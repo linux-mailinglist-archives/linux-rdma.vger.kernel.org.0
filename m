@@ -2,225 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D25C3A948A
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 09:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FE23A94B2
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 10:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232038AbhFPH7z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Jun 2021 03:59:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231645AbhFPH7y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Jun 2021 03:59:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BFCF611BE;
-        Wed, 16 Jun 2021 07:57:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623830269;
-        bh=4TkXloCYrvM3Lo8a7KonMNtyrO8BPwjAw6KGTZTSrMM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=evN7PFujsievEDXrlr4tHIQ0nM9DutCey78+fnH4uwINbziPsM7hJpt2Le0cRL93D
-         xNni5ce3/+XKQvOhG57jLNhRskGsBca09N/iQGTjD4qIr3C5OsXPevMX9gmQTCd9eM
-         P32y8dwtd1qNCwWtPH4Q2M0g89zpP9A0Bmcs8AJumJSnB2b/n5cNPobdXTQbsdFhYt
-         f+LCYWHCaqJMBYBV06IRRbeWR4MsIR+3/oaqb3rFeSaRWaqfpYIr+x0FbIYwaQzdD6
-         xrqGCq9DsW3b8q7A2lVUR7W+Sd6wxcgVb2e3serEun5kLeJPNj4jMWcwYDLezIaJah
-         GFxiGZ99N9bMw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
-Subject: [PATCH rdma-next 2/2] RDMA/mlx5: Support real-time timestamp directly from the device
-Date:   Wed, 16 Jun 2021 10:57:39 +0300
-Message-Id: <c6cfc8e6f038575c5c2de6505830f7e74e4de80d.1623829775.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1623829775.git.leonro@nvidia.com>
-References: <cover.1623829775.git.leonro@nvidia.com>
+        id S231391AbhFPIGA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Jun 2021 04:06:00 -0400
+Received: from mail-dm3nam07on2081.outbound.protection.outlook.com ([40.107.95.81]:3075
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231290AbhFPIGA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Jun 2021 04:06:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NmwFDIdBW4Wwi3wq40GUAXpVaURpw/n7ZRojp8xsPae3hyvq8qP0vJOUNIgidXSny/UgtoJ+cpz3uewEpAN01D3dy8+ebhmPSsUbpqXK85iD66359hPcg4YPC+Lard3plfWQk+FBvkZe7nsA+2KutQ6u7GcF8NU/aKeYIjNc47n0IEFejxV/3J2o1z/qSQKgBea4QrLwjs77O3c7uNqsyU37N48V1f/czniQ0XCxcXkmLXyaAEF6BqrWWDQyxTBCfGJv4VttZVYKFES9yTVWqYJ4aKQuRnmA+jMjxJ0yIc4Wi2IkEn/xsDtjiD4/vPkr8S7aq1MF/c6H+RwQyLe5Qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SgvsWPE31ohoJPjCpbNouT73ZuI2L+nvp13Ar4StSr4=;
+ b=HHTOI9OwVlElp3ii8lvJG9Y7JSgFi7hY9skmdd4zYNNEx+xZA+BPww1VFW+5Dak0mFJ6micO/EBf/Sv3OaqRKHcyBEaoYN7VAfP3pAz57teN88QOlygmWr2brbdLKooA+k7XI9B6q473sJ4j5YUbLSdgADhYGaP/qkQ0p3BpBj09CJnbQ7zoWpxU0ccGLUD/uTSgA+jM7bAPxPW9xIbU51Sdx9qPhMEuZ67fB/w22fs+2yAx5epo1Gtx2oEXbZcIwEgXy6Dl38D0EtuNWSRPLGUMIoyrfmYVq03Wjt2EAbpt+gMXSscZO1dNhAqx4hH/izuwksD945oIo0iF95U7iQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SgvsWPE31ohoJPjCpbNouT73ZuI2L+nvp13Ar4StSr4=;
+ b=mIBEeZHTyIJ0wAv8T6L83C2ovwVODQINyw+zAtBgEbt8PI1KkmPKaWEZ7OW3/b5xvbPB+ufxWpSINjEcZqPGLXVlf5cz+++B0N3b+bSssbDEe38yEGiDpQDfCPRESMSJaPuoCAKczf6ziFimVum64l8yGKClQTxC+UCrd3+Gb6ljCWO27wfifgv3Qjsn34b0a+f1oGNyEf9CrySFfFfjLG9GHPscyr0Y/VoGJ1PO3YDTlPZBrkvo1h3fqS+S52eZBV7T7yBTu21e7SzfaaLqBzLHpeN4ae2DHX9g+l9g+2oNUJZuDvhBSOGLjPVE8/yLp5U3xXGr85mIK7HSPDB0CA==
+Received: from DM5PR19CA0056.namprd19.prod.outlook.com (2603:10b6:3:116::18)
+ by BL1PR12MB5031.namprd12.prod.outlook.com (2603:10b6:208:31a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.22; Wed, 16 Jun
+ 2021 08:03:52 +0000
+Received: from DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:116:cafe::64) by DM5PR19CA0056.outlook.office365.com
+ (2603:10b6:3:116::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
+ Transport; Wed, 16 Jun 2021 08:03:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT020.mail.protection.outlook.com (10.13.172.224) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4242.16 via Frontend Transport; Wed, 16 Jun 2021 08:03:52 +0000
+Received: from [172.27.12.167] (172.20.187.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 16 Jun
+ 2021 08:03:50 +0000
+Subject: Re: [PATCH rdma-core 2/4] mlx5: Implement
+ ibv_query_qp_data_in_order() verb
+From:   Yishai Hadas <yishaih@nvidia.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Maor Gottlieb <maorg@nvidia.com>,
+        Patrisious Haddad <phaddad@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20210609155932.218005-1-yishaih@nvidia.com>
+ <20210609155932.218005-3-yishaih@nvidia.com> <YMGoQ2ZmTjSun54y@unreal>
+ <20210610114224.GJ1002214@nvidia.com> <YMH8mr6AWEuJceoj@unreal>
+ <BN9PR12MB50522EC7EC780D64612D9668C3359@BN9PR12MB5052.namprd12.prod.outlook.com>
+Message-ID: <ff380d91-6b91-9b9c-96ce-776e83ad2a70@nvidia.com>
+Date:   Wed, 16 Jun 2021 11:03:48 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <BN9PR12MB50522EC7EC780D64612D9668C3359@BN9PR12MB5052.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f97e5d45-07e3-4466-915a-08d9309d480c
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5031:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5031C0F947D1C293C0EB4934C30F9@BL1PR12MB5031.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rGR8+MVd0fPz1szIwXy0IxGEDfxpUtwnI8v10BeK1DTaLccTRrcYaFK5JCvS0iL/GSKyHg92uXkRubc8ghHKen3vXTnMo70/mZWdb7cBtpHlDKybZi/OEpV9/uHCC6F0pqVQB6YWcBMISDaiC3ofuuwfXGoUiPzKVGJmkJSy7u9KLvHg5ro/xAWCApA4ZNN2gej+JN1sgatUn32pIArAtIcyeZ70pbt1NCDlXriVvyDzp+G/yMaWCwWGtJYHXENL/BF/lCTQ5C98gW6eZfYpBc3SRFtM2dmwBmuUKR9cNrBGWmiAcWt8sUqkNLLZTW0OEs0/P4KYkFvsUA7zyOt3isQuyXcyYk8K7fJ6hlEaB7UGgkwkaebsvqXryvC/poB4Jcx1Vu4StG+ZqalDK5HcEvC1G96cKfjNKEJPHNcVEUYkPorxsSnvOxsvkQViIgTp3DeA2mFPVoyu82FznIvQF6R7TPCB3kl0Ubnvneuug2AP/UGXoT/aOe/RdTUOKqaMDpP0FusUJ0acWpPjssk4ir0GtEpAlpotqQOik7n3Vvqqg4JjbvK5un5z6vijiUOBEDfjEC8fAeppj+gSn4GGtWcqr5bxGmYXJQi85mOpteZwR7JtMUppCvPu30u4dYp7rB8h/rJKpbRA1XH6zRBFbZZ1Nb2tKZrGlgxt5EcOHGOMP/M4AC0tuBn7KOfsVHENitlyIlz2KZeMVuwivW9vnstW50v7MBDCVMcUN/JC5wudnuQ37/9i3kYFq37yk2KgXpJo2uz772xZCLXOd7xIDRMjWx6abF0AiRGprHpWyYEN04hxz+lmE8lCkDuTdW/y
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(346002)(396003)(36840700001)(46966006)(5660300002)(2616005)(31686004)(70206006)(83380400001)(70586007)(36860700001)(2906002)(36756003)(82740400003)(356005)(336012)(47076005)(4744005)(7636003)(8936002)(316002)(26005)(966005)(31696002)(82310400003)(478600001)(54906003)(16576012)(8676002)(4326008)(426003)(6916009)(53546011)(86362001)(186003)(36906005)(16526019)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 08:03:52.5398
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f97e5d45-07e3-4466-915a-08d9309d480c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT020.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5031
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+On 6/10/2021 3:51 PM, Yishai Hadas wrote:
+>> From: Leon Romanovsky <leon@kernel.org>
+> <>
+>
+>>> We should probably put the above in the core code anyhow
+>> Agree, it makes sense.
+>>
+> Thanks, the PR was updated accordingly.
+> https://github.com/linux-rdma/rdma-core/pull/1009
+>
+> Yishai
 
-Currently, if the user asks for a real-time timestamp, the device will
-return a free-running one, and the timestamp will be translated to
-real-time in the user-space.
+The PR was merged.
 
-When the device supports only real-time timestamp and not free-running,
-the creation of the QP will fail even though the user needs supported the
-real-time one. To prevent this, we will return the real-time timestamp
-directly from the device.
-
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/cq.c      |  6 +++++-
- drivers/infiniband/hw/mlx5/main.c    |  6 ++++++
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  7 +++++++
- drivers/infiniband/hw/mlx5/qp.c      | 30 +++++++++++++++++++++++-----
- include/uapi/rdma/mlx5-abi.h         |  2 ++
- 5 files changed, 45 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index cce3cdd191e6..7575f7b2aa77 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -725,7 +725,8 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 		return -EFAULT;
- 
- 	if ((ucmd.flags & ~(MLX5_IB_CREATE_CQ_FLAGS_CQE_128B_PAD |
--			    MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX)))
-+			    MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX |
-+			    MLX5_IB_CREATE_CQ_FLAGS_REAL_TIME_TS)))
- 		return -EINVAL;
- 
- 	if ((ucmd.cqe_size != 64 && ucmd.cqe_size != 128) ||
-@@ -826,6 +827,9 @@ static int create_cq_user(struct mlx5_ib_dev *dev, struct ib_udata *udata,
- 		cq->private_flags |= MLX5_IB_CQ_PR_FLAGS_CQE_128_PAD;
- 	}
- 
-+	if (ucmd.flags & MLX5_IB_CREATE_CQ_FLAGS_REAL_TIME_TS)
-+		cq->private_flags |= MLX5_IB_CQ_PR_FLAGS_REAL_TIME_TS;
-+
- 	MLX5_SET(create_cq_in, *cqb, uid, context->devx_uid);
- 	return 0;
- 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index c46581686258..087633b01bc5 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -1826,6 +1826,12 @@ static int set_ucontext_resp(struct ib_ucontext *uctx,
- 	if (MLX5_CAP_GEN(dev->mdev, ece_support))
- 		resp->comp_mask |= MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_ECE;
- 
-+	if (rt_supported(MLX5_CAP_GEN(dev->mdev, sq_ts_format)) &&
-+	    rt_supported(MLX5_CAP_GEN(dev->mdev, rq_ts_format)) &&
-+	    rt_supported(MLX5_CAP_ROCE(dev->mdev, qp_ts_format)))
-+		resp->comp_mask |=
-+			MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_REAL_TIME_TS;
-+
- 	resp->num_dyn_bfregs = bfregi->num_dyn_bfregs;
- 
- 	if (MLX5_CAP_GEN(dev->mdev, drain_sigerr))
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 6043a42e8dda..ab078720cb27 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -549,6 +549,7 @@ static inline const struct mlx5_umr_wr *umr_wr(const struct ib_send_wr *wr)
- 
- enum mlx5_ib_cq_pr_flags {
- 	MLX5_IB_CQ_PR_FLAGS_CQE_128_PAD	= 1 << 0,
-+	MLX5_IB_CQ_PR_FLAGS_REAL_TIME_TS = 1 << 1,
- };
- 
- struct mlx5_ib_cq {
-@@ -1636,4 +1637,10 @@ static inline bool mlx5_ib_lag_should_assign_affinity(struct mlx5_ib_dev *dev)
- 		(MLX5_CAP_GEN(dev->mdev, num_lag_ports) > 1 &&
- 		 MLX5_CAP_GEN(dev->mdev, lag_tx_port_affinity));
- }
-+
-+static inline bool rt_supported(int ts_cap)
-+{
-+	return ts_cap == MLX5_TIMESTAMP_FORMAT_CAP_REAL_TIME ||
-+	       ts_cap == MLX5_TIMESTAMP_FORMAT_CAP_FREE_RUNNING_AND_REAL_TIME;
-+}
- #endif /* MLX5_IB_H */
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index dfe9eab7bd72..3d797be84bfa 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1182,8 +1182,16 @@ static bool fr_supported(int ts_cap)
- }
- 
- static int get_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *cq,
--			 bool fr_sup)
-+			 bool fr_sup, bool rt_sup)
- {
-+	if (cq->private_flags & MLX5_IB_CQ_PR_FLAGS_REAL_TIME_TS) {
-+		if (!rt_sup) {
-+			mlx5_ib_dbg(dev,
-+				    "Real time TS format is not supported\n");
-+			return -EOPNOTSUPP;
-+		}
-+		return MLX5_TIMESTAMP_FORMAT_REAL_TIME;
-+	}
- 	if (cq->create_flags & IB_UVERBS_CQ_FLAGS_TIMESTAMP_COMPLETION) {
- 		if (!fr_sup) {
- 			mlx5_ib_dbg(dev,
-@@ -1200,14 +1208,16 @@ static int get_rq_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *recv_cq)
- {
- 	u8 ts_cap = MLX5_CAP_GEN(dev->mdev, rq_ts_format);
- 
--	return get_ts_format(dev, recv_cq, fr_supported(ts_cap));
-+	return get_ts_format(dev, recv_cq, fr_supported(ts_cap),
-+			     rt_supported(ts_cap));
- }
- 
- static int get_sq_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *send_cq)
- {
- 	u8 ts_cap = MLX5_CAP_GEN(dev->mdev, sq_ts_format);
- 
--	return get_ts_format(dev, send_cq, fr_supported(ts_cap));
-+	return get_ts_format(dev, send_cq, fr_supported(ts_cap),
-+			     rt_supported(ts_cap));
- }
- 
- static int get_qp_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *send_cq,
-@@ -1215,18 +1225,28 @@ static int get_qp_ts_format(struct mlx5_ib_dev *dev, struct mlx5_ib_cq *send_cq,
- {
- 	u8 ts_cap = MLX5_CAP_ROCE(dev->mdev, qp_ts_format);
- 	bool fr_sup = fr_supported(ts_cap);
-+	bool rt_sup = rt_supported(ts_cap);
- 	u8 default_ts = fr_sup ? MLX5_TIMESTAMP_FORMAT_FREE_RUNNING :
- 				 MLX5_TIMESTAMP_FORMAT_DEFAULT;
- 	int send_ts_format =
--		send_cq ? get_ts_format(dev, send_cq, fr_sup) :
-+		send_cq ? get_ts_format(dev, send_cq, fr_sup, rt_sup) :
- 			  default_ts;
- 	int recv_ts_format =
--		recv_cq ? get_ts_format(dev, recv_cq, fr_sup) :
-+		recv_cq ? get_ts_format(dev, recv_cq, fr_sup, rt_sup) :
- 			  default_ts;
- 
- 	if (send_ts_format < 0 || recv_ts_format < 0)
- 		return -EOPNOTSUPP;
- 
-+	if (send_ts_format != MLX5_TIMESTAMP_FORMAT_DEFAULT &&
-+	    recv_ts_format != MLX5_TIMESTAMP_FORMAT_DEFAULT &&
-+	    send_ts_format != recv_ts_format) {
-+		mlx5_ib_dbg(
-+			dev,
-+			"The send ts_format does not match the receive ts_format\n");
-+		return -EOPNOTSUPP;
-+	}
-+
- 	return send_ts_format == default_ts ? recv_ts_format : send_ts_format;
- }
- 
-diff --git a/include/uapi/rdma/mlx5-abi.h b/include/uapi/rdma/mlx5-abi.h
-index 6f54ab3d99e5..86be4a92b67b 100644
---- a/include/uapi/rdma/mlx5-abi.h
-+++ b/include/uapi/rdma/mlx5-abi.h
-@@ -103,6 +103,7 @@ enum mlx5_ib_alloc_ucontext_resp_mask {
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_DUMP_FILL_MKEY    = 1UL << 1,
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_ECE               = 1UL << 2,
- 	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_SQD2RTS           = 1UL << 3,
-+	MLX5_IB_ALLOC_UCONTEXT_RESP_MASK_REAL_TIME_TS	   = 1UL << 4,
- };
- 
- enum mlx5_user_cmds_supp_uhw {
-@@ -278,6 +279,7 @@ struct mlx5_ib_query_device_resp {
- enum mlx5_ib_create_cq_flags {
- 	MLX5_IB_CREATE_CQ_FLAGS_CQE_128B_PAD	= 1 << 0,
- 	MLX5_IB_CREATE_CQ_FLAGS_UAR_PAGE_INDEX  = 1 << 1,
-+	MLX5_IB_CREATE_CQ_FLAGS_REAL_TIME_TS	= 1 << 2,
- };
- 
- struct mlx5_ib_create_cq {
--- 
-2.31.1
+Yishai
 
