@@ -2,186 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B52213A9532
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 10:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B0B3A96AB
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 11:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhFPInk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Jun 2021 04:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231318AbhFPInk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Jun 2021 04:43:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1EA2760C41;
-        Wed, 16 Jun 2021 08:41:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623832895;
-        bh=wYwG7LnKrp9lLE5sLvcBvxTZo+OvvtxXnkvbV79A43s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=teKwMP25f+QE6deY5wNZu6b0sKz7NUebvywyvDGOtjzKQGMMzhKlG4LL5HSTKiVxM
-         TmF2/FOWtxhrVmoM0SxPiTB2zwsZJ3QMcllBc2jqcB7r3Hyf8B7VvmHTH4l97UY3Nz
-         nMfCGScy95olGwd4SfZWC5Q1yd9C2QIQt2zLwlTLWUH274lgBNXTARcwWmV+GVJj0l
-         VBfjlQeRC8GsZR6iYfH7+0nvzivZaUU5gU+0YqP5SY3DoGd5/ZKV1EExtgdHj73YGm
-         r6qXHshazikbPeZjxEl5jcsYl46E/5nG+3NyMtDJMOSPsDVuP636gkJMQKgQhUYPOV
-         CcoogsOTCJKgQ==
-Date:   Wed, 16 Jun 2021 11:41:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
-Subject: Re: [PATCH v4 for-next 3/3] IB/core: Obtain subnet_prefix from cache
- in IB devices
-Message-ID: <YMm5OWnN0242e970@unreal>
-References: <20210616065213.987-1-anand.a.khoje@oracle.com>
- <20210616065213.987-4-anand.a.khoje@oracle.com>
- <YMmnyE+rpLIf6e0B@unreal>
- <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
+        id S231835AbhFPJ6J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 16 Jun 2021 05:58:09 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:7306 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232207AbhFPJ6I (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Jun 2021 05:58:08 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G4gRm0nJmz1BN8v;
+        Wed, 16 Jun 2021 17:51:00 +0800 (CST)
+Received: from dggpeml100022.china.huawei.com (7.185.36.176) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 17:55:46 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml100022.china.huawei.com (7.185.36.176) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 16 Jun 2021 17:55:46 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Wed, 16 Jun 2021 17:55:46 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
+Thread-Topic: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
+Thread-Index: AQHXU6R/LojSLjaQ0EW84zhJi1oR7g==
+Date:   Wed, 16 Jun 2021 09:55:45 +0000
+Message-ID: <3fa07c87b91047a79402a9871e4e932a@huawei.com>
+References: <1622194379-59868-1-git-send-email-liweihang@huawei.com>
+ <1622194379-59868-5-git-send-email-liweihang@huawei.com>
+ <20210604145005.GA405010@nvidia.com>
+ <efc5283d762542f6a4add9329744c4ee@huawei.com>
+ <20210611113124.GO1002214@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac8da9cf-9dec-a207-c80e-e9ee650b40fc@oracle.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 01:12:51PM +0530, Anand Khoje wrote:
-> On 6/16/2021 12:57 PM, Leon Romanovsky wrote:
-> > On Wed, Jun 16, 2021 at 12:22:13PM +0530, Anand Khoje wrote:
-> > > ib_query_port() calls device->ops.query_port() to get the port
-> > > attributes. The method of querying is device driver specific.
-> > > The same function calls device->ops.query_gid() to get the GID and
-> > > extract the subnet_prefix (gid_prefix).
-> > > 
-> > > The GID and subnet_prefix are stored in a cache. But they do not get
-> > > read from the cache if the device is an Infiniband device. The
-> > > following change takes advantage of the cached subnet_prefix.
-> > > Testing with RDBMS has shown a significant improvement in performance
-> > > with this change.
-> > > 
-> > > The function ib_cache_is_initialised() is introduced because
-> > > ib_query_port() gets called early in the stage when the cache is not
-> > > built while reading port immutable property.
-> > > 
-> > > In that case, the default GID still gets read from HCA for IB link-
-> > > layer devices.
-> > > 
-> > > In the situation of an event causing cache update, the subnet_prefix
-> > > will get retrieved from newly updated GID cache in ib_cache_update(),
-> > > so that we do not end up reading a stale value from cache via
-> > > ib_query_port().
-> > > 
-> > > Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
-> > > Suggested-by: Leon Romanovsky <leonro@nvidia.com>
-> > > Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
-> > > Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
-> > > Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
-> > > ---
-> > > 
-> > > v1 -> v2:
-> > >      -   Split the v1 patch in 3 patches as per Leon's suggestion.
-> > > 
-> > > v2 -> v3:
-> > >      -   Added changes as per Mark Zhang's suggestion of clearing
-> > >          flags in git_table_cleanup_one().
-> > > v3 -> v4:
-> > >      -   Removed the enum ib_port_data_flags and 8 byte flags from
-> > >          struct ib_port_data, and the set_bit()/clear_bit() API
-> > >          used to update this flag as that was not necessary.
-> > >          Done to keep the code simple.
-> > >      -   Added code to read subnet_prefix from updated GID cache in the
-> > >          event of cache update. Prior to this change, ib_cache_update
-> > >          was reading the value for subnet_prefix via ib_query_port(),
-> > >          due to this patch, we ended up reading a stale cached value of
-> > >          subnet_prefix.
-> > > 
-> > > ---
-> > >   drivers/infiniband/core/cache.c  | 18 +++++++++++++++---
-> > >   drivers/infiniband/core/device.c |  9 +++++++++
-> > >   include/rdma/ib_cache.h          |  5 +++++
-> > >   include/rdma/ib_verbs.h          |  1 +
-> > >   4 files changed, 30 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> > > index 2325171..cd99c46 100644
-> > > --- a/drivers/infiniband/core/cache.c
-> > > +++ b/drivers/infiniband/core/cache.c
-> > > @@ -917,9 +917,11 @@ static void gid_table_cleanup_one(struct ib_device *ib_dev)
-> > >   {
-> > >   	u32 p;
-> > > -	rdma_for_each_port (ib_dev, p)
-> > > +	rdma_for_each_port (ib_dev, p) {
-> > > +		ib_dev->port_data[p].cache_is_initialized = 0;
-> > 
-> > I think that this line is not needed, we are removing device anyway and
-> > and query_port is not allowed at this stage.
-> > 
-> We have kept this for code completeness purposes. Just as we did with
-> set_bit() and clear_bit() APIs.
-
-You are not using *_bit() API now, so let's not clear here.
-It is not completeness, but misleading. It gives false assumption
-that cache_is_initialized is used later in the code.
-
+On 2021/6/11 19:31, Jason Gunthorpe wrote:
+> On Fri, Jun 11, 2021 at 09:20:51AM +0000, liweihang wrote:
+>> On 2021/6/4 22:50, Jason Gunthorpe wrote:
+>>> On Fri, May 28, 2021 at 05:32:59PM +0800, Weihang Li wrote:
+>>>> diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
+>>>> index aa57cc4..28d455b 100644
+>>>> +++ b/providers/hns/hns_roce_u_hw_v2.c
+>>>> @@ -33,10 +33,15 @@
+>>>>  #define _GNU_SOURCE
+>>>>  #include <stdio.h>
+>>>>  #include <string.h>
+>>>> +#include <sys/mman.h>
+>>>>  #include "hns_roce_u.h"
+>>>>  #include "hns_roce_u_db.h"
+>>>>  #include "hns_roce_u_hw_v2.h"
+>>>>  
+>>>> +#if defined(__aarch64__) || defined(__arm__)
+>>>> +#include <arm_neon.h>
+>>>> +#endif
+>>>> +
+>>>>  #define HR_IBV_OPC_MAP(ib_key, hr_key) \
+>>>>  		[IBV_WR_ ## ib_key] = HNS_ROCE_WQE_OP_ ## hr_key
+>>>>  
+>>>> @@ -313,6 +318,39 @@ static void hns_roce_update_sq_db(struct hns_roce_context *ctx,
+>>>>  			 (__le32 *)&sq_db);
+>>>>  }
+>>>>  
+>>>> +static inline void hns_roce_write512(uint64_t *dest, uint64_t *val)
+>>>> +{
+>>>> +#if defined(__aarch64__) || defined(__arm__)
+>>>> +	uint64x2x4_t dwqe;
+>>>> +
+>>>> +	/* Load multiple 4-element structures to 4 registers */
+>>>> +	dwqe = vld4q_u64(val);
+>>>> +	/* store multiple 4-element structures from 4 registers */
+>>>> +	vst4q_u64(dest, dwqe);
+>>>> +#else
+>>>> +	int i;
+>>>> +
+>>>> +	for (i = 0; i < HNS_ROCE_WRITE_TIMES; i++)
+>>>> +		hns_roce_write64(dest + i, val + HNS_ROCE_WORD_NUM * i);
+>>>> +#endif
+>>>> +}
+>>>
+>>> No code like this in providers. This should be done similiarly to how
+>>> SSE is handled on x86
+>>>
+>>> This is 
+>>>
+>>>    mmio_memcpy_x64(dest, val, 64);
+>>>
+>>> The above should be conditionalized to trigger NEON
+>>>
+>>> #if defined(__aarch64__) || defined(__arm__)
+>>> static inline void __mmio_memcpy_x64_64b(..)
+>>> {..
+>>>     vst4q_u64(dest, vld4q_u64(src))
+>>> ..}
+>>> #endif
+>>>
+>>> #define mmio_memcpy_x64(dest, src, bytecount)
+>>>  ({if (__builtin_constant_p(bytecount == 64)
+>>>         __mmio_memcpy_x64_64b(dest,src,bytecount)
+>>>    ...
+>>>
+>>
+>> OK, thank you.
+>>
+>>> And I'm not sure what barriers you need for prot_device, but certainly
+>>> more than none. If you don't know then use the WC barriers
+>>>
+>>
+>> ST4 instructions can guarantee the 64 bytes data to be wrote at a time, so we
+>> don't need a barrier.
 > 
-> > >   		cleanup_gid_table_port(ib_dev, p,
-> > >   				       ib_dev->port_data[p].cache.gid);
-> > > +	}
-> > >   }
-> > >   static int gid_table_setup_one(struct ib_device *ib_dev)
-> > > @@ -1466,6 +1468,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
-> > >   	struct ib_port_attr       *tprops = NULL;
-> > >   	struct ib_pkey_cache      *pkey_cache = NULL;
-> > >   	struct ib_pkey_cache      *old_pkey_cache = NULL;
-> > > +	union ib_gid               gid;
-> > >   	int                        i;
-> > >   	int                        ret;
-> > > @@ -1523,13 +1526,21 @@ static int config_non_roce_gid_cache(struct ib_device *device,
-> > >   	device->port_data[port].cache.lmc = tprops->lmc;
-> > >   	device->port_data[port].cache.port_state = tprops->state;
-> > > -	device->port_data[port].cache.subnet_prefix = tprops->subnet_prefix;
-> > > +	ret = rdma_query_gid(device, port, 0, &gid);
-> > > +	if (ret) {
-> > > +		write_unlock_irq(&device->cache.lock);
-> > > +		goto err;
-> > > +	}
-> > > +
-> > > +	device->port_data[port].cache.subnet_prefix =
-> > > +			be64_to_cpu(gid.global.subnet_prefix);
-> > > +
-> > >   	write_unlock_irq(&device->cache_lock);
-> > >   	if (enforce_security)
-> > >   		ib_security_cache_change(device,
-> > >   					 port,
-> > > -					 tprops->subnet_prefix);
-> > > +					 be64_to_cpu(gid.global.subnet_prefix));
-> > >   	kfree(old_pkey_cache);
-> > >   	kfree(tprops);
-> > > @@ -1629,6 +1640,7 @@ int ib_cache_setup_one(struct ib_device *device)
-> > >   		err = ib_cache_update(device, p, true, true, true);
-> > >   		if (err)
-> > >   			return err;
-> > > +		device->port_data[p].cache_is_initialized = 1;
-> > >   	}
-> > >   	return 0;
-> > > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> > > index 7a617e4..57b9039 100644
-> > > --- a/drivers/infiniband/core/device.c
-> > > +++ b/drivers/infiniband/core/device.c
-> > > @@ -2057,6 +2057,15 @@ static int __ib_query_port(struct ib_device *device,
-> > >   	    IB_LINK_LAYER_INFINIBAND)
-> > >   		return 0;
-> > > +	if (!ib_cache_is_initialised(device, port_num))
-> > > +		goto query_gid_from_device;
-> > 
-> > IMHO, we don't need this new function and can access ib_port_data
-> > directly. In device.c, we have plenty of places that does it.
-> > 
-> > Not critical.
-> > 
-> Added this function to have a way to check validity of cache, such that it
-> could be used in future for the same check in areas to which ib_port_data is
-> opaque.
+> arm is always a relaxed out of order storage model, you need barriers
+> to ensure that the observance of the ST4 is in-order with the other
+> writes that might be going on
+> 
+> Jason
+> 
 
+Hi Jason
 
-It is ok, just call directly if (!device->port_data[port_num].cache_is_initialized).
+Sorry for the late reply. Here is the process of post send of HIP08/09:
 
-Thanks
+   +-----------+
+   | post send |
+   +-----+-----+
+         |
+   +-----+-----+
+   | write WQE |
+   +-----+-----+
+         |
+         | udma_to_device_barrier()
+         |
+   +-----+-----+   Y  +-----------+  N
+   |  HIP09 ?  +------+ multi WR ?+-------------+
+   +-----+-----+      +-----+-----+             |
+         | N                | Y                 |
+   +-----+-----+      +-----+-----+    +--------+--------+
+   |  ring DB  |      |  ring DB  |    |direct WQE (ST4) |
+   +-----------+      +-----------+    +-----------------+
+
+After users call ibv_post_send, the driver writes the WQE into memory, and add a
+barrier to ensure that all of the WQE has been fully written. Then, for HIP09,
+we check if there is only one WR, and if so, we write the WQE into pci bar space
+via ST4 instructions, then the hardware will get the WQE. If there are more than
+one WQEs, we generate a SQ doorbell to tell the hardware to read WQEs.
+
+Direct WQE merge the process ring doorbell and get WQE from memory to the
+hardware, avoiding reading WQEs from the memory after the doorbell is updated.
+The ST4 instructions is atomic as ring doorbell for the hardware, and before
+ST4, the WQE has been fully written into the memory. So I think current barrier
+is enough for Direct WQE.
+
+If there is still any issues in this process, could you please tell us where to
+add the barrier? Thank you :)
+
+Weihang
+
