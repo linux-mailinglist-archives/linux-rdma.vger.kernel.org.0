@@ -2,188 +2,387 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D926D3A8978
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Jun 2021 21:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B98E3A91B5
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 08:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhFOT2t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Jun 2021 15:28:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbhFOT2t (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Jun 2021 15:28:49 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD758C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Jun 2021 12:26:44 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id 93so12146687qtc.10
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Jun 2021 12:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=OnG02JNcW28O93PnepuqJW+cvOJG9WJNqXDP8DhD7+0=;
-        b=hFi4ldg1Q6zveIhTQkuYI9duKq7noLcEnCl+sQy2EOU9PhGwjcy0+YvkA5mlyyfdzh
-         KeRE079PwYJOEZH8tEs39JLWZc0/5Oil+orXpBXU8ls+R5a0WDluCReaj2a6eWLelpHW
-         1pmynYWjLtslwohNd/Jjke/xU7zwDjU9iK7WA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=OnG02JNcW28O93PnepuqJW+cvOJG9WJNqXDP8DhD7+0=;
-        b=Aa+ELoKPrbEFLodKvsmUxHm1vBPPN0fck0uWmTNjtIWTt5W6IF2C669W8KiyGFW7P3
-         utsSURaQrgkzWD9jy9x6ZQ7GrW7LAKWnclPkh1J4fIB11Y46K5CaHu26um4qh68hveMk
-         tATS1GvTYLFsknHsusi+Zu3r/NpLwFaLm69YTD3Fe81ZnLZa2N4pv4CwnqOcC8zlVo57
-         JjdiRIXHA+2PZ2Gtn0RfHhWEXOe/jAXmQpnt/l2Y3HlyIMp+qO/Ni/0hO3MAwFaL/3qM
-         T8GhmHCLWoqtiNLqsdMGXFFSbnfL39imcvs2fLQl/7hGE2eVTH5UBEZ7gvPGyCn6knXz
-         s9ZQ==
-X-Gm-Message-State: AOAM532SB4e5ZDMj5rEDwRvLlcPP0NdJBmAOwydMCP9JJGHEblgMYbI9
-        NS0cOb8l2G0hSBG3jrvYyhTGCExacCcc5Dafwsp8hx/uop6HBg==
-X-Google-Smtp-Source: ABdhPJy7Fp8IG1u9W2ESFHlFVsmCEYg/s4yBid2+ru9sdGik0FInjj4oMeqxeKDSnUp4yyH7TuJnZ5X1yff/0mAIpaU=
-X-Received: by 2002:ac8:514d:: with SMTP id h13mr1254058qtn.8.1623785203411;
- Tue, 15 Jun 2021 12:26:43 -0700 (PDT)
+        id S230515AbhFPGL7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Jun 2021 02:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhFPGL6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Jun 2021 02:11:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 440E261369;
+        Wed, 16 Jun 2021 06:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623823793;
+        bh=z1nlLP7D7x459fNS9bCIELuFIiPoZbbbsP3K0TDQvto=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Oavuh38Jpvl/Wd+3l1vx3i075RUMkFshkFLm3P1X+T6WMmIAb9MRvZxwXxUC2TK3t
+         bmBlbJnSYuX4lZIjowqKU+5E1eP9nCsU8JxJl3qY3ljCQB1pRHUajaMFf8WCmBD/5Q
+         kJe3jG5koFscLgi2BKaNwpxeAyDCYxvA5hrMm03SCMqnhSREZkD3ynF7I4+3KeZE/T
+         KnMZ4Cc0nhdsuJb5wgr06JMsXfKrW44R5niU30yhZtsWIvhhcKQ6pkJraDh+136HmH
+         Ls3CBxraHdLOyimZq8aFggVTFlqf8Mll/v2zqJM54tj5hXPCHCnwRpSp2+8mfiNzxi
+         UgSa3Ryr0BGMA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Weihang Li <liweihang@huawei.com>
+Subject: [PATCH rdma-next v2] RDMA: Fix kernel-doc warnings about wrong comment
+Date:   Wed, 16 Jun 2021 09:09:47 +0300
+Message-Id: <e57d5f4ddd08b7a19934635b44d6d632841b9ba7.1623823612.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210615183148.1179042-1-devesh.sharma@broadcom.com>
-In-Reply-To: <20210615183148.1179042-1-devesh.sharma@broadcom.com>
-From:   Devesh Sharma <devesh.sharma@broadcom.com>
-Date:   Wed, 16 Jun 2021 00:56:07 +0530
-Message-ID: <CANjDDBj=qdZ7xkCYxwowLvsrCXyLD5xUndssTUVhY2OKw9jHPw@mail.gmail.com>
-Subject: Re: [PATCH V5 rdma-core 0/5] Broadcom's user library update
-To:     linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="0000000000004646ab05c4d2f483"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---0000000000004646ab05c4d2f483
-Content-Type: text/plain; charset="UTF-8"
+From: Leon Romanovsky <leonro@nvidia.com>
 
-@Jason Gunthorpe
-Build is not going through on these patches
+Compilation with W=1 produces warnings similar to the below.
 
-         Build log #L12
+  drivers/infiniband/ulp/ipoib/ipoib_main.c:320: warning: This comment
+	starts with '/**', but isn't a kernel-doc comment. Refer
+	Documentation/doc-guide/kernel-doc.rst
 
-Docker login fail with exit code 1
+All such occurrences were found with the following one line
+ git grep -A 1 "\/\*\*" drivers/infiniband/
 
-how to fix?
+Reviewed-by: Jack Wang <jinpu.wang@ionos.com> #rtrs
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ Changelog:
+ v1 https://lore.kernel.org/lkml/8b40bbff098247962af5a7b35d47b2e964daa523.1622726066.git.leonro@nvidia.com
+ * Found two extra places in hns_roce_hem.c
+ * Added Dennis's ROB
+ v0 https://lore.kernel.org/lkml/635def71048cbffe76e2dd324cf420d8a465ee9d.1622460676.git.leonro@nvidia.com:
+ * Rebased to drop i40iw
+ * Added Jack's ROB
+---
+ drivers/infiniband/core/iwpm_util.h       | 2 +-
+ drivers/infiniband/core/roce_gid_mgmt.c   | 5 +++--
+ drivers/infiniband/hw/hfi1/chip.c         | 4 ++--
+ drivers/infiniband/hw/hfi1/file_ops.c     | 6 +++---
+ drivers/infiniband/hw/hfi1/hfi.h          | 2 +-
+ drivers/infiniband/hw/hfi1/init.c         | 4 ++--
+ drivers/infiniband/hw/hfi1/pio.c          | 2 +-
+ drivers/infiniband/hw/hns/hns_roce_hem.c  | 4 ++--
+ drivers/infiniband/sw/rdmavt/mr.c         | 4 ++--
+ drivers/infiniband/sw/rdmavt/qp.c         | 3 ++-
+ drivers/infiniband/sw/rdmavt/vt.c         | 4 ++--
+ drivers/infiniband/ulp/ipoib/ipoib_main.c | 7 ++++---
+ drivers/infiniband/ulp/iser/iser_verbs.c  | 2 +-
+ drivers/infiniband/ulp/isert/ib_isert.c   | 4 ++--
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c    | 4 ++--
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c    | 2 +-
+ 16 files changed, 31 insertions(+), 28 deletions(-)
 
-On Wed, Jun 16, 2021 at 12:01 AM Devesh Sharma
-<devesh.sharma@broadcom.com> wrote:
->
-> The focus of this patch series is to move SQ and RQ
-> wqe posting indices from 128B fixed stride to 16B
-> aligned stride. This allows more flexibility in choosing
-> wqe size.
->
-> v4 -> v5
->  - addressed few minor suggestion.
-> v3 -> v4
->  - fixed build warning
-> v2 -> V3
->  - Split the ABI change into separate patch
->  - committed ABI patch using standard rdma-core script.
->
-> Devesh Sharma (5):
->   Update kernel headers
->   bnxt_re/lib: Read wqe mode from the driver
->   bnxt_re/lib: add a function to initialize software queue
->   bnxt_re/lib: Use separate indices for shadow queue
->   bnxt_re/lib: Move hardware queue to 16B aligned indices
->
->  kernel-headers/rdma/bnxt_re-abi.h |   5 +-
->  providers/bnxt_re/bnxt_re-abi.h   |   5 +
->  providers/bnxt_re/db.c            |  10 +-
->  providers/bnxt_re/main.c          |   4 +
->  providers/bnxt_re/main.h          |  25 ++
->  providers/bnxt_re/memory.h        |  37 ++-
->  providers/bnxt_re/verbs.c         | 523 ++++++++++++++++++++----------
->  7 files changed, 429 insertions(+), 180 deletions(-)
->
-> --
-> 2.25.1
->
-
-
+diff --git a/drivers/infiniband/core/iwpm_util.h b/drivers/infiniband/core/iwpm_util.h
+index 5002ac6dfbc3..e201835de733 100644
+--- a/drivers/infiniband/core/iwpm_util.h
++++ b/drivers/infiniband/core/iwpm_util.h
+@@ -183,7 +183,7 @@ u32 iwpm_check_registration(u8 nl_client, u32 reg);
+ void iwpm_set_registration(u8 nl_client, u32 reg);
+ 
+ /**
+- * iwpm_get_registration
++ * iwpm_get_registration - Get the client registration
+  * @nl_client: The index of the netlink client
+  *
+  * Returns the client registration type
+diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+index 7b638d91a4ec..68197e576433 100644
+--- a/drivers/infiniband/core/roce_gid_mgmt.c
++++ b/drivers/infiniband/core/roce_gid_mgmt.c
+@@ -186,12 +186,13 @@ is_eth_port_inactive_slave_filter(struct ib_device *ib_dev, u32 port,
+ 	return res;
+ }
+ 
+-/** is_ndev_for_default_gid_filter - Check if a given netdevice
++/**
++ * is_ndev_for_default_gid_filter - Check if a given netdevice
+  * can be considered for default GIDs or not.
+  * @ib_dev:		IB device to check
+  * @port:		Port to consider for adding default GID
+  * @rdma_ndev:		rdma netdevice pointer
+- * @cookie_ndev:	Netdevice to consider to form a default GID
++ * @cookie:             Netdevice to consider to form a default GID
+  *
+  * is_ndev_for_default_gid_filter() returns true if a given netdevice can be
+  * considered for deriving default RoCE GID, returns false otherwise.
+diff --git a/drivers/infiniband/hw/hfi1/chip.c b/drivers/infiniband/hw/hfi1/chip.c
+index 5eeae8df415b..c97544638367 100644
+--- a/drivers/infiniband/hw/hfi1/chip.c
++++ b/drivers/infiniband/hw/hfi1/chip.c
+@@ -14186,7 +14186,7 @@ static void init_kdeth_qp(struct hfi1_devdata *dd)
+ }
+ 
+ /**
+- * hfi1_get_qp_map
++ * hfi1_get_qp_map - get qp map
+  * @dd: device data
+  * @idx: index to read
+  */
+@@ -14199,7 +14199,7 @@ u8 hfi1_get_qp_map(struct hfi1_devdata *dd, u8 idx)
+ }
+ 
+ /**
+- * init_qpmap_table
++ * init_qpmap_table - init qp map
+  * @dd: device data
+  * @first_ctxt: first context
+  * @last_ctxt: first context
+diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
+index 3b7bbc7b9d10..955c3637980e 100644
+--- a/drivers/infiniband/hw/hfi1/file_ops.c
++++ b/drivers/infiniband/hw/hfi1/file_ops.c
+@@ -736,7 +736,7 @@ static u64 kvirt_to_phys(void *addr)
+ }
+ 
+ /**
+- * complete_subctxt
++ * complete_subctxt - complete sub-context info
+  * @fd: valid filedata pointer
+  *
+  * Sub-context info can only be set up after the base context
+@@ -841,7 +841,7 @@ static int assign_ctxt(struct hfi1_filedata *fd, unsigned long arg, u32 len)
+ }
+ 
+ /**
+- * match_ctxt
++ * match_ctxt - match context
+  * @fd: valid filedata pointer
+  * @uinfo: user info to compare base context with
+  * @uctxt: context to compare uinfo to.
+@@ -898,7 +898,7 @@ static int match_ctxt(struct hfi1_filedata *fd,
+ }
+ 
+ /**
+- * find_sub_ctxt
++ * find_sub_ctxt - fund sub-context
+  * @fd: valid filedata pointer
+  * @uinfo: matching info to use to find a possible context to share.
+  *
+diff --git a/drivers/infiniband/hw/hfi1/hfi.h b/drivers/infiniband/hw/hfi1/hfi.h
+index 867ae0b1aa95..9e020bb6f405 100644
+--- a/drivers/infiniband/hw/hfi1/hfi.h
++++ b/drivers/infiniband/hw/hfi1/hfi.h
+@@ -1764,7 +1764,7 @@ static inline void pause_for_credit_return(struct hfi1_devdata *dd)
+ }
+ 
+ /**
+- * sc_to_vlt() reverse lookup sc to vl
++ * sc_to_vlt() - reverse lookup sc to vl
+  * @dd - devdata
+  * @sc5 - 5 bit sc
+  */
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index e3a8a420c045..0986aa065418 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -312,7 +312,7 @@ struct hfi1_ctxtdata *hfi1_rcd_get_by_index_safe(struct hfi1_devdata *dd,
+ }
+ 
+ /**
+- * hfi1_rcd_get_by_index
++ * hfi1_rcd_get_by_index - get by index
+  * @dd: pointer to a valid devdata structure
+  * @ctxt: the index of an possilbe rcd
+  *
+@@ -499,7 +499,7 @@ int hfi1_create_ctxtdata(struct hfi1_pportdata *ppd, int numa,
+ }
+ 
+ /**
+- * hfi1_free_ctxt
++ * hfi1_free_ctxt - free context
+  * @rcd: pointer to an initialized rcd data structure
+  *
+  * This wrapper is the free function that matches hfi1_create_ctxtdata().
+diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+index ff864f6f0266..e276522104c6 100644
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -993,7 +993,7 @@ static bool is_sc_halted(struct hfi1_devdata *dd, u32 hw_context)
+ }
+ 
+ /**
+- * sc_wait_for_packet_egress
++ * sc_wait_for_packet_egress - wait for packet
+  * @sc: valid send context
+  * @pause: wait for credit return
+  *
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hem.c b/drivers/infiniband/hw/hns/hns_roce_hem.c
+index 7fdeedd5722a..d1e1b602b1ed 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hem.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hem.c
+@@ -1087,7 +1087,7 @@ static bool hem_list_is_bottom_bt(int hopnum, int bt_level)
+ 	return bt_level >= (hopnum ? hopnum - 1 : hopnum);
+ }
+ 
+-/**
++/*
+  * calc base address entries num
+  * @hopnum: num of mutihop addressing
+  * @bt_level: base address table level
+@@ -1120,7 +1120,7 @@ static u32 hem_list_calc_ba_range(int hopnum, int bt_level, int unit)
+ 	return step;
+ }
+ 
+-/**
++/*
+  * calc the root ba entries which could cover all regions
+  * @regions: buf region array
+  * @region_cnt: array size of @regions
+diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
+index 601d18dda1f5..34b7af6ab9c2 100644
+--- a/drivers/infiniband/sw/rdmavt/mr.c
++++ b/drivers/infiniband/sw/rdmavt/mr.c
+@@ -101,8 +101,8 @@ int rvt_driver_mr_init(struct rvt_dev_info *rdi)
+ }
+ 
+ /**
+- *rvt_mr_exit: clean up MR
+- *@rdi: rvt dev structure
++ * rvt_mr_exit - clean up MR
++ * @rdi: rvt dev structure
+  *
+  * called when drivers have unregistered or perhaps failed to register with us
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 4522071fc220..1111eee8d05a 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -984,7 +984,8 @@ static void rvt_reset_qp(struct rvt_dev_info *rdi, struct rvt_qp *qp,
+ 	spin_unlock_irq(&qp->r_lock);
+ }
+ 
+-/** rvt_free_qpn - Free a qpn from the bit map
++/**
++ * rvt_free_qpn - Free a qpn from the bit map
+  * @qpt: QP table
+  * @qpn: queue pair number to free
+  */
+diff --git a/drivers/infiniband/sw/rdmavt/vt.c b/drivers/infiniband/sw/rdmavt/vt.c
+index 12ebe041a5da..3749380ff193 100644
+--- a/drivers/infiniband/sw/rdmavt/vt.c
++++ b/drivers/infiniband/sw/rdmavt/vt.c
+@@ -144,7 +144,7 @@ static int rvt_modify_device(struct ib_device *device,
+ }
+ 
+ /**
+- * rvt_query_port: Passes the query port call to the driver
++ * rvt_query_port - Passes the query port call to the driver
+  * @ibdev: Verbs IB dev
+  * @port_num: port number, 1 based from ib core
+  * @props: structure to hold returned properties
+@@ -175,7 +175,7 @@ static int rvt_query_port(struct ib_device *ibdev, u32 port_num,
+ }
+ 
+ /**
+- * rvt_modify_port
++ * rvt_modify_port - modify port
+  * @ibdev: Verbs IB dev
+  * @port_num: Port number, 1 based from ib core
+  * @port_modify_mask: How to change the port
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_main.c b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+index 7bd110ac4fe6..abf60f4d9203 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_main.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_main.c
+@@ -316,7 +316,7 @@ static bool ipoib_is_dev_match_addr_rcu(const struct sockaddr *addr,
+ 	return false;
+ }
+ 
+-/**
++/*
+  * Find the master net_device on top of the given net_device.
+  * @dev: base IPoIB net_device
+  *
+@@ -361,8 +361,9 @@ static int ipoib_upper_walk(struct net_device *upper,
+ }
+ 
+ /**
+- * Find a net_device matching the given address, which is an upper device of
+- * the given net_device.
++ * ipoib_get_net_dev_match_addr - Find a net_device matching
++ * the given address, which is an upper device of the given net_device.
++ *
+  * @addr: IP address to look for.
+  * @dev: base IPoIB net_device
+  *
+diff --git a/drivers/infiniband/ulp/iser/iser_verbs.c b/drivers/infiniband/ulp/iser/iser_verbs.c
+index 136f6c4492e0..b44cbb8e84eb 100644
+--- a/drivers/infiniband/ulp/iser/iser_verbs.c
++++ b/drivers/infiniband/ulp/iser/iser_verbs.c
+@@ -761,7 +761,7 @@ void iser_conn_init(struct iser_conn *iser_conn)
+ 	ib_conn->reg_cqe.done = iser_reg_comp;
+ }
+ 
+- /**
++/*
+  * starts the process of connecting to the target
+  * sleeps until the connection is established or rejected
+  */
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 160efef66031..8634c83067da 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -2397,10 +2397,10 @@ isert_accept_np(struct iscsi_np *np, struct iscsi_conn *conn)
+ 		spin_unlock_bh(&np->np_thread_lock);
+ 		isert_dbg("np_thread_state %d\n",
+ 			 np->np_thread_state);
+-		/**
++		/*
+ 		 * No point in stalling here when np_thread
+ 		 * is in state RESET/SHUTDOWN/EXIT - bail
+-		 **/
++		 */
+ 		return -ENODEV;
+ 	}
+ 	spin_unlock_bh(&np->np_thread_lock);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index f1fd7ae9ac53..948eb51026ed 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -915,7 +915,7 @@ static inline void path_it_deinit(struct path_it *it)
+ }
+ 
+ /**
+- * rtrs_clt_init_req() Initialize an rtrs_clt_io_req holding information
++ * rtrs_clt_init_req() - Initialize an rtrs_clt_io_req holding information
+  * about an inflight IO.
+  * The user buffer holding user control message (not data) is copied into
+  * the corresponding buffer of rtrs_iu (req->iu->buf), which later on will
+@@ -1221,7 +1221,7 @@ static int rtrs_clt_read_req(struct rtrs_clt_io_req *req)
+ }
+ 
+ /**
+- * rtrs_clt_failover_req() Try to find an active path for a failed request
++ * rtrs_clt_failover_req() - Try to find an active path for a failed request
+  * @clt: clt context
+  * @fail_req: a failed io request.
+  */
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index 5639b29b8b02..658bf4e1f732 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -1308,7 +1308,7 @@ int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
+ EXPORT_SYMBOL(rtrs_srv_get_sess_name);
+ 
+ /**
+- * rtrs_srv_get_sess_qdepth() - Get rtrs_srv qdepth.
++ * rtrs_srv_get_queue_depth() - Get rtrs_srv qdepth.
+  * @srv:	Session
+  */
+ int rtrs_srv_get_queue_depth(struct rtrs_srv *srv)
 -- 
--Regards
-Devesh
+2.31.1
 
---0000000000004646ab05c4d2f483
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
-Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
-BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
-YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
-BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
-MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
-Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
-HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
-BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
-KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
-SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
-PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
-G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
-PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
-MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
-VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFdPHBl4m5cP+4pA379mxAWsbZ4j
-wo1G9dvVJ2I6Rnw+MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYxNTE5MjY0M1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
-CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQBP68FCfgda8uZ+hkyBOEij3e6b/7R5NkMvMjcRuhNJMAGH
-7thJ0CCGhMAGbnlICK0ZMHF6iZOdRSDLtJfCXCoep/e/76Dbruo5ULnwQvEjx8L17hZrz/Xg6mNQ
-9G9OaqPU5oGpyBL4uXAhLrVMo26G1w+Bx7MeIWXKw+uInlJl3/8sSbX2yhEx/6/HCqf2rhOZtbx/
-ID9IvBJcEF44AjD8Z/X9gRqyvY5AP5r4ParuuhVZKTUcNtBwwkFdDYCX+exiUFzOot5I2AuHAuYp
-MzYfrAHXo+UD26RnYU4ZiKsT5abG7t7GOy79RwF9llAv+rQAGmgwDDLvSIo1FhLFVrqa
---0000000000004646ab05c4d2f483--
