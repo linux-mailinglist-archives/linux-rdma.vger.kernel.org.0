@@ -2,100 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E943AA53A
+	by mail.lfdr.de (Postfix) with ESMTP id A95C63AA53B
 	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 22:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhFPU1r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Jun 2021 16:27:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
+        id S233449AbhFPU1t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Jun 2021 16:27:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233390AbhFPU1p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Jun 2021 16:27:45 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B903C061574
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:39 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id s14so3126766pfd.9
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:39 -0700 (PDT)
+        with ESMTP id S233390AbhFPU1s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Jun 2021 16:27:48 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84DB1C061574
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:41 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id q15so2948392pgg.12
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version;
-        bh=GEIs7OcrEyy282s+ad24HBCNt3BlpBT0y/yHykSbql4=;
-        b=JKanWRG/zFZvGKMr5ZHLY5BEVhIBZb4rTcYyuGTy7pDuo6a89/oF71VI+DYHKR9ORp
-         +N13DjY4orQpBQ36XSjdVP3gypgOjorroARzuSDMLXRo6rEEpJxQnvpBh0DRjY9E8rmT
-         jSQwDQhSA1Zv/OBRWCg9xhvRZLOAG9bmmIgJk=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version;
+        bh=jrowcMZCIkOjNBOe2XBEyWufSuwQXDXkPduU0EA4QNY=;
+        b=DdOWoMD+GWdfCsr4FVevSBrz52sBNC6CutJweJDu9VySXZ9A0PazSY4StIDKXkbhsT
+         cY32GprY+X4BAzF/c7AvdYJCraZ6qpej7fCK2KSJR8G5mTb4yrNkzeYj0ALqUj75HYTa
+         orDFQNUoNVJwLBMHQ0RB1y/kCWtzCc+59zGs0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
-        bh=GEIs7OcrEyy282s+ad24HBCNt3BlpBT0y/yHykSbql4=;
-        b=jVi4aa/XXkgCnJXJBnboP3XJmXwb0KvrEf5FMrHz5oUJRgpKFrzAMKjwHlUjl2ltVR
-         Fs2Dx5knn/hvMMkEL2PxW3lcS4PG8JTi6IJs99QiXSA1T2oJkCSMPr671jSpVsHRSJgc
-         MbTPojn5eBKJQLPXet8I0WufCxO4Wz16uuzjbOSruk1C/qNDlzlfv6dIA7j6DNqW2Z4z
-         b3lvzwgfKAbD2gHMzao+WvgfFEFjW5HfmE5izES3iGI/wt4wS6SM2Ti4lTrcRKRiQgGL
-         pzyUSsme8WzCtDWlU5QlMRL/1GToDz3c5pBMKWjs3zawyDN0V4fMZjcAmj4gWyCyx3J3
-         Gjyg==
-X-Gm-Message-State: AOAM530uAlGmWuPV6iVkZaSn/TE23qnRL0I225k3nsJq9umQgSSNBaqe
-        Q5CbDodqkxVzMCRLzKBT+uQ979HpSuCOMJ4aBJG38pMS3UFG3hq645HnhPlQC2VYR0BGJHcAeTq
-        gFv8FyJzm0KAsGNizGiQA6UD1VAseRIGoTAePj8t8X7WPznpFyGN72S4yBTUs3VeELBA/wZv1Kl
-        RAJTMkxw==
-X-Google-Smtp-Source: ABdhPJxrCr5EOOVit41uWapUE/4IGHYrsRdExcyHA/TY+iq1s3OuZTMdmwYkLHqj+HcbszUfjoy/+g==
-X-Received: by 2002:a65:6256:: with SMTP id q22mr1364718pgv.391.1623875138425;
-        Wed, 16 Jun 2021 13:25:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=jrowcMZCIkOjNBOe2XBEyWufSuwQXDXkPduU0EA4QNY=;
+        b=iHIyXXJINr/FzFh2pOvG82Q4v52HtP3v3KcojPmYrMVOLN+5IzsJJeKCtQHhOF2VgQ
+         hbSYwG+qmMHnZ3DHJZIRYVap6ON0mnA/8cxNCGV+1L+OQdTds/qorzegwExRZIpfOAfz
+         AK8xyN8ZKmNdV+mA+9vuh80aEmyxx3hLzoswVh6tfQEsbWnTyqIetndmMBTi36udpN8h
+         CKv8OTwnzphG8fNP8YRPO6wOPy7w1ifJ6EQwQc7c761OpPUNqmzXnipoN4PhVsXDo2UP
+         VNOFVqAPZCUHgjuQn3ML1952K1W3utCo7eBJypks6h6Ld3u5Ix93MAaV9xWNvLTdZt75
+         viqQ==
+X-Gm-Message-State: AOAM531HrnEf3oZCPqmyqsvv0V4QjfA38kSmFC57jCmMZFk4t646nGXQ
+        x5xabkro1nPoQacz/Slsjpit2EP6zJnpAZ0OM5YuMhR1x5ku2iuEh/cZ94tD/2YnQnfD4QX1T89
+        ADTCwxH0PQSKPqo+xsHnrqSx8kTJj7SERLLqJZXug1huiccWu1Dk7kchIGvFB6pMaCbXX8fIMR+
+        ol7Qp4Sg==
+X-Google-Smtp-Source: ABdhPJwR67SA1dSITFxDb915aMO4QT/imm5RDH8gdtkIYIkysNWGfIzPGppta1w6vBrkW2yRz/VCbw==
+X-Received: by 2002:a63:e958:: with SMTP id q24mr1403342pgj.438.1623875140404;
+        Wed, 16 Jun 2021 13:25:40 -0700 (PDT)
 Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id s24sm6236561pju.9.2021.06.16.13.25.36
+        by smtp.gmail.com with ESMTPSA id s24sm6236561pju.9.2021.06.16.13.25.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Jun 2021 13:25:37 -0700 (PDT)
+        Wed, 16 Jun 2021 13:25:40 -0700 (PDT)
 From:   Devesh Sharma <devesh.sharma@broadcom.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
-Subject: [PATCH V6 rdma-core 0/5] Broadcom's user library update
-Date:   Thu, 17 Jun 2021 01:55:19 +0530
-Message-Id: <20210616202524.1185195-1-devesh.sharma@broadcom.com>
+Subject: [PATCH V6 rdma-core 1/5] Update kernel headers
+Date:   Thu, 17 Jun 2021 01:55:20 +0530
+Message-Id: <20210616202524.1185195-2-devesh.sharma@broadcom.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210616202524.1185195-1-devesh.sharma@broadcom.com>
+References: <20210616202524.1185195-1-devesh.sharma@broadcom.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000d14b1305c4e7e4bc"
+        boundary="000000000000f2761505c4e7e409"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000d14b1305c4e7e4bc
+--000000000000f2761505c4e7e409
 Content-Transfer-Encoding: 8bit
 
-The focus of this patch series is to move SQ and RQ
-wqe posting indices from 128B fixed stride to 16B
-aligned stride. This allows more flexibility in choosing
-wqe size.
+To commit ?? ("RDMA/bnxt_re: update ABI to pass wqe-mode to user space").
 
-v5 -> v6
- - updated abi file with newly moved enum.
-v4 -> v5
- - addressed few minor suggestion.
-v3 -> v4
- - fixed build warning
-v2 -> V3
- - Split the ABI change into separate patch
- - committed ABI patch using standard rdma-core script.
+Signed-off-by: Devesh Sharma <devesh.sharma@broadcom.com>
+---
+ kernel-headers/rdma/bnxt_re-abi.h | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-Devesh Sharma (5):
-  Update kernel headers
-  bnxt_re/lib: Read wqe mode from the driver
-  bnxt_re/lib: add a function to initialize software queue
-  bnxt_re/lib: Use separate indices for shadow queue
-  bnxt_re/lib: Move hardware queue to 16B aligned indices
-
- kernel-headers/rdma/bnxt_re-abi.h |  11 +-
- providers/bnxt_re/db.c            |  10 +-
- providers/bnxt_re/main.c          |   4 +
- providers/bnxt_re/main.h          |  25 ++
- providers/bnxt_re/memory.h        |  37 ++-
- providers/bnxt_re/verbs.c         | 525 ++++++++++++++++++++----------
- 6 files changed, 432 insertions(+), 180 deletions(-)
-
+diff --git a/kernel-headers/rdma/bnxt_re-abi.h b/kernel-headers/rdma/bnxt_re-abi.h
+index dc52e3cf..b1de99bf 100644
+--- a/kernel-headers/rdma/bnxt_re-abi.h
++++ b/kernel-headers/rdma/bnxt_re-abi.h
+@@ -49,7 +49,14 @@
+ #define BNXT_RE_CHIP_ID0_CHIP_MET_SFT		0x18
+ 
+ enum {
+-	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL
++	BNXT_RE_UCNTX_CMASK_HAVE_CCTX = 0x1ULL,
++	BNXT_RE_UCNTX_CMASK_HAVE_MODE = 0x02ULL,
++};
++
++enum bnxt_re_wqe_mode {
++	BNXT_QPLIB_WQE_MODE_STATIC	= 0x00,
++	BNXT_QPLIB_WQE_MODE_VARIABLE	= 0x01,
++	BNXT_QPLIB_WQE_MODE_INVALID	= 0x02,
+ };
+ 
+ struct bnxt_re_uctx_resp {
+@@ -62,6 +69,8 @@ struct bnxt_re_uctx_resp {
+ 	__aligned_u64 comp_mask;
+ 	__u32 chip_id0;
+ 	__u32 chip_id1;
++	__u32 mode;
++	__u32 rsvd1; /* padding */
+ };
+ 
+ /*
 -- 
 2.25.1
 
 
---000000000000d14b1305c4e7e4bc
+--000000000000f2761505c4e7e409
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -166,13 +176,13 @@ G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
 PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
 MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
 VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
-SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJQG1HU1GSq+H0l6OeQdrqIwFCOV
-4cPtjJxjatL2qgLJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
-MDYxNjIwMjUzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIG6c/r1MJyTbm1tCHCUO/CLfU5U6
+0CpoYVQUPr1czQyVMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYxNjIwMjU0MVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
 CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
-AwQCATANBgkqhkiG9w0BAQEFAASCAQA3Is5WX6euYlMR57W9GmqucjS6POOPOqwa/4lqZoT/nM1x
-IG2IIW+GZu2YYNvqS1Gw86FNSfSTH7ftx78G/RbdJhGurBhz8hY2ljg92nmyCI6L7Keh8LDj1w8p
-ShdrtJ2e2ZfSPGFW+bY5mnJKuWEKX7yX6Q1TtQSWWFkDfwdK+vsKSfG1+fKvg99+pl69ZsxkfpcE
-BosCNmfFQE367PipoQ80mmTYNDxoGfmBxlfnUiSE66kAMHfI2h1reV0ARRAT84qSjtlZtLYNAAii
-BETkLuZ8qooQAvICJUQkFSjBM/z+b6d/oxdgJAOAB3QBtZN8pXe9/5ER/KeVbmpBrrr+
---000000000000d14b1305c4e7e4bc--
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBdTe3lZivjDVHSOnsttctm5FyKFfiTMbr1QU7n0lVfEtnu
+KsqP52RjuUkjoU7aLhAkYX3waCzH6jv1H/mf+onwZ9aUKeV7J4pxL9dCiSkedU1D8JXbChSQV/vs
+Zs3/40UH6///awFwoH/WVpuZ61Di/VSqqwXdmN145AtBe69IGwGnYb51RFf9X+zR3I2bTLFiUbtj
+JSogoV6zRqK/iacsx9yOS6K7/1mXo54ojqvvfqwERqkMW8Glbx03HNzbq4kpdV4KK2FzcmfZuWyl
+fJSbhZzm2+iR/xzlZBcQo9BBNk1WCtdFWb/xi3tDAwnq2CNJDWxruA9G8RecwVFf8JGk
+--000000000000f2761505c4e7e409--
