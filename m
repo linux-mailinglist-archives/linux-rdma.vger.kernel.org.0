@@ -2,128 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E873AA474
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 21:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25E943AA53A
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Jun 2021 22:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbhFPTm2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Jun 2021 15:42:28 -0400
-Received: from mail-bn8nam12on2048.outbound.protection.outlook.com ([40.107.237.48]:13313
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232635AbhFPTmX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Jun 2021 15:42:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FSfIHXin3jfHeAuXqbgTHXTAjpiHxK2CSL+oAaQIbtrIK4ZZkTsHOYPi2MDbB0zm9T9Zt7ilVX6CXAlzZ0AWoZrq0+2LMqGTVC4Km5H+XIlLrLrQUIuLkJ2e2qETT5zXK5b7x2hIMsfym7ccD1WreEAJoViorKoZ/BXKF/9zssbX5jS++bGQBTk426GlyQgpDalG50AJfu2Op5Rt9WueATwxtO+dHS5eKd5PKg9y4VnWgRYL8JsORXG6CipizCxvPUkRQ0O2JY8hJaTw35D5NCsHF9y3+iCjLhFdyht9WaJkIf0eNI/jxGu/v9se5i+XNsfY5inMxc35207i93LNPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YWCMlb0ZDlLqxU9k9diEQGb+Lmc5jeuqH6rRcxlUSG4=;
- b=TxuUgPSqAipqH9mzwfpRc5YSzUYODDUsTVvJ+xZMoXSInYnghQiE+IHPmh0mXebn1f0cKK2R8jOFZa7+dAoOLXbjF7K77CnbPArLz3Nmz1cVboSqjF7Ldqmscs/J6khz74WHVS1y2/feQjp+wt7Qc/MGEh9caIQnZ8uQPDV0QvANV69FSnRxa8cDWqctfW+A4s4BZJf+kJ8MO3PPIvWEC3hxAXYc6Cz0UkYQju/1b4bsZWsOzHC9FA3C0F18cgWJYUuREMlTzumQH+HspjpaH+A/gVrKyyKzlg5WAalXNWGR/g6wx8/emPcu5zbMPR9qWBLLvNjBk/vVEPZI2w3GVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YWCMlb0ZDlLqxU9k9diEQGb+Lmc5jeuqH6rRcxlUSG4=;
- b=C41LQ1O4ynLAi7iXV1CS/ITu7gUgXfEcHYBG8OM4HIL4OO3TUVPYTsr2mx7iVd2q/yVnEwhoPuf0OdTmly3g6WwOmw4Wi8HBIuW5Vuw74a7KRz1/tZZ6rq+LoJIvw+voRE13r864BHDKave6s8BiW1Ss7m9q9YZyX1OesH7V6/ppM6VQwpo/Knc0JwmLgXM6NDzEg9UQCkNGf5WCr/V8IyHefv9ipazZNk0TvnuHoFsNpogSaZxMd8V9WqPrWyOt6y/yVYTGzj+OdIvOUqApp2drBvVz+HVHb3XzkRZkO0RpUwmwQncJlOv0oU0pDK4X+6PTCrrlOBpEhFtbhuQVHA==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com (2603:10b6:5:208::9) by
- DM8PR12MB5464.namprd12.prod.outlook.com (2603:10b6:8:3d::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Wed, 16 Jun 2021 19:40:15 +0000
-Received: from DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::18b7:5b87:86c1:afdb]) by DM6PR12MB5520.namprd12.prod.outlook.com
- ([fe80::18b7:5b87:86c1:afdb%8]) with mapi id 15.20.4242.019; Wed, 16 Jun 2021
- 19:40:15 +0000
-Date:   Wed, 16 Jun 2021 16:40:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, Lang Cheng <chenglang@huawei.com>
-Subject: Re: [PATCH RESEND v2 for-next 1/7] RDMA/hns: Fix potential compile
- warnings on hr_reg_write()
-Message-ID: <20210616194012.GA1844581@nvidia.com>
-References: <1622624265-44796-1-git-send-email-liweihang@huawei.com>
- <1622624265-44796-2-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1622624265-44796-2-git-send-email-liweihang@huawei.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR06CA0007.namprd06.prod.outlook.com
- (2603:10b6:208:23d::12) To DM6PR12MB5520.namprd12.prod.outlook.com
- (2603:10b6:5:208::9)
+        id S233448AbhFPU1r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Jun 2021 16:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233390AbhFPU1p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Jun 2021 16:27:45 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B903C061574
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:39 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id s14so3126766pfd.9
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Jun 2021 13:25:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version;
+        bh=GEIs7OcrEyy282s+ad24HBCNt3BlpBT0y/yHykSbql4=;
+        b=JKanWRG/zFZvGKMr5ZHLY5BEVhIBZb4rTcYyuGTy7pDuo6a89/oF71VI+DYHKR9ORp
+         +N13DjY4orQpBQ36XSjdVP3gypgOjorroARzuSDMLXRo6rEEpJxQnvpBh0DRjY9E8rmT
+         jSQwDQhSA1Zv/OBRWCg9xhvRZLOAG9bmmIgJk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version;
+        bh=GEIs7OcrEyy282s+ad24HBCNt3BlpBT0y/yHykSbql4=;
+        b=jVi4aa/XXkgCnJXJBnboP3XJmXwb0KvrEf5FMrHz5oUJRgpKFrzAMKjwHlUjl2ltVR
+         Fs2Dx5knn/hvMMkEL2PxW3lcS4PG8JTi6IJs99QiXSA1T2oJkCSMPr671jSpVsHRSJgc
+         MbTPojn5eBKJQLPXet8I0WufCxO4Wz16uuzjbOSruk1C/qNDlzlfv6dIA7j6DNqW2Z4z
+         b3lvzwgfKAbD2gHMzao+WvgfFEFjW5HfmE5izES3iGI/wt4wS6SM2Ti4lTrcRKRiQgGL
+         pzyUSsme8WzCtDWlU5QlMRL/1GToDz3c5pBMKWjs3zawyDN0V4fMZjcAmj4gWyCyx3J3
+         Gjyg==
+X-Gm-Message-State: AOAM530uAlGmWuPV6iVkZaSn/TE23qnRL0I225k3nsJq9umQgSSNBaqe
+        Q5CbDodqkxVzMCRLzKBT+uQ979HpSuCOMJ4aBJG38pMS3UFG3hq645HnhPlQC2VYR0BGJHcAeTq
+        gFv8FyJzm0KAsGNizGiQA6UD1VAseRIGoTAePj8t8X7WPznpFyGN72S4yBTUs3VeELBA/wZv1Kl
+        RAJTMkxw==
+X-Google-Smtp-Source: ABdhPJxrCr5EOOVit41uWapUE/4IGHYrsRdExcyHA/TY+iq1s3OuZTMdmwYkLHqj+HcbszUfjoy/+g==
+X-Received: by 2002:a65:6256:: with SMTP id q22mr1364718pgv.391.1623875138425;
+        Wed, 16 Jun 2021 13:25:38 -0700 (PDT)
+Received: from dev01.dhcp.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id s24sm6236561pju.9.2021.06.16.13.25.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 16 Jun 2021 13:25:37 -0700 (PDT)
+From:   Devesh Sharma <devesh.sharma@broadcom.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Devesh Sharma <devesh.sharma@broadcom.com>
+Subject: [PATCH V6 rdma-core 0/5] Broadcom's user library update
+Date:   Thu, 17 Jun 2021 01:55:19 +0530
+Message-Id: <20210616202524.1185195-1-devesh.sharma@broadcom.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR06CA0007.namprd06.prod.outlook.com (2603:10b6:208:23d::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.20 via Frontend Transport; Wed, 16 Jun 2021 19:40:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ltbOW-007lCH-TK; Wed, 16 Jun 2021 16:40:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: bb65150b-80d9-40ca-f874-08d930fe900c
-X-MS-TrafficTypeDiagnostic: DM8PR12MB5464:
-X-Microsoft-Antispam-PRVS: <DM8PR12MB54641BC8E32EE6F2118FFBBEC20F9@DM8PR12MB5464.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6Kco7CJSDkZA4ZlCmq1lQAh1vwCAuO/iJV4HS755d5oH5sCRHk34F0KcvvdBgFECEPJUa5F4aGJ5suCKEn3/5zvirpis/cFH4XkMxMfxgU+v8OPgQkrvd+lKI5LoqMLshDUNxCJU1Tt3RbXYkIK8DQnAuTjlmJER48YT39bfNMfH0nNOh2qg8TiylWDEWi0XivL4MOOGeytUUy3Je6gLaldGKSRc/z9m0EW5PkXBnMW+fZvi1861Pbtpkv8UG+fpiuqAkRKRc82pFRhfGCTgR3w/QhzlT3Mjv9Ek/lY8gOh8nLvfIDqGeUd8qYQXT//1DUYmq6x0yX03voLKeYMHfu7R7UWRQhTjPaVqUvgGmKj6zPe2zqFZlBM6FzvOAMgHsmgYGy0udLElGC6z0yVqbLUOpW4D3hjzNPfwCJLmdt/Z7IlMnnw55xQF5qZ83EPzNKDBXbHEE5vgP/TjLcFECsFv48T3haOrz0Sx2GD9nlBLZn1fXTHwz69aGRzAkYfvVEuusGpxuYZDg0y+j5eWMYieVJVxPiSDMY58IwF63bW625lQRsExj6QbRnfsrQf6fVtR1uM0iRoj7Tzqup4I8AO3sSuEqKk1Ig+INHzxGE0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB5520.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(39860400002)(366004)(136003)(9746002)(86362001)(9786002)(8936002)(5660300002)(4744005)(2906002)(1076003)(186003)(66476007)(66556008)(66946007)(316002)(26005)(8676002)(4326008)(33656002)(36756003)(6916009)(83380400001)(38100700002)(478600001)(426003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?klubT80fBB1UmriWzw/388kiGsT1f6eiuU8r1UHboxjIsWpR6qfT3swJgMYD?=
- =?us-ascii?Q?9ZjkWcy4S21x65cm0ndIbrltWz8PrOksuhrOruyySW1tBhXB2i9+UIYSj5Zz?=
- =?us-ascii?Q?qnIS8N3RaMEYijmub3stuU8cNQAmysw7d0a/13BwkqZCIlJUZt+laml/3lku?=
- =?us-ascii?Q?Jn6Sjt7BUJTHNHfqYbib3yaOATB0O1xrez8cBeejmYT/W1b9cEfgJlOgCwVN?=
- =?us-ascii?Q?Z5F0mNCdGSQ2RLsmG9wBxMQg36sGurRnJSUozbAOjKux5mow/8tpvPboNqhN?=
- =?us-ascii?Q?6OS0oIvJukgc2821V5X0xjb7p/e+saZkObFIOiwyBMcD/m4gRTgpzHRkoiwV?=
- =?us-ascii?Q?EZVQE63LuAyi2zqUDQxx2MmJlfpq5VPZbB50lltt1TsYB++KOHGEXOT0P5ar?=
- =?us-ascii?Q?JOCES6VaOnVfml6ykrEH/k6NkpA0z3ztJYGME7U7jP7hnWuo6ApzrEDL9ddw?=
- =?us-ascii?Q?TNkPs0Cby1IVeqJbdUdS2/EiUHqdMSrD9rwJDSrBpj6VpA7YqJdT77MMwmA9?=
- =?us-ascii?Q?msMdXDzXDJR0oJhvJj28d4AgmEUV6zILJk6Op/ou47N/4oc1BgnzsR20INqz?=
- =?us-ascii?Q?dTiIgK/UXEYUAUCmWlZEVBXtGzDfyXsKPMgrSspqVK2YplgF/9yha4mSD8qV?=
- =?us-ascii?Q?kNnm1t2Gzt59R5jzoQ2ybsQHXxJqTsMHIlG3jKm2eKkuemxskIqsIQrhD2O+?=
- =?us-ascii?Q?bcRYNy/gE2x51o2SduB9+LEMRT3wz5yclRnkxR2grwpPmHy6Y7PsgofWskRv?=
- =?us-ascii?Q?GEBuCAfGJDDSIWWmgIn/6lbh0LSIDq1g6+x/JAWrDwUsao/CkoSaE4JWZjvo?=
- =?us-ascii?Q?p7/J4ULJiPFbsH0Gw/8u2Zqxa2WYjp2s19jKBMhA0fmW2pb8THktiRFD6+1Y?=
- =?us-ascii?Q?b88aqO/9SHHbD8idX8HyDrfrqRKPLI87kdZmOiutnMO8upS8QMZIjAagTqWi?=
- =?us-ascii?Q?aN3jICFK5AtvTjd5KJSP8o+AqKwPr77ntyrWVLHWkpU7bEhhY5L5CeznEC8q?=
- =?us-ascii?Q?ui+gWIQrS4uI+/k+n/49wGRr5Pn0w+07dybMQ9K+jH6BrNrFIgVFjU1PzR1l?=
- =?us-ascii?Q?qcfW5OTpzWoNTdNSs8VU2fIpSyq6r6+8nzxJXiCz0jr244N1eh8FZLOqyGCR?=
- =?us-ascii?Q?hv7OUebc7US52qeYqZEYBQ4UbYFU5EIF+pOWgDeujWtBvyfrWIzK/mdDHyOS?=
- =?us-ascii?Q?20pFlwU35ImrY2e46ELqyCByEKstYPCrETzVp9gYFV631zsCjHqjkLRVA+S+?=
- =?us-ascii?Q?uvQAx9QdNU0Ka7wMnBYuZzFXgU3anqK1+3KPPuibJ2ynWuS5VOhrP3ZdMMjp?=
- =?us-ascii?Q?Hu6dPubj/aTC1+qw365qjnSB?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb65150b-80d9-40ca-f874-08d930fe900c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB5520.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jun 2021 19:40:15.2553
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gCd+aWgHUKZdq3kaWwCRqbsGC1PGti+UAm+evYFR0vsOEKkryBkgz0FTcoaT7vKi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5464
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000d14b1305c4e7e4bc"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 02, 2021 at 04:57:39PM +0800, Weihang Li wrote:
-> From: Lang Cheng <chenglang@huawei.com>
-> 
-> GCC may reports an running time assert error when a value calculated from
-> ib_mtu_enum_to_int() is using as 'val' in FIELD_PREDP:
-> 
-> include/linux/compiler_types.h:328:38: error: call to
-> '__compiletime_assert_1524' declared with attribute error: FIELD_PREP:
-> value too large for the field
+--000000000000d14b1305c4e7e4bc
+Content-Transfer-Encoding: 8bit
 
-Huh? This warning looks reliable to me, you should not suppress it
-like this.
+The focus of this patch series is to move SQ and RQ
+wqe posting indices from 128B fixed stride to 16B
+aligned stride. This allows more flexibility in choosing
+wqe size.
 
-> But actually this error will still exists even if the driver can ensure
-> that ib_mtu_enum_to_int() returns a legal value. So add a mask in
-> hr_reg_write() to avoid above warning.
+v5 -> v6
+ - updated abi file with newly moved enum.
+v4 -> v5
+ - addressed few minor suggestion.
+v3 -> v4
+ - fixed build warning
+v2 -> V3
+ - Split the ABI change into separate patch
+ - committed ABI patch using standard rdma-core script.
 
-I think you need to have an if that ib_mtu_enum_to_int() is not
-negative, that should satisfy the CFA?
+Devesh Sharma (5):
+  Update kernel headers
+  bnxt_re/lib: Read wqe mode from the driver
+  bnxt_re/lib: add a function to initialize software queue
+  bnxt_re/lib: Use separate indices for shadow queue
+  bnxt_re/lib: Move hardware queue to 16B aligned indices
 
-Jason
+ kernel-headers/rdma/bnxt_re-abi.h |  11 +-
+ providers/bnxt_re/db.c            |  10 +-
+ providers/bnxt_re/main.c          |   4 +
+ providers/bnxt_re/main.h          |  25 ++
+ providers/bnxt_re/memory.h        |  37 ++-
+ providers/bnxt_re/verbs.c         | 525 ++++++++++++++++++++----------
+ 6 files changed, 432 insertions(+), 180 deletions(-)
+
+-- 
+2.25.1
+
+
+--000000000000d14b1305c4e7e4bc
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+TUsFTOuxP4FZ9JSu9FWkGJGPobx8FmEvg+HybmXuUG0+PU7EDHKNoW8AcgZvIQYbwfevqWBFwwRD
+Paihaaj18xGk21lqZcO0BecWKYyV4k9E8poof1dH+GnKqwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpkZXZlc2guc2hhcm1hQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUEe3qNwswWXCeWt/hTDSC
+KajMvUgwDQYJKoZIhvcNAQELBQADggEBAGm+rkHFWdX4Z3YnpNuhM5Sj6w4b4z1pe+LtSquNyt9X
+SNuffkoBuPMkEpU3AF9DKJQChG64RAf5UWT/7pOK6lx2kZwhjjXjk9bQVlo6bpojz99/6cqmUyxG
+PsH1dIxDlPUxwxCksGuW65DORNZgmD6mIwNhKI4Thtdf5H6zGq2ke0523YysUqecSws1AHeA1B3d
+G6Yi9ScSuy1K8yGKKgHn/ZDCLAVEG92Ax5kxUaivh1BLKdo3kZX8Ot/0mmWvFcjEqRyCE5CL9WAo
+PU3wdmxYDWOzX5HgFsvArQl4oXob3zKc58TNeGivC9m1KwWJphsMkZNjc2IVVC8gIryWh90xggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwhg1OJo0VLRNay
+SHwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIJQG1HU1GSq+H0l6OeQdrqIwFCOV
+4cPtjJxjatL2qgLJMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIx
+MDYxNjIwMjUzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQA3Is5WX6euYlMR57W9GmqucjS6POOPOqwa/4lqZoT/nM1x
+IG2IIW+GZu2YYNvqS1Gw86FNSfSTH7ftx78G/RbdJhGurBhz8hY2ljg92nmyCI6L7Keh8LDj1w8p
+ShdrtJ2e2ZfSPGFW+bY5mnJKuWEKX7yX6Q1TtQSWWFkDfwdK+vsKSfG1+fKvg99+pl69ZsxkfpcE
+BosCNmfFQE367PipoQ80mmTYNDxoGfmBxlfnUiSE66kAMHfI2h1reV0ARRAT84qSjtlZtLYNAAii
+BETkLuZ8qooQAvICJUQkFSjBM/z+b6d/oxdgJAOAB3QBtZN8pXe9/5ER/KeVbmpBrrr+
+--000000000000d14b1305c4e7e4bc--
