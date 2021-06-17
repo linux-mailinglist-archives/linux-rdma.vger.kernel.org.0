@@ -2,83 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E42E3AAC6D
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 08:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8323C3AAC9F
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 08:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229671AbhFQGfg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 17 Jun 2021 02:35:36 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:7341 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbhFQGff (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Jun 2021 02:35:35 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5Bwl0LK8z6y72;
-        Thu, 17 Jun 2021 14:29:27 +0800 (CST)
-Received: from dggpemm100004.china.huawei.com (7.185.36.189) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 14:33:27 +0800
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggpemm100004.china.huawei.com (7.185.36.189) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 14:33:26 +0800
-Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
- dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
- Thu, 17 Jun 2021 14:33:26 +0800
-From:   liweihang <liweihang@huawei.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Linuxarm <linuxarm@huawei.com>, chenglang <chenglang@huawei.com>
-Subject: Re: [PATCH RESEND v2 for-next 1/7] RDMA/hns: Fix potential compile
- warnings on hr_reg_write()
-Thread-Topic: [PATCH RESEND v2 for-next 1/7] RDMA/hns: Fix potential compile
- warnings on hr_reg_write()
-Thread-Index: AQHXV41p2Y+MFv52lk6tzTqvEuCI0g==
-Date:   Thu, 17 Jun 2021 06:33:26 +0000
-Message-ID: <59ca0489be9a44a082bd1bed130ea3ff@huawei.com>
-References: <1622624265-44796-1-git-send-email-liweihang@huawei.com>
- <1622624265-44796-2-git-send-email-liweihang@huawei.com>
- <20210616194012.GA1844581@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.67.100.165]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229716AbhFQGoC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Jun 2021 02:44:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhFQGn7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Jun 2021 02:43:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF7D3610A1;
+        Thu, 17 Jun 2021 06:41:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623912112;
+        bh=k22wDppAh/+MfBvxHK3lLfrhgV48Cp0+hy+NlhOezjo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k08qDhZlti1TGwtsRZt2sGX5il6HZSEPQc9KEU9lcYZJ9epJmsJhpdQhHJo+8JEH8
+         z+uvVXOG6rQoPoalYEBq8a1AQBGwW+LtHW7etqnBNL7/j4hsMvJ+/o8WeqsxHMjh1r
+         LoLKrExPTPT9OJWkitYeLYaZCCX3meQ69TMJ7Znqc0tM5loMkBaZGKTqg347zPV1Di
+         m+ggFt9C8a2N2O+Vu6BQR+c2q8UtqJIU6tl3lpFSlys9YeSoNedn3zzesycIq24dpL
+         jh/zQzUaBGBKVRPGLSEgwiOx0s75d+5KfrJphRDuHnDmmNuQz9ZAZjJ45s4pWnHvgg
+         U9W90I8i+UCbQ==
+Date:   Thu, 17 Jun 2021 09:41:47 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com
+Subject: Re: [PATCH v5 for-next 3/3] IB/core: Obtain subnet_prefix from cache
+ in IB devices
+Message-ID: <YMruq7pXGcxwW1Ne@unreal>
+References: <20210616154509.1047-1-anand.a.khoje@oracle.com>
+ <20210616154509.1047-4-anand.a.khoje@oracle.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616154509.1047-4-anand.a.khoje@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/6/17 3:40, Jason Gunthorpe wrote:
-> On Wed, Jun 02, 2021 at 04:57:39PM +0800, Weihang Li wrote:
->> From: Lang Cheng <chenglang@huawei.com>
->>
->> GCC may reports an running time assert error when a value calculated from
->> ib_mtu_enum_to_int() is using as 'val' in FIELD_PREDP:
->>
->> include/linux/compiler_types.h:328:38: error: call to
->> '__compiletime_assert_1524' declared with attribute error: FIELD_PREP:
->> value too large for the field
+On Wed, Jun 16, 2021 at 09:15:09PM +0530, Anand Khoje wrote:
+> ib_query_port() calls device->ops.query_port() to get the port
+> attributes. The method of querying is device driver specific.
+> The same function calls device->ops.query_gid() to get the GID and
+> extract the subnet_prefix (gid_prefix).
 > 
-> Huh? This warning looks reliable to me, you should not suppress it
-> like this.
+> The GID and subnet_prefix are stored in a cache. But they do not get
+> read from the cache if the device is an Infiniband device. The
+> following change takes advantage of the cached subnet_prefix.
+> Testing with RDBMS has shown a significant improvement in performance
+> with this change.
 > 
->> But actually this error will still exists even if the driver can ensure
->> that ib_mtu_enum_to_int() returns a legal value. So add a mask in
->> hr_reg_write() to avoid above warning.
+> The function ib_cache_is_initialised() is introduced because
+> ib_query_port() gets called early in the stage when the cache is not
+> built while reading port immutable property.
 > 
-> I think you need to have an if that ib_mtu_enum_to_int() is not
-> negative, that should satisfy the CFA?
+> In that case, the default GID still gets read from HCA for IB link-
+> layer devices.
 > 
-> Jason
+> In the situation of an event causing cache update, the subnet_prefix
+> will get retrieved from newly updated GID cache in ib_cache_update(),
+> so that we do not end up reading a stale value from cache via
+> ib_query_port().
+> 
+> Fixes: fad61ad ("IB/core: Add subnet prefix to port info")
+> Suggested-by: Leon Romanovsky <leonro@nvidia.com>
+> Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
+> Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+> Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
+> ---
+> 
+> v1 -> v2:
+>     -   Split the v1 patch in 3 patches as per Leon's suggestion.
+> 
+> v2 -> v3:
+>     -   Added changes as per Mark Zhang's suggestion of clearing
+>         flags in git_table_cleanup_one().
+> v3 -> v4:
+>     -   Removed the enum ib_port_data_flags and 8 byte flags from
+>         struct ib_port_data, and the set_bit()/clear_bit() API
+>         used to update this flag as that was not necessary.
+>         Done to keep the code simple.
+>     -   Added code to read subnet_prefix from updated GID cache in the
+>         event of cache update. Prior to this change, ib_cache_update
+>         was reading the value for subnet_prefix via ib_query_port(),
+>         due to this patch, we ended up reading a stale cached value of
+>         subnet_prefix.
+> v4 -> v5:
+>     -   Removed the code to reset cache_is_initialised bit from cleanup
+>         as per Leon's suggestion.
+>     -   Removed ib_cache_is_initialised() function.
+> 
+> ---
+>  drivers/infiniband/core/cache.c  | 14 ++++++++++++--
+>  drivers/infiniband/core/device.c |  9 +++++++++
+>  include/rdma/ib_verbs.h          |  1 +
+>  3 files changed, 22 insertions(+), 2 deletions(-)
 > 
 
-I add a check for the integer mtu from ib_mtu_enum_to_int(), and gcc stop to
-complain about that. I will add a patch to this series to fix it. Thank you.
-
-Weihang
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
