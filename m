@@ -2,198 +2,256 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F203AADAB
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 09:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D3F3AADC8
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 09:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFQHed (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Jun 2021 03:34:33 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8249 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhFQHeb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Jun 2021 03:34:31 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5DCX3CqZz1BNSh;
-        Thu, 17 Jun 2021 15:27:20 +0800 (CST)
-Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 17 Jun 2021 15:32:22 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 17 Jun 2021 15:32:22 +0800
-From:   Weihang Li <liweihang@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>, "Xi Wang" <wangxi11@huawei.com>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH v3 for-next 8/8] RDMA/hns: Clean SRQC structure definition
-Date:   Thu, 17 Jun 2021 15:31:51 +0800
-Message-ID: <1623915111-43630-9-git-send-email-liweihang@huawei.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623915111-43630-1-git-send-email-liweihang@huawei.com>
-References: <1623915111-43630-1-git-send-email-liweihang@huawei.com>
+        id S229872AbhFQHkN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Jun 2021 03:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229972AbhFQHkM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 17 Jun 2021 03:40:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1D8A613BF;
+        Thu, 17 Jun 2021 07:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623915485;
+        bh=XTfpZ4mknpSfGmiQsRsnyn1g9bHN674g17Eg26GA2jw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UCydjILi/2IM9eO7QsMUegrMTDQizxARKJBfUP2TiNvqD2u+Na5vW9rEAR2e4zg8Z
+         jED8Ggk5+jr02Sb77ffbI+uFFlQENP7otNgh5GjVdyP1WgfwFiA94/bWXiBRWA2Q/t
+         C4t8Rxa+/WvLJEV5Plh36GB5mtymtsmKvd4oj5/M7gid7NghvZwipbuxlDUnpRT/pU
+         tqrrlOllZwPmwPZKbDgjFLm/J0lI8L2aX05/UEartXFLhurhTyR1Csl8Qt0Lq2XWon
+         H0MgcjwgREa8XyFD0ijlsY0B+bluHTM1hkd3KlxU1IveYrn88lHW/vtA4hRpsEEdwL
+         SBlJ+hnpSn/sQ==
+Date:   Thu, 17 Jun 2021 10:38:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH for-next] RDMA/cma: Replace RMW with atomic bit-ops
+Message-ID: <YMr72f1bVgQPPlnv@unreal>
+References: <1623854153-19147-1-git-send-email-haakon.bugge@oracle.com>
+ <YMrxDtudALQkYuXP@unreal>
+ <E69C3CB3-AE31-4139-816A-11467729ABDC@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema753-chm.china.huawei.com (10.1.198.195)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E69C3CB3-AE31-4139-816A-11467729ABDC@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Thu, Jun 17, 2021 at 06:56:15AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 17 Jun 2021, at 08:51, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Wed, Jun 16, 2021 at 04:35:53PM +0200, Håkon Bugge wrote:
+> >> The struct rdma_id_private contains three bit-fields, tos_set,
+> >> timeout_set, and min_rnr_timer_set. These are set by accessor
+> >> functions without any synchronization. If two or all accessor
+> >> functions are invoked in close proximity in time, there will be
+> >> Read-Modify-Write from several contexts to the same variable, and the
+> >> result will be intermittent.
+> >> 
+> >> Replace with a flag variable and inline functions for set and get.
+> >> 
+> >> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> >> Signed-off-by: Hans Westgaard Ry<hans.westgaard.ry@oracle.com>
+> >> ---
+> >> drivers/infiniband/core/cma.c      | 24 +++++++++++-------------
+> >> drivers/infiniband/core/cma_priv.h | 28 +++++++++++++++++++++++++---
+> >> 2 files changed, 36 insertions(+), 16 deletions(-)
+> >> 
+> >> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> >> index 2b9ffc2..fe609e7 100644
+> >> --- a/drivers/infiniband/core/cma.c
+> >> +++ b/drivers/infiniband/core/cma.c
+> >> @@ -844,9 +844,7 @@ static void cma_id_put(struct rdma_id_private *id_priv)
+> >> 	id_priv->id.event_handler = event_handler;
+> >> 	id_priv->id.ps = ps;
+> >> 	id_priv->id.qp_type = qp_type;
+> >> -	id_priv->tos_set = false;
+> >> -	id_priv->timeout_set = false;
+> >> -	id_priv->min_rnr_timer_set = false;
+> >> +	id_priv->flags = 0;
+> > 
+> > It is not needed, id_priv is allocated with kzalloc.
+> 
+> I agree. Did put it in due the foo = false.
+> > 
+> >> 	id_priv->gid_type = IB_GID_TYPE_IB;
+> >> 	spin_lock_init(&id_priv->lock);
+> >> 	mutex_init(&id_priv->qp_mutex);
+> >> @@ -1134,10 +1132,10 @@ int rdma_init_qp_attr(struct rdma_cm_id *id, struct ib_qp_attr *qp_attr,
+> >> 		ret = -ENOSYS;
+> >> 	}
+> >> 
+> >> -	if ((*qp_attr_mask & IB_QP_TIMEOUT) && id_priv->timeout_set)
+> >> +	if ((*qp_attr_mask & IB_QP_TIMEOUT) && get_TIMEOUT_SET(id_priv->flags))
+> >> 		qp_attr->timeout = id_priv->timeout;
+> >> 
+> >> -	if ((*qp_attr_mask & IB_QP_MIN_RNR_TIMER) && id_priv->min_rnr_timer_set)
+> >> +	if ((*qp_attr_mask & IB_QP_MIN_RNR_TIMER) && get_MIN_RNR_TIMER_SET(id_priv->flags))
+> >> 		qp_attr->min_rnr_timer = id_priv->min_rnr_timer;
+> >> 
+> >> 	return ret;
+> >> @@ -2472,7 +2470,7 @@ static int cma_iw_listen(struct rdma_id_private *id_priv, int backlog)
+> >> 		return PTR_ERR(id);
+> >> 
+> >> 	id->tos = id_priv->tos;
+> >> -	id->tos_set = id_priv->tos_set;
+> >> +	id->tos_set = get_TOS_SET(id_priv->flags);
+> >> 	id->afonly = id_priv->afonly;
+> >> 	id_priv->cm_id.iw = id;
+> >> 
+> >> @@ -2533,7 +2531,7 @@ static int cma_listen_on_dev(struct rdma_id_private *id_priv,
+> >> 	cma_id_get(id_priv);
+> >> 	dev_id_priv->internal_id = 1;
+> >> 	dev_id_priv->afonly = id_priv->afonly;
+> >> -	dev_id_priv->tos_set = id_priv->tos_set;
+> >> +	dev_id_priv->flags = id_priv->flags;
+> >> 	dev_id_priv->tos = id_priv->tos;
+> >> 
+> >> 	ret = rdma_listen(&dev_id_priv->id, id_priv->backlog);
+> >> @@ -2582,7 +2580,7 @@ void rdma_set_service_type(struct rdma_cm_id *id, int tos)
+> >> 
+> >> 	id_priv = container_of(id, struct rdma_id_private, id);
+> >> 	id_priv->tos = (u8) tos;
+> >> -	id_priv->tos_set = true;
+> >> +	set_TOS_SET(id_priv->flags);
+> >> }
+> >> EXPORT_SYMBOL(rdma_set_service_type);
+> >> 
+> >> @@ -2610,7 +2608,7 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
+> >> 
+> >> 	id_priv = container_of(id, struct rdma_id_private, id);
+> >> 	id_priv->timeout = timeout;
+> >> -	id_priv->timeout_set = true;
+> >> +	set_TIMEOUT_SET(id_priv->flags);
+> >> 
+> >> 	return 0;
+> >> }
+> >> @@ -2647,7 +2645,7 @@ int rdma_set_min_rnr_timer(struct rdma_cm_id *id, u8 min_rnr_timer)
+> >> 
+> >> 	id_priv = container_of(id, struct rdma_id_private, id);
+> >> 	id_priv->min_rnr_timer = min_rnr_timer;
+> >> -	id_priv->min_rnr_timer_set = true;
+> >> +	set_MIN_RNR_TIMER_SET(id_priv->flags);
+> >> 
+> >> 	return 0;
+> >> }
+> >> @@ -3033,7 +3031,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+> >> 
+> >> 	u8 default_roce_tos = id_priv->cma_dev->default_roce_tos[id_priv->id.port_num -
+> >> 					rdma_start_port(id_priv->cma_dev->device)];
+> >> -	u8 tos = id_priv->tos_set ? id_priv->tos : default_roce_tos;
+> >> +	u8 tos = get_TOS_SET(id_priv->flags) ? id_priv->tos : default_roce_tos;
+> >> 
+> >> 
+> >> 	work = kzalloc(sizeof *work, GFP_KERNEL);
+> >> @@ -3081,7 +3079,7 @@ static int cma_resolve_iboe_route(struct rdma_id_private *id_priv)
+> >> 	 * PacketLifeTime = local ACK timeout/2
+> >> 	 * as a reasonable approximation for RoCE networks.
+> >> 	 */
+> >> -	route->path_rec->packet_life_time = id_priv->timeout_set ?
+> >> +	route->path_rec->packet_life_time = get_TIMEOUT_SET(id_priv->flags) ?
+> >> 		id_priv->timeout - 1 : CMA_IBOE_PACKET_LIFETIME;
+> >> 
+> >> 	if (!route->path_rec->mtu) {
+> >> @@ -4107,7 +4105,7 @@ static int cma_connect_iw(struct rdma_id_private *id_priv,
+> >> 		return PTR_ERR(cm_id);
+> >> 
+> >> 	cm_id->tos = id_priv->tos;
+> >> -	cm_id->tos_set = id_priv->tos_set;
+> >> +	cm_id->tos_set = get_TOS_SET(id_priv->flags);
+> >> 	id_priv->cm_id.iw = cm_id;
+> >> 
+> >> 	memcpy(&cm_id->local_addr, cma_src_addr(id_priv),
+> >> diff --git a/drivers/infiniband/core/cma_priv.h b/drivers/infiniband/core/cma_priv.h
+> >> index 5c463da..2c1694f 100644
+> >> --- a/drivers/infiniband/core/cma_priv.h
+> >> +++ b/drivers/infiniband/core/cma_priv.h
+> >> @@ -82,11 +82,9 @@ struct rdma_id_private {
+> >> 	u32			qkey;
+> >> 	u32			qp_num;
+> >> 	u32			options;
+> >> +	unsigned long		flags;
+> >> 	u8			srq;
+> >> 	u8			tos;
+> >> -	u8			tos_set:1;
+> >> -	u8                      timeout_set:1;
+> >> -	u8			min_rnr_timer_set:1;
+> >> 	u8			reuseaddr;
+> >> 	u8			afonly;
+> >> 	u8			timeout;
+> >> @@ -127,4 +125,28 @@ int cma_set_default_roce_tos(struct cma_device *dev, u32 port,
+> >> 			     u8 default_roce_tos);
+> >> struct ib_device *cma_get_ib_dev(struct cma_device *dev);
+> >> 
+> >> +#define BIT_ACCESS_FUNCTIONS(b)							\
+> >> +	static inline void set_##b(unsigned long flags)				\
+> >> +	{									\
+> >> +		/* set_bit() does not imply a memory barrier */			\
+> >> +		smp_mb__before_atomic();					\
+> >> +		set_bit(b, &flags);						\
+> >> +		/* set_bit() does not imply a memory barrier */			\
+> >> +		smp_mb__after_atomic();						\
+> >> +	}									\
+> >> +	static inline bool get_##b(unsigned long flags)				\
+> >> +	{									\
+> >> +		return test_bit(b, &flags);					\
+> >> +	}
+> >> +
+> >> +enum cm_id_flag_bits {
+> 
+> This should be called cm_id_priv_flags_bits.
+> 
+> >> +	TOS_SET,
+> >> +	TIMEOUT_SET,
+> >> +	MIN_RNR_TIMER_SET,
+> >> +};
+> >> +
+> >> +BIT_ACCESS_FUNCTIONS(TIMEOUT_SET);
+> >> +BIT_ACCESS_FUNCTIONS(TOS_SET);
+> >> +BIT_ACCESS_FUNCTIONS(MIN_RNR_TIMER_SET);
+> > 
+> > I would prefer one function that has same syntax as set_bit() instead of
+> > introducing two new that built with macros.
+> > 
+> > Something like this:
+> > static inline set_bit_mb(long nr, unsigned long *flags)
+> > {
+> >   smp_mb__before_atomic();
+> >   set_bit(nr, flags); 
+> >   smp_mb__after_atomic();
+> > }
+> 
+> OK. I should also probably move this to cma.c, since it is not used outside cma.c?
 
-Remove unused members in srq context structure.
+Yes, please
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 15 ++----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 82 +-----------------------------
- 2 files changed, 4 insertions(+), 93 deletions(-)
+> 
+> Also, do you want it checkpatch clean? Then I need the /* set_bit() does not imply a memory barrier */ comments.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index a56149a..ddaebad 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5354,12 +5354,8 @@ static int hns_roce_v2_modify_srq(struct ib_srq *ibsrq,
- 
- 		memset(srqc_mask, 0xff, sizeof(*srqc_mask));
- 
--		roce_set_field(srq_context->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, srq_attr->srq_limit);
--		roce_set_field(srqc_mask->byte_8_limit_wl,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--			       SRQC_BYTE_8_SRQ_LIMIT_WL_S, 0);
-+		hr_reg_write(srq_context, SRQC_LIMIT_WL, srq_attr->srq_limit);
-+		hr_reg_clear(srqc_mask, SRQC_LIMIT_WL);
- 
- 		ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0, srq->srqn, 0,
- 					HNS_ROCE_CMD_MODIFY_SRQC,
-@@ -5382,7 +5378,6 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
- 	struct hns_roce_srq_context *srq_context;
- 	struct hns_roce_cmd_mailbox *mailbox;
--	int limit_wl;
- 	int ret;
- 
- 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-@@ -5400,11 +5395,7 @@ static int hns_roce_v2_query_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr)
- 		goto out;
- 	}
- 
--	limit_wl = roce_get_field(srq_context->byte_8_limit_wl,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_M,
--				  SRQC_BYTE_8_SRQ_LIMIT_WL_S);
--
--	attr->srq_limit = limit_wl;
-+	attr->srq_limit = hr_reg_read(srq_context, SRQC_LIMIT_WL);
- 	attr->max_wr = srq->wqe_cnt;
- 	attr->max_sge = srq->max_gs - srq->rsv_sge;
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index 974f8c1..bf4f179 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -377,22 +377,7 @@ struct hns_roce_v2_cq_context {
- #define CQC_POE_QID_H_1 CQC_FIELD_LOC(511, 511)
- 
- struct hns_roce_srq_context {
--	__le32 byte_4_srqn_srqst;
--	__le32 byte_8_limit_wl;
--	__le32 byte_12_xrcd;
--	__le32 byte_16_pi_ci;
--	__le32 wqe_bt_ba;
--	__le32 byte_24_wqe_bt_ba;
--	__le32 byte_28_rqws_pd;
--	__le32 idx_bt_ba;
--	__le32 rsv_idx_bt_ba;
--	__le32 idx_cur_blk_addr;
--	__le32 byte_44_idxbufpgsz_addr;
--	__le32 idx_nxt_blk_addr;
--	__le32 rsv_idxnxtblkaddr;
--	__le32 byte_56_xrc_cqn;
--	__le32 db_record_addr_record_en;
--	__le32 db_record_addr;
-+	__le32 data[16];
- };
- 
- #define SRQC_FIELD_LOC(h, l) FIELD_LOC(struct hns_roce_srq_context, h, l)
-@@ -433,71 +418,6 @@ struct hns_roce_srq_context {
- #define SRQC_DB_RECORD_ADDR_L SRQC_FIELD_LOC(479, 449)
- #define SRQC_DB_RECORD_ADDR_H SRQC_FIELD_LOC(511, 480)
- 
--#define SRQC_BYTE_4_SRQ_ST_S 0
--#define SRQC_BYTE_4_SRQ_ST_M GENMASK(1, 0)
--
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_S 2
--#define SRQC_BYTE_4_SRQ_WQE_HOP_NUM_M GENMASK(3, 2)
--
--#define SRQC_BYTE_4_SRQ_SHIFT_S 4
--#define SRQC_BYTE_4_SRQ_SHIFT_M GENMASK(7, 4)
--
--#define SRQC_BYTE_4_SRQN_S 8
--#define SRQC_BYTE_4_SRQN_M GENMASK(31, 8)
--
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_S 0
--#define SRQC_BYTE_8_SRQ_LIMIT_WL_M GENMASK(15, 0)
--
--#define SRQC_BYTE_12_SRQ_XRCD_S 0
--#define SRQC_BYTE_12_SRQ_XRCD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_PRODUCER_IDX_M GENMASK(15, 0)
--
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_S 0
--#define SRQC_BYTE_16_SRQ_CONSUMER_IDX_M GENMASK(31, 16)
--
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_S 0
--#define SRQC_BYTE_24_SRQ_WQE_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_28_PD_S 0
--#define SRQC_BYTE_28_PD_M GENMASK(23, 0)
--
--#define SRQC_BYTE_28_RQWS_S 24
--#define SRQC_BYTE_28_RQWS_M GENMASK(27, 24)
--
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_S 0
--#define SRQC_BYTE_36_SRQ_IDX_BT_BA_M GENMASK(28, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_S 0
--#define SRQC_BYTE_44_SRQ_IDX_CUR_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_S 22
--#define SRQC_BYTE_44_SRQ_IDX_HOP_NUM_M GENMASK(23, 22)
--
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_S 24
--#define SRQC_BYTE_44_SRQ_IDX_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_S 28
--#define SRQC_BYTE_44_SRQ_IDX_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_S 0
--#define SRQC_BYTE_52_SRQ_IDX_NXT_BLK_ADDR_M GENMASK(19, 0)
--
--#define SRQC_BYTE_56_SRQ_XRC_CQN_S 0
--#define SRQC_BYTE_56_SRQ_XRC_CQN_M GENMASK(23, 0)
--
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_S 24
--#define SRQC_BYTE_56_SRQ_WQE_BA_PG_SZ_M GENMASK(27, 24)
--
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_S 28
--#define SRQC_BYTE_56_SRQ_WQE_BUF_PG_SZ_M GENMASK(31, 28)
--
--#define SRQC_BYTE_60_SRQ_RECORD_EN_S 0
--
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_S 1
--#define SRQC_BYTE_60_SRQ_DB_RECORD_ADDR_M GENMASK(31, 1)
--
- enum {
- 	V2_MPT_ST_VALID = 0x1,
- 	V2_MPT_ST_FREE	= 0x2,
--- 
-2.7.4
+It is always safer to send checkpatch clean patches. The most important
+part is to have W=1 clean patches, our subsystem is one warning away from
+being warnings-free one.
 
+> 
+> Thanks for you review, Leon.
+
+Thank you for listening :)
+
+> 
+> 
+> Håkon
+> 
+> > 
+> >> +
+> >> #endif /* _CMA_PRIV_H */
+> >> -- 
+> >> 1.8.3.1
+> 
