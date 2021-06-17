@@ -2,102 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028EE3AA854
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 02:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE733AA922
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Jun 2021 04:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhFQBBS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Jun 2021 21:01:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33870 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231361AbhFQBBS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 16 Jun 2021 21:01:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FC39613BF;
-        Thu, 17 Jun 2021 00:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623891551;
-        bh=LnI42oM+huJkD4bxD8CwkKH5CzDJoXGskz8GSzrb1rg=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ksFcBsQkNvpToZyi/yTyHHpYIJxHDVOpUX9I3EVrioRxluRpXF6wlu1T1fng7kXns
-         TUo+rFosOWDwyAXUzvPCGAWc5zAZ4rLM+RYo+82JzrAr9X50vKXjFzdKW2dzwlVf5b
-         7u3uYPKEpW7DqSKtD9ed1t2ojqUNcGVMVJanPgSbVaYTqHcriJSGyKgpTnBn6MOxbw
-         SbMuCNWzsOJvK4K+V8tc/F3gjlZAI8xSKoQJ2MDRA+d4nLtjxkuFPHtz5lgBW9ByFh
-         tLdFp5BV8zfDpRtzieyyRU1z+21PKMPyqFK23NjzHQINgHHml8K1SP3zYVbXgrWdg0
-         rR+oO7HVl7QIw==
-Subject: Re: [PATCH rdma-next v2 00/15] Reorganize sysfs file creation for
- struct ib_devices
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        clang-built-linux@googlegroups.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1623427137.git.leonro@nvidia.com>
- <20210617000021.GA1899410@nvidia.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <0b6de703-1071-ca39-5657-cd00862bfbfd@kernel.org>
-Date:   Wed, 16 Jun 2021 17:59:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230332AbhFQCuI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Jun 2021 22:50:08 -0400
+Received: from mx21.baidu.com ([220.181.3.85]:52774 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230267AbhFQCuH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 16 Jun 2021 22:50:07 -0400
+Received: from BC-Mail-Ex31.internal.baidu.com (unknown [172.31.51.25])
+        by Forcepoint Email with ESMTPS id 25E1EB5CA77508766B1A;
+        Thu, 17 Jun 2021 10:32:23 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BC-Mail-Ex31.internal.baidu.com (172.31.51.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Thu, 17 Jun 2021 10:32:22 +0800
+Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2242.4; Thu, 17 Jun 2021 10:32:22 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     <saeedm@nvidia.com>, <leonro@nvidia.com>
+CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        caihuoqing <caihuoqing@baidu.com>
+Subject: [PATCH] net/mlx5: remove "default n" from Kconfig
+Date:   Thu, 17 Jun 2021 10:32:15 +0800
+Message-ID: <20210617023215.176-1-caihuoqing@baidu.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210617000021.GA1899410@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BJHW-Mail-Ex10.internal.baidu.com (10.127.64.33) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/16/2021 5:00 PM, Jason Gunthorpe wrote:
-> On Fri, Jun 11, 2021 at 07:00:19PM +0300, Leon Romanovsky wrote:
-> 
->> Jason Gunthorpe (15):
->>    RDMA: Split the alloc_hw_stats() ops to port and device variants
->>    RDMA/core: Replace the ib_port_data hw_stats pointers with a ib_port
->>      pointer
->>    RDMA/core: Split port and device counter sysfs attributes
->>    RDMA/core: Split gid_attrs related sysfs from add_port()
->>    RDMA/core: Simplify how the gid_attrs sysfs is created
->>    RDMA/core: Simplify how the port sysfs is created
->>    RDMA/core: Create the device hw_counters through the normal groups
->>      mechanism
->>    RDMA/core: Remove the kobject_uevent() NOP
->>    RDMA/core: Expose the ib port sysfs attribute machinery
->>    RDMA/cm: Use an attribute_group on the ib_port_attribute intead of
->>      kobj's
->>    RDMA/qib: Use attributes for the port sysfs
->>    RDMA/hfi1: Use attributes for the port sysfs
->>    RDMA: Change ops->init_port to ops->port_groups
->>    RDMA/core: Allow port_groups to be used with namespaces
->>    RDMA: Remove rdma_set_device_sysfs_group()
-> 
-> Applied to for-next, thanks everyone
-> 
-> Jason
-> 
+From: caihuoqing <caihuoqing@baidu.com>
 
-I just got done verifying that v2 still fixes the Control Flow Integrity 
-violations. In case it is useful:
+remove "default n" and "No" is default
 
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: caihuoqing <caihuoqing@baidu.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/Kconfig | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-Cheers,
-Nathan
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+index d62f90aedade..e1a5a79e27c7 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+@@ -12,7 +12,6 @@ config MLX5_CORE
+        depends on MLXFW || !MLXFW
+        depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
+        depends on PCI_HYPERV_INTERFACE || !PCI_HYPERV_INTERFACE
+-       default n
+        help
+          Core driver for low level functionality of the ConnectX-4 and
+          Connect-IB cards by Mellanox Technologies.
+@@ -36,7 +35,6 @@ config MLX5_CORE_EN
+        depends on NETDEVICES && ETHERNET && INET && PCI && MLX5_CORE
+        select PAGE_POOL
+        select DIMLIB
+-       default n
+        help
+          Ethernet support in Mellanox Technologies ConnectX-4 NIC.
+ 
+@@ -141,7 +139,6 @@ config MLX5_CORE_EN_DCB
+ config MLX5_CORE_IPOIB
+        bool "Mellanox 5th generation network adapters (connectX series) IPoIB offloads support"
+        depends on MLX5_CORE_EN
+-       default n
+        help
+          MLX5 IPoIB offloads & acceleration support.
+ 
+@@ -149,7 +146,6 @@ config MLX5_FPGA_IPSEC
+        bool "Mellanox Technologies IPsec Innova support"
+        depends on MLX5_CORE
+        depends on MLX5_FPGA
+-       default n
+        help
+        Build IPsec support for the Innova family of network cards by Mellanox
+        Technologies. Innova network cards are comprised of a ConnectX chip
+@@ -163,7 +159,6 @@ config MLX5_IPSEC
+        depends on XFRM_OFFLOAD
+        depends on INET_ESP_OFFLOAD || INET6_ESP_OFFLOAD
+        select MLX5_ACCEL
+-       default n
+        help
+        Build IPsec support for the Connect-X family of network cards by Mellanox
+        Technologies.
+@@ -176,7 +171,6 @@ config MLX5_EN_IPSEC
+        depends on XFRM_OFFLOAD
+        depends on INET_ESP_OFFLOAD || INET6_ESP_OFFLOAD
+        depends on MLX5_FPGA_IPSEC || MLX5_IPSEC
+-       default n
+        help
+          Build support for IPsec cryptography-offload acceleration in the NIC.
+          Note: Support for hardware with this capability needs to be selected
+@@ -189,7 +183,6 @@ config MLX5_FPGA_TLS
+        depends on MLX5_CORE_EN
+        depends on MLX5_FPGA
+        select MLX5_EN_TLS
+-       default n
+        help
+        Build TLS support for the Innova family of network cards by Mellanox
+        Technologies. Innova network cards are comprised of a ConnectX chip
+@@ -204,7 +197,6 @@ config MLX5_TLS
+        depends on MLX5_CORE_EN
+        select MLX5_ACCEL
+        select MLX5_EN_TLS
+-       default n
+        help
+        Build TLS support for the Connect-X family of network cards by Mellanox
+        Technologies.
+@@ -227,7 +219,6 @@ config MLX5_SW_STEERING
+ config MLX5_SF
+        bool "Mellanox Technologies subfunction device support using auxiliary device"
+        depends on MLX5_CORE && MLX5_CORE_EN
+-       default n
+        help
+        Build support for subfuction device in the NIC. A Mellanox subfunction
+        device can support RDMA, netdevice and vdpa device.
+-- 
+2.22.0
+
