@@ -2,133 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AAE3AD238
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 20:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6CDD3AD26E
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 20:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230430AbhFRSgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Jun 2021 14:36:05 -0400
-Received: from mail-bn8nam11on2071.outbound.protection.outlook.com ([40.107.236.71]:32257
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229945AbhFRSgF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:36:05 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b47YbsaVsOqiyO8HXOAt22Q4/rffO9z8YGX5/0k9CX72kwIUaqocqLrUMyZRtVgWCoe/MzvDBie1f34NVc2wzP1LjGozn/uXW0zTbWce1Aye+NLhVi7u864FSo4JXUzVcA1tXctDvweLBkAK1wbAbsVyOQQ/F3kFtpDn/PIKDAnkcfsl0EGo27APJakmmHQweyGzREeus85e+xqM+JTep3BySFten6Ts5TSd2mfNGMvbuG/tkJRCXb+1fosLFyWU7q0HN5B2Qur94zb0si7hmVIBrcIuYCE4k5V4ND9dKMLh8EDX2x1vPQ6Np5TsF0fusBt9uiiqhxXmDnzxR7w1+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i0aIcW/yDi+CxgAsJUAqawy4bcO3zYOcd8d4pgxCxsE=;
- b=aoW6G99F7/Z4tGRaAVXppkEn5vplxr01WT3XgKlJAkp3CMPC3EKxLYr1BC/RJddKC0l1aFok2gLpeaTbfIOQaANwyJGdRmQUiKO6XnB6gOcT+Dbjtul7wJOdSM2d1QoQD7T/cEaCfBDd2JqyzsAb1q6I4BCxf6ccnEpA56kDrLl+aoF4qouSj/96ejLulD5EFYIDFF8BNO/wiRfYFf2rHYY9QBR9ZuZibb/RowJ1BnR4utw9qEZtxuoeWs95jOBYqwLFRnv3TUKtxZV5dMfIvX6qf6asphF/r2EsHUWqW+MTCFGZQdKb/zGiFpiOIU49tdOJIiLt+6U/DJ55O2NoMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=i0aIcW/yDi+CxgAsJUAqawy4bcO3zYOcd8d4pgxCxsE=;
- b=miuPZnWzkAhz25aBDA8KuNAuf8anmuLeq70NzHM7lcxdvwxNBremaH3Isd9ufkkJqpjCW3o9TYPbwDj5IQCvnZPkMVUSvfC9CsJOU2GbHMRkDAdrF5+FgqxEd+Id9BtYas93bMiDllOVn7R8vtCXfvbanAylw28DZfNDZfi1snX2A3pMSkMk8VxvvF5hoTqHD/26JV0qfotyxj50nlUIcAtAVvXWkcBAkZeH7GFO3PheLy+aCnbPX29tDKh7DkPxmM5b8KeXfAysnCB2TLUroCEnAI0jE/LkKcpvtdGifewapu9cTAdL44V+2mL4HwWnxHsA5N18agUa/PSf9t2dOQ==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5110.namprd12.prod.outlook.com (2603:10b6:208:312::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
- 2021 18:33:54 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
- 18:33:54 +0000
-Date:   Fri, 18 Jun 2021 15:33:53 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, Xi Wang <wangxi11@huawei.com>
-Subject: Re: [PATCH v3 for-next] RDMA/hns: Clear extended doorbell info
- before using
-Message-ID: <20210618183353.GA2061939@nvidia.com>
-References: <1623392089-35639-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623392089-35639-1-git-send-email-liweihang@huawei.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S234500AbhFRTBB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Jun 2021 15:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231589AbhFRTBA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Jun 2021 15:01:00 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2199EC061574
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 11:58:50 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id w127so11605155oig.12
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 11:58:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eeEk+g+NlqllAB0X42BY49mULUzTThPPBJ9Hf1lLSF4=;
+        b=ahCgP7WSCQjLOHUNLwL6hrGGtwXRp1YztatQqG6y1LvwQ0CIOS1vOMGnKs+Occq4dx
+         36+JMxbZxJOk1/Fa63MJQEYuo4PVtH1vjieb4ZEumxgf0jRzf3qP1K1yFCZFMdKRkMHV
+         gl1BJkxckK5MHpMDn7vHNqlQDluPGsWYG6u/RrbNDljW9QCC4Uzaf8Tu5i5JOHwZePZG
+         vTPTvvCqooCOzgfM8tzPvbGDC5ULpiq9Bwrw/mGg/I3lntmgosv6O2ubfITCZUnO65j4
+         4b18tz1JIW6BuogYMXbw2dsO0A0QxUaLxMfoSoh15EUYjnoPYuPqlC38xQplbKaK3G/U
+         w02g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eeEk+g+NlqllAB0X42BY49mULUzTThPPBJ9Hf1lLSF4=;
+        b=uYsEYAtIjtQkFIEKZE4VGP7+tIWI0LHEBUUUg45pwyN+zy1LOdxvme/rq2tY4Btyyr
+         2O7jPjh5uRlUTfRkTRRxCm2xCT1Ytszr60HvlndJg51lc12bH/1jCMEwzKm2Iv7J3zJF
+         TflDyF5LohHcYg/9Tj7eJts9wdvc5HnKNaYh+esGTTZLJF11zg6KDR4ro5xjWDljRqdD
+         PTKz7sj0Dzpmt6xf4Xc7r5Bk1xz+8PPhUipk/Rsi2Df84vCWaNcB0gypN5g1Q7aRhTAo
+         L1NokU/xuJkZ1dL2v1Vf8zlLI+pOtwRDYgjQWE/6YN/m0aUzx/fWChaoY4ogGJPg093w
+         8QdQ==
+X-Gm-Message-State: AOAM532s5VKUIgq5+yzQioqVQByOSBBihDxM9L3KB610Le3B5fuI0pRk
+        2KajQt2bWGRxSWWrbr66vowxQTk4D1o=
+X-Google-Smtp-Source: ABdhPJybQ0CFioL+hdYkkn6fHbBM5fBliH8xaEtQ1pdfajaoHatnAez1q7qyzynoopc0vKN96gbg7Q==
+X-Received: by 2002:aca:4141:: with SMTP id o62mr9180447oia.42.1624042729516;
+        Fri, 18 Jun 2021 11:58:49 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:2fce:3453:431e:5204? (2603-8081-140c-1a00-2fce-3453-431e-5204.res6.spectrum.com. [2603:8081:140c:1a00:2fce:3453:431e:5204])
+        by smtp.gmail.com with ESMTPSA id e23sm2195997otk.67.2021.06.18.11.58.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 11:58:49 -0700 (PDT)
+Subject: Re: [PATCH v1 3/3] RDMA/rxe: Increase value of RXE_MAX_AH
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Shoaib Rao <rao.shoaib@oracle.com>, linux-rdma@vger.kernel.org,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <20210617182511.1257629-1-Rao.Shoaib@oracle.com>
+ <20210617182511.1257629-3-Rao.Shoaib@oracle.com>
+ <3aa5a673-3fd7-744b-b664-510005215bd2@gmail.com>
+ <10d9763c-4d10-3820-93a0-b79f55acfa8e@oracle.com>
+ <edcf0cc0-4da8-5af3-3366-220b4eeba5e4@gmail.com>
+ <20210618163359.GA1096940@ziepe.ca>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <14e2c2a4-6067-c657-6ea4-91cd3c19d032@gmail.com>
+Date:   Fri, 18 Jun 2021 13:58:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR01CA0030.prod.exchangelabs.com (2603:10b6:208:71::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend Transport; Fri, 18 Jun 2021 18:33:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1luJJR-008ePp-7g; Fri, 18 Jun 2021 15:33:53 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 233a6ec7-44ac-4eea-cb94-08d93287a062
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5110:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB511075D1FBF795EEB051511EC20D9@BL1PR12MB5110.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hGaQ6qYBn4bqZv5lY80+Ud8ZxBYKxIzbo3+ghPS+TopT5/LRa3Lvvkz10QrOLk44lFdF/xQcWCW2Wl81vEKBunNbX1jwQSsfb6i8JTUc9qdXNl1T+JxWdVom/sGM7XaObZjxczjhaaC856VEjueDeLrL9f3nvcxRpziGUvQnMuN5186JriHt+ZfHYbTleK7auGb157whFzq5YJPhQoguB3PixfiTv3Y1oIYLX/ofSgy7cxWWduj3H2XELaTs+Nb2ZSpvn9Kto0kQKGpgYSti/AJoA1m7kCT1wMsBNr8+y9dcAKLCOwjAMxggJZ7J/EuX8coKdosDl2m5DyXnIchZw4FS8UEhkSF4Wi7BCRgQkrg9+4UqnpaRkxEiLEl8SyzuiCGhAvGiG2HbyO6H185SQSK/kDxta2+KaRGrCicD6uM1niqK8f7+jMne+EYo9XhXmmjRx37FRTTwns3JfQBv74D9gGOoww93x0Ggom50s9Ddfn5D3nbYZbRC//TvA7nYger/FEvK1yYtGqYCg7lLenmpzB0ZzmJ6bbINfN/w4QUhnXFr0noiyKbVtJkbzYVhGxDDj3LUQU9OVbUK/OSWoz44RBtqEACytAZ9jLg9MU3mInDhv8dFZZJ0+itCvXtVgL33KNWKcOqibnCNu46OAAIqkcyprGzxUzEQftK5VpCYNcw2ZAMgB4t4qr+OazMY/YzOdhpz/pHhGwIqrBhz+2G5br12fMwFoEijZINWLfD0zTuq9hdEz42GzAxAPRyC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(39860400002)(376002)(5660300002)(478600001)(4326008)(186003)(9746002)(966005)(38100700002)(26005)(66476007)(66556008)(2906002)(36756003)(1076003)(8676002)(8936002)(66946007)(86362001)(33656002)(426003)(9786002)(2616005)(316002)(6916009);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZpOznDuBW16LKs9KPXFFRywtatAdFGZ0isOOcb3WM/TXrpXJzUij/NtUt/lD?=
- =?us-ascii?Q?0nXmXT6AoNS45Hw1eq/v7DZGCG8OOUwH4ckvn+G4Tl2qc/r+IE5OIEQYfMZR?=
- =?us-ascii?Q?cpLPnyko7T75aLmZyMOAFyJ6G1KK9WoE0z+7RkNdVDAVVkHZwxoKx9UPm4U3?=
- =?us-ascii?Q?wYZNPbFtKGn4eTixhLQxpf8g1VhosRJURYqJNDS0hGjyNiNHQScFTjGp+hqc?=
- =?us-ascii?Q?fRzztSZPU1SuaEUNCTljUn37GpQ9mNZJcD4Lo5ogS35VCOkWQpVHQwCTky9+?=
- =?us-ascii?Q?K+dJZUJWyBnjibzolFuYV+NxyeF6/jTQKwyOFTSqpMNaNMIsHD3DBRQpI4hT?=
- =?us-ascii?Q?4kzk7Yx85ASueeAPBmcTh69QJCIa7YjWWVdtrjfUiiRtitMRisD50sl5A/C9?=
- =?us-ascii?Q?0YcxOFLsX3TZoEJhIojL0xAE+RJvmZF9OMON0kb0tDLAJXkIWRbbpPBOcOIa?=
- =?us-ascii?Q?2gNwbhyp+22uk80JNuR5h9bqtHX+4GY0bU0M26HmIvFQUX5cVanYv63pfF77?=
- =?us-ascii?Q?GMnv2Wn2qMdcajxYk6WDdywiUihYJJ+t5GihiuRVom3DalxGYjiymL7KEdBK?=
- =?us-ascii?Q?JO7sUT4/sNCPsYNrfsPL1eyVLPZ03A4VH6tkONtFYM9pX4qZnMYn1cpjV8TI?=
- =?us-ascii?Q?K+XG0/cxxtKrau72X8LWUbp7X9eIz6cp9gv24vkmzPrrapKPl/i++W9X9/F0?=
- =?us-ascii?Q?vqvTQhapfXf8xtVjES0UZt6g35eckwZ6fz0KumMf0uEhsjDCQOERAu4IUF3a?=
- =?us-ascii?Q?NwO+cPBI65FqOrSzy7haGg0DnvrU7wxvjjOxT0nlQiwcAMKBqgVJMoUPSBPg?=
- =?us-ascii?Q?7eF8/si5gBTUzokN9ivpXQpNcHm8OhoHe1ryYzjmiiJ6gTTn8Fv/d6MCc86R?=
- =?us-ascii?Q?AxO0T4KeSA91jeDjTRw5rto0DtMCD6Wj52hcW5/eMz+ghfvFP7tu5wMr3c5J?=
- =?us-ascii?Q?NhEEnJJ4EhA7d6skCacNPr11JODC1cOPB7bUMWMnL53w1UvhNCxOkCYTnT4D?=
- =?us-ascii?Q?wQGskmrOD8G0J1bU9TOAFIz0uX+AgNSEwz3ldQEjV7Fu6E0q9jCvANW7ol0m?=
- =?us-ascii?Q?41kJp8BMMPz+mdl4YxygrOPlMCoSaOgezPw71QtJ6rQlJVwzYkfilQbhGOnD?=
- =?us-ascii?Q?4vVQjISgz5UMquy2KESsfGMO2RqT0fL7RQNgQftSbI0N1mvuCW6RSv+qctec?=
- =?us-ascii?Q?uTFvmWjvRI+zhwSe9FmWjAiIfulk+IEjCtmuyniB2F+kDTWJynd1ANMaOYvz?=
- =?us-ascii?Q?eZ9EYJ7+Y/6f7PId0YVl1AGL3EQRpNEQKvw7xM4Wo/qs5eRNF+6G9qEgpY/S?=
- =?us-ascii?Q?lJrH9oEq+QiluRURFc1hPSbZ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 233a6ec7-44ac-4eea-cb94-08d93287a062
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 18:33:54.4071
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FzXbaCvbqNFK0ZBUeSr3eeXMfUxTaPn4VOex7okhm4tkrZwz33U2qtJnQzP9iAMj
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5110
+In-Reply-To: <20210618163359.GA1096940@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 02:14:49PM +0800, Weihang Li wrote:
-> From: Xi Wang <wangxi11@huawei.com>
+On 6/18/21 11:33 AM, Jason Gunthorpe wrote:
+> On Thu, Jun 17, 2021 at 10:56:58PM -0500, Bob Pearson wrote:
+>  
+>> It isn't my call. But I am in favor of tunable parameters. -- Bob Pearson
 > 
-> Both of HIP08 and HIP09 require the extended doorbell information to be
-> cleared before being used.
+> Can we just delete the concept completely?
 > 
-> Fixes: 6b63597d3540 ("RDMA/hns: Add TSQ link table support")
-> Signed-off-by: Xi Wang <wangxi11@huawei.com>
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
-> Changes since v2:
-> - Clear ext doorbell list info before get_hem_table().
-> - Link: https://patchwork.kernel.org/project/linux-rdma/patch/1623323990-62343-1-git-send-email-liweihang@huawei.com/
+> Jason
 > 
-> Changes since v1:
-> - Add fixes tag.
-> - Add check for return value of hns_roce_clear_extdb_list_info().
-> - Link: https://patchwork.kernel.org/project/linux-rdma/patch/1623237065-43344-1-git-send-email-liweihang@huawei.com/
-> 
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 21 +++++++++++++++++++++
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  1 +
->  2 files changed, 22 insertions(+)
+Not sure where you are headed here. Do you mean just lift the limits all together?
+That would not be in the spirit of the IBA even if that is not very meaningful.
+One of the useful things rxe does is to provide a cheap 'reference' implementation of the spec.
+If OTOH you want to put it in production then the limits are not very useful.
 
-Applied to for-next, thanks
-
-Jason
+Bob
