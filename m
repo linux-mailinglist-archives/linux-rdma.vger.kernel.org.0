@@ -2,130 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB15C3AC31D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 08:08:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E2D3AC4E7
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 09:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhFRGKX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Jun 2021 02:10:23 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:57058 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232270AbhFRGKW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:10:22 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15I60upp004015;
-        Fri, 18 Jun 2021 06:08:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=fnKMNVIlCGtOtYsBIw5EFVSBoCcmHjqZ3zudQyGQLiQ=;
- b=TGRwQ/42c+RUpxBISV+KMNl+HUwkdM6B/OQVHOWZYv/6jeqJDVy7Ti6uZNpOtRAnn8RB
- B449QQUVD2ob2BiXMALyJTFYPM3Qz3YoZ5CLH4is1pvH00gzt1BjpuY0cE4sTLnqsILU
- 6uRisAIkobEfrmP0a9iMtQU5FCbkaa6lw4ULrNcmc7OXsjqV/V8HJZdfW5RSCtc9Winn
- dtfs7gA/qDlKmc7OKnC+i1ozBhgZ+F/QV7zPIkbLKYfla/FICkma1MIONsssE4eUdyO5
- RoTo37Ovv0p1pVIlao7mBAB4U+kfg77cW8AFrCWmSEBf66Y4JWRkmqUUtXG35s11w7hI Zg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39770hcpka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 06:08:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15I65bix120882;
-        Fri, 18 Jun 2021 06:08:07 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 396wayh7q2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 06:08:07 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15I686b7011612;
-        Fri, 18 Jun 2021 06:08:06 GMT
-Received: from lab02.no.oracle.com (/10.172.144.56)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Jun 2021 23:08:06 -0700
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH for-next v2] RDMA/cma: Remove unnecessary INIT->INIT transition
-Date:   Fri, 18 Jun 2021 08:07:55 +0200
-Message-Id: <1623996475-23986-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230151AbhFRH0C convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 18 Jun 2021 03:26:02 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7486 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFRH0C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Jun 2021 03:26:02 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5r1f3NPnzZhXJ;
+        Fri, 18 Jun 2021 15:20:54 +0800 (CST)
+Received: from dggpeml100021.china.huawei.com (7.185.36.148) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 15:23:50 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml100021.china.huawei.com (7.185.36.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 15:23:50 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Fri, 18 Jun 2021 15:23:50 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>,
+        linyunsheng <linyunsheng@huawei.com>
+Subject: Re: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
+Thread-Topic: [PATCH rdma-core 4/4] libhns: Add support for direct wqe
+Thread-Index: AQHXU6R/LojSLjaQ0EW84zhJi1oR7g==
+Date:   Fri, 18 Jun 2021 07:23:50 +0000
+Message-ID: <fae84e6e29f94f26849aa709285cb8cf@huawei.com>
+References: <1622194379-59868-1-git-send-email-liweihang@huawei.com>
+ <1622194379-59868-5-git-send-email-liweihang@huawei.com>
+ <20210604145005.GA405010@nvidia.com>
+ <efc5283d762542f6a4add9329744c4ee@huawei.com>
+ <20210611113124.GO1002214@nvidia.com>
+ <3fa07c87b91047a79402a9871e4e932a@huawei.com>
+ <20210616191413.GO1002214@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10018 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180034
-X-Proofpoint-GUID: NNTeQba-yJPMzOonqgU9X02kkEOYcJZS
-X-Proofpoint-ORIG-GUID: NNTeQba-yJPMzOonqgU9X02kkEOYcJZS
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In rdma_create_qp(), a connected QP will be transitioned to the INIT
-state.
+On 2021/6/17 3:14, Jason Gunthorpe wrote:
+> On Wed, Jun 16, 2021 at 09:55:45AM +0000, liweihang wrote:
+> 
+>> If there is still any issues in this process, could you please tell us where to
+>> add the barrier? Thank you :)
+> 
+> I don't know ARM perfectly well, but generally look at
+> 
+>  1) Do these special stores barrier with the spin unlock protecting
+>     the post send? Allowing them to leak out will get things out of
+>     order
 
-Afterwards, the QP will be transitioned to the RTR state by the
-cma_modify_qp_rtr() function. But this function starts by performing
-an ib_modify_qp() to the INIT state again, before another
-ib_modify_qp() is performed to transition the QP to the RTR state.
+I do not think we need to rely on the spin unlock to ensure correct ordering for
+ST4 store.
+ST4 store is similiar as DB store, the difference is that DB store writes 8
+bytes to the device's MMIO space and ST4 store writes 64 bytes, the ST4 store
+can be ordered by udma_to_device_barrier() too, which mean we can also use
+udma_to_device_barrier() to ensure correct ordering between ST4 store and DB
+store too.
 
-Hence, there is no need to transition the QP to the INIT state in
-rdma_create_qp().
+> 
+>  2) ARM MMIO stores are not ordered, so that DB store the ST4 store
+>     are not guaranteed to execute in program order without a barrier.
+>     The spinlock is not a MMIO barrier
+> 
 
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+As there is udma_to_device_barrier() between each round of post send, we can
+guarantee that the last DB store/ST4 store reaches the device before issuing the
+the next DB store/ST4 store.
 
----
+> You could ignore some of this when the DB rings were basically
+> idempotent, but if you are xfering data it is more tricky. This is why
+> we always see a barrier after a WC store to put all future MMIO
+> strongly in order with the store.
+> 
+> Jason
+> 
 
-	v1 -> v2:
-	   * Fixed uninitialized ret variable as:
-	     Reported-by: kernel test robot <lkp@intel.com>
----
- drivers/infiniband/core/cma.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
+"st4 store" writes the doorbell and the content of WQE to the roce engine, and
+the st4 store ensure doorbell and the content of WQE both reach the roce engine
+at the same time. we tried to avoid WC store by using st4 store here, as WC
+store might need a different barrier in order to flush the data to the device.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 2b9ffc2..20c155c 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -925,25 +925,12 @@ static int cma_init_ud_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
- 	return ret;
- }
- 
--static int cma_init_conn_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
--{
--	struct ib_qp_attr qp_attr;
--	int qp_attr_mask, ret;
--
--	qp_attr.qp_state = IB_QPS_INIT;
--	ret = rdma_init_qp_attr(&id_priv->id, &qp_attr, &qp_attr_mask);
--	if (ret)
--		return ret;
--
--	return ib_modify_qp(qp, &qp_attr, qp_attr_mask);
--}
--
- int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
- 		   struct ib_qp_init_attr *qp_init_attr)
- {
- 	struct rdma_id_private *id_priv;
- 	struct ib_qp *qp;
--	int ret;
-+	int ret = 0;
- 
- 	id_priv = container_of(id, struct rdma_id_private, id);
- 	if (id->device != pd->device) {
-@@ -960,8 +947,6 @@ int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
- 
- 	if (id->qp_type == IB_QPT_UD)
- 		ret = cma_init_ud_qp(id_priv, qp);
--	else
--		ret = cma_init_conn_qp(id_priv, qp);
- 	if (ret)
- 		goto out_destroy;
- 
--- 
-1.8.3.1
-
+Thanks
+Weihang
