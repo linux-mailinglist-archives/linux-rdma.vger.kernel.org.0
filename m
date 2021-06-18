@@ -2,66 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08433ACF25
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 17:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DE03ACF4F
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Jun 2021 17:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235531AbhFRPfL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Jun 2021 11:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S233853AbhFRPlW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Jun 2021 11:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235690AbhFRPfC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Jun 2021 11:35:02 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C0DC061574
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 08:32:52 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id t140so11007709oih.0
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 08:32:52 -0700 (PDT)
+        with ESMTP id S230334AbhFRPlV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Jun 2021 11:41:21 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 255BFC061574
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 08:39:12 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 7-20020a9d0d070000b0290439abcef697so10098177oti.2
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Jun 2021 08:39:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Xd5QjTe4uWXP118dpRaT9dbxsXoCwPmnvbserUtYyTs=;
-        b=bdh31Vda7c5WHAea/wG5Twt+m0JG/ZH+UjfEB/a1HBJ5PRaejxQrQFpwNXmpzf6fuE
-         Li0JerLqtRIX9Fej3/sD0H2VhTNzxWQI5LW8SWcHs9gciACbMoYguQNLnLNpWGjhoDgu
-         QgSXpM3NV5zxmD29+env5u3Wt2GkD/W8dytQ7pnUpRWR38SXsFgkem5nfBjbfbRyFKHc
-         GfK4fcb6f845a3xx2ElaQ1rG5Wx43r5LuznpXt6pPjp8VRNwMGAE6iBdY/+VyaG8ShMJ
-         0KX3OV+z+BR+pO+uxrafFWo6io6Bu2cx5eFK92grB3WHeHoD7hDyVXKu2TUjXYpihhm5
-         QiRg==
+        bh=Ic1FuZM1BK3d7xlaZFrohhknMVoo72soISrvlnHxxy0=;
+        b=oyYSXgvP+82f2sdD2tA492IsbyASrXHa6KDv2Y2JQmq4W5jjdZYfNPpWZas+n0Z9Lz
+         VQqhAKdtUXBvKqUjfrSXdTivz/6FHPGHeP2tzq0u1zZW7do9PppqC51Dh98UPADhuRrS
+         9Z/OXMe2Ll+APoW2bi0HY8F6rHqTc5jCT+ZDHgguRs66DiMRpyvKHbS6KOmIjS9mijB3
+         Kn53G4oVaB2VqiAuzvl9xHaWL6bL90S9r/RFJO6gkzfNGEav6pw3uBIE4lf9jEQC30CK
+         RzkhAq1tadPaHrnvTi5nvop7Ph84DxOPEHCv3prce4xibE4XAicawEiJ4uJX+KAJUPBS
+         CEtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=Xd5QjTe4uWXP118dpRaT9dbxsXoCwPmnvbserUtYyTs=;
-        b=EwcuusyHIdm+tslYpwq/poD6pRU0immd2Dp+JOv/rHFZ21LqEFSkUBCCJw9shVoc1q
-         PEztLbocZTMYXtuGa74rFsY0JnyCxdFKNByr8E5MDqYDMt1TDxOmny0Bo+kfZlQesijk
-         cRNeTVVD3bAKNno9olGxdFlBmj/J4p8FgaAt+a++jP947NhFQP50iyihez7ZC/iEG/Yz
-         WNCoMHcTrmG14x/XRXiwp4nc+EZLuz8dLQOILqpc1SXf+CualOb/c08eb6C5j/TJybR3
-         AIOSc3VNy4HsDT8ksJoxostZSzCizCHIPKr8GX1fkFn78mVUsDjHMWgOEg7ZwvCZLRjA
-         qE8g==
-X-Gm-Message-State: AOAM532A+wkw/dUJvChbmcnPuzSWvRBZhtnX9UCV0HjiiUBV0r+mhfHQ
-        xeaqLquI/qFzPZm76H91V1Sn04V3WIw=
-X-Google-Smtp-Source: ABdhPJz79EJYhoMf9GJWcrZsz+qc3aT/y+4rmi/0MuUUhppYFJrhhE1bXdg/lZTCaPwwo/mTqKU+Sg==
-X-Received: by 2002:aca:b484:: with SMTP id d126mr15100588oif.80.1624030371662;
-        Fri, 18 Jun 2021 08:32:51 -0700 (PDT)
+        bh=Ic1FuZM1BK3d7xlaZFrohhknMVoo72soISrvlnHxxy0=;
+        b=PhmNhIsxN1uKpwafTgjsHceRCDagV3/XADPDq6A0ubYtd0wX4FDb0YBaokK6X10yOA
+         IfIgRmZPm2Zx4Yirsm1un0s69Z/iMkQK8lXwJvjm/SiCA+QQePEymobFFB1nYsq/mqUf
+         FAPkV25TitUgkraxVNHzDGS9oUC34yY1UHTG4jAfxshbpdzMGIX4AuXOc5Es9D4G0XLq
+         tY9ipGMnLCkGz/BVnt9DL/DDfPwOTL3P0gysLsohHtX2ngWN43qbJuHc2M0ML1dpg8PF
+         gtku7uI3X0IxKMVlKRTsPHLE7SP9kV4qCD4dNdiMSk/2KAH2ro+DHvt5Qy/UeRw1CoHE
+         nOsQ==
+X-Gm-Message-State: AOAM532A+wbRKs4eh1NY5gdVWjd3ekc7/GTlP+IzUJHl+cSqiWZKjGnr
+        osTpa6KERJUBNgK69fME2uRhzTizGlQ=
+X-Google-Smtp-Source: ABdhPJx+lYSEOAwkj0PvL03zD/f+yQF+qQVqlF1OUDJKy0SXf7IZMzBLB7jfuxCLIsMe7J5O/fnmlg==
+X-Received: by 2002:a9d:588c:: with SMTP id x12mr9528693otg.193.1624030751416;
+        Fri, 18 Jun 2021 08:39:11 -0700 (PDT)
 Received: from ?IPv6:2603:8081:140c:1a00:2fce:3453:431e:5204? (2603-8081-140c-1a00-2fce-3453-431e-5204.res6.spectrum.com. [2603:8081:140c:1a00:2fce:3453:431e:5204])
-        by smtp.gmail.com with ESMTPSA id b198sm1865097oii.19.2021.06.18.08.32.51
+        by smtp.gmail.com with ESMTPSA id j3sm1833235oii.46.2021.06.18.08.39.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 08:32:51 -0700 (PDT)
-Subject: Re: [PATCH for-next 6/6] RDMA/rxe: Fix redundant skb_put_zero
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20210618045742.204195-1-rpearsonhpe@gmail.com>
- <20210618045742.204195-7-rpearsonhpe@gmail.com>
- <CAD=hENfOFHUrSFws0ipYmrcQ803uFNmK9rPNLt-hPWpXndsLSQ@mail.gmail.com>
+        Fri, 18 Jun 2021 08:39:11 -0700 (PDT)
+Subject: Re: [PATCH for-next v9 00/10] RDMA/rxe: Implement memory windows
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, monis@mellanox.com,
+        linux-rdma@vger.kernel.org
+References: <20210608042552.33275-1-rpearsonhpe@gmail.com>
+ <20210618131927.GA1898298@nvidia.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <4ecf3073-b107-03cf-2072-e9d0f8cbff44@gmail.com>
-Date:   Fri, 18 Jun 2021 10:32:50 -0500
+Message-ID: <0105425c-2ce4-33ef-223c-98dd0d391084@gmail.com>
+Date:   Fri, 18 Jun 2021 10:39:10 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAD=hENfOFHUrSFws0ipYmrcQ803uFNmK9rPNLt-hPWpXndsLSQ@mail.gmail.com>
+In-Reply-To: <20210618131927.GA1898298@nvidia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,52 +68,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/18/21 3:02 AM, Zhu Yanjun wrote:
-> On Fri, Jun 18, 2021 at 1:00 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->>
->> rxe_init_packet() in rxe_net.c calls skb_put_zero() to reserve space
->> for the payload and zero it out. All these bytes are then re-written
->> with RoCE headers and payload. Remove this useless extra copy.
+On 6/18/21 8:19 AM, Jason Gunthorpe wrote:
+> On Mon, Jun 07, 2021 at 11:25:43PM -0500, Bob Pearson wrote:
+>> This series of patches implement memory windows for the rdma_rxe
+>> driver. This is a shorter reimplementation of an earlier patch set.
+>> They apply to and depend on the current for-next linux rdma tree.
 > 
-> The paylen seems to be a variable, that is, the length of pkt->hdr is not fixed.
+>> Bob Pearson (10):
+>>   RDMA/rxe: Add bind MW fields to rxe_send_wr
+>>   RDMA/rxe: Return errors for add index and key
+>>   RDMA/rxe: Enable MW object pool
+>>   RDMA/rxe: Add ib_alloc_mw and ib_dealloc_mw verbs
+>>   RDMA/rxe: Replace WR_REG_MASK by WR_LOCAL_OP_MASK
+>>   RDMA/rxe: Move local ops to subroutine
+>>   RDMA/rxe: Add support for bind MW work requests
+>>   RDMA/rxe: Implement invalidate MW operations
+>>   RDMA/rxe: Implement memory access through MWs
+>>   RDMA/rxe: Disallow MR dereg and invalidate when bound
 > 
-> Can you confirm that all the pkt->hdr are re-writtenwith RoCE headers
-> and payload?
-
-Yes. rxe_init_packet() is called twice, once from rxe_req.c for request packets and once from rxe_resp.c for response packets.
-In rxe_req.c in init_req_packet() paylen is set to
-
-    paylen = rxe_opcode[opcode].length + payload + pad + RXE_ICRC_SIZE
-
-which is the correct size of the packet from the UDP header to the frame FCS i.e. the UDP payload. rxe_opcode[opcode] is a table that includes the length of the all the RoCE headers for a given opcode which does vary. Payload is the RoCE payload and pad is the number of pad bytes required to extend the payload to a multiple of 4 bytes. RXE_ICRC_SIZE is the 4 bytes for the RoCE invariant CRC. It requires some checking but all the headers are fully written, the payload is fully copied from the client and the pad and ICRC bytes are also written. In rxe_resp.c paylen is set to the same value.
- 
-There are two potential issues here 1) Is the intended packet sent to the destination, and 2) is there a possibility that information can leak from the kernel to the outside. The above addresses 1). 2) requires the assumption that the NIC is not examining data outside of the proper data area in the skb and doing something with it. But you have a worse problem there since the NIC has DMA access to all of kernel memory and can send any packet it likes.
-
-Bob Pearson
-
-> Zhu Yanjun
+> Applied to for-next, thanks
 > 
->>
->> Fixes: ecb238f6a7f3 ("IB/cxgb4: use skb_put_zero()/__skb_put_zero")
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->> ---
->>  drivers/infiniband/sw/rxe/rxe_net.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
->> index 178a66a45312..6605ee777667 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_net.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
->> @@ -470,7 +470,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
->>
->>         pkt->rxe        = rxe;
->>         pkt->port_num   = port_num;
->> -       pkt->hdr        = skb_put_zero(skb, paylen);
->> +       pkt->hdr        = skb_put(skb, paylen);
->>         pkt->mask       |= RXE_GRH_MASK;
->>
->>  out:
->> --
->> 2.30.2
->>
+> Jason
+> 
 
+Thanks. I updated the provider in roce-core by applying clang-format-diff. I am not really sure it any better but I am convinced it is logically the same. Looks like the earlier commit already got accepted. So you can take this one or throw it away if you wish. I don't care one way or the other.
+
+Bob
