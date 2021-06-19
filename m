@@ -2,162 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00FC3AD898
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Jun 2021 10:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4985F3AD8A5
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Jun 2021 10:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhFSIZP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Jun 2021 04:25:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1724 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhFSIZO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 19 Jun 2021 04:25:14 -0400
-IronPort-SDR: 4r+m2MOcXKoYOLSfta7eJLSQd4LRvwK58dnpkeXkZ43VunkseqbRAvIuIbrddKjPLsUTZM7iUD
- 4o0kzrwyJWFA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="193972236"
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="193972236"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 01:23:04 -0700
-IronPort-SDR: rFmqVlwk+NOr8ghlfU+dVIdp3nIhYIcNZ6Fufm1CjGGYfYw4LcrwB1zMgdrKf1GC23LaUmcR5V
- t+SBq4qD2F8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="422446460"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 19 Jun 2021 01:23:01 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1luWFp-0003Rp-5A; Sat, 19 Jun 2021 08:23:01 +0000
-Date:   Sat, 19 Jun 2021 16:22:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS WITH WARNING
- 7e78dd816e458fbc2928a068d70009178d5d070d
-Message-ID: <60cda951.u7qEhtgj3t1pScy6%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234304AbhFSIj0 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 19 Jun 2021 04:39:26 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8280 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234255AbhFSIj0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Jun 2021 04:39:26 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G6TYM4WSPz1BNqG;
+        Sat, 19 Jun 2021 16:32:07 +0800 (CST)
+Received: from dggpeml500024.china.huawei.com (7.185.36.10) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 19 Jun 2021 16:37:12 +0800
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sat, 19 Jun 2021 16:37:12 +0800
+Received: from dggema753-chm.china.huawei.com ([10.9.48.84]) by
+ dggema753-chm.china.huawei.com ([10.9.48.84]) with mapi id 15.01.2176.012;
+ Sat, 19 Jun 2021 16:37:12 +0800
+From:   liweihang <liweihang@huawei.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, hhh ching <chenglang7@gmail.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+Subject: Re: [PATCH v4 for-next 1/8] RDMA/hns: Fix sparse warnings about
+ hr_reg_write()
+Thread-Topic: [PATCH v4 for-next 1/8] RDMA/hns: Fix sparse warnings about
+ hr_reg_write()
+Thread-Index: AQHXZCmd+gx7WuGX9USxRlbj85Fxsg==
+Date:   Sat, 19 Jun 2021 08:37:12 +0000
+Message-ID: <2de4153f7b704e398315de98a709183c@huawei.com>
+References: <1624010765-1029-1-git-send-email-liweihang@huawei.com>
+ <1624010765-1029-2-git-send-email-liweihang@huawei.com>
+ <20210618120159.GC1002214@nvidia.com>
+ <CAEc5TmJTfaSqPgk7CWgD1R9Oqddkg7XEJSHJF0A=8EFJtXcYLQ@mail.gmail.com>
+ <20210618161038.GH1002214@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.67.100.165]
+Content-Type: text/plain; charset="iso-2022-jp"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 7e78dd816e458fbc2928a068d70009178d5d070d  RDMA/hns: Clear extended doorbell info before using
+On 2021/6/19 0:10, Jason Gunthorpe wrote:
+> On Fri, Jun 18, 2021 at 11:22:46PM +0800, hhh ching wrote:
+>> Jason Gunthorpe <jgg@nvidia.com> 于2021年6月18日周五 下午8:49写道：
+>>>
+>>> On Fri, Jun 18, 2021 at 06:05:58PM +0800, Weihang Li wrote:
+>>>> Fix complains from sparse about "dubious: x & !y" when calling
+>>>> hr_reg_write(ctx, field, !!val) by using "val ? 1 : 0" instead of "!!val".
+>>>>
+>>>> Fixes: dc504774408b ("RDMA/hns: Use new interface to set MPT related fields")
+>>>> Fixes: 495c24808ce7 ("RDMA/hns: Add XRC subtype in QPC and XRC type in SRQC")
+>>>> Fixes: 782832f25404 ("RDMA/hns: Simplify the function config_eqc()")
+>>>> Signed-off-by: Weihang Li <liweihang@huawei.com>
+>>>>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 14 +++++++-------
+>>>>  1 file changed, 7 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>>> index fbc45b9..6452ccc 100644
+>>>> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+>>>> @@ -3013,15 +3013,15 @@ static int hns_roce_v2_write_mtpt(struct hns_roce_dev *hr_dev,
+>>>>       hr_reg_enable(mpt_entry, MPT_L_INV_EN);
+>>>>
+>>>>       hr_reg_write(mpt_entry, MPT_BIND_EN,
+>>>> -                  !!(mr->access & IB_ACCESS_MW_BIND));
+>>>> +                  mr->access & IB_ACCESS_MW_BIND ? 1 : 0);
+>>>
+>>> Err, I'm still confused where the sparse warning is coming from
+>>
+>> Hi, Jason, i found some code in sparse/evaluate.c:
+>> const unsigned left_not = expr->left->type == EXPR_PREOP &&
+>> expr->left->op == '!';
+>> const unsigned right_not = expr->right->type == EXPR_PREOP &&
+>> expr->right->op == '!';
+>> if ((op == '&' || op == '|') && (left_not || right_not))
+>>         warning(expr->pos, "dubious: %sx %c %sy",
+>>
+>> I guess the "dubious" is,  if somebody use "&" or "|",  maybe he want
+>> to bitwise operate a number instead of a bool.
+> 
+> Oh I see, yes, that does many some sense actually
+> 
+>>> A hr_reg_write_bool() would be cleaner?
+> 
+> Which makes me further think this is the right direction
+> 
+> Jason
+> 
 
-possible Warning in current branch:
+I see, thanks.
 
-include/rdma/ib_sysfs.h:1:0: warning: dual license is used, are you sure you want to do this.
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-`-- x86_64-allnoconfig
-    `-- include-rdma-ib_sysfs.h:warning:dual-license-is-used-are-you-sure-you-want-to-do-this.
-
-elapsed time: 767m
-
-configs tested: 93
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         bcm2835_defconfig
-powerpc                    klondike_defconfig
-mips                          rb532_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                     tqm8555_defconfig
-arm                     am200epdkit_defconfig
-arm                         orion5x_defconfig
-sh                        edosk7705_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210618
-i386                 randconfig-a006-20210618
-i386                 randconfig-a004-20210618
-i386                 randconfig-a001-20210618
-i386                 randconfig-a005-20210618
-i386                 randconfig-a003-20210618
-x86_64               randconfig-a015-20210618
-x86_64               randconfig-a011-20210618
-x86_64               randconfig-a012-20210618
-x86_64               randconfig-a014-20210618
-x86_64               randconfig-a016-20210618
-x86_64               randconfig-a013-20210618
-i386                 randconfig-a015-20210618
-i386                 randconfig-a016-20210618
-i386                 randconfig-a013-20210618
-i386                 randconfig-a014-20210618
-i386                 randconfig-a012-20210618
-i386                 randconfig-a011-20210618
-i386                 randconfig-a015-20210619
-i386                 randconfig-a016-20210619
-i386                 randconfig-a013-20210619
-i386                 randconfig-a014-20210619
-i386                 randconfig-a012-20210619
-i386                 randconfig-a011-20210619
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210618
-x86_64               randconfig-a002-20210618
-x86_64               randconfig-a001-20210618
-x86_64               randconfig-a004-20210618
-x86_64               randconfig-a003-20210618
-x86_64               randconfig-a006-20210618
-x86_64               randconfig-a005-20210618
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Weihang
