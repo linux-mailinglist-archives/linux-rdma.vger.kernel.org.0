@@ -2,90 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C7E3AE02B
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jun 2021 22:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD5E3AE034
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Jun 2021 22:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFTURc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 20 Jun 2021 16:17:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41996 "EHLO
+        id S229897AbhFTUYO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 20 Jun 2021 16:24:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhFTURb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 20 Jun 2021 16:17:31 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACA5C061574
-        for <linux-rdma@vger.kernel.org>; Sun, 20 Jun 2021 13:15:18 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id r7so16070166edv.12
-        for <linux-rdma@vger.kernel.org>; Sun, 20 Jun 2021 13:15:18 -0700 (PDT)
+        with ESMTP id S229632AbhFTUYN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 20 Jun 2021 16:24:13 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20215C061574
+        for <linux-rdma@vger.kernel.org>; Sun, 20 Jun 2021 13:22:00 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso15569345oto.12
+        for <linux-rdma@vger.kernel.org>; Sun, 20 Jun 2021 13:22:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UoXeGFUYWl4kX6Xyg07j2TvWhA+3VGoss8gs+6ssYkM=;
-        b=Ys+J5XV2BeOiKnPu2nJGFmUd9Yj0G0zwgGLSDFqCh7oQBXNSTgMpbo5G1eCTkGeghE
-         CyOMH5rBkeouM/wEluymoCTnZejuOQf+RtKl57dpxHYBOqXPQ2qcenVVFVmoV4cWANMc
-         rLDb1Mdy6Gku5H4GZtJHtr57WXpe00sEhUsLHj+Sa/EyY54xLOcjwqM5VWxsuWqENhhA
-         VTkXmaJLZ9ckmz0QXdQ/pMR168qdLsmHwDA9TW7EeBXIUS19o+TsS7HLUJhmxEXXyD8O
-         HdfhbrmfgLcjvNtlMi8YQxSfWae+nhBV5HCGrFV1XLjKw2liRl6qw+ocYdRi31Nt/Jz8
-         Td0A==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7/iypNGiChbeFevrj1o9JsMgICiOYoJKjv+5NpxPv/E=;
+        b=u/ixeZM/LLCnGVAJMMxcB/K82GKhU0YG9DY7sXAGviE+LvSFHVpbGDcu4I8Zk1Q5lV
+         6b3ZUCwSlvALg9g/+vg5EDAx5/Ylw9yQWsPWbIl8Z2mNYd/8ZNJybDaszguPreuTG/nS
+         cuqcrmExzqWWE8vcccGxHQDtfSmjPFYsCtEnoGJRldJjoSzmaAyaPqIhmv7aJfkhnCrw
+         9DIv+9s2Q/BwAIpo1g8PULncj22xEPuFqSCq6vsvMapKAEXfRJ3r/VvzCw2QZlu3xfh2
+         rnBvryV8WHG8x05nqRc7VkcD17xGmFup1UaOPb4Mx1tiZ26/yWwoe+d3a8NeONpJmuiQ
+         Gk3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UoXeGFUYWl4kX6Xyg07j2TvWhA+3VGoss8gs+6ssYkM=;
-        b=kAOYzGsFauW0VVTNkYd6yoUh4LYcWONVfzOfSSC9lR891B2Ynrflnxc0jrsQAAkmTl
-         0kn24Tc8FnH5PPeDD7/Pr0hagAaXmhCyBG2Dk7lNkxdYg9h16PcTJKepOSs4L7BoDv0K
-         QXPQMrUGQAIypowCJP3duhlKMzHg5MXrhdSLY2pvbFOuidBlrFm2oEWGoBYtAnGiIn0Y
-         D7epO9lHzaFqUf72De8wuTbjCKeCFc+Xn7Wzx4CKkhG0h/M5yVQRXzajd4/KGbZ1qdNH
-         opERsQNUltvpowqaSVqbEx/4vDrSzALzvKD6r7ubRWEyq5LjK7xfgMmwNdfp6UjIxBYf
-         nSbw==
-X-Gm-Message-State: AOAM533/Btd15b7Ta0FeDNapp6mtz627yq17EArSA84pfOZB/gyK8PKZ
-        GI+kg1+DqWYpfhi7a1cX/zDiqbF4yzIeCFhV
-X-Google-Smtp-Source: ABdhPJzvAySRYES5/Uh3DXbNCvq+zyD4Wna/0ecasDt9bnpiCRUI3UtIgiTrKeoZAOzQQN2FlgqJDg==
-X-Received: by 2002:aa7:dc42:: with SMTP id g2mr17374622edu.362.1624220116878;
-        Sun, 20 Jun 2021 13:15:16 -0700 (PDT)
-Received: from kheib-workstation.redhat.com ([2a00:a040:19b:e02f::1006])
-        by smtp.gmail.com with ESMTPSA id hg25sm3880741ejc.51.2021.06.20.13.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 13:15:16 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next] RDMA/irdma: Use the queried port attributes
-Date:   Sun, 20 Jun 2021 23:15:03 +0300
-Message-Id: <20210620201503.67055-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        bh=7/iypNGiChbeFevrj1o9JsMgICiOYoJKjv+5NpxPv/E=;
+        b=jXnf1IL+yUjGIEEG9dkEyr+KHXLXs/GCkTYyb+r6sWDXjYxM8ObhNaINaiVE8FRKtV
+         n2gDQjp8WyiMdfzdz+YAQhpzU2ThQcLCnu66J0Ei5OJbqLniAWe6hos5W88PRu+SNors
+         qxNde+uTcSUG4e9T8gU01uJYPfGrL/tzzFH1RvucIVGT27ex4P56SPzU2m07vqJAa+4Y
+         Pa/D+5L2GHrxd9Q1fiN0GOhESzNQYdwo6bajdjS1I05Qse7gpltvFMa1kMTHA3CsWl9W
+         h/py7cavZoZYQS719cssB5iIGyuuVMJ7EAphXcFgZ845U27GU2w3MZnwdiOMtPtuXZKC
+         J7eQ==
+X-Gm-Message-State: AOAM531EKoCWOWjYXS8RS7nKRRdSZT5KacEERZauy1nlsfqcxMXJMo79
+        MMU9yieByB80tWiMSg1fPCZ8qoO7k3w=
+X-Google-Smtp-Source: ABdhPJwdqZv/R3ML3zaztTF8FIZU98LfEwPJR4Ysh7+UUHl1ZI68dZf/qN6ECCzvJP+VccJLjzDcMA==
+X-Received: by 2002:a9d:2669:: with SMTP id a96mr17752249otb.127.1624220519319;
+        Sun, 20 Jun 2021 13:21:59 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:8770:c31b:a4b9:fb27? (2603-8081-140c-1a00-8770-c31b-a4b9-fb27.res6.spectrum.com. [2603:8081:140c:1a00:8770:c31b:a4b9:fb27])
+        by smtp.gmail.com with ESMTPSA id j7sm3214439oij.25.2021.06.20.13.21.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Jun 2021 13:21:58 -0700 (PDT)
+Subject: Re: [PATCH for-next 6/6] RDMA/rxe: Fix redundant skb_put_zero
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210618045742.204195-1-rpearsonhpe@gmail.com>
+ <20210618045742.204195-7-rpearsonhpe@gmail.com>
+ <CAD=hENfOFHUrSFws0ipYmrcQ803uFNmK9rPNLt-hPWpXndsLSQ@mail.gmail.com>
+ <4ecf3073-b107-03cf-2072-e9d0f8cbff44@gmail.com>
+ <CAD=hENdbzWgCfV3fwi7iJUGMTqzq1Ocukk_krbGiPQVi-7EP6Q@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <5c6fcd23-b508-18d6-69b4-d446def47a0a@gmail.com>
+Date:   Sun, 20 Jun 2021 15:21:58 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=hENdbzWgCfV3fwi7iJUGMTqzq1Ocukk_krbGiPQVi-7EP6Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Instead of hard code the gid_table_len value, use the value from the
-ib_query_port() attributes.
+On 6/20/21 9:07 AM, Zhu Yanjun wrote:
+> On Fri, Jun 18, 2021 at 11:32 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> On 6/18/21 3:02 AM, Zhu Yanjun wrote:
+>>> On Fri, Jun 18, 2021 at 1:00 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>
+>>>> rxe_init_packet() in rxe_net.c calls skb_put_zero() to reserve space
+>>>> for the payload and zero it out. All these bytes are then re-written
+>>>> with RoCE headers and payload. Remove this useless extra copy.
+>>>
+>>> The paylen seems to be a variable, that is, the length of pkt->hdr is not fixed.
+>>>
+>>> Can you confirm that all the pkt->hdr are re-writtenwith RoCE headers
+>>> and payload?
+>>
+>> Yes. rxe_init_packet() is called twice, once from rxe_req.c for request packets and once from rxe_resp.c for response packets.
+>> In rxe_req.c in init_req_packet() paylen is set to
+>>
+>>     paylen = rxe_opcode[opcode].length + payload + pad + RXE_ICRC_SIZE
+>>
+>> which is the correct size of the packet from the UDP header to the frame FCS i.e. the UDP payload. rxe_opcode[opcode] is a table that includes the length of the all the RoCE headers for a given opcode which does vary. Payload is the RoCE payload and pad is the number of pad bytes required to extend the payload to a multiple of 4 bytes. RXE_ICRC_SIZE is the 4 bytes for the RoCE invariant CRC. It requires some checking but all the headers are fully written, the payload is fully copied from the client and the pad and ICRC bytes are also written. In rxe_resp.c paylen is set to the same value.
+> 
+> Too complicated assignment.
+> So I prefer to skb_put_zero.
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+My goal here is to improve the performance of rxe. This one line adds an extra memory copy on every sent message. Without the skb_put_zero it passes all the tests and works correctly. What are you worried about exactly?
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index e8b170f0d997..5ae5dbcbc3a5 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -3627,7 +3627,7 @@ static int irdma_iw_port_immutable(struct ib_device *ibdev, u32 port_num,
- 	err = ib_query_port(ibdev, port_num, &attr);
- 	if (err)
- 		return err;
--	immutable->gid_tbl_len = 1;
-+	immutable->gid_tbl_len = attr.gid_tbl_len;
- 
- 	return 0;
- }
--- 
-2.31.1
+Bob
+> 
+> Zhu Yanjun
+>>
+>> There are two potential issues here 1) Is the intended packet sent to the destination, and 2) is there a possibility that information can leak from the kernel to the outside. The above addresses 1). 2) requires the assumption that the NIC is not examining data outside of the proper data area in the skb and doing something with it. But you have a worse problem there since the NIC has DMA access to all of kernel memory and can send any packet it likes.
+>>
+>> Bob Pearson
+>>
+>>> Zhu Yanjun
+>>>
+>>>>
+>>>> Fixes: ecb238f6a7f3 ("IB/cxgb4: use skb_put_zero()/__skb_put_zero")
+>>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>>>> ---
+>>>>  drivers/infiniband/sw/rxe/rxe_net.c | 2 +-
+>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+>>>> index 178a66a45312..6605ee777667 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_net.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_net.c
+>>>> @@ -470,7 +470,7 @@ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+>>>>
+>>>>         pkt->rxe        = rxe;
+>>>>         pkt->port_num   = port_num;
+>>>> -       pkt->hdr        = skb_put_zero(skb, paylen);
+>>>> +       pkt->hdr        = skb_put(skb, paylen);
+>>>>         pkt->mask       |= RXE_GRH_MASK;
+>>>>
+>>>>  out:
+>>>> --
+>>>> 2.30.2
+>>>>
+>>
 
