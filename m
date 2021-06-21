@@ -2,167 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8023AE8DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 14:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B943AE90B
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 14:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhFUMRH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Jun 2021 08:17:07 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:48410 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229610AbhFUMRH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:17:07 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LCBDkm013489;
-        Mon, 21 Jun 2021 12:14:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=RaWPExH5jeNjZd0SI76ZEsmMdpamH5G6E/ehrtQs040=;
- b=N2zaGy0xhwUyXlcLTBEU5dTRZbtOXtL+sya5BDfKkt+M/SrRkDOa1MC7bEZ43CVXs9jP
- l+hjWutVUxdGf7Lb4eLHjM8amUhF65KqHZQQNd8sGd0WbFlLRkq3lSMaoG4obeyyTI2y
- JIMyIjEUXBVgn8RBoag5UfMqALsNXa0JYLvAtDxWMunwBDzCaZ59azpTZyRlKp3T+wiI
- K1X3dswaBoBlWN1XbPGPDl/buhoqtfWYKVj3nXo8EPWLabm77njJ9OcPuhyRJXbsStxm
- LQUthJYIicsph2cIc5PZXDaDwf4A3bvzFTlRnvWjYwKB75dN7GUb/7g1c+Qwp48bbBY7 BQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39as86r50q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 12:14:49 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15LCB9ee177323;
-        Mon, 21 Jun 2021 12:14:48 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2174.outbound.protection.outlook.com [104.47.58.174])
-        by userp3030.oracle.com with ESMTP id 3995pugr7h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 12:14:47 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f850/GIZfLIWLJ+Z6ul1cljQbRIpPvyADMtvrwWXf+TxbMy+KzdCid5JYOZcVZURicTkMHUEgjAtUhviFRXZ2SWivtT+x9D6ccexCjdhCz5fTERc6rvJfD0h/2qtOtR+lgrtO/VwIyxt4DIi43yJ3umhviwuhs6/qUJYGbre80r6ewhaQo8lgwQXq59FbFMZFsWnycvBm6DL8bRNzmqcIsNLonqp1cbLxnqqoQsksDjOdyaFx3I463oanT5fM/573BUpb7tniL7XwNHNTvlVJJAKYaUfIvtH5J4Jk9Fp/Gmgzc5DXYeZqzW5d0pdr4t63cyYhtc8piKWxsstXEz0YQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RaWPExH5jeNjZd0SI76ZEsmMdpamH5G6E/ehrtQs040=;
- b=KR1fBJmoIOOpBqytxtsvL/t8kgIwvUc9cYUYO9BBtWat4bh0ca2SwjxxWKwboZU90xWU6ARLFe9qPoewvGpkBF1RkARpigupfQFBIuVnVDyEU7y0IqprelyxzpnxoYFWmd/Xa8QGqAvhO0ELjIQajbu4JzaNFRLw4xjBnIbjDIHFW9bJNfYSyOAq/MMsdPHIiSArdy/xmTm5TGtaNdIqDpHWv3tZmlz9fOwZOMCecyWM+k6YKxgXjBWmbUGwjcdCgyAqbsBC0s34FL6hEZkSrU/iJaPmWz145YLZrIevGoCmNRFk9RjG2+TQU1I5QBbgrPOR2IvMVIDL7QRUyZRDdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S229708AbhFUMbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Jun 2021 08:31:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhFUMbN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Jun 2021 08:31:13 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D35C06175F
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id v11-20020a9d340b0000b0290455f7b8b1dcso4589038otb.7
+        for <linux-rdma@vger.kernel.org>; Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RaWPExH5jeNjZd0SI76ZEsmMdpamH5G6E/ehrtQs040=;
- b=G2qTbOF+r2+9KWEaFLCqbSJcYpTPUhTxGbWnWX4wiGjihVPbH+2Pnab1Vovhok4tSeRvRNQnMMqA5U81JazyFJ4a9kISSJCHX1i2dH1VBZXyf89Nbgi64+eoyYN7evkwwULDgkZJWJb54bUBvWf4eevyn+82xp6y+1u21vbP9Us=
-Received: from CY4PR10MB1989.namprd10.prod.outlook.com (2603:10b6:903:11a::12)
- by CY4PR1001MB2406.namprd10.prod.outlook.com (2603:10b6:910:45::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
- 2021 12:14:46 +0000
-Received: from CY4PR10MB1989.namprd10.prod.outlook.com
- ([fe80::2cda:5611:238a:17a3]) by CY4PR10MB1989.namprd10.prod.outlook.com
- ([fe80::2cda:5611:238a:17a3%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 12:14:46 +0000
-From:   Haakon Bugge <haakon.bugge@oracle.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-next] RDMA/cma: Remove unnecessary INIT->INIT
- transition
-Thread-Topic: [PATCH for-next] RDMA/cma: Remove unnecessary INIT->INIT
- transition
-Thread-Index: AQHXY4/9tgmALgj7ckyob56jJS8GkKseQ1EAgAAjl4A=
-Date:   Mon, 21 Jun 2021 12:14:45 +0000
-Message-ID: <6295681C-15C1-4E43-8E5A-A38509234A3D@oracle.com>
-References: <1623944783-9093-1-git-send-email-haakon.bugge@oracle.com>
- <YNBk2HcMKlSTM2tn@unreal>
-In-Reply-To: <YNBk2HcMKlSTM2tn@unreal>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.100.0.2.22)
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-x-originating-ip: [92.221.252.204]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8dfb32dc-4692-4be7-1447-08d934ae28a3
-x-ms-traffictypediagnostic: CY4PR1001MB2406:
-x-microsoft-antispam-prvs: <CY4PR1001MB24066537E54F87785927858AFD0A9@CY4PR1001MB2406.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Fzu4C8yKr9x4VXzaTxcSJpyVz8Knj30UolzwU8lRyX7mGolDKIRPqrjX4GZZviDKMI2mcVbN2sidneOwlel01yo8eagQLKWJMGrI7HYJqs4lcMJ5j1jhrnfqUpULWBInLluURoFR9CKXBcmSDF3rC1xw2rUQLZ8+DOmho2T0JmmAxuohpTjF7geICOGypjUP7SAYemCZpOdDJPLSAwF+YiSaW4Doqzc76qW8CjJf1F1J9OLUUF/A/6oLQkrSxGfEMVYNvVkdXYL6AndYpKQA14s4IiN7oAfviuPO52frGtCy+8TJ6/zZabQnGddG+DJzqlC/2O4sVqOlty0BcFH5Y9K45I4j5XF7xkmqDTBXeKJFTuQT8ra5ZOmemcPXFoJ2tfnCUg5yob9W1xrQHc1tY9DeUl5qh2v+2asALoqYQEXZu1vYqSTKn5GKNrdmlrBtZRQwMAFNdtMPoNuccZSQy1Hb2FPlgKKy1N19OrMLPnDlSC88qpUMN1aptjypjJYjVsIwabd0bP885MFkwYZTJfjHAmQQ53BUoUpx+4WSWE5mMVpbJh7elF2rPKKd5mcE5nh7KGsqyJbFJfSUTmJ7flzEMXNlnKDoF7bQWjTxHIiwB97zndADnbIj1S2sRGEMM6z0D189YeYJWD6XZThc2A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1989.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(39860400002)(136003)(376002)(346002)(33656002)(316002)(6486002)(36756003)(86362001)(66556008)(66446008)(44832011)(64756008)(6506007)(5660300002)(83380400001)(66476007)(54906003)(2906002)(186003)(8676002)(66946007)(26005)(53546011)(91956017)(76116006)(2616005)(71200400001)(8936002)(4326008)(38100700002)(6916009)(122000001)(478600001)(6512007)(4744005)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?MmNSd3BCWUl2cVQvN2JGSDlSSW1iNk9WalZGUnV0Rmx4My95clNRMmJQenVJ?=
- =?utf-8?B?S3dKcXQvVzYwc0VjU3crZWtocnZQOEUvMktRWUhHYlp6QkJPM3NOSWxCTlFJ?=
- =?utf-8?B?L0gzekw0WU50RE9DSkxmM3hGcFhLc25FWWRkVEpkMkdhVWJTbGozMmtkdEk4?=
- =?utf-8?B?ZFhZSytCQ0Z0QkxDdUxsQWx1d2FvUDU5M0lVNUFZSkE4cHhNNE9qVVBqblpI?=
- =?utf-8?B?bkJFc25EQW5XNng2YzYraDQvMW9tL2FZRlpvdHpRQzhZd3ZHNTNPaW5CTE1I?=
- =?utf-8?B?VzVzT3NDbTBGODVneG12RjNFZ3RwSDVXckZZY01jY3FHMk9OT3dtVWtPK3dV?=
- =?utf-8?B?NlA0dFBiYjJpUHg1amdtcDlSMVBpa1c1Z1VaWThRcHlRZjhlUklBU2ZkQTZp?=
- =?utf-8?B?Qks3bVJnbDZZY1BHVHh2QThmVTVNTURneiszUlBVeDc5c3FlanVQRlM2b2k0?=
- =?utf-8?B?Mlo1NWEzUWZjdm5zMHU2NGVBQ1Q3UXpxZWF4VkZRSFlUYXdoT0F3eW1qZ3p0?=
- =?utf-8?B?dTJEc0hJUG93SFA2NlpUZEduVDJkY281eUhTbUtBUEF3WWJCTTdOVTdMeVZN?=
- =?utf-8?B?MXVMVTloUURzM3VnN2VEbkxNMVdSU2d1TnVnOEVyWWJKZ1hTQzRUTTBPajda?=
- =?utf-8?B?ZDNoa1pJckhUN1llR3JwRWs5TnQ3NXRvKzhCaE9TWkFLbjVZUnRXdi9JWUR3?=
- =?utf-8?B?c3J3bklZUjhCZFNLcW1OZDllSmFOOEtpM0J3dGJVZ2RuTUpnMnNTUXdqNGI5?=
- =?utf-8?B?eXBsYVFQcEUyRHlFdTE4TU94NU8wSnM2UVZsZ3NFM2FuMm53THdHa3h0WXlQ?=
- =?utf-8?B?cTdvYkp1dWdQNXhoc2tST1ZrRSs3QndlMTFVaEEzTXdMVm5NdlgvdFlVYk9y?=
- =?utf-8?B?YzcwY1dzTVVkRE9OVkFRQWVZa1dhTTgxeHFUb0RmKytyREtKd29BdndPcDli?=
- =?utf-8?B?NlppelY3Y1hMMG45UFF2SjlZRnMwVGRLbUxJRmtKTG1BNytlMXRyeU5Ed1Bk?=
- =?utf-8?B?bG8wcnVCdVYwdEpOa1FmTTBlc1ZpalFXYll5cHdvR0FndU9PbGZEbzIvSnRP?=
- =?utf-8?B?MlBRdlJNb2RqTndlVDA2ZEFYdjdtRlZjVS9Ja3E0M2lOaUZGY2tZMlFsMWtZ?=
- =?utf-8?B?T0tWc3JGcFhzcGdjVi9OK0ROMXZ6WXpGZFVSVkVqTSt6MjM1MHFJd1RTTUNr?=
- =?utf-8?B?cmNUTnNlYy9zbWVDdEZOTW50R3ZDR2hZNnNBK3RCYUZnRk1TOTgvNDZkTUdO?=
- =?utf-8?B?STluLzRYWFpDN3dzQ2VMNHRoQzh2NGlKZGY3YzJZR3Z3am5OODdIMStjZHB4?=
- =?utf-8?B?MXN3TVdTRTA0YnZlYnVLcGg3aTFMV2ZJUGp3RkFMWEFtMTN0akdEUHlFdStz?=
- =?utf-8?B?TUp3V2Yxc2cyaXdVYm1aVWlId0FPaUt3TjVNMGU5S3owSkdDRVlySGR2N1dE?=
- =?utf-8?B?OHZzS21jUFlCRXN1RmgvOXQyUUwzc1hnYWFDdXBaL2V2dCtKWVJZbzFuY0F2?=
- =?utf-8?B?dFVPTnZ0Um0wM0IydFBYSVBILzc0MnBLLzE3YnFoOU12UTZRbW9xL0pZRzN5?=
- =?utf-8?B?VDdsMHd3L3ZIRmFZa2dWV3BLNldjbVU3aS83TExVOTRMOVZKd3JScC8yTjg4?=
- =?utf-8?B?bzhhbzdoOXgzWU5KN2dqTGRlSkJZQjQ4dUJpeFlhVDJVM0k2dnh6Q0E5Nldh?=
- =?utf-8?B?N2RlUHpEdkoxZ25tMW1SZGRXRkkrak5xMFNCOHdKVHdSNXFVOWwzeE9Qa3pt?=
- =?utf-8?B?QldOOUxKRjdsRUgyQXZoTFBaZVBVSEJ2a0lCTHdiMmtEME9zWDdhZW1LSzZh?=
- =?utf-8?B?L3RlSW1KbDNxUGVxTFdGUT09?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <324EB1BEC7BA484E9A0D8A6C2108A35D@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HHQC6lOkJEn8B4ZK4mW/HBR6aX7M4uga90R1ZErZgKw=;
+        b=Td38oUyS/9/MPrT4jo5WsEx4w0MWOF/8bM1XyUzvOBwwzScRQorv0t2fw+zHCf7ir0
+         h8zpP6oNobDqmDV0rX43vwv23S4wvsx20o1++gTR06+eOXnxOdhaB+3kQbyaZz/2S0tV
+         GQVwEXVWhC4IEfs607x4fPCPD20Mejq78fTdQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HHQC6lOkJEn8B4ZK4mW/HBR6aX7M4uga90R1ZErZgKw=;
+        b=Aw72adzT5SlkQfn5EATIBmMioDbhLIefKFbJ5kmr8p8+akwFFYWjx/7RI1BjEOg1Ca
+         od1Zark6dx2lHYzS4kTv1mLV6kwXtg4p/ITVSs7JwAR2lEJTJOy6nE34N3hjsuWJTu1M
+         pZakOmMjzBo0fqyR+ZOgwmGK5gzxyFDd5F0GeHbHWN+xhl+Yjf8kGiYuzMKEr96D9U2z
+         8W0mUCtveYIJ4ghfTNsDshEc12JMEz8i53rTcj1+l/aMGkL0pRc4ttxzz47GRRZQOukb
+         auSvBawzo68IvnVU0kSCwER0Pbm06Er7H77F1xPSpgmZqP4j3awMEdpUA/ve5+3BCSbf
+         71+g==
+X-Gm-Message-State: AOAM533ZN8KW31tL30jBngw249QUk0U7xdhaGiQtNUW0ShCbzS+nYM7D
+        VpHZ1g5HPsKScjzLiVv6KfplyWUB96l0RE9/y+gs2Q==
+X-Google-Smtp-Source: ABdhPJwD0i9Zn4q4SoQulAg+xyZR3j3c5+btpLl6Z1t9xWUhyH1ThXXNgyVXCPxYSRcrINNnl8lEcpNTDGpjBNUKKJE=
+X-Received: by 2002:a9d:12eb:: with SMTP id g98mr20269296otg.303.1624278539116;
+ Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1989.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8dfb32dc-4692-4be7-1447-08d934ae28a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 12:14:45.8936
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: N9OUdEXdRmat7pywfOHDnFo3cyB0QGpSa18djueIm482qs8TeRZ5fRomEwobDXwDdCKOLGYWVJJt9Nk7QbsXLA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2406
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10021 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106210073
-X-Proofpoint-ORIG-GUID: G-y-ugqgmARcayhnFFXPJYx-xRAy36Rc
-X-Proofpoint-GUID: G-y-ugqgmARcayhnFFXPJYx-xRAy36Rc
+References: <20210618123615.11456-1-ogabbay@kernel.org>
+In-Reply-To: <20210618123615.11456-1-ogabbay@kernel.org>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 21 Jun 2021 14:28:48 +0200
+Message-ID: <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+To:     Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gT24gMjEgSnVuIDIwMjEsIGF0IDEyOjA3LCBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2Vy
-bmVsLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBUaHUsIEp1biAxNywgMjAyMSBhdCAwNTo0NjoyM1BN
-ICswMjAwLCBIw6Vrb24gQnVnZ2Ugd3JvdGU6DQo+PiBJbiByZG1hX2NyZWF0ZV9xcCgpLCBhIGNv
-bm5lY3RlZCBRUCB3aWxsIGJlIHRyYW5zaXRpb25lZCB0byB0aGUgSU5JVA0KPj4gc3RhdGUuDQo+
-PiANCj4+IEFmdGVyd2FyZHMsIHRoZSBRUCB3aWxsIGJlIHRyYW5zaXRpb25lZCB0byB0aGUgUlRS
-IHN0YXRlIGJ5IHRoZQ0KPj4gY21hX21vZGlmeV9xcF9ydHIoKSBmdW5jdGlvbi4gQnV0IHRoaXMg
-ZnVuY3Rpb24gc3RhcnRzIGJ5IHBlcmZvcm1pbmcNCj4+IGFuIGliX21vZGlmeV9xcCgpIHRvIHRo
-ZSBJTklUIHN0YXRlIGFnYWluLCBiZWZvcmUgYW5vdGhlcg0KPj4gaWJfbW9kaWZ5X3FwKCkgaXMg
-cGVyZm9ybWVkIHRvIHRyYW5zaXRpb24gdGhlIFFQIHRvIHRoZSBSVFIgc3RhdGUuDQo+PiANCj4+
-IEhlbmNlLCB0aGVyZSBpcyBubyBuZWVkIHRvIHRyYW5zaXRpb24gdGhlIFFQIHRvIHRoZSBJTklU
-IHN0YXRlIGluDQo+PiByZG1hX2NyZWF0ZV9xcCgpLg0KPj4gDQo+PiBTaWduZWQtb2ZmLWJ5OiBI
-w6Vrb24gQnVnZ2UgPGhhYWtvbi5idWdnZUBvcmFjbGUuY29tPg0KPj4gLS0tDQo+PiBkcml2ZXJz
-L2luZmluaWJhbmQvY29yZS9jbWEuYyB8IDE1IC0tLS0tLS0tLS0tLS0tLQ0KPj4gMSBmaWxlIGNo
-YW5nZWQsIDE1IGRlbGV0aW9ucygtKQ0KPj4gDQo+IA0KPiBUaGFua3MsDQo+IFJldmlld2VkLWJ5
-OiBMZW9uIFJvbWFub3Zza3kgPGxlb25yb0BudmlkaWEuY29tPg0KDQpUaGFuayB5b3UgTGVvbiEN
-Cg0KDQpIw6Vrb24NCg0KDQo=
+On Fri, Jun 18, 2021 at 2:36 PM Oded Gabbay <ogabbay@kernel.org> wrote:
+> User process might want to share the device memory with another
+> driver/device, and to allow it to access it over PCIe (P2P).
+>
+> To enable this, we utilize the dma-buf mechanism and add a dma-buf
+> exporter support, so the other driver can import the device memory and
+> access it.
+>
+> The device memory is allocated using our existing allocation uAPI,
+> where the user will get a handle that represents the allocation.
+>
+> The user will then need to call the new
+> uAPI (HL_MEM_OP_EXPORT_DMABUF_FD) and give the handle as a parameter.
+>
+> The driver will return a FD that represents the DMA-BUF object that
+> was created to match that allocation.
+>
+> Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+> Reviewed-by: Tomer Tayar <ttayar@habana.ai>
+
+Mission acomplished, we've gone full circle, and the totally-not-a-gpu
+driver is now trying to use gpu infrastructure. And seems to have
+gained vram meanwhile too. Next up is going to be synchronization
+using dma_fence so you can pass buffers back&forth without stalls
+among drivers.
+
+Bonus points for this being at v3 before it shows up on dri-devel and
+cc's dma-buf folks properly (not quite all, I added the missing
+people).
+
+I think we roughly have two options here
+
+a) Greg continues to piss off dri-devel folks while trying to look
+cute&cuddly and steadfastly claiming that this accelator doesn't work
+like any of the other accelerator drivers we have in drivers/gpu/drm.
+All while the driver ever more looks like one of these other accel
+drivers.
+
+b) We finally do what we should have done years back and treat this as
+a proper driver submission and review it on dri-devel instead of
+sneaking it in through other channels because the merge criteria
+dri-devel has are too onerous and people who don't have experience
+with accel stacks for the past 20 years or so don't like them.
+
+"But this probably means a new driver and big disruption!"
+
+Not my problem, I'm not the dude who has to come up with an excuse for
+this because I didn't merge the driver in the first place. I do get to
+throw a "we all told you so" in though, but that's not helping.
+
+Also I'm wondering which is the other driver that we share buffers
+with. The gaudi stuff doesn't have real struct pages as backing
+storage, it only fills out the dma_addr_t. That tends to blow up with
+other drivers, and the only place where this is guaranteed to work is
+if you have a dynamic importer which sets the allow_peer2peer flag.
+Adding maintainers from other subsystems who might want to chime in
+here. So even aside of the big question as-is this is broken.
+
+Currently only 2 drivers set allow_peer2peer, so those are the only
+ones who can consume these buffers from device memory. Pinging those
+folks specifically.
+
+Doug/Jason from infiniband: Should we add linux-rdma to the dma-buf
+wildcard match so that you can catch these next time around too? At
+least when people use scripts/get_maintainers.pl correctly. All the
+other subsystems using dma-buf are on there already (dri-devel,
+linux-media and linaro-mm-sig for android/arm embedded stuff).
+
+Cheers, Daniel
+
+
+
+> ---
+>  include/uapi/misc/habanalabs.h | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+> index a47a731e4527..aa3d8e0ba060 100644
+> --- a/include/uapi/misc/habanalabs.h
+> +++ b/include/uapi/misc/habanalabs.h
+> @@ -808,6 +808,10 @@ union hl_wait_cs_args {
+>  #define HL_MEM_OP_UNMAP                        3
+>  /* Opcode to map a hw block */
+>  #define HL_MEM_OP_MAP_BLOCK            4
+> +/* Opcode to create DMA-BUF object for an existing device memory allocation
+> + * and to export an FD of that DMA-BUF back to the caller
+> + */
+> +#define HL_MEM_OP_EXPORT_DMABUF_FD     5
+>
+>  /* Memory flags */
+>  #define HL_MEM_CONTIGUOUS      0x1
+> @@ -878,11 +882,26 @@ struct hl_mem_in {
+>                         /* Virtual address returned from HL_MEM_OP_MAP */
+>                         __u64 device_virt_addr;
+>                 } unmap;
+> +
+> +               /* HL_MEM_OP_EXPORT_DMABUF_FD */
+> +               struct {
+> +                       /* Handle returned from HL_MEM_OP_ALLOC. In Gaudi,
+> +                        * where we don't have MMU for the device memory, the
+> +                        * driver expects a physical address (instead of
+> +                        * a handle) in the device memory space.
+> +                        */
+> +                       __u64 handle;
+> +                       /* Size of memory allocation. Relevant only for GAUDI */
+> +                       __u64 mem_size;
+> +               } export_dmabuf_fd;
+>         };
+>
+>         /* HL_MEM_OP_* */
+>         __u32 op;
+> -       /* HL_MEM_* flags */
+> +       /* HL_MEM_* flags.
+> +        * For the HL_MEM_OP_EXPORT_DMABUF_FD opcode, this field holds the
+> +        * DMA-BUF file/FD flags.
+> +        */
+>         __u32 flags;
+>         /* Context ID - Currently not in use */
+>         __u32 ctx_id;
+> @@ -919,6 +938,13 @@ struct hl_mem_out {
+>
+>                         __u32 pad;
+>                 };
+> +
+> +               /* Returned in HL_MEM_OP_EXPORT_DMABUF_FD. Represents the
+> +                * DMA-BUF object that was created to describe a memory
+> +                * allocation on the device's memory space. The FD should be
+> +                * passed to the importer driver
+> +                */
+> +               __u64 fd;
+>         };
+>  };
+>
+> --
+> 2.25.1
+>
+
+
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
