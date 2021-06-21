@@ -2,97 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62583AE552
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 10:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A293AE554
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 10:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229946AbhFUIz6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Jun 2021 04:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFUIz6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Jun 2021 04:55:58 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA36C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Jun 2021 01:53:43 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id s17so10350898oij.11
-        for <linux-rdma@vger.kernel.org>; Mon, 21 Jun 2021 01:53:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bWRRAzxlIpr1S2+Wg1zexgX/+EjWbkDZ4d1RSz9K360=;
-        b=akj57s64Ky6CL0eDL7cpcEJwTSkij9+MtE+sDsp4oy0hj1/j0yu1uzx/9S5vx38sww
-         9EF81ss6jNSTFdsHp27ChcSPILDHz3SG4bZ0fqsSHqs764zWyr2leIUV9avugaqqLDZB
-         kP2CtfShRHd5GpfWYlLvoYxHiXdbpHmSGG7uhEcqXsOsbtCnwk4AC3P38mZBqyi6SXRo
-         +M5v11TsOMPZfdzh+U3Z7zTcJ7pROLi8J2ky0hcTG1ch4UoFjsax0Oz3qVWpbmeheoi2
-         phxH/pPH8j74Cc3SkFg6vXqYG7a+9u1N5k65Egktl0E73D4HBVxAUQnPF5upDu5poPsd
-         jV4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bWRRAzxlIpr1S2+Wg1zexgX/+EjWbkDZ4d1RSz9K360=;
-        b=umBMgCwFe/ApdBl9+8Af07PEvYsQNh6Z9Du/9zmtJeJN28JVW4ocXNOhmqQCIzVFjv
-         CusmwhnRTtuUTzEf5eQMxacDRUAue77aGeqnVzMlIyEaJ5aBeGwMqtWaUDdYGLvM0rE/
-         JzH2KMpXGlj25iLQbRIOuzai2cKYhHxe3W4dAJNyijCFp4ZDGOzRk7IZcn/k2k8F/I6h
-         gAxQ3RHYsfQokaARB+WXydY9gsdF9lZwRe5DBk7TgHhjcKNqZkr3aH9hWJLL3IQAGZCE
-         isksoJftc0Pwz1xHsx/ITs5og7U/IuobBOv0IaBl9MflR7Gpq5Ij1pR5Uj5FvKFgZVmX
-         JclQ==
-X-Gm-Message-State: AOAM532m3ndvlyfcdi0fP2UECpoVTfASuEhFRqfEmNLjT18eWeV+SFOB
-        AxSTQWYudUSeT5lo3ESs486kkHzYHZtjAL6QOTs=
-X-Google-Smtp-Source: ABdhPJxKmdmHOkiDs4PeLekhzSieC5WrMp9VTzuiAJ2h48nL5gjbA0fypncYi4nae4eWwLjlKlKDRUGC4w0xk4yUWgY=
-X-Received: by 2002:a54:400c:: with SMTP id x12mr22951597oie.89.1624265622990;
- Mon, 21 Jun 2021 01:53:42 -0700 (PDT)
+        id S230225AbhFUI4v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Jun 2021 04:56:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230232AbhFUI4K (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:56:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE39C60FE7;
+        Mon, 21 Jun 2021 08:53:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624265636;
+        bh=tSx8kLmE8sQrgAhcGOKx5HCEQMnfoRMEpAA/QmGg9I8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mgnTgKk8gP7ONciFIDFw+1KZ2g+y3W2SZEpF4YuWWZ+C4nUs6Uu8Z5WNuLgNL11UM
+         JWf1Pn6zsraYVz9j0AytRQA3/Og0kQOZRx6aRTVVN8q84aeqd5zx9xxul1vAHTwWFn
+         Or9wuj3bCBi0sCchbGxX4DkFkyaDZ97bE4U4mPsAeV+TnTquOmweY1+CB2W2c8I2Sv
+         zKiwFkyKwh+jX8+Mewq6aE1DB+Jq7etEeOz1DULARxmXCIyqpESXVux/7XjnFLomFH
+         bM8VEBjiENMbchxYu8jswvUu1fgNr9nSUs5KK5aHJXYaYE1hBGYBXzfAlj369ANicw
+         RIiNtO3PcQRjA==
+Date:   Mon, 21 Jun 2021 11:53:52 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH net-next] net/mlx5: Use cpumask_available() in
+ mlx5_eq_create_generic()
+Message-ID: <YNBToF0+eruEG7JL@unreal>
+References: <20210618000358.2402567-1-nathan@kernel.org>
 MIME-Version: 1.0
-References: <20210621071456.4259-1-ice_yangxiao@163.com>
-In-Reply-To: <20210621071456.4259-1-ice_yangxiao@163.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 21 Jun 2021 16:53:32 +0800
-Message-ID: <CAD=hENf2NR+mOmUPw5dg726_OO9BkfALNfTJphrM=rP+Y-RAwQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND] RDMA/rxe: Don't overwrite errno from ib_umem_get()
-To:     ice_yangxiao@163.com
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Xiao Yang <yangx.jy@fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618000358.2402567-1-nathan@kernel.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 3:15 PM <ice_yangxiao@163.com> wrote:
->
-> From: Xiao Yang <yangx.jy@fujitsu.com>
->
-> rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
-> fails so it's hard for user to know which actual error happens in
-> ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP
-> when trying to pin pages on a DAX file.
->
-> Return actual error as mlx4/mlx5 does.
->
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+On Thu, Jun 17, 2021 at 05:03:59PM -0700, Nathan Chancellor wrote:
+> When CONFIG_CPUMASK_OFFSTACK is unset, cpumask_var_t is not a pointer
+> but a single element array, meaning its address in a structure cannot be
+> NULL as long as it is not the first element, which it is not. This
+> results in a clang warning:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/eq.c:715:14: warning: address of
+> array 'param->affinity' will always evaluate to 'true'
+> [-Wpointer-bool-conversion]
+>         if (!param->affinity)
+>             ~~~~~~~~^~~~~~~~
+> 1 warning generated.
+> 
+> The helper cpumask_available was added in commit f7e30f01a9e2 ("cpumask:
+> Add helper cpumask_available()") to handle situations like this so use
+> it to keep the meaning of the code the same while resolving the warning.
+> 
+> Fixes: e4e3f24b822f ("net/mlx5: Provide cpumask at EQ creation phase")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1400
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-> index 9f63947bab12..fe2b7d223183 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> @@ -135,7 +135,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
->         if (IS_ERR(umem)) {
->                 pr_warn("err %d from rxe_umem_get\n",
->                         (int)PTR_ERR(umem));
-> -               err = -EINVAL;
-> +               err = PTR_ERR(umem);
+> 
 
-Thanks. I am fine with this.
-
-Zhu Yanjun
-
->                 goto err1;
->         }
->
-> --
-> 2.26.2
->
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
