@@ -2,122 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876C53AF556
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 20:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 627633AF613
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Jun 2021 21:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhFUSpy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Jun 2021 14:45:54 -0400
-Received: from mail-sn1anam02on2087.outbound.protection.outlook.com ([40.107.96.87]:28866
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230160AbhFUSpy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:45:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=br3p19mWKutqGeu1EnqgHBDqeO/5TqAPB2fRePG36GgH3SlWlBey/ddqYBsTYrICCvFnY6upEIvl9MJ0KGlQXjCn4MnrRKZxc8lLNSLtP8uOUaK1XAj6jnnfVwbw8uNCUWgvGCX8q8eMTBzg5ukt4R70h2mPSJDeTt7FM8MVWAGyn+8zXwafEmQWp9ACHjFiO614z19D8rlK4erkUqrHsKMwdWl2CnsNSttnAo0ns78Yl1qrVITvZQg/fHmOCHS94mGzUVwCVHUnECXgUYwQn6cB9clQRNFA+fckZgTu0wrb1NGuVTdxzD23jtqSaHvdgq3U/TFx268sABMXoxsv6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dZnptIAdPtjJsGcA5cIRfanLmnf1cOEju2hypOjGhdI=;
- b=E50Eo2drDZd04G0DX6EiJHaey/T/Yu78DEJanERU5pFxCj52n6SAYRw66zBJCqEddIyHerTbqxCnjEd16Y6WqmevY2afSECDwAPxwV44optmWLLy29NM/X76aheoGOt62ud29KmuPBCcQF/XeskjEbjd7r08W1BZo7fSv4NbPBHwZuItUzDjFKv6Lf9safLabCJfV4y1HBfjFKAUqipn6en87oOa2Eu8Kaw7gU4zepj8DGLHmDio/u8vgNLiCK21GhOyGPffFlZIP3eooHTrbU6GXdcHM2rEernSOfRECIaQh8ZUWzPfQ3524cLL1+JziHB3Xd+tGNn80W0PSx3FYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dZnptIAdPtjJsGcA5cIRfanLmnf1cOEju2hypOjGhdI=;
- b=fGmW4I7qAOQgEe6lORobBS2Nzfor0ugCxDFgNWItwJP7Mkv8xnbmESUSm8b3SjQ1nGmsmV8QRr3XIjR609oh5kustoyUNMBcE6rNWqywhv5EEn/hEotf5a9ibaUJzQY0BCnaR/KmWONNzK1afzMZrZMK1CMJ/ikT5mRurMBC8PqEk3nF1CTRJY86ydub1PMD1Zg9AIZXn8PM3aiNy6kE5NxRf8xeI9B2V44jwQZV0+qAe8g+WAXSx07FCbfe6b9fYPmcxeihm2NpiurD0VWhC/USUdG4+lJmZwMAy//nb3PcJHIix8HBeuL0QJUS3ADc+F49clvSzjEBH7BXHFMf3g==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5032.namprd12.prod.outlook.com (2603:10b6:208:30a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
- 2021 18:43:38 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 18:43:38 +0000
-Date:   Mon, 21 Jun 2021 15:43:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next 0/6] RDMA/hns: Use ida to manage index of some
- resources
-Message-ID: <20210621184337.GA2345030@nvidia.com>
-References: <1623325814-55737-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623325814-55737-1-git-send-email-liweihang@huawei.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR05CA0033.namprd05.prod.outlook.com
- (2603:10b6:208:c0::46) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S230052AbhFUT07 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Jun 2021 15:26:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230397AbhFUT06 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Jun 2021 15:26:58 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7913BC061756;
+        Mon, 21 Jun 2021 12:24:44 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so18803522oth.9;
+        Mon, 21 Jun 2021 12:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dBJ5d1VMITTeIiGdzPkAixCEDqtOI+Of2asfGh+UAZ4=;
+        b=poWdRMlEM2ZoLHlzus9H+sJm2Gyv4Ad5UYLCdoksxIn2aeAMLa+dKaekWP8LifxgyJ
+         n2jVVjTuonYLSxe3ETtsIuLK6gvACWCDRPmuF5tYeQjeJRX7OY/u7vWBpL0kZJzHl5sj
+         Ny/XMZJGPL6fogHwoJFWsiHZjsbH13H9+wxt/q/eKq5DtLZntN4WMvAkk8EZkafocBEK
+         6xqocdwV6n4EqRoI+ZBfp3axIcf4mR5Wn6oTb26BEs3yq9YTXbI3ZeEuQkoD5A+xRhEy
+         Pckce+Y9OeKX2dihb865SJYvyNOs4TOMg3c3iU7fvPH++FHzFI5BYoTOBQOjmtC3BaTY
+         AZFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dBJ5d1VMITTeIiGdzPkAixCEDqtOI+Of2asfGh+UAZ4=;
+        b=Z6TcuANUJds16hTi8hffR8eVoxSYOIdorTOVAbVhPCLkRydNfApPbN9mHaU7J5vqaK
+         HfI67UOliHEvqeaglP6/4ndtXqAz/c4/pgu+/UVaJMnM+mC4gk8YMcrOiCpXe2uZMNbs
+         zLswkXMm135/eCoC1WHCquIaUa9C8zGO5Nqydds8QaZR1HB5EYJ8z8GY/S2c5L1XtlXM
+         CDrVfHxB3uItyyBfg8SS5IgD9iIpi1ronHwg5AI1EjjQFVMLkr0NAEvszmLkaRXrx3mg
+         bcfeW0gkbJllQQQzCoVfMljcvtnJA51O1bHJOXG2jPbcbZe/falexQnPp2vbu53yz9W0
+         LNUg==
+X-Gm-Message-State: AOAM533krmmjlEmIcP4Xtps9U6+5mR4rAaO4zjtzTGRO/qp2UEZNfFu4
+        JGSGXM7dcJhENC7/cmNmzwX9rxvS8vJV1tWMDEU=
+X-Google-Smtp-Source: ABdhPJxgnG68naVmqaj9VbYQpqtCzzRUWIKZ1A7mHfJtyBXgRWCjJn597bAS85CrpNuYd9PVyrIs804CEiOHGbIXZSQ=
+X-Received: by 2002:a9d:542:: with SMTP id 60mr12808otw.143.1624303483767;
+ Mon, 21 Jun 2021 12:24:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR05CA0033.namprd05.prod.outlook.com (2603:10b6:208:c0::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Mon, 21 Jun 2021 18:43:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvOtV-009q3i-2U; Mon, 21 Jun 2021 15:43:37 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32e263cb-b607-449c-8a93-08d934e47bd2
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5032:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5032CACD3ABE0425963437E3C20A9@BL1PR12MB5032.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OPAEk/H045LaENYQel5EmtBLFNHjB1bqxF6eaYYbE+LbXjwxWPNGh9HnJk9Ag27sSKPnn3i+/365/LXgItAAVubMIkp5yvoqe6i1Y4mocvTOEaZhqHsN/taZZYP2p8DhpMvbxtFwQW1+nvQplUQSI7n9ybUy2WqF4J2efB2KuSRekbZNjzOEeUNBqZljw5qEbEyRnj+q8En0r4pfcVKNJd8xFgWXu5JQf/Ab5lkFcS3vpTId8osah4vCbLzSRDOsd3G2ouAtYJMXlKyXSrHgk8Y2sXVF5dupoFKm4zN3rs/+jbL1TIBHGftjPJLY1Q+zPAu1m6KLhkwwhAvF4mRaGO8rsrYFRwYrCs6Enknuf8E+i8HMU5fqxGKTpi1WMuulYt8g9X+hZTh5m7FmvBT5D1J/4wgaffrVLipETDHb2Zjzgse2cvTh+5evVIylU0iJhxd4usrv2rTLu2aDWxbgipVhRo5xg5LAZCnfiU7OfqDYezjEKevGJFk+5vx7Nv/mqLwzA9dh5RO+E9Cf11TNIDvLVsYFQpwuo2Ij6O3Dl3d6H3h6yzXaLXr8uJrPuNqLW6ECLlOTkcafG6nPP99nc9z4nvzJmvZ0QVvXDUdl76k=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(39860400002)(376002)(346002)(426003)(4326008)(9786002)(9746002)(66556008)(66476007)(66946007)(186003)(26005)(6916009)(38100700002)(2616005)(36756003)(478600001)(86362001)(33656002)(5660300002)(1076003)(8676002)(8936002)(2906002)(4744005)(316002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gwvMdf7jvRGh8EqoZ7weIeNmo3+ZXoagQdzsXjkLM01vHo/KR1+Q0gtmMLQs?=
- =?us-ascii?Q?rFpsncJYYu8fwkoxb428AhCgt8Lcs3XTZ9or5afNYK2yVisH4Dp9xVscNnQb?=
- =?us-ascii?Q?hKVs+/YkIciyp5H71moToci5WsqSH3RHDe26dTVwFi9JwooQrKXOHFErI6Ux?=
- =?us-ascii?Q?l2tij+6r/ORX+ke+eMzF77Gp5En79we6L8DlCLTeSBNpk0gAuVxSEl8ZIl9t?=
- =?us-ascii?Q?RWEm+D7PYcQss4v6k2lm2eGoMrSjU+Uidl6dBo2R5UH6+zbBgdIvrrMzTPcl?=
- =?us-ascii?Q?phVhaDq3+f13Mwxit++SWZJkbWn5c9QN6yoglMQgY+NAlutuvSH1u0dJ9e6Y?=
- =?us-ascii?Q?GUQ4oQxmQA57B1xJsmLUN8zJs33cHAbjnBNkFjpoN7Rl/0vlcnqoie5YITQJ?=
- =?us-ascii?Q?gOrEkSmkIxJGudlWDF49uCAZXf5tsJmeVY2MezQUbOm6eNkDSZ2gSNimhT/o?=
- =?us-ascii?Q?JRoJn0N5kck9HWKmnIS5tGBb0mp2xlQMhgUPGeJJfvkp+n8jI7+guhMU1f53?=
- =?us-ascii?Q?m25sVwPj3BVkdZSZaqAMfpohJZRQMQygPVkqJmrk4Pbnrsz/2H9+vLaLoTZe?=
- =?us-ascii?Q?gWZCsReap0lq3wTtz46JAAiMqnUax84lVI1PBHjvrCM469D6t2G1twm5ngoM?=
- =?us-ascii?Q?GzTkOOli65pnfl+cnE2BHbZO9ED6NaaND3XI3wallRwPn2qnyk+FIUXQK9/x?=
- =?us-ascii?Q?GewabVO/RVihG3vqQenQZASmCwFo7VdWEFW5D/5451iUCvQLXM0fgc/qKfoR?=
- =?us-ascii?Q?KF40K4now83j2PjGGklWj1GyWxgj6jLad1MNVd2fCkgiMjXZT6XS/0qVELyp?=
- =?us-ascii?Q?PdyvYLjrVfF5idUJ6F3ytCzLB3wNpMjN1v/9EnDXVCgQKEUWC2NQxKu5MrFF?=
- =?us-ascii?Q?zVhIqaEZzXI4lBQo5W684TWmdtmNyGgl/MvhPSGZ2CrAsM+MqxKAUGVTWn83?=
- =?us-ascii?Q?7E+XnEWEATHTEnMP6pbjv/mCfBPZX0R935ZzKilWhuWRMMl/u331YZWHHjDD?=
- =?us-ascii?Q?L8DT8UuYctVHrE9sVnDkRzEnFrwQfC4DZK/qtNXsr7mt/q29t4ZMsM6aTBKt?=
- =?us-ascii?Q?w5ZTplYJghM+N5m8aP5XvFzk2GW1wzximHBgWsQsxe6UYEmUQPx7Rw0AoAW7?=
- =?us-ascii?Q?JoiBTGcyovcoi5rybZOEZhzEDB3zZUTaDmqj3ymTzf2eXupH0IRGp7YqTcSo?=
- =?us-ascii?Q?XYcO9qIMdUAfoeKMYHj2uj3TED3WHaLWOtfPHewPjDGrSURCu3b75nA3dGUx?=
- =?us-ascii?Q?M5PzsVgGm1hWLTXo5tV/O+ONPhZe8gM7VmUxc61q6bvuoNSovCLaL0AgYtwB?=
- =?us-ascii?Q?aoDJZJgmPdQMyW++ToJGAzzZ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32e263cb-b607-449c-8a93-08d934e47bd2
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 18:43:38.6041
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HHdWuiDqx1aIpH4056MwE9Z9gII0lnTpW74Ip2zPebUw3ymUkgjFYb4hkNnBfXkp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5032
+References: <20210618123615.11456-1-ogabbay@kernel.org> <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+ <YNCN0ulL6DQiRJaB@kroah.com> <20210621141217.GE1096940@ziepe.ca>
+ <CAFCwf10KvCh0zfHEHqYR-Na6KJh4j+9i-6+==QaMdHHpLH1yEA@mail.gmail.com>
+ <20210621175511.GI1096940@ziepe.ca> <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+In-Reply-To: <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 21 Jun 2021 22:24:16 +0300
+Message-ID: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 10, 2021 at 07:50:08PM +0800, Weihang Li wrote:
-> Index of some resources is managed by bitmap in driver, we first do some
-> cleanups on the bitmap functions, than replace them with ida interfaces.
-> 
-> Yangyang Li (6):
->   RDMA/hns: Remove the unused hns_roce_bitmap_alloc_range function
->   RDMA/hns: Remove the unused hns_roce_bitmap_free_range function
->   RDMA/hns: Remove unused RR mechanism
->   RDMA/hns: Use IDA interface to manage mtpt index
->   RDMA/hns: Use IDA interface to manage pd index
->   RDMA/hns: Use IDA interface to manage xrcd index
+On Mon, Jun 21, 2021 at 9:27 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> On Mon, Jun 21, 2021 at 7:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > On Mon, Jun 21, 2021 at 07:26:14PM +0300, Oded Gabbay wrote:
+> > > On Mon, Jun 21, 2021 at 5:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Mon, Jun 21, 2021 at 03:02:10PM +0200, Greg KH wrote:
+> > > > > On Mon, Jun 21, 2021 at 02:28:48PM +0200, Daniel Vetter wrote:
+> > > >
+> > > > > > Also I'm wondering which is the other driver that we share buffers
+> > > > > > with. The gaudi stuff doesn't have real struct pages as backing
+> > > > > > storage, it only fills out the dma_addr_t. That tends to blow up with
+> > > > > > other drivers, and the only place where this is guaranteed to work is
+> > > > > > if you have a dynamic importer which sets the allow_peer2peer flag.
+> > > > > > Adding maintainers from other subsystems who might want to chime in
+> > > > > > here. So even aside of the big question as-is this is broken.
+> > > > >
+> > > > > From what I can tell this driver is sending the buffers to other
+> > > > > instances of the same hardware,
+> > > >
+> > > > A dmabuf is consumed by something else in the kernel calling
+> > > > dma_buf_map_attachment() on the FD.
+> > > >
+> > > > What is the other side of this? I don't see any
+> > > > dma_buf_map_attachment() calls in drivers/misc, or added in this patch
+> > > > set.
+> > >
+> > > This patch-set is only to enable the support for the exporter side.
+> > > The "other side" is any generic RDMA networking device that will want
+> > > to perform p2p communication over PCIe with our GAUDI accelerator.
+> > > An example is indeed the mlnx5 card which has already integrated
+> > > support for being an "importer".
+> >
+> > It raises the question of how you are testing this if you aren't using
+> > it with the only intree driver: mlx5.
+>
+> For p2p dma-buf there's also amdgpu as a possible in-tree candiate
+> driver, that's why I added amdgpu folks. Otoh I'm not aware of AI+GPU
+> combos being much in use, at least with upstream gpu drivers (nvidia
+> blob is a different story ofc, but I don't care what they do in their
+> own world).
+> -Daniel
+> --
+We have/are doing three things:
+1. I wrote a simple "importer" driver that emulates an RDMA driver. It
+calls all the IB_UMEM_DMABUF functions, same as the mlnx5 driver does.
+And instead of using h/w, it accesses the bar directly. We wrote
+several tests that emulated the real application. i.e. asking the
+habanalabs driver to create dma-buf object and export its FD back to
+userspace. Then the userspace sends the FD to the "importer" driver,
+which attaches to it, get the SG list and accesses the memory on the
+GAUDI device. This gave me the confidence that how we integrated the
+exporter is basically correct/working.
 
-Applied to for-next, thanks
+2. We are trying to do a POC with a MLNX card we have, WIP.
 
-Jason
+3. We are working with another 3rd party RDMA device that its driver
+is now adding support for being an "importer". also WIP
+
+In both points 2&3 We haven't yet reached the actual stage of checking
+this feature.
+
+Another thing I want to emphasize is that we are doing p2p only
+through the export/import of the FD. We do *not* allow the user to
+mmap the dma-buf as we do not support direct IO. So there is no access
+to these pages through the userspace.
+
+Thanks,
+Oded
