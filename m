@@ -2,108 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC65F3B0AF1
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 18:57:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590873B0B2A
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 19:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231655AbhFVQ7R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 12:59:17 -0400
-Received: from mga18.intel.com ([134.134.136.126]:56792 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231572AbhFVQ7K (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:59:10 -0400
-IronPort-SDR: E06Ry6tRZgL2/Sj9XFDR6aXCh3/hVkbCjjC1Mw12LS92LAzhdy9JabVFnCxF5usygUy3QUhiHE
- hBxodT1/BqJQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194408104"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="194408104"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 09:56:24 -0700
-IronPort-SDR: s2BwDnZyMjQskcsJj5BGgqhuiSA0OZzV+M6OKn1PVBuZtrFq0X+aPPC0IH4sO3L/H1steauqDk
- L8yjeJsankAw==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="452685198"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 09:56:23 -0700
-From:   ira.weiny@intel.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] RDMA/irdma: Remove use of kmap()
-Date:   Tue, 22 Jun 2021 09:56:22 -0700
-Message-Id: <20210622165622.2638628-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210622061422.2633501-3-ira.weiny@intel.com>
-References: <20210622061422.2633501-3-ira.weiny@intel.com>
+        id S231917AbhFVRLx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 13:11:53 -0400
+Received: from mail-dm6nam10on2057.outbound.protection.outlook.com ([40.107.93.57]:29249
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230076AbhFVRLx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:11:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HdKkB7Z7wfONpHXxGW66msbxAxhx4eK7/DIviA0Redsg4FKD332hLOXFrkRDbUDRz5zE5//dMa38oOHa1wfIOXYSGOIoNDuRUG4cpkYdzNch+B0ms/YXFGe1vpaQoyZ1mpaHfNPhiqtbAfVtugrA7LTp9OjVI6LIqeM6avY4scbZtAF5jf7nFatZW2RFcBi3QAmBExTNk/oJ/MnHaETKKJo4Xkpsm+QTyB0vfsUrZaZypnvFu3U2d2McgX+GR943YgMjd+4lZIkY7uuPh1GUAweYFjflEZct/B22SkE6uOuj3keNCe0JcweHS8FcYNlxXYA+2nh6twrW0jEd3Wd6dQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJiImV3UaEqqqCFFaOmIjHlmxp1kabmyVSy+GTs2BzA=;
+ b=LYUyfRBws4rUEYN02i5VhMIQ1v0lHTsX+YYXphZ+uPH95wdtGb+j0LEnqfOOe2MQo/29wllUYOCFYWeXVqYJ2QcYU89YAZ2FEhjVnhepSW5UBnXnLKO+tyMaBj73GBIcoRO/UFUjJ4bRhdIOSzPxv6FC4tAe+ggHpni1P3z97JA8t72oYo877gKVdYEjrkwPIPheLTJdap+2eShUG2qI6ZgQ4S0JlpBOjLL362alNMFbzpeGwW92pq2MF40GANy08mFmTmfqvquCngXj2LAaroQMPbGWuE+dXohCUssbxS51knbf8M39nvkhht4aNAzN5jzWLpMB3VWNiVF/CSotcA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IJiImV3UaEqqqCFFaOmIjHlmxp1kabmyVSy+GTs2BzA=;
+ b=ZDkU/ugxuP8M9VRsoIBtOZBzVFJVCduLGebcxPr5/FXoLqekyvnsQz8QGB/lJVTCTO2icSy0a46jzJGVfzu9FcnPJ6ke6L5/Ce4QE1AopntdNfcrgL9p/OFS+iJDOQDCHEzxPy4R3ur6kp4ceX67zdcaFvDF9+5qfA9UuMJceNJ+UKoOlln/RIZ5jExKgNQnln/9cgiLkJhAtmYq+uuKFl8AoSCxzcNzedoL+k3SEjf1Gk9VokkG+ykmQJs4gyD1aY4BaVYLMNsLc8xTpDXOWjWGqutdX3R99GnJ6cn0qskYakqbStc6m0IktZrj7kL7hyhE/6kCTZvA8VxJJEN+ZA==
+Authentication-Results: chromium.org; dkim=none (message not signed)
+ header.d=none;chromium.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5269.namprd12.prod.outlook.com (2603:10b6:208:30b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 22 Jun
+ 2021 17:09:35 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.018; Tue, 22 Jun 2021
+ 17:09:35 +0000
+Date:   Tue, 22 Jun 2021 14:09:33 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] RDMA/core: Use flexible array for mad data
+Message-ID: <20210622170933.GA2449789@nvidia.com>
+References: <20210616202615.1247242-1-keescook@chromium.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616202615.1247242-1-keescook@chromium.org>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0419.namprd13.prod.outlook.com
+ (2603:10b6:208:2c2::34) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0419.namprd13.prod.outlook.com (2603:10b6:208:2c2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Tue, 22 Jun 2021 17:09:35 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvju1-00AHJF-Q0; Tue, 22 Jun 2021 14:09:33 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 17838333-05dc-4892-03bb-08d935a08288
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5269:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5269554D482175DA80FCDC65C2099@BL1PR12MB5269.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9k2+xCQBjBm5G7m/ZJu0ZZr1NLHOLg+bB6cW5tMbJdiybD8/rU/9SMjV6/Pet8U8Q0HkpTguHa1DxKQ2m5D88qNorlCRlh6IAt6ShNEvcz8fRnDHMgwVbequpG5i0fNCxY0oVMF08af8qYH0UorLoA6WVTSCMup4TVxtCqBmALP7R7JSISos+o4fZ5h6f6dH/1PSPX5wNNFSFTan1Qzr9LrQL1qAugn9HJ1/F/j3fU/13BkSlFR2CsYqgUl/ge9SfYVnSxXJctZSyP1vfL+j41h9BEXZtsxfrQIAqmZVetsdWqNInaVDPTe012FIckBRD18t8zTjZoMVYEqHduxQNNroBGpNJojkH6PWrgeUAStQDrAmPbkLJsrOC+AuP/LhjM37ptJrIh8Kdlo9etPXH1DmGLUpbBdch5quJ1fWh0K58AONY9CcShQaEsVppBHHH8yFi1ZQIPgferEuoW581lTl2I6dFp/sjCZ1ee7mK9mAQQ8bibex2Hdjp5QrbWRHweGTAXA6byHHubbB3d48kukdBZKpq71IB4GRhu/I6z/rvKw341OzdcFzngIaF4xlwCAj9p4WWCSeunM7E2ftmHSha/PLlbVwXzHFozU179Y=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(376002)(136003)(8676002)(86362001)(316002)(33656002)(8936002)(6916009)(9786002)(38100700002)(36756003)(2616005)(426003)(4326008)(9746002)(4744005)(2906002)(5660300002)(66946007)(186003)(83380400001)(66476007)(66556008)(1076003)(478600001)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lROuH/FSwB4KgmJtcts4SwqFHAhZ0eVy8gKofPlpEl4Z7VIn7iijUYj1u7oT?=
+ =?us-ascii?Q?suRPRZgsEdCAJC/aRGW5hE/1vDGlGHXZJTswnwXwuJiD621C0KrHU/nSJjGx?=
+ =?us-ascii?Q?uhioxY6bDsLF+w0qfPmGJQDHbybvAq9V050js2azbrfQCas7Lebb3Q84oEZR?=
+ =?us-ascii?Q?x8UZONhj73Kk6L3+jviQ5pOcb1/WTSsbLOdusYt8jTyJcAYqWxQYrUvhx2D9?=
+ =?us-ascii?Q?SyN9sX328AjkgcGDTLHyAH8QOmIuYpP7+j0QhxupqxAArvFa6wNe294llEcL?=
+ =?us-ascii?Q?y6FHFevryRnr1pfmfgm96YVNMFeQ6o2K2CZEbmM5a0CdwwF3MdCSaCa8WzVx?=
+ =?us-ascii?Q?AHmU7/88SPr7tS6I4HG0cR+YQAzQWhzqFkFzWJcNuLyD9jtT+kO0ARfMf3mg?=
+ =?us-ascii?Q?+c4Xq883uY/IQDKrmsVJqmAWuUhrULZ7xU1V2YirEjN4PrBTrjAJmugQeuvN?=
+ =?us-ascii?Q?uwg3wN5DNB6VISa6GUXrSx5mhJ/wGMJNDhLgZDZdQ/ZBLweJjUZLDKF5AGO+?=
+ =?us-ascii?Q?s/oad3i4WJeX01TjsN2mN027UAiCIWg0dpKJBcUlbIA80rB4jeJlhKn/Yssm?=
+ =?us-ascii?Q?8Rl6QNWhx1AbFmpQPJnFFoE+6lJZRHyoa+kj4Wt0yQLyd2CTImXQWeIy8Er5?=
+ =?us-ascii?Q?U0TfFLNzys74/ybkLV7UeUMrZeevd+OXyJESp0E2MbzAfUeeScgJ5V/kQ5uO?=
+ =?us-ascii?Q?ZJfRsp8WzZCP/FGHLLUje8zjFDI47RTJuqdbNslD6l82Iqo3HMLY+MaTLYXE?=
+ =?us-ascii?Q?r1nIwCqWUPYIEC8dV36DZzHUCRBc5VVrLYkSJgKw3iHhIDJFCpGhfimNKxHq?=
+ =?us-ascii?Q?WuHFkbMuU46/woCiNLhA325CNYweO0sT7YupMb90t1MebjuHq1g5k+1NcaBc?=
+ =?us-ascii?Q?yiw8vKp5rHIaAIWU1sGIg+dgRh6eGrLdHLIwymMUIF0YDyQmMk07qzxOoYdy?=
+ =?us-ascii?Q?wKWMcJPA/3v1h7293p2e4joHenYdCUXjjesattWwAiNBJvrIFVBBpZmhR4A2?=
+ =?us-ascii?Q?gT17k1T3dLi54JouOb5dWTyVcMTdx3pgxS4uMUpGvUDMMCdrArjYhlHgzUjR?=
+ =?us-ascii?Q?gcURncM2EDS6oMBUBsTsUbYRi3ik702R7Yo1uNSas7KfyN21jy2OB3O+Z5Gj?=
+ =?us-ascii?Q?V+P0Y7TEBMU6xClebg+uec9IvJnfOEbAM48M4gyJCN7J2Wmtd+z0Kvrn1ppa?=
+ =?us-ascii?Q?ywQTxg7D6hj9LY3m/gsnGJxIvnizrFXvxy+NBF0xeuwzBmK1Vkt/SmsB6XRj?=
+ =?us-ascii?Q?BNX8Sb4QRUi552/ssywn3Xjv/qlBlu1zhZ/pfKYkh2fdvpkRDE/FGKbDmg3+?=
+ =?us-ascii?Q?gq0wC1q50ZHyn5b0MQyuSsEd?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17838333-05dc-4892-03bb-08d935a08288
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 17:09:35.1941
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MRtsyNplm3wrdNbbN5T4pu7xuQkC51S4mpbMPtqzAAZUMz6JstFPWDMOucvRlipc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5269
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Wed, Jun 16, 2021 at 01:26:15PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memcpy(), memmove(), and memset(), avoid
+> intentionally read across neighboring array fields.
+> 
+> Without a flexible array, this looks like an attempt to perform a
+> memcpy() read beyond the end of the packet->mad.data array:
+> 
+> drivers/infiniband/core/user_mad.c:
+> 	memcpy(packet->msg->mad, packet->mad.data, IB_MGMT_MAD_HDR);
+> 
+> Switch from [0] to [] to use the appropriately handled type for trailing
+> bytes.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  include/uapi/rdma/ib_user_mad.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-kmap() is being deprecated and will break uses of device dax after PKS
-protection is introduced.[1]
+Applied to for-next, thanks
 
-The kmap() used in the irdma CM driver is thread local.  Therefore
-kmap_local_page() is sufficient to use and may provide performance benefits
-as well.  kmap_local_page() will work with device dax and pgmap
-protected pages.
-
-Use kmap_local_page() instead of kmap().
-
-[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
----
-Changes for V2:
-	Move to the new irdma driver for 5.14
----
- drivers/infiniband/hw/irdma/cm.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
-index 3d2bdb033a54..6b62299abfbb 100644
---- a/drivers/infiniband/hw/irdma/cm.c
-+++ b/drivers/infiniband/hw/irdma/cm.c
-@@ -3675,14 +3675,14 @@ int irdma_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	ibmr->device = iwpd->ibpd.device;
- 	iwqp->lsmm_mr = ibmr;
- 	if (iwqp->page)
--		iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
-+		iwqp->sc_qp.qp_uk.sq_base = kmap_local_page(iwqp->page);
- 
- 	cm_node->lsmm_size = accept.size + conn_param->private_data_len;
- 	irdma_sc_send_lsmm(&iwqp->sc_qp, iwqp->ietf_mem.va, cm_node->lsmm_size,
- 			   ibmr->lkey);
- 
- 	if (iwqp->page)
--		kunmap(iwqp->page);
-+		kunmap_local(iwqp->sc_qp.qp_uk.sq_base);
- 
- 	iwqp->cm_id = cm_id;
- 	cm_node->cm_id = cm_id;
-@@ -4093,10 +4093,10 @@ static void irdma_cm_event_connected(struct irdma_cm_event *event)
- 	irdma_cm_init_tsa_conn(iwqp, cm_node);
- 	read0 = (cm_node->send_rdma0_op == SEND_RDMA_READ_ZERO);
- 	if (iwqp->page)
--		iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
-+		iwqp->sc_qp.qp_uk.sq_base = kmap_local_page(iwqp->page);
- 	irdma_sc_send_rtt(&iwqp->sc_qp, read0);
- 	if (iwqp->page)
--		kunmap(iwqp->page);
-+		kunmap_local(iwqp->sc_qp.qp_uk.sq_base);
- 
- 	attr.qp_state = IB_QPS_RTS;
- 	cm_node->qhash_set = false;
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+Jason
