@@ -2,182 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD563AFCED
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773BD3AFCF4
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFVGQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 02:16:43 -0400
-Received: from mga17.intel.com ([192.55.52.151]:25148 "EHLO mga17.intel.com"
+        id S229667AbhFVGSn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 02:18:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229690AbhFVGQm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:16:42 -0400
-IronPort-SDR: 1K3gL1TO7zDnPtEpcLNggr5f503xc8yhKaMvHMEdlIcxDrsGZK7Tdm0Q95CSXUwdIJDcQQ2BYj
- 7SaKCeqAs+7Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187373709"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="187373709"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:26 -0700
-IronPort-SDR: c+Ww4MZiipEi0JDqxxgKOk/xYwedidZVHzAQB5QLE+sk8Nr8/tbdDAkMiS2QDtZnMFNjW3sgfB
- awj2dy9vx7/g==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="641551763"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:26 -0700
-From:   ira.weiny@intel.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        id S229574AbhFVGSn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Jun 2021 02:18:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 292B060FDC;
+        Tue, 22 Jun 2021 06:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624342587;
+        bh=z15Kwl8oV1sBDp03uYbCoqoT/uw5Ys7M76aR3X1yf+s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eswEkGgwPDBT5jTXngsC9JVGDoKB4HSkeJ+4BeAaUX01vdQp3Q0/bNQh5fScUJbmX
+         sPdEfQkIB/kWLWUp9KPV82I016Z+V2ddeUMo73mAzu5L9NRlhRwwPjRVDlVIt0lsok
+         C5oWvSqU59H9zIst/XukCJ6NXvomqHRXiYc01v0AM92A89OzPb8hQSpaqHNo5UZRLF
+         0eG1q4B+3hwaV3aYoPe+PFfhPpOQ4FXBS5D4AXk2OFKVtUIDSGkVRHGw+R5EUEvzeG
+         kbwTgwXmZ+DxeitY8OJhEOFT03V2S3U5KDLF5KC3gdijiuuNhRYrmG7qwIJo7gLs2s
+         FazhQnvpFXqjg==
+Date:   Tue, 22 Jun 2021 09:16:23 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
         Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-Date:   Mon, 21 Jun 2021 23:14:22 -0700
-Message-Id: <20210622061422.2633501-5-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210622061422.2633501-1-ira.weiny@intel.com>
-References: <20210622061422.2633501-1-ira.weiny@intel.com>
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Hans Ry <hans.westgaard.ry@oracle.com>
+Subject: Re: [PATCH for-next v2] RDMA/cma: Replace RMW with atomic bit-ops
+Message-ID: <YNGAN4eGYXkrFMCg@unreal>
+References: <1623934765-31435-1-git-send-email-haakon.bugge@oracle.com>
+ <YNA7ZnKIKC217pCw@unreal>
+ <C8E39F1F-14D5-4DBE-ABE0-2EFC20353D83@oracle.com>
+ <YNBhuZNjGvUsJHUy@unreal>
+ <FB3E1A32-A1BA-48B8-A20D-99662CDAC921@oracle.com>
+ <20210621143758.GP1002214@nvidia.com>
+ <36906AC6-B2DB-40D4-972C-8058FF0B462C@oracle.com>
+ <20210621151240.GQ1002214@nvidia.com>
+ <AFF46FA1-4679-4625-89CD-B608FCBE14C1@oracle.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <AFF46FA1-4679-4625-89CD-B608FCBE14C1@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+On Mon, Jun 21, 2021 at 03:55:40PM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 21 Jun 2021, at 17:12, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > 
+> > On Mon, Jun 21, 2021 at 02:58:46PM +0000, Haakon Bugge wrote:
+> >> 
+> >> 
+> >>> On 21 Jun 2021, at 16:37, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >>> 
+> >>> On Mon, Jun 21, 2021 at 10:46:26AM +0000, Haakon Bugge wrote:
+> >>> 
+> >>>>>> You're running an old checkpatch. Since commit bdc48fa11e46 ("checkpatch/coding-style: deprecate 80-column warning"), the default line-length is 100. As Linus states in:
+> >>>>>> 
+> >>>>>> https://lkml.org/lkml/2009/12/17/229
+> >>>>>> 
+> >>>>>> "... But 80 characters is causing too many idiotic changes."
+> >>>>> 
+> >>>>> I'm aware of that thread, but RDMA subsystem continues to use 80 symbols limit.
+> >>>> 
+> >>>> I wasn't aware. Where is that documented? Further, it must be a
+> >>>> limit that is not enforced. Of the last 100 commits in
+> >>>> drivers/infiniband, there are 630 lines longer than 80.
+> >>> 
+> >>> Linus said stick to 80 but use your best judgement if going past
+> >>> 
+> >>> It was not a blanket allowance to needless long lines all over the
+> >>> place.
+> >> 
+> >> That is not how I interpreted him:
+> > 
+> > There was a much newer thread on this from Linus, 2009 is really old
+> 
+> Yes, from last year, lkml.org/lkml/2020/5/29/1038
+> 
+> <quote>
+> Excessive line breaks are BAD. They cause real and every-day problems.
+> 
+> They cause problems for things like "grep" both in the patterns and in
+> the output, since grep (and a lot of other very basic unix utilities)
+> is fundamentally line-based.
+> 
+> So the fact is, many of us have long long since skipped the whole
+> "80-column terminal" model, for the same reason that we have many more
+> lines than 25 lines visible at a time.
+> 
+> And honestly, I don't want to see patches that make the kernel reading
+> experience worse for me and likely for the vast majority of people,
+> based on the argument that some odd people have small terminal
+> windows.
+> </quote>
+> 
+> Occasionally enforcing 80-chars line lengths in the RDMA subsystem seems like a strange policy to me :-)
 
-kmap() is being deprecated and will break uses of device dax after PKS
-protection is introduced.[1]
+I prefer to be strict here. We are submitting patches to different
+subsystems with different reviewers.
 
-The use of kmap() in siw_tx_hdt() is all thread local therefore
-kmap_local_page() is a sufficient replacement and will work with pgmap
-protected pages when those are implemented.
+"This adds a few pointles > 80 char lines."
+https://lore.kernel.org/linux-rdma/20200907072921.GC19875@lst.de/
 
-kmap_local_page() mappings are tracked in a stack and must be unmapped
-in the opposite order they were mapped in.
-
-siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
-unmap pages which were mapped on function exit.  Not all entries in the
-array are mapped and this is tracked in kmap_mask.
-
-kunmap_local() takes a mapped address rather than a page.  Declare a
-mapped address array, page_array_addr, of the same size as the page
-array to be used for unmapping.
-
-Use kmap_local_page() instead of kmap() to map pages in the page_array.
-
-Because segments are mapped into the page array in increasing index
-order, modify siw_unmap_pages() to unmap pages in decreasing order.
-
-The kmap_mask is no longer needed as the lack of an address in the
-address array can indicate no unmap is required.
-
-[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 35 +++++++++++++++------------
- 1 file changed, 20 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index db68a10d12cd..e70aba23f6e7 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -396,13 +396,17 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
- 
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
-+static void siw_unmap_pages(void **addrs, int len)
- {
--	while (kmap_mask) {
--		if (kmap_mask & BIT(0))
--			kunmap(*pp);
--		pp++;
--		kmap_mask >>= 1;
-+	int i;
-+
-+	/*
-+	 * Work backwards through the array to honor the kmap_local_page()
-+	 * ordering requirements.
-+	 */
-+	for (i = (len-1); i >= 0; i--) {
-+		if (addrs[i])
-+			kunmap_local(addrs[i]);
- 	}
- }
- 
-@@ -427,13 +431,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
- 	struct kvec iov[MAX_ARRAY];
- 	struct page *page_array[MAX_ARRAY];
-+	void *page_array_addr[MAX_ARRAY];
- 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
- 
- 	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
- 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
- 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
- 		     pbl_idx = c_tx->pbl_idx;
--	unsigned long kmap_mask = 0L;
-+
-+	memset(page_array_addr, 0, sizeof(page_array_addr));
- 
- 	if (c_tx->state == SIW_SEND_HDR) {
- 		if (c_tx->use_sendpage) {
-@@ -498,7 +504,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					siw_unmap_pages(page_array, kmap_mask);
-+					siw_unmap_pages(page_array_addr, MAX_ARRAY);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
-@@ -506,11 +512,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				page_array[seg] = p;
- 
- 				if (!c_tx->use_sendpage) {
--					iov[seg].iov_base = kmap(p) + fp_off;
--					iov[seg].iov_len = plen;
-+					page_array_addr[seg] = kmap_local_page(page_array[seg]);
- 
--					/* Remember for later kunmap() */
--					kmap_mask |= BIT(seg);
-+					iov[seg].iov_base = page_array_addr[seg] + fp_off;
-+					iov[seg].iov_len = plen;
- 
- 					if (do_crc)
- 						crypto_shash_update(
-@@ -518,7 +523,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 							iov[seg].iov_base,
- 							plen);
- 				} else if (do_crc) {
--					kaddr = kmap_local_page(p);
-+					kaddr = kmap_local_page(page_array[seg]);
- 					crypto_shash_update(c_tx->mpa_crc_hd,
- 							    kaddr + fp_off,
- 							    plen);
-@@ -542,7 +547,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				siw_unmap_pages(page_array, kmap_mask);
-+				siw_unmap_pages(page_array_addr, MAX_ARRAY);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
-@@ -593,7 +598,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	} else {
- 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
- 				    hdr_len + data_len + trl_len);
--		siw_unmap_pages(page_array, kmap_mask);
-+		siw_unmap_pages(page_array_addr, MAX_ARRAY);
- 	}
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
--- 
-2.28.0.rc0.12.gb6a658bd00c9
-
+> 
+> 
+> Thxs, Håkon
+> 
+> 
+> > 
+> > Jason
+> 
