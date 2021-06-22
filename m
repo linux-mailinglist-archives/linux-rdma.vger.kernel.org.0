@@ -2,26 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D959F3AFCEB
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD563AFCED
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFVGQm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 02:16:42 -0400
+        id S229812AbhFVGQn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 02:16:43 -0400
 Received: from mga17.intel.com ([192.55.52.151]:25148 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229677AbhFVGQl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:16:41 -0400
-IronPort-SDR: grlOUodDHUNQacapJi8fD7zETcq0RcxxMp7uGrAS0pUY5PvHQ/ECA2jV+5gEBD9VaCmsk3uNlL
- i/k7duP1JqUw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187373707"
+        id S229690AbhFVGQm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Jun 2021 02:16:42 -0400
+IronPort-SDR: 1K3gL1TO7zDnPtEpcLNggr5f503xc8yhKaMvHMEdlIcxDrsGZK7Tdm0Q95CSXUwdIJDcQQ2BYj
+ 7SaKCeqAs+7Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187373709"
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="187373707"
+   d="scan'208";a="187373709"
 Received: from fmsmga005.fm.intel.com ([10.253.24.32])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:26 -0700
-IronPort-SDR: uTXj1eV9OSREsDrxY82DojwtSd6ZTstZHlT5AS6eImRzMPg6WNfI/ZWSztLu3Wl73ZPampQl6f
- 0lpT8WnhUSkA==
+IronPort-SDR: c+Ww4MZiipEi0JDqxxgKOk/xYwedidZVHzAQB5QLE+sk8Nr8/tbdDAkMiS2QDtZnMFNjW3sgfB
+ awj2dy9vx7/g==
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="641551760"
+   d="scan'208";a="641551763"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
   by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:26 -0700
 From:   ira.weiny@intel.com
@@ -35,9 +35,9 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] RDMA/siw: Remove kmap()
-Date:   Mon, 21 Jun 2021 23:14:21 -0700
-Message-Id: <20210622061422.2633501-4-ira.weiny@intel.com>
+Subject: [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Date:   Mon, 21 Jun 2021 23:14:22 -0700
+Message-Id: <20210622061422.2633501-5-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 In-Reply-To: <20210622061422.2633501-1-ira.weiny@intel.com>
 References: <20210622061422.2633501-1-ira.weiny@intel.com>
@@ -52,81 +52,132 @@ From: Ira Weiny <ira.weiny@intel.com>
 kmap() is being deprecated and will break uses of device dax after PKS
 protection is introduced.[1]
 
-These uses of kmap() in the SIW driver are thread local.  Therefore
-kmap_local_page() is sufficient to use and will work with pgmap
-protected pages when those are implemnted.
+The use of kmap() in siw_tx_hdt() is all thread local therefore
+kmap_local_page() is a sufficient replacement and will work with pgmap
+protected pages when those are implemented.
 
-There is one more use of kmap() in this driver which is split into its
-own patch because kmap_local_page() has strict ordering rules and the
-use of the kmap_mask over multiple segments must be handled carefully.
-Therefore, that conversion is handled in a stand alone patch.
+kmap_local_page() mappings are tracked in a stack and must be unmapped
+in the opposite order they were mapped in.
 
-Use kmap_local_page() instead of kmap() in the 'easy' cases.
+siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
+unmap pages which were mapped on function exit.  Not all entries in the
+array are mapped and this is tracked in kmap_mask.
+
+kunmap_local() takes a mapped address rather than a page.  Declare a
+mapped address array, page_array_addr, of the same size as the page
+array to be used for unmapping.
+
+Use kmap_local_page() instead of kmap() to map pages in the page_array.
+
+Because segments are mapped into the page array in increasing index
+order, modify siw_unmap_pages() to unmap pages in decreasing order.
+
+The kmap_mask is no longer needed as the lack of an address in the
+address array can indicate no unmap is required.
 
 [1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
 
 Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 ---
- drivers/infiniband/sw/siw/siw_qp_tx.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 35 +++++++++++++++------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index 7989c4043db4..db68a10d12cd 100644
+index db68a10d12cd..e70aba23f6e7 100644
 --- a/drivers/infiniband/sw/siw/siw_qp_tx.c
 +++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -76,7 +76,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- 			if (unlikely(!p))
- 				return -EFAULT;
+@@ -396,13 +396,17 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
  
--			buffer = kmap(p);
-+			buffer = kmap_local_page(p);
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
  
- 			if (likely(PAGE_SIZE - off >= bytes)) {
- 				memcpy(paddr, buffer + off, bytes);
-@@ -84,7 +84,7 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- 				unsigned long part = bytes - (PAGE_SIZE - off);
- 
- 				memcpy(paddr, buffer + off, part);
--				kunmap(p);
-+				kunmap_local(buffer);
- 
- 				if (!mem->is_pbl)
- 					p = siw_get_upage(mem->umem,
-@@ -96,10 +96,10 @@ static int siw_try_1seg(struct siw_iwarp_tx *c_tx, void *paddr)
- 				if (unlikely(!p))
- 					return -EFAULT;
- 
--				buffer = kmap(p);
-+				buffer = kmap_local_page(p);
- 				memcpy(paddr + part, buffer, bytes - part);
- 			}
--			kunmap(p);
-+			kunmap_local(buffer);
- 		}
+-static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
++static void siw_unmap_pages(void **addrs, int len)
+ {
+-	while (kmap_mask) {
+-		if (kmap_mask & BIT(0))
+-			kunmap(*pp);
+-		pp++;
+-		kmap_mask >>= 1;
++	int i;
++
++	/*
++	 * Work backwards through the array to honor the kmap_local_page()
++	 * ordering requirements.
++	 */
++	for (i = (len-1); i >= 0; i--) {
++		if (addrs[i])
++			kunmap_local(addrs[i]);
  	}
- 	return (int)bytes;
-@@ -485,6 +485,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ }
  
- 		while (sge_len) {
- 			size_t plen = min((int)PAGE_SIZE - fp_off, sge_len);
-+			void *kaddr;
+@@ -427,13 +431,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
+ 	struct kvec iov[MAX_ARRAY];
+ 	struct page *page_array[MAX_ARRAY];
++	void *page_array_addr[MAX_ARRAY];
+ 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
  
- 			if (!is_kva) {
- 				struct page *p;
-@@ -517,10 +518,11 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
+ 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len = 0,
+ 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
+ 		     pbl_idx = c_tx->pbl_idx;
+-	unsigned long kmap_mask = 0L;
++
++	memset(page_array_addr, 0, sizeof(page_array_addr));
+ 
+ 	if (c_tx->state == SIW_SEND_HDR) {
+ 		if (c_tx->use_sendpage) {
+@@ -498,7 +504,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					siw_unmap_pages(page_array, kmap_mask);
++					siw_unmap_pages(page_array_addr, MAX_ARRAY);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+@@ -506,11 +512,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				page_array[seg] = p;
+ 
+ 				if (!c_tx->use_sendpage) {
+-					iov[seg].iov_base = kmap(p) + fp_off;
+-					iov[seg].iov_len = plen;
++					page_array_addr[seg] = kmap_local_page(page_array[seg]);
+ 
+-					/* Remember for later kunmap() */
+-					kmap_mask |= BIT(seg);
++					iov[seg].iov_base = page_array_addr[seg] + fp_off;
++					iov[seg].iov_len = plen;
+ 
+ 					if (do_crc)
+ 						crypto_shash_update(
+@@ -518,7 +523,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
  							iov[seg].iov_base,
  							plen);
  				} else if (do_crc) {
-+					kaddr = kmap_local_page(p);
+-					kaddr = kmap_local_page(p);
++					kaddr = kmap_local_page(page_array[seg]);
  					crypto_shash_update(c_tx->mpa_crc_hd,
--							    kmap(p) + fp_off,
-+							    kaddr + fp_off,
+ 							    kaddr + fp_off,
  							    plen);
--					kunmap(p);
-+					kunmap_local(kaddr);
- 				}
- 			} else {
- 				u64 va = sge->laddr + sge_off;
+@@ -542,7 +547,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg > (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				siw_unmap_pages(page_array, kmap_mask);
++				siw_unmap_pages(page_array_addr, MAX_ARRAY);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+@@ -593,7 +598,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	} else {
+ 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+ 				    hdr_len + data_len + trl_len);
+-		siw_unmap_pages(page_array, kmap_mask);
++		siw_unmap_pages(page_array_addr, MAX_ARRAY);
+ 	}
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
