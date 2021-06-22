@@ -2,70 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923E43B08D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 17:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0483F3B0904
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 17:28:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232177AbhFVP1O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 11:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
+        id S231936AbhFVPap (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 11:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232300AbhFVP1L (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Jun 2021 11:27:11 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 096F5C061574;
-        Tue, 22 Jun 2021 08:24:56 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so21606083otl.3;
-        Tue, 22 Jun 2021 08:24:56 -0700 (PDT)
+        with ESMTP id S231248AbhFVPap (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Jun 2021 11:30:45 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2D33C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Jun 2021 08:28:29 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id j12so1836483qtv.11
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Jun 2021 08:28:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4X+AcHyDDe3HhjQCq2G+eaJ8kvsIjHhuoyLFdEACcnQ=;
-        b=F9cy62wh9RybK9h82fBHPpp8hPDnZx1s+Z0/GOTSU92eNMyNLfj1mmqR2+r3kT8aM1
-         xYDm3xoWuWMpBQnf+yCUtYaytLMGRdU+gDGi6swnU2/1W4YjA3DmVGgEJEhpqqWEJhiE
-         01z+W8Xkif0R9mOOrdnFJqQd5G+uUqQGTMfvsT/2xP5BWwkuBCnE6fDDDeJPKFj99hpa
-         IUTx7/RubZA8kR6BUpUTkctQ7E0FSq1LJm9p8lS8IeiHhgNrTRG9ObqVGWK0oLwjI4ER
-         nWl4Jh30VyNTX8WV9ruVKyd0scG13WLdSbrapyE0pKhuHbHyEx+IQYLAiGL9vT11KyaE
-         aOoQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=gSIT2aB7rHsSORmJBVTerFLvPUzJvuTh9nq+ipo1OW4=;
+        b=jMJSjWzPfPzqnKB8B3d0txI+f1QCXRwofrHYktBL6Dp/RhK8mDhbKSZcIAeOroGN79
+         9QKZyuK/IHnSXDzJVZS3X6lKP7w6E8KyRCjjniSQVc0jCI0AkxFDLwDCLmcInmPgiCnf
+         jgWG0hhVMC1nVN8HteDjeVRfh514OJrhlEcH2R925fh0DHPJTQOuXuBlI4DUwVhGyPRl
+         DthIYUE4NB1fnKp7n1suCV8ABft4OFetd4l8JY9SJSPUN6ozC3ygwCBUw+HE0mNeNlWt
+         b8N9Y1O7r/s/b3RUVZtkPQ9u0U0mfuUS0aqx+/yNM9XPrMJnox3nrIaQn6+gPefKB6rN
+         j1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4X+AcHyDDe3HhjQCq2G+eaJ8kvsIjHhuoyLFdEACcnQ=;
-        b=Eh7SchjWN0/sC0XIQzwQqaR68iJ7uySxMQOMVWXWPWnQvNUU0Bl/nSndklPp89sDP+
-         EQKA/lCyqbNfyJkPcuk/nk0iUe9rtQRP7h5k5OTAG1jma9KJ/DWaAgGXCCv+CcfmmgJn
-         4zMRX4gOYDQO1i2oUL2jp/1aPqG1MGxnmfoNXCuuk5lClx4Tyw5N6o2zjDw2Wv8sbeiX
-         nir0xFCiqZ7WD/sfjC8ZHUkkV0pHjDH7mAxFPTBLx0+X5ayDARRZUq+Eo1gm7FO9eISZ
-         qfuXyW1dmOon2POLz/AtV89aCRXLLCjydIX1iQiPmdUGV+0+LqpdNYZlTex2XY5gwd8G
-         Q8qg==
-X-Gm-Message-State: AOAM531LgEQnidWugvgE6zkPnQUUUfJYBiMHvv+sXZ5JIuGZlocLAEUv
-        11mZ3F+Bdkb0EYByogZKAiL80L/sqcxpNtOSUXk=
-X-Google-Smtp-Source: ABdhPJxdbW8W5cXUxxqtgxKi95nj/EmM2JjajNW5+/OukMinRa2g08LQoWclCFHmO/psGwfcUIox+YZCnLKA4tnM/9A=
-X-Received: by 2002:a9d:4581:: with SMTP id x1mr3651165ote.145.1624375495284;
- Tue, 22 Jun 2021 08:24:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621175511.GI1096940@ziepe.ca> <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
- <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca> <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca> <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
- <20210622121546.GN1096940@ziepe.ca> <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
- <20210622151142.GA2431880@ziepe.ca>
-In-Reply-To: <20210622151142.GA2431880@ziepe.ca>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Tue, 22 Jun 2021 18:24:28 +0300
-Message-ID: <CAFCwf1361iVGeGtcc8WsQeFmHMWY+J6UNkzJnrodFrsOh9zgqQ@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=gSIT2aB7rHsSORmJBVTerFLvPUzJvuTh9nq+ipo1OW4=;
+        b=j1X7QNGQ5FlcfuzOxFR2H526p4YruYyAF3b6rxD6kxH/Wp0nPLHzqJmXski13BG+7V
+         s/SbjdGSwGA1Ulw1d9T1R6ZhwWxJ5H7QwPtTI9RpuKoI28ktJQ2YCzDgyIUrhuDRE9RP
+         Ws7DMkEjcQHcZhxzYAP6QY3kHAYvaB7/Z7vDu8j9e6D7hgIWpNnUPA1j67CSWMn7Qtyq
+         SRHjhS7mZtAIWisBHqBzZp4YISkKarFObPixHrkr8Jiq26ePU7iHekW+JnDh7D8kn8Pa
+         w/TcLzrzHHuv3LkwXGyDeJSOih88qhIe7QzadgMNYy7uzFFKKOZHSrWbPa7bSWRy7p+y
+         C9LA==
+X-Gm-Message-State: AOAM531FT4v59L9jbLz0p/KBLtZtNrceEXbvXV3FiRdJ8w6tI4duAC76
+        xOvN7+e01bZHeyRgKYi64H/5BQ==
+X-Google-Smtp-Source: ABdhPJwvGxEjOXxCirTSFPJmIHH9j6VoDmK24La5Ry2f+RuAq8/L4z8p3qLfsHgu2FnFM9CaTb3hKA==
+X-Received: by 2002:ac8:5ad5:: with SMTP id d21mr3797369qtd.166.1624375708968;
+        Tue, 22 Jun 2021 08:28:28 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id f19sm13636743qkg.70.2021.06.22.08.28.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 08:28:28 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lviKC-00ADKO-08; Tue, 22 Jun 2021 12:28:28 -0300
+Date:   Tue, 22 Jun 2021 12:28:27 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
         Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
         linux-rdma <linux-rdma@vger.kernel.org>,
         Oded Gabbay <ogabbay@kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         dri-devel <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         "moderated list:DMA BUFFER SHARING FRAMEWORK" 
         <linaro-mm-sig@lists.linaro.org>,
         Doug Ledford <dledford@redhat.com>,
@@ -76,78 +72,46 @@ Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         "open list:DMA BUFFER SHARING FRAMEWORK" 
         <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210622152827.GQ1096940@ziepe.ca>
+References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+ <20210621232912.GK1096940@ziepe.ca>
+ <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
+ <20210622121546.GN1096940@ziepe.ca>
+ <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
+ <20210622151142.GA2431880@ziepe.ca>
+ <4a37216d-7c4c-081e-3325-82466f30b6eb@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4a37216d-7c4c-081e-3325-82466f30b6eb@amd.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 6:11 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jun 22, 2021 at 04:12:26PM +0300, Oded Gabbay wrote:
->
-> > > 1) Setting sg_page to NULL
-> > > 2) 'mapping' pages for P2P DMA without going through the iommu
-> > > 3) Allowing P2P DMA without using the p2p dma API to validate that it
-> > >    can work at all in the first place.
-> > >
-> > > All of these result in functional bugs in certain system
-> > > configurations.
-> > >
-> > > Jason
-> >
-> > Hi Jason,
-> > Thanks for the feedback.
-> > Regarding point 1, why is that a problem if we disable the option to
-> > mmap the dma-buf from user-space ?
->
-> Userspace has nothing to do with needing struct pages or not
->
-> Point 1 and 2 mostly go together, you supporting the iommu is not nice
-> if you dont have struct pages.
->
-> You should study Logan's patches I pointed you at as they are solving
-> exactly this problem.
-Yes, I do need to study them. I agree with you here. It appears I have
-a hole in my understanding.
-I'm missing the connection between iommu support (which I must have of
-course) and struct pages.
+On Tue, Jun 22, 2021 at 05:24:08PM +0200, Christian König wrote:
 
->
-> > In addition, I didn't see any problem with sg_page being NULL in the
-> > RDMA p2p dma-buf code. Did I miss something here ?
->
-> No, the design of the dmabuf requires the exporter to do the dma maps
-> and so it is only the exporter that is wrong to omit all the iommu and
-> p2p logic.
->
-> RDMA is OK today only because nobody has implemented dma buf support
-> in rxe/si - mainly because the only implementations of exporters don't
-Can you please educate me, what is rxe/si ?
+> > > I will take two GAUDI devices and use one as an exporter and one as an
+> > > importer. I want to see that the solution works end-to-end, with real
+> > > device DMA from importer to exporter.
+> > I can tell you it doesn't. Stuffing physical addresses directly into
+> > the sg list doesn't involve any of the IOMMU code so any configuration
+> > that requires IOMMU page table setup will not work.
+> 
+> Sure it does. See amdgpu_vram_mgr_alloc_sgt:
+> 
+>         amdgpu_res_first(res, offset, length, &cursor);
+         ^^^^^^^^^^
 
-> set the struct page and are thus buggy.
+I'm not talking about the AMD driver, I'm talking about this patch.
 
-ok...
-so how come that patch-set was merged into 5.12 if it's buggy ?
-Because the current exporters are buggy ?  I probably need a history
-lesson here.
-But I understand why you think it's a bad idea to add a new buggy exporter.
++		bar_address = hdev->dram_pci_bar_start +
++				(pages[cur_page] - prop->dram_base_address);
++		sg_dma_address(sg) = bar_address;
 
->
-> > I will take two GAUDI devices and use one as an exporter and one as an
-> > importer. I want to see that the solution works end-to-end, with real
-> > device DMA from importer to exporter.
->
-> I can tell you it doesn't. Stuffing physical addresses directly into
-> the sg list doesn't involve any of the IOMMU code so any configuration
-> that requires IOMMU page table setup will not work.
->
-> Jason
-
-Yes, that's what I expect to see. But I want to see it with my own
-eyes and then figure out how to solve this.
-Maybe the result will be going to Logan's path, maybe something else,
-but I need to start by seeing the failure in a real system.
-
-Thanks for the information, it is really helpful.
-
-Oded
+Jason
