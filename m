@@ -2,69 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2426A3AFCE4
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550C33AFCF1
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbhFVGLu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 02:11:50 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:40369 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229490AbhFVGLr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:11:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UdHolaH_1624342164;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UdHolaH_1624342164)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 22 Jun 2021 14:09:30 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     saeedm@nvidia.com
-Cc:     leon@kernel.org, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] net/mlx5: Fix missing error code in mlx5_init_fs()
-Date:   Tue, 22 Jun 2021 14:09:21 +0800
-Message-Id: <1624342161-84389-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S230047AbhFVGQ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 02:16:56 -0400
+Received: from mga02.intel.com ([134.134.136.20]:63359 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229810AbhFVGQx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Jun 2021 02:16:53 -0400
+IronPort-SDR: Z6S05p7pLJ2ptLOyTatItj2LIh4mlQnOgENWZMiiJJDODGKo5Qq9oPI+C34NX8F3lpKBnT5NkU
+ AgOeowe5KQ1w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194131560"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="194131560"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:32 -0700
+IronPort-SDR: dUxdZGhfZb6+NVPzyfJSt0om/nnqEWmkNKCMT9DRTUIv8WKzgU+ZSQWeUCN8RYRKTxAfqGY1Dd
+ 290YzY5zx30g==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="486783249"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:25 -0700
+From:   ira.weiny@intel.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Remove use of kmap()
+Date:   Mon, 21 Jun 2021 23:14:18 -0700
+Message-Id: <20210622061422.2633501-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The error code is missing in this code scenario, add the error code
-'-ENOMEM' to the return value 'err'.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Eliminate the follow smatch warning:
+kmap() is being deprecated and will break uses of device dax after PKS
+protection is introduced.[1]
 
-drivers/net/ethernet/mellanox/mlx5/core/fs_core.c:2973 mlx5_init_fs()
-warn: missing error code 'err'.
+These kmap() usages don't need to be global and work fine as thread local
+mappings.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: 4a98544d1827 ("net/mlx5: Move chains ft pool to be used by all firmware steering").
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  - For the follow advice: https://lore.kernel.org/patchwork/patch/1446816/
+Replace these kmap() calls with kmap_local_page() which is more appropriate.
 
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+The only final use of kmap() in the RDMA subsystem is in the qib driver which
+is pretty old at this point.  The use is pretty convoluted and I doubt systems
+using that driver are using persistent memory.  So it is left as is.  If this
+is a problem I can dig into converting it as well.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 2cd7aea..b861745 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -2969,8 +2969,11 @@ int mlx5_init_fs(struct mlx5_core_dev *dev)
- 		return err;
- 
- 	steering = kzalloc(sizeof(*steering), GFP_KERNEL);
--	if (!steering)
-+	if (!steering) {
-+		err = -ENOMEM;
- 		goto err;
-+	}
-+
- 	steering->dev = dev;
- 	dev->priv.steering = steering;
- 
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
+
+Ira Weiny (4):
+  RDMA/hfi1: Remove use of kmap()
+  RDMA/i40iw: Remove use of kmap()
+  RDMA/siw: Remove kmap()
+  RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+
+ drivers/infiniband/hw/hfi1/sdma.c      |  4 +--
+ drivers/infiniband/hw/i40iw/i40iw_cm.c | 10 +++---
+ drivers/infiniband/sw/siw/siw_qp_tx.c  | 47 +++++++++++++++-----------
+ 3 files changed, 34 insertions(+), 27 deletions(-)
+
 -- 
-1.8.3.1
+2.28.0.rc0.12.gb6a658bd00c9
 
