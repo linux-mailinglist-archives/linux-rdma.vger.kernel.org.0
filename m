@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550C33AFCF1
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B853AFCE9
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 08:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbhFVGQ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 02:16:56 -0400
-Received: from mga02.intel.com ([134.134.136.20]:63359 "EHLO mga02.intel.com"
+        id S229628AbhFVGQl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 02:16:41 -0400
+Received: from mga17.intel.com ([192.55.52.151]:25148 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229810AbhFVGQx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:16:53 -0400
-IronPort-SDR: Z6S05p7pLJ2ptLOyTatItj2LIh4mlQnOgENWZMiiJJDODGKo5Qq9oPI+C34NX8F3lpKBnT5NkU
- AgOeowe5KQ1w==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194131560"
+        id S229490AbhFVGQl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 22 Jun 2021 02:16:41 -0400
+IronPort-SDR: 04FZbNjMBOOreiP3CNuzHXsD8xj+i4HlI4+oZIuVe6LUQ066Y/Q/T7wxVxHuoyJWeK5s98T4pg
+ VK1aNyBmUcwA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187373703"
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="194131560"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:32 -0700
-IronPort-SDR: dUxdZGhfZb6+NVPzyfJSt0om/nnqEWmkNKCMT9DRTUIv8WKzgU+ZSQWeUCN8RYRKTxAfqGY1Dd
- 290YzY5zx30g==
+   d="scan'208";a="187373703"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:25 -0700
+IronPort-SDR: Ir+4ZlduStZgrjV86BlzGR1j2rSP/gVwinsIwzf8uS6DKa9u2BFNJr8pwmgAY7ZlpP/SEd2p5G
+ mZ4K/f7QIlzw==
 X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="486783249"
+   d="scan'208";a="641551752"
 Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:25 -0700
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 23:14:25 -0700
 From:   ira.weiny@intel.com
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Ira Weiny <ira.weiny@intel.com>,
@@ -35,10 +35,12 @@ Cc:     Ira Weiny <ira.weiny@intel.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
         Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] Remove use of kmap()
-Date:   Mon, 21 Jun 2021 23:14:18 -0700
-Message-Id: <20210622061422.2633501-1-ira.weiny@intel.com>
+Subject: [PATCH 1/4] RDMA/hfi1: Remove use of kmap()
+Date:   Mon, 21 Jun 2021 23:14:19 -0700
+Message-Id: <20210622061422.2633501-2-ira.weiny@intel.com>
 X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210622061422.2633501-1-ira.weiny@intel.com>
+References: <20210622061422.2633501-1-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -50,29 +52,39 @@ From: Ira Weiny <ira.weiny@intel.com>
 kmap() is being deprecated and will break uses of device dax after PKS
 protection is introduced.[1]
 
-These kmap() usages don't need to be global and work fine as thread local
-mappings.
-
-Replace these kmap() calls with kmap_local_page() which is more appropriate.
-
-The only final use of kmap() in the RDMA subsystem is in the qib driver which
-is pretty old at this point.  The use is pretty convoluted and I doubt systems
-using that driver are using persistent memory.  So it is left as is.  If this
-is a problem I can dig into converting it as well.
+The kmap() used in sdma does not need to be global.  Use the new
+kmap_local_page() which works with PKS and may provide better
+performance for this thread local mapping anyway.
 
 [1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
 
-Ira Weiny (4):
-  RDMA/hfi1: Remove use of kmap()
-  RDMA/i40iw: Remove use of kmap()
-  RDMA/siw: Remove kmap()
-  RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+---
+ drivers/infiniband/hw/hfi1/sdma.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/infiniband/hw/hfi1/sdma.c      |  4 +--
- drivers/infiniband/hw/i40iw/i40iw_cm.c | 10 +++---
- drivers/infiniband/sw/siw/siw_qp_tx.c  | 47 +++++++++++++++-----------
- 3 files changed, 34 insertions(+), 27 deletions(-)
-
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index 46b5290b2839..af43dcbb0928 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -3130,7 +3130,7 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx,
+ 		}
+ 
+ 		if (type == SDMA_MAP_PAGE) {
+-			kvaddr = kmap(page);
++			kvaddr = kmap_local_page(page);
+ 			kvaddr += offset;
+ 		} else if (WARN_ON(!kvaddr)) {
+ 			__sdma_txclean(dd, tx);
+@@ -3140,7 +3140,7 @@ int ext_coal_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx,
+ 		memcpy(tx->coalesce_buf + tx->coalesce_idx, kvaddr, len);
+ 		tx->coalesce_idx += len;
+ 		if (type == SDMA_MAP_PAGE)
+-			kunmap(page);
++			kunmap_local(kvaddr);
+ 
+ 		/* If there is more data, return */
+ 		if (tx->tlen - tx->coalesce_idx)
 -- 
 2.28.0.rc0.12.gb6a658bd00c9
 
