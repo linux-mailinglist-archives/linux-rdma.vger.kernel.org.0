@@ -2,151 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E33C3B0404
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 14:15:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032123B040A
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Jun 2021 14:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231307AbhFVMSG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Jun 2021 08:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbhFVMSG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Jun 2021 08:18:06 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3A5C06175F
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Jun 2021 05:15:48 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id f5so9076199qvu.8
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Jun 2021 05:15:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KjofJoQyUwiIAacJkE1UxWn3Mo9VplV7FtMGlU0RWLM=;
-        b=h97BE10eQvAs7iuAp3KSz/AKkEBSJK+RWgPE2bKUnLoQdvOUv3nQXFBCT3PEWlx2Sl
-         E/e2cYiumFAEGqj4jTurYIMnn2zsv1UeEuBl9zhKLEnlbb/EkISQicJQPDbtplfY7NkM
-         co8/vN6NEYxfoOaungf0V4XWEA/Cmf7QBmCZBDNRHWHAx6heTvyghfkmTuWnPgQqEDpW
-         mESlAUjUeEAGF0vwR/v1AwASBsRjSyjZOYhs7r1/kwL3GwXPKGLxfpNXjMb/amd4m48L
-         RTR9a5HRMe1vZ+UVKk7QU3T0ut/x3x7ci4FJwEzm6Jq6XV4LXljZKU5h4jBZaF4LdabI
-         BUuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KjofJoQyUwiIAacJkE1UxWn3Mo9VplV7FtMGlU0RWLM=;
-        b=Y1JDKIja+YnKOvcDfqZji/dS/DjQ0jc9/2NN3tsu3HZa+qDUjt0QwvDCQsZNiArmbo
-         oW4u14hM5JKBcY7klEsymhIi3Q4lSGvXRb4FQzWGAwGS1fyQzEDDmQcddo8xFH7CrV8H
-         IbHKxI0Zb1ISLn5bR1qh+j7TPD3FKKk0cKiXK2CVQ0aFo7Zs2CN6sVy90VtwBhqyZgPs
-         7OzA8kpUA2IOaXfBFvol9gYG31w1ZMvq1wnbQ5lXGjyKEVo3Gstk+xUelXZvNuXKjPKa
-         OxgWjglhtxsCxPy1mCnWOfjb+QCnRmEz+0YxNoG2e4dYBsIYDSJEi1AEju9FjHU9FfXx
-         Egow==
-X-Gm-Message-State: AOAM530n+3Rxt44/F4SkNC1GLrD29+BU0WgEAB6km8CCfBugdG2OdEUg
-        l7nCe46hh8TER5u/ctW45WSHSw==
-X-Google-Smtp-Source: ABdhPJy23RwHWwohPH/Gr7a/6x+XnMYskE5GrjrV3VrRGHji6PDv+ikMUtwLNa4CYmg0qZGAziatcw==
-X-Received: by 2002:a0c:aacd:: with SMTP id g13mr1227641qvb.22.1624364148049;
-        Tue, 22 Jun 2021 05:15:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id l123sm5662330qke.10.2021.06.22.05.15.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 05:15:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lvfJj-00A9d2-05; Tue, 22 Jun 2021 09:15:47 -0300
-Date:   Tue, 22 Jun 2021 09:15:46 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622121546.GN1096940@ziepe.ca>
-References: <20210621141217.GE1096940@ziepe.ca>
- <CAFCwf10KvCh0zfHEHqYR-Na6KJh4j+9i-6+==QaMdHHpLH1yEA@mail.gmail.com>
- <20210621175511.GI1096940@ziepe.ca>
- <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
- <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca>
- <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
+        id S231218AbhFVMSu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Jun 2021 08:18:50 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8292 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhFVMSu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Jun 2021 08:18:50 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G8QGz0vS6z1BQWB;
+        Tue, 22 Jun 2021 20:11:23 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 20:16:32 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 20:16:31 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Yixing Liu <liuyixing1@huawei.com>,
+        Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Add window selection field of congestion control
+Date:   Tue, 22 Jun 2021 20:16:03 +0800
+Message-ID: <1624364163-44185-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 03:04:30PM +0300, Oded Gabbay wrote:
-> On Tue, Jun 22, 2021 at 3:01 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Tue, Jun 22, 2021 at 11:42:27AM +0300, Oded Gabbay wrote:
-> > > On Tue, Jun 22, 2021 at 9:37 AM Christian König
-> > > <ckoenig.leichtzumerken@gmail.com> wrote:
-> > > >
-> > > > Am 22.06.21 um 01:29 schrieb Jason Gunthorpe:
-> > > > > On Mon, Jun 21, 2021 at 10:24:16PM +0300, Oded Gabbay wrote:
-> > > > >
-> > > > >> Another thing I want to emphasize is that we are doing p2p only
-> > > > >> through the export/import of the FD. We do *not* allow the user to
-> > > > >> mmap the dma-buf as we do not support direct IO. So there is no access
-> > > > >> to these pages through the userspace.
-> > > > > Arguably mmaping the memory is a better choice, and is the direction
-> > > > > that Logan's series goes in. Here the use of DMABUF was specifically
-> > > > > designed to allow hitless revokation of the memory, which this isn't
-> > > > > even using.
-> > > >
-> > > > The major problem with this approach is that DMA-buf is also used for
-> > > > memory which isn't CPU accessible.
-> >
-> > That isn't an issue here because the memory is only intended to be
-> > used with P2P transfers so it must be CPU accessible.
-> >
-> > > > That was one of the reasons we didn't even considered using the mapping
-> > > > memory approach for GPUs.
-> >
-> > Well, now we have DEVICE_PRIVATE memory that can meet this need
-> > too.. Just nobody has wired it up to hmm_range_fault()
-> >
-> > > > > So you are taking the hit of very limited hardware support and reduced
-> > > > > performance just to squeeze into DMABUF..
-> > >
-> > > Thanks Jason for the clarification, but I honestly prefer to use
-> > > DMA-BUF at the moment.
-> > > It gives us just what we need (even more than what we need as you
-> > > pointed out), it is *already* integrated and tested in the RDMA
-> > > subsystem, and I'm feeling comfortable using it as I'm somewhat
-> > > familiar with it from my AMD days.
-> >
-> > You still have the issue that this patch is doing all of this P2P
-> > stuff wrong - following the already NAK'd AMD approach.
-> 
-> Could you please point me exactly to the lines of code that are wrong
-> in your opinion ?
+From: Yixing Liu <liuyixing1@huawei.com>
 
-1) Setting sg_page to NULL
-2) 'mapping' pages for P2P DMA without going through the iommu
-3) Allowing P2P DMA without using the p2p dma API to validate that it
-   can work at all in the first place.
+The window selection field is necessary for congestion control of HIP09, it
+is got from firmware and then filled into QPC. Some algorithms need it to
+decide whether to limit the number of windows.
 
-All of these result in functional bugs in certain system
-configurations.
+Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
+Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+Signed-off-by: Weihang Li <liweihang@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 ++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  2 ++
+ 2 files changed, 14 insertions(+)
 
-Jason
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 069c7cd..e057ede 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4585,6 +4585,11 @@ enum {
+ 	DIP_VALID,
+ };
+ 
++enum {
++	WND_LIMIT,
++	WND_UNLIMIT,
++};
++
+ static int check_cong_type(struct ib_qp *ibqp,
+ 			   struct hns_roce_congestion_algorithm *cong_alg)
+ {
+@@ -4596,21 +4601,25 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+ 		cong_alg->dip_vld = DIP_INVALID;
++		cong_alg->wnd_mode_sel = WND_LIMIT;
+ 		break;
+ 	case CONG_TYPE_LDCP:
+ 		cong_alg->alg_sel = CONG_WINDOW;
+ 		cong_alg->alg_sub_sel = CONG_LDCP;
+ 		cong_alg->dip_vld = DIP_INVALID;
++		cong_alg->wnd_mode_sel = WND_UNLIMIT;
+ 		break;
+ 	case CONG_TYPE_HC3:
+ 		cong_alg->alg_sel = CONG_WINDOW;
+ 		cong_alg->alg_sub_sel = CONG_HC3;
+ 		cong_alg->dip_vld = DIP_INVALID;
++		cong_alg->wnd_mode_sel = WND_LIMIT;
+ 		break;
+ 	case CONG_TYPE_DIP:
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+ 		cong_alg->dip_vld = DIP_VALID;
++		cong_alg->wnd_mode_sel = WND_LIMIT;
+ 		break;
+ 	default:
+ 		ibdev_err(&hr_dev->ib_dev,
+@@ -4651,6 +4660,9 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SUB_SEL);
+ 	hr_reg_write(&context->ext, QPCEX_DIP_CTX_IDX_VLD, cong_field.dip_vld);
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_DIP_CTX_IDX_VLD);
++	hr_reg_write(&context->ext, QPCEX_SQ_RQ_NOT_FORBID_EN,
++		     cong_field.wnd_mode_sel);
++	hr_reg_clear(&qpc_mask->ext, QPCEX_SQ_RQ_NOT_FORBID_EN);
+ 
+ 	/* if dip is disabled, there is no need to set dip idx */
+ 	if (cong_field.dip_vld == 0)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 04b4ad4..82a2fe4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -700,6 +700,7 @@ struct hns_roce_v2_qp_context {
+ #define QPCEX_CONG_ALG_SUB_SEL QPCEX_FIELD_LOC(1, 1)
+ #define QPCEX_DIP_CTX_IDX_VLD QPCEX_FIELD_LOC(2, 2)
+ #define QPCEX_DIP_CTX_IDX QPCEX_FIELD_LOC(22, 3)
++#define QPCEX_SQ_RQ_NOT_FORBID_EN QPCEX_FIELD_LOC(23, 23)
+ #define QPCEX_STASH QPCEX_FIELD_LOC(82, 82)
+ 
+ #define	V2_QP_RWE_S 1 /* rdma write enable */
+@@ -1337,6 +1338,7 @@ struct hns_roce_congestion_algorithm {
+ 	u8 alg_sel;
+ 	u8 alg_sub_sel;
+ 	u8 dip_vld;
++	u8 wnd_mode_sel;
+ };
+ 
+ #define V2_QUERY_PF_CAPS_D_CEQ_DEPTH_S 0
+-- 
+2.7.4
+
