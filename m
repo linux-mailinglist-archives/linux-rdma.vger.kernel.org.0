@@ -2,118 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BB53B1FEA
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 19:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABED43B203E
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 20:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbhFWR4W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 13:56:22 -0400
-Received: from mail-bn8nam12on2085.outbound.protection.outlook.com ([40.107.237.85]:3808
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229881AbhFWR4V (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Jun 2021 13:56:21 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YxPF7oIlfhsAmcU6XxUzZUdKP8gDD4cSjeXrltcmMlgp5HiacAidh6I0TbeT0/l0z2tA9KcZYfM8JTbHpeZwNBLoXAEaX+X5tSl3C8LLdjCZzq3yKxaPniukU2+yafJUoroW/vSxK8IaH69FT68zViD+ROqnDidn9eMs72QQCsHHbNsIDJ9AI53wgJUfH7dMVQ6QcEhzBLAY5wzH9U2PktgVMECssJPcGe2f/mYA5RbZkAJbzfsEtpZmWNZKt9z1BWzc9t913zrQbBk68QvDy9j6cijKIBbOglS4gN5J7NBXWeKGShDyP0Mtp/SKJqY30U4m8U/hNaMiXznZ53GRcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AKnO7ofwHAL8gPmZ4WQaOCWrzAF5dhCXeUmq1Es3FIk=;
- b=WxBDg/AZnjLCAtI+yMnS6JsCtAjXBcLzLEmZK5+cp8L1jJ9JwC9dIek8U6UUJxoi8Z01mB9e0L2acClBa2PZl44dx8sLyqt3RLfqtVdlrxWtSw7hTEmQ0bpDggg7LHHeRRc4zVEknlBcOaO8b/uFy2raJt5lDrV+NpTRIbs5vMkQax+PefczObHaZyqPXTDTx/QPQzS9ZAfXm/1Ez6w0n28NwUAt+Cgdmb8lc65eX8QpIAlXpuw6xg13ifkHEZOQaPS2h7L+Vil3mVFeo6g8rs9aP3NHVJxvlm3EfXso9MKx1u5RZtqXV1cCJX7QDtSZkyT1EFndrd1vo7sDD45Thg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AKnO7ofwHAL8gPmZ4WQaOCWrzAF5dhCXeUmq1Es3FIk=;
- b=dL38LVMVG6Q98sp1GWggVe2lmPsNtxb6YSICa3eq6FDg4AZgHyXbik3v5CM8/xxwlC0BRZK3sY+4mVx2Hihw7x/6VVnI7ggSoWNDuOCFlXwibXssrREtwyE3E1I0RB3VixueeuTQAPiAQ70fY/+SydMxKz1tzpUkT8TjyIBpNP6JEbspxPVhDF1j/BqA70ZfipnVM5iOswkVOgbJDWeTY9W6QGTrNE1zI23XRMhsGtCMzmm0fVy76+OYgmUzN/NuxewRp3E5Q+KlbWqxKjeh5ISr4601ZVid0Gv/xM9rPZR+1EPsCzByaaXvJBLJBvkhlCjhazxJVD+yOXrp+1zrFw==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Wed, 23 Jun
- 2021 17:54:02 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.019; Wed, 23 Jun 2021
- 17:54:02 +0000
-Date:   Wed, 23 Jun 2021 14:54:01 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Weihang Li <liweihang@huawei.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH for-next] RDMA/hns: Fix incorrect vlan enable bit in QPC
-Message-ID: <20210623175401.GB2800751@nvidia.com>
-References: <1624438201-11915-1-git-send-email-liweihang@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624438201-11915-1-git-send-email-liweihang@huawei.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0094.namprd02.prod.outlook.com
- (2603:10b6:208:51::35) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229926AbhFWS1I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 14:27:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhFWS05 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 14:26:57 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53E5C061760
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 11:24:37 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id f16so1929552qvs.7
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 11:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Ay2MFJ8k8M7R+vcG/EIgcKO9+a17Gdo2IRp61Ubbznw=;
+        b=mCvqGy8+wtoV1fX/pyjo8KTMFPXZBXguyo9f6344j9Tuu6bvNitRH+6EMM391SPgX6
+         SQMYyLNce8QZVpU7zBjnXebtb+Q1dmFuIlrzFz1aYg4dzKB/BRgz4LB8VyLVDBN8SLbD
+         /DnbLaMY7YnyWKxjMZMgiPK42h8fTN66ErFs85v1J8jFaHQ7sl2AsFzx96c0xf/l9U1g
+         an4hgyfwGlZSu7q9rvwAQ11c2UHFj6bACLkguqt6g9SVPdmo2aTNRobeEQ+DP+d/WoQh
+         ZrnVQWoPWeo+kqw9aoKL73cB5McCCDUOBzJRc7EqyhLF4fkeGZrtBUlGnWa8WWodzdtj
+         vF9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Ay2MFJ8k8M7R+vcG/EIgcKO9+a17Gdo2IRp61Ubbznw=;
+        b=Dcc+eHcVLn3Kqd6eVKad+7KRYD6LyuIhh0u3dxBTiB5IUjrrl64htqqRZ7y34jxE8m
+         C91ZYAgB+EofWUDwx5myNAXu1/ZigpljgHnag9rg9AGE0hYPPJ/Df9VLhacHOL8SAtH9
+         6/it5lEXL9F29SI+MgepZBIuXqx9H6tzTQDPq504LeXWd6R6Rkpl3oY5WuZ2x0todLc8
+         YtvfioHkfjj7GkgcTtsovBr20RwabQTh/gkicqaVZVW89Gtq4EGW326tiHyqM9+0GF5E
+         KqvpwnTkBJpvJkFMenaJ3ree7mKX5J5q/JszSvli8b+kcwvKFKlwnvSmMOyKXLNvl52w
+         HYMw==
+X-Gm-Message-State: AOAM53243SIjDv/AWFbfijDPgrYXV8t+Q/jt9c1Ezwt8ZKbrdWO9asnE
+        ouQBFoFI4V0X3u1Cqj458L/9bg==
+X-Google-Smtp-Source: ABdhPJwlrtEHn8YPQ5NuHFKzj1NcK0jWPqvPQ5lmMB0+rCMklEH74CDToqHNweA68dTG1W74jUsdaA==
+X-Received: by 2002:a0c:f309:: with SMTP id j9mr1350376qvl.12.1624472676911;
+        Wed, 23 Jun 2021 11:24:36 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id 85sm456567qkl.46.2021.06.23.11.24.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Jun 2021 11:24:36 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lw7YB-00BlF7-OO; Wed, 23 Jun 2021 15:24:35 -0300
+Date:   Wed, 23 Jun 2021 15:24:35 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210623182435.GX1096940@ziepe.ca>
+References: <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
+ <20210622152343.GO1096940@ziepe.ca>
+ <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+ <20210622154027.GS1096940@ziepe.ca>
+ <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
+ <20210622160538.GT1096940@ziepe.ca>
+ <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0094.namprd02.prod.outlook.com (2603:10b6:208:51::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23 via Frontend Transport; Wed, 23 Jun 2021 17:54:02 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lw74b-00Bkch-Oz; Wed, 23 Jun 2021 14:54:01 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: afd566d4-21ae-456d-b3b0-08d9366fe2c5
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB531859447C134CDD606C90BEC2089@BL1PR12MB5318.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6Uxghvymxl1u2jJqh7aQA8BXVfaRQ3T0dsfnfTPV9lVBJib9jH12n8AYq6kdaeZkknB5vn2nceetQWH8rxgMIEvGIGuaQBMKQOdRdH/yUHiHkPJz9sCVPr2VpFfqTMtEkW1h9TIPA1SnvTNrB7ltsn+Et9ymsGzBC5MDFTnpAgPBpPUAE31tBXRnsuUIH61I7Mc0api3OuWiL5FAJxbfb7ER6segNzWUKd9hJ/1CV7ey3x0P/dbr2sor8HkmZrpYZBh9CY6RexI2+L5+HsWv4ZA5gG0Fk7VFRtjLGdsGlBeOzWW7K+wlpkQuLv2YicHxyBKKCQqwctdrKdqvv0l2iuVwu5IW/w2w9IrIYpu6i6gH07N5uNY9m1jYDm2ygK3wjCkk2owvRPicx25Qag9EfMfnacqfrdg5xK4pKC3NB5bXZVnldsmISyzH2cmx2H/2NHckTE9oLN/IDKHuvc/zK6jBjY/YXhdaSkVyqY/4IwZBrV62sxm6wGNVR+QTW6CWqD4F3MzYd0pNs+q41300vDr8LpqtFAOF5G2nC+DE0UPO8/6MmXrJVZl9aAwaNqBkuBU8r9dgpfdAueHKRsrX7FwCrGq/rhh/AjfyS2rf36ZhezFxZ+iDe4YiOQ8xsPJy36YTJ+Ow+KohpwyG6QHJHw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39860400002)(376002)(136003)(366004)(5660300002)(8936002)(8676002)(66946007)(66556008)(66476007)(4744005)(86362001)(36756003)(9746002)(478600001)(6916009)(9786002)(83380400001)(426003)(2616005)(186003)(26005)(316002)(4326008)(2906002)(1076003)(38100700002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iuU56aMJTXJpy6/Jqmc94zPrzkm/S7tdyXGbxQtK6yzZQdAeW4fVDB9lMJpZ?=
- =?us-ascii?Q?ktC4M6CPqY1t9ycXRhQQ/J5Z7dlsq5Rcyh2J+q8ECZqSTGC1GVmigjhTb/qw?=
- =?us-ascii?Q?LbXhh6F5OQxNG+qU9z7iAIZMtGx6LD9wrA+eGR92FeK460G3mddpLyvvVeeu?=
- =?us-ascii?Q?zzN4c/hUaSKZSPZ/nY/uNHNmWVB2lWsiF3VlN9BXK9W3dJB0KuY0vw6hMmE+?=
- =?us-ascii?Q?K7NQK8ABqIVjzxYm0bDWybYb/P5zJtGMjZVvz3G7GD3KBt3Ih7NnElX4He9g?=
- =?us-ascii?Q?A9Bfm7AjvWUDxgbXms2zAL9sDucCKalozUxQfqmn/+7BeVsZeha7N1ouklIP?=
- =?us-ascii?Q?zqDXYKI+O5VFAwJmJroeAQ3Yp5u6BMgM1i2vBA0LeRlxoJDDewrrNZaBAnaz?=
- =?us-ascii?Q?jjrxVRjQ6eG5q2NEApig1GJuieZ18qR1D/ppSTAu0IZNN3qDWjDTpFoE7fr5?=
- =?us-ascii?Q?bqIwom+DzXJ+b8q/ZgcuzRKHIa4hc06D7lFLa5kuWRVx+jO1Fcgoxd6pJw+Z?=
- =?us-ascii?Q?FSVtSntpRDil8hcPNMelMT6aiO21G79ZPwcDnO5IlOTnEADDYXkDSkw99Niz?=
- =?us-ascii?Q?Wuw0ydPDAv+p92eZlQz4uGUK1xZAfTgbi/mq5B2lHuTomEHiSQ5AxRRFHMo2?=
- =?us-ascii?Q?D9ughfC0cBD6aSlUmAeyr6V5jKEHsKSBQKUl2qvebsG+uWiNBwdNJykSJhow?=
- =?us-ascii?Q?eiGARJActgnviWtiOM1PcOteSprxlplCBSqarZqHTLhfpjSr8AT3WWV36Ddu?=
- =?us-ascii?Q?ryrYPdaK890YAszYrIaM7I+dUMgD3MCOhbigV03bDkIM0VZymSCK2Z/D2F56?=
- =?us-ascii?Q?yHGFidUv5cBkMjO/sKQo3hrJ+RhSN6THG92D4E6wtqO0ZenNwcE2TMsoAhL7?=
- =?us-ascii?Q?2nM3SQIN5ccdzqsBKvs0WdL05rGUCl3xyX30A9kQIUZ0biaKKpMtJBcpxamf?=
- =?us-ascii?Q?k33H43QSjWV6xEjIRlfAX90YIJBHhY9hLTVJBknXbfrMPFd/Xr0Z70pJAUyE?=
- =?us-ascii?Q?HnFN78bnp/NK9hyPRIe2OxgSiVWXXOlyyezw/EQtL203oOlxIqH4w61GTCix?=
- =?us-ascii?Q?kKkamtbkCnAFHaKjs/v3Mz4bmSm29HIvmNSvNGy7+tf/vG44LQxB073GNWyn?=
- =?us-ascii?Q?NgsPx+lTH390Tkf90VEoXJRtuEVFh+JMhlNqkZqQQhFXiBP/tzbZ8V2cCNPV?=
- =?us-ascii?Q?0ijWtolrQmctt+85sko2qWLcA/sBZKwjxgfXMDOx+pst/W/9p8Qi1p9czYkJ?=
- =?us-ascii?Q?wI8f4XIMY5nOvCjw3EBitVDvm4VexJOKAEqIZr+y9CZyPc9XtSozo0G7AmM+?=
- =?us-ascii?Q?7CpoUquudkmJssCBlPZIY59n?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afd566d4-21ae-456d-b3b0-08d9366fe2c5
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2021 17:54:02.4618
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FDO8uUg8G7xqYqmW4mZAVTVZAM3HYefDNSNpLc9cEsgL0uBziilKMriWVcNwy1lK
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 04:50:01PM +0800, Weihang Li wrote:
-> The QPC_RQ/SQ_VLAN_EN bit in QPC should be enabled, not the QPC mask.
-> 
-> Fixes: f0cb411aad23 ("RDMA/hns: Use new interface to modify QP context")
-> Signed-off-by: Weihang Li <liweihang@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+On Wed, Jun 23, 2021 at 10:57:35AM +0200, Christian König wrote:
 
-Applied to for-next, thanks
+> > > No it isn't. It makes devices depend on allocating struct pages for their
+> > > BARs which is not necessary nor desired.
+> > Which dramatically reduces the cost of establishing DMA mappings, a
+> > loop of dma_map_resource() is very expensive.
+> 
+> Yeah, but that is perfectly ok. Our BAR allocations are either in chunks of
+> at least 2MiB or only a single 4KiB page.
+
+And very small apparently
+ 
+> > > Allocating a struct pages has their use case, for example for exposing VRAM
+> > > as memory for HMM. But that is something very specific and should not limit
+> > > PCIe P2P DMA in general.
+> > Sure, but that is an ideal we are far from obtaining, and nobody wants
+> > to work on it prefering to do hacky hacky like this.
+> > 
+> > If you believe in this then remove the scatter list from dmabuf, add a
+> > new set of dma_map* APIs to work on physical addresses and all the
+> > other stuff needed.
+> 
+> Yeah, that's what I totally agree on. And I actually hoped that the new P2P
+> work for PCIe would go into that direction, but that didn't materialized.
+
+It is a lot of work and the only gain is to save a bit of memory for
+struct pages. Not a very big pay off.
+ 
+> But allocating struct pages for PCIe BARs which are essentially registers
+> and not memory is much more hacky than the dma_resource_map() approach.
+
+It doesn't really matter. The pages are in a special zone and are only
+being used as handles for the BAR memory.
+
+> By using PCIe P2P we want to avoid the round trip to the CPU when one device
+> has filled the ring buffer and another device must be woken up to process
+> it.
+
+Sure, we all have these scenarios, what is inside the memory doesn't
+realy matter. The mechanism is generic and the struct pages don't care
+much if they point at something memory-like or at something
+register-like.
+
+They are already in big trouble because you can't portably use CPU
+instructions to access them anyhow.
 
 Jason
