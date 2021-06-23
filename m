@@ -2,181 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4343B169C
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 11:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BD53B179F
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 12:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230189AbhFWJRq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 05:17:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbhFWJRq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 05:17:46 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CAEC061760;
-        Wed, 23 Jun 2021 02:15:28 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id q10so2586520oij.5;
-        Wed, 23 Jun 2021 02:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=quouQNx98OeM2JWkzBIUm3+vF8x4xm+zxWV/raoo3aQ=;
-        b=Fmu2kU2I9U/tO77+2EI8nnRLVsm1KZns9poRXkmFydncMdpd17HRS7jmpP6eSA7e9H
-         BPhqm28O6C2qLsEb6KXrV189fkUkVFRIdy10NA3Zi3UnajXBIYCYWRgiAEw+pfjA+jIR
-         Gd+28Lw0bfeU/z2KQNu9rTF9lSNYnw+7oQjwznJh9yhwQHK7meHufl25CdQfhM7NkSrV
-         x1wKS5LkejWdl4ftXDvaM7DGGXNZ15lP1fphbHDmeeUCuMuhLeLzYsDj20mIjg9ujadC
-         +W1Of5Blo0JBXkv/cliU89T7B/mKdUdRC+M3luCI7hIv9SUyco0iL10gFoVPIYistGGv
-         pC0g==
+        id S229987AbhFWKDf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 06:03:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36681 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230138AbhFWKDd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Jun 2021 06:03:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624442476;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yQR3kWoDpNUY1FDcAA8oN8bLTedbRvN61RpEng3B+UE=;
+        b=AgtqrTvj4NnsFFP/SnpRshvP1qVZ0/+KVPjP0D7lzDPpVERi+2K6nUG7T1ks77TQzh1Stf
+        Nhw8jWOEPl0unSB/KfEUa5NJYCrjS+yfhFCzkehvI+2yNqeIM/u8ADcIil3FpPN7rVkwoD
+        BCslMyBFN9Mb51bQ05krUiOiRbFWWuE=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-527-JHWvGQyWNXeM8CcV_R6UMA-1; Wed, 23 Jun 2021 06:01:14 -0400
+X-MC-Unique: JHWvGQyWNXeM8CcV_R6UMA-1
+Received: by mail-qk1-f200.google.com with SMTP id t131-20020a37aa890000b02903a9f6c1e8bfso1858642qke.10
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 03:01:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=quouQNx98OeM2JWkzBIUm3+vF8x4xm+zxWV/raoo3aQ=;
-        b=LZwPIIajNlKq7A4HUTDu59V1+/QzizxdpUv0KqKynRA4TgyjzhWZwvSRyhd/f7XxX7
-         A0bWtqXAwhSAw8wMwoIRA1ySICDhzRP0IdpDoJLMQu8nwvOMdP8cBz03Cw6RpgtNMD71
-         ZdxEBn0T+iqem8Yw4UnCIbE4XUGBbrWj6kmGxJKwcEFb9+Ab+lTvVvv7/NdsxRx1h/tv
-         PKxzzJUAifm3vH9C8+KqzNTNOfF5nh0RPaJ5q+v6VVmiW2YUkJBf4Km3nql3bgMIjbTe
-         9zeabWOG/7pVCvYHaX+5dh+gwWUGDqH/oIM5qYAO612Gnf9GrbhY4VEpKS0P6cA3GC3U
-         A2Qg==
-X-Gm-Message-State: AOAM530qQQyuHFc+H4qtCua1fATn5lXn4ifkj18th6AFRf3YmkCYmmfl
-        pEJ0BcdNoYBf8STHw2/Kee5mUk4zFotlR/f0LKE=
-X-Google-Smtp-Source: ABdhPJxlh6DW0WITP5HCozbR6iBRVIh8Cgnl5UHJUnk65FQPQ/9TS+t8xXDV2Gmdxn5HNi4XWlqIrc32l0TnSWanVgI=
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr2375999oia.102.1624439727422;
- Wed, 23 Jun 2021 02:15:27 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=yQR3kWoDpNUY1FDcAA8oN8bLTedbRvN61RpEng3B+UE=;
+        b=FYN0f3RW1CZN2+r0Wcv4z2skyH76Ws3E5fRViBfEDcGWtRFqUOAkn2as1LXYLMdUV2
+         z17zqK/JU9tn7VWjx2WRvgtMPEYFWo8ZtRs6qagDJyny71EKpTdM1hrbClsuKkh5k7wp
+         2fDSxaKeWN5F66Oa7jSmQq9gXsyhsfT786C58Wsdrc6ZsR5/41xqI73r8N5kAkcOrH03
+         LcIxUopS0NU0uqxeS1ZfhIB7YfZnmOaD3aKzt9jVl+3N4NA/529bMF2aO/ss7iWnDzvG
+         9FKuE/2rfEXvrqMsDadMqt2pGr6vDM015HHqebbGSqj8hBHql90em9UHJJfe7jtWrKVe
+         hBNA==
+X-Gm-Message-State: AOAM531z7gHxm2kI7MBVDT1t7Z3BrSnUwYR5MiUo4iJR1q17SwLCZtOj
+        GFni3kLMOMvp2kpR2iH+dUNIzcEDBLB8S1XsV/vqUbWjsgVOm4FFaz6/1C2c9q8GZwbM4DKhz5L
+        MAJ1lsBXXWqI0AconOhWqs0om/nlqpUj4fMNTow==
+X-Received: by 2002:a25:3d87:: with SMTP id k129mr10932196yba.205.1624442473922;
+        Wed, 23 Jun 2021 03:01:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8fNfj6F1w3LldNmDx1Cyu+8eqR0Cir+Zc+au7eaqC0bnW59h79EsFCMVOJxkRMwAFLote6T7IhBVGoDP73LU=
+X-Received: by 2002:a25:3d87:: with SMTP id k129mr10932175yba.205.1624442473708;
+ Wed, 23 Jun 2021 03:01:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca> <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca> <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
- <20210622152343.GO1096940@ziepe.ca> <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
- <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
-In-Reply-To: <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 23 Jun 2021 12:14:59 +0300
-Message-ID: <CAFCwf12JXQ6XnQEPM6wa2ut8dV8VBLTJE_popZT2GTVVra5CLQ@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
+References: <CAHj4cs8cT23z+h2i+g6o3OQqEhWnHS88JO4jNoQo0Nww-sdkYg@mail.gmail.com>
+ <3c86dc88-97d9-5a71-20e1-a90279f47db5@grimberg.me> <CAHj4cs_3eLZd=vxRRrnBU2W4H38mqttcy0ZdSw6uw4KvbJWgeQ@mail.gmail.com>
+In-Reply-To: <CAHj4cs_3eLZd=vxRRrnBU2W4H38mqttcy0ZdSw6uw4KvbJWgeQ@mail.gmail.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Wed, 23 Jun 2021 18:01:00 +0800
+Message-ID: <CAHj4cs_VZ7C7ciKy-q51a+Gc=uce0GDKRHNmUdoGOd7KSvURpA@mail.gmail.com>
+Subject: Re: [bug report] NVMe/IB: reset_controller need more than 1min
+To:     Sagi Grimberg <sagi@grimberg.me>
+Cc:     linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 11:57 AM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> Am 22.06.21 um 18:05 schrieb Jason Gunthorpe:
-> > On Tue, Jun 22, 2021 at 05:48:10PM +0200, Christian K=C3=B6nig wrote:
-> >> Am 22.06.21 um 17:40 schrieb Jason Gunthorpe:
-> >>> On Tue, Jun 22, 2021 at 05:29:01PM +0200, Christian K=C3=B6nig wrote:
-> >>>> [SNIP]
-> >>>> No absolutely not. NVidia GPUs work exactly the same way.
-> >>>>
-> >>>> And you have tons of similar cases in embedded and SoC systems where
-> >>>> intermediate memory between devices isn't directly addressable with =
-the CPU.
-> >>> None of that is PCI P2P.
-> >>>
-> >>> It is all some specialty direct transfer.
-> >>>
-> >>> You can't reasonably call dma_map_resource() on non CPU mapped memory
-> >>> for instance, what address would you pass?
-> >>>
-> >>> Do not confuse "I am doing transfers between two HW blocks" with PCI
-> >>> Peer to Peer DMA transfers - the latter is a very narrow subcase.
-> >>>
-> >>>> No, just using the dma_map_resource() interface.
-> >>> Ik, but yes that does "work". Logan's series is better.
-> >> No it isn't. It makes devices depend on allocating struct pages for th=
-eir
-> >> BARs which is not necessary nor desired.
-> > Which dramatically reduces the cost of establishing DMA mappings, a
-> > loop of dma_map_resource() is very expensive.
->
-> Yeah, but that is perfectly ok. Our BAR allocations are either in chunks
-> of at least 2MiB or only a single 4KiB page.
->
-> Oded might run into more performance problems, but those DMA-buf
-> mappings are usually set up only once.
->
-> >> How do you prevent direct I/O on those pages for example?
-> > GUP fails.
->
-> At least that is calming.
->
-> >> Allocating a struct pages has their use case, for example for exposing=
- VRAM
-> >> as memory for HMM. But that is something very specific and should not =
-limit
-> >> PCIe P2P DMA in general.
-> > Sure, but that is an ideal we are far from obtaining, and nobody wants
-> > to work on it prefering to do hacky hacky like this.
-> >
-> > If you believe in this then remove the scatter list from dmabuf, add a
-> > new set of dma_map* APIs to work on physical addresses and all the
-> > other stuff needed.
->
-> Yeah, that's what I totally agree on. And I actually hoped that the new
-> P2P work for PCIe would go into that direction, but that didn't
-> materialized.
->
-> But allocating struct pages for PCIe BARs which are essentially
-> registers and not memory is much more hacky than the dma_resource_map()
-> approach.
->
-> To re-iterate why I think that having struct pages for those BARs is a
-> bad idea: Our doorbells on AMD GPUs are write and read pointers for ring
-> buffers.
->
-> When you write to the BAR you essentially tell the firmware that you
-> have either filled the ring buffer or read a bunch of it. This in turn
-> then triggers an interrupt in the hardware/firmware which was eventually
-> asleep.
->
-> By using PCIe P2P we want to avoid the round trip to the CPU when one
-> device has filled the ring buffer and another device must be woken up to
-> process it.
->
-> Think of it as MSI-X in reverse and allocating struct pages for those
-> BARs just to work around the shortcomings of the DMA API makes no sense
-> at all to me.
-We would also like to do that *in the future*.
-In Gaudi it will never be supported (due to security limitations) but
-I definitely see it happening in future ASICs.
+Hello
 
-Oded
+Gentle ping here, this issue still exists on latest 5.13-rc7
 
+# time nvme reset /dev/nvme0
+
+real 0m12.636s
+user 0m0.002s
+sys 0m0.005s
+# time nvme reset /dev/nvme0
+
+real 0m12.641s
+user 0m0.000s
+sys 0m0.007s
+# time nvme reset /dev/nvme0
+
+real 1m16.133s
+user 0m0.000s
+sys 0m0.007s
+
+On Sat, May 22, 2021 at 12:27 PM Yi Zhang <yi.zhang@redhat.com> wrote:
 >
->
-> We also do have the VRAM BAR, and for HMM we do allocate struct pages
-> for the address range exposed there. But this is a different use case.
->
-> Regards,
-> Christian.
->
+> On Sat, May 22, 2021 at 2:00 AM Sagi Grimberg <sagi@grimberg.me> wrote:
 > >
-> > Otherwise, we have what we have and drivers don't get to opt out. This
-> > is why the stuff in AMDGPU was NAK'd.
 > >
-> > Jason
+> > > Hi
+> > > I found this issue on 5.13-rc2 with NVMe/IB environment, could anyone
+> > > help check it?
+> > > Thanks.
+> > >
+> > > $ time echo 1 >/sys/block/nvme0n1/device/reset_controller
+> > > real 0m10.678s
+> > > user 0m0.000s
+> > > sys 0m0.000s
+> > > $ time echo 1 >/sys/block/nvme0n1/device/reset_controller
+> > > real 1m11.530s
+> > > user 0m0.000s
+> > > sys 0m0.000s
+> > >
+> > > target:
+> > > $ dmesg | grep nvme
+> > > [  276.891454] nvmet: creating controller 1 for subsystem testnqn for
+> > > NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+> > > [  287.374412] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
+> > > [  287.399317] nvmet: ctrl 1 fatal error occurred!
+> > > [  348.412672] nvmet: creating controller 1 for subsystem testnqn for
+> > > NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+> > >
+> > > client:
+> > > $ dmesg | grep nvme
+> > > [  281.704475] nvme nvme0: creating 40 I/O queues.
+> > > [  285.557759] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+> > > [  353.187809] nvme nvme0: I/O 8 QID 0 timeout
+> > > [  353.193100] nvme nvme0: Property Set error: 881, offset 0x14
+> > > [  353.226082] nvme nvme0: creating 40 I/O queues.
+> > > [  357.088266] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+> >
+> > It appears that there is an admin timeout that is either triggered
+> > by the reset or unrelated.
+> >
+> > Can you run nvme reset /dev/nvme0 instead so we can see the "resetting
+> > controller" print?
+> >
+> Yes, here is the log:
+> ------------------------0
+> + nvme reset /dev/nvme0
+> real 0m10.737s
+> user 0m0.004s
+> sys 0m0.004s
+> ------------------------1
+> + nvme reset /dev/nvme0
+> real 1m11.335s
+> user 0m0.002s
+> sys 0m0.005s
 >
+> target:
+> [  934.306016] nvmet: creating controller 1 for subsystem testnqn for
+> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+> [  944.875021] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
+> [  944.900051] nvmet: ctrl 1 fatal error occurred!
+> [ 1005.628340] nvmet: creating controller 1 for subsystem testnqn for
+> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+>
+> client:
+> [  857.264029] nvme nvme0: resetting controller
+> [  864.115369] nvme nvme0: creating 40 I/O queues.
+> [  867.996746] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+> [  868.001673] nvme nvme0: resetting controller
+> [  935.396789] nvme nvme0: I/O 9 QID 0 timeout
+> [  935.402036] nvme nvme0: Property Set error: 881, offset 0x14
+> [  935.438080] nvme nvme0: creating 40 I/O queues.
+> [  939.332125] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+>
+>
+> --
+> Best Regards,
+>   Yi Zhang
+
