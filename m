@@ -2,115 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1FC3B13A2
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 08:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A39E3B15C3
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 10:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFWGF7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 02:05:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38452 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229800AbhFWGF7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Jun 2021 02:05:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFC2761186;
-        Wed, 23 Jun 2021 06:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624428222;
-        bh=Ja+ISr0NAdxQoaoVB7TsXbPptUPHLgLampPKJ/ivUd4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZdtqaLMcLwNums4Y8j4S/gJQ3NLegOj572Ir5OQkxmcgonjj/A+HbtjIznU08vNxL
-         6XKx/6db6BKqFHQcx5NsvKw2b7Uee8R/gznS1QgoFGdFqWF4n+oicc/oDu2l5BtWbO
-         6d190iknFRX1hPtHGoBMYGa/kcujRlRkUGnPj7v4cjpUsDFwyuYfkrU/ewuQbtaOXf
-         EPBlli8bRjgZVDjFO0N7QqX7U9/GRyYWazQtAHldNVdS6U98Tu77JJWlfrhDyNIvIp
-         Bcvvatl7woQ7Ohsk4FCUW5MZeUpOAig3RBNMUCg90zRAl4bpQL6NlJgbWA3lOlIKJB
-         3obbxS42HmQhA==
-Date:   Wed, 23 Jun 2021 09:03:38 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Lior Nahmanson <liorna@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Meir Lichtinger <meirl@nvidia.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 2/3] RDMA/mlx5: Separate DCI QP creation
- logic
-Message-ID: <YNLOurv1BXrlpsha@unreal>
-References: <cover.1624258894.git.leonro@nvidia.com>
- <b4530bdd999349c59691224f016ff1efb5dc3b92.1624258894.git.leonro@nvidia.com>
- <20210622184556.GA2596427@nvidia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622184556.GA2596427@nvidia.com>
+        id S230072AbhFWIYE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 04:24:04 -0400
+Received: from lpdvsmtp11.broadcom.com ([192.19.166.231]:51864 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230030AbhFWIYD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Jun 2021 04:24:03 -0400
+X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 04:24:03 EDT
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1EBC124AB2;
+        Wed, 23 Jun 2021 01:15:06 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1EBC124AB2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1624436108;
+        bh=Nxvg3CePTD4fU7UbeNC1eaymrfaplF9rdrUYZHyUjG4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EjbbQ2EPtguhB4BoWEMJ5BWRRS9W+uQdmGLqYtwlohkn9ZDtLjEaC1UJdS3pOOhld
+         kq+jy/xD69YENFPyTEaxQ8q5CBxxQwULTWY8iS8+H1hUotBQft19TDbYOP9vuQUKge
+         TVJIpWXAmUw6eVXuAP3SiSZMzadicKthNOHLDulc=
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-next] MAINTAINERS: Update Broadcom RDMA maintainers
+Date:   Wed, 23 Jun 2021 01:14:49 -0700
+Message-Id: <1624436089-28263-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 03:45:56PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 21, 2021 at 10:06:15AM +0300, Leon Romanovsky wrote:
-> > From: Lior Nahmanson <liorna@nvidia.com>
-> > 
-> > This patch isolates DCI QP creation logic to separate function, so this
-> > change will reduce complexity when adding new features to DCI QP without
-> > interfering with other QP types.
-> > 
-> > The code was copied from create_user_qp() while taking only DCI relevant bits.
-> > 
-> > Reviewed-by: Meir Lichtinger <meirl@nvidia.com>
-> > Signed-off-by: Lior Nahmanson <liorna@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> >  drivers/infiniband/hw/mlx5/qp.c | 157 ++++++++++++++++++++++++++++++++
-> >  1 file changed, 157 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-> > index 7a5f1eba60e3..65a380543f5a 100644
-> > +++ b/drivers/infiniband/hw/mlx5/qp.c
-> > @@ -1974,6 +1974,160 @@ static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
-> >  	return 0;
-> >  }
-> >  
-> > +static int create_dci(struct mlx5_ib_dev *dev, struct ib_pd *pd,
-> > +		      struct mlx5_ib_qp *qp,
-> > +		      struct mlx5_create_qp_params *params)
-> > +{
-> 
-> This is a huge amount of copying just to add 4 lines, why?
-> 
-> There must be a better way to do this qp stuff.
-> 
-> Why not put more stuff in _create_user_qp()?
+Updating the maintainers file as Devesh decidied to
+leave Broadcom.
 
-Lior proposed it in original patch, but I didn't like it. It caused to
-mix of various QP types and maze of "if () else ()" that are not applicable
-one to another.
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ MAINTAINERS | 2 --
+ 1 file changed, 2 deletions(-)
 
-The huge _create_user_qp() is the reason why create_dci() is not small,
-we simply had hard time to understand if specific HW bit is needed or
-not in DCI flow.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 636b238..985e621 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3735,7 +3735,6 @@ F:	drivers/gpio/gpio-bcm-kona.c
+ 
+ BROADCOM NETXTREME-E ROCE DRIVER
+ M:	Selvin Xavier <selvin.xavier@broadcom.com>
+-M:	Devesh Sharma <devesh.sharma@broadcom.com>
+ M:	Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Supported
+@@ -6719,7 +6718,6 @@ F:	drivers/net/ethernet/emulex/benet/
+ 
+ EMULEX ONECONNECT ROCE DRIVER
+ M:	Selvin Xavier <selvin.xavier@broadcom.com>
+-M:	Devesh Sharma <devesh.sharma@broadcom.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Odd Fixes
+ W:	http://www.broadcom.com
+-- 
+2.5.5
 
-My goal is to have small per-QP type specific functions that calls
-to simple functions for very narrow scope.
-
-Something like that:
-static int create_dci(...)
-{
-  ...
-  configure_send_cq(..)
-  configure_recv_sq(..)
-  configure_srq(...)
-  ...
-}
-
-static int create_user_qp(...)
-{
-  ...
-  configure_send_cq(..)
-  configure_recv_sq(..)
-  configure_srq(...)
-  ...
-}
-
-
-Thanks
-
-> 
-> Jason
