@@ -2,96 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 573373B2298
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 23:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80C83B237D
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jun 2021 00:16:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbhFWVmC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 17:42:02 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:42704 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhFWVmC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 17:42:02 -0400
-Received: by mail-wr1-f45.google.com with SMTP id j1so4221735wrn.9
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 14:39:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wkW+1IRsoOV7dgCGp7KoNHFH+4Rdb/xRTBr2VLOih/4=;
-        b=DBm3SL9HUsZe27LvgRvmfdv1siVxS/0zHFEqbgLoQRYPihkA7cEd1ps5IG4eFipdNi
-         mucLq84hyqyAY33p5/CKThHXuhtL3tyfmVSdOdWFp/pf1GoJjRTRG9aWOc8ZxXTYGAgR
-         n3+9Q0qSikh2wKsXq6ceNakXgP1UBFYuwNVaufsjbWot9slXJgTMjamPq6mnC22kUEei
-         XZyV3/PofCEXPsIMsarSXY6jOldFx3IO1qxILOT2wHOWjCUCrFIM4KMdyvP4nvXOMmAV
-         k+rGi58l4ag4yVGJuByvjfi2POrct4BIl+DZiGaENjwqFV3ATPNEN5JWx6M4usyEwCNl
-         dzTw==
-X-Gm-Message-State: AOAM530d6rDP5BNZr4TN9oDvOnPha8lWQfgGZrn9NimmwhGVfBFX/Vfg
-        BLNQG9W/ksR/XcRn07JiDqo=
-X-Google-Smtp-Source: ABdhPJz9FrlhauHxL5K9AGdJLvDUmmNNs69vqJ1nYU2cwlE/kdTKPJwMVeu8/6VWkpJSNgS0C4VOHA==
-X-Received: by 2002:a5d:5401:: with SMTP id g1mr192907wrv.373.1624484383409;
-        Wed, 23 Jun 2021 14:39:43 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:d7a5:9de1:faa6:69b7? ([2601:647:4802:9070:d7a5:9de1:faa6:69b7])
-        by smtp.gmail.com with ESMTPSA id k13sm1128876wrp.73.2021.06.23.14.39.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Jun 2021 14:39:42 -0700 (PDT)
-Subject: Re: [PATCH 1/1] IB/isert: align target max I/O size to initiator size
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, Kamal Heib <kheib@redhat.com>
-Cc:     israelr@nvidia.com, alaa@nvidia.com, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com
-References: <20210524085215.29005-1-mgurtovoy@nvidia.com>
- <46c4d30d-510d-b329-4793-8a354642632e@grimberg.me>
- <fdef3991-74e1-63f1-593e-ac2018286ae9@nvidia.com>
- <b62e5d29-025a-0827-ecad-a48812114220@redhat.com>
- <e6623d9e-0122-ea0c-e148-f739bd15b0bb@nvidia.com>
- <0e4f17d0-5237-e9ae-44a0-4891a53bb26a@grimberg.me>
- <2237ccdf-e2b0-aab3-6e3f-297e5b7791a1@nvidia.com>
- <82ef613c-2697-261e-317e-b40d09cf0764@redhat.com>
- <90153fcc-8ed5-6ad5-0539-bcf97d8e0ce3@nvidia.com>
- <d6e2f70a-1885-9cc3-f82c-0c0abeca2c7d@grimberg.me>
- <ba0b44fa-c93b-34fa-41c0-8bd492cda92e@nvidia.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <4d503c23-506f-6e49-8b48-48426de6a239@grimberg.me>
-Date:   Wed, 23 Jun 2021 14:39:40 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229726AbhFWWTB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 18:19:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:45531 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229688AbhFWWTB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Jun 2021 18:19:01 -0400
+IronPort-SDR: ET4x9hI7mfaAm2EiHfoPltY7fWHMmFZJl9t4jI0JPLp4r+Ho2y77cv/G0vVZBVg87lx/nHWe7g
+ 5yM2KMutqR1Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194657904"
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="194657904"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:43 -0700
+IronPort-SDR: HOwd+5ObPbk+XhFgaOP/qvRO8xp0WBxCnEEkowkx03KuZN1h8OAxroqP65zTOdbMkOBYs54ca2
+ tmXWaNjYOOOA==
+X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
+   d="scan'208";a="487507153"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 15:16:42 -0700
+From:   ira.weiny@intel.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Date:   Wed, 23 Jun 2021 15:15:44 -0700
+Message-Id: <20210623221543.2799198-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210622203432.2715659-1-ira.weiny@intel.com>
+References: <20210622203432.2715659-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <ba0b44fa-c93b-34fa-41c0-8bd492cda92e@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
->>>> Well, from the distro's point of view this code is not going to be 
->>>> dead any time
->>>> soon..., And the current user experience is very bad, Could you guys 
->>>> please
->>>> decide on a way to fix this issue?
->>>
->>> As mention above, I prefer the simple solution for this issue.
->>>
->>> I guess the most of iSER users are using pretty old HW so defaults 
->>> should be accordingly.
->>>
->>> For NVMe/RDMA this is a different story and we can use higher defaults
->>>
->>> Adding fallbacks will complicate the code without a real 
->>> justification for doing it.
->>
->> Usually when you end up changing the defaults multiple times it should
->> be an indication that it should do something about it.
->>
->> But hey, if you are killing Connect-IB anyways, and you don't see any
->> sort of regressions from this I don't really have a problem with it.
-> 
-> I don't know why you conclude it from the above.
-> 
-> I just want to change the defaults to what we had in the past. This will 
-> help OOB for old devices. We did the same for Chelsio.
-> 
-> And we see that RH team is also interested in it.
+kmap() is being deprecated and will break uses of device dax after PKS
+protection is introduced.[1]
 
-I'm fine with this.
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
+The use of kmap() in siw_tx_hdt() is all thread local therefore
+kmap_local_page() is a sufficient replacement and will work with pgmap
+protected pages when those are implemented.
+
+siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
+unmap pages which were mapped on function exit.  Not all entries in the
+array are mapped and this is tracked in kmap_mask.
+
+kunmap_local() takes a mapped address rather than a page.  Alter
+siw_unmap_pages() to take the iov array to reuse the iov_base address of
+each mapping.  Use PAGE_MASK to get the proper address for
+kunmap_local().
+
+kmap_local_page() mappings are tracked in a stack and must be unmapped
+in the opposite order they were mapped in.  Because segments are mapped
+into the page array in increasing index order, modify siw_unmap_pages()
+to unmap pages in decreasing order.
+
+Use kmap_local_page() instead of kmap() to map pages in the page_array.
+
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
+
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+Jason, I went ahead and left this a separate patch.  Let me know if you really
+want this and the other siw squashed.
+
+Changes for V3:
+	From Bernard
+		Use 'p' in kmap_local_page()
+		Use seg as length to siw_unmap_pages()
+
+Changes for V2:
+	From Bernard
+		Reuse iov[].iov_base rather than declaring another array
+		of pointers and preserve the use of kmap_mask to know
+		which iov's were kmapped.
+---
+ drivers/infiniband/sw/siw/siw_qp_tx.c | 30 +++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
+index db68a10d12cd..89a5b75f7254 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
+ 
+ #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+ 
+-static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
++static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
+ {
+-	while (kmap_mask) {
+-		if (kmap_mask & BIT(0))
+-			kunmap(*pp);
+-		pp++;
+-		kmap_mask >>= 1;
++	int i;
++
++	/*
++	 * Work backwards through the array to honor the kmap_local_page()
++	 * ordering requirements.
++	 */
++	for (i = (len-1); i >= 0; i--) {
++		if (kmap_mask & BIT(i)) {
++			unsigned long addr = (unsigned long)iov[i].iov_base;
++
++			kunmap_local((void *)(addr & PAGE_MASK));
++		}
+ 	}
+ }
+ 
+@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 					p = siw_get_upage(mem->umem,
+ 							  sge->laddr + sge_off);
+ 				if (unlikely(!p)) {
+-					siw_unmap_pages(page_array, kmap_mask);
++					siw_unmap_pages(iov, kmap_mask, seg);
+ 					wqe->processed -= c_tx->bytes_unsent;
+ 					rv = -EFAULT;
+ 					goto done_crc;
+@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 				page_array[seg] = p;
+ 
+ 				if (!c_tx->use_sendpage) {
+-					iov[seg].iov_base = kmap(p) + fp_off;
+-					iov[seg].iov_len = plen;
++					void *kaddr = kmap_local_page(p);
+ 
+ 					/* Remember for later kunmap() */
+ 					kmap_mask |= BIT(seg);
++					iov[seg].iov_base = kaddr + fp_off;
++					iov[seg].iov_len = plen;
+ 
+ 					if (do_crc)
+ 						crypto_shash_update(
+@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 
+ 			if (++seg > (int)MAX_ARRAY) {
+ 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+-				siw_unmap_pages(page_array, kmap_mask);
++				siw_unmap_pages(iov, kmap_mask, seg-1);
+ 				wqe->processed -= c_tx->bytes_unsent;
+ 				rv = -EMSGSIZE;
+ 				goto done_crc;
+@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
+ 	} else {
+ 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+ 				    hdr_len + data_len + trl_len);
+-		siw_unmap_pages(page_array, kmap_mask);
++		siw_unmap_pages(iov, kmap_mask, seg+1);
+ 	}
+ 	if (rv < (int)hdr_len) {
+ 		/* Not even complete hdr pushed or negative rv */
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
