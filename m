@@ -2,204 +2,277 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E440C3B1B92
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 15:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A78183B1CA5
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 16:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbhFWNxo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 09:53:44 -0400
-Received: from mga02.intel.com ([134.134.136.20]:30331 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230182AbhFWNxn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Jun 2021 09:53:43 -0400
-IronPort-SDR: 5hhefWdfc63BK+jKC6suh+Njab50eyz7+NRKEzvi3l6danWRDw5h87NS0MGxklhVqb3ABhFGZb
- 55JK8qOJb6rg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="194404306"
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="194404306"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 06:51:26 -0700
-IronPort-SDR: I/5pnt6dZ1T9de193if/iZRdo44mi/qJH2t6lCAzz/xHITFmaeUlrgqCSWQZ24hbktlDSot/MS
- WnhdewJ/x1bA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,293,1616482800"; 
-   d="scan'208";a="556149966"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 23 Jun 2021 06:51:24 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lw3Hn-0005xf-Tb; Wed, 23 Jun 2021 13:51:23 +0000
-Date:   Wed, 23 Jun 2021 21:50:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- feda49a1a550d271593cbe9d198527cfd78dd8c4
-Message-ID: <60d33c26.Xx32AFXyXijMtL5o%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231262AbhFWOjH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 10:39:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50699 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231184AbhFWOjH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 23 Jun 2021 10:39:07 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15NEYYM1132124
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 10:36:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
+ from : to : cc : date : references : content-type : message-id :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=R/x0Dwd4s1GXRloBipRE8+Nmzp4up4fg93kwTMxwMbY=;
+ b=JDcgKtOZmZ+bWIXwjEnDuNV9GtIfDrDt+4lc5RDcTcmmvoJ+q1rZ0WLq9IEmlSVUC6BH
+ XRu9mv0UF/16quwlz3/3DMpg9z7ZMjlzqhUX0hAv6SJHgzAFGAbq5iKVa+/hmbP61aog
+ dRdGEfccD0fu9Oc75+53nNXDD3Ow9y1MOLqs4a5j5QyaTramR76DPLC/JEjdLUARWwlx
+ wo0QdnY7Yl7OLiH4Or0TlF39irrzqi+zUOJcp31jLVR4Gcn6G7xlLUNiii/+sOoaxL9K
+ jfCV9fXZKrnmIpNCY4pFaH6mNbpUrDfCO4ikFUuL1BDcF017Jrs0JmSd6MneV1GVWkGb pA== 
+Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.110])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39c6sbr6k9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 10:36:49 -0400
+Received: from localhost
+        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
+        for <linux-rdma@vger.kernel.org> from <BMT@zurich.ibm.com>;
+        Wed, 23 Jun 2021 14:36:48 -0000
+Received: from us1b3-smtp01.a3dr.sjc01.isc4sb.com (10.122.7.174)
+        by smtp.notes.na.collabserv.com (10.122.47.50) with smtp.notes.na.collabserv.com ESMTP;
+        Wed, 23 Jun 2021 14:36:46 -0000
+Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
+          by us1b3-smtp01.a3dr.sjc01.isc4sb.com
+          with ESMTP id 2021062314364555-465809 ;
+          Wed, 23 Jun 2021 14:36:45 +0000 
+In-Reply-To: <20210622203432.2715659-1-ira.weiny@intel.com>
+Subject: Re: [PATCH V2] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+From:   "Bernard Metzler" <BMT@zurich.ibm.com>
+To:     "ira.weiny" <ira.weiny@intel.com>
+Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
+        "Mike Marciniszyn" <mike.marciniszyn@cornelisnetworks.com>,
+        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
+        "Doug Ledford" <dledford@redhat.com>,
+        "Faisal Latif" <faisal.latif@intel.com>,
+        "Shiraz Saleem" <shiraz.saleem@intel.com>,
+        "Kamal Heib" <kheib@redhat.com>,
+        "linux-rdma" <linux-rdma@vger.kernel.org>,
+        "linux-kernel" <linux-kernel@vger.kernel.org>
+Date:   Wed, 23 Jun 2021 14:36:45 +0000
+Sensitivity: 
+Importance: Normal
+X-Priority: 3 (Normal)
+References: <20210622203432.2715659-1-ira.weiny@intel.com>,<20210622061422.2633501-5-ira.weiny@intel.com>
+X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
+ SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
+X-KeepSent: 951DAF0B:941A938D-002586FD:003F1610;
+ type=4; name=$KeepSent
+X-LLNOutbound: False
+X-Disclaimed: 62187
+X-TNEFEvaluated: 1
+Content-Type: text/plain; charset=UTF-8
+x-cbid: 21062314-1059-0000-0000-0000040024D7
+X-IBM-SpamModules-Scores: BY=0.004727; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
+ SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.000001
+X-IBM-SpamModules-Versions: BY=3.00015370; HX=3.00000242; KW=3.00000007;
+ PH=3.00000004; SC=3.00000296; SDB=6.01555896; UDB=6.00845132; IPR=6.01348296;
+ MB=3.00037289; MTD=3.00000008; XFM=3.00000015; UTC=2021-06-23 14:36:47
+X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
+X-IBM-AV-VERSION: SAVI=2021-03-23 12:31:21 - 6.00012377
+x-cbparentid: 21062314-1060-0000-0000-0000CCC4303F
+Message-Id: <OF951DAF0B.941A938D-ON002586FD.003F1610-002586FD.00504522@notes.na.collabserv.com>
+X-Proofpoint-ORIG-GUID: alw6SWJ3dKDC-vIEYvBjP4mL7p8KKFhS
+X-Proofpoint-GUID: alw6SWJ3dKDC-vIEYvBjP4mL7p8KKFhS
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-23_09:2021-06-23,2021-06-23 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: feda49a1a550d271593cbe9d198527cfd78dd8c4  RDMA/irdma: Use the queried port attributes
+-----ira.weiny@intel.com wrote: -----
 
-elapsed time: 784m
+>To: "Jason Gunthorpe" <jgg@ziepe.ca>
+>From: ira.weiny@intel.com
+>Date: 06/22/2021 10:35PM
+>Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
+><mike.marciniszyn@cornelisnetworks.com>, "Dennis Dalessandro"
+><dennis.dalessandro@cornelisnetworks.com>, "Doug Ledford"
+><dledford@redhat.com>, "Faisal Latif" <faisal.latif@intel.com>,
+>"Shiraz Saleem" <shiraz.saleem@intel.com>, "Bernard Metzler"
+><bmt@zurich.ibm.com>, "Kamal Heib" <kheib@redhat.com>,
+>linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+>Subject: [EXTERNAL] [PATCH V2] RDMA/siw: Convert siw_tx_hdt() to
+>kmap_local_page()
+>
+>From: Ira Weiny <ira.weiny@intel.com>
+>
+>kmap() is being deprecated and will break uses of device dax after
+>PKS
+>protection is introduced.[1]
+>
+>The use of kmap() in siw_tx_hdt() is all thread local therefore
+>kmap_local_page() is a sufficient replacement and will work with
+>pgmap
+>protected pages when those are implemented.
+>
+>siw_tx_hdt() tracks pages used in a page_array.  It uses that array
+>to
+>unmap pages which were mapped on function exit.  Not all entries in
+>the
+>array are mapped and this is tracked in kmap_mask.
+>
+>kunmap_local() takes a mapped address rather than a page.  Alter
+>siw_unmap_pages() to take the iov array to reuse the iov_base address
+>of
+>each mapping.  Use PAGE_MASK to get the proper address for
+>kunmap_local().
+>
+>kmap_local_page() mappings are tracked in a stack and must be
+>unmapped
+>in the opposite order they were mapped in.  Because segments are
+>mapped
+>into the page array in increasing index order, modify
+>siw_unmap_pages()
+>to unmap pages in decreasing order.
+>
+>Use kmap_local_page() instead of kmap() to map pages in the
+>page_array.
+>
+>[1]
+>INVALID URI REMOVED
+>lkml_20201009195033.3208459-2D59-2Dira.weiny-40intel.com_&d=3DDwIDAg&c=3D
+>jf_iaSHvJObTbx-siA1ZOg&r=3D2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&
+>m=3DujJBVqPLdVdVxXvOu_PlFL3NVC0Znds3FgxyrtWJtwM&s=3DWZIBAdwlCqPIRjsNOGlly
+>gQ6Hsug6ObgrWgO_nvBGyc&e=3D=20
+>
+>Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+>
+>---
+>Changes for V2:
+>	From Bernard
+>		Reuse iov[].iov_base rather than declaring another array of
+>		pointers and preserve the use of kmap_mask to know which iov's
+>		were kmapped.
+>
+>---
+> drivers/infiniband/sw/siw/siw_qp_tx.c | 32
+>+++++++++++++++++----------
+> 1 file changed, 20 insertions(+), 12 deletions(-)
+>
+>diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>index db68a10d12cd..fd3b9e6a67d7 100644
+>--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+>+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+>@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s,
+>struct page **page,
+>=20
+> #define MAX_TRAILER (MPA_CRC_SIZE + 4)
+>=20
+>-static void siw_unmap_pages(struct page **pp, unsigned long
+>kmap_mask)
+>+static void siw_unmap_pages(struct kvec *iov, unsigned long
+>kmap_mask, int len)
+> {
+>-	while (kmap_mask) {
+>-		if (kmap_mask & BIT(0))
+>-			kunmap(*pp);
+>-		pp++;
+>-		kmap_mask >>=3D 1;
+>+	int i;
+>+
+>+	/*
+>+	 * Work backwards through the array to honor the kmap_local_page()
+>+	 * ordering requirements.
+>+	 */
+>+	for (i =3D (len-1); i >=3D 0; i--) {
+>+		if (kmap_mask & BIT(i)) {
+>+			unsigned long addr =3D (unsigned long)iov[i].iov_base;
+>+
+>+			kunmap_local((void *)(addr & PAGE_MASK));
+>+		}
+> 	}
+> }
+>=20
+>@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+> 					p =3D siw_get_upage(mem->umem,
+> 							  sge->laddr + sge_off);
+> 				if (unlikely(!p)) {
+>-					siw_unmap_pages(page_array, kmap_mask);
+>+					siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
+> 					wqe->processed -=3D c_tx->bytes_unsent;
+> 					rv =3D -EFAULT;
+> 					goto done_crc;
+>@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx
+>*c_tx, struct socket *s)
+> 				page_array[seg] =3D p;
+>=20
+> 				if (!c_tx->use_sendpage) {
+>-					iov[seg].iov_base =3D kmap(p) + fp_off;
+>-					iov[seg].iov_len =3D plen;
+>+					void *kaddr =3D kmap_local_page(page_array[seg]);
 
-configs tested: 142
-configs skipped: 2
+we can use 'kmap_local_page(p)' here
+>=20
+> 					/* Remember for later kunmap() */
+> 					kmap_mask |=3D BIT(seg);
+>+					iov[seg].iov_base =3D kaddr + fp_off;
+>+					iov[seg].iov_len =3D plen;
+>=20
+> 					if (do_crc)
+> 						crypto_shash_update(
+>@@ -518,7 +526,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+> 							iov[seg].iov_base,
+> 							plen);
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+This patch does not apply for me. Would I have to install first
+your [Patch 3/4] -- since the current patch references kmap_local_page()
+already? Maybe it is better to apply if it would be just one siw
+related patch in that series?
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arc                                 defconfig
-arm                           h3600_defconfig
-powerpc                    klondike_defconfig
-arm                       imx_v6_v7_defconfig
-powerpc                      arches_defconfig
-arm                             rpc_defconfig
-arm                            lart_defconfig
-powerpc                        fsp2_defconfig
-sparc64                             defconfig
-mips                         mpc30x_defconfig
-arm                        multi_v7_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                    sam440ep_defconfig
-sh                           se7705_defconfig
-powerpc               mpc834x_itxgp_defconfig
-mips                          malta_defconfig
-xtensa                           alldefconfig
-powerpc                      makalu_defconfig
-powerpc                  mpc866_ads_defconfig
-mips                     cu1830-neo_defconfig
-i386                                defconfig
-powerpc                      acadia_defconfig
-arc                     nsimosci_hs_defconfig
-powerpc                   motionpro_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                           se7724_defconfig
-m68k                          atari_defconfig
-powerpc                     tqm8555_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                         axm55xx_defconfig
-arm                         lpc18xx_defconfig
-arc                    vdk_hs38_smp_defconfig
-powerpc                     tqm8560_defconfig
-openrisc                 simple_smp_defconfig
-m68k                        mvme16x_defconfig
-arm                        realview_defconfig
-s390                             allmodconfig
-sh                                  defconfig
-arm                        mvebu_v5_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                     kmeter1_defconfig
-microblaze                          defconfig
-arm                         orion5x_defconfig
-arm                        shmobile_defconfig
-powerpc                     tqm5200_defconfig
-sh                            titan_defconfig
-mips                            gpr_defconfig
-h8300                               defconfig
-mips                         bigsur_defconfig
-powerpc                      katmai_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                     ppa8548_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210623
-x86_64               randconfig-a001-20210623
-x86_64               randconfig-a005-20210623
-x86_64               randconfig-a003-20210623
-x86_64               randconfig-a004-20210623
-x86_64               randconfig-a006-20210623
-i386                 randconfig-a001-20210622
-i386                 randconfig-a002-20210622
-i386                 randconfig-a003-20210622
-i386                 randconfig-a006-20210622
-i386                 randconfig-a005-20210622
-i386                 randconfig-a004-20210622
-x86_64               randconfig-a012-20210622
-x86_64               randconfig-a016-20210622
-x86_64               randconfig-a015-20210622
-x86_64               randconfig-a014-20210622
-x86_64               randconfig-a013-20210622
-x86_64               randconfig-a011-20210622
-i386                 randconfig-a011-20210623
-i386                 randconfig-a014-20210623
-i386                 randconfig-a013-20210623
-i386                 randconfig-a015-20210623
-i386                 randconfig-a012-20210623
-i386                 randconfig-a016-20210623
-i386                 randconfig-a011-20210622
-i386                 randconfig-a014-20210622
-i386                 randconfig-a013-20210622
-i386                 randconfig-a015-20210622
-i386                 randconfig-a012-20210622
-i386                 randconfig-a016-20210622
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-b001-20210622
-x86_64               randconfig-a002-20210622
-x86_64               randconfig-a001-20210622
-x86_64               randconfig-a005-20210622
-x86_64               randconfig-a003-20210622
-x86_64               randconfig-a004-20210622
-x86_64               randconfig-a006-20210622
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 				} else if (do_crc) {
+>-					kaddr =3D kmap_local_page(p);
+>+					kaddr =3D kmap_local_page(page_array[seg]);
+
+using 'kmap_local_page(p)' as you had it is straightforward
+and I would prefer it.
+
+> 					crypto_shash_update(c_tx->mpa_crc_hd,
+> 							    kaddr + fp_off,
+> 							    plen);
+>@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+>=20
+> 			if (++seg > (int)MAX_ARRAY) {
+> 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+>-				siw_unmap_pages(page_array, kmap_mask);
+>+				siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
+
+to minimize the iterations over the byte array in 'siw_unmap_pages()',
+we may pass seg-1 instead of MAX_ARRAY
+
+
+> 				wqe->processed -=3D c_tx->bytes_unsent;
+> 				rv =3D -EMSGSIZE;
+> 				goto done_crc;
+>@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+>struct socket *s)
+> 	} else {
+> 		rv =3D kernel_sendmsg(s, &msg, iov, seg + 1,
+> 				    hdr_len + data_len + trl_len);
+>-		siw_unmap_pages(page_array, kmap_mask);
+>+		siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
+
+to minimize the iterations over the byte array in 'siw_unmap_pages()',
+we may pass seg instead of MAX_ARRAY
+
+> 	}
+> 	if (rv < (int)hdr_len) {
+> 		/* Not even complete hdr pushed or negative rv */
+>--=20
+>2.28.0.rc0.12.gb6a658bd00c9
+>
+>
+
