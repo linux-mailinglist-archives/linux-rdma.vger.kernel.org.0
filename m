@@ -2,130 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F8D3B215B
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 21:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19413B227E
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 23:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFWTmg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 15:42:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230124AbhFWTmf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 15:42:35 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A0AC0613A2;
-        Wed, 23 Jun 2021 12:40:15 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso3086987oto.12;
-        Wed, 23 Jun 2021 12:40:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDjEA/DLHJuJqbx7wc+mRyI0RJczQytGp1V6E75bd6s=;
-        b=njxfplOx17G0/91fOLaiwVofE0DeSdGcCG3lxRi9OYVY6KYvRDAEsYT4a2X08avjYz
-         uk9LS4BPT8B0ygh92FmzwsjnilNP75l1/gXEVq89GseCAdSIpq6YYw8fjjAPPxr4o+PW
-         L1d2m01Uw4KLPxZ66w09nOVAPTd8mJoSjCCMU66jx/8k6x/Lf49D21aPA/ifhKbt2vkW
-         jY4n3+MG8/wALoxr2cftjzWWAHPFat3vVo01kBbQP+RM7GGT5W4PQR6uFllaJRjFkjzQ
-         vwcmftcSUgYfe5LpftZyXNntJzQ+Wo2BZqKzqtT+Ch7LKM5E+/AWX9vBPa/rH66Sg51K
-         GNSw==
+        id S229726AbhFWVfI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 17:35:08 -0400
+Received: from mail-wr1-f44.google.com ([209.85.221.44]:46721 "EHLO
+        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229688AbhFWVfI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 17:35:08 -0400
+Received: by mail-wr1-f44.google.com with SMTP id a11so4179004wrt.13
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Jun 2021 14:32:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDjEA/DLHJuJqbx7wc+mRyI0RJczQytGp1V6E75bd6s=;
-        b=d7oDwWtBSFOBJ15jMYouUqLjlwSCasEdomDIFvWMcYICYo1E4noBb+G7rEoltqExPQ
-         oK5LrZgJo4cLXUUjvL/wEqLO+qCGCV0QpU8v8NpVOQf0eOwggoCxY/bAEUONGNAg3G3E
-         1H2mW+y/uJ28qjcmw5zHA6ATCJbAqLysGLEJBHQ0Ta3lxQXPJXlxoSYIpZ1OEZRGJwSV
-         Oolm3VK1vALZZ+0mOTV5sZYKcxZJSnpjpqFY9lAk6SJ5SIueSR/cEO5mXbocGz6oEhjK
-         o5NEp+EuytaKgHvkx494ehwNg1qUgOjagS5TPAlb5ktYTOou7GGpZ2ZzFx8LmCRWPJ1M
-         kMlw==
-X-Gm-Message-State: AOAM530ColhpSh+ZVgUlBXq4Z5EH8gbuSriJwiqCl1z9Zdsp/r3nn2Wx
-        mf4p6FqWRx9GdaIsIHJXiCDSklS4gX9i2w4LYhI=
-X-Google-Smtp-Source: ABdhPJznDm09EdJ4nc7aCaNiJgX/OzhaJax6fBkCDboeJEjZGy4mnzO3nT99DVOufQL4W+3P5HvD7FiPj986tjjoFdA=
-X-Received: by 2002:a9d:542:: with SMTP id 60mr1364333otw.143.1624477214591;
- Wed, 23 Jun 2021 12:40:14 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KQNp5IMse43OkEqE+mzPjQAcJhkyYGIkXC2qTp6ZlDQ=;
+        b=EOj6WxHMsswu1rSlC9IiXOWATsjUl3ZxzWc8i5+hAhE66ixY4cQ3XaZ8w6jhm9gozD
+         aMGMbDLB64m97OxtWjAl2nTY4FqNbGMFOM7Nq5HTmEapyrinBw1OOaPc+pzlOLpFYPZR
+         SRfQCcwpEEMOtMBZKobQ+qRTjNip623qcYEJE7ehzy4tTqBIn+CTGiVyf9wjg2CFTlZN
+         YzdGSYqCdfhzcCOAqcC0qG5BWbMHeHzyn9RvwLi5ZC2OUwbxHLZPToAEfnbpwvp0VESn
+         IciXEe6OrKQmPFN6kjoaak2ANIWjPlB3QDXJAO/c3UH7760cZXUb/jm8uLSA3VfN1Grm
+         O9Dw==
+X-Gm-Message-State: AOAM532jqUwOL2YMbccD9TZvxhTpC852F46rqqnVbPT9jCIV17pXyI6E
+        VcvkzSIyVx+yBnWzzNiD0tplxbS58q0=
+X-Google-Smtp-Source: ABdhPJzUwExWUOCqamnHQeG8Fi6g/8jDwAybW/Aw+aHAFxxd/7IPZIo1VGhAd0ZVkKe5EMzhf3h4bA==
+X-Received: by 2002:a5d:59a5:: with SMTP id p5mr188596wrr.27.1624483969473;
+        Wed, 23 Jun 2021 14:32:49 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:d7a5:9de1:faa6:69b7? ([2601:647:4802:9070:d7a5:9de1:faa6:69b7])
+        by smtp.gmail.com with ESMTPSA id u10sm1024437wmm.21.2021.06.23.14.32.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Jun 2021 14:32:48 -0700 (PDT)
+Subject: Re: [bug report] NVMe/IB: reset_controller need more than 1min
+To:     Yi Zhang <yi.zhang@redhat.com>
+Cc:     linux-nvme@lists.infradead.org, linux-rdma@vger.kernel.org
+References: <CAHj4cs8cT23z+h2i+g6o3OQqEhWnHS88JO4jNoQo0Nww-sdkYg@mail.gmail.com>
+ <3c86dc88-97d9-5a71-20e1-a90279f47db5@grimberg.me>
+ <CAHj4cs_3eLZd=vxRRrnBU2W4H38mqttcy0ZdSw6uw4KvbJWgeQ@mail.gmail.com>
+ <CAHj4cs_VZ7C7ciKy-q51a+Gc=uce0GDKRHNmUdoGOd7KSvURpA@mail.gmail.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <84208be5-a7a9-5261-398c-fa9bda3efbe3@grimberg.me>
+Date:   Wed, 23 Jun 2021 14:32:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210622152343.GO1096940@ziepe.ca> <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
- <20210622154027.GS1096940@ziepe.ca> <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
- <20210622160538.GT1096940@ziepe.ca> <d600a638-9e55-6249-b574-0986cd5cea1e@gmail.com>
- <20210623182435.GX1096940@ziepe.ca> <CAFCwf111O0_YB_tixzEUmaKpGAHMNvMaOes2AfMD4x68Am4Yyg@mail.gmail.com>
- <20210623185045.GY1096940@ziepe.ca> <CAFCwf12tW_WawFfAfrC8bgVhTRnDA7DuM+0V8w3JsUZpA2j84w@mail.gmail.com>
- <20210623193456.GZ1096940@ziepe.ca>
-In-Reply-To: <20210623193456.GZ1096940@ziepe.ca>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Wed, 23 Jun 2021 22:39:48 +0300
-Message-ID: <CAFCwf13vM2T-eJUu42ht5jdXpRCF3UZh0Ow=vwN9QqZ=KNUBsQ@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHj4cs_VZ7C7ciKy-q51a+Gc=uce0GDKRHNmUdoGOd7KSvURpA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 23, 2021 at 10:34 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Wed, Jun 23, 2021 at 10:00:29PM +0300, Oded Gabbay wrote:
-> > On Wed, Jun 23, 2021 at 9:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Wed, Jun 23, 2021 at 09:43:04PM +0300, Oded Gabbay wrote:
-> > >
-> > > > Can you please explain why it is so important to (allow) access them
-> > > > through the CPU ?
-> > >
-> > > It is not so much important, as it reflects significant design choices
-> > > that are already tightly baked into alot of our stacks.
-> > >
-> > > A SGL is CPU accessible by design - that is baked into this thing and
-> > > places all over the place assume it. Even in RDMA we have
-> > > RXE/SWI/HFI1/qib that might want to use the CPU side (grep for sg_page
-> > > to see)
-> > >
-> > > So, the thing at the top of the stack - in this case the gaudi driver
-> > > - simply can't assume what the rest of the stack is going to do and
-> > > omit the CPU side. It breaks everything.
-> > >
-> > > Logan's patch series is the most fully developed way out of this
-> > > predicament so far.
-> >
-> > I understand the argument and I agree that for the generic case, the
-> > top of the stack can't assume anything.
-> > Having said that, in this case the SGL is encapsulated inside a dma-buf object.
-> >
-> > Maybe its a stupid/over-simplified suggestion, but can't we add a
-> > property to the dma-buf object,
-> > that will be set by the exporter, which will "tell" the importer it
-> > can't use any CPU fallback ? Only "real" p2p ?
->
-> The block stack has been trying to do something like this.
->
-> The flag doesn't solve the DMA API/IOMMU problems though.
-hmm, I thought using dma_map_resource will solve the IOMMU issues, no ?
-We talked about it yesterday, and you said that it will "work"
-(although I noticed a tone of reluctance when you said that).
 
-If I use dma_map_resource to set the addresses inside the SGL before I
-export the dma-buf, and guarantee no one will use the SGL in the
-dma-buf for any other purpose than device p2p, what else is needed ?
+> Hello
+> 
+> Gentle ping here, this issue still exists on latest 5.13-rc7
+> 
+> # time nvme reset /dev/nvme0
+> 
+> real 0m12.636s
+> user 0m0.002s
+> sys 0m0.005s
+> # time nvme reset /dev/nvme0
+> 
+> real 0m12.641s
+> user 0m0.000s
+> sys 0m0.007s
 
-Oded
+Strange that even normal resets take so long...
+What device are you using?
 
->
-> Jason
+> # time nvme reset /dev/nvme0
+> 
+> real 1m16.133s
+> user 0m0.000s
+> sys 0m0.007s
+
+There seems to be a spurious command timeout here, but maybe this
+is due to the fact that the queues take so long to connect and
+the target expires the keep-alive timer.
+
+Does this patch help?
+--
+diff --git a/drivers/nvme/target/fabrics-cmd.c 
+b/drivers/nvme/target/fabrics-cmd.c
+index 7d0f3523fdab..f4a7db1ab3e5 100644
+--- a/drivers/nvme/target/fabrics-cmd.c
++++ b/drivers/nvme/target/fabrics-cmd.c
+@@ -142,6 +142,14 @@ static u16 nvmet_install_queue(struct nvmet_ctrl 
+*ctrl, struct nvmet_req *req)
+                 }
+         }
+
++       /*
++        * Controller establishment flow may take some time, and the 
+host may not
++        * send us keep-alive during this period, hence reset the
++        * traffic based keep-alive timer so we don't trigger a
++        * controller teardown as a result of a keep-alive expiration.
++        */
++       ctrl->reset_tbkas = true;
++
+         return 0;
+
+  err:
+--
+
+>> target:
+>> [  934.306016] nvmet: creating controller 1 for subsystem testnqn for
+>> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+>> [  944.875021] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
+>> [  944.900051] nvmet: ctrl 1 fatal error occurred!
+>> [ 1005.628340] nvmet: creating controller 1 for subsystem testnqn for
+>> NQN nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0056-4c10-8058-b7c04f383432.
+>>
+>> client:
+>> [  857.264029] nvme nvme0: resetting controller
+>> [  864.115369] nvme nvme0: creating 40 I/O queues.
+>> [  867.996746] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+>> [  868.001673] nvme nvme0: resetting controller
+>> [  935.396789] nvme nvme0: I/O 9 QID 0 timeout
+>> [  935.402036] nvme nvme0: Property Set error: 881, offset 0x14
+>> [  935.438080] nvme nvme0: creating 40 I/O queues.
+>> [  939.332125] nvme nvme0: mapped 40/0/0 default/read/poll queues.
