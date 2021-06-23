@@ -2,68 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A39E3B15C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 10:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97DF3B1637
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Jun 2021 10:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhFWIYE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Jun 2021 04:24:04 -0400
-Received: from lpdvsmtp11.broadcom.com ([192.19.166.231]:51864 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230030AbhFWIYD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 23 Jun 2021 04:24:03 -0400
-X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Wed, 23 Jun 2021 04:24:03 EDT
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 1EBC124AB2;
-        Wed, 23 Jun 2021 01:15:06 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 1EBC124AB2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1624436108;
-        bh=Nxvg3CePTD4fU7UbeNC1eaymrfaplF9rdrUYZHyUjG4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EjbbQ2EPtguhB4BoWEMJ5BWRRS9W+uQdmGLqYtwlohkn9ZDtLjEaC1UJdS3pOOhld
-         kq+jy/xD69YENFPyTEaxQ8q5CBxxQwULTWY8iS8+H1hUotBQft19TDbYOP9vuQUKge
-         TVJIpWXAmUw6eVXuAP3SiSZMzadicKthNOHLDulc=
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH rdma-next] MAINTAINERS: Update Broadcom RDMA maintainers
-Date:   Wed, 23 Jun 2021 01:14:49 -0700
-Message-Id: <1624436089-28263-1-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
+        id S229930AbhFWIxE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Jun 2021 04:53:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5067 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229833AbhFWIxE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Jun 2021 04:53:04 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G8xg30XL1zXkDT;
+        Wed, 23 Jun 2021 16:45:35 +0800 (CST)
+Received: from dggema753-chm.china.huawei.com (10.1.198.195) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Wed, 23 Jun 2021 16:50:31 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggema753-chm.china.huawei.com (10.1.198.195) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 23 Jun 2021 16:50:31 +0800
+From:   Weihang Li <liweihang@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>, Weihang Li <liweihang@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Fix incorrect vlan enable bit in QPC
+Date:   Wed, 23 Jun 2021 16:50:01 +0800
+Message-ID: <1624438201-11915-1-git-send-email-liweihang@huawei.com>
+X-Mailer: git-send-email 2.7.4
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema753-chm.china.huawei.com (10.1.198.195)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Updating the maintainers file as Devesh decidied to
-leave Broadcom.
+The QPC_RQ/SQ_VLAN_EN bit in QPC should be enabled, not the QPC mask.
 
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Fixes: f0cb411aad23 ("RDMA/hns: Use new interface to modify QP context")
+Signed-off-by: Weihang Li <liweihang@huawei.com>
 ---
- MAINTAINERS | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 636b238..985e621 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3735,7 +3735,6 @@ F:	drivers/gpio/gpio-bcm-kona.c
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 3c35ae4..fc985d6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4676,9 +4676,9 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 	/* Only HIP08 needs to set the vlan_en bits in QPC */
+ 	if (vlan_id < VLAN_N_VID &&
+ 	    hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
+-		hr_reg_enable(qpc_mask, QPC_RQ_VLAN_EN);
++		hr_reg_enable(context, QPC_RQ_VLAN_EN);
+ 		hr_reg_clear(qpc_mask, QPC_RQ_VLAN_EN);
+-		hr_reg_enable(qpc_mask, QPC_SQ_VLAN_EN);
++		hr_reg_enable(context, QPC_SQ_VLAN_EN);
+ 		hr_reg_clear(qpc_mask, QPC_SQ_VLAN_EN);
+ 	}
  
- BROADCOM NETXTREME-E ROCE DRIVER
- M:	Selvin Xavier <selvin.xavier@broadcom.com>
--M:	Devesh Sharma <devesh.sharma@broadcom.com>
- M:	Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
- L:	linux-rdma@vger.kernel.org
- S:	Supported
-@@ -6719,7 +6718,6 @@ F:	drivers/net/ethernet/emulex/benet/
- 
- EMULEX ONECONNECT ROCE DRIVER
- M:	Selvin Xavier <selvin.xavier@broadcom.com>
--M:	Devesh Sharma <devesh.sharma@broadcom.com>
- L:	linux-rdma@vger.kernel.org
- S:	Odd Fixes
- W:	http://www.broadcom.com
 -- 
-2.5.5
+2.7.4
 
