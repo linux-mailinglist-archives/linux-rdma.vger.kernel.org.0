@@ -2,126 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D023B6FB6
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 10:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597173B726A
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 14:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhF2IyL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 04:54:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56014 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232556AbhF2IyK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:54:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C58DA61CA2;
-        Tue, 29 Jun 2021 08:51:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624956703;
-        bh=KJN63K8riJbDlFr2P45UgIg7HaVSqdNLwbvovnKR8ng=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FTuivG5R8i7YnrPmdsOXWGllBirBE9829gQ9RkZYjQUyXpY3urAMl/xJVDzTEdApU
-         zZeKr5+MkzcKgzob1a2q7p9Sx2D0QrIkAsbCp5C6B5Acdyb5gpYVlMdc/4JB7Qlskq
-         F5i4Td3RtoTxe1wwnRZt2FBs1+OLIa2jDo/bHe7M5VGm7MUuI2ZUvmGI+weDqAJejl
-         3x7qtqKgwGRvXc1ey/f4OwApRLhKl5Cbv7FMMcEGMmpZDRX46J/Xmiq7o9DJfBSRgF
-         /6B8BuadCVUiLGL7cW4M024HXhOjcVqN+Yalw+DnhbVDjjlr6fInjZYgu6R9p0jr2A
-         giFhDJ4OR4wxg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Itay Aveksis <itayav@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
-Subject: [PATCH rdma-next] RDMA/mlx5: Don't access NULL-cleared mpi pointer
-Date:   Tue, 29 Jun 2021 11:51:38 +0300
-Message-Id: <899ac1b33a995be5ec0e16a4765c4e43c2b1ba5b.1624956444.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S233966AbhF2Mxl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 29 Jun 2021 08:53:41 -0400
+Received: from [218.75.92.58] ([218.75.92.58]:65181 "EHLO WIN-VTPUBHNS72V"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233874AbhF2Mxb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Jun 2021 08:53:31 -0400
+Received: from [192.168.43.47] (Unknown [197.210.84.10])
+        by WIN-VTPUBHNS72V with ESMTPA
+        ; Thu, 24 Jun 2021 20:46:36 +0800
+Message-ID: <54A5FC11-C31B-40D1-AA9A-2C5377164809@WIN-VTPUBHNS72V>
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: URGENT ATTENTION
+To:     Recipients <wjjt@wjjt.cn>
+From:   "Andres Auchincloss" <wjjt@wjjt.cn>
+Date:   Thu, 24 Jun 2021 14:46:10 +0200
+Reply-To: andresauchincloss926@gmail.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi,
 
-The "dev->port[i].mp.mpi" is set to NULL during mlx5_ib_unbind_slave_port()
-execution, however that field is needed to add device to unaffiliated list.
+I will like to use this opportunity to wish you a productive time in 2021 and also confide in you to finalize this transaction of mutual benefits. It may seem strange to you, but it is real. This is a transaction that has no risk at all, due process shall be followed and it shall be carried out under the ambit of the financial laws. Being the Chief Financial Officer, BP Plc. I want to trust and put in your care Eighteen Million British Pounds Sterling, The funds were acquired from an over-invoiced payment from a past contract executed in one of my departments.
 
-Such flow causes to the following kernel panic while unloading mlx5_ib
-module in multi-port mode, hence the device should be added to the list
-prior to unbind call.
+I can't successfully achieve this transaction without presenting you as foreign contractor who will provide a bank account to receive the funds.
 
- RPC: Unregistered rdma transport module.
- RPC: Unregistered rdma backchannel transport module.
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0
- Oops: 0002 [#1] SMP NOPTI
- CPU: 4 PID: 1904 Comm: modprobe Not tainted 5.13.0-rc7_for_upstream_min_debug_2021_06_24_12_08 #1
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
- RIP: 0010:mlx5_ib_cleanup_multiport_master+0x18b/0x2d0 [mlx5_ib]
- Code: 00 04 0f 85 c4 00 00 00 48 89 df e8 ef fa ff ff 48 8b 83 40 0d 00 00 48 8b 15 b9 e8 05 00 4a 8b 44 28 20 48 89 05 ad e8 05 00 <48> c7 00 d0 57 c5 a0 48 89 50 08 48 89 02 39 ab 88 0a 00 00 0f 86
- RSP: 0018:ffff888116ee3df8 EFLAGS: 00010296
- RAX: 0000000000000000 RBX: ffff8881154f6000 RCX: 0000000000000080
- RDX: ffffffffa0c557d0 RSI: ffff88810b69d200 RDI: 000000000002d8a0
- RBP: 0000000000000002 R08: ffff888110780408 R09: 0000000000000000
- R10: ffff88812452e1c0 R11: fffffffffff7e028 R12: 0000000000000000
- R13: 0000000000000080 R14: ffff888102c58000 R15: 0000000000000000
- FS:  00007f884393a740(0000) GS:ffff8882f5a00000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 00000001249f6004 CR4: 0000000000370ea0
- DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
- DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
- Call Trace:
-  mlx5_ib_stage_init_cleanup+0x16/0xd0 [mlx5_ib]
-  __mlx5_ib_remove+0x33/0x90 [mlx5_ib]
-  mlx5r_remove+0x22/0x30 [mlx5_ib]
-  auxiliary_bus_remove+0x18/0x30
-  __device_release_driver+0x177/0x220
-  driver_detach+0xc4/0x100
-  bus_remove_driver+0x58/0xd0
-  auxiliary_driver_unregister+0x12/0x20
-  mlx5_ib_cleanup+0x13/0x897 [mlx5_ib]
-  __x64_sys_delete_module+0x154/0x230
-  ? exit_to_user_mode_prepare+0x104/0x140
-  do_syscall_64+0x3f/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
- RIP: 0033:0x7f8842e095c7
- Code: 73 01 c3 48 8b 0d d9 48 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a9 48 2c 00 f7 d8 64 89 01 48
- RSP: 002b:00007ffc68f6e758 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
- RAX: ffffffffffffffda RBX: 00005638207929c0 RCX: 00007f8842e095c7
- RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000563820792a28
- RBP: 00005638207929c0 R08: 00007ffc68f6d701 R09: 0000000000000000
- R10: 00007f8842e82880 R11: 0000000000000206 R12: 0000563820792a28
- R13: 0000000000000001 R14: 0000563820792a28 R15: 00007ffc68f6fb40
- Modules linked in: xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat xt_addrtype xt_conntrack nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter overlay rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_ipoib ib_cm ib_umad mlx5_ib(-) mlx4_ib ib_uverbs ib_core mlx4_en mlx4_core mlx5_core ptp pps_core [last unloaded: rpcrdma]
- CR2: 0000000000000000
- ---[ end trace a0bb7e20804e9e9b ]---
+Documentation for the claim of the funds will be legally processed and documented, so I will need your full cooperation on this matter for our mutual benefits. We will discuss details if you are interested to work with me to secure this funds. I will appreciate your prompt response in every bit of our communication. Stay Blessed and Stay Safe.
 
-Fixes: 7ce6095e3bff ("RDMA/mlx5: Don't add slave port to unaffiliated list")
-Reviewed-by: Itay Aveksis <itayav@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
-This is fix the patch in the for-next.
----
- drivers/infiniband/hw/mlx5/main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 90f8a6874cd1..9b8dd7a604c9 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -3345,9 +3345,10 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
- 			} else {
- 				mlx5_ib_dbg(dev, "unbinding port_num: %u\n",
- 					    i + 1);
--				mlx5_ib_unbind_slave_port(dev, dev->port[i].mp.mpi);
- 				list_add_tail(&dev->port[i].mp.mpi->list,
- 					      &mlx5_ib_unaffiliated_port_list);
-+				mlx5_ib_unbind_slave_port(dev,
-+							  dev->port[i].mp.mpi);
- 			}
- 		}
- 	}
--- 
-2.31.1
+
+Best Regards
+
+
+
+
+Tel: +1 (587) 770-0485
+Andres .B. Auchincloss
+Chief financial officerBP Petroleum p.l.c.
+
+
+
+
+                                  Copyright ©? 1996-2021
 
