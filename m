@@ -2,202 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5833B272A
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jun 2021 08:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0656F3B277D
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Jun 2021 08:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhFXGLY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Jun 2021 02:11:24 -0400
-Received: from mga07.intel.com ([134.134.136.100]:34771 "EHLO mga07.intel.com"
+        id S231261AbhFXGkx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Jun 2021 02:40:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33732 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230257AbhFXGLY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 24 Jun 2021 02:11:24 -0400
-IronPort-SDR: UyGaE+DPWwiM7TFGQrG9IAtdbqco8lwFJtn863J1SQhMJVk389QHQzlvMpiX4fVMTRdo5NHNP9
- nKkhNfATmxrA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10024"; a="271245760"
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="271245760"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2021 23:09:05 -0700
-IronPort-SDR: UJEOxdSKEdQ7e3SvOShD6IyKi4JNcYh3meSNbzXnQpHS45Dj6otRx7/2gLyfPZWY/7xS2Gokma
- cLP/wvvTrggA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,295,1616482800"; 
-   d="scan'208";a="487628232"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 23 Jun 2021 23:09:01 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lwIXs-0006O0-R7; Thu, 24 Jun 2021 06:09:00 +0000
-Date:   Thu, 24 Jun 2021 14:08:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- e7c07d5e0750e921d60e63dd181886c479a0ee19
-Message-ID: <60d42151.tHQ6Uz4bk8QEVZOC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231132AbhFXGkv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 24 Jun 2021 02:40:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D3C6112D;
+        Thu, 24 Jun 2021 06:38:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624516711;
+        bh=3H3h6nvUXcwX3K9dOXFx+WCCQStHotL4IqRDWj23LDk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jXmwdJj0AMj1whXFcv8ZY4Se99jEsDi3bG+x2fx7mFgORpKgPScjaocq6pPIQXhyY
+         PayoUjYwKO8eEnL9SVK2KLN0xDs9rG87pcbZ9tRdclmXwWQeAvG90SrJEVwSZ8MuIb
+         3HohbUeGNsTWbX8xYQYOVVRJ3VuX/gP7qcc/sszyLD2I444wQRrL0JgIe3ww2L6nJD
+         5XcH3ZCUACfgkMoshhLNDFVoI/BR5U1GkUe4RTFYbwp12aP5MD4mWhHndEtz3Rhvfl
+         7eJ72EEXRjvjSthMcS9CV4qGdE15PXKRb8fDWBJYMaJBO2Ozlj9Lh7fUl2WjUEsCsk
+         aA/cIRMJCEd1w==
+Date:   Thu, 24 Jun 2021 09:38:27 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Honggang LI <honli@redhat.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YNQoY7MRdYMNAUPg@unreal>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <9c5b7ae5-8578-3008-5e78-02e77e121cda@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <9c5b7ae5-8578-3008-5e78-02e77e121cda@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: e7c07d5e0750e921d60e63dd181886c479a0ee19  RDMA/hns: Fix incorrect vlan enable bit in QPC
+On Thu, Jun 24, 2021 at 02:06:46AM +0300, Max Gurtovoy wrote:
+> 
+> On 6/9/2021 2:05 PM, Leon Romanovsky wrote:
+> > From: Avihai Horon <avihaih@nvidia.com>
+> > 
+> > Relaxed Ordering is a capability that can only benefit users that support
+> > it. All kernel ULPs should support Relaxed Ordering, as they are designed
+> > to read data only after observing the CQE and use the DMA API correctly.
+> > 
+> > Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
+> > 
+> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> > Changelog:
+> > v2:
+> >   * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
+> >     eth side of mlx5 driver.
+> > v1: https://lore.kernel.org/lkml/cover.1621505111.git.leonro@nvidia.com
+> >   * Enabled by default RO in IB/core instead of changing all users
+> > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
+> > ---
+> >   drivers/infiniband/hw/mlx5/mr.c | 10 ++++++----
+> >   drivers/infiniband/hw/mlx5/wr.c |  5 ++++-
+> >   2 files changed, 10 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> > index 3363cde85b14..2182e76ae734 100644
+> > --- a/drivers/infiniband/hw/mlx5/mr.c
+> > +++ b/drivers/infiniband/hw/mlx5/mr.c
+> > @@ -69,6 +69,7 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> >   					  struct ib_pd *pd)
+> >   {
+> >   	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+> > +	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
+> >   	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+> >   	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+> > @@ -78,10 +79,10 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+> >   	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+> >   		MLX5_SET(mkc, mkc, relaxed_ordering_write,
+> > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
+> > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+> >   	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+> >   		MLX5_SET(mkc, mkc, relaxed_ordering_read,
+> > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
+> > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
+> 
+> Jason,
+> 
+> If it's still possible to add small change, it will be nice to avoid
+> calculating "acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled" twice.
 
-elapsed time: 726m
+The patch is part of for-next now, so feel free to send followup patch.
 
-configs tested: 140
-configs skipped: 3
+Thanks
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index c1e70c99b70c..c4f246c90c4d 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -69,7 +69,8 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+                                          struct ib_pd *pd)
+ {
+        struct mlx5_ib_dev *dev = to_mdev(pd->device);
+-       bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
++       bool ro_pci_enabled = acc & IB_ACCESS_RELAXED_ORDERING &&
++                             pcie_relaxed_ordering_enabled(dev->mdev->pdev);
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                           mtx1_defconfig
-powerpc                      arches_defconfig
-mips                            gpr_defconfig
-m68k                        m5272c3_defconfig
-microblaze                      mmu_defconfig
-m68k                          atari_defconfig
-sh                   secureedge5410_defconfig
-arm                              alldefconfig
-sparc64                          alldefconfig
-arm                        keystone_defconfig
-mips                          ath79_defconfig
-sh                          rsk7203_defconfig
-sh                        edosk7760_defconfig
-arm                         lpc32xx_defconfig
-arm                          lpd270_defconfig
-arm                             pxa_defconfig
-arm                           corgi_defconfig
-sparc                            alldefconfig
-arm                      pxa255-idp_defconfig
-arm                             ezx_defconfig
-mips                          ath25_defconfig
-mips                       capcella_defconfig
-arm                        mini2440_defconfig
-arm                            hisi_defconfig
-arm                        neponset_defconfig
-mips                        bcm63xx_defconfig
-sh                         microdev_defconfig
-parisc                generic-32bit_defconfig
-powerpc                    gamecube_defconfig
-sh                      rts7751r2d1_defconfig
-sh                           se7722_defconfig
-powerpc                 mpc834x_itx_defconfig
-powerpc                     ep8248e_defconfig
-sh                           se7724_defconfig
-sh                             sh03_defconfig
-m68k                          sun3x_defconfig
-powerpc                 canyonlands_defconfig
-parisc                              defconfig
-powerpc                  storcenter_defconfig
-powerpc                         wii_defconfig
-xtensa                          iss_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                       maple_defconfig
-arm                       aspeed_g5_defconfig
-arm                          ep93xx_defconfig
-powerpc                 mpc836x_mds_defconfig
-m68k                       m5249evb_defconfig
-mips                        omega2p_defconfig
-arm                        magician_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20210623
-x86_64               randconfig-a001-20210623
-x86_64               randconfig-a005-20210623
-x86_64               randconfig-a003-20210623
-x86_64               randconfig-a004-20210623
-x86_64               randconfig-a006-20210623
-i386                 randconfig-a001-20210622
-i386                 randconfig-a002-20210622
-i386                 randconfig-a003-20210622
-i386                 randconfig-a006-20210622
-i386                 randconfig-a005-20210622
-i386                 randconfig-a004-20210622
-x86_64               randconfig-a012-20210622
-x86_64               randconfig-a016-20210622
-x86_64               randconfig-a015-20210622
-x86_64               randconfig-a014-20210622
-x86_64               randconfig-a013-20210622
-x86_64               randconfig-a011-20210622
-i386                 randconfig-a011-20210623
-i386                 randconfig-a014-20210623
-i386                 randconfig-a013-20210623
-i386                 randconfig-a015-20210623
-i386                 randconfig-a012-20210623
-i386                 randconfig-a016-20210623
-i386                 randconfig-a011-20210622
-i386                 randconfig-a014-20210622
-i386                 randconfig-a013-20210622
-i386                 randconfig-a015-20210622
-i386                 randconfig-a012-20210622
-i386                 randconfig-a016-20210622
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+        MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+        MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+@@ -78,11 +79,9 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+        MLX5_SET(mkc, mkc, lr, 1);
 
-clang tested configs:
-x86_64               randconfig-b001-20210623
-x86_64               randconfig-b001-20210622
-x86_64               randconfig-a002-20210622
-x86_64               randconfig-a001-20210622
-x86_64               randconfig-a003-20210622
-x86_64               randconfig-a006-20210622
-x86_64               randconfig-a005-20210622
-x86_64               randconfig-a004-20210622
+        if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+-               MLX5_SET(mkc, mkc, relaxed_ordering_write,
+-                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
++               MLX5_SET(mkc, mkc, relaxed_ordering_write, ro_pci_enabled);
+        if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+-               MLX5_SET(mkc, mkc, relaxed_ordering_read,
+-                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
++               MLX5_SET(mkc, mkc, relaxed_ordering_read, ro_pci_enabled);
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+        MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+        MLX5_SET(mkc, mkc, qpn, 0xffffff);
+(END)
+
+
+> 
+> 
