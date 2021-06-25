@@ -2,133 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE8C13B4395
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jun 2021 14:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA743B439A
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Jun 2021 14:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229498AbhFYMuf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Jun 2021 08:50:35 -0400
-Received: from mail-bn1nam07on2072.outbound.protection.outlook.com ([40.107.212.72]:12142
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229653AbhFYMuf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 25 Jun 2021 08:50:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kEfB3wkFwD7J7LDqnEZDeMgsegV5rqSFdO2uV3z3gKZS0XC214c8ipAqKO2iF9/f/lyqsq7cAvHv1Qn4ZiBIFL1ltOyir6h4DWttjsiBwXxmFx8KSS+JGl7cxOUw01vK+gTypOVuVK80KJGd41z+RLtxIDiO/vVC4Z/E+cy7yAYgsHMI/ZbNStIZHL1bLkQNQ5cZrTt4RdDP+oHWv5/cQ4Du8Eh3lpssp5AO9R/4hVwhUhQpf2BwbIJyP3DSiWDGFCJDS+Bn30KWXNQk3GyxNI6DzY1osFveluRzSO2J5zK3gitTRnziklrOA7tGYVd7Xtv1F0F1O82el0eIn1J39A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gb9CSXjdXUMWQphwR3Ej5TsPbsDmtDchfxcd4dIo16M=;
- b=maGw9paiQdU3XP11EEKCoZVu4O8q7MsGv4RBERmUsBkHUifMv5PRI0Re8//1hlFmbMYrpZnYdQy8lh9BtdkldHAgy8TL6utveWVoL9oniiom+9zG0H6LKM8BpMcCMRIbIFbMrrtvMO5HkqXiyrKt9OBFrsGneeK4KEsX9NGFd7GQ6XI+Jv3xrt/slHQaRYQ1MjyZbCbWoDH0ey+kghDfXWhTRjBx0fO7ZTC/nprG9mNGjHuDzbw0hRvjcQP+jV7NxDhxPwi3VSqMYWaaRsRh50Ab4f8NqjAXvbppcjQk5RTjRylvhYsE3vNoWmoWZ/EbPLgIqFgL2quOt2Kkbc27qQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gb9CSXjdXUMWQphwR3Ej5TsPbsDmtDchfxcd4dIo16M=;
- b=m04l6xmRB0ObFk72aJj1f5NnnxoNPhv+bf9QvMS1FbKbDhJKiby587l53D8N4shpv5hsudRHFWvUpOHTFirWD0tpw6L2BF1pOSg2o7ggcyfU0q93U69sy3ZX3BUhhQxCiPZT97jVVSfBvhpFMFh96PhOpPP2L5s1yzPotcipuiY8+B2kCnibPXfSWq6SYVWOl3MwDBVpwVd9q2ATwWRNMQ0BOJez5OS3sy4+CmY+CHWgQ3LEMZKpa3CNPvPZwdmIIAJZAdhb1UhsfQ5OJigX0KRIMl7D5JgmH7U3bjFu718VzzalA2iIZs/yCYkPC7+/K8Buk0TZpvc4BosS3anjwA==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5032.namprd12.prod.outlook.com (2603:10b6:208:30a::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.20; Fri, 25 Jun
- 2021 12:48:13 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4264.023; Fri, 25 Jun 2021
- 12:48:13 +0000
-Date:   Fri, 25 Jun 2021 09:48:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Anand Khoje <anand.a.khoje@oracle.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dledford@redhat.com, haakon.bugge@oracle.com, leon@kernel.org
-Subject: Re: [PATCH v5 for-next 3/3] IB/core: Obtain subnet_prefix from cache
- in IB devices
-Message-ID: <20210625124812.GS2371267@nvidia.com>
-References: <20210616154509.1047-1-anand.a.khoje@oracle.com>
- <20210616154509.1047-4-anand.a.khoje@oracle.com>
- <20210621234913.GA2364052@nvidia.com>
- <012d6cd2-5167-ed81-80db-444fd2741ea8@oracle.com>
- <20210624175458.GR2371267@nvidia.com>
- <5fd99709-8a90-e875-1ed2-74f5bcce6eec@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5fd99709-8a90-e875-1ed2-74f5bcce6eec@oracle.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0061.namprd02.prod.outlook.com
- (2603:10b6:207:3d::38) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229653AbhFYMwS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Jun 2021 08:52:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhFYMwR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Jun 2021 08:52:17 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23397C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Jun 2021 05:49:56 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id u8so1758261qvg.0
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Jun 2021 05:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Vp2M6wKaeQ8Ae3VYAdqhfAI9w/ItFEcYpgWESoIC89A=;
+        b=nHPRkgwcDCGE29GMQxxUb6k+oz4iVTau3QnEOsoHnR5/UrD/tqLeAToQYPuaKoG3n7
+         qoHAup2illTsC1QJqWkr7seQIeTnGC2aBUvcv3er/a0F9tDp4YQejfEOLpAfveV2vcVZ
+         9X65FKLrJokM3qRw554fozaku/SOqSBsob2N9YVW1paH03g8J+yk0eWeSjGnHl054Hih
+         0k3T/0Q7udIVs91NN8PY6w6P8A7ZOsB7PNefgDW4LeLj3pqnJavIpFceKy+iJxGV3Nx8
+         i05tx+LU1fw2ayGUJFmh9VJOZWkbN7Jo26F3vsbTL8COnvsMt7mlO5ARfcOp+YnCXrtx
+         HnOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Vp2M6wKaeQ8Ae3VYAdqhfAI9w/ItFEcYpgWESoIC89A=;
+        b=QYBXMEMV/MlJAPn7iYC4XyM6J3CYZpOSFM4GmDSJG1EsED1RG/fk2c+87slD/5pHRe
+         e0QLVFgQNz4nE7Z0oDWt1Dpo7Odoq0nEQu8HWIp7dB9gMNp6XAe/54xcorWYpS7Gk0ZO
+         Y6ogOtDonLaOwZfmoYoyqBkR+gh6+6CkxFKIYjVxDWKOWY8qOkimqC2fVLkwa+7IVaf/
+         eBnDVFMIppfXwv1U1nnHBVOUU+p//rvF/epW3XksQxmTzez8fkS42yk5RgKoUf86tqtE
+         q/2bENQ/B5cbdt4FS94TH6uN4xz0nHPnugpGlNRu7scRG0i7XqhIYnY7fi4AbK/uUAM0
+         ZsuQ==
+X-Gm-Message-State: AOAM530nEdq+0Ro6zNAjc4HCU3S1/84MGXpc4DEHDfsX0ZQy/1zjXENY
+        2wnKu5MpWm9eoCyXZNyJeUgZTg==
+X-Google-Smtp-Source: ABdhPJyMdaB4DAd/pfG93A9fwe60ZjH+OQ356McHHPxJ0TuRtuJjVseHoFUN1njN7bR6Cxl5W7nahQ==
+X-Received: by 2002:a0c:f60a:: with SMTP id r10mr10941972qvm.53.1624625395329;
+        Fri, 25 Jun 2021 05:49:55 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id i185sm274102qke.34.2021.06.25.05.49.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Jun 2021 05:49:54 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lwlHN-00CWgL-Ux; Fri, 25 Jun 2021 09:49:53 -0300
+Date:   Fri, 25 Jun 2021 09:49:53 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Shoaib Rao <rao.shoaib@oracle.com>, linux-rdma@vger.kernel.org,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH v1 3/3] RDMA/rxe: Increase value of RXE_MAX_AH
+Message-ID: <20210625124953.GC1096940@ziepe.ca>
+References: <20210617182511.1257629-1-Rao.Shoaib@oracle.com>
+ <20210617182511.1257629-3-Rao.Shoaib@oracle.com>
+ <3aa5a673-3fd7-744b-b664-510005215bd2@gmail.com>
+ <10d9763c-4d10-3820-93a0-b79f55acfa8e@oracle.com>
+ <edcf0cc0-4da8-5af3-3366-220b4eeba5e4@gmail.com>
+ <20210618163359.GA1096940@ziepe.ca>
+ <14e2c2a4-6067-c657-6ea4-91cd3c19d032@gmail.com>
+ <20210618232535.GB1096940@ziepe.ca>
+ <9b651595-94b1-4ecd-1e37-16459530f297@oracle.com>
+ <5979c6c7-7ffe-d08c-f970-f97a1727988a@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0061.namprd02.prod.outlook.com (2603:10b6:207:3d::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18 via Frontend Transport; Fri, 25 Jun 2021 12:48:13 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lwlFk-00CWe0-C4; Fri, 25 Jun 2021 09:48:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 02fd808f-087f-4d58-f3bc-08d937d77e98
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5032:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5032D3F719576CD6B0747B25C2069@BL1PR12MB5032.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rk8Fb+AXajeDkfHkNUicWBZ81DVrks9PCoeGosxweek6JxomS/AWca8w7N+KEcCMTJLiCiqpusGC3OUBf9LT3dj3w6i1yd80yuo+MAsRfIFpDTaPyrvzdyzLg00kvmE8fMzoiKK4yjeMVsPOefFzsNWx/1z5wI7E+/9VM5EtrYZgZx8G0fi3XFB4LoxwyPvOa/BN5RY6EmNKAUNuppOSxjMmJI2ajD9DZdC1FikCMgkW6er1Wh9Ktte7Z6STtEVc5Qj4KdE1CZHlOXxzJl2IVlUHLfIlMAsZmqVYtdcv6RhxF60BXQ7cpExmMyS37YpzKTiWG/MfTuUcfeU0oHmzT/RnblXburn4hTVZi1901RkVJQ0Z/GFiEe8DFbe3zElM8JHxALGbAR/e9TPToxe9bXx6ZKsKX6NqXTVval2vAdE8z3BKJtBy+PruXS2Txd2wwZHSFdMsSM4xSqv38hNH+ZcxD714ayb9+++AK5KKdrYhlL88QJMHUAB2QZPANLKhod7LS+dc5x8Ns24wltYtpQ7oSrCEZ+oYgpe9m5cun1mw05Wn5CqcBmY51KFzYj9F6cnzh//w/VYuJRr38MkABWRt+0VMqjcrWwo/2j+Z/x4pNjdj1Nq1MKFYfPw1vro1j6a3leI+Uhrhsx20t6iDog==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(376002)(366004)(396003)(38100700002)(186003)(426003)(4744005)(2616005)(1076003)(9786002)(2906002)(9746002)(33656002)(6916009)(316002)(26005)(5660300002)(83380400001)(478600001)(36756003)(86362001)(8936002)(66476007)(66946007)(66556008)(8676002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rOQ5AFb19a9nxD+40KwpM/QQjiHsohYuHiXX5/CHlXaDXOyowrswuQRzWg5X?=
- =?us-ascii?Q?2mFqZGE9/TeBUN1cEi2lRWitIb3jAmm/BhzhWzZRsB5PRx7XeJ9WjVizjmPf?=
- =?us-ascii?Q?lUeZ+lti8HNT0pS/hE/jR4GlHYbr0I20GbiD7M0ux2eagqxF/xC0KNpGk+Z7?=
- =?us-ascii?Q?aqYNAKe1waTLaCi/JDH3TCzSpWzk/vGoZ1+IrsriMO7TFbfTsDAmi3bWIw80?=
- =?us-ascii?Q?tia7XXefsxXOjUAEuARochKGUdwQuYoc+Da8IVqxZobWxZ6megwhddoTmH4M?=
- =?us-ascii?Q?TAA8IaTPd42f7JoHF3Y3u155dmWaJ7quzI7l6CFRLorEQT9Oh9/KHVpz3wNk?=
- =?us-ascii?Q?t9tIicDMkng9bmoy+CA5vIulGzuUfbxu+ukVsm8/yMjnkNIGHaM5ZAmiT62q?=
- =?us-ascii?Q?FTZv1KqTKuLYyYR01vPz8iUZMO4yBi1W26JWSTHTLZLo8NZtowzsA+1iW/8F?=
- =?us-ascii?Q?PhXYPES/bf+09q1TnpSxJh5E2wejhaWtS4Fk+1YARCbEndqY3XG9/QqFG8Kv?=
- =?us-ascii?Q?vYGM3rng/0dUXYPXnsjEZ6o0Dj7ZHk99mslEqkIOh2hq0LEKILMAwsaSqP+L?=
- =?us-ascii?Q?FYSgft82SP1UMTNGlnHB8gd0LXguN8DIGStiSkeR6b4zuKZcgpMV/hZSsvqF?=
- =?us-ascii?Q?uxR9NS776yETba6Q36EtzWkh5mCtKhbRY+1U2+8b3NgzWi8vAlvwoD8PJp2j?=
- =?us-ascii?Q?HyQK60SDT/munXrqxyhPRJI/BISs+uNHPkX8y4EAjzRSluGP34YZDTdwF4C2?=
- =?us-ascii?Q?je5EhoIOC7Xnl6/+3IRelI8POq0p2V2QBUdV9Ll77KSSkh9JtKRdMnD1POFf?=
- =?us-ascii?Q?IH0P3KbX3v46uRzLHjGf4iaKrButEYDcFSZ2okjj2QemgPOfiYikfWbT+XTY?=
- =?us-ascii?Q?bauTjUaqtIxSg6o5U8Gx27NIRpi2AmmhwWin3uppSnBekTGuiA0qQkvvnhAJ?=
- =?us-ascii?Q?ZuI/SLHkbrBqhPbqEMcE2IKoeB4HZ8tRyloVb72ka0ynZn6+JQfPOODzmg1F?=
- =?us-ascii?Q?ohyrWuwBU6QfwdDS6kfjZy2945oYOE7oxVtk00unb236iC01FH2dtzXPqElg?=
- =?us-ascii?Q?AVEccBZ9HnkC23jt40jMNIqO5L6Wdb/8oRXJTyLwTCzuz5iLskPD2FRj4lsg?=
- =?us-ascii?Q?0SXb4bTVaryLF796/u0FlIqDPJZ5Fk0MHiAy7d/ZADuKH5aJB1IJtUPA+G3c?=
- =?us-ascii?Q?eTR5atjsUSbBslWmOLUy+hapXlxXieMkLZtdw6hQGdt0gMp+ldj2a4fh4hYW?=
- =?us-ascii?Q?DU5h1MBQFC8iG/or68g2+duV+nPnFsI2V3r8wyE72/a/7NJRGgdliG0wyhsv?=
- =?us-ascii?Q?a3X627fQYafYBFzdWqyIAzQm?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 02fd808f-087f-4d58-f3bc-08d937d77e98
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2021 12:48:13.2449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yXGYXXgoCDGwUSsFXRVCRdvwujquoG3QLfl4MRhr14Ak3uoZK1+hEDYbpzZeWwls
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5032
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5979c6c7-7ffe-d08c-f970-f97a1727988a@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:33:58AM +0530, Anand Khoje wrote:
-> 
-> If the above change is to be made, there could arise a scenario in which:
->  In case of a cache_update event, another application/module could try to
-> call ib_query_port() and read subnet_prefix while the cache is still getting
-> updated and the application/module could end up reading a stale value of
-> subnet_prefix.
+On Fri, Jun 25, 2021 at 12:13:57AM -0500, Bob Pearson wrote:
+> On 6/24/21 4:21 PM, Shoaib Rao wrote:
+> > 
+> > On 6/18/21 4:25 PM, Jason Gunthorpe wrote:
+> >> On Fri, Jun 18, 2021 at 01:58:48PM -0500, Bob Pearson wrote:
+> >>> On 6/18/21 11:33 AM, Jason Gunthorpe wrote:
+> >>>> On Thu, Jun 17, 2021 at 10:56:58PM -0500, Bob Pearson wrote:
+> >>>>  
+> >>>>> It isn't my call. But I am in favor of tunable parameters. -- Bob Pearson
+> >>>> Can we just delete the concept completely?
+> >>>>
+> >>>> Jason
+> >>>>
+> >>> Not sure where you are headed here. Do you mean just lift the limits
+> >>> all together?
+> >> Yes.. The spec doesn't have like a UCONTEXT limit for instance, and
+> >> real HW like mlx5 has huge reported limits anyhow.
+> > 
+> > These limits are reported via uverbs, so what do we report without current applications. Creating pool also requires limits but I guess we can use something like -1 to indicate there is no limit. I would have to look at all the values to see if we can implement this.
+> > 
+> > Shoaib
+> > 
+> > 
+> >>
+> >> Jason
+>
+> The object create in pools (rxe_alloc_locked) just calls kzalloc for
+> objects allocated by rxe and checks the limits. For objects
+> allocated by rdma-core (__rxe_add_to_pool) it just checks the
+> limits. The only place where the limit really matters is when a pool
+> is indexed (RXE_POOL_INDEXED). Then there is a bitmask used to
+> allocate the indices for the objects which consumes one byte for
+> each 8 objects.
 
-Applications relying on this data must hook the event and update their
-state when the event fires.
-
-So long as ib_query_port returns the correct value in the event
-handler it is all OK. This whole thing is racy - the HW can change the
-subnet_prefix at anytime, this is just shuffling the race around.
-
-> - Is it possible that different GIDs in the gid_table will have different
-> values of subnet_prefix?
-
-Valid GIDs should have the same prefix
+Use an ida or xarray instead?
 
 Jason
