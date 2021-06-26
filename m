@@ -2,198 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E748A3B4DB6
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Jun 2021 10:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7893B4EBB
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Jun 2021 15:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhFZIvJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 26 Jun 2021 04:51:09 -0400
-Received: from mga02.intel.com ([134.134.136.20]:1564 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229518AbhFZIvJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 26 Jun 2021 04:51:09 -0400
-IronPort-SDR: HU0fZOYopS1N1h3YDoKWxU+8kjh4bZNYFkbb3JTs8czyCL5vtuxO7YiPiWIKf0BOx6LpfgbbFs
- yyymIEDjgT6g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10026"; a="194923976"
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
-   d="scan'208";a="194923976"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jun 2021 01:48:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,301,1616482800"; 
-   d="scan'208";a="418613101"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 26 Jun 2021 01:48:45 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lx3zY-0007fF-U2; Sat, 26 Jun 2021 08:48:44 +0000
-Date:   Sat, 26 Jun 2021 16:47:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 1f700757224effe598690b34e95329aff4e3e362
-Message-ID: <60d6e9b2.oK/5XpA83ePv7IB9%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230013AbhFZNaq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 26 Jun 2021 09:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhFZNaq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 26 Jun 2021 09:30:46 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92DAC061574
+        for <linux-rdma@vger.kernel.org>; Sat, 26 Jun 2021 06:28:22 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id c11so16665125ljd.6
+        for <linux-rdma@vger.kernel.org>; Sat, 26 Jun 2021 06:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=fkzTob+3bW1xRTGZ343yDpkgmFJWtVEeh+6HnOW5xMw=;
+        b=vMlHzFpEXq4PZBs49P/rOjNYXQ9RhCfGaYi7rN0BPsah9fjtFX3UTY4mS5ydquCRPY
+         H8Mc91TeDM+1NCBbrZ6sz3YrMf/7CNVyOplpgTHeFZHmm81+YcgvdlYKvM7WiDLQ7294
+         hJgbqJFcQj5n9t5v9K/mN7kIbakpwGKVai5cDlik07DEHR2kgxVELRGmlcHnm9NLzjV6
+         WzSmcM/fbGwN/U2+xnKqayhgS1dFO8OQ6sLNkeG3Q58Ymu2VzZcXrb1C5Vmq3JBhbc4u
+         nt8LjgyuwiCwC5CXzQLi2uGZSI+q/c/ZEEwvjZE28HoZezvJVa3mWO1f5ql9emsFY01r
+         2VbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=fkzTob+3bW1xRTGZ343yDpkgmFJWtVEeh+6HnOW5xMw=;
+        b=iwc+MID/QA2rY43hC1MI5QqZj9PYeO0sc/97G7n6JtzV3EWOrszbiTy3qNuJmCD9Qs
+         YoZIaQ1e8VRROn9Ck+bReinlno+XJAvM/OptmkQGLI8s/3iMCcVOchs2P2peSwxIvVHQ
+         UJqi0G8ZfI49TwXiQWWrO6zqtNiO6IF1oxxIhRhjkWPeCeMJ5+Z8bX6IjghkXNWJDg5x
+         x2Fv/I4Ty7ewSIYtFLQPtWktr/2lMVjWXPnIm+dw4fBrv0dmWoDZ0RtPVze3jg2zbs2I
+         EY8E/nlIlxjpMQXlC5ZECdd2wnhUwjmsMq4TZcOoIfajmAXBWivEI8XAbxp+b+TMn7Y9
+         4Oxw==
+X-Gm-Message-State: AOAM5337UtePQKhun6cSODRWAAmtW0EAyN1YWkL3nsNQ9GfXjPTk9GwN
+        h0XITjvNbzyEzKGOcdYSsB7HSUdRkotWLnghogw=
+X-Google-Smtp-Source: ABdhPJzIqeXGGygduN+2xzFd952qotOuoc0CgCYMybfMzTX0TeBS48dMBUvOFoweeZqCTDRABwHkdkCVSNPeB20oJPQ=
+X-Received: by 2002:a05:651c:b1f:: with SMTP id b31mr12160200ljr.488.1624714100945;
+ Sat, 26 Jun 2021 06:28:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:6512:3fa2:0:0:0:0 with HTTP; Sat, 26 Jun 2021 06:28:20
+ -0700 (PDT)
+Reply-To: dmouka6@gmail.com
+From:   DIOUF MOUKA <habibnuru1000@gmail.com>
+Date:   Sat, 26 Jun 2021 06:28:20 -0700
+Message-ID: <CADGwnDRYrqwxD+kcysJTdVbotZrhgHdrMvJy1UdQEb8B1ktGjw@mail.gmail.com>
+Subject: Greetings To You Friend
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 1f700757224effe598690b34e95329aff4e3e362  RDMA/irdma: Fix potential overflow expression in irdma_prm_get_pbles
+-- 
+Greetings To You Friend,
+I Am Mr. Diouf Mouka From Burkina Faso I Have A Genuine
+Business Transaction Of 30million U.S Dollars To Do With You
+If You Are Interested Send To Me The Following Information
+Immediately.
 
-elapsed time: 876m
+Your Full Name......
 
-configs tested: 138
-configs skipped: 3
+Your Occupation.....
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Your Age........
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-mips                  maltasmvp_eva_defconfig
-mips                         db1xxx_defconfig
-sh                        apsh4ad0a_defconfig
-mips                         tb0226_defconfig
-powerpc                           allnoconfig
-ia64                                defconfig
-mips                        bcm47xx_defconfig
-powerpc                     skiroot_defconfig
-microblaze                          defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                          rsk7201_defconfig
-arm                         bcm2835_defconfig
-sh                               j2_defconfig
-sh                          r7785rp_defconfig
-h8300                            alldefconfig
-mips                 decstation_r4k_defconfig
-sh                        edosk7705_defconfig
-arm                          pxa3xx_defconfig
-arm                          moxart_defconfig
-powerpc                      mgcoge_defconfig
-arm                           u8500_defconfig
-arm                         palmz72_defconfig
-powerpc                 mpc834x_mds_defconfig
-mips                        workpad_defconfig
-powerpc                    ge_imp3a_defconfig
-mips                         tb0219_defconfig
-powerpc                      pasemi_defconfig
-sh                             shx3_defconfig
-arm                         hackkit_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                 xes_mpc85xx_defconfig
-m68k                       m5275evb_defconfig
-arm                        mini2440_defconfig
-arm                       versatile_defconfig
-powerpc                 canyonlands_defconfig
-arc                          axs103_defconfig
-powerpc                     pq2fads_defconfig
-arm                         vf610m4_defconfig
-m68k                            mac_defconfig
-ia64                            zx1_defconfig
-microblaze                      mmu_defconfig
-arm                        trizeps4_defconfig
-arm                             pxa_defconfig
-m68k                         amcore_defconfig
-sh                           sh2007_defconfig
-arm                           viper_defconfig
-mips                           ip27_defconfig
-powerpc                     mpc83xx_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a002-20210625
-x86_64               randconfig-a001-20210625
-x86_64               randconfig-a005-20210625
-x86_64               randconfig-a003-20210625
-x86_64               randconfig-a004-20210625
-x86_64               randconfig-a006-20210625
-i386                 randconfig-a002-20210625
-i386                 randconfig-a001-20210625
-i386                 randconfig-a003-20210625
-i386                 randconfig-a006-20210625
-i386                 randconfig-a005-20210625
-i386                 randconfig-a004-20210625
-x86_64               randconfig-a012-20210622
-x86_64               randconfig-a016-20210622
-x86_64               randconfig-a015-20210622
-x86_64               randconfig-a014-20210622
-x86_64               randconfig-a013-20210622
-x86_64               randconfig-a011-20210622
-i386                 randconfig-a011-20210622
-i386                 randconfig-a014-20210622
-i386                 randconfig-a013-20210622
-i386                 randconfig-a015-20210622
-i386                 randconfig-a012-20210622
-i386                 randconfig-a016-20210622
-i386                 randconfig-a011-20210625
-i386                 randconfig-a014-20210625
-i386                 randconfig-a013-20210625
-i386                 randconfig-a015-20210625
-i386                 randconfig-a012-20210625
-i386                 randconfig-a016-20210625
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+Your Marital Status.....
 
-clang tested configs:
-x86_64               randconfig-b001-20210622
-x86_64               randconfig-b001-20210625
-x86_64               randconfig-a002-20210622
-x86_64               randconfig-a001-20210622
-x86_64               randconfig-a005-20210622
-x86_64               randconfig-a003-20210622
-x86_64               randconfig-a004-20210622
-x86_64               randconfig-a006-20210622
+Your Phone Number.....
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Your Country/Nationality.....
+
+Best Regard,
+
+Diouf Mouka.
