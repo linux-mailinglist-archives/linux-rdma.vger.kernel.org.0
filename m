@@ -2,149 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F0A3B526C
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Jun 2021 09:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B603B5286
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Jun 2021 10:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229534AbhF0Hev (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Jun 2021 03:34:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35276 "EHLO mail.kernel.org"
+        id S229978AbhF0IKB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Jun 2021 04:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhF0Heu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 27 Jun 2021 03:34:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86D6C61C17;
-        Sun, 27 Jun 2021 07:32:26 +0000 (UTC)
+        id S229507AbhF0IKB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 27 Jun 2021 04:10:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C629561C32;
+        Sun, 27 Jun 2021 08:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624779147;
-        bh=zlru4aeecx66uG4AaBV7pSp7w2wfSyth2muFtppUKJg=;
+        s=k20201202; t=1624781257;
+        bh=h5CSvzy0V/l1v+zE/fkgAeIjDT3aAzc6SsRS7UQrEGs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Q6HtdHwfeqgFFTFNjXYjvWEfjGx8bbFPSD71xc2+2IASbx2WI/r50aE184FSjBvj8
-         ynhhNv8T7kVbcUs5Fg96ob6F1fOJWZiJtseZIjpG9exInBx8A/PyoNwss5cb3UwH1t
-         FmjG+yrR0T5Ld6m3/7TtFEdijSLS8fhfweojK2egGMwCwbNTITjVvp7aauVThm+zMT
-         9+CGa5R/EgWC4rG+lESqtYaBI41RX2kY3ciJDTx33ITjrCXCb5v2rjv3Omr/vXXVz8
-         gXH4U9ZTg5SBZvzMcrWVf4vJjKHe6I2fjyZw0HCq45NM+o9E7ZKiHJuX6r7lTrf9HN
-         sf/RN+e/GFomw==
-Date:   Sun, 27 Jun 2021 10:32:23 +0300
+        b=ITuI43vEbCgFPcmqnZa8ft1RNZp8DSHbx4VKWUIibtpNjEscGGcKtK3Ni5NtDaCGr
+         8eamPL++/5jaBg/chP0aQnu+EDm6CcD4KOdOr0ukjbi9ysgJVfmB054H2f3gvsVJXb
+         LrjLDv20H6dss3U3Zt3Z0s5LqE4+99SgA3tLeZwOvWbIsDIp5rHiw96lf5jKslmFoE
+         B099bJEmJG9Lfuae1/ODmwmxQCGtz1CNtt5Tn93OqPUXIcLsMKgki2wmcK0/xBzPmO
+         zxwMGfmUkN05/ijxERpHc0YqZ1d2fpBzDR1jJ4P8b32sScL99HhP4ScuSlkajmMIQp
+         WqPqfQ7N+5QFA==
+Date:   Sun, 27 Jun 2021 11:07:33 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tom Talpey <tom@talpey.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Keith Busch <kbusch@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Honggang LI <honli@redhat.com>
-Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
- default for kernel ULPs
-Message-ID: <YNgph1jttXFybaIR@unreal>
-References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
- <9c5b7ae5-8578-3008-5e78-02e77e121cda@nvidia.com>
- <YNQoY7MRdYMNAUPg@unreal>
- <1ef0ac51-4c7d-d79d-cb30-2e219f74c8c1@nvidia.com>
- <20210624113607.GN2371267@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack
+ object
+Message-ID: <YNgxxTQ4NW0yGHq1@unreal>
+References: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
+ <20210624174841.GA2906108@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210624113607.GN2371267@nvidia.com>
+In-Reply-To: <20210624174841.GA2906108@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jun 24, 2021 at 08:36:07AM -0300, Jason Gunthorpe wrote:
-> On Thu, Jun 24, 2021 at 10:39:16AM +0300, Max Gurtovoy wrote:
+On Thu, Jun 24, 2021 at 02:48:41PM -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 08, 2021 at 08:23:48AM +0300, Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
 > > 
-> > On 6/24/2021 9:38 AM, Leon Romanovsky wrote:
-> > > On Thu, Jun 24, 2021 at 02:06:46AM +0300, Max Gurtovoy wrote:
-> > > > On 6/9/2021 2:05 PM, Leon Romanovsky wrote:
-> > > > > From: Avihai Horon <avihaih@nvidia.com>
-> > > > > 
-> > > > > Relaxed Ordering is a capability that can only benefit users that support
-> > > > > it. All kernel ULPs should support Relaxed Ordering, as they are designed
-> > > > > to read data only after observing the CQE and use the DMA API correctly.
-> > > > > 
-> > > > > Hence, implicitly enable Relaxed Ordering by default for kernel ULPs.
-> > > > > 
-> > > > > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-> > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > Changelog:
-> > > > > v2:
-> > > > >    * Dropped IB/core patch and set RO implicitly in mlx5 exactly like in
-> > > > >      eth side of mlx5 driver.
-> > > > > v1: https://lore.kernel.org/lkml/cover.1621505111.git.leonro@nvidia.com
-> > > > >    * Enabled by default RO in IB/core instead of changing all users
-> > > > > v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
-> > > > >    drivers/infiniband/hw/mlx5/mr.c | 10 ++++++----
-> > > > >    drivers/infiniband/hw/mlx5/wr.c |  5 ++++-
-> > > > >    2 files changed, 10 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> > > > > index 3363cde85b14..2182e76ae734 100644
-> > > > > +++ b/drivers/infiniband/hw/mlx5/mr.c
-> > > > > @@ -69,6 +69,7 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > > > >    					  struct ib_pd *pd)
-> > > > >    {
-> > > > >    	struct mlx5_ib_dev *dev = to_mdev(pd->device);
-> > > > > +	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > > >    	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
-> > > > >    	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
-> > > > > @@ -78,10 +79,10 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-> > > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_write,
-> > > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-> > > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
-> > > > >    	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-> > > > >    		MLX5_SET(mkc, mkc, relaxed_ordering_read,
-> > > > > -			 !!(acc & IB_ACCESS_RELAXED_ORDERING));
-> > > > > +			 acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled);
-> > > > Jason,
-> > > > 
-> > > > If it's still possible to add small change, it will be nice to avoid
-> > > > calculating "acc & IB_ACCESS_RELAXED_ORDERING && ro_pci_enabled" twice.
-> > > The patch is part of for-next now, so feel free to send followup patch.
-> > > 
-> > > Thanks
-> > > 
-> > > diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> > > index c1e70c99b70c..c4f246c90c4d 100644
-> > > +++ b/drivers/infiniband/hw/mlx5/mr.c
-> > > @@ -69,7 +69,8 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > >                                            struct ib_pd *pd)
-> > >   {
-> > >          struct mlx5_ib_dev *dev = to_mdev(pd->device);
-> > > -       bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > +       bool ro_pci_enabled = acc & IB_ACCESS_RELAXED_ORDERING &&
-> > > +                             pcie_relaxed_ordering_enabled(dev->mdev->pdev);
-> > > 
-> > >          MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
-> > >          MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
-> > > @@ -78,11 +79,9 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
-> > >          MLX5_SET(mkc, mkc, lr, 1);
-> > > 
-> > >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
-> > > -               MLX5_SET(mkc, mkc, relaxed_ordering_write,
-> > > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
-> > > +               MLX5_SET(mkc, mkc, relaxed_ordering_write, ro_pci_enabled);
-> > >          if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
-> > > -               MLX5_SET(mkc, mkc, relaxed_ordering_read,
-> > > -                        (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
-> > > +               MLX5_SET(mkc, mkc, relaxed_ordering_read, ro_pci_enabled);
-> > > 
-> > >          MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
-> > >          MLX5_SET(mkc, mkc, qpn, 0xffffff);
-> > > (END)
-> > > 
-> > Yes this looks good.
+> > Change location of rdma_restrack_add() callers to be near attachment
+> > to device logic. Such improvement fixes the bug where task_struct was
+> > acquired but not released, causing to resource leak.
 > > 
-> > Can you/Avihai create a patch from this ? or I'll do it ?
+> >   ucma_create_id() {
+> >     ucma_alloc_ctx();
+> >     rdma_create_user_id() {
+> >       rdma_restrack_new();
+> >       rdma_restrack_set_name() {
+> >         rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
+> >       }
+> >     }
+> >     ucma_destroy_private_ctx() {
+> >       ucma_put_ctx();
+> >       rdma_destroy_id() {
+> >         _destroy_id()                       <--- id_priv was freed
+> >       }
+> >     }
+> >   }
 > 
-> I'd be surpised if it matters.. CSE and all
+> I still don't understand this patch
+> 
+> > @@ -1852,6 +1849,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+> >  {
+> >  	cma_cancel_operation(id_priv, state);
+> >  
+> > +	rdma_restrack_del(&id_priv->res);
+> >  	if (id_priv->cma_dev) {
+> >  		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
+> >  			if (id_priv->cm_id.ib)
+> > @@ -1861,7 +1859,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
+> >  				iw_destroy_cm_id(id_priv->cm_id.iw);
+> >  		}
+> >  		cma_leave_mc_groups(id_priv);
+> > -		rdma_restrack_del(&id_priv->res);
+> >  		cma_release_dev(id_priv);
+> 
+> This seems to be the only hunk that is actually necessary, ensuring a
+> non-added ID is always cleaned up is the necessary step to fixing the
+> trace above.
+> 
+> What is the rest of this doing?? It looks wrong:
+> 
+> int rdma_bind_addr(struct rdma_cm_id *id, struct sockaddr *addr)
+> {
+> [..]
+> 	ret = cma_get_port(id_priv);
+> 	if (ret)
+> 		goto err2;
+> err2:
+> [..]
+> 	if (!cma_any_addr(addr))
+> 		rdma_restrack_del(&id_priv->res);
+> 
+> Which means if rdma_bind_addr() fails then restrack will discard the
+> task, even though the cm_id is still valid! The ucma is free to try
+> bind again and keep using the ID.
 
-From bytecode/performance POV, It shouldn't change anything.
-However it looks better.
+"Failure to bind" means that cma_attach_to_dev() needs to be unwind.
+
+It is the same if rdma_restrack_add() inside that function like in this
+patch or in the line before rdma_bind_addr() returns as it was in
+previous code.
 
 Thanks
 
