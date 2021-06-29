@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580D53B7956
+	by mail.lfdr.de (Postfix) with ESMTP id D0BEC3B7958
 	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 22:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhF2Uav (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 16:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        id S235441AbhF2Uaw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Jun 2021 16:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235429AbhF2Uau (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 16:30:50 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0368DC061768
+        with ESMTP id S235419AbhF2Uav (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 16:30:51 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A960C061760
         for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:28:22 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so122091otl.3
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:28:21 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso6029966ooc.5
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:28:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1ZP8OQV1IW6mwxiCTa9PrhgGhzRq3ovPPPsyQVW7nmQ=;
-        b=AfnvRnBEL/0USVgMRZgkaP1NoXsLeqUdIeBTzin9O5XkWUPA7fRd6reu8XbXqDPsWL
-         6ZTUfSBHdIiffX5LzX+hRm6/LlwT5Ksru1hSbYZB4zXjy4bmV36LuUmcDEBtPD66Dj4F
-         50Vtohaw/nRmsyDy2s1i5AeJxWpbJIRnetBQz0dzczP0Ou1onSXJLFulgr8yEND2GSGA
-         a9LDJyCoqoQ0CdkxJPHUAGM9WC1WU7yJ7VFPPk4taEljAjuCObBFREaL9csysS1cbPvu
-         4jBMD2ntSooI4xkkHtOEjJHV70l0QejOf79pwVjPJzgARSkFQHcoRIPYK1UaiKJNPDxy
-         oGwg==
+        bh=Ts0M4A+kaV/PqWUKIrOiU8P0d0m2308UEHxNlk5yfDU=;
+        b=B1ZCAbezF8PUfroHIgi7+7DAKAc6t0+T4JfyG9sbITGZhxZBMsfMbP6LChq/Bwl50i
+         ARudn1+dPWi1cmENOmNC6X7+7NEIYdlAGmxLKrri+hINiB8RGTnLXR4Vilcyf0RiDOVn
+         A7jYg+hYpGy/wH6mYxNVcpJxsC1oRhOWOj67mU91I8jF8Gu7DKpz6HMsFuYzU2rWyjcv
+         sftIo1Jq3gY0tzzJr5s/wgqBqtoVS+xdCC45nKZZnT+VQ9ZeL7ZoCJKOgOtNNYqCJHr6
+         2DUq0qKi4JQO1U/Rpr7vvWUpjfSoQrlTkNhTt/xwaW6FOrTpwbR4dhxXtGrIXH3kkPhi
+         6GVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1ZP8OQV1IW6mwxiCTa9PrhgGhzRq3ovPPPsyQVW7nmQ=;
-        b=TfLYHdKSDzlbvdL5O031oFfspseYLc+86n6QRp/LmwZiV/aLVhM+XVDNnpKThareIF
-         Q94RD/lmCy37HJIle0GIZQI6vZWlOgBI5AFohGHuPIyS5/vO+ZLyNccij5vpPw0TrqY0
-         XXwXL05g6ZbrskFJay6bmtLyj+ChqbuCSHC0p8RYqX8nN8UfM8Z0OvPIFT7r1g175qBT
-         ilEZIACn5qKcOjWGilpQ9nLupaDa2W6KU2ak3NKxAV4VegPQ2JsvUvSHG6i65xN4v2ih
-         ADvNnIfEBQ4l0/6LiVIBLgJkVIC1Gl3rsDxpUFDOD2+KPa9yvwdCNkiaZROzKWi8OW0B
-         tFjw==
-X-Gm-Message-State: AOAM530b97Pv67THVbs74Oc/9XvVi0ju9P876lYmT9l7Wqka+ZQfKfvC
-        zZSoPByWTfPQzs3InOzbTo8YaiZjnYE=
-X-Google-Smtp-Source: ABdhPJxe4t15yYlsGB+0WP0/7sqV0+QQrqTsW5wmJFnBnPs/7J/h1tdkqnrvl5W+55dbE9quEzlZ2g==
-X-Received: by 2002:a9d:61d0:: with SMTP id h16mr6220898otk.124.1624998501369;
-        Tue, 29 Jun 2021 13:28:21 -0700 (PDT)
+        bh=Ts0M4A+kaV/PqWUKIrOiU8P0d0m2308UEHxNlk5yfDU=;
+        b=MMb551jEvB6h+d/D8IEEb72WRa8DWp0xEjNw/y5BPM0YhAmmU5gzNFAibZJQGZYKtO
+         0PuBJSV3rFjA8S5sjqlF0OC07xs4GUP0LLXzHksHT/MTYJchhaxufh9mPfWfINLz7RYx
+         PAf37orcurKzbvm7FyIUEWPttKyVtf5aaN1nBZpeHE/G6SLt2C28+xtBTrIvJiS5GYfT
+         x0BfGdHUcltEcWPR1ZlsN9fUTPwylnyJzB9kikQBlA4ejwEjfIZnTqH/clIbLOCq1MIc
+         87rDu4uSmqRI6Kku+UEpAz/JXdusQ9iRu58FSzHBGyG6jCKqjHWuB7oH1qfxaGqU1/AB
+         5u9w==
+X-Gm-Message-State: AOAM533A6Ukk/vHP0HSP0UAn0PkkVB40sY6CCNWzVD7Y7CBGNuK/nRUR
+        QyZ4kQXUt8o7Spfdapp2yss=
+X-Google-Smtp-Source: ABdhPJx1qPd5WiIkKJxJ9N8pWzUvFyO79WutJ6FRO9z2F8eOnafaYjmHMXsHBHK41lz2kYEN0p6G9A==
+X-Received: by 2002:a4a:ea8d:: with SMTP id r13mr5465260ooh.7.1624998502064;
+        Tue, 29 Jun 2021 13:28:22 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-2b92-ca20-93cc-e890.res6.spectrum.com. [2603:8081:140c:1a00:2b92:ca20:93cc:e890])
-        by smtp.gmail.com with ESMTPSA id o25sm4040899ood.20.2021.06.29.13.28.20
+        by smtp.gmail.com with ESMTPSA id h2sm3814854oog.16.2021.06.29.13.28.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 29 Jun 2021 13:28:21 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next resending 3/5] RDMA/rxe: Move ICRC generation to a subroutine
-Date:   Tue, 29 Jun 2021 15:28:03 -0500
-Message-Id: <20210629202804.29403-4-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next resending 4/5] RDMA/rxe: Move rxe_crc32 to a subroutine
+Date:   Tue, 29 Jun 2021 15:28:04 -0500
+Message-Id: <20210629202804.29403-5-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210629202804.29403-1-rpearsonhpe@gmail.com>
 References: <20210629202804.29403-1-rpearsonhpe@gmail.com>
@@ -62,411 +62,136 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Isolate ICRC generation into a single subroutine named rxe_generate_icrc()
-in rxe_icrc.c. Remove scattered crc generation code from elsewhere.
+Move rxe_crc32 from rxe.h to rxe_icrc.c as a static local function.
+Add some comments to rxe_icrc.c
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c |  4 +--
- drivers/infiniband/sw/rxe/rxe_icrc.c | 13 ++++++++
- drivers/infiniband/sw/rxe/rxe_loc.h  | 10 +++---
- drivers/infiniband/sw/rxe/rxe_mr.c   | 47 ++++++++++++----------------
- drivers/infiniband/sw/rxe/rxe_net.c  |  8 ++---
- drivers/infiniband/sw/rxe/rxe_req.c  | 13 ++------
- drivers/infiniband/sw/rxe/rxe_resp.c | 33 +++++--------------
- 7 files changed, 54 insertions(+), 74 deletions(-)
+ drivers/infiniband/sw/rxe/rxe.h      | 21 ------------
+ drivers/infiniband/sw/rxe/rxe_icrc.c | 50 +++++++++++++++++++++++++---
+ drivers/infiniband/sw/rxe/rxe_loc.h  |  1 -
+ 3 files changed, 45 insertions(+), 27 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index 58ad9c2644f3..d2d802c776fd 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -349,7 +349,7 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index 623fd17df02d..65a73c1c8b35 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -42,27 +42,6 @@
  
- 	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
- 			&wqe->dma, payload_addr(pkt),
--			payload_size(pkt), RXE_TO_MR_OBJ, NULL);
-+			payload_size(pkt), RXE_TO_MR_OBJ);
- 	if (ret) {
- 		wqe->status = IB_WC_LOC_PROT_ERR;
- 		return COMPST_ERROR;
-@@ -371,7 +371,7 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
+ extern bool rxe_initialized;
  
- 	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
- 			&wqe->dma, &atomic_orig,
--			sizeof(u64), RXE_TO_MR_OBJ, NULL);
-+			sizeof(u64), RXE_TO_MR_OBJ);
- 	if (ret) {
- 		wqe->status = IB_WC_LOC_PROT_ERR;
- 		return COMPST_ERROR;
-diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-index 5193dfa94a75..5424b8bea908 100644
---- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-+++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-@@ -105,3 +105,16 @@ int rxe_icrc_check(struct sk_buff *skb)
- 
- 	return 0;
- }
-+
-+/* rxe_icrc_generate- compute ICRC for a packet. */
-+void rxe_icrc_generate(struct rxe_pkt_info *pkt, struct sk_buff *skb)
-+{
-+	__be32 *icrcp;
-+	u32 icrc;
-+
-+	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
-+	icrc = rxe_icrc_hdr(pkt, skb);
-+	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
-+				payload_size(pkt) + bth_pad(pkt));
-+	*icrcp = ~icrc;
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 3468a61efe4e..2c724b9970d6 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -77,10 +77,9 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 		     int access, struct rxe_mr *mr);
- int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *mr);
- int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
--		enum rxe_mr_copy_dir dir, u32 *crcp);
--int copy_data(struct rxe_pd *pd, int access,
--	      struct rxe_dma_info *dma, void *addr, int length,
--	      enum rxe_mr_copy_dir dir, u32 *crcp);
-+		enum rxe_mr_copy_dir dir);
-+int copy_data(struct rxe_pd *pd, int access, struct rxe_dma_info *dma,
-+	      void *addr, int length, enum rxe_mr_copy_dir dir);
- void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length);
- struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 			 enum rxe_mr_lookup_type type);
-@@ -101,7 +100,7 @@ void rxe_mw_cleanup(struct rxe_pool_entry *arg);
- /* rxe_net.c */
- struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
- 				int paylen, struct rxe_pkt_info *pkt);
--int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc);
-+int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb);
- int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		    struct sk_buff *skb);
- const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
-@@ -196,6 +195,7 @@ int rxe_responder(void *arg);
- /* rxe_icrc.c */
- u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb);
- int rxe_icrc_check(struct sk_buff *skb);
-+void rxe_icrc_generate(struct rxe_pkt_info *pkt, struct sk_buff *skb);
- 
- void rxe_resp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6aabcb4de235..f94fd143e27b 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -279,11 +279,10 @@ void *iova_to_vaddr(struct rxe_mr *mr, u64 iova, int length)
- }
- 
- /* copy data from a range (vaddr, vaddr+length-1) to or from
-- * a mr object starting at iova. Compute incremental value of
-- * crc32 if crcp is not zero. caller must hold a reference to mr
-+ * a mr object starting at iova.
-  */
- int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
--		enum rxe_mr_copy_dir dir, u32 *crcp)
-+		enum rxe_mr_copy_dir dir)
- {
- 	int			err;
- 	int			bytes;
-@@ -293,24 +292,23 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 	int			m;
- 	int			i;
- 	size_t			offset;
--	u32			crc = crcp ? (*crcp) : 0;
-+	u8			*src;
-+	u8			*dest;
- 
- 	if (length == 0)
- 		return 0;
- 
- 	if (mr->type == RXE_MR_TYPE_DMA) {
--		u8 *src, *dest;
+-static inline u32 rxe_crc32(struct rxe_dev *rxe,
+-			    u32 crc, void *next, size_t len)
+-{
+-	u32 retval;
+-	int err;
 -
--		src = (dir == RXE_TO_MR_OBJ) ? addr : ((void *)(uintptr_t)iova);
+-	SHASH_DESC_ON_STACK(shash, rxe->tfm);
 -
--		dest = (dir == RXE_TO_MR_OBJ) ? ((void *)(uintptr_t)iova) : addr;
-+		if (dir == RXE_TO_MR_OBJ) {
-+			src = addr;
-+			dest = ((void *)(uintptr_t)iova);
-+		} else {
-+			src = ((void *)(uintptr_t)iova);
-+			dest = addr;
-+		}
- 
- 		memcpy(dest, src, length);
- 
--		if (crcp)
--			*crcp = rxe_crc32(to_rdev(mr->ibmr.device), *crcp, dest,
--					  length);
--
- 		return 0;
- 	}
- 
-@@ -328,11 +326,14 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 	buf	= map[0]->buf + i;
- 
- 	while (length > 0) {
--		u8 *src, *dest;
--
- 		va	= (u8 *)(uintptr_t)buf->addr + offset;
--		src = (dir == RXE_TO_MR_OBJ) ? addr : va;
--		dest = (dir == RXE_TO_MR_OBJ) ? va : addr;
-+		if (dir == RXE_TO_MR_OBJ) {
-+			src = addr;
-+			dest = va;
-+		} else {
-+			src = va;
-+			dest = addr;
-+		}
- 
- 		bytes	= buf->size - offset;
- 
-@@ -341,10 +342,6 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 
- 		memcpy(dest, src, bytes);
- 
--		if (crcp)
--			crc = rxe_crc32(to_rdev(mr->ibmr.device), crc, dest,
--					bytes);
--
- 		length	-= bytes;
- 		addr	+= bytes;
- 
-@@ -359,9 +356,6 @@ int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
- 		}
- 	}
- 
--	if (crcp)
--		*crcp = crc;
--
- 	return 0;
- 
- err1:
-@@ -377,8 +371,7 @@ int copy_data(
- 	struct rxe_dma_info	*dma,
- 	void			*addr,
- 	int			length,
--	enum rxe_mr_copy_dir	dir,
--	u32			*crcp)
-+	enum rxe_mr_copy_dir	dir)
- {
- 	int			bytes;
- 	struct rxe_sge		*sge	= &dma->sge[dma->cur_sge];
-@@ -439,7 +432,7 @@ int copy_data(
- 		if (bytes > 0) {
- 			iova = sge->addr + offset;
- 
--			err = rxe_mr_copy(mr, iova, addr, bytes, dir, crcp);
-+			err = rxe_mr_copy(mr, iova, addr, bytes, dir);
- 			if (err)
- 				goto err2;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
-index 6968c247bcf7..ffbe8f95405e 100644
---- a/drivers/infiniband/sw/rxe/rxe_net.c
-+++ b/drivers/infiniband/sw/rxe/rxe_net.c
-@@ -343,7 +343,7 @@ static int prepare6(struct rxe_pkt_info *pkt, struct sk_buff *skb)
- 	return 0;
- }
- 
--int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc)
-+int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb)
- {
- 	int err = 0;
- 
-@@ -352,8 +352,6 @@ int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc)
- 	else if (skb->protocol == htons(ETH_P_IPV6))
- 		err = prepare6(pkt, skb);
- 
--	*crc = rxe_icrc_hdr(pkt, skb);
--
- 	if (ether_addr_equal(skb->dev->dev_addr, rxe_get_av(pkt)->dmac))
- 		pkt->mask |= RXE_LOOPBACK_MASK;
- 
-@@ -396,7 +394,7 @@ static int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb)
- 	}
- 
- 	if (unlikely(net_xmit_eval(err))) {
--		pr_debug("error sending packet: %d\n", err);
-+		pr_info("error sending packet: %d\n", err);
- 		return -EAGAIN;
- 	}
- 
-@@ -438,6 +436,8 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 		goto drop;
- 	}
- 
-+	rxe_icrc_generate(pkt, skb);
-+
- 	if (pkt->mask & RXE_LOOPBACK_MASK)
- 		err = rxe_loopback(pkt, skb);
- 	else
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index c57699cc6578..3894197a82f6 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -466,12 +466,9 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		       struct rxe_pkt_info *pkt, struct sk_buff *skb,
- 		       int paylen)
- {
--	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
--	u32 crc = 0;
--	u32 *p;
- 	int err;
- 
--	err = rxe_prepare(pkt, skb, &crc);
-+	err = rxe_prepare(pkt, skb);
- 	if (err)
- 		return err;
- 
-@@ -479,7 +476,6 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		if (wqe->wr.send_flags & IB_SEND_INLINE) {
- 			u8 *tmp = &wqe->dma.inline_data[wqe->dma.sge_offset];
- 
--			crc = rxe_crc32(rxe, crc, tmp, paylen);
- 			memcpy(payload_addr(pkt), tmp, paylen);
- 
- 			wqe->dma.resid -= paylen;
-@@ -487,8 +483,7 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		} else {
- 			err = copy_data(qp->pd, 0, &wqe->dma,
- 					payload_addr(pkt), paylen,
--					RXE_FROM_MR_OBJ,
--					&crc);
-+					RXE_FROM_MR_OBJ);
- 			if (err)
- 				return err;
- 		}
-@@ -496,12 +491,8 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 			u8 *pad = payload_addr(pkt) + paylen;
- 
- 			memset(pad, 0, bth_pad(pkt));
--			crc = rxe_crc32(rxe, crc, pad, bth_pad(pkt));
- 		}
- 	}
--	p = payload_addr(pkt) + paylen + bth_pad(pkt);
--
--	*p = ~crc;
- 
- 	return 0;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 3743dc39b60c..685b8aebd627 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -536,7 +536,7 @@ static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
- 	int err;
- 
- 	err = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE, &qp->resp.wqe->dma,
--			data_addr, data_len, RXE_TO_MR_OBJ, NULL);
-+			data_addr, data_len, RXE_TO_MR_OBJ);
- 	if (unlikely(err))
- 		return (err == -ENOSPC) ? RESPST_ERR_LENGTH
- 					: RESPST_ERR_MALFORMED_WQE;
-@@ -552,7 +552,7 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
- 	int data_len = payload_size(pkt);
- 
- 	err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
--			  payload_addr(pkt), data_len, RXE_TO_MR_OBJ, NULL);
-+			  payload_addr(pkt), data_len, RXE_TO_MR_OBJ);
- 	if (err) {
- 		rc = RESPST_ERR_RKEY_VIOLATION;
- 		goto out;
-@@ -613,13 +613,10 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
- 					  int opcode,
- 					  int payload,
- 					  u32 psn,
--					  u8 syndrome,
--					  u32 *crcp)
-+					  u8 syndrome)
- {
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 	struct sk_buff *skb;
--	u32 crc = 0;
--	u32 *p;
- 	int paylen;
- 	int pad;
- 	int err;
-@@ -651,20 +648,12 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
- 	if (ack->mask & RXE_ATMACK_MASK)
- 		atmack_set_orig(ack, qp->resp.atomic_orig);
- 
--	err = rxe_prepare(ack, skb, &crc);
-+	err = rxe_prepare(ack, skb);
- 	if (err) {
- 		kfree_skb(skb);
- 		return NULL;
- 	}
- 
--	if (crcp) {
--		/* CRC computation will be continued by the caller */
--		*crcp = crc;
--	} else {
--		p = payload_addr(ack) + payload + bth_pad(ack);
--		*p = ~crc;
+-	shash->tfm = rxe->tfm;
+-	*(u32 *)shash_desc_ctx(shash) = crc;
+-	err = crypto_shash_update(shash, next, len);
+-	if (unlikely(err)) {
+-		pr_warn_ratelimited("failed crc calculation, err: %d\n", err);
+-		return crc32_le(crc, next, len);
 -	}
 -
- 	return skb;
+-	retval = *(u32 *)shash_desc_ctx(shash);
+-	barrier_data(shash_desc_ctx(shash));
+-	return retval;
+-}
+-
+ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int dev_mtu);
+ 
+ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name);
+diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
+index 5424b8bea908..e116c63d7b84 100644
+--- a/drivers/infiniband/sw/rxe/rxe_icrc.c
++++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
+@@ -7,8 +7,44 @@
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ 
+-/* Compute a partial ICRC for all the IB transport headers. */
+-u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb)
++/**
++ * rxe_crc32 - Compute incremental crc32 for a contiguous segment
++ * @rxe: rdma_rxe device object
++ * @crc: starting crc32 value from previous segments
++ * @addr: starting address of segment
++ * @len: length of the segment in bytes
++ *
++ * Returns the crc32 checksum of the segment starting from crc.
++ */
++static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *addr, size_t len)
++{
++	u32 icrc;
++	int err;
++
++	SHASH_DESC_ON_STACK(shash, rxe->tfm);
++
++	shash->tfm = rxe->tfm;
++	*(u32 *)shash_desc_ctx(shash) = crc;
++	err = crypto_shash_update(shash, addr, len);
++	if (unlikely(err)) {
++		pr_warn_ratelimited("failed crc calculation, err: %d\n", err);
++		return crc32_le(crc, addr, len);
++	}
++
++	icrc = *(u32 *)shash_desc_ctx(shash);
++	barrier_data(shash_desc_ctx(shash));
++
++	return icrc;
++}
++
++/**
++ * rxe_icrc_hdr - Compute a partial ICRC for the IB transport headers.
++ * @pkt: Information about the current packet
++ * @skb: The packet buffer
++ *
++ * Returns the partial ICRC
++ */
++static u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb)
+ {
+ 	unsigned int bth_offset = 0;
+ 	struct iphdr *ip4h = NULL;
+@@ -71,9 +107,9 @@ u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb)
+ /**
+  * rxe_icrc_check - Compute ICRC for a packet and compare to the ICRC
+  *		    delivered in the packet.
+- * @skb: The packet buffer with packet info in skb->cb[] (receive path)
++ * @skb: packet buffer with packet info in skb->cb[] (receive path)
+  *
+- * Returns 0 on success or an error on failure
++ * Returns 0 if the ICRCs match or an error on failure
+  */
+ int rxe_icrc_check(struct sk_buff *skb)
+ {
+@@ -106,7 +142,11 @@ int rxe_icrc_check(struct sk_buff *skb)
+ 	return 0;
  }
  
-@@ -682,8 +671,6 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	int opcode;
- 	int err;
- 	struct resp_res *res = qp->resp.res;
--	u32 icrc;
--	u32 *p;
+-/* rxe_icrc_generate- compute ICRC for a packet. */
++/**
++ * rxe_icrc_generate - Compute ICRC for a packet.
++ * @pkt: packet information
++ * @skb: packet buffer
++ */
+ void rxe_icrc_generate(struct rxe_pkt_info *pkt, struct sk_buff *skb)
+ {
+ 	__be32 *icrcp;
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 2c724b9970d6..b08689b664ec 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -193,7 +193,6 @@ int rxe_requester(void *arg);
+ int rxe_responder(void *arg);
  
- 	if (!res) {
- 		/* This is the first time we process that request. Get a
-@@ -742,24 +729,20 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	payload = min_t(int, res->read.resid, mtu);
+ /* rxe_icrc.c */
+-u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb);
+ int rxe_icrc_check(struct sk_buff *skb);
+ void rxe_icrc_generate(struct rxe_pkt_info *pkt, struct sk_buff *skb);
  
- 	skb = prepare_ack_packet(qp, req_pkt, &ack_pkt, opcode, payload,
--				 res->cur_psn, AETH_ACK_UNLIMITED, &icrc);
-+				 res->cur_psn, AETH_ACK_UNLIMITED);
- 	if (!skb)
- 		return RESPST_ERR_RNR;
- 
- 	err = rxe_mr_copy(res->read.mr, res->read.va, payload_addr(&ack_pkt),
--			  payload, RXE_FROM_MR_OBJ, &icrc);
-+			  payload, RXE_FROM_MR_OBJ);
- 	if (err)
- 		pr_err("Failed copying memory\n");
- 
- 	if (bth_pad(&ack_pkt)) {
--		struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 		u8 *pad = payload_addr(&ack_pkt) + payload;
- 
- 		memset(pad, 0, bth_pad(&ack_pkt));
--		icrc = rxe_crc32(rxe, icrc, pad, bth_pad(&ack_pkt));
- 	}
--	p = payload_addr(&ack_pkt) + payload + bth_pad(&ack_pkt);
--	*p = ~icrc;
- 
- 	err = rxe_xmit_packet(qp, &ack_pkt, skb);
- 	if (err) {
-@@ -984,7 +967,7 @@ static int send_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	struct sk_buff *skb;
- 
- 	skb = prepare_ack_packet(qp, pkt, &ack_pkt, IB_OPCODE_RC_ACKNOWLEDGE,
--				 0, psn, syndrome, NULL);
-+				 0, psn, syndrome);
- 	if (!skb) {
- 		err = -ENOMEM;
- 		goto err1;
-@@ -1008,7 +991,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 
- 	skb = prepare_ack_packet(qp, pkt, &ack_pkt,
- 				 IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE, 0, pkt->psn,
--				 syndrome, NULL);
-+				 syndrome);
- 	if (!skb) {
- 		rc = -ENOMEM;
- 		goto out;
 -- 
 2.30.2
 
