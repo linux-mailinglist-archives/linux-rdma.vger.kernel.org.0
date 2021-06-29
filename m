@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8937F3B7935
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 22:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4643E3B7937
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 22:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235271AbhF2USr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 16:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38908 "EHLO
+        id S234640AbhF2UTe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Jun 2021 16:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235123AbhF2USr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 16:18:47 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F1A9C061760
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:16:18 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id s17so278960oij.0
-        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:16:18 -0700 (PDT)
+        with ESMTP id S233801AbhF2UTd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 16:19:33 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0D8C061760
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:17:05 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id t24-20020a9d7f980000b029046f4a1a5ec4so99807otp.1
+        for <linux-rdma@vger.kernel.org>; Tue, 29 Jun 2021 13:17:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=/od40hQAm+UQc2PNe7QEJF6inz5GD2/iU8cgLB9lG3g=;
-        b=FFiWeTKDcWhK7FDLehALq2wjmnZRweC7va/EgOTSH6u9vnos/7L/2yMbhTAhFWthiE
-         +PHnei2vDAh0+z1Lcbrhl2iHt36t8EUqXMNetH0Ydq1hpSUOJRuXhYvuG5lvjTkK0Qyu
-         QMNn8MYVIzJq3St6XGs6Q0IKF3x7+1G4kxUsbS1W3NxhPQdPcCP4yM4JCdFovbHwBFQx
-         CEA2weRFMpnNyEmn/9zoXbmWPr0fHKyLt007+nn/f5uhEdQApVAjNC9YkI4u/X6XTM3z
-         nErDgYYkTxfiLFNIBxLdhHz0/cXkzrF40AG+WmLD54JkXB01N9+Pl8hdVVjyLNznpPU0
-         wVRw==
+        bh=urkaZXodzwLT6FVyNiSifbB8/9RkoaBt58FpAKmyVWc=;
+        b=TKtMlrH3aVt+chmNIZlt5uEzdaSPLJ+y5ZFtLE47vQmrkU+wQs3NGqfQruSF+w8eIU
+         /UVNsYvxH+U7FJh/PmqlaHslhxPl0CuUIcvnXDsviH2boZU/6GpgfBbuJE+nF23rZcw8
+         Pm0tpAKmHD5vNkKc/Qjw+7LQsUsOjUuxicD6nn2dRUPgweHLUE6ppR7l1Qd0VnCbn6el
+         1AGQ72FF5YH9cIKltWWpFCd69cDU9x1RhjqPdTO4O2tTLf60/CTjfy84gFILZyg8kj0V
+         754lqplnS+jaEDLltUvy/kRNYHXhu1YV6s2VYmzplg0O+UghP3FNefapV+KFmuTmwDOq
+         KjtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/od40hQAm+UQc2PNe7QEJF6inz5GD2/iU8cgLB9lG3g=;
-        b=K85EQ/jXKcHkNnap3bTwF3NNFTTKFp+LhEoGvmdT0Q3iB3Lno52NH/+g06I8Z9T1Fx
-         Q1+NiT1ntUZi/pZSXx0ienstgMAoFTTfQM/z3lefP/HYIB5S6DmpUirGgJ+0g/izKOym
-         LVGcURR8Sf/zDzTxETQwGsEPkUq6aveBKkVWfGAwPD40scR21dk/AY8ToGHzwBZknpJ4
-         L9AvRzkOy/HLm+oZL/AFDYuQyLMkhROfb+i5u+0o2FEzDIftmHYysqE2kfj083AJ+Xil
-         yCkk9EgUKN2v+NpOF1YWO+kaCaoj6CifmPn4KMDdAMoFy02Pu7e4dUg0h8V5KhTUutQ8
-         bMSw==
-X-Gm-Message-State: AOAM531MJBCcbDiOIsLgm3tdacU7ioTRcaOL9nL5+5DFFhMvsczQroN7
-        y1Pbr1NDKxomGzha5hIb3Z78PfPvn60=
-X-Google-Smtp-Source: ABdhPJw8kHM1jVdgYA4Wdiq9cpfy3VlDPuKpH/a+BROBNqvfIfzsTO4/VEX0cOcKcsnoewDOfcVljg==
-X-Received: by 2002:a05:6808:f10:: with SMTP id m16mr472221oiw.72.1624997777742;
-        Tue, 29 Jun 2021 13:16:17 -0700 (PDT)
+        bh=urkaZXodzwLT6FVyNiSifbB8/9RkoaBt58FpAKmyVWc=;
+        b=GcB6kDu+kqniluBvn9pGfOYsCLdVDw1GIRlb0PSWcZc3773SDGGjNFdrH/dct2ZenK
+         LDsHTkmtXsyVr4GzKDtqcmWsKBDnxHdYhAULwOMu8b9pZYsk1iTRPGq7iaLPLDcH2ksk
+         DxWAWiorQgGzIDctWnlgAA+kR0MD6euim3tmIzJ/2zfGNhTFKEuE+RVarxkt85cPcB9b
+         g3aDkFky1FzmIkkJKWkXIJnQ+vlc9tlFgi1eCmk0tnufmD92+//gF6pXWXcgwwhpjbcD
+         oaM8dq0tvWTDwpeNw0ig6DlTkKv4tpNDCWGK1IH6pRyRyTby/BQIGiOeNQCzdAwKt9DY
+         /ejw==
+X-Gm-Message-State: AOAM532HywdAn/VRzMeRQzdDyTi6EqXQttM7+88RS2/0YXVKJoWe56mC
+        ebRbz6b2PcV2n8BZDXuMuPVyjfre9dY=
+X-Google-Smtp-Source: ABdhPJxLfFEKzAgjrdO+5R5ZCLme+E8PtVokTXY70gaprefS7BkpOp0VfNie8fl6tBMFbVr2oq2Afg==
+X-Received: by 2002:a9d:6219:: with SMTP id g25mr5882481otj.262.1624997824445;
+        Tue, 29 Jun 2021 13:17:04 -0700 (PDT)
 Received: from ?IPv6:2603:8081:140c:1a00:aaa9:75eb:6e0f:9f85? (2603-8081-140c-1a00-aaa9-75eb-6e0f-9f85.res6.spectrum.com. [2603:8081:140c:1a00:aaa9:75eb:6e0f:9f85])
-        by smtp.gmail.com with ESMTPSA id a76sm2047345oii.26.2021.06.29.13.16.17
+        by smtp.gmail.com with ESMTPSA id r25sm1121589ots.72.2021.06.29.13.17.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 29 Jun 2021 13:16:17 -0700 (PDT)
+        Tue, 29 Jun 2021 13:17:04 -0700 (PDT)
 Subject: Re: [PATCH 7/7] RDMA/rxe: Extend ICRC to support nonlinear skbs
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 References: <20210629201412.28306-1-rpearsonhpe@gmail.com>
  <20210629201412.28306-8-rpearsonhpe@gmail.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <b2736253-e066-4148-66e5-2ae9601231b6@gmail.com>
-Date:   Tue, 29 Jun 2021 15:16:16 -0500
+Message-ID: <d96918f9-7e1f-43d0-5517-5a0479ba6b31@gmail.com>
+Date:   Tue, 29 Jun 2021 15:17:03 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
@@ -347,4 +347,4 @@ On 6/29/21 3:14 PM, Bob Pearson wrote:
 >  			goto drop;
 >  	}
 > 
-Please ignore. This was sent in error. Only patches 0-5 belong.
+please ignore. This was sent in error. Only 0-5 were supposed to be sent.
