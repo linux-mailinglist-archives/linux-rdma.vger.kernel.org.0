@@ -2,282 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E406D3B6F93
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 10:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5D023B6FB6
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 10:52:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhF2Iml (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 04:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
+        id S232577AbhF2IyL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Jun 2021 04:54:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232572AbhF2Imk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Jun 2021 04:42:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C293361DC8;
-        Tue, 29 Jun 2021 08:40:12 +0000 (UTC)
+        id S232556AbhF2IyK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Jun 2021 04:54:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C58DA61CA2;
+        Tue, 29 Jun 2021 08:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624956013;
-        bh=IdyzRcmXVpwvhqUMpa3WRL5I00BM3CX4UDH6kfhD8rI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I9xBZRPbngeToC/9BzLlPyT3s4c5EBlPMHM+kaI64dfK8Z0BFN5C3ryu/3tAc8Ftj
-         mjRoqZ1EinNMCEDRuKyLZRaahnJyLvJRIjvRO+k+GTtlC0KEE+BY/enjYWknbiirSX
-         qaE+zudBjyJaOVD9nLFkGEtuCKZFjV6jRJKFPrTZjI6TKlaPj4sEyZSlq9/7Qm+zeF
-         OY+nWudSUIkwSDEpGSGkzLEFt4FO24Uh1ExAET5MLp1sIQdllhREqniNfmEtyaLvJV
-         7Bm0bGVWAVu5wjm62T1mq94oVSKU9lbsfOuFjFtan+jEbTBXbh7Vzm0/1RdQejMb9K
-         EB9FWKOmsUVOg==
+        s=k20201202; t=1624956703;
+        bh=KJN63K8riJbDlFr2P45UgIg7HaVSqdNLwbvovnKR8ng=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FTuivG5R8i7YnrPmdsOXWGllBirBE9829gQ9RkZYjQUyXpY3urAMl/xJVDzTEdApU
+         zZeKr5+MkzcKgzob1a2q7p9Sx2D0QrIkAsbCp5C6B5Acdyb5gpYVlMdc/4JB7Qlskq
+         F5i4Td3RtoTxe1wwnRZt2FBs1+OLIa2jDo/bHe7M5VGm7MUuI2ZUvmGI+weDqAJejl
+         3x7qtqKgwGRvXc1ey/f4OwApRLhKl5Cbv7FMMcEGMmpZDRX46J/Xmiq7o9DJfBSRgF
+         /6B8BuadCVUiLGL7cW4M024HXhOjcVqN+Yalw+DnhbVDjjlr6fInjZYgu6R9p0jr2A
+         giFhDJ4OR4wxg==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Maor Gottlieb <maorg@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 2/2] RDMA: Use dma_map_sgtable for map umem pages
-Date:   Tue, 29 Jun 2021 11:40:02 +0300
-Message-Id: <70cbe6ddc2aa9bc5efb96d3c932d76fb2d68a50c.1624955710.git.leonro@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Itay Aveksis <itayav@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx5: Don't access NULL-cleared mpi pointer
+Date:   Tue, 29 Jun 2021 11:51:38 +0300
+Message-Id: <899ac1b33a995be5ec0e16a4765c4e43c2b1ba5b.1624956444.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624955710.git.leonro@nvidia.com>
-References: <cover.1624955710.git.leonro@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Maor Gottlieb <maorg@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-In order to avoid incorrect usage of sg_table fields, change umem to
-use dma_map_sgtable for map the pages for DMA. Since dma_map_sgtable
-update the nents field (number of DMA entries), there is no need
-anymore for nmap variable, hence do some cleanups accordingly.
+The "dev->port[i].mp.mpi" is set to NULL during mlx5_ib_unbind_slave_port()
+execution, however that field is needed to add device to unaffiliated list.
 
-Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+Such flow causes to the following kernel panic while unloading mlx5_ib
+module in multi-port mode, hence the device should be added to the list
+prior to unbind call.
+
+ RPC: Unregistered rdma transport module.
+ RPC: Unregistered rdma backchannel transport module.
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor write access in kernel mode
+ #PF: error_code(0x0002) - not-present page
+ PGD 0 P4D 0
+ Oops: 0002 [#1] SMP NOPTI
+ CPU: 4 PID: 1904 Comm: modprobe Not tainted 5.13.0-rc7_for_upstream_min_debug_2021_06_24_12_08 #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:mlx5_ib_cleanup_multiport_master+0x18b/0x2d0 [mlx5_ib]
+ Code: 00 04 0f 85 c4 00 00 00 48 89 df e8 ef fa ff ff 48 8b 83 40 0d 00 00 48 8b 15 b9 e8 05 00 4a 8b 44 28 20 48 89 05 ad e8 05 00 <48> c7 00 d0 57 c5 a0 48 89 50 08 48 89 02 39 ab 88 0a 00 00 0f 86
+ RSP: 0018:ffff888116ee3df8 EFLAGS: 00010296
+ RAX: 0000000000000000 RBX: ffff8881154f6000 RCX: 0000000000000080
+ RDX: ffffffffa0c557d0 RSI: ffff88810b69d200 RDI: 000000000002d8a0
+ RBP: 0000000000000002 R08: ffff888110780408 R09: 0000000000000000
+ R10: ffff88812452e1c0 R11: fffffffffff7e028 R12: 0000000000000000
+ R13: 0000000000000080 R14: ffff888102c58000 R15: 0000000000000000
+ FS:  00007f884393a740(0000) GS:ffff8882f5a00000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 00000001249f6004 CR4: 0000000000370ea0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  mlx5_ib_stage_init_cleanup+0x16/0xd0 [mlx5_ib]
+  __mlx5_ib_remove+0x33/0x90 [mlx5_ib]
+  mlx5r_remove+0x22/0x30 [mlx5_ib]
+  auxiliary_bus_remove+0x18/0x30
+  __device_release_driver+0x177/0x220
+  driver_detach+0xc4/0x100
+  bus_remove_driver+0x58/0xd0
+  auxiliary_driver_unregister+0x12/0x20
+  mlx5_ib_cleanup+0x13/0x897 [mlx5_ib]
+  __x64_sys_delete_module+0x154/0x230
+  ? exit_to_user_mode_prepare+0x104/0x140
+  do_syscall_64+0x3f/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f8842e095c7
+ Code: 73 01 c3 48 8b 0d d9 48 2c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 b0 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d a9 48 2c 00 f7 d8 64 89 01 48
+ RSP: 002b:00007ffc68f6e758 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+ RAX: ffffffffffffffda RBX: 00005638207929c0 RCX: 00007f8842e095c7
+ RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000563820792a28
+ RBP: 00005638207929c0 R08: 00007ffc68f6d701 R09: 0000000000000000
+ R10: 00007f8842e82880 R11: 0000000000000206 R12: 0000563820792a28
+ R13: 0000000000000001 R14: 0000563820792a28 R15: 00007ffc68f6fb40
+ Modules linked in: xt_MASQUERADE nf_conntrack_netlink nfnetlink iptable_nat xt_addrtype xt_conntrack nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter overlay rdma_ucm ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_ipoib ib_cm ib_umad mlx5_ib(-) mlx4_ib ib_uverbs ib_core mlx4_en mlx4_core mlx5_core ptp pps_core [last unloaded: rpcrdma]
+ CR2: 0000000000000000
+ ---[ end trace a0bb7e20804e9e9b ]---
+
+Fixes: 7ce6095e3bff ("RDMA/mlx5: Don't add slave port to unaffiliated list")
+Reviewed-by: Itay Aveksis <itayav@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/umem.c        | 29 ++++++++++-----------------
- drivers/infiniband/core/umem_dmabuf.c |  1 -
- drivers/infiniband/hw/mlx4/mr.c       |  4 ++--
- drivers/infiniband/hw/mlx5/mr.c       |  3 ++-
- drivers/infiniband/sw/rdmavt/mr.c     |  2 +-
- drivers/infiniband/sw/rxe/rxe_mr.c    |  3 ++-
- include/rdma/ib_umem.h                |  5 ++---
- include/rdma/ib_verbs.h               | 28 ++++++++++++++++++++++++++
- 8 files changed, 48 insertions(+), 27 deletions(-)
+This is fix the patch in the for-next.
+---
+ drivers/infiniband/hw/mlx5/main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 0eb40025075f..f620d5b6b0e1 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -51,11 +51,11 @@ static void __ib_umem_release(struct ib_device *dev, struct ib_umem *umem, int d
- 	struct scatterlist *sg;
- 	unsigned int i;
- 
--	if (umem->nmap > 0)
--		ib_dma_unmap_sg(dev, umem->sg_head.sgl, umem->sg_nents,
--				DMA_BIDIRECTIONAL);
-+	if (dirty)
-+		ib_dma_unmap_sgtable_attrs(dev, &umem->sg_head,
-+					   DMA_BIDIRECTIONAL, 0);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->sg_nents, i)
-+	for_each_sgtable_sg(&umem->sg_head, sg, i)
- 		unpin_user_page_range_dirty_lock(sg_page(sg),
- 			DIV_ROUND_UP(sg->length, PAGE_SIZE), make_dirty);
- 
-@@ -111,7 +111,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 	/* offset into first SGL */
- 	pgoff = umem->address & ~PAGE_MASK;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/* Walk SGL and reduce max page size if VA/PA bits differ
- 		 * for any address.
- 		 */
-@@ -121,7 +121,7 @@ unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
- 		 * the maximum possible page size as the low bits of the iova
- 		 * must be zero when starting the next chunk.
- 		 */
--		if (i != (umem->nmap - 1))
-+		if (i != (umem->sg_head.nents - 1))
- 			mask |= va;
- 		pgoff = 0;
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 90f8a6874cd1..9b8dd7a604c9 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -3345,9 +3345,10 @@ static void mlx5_ib_cleanup_multiport_master(struct mlx5_ib_dev *dev)
+ 			} else {
+ 				mlx5_ib_dbg(dev, "unbinding port_num: %u\n",
+ 					    i + 1);
+-				mlx5_ib_unbind_slave_port(dev, dev->port[i].mp.mpi);
+ 				list_add_tail(&dev->port[i].mp.mpi->list,
+ 					      &mlx5_ib_unaffiliated_port_list);
++				mlx5_ib_unbind_slave_port(dev,
++							  dev->port[i].mp.mpi);
+ 			}
+ 		}
  	}
-@@ -230,7 +230,6 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 				0, ret << PAGE_SHIFT,
- 				ib_dma_max_seg_size(device), sg, npages,
- 				GFP_KERNEL);
--		umem->sg_nents = umem->sg_head.nents;
- 		if (IS_ERR(sg)) {
- 			unpin_user_pages_dirty_lock(page_list, ret, 0);
- 			ret = PTR_ERR(sg);
-@@ -241,16 +240,10 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	if (access & IB_ACCESS_RELAXED_ORDERING)
- 		dma_attr |= DMA_ATTR_WEAK_ORDERING;
- 
--	umem->nmap =
--		ib_dma_map_sg_attrs(device, umem->sg_head.sgl, umem->sg_nents,
--				    DMA_BIDIRECTIONAL, dma_attr);
--
--	if (!umem->nmap) {
--		ret = -ENOMEM;
-+	ret = ib_dma_map_sgtable_attrs(device, &umem->sg_head,
-+				       DMA_BIDIRECTIONAL, dma_attr);
-+	if (ret)
- 		goto umem_release;
--	}
--
--	ret = 0;
- 	goto out;
- 
- umem_release:
-@@ -310,8 +303,8 @@ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
- 		return -EINVAL;
- 	}
- 
--	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_nents, dst, length,
--				 offset + ib_umem_offset(umem));
-+	ret = sg_pcopy_to_buffer(umem->sg_head.sgl, umem->sg_head.orig_nents,
-+				 dst, length, offset + ib_umem_offset(umem));
- 
- 	if (ret < 0)
- 		return ret;
-diff --git a/drivers/infiniband/core/umem_dmabuf.c b/drivers/infiniband/core/umem_dmabuf.c
-index 0d65ce146fc4..cd2dd1f39aa7 100644
---- a/drivers/infiniband/core/umem_dmabuf.c
-+++ b/drivers/infiniband/core/umem_dmabuf.c
-@@ -57,7 +57,6 @@ int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
- 
- 	umem_dmabuf->umem.sg_head.sgl = umem_dmabuf->first_sg;
- 	umem_dmabuf->umem.sg_head.nents = nmap;
--	umem_dmabuf->umem.nmap = nmap;
- 	umem_dmabuf->sgt = sgt;
- 
- wait_fence:
-diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
-index 50becc0e4b62..ab5dc8eac7f8 100644
---- a/drivers/infiniband/hw/mlx4/mr.c
-+++ b/drivers/infiniband/hw/mlx4/mr.c
-@@ -200,7 +200,7 @@ int mlx4_ib_umem_write_mtt(struct mlx4_ib_dev *dev, struct mlx4_mtt *mtt,
- 	mtt_shift = mtt->page_shift;
- 	mtt_size = 1ULL << mtt_shift;
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		if (cur_start_addr + len == sg_dma_address(sg)) {
- 			/* still the same block */
- 			len += sg_dma_len(sg);
-@@ -273,7 +273,7 @@ int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
- 
- 	*num_of_mtts = ib_umem_num_dma_blocks(umem, PAGE_SIZE);
- 
--	for_each_sg(umem->sg_head.sgl, sg, umem->nmap, i) {
-+	for_each_sgtable_dma_sg(&umem->sg_head, sg, i) {
- 		/*
- 		 * Initialization - save the first chunk start as the
- 		 * current_block_start - block means contiguous pages.
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 3263851ea574..4954fb9eb6dc 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -1226,7 +1226,8 @@ int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
- 	orig_sg_length = sg.length;
- 
- 	cur_mtt = mtt;
--	rdma_for_each_block (mr->umem->sg_head.sgl, &biter, mr->umem->nmap,
-+	rdma_for_each_block (mr->umem->sg_head.sgl, &biter,
-+			     mr->umem->sg_head.nents,
- 			     BIT(mr->page_shift)) {
- 		if (cur_mtt == (void *)mtt + sg.length) {
- 			dma_sync_single_for_device(ddev, sg.addr, sg.length,
-diff --git a/drivers/infiniband/sw/rdmavt/mr.c b/drivers/infiniband/sw/rdmavt/mr.c
-index 34b7af6ab9c2..d955c8c4acc4 100644
---- a/drivers/infiniband/sw/rdmavt/mr.c
-+++ b/drivers/infiniband/sw/rdmavt/mr.c
-@@ -410,7 +410,7 @@ struct ib_mr *rvt_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
- 	mr->mr.page_shift = PAGE_SHIFT;
- 	m = 0;
- 	n = 0;
--	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+	for_each_sg_page (umem->sg_head.sgl, &sg_iter, umem->sg_head.nents, 0) {
- 		void *vaddr;
- 
- 		vaddr = page_address(sg_page_iter_page(&sg_iter));
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 6aabcb4de235..a269085e0946 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -142,7 +142,8 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	if (length > 0) {
- 		buf = map[0]->buf;
- 
--		for_each_sg_page(umem->sg_head.sgl, &sg_iter, umem->nmap, 0) {
-+		for_each_sg_page(umem->sg_head.sgl, &sg_iter,
-+				 umem->sg_head.nents, 0) {
- 			if (num_buf >= RXE_BUF_PER_MAP) {
- 				map++;
- 				buf = map[0]->buf;
-diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
-index 676c57f5ca80..c754b1a31cc9 100644
---- a/include/rdma/ib_umem.h
-+++ b/include/rdma/ib_umem.h
-@@ -27,8 +27,6 @@ struct ib_umem {
- 	u32 is_dmabuf : 1;
- 	struct work_struct	work;
- 	struct sg_table sg_head;
--	int             nmap;
--	unsigned int    sg_nents;
- };
- 
- struct ib_umem_dmabuf {
-@@ -77,7 +75,8 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
- 						struct ib_umem *umem,
- 						unsigned long pgsz)
- {
--	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->nmap, pgsz);
-+	__rdma_block_iter_start(biter, umem->sg_head.sgl, umem->sg_head.nents,
-+				pgsz);
- }
- 
- /**
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 371df1c80aeb..2dba30849731 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -4057,6 +4057,34 @@ static inline void ib_dma_unmap_sg_attrs(struct ib_device *dev,
- 				   dma_attrs);
- }
- 
-+/**
-+ * ib_dma_map_sgtable_attrs - Map a scatter/gather table to DMA addresses
-+ * @dev: The device for which the DMA addresses are to be created
-+ * @sg: The sg_table object describing the buffer
-+ * @direction: The direction of the DMA
-+ * @attrs: Optional DMA attributes for the map operation
-+ */
-+static inline int ib_dma_map_sgtable_attrs(struct ib_device *dev,
-+					   struct sg_table *sgt,
-+					   enum dma_data_direction direction,
-+					   unsigned long dma_attrs)
-+{
-+	if (ib_uses_virt_dma(dev)) {
-+		ib_dma_virt_map_sg(dev, sgt->sgl, sgt->orig_nents);
-+		return 0;
-+	}
-+	return dma_map_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
-+static inline void ib_dma_unmap_sgtable_attrs(struct ib_device *dev,
-+					      struct sg_table *sgt,
-+					      enum dma_data_direction direction,
-+					      unsigned long dma_attrs)
-+{
-+	if (!ib_uses_virt_dma(dev))
-+		dma_unmap_sgtable(dev->dma_device, sgt, direction, dma_attrs);
-+}
-+
- /**
-  * ib_dma_map_sg - Map a scatter/gather list to DMA addresses
-  * @dev: The device for which the DMA addresses are to be created
 -- 
 2.31.1
 
