@@ -2,99 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF43B3B6E61
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 08:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719CF3B6E64
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 08:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232075AbhF2GwG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 02:52:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38466 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhF2GwF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 29 Jun 2021 02:52:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52C1561D05;
-        Tue, 29 Jun 2021 06:49:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624949379;
-        bh=geUkSje1bwQGUcGQakAxM6zh1cxYS7g/E3AbxwqPG0g=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YF/lXZANbzZNcsA5eQJ5ZTFRzIec5NmcL5eb3oiosqexuqAyAb6CSE80Joy/Ca/bS
-         ACCcEDK+SdeNkjRgE0PH9FyzrtZhsD1O0kkBlCxt7UOteVgpcJhwp1ucrX+hSZOFUx
-         TiV+z8wvCjxJ9E8d66e1CeHnkoSGhXxQHka0V2Ff5VtTAAXEad/V5yXMNxsdiuJSHF
-         5QlBbfwaDKvy1EADImq269QtmsD6L1qb+Au+6y2IfBKXuFh6uq68z4XdgZotC4dDlB
-         ZIg3EUU5L3LaGDlkOpstI9bfEso4g2xn1GcCrDO48GyYIR2UIyAae6sQ3TI517KQf1
-         DkmfPh6Me2WcQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        Shay Drory <shayd@nvidia.com>
-Subject: [PATCH rdma-rc v3] RDMA/core: Always release restrack object
-Date:   Tue, 29 Jun 2021 09:49:33 +0300
-Message-Id: <073ec27acb943ca8b6961663c47c5abe78a5c8cc.1624948948.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
+        id S232097AbhF2Gzw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Jun 2021 02:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232041AbhF2Gzv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 02:55:51 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA1C7C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Jun 2021 23:53:24 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id v20so15917632eji.10
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Jun 2021 23:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KCDlmqCxi4w8kgmY0n9zAvpidQK1fSA0NuOSQRDZIic=;
+        b=di4Q1MJjIURk2Wp+xwVehHAXCaJidH4axBQ+18K9xr3J9W6lG1mhScVg1DZo2Wmnji
+         doPXia75z68fLpNOdjRfqi/jcsE0JfmKQaJBBWbBLjIz8mB4x7UxvCMHNTXSuyEJa0/t
+         hkzp4I3yTGt4VisOSDyGE2polzpMwhwYYkc+xLsdpdiocQWCdQu38X6a9Cg0r40V3pVk
+         GdKvVoYEpD5f9pvkEarV6E0bUuPK5HMV9bwXTZberDiyYeifI7Xbj3LImApmHJ46prqO
+         sHxXmznXDKPODQWOluUNZuGqbpHhnwA96E4+L4tj8Kbv0ekqyvV+ZQd9wC1ZK4R9Qs07
+         5THA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KCDlmqCxi4w8kgmY0n9zAvpidQK1fSA0NuOSQRDZIic=;
+        b=Io2VdRyGcXypxJkfvaO5EoJmBeQN4AXFLIV2nNrmVPtA3ihx5lPbMzmzpsx7ys0fZr
+         zp7YP1QG6A3vv6bjfMwEq23e0KERSTlWk1jD1hueE84y4kNWHxW+w+DkiMGAdiuB5OvE
+         AYSXvGq1SozqmmOOVPnYuq5NuRDCJKfJXw6JTbxwpTses5x3dsXkwupZ1hp/1QGYkq9o
+         MpNkjDRlN7pzYHUI9hnXCuPbOR4qDCj1ujc0fFdN72v1w1R2xX0aoked8lf26pPvAgkW
+         wTluBz0GRZQMBuzMduIxLg6QYtri0NbuZArYqUm/qsot4zHoIgULsroKOJybvVBjR4aB
+         B11w==
+X-Gm-Message-State: AOAM531C2UMvWkiYSvtKci0vvZeZB6b7Ll6PgtrOd2x7kH0D7YmCNHdt
+        d3O/FdOKBjYCVEVjAY+MyEZEj7PDXjDoSA==
+X-Google-Smtp-Source: ABdhPJyHuOIXIjDUqJE6YHgukCUWNjIyTrPg8g7EjTrq84eCd48Vszjb161Wi0TKbhaRVBQoY/BwrQ==
+X-Received: by 2002:a17:907:3e8a:: with SMTP id hs10mr17819082ejc.359.1624949603171;
+        Mon, 28 Jun 2021 23:53:23 -0700 (PDT)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:49c9:3e00:293f:8e14:7de3:8980])
+        by smtp.gmail.com with ESMTPSA id t27sm7717853eje.86.2021.06.28.23.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Jun 2021 23:53:22 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, axboe@kernel.dk, haris.iqbal@ionos.com,
+        jinpu.wang@ionos.com
+Subject: [PATCH for-next 0/6] Bugfixes for send queue overflow by heartbeat
+Date:   Tue, 29 Jun 2021 08:53:15 +0200
+Message-Id: <20210629065321.12600-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+Hi Jason, hi Doug,
 
-Change location of rdma_restrack_del() to fix the bug where
-task_struct was acquired but not released, causing to resource leak.
+Please consider to include following changes to the next merge window.
 
-  ucma_create_id() {
-    ucma_alloc_ctx();
-    rdma_create_user_id() {
-      rdma_restrack_new();
-      rdma_restrack_set_name() {
-        rdma_restrack_attach_task.part.0(); <--- task_struct was gotten
-      }
-    }
-    ucma_destroy_private_ctx() {
-      ucma_put_ctx();
-      rdma_destroy_id() {
-        _destroy_id()                       <--- id_priv was freed
-      }
-    }
-  }
+This patchset fix a regression since b38041d50add ("RDMA/rtrs: Do not signal for heatbeat").
 
-Fixes: 889d916b6f8a ("RDMA/core: Don't access cm_id after its destruction")
-Reported-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
----
-Changelog:
-v3:
- * Dropped controversial hunks and updated commit message respectively
-v2: https://lore.kernel.org/lkml/e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com
- * Added bug report analysis
-v1: https://lore.kernel.org/linux-rdma/f72e27d5c82cd9beec7670141afa62786836c569.1622956637.git.leonro@nvidia.com/T/#u
----
- drivers/infiniband/core/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In commit b38041d50add, the signal flag is droped to fix the send queue full
+logic, but introduced a worse bug the send queue overflow on both clt and srv
+by heartbeat, sorry.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index ab148a696c0c..6d103c42bbec 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -1852,6 +1852,7 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- {
- 	cma_cancel_operation(id_priv, state);
- 
-+	rdma_restrack_del(&id_priv->res);
- 	if (id_priv->cma_dev) {
- 		if (rdma_cap_ib_cm(id_priv->id.device, 1)) {
- 			if (id_priv->cm_id.ib)
-@@ -1861,7 +1862,6 @@ static void _destroy_id(struct rdma_id_private *id_priv,
- 				iw_destroy_cm_id(id_priv->cm_id.iw);
- 		}
- 		cma_leave_mc_groups(id_priv);
--		rdma_restrack_del(&id_priv->res);
- 		cma_release_dev(id_priv);
- 	}
- 
+The patchset is orgnized as:
+- patch1 debug patch.
+- patch2 preparation.
+- patch3 signal both IO and heartbeat.
+- patch4 cleanup.
+- patch5 cleanup
+- patch6 move sq_wr_avail to account send queue full correctly.
+
+The patches are created base on rdma/wip/jgg-for-next at commit:
+1f700757224e ("RDMA/irdma: Fix potential overflow expression in irdma_prm_get_pbles")
+
+Thanks!
+
+Jack Wang (6):
+  RDMA/rtrs: Add error messages for failed operations.
+  RDMA/rtrs: move wr_cnt from rtrs_srv_con to rtrs_con
+  RDMA/rtrs: Enable the same selective signal for heartbeat and IO
+  RDMA/rtrs: Make rtrs_post_rdma_write_imm_empty static
+  RDMA/rtrs: Remove unused flags parameter
+  RDMA/rtrs: Move sq_wr_avail to rtrs_con
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 11 ++++++++---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h |  1 -
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h |  6 +++---
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 19 ++++++++++---------
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h |  2 --
+ drivers/infiniband/ulp/rtrs/rtrs.c     | 23 ++++++++++++++++-------
+ 6 files changed, 37 insertions(+), 25 deletions(-)
+
 -- 
-2.31.1
+2.25.1
 
