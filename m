@@ -2,103 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03453B6E51
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 08:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D053B6E57
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Jun 2021 08:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhF2Gji (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Jun 2021 02:39:38 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:49394 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232024AbhF2Gji (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Jun 2021 02:39:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1624948632; x=1656484632;
-  h=subject:to:references:from:message-id:date:mime-version:
-   in-reply-to:content-transfer-encoding;
-  bh=WfbFWTI1JIn3aeCdAgZpb3BqKOBVJUAAvzLF22n+gOk=;
-  b=pmBFmwLpTsfm12ehr0poPSFS6fFbQ13ot+hFIPehMS9jNGom7kFpwMas
-   ZtuPD0kyOB1eFY6CM8fiZsSDjP1rlCNf1V8g2boE5NtUviBMycSSdco35
-   gOVs0zLir5pSTAzJrQap7omr5PJZGwZjeR2/wqPTyYjpo31Pp69lcyvOg
-   o=;
-X-IronPort-AV: E=Sophos;i="5.83,308,1616457600"; 
-   d="scan'208";a="142656408"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 29 Jun 2021 06:37:05 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id F37D4A9765;
-        Tue, 29 Jun 2021 06:37:03 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.162.164) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 29 Jun 2021 06:37:00 +0000
-Subject: Re: [PATCH 1/2] Update kernel headers
-To:     Bob Pearson <rpearsonhpe@gmail.com>, <jgg@nvidia.com>,
-        <zyjzyj2000@gmail.com>, <linux-rdma@vger.kernel.org>
-References: <20210628220535.10020-1-rpearsonhpe@gmail.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <45f33f25-d75e-5905-a2ce-bd62573a9a5e@amazon.com>
-Date:   Tue, 29 Jun 2021 09:36:50 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
+        id S232000AbhF2GnA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 29 Jun 2021 02:43:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37656 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231958AbhF2Gm7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 29 Jun 2021 02:42:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8983261CC7;
+        Tue, 29 Jun 2021 06:40:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624948833;
+        bh=uiM4ZLlUWZ7h4sImIXL++IvKwJZNxgmEDXyACS1QTvs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=j6zrxtJXNmcJ0vPKYlN/1Pzt7zNEI2j40Jkd3N/MyETUJ6fx6rpLOVJ2FrzVz/WGM
+         CCXlSV7ex+o2UyH+HaEkFDYM6/B5a66SO7X/E4KuUo8PztoNnCc+QEE0J2Vd9PoFyc
+         AJyZodXD8XqUNmvakICvix3VewBfBAFnJ80eDaYG5g08jvXpAy3cMQjFZzW/vfExmB
+         5JTS1GDI0AivZ/qubH9PWOPAhto2D71jMUgZ7PSlCSdTCxi7mVo6SI9e3NNBC4EkLs
+         dUoDBA0XFhu9IE5871dUnmiBMTLI3ZPOx9oH78JdnRZWCKmyPZ9KeS10O24XvvpjD/
+         CL9MjO2pvR7yA==
+Date:   Tue, 29 Jun 2021 09:40:29 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Shay Drory <shayd@nvidia.com>
+Subject: Re: [PATCH rdma-rc v2] RDMA/core: Simplify addition of restrack
+ object
+Message-ID: <YNrAXW/94SJkOO0g@unreal>
+References: <e2eed941f912b2068e371fd37f43b8cf5082a0e6.1623129597.git.leonro@nvidia.com>
+ <20210624174841.GA2906108@nvidia.com>
+ <YNgxxTQ4NW0yGHq1@unreal>
+ <20210627231528.GA4459@nvidia.com>
+ <YNlcpfdsdJdwMp5l@unreal>
+ <20210628113813.GA21676@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20210628220535.10020-1-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.162.164]
-X-ClientProxiedBy: EX13D10UWB001.ant.amazon.com (10.43.161.111) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210628113813.GA21676@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 29/06/2021 1:05, Bob Pearson wrote:
-> To commit ?? ("RDMA/rxe: Convert kernel UD post send to use ah_num").
+On Mon, Jun 28, 2021 at 08:38:13AM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 28, 2021 at 08:22:45AM +0300, Leon Romanovsky wrote:
+> > > The previous code didn't call restrack_del. restrack_del undoes the
+> > > restrack_set_name stuff, not just add - so it does not leave things
+> > > back the way it found them
+> > 
+> > The previous code didn't call to restrack_add and this is why it didn't
+> > call to restrack_del later. In old and new code, we are still calling to
+> > acquire and release dev (cma_acquire_dev_by_src_ip/cma_release_dev) and
+> > this is where the CM_ID is actually attached.
 > 
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  kernel-headers/rdma/rdma_user_rxe.h | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel-headers/rdma/rdma_user_rxe.h b/kernel-headers/rdma/rdma_user_rxe.h
-> index e283c222..e544832e 100644
-> --- a/kernel-headers/rdma/rdma_user_rxe.h
-> +++ b/kernel-headers/rdma/rdma_user_rxe.h
-> @@ -98,6 +98,8 @@ struct rxe_send_wr {
->  			__u32	remote_qpn;
->  			__u32	remote_qkey;
->  			__u16	pkey_index;
-> +			__u16	reserved;
-> +			__u32	ah_num;
->  		} ud;
->  		struct {
->  			__aligned_u64	addr;
-> @@ -148,7 +150,12 @@ struct rxe_dma_info {
->  
->  struct rxe_send_wqe {
->  	struct rxe_send_wr	wr;
-> -	struct rxe_av		av;
-> +	union {
-> +		struct rxe_av av;
-> +		struct {
-> +			__u32		reserved[0];
-> +		} ex;
-> +	};
->  	__u32			status;
->  	__u32			state;
->  	__aligned_u64		iova;
-> @@ -168,6 +175,11 @@ struct rxe_recv_wqe {
->  	struct rxe_dma_info	dma;
->  };
->  
-> +struct rxe_create_ah_resp {
-> +	__u32 ah_num;
-> +	__u32 reserved;
-> +};
-> +
->  struct rxe_create_cq_resp {
->  	struct mminfo mi;
->  };
-> 
+> Which is my point, you can't call restrack_del anyplace except the
+> final destroy. It cannot be used for error unwinding in these kinds of
+> functions
 
-I think the second patch didn't make it to the list.
+ok, let's remove the controversial hunks.
+
+> 
+> Jason
