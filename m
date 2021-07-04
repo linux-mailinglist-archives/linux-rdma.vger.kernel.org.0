@@ -2,69 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF2AD3BABB1
-	for <lists+linux-rdma@lfdr.de>; Sun,  4 Jul 2021 08:34:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C24493BAF3D
+	for <lists+linux-rdma@lfdr.de>; Sun,  4 Jul 2021 23:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhGDGgm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 4 Jul 2021 02:36:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36692 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhGDGgi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 4 Jul 2021 02:36:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ABFC613BD;
-        Sun,  4 Jul 2021 06:34:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625380443;
-        bh=wno3oUYI1yHOGawbHZ4ScbOty2mhX22sWkBa1oLvOwo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Aa/O34YsbC06irLFlMj8X2BY0NTIM+0pG7NqgnXpPpCfDWAAzJVz3FBZ2dLhkIpAn
-         v+h7VSQMudbAVtpUhTWmbu6s02LMzaxgtIOmXG5lJy+mi3EtefKf0COGQ8us3u0eD5
-         +2OvrWIXrHoFR9PzAwpSvYHXKVVf4yoxg/gEUaZiECFXSb8WSVdY5waN+IWqQXXXy2
-         EdcGJsmVwSRKPd4o6RQ3Cqi+4HZjkLDK/jxdVMw/BRg8AVwBKfRFG23CuuE3qAmVNH
-         IYCJpvvH4zGJaNW76VFXUEoLmfDN/tNSmqsg6xz+hG4BqWIMAc+q9+I4EuEqPzRTLO
-         uc7ci62JoQ9Pw==
-Date:   Sun, 4 Jul 2021 09:34:00 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Pine, Kevin" <kevin.pine@cornelisnetworks.com>
-Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
- allocations
-Message-ID: <YOFWWOb7Dq92uaat@unreal>
-References: <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
- <20210519182941.GQ1002214@nvidia.com>
- <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
- <20210519202623.GU1002214@nvidia.com>
- <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
- <20210525131358.GU1002214@nvidia.com>
- <4e4df8bd-4e3a-fe35-041d-ed3ed95be1cb@cornelisnetworks.com>
- <20210525142048.GZ1002214@nvidia.com>
- <CH0PR01MB7153F90EA5FAD6C18D361CC4F2039@CH0PR01MB7153.prod.exchangelabs.com>
- <20210628231934.GL4459@nvidia.com>
+        id S229734AbhGDVqQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 4 Jul 2021 17:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229652AbhGDVqQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 4 Jul 2021 17:46:16 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F55FC061574
+        for <linux-rdma@vger.kernel.org>; Sun,  4 Jul 2021 14:43:39 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id l17-20020a9d6a910000b029048a51f0bc3cso4531512otq.13
+        for <linux-rdma@vger.kernel.org>; Sun, 04 Jul 2021 14:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nJhEa1QwZlor7AIfDOIPjSjh9nWmHpQG8HHrMUiUDRo=;
+        b=T1QkKILW24f0esDNC8E3jiF9WzDUeRT/n2Hl0rsXNsb7vAwzObBGkZ5rZ3bNtVnGqw
+         AKL2tkXfwR1Lhx6tkhI3ZoICxFwpf35HVq1cCjwy+NpIgA6yiXIxyaWYAoSxDFiITx3e
+         pPr58JY88Mk2V93nWcBt++3NV4K7KfoiQzydN1y/3Wsy1PUrbd2ZopW5z4SeCFSCya6V
+         nINtp1DFzeAzV3xyg4KbBpjKjSk/zM1zauWO8bCg2c5JU0hzi35Xhhs48y9HfNAn+tWg
+         R2Dm7mKKq9pbMl9vpDDTu8ZE0nnApw8kUMQ3tmKwPNU+1d81HB7uE4uhB6m0EMreR6z9
+         PqRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nJhEa1QwZlor7AIfDOIPjSjh9nWmHpQG8HHrMUiUDRo=;
+        b=GHl94sgqWpOLdJBlFiOSjWAep9oHSp6n0bmyYyFT85Oa5ZejgU2YV2wtei59tIN6RF
+         IRX9KYoqKAcXDHpUH7EP2BV/Uo8jpwI1fkOQ4IwxLTR1FA43hWFbsKDp5B0t8SwE9YgV
+         r3VJsx1dtOXqO/a9erjd1ML0rmkLh63wGnPMs+f1vBRMxreofcV7vZuT2uqiEcPZ/otG
+         Cu9grL364o3hqRBC+qnHAheh/dNpPIl1K+KPxGHSts6IIlfOn82W8btdrtbm5Xs95Xji
+         YLPNlKH6qhF462fOXCAfMm3oLp27RITpve5hBEiUH5h0pNL2zP3+cg9ZUmBzxjBMmucu
+         UhSA==
+X-Gm-Message-State: AOAM530SB89NXoRHkIIswbDEzxWECF2pZ8PkOQU66x09taqFb+nDUh0G
+        ZtUy3DK9aTFuiVEwL6iELNhOAuO0pmY=
+X-Google-Smtp-Source: ABdhPJythXFqt6D0RbqnQXdca4w7Y6ORRguNH8UZdVzBfIVJfXkoRQxQHCFGuuijI7NSrUSlqsK9zQ==
+X-Received: by 2002:a9d:628:: with SMTP id 37mr8413982otn.120.1625435018990;
+        Sun, 04 Jul 2021 14:43:38 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:e370:af2e:f4f:b7fe? (2603-8081-140c-1a00-e370-af2e-0f4f-b7fe.res6.spectrum.com. [2603:8081:140c:1a00:e370:af2e:f4f:b7fe])
+        by smtp.gmail.com with ESMTPSA id o17sm2259597oie.56.2021.07.04.14.43.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 04 Jul 2021 14:43:38 -0700 (PDT)
+Subject: Re: [PATCH] RDMA/rxe: Remove the repeated 'mr->umem = umem'
+To:     ice_yangxiao@163.com, linux-rdma@vger.kernel.org
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com,
+        Xiao Yang <yangx.jy@fujitsu.com>
+References: <20210702123024.37025-1-ice_yangxiao@163.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <24f83a1c-6bdc-a56a-8e56-42146f4fb86b@gmail.com>
+Date:   Sun, 4 Jul 2021 16:43:38 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210628231934.GL4459@nvidia.com>
+In-Reply-To: <20210702123024.37025-1-ice_yangxiao@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 28, 2021 at 08:19:34PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 28, 2021 at 09:59:48PM +0000, Marciniszyn, Mike wrote:
-
-<...>
-
-> I certainly object to this idea that the driver assumes userspace will
-> never move its IRQs off the local because it has wrongly hardwired a
-> numa locality to the wrong object.
-
-It makes me wonder how should we progress with my patch.
-
-Thanks
-
+On 7/2/21 7:30 AM, ice_yangxiao@163.com wrote:
+> From: Xiao Yang <yangx.jy@fujitsu.com>
 > 
-> Jason
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_mr.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index 6aabcb4de235..487cefc015b8 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -122,7 +122,6 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+>  		goto err1;
+>  	}
+>  
+> -	mr->umem = umem;
+>  	num_buf = ib_umem_num_pages(umem);
+>  
+>  	rxe_mr_init(access, mr);
+> 
+
+Reviewed-by: Bob Pearson <rpearsonhpe@gmail.com>
+
+Looks good.
