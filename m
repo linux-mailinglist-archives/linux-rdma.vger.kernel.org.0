@@ -2,81 +2,227 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E5D3BC11B
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 17:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1573BC11E
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 17:40:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232591AbhGEPmB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jul 2021 11:42:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:49620 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232937AbhGEPl6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:41:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 716091FB;
-        Mon,  5 Jul 2021 08:39:21 -0700 (PDT)
-Received: from [10.57.40.45] (unknown [10.57.40.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 542423F694;
-        Mon,  5 Jul 2021 08:39:20 -0700 (PDT)
-Subject: Re: [bug report] IB/usnic: Add Cisco VIC low-level hardware driver
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>, umalhi@cisco.com,
-        linux-rdma@vger.kernel.org, iommu@lists.linux-foundation.org
-References: <YOLdvTe4MJ4kS01z@mwanda>
- <0b8a876b-f71d-24a2-1826-07aa54248f40@arm.com>
- <20210705152138.GH4604@ziepe.ca>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <b2fd45e1-58ee-a695-5560-dc71eca91eb7@arm.com>
-Date:   Mon, 5 Jul 2021 16:39:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231721AbhGEPnF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jul 2021 11:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231787AbhGEPnE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jul 2021 11:43:04 -0400
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62C4BC061574
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jul 2021 08:40:26 -0700 (PDT)
+Received: by mail-vs1-xe34.google.com with SMTP id h5so8560097vsg.12
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Jul 2021 08:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XPlggIX2gmP+FYa4xNaEk+FyTYg9U+QcpsZKg2tvaZc=;
+        b=vMpmE9LlK8/x4YObclbiDLaZbw/WUaLRQDDwlaiH1b7w+oa2qDLvEAIe+MxwOzZB8V
+         9bL4HMxIv+rpXGK67W0PzM7t9uZBouxSCiMBP+S+O0PAiRla/v0UQFzHO0aYzs4osXhu
+         n11qFFKbG2VjsYFfJZhtE6AYw1qvsUmWHI0WYWxWdCjkimCxGpAL5jfqLhP6s2FVMmP4
+         fjOlxGS6luInHT6e3Hi3ravZE4yf2zd/6+J4jiaicqg65QS2QE35WDgyiw9qx8RdxdbY
+         zjbTvyfJvMC/B/5SXmcIkajypx01beFA7nNjYF+TBw5ccLRptO6ohcx5LkzYvSNuxk7f
+         bcEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XPlggIX2gmP+FYa4xNaEk+FyTYg9U+QcpsZKg2tvaZc=;
+        b=q5OOvzu+Q1r6WFMKgyr73nmd+QyKt4wyt0bW3EwCSpHbdn5Oq/WxmYjawbRrtmaf4F
+         PxyjGCeffQiCSSYtBCJt8hPQ5wnJwkV6k/LomNqb9G42pkCFZVtyh4iNGXUkF9FvSYV2
+         9W5Xrsd1cH8bzFrnnQoI+gp/Aj0uhQgC5JmLepdfxR3SqvOk5qjaUpn8YRtsd6USncIu
+         /IsJDuGXj9+m75+ppr0Y0swKObBN77U1VUZZ6bxUFzEgwn1Jv8p8IjVdfrBQcJghQRsg
+         WHpAd3i1TRWPCSELzZdVJcYpKqNbm2sCEQZ4dYuRCH6jOLT0kmO2m/JMhgSeGq/jM7uu
+         XtzQ==
+X-Gm-Message-State: AOAM530X09ugtn4GW6rTwIGjRERKP3XQyJsU+wm3VEii1F64K7gr05Uc
+        U1ShtOkd4nr+zTZjYxswDUogTLMz39SniKJvBEg=
+X-Google-Smtp-Source: ABdhPJxgF4J6bJV46RlRVBYQ1c6p4VhNKchWL2eu1MRLpNk1JdDaeUAtwUmx4N7i+QIYbclr/UjHujH0Tbd9AathvOM=
+X-Received: by 2002:a67:f518:: with SMTP id u24mr9893036vsn.8.1625499625565;
+ Mon, 05 Jul 2021 08:40:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210705152138.GH4604@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210704223506.12795-1-rpearsonhpe@gmail.com> <CAD=hENeHRjL8YhjwWi-dnknFAJeDUyHK3s-TdQf2AF853MHCMw@mail.gmail.com>
+ <E55ABD6F-18FB-44FE-B103-3403CFD21274@oracle.com> <CAD=hENfwA3xEuoQp0O4uxKqeG8-sJsUNOCpcCKNUtSgk_ezepg@mail.gmail.com>
+In-Reply-To: <CAD=hENfwA3xEuoQp0O4uxKqeG8-sJsUNOCpcCKNUtSgk_ezepg@mail.gmail.com>
+From:   Robert Pearson <rpearsonhpe@gmail.com>
+Date:   Mon, 5 Jul 2021 10:40:14 -0500
+Message-ID: <CAFc_bgagW37Z1dNw_3T7h4eQCKTwmJypAWdh5QhnzGNOLrEEZQ@mail.gmail.com>
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix memory leak in error path code
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "haakon.brugge@oracle.com" <haakon.brugge@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021-07-05 16:21, Jason Gunthorpe wrote:
-> On Mon, Jul 05, 2021 at 02:47:36PM +0100, Robin Murphy wrote:
->> On 2021-07-05 11:23, Dan Carpenter wrote:
->>> [ Ancient code, but the bug seems real enough still.  -dan ]
->>>
->>> Hello Upinder Malhi,
->>>
->>> The patch e3cf00d0a87f: "IB/usnic: Add Cisco VIC low-level hardware
->>> driver" from Sep 10, 2013, leads to the following static checker
->>> warning:
->>>
->>> 	drivers/iommu/iommu.c:2482 iommu_map()
->>> 	warn: sleeping in atomic context
->>>
->>> drivers/infiniband/hw/usnic/usnic_uiom.c
->>>      244  static int usnic_uiom_map_sorted_intervals(struct list_head *intervals,
->>>      245                                                  struct usnic_uiom_reg *uiomr)
->>>
->>> This function is always called from usnic_uiom_reg_get() which is holding
->>> spin_lock(&pd->lock); so it can't sleep.
->>
->> FWIW back in those days it wasn't really well defined whether iommu_map()
->> was callable from non-sleeping contexts (the arch/arm DMA API code relied on
->> it, for instance). It was only formalised 2 years ago by 781ca2de89ba
->> ("iommu: Add gfp parameter to iommu_ops::map") which introduced the
->> might_sleep() check that's firing there. I guess these calls want to be
->> updated to iommu_map_atomic() now.
-> 
-> Does this mean this driver doesn't work at all upstream? I would be
-> quite interested to delete it.
+Jason has been asking for patches to pass clang-format-patch so I've
+been cleaning up the code near functional changes since it doesn't
+like extra spaces such as for vertical alignment.
 
-I think the only time it's actually in trouble is on AMD hardware if one 
-of those iommu_map() calls has to allocate a new pagetable page and that 
-allocation has to go down whichever reclaim path actually sleeps. 
-Historically all the other IOMMU drivers it might have come into contact 
-with already used GFP_ATOMIC for their internal allocations anyway (AMD 
-was the only one using a mutex instead of a spinlock internally), and 
-some like intel-iommu still haven't relaxed that even now.
+If I could figure out how ib_umem_works there is a chance that it
+would fail if it couldn't map all the user space virtual memory into
+kernel virtual addresses. But so far I have failed. It's fairly
+complex.
 
-Robin.
+Bob
+
+On Mon, Jul 5, 2021 at 3:35 AM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>
+> On Mon, Jul 5, 2021 at 4:16 PM Haakon Bugge <haakon.bugge@oracle.com> wro=
+te:
+> >
+> >
+> >
+> > > On 5 Jul 2021, at 05:42, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+> > >
+> > > On Mon, Jul 5, 2021 at 6:37 AM Bob Pearson <rpearsonhpe@gmail.com> wr=
+ote:
+> > >>
+> > >> In rxe_mr_init_user() in rxe_mr.c at the third error the driver fail=
+s to
+> > >> free the memory at mr->map. This patch adds code to do that.
+> > >> This error only occurs if page_address() fails to return a non zero =
+address
+> > >> which should never happen for 64 bit architectures.
+> > >
+> > > If this will never happen for 64 bit architectures, is it possible to
+> > > exclude 64 bit architecture with some MACROs or others?
+> > >
+> > > Thanks,
+> > >
+> > > Zhu Yanjun
+> > >
+> > >>
+> > >> Fixes: 8700e3e7c485 ("Soft RoCE driver")
+> > >> Reported by: Haakon Bugge <haakon.bugge@oracle.com>
+> > >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> > >> ---
+> > >> drivers/infiniband/sw/rxe/rxe_mr.c | 41 +++++++++++++++++-----------=
+--
+> > >> 1 file changed, 24 insertions(+), 17 deletions(-)
+> > >>
+> > >> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband=
+/sw/rxe/rxe_mr.c
+> > >> index 6aabcb4de235..f49baff9ca3d 100644
+> > >> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> > >> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > >> @@ -106,20 +106,21 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int ac=
+cess, struct rxe_mr *mr)
+> > >> int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 i=
+ova,
+> > >>                     int access, struct rxe_mr *mr)
+> > >> {
+> > >> -       struct rxe_map          **map;
+> > >> -       struct rxe_phys_buf     *buf =3D NULL;
+> > >> -       struct ib_umem          *umem;
+> > >> -       struct sg_page_iter     sg_iter;
+> > >> -       int                     num_buf;
+> > >> -       void                    *vaddr;
+> > >> +       struct rxe_map **map;
+> > >> +       struct rxe_phys_buf *buf =3D NULL;
+> > >> +       struct ib_umem *umem;
+> > >> +       struct sg_page_iter sg_iter;
+> > >> +       int num_buf;
+> > >> +       void *vaddr;
+> >
+> > This white-space stripping must be another issue, not related to the me=
+mleak?
+> >
+> > >>        int err;
+> > >> +       int i;
+> > >>
+> > >>        umem =3D ib_umem_get(pd->ibpd.device, start, length, access);
+> > >>        if (IS_ERR(umem)) {
+> > >> -               pr_warn("err %d from rxe_umem_get\n",
+> > >> -                       (int)PTR_ERR(umem));
+> > >> +               pr_warn("%s: Unable to pin memory region err =3D %d\=
+n",
+> > >> +                       __func__, (int)PTR_ERR(umem));
+> > >>                err =3D PTR_ERR(umem);
+> > >> -               goto err1;
+> > >> +               goto err_out;
+> > >>        }
+> > >>
+> > >>        mr->umem =3D umem;
+> > >> @@ -129,15 +130,15 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 st=
+art, u64 length, u64 iova,
+> > >>
+> > >>        err =3D rxe_mr_alloc(mr, num_buf);
+> > >>        if (err) {
+> > >> -               pr_warn("err %d from rxe_mr_alloc\n", err);
+> > >> -               ib_umem_release(umem);
+> > >> -               goto err1;
+> > >> +               pr_warn("%s: Unable to allocate memory for map\n",
+> > >> +                               __func__);
+> > >> +               goto err_release_umem;
+> > >>        }
+> > >>
+> > >>        mr->page_shift =3D PAGE_SHIFT;
+> > >>        mr->page_mask =3D PAGE_SIZE - 1;
+> > >>
+> > >> -       num_buf                 =3D 0;
+> > >> +       num_buf =3D 0;
+> >
+> > White-space change.
+>
+> Yeah. It seems that some white-space changes in this commit.
+>
+> Zhu Yanjun
+>
+> >
+> > Otherwise:
+> >
+> > Reviewed-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
+> >
+> >
+> > Thxs, H=C3=A5kon
+> >
+> >
+> >
+> > >>        map =3D mr->map;
+> > >>        if (length > 0) {
+> > >>                buf =3D map[0]->buf;
+> > >> @@ -151,10 +152,10 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 st=
+art, u64 length, u64 iova,
+> > >>
+> > >>                        vaddr =3D page_address(sg_page_iter_page(&sg_=
+iter));
+> > >>                        if (!vaddr) {
+> > >> -                               pr_warn("null vaddr\n");
+> > >> -                               ib_umem_release(umem);
+> > >> +                               pr_warn("%s: Unable to get virtual a=
+ddress\n",
+> > >> +                                               __func__);
+> > >>                                err =3D -ENOMEM;
+> > >> -                               goto err1;
+> > >> +                               goto err_cleanup_map;
+> > >>                        }
+> > >>
+> > >>                        buf->addr =3D (uintptr_t)vaddr;
+> > >> @@ -177,7 +178,13 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 sta=
+rt, u64 length, u64 iova,
+> > >>
+> > >>        return 0;
+> > >>
+> > >> -err1:
+> > >> +err_cleanup_map:
+> > >> +       for (i =3D 0; i < mr->num_map; i++)
+> > >> +               kfree(mr->map[i]);
+> > >> +       kfree(mr->map);
+> > >> +err_release_umem:
+> > >> +       ib_umem_release(umem);
+> > >> +err_out:
+> > >>        return err;
+> > >> }
+> > >>
+> > >> --
+> > >> 2.30.2
+> > >>
+> >
