@@ -2,107 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7E93BC1BF
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 18:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA54C3BC1C2
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 18:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhGEQnM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jul 2021 12:43:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
+        id S229652AbhGEQo4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jul 2021 12:44:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229560AbhGEQnM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jul 2021 12:43:12 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F781C061574
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jul 2021 09:40:35 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id v10so12599518qto.1
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Jul 2021 09:40:34 -0700 (PDT)
+        with ESMTP id S229560AbhGEQo4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jul 2021 12:44:56 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D01DC061574
+        for <linux-rdma@vger.kernel.org>; Mon,  5 Jul 2021 09:42:19 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o13-20020a9d404d0000b0290466630039caso18858419oti.6
+        for <linux-rdma@vger.kernel.org>; Mon, 05 Jul 2021 09:42:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v8W5OCvh0R5EqmZsg4dv+m2qyL7opMLwoZzcmRvAyaM=;
-        b=CNdk6C4fzSlUOzIbgorZGHO3D2zkg0c7BfSp7EA/k7ImR47m6pyjhcwNKh5RxMED8J
-         a9gx3boDmWqr+7eWAt1Ngwve1OXPjnqR2L5QvEM3Be7ts49Nc7yFpHIatPi5c3waPLY0
-         kwn7uGEW0Hcftol0buI1X66GwF6yZ/3swB+gzAGjo1az7WCfeHweMX5AwJkS/AKA3/kq
-         mIAT9wz+58NyVvFb1zsNompDz7VHjoAdBbDjnpaiy8dT3q6Y+Kj3na2ZS/GV4OFwZ5lo
-         Tl3mwgiLbFBOwBAb1cuKf28ww+bM6CxchKhki8dfTDWW2Q5QW5OSRJ81bYBj0NVkzgq+
-         4kAQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p5IjKnSTmw8301oRc6L9LSJLTO34moUULtUlikzI7m4=;
+        b=q1wQDBSObIwedA1gjC1POTZJjLGwhstBVkLDKqTLdGluC1khgrDGmqZMXculCOGsYO
+         OZ+wlZeZOg1zehE/3Sp/zhhzDYLz2w02jN6J+alJYjNuHT4IXklQzzPk1/6Pyl1T9KnE
+         E1lzi8o2/e+2pwZaaE4ZQJU0i2L+dwe2w+yU7NDyYw2vJt1fGWAAP+/izFs5+8oI1prL
+         k4jYfEOc9JW6UQhk3w6Lfz4CT3ReME8dsZc6M1wnRBRMkQh8JQSGJUDaOigOAkinNitL
+         /IBiOFGdQJRb8BIjAFExysa1EjXLlwDCMUya1Q6zedg21qdw1GQyS0Lsz7eWycoGeY07
+         DcdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v8W5OCvh0R5EqmZsg4dv+m2qyL7opMLwoZzcmRvAyaM=;
-        b=YZYajraQwqgb2C2h3wcO8DePy5/d2MG+PPsojIsjXsxNlSeLfIpBUgXFpbknS/uGG1
-         bN8SUNLNCCF2CSI4YAOzrfI8d48Cf5MMvgRyH/SP1x8rDExfyLS0YQDlkzePmW99bjUJ
-         D0IjyyFzGB+ocgQRu+aUVpg9kBZfuCHAJclzyHQFO55m0o+l5cg3+pL5izBeaebGnlh8
-         qaD92Za1+jr7ptjS2Z9m3ilnm9VFNqbBTHVxzaFv2V8DhjWcvLt2MGiNaCd06oR5thnf
-         SYs3ytyCT5ODHPaTOs9CyE3Aae4w8mAJRBaG+4bsll/PZeVaWCRzCEhGuAQ8T9sRXDtk
-         3B1w==
-X-Gm-Message-State: AOAM533S+SHcEJ/uX3x7MkOhHEHss211M3pMsFun8LtrSnIyMG6gnuHZ
-        9o4BResFFQ5+gpjbw1Ss12YxNQ==
-X-Google-Smtp-Source: ABdhPJxLVpMQIgf8JTQJv0s8ycAGIrtK4aOgzbONIKppGLph8rOItcmqdlsbG2VdGdmoqMiBZKYsNg==
-X-Received: by 2002:ac8:5452:: with SMTP id d18mr2718765qtq.72.1625503234095;
-        Mon, 05 Jul 2021 09:40:34 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id p187sm5539712qkd.57.2021.07.05.09.40.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p5IjKnSTmw8301oRc6L9LSJLTO34moUULtUlikzI7m4=;
+        b=LEyO0egTGJ74btuZSqq2XMRM8/73yZPFeccwzPEDJp9+DQdVlGOol8jYydVfdFhiU1
+         GqVekG7vExyHEo36JH5vk6lDDDJ60asy3XOBKIabQvABrN9s3jUv4t0Y/kZrWWVjMI16
+         M13ciGk9cSFZAB+qHrVT7C6FS/9TC08jMnOzpTHKyc67S+fIma+HJ/ajkavfoonyh3dr
+         9QMQ85AcHPGDTeM7ZU1QzfflvVbM20uvmRWeynyiDA90A9Zg1Wdx3wfYKc77CEHf/7u3
+         GUztUPOm0f8CiN1BL+QNHyZg4lal3+4yA4DLhwnHx834JuMBsTZhbusXfK1/jMDN0Dqd
+         rWww==
+X-Gm-Message-State: AOAM532FHiWa+Y39EuomVw2VKPnA34yK4AH+yNhKcmsXfHwWO7CuWkmJ
+        5+H3TNJnXsHl2uNC8ftQ2yA=
+X-Google-Smtp-Source: ABdhPJzbqkJLN0ohTX6vn1gVjnOwiV2Wl9O2eZVc0si2mD/Z/xjjuxqi/ocZIjSnqViFlyj2p0UIlw==
+X-Received: by 2002:a9d:7d83:: with SMTP id j3mr5154898otn.283.1625503338681;
+        Mon, 05 Jul 2021 09:42:18 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-213d-64e7-bcac-e2c2.res6.spectrum.com. [2603:8081:140c:1a00:213d:64e7:bcac:e2c2])
+        by smtp.gmail.com with ESMTPSA id c14sm2797581oic.50.2021.07.05.09.42.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Jul 2021 09:40:33 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0Re5-003rx4-4c; Mon, 05 Jul 2021 13:40:33 -0300
-Date:   Mon, 5 Jul 2021 13:40:33 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-rc or next 0/2] Two small fixups
-Message-ID: <20210705164033.GI4604@ziepe.ca>
-References: <20210701154318.93459.18982.stgit@awfm-01.cornelisnetworks.com>
- <41f90b65-8f76-9559-8ea9-54e7a22f5627@cornelisnetworks.com>
+        Mon, 05 Jul 2021 09:42:18 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        haakon.brugge@oracle.com, yang.jy@fujitsu.com
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2] RDMA/rxe: Fix memory leak in error path code
+Date:   Mon,  5 Jul 2021 11:41:54 -0500
+Message-Id: <20210705164153.17652-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <41f90b65-8f76-9559-8ea9-54e7a22f5627@cornelisnetworks.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jul 01, 2021 at 11:50:51AM -0400, Dennis Dalessandro wrote:
-> On 7/1/21 11:46 AM, Dennis Dalessandro wrote:
-> > Hi Jason,
-> >
-> > These two small patches aren't realy fixing serious bugs. Maybe you want to
-> > wait for 5.15 content, but they are small and have fixes lines. Maybe OK
-> > for the RC, so wanted to get them out.
-> >
-> >
-> > Mike Marciniszyn (2):
-> >       IB/hfi1: Indicate DMA wait when txq is queued for wakeup
-> >       IB/hfi1: Adjust pkey entry in index 0
-> >
-> >
-> >  drivers/infiniband/hw/hfi1/init.c     |    7 +------
-> >  drivers/infiniband/hw/hfi1/ipoib_tx.c |    3 +++
-> >  2 files changed, 4 insertions(+), 6 deletions(-)
-> >
-> ^^^^^^^^^^^^^^^^^^^^ No clue how that got added. Looking into that right now.
-> 
+In rxe_mr_init_user() in rxe_mr.c at the third error the driver fails to
+free the memory at mr->map. This patch adds code to do that.
+This error only occurs if page_address() fails to return a non zero address
+which should never happen for 64 bit architectures.
 
-Oh yes, and it corrupted the diffs along the way too.
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Reported by: Haakon Bugge <haakon.bugge@oracle.com>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v2:
+  Left out white space changes.
 
-Using index info to reconstruct a base tree...
-error: patch failed: drivers/infiniband/hw/hfi1/ipoib_tx.c:644
-error: drivers/infiniband/hw/hfi1/ipoib_tx.c: patch does not apply
-error: Did you hand edit your patch?
-It does not apply to blobs recorded in its index.
+ drivers/infiniband/sw/rxe/rxe_mr.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-Discourage your IT department from mangling outgoing emails... Looks
-like your site is using O365 - you may want to bypass your on prem
-SMTP and submit directly to smtp.office365.com:587
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 6aabcb4de235..be4bcb420fab 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -113,13 +113,14 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 	int			num_buf;
+ 	void			*vaddr;
+ 	int err;
++	int i;
+ 
+ 	umem = ib_umem_get(pd->ibpd.device, start, length, access);
+ 	if (IS_ERR(umem)) {
+-		pr_warn("err %d from rxe_umem_get\n",
+-			(int)PTR_ERR(umem));
++		pr_warn("%s: Unable to pin memory region err = %d\n",
++			__func__, (int)PTR_ERR(umem));
+ 		err = PTR_ERR(umem);
+-		goto err1;
++		goto err_out;
+ 	}
+ 
+ 	mr->umem = umem;
+@@ -129,9 +130,9 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 	err = rxe_mr_alloc(mr, num_buf);
+ 	if (err) {
+-		pr_warn("err %d from rxe_mr_alloc\n", err);
+-		ib_umem_release(umem);
+-		goto err1;
++		pr_warn("%s: Unable to allocate memory for map\n",
++				__func__);
++		goto err_release_umem;
+ 	}
+ 
+ 	mr->page_shift = PAGE_SHIFT;
+@@ -151,10 +152,10 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 			vaddr = page_address(sg_page_iter_page(&sg_iter));
+ 			if (!vaddr) {
+-				pr_warn("null vaddr\n");
+-				ib_umem_release(umem);
++				pr_warn("%s: Unable to get virtual address\n",
++						__func__);
+ 				err = -ENOMEM;
+-				goto err1;
++				goto err_cleanup_map;
+ 			}
+ 
+ 			buf->addr = (uintptr_t)vaddr;
+@@ -177,7 +178,13 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+ 
+ 	return 0;
+ 
+-err1:
++err_cleanup_map:
++	for (i = 0; i < mr->num_map; i++)
++		kfree(mr->map[i]);
++	kfree(mr->map);
++err_release_umem:
++	ib_umem_release(umem);
++err_out:
+ 	return err;
+ }
+ 
+-- 
+2.30.2
 
-This may help:
-
-https://github.com/jgunthorpe/cloud_mdir_sync
-
-Particularly the "outbound mail through smtp" section
-
-Jason
