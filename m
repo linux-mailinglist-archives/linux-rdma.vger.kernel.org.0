@@ -2,213 +2,244 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D06B3BB96C
-	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 10:35:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C2D3BBB2E
+	for <lists+linux-rdma@lfdr.de>; Mon,  5 Jul 2021 12:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhGEIiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 5 Jul 2021 04:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbhGEIiL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jul 2021 04:38:11 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA28C061764
-        for <linux-rdma@vger.kernel.org>; Mon,  5 Jul 2021 01:35:34 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id 11so20002878oid.3
-        for <linux-rdma@vger.kernel.org>; Mon, 05 Jul 2021 01:35:34 -0700 (PDT)
+        id S230366AbhGEK05 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 5 Jul 2021 06:26:57 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:7038 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230355AbhGEK05 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 5 Jul 2021 06:26:57 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 165AG2lR023847;
+        Mon, 5 Jul 2021 10:24:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=XZeSdFfLCYeIFMztC3S/pFM/tQ+tCENIU/Vtz0jmk4Q=;
+ b=fBbBElDLrGO18NxXgyHjaDL68T5caeTOs6fCbvQpEsG6DU0XGc3rDXXPwVVrY2Ll4Rue
+ 9cM5arT3AzEforQ2xzRYeXw7qenV5k7b27Uqg1ItXvJjLVqsnbznZLlxjlIcsxxr4gBV
+ a9jebdYQwRXmKRo1s07pIdtyk1e+xQ2s02q6EgggoEJQiA9EgDxz8uqLld8IO6W1GEgU
+ A+eOsUjoa+h3SA3U73Cp07QNg6OPoZmnKwZURH7GYeZaKo4svaWEo9wS3X+VJMKUF+C8
+ yLXAWEA6RAkQ9Gz4zakLXsmpsDRDealeDmQlwhNI8O673aI/VE3EndYIWEuSiR/ugG0o Xg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39jeacjc82-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 05 Jul 2021 10:24:18 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 165AGBec019683;
+        Mon, 5 Jul 2021 10:24:17 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
+        by aserp3020.oracle.com with ESMTP id 39jfq6hs0m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 05 Jul 2021 10:24:17 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hmHFcR0MPIcGM05hDvcDiUnbKG4V6n2ZtrphPxcYBY/H+1BA/KAj5O8oBDC2r6g55MuWDowjaUAzUm0/b1gDhCuxsH9HOeb1+04H6NuCY/ApNcUN/4CJRcPozULtK9MqTvE+OuVr200JXhe/Zil8kOxC3Atuuxg1YJV7vV6pRmfJ/dqg2K7duyxl6lbBazPc4nlxK8sX4kfKZbNqklnu2PqTz3Sug/AHAsFzW4aKLCfMvnOj34qTYE6fWHlHfN6cfrcvKx/X3nOxI5pWYlj8daj++pjT9SZ54kZ0h+97IBZYhnyAXNzLNw1t9Ehr2ALkV6FC6k2IPUAL9a2hYYzugA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XZeSdFfLCYeIFMztC3S/pFM/tQ+tCENIU/Vtz0jmk4Q=;
+ b=Gy7/x6eJhX1iTByCcxu5QvJl+/IDt//Mx5dkfoj/E4gT8/rKvgUK0o2uiS85WP6QrtnHlWlA+hlQ9mupc9PQgID5HPN+ShiYdbVdGWvAJLBy93csG8o7MhM7EAc777s+XfrDKkyRILz/ZawGEZE3IoDJfYtQj48aa/zLDbI7KvA4+QO1ISGrScQLeWSpODGtek4CeaDHfWu5ozs4A8K7NKgYoIp52G7GUFa5UoCCmHcm2P3bEKfSh6UANe7hgPVf1s0gFF3WXSzcv1VuGwkJFAaqGdb4vALzyizq6bb29yD/Y3adH0oBUHhJi3sgMWr0p77IV6QHxu8wGVKBdgSCpw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=bE2TwyBg816PUwNgOjl18KBHrEiD+EQhA38EIdbPWAk=;
-        b=IRmBVl7GWsciqHIECFmzGWZ6NRnVqyCA7TgtSfHhpBFEK+8VSebmJb9ZFw5+NYr6e2
-         7WMkSWDNZu2EO8I6YLi9XgLG55hE4srbWeYLntZgWU5cGdfzBOnOF6UXUhvZxxky280F
-         6he7q0sBE8LQu01A9ld06cMeLNfNxnW8eqThGL6kkV8d+4NGh0Ut0yan0dz5YHxbhp3b
-         0XhHo86VS+VIUyFKT4xDdjA7fKFqiNdLyynS8F+YfauOdbEhdHJWjDJtFyDkGTUc2KZ6
-         fAUErU+ALgR1NO6IbMs9tDpVb/ypXRjwryDz9oi27YYFHow+qM+oBKI9jIQeBtgW1Sq4
-         cJIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=bE2TwyBg816PUwNgOjl18KBHrEiD+EQhA38EIdbPWAk=;
-        b=LBzyUr9Sf49AyLPd+jDarkHhlnSWCJ6EYvh1pncHGCB+j3P5rk2UgbkvADSaycyLeL
-         us23xzIzZ+lllJUOTuoEt0Z517MAu43zwRKiBahxWv6AXI7SZObHHAmLv/7Xgphb9ayb
-         z3tUSg517FsyUqzUvSa4budBlhetHM4/lKx5baYPhmeVtrLb6daFl7bbkKltRh/T6IFg
-         bGcRQFWOMYq0K7t2x1mbgfUDWgm2szaBFVlUaHLy2g5n28e2gLXCcK+zUqIQHJAQFm0e
-         Kao8s0oO1xFQH9y73sIW2Ep82MGk3HzzkTAsf0lewszDEksqRWmKEGuqEWlHjDlOXCtl
-         3zvw==
-X-Gm-Message-State: AOAM530fgEDjN49D0XA+OqDiF8+jIIXrRNIrbSj1K5Lc67nyK5aV8I/5
-        kHbTxLenB/Qd0zxWnQlXZSovWoJWyhbs7doXDfw=
-X-Google-Smtp-Source: ABdhPJzzgztxAZW0E21pTkRp4fC4lKChE/tn+iH8Aut780ifKno+XHJImIpyIY0LjQapuaTGvPhB9f4FgXt1yYijY5w=
-X-Received: by 2002:a05:6808:10ca:: with SMTP id s10mr4440665ois.163.1625474133727;
- Mon, 05 Jul 2021 01:35:33 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XZeSdFfLCYeIFMztC3S/pFM/tQ+tCENIU/Vtz0jmk4Q=;
+ b=J057HQ0PjIFE5+VZcyTBPwZS2zd1+b48j3sF8dXc7OzeE7c+inqchnz6gUGQC5LZaeSSn9ee2E/ULp4ThbmXZnrh+25IDz8tjUCaNWB9pNx3BcJwsksU6ecwmIBUH0Q2+nXwzNPugp6KpsJsC6wkVHm7o53cZSCd2qGr9eafY2E=
+Authentication-Results: cisco.com; dkim=none (message not signed)
+ header.d=none;cisco.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by MWHPR10MB1616.namprd10.prod.outlook.com
+ (2603:10b6:301:9::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23; Mon, 5 Jul
+ 2021 10:24:15 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::3413:3c61:5067:ba73%5]) with mapi id 15.20.4287.033; Mon, 5 Jul 2021
+ 10:24:15 +0000
+Date:   Mon, 5 Jul 2021 13:23:57 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     umalhi@cisco.com
+Cc:     iommu@lists.linux-foundation.org, linux-rdma@vger.kernel.org
+Subject: [bug report] IB/usnic: Add Cisco VIC low-level hardware driver
+Message-ID: <YOLdvTe4MJ4kS01z@mwanda>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Originating-IP: [102.222.70.252]
+X-ClientProxiedBy: JNXP275CA0044.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::32)
+ To MWHPR1001MB2365.namprd10.prod.outlook.com (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-References: <20210704223506.12795-1-rpearsonhpe@gmail.com> <CAD=hENeHRjL8YhjwWi-dnknFAJeDUyHK3s-TdQf2AF853MHCMw@mail.gmail.com>
- <E55ABD6F-18FB-44FE-B103-3403CFD21274@oracle.com>
-In-Reply-To: <E55ABD6F-18FB-44FE-B103-3403CFD21274@oracle.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 5 Jul 2021 16:35:22 +0800
-Message-ID: <CAD=hENfwA3xEuoQp0O4uxKqeG8-sJsUNOCpcCKNUtSgk_ezepg@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix memory leak in error path code
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "haakon.brugge@oracle.com" <haakon.brugge@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mwanda (102.222.70.252) by JNXP275CA0044.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:18::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4287.23 via Frontend Transport; Mon, 5 Jul 2021 10:24:11 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b9a3ed64-c575-489b-d0aa-08d93f9f09bf
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1616:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MWHPR10MB161689CA63EE32FE1AE1E6EF8E1C9@MWHPR10MB1616.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wXUipM9+zOqjy4mKl9gc5YFQNSu5ISTLvHTivLOiIZMseII+0Ls0RNCfJUU1ULK32TpnpwmsITWEKdzjlZkLlijFKVY1KqnFTv/4wEGM0Hylh44zaGxrwxvX0GuJi1DN8YhHXHJlDsOAZTGrnl0+IRd723UqCVmz5TkIyS4jnsVM5YDOB5PtTnDqvD5gRQIuycNfgi5VB5p5Xf5dQmUFpg/6JVp+X3NbT4n73ZFta5dw+oTjphju9cSBg6/B1P5HJk3U/0kWCwqWzanqtC9KKf/jpED9HeWvSwODRQLHNJ5pJk26vuqbOUDwziEVtisteg0WbYK1XK+gZPuE9jYqHSeKyc14Epku/EcGbDq8mepuJqjpdnQPoa2klxFp2i4vpp86fzGt0JPt++T8yCqUVRq+TxRG6N5K9/Rb2yN48/+AXZHnve4mYrqDEjh+QropGScjzY70ThgGJrFS9VxYPWibderoQeiQOx/OqaDtxloQXpuX/+12gWQ+yzlaIm1NRKlhz7mjjlplK8FCOJHraRmMxNqXNCR81fp4w76nGRuhi3tlqCdSS432FOi8ohmIVdsWYAR5uvg55GrDFIPmw3vAPNub23T+o4OFwLj8QLVKLaQ0c2znqqkuuzrGRMnsJqmyyuQJe8knlF2A2FW+yQwML+VzfVb0fqSTSuWLb9dPhwTPpmhov8MFhh1RMUrh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(396003)(136003)(39860400002)(33716001)(44832011)(8676002)(66556008)(52116002)(66946007)(6496006)(66476007)(83380400001)(6666004)(956004)(5660300002)(16526019)(478600001)(6916009)(316002)(38100700002)(38350700002)(86362001)(2906002)(26005)(9686003)(8936002)(186003)(4326008)(55016002)(9576002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/DF6n1mQRVFT2BqhjnmVorgRW9AZVS3LFle8pi/NMdVd0/EY7OpAmRwjQ/Pr?=
+ =?us-ascii?Q?QeFgZrZtYAHS6N3ageFmx59MR+PQcear6bNv3GwK9qerWPDx6dsDOxCThAp3?=
+ =?us-ascii?Q?raHIALRfZKrAiYwBbUlPlfbRhtVVtvMsqpq/mxLLsRaMDbpOSpSpq1eWD9jL?=
+ =?us-ascii?Q?zxWqbgZrtec3/wg5jqyeUWPBR1ZTI0TOGWRqre9BZ7EKSaHrxhO9u9lGEQnc?=
+ =?us-ascii?Q?CZSv653y1hBGYJHuV90lM/idf8S5as2wW776CVGl4BcndXPnZ1qrcod594Y1?=
+ =?us-ascii?Q?2FjdIO5MqfPDL2om74fZsQj0dOFtvfxzFFJ9l632/ARIc7xlzaqqrCyqXlta?=
+ =?us-ascii?Q?xfryv9jz1v26KnJCaEoIpNPyJMroOYiIL8BJplFQevAoA0eQgCWcBYKTpJt4?=
+ =?us-ascii?Q?0S+ay5pw1yPjhj0zJ1PlQ88agvFF8EfgQwI/6lag7GhL7DrGNcTFw7VQ8HNQ?=
+ =?us-ascii?Q?Mpr1xq8mBgAa0tc0a0ovpgOrmZ/khh99E2IKvYXRMVbfCrsxAkPZ2dt0QKHR?=
+ =?us-ascii?Q?RvyXiIDtd4V/rpX24wrIdTZtPZiwHl8KsK8fqzO8SUcKLK4FWgng8pTwjbY0?=
+ =?us-ascii?Q?EDeO5q/Er7TB8elMsPO9WtGBjQb2v30ykcPCx/Ihy6Ex2HkqZKlTzn5fgIJ1?=
+ =?us-ascii?Q?R7D3HWK2gkoL14+rCvISSwSNH4YbI31asDpFLcgdYGkdKvm3IJE2En5c0htl?=
+ =?us-ascii?Q?4la7+jofLFsHnC7g0b4TWcJa32AAMb0XW3PGgcZjyCxrhS5frA4l4h3KB8se?=
+ =?us-ascii?Q?LCtPbO+EAF3/8Onqg2AgDegzuRQ9TxAFUAwI0hFNpBerC2SVZtEdjsXvsWRE?=
+ =?us-ascii?Q?PnodlcM9BYjUSo8y3a3t4UB0zGDN4ryQ/aT8NiFAlBlnE6YA8YNNfAFNkhWv?=
+ =?us-ascii?Q?EyXrh7ophIqxpFEv50kGm9y0dFshW2chbmp8CvLMqjgSt64JZoUnlpB88IIp?=
+ =?us-ascii?Q?oxv+U0KaZzsyWd3ywI6TugkJQ/9wkNf6euXguhvY6zJKMHFfwe0LcIAFENde?=
+ =?us-ascii?Q?HvB4LFa980slAMNadDLAXPfDzZKhLLHmQLxiqjJkZrp+ihNebugn2DXPh0zW?=
+ =?us-ascii?Q?T2qj/XaIDIsiYsLfhgqtzTxmhHRZENk8WU29bULt2MRaotJ01fRNDRr+nAUF?=
+ =?us-ascii?Q?5S9ZdqXApEafH+3sHCEm1X3vFTzj31j16Jp7oJMVs0Zp3Ihv9HUSKO1r9vJ/?=
+ =?us-ascii?Q?OYc+yJygwpEg8PM2GbWpPzfFfCx+wzIVLIqlIw9Yd+UPJSIHCLupo9+58RPO?=
+ =?us-ascii?Q?OF1NBfW7WjahiDum1ExPI1J9N9izz/O1+gb0S/DP2u4fSBqWfgLYcKpfYBMA?=
+ =?us-ascii?Q?mL1kSFttLN833tNRvRomIxKJ?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b9a3ed64-c575-489b-d0aa-08d93f9f09bf
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jul 2021 10:24:14.9649
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QTgMf8xP1KoABuPIpUNDWPMo3WPTwQSCiVngv0FOT7xNcFMkPp01dbxQtKs6779wfJRyIirMCPV3zxucJlkJPsVT8qO67fInJcOCQU9MEUc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1616
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10035 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 spamscore=0 phishscore=0
+ mlxscore=0 bulkscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107050055
+X-Proofpoint-GUID: 353zQFG3ONCmQeqxmS6Ft9ilpzblh9Sl
+X-Proofpoint-ORIG-GUID: 353zQFG3ONCmQeqxmS6Ft9ilpzblh9Sl
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 5, 2021 at 4:16 PM Haakon Bugge <haakon.bugge@oracle.com> wrote=
-:
->
->
->
-> > On 5 Jul 2021, at 05:42, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
-> >
-> > On Mon, Jul 5, 2021 at 6:37 AM Bob Pearson <rpearsonhpe@gmail.com> wrot=
-e:
-> >>
-> >> In rxe_mr_init_user() in rxe_mr.c at the third error the driver fails =
-to
-> >> free the memory at mr->map. This patch adds code to do that.
-> >> This error only occurs if page_address() fails to return a non zero ad=
-dress
-> >> which should never happen for 64 bit architectures.
-> >
-> > If this will never happen for 64 bit architectures, is it possible to
-> > exclude 64 bit architecture with some MACROs or others?
-> >
-> > Thanks,
-> >
-> > Zhu Yanjun
-> >
-> >>
-> >> Fixes: 8700e3e7c485 ("Soft RoCE driver")
-> >> Reported by: Haakon Bugge <haakon.bugge@oracle.com>
-> >> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> >> ---
-> >> drivers/infiniband/sw/rxe/rxe_mr.c | 41 +++++++++++++++++-------------
-> >> 1 file changed, 24 insertions(+), 17 deletions(-)
-> >>
-> >> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/s=
-w/rxe/rxe_mr.c
-> >> index 6aabcb4de235..f49baff9ca3d 100644
-> >> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> >> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> >> @@ -106,20 +106,21 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int acce=
-ss, struct rxe_mr *mr)
-> >> int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iov=
-a,
-> >>                     int access, struct rxe_mr *mr)
-> >> {
-> >> -       struct rxe_map          **map;
-> >> -       struct rxe_phys_buf     *buf =3D NULL;
-> >> -       struct ib_umem          *umem;
-> >> -       struct sg_page_iter     sg_iter;
-> >> -       int                     num_buf;
-> >> -       void                    *vaddr;
-> >> +       struct rxe_map **map;
-> >> +       struct rxe_phys_buf *buf =3D NULL;
-> >> +       struct ib_umem *umem;
-> >> +       struct sg_page_iter sg_iter;
-> >> +       int num_buf;
-> >> +       void *vaddr;
->
-> This white-space stripping must be another issue, not related to the meml=
-eak?
->
-> >>        int err;
-> >> +       int i;
-> >>
-> >>        umem =3D ib_umem_get(pd->ibpd.device, start, length, access);
-> >>        if (IS_ERR(umem)) {
-> >> -               pr_warn("err %d from rxe_umem_get\n",
-> >> -                       (int)PTR_ERR(umem));
-> >> +               pr_warn("%s: Unable to pin memory region err =3D %d\n"=
-,
-> >> +                       __func__, (int)PTR_ERR(umem));
-> >>                err =3D PTR_ERR(umem);
-> >> -               goto err1;
-> >> +               goto err_out;
-> >>        }
-> >>
-> >>        mr->umem =3D umem;
-> >> @@ -129,15 +130,15 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 star=
-t, u64 length, u64 iova,
-> >>
-> >>        err =3D rxe_mr_alloc(mr, num_buf);
-> >>        if (err) {
-> >> -               pr_warn("err %d from rxe_mr_alloc\n", err);
-> >> -               ib_umem_release(umem);
-> >> -               goto err1;
-> >> +               pr_warn("%s: Unable to allocate memory for map\n",
-> >> +                               __func__);
-> >> +               goto err_release_umem;
-> >>        }
-> >>
-> >>        mr->page_shift =3D PAGE_SHIFT;
-> >>        mr->page_mask =3D PAGE_SIZE - 1;
-> >>
-> >> -       num_buf                 =3D 0;
-> >> +       num_buf =3D 0;
->
-> White-space change.
+[ Ancient code, but the bug seems real enough still.  -dan ]
 
-Yeah. It seems that some white-space changes in this commit.
+Hello Upinder Malhi,
 
-Zhu Yanjun
+The patch e3cf00d0a87f: "IB/usnic: Add Cisco VIC low-level hardware
+driver" from Sep 10, 2013, leads to the following static checker
+warning:
 
->
-> Otherwise:
->
-> Reviewed-by: H=C3=A5kon Bugge <haakon.bugge@oracle.com>
->
->
-> Thxs, H=C3=A5kon
->
->
->
-> >>        map =3D mr->map;
-> >>        if (length > 0) {
-> >>                buf =3D map[0]->buf;
-> >> @@ -151,10 +152,10 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 star=
-t, u64 length, u64 iova,
-> >>
-> >>                        vaddr =3D page_address(sg_page_iter_page(&sg_it=
-er));
-> >>                        if (!vaddr) {
-> >> -                               pr_warn("null vaddr\n");
-> >> -                               ib_umem_release(umem);
-> >> +                               pr_warn("%s: Unable to get virtual add=
-ress\n",
-> >> +                                               __func__);
-> >>                                err =3D -ENOMEM;
-> >> -                               goto err1;
-> >> +                               goto err_cleanup_map;
-> >>                        }
-> >>
-> >>                        buf->addr =3D (uintptr_t)vaddr;
-> >> @@ -177,7 +178,13 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start=
-, u64 length, u64 iova,
-> >>
-> >>        return 0;
-> >>
-> >> -err1:
-> >> +err_cleanup_map:
-> >> +       for (i =3D 0; i < mr->num_map; i++)
-> >> +               kfree(mr->map[i]);
-> >> +       kfree(mr->map);
-> >> +err_release_umem:
-> >> +       ib_umem_release(umem);
-> >> +err_out:
-> >>        return err;
-> >> }
-> >>
-> >> --
-> >> 2.30.2
-> >>
->
+	drivers/iommu/iommu.c:2482 iommu_map()
+	warn: sleeping in atomic context
+
+drivers/infiniband/hw/usnic/usnic_uiom.c
+   244  static int usnic_uiom_map_sorted_intervals(struct list_head *intervals,
+   245                                                  struct usnic_uiom_reg *uiomr)
+
+This function is always called from usnic_uiom_reg_get() which is holding
+spin_lock(&pd->lock); so it can't sleep.
+
+   246  {
+   247          int i, err;
+   248          size_t size;
+   249          struct usnic_uiom_chunk *chunk;
+   250          struct usnic_uiom_interval_node *interval_node;
+   251          dma_addr_t pa;
+   252          dma_addr_t pa_start = 0;
+   253          dma_addr_t pa_end = 0;
+   254          long int va_start = -EINVAL;
+   255          struct usnic_uiom_pd *pd = uiomr->pd;
+   256          long int va = uiomr->va & PAGE_MASK;
+   257          int flags = IOMMU_READ | IOMMU_CACHE;
+   258  
+   259          flags |= (uiomr->writable) ? IOMMU_WRITE : 0;
+   260          chunk = list_first_entry(&uiomr->chunk_list, struct usnic_uiom_chunk,
+   261                                                                          list);
+   262          list_for_each_entry(interval_node, intervals, link) {
+   263  iter_chunk:
+   264                  for (i = 0; i < chunk->nents; i++, va += PAGE_SIZE) {
+   265                          pa = sg_phys(&chunk->page_list[i]);
+   266                          if ((va >> PAGE_SHIFT) < interval_node->start)
+   267                                  continue;
+   268  
+   269                          if ((va >> PAGE_SHIFT) == interval_node->start) {
+   270                                  /* First page of the interval */
+   271                                  va_start = va;
+   272                                  pa_start = pa;
+   273                                  pa_end = pa;
+   274                          }
+   275  
+   276                          WARN_ON(va_start == -EINVAL);
+   277  
+   278                          if ((pa_end + PAGE_SIZE != pa) &&
+   279                                          (pa != pa_start)) {
+   280                                  /* PAs are not contiguous */
+   281                                  size = pa_end - pa_start + PAGE_SIZE;
+   282                                  usnic_dbg("va 0x%lx pa %pa size 0x%zx flags 0x%x",
+   283                                          va_start, &pa_start, size, flags);
+   284                                  err = iommu_map(pd->domain, va_start, pa_start,
+   285                                                          size, flags);
+
+The iommu_map() function sleeps.
+
+   286                                  if (err) {
+   287                                          usnic_err("Failed to map va 0x%lx pa %pa size 0x%zx with err %d\n",
+   288                                                  va_start, &pa_start, size, err);
+   289                                          goto err_out;
+   290                                  }
+   291                                  va_start = va;
+   292                                  pa_start = pa;
+   293                                  pa_end = pa;
+   294                          }
+   295  
+   296                          if ((va >> PAGE_SHIFT) == interval_node->last) {
+   297                                  /* Last page of the interval */
+   298                                  size = pa - pa_start + PAGE_SIZE;
+   299                                  usnic_dbg("va 0x%lx pa %pa size 0x%zx flags 0x%x\n",
+   300                                          va_start, &pa_start, size, flags);
+   301                                  err = iommu_map(pd->domain, va_start, pa_start,
+   302                                                  size, flags);
+
+iommu_map() again.
+
+   303                                  if (err) {
+   304                                          usnic_err("Failed to map va 0x%lx pa %pa size 0x%zx with err %d\n",
+   305                                                  va_start, &pa_start, size, err);
+   306                                          goto err_out;
+   307                                  }
+   308                                  break;
+   309                          }
+   310  
+   311                          if (pa != pa_start)
+   312                                  pa_end += PAGE_SIZE;
+   313                  }
+   314  
+   315                  if (i == chunk->nents) {
+   316                          /*
+   317                           * Hit last entry of the chunk,
+   318                           * hence advance to next chunk
+   319                           */
+   320                          chunk = list_first_entry(&chunk->list,
+   321                                                          struct usnic_uiom_chunk,
+   322                                                          list);
+   323                          goto iter_chunk;
+   324                  }
+   325          }
+   326  
+   327          return 0;
+   328  
+   329  err_out:
+   330          usnic_uiom_unmap_sorted_intervals(intervals, pd);
+   331          return err;
+   332  }
+
+regards,
+dan carpenter
