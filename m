@@ -2,34 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 122DA3BD05B
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6DA3BD0BB
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:35:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234735AbhGFLdl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 07:33:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
+        id S234763AbhGFLdm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 07:33:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235470AbhGFLaG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:30:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B3DF61CE0;
-        Tue,  6 Jul 2021 11:21:08 +0000 (UTC)
+        id S235660AbhGFLaS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:30:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D60A61DC4;
+        Tue,  6 Jul 2021 11:21:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570468;
-        bh=EfgEJylRHF1NQY/Yx5XZyMIOkbTSyQmMOC7KGA5XTKQ=;
+        s=k20201202; t=1625570491;
+        bh=OLYz9Fhx4UCce3belqp6thG8WF8rjYVJA9ABbB28Ka4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uC9J5F0vM8KZMBqMZqcol6gtRfFtmIeVHbLxKSsNxosj73SuIeEtYdDwlEEI1c5aE
-         4PUmZoVwtXkYSpvu+bkphxmlLfgMSvCWZO8mpJcKHI6RjQxMluOiueKsFQZkxZtKrg
-         vkGWF96jExyEp5Z9k0x6LJthMoxJqmxK+EiS1sTzgt4/Ji0Wf6/aaPJ5EJjdpZCQdC
-         p10xORuc38O+j/5c23LxE6jwZP2buhfj8BRoVMdZbq5YFFQESKwJ9dGHmHdAWhfa/4
-         w5a+irawtqOtwgnAqFczQ/bN6WTe2q4xDNxzourMjK7/bv+oC7on8OuEOvGCHZ+Z7t
-         C+1hcqM1Ac5ag==
+        b=L7r8Bnv3xe34Hz8B07AGbS5Sd2/1aDAwuux7D1/xFTn1t/kVTjmaRom0/WOMUfk32
+         w7tLBRwUcdWxzSffT9mKLewsmXozl3lCVAUJnC0dWrsUAB2hiBD5lwJ6vXs/XQ4q6f
+         OWASOdj+/fcf67W2zBXsJfOgN45A/YgQRWlZuM/uyMz7JKf6GtH3Fc9hYWYa9Gt2sH
+         LCUdO0U8Ykf9uSAhA/A9nf4AYZkqfvtcKn+DOC+YHiTfT7fbjOutbLKBB1wFsMhSSG
+         IYatJCvNKd6RhV9OnrF8AP1Q/INk99wA+mmh2sjabNpQGVuU8YZlQYflHd5SFOHYex
+         V9oClwIqKCCDA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiao Yang <yangx.jy@fujitsu.com>, Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 120/160] RDMA/rxe: Don't overwrite errno from ib_umem_get()
-Date:   Tue,  6 Jul 2021 07:17:46 -0400
-Message-Id: <20210706111827.2060499-120-sashal@kernel.org>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Alaa Hleihel <alaa@nvidia.com>,
+        Israel Rukshin <israelr@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
+        target-devel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 137/160] IB/isert: Align target max I/O size to initiator size
+Date:   Tue,  6 Jul 2021 07:18:03 -0400
+Message-Id: <20210706111827.2060499-137-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -41,37 +46,59 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xiao Yang <yangx.jy@fujitsu.com>
+From: Max Gurtovoy <mgurtovoy@nvidia.com>
 
-[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
+[ Upstream commit 109d19a5eb3ddbdb87c43bfd4bcf644f4569da64 ]
 
-rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
-fails so it's hard for user to know which actual error happens in
-ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
-trying to pin pages on a DAX file.
+Since the Linux iser initiator default max I/O size set to 512KB and since
+there is no handshake procedure for this size in iser protocol, set the
+default max IO size of the target to 512KB as well.
 
-Return actual error as mlx4/mlx5 does.
+For changing the default values, there is a module parameter for both
+drivers.
 
-Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Link: https://lore.kernel.org/r/20210524085215.29005-1-mgurtovoy@nvidia.com
+Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
+Reviewed-by: Israel Rukshin <israelr@nvidia.com>
+Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+Acked-by: Sagi Grimberg <sagi@grimberg.me>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
+ drivers/infiniband/ulp/isert/ib_isert.h | 3 ---
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 9f63947bab12..fe2b7d223183 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -135,7 +135,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	if (IS_ERR(umem)) {
- 		pr_warn("err %d from rxe_umem_get\n",
- 			(int)PTR_ERR(umem));
--		err = -EINVAL;
-+		err = PTR_ERR(umem);
- 		goto err1;
- 	}
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
+index 18266f07c58d..de3fc05fd2e8 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.c
++++ b/drivers/infiniband/ulp/isert/ib_isert.c
+@@ -35,10 +35,10 @@ static const struct kernel_param_ops sg_tablesize_ops = {
+ 	.get = param_get_int,
+ };
+ 
+-static int isert_sg_tablesize = ISCSI_ISER_DEF_SG_TABLESIZE;
++static int isert_sg_tablesize = ISCSI_ISER_MIN_SG_TABLESIZE;
+ module_param_cb(sg_tablesize, &sg_tablesize_ops, &isert_sg_tablesize, 0644);
+ MODULE_PARM_DESC(sg_tablesize,
+-		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 256, max: 4096)");
++		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 128, max: 4096)");
+ 
+ static DEFINE_MUTEX(device_list_mutex);
+ static LIST_HEAD(device_list);
+diff --git a/drivers/infiniband/ulp/isert/ib_isert.h b/drivers/infiniband/ulp/isert/ib_isert.h
+index 6c5af13db4e0..ca8cfebe26ca 100644
+--- a/drivers/infiniband/ulp/isert/ib_isert.h
++++ b/drivers/infiniband/ulp/isert/ib_isert.h
+@@ -65,9 +65,6 @@
+  */
+ #define ISER_RX_SIZE		(ISCSI_DEF_MAX_RECV_SEG_LEN + 1024)
+ 
+-/* Default I/O size is 1MB */
+-#define ISCSI_ISER_DEF_SG_TABLESIZE 256
+-
+ /* Minimum I/O size is 512KB */
+ #define ISCSI_ISER_MIN_SG_TABLESIZE 128
  
 -- 
 2.30.2
