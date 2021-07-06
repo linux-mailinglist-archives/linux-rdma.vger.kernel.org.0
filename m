@@ -2,64 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C5F3BDC99
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 20:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AF73BDC9F
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 20:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhGFSCQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 14:02:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50922 "EHLO
+        id S230505AbhGFSFy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 14:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229834AbhGFSCQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jul 2021 14:02:16 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E05DC061760
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 10:59:37 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q190so21036550qkd.2
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 10:59:37 -0700 (PDT)
+        with ESMTP id S230440AbhGFSFy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jul 2021 14:05:54 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF57C06175F
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 11:03:15 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id m3so191291oig.10
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 11:03:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QafN6h6Co6NuKaJg6KsXY/qvYmait2ZxGzl1LH+hKGc=;
-        b=o+6yrnhyDXWJv8oLffV4OzrBks140sBzkKRa/BHDPAgco6gkcsk/KfM0urmbG1ZpZp
-         aNfP9t5Y248cSGYMNP5udtisN7IexW8dI/evhDcabpX78aqPc3z4PUkjqOFT88k3q2UU
-         VMDnrscsVmrIJXOn1Tl4GknyaQqnihC5TNeBzt7oxN9cnepeiC33KAZ1WQv24bEg5Ptl
-         wh50zYlI3opLL0jj7l3ICvX3darwow+ATpP8HNytVg4jpuzFtVevfPbuvYAuE+UIH3oi
-         0+6FwhgS8LlAzXLg8Hrg7kDb7r475k6OOP9fsruyXhd5J6BvIkWbmMJ01HjVqF1+s9dG
-         KB4A==
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dktWyNUxLR/AUElofB65u1HHbgT9UFWQxsLDt5+3GUI=;
+        b=ZIIokBg2jBdWhCL7gcGwLmSOV/agdcYoB8F8XpjDEzGo/EAdbxyLxT2KnOuf5bltwl
+         pm+fOZsYW3HUoIFT3TIvRq2nRbvDgFJ8xTd28wsNILl09Ma0QamzwXibQlK77/l+SPuM
+         Yen/KPmVu+16q5wchrC9LcRS3jJH6JO4ussxE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QafN6h6Co6NuKaJg6KsXY/qvYmait2ZxGzl1LH+hKGc=;
-        b=YLdy6WrCZjtES3e+/Je7Se8MOLU2h6oxX6obF5R++HAvUe1M/H44smw81I0YhibVlh
-         IFHe96QJbME5Q0MJ71ioniSC1Rfxjraiq0Ry5S2wuY6Mj/XIYyBmfsIwPtbIeaHWPsUL
-         3y4Qcouwxir7IERZeqxVMlsvQhL44W9kbTHyNTcQVzFN9X7XxmcyEamts/TiKcYIujQG
-         ahVTM9XzK49q9gSRTgtHJY//1X5imK/Iel8e3uWusiyyY3uC93g9+ClJry/RQh/r+66F
-         mFEPnT2pyLFJ4Q800T0gQWrYzovHsa3UfOI3ox8ZnN0jGrE5jltfTk0O3dLwzHFvu6CS
-         gU0w==
-X-Gm-Message-State: AOAM530FDoD5/KrImh7ZRZGpiBhUo8h3I0v/xNh6VvgYFC4u+Gxt7Q3g
-        jiEF7Wbo8cRL27gUEBnfIAldaw==
-X-Google-Smtp-Source: ABdhPJyVxfP24yiWMaxghSmvMQwbby4otQnbgBhcVo8qVKROchOHAE6ChpAWAzTpF2fYkJyDXgbw1w==
-X-Received: by 2002:a37:c448:: with SMTP id h8mr10568428qkm.191.1625594376601;
-        Tue, 06 Jul 2021 10:59:36 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id 16sm5697170qty.15.2021.07.06.10.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 10:59:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0pM7-004W2s-6g; Tue, 06 Jul 2021 14:59:35 -0300
-Date:   Tue, 6 Jul 2021 14:59:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dktWyNUxLR/AUElofB65u1HHbgT9UFWQxsLDt5+3GUI=;
+        b=sz4/Du9h+Wp+9eLRnuDEACjQwM1MPllRp0vOu/aJbwTaqWDbqKPUcwbnQFEfrqMeHK
+         zzlJwXRqOREc7OSLyZ+zhsZii9rPvWPoOexng3Ym5deC7mM30ifnHPx6w/QM/GgtnqMm
+         H8Kbl3Eqw5pCVOURp55hFn/iVglM3FK4O+xdpluAaBctkUw0nyZ3X13kKHH/Onk/zlsC
+         qtrYwVOWl2J99dz2pKh4x6imkTEkYTn8yemD+PeppRwNBzaRtueGJmgrtNOrESEM/+rD
+         qWRtor/hAdQ5HUYGnfS2IQQdslJUFTTNU8q8ZcQeFyDuionXSMDb/a0NrfRIxMYx5h4N
+         7wiQ==
+X-Gm-Message-State: AOAM531J8UqVp6+6Ug+NjRykAXyQrtgXQEXPD4eKsOmQTXqA7Sdgo4Qi
+        eU7T1VBVS4gWWCx6wBVZSXbxfvfYYtIi0JUOO5fu39nGd2Y=
+X-Google-Smtp-Source: ABdhPJyoboKypUddRjaA6y8obByeJeHKz79Uj26M4/V8g6nwCtOZ07vtesXFU4/AmECSu0n8jYcSgN9fkXKjIXlafdU=
+X-Received: by 2002:aca:eb43:: with SMTP id j64mr1370482oih.101.1625594594921;
+ Tue, 06 Jul 2021 11:03:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <20210706142357.GN4604@ziepe.ca> <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
+ <20210706152542.GP4604@ziepe.ca> <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
+ <20210706162953.GQ4604@ziepe.ca> <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
+In-Reply-To: <CAKMK7uGXUgjyjch57J3UnC7SA3-4g87Ft7tLjj9fFkgyKkKdrg@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 6 Jul 2021 20:03:03 +0200
+Message-ID: <CAKMK7uHA7otRWTcMBDG4CNxNCs9GriOdGvWad4Fx-Y0teJuLxA@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
         Oded Gabbay <ogabbay@kernel.org>,
         "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
@@ -69,60 +68,133 @@ Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
         Dave Airlie <airlied@gmail.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         "moderated list:DMA BUFFER SHARING FRAMEWORK" 
         <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706175935.GS4604@ziepe.ca>
-References: <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
- <20210706142357.GN4604@ziepe.ca>
- <CAKMK7uELNzwUe+hhVWRg=Pk5Wt_vOOX922H48Kd6dTyO2PeBbg@mail.gmail.com>
- <20210706152542.GP4604@ziepe.ca>
- <CAKMK7uH7Ar6+uAOU_Sj-mf89V9WCru+66CV5bO9h-WAAv7Mgdg@mail.gmail.com>
- <CAKMK7uGvO0h7iZ3vKGe8GouESkr79y1gP1JXbfV82sRiaT-d1A@mail.gmail.com>
- <20210706172828.GR4604@ziepe.ca>
- <20210706173137.GA7840@lst.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210706173137.GA7840@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 07:31:37PM +0200, Christoph Hellwig wrote:
-> On Tue, Jul 06, 2021 at 02:28:28PM -0300, Jason Gunthorpe wrote:
-> > > Also on your claim that drivers/gpu is a non-upstream disaster: I've
-> > > also learned that that for drivers/rdma there's the upstream driver,
-> > > and then there's the out-of-tree hackjob the vendor actually
-> > > supports.
-> > 
-> > In the enterprise world everyone has their out of tree backport
-> > drivers. It varies on the vendor how much deviation there is from the
-> > upstream driver and what commercial support relationship the vendor
-> > has with the enterprise distros.
-> 
-> I think he means the Mellanox OFED stack, which is a complete and utter
-> mess and which gets force fed by Mellanox/Nvidia on unsuspecting
-> customers.  I know many big HPC sites that ignore it, but a lot of
-> enterprise customers are dumb enought to deploy it.
+I should stop typing and prep dinner, but I found some too hilarious
+typos below.
 
-No, I don't think so. While MOFED is indeed a giant mess, the mlx5
-upstream driver is not some token effort to generate good will and
-Mellanox certainly does provide full commercial support for the mlx5
-drivers shipped inside various enterprise distros.
+On Tue, Jul 6, 2021 at 7:35 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> On Tue, Jul 6, 2021 at 6:29 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Jul 06, 2021 at 05:49:01PM +0200, Daniel Vetter wrote:
+> >
+> > > The other thing to keep in mind is that one of these drivers supports
+> > > 25 years of product generations, and the other one doesn't.
+> >
+> > Sure, but that is the point, isn't it? To have an actually useful
+> > thing you need all of this mess
+> >
+> > > > My argument is that an in-tree open kernel driver is a big help to
+> > > > reverse engineering an open userspace. Having the vendors
+> > > > collaboration to build that monstrous thing can only help the end goal
+> > > > of an end to end open stack.
+> > >
+> > > Not sure where this got lost, but we're totally fine with vendors
+> > > using the upstream driver together with their closed stack. And most
+> > > of the drivers we do have in upstream are actually, at least in parts,
+> > > supported by the vendor. E.g. if you'd have looked the drm/arm driver
+> > > you picked is actually 100% written by ARM engineers. So kinda
+> > > unfitting example.
+> >
+> > So the argument with Habana really boils down to how much do they need
+> > to show in the open source space to get a kernel driver? You want to
+> > see the ISA or compiler at least?
+>
+> Yup. We dont care about any of the fancy pieces you build on top, nor
+> does the compiler need to be the optimizing one. Just something that's
+> good enough to drive the hw in some demons to see how it works and all
 
-MOFED also doesn't have a big functional divergance from RDMA
-upstream, and it is not mandatory just to use the hardware.
+s/demons/demos/ but hw tends to be funky enough that either fits :-)
 
-I can not say the same about other company's RDMA driver
-distributions, Daniel's description of "minimal effort to get
-goodwill" would match others much better.
+> that. Generally that's also not that hard to reverse engineer, if
+> someone is bored enough, the real fancy stuff tends to be in how you
+> optimize the generated code. And make it fit into the higher levels
+> properly.
+>
+> > That at least doesn't seem "extreme" to me.
+> >
+> > > > For instance a vendor with an in-tree driver has a strong incentive to
+> > > > sort out their FW licensing issues so it can be redistributed.
+> > >
+> > > Nvidia has been claiming to try and sort out the FW problem for years.
+> > > They even managed to release a few things, but I think the last one is
+> > > 2-3 years late now. Partially the reason is that there don't have a
+> > > stable api between the firmware and driver, it's all internal from the
+> > > same source tree, and they don't really want to change that.
+> >
+> > Right, companies have no incentive to work in a sane way if they have
+> > their own parallel world. I think drawing them part by part into the
+> > standard open workflows and expectations is actually helpful to
+> > everyone.
+>
+> Well we do try to get them on board part-by-part generally starting
+> with the kernel and ending with a proper compiler instead of the usual
+> llvm hack job, but for whatever reasons they really like their
+> in-house stuff, see below for what I mean.
+>
+> > > > > I don't think the facts on the ground support your claim here, aside
+> > > > > from the practical problem that nvidia is unwilling to even create an
+> > > > > open driver to begin with. So there isn't anything to merge.
+> > > >
+> > > > The internet tells me there is nvgpu, it doesn't seem to have helped.
+> > >
+> > > Not sure which one you mean, but every once in a while they open up a
+> > > few headers, or a few programming specs, or a small driver somewhere
+> > > for a very specific thing, and then it dies again or gets obfuscated
+> > > for the next platform, or just never updated. I've never seen anything
+> > > that comes remotely to something complete, aside from tegra socs,
+> > > which are fully supported in upstream afaik.
+> >
+> > I understand nvgpu is the tegra driver that people actualy
+> > use. nouveau may have good tegra support but is it used in any actual
+> > commercial product?
+>
+> I think it was almost the case. Afaik they still have their internal
+> userspace stack working on top of nvidia, at least last year someone
+> fixed up a bunch of issues in the tegra+nouveau combo to enable format
+> modifiers properly across the board. But also nvidia is never going to
+> sell you that as the officially supported thing, unless your ask comes
+> back with enormous amounts of sold hardware.
+>
+> And it's not just nvidia, it's pretty much everyone. Like a soc
+> company I don't want to know started collaborating with upstream and
 
-You are right that there are a lot of enterprise customers who deploy
-the MOFED. I can't agree with their choices, but they are not forced
-into using it anymore.
+s/know/name/ I do know them unfortunately quite well ...
 
-Jason
+Cheers, Daniel
+
+> the reverse-engineered mesa team on a kernel driver, seems to work
+> pretty well for current hardware. But for the next generation they
+> decided it's going to be again only their in-house tree that
+> completele ignores drivers/gpu/drm, and also tosses all the
+> foundational work they helped build on the userspace side. And this is
+> consistent across all companies, over the last 20 years I know of
+> (often non-public) stories across every single company where they
+> decided that all the time invested into community/upstream
+> collaboration isn't useful anymore, we go all vendor solo for the next
+> one.
+>
+> Most of those you luckily don't hear about anymore, all it results in
+> the upstream driver being 1-2 years late or so. But even the good ones
+> where we collaborate well can't seem to help themselves and want to
+> throw it all away every few years.
+> -Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
