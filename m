@@ -2,35 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CA2F3BD629
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DEFD3BD62B
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238159AbhGFMbs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 08:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42374 "EHLO mail.kernel.org"
+        id S234322AbhGFMbu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 08:31:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234322AbhGFLd3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:33:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64D1E61D26;
-        Tue,  6 Jul 2021 11:22:52 +0000 (UTC)
+        id S236794AbhGFLfk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A3C261E53;
+        Tue,  6 Jul 2021 11:24:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570573;
-        bh=cJMaaJMtowFiLkow7PjF58jLQoCxdhCoY6hKVUPpwH4=;
+        s=k20201202; t=1625570659;
+        bh=a2TYuJh7PkCVniY4/fKjO/f6OUDpXJ887zt9Jfrveuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H15VWorYexT/ZA9TXme5lskXYCpbcRHWv3WsEHTBaGoFkM6c6U2DpCYH1hMj4V+q9
-         kLlYSUDLzM+/BCtUmk6+nSLXz34+kmvBH5NM1zFaoAWXO1v57NRG76oGLDh1W75iw8
-         6Q+X/CCqlB0KeK2bagGSLg6w45fn0yOG4/9PL8SgH5KDTi3+7msmJ+Sq32wxh5wV7b
-         xPr22sRlr08xl00a9mlOjqnhf2VbjQHkbIRCjl/f5iePbYtvnCvf66eRG12Z5f62IS
-         zATqCnU+I6wMY7v1MCpo3VREM+pkVVbwQrvsfwrBVue/rnaansLbtae+uGUNRZKmI5
-         pVRrX2/BYPipw==
+        b=Kidl8uT/9V/sdVuK6v3mTfzTNexhmaRtSWSJeQtK7Ws8upKbM2suTJsSBui1ccVm+
+         uiQvHE244gq6GwVVKOjSOQvhAtXnUe5MnGgaMdQLJgLO15eiBSf23dsZlMqAdWjLt5
+         UuLnM8AIWijfCwBvlcKkI2nD5Nit+CIFerb76wYe4pJc9dcgQkJ2AZsC6pgWLjwPky
+         Z6WW+v3oT7GHxroK8RArDsbKByC/1JUcn/Ju/Rkb7vSXZXR+xrK00RyZYe8VmgXsfJ
+         X5OsoHJtZjHRHF8QSYzqkWx1zSdVfpFiOGM4ArPv7Cd1d5fK8cIEH8tSCy81X07wOA
+         9fT78vx4jRCFQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eli Cohen <elic@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 038/137] net/mlx5: Fix lag port remapping logic
-Date:   Tue,  6 Jul 2021 07:20:24 -0400
-Message-Id: <20210706112203.2062605-38-sashal@kernel.org>
+Cc:     Xiao Yang <yangx.jy@fujitsu.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 104/137] RDMA/rxe: Don't overwrite errno from ib_umem_get()
+Date:   Tue,  6 Jul 2021 07:21:30 -0400
+Message-Id: <20210706112203.2062605-104-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112203.2062605-1-sashal@kernel.org>
 References: <20210706112203.2062605-1-sashal@kernel.org>
@@ -42,58 +41,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit 8613641063617c1dfc731b403b3ee4935ef15f87 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-Fix the logic so that if both ports netdevices are enabled or disabled,
-use the trivial mapping without swapping.
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-If only one of the netdevice's tx is enabled, use it to remap traffic to
-that port.
+Return actual error as mlx4/mlx5 does.
 
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lag.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index 9025e5f38bb6..fe5476a76464 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -118,17 +118,24 @@ static bool __mlx5_lag_is_sriov(struct mlx5_lag *ldev)
- static void mlx5_infer_tx_affinity_mapping(struct lag_tracker *tracker,
- 					   u8 *port1, u8 *port2)
- {
-+	bool p1en;
-+	bool p2en;
-+
-+	p1en = tracker->netdev_state[MLX5_LAG_P1].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P1].link_up;
-+
-+	p2en = tracker->netdev_state[MLX5_LAG_P2].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P2].link_up;
-+
- 	*port1 = 1;
- 	*port2 = 2;
--	if (!tracker->netdev_state[MLX5_LAG_P1].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P1].link_up) {
--		*port1 = 2;
-+	if ((!p1en && !p2en) || (p1en && p2en))
- 		return;
--	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index d2ce852447c1..026285f7f36a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -139,7 +139,7 @@ int rxe_mem_init_user(struct rxe_pd *pd, u64 start,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
+ 		goto err1;
+ 	}
  
--	if (!tracker->netdev_state[MLX5_LAG_P2].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P2].link_up)
-+	if (p1en)
- 		*port2 = 1;
-+	else
-+		*port1 = 2;
- }
- 
- void mlx5_modify_lag(struct mlx5_lag *ldev,
 -- 
 2.30.2
 
