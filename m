@@ -2,67 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856693BD78B
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 15:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9653BD8C9
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 16:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhGFNTw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 09:19:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        id S232211AbhGFOr3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 10:47:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhGFNTv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jul 2021 09:19:51 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F74C061574
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 06:17:12 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id d21-20020a9d72d50000b02904604cda7e66so21495905otk.7
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 06:17:12 -0700 (PDT)
+        with ESMTP id S233181AbhGFOrW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jul 2021 10:47:22 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 071F7C0610EF
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 07:44:06 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id i18so34515575yba.13
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 07:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U9D/asRW8RIRRhOKKkNY/c0bgyv3JnZBPRvStuSKb28=;
-        b=cB9WV9sNtYm4EIQPRYYsOGXCyC85KX4IvPilkqi+DXH4BpSsZyGkNpW3uSI8JnhhUm
-         Uoplzu3pWcmKt7UBmyg4GG/1Ehm8EZCdN1AUKXSFMtmPdYVFA4tSUwyZPyO+z/eahKfZ
-         PrBc3UQ6AHFgqTPV3OhYjDG9m5j2bWR34qSio=
+        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
+        b=I3PSWk0qdtLFBmphAZxkzdBLbBanHnSZ0lDy0Hh/Ww45NThwfPWgOKeOhk0qySlDno
+         N76byVhIjKXABiEeqkETac6DodkM4w9tLHdTxMThwhYfWv577ISzp1xMGs578F8PpfZ1
+         q9Lvgwe7Uqz9k9WBl4dQSoOJQ0Uhiw8dS3XsY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U9D/asRW8RIRRhOKKkNY/c0bgyv3JnZBPRvStuSKb28=;
-        b=DWE+1SsVTvn29fjVDX9hpMc3Vx0fjASyu0yBiDD37ZBC9kK3RIjKNytmmwUsc/rAq5
-         fj7g3MzGf7oOKFIVjNPfQ4CZUH8oPEOUo3pV7PnRIfnkYvV4/6y3WRnonJDBJMFqE+pY
-         NXHQEas5YdQWv6b2ZPgXxqzsCJI47M13kkE/d0+zKvD79xTJlrwqbsM5Ro2li8UguNYo
-         kFleLMFu/pXN3gUdfmVMcqWjFL33K8VCRAxs04R5ogKUkmm6B3ZXpefrmmy1vI6zLPAG
-         rcuDsyJyS6Z6L7vqSCdtsfDPq6+EtC2Ox7Qn37QdiribgET1scObcZJ7+eEWwUoUZx0V
-         bg/Q==
-X-Gm-Message-State: AOAM530dOM2Sr1nynndmkbnEi6i3htJ3f9c1ql6GDnOyxictaxBWrcBb
-        JTjq3dmJNXyqjgXrUSvORZ7vW7QsAu6V9sLzyglGWQ==
-X-Google-Smtp-Source: ABdhPJyhU38uAVUSjr8gRwHKDTIhLNjZ02bjGpdJaQ/Zri9HQUmeedc5h+sEGm5UwpWhHyQGUQa0Ps8orpOzhY8rJNs=
-X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr14854251oth.188.1625577431903;
- Tue, 06 Jul 2021 06:17:11 -0700 (PDT)
+        bh=oa36JT6ZXXdeNbOW7MRMPItJC85KRkSUT3t0lipsRGE=;
+        b=lKpWMwAmv0sfZ3o09SpeOmTYNKy7i3uubFj2bSSu6FVK01ANZjm5nFktWeSJwgrsrz
+         /iSF8NOyXy05FV82Kyk3kXNohDAdGpj+GpJM2hEOcbt8E+ePfKeZ7F6J/IDYzpg22Aow
+         Qc1ViPpAnb6x0VItlWk8I/Sw0L15JFMVOGcY4XE/5logyUqc5/GvP5cg1fLS3Qw2CvVe
+         8wo2NKWP79rAsZpiTH3LmZaRP1Ov+WJ3p6RiAgbp5GOYaqHR+qsfFAB1Y9rv6oVkYWfr
+         v1irNnw/rh6Xoa3GqdFao/RmMziS6kcWzmyHwS0S4Dce0HdAvQ4bdxyrn5B3NbAKbTJ8
+         ApiA==
+X-Gm-Message-State: AOAM53141aR7S7hOws19oio9ZKakRMI/XZ0UxT9+buJGIhUri7XTZy0L
+        +0ZsNLjbFDn5KTWFpts1cz6aJ3BMCZzxTXADl4SYFM7DIm0=
+X-Google-Smtp-Source: ABdhPJwzXN/NwcfTnIiFRue1K5cnhWHoor7mzX3yGgIo+ac7YSL8ymVa3l8VD8fedtiFTq2s+GtWnKhr2VvW4LOuy6E=
+X-Received: by 2002:a05:6830:2366:: with SMTP id r6mr15034001oth.188.1625580576688;
+ Tue, 06 Jul 2021 07:09:36 -0700 (PDT)
 MIME-Version: 1.0
 References: <20210705130314.11519-1-ogabbay@kernel.org> <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <20210706122110.GA18273@lst.de> <YORLTmyoXDtoM9Ta@phenom.ffwll.local> <CAFCwf114KEH-kO6w+nmbqKKdaGuqy3iOpHJi=5ZWqT3cgDm4Cw@mail.gmail.com>
-In-Reply-To: <CAFCwf114KEH-kO6w+nmbqKKdaGuqy3iOpHJi=5ZWqT3cgDm4Cw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Tue, 6 Jul 2021 15:17:00 +0200
-Message-ID: <CAKMK7uHfCbNQJwbXgLC9ibk71kVG7TBK4bfFxzX82ziSgqG9nw@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Oded Gabbay <ogabbay@kernel.org>,
+ <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
+ <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+ <CAKMK7uHpKFVm55O_NB=WYCsv0iUt92ZUn6eCzifH=unbhe3J8g@mail.gmail.com>
+ <CAKMK7uFGr=ugyKj0H3ctbh28Jnr25vAgXPBaDBMmfErCxYVo3w@mail.gmail.com> <20210706134430.GL4604@ziepe.ca>
+In-Reply-To: <20210706134430.GL4604@ziepe.ca>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 6 Jul 2021 16:09:25 +0200
+Message-ID: <CAKMK7uFEZjp2_WBhtkVxSNQ-1WcBSr3NDotY0fjz0iLRw8Barw@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Oded Gabbay <ogabbay@kernel.org>,
         "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sumit Semwal <sumit.semwal@linaro.org>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
         Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        <dri-devel@lists.freedesktop.org>,
         linux-rdma <linux-rdma@vger.kernel.org>,
         Linux Media Mailing List <linux-media@vger.kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Dave Airlie <airlied@gmail.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         "moderated list:DMA BUFFER SHARING FRAMEWORK" 
         <linaro-mm-sig@lists.linaro.org>
@@ -71,104 +76,123 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 6, 2021 at 2:46 PM Oded Gabbay <oded.gabbay@gmail.com> wrote:
+On Tue, Jul 6, 2021 at 3:44 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
 >
-> On Tue, Jul 6, 2021 at 3:23 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Tue, Jul 06, 2021 at 02:21:10PM +0200, Christoph Hellwig wrote:
-> > > On Tue, Jul 06, 2021 at 10:40:37AM +0200, Daniel Vetter wrote:
-> > > > > Greg, I hope this will be good enough for you to merge this code.
-> > > >
-> > > > So we're officially going to use dri-devel for technical details review
-> > > > and then Greg for merging so we don't have to deal with other merge
-> > > > criteria dri-devel folks have?
-> > > >
-> > > > I don't expect anything less by now, but it does make the original claim
-> > > > that drivers/misc will not step all over accelerators folks a complete
-> > > > farce under the totally-not-a-gpu banner.
-> > > >
-> > > > This essentially means that for any other accelerator stack that doesn't
-> > > > fit the dri-devel merge criteria, even if it's acting like a gpu and uses
-> > > > other gpu driver stuff, you can just send it to Greg and it's good to go.
-> > > >
-> > > > There's quite a lot of these floating around actually (and many do have
-> > > > semi-open runtimes, like habanalabs have now too, just not open enough to
-> > > > be actually useful). It's going to be absolutely lovely having to explain
-> > > > to these companies in background chats why habanalabs gets away with their
-> > > > stack and they don't.
-> > >
-> > > FYI, I fully agree with Daniel here.  Habanlabs needs to open up their
-> > > runtime if they want to push any additional feature in the kernel.
-> > > The current situation is not sustainable.
-> Well, that's like, your opinion...
+> On Tue, Jul 06, 2021 at 02:07:16PM +0200, Daniel Vetter wrote:
 >
-> >
-> > Before anyone replies: The runtime is open, the compiler is still closed.
-> > This has become the new default for accel driver submissions, I think
-> > mostly because all the interesting bits for non-3d accelerators are in the
-> > accel ISA, and no longer in the runtime. So vendors are fairly happy to
-> > throw in the runtime as a freebie.
-> >
-> > It's still incomplete, and it's still useless if you want to actually hack
-> > on the driver stack.
-> > -Daniel
-> > --
-> I don't understand what's not sustainable here.
+> > On the "rdma-core" idea, afaik rdma NIC do not have fully programmable
+> > cores in their hw, for which you'd need some kind of compiler to make
+> > use of the hardware and the interfaces the kernel provides? So not
+> > really compareable, but also my understanding is that rdma-core does
+> > actually allow you to reasonable use&drive all the hw features and
+> > kernel interfaces fully.
 >
-> There is zero code inside the driver that communicates or interacts
-> with our TPC code (TPC is the Tensor Processing Core).
-> Even submitting works to the TPC is done via a generic queue
-> interface. And that queue IP is common between all our engines
-> (TPC/DMA/NIC). The driver provides all the specs of that queue IP,
-> because the driver's code is handling that queue. But why is the TPC
-> compiler code even relevant here ?
+> The whole HPC stack has speciality compilers of course. OpenMP, PGAS,
+> etc. These compilers map onto library primitives that eventually boil
+> down into rdma-core calls. Even the HW devices have various
+> programmability that are being targetted with compilers now. People
+> are making NIC devices with ARM cores/etc - P4 is emerging for some
+> packet processing tasks.
 
-Can I use the hw how it's intended to be used without it?
+Well it depends which compilers we're talking about here, and what
+kind of features. Higher level compilers that break down some fancy
+language like OpenMP into what that actually should do on a given
+hardware like gpu, or rdma-connected cluster, or whatever, we really
+don't care about. You don't need that to drive the hardware. Usually
+that stuff works by breaking some of the code down into cpu compiler
+IR (most of this is built on top of LLVM IR nowadays), interspersed
+with library calls to the runtime.
 
-If the answer is no, then essentially what you're doing with your
-upstream driver is getting all the benefits of an upstream driver,
-while upstream gets nothing. We can't use your stack, not as-is. Sure
-we can use the queue, but we can't actually submit anything
-interesting. And I'm pretty sure the point of your hw is to do more
-than submit no-op packets to a queue.
+Now the thing I care about here is if things doen't get compiled down
+to cpu code, but to some other IR (SPIR-V is starting to win, but very
+often ist still a hacked up version of LLVM IR), which then in a
+hw-specific backend gets compiled down to instructions that run on the
+hw. I had no idea that rdma NICs can do that, but it sounds like? I
+guess maybe some openmpi operations could be done directly on the rdma
+chip, but I'm not sure why you'd want a backend compiler here.
 
-This is all "I want my cake and eat it too" approach to upstreaming,
-and it's totally fine attitude to have, but if you don't see why
-there's maybe an different side to it then I don't get what you're
-arguing. Upstream isn't free lunch for nothing.
+Anyway, for anything that works like a gpu accelerator, like 3d accel,
+or parallel compute accel (aka gpgpu) or spatial compute accel (aka
+NN/AI) or maybe even fpga accel most of the magic to use the hardware
+is in this backend compiler, which translates from an IR into whatever
+your accelerator consumes. That's the part we really care about for
+modern accelerators because without that defacto the hardware is
+useless. Generally these chips have full-blown, if special purpose
+ISA, with register files, spilling, branches, loops and other control
+flow (sometimes only execution masks on simpler hw).
 
-Frankly I'm starting to assume you're arguing this all in bad faith
-just because habanalabds doesn't want to actually have an open driver
-stack, so any attack is good, no matter what. Which is also what
-everyone else does who submits their accel driver to upstream, and
-which gets us back to the starting point of this sub-thread of me
-really appreciation how this will improve background discussions going
-forward for everyone.
+> rdma-core can drive all the kernel interfaces with at least an ioctl
+> wrapper, and it has a test suite that tries to cover this. It does not
+> exercise the full HW capability, programmability, etc of every single
+> device.
+>
+> I actually don't entirely know what everyone has built on top of
+> rdma-core, or how I'd try to map it the DRI ideas you are trying to
+> explain.
+>
+> Should we ban all Intel RDMA drivers because they are shipping
+> proprietary Intel HPC compilers and proprietary Intel MPI which drives
+> their RDMA HW? Or is that OK because there are open analogs for some
+> of that stuff? And yes, the open versions are inferior in various
+> metrics.
+>
+> Pragmatically what I want to see is enough RDMA common/open user space
+> to understand the uAPI and thus more about how the kernel driver
+> works. Forcing everyone into rdma-core has already prevented a number
+> of uAPI mistakes in drivers that would have been bad - so at least
+> this level really is valuable.
+>
+> > So we actually want less on dri-devel, because for compute/accel chips
+> > we're currently happy with a vendor userspace. It just needs to be
+> > functional and complete, and open in its entirety.
+>
+> In a sense yes: DRI doesn't insist on a single code base to act as the
+> kernel interface, but that is actually the thing that has brought the
+> most value to RDMA, IMHO.
 
-Like if the requirement for accel drivers truly is that you can submit
-a dummy command to the queues then I have about 5-10 drivers at least
-I could merge instantly. For something like the intel gpu driver it
-would be about 50 lines of code (including all the structure boiler
-plate the ioctls require)in userspace to submit a dummy queue command.
-GPU and accel vendors would really love that, because it would allow
-them to freeload on upstream and do essentially nothing in return.
+So in practice we're not that different in DRI wrt userspace - if
+there is an established cross-vendor project in the given area, we do
+expect the userspace side to be merged there. And nowadays most of the
+feature work is done that way, it's just that we don't have a single
+project like rdma-core for this. We do still allow per-driver submit
+interfaces because hw is just not standardized enough there, the
+standards are at a higher level. Which is why it just doesn't make
+sense to talk about a kernel driver as something that's useful
+stand-alone at all.
 
-And we'd end up with an unmaintainable disaster of a gpu or well
-accelerator subsystem because there's nothing you can change or
-improve because all the really useful bits of the stack are closed.
-And ofc that's not any companies problem anymore, so ofc you with the
-habanalabs hat on don't care and call this *extreme*.
+> We've certainly had some interesting successes because of this. The
+> first submission for AWS's EFA driver proposed to skip the rdma-core
+> step, which was rejected. However since EFA has been in that ecosystem
+> it has benefited greatly, I think.
+>
+> However, in another sense no: RDMA hasn't been blocking, say Intel,
+> just because they have built proprietary stuff on top of our open
+> stack.
 
-> btw, you can today see our TPC code at
-> https://github.com/HabanaAI/Habana_Custom_Kernel
-> There is a link there to the TPC user guide and link to download the
-> LLVM compiler.
+Oh we allow this too. We only block the initial submission if the
+proprietary stuff is the only thing out there.
 
-I got stuck clicking links before I found the source for that llvm
-compiler. Can you give me a direct link to the repo with sourcecode
-instead please?
+> Honestly, I think GPU is approaching this backwards. Wayland should
+> have been designed to prevent proprietary userspace stacks.
 
-Thanks, Daniel
+That's not possible without some serious cans of worms though. Wayland
+is a protocol, and you can't forbid people from implementing it.
+Otherwise all the compatible open implementations of closed protocols
+wouldn't be possible either.
+
+Now the implementation is a different thing, and there a few
+compositors have succumbed to market pressure and enabled the nvidia
+stack, as a mostly separate piece from supporting the open stack. And
+that's largely because nvidia managed to completely kill the open
+source r/e effort through firmware licensing and crypto-key based
+verified loading, so unless you install the proprietary stack you
+actually can't make use of the hardware at all - well display works
+without the firmware, but 3d/compute just doesn't. So you just can't
+use nvidia hw without accepting their proprietary driver licenses and
+all that entails for the latest hardware.
+
+So I'm not clear what you're suggesting here we should do different.
+-Daniel
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
