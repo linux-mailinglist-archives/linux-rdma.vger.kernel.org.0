@@ -2,35 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF933BCF0F
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:27:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28E7B3BD057
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234559AbhGFL1y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 07:27:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35434 "EHLO mail.kernel.org"
+        id S234615AbhGFLdh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 07:33:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234990AbhGFLZR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:25:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C60E610C7;
-        Tue,  6 Jul 2021 11:19:24 +0000 (UTC)
+        id S235023AbhGFLZU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:25:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4FC961D4E;
+        Tue,  6 Jul 2021 11:19:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570365;
-        bh=MnWRg8O598uw45XJPMdWCTc8gdgBnSuLbsps9RCIGoE=;
+        s=k20201202; t=1625570370;
+        bh=x1TvY+knuN5gDF07XZ/Q+PwYNswhi2uTCeBf1ReKKX8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cfVbKCmZwEvj0YbNpM59ij9fOf/INUaD7V63j3gdVyNZlIWtjCOK1t3vE55IDNImS
-         UqVLEbRAHsGDBqT19wH3CAXgsnErfz/CyHavZCugPrmO+7OuugXh64lBT9zZdfhJP5
-         Gtf2LgCfX80DWWgLuH4pXUZK/GJ4OaReoZogOsijYzNAGDerow6ORQQTO0adx062Sd
-         jz5Y/T/cm6qkCse6h/OzJWsZkgxOaIj8vNJAvvDms9hSgO53po9NWfDxk670pKfSnP
-         JjFyTdrWcie5M3jnPWHf9YBuLbeNE6P7JNP4OUgWpxaTGxexBNSNPs3FAyRQv3i3l5
-         3c2SnKwwlHgBg==
+        b=c9fS3Z2q96kw/eHwteFJCBsc0lzO9pR/AaPhPV86YjYeFTlvVRQZKvmVtbWVokxJu
+         WXNmJDbro3RXWUYjO79VmSrjr6DJ9xKXI4GvM8aKNp4nZsIOEx3miqJW720Gtoftm9
+         pklWXNHZyWJsfn5q+3pptMi9h35EoXWsK6R1fQ6rPD6gF4JSnPVpFDa69f8ka1czYL
+         IdKUfnc2725dv6eeCUSujlxyUav8ebjqTE1IkceLL86KDH/VqQnTHP6Rd3BYa6CFwn
+         9GtRT0zz/bahuUNhhShGUi/Fh8p+yLTOSmt7hR6BWGjBWiavja1KN8Hp8UqTi/zQha
+         uhgRoEcilEGCg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eli Cohen <elic@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 043/160] net/mlx5: Fix lag port remapping logic
-Date:   Tue,  6 Jul 2021 07:16:29 -0400
-Message-Id: <20210706111827.2060499-43-sashal@kernel.org>
+Cc:     Gioh Kim <gi-oh.kim@cloud.ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        kernel test robot <lkp@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 047/160] RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
+Date:   Tue,  6 Jul 2021 07:16:33 -0400
+Message-Id: <20210706111827.2060499-47-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -42,58 +45,49 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
 
-[ Upstream commit 8613641063617c1dfc731b403b3ee4935ef15f87 ]
+[ Upstream commit 3a98ea7041b7d18ac356da64823c2ba2f8391b3e ]
 
-Fix the logic so that if both ports netdevices are enabled or disabled,
-use the trivial mapping without swapping.
+Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
+and the minimum chunk size is 4096 (2^12).
+Therefore the maximum sess_queue_depth is 65536 (2^16).
 
-If only one of the netdevice's tx is enabled, use it to remap traffic to
-that port.
-
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Link: https://lore.kernel.org/r/20210528113018.52290-6-jinpu.wang@ionos.com
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/lag.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index 83a05371e2aa..8d029401ca6c 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -118,17 +118,24 @@ static bool __mlx5_lag_is_sriov(struct mlx5_lag *ldev)
- static void mlx5_infer_tx_affinity_mapping(struct lag_tracker *tracker,
- 					   u8 *port1, u8 *port2)
- {
-+	bool p1en;
-+	bool p2en;
-+
-+	p1en = tracker->netdev_state[MLX5_LAG_P1].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P1].link_up;
-+
-+	p2en = tracker->netdev_state[MLX5_LAG_P2].tx_enabled &&
-+	       tracker->netdev_state[MLX5_LAG_P2].link_up;
-+
- 	*port1 = 1;
- 	*port2 = 2;
--	if (!tracker->netdev_state[MLX5_LAG_P1].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P1].link_up) {
--		*port1 = 2;
-+	if ((!p1en && !p2en) || (p1en && p2en))
- 		return;
--	}
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+index 8caad0a2322b..51c60f542876 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
++++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
+@@ -47,12 +47,15 @@ enum {
+ 	MAX_PATHS_NUM = 128,
  
--	if (!tracker->netdev_state[MLX5_LAG_P2].tx_enabled ||
--	    !tracker->netdev_state[MLX5_LAG_P2].link_up)
-+	if (p1en)
- 		*port2 = 1;
-+	else
-+		*port1 = 2;
- }
+ 	/*
+-	 * With the size of struct rtrs_permit allocated on the client, 4K
+-	 * is the maximum number of rtrs_permits we can allocate. This number is
+-	 * also used on the client to allocate the IU for the user connection
+-	 * to receive the RDMA addresses from the server.
++	 * Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
++	 * and the minimum chunk size is 4096 (2^12).
++	 * So the maximum sess_queue_depth is 65536 (2^16) in theory.
++	 * But mempool_create, create_qp and ib_post_send fail with
++	 * "cannot allocate memory" error if sess_queue_depth is too big.
++	 * Therefore the pratical max value of sess_queue_depth is
++	 * somewhere between 1 and 65536 and it depends on the system.
+ 	 */
+-	MAX_SESS_QUEUE_DEPTH = 4096,
++	MAX_SESS_QUEUE_DEPTH = 65536,
  
- void mlx5_modify_lag(struct mlx5_lag *ldev,
+ 	RTRS_HB_INTERVAL_MS = 5000,
+ 	RTRS_HB_MISSED_MAX = 5,
 -- 
 2.30.2
 
