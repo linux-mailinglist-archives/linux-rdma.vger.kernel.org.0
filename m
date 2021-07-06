@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A26E3BD313
+	by mail.lfdr.de (Postfix) with ESMTP id B4A413BD314
 	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhGFLr7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 07:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        id S237753AbhGFLsE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 07:48:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237643AbhGFLgU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6058A61F18;
-        Tue,  6 Jul 2021 11:29:05 +0000 (UTC)
+        id S237786AbhGFLhV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:37:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EA3261F57;
+        Tue,  6 Jul 2021 11:29:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570946;
-        bh=/FmABL8P8Kzp/tSylSEns/F+lkGB7N4r8tCDR2G54pg=;
+        s=k20201202; t=1625570988;
+        bh=WAQuxWIlNPd2b0uqYifXkaNozvCoZsBxDPZ2UQs77LI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SUWTFAIThj49jkB/Jbv8rDjTymKZlm3M460KwX4SnmzFSmjFxKoZeY1LvPHEdAXcJ
-         cQIUBX0PZjMdBhenF8jUytpPitVwQaomk1vTT3XTTBPN3gDtU4tDlFErz/momhBYoJ
-         TT2MdhqJOF+Oj82ZcXgU8DqKHnJ2ld9i0GqGaMpm/n465rO0P4PXXFz+BAo9L8xfvp
-         DUwHdxMFa7Mph/gmKwrRnmIgngjxMuID5ZO4SYzEc9H2oMr2XonSfTVOaF1e1OYhZm
-         e59zlI1CLXTcN9B0coiHULJrPSRETSnppntDQjGimAl3VqxdttHv+OVEk9wXIOQaCw
-         22thZ+TW5ci7w==
+        b=bcPge6+g2V5VGK8yYnbonbN9TRtzjWzAVV4dJY1kOofzMCkjwRdxf/DwFXBeR3JlQ
+         mCsikVe05XrUZtN+2OJxDnTodKT1VuEHnvJgY2Ub1NN6w+dZVpE8KkDkr+GbrG6OsF
+         DR0A1ST5Z/jjHZgFSedIHlKYsGv7mher7H1lufwHFXRTz1X7q4Jw4/FISYBYV+tyOp
+         b6BBB6S3yBfJc3Bezk7M8McwR/rif+ZmCV9vhIhXyWmmQ4+W0bECT5wyqk8qw+TlkA
+         p/kl1Be4gNsZ+nVSWUcRe2LC0xeL0Rg09PDuJvZwYXECVb8fMJlqumppjSB3doCqhZ
+         +mlWhtdigLcFw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
         Abaci Robot <abaci@linux.alibaba.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 14/35] RDMA/cxgb4: Fix missing error code in create_qp()
-Date:   Tue,  6 Jul 2021 07:28:26 -0400
-Message-Id: <20210706112848.2066036-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 13/31] RDMA/cxgb4: Fix missing error code in create_qp()
+Date:   Tue,  6 Jul 2021 07:29:13 -0400
+Message-Id: <20210706112931.2066397-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112848.2066036-1-sashal@kernel.org>
-References: <20210706112848.2066036-1-sashal@kernel.org>
+In-Reply-To: <20210706112931.2066397-1-sashal@kernel.org>
+References: <20210706112931.2066397-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -64,7 +64,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index 36bdb04f8f01..87bc7b0db892 100644
+index 07579e31168c..67e4002bd776 100644
 --- a/drivers/infiniband/hw/cxgb4/qp.c
 +++ b/drivers/infiniband/hw/cxgb4/qp.c
 @@ -277,6 +277,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
