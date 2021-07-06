@@ -2,36 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A0F3BD30E
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D083BD324
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234885AbhGFLr4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 07:47:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47572 "EHLO mail.kernel.org"
+        id S237466AbhGFLr6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 07:47:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237500AbhGFLgL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B592261F1E;
-        Tue,  6 Jul 2021 11:28:13 +0000 (UTC)
+        id S237547AbhGFLgN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6199761F3C;
+        Tue,  6 Jul 2021 11:28:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570894;
-        bh=XVELak/A53j3wbXPO7smMGauYy+KwP/a/wsJCFJNp/g=;
+        s=k20201202; t=1625570914;
+        bh=4AXBdRasTNrjpeGkDLubeXWyuqHllUH+Ebid30jEHL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ETaDQgFa1mpNsygMtB96S7inywHFqjOqQ2CIWnX4tEFrTWtSwth157LY2Aya2vH3u
-         FPHkBBi+u2kaV2X4rKVibikF/iTFNIUjrlsrZVaExGaRzoM8pKEOV4WvrwNVQ3xyjn
-         e5G2qnfsaYppNGizdmNIY5qV8rMbt8yXQBsfrtUhkcf04PR3hS4vfsq5IpDLNSf+FI
-         hgqHr1RKwYsUaun0q0MtFoXDgYURiApW5vKtLow1j8fKckmrP2z5ArPZneHboHgAAE
-         0hw5fLaNRGjz+rLoi5WK54NwEjAfhiBqB2DZ0WJgMdQKe5kCDgKCi48mK2KMxph35A
-         uSoGE+NRkm5Jg==
+        b=fwL23mGHg9ceAu86WwSf+DIb7G2+xyQ9pJSF2TICBACLuK7wtBOIWgoSeVBiMBaHZ
+         7A0Ge4dT0zFUrK4xzsudRyvAyKtgxOYUHFlXRWjahwl3tLwPy/UpPULw6SZCv6HxJw
+         ZDtFAc6NuU37e5jxnsl4AapqpsODCYWtCfyvuF8gFJf1jimJs+TV4SA5VLssgfgG8h
+         wZwWqPs3KPH3cTtCIIFWBW97IaQq3j/sJknCqpr2NMWoIJ5+z5up1x45KnKbl1XvJw
+         jVoRELq7dhulwBflZCQku7ienvDTYTOr1lZEF0cQTRWmXcSm1kOI6AbUhDV8xJOAtO
+         MmwqbiOjGKayw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+Cc:     Xiao Yang <yangx.jy@fujitsu.com>, Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 19/45] RDMA/cxgb4: Fix missing error code in create_qp()
-Date:   Tue,  6 Jul 2021 07:27:23 -0400
-Message-Id: <20210706112749.2065541-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 35/45] RDMA/rxe: Don't overwrite errno from ib_umem_get()
+Date:   Tue,  6 Jul 2021 07:27:39 -0400
+Message-Id: <20210706112749.2065541-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
 References: <20210706112749.2065541-1-sashal@kernel.org>
@@ -43,36 +41,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit aeb27bb76ad8197eb47890b1ff470d5faf8ec9a5 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-The error code is missing in this code scenario so 0 will be returned. Add
-the error code '-EINVAL' to the return value 'ret'.
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-Eliminates the follow smatch warning:
+Return actual error as mlx4/mlx5 does.
 
-drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error code 'ret'.
-
-Link: https://lore.kernel.org/r/1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/qp.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index 15a867d62d02..325561580729 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -277,6 +277,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
- 	if (user && (!wq->sq.bar2_pa || !wq->rq.bar2_pa)) {
- 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
- 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
-+		ret = -EINVAL;
- 		goto free_dma;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index a0d2a2350c7e..cf18e61934f7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -175,7 +175,7 @@ int rxe_mem_init_user(struct rxe_dev *rxe, struct rxe_pd *pd, u64 start,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
+ 		goto err1;
  	}
  
 -- 
