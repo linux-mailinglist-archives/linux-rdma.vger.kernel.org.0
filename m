@@ -2,39 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 100163BD62C
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB0273BD62E
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239946AbhGFMbz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 08:31:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47548 "EHLO mail.kernel.org"
+        id S240394AbhGFMb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 08:31:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236879AbhGFLfp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44C2761C38;
-        Tue,  6 Jul 2021 11:24:34 +0000 (UTC)
+        id S236893AbhGFLfq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8060161C4B;
+        Tue,  6 Jul 2021 11:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570675;
-        bh=umTpPidblLEoLIcldFS+oYQrpZPqv5PsjC7OHkD8deQ=;
+        s=k20201202; t=1625570679;
+        bh=vnqtDYBKNdLzbsGPy+KXkh2z2UP9zRWW8jlw3m3PVMI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AR9e0RmPvjDhPw6/jh9YOk+PT+lLAzQYR6elQgeZBVo9WyBsCMAM3J72mNKoQTwti
-         ioVAHESxtVOnn8Lj3E8CGGdfnx3yH2c8JLCeoNuRjQE3tiYD2xJRxJnAt6+eQuE0oM
-         6uxK0B2uesssMXFn5/o6NtkQjyZoIvSStEGreJUb7E0bACj7utd6TBsA72qWC7jLZr
-         LPiXD2WcWRr75HFgHm7TtVq1j6ZXA0il5sZvD+lfVS7+k9977UoJ93AD2ap+0YfEkj
-         Lg/Lf59H69GI6v4oun+3mKgZ2vlZyHZUJS4eha307Qzfy9EJKR9A+aSyEHRRyYwu5D
-         VCP7jrbXg/6vQ==
+        b=Z3hh3Dl8jo2aGER6SHv2XfzIONG2QY4m1ArAx6luZ/XZ0vu+N5wfgMVZcIiqJOlVc
+         gjubY4PSpx44XriBDgWroUF3xDD2mGhTakCRDRa4sXimt4nNj1kzrlE7Et4bgKObmJ
+         jaJSCc6fMsjvT9r6ZVo1RtDe/XeIlSS8jIXci8yFhrS3rlf8S51g5bNKMApVQI1OL/
+         4dqpnMZdo9E0Mg/7MsoEq5uaaUASLJARm8Ey2zkYvvVLRG5OuFfAOvaGjEP/Mz5jVd
+         bJpVpa/titQU08r5o2OuOL/LVGhIgt+lZFOk6sxgPpk7aZaypkLQ2MfeEcE+ayOep4
+         LiBx0QoUkTlhQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Alaa Hleihel <alaa@nvidia.com>,
-        Israel Rukshin <israelr@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
+Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
-        target-devel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 117/137] IB/isert: Align target max I/O size to initiator size
-Date:   Tue,  6 Jul 2021 07:21:43 -0400
-Message-Id: <20210706112203.2062605-117-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 120/137] RDMA/cma: Fix rdma_resolve_route() memory leak
+Date:   Tue,  6 Jul 2021 07:21:46 -0400
+Message-Id: <20210706112203.2062605-120-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112203.2062605-1-sashal@kernel.org>
 References: <20210706112203.2062605-1-sashal@kernel.org>
@@ -46,60 +42,39 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Max Gurtovoy <mgurtovoy@nvidia.com>
+From: Gerd Rausch <gerd.rausch@oracle.com>
 
-[ Upstream commit 109d19a5eb3ddbdb87c43bfd4bcf644f4569da64 ]
+[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
 
-Since the Linux iser initiator default max I/O size set to 512KB and since
-there is no handshake procedure for this size in iser protocol, set the
-default max IO size of the target to 512KB as well.
+Fix a memory leak when "mda_resolve_route() is called more than once on
+the same "rdma_cm_id".
 
-For changing the default values, there is a module parameter for both
-drivers.
+This is possible if cma_query_handler() triggers the
+RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
+allows rdma_resolve_route() to be called again.
 
-Link: https://lore.kernel.org/r/20210524085215.29005-1-mgurtovoy@nvidia.com
-Reviewed-by: Alaa Hleihel <alaa@nvidia.com>
-Reviewed-by: Israel Rukshin <israelr@nvidia.com>
-Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Acked-by: Sagi Grimberg <sagi@grimberg.me>
+Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
+Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/isert/ib_isert.c | 4 ++--
- drivers/infiniband/ulp/isert/ib_isert.h | 3 ---
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/infiniband/core/cma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.c b/drivers/infiniband/ulp/isert/ib_isert.c
-index e653c83f8a35..edea37da8a5b 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.c
-+++ b/drivers/infiniband/ulp/isert/ib_isert.c
-@@ -35,10 +35,10 @@ static const struct kernel_param_ops sg_tablesize_ops = {
- 	.get = param_get_int,
- };
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index d1e94147fb16..fad06233412f 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -2785,7 +2785,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
  
--static int isert_sg_tablesize = ISCSI_ISER_DEF_SG_TABLESIZE;
-+static int isert_sg_tablesize = ISCSI_ISER_MIN_SG_TABLESIZE;
- module_param_cb(sg_tablesize, &sg_tablesize_ops, &isert_sg_tablesize, 0644);
- MODULE_PARM_DESC(sg_tablesize,
--		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 256, max: 4096)");
-+		 "Number of gather/scatter entries in a single scsi command, should >= 128 (default: 128, max: 4096)");
+ 	cma_init_resolve_route_work(work, id_priv);
  
- static DEFINE_MUTEX(device_list_mutex);
- static LIST_HEAD(device_list);
-diff --git a/drivers/infiniband/ulp/isert/ib_isert.h b/drivers/infiniband/ulp/isert/ib_isert.h
-index 6c5af13db4e0..ca8cfebe26ca 100644
---- a/drivers/infiniband/ulp/isert/ib_isert.h
-+++ b/drivers/infiniband/ulp/isert/ib_isert.h
-@@ -65,9 +65,6 @@
-  */
- #define ISER_RX_SIZE		(ISCSI_DEF_MAX_RECV_SEG_LEN + 1024)
- 
--/* Default I/O size is 1MB */
--#define ISCSI_ISER_DEF_SG_TABLESIZE 256
--
- /* Minimum I/O size is 512KB */
- #define ISCSI_ISER_MIN_SG_TABLESIZE 128
- 
+-	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
++	if (!route->path_rec)
++		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
+ 	if (!route->path_rec) {
+ 		ret = -ENOMEM;
+ 		goto err1;
 -- 
 2.30.2
 
