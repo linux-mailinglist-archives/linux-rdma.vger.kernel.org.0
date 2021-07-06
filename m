@@ -2,38 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB0273BD62E
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCB53BD630
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 14:29:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240394AbhGFMb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S232890AbhGFMb4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 6 Jul 2021 08:31:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47550 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236893AbhGFLfq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8060161C4B;
-        Tue,  6 Jul 2021 11:24:38 +0000 (UTC)
+        id S234984AbhGFLgd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F029C61F15;
+        Tue,  6 Jul 2021 11:29:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570679;
-        bh=vnqtDYBKNdLzbsGPy+KXkh2z2UP9zRWW8jlw3m3PVMI=;
+        s=k20201202; t=1625570961;
+        bh=E7wTSz+U1lpd+F+dd1pk3DvWWv9XGdvIxyggNW2n+N8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z3hh3Dl8jo2aGER6SHv2XfzIONG2QY4m1ArAx6luZ/XZ0vu+N5wfgMVZcIiqJOlVc
-         gjubY4PSpx44XriBDgWroUF3xDD2mGhTakCRDRa4sXimt4nNj1kzrlE7Et4bgKObmJ
-         jaJSCc6fMsjvT9r6ZVo1RtDe/XeIlSS8jIXci8yFhrS3rlf8S51g5bNKMApVQI1OL/
-         4dqpnMZdo9E0Mg/7MsoEq5uaaUASLJARm8Ey2zkYvvVLRG5OuFfAOvaGjEP/Mz5jVd
-         bJpVpa/titQU08r5o2OuOL/LVGhIgt+lZFOk6sxgPpk7aZaypkLQ2MfeEcE+ayOep4
-         LiBx0QoUkTlhQ==
+        b=YHOXwTEqBCL4hU89Bt7U+vC/cnuutqTbsYoGv5fIXLZVmMLOybyxGC1K3ZK3cxlFA
+         vPJVznYqBDngLAN1X9AxxnRfoxUEapLZEeGBLPGoMqWzV6kxQSrh+47u+WHQXucqVe
+         uJ9jED9Yh9UDMXNABTkTggZcj7CiHOkfGjbnwwDJoDzoZQ2Ay1yl5zIpKWQzAuqC+d
+         i4GdL0XFDDkpx+o/HkDnqn2gcoZmB0mFpa+Xk1lC0sAZlL3JuT/Rpkl/d4cuIBl6gs
+         Zk5POHLsfrwmNsYo2jDzpJbJklJ9fTRf43CPU4tq8cbwM8BqityM3fIR96odnEYh0O
+         aqoIJcS+qJuUw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+Cc:     Xiao Yang <yangx.jy@fujitsu.com>, Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 120/137] RDMA/cma: Fix rdma_resolve_route() memory leak
-Date:   Tue,  6 Jul 2021 07:21:46 -0400
-Message-Id: <20210706112203.2062605-120-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 27/35] RDMA/rxe: Don't overwrite errno from ib_umem_get()
+Date:   Tue,  6 Jul 2021 07:28:39 -0400
+Message-Id: <20210706112848.2066036-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112203.2062605-1-sashal@kernel.org>
-References: <20210706112203.2062605-1-sashal@kernel.org>
+In-Reply-To: <20210706112848.2066036-1-sashal@kernel.org>
+References: <20210706112848.2066036-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -42,39 +41,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+From: Xiao Yang <yangx.jy@fujitsu.com>
 
-[ Upstream commit 74f160ead74bfe5f2b38afb4fcf86189f9ff40c9 ]
+[ Upstream commit 20ec0a6d6016aa28b9b3299be18baef1a0f91cd2 ]
 
-Fix a memory leak when "mda_resolve_route() is called more than once on
-the same "rdma_cm_id".
+rxe_mr_init_user() always returns the fixed -EINVAL when ib_umem_get()
+fails so it's hard for user to know which actual error happens in
+ib_umem_get(). For example, ib_umem_get() will return -EOPNOTSUPP when
+trying to pin pages on a DAX file.
 
-This is possible if cma_query_handler() triggers the
-RDMA_CM_EVENT_ROUTE_ERROR flow which puts the state machine back and
-allows rdma_resolve_route() to be called again.
+Return actual error as mlx4/mlx5 does.
 
-Link: https://lore.kernel.org/r/f6662b7b-bdb7-2706-1e12-47c61d3474b6@oracle.com
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
+Link: https://lore.kernel.org/r/20210621071456.4259-1-ice_yangxiao@163.com
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/cma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index d1e94147fb16..fad06233412f 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2785,7 +2785,8 @@ static int cma_resolve_ib_route(struct rdma_id_private *id_priv,
- 
- 	cma_init_resolve_route_work(work, id_priv);
- 
--	route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
-+	if (!route->path_rec)
-+		route->path_rec = kmalloc(sizeof *route->path_rec, GFP_KERNEL);
- 	if (!route->path_rec) {
- 		ret = -ENOMEM;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 6d1ba75398a1..e23b322224ab 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -175,7 +175,7 @@ int rxe_mem_init_user(struct rxe_dev *rxe, struct rxe_pd *pd, u64 start,
+ 	if (IS_ERR(umem)) {
+ 		pr_warn("err %d from rxe_umem_get\n",
+ 			(int)PTR_ERR(umem));
+-		err = -EINVAL;
++		err = PTR_ERR(umem);
  		goto err1;
+ 	}
+ 
 -- 
 2.30.2
 
