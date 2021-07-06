@@ -2,38 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E7B3BD057
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7653BD059
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 13:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234615AbhGFLdh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 07:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35482 "EHLO mail.kernel.org"
+        id S234691AbhGFLdj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 07:33:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35426 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235023AbhGFLZU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:25:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4FC961D4E;
-        Tue,  6 Jul 2021 11:19:29 +0000 (UTC)
+        id S233857AbhGFL02 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:26:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C50D61CC9;
+        Tue,  6 Jul 2021 11:19:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570370;
-        bh=x1TvY+knuN5gDF07XZ/Q+PwYNswhi2uTCeBf1ReKKX8=;
+        s=k20201202; t=1625570387;
+        bh=XM0qc8OEyEQoRAXRwwR3NOU253deuvnzcoUFNMEsi9M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9fS3Z2q96kw/eHwteFJCBsc0lzO9pR/AaPhPV86YjYeFTlvVRQZKvmVtbWVokxJu
-         WXNmJDbro3RXWUYjO79VmSrjr6DJ9xKXI4GvM8aKNp4nZsIOEx3miqJW720Gtoftm9
-         pklWXNHZyWJsfn5q+3pptMi9h35EoXWsK6R1fQ6rPD6gF4JSnPVpFDa69f8ka1czYL
-         IdKUfnc2725dv6eeCUSujlxyUav8ebjqTE1IkceLL86KDH/VqQnTHP6Rd3BYa6CFwn
-         9GtRT0zz/bahuUNhhShGUi/Fh8p+yLTOSmt7hR6BWGjBWiavja1KN8Hp8UqTi/zQha
-         uhgRoEcilEGCg==
+        b=n51W0YNVPM+UyS0Ai9f5U8mHC2CLsEo6Xfi3eTdOqpJr1r1ag/9xJfPRD07kvDyGa
+         VUenYFeaVy12bJfyVHgAm2tuOOUu4xA4thXPxX8C8h/hodv1vr7NIYAfAqTwvlXJxG
+         sBzcKCB/Bq1ViJeaw4PhBXB8aRtDUzth2ziQRv5uKUvMeV6TqR5yzaNqFmaXfoqkg+
+         gIvT6noQ+zEsPn8p1Thxcjf/IiIhxgFzQr9C5JRz99zPZUzJ26ydHocE8aDQ2oHm1s
+         ZmA9HlA77jSb0gKjjXSRvVAyHTGpkiWlMEEUmG6keO4tP1pDcsh8jBVePq8m3C48uV
+         QRc/pEigteNAA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gioh Kim <gi-oh.kim@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        kernel test robot <lkp@intel.com>,
+Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        Abaci Robot <abaci@linux.alibaba.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 047/160] RDMA/rtrs: Change MAX_SESS_QUEUE_DEPTH
-Date:   Tue,  6 Jul 2021 07:16:33 -0400
-Message-Id: <20210706111827.2060499-47-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 060/160] RDMA/cxgb4: Fix missing error code in create_qp()
+Date:   Tue,  6 Jul 2021 07:16:46 -0400
+Message-Id: <20210706111827.2060499-60-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -45,49 +43,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@cloud.ionos.com>
+From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-[ Upstream commit 3a98ea7041b7d18ac356da64823c2ba2f8391b3e ]
+[ Upstream commit aeb27bb76ad8197eb47890b1ff470d5faf8ec9a5 ]
 
-Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-and the minimum chunk size is 4096 (2^12).
-Therefore the maximum sess_queue_depth is 65536 (2^16).
+The error code is missing in this code scenario so 0 will be returned. Add
+the error code '-EINVAL' to the return value 'ret'.
 
-Link: https://lore.kernel.org/r/20210528113018.52290-6-jinpu.wang@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reported-by: kernel test robot <lkp@intel.com>
+Eliminates the follow smatch warning:
+
+drivers/infiniband/hw/cxgb4/qp.c:298 create_qp() warn: missing error code 'ret'.
+
+Link: https://lore.kernel.org/r/1622545669-20625-1-git-send-email-jiapeng.chong@linux.alibaba.com
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/cxgb4/qp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 8caad0a2322b..51c60f542876 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -47,12 +47,15 @@ enum {
- 	MAX_PATHS_NUM = 128,
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index d109bb3822a5..c9403743346e 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -295,6 +295,7 @@ static int create_qp(struct c4iw_rdev *rdev, struct t4_wq *wq,
+ 	if (user && (!wq->sq.bar2_pa || (need_rq && !wq->rq.bar2_pa))) {
+ 		pr_warn("%s: sqid %u or rqid %u not in BAR2 range\n",
+ 			pci_name(rdev->lldi.pdev), wq->sq.qid, wq->rq.qid);
++		ret = -EINVAL;
+ 		goto free_dma;
+ 	}
  
- 	/*
--	 * With the size of struct rtrs_permit allocated on the client, 4K
--	 * is the maximum number of rtrs_permits we can allocate. This number is
--	 * also used on the client to allocate the IU for the user connection
--	 * to receive the RDMA addresses from the server.
-+	 * Max IB immediate data size is 2^28 (MAX_IMM_PAYL_BITS)
-+	 * and the minimum chunk size is 4096 (2^12).
-+	 * So the maximum sess_queue_depth is 65536 (2^16) in theory.
-+	 * But mempool_create, create_qp and ib_post_send fail with
-+	 * "cannot allocate memory" error if sess_queue_depth is too big.
-+	 * Therefore the pratical max value of sess_queue_depth is
-+	 * somewhere between 1 and 65536 and it depends on the system.
- 	 */
--	MAX_SESS_QUEUE_DEPTH = 4096,
-+	MAX_SESS_QUEUE_DEPTH = 65536,
- 
- 	RTRS_HB_INTERVAL_MS = 5000,
- 	RTRS_HB_MISSED_MAX = 5,
 -- 
 2.30.2
 
