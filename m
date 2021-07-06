@@ -2,118 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1E73BD8CF
-	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 16:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E676D3BD8AD
+	for <lists+linux-rdma@lfdr.de>; Tue,  6 Jul 2021 16:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232343AbhGFOsB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 6 Jul 2021 10:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbhGFOqe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 6 Jul 2021 10:46:34 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5734DC08EA3B
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 07:36:39 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id h18so8111643vsj.2
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 07:36:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YFV6rk8SCk3lOjLONoCa6QpHpLH5GrV0fP6FZz2KGC4=;
-        b=i36XoWKRqU8KJek9jwEW2vzH1kXRjuehGEigeg5Akp/37tkny8vakSr0jIAXiOGu1u
-         GHL0ilRliQ9oc9iQmH0an9uV7JDwd/mzX3DacIwdaf7HcjAKD8DG/JUXrWtMORT34TXg
-         BYTz5cnKNmWDAd3HuxUJ6kG/qwZoiWbpmkdvRPgflY5DbEzGQI/QtT0N02w4M1gse04r
-         jsMypKxf5auUb2hsbqD5cFX7qeepAXsueX82eDVDxqpjWSWLMJVdOufDNgfIs7QguF2V
-         gCqp8r5nbz2rp8BmskQCVyWGVWJsMkQ7QtZ+ygTqYTusq6gu7yTTPo1WNdN0ZZrvKsSb
-         lqLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YFV6rk8SCk3lOjLONoCa6QpHpLH5GrV0fP6FZz2KGC4=;
-        b=MEs2hOR+51aFkAEbqKt7gftOxVfL1vNUN3+FEsMQOBKxId1HKdqx/8w34BmKUVVRJ/
-         wF6+BtUcWeBw5K9Y4AupyME2i8awOY8s1fqLP6wSTThj2KaNulxv5QwcUHWgr39eDr8W
-         SuJan5GUl146kAC6rFdVboVRWYXbhuvMVzZuWbzs1aiey6sKpWNtdEWJfutlipARzLRo
-         5lgB0YbWi3wQ4vanBv6OlexRdvVYrZtQGN/uLZHUPATafnRQbFq7MJcmyM+GGFuP0SkQ
-         fnewliHWTJA1E5073T5CORNwndF0sejdc7kFu4+xF9Hve1pDQaR5yBh8mrRrbSyJiWkt
-         /QiA==
-X-Gm-Message-State: AOAM531vzk7yqhNXoBEfEjOghlhor8MiC+OpIaVa9l3Pmeri4MvCHTjT
-        WZT36ptxPpTu3648bHmMhlfx19bkQf+l4w==
-X-Google-Smtp-Source: ABdhPJz1CsC+M5B6A7qlNZPYOtCZ1RD0GqU6WwjApjr7wLD9E1k97rwxhSXS/QrhzlkoPkDPUTVSHw==
-X-Received: by 2002:a0c:c401:: with SMTP id r1mr18387245qvi.46.1625581438559;
-        Tue, 06 Jul 2021 07:23:58 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id b25sm6994985qkk.111.2021.07.06.07.23.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 07:23:58 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1m0lzR-004RHF-1S; Tue, 06 Jul 2021 11:23:57 -0300
-Date:   Tue, 6 Jul 2021 11:23:57 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210706142357.GN4604@ziepe.ca>
-References: <20210705130314.11519-1-ogabbay@kernel.org>
- <YOQXBWpo3whVjOyh@phenom.ffwll.local>
- <CAFCwf10_rTYL2Fy6tCRVAUCf4-6_TtcWCv5gEEkGnQ0KxqMUBg@mail.gmail.com>
- <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+        id S232950AbhGFOqB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 6 Jul 2021 10:46:01 -0400
+Received: from m12-14.163.com ([220.181.12.14]:35916 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232909AbhGFOpu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 6 Jul 2021 10:45:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Message-ID:Date:MIME-Version; bh=EuJBX
+        1ZKoj+1ARbmlA1rHu7TnjQoW4QVhjscbi7p+OY=; b=YRmMTPV5WUXDJP+XfmyyS
+        uJVU+uAz84Adzu8jDitNO3xMwAkJ/Gw7i9A4EwDfhon0E4YLLBVlR+TpwcqYvXTI
+        /1WBUkVRr96lZy51C3z2ggff0/JMaQVef/Jz7Y+gAWHfdBJCvGawnOxncUOSyKBN
+        Bgd7F+WxKzsZ7pDFMl71oI=
+Received: from [192.168.0.11] (unknown [183.210.50.1])
+        by smtp10 (Coremail) with SMTP id DsCowABHTjK8Z+RgxK8mSg--.63950S2;
+        Tue, 06 Jul 2021 22:25:01 +0800 (CST)
+From:   Xiao Yang <ice_yangxiao@163.com>
+Subject: Question about ibv_reg_mr() and ibv_reg_mr_iova()
+To:     jgg@nvidia.com, rpearsonhpe@gmail.com, haakon.bugge@oracle.com,
+        zyjzyj2000@gmail.com
+Cc:     linux-rdma@vger.kernel.org
+Message-ID: <56061c0b-89bc-4ca1-599b-c47ce9a5e5f7@163.com>
+Date:   Tue, 6 Jul 2021 22:25:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEAJZUHNLreBB839BZOfnTGNU4rCx-0k55+67Nbxtdx3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID: DsCowABHTjK8Z+RgxK8mSg--.63950S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUDwFxDUUUU
+X-Originating-IP: [183.210.50.1]
+X-CM-SenderInfo: 5lfhs5xdqj5xldr6il2tof0z/xtbBEgnHXl6iclDQggABsP
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 12:36:51PM +0200, Daniel Vetter wrote:
+Hi all,
 
-> If that means AI companies don't want to open our their hw specs
-> enough to allow that, so be it - all you get in that case is
-> offloading the kernel side  of the stack for convenience, with zero
-> long term prospects to ever make this into a cross vendor subsystem
-> stack that does something useful.
+After reading the implementation of ibv_reg_mr() and ibv_reg_mr_iova(), 
+I am confused about three variables(i.e. addr, iova, hca_va).
 
-I don't think this is true at all - nouveau is probably the best
-example.
+What do these three variables mean? what is the difference between them?
 
-nouveau reverse engineered a userspace stack for one of these devices.
+Best Regards,
 
-How much further ahead would they have been by now if they had a
-vendor supported, fully featured, open kernel driver to build the
-userspace upon?
+Xiao Yang
 
-> open up your hw enough for that, I really don't see the point in
-> merging such a driver, it'll be an unmaintainable stack by anyone else
-> who's not having access to those NDA covered specs and patents and
-> everything.
-
-My perspective from RDMA is that the drivers are black boxes. I can
-hack around the interface layers but there is a lot of wild stuff in
-there that can't be understood without access to the HW documentation.
-
-I think only HW that has open specs, like say NVMe, can really be
-properly community oriented. Otherwise we have to work in a community
-partnership with the vendor.
-
-Jason
