@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B9F3BE1BE
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jul 2021 06:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 371953BE1BF
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jul 2021 06:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbhGGEEc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229522AbhGGEEc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 7 Jul 2021 00:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41692 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhGGEE2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 00:04:28 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97264C061574
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 21:01:48 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id w15-20020a056830144fb02904af2a0d96f3so988599otp.6
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 21:01:48 -0700 (PDT)
+        with ESMTP id S230038AbhGGEE3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 00:04:29 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 807F4C06175F
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 21:01:49 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso965893otu.10
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 21:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Bz3V5ojuUP/A+CT8wC8BF8ApPM0Os6RmAzoPYOfuSws=;
-        b=B5iDNsHPOeEuM6VrAGOcBUfEn/gQ+pITZLRWlDOsgSUpqF6/MUDXKHQJXX0nM95/6i
-         LTRGZQUzrh650jxIS8rXNvIMKQfdW2Z8gF3yTZ14SRIdgq55tQK0BR3Bq8BhCJUP4ksv
-         iZyMPFSsVQHncG3SgS048L1pimHA8wOPP71aVjFOPR0W2I1xkywiyBq8UZI2weCFYJ+g
-         fkyEjyg9ug4O/M8cviAptiXxs8ruxjGdGoDDeXQ9cqS0l8QT9wAzlh8SIaBA9ij0yBu7
-         N37PEfjVXyhBuqYbwdW6YDrnJ6dbOdn+q3MckUW6umgAPrDMJ6cM6zEz743fezTQmYZ+
-         e7QQ==
+        bh=ZW62XsamrXQDM8qOOE9QxYBZaa7HOU2EbGz8Tu41ogw=;
+        b=R60jA6dCY0BocyND5JS8Hq4ZCK4NV0yhOFGqC/j/PKHL5C3YlnrbuFI3bh8yg6rlnp
+         Ifz3lo7ibMSLvb/rn0KEiMFnOLpQYBr+N7WMcdzzsPa6oPA6bsm/472xsurQXsQALSjj
+         xbuTMG/xiPfXa2BTnpw+70Q+UqujsMh2HmVbYqNSckF/HS9pdqQLocubKp6VwqqwV2fQ
+         v2yfg1U7rgNKA1IhbPlpoADfkMMVVcIS5ahk8AcF3C8NV/9ZoLo9WYsfeYGO/a84LJJp
+         3k/LWAO3wzgewNJnVBmdBEr6+Bq8S/KLtY3jWmk1IgfNSQ/DsLIl67qNZ1sPAJNrBnvw
+         YfJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Bz3V5ojuUP/A+CT8wC8BF8ApPM0Os6RmAzoPYOfuSws=;
-        b=W1VjERp7GJ0H3lYhzDirPr/PweEfvjLmSkD1C5xoai9zTZC0808Xj89O2mUPT55RRf
-         4V+4afc5ilDHUc/tWmXP0vOAuWqPtTrlMs6cE5RyFQeNf+T0v640/8loxbO0e+45ICuj
-         7//VWmUscPbdl2JjL+RTefndiKp/CLuIYArCyFZgd/eQlerTCTar3W6LiBPQ4Nr8DZoZ
-         T0x3g8Volm8XXU53Cg4VCQn3bSSPd3HpBFI4YE2rn465T9R640VVZwhqSIAl2rLJQPxD
-         H24JHKnY4Ewbec9X+l0aeyGFbLdw5FgIRmwU3J2bPNj6Bg97uIKfIbh/yY6ZmZYZGVHZ
-         WhLg==
-X-Gm-Message-State: AOAM530DVGtvXN6Xp39hxK0Lsy3WtRPjrzNeD2/OVi3EnzwX53949FtE
-        Teq6HKEkyEucetQdxeC8KZI=
-X-Google-Smtp-Source: ABdhPJwg3KqknukzwUEb/OVf4u1OFH5Wc8NXaUozuQUEETQWWjFpapt4iiSoL2G0ruOwvk7cwPa/Fw==
-X-Received: by 2002:a05:6830:22fa:: with SMTP id t26mr7575670otc.2.1625630508065;
+        bh=ZW62XsamrXQDM8qOOE9QxYBZaa7HOU2EbGz8Tu41ogw=;
+        b=Y4SlLOEie8KB5KOoSc2LORJ9z9Wy6zi2dcp/ARwuoGa7HPKGSU9Gr0MYkF/sffwpZF
+         LTJG2fW+LneJsvWfLdV0Z8Sw58VmVWhscz5sh0efiq2veSS5GQYSyj6mXFXOX3XW8KwQ
+         T5p04yu0X5h+SjAxig9gzC5Z8B5TA10z+BcGu2zZ6sRAujPQNvKuVSs/JUM3eyCtHH82
+         axFZ/PUwQvEmC19ln9cxWVip099CVTC3Y73QDfNu4snKU4Sy1XgfkZRBeR4vijeGHX55
+         fbpAN3I3tEBOwpCpvxpmoWJ3JH2K2EdGBm7nXUWjpsGKD/hoPPS6dcODVIhJDxCDjVmA
+         fmUQ==
+X-Gm-Message-State: AOAM532F2ej1e6kDl7V9oP2SR02ec0e2dRRYjFFiCDG419Rvkeb6mWa0
+        F9yiE096PRpmtixPQfEw6HA=
+X-Google-Smtp-Source: ABdhPJy6c9E5ctS8DjFcXFCtRPk4X3Aeb+nbPU9n27gyjDqCm5PZgpNLMA62tx5ObZXlEVTL9bshZQ==
+X-Received: by 2002:a05:6830:34a2:: with SMTP id c34mr17709093otu.59.1625630508983;
         Tue, 06 Jul 2021 21:01:48 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-3e85-59b9-418d-5cfe.res6.spectrum.com. [2603:8081:140c:1a00:3e85:59b9:418d:5cfe])
-        by smtp.gmail.com with ESMTPSA id l63sm317937ooc.7.2021.07.06.21.01.47
+        by smtp.gmail.com with ESMTPSA id r25sm3762122otp.21.2021.07.06.21.01.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 21:01:47 -0700 (PDT)
+        Tue, 06 Jul 2021 21:01:48 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v2 7/9] RDMA/rxe: Move crc32 init code to rxe_icrc.c
-Date:   Tue,  6 Jul 2021 23:00:39 -0500
-Message-Id: <20210707040040.15434-8-rpearsonhpe@gmail.com>
+Subject: [PATCH v2 8/9] RDMA/rxe: Add kernel-doc comments to rxe_icrc.c
+Date:   Tue,  6 Jul 2021 23:00:40 -0500
+Message-Id: <20210707040040.15434-9-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210707040040.15434-1-rpearsonhpe@gmail.com>
 References: <20210707040040.15434-1-rpearsonhpe@gmail.com>
@@ -62,103 +62,84 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch collects the code from rxe_register_device() that sets
-up the crc32 calculation into a subroutine rxe_icrc_init() in
-rxe_icrc.c.
+This patch adds kernel-doc style comments to rxe_icrc.c
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe.h       |  1 -
- drivers/infiniband/sw/rxe/rxe_icrc.c  | 18 ++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_loc.h   |  1 +
- drivers/infiniband/sw/rxe/rxe_verbs.c | 11 +++--------
- 4 files changed, 22 insertions(+), 9 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_icrc.c | 32 +++++++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-index 65a73c1c8b35..1bb3fb618bf5 100644
---- a/drivers/infiniband/sw/rxe/rxe.h
-+++ b/drivers/infiniband/sw/rxe/rxe.h
-@@ -14,7 +14,6 @@
- 
- #include <linux/module.h>
- #include <linux/skbuff.h>
--#include <linux/crc32.h>
- 
- #include <rdma/ib_verbs.h>
- #include <rdma/ib_user_verbs.h>
 diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-index 777199517e9a..62bcdfc8e96a 100644
+index 62bcdfc8e96a..4473d38c171f 100644
 --- a/drivers/infiniband/sw/rxe/rxe_icrc.c
 +++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-@@ -4,9 +4,27 @@
-  * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
-  */
- 
-+#include <linux/crc32.h>
-+
+@@ -9,6 +9,12 @@
  #include "rxe.h"
  #include "rxe_loc.h"
  
-+int rxe_icrc_init(struct rxe_dev *rxe)
-+{
-+	struct crypto_shash *tfm;
-+
-+	tfm = crypto_alloc_shash("crc32", 0, 0);
-+	if (IS_ERR(tfm)) {
-+		pr_warn("failed to init crc32 algorithm err:%ld\n",
-+			       PTR_ERR(tfm));
-+		return PTR_ERR(tfm);
-+	}
-+
-+	rxe->tfm = tfm;
-+
-+	return 0;
-+}
-+
++/**
++ * rxe_icrc_init() - Initialize crypto function for computing crc32
++ * @rxe: rdma_rxe device object
++ *
++ * Return: 0 on success else an error
++ */
+ int rxe_icrc_init(struct rxe_dev *rxe)
+ {
+ 	struct crypto_shash *tfm;
+@@ -25,6 +31,15 @@ int rxe_icrc_init(struct rxe_dev *rxe)
+ 	return 0;
+ }
+ 
++/**
++ * rxe_crc32() - Compute cumulative crc32 for a contiguous segment
++ * @rxe: rdma_rxe device object
++ * @crc: starting crc32 value from previous segments
++ * @next: starting address of current segment
++ * @len: length of current segment
++ *
++ * Return: the cumulative crc32 checksum
++ */
  static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
  {
  	u32 icrc;
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 73a2c48a3160..f0c954575bde 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -193,6 +193,7 @@ int rxe_requester(void *arg);
- int rxe_responder(void *arg);
+@@ -46,7 +61,14 @@ static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
+ 	return icrc;
+ }
  
- /* rxe_icrc.c */
-+int rxe_icrc_init(struct rxe_dev *rxe);
- int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt);
- void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index c223959ac174..f7b1a1f64c13 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -1154,7 +1154,6 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
+-/* Compute a partial ICRC for all the IB transport headers. */
++/**
++ * rxe_icrc_hdr() - Compute the partial ICRC for the network and transport
++ *		  headers of a packet.
++ * @skb: packet buffer
++ * @pkt: packet information
++ *
++ * Return: the partial ICRC
++ */
+ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
  {
- 	int err;
- 	struct ib_device *dev = &rxe->ib_dev;
--	struct crypto_shash *tfm;
+ 	unsigned int bth_offset = 0;
+@@ -111,7 +133,7 @@ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+  * rxe_icrc_check() - Compute ICRC for a packet and compare to the ICRC
+  *		      delivered in the packet.
+  * @skb: packet buffer
+- * @pkt: packet info
++ * @pkt: packet information
+  *
+  * Return: 0 if the values match else an error
+  */
+@@ -145,7 +167,11 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+ 	return 0;
+ }
  
- 	strscpy(dev->node_desc, "rxe", sizeof(dev->node_desc));
- 
-@@ -1173,13 +1172,9 @@ int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name)
- 	if (err)
- 		return err;
- 
--	tfm = crypto_alloc_shash("crc32", 0, 0);
--	if (IS_ERR(tfm)) {
--		pr_err("failed to allocate crc algorithm err:%ld\n",
--		       PTR_ERR(tfm));
--		return PTR_ERR(tfm);
--	}
--	rxe->tfm = tfm;
-+	err = rxe_icrc_init(rxe);
-+	if (err)
-+		return err;
- 
- 	err = ib_register_device(dev, ibdev_name, NULL);
- 	if (err)
+-/* rxe_icrc_generate- compute ICRC for a packet. */
++/**
++ * rxe_icrc_generate() - compute ICRC for a packet.
++ * @skb: packet buffer
++ * @pkt: packet information
++ */
+ void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+ {
+ 	__be32 *icrcp;
 -- 
 2.30.2
 
