@@ -2,170 +2,132 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F45C3BE1C0
-	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jul 2021 06:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140E93BE7B3
+	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jul 2021 14:17:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhGGEEc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 7 Jul 2021 00:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41704 "EHLO
+        id S231449AbhGGMTz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 7 Jul 2021 08:19:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230120AbhGGEEa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 00:04:30 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591CFC061574
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 21:01:50 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id q23so1860600oiw.11
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 21:01:50 -0700 (PDT)
+        with ESMTP id S231358AbhGGMTz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 08:19:55 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1CFC061574;
+        Wed,  7 Jul 2021 05:17:14 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id d12so2200170wre.13;
+        Wed, 07 Jul 2021 05:17:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=10Ev9SPave/k5CAY73W+iEMVlowQOzVZsPSBG2WZa6s=;
-        b=H/dochdJ54pcQ7aUAAMVWrDD0NFRCXcwkUK7hDcrpaUK2ZCSDelfGeWZ+ju3Lpv/lr
-         TgLlengXR+3cMeitbeQbaPJIshQFstFThC178bM3pT5gBxIfjtnq8wOHvp9CZ64nGqkF
-         9oSKWARfExq2mVxvxn/WGdH6Zj4yLSakjV/xaN3wkigbg2kQnrUec3EBEhKYN0OahHmu
-         Ss88poxlts2imMvHShtq+q8NXjwHWAYg1S8+x2VDpfwPLApQI855Si4hKeCLOOEaLh29
-         gtcatIK61A7leZVgBwcyUZhDSA2AHwZqvNPsSMb7DAP/rChDglwyZPrk9N6q8ZPQJqoN
-         oqfA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=gFcpO09X9eqmjEev1StyvxVCY7X0AALnaeQkmkAwWuA=;
+        b=ZjJsQUBAGSRzwkesl+g70QlwkbvYhuHJtn9TzO41zn/XqXK0HsPfSJXxQ1uubM80r2
+         QYeHYcYzl3pdaIKusWL8Cd7Wu51RMb/uf3qRgfVEUeKySy/8psgPpeGYTaM+zPTnUhPF
+         9xKe5V78YV9n8JpqoYRiJqSsCkiLrBbIA9ZtSqYpocicMRidvhtcTJamlaqtccNRyFEN
+         02DbkAeA4CUIOThsqvoQeKbSJh5ta3Oe42xfSOVaXDxn0ln/B0etndt5ICGG0ZrG3npQ
+         LpRDrwUb4cIJSkCzDubfh19bl4gMUkqIeaYnL4XjUhz4gGqkC155BwFDxgWq0MBa3QsZ
+         xebw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=10Ev9SPave/k5CAY73W+iEMVlowQOzVZsPSBG2WZa6s=;
-        b=AliWSPkzWTl3zroNYtpMXys2nC8iGwLVBdYLrmGYlTbq0ohlRPaZVtsuPqkqfrSeni
-         5Om6U0PxCtfrgK6Uo/8fjl6rbgvBV2nrU304qZy2qslHQMy/eVcOnZMWcFF55mK3k5xX
-         Jl+ULJnZBXG1Xq5vSeCKHrybdYGxwCR/pPLkEKpLx3msB97tKp9tSC+I1bycGC6KYAJe
-         UrtawbMMi4VNuYLw3XQkldqFtDP2dQUH6Q+hmxaBxCGLDkr+qbiBVZ5/dqWZBObWFtFK
-         LSaVdLkaAyfW/Swhy4mBPREpgw00vJjL+dlJQnsgKdU3sGbQF03kSmkDIVYbETf4q4N6
-         s4oA==
-X-Gm-Message-State: AOAM533NuGpPnVO72H/mt9Y8L5h+emI+r5oz9Ywli0phUEP31hTf9pKL
-        3Mf+bUeg6oNutr3cHMaly7k=
-X-Google-Smtp-Source: ABdhPJy3BLTsBMGgh/PQ+sfs3lPxVIWh2bZ/ydCQJjvtCFWylxDOkzV831SvYzajaezNFwQBWyeAyg==
-X-Received: by 2002:aca:30d4:: with SMTP id w203mr2184220oiw.34.1625630509783;
-        Tue, 06 Jul 2021 21:01:49 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-3e85-59b9-418d-5cfe.res6.spectrum.com. [2603:8081:140c:1a00:3e85:59b9:418d:5cfe])
-        by smtp.gmail.com with ESMTPSA id r13sm2564732oiw.44.2021.07.06.21.01.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 21:01:49 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v2 9/9] RDMA/rxe: Fix types in rxe_icrc.c
-Date:   Tue,  6 Jul 2021 23:00:41 -0500
-Message-Id: <20210707040040.15434-10-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210707040040.15434-1-rpearsonhpe@gmail.com>
-References: <20210707040040.15434-1-rpearsonhpe@gmail.com>
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=gFcpO09X9eqmjEev1StyvxVCY7X0AALnaeQkmkAwWuA=;
+        b=pAACjh16ceqY2dnrPo8i6UULmcT07c5TUhWTFwsFbRZYiLzYvQPyZcb3BDxTGAT/WX
+         kX4dNCIV4g+rjuJZ85XnkzndpE3TaJwoAdGjgTzQnujLWOAjY1M8HG07kNYdNUxzxAsI
+         S92TgEQ1UDdHgFT4zYm4vuIdQAIGi6kI4JxPkMJw99fOL5yTyKbmHSqkEKPpVuYAqIUX
+         Ir0VtFqgs68THh2leAdkiWAtiLR/DfqpMxCZqe+G+1cGB8WXh0Bm4i1PWgJLXX6S28FJ
+         04sa7jbwXCi4PxZ/MGpx+Xk8aUEf5e9b3QcgTmaws7P3S3e/L4go0euuGkt6H2O3VkYf
+         tsyg==
+X-Gm-Message-State: AOAM531GyYFyde6Ge+aqbymCmaEIC6I/EpIi82Yq303/mmw8Gpo+6nuw
+        JwR8M8XyEXLUKiFBH0KLJ/Y=
+X-Google-Smtp-Source: ABdhPJw+KpKKmv799GNloUfwlu8fKZlyMeia+T+6lyR5kx2E0g6ByA5UB8esUFEyQkPer8zSwXyRww==
+X-Received: by 2002:a5d:680b:: with SMTP id w11mr15450397wru.426.1625660233375;
+        Wed, 07 Jul 2021 05:17:13 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:7671:3328:2129:96b5? ([2a02:908:1252:fb60:7671:3328:2129:96b5])
+        by smtp.gmail.com with ESMTPSA id u2sm13550473wmc.42.2021.07.07.05.17.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jul 2021 05:17:12 -0700 (PDT)
+Subject: Re: [Linaro-mm-sig] [PATCH v4 0/2] Add p2p via dmabuf to habanalabs
+To:     Christoph Hellwig <hch@lst.de>, Oded Gabbay <ogabbay@kernel.org>,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        galpress@amazon.com, sleybo@amazon.com,
+        dri-devel@lists.freedesktop.org, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-media@vger.kernel.org,
+        dledford@redhat.com, airlied@gmail.com, alexander.deucher@amd.com,
+        leonro@nvidia.com, amd-gfx@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org
+References: <20210705130314.11519-1-ogabbay@kernel.org>
+ <YOQXBWpo3whVjOyh@phenom.ffwll.local> <20210706122110.GA18273@lst.de>
+ <YORLTmyoXDtoM9Ta@phenom.ffwll.local>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <9af554b1-e4d8-4dd4-5a6a-830f3112941d@gmail.com>
+Date:   Wed, 7 Jul 2021 14:17:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YORLTmyoXDtoM9Ta@phenom.ffwll.local>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently the ICRC is generated as a u32 type and then forced to a __be32
-and stored into the ICRC field in the packet. The actual type of the ICRC
-is __be32. This patch replaces u32 by __be32 and eliminates the casts.
-The computation is exactly the same as the original but the types are
-more consistent.
+Am 06.07.21 um 14:23 schrieb Daniel Vetter:
+> On Tue, Jul 06, 2021 at 02:21:10PM +0200, Christoph Hellwig wrote:
+>> On Tue, Jul 06, 2021 at 10:40:37AM +0200, Daniel Vetter wrote:
+>>>> Greg, I hope this will be good enough for you to merge this code.
+>>> So we're officially going to use dri-devel for technical details review
+>>> and then Greg for merging so we don't have to deal with other merge
+>>> criteria dri-devel folks have?
+>>>
+>>> I don't expect anything less by now, but it does make the original claim
+>>> that drivers/misc will not step all over accelerators folks a complete
+>>> farce under the totally-not-a-gpu banner.
+>>>
+>>> This essentially means that for any other accelerator stack that doesn't
+>>> fit the dri-devel merge criteria, even if it's acting like a gpu and uses
+>>> other gpu driver stuff, you can just send it to Greg and it's good to go.
+>>>
+>>> There's quite a lot of these floating around actually (and many do have
+>>> semi-open runtimes, like habanalabs have now too, just not open enough to
+>>> be actually useful). It's going to be absolutely lovely having to explain
+>>> to these companies in background chats why habanalabs gets away with their
+>>> stack and they don't.
+>> FYI, I fully agree with Daniel here.  Habanlabs needs to open up their
+>> runtime if they want to push any additional feature in the kernel.
+>> The current situation is not sustainable.
+> Before anyone replies: The runtime is open, the compiler is still closed.
+> This has become the new default for accel driver submissions, I think
+> mostly because all the interesting bits for non-3d accelerators are in the
+> accel ISA, and no longer in the runtime. So vendors are fairly happy to
+> throw in the runtime as a freebie.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_icrc.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+Well a compiler and runtime makes things easier, but the real question 
+is if they are really required for upstreaming a kernel driver?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-index 4473d38c171f..e03af3012590 100644
---- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-+++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-@@ -40,22 +40,22 @@ int rxe_icrc_init(struct rxe_dev *rxe)
-  *
-  * Return: the cumulative crc32 checksum
-  */
--static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
-+static __be32 rxe_crc32(struct rxe_dev *rxe, __be32 crc, void *next, size_t len)
- {
--	u32 icrc;
-+	__be32 icrc;
- 	int err;
- 
- 	SHASH_DESC_ON_STACK(shash, rxe->tfm);
- 
- 	shash->tfm = rxe->tfm;
--	*(u32 *)shash_desc_ctx(shash) = crc;
-+	*(__be32 *)shash_desc_ctx(shash) = crc;
- 	err = crypto_shash_update(shash, next, len);
- 	if (unlikely(err)) {
- 		pr_warn_ratelimited("failed crc calculation, err: %d\n", err);
--		return crc32_le(crc, next, len);
-+		return (__force __be32)crc32_le((__force u32)crc, next, len);
- 	}
- 
--	icrc = *(u32 *)shash_desc_ctx(shash);
-+	icrc = *(__be32 *)shash_desc_ctx(shash);
- 	barrier_data(shash_desc_ctx(shash));
- 
- 	return icrc;
-@@ -69,14 +69,14 @@ static u32 rxe_crc32(struct rxe_dev *rxe, u32 crc, void *next, size_t len)
-  *
-  * Return: the partial ICRC
-  */
--static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-+static __be32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
- 	unsigned int bth_offset = 0;
- 	struct iphdr *ip4h = NULL;
- 	struct ipv6hdr *ip6h = NULL;
- 	struct udphdr *udph;
- 	struct rxe_bth *bth;
--	int crc;
-+	__be32 crc;
- 	int length;
- 	int hdr_size = sizeof(struct udphdr) +
- 		(skb->protocol == htons(ETH_P_IP) ?
-@@ -91,7 +91,7 @@ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- 	/* This seed is the result of computing a CRC with a seed of
- 	 * 0xfffffff and 8 bytes of 0xff representing a masked LRH.
- 	 */
--	crc = 0xdebb20e3;
-+	crc = (__force __be32)0xdebb20e3;
- 
- 	if (skb->protocol == htons(ETH_P_IP)) { /* IPv4 */
- 		memcpy(pshdr, ip_hdr(skb), hdr_size);
-@@ -140,16 +140,16 @@ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
- 	__be32 *icrcp;
--	u32 pkt_icrc;
--	u32 icrc;
-+	__be32 pkt_icrc;
-+	__be32 icrc;
- 
- 	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
--	pkt_icrc = be32_to_cpu(*icrcp);
-+	pkt_icrc = *icrcp;
- 
- 	icrc = rxe_icrc_hdr(skb, pkt);
- 	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
- 				payload_size(pkt) + bth_pad(pkt));
--	icrc = (__force u32)cpu_to_be32(~icrc);
-+	icrc = ~icrc;
- 
- 	if (unlikely(icrc != pkt_icrc)) {
- 		if (skb->protocol == htons(ETH_P_IPV6))
-@@ -175,11 +175,11 @@ int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
- {
- 	__be32 *icrcp;
--	u32 icrc;
-+	__be32 icrc;
- 
- 	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
- 	icrc = rxe_icrc_hdr(skb, pkt);
- 	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
- 				payload_size(pkt) + bth_pad(pkt));
--	*icrcp = (__force __be32)~icrc;
-+	*icrcp = ~icrc;
- }
--- 
-2.30.2
+I mean what we need is to be able to exercise the functionality. So 
+wouldn't (for example) an assembler be sufficient?
+
+> It's still incomplete, and it's still useless if you want to actually hack
+> on the driver stack.
+
+Yeah, when you want to hack on it in the sense of extending it then this 
+requirement is certainly true.
+
+But as far as I can see userspace don't need to be extendable to justify 
+a kernel driver. It just needs to have enough glue to thoughtfully 
+exercise the relevant kernel interfaces.
+
+Applying that to GPUs I think what you need to be able to is to write 
+shaders, but that doesn't need to be in a higher language requiring a 
+compiler and runtime. Released opcodes and a low level assembler should 
+be sufficient.
+
+Regards,
+Christian.
+
+> -Daniel
 
