@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115EF3BE1B7
+	by mail.lfdr.de (Postfix) with ESMTP id A57B93BE1B9
 	for <lists+linux-rdma@lfdr.de>; Wed,  7 Jul 2021 06:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229584AbhGGEEZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S229477AbhGGEEZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 7 Jul 2021 00:04:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41652 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229460AbhGGEEW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 00:04:22 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 365C8C06175F
-        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 21:01:42 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id z3so1041378oib.9
-        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 21:01:42 -0700 (PDT)
+        with ESMTP id S229475AbhGGEEX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 7 Jul 2021 00:04:23 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1303DC061574
+        for <linux-rdma@vger.kernel.org>; Tue,  6 Jul 2021 21:01:43 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id w74so1878125oiw.8
+        for <linux-rdma@vger.kernel.org>; Tue, 06 Jul 2021 21:01:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+fxotpGD6AF/6V7WYZKBTlZ/T44Sa0z+ZcKqvuGuth0=;
-        b=bGMBKXTH7WxAd6ZgBj0qZ2OOoXBIT05C9NGWAnr8VquCyJFkrRQ7KD4S8Sgew6h+v9
-         uSUJuVp/HsliDuHKxRaLxY+5W3UaaakK3+OlRsC5u1Um/G9bvBneDekcdPA3h7hjCUkU
-         gOexxHqZQ1R4DEZwdV0IHP9cQDAzg3+oZOdxPsXY9sy08HAOwU6a3utCwNEg6I/KtfE5
-         2NR/UHDhPY2EJYHh8Xj7AEjrnxmY7kTMNtTN7tn5vsEswMSKds5Zr2B+gxef5c6t/MNg
-         nxQAPrqsJ88Oi8ua4MjU9sqWr/8595KTglRFhyoj5YS1GMNywHOCKtdOAWeYoRU1SI/9
-         HFdw==
+        bh=c5kzeczmKMiT45siTmiezKJGqHqWKuD9+r+3Zvf7KAs=;
+        b=l6ILIkk7MGfiYbK9lmIIaWK4HlEh9BnvyBydeNmUlY2v/t8kyhGeO3trfOd303bd6t
+         rG4oilYSxqXKmBZCbWgDTQzFdpEfF4YYoHtdH8bFJN9Bmx1VaTYW1R8swrb8mY2MLUSf
+         uypxHPM63VQnBZQdTkXXHji6Lj8uHnWrSk8Qe4Mk+UDugsKw1o+NRe6o9e8J/DpjTZjf
+         h2pLsk92qUJtiV7O1VQ7fW3cEcLIyGcnxf1avf5Jnf0coLR5M9t3DCyvf3zRV6Lg6NQ0
+         nkhG1SiGp0LJzzG1fXSxgG9+XAV9FIjHDvHSEpssuX6us0xOamqkuXFn3roGSKhzB2v1
+         9dwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+fxotpGD6AF/6V7WYZKBTlZ/T44Sa0z+ZcKqvuGuth0=;
-        b=Rjpx5GFJJslfdc55LAQ6bDznhhXKtS9iOjsqKJdEpzdP/FSX54PQyxLFgM/68yjYNQ
-         g09usRLchd1RtuL2ZlImJtzK47/02NDX930nQqQl28okq06Meu2gkn2zIecxvWFU4nrs
-         DYXos8te4zevtQKQIGI4dkAF4Lvh12LCSrcYFFEzJD85rC2Fdz6qnbVWVaU2BpOvKcxd
-         TPqYXeOqKyfo7KLAM5tGSS/u53WdNCknzisuGzRLw9HtZRcD7js4pV48SYbtkrDmTSwu
-         ZthgGtvJF4zh7x2bEZCYsDkVAtnxXmIKZJHsKfO/pu9NoYaeDpR6tTE/T8ptwzVABR67
-         rWXQ==
-X-Gm-Message-State: AOAM532h2ndihzd+FK+YxCXq2Cqdo4dFQzKbVxB5XN6+kat/MEVXSSz6
-        NMLZboAjqzgMTSEg5b0NmQw=
-X-Google-Smtp-Source: ABdhPJxuAI4byAAmwng3jk4egdKcus4lMhYb6UZlG/ZPCMKTt01DUln/DHY617EX8Plz5/cS4TcTbQ==
-X-Received: by 2002:aca:3bc3:: with SMTP id i186mr3266343oia.102.1625630501620;
-        Tue, 06 Jul 2021 21:01:41 -0700 (PDT)
+        bh=c5kzeczmKMiT45siTmiezKJGqHqWKuD9+r+3Zvf7KAs=;
+        b=EWGodT1Kh5XJKfk2CrjYNyq+QYc904rzUK5rwmnC7nnGbh455paqSyxws2F0EkBexB
+         +BPZASAGIUFPwpAy99RR7CIIg4JkiXzd58L9kb9OB/2iSg5yBlGugEqyXDBQk1hZbobg
+         QIr+DmU2wt7pvbvdvCyEYmIS9dHHikV8UeWwfLLTwjSsWRQqDFoV7JsZBJOrmDH+v2j6
+         fYGU8EED/XApk33qWBQXoznecFlQa6CnTp1WV23vRvO+kZuxDRTQDbFBidC+VQfv5Cq1
+         HIIEYOJetMO9BGU4aQsRSL9s/NazTRnC1qZV1QddbuaEUDGV/SNjX3jmz2XWew9Z/93O
+         MmvA==
+X-Gm-Message-State: AOAM531c297xsdZRpgpCd3WwPxrmBKKLt2xVpYbMQ5yQ6IDQ9s3R+MfG
+        zsdgjIQnso5uarUTJKwCmkM=
+X-Google-Smtp-Source: ABdhPJwJmfipPhwkUpBV06YNEJApknT8Tt9gbGJ3l57i/P4hJpmS7sxMXuHHaxAHZdr5dMq/s9kf9A==
+X-Received: by 2002:aca:eb43:: with SMTP id j64mr3224641oih.101.1625630502506;
+        Tue, 06 Jul 2021 21:01:42 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-3e85-59b9-418d-5cfe.res6.spectrum.com. [2603:8081:140c:1a00:3e85:59b9:418d:5cfe])
-        by smtp.gmail.com with ESMTPSA id p26sm1946749otp.59.2021.07.06.21.01.40
+        by smtp.gmail.com with ESMTPSA id 104sm1727558otm.55.2021.07.06.21.01.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jul 2021 21:01:41 -0700 (PDT)
+        Tue, 06 Jul 2021 21:01:42 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v2 1/9] RDMA/rxe: Move ICRC checking to a subroutine
-Date:   Tue,  6 Jul 2021 23:00:33 -0500
-Message-Id: <20210707040040.15434-2-rpearsonhpe@gmail.com>
+Subject: [PATCH v2 2/9] RDMA/rxe: Move rxe_xmit_packet to a subroutine
+Date:   Tue,  6 Jul 2021 23:00:34 -0500
+Message-Id: <20210707040040.15434-3-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210707040040.15434-1-rpearsonhpe@gmail.com>
 References: <20210707040040.15434-1-rpearsonhpe@gmail.com>
@@ -62,118 +62,130 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Move the code in rxe_recv() that checks the ICRC on incoming packets to a
-subroutine rxe_check_icrc() and move that to rxe_icrc.c.
+rxe_xmit_packet() was an overlong inline subroutine. This patch moves it
+into rxe_net.c as an ordinary subroutine.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_icrc.c | 38 ++++++++++++++++++++++++++++
- drivers/infiniband/sw/rxe/rxe_loc.h  |  2 ++
- drivers/infiniband/sw/rxe/rxe_recv.c | 23 ++---------------
- 3 files changed, 42 insertions(+), 21 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_loc.h | 45 ++---------------------------
+ drivers/infiniband/sw/rxe/rxe_net.c | 43 +++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 43 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_icrc.c b/drivers/infiniband/sw/rxe/rxe_icrc.c
-index 66b2aad54bb7..d067841214be 100644
---- a/drivers/infiniband/sw/rxe/rxe_icrc.c
-+++ b/drivers/infiniband/sw/rxe/rxe_icrc.c
-@@ -67,3 +67,41 @@ u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb)
- 			rxe_opcode[pkt->opcode].length - RXE_BTH_BYTES);
- 	return crc;
- }
-+
-+/**
-+ * rxe_icrc_check() - Compute ICRC for a packet and compare to the ICRC
-+ *		      delivered in the packet.
-+ * @skb: packet buffer
-+ * @pkt: packet info
-+ *
-+ * Return: 0 if the values match else an error
-+ */
-+int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt)
-+{
-+	__be32 *icrcp;
-+	u32 pkt_icrc;
-+	u32 icrc;
-+
-+	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
-+	pkt_icrc = be32_to_cpu(*icrcp);
-+
-+	icrc = rxe_icrc_hdr(pkt, skb);
-+	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
-+				payload_size(pkt) + bth_pad(pkt));
-+	icrc = (__force u32)cpu_to_be32(~icrc);
-+
-+	if (unlikely(icrc != pkt_icrc)) {
-+		if (skb->protocol == htons(ETH_P_IPV6))
-+			pr_warn_ratelimited("bad ICRC from %pI6c\n",
-+					    &ipv6_hdr(skb)->saddr);
-+		else if (skb->protocol == htons(ETH_P_IP))
-+			pr_warn_ratelimited("bad ICRC from %pI4\n",
-+					    &ip_hdr(skb)->saddr);
-+		else
-+			pr_warn_ratelimited("bad ICRC from unknown\n");
-+
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
 diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 1ddb20855dee..015777e31ec9 100644
+index 015777e31ec9..409d10f20948 100644
 --- a/drivers/infiniband/sw/rxe/rxe_loc.h
 +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -193,7 +193,9 @@ int rxe_completer(void *arg);
- int rxe_requester(void *arg);
- int rxe_responder(void *arg);
+@@ -104,6 +104,8 @@ int rxe_send(struct rxe_pkt_info *pkt, struct sk_buff *skb);
+ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 				int paylen, struct rxe_pkt_info *pkt);
+ int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb, u32 *crc);
++int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
++		    struct sk_buff *skb);
+ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
+ int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid);
+ int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid);
+@@ -206,47 +208,4 @@ static inline unsigned int wr_opcode_mask(int opcode, struct rxe_qp *qp)
+ 	return rxe_wr_opcode_info[opcode].mask[qp->ibqp.qp_type];
+ }
  
-+/* rxe_icrc.c */
- u32 rxe_icrc_hdr(struct rxe_pkt_info *pkt, struct sk_buff *skb);
-+int rxe_icrc_check(struct sk_buff *skb, struct rxe_pkt_info *pkt);
- 
- void rxe_resp_queue_pkt(struct rxe_qp *qp, struct sk_buff *skb);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 7a49e27da23a..6a6cc1fa90e4 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -361,8 +361,6 @@ void rxe_rcv(struct sk_buff *skb)
- 	int err;
- 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
- 	struct rxe_dev *rxe = pkt->rxe;
--	__be32 *icrcp;
--	u32 calc_icrc, pack_icrc;
- 
- 	if (unlikely(skb->len < RXE_BTH_BYTES))
- 		goto drop;
-@@ -384,26 +382,9 @@ void rxe_rcv(struct sk_buff *skb)
- 	if (unlikely(err))
- 		goto drop;
- 
--	/* Verify ICRC */
--	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
--	pack_icrc = be32_to_cpu(*icrcp);
+-static inline int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+-				  struct sk_buff *skb)
+-{
+-	int err;
+-	int is_request = pkt->mask & RXE_REQ_MASK;
+-	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
 -
--	calc_icrc = rxe_icrc_hdr(pkt, skb);
--	calc_icrc = rxe_crc32(rxe, calc_icrc, (u8 *)payload_addr(pkt),
--			      payload_size(pkt) + bth_pad(pkt));
--	calc_icrc = (__force u32)cpu_to_be32(~calc_icrc);
--	if (unlikely(calc_icrc != pack_icrc)) {
--		if (skb->protocol == htons(ETH_P_IPV6))
--			pr_warn_ratelimited("bad ICRC from %pI6c\n",
--					    &ipv6_hdr(skb)->saddr);
--		else if (skb->protocol == htons(ETH_P_IP))
--			pr_warn_ratelimited("bad ICRC from %pI4\n",
--					    &ip_hdr(skb)->saddr);
--		else
--			pr_warn_ratelimited("bad ICRC from unknown\n");
--
-+	err = rxe_icrc_check(skb, pkt);
-+	if (unlikely(err))
- 		goto drop;
+-	if ((is_request && (qp->req.state != QP_STATE_READY)) ||
+-	    (!is_request && (qp->resp.state != QP_STATE_READY))) {
+-		pr_info("Packet dropped. QP is not in ready state\n");
+-		goto drop;
 -	}
+-
+-	if (pkt->mask & RXE_LOOPBACK_MASK) {
+-		memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
+-		rxe_loopback(skb);
+-		err = 0;
+-	} else {
+-		err = rxe_send(pkt, skb);
+-	}
+-
+-	if (err) {
+-		rxe->xmit_errors++;
+-		rxe_counter_inc(rxe, RXE_CNT_SEND_ERR);
+-		return err;
+-	}
+-
+-	if ((qp_type(qp) != IB_QPT_RC) &&
+-	    (pkt->mask & RXE_END_MASK)) {
+-		pkt->wqe->state = wqe_state_done;
+-		rxe_run_task(&qp->comp.task, 1);
+-	}
+-
+-	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
+-	goto done;
+-
+-drop:
+-	kfree_skb(skb);
+-	err = 0;
+-done:
+-	return err;
+-}
+-
+ #endif /* RXE_LOC_H */
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index dec92928a1cd..c93a379a1b28 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -421,6 +421,49 @@ void rxe_loopback(struct sk_buff *skb)
+ 		rxe_rcv(skb);
+ }
  
- 	rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
- 
++int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
++		    struct sk_buff *skb)
++{
++	int err;
++	int is_request = pkt->mask & RXE_REQ_MASK;
++	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
++
++	if ((is_request && (qp->req.state != QP_STATE_READY)) ||
++	    (!is_request && (qp->resp.state != QP_STATE_READY))) {
++		pr_info("Packet dropped. QP is not in ready state\n");
++		goto drop;
++	}
++
++	if (pkt->mask & RXE_LOOPBACK_MASK) {
++		memcpy(SKB_TO_PKT(skb), pkt, sizeof(*pkt));
++		rxe_loopback(skb);
++		err = 0;
++	} else {
++		err = rxe_send(pkt, skb);
++	}
++
++	if (err) {
++		rxe->xmit_errors++;
++		rxe_counter_inc(rxe, RXE_CNT_SEND_ERR);
++		return err;
++	}
++
++	if ((qp_type(qp) != IB_QPT_RC) &&
++	    (pkt->mask & RXE_END_MASK)) {
++		pkt->wqe->state = wqe_state_done;
++		rxe_run_task(&qp->comp.task, 1);
++	}
++
++	rxe_counter_inc(rxe, RXE_CNT_SENT_PKTS);
++	goto done;
++
++drop:
++	kfree_skb(skb);
++	err = 0;
++done:
++	return err;
++}
++
+ struct sk_buff *rxe_init_packet(struct rxe_dev *rxe, struct rxe_av *av,
+ 				int paylen, struct rxe_pkt_info *pkt)
+ {
 -- 
 2.30.2
 
