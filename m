@@ -2,93 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06A4E3C1B12
-	for <lists+linux-rdma@lfdr.de>; Thu,  8 Jul 2021 23:35:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F6F3C222F
+	for <lists+linux-rdma@lfdr.de>; Fri,  9 Jul 2021 12:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhGHViW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 8 Jul 2021 17:38:22 -0400
-Received: from mga02.intel.com ([134.134.136.20]:2861 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhGHViV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 8 Jul 2021 17:38:21 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10039"; a="196777237"
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="196777237"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 14:35:35 -0700
-X-IronPort-AV: E=Sophos;i="5.84,225,1620716400"; 
-   d="scan'208";a="450070379"
-Received: from tenikolo-mobl1.amr.corp.intel.com ([10.213.168.178])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jul 2021 14:35:34 -0700
-From:   Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-To:     jgg@nvidia.com, dledford@redhat.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, mustafa.ismail@intel.com,
-        Tatyana Nikolova <tatyana.e.nikolova@intel.com>,
-        coverity-bot <keescook+coverity-bot@chromium.org>
-Subject: [PATCH rdma-next] Check vsi pointer before using it
-Date:   Thu,  8 Jul 2021 14:35:21 -0700
-Message-Id: <20210708213521.438-1-tatyana.e.nikolova@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S232107AbhGIK1p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jul 2021 06:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232006AbhGIK1p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 9 Jul 2021 06:27:45 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CCFAC0613DD
+        for <linux-rdma@vger.kernel.org>; Fri,  9 Jul 2021 03:25:01 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 11so3237261ljv.1
+        for <linux-rdma@vger.kernel.org>; Fri, 09 Jul 2021 03:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7eYg2OORZqFMxEkSST4c5MTXIQq7mqljuPAsGPZpLPI=;
+        b=G49PFH5ygg3gH93BnCgxj8e6m8bKrsoQK6Bo+D/LwEy+oV3GHLXqc1FDuAC55BFCnX
+         UoNrx5Iv7BHj1ZLz533xL2RBi15jHBeRHTCJwD8CTqEFw4BLCHBv18ZXZHwZ+lkhqt2g
+         ngxTQ5j40jCjpBnkJPhLqWSfJBLf+8TMgSfnidJ9mkBD0dWD1tEIKUhqJ4fuB/tPlT4H
+         ueehsCTtQoGo0ShFH3vK6e0buub6sGRV+QBw1Yzvc0njbO2td4qzZmO86GDAmm1bvAnT
+         FxGUptVLlB1OUI+JPeQoNvNfSGXnD9r4Ey4MQ7NdxfBNPbbl7J0SLOQJnknT6+F/Bf88
+         /r1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7eYg2OORZqFMxEkSST4c5MTXIQq7mqljuPAsGPZpLPI=;
+        b=tsQXVTg6KaZiblL2gJFnnrBozrFYLl2Gdq368ri+YHXr6lp1W5ZVcRSQz6Ncp/oGCy
+         l1qjLIKpaiHBc+plz9pdBZDinM883CJmt09lUup6rEgVmEukGdINWOESlgGgF4B/Y2Y/
+         FOKOyWtuDj81Co7VvRIZhnSouxnzgreB947jLJIUfI2Ny6BS4UUuDOHOQ+DQ7CEbBjl2
+         alfHToSmeVS3f+S9dJ0J42fnnjDC8KdE5xtVltCo6hoJTsWNkgb7w6Cs5hE75qcLW0yN
+         k3p+YJ2qlv7NwPKkgFTw1gS3dPI/brb07c/ou1ux3EQ1gKBO+kRcf7ZQRMsC7JQhwEFn
+         M+Bw==
+X-Gm-Message-State: AOAM533pxR3GO64eRgMOfCdtil5hjpEfxww0JCaJw60htsCapmgUHtRp
+        jfNjsqFu6ClniZDSlUPRIwFx1H4LHyEwEOoalMymfCwJNI2wAyPz
+X-Google-Smtp-Source: ABdhPJxwPpQi6cah3sxjlzwFMPXnNvcsN1KEUS9vt46PfZiSnuZMVXlt82MKifMCy1oqoxKfCKMchb7urylv7dAw6bs=
+X-Received: by 2002:a2e:95c9:: with SMTP id y9mr28170948ljh.401.1625826299581;
+ Fri, 09 Jul 2021 03:24:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Fri, 9 Jul 2021 19:24:48 +0900
+Message-ID: <CANXvt5oKHQFcKm5ypgS1FyMm_K9KntpmDVHDQRH3fsKXOXoc5A@mail.gmail.com>
+Subject: [RFC] RDMA with Continuous Memory Allocator
+To:     linux-rdma@vger.kernel.org, Takanari Hayama <taki@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix a coverity warning about NULL pointer dereference:
->> Dereferencing "vsi", which is known to be "NULL".
+Hi all,
 
-Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-Addresses-Coverity-ID: 1505164 ("Null pointer dereferences")
-Fixes: 8498a30e1b94 ("RDMA/irdma: Register auxiliary driver and implement private channel OPs")
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
----
- drivers/infiniband/hw/irdma/main.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+I tried to use Continuous Memory Allocator (CMA) allocated memory for
+RDMA transfer buffer in userspace, but it failed.
 
-diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
-index ea59432351fb..51a41359e0b4 100644
---- a/drivers/infiniband/hw/irdma/main.c
-+++ b/drivers/infiniband/hw/irdma/main.c
-@@ -215,10 +215,10 @@ static void irdma_remove(struct auxiliary_device *aux_dev)
- 	pr_debug("INIT: Gen2 PF[%d] device remove success\n", PCI_FUNC(pf->pdev->devfn));
- }
- 
--static void irdma_fill_device_info(struct irdma_device *iwdev, struct ice_pf *pf)
-+static void irdma_fill_device_info(struct irdma_device *iwdev, struct ice_pf *pf,
-+				   struct ice_vsi *vsi)
- {
- 	struct irdma_pci_f *rf = iwdev->rf;
--	struct ice_vsi *vsi = ice_get_main_vsi(pf);
- 
- 	rf->cdev = pf;
- 	rf->gen_ops.register_qset = irdma_lan_register_qset;
-@@ -253,12 +253,15 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 							    struct iidc_auxiliary_dev,
- 							    adev);
- 	struct ice_pf *pf = iidc_adev->pf;
-+	struct ice_vsi *vsi = ice_get_main_vsi(pf);
- 	struct iidc_qos_params qos_info = {};
- 	struct irdma_device *iwdev;
- 	struct irdma_pci_f *rf;
- 	struct irdma_l2params l2params = {};
- 	int err;
- 
-+	if (!vsi)
-+		return -EIO;
- 	iwdev = ib_alloc_device(irdma_device, ibdev);
- 	if (!iwdev)
- 		return -ENOMEM;
-@@ -268,7 +271,7 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 		return -ENOMEM;
- 	}
- 
--	irdma_fill_device_info(iwdev, pf);
-+	irdma_fill_device_info(iwdev, pf, vsi);
- 	rf = iwdev->rf;
- 
- 	if (irdma_ctrl_init_hw(rf)) {
--- 
-2.27.0
+For more details, an ibv_reg_mr() API fails when I pass an mmaped
+memory region of allocated memory by the CMA. The reason why, a CMA
+mmap function, __dma_mmap_from_coherent(), sets  VM_IO and VM_PFNMAP
+to vma->vm_flags, and an ib_uverbs_reg_mr(), kernel function
+corresponding to the ibv_reg_mr(), tries to pin the memory region but,
+it becomes to fail. because VM_IO or VM_PFNMAP regions cannot be
+pined. As a result, the ibv_reg_mr() returns an error.
 
+I think the ib_umem_get() that is called in the ib_uverbs_reg_mr() and
+pins memories needs some modifications to support RDMA transfer
+to/from the CMA memory.
+
+I=E2=80=99d like to know your comments, ideas, and other solution.
+
+Thanks a lot,
+Shunsuke.
