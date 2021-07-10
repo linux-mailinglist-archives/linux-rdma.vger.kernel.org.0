@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1893C2D3F
-	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jul 2021 04:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F93C2E0C
+	for <lists+linux-rdma@lfdr.de>; Sat, 10 Jul 2021 04:25:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232490AbhGJCWQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 9 Jul 2021 22:22:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38416 "EHLO mail.kernel.org"
+        id S233440AbhGJC0F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 9 Jul 2021 22:26:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232493AbhGJCVc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 9 Jul 2021 22:21:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57137613BE;
-        Sat, 10 Jul 2021 02:18:47 +0000 (UTC)
+        id S233213AbhGJCZc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 9 Jul 2021 22:25:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 18C76613D6;
+        Sat, 10 Jul 2021 02:22:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625883528;
-        bh=7U4vZqBaD7Fctf/2ZRSIKOEiDNzE4mJm9yBDA0b3hT8=;
+        s=k20201202; t=1625883768;
+        bh=fD1LaNOTlbKiJbWhZW7R5n9qQL7aHKWvIPGQEkN4bWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cAxKGVNs1/E6GLzfpXXxG9/IWgh1YSC1uG05Q0ox07SGei3jvNW9m/BNGjShtBXx6
-         suhS2/4AbygIsAVTAZHXQI9lDpvBtemNR567MrsKfPl0saOLw1noGT4PlIbYkt7HEO
-         RsfL2hsb8mfFOo1XzqosBPjA9pYUiNjIAN0GVxIiGH/pgrF/LqOKrKzz5yrJkyCWKX
-         WInY87b5HbrlfthNaW6RvFbVJj9pUAH98P47DV8QmEWixIl/k7lP086ui0nMqb28RS
-         MQ2SVwS9MI2VyAr3MV4ZCOj+OM0+gSPo8wwIbxwXi7n979jxzP+rRBoMc4L8cxOSXe
-         tjpMit960eRIg==
+        b=bhf/AVK6bn5j79seIQa9GErOLTWVgHJPwntqQND2+9HpR0BurMBhRz647xQWWwgBj
+         q5FH+CU3cqC/BQTCGX26J6YWZ1Sr7NrdKdp+T6ruMR6NqrmrEk9F1lOWnwIq5ytTKu
+         KVJp78mrdrgsj3vqpWR5ITElOi5eF2WtJdhsGnJ2evFlwzG4xtUO8RWlUDOsuf1vWq
+         tbg1qGLpvktcvBRukZbxEquJrgI8SJD1jUv15JEEncQe+epSWKGbzChPx6cMEYrAgv
+         Uqc3bTcl6z/Bl1ToXW8VNT+ypL/I78EJqk+H0RuO0O5ws9ansTKnlgJIiXmk0+G+0T
+         9PU9L/KTIoUZg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mike Christie <michael.christie@oracle.com>,
@@ -30,12 +30,12 @@ Cc:     Mike Christie <michael.christie@oracle.com>,
         "Martin K . Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org,
         linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com
-Subject: [PATCH AUTOSEL 5.13 043/114] scsi: iscsi: Stop queueing during ep_disconnect
-Date:   Fri,  9 Jul 2021 22:16:37 -0400
-Message-Id: <20210710021748.3167666-43-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 039/104] scsi: iscsi: Stop queueing during ep_disconnect
+Date:   Fri,  9 Jul 2021 22:20:51 -0400
+Message-Id: <20210710022156.3168825-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210710021748.3167666-1-sashal@kernel.org>
-References: <20210710021748.3167666-1-sashal@kernel.org>
+In-Reply-To: <20210710022156.3168825-1-sashal@kernel.org>
+References: <20210710022156.3168825-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -90,7 +90,7 @@ index 8fcaa1136f2c..6baebcb6d14d 100644
  	.attr_is_visible	= iser_attr_is_visible,
  	.set_param              = iscsi_iser_set_param,
 diff --git a/drivers/scsi/be2iscsi/be_main.c b/drivers/scsi/be2iscsi/be_main.c
-index 22cf7f4b8d8c..27c4f1598f76 100644
+index 90fcddb76f46..e9658a67d9da 100644
 --- a/drivers/scsi/be2iscsi/be_main.c
 +++ b/drivers/scsi/be2iscsi/be_main.c
 @@ -5809,6 +5809,7 @@ struct iscsi_transport beiscsi_iscsi_transport = {
@@ -114,7 +114,7 @@ index 1e6d8f62ea3c..b6c1da46d582 100644
  	.attr_is_visible	= bnx2i_attr_is_visible,
  	.set_param		= iscsi_set_param,
 diff --git a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-index 203f938fca7e..f949a4e00783 100644
+index 37d99357120f..edcd3fab6973 100644
 --- a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
 +++ b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
 @@ -117,6 +117,7 @@ static struct iscsi_transport cxgb3i_iscsi_transport = {
@@ -247,7 +247,7 @@ index 08c05403cd72..ef16537c523c 100644
  	.stop_conn = iscsi_conn_stop,
  	.destroy_conn = qedi_conn_destroy,
 diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index ad3afe30f617..74d0d1bc208d 100644
+index 7bd9a4a04ad5..ff663cb330c2 100644
 --- a/drivers/scsi/qla4xxx/ql4_os.c
 +++ b/drivers/scsi/qla4xxx/ql4_os.c
 @@ -259,6 +259,7 @@ static struct iscsi_transport qla4xxx_iscsi_transport = {
