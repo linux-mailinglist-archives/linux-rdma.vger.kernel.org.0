@@ -2,73 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77983C5C1D
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 14:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AE33C5C21
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 14:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232019AbhGLM3e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jul 2021 08:29:34 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:14048 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231749AbhGLM3e (ORCPT
+        id S232943AbhGLM3k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jul 2021 08:29:40 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:42574 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232342AbhGLM3j (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Jul 2021 08:29:34 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CCNiNC007976;
-        Mon, 12 Jul 2021 12:26:43 GMT
+        Mon, 12 Jul 2021 08:29:39 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16CCNFXY027745;
+        Mon, 12 Jul 2021 12:26:48 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2020-01-29;
- bh=EUeN2FlUs0J/CHYtSHN6FlqiAG9uM09QpQ3NzijVt/s=;
- b=HTJsFkLkUxXpfgqf6VGKwV8wSnQU9Zqs/zIZY8I5oTc7mZkt7ix6YyvlME8cWMg+0hX0
- uty6clRNIDy/OQD3vU1pfM0aTUI/lxasVp5tVr1mS3mEnIfdIPdLzLt8S8Rw9SlJhN+v
- Zvp+NvYD0eOVWJhn7DR1DBZ7XySLpy8Z/Amf6/6rhaEDabpTljXWNr7TLOxtfNf25ciD
- GUFHW/aYP2/BwsocifHoczc3HIP7j20VTsgHTp5Nav82WwuUqt3mDhLVD/s7hkWTxhHw
- bxU7ys4WPn9kfUba3QL/EMZ8WVmYJq3qMQu+Go/JmgRAC4B3VXmYo0CRshXeATbVVtaE Jg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39q2b2jjmp-1
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2020-01-29; bh=v3bg3YxFwnBDKbMXYaAbBRZlM1cz8e3lMy86gTPvvaU=;
+ b=sRB0KGfWibn/+4jwAQG9ZAtnlJQlt/EKHKVbVo57eJpsmK0CWZE5e+pONVTjAgWw43uL
+ wrA0uLSEVWefDS5RBtyYgXvJkT4qD78M5RF0B28eb8vkHL41Ukd/7eSMkJzTZjzZpbHl
+ M/3iT0+552VmUv7jJ7GjzBdpZ0UFgcZTN11zoZ/2vN7rHLQGpU47bC3FBcOMdMseOVUk
+ 3X3RjGj5UzlEoLizwShGxOEEMG3tOay9xGJ5gUiIvdodGsNtn6w/xb+WMkgUYS6EskMK
+ APtMDdclHGGq4RXHp8zlPn6HIrfPZrUhiYJ/Cm0GgipMEi4Leojc/o5MB7GO5lrQfeqD 1g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39r9hch0y5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Jul 2021 12:26:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16CCKolP028519;
-        Mon, 12 Jul 2021 12:26:42 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        by userp3020.oracle.com with ESMTP id 39qnatuwsp-1
+        Mon, 12 Jul 2021 12:26:48 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16CCKmJU134677;
+        Mon, 12 Jul 2021 12:26:47 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
+        by aserp3030.oracle.com with ESMTP id 39qycrhjsa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Jul 2021 12:26:42 +0000
+        Mon, 12 Jul 2021 12:26:46 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eCd0LeHGVKMCeXiEfE8Q91gWilnSBO6iIgCKO9+rVVVXNqkfPJhl/3vvhhJn6mLvYV8imx4kJzLdzGrZsLumxhNZyI1HdnjQEpjXB6Q2A3x2jZGK/zv0/ZLae6EHClEqq9xG02T9tDVm5wMg7PhBXNzbpPDjXnCHq9l+tawgfd6/DPotWOWcYObPaLIulIJRKXa21NuIRyaxwRi7M5K03IGi+1eH0zxvljCKUyQAsMDiUadPo3faMGxI+9Fv1/VruXaeIaVCQkeNq+ThWaV/t2ikTUK+opamj3vxqwh1sNKKbAdNaOGPTY7xQOFasUUzisvPCeYraLeyt8z9sjyWjw==
+ b=ipSaeiCyIkQKEGIhYcgSR6vCfzEm5HJLECgeDz7KoPuT/SxhUT1mgLB5/vJcJzmbqExXg+Pmq9yOQ4r6kLH9fR3wMg1mZ2wP6ddhKA/qz1viTJHZx95Y3pR1MLNHuQ1nPKmBGk6j7hFWnVxwc1/VWwcNRE5iYdqoN5RHyaYdmu3WKXHRTVXB/hEyK9zgopBd6Odn7Fka1bhk+lf8ku/ID39SIm3BJp5XCAN8T0qyq0me9Uuec0ClthboPeqmJrqVdzW6voVOfNfCakAkFKDoALJWbEdxIj8geSkh+KgUnRl4ccMwzSUuATjw1CwNr1U7gERuTbEogLMkBPjFXEq0Hw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EUeN2FlUs0J/CHYtSHN6FlqiAG9uM09QpQ3NzijVt/s=;
- b=nzizbI9WzA34eZ8h7dWPUo8/vnzbhBwre25zbLDBrcHNH6lI6oyjHRCe9NLhb+5j7VJZCc/dh/M/eOSn71q38akyJaIBnHhL4QogW87U8vnJIlcbdF3IPejhTAd3VEFTP0wcNVrGHXkyYFEPwXfKp4j4nNRKZus5+On7bIDZUyvQGGlHGo4NP+58yWYS9mVkqU7ic562F6EJM/Ok2UuQHnW/TrrVX0aERt4U8a+VUFQf0RXUISybJpctXdeKVnI97oPhZ8gJlh0RNxis3wD+3omrjXSjlesESeBafssfZYWvLuOLc01/L/P1FPXktGxy5K0bUlMst9ARSbZLoK3M8Q==
+ bh=v3bg3YxFwnBDKbMXYaAbBRZlM1cz8e3lMy86gTPvvaU=;
+ b=mr0zWhqKZtgq7aDa/1hDP+pRUxZpfuVpWSxxLcfvupKHO6hc9eaTPPSo0jkaEJPKZ3KTuuD7NzO6eoJUFwFa8XIjLfO5qIEckBLb6z6ktzsaoXiFXtLJ9wkCFr+LPWtUA6FweBvR2Ay6cKndIhum52bal0wnf1Kqi/pizIkS6GiFSUZs0RGPEyK1Y22Fslz5F0fGKOiNRDe6ocYKPOPe24tXYou0NweaYun67lIEmZzsHezden99RwQ0IVmEJQZx4ryy7CWvVXp/qWX26QFyW+WEuLya7mHAvoRmVFDQpbaroqXVT0nykMdkNkGS/UBU//IrYebsKQ6+EVx8iOWMuA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EUeN2FlUs0J/CHYtSHN6FlqiAG9uM09QpQ3NzijVt/s=;
- b=ZhQFn/PM8lWPBIM1W4nGHIHwQWVBYzwSDL0ERbpzqVDS0/TmYWyhoDikwEUYO1dXO/f7UuApGhEcGMn4731FYuy+saem05v9HJU+UPTRWsgF2oLMRopwWkRpZjYqlq55EDp8vDpuVXg2Un6ReStQhYaMd2PLsx0jqXJmv9wM1mQ=
+ bh=v3bg3YxFwnBDKbMXYaAbBRZlM1cz8e3lMy86gTPvvaU=;
+ b=fJWnrNz96o+JMbE3h3T9dkN38+9ZL11VKILIGtuMcnolMEzBka+JPisTwFRp58qTLL6WjOCf5iCF5iZd2rGvMef/nzTQzpIYSOI8dLdp2fZif4PeZUqS6sjYixnuG3LlqyTi2PBIRtL3GNZhPmxG3dFuNNx8VvPKZh5StyfmQmE=
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
 Received: from CY4PR1001MB2086.namprd10.prod.outlook.com
- (2603:10b6:910:49::39) by CY4PR1001MB2262.namprd10.prod.outlook.com
- (2603:10b6:910:42::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Mon, 12 Jul
- 2021 12:26:40 +0000
+ (2603:10b6:910:49::39) by CY4PR1001MB2309.namprd10.prod.outlook.com
+ (2603:10b6:910:3f::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.24; Mon, 12 Jul
+ 2021 12:26:43 +0000
 Received: from CY4PR1001MB2086.namprd10.prod.outlook.com
  ([fe80::9dcb:26d6:7408:b4d5]) by CY4PR1001MB2086.namprd10.prod.outlook.com
  ([fe80::9dcb:26d6:7408:b4d5%6]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
- 12:26:40 +0000
+ 12:26:43 +0000
 From:   Anand Khoje <anand.a.khoje@oracle.com>
 To:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     dledford@redhat.com, jgg@ziepe.ca, haakon.bugge@oracle.com,
         leon@kernel.org
-Subject: [PATCH v8 for-next 0/3] IB/core: Obtaining subnet_prefix from cache in
-Date:   Mon, 12 Jul 2021 17:56:22 +0530
-Message-Id: <20210712122625.1147-1-anand.a.khoje@oracle.com>
+Subject: [PATCH v8 for-next 1/3] IB/core: Updating cache for subnet_prefix in config_non_roce_gid_cache()
+Date:   Mon, 12 Jul 2021 17:56:23 +0530
+Message-Id: <20210712122625.1147-2-anand.a.khoje@oracle.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210712122625.1147-1-anand.a.khoje@oracle.com>
+References: <20210712122625.1147-1-anand.a.khoje@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-ClientProxiedBy: TYAP286CA0005.JPNP286.PROD.OUTLOOK.COM
@@ -76,122 +78,119 @@ X-ClientProxiedBy: TYAP286CA0005.JPNP286.PROD.OUTLOOK.COM
  (2603:10b6:910:49::39)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from AAKHOJE-T480.in.oracle.com (122.170.228.204) by TYAP286CA0005.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8015::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 12:26:37 +0000
+Received: from AAKHOJE-T480.in.oracle.com (122.170.228.204) by TYAP286CA0005.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8015::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 12:26:40 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9513d70b-a323-4aad-b489-08d945304c92
-X-MS-TrafficTypeDiagnostic: CY4PR1001MB2262:
+X-MS-Office365-Filtering-Correlation-Id: a8b69ea8-ae3a-4378-2302-08d945304e5b
+X-MS-TrafficTypeDiagnostic: CY4PR1001MB2309:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR1001MB226290907A0E2D7488CF3913C5159@CY4PR1001MB2262.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Microsoft-Antispam-PRVS: <CY4PR1001MB23091E89EAA7018B87A6646AC5159@CY4PR1001MB2309.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RKYeKprcoNY03DgihX9g8pLvTxpGAJDC4n2hR/PaaYLp+J4onFovJ7/u9wBACg0xkt6a55biW//GINK2bJljVno2edKT5D9AoKrQafxfu6JQBQlSnsolSOwq4QQI42rqrrVgdqUQUuh4GmFzRgxxymASduirf+hcKirHuVxOT6liBcSa1fDNEm3U9/M7s81G5UmGG7rUeWBzK4McjaCLfV8/HNyrJw1QgsFYkqLC9bdswMhSrzt54ezdiQxBphSWjz4vhL9eVewfSS3gZczuwLu5cyojEItrZhwGiFBt8WBsSa5G13Watg3lKzpIsDRWpgA/0xayWOqVVu1hBZagy8nakPN2qvECMoisuEYfw9kBklR0pxb75/CZCaepp/Qhe5z2SIlJBfY2Q1YN6t23JPTsMv0x75Ufx6THMJ+7z7xk4rYAKUPF5lu9YBUKjtjyT54/RJdPPHdQrzqrTsdxzs53TdTnH/LNlZV6CHPFomtycI8x2xOaewEDuqnrUOTrS0oAcpbhjxXhGnhcoqK03jIKeXtyMVs5Oc2MlgAVmrK9JdgBAjF4gQZOa4DTmiUXQu8dRIme6ZGxC1lAGb26vtIawz5lC+bPQcJKD39Bf0Y2v/J+Bekec9/h1JucM1Ls1ETRZiQR/2V+6BjfQxv4eiTqoe/bTLB8cr2kJKZJwRb8nF0AUoys29OGrLXP8LcuqZc74/DAU2fTM+byP3lllg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2086.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39860400002)(396003)(346002)(136003)(376002)(38100700002)(38350700002)(5660300002)(83380400001)(66556008)(36756003)(6666004)(186003)(26005)(55236004)(52116002)(66476007)(478600001)(103116003)(1076003)(4326008)(956004)(2616005)(66946007)(8936002)(316002)(86362001)(8676002)(2906002)(7696005)(6486002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ntl2g8R7dyrHkHHb6os2NCLGBaOs703cdGZ6n58P0ETjAGmKb/klGBLVgiy71AD8oxnGWFndQUthcvVk53+6YIdgqcDArHgZkquBg0tcbS5KGFnnmsL06tlcdtb6qj12scHiMlb2dQhZZyIxi7Jm3P8QkHsTMgktWxirUR3wV3aAq9lvRZ9feD5oCK6bPgaqK0Q+Oclkhq/jc8Fm/9aeBznDQICUoPKFv1rTAq2300l4vPXJetrYZ+AJ20yIuHpwkDAvL2DIqw45KCotu+dx4hjxDkkY4VJu/vZWkQAJd+mVz6csv6vD9Xoagcvo3DSDdbkHhP9LgXRgbZ/EefouT8EqshoYT9lxGZLOgfTZMSPAenxXo/13nQv44xqFuu3wdfKgbJJbp90IsFOzTEJpnu14qYrxvgPRukYLk5u/R2rNyn3sBzRcaUEtuR5qGhmhdeVogwWttqEHOawxOkvJl9Aq2lcjZdbCVf9eBZW1PxUXafi7Qd/f6rnVJpmiaThP5tsOW+IHWkfPjGZYfNfKVGIEXONk37N0Mtgj3WefWaWCAA6dNa5wkzzJ2GG8qtYiUuRflAw/M0uw7VL6PHsDH02+kgszkjJcgwlRYN5ZZ3WssrrkhayoxoVw5VEv4D+awfTgmQr+14gIzNx7QlTVEoysO+a9NL7aEpjhRpwiZdUSor08zeCCyyfAFIjRFDzge/Egb4nD/ODPcb6J/4xNuA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR1001MB2086.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39860400002)(376002)(346002)(6666004)(2906002)(36756003)(2616005)(66946007)(66556008)(1076003)(66476007)(86362001)(38350700002)(4326008)(6486002)(83380400001)(316002)(956004)(55236004)(186003)(38100700002)(8676002)(103116003)(7696005)(52116002)(478600001)(8936002)(5660300002)(26005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gpsjuEqLTIRSL2hAi0qnfbrdMB5YvyzHA687PKcCrVzaC/UoOrb49LY7GLmQ?=
- =?us-ascii?Q?kqlxnQTdStghh0uJLyHRXVE3t6xxxvEpLLwq+qywpkuNK1+VjLQy4eR9qlG6?=
- =?us-ascii?Q?5agILbKOZjBa8PyemsYc3ZePL/H9DVYYcGL/kA8L1LWoeEL4o1tCq269TakK?=
- =?us-ascii?Q?Ke1fH3KZiZ6tJGJLA/MyYsmNoUTqp/V91MKI78qw6xGJeMvsC/r8rnd5s92w?=
- =?us-ascii?Q?KfPy9luWJLZN06lHNjlbSt5MOmZL9ayUszH4nFXnlfr7L2fpI6gBaOZk8Y+E?=
- =?us-ascii?Q?eyXKm8IDhwfOktDX8G029kVjYpTJViFbBcpsHRFg++rKwQjlNq82Nd4TNseu?=
- =?us-ascii?Q?yUxtTXqJax9eqSNMM8W3lRldbMS6bqwjc+GnAygfV9WAsH/e1thGwqe+zURg?=
- =?us-ascii?Q?oiAVq2D/Rbc33R4CfgOp8/bY1Br2RrhZ8TpPkYZP9Dv9IrrHx6KxgmgEyyBI?=
- =?us-ascii?Q?h2TYds7hXr8WWe/JP1gQ8uC0VN76/kzsyfn4/3rIE0wP/YtmZXNotMsUq3Oh?=
- =?us-ascii?Q?Auxjw/ubn34U6deBX91rkomlajqt2zU7o/G1zpN9lIQQ1e2Vn8z0273uhjTg?=
- =?us-ascii?Q?3RUceioqlkLtF1T/aYLJbFi7hZTjY2XafIhYrdDPZDBy3iAZqVNLr8ZCOFRm?=
- =?us-ascii?Q?ppESHSiOVI1HaTFh/nVQFP40TomhzwybE7Fd+MnoHenJcloyVz6ke52fUZog?=
- =?us-ascii?Q?wkpQTuS3iwbMSa57JaUpKD6jBxJGdVWsKDWqE6kZ0X2JXsLlljPw4NyqYk33?=
- =?us-ascii?Q?vUgT7O4T8IdacLpWnTWj7Vl13PtoZpF7wSR525W6FpxD98lsG/KW3lM5DiNG?=
- =?us-ascii?Q?Bad+VgwreQkllKQ5/7rz1z+3LHC6Ya/ypwCSC9j13uY0ifmWr84prbaQcr6b?=
- =?us-ascii?Q?5EC4U9NLaUAZEnLGVEi6c3VkDjBieKfGkZRv16iWlopls231y0QVtV/LbAMq?=
- =?us-ascii?Q?sEtKRcNIdR1hkOjrzNuwhlwKbPsS97hSvQNG87rWYJaKvDk0QOYEgslAn7LO?=
- =?us-ascii?Q?7gYlVPI2HKK9WEhy+EZ7F+U/eV81OuDLuQ1XROBEwoSqkolsXEAMaGtxgtiZ?=
- =?us-ascii?Q?mF/gocM0mVJRMoZPMqtif9Dgzv7CemZ2Rp51oTrIFoG4wcY/yKlNk+4qGwNN?=
- =?us-ascii?Q?+OGrpipsBQePLjYlCgtiBUVUs7t8MCjlKU/TQbi3QMRRFRKJlQ9x0zKLFUpt?=
- =?us-ascii?Q?6Tg5N0J9q2DUAnu+pZP1Tk00352x4Z+6ob6rzeKhFYflyJWmXGOunYRweEeZ?=
- =?us-ascii?Q?+T/K5uDImxA3dFUy15gq6R8L/pF7bPu4Y9cFQSo7Ny2iPAt0CBoVQXR/5AcT?=
- =?us-ascii?Q?ut6USpjQAQJek+VEwYo1PC6N?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?O1tK6MBg/VkUKyWcY+8/u3DHumicvnwl6vJo1/4ddBIHnTv5cNFv16xFCQWU?=
+ =?us-ascii?Q?i/YkwO34bmqlhmoQxm9ndjFsptkBV6WMGvqurEXdLThX+MV4/mKiaRIw/By/?=
+ =?us-ascii?Q?k6cNdkE2KKEYzisRZr/QKvlOkzSIjZwQnfuM7d6cJiaL7AAGUjvjlaCZLPeS?=
+ =?us-ascii?Q?fLRppqAB7K/u/GEZNQ7pWUHj112Zsh/LX0VmoXbxIxVTPcFz5Ig2xhhlvDek?=
+ =?us-ascii?Q?ifICJ2Fwktlo7pknoUAMwn7T9iUF2oIEh2aS7CCO2UndnBfsr0DgZWiKwNA/?=
+ =?us-ascii?Q?p94plckWAImMhS5iudIrJQa2Ssy5PaKs6Ksthf8iyd0Kjv+ZKWOvjThBKgaM?=
+ =?us-ascii?Q?IfEhq/0XXY6WUk0/VvUJ7UWgQn8zoejpoYJwV5L2LsK2uUvMB8/5JomzCYi2?=
+ =?us-ascii?Q?LmMyaJOhCHwH9MjwpDyshJmp3UZ1mRzogu5yTqUioxE3wzYHazYkZE/5svB2?=
+ =?us-ascii?Q?/Dw3Gd+THmvI2F0uqXRPaTwapKCtmCXsLyro3FJ3RIQbXZtKtgu0WtE8Q32V?=
+ =?us-ascii?Q?ZSEw8q1pie2Y/0CrO5RDRiUuOk5rMknaZL9T3gXzcvrT3ggG4VrNHPWgJJsc?=
+ =?us-ascii?Q?rXDeR1diN6zFJeKjG9tUrTM0jqCUWmXlHrSxamnRjtlKOl/qTsslVh70iHth?=
+ =?us-ascii?Q?lPmIm/6etkjEPVuSL1p4tL5byP3Vkby+uzcGkLS62DT0XikCvj+ncIF4qihN?=
+ =?us-ascii?Q?q49i8NT2zrWQNNAJ01i888C+RFEVia8gpBBg0+iPh2pfZUF/W5XKG7sD1rCu?=
+ =?us-ascii?Q?TyQ6RMafymK0hZxVvTqmpJ1a8FT56n9hxsTU9+XrbpUVAGe76Fj9lztk8iJ1?=
+ =?us-ascii?Q?kMsJ5AgjeV3Xb0iOIucZy4LSkEOS/4O6tizMy8vkrtDwwMcVZazAq4uXtr80?=
+ =?us-ascii?Q?oUWSdV83DUntGmNvIdb7PZ/2UE25rXhhXNC3ZThh8vNpi3I6B9Q5vC8XTfJV?=
+ =?us-ascii?Q?R5O2si+zmGQTQkZJZbJH+epUK02aMaysxWr1P7/axYmIn3JxJ+J92DXisrbl?=
+ =?us-ascii?Q?FEk1YUSu9I5Almn0wTWNvaga0v4/RbGMVlLeF2Ke3HDGDxzRJKUq+frzxFoq?=
+ =?us-ascii?Q?cT/0j4zJzXxygKkaWsZRGXy6dyt/G4uDChhxbI//XXBjzfMW0f74MTxMoVlU?=
+ =?us-ascii?Q?SCLbvhdUWeWmsZkj92t6c1k7V6cB8FlPw9uoMb92fRDL8YaG7/Qi4HPppj+d?=
+ =?us-ascii?Q?wyLwHYxZhcXd5Mna0fvLcWlFpkOKJbYS/LPFz+ibqrs23VKM6vXTlvwEIsH8?=
+ =?us-ascii?Q?ED8k/riWBmdbQLyOHXvoD1aws+D37fCXlygp83nONtIwvZ8s84eZVwXxczD/?=
+ =?us-ascii?Q?tdoXYSyAWxMLYe6u+JYFn9Hc?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9513d70b-a323-4aad-b489-08d945304c92
+X-MS-Exchange-CrossTenant-Network-Message-Id: a8b69ea8-ae3a-4378-2302-08d945304e5b
 X-MS-Exchange-CrossTenant-AuthSource: CY4PR1001MB2086.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 12:26:39.9922
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 12:26:43.0624
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nmMLRvApYwUS2jMJcbGZ7Ud8DFbf4kx5IBP1dhOb2TvBTfbztzY82cH0+XTCvtVSx3aZV+rM9Tb4/XeRXay0N2RplBwaqiA4nhGQcSi47C4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2262
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0xXnix+dqgT/kPilaOYU6puqaQY0ccjaVtxqnQGBhAaEi3o6nVgaWz9G57tKKPEzHH8RgWKsPzNbp2pXoSXaEDUSo3hZ5wCP9ynPzauEnDc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1001MB2309
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10042 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 malwarescore=0
- spamscore=0 suspectscore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2107120097
-X-Proofpoint-GUID: lGB2JsCjEByiNMz0c6IWmjHlDpCSPMVM
-X-Proofpoint-ORIG-GUID: lGB2JsCjEByiNMz0c6IWmjHlDpCSPMVM
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ adultscore=0 malwarescore=0 bulkscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107120097
+X-Proofpoint-ORIG-GUID: NsrshBeXhEgk7YUcCionIesyfPoVtfyX
+X-Proofpoint-GUID: NsrshBeXhEgk7YUcCionIesyfPoVtfyX
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This v8 of patch series is used to read the port_attribute subnet_prefix
-from a valid cache entry instead of having to call
-device->ops.query_gid() for Infiniband link-layer devices in
-__ib_query_port().
+Currently, cache for subnet_prefix was getting updated by reading port
+attributes via ib_query_port. ib_query_port() calls ops.query_gid()
+to get subnet_prefix and returns it via port_attr.
 
-In the event of a cache update, the value for subnet_prefix gets read
-using device->ops.query_gid() in config_non_roce_gid_cache().
+In ib_cache_update(), config_non_roce_gid_cache() obtains GIDs
+by calling ops.query_gid(). We utilize this to store subnet_prefix
+in cache.
 
-It also re-orders the initialization of lock cache_lock of struct ib_device
-such that the lock is initialized before its first use in __ib_query_port()
-during device initialization.
-
-Anand Khoje (3):
-  IB/core: Updating cache for subnet_prefix in
-    config_non_roce_gid_cache()
-  IB/core: Shifting initialization of device->cache_lock
-  IB/core: Read subnet_prefix in ib_query_port via cache.
-
- drivers/infiniband/core/cache.c  | 10 +++++-----
- drivers/infiniband/core/device.c | 10 ++++------
- 2 files changed, 9 insertions(+), 11 deletions(-)
-
+Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+Suggested-by: Aru Kolappan <aru.kolappan@oracle.com>
+Signed-off-by: Anand Khoje <anand.a.khoje@oracle.com>
+Signed-off-by: Haakon Bugge <haakon.bugge@oracle.com>
 ---
-v1 -> v2:
-    -   Split the v1 patch in 3 patches as per Leon's suggestion.
+ drivers/infiniband/core/cache.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-v2 -> v3:
-    -   Added changes as per Mark Zhang's suggestion of clearing
-        flags in git_table_cleanup_one().
-v3 -> v4:
-    -   Removed the enum ib_port_data_flags and 8 byte flags from
-        struct ib_port_data, and the set_bit()/clear_bit() API
-        used to update this flag as that was not necessary.
-        Done to keep the code simple.
-    -   Added code to read subnet_prefix from updated GID cache in the
-        event of cache update. Prior to this change, ib_cache_update
-        was reading the value for subnet_prefix via ib_query_port(),
-        due to this patch, we ended up reading a stale cached value of
-        subnet_prefix.
-v4 -> v5:
-    -   Removed the code to reset cache_is_initialised bit from cleanup
-        as per Leon's suggestion.
-    -   Removed ib_cache_is_initialised() function.
-
-v5 -> v6:
-    -   Added changes as per Jason's suggestion of updating subnet_prefix
-        in config_non_roce_gid_cache() and removing the flag
-        cache_is_initialized in __ib_query_port().
-
-v6 -> v7:
-    -   Reordering the initialization of cache_lock, as the previous
-        version caused an access to uninitialized cache_lock.
-
-v7 -> v8:
-    -   Resending the v7 of the patch-set after rebasing on the new rc1.
-        There has been no change in the patches between v7 and v8 as v7
-        patches applied cleanly after rebasing to 5.14-rc1.
----
-
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index c9e9fc8..929399e 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -1429,7 +1429,7 @@ int rdma_read_gid_l2_fields(const struct ib_gid_attr *attr,
+ EXPORT_SYMBOL(rdma_read_gid_l2_fields);
+ 
+ static int config_non_roce_gid_cache(struct ib_device *device,
+-				     u32 port, int gid_tbl_len)
++				     u32 port, struct ib_port_attr *tprops)
+ {
+ 	struct ib_gid_attr gid_attr = {};
+ 	struct ib_gid_table *table;
+@@ -1441,7 +1441,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+ 	table = rdma_gid_table(device, port);
+ 
+ 	mutex_lock(&table->lock);
+-	for (i = 0; i < gid_tbl_len; ++i) {
++	for (i = 0; i < tprops->gid_tbl_len; ++i) {
+ 		if (!device->ops.query_gid)
+ 			continue;
+ 		ret = device->ops.query_gid(device, port, i, &gid_attr.gid);
+@@ -1452,6 +1452,8 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+ 			goto err;
+ 		}
+ 		gid_attr.index = i;
++		tprops->subnet_prefix =
++			be64_to_cpu(gid_attr.gid.global.subnet_prefix);
+ 		add_modify_gid(table, &gid_attr);
+ 	}
+ err:
+@@ -1484,7 +1486,7 @@ static int config_non_roce_gid_cache(struct ib_device *device,
+ 
+ 	if (!rdma_protocol_roce(device, port) && update_gids) {
+ 		ret = config_non_roce_gid_cache(device, port,
+-						tprops->gid_tbl_len);
++						tprops);
+ 		if (ret)
+ 			goto err;
+ 	}
 -- 
 1.8.3.1
 
