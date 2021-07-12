@@ -2,172 +2,245 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B6C3C43DA
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 08:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2933C5B1E
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 13:05:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhGLGKq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jul 2021 02:10:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhGLGKq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jul 2021 02:10:46 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03439C0613E8
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jul 2021 23:07:58 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id h18-20020a05600c3512b029020e4ceb9588so13603308wmq.5
-        for <linux-rdma@vger.kernel.org>; Sun, 11 Jul 2021 23:07:57 -0700 (PDT)
+        id S233638AbhGLLDm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jul 2021 07:03:42 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:35926 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232889AbhGLLDl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 12 Jul 2021 07:03:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VInWHDB2M54SAf2pi/ohFQ/fjdS46jXhiC35qkGExsU=;
-        b=SCOCwk1BoDZevRcBQGb8oTeXcN4KFAhYFcUWZX1sCejSWdc/GrXTnTOeaxcfgsL/ao
-         6Ikau/SCURt0VlMTdg6jH5Roa41O7hFy1bkAOR2UkZCv5h0yWLHJaIfIExmxTAfXjIqr
-         ZNMKyJyS+cz4oV8bzvhfJXo/tVykL/71HpSUioXdcpo/nvdND6IqI3tuEdYFFJmt+qZt
-         mlA5qK9u9EcGhD74qCDepCdQ0Cg7fttgJ3GjADjL+vtKzGqhllYzNc5F2gNvB5N19ipE
-         4Wd2/dw2FIxgDQY0AXFID7PZNdyFMIgrt9mktPfED33YDU9h48CY/k/uNRU2kSsbVgiD
-         fm/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VInWHDB2M54SAf2pi/ohFQ/fjdS46jXhiC35qkGExsU=;
-        b=R6rovbkdQC7ndcR+44Quxmrt77nU3+MKZHj0hLv+tlcPW+oBPdMx/WBlkf9Rfg3K9g
-         047xOJ5FfiYoFAt7Tu4dT502YzGyxFbKY9nknlghcMmGwkj6n9hiDSfHlhB3P47VMW2E
-         a/+cogo/pfDn3Ml1cZkkjxfOgE5mjgYj0Lkav9kIh8vaeIIc1bWW4ZKvX9VN/xcFBzOb
-         hMWMOto5AAIO8yT/a+TCC5sidZg0d4vfvGwO2SXrmZFpNB/Kzusry0dDIptmdqbXGDzv
-         /2K5IgTWpsosMdz7L4KA5mtJwExpbXQLbQdFdeacjphGJTcxvMcpeLfwTClrGFhcNCG+
-         0v8g==
-X-Gm-Message-State: AOAM532XCYG2kb2fZYpA9M+uIjRz38VZVmIZ2ZFKC4R13TzeYAIWf7ck
-        M4iA+KVuuJE59rpJlZpsviG8qv6xtyPcmA==
-X-Google-Smtp-Source: ABdhPJz3ikkHnnMztBw4qqixovFnev5cFOZvNOqHbhHr7F1cWGN60i659MHma5FR84Sbpi6sPrG0bw==
-X-Received: by 2002:a05:600c:1c1f:: with SMTP id j31mr600321wms.132.1626070076477;
-        Sun, 11 Jul 2021 23:07:56 -0700 (PDT)
-Received: from jwang-Latitude-5491.fkb.profitbricks.net ([2001:16b8:49bc:8600:895c:e529:e1b8:7823])
-        by smtp.gmail.com with ESMTPSA id s17sm13344245wrv.2.2021.07.11.23.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 23:07:56 -0700 (PDT)
-From:   Jack Wang <jinpu.wang@ionos.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Aleksei Marov <aleksei.marov@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCHv2 for-rc 6/6] RDMA/rtrs: Move sq_wr_avail to rtrs_con
-Date:   Mon, 12 Jul 2021 08:07:50 +0200
-Message-Id: <20210712060750.16494-7-jinpu.wang@ionos.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210712060750.16494-1-jinpu.wang@ionos.com>
-References: <20210712060750.16494-1-jinpu.wang@ionos.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1626087654; x=1657623654;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=O5DavsvV+97OzMq9TAXEWE+szCdoViUVEtx3lhUrhA8=;
+  b=OApS79/FzUOobZjuOzNO2F/EEQ445rosUAZKsCwnAJRYkQcnY2QZAeYI
+   Gnk1ehwZHmrlP/op7uJ5me8kzS/wYZUFkMOYqbWnoQul7fGtPFe0Q6bHC
+   oehtkSWaP9awhyZACEH69kTonwj8VhOJS4R+Tbzk+JFpqcTojdRRoOsBx
+   0=;
+X-IronPort-AV: E=Sophos;i="5.84,232,1620691200"; 
+   d="scan'208";a="11559834"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 12 Jul 2021 10:59:41 +0000
+Received: from EX13D19EUB001.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id CA075A2010;
+        Mon, 12 Jul 2021 10:59:38 +0000 (UTC)
+Received: from EX13MTAUWB001.ant.amazon.com (10.43.161.207) by
+ EX13D19EUB001.ant.amazon.com (10.43.166.229) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Mon, 12 Jul 2021 10:59:37 +0000
+Received: from 8c85908914bf.ant.amazon.com.com (10.218.69.140) by
+ mail-relay.amazon.com (10.43.161.249) with Microsoft SMTP Server id
+ 15.0.1497.18 via Frontend Transport; Mon, 12 Jul 2021 10:59:34 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, Gal Pressman <galpress@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+Subject: [PATCH for-next] RDMA/efa: Split hardware stats to device and port stats
+Date:   Mon, 12 Jul 2021 13:59:23 +0300
+Message-ID: <20210712105923.17389-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In order to account HB for sq_wr_avail properly,
-move sq_wr_avail from rtrs_srv_con to rtrs_con.
+The hardware stats API distinguishes between device and port statistics,
+split the EFA stats accordingly instead of always dumping everything.
 
-Although rtrs-clt do not care sq_wr_avail, but still init it
-to max_send_wr.
-
-Fixes: b38041d50add ("RDMA/rtrs: Do not signal for heatbeat")
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Reviewed-by: Firas JahJah <firasj@amazon.com>
+Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-pri.h | 1 +
- drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 ++++----
- drivers/infiniband/ulp/rtrs/rtrs-srv.h | 1 -
- drivers/infiniband/ulp/rtrs/rtrs.c     | 1 +
- 5 files changed, 7 insertions(+), 5 deletions(-)
+ drivers/infiniband/hw/efa/efa_verbs.c | 120 +++++++++++++++-----------
+ 1 file changed, 71 insertions(+), 49 deletions(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index f023676e05e4..ece3205531b8 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -1680,6 +1680,7 @@ static int create_con_cq_qp(struct rtrs_clt_con *con)
- 			      sess->queue_depth * 3 + 1);
- 		max_send_sge = 2;
- 	}
-+	atomic_set(&con->c.sq_wr_avail, max_send_wr);
- 	cq_num = max_send_wr + max_recv_wr;
- 	/* alloc iu to recv new rkey reply when server reports flags set */
- 	if (sess->flags & RTRS_MSG_NEW_RKEY_F || con->c.cid == 0) {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-pri.h b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-index 76581ebaed1d..d12ddfa50747 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-pri.h
-@@ -97,6 +97,7 @@ struct rtrs_con {
- 	unsigned int		cid;
- 	int                     nr_cqe;
- 	atomic_t		wr_cnt;
-+	atomic_t		sq_wr_avail;
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index be6d3ff0f1be..b4cfb656ddd5 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include <linux/vmalloc.h>
+@@ -30,20 +30,7 @@ struct efa_user_mmap_entry {
+ 	u8 mmap_flag;
  };
  
- struct rtrs_sess {
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-index 44ed15f38896..cd9a4ccf4c28 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-@@ -507,11 +507,11 @@ bool rtrs_srv_resp_rdma(struct rtrs_srv_op *id, int status)
- 		ib_update_fast_reg_key(mr->mr, ib_inc_rkey(mr->mr->rkey));
- 	}
- 	if (unlikely(atomic_sub_return(1,
--				       &con->sq_wr_avail) < 0)) {
-+				       &con->c.sq_wr_avail) < 0)) {
- 		rtrs_err(s, "IB send queue full: sess=%s cid=%d\n",
- 			 kobject_name(&sess->kobj),
- 			 con->c.cid);
--		atomic_add(1, &con->sq_wr_avail);
-+		atomic_add(1, &con->c.sq_wr_avail);
- 		spin_lock(&con->rsp_wr_wait_lock);
- 		list_add_tail(&id->wait_list, &con->rsp_wr_wait_list);
- 		spin_unlock(&con->rsp_wr_wait_lock);
-@@ -1268,7 +1268,7 @@ static void rtrs_srv_rdma_done(struct ib_cq *cq, struct ib_wc *wc)
- 		 * post_send() RDMA write completions of IO reqs (read/write)
- 		 * and hb.
- 		 */
--		atomic_add(s->signal_interval, &con->sq_wr_avail);
-+		atomic_add(s->signal_interval, &con->c.sq_wr_avail);
+-#define EFA_DEFINE_STATS(op) \
+-	op(EFA_TX_BYTES, "tx_bytes") \
+-	op(EFA_TX_PKTS, "tx_pkts") \
+-	op(EFA_RX_BYTES, "rx_bytes") \
+-	op(EFA_RX_PKTS, "rx_pkts") \
+-	op(EFA_RX_DROPS, "rx_drops") \
+-	op(EFA_SEND_BYTES, "send_bytes") \
+-	op(EFA_SEND_WRS, "send_wrs") \
+-	op(EFA_RECV_BYTES, "recv_bytes") \
+-	op(EFA_RECV_WRS, "recv_wrs") \
+-	op(EFA_RDMA_READ_WRS, "rdma_read_wrs") \
+-	op(EFA_RDMA_READ_BYTES, "rdma_read_bytes") \
+-	op(EFA_RDMA_READ_WR_ERR, "rdma_read_wr_err") \
+-	op(EFA_RDMA_READ_RESP_BYTES, "rdma_read_resp_bytes") \
++#define EFA_DEFINE_DEVICE_STATS(op) \
+ 	op(EFA_SUBMITTED_CMDS, "submitted_cmds") \
+ 	op(EFA_COMPLETED_CMDS, "completed_cmds") \
+ 	op(EFA_CMDS_ERR, "cmds_err") \
+@@ -57,15 +44,38 @@ struct efa_user_mmap_entry {
+ 	op(EFA_CREATE_AH_ERR, "create_ah_err") \
+ 	op(EFA_MMAP_ERR, "mmap_err")
  
- 		if (unlikely(!list_empty_careful(&con->rsp_wr_wait_list)))
- 			rtrs_rdma_process_wr_wait_list(con);
-@@ -1680,7 +1680,7 @@ static int create_con(struct rtrs_srv_sess *sess,
- 		 */
- 	}
- 	cq_num = max_send_wr + max_recv_wr;
--	atomic_set(&con->sq_wr_avail, max_send_wr);
-+	atomic_set(&con->c.sq_wr_avail, max_send_wr);
- 	cq_vector = rtrs_srv_get_next_cq_vector(sess);
++#define EFA_DEFINE_PORT_STATS(op) \
++	op(EFA_TX_BYTES, "tx_bytes") \
++	op(EFA_TX_PKTS, "tx_pkts") \
++	op(EFA_RX_BYTES, "rx_bytes") \
++	op(EFA_RX_PKTS, "rx_pkts") \
++	op(EFA_RX_DROPS, "rx_drops") \
++	op(EFA_SEND_BYTES, "send_bytes") \
++	op(EFA_SEND_WRS, "send_wrs") \
++	op(EFA_RECV_BYTES, "recv_bytes") \
++	op(EFA_RECV_WRS, "recv_wrs") \
++	op(EFA_RDMA_READ_WRS, "rdma_read_wrs") \
++	op(EFA_RDMA_READ_BYTES, "rdma_read_bytes") \
++	op(EFA_RDMA_READ_WR_ERR, "rdma_read_wr_err") \
++	op(EFA_RDMA_READ_RESP_BYTES, "rdma_read_resp_bytes") \
++
+ #define EFA_STATS_ENUM(ename, name) ename,
+ #define EFA_STATS_STR(ename, name) [ename] = name,
  
- 	/* TODO: SOFTIRQ can be faster, but be careful with softirq context */
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.h b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-index 6785c3b6363e..e81774f5acd3 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.h
-@@ -42,7 +42,6 @@ struct rtrs_srv_stats {
- 
- struct rtrs_srv_con {
- 	struct rtrs_con		c;
--	atomic_t		sq_wr_avail;
- 	struct list_head	rsp_wr_wait_list;
- 	spinlock_t		rsp_wr_wait_lock;
+-enum efa_hw_stats {
+-	EFA_DEFINE_STATS(EFA_STATS_ENUM)
++enum efa_hw_device_stats {
++	EFA_DEFINE_DEVICE_STATS(EFA_STATS_ENUM)
  };
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index b56dc5b82db0..ca542e477d38 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -191,6 +191,7 @@ static int rtrs_post_rdma_write_imm_empty(struct rtrs_con *con,
- 	struct rtrs_sess *sess = con->sess;
- 	enum ib_send_flags sflags;
  
-+	atomic_dec_if_positive(&con->sq_wr_avail);
- 	sflags = (atomic_inc_return(&con->wr_cnt) % sess->signal_interval) ?
- 		0 : IB_SEND_SIGNALED;
+-static const char *const efa_stats_names[] = {
+-	EFA_DEFINE_STATS(EFA_STATS_STR)
++static const char *const efa_device_stats_names[] = {
++	EFA_DEFINE_DEVICE_STATS(EFA_STATS_STR)
++};
++
++enum efa_hw_port_stats {
++	EFA_DEFINE_PORT_STATS(EFA_STATS_ENUM)
++};
++
++static const char *const efa_port_stats_names[] = {
++	EFA_DEFINE_PORT_STATS(EFA_STATS_STR)
+ };
  
+ #define EFA_CHUNK_PAYLOAD_SHIFT       12
+@@ -1904,33 +1914,53 @@ int efa_destroy_ah(struct ib_ah *ibah, u32 flags)
+ 	return 0;
+ }
+ 
+-struct rdma_hw_stats *efa_alloc_hw_port_stats(struct ib_device *ibdev, u32 port_num)
++struct rdma_hw_stats *efa_alloc_hw_port_stats(struct ib_device *ibdev,
++					      u32 port_num)
+ {
+-	return rdma_alloc_hw_stats_struct(efa_stats_names,
+-					  ARRAY_SIZE(efa_stats_names),
++	return rdma_alloc_hw_stats_struct(efa_port_stats_names,
++					  ARRAY_SIZE(efa_port_stats_names),
+ 					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
+ }
+ 
+ struct rdma_hw_stats *efa_alloc_hw_device_stats(struct ib_device *ibdev)
+ {
+-	/*
+-	 * It is probably a bug that efa reports its port stats as device
+-	 * stats
+-	 */
+-	return efa_alloc_hw_port_stats(ibdev, 0);
++	return rdma_alloc_hw_stats_struct(efa_device_stats_names,
++					  ARRAY_SIZE(efa_device_stats_names),
++					  RDMA_HW_STATS_DEFAULT_LIFESPAN);
+ }
+ 
+-int efa_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
+-		     u32 port_num, int index)
++static int efa_fill_device_stats(struct efa_dev *dev,
++				 struct rdma_hw_stats *stats)
++{
++	struct efa_com_stats_admin *as = &dev->edev.aq.stats;
++	struct efa_stats *s = &dev->stats;
++
++	stats->value[EFA_SUBMITTED_CMDS] = atomic64_read(&as->submitted_cmd);
++	stats->value[EFA_COMPLETED_CMDS] = atomic64_read(&as->completed_cmd);
++	stats->value[EFA_CMDS_ERR] = atomic64_read(&as->cmd_err);
++	stats->value[EFA_NO_COMPLETION_CMDS] = atomic64_read(&as->no_completion);
++
++	stats->value[EFA_KEEP_ALIVE_RCVD] = atomic64_read(&s->keep_alive_rcvd);
++	stats->value[EFA_ALLOC_PD_ERR] = atomic64_read(&s->alloc_pd_err);
++	stats->value[EFA_CREATE_QP_ERR] = atomic64_read(&s->create_qp_err);
++	stats->value[EFA_CREATE_CQ_ERR] = atomic64_read(&s->create_cq_err);
++	stats->value[EFA_REG_MR_ERR] = atomic64_read(&s->reg_mr_err);
++	stats->value[EFA_ALLOC_UCONTEXT_ERR] =
++		atomic64_read(&s->alloc_ucontext_err);
++	stats->value[EFA_CREATE_AH_ERR] = atomic64_read(&s->create_ah_err);
++	stats->value[EFA_MMAP_ERR] = atomic64_read(&s->mmap_err);
++
++	return ARRAY_SIZE(efa_device_stats_names);
++}
++
++static int efa_fill_port_stats(struct efa_dev *dev, struct rdma_hw_stats *stats,
++			       u32 port_num)
+ {
+ 	struct efa_com_get_stats_params params = {};
+ 	union efa_com_get_stats_result result;
+-	struct efa_dev *dev = to_edev(ibdev);
+ 	struct efa_com_rdma_read_stats *rrs;
+ 	struct efa_com_messages_stats *ms;
+ 	struct efa_com_basic_stats *bs;
+-	struct efa_com_stats_admin *as;
+-	struct efa_stats *s;
+ 	int err;
+ 
+ 	params.scope = EFA_ADMIN_GET_STATS_SCOPE_ALL;
+@@ -1969,24 +1999,16 @@ int efa_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
+ 	stats->value[EFA_RDMA_READ_WR_ERR] = rrs->read_wr_err;
+ 	stats->value[EFA_RDMA_READ_RESP_BYTES] = rrs->read_resp_bytes;
+ 
+-	as = &dev->edev.aq.stats;
+-	stats->value[EFA_SUBMITTED_CMDS] = atomic64_read(&as->submitted_cmd);
+-	stats->value[EFA_COMPLETED_CMDS] = atomic64_read(&as->completed_cmd);
+-	stats->value[EFA_CMDS_ERR] = atomic64_read(&as->cmd_err);
+-	stats->value[EFA_NO_COMPLETION_CMDS] = atomic64_read(&as->no_completion);
++	return ARRAY_SIZE(efa_port_stats_names);
++}
+ 
+-	s = &dev->stats;
+-	stats->value[EFA_KEEP_ALIVE_RCVD] = atomic64_read(&s->keep_alive_rcvd);
+-	stats->value[EFA_ALLOC_PD_ERR] = atomic64_read(&s->alloc_pd_err);
+-	stats->value[EFA_CREATE_QP_ERR] = atomic64_read(&s->create_qp_err);
+-	stats->value[EFA_CREATE_CQ_ERR] = atomic64_read(&s->create_cq_err);
+-	stats->value[EFA_REG_MR_ERR] = atomic64_read(&s->reg_mr_err);
+-	stats->value[EFA_ALLOC_UCONTEXT_ERR] =
+-		atomic64_read(&s->alloc_ucontext_err);
+-	stats->value[EFA_CREATE_AH_ERR] = atomic64_read(&s->create_ah_err);
+-	stats->value[EFA_MMAP_ERR] = atomic64_read(&s->mmap_err);
+-
+-	return ARRAY_SIZE(efa_stats_names);
++int efa_get_hw_stats(struct ib_device *ibdev, struct rdma_hw_stats *stats,
++		     u32 port_num, int index)
++{
++	if (port_num)
++		return efa_fill_port_stats(to_edev(ibdev), stats, port_num);
++	else
++		return efa_fill_device_stats(to_edev(ibdev), stats);
+ }
+ 
+ enum rdma_link_layer efa_port_link_layer(struct ib_device *ibdev,
+
+base-commit: 3d8287544223a3d2f37981c1f9ffd94d0b5e9ffc
 -- 
-2.25.1
+2.32.0
 
