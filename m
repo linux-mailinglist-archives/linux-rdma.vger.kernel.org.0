@@ -2,149 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D893C6207
-	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 19:35:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 758773C621A
+	for <lists+linux-rdma@lfdr.de>; Mon, 12 Jul 2021 19:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235694AbhGLRi1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 12 Jul 2021 13:38:27 -0400
-Received: from mail-dm6nam12on2087.outbound.protection.outlook.com ([40.107.243.87]:64904
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S233603AbhGLRpG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 12 Jul 2021 13:45:06 -0400
+Received: from mail-dm6nam10on2073.outbound.protection.outlook.com ([40.107.93.73]:61408
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235375AbhGLRi1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 12 Jul 2021 13:38:27 -0400
+        id S233570AbhGLRpG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 12 Jul 2021 13:45:06 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HQ88wC90Xra9kiIMZDbrwF9EiUw6atzqGW3aQvXHNu+u/6EeOoGQ2DJaI4XpHdTaaXJdASgxaVQ/K53p6DqtcCypDEN0lUmFYAACKUc5CYWqpVoxFO4dUjQehGiMVR/7CRD5eNOs3hVBLmUgwG1/PBU9hz1kb09CJBelmTj26nTkzI5S614b6wAESskj/om4JTWA1EAMr3uYrp9UONDQ1UUX8QPhsVL2XFKcdWUVAL5LtyeOupzBnRq/1ebHejIQn+QTZd/d786VyaTa38nvUsKQRNBxc8IgTTEEP4+beCwnsY0LvvgKmM1UEEiEwV6tQfAPj9pqCAFLdtzxKY+gTw==
+ b=R+W96Kf2GJINTAFPZnmusEGdnvy8MDph48LcZS8wLUqhPGbR0Nt8OagSF7FHr0tZsGQYG9ojMsoxZd/FNk/o9jae2RyW7BLH7I+DCBP9RI8L6k0WUjaCD/K27rmk4dprcw1I5bKb/XpXTbVxKpv6oG38mrDM5p8cihE5XrA2FgmHUrVbxxOVpx3Nk4HkLVLjh1y8jPHH0PEt2e6bSteWQB+KqlatxPvWmobpIlGKqlP0mou7xAy5hHwzcbLB1XOw1r8isX6u584CTkZdw2Wkbq426VTkjv7XW0MZG/VljRPFZpfeVVZ/8wUGW1WYEkrRiUQlWsZhzMRjEgauCXtJtA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RALaUzdRhegQJSqNbifyDshN+OWycfnfAS+XCY5/3lo=;
- b=KL/AgF9U/exKNgJUOokcjfUySDwCEeMrdc8RKnAl7HqAuUbx4aXD+FRz/cJBpesjFNg13gPpfcGC8ulUo46Y4gqoCApmS2j1/wYBke4xLGIz3VAzI7qfLs+2pJZgqNQXLZDrg5J79yHoT7S6al7DuirZwNvQRESS+7I468iH8k4dp5sNGZ4oSETWH2wzqdPPUU1UGZJXwpWINocThBRxZ1TxfeyDEivdKb26AUQsrvYi4hFVXzIF06XthRi2C+4VK8TmsADxQ9ctrIsmBklLD/BDLtMRe0Tp04eaCAp5wMp9uB2iVbMw/DZ+/QUmFw3JV/okA8fhgip/gURvYrKCyg==
+ bh=3ruy6zcu/g3iCPNobFZS5/BtzaRbBhEFwCybZEnwu8s=;
+ b=V4oFumJXspvPKoaci8KlreqDVlWmparh8x6vR+r8JCvj8QFlQs4p5ktvLrPJRkG+IJQHWS7apvrya/kJHUGl0gHoMNMCv27GxnUKaNo13DFFEsGy+hAI6TNpgOt67nLdev+e6KuSI/thhb7VgMNoC9akAGM7WJhtC+Gdnoyak6C3wRJCOaBVgZiDiKOqM/2axUiq1R97NhKyuv6Ttb1cJU4gY2mG6FntJWdFw9nv+jC/6UR31UXT7xTATxLYP80nwGqh0gH4FKXCnhYC5pm7xDFCxQsdxstPDMJw6jJtu/FtPbJ+4iWPhCx0DJ5JoHKdHlG4TGSAXKYKGuPzfAU2FQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RALaUzdRhegQJSqNbifyDshN+OWycfnfAS+XCY5/3lo=;
- b=NY0DwEJ0s0MhMP1KEaM6XfrCtevnMmC/amLvXYnwmQ5X2Mj+hxBnO487+OrcQINyzdiX5plTutZqjx2EaVLWWEgN8mHW1G+CwKHKy68mby5UCpYwePl6y9I/uI8pPOP82rpY9OMgRTq2o+xHEHhmsNkDMwVAZupllk0N5s9E2FUiEvlNpChcE1A2XDVeP8FSWVEAF4UMkkBDumRjD0r5Qkix12x1Q8lCDCru+HOU0U2/RTTj3YrJAAV9FgBbiywMBRhohjTU49fvKOrcFKrZsPG1/gSm7XdXyINz2e0HAW0ep5LoVbxI6nBE4/u5zUfFBmGnYdvNiN3gan0ArV64sg==
-Authentication-Results: ionos.com; dkim=none (message not signed)
- header.d=none;ionos.com; dmarc=none action=none header.from=nvidia.com;
+ bh=3ruy6zcu/g3iCPNobFZS5/BtzaRbBhEFwCybZEnwu8s=;
+ b=ZPzpbHRyFC/4i+4fSR51OyYEyLPQEaUirJLsA7yVl4mkY0eJJWSl3T3sBy4OgIdMUClXFWXxMJIPv8XupmdjzltufG+Bvu0/uvAZLhBJAfZEDRSYTErRM0M4OMmer7sdg+3u7HQeaOFc7ncP6dpYrYnuBIne1azpJYSpzGDQnlFlWNO6NPBymbjMcJXOgtQv05uX8gdv2zskh5PFEbn9pZNj321zC++z4+ZGoDPqFCE9+vYvnthckYLbpW6tysori2MOM0M4SQ4NZQAkPPLK75EHOyHbHBU8kDf5eNBIzdfX7hfdceImI1sm2CG3M4yHptmsy92XyAMMB1N/qrXEBw==
+Authentication-Results: cornelisnetworks.com; dkim=none (message not signed)
+ header.d=none;cornelisnetworks.com; dmarc=none action=none
+ header.from=nvidia.com;
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5255.namprd12.prod.outlook.com (2603:10b6:208:315::7) with
+ by BL1PR12MB5364.namprd12.prod.outlook.com (2603:10b6:208:314::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.22; Mon, 12 Jul
- 2021 17:35:37 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.21; Mon, 12 Jul
+ 2021 17:42:16 +0000
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::d017:af2f:7049:5482%4]) with mapi id 15.20.4308.026; Mon, 12 Jul 2021
- 17:35:37 +0000
-Date:   Mon, 12 Jul 2021 14:35:35 -0300
+ 17:42:16 +0000
+Date:   Mon, 12 Jul 2021 14:42:14 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jack Wang <jinpu.wang@ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        dledford@redhat.com, haris.iqbal@ionos.com
-Subject: Re: [PATCHv2 for-rc 0/6] Bugfixes for send queue overflow by
- heartbeat
-Message-ID: <20210712173535.GA258722@nvidia.com>
-References: <20210712060750.16494-1-jinpu.wang@ionos.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: Re: [PATCH for-rc or next 1/2] IB/hfi1: Indicate DMA wait when txq
+ is queued for wakeup
+Message-ID: <20210712174214.GA259846@nvidia.com>
+References: <20210706171942.49902.72880.stgit@awfm-01.cornelisnetworks.com>
+ <20210706172345.49902.10221.stgit@awfm-01.cornelisnetworks.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210712060750.16494-1-jinpu.wang@ionos.com>
-X-ClientProxiedBy: YTOPR0101CA0054.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:14::31) To BL0PR12MB5506.namprd12.prod.outlook.com
+In-Reply-To: <20210706172345.49902.10221.stgit@awfm-01.cornelisnetworks.com>
+X-ClientProxiedBy: CH0PR03CA0289.namprd03.prod.outlook.com
+ (2603:10b6:610:e6::24) To BL0PR12MB5506.namprd12.prod.outlook.com
  (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YTOPR0101CA0054.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:14::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.19 via Frontend Transport; Mon, 12 Jul 2021 17:35:37 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m2zqB-0015Rb-OJ; Mon, 12 Jul 2021 14:35:35 -0300
+Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0289.namprd03.prod.outlook.com (2603:10b6:610:e6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4308.20 via Frontend Transport; Mon, 12 Jul 2021 17:42:16 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m2zwc-0015c1-Tx; Mon, 12 Jul 2021 14:42:14 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6b54f8da-11b5-4e96-2972-08d9455b75d1
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5255:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5255AD56B262E8A893EDA563C2159@BL1PR12MB5255.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1360;
+X-MS-Office365-Filtering-Correlation-Id: 99b0e5de-f6bc-4f39-66d9-08d9455c63c7
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5364:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB53647BE5883FCD61962C54D9C2159@BL1PR12MB5364.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TCGLCo9AVy/xFWZUZOdn0aj7Fxce//ZCRNNt5zVkGmAj5rYuDLl6apYl9XZIMKI7/s8Bq2nFmL+K77CUiueoo5aS3KuI50ZgbrNpHMHK4eTXg48NSYG+5sD5xMge0k7S7h/0fVXUvlvcYZQbsh0/vpmAA1PHBJ8mNHpbeOq1DDE8R8GhVgTfaJrcBB/NhRGwQsshPelVYvELgMgVL8hq4pg3RgDpwn04c/LuQaBkC5EkehBnoZeprv3OjmSa/vNewRdemosVNf7t+eiLbg26NRGoNzwtFqTDLSKQ3Lg8OEt+lXTcTAo3ub9+q48wnTd5qCSNSuRiNjhnU2U66MjG/eHFBlaLyFpN6iYaipjFAlbqiEii7zJAOAr0KoADG3LXngVjnq//tyckstFUnOc4OwJFBUBcx0nUz+5P7DNz2bYdHVdw4mTfiK7LMwOKZLoX6Bzor8Aozl/PHn3aVvYur0VISg13aGY7EYerDlRPscKZGHeGI3hlr05e0eguR1aApaAgC/iP1UB2IdfIZCkb2e/IxD8Jd8pFJtq2SgveaqL3yIHNFTlhcoJ93GCaSHNst0Rf4mciDgYpKcAjqoBn/b6Gr7AoywCgm8YE+KzIinQaPVsOlTbIZouUNFdFM9WqmBvHO2ANb2Xs9mDdmxGBhw4yDmA4no73g0nu9XN9z8dMVyazQ2cGRoTx0MXFN5l+iZwS5vEEG42HVzkr9HMtgCBcUE4OYYCjJITadRy4zI03cMJpKFhFQpF0mKaPt+qwdEhK7JbURooaplpg+9OXQ91a2rJyqPGpz5AbFEfRrGs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(136003)(346002)(376002)(39860400002)(38100700002)(186003)(9746002)(5660300002)(83380400001)(9786002)(26005)(66556008)(36756003)(966005)(86362001)(33656002)(478600001)(4326008)(1076003)(66476007)(6916009)(2616005)(316002)(8936002)(426003)(66946007)(8676002)(2906002)(27376004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: YwPGiH8vLc0By0N2mhmimf+G4rDgz6rBo5vYOyeIT2eLfOVE/433CexMH0bEXoSwXOneT1HQeKuKEDy0CyumKE7DtJRzDDzBPg42I93S78UZmApd0nnye2tuhB2L8NzTXbWwJqaVMaPKRtWi85bf1g+Bl+ab6LBU9vMTcg+LqyF94sBEWMfWZv+mzaxqJJB91Iafg41M8xVr+Da0XV5L4Any7Q98+h8DAgQRLL0SWGE/hPsEmZcsxyEJIuatQfSou6AqgLmCx7Ego+27QJEjib55/2r48hcR3rdWch66R3afIvNhO4ql1gYlCLQu4EOIh7v7ucCqYdhjAsSlniRnQoxgv+0hMB+taKfmgByMzKUc7gulSPEoFXmFAcZrJJNfTZQIlYZFfN4hcGDT/kls7Pw+EEB5BHyyLucvuUe9qQQPRXhPchpwxDHNJKxJ5mJdZ+RY459mG61s7qDskl/N4Hknir7FNH3R8ubgN8ldiyyHF7HWVPW5gFCQ3lXWtieGn65exZyJ+w4lqJNzN/t64nYwmOolcTgdCNEz3+OF9BBaVZiJrBqqcpaHl0ZFnYFqYBm/g6JRvW2d6MT8p53joYiglcEqV1Xy0fmHHyWpexlRf+vNZxehReTuS8RLfbOcubwkdG588ooLTujhpfTRQbEFNPvdV/zVW2vQtNOHmhmk70RbciJHJbMA7+VVy00GPJ0I5LkOuzLg9CaymhsJWg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(83380400001)(2906002)(1076003)(478600001)(2616005)(66946007)(66556008)(66476007)(36756003)(38100700002)(426003)(4326008)(4744005)(86362001)(8676002)(9746002)(9786002)(26005)(8936002)(186003)(6916009)(33656002)(5660300002)(316002)(27376004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?21DTSiDwmD14Trt3g/mb+tYmUqgaqF2I9lzAW8GQP3H2Z8TsdNua+FUd9te9?=
- =?us-ascii?Q?E2RivqeCC2YbKE8LsctADc8NgV2Xa9780JyefNC+BQHHUnNRTBn8JO+sd98c?=
- =?us-ascii?Q?8eEC6ddLagwN/5A80rpJx+79wn4g7MptJ1eq2zwC03QgvU5EYXO+13tzJtSU?=
- =?us-ascii?Q?/VOv57v2Acyu5G1YvUQmgmehsO0NjI1Mw6LpVDDvtCaMg+a0ZTSclX7I/idT?=
- =?us-ascii?Q?nKW6fOkgtFKbDOIGkn0YKutur2tY6kLRs/SQHOkPcp1XYk7CEYygrBPz2vYj?=
- =?us-ascii?Q?P6pq2eWiyGLJWbP92w2im9AvUT1VJlJ8U9iGOnZS+K3VhYQ7HZms1lLswwYj?=
- =?us-ascii?Q?HynFl+7u9RVXppXwHQMsWPA/suZ8rYPeirTdFZJzqQo6drbeIWqgHCFuOcHh?=
- =?us-ascii?Q?1x6xzQAfh91WyBWc1GUPfKhE5y/ywxk9kX5TTzQUT7sb94j9ecVndScUN2QX?=
- =?us-ascii?Q?T+MshimKl5IxMjMnQ36iGK6uvcBsJ6vgIwLRjA1o6s3OZFQ7qCpet6xmjcSg?=
- =?us-ascii?Q?hFvQVT1FL0blGYFYPPWED0YlFZhF5unf0LUaLG8QoqIBVDMaOsoI9brE9yVY?=
- =?us-ascii?Q?zSOBknwQfHUhDw6gkEtszjtNv9+b+JfXzdRblo7L/JlpznaAf7UDKv1DZMUo?=
- =?us-ascii?Q?YtHWyCk3nSMj/s2ZsO7omCnlq46TajcSHfvrC802tEegssN8Tl54ctf67Src?=
- =?us-ascii?Q?2ibLA46l5oKK47A6/+fncc9NY4kuV51C1uZTXl5VxNkcOTIpyzwgBhdbny+r?=
- =?us-ascii?Q?iV247btzMe0Y1kMKIcDv/IawPlkRQypD9JtpqYNBmYTC1I8Eni+CnFWafFk/?=
- =?us-ascii?Q?8D19v2Uf/bKqd1oxs56cvkD+ZtfWZ5yqKQ+kiWwrUciUFATwqc6LfFn1ez3F?=
- =?us-ascii?Q?CHm0KHbgebyTFjZODPFdX9R2NsC2lsJIollxNkXXtVTGl1p3mUexazFYNiZl?=
- =?us-ascii?Q?OQ9aa1q3vYWNL06Z3Q3RtlHqlKzTAqQXdBg9bnf63ZcgL3YFayFCFM7cVgZW?=
- =?us-ascii?Q?Ir5MAs8vS21hOFk6dBkCRm8NMDssBdiKEdAmeE3dlsav7XxdUFQNp6i/xtRh?=
- =?us-ascii?Q?6+hyuXGcrD6EgORS9WT+a1fGZrdXRAzKGQurkCZ7K5oXyP65CcTVPvgsQ2Zs?=
- =?us-ascii?Q?Y+2h2dpyhOAojbemHphMdE8en7sNw8P4H7JGmh5xuOcNiFGuaxxQo2xK4hue?=
- =?us-ascii?Q?+pH+9anYNYb49bZYF9OzwV7D5L8A4UPrn27hg5BgVfP5DjGYPHJvjKlraEEb?=
- =?us-ascii?Q?HXRGoDvrsamR+lO06uWdiIkq931s/y2iRUI6FG7KCdh6gSYACZ1UTvLABi/n?=
- =?us-ascii?Q?ufnT2LCmMxLmuu9lC/DiSTnF?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2F7RDXjgQdRvH7xbtA0V8bf82PuT12uvK8c2jcAZwDEIpwYCFh6nhBu+BpPG?=
+ =?us-ascii?Q?oe74bYyJo6WE63AsdIA9GC0Ndopn6T+E7mDxmEKIuNEte2J5SaL7Rt0QelRm?=
+ =?us-ascii?Q?7lUNCMCrUCkjpKLLPUtQcF+fhxy3X2whFZyvgKcs9m8yl3ebZmdjTt9nbwOc?=
+ =?us-ascii?Q?T5Zb1mvKNgkXgQojPXoL/d8tskCcf6/iIe5C4nbMQ9mSWfeo4d2JmbIdM+5U?=
+ =?us-ascii?Q?lFCCecOrLH45MHSZZVMjU6eRGh9zj2OPVw+En6f9bnvUFo0viIqHgVyCKt8j?=
+ =?us-ascii?Q?sqkDOMLXJOuWBaZCtSbaTAx/1PueG3P+kqzS0TspJ8adSa7SIWbb49c7DInw?=
+ =?us-ascii?Q?0wj4Xpt6Ie9B3cetaO6WnqebDjRnD+gYAGy6NcihovIofb20ZfsJ35PF57JX?=
+ =?us-ascii?Q?5BVTcURygUTx0WnMdGdqTeZD/tqJloF/g689PUyFWcsnHcd0CTumm8wZcUJX?=
+ =?us-ascii?Q?laPvOqYeM/QSKWj54g3a75bGxASq7r1y9vvap9dpkt42p5esXhgAH441eOGl?=
+ =?us-ascii?Q?yg7Tnj04envwdo6mYjAmVHBcyp6EMtlfbz8Os9rJDS8qHOKO61VH1qMpu2Gi?=
+ =?us-ascii?Q?JN39Vfvk0y7WeaiQRtZRsqt55UW61xH9hn+RJzLzveBEJJFzY7eTyRaoj3Bb?=
+ =?us-ascii?Q?Gb9QpojGUimYa+caCvsmBozHJDUtXQYMIAT0pgZ6/NdttRZuGLhWkUWu+s+I?=
+ =?us-ascii?Q?auPSmzz5LucyU8eVQiHJjItF43G7hiqtyZLZxKzY1wVT/kNTGIJqRCBrDtyP?=
+ =?us-ascii?Q?BKcUsa/kGCuW37q/kesoJWwTCfIiYfx/xHCU8SB0mG5Os6gNaLqrvMRZ8iaX?=
+ =?us-ascii?Q?pA9A0LBHGw4CR21W2xWsWCghaFKJkNsSljVFzj3hfdX72aMDYWkv5R4OauAM?=
+ =?us-ascii?Q?H2oIP9j1RhNoH9AszFPt63EBXrpq0rYM39SJlf/ZebeHYiwgCzKwL5z66zG3?=
+ =?us-ascii?Q?WlcObZS9TnALwSmYx+S9FbKcJfYlCQfwGYj2sNZ9nBr3Ay7v9pDY09Nz4+e+?=
+ =?us-ascii?Q?U89u4Q9t9yU9aJSKOLksrjjaA8tgYNIyVMmWqThFItUfXKpkNW34l9ir50ST?=
+ =?us-ascii?Q?g/H2XvevAm76ExtOOu9+Ve3Uf7xBNn2xnAzaP1ny80Ol0C0CxRov1inqiOPN?=
+ =?us-ascii?Q?kXmf4Rmx3/8a3FmPRAN/fi6wk5MRSh+XH3qKnGVtI0rpJBYJCAZOhQgz+16v?=
+ =?us-ascii?Q?yhN5GmNcdSTGLuA3WjqeKP8EZUl5TZefUBP/soex72A8E7HPqUih5KOsaLk7?=
+ =?us-ascii?Q?A/o9OOV+MENqBTsEJjDWZBfBFLxQ0Pnts5qpDvIGIEVxB5LTaz/CAJgMTxzY?=
+ =?us-ascii?Q?3B2nHdMhDpAPgbn8eX/y6J9m?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b54f8da-11b5-4e96-2972-08d9455b75d1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99b0e5de-f6bc-4f39-66d9-08d9455c63c7
 X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 17:35:37.2430
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jul 2021 17:42:16.5265
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ncfGEGDE/4hJ322letD93By/jyzN8k6j8ErxHNT/G89+PppVmmgvHggk9ikuTlxZ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5255
+X-MS-Exchange-CrossTenant-UserPrincipalName: vovMwqMKJMe3Nfw7LnCXzWdrIRZPxSxD96L7TbPh54wccbxCNzQBCp127AjeMJwr
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5364
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jul 12, 2021 at 08:07:44AM +0200, Jack Wang wrote:
-> Hi Jason, hi Doug,
+On Tue, Jul 06, 2021 at 01:23:45PM -0400, Dennis Dalessandro wrote:
+> From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 > 
-> Please consider to include following changes to upstream.
+> There is no counter for dmawait in AIP, which hampers debugging
+> performance issues.
 > 
-> This patchset fix a regression since b38041d50add ("RDMA/rtrs: Do not signal for heatbeat").
+> Add the counter increment when the txq is queued.
 > 
-> In commit b38041d50add, the signal flag is droped to fix the send queue full
-> logic, but introduced a worse bug the send queue overflow on both clt and srv
-> by heartbeat, sorry.
-> 
-> The patchset is orgnized as:
-> - patch1 debug patch.
-> - patch2 preparation.
-> - patch3 signal both IO and heartbeat.
-> - patch4 cleanup.
-> - patch5 cleanup
-> - patch6 move sq_wr_avail to account send queue full correctly.
-> 
-> The patches are created base v5.14-rc1.
-> 
-> Since v1:
-> * rebased to latest v5.14-rc1, target rc instread of for-next.
-> 
-> v1: https://lore.kernel.org/linux-rdma/20210629065321.12600-1-jinpu.wang@ionos.com/T/#t
-> 
-> Jack Wang (6):
->   RDMA/rtrs: Add error messages for failed operations.
->   RDMA/rtrs: move wr_cnt from rtrs_srv_con to rtrs_con
->   RDMA/rtrs: Enable the same selective signal for heartbeat and IO
->   RDMA/rtrs: Make rtrs_post_rdma_write_imm_empty static
->   RDMA/rtrs: Remove unused flags parameter
->   RDMA/rtrs: Move sq_wr_avail to rtrs_con
+> Fixes: d99dc602e2a5 ("IB/hfi1: Add functions to transmit datagram ipoib packets")
+> Fixes: c4cf5688ea69 ("IB/hfi1: Indicate DMA wait when txq is queued for wakeup")
 
-This is not really structured well enough for a -rc patch. There
-should be no unncessary changes and each patch should try to be self
-contained. Avoid "cleanup". Carefully describe what user visible
-defect each patch is fixing.
+Neither of these fixes lines are correct, please resend it with
+correct fixes lines.
 
-If you really want it to be in -rc then it needs reorganizing,
-otherwise I can put it in -next
+This commit message is not quite good enough to justfy adding a
+counter increment to rc, can you explain how this is an existing
+counter and it is a bug that this single case was not incremented?
 
 Jason
