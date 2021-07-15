@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E3493CA1D4
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jul 2021 18:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88B5F3CA1D5
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jul 2021 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232659AbhGOQHg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Jul 2021 12:07:36 -0400
-Received: from mail-dm6nam10on2120.outbound.protection.outlook.com ([40.107.93.120]:43233
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S239703AbhGOQHo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Jul 2021 12:07:44 -0400
+Received: from mail-bn8nam11on2117.outbound.protection.outlook.com ([40.107.236.117]:14913
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239701AbhGOQHg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Jul 2021 12:07:36 -0400
+        id S239701AbhGOQHo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Jul 2021 12:07:44 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CHxQbbwT+yUhg5S0V2cT0B3ob6Z0wAc3quxdQkyea8swXDFRgX6wAu636OTa+SZA2pWDn1mYDBpA0TSo1GxoDCqQ2VgDZGD0euRTEpARNlkZefEBdw2S9BtNkP/Pgx2JaF/BtXUn+UPhI11tYg8nj/NKgbaRGU+XQE5/sMesm2FN58NGlnuVlESBBSxHSxcF0hquNRFzsCMamhVD7NO5zAZVKPfgt1yFFp6Y1YZoX8CQh2ceYT/KMr3etdnS20bFl0QqpPagbGVaiyLr3rVfVd/JcPiBNvQHRYAexV+CpQNtnhm07qjO134BWBCQTDW3tthXacz195W+zNywLxMQGQ==
+ b=SQq01qwKZ6HCrbKqCiTX7zjzwNKVgGC6rmJq+KhCpZGabuxCcejXx25Ip66w494bQZgpmb6GopZfYkdZuuCR/OvHNtkc2gjhVvWADYfE1yBkaaJb2Vor+F3WT3MSh5ZtESPFNBlgbyUqFltkR9Gos8FDfLB5WJN+gdtSoGGPJNJh7SYpt+/SUrpl46ql6qliN0ieq1R6mVbnNoXPfweU3DVBPSrR28df60xK+NPHr5VfytejNtB0+iWY5g25SlkNhjLbwVY2EI4MQedmbWkkF/BM03qDmG2yviDJ/Yia1kIBCXr4tj6FvKXcwSYUkd+Y4TeRA3yXFA+l9PtLzYtllQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZvQXCfhbiX5vq5b4kZxUJSpCH0Xb0aoXiwpASEVi+0M=;
- b=GtjOW84d/T0ouO3/KtjB9PgaOghg4PWiA23SRvBEbBOwR311ZZFBegoUvXWYNnfKbUJZi6988FrG6ir8gp/2tJmh8XiTMa6FZnwzFHRYNf28faeIMd0YwfLfUP6hruoaewQX571YMaMCV28qLb7a9UowTPq9NINI6pOg7dO4ZIh6QdrRGBt2oV/8H2zs+xDDutUhmUrSSIFQO+b/Ct0nV4Mw9eugWQ3epxOH3rame7GBHuKGW4cXnOfKOedvvTCzoUmzjveaLKzsMsUQB4s11zH0RTmo9Ber1O+4Qp2LHuE63ccC6YZ+ZYDWQejs38ZPQjsqawyrrHo/A0pVcDlyYg==
+ bh=3tx9KDnNCUZzWOtiC3xOouBbZEBcgEIKnGIIlp6M4HY=;
+ b=Z7DS4qOXeYCJ3mBU4m6Ok7PH6qiYmQxgkYFgQ6SVo9SfCr/KxlCfZ9Ws4oyVJcF0+53TuN0Pnvh22nHrjN6LxkDD1naPfNfxkDHkGSOPU2BaVN5jsk2BayUCRvMuKOPPMDb+YDADnn3XXk+6FrojlDGw0F6hhGVeXaLfCSQGAudEov618PhTBbNYdWSUw9z1u2NoKZvvJh37lOdLVOr2YhnaKsaby8lpfrifjy86kaMHB1dD1a4E8xqxqL6UfIGiymEPgFvMIqkVoJzVaufpBrZZ1aFXNwI/nwdCVnWJhBlW20HScQks9zr8kzYizlm+WJN3tvBWpqheg0yLpaQfzw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  208.255.156.42) smtp.rcpttodomain=cornelisnetworks.com
  smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
@@ -26,17 +26,17 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZvQXCfhbiX5vq5b4kZxUJSpCH0Xb0aoXiwpASEVi+0M=;
- b=M8dTAKGzTYck7pDla0qr6HPZjPhCN7v8jhmaydzYwG5pVnOB1t7gOzsOGQg+c596y4CV2tsDA9C0gtIGYw6k2GbsvcYgfUkkjbQGtVffaDEMZPDmgB2VwyZP2Xg7vUiyFqlROvGBaCX3uary/kBciLS7fPz+CeNyFPl4zMJliWgHnDNyCU1UsKD2wec/DHjFA8CEJzDwrobu03xO3y1AOPpRGSllVfUAc7bHBuoF8NICdLcFhkhszjr1q6a9RapxZHVYhhalMj7xK/DzpBSBzy/jXogDuqV/8kL67rMZQTtja2UIh9fKU3zuuFVQkOILZ37nycte/NF+uQeU4awNnA==
-Received: from MWHPR22CA0056.namprd22.prod.outlook.com (2603:10b6:300:12a::18)
- by DM5PR01MB2442.prod.exchangelabs.com (2603:10b6:3:3d::10) with Microsoft
+ bh=3tx9KDnNCUZzWOtiC3xOouBbZEBcgEIKnGIIlp6M4HY=;
+ b=LauYggBkOZ/hEJA+NMMfkWD/i9Yc+LvxXQ8ez/pzr9qgHzFdnIOHivwF0iQiyxcdji8l7qIe//WS9Cr0+mNVVLo2Gr/MXSwecCC8B3a+3/y7SVKZTBWhDI/CjglYYbAVi3idGlTnuwqUyemgKR2Rb5V5MJRn+rLu6RKz3oipA88hGBdVj+54faAEcL9AkNJYBOKvcLHdnPBZBJXZDvQtOlmCQe5pQFEMGvRcuv+Hg4NMkamTEsqIyid6WdlC7kLLWaaSzuEiWUVIx0nEOWFWTjOJcTMZT4CZ+rpG4AMvGwAWrbQUCo0V8IaGw6u3W9WBjcAblvS2XPLfCAZyzv43IA==
+Received: from MW4PR03CA0055.namprd03.prod.outlook.com (2603:10b6:303:8e::30)
+ by CO1PR01MB6678.prod.exchangelabs.com (2603:10b6:303:d9::18) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4308.23; Thu, 15 Jul 2021 16:04:41 +0000
-Received: from CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:12a:cafe::6d) by MWHPR22CA0056.outlook.office365.com
- (2603:10b6:300:12a::18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend
- Transport; Thu, 15 Jul 2021 16:04:41 +0000
+ 15.20.4331.22; Thu, 15 Jul 2021 16:04:47 +0000
+Received: from CO1NAM11FT021.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:8e:cafe::4a) by MW4PR03CA0055.outlook.office365.com
+ (2603:10b6:303:8e::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23 via Frontend
+ Transport; Thu, 15 Jul 2021 16:04:47 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
  smtp.mailfrom=cornelisnetworks.com; cornelisnetworks.com; dkim=none (message
  not signed) header.d=none;cornelisnetworks.com; dmarc=bestguesspass
@@ -46,20 +46,19 @@ Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
  receiver=protection.outlook.com; client-ip=208.255.156.42;
  helo=awfm-01.cornelisnetworks.com;
 Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT058.mail.protection.outlook.com (10.13.174.164) with Microsoft SMTP
+ CO1NAM11FT021.mail.protection.outlook.com (10.13.175.51) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 16:04:41 +0000
+ 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 16:04:46 +0000
 Received: from awfm-01.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-01.cornelisnetworks.com (8.14.7/8.14.7) with ESMTP id 16FG4eTj146541;
-        Thu, 15 Jul 2021 12:04:40 -0400
-Subject: [PATCH for-next v3 1/2] IB/hfi1: Indicate DMA wait when txq is
- queued for wakeup
+        by awfm-01.cornelisnetworks.com (8.14.7/8.14.7) with ESMTP id 16FG4jcZ146756;
+        Thu, 15 Jul 2021 12:04:45 -0400
+Subject: [PATCH for-next v3 2/2] IB/hfi1: Adjust pkey entry in index 0
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     linux-rdma@vger.kernel.org,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Date:   Thu, 15 Jul 2021 12:04:40 -0400
-Message-ID: <20210715160440.142451.8278.stgit@awfm-01.cornelisnetworks.com>
+Date:   Thu, 15 Jul 2021 12:04:45 -0400
+Message-ID: <20210715160445.142451.47651.stgit@awfm-01.cornelisnetworks.com>
 In-Reply-To: <20210715160303.142451.38503.stgit@awfm-01.cornelisnetworks.com>
 References: <20210715160303.142451.38503.stgit@awfm-01.cornelisnetworks.com>
 User-Agent: StGit/0.17.1-dirty
@@ -68,63 +67,86 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7279303b-b8ee-4169-b5ae-08d947aa415b
-X-MS-TrafficTypeDiagnostic: DM5PR01MB2442:
+X-MS-Office365-Filtering-Correlation-Id: 83ba7c85-ed31-429a-0738-08d947aa4474
+X-MS-TrafficTypeDiagnostic: CO1PR01MB6678:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM5PR01MB24420CFA5DD54F2A0D1E3517F4129@DM5PR01MB2442.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-Microsoft-Antispam-PRVS: <CO1PR01MB66788E90F5C798EE7202426DF4129@CO1PR01MB6678.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 6c+Ad94UHFSe2akmxmloztY1j0y1CIp+nKti6qaF6LRSLKdgsTqp6nC4hdT68o5eF1Q1pf34CjRHrQ7wYGXzqYlmv3C2IMoSgoJD9Vs6x42jId2rcPFb4fB23rbNb7jaFLLlbz9lPtM6KMtyDQ6GE/tRp2zsNAtNQvcJ3Ny1qNrUaEf/gaCxLEuYiT3qqkLhTudry/9X+85+gzLxfyi7Tv05zwtx26MvS1of6mlKtBXwv+0Lp0pJmRGo+5dR7Gm8xMR2eDCjfHLxwODtBmygQAgyERl6R/lJFjD3ctW970oYp5N/0z8/puvCjWuWwDm3C3PkKSmERhNcXAxjMpbElORAYHxooTuBx05U/JPVH0caRVtkjY0xfZTJjLgJJiTnAP4fSIiS3KjmSHQojmSzMrQrhCbjMVdfcjLPR358b9a1A91S3GuhyJRY8WMnLj+VZxY4MVL+JnZjn1yifIcgjAZtviGC9LhstPOmlgJUNucFMyFkaCMMk0xHp1Osy1epS1zSTO6O+82jNRYu2MlRBjIiJZJ4XcVX6gLmOqlz+PQwI+e0ga35qVc9YLCIgiesoeDnxfinQA11DLUglrqiAl11YSPSAhaBNBTMwMNmnol0uU3G03GmPP52dapYYKffleLKXRS/FFJuRv1EBIfIb6uhTMsiSpYjgNaew0rihgbkY4XKPIY/xbxFJfwbiI/atY0LBQYB6i++W+VqMyihsFwvzaeJPlQCxirCElHuYW0=
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-01.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(136003)(376002)(346002)(39840400004)(36840700001)(46966006)(426003)(86362001)(1076003)(107886003)(5660300002)(103116003)(55016002)(4326008)(82310400003)(7126003)(8676002)(44832011)(336012)(36906005)(26005)(316002)(36860700001)(70206006)(356005)(83380400001)(8936002)(81166007)(47076005)(2906002)(7696005)(70586007)(186003)(478600001)(36900700001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: SPMv9zKigFE2JOuKB2/Z0SBop6CeZPVlyuy/CaDaZBNanhymIcfEDtPIca1h0n7XANRgkc6n1F5ilTF5rbs1hsX1m1WkPkxG/7MmwSvypgoTZxMJ9As+tO8SV7N8qK6HIg8WAH5Rlxd8sOtygD0o2FWAQ5Dpo6Ru63h4JT9UAaTSs1iqShAmrfFpRTBJfg8pDLaQcc/LPAx8W8I3hSxH1VsP7X2nGAEny8nOaRIoXNNeEKrlJiaPmQ23qTHUYyzQ/PyxzGxa/g/qzmZGFyItJFE+jqXhpX17dBEEgnT2fOkWgWg1KqKKjg4wFVzncrmo6/eVRTeV2vfc3mvAFKTbRDloa38fbtV/XleEloEQgjlPBLcT10O9j66c8pT/lvIUC7uoHrfLOpe6lJe63vZZjqypcUwGDyp3nA45g4U3xEPDkdFXQaJIGnsMhNi3EzwH/7LwZa+lNoyYzGeHZpv1vkSiCEiFq5AZEpw0vWScnKTWOp5PWaGRLGNk/ROBS2b5vY7iwLozayOSS0yrjIQR1ZRt8aRCH/iRuQfDIZHVPQz26Jp7+YUL3GfXz+VUQWOmQvmCzvcITlszDrRuKPqgnFpUIcInSjyiL0Ld1Le5KMXDxs/TdBLeLqFs7upiFL0dRYAERURAY11yPWttSaUOi4zHuGf7sA20oJ0Bl5UfKpGZA4bBHowYbazWanGp+QQaOPzMzZEuLPg4Ze4eEsh8On8g3iLDjNCNdgOAO1SM2F4=
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-01.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(336012)(47076005)(7696005)(86362001)(70586007)(70206006)(186003)(1076003)(426003)(36860700001)(26005)(478600001)(55016002)(8676002)(103116003)(4326008)(7126003)(44832011)(81166007)(36906005)(356005)(82310400003)(2906002)(5660300002)(316002)(8936002)(83380400001)(107886003)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 16:04:41.4708
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 16:04:46.6453
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7279303b-b8ee-4169-b5ae-08d947aa415b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83ba7c85-ed31-429a-0738-08d947aa4474
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-01.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT058.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT021.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR01MB2442
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB6678
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-There is no counter for dmawait in AIP, which hampers debugging
-performance issues.
+It is possible for the primary IPoIB network device associated with any
+RDMA device to fail to join certain multicast groups preventing IPv6
+neighbor discovery and possibly other network ULPs from working
+correctly. The IPv4 broadcast group is not affected as the IPoIB
+network device handles joining that multicast group directly.
 
-Add the counter increment when the txq is queued.
+This is because the primary IPoIB network device uses the pkey at
+ndex 0 in the associated RDMA device's pkey table. Anytime the pkey
+value of index 0 changes, the primary IPoIB network device
+automatically modifies it's broadcast address
+(i.e. /sys/class/net/[ib0]/broadcast), since the broadcast address
+includes the pkey value, and then bounces carrier. This includes
+initial pkey assignment, such as when the pkey at index 0 transitions
+from the opa default of invalid (0x0000) to some value such as the
+OPA default pkey for Virtual Fabric 0: 0x8001 or when the fabric manager
+is restarted with a configuration change causing the pkey at index 0
+to change. Many network ULPs are not sensitive to the carrier bounce
+and are not expecting the broadcast address to change including the
+linux IPv6 stack.  This problem does not affect IPoIB child network
+devices as their pkey value is constant for all time.
 
-Fixes: d99dc602e2a5 ("IB/hfi1: Add functions to transmit datagram ipoib packets")
+To mitigate this issue, change the default pkey in at index 0 to
+0x8001 to cover the predominant case and avoid issues as ipoib
+comes up and the FM sweeps.
+
+At some point, ipoib multicast support should automatically
+fix non-broadcast addresses as it does with the primary broadcast
+address.
+
+
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Suggested-by: Josh Collier <josh.d.collier@intel.com>
 Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-
 ---
-Updated fixes section.
----
- drivers/infiniband/hw/hfi1/ipoib_tx.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/hfi1/init.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index 993f983..e74ddbe 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -644,10 +644,13 @@ static int hfi1_ipoib_sdma_sleep(struct sdma_engine *sde,
- 			/* came from non-list submit */
- 			list_add_tail(&txreq->list, &txq->tx_list);
- 		if (list_empty(&txq->wait.list)) {
-+			struct hfi1_ibport *ibp = &sde->ppd->ibport_data;
-+
- 			if (!atomic_xchg(&txq->no_desc, 1)) {
- 				trace_hfi1_txq_queued(txq);
- 				hfi1_ipoib_stop_txq(txq);
- 			}
-+			ibp->rvp.n_dmawait++;
- 			iowait_queue(pkts_sent, wait->iow, &sde->dmawait);
- 		}
+diff --git a/drivers/infiniband/hw/hfi1/init.c b/drivers/infiniband/hw/hfi1/init.c
+index 0986aa0..34106e5 100644
+--- a/drivers/infiniband/hw/hfi1/init.c
++++ b/drivers/infiniband/hw/hfi1/init.c
+@@ -650,12 +650,7 @@ void hfi1_init_pportdata(struct pci_dev *pdev, struct hfi1_pportdata *ppd,
  
+ 	ppd->pkeys[default_pkey_idx] = DEFAULT_P_KEY;
+ 	ppd->part_enforce |= HFI1_PART_ENFORCE_IN;
+-
+-	if (loopback) {
+-		dd_dev_err(dd, "Faking data partition 0x8001 in idx %u\n",
+-			   !default_pkey_idx);
+-		ppd->pkeys[!default_pkey_idx] = 0x8001;
+-	}
++	ppd->pkeys[0] = 0x8001;
+ 
+ 	INIT_WORK(&ppd->link_vc_work, handle_verify_cap);
+ 	INIT_WORK(&ppd->link_up_work, handle_link_up);
 
