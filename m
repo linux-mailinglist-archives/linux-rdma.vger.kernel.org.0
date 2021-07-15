@@ -2,161 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9973C97FF
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jul 2021 07:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84053CA05F
+	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jul 2021 16:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237396AbhGOFFn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Jul 2021 01:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbhGOFFn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 15 Jul 2021 01:05:43 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E77B7C06175F
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jul 2021 22:02:50 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id v32-20020a0568300920b02904b90fde9029so4902706ott.7
-        for <linux-rdma@vger.kernel.org>; Wed, 14 Jul 2021 22:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CcH7QWFJyXPKcqY0G5on10RSJev+iAoUjznebch/Lk8=;
-        b=GzL4YEdn3c1a+sMwTp/7O6lOWRRRy5LKWDvXDP6dMcibgzhNBE0Ga3OhOBY0VqLlIH
-         WIssnOSmzvJG5KJelIt+DwqicccjUQ5NyF0/GNmjWwZC/LCoxd9ekaq8pQFa+RU5BGfL
-         SjQ7dAeJ+y0VxMCuJZn8QM/PURYFllemmXuUlIe2MYUl1eY2AQQvaPRAv4fqgN+DRWqa
-         pHQ/RMeOPFKNJmN70IPxOkWvN8JBbpMFJoHi1mH21Sc70uejbD8rXjGAv8iIUbplNy+0
-         McetVh32CAZB7BKqpvbYZJseoEN2N/rrvb0iE1Z4oHvAhxj5wiOlXDHjQXQLp3cojuB3
-         k4RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CcH7QWFJyXPKcqY0G5on10RSJev+iAoUjznebch/Lk8=;
-        b=rLp+GQmjTzNcKv8RaYIIHwixuM7ncosx7zuK8GAw+BmTdVE4lkQTNwmH0RAYPBM/3x
-         iJyJ836dp43wYmdR7HLTxTMz7mbNliFMMPG3hF25DbEYigqZgdWNc5e7RUL/PMIn+Ef9
-         C72I36B9MTjTswha3d5HlKXzg5EuAFeITx3tsk4sVsrTkQCUydwPh0+N5Oyhg2UjkVcL
-         nzMpkptaeSlRkcR2Lijej3ixvANDq8qDavvbd73JY1Jq2ivSGr28jpIF0UggivsMN+n4
-         9rUl/HT9R1i+I4NFlfpoxAfE6WGm+MjORckzxRkbrxBpQNkcAJ0gLFX/8Jh+VtjLQRjb
-         GgQg==
-X-Gm-Message-State: AOAM531CwZyWQRBZXZin3xi9i/Pw3w8g6bGCXp0SYsA+uG/kZjPYRcjj
-        eCUSbPiVUbik2j2wb1bB8Axj75M5h8NZ53Wy3Sb+oNd4
-X-Google-Smtp-Source: ABdhPJzX7aiu2NEqI/2brIVoaeL2Qe6tKHGol7tvOU2HO/KgioQnloWAQuF67A2upbTAea1TlM5JyTRwOenayxOB1Yg=
-X-Received: by 2002:a05:6830:108b:: with SMTP id y11mr1914075oto.53.1626325370296;
- Wed, 14 Jul 2021 22:02:50 -0700 (PDT)
+        id S236733AbhGOOTT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 15 Jul 2021 10:19:19 -0400
+Received: from mx0a-000c9b01.pphosted.com ([205.220.166.177]:61586 "EHLO
+        mx0a-000c9b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236344AbhGOOTT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 15 Jul 2021 10:19:19 -0400
+X-Greylist: delayed 1009 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Jul 2021 10:19:19 EDT
+Received: from pps.filterd (m0234721.ppops.net [127.0.0.1])
+        by mx0a-000c9b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16FDwOax030721;
+        Thu, 15 Jul 2021 13:59:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fiu.edu; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=Nov2020; bh=8BZTrFzRP0+/k4puWAXM4GQYvUzo4hRTo4mWgSeM0Xc=;
+ b=Od4sXlX2rXCmNZDTi+weYrEVS7Ki0jK6RJK0qvkzFJSxnspZLe9x0kHeK5y6DQlcc2Tf
+ KVEZshNx51PewwrAWHJLEb3jiuL9ijQ7gyQDmkrCY4qs1NmR0nCaudcJ0yDRHHt9E2XI
+ uWya0QKwmiwPDdy+NXKHkAgjnftGZcGbpEoScxapfJrmx6BErSIvrxeczOayqjQFEsdY
+ MfbGJMsCWKoWw/cnOicomhxPOr69ZcqdsNFbpdvEtJrfCoHC88mIHsgCioIXnDvsT2Hl
+ ffc/yCo0DzAQGZGZTcm4XjJkQs1A2YtmNlyVDxXdhN17nV/XxS7UEnxNTqOfKxAKe0Qy oQ== 
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2048.outbound.protection.outlook.com [104.47.56.48])
+        by mx0a-000c9b01.pphosted.com with ESMTP id 39sd0cu14u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 15 Jul 2021 13:59:34 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RRfDTOq0idLXPdhSNQuOeQ/nCUrGK6dHftTHNLJ4iFgct+VV9ROglEXuRgGIviVoz9Gi7xz8ixh34S1/zUZ1NMSJpmn40+UxL8PUsJ9hJ9q9vn2DMYdNmc863iD0NZZ+jAgPDtOg6lxaFSObSzOTjzEZKVQVEow9F8m/Uhq02qnv9By6yt59I/smCtGjgoHbDke+iNMDyDERTAtZ99XDc0h2sIZbbIBbuSq6B3T94dmv3MUsEavqjGO3C+GsBgE0oSPpFRzL7VKTcJPGCzF3dICo2XfZGL133Q4qHfqqZkJVpVy3wRTw8uEWVg8oI0F83FljhR6FPznmTM6pUxJ9jw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8BZTrFzRP0+/k4puWAXM4GQYvUzo4hRTo4mWgSeM0Xc=;
+ b=j1s0nxL+RYMybYzh0DvEcZRk7cXA6yQNpWpdkc5iWT8bTZcVf2utnKrmtL0179dHbSbb3fLqA2hFTVO9O2xU2RZFAhgJUOzbcvZHC+9wInvn6joadcqiwMu9uP80FHE7imuv2jCQUjQnL8jjykRuRF0Yu6tFImesFbzp+jJriFBefTG6k2X8EX+yCexti54sFWdtzBIXOAltfuWtVI0PhQeANt0/sgnPLYeFPtLz4XhKJeoSxn0OaCXj9gvM0jXyS9w9Xhxn91CCoYllCcEUXinw8NdA/+yjUIhIqSbrT8j3CEJZ0HX7gsyNavz6NaSngvxEeommrAgbt02oJKxsNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fiu.edu; dmarc=pass action=none header.from=fiu.edu; dkim=pass
+ header.d=fiu.edu; arc=none
+Received: from BN7PR05MB5923.namprd05.prod.outlook.com (2603:10b6:408:9::28)
+ by BN7PR05MB4195.namprd05.prod.outlook.com (2603:10b6:406:90::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.14; Thu, 15 Jul
+ 2021 13:59:32 +0000
+Received: from BN7PR05MB5923.namprd05.prod.outlook.com
+ ([fe80::e5c6:8134:83d0:8cc1]) by BN7PR05MB5923.namprd05.prod.outlook.com
+ ([fe80::e5c6:8134:83d0:8cc1%6]) with mapi id 15.20.4352.011; Thu, 15 Jul 2021
+ 13:59:32 +0000
+From:   David Ramirez <davramir@fiu.edu>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: XDP applications running in driver mode on mlx5_core can't access
+ various helper functions
+Thread-Topic: XDP applications running in driver mode on mlx5_core can't
+ access various helper functions
+Thread-Index: AQHXeYEANaj7XAKvZE2i1U9m15tDDA==
+Date:   Thu, 15 Jul 2021 13:59:32 +0000
+Message-ID: <BN7PR05MB592314B791EB8654A59E8841CC129@BN7PR05MB5923.namprd05.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=fiu.edu;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 76e14970-49f0-4bf2-2b1f-08d94798c592
+x-ms-traffictypediagnostic: BN7PR05MB4195:
+x-microsoft-antispam-prvs: <BN7PR05MB4195D297422B363F24F2C648CC129@BN7PR05MB4195.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: qAd2R5+HD7LBclOmBE9jgi2+WBeFoSgYsD8Uj5PucFW674KuvRjsyot3yfs0PYmem4r4CZzzOZmfxn27JJF6/+RyaQav6sNEHWxnJJb0J9bK+nJ6SkPVYwFDyK7sOjjpq1cezga1qMl6LZa7x5nNeAji3jb9nJ4PHdrdXO4APfgr2HmGN5JjA1IKbTvzieMFrL27uSrS7iIiTplApGj6HGT8bSV49/tYNxqQw19PA6/ca+HgPiH8tLXH7JyXDux8MEQ9A19T18GoNzeC7dO79h74hdWKfxTDiVrixrOTHzxPA7qbDWfLrJgxY9KPbuGCKcBqnyePwhN6OijQK/sv0XAHVZnRvxu29H1ImN1vRVn5lL4WyLdpcAiwMyXJ40PS/GDb/DdE9FZSCMt2SY6as9B+YmHG5B1IV8dJyrw+Fvq5LbnZbD/uDIloAdUVUs0hzElkvs9+HjDXiLzRYvyvOVgyMpwc2iIDGK4eXRcaVDcUsnDlg6xPxD52WEDaACVqEqXS+KvEoBgcgV+bSIPDC64N52RU16LiCTjZGs8qh9y5pP0G0sWGcCclG/Xfl/SKxokaHEsnVXQ+E8dJMs3LGk3Twc7pLVIfmLHqgkbMWtzJftgNIMv9TcYz4ypYAlx0HWT5QX72ovsLIE4uT/hNZtOBdu9qzvzhyG7NR9xEDQ/SeuDL5pKQbQZqd5PednaEG7CMYVQtdYt9JqFBHnJfzg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR05MB5923.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(66946007)(66446008)(64756008)(66556008)(66476007)(2906002)(86362001)(76116006)(9686003)(122000001)(4326008)(478600001)(186003)(71200400001)(8936002)(52536014)(316002)(786003)(5660300002)(8676002)(110136005)(7696005)(75432002)(54906003)(33656002)(83380400001)(55016002)(38100700002)(38070700004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?liIriXTFSGXSW4NTJVe0NjnTzaF+VD9Fr8Xq4qOIQ79GaICbfdJk5tFCQA?=
+ =?iso-8859-1?Q?3X3p0V1eONwz/cANMvGpmt1au4V/8LF6pjcF8Bs68dpsDhKYR2tbsarVJX?=
+ =?iso-8859-1?Q?TEFMZ0Vi8qRe10Ev9VvrDpfozQ8axZEDhbVaXGMfCZnmQYmJCKzbdTDlnv?=
+ =?iso-8859-1?Q?FOFYr+4nqs4C00uo5lLbDn0+rVMNhrupkK+r5OlwQiQbow8p1ENlr8Po3s?=
+ =?iso-8859-1?Q?oJnO1gw15qQqg9ILTbaGMqyGeJzxyZ0sweCs7FIfvoOHr235Wxh0TEJu49?=
+ =?iso-8859-1?Q?G0FB5bmfpWmTsKPAXL4+duRWs3wJsc6t5LcW0YH90zX1We+7F696BsnivW?=
+ =?iso-8859-1?Q?dsoWmBjtM8R7zTGCyjhOPjwuofXrNod7m3xM5qHo65cJDDs0a4LN86tdmd?=
+ =?iso-8859-1?Q?mMdX31btFZlVIuMvXgZ0knkVGN21RTC/ZQ+BpykR3MmchVF9AovgyM9khL?=
+ =?iso-8859-1?Q?214hP44GQJOATi60XpBgkEJX9+DYevaxnehYu3Vni+tJwck5mib5mva28N?=
+ =?iso-8859-1?Q?LysRZUgdd9PF+g1x7OIhWOjpzunzFXRC1l3EGPB4MwrWvcS1Vp5/2uHQx6?=
+ =?iso-8859-1?Q?VfWUKUrk5vUG1Z/o1tCkwNfolk4T6QkTkH3B1fZ9uFH7h4Ka+P+iAnofIF?=
+ =?iso-8859-1?Q?rwN2NRKek/uJ1+z3CFz25YqvV18Q259A0527P5pvi+eG3lmTIGk2Es/W59?=
+ =?iso-8859-1?Q?Z4o2IcZgY/bxU2nKiMzAH5Z3wqioqifKuIePEKel6tyOibRjCfbMwgS8au?=
+ =?iso-8859-1?Q?96B4iU0qWvlkxVlOyONFK+5iTFFklP/pHxJAuCr7jq/C6zFrK8Nw7v2XVI?=
+ =?iso-8859-1?Q?+n+osX5LxQa9JW9fU5Uaiaqr+D+8grZevCUHiUS9Tw1EIUHWkFrPUllk55?=
+ =?iso-8859-1?Q?Mr7v51ZOX5Q1UN7X/qvIDLFIVxQJgCbnqUqLyR+lrv+FZuCgWbABTytkt4?=
+ =?iso-8859-1?Q?cMG7DDiUfHlVJ+3HDiNDGgpWQG/M3Rjq9GJTwJoBatcxgWILCPrnm7LZfO?=
+ =?iso-8859-1?Q?aGTh7+DIGzCvQN0+sRq7cXjPdmigzFsRaJ66BmPkW40Vb5BTCyiyUHBUPp?=
+ =?iso-8859-1?Q?x5n3fqvX9PZT+wD3ZrT+cFJKKILLrk8UmNnAQ+hKtiDBC4QfQFTq7QuSsV?=
+ =?iso-8859-1?Q?HCvahuC5giL0e+rcW4H9Ha7h3sweRdimwA/d3DB8VFGq8v5Z3zj8ORuFPJ?=
+ =?iso-8859-1?Q?NmnN8n89nTKiCMSUgidBsPbaTfUp2cETeoDIBz+UDUGS9YSAJJqOWWqhPG?=
+ =?iso-8859-1?Q?YaBdMUZkMdaMiVfM5XLfvwBBUnufgKxu98YPOLrIHAwIvVu448bH7W9X2D?=
+ =?iso-8859-1?Q?WluDK8nl4a0lq8b7Q98pMnUjFsR0A/on95L5b5ndQfnB9ErSv+o8/AvRhV?=
+ =?iso-8859-1?Q?DPN4tlP8mVllGC0uXCmH7/NUCFJdZPQpdrkiDL3lLRYdJUXhES6hg=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210714083516.456736-1-Rao.Shoaib@oracle.com> <20210714083516.456736-2-Rao.Shoaib@oracle.com>
-In-Reply-To: <20210714083516.456736-2-Rao.Shoaib@oracle.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 15 Jul 2021 13:02:39 +0800
-Message-ID: <CAD=hENdhJJghv2GNh3V7ndyoJ8eRej8g2TeoDFn6F4T+n2cTHA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] RDMA/rxe: Bump up default maximum values used via uverbs
-To:     Rao Shoaib <Rao.Shoaib@oracle.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: fiu.edu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN7PR05MB5923.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 76e14970-49f0-4bf2-2b1f-08d94798c592
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Jul 2021 13:59:32.2729
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: ac79e5a8-e0e4-434b-a292-2c89b5c28366
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KMSBO1OrOvdYvmMhWbvz3ec8Yd1Vzh2QavGm26Uob7LCJw3ZKWYlbSxci6bLSkp/VVU34c5gsGVnV0XVjZ6xag==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR05MB4195
+X-Proofpoint-ORIG-GUID: i_0JeASGDwGTUk_bv1GcT8Gv-mpJ6E9M
+X-Proofpoint-GUID: i_0JeASGDwGTUk_bv1GcT8Gv-mpJ6E9M
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-15_07:2021-07-14,2021-07-15 signatures=0
+X-Proofpoint-Spam-Details: rule=outboundspampolicy_notspam policy=outboundspampolicy score=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 mlxlogscore=732 malwarescore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011
+ suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2107150100
+X-Proofpoint-FIU-O365: True
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 14, 2021 at 4:36 PM Rao Shoaib <Rao.Shoaib@oracle.com> wrote:
->
-> From: Rao Shoaib <rshoaib@ca-dev141.us.oracle.com>
->
-> In our internal testing we have found that the
-> current maximum are too smalls. Ideally there should
-> be no limits but currently maximum values are reported
-> via ibv_query_device, so we have to keep maximum values
-> but they have been made suffiently large.
->
-> Resubmitting after fixing an issue reported by test robot.
->
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> Signed-off-by: Rao Shoaib <rshoaib@ca-dev141.us.oracle.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_param.h | 26 ++++++++++++++------------
->  1 file changed, 14 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-> index 742e6ec93686..092dbff890f2 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_param.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
-> @@ -9,6 +9,8 @@
->
->  #include <uapi/rdma/rdma_user_rxe.h>
->
-> +#define DEFAULT_MAX_VALUE (1 << 20)
-
-Can you let me know the link in which the above value is discussed?
-
-Thanks,
-Zhu Yanjun
-
-> +
->  static inline enum ib_mtu rxe_mtu_int_to_enum(int mtu)
->  {
->         if (mtu < 256)
-> @@ -37,7 +39,7 @@ static inline enum ib_mtu eth_mtu_int_to_enum(int mtu)
->  enum rxe_device_param {
->         RXE_MAX_MR_SIZE                 = -1ull,
->         RXE_PAGE_SIZE_CAP               = 0xfffff000,
-> -       RXE_MAX_QP_WR                   = 0x4000,
-> +       RXE_MAX_QP_WR                   = DEFAULT_MAX_VALUE,
->         RXE_DEVICE_CAP_FLAGS            = IB_DEVICE_BAD_PKEY_CNTR
->                                         | IB_DEVICE_BAD_QKEY_CNTR
->                                         | IB_DEVICE_AUTO_PATH_MIG
-> @@ -58,40 +60,40 @@ enum rxe_device_param {
->         RXE_MAX_INLINE_DATA             = RXE_MAX_WQE_SIZE -
->                                           sizeof(struct rxe_send_wqe),
->         RXE_MAX_SGE_RD                  = 32,
-> -       RXE_MAX_CQ                      = 16384,
-> +       RXE_MAX_CQ                      = DEFAULT_MAX_VALUE,
->         RXE_MAX_LOG_CQE                 = 15,
-> -       RXE_MAX_PD                      = 0x7ffc,
-> +       RXE_MAX_PD                      = DEFAULT_MAX_VALUE,
->         RXE_MAX_QP_RD_ATOM              = 128,
->         RXE_MAX_RES_RD_ATOM             = 0x3f000,
->         RXE_MAX_QP_INIT_RD_ATOM         = 128,
->         RXE_MAX_MCAST_GRP               = 8192,
->         RXE_MAX_MCAST_QP_ATTACH         = 56,
->         RXE_MAX_TOT_MCAST_QP_ATTACH     = 0x70000,
-> -       RXE_MAX_AH                      = 100,
-> -       RXE_MAX_SRQ_WR                  = 0x4000,
-> +       RXE_MAX_AH                      = DEFAULT_MAX_VALUE,
-> +       RXE_MAX_SRQ_WR                  = DEFAULT_MAX_VALUE,
->         RXE_MIN_SRQ_WR                  = 1,
->         RXE_MAX_SRQ_SGE                 = 27,
->         RXE_MIN_SRQ_SGE                 = 1,
->         RXE_MAX_FMR_PAGE_LIST_LEN       = 512,
-> -       RXE_MAX_PKEYS                   = 1,
-> +       RXE_MAX_PKEYS                   = 64,
->         RXE_LOCAL_CA_ACK_DELAY          = 15,
->
-> -       RXE_MAX_UCONTEXT                = 512,
-> +       RXE_MAX_UCONTEXT                = DEFAULT_MAX_VALUE,
->
->         RXE_NUM_PORT                    = 1,
->
-> -       RXE_MAX_QP                      = 0x10000,
-> +       RXE_MAX_QP                      = DEFAULT_MAX_VALUE,
->         RXE_MIN_QP_INDEX                = 16,
-> -       RXE_MAX_QP_INDEX                = 0x00020000,
-> +       RXE_MAX_QP_INDEX                = 0x00040000,
->
-> -       RXE_MAX_SRQ                     = 0x00001000,
-> +       RXE_MAX_SRQ                     = DEFAULT_MAX_VALUE,
->         RXE_MIN_SRQ_INDEX               = 0x00020001,
->         RXE_MAX_SRQ_INDEX               = 0x00040000,
->
-> -       RXE_MAX_MR                      = 0x00001000,
-> +       RXE_MAX_MR                      = DEFAULT_MAX_VALUE,
->         RXE_MAX_MW                      = 0x00001000,
->         RXE_MIN_MR_INDEX                = 0x00000001,
-> -       RXE_MAX_MR_INDEX                = 0x00010000,
-> +       RXE_MAX_MR_INDEX                = 0x00040000,
->         RXE_MIN_MW_INDEX                = 0x00010001,
->         RXE_MAX_MW_INDEX                = 0x00020000,
->
-> --
-> 2.27.0
->
+Hey all,=0A=
+=0A=
+I am having issues with calling some bpf helper functions=0A=
+when running my XDP program in driver on the mlx5_core driver.=0A=
+Several of the helpers I've tried to use for ringbuf and maps always return=
+ 0.=0A=
+While this may seem to imply that for functions that merely return null ins=
+tead of=0A=
+a pointer in case of an error are working as intended,=0A=
+some functions which return negative on failure and 0 on success are are al=
+so affected,=0A=
+as while they return 0, they do not result in the desired effect.=0A=
+=0A=
+Observed examples:=0A=
+ - bpf_ringbuf_output always returns 0, but no data is pushed to the ringbu=
+f=0A=
+ - bpf_map_update_elem always returns 0, but the element is not updated=0A=
+ - bpf_ringbuf_reserve always returns 0=0A=
+ - bpf_map_lookup_elem always returns 0=0A=
+ =0A=
+I'm uncertain if this is a driver specific issue or an ebpf issue.=0A=
+Testing with xdp in driver mode on veth devices works as expected,=0A=
+which suggests this is more likely a driver issue.=0A=
+=0A=
+Additional Details:=0A=
+=0A=
+Linux Distro: Ubuntu 21.04=0A=
+Linux Kernel version: 5.11.0-18-generic=0A=
+driver: mlx5_core=0A=
+version: 5.11.0-18-generic=0A=
+=0A=
+Thank you,=0A=
+David Ramirez=
