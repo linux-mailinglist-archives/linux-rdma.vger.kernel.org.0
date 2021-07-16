@@ -2,122 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383F43CA545
-	for <lists+linux-rdma@lfdr.de>; Thu, 15 Jul 2021 20:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518AE3CB152
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jul 2021 06:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhGOSWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 15 Jul 2021 14:22:09 -0400
-Received: from mail-bn8nam11on2050.outbound.protection.outlook.com ([40.107.236.50]:13793
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231627AbhGOSWJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 15 Jul 2021 14:22:09 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qt8O2YkDhdA5pd3Tdvh5V3dfhZCrCBr+I+qAjVuvyVvElUTPxN5fowx+dsFyesYVsHdGNcfiZ1CD63nCnPWMMrwyXD1paM2U19tz7y8E+aBMatoeDxAgRuL6bCzZyCdo1vt978ZDf0EcHftMEout+HaX62So00FzQ4gMaYGMN1WZHSkd7Y2kVo9EkyBYTg1jd4V5yb00dE+bEV7tVY253aZPEnfeRoJ5e7SfofC41OhzyRYrfkGHplGKrgznedfG8o2ANawO8/kuX7Fbj5AIRg88DAE/twPzWDUgxP/y2NtJA9ANS4JwN2DpqQY9KjSGHH+axXdLdg/f2YbP1DoM5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1hXRoypdsK1skd0l5wNaO3NTHs/49BQAvTlC21B3fA4=;
- b=er9rs7fWtKHxRQmdRrRw9Qg+p0ogx5vzjhRKK5EQBeffriwzNy27CFpNKXLsBKskbxDLDrlT1DR8YiS9C410da+reHu8Az7gO7Q8k8lYurH6MJFMwZcrmNLhtBZKwzc47C51P/ewoQSiWtY+mVn6xyrk06fjOo0qa2eQARNETaBDj0MfafJvGpL5eStzQ0AVweXLdeAhUG+F4vxNbuMvIeyVk0yv8D/zE9IUIOEkJZ9Db9hBtBYpJwFIcbTItdsXgn7Sc14raZ2WBgQjhjfE2c+4a6bqBbcFGtpwcUZh3EQkl3l85pCTM9HOpgKFUMrVhOvJJuZlbryQy/NllFjoUQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1hXRoypdsK1skd0l5wNaO3NTHs/49BQAvTlC21B3fA4=;
- b=BOv92dghyFheJQIHWman571BYINa7smB1/mW2IxB2Alkde6SYt9vqxQSTyWs2KcgVHUp3BQGAPwUULgLfsoTMjRBKSNVK4mzoWjV+y1qVXN7wsgTSfxoj8JTIM3BgFIRO5vKbshQaOE4gNiXpBbjyKCUIdGreZZ9ZonI87tbohsKKwzA8SsxDLJdWJ2bbiS3qgnWUmiZObNm9qLj3f3BE7ba+FlYNvQq/Uj8o9k4Jla31OzG+/3g00LU/vdqobQbQ8mTLNmfPZFlFOFLdgKJ44gJOyMGu23PZGIhJho2zrnboUPqgKZS9Ol0a+JJ8CIXpnfAYrL+lsrA3igES+Hefw==
-Authentication-Results: linux.dev; dkim=none (message not signed)
- header.d=none;linux.dev; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.24; Thu, 15 Jul
- 2021 18:19:14 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4331.024; Thu, 15 Jul 2021
- 18:19:14 +0000
-Date:   Thu, 15 Jul 2021 15:19:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     yanjun.zhu@linux.dev
-Cc:     zyjzyj2000@gmail.com, yanjun.zhu@intel.com,
-        mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org
-Subject: Re: [PATCH 0/3] RDMA/irdma: do some cleanups
-Message-ID: <20210715181912.GB673000@nvidia.com>
-References: <20210714031130.1511109-1-yanjun.zhu@linux.dev>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210714031130.1511109-1-yanjun.zhu@linux.dev>
-X-ClientProxiedBy: YQBPR01CA0102.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:3::38) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S229534AbhGPEKa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Jul 2021 00:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229507AbhGPEKa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jul 2021 00:10:30 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8929C06175F
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jul 2021 21:07:35 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id t4-20020a05683014c4b02904cd671b911bso510043otq.1
+        for <linux-rdma@vger.kernel.org>; Thu, 15 Jul 2021 21:07:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PQcFDGDuap2TcC5QsFARpF5BffQICv+X+HMasKvzH1M=;
+        b=bz1zTpI0px0hk2weiYxe/vzkeWweKrDXaDMdtzD5KgQpR75PTTTSPGC1b/vMId0CvZ
+         8bteCmBZwGV7tYC/RuBunFzVSi5uOkRKDo0REBFMk3tagzxmY9bKROsuIIIT1DJNc4rb
+         RgjWc3PROadZgSi1PdctKe3PW81N9hqamRplECmSAFbmS1zMoWObcEAv4NZxSvi7TT1n
+         GiWUVaMoFruyJMO1mqOzIdu4/ZuuB0NW7ZhBKRtVdWVeIU6I4+p3bDgQWc2kbD66ZUDG
+         fnGQ8rsCkLmap7iCeukd9XsNp3wmwoFRm11GSYAaOwjusPVqOfzTE5qxsSPR0dOQ7VkG
+         OB0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PQcFDGDuap2TcC5QsFARpF5BffQICv+X+HMasKvzH1M=;
+        b=Hx3LYg+EmyTmM6wDJ/x2BQPje3Uw9E1DK9XjSTar64ySJDdDhaDqv1bIRKcN1bCa1a
+         mLYPTOEHYpS8YV0DRh9UaBfGCVSzpQfKNGWgUZhAAP7QMjc5TufP7CEew4Ev0QBeboga
+         NdigrtUNcTktGL8SmdGHrvI6F5m7S/G8V+dx92/BIqoX6063WrgMUIbYcstTYtWHkq+/
+         EFjboID5r+nHNIl8q4eb6fEejWbE1kl9fS68TiOtAHKhrR5XzdqkDV4ao2fV2uHHCKp+
+         JJSS0cLM4N6p59VaqOOyCuIUOoTZiezB9DdQa2UTchWNhedealh1btnuUbo5mXvuMI34
+         FGcw==
+X-Gm-Message-State: AOAM5336a/jqQHT70TDKwgaHz3f7AZHYSE7aY6/Mhwp0w5SJLtY79n/n
+        3buJejwo/rxhIXXXERaIHjYrFn/MHsX4ccUuSRI=
+X-Google-Smtp-Source: ABdhPJy5T3czuRE3pvthud6FPZx3n7rGe63cI1fcHhDHfFXc4a8UAQ5FVyRCdEXwxM8euZp8R6kv4q7ZR0SzkwCCvPM=
+X-Received: by 2002:a05:6830:108b:: with SMTP id y11mr6538905oto.53.1626408455376;
+ Thu, 15 Jul 2021 21:07:35 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YQBPR01CA0102.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01:3::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.21 via Frontend Transport; Thu, 15 Jul 2021 18:19:14 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m45x2-002p5v-2i; Thu, 15 Jul 2021 15:19:12 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20ca6df4-3c4e-4d5d-e6c9-08d947bd0d2c
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5047:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5047FD009ED29468CA743221C2129@BL1PR12MB5047.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lpoU/jf2+7MT00gCdKRN7SMwF+FzfCdiO3uUD/hZgAKS5udJkwjgjxAfzvchKgLdGj1QlUya1tE2krCljkwXNK4TdeAZOChKxFt8qEHY9uElFOB3SeXbB+1TAYXXyFRH5uaDaX2krXI1znsvScTDmicnuJRN6070lFDbsnzI7IKqgDgy4ukJwaDSHsLBe9PrfTeVkllhoS9LR3wOFY3ImzRlekGErFhaOwpGL8U6b7K2zMNAHiO76/9EsYS9oYJLNFTYoy+SxLEMcZJeGIvJtWZZnkEX18eAm7ecWNZW9KQtf3VJg4lk2TYuIAxjZkaHQx1ng26vPcKmQN36JaLmXRLVGMvDEOWuSxYr1Wk1BmdEN7AGPT/oi0AgaqhTLmdnBbC/OkBzIhDaKdWWdk2rkUViznWILeXMA1qnsoP6T1phIQ5gC0ryH/sH788gkYFjiuQmL8yP8L32hbdbCcrpjQwOPe2Tz4pe0NC+r0EVfCA+SzehcIstYSslP3CIOXJF3C06Ef7VuX6fI7djc4ySOtskT1sLXC3f4iAiRKvrw2O3O2XVB7Ck5lWh8jhZmmyO9p4SnC4n38U8mEXsI7ip/1K8oSNK/v9V+S4hiELYuq1ZY1tj+PZGQP/Ua0Cgqaj0NweQj5c+j2httrpst2irJyXg2s7F0/2DrgUNiur5xAW3i73yOxpTY0r9Guzcr3/c
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(396003)(366004)(136003)(346002)(38100700002)(186003)(2906002)(66556008)(316002)(426003)(2616005)(26005)(86362001)(66946007)(4326008)(8676002)(66476007)(4744005)(9786002)(9746002)(36756003)(1076003)(8936002)(5660300002)(6916009)(478600001)(33656002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SIG+yFlNqZ+Oli/2fLTw4qBtJGXGp83uKwMzgxx3FIl1PSi8zeoJrFo+fMB7?=
- =?us-ascii?Q?fSDZJF5BQrM4tNlq25AgJzVDyHBbrOVC8HLtpL5qfEnxjoG29XdNsNdvqazz?=
- =?us-ascii?Q?OLUHtCkD7agm+/PFN6cgHyHFc3c12zcJ7NP9gQgGyB8Ctmu3lLWX5iZPuWuz?=
- =?us-ascii?Q?cl8ukNyH7TXDdYA2RvWRg9gCDvl84dTpE5QRUGc5YLK/p4oNHjp213KPOiTJ?=
- =?us-ascii?Q?Gf48fco1LeA7r47tqH1Ng26eoqyKegvp4TjYBxpnPTelwUjRlS55Pjtwx6hu?=
- =?us-ascii?Q?5fqYZQENJRzA2cqFIv4ZrcnJv7OWgYmhQYU0GdKC8i9gK0p4PxYULgalgfX2?=
- =?us-ascii?Q?iviSOzqKNOWuaQXqTTrgynkUf6bFaEwWUIvEv1WjZwX2ancps+2KmUxej10C?=
- =?us-ascii?Q?4zRUFtM9e4sXP4qMrAklmJzPqb4DuaCp9Rp6LPH82Ky2LMQDBpWSVuAKsD37?=
- =?us-ascii?Q?dVs9wogHb0rA/6N/Mmn1bFsuOxT8MQ8kHaffA1XIW9cDCs/lq9C4Z0ib5VPz?=
- =?us-ascii?Q?3w3iM35V2oS8MCzKdNlHIsMo/82gbs0HRjFvIWm3E4SuO3jKiUHDGQgNhj3k?=
- =?us-ascii?Q?n8wHtqpZRhwoW4EfTP4OD+wCXsdFOeAQOEALR4iVdoJCWjyp0VGwCNEFrtt2?=
- =?us-ascii?Q?hSTiCIDBQkuCMnic5Aq4knqb558/D80XheOTKsNBrPobI0INQr5t8WmpH6hB?=
- =?us-ascii?Q?OVoRj19zrrRB8vuysZXkD/VVqaCopkBO4qTNPnW/wRMz2GuH5sV87XGn19JC?=
- =?us-ascii?Q?VLNf/cNP85iT77hjUk2Q54CLZ0qEXKt+Xq5JzH8jaBgs0AgwMYwSAjmesZ5m?=
- =?us-ascii?Q?//p3RAUD3PPLr9MiaU3+A6SZX/ROiQLGVJHVq8nZYXgrUZos5IyYzLecq4kL?=
- =?us-ascii?Q?AenR4Z96XH5voso7imD93lQPz8DN3A3v81NHXPisDUPZ7iah240C6GwY7LYU?=
- =?us-ascii?Q?PEuK6I9MAeRLJpZ0xsWMKB9jsIZl7mj+3xdUSnEsGPH0YW+iHIh7zxEzoNLi?=
- =?us-ascii?Q?0YrtsKiYEqczgCnkvu/F5pUlq5IH8/KtXVcRkELqLwQDDhIr/2wsyDK/rvyU?=
- =?us-ascii?Q?mHMwG0mhIOYUByp1VYiy0SQMm2Or7s+yHIVgGcrWuPvpUYQXeKujcAuWHc7Y?=
- =?us-ascii?Q?EZCZOUxNCaePMPBZNbZmjntyx51ry2hXQSGRS5eJZbj+eZFdsFGsbxFsnMTs?=
- =?us-ascii?Q?1vAy+bDgWKyPW/F4c9I2fyATRQlpWMW0xyuuIW05tZp0kjxBZ5xl1uYS/R3J?=
- =?us-ascii?Q?rDC8CjMTd5BTEDRgYz2ATLC0Jk1G42HRomDSHgTX/frXra2lQI7aEk76c2wV?=
- =?us-ascii?Q?C5pmvJ+1Wo63XiD9KCDTYuPT?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20ca6df4-3c4e-4d5d-e6c9-08d947bd0d2c
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Jul 2021 18:19:14.7044
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K2rKJQk7dSc3ksYngaH96Dfy+Zpl22jBwe60yscNgoHCTbMAvQ8SJd96gGXkGHja
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
+References: <20210714083516.456736-1-Rao.Shoaib@oracle.com>
+ <20210714083516.456736-2-Rao.Shoaib@oracle.com> <CAD=hENdhJJghv2GNh3V7ndyoJ8eRej8g2TeoDFn6F4T+n2cTHA@mail.gmail.com>
+ <1f764b55-77d4-8332-858e-fb9e8bd9abcd@oracle.com>
+In-Reply-To: <1f764b55-77d4-8332-858e-fb9e8bd9abcd@oracle.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Fri, 16 Jul 2021 12:07:24 +0800
+Message-ID: <CAD=hENcEZ6MFrivYoBmbiBEcCjFbg-6yFQJ6TrLSNQVkDs+2_A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] RDMA/rxe: Bump up default maximum values used via uverbs
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 13, 2021 at 11:11:27PM -0400, yanjun.zhu@linux.dev wrote:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> Since the functions irdma_sc_repost_aeq_entries, irdma_set_hw_rsrc and
-> irdma_setup_virt_qp always return 0, remove the returned value check
-> and change the returned type to void.
-> 
-> Zhu Yanjun (3):
->   RDMA/irdma: change the returned type of irdma_sc_repost_aeq_entries to
->     void
->   RDMA/irdma: change the returned type of irdma_set_hw_rsrc to void
->   RDMA/irdma: change returned type of irdma_setup_virt_qp to void
+On Fri, Jul 16, 2021 at 12:44 AM Shoaib Rao <rao.shoaib@oracle.com> wrote:
+>
+> Following is a link
+>
+> https://marc.info/?l=linux-rdma&m=162395437604846&w=2
+>
+> Or just search for my name in the archive.
+>
+> Do you see any issues with this value?
 
-Applied to for-next, thanks
+After this commit is applied, I confronted the following problem
+"
+[  639.943561] rdma_rxe: unloaded
+[  679.717143] rdma_rxe: loaded
+[  691.721055] rdma_rxe: not enough indices for max_elem
+"
+Not sure if this problem is introduced by this commit. Please help to
+check this problem.
+Thanks a lot.
 
-Jason
+Zhu Yanjun
+>
+> Shoaib
+>
+> On 7/14/21 10:02 PM, Zhu Yanjun wrote:
+> > On Wed, Jul 14, 2021 at 4:36 PM Rao Shoaib <Rao.Shoaib@oracle.com> wrote:
+> >> From: Rao Shoaib <rshoaib@ca-dev141.us.oracle.com>
+> >>
+> >> In our internal testing we have found that the
+> >> current maximum are too smalls. Ideally there should
+> >> be no limits but currently maximum values are reported
+> >> via ibv_query_device, so we have to keep maximum values
+> >> but they have been made suffiently large.
+> >>
+> >> Resubmitting after fixing an issue reported by test robot.
+> >>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >>
+> >> Signed-off-by: Rao Shoaib <rshoaib@ca-dev141.us.oracle.com>
+> >> ---
+> >>   drivers/infiniband/sw/rxe/rxe_param.h | 26 ++++++++++++++------------
+> >>   1 file changed, 14 insertions(+), 12 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
+> >> index 742e6ec93686..092dbff890f2 100644
+> >> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+> >> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+> >> @@ -9,6 +9,8 @@
+> >>
+> >>   #include <uapi/rdma/rdma_user_rxe.h>
+> >>
+> >> +#define DEFAULT_MAX_VALUE (1 << 20)
+> > Can you let me know the link in which the above value is discussed?
+> >
+> > Thanks,
+> > Zhu Yanjun
+> >
+> >> +
+> >>   static inline enum ib_mtu rxe_mtu_int_to_enum(int mtu)
+> >>   {
+> >>          if (mtu < 256)
+> >> @@ -37,7 +39,7 @@ static inline enum ib_mtu eth_mtu_int_to_enum(int mtu)
+> >>   enum rxe_device_param {
+> >>          RXE_MAX_MR_SIZE                 = -1ull,
+> >>          RXE_PAGE_SIZE_CAP               = 0xfffff000,
+> >> -       RXE_MAX_QP_WR                   = 0x4000,
+> >> +       RXE_MAX_QP_WR                   = DEFAULT_MAX_VALUE,
+> >>          RXE_DEVICE_CAP_FLAGS            = IB_DEVICE_BAD_PKEY_CNTR
+> >>                                          | IB_DEVICE_BAD_QKEY_CNTR
+> >>                                          | IB_DEVICE_AUTO_PATH_MIG
+> >> @@ -58,40 +60,40 @@ enum rxe_device_param {
+> >>          RXE_MAX_INLINE_DATA             = RXE_MAX_WQE_SIZE -
+> >>                                            sizeof(struct rxe_send_wqe),
+> >>          RXE_MAX_SGE_RD                  = 32,
+> >> -       RXE_MAX_CQ                      = 16384,
+> >> +       RXE_MAX_CQ                      = DEFAULT_MAX_VALUE,
+> >>          RXE_MAX_LOG_CQE                 = 15,
+> >> -       RXE_MAX_PD                      = 0x7ffc,
+> >> +       RXE_MAX_PD                      = DEFAULT_MAX_VALUE,
+> >>          RXE_MAX_QP_RD_ATOM              = 128,
+> >>          RXE_MAX_RES_RD_ATOM             = 0x3f000,
+> >>          RXE_MAX_QP_INIT_RD_ATOM         = 128,
+> >>          RXE_MAX_MCAST_GRP               = 8192,
+> >>          RXE_MAX_MCAST_QP_ATTACH         = 56,
+> >>          RXE_MAX_TOT_MCAST_QP_ATTACH     = 0x70000,
+> >> -       RXE_MAX_AH                      = 100,
+> >> -       RXE_MAX_SRQ_WR                  = 0x4000,
+> >> +       RXE_MAX_AH                      = DEFAULT_MAX_VALUE,
+> >> +       RXE_MAX_SRQ_WR                  = DEFAULT_MAX_VALUE,
+> >>          RXE_MIN_SRQ_WR                  = 1,
+> >>          RXE_MAX_SRQ_SGE                 = 27,
+> >>          RXE_MIN_SRQ_SGE                 = 1,
+> >>          RXE_MAX_FMR_PAGE_LIST_LEN       = 512,
+> >> -       RXE_MAX_PKEYS                   = 1,
+> >> +       RXE_MAX_PKEYS                   = 64,
+> >>          RXE_LOCAL_CA_ACK_DELAY          = 15,
+> >>
+> >> -       RXE_MAX_UCONTEXT                = 512,
+> >> +       RXE_MAX_UCONTEXT                = DEFAULT_MAX_VALUE,
+> >>
+> >>          RXE_NUM_PORT                    = 1,
+> >>
+> >> -       RXE_MAX_QP                      = 0x10000,
+> >> +       RXE_MAX_QP                      = DEFAULT_MAX_VALUE,
+> >>          RXE_MIN_QP_INDEX                = 16,
+> >> -       RXE_MAX_QP_INDEX                = 0x00020000,
+> >> +       RXE_MAX_QP_INDEX                = 0x00040000,
+> >>
+> >> -       RXE_MAX_SRQ                     = 0x00001000,
+> >> +       RXE_MAX_SRQ                     = DEFAULT_MAX_VALUE,
+> >>          RXE_MIN_SRQ_INDEX               = 0x00020001,
+> >>          RXE_MAX_SRQ_INDEX               = 0x00040000,
+> >>
+> >> -       RXE_MAX_MR                      = 0x00001000,
+> >> +       RXE_MAX_MR                      = DEFAULT_MAX_VALUE,
+> >>          RXE_MAX_MW                      = 0x00001000,
+> >>          RXE_MIN_MR_INDEX                = 0x00000001,
+> >> -       RXE_MAX_MR_INDEX                = 0x00010000,
+> >> +       RXE_MAX_MR_INDEX                = 0x00040000,
+> >>          RXE_MIN_MW_INDEX                = 0x00010001,
+> >>          RXE_MAX_MW_INDEX                = 0x00020000,
+> >>
+> >> --
+> >> 2.27.0
+> >>
