@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986A43CB318
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB673CB317
 	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jul 2021 09:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236100AbhGPHQ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S236041AbhGPHQ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 16 Jul 2021 03:16:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:35319 "EHLO mga05.intel.com"
+Received: from mga01.intel.com ([192.55.52.88]:54029 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236137AbhGPHQr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 16 Jul 2021 03:16:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="296331589"
+        id S236157AbhGPHQq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 16 Jul 2021 03:16:46 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10046"; a="232522440"
 X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="296331589"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 00:13:50 -0700
+   d="scan'208";a="232522440"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jul 2021 00:13:50 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,244,1620716400"; 
-   d="scan'208";a="506375088"
+   d="scan'208";a="413891200"
 Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 16 Jul 2021 00:13:49 -0700
+  by orsmga003.jf.intel.com with ESMTP; 16 Jul 2021 00:13:49 -0700
 Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m4I2e-000KOq-AO; Fri, 16 Jul 2021 07:13:48 +0000
-Date:   Fri, 16 Jul 2021 15:13:04 +0800
+        id 1m4I2e-000KOy-DL; Fri, 16 Jul 2021 07:13:48 +0000
+Date:   Fri, 16 Jul 2021 15:13:08 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- dc6afef7e14252c5ca5b8a8444946cb4b75b0aa0
-Message-ID: <60f13180.Asaa2LoTtuq5+MZ1%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 916071185b178b052e0ca8bcdf269161b6848da9
+Message-ID: <60f13184.aYoYoDrLxEPMjeyx%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,8 +39,8 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: dc6afef7e14252c5ca5b8a8444946cb4b75b0aa0  RDMA/irdma: Change returned type of irdma_setup_virt_qp to void
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 916071185b178b052e0ca8bcdf269161b6848da9  MAINTAINERS: Update maintainers of HiSilicon RoCE
 
 elapsed time: 721m
 
