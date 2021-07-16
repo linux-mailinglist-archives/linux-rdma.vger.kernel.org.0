@@ -2,144 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94843CBA45
-	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jul 2021 18:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8063C3CBA57
+	for <lists+linux-rdma@lfdr.de>; Fri, 16 Jul 2021 18:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhGPQJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 16 Jul 2021 12:09:39 -0400
-Received: from mail-mw2nam12on2055.outbound.protection.outlook.com ([40.107.244.55]:48736
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230358AbhGPQJj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 16 Jul 2021 12:09:39 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KILmtm4RNaWcDpMjkP28CGse+dvEHLQhkfz3WLWDfn8E0YWtcIzjM1ObBDPrW5JwqCy6VNBfdoqqNEsck2JEG7zw+zFg400VbmwYZhfwtBFqfz7ukXpYPH09bMvlck05wdYrWSK2ZGmIsyOdLLVRE6loEes0NshDKsCmmHzIi1ls5ZhUkk/G0nuT7Jq4PFHIZ2zOVwt3ceh702u21YuPKx2SEB68vRLLskgd2qx1073ODqrMCoULTZuFJKokgpH1MHaQX/2f0DbIuntcP3m4xdmBSgMZCQObXXxwdAtreiD/0/MEAhDSsIVJ2H2Eezc7Ec7sjOrssFBGMEoas8T0UQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=snTtxRG5OKV8fkDWwxy0Upeh3SN24tDLzmzI4pr+nt0=;
- b=GCpwYJL9V19mpS1vlVfQjTMmOqO7ZEv2mQGQ32+NXsPD1UJDL7KsPIk2m+BXCdedBkjh5pFuHvZ1gPjZeiysONSAzdXVRvRfnMDs/Kpk7/RLkpNH9W3TLGFRhkoqe2BA9O6xAhUy/8LnghYyj4F7LfFbc8vlfFEmqBgcQBS3o1Nfm6uuw7RfChoKShi2V0XXSEApOP8VIdmmcJwzf7VQ1bHoU3Qe4RTWRc80PYUMckFZ20dIAvNDiStHoPwsyoC/RbAuoonsXiElw+LNSxwlnE2v9LkPyJHHCy/CmSOkn+V9/nrxUbXmvjzvW4b2gaSwosKDNiHzXk4CJxXctZGE9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=snTtxRG5OKV8fkDWwxy0Upeh3SN24tDLzmzI4pr+nt0=;
- b=VLftcZfrJ6R5mOAh/4s0SoWiLplzfBo/SPqeUuCJlEn/gO3v4/Ml20mSSZHHUhRbjkPlatSh8YSpCf5EQsZQObp1gJbJ9Z4VklfbmUsD2SbLrUlR1Ael6VsdBoDTFNmqImHPPxSv8jzfSoAcYVfdDqpotV/ZBOQyS49r1NRVLg4xhwWz1Netsg2V7sc0KfcgZKyH1v9ek6h5915NbXp+dAvZ6eU569rjtBefn+MxCRiRGIFxqVEzf9Qc7iid35y94o2Tjyd+ZTCEwOGI/PxJ9moAtKbtMOKKHmPvgOzHiqQJjkVlT5NPB2dlXJ3BLJFjZ2zxFAzPVpYx/6ipe0olAg==
-Authentication-Results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5222.namprd12.prod.outlook.com (2603:10b6:208:31e::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.23; Fri, 16 Jul
- 2021 16:06:42 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4331.026; Fri, 16 Jul 2021
- 16:06:42 +0000
-Date:   Fri, 16 Jul 2021 13:06:40 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
+        id S229498AbhGPQLk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 16 Jul 2021 12:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36894 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhGPQLk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 16 Jul 2021 12:11:40 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76292C06175F
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Jul 2021 09:08:45 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id w188so11401968oif.10
+        for <linux-rdma@vger.kernel.org>; Fri, 16 Jul 2021 09:08:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=GOYuV4pKe/sE/aez2ubgXEmsVeFqPyk9H+nzGEcTV3Y=;
+        b=JQjyukqZosfcp8lwyN8bhi1nE2yHnuDaSLRKdHaYFWtO2yaE1dlOUjDJ9Eh9VGzpcW
+         /lgYjhN0TwGc8O5hMD18qif+ehOHwA1yHiQt1YBI+sjCeqF3W9ngyqDU/cFDoRaFeWGI
+         zu8Q4CjVaHd6vRCBLwicgbg4ZZVpFfuF4YVrI6IpEv/XeYpYf/sjSXbdkDR7CrNIlFBb
+         i1N3mh08uIKgrYbNbA7rf5wVdC5DEay7Q6I9cN34bE0VtgoS8e+5+i1ecCOJB5E3n4pe
+         8cJ7/AvPamjGXufhQWSVWhqUbWMjvNEHHcveN6ZLSh+3Y15R7MM7NBgaIWavO2Jkr080
+         BhJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GOYuV4pKe/sE/aez2ubgXEmsVeFqPyk9H+nzGEcTV3Y=;
+        b=gGo15iD6PI5dgf57G+zghe/HcXS/yHWqBhCwoDP8ZRDUr8zACtq79It3wJWCket9Px
+         AszGmoKCqCzsOaKH+3jxpb49EcG46Nb66S0qZGaD/lzw1RrHyZE8YejqGzvZYiXR+V2b
+         UxYEPbmFnPtlIigDS4KywpSRD+LktRizPWrKsvN917uYaEjhnY9aa3FmMZ7LcnWOlMeb
+         21kB7AlGBcLoLV8PcttPmvwUKpO02lRIW2ObjQJsZIGmcoDXcYoS9UyxKmwSM1QxmxCk
+         OdKICH2zQI8r6ngX8sKPUdyvEsPw89EmvpIG/nCuDic9wrmnjfYV5bQJKCK4+YMxIWgR
+         5WNA==
+X-Gm-Message-State: AOAM533yXhQaKa1gI7dx23Pcu8E7FKD/riWz7y79Ac9A7xO8YvyOlXMX
+        w5Vj+Odd27dyqC90BsNmV5DRFtrhJQc=
+X-Google-Smtp-Source: ABdhPJz7SsbsmApjHJhUAzqqFdqW3FEuDcLdt75STpO0Qms7WCMZY30/rAt9JiDIaAlWRfXZmc568A==
+X-Received: by 2002:a05:6808:1286:: with SMTP id a6mr8498848oiw.121.1626451724756;
+        Fri, 16 Jul 2021 09:08:44 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:3254:da98:32e5:5358? (2603-8081-140c-1a00-3254-da98-32e5-5358.res6.spectrum.com. [2603:8081:140c:1a00:3254:da98:32e5:5358])
+        by smtp.gmail.com with ESMTPSA id f26sm177596oto.65.2021.07.16.09.08.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jul 2021 09:08:44 -0700 (PDT)
+Subject: Re: [PATCH v2 4/9] RDMA/rxe: Move ICRC generation to a subroutine
+To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 9/9] RDMA/rxe: Fix types in rxe_icrc.c
-Message-ID: <20210716160640.GC759856@nvidia.com>
 References: <20210707040040.15434-1-rpearsonhpe@gmail.com>
- <20210707040040.15434-10-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210707040040.15434-10-rpearsonhpe@gmail.com>
-X-ClientProxiedBy: BL1PR13CA0430.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ <20210707040040.15434-5-rpearsonhpe@gmail.com>
+ <20210716155759.GB759856@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <6a07ad6e-5167-9d71-e22b-94efb9b64401@gmail.com>
+Date:   Fri, 16 Jul 2021 11:08:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0430.namprd13.prod.outlook.com (2603:10b6:208:2c3::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.11 via Frontend Transport; Fri, 16 Jul 2021 16:06:41 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m4QMK-003Byy-UQ; Fri, 16 Jul 2021 13:06:40 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7642983e-9f9f-47e4-a5c7-08d94873b35f
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5222:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52223EFED7C268BB5CD83EDEC2119@BL1PR12MB5222.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: TSeHKuVXJqdLzq58ArxWiEzl88s32e82Sg4LeATfbCKf8RBqBvfwX10k1xkXqj5cCtqczQImwncSf//QM+MXjFCrbNcHqkrsF8PdPJtP1fU/LWxVJ8yMDtYNnNzEMRSNePom2hW80q5JkiyAeeNrf7EPJeRMxZb2Z63Fzncelh4zgNuVzGgX1kgUqqslzq+15+64KsxHoITBWbM4t6HadEzUXYmkfx1eV9myPFXtLitghp1r2IN89Fy/jgjiH5+PysRSwKsHSERoo4ObagckiN3ah5oPJLFnEzvr5QIX4Nsqut72xTccUYETPccJ66+MmiQMiPAI1bwiI5e4C+RC0rKo0VGPdClxPPZGPYQS+xwiiyWlVAvSQCClljsHGOrANFbu7uIx9IW8Y6UY72x+89RoaOwuDyrvrQkFHnfaQLuwsMHpwtcZ3x91F5io8lniZ5ZLxktz2+fpZO5zXHWciUhMXKdeSro5qhD1onEzb4OMOBH6BZYjKE7Wqtm+rsARP7GM6AZLyQ2vEhFvf5Cd+7xrbRsvB96UsHlZlddF2pfOUf7LG3YN3ejYxB+sD6YkVGHym+Fb2naiCWEwrLG6PWuNLY447+K52PpSkX4zb+WK0pjLTydWrsxwyFESyLlFksDGNCu5NeINIilFDheKJVYiv+KFVsXWDyiISzAikzLVdKt3dYDHXt2ledkawLO1uyMd6CiJbyjCr2teSKTuLA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(396003)(39860400002)(346002)(8936002)(478600001)(86362001)(1076003)(426003)(5660300002)(2616005)(33656002)(4326008)(38100700002)(83380400001)(9746002)(316002)(186003)(2906002)(8676002)(9786002)(36756003)(6916009)(66556008)(66476007)(66946007)(26005)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jHDudosA6lADos2KRH4QEVT188UkHhRX5yibxvsbEYUa44elALmx4KR8Moyl?=
- =?us-ascii?Q?dIpZk5r2B/+2IeeyYVrF8nDxrrx6xhQms5tjs15ZvG4CKdYyCpYBNXw3tZxo?=
- =?us-ascii?Q?UGrWxtiQl9aydO/3yHOpuVXkb8WnQ/rV6bFRH+lXTHDFOAgpQb9gknCA3Yj7?=
- =?us-ascii?Q?MXvHIK5N0/lRPvX1frnKzgSsnXiSTp/eZUPdqQrqcqBk6npyczX4TSj3Alsz?=
- =?us-ascii?Q?dTh22ikGlx+s4AO/bCMMPwPMWxzvB9f4NeYTuS7RXIuQn9Opy1a/kcnq3yg3?=
- =?us-ascii?Q?sYDzbIa5XPBoaeYeJPy88MD+Wyg1kGzpGsSszlCsk9jJgFXN/n3zM93OHpfe?=
- =?us-ascii?Q?SxJzzfPkgbIy67NzxXWksilIlraK3ZLzhEiV8Hi5CuwJbxptwNpz/75NN0+t?=
- =?us-ascii?Q?BAGNR9BLGgb5Br4cohEYwOPukV0zBqLvawysU4Co5h7/02qiV9vDERGy3H8y?=
- =?us-ascii?Q?WdQ6zJgqqSlIei30GtLYRPwAhdorw5XrhVrMgXEkjruQHwRMgd/VuNL2Ihhs?=
- =?us-ascii?Q?RNrOrlYMOesfYPutLG9pIWEBBVlEENENCZGwOP+hvYFgNU3+71HlDTROWI9a?=
- =?us-ascii?Q?IlfsqLfbrQ4FaUCGLVE6KPBcxQ+x56Jcf3GTxM7t/6G8zWLKuKcqEX8qgLmP?=
- =?us-ascii?Q?Zh0hUd9RFIe63u1A8zmT09x7a8GPLcZG1y5MoWOEqZlBXzKLcbkMdV1FVoZu?=
- =?us-ascii?Q?4mA4hhJltf6Yq9nfRncVy2jaf135i7Xt4F+4L6v2iBsSOzrgLu4VjcASBVpm?=
- =?us-ascii?Q?1QJ1EdWjYYdbyGN0zeYO2rxxm3QjRI8E8ek4ZPdm1uL+iEe0JBGBzXoYOrnO?=
- =?us-ascii?Q?ug1mbL0X8MOaTkNY7QyeoXrxUeCyYqrVXZziWw5ETUUupncHL/f0fFXvWx3e?=
- =?us-ascii?Q?6UJTFvJroj4+UCj7y8ZJGgWokjzKgfnhQGdFn1gbq6IihHybOUs07ABatrJw?=
- =?us-ascii?Q?a0ZeR5/ewP4xZYNGsJIoy1RMdZWJB7bYjXv+6EnTxVIxa/HUXkhWsLaSuZfU?=
- =?us-ascii?Q?uMzP0ana7vp+UD8nF/Q/CmZoNVMFqHYvhcpDKXzkZK1qhCHAmTNNXcsdsPFk?=
- =?us-ascii?Q?1AA1C7r/1QIQRlHfnPnw2B5paAfCNZosbhRLFh6eBZU0QcDlTmMtqaZUgloI?=
- =?us-ascii?Q?sJZ+QlAZg+Scc3zew5khrwMkCWtUw9hI//Za8xY6FxzlSOm45Pxz42MV1uRz?=
- =?us-ascii?Q?ZaQ837rVUz8lBUrF+lljPoky37h4Y5je6P7zaIPwO13DXzHVLLWyigPOAb4r?=
- =?us-ascii?Q?z3hK8a2WIZvO1qfHSkuBfOAyYsVhAtASHL713emxlSzRt144Upsg64l9k8Nk?=
- =?us-ascii?Q?RE9tJ2Sq4jAT0J+kJpaTYcet?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7642983e-9f9f-47e4-a5c7-08d94873b35f
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Jul 2021 16:06:41.9127
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fB83YjBW4qUEcYGJn991Xb9m61VgFRBQqbLu4UV1rNPmW+CW+0hgr0kCPOn+niGM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5222
+In-Reply-To: <20210716155759.GB759856@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 06, 2021 at 11:00:41PM -0500, Bob Pearson wrote:
-> Currently the ICRC is generated as a u32 type and then forced to a __be32
-> and stored into the ICRC field in the packet. The actual type of the ICRC
-> is __be32. This patch replaces u32 by __be32 and eliminates the casts.
-> The computation is exactly the same as the original but the types are
-> more consistent.
+On 7/16/21 10:57 AM, Jason Gunthorpe wrote:
+> On Tue, Jul 06, 2021 at 11:00:36PM -0500, Bob Pearson wrote:
 > 
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_icrc.c | 28 ++++++++++++++--------------
->  1 file changed, 14 insertions(+), 14 deletions(-)
+>> +/* rxe_icrc_generate- compute ICRC for a packet. */
+>> +void rxe_icrc_generate(struct sk_buff *skb, struct rxe_pkt_info *pkt)
+>> +{
+>> +	__be32 *icrcp;
+>> +	u32 icrc;
+>> +
+>> +	icrcp = (__be32 *)(pkt->hdr + pkt->paylen - RXE_ICRC_SIZE);
+>> +	icrc = rxe_icrc_hdr(pkt, skb);
+>> +	icrc = rxe_crc32(pkt->rxe, icrc, (u8 *)payload_addr(pkt),
+>> +				payload_size(pkt) + bth_pad(pkt));
+>> +	*icrcp = (__force __be32)~icrc;
+>> +}
+> 
+> Same comment here, the u32 icrc should be a  __be32 because that is
+> what rxe_crc32 returns, no force
+> 
+> Jason
+> 
 
-Oh, well Ok, it mostly gets fixed up here
+I agree. The last patch in the series tries to make sense of the byte order.
+Here I was trying to take baby steps and just move the code without changing anything.
+It makes the thing easier for Zhu to review because no logic changed just where the code is.
+However as you point out it doesn't really make sense on the face of it. There isn't any
+really good resolution because both the hardware and software versions of the crc32 calculation
+are clearly labeled __le but they are stuffed into the ICRC which is clearly identified as __be.
+The problem is that it works i.e. interoperates with ConnectX. I would love a conversation with one
+of the IBA architects to resolve this.
 
->  	shash->tfm = rxe->tfm;
-> -	*(u32 *)shash_desc_ctx(shash) = crc;
-> +	*(__be32 *)shash_desc_ctx(shash) = crc;
->  	err = crypto_shash_update(shash, next, len);
->  	if (unlikely(err)) {
->  		pr_warn_ratelimited("failed crc calculation, err: %d\n", err);
-> -		return crc32_le(crc, next, len);
-> +		return (__force __be32)crc32_le((__force u32)crc, next, len);
->  	}
+Bob
 
-But all this makes my head ache, I'm skeptical it is OK, but isn't any
-worse
-
-> @@ -91,7 +91,7 @@ static u32 rxe_icrc_hdr(struct sk_buff *skb, struct rxe_pkt_info *pkt)
->  	/* This seed is the result of computing a CRC with a seed of
->  	 * 0xfffffff and 8 bytes of 0xff representing a masked LRH.
->  	 */
-> -	crc = 0xdebb20e3;
-> +	crc = (__force __be32)0xdebb20e3;
-
-Eg should this be cpu_to_be32(0xe320bbde) ?
-
-Hard to know without a BE system to check it out on
-
-Jason
