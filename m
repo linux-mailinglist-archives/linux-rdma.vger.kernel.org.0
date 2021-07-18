@@ -2,79 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D443CC86E
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 12:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CE73CC8AE
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 13:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhGRKlI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 06:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58394 "EHLO mail.kernel.org"
+        id S232312AbhGRLMQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 07:12:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230461AbhGRKlH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Jul 2021 06:41:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A106610D1;
-        Sun, 18 Jul 2021 10:38:08 +0000 (UTC)
+        id S230461AbhGRLMQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Jul 2021 07:12:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FAF561166;
+        Sun, 18 Jul 2021 11:09:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626604689;
-        bh=H/blmi1bcoaBh+CBZ8vsfGLxUAhzjxY/70q/vEpigzk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E0i403PskP7q7iy1j1Um8HM64r8W3WeJgW7zAUWeO49frfywx0eNRyWw63v1ct3yr
-         KttkixCQNpjDjEdWgFvyLdGRNUOW10UiJaJA/CL/POIyxJPLTWUZKDssYBs2iN3Xm+
-         7X+LKVgetMyVn1mpmOJJgyeNHinp+VQlqpWnnnn9qoa1R4wH1wUJ3Fksu1r63sTkif
-         6lhFnuNqKmcahpdyIM58VzZGH3lvkLXCQ06jvE9DQ+HYnbEK8znzN2j89SR4jxDjIU
-         4ensedpSQeWehuN8KDL+D+OvIzQySyUsbPgmTYQ4T3kKb4tME8wa67Z35TSrS/NGEr
-         5DvItXSlbVNuQ==
-Date:   Sun, 18 Jul 2021 13:38:05 +0300
+        s=k20201202; t=1626606558;
+        bh=scysiXjyferckCGbthGvR8xqveehOph98QgmtZIcrec=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XNrMJtjIYfhN0XTG3RHYKnxAldtmMPe3Fn0tYzrYyOc78jO/VZ7uH/sHudWjRpkiP
+         yZLIgj8DXTnC15yOHZ62829FXeY2Ylj1hfLGbcahe50CKpZOaFEwF509uzrVf0XmQq
+         zXSSnU+F418MiGnCpbYvqomVTOuZOYCSHVdOoXVHnz+VJQsymAScSGgGet+gdvGtU4
+         SyhAgAPAtdBDP/5e0cts9gfcDq5FfYoxtiPFX7811Rm6Wue+ucosWfB3uyrtxjtEuD
+         hXlJfssJ96pNrvx3E/7kuAe86zgezKeuERXXD3k0Q2LAAUYlEZRPDfirtPvTHrpCcT
+         1K7JSLV5lg+zQ==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Lior Nahmanson <liorna@nvidia.com>,
-        Meir Lichtinger <meirl@nvidia.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 0/3] Add ConnectX DCS offload support
-Message-ID: <YPQEjUIbviO74e6X@unreal>
-References: <cover.1624258894.git.leonro@nvidia.com>
- <20210716154208.GA758521@nvidia.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        VMware Graphics <linux-graphics-maintainer@vmware.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v2 0/2] SG fix together with update to RDMA umem
+Date:   Sun, 18 Jul 2021 14:09:11 +0300
+Message-Id: <cover.1626605893.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210716154208.GA758521@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 16, 2021 at 12:42:08PM -0300, Jason Gunthorpe wrote:
-> On Mon, Jun 21, 2021 at 10:06:13AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Changelog:
-> > v1:
-> >  * Rephrase commit message of second patch
-> > v0: https://lore.kernel.org/linux-rdma/cover.1622723815.git.leonro@nvidia.com
-> > 
-> > 
-> > This patchset from Lior adds support of DCI stream channel (DCS) support.
-> > 
-> > DCS is an offload to SW load balancing of DC initiator work requests.
-> > 
-> > A single DC QP initiator (DCI) can be connected to only one target at the time
-> > and can't start new connection until the previous work request is completed.
-> > 
-> > This limitation causes to delays when the initiator process needs to
-> > transfer data to multiple targets at the same time.
-> > 
-> > Thanks
-> > 
-> > Lior Nahmanson (3):
-> >   net/mlx5: Add DCS caps & fields support
-> >   RDMA/mlx5: Separate DCI QP creation logic
-> >   RDMA/mlx5: Add DCS offload support
-> 
-> Okay, can you update the shared branch?
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Pushed, 96cd2dd65bb0 ("net/mlx5: Add DCS caps & fields support")
+Changelog:
+v2:
+ * Changed implementation of first patch, based on our discussion with Christoph.
+   https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
+v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
+ * Fixed sg_page with a _dma_ API in the umem.c
+v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
 
-Thanks
+Maor Gottlieb (2):
+  lib/scatterlist: Fix wrong update of orig_nents
+  RDMA: Use dma_map_sgtable for map umem pages
 
-> 
-> Thanks,
-> Jason
+ drivers/gpu/drm/drm_prime.c                 |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  2 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  2 +-
+ drivers/infiniband/core/umem.c              | 33 +++-----
+ drivers/infiniband/core/umem_dmabuf.c       |  1 -
+ drivers/infiniband/hw/mlx4/mr.c             |  4 +-
+ drivers/infiniband/hw/mlx5/mr.c             |  3 +-
+ drivers/infiniband/sw/rdmavt/mr.c           |  2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c          |  3 +-
+ include/linux/scatterlist.h                 |  3 +-
+ include/rdma/ib_umem.h                      |  6 +-
+ include/rdma/ib_verbs.h                     | 28 +++++++
+ lib/scatterlist.c                           | 88 ++++++++++++++-------
+ tools/testing/scatterlist/main.c            | 15 +++-
+ 14 files changed, 128 insertions(+), 64 deletions(-)
+
+-- 
+2.31.1
+
