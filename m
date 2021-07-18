@@ -2,233 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFC9D3CC970
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 15:59:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255C93CC98A
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 16:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhGROBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 10:01:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36003 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233181AbhGROBW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Jul 2021 10:01:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1626616703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=19v5D8bRVm+lStdjgUon0q9aeP8opTApQap714gjX7U=;
-        b=bbH3KmwZ4E3/yyqFAD7Ifp12Kpvzwf3onioPvhaKzVKYHnlyrwZtz1fXuCN9UPnAs8MM5+
-        BSMi/7nHtcWyKukdHSt5uVDJ9ZnWqG3mOMspnJUa+5XYNfalI6EGPEkJWSQW3c2+4UCs72
-        u41LzJ68QhMxdL7+S8tCm8SR6oyaeAE=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-281-_80pUTGaMUa2oBlGBebaGQ-1; Sun, 18 Jul 2021 09:58:22 -0400
-X-MC-Unique: _80pUTGaMUa2oBlGBebaGQ-1
-Received: by mail-wm1-f69.google.com with SMTP id i7-20020a05600c3547b0290229a389ceb2so3285764wmq.0
-        for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 06:58:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=19v5D8bRVm+lStdjgUon0q9aeP8opTApQap714gjX7U=;
-        b=jzrCNL0kpuB9xEywfPOk6Xyd4cL8q9kU1VdZ9nrYohEwY8y0bgJN9JcxajMGSqsGL3
-         Y/zBhFElVX4QHzABdDF3UCbwykAB4sNuXMZEVEgH7csa7q+u3ysYSG60MvK07+6K7gwn
-         HyqZFbyNeHhfjdPTqvdRe+MBUYwjwVgFYXs6QEj2EvtHsGApVNJB1x7kVxb/TJuGlRSo
-         cb5sg1IN3RHmQljG/iXftszKIzWTqk9duGMUlai3kRTZu4eeF96ikTrdcgRy+om60HwD
-         vfuFvKnaU2NaMlO7Z/yALiCnAVdOuQco646ywbbH/mg1rHTM+SRysdKn7QJJ4p7/h9s2
-         Nwag==
-X-Gm-Message-State: AOAM530UW/py3UJjNhsZ93P+fMn8PTHrvacfpxRR4mO43E99lR9haOsd
-        SkqPhG61D7vSWT/EhzXtRkrcTM90wtncWW6zuWMQFVBqk2Kgswb/mpvWMiOVwQuQIOIWZ6y4JUE
-        s6Skckhd2yw/6CHTtZQRfeQ==
-X-Received: by 2002:a5d:6889:: with SMTP id h9mr5083528wru.80.1626616701228;
-        Sun, 18 Jul 2021 06:58:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwF7QfXkH4VrgcY96cSNBnRG8DR0SNMZ2/Sbv43p7XU/OxiIQSeCAAcCG8kp14LFV47h3tTuA==
-X-Received: by 2002:a5d:6889:: with SMTP id h9mr5083506wru.80.1626616700970;
-        Sun, 18 Jul 2021 06:58:20 -0700 (PDT)
-Received: from redhat.com ([2.55.29.175])
-        by smtp.gmail.com with ESMTPSA id o18sm16881198wrx.21.2021.07.18.06.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 06:58:20 -0700 (PDT)
-Date:   Sun, 18 Jul 2021 09:58:15 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Tal Gilboa <talgi@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH mlx5-next] IB/mlx5: Rename is_apu_thread_cq function to
- is_apu_cq
-Message-ID: <20210718095805-mutt-send-email-mst@kernel.org>
-References: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
+        id S233693AbhGRO1o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 10:27:44 -0400
+Received: from mga18.intel.com ([134.134.136.126]:1539 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230307AbhGRO1o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Jul 2021 10:27:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="198208706"
+X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
+   d="scan'208";a="198208706"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2021 07:24:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
+   d="scan'208";a="655755977"
+Received: from lkp-server01.sh.intel.com (HELO a467b34d8c10) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Jul 2021 07:24:44 -0700
+Received: from kbuild by a467b34d8c10 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m57im-0000KD-0O; Sun, 18 Jul 2021 14:24:44 +0000
+Date:   Sun, 18 Jul 2021 22:24:35 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 8c1b4316c3faa38cb66bde200a8f2942fa6728b6
+Message-ID: <60f439a3.Pv4UNc4i9oIB0a+m%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Jul 18, 2021 at 02:54:13PM +0300, Leon Romanovsky wrote:
-> From: Tal Gilboa <talgi@nvidia.com>
-> 
-> is_apu_thread_cq() used to detect CQs which are attached to APU
-> threads. This was extended to support other elements as well,
-> so the function was renamed to is_apu_cq().
-> 
-> c_eqn_or_apu_element was extended from 8 bits to 32 bits, which wan't
-> reflected when the APU support was first introduced.
-> 
-> Signed-off-by: Tal Gilboa <talgi@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 8c1b4316c3faa38cb66bde200a8f2942fa6728b6  RDMA/efa: Split hardware stats to device and port stats
 
-vdpa bits
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+elapsed time: 746m
 
-> ---
->  drivers/infiniband/hw/mlx5/cq.c                            | 2 +-
->  drivers/infiniband/hw/mlx5/devx.c                          | 7 +++----
->  drivers/net/ethernet/mellanox/mlx5/core/cq.c               | 3 ++-
->  drivers/net/ethernet/mellanox/mlx5/core/en_main.c          | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c        | 2 +-
->  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 2 +-
->  drivers/vdpa/mlx5/net/mlx5_vnet.c                          | 2 +-
->  include/linux/mlx5/mlx5_ifc.h                              | 5 ++---
->  8 files changed, 12 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-> index aef87a7c01ff..464e6a1ecdb0 100644
-> --- a/drivers/infiniband/hw/mlx5/cq.c
-> +++ b/drivers/infiniband/hw/mlx5/cq.c
-> @@ -997,7 +997,7 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  				  MLX5_IB_CQ_PR_FLAGS_CQE_128_PAD));
->  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(entries));
->  	MLX5_SET(cqc, cqc, uar_page, index);
-> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
-> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
->  	MLX5_SET64(cqc, cqc, dbr_addr, cq->db.dma);
->  	if (cq->create_flags & IB_UVERBS_CQ_FLAGS_IGNORE_OVERRUN)
->  		MLX5_SET(cqc, cqc, oi, 1);
-> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-> index edcac8b3f384..31f5f4c73d25 100644
-> --- a/drivers/infiniband/hw/mlx5/devx.c
-> +++ b/drivers/infiniband/hw/mlx5/devx.c
-> @@ -1437,11 +1437,10 @@ static void devx_cq_comp(struct mlx5_core_cq *mcq, struct mlx5_eqe *eqe)
->  	rcu_read_unlock();
->  }
->  
-> -static bool is_apu_thread_cq(struct mlx5_ib_dev *dev, const void *in)
-> +static bool is_apu_cq(struct mlx5_ib_dev *dev, const void *in)
->  {
->  	if (!MLX5_CAP_GEN(dev->mdev, apu) ||
-> -	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
-> -		      apu_thread_cq))
-> +	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), apu_cq))
->  		return false;
->  
->  	return true;
-> @@ -1501,7 +1500,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
->  		err = mlx5_core_create_dct(dev, &obj->core_dct, cmd_in,
->  					   cmd_in_len, cmd_out, cmd_out_len);
->  	} else if (opcode == MLX5_CMD_OP_CREATE_CQ &&
-> -		   !is_apu_thread_cq(dev, cmd_in)) {
-> +		   !is_apu_cq(dev, cmd_in)) {
->  		obj->flags |= DEVX_OBJ_FLAGS_CQ;
->  		obj->core_cq.comp = devx_cq_comp;
->  		err = mlx5_core_create_cq(dev->mdev, &obj->core_cq,
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-> index df3e4938ecdd..99ec278d0370 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
-> @@ -89,7 +89,8 @@ static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
->  int mlx5_core_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
->  			u32 *in, int inlen, u32 *out, int outlen)
->  {
-> -	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), c_eqn);
-> +	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
-> +			   c_eqn_or_apu_element);
->  	u32 din[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
->  	struct mlx5_eq_comp *eq;
->  	int err;
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> index c47603a952f3..308ccace48d0 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-> @@ -1626,7 +1626,7 @@ static int mlx5e_create_cq(struct mlx5e_cq *cq, struct mlx5e_cq_param *param)
->  				  (__be64 *)MLX5_ADDR_OF(create_cq_in, in, pas));
->  
->  	MLX5_SET(cqc,   cqc, cq_period_mode, param->cq_period_mode);
-> -	MLX5_SET(cqc,   cqc, c_eqn,         eqn);
-> +	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
->  	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
->  	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
->  					    MLX5_ADAPTER_PAGE_SHIFT);
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-> index 6f78716ff321..9bb4944820df 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
-> @@ -454,7 +454,7 @@ static int mlx5_fpga_conn_create_cq(struct mlx5_fpga_conn *conn, int cq_size)
->  
->  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
->  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(cq_size));
-> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
-> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
->  	MLX5_SET(cqc, cqc, uar_page, fdev->conn_res.uar->index);
->  	MLX5_SET(cqc, cqc, log_page_size, conn->cq.wq_ctrl.buf.page_shift -
->  			   MLX5_ADAPTER_PAGE_SHIFT);
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-> index d1300b16d054..a4a3ee87a903 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
-> @@ -790,7 +790,7 @@ static struct mlx5dr_cq *dr_create_cq(struct mlx5_core_dev *mdev,
->  
->  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
->  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(ncqe));
-> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
-> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
->  	MLX5_SET(cqc, cqc, uar_page, uar->index);
->  	MLX5_SET(cqc, cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
->  		 MLX5_ADAPTER_PAGE_SHIFT);
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 0121c7c49396..83fa3c26cbd2 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -573,7 +573,7 @@ static int cq_create(struct mlx5_vdpa_net *ndev, u16 idx, u32 num_ent)
->  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
->  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(num_ent));
->  	MLX5_SET(cqc, cqc, uar_page, ndev->mvdev.res.uar->index);
-> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
-> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
->  	MLX5_SET64(cqc, cqc, dbr_addr, vcq->db.dma);
->  
->  	err = mlx5_core_create_cq(mdev, &vcq->mcq, in, inlen, out, sizeof(out));
-> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-> index c980eab89867..e93f16b87312 100644
-> --- a/include/linux/mlx5/mlx5_ifc.h
-> +++ b/include/linux/mlx5/mlx5_ifc.h
-> @@ -3923,7 +3923,7 @@ struct mlx5_ifc_cqc_bits {
->  	u8         status[0x4];
->  	u8         reserved_at_4[0x2];
->  	u8         dbr_umem_valid[0x1];
-> -	u8         apu_thread_cq[0x1];
-> +	u8         apu_cq[0x1];
->  	u8         cqe_sz[0x3];
->  	u8         cc[0x1];
->  	u8         reserved_at_c[0x1];
-> @@ -3949,8 +3949,7 @@ struct mlx5_ifc_cqc_bits {
->  	u8         cq_period[0xc];
->  	u8         cq_max_count[0x10];
->  
-> -	u8         reserved_at_a0[0x18];
-> -	u8         c_eqn[0x8];
-> +	u8         c_eqn_or_apu_element[0x20];
->  
->  	u8         reserved_at_c0[0x3];
->  	u8         log_page_size[0x5];
-> -- 
-> 2.31.1
+configs tested: 139
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                       mainstone_defconfig
+sh                          landisk_defconfig
+arm                            lart_defconfig
+mips                            ar7_defconfig
+sh                               allmodconfig
+arm                  colibri_pxa300_defconfig
+powerpc                       ebony_defconfig
+arm                         s3c6400_defconfig
+arm                      footbridge_defconfig
+arm                            hisi_defconfig
+arm                       versatile_defconfig
+nios2                         3c120_defconfig
+arc                        vdk_hs38_defconfig
+sh                            shmin_defconfig
+powerpc                 canyonlands_defconfig
+powerpc                        cell_defconfig
+microblaze                      mmu_defconfig
+h8300                     edosk2674_defconfig
+mips                     cu1830-neo_defconfig
+arm                         lpc18xx_defconfig
+sh                          rsk7203_defconfig
+arm                         at91_dt_defconfig
+mips                           rs90_defconfig
+powerpc                   bluestone_defconfig
+powerpc                    amigaone_defconfig
+m68k                       m5208evb_defconfig
+powerpc                  storcenter_defconfig
+um                                  defconfig
+sh                          urquell_defconfig
+powerpc                 mpc8313_rdb_defconfig
+xtensa                  audio_kc705_defconfig
+m68k                        m5272c3_defconfig
+arm                          collie_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                        spear6xx_defconfig
+sh                        dreamcast_defconfig
+m68k                           sun3_defconfig
+microblaze                          defconfig
+powerpc                  mpc885_ads_defconfig
+ia64                            zx1_defconfig
+powerpc                      chrp32_defconfig
+sh                           se7206_defconfig
+arm                        mini2440_defconfig
+powerpc                 mpc837x_mds_defconfig
+sh                      rts7751r2d1_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                            gpr_defconfig
+arm                         cm_x300_defconfig
+riscv                            alldefconfig
+arm                        realview_defconfig
+powerpc                      ppc64e_defconfig
+arm                         palmz72_defconfig
+arm                     davinci_all_defconfig
+sh                           se7751_defconfig
+arm                           h5000_defconfig
+sh                           se7780_defconfig
+sh                          polaris_defconfig
+powerpc                      ep88xc_defconfig
+mips                          rb532_defconfig
+powerpc                     tqm8560_defconfig
+openrisc                            defconfig
+arm                            dove_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210718
+x86_64               randconfig-a004-20210718
+x86_64               randconfig-a002-20210718
+x86_64               randconfig-a003-20210718
+x86_64               randconfig-a006-20210718
+x86_64               randconfig-a001-20210718
+i386                 randconfig-a005-20210718
+i386                 randconfig-a004-20210718
+i386                 randconfig-a006-20210718
+i386                 randconfig-a001-20210718
+i386                 randconfig-a003-20210718
+i386                 randconfig-a002-20210718
+i386                 randconfig-a014-20210718
+i386                 randconfig-a015-20210718
+i386                 randconfig-a011-20210718
+i386                 randconfig-a013-20210718
+i386                 randconfig-a016-20210718
+i386                 randconfig-a012-20210718
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210718
+x86_64               randconfig-a013-20210718
+x86_64               randconfig-a015-20210718
+x86_64               randconfig-a012-20210718
+x86_64               randconfig-a014-20210718
+x86_64               randconfig-a011-20210718
+x86_64               randconfig-a016-20210718
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
