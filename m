@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 684E83CCAD7
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 23:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 860363CCAD8
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 23:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhGRVaj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 17:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57346 "EHLO
+        id S232895AbhGRVal (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 17:30:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhGRVai (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Jul 2021 17:30:38 -0400
-Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C4FC061762
+        with ESMTP id S232896AbhGRVak (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Jul 2021 17:30:40 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD750C061762
         for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 14:27:40 -0700 (PDT)
-Received: by mail-oo1-xc33.google.com with SMTP id s11-20020a4ae48b0000b02902667598672bso45456oov.12
+Received: by mail-ot1-x329.google.com with SMTP id 42-20020a9d012d0000b02904b98d90c82cso16169392otu.5
         for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 14:27:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=YYx1T+4atNwsYAUkNYXAuWRC7vMHJzuHplwG+C79x20=;
-        b=VhesS1YjmgIrkvbvvHGDLgJqgHkfuafzxO6MIYZf5Jd1xZPkJyMoIiO7lLn5NxQrqr
-         Zz1sysUhyqXkS99HA0dA5mzp84hAfWJoVhdL3TcRKpFtIDEg/yh9QrYUSCoexrWqDcc7
-         UPNFtmrHGw6r66ArOrpr9vyrrXXmZUD3WreC11OgDcCr5DzxVVhwbG+bPLff/QkRAlNf
-         Cjs9JJ2bxTbzgQYSnz4JQZr4RUZxAJKUCazxlNIivKWfkHJwskZYq8dxN5fzzSErI4EM
-         0F89n6QdsNKkrgWNxi5XEkFDYHSWcMPY98VNJdjqTXQcKpCqyhTVt0HP0TVgza2D+o53
-         B4Qg==
+        bh=2uXvT2E/bOcgWhDkWg8W6+iY8xVb9gLWp8HbFjcf94g=;
+        b=urOpH3RoYNLdLsmlTpU8Ooeo99rR/4YivbMmRVI17Bxq8j9IlYRa0r81dy6/ZoGIF4
+         FpHEiJsoM3KQWB1Lz9lvaV36oxy6e62bUOcSSZWwu3KpXbLDyC4QIXRE/yBoYTGi0J5n
+         SuXmpr4ihJo/su5TNj6iIuCxb25MTOAsiWsKAsVDrj2vh/R+Xn9MrTHz2gGmpjl29/aG
+         /ILF0g7dPha5GMkmWp0C3G/y5XVEfRM5kWiD60CjpxI5n2yOvLu5u3Wh+uk4VjXIUJkE
+         8ucaqKF13Rb4m7orshNOe4GnCNd1F+rW4H/8KEVxbNnPa8eKIYfXg9/7J2PhczRV4XyZ
+         Z0nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=YYx1T+4atNwsYAUkNYXAuWRC7vMHJzuHplwG+C79x20=;
-        b=HMiRmX+uFXUvJU+04d9xCEhIWF/dZMrbzP+fX67MaqK39uteJyrjtTZdKhAbxK4VKT
-         iSTuaw/0V5FxfFRrKoo4Ybhpyc+13y9XA21maqtLb7kcZFdL4qfaV2VtCHOcrcGYs3Ra
-         0OD2TWSx5DD++IuKJzWjazpgEuvQBQ0y2erUQEwNcw/dDMzXlLyR4IXa2I+sJtMh3j9f
-         +cPea1ESYGeoaqtjo3vlzRVmxew3l8ulrbQySZLZfBkMe6vt73h3w5WvplBUokefnaG3
-         afZFhJYsvbny8y1yFwGnrlEMxNEmbZ/pncm743bAt1ZEMBmdckD3Tlu+7N1Buok+BNSW
-         2JOg==
-X-Gm-Message-State: AOAM530MEG3nKsxaDEusMKsW7bNSZSdXjmcoaR3luoW7yHGZ0vI1/gqh
-        A4DGwamMrAUl7dh8yp7+PBOPYGp3lsQ=
-X-Google-Smtp-Source: ABdhPJxmTG/Hoy8x4SkaFgXWiI34fRoTcs5wVvpJU95JkI7V3G9xzyVxfo2Fu0+j9FhBXnXz2rDkYA==
-X-Received: by 2002:a4a:8241:: with SMTP id t1mr15425559oog.13.1626643659625;
-        Sun, 18 Jul 2021 14:27:39 -0700 (PDT)
+        bh=2uXvT2E/bOcgWhDkWg8W6+iY8xVb9gLWp8HbFjcf94g=;
+        b=RuRvA+ObIEyGkOYLuPaKElIHVf819elRWo69e7m+5URNg/a9AvBWqES0RhTkkjHRQM
+         XuY6fgU32wc3VaG5Re9YEvOJ616WvPb6TNbwp98QjlByoCrlQ5Ac0alu3KNEKtkFoMkS
+         PH9NIe/rvcj0ykJNLVHHa2eLvF9P9zej6rfv2K1z/ESNAM6to1KxePs5IIJQ6eqCElIq
+         dpmMAmVo+AOE68cQ1Ovz8jbTgue9ctSimUM5EPk9BtZo3nSsSxRj555avA/2eUZLoFGJ
+         pyhMmpEx9BNYbdEeQLNisOSJj4+vPfpX1OfIJ4Sj2NO97tnRlvX42I4H9eVuaovTyyfo
+         RSSQ==
+X-Gm-Message-State: AOAM531zvJJVC5alnRpjg5JBo/+/RcfQejTTJW5QxJcQqTosf0wVtnPV
+        T6+A/gR3kvbH26T9zPSc9Sw=
+X-Google-Smtp-Source: ABdhPJy17ljcIyPh8i8ZwvMXH5FbgwYuZjKZaYarGOoitC34QiS+Pr5VLsCBq0804dMvIvJUkfEHsw==
+X-Received: by 2002:a05:6830:120b:: with SMTP id r11mr16215104otp.173.1626643660366;
+        Sun, 18 Jul 2021 14:27:40 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-0284-9a3c-0f8a-4ac7.res6.spectrum.com. [2603:8081:140c:1a00:284:9a3c:f8a:4ac7])
-        by smtp.gmail.com with ESMTPSA id x73sm2967690oif.44.2021.07.18.14.27.39
+        by smtp.gmail.com with ESMTPSA id n9sm3245067otn.54.2021.07.18.14.27.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jul 2021 14:27:39 -0700 (PDT)
+        Sun, 18 Jul 2021 14:27:40 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 3/5] RDMA/rxe: Create AH index and return to user space
-Date:   Sun, 18 Jul 2021 16:27:02 -0500
-Message-Id: <20210718212703.21471-4-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 4/5] RDMA/rxe: Lookup kernel AH from ah index in UD WQEs
+Date:   Sun, 18 Jul 2021 16:27:03 -0500
+Message-Id: <20210718212703.21471-5-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210718212703.21471-1-rpearsonhpe@gmail.com>
 References: <20210718212703.21471-1-rpearsonhpe@gmail.com>
@@ -62,105 +62,78 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Modify rxe_create_ah() to add an index to AH when created and if
-called from a new user provider return it to user space. If called
-from an old provider mark the AH as not having a useful index.
-Modify rxe_destroy_ah to drop the index before deleting the object.
-
-Also use the PD in the core ib_ah struct instead of a duplicate copy in
-rxe_ah.
+Add code to rxe_get_av in rxe_av.c to use the AH index in UD send WQEs
+to lookup the kernel AH. For old user providers continue to use the AV
+passed in WQEs. Move setting pkt->rxe to before the call to rxe_get_av()
+to get access to the AH pool.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_verbs.c | 31 ++++++++++++++++++++++++++-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  8 ++++++-
- 2 files changed, 37 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_av.c  | 20 +++++++++++++++++++-
+ drivers/infiniband/sw/rxe/rxe_req.c |  8 +++++---
+ 2 files changed, 24 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 4176fffa7fdc..1cc12c913e39 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -161,9 +161,19 @@ static int rxe_create_ah(struct ib_ah *ibah,
- 			 struct ib_udata *udata)
+diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
+index 85580ea5eed0..38f75249588e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_av.c
++++ b/drivers/infiniband/sw/rxe/rxe_av.c
+@@ -101,11 +101,29 @@ void rxe_av_fill_ip_info(struct rxe_av *av, struct rdma_ah_attr *attr)
  
+ struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt)
  {
--	int err;
- 	struct rxe_dev *rxe = to_rdev(ibah->device);
- 	struct rxe_ah *ah = to_rah(ibah);
-+	struct rxe_create_ah_resp __user *uresp = NULL;
-+	int err;
++	struct rxe_ah *ah;
++	u32 ah_num;
 +
-+	if (udata) {
-+		/* test if new user provider */
-+		if (udata->outlen >= sizeof(*uresp))
-+			uresp = udata->outbuf;
-+		ah->is_user = true;
-+	} else {
-+		ah->is_user = false;
-+	}
+ 	if (!pkt || !pkt->qp)
+ 		return NULL;
  
- 	err = rxe_av_chk_attr(rxe, init_attr->ah_attr);
- 	if (err)
-@@ -173,6 +183,24 @@ static int rxe_create_ah(struct ib_ah *ibah,
- 	if (err)
- 		return err;
+ 	if (qp_type(pkt->qp) == IB_QPT_RC || qp_type(pkt->qp) == IB_QPT_UC)
+ 		return &pkt->qp->pri_av;
  
-+	/* create index > 0 */
-+	rxe_add_index(ah);
-+	ah->ah_num = ah->pelem.index;
+-	return (pkt->wqe) ? &pkt->wqe->wr.wr.ud.av : NULL;
++	if (!pkt->wqe)
++		return NULL;
 +
-+	if (uresp) {
-+		/* only if new user provider */
-+		err = copy_to_user(&uresp->ah_num, &ah->ah_num,
-+					 sizeof(uresp->ah_num));
-+		if (err) {
-+			rxe_drop_index(ah);
-+			rxe_drop_ref(ah);
-+			return -EFAULT;
++	ah_num = pkt->wqe->wr.wr.ud.ah_num;
++	if (ah_num) {
++		/* only new user provider or kernel client */
++		ah = rxe_pool_get_index(&pkt->rxe->ah_pool, ah_num);
++		if (!ah || ah->ah_num != ah_num || ah_pd(ah) != pkt->qp->pd) {
++			pr_warn("Unable to find AH matching ah_num\n");
++			return NULL;
 +		}
-+	} else if (ah->is_user) {
-+		/* only if old user provider */
-+		ah->ah_num = 0;
++		return &ah->av;
 +	}
 +
- 	rxe_init_av(init_attr->ah_attr, &ah->av);
- 	return 0;
++	/* only old user provider for UD sends*/
++	return &pkt->wqe->wr.wr.ud.av;
  }
-@@ -205,6 +233,7 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
- {
- 	struct rxe_ah *ah = to_rah(ibah);
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index c57699cc6578..01485de2cc7d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -390,9 +390,8 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 	/* length from start of bth to end of icrc */
+ 	paylen = rxe_opcode[opcode].length + payload + pad + RXE_ICRC_SIZE;
  
-+	rxe_drop_index(ah);
- 	rxe_drop_ref(ah);
- 	return 0;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 959a3260fcab..fa234d7ad382 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -46,8 +46,9 @@ struct rxe_pd {
- struct rxe_ah {
- 	struct ib_ah		ibah;
- 	struct rxe_pool_entry	pelem;
--	struct rxe_pd		*pd;
- 	struct rxe_av		av;
-+	bool			is_user;
-+	int			ah_num;
- };
+-	/* pkt->hdr, rxe, port_num and mask are initialized in ifc
+-	 * layer
+-	 */
++	/* pkt->hdr, port_num and mask are initialized in ifc layer */
++	pkt->rxe	= rxe;
+ 	pkt->opcode	= opcode;
+ 	pkt->qp		= qp;
+ 	pkt->psn	= qp->req.psn;
+@@ -402,6 +401,9 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
  
- struct rxe_cqe {
-@@ -469,6 +470,11 @@ static inline struct rxe_mw *to_rmw(struct ib_mw *mw)
- 	return mw ? container_of(mw, struct rxe_mw, ibmw) : NULL;
- }
- 
-+static inline struct rxe_pd *ah_pd(struct rxe_ah *ah)
-+{
-+	return to_rpd(ah->ibah.pd);
-+}
+ 	/* init skb */
+ 	av = rxe_get_av(pkt);
++	if (!av)
++		return NULL;
 +
- static inline struct rxe_pd *mr_pd(struct rxe_mr *mr)
- {
- 	return to_rpd(mr->ibmr.pd);
+ 	skb = rxe_init_packet(rxe, av, paylen, pkt);
+ 	if (unlikely(!skb))
+ 		return NULL;
 -- 
 2.30.2
 
