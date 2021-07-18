@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255C93CC98A
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 16:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 965383CC98E
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 16:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233693AbhGRO1o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 10:27:44 -0400
-Received: from mga18.intel.com ([134.134.136.126]:1539 "EHLO mga18.intel.com"
+        id S230307AbhGRO3s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 10:29:48 -0400
+Received: from mga14.intel.com ([192.55.52.115]:44266 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230307AbhGRO1o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Jul 2021 10:27:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="198208706"
+        id S233807AbhGRO3r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Jul 2021 10:29:47 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10049"; a="210673867"
 X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
-   d="scan'208";a="198208706"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2021 07:24:46 -0700
+   d="scan'208";a="210673867"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jul 2021 07:26:46 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,249,1620716400"; 
-   d="scan'208";a="655755977"
+   d="scan'208";a="461356042"
 Received: from lkp-server01.sh.intel.com (HELO a467b34d8c10) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 18 Jul 2021 07:24:44 -0700
+  by orsmga008.jf.intel.com with ESMTP; 18 Jul 2021 07:26:45 -0700
 Received: from kbuild by a467b34d8c10 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1m57im-0000KD-0O; Sun, 18 Jul 2021 14:24:44 +0000
-Date:   Sun, 18 Jul 2021 22:24:35 +0800
+        id 1m57ki-0000LK-HA; Sun, 18 Jul 2021 14:26:44 +0000
+Date:   Sun, 18 Jul 2021 22:26:24 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 8c1b4316c3faa38cb66bde200a8f2942fa6728b6
-Message-ID: <60f439a3.Pv4UNc4i9oIB0a+m%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 923232bbea88a29f18a2361790582a6474a538fc
+Message-ID: <60f43a10.Su2ngEChrmxgTpyQ%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,10 +39,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 8c1b4316c3faa38cb66bde200a8f2942fa6728b6  RDMA/efa: Split hardware stats to device and port stats
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 923232bbea88a29f18a2361790582a6474a538fc  RDMA/rxe: Fix types in rxe_icrc.c
 
-elapsed time: 746m
+elapsed time: 748m
 
 configs tested: 139
 configs skipped: 3
