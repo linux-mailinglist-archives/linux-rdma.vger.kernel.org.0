@@ -2,253 +2,233 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62FA3CC8FE
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 14:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC9D3CC970
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 15:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233621AbhGRMEh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 08:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233673AbhGRMEd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 18 Jul 2021 08:04:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3450F610D1;
-        Sun, 18 Jul 2021 12:01:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626609695;
-        bh=/xVusLaIisjwDrhXsvTfDCOTo4UomSFhxaE4UNzqDKw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tlBgpCaOgQl+f4P/lZePWrp2FJY1W7wWBVXbsPlBArWT5cbsCdBdIF4RUkXHiSd1J
-         msWD0is3f7tLTVjqsKGWrsRoh6vtRtvLFsNCICtcyyTCkH1Q6aTDxBG5r/SPfekhga
-         2mSplqEyAGYmfXXbYMOFrF91pEfkEwRYc/0GFEwSuflgFnOTnXuVpe5NZotDIFbdBK
-         MuQusF6riXH45KhMs4F43bzOxgH+ECJGF+qfJYRuAtmRBNY+nuucGA7A7b+GQRJPRi
-         qdWQU+WFgPqMDfZcbxkKK4ClCN5cHZy55CaSyQbEpqd+sdSLLh9J5K8+wGUbR8GL4x
-         mbWfNHeYpUGVg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next 9/9] RDMA/mlx5: Drop in-driver verbs object creations
-Date:   Sun, 18 Jul 2021 15:00:59 +0300
-Message-Id: <b5f778c93b2d98721f635c0c160f05d33dea9285.1626609283.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1626609283.git.leonro@nvidia.com>
-References: <cover.1626609283.git.leonro@nvidia.com>
+        id S233807AbhGROBX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 10:01:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36003 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233181AbhGROBW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 18 Jul 2021 10:01:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1626616703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=19v5D8bRVm+lStdjgUon0q9aeP8opTApQap714gjX7U=;
+        b=bbH3KmwZ4E3/yyqFAD7Ifp12Kpvzwf3onioPvhaKzVKYHnlyrwZtz1fXuCN9UPnAs8MM5+
+        BSMi/7nHtcWyKukdHSt5uVDJ9ZnWqG3mOMspnJUa+5XYNfalI6EGPEkJWSQW3c2+4UCs72
+        u41LzJ68QhMxdL7+S8tCm8SR6oyaeAE=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-281-_80pUTGaMUa2oBlGBebaGQ-1; Sun, 18 Jul 2021 09:58:22 -0400
+X-MC-Unique: _80pUTGaMUa2oBlGBebaGQ-1
+Received: by mail-wm1-f69.google.com with SMTP id i7-20020a05600c3547b0290229a389ceb2so3285764wmq.0
+        for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 06:58:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=19v5D8bRVm+lStdjgUon0q9aeP8opTApQap714gjX7U=;
+        b=jzrCNL0kpuB9xEywfPOk6Xyd4cL8q9kU1VdZ9nrYohEwY8y0bgJN9JcxajMGSqsGL3
+         Y/zBhFElVX4QHzABdDF3UCbwykAB4sNuXMZEVEgH7csa7q+u3ysYSG60MvK07+6K7gwn
+         HyqZFbyNeHhfjdPTqvdRe+MBUYwjwVgFYXs6QEj2EvtHsGApVNJB1x7kVxb/TJuGlRSo
+         cb5sg1IN3RHmQljG/iXftszKIzWTqk9duGMUlai3kRTZu4eeF96ikTrdcgRy+om60HwD
+         vfuFvKnaU2NaMlO7Z/yALiCnAVdOuQco646ywbbH/mg1rHTM+SRysdKn7QJJ4p7/h9s2
+         Nwag==
+X-Gm-Message-State: AOAM530UW/py3UJjNhsZ93P+fMn8PTHrvacfpxRR4mO43E99lR9haOsd
+        SkqPhG61D7vSWT/EhzXtRkrcTM90wtncWW6zuWMQFVBqk2Kgswb/mpvWMiOVwQuQIOIWZ6y4JUE
+        s6Skckhd2yw/6CHTtZQRfeQ==
+X-Received: by 2002:a5d:6889:: with SMTP id h9mr5083528wru.80.1626616701228;
+        Sun, 18 Jul 2021 06:58:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwF7QfXkH4VrgcY96cSNBnRG8DR0SNMZ2/Sbv43p7XU/OxiIQSeCAAcCG8kp14LFV47h3tTuA==
+X-Received: by 2002:a5d:6889:: with SMTP id h9mr5083506wru.80.1626616700970;
+        Sun, 18 Jul 2021 06:58:20 -0700 (PDT)
+Received: from redhat.com ([2.55.29.175])
+        by smtp.gmail.com with ESMTPSA id o18sm16881198wrx.21.2021.07.18.06.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Jul 2021 06:58:20 -0700 (PDT)
+Date:   Sun, 18 Jul 2021 09:58:15 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Tal Gilboa <talgi@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH mlx5-next] IB/mlx5: Rename is_apu_thread_cq function to
+ is_apu_cq
+Message-ID: <20210718095805-mutt-send-email-mst@kernel.org>
+References: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Sun, Jul 18, 2021 at 02:54:13PM +0300, Leon Romanovsky wrote:
+> From: Tal Gilboa <talgi@nvidia.com>
+> 
+> is_apu_thread_cq() used to detect CQs which are attached to APU
+> threads. This was extended to support other elements as well,
+> so the function was renamed to is_apu_cq().
+> 
+> c_eqn_or_apu_element was extended from 8 bits to 32 bits, which wan't
+> reflected when the APU support was first introduced.
+> 
+> Signed-off-by: Tal Gilboa <talgi@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-There is no real value in bypassing IB/core APIs for creating standard
-objects with standard types. The open-coded variant didn't have any
-restrack task management calls and caused to such objects to be not
-present when running rdmatoool.
+vdpa bits
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/verbs.c   |  7 ++-
- drivers/infiniband/hw/mlx5/main.c | 92 +++++++------------------------
- 2 files changed, 25 insertions(+), 74 deletions(-)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index a164609c2ee7..89c6987cb5eb 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1035,7 +1035,8 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	}
- 	if (srq->srq_type == IB_SRQT_XRC) {
- 		srq->ext.xrc.xrcd = srq_init_attr->ext.xrc.xrcd;
--		atomic_inc(&srq->ext.xrc.xrcd->usecnt);
-+		if (srq->ext.xrc.xrcd)
-+			atomic_inc(&srq->ext.xrc.xrcd->usecnt);
- 	}
- 	atomic_inc(&pd->usecnt);
- 
-@@ -1046,7 +1047,7 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	if (ret) {
- 		rdma_restrack_put(&srq->res);
- 		atomic_dec(&srq->pd->usecnt);
--		if (srq->srq_type == IB_SRQT_XRC)
-+		if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 			atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 		if (ib_srq_has_cq(srq->srq_type))
- 			atomic_dec(&srq->ext.cq->usecnt);
-@@ -1090,7 +1091,7 @@ int ib_destroy_srq_user(struct ib_srq *srq, struct ib_udata *udata)
- 		return ret;
- 
- 	atomic_dec(&srq->pd->usecnt);
--	if (srq->srq_type == IB_SRQT_XRC)
-+	if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 		atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 	if (ib_srq_has_cq(srq->srq_type))
- 		atomic_dec(&srq->ext.cq->usecnt);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 7a6bafc19c9b..fbed9e4241e1 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2802,31 +2802,16 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
- 		return -EOPNOTSUPP;
- 
--	devr->p0 = rdma_zalloc_drv_obj(ibdev, ib_pd);
--	if (!devr->p0)
--		return -ENOMEM;
--
--	devr->p0->device  = ibdev;
--	devr->p0->uobject = NULL;
--	atomic_set(&devr->p0->usecnt, 0);
-+	devr->p0 = ib_alloc_pd(ibdev, 0);
-+	if (IS_ERR(devr->p0))
-+		return PTR_ERR(devr->p0);
- 
--	ret = mlx5_ib_alloc_pd(devr->p0, NULL);
--	if (ret)
--		goto error0;
--
--	devr->c0 = rdma_zalloc_drv_obj(ibdev, ib_cq);
--	if (!devr->c0) {
--		ret = -ENOMEM;
-+	devr->c0 = ib_create_cq(ibdev, NULL, NULL, NULL, &cq_attr);
-+	if (IS_ERR(devr->c0)) {
-+		ret = PTR_ERR(devr->c0);
- 		goto error1;
- 	}
- 
--	devr->c0->device = &dev->ib_dev;
--	atomic_set(&devr->c0->usecnt, 0);
--
--	ret = mlx5_ib_create_cq(devr->c0, &cq_attr, NULL);
--	if (ret)
--		goto err_create_cq;
--
- 	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &devr->xrcdn0, 0);
- 	if (ret)
- 		goto error2;
-@@ -2841,45 +2826,22 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	attr.srq_type = IB_SRQT_XRC;
- 	attr.ext.cq = devr->c0;
- 
--	devr->s0 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s0) {
--		ret = -ENOMEM;
--		goto error4;
--	}
--
--	devr->s0->device	= &dev->ib_dev;
--	devr->s0->pd		= devr->p0;
--	devr->s0->srq_type      = IB_SRQT_XRC;
--	devr->s0->ext.cq	= devr->c0;
--	ret = mlx5_ib_create_srq(devr->s0, &attr, NULL);
--	if (ret)
-+	devr->s0 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s0)) {
-+		ret = PTR_ERR(devr->s0);
- 		goto err_create;
--
--	atomic_inc(&devr->s0->ext.cq->usecnt);
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s0->usecnt, 0);
-+	}
- 
- 	memset(&attr, 0, sizeof(attr));
- 	attr.attr.max_sge = 1;
- 	attr.attr.max_wr = 1;
- 	attr.srq_type = IB_SRQT_BASIC;
--	devr->s1 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s1) {
--		ret = -ENOMEM;
--		goto error5;
--	}
--
--	devr->s1->device	= &dev->ib_dev;
--	devr->s1->pd		= devr->p0;
--	devr->s1->srq_type      = IB_SRQT_BASIC;
--	devr->s1->ext.cq	= devr->c0;
- 
--	ret = mlx5_ib_create_srq(devr->s1, &attr, NULL);
--	if (ret)
-+	devr->s1 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s1)) {
-+		ret = PTR_ERR(devr->s1);
- 		goto error6;
--
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s1->usecnt, 0);
-+	}
- 
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		INIT_WORK(&devr->ports[port].pkey_change_work,
-@@ -2888,23 +2850,15 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	return 0;
- 
- error6:
--	kfree(devr->s1);
--error5:
--	mlx5_ib_destroy_srq(devr->s0, NULL);
-+	ib_destroy_srq(devr->s0);
- err_create:
--	kfree(devr->s0);
--error4:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- error3:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
- error2:
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--err_create_cq:
--	kfree(devr->c0);
-+	ib_destroy_cq(devr->c0);
- error1:
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--error0:
--	kfree(devr->p0);
-+	ib_dealloc_pd(devr->p0);
- 	return ret;
- }
- 
-@@ -2922,16 +2876,12 @@ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		cancel_work_sync(&devr->ports[port].pkey_change_work);
- 
--	mlx5_ib_destroy_srq(devr->s1, NULL);
--	kfree(devr->s1);
--	mlx5_ib_destroy_srq(devr->s0, NULL);
--	kfree(devr->s0);
-+	ib_destroy_srq(devr->s1);
-+	ib_destroy_srq(devr->s0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--	kfree(devr->c0);
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--	kfree(devr->p0);
-+	ib_destroy_cq(devr->c0);
-+	ib_dealloc_pd(devr->p0);
- }
- 
- static u32 get_core_cap_flags(struct ib_device *ibdev,
--- 
-2.31.1
+> ---
+>  drivers/infiniband/hw/mlx5/cq.c                            | 2 +-
+>  drivers/infiniband/hw/mlx5/devx.c                          | 7 +++----
+>  drivers/net/ethernet/mellanox/mlx5/core/cq.c               | 3 ++-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c          | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c        | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 2 +-
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c                          | 2 +-
+>  include/linux/mlx5/mlx5_ifc.h                              | 5 ++---
+>  8 files changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
+> index aef87a7c01ff..464e6a1ecdb0 100644
+> --- a/drivers/infiniband/hw/mlx5/cq.c
+> +++ b/drivers/infiniband/hw/mlx5/cq.c
+> @@ -997,7 +997,7 @@ int mlx5_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+>  				  MLX5_IB_CQ_PR_FLAGS_CQE_128_PAD));
+>  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(entries));
+>  	MLX5_SET(cqc, cqc, uar_page, index);
+> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
+> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+>  	MLX5_SET64(cqc, cqc, dbr_addr, cq->db.dma);
+>  	if (cq->create_flags & IB_UVERBS_CQ_FLAGS_IGNORE_OVERRUN)
+>  		MLX5_SET(cqc, cqc, oi, 1);
+> diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
+> index edcac8b3f384..31f5f4c73d25 100644
+> --- a/drivers/infiniband/hw/mlx5/devx.c
+> +++ b/drivers/infiniband/hw/mlx5/devx.c
+> @@ -1437,11 +1437,10 @@ static void devx_cq_comp(struct mlx5_core_cq *mcq, struct mlx5_eqe *eqe)
+>  	rcu_read_unlock();
+>  }
+>  
+> -static bool is_apu_thread_cq(struct mlx5_ib_dev *dev, const void *in)
+> +static bool is_apu_cq(struct mlx5_ib_dev *dev, const void *in)
+>  {
+>  	if (!MLX5_CAP_GEN(dev->mdev, apu) ||
+> -	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
+> -		      apu_thread_cq))
+> +	    !MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), apu_cq))
+>  		return false;
+>  
+>  	return true;
+> @@ -1501,7 +1500,7 @@ static int UVERBS_HANDLER(MLX5_IB_METHOD_DEVX_OBJ_CREATE)(
+>  		err = mlx5_core_create_dct(dev, &obj->core_dct, cmd_in,
+>  					   cmd_in_len, cmd_out, cmd_out_len);
+>  	} else if (opcode == MLX5_CMD_OP_CREATE_CQ &&
+> -		   !is_apu_thread_cq(dev, cmd_in)) {
+> +		   !is_apu_cq(dev, cmd_in)) {
+>  		obj->flags |= DEVX_OBJ_FLAGS_CQ;
+>  		obj->core_cq.comp = devx_cq_comp;
+>  		err = mlx5_core_create_cq(dev->mdev, &obj->core_cq,
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cq.c b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> index df3e4938ecdd..99ec278d0370 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/cq.c
+> @@ -89,7 +89,8 @@ static void mlx5_add_cq_to_tasklet(struct mlx5_core_cq *cq,
+>  int mlx5_core_create_cq(struct mlx5_core_dev *dev, struct mlx5_core_cq *cq,
+>  			u32 *in, int inlen, u32 *out, int outlen)
+>  {
+> -	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context), c_eqn);
+> +	int eqn = MLX5_GET(cqc, MLX5_ADDR_OF(create_cq_in, in, cq_context),
+> +			   c_eqn_or_apu_element);
+>  	u32 din[MLX5_ST_SZ_DW(destroy_cq_in)] = {};
+>  	struct mlx5_eq_comp *eq;
+>  	int err;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> index c47603a952f3..308ccace48d0 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+> @@ -1626,7 +1626,7 @@ static int mlx5e_create_cq(struct mlx5e_cq *cq, struct mlx5e_cq_param *param)
+>  				  (__be64 *)MLX5_ADDR_OF(create_cq_in, in, pas));
+>  
+>  	MLX5_SET(cqc,   cqc, cq_period_mode, param->cq_period_mode);
+> -	MLX5_SET(cqc,   cqc, c_eqn,         eqn);
+> +	MLX5_SET(cqc,   cqc, c_eqn_or_apu_element, eqn);
+>  	MLX5_SET(cqc,   cqc, uar_page,      mdev->priv.uar->index);
+>  	MLX5_SET(cqc,   cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+>  					    MLX5_ADAPTER_PAGE_SHIFT);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+> index 6f78716ff321..9bb4944820df 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c
+> @@ -454,7 +454,7 @@ static int mlx5_fpga_conn_create_cq(struct mlx5_fpga_conn *conn, int cq_size)
+>  
+>  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+>  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(cq_size));
+> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
+> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+>  	MLX5_SET(cqc, cqc, uar_page, fdev->conn_res.uar->index);
+>  	MLX5_SET(cqc, cqc, log_page_size, conn->cq.wq_ctrl.buf.page_shift -
+>  			   MLX5_ADAPTER_PAGE_SHIFT);
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+> index d1300b16d054..a4a3ee87a903 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+> @@ -790,7 +790,7 @@ static struct mlx5dr_cq *dr_create_cq(struct mlx5_core_dev *mdev,
+>  
+>  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+>  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(ncqe));
+> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
+> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+>  	MLX5_SET(cqc, cqc, uar_page, uar->index);
+>  	MLX5_SET(cqc, cqc, log_page_size, cq->wq_ctrl.buf.page_shift -
+>  		 MLX5_ADAPTER_PAGE_SHIFT);
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> index 0121c7c49396..83fa3c26cbd2 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -573,7 +573,7 @@ static int cq_create(struct mlx5_vdpa_net *ndev, u16 idx, u32 num_ent)
+>  	cqc = MLX5_ADDR_OF(create_cq_in, in, cq_context);
+>  	MLX5_SET(cqc, cqc, log_cq_size, ilog2(num_ent));
+>  	MLX5_SET(cqc, cqc, uar_page, ndev->mvdev.res.uar->index);
+> -	MLX5_SET(cqc, cqc, c_eqn, eqn);
+> +	MLX5_SET(cqc, cqc, c_eqn_or_apu_element, eqn);
+>  	MLX5_SET64(cqc, cqc, dbr_addr, vcq->db.dma);
+>  
+>  	err = mlx5_core_create_cq(mdev, &vcq->mcq, in, inlen, out, sizeof(out));
+> diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+> index c980eab89867..e93f16b87312 100644
+> --- a/include/linux/mlx5/mlx5_ifc.h
+> +++ b/include/linux/mlx5/mlx5_ifc.h
+> @@ -3923,7 +3923,7 @@ struct mlx5_ifc_cqc_bits {
+>  	u8         status[0x4];
+>  	u8         reserved_at_4[0x2];
+>  	u8         dbr_umem_valid[0x1];
+> -	u8         apu_thread_cq[0x1];
+> +	u8         apu_cq[0x1];
+>  	u8         cqe_sz[0x3];
+>  	u8         cc[0x1];
+>  	u8         reserved_at_c[0x1];
+> @@ -3949,8 +3949,7 @@ struct mlx5_ifc_cqc_bits {
+>  	u8         cq_period[0xc];
+>  	u8         cq_max_count[0x10];
+>  
+> -	u8         reserved_at_a0[0x18];
+> -	u8         c_eqn[0x8];
+> +	u8         c_eqn_or_apu_element[0x20];
+>  
+>  	u8         reserved_at_c0[0x3];
+>  	u8         log_page_size[0x5];
+> -- 
+> 2.31.1
 
