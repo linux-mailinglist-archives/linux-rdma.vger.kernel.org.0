@@ -2,95 +2,145 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F323CCAD4
-	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 23:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA9A3CCAD6
+	for <lists+linux-rdma@lfdr.de>; Sun, 18 Jul 2021 23:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhGRVag (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 18 Jul 2021 17:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        id S229697AbhGRVai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 18 Jul 2021 17:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229697AbhGRVag (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Jul 2021 17:30:36 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1051EC061762
+        with ESMTP id S230225AbhGRVai (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 18 Jul 2021 17:30:38 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A8FC061762
         for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 14:27:38 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id o72-20020a9d224e0000b02904bb9756274cso16195226ota.6
+Received: by mail-oi1-x22e.google.com with SMTP id y66so9011634oie.7
         for <linux-rdma@vger.kernel.org>; Sun, 18 Jul 2021 14:27:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YQacgArEqfF7a1jsdVI4PzVNx5cf51pLSMFO4emwAYc=;
-        b=VlHcv8sJu57xk9XYIJ0/1s4RPmsJv0laPFCEFzSM9rJ8vQCKCphT7VZ3nKZXC7+f8T
-         AE2r71uYq6jRVsrVhaSuWy4DFT/MB4IwIlmof9G0pIEo+8ewXsGTh0czTCJtL7TFccxu
-         c1P+xJvwfrJino4os7NsIY2hMvfv+2uh+grHoOQyJFMIwY5Rthox6ywn40zPNsRbF5dL
-         7XirBy6CfgNAbuJSl+sHnxFHFLov+y287HTSkqCwx/DN5xwrtEgEuo44LCUD6RWmDXFL
-         czqu7kEWQ9wFCn93zwKAL+mQas51mo9IQTfX0SlK2KqKiBetnGbr+kIkGeEm9feGgEOi
-         Eqbg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7+cWWG+X6YgSz1Adp48PcDN3mkt0jili7TeJ8haPNl8=;
+        b=kWS98M2tKZ8rTfv/bMYUZ9QpQaBkz7z8Dxznx3IV0xfPBmAy2YB0W+qjSZlQ8qZFi6
+         sZ9Oh/c82eT8uVyT/xnfEw8E/khAaXTAHX3i6JGY4+7IWpcYPf4BsXj80+sUAAIeYtF+
+         FzRy6jxLOWlPesD/CzWdlpXdECjzkE6qPqXeEk9hfmV6Z+oOSXc/QImxYFctnv4CAgX1
+         hZDrErRxj0FiG02lg2YqZho5uki29/MvgBrUAPcFCi8h9YNCn8lTGUjunXchbelVgWy9
+         xHyw2fWHi5GxYHRnUCrTYjBLnfJrrkLbg41N6foo43lJ2GFeAvJGiicPcaE03tgsVkvu
+         DG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YQacgArEqfF7a1jsdVI4PzVNx5cf51pLSMFO4emwAYc=;
-        b=tkxr+lxawfP54uDuAEW+rZs858P/dz5VfyIjeGIqDM+4pZX2n6EOU0DU+TxUb8q0pl
-         d2A5uYXJxQOfbayv6xFojlZgNcWZ8oXn3dFcg86rTlL6gMHurZQXR5vQhXrnkK6Rzblb
-         OBw7zIxTS4EB0bi33/tVB9sjTvg0oFbJkJHBm2krtsya+Oa7MKbaLc2826g4d3C3BSEe
-         iNREknHt7qNeUmKMy2YtbIRcQQHbct1f1xdxVhHzVWmpK7NEI8MHhqdmzZuhrYyMz3CP
-         bO6ntKmka1z0ogS9yS0TE2pxn4KOUihE+ojGJ0pyyex0RGg7prDX5i2m/sIodElShgw8
-         4x0g==
-X-Gm-Message-State: AOAM530geq3wM3X3+hN65Hx4nWFaPYRdejHRq61iOmR7RuXTgBUIC0le
-        Vk5G4K2fF97zFdzXUMRmiW4=
-X-Google-Smtp-Source: ABdhPJx9E7Ba2N7JakZAO+t4WHi/kZgl+CAMo07TYNUlwrrhp+AJV3JVld5jmpyCVGef6iMKqDfjKg==
-X-Received: by 2002:a05:6830:1141:: with SMTP id x1mr17238605otq.104.1626643657446;
-        Sun, 18 Jul 2021 14:27:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7+cWWG+X6YgSz1Adp48PcDN3mkt0jili7TeJ8haPNl8=;
+        b=VD9zoEDIyWLv1dRMhqWZDrm9UrhGFYpiLjFK/AmdIfuzeEFO/wBDUaV6LZ+1pQa9Wv
+         5p/MN9chR3aeGeDvDDt6v0aW7OuEbHmxln1KdOH4cfvVtH+DimM/u2fkJdsNeP3bMCIy
+         uPM5CUXl6iOpyLM1A2eNyjzI8U+V0rgclAOA6noPEZnxB7td04jGX+AEsFmpS0CG3RWm
+         CFTK9eq2gvHGxfY9xFPuo6P29F65BqiK0G8liApxtfqN5MLfhfFzTJ2MGgg2Pxu9cLVN
+         xbV/qd7khvdZ6XbsTxEqHf8mNYtOy2gpRnFVv8U+2yTQpTExjHuIk3pIVN5TtgJ5Qu7N
+         oUpw==
+X-Gm-Message-State: AOAM532s4wqI6CBCE5IuAzl6KNCUNirOVlGz9esRPajnxeYcO8s2qHVx
+        WBa4PceDnT9r5D3RQWAi3KE=
+X-Google-Smtp-Source: ABdhPJzdIH8XdH85GuWQceQWxsAaPrZDhTyRfu7fn5QwrvEicTPUbdT6navlyuXpWaB4boirEecyrg==
+X-Received: by 2002:a54:4109:: with SMTP id l9mr15795609oic.3.1626643658203;
+        Sun, 18 Jul 2021 14:27:38 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-0284-9a3c-0f8a-4ac7.res6.spectrum.com. [2603:8081:140c:1a00:284:9a3c:f8a:4ac7])
-        by smtp.gmail.com with ESMTPSA id t10sm3242900otd.73.2021.07.18.14.27.36
+        by smtp.gmail.com with ESMTPSA id y5sm2601775otu.27.2021.07.18.14.27.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Sun, 18 Jul 2021 14:27:37 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 0/5] Replace AV by AH in UD sends
-Date:   Sun, 18 Jul 2021 16:26:59 -0500
-Message-Id: <20210718212703.21471-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 1/5] RDMA/rxe: Change user/kernel API to allow indexing AH
+Date:   Sun, 18 Jul 2021 16:27:00 -0500
+Message-Id: <20210718212703.21471-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210718212703.21471-1-rpearsonhpe@gmail.com>
+References: <20210718212703.21471-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently the rdma_rxe driver and its user space provider exchange
-addressing information for UD sends by having the provider compute an
-address vector (AV) and send it with each WQE. This is not the way
-that the RDMA verbs API was intended to operate.
+Make changes to rdma_user_rxe.h to allow indexing AH objects, passing
+the index in UD send WRs to the driver and returning the index to the rxe
+provider. This change will allow removing handling of the AV in the user
+space provider.
 
-This series of patches modifies the way UD send WQEs work by exchanging
-an index identifying the AH replacing the 88 byte AV by a 4 byte AH
-index. In order to not break compatibility with the existing API the
-rdma_rxe driver will recognise when an older version of the provider
-is not sending an index (i.e. it is 0) and will use the AV instead.
+In order to preserve ABI compatibility for old kernel and/or rdma-core
+code keep the AV in the WQE at the same offset but move to the UD specific
+part of the work request since that is the only case that uses it.
 
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
 v2:
-  Rearranged AV in rxe_send_wqe to be in the ud struct but padded to the
-  same offset as the original preserving ABI compatibility.
+  Moved AV from rxe_send_wqe to rxe_wr.
 
-Bob Pearson (5):
-  RDMA/rxe: Change user/kernel API to allow indexing AH
-  RDMA/rxe: Change AH objects to indexed
-  RDMA/rxe: Create AH index and return to user space
-  RDMA/rxe: Lookup kernel AH from ah index in UD WQEs
-  RDMA/rxe: Convert kernel UD post send to use ah_num
+ drivers/infiniband/sw/rxe/rxe_av.c    |  2 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  3 ++-
+ include/uapi/rdma/rdma_user_rxe.h     | 10 +++++++++-
+ 3 files changed, 12 insertions(+), 3 deletions(-)
 
- drivers/infiniband/sw/rxe/rxe_av.c    | 20 +++++++++++++-
- drivers/infiniband/sw/rxe/rxe_param.h |  4 ++-
- drivers/infiniband/sw/rxe/rxe_pool.c  |  4 ++-
- drivers/infiniband/sw/rxe/rxe_req.c   |  8 +++---
- drivers/infiniband/sw/rxe/rxe_verbs.c | 39 ++++++++++++++++++++++-----
- drivers/infiniband/sw/rxe/rxe_verbs.h |  8 +++++-
- include/uapi/rdma/rdma_user_rxe.h     | 14 +++++++++-
- 7 files changed, 83 insertions(+), 14 deletions(-)
-
+diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
+index da2e867a1ed9..85580ea5eed0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_av.c
++++ b/drivers/infiniband/sw/rxe/rxe_av.c
+@@ -107,5 +107,5 @@ struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt)
+ 	if (qp_type(pkt->qp) == IB_QPT_RC || qp_type(pkt->qp) == IB_QPT_UC)
+ 		return &pkt->qp->pri_av;
+ 
+-	return (pkt->wqe) ? &pkt->wqe->av : NULL;
++	return (pkt->wqe) ? &pkt->wqe->wr.wr.ud.av : NULL;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index c223959ac174..4176fffa7fdc 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -605,7 +605,8 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 	if (qp_type(qp) == IB_QPT_UD ||
+ 	    qp_type(qp) == IB_QPT_SMI ||
+ 	    qp_type(qp) == IB_QPT_GSI)
+-		memcpy(&wqe->av, &to_rah(ud_wr(ibwr)->ah)->av, sizeof(wqe->av));
++		memcpy(&wqe->wr.wr.ud.av, &to_rah(ud_wr(ibwr)->ah)->av,
++		       sizeof(struct rxe_av));
+ 
+ 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
+ 		copy_inline_data_to_wqe(wqe, ibwr);
+diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
+index e283c2220aba..ad7da77dca04 100644
+--- a/include/uapi/rdma/rdma_user_rxe.h
++++ b/include/uapi/rdma/rdma_user_rxe.h
+@@ -98,6 +98,10 @@ struct rxe_send_wr {
+ 			__u32	remote_qpn;
+ 			__u32	remote_qkey;
+ 			__u16	pkey_index;
++			__u16	reserved;
++			__u32	ah_num;
++			__u32	pad[4];
++			struct rxe_av av;	/* deprecated */
+ 		} ud;
+ 		struct {
+ 			__aligned_u64	addr;
+@@ -148,7 +152,6 @@ struct rxe_dma_info {
+ 
+ struct rxe_send_wqe {
+ 	struct rxe_send_wr	wr;
+-	struct rxe_av		av;
+ 	__u32			status;
+ 	__u32			state;
+ 	__aligned_u64		iova;
+@@ -168,6 +171,11 @@ struct rxe_recv_wqe {
+ 	struct rxe_dma_info	dma;
+ };
+ 
++struct rxe_create_ah_resp {
++	__u32 ah_num;
++	__u32 reserved;
++};
++
+ struct rxe_create_cq_resp {
+ 	struct mminfo mi;
+ };
 -- 
 2.30.2
 
