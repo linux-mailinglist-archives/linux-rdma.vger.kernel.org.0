@@ -2,92 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8CD3CEFEF
-	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jul 2021 01:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A903CEFFA
+	for <lists+linux-rdma@lfdr.de>; Tue, 20 Jul 2021 01:37:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351706AbhGSWsW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 19 Jul 2021 18:48:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56982 "EHLO mail.kernel.org"
+        id S244400AbhGSWxz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 19 Jul 2021 18:53:55 -0400
+Received: from smtp.digdes.com ([85.114.5.12]:20745 "EHLO smtp.digdes.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358523AbhGSTsW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:48:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C5276109E;
-        Mon, 19 Jul 2021 20:29:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626726541;
-        bh=kBXee+brflaLe0t6ZlxZrXD08ISe59xEAGNE60i3ghk=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=sOcSiK7uc0c3GX6bPRdC1rGXEPKCwwblC54f8qdXL57BbhXE0cydqTww8HjszL2au
-         kaTeB5koH12qQdshfOKdg2Aob3dpQgQIjSg7tOR0i9kBndxPY+FkXpN+1h4Sh5aet/
-         VPcyn0vf5ZTjix8z6LXJV1fbFVFRw7FirlhnvMEQ6fLgit9q72qpAdwmq+ktsw0RSi
-         31hv4fktuqmN/Jmd1/UQyXNvymfWGPJxirnf0jW3Amz0u/1833TRkcj8D0OcR6XUjL
-         f6kiXrh4WI/yto1vrYE03nP63u58ZrvKKTE2mfswEa4xg+kuT0HN3AqV7pCHn/tgTz
-         h2pL79xjRHpag==
-Message-ID: <24f5387bc2bec23627ea9cfaec4ed4e416c60510.camel@kernel.org>
-Subject: Re: XDP applications running in driver mode on mlx5_core can't
- access various helper functions
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     David Ramirez <davramir@fiu.edu>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Date:   Mon, 19 Jul 2021 13:29:00 -0700
-In-Reply-To: <BN7PR05MB592314B791EB8654A59E8841CC129@BN7PR05MB5923.namprd05.prod.outlook.com>
-References: <BN7PR05MB592314B791EB8654A59E8841CC129@BN7PR05MB5923.namprd05.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S1385864AbhGSUHO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 19 Jul 2021 16:07:14 -0400
+Received: from DDSM-MAIL01.digdes.com (172.16.100.67) by relay2.digdes.com
+ (172.16.96.56) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 19 Jul
+ 2021 23:47:33 +0300
+Received: from DDSM-MAIL01.digdes.com (172.16.100.67) by
+ DDSM-MAIL01.digdes.com (172.16.100.67) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 19 Jul 2021 23:47:32 +0300
+Received: from DDSM-MAIL01.digdes.com ([fe80::bcb8:b09e:6891:336a]) by
+ ddsm-mail01.digdes.com ([fe80::bcb8:b09e:6891:336a%2]) with mapi id
+ 15.01.2176.009; Mon, 19 Jul 2021 23:47:32 +0300
+From:   Chesnokov Gleb <Chesnokov.G@raidix.com>
+To:     Sagi Grimberg <sagi@grimberg.me>, Jason Gunthorpe <jgg@nvidia.com>,
+        "lanevdenoche@gmail.com" <lanevdenoche@gmail.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>
+Subject: Re: [PATCH 1/1] iser-target: Fix handling of
+ RDMA_CV_EVENT_ADDR_CHANGE
+Thread-Topic: [PATCH 1/1] iser-target: Fix handling of
+ RDMA_CV_EVENT_ADDR_CHANGE
+Thread-Index: AQHXeN9BrGPA8AdBnUS24KgxTpIoiqtKCs4AgABs1p3///xlAIAAVo5Q
+Date:   Mon, 19 Jul 2021 20:47:31 +0000
+Message-ID: <1a74041f62f3489b814ce88f8f7f3d73@raidix.com>
+References: <20210714182646.112181-1-Chesnokov.G@raidix.com>
+ <20210719121302.GA1048368@nvidia.com>
+ <2ea098b2bbfc4f5c9e9b590804e0dcb5@raidix.com>,<0e6e8da9-5d14-92ef-39d9-99d7a0792f62@grimberg.me>
+In-Reply-To: <0e6e8da9-5d14-92ef-39d9-99d7a0792f62@grimberg.me>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.100.61]
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2021-07-15 at 13:59 +0000, David Ramirez wrote:
-> Hey all,
-> 
-> I am having issues with calling some bpf helper functions
-> when running my XDP program in driver on the mlx5_core driver.
-> Several of the helpers I've tried to use for ringbuf and maps always
-> return 0.
-> While this may seem to imply that for functions that merely return
-> null instead of
-> a pointer in case of an error are working as intended,
-> some functions which return negative on failure and 0 on success are
-> are also affected,
-> as while they return 0, they do not result in the desired effect.
-> 
-> Observed examples:
->  - bpf_ringbuf_output always returns 0, but no data is pushed to the
-> ringbuf
->  - bpf_map_update_elem always returns 0, but the element is not
-> updated
->  - bpf_ringbuf_reserve always returns 0
->  - bpf_map_lookup_elem always returns 0
->  
-> I'm uncertain if this is a driver specific issue or an ebpf issue.
+> (I also have some vague memory that some bonding events mapped to this
+> cma event although the address was still available but that was a long
+> time ago so I'm not sure, and the change log says nothing about it...)
 
-this is purely ebpf issue or user prog issue.
-1. the ebpf program/helpers are agnostic to run mode, driver/native
-v.s. skb/generic modes.
-2. the above helpers are pure bpf callbacks, the driver is not
-involved.
+The test case where I reproduced the problem with processing RDMA_CM_EVENT_ADDR_CHANGE 
+is the disconnection of the active link from bonding under load (through pull out the cable).
 
-> Testing with xdp in driver mode on veth devices works as expected,
-> which suggests this is more likely a driver issue.
-> 
+With my patch, the bug is not reproduced, the load is not interrupted.
 
-The driver or its implementation are not involved with the above
-helpers, so further debug is required in the user prog or the helpers
-logic themselves.
-
-> Additional Details:
-> 
-> Linux Distro: Ubuntu 21.04
-> Linux Kernel version: 5.11.0-18-generic
-> driver: mlx5_core
-> version: 5.11.0-18-generic
-> 
-> Thank you,
-> David Ramirez
-
-
+Best regards,
+Chesnokov Gleb
