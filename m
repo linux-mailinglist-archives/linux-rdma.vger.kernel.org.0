@@ -2,86 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 362C83D2D02
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jul 2021 21:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C0DF3D2D57
+	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jul 2021 22:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229556AbhGVTN5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Jul 2021 15:13:57 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:36682 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhGVTN5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jul 2021 15:13:57 -0400
-Received: by mail-wm1-f46.google.com with SMTP id l11-20020a7bc34b0000b029021f84fcaf75so2240862wmj.1
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jul 2021 12:54:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3JobQHdK18zGQ2iPygAVP81myTdaAVg9uL/XgSOhojs=;
-        b=uVzQWg5rV/kaXg4puluElyxZ7leuVI+9mV+O4wezI5i2lyS2oG/wimveIHxLwE1/oN
-         oPtlCs0vxQAemW8KWA7ER2PtrC68NDLxCTKs5KyQ/1InT8YP7+1WIHOJHqDZfTKkvLZw
-         W8qFn9UbRqrp3GixD31AKiHMzL+YGbVTuvmngM50ZCTEOw4tHH3GMzNrv8W95qaQXiqb
-         5vz2lUAcAWeyYDL68AZMAJl0hsh7QqOdq7BUvQCvzmr/YpbAWIM9989EyvBcbttEj2MM
-         J2A1Dwdu+Dzl3d7W0J8UNvpX4w+jEzOgMI8tPkYhMPBtyyfXW3MAK6NcoFK8LbEjDVLO
-         BCnA==
-X-Gm-Message-State: AOAM5304C2VycECQ5fBR5opdj+G6PquAoJJCMjUZaFubFVepo+OD+bTo
-        PwISK3atiII3UQMG9MdvMUE=
-X-Google-Smtp-Source: ABdhPJyalpwun3u6lm9He/Bt6VhnCaGIOSe5Q4bRHpM1ASzA+gXInPIiW5GRS1Xf6cL20pXZHml9rQ==
-X-Received: by 2002:a7b:c30f:: with SMTP id k15mr10844062wmj.128.1626983671199;
-        Thu, 22 Jul 2021 12:54:31 -0700 (PDT)
-Received: from ?IPv6:2601:647:4802:9070:b070:1d59:88d7:1405? ([2601:647:4802:9070:b070:1d59:88d7:1405])
-        by smtp.gmail.com with ESMTPSA id w8sm19470155wrk.10.2021.07.22.12.54.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Jul 2021 12:54:30 -0700 (PDT)
-Subject: Re: [PATCH 1/1] iser-target: Fix handling of
- RDMA_CV_EVENT_ADDR_CHANGE
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Chesnokov Gleb <Chesnokov.G@raidix.com>,
-        "lanevdenoche@gmail.com" <lanevdenoche@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "dledford@redhat.com" <dledford@redhat.com>
-References: <20210714182646.112181-1-Chesnokov.G@raidix.com>
- <20210719121302.GA1048368@nvidia.com>
- <2ea098b2bbfc4f5c9e9b590804e0dcb5@raidix.com>
- <0e6e8da9-5d14-92ef-39d9-99d7a0792f62@grimberg.me>
- <20210722142346.GL1117491@nvidia.com>
-From:   Sagi Grimberg <sagi@grimberg.me>
-Message-ID: <d7cba69f-42f1-c86e-8c01-9ddba87332e8@grimberg.me>
-Date:   Thu, 22 Jul 2021 12:54:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230458AbhGVT3Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 22 Jul 2021 15:29:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230429AbhGVT3P (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jul 2021 15:29:15 -0400
+Received: from 68-252-206-104.staticrdns.eonix.net (unknown [IPv6:2607:ff28:b005:2a:ec52:75ff:fe50:d321])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 677C0C061575;
+        Thu, 22 Jul 2021 13:09:50 -0700 (PDT)
+Received: from User (localhost [IPv6:::1])
+        by 68-252-206-104.staticrdns.eonix.net (Postfix) with SMTP id DC7298F1F52;
+        Mon, 19 Jul 2021 22:13:42 -0400 (EDT)
+Reply-To: <mrs_hannah@rediffmail.com>
+From:   "Mrs. Hajia Hannah Ahmed" <info@247vidz.com>
+Subject: Re: I WANT TO INVESTMENT IN YOUR COUNTRY?
+Date:   Tue, 20 Jul 2021 05:13:14 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210722142346.GL1117491@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-Id: <20210720021342.DC7298F1F52@68-252-206-104.staticrdns.eonix.net>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
->>>> What is this trying to do anyhow? If the addr has truely changed why
->>>> does the bind fail?
->>>
->>> When the active physical link member of bonding interface in active-standby
->>> mode gets faulty, the standby link will represent the assigned addresses on
->>> behalf of the active link.
->>> Therefore, RDMA communication manager will notify iSER target with
->>> RDMA_CM_EVENT_ADDR_CHANGE.
->>
->> Ah, here is my recollection...
->>
->> However I think that if we move that into a work, we should do it
->> periodically until we succeed or until the endpoint is torn down so
->> we can handle address removed and restore use-cases.
-> 
-> That soudns better, but still I would say this shouldn't even happen
-> in the first place, check the address and don't initiate rebinding if
-> it hasn't changed.
-
-But don't you need to setup a new cm_id for the this notification? It
-will remain active?
-
-Also it's a bit cumbersome to match addresses in some cases like multi
-address interfaces. Almost seems easier to setup a new one...
+Attn:
+ 
+I am Mrs. Hajia Hannah Ahmed I am a Widow and member of the contract award committee and 14 project allocation manager, of the Department of Minerals and Natural Resources in Syria;
+ 
+Due to the war in Syria, I am in search of an agent or company to assist me to invest my fund  (USD$35Million) and subsequent investment in properties in your country. You will be required to. If you decide to render your service to me in this regard, 30% of the total sum of USD$35M will be given to you for your service. 
+ 
+Yours Faithfully,
+Mrs. Hajia Hannah Ahmed
