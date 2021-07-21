@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B47743D08B4
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EAB23D08A0
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbhGUFfx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jul 2021 01:35:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34270 "EHLO mail.kernel.org"
+        id S232930AbhGUFcn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jul 2021 01:32:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhGUFcr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:32:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6679B6113C;
-        Wed, 21 Jul 2021 06:13:21 +0000 (UTC)
+        id S232468AbhGUFci (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:32:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9DF7600EF;
+        Wed, 21 Jul 2021 06:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626848002;
-        bh=5J+jBturQ/bt30k9Ss/DG7LeflH8jrxgH/e5dbAPOps=;
+        s=k20201202; t=1626847995;
+        bh=CEJyO9Yy4FU8TKYwWIP+VJYoiy0mqOrVsLitic27HE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PK7ouXDOo62W01D6sVbVnrS2pT16/qoA962+b1M3VzX84/biS5+F7632/Zs1h8iPh
-         TrSSLTuAXBRCqWY00foAkH1pW9Sczs7UYhR3PotNgSITjp+Ey73o9vR5Nz7keDwWTy
-         d/A0NVk5IWfC+0Pr5kLtP2aEyRl5RJtkqUEL1wOYsstXVwHgFh6GTQWtwwuH9Wdzkc
-         hr9SSxtZ4+mSTcDxJuiiPI6s+qDqZ4Mk8PL7wTGQLXgHmTYHQXTRTeNM/HXVvXNBht
-         KAOxHyah6kz1r1kRkeacEIm4/wRtzewSqfcj1okMYqCKOwyQCjCBdHDcXdECPJBnqA
-         QVMS5pE/74DHg==
+        b=inLjeueoNXyZHCu9I4uoFEeQVHpoaFukdalnk7nln8JKApw0x5xZlG6oUjsWO+9tr
+         PcuQNP6P3RfC5o1VYNfH1a/KZpwOrJjXG7gMXBrzdST+a3NrU1DdbSSlmnNjp6j8DM
+         cfWGK7YXDcWGlbV90U7seijAdYhBRCjixfO/UUAEiOD3NFw2+CUcTP+Fo8yuN4wkK/
+         Nqb+yJNmuCYbt+CSocf2LvuD6+1eoNNIX8JyTNLVAKbqZR+hmVSu3Ych6TAEJZtCWU
+         wpToQXy6ii+s4R0mXanURGkKcPk6sdlJRM7h/dD0+NQS3wVoExI2oVlejXcrdnL2ZE
+         3gNwRedIuCTqA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next 1/7] RDMA/mlx5: Delete not-available udata check
-Date:   Wed, 21 Jul 2021 09:13:00 +0300
-Message-Id: <1c60391dd1a45130343675bc2c15a8239c217f5b.1626846795.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 2/7] RDMA/core: Delete duplicated and unreachable code
+Date:   Wed, 21 Jul 2021 09:13:01 +0300
+Message-Id: <5f65e3382a54cf2143b8a9ea38998e82ec14475c.1626846795.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626846795.git.leonro@nvidia.com>
 References: <cover.1626846795.git.leonro@nvidia.com>
@@ -42,36 +42,65 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-XRC_TGT QPs are created through kernel verbs and don't have udata at all.
+The ib_create_named_qp() is kernel verb and no kernel users exist that
+use XRC_INI QP. Hence such QP path is not reachable. In addition, delete
+duplicated assignments of QP attributes from the initialization structure.
 
-Fixes: 6eefa839c4dd ("RDMA/mlx5: Protect from kernel crash if XRC_TGT doesn't have udata")
-Fixes: e383085c2425 ("RDMA/mlx5: Set ECE options during QP create")
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/qp.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/infiniband/core/core_priv.h |  1 +
+ drivers/infiniband/core/verbs.c     | 22 ++++------------------
+ 2 files changed, 5 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 18b018f1db83..81e3170a1ae6 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -1908,7 +1908,6 @@ static int get_atomic_mode(struct mlx5_ib_dev *dev,
- static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 			     struct mlx5_create_qp_params *params)
- {
--	struct mlx5_ib_create_qp *ucmd = params->ucmd;
- 	struct ib_qp_init_attr *attr = params->attr;
- 	u32 uidx = params->uidx;
- 	struct mlx5_ib_resources *devr = &dev->devr;
-@@ -1928,8 +1927,6 @@ static int create_xrc_tgt_qp(struct mlx5_ib_dev *dev, struct mlx5_ib_qp *qp,
- 	if (!in)
- 		return -ENOMEM;
+diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
+index 5dfa1190e3ea..cc54d74930d6 100644
+--- a/drivers/infiniband/core/core_priv.h
++++ b/drivers/infiniband/core/core_priv.h
+@@ -342,6 +342,7 @@ _ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
+ 	qp->event_handler = attr->event_handler;
+ 	qp->port = attr->port_num;
++	qp->qp_context = attr->qp_context;
  
--	if (MLX5_CAP_GEN(mdev, ece_support) && ucmd)
--		MLX5_SET(create_qp_in, in, ece, ucmd->ece_options);
- 	qpc = MLX5_ADDR_OF(create_qp_in, in, qpc);
+ 	spin_lock_init(&qp->mr_lock);
+ 	INIT_LIST_HEAD(&qp->rdma_mrs);
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 89c6987cb5eb..635642a3ecbc 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1257,28 +1257,14 @@ struct ib_qp *ib_create_named_qp(struct ib_pd *pd,
+ 		return xrc_qp;
+ 	}
  
- 	MLX5_SET(qpc, qpc, st, MLX5_QP_ST_XRC);
+-	qp->event_handler = qp_init_attr->event_handler;
+-	qp->qp_context = qp_init_attr->qp_context;
+-	if (qp_init_attr->qp_type == IB_QPT_XRC_INI) {
+-		qp->recv_cq = NULL;
+-		qp->srq = NULL;
+-	} else {
+-		qp->recv_cq = qp_init_attr->recv_cq;
+-		if (qp_init_attr->recv_cq)
+-			atomic_inc(&qp_init_attr->recv_cq->usecnt);
+-		qp->srq = qp_init_attr->srq;
+-		if (qp->srq)
+-			atomic_inc(&qp_init_attr->srq->usecnt);
+-	}
+-
+-	qp->send_cq = qp_init_attr->send_cq;
+-	qp->xrcd    = NULL;
++	if (qp_init_attr->recv_cq)
++		atomic_inc(&qp_init_attr->recv_cq->usecnt);
++	if (qp->srq)
++		atomic_inc(&qp_init_attr->srq->usecnt);
+ 
+ 	atomic_inc(&pd->usecnt);
+ 	if (qp_init_attr->send_cq)
+ 		atomic_inc(&qp_init_attr->send_cq->usecnt);
+-	if (qp_init_attr->rwq_ind_tbl)
+-		atomic_inc(&qp->rwq_ind_tbl->usecnt);
+ 
+ 	if (qp_init_attr->cap.max_rdma_ctxs) {
+ 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
 -- 
 2.31.1
 
