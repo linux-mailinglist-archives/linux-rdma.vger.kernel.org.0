@@ -2,94 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AAA3D18D5
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 23:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50F373D1955
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 23:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229764AbhGUUe6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jul 2021 16:34:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37418 "EHLO
+        id S229775AbhGUVBZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jul 2021 17:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbhGUUe5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jul 2021 16:34:57 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F612C061575
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jul 2021 14:15:32 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id w14so4155873edc.8
-        for <linux-rdma@vger.kernel.org>; Wed, 21 Jul 2021 14:15:32 -0700 (PDT)
+        with ESMTP id S229676AbhGUVBY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 21 Jul 2021 17:01:24 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36EACC061575
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jul 2021 14:42:00 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id t143so4421580oie.8
+        for <linux-rdma@vger.kernel.org>; Wed, 21 Jul 2021 14:42:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qYGtT9th5akHaXbl1CreYNk4Ul2/NGj//xYVdEeZwTM=;
-        b=dA/YVtnkcO/ImsuZzjsFD2dS/kSK/p87ocBFDb3uEgJ2koTPdSArnrVjSvXShiV8oZ
-         lBXbcvUli4uhK+3DSOS069dUAEuReElOAld5M0C6kSbYSGKkIerDkYg4T+PlWhOc3SX7
-         Lq8WUVNQ0CbiU/xM/AAhlE+sW4B2xp0NT4fzpAP6VajpFz4Gg5AFcBAP0maEpVT+FvdV
-         N3qfImplz081m4JD6kgwInN1Ldww6MLuOjtZWaFSVcIjVJqAjQ9QfMfOJjYUoow6TxAL
-         MPvqabAOl+3I2LnC8msB5GlEpxHQ7Ent0aBK1WHonIcjVZ6C2SrWKlpDTGNc2POeTVMV
-         GtbA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zm6djJrwh5iWBFtFToqv2yEzVAqAM30+mKuHw73SS3E=;
+        b=uJoJuwvzChkphbfLeJ6oigxGmcpij8CYf3EWIBZg2b34aipNQDXXuUXcGg/Fb6y8TI
+         PKm1wanOjas4hysx8uqmuRtkkWSG/T75bdUjEAnQmB5m2LB3SZ3Btev4zmA/toClfFGc
+         I1DUcbvYIYwS82baTSZ2o5OmxssoBzny+d4nf86AM45qvVpYj+1Jd/0TI/z35R/Aj46T
+         gA+Q/b7Q9I/vIoYBReC0eilvMn+YSnSgMTsFi/4WocOvZtDUKcLon/1Kir6Z975oHNH7
+         uO/r7lYKyncrZ2XiMcH37Jyi95Hvh28Sf4iKK8HJ6TQppds230RmoWxRhAum7cOT70tg
+         +Row==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qYGtT9th5akHaXbl1CreYNk4Ul2/NGj//xYVdEeZwTM=;
-        b=O1L7wDufbVyGqBQOeUB69JTPBwZYDeUWlvc0X542qSNTw2hoBxmIUpln0JMJDtR72N
-         c8Vk6VgLMORhVyOhqQfTt6G4uNTOcMZFD3qCzjQ+s670Ou9GOUb/nEaOxTsLhRw2fx4D
-         K2VSRFSnS+9X3gbFlbkGb8cFKcjj7xcGiO7NPk96hoUXOpz31YTf4/vroIch+bJFYVyi
-         CXmRzjnySriJChIzxYvF2N7MRNVqAio3aeRk6d3kntzHKE/jn6I+KOdgof3B8FtoTjm4
-         9SptAD56dScLe3M/Ka7if6il5ZxX9uqdY1ywOALtpxNkEIK49h4Wddqhms9RsX1aae84
-         +Rag==
-X-Gm-Message-State: AOAM532zRzxBg8/3gCucAOteSdk7IdDRphun4WJnCTY7eirmbCf0mDQG
-        suB5O/86mr5oqtqfF1MP6VtnFmS/MTtvqRN9c4Y=
-X-Google-Smtp-Source: ABdhPJyVpdyITO31HApNrn7sTuzPap9kjFSJK+EYVoj4IAHAnWHOsGq3ByCIKap5MdJWC1Ng6HNVwDgzX9sicjyAYqw=
-X-Received: by 2002:a05:6402:1d4d:: with SMTP id dz13mr50592887edb.67.1626902131188;
- Wed, 21 Jul 2021 14:15:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zm6djJrwh5iWBFtFToqv2yEzVAqAM30+mKuHw73SS3E=;
+        b=hfG3OvbE0RCSBDy1HXCK2jP6v7vlEMcF762YbXt8qtp/iknxx14c25Hynr+BV6971K
+         fBI4q30w2WSmJWGbf1g9OhJW4LT8ZblyTj4hOLYU9eGqN6zguyHcMxZRevyPipPJpYpE
+         1KwoOszShVjGQpuwp99Kn/5gc3wDGvY9di2GEEm0a/i0kB9LXDWPSd76K2i9lkgg0fFv
+         PJ6rjlDY90n/pexONd+0v5HviYdRCEOW7dQLefnlrm67cnIjqp62F50lRs17F/x70UyS
+         WNshHk0J/FqnoHEJRXGBXInQAB6GqPbGO0S6gLf2JD3D5jVaV0hFpFjlRMHyf4MCmZQk
+         lopw==
+X-Gm-Message-State: AOAM531ywIu+POrzZJBHqiuNSvoYx4h2kQnrbt/VpcJjW0e4mN0jS21f
+        34ax2b2HNlChl+zBm5f9UC0=
+X-Google-Smtp-Source: ABdhPJyGIKms0efYAIkXL7ESd1HEk4ZLjXUgS05H2unLYuO9YfYalcxmiftFeQdirromfrspN4v0bw==
+X-Received: by 2002:aca:e108:: with SMTP id y8mr9294219oig.43.1626903719535;
+        Wed, 21 Jul 2021 14:41:59 -0700 (PDT)
+Received: from localhost (2603-8081-140c-1a00-f09d-c26a-c3f3-d2e6.res6.spectrum.com. [2603:8081:140c:1a00:f09d:c26a:c3f3:d2e6])
+        by smtp.gmail.com with ESMTPSA id i188sm5254512oih.7.2021.07.21.14.41.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Jul 2021 14:41:59 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, aglo@umich.edu,
+        linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Fix bug in rxe_net.c
+Date:   Wed, 21 Jul 2021 16:41:06 -0500
+Message-Id: <20210721214105.8099-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <CAN-5tyGbmTjiT+nxXB7BMp6mwpUs+HVUGy-CGXBBrC04jQ3grA@mail.gmail.com>
- <63d7f374-1252-82c8-769d-2d1a540466fd@gmail.com> <CAN-5tyFQd3wzRXtcQoO0wC-bU1Ggk05K7ikokY_ZGZidG=CP5A@mail.gmail.com>
- <YPe02wEIHJffalro@unreal>
-In-Reply-To: <YPe02wEIHJffalro@unreal>
-From:   Olga Kornievskaia <aglo@umich.edu>
-Date:   Wed, 21 Jul 2021 17:15:20 -0400
-Message-ID: <CAN-5tyEDF+KvSLxBNR_1vPdiJTDJMt1hc_ztk3E-J109x+Z4SA@mail.gmail.com>
-Subject: Re: RDMA/rxe is broken (impacting running NFSoRDMA over softRoCE)
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jul 21, 2021 at 1:47 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, Jul 20, 2021 at 05:48:03PM -0400, Olga Kornievskaia wrote:
-> > On Tue, Jul 20, 2021 at 2:27 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> <...>
->
-> > There were a number of commits that lead to crashes. commit
-> > ec9bf373f2458f4b5f1ece8b93a07e6204081667 "RDMA/core: Use refcount_t
-> > instead of atomic_t on refcount of ib_uverbs_device" leads to the
-> > following kernel oops. commit 205be5dc9984b67a3b388cbdaa27a2f2644a4bd6
-> > "RDMA/irdma: Fix spelling mistake "Allocal" -> "Allocate"" also leads
-> > to the kernel oops.
->
-> The commits above aren't relevant to RXE at all.
->
-> If first commit is wrong, all drivers will experience crashes and second
-> commit is in irdma and not in RXE.
->
-> And both of them are legit commits.
+An earlier patch removed setting of tot_len in IPV4 headers because it
+was also set in ip_local_out. However, this change resulted in an incorrect
+ICRC being computed because the tot_len field is not masked out. This
+patch restores that line. This fixes the bug reported by Zhu Yanjun.
+This bug would have also affected anyone using rxe.
 
-Yes I realize they are problems outside of rxe but I didn't run into
-any crashes when I ran rpring on the 5.14-rc1 (it was hanging and
-that's what I reported here) so I thought perhaps later patches have
-addressed the crashes I've seen.
+Fixes: 230bb836ee88 ("RDMA/rxe: Fix redundant call to ip_send_check")
+Reported_by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_net.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Would you like me to post a separate email report on the crash(es) (I
-don't recall if it's the same one or two different ones)?
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index dec92928a1cd..5ac27f28ace1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -259,6 +259,7 @@ static void prepare_ipv4_hdr(struct dst_entry *dst, struct sk_buff *skb,
+ 
+ 	iph->version	=	IPVERSION;
+ 	iph->ihl	=	sizeof(struct iphdr) >> 2;
++	iph->tot_len	=	htons(skb->len);
+ 	iph->frag_off	=	df;
+ 	iph->protocol	=	proto;
+ 	iph->tos	=	tos;
+-- 
+2.30.2
 
->
-> Thanks
