@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED603D08A5
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEBB13D08AF
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhGUFdy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jul 2021 01:33:54 -0400
+        id S233792AbhGUFej (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jul 2021 01:34:39 -0400
 Received: from mail.kernel.org ([198.145.29.99]:34350 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233203AbhGUFcv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:32:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0F30610D2;
-        Wed, 21 Jul 2021 06:13:27 +0000 (UTC)
+        id S233366AbhGUFdA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:33:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1B116120C;
+        Wed, 21 Jul 2021 06:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626848008;
-        bh=lwZkq0QcJB6OO75dmawMQJIIxHMVupKGsQJm/QS0Ako=;
+        s=k20201202; t=1626848015;
+        bh=XDXSIfpQiYiHZAZz04Rwc8JQLhSX9BpvH+OCpuH49vA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ea1FgmfNi1XYHyxA/D3utxecl3SDR+SVWzcCRFXZxMy4zPTDLhthX0H+X0SqGRzBO
-         js9Rtfyx2IXCGGdov7Lw9COPmNisgly+h/6TyQBOGr5oCuKVTHVbUYw9pQFH9w58Uf
-         B9dOyDl/wTFehF+Dz4nurS8klfkGJ0zuTvGXHDVBOQfSZXMuIqY6lWeYvPTpvqmAZ9
-         7jlv0EQfwU3DoWfvV5Ad1Y6EPp0k2WPDQJq6aLHjUzVrWqIjRiZnZCWVbvYrMcFmrA
-         e2gsTxF8BEA4plHXkp/bHm4t+jgJ1+aXdljsFsrqE/QA/i20bIVWXXox+r/1iFSVEZ
-         BJ99zcFt0FZaA==
+        b=AYUKZXyyVVerYzSioVTsAGvqdta8rRoFplbuStcJHlts2mf6P80hSvIGd5s+gGRlV
+         auB+nFeXaGJptQm3O++0tEcXy48RbfPXWcmlXT0BWVH0UgzoIP4HCNw4POS9rqtJ77
+         gmus6obaeprERGF4N420F9msUsn2/Spc6iv7o00ttxJf22T/j1unpcaUG8zk36P6d3
+         n01rpr5gL1O8tu6PbOF6Yqp57pySwqaqlq8eIBvLlFMiAEShjXvjC/DugZXCjYDCXh
+         PkTqa1JjXAbnO/aYBlMchbcJjQuld1WB9h7i2QXC/ys4Ba/LgnIJCWmu/LnebgjMwL
+         9j3UHVcR8aJ2Q==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next 6/7] RDMA/core: Properly increment and decrement QP usecnts
-Date:   Wed, 21 Jul 2021 09:13:05 +0300
-Message-Id: <8057f36af73cebc5e3acfeeea4264f5044734d0c.1626846795.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 7/7] RDMA/core: Create clean QP creations interface for uverbs
+Date:   Wed, 21 Jul 2021 09:13:06 +0300
+Message-Id: <8eaf125d3bfb463e1641b6f2794203cc93d76c90.1626846795.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626846795.git.leonro@nvidia.com>
 References: <cover.1626846795.git.leonro@nvidia.com>
@@ -42,181 +42,213 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-The QP usecnts were incremented through QP attributes structure while
-decreased through QP itself. Rely on the ib_creat_qp_user() code that
-initialized all QP parameters prior returning to the user and increment
-exactly like destroy does.
+Unify create QP creation interface to make clean approach to create
+XRC_TGT and regular QPs.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/core_priv.h           |  2 +
- drivers/infiniband/core/uverbs_cmd.c          | 13 +---
- drivers/infiniband/core/uverbs_std_types_qp.c | 13 +---
- drivers/infiniband/core/verbs.c               | 60 ++++++++++---------
- 4 files changed, 39 insertions(+), 49 deletions(-)
+ drivers/infiniband/core/core_priv.h           | 21 +++++-
+ drivers/infiniband/core/uverbs_cmd.c          | 12 +--
+ drivers/infiniband/core/uverbs_std_types_qp.c |  9 +--
+ drivers/infiniband/core/verbs.c               | 73 +++++++++++--------
+ 4 files changed, 63 insertions(+), 52 deletions(-)
 
 diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index d28ced053222..d8f464b43dbc 100644
+index d8f464b43dbc..dd4c2e560b59 100644
 --- a/drivers/infiniband/core/core_priv.h
 +++ b/drivers/infiniband/core/core_priv.h
-@@ -320,6 +320,8 @@ struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
- 			    struct ib_qp_init_attr *attr,
- 			    struct ib_udata *udata, struct ib_uqp_object *uobj,
- 			    const char *caller);
-+void ib_qp_usecnt_inc(struct ib_qp *qp);
-+void ib_qp_usecnt_dec(struct ib_qp *qp);
+@@ -316,10 +316,23 @@ struct ib_device *ib_device_get_by_index(const struct net *net, u32 index);
+ void nldev_init(void);
+ void nldev_exit(void);
  
- struct rdma_dev_addr;
- int rdma_resolve_ip_route(struct sockaddr *src_addr,
+-struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
+-			    struct ib_qp_init_attr *attr,
+-			    struct ib_udata *udata, struct ib_uqp_object *uobj,
+-			    const char *caller);
++struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
++				struct ib_qp_init_attr *attr,
++				struct ib_udata *udata,
++				struct ib_uqp_object *uobj, const char *caller);
++static inline struct ib_qp *ib_create_qp_uverbs(struct ib_device *dev,
++						struct ib_pd *pd,
++						struct ib_qp_init_attr *attr,
++						struct ib_udata *udata,
++						struct ib_uqp_object *uobj)
++{
++	if (attr->qp_type == IB_QPT_XRC_TGT)
++		return ib_create_qp_user(dev, pd, attr, NULL, uobj,
++					 KBUILD_MODNAME);
++
++	return ib_create_qp_user(dev, pd, attr, udata, uobj, NULL);
++}
++
+ void ib_qp_usecnt_inc(struct ib_qp *qp);
+ void ib_qp_usecnt_dec(struct ib_qp *qp);
+ 
 diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index b5153200b8a8..62cafd768d89 100644
+index 62cafd768d89..39206ecdeaad 100644
 --- a/drivers/infiniband/core/uverbs_cmd.c
 +++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -1445,18 +1445,9 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+@@ -1435,23 +1435,13 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 		attr.source_qpn = cmd->source_qpn;
+ 	}
+ 
+-	if (cmd->qp_type == IB_QPT_XRC_TGT)
+-		qp = ib_create_qp(pd, &attr);
+-	else
+-		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
+-				   NULL);
+-
++	qp = ib_create_qp_uverbs(device, pd, &attr, &attrs->driver_udata, obj);
+ 	if (IS_ERR(qp)) {
  		ret = PTR_ERR(qp);
  		goto err_put;
  	}
-+	ib_qp_usecnt_inc(qp);
+ 	ib_qp_usecnt_inc(qp);
  
--	if (cmd->qp_type != IB_QPT_XRC_TGT) {
--		atomic_inc(&pd->usecnt);
--		if (attr.send_cq)
--			atomic_inc(&attr.send_cq->usecnt);
--		if (attr.recv_cq)
--			atomic_inc(&attr.recv_cq->usecnt);
--		if (attr.srq)
--			atomic_inc(&attr.srq->usecnt);
--		if (ind_tbl)
--			atomic_inc(&ind_tbl->usecnt);
--	} else {
-+	if (cmd->qp_type == IB_QPT_XRC_TGT) {
- 		/* It is done in _ib_create_qp for other QP types */
- 		qp->uobject = obj;
- 	}
+-	if (cmd->qp_type == IB_QPT_XRC_TGT) {
+-		/* It is done in _ib_create_qp for other QP types */
+-		qp->uobject = obj;
+-	}
+-
+ 	obj->uevent.uobject.object = qp;
+ 	obj->uevent.event_file = READ_ONCE(attrs->ufile->default_async_file);
+ 	if (obj->uevent.event_file)
 diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index 92812f6a21b0..a0e734735ba5 100644
+index a0e734735ba5..15ea00188363 100644
 --- a/drivers/infiniband/core/uverbs_std_types_qp.c
 +++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -258,18 +258,9 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+@@ -248,12 +248,7 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 	set_caps(&attr, &cap, true);
+ 	mutex_init(&obj->mcast_lock);
+ 
+-	if (attr.qp_type == IB_QPT_XRC_TGT)
+-		qp = ib_create_qp(pd, &attr);
+-	else
+-		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
+-				   NULL);
+-
++	qp = ib_create_qp_uverbs(device, pd, &attr, &attrs->driver_udata, obj);
+ 	if (IS_ERR(qp)) {
  		ret = PTR_ERR(qp);
  		goto err_put;
- 	}
-+	ib_qp_usecnt_inc(qp);
- 
--	if (attr.qp_type != IB_QPT_XRC_TGT) {
--		atomic_inc(&pd->usecnt);
--		if (attr.send_cq)
--			atomic_inc(&attr.send_cq->usecnt);
--		if (attr.recv_cq)
--			atomic_inc(&attr.recv_cq->usecnt);
--		if (attr.srq)
--			atomic_inc(&attr.srq->usecnt);
--		if (attr.rwq_ind_tbl)
--			atomic_inc(&attr.rwq_ind_tbl->usecnt);
--	} else {
-+	if (attr.qp_type == IB_QPT_XRC_TGT) {
+@@ -264,8 +259,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
  		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
  					  uobject);
  		atomic_inc(&obj->uxrcd->refcnt);
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 612c73861e0d..acf866038277 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1275,6 +1275,36 @@ struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
- }
- EXPORT_SYMBOL(_ib_create_qp);
- 
-+void ib_qp_usecnt_inc(struct ib_qp *qp)
-+{
-+	if (qp->pd)
-+		atomic_inc(&qp->pd->usecnt);
-+	if (qp->send_cq)
-+		atomic_inc(&qp->send_cq->usecnt);
-+	if (qp->recv_cq)
-+		atomic_inc(&qp->recv_cq->usecnt);
-+	if (qp->srq)
-+		atomic_inc(&qp->srq->usecnt);
-+	if (qp->rwq_ind_tbl)
-+		atomic_inc(&qp->rwq_ind_tbl->usecnt);
-+}
-+EXPORT_SYMBOL(ib_qp_usecnt_inc);
-+
-+void ib_qp_usecnt_dec(struct ib_qp *qp)
-+{
-+	if (qp->rwq_ind_tbl)
-+		atomic_dec(&qp->rwq_ind_tbl->usecnt);
-+	if (qp->srq)
-+		atomic_dec(&qp->srq->usecnt);
-+	if (qp->recv_cq)
-+		atomic_dec(&qp->recv_cq->usecnt);
-+	if (qp->send_cq)
-+		atomic_dec(&qp->send_cq->usecnt);
-+	if (qp->pd)
-+		atomic_dec(&qp->pd->usecnt);
-+}
-+EXPORT_SYMBOL(ib_qp_usecnt_dec);
-+
- /**
-  * ib_create_qp_kernel - Creates a kernel QP associated with the specified
-  *   protection domain.
-@@ -1316,14 +1346,7 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 		return xrc_qp;
+-		/* It is done in _ib_create_qp for other QP types */
+-		qp->uobject = obj;
  	}
  
--	if (qp_init_attr->recv_cq)
--		atomic_inc(&qp_init_attr->recv_cq->usecnt);
--	if (qp->srq)
--		atomic_inc(&qp_init_attr->srq->usecnt);
--
--	atomic_inc(&pd->usecnt);
--	if (qp_init_attr->send_cq)
--		atomic_inc(&qp_init_attr->send_cq->usecnt);
-+	ib_qp_usecnt_inc(qp);
+ 	obj->uevent.uobject.object = qp;
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index acf866038277..9414fa8b54c4 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1200,21 +1200,10 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
+ 	return qp;
+ }
  
- 	if (qp_init_attr->cap.max_rdma_ctxs) {
- 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
-@@ -1981,10 +2004,6 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
+-/**
+- * _ib_create_qp - Creates a QP associated with the specified protection domain
+- * @dev: IB device
+- * @pd: The protection domain associated with the QP.
+- * @attr: A list of initial attributes required to create the
+- *   QP.  If QP creation succeeds, then the attributes are updated to
+- *   the actual capabilities of the created QP.
+- * @udata: User data
+- * @uobj: uverbs obect
+- * @caller: caller's build-time module name
+- */
+-struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
+-			    struct ib_qp_init_attr *attr,
+-			    struct ib_udata *udata, struct ib_uqp_object *uobj,
+-			    const char *caller)
++static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
++			       struct ib_qp_init_attr *attr,
++			       struct ib_udata *udata,
++			       struct ib_uqp_object *uobj, const char *caller)
  {
- 	const struct ib_gid_attr *alt_path_sgid_attr = qp->alt_path_sgid_attr;
- 	const struct ib_gid_attr *av_sgid_attr = qp->av_sgid_attr;
--	struct ib_pd *pd;
--	struct ib_cq *scq, *rcq;
--	struct ib_srq *srq;
--	struct ib_rwq_ind_table *ind_tbl;
- 	struct ib_qp_security *sec;
+ 	struct ib_udata dummy = {};
+ 	struct ib_qp *qp;
+@@ -1273,7 +1262,44 @@ struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	return ERR_PTR(ret);
+ 
+ }
+-EXPORT_SYMBOL(_ib_create_qp);
++
++/**
++ * ib_create_qp_user - Creates a QP associated with the specified protection
++ *   domain.
++ * @dev: IB device
++ * @pd: The protection domain associated with the QP.
++ * @attr: A list of initial attributes required to create the
++ *   QP.  If QP creation succeeds, then the attributes are updated to
++ *   the actual capabilities of the created QP.
++ * @udata: User data
++ * @uobj: uverbs obect
++ * @caller: caller's build-time module name
++ */
++struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
++				struct ib_qp_init_attr *attr,
++				struct ib_udata *udata,
++				struct ib_uqp_object *uobj, const char *caller)
++{
++	struct ib_uqp_object *obj = uobj;
++	struct ib_qp *qp, *xrc_qp;
++
++	if (attr->qp_type == IB_QPT_XRC_TGT)
++		obj = NULL;
++
++	qp = create_qp(dev, pd, attr, udata, obj, caller);
++	if (attr->qp_type != IB_QPT_XRC_TGT || IS_ERR(qp))
++		return qp;
++
++	xrc_qp = create_xrc_qp_user(qp, attr);
++	if (IS_ERR(xrc_qp)) {
++		ib_destroy_qp(qp);
++		return xrc_qp;
++	}
++
++	xrc_qp->uobject = uobj;
++	return xrc_qp;
++}
++EXPORT_SYMBOL(ib_create_qp_user);
+ 
+ void ib_qp_usecnt_inc(struct ib_qp *qp)
+ {
+@@ -1318,7 +1344,7 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
+ 				  struct ib_qp_init_attr *qp_init_attr,
+ 				  const char *caller)
+ {
+-	struct ib_device *device = pd ? pd->device : qp_init_attr->xrcd->device;
++	struct ib_device *device = pd->device;
+ 	struct ib_qp *qp;
  	int ret;
  
-@@ -1996,11 +2015,6 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
- 	if (qp->real_qp != qp)
- 		return __ib_destroy_shared_qp(qp);
+@@ -1331,21 +1357,10 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
+ 	if (qp_init_attr->cap.max_rdma_ctxs)
+ 		rdma_rw_init_qp(device, qp_init_attr);
  
--	pd   = qp->pd;
--	scq  = qp->send_cq;
--	rcq  = qp->recv_cq;
--	srq  = qp->srq;
--	ind_tbl = qp->rwq_ind_tbl;
- 	sec  = qp->qp_sec;
- 	if (sec)
- 		ib_destroy_qp_security_begin(sec);
-@@ -2020,16 +2034,8 @@ int ib_destroy_qp_user(struct ib_qp *qp, struct ib_udata *udata)
- 		rdma_put_gid_attr(alt_path_sgid_attr);
- 	if (av_sgid_attr)
- 		rdma_put_gid_attr(av_sgid_attr);
--	if (pd)
--		atomic_dec(&pd->usecnt);
--	if (scq)
--		atomic_dec(&scq->usecnt);
--	if (rcq)
--		atomic_dec(&rcq->usecnt);
--	if (srq)
--		atomic_dec(&srq->usecnt);
--	if (ind_tbl)
--		atomic_dec(&ind_tbl->usecnt);
-+
-+	ib_qp_usecnt_dec(qp);
- 	if (sec)
- 		ib_destroy_qp_security_end(sec);
+-	qp = _ib_create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
++	qp = create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
+ 	if (IS_ERR(qp))
+ 		return qp;
  
+-	if (qp_init_attr->qp_type == IB_QPT_XRC_TGT) {
+-		struct ib_qp *xrc_qp =
+-			create_xrc_qp_user(qp, qp_init_attr);
+-
+-		if (IS_ERR(xrc_qp)) {
+-			ret = PTR_ERR(xrc_qp);
+-			goto err;
+-		}
+-		return xrc_qp;
+-	}
+-
+ 	ib_qp_usecnt_inc(qp);
+ 
+ 	if (qp_init_attr->cap.max_rdma_ctxs) {
 -- 
 2.31.1
 
