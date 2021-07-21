@@ -2,64 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34A63D087D
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 07:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8D83D089F
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhGUFGf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jul 2021 01:06:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58054 "EHLO mail.kernel.org"
+        id S232035AbhGUFce (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jul 2021 01:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhGUFGe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:06:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24FBD61019;
-        Wed, 21 Jul 2021 05:47:09 +0000 (UTC)
+        id S229484AbhGUFce (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:32:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19AD761007;
+        Wed, 21 Jul 2021 06:13:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626846430;
-        bh=nZu1ol/FxuxiNW0ST35OvWsLorC0P+mSFpL7CtBP+Zc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qu3XVDkBDMQH1Z8v5R2RZe9kry9Y51T4DaUcSn6/UmwowRlvoOJ3XEmlco3XudlBq
-         uYk8vg/+myVTGR+eRswEficsXzxSt8f6x+P4aCW4o/yg5I0vfW9K3DB29ehqF+M8OS
-         hrAdgHRjkqTGSMMKyGiSUGf9HONueDAr9OL6eQnkgBcXK7L99pSsjzGe+q44fFpw0l
-         oN4bfP6ltXAy/DP8wXETMSMUoj1hXi654wLUMhivIj9RiMsf6OFO+b0FMP+uVt71i8
-         7nggXAl60dwr1/+KttoDl8sVLL2duusFGIqac9p19qkCV7daxizlKVmMx6J5vLBdcp
-         AVQYQOY9cv7bw==
-Date:   Wed, 21 Jul 2021 08:47:07 +0300
+        s=k20201202; t=1626847991;
+        bh=qyuJ/Pm4Y6kbn5Ux8VS9eXZoNl/MNbn/y0CNK17o4uY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=raRW2tDWA+OxotJ/HaLx0ZZxa3KtUIz3h/bzd1b1H2L2K16vx1uFC0w7t/VvhTaUU
+         ZQsWIYLIjk6RAm9rdQv6jZF6BTQYeXpDJoX0pM95a2ord8+sVSESWHiO2LnmCeGH6+
+         USvYVcO1Z2oj7BOEGZpY9xh99uvaWl583xJilE0m5bZkZ2pTTtXb3hL8UF8GD8DU1c
+         BFJnmay4vFEgohz73xPAG+Q6oTeJB0a3sPTW3kIjGppHHzNb6ZT4y/MPhOtGX7mdXL
+         ZGgV27NzDbvJR5xU6fERDXxxMYJtofvONkhhx6+v46jNUHm/z77p17G/HpVV7fedqX
+         0OX7Ksk2DCbDg==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Olga Kornievskaia <aglo@umich.edu>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Subject: Re: RDMA/rxe is broken (impacting running NFSoRDMA over softRoCE)
-Message-ID: <YPe02wEIHJffalro@unreal>
-References: <CAN-5tyGbmTjiT+nxXB7BMp6mwpUs+HVUGy-CGXBBrC04jQ3grA@mail.gmail.com>
- <63d7f374-1252-82c8-769d-2d1a540466fd@gmail.com>
- <CAN-5tyFQd3wzRXtcQoO0wC-bU1Ggk05K7ikokY_ZGZidG=CP5A@mail.gmail.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
+Subject: [PATCH rdma-next 0/7] Separate user/kernel QP creation logic
+Date:   Wed, 21 Jul 2021 09:12:59 +0300
+Message-Id: <cover.1626846795.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAN-5tyFQd3wzRXtcQoO0wC-bU1Ggk05K7ikokY_ZGZidG=CP5A@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jul 20, 2021 at 05:48:03PM -0400, Olga Kornievskaia wrote:
-> On Tue, Jul 20, 2021 at 2:27 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-<...>
+Hi,
 
-> There were a number of commits that lead to crashes. commit
-> ec9bf373f2458f4b5f1ece8b93a07e6204081667 "RDMA/core: Use refcount_t
-> instead of atomic_t on refcount of ib_uverbs_device" leads to the
-> following kernel oops. commit 205be5dc9984b67a3b388cbdaa27a2f2644a4bd6
-> "RDMA/irdma: Fix spelling mistake "Allocal" -> "Allocate"" also leads
-> to the kernel oops.
+The "QP allocation" series shows clearly how convoluted the create QP
+flow and especially in XRC_TGT flows, where it called to kernel verb
+just to pass some parameters as NULL to the user create QP verb.
 
-The commits above aren't relevant to RXE at all.
+This series is a small step to make clean XRC_TGT flow by providing
+more clean user/kernel create QP verb separation.
 
-If first commit is wrong, all drivers will experience crashes and second
-commit is in irdma and not in RXE.
-
-And both of them are legit commits.
+It is based on the "QP allocation" series.
 
 Thanks
+
+Leon Romanovsky (7):
+  RDMA/mlx5: Delete not-available udata check
+  RDMA/core: Delete duplicated and unreachable code
+  RDMA/core: Remove protection from wrong in-kernel API usage
+  RDMA/core: Reorganize create QP low-level functions
+  RDMA/core: Configure selinux QP during creation
+  RDMA/core: Properly increment and decrement QP usecnts
+  RDMA/core: Create clean QP creations interface for uverbs
+
+ drivers/infiniband/core/core_priv.h           |  67 ++----
+ drivers/infiniband/core/uverbs_cmd.c          |  30 +--
+ drivers/infiniband/core/uverbs_std_types_qp.c |  28 +--
+ drivers/infiniband/core/verbs.c               | 216 ++++++++++++------
+ drivers/infiniband/hw/mlx5/qp.c               |   3 -
+ include/rdma/ib_verbs.h                       |   8 +-
+ 6 files changed, 166 insertions(+), 186 deletions(-)
+
+-- 
+2.31.1
+
