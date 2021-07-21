@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00C733D08A2
-	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:14:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFAA3D08A3
+	for <lists+linux-rdma@lfdr.de>; Wed, 21 Jul 2021 08:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhGUFcw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 21 Jul 2021 01:32:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34184 "EHLO mail.kernel.org"
+        id S233417AbhGUFdB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 21 Jul 2021 01:33:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232397AbhGUFci (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 21 Jul 2021 01:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B654C61007;
-        Wed, 21 Jul 2021 06:13:14 +0000 (UTC)
+        id S232713AbhGUFcl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 21 Jul 2021 01:32:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 116C66108B;
+        Wed, 21 Jul 2021 06:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1626847995;
-        bh=CEJyO9Yy4FU8TKYwWIP+VJYoiy0mqOrVsLitic27HE0=;
+        s=k20201202; t=1626847998;
+        bh=tbn33wjjVuiv3kzeE4HsxsCHrdDaV9aipcwfnmjZej8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inLjeueoNXyZHCu9I4uoFEeQVHpoaFukdalnk7nln8JKApw0x5xZlG6oUjsWO+9tr
-         PcuQNP6P3RfC5o1VYNfH1a/KZpwOrJjXG7gMXBrzdST+a3NrU1DdbSSlmnNjp6j8DM
-         cfWGK7YXDcWGlbV90U7seijAdYhBRCjixfO/UUAEiOD3NFw2+CUcTP+Fo8yuN4wkK/
-         Nqb+yJNmuCYbt+CSocf2LvuD6+1eoNNIX8JyTNLVAKbqZR+hmVSu3Ych6TAEJZtCWU
-         wpToQXy6ii+s4R0mXanURGkKcPk6sdlJRM7h/dD0+NQS3wVoExI2oVlejXcrdnL2ZE
-         3gNwRedIuCTqA==
+        b=U5uajfH+gfdLy2jcXsvVGBpH44/P+ViHDxQqEubl6BLMHGMCnHqmu7Qc2KxSyUgDt
+         G59pu1TYVsMFQpGI89pf9391OpRHJzRGgp0UMjYT9ZJYKwpBwMHOgnUc02m+LCiFfX
+         lNsdD4zjcOhRNoZA93HHVt5Tn7NtXoLxjAXCsk+b3Vb51ZKYpLVvJoxCycS8f2/++Y
+         xuGD/bN8SuQBLI6eMZ/6tDojw8S9HsSDwKaQCGvjO2GxlElPjVepxzq7NbOudWSCtb
+         J8Jc8g0N3BMTMrfCEGZFqZduHCdAi5S7wof5Hg0f3bo3SMUBbp3gflP1heHf3aGkIR
+         uUXvQqih8MbJw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next 2/7] RDMA/core: Delete duplicated and unreachable code
-Date:   Wed, 21 Jul 2021 09:13:01 +0300
-Message-Id: <5f65e3382a54cf2143b8a9ea38998e82ec14475c.1626846795.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 3/7] RDMA/core: Remove protection from wrong in-kernel API usage
+Date:   Wed, 21 Jul 2021 09:13:02 +0300
+Message-Id: <8084238e374fe487c3f9728c2ee5ec8736c204d5.1626846795.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1626846795.git.leonro@nvidia.com>
 References: <cover.1626846795.git.leonro@nvidia.com>
@@ -42,65 +42,39 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-The ib_create_named_qp() is kernel verb and no kernel users exist that
-use XRC_INI QP. Hence such QP path is not reachable. In addition, delete
-duplicated assignments of QP attributes from the initialization structure.
+The ib_create_named_qp() is kernel verb that is not used for user
+supplied attributes. In such case, it is ULP responsibility to provide
+valid QP attributes.
+
+In-kernel API shouldn't check it, exactly like other functions that
+don't check device capabilities.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/core/core_priv.h |  1 +
- drivers/infiniband/core/verbs.c     | 22 ++++------------------
- 2 files changed, 5 insertions(+), 18 deletions(-)
+ drivers/infiniband/core/verbs.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index 5dfa1190e3ea..cc54d74930d6 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -342,6 +342,7 @@ _ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	qp->rwq_ind_tbl = attr->rwq_ind_tbl;
- 	qp->event_handler = attr->event_handler;
- 	qp->port = attr->port_num;
-+	qp->qp_context = attr->qp_context;
- 
- 	spin_lock_init(&qp->mr_lock);
- 	INIT_LIST_HEAD(&qp->rdma_mrs);
 diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index 89c6987cb5eb..635642a3ecbc 100644
+index 635642a3ecbc..2090f3c9f689 100644
 --- a/drivers/infiniband/core/verbs.c
 +++ b/drivers/infiniband/core/verbs.c
-@@ -1257,28 +1257,14 @@ struct ib_qp *ib_create_named_qp(struct ib_pd *pd,
- 		return xrc_qp;
- 	}
+@@ -1219,16 +1219,6 @@ struct ib_qp *ib_create_named_qp(struct ib_pd *pd,
+ 	struct ib_qp *qp;
+ 	int ret;
  
--	qp->event_handler = qp_init_attr->event_handler;
--	qp->qp_context = qp_init_attr->qp_context;
--	if (qp_init_attr->qp_type == IB_QPT_XRC_INI) {
--		qp->recv_cq = NULL;
--		qp->srq = NULL;
--	} else {
--		qp->recv_cq = qp_init_attr->recv_cq;
--		if (qp_init_attr->recv_cq)
--			atomic_inc(&qp_init_attr->recv_cq->usecnt);
--		qp->srq = qp_init_attr->srq;
--		if (qp->srq)
--			atomic_inc(&qp_init_attr->srq->usecnt);
--	}
+-	if (qp_init_attr->rwq_ind_tbl &&
+-	    (qp_init_attr->recv_cq ||
+-	    qp_init_attr->srq || qp_init_attr->cap.max_recv_wr ||
+-	    qp_init_attr->cap.max_recv_sge))
+-		return ERR_PTR(-EINVAL);
 -
--	qp->send_cq = qp_init_attr->send_cq;
--	qp->xrcd    = NULL;
-+	if (qp_init_attr->recv_cq)
-+		atomic_inc(&qp_init_attr->recv_cq->usecnt);
-+	if (qp->srq)
-+		atomic_inc(&qp_init_attr->srq->usecnt);
- 
- 	atomic_inc(&pd->usecnt);
- 	if (qp_init_attr->send_cq)
- 		atomic_inc(&qp_init_attr->send_cq->usecnt);
--	if (qp_init_attr->rwq_ind_tbl)
--		atomic_inc(&qp->rwq_ind_tbl->usecnt);
- 
- 	if (qp_init_attr->cap.max_rdma_ctxs) {
- 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
+-	if ((qp_init_attr->create_flags & IB_QP_CREATE_INTEGRITY_EN) &&
+-	    !(device->attrs.device_cap_flags & IB_DEVICE_INTEGRITY_HANDOVER))
+-		return ERR_PTR(-EINVAL);
+-
+ 	/*
+ 	 * If the callers is using the RDMA API calculate the resources
+ 	 * needed for the RDMA READ/WRITE operations.
 -- 
 2.31.1
 
