@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0789C3D39A3
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC93D39AB
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234601AbhGWK7h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jul 2021 06:59:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38812 "EHLO mail.kernel.org"
+        id S234785AbhGWLAA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 07:00:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234631AbhGWK7e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B57BD60E8C;
-        Fri, 23 Jul 2021 11:40:06 +0000 (UTC)
+        id S234706AbhGWK7r (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:59:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 874A9608FE;
+        Fri, 23 Jul 2021 11:40:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627040407;
-        bh=cAnq0DG8YTB9VFO8VFMDen4mU9E05ik62n+FRZ0hxdc=;
+        s=k20201202; t=1627040421;
+        bh=uzq54RD5rZlPgk1E6YmXI5XtGyehCEp6l22OvYxcfvA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i2N9EKWPqUlKKjBmi7Zh+kmONGHhXmQrK+9D8v7kcolrukCQovHkuPoO0OxBbM+MD
-         RArt3/YJWpFx7IkaA9L4L8db6a70QdorO1IVOhVaBDKG3/DejmUKbW5x9gTRdMglZX
-         Hy6Q7vcDmp8M37CUACOrku7gvQYSWYuagQbSH2wp4iSqnQP5/tZ7NYTm+fTy2BlusA
-         myypV2TO8TLcuTzfWZIwti7YI+4oCQaWcJpyA6yAhVwlhXAG/Wyu0FszEsYuFMkB4X
-         Iodn8c3HPUxDxPwGIm3AaqZIxHZ9spLv1m4rFtYfivIcamCP1HgYb2Y2qzPuV3t4i5
-         KUstvmeFvx15A==
+        b=BRpAZ1WqRjXc63+QCaaronnpb3QA67q8SivW4fPYCpytoVj20vbLfckCbHNaVDFdi
+         D+ANdQUkDRk+kY+oc3lydz6DifrUMVYK7kJPWYGybeivru4MD3JUJS3CLBch05QZAx
+         p/HCZOOrw04Eqwx+NUr3AxpcIof6qqKPzhAvpuQF2tMlOgue30skt7R+O8i49J9+aQ
+         2kJsvQfrrXK8w+mmF/MOKofJ1bEoWHohvmBngPrvigQ3uviQ31u3KS0K1sb1XitjH7
+         tWZ5MpszVchF+h9aSLg4DtWGXe2ADeQRCiBym8ExikJC0riIdQduTAvRyCNTIIHRBG
+         kAKByIxnAuRiw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
@@ -48,9 +48,9 @@ Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Wenpeng Liang <liangwenpeng@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 4/9] RDMA/mlx5: Cancel pkey work before destroying device resources
-Date:   Fri, 23 Jul 2021 14:39:46 +0300
-Message-Id: <f2b1ea1bad952e4e7a48a6f731de9e0344986b29.1627040189.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next v1 5/9] RDMA/mlx5: Delete device resource mutex that didn't protect anything
+Date:   Fri, 23 Jul 2021 14:39:47 +0300
+Message-Id: <6e338c561033df20d92e1371fc6a7a0d93aad945.1627040189.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1627040189.git.leonro@nvidia.com>
 References: <cover.1627040189.git.leonro@nvidia.com>
@@ -62,47 +62,155 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-In the driver release flow, we are ensuring that notifier is disabled
-and no new works can be added to pkey_change_handler. It means that
-we can cancel that handler before destroying resources to make sure
-that our unwind routine is symmetrical to the allocation one.
+The dev->devr.mutex was intended to protect GSI QP pointer change
+in the struct mlx5_ib_port_resources when it is accessed from the
+pkey_change_work. However that pointer isn't changed during the
+runtime and once IB/core adds MAD, it stays stable.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/main.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ drivers/infiniband/hw/mlx5/gsi.c     | 34 ++++++++--------------------
+ drivers/infiniband/hw/mlx5/main.c    |  9 ++++++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 --
+ 3 files changed, 16 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 9b8dd7a604c9..75d5de14f80b 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2908,6 +2908,15 @@ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- 	struct mlx5_ib_resources *devr = &dev->devr;
- 	int port;
+diff --git a/drivers/infiniband/hw/mlx5/gsi.c b/drivers/infiniband/hw/mlx5/gsi.c
+index 7fcad9135276..e549d6fa4a41 100644
+--- a/drivers/infiniband/hw/mlx5/gsi.c
++++ b/drivers/infiniband/hw/mlx5/gsi.c
+@@ -116,8 +116,6 @@ int mlx5_ib_create_gsi(struct ib_pd *pd, struct mlx5_ib_qp *mqp,
+ 		goto err_free_tx;
+ 	}
  
-+	/*
-+	 * Make sure no change P_Key work items are still executing.
-+	 *
-+	 * At this stage, the mlx5_ib_event should be unregistered
-+	 * and it ensures that no new works are added.
-+	 */
-+	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
-+		cancel_work_sync(&devr->ports[port].pkey_change_work);
-+
- 	mlx5_ib_destroy_srq(devr->s1, NULL);
- 	kfree(devr->s1);
- 	mlx5_ib_destroy_srq(devr->s0, NULL);
-@@ -2918,10 +2927,6 @@ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- 	kfree(devr->c0);
- 	mlx5_ib_dealloc_pd(devr->p0, NULL);
- 	kfree(devr->p0);
+-	mutex_lock(&dev->devr.mutex);
 -
--	/* Make sure no change P_Key work items are still executing */
--	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
--		cancel_work_sync(&devr->ports[port].pkey_change_work);
+ 	if (dev->devr.ports[port_num - 1].gsi) {
+ 		mlx5_ib_warn(dev, "GSI QP already exists on port %d\n",
+ 			     port_num);
+@@ -167,15 +165,11 @@ int mlx5_ib_create_gsi(struct ib_pd *pd, struct mlx5_ib_qp *mqp,
+ 	INIT_LIST_HEAD(&gsi->rx_qp->sig_mrs);
+ 
+ 	dev->devr.ports[attr->port_num - 1].gsi = gsi;
+-
+-	mutex_unlock(&dev->devr.mutex);
+-
+ 	return 0;
+ 
+ err_destroy_cq:
+ 	ib_free_cq(gsi->cq);
+ err_free_wrs:
+-	mutex_unlock(&dev->devr.mutex);
+ 	kfree(gsi->outstanding_wrs);
+ err_free_tx:
+ 	kfree(gsi->tx_qps);
+@@ -190,16 +184,13 @@ int mlx5_ib_destroy_gsi(struct mlx5_ib_qp *mqp)
+ 	int qp_index;
+ 	int ret;
+ 
+-	mutex_lock(&dev->devr.mutex);
+ 	ret = mlx5_ib_destroy_qp(gsi->rx_qp, NULL);
+ 	if (ret) {
+ 		mlx5_ib_warn(dev, "unable to destroy hardware GSI QP. error %d\n",
+ 			     ret);
+-		mutex_unlock(&dev->devr.mutex);
+ 		return ret;
+ 	}
+ 	dev->devr.ports[port_num - 1].gsi = NULL;
+-	mutex_unlock(&dev->devr.mutex);
+ 	gsi->rx_qp = NULL;
+ 
+ 	for (qp_index = 0; qp_index < gsi->num_qps; ++qp_index) {
+@@ -339,23 +330,13 @@ static void setup_qp(struct mlx5_ib_gsi_qp *gsi, u16 qp_index)
+ 	WARN_ON_ONCE(qp);
  }
  
- static u32 get_core_cap_flags(struct ib_device *ibdev,
+-static void setup_qps(struct mlx5_ib_gsi_qp *gsi)
+-{
+-	struct mlx5_ib_dev *dev = to_mdev(gsi->rx_qp->device);
+-	u16 qp_index;
+-
+-	mutex_lock(&dev->devr.mutex);
+-	for (qp_index = 0; qp_index < gsi->num_qps; ++qp_index)
+-		setup_qp(gsi, qp_index);
+-	mutex_unlock(&dev->devr.mutex);
+-}
+-
+ int mlx5_ib_gsi_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+ 			  int attr_mask)
+ {
+ 	struct mlx5_ib_dev *dev = to_mdev(qp->device);
+ 	struct mlx5_ib_qp *mqp = to_mqp(qp);
+ 	struct mlx5_ib_gsi_qp *gsi = &mqp->gsi;
++	u16 qp_index;
+ 	int ret;
+ 
+ 	mlx5_ib_dbg(dev, "modifying GSI QP to state %d\n", attr->qp_state);
+@@ -366,8 +347,11 @@ int mlx5_ib_gsi_modify_qp(struct ib_qp *qp, struct ib_qp_attr *attr,
+ 		return ret;
+ 	}
+ 
+-	if (to_mqp(gsi->rx_qp)->state == IB_QPS_RTS)
+-		setup_qps(gsi);
++	if (to_mqp(gsi->rx_qp)->state != IB_QPS_RTS)
++		return 0;
++
++	for (qp_index = 0; qp_index < gsi->num_qps; ++qp_index)
++		setup_qp(gsi, qp_index);
+ 	return 0;
+ }
+ 
+@@ -511,8 +495,8 @@ int mlx5_ib_gsi_post_recv(struct ib_qp *qp, const struct ib_recv_wr *wr,
+ 
+ void mlx5_ib_gsi_pkey_change(struct mlx5_ib_gsi_qp *gsi)
+ {
+-	if (!gsi)
+-		return;
++	u16 qp_index;
+ 
+-	setup_qps(gsi);
++	for (qp_index = 0; qp_index < gsi->num_qps; ++qp_index)
++		setup_qp(gsi, qp_index);
+ }
+diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
+index 75d5de14f80b..cac05bbe14c2 100644
+--- a/drivers/infiniband/hw/mlx5/main.c
++++ b/drivers/infiniband/hw/mlx5/main.c
+@@ -2501,6 +2501,13 @@ static void pkey_change_handler(struct work_struct *work)
+ 		container_of(work, struct mlx5_ib_port_resources,
+ 			     pkey_change_work);
+ 
++	if (!ports->gsi)
++		/*
++		 * We got this event before device was fully configured
++		 * and MAD registration code wasn't called/finished yet.
++		 */
++		return;
++
+ 	mlx5_ib_gsi_pkey_change(ports->gsi);
+ }
+ 
+@@ -2795,8 +2802,6 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
+ 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
+ 		return -EOPNOTSUPP;
+ 
+-	mutex_init(&devr->mutex);
+-
+ 	devr->p0 = rdma_zalloc_drv_obj(ibdev, ib_pd);
+ 	if (!devr->p0)
+ 		return -ENOMEM;
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index dbbcb53d2ca2..f2c8a6375b16 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -813,8 +813,6 @@ struct mlx5_ib_resources {
+ 	struct ib_srq	*s0;
+ 	struct ib_srq	*s1;
+ 	struct mlx5_ib_port_resources ports[2];
+-	/* Protects changes to the port resources */
+-	struct mutex	mutex;
+ };
+ 
+ struct mlx5_ib_counters {
 -- 
 2.31.1
 
