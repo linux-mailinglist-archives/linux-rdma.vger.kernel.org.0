@@ -2,62 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0C73D38C3
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 12:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 109953D38D0
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 12:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231574AbhGWJwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jul 2021 05:52:33 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54275 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230238AbhGWJwd (ORCPT
+        id S231659AbhGWJzp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 05:55:45 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:32816 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231519AbhGWJzp (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Jul 2021 05:52:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ugi2esO_1627036381;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ugi2esO_1627036381)
+        Fri, 23 Jul 2021 05:55:45 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UgiGgeH_1627036571;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UgiGgeH_1627036571)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 23 Jul 2021 18:33:05 +0800
+          Fri, 23 Jul 2021 18:36:17 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     mustafa.ismail@intel.com
-Cc:     shiraz.saleem@intel.com, dledford@redhat.com, jgg@ziepe.ca,
+To:     tariqt@nvidia.com
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        chongjiapeng <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] RDMA/irdma: Fix missing error code in irdma_modify_qp_roce()
-Date:   Fri, 23 Jul 2021 18:32:53 +0800
-Message-Id: <1627036373-69929-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] mlx4: Fix missing error code in mlx4_load_one()
+Date:   Fri, 23 Jul 2021 18:36:09 +0800
+Message-Id: <1627036569-71880-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
-
 The error code is missing in this code scenario, add the error code
-'-EINVAL' to the return value 'ret'.
+'-EINVAL' to the return value 'err'.
 
 Eliminate the follow smatch warning:
 
-drivers/infiniband/hw/irdma/verbs.c:1344 irdma_modify_qp_roce() warn:
-missing error code 'ret'.
+drivers/net/ethernet/mellanox/mlx4/main.c:3538 mlx4_load_one() warn:
+missing error code 'err'.
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Fixes: 7ae0e400cd93 ("net/mlx4_core: Flexible (asymmetric) allocation of
+EQs and MSI-X vectors for PF/VFs")
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/infiniband/hw/irdma/verbs.c | 1 +
+ drivers/net/ethernet/mellanox/mlx4/main.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 717147e..406c8b05 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -1341,6 +1341,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 			break;
- 		case IB_QPS_SQD:
- 			if (iwqp->iwarp_state == IRDMA_QP_STATE_SQD)
-+				ret = -EINVAL;
- 				goto exit;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 00c8465..28ac469 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -3535,6 +3535,7 @@ static int mlx4_load_one(struct pci_dev *pdev, int pci_dev_data,
  
- 			if (iwqp->iwarp_state != IRDMA_QP_STATE_RTS) {
+ 		if (!SRIOV_VALID_STATE(dev->flags)) {
+ 			mlx4_err(dev, "Invalid SRIOV state\n");
++			err = -EINVAL;
+ 			goto err_close;
+ 		}
+ 	}
 -- 
 1.8.3.1
 
