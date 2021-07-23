@@ -2,253 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5903D39AC
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 866423D3B71
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 15:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234725AbhGWLAC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jul 2021 07:00:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39246 "EHLO mail.kernel.org"
+        id S235306AbhGWNMJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 09:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234695AbhGWK7v (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:59:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DCFFE60EBD;
-        Fri, 23 Jul 2021 11:40:23 +0000 (UTC)
+        id S233552AbhGWNMJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Jul 2021 09:12:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F0D3D60EE6;
+        Fri, 23 Jul 2021 13:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627040424;
-        bh=/xVusLaIisjwDrhXsvTfDCOTo4UomSFhxaE4UNzqDKw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oJk42kHHuKCAQSlMqKfq+hbQ4nyNypoEASZQIJTdZbQgJI4KeRpDO9V7TQyQB2p83
-         W6oDn2hiQCCtFGCIfpRAMoIIN4MjSxjRFK9vaWqMB3pMb8Hq66wYowV7q9mxlgp+6W
-         XXGS3eeW7yuoGsB70GYiByfmB+IrWsKT87aVw3RRDID8S+blBcQDpyYbh4kwOflV8V
-         RIpF0TZrF5Nh7EoZgVOz5MMBLgscC3uJHgV9Y1Jp1+AFKwpFicl+ie2Y5JC3EeAgNH
-         Gqb8SU6JycvVSJwmu/bk/curN+jZ+hr4r/PvBeekOITuiw8oh4wfLUH3lqSuxUc7H0
-         IFOwirx+ka8dQ==
+        s=k20201202; t=1627048362;
+        bh=RNXg8/C+IrtgrBMwx3jmxhil9oDOOdRisD6WNe25kt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hMsRiFjmrQ/Oae2VOm9ClsBETdG5QUJ4ykX94vi4tX4IvvkM3yn4pDSmP+eJgIg1j
+         47QwmbPPKhaS6tssprvP239otj+nuJu+u8C0k74eyvnt5s40FLkcbdAiftzE8b/+tM
+         cZZwEK0x511Nj5kGWLAUA7UA1IP9SX26QorVdOIbi7Ru3oQufK2LP3msF+mpyg7Gdg
+         v5OgC3yIPOmEFpCoVyfMgDzk4VUaXB5G6dxRLoxnYydCwPWVF6FaT5NzmnGOMPHHAe
+         ouD84pFCKnXqKi4uAiFWEYxVx024o8sz/8Pgy0YFIF7SP7gR41nUD+OtQkYSrfQJPF
+         HPTBrG0ZwceRw==
+Date:   Fri, 23 Jul 2021 16:52:34 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Steve Wise <larrystevenwise@gmail.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 9/9] RDMA/mlx5: Drop in-driver verbs object creations
-Date:   Fri, 23 Jul 2021 14:39:51 +0300
-Message-Id: <f745590e5fb7d56f90fdb25f64ee3983ba17e1e4.1627040189.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1627040189.git.leonro@nvidia.com>
-References: <cover.1627040189.git.leonro@nvidia.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-next] docs: Fix infiniband uverbs minor number
+Message-ID: <YPrJorr7r9Kd2IzA@unreal>
+References: <a1213ef6064911aa3499322691bc465482818a3a.1626936170.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1213ef6064911aa3499322691bc465482818a3a.1626936170.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
++ RDMA
 
-There is no real value in bypassing IB/core APIs for creating standard
-objects with standard types. The open-coded variant didn't have any
-restrack task management calls and caused to such objects to be not
-present when running rdmatoool.
-
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/verbs.c   |  7 ++-
- drivers/infiniband/hw/mlx5/main.c | 92 +++++++------------------------
- 2 files changed, 25 insertions(+), 74 deletions(-)
-
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index a164609c2ee7..89c6987cb5eb 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1035,7 +1035,8 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	}
- 	if (srq->srq_type == IB_SRQT_XRC) {
- 		srq->ext.xrc.xrcd = srq_init_attr->ext.xrc.xrcd;
--		atomic_inc(&srq->ext.xrc.xrcd->usecnt);
-+		if (srq->ext.xrc.xrcd)
-+			atomic_inc(&srq->ext.xrc.xrcd->usecnt);
- 	}
- 	atomic_inc(&pd->usecnt);
- 
-@@ -1046,7 +1047,7 @@ struct ib_srq *ib_create_srq_user(struct ib_pd *pd,
- 	if (ret) {
- 		rdma_restrack_put(&srq->res);
- 		atomic_dec(&srq->pd->usecnt);
--		if (srq->srq_type == IB_SRQT_XRC)
-+		if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 			atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 		if (ib_srq_has_cq(srq->srq_type))
- 			atomic_dec(&srq->ext.cq->usecnt);
-@@ -1090,7 +1091,7 @@ int ib_destroy_srq_user(struct ib_srq *srq, struct ib_udata *udata)
- 		return ret;
- 
- 	atomic_dec(&srq->pd->usecnt);
--	if (srq->srq_type == IB_SRQT_XRC)
-+	if (srq->srq_type == IB_SRQT_XRC && srq->ext.xrc.xrcd)
- 		atomic_dec(&srq->ext.xrc.xrcd->usecnt);
- 	if (ib_srq_has_cq(srq->srq_type))
- 		atomic_dec(&srq->ext.cq->usecnt);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index 7a6bafc19c9b..fbed9e4241e1 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -2802,31 +2802,16 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	if (!MLX5_CAP_GEN(dev->mdev, xrc))
- 		return -EOPNOTSUPP;
- 
--	devr->p0 = rdma_zalloc_drv_obj(ibdev, ib_pd);
--	if (!devr->p0)
--		return -ENOMEM;
--
--	devr->p0->device  = ibdev;
--	devr->p0->uobject = NULL;
--	atomic_set(&devr->p0->usecnt, 0);
-+	devr->p0 = ib_alloc_pd(ibdev, 0);
-+	if (IS_ERR(devr->p0))
-+		return PTR_ERR(devr->p0);
- 
--	ret = mlx5_ib_alloc_pd(devr->p0, NULL);
--	if (ret)
--		goto error0;
--
--	devr->c0 = rdma_zalloc_drv_obj(ibdev, ib_cq);
--	if (!devr->c0) {
--		ret = -ENOMEM;
-+	devr->c0 = ib_create_cq(ibdev, NULL, NULL, NULL, &cq_attr);
-+	if (IS_ERR(devr->c0)) {
-+		ret = PTR_ERR(devr->c0);
- 		goto error1;
- 	}
- 
--	devr->c0->device = &dev->ib_dev;
--	atomic_set(&devr->c0->usecnt, 0);
--
--	ret = mlx5_ib_create_cq(devr->c0, &cq_attr, NULL);
--	if (ret)
--		goto err_create_cq;
--
- 	ret = mlx5_cmd_xrcd_alloc(dev->mdev, &devr->xrcdn0, 0);
- 	if (ret)
- 		goto error2;
-@@ -2841,45 +2826,22 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	attr.srq_type = IB_SRQT_XRC;
- 	attr.ext.cq = devr->c0;
- 
--	devr->s0 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s0) {
--		ret = -ENOMEM;
--		goto error4;
--	}
--
--	devr->s0->device	= &dev->ib_dev;
--	devr->s0->pd		= devr->p0;
--	devr->s0->srq_type      = IB_SRQT_XRC;
--	devr->s0->ext.cq	= devr->c0;
--	ret = mlx5_ib_create_srq(devr->s0, &attr, NULL);
--	if (ret)
-+	devr->s0 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s0)) {
-+		ret = PTR_ERR(devr->s0);
- 		goto err_create;
--
--	atomic_inc(&devr->s0->ext.cq->usecnt);
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s0->usecnt, 0);
-+	}
- 
- 	memset(&attr, 0, sizeof(attr));
- 	attr.attr.max_sge = 1;
- 	attr.attr.max_wr = 1;
- 	attr.srq_type = IB_SRQT_BASIC;
--	devr->s1 = rdma_zalloc_drv_obj(ibdev, ib_srq);
--	if (!devr->s1) {
--		ret = -ENOMEM;
--		goto error5;
--	}
--
--	devr->s1->device	= &dev->ib_dev;
--	devr->s1->pd		= devr->p0;
--	devr->s1->srq_type      = IB_SRQT_BASIC;
--	devr->s1->ext.cq	= devr->c0;
- 
--	ret = mlx5_ib_create_srq(devr->s1, &attr, NULL);
--	if (ret)
-+	devr->s1 = ib_create_srq(devr->p0, &attr);
-+	if (IS_ERR(devr->s1)) {
-+		ret = PTR_ERR(devr->s1);
- 		goto error6;
--
--	atomic_inc(&devr->p0->usecnt);
--	atomic_set(&devr->s1->usecnt, 0);
-+	}
- 
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		INIT_WORK(&devr->ports[port].pkey_change_work,
-@@ -2888,23 +2850,15 @@ static int mlx5_ib_dev_res_init(struct mlx5_ib_dev *dev)
- 	return 0;
- 
- error6:
--	kfree(devr->s1);
--error5:
--	mlx5_ib_destroy_srq(devr->s0, NULL);
-+	ib_destroy_srq(devr->s0);
- err_create:
--	kfree(devr->s0);
--error4:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- error3:
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
- error2:
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--err_create_cq:
--	kfree(devr->c0);
-+	ib_destroy_cq(devr->c0);
- error1:
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--error0:
--	kfree(devr->p0);
-+	ib_dealloc_pd(devr->p0);
- 	return ret;
- }
- 
-@@ -2922,16 +2876,12 @@ static void mlx5_ib_dev_res_cleanup(struct mlx5_ib_dev *dev)
- 	for (port = 0; port < ARRAY_SIZE(devr->ports); ++port)
- 		cancel_work_sync(&devr->ports[port].pkey_change_work);
- 
--	mlx5_ib_destroy_srq(devr->s1, NULL);
--	kfree(devr->s1);
--	mlx5_ib_destroy_srq(devr->s0, NULL);
--	kfree(devr->s0);
-+	ib_destroy_srq(devr->s1);
-+	ib_destroy_srq(devr->s0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn1, 0);
- 	mlx5_cmd_xrcd_dealloc(dev->mdev, devr->xrcdn0, 0);
--	mlx5_ib_destroy_cq(devr->c0, NULL);
--	kfree(devr->c0);
--	mlx5_ib_dealloc_pd(devr->p0, NULL);
--	kfree(devr->p0);
-+	ib_destroy_cq(devr->c0);
-+	ib_dealloc_pd(devr->p0);
- }
- 
- static u32 get_core_cap_flags(struct ib_device *ibdev,
--- 
-2.31.1
-
+On Thu, Jul 22, 2021 at 09:45:07AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Starting from the introduction of infiniband subsystem, the uverbs
+> char devices started from 192 as a minor number, see 
+> commit bc38a6abdd5a ("[PATCH] IB uverbs: core implementation"), but
+> the documentation was slightly different.
+> 
+> This patch updates the admin guide documentation to reflect it.
+> 
+> Fixes: 9d85025b0418 ("docs-rst: create an user's manual book")
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  Documentation/admin-guide/devices.txt | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
+> index 9c2be821c225..922c23bb4372 100644
+> --- a/Documentation/admin-guide/devices.txt
+> +++ b/Documentation/admin-guide/devices.txt
+> @@ -2993,10 +2993,10 @@
+>  		65 = /dev/infiniband/issm1     Second InfiniBand IsSM device
+>  		  ...
+>  		127 = /dev/infiniband/issm63    63rd InfiniBand IsSM device
+> -		128 = /dev/infiniband/uverbs0   First InfiniBand verbs device
+> -		129 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
+> +		192 = /dev/infiniband/uverbs0   First InfiniBand verbs device
+> +		193 = /dev/infiniband/uverbs1   Second InfiniBand verbs device
+>  		  ...
+> -		159 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
+> +		223 = /dev/infiniband/uverbs31  31st InfiniBand verbs device
+>  
+>   232 char	Biometric Devices
+>  		0 = /dev/biometric/sensor0/fingerprint	first fingerprint sensor on first device
+> -- 
+> 2.31.1
+> 
