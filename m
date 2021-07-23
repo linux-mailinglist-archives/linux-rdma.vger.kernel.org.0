@@ -2,103 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF583D2F0E
-	for <lists+linux-rdma@lfdr.de>; Thu, 22 Jul 2021 23:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0C73D38C3
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 12:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhGVUnK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 22 Jul 2021 16:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231513AbhGVUnJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 22 Jul 2021 16:43:09 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B404FC061575
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jul 2021 14:23:42 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so82415ota.11
-        for <linux-rdma@vger.kernel.org>; Thu, 22 Jul 2021 14:23:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v3RIBh5TUYedqT7jW+xGyfalIzfFfS9vUC2W8TmzJQw=;
-        b=aI+CtR+ov6qj5xriqNNVfvXWjYI7mDot6UpjpliI6+jp1a/NOiOTBDdqJEACPiHhrH
-         ghhT/piuF4p8R5Vj4bxBXyA41N+4vMfaNyiOR01sPjcqCePu+aaRBJ3pZyAfz+8Rb5kX
-         KYBwV0SIwr8lqiR2mLSuxpSbxathv9w96Fq4bTHS0y+Au8qry7drqe8SzyF8k/rGuI1w
-         siyS6eGfZMCAbLA0Hwqg+s5iIG29FrVBGAHQX0dutr9Cgz55KHiz6uzPDdFhVi5wv7Vd
-         3I+mk4Y7ej0lg8P2bt5CTdB7LLEFuXyNvje2KE1cITPAhfA2/huIAA/RlIIafAqsxPx6
-         jcEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v3RIBh5TUYedqT7jW+xGyfalIzfFfS9vUC2W8TmzJQw=;
-        b=t3QeMffvIWO3tNGwM18F6lrMBZjnNbLgouwwLCB291UAGtxa3gU56zz0v3JKFegDmx
-         lkel51hAqUnqYvDuZwaYSz8cechnqF8r4sClCcZBYf59X2D20UDHjqfHt5nFii8IDzMp
-         gCFZf7c83iCchol8axYz6FB/Z002yJQ8zjWmR/3NEvpS3Gnh7bLuTjnnFsorHyrIGAe1
-         Za8TCIRrG20B6PxjBnk7ff2xPAR5zlMNgrSum0EEJtXuEVcLfyezU6uZw8TGB/fouTvz
-         sCWUG5fgw77COKnb+isnqSq1gTI9ueKiXNqlQ645QARCgaiPZXDWEUYgYeBwsEDQW7+K
-         kLfw==
-X-Gm-Message-State: AOAM532Dotdi9yGG5a1iNSjFrK78t/bJghSoHvXcc0k/bX+KAlA/KpfM
-        1dEioDPZodsrflC6wYM/vzgSEAmE6nE=
-X-Google-Smtp-Source: ABdhPJzze8OHpL3eLWgvjac20e0UYwTJGxfL6Q3t/yVGW0SizWhGULWu5tN/1nqfM6wrbIXDsMQrUQ==
-X-Received: by 2002:a05:6830:140d:: with SMTP id v13mr1135969otp.296.1626989022194;
-        Thu, 22 Jul 2021 14:23:42 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-d50d-298a-08dc-a5ed.res6.spectrum.com. [2603:8081:140c:1a00:d50d:298a:8dc:a5ed])
-        by smtp.gmail.com with ESMTPSA id 68sm5276220otd.74.2021.07.22.14.23.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Jul 2021 14:23:41 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v3 6/6] RDMA/rxe: Convert kernel UD post send to use ah_num
-Date:   Thu, 22 Jul 2021 16:22:45 -0500
-Message-Id: <20210722212244.412157-7-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210722212244.412157-1-rpearsonhpe@gmail.com>
-References: <20210722212244.412157-1-rpearsonhpe@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231574AbhGWJwd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 05:52:33 -0400
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:54275 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230238AbhGWJwd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Jul 2021 05:52:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0Ugi2esO_1627036381;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Ugi2esO_1627036381)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Jul 2021 18:33:05 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mustafa.ismail@intel.com
+Cc:     shiraz.saleem@intel.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        chongjiapeng <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] RDMA/irdma: Fix missing error code in irdma_modify_qp_roce()
+Date:   Fri, 23 Jul 2021 18:32:53 +0800
+Message-Id: <1627036373-69929-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Modify ib_post_send for kernel UD sends to put the AH index into the
-WQE instead of the address vector.
+From: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+The error code is missing in this code scenario, add the error code
+'-EINVAL' to the return value 'ret'.
+
+Eliminate the follow smatch warning:
+
+drivers/infiniband/hw/irdma/verbs.c:1344 irdma_modify_qp_roce() warn:
+missing error code 'ret'.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
+Signed-off-by: chongjiapeng <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/infiniband/sw/rxe/rxe_verbs.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/infiniband/hw/irdma/verbs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 7181e21f0c55..ee3f70c8809a 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -558,8 +558,11 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
- 	if (qp_type(qp) == IB_QPT_UD ||
- 	    qp_type(qp) == IB_QPT_SMI ||
- 	    qp_type(qp) == IB_QPT_GSI) {
-+		struct ib_ah *ibah = ud_wr(ibwr)->ah;
-+
- 		wr->wr.ud.remote_qpn = ud_wr(ibwr)->remote_qpn;
- 		wr->wr.ud.remote_qkey = ud_wr(ibwr)->remote_qkey;
-+		wr->wr.ud.ah_num = to_rah(ibah)->ah_num;
- 		if (qp_type(qp) == IB_QPT_GSI)
- 			wr->wr.ud.pkey_index = ud_wr(ibwr)->pkey_index;
- 		if (wr->opcode == IB_WR_SEND_WITH_IMM)
-@@ -631,12 +634,6 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 		return;
- 	}
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 717147e..406c8b05 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1341,6 +1341,7 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 			break;
+ 		case IB_QPS_SQD:
+ 			if (iwqp->iwarp_state == IRDMA_QP_STATE_SQD)
++				ret = -EINVAL;
+ 				goto exit;
  
--	if (qp_type(qp) == IB_QPT_UD ||
--	    qp_type(qp) == IB_QPT_SMI ||
--	    qp_type(qp) == IB_QPT_GSI)
--		memcpy(&wqe->wr.wr.ud.av, &to_rah(ud_wr(ibwr)->ah)->av,
--		       sizeof(struct rxe_av));
--
- 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
- 		copy_inline_data_to_wqe(wqe, ibwr);
- 	else
+ 			if (iwqp->iwarp_state != IRDMA_QP_STATE_RTS) {
 -- 
-2.30.2
+1.8.3.1
 
