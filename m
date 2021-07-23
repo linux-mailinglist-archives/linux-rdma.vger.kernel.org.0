@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96143D399D
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:40:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12873D39A0
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234497AbhGWK7Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jul 2021 06:59:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38570 "EHLO mail.kernel.org"
+        id S233315AbhGWK71 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 06:59:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233315AbhGWK7X (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:59:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B9A460E8E;
-        Fri, 23 Jul 2021 11:39:56 +0000 (UTC)
+        id S234501AbhGWK71 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:59:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E4F460E8C;
+        Fri, 23 Jul 2021 11:39:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627040397;
-        bh=ZAmTOYZc6J+tviIaAcmH3SJGz7s0QL746yOYLsrkX/o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=kMFeVBn9Ff61XczYk96buS/x+mFaJNBGDMNGseJe83Y8/XrgaSyTTcyqVFBjCsJ9o
-         6kfFqMFcDYq6ToIO7NQcf0nbElUVn75KEzFF7RgL738oaI7z480h7q/QjjYMGm3LPJ
-         Y0RMumccIDnIjwoyTSm4yRXRbapMeedYZntDw8Xh8l5qGupQyfAm2qlQyv8zw6+rpq
-         jE1/Wxi04cd2htrh1qPgmKj3ZSe8IwCbLoPBdm1EQEDZ3F9rCK+j0ttbOyD8E3PhuY
-         FunKxcnsRURty+uhJpirkrooJDTftCTB10JsKRCeJlIffMnaYRVRVJ1J4bEHPB/UmK
-         HeBIpEaFmNhgQ==
+        s=k20201202; t=1627040400;
+        bh=+0os3ryL31iZeQ6MByhLX4F/Nn2Iz8unL7CcJXDsMCk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=snqLt4ppEO/fNc+QR12EBGttWyUVxfviMHQO8qdtrArnJQlzpwOMWwoFmzIOiI2OQ
+         7fcTDAFfF8rG+wmh8KsIl2uE8Pnx/mXHvxcR136CDOVO4j1xFOJjNMuc8ObpQ0/PIm
+         eI7IpTD/NHklghWoSSnGlCoqtHuu5aeeLhx052Us6eNir7hAnKV8bYso3/8jmIxAFa
+         W1qmrq/Xf3fj/AGtnrWRJZRXAd4leujf/i4wKhkX8vBHoZ/Gxzkifq7gT977M3lrP8
+         FXdMuXHC5gkdI+9zfG32DFPH4ggIszqhqVj3Z2hNsCrZ70uRL3Tmni94LAp8/uTDsb
+         iLUFl5JrjLUUw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
@@ -48,10 +48,12 @@ Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Wenpeng Liang <liangwenpeng@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 0/9] QP allocation changes
-Date:   Fri, 23 Jul 2021 14:39:42 +0300
-Message-Id: <cover.1627040189.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next v1 1/9] RDMA/hns: Don't skip IB creation flow for regular RC QP
+Date:   Fri, 23 Jul 2021 14:39:43 +0300
+Message-Id: <7b236c15f7d5abb368958297ac6962d8459cb824.1627040189.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1627040189.git.leonro@nvidia.com>
+References: <cover.1627040189.git.leonro@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -60,89 +62,48 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-Changelog:
-v1:
- * Added ROB tags
- * Deleted already existed double rwq_ind_tbl assignment
- * Deleted hr_qp->ibqp.qp_type assignment
-v0: https://lore.kernel.org/lkml/cover.1626609283.git.leonro@nvidia.com
+The call to internal QP creation function skips QP creation checks
+and misses the addition of such device QPs to the restrack DB.
 
------------------------------------------------------------------------------
-Hi,
+As a preparation to general allocation scheme, convert hns to use
+proper API.
 
-This series convert IB/core to use core allocation scheme for the QP
-objects.
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Thanks
-
-Leon Romanovsky (9):
-  RDMA/hns: Don't skip IB creation flow for regular RC QP
-  RDMA/hns: Don't overwrite supplied QP attributes
-  RDMA/efa: Remove double QP type assignment
-  RDMA/mlx5: Cancel pkey work before destroying device resources
-  RDMA/mlx5: Delete device resource mutex that didn't protect anything
-  RDMA/mlx5: Rework custom driver QP type creation
-  RDMA/rdmavt: Decouple QP and SGE lists allocations
-  RDMA: Globally allocate and release QP memory
-  RDMA/mlx5: Drop in-driver verbs object creations
-
- drivers/infiniband/core/core_priv.h           |  28 +++-
- drivers/infiniband/core/device.c              |   2 +
- drivers/infiniband/core/restrack.c            |   2 +-
- drivers/infiniband/core/verbs.c               |  47 +++---
- drivers/infiniband/hw/bnxt_re/ib_verbs.c      |  26 ++--
- drivers/infiniband/hw/bnxt_re/ib_verbs.h      |   7 +-
- drivers/infiniband/hw/bnxt_re/main.c          |   1 +
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h        |   5 +-
- drivers/infiniband/hw/cxgb4/provider.c        |   1 +
- drivers/infiniband/hw/cxgb4/qp.c              |  37 ++---
- drivers/infiniband/hw/efa/efa.h               |   5 +-
- drivers/infiniband/hw/efa/efa_main.c          |   1 +
- drivers/infiniband/hw/efa/efa_verbs.c         |  29 ++--
- drivers/infiniband/hw/hns/hns_roce_device.h   |   5 +-
- drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   6 +-
- drivers/infiniband/hw/hns/hns_roce_main.c     |   1 +
- drivers/infiniband/hw/hns/hns_roce_qp.c       |  36 ++---
- drivers/infiniband/hw/irdma/utils.c           |   3 -
- drivers/infiniband/hw/irdma/verbs.c           |  31 ++--
- drivers/infiniband/hw/mlx4/main.c             |   1 +
- drivers/infiniband/hw/mlx4/mlx4_ib.h          |   5 +-
- drivers/infiniband/hw/mlx4/qp.c               |  25 ++--
- drivers/infiniband/hw/mlx5/gsi.c              |  51 ++-----
- drivers/infiniband/hw/mlx5/main.c             | 135 ++++++------------
- drivers/infiniband/hw/mlx5/mlx5_ib.h          |   7 +-
- drivers/infiniband/hw/mlx5/qp.c               |  62 +++-----
- drivers/infiniband/hw/mthca/mthca_provider.c  |  77 ++++------
- drivers/infiniband/hw/ocrdma/ocrdma_main.c    |   1 +
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.c   |  25 ++--
- drivers/infiniband/hw/ocrdma/ocrdma_verbs.h   |   5 +-
- drivers/infiniband/hw/qedr/main.c             |   1 +
- drivers/infiniband/hw/qedr/qedr_roce_cm.c     |  13 +-
- drivers/infiniband/hw/qedr/qedr_roce_cm.h     |   5 +-
- drivers/infiniband/hw/qedr/verbs.c            |  49 ++-----
- drivers/infiniband/hw/qedr/verbs.h            |   4 +-
- drivers/infiniband/hw/usnic/usnic_ib_main.c   |   1 +
- drivers/infiniband/hw/usnic/usnic_ib_qp_grp.c |  34 ++---
- drivers/infiniband/hw/usnic/usnic_ib_qp_grp.h |  10 +-
- drivers/infiniband/hw/usnic/usnic_ib_verbs.c  |  69 +++++----
- drivers/infiniband/hw/usnic/usnic_ib_verbs.h  |   5 +-
- .../infiniband/hw/vmw_pvrdma/pvrdma_main.c    |   1 +
- drivers/infiniband/hw/vmw_pvrdma/pvrdma_qp.c  |  53 +++----
- .../infiniband/hw/vmw_pvrdma/pvrdma_verbs.h   |   5 +-
- drivers/infiniband/sw/rdmavt/qp.c             | 102 ++++++-------
- drivers/infiniband/sw/rdmavt/qp.h             |   5 +-
- drivers/infiniband/sw/rdmavt/vt.c             |   9 ++
- drivers/infiniband/sw/rxe/rxe_pool.c          |   2 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c         |  48 +++----
- drivers/infiniband/sw/rxe/rxe_verbs.h         |   2 +-
- drivers/infiniband/sw/siw/siw_main.c          |   1 +
- drivers/infiniband/sw/siw/siw_qp.c            |   2 -
- drivers/infiniband/sw/siw/siw_verbs.c         |  54 +++----
- drivers/infiniband/sw/siw/siw_verbs.h         |   5 +-
- include/rdma/ib_verbs.h                       |  30 +++-
- include/rdma/rdmavt_qp.h                      |   2 +-
- 55 files changed, 480 insertions(+), 699 deletions(-)
-
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+index a3305d196675..e0f59b8d7d5d 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v1.c
+@@ -758,7 +758,7 @@ static struct hns_roce_qp *hns_roce_v1_create_lp_qp(struct hns_roce_dev *hr_dev,
+ 	init_attr.cap.max_recv_wr	= HNS_ROCE_MIN_WQE_NUM;
+ 	init_attr.cap.max_send_wr	= HNS_ROCE_MIN_WQE_NUM;
+ 
+-	qp = hns_roce_create_qp(pd, &init_attr, NULL);
++	qp = ib_create_qp(pd, &init_attr);
+ 	if (IS_ERR(qp)) {
+ 		dev_err(dev, "Create loop qp for mr free failed!");
+ 		return NULL;
+@@ -923,7 +923,7 @@ static int hns_roce_v1_rsv_lp_qp(struct hns_roce_dev *hr_dev)
+ create_lp_qp_failed:
+ 	for (i -= 1; i >= 0; i--) {
+ 		hr_qp = free_mr->mr_free_qp[i];
+-		if (hns_roce_v1_destroy_qp(&hr_qp->ibqp, NULL))
++		if (ib_destroy_qp(&hr_qp->ibqp))
+ 			dev_err(dev, "Destroy qp %d for mr free failed!\n", i);
+ 	}
+ 
+@@ -953,7 +953,7 @@ static void hns_roce_v1_release_lp_qp(struct hns_roce_dev *hr_dev)
+ 		if (!hr_qp)
+ 			continue;
+ 
+-		ret = hns_roce_v1_destroy_qp(&hr_qp->ibqp, NULL);
++		ret = ib_destroy_qp(&hr_qp->ibqp);
+ 		if (ret)
+ 			dev_err(dev, "Destroy qp %d for mr free failed(%d)!\n",
+ 				i, ret);
 -- 
 2.31.1
 
