@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805B73D39A7
-	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456CE3D39A9
+	for <lists+linux-rdma@lfdr.de>; Fri, 23 Jul 2021 13:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234678AbhGWK7p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 23 Jul 2021 06:59:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38962 "EHLO mail.kernel.org"
+        id S234730AbhGWK7u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 23 Jul 2021 06:59:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234623AbhGWK7l (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 23 Jul 2021 06:59:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E64F460E8E;
-        Fri, 23 Jul 2021 11:40:13 +0000 (UTC)
+        id S234693AbhGWK7o (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 23 Jul 2021 06:59:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B5A060E8C;
+        Fri, 23 Jul 2021 11:40:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627040414;
-        bh=9xv4JmFZ3GB3RoiD7Y9IW8R3273Ho3jy6hJWvUao1ro=;
+        s=k20201202; t=1627040418;
+        bh=1T2Lt3llebp8CxVs54EHp5DqZdBD5AMfGku58BYeKo0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DMuSQVyMn9bkUtw48nTxpQDWSIbbPwvG86/z4gwU0nUYtPluh0cRubzldKrW2/M6X
-         ZLO4wrsfnCayQzafPHr1zvq6eXaly7lCzOoG8ukA62IEFid7vpHT7ZaMqEBLm2s0E3
-         qcAvUcKJxcajatn+OI9EdLVxLFCYSJ9eURksvLgLyTpQDZ/p1Cdmkn6y6MJ1K7Nwkh
-         UTDd+yl7OzwSv2+ara84FCUaCoZ0cbmKGS0UVd/9Fu75ni/HvZdG14CcyGs72VFFPH
-         4TP/V/RRdeKxMfd2dsT2sqVKEb+GAeKGv/A6d9DW9qbpeG1NXVcdZmtIAbdapMm3p9
-         i41yeVqPJs9Ag==
+        b=ZR/7q8I/9itBIfRpwUJkTQ/NRCKeZ7cyUgHgFjtJLmSX18D3d3WCX6J7CxDYPgkiO
+         EeF8LykwwKesBFIGIyTwWAA89VGBhc3Z8C73JC2UMRNM5QS5uMAQ28j9M/wftQ0e1k
+         UrjonkEWGQfIW+pb+KVLzh6OW6lAuP7jr3NoLBbs7BseWImvdNGjatBudGurboLTZH
+         0Ny0d15UPr8elryA2LwqD+4v8BWQrK6uufj5RR8d5S3cZ/2LehHJZYikFa00tv0/oY
+         AepFZ/7ZM8aZ5cKpRxtTIJKaLMr2JuKx72FhBCbKUDgo41t4woZBCnZsbgvAt4e1nq
+         bAWdcEufYwkhw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
@@ -48,9 +48,9 @@ Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Wenpeng Liang <liangwenpeng@huawei.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 6/9] RDMA/mlx5: Rework custom driver QP type creation
-Date:   Fri, 23 Jul 2021 14:39:48 +0300
-Message-Id: <51682ab82298748941f38bd23ee3bf77ef1cab7b.1627040189.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next v1 7/9] RDMA/rdmavt: Decouple QP and SGE lists allocations
+Date:   Fri, 23 Jul 2021 14:39:49 +0300
+Message-Id: <f66c1e20ccefba0db3c69c58ca9c897f062b4d1c.1627040189.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1627040189.git.leonro@nvidia.com>
 References: <cover.1627040189.git.leonro@nvidia.com>
@@ -62,156 +62,90 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-Starting from commit 2b1f747071c5 ("RDMA/core: Allow drivers to disable
-restrack DB") the restrack is able to handle non-standard QP types either.
+The rdmavt QP has fields that are both needed for the control and data
+path. Such mixed declaration caused to the very specific allocation flow
+with kzalloc_node and SGE list embedded into the struct rvt_qp.
 
-That change allows us to rewrite custom QP calls to their IB/core counterparts,
-so we will use general QP creation flow even for the driver QP types.
+This patch separates QP creation to two: regular memory allocation for
+the control path and specific code for the SGE list, while the access to
+the later is performed through derefenced pointer.
+
+Such pointer and its context are expected to be in the cache, so
+performance difference is expected to be negligible, if any exists.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/gsi.c  | 15 ++-------------
- drivers/infiniband/hw/mlx5/main.c | 20 +++++++-------------
- drivers/infiniband/hw/mlx5/qp.c   |  6 +++++-
- 3 files changed, 14 insertions(+), 27 deletions(-)
+ drivers/infiniband/sw/rdmavt/qp.c | 13 ++++++++-----
+ include/rdma/rdmavt_qp.h          |  2 +-
+ 2 files changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/gsi.c b/drivers/infiniband/hw/mlx5/gsi.c
-index e549d6fa4a41..541da52470cb 100644
---- a/drivers/infiniband/hw/mlx5/gsi.c
-+++ b/drivers/infiniband/hw/mlx5/gsi.c
-@@ -145,24 +145,13 @@ int mlx5_ib_create_gsi(struct ib_pd *pd, struct mlx5_ib_qp *mqp,
- 		hw_init_attr.cap.max_inline_data = 0;
- 	}
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index e9f3d356b361..14900860985c 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -1078,7 +1078,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 	int err;
+ 	struct rvt_swqe *swq = NULL;
+ 	size_t sz;
+-	size_t sg_list_sz;
++	size_t sg_list_sz = 0;
+ 	struct ib_qp *ret = ERR_PTR(-ENOMEM);
+ 	struct rvt_dev_info *rdi = ib_to_rvt(ibpd->device);
+ 	void *priv = NULL;
+@@ -1126,8 +1126,6 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		if (!swq)
+ 			return ERR_PTR(-ENOMEM);
  
--	gsi->rx_qp = mlx5_ib_create_qp(pd, &hw_init_attr, NULL);
-+	gsi->rx_qp = ib_create_qp(pd, &hw_init_attr);
- 	if (IS_ERR(gsi->rx_qp)) {
- 		mlx5_ib_warn(dev, "unable to create hardware GSI QP. error %ld\n",
- 			     PTR_ERR(gsi->rx_qp));
- 		ret = PTR_ERR(gsi->rx_qp);
- 		goto err_destroy_cq;
- 	}
--	gsi->rx_qp->device = pd->device;
--	gsi->rx_qp->pd = pd;
--	gsi->rx_qp->real_qp = gsi->rx_qp;
--
--	gsi->rx_qp->qp_type = hw_init_attr.qp_type;
--	gsi->rx_qp->send_cq = hw_init_attr.send_cq;
--	gsi->rx_qp->recv_cq = hw_init_attr.recv_cq;
--	gsi->rx_qp->event_handler = hw_init_attr.event_handler;
--	spin_lock_init(&gsi->rx_qp->mr_lock);
--	INIT_LIST_HEAD(&gsi->rx_qp->rdma_mrs);
--	INIT_LIST_HEAD(&gsi->rx_qp->sig_mrs);
+-		sz = sizeof(*qp);
+-		sg_list_sz = 0;
+ 		if (init_attr->srq) {
+ 			struct rvt_srq *srq = ibsrq_to_rvtsrq(init_attr->srq);
  
- 	dev->devr.ports[attr->port_num - 1].gsi = gsi;
- 	return 0;
-@@ -184,7 +173,7 @@ int mlx5_ib_destroy_gsi(struct mlx5_ib_qp *mqp)
- 	int qp_index;
- 	int ret;
+@@ -1137,10 +1135,13 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
+ 		} else if (init_attr->cap.max_recv_sge > 1)
+ 			sg_list_sz = sizeof(*qp->r_sg_list) *
+ 				(init_attr->cap.max_recv_sge - 1);
+-		qp = kzalloc_node(sz + sg_list_sz, GFP_KERNEL,
+-				  rdi->dparms.node);
++		qp = kzalloc_node(sizeof(*qp), GFP_KERNEL, rdi->dparms.node);
+ 		if (!qp)
+ 			goto bail_swq;
++		qp->r_sg_list =
++			kzalloc_node(sg_list_sz, GFP_KERNEL, rdi->dparms.node);
++		if (!qp->r_sg_list)
++			goto bail_qp;
+ 		qp->allowed_ops = get_allowed_ops(init_attr->qp_type);
  
--	ret = mlx5_ib_destroy_qp(gsi->rx_qp, NULL);
-+	ret = ib_destroy_qp(gsi->rx_qp);
- 	if (ret) {
- 		mlx5_ib_warn(dev, "unable to destroy hardware GSI QP. error %d\n",
- 			     ret);
-diff --git a/drivers/infiniband/hw/mlx5/main.c b/drivers/infiniband/hw/mlx5/main.c
-index cac05bbe14c2..bcdbc3033b0a 100644
---- a/drivers/infiniband/hw/mlx5/main.c
-+++ b/drivers/infiniband/hw/mlx5/main.c
-@@ -4073,7 +4073,7 @@ static void mlx5_ib_stage_pre_ib_reg_umr_cleanup(struct mlx5_ib_dev *dev)
- 		mlx5_ib_warn(dev, "mr cache cleanup failed\n");
+ 		RCU_INIT_POINTER(qp->next, NULL);
+@@ -1328,6 +1329,7 @@ struct ib_qp *rvt_create_qp(struct ib_pd *ibpd,
  
- 	if (dev->umrc.qp)
--		mlx5_ib_destroy_qp(dev->umrc.qp, NULL);
-+		ib_destroy_qp(dev->umrc.qp);
- 	if (dev->umrc.cq)
- 		ib_free_cq(dev->umrc.cq);
- 	if (dev->umrc.pd)
-@@ -4126,23 +4126,17 @@ static int mlx5_ib_stage_post_ib_reg_umr_init(struct mlx5_ib_dev *dev)
- 	init_attr->cap.max_send_sge = 1;
- 	init_attr->qp_type = MLX5_IB_QPT_REG_UMR;
- 	init_attr->port_num = 1;
--	qp = mlx5_ib_create_qp(pd, init_attr, NULL);
-+	qp = ib_create_qp(pd, init_attr);
- 	if (IS_ERR(qp)) {
- 		mlx5_ib_dbg(dev, "Couldn't create sync UMR QP\n");
- 		ret = PTR_ERR(qp);
- 		goto error_3;
- 	}
--	qp->device     = &dev->ib_dev;
--	qp->real_qp    = qp;
--	qp->uobject    = NULL;
--	qp->qp_type    = MLX5_IB_QPT_REG_UMR;
--	qp->send_cq    = init_attr->send_cq;
--	qp->recv_cq    = init_attr->recv_cq;
+ bail_qp:
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	kfree(qp);
  
- 	attr->qp_state = IB_QPS_INIT;
- 	attr->port_num = 1;
--	ret = mlx5_ib_modify_qp(qp, attr, IB_QP_STATE | IB_QP_PKEY_INDEX |
--				IB_QP_PORT, NULL);
-+	ret = ib_modify_qp(qp, attr,
-+			   IB_QP_STATE | IB_QP_PKEY_INDEX | IB_QP_PORT);
- 	if (ret) {
- 		mlx5_ib_dbg(dev, "Couldn't modify UMR QP\n");
- 		goto error_4;
-@@ -4152,7 +4146,7 @@ static int mlx5_ib_stage_post_ib_reg_umr_init(struct mlx5_ib_dev *dev)
- 	attr->qp_state = IB_QPS_RTR;
- 	attr->path_mtu = IB_MTU_256;
+ bail_swq:
+@@ -1762,6 +1764,7 @@ int rvt_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	kvfree(qp->r_rq.kwq);
+ 	rdi->driver_f.qp_priv_free(rdi, qp);
+ 	kfree(qp->s_ack_queue);
++	kfree(qp->r_sg_list);
+ 	rdma_destroy_ah_attr(&qp->remote_ah_attr);
+ 	rdma_destroy_ah_attr(&qp->alt_ah_attr);
+ 	free_ud_wq_attr(qp);
+diff --git a/include/rdma/rdmavt_qp.h b/include/rdma/rdmavt_qp.h
+index 8275954f5ce6..2e58d5e6ac0e 100644
+--- a/include/rdma/rdmavt_qp.h
++++ b/include/rdma/rdmavt_qp.h
+@@ -444,7 +444,7 @@ struct rvt_qp {
+ 	/*
+ 	 * This sge list MUST be last. Do not add anything below here.
+ 	 */
+-	struct rvt_sge r_sg_list[] /* verified SGEs */
++	struct rvt_sge *r_sg_list /* verified SGEs */
+ 		____cacheline_aligned_in_smp;
+ };
  
--	ret = mlx5_ib_modify_qp(qp, attr, IB_QP_STATE, NULL);
-+	ret = ib_modify_qp(qp, attr, IB_QP_STATE);
- 	if (ret) {
- 		mlx5_ib_dbg(dev, "Couldn't modify umr QP to rtr\n");
- 		goto error_4;
-@@ -4160,7 +4154,7 @@ static int mlx5_ib_stage_post_ib_reg_umr_init(struct mlx5_ib_dev *dev)
- 
- 	memset(attr, 0, sizeof(*attr));
- 	attr->qp_state = IB_QPS_RTS;
--	ret = mlx5_ib_modify_qp(qp, attr, IB_QP_STATE, NULL);
-+	ret = ib_modify_qp(qp, attr, IB_QP_STATE);
- 	if (ret) {
- 		mlx5_ib_dbg(dev, "Couldn't modify umr QP to rts\n");
- 		goto error_4;
-@@ -4183,7 +4177,7 @@ static int mlx5_ib_stage_post_ib_reg_umr_init(struct mlx5_ib_dev *dev)
- 	return 0;
- 
- error_4:
--	mlx5_ib_destroy_qp(qp, NULL);
-+	ib_destroy_qp(qp);
- 	dev->umrc.qp = NULL;
- 
- error_3:
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index 3d797be84bfa..d6c6bfe9921a 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -2675,7 +2675,6 @@ static int create_dct(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	}
- 
- 	qp->state = IB_QPS_RESET;
--	rdma_restrack_no_track(&qp->ibqp.res);
- 	return 0;
- }
- 
-@@ -3014,6 +3013,7 @@ static int create_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	switch (qp->type) {
- 	case MLX5_IB_QPT_DCT:
- 		err = create_dct(dev, pd, qp, params);
-+		rdma_restrack_no_track(&qp->ibqp.res);
- 		break;
- 	case MLX5_IB_QPT_DCI:
- 		err = create_dci(dev, pd, qp, params);
-@@ -3024,6 +3024,10 @@ static int create_qp(struct mlx5_ib_dev *dev, struct ib_pd *pd,
- 	case IB_QPT_GSI:
- 		err = mlx5_ib_create_gsi(pd, qp, params->attr);
- 		break;
-+	case MLX5_IB_QPT_HW_GSI:
-+	case MLX5_IB_QPT_REG_UMR:
-+		rdma_restrack_no_track(&qp->ibqp.res);
-+		fallthrough;
- 	default:
- 		if (params->udata)
- 			err = create_user_qp(dev, pd, qp, params);
 -- 
 2.31.1
 
