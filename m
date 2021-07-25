@@ -2,69 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A1A3D4CF9
-	for <lists+linux-rdma@lfdr.de>; Sun, 25 Jul 2021 11:50:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5690D3D4CFF
+	for <lists+linux-rdma@lfdr.de>; Sun, 25 Jul 2021 11:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhGYJJe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 25 Jul 2021 05:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54364 "EHLO mail.kernel.org"
+        id S230421AbhGYJKt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 25 Jul 2021 05:10:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhGYJJe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 25 Jul 2021 05:09:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8669A60F26;
-        Sun, 25 Jul 2021 09:50:04 +0000 (UTC)
+        id S230305AbhGYJKs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 25 Jul 2021 05:10:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F0236069E;
+        Sun, 25 Jul 2021 09:51:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627206604;
-        bh=U9rECIpUm/XacYfhUYSayFYjKoTXF4eXWtqLVGy/kFc=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gIuHj6lRE6tOh8xTqc67m/iNokF5BLs8vMaujKRwQzbTLmhoMgrNJ5Ticvq2YL+Qe
-         5H4sQVNc6ZlzRp7fqQZUyglUxVRRGgOnBUR9UxCE15GxwuaccQdXtlA/XoOcuOBHhQ
-         f8iUDXRpDd5nzDxhKQxbPYjFCXNIPbUvVTk2liqkqhXDZVVru69LJbDHO/c7OQMV1L
-         glp1QzorkjPx+agOnsVFUDtmgEGqRshFqilOASeVR5nq6cFSk12N9AMKtuP+EvqJPF
-         3568hkhGgh+k4VV1LsNiUuUeOzcFfXjGhtYN7NIE4o9iwz6C842PLyxWSoFUvDdBjp
-         wZee9EtbHfHEQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A1D260A44;
-        Sun, 25 Jul 2021 09:50:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1627206679;
+        bh=hyDjtkF5eCcWkADXAB8rrXfHqOep6tJmcaDVlottAjM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UcHBjYhHkRvNFCR4CdHvCdWWKNWeM7lDfj+yZCIoXN35uoSWLbiLjnpI86ER6Z4ev
+         MJQaWOhLCGWcI/tLT13yaUl2ir2HpYPkpDV6zOT1eUw636FBc2Bd05wAMwDgxzusaO
+         VjsNOdFMMcThgim+LhDj+hkz7acuKNaKxLDSV623Hbmo2MPcecr5zcQxu2AQbGTF2K
+         SisM+Qqhg6mrVDh5teydoYCYvI7yxxWLWrH/QLWYxwPtCI+PLMkHS+DCJsgKNH/85Y
+         TI6CB4ed9uEoHM4qndkP+VXc6yg82KZ85QyZoGoSdTslai20DmL3r+uIU9DV9L/B53
+         n7aPfed4zAGeA==
+Date:   Sun, 25 Jul 2021 12:51:15 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tal Gilboa <talgi@nvidia.com>
+Subject: Re: [PATCH mlx5-next] IB/mlx5: Rename is_apu_thread_cq function to
+ is_apu_cq
+Message-ID: <YP00E/bLM+RTY3u7@unreal>
+References: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] mlx4: Fix missing error code in mlx4_load_one()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162720660449.12734.8611771205877417069.git-patchwork-notify@kernel.org>
-Date:   Sun, 25 Jul 2021 09:50:04 +0000
-References: <1627036569-71880-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1627036569-71880-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Fri, 23 Jul 2021 18:36:09 +0800 you wrote:
-> The error code is missing in this code scenario, add the error code
-> '-EINVAL' to the return value 'err'.
+On Sun, Jul 18, 2021 at 02:54:13PM +0300, Leon Romanovsky wrote:
+> From: Tal Gilboa <talgi@nvidia.com>
 > 
-> Eliminate the follow smatch warning:
+> is_apu_thread_cq() used to detect CQs which are attached to APU
+> threads. This was extended to support other elements as well,
+> so the function was renamed to is_apu_cq().
 > 
-> drivers/net/ethernet/mellanox/mlx4/main.c:3538 mlx4_load_one() warn:
-> missing error code 'err'.
+> c_eqn_or_apu_element was extended from 8 bits to 32 bits, which wan't
+> reflected when the APU support was first introduced.
 > 
-> [...]
+> Signed-off-by: Tal Gilboa <talgi@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/infiniband/hw/mlx5/cq.c                            | 2 +-
+>  drivers/infiniband/hw/mlx5/devx.c                          | 7 +++----
+>  drivers/net/ethernet/mellanox/mlx5/core/cq.c               | 3 ++-
+>  drivers/net/ethernet/mellanox/mlx5/core/en_main.c          | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/fpga/conn.c        | 2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 2 +-
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c                          | 2 +-
+>  include/linux/mlx5/mlx5_ifc.h                              | 5 ++---
+>  8 files changed, 12 insertions(+), 13 deletions(-)
 
-Here is the summary with links:
-  - mlx4: Fix missing error code in mlx4_load_one()
-    https://git.kernel.org/netdev/net/c/7e4960b3d66d
+Applied to mlx5-next.
+616d57693455 ("IB/mlx5: Rename is_apu_thread_cq function to is_apu_cq")
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Jason, please pull.
 
-
+Thanks
