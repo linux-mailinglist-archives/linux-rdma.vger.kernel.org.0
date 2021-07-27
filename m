@@ -2,20 +2,20 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31083D7065
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 177503D7067
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235629AbhG0Hb7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Jul 2021 03:31:59 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12268 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235656AbhG0Hb5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:31:57 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GYpHZ2XY7z1CNtG;
-        Tue, 27 Jul 2021 15:26:02 +0800 (CST)
+        id S235659AbhG0HcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Jul 2021 03:32:01 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12314 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235675AbhG0Hb6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:31:58 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GYpJy4tgbz7ydv;
+        Tue, 27 Jul 2021 15:27:14 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Tue, 27 Jul 2021 15:31:56 +0800
 Received: from localhost.localdomain (10.67.165.24) by
@@ -25,9 +25,9 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 rdma-core 05/10] libhns: Use shared memory to sync DCA status
-Date:   Tue, 27 Jul 2021 15:28:16 +0800
-Message-ID: <1627370901-10054-6-git-send-email-liangwenpeng@huawei.com>
+Subject: [PATCH v2 rdma-core 06/10] libhns: Sync DCA status by shared memory
+Date:   Tue, 27 Jul 2021 15:28:17 +0800
+Message-ID: <1627370901-10054-7-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
 References: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
@@ -43,272 +43,244 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-The user DCA needs to check the QP attaching state before filling wqe
-buffer by the response from uverbs 'HNS_IB_METHOD_DCA_MEM_ATTACH', but
-this will result in too much time being wasted on system calls, so use a
-shared table between user driver and kernel driver to sync DCA status.
+Use DCA num from the resp of modify_qp() and indicate the DCA status bit in
+the shared memory, if the num is valid, the user DCA can get the DCA status
+by testing the bit in the shared memory for each QP, othewise invoke the
+verbs 'HNS_IB_METHOD_DCA_MEM_ATTACH' to check the DCA status.
+
+Each QP has 2 bits in shared memory, 1 bit is used to lock the DCA status
+changing by kernel driver or user driver, another bit is used to indicate
+the DCA attaching status.
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- providers/hns/hns_roce_u.c     | 135 +++++++++++++++++++++++++++++++----------
- providers/hns/hns_roce_u.h     |  11 ++++
- providers/hns/hns_roce_u_abi.h |   3 +-
- 3 files changed, 116 insertions(+), 33 deletions(-)
+ providers/hns/hns_roce_u.h       | 31 +++++++++++++++++++++++++++++
+ providers/hns/hns_roce_u_abi.h   |  3 +++
+ providers/hns/hns_roce_u_buf.c   | 42 ++++++++++++++++++++++++++++++++++++++++
+ providers/hns/hns_roce_u_hw_v2.c | 28 +++++++++++++++++++++++----
+ 4 files changed, 100 insertions(+), 4 deletions(-)
 
-diff --git a/providers/hns/hns_roce_u.c b/providers/hns/hns_roce_u.c
-index a4e0997..3b13d0f 100644
---- a/providers/hns/hns_roce_u.c
-+++ b/providers/hns/hns_roce_u.c
-@@ -95,7 +95,46 @@ static const struct verbs_context_ops hns_common_ops = {
- 	.get_srq_num = hns_roce_u_get_srq_num,
- };
- 
--static int init_dca_context(struct hns_roce_context *ctx, int page_size)
-+/* command value is offset[15:8] */
-+static void hns_roce_mmap_set_command(int command, off_t *offset)
-+{
-+	*offset |= (command & 0xff) << 8;
-+}
-+
-+/* index value is offset[63:16] | offset[7:0] */
-+static void hns_roce_mmap_set_index(unsigned long index, off_t *offset)
-+{
-+	*offset |= (index & 0xff) | ((index >> 8) << 16);
-+}
-+
-+static off_t get_uar_mmap_offset(unsigned long idx, int page_size, int cmd)
-+{
-+	off_t offset = 0;
-+
-+	hns_roce_mmap_set_command(cmd, &offset);
-+	hns_roce_mmap_set_index(idx, &offset);
-+
-+	return offset * page_size;
-+}
-+
-+static int mmap_dca(struct hns_roce_dca_ctx *dca_ctx, int cmd_fd, int page_size,
-+		    size_t size)
-+{
-+	void *addr;
-+
-+	addr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, cmd_fd,
-+		    get_uar_mmap_offset(0, page_size, HNS_ROCE_MMAP_DCA_PAGE));
-+	if (addr == MAP_FAILED)
-+		return -EINVAL;
-+
-+	dca_ctx->buf_status = addr;
-+	dca_ctx->sync_status = addr + size / 2;
-+
-+	return 0;
-+}
-+
-+static int init_dca_context(struct hns_roce_context *ctx, int cmd_fd,
-+			    int page_size, int max_qps, int mmap_size)
- {
- 	struct hns_roce_dca_ctx *dca_ctx = &ctx->dca_ctx;
- 	int ret;
-@@ -112,6 +151,16 @@ static int init_dca_context(struct hns_roce_context *ctx, int page_size)
- 	dca_ctx->max_size = HNS_DCA_MAX_MEM_SIZE;
- 	dca_ctx->mem_cnt = 0;
- 
-+	if (mmap_size > 0) {
-+		const unsigned int bits_per_qp = 2 * HNS_DCA_BITS_PER_STATUS;
-+
-+		if (!mmap_dca(dca_ctx, cmd_fd, page_size, mmap_size)) {
-+			dca_ctx->status_size = mmap_size;
-+			dca_ctx->max_qps = min_t(int, max_qps,
-+						 mmap_size *  8 / bits_per_qp);
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -126,19 +175,60 @@ static void uninit_dca_context(struct hns_roce_context *ctx)
- 	hns_roce_cleanup_dca_mem(ctx);
- 	pthread_spin_unlock(&dca_ctx->lock);
- 
-+	if (dca_ctx->buf_status)
-+		munmap(dca_ctx->buf_status, dca_ctx->status_size);
-+
- 	pthread_spin_destroy(&dca_ctx->lock);
- }
- 
-+static int hns_roce_mmap(struct hns_roce_device *hr_dev,
-+			 struct hns_roce_context *context, int cmd_fd)
-+{
-+	int page_size = hr_dev->page_size;
-+	off_t offset;
-+
-+	offset = get_uar_mmap_offset(0, page_size, HNS_ROCE_MMAP_REGULAR_PAGE);
-+	context->uar = mmap(NULL, page_size, PROT_READ | PROT_WRITE,
-+			    MAP_SHARED, cmd_fd, offset);
-+	if (context->uar == MAP_FAILED)
-+		return -EINVAL;
-+
-+	offset = get_uar_mmap_offset(1, page_size, HNS_ROCE_MMAP_REGULAR_PAGE);
-+	if (hr_dev->hw_version == HNS_ROCE_HW_VER1) {
-+		/*
-+		 * when vma->vm_pgoff is 1, the cq_tptr_base includes 64K CQ,
-+		 * a pointer of CQ need 2B size
-+		 */
-+		context->cq_tptr_base = mmap(NULL, HNS_ROCE_CQ_DB_BUF_SIZE,
-+					     PROT_READ | PROT_WRITE, MAP_SHARED,
-+					     cmd_fd, offset);
-+		if (context->cq_tptr_base == MAP_FAILED)
-+			goto db_free;
-+	}
-+
-+	return 0;
-+
-+db_free:
-+	munmap(context->uar, hr_dev->page_size);
-+
-+	return -EINVAL;
-+}
-+
-+static void ucontext_set_cmd(struct hns_roce_alloc_ucontext *cmd, int page_size)
-+{
-+	cmd->comp = HNS_ROCE_ALLOC_UCTX_COMP_DCA_MAX_QPS;
-+	cmd->dca_max_qps = page_size * 8 / 2 * HNS_DCA_BITS_PER_STATUS;
-+}
-+
- static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 						    int cmd_fd,
- 						    void *private_data)
- {
- 	struct hns_roce_device *hr_dev = to_hr_dev(ibdev);
- 	struct hns_roce_alloc_ucontext_resp resp = {};
-+	struct hns_roce_alloc_ucontext cmd = {};
- 	struct ibv_device_attr dev_attrs;
- 	struct hns_roce_context *context;
--	struct ibv_get_context cmd;
--	int offset = 0;
- 	int i;
- 
- 	context = verbs_init_and_alloc_context(ibdev, cmd_fd, context, ibv_ctx,
-@@ -146,7 +236,8 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 	if (!context)
- 		return NULL;
- 
--	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd, sizeof(cmd),
-+	ucontext_set_cmd(&cmd, hr_dev->page_size);
-+	if (ibv_cmd_get_context(&context->ibv_ctx, &cmd.ibv_cmd, sizeof(cmd),
- 				&resp.ibv_resp, sizeof(resp)))
- 		goto err_free;
- 
-@@ -190,42 +281,22 @@ static struct verbs_context *hns_roce_alloc_context(struct ibv_device *ibdev,
- 	context->max_srq_wr = dev_attrs.max_srq_wr;
- 	context->max_srq_sge = dev_attrs.max_srq_sge;
- 
--	context->uar = mmap(NULL, hr_dev->page_size, PROT_READ | PROT_WRITE,
--			    MAP_SHARED, cmd_fd, offset);
--	if (context->uar == MAP_FAILED)
--		goto err_free;
--
--	offset += hr_dev->page_size;
--
--	if (hr_dev->hw_version == HNS_ROCE_HW_VER1) {
--		/*
--		 * when vma->vm_pgoff is 1, the cq_tptr_base includes 64K CQ,
--		 * a pointer of CQ need 2B size
--		 */
--		context->cq_tptr_base = mmap(NULL, HNS_ROCE_CQ_DB_BUF_SIZE,
--					     PROT_READ | PROT_WRITE, MAP_SHARED,
--					     cmd_fd, offset);
--		if (context->cq_tptr_base == MAP_FAILED)
--			goto db_free;
--	}
--
- 	pthread_spin_init(&context->uar_lock, PTHREAD_PROCESS_PRIVATE);
- 
- 	verbs_set_ops(&context->ibv_ctx, &hns_common_ops);
- 	verbs_set_ops(&context->ibv_ctx, &hr_dev->u_hw->hw_ops);
- 
--	if (init_dca_context(context, hr_dev->page_size))
--		goto tptr_free;
-+	if (init_dca_context(context, cmd_fd, hr_dev->page_size, resp.dca_qps,
-+			     resp.dca_mmap_size))
-+		goto err_free;
- 
--	return &context->ibv_ctx;
-+	if (hns_roce_mmap(hr_dev, context, cmd_fd))
-+		goto dca_free;
- 
--tptr_free:
--	if (hr_dev->hw_version == HNS_ROCE_HW_VER1)
--		munmap(context->cq_tptr_base, HNS_ROCE_CQ_DB_BUF_SIZE);
-+	return &context->ibv_ctx;
- 
--db_free:
--	munmap(context->uar, hr_dev->page_size);
--	context->uar = NULL;
-+dca_free:
-+	uninit_dca_context(context);
- 
- err_free:
- 	verbs_uninit_context(&context->ibv_ctx);
 diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
-index 08e60b7..95e8046 100644
+index 95e8046..fb7b864 100644
 --- a/providers/hns/hns_roce_u.h
 +++ b/providers/hns/hns_roce_u.h
-@@ -35,6 +35,7 @@
- 
- #include <stddef.h>
- #include <endian.h>
-+#include <stdatomic.h>
- #include <util/compiler.h>
- 
- #include <infiniband/driver.h>
-@@ -44,6 +45,8 @@
- #include <ccan/array_size.h>
- #include <ccan/bitmap.h>
- #include <ccan/container_of.h>
-+#include <ccan/minmax.h>
-+
- #include <linux/if_ether.h>
- #include "hns_roce_u_abi.h"
- 
-@@ -54,6 +57,8 @@
- 
- #define PFX				"hns: "
- 
-+typedef _Atomic(uint64_t) atomic_bitmap_t;
-+
- /* The minimum page size is 4K for hardware */
- #define HNS_HW_PAGE_SHIFT 12
- #define HNS_HW_PAGE_SIZE (1 << HNS_HW_PAGE_SHIFT)
-@@ -157,6 +162,12 @@ struct hns_roce_dca_ctx {
- 	uint64_t max_size;
- 	uint64_t min_size;
- 	uint64_t curr_size;
-+
-+#define HNS_DCA_BITS_PER_STATUS 1
-+	unsigned int max_qps;
-+	unsigned int status_size;
-+	atomic_bitmap_t *buf_status;
-+	atomic_bitmap_t *sync_status;
+@@ -298,6 +298,7 @@ struct hns_roce_dca_buf {
+ 	void **bufs;
+ 	unsigned int max_cnt;
+ 	unsigned int shift;
++	unsigned int dcan;
  };
  
- struct hns_roce_context {
+ struct hns_roce_qp {
+@@ -349,6 +350,7 @@ struct hns_roce_dca_attach_attr {
+ 	uint32_t sq_offset;
+ 	uint32_t sge_offset;
+ 	uint32_t rq_offset;
++	bool force;
+ };
+ 
+ struct hns_roce_dca_detach_attr {
+@@ -402,6 +404,32 @@ static inline struct hns_roce_ah *to_hr_ah(struct ibv_ah *ibv_ah)
+ 	return container_of(ibv_ah, struct hns_roce_ah, ibv_ah);
+ }
+ 
++#define HNS_ROCE_BIT_MASK(nr) (1UL << ((nr) % 64))
++#define HNS_ROCE_BIT_WORD(nr) ((nr) / 64)
++
++static inline bool atomic_test_bit(atomic_bitmap_t *p, uint32_t nr)
++{
++	p += HNS_ROCE_BIT_WORD(nr);
++	return !!(atomic_load(p) & HNS_ROCE_BIT_MASK(nr));
++}
++
++static inline bool test_and_set_bit_lock(atomic_bitmap_t *p, uint32_t nr)
++{
++	uint64_t mask = HNS_ROCE_BIT_MASK(nr);
++
++	p += HNS_ROCE_BIT_WORD(nr);
++	if (atomic_load(p) & mask)
++		return true;
++
++	return (atomic_fetch_or(p, mask) & mask) != 0;
++}
++
++static inline void clear_bit_unlock(atomic_bitmap_t *p, uint32_t nr)
++{
++	p += HNS_ROCE_BIT_WORD(nr);
++	atomic_fetch_and(p, ~HNS_ROCE_BIT_MASK(nr));
++}
++
+ int hns_roce_u_query_device(struct ibv_context *context,
+ 			    const struct ibv_query_device_ex_input *input,
+ 			    struct ibv_device_attr_ex *attr, size_t attr_size);
+@@ -474,6 +502,9 @@ int hns_roce_attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
+ 			    uint32_t size, struct hns_roce_dca_buf *buf);
+ void hns_roce_detach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
+ 			     struct hns_roce_dca_detach_attr *attr);
++bool hns_roce_dca_start_post(struct hns_roce_dca_ctx *ctx, uint32_t dcan);
++void hns_roce_dca_stop_post(struct hns_roce_dca_ctx *ctx, uint32_t dcan);
++
+ void hns_roce_shrink_dca_mem(struct hns_roce_context *ctx);
+ void hns_roce_cleanup_dca_mem(struct hns_roce_context *ctx);
+ 
 diff --git a/providers/hns/hns_roce_u_abi.h b/providers/hns/hns_roce_u_abi.h
-index e56f9d3..23509c1 100644
+index 23509c1..3a9aacf 100644
 --- a/providers/hns/hns_roce_u_abi.h
 +++ b/providers/hns/hns_roce_u_abi.h
-@@ -39,10 +39,11 @@
+@@ -57,4 +57,7 @@ DECLARE_DRV_CMD(hns_roce_create_srq, IB_USER_VERBS_CMD_CREATE_SRQ,
+ DECLARE_DRV_CMD(hns_roce_create_srq_ex, IB_USER_VERBS_CMD_CREATE_XSRQ,
+ 		hns_roce_ib_create_srq, hns_roce_ib_create_srq_resp);
  
- DECLARE_DRV_CMD(hns_roce_alloc_pd, IB_USER_VERBS_CMD_ALLOC_PD,
- 		empty, hns_roce_ib_alloc_pd_resp);
++DECLARE_DRV_CMD(hns_roce_modify_qp_ex, IB_USER_VERBS_EX_CMD_MODIFY_QP,
++		empty, hns_roce_ib_modify_qp_resp);
 +
- DECLARE_DRV_CMD(hns_roce_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
- 		hns_roce_ib_create_cq, hns_roce_ib_create_cq_resp);
- DECLARE_DRV_CMD(hns_roce_alloc_ucontext, IB_USER_VERBS_CMD_GET_CONTEXT,
--		empty, hns_roce_ib_alloc_ucontext_resp);
-+		hns_roce_ib_alloc_ucontext, hns_roce_ib_alloc_ucontext_resp);
+ #endif /* _HNS_ROCE_U_ABI_H */
+diff --git a/providers/hns/hns_roce_u_buf.c b/providers/hns/hns_roce_u_buf.c
+index 8142fcd..9a26aff 100644
+--- a/providers/hns/hns_roce_u_buf.c
++++ b/providers/hns/hns_roce_u_buf.c
+@@ -402,6 +402,45 @@ static int setup_dca_buf(struct hns_roce_context *ctx, uint32_t handle,
+ 	return (idx >= page_count) ? 0 : -ENOMEM;
+ }
  
- DECLARE_DRV_CMD(hns_roce_create_qp, IB_USER_VERBS_CMD_CREATE_QP,
- 		hns_roce_ib_create_qp, hns_roce_ib_create_qp_resp);
++#define DCAN_TO_SYNC_BIT(n) ((n) * HNS_DCA_BITS_PER_STATUS)
++#define DCAN_TO_STAT_BIT(n) DCAN_TO_SYNC_BIT(n)
++
++#define MAX_DCA_TRY_LOCK_TIMES 10
++bool hns_roce_dca_start_post(struct hns_roce_dca_ctx *ctx, uint32_t dcan)
++{
++	atomic_bitmap_t *st = ctx->sync_status;
++	int try_times = 0;
++
++	if (!st || dcan >= ctx->max_qps)
++		return true;
++
++	while (test_and_set_bit_lock(st, DCAN_TO_SYNC_BIT(dcan)))
++		if (try_times++ > MAX_DCA_TRY_LOCK_TIMES)
++			return false;
++
++	return true;
++}
++
++void hns_roce_dca_stop_post(struct hns_roce_dca_ctx *ctx, uint32_t dcan)
++{
++	atomic_bitmap_t *st = ctx->sync_status;
++
++	if (!st || dcan >= ctx->max_qps)
++		return;
++
++	clear_bit_unlock(st, DCAN_TO_SYNC_BIT(dcan));
++}
++
++static bool check_dca_is_attached(struct hns_roce_dca_ctx *ctx, uint32_t dcan)
++{
++	atomic_bitmap_t *st = ctx->buf_status;
++
++	if (!st || dcan >= ctx->max_qps)
++		return false;
++
++	return atomic_test_bit(st, DCAN_TO_STAT_BIT(dcan));
++}
++
+ #define DCA_EXPAND_MEM_TRY_TIMES	3
+ int hns_roce_attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
+ 			    struct hns_roce_dca_attach_attr *attr,
+@@ -413,6 +452,9 @@ int hns_roce_attach_dca_mem(struct hns_roce_context *ctx, uint32_t handle,
+ 	int try_times = 0;
+ 	int ret = 0;
+ 
++	if (!attr->force && check_dca_is_attached(&ctx->dca_ctx, buf->dcan))
++		return 0;
++
+ 	do {
+ 		resp.alloc_pages = 0;
+ 		ret = attach_dca_mem(ctx, handle, attr, &resp);
+diff --git a/providers/hns/hns_roce_u_hw_v2.c b/providers/hns/hns_roce_u_hw_v2.c
+index dff0e42..8989a08 100644
+--- a/providers/hns/hns_roce_u_hw_v2.c
++++ b/providers/hns/hns_roce_u_hw_v2.c
+@@ -533,6 +533,7 @@ static int dca_attach_qp_buf(struct hns_roce_context *ctx,
+ 			     struct hns_roce_qp *qp)
+ {
+ 	struct hns_roce_dca_attach_attr attr = {};
++	bool enable_detach;
+ 	uint32_t idx;
+ 	int ret;
+ 
+@@ -554,9 +555,16 @@ static int dca_attach_qp_buf(struct hns_roce_context *ctx,
+ 		attr.rq_offset = idx << qp->rq.wqe_shift;
+ 	}
+ 
++	enable_detach = check_dca_detach_enable(qp);
++	if (enable_detach &&
++	    !hns_roce_dca_start_post(&ctx->dca_ctx, qp->dca_wqe.dcan))
++		/* Force attach if failed to sync dca status */
++		attr.force = true;
+ 
+ 	ret = hns_roce_attach_dca_mem(ctx, qp->verbs_qp.qp.handle, &attr,
+-								  qp->buf_size, &qp->dca_wqe);
++				      qp->buf_size, &qp->dca_wqe);
++	if (ret && enable_detach)
++		hns_roce_dca_stop_post(&ctx->dca_ctx, qp->dca_wqe.dcan);
+ 
+ 	pthread_spin_unlock(&qp->rq.lock);
+ 	pthread_spin_unlock(&qp->sq.lock);
+@@ -1368,6 +1376,9 @@ out:
+ 
+ 	pthread_spin_unlock(&qp->sq.lock);
+ 
++	if (check_dca_detach_enable(qp))
++		hns_roce_dca_stop_post(&ctx->dca_ctx, qp->dca_wqe.dcan);
++
+ 	if (ibvqp->state == IBV_QPS_ERR) {
+ 		attr.qp_state = IBV_QPS_ERR;
+ 
+@@ -1475,6 +1486,9 @@ out:
+ 
+ 	pthread_spin_unlock(&qp->rq.lock);
+ 
++	if (check_dca_detach_enable(qp))
++		hns_roce_dca_stop_post(&ctx->dca_ctx, qp->dca_wqe.dcan);
++
+ 	if (ibvqp->state == IBV_QPS_ERR) {
+ 		attr.qp_state = IBV_QPS_ERR;
+ 		hns_roce_u_v2_modify_qp(ibvqp, &attr, IBV_QP_STATE);
+@@ -1563,8 +1577,9 @@ static int hns_roce_u_v2_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
+ 				   int attr_mask)
+ {
+ 	int ret;
+-	struct ibv_modify_qp cmd;
++	struct hns_roce_modify_qp_ex cmd_ex = {};
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(qp);
++	struct hns_roce_modify_qp_ex_resp resp_ex = {};
+ 	bool flag = false; /* modify qp to error */
+ 	struct hns_roce_context *ctx = to_hr_ctx(qp->context);
+ 
+@@ -1574,7 +1589,9 @@ static int hns_roce_u_v2_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
+ 		flag = true;
+ 	}
+ 
+-	ret = ibv_cmd_modify_qp(qp, attr, attr_mask, &cmd, sizeof(cmd));
++	ret = ibv_cmd_modify_qp_ex(qp, attr, attr_mask, &cmd_ex.ibv_cmd,
++				   sizeof(cmd_ex), &resp_ex.ibv_resp,
++				   sizeof(resp_ex));
+ 
+ 	if (flag) {
+ 		pthread_spin_unlock(&hr_qp->rq.lock);
+@@ -1584,8 +1601,11 @@ static int hns_roce_u_v2_modify_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (attr_mask & IBV_QP_STATE)
++	if (attr_mask & IBV_QP_STATE) {
+ 		qp->state = attr->qp_state;
++		if (attr->qp_state == IBV_QPS_RTR)
++			hr_qp->dca_wqe.dcan = resp_ex.drv_payload.dcan;
++	}
+ 
+ 	if ((attr_mask & IBV_QP_STATE) && attr->qp_state == IBV_QPS_RESET) {
+ 		if (qp->recv_cq)
 -- 
 2.8.1
 
