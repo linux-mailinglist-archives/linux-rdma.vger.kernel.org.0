@@ -2,20 +2,20 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB54C3D7066
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCEE3D7069
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235504AbhG0HcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Jul 2021 03:32:01 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:12315 "EHLO
+        id S235679AbhG0HcC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Jul 2021 03:32:02 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:12316 "EHLO
         szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhG0Hb6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:31:58 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GYpJy61vBz7ydR;
-        Tue, 27 Jul 2021 15:27:14 +0800 (CST)
+        with ESMTP id S235731AbhG0HcA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:32:00 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4GYpJz665bz7x6T;
+        Tue, 27 Jul 2021 15:27:15 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2176.2; Tue, 27 Jul 2021 15:31:57 +0800
 Received: from localhost.localdomain (10.67.165.24) by
@@ -25,9 +25,9 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 rdma-core 09/10] pyverbs/hns: Initial support for HNS direct verbs
-Date:   Tue, 27 Jul 2021 15:28:20 +0800
-Message-ID: <1627370901-10054-10-git-send-email-liangwenpeng@huawei.com>
+Subject: [PATCH v2 rdma-core 10/10] tests: Add traffic test of send on HNS DCA QPEx
+Date:   Tue, 27 Jul 2021 15:28:21 +0800
+Message-ID: <1627370901-10054-11-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
 References: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
@@ -43,324 +43,146 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xi Wang <wangxi11@huawei.com>
 
-Add initial support for HNS direct verbs. For now, DCA direct verbs are
-supported.
+Add traffic test of old send on QPEx class.
 
 Signed-off-by: Xi Wang <wangxi11@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- pyverbs/CMakeLists.txt                |   1 +
- pyverbs/providers/hns/CMakeLists.txt  |   7 ++
- pyverbs/providers/hns/__init__.pxd    |   0
- pyverbs/providers/hns/__init__.py     |   0
- pyverbs/providers/hns/hns_enums.pyx   |   1 +
- pyverbs/providers/hns/hnsdv.pxd       |  25 ++++++
- pyverbs/providers/hns/hnsdv.pyx       | 158 ++++++++++++++++++++++++++++++++++
- pyverbs/providers/hns/hnsdv_enums.pxd |  21 +++++
- pyverbs/providers/hns/libhns.pxd      |  28 ++++++
- 9 files changed, 241 insertions(+)
- create mode 100644 pyverbs/providers/hns/CMakeLists.txt
- create mode 100644 pyverbs/providers/hns/__init__.pxd
- create mode 100644 pyverbs/providers/hns/__init__.py
- create mode 120000 pyverbs/providers/hns/hns_enums.pyx
- create mode 100644 pyverbs/providers/hns/hnsdv.pxd
- create mode 100644 pyverbs/providers/hns/hnsdv.pyx
- create mode 100644 pyverbs/providers/hns/hnsdv_enums.pxd
- create mode 100644 pyverbs/providers/hns/libhns.pxd
+ tests/hns_base.py     | 80 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/test_hns_dca.py | 37 ++++++++++++++++++++++++
+ 2 files changed, 117 insertions(+)
+ create mode 100644 tests/hns_base.py
+ create mode 100644 tests/test_hns_dca.py
 
-diff --git a/pyverbs/CMakeLists.txt b/pyverbs/CMakeLists.txt
-index c532b4c..80f6e2b 100644
---- a/pyverbs/CMakeLists.txt
-+++ b/pyverbs/CMakeLists.txt
-@@ -44,4 +44,5 @@ rdma_python_module(pyverbs
- if (HAVE_COHERENT_DMA)
- add_subdirectory(providers/mlx5)
- add_subdirectory(providers/efa)
-+add_subdirectory(providers/hns)
- endif()
-diff --git a/pyverbs/providers/hns/CMakeLists.txt b/pyverbs/providers/hns/CMakeLists.txt
+diff --git a/tests/hns_base.py b/tests/hns_base.py
 new file mode 100644
-index 0000000..bb60f16
+index 0000000..46d6a28
 --- /dev/null
-+++ b/pyverbs/providers/hns/CMakeLists.txt
-@@ -0,0 +1,7 @@
++++ b/tests/hns_base.py
+@@ -0,0 +1,80 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
 +# Copyright (c) 2021 HiSilicon Limited. All rights reserved.
 +
-+rdma_cython_module(pyverbs/providers/hns hns
-+  hns_enums.pyx
-+  hnsdv.pyx
-+)
-diff --git a/pyverbs/providers/hns/__init__.pxd b/pyverbs/providers/hns/__init__.pxd
++import unittest
++import random
++import errno
++
++from pyverbs.providers.hns.hnsdv import HnsContext, HnsDVContextAttr, \
++    HnsDVQPInitAttr, HnsQP
++from tests.base import RCResources, RDMATestCase, PyverbsAPITestCase
++from pyverbs.pyverbs_error import PyverbsRDMAError, PyverbsUserError
++from pyverbs.qp import QPCap, QPInitAttrEx
++import pyverbs.providers.hns.hns_enums as dve
++import pyverbs.device as d
++import pyverbs.enums as e
++from pyverbs.mr import MR
++
++
++HUAWEI_VENDOR_ID = 0x19e5
++
++def is_hns_dev(ctx):
++    dev_attrs = ctx.query_device()
++    return dev_attrs.vendor_id == HUAWEI_VENDOR_ID
++
++
++def skip_if_not_hns_dev(ctx):
++    if not is_hns_dev(ctx):
++        raise unittest.SkipTest('Can not run the test over non HNS device')
++
++
++class HnsPyverbsAPITestCase(PyverbsAPITestCase):
++    def setUp(self):
++        super().setUp()
++        skip_if_not_hns_dev(self.ctx)
++
++
++class HnsRDMATestCase(RDMATestCase):
++    def setUp(self):
++        super().setUp()
++        skip_if_not_hns_dev(d.Context(name=self.dev_name))
++
++
++class HnsDcaResources(RCResources):
++    def create_context(self):
++        hnsdv_attr = HnsDVContextAttr(flags=dve.HNSDV_CONTEXT_FLAGS_DCA)
++        try:
++            self.ctx = HnsContext(hnsdv_attr, name=self.dev_name)
++        except PyverbsUserError as ex:
++            raise unittest.SkipTest(f'Could not open hns context ({ex})')
++        except PyverbsRDMAError:
++            raise unittest.SkipTest('Opening hns context is not supported')
++
++    def create_qp_cap(self):
++        return QPCap(100, 0, 10, 0)
++
++    def create_qp_init_attr(self):
++        return QPInitAttrEx(cap=self.create_qp_cap(), pd=self.pd, scq=self.cq,
++                            rcq=self.cq, srq=self.srq, qp_type=e.IBV_QPT_RC,
++                            comp_mask=e.IBV_QP_INIT_ATTR_PD,
++                            sq_sig_all=1)
++
++    def create_qps(self):
++        # Create the DCA QPs.
++        qp_init_attr = self.create_qp_init_attr()
++        try:
++            for _ in range(self.qp_count):
++                attr = HnsDVQPInitAttr(comp_mask=dve.HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS,
++                                       create_flags=dve.HNSDV_QP_CREATE_ENABLE_DCA_MODE)
++                qp = HnsQP(self.ctx, qp_init_attr, attr)
++                self.qps.append(qp)
++                self.qps_num.append(qp.qp_num)
++                self.psns.append(random.getrandbits(24))
++        except PyverbsRDMAError as ex:
++            if ex.error_code == errno.EOPNOTSUPP:
++                raise unittest.SkipTest(f'Create DCA QP is not supported')
++            raise ex
++
++    def create_mr(self):
++        access = e.IBV_ACCESS_REMOTE_WRITE | e.IBV_ACCESS_LOCAL_WRITE
++        self.mr = MR(self.pd, self.msg_size, access)
+diff --git a/tests/test_hns_dca.py b/tests/test_hns_dca.py
 new file mode 100644
-index 0000000..e69de29
-diff --git a/pyverbs/providers/hns/__init__.py b/pyverbs/providers/hns/__init__.py
-new file mode 100644
-index 0000000..e69de29
-diff --git a/pyverbs/providers/hns/hns_enums.pyx b/pyverbs/providers/hns/hns_enums.pyx
-new file mode 120000
-index 0000000..33b3389
+index 0000000..8f47fb1
 --- /dev/null
-+++ b/pyverbs/providers/hns/hns_enums.pyx
-@@ -0,0 +1 @@
-+hnsdv_enums.pxd
-\ No newline at end of file
-diff --git a/pyverbs/providers/hns/hnsdv.pxd b/pyverbs/providers/hns/hnsdv.pxd
-new file mode 100644
-index 0000000..b23fab8
---- /dev/null
-+++ b/pyverbs/providers/hns/hnsdv.pxd
-@@ -0,0 +1,25 @@
++++ b/tests/test_hns_dca.py
+@@ -0,0 +1,37 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
 +# Copyright (c) 2021 HiSilicon Limited. All rights reserved.
 +
-+#cython: language_level=3
++import unittest
++import errno
 +
-+from pyverbs.base cimport PyverbsObject
-+cimport pyverbs.providers.hns.libhns as dv
-+from pyverbs.device cimport Context
-+from pyverbs.qp cimport QP, QPEx
++from pyverbs.pyverbs_error import PyverbsRDMAError
++import pyverbs.enums as e
++
++from tests.hns_base import HnsRDMATestCase
++from tests.hns_base import HnsDcaResources
++import tests.utils as u
 +
 +
-+cdef class HnsContext(Context):
-+    cpdef close(self)
 +
-+cdef class HnsDVContextAttr(PyverbsObject):
-+    cdef dv.hnsdv_context_attr attr
++class QPDCATestCase(HnsRDMATestCase):
++    def setUp(self):
++        super().setUp()
++        self.iters = 100
++        self.server = None
++        self.client = None
 +
-+cdef class HnsDVContext(PyverbsObject):
-+    pass
++    def create_players(self, qp_count=8):
++        try:
++            self.client = HnsDcaResources(self.dev_name, self.ib_port, self.gid_index, qp_count)
++            self.server = HnsDcaResources(self.dev_name, self.ib_port, self.gid_index, qp_count)
++        except PyverbsRDMAError as ex:
++            if ex.error_code == errno.EOPNOTSUPP:
++                raise unittest.SkipTest('Create DCA Resources is not supported')
++            raise ex
++        self.client.pre_run(self.server.psns, self.server.qps_num)
++        self.server.pre_run(self.client.psns, self.client.qps_num)
 +
-+cdef class HnsDVQPInitAttr(PyverbsObject):
-+    cdef dv.hnsdv_qp_init_attr attr
-+
-+cdef class HnsQP(QPEx):
-+    pass
-diff --git a/pyverbs/providers/hns/hnsdv.pyx b/pyverbs/providers/hns/hnsdv.pyx
-new file mode 100644
-index 0000000..4642255
---- /dev/null
-+++ b/pyverbs/providers/hns/hnsdv.pyx
-@@ -0,0 +1,158 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2021 HiSilicon Limited. All rights reserved.
-+
-+from libc.stdint cimport uintptr_t, uint8_t, uint16_t, uint32_t
-+import logging
-+
-+from pyverbs.pyverbs_error import PyverbsUserError
-+
-+cimport pyverbs.providers.hns.hnsdv_enums as dve
-+cimport pyverbs.providers.hns.libhns as dv
-+
-+from pyverbs.qp cimport QPInitAttrEx, QPEx
-+from pyverbs.base import PyverbsRDMAErrno
-+from pyverbs.base cimport close_weakrefs
-+from pyverbs.pd cimport PD
-+
-+cdef class HnsDVContextAttr(PyverbsObject):
-+    """
-+    Represent hnsdv_context_attr struct. This class is used to open an hns
-+    device.
-+    """
-+    def __init__(self, flags=0, comp_mask=0, dca_qps=1):
-+        super().__init__()
-+        self.attr.flags = flags
-+        self.attr.comp_mask = comp_mask
-+        if dca_qps > 0:
-+            self.attr.comp_mask |= dve.HNSDV_CONTEXT_MASK_DCA_PRIME_QPS
-+            self.attr.dca_prime_qps = dca_qps
-+
-+    def __str__(self):
-+        print_format = '{:20}: {:<20}\n'
-+        return print_format.format('flags', self.attr.flags) +\
-+               print_format.format('comp_mask', self.attr.comp_mask)
-+
-+    @property
-+    def flags(self):
-+        return self.attr.flags
-+    @flags.setter
-+    def flags(self, val):
-+        self.attr.flags = val
-+
-+    @property
-+    def comp_mask(self):
-+        return self.attr.comp_mask
-+    @comp_mask.setter
-+    def comp_mask(self, val):
-+        self.attr.comp_mask = val
-+
-+cdef class HnsContext(Context):
-+    """
-+    Represent hns context, which extends Context.
-+    """
-+    def __init__(self, HnsDVContextAttr attr not None, name=''):
-+        """
-+        Open an hns device using the given attributes
-+        :param name: The RDMA device's name (used by parent class)
-+        :param attr: hns-specific device attributes
-+        :return: None
-+        """
-+        super().__init__(name=name, attr=attr)
-+        if not dv.hnsdv_is_supported(self.device):
-+            raise PyverbsUserError('This is not an HNS device')
-+        self.context = dv.hnsdv_open_device(self.device, &attr.attr)
-+        if self.context == NULL:
-+            raise PyverbsRDMAErrno('Failed to open hns context on {dev}'
-+                                   .format(dev=self.name))
-+
-+    def __dealloc__(self):
-+        self.close()
-+
-+    cpdef close(self):
-+        if self.context != NULL:
-+            super(HnsContext, self).close()
-+
-+cdef class HnsDVQPInitAttr(PyverbsObject):
-+    """
-+    Represents hnsdv_qp_init_attr struct, initial attributes used for hns QP
-+    creation.
-+    """
-+    def __init__(self, comp_mask=0, create_flags=0):
-+        """
-+        Initializes an HnsDVQPInitAttr object with the given user data.
-+        :param comp_mask: A bitmask specifying which fields are valid
-+        :param create_flags: A bitwise OR of hnsdv_qp_create_flags
-+        :return: An initialized HnsDVQPInitAttr object
-+        """
-+        super().__init__()
-+        self.attr.comp_mask = comp_mask
-+        self.attr.create_flags = create_flags
-+
-+    def __str__(self):
-+        print_format = '{:20}: {:<20}\n'
-+        return print_format.format('Comp mask',
-+                                   qp_comp_mask_to_str(self.attr.comp_mask)) +\
-+               print_format.format('Create flags',
-+                                   qp_create_flags_to_str(self.attr.create_flags))
-+
-+    @property
-+    def comp_mask(self):
-+        return self.attr.comp_mask
-+    @comp_mask.setter
-+    def comp_mask(self, val):
-+        self.attr.comp_mask = val
-+
-+    @property
-+    def create_flags(self):
-+        return self.attr.create_flags
-+    @create_flags.setter
-+    def create_flags(self, val):
-+        self.attr.create_flags = val
-+
-+cdef class HnsQP(QPEx):
-+    def __init__(self, Context context, QPInitAttrEx init_attr,
-+                 HnsDVQPInitAttr dv_init_attr):
-+        """
-+        Initializes an hns QP according to the user-provided data.
-+        :param context: Context object
-+        :param init_attr: QPInitAttrEx object
-+        :return: An initialized HnsQP
-+        """
-+        cdef PD pd
-+
-+        # Initialize the logger here as the parent's __init__ is called after
-+        # the QP is allocated. Allocation can fail, which will lead to exceptions
-+        # thrown during object's teardown.
-+        self.logger = logging.getLogger(self.__class__.__name__)
-+        if init_attr.pd is not None:
-+            pd = <PD>init_attr.pd
-+            pd.add_ref(self)
-+        self.qp = \
-+            dv.hnsdv_create_qp(context.context,
-+                                &init_attr.attr,
-+                                &dv_init_attr.attr if dv_init_attr is not None
-+                                else NULL)
-+        if self.qp == NULL:
-+            raise PyverbsRDMAErrno('Failed to create HNS QP.\nQPInitAttrEx '
-+                                   'attributes:\n{}\nHNSDVQPInitAttr:\n{}'.
-+                                   format(init_attr, dv_init_attr))
-+        super().__init__(context, init_attr)
-+
-+def bitmask_to_str(bits, values):
-+    numeric_bits = bits
-+    res = ''
-+    for t in values.keys():
-+        if t & bits:
-+            res += values[t] + ', '
-+            bits -= t
-+        if bits == 0:
-+            break
-+    return res[:-2] + ' ({})'.format(numeric_bits) # Remove last comma and space
-+
-+def qp_comp_mask_to_str(flags):
-+    l = {dve.HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS: 'Create flags'}
-+    return bitmask_to_str(flags, l)
-+
-+def qp_create_flags_to_str(flags):
-+    l = {dve.HNSDV_QP_CREATE_ENABLE_DCA_MODE: 'Enable DCA'}
-+    return bitmask_to_str(flags, l)
-diff --git a/pyverbs/providers/hns/hnsdv_enums.pxd b/pyverbs/providers/hns/hnsdv_enums.pxd
-new file mode 100644
-index 0000000..9fa43af
---- /dev/null
-+++ b/pyverbs/providers/hns/hnsdv_enums.pxd
-@@ -0,0 +1,21 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2021 HiSilicon Limited. All rights reserved.
-+
-+#cython: language_level=3
-+
-+cdef extern from 'infiniband/hnsdv.h':
-+
-+    cpdef enum hnsdv_context_attr_flags:
-+        HNSDV_CONTEXT_FLAGS_DCA	= 1 << 0
-+
-+    cpdef enum hnsdv_context_comp_mask:
-+        HNSDV_CONTEXT_MASK_DCA_PRIME_QPS	= 1 << 0
-+        HNSDV_CONTEXT_MASK_DCA_UNIT_SIZE	= 1 << 1
-+        HNSDV_CONTEXT_MASK_DCA_MAX_SIZE		= 1 << 2
-+        HNSDV_CONTEXT_MASK_DCA_MIN_SIZE		= 1 << 3
-+
-+    cpdef enum hnsdv_qp_init_attr_mask:
-+        HNSDV_QP_INIT_ATTR_MASK_QP_CREATE_FLAGS	= 1 << 0
-+
-+    cpdef enum hnsdv_qp_create_flags:
-+        HNSDV_QP_CREATE_ENABLE_DCA_MODE		= 1 << 0
-diff --git a/pyverbs/providers/hns/libhns.pxd b/pyverbs/providers/hns/libhns.pxd
-new file mode 100644
-index 0000000..c1e4ec3
---- /dev/null
-+++ b/pyverbs/providers/hns/libhns.pxd
-@@ -0,0 +1,28 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR Linux-OpenIB)
-+# Copyright (c) 2021 HiSilicon Limited. All rights reserved.
-+
-+from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t
-+from libcpp cimport bool
-+
-+cimport pyverbs.libibverbs as v
-+
-+cdef extern from 'infiniband/hnsdv.h':
-+
-+    cdef struct hnsdv_context_attr:
-+        uint64_t flags
-+        uint64_t comp_mask
-+        uint32_t dca_prime_qps
-+        uint32_t dca_unit_size
-+        uint64_t dca_max_size
-+        uint64_t dca_min_size
-+
-+    cdef struct hnsdv_qp_init_attr:
-+        uint64_t comp_mask
-+        uint32_t create_flags
-+
-+    bool hnsdv_is_supported(v.ibv_device *device)
-+    v.ibv_context* hnsdv_open_device(v.ibv_device *device,
-+                                     hnsdv_context_attr *attr)
-+    v.ibv_qp *hnsdv_create_qp(v.ibv_context *context,
-+                              v.ibv_qp_init_attr_ex *qp_attr,
-+                              hnsdv_qp_init_attr *hns_qp_attr)
++    def test_qp_ex_dca_send(self):
++        self.create_players()
++        u.traffic(self.client, self.server, self.iters, self.gid_index, self.ib_port,
++                  new_send=False)
 -- 
 2.8.1
 
