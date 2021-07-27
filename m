@@ -2,22 +2,22 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 371493D7068
-	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D40C3D7063
+	for <lists+linux-rdma@lfdr.de>; Tue, 27 Jul 2021 09:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235745AbhG0HcB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 27 Jul 2021 03:32:01 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:7067 "EHLO
+        id S235612AbhG0Hb6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 27 Jul 2021 03:31:58 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16006 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235679AbhG0Hb6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:31:58 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYpHZ5RKlzYh1Q;
-        Tue, 27 Jul 2021 15:26:02 +0800 (CST)
+        with ESMTP id S235629AbhG0Hb5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 27 Jul 2021 03:31:57 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GYpLN5CV9zZtDp;
+        Tue, 27 Jul 2021 15:28:28 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 27 Jul 2021 15:31:55 +0800
+ 15.1.2176.2; Tue, 27 Jul 2021 15:31:56 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -25,10 +25,12 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 rdma-core 00/10] libhns: Add support for Dynamic Context Attachment
-Date:   Tue, 27 Jul 2021 15:28:11 +0800
-Message-ID: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
+Subject: [PATCH v2 rdma-core 01/10] Update kernel headers
+Date:   Tue, 27 Jul 2021 15:28:12 +0800
+Message-ID: <1627370901-10054-2-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
+In-Reply-To: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
+References: <1627370901-10054-1-git-send-email-liangwenpeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -39,105 +41,182 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
-supports many RC QPs to share the WQE buffer in a memory pool. If a QP
-enables DCA feature, the WQE's buffer will not be allocated when creating
-but when the users start to post WRs. This will reduce the memory
-consumption when there are too many QPs are inactive.
+To commit ?? ("RDMA/hns: Dump detailed driver-specific UCTX").
 
-For more detailed information, please refer to the man pages provided by
-the last patch of this series.
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+---
+ kernel-headers/rdma/hns-abi.h  | 86 ++++++++++++++++++++++++++++++++++++++++++
+ kernel-headers/rdma/mlx5-abi.h | 17 ++++++++-
+ 2 files changed, 101 insertions(+), 2 deletions(-)
 
-This series is associated with the kernel one "RDMA/hns: Add support for
-Dynamic Context Attachment", and two RFC versions of this series has been
-sent before.
-
-Changes since v1:
-* Add DCA pyverbs test cases.
-* Add a shared memory mechanism to synchronize status of DCA.
-* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1620652384-34097-1-git-send-email-liweihang@huawei.com/
-
-No changes since RFC v2.
-* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1614847759-33139-1-git-send-email-liweihang@huawei.com/
-
-Changes since RFC v1:
-* Add direct verbs to set the parameters about size that used to
-  configuring DCA.
-* Add man pages to explain what is DCA, how does it works and how to use
-  it.
-* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1612667574-56673-1-git-send-email-liweihang@huawei.com/
-
-Wenpeng Liang (1):
-  Update kernel headers
-
-Xi Wang (9):
-  libhns: Introduce DCA for RC QP
-  libhns: Add support for shrinking DCA memory pool
-  libhns: Add support for attaching QP's WQE buffer
-  libhns: Use shared memory to sync DCA status
-  libhns: Sync DCA status by shared memory
-  libhns: Add direct verbs support to config DCA
-  libhns: Add man pages to introduce DCA feature
-  pyverbs/hns: Initial support for HNS direct verbs
-  tests: Add traffic test of send on HNS DCA QPEx
-
- CMakeLists.txt                             |   1 +
- debian/control                             |   2 +-
- debian/ibverbs-providers.install           |   1 +
- debian/ibverbs-providers.lintian-overrides |   4 +-
- debian/ibverbs-providers.symbols           |   6 +
- debian/libibverbs-dev.install              |   6 +
- kernel-headers/rdma/hns-abi.h              |  86 ++++++
- kernel-headers/rdma/mlx5-abi.h             |  17 +-
- providers/hns/CMakeLists.txt               |   9 +-
- providers/hns/hns_roce_u.c                 | 229 ++++++++++++++--
- providers/hns/hns_roce_u.h                 |  88 +++++-
- providers/hns/hns_roce_u_abi.h             |   7 +-
- providers/hns/hns_roce_u_buf.c             | 422 +++++++++++++++++++++++++++++
- providers/hns/hns_roce_u_hw_v2.c           | 178 ++++++++++--
- providers/hns/hns_roce_u_hw_v2.h           |   7 +
- providers/hns/hns_roce_u_verbs.c           |  67 ++++-
- providers/hns/hnsdv.h                      |  65 +++++
- providers/hns/libhns.map                   |   9 +
- providers/hns/man/CMakeLists.txt           |   7 +
- providers/hns/man/hns_dca.7.md             |  35 +++
- providers/hns/man/hnsdv.7.md               |  34 +++
- providers/hns/man/hnsdv_create_qp.3.md     |  69 +++++
- providers/hns/man/hnsdv_is_supported.3.md  |  39 +++
- providers/hns/man/hnsdv_open_device.3.md   |  74 +++++
- pyverbs/CMakeLists.txt                     |   1 +
- pyverbs/providers/hns/CMakeLists.txt       |   7 +
- pyverbs/providers/hns/__init__.pxd         |   0
- pyverbs/providers/hns/__init__.py          |   0
- pyverbs/providers/hns/hns_enums.pyx        |   1 +
- pyverbs/providers/hns/hnsdv.pxd            |  25 ++
- pyverbs/providers/hns/hnsdv.pyx            | 158 +++++++++++
- pyverbs/providers/hns/hnsdv_enums.pxd      |  21 ++
- pyverbs/providers/hns/libhns.pxd           |  28 ++
- redhat/rdma-core.spec                      |   7 +-
- suse/rdma-core.spec                        |  21 +-
- tests/hns_base.py                          |  80 ++++++
- tests/test_hns_dca.py                      |  37 +++
- 37 files changed, 1781 insertions(+), 67 deletions(-)
- create mode 100644 providers/hns/hnsdv.h
- create mode 100644 providers/hns/libhns.map
- create mode 100644 providers/hns/man/CMakeLists.txt
- create mode 100644 providers/hns/man/hns_dca.7.md
- create mode 100644 providers/hns/man/hnsdv.7.md
- create mode 100644 providers/hns/man/hnsdv_create_qp.3.md
- create mode 100644 providers/hns/man/hnsdv_is_supported.3.md
- create mode 100644 providers/hns/man/hnsdv_open_device.3.md
- create mode 100644 pyverbs/providers/hns/CMakeLists.txt
- create mode 100644 pyverbs/providers/hns/__init__.pxd
- create mode 100644 pyverbs/providers/hns/__init__.py
- create mode 120000 pyverbs/providers/hns/hns_enums.pyx
- create mode 100644 pyverbs/providers/hns/hnsdv.pxd
- create mode 100644 pyverbs/providers/hns/hnsdv.pyx
- create mode 100644 pyverbs/providers/hns/hnsdv_enums.pxd
- create mode 100644 pyverbs/providers/hns/libhns.pxd
- create mode 100644 tests/hns_base.py
- create mode 100644 tests/test_hns_dca.py
-
---
+diff --git a/kernel-headers/rdma/hns-abi.h b/kernel-headers/rdma/hns-abi.h
+index 42b1776..40ac2c3 100644
+--- a/kernel-headers/rdma/hns-abi.h
++++ b/kernel-headers/rdma/hns-abi.h
+@@ -77,21 +77,107 @@ enum hns_roce_qp_cap_flags {
+ 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
+ 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
+ 	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
++	HNS_ROCE_QP_CAP_DYNAMIC_CTX_ATTACH = 1 << 4,
++	HNS_ROCE_QP_CAP_DYNAMIC_CTX_DETACH = 1 << 6,
+ };
+ 
+ struct hns_roce_ib_create_qp_resp {
+ 	__aligned_u64 cap_flags;
+ };
+ 
++enum {
++	HNS_ROCE_ALLOC_UCTX_COMP_DCA_MAX_QPS = 1 << 0,
++};
++
++struct hns_roce_ib_alloc_ucontext {
++	__u32 comp;
++	__u32 dca_max_qps;
++};
++
++enum {
++	HNS_ROCE_CAP_FLAG_DCA_MODE = 1 << 15,
++};
++
+ struct hns_roce_ib_alloc_ucontext_resp {
+ 	__u32	qp_tab_size;
+ 	__u32	cqe_size;
+ 	__u32	srq_tab_size;
+ 	__u32	reserved;
++	__aligned_u64 cap_flags;
++	__u32	dca_qps;
++	__u32	dca_mmap_size;
+ };
+ 
+ struct hns_roce_ib_alloc_pd_resp {
+ 	__u32 pdn;
+ };
+ 
++enum {
++	HNS_ROCE_MMAP_REGULAR_PAGE,
++	HNS_ROCE_MMAP_DCA_PAGE,
++};
++
++struct hns_roce_ib_modify_qp_resp {
++	__u32	dcan;
++	__u32	reserved;
++};
++
++#define UVERBS_ID_NS_MASK 0xF000
++#define UVERBS_ID_NS_SHIFT 12
++
++enum hns_ib_objects {
++	HNS_IB_OBJECT_DCA_MEM = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum hns_ib_dca_mem_methods {
++	HNS_IB_METHOD_DCA_MEM_REG = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_METHOD_DCA_MEM_DEREG,
++	HNS_IB_METHOD_DCA_MEM_SHRINK,
++	HNS_IB_METHOD_DCA_MEM_ATTACH,
++	HNS_IB_METHOD_DCA_MEM_DETACH,
++	HNS_IB_METHOD_DCA_MEM_QUERY,
++};
++
++enum hns_ib_dca_mem_reg_attrs {
++	HNS_IB_ATTR_DCA_MEM_REG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_REG_LEN,
++	HNS_IB_ATTR_DCA_MEM_REG_ADDR,
++	HNS_IB_ATTR_DCA_MEM_REG_KEY,
++};
++
++enum hns_ib_dca_mem_dereg_attrs {
++	HNS_IB_ATTR_DCA_MEM_DEREG_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++};
++
++enum hns_ib_dca_mem_shrink_attrs {
++	HNS_IB_ATTR_DCA_MEM_SHRINK_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_SHRINK_RESERVED_SIZE,
++	HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_KEY,
++	HNS_IB_ATTR_DCA_MEM_SHRINK_OUT_FREE_MEMS,
++};
++
++#define HNS_IB_ATTACH_FLAGS_NEW_BUFFER 1U
++
++enum hns_ib_dca_mem_attach_attrs {
++	HNS_IB_ATTR_DCA_MEM_ATTACH_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_ATTACH_SQ_OFFSET,
++	HNS_IB_ATTR_DCA_MEM_ATTACH_SGE_OFFSET,
++	HNS_IB_ATTR_DCA_MEM_ATTACH_RQ_OFFSET,
++	HNS_IB_ATTR_DCA_MEM_ATTACH_OUT_ALLOC_FLAGS,
++	HNS_IB_ATTR_DCA_MEM_ATTACH_OUT_ALLOC_PAGES,
++};
++
++enum hns_ib_dca_mem_detach_attrs {
++	HNS_IB_ATTR_DCA_MEM_DETACH_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_DETACH_SQ_INDEX,
++};
++
++enum hns_ib_dca_mem_query_attrs {
++	HNS_IB_ATTR_DCA_MEM_QUERY_HANDLE = (1U << UVERBS_ID_NS_SHIFT),
++	HNS_IB_ATTR_DCA_MEM_QUERY_PAGE_INDEX,
++	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_KEY,
++	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_OFFSET,
++	HNS_IB_ATTR_DCA_MEM_QUERY_OUT_PAGE_COUNT,
++};
++
+ #endif /* HNS_ABI_USER_H */
+diff --git a/kernel-headers/rdma/mlx5-abi.h b/kernel-headers/rdma/mlx5-abi.h
+index 8597e6f..86be4a9 100644
+--- a/kernel-headers/rdma/mlx5-abi.h
++++ b/kernel-headers/rdma/mlx5-abi.h
+@@ -50,6 +50,7 @@ enum {
+ 	MLX5_QP_FLAG_ALLOW_SCATTER_CQE	= 1 << 8,
+ 	MLX5_QP_FLAG_PACKET_BASED_CREDIT_MODE	= 1 << 9,
+ 	MLX5_QP_FLAG_UAR_PAGE_INDEX = 1 << 10,
++	MLX5_QP_FLAG_DCI_STREAM	= 1 << 11,
+ };
+ 
+ enum {
+@@ -238,6 +239,11 @@ struct mlx5_ib_striding_rq_caps {
+ 	__u32 reserved;
+ };
+ 
++struct mlx5_ib_dci_streams_caps {
++	__u8 max_log_num_concurent;
++	__u8 max_log_num_errored;
++};
++
+ enum mlx5_ib_query_dev_resp_flags {
+ 	/* Support 128B CQE compression */
+ 	MLX5_IB_QUERY_DEV_RESP_FLAGS_CQE_128B_COMP = 1 << 0,
+@@ -266,7 +272,8 @@ struct mlx5_ib_query_device_resp {
+ 	struct mlx5_ib_sw_parsing_caps sw_parsing_caps;
+ 	struct mlx5_ib_striding_rq_caps striding_rq_caps;
+ 	__u32	tunnel_offloads_caps; /* enum mlx5_ib_tunnel_offloads */
+-	__u32	reserved;
++	struct  mlx5_ib_dci_streams_caps dci_streams_caps;
++	__u16 reserved;
+ };
+ 
+ enum mlx5_ib_create_cq_flags {
+@@ -313,6 +320,11 @@ struct mlx5_ib_create_srq_resp {
+ 	__u32	reserved;
+ };
+ 
++struct mlx5_ib_create_qp_dci_streams {
++	__u8 log_num_concurent;
++	__u8 log_num_errored;
++};
++
+ struct mlx5_ib_create_qp {
+ 	__aligned_u64 buf_addr;
+ 	__aligned_u64 db_addr;
+@@ -327,7 +339,8 @@ struct mlx5_ib_create_qp {
+ 		__aligned_u64 access_key;
+ 	};
+ 	__u32  ece_options;
+-	__u32  reserved;
++	struct  mlx5_ib_create_qp_dci_streams dci_streams;
++	__u16 reserved;
+ };
+ 
+ /* RX Hash function flags */
+-- 
 2.8.1
 
