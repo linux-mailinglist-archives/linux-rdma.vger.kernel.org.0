@@ -2,71 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7123D872C
-	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jul 2021 07:37:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42413D87B1
+	for <lists+linux-rdma@lfdr.de>; Wed, 28 Jul 2021 08:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230095AbhG1FhE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Jul 2021 01:37:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229814AbhG1FhD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Jul 2021 01:37:03 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE345C061757
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jul 2021 22:37:02 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id f26so1976902ybj.5
-        for <linux-rdma@vger.kernel.org>; Tue, 27 Jul 2021 22:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=Q5kM0vzvFm7FrNkOGWhg1PvJ6OpK7cZl+qQN1TR+ig2ySYU4VAtO0zATCl70fOMimu
-         D4PQwbnQVbsX2+ML7/En7G1d0WOZWizJEmyAjqV6Kn3HAJzjQjnc0xoVXb7L4NKQAwmA
-         AQ+49ssNDps9t4pX8WEyshJvv66Rt5p96xX/mEw4QUTYZdE+63TubdJvFjq1H5EJLIv7
-         KLS3Qc8lgfoGa+BdMSlCOQ2v+CYDhdM/nNKdRPHKnbV0WvIcXIrTrD3GwV2jSOPpK62j
-         EJ3k28UgmjAFX0OCfFo0P6ZKBTTeTSgtthBJ4b51M45M2VAU2KPwnZKe6iuvPgOlY7XS
-         ONqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=Z/BiJVzW+T0gYdDU4N+DgMkb8hbhL7kkKdhy/E5pc2ojei8hZD290PwyEkb9JepS7C
-         Ltr1A7u4NfjxJ+49zEZS6GadksV9LQSpcBvT+RXC8BKrzB++w+2g4a3JPRyMgMXSgJF2
-         izlqLGhV8YVcBgkZb0EAUWaEqZecP5loncLgcjA3D5hLZvFO1kEg2bvetPLhHFUnCwlL
-         ihH16kvrID228kYSSwdl4T1Ui0+1DUrwBR3Xj13UbLJs/qyjSWmAPvmWbuKKaldbHiig
-         0qqXSNesnJEOKeTegvOLjhJz0QDbaITY648qnwdk00O29cwzxAT2Jsgjkvk9JWlcRdQ3
-         BsZw==
-X-Gm-Message-State: AOAM530FN8PyC6RJnsGwQVtuwEoJ6FShPYAM1vXyTh1LZW5KpsrVKOVC
-        8BXu3o3Ch80ukpIux2tEwu5Jy/vissTTc22uHnQ=
-X-Google-Smtp-Source: ABdhPJyDsyn4QV7oQ3ZKJLijUzXAOHq1RtP8EtSmNRX+tUi5sAGsHfXtqhr1sdflGf2d/tttedeK1CEzVj0aQK1YcME=
-X-Received: by 2002:a25:a565:: with SMTP id h92mr35561440ybi.423.1627450621928;
- Tue, 27 Jul 2021 22:37:01 -0700 (PDT)
+        id S233260AbhG1GKm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Jul 2021 02:10:42 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:16010 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233082AbhG1GKm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Jul 2021 02:10:42 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GZNV63TXXzZthh;
+        Wed, 28 Jul 2021 14:07:10 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 28 Jul 2021 14:10:38 +0800
+Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 28 Jul
+ 2021 14:10:38 +0800
+Subject: Re: [PATCH v3 for-next 01/12] RDMA/hns: Introduce DCA for RC QP
+To:     Leon Romanovsky <leon@kernel.org>
+References: <1627356452-30564-1-git-send-email-liangwenpeng@huawei.com>
+ <1627356452-30564-2-git-send-email-liangwenpeng@huawei.com>
+ <YP/3HPtB9DkFbWOL@unreal>
+CC:     <dledford@redhat.com>, <jgg@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        Xi Wang <wangxi11@huawei.com>
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+Message-ID: <570898e5-bf25-e1d0-dde3-b4e651b79418@huawei.com>
+Date:   Wed, 28 Jul 2021 14:10:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: burkinapost.office.org@gmail.com
-Received: by 2002:a05:7000:8205:0:0:0:0 with HTTP; Tue, 27 Jul 2021 22:37:01
- -0700 (PDT)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Wed, 28 Jul 2021 07:37:01 +0200
-X-Google-Sender-Auth: L_ONvtKoVdoMTwSRx4p4KS2p34g
-Message-ID: <CAEH6QtDwHa92UoEkjbLBu9PFrDWYEG-9rnWAyigYwcjonKSfWA@mail.gmail.com>
-Subject: Reply immediately
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YP/3HPtB9DkFbWOL@unreal>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.238.78]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-My good friend,
-
-I just want to know if you, can help me to transfer the amount of
-($6Million). After the transfer we have to share it, 50% for me, and
-50% for you. Please let me know if you can help me for more
-information in regards with the transfer. I hope you can work with me
-honestly?
 
 
-Thanks.
+On 2021/7/27 20:07, Leon Romanovsky wrote:
+> On Tue, Jul 27, 2021 at 11:27:21AM +0800, Wenpeng Liang wrote:
+>> From: Xi Wang <wangxi11@huawei.com>
+>>
+>> The hip09 introduces the DCA(Dynamic context attachment) feature which
+>> supports many RC QPs to share the WQE buffer in a memory pool, this will
+>> reduce the memory consumption when there are too many QPs are inactive.
+>>
+>> If a QP enables DCA feature, the WQE's buffer will not be allocated when
+>> creating. But when the users start to post WRs, the hns driver will
+>> allocate a buffer from the memory pool and then fill WQEs which tagged with
+>> this QP's number.
+>>
+>> The hns ROCEE will stop accessing the WQE buffer when the user polled all
+>> of the CQEs for a DCA QP, then the driver will recycle this WQE's buffer
+>> to the memory pool.
+>>
+>> This patch adds a group of methods to support the user space register
+>> buffers to a memory pool which belongs to the user context. The hns kernel
+>> driver will update the pages state in this pool when the user calling the
+>> post/poll methods and the user driver can get the QP's WQE buffer address
+>> by the key and offset which queried from kernel.
+>>
+>> Signed-off-by: Xi Wang <wangxi11@huawei.com>
+>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/Makefile          |   2 +-
+>>  drivers/infiniband/hw/hns/hns_roce_dca.c    | 343 ++++++++++++++++++++++++++++
+>>  drivers/infiniband/hw/hns/hns_roce_dca.h    |  22 ++
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |   9 +
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   |  27 ++-
+>>  include/uapi/rdma/hns-abi.h                 |  27 +++
+>>  6 files changed, 427 insertions(+), 3 deletions(-)
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.c
+>>  create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.h
+> 
+> <...>
+> 
+>> +static struct hns_dca_page_state *alloc_dca_states(void *pages, int count)
+>> +{
+>> +	struct hns_dca_page_state *states;
+>> +
+>> +	states = kcalloc(count, sizeof(*states), GFP_NOWAIT);
+> 
+> GFP_NOWAIT ????
+> Why do you use this flag while in the function before you used classic GFP_KERNEL?
+> 
+> Thanks
+> .
+> 
 
-Godwin Peter,
+The next version will change this flag to GFP_KERNEL.
+
+Thanks
+
+
