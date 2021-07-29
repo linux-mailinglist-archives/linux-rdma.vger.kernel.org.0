@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5513DAEE4
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 00:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08623DAEE5
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 00:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229510AbhG2Way (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jul 2021 18:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S229913AbhG2Waz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jul 2021 18:30:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhG2Way (ORCPT
+        with ESMTP id S229707AbhG2Way (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jul 2021 18:30:54 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67A8C0613C1
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 15:30:49 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id y18so10499747oiv.3
-        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 15:30:49 -0700 (PDT)
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FB71C061765
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 15:30:50 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id f20-20020a9d6c140000b02904bb9756274cso7456061otq.6
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 15:30:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qFwDpA1rWeu46+ZSonfzOtXEDNtKkZgdP4hkzldZ6yI=;
-        b=LNlCx9Ida3NA5Kcntw6D48hRzpt06FMkyKvKMF035LLBrfKeGyh1v3yr6sLO8amzjX
-         JzS31kJkRh3rU2pC65gzKkaupeLlO5KtADbOEc9x5LPidaMz3N2cMc10CvriZmStzoWQ
-         998lSVuEel3zefjHrKZwovSWj73km2437Rgmw1hcLC4S6Sn/k9RcY2+SoxJw0m3KwAFy
-         wtoRX6mUU4tgocQHMsfzGG++Vx5Un4Tp9zMia2AdIt0ugFfdyVe5bgUb4S8vle0uKFZz
-         +RySNq7jYrz7Xrx/GYlKi/TboG9pqO6bJl3zJf+eqaXAdgaHwTmKmNH8hi6B7OEBhtsu
-         xntQ==
+        bh=oOukb0xs962PsMTS3nc+Yw6DvUUTdInNpaCNo2Sa+q0=;
+        b=W2WV+XgdgdfneRSC4kglGoEdu4h21LCqazAXT877BobpvlCvh3POLX63XhP89/4bKV
+         M5D8dMVOv7liO2x95XaEQqCbZbZUMlmQULXC8QWPkMgMAvjQcsfJhvgiAvAZIZGlP5bA
+         BDPw+0aq8Hc7JtLcQJq1ecdO13yt13ZAjpQoFqxi6w256fi7lIrlKq+fab6chxHnblZv
+         1gK4ZLFu3dZtKhzynfGJrmnUHRW6PKcGk3742PVuj+lOxvBKaaK4D+2W3brFJQUjy/Ma
+         zEfj2BAXAARuIJeGTyEgCP11WiL+q1LN9wGulvY8AYacg1RMYK7kJP9VfOEhJejxxoaC
+         tkPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qFwDpA1rWeu46+ZSonfzOtXEDNtKkZgdP4hkzldZ6yI=;
-        b=Sd0IhAILLpqyn+Zb/2/6SEVbGa6pwDc5kvOZ/6DOa2EMUGSNKnBYwD/Jup1eb5Lm0X
-         XUdhsid/avo9OIgDk/hrxnnniDrHvjhA8CIDO4vIQP/z1YGIvi0FQ11Wz3uRlquKpo11
-         Ph1I/BkzS04YDy+afyAEiUVhd9QYbTUYOeB6ei5PqBRbztkduAt6zObMShtDtB2L96cR
-         EA89HxEEI00tn6OZMFbx68o3TivXtZfspuTqpKajXrXhCgXX9lRwPcJ8kIBrkL4xwaWg
-         F/TgIgEEh2DWFXWrrzxsZ0xeVbC9RygNgS+nj0Wl65m5/PfP8XpmbtYfDBIO8wCtxHB5
-         RThw==
-X-Gm-Message-State: AOAM532gEixtbrqC3elc+46/UwBlrnl9Et3gpv0+IakcmfQPkPEGorfy
-        ztMA9QzfvEuXP9t0CdDg6nE=
-X-Google-Smtp-Source: ABdhPJwif6Vs7Ny+yBu+LJgyoe4whbbWH2xfaVHLI7cD73ph4+K/c8hFdWJl7+Iv3WifqWBzGjFNZA==
-X-Received: by 2002:aca:2403:: with SMTP id n3mr2973178oic.109.1627597849035;
+        bh=oOukb0xs962PsMTS3nc+Yw6DvUUTdInNpaCNo2Sa+q0=;
+        b=W5rR+iQatH7FNqzrScZGXEedozfSTXt19XPC1/VmTVsDIUXBp9rvWw1vBjmSlOkOVr
+         XT5ezsGjygfk2CfILw+D9zdl1LKNI8sWUOKfPwCdIZPaQwqnDcjPWXbu4edG4jUeXQIt
+         zjrQH3+pHUZ0iVC/A2pPXtE9QsehKozMYt0od5RK7fLA1dps+nVrQqXV6OziqpymIfzQ
+         n1kwSEYPuXUYqHWS+ZyAEIKSrn2VdHN3Ux3kclthfGAgiDQH/AhtjffSIVPLFxDmeoeD
+         Tv7urg7pJpakc/ScS2aucVEDwZoS86mj0BgFTZCWnG1opvnYW+uYRVnVRxY7S/2TvTJR
+         8EZQ==
+X-Gm-Message-State: AOAM53282Jk8+EmbAHpWqM7M2G0nCym1/SO6zMLWrvENSq4Bo/epvAg5
+        LAzuxzZHPKfvh/73ndX2uRw=
+X-Google-Smtp-Source: ABdhPJxz0M6B/2WFNG0o6y61zDWFUXwQBJQsSoMtu04PWoYHmRix8SxBMFLQfcjyEnDiK9RCPybkGg==
+X-Received: by 2002:a05:6830:1d88:: with SMTP id y8mr4779373oti.95.1627597849871;
         Thu, 29 Jul 2021 15:30:49 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-80ca-c9ae-640f-0f9a.res6.spectrum.com. [2603:8081:140c:1a00:80ca:c9ae:640f:f9a])
-        by smtp.gmail.com with ESMTPSA id t4sm820386oiw.19.2021.07.29.15.30.48
+        by smtp.gmail.com with ESMTPSA id y52sm770268otb.52.2021.07.29.15.30.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 15:30:48 -0700 (PDT)
+        Thu, 29 Jul 2021 15:30:49 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 1/2] RDMA/rxe: Let rdma-core manage PDs
-Date:   Thu, 29 Jul 2021 17:30:10 -0500
-Message-Id: <20210729223010.31007-2-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 2/2] RDMA/rxe: Let rdma-core manage CQs and SRQs
+Date:   Thu, 29 Jul 2021 17:30:11 -0500
+Message-Id: <20210729223010.31007-3-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210729223010.31007-1-rpearsonhpe@gmail.com>
 References: <20210729223010.31007-1-rpearsonhpe@gmail.com>
@@ -62,497 +62,855 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently several rxe objects hold references to PDs which are ref-
+Currently QP rxe objects hold references to CQs and SRQs which are ref-
 counted. This replicates work already done by RDMA core which takes
-references to PDs in the ib objects which are contained in the rxe
-objects. This patch removes struct rxe_pd from rxe objects and removes
-reference counting for PDs except for PD alloc and PD dealloc. It also
-adds inline extractor routines which return PDs from the PDs in the
-ib objects. The names of these are made consistent including a rxe_
-prefix.
+references to these in the ib QP object which is contained in the rxe
+QP object. This patch removes these references from rxe QP and removes
+reference counting for them except for alloc and dealloc. It also
+adds inline extractor routines which return them from the ib objects
+and moves extractors for qp type, status ann num from rxe_loc.h to be
+in the same place and adds rxe_ prefix so the names are consistent.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_av.c    |  3 ++-
- drivers/infiniband/sw/rxe/rxe_comp.c  |  4 ++--
- drivers/infiniband/sw/rxe/rxe_loc.h   |  4 ++--
- drivers/infiniband/sw/rxe/rxe_mr.c    |  7 +++---
- drivers/infiniband/sw/rxe/rxe_mw.c    | 31 +++++++++++----------------
- drivers/infiniband/sw/rxe/rxe_qp.c    |  9 +-------
- drivers/infiniband/sw/rxe/rxe_req.c   |  2 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  |  4 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.c | 26 ++++++----------------
- drivers/infiniband/sw/rxe/rxe_verbs.h | 28 +++++++++++++++---------
- 10 files changed, 49 insertions(+), 69 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_av.c    |  3 +-
+ drivers/infiniband/sw/rxe/rxe_comp.c  | 10 ++--
+ drivers/infiniband/sw/rxe/rxe_loc.h   | 15 -----
+ drivers/infiniband/sw/rxe/rxe_net.c   |  6 +-
+ drivers/infiniband/sw/rxe/rxe_qp.c    | 83 +++++++++------------------
+ drivers/infiniband/sw/rxe/rxe_recv.c  |  6 +-
+ drivers/infiniband/sw/rxe/rxe_req.c   | 20 +++----
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 54 ++++++++---------
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 12 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 35 +++++++++--
+ 10 files changed, 115 insertions(+), 129 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
-index 38c7b6fb39d7..0bbaff74476b 100644
+index 0bbaff74476b..46cd7e2d2806 100644
 --- a/drivers/infiniband/sw/rxe/rxe_av.c
 +++ b/drivers/infiniband/sw/rxe/rxe_av.c
-@@ -117,7 +117,8 @@ struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt)
- 	if (ah_num) {
- 		/* only new user provider or kernel client */
- 		ah = rxe_pool_get_index(&pkt->rxe->ah_pool, ah_num);
--		if (!ah || ah->ah_num != ah_num || rxe_ah_pd(ah) != pkt->qp->pd) {
-+		if (!ah || ah->ah_num != ah_num ||
-+		    rxe_ah_pd(ah) != rxe_qp_pd(pkt->qp)) {
- 			pr_warn("Unable to find AH matching ah_num\n");
- 			return NULL;
- 		}
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index ed4e3f29bd65..b0294f8df94f 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -344,7 +344,7 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
- {
- 	int ret;
- 
--	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
-+	ret = copy_data(rxe_qp_pd(qp), IB_ACCESS_LOCAL_WRITE,
- 			&wqe->dma, payload_addr(pkt),
- 			payload_size(pkt), RXE_TO_MR_OBJ);
- 	if (ret) {
-@@ -366,7 +366,7 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
- 
- 	u64 atomic_orig = atmack_orig(pkt);
- 
--	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
-+	ret = copy_data(rxe_qp_pd(qp), IB_ACCESS_LOCAL_WRITE,
- 			&wqe->dma, &atomic_orig,
- 			sizeof(u64), RXE_TO_MR_OBJ);
- 	if (ret) {
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index f0c954575bde..000607f4e40c 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -110,10 +110,10 @@ int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid);
- /* rxe_qp.c */
- int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init);
- 
--int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
-+int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		     struct ib_qp_init_attr *init,
- 		     struct rxe_create_qp_resp __user *uresp,
--		     struct ib_pd *ibpd, struct ib_udata *udata);
-+		     struct ib_udata *udata);
- 
- int rxe_qp_to_init(struct rxe_qp *qp, struct ib_qp_init_attr *init);
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 1ee5bd8291e5..14bfd729b09f 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -500,9 +500,9 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 	if (!mr)
+@@ -107,7 +107,8 @@ struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt)
+ 	if (!pkt || !pkt->qp)
  		return NULL;
  
--	if (unlikely((type == RXE_LOOKUP_LOCAL && mr_lkey(mr) != key) ||
--		     (type == RXE_LOOKUP_REMOTE && mr_rkey(mr) != key) ||
--		     mr_pd(mr) != pd || (access && !(access & mr->access)) ||
-+	if (unlikely((type == RXE_LOOKUP_LOCAL && rxe_mr_lkey(mr) != key) ||
-+		     (type == RXE_LOOKUP_REMOTE && rxe_mr_rkey(mr) != key) ||
-+		     rxe_mr_pd(mr) != pd || (access && !(access & mr->access)) ||
- 		     mr->state != RXE_MR_STATE_VALID)) {
- 		rxe_drop_ref(mr);
- 		mr = NULL;
-@@ -558,7 +558,6 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+-	if (qp_type(pkt->qp) == IB_QPT_RC || qp_type(pkt->qp) == IB_QPT_UC)
++	if (rxe_qp_type(pkt->qp) == IB_QPT_RC ||
++	    rxe_qp_type(pkt->qp) == IB_QPT_UC)
+ 		return &pkt->qp->pri_av;
+ 
+ 	if (!pkt->wqe)
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index b0294f8df94f..1ccd2deff835 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -403,7 +403,7 @@ static void make_send_cqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ 		    wqe->wr.opcode == IB_WR_SEND_WITH_IMM)
+ 			uwc->wc_flags = IB_WC_WITH_IMM;
+ 		uwc->byte_len		= wqe->dma.length;
+-		uwc->qp_num		= qp->ibqp.qp_num;
++		uwc->qp_num		= rxe_qp_num(qp);
  	}
+ }
  
- 	mr->state = RXE_MR_STATE_ZOMBIE;
--	rxe_drop_ref(mr_pd(mr));
- 	rxe_drop_index(mr);
- 	rxe_drop_ref(mr);
+@@ -432,7 +432,7 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+ 	advance_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
  
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index 5ba77df7598e..17936a0b8320 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -8,17 +8,12 @@
- int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
- {
- 	struct rxe_mw *mw = to_rmw(ibmw);
--	struct rxe_pd *pd = to_rpd(ibmw->pd);
- 	struct rxe_dev *rxe = to_rdev(ibmw->device);
- 	int ret;
+ 	if (post)
+-		rxe_cq_post(qp->scq, &cqe, 0);
++		rxe_cq_post(rxe_qp_scq(qp), &cqe, 0);
  
--	rxe_add_ref(pd);
+ 	if (wqe->wr.opcode == IB_WR_SEND ||
+ 	    wqe->wr.opcode == IB_WR_SEND_WITH_IMM ||
+@@ -584,7 +584,7 @@ int rxe_completer(void *arg)
+ 	state = COMPST_GET_ACK;
+ 
+ 	while (1) {
+-		pr_debug("qp#%d state = %s\n", qp_num(qp),
++		pr_debug("qp#%d state = %s\n", rxe_qp_num(qp),
+ 			 comp_state_name[state]);
+ 		switch (state) {
+ 		case COMPST_GET_ACK:
+@@ -666,7 +666,7 @@ int rxe_completer(void *arg)
+ 			 *     timeouts but try to keep them as few as possible)
+ 			 * (4) the timeout parameter is set
+ 			 */
+-			if ((qp_type(qp) == IB_QPT_RC) &&
++			if ((rxe_qp_type(qp) == IB_QPT_RC) &&
+ 			    (qp->req.state == QP_STATE_READY) &&
+ 			    (psn_compare(qp->req.psn, qp->comp.psn) > 0) &&
+ 			    qp->qp_timeout_jiffies)
+@@ -732,7 +732,7 @@ int rxe_completer(void *arg)
+ 
+ 				qp->req.need_retry = 1;
+ 				pr_debug("qp#%d set rnr nak timer\n",
+-					 qp_num(qp));
++					 rxe_qp_num(qp));
+ 				mod_timer(&qp->rnr_nak_timer,
+ 					  jiffies + rnrnak_jiffies(aeth_syn(pkt)
+ 						& ~AETH_TYPE_MASK));
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 000607f4e40c..de75413fb4d9 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -131,21 +131,6 @@ void rxe_qp_destroy(struct rxe_qp *qp);
+ 
+ void rxe_qp_cleanup(struct rxe_pool_entry *arg);
+ 
+-static inline int qp_num(struct rxe_qp *qp)
+-{
+-	return qp->ibqp.qp_num;
+-}
 -
- 	ret = rxe_add_to_pool(&rxe->mw_pool, mw);
--	if (ret) {
--		rxe_drop_ref(pd);
-+	if (ret)
- 		return ret;
--	}
- 
- 	rxe_add_index(mw);
- 	ibmw->rkey = (mw->pelem.index << 8) | rxe_get_next_key(-1);
-@@ -55,7 +50,6 @@ static void rxe_do_dealloc_mw(struct rxe_mw *mw)
- int rxe_dealloc_mw(struct ib_mw *ibmw)
+-static inline enum ib_qp_type qp_type(struct rxe_qp *qp)
+-{
+-	return qp->ibqp.qp_type;
+-}
+-
+-static inline enum ib_qp_state qp_state(struct rxe_qp *qp)
+-{
+-	return qp->attr.qp_state;
+-}
+-
+ static inline int qp_mtu(struct rxe_qp *qp)
  {
- 	struct rxe_mw *mw = to_rmw(ibmw);
--	struct rxe_pd *pd = to_rpd(ibmw->pd);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&mw->lock, flags);
-@@ -63,7 +57,6 @@ int rxe_dealloc_mw(struct ib_mw *ibmw)
- 	spin_unlock_irqrestore(&mw->lock, flags);
- 
- 	rxe_drop_ref(mw);
--	rxe_drop_ref(pd);
- 
- 	return 0;
- }
-@@ -94,7 +87,7 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		}
- 
- 		/* C10-72 */
--		if (unlikely(qp->pd != to_rpd(mw->ibmw.pd))) {
-+		if (unlikely(rxe_qp_pd(qp) != rxe_mw_pd(mw))) {
- 			pr_err_once(
- 				"attempt to bind type 2 MW with qp with different PD\n");
- 			return -EINVAL;
-@@ -108,7 +101,7 @@ static int rxe_check_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		}
- 	}
- 
--	if (unlikely((wqe->wr.wr.mw.rkey & 0xff) == (mw->ibmw.rkey & 0xff))) {
-+	if (unlikely((wqe->wr.wr.mw.rkey & 0xff) == (rxe_mw_rkey(mw) & 0xff))) {
- 		pr_err_once("attempt to bind MW with same key\n");
- 		return -EINVAL;
- 	}
-@@ -164,7 +157,7 @@ static void rxe_do_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 	u32 rkey;
- 	u32 new_rkey;
- 
--	rkey = mw->ibmw.rkey;
-+	rkey = rxe_mw_rkey(mw);
- 	new_rkey = (rkey & 0xffffff00) | (wqe->wr.wr.mw.rkey & 0x000000ff);
- 
- 	mw->ibmw.rkey = new_rkey;
-@@ -206,7 +199,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		goto err;
- 	}
- 
--	if (unlikely(mw->ibmw.rkey != wqe->wr.wr.mw.mw_rkey)) {
-+	if (unlikely(rxe_mw_rkey(mw) != wqe->wr.wr.mw.mw_rkey)) {
- 		ret = -EINVAL;
- 		goto err_drop_mw;
- 	}
-@@ -219,7 +212,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 			goto err_drop_mw;
- 		}
- 
--		if (unlikely(mr->ibmr.lkey != wqe->wr.wr.mw.mr_lkey)) {
-+		if (unlikely(rxe_mr_lkey(mr) != wqe->wr.wr.mw.mr_lkey)) {
- 			ret = -EINVAL;
- 			goto err_drop_mr;
- 		}
-@@ -289,12 +282,12 @@ int rxe_invalidate_mw(struct rxe_qp *qp, u32 rkey)
- 	mw = rxe_pool_get_index(&rxe->mw_pool, rkey >> 8);
- 	if (!mw) {
- 		ret = -EINVAL;
--		goto err;
-+		goto err_out;
- 	}
- 
--	if (rkey != mw->ibmw.rkey) {
-+	if (rkey != rxe_mw_rkey(mw)) {
- 		ret = -EINVAL;
--		goto err_drop_ref;
-+		goto err_drop_mw_ref;
- 	}
- 
- 	spin_lock_irqsave(&mw->lock, flags);
-@@ -306,16 +299,16 @@ int rxe_invalidate_mw(struct rxe_qp *qp, u32 rkey)
- 	rxe_do_invalidate_mw(mw);
- err_unlock:
- 	spin_unlock_irqrestore(&mw->lock, flags);
--err_drop_ref:
-+err_drop_mw_ref:
- 	rxe_drop_ref(mw);
--err:
-+err_out:
- 	return ret;
- }
- 
- struct rxe_mw *rxe_lookup_mw(struct rxe_qp *qp, int access, u32 rkey)
+ 	if (qp->ibqp.qp_type == IB_QPT_RC || qp->ibqp.qp_type == IB_QPT_UC)
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index 2cb810cb890a..4f96437a2a8e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -114,7 +114,7 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
  {
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
--	struct rxe_pd *pd = to_rpd(qp->ibqp.pd);
-+	struct rxe_pd *pd = rxe_qp_pd(qp);
- 	struct rxe_mw *mw;
- 	int index = rkey >> 8;
+ 	struct dst_entry *dst = NULL;
  
+-	if (qp_type(qp) == IB_QPT_RC)
++	if (rxe_qp_type(qp) == IB_QPT_RC)
+ 		dst = sk_dst_get(qp->sk->sk);
+ 
+ 	if (!dst || !dst_check(dst, qp->dst_cookie)) {
+@@ -142,7 +142,7 @@ static struct dst_entry *rxe_find_route(struct net_device *ndev,
+ #endif
+ 		}
+ 
+-		if (dst && (qp_type(qp) == IB_QPT_RC)) {
++		if (dst && (rxe_qp_type(qp) == IB_QPT_RC)) {
+ 			dst_hold(dst);
+ 			sk_dst_set(qp->sk->sk, dst);
+ 		}
+@@ -449,7 +449,7 @@ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 		return err;
+ 	}
+ 
+-	if ((qp_type(qp) != IB_QPT_RC) &&
++	if ((rxe_qp_type(qp) != IB_QPT_RC) &&
+ 	    (pkt->mask & RXE_END_MASK)) {
+ 		pkt->wqe->state = wqe_state_done;
+ 		rxe_run_task(&qp->comp.task, 1);
 diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 2e923af642f8..ca8d7da74969 100644
+index ca8d7da74969..177edf684f2a 100644
 --- a/drivers/infiniband/sw/rxe/rxe_qp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -324,10 +324,9 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- }
+@@ -220,7 +220,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	 * (0xc000 - 0xffff).
+ 	 */
+ 	qp->src_port = RXE_ROCE_V2_SPORT +
+-		(hash_32_generic(qp_num(qp), 14) & 0x3fff);
++		(hash_32_generic(rxe_qp_num(qp), 14) & 0x3fff);
+ 	qp->sq.max_wr		= init->cap.max_send_wr;
  
- /* called by the create qp verb */
--int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
-+int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		     struct ib_qp_init_attr *init,
- 		     struct rxe_create_qp_resp __user *uresp,
--		     struct ib_pd *ibpd,
+ 	/* These caps are limited by rxe_qp_chk_cap() done by the caller */
+@@ -280,14 +280,14 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	int wqe_size;
+ 	enum queue_type type;
+ 
+-	if (!qp->srq) {
++	if (!rxe_qp_srq(qp)) {
+ 		qp->rq.max_wr		= init->cap.max_recv_wr;
+ 		qp->rq.max_sge		= init->cap.max_recv_sge;
+ 
+ 		wqe_size = rcv_wqe_size(qp->rq.max_sge);
+ 
+ 		pr_debug("qp#%d max_wr = %d, max_sge = %d, wqe_size = %d\n",
+-			 qp_num(qp), qp->rq.max_wr, qp->rq.max_sge, wqe_size);
++			 rxe_qp_num(qp), qp->rq.max_wr, qp->rq.max_sge, wqe_size);
+ 
+ 		type = QUEUE_TYPE_FROM_CLIENT;
+ 		qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr,
+@@ -330,18 +330,6 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
  		     struct ib_udata *udata)
  {
  	int err;
-@@ -335,13 +334,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	struct rxe_cq *scq = to_rcq(init->send_cq);
- 	struct rxe_srq *srq = init->srq ? to_rsrq(init->srq) : NULL;
+-	struct rxe_cq *rcq = to_rcq(init->recv_cq);
+-	struct rxe_cq *scq = to_rcq(init->send_cq);
+-	struct rxe_srq *srq = init->srq ? to_rsrq(init->srq) : NULL;
+-
+-	rxe_add_ref(rcq);
+-	rxe_add_ref(scq);
+-	if (srq)
+-		rxe_add_ref(srq);
+-
+-	qp->rcq			= rcq;
+-	qp->scq			= scq;
+-	qp->srq			= srq;
  
--	rxe_add_ref(pd);
- 	rxe_add_ref(rcq);
- 	rxe_add_ref(scq);
- 	if (srq)
- 		rxe_add_ref(srq);
+ 	rxe_qp_init_misc(rxe, qp, init);
  
--	qp->pd			= pd;
- 	qp->rcq			= rcq;
- 	qp->scq			= scq;
- 	qp->srq			= srq;
-@@ -364,7 +361,6 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
+@@ -361,15 +349,6 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp,
  err2:
  	rxe_queue_cleanup(qp->sq.queue);
  err1:
--	qp->pd = NULL;
- 	qp->rcq = NULL;
- 	qp->scq = NULL;
- 	qp->srq = NULL;
-@@ -373,7 +369,6 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 		rxe_drop_ref(srq);
- 	rxe_drop_ref(scq);
- 	rxe_drop_ref(rcq);
--	rxe_drop_ref(pd);
- 
+-	qp->rcq = NULL;
+-	qp->scq = NULL;
+-	qp->srq = NULL;
+-
+-	if (srq)
+-		rxe_drop_ref(srq);
+-	rxe_drop_ref(scq);
+-	rxe_drop_ref(rcq);
+-
  	return err;
  }
-@@ -817,8 +812,6 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
- 		rxe_drop_ref(qp->scq);
- 	if (qp->rcq)
- 		rxe_drop_ref(qp->rcq);
--	if (qp->pd)
--		rxe_drop_ref(qp->pd);
  
+@@ -386,14 +365,14 @@ int rxe_qp_to_init(struct rxe_qp *qp, struct ib_qp_init_attr *init)
+ 	init->cap.max_send_sge		= qp->sq.max_sge;
+ 	init->cap.max_inline_data	= qp->sq.max_inline;
+ 
+-	if (!qp->srq) {
++	if (!rxe_qp_srq(qp)) {
+ 		init->cap.max_recv_wr		= qp->rq.max_wr;
+ 		init->cap.max_recv_sge		= qp->rq.max_sge;
+ 	}
+ 
+ 	init->sq_sig_type		= qp->sq_sig_type;
+ 
+-	init->qp_type			= qp->ibqp.qp_type;
++	init->qp_type			= rxe_qp_type(qp);
+ 	init->port_num			= 1;
+ 
+ 	return 0;
+@@ -410,7 +389,7 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	enum ib_qp_state new_state = (mask & IB_QP_STATE) ?
+ 					attr->qp_state : cur_state;
+ 
+-	if (!ib_modify_qp_is_ok(cur_state, new_state, qp_type(qp), mask)) {
++	if (!ib_modify_qp_is_ok(cur_state, new_state, rxe_qp_type(qp), mask)) {
+ 		pr_warn("invalid mask or state for qp\n");
+ 		goto err1;
+ 	}
+@@ -430,7 +409,8 @@ int rxe_qp_chk_attr(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		}
+ 	}
+ 
+-	if (mask & IB_QP_CAP && rxe_qp_chk_cap(rxe, &attr->cap, !!qp->srq))
++	if (mask & IB_QP_CAP && rxe_qp_chk_cap(rxe, &attr->cap,
++				!!rxe_qp_srq(qp)))
+ 		goto err1;
+ 
+ 	if (mask & IB_QP_AV && rxe_av_chk_attr(rxe, &attr->ah_attr))
+@@ -495,7 +475,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ 
+ 	/* stop request/comp */
+ 	if (qp->sq.queue) {
+-		if (qp_type(qp) == IB_QPT_RC)
++		if (rxe_qp_type(qp) == IB_QPT_RC)
+ 			rxe_disable_task(&qp->comp.task);
+ 		rxe_disable_task(&qp->req.task);
+ 	}
+@@ -537,7 +517,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ 	rxe_enable_task(&qp->resp.task);
+ 
+ 	if (qp->sq.queue) {
+-		if (qp_type(qp) == IB_QPT_RC)
++		if (rxe_qp_type(qp) == IB_QPT_RC)
+ 			rxe_enable_task(&qp->comp.task);
+ 
+ 		rxe_enable_task(&qp->req.task);
+@@ -550,7 +530,7 @@ static void rxe_qp_drain(struct rxe_qp *qp)
+ 	if (qp->sq.queue) {
+ 		if (qp->req.state != QP_STATE_DRAINED) {
+ 			qp->req.state = QP_STATE_DRAIN;
+-			if (qp_type(qp) == IB_QPT_RC)
++			if (rxe_qp_type(qp) == IB_QPT_RC)
+ 				rxe_run_task(&qp->comp.task, 1);
+ 			else
+ 				__rxe_do_task(&qp->comp.task);
+@@ -569,7 +549,7 @@ void rxe_qp_error(struct rxe_qp *qp)
+ 	/* drain work and packet queues */
+ 	rxe_run_task(&qp->resp.task, 1);
+ 
+-	if (qp_type(qp) == IB_QPT_RC)
++	if (rxe_qp_type(qp) == IB_QPT_RC)
+ 		rxe_run_task(&qp->comp.task, 1);
+ 	else
+ 		__rxe_do_task(&qp->comp.task);
+@@ -651,27 +631,27 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 	if (mask & IB_QP_RETRY_CNT) {
+ 		qp->attr.retry_cnt = attr->retry_cnt;
+ 		qp->comp.retry_cnt = attr->retry_cnt;
+-		pr_debug("qp#%d set retry count = %d\n", qp_num(qp),
++		pr_debug("qp#%d set retry count = %d\n", rxe_qp_num(qp),
+ 			 attr->retry_cnt);
+ 	}
+ 
+ 	if (mask & IB_QP_RNR_RETRY) {
+ 		qp->attr.rnr_retry = attr->rnr_retry;
+ 		qp->comp.rnr_retry = attr->rnr_retry;
+-		pr_debug("qp#%d set rnr retry count = %d\n", qp_num(qp),
++		pr_debug("qp#%d set rnr retry count = %d\n", rxe_qp_num(qp),
+ 			 attr->rnr_retry);
+ 	}
+ 
+ 	if (mask & IB_QP_RQ_PSN) {
+ 		qp->attr.rq_psn = (attr->rq_psn & BTH_PSN_MASK);
+ 		qp->resp.psn = qp->attr.rq_psn;
+-		pr_debug("qp#%d set resp psn = 0x%x\n", qp_num(qp),
++		pr_debug("qp#%d set resp psn = 0x%x\n", rxe_qp_num(qp),
+ 			 qp->resp.psn);
+ 	}
+ 
+ 	if (mask & IB_QP_MIN_RNR_TIMER) {
+ 		qp->attr.min_rnr_timer = attr->min_rnr_timer;
+-		pr_debug("qp#%d set min rnr timer = 0x%x\n", qp_num(qp),
++		pr_debug("qp#%d set min rnr timer = 0x%x\n", rxe_qp_num(qp),
+ 			 attr->min_rnr_timer);
+ 	}
+ 
+@@ -679,7 +659,8 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 		qp->attr.sq_psn = (attr->sq_psn & BTH_PSN_MASK);
+ 		qp->req.psn = qp->attr.sq_psn;
+ 		qp->comp.psn = qp->attr.sq_psn;
+-		pr_debug("qp#%d set req psn = 0x%x\n", qp_num(qp), qp->req.psn);
++		pr_debug("qp#%d set req psn = 0x%x\n",
++			 rxe_qp_num(qp), qp->req.psn);
+ 	}
+ 
+ 	if (mask & IB_QP_PATH_MIG_STATE)
+@@ -693,38 +674,38 @@ int rxe_qp_from_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask,
+ 
+ 		switch (attr->qp_state) {
+ 		case IB_QPS_RESET:
+-			pr_debug("qp#%d state -> RESET\n", qp_num(qp));
++			pr_debug("qp#%d state -> RESET\n", rxe_qp_num(qp));
+ 			rxe_qp_reset(qp);
+ 			break;
+ 
+ 		case IB_QPS_INIT:
+-			pr_debug("qp#%d state -> INIT\n", qp_num(qp));
++			pr_debug("qp#%d state -> INIT\n", rxe_qp_num(qp));
+ 			qp->req.state = QP_STATE_INIT;
+ 			qp->resp.state = QP_STATE_INIT;
+ 			break;
+ 
+ 		case IB_QPS_RTR:
+-			pr_debug("qp#%d state -> RTR\n", qp_num(qp));
++			pr_debug("qp#%d state -> RTR\n", rxe_qp_num(qp));
+ 			qp->resp.state = QP_STATE_READY;
+ 			break;
+ 
+ 		case IB_QPS_RTS:
+-			pr_debug("qp#%d state -> RTS\n", qp_num(qp));
++			pr_debug("qp#%d state -> RTS\n", rxe_qp_num(qp));
+ 			qp->req.state = QP_STATE_READY;
+ 			break;
+ 
+ 		case IB_QPS_SQD:
+-			pr_debug("qp#%d state -> SQD\n", qp_num(qp));
++			pr_debug("qp#%d state -> SQD\n", rxe_qp_num(qp));
+ 			rxe_qp_drain(qp);
+ 			break;
+ 
+ 		case IB_QPS_SQE:
+-			pr_warn("qp#%d state -> SQE !!?\n", qp_num(qp));
++			pr_warn("qp#%d state -> SQE !!?\n", rxe_qp_num(qp));
+ 			/* Not possible from modify_qp. */
+ 			break;
+ 
+ 		case IB_QPS_ERR:
+-			pr_debug("qp#%d state -> ERR\n", qp_num(qp));
++			pr_debug("qp#%d state -> ERR\n", rxe_qp_num(qp));
+ 			rxe_qp_error(qp);
+ 			break;
+ 		}
+@@ -745,7 +726,7 @@ int rxe_qp_to_attr(struct rxe_qp *qp, struct ib_qp_attr *attr, int mask)
+ 	attr->cap.max_send_sge			= qp->sq.max_sge;
+ 	attr->cap.max_inline_data		= qp->sq.max_inline;
+ 
+-	if (!qp->srq) {
++	if (!rxe_qp_srq(qp)) {
+ 		attr->cap.max_recv_wr		= qp->rq.max_wr;
+ 		attr->cap.max_recv_sge		= qp->rq.max_sge;
+ 	}
+@@ -776,7 +757,7 @@ void rxe_qp_destroy(struct rxe_qp *qp)
+ 	qp->qp_timeout_jiffies = 0;
+ 	rxe_cleanup_task(&qp->resp.task);
+ 
+-	if (qp_type(qp) == IB_QPT_RC) {
++	if (rxe_qp_type(qp) == IB_QPT_RC) {
+ 		del_timer_sync(&qp->retrans_timer);
+ 		del_timer_sync(&qp->rnr_nak_timer);
+ 	}
+@@ -802,23 +783,15 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
+ 	if (qp->sq.queue)
+ 		rxe_queue_cleanup(qp->sq.queue);
+ 
+-	if (qp->srq)
+-		rxe_drop_ref(qp->srq);
+-
+ 	if (qp->rq.queue)
+ 		rxe_queue_cleanup(qp->rq.queue);
+ 
+-	if (qp->scq)
+-		rxe_drop_ref(qp->scq);
+-	if (qp->rcq)
+-		rxe_drop_ref(qp->rcq);
+-
  	if (qp->resp.mr) {
  		rxe_drop_ref(qp->resp.mr);
+ 		qp->resp.mr = NULL;
+ 	}
+ 
+-	if (qp_type(qp) == IB_QPT_RC)
++	if (rxe_qp_type(qp) == IB_QPT_RC)
+ 		sk_dst_reset(qp->sk->sk);
+ 
+ 	free_rd_atomic_resources(qp);
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 6a6cc1fa90e4..8ed4f3bcc779 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -20,7 +20,7 @@ static int check_type_state(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 
+ 	pkt_type = pkt->opcode & 0xe0;
+ 
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		if (unlikely(pkt_type != IB_OPCODE_RC)) {
+ 			pr_warn_ratelimited("bad qp type\n");
+@@ -90,7 +90,7 @@ static int check_keys(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 		goto err1;
+ 	}
+ 
+-	if (qp_type(qp) == IB_QPT_UD || qp_type(qp) == IB_QPT_GSI) {
++	if (rxe_qp_type(qp) == IB_QPT_UD || rxe_qp_type(qp) == IB_QPT_GSI) {
+ 		u32 qkey = (qpn == 1) ? GSI_QKEY : qp->attr.qkey;
+ 
+ 		if (unlikely(deth_qkey(pkt) != qkey)) {
+@@ -112,7 +112,7 @@ static int check_addr(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ {
+ 	struct sk_buff *skb = PKT_TO_SKB(pkt);
+ 
+-	if (qp_type(qp) != IB_QPT_RC && qp_type(qp) != IB_QPT_UC)
++	if (rxe_qp_type(qp) != IB_QPT_RC && rxe_qp_type(qp) != IB_QPT_UC)
+ 		goto done;
+ 
+ 	if (unlikely(pkt->port_num != qp->attr.port_num)) {
 diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 3118e444ebfc..70a238085abb 100644
+index 70a238085abb..3eee4d8dbe48 100644
 --- a/drivers/infiniband/sw/rxe/rxe_req.c
 +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -472,7 +472,7 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 			wqe->dma.resid -= paylen;
- 			wqe->dma.sge_offset += paylen;
- 		} else {
--			err = copy_data(qp->pd, 0, &wqe->dma,
-+			err = copy_data(rxe_qp_pd(qp), 0, &wqe->dma,
- 					payload_addr(pkt), paylen,
- 					RXE_FROM_MR_OBJ);
- 			if (err)
+@@ -103,7 +103,7 @@ void rnr_nak_timer(struct timer_list *t)
+ {
+ 	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
+ 
+-	pr_debug("qp#%d rnr nak timer fired\n", qp_num(qp));
++	pr_debug("qp#%d rnr nak timer fired\n", rxe_qp_num(qp));
+ 	rxe_run_task(&qp->req.task, 1);
+ }
+ 
+@@ -304,7 +304,7 @@ static int next_opcode(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ {
+ 	int fits = (wqe->dma.resid <= qp->mtu);
+ 
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		return next_opcode_rc(qp, opcode, fits);
+ 
+@@ -354,7 +354,7 @@ static inline int get_mtu(struct rxe_qp *qp)
+ {
+ 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+ 
+-	if ((qp_type(qp) == IB_QPT_RC) || (qp_type(qp) == IB_QPT_UC))
++	if ((rxe_qp_type(qp) == IB_QPT_RC) || (rxe_qp_type(qp) == IB_QPT_UC))
+ 		return qp->mtu;
+ 
+ 	return rxe->port.mtu_cap;
+@@ -443,11 +443,11 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 	}
+ 
+ 	if (pkt->mask & RXE_DETH_MASK) {
+-		if (qp->ibqp.qp_num == 1)
++		if (rxe_qp_num(qp) == 1)
+ 			deth_set_qkey(pkt, GSI_QKEY);
+ 		else
+ 			deth_set_qkey(pkt, ibwr->wr.ud.remote_qkey);
+-		deth_set_sqp(pkt, qp->ibqp.qp_num);
++		deth_set_sqp(pkt, rxe_qp_num(qp));
+ 	}
+ 
+ 	return skb;
+@@ -493,7 +493,7 @@ static void update_wqe_state(struct rxe_qp *qp,
+ 		struct rxe_pkt_info *pkt)
+ {
+ 	if (pkt->mask & RXE_END_MASK) {
+-		if (qp_type(qp) == IB_QPT_RC)
++		if (rxe_qp_type(qp) == IB_QPT_RC)
+ 			wqe->state = wqe_state_pending;
+ 	} else {
+ 		wqe->state = wqe_state_processing;
+@@ -661,7 +661,7 @@ int rxe_requester(void *arg)
+ 			goto next_wqe;
+ 	}
+ 
+-	if (unlikely(qp_type(qp) == IB_QPT_RC &&
++	if (unlikely(rxe_qp_type(qp) == IB_QPT_RC &&
+ 		psn_compare(qp->req.psn, (qp->comp.psn +
+ 				RXE_MAX_UNACKED_PSNS)) > 0)) {
+ 		qp->req.wait_psn = 1;
+@@ -690,7 +690,7 @@ int rxe_requester(void *arg)
+ 	mtu = get_mtu(qp);
+ 	payload = (mask & RXE_WRITE_OR_SEND) ? wqe->dma.resid : 0;
+ 	if (payload > mtu) {
+-		if (qp_type(qp) == IB_QPT_UD) {
++		if (rxe_qp_type(qp) == IB_QPT_UD) {
+ 			/* C10-93.1.1: If the total sum of all the buffer lengths specified for a
+ 			 * UD message exceeds the MTU of the port as returned by QueryHCA, the CI
+ 			 * shall not emit any packets for this message. Further, the CI shall not
+@@ -715,14 +715,14 @@ int rxe_requester(void *arg)
+ 
+ 	skb = init_req_packet(qp, wqe, opcode, payload, &pkt);
+ 	if (unlikely(!skb)) {
+-		pr_err("qp#%d Failed allocating skb\n", qp_num(qp));
++		pr_err("qp#%d Failed allocating skb\n", rxe_qp_num(qp));
+ 		wqe->status = IB_WC_LOC_QP_OP_ERR;
+ 		goto err;
+ 	}
+ 
+ 	ret = finish_packet(qp, wqe, &pkt, skb, payload);
+ 	if (unlikely(ret)) {
+-		pr_debug("qp#%d Error during finish packet\n", qp_num(qp));
++		pr_debug("qp#%d Error during finish packet\n", rxe_qp_num(qp));
+ 		if (ret == -EFAULT)
+ 			wqe->status = IB_WC_LOC_PROT_ERR;
+ 		else
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 76bc070edea4..29b56d52e2c7 100644
+index 29b56d52e2c7..399678e49d33 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -466,7 +466,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 		rxe_drop_ref(mw);
- 		rxe_add_ref(mr);
- 	} else {
--		mr = lookup_mr(qp->pd, access, rkey, RXE_LOOKUP_REMOTE);
-+		mr = lookup_mr(rxe_qp_pd(qp), access, rkey, RXE_LOOKUP_REMOTE);
- 		if (!mr) {
- 			pr_err("%s: no MR matches rkey %#x\n", __func__, rkey);
- 			state = RESPST_ERR_RKEY_VIOLATION;
-@@ -519,7 +519,7 @@ static enum resp_states send_data_in(struct rxe_qp *qp, void *data_addr,
- {
- 	int err;
+@@ -123,7 +123,7 @@ static enum resp_states check_psn(struct rxe_qp *qp,
+ 	int diff = psn_compare(pkt->psn, qp->resp.psn);
+ 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
  
--	err = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE, &qp->resp.wqe->dma,
-+	err = copy_data(rxe_qp_pd(qp), IB_ACCESS_LOCAL_WRITE, &qp->resp.wqe->dma,
- 			data_addr, data_len, RXE_TO_MR_OBJ);
- 	if (unlikely(err))
- 		return (err == -ENOSPC) ? RESPST_ERR_LENGTH
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		if (diff > 0) {
+ 			if (qp->resp.sent_psn_nak)
+@@ -164,7 +164,7 @@ static enum resp_states check_psn(struct rxe_qp *qp,
+ static enum resp_states check_op_seq(struct rxe_qp *qp,
+ 				     struct rxe_pkt_info *pkt)
+ {
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		switch (qp->resp.opcode) {
+ 		case IB_OPCODE_RC_SEND_FIRST:
+@@ -254,7 +254,7 @@ static enum resp_states check_op_seq(struct rxe_qp *qp,
+ static enum resp_states check_op_valid(struct rxe_qp *qp,
+ 				       struct rxe_pkt_info *pkt)
+ {
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		if (((pkt->mask & RXE_READ_MASK) &&
+ 		     !(qp->attr.qp_access_flags & IB_ACCESS_REMOTE_READ)) ||
+@@ -291,7 +291,7 @@ static enum resp_states check_op_valid(struct rxe_qp *qp,
+ 
+ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+ {
+-	struct rxe_srq *srq = qp->srq;
++	struct rxe_srq *srq = rxe_qp_srq(qp);
+ 	struct rxe_queue *q = srq->rq.queue;
+ 	struct rxe_recv_wqe *wqe;
+ 	struct ib_event ev;
+@@ -342,7 +342,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+ static enum resp_states check_resource(struct rxe_qp *qp,
+ 				       struct rxe_pkt_info *pkt)
+ {
+-	struct rxe_srq *srq = qp->srq;
++	struct rxe_srq *srq = rxe_qp_srq(qp);
+ 
+ 	if (qp->resp.state == QP_STATE_ERROR) {
+ 		if (qp->resp.wqe) {
+@@ -388,7 +388,7 @@ static enum resp_states check_resource(struct rxe_qp *qp,
+ static enum resp_states check_length(struct rxe_qp *qp,
+ 				     struct rxe_pkt_info *pkt)
+ {
+-	switch (qp_type(qp)) {
++	switch (rxe_qp_type(qp)) {
+ 	case IB_QPT_RC:
+ 		return RESPST_CHK_RKEY;
+ 
+@@ -770,9 +770,9 @@ static enum resp_states execute(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+ 	union rdma_network_hdr hdr;
+ 
+ 	if (pkt->mask & RXE_SEND_MASK) {
+-		if (qp_type(qp) == IB_QPT_UD ||
+-		    qp_type(qp) == IB_QPT_SMI ||
+-		    qp_type(qp) == IB_QPT_GSI) {
++		if (rxe_qp_type(qp) == IB_QPT_UD ||
++		    rxe_qp_type(qp) == IB_QPT_SMI ||
++		    rxe_qp_type(qp) == IB_QPT_GSI) {
+ 			if (skb->protocol == htons(ETH_P_IP)) {
+ 				memset(&hdr.reserved, 0,
+ 						sizeof(hdr.reserved));
+@@ -825,7 +825,7 @@ static enum resp_states execute(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+ 		/* We successfully processed this new request. */
+ 		qp->resp.msn++;
+ 		return RESPST_COMPLETE;
+-	} else if (qp_type(qp) == IB_QPT_RC)
++	} else if (rxe_qp_type(qp) == IB_QPT_RC)
+ 		return RESPST_ACKNOWLEDGE;
+ 	else
+ 		return RESPST_CLEANUP;
+@@ -845,9 +845,9 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 
+ 	memset(&cqe, 0, sizeof(cqe));
+ 
+-	if (qp->rcq->is_user) {
++	if (rxe_qp_rcq(qp)->is_user) {
+ 		uwc->status		= qp->resp.status;
+-		uwc->qp_num		= qp->ibqp.qp_num;
++		uwc->qp_num		= rxe_qp_num(qp);
+ 		uwc->wr_id		= wqe->wr_id;
+ 	} else {
+ 		wc->status		= qp->resp.status;
+@@ -868,7 +868,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 		/* fields after byte_len are different between kernel and user
+ 		 * space
+ 		 */
+-		if (qp->rcq->is_user) {
++		if (rxe_qp_rcq(qp)->is_user) {
+ 			uwc->wc_flags = IB_WC_GRH;
+ 
+ 			if (pkt->mask & RXE_IMMDT_MASK) {
+@@ -881,7 +881,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 				uwc->ex.invalidate_rkey = ieth_rkey(pkt);
+ 			}
+ 
+-			uwc->qp_num		= qp->ibqp.qp_num;
++			uwc->qp_num		= rxe_qp_num(qp);
+ 
+ 			if (pkt->mask & RXE_DETH_MASK)
+ 				uwc->src_qp = deth_sqp(pkt);
+@@ -920,12 +920,12 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 	}
+ 
+ 	/* have copy for srq and reference for !srq */
+-	if (!qp->srq)
++	if (!rxe_qp_srq(qp))
+ 		advance_consumer(qp->rq.queue, QUEUE_TYPE_FROM_CLIENT);
+ 
+ 	qp->resp.wqe = NULL;
+ 
+-	if (rxe_cq_post(qp->rcq, &cqe, pkt ? bth_se(pkt) : 1))
++	if (rxe_cq_post(rxe_qp_rcq(qp), &cqe, pkt ? bth_se(pkt) : 1))
+ 		return RESPST_ERR_CQ_OVERFLOW;
+ 
+ finish:
+@@ -933,7 +933,7 @@ static enum resp_states do_complete(struct rxe_qp *qp,
+ 		return RESPST_CHK_RESOURCE;
+ 	if (unlikely(!pkt))
+ 		return RESPST_DONE;
+-	if (qp_type(qp) == IB_QPT_RC)
++	if (rxe_qp_type(qp) == IB_QPT_RC)
+ 		return RESPST_ACKNOWLEDGE;
+ 	else
+ 		return RESPST_CLEANUP;
+@@ -1000,7 +1000,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ static enum resp_states acknowledge(struct rxe_qp *qp,
+ 				    struct rxe_pkt_info *pkt)
+ {
+-	if (qp_type(qp) != IB_QPT_RC)
++	if (rxe_qp_type(qp) != IB_QPT_RC)
+ 		return RESPST_CLEANUP;
+ 
+ 	if (qp->resp.aeth_syndrome != AETH_ACK_UNLIMITED)
+@@ -1147,7 +1147,7 @@ static void do_class_ac_error(struct rxe_qp *qp, u8 syndrome,
+ static enum resp_states do_class_d1e_error(struct rxe_qp *qp)
+ {
+ 	/* UC */
+-	if (qp->srq) {
++	if (rxe_qp_srq(qp)) {
+ 		/* Class E */
+ 		qp->resp.drop_msg = 1;
+ 		if (qp->resp.wqe) {
+@@ -1192,7 +1192,7 @@ static void rxe_drain_req_pkts(struct rxe_qp *qp, bool notify)
+ 	if (notify)
+ 		return;
+ 
+-	while (!qp->srq && q && queue_head(q, q->type))
++	while (!rxe_qp_srq(qp) && q && queue_head(q, q->type))
+ 		advance_consumer(q, q->type);
+ }
+ 
+@@ -1224,7 +1224,7 @@ int rxe_responder(void *arg)
+ 	}
+ 
+ 	while (1) {
+-		pr_debug("qp#%d state = %s\n", qp_num(qp),
++		pr_debug("qp#%d state = %s\n", rxe_qp_num(qp),
+ 			 resp_state_name[state]);
+ 		switch (state) {
+ 		case RESPST_GET_REQ:
+@@ -1287,7 +1287,7 @@ int rxe_responder(void *arg)
+ 			state = do_class_d1e_error(qp);
+ 			break;
+ 		case RESPST_ERR_RNR:
+-			if (qp_type(qp) == IB_QPT_RC) {
++			if (rxe_qp_type(qp) == IB_QPT_RC) {
+ 				rxe_counter_inc(rxe, RXE_CNT_SND_RNR);
+ 				/* RC - class B */
+ 				send_ack(qp, pkt, AETH_RNR_NAK |
+@@ -1302,14 +1302,14 @@ int rxe_responder(void *arg)
+ 			break;
+ 
+ 		case RESPST_ERR_RKEY_VIOLATION:
+-			if (qp_type(qp) == IB_QPT_RC) {
++			if (rxe_qp_type(qp) == IB_QPT_RC) {
+ 				/* Class C */
+ 				do_class_ac_error(qp, AETH_NAK_REM_ACC_ERR,
+ 						  IB_WC_REM_ACCESS_ERR);
+ 				state = RESPST_COMPLETE;
+ 			} else {
+ 				qp->resp.drop_msg = 1;
+-				if (qp->srq) {
++				if (rxe_qp_srq(qp)) {
+ 					/* UC/SRQ Class D */
+ 					qp->resp.status = IB_WC_REM_ACCESS_ERR;
+ 					state = RESPST_COMPLETE;
+@@ -1328,12 +1328,12 @@ int rxe_responder(void *arg)
+ 			break;
+ 
+ 		case RESPST_ERR_LENGTH:
+-			if (qp_type(qp) == IB_QPT_RC) {
++			if (rxe_qp_type(qp) == IB_QPT_RC) {
+ 				/* Class C */
+ 				do_class_ac_error(qp, AETH_NAK_INVALID_REQ,
+ 						  IB_WC_REM_INV_REQ_ERR);
+ 				state = RESPST_COMPLETE;
+-			} else if (qp->srq) {
++			} else if (rxe_qp_srq(qp)) {
+ 				/* UC/UD - class E */
+ 				qp->resp.status = IB_WC_REM_INV_REQ_ERR;
+ 				state = RESPST_COMPLETE;
+@@ -1379,7 +1379,7 @@ int rxe_responder(void *arg)
+ 
+ 		case RESPST_ERROR:
+ 			qp->resp.goto_error = 0;
+-			pr_warn("qp#%d moved to error state\n", qp_num(qp));
++			pr_warn("qp#%d moved to error state\n", rxe_qp_num(qp));
+ 			rxe_qp_error(qp);
+ 			goto exit;
+ 
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 23b2fd43e0ce..bdd350e02d42 100644
+index bdd350e02d42..7ff98a60ddcd 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -288,7 +288,6 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
- {
- 	int err;
- 	struct rxe_dev *rxe = to_rdev(ibsrq->device);
--	struct rxe_pd *pd = to_rpd(ibsrq->pd);
- 	struct rxe_srq *srq = to_rsrq(ibsrq);
- 	struct rxe_create_srq_resp __user *uresp = NULL;
+@@ -537,15 +537,15 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+ 	wr->opcode = ibwr->opcode;
+ 	wr->send_flags = ibwr->send_flags;
  
-@@ -306,25 +305,21 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+-	if (qp_type(qp) == IB_QPT_UD ||
+-	    qp_type(qp) == IB_QPT_SMI ||
+-	    qp_type(qp) == IB_QPT_GSI) {
++	if (rxe_qp_type(qp) == IB_QPT_UD ||
++	    rxe_qp_type(qp) == IB_QPT_SMI ||
++	    rxe_qp_type(qp) == IB_QPT_GSI) {
+ 		struct ib_ah *ibah = ud_wr(ibwr)->ah;
  
- 	err = rxe_srq_chk_attr(rxe, NULL, &init->attr, IB_SRQ_INIT_MASK);
- 	if (err)
--		goto err1;
-+		goto err_out;
+ 		wr->wr.ud.remote_qpn = ud_wr(ibwr)->remote_qpn;
+ 		wr->wr.ud.remote_qkey = ud_wr(ibwr)->remote_qkey;
+ 		wr->wr.ud.ah_num = to_rah(ibah)->ah_num;
+-		if (qp_type(qp) == IB_QPT_GSI)
++		if (rxe_qp_type(qp) == IB_QPT_GSI)
+ 			wr->wr.ud.pkey_index = ud_wr(ibwr)->pkey_index;
+ 		if (wr->opcode == IB_WR_SEND_WITH_IMM)
+ 			wr->ex.imm_data = ibwr->ex.imm_data;
+@@ -743,13 +743,13 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 	struct rxe_rq *rq = &qp->rq;
+ 	unsigned long flags;
  
- 	err = rxe_add_to_pool(&rxe->srq_pool, srq);
- 	if (err)
--		goto err1;
--
--	rxe_add_ref(pd);
--	srq->pd = pd;
-+		goto err_out;
+-	if (unlikely((qp_state(qp) < IB_QPS_INIT) || !qp->valid)) {
++	if (unlikely((rxe_qp_state(qp) < IB_QPS_INIT) || !qp->valid)) {
+ 		*bad_wr = wr;
+ 		err = -EINVAL;
+ 		goto err1;
+ 	}
  
- 	err = rxe_srq_from_init(rxe, srq, init, udata, uresp);
- 	if (err)
--		goto err2;
-+		goto err_drop_srq_ref;
- 
- 	return 0;
- 
--err2:
--	rxe_drop_ref(pd);
-+err_drop_srq_ref:
- 	rxe_drop_ref(srq);
--err1:
-+err_out:
- 	return err;
- }
- 
-@@ -380,7 +375,6 @@ static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- 	if (srq->rq.queue)
- 		rxe_queue_cleanup(srq->rq.queue);
- 
--	rxe_drop_ref(srq->pd);
- 	rxe_drop_ref(srq);
- 	return 0;
- }
-@@ -415,7 +409,6 @@ static struct ib_qp *rxe_create_qp(struct ib_pd *ibpd,
- {
- 	int err;
- 	struct rxe_dev *rxe = to_rdev(ibpd->device);
--	struct rxe_pd *pd = to_rpd(ibpd);
- 	struct rxe_qp *qp;
- 	struct rxe_create_qp_resp __user *uresp = NULL;
- 
-@@ -450,7 +443,7 @@ static struct ib_qp *rxe_create_qp(struct ib_pd *ibpd,
- 
- 	rxe_add_index(qp);
- 
--	err = rxe_qp_from_init(rxe, qp, pd, init, uresp, ibpd, udata);
-+	err = rxe_qp_from_init(rxe, qp, init, uresp, udata);
- 	if (err)
- 		goto err3;
- 
-@@ -912,7 +905,6 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
- 		return ERR_PTR(-ENOMEM);
- 
- 	rxe_add_index(mr);
--	rxe_add_ref(pd);
- 	rxe_mr_init_dma(pd, access, mr);
- 
- 	return &mr->ibmr;
-@@ -937,8 +929,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 
- 	rxe_add_index(mr);
- 
--	rxe_add_ref(pd);
--
- 	err = rxe_mr_init_user(pd, start, length, iova, access, mr);
- 	if (err)
- 		goto err3;
-@@ -946,7 +936,6 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 	return &mr->ibmr;
- 
- err3:
--	rxe_drop_ref(pd);
- 	rxe_drop_index(mr);
- 	rxe_drop_ref(mr);
- err2:
-@@ -972,8 +961,6 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 
- 	rxe_add_index(mr);
- 
--	rxe_add_ref(pd);
--
- 	err = rxe_mr_init_fast(pd, max_num_sg, mr);
- 	if (err)
- 		goto err2;
-@@ -981,7 +968,6 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 	return &mr->ibmr;
- 
- err2:
--	rxe_drop_ref(pd);
- 	rxe_drop_index(mr);
- 	rxe_drop_ref(mr);
- err1:
+-	if (unlikely(qp->srq)) {
++	if (unlikely(rxe_qp_srq(qp))) {
+ 		*bad_wr = wr;
+ 		err = -EINVAL;
+ 		goto err1;
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 6e48dcd21c5f..6b2dcbfcd404 100644
+index 6b2dcbfcd404..0a433f4c0222 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -98,7 +98,6 @@ struct rxe_rq {
- struct rxe_srq {
- 	struct ib_srq		ibsrq;
- 	struct rxe_pool_entry	pelem;
--	struct rxe_pd		*pd;
- 	struct rxe_rq		rq;
- 	u32			srq_num;
- 	bool			is_user;
-@@ -218,7 +217,6 @@ struct rxe_qp {
+@@ -217,10 +217,6 @@ struct rxe_qp {
  	unsigned int		mtu;
  	bool			is_user;
  
--	struct rxe_pd		*pd;
- 	struct rxe_srq		*srq;
- 	struct rxe_cq		*scq;
- 	struct rxe_cq		*rcq;
-@@ -470,24 +468,24 @@ static inline struct rxe_mw *to_rmw(struct ib_mw *mw)
- 	return mw ? container_of(mw, struct rxe_mw, ibmw) : NULL;
- }
+-	struct rxe_srq		*srq;
+-	struct rxe_cq		*scq;
+-	struct rxe_cq		*rcq;
+-
+ 	enum ib_sig_type	sq_sig_type;
  
--static inline struct rxe_pd *mr_pd(struct rxe_mr *mr)
-+static inline struct rxe_pd *rxe_ah_pd(struct rxe_ah *ah)
- {
--	return to_rpd(mr->ibmr.pd);
-+	return to_rpd(ah->ibah.pd);
- }
- 
--static inline u32 mr_lkey(struct rxe_mr *mr)
-+static inline struct rxe_pd *rxe_mr_pd(struct rxe_mr *mr)
- {
--	return mr->ibmr.lkey;
-+	return to_rpd(mr->ibmr.pd);
- }
- 
--static inline u32 mr_rkey(struct rxe_mr *mr)
-+static inline u32 rxe_mr_lkey(struct rxe_mr *mr)
- {
--	return mr->ibmr.rkey;
-+	return mr->ibmr.lkey;
- }
- 
--static inline struct rxe_pd *rxe_ah_pd(struct rxe_ah *ah)
-+static inline u32 rxe_mr_rkey(struct rxe_mr *mr)
- {
--	return to_rpd(ah->ibah.pd);
-+	return mr->ibmr.rkey;
- }
- 
- static inline struct rxe_pd *rxe_mw_pd(struct rxe_mw *mw)
-@@ -500,6 +498,16 @@ static inline u32 rxe_mw_rkey(struct rxe_mw *mw)
+ 	struct rxe_sq		sq;
+@@ -498,11 +494,42 @@ static inline u32 rxe_mw_rkey(struct rxe_mw *mw)
  	return mw->ibmw.rkey;
  }
  
-+static inline struct rxe_pd *rxe_qp_pd(struct rxe_qp *qp)
++/* QP extractors */
++static inline int rxe_qp_num(struct rxe_qp *qp)
 +{
-+	return to_rpd(qp->ibqp.pd);
++	return qp->ibqp.qp_num;
 +}
 +
-+static inline struct rxe_pd *rxe_srq_pd(struct rxe_srq *srq)
-+{
-+	return to_rpd(srq->ibsrq.pd);
-+}
-+
- int rxe_register_device(struct rxe_dev *rxe, const char *ibdev_name);
+ static inline struct rxe_pd *rxe_qp_pd(struct rxe_qp *qp)
+ {
+ 	return to_rpd(qp->ibqp.pd);
+ }
  
- void rxe_mc_cleanup(struct rxe_pool_entry *arg);
++static inline struct rxe_cq *rxe_qp_rcq(struct rxe_qp *qp)
++{
++	return to_rcq(qp->ibqp.recv_cq);
++}
++
++static inline struct rxe_cq *rxe_qp_scq(struct rxe_qp *qp)
++{
++	return to_rcq(qp->ibqp.send_cq);
++}
++
++static inline struct rxe_srq *rxe_qp_srq(struct rxe_qp *qp)
++{
++	return to_rsrq(qp->ibqp.srq);
++}
++
++static inline enum ib_qp_state rxe_qp_state(struct rxe_qp *qp)
++{
++	return qp->attr.qp_state;
++}
++
++static inline enum ib_qp_type rxe_qp_type(struct rxe_qp *qp)
++{
++	return qp->ibqp.qp_type;
++}
++
+ static inline struct rxe_pd *rxe_srq_pd(struct rxe_srq *srq)
+ {
+ 	return to_rpd(srq->ibsrq.pd);
 -- 
 2.30.2
 
