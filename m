@@ -2,145 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DCE3D9BB5
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 04:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143CF3D9DC5
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 08:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233324AbhG2CXG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Jul 2021 22:23:06 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:12277 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbhG2CXF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Jul 2021 22:23:05 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4GZvL84bCYz1CNPX;
-        Thu, 29 Jul 2021 10:17:04 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 10:23:01 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 10:23:01 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <leon@kernel.org>, <liangwenpeng@huawei.com>,
-        Xi Wang <wangxi11@huawei.com>
-Subject: [PATCH v4 for-next 12/12] RDMA/hns: Dump detailed driver-specific UCTX
-Date:   Thu, 29 Jul 2021 10:19:23 +0800
-Message-ID: <1627525163-1683-13-git-send-email-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1627525163-1683-1-git-send-email-liangwenpeng@huawei.com>
-References: <1627525163-1683-1-git-send-email-liangwenpeng@huawei.com>
+        id S234123AbhG2Gmm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jul 2021 02:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234079AbhG2Gmm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jul 2021 02:42:42 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B99C061757
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Jul 2021 23:42:38 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 61-20020a9d0d430000b02903eabfc221a9so4912361oti.0
+        for <linux-rdma@vger.kernel.org>; Wed, 28 Jul 2021 23:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/ANL8XkryTyFZKOTzhI1wDltzpeQc2KMP3Slba+WBzc=;
+        b=JgeLSQJgy5wWGXvlOGCawCguc6VVlOvuEEGdl+dF7Uji54KnH/pY4BjkuZRMh1JDc2
+         iFLnyo4UR9VryZXgDEBneLOL+AWipgbsAgZm3CaUQ7ah0LNnkuoiu3P0nh9tSuveZ6BJ
+         nIIGV5NUjWRXEXa4Exsur5GY14rREdEm+oau68+xpNX/ao04qoTCVwWKOZ/32Tvzpuuz
+         yNXoIT/dtXRgkci3onCmyr7GxnHOlcea4RDx7XrT48cHSVXr76/hoUmuxp0zc63GQaK7
+         HhRs/FagPYBdpQyCN9VkKd9O/0gcLJojFG1QcVEEGbrhXx+y9SgV/22P80QdHl301it4
+         TODQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/ANL8XkryTyFZKOTzhI1wDltzpeQc2KMP3Slba+WBzc=;
+        b=M17tYX+p20iVrlcJ0NexA+be5/4Nyvo1lBqfc5/wh4tGbxG6bcLfs1VAI1sfL+p1G2
+         3oXUBQ2gH2b6QKHH1Y2fNzDJM2a6im+tqd5fZNLS/3J6/SPEcV/okEYg69IoSGyh7Q1I
+         KSmPT8+Sitcr9zP5jvfbJbxGO4w6MaLWMgWDivc4rqEye695Jo0uuNUkrJ3MWaxEZqNH
+         nCaN5z2DWJz9gERvrh/TdQ+ffkZAiaeWb4krQ7iEOcioU7NPRUfoyEX8bHT00W5IrA1p
+         6e26SudpcumzNPPZGZSimTr9JYGWHqsapk/oY0cyQX7sSd0pZuSiIkhNsH/kjvppVk4/
+         LSCQ==
+X-Gm-Message-State: AOAM530nfAggWITaQGHtY93RwDjIxBam7cXoSdt9nkxv85DZNCMP4Lc+
+        ILOYbz/ADzpmyBRNO48Rir23OAydvPPp8Zh2LDQ=
+X-Google-Smtp-Source: ABdhPJwgpkIY95/lhoCVAQPOGJajT/blEkebhvWl3J17N6mYF2tOJrg2RR2IroLiuZJ1sYyLpHA0v+LPqMoVb5sZrmA=
+X-Received: by 2002:a9d:5f87:: with SMTP id g7mr2528643oti.278.1627540957647;
+ Wed, 28 Jul 2021 23:42:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+References: <20210718225905.58728-1-Rao.Shoaib@oracle.com> <54817f70-e7e5-d145-badf-268ba7533110@oracle.com>
+ <20210727174144.GE543798@ziepe.ca>
+In-Reply-To: <20210727174144.GE543798@ziepe.ca>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 29 Jul 2021 14:42:26 +0800
+Message-ID: <CAD=hENdOrfyq2buP269LQVhq+QkZ=hpA3jpbZH+CAFt=CGLV-w@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] RDMA/rxe: Bump up default maximum values used via uverbs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Shoaib Rao <rao.shoaib@oracle.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xi Wang <wangxi11@huawei.com>
+On Wed, Jul 28, 2021 at 1:42 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Jul 27, 2021 at 09:15:45AM -0700, Shoaib Rao wrote:
+> > Hi Jason et al,
+> >
+> > Can I please get an up or down comment on my patch?
+>
+> Bob and Zhu should check it
 
-Dump DCA mem pool status in UCTX restrack.
+In my daily tests, I found that one host 5.12-stable, the other host
+is 5.14.-rc3 + this commit.
+rping can not work. Sometimes crash will occur.
 
-Sample output:
-$ rdma res show ctx dev hns_0 -dd
- dev hns_0 ctxn 7 pid 1410 comm python3 drv_dca-total 65536 drv_dca-free 40960
- dev hns_0 ctxn 8 pid 1410 comm python3 drv_dca-total 0 drv_dca-free 0
+It seems that changing maximum values breaks backward compatibility.
 
-Signed-off-by: Xi Wang <wangxi11@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h   |  2 ++
- drivers/infiniband/hw/hns/hns_roce_main.c     |  1 +
- drivers/infiniband/hw/hns/hns_roce_restrack.c | 50 +++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
+But without this commit, that is, 5.12-stable <-------> 5.14-rc3,
+rping can work well.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index bef418d..0dfaca4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -1304,4 +1304,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev);
- void hns_roce_exit(struct hns_roce_dev *hr_dev);
- int hns_roce_fill_res_cq_entry(struct sk_buff *msg,
- 			       struct ib_cq *ib_cq);
-+int hns_roce_fill_res_ctx_entry(struct sk_buff *msg, struct ib_ucontext *ctx);
-+
- #endif /* _HNS_ROCE_DEVICE_H */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index e37ece8..4f30c29 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -546,6 +546,7 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.destroy_cq = hns_roce_destroy_cq,
- 	.disassociate_ucontext = hns_roce_disassociate_ucontext,
- 	.fill_res_cq_entry = hns_roce_fill_res_cq_entry,
-+	.fill_res_ctx_entry = hns_roce_fill_res_ctx_entry,
- 	.get_dma_mr = hns_roce_get_dma_mr,
- 	.get_link_layer = hns_roce_get_link_layer,
- 	.get_port_immutable = hns_roce_port_immutable,
-diff --git a/drivers/infiniband/hw/hns/hns_roce_restrack.c b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-index 259444c..18521a4 100644
---- a/drivers/infiniband/hw/hns/hns_roce_restrack.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_restrack.c
-@@ -118,3 +118,53 @@ int hns_roce_fill_res_cq_entry(struct sk_buff *msg,
- 	kfree(context);
- 	return ret;
- }
-+
-+static int hns_roce_fill_dca_uctx(struct hns_roce_dca_ctx *ctx,
-+				  struct sk_buff *msg)
-+{
-+	unsigned long flags;
-+	u64 total, free;
-+
-+	spin_lock_irqsave(&ctx->pool_lock, flags);
-+	total = ctx->total_size;
-+	free = ctx->free_size;
-+	spin_unlock_irqrestore(&ctx->pool_lock, flags);
-+
-+	if (rdma_nl_put_driver_u64(msg, "dca-total", total))
-+		goto err;
-+
-+	if (rdma_nl_put_driver_u64(msg, "dca-free", free))
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	return -EMSGSIZE;
-+}
-+
-+int hns_roce_fill_res_ctx_entry(struct sk_buff *msg, struct ib_ucontext *ctx)
-+{
-+	struct hns_roce_dev *hr_dev = to_hr_dev(ctx->device);
-+	struct hns_roce_ucontext *uctx = to_hr_ucontext(ctx);
-+	struct nlattr *table_attr;
-+
-+	table_attr = nla_nest_start(msg, RDMA_NLDEV_ATTR_DRIVER);
-+	if (!table_attr)
-+		goto err;
-+
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DCA_MODE) {
-+		if (hns_roce_fill_dca_uctx(&uctx->dca_ctx, msg))
-+			goto err_cancel_table;
-+	}
-+
-+	nla_nest_end(msg, table_attr);
-+
-+	return 0;
-+
-+err_cancel_table:
-+	nla_nest_cancel(msg, table_attr);
-+err:
-+	return -EMSGSIZE;
-+
-+	return 0;
-+}
--- 
-2.8.1
-
+Zhu Yanjun
+>
+> Jason
