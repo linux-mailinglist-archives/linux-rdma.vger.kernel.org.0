@@ -2,187 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA35F3D9DE5
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 08:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689FB3D9F06
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 09:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234391AbhG2Gw7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jul 2021 02:52:59 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:52046 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234312AbhG2Gw6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Jul 2021 02:52:58 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16T6pZ5s003279;
-        Thu, 29 Jul 2021 06:52:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=pOqwfaDDEJ5ORDkm0OhEgZExqmOZpOW8FVqonTOOoOc=;
- b=reRGafoj5wuag1vg7V/MRHjmxveI9QFQdroOtdSaLlbKr96iu1KhFOtemOqDy1f2N+IA
- +qf03Tpv1T9H0jLqJrOZVCYtQy5JH1V5JyWpSjd7YZViqah5PzucOGqj9XVkaRv9uP1q
- 9E3X2riP/lcQ721wNuGQTEBcLuMbLcsmiMkoJbPyHomqIxwURqX93WGB9rk97xt9/sl3
- A5DLCgsug6kIAadj7UTL9KnCXsX7vL85fLRvtOtKbsZL21iqwvcbT3C5K4X3FmYb/gRk
- +CuG4Pa2fDkGBlxBTKkifmIvwvbuoooL3kPRjIRple8s5TOHfeYAdZczKlh70gDhw/KX +g== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=pOqwfaDDEJ5ORDkm0OhEgZExqmOZpOW8FVqonTOOoOc=;
- b=nxmYfF4w0ieK4qPWO20ENwVTVbDNyXP6c5wxWMt7EtU/2Z+3A8Ms6jzXdqmO+bYM0xM7
- sRBpsehpJBD3rWArXR1QePMDqGQI0tsppRu/2/xr/UN0AhMnwH7N7WjUpPf0wnY6vGnY
- w3ux22KPs67kZypIe2olxeQ46G3x13aVbxfRsqv+36hmVeYd6qQM2zJJNbuWw8e43oY3
- cSYQkG5MGjk7RWIncgJWZjq0cZn6mkY70dNCaNHYwEqfsFKHTlHjG2sfGJ3bpt6al0AV
- Ts6ZMmKbLTneQ+n58G+WBW87t9k46XOAoF4SqP7LF5WFXEEJZrq6Xs9flp0IFifP0/0c qg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3a234w6fv1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 06:52:55 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16T6oqtN015368;
-        Thu, 29 Jul 2021 06:52:53 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2170.outbound.protection.outlook.com [104.47.56.170])
-        by userp3020.oracle.com with ESMTP id 3a2350a882-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 29 Jul 2021 06:52:53 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YPxD8Y59jioCACwmo6iCcvcaLFcjST2wGz2dhn6qdsQ51XT2jbbRom1o2IyoloDgSCdexPMdGEYDsriHY8pRD84hyI++QRyKmo44mZOSCYZ7hMqkAJKuGCLTashmAfGuGP6vKV/7lzd/vV2TOYPtalEUns3LD+3CRw4ER1llbsycRbB79FSjn6PDaBRaufurXzbxCCs8rzI9W3Af5f3HMDQNxOWJGQo8COH/31XOmEbsOeBY0w24dGV6blRvsLqRYkI4rAH8Ecgt9K9L5bfdbTU1VdN0Tdzr1DmQrBq4koJrQz+jZUBRXUpbswtbkCylSuEOngnanWjEEpHIvu9bYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pOqwfaDDEJ5ORDkm0OhEgZExqmOZpOW8FVqonTOOoOc=;
- b=WV2rj3ZQCe9PWuBvYNQbDJWHzXEEw0EtGjQr9ugaj5X8GAFW1YPdFw18bsjCFD8FTnrk+3PhV8IFE0TBjdR595dpHvf7Q7dXfl9O5UYf5dnZrHlgM0Pz+2+GtTUP9PEJCCUVRjf0MFaHr2V1n/5x98KViy2a1MnoCoM+uSWBGMj0j5OT6GN7G63DQtW63Hx8WMmFVc4kOrEWH0t2Yi3Y4YZwqq9oZwcOe16aoX9xD+8s0b0NbnysAL/Iv2MoHZIS8aAnOgb5s5yKmWiWldwwcSx+mmeJk28NFXIqa3sbRCX1DlKhCvQdG2g6l5ULWO2VTy2lqMlgCXKbM34ilBszqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S234683AbhG2H5Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jul 2021 03:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51618 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234524AbhG2H5X (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 29 Jul 2021 03:57:23 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F684C061757
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 00:57:20 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id o185so7329503oih.13
+        for <linux-rdma@vger.kernel.org>; Thu, 29 Jul 2021 00:57:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pOqwfaDDEJ5ORDkm0OhEgZExqmOZpOW8FVqonTOOoOc=;
- b=PrIYakp3ewFNAzk2bM1SldBOZqKFFwdLYuoZI4E6iR1s8s8pC/FsFhASzqk1qG7VtlLYQXmFjnMwbPDAWtj/bT8K/VNjU2SlDO2lQvg0ui0EfRAftUuPNtyc4DaB7El758LnJQNO8Q8aZyk5wjSjYHBi2+cDMB8LMY29/REUXbc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
- by BY5PR10MB4131.namprd10.prod.outlook.com (2603:10b6:a03:206::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.21; Thu, 29 Jul
- 2021 06:52:51 +0000
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::5de5:d174:9459:6d21]) by SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::5de5:d174:9459:6d21%6]) with mapi id 15.20.4373.021; Thu, 29 Jul 2021
- 06:52:51 +0000
-Subject: Re: [PATCH v3 0/1] RDMA/rxe: Bump up default maximum values used via
- uverbs
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20210718225905.58728-1-Rao.Shoaib@oracle.com>
- <54817f70-e7e5-d145-badf-268ba7533110@oracle.com>
- <20210727174144.GE543798@ziepe.ca>
- <CAD=hENdOrfyq2buP269LQVhq+QkZ=hpA3jpbZH+CAFt=CGLV-w@mail.gmail.com>
-From:   Shoaib Rao <rao.shoaib@oracle.com>
-Message-ID: <6687ea04-c402-1b4e-dce0-386d29948ecc@oracle.com>
-Date:   Wed, 28 Jul 2021 23:52:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
-In-Reply-To: <CAD=hENdOrfyq2buP269LQVhq+QkZ=hpA3jpbZH+CAFt=CGLV-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SN4PR0501CA0028.namprd05.prod.outlook.com
- (2603:10b6:803:40::41) To SJ0PR10MB4494.namprd10.prod.outlook.com
- (2603:10b6:a03:2d4::12)
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=48lDxI7tsceK+p34FhGaXSYi+7yOu1zRPynJ9t8sGTs=;
+        b=S/a19QJfrlWhy5L2h092XaMgShyhqqxZu88lIbghTsNAPDZ8S5cJrndpW/j2SusmNP
+         wkLuD4nz5r7k1t2x264Dr69MhtYhR1KAppJ5Q99Y6NRC3DPVnkRum5o+TT//AnoO10bI
+         clD79cw1wpSl7/ouvgAMYHcHHrYjNwrFg2ytxqF4eJ8lJzV7C3dIqQAeK4aIy/GlkUeU
+         TRR2F+WLFUeFxDH9BFLOTUyJruX0joWzFLZZuwHOkJpiDgo3N/WKcO5guTbEAcGUy2tc
+         bb1hZc/kUk1FEYFQOPmBaZk8rABYnAaMEZTEm7ssEsPkAyy3UK8p5BGeBwdBZuYxctfE
+         TiEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=48lDxI7tsceK+p34FhGaXSYi+7yOu1zRPynJ9t8sGTs=;
+        b=gUYdz4Y++fP/vKqHNt+VmKvE6YqWPOZ393W/V9dKfbAa8NZ88RwWEBLPCaMMant58Q
+         qovg8gRDAZVJewp3jvMcvCOOjfkHiZVzxG7QzZkv0lPxpvRNE7O8/OSkfcksXO3bkeYg
+         /M2lDzq15Z2d01n+jwgtD8nl1/4IEWFvp2GPuRO0S6gZLUurLUTfgOQoiDFL+p/dAneV
+         7o66olVlo6odOePfzSEzO+o0EzKwDBg9/QILJBayKkBAnBAH5A8sSFSW4mTCIK6umIYz
+         wAyqYBbDBxvgjC3GPyZbNEOEp+VplzIwo9Wy5etHQMOCb06fTgN2Me0mT3+KrwVWFZA/
+         tH4A==
+X-Gm-Message-State: AOAM531/kAOgBmt7zqMiRfjNFTsmd4hlbz2iP/fG8fCyCMiAtXo/7jFh
+        UnAa/AlUepXbvt3x9Ox9T1C32gbkjNxSl520LXNaWtYnSnE=
+X-Google-Smtp-Source: ABdhPJyvjahIUb1d2PY+tJx4kx9sl9/i/frjUltl2bKtbZ66Q5skP30Af9qTTAz1bQKYFnTMi93OzFqPCBCt/JH0RG8=
+X-Received: by 2002:a05:6808:490:: with SMTP id z16mr8871187oid.89.1627545439992;
+ Thu, 29 Jul 2021 00:57:19 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2606:b400:400:7444:8000::4a6] (2606:b400:8301:1010::16aa) by SN4PR0501CA0028.namprd05.prod.outlook.com (2603:10b6:803:40::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.9 via Frontend Transport; Thu, 29 Jul 2021 06:52:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ae45ef61-df0f-4a15-e506-08d9525d7bd7
-X-MS-TrafficTypeDiagnostic: BY5PR10MB4131:
-X-Microsoft-Antispam-PRVS: <BY5PR10MB413152F7AEB5357D3BEFC116EFEB9@BY5PR10MB4131.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y2YdSq+8OHJM/SEWobbEJqa85D6sp2UGyGdKzx1vjIFT4cSKS5flgp3ef+Nu0QXLHaOOohr+0AnvIGuDQyXfj8isjNIbGRQWlciRjpKJbOyRjWlCQqkHmGiNkWEjef0gaIj3MAzsZkpABVPo0hyzpwj5S5fTgBF2RBbpLmpbylEQBbGXz+3JoTZvYvSkPPOy0TmQj7YJJnryZTNJL0X71TossA6RZtEj5iSAQFOlCgCN5+hFKfR2qvrzIHlz8VE7QHLDRs5r9rSaZ8Eb1GzGKEEnhQYwIyHR+j/8TcMGApkINryNQNz+WbNjPW+Aiyp35cc6UhZfRffg7fJvBvdJtF9z6s7RPTK8WhEFfnHG2WT6C2UqN1D+c6dqdCt7wqS385fTI4ksw2gJ4py9xvL2m4EM+vlRWiVDe8y8S5FhOn72ZpRUPtUzfuuR4w1BxP7kla1R6qwGHa1unD4WNOjb6Um7pS8V5EiasFxkb6DGX1fAcgxyidWYFHta7G5r39bBp0sL1mE8VSkZrjvUfJR6tk6r1kEP/z0S7eV11eonszbqyJ9i5Tl0geI0bhrRLXQvuX5147bLazGvVoPhGJM+4cCciGPvoPDcu7b9hf1rwwUlPgQYhYMWV+IDDoxvEn2Tz6xfjiSkdglySUtknkA4SY/LBH8jnnzOv4Bzn8IqlqB9/AEXQOfsYZVIWK87xq1Nwgx5LVcSrd9Owg31PKnp3/lbFEYeniSkXI+kPkcwbtQ=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39860400002)(346002)(396003)(376002)(366004)(8676002)(186003)(110136005)(5660300002)(36756003)(316002)(31696002)(53546011)(31686004)(478600001)(6486002)(2616005)(2906002)(66946007)(66476007)(66556008)(4326008)(86362001)(38100700002)(8936002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NmNmdFpvV1NRNXhpMlJMbE4zUUw4R3F6cm9FYnhRWFlSM1IxbnNLT2FoT0FM?=
- =?utf-8?B?Wklpa3RpVXZDeXhZYmhTUnlmS1lTWmdPK09hclppTk1yRmRWUlEzak56UzJ0?=
- =?utf-8?B?YjM3a2VzcVlTY0tiRUVmTWtKNXp6bEdNbEt5MG0rVmdZdHFNMTNnNkNpRW1R?=
- =?utf-8?B?NUw1NTIybWtDejREald0QmExajZJVjQ0NHorSlVLY1c2ejhIRlkyRkF6SkRR?=
- =?utf-8?B?Z1N3Y282S2h6S3dDL1FUZXVIZE4rcHJqKzg0NDBVaHNudGUwOTdLREdQTTZB?=
- =?utf-8?B?YSt2dHZkMTRvS29LUWc4NkZQNlZ3ak51WEU1c09oVmNaLzNacEpaUStEK3px?=
- =?utf-8?B?QktaSlUxTVVDU2hHb3d0NzY5VFNMV1oxcWxPdEVJRU8wZzYrZFdwMjBDRVpP?=
- =?utf-8?B?cUw0WVN0ZHZqVVFyUXJlSjduMnltNlo3WmVLcEVIdnhIREdsbytXUlNlamIx?=
- =?utf-8?B?YktHWGJmRVhOeUhpOEcxTzl0VUxtaWVNTGRhSHVMMTV4ay80S1Y4SzBFUXJl?=
- =?utf-8?B?c2F2VmhZRlgxZzltL2tTR0UrOThFUkNLRmdnajVmTW5EUFFtZEpMcWQzU3lj?=
- =?utf-8?B?THpjK1RzQ2V5Wm5uNzRQMzN3ZnVuRXhxZTE0U2lZQjVwVnQ4bHJMNHJXeXN2?=
- =?utf-8?B?VnRqSXZOSVl0eXBvOTdrL1Z0d0RwWXRYM1hINW83ZWlCYS9nb0hMbXV4Y0ph?=
- =?utf-8?B?V1hnTkNZd1FkalhxZjJyREZWNkdVSFZIeGs2cGRubmVMcktXVm1kanFSbEdr?=
- =?utf-8?B?dy9rN1lraGdvcks1QWNrOG5ybnRKVVNmNGpyUTRlbWFDelZ3VnNuSXZTcHk0?=
- =?utf-8?B?RjlJTDJFbWlNK3ZYQ3ZvQ25iS0ZzNEdqVXl1N1pnZDF3NUdtL1lpYUt2ZnZI?=
- =?utf-8?B?RXdIR1ZHcFZYdWpMSEJJSU1HSVFLa0ZrQ0lnNG5STHpabUk2TkN4cjBjQUlh?=
- =?utf-8?B?YnVnNld4UlpvM0JzdDZ2U3k4VFVkcmxvMWRvaHVKQjh5Q0tZYzlaVjVEM1ZO?=
- =?utf-8?B?KzQ3VHovTUw4dUR3dnF4MjY3aFBIcXFKZzZxdldGTmYxM2VtcnhDQ3JUTEtD?=
- =?utf-8?B?ZURQWGFhOVpLOGRTMlNIMnI1RndQYmM1WDQvL1hQb1QxQnF3WkdNdmhFMzZR?=
- =?utf-8?B?L0NabWxxS09KWUFoK2VMYThLZ1lNMEhpTnJsTytjZzlUeVF4SWhOSHowak5Z?=
- =?utf-8?B?QVdUSGJ1Lzk2SGQ5SHRsc3ZvTVE0SG1WL002TmI1SnREZW1mWWtLTVZ4bkxi?=
- =?utf-8?B?QmFTNmVYZ0RnNWlVSUtEWFBjM25ncVhuYlJlakJIcHE1bEtmRDU2SlZrdUJ0?=
- =?utf-8?B?dW9hd1RnZWhRZUpKa2pHNS9ZOGdZYnRUc3YzSHRmY2h5V2l1Y3ZhQithRjBK?=
- =?utf-8?B?THV6OVpWeVBYV3ZVR1NsQzV1d3QvZ0RPeWhKQktxTkM3U1RsbFdleWlKdThM?=
- =?utf-8?B?K1J1b0xDRUprdGJMVkdJaUU4empKbXJSYnd0WmZoV0swVWtqcGk0RlRLT1Ix?=
- =?utf-8?B?Q2VLNUltRHFsNkVNeFpBaUFPelgxcFQzcHZxUGJMckJ3NE9HQ3ovRXJOMFhZ?=
- =?utf-8?B?VnYxd1Z0T1lvWnhVa1JOWDJVcDdmTFZPamgxS29SdUlIaW9JN2tXUWJINFAv?=
- =?utf-8?B?T05EZnU1Q2xHVjl2S3BsREtkUERBNnp1aHE1dUtmTjNiNXlBdnFhMTlnY0tV?=
- =?utf-8?B?YTBJdlJFVEJhUVpaSzNjZnIraEFKeWF6eVIwMkE4dDMwV2hyc0lkY054VnFo?=
- =?utf-8?B?MmJlWG0zU0NCRjlTemtHb2Q5QUl0ZElwSzN5dGIzRGdFMmxpdmJkTCs0M0Va?=
- =?utf-8?B?N0VSeFFFdVBVcW94SXc2UT09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ae45ef61-df0f-4a15-e506-08d9525d7bd7
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 06:52:51.4132
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mEj+MGDxaye04dqpk2JZP0fQ4yBJlXvxPKPz3n0RRnZnL90BGJ4zA5JKHcOldxoGGxvm1JxbM1fw0caO6HA0gQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4131
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10059 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
- mlxlogscore=999 bulkscore=0 mlxscore=0 phishscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2107290047
-X-Proofpoint-ORIG-GUID: bf8e2HMj-x5kZxrTILX84StfJOB0WdYF
-X-Proofpoint-GUID: bf8e2HMj-x5kZxrTILX84StfJOB0WdYF
+References: <20210718225905.58728-1-Rao.Shoaib@oracle.com> <54817f70-e7e5-d145-badf-268ba7533110@oracle.com>
+ <20210727174144.GE543798@ziepe.ca> <CAD=hENdOrfyq2buP269LQVhq+QkZ=hpA3jpbZH+CAFt=CGLV-w@mail.gmail.com>
+ <6687ea04-c402-1b4e-dce0-386d29948ecc@oracle.com>
+In-Reply-To: <6687ea04-c402-1b4e-dce0-386d29948ecc@oracle.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 29 Jul 2021 15:57:08 +0800
+Message-ID: <CAD=hENcTYfV1LT1=_e=eCNxdjr1Nmi+R3hH_CQn70MGRTKG7LA@mail.gmail.com>
+Subject: Re: [PATCH v3 0/1] RDMA/rxe: Bump up default maximum values used via uverbs
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 7/28/21 11:42 PM, Zhu Yanjun wrote:
-> On Wed, Jul 28, 2021 at 1:42 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->> On Tue, Jul 27, 2021 at 09:15:45AM -0700, Shoaib Rao wrote:
->>> Hi Jason et al,
->>>
->>> Can I please get an up or down comment on my patch?
->> Bob and Zhu should check it
-> In my daily tests, I found that one host 5.12-stable, the other host
-> is 5.14.-rc3 + this commit.
-> rping can not work. Sometimes crash will occur.
-Can you paste the stack?
+On Thu, Jul 29, 2021 at 2:52 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
 >
-> It seems that changing maximum values breaks backward compatibility.
 >
-> But without this commit, that is, 5.12-stable <-------> 5.14-rc3,
-> rping can work well.
+> On 7/28/21 11:42 PM, Zhu Yanjun wrote:
+> > On Wed, Jul 28, 2021 at 1:42 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >> On Tue, Jul 27, 2021 at 09:15:45AM -0700, Shoaib Rao wrote:
+> >>> Hi Jason et al,
+> >>>
+> >>> Can I please get an up or down comment on my patch?
+> >> Bob and Zhu should check it
+> > In my daily tests, I found that one host 5.12-stable, the other host
+> > is 5.14.-rc3 + this commit.
+> > rping can not work. Sometimes crash will occur.
+> Can you paste the stack?
 
-That is strange because all the large values do is initialize the pool 
-with large values. Nothing else. So unless large values are used there 
-should be no issues. Is it possible that the issue is with 5.14-rc3. Do 
-things work between 5.12-stable systems. Anyways, please post the stack 
-trace and also information on the setup and rping commands used.
+[  381.068203] rdma_rxe: qp#17 moved to error state
+[  421.464485] BUG: unable to handle page fault for address: ffff9e5de298d180
+[  421.464515] #PF: supervisor write access in kernel mode
+[  421.464532] #PF: error_code(0x0002) - not-present page
+[  421.464549] PGD 100c00067 P4D 100c00067 PUD 100dc1067 PMD 125e78067 PTE 0
+[  421.464572] Oops: 0002 [#1] SMP PTI
+[  421.464585] CPU: 25 PID: 0 Comm: swapper/25 Kdump: loaded Tainted:
+G S      W  OE     5.13.1-rxe+ #17
+[  421.464613] Hardware name: Intel Corporation S2600WFT/S2600WFT,
+BIOS SE5C620.86B.02.01.0008.031920191559 03/19/2019
+[  421.464642] RIP: 0010:rxe_cq_post+0x98/0x210 [rdma_rxe]
+[  421.464667] Code: 8b b3 48 01 00 00 4d 8b 48 08 41 8b 48 28 49 8d
+b9 80 01 00 00 85 f6 0f 84 78 01 00 00 41 8b 50 34 d3 e2 48 01 fa 48
+8b 4d 00 <48> 89 0a 48 8b 4d 08 48 89 4a 08 48 8b 4d 10 48 89 4a 10 48
+8b 4d
+[  421.464718] RSP: 0018:ffff9e5dc6ce0918 EFLAGS: 00010082
+[  421.464735] RAX: 0000000000000246 RBX: ffff8b200cabd800 RCX: 0000000000000000
+[  421.464756] RDX: ffff9e5de298d180 RSI: 0000000000000001 RDI: ffff9e5dc698b180
+[  421.464777] RBP: ffff9e5dc6ce09c0 R08: ffff8b2014d85a80 R09: ffff9e5dc698b000
+[  421.464797] R10: ffffffff8bc90940 R11: 0000000000000001 R12: 0000000000000000
+[  421.464817] R13: ffff8b200cabd940 R14: ffff8b206e014008 R15: 000000000000001a
+[  421.464838] FS:  0000000000000000(0000) GS:ffff8b1fd1040000(0000)
+knlGS:0000000000000000
+[  421.464861] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  421.464879] CR2: ffff9e5de298d180 CR3: 0000000c4df4e006 CR4: 00000000007706e0
+[  421.464899] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[  421.464920] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[  421.464941] PKRU: 55555554
+[  421.464950] Call Trace:
+[  421.464961]  <IRQ>
+[  421.464971]  rxe_responder+0x621/0x2480 [rdma_rxe]
+[  421.464993]  ? __fib_validate_source+0x2e9/0x450
+[  421.465013]  rxe_do_task+0x89/0x100 [rdma_rxe]
+[  421.465033]  rxe_rcv+0x2eb/0x900 [rdma_rxe]
+[  421.465050]  ? __udp4_lib_lookup+0x2c8/0x440
+[  421.465065]  rxe_udp_encap_recv+0x68/0xc0 [rdma_rxe]
+[  421.465085]  ? rxe_enable_task+0x10/0x10 [rdma_rxe]
+[  421.465104]  udp_queue_rcv_one_skb+0x1df/0x4e0
+[  421.465120]  udp_unicast_rcv_skb.isra.67+0x74/0x90
+[  421.465135]  __udp4_lib_rcv+0x555/0xb90
+[  421.465150]  ? nf_ct_deliver_cached_events+0xc1/0x120 [nf_conntrack]
+[  421.465181]  ip_protocol_deliver_rcu+0xe8/0x1b0
+[  421.465199]  ip_local_deliver_finish+0x44/0x50
+[  421.465215]  ip_local_deliver+0xf1/0x100
+[  421.465229]  ? coalesce_fill_reply+0x2c1/0x480
+[  421.465249]  ? ip_protocol_deliver_rcu+0x1b0/0x1b0
+[  421.465265]  ip_sublist_rcv_finish+0x75/0x80
+[  421.465281]  ip_sublist_rcv+0x196/0x220
+[  421.465296]  ? ip_local_deliver+0x100/0x100
+[  421.465312]  ip_list_rcv+0x137/0x160
+[  421.465325]  __netif_receive_skb_list_core+0x29b/0x2c0
+[  421.465344]  netif_receive_skb_list_internal+0x1c3/0x2f0
+[  421.465361]  gro_normal_list.part.158+0x19/0x40
+[  421.465376]  napi_complete_done+0x67/0x160
+[  421.465391]  i40e_napi_poll+0x53b/0x840 [i40e]
+[  421.465426]  __napi_poll+0x2b/0x120
+[  421.466123]  net_rx_action+0x236/0x300
+[  421.466783]  __do_softirq+0xc9/0x285
+[  421.467440]  irq_exit_rcu+0xba/0xd0
+[  421.468091]  common_interrupt+0x7f/0xa0
+[  421.468737]  </IRQ>
+[  421.469366]  asm_common_interrupt+0x1e/0x40
+[  421.469990] RIP: 0010:cpuidle_enter_state+0xd6/0x350
+[  421.470608] Code: 49 89 c4 0f 1f 44 00 00 31 ff e8 45 49 99 ff 45
+84 ff 74 12 9c 58 f6 c4 02 0f 85 32 02 00 00 31 ff e8 ae c8 9f ff fb
+45 85 f6 <0f> 88 e0 00 00 00 49 63 d6 4c 2b 24 24 48 8d 04 52 48 8d 04
+82 49
+[  421.471935] RSP: 0018:ffff9e5dc679fe80 EFLAGS: 00000202
+[  421.472599] RAX: ffff8b1fd106bc40 RBX: 0000000000000002 RCX: 000000000000001f
+[  421.473266] RDX: 00000062213d764d RSI: 000000003351fed6 RDI: 0000000000000000
+[  421.473920] RBP: ffffbe51c1040000 R08: 0000000000000002 R09: 000000000002b480
+[  421.474558] R10: 0000a82bea904be8 R11: ffff8b1fd106a984 R12: 00000062213d764d
+[  421.475172] R13: ffffffff8c6c6d80 R14: 0000000000000002 R15: 0000000000000000
+[  421.475763]  cpuidle_enter+0x29/0x40
+[  421.476348]  do_idle+0x257/0x2a0
+[  421.476926]  cpu_startup_entry+0x19/0x20
+[  421.477497]  start_secondary+0x116/0x150
+[  421.478067]  secondary_startup_64_no_verify+0xc2/0xcb
+[  421.478640] Modules linked in: rdma_rxe(OE) ip6_udp_tunnel
+udp_tunnel xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
+nf_reject_ipv4 nft_compat nft_counter nft_chain_nat nf_nat
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun
+bridge stp llc nls_utf8 isofs cdrom loop rfkill ib_isert
+iscsi_target_mod ib_srpt ext4 target_core_mod ib_srp
+scsi_transport_srp mbcache jbd2 rpcrdma sunrpc intel_rapl_msr
+intel_rapl_common rdma_ucm isst_if_common ib_iser ib_umad rdma_cm
+ib_ipoib iw_cm skx_edac libiscsi ib_cm nfit libnvdimm
+scsi_transport_iscsi x86_pkg_temp_thermal intel_powerclamp mlx5_ib
+coretemp crct10dif_pclmul crc32_pclmul iTCO_wdt iTCO_vendor_support
+ib_uverbs ghash_clmulni_intel rapl ipmi_ssif intel_cstate ib_core
+mei_me acpi_ipmi i2c_i801 joydev intel_uncore pcspkr mei i2c_smbus
+lpc_ich ioatdma ipmi_si intel_pch_thermal dca ipmi_devintf
+ipmi_msghandler acpi_pad acpi_power_meter ip_tables xfs libcrc32c
+sd_mod t10_pi sg mlx5_core ast i2c_algo_bit drm_vram_helper
+[  421.478702]  drm_kms_helper syscopyarea sysfillrect sysimgblt
+fb_sys_fops drm_ttm_helper ttm mlxfw ahci libahci pci_hyperv_intf ice
+drm i40e tls crc32c_intel libata psample wmi dm_mirror dm_region_hash
+dm_log dm_mod fuse [last unloaded: ip6_udp_tunnel]
+[  421.483665] CR2: ffff9e5de298d180
 
-Shoaib
 
+> >
+> > It seems that changing maximum values breaks backward compatibility.
+> >
+> > But without this commit, that is, 5.12-stable <-------> 5.14-rc3,
+> > rping can work well.
 >
-> Zhu Yanjun
->> Jason
+> That is strange because all the large values do is initialize the pool
+> with large values. Nothing else. So unless large values are used there
+> should be no issues. Is it possible that the issue is with 5.14-rc3. Do
+> things work between 5.12-stable systems. Anyways, please post the stack
+> trace and also information on the setup and rping commands used.
+>
+> Shoaib
+>
+> >
+> > Zhu Yanjun
+> >> Jason
