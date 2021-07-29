@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDE63DAADE
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 20:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1F933DAAE6
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 20:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbhG2S0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jul 2021 14:26:49 -0400
-Received: from mail-mw2nam12on2098.outbound.protection.outlook.com ([40.107.244.98]:30452
+        id S229672AbhG2S21 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jul 2021 14:28:27 -0400
+Received: from mail-mw2nam12on2120.outbound.protection.outlook.com ([40.107.244.120]:12256
         "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229620AbhG2S0s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:26:48 -0400
+        id S229807AbhG2S2Z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:28:25 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cqA48ZuIaBmTf9rvN+GXg25tnk5hFeOqfYNqTBshuEn3RxHH9idTctSmy8654R8FTnHrPQCHz6S8g+zTpBn1WJ105Zjmr65SzhyoMxtysCh1hslNchKHCu27vQe8EXG1IRBQkmqmLUfBUqfQNjiuW8QAKKi4wy1vPFvV68EBPwvxl1d58t/YJ5ChQy9LGrGUSuEApnKpVpjFHWTf7NB7EHbcOYt0jWDmaoDbu8k7SQZIoDlu9xxha3z6bu9mvlVwadBMxi+p+SEz2K7QMZINDMoPMaS0XwAOkrLG+MZOz6N70RRkEhsxi7XHA8nUKmtfBO9+1NcpSdCIAgdWkyv48w==
+ b=gPg5/oYq9dhX96/ChIfJ3sH/kcEZDvIESj11V1RW1fEbfemtijDgIXaGzxzmHxQtBypmeSzpQBPf0gCqU78KDsFQVKovKBAZZWJH49wBZR4OvvS+rLJwY/aR895AFYxd4OqkxyCT4GoGQ68vaxHCrzSKf9+9qsmjsYqBfy6ef4c41ifEuCTUhOdJAUD5SiT8PY8OlcIQ6rxJHBjZ7DhXYzV49G6zicJB6F+XYMghqryk4Qo9ATo8ZOuu7kwqscjHqvA7q8qpn655RN9CiaxOi4pLLb80wnNXwNyyY5aoZKemS2SOwsyO4psgDloOJQG+rX3j+OxmlW5A3PlFKKfJ2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mgc/2/NebGuU6ozQLFVNIzxffsqZjb60vrIQkBBM60Y=;
- b=a6yR/HugICntdYR9zhWXMgogBT2XA0d9rSNFdYJ+9F8cAZyUw2LYWdZLz6Ha1Il+FBsbbc615DxUC2xo4aj2Gmqog6YPbhij/xxZxm+lKdUGm/2WygIXwVa/IENxkIaaEOWbxjyacEqJkB/7XunlSR6DW/ZFbM0fZpGDNA+uzIB5O7iyFBmEawQ1AdxJL1O9p7Qq3l53LM1CM2nELq3ZyukwBu2kbxFgoNNs3dVSl86D0MFPlgs4C+tR5pQTxFX0r1rjLuSy81cl17oiYtNfmQEKRYSAyfWkLQnLVAoCucKFUn+04pkZ90yKqt3bt3rXMEwbtas6pQ8PoM4wlvcj7Q==
+ bh=c+EGjvShBE76Vr0H7eyShwgynS1fEvvPm+QEF/ZePjQ=;
+ b=YG24ro18ZfaY5CtkJt2oJlbF6BEzUdEl63CCDNwc9VsJSwM2ohkmYInq/79WyK91S4/MVuZ3CXwRVj9yuSJt+IizCrAHRrcb9Cij2rYEi+1oVizIfBOe3mjpYk5ZSyyyAhE6cQSO60i5EMihNnfkWBz9Vkoz+W/TCqYbmOy6+sFp353hqu43weqDByWI4PJo+axriq89GwhaFYsasbPDSGpd2h8bQ2LIwLysCXzEiOzLwZk7++X46yNUOGnKTdBkBRUSW7nlu2OzVi2FLRmxKxtDfoZPqJXhiZBhFl5Sp/bBiT3vhbiTLatHZtFrnQr1KTaDg6/9yfbuZwK+qmtQmw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
  header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
@@ -26,150 +26,101 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Mgc/2/NebGuU6ozQLFVNIzxffsqZjb60vrIQkBBM60Y=;
- b=hyRCWdkNqrnYzuxhZshZ6uaG2IqFFbtNLXJOKOuz6hUTbnPS54NGY0Vw4bRqYE/QcfS76f3gLgSATUvtekUsNv1mmXWTs7o3Q5G1OEMapifhXINBT+xnzQRO8HzGLeyqFhpW+GaLxzu1+mKJpb9xqc9LpjncqOKvDmJ3qqcYj/xV8G5tt+3iiSASWrzGvExsaFQq6oxLw1nPIVbzRNbJbTrMEpe2Nvp/yin4FDk/werUJIzUAhkahsw7fZLj4kMPwexKvWQSLGCxiL7r8xvLWeAG9AOxkDNrsLwUZLU89kYy1h0GiXkq1E59aJwzngiNeK67P72bCXXztSIs2Kg9Ng==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
+ bh=c+EGjvShBE76Vr0H7eyShwgynS1fEvvPm+QEF/ZePjQ=;
+ b=eqFyakxKbiQZZtR/w5FOgDk5M+62h6HYL+Shg2wZaNnHK6ijUSAT5W4opbsDynAm9xx/FQucQJMWIZPrRW+uHPqMSdjscbO/o7/9kTkVjnhwW2Bcqh+2OvpbmnMYCzZErMkimi2WOeddZ2NXZysmNVqmThlMrEdX9p4LvHYKVOiPqhLpTsu0uKbGCzBMg/iy4nIq7DJ9XjX5YyrMwRfXG7zEwoJHcf0HXeueVV/pADeZD/rWyPp+1RoT9zQxqrgYXtbpscSEDp6VsDMiwooXWNzOwGB0io/3oVnfiPm+TFgvvVqUWGRau4P4DH5a544LLr1wU1GyHfZzkobLF9VNMw==
 Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH0PR01MB7201.prod.exchangelabs.com (2603:10b6:610:fe::5) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4373.18; Thu, 29 Jul 2021 18:26:42 +0000
+ CH0PR01MB6890.prod.exchangelabs.com (2603:10b6:610:103::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4373.17; Thu, 29 Jul 2021 18:28:20 +0000
 Received: from CH0PR01MB7153.prod.exchangelabs.com
  ([fe80::f16e:8a3e:3b8d:8a34]) by CH0PR01MB7153.prod.exchangelabs.com
  ([fe80::f16e:8a3e:3b8d:8a34%5]) with mapi id 15.20.4373.022; Thu, 29 Jul 2021
- 18:26:42 +0000
-From:   mike.marciniszyn@cornelisnetworks.com
-To:     dledford@redhat.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Haakon Bugge <haakon.bugge@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>
-Subject: [PATCH for-rc] RDMA/cma: Revert INIT-INIT patch
-Date:   Thu, 29 Jul 2021 14:26:22 -0400
-Message-Id: <1627583182-81330-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
-X-Mailer: git-send-email 1.8.3.1
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR12CA0032.namprd12.prod.outlook.com
- (2603:10b6:208:a8::45) To CH0PR01MB7153.prod.exchangelabs.com
- (2603:10b6:610:ea::7)
+ 18:28:20 +0000
+From:   "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Haakon Bugge <haakon.bugge@oracle.com>
+Subject: RE: NFS RDMA test failure as of 5.14-rc1
+Thread-Topic: NFS RDMA test failure as of 5.14-rc1
+Thread-Index: AdeC6xneRTsXNTlrTWuqxyNIUrjEqgAOO93QACMdPeAACJMjAAA1KQDw
+Date:   Thu, 29 Jul 2021 18:28:20 +0000
+Message-ID: <CH0PR01MB7153AC0E62FCE1E9C4C82AD6F2EB9@CH0PR01MB7153.prod.exchangelabs.com>
+References: <CH0PR01MB7153D5381BBC3D1D0F146E8AF2E99@CH0PR01MB7153.prod.exchangelabs.com>
+ <CH0PR01MB715358BA093A504AED855CCBF2E99@CH0PR01MB7153.prod.exchangelabs.com>
+ <CH0PR01MB71535949BACC7C43261EDAD2F2EA9@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210728170540.GA2316423@nvidia.com>
+In-Reply-To: <20210728170540.GA2316423@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 15cddfa3-aef8-4c23-71f6-08d952bea47b
+x-ms-traffictypediagnostic: CH0PR01MB6890:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH0PR01MB6890000D57F0B5D762BBFCA2F2EB9@CH0PR01MB6890.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2512;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0iKDZSqjeMvqx3rihtWnqgDFWAPOf0pH5YpCNhNEznX5OJ4vclOvtDYguddUfWLvOWOCOwf+w+X3qSupA2RGoKL1d1lIlUc2U0POEJ9wdm+07H4MswOVjDZPBy8cLSdhNrdnELo5AEL4JrtZWmS2eGgKYiw1+zrQ9YAIPYT9l3CmDpGMhVMO1knJ9FqOZywG8rFIU/BbGXgt/UYOqyY9bBIuqkV1zELibIjvFqx7dLBZJa+i0JqqbNqmgzQ9DzzF9Pw/4kHFDTYBbzZlavCYlVlEDUZ0Bs0BpMcahjbgt3jKFPnsEoEkku5Pg1ITbEsnnPjFPBKyCVG+CvbQqoRnVeqwE4tKEPjdFK87HHlUBS4xNSMQkDQBk1k2CbQh8Yv7S5aeMH1llpTTTvhG0wk6BdSrcEgVwyRTBVJ/3L+VoICQuzMaUCpoCJ2dPqOHjLQkHdvwGv70azLiJRNSi9MMt7TO6oXbWHwJZVO/vwdyFvf0/9AcpGZ85IHypYDntV26x+JOwI/PKX6vQkO9njSRW2YI5QVtzl6U8ib37n4XxQxbN29m7I1Ydj59JijWvfgvpf9CL7wwTnX3YLAh2lkZljjCpsBuJfPMC34tRoxLqofmIYgoBjA9MkGd+k5BepACmh50I6TqeMYnmDG3fcv2/F5ZNqrS/Irf6pcecOOyBqpvJUPflAzIPDdHgkq0fgwEX7+2gjeqkExTTdyLR8Nr8WlYkL3ltKt9pMN5DlWtEiuwIfHcAR6/hNUD1O5ewdeMU8Wk9lLkWP3GZpmMTwN7Z9tFXLwlTVWf4aY69v1bImc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(39840400004)(136003)(38100700002)(316002)(122000001)(478600001)(71200400001)(26005)(66946007)(76116006)(7696005)(966005)(6916009)(54906003)(52536014)(38070700005)(6506007)(558084003)(2906002)(86362001)(33656002)(8676002)(5660300002)(9686003)(66476007)(55016002)(4326008)(66556008)(66446008)(8936002)(64756008)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?fDJhoG4MZ4rP7sPbjSMUq4K58OS4CVt+32ZiiUPdSuFFNVXCekymgF6DsexA?=
+ =?us-ascii?Q?Y+JNmOE0e2Kshz8MG1RT2786Qof/BEFuhxlEjv/nze8T8zllwa3PPSMzoYir?=
+ =?us-ascii?Q?FCoct647/CDunTSe2y0Zpggb7KHaaTwwgWqwbNNYCiyY+ak7VIBPabbc48dR?=
+ =?us-ascii?Q?jSC7W83pESgCEHF6jZ6Z/PQmzub32oQVjYCD4ZmtG6Fpog8AKIwiVNolumvY?=
+ =?us-ascii?Q?ZkM8Pcguh51HZfYsxsram58V/G40Fo0fS2hmhtYDILS2f1AFHJYW7AT5wJHf?=
+ =?us-ascii?Q?6J7uNXUMuBG1cqvAO5G5gMWV1+EYMmyCAl7JO1duoRz471kblK0cpB+PmQ5l?=
+ =?us-ascii?Q?3SqaBIth+XFCCBYXPFOZ1i3Y7txWFN+foUEVMg4uBqMF+TxKsojYBHp9Fumy?=
+ =?us-ascii?Q?1hz47Wjh9rDOlVnhuPmmpInTtIn6dmZ19lhod1Gct2uCi08BDvlgAkGEuxqW?=
+ =?us-ascii?Q?7y9f5GqkMKkgYbCdLCoMDOM/qd4FLrJazPRo49iSJQfszp9FPPFhwEtdsaur?=
+ =?us-ascii?Q?Fy0S8bcE9ij7a/vTw9v/jcI5+UUFmkkF24TwhFMfO2UdEaUKzVLpl35mBVQf?=
+ =?us-ascii?Q?6Du/0+Eto6rLk2ucGAVrkKkeqQNbBdiCuEA+C4iBC+GmfIuYJTA/mIziyRb7?=
+ =?us-ascii?Q?Ba3SJ5Ig+L5QiUw+SzMapwLQFD6ly6d8++Q+k2zrtdYd/p602a1xvCn4kPNo?=
+ =?us-ascii?Q?m0/hqD4cxNn28uh3H8Bd7lKGlM/B3mi0gUBsXV6RTR9Ih2lZ9m/D2LLt7SNx?=
+ =?us-ascii?Q?paJw27d3v5MyptgMpxqe5YDQdOeRntaiK5mm6H0OkgMgfQw7/rJx//KNqo2s?=
+ =?us-ascii?Q?SMtVxUovwHh7kIkd1Yj4wNeKoRk/y6VC5uNq6enqV9K1EUz88/6JDUvVF7w2?=
+ =?us-ascii?Q?lLbB/BJTHbeIj6bfaYMmhQYq5g12MKpVtCaRyPEV+txLPY6pFVn5/I9wnkBz?=
+ =?us-ascii?Q?Wnl5hcEPOeoSDuFbmMeAkp8azRccJarTGwkigA5EwIu1w+Ds5XgLmpUXsecr?=
+ =?us-ascii?Q?EaRxg5+B8ibZ727LOuLRP6MSo/uB5NaMQ54L8NXzbRMcgESYcxPZkARBUwka?=
+ =?us-ascii?Q?R2EWMKqeXNQ10S9f2nrgklxXTMWdl42DMULk7L9E4OfjP6kyPpRZqiQJu+3b?=
+ =?us-ascii?Q?JxRVnDW4r+CifRcZKJClQ1j1IR3ew1xNNT89bipZp4jo0/8HOaO4ChWgK7RT?=
+ =?us-ascii?Q?cxH5l1o8c1MATkggeFA7Es7adOWunfJXgCsdl0fBZV5OGxqrf5Nih20vnma/?=
+ =?us-ascii?Q?2bqHnOkaNQw+ipl8+w8BOFrjE9X2wE1no2kmUHUjs64LUgoTa/AAd04D2RVa?=
+ =?us-ascii?Q?n8o=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by MN2PR12CA0032.namprd12.prod.outlook.com (2603:10b6:208:a8::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 29 Jul 2021 18:26:41 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fba04791-90c9-46f9-b9b6-08d952be69b5
-X-MS-TrafficTypeDiagnostic: CH0PR01MB7201:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CH0PR01MB720106AA4FF53DA2DB1893A9F2EB9@CH0PR01MB7201.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:229;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: K1DzqIfNjNZUvQY2KcQfz7LBaueKUAJFjBlugn4qTdrQslg1r27lbL+jbfIic/cx6d3lGZLfCZ5tBfrd4p0+vuMvVPxmLzyEQeOIYzR7lDqvXN6fiEExlcV3a0AyzJ/fOFHiPc9+/FaOmmF0T8QxcXrTufUSk9qA52MvKiHpCIswjzrUqcv/f4H71iFfohDwefn5/MelZkYwV1bGRfIMi7PoQ+5qm7kByHJmB9BdASDHL5dMDFSGAgPcy+9paSMgkxgAFAMRegcUVo9C1T/zUErn0i9kkCPINznFIEbNTob3rsxBQR//4pAZIl79OarQ6URcK1SrKPk80aQmlFrqSbXOARa7cwgw4XwnzGMBw/bOZqpOYq1PqLNo0peQABAmoPqozxZada4g7zejn1AhGbCqgS5Q5pgfEhgxLhTyUtQzMf/7edQZRMqxsCpBja4tFtcYqvM5rCkLNvrQUb6SP2QBTAh0dtvhOIVjSPExIK3CdAGkFYTuTZWRSdNFrQyZifyWrvHkpGoDNf5raCKwp75c2eqQZEyuNmSN9ygdk7+9YdFPc5LzlTFpgnSgPWd6d1ettVlhIX7k015THPo/XbjKNUQrnODol0xfeOYqFsl6Psvl3Ez+avIdlHurL406jljbBIqv2lwRWwuThjN3ACi6vxlfOxlDni9nB/0g3ZeA0wfABp/lWocCyhPmfleckIn/lm60QXWd/17DuVCMqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39840400004)(346002)(366004)(6486002)(66556008)(6666004)(38350700002)(38100700002)(186003)(66476007)(316002)(36756003)(478600001)(26005)(9686003)(54906003)(2906002)(83380400001)(5660300002)(2616005)(956004)(86362001)(52116002)(7696005)(8676002)(4326008)(8936002)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?x8d3+V+GKKt09YGNJTtKLwbRq/Nlpa08mUHuBEuRggtFEpbvSa9k/C4fZPCg?=
- =?us-ascii?Q?G2g11U4dUGU2nXdY08rD9wBV8lAy3C2mbvE9VNU1yTTj4ASdfM9SsMbkea26?=
- =?us-ascii?Q?xssuOQjRX1J3fYjVgSArD3ISwd2K0vbAV4WAZuFYcZMJrwnWoJskqsZgIWoB?=
- =?us-ascii?Q?kgU4I781IDZsfbqG+EBay4lpeEsDdcqLJ5tATBu8T8XfOTdp4mwRSj22GrNe?=
- =?us-ascii?Q?YS8Bqq7S4Siyeba1qXVWgKM1cbTxxe72AULhlgi3qM/zHuVeE43moRw9HJPL?=
- =?us-ascii?Q?CAFjxe8FtTJbC/sDx1vmuBZx6r3L9QwWlq5Am6iT3E+QNZ/p7KPxF8kydHWy?=
- =?us-ascii?Q?DhmnAODjxrvPYytquUKlbYaXTHZxXzM757azWCRFiOFzGhzEl9bECHj8QfOF?=
- =?us-ascii?Q?X3GIgQraTIPqtTMYLtO4SKVXZkixVFM642ssSDumgQ5Gm2Z2UAJcr/6Ryavz?=
- =?us-ascii?Q?jPXd6uN4lFnERIi0pt2oqlzdoZhpoOSueaUaxcKlgcxrFs64Hr5L0Csr3/Aa?=
- =?us-ascii?Q?B134vh+Oc+MEcsf1n4YPvCTYgMKCrdJebUfBbZlk7ffp3RfAijTTacT8lc1c?=
- =?us-ascii?Q?vVjdJg/8ImrLcIXJYq8NTVdqCBi/KXBLZrmd9GbQ8zxEMQrv1sjaJScxPclh?=
- =?us-ascii?Q?pfqxSLY4Q7/C+IP8tNgiP6dpUfpFUBC8ZxcYkk5QbIMdtz+zfpenZEBuRgxc?=
- =?us-ascii?Q?m91ralwXkuuDv8n48BaxCtHT2FIGyYkwn8g4CkdYSWCOmTyl9SjbD687nJyJ?=
- =?us-ascii?Q?9Qp748cz8tFvYV33n1Aj1uNgdZJUB5B06ZgcqS1GSashzy+7RkkjCh/M3GV1?=
- =?us-ascii?Q?NwP9Ej6jaq2mXOri2cOzB20Oe8gKrquVjRrpZRNvaK5WRRWzExjdQ/zeLzzX?=
- =?us-ascii?Q?Qf7vExXXhznUfEARMrgg9Mowywil4NUuOLgTtUoX72mHJ5gMLh5CElztBPlP?=
- =?us-ascii?Q?E+uQ2eUUesTsUPxjc1RVrJLSPKwGS6T8vzQy4U90WQJ6QAuDqEK++p3XGOOd?=
- =?us-ascii?Q?T9FyZEbh1I2UKzFQYO42bTDb4l0bTvhTf2tZ7VsLiefRC5Xi0oTYLVr1/WFj?=
- =?us-ascii?Q?ex6NeSK1nPT+UetAx25SxVQZTL+Mw7rq75f+bj2dfFXi3RcEi39Yqsdx/hRs?=
- =?us-ascii?Q?L0VP+f24jll0HhTjyNMBixzjEiX6PpyDRq8/NJGfdWqY+D7VvtuHqI0EUEwu?=
- =?us-ascii?Q?a10wfffHeA4fOCoyy8H1lKIyv93cGQbr24TlqZfel8TthnjFM59WhMdHXVi/?=
- =?us-ascii?Q?iyG6WkBpsNXsJ+mNRfsAoC24Er1P97PPDczxbdRTHGGKvOLaK7Bdr3fqmKq1?=
- =?us-ascii?Q?YqNLBTYOvKwjwL6bYYKM6iH7?=
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fba04791-90c9-46f9-b9b6-08d952be69b5
-X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 18:26:42.1392
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15cddfa3-aef8-4c23-71f6-08d952bea47b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Jul 2021 18:28:20.5527
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ib/966MJEOvmUzMLkN+bGlk8UTxZZf46h45HmirIZe5kP3B3D9PuuAPtBeyCH9DdPxn0HO4AuD7AuwmVKJbmu95wRI2nPcmEucKk0ooWYe4b1m0TyX/UvKx1XcmFvwBo
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB7201
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: WoEd091ikfOBUo/C/baib+FLqnlvnKsJVwEwKbAdb2/bVP2WXu+ZoztmTeqqLX/xBqeYuHHkLIYzyBChhzm5vIjswvx2DeMnHznTcX/fqdenxDAk8iOH/dqnE7YWoe01
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB6890
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> > A test of 5.15-rc3 + a revert tested clean.
+> >
+> > Jason, do you need a patch to revert or should I send one.
+>=20
+> Please, I would like to hear from Haakon as well
+>=20
+The revert is https://lore.kernel.org/linux-rdma/1627583182-81330-1-git-sen=
+d-email-mike.marciniszyn@cornelisnetworks.com/T/#u.
 
-The net/sunrpc/xprtrdma module creates its QP using rdma_create_qp() and
-immediately post receives, implicitly assuming the QP is in the INIT
-state and thus valid for ib_post_recv().
-
-The patch noted in Fixes: removed the RESET->INIT modifiy from
-rdma_create_qp(), breaking NFS rdma for verbs providers that fail the
-ib_post_recv() for a bad state.
-
-This situation was proven using kprobes in rvt_post_recv() and
-rvt_modify_qp(). The traces showed that the rvt_post_recv() failed before
-ANY modify QP and that the current state was RESET.
-
-Fix by reverting the patch below.
-
-Fixes: dc70f7c3ed34 ("RDMA/cma: Remove unnecessary INIT->INIT transition")
-Cc: Haakon Bugge <haakon.bugge@oracle.com>
-Cc: Chuck Lever III <chuck.lever@oracle.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
----
- drivers/infiniband/core/cma.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 515a7e9..5d3b8b8 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -926,12 +926,25 @@ static int cma_init_ud_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
- 	return ret;
- }
- 
-+static int cma_init_conn_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
-+{
-+	struct ib_qp_attr qp_attr;
-+	int qp_attr_mask, ret;
-+
-+	qp_attr.qp_state = IB_QPS_INIT;
-+	ret = rdma_init_qp_attr(&id_priv->id, &qp_attr, &qp_attr_mask);
-+	if (ret)
-+		return ret;
-+
-+	return ib_modify_qp(qp, &qp_attr, qp_attr_mask);
-+}
-+
- int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
- 		   struct ib_qp_init_attr *qp_init_attr)
- {
- 	struct rdma_id_private *id_priv;
- 	struct ib_qp *qp;
--	int ret = 0;
-+	int ret;
- 
- 	id_priv = container_of(id, struct rdma_id_private, id);
- 	if (id->device != pd->device) {
-@@ -948,6 +961,8 @@ int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
- 
- 	if (id->qp_type == IB_QPT_UD)
- 		ret = cma_init_ud_qp(id_priv, qp);
-+	else
-+		ret = cma_init_conn_qp(id_priv, qp);
- 	if (ret)
- 		goto out_destroy;
- 
--- 
-1.8.3.1
-
+Mike
