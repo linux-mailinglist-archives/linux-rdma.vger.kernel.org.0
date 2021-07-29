@@ -2,194 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686713D9B13
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 03:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A353D9BBE
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 04:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhG2B2K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 28 Jul 2021 21:28:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:12418 "EHLO
+        id S233642AbhG2CXM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 28 Jul 2021 22:23:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7890 "EHLO
         szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233142AbhG2B2J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Jul 2021 21:28:09 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZt9d047tzcj9h;
-        Thu, 29 Jul 2021 09:24:37 +0800 (CST)
+        with ESMTP id S233553AbhG2CXL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 28 Jul 2021 22:23:11 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GZvNn2dZYz81ZB;
+        Thu, 29 Jul 2021 10:19:21 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 29 Jul 2021 09:28:05 +0800
-Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 29 Jul
- 2021 09:28:05 +0800
-Subject: Re: [bug report] RDMA/hns: Optimize cmd init and mode selection for
- hip08
-To:     Dan Carpenter <dan.carpenter@oracle.com>, <liuyixian@huawei.com>
-References: <20210728114334.GA5071@kili>
-CC:     <linux-rdma@vger.kernel.org>
+ 15.1.2176.2; Thu, 29 Jul 2021 10:22:59 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 29 Jul 2021 10:22:59 +0800
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <705c1370-242f-6b04-c76b-14f78d2d8c2b@huawei.com>
-Date:   Thu, 29 Jul 2021 09:28:04 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <leon@kernel.org>, <liangwenpeng@huawei.com>
+Subject: [PATCH v4 for-next 00/12] RDMA/hns: Add support for Dynamic Context Attachment
+Date:   Thu, 29 Jul 2021 10:19:11 +0800
+Message-ID: <1627525163-1683-1-git-send-email-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210728114334.GA5071@kili>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
+supports many RC QPs to share the WQE buffer in a memory pool. If a QP
+enables DCA feature, the WQE's buffer will not be allocated when creating
+but when the users start to post WRs. This will reduce the memory
+consumption when there are too many QPs are inactive.
 
+The related userspace series is named "libhns: Add support for Dynamic Context Attachment".
 
-On 2021/7/28 19:43, Dan Carpenter wrote:
-> Hello Yixian Liu,
-> 
-> The patch 3d50503b3b33: "RDMA/hns: Optimize cmd init and mode
-> selection for hip08" from Aug 29, 2019, leads to the following static
-> checker warning:
-> 
-> 	drivers/infiniband/hw/hns/hns_roce_main.c:926 hns_roce_init()
-> 	error: double unlocked '&hr_dev->cmd.poll_sem' (orig line 879)
-> 
-> drivers/infiniband/hw/hns/hns_roce_main.c
->     833 int hns_roce_init(struct hns_roce_dev *hr_dev)
->     834 {
->     835 	struct device *dev = hr_dev->dev;
->     836 	int ret;
->     837 
->     838 	if (hr_dev->hw->reset) {
->     839 		ret = hr_dev->hw->reset(hr_dev, true);
->     840 		if (ret) {
->     841 			dev_err(dev, "Reset RoCE engine failed!\n");
->     842 			return ret;
->     843 		}
->     844 	}
->     845 	hr_dev->is_reset = false;
->     846 
->     847 	if (hr_dev->hw->cmq_init) {
->     848 		ret = hr_dev->hw->cmq_init(hr_dev);
->     849 		if (ret) {
->     850 			dev_err(dev, "Init RoCE Command Queue failed!\n");
->     851 			goto error_failed_cmq_init;
->     852 		}
->     853 	}
->     854 
->     855 	ret = hr_dev->hw->hw_profile(hr_dev);
->     856 	if (ret) {
->     857 		dev_err(dev, "Get RoCE engine profile failed!\n");
->     858 		goto error_failed_cmd_init;
->     859 	}
->     860 
->     861 	ret = hns_roce_cmd_init(hr_dev);
->     862 	if (ret) {
->     863 		dev_err(dev, "cmd init failed!\n");
->     864 		goto error_failed_cmd_init;
->     865 	}
->     866 
->     867 	/* EQ depends on poll mode, event mode depends on EQ */
->     868 	ret = hr_dev->hw->init_eq(hr_dev);
->     869 	if (ret) {
->     870 		dev_err(dev, "eq init failed!\n");
->     871 		goto error_failed_eq_table;
->     872 	}
->     873 
->     874 	if (hr_dev->cmd_mod) {
->     875 		ret = hns_roce_cmd_use_events(hr_dev);
-> 
-> If hns_roce_cmd_use_events() fails then that means we haven't taken the
-> semaphore.
-> 
->     876 		if (ret) {
->     877 			dev_warn(dev,
->     878 				 "Cmd event  mode failed, set back to poll!\n");
->     879 			hns_roce_cmd_use_polling(hr_dev);
->                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> This releases a semaphore but we are not holding it.
-> 
-> 
->     880 		}
->     881 	}
->     882 
->     883 	ret = hns_roce_init_hem(hr_dev);
->     884 	if (ret) {
->     885 		dev_err(dev, "init HEM(Hardware Entry Memory) failed!\n");
->     886 		goto error_failed_init_hem;
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> Let's assume we hit this goto
-> 
->     887 	}
->     888 
->     889 	ret = hns_roce_setup_hca(hr_dev);
->     890 	if (ret) {
->     891 		dev_err(dev, "setup hca failed!\n");
->     892 		goto error_failed_setup_hca;
->     893 	}
->     894 
->     895 	if (hr_dev->hw->hw_init) {
->     896 		ret = hr_dev->hw->hw_init(hr_dev);
->     897 		if (ret) {
->     898 			dev_err(dev, "hw_init failed!\n");
->     899 			goto error_failed_engine_init;
->     900 		}
->     901 	}
->     902 
->     903 	INIT_LIST_HEAD(&hr_dev->qp_list);
->     904 	spin_lock_init(&hr_dev->qp_list_lock);
->     905 	INIT_LIST_HEAD(&hr_dev->dip_list);
->     906 	spin_lock_init(&hr_dev->dip_list_lock);
->     907 
->     908 	ret = hns_roce_register_device(hr_dev);
->     909 	if (ret)
->     910 		goto error_failed_register_device;
->     911 
->     912 	return 0;
->     913 
->     914 error_failed_register_device:
->     915 	if (hr_dev->hw->hw_exit)
->     916 		hr_dev->hw->hw_exit(hr_dev);
->     917 
->     918 error_failed_engine_init:
->     919 	hns_roce_cleanup_bitmap(hr_dev);
->     920 
->     921 error_failed_setup_hca:
->     922 	hns_roce_cleanup_hem(hr_dev);
->     923 
->     924 error_failed_init_hem:
->     925 	if (hr_dev->cmd_mod)
-> --> 926 		hns_roce_cmd_use_polling(hr_dev);
->                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> This will release the semaphore a second time again.
-> 
->     927 	hr_dev->hw->cleanup_eq(hr_dev);
->     928 
->     929 error_failed_eq_table:
->     930 	hns_roce_cmd_cleanup(hr_dev);
->     931 
->     932 error_failed_cmd_init:
->     933 	if (hr_dev->hw->cmq_exit)
->     934 		hr_dev->hw->cmq_exit(hr_dev);
->     935 
->     936 error_failed_cmq_init:
->     937 	if (hr_dev->hw->reset) {
->     938 		if (hr_dev->hw->reset(hr_dev, false))
->     939 			dev_err(dev, "Dereset RoCE engine failed!\n");
->     940 	}
->     941 
->     942 	return ret;
->     943 }
-> 
-> regards,
-> dan carpenter
-> .
-> 
+Changes since v3:
+* alloc_dca_states() replaces GFP_NOWAIT with the GFP_KERNEL in #1.
+* Remove the calculation of DCA percentage in #12.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1627356452-30564-1-git-send-email-liangwenpeng@huawei.com/
 
-Thank you for reporting this bug and I will submit a patch to fix it
-as soon as possible.
+Changes since v2:
+* Refactor flow of modify_qp and then add a shared memory mechanism to
+  synchronize status of DCA, which can save more memory than previous
+  scheme.
+* Remove some inline functions from #1.
+* Add support for dumping DCA mem status in restrack.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1620732161-27180-1-git-send-email-liweihang@huawei.com/
 
-regards,
-Wenpeng Liang
+Changes since v1:
+* Modify return type of hns_roce_enable_dca() to void.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1620650889-61650-1-git-send-email-liweihang@huawei.com/
+
+Two RFC versions of this series has been sent before, and it's associated
+with the userspace one "libhns: Add support for Dynamic Context
+Attachment".
+
+Changes since RFC v2:
+* Just fix a typo in commit message of #6.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1611394994-50363-1-git-send-email-liweihang@huawei.com/
+
+Changes since RFC v1:
+* Replace all GFP_ATOMIC with GFP_NOWAIT, because the former may use
+  emergency pool if no regular memory can be found.
+* Change size of cap_flags of alloc_ucontext_resp from 32 to 64 to avoid
+  a potential problem when pass it back to the userspace.
+* Move definition of HNS_ROCE_CAP_FLAG_DCA_MODE to hns-abi.h.
+* Rename free_mem_states() to free_dca_states() in #1.
+* Link: https://patchwork.kernel.org/project/linux-rdma/cover/1610706138-4219-1-git-send-email-liweihang@huawei.com/
+
+Xi Wang (12):
+  RDMA/hns: Introduce DCA for RC QP
+  RDMA/hns: Add method for shrinking DCA memory pool
+  RDMA/hns: Configure DCA mode for the userspace QP
+  RDMA/hns: Refactor QP modify flow
+  RDMA/hns: Add method for attaching WQE buffer
+  RDMA/hns: Setup the configuration of WQE addressing to QPC
+  RDMA/hns: Add method to detach WQE buffer
+  RDMA/hns: Add method to query WQE buffer's address
+  RDMA/hns: Add a shared memory to sync DCA status
+  RDMA/hns: Sync DCA status by the shared memory
+  RDMA/nldev: Add detailed CTX information support
+  RDMA/hns: Dump detailed driver-specific UCTX
+
+ drivers/infiniband/core/device.c              |    1 +
+ drivers/infiniband/core/nldev.c               |    8 +-
+ drivers/infiniband/hw/hns/Makefile            |    2 +-
+ drivers/infiniband/hw/hns/hns_roce_dca.c      | 1438 +++++++++++++++++++++++++
+ drivers/infiniband/hw/hns/hns_roce_dca.h      |   73 ++
+ drivers/infiniband/hw/hns/hns_roce_device.h   |   47 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v1.c    |   12 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  173 ++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h    |    1 +
+ drivers/infiniband/hw/hns/hns_roce_main.c     |  128 ++-
+ drivers/infiniband/hw/hns/hns_roce_qp.c       |  169 ++-
+ drivers/infiniband/hw/hns/hns_roce_restrack.c |   50 +
+ include/rdma/ib_verbs.h                       |    1 +
+ include/uapi/rdma/hns-abi.h                   |   86 ++
+ 14 files changed, 2113 insertions(+), 76 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.c
+ create mode 100644 drivers/infiniband/hw/hns/hns_roce_dca.h
+
+--
+2.8.1
+
