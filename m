@@ -2,159 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310D33DAAC6
-	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 20:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDE63DAADE
+	for <lists+linux-rdma@lfdr.de>; Thu, 29 Jul 2021 20:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229620AbhG2SJC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jul 2021 14:09:02 -0400
-Received: from mail-mw2nam12on2082.outbound.protection.outlook.com ([40.107.244.82]:32544
+        id S229761AbhG2S0t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 29 Jul 2021 14:26:49 -0400
+Received: from mail-mw2nam12on2098.outbound.protection.outlook.com ([40.107.244.98]:30452
         "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229614AbhG2SJC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Jul 2021 14:09:02 -0400
+        id S229620AbhG2S0s (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 29 Jul 2021 14:26:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WjbAbN9ER60J3q3N03ZVQonGd1E1zablkwB5m/z0KOsT7i66a5kpq7ujql2NbLtwefrWcTeqFB+dsBz4eFAF23ArUeKVm506qgijgcD5Y96FJLP+OTHH+dpzixOQQ+CMjpFi95vv3kLfa7iPBTPciQiMQowBarDZos5lycEGcKo2qyVYeI16j3sovpw9jekZr6zbR/ljwHZe37Ko7ZuE0WsHXa5mfyTzqIRQxVi5d+RLF6GPC9g/yhFl/8GRFbefkZG0y+v3A4f6K+IK7cMKupVh+oVwGwpjv4BEtBDFgYYCM+vcP64SMKsSGvIIgEwnQ3Yn3m7x2gDlPLcS4S4Grg==
+ b=cqA48ZuIaBmTf9rvN+GXg25tnk5hFeOqfYNqTBshuEn3RxHH9idTctSmy8654R8FTnHrPQCHz6S8g+zTpBn1WJ105Zjmr65SzhyoMxtysCh1hslNchKHCu27vQe8EXG1IRBQkmqmLUfBUqfQNjiuW8QAKKi4wy1vPFvV68EBPwvxl1d58t/YJ5ChQy9LGrGUSuEApnKpVpjFHWTf7NB7EHbcOYt0jWDmaoDbu8k7SQZIoDlu9xxha3z6bu9mvlVwadBMxi+p+SEz2K7QMZINDMoPMaS0XwAOkrLG+MZOz6N70RRkEhsxi7XHA8nUKmtfBO9+1NcpSdCIAgdWkyv48w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jia6VYwix3lZTljkvgB6XLFJyZBWPqZm+GG/smpyN1U=;
- b=lXYEfz9b3wOqPq/tgThf2yu+Az/7Z6Z7xbeuDBUAettZdil5+R8wkHfDNzRjTAKAo5KwUeokn47MdMQGNQnvFVmjodNCap+SEOzgwwSwKgOBZ7itQ8ss2Yy2IKSHvmymWR9DmogZEPqyFjlztyP/ZYH/FKM0VBFqQFI4jkyvLPJfH7Jhn9Kc1yFcFVGwP7CIcpDNg31kq0oRZlDzCdu9JUvzpn8/L2V7ux8NUh89Pz+HYfSJ8fFtqQNUj5WlJ9qNQIN4jl/HCa/G3Rz/YI8fYD13KoUNAIaFhh2HtVo63F3E0Bmmqtvvljp6L2hxmTEl21HHuZcpMrhU641O85Xw0A==
+ bh=Mgc/2/NebGuU6ozQLFVNIzxffsqZjb60vrIQkBBM60Y=;
+ b=a6yR/HugICntdYR9zhWXMgogBT2XA0d9rSNFdYJ+9F8cAZyUw2LYWdZLz6Ha1Il+FBsbbc615DxUC2xo4aj2Gmqog6YPbhij/xxZxm+lKdUGm/2WygIXwVa/IENxkIaaEOWbxjyacEqJkB/7XunlSR6DW/ZFbM0fZpGDNA+uzIB5O7iyFBmEawQ1AdxJL1O9p7Qq3l53LM1CM2nELq3ZyukwBu2kbxFgoNNs3dVSl86D0MFPlgs4C+tR5pQTxFX0r1rjLuSy81cl17oiYtNfmQEKRYSAyfWkLQnLVAoCucKFUn+04pkZ90yKqt3bt3rXMEwbtas6pQ8PoM4wlvcj7Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jia6VYwix3lZTljkvgB6XLFJyZBWPqZm+GG/smpyN1U=;
- b=gnCez4ADyBTcjM7NbcuJtTHwlk9zU9SVC8qkmaQirhrUnfHyBU51aRInx/3B6eBy+rv12gfVldaC19X6jM/lf8yMmJH1G45r5wVpMbQX4qpMipoK0FDLF9lV8sfzfRVEEzHcadgXnwd2APuO9pxJ1BzTfRZR8086Q+5jJuJKYxaSkCmVvphD/cD1QsXZay5Mo/yIIGeJKGCnQwhq++b67KWkm5V1OF1+Vvj7ZH204ZTvzQUN/WQLK8mX9nj1kFB48F3QzCc2lwWBMK/BZRQdHng224wYdYhKG9b0id5I6j3sv11mWmYpzOI2VZXQ78Tp8myHlJHNxEXkdjFMEjmutQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5224.namprd12.prod.outlook.com (2603:10b6:208:319::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.26; Thu, 29 Jul
- 2021 18:08:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.022; Thu, 29 Jul 2021
- 18:08:57 +0000
-Date:   Thu, 29 Jul 2021 15:08:55 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Shay Drory <shayd@nvidia.com>,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH mlx5-next 1/5] RDMA/mlx5: Replace struct mlx5_core_mkey
- by u32 key
-Message-ID: <20210729180855.GA2401905@nvidia.com>
-References: <cover.1624362290.git.leonro@nvidia.com>
- <2e0feba18d8fe310b2ed38fbfbdd4af7a9b84bf1.1624362290.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2e0feba18d8fe310b2ed38fbfbdd4af7a9b84bf1.1624362290.git.leonro@nvidia.com>
-X-ClientProxiedBy: CH0PR03CA0102.namprd03.prod.outlook.com
- (2603:10b6:610:cd::17) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ bh=Mgc/2/NebGuU6ozQLFVNIzxffsqZjb60vrIQkBBM60Y=;
+ b=hyRCWdkNqrnYzuxhZshZ6uaG2IqFFbtNLXJOKOuz6hUTbnPS54NGY0Vw4bRqYE/QcfS76f3gLgSATUvtekUsNv1mmXWTs7o3Q5G1OEMapifhXINBT+xnzQRO8HzGLeyqFhpW+GaLxzu1+mKJpb9xqc9LpjncqOKvDmJ3qqcYj/xV8G5tt+3iiSASWrzGvExsaFQq6oxLw1nPIVbzRNbJbTrMEpe2Nvp/yin4FDk/werUJIzUAhkahsw7fZLj4kMPwexKvWQSLGCxiL7r8xvLWeAG9AOxkDNrsLwUZLU89kYy1h0GiXkq1E59aJwzngiNeK67P72bCXXztSIs2Kg9Ng==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
+ CH0PR01MB7201.prod.exchangelabs.com (2603:10b6:610:fe::5) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4373.18; Thu, 29 Jul 2021 18:26:42 +0000
+Received: from CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::f16e:8a3e:3b8d:8a34]) by CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::f16e:8a3e:3b8d:8a34%5]) with mapi id 15.20.4373.022; Thu, 29 Jul 2021
+ 18:26:42 +0000
+From:   mike.marciniszyn@cornelisnetworks.com
+To:     dledford@redhat.com, jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Haakon Bugge <haakon.bugge@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>
+Subject: [PATCH for-rc] RDMA/cma: Revert INIT-INIT patch
+Date:   Thu, 29 Jul 2021 14:26:22 -0400
+Message-Id: <1627583182-81330-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: MN2PR12CA0032.namprd12.prod.outlook.com
+ (2603:10b6:208:a8::45) To CH0PR01MB7153.prod.exchangelabs.com
+ (2603:10b6:610:ea::7)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0102.namprd03.prod.outlook.com (2603:10b6:610:cd::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19 via Frontend Transport; Thu, 29 Jul 2021 18:08:56 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1m9ASl-00A6Wy-LS; Thu, 29 Jul 2021 15:08:55 -0300
+Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by MN2PR12CA0032.namprd12.prod.outlook.com (2603:10b6:208:a8::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Thu, 29 Jul 2021 18:26:41 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e2cf68ce-a87f-4f1b-8727-08d952bbeec8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5224:
+X-MS-Office365-Filtering-Correlation-Id: fba04791-90c9-46f9-b9b6-08d952be69b5
+X-MS-TrafficTypeDiagnostic: CH0PR01MB7201:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52245C6F86E684444D131656C2EB9@BL1PR12MB5224.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-Microsoft-Antispam-PRVS: <CH0PR01MB720106AA4FF53DA2DB1893A9F2EB9@CH0PR01MB7201.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:229;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0Hpy4ppUEvzLKBpnJctuKQmPUrCCmOfnBCE2mgcYLzP/LkFXW4Or48JInx2ueZls5rNhpHe0rK54z1Kq6bUNmC0SfnedG2thCJk88jntm2zzEjOF9ekqhf0fwrB51j943pBvhJTomydZo/hsV8CGKHGVxBuK4hS6VLaUKTx0S8t+kNygnDOala75DRIYOt/kOweo0PJKxg32MHZPwnfW+I3YrH5vZSuxVISh6k6BuLATDl7DBjYym3Hpf2I46ZCFHj1Znh8NyRMEowgBV6ckhU8vwuYPN0kddU+WAxiT8WZJjGXO7cCtCqv2DSXcrGC8tOViCCWdJ690QsfYPt4NW17HDyz7YulgkZPu88pCI0Z6ZGpOXNvfLqnEyMwEmw7Ti9W3KQHeWYXMSEO+25NJDYt+X0rxva//sqdWbBwEVZbdBzVgLcGeNYzBiGqwf2r76fSHRyDlaCSgPBPHUdL34RpeWwChJIEcDbIGGpPzns4NaFlphpfTso7BMddCuMq1U+CeS+J7OkdJ/Ru/U13b/MGtG44fSXrERXDjD+Q+84+MAyQLShPYzhsLoM69tEdSG/nyRQ8YVWSm+F+w92dv5PceiCxh80ny0HFwDb5q5P74iwASbYfjqjmnmpxuQEWIisrWGQWMsdCHS3KSn5+4bw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(366004)(136003)(376002)(6916009)(9746002)(1076003)(316002)(186003)(5660300002)(9786002)(2616005)(426003)(38100700002)(36756003)(8676002)(4326008)(478600001)(66556008)(33656002)(66946007)(66476007)(8936002)(2906002)(83380400001)(26005)(86362001)(54906003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: K1DzqIfNjNZUvQY2KcQfz7LBaueKUAJFjBlugn4qTdrQslg1r27lbL+jbfIic/cx6d3lGZLfCZ5tBfrd4p0+vuMvVPxmLzyEQeOIYzR7lDqvXN6fiEExlcV3a0AyzJ/fOFHiPc9+/FaOmmF0T8QxcXrTufUSk9qA52MvKiHpCIswjzrUqcv/f4H71iFfohDwefn5/MelZkYwV1bGRfIMi7PoQ+5qm7kByHJmB9BdASDHL5dMDFSGAgPcy+9paSMgkxgAFAMRegcUVo9C1T/zUErn0i9kkCPINznFIEbNTob3rsxBQR//4pAZIl79OarQ6URcK1SrKPk80aQmlFrqSbXOARa7cwgw4XwnzGMBw/bOZqpOYq1PqLNo0peQABAmoPqozxZada4g7zejn1AhGbCqgS5Q5pgfEhgxLhTyUtQzMf/7edQZRMqxsCpBja4tFtcYqvM5rCkLNvrQUb6SP2QBTAh0dtvhOIVjSPExIK3CdAGkFYTuTZWRSdNFrQyZifyWrvHkpGoDNf5raCKwp75c2eqQZEyuNmSN9ygdk7+9YdFPc5LzlTFpgnSgPWd6d1ettVlhIX7k015THPo/XbjKNUQrnODol0xfeOYqFsl6Psvl3Ez+avIdlHurL406jljbBIqv2lwRWwuThjN3ACi6vxlfOxlDni9nB/0g3ZeA0wfABp/lWocCyhPmfleckIn/lm60QXWd/17DuVCMqw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(39840400004)(346002)(366004)(6486002)(66556008)(6666004)(38350700002)(38100700002)(186003)(66476007)(316002)(36756003)(478600001)(26005)(9686003)(54906003)(2906002)(83380400001)(5660300002)(2616005)(956004)(86362001)(52116002)(7696005)(8676002)(4326008)(8936002)(66946007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eqe8CVUduB4VZ1+i8pZO5cBMd/l5VoJTGCLTJJSknCSh6lIyKjrx+PZyHk6q?=
- =?us-ascii?Q?PktZUn+F8zzSXrMqjlSYQEfFYurP4OjuZco/VG0KNKYPSKdCKKJRf5A7uPeW?=
- =?us-ascii?Q?Tx9T04c9UKrRWOGxYK9A4YscUHW12Lt8G8/I7e9W7MJJ2FTNXw/Kuwk9VZPb?=
- =?us-ascii?Q?J1yhM+WBXPxmreGxYKbwdW7T/XmdtVscF5hvrO7lYdRCA0A504AMSWEV4ZQn?=
- =?us-ascii?Q?lpOeock3ohmIT0qVHQ9Pdw8PzxNam8NfDjo1dBll5s6lkQGYu+rwbbvIdqTL?=
- =?us-ascii?Q?4FXyoBdK0iE7EmCJuLDPqkO/xraYPerhckXveRQLUC9hQgghoLUEMHMdmzd/?=
- =?us-ascii?Q?ogfkW11Pbgom9ndWrhw17y0TvH83MwlZu+GHHFGYSVZMO6a5xcvGtIsXCcNu?=
- =?us-ascii?Q?pz6S+zxVk9u306nrSV7kACmMtQ+pRwvOtuDRUtNqA//T1NSYeCdUYrneLinA?=
- =?us-ascii?Q?Us7PY5MN7Tk6NcTnc68t/DK1TK/XlC6jNoLF6N2yydAmF3sxKLi6eIfRYrLB?=
- =?us-ascii?Q?P0dEZv/JdeDehUF3cpB8ZzMzsGd/XbrzKlhJWwuI4Zvs2S7anC/KockWyUoo?=
- =?us-ascii?Q?MsVlkMIpM2AJ3U638uGUUDxHLxbb8TqmwH0oi/eh/mlB689JNQJe3YrnFXX+?=
- =?us-ascii?Q?9oOWdTn2PaFLhjEtOIAGGRWjTdRvnFVVtfT0PYd0nLpjzM2woCV1zTOnypLS?=
- =?us-ascii?Q?xdvGpoQyJb7ybzGaBeCbj71xBgwNEq0Mp+53cKm/rbsy6jEq6Wre8iIUa05I?=
- =?us-ascii?Q?MpQ4mgKCUfaLPuew+6mc+zZ+H3Hu79X3bZIsl8Lkx24iy9UJKBWbftnqfAZ0?=
- =?us-ascii?Q?8UUstYYcdkgo342Ue71BjIN5DzjpHBqFKC1wB1yp6reYzFR+bwkUY2wQEhNv?=
- =?us-ascii?Q?QfVvDRCDONtgD0UbwGG/ojNkSwlf/i9KmmUAUSd0z5J01hGvpxnEbxlblyVm?=
- =?us-ascii?Q?SPfR+QygPzpZVD/FvS6bezsLuDf3f3NAqa/jh8qkrb5hBaDV7Sl58xgfu+sN?=
- =?us-ascii?Q?LDsAcUC2Bhg77+WZd06vjMnCjUYO/e83S2be6aNdZo7lnOJcdZ6GwMN7+9WA?=
- =?us-ascii?Q?j0zbLWQLHGbjW87ymigNJKNRSCFSAt+AYUtpD3VOm0L8gnFn8tUJBoVoxVLU?=
- =?us-ascii?Q?6vb5ij85noLandSvtIy3HzAP9B7NL4Let++dZzvnfRjEh0A17nhfEZB+gfdz?=
- =?us-ascii?Q?hv2FubiAghYxXHc738A4kac3cIe8Rv7LHbbEUdhtpRoilrABN4X8uHJRsgeG?=
- =?us-ascii?Q?/rUPGImZW8FEfwjUNA/EhIrvU+6+hE4EWJl0+o18me8LJut74vOW0HCfd3vz?=
- =?us-ascii?Q?fYiDE1ERkb+8MSBWM+ua4mKo?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2cf68ce-a87f-4f1b-8727-08d952bbeec8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?x8d3+V+GKKt09YGNJTtKLwbRq/Nlpa08mUHuBEuRggtFEpbvSa9k/C4fZPCg?=
+ =?us-ascii?Q?G2g11U4dUGU2nXdY08rD9wBV8lAy3C2mbvE9VNU1yTTj4ASdfM9SsMbkea26?=
+ =?us-ascii?Q?xssuOQjRX1J3fYjVgSArD3ISwd2K0vbAV4WAZuFYcZMJrwnWoJskqsZgIWoB?=
+ =?us-ascii?Q?kgU4I781IDZsfbqG+EBay4lpeEsDdcqLJ5tATBu8T8XfOTdp4mwRSj22GrNe?=
+ =?us-ascii?Q?YS8Bqq7S4Siyeba1qXVWgKM1cbTxxe72AULhlgi3qM/zHuVeE43moRw9HJPL?=
+ =?us-ascii?Q?CAFjxe8FtTJbC/sDx1vmuBZx6r3L9QwWlq5Am6iT3E+QNZ/p7KPxF8kydHWy?=
+ =?us-ascii?Q?DhmnAODjxrvPYytquUKlbYaXTHZxXzM757azWCRFiOFzGhzEl9bECHj8QfOF?=
+ =?us-ascii?Q?X3GIgQraTIPqtTMYLtO4SKVXZkixVFM642ssSDumgQ5Gm2Z2UAJcr/6Ryavz?=
+ =?us-ascii?Q?jPXd6uN4lFnERIi0pt2oqlzdoZhpoOSueaUaxcKlgcxrFs64Hr5L0Csr3/Aa?=
+ =?us-ascii?Q?B134vh+Oc+MEcsf1n4YPvCTYgMKCrdJebUfBbZlk7ffp3RfAijTTacT8lc1c?=
+ =?us-ascii?Q?vVjdJg/8ImrLcIXJYq8NTVdqCBi/KXBLZrmd9GbQ8zxEMQrv1sjaJScxPclh?=
+ =?us-ascii?Q?pfqxSLY4Q7/C+IP8tNgiP6dpUfpFUBC8ZxcYkk5QbIMdtz+zfpenZEBuRgxc?=
+ =?us-ascii?Q?m91ralwXkuuDv8n48BaxCtHT2FIGyYkwn8g4CkdYSWCOmTyl9SjbD687nJyJ?=
+ =?us-ascii?Q?9Qp748cz8tFvYV33n1Aj1uNgdZJUB5B06ZgcqS1GSashzy+7RkkjCh/M3GV1?=
+ =?us-ascii?Q?NwP9Ej6jaq2mXOri2cOzB20Oe8gKrquVjRrpZRNvaK5WRRWzExjdQ/zeLzzX?=
+ =?us-ascii?Q?Qf7vExXXhznUfEARMrgg9Mowywil4NUuOLgTtUoX72mHJ5gMLh5CElztBPlP?=
+ =?us-ascii?Q?E+uQ2eUUesTsUPxjc1RVrJLSPKwGS6T8vzQy4U90WQJ6QAuDqEK++p3XGOOd?=
+ =?us-ascii?Q?T9FyZEbh1I2UKzFQYO42bTDb4l0bTvhTf2tZ7VsLiefRC5Xi0oTYLVr1/WFj?=
+ =?us-ascii?Q?ex6NeSK1nPT+UetAx25SxVQZTL+Mw7rq75f+bj2dfFXi3RcEi39Yqsdx/hRs?=
+ =?us-ascii?Q?L0VP+f24jll0HhTjyNMBixzjEiX6PpyDRq8/NJGfdWqY+D7VvtuHqI0EUEwu?=
+ =?us-ascii?Q?a10wfffHeA4fOCoyy8H1lKIyv93cGQbr24TlqZfel8TthnjFM59WhMdHXVi/?=
+ =?us-ascii?Q?iyG6WkBpsNXsJ+mNRfsAoC24Er1P97PPDczxbdRTHGGKvOLaK7Bdr3fqmKq1?=
+ =?us-ascii?Q?YqNLBTYOvKwjwL6bYYKM6iH7?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fba04791-90c9-46f9-b9b6-08d952be69b5
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 18:08:56.9869
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jul 2021 18:26:42.1392
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MEFJWs1Td8EHQ0czIOMF5V6wtbbei5raz05rI15rig1QFKoEq9qgomGuLO2R5F3W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5224
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ib/966MJEOvmUzMLkN+bGlk8UTxZZf46h45HmirIZe5kP3B3D9PuuAPtBeyCH9DdPxn0HO4AuD7AuwmVKJbmu95wRI2nPcmEucKk0ooWYe4b1m0TyX/UvKx1XcmFvwBo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB7201
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 03:08:19PM +0300, Leon Romanovsky wrote:
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-> index 03dc6c22843f..ae0472d92801 100644
-> +++ b/drivers/infiniband/hw/mlx5/mr.c
-> @@ -89,24 +89,39 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
->  	MLX5_SET64(mkc, mkc, start_addr, start_addr);
->  }
->  
-> -static void
-> -assign_mkey_variant(struct mlx5_ib_dev *dev, struct mlx5_core_mkey *mkey,
-> -		    u32 *in)
-> +static void assign_mkey_variant(struct mlx5_ib_dev *dev, u32 *mkey, u32 *in)
->  {
->  	u8 key = atomic_inc_return(&dev->mkey_var);
->  	void *mkc;
->  
->  	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
->  	MLX5_SET(mkc, mkc, mkey_7_0, key);
-> -	mkey->key = key;
-> +	*mkey = key;
-> +}
+The net/sunrpc/xprtrdma module creates its QP using rdma_create_qp() and
+immediately post receives, implicitly assuming the QP is in the INIT
+state and thus valid for ib_post_recv().
 
-Can this be tidied please? We set both mkey_7_0 and mkey then pass
-them into mlx5_core_create_mkey which then does
+The patch noted in Fixes: removed the RESET->INIT modifiy from
+rdma_create_qp(), breaking NFS rdma for verbs providers that fail the
+ib_post_recv() for a bad state.
 
-	*mkey = (u32)mlx5_mkey_variant(*mkey) | mlx5_idx_to_mkey(mkey_index);
+This situation was proven using kprobes in rvt_post_recv() and
+rvt_modify_qp(). The traces showed that the rvt_post_recv() failed before
+ANY modify QP and that the current state was RESET.
 
-But isn't mlx5_mkey_variant(*mkey) just MLX5_GET(mkc, in, mkey_7_0)
-and we can get rid of this confusing sequence?
+Fix by reverting the patch below.
 
-> +
-> +static void set_mkey_fields(void *mkc, struct mlx5_core_mkey *mkey)
-> +{
-> +	mkey->iova = MLX5_GET64(mkc, mkc, start_addr);
-> +	mkey->size = MLX5_GET64(mkc, mkc, len);
-> +	mkey->pd = MLX5_GET(mkc, mkc, pd);
-> +	init_waitqueue_head(&mkey->wait);
->  }
+Fixes: dc70f7c3ed34 ("RDMA/cma: Remove unnecessary INIT->INIT transition")
+Cc: Haakon Bugge <haakon.bugge@oracle.com>
+Cc: Chuck Lever III <chuck.lever@oracle.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+---
+ drivers/infiniband/core/cma.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-Why isn't this called through the create_mkey_callback() path? I think
-evey mkey should always have a valid waitqueue
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 515a7e9..5d3b8b8 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -926,12 +926,25 @@ static int cma_init_ud_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
+ 	return ret;
+ }
+ 
++static int cma_init_conn_qp(struct rdma_id_private *id_priv, struct ib_qp *qp)
++{
++	struct ib_qp_attr qp_attr;
++	int qp_attr_mask, ret;
++
++	qp_attr.qp_state = IB_QPS_INIT;
++	ret = rdma_init_qp_attr(&id_priv->id, &qp_attr, &qp_attr_mask);
++	if (ret)
++		return ret;
++
++	return ib_modify_qp(qp, &qp_attr, qp_attr_mask);
++}
++
+ int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
+ 		   struct ib_qp_init_attr *qp_init_attr)
+ {
+ 	struct rdma_id_private *id_priv;
+ 	struct ib_qp *qp;
+-	int ret = 0;
++	int ret;
+ 
+ 	id_priv = container_of(id, struct rdma_id_private, id);
+ 	if (id->device != pd->device) {
+@@ -948,6 +961,8 @@ int rdma_create_qp(struct rdma_cm_id *id, struct ib_pd *pd,
+ 
+ 	if (id->qp_type == IB_QPT_UD)
+ 		ret = cma_init_ud_qp(id_priv, qp);
++	else
++		ret = cma_init_conn_qp(id_priv, qp);
+ 	if (ret)
+ 		goto out_destroy;
+ 
+-- 
+1.8.3.1
 
-Jason
