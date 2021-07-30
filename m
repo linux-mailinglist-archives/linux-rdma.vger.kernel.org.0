@@ -2,58 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E909D3DB92C
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 15:18:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E3A73DB92D
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 15:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhG3NSl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Jul 2021 09:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50540 "EHLO
+        id S238912AbhG3NSm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Jul 2021 09:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238890AbhG3NSk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Jul 2021 09:18:40 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18AA1C06175F
+        with ESMTP id S238890AbhG3NSl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Jul 2021 09:18:41 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F7DC06175F
         for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 06:18:36 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id b7so11305126wri.8
+Received: by mail-wr1-x429.google.com with SMTP id k4so476784wrc.0
         for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 06:18:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I23W8uRoYmeDeWltvLdj9fSm/dRKdVOIpfqaw3NOMS0=;
-        b=DB0dzy8CBrXuhgxjNZBDYqMMAxbC/RQ28vwrShzk//CvdvgYnS+l57vaWFEFtZoNYv
-         JHMVr+G/ZOGuEHu/6mndAoUV0KuxuTyGTuwxV1Vu4mwsr1qlzCkMb9Fi2b9GmDVus/b5
-         vmEuZEndwErXHQQqqJBUOjopmzy2fGrMWqOa2EHCUArQRX9P3QEDcqfOvAcG04ux0s5m
-         mdZLB6YdwWxm379n48LeO+No3rtRHMDhT1WfklEQ2Mx3+u99o6/yD5r8Ae2/vggWSsgB
-         zyQGyODsTcoPukFXfBPsgsrr/ip3VpNtJBR1OAnAqCfYVNl05VS1XB193PVcRiPbz/rP
-         YfEQ==
+        bh=Z+vkdV0HH1tgeL7gC1IU56T6CEYngD6yq5bmbkBJLK0=;
+        b=cReyz2YqEOaOyTt8K8fIlWJbExcJjR9/OW7uxGNDrNvskUa1WsCM2lchm23H0wICjz
+         5mYa9c9o+EKtQvU49ajq9/T8HtWSn+TXiIgf/Q1PyPuWAciiQ4EInoWwNMW7XW3xQxQc
+         CCG1H34bv6Qo2ztdLSqBfnH7W9OJGNhCYO0PkP3jgtWEP20Z6dWaF6cPciNHq3wJNfa3
+         e6aRB1yImN3PeegF5U2jFq+eLLq55tgyeZBa4qLf4pC9Xw0D2YJbdgCDxMzpJ+E2f6Wx
+         mnBcoGAIHry0C+LNQATlC9TfKAy7W3qeYtVeBb5szz5jwzx8NjoDHkeiDw+b5oSVEKNs
+         TpLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I23W8uRoYmeDeWltvLdj9fSm/dRKdVOIpfqaw3NOMS0=;
-        b=mA2z3CdG1WR9qnQYOgFmDcv4GGS4lMFXGImKyqLlpKIsdaq0sQ5LWWstj5ltXvuvoQ
-         xWwnunM+U0fpS7GysoUo1A6qK5H9DKBzlQdNwj56YjG0yJcHf/Yj500zXpbes4OGEa4C
-         EWRr2C5SN1migAg6iKVey5edG+78BpbVM43HpKAKUCn+EucgOUiaM5OKfr9z79O6iwKz
-         ee1LYDuSLMvxLS1AAZ0nF2xIpJvScjwYvpSQEjPZk2RLy8azPaE4nCigAfCafqTgTzjp
-         VRQMIwZPG/JLZMOAJxsAlbbPcTPSKCPAPJaeyp7k4l2GVMCowiz30EIDcP0EPCtOWwei
-         LbDA==
-X-Gm-Message-State: AOAM531JOyU1izYc54l80hWRb9uRmpaHwNhApyOE9n8+6PllAzgMwdBO
-        jyNsqMDMQ+6/BhBGJRaLmRBAnplyVBzZ1w==
-X-Google-Smtp-Source: ABdhPJxjWn1dOy4kXDQRqqh4jsx+SeuGbvHSTcpO/Jjn5wbvPFjZvWUW7ptVNSE0el183t/s406lXA==
-X-Received: by 2002:a5d:5906:: with SMTP id v6mr3092308wrd.194.1627651114649;
-        Fri, 30 Jul 2021 06:18:34 -0700 (PDT)
+        bh=Z+vkdV0HH1tgeL7gC1IU56T6CEYngD6yq5bmbkBJLK0=;
+        b=XClpqdrs4BnZn6ymlGJpY+u4lvVUeY4HzRvKmiBaHtz43IRWwoaRae8OGX0N1LF3VS
+         syav00mDqXe/ieaIbabRSIRf4B3aW2Orlg9VmW6SIc1qPuGX4FLVwuzJD/SLfzyhGQMz
+         hn9xatJ/8ALMUM5cQhbWNj3knQJJV71dmq6x5oHUZg7hJqjtNwwtuqrezh4kxR9BGmHD
+         F586gmCiQhNlt0L9PZ6dmmOlzBImOJ8xH2d88G+/7t845RM3eLiWV6njby7OT2ZiDCyE
+         GIQy59T/GMyYDHrbCMLLJiJUkGuQUJbYArfIVg7Su/xIGSBKNeFfxTMCUEZBIg4BoFiR
+         5Tsg==
+X-Gm-Message-State: AOAM533F5+U89IJlJgFqDk/K8UdT3Huw1VzYN08G1iq8UVXmw/Jg75Qq
+        h9mJsMWmh7Xth39NPOKh06UEsxi5fu1/WA==
+X-Google-Smtp-Source: ABdhPJyojkSvo0gjiOVAI2gilWd9tFGjskosd0pXWw4JVKuWPQqWmPznOHnK/ZeIlNh5Q8LkqMJHNg==
+X-Received: by 2002:adf:c5d2:: with SMTP id v18mr3034244wrg.386.1627651115466;
+        Fri, 30 Jul 2021 06:18:35 -0700 (PDT)
 Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:496a:8500:4512:4a6e:16f3:2377])
         by smtp.gmail.com with ESMTPSA id z5sm1626012wmp.26.2021.07.30.06.18.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 06:18:34 -0700 (PDT)
+        Fri, 30 Jul 2021 06:18:35 -0700 (PDT)
 From:   Jack Wang <jinpu.wang@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
-Subject: [PATCH for-next 01/10] RDMA/rtrs-clt: During add_path change for_new_clt according to path_num
-Date:   Fri, 30 Jul 2021 15:18:23 +0200
-Message-Id: <20210730131832.118865-2-jinpu.wang@ionos.com>
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Subject: [PATCH for-next 02/10] RDMA/rtrs-srv: Prevent sysfs error with path name "ctl"
+Date:   Fri, 30 Jul 2021 15:18:24 +0200
+Message-Id: <20210730131832.118865-3-jinpu.wang@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210730131832.118865-1-jinpu.wang@ionos.com>
 References: <20210730131832.118865-1-jinpu.wang@ionos.com>
@@ -63,39 +64,69 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@ionos.com>
+From: Gioh Kim <gi-oh.kim@ionos.com>
 
-When all the paths are removed for a session, the addition of the first
-path is like a new session for the storage server.
+If the client tries to create a path with name "ctl",
+the server tries to creates /sys/devices/virtual/rtrs-server/ctl/.
+Then server generated below error because there is already ctl directory
+which manages some setup of the server.
 
-Hence, for_new_clt has to be set to 1.
+sysfs: cannot create duplicate filename '/devices/virtual/rtrs-server/ctl'
+Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
+Call Trace:
+dump_stack+0x50/0x63
+sysfs_warn_dup.cold+0x17/0x24
+sysfs_create_dir_ns+0xb6/0xd0
+kobject_add_internal+0xa6/0x2a0
+kobject_add+0x7e/0xb0
+? _cond_resched+0x15/0x30
+device_add+0x121/0x640
+rtrs_srv_create_sess_files+0x18f/0x1f0 [rtrs_server]
+? __alloc_pages_nodemask+0x16c/0x2b0
+? kmalloc_order+0x7c/0x90
+? kmalloc_order_trace+0x1d/0xa0
+? rtrs_iu_alloc+0x17e/0x1bf [rtrs_core]
+rtrs_srv_info_req_done+0x417/0x5b0 [rtrs_server]
+? __switch_to_asm+0x40/0x70
+__ib_process_cq+0x76/0xd0 [ib_core]
+ib_cq_poll_work+0x26/0x80 [ib_core]
+process_one_work+0x1df/0x3a0
+worker_thread+0x4a/0x3c0
+kthread+0xfb/0x130
+? process_one_work+0x3a0/0x3a0
+? kthread_park+0x90/0x90
+ret_from_fork+0x1f/0x40
+kobject_add_internal failed for ctl with -EEXIST, don't try to register things with the same name in the same directory.
+rtrs_server L178: device_add(): -17
 
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+This patch checks the path name and disconnect on server to prevent
+the kernel error.
+
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index ece3205531b8..e048bfa12755 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -3083,6 +3083,15 @@ int rtrs_clt_create_path_from_sysfs(struct rtrs_clt *clt,
- 	if (IS_ERR(sess))
- 		return PTR_ERR(sess);
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+index cd9a4ccf4c28..b814a6052cf1 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+@@ -758,6 +758,14 @@ static bool exist_sessname(struct rtrs_srv_ctx *ctx,
+ 	struct rtrs_srv_sess *sess;
+ 	bool found = false;
  
-+	if (clt->paths_num == 0) {
-+		/*
-+		 * When all the paths are removed for a session,
-+		 * the addition of the first path is like a new session for
-+		 * the storage server
-+		 */
-+		sess->for_new_clt = 1;
-+	}
++	/*
++	 * Session name "ct" is not allowed because
++	 * /sys/devices/virtual/rtrs-server/ctl already exists
++	 * for setup management.
++	 */
++	if (!strcmp(sessname, "ctl"))
++		return true;
 +
- 	/*
- 	 * It is totally safe to add path in CONNECTING state: coming
- 	 * IO will never grab it.  Also it is very important to add
+ 	mutex_lock(&ctx->srv_mutex);
+ 	list_for_each_entry(srv, &ctx->srv_list, ctx_list) {
+ 		mutex_lock(&srv->paths_mutex);
 -- 
 2.25.1
 
