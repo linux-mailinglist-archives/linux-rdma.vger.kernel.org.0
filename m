@@ -2,88 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037123DBC24
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9C03DBC25
 	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 17:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239658AbhG3PXO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Jul 2021 11:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55462 "EHLO
+        id S239559AbhG3PXP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Jul 2021 11:23:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239559AbhG3PXO (ORCPT
+        with ESMTP id S239720AbhG3PXO (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Jul 2021 11:23:14 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81701C061765
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 08:23:09 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id o2-20020a9d22020000b0290462f0ab0800so9842804ota.11
-        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 08:23:09 -0700 (PDT)
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22055C0613C1
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 08:23:10 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id x15-20020a05683000cfb02904d1f8b9db81so9836763oto.12
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 08:23:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zxw53FG+XeqBG4lT1Ei76hQc8WUepspEW1QlVoaU4Ms=;
-        b=LwPoKU4It2/sZbS03AMVZff28j0xa5rW8kFnKwRqak+gSjmwKhvI5R6GWby26BcEhX
-         jf3I7BiR/ZBdsPDfgTRtJ6SKZ6XbpUzkQ/TV881CE9hwSVM5blS8mHTqbUGIWnM7keXG
-         LK9uMdVal/mdGoxgyw/aETcqjLbqRT6M/8TzP92nwUpur+qhx4wXzbBH1kWzhklo4Shg
-         d3xHtGQ+Pu2+7LrOECUxnuA6OhBHwh/22oFxo1IN5cU6UFbVte4sSNfOrPkv/ElumrvP
-         RNmcLmSDJwuN24Wlz04N7iG1M/1F2A1JLMbep20wnQR/bvSGXbBgITKu0O5sFP7Ee/1y
-         Od+g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NeigI8aZa+KNtubfGbbxqzXBSdS2WPBug/qsj18eqE0=;
+        b=JIu75NiQof9b7pDEY7DvrnZiW5AU8Sftr0Q2kIbvRTqgS6f5HiX1/M/isdeBOVwTfu
+         wOE0yJg2Uq3ypq1qCYajoiT+mnMQOuQxDpwtfsr8PjU5NnzP0qza+v+fxwgHXO+1bdgM
+         FoEweNmx2zCTuhd694KKiJldbNd2yarwwcXTGDp6VawC1IcYM7h3dILhDEw6W48htoNf
+         vNd10MWbVwmz+dzv60liJ7HNkx57H9Zjuq2UJFWf6Lm30bDI1sdW/KrwmItzf/4bv7RB
+         jMAiOArGidp3f7mKgrSOGKuMq6njulj86uq0SzZWqVHUY0Rg9q9zxYpB8RdhYBNG3w+J
+         ssVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zxw53FG+XeqBG4lT1Ei76hQc8WUepspEW1QlVoaU4Ms=;
-        b=o91w1ad6F2iulWA0xoAu4EJTTgF/RtO77gjQhocSOxCcpxH7sh0lyqKsDJcS1LFtH2
-         Ra9mIpjjta3t1GUG9yoKlcdySDcUQgqbdwAEa9yWflW3mZDj+HpbXUDxQhFWvzFXplm0
-         hY3lLPKG5Z48+9pKWeRm9HP3LVLQNaDrQ2vvJSR80TOWEt+LfsdPbiRf4kmAkCOhuIh3
-         amq2qF+zr0u+irozWGxB1ZTqb4rQRjxI9PR18ke2Bp5UbGzP3Skyioz58UNa6xBY9lUk
-         M9xAnuRhFZTHrCA8UPg1/+6mEDsXe3Ydpf+sP/d2qLKOcHlTWecGepBzTf3DHtTtn0Iu
-         kSrQ==
-X-Gm-Message-State: AOAM533wz4BoJ/YLw8AmlvD1swEul+3Ijk5RxPaIdgTCMeFOijVj7hU5
-        LDigJuMirHCzLCEG5vdgPBc=
-X-Google-Smtp-Source: ABdhPJxcfzPV2UY7+TObba5ZKTeHweUMGPM/GT+UhG4ioaigaKpADvaT4GN0nRhiHTyvKgi/oYcwag==
-X-Received: by 2002:a05:6830:2154:: with SMTP id r20mr2513138otd.12.1627658588900;
-        Fri, 30 Jul 2021 08:23:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NeigI8aZa+KNtubfGbbxqzXBSdS2WPBug/qsj18eqE0=;
+        b=PcF65mcE6Q6of3fgEAt6a6WHyC39YwzbeXw+Jc/Czs2d3kRy3W9rpGeGFp6fwqmkDE
+         Sz78qFujR07FJi1B1aKAU/A9frI4tTdRW+l4VYgeyrpz7DWnTcWDWy60bNLS8JstHSDm
+         4Zm6scoUoGijscdDxC74fN+WkrCnvssrt14pC6mM8n4uX5q56FqdeyVKaIQwnDBXV24p
+         Nd8aFX1fvgZ4bXWoWwSJ22+R1FAkcczWXznMriTRvAfryxPAZTiA9aQyMQVZzbpsMz41
+         GyoUh0vu+KsGY+3mwtgkhD5aCZMmPiBvKMIHTM900IbqM4r9nhOhqbNF7MaQIOz2Ab9B
+         QBMw==
+X-Gm-Message-State: AOAM531akVYsetJEK2Ln7uifO2lT6KI39ss63lIWnL6WPhPEAW/2jsCj
+        UA0ejUJO8MTKIU6p3becEFM=
+X-Google-Smtp-Source: ABdhPJyMtnU3/qikFxdOsIPcMxJ7xw28yD43cuyplbLLIP6y4EpHkWZuSObbbD3XXfQjVrzE4U5CJg==
+X-Received: by 2002:a9d:2208:: with SMTP id o8mr2430552ota.78.1627658589600;
+        Fri, 30 Jul 2021 08:23:09 -0700 (PDT)
 Received: from localhost (2603-8081-140c-1a00-80ca-c9ae-640f-0f9a.res6.spectrum.com. [2603:8081:140c:1a00:80ca:c9ae:640f:f9a])
-        by smtp.gmail.com with ESMTPSA id v5sm337560ota.33.2021.07.30.08.23.08
+        by smtp.gmail.com with ESMTPSA id c11sm333199otm.37.2021.07.30.08.23.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Jul 2021 08:23:08 -0700 (PDT)
+        Fri, 30 Jul 2021 08:23:09 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, xyjxyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH 0/5] Providers/rxe: Implement XRC transport for rxe
-Date:   Fri, 30 Jul 2021 10:21:53 -0500
-Message-Id: <20210730152157.67592-1-rpearsonhpe@gmail.com>
+Subject: [PATCH 1/5] Update kernel headers
+Date:   Fri, 30 Jul 2021 10:21:54 -0500
+Message-Id: <20210730152157.67592-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210730152157.67592-1-rpearsonhpe@gmail.com>
+References: <20210730152157.67592-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This set of patches implements xrc transport and extended srq required for
-xrc transport in the rxe provider. It matches a kernel rxe driver patch
-set with a similar name.
+To commit ?? ("RDMA/rxe: Enable receiving XRC packets").
 
-This patch set should be applied to the current rdma-core with the
-"Replace AV by AH for UD sends (v2)" patch set which is a prerequisite.
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ kernel-headers/rdma/rdma_user_rxe.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-With this patch set 4 of the 5 xrc tests in the python tests pass for
-both regular and extended QP create verbs. The XRC/ODP test does not
-pass since rxe does not currently support ODP.
-
-Bob Pearson (5):
-  Update kernel headers
-  Providers/rxe: Support alloc/dealloc xrcd
-  Providers/rxe: Support extended create srq
-  Providers/rxe: Support get srq number
-  Providers/rxe: Support XRC traffic
-
- kernel-headers/rdma/rdma_user_rxe.h |   6 +-
- providers/rxe/rxe-abi.h             |   2 +
- providers/rxe/rxe.c                 | 235 ++++++++++++++++++++++------
- providers/rxe/rxe.h                 |   5 +-
- 4 files changed, 200 insertions(+), 48 deletions(-)
-
+diff --git a/kernel-headers/rdma/rdma_user_rxe.h b/kernel-headers/rdma/rdma_user_rxe.h
+index ad7da77d..1d80586c 100644
+--- a/kernel-headers/rdma/rdma_user_rxe.h
++++ b/kernel-headers/rdma/rdma_user_rxe.h
+@@ -82,6 +82,10 @@ struct rxe_send_wr {
+ 		__u32		invalidate_rkey;
+ 	} ex;
+ 	union {
++		struct {
++			__aligned_u64 pad[4];
++			__u32	srq_num;
++		} xrc;
+ 		struct {
+ 			__aligned_u64 remote_addr;
+ 			__u32	rkey;
+@@ -101,7 +105,7 @@ struct rxe_send_wr {
+ 			__u16	reserved;
+ 			__u32	ah_num;
+ 			__u32	pad[4];
+-			struct rxe_av av;	/* deprecated */
++			struct rxe_av av;
+ 		} ud;
+ 		struct {
+ 			__aligned_u64	addr;
 -- 
 2.30.2
 
