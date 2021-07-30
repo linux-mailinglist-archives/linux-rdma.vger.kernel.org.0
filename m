@@ -2,86 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 943343DB3E6
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 08:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CA33DB931
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 15:18:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237278AbhG3Gud (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Jul 2021 02:50:33 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:6752 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237680AbhG3Gud (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Jul 2021 02:50:33 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U6f0br030240;
-        Thu, 29 Jul 2021 23:50:21 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=k0JVZscF0ZBcgmcbH1MEssOaUY3TcA+4kLtUbHSiXqg=;
- b=Tf999xxCOMfpKQbtE/Wg3ZJ6bFmw5l9wz+4pYP22bVSshs3vy6dB59zF8Qq2JlI0GcGa
- AXSnmRlOPtbd9RdElnmc7994IFWUYkCJMZwzkSR8doCmKnDz+BsaACI61X+Q8BJ3bTSA
- Y52aHPtGzL1jBPJSqFc9GYP8KibtLDu9Tngqax/w7NAlOhsh3OdvFXnkYnlpXQYxulJJ
- TUSNqsQszIUSe5852n4hD/oQJ9ntDWsVqOEddGnSX8XgBKTaMw0LMX2K9+/zPX3xZ6wE
- 750rqV4iUtCX45+s2nqQRpu/d4/NoVhhj822HC8X2nzfWGOCvl0baVNZNQa+nf9jws5F UQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3a456ts8gx-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 29 Jul 2021 23:50:21 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 29 Jul
- 2021 23:50:18 -0700
-Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
- DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server id
- 15.0.1497.18 via Frontend Transport; Thu, 29 Jul 2021 23:50:16 -0700
-From:   Shai Malin <smalin@marvell.com>
-To:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <jgg@nvidia.com>, <mkalderon@marvell.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <smalin@marvell.com>,
-        <aelior@marvell.com>, <pkushwaha@marvell.com>,
-        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>
-Subject: [PATCH for-next 3/3][v2] qedr: Use grh layer traffic_class as RDMA CM TOS
-Date:   Fri, 30 Jul 2021 09:50:01 +0300
-Message-ID: <20210730065001.805-4-smalin@marvell.com>
-X-Mailer: git-send-email 2.16.6
-In-Reply-To: <20210730065001.805-1-smalin@marvell.com>
-References: <20210730065001.805-1-smalin@marvell.com>
+        id S231140AbhG3NSk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Jul 2021 09:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhG3NSk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 30 Jul 2021 09:18:40 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7799AC061765
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 06:18:35 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id b7so11305089wri.8
+        for <linux-rdma@vger.kernel.org>; Fri, 30 Jul 2021 06:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVZyMdqykAKaELdQcRa249NH48OvkP2tWCmv72L6uVQ=;
+        b=baK5f6xOF1ZG77rh7IPgy6u1O2S7smlTS+FCL7CknzKCy2ZPIrArn0KLfuhYUKEaaS
+         IBf6RN1imSVKHI7iArgo4TMPe2H5Vhluw52B84OHlR+busMULtdAqBLV4rsr4pVY6QVM
+         rGOYX9uNtqNnGUCkA65Br7yTlr8qa2Bxm1q7ECMcEQbfupPyb37U3JMThEURf/utIdHK
+         Z2gkbAcJJ8+s6/RMxi0q0fJMeRaWxtIy8kWYm/OwPnqV7EWke+3TCCOy5hr1GwHkH8Bj
+         ujduNeppn+c6CzBmapFniNDy61kXIJfMlRA7iaAKlJtyF5Z5PFl8DFgkiUwO3N7W8Zae
+         XnVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LVZyMdqykAKaELdQcRa249NH48OvkP2tWCmv72L6uVQ=;
+        b=kmk34yNaWQIAJte51QT2X5JqsH/prITtgYxMd8xTbTBy+KrHI4E/OQYkYqE7zKAwlW
+         GLN2HrvqZeBDgWtLXwO/d0LCPmpWhMGeiZisRAoqlOx3L6WGF6sTMfckineYm23pjhUw
+         9FFxAoVDvDieQiFkpv3IACCOXLbXndr46IxaUh0HaCWZCp+/H+dVNxY1H5RU4eNTa7dd
+         UQsswZZQK7cJe9ZN4AcJq1OPGB2D/JHLG74SxbD5jSrbxIBMBwHkFKtC+NcnXhlsQz+W
+         egOaWPVsx6P01QSUe3cQ0D4Bd3feDqIAeJfwjtghZkiNO89Ol0tKn7HLtiXfa0E21lyf
+         VSqA==
+X-Gm-Message-State: AOAM531c/TtAi/OAdos2e8pOJoUPv9RxGwrI07wcZWbtn25ciIB72Uiu
+        o7GJOy55nYzSYnM/Rt9HTQhhG2UhrQIeow==
+X-Google-Smtp-Source: ABdhPJwniPIs941DOUSVAxIYpIr+5EVdNFFEwkZHtFE8G+D8nhikjjZcCw0z4GfNy3PheOy/qxLBGg==
+X-Received: by 2002:adf:f74f:: with SMTP id z15mr3098357wrp.54.1627651113980;
+        Fri, 30 Jul 2021 06:18:33 -0700 (PDT)
+Received: from jwang-Latitude-5491.fritz.box ([2001:16b8:496a:8500:4512:4a6e:16f3:2377])
+        by smtp.gmail.com with ESMTPSA id z5sm1626012wmp.26.2021.07.30.06.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jul 2021 06:18:33 -0700 (PDT)
+From:   Jack Wang <jinpu.wang@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: [PATCH for-next 00/10] Misc update for RTRS
+Date:   Fri, 30 Jul 2021 15:18:22 +0200
+Message-Id: <20210730131832.118865-1-jinpu.wang@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-GUID: 858Sks-5u4qb4Mckvbh534Gq0MwL4CXY
-X-Proofpoint-ORIG-GUID: 858Sks-5u4qb4Mckvbh534Gq0MwL4CXY
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-07-30_04:2021-07-29,2021-07-30 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Hi Jason, hi Doug,
 
-Instead of grh flow label use grh layer traffic_class as RDMA CM TOS.
+Please consider to include following changes to the next merge window.
 
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
----
-Changes for v2:
-	- none 
+The patchset is orgnized as:
+- patch1 bugfix for corner case.
+- patch2 reject client with special sessname.
+- patch3 sysfs_emit conversion.
+- patch4 remove unused functions.
+- patch5 Fix warning with poll mode.
+- patch6 remove len parameter.
+- patch7 remove likely/unlikely.
+- patch8 Fix inflight io accounting when switch mp_policy.
+- patch9 add interface to disable IB port on server side.
+- patch10 remove void cast.
 
- drivers/infiniband/hw/qedr/qedr_roce_cm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patches are created base on rdma/for-next at commit:
+07d0f314ba75 ("Merge branch 'mlx5_dcs' into rdma.git for-next")
 
-diff --git a/drivers/infiniband/hw/qedr/qedr_roce_cm.c b/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-index eb7d24742664..1fa7415117e5 100644
---- a/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-+++ b/drivers/infiniband/hw/qedr/qedr_roce_cm.c
-@@ -477,7 +477,7 @@ static inline int qedr_gsi_build_header(struct qedr_dev *dev,
- 		u32 ipv4_addr;
- 
- 		udh->ip4.protocol = IPPROTO_UDP;
--		udh->ip4.tos = htonl(grh->flow_label);
-+		udh->ip4.tos = grh->traffic_class;
- 		udh->ip4.frag_off = htons(IP_DF);
- 		udh->ip4.ttl = grh->hop_limit;
- 
+Thanks!
+
+Gioh Kim (4):
+  RDMA/rtrs-srv: Prevent sysfs error with path name "ctl"
+  RDMA/rtrs: Remove all likely and unlikely
+  RDMA/rtrs-clt: Fix counting inflight IO
+  RDMA/rtrs: remove (void) casting for functions
+
+Jack Wang (2):
+  RDMA/rtrs: Remove unused functions
+  RDMA/rtrs: Fix warning when use poll mode
+
+Md Haris Iqbal (4):
+  RDMA/rtrs-clt: During add_path change for_new_clt according to
+    path_num
+  RDMA/rtrs: Use sysfs_emit instead of s*printf function for sysfs show
+  RDMA/rtrs: Remove len parameter from helper print functions of sysfs
+  RDMA/rtrs: Add support to disable an IB port on the storage side
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c |  40 ++---
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 152 +++++++++--------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h       |  16 +-
+ drivers/infiniband/ulp/rtrs/rtrs-pri.h       |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv-stats.c |   3 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c       | 169 ++++++++++++++-----
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h       |   7 +-
+ drivers/infiniband/ulp/rtrs/rtrs.c           |  17 +-
+ 9 files changed, 253 insertions(+), 155 deletions(-)
+
 -- 
-2.24.1
+2.25.1
 
