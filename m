@@ -2,318 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB4F3DB1A8
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 05:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A7D3DB3C9
+	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 08:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhG3DDY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 29 Jul 2021 23:03:24 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:38036 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234815AbhG3DDS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 29 Jul 2021 23:03:18 -0400
-Received: from BC-Mail-Ex15.internal.baidu.com (unknown [172.31.51.55])
-        by Forcepoint Email with ESMTPS id 19C7B80CD1D32785048F;
-        Fri, 30 Jul 2021 11:03:08 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex15.internal.baidu.com (172.31.51.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Fri, 30 Jul 2021 11:03:07 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Fri, 30 Jul 2021 11:03:07 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <saeedm@nvidia.com>, <leonro@nvidia.com>
-CC:     <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Cai Huoqing <caihuoqing@baidu.com>
-Subject: [PATCH] net/mlx5: Fix typo in comments
-Date:   Fri, 30 Jul 2021 11:03:00 +0800
-Message-ID: <20210730030300.2459-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S237599AbhG3Gqo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 30 Jul 2021 02:46:44 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:25292 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237576AbhG3Gqo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 30 Jul 2021 02:46:44 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16U6f160030272;
+        Thu, 29 Jul 2021 23:46:30 -0700
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3a456ts840-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 29 Jul 2021 23:46:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Hkm5z0Z4qBr+VRvcMvRdjzbvSr+0AeBj/MxzI1NHZ78a8SgQOmm9BVK2qXNA8iiFCyr+BzW2DNsjpowEXHKnYn9epuchmC3j0t95LNeP+C7aSyGV2gdYfbUKeZy+Bu1pMADuavmJO+7UW4LoaeuNQgxxLt07obASJph/12XFyaNt6S8KvgRyiS9ilBR8ei+MAQ30K19mIpRENWSX+LKFaEr8lkM6yT/jWInSRq67M50f2ZGRhSm8KMtOhQCanFwbGhJQCbYVWFsD5QDRm0m5eVfrAOHKEZa+EdDQUW9mElaMSzCatwzUtx893lckYOcj24SSwOIRxW+U13eMXw31nQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hl3VHRGbm+jo/mTk73bWDxfYdA7wTZOfKwkjpY0VvDQ=;
+ b=d3YuA11F2vZnnU6BreCn5pfuDij4u+wvV3hzdU6cKqbNtb9wupb+et7NL1XZHmhYe6im4FcDkg57V8WPYJrpaqnkNTghTljMz8FnGlKLoClFwU8GZe2/NX3CyW0M9QFWKSx/ahvoky9Ep8V6vsuWyeWiT2/5GDF1RtLdPDwYktVtyf5tgONiNq8g9v/p0qlureWIE1SQt4bKDajXx3k1TUBnnsZAAF9S5XueBVZtG2qS20Nuk0u2qBGvuLE/IeUrOr9u0sQPFaTvW2i048LVDn4lSwnwG6hUIuBOvzvIlGOLhmUaxJGp4H5UJHkKAYswBL6sCmGqSUZATzLfH9FEAQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hl3VHRGbm+jo/mTk73bWDxfYdA7wTZOfKwkjpY0VvDQ=;
+ b=tns172h275o7qVtu9GEuH9mUT92MJr4DzwFZ+C+TaPkFZqoSbTVLO3/pI5vW/aYLeJxK+dG9Vn9pvzE2fPkDiYD/knqOLLeugeednuRviUWgCQf/oNMxo24/4BoHexDnBQqAGKz43f432NuiQbNtte3JrS5HCVNFkk586Wtx5f8=
+Received: from SJ0PR18MB3882.namprd18.prod.outlook.com (2603:10b6:a03:2c8::13)
+ by BYAPR18MB2504.namprd18.prod.outlook.com (2603:10b6:a03:12c::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Fri, 30 Jul
+ 2021 06:46:28 +0000
+Received: from SJ0PR18MB3882.namprd18.prod.outlook.com
+ ([fe80::6513:d2ca:d44a:537c]) by SJ0PR18MB3882.namprd18.prod.outlook.com
+ ([fe80::6513:d2ca:d44a:537c%9]) with mapi id 15.20.4373.025; Fri, 30 Jul 2021
+ 06:46:28 +0000
+From:   Shai Malin <smalin@marvell.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        Ariel Elior <aelior@marvell.com>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>,
+        "prabhakar.pkin@gmail.com" <prabhakar.pkin@gmail.com>,
+        "malin1024@gmail.com" <malin1024@gmail.com>
+Subject: Re: [PATCH for-next 1/3] qed: add get and set support for dscp
+ priority
+Thread-Topic: [PATCH for-next 1/3] qed: add get and set support for dscp
+ priority
+Thread-Index: AdeFDb/8Fvh6z9QaQ+Wj83hjZpQZLA==
+Date:   Fri, 30 Jul 2021 06:46:28 +0000
+Message-ID: <SJ0PR18MB3882E35D7C0D4D69CE935C87CCEC9@SJ0PR18MB3882.namprd18.prod.outlook.com>
+Accept-Language: he-IL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5366ad63-73aa-49d0-e3d3-08d95325c207
+x-ms-traffictypediagnostic: BYAPR18MB2504:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR18MB250459148D490F1491EBBF31CCEC9@BYAPR18MB2504.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9qcJecvz6MWgCWRu9GXBjAyK+RxMQiJg+FhaoeI77mhmel41jd+ER4NoEb1ig3CzFj7ehg8plGzTMtiwvaN+YdlFO1TSFW78z4wnpAoVPW1bcfm9uSAlL3ZBnKk0/WV+CEfmWcd4j+uLSmMekaYz91BBC9noa/eZ0zh+jVMXUejn6HrGxV9Qtt2DIfFupgs6Wk4lI1n8DnZRuZuGDsvtZUYOGOpZT2IB4q3GpgVDmaqdNQEcJwgHrsCk07M3HihGk8xc+WQwSwC96KchAOCSgsree7gECEzg/ABQpr6i8xLWSjaY0sB/RN1xoxZIfZ5VmoIJWIGJPFXSomORMmfdqN6phmB3HZ5t3kn4O8hHI5w9UCbu4l3lm9mfoLAaT4KWr+4XZeiSBOUzLw2SnN2EYtUiuMDyUwR8qvY6eA7xNwrAKISpUSmHT6bZTI+2/ybI5/SNdcHE+a9CupEQBL2XeiOkmph3/F8okp8ASrdpkq0XWyMU4o64IB/vpoL35tdDt/qe6izU9rWc3koinQJzbSZ1tr0CEMhOKz8zme6gr6I65J3RvKKVAY9YL3mxoTOYDXFlZiBVeZ0YcM2c+cz43WbQrSJTzAXN+aGs4SOZLV6LACCiRcfU5yGBstxOj8ujy4MTaK331KNtvS2QSz8+hMaWjZJXC+fYDuKhgpemQqBvwjh/aOUfcYgNwbRR8oRt8HruQoWtXhCG7eq8vQ/3VA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB3882.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(136003)(39860400002)(396003)(122000001)(38100700002)(66946007)(86362001)(26005)(66446008)(6506007)(64756008)(478600001)(66556008)(76116006)(7696005)(54906003)(66476007)(6916009)(316002)(33656002)(38070700005)(52536014)(8936002)(71200400001)(5660300002)(4326008)(2906002)(8676002)(186003)(9686003)(55016002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?L6XugOBH6A7EM7YiVzjIU9svKFHECI6jdfw46C3Mt8sZ5GeMTQp4uug3uH/E?=
+ =?us-ascii?Q?W4VfdXdPJ5EZvupxO+wB+RkjSPehO3qc+Pyk57/dAVu64srcF7NNNwJCPTLt?=
+ =?us-ascii?Q?yc+Aw5xRfV5g2A3u40q9bEIIVOk8xWRjOj2cIg8wIdODXD1E0yNdEul+XGja?=
+ =?us-ascii?Q?KqaWSfaID5p60GWFtqr/r1PJKEuWrNnahe/PbtWaNak+WtOfw4z0cYXdQnoy?=
+ =?us-ascii?Q?gQZ2ofb0CMpSZnDf0boeLCN+XtFXtXDMecoBxjkoXa7p+c09K1jjd9Ag8WCq?=
+ =?us-ascii?Q?PMc7ee8qQiq5YmOOtv+whBwT0Jm4kr+96yI17Yy0UPd38hZLoMOPmn6A9TEh?=
+ =?us-ascii?Q?xVTkmB7G5Yk8BmlTj2AYzqB779zCmuxNYh1qVi4JldHY179hjYSRUAYcl6be?=
+ =?us-ascii?Q?ev55jlapJYUKNwNJlVZssumAAIguVbaw440V7/1XlInFcplw78w6JRKVM0hE?=
+ =?us-ascii?Q?0eeOuF9u9dCPa7BFGVWd9vqHcVr4QXxNZVLIzEqry/GE8SDnmKuGqzu/deEt?=
+ =?us-ascii?Q?I38TjlQE/ANRFcYNQx2bOq5ID7xOY+VBo4likSPt+TcDK/nqx96tiwrR67Sf?=
+ =?us-ascii?Q?lE/dmDO6gmaB6I2kAt4CFQJT09rMI5RJUkvMca8bUNUSfaedynbcvqs8oYXF?=
+ =?us-ascii?Q?0ZiL6to1g882EDyuoQWdj1B9+6NWSqLffde2gNsn1GUEMZUc6ZM3fys3FNhl?=
+ =?us-ascii?Q?j/3MKCQ+BlAvs0n1hGi7rhlbSedFe3TSXylwz3Xz03o8vmjF/bYoVupAP0yd?=
+ =?us-ascii?Q?J8BwiurO0L7zX+ZEXZDxuTfoN8Tr6ldpaqJbJbK0W7S+0TFIgFi11tZay06f?=
+ =?us-ascii?Q?5jty3qf5Ixwc6YK3DFH6osuxTjohSDK+s9CJbUR1qWsdf6p6iV8nYFPabqF6?=
+ =?us-ascii?Q?q398GPzAEPobeoWcbeMFvdK7zvnX7dd2gaVSnf150MB0J42+sLzqYQ0XY661?=
+ =?us-ascii?Q?Z+L5NdeQAjmQ3BrQZDCV1wQKAYPPmIQEtE2SRTXJMlJx/sTEDBvvfIyw5Hea?=
+ =?us-ascii?Q?7JEj4TpIvRX6BqvO5j3R63bIzS5CNcPDL3z67ApgR5B1mZbNMIOUwSN40Dyo?=
+ =?us-ascii?Q?gDZlzwQ0hfBqfNMQNqKC8a6/uEdiz+n64zvNErwHwjPWm6Y+2mxpyUSfP97t?=
+ =?us-ascii?Q?T6vBieI6wvIRsPr85BRoFGFjW7gNqUoN62WrVaVC2PHK3B+6bvn1MK2dRBA8?=
+ =?us-ascii?Q?qWpon/ueBfk+VwaI3qC1UgR3A+ECelxeoDcNw+g47kzVnnayaoLfdcs+rev0?=
+ =?us-ascii?Q?fqi280UdgHdqPSRuvEH4O//WtCpKBFiNgEyhKuTBE8g6E/HK1X9gKqMaa/eq?=
+ =?us-ascii?Q?waiJO72uW2ZUcbnhguI21Xo0?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB3882.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5366ad63-73aa-49d0-e3d3-08d95325c207
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jul 2021 06:46:28.2314
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: QUSIz6CqETUrQk5bVBEdwl5MEWBwJZK7/qwYRL7G25tKYG+BTO7sG/EBjsFTwL0ghQTamXgK2fs2Oo8V7ZctYA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2504
+X-Proofpoint-GUID: SSwZKlb7WHVJuX9Wjks95YH0JZlvZC3d
+X-Proofpoint-ORIG-GUID: SSwZKlb7WHVJuX9Wjks95YH0JZlvZC3d
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-07-30_04:2021-07-29,2021-07-30 signatures=0
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix typo:
-*vectores  ==> vectors
-*realeased  ==> released
-*erros  ==> errors
-*namepsace  ==> namespace
-*trafic  ==> traffic
-*proccessed  ==> processed
-*retore  ==> restore
-*Currenlty  ==> Currently
-*crated  ==> created
-*chane  ==> change
-*cannnot  ==> cannot
-*usuallly  ==> usually
-*failes  ==> fails
-*importent  ==> important
-*reenabled  ==> re-enabled
-*alocation  ==> allocation
-*recived  ==> received
-*tanslation  ==> translation
+On Thu, Jul 29, 2021 at 08:22:00PM +0300, Leon Romanovsky wrote:
+> On Thu, Jul 29, 2021 at 04:30:30PM +0300, Shai Malin wrote:
+> > From: Prabhakar Kushwaha <pkushwaha@marvell.com>
+> >
+> > This patch add support of get or set priority value for a given
+> > dscp index.
+> >
+> > Signed-off-by: Shai Malin <smalin@marvell.com>
+> > Signed-off-by: Ariel Elior <aelior@marvell.com>
+> > Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+> > ---
+> >  drivers/net/ethernet/qlogic/qed/qed_dcbx.c | 65
+> ++++++++++++++++++++++
+> >  drivers/net/ethernet/qlogic/qed/qed_dcbx.h |  9 +++
+> >  include/linux/qed/qed_if.h                 |  6 ++
+> >  3 files changed, 80 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+> b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+> > index e81dd34a3cac..ba9276599e72 100644
+> > --- a/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+> > +++ b/drivers/net/ethernet/qlogic/qed/qed_dcbx.c
+> > @@ -1280,6 +1280,71 @@ int qed_dcbx_get_config_params(struct qed_hwfn
+> *p_hwfn,
+> >  	return 0;
+> >  }
+>=20
+> <...>
+>=20
+> > +	p_dcbx_info =3D kmalloc(sizeof(*p_dcbx_info), GFP_KERNEL);
+> > +	if (!p_dcbx_info)
+> > +		return -ENOMEM;
+> > +
+> > +	memset(p_dcbx_info, 0, sizeof(*p_dcbx_info));
+>=20
+> This is open-coded kzalloc().
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_common.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.h       | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c        | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c      | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/events.c       | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c   | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c      | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/health.c       | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c    | 2 +-
- drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c      | 4 ++--
- drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c   | 2 +-
- include/linux/mlx5/device.h                            | 2 +-
- include/linux/mlx5/driver.h                            | 4 ++--
- 16 files changed, 19 insertions(+), 19 deletions(-)
+Thanks! will be fixed.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-index 8f79f04eccd6..a61731cb6045 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_tun.c
-@@ -520,7 +520,7 @@ int mlx5e_tc_tun_create_header_ipv6(struct mlx5e_priv *priv,
- 	e->out_dev = attr.out_dev;
- 	e->route_dev_ifindex = attr.route_dev->ifindex;
- 
--	/* It's importent to add the neigh to the hash table before checking
-+	/* It's important to add the neigh to the hash table before checking
- 	 * the neigh validity state. So if we'll get a notification, in case the
- 	 * neigh changes it's validity state, we would find the relevant neigh
- 	 * in the hash.
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-index ab485d082729..b1832e6a5c4a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-@@ -126,7 +126,7 @@ int mlx5e_open_xsk(struct mlx5e_priv *priv, struct mlx5e_params *params,
- 	/* Create a separate SQ, so that when the buff pool is disabled, we could
- 	 * close this SQ safely and stop receiving CQEs. In other case, e.g., if
- 	 * the XDPSQ was used instead, we might run into trouble when the buff pool
--	 * is disabled and then reenabled, but the SQ continues receiving CQEs
-+	 * is disabled and then re-enabled, but the SQ continues receiving CQEs
- 	 * from the old buff pool.
- 	 */
- 	err = mlx5e_open_xdpsq(c, params, &cparam->xdp_sq, pool, &c->xsksq, true);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-index c4db367d4baf..84eb7201c142 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_common.c
-@@ -33,7 +33,7 @@
- #include "en.h"
- 
- /* mlx5e global resources should be placed in this file.
-- * Global resources are common to all the netdevices crated on the same nic.
-+ * Global resources are common to all the netdevices created on the same nic.
-  */
- 
- void mlx5e_mkey_set_relaxed_ordering(struct mlx5_core_dev *mdev, void *mkc)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.h b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.h
-index 47a2dfb7792a..1088d6aa6237 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rep.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rep.h
-@@ -146,7 +146,7 @@ struct mlx5e_neigh_hash_entry {
- 	 */
- 	refcount_t refcnt;
- 
--	/* Save the last reported time offloaded trafic pass over one of the
-+	/* Save the last reported time offloaded traffic pass over one of the
- 	 * neigh hash entry flows. Use it to periodically update the neigh
- 	 * 'used' value and avoid neigh deleting by the kernel.
- 	 */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 2ef02fea119a..c90eb9e48b6d 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -103,7 +103,7 @@ struct mlx5e_tc_attr_to_reg_mapping mlx5e_tc_attr_to_reg_mappings[] = {
- 	[MARK_TO_REG] = mark_to_reg_ct,
- 	[LABELS_TO_REG] = labels_to_reg_ct,
- 	[FTEID_TO_REG] = fteid_to_reg_ct,
--	/* For NIC rules we store the retore metadata directly
-+	/* For NIC rules we store the restore metadata directly
- 	 * into reg_b that is passed to SW since we don't
- 	 * jump between steering domains.
- 	 */
-@@ -2445,7 +2445,7 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 			spec->match_criteria_enable |= MLX5_MATCH_MISC_PARAMETERS_3;
- 		}
- 	}
--	/* Currenlty supported only for MPLS over UDP */
-+	/* Currently supported only for MPLS over UDP */
- 	if (flow_rule_match_key(rule, FLOW_DISSECTOR_KEY_MPLS) &&
- 	    !netif_is_bareudp(filter_dev)) {
- 		NL_SET_ERR_MSG_MOD(extack,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-index 97e6cb6f13c1..c47bde52f882 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
-@@ -1494,7 +1494,7 @@ int mlx5_eswitch_enable_locked(struct mlx5_eswitch *esw, int mode, int num_vfs)
- /**
-  * mlx5_eswitch_enable - Enable eswitch
-  * @esw:	Pointer to eswitch
-- * @num_vfs:	Enable eswitch swich for given number of VFs.
-+ * @num_vfs:	Enable eswitch switch for given number of VFs.
-  *		Caller must pass num_vfs > 0 when enabling eswitch for
-  *		vf vports.
-  * mlx5_eswitch_enable() returns 0 on success or error code on failure.
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/events.c b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-index d713ae24d6b6..a1ac3a654962 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/events.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/events.c
-@@ -27,7 +27,7 @@ static int pcie_core(struct notifier_block *, unsigned long, void *);
- static int forward_event(struct notifier_block *, unsigned long, void *);
- 
- static struct mlx5_nb events_nbs_ref[] = {
--	/* Events to be proccessed by mlx5_core */
-+	/* Events to be processed by mlx5_core */
- 	{.nb.notifier_call = any_notifier,  .event_type = MLX5_EVENT_TYPE_NOTIFY_ANY },
- 	{.nb.notifier_call = temp_warn,     .event_type = MLX5_EVENT_TYPE_TEMP_WARN_EVENT },
- 	{.nb.notifier_call = port_module,   .event_type = MLX5_EVENT_TYPE_PORT_MODULE_EVENT },
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-index 0bba92cf5dc0..8ec148010d62 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fpga/ipsec.c
-@@ -1516,7 +1516,7 @@ static int mlx5_fpga_esp_modify_xfrm(struct mlx5_accel_esp_xfrm *xfrm,
- 	mutex_lock(&fpga_xfrm->lock);
- 
- 	if (!fpga_xfrm->sa_ctx)
--		/* Unbounded xfrm, chane only sw attrs */
-+		/* Unbounded xfrm, change only sw attrs */
- 		goto change_sw_xfrm_attrs;
- 
- 	/* copy original hw sa */
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index c0697e1b7118..ec77e4859bf0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -2493,7 +2493,7 @@ static void set_prio_attrs_in_prio(struct fs_prio *prio, int acc_level)
- 		acc_level_ns = set_prio_attrs_in_ns(ns, acc_level);
- 
- 		/* If this a prio with chains, and we can jump from one chain
--		 * (namepsace) to another, so we accumulate the levels
-+		 * (namespace) to another, so we accumulate the levels
- 		 */
- 		if (prio->node.type == FS_TYPE_PRIO_CHAINS)
- 			acc_level = acc_level_ns;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-index 9abeb80ffa31..4a7de1259004 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
-@@ -170,7 +170,7 @@ static bool reset_fw_if_needed(struct mlx5_core_dev *dev)
- 
- 	/* The reset only needs to be issued by one PF. The health buffer is
- 	 * shared between all functions, and will be cleared during a reset.
--	 * Check again to avoid a redundant 2nd reset. If the fatal erros was
-+	 * Check again to avoid a redundant 2nd reset. If the fatal errors was
- 	 * PCI related a reset won't help.
- 	 */
- 	fatal_error = mlx5_health_check_fatal_sensors(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-index ce696d523493..ffac8a0e7a23 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/clock.c
-@@ -749,7 +749,7 @@ static int mlx5_pps_event(struct notifier_block *nb,
- 		} else {
- 			ptp_event.type = PTP_CLOCK_EXTTS;
- 		}
--		/* TODOL clock->ptp can be NULL if ptp_clock_register failes */
-+		/* TODOL clock->ptp can be NULL if ptp_clock_register fails */
- 		ptp_clock_event(clock->ptp, &ptp_event);
- 		break;
- 	case PTP_PF_PEROUT:
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-index 38084400ee8f..e3b0a131c3e1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/vxlan.c
-@@ -40,7 +40,7 @@
- 
- struct mlx5_vxlan {
- 	struct mlx5_core_dev		*mdev;
--	/* max_num_ports is usuallly 4, 16 buckets is more than enough */
-+	/* max_num_ports is usually 4, 16 buckets is more than enough */
- 	DECLARE_HASHTABLE(htable, 4);
- 	struct mutex                    sync_lock; /* sync add/del port HW operations */
- };
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-index b25f764daa08..9fb75d79bf08 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c
-@@ -18,7 +18,7 @@
- 
- #define MLX5_SFS_PER_CTRL_IRQ 64
- #define MLX5_IRQ_CTRL_SF_MAX 8
--/* min num of vectores for SFs to be enabled */
-+/* min num of vectors for SFs to be enabled */
- #define MLX5_IRQ_VEC_COMP_BASE_SF 2
- 
- #define MLX5_EQ_SHARE_IRQ_MAX_COMP (8)
-@@ -597,7 +597,7 @@ void mlx5_irq_table_destroy(struct mlx5_core_dev *dev)
- 		return;
- 
- 	/* There are cases where IRQs still will be in used when we reaching
--	 * to here. Hence, making sure all the irqs are realeased.
-+	 * to here. Hence, making sure all the irqs are released.
- 	 */
- 	irq_pools_destroy(table);
- 	pci_free_irq_vectors(dev->pdev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-index 1be048769309..ce2c5e576c47 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/devlink.c
-@@ -476,7 +476,7 @@ static void mlx5_sf_table_disable(struct mlx5_sf_table *table)
- 		return;
- 
- 	/* Balances with refcount_set; drop the reference so that new user cmd cannot start
--	 * and new vhca event handler cannnot run.
-+	 * and new vhca event handler cannot run.
- 	 */
- 	mlx5_sf_table_put(table);
- 	wait_for_completion(&table->disable_complete);
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index 0025913505ab..1e9d55dc1a9c 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -1038,7 +1038,7 @@ enum {
- struct mlx5_mkey_seg {
- 	/* This is a two bit field occupying bits 31-30.
- 	 * bit 31 is always 0,
--	 * bit 30 is zero for regular MRs and 1 (e.g free) for UMRs that do not have tanslation
-+	 * bit 30 is zero for regular MRs and 1 (e.g free) for UMRs that do not have translation
- 	 */
- 	u8		status;
- 	u8		pcie_control;
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 1efe37466969..51c1d37e7c28 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -581,7 +581,7 @@ struct mlx5_priv {
- 	/* end: qp staff */
- 
- 	/* start: alloc staff */
--	/* protect buffer alocation according to numa node */
-+	/* protect buffer allocation according to numa node */
- 	struct mutex            alloc_mutex;
- 	int                     numa_node;
- 
-@@ -1111,7 +1111,7 @@ static inline u8 mlx5_mkey_variant(u32 mkey)
- }
- 
- /* Async-atomic event notifier used by mlx5 core to forward FW
-- * evetns recived from event queue to mlx5 consumers.
-+ * evetns received from event queue to mlx5 consumers.
-  * Optimise event queue dipatching.
-  */
- int mlx5_notifier_register(struct mlx5_core_dev *dev, struct notifier_block *nb);
--- 
-2.25.1
-
+>=20
+> Thanks
