@@ -2,177 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B51C3DC01D
-	for <lists+linux-rdma@lfdr.de>; Fri, 30 Jul 2021 23:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3778C3DC321
+	for <lists+linux-rdma@lfdr.de>; Sat, 31 Jul 2021 06:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231980AbhG3VKn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 30 Jul 2021 17:10:43 -0400
-Received: from mga03.intel.com ([134.134.136.65]:12207 "EHLO mga03.intel.com"
+        id S230302AbhGaEOY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 31 Jul 2021 00:14:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:27089 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhG3VKn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 30 Jul 2021 17:10:43 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="213203323"
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="213203323"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 14:10:38 -0700
-X-IronPort-AV: E=Sophos;i="5.84,282,1620716400"; 
-   d="scan'208";a="499752259"
-Received: from sindhude-mobl.amr.corp.intel.com ([10.212.74.5])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 14:10:37 -0700
-From:   Sindhu Devale <sindhu.devale@intel.com>
-To:     jgg@nvidia.com, dledford@redhat.com, leon@kernel.org,
-        tatyana.e.nikolova@intel.com
-Cc:     linux-rdma@vger.kernel.org, shiraz.saleem@intel.com,
-        mustafa.ismail@intel.com, Sindhu Devale <sindhu.devale@intel.com>
-Subject: [PATCH rdma-core 2/2] iwpmd: Remove IP address checking per mapping
-Date:   Fri, 30 Jul 2021 16:10:04 -0500
-Message-Id: <20210730211004.1946-3-sindhu.devale@intel.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210730211004.1946-1-sindhu.devale@intel.com>
-References: <20210730211004.1946-1-sindhu.devale@intel.com>
+        id S231630AbhGaEOY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 31 Jul 2021 00:14:24 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10061"; a="193485972"
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="193485972"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jul 2021 21:14:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,283,1620716400"; 
+   d="scan'208";a="500740177"
+Received: from lkp-server01.sh.intel.com (HELO d053b881505b) ([10.239.97.150])
+  by fmsmga004.fm.intel.com with ESMTP; 30 Jul 2021 21:14:16 -0700
+Received: from kbuild by d053b881505b with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1m9gO7-000Ag7-Df; Sat, 31 Jul 2021 04:14:15 +0000
+Date:   Sat, 31 Jul 2021 12:14:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 0050a57638ca4d681ff92bee55246bf64a6afe54
+Message-ID: <6104ce0f.xRcr2syLuByAj4oa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 0050a57638ca4d681ff92bee55246bf64a6afe54  RDMA/qedr: Improve error logs for rdma_alloc_tid error return
 
-IP address checking per mapping is redundant, because
-the IP address has already been checked in the rdma_bind_addr()
-in kernel before the IP address is passed to the iwpmd.
+elapsed time: 724m
 
-Without removing this logic, the system call getifaddrs()
-could take long time and cause mapping requests to timeout.
+configs tested: 108
+configs skipped: 4
 
-Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Signed-off-by: Sindhu Devale <sindhu.devale@intel.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20210730
+nds32                            alldefconfig
+m68k                       m5249evb_defconfig
+sh                          r7785rp_defconfig
+powerpc                 mpc832x_mds_defconfig
+arm                            xcep_defconfig
+mips                      pic32mzda_defconfig
+mips                          malta_defconfig
+h8300                            alldefconfig
+arm                          collie_defconfig
+powerpc                     ppa8548_defconfig
+arm                           sunxi_defconfig
+m68k                       bvme6000_defconfig
+arm                         assabet_defconfig
+arm                           viper_defconfig
+mips                           ip28_defconfig
+m68k                            q40_defconfig
+nios2                         10m50_defconfig
+arm                          pcm027_defconfig
+powerpc                         wii_defconfig
+arc                              alldefconfig
+sh                           se7705_defconfig
+mips                           mtx1_defconfig
+x86_64                           alldefconfig
+powerpc                    gamecube_defconfig
+powerpc                   currituck_defconfig
+powerpc                      chrp32_defconfig
+mips                      fuloong2e_defconfig
+sh                ecovec24-romimage_defconfig
+mips                           rs90_defconfig
+arm                      footbridge_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210730
+i386                 randconfig-a004-20210730
+i386                 randconfig-a003-20210730
+i386                 randconfig-a002-20210730
+i386                 randconfig-a006-20210730
+i386                 randconfig-a001-20210730
+x86_64               randconfig-a015-20210730
+x86_64               randconfig-a014-20210730
+x86_64               randconfig-a013-20210730
+x86_64               randconfig-a011-20210730
+x86_64               randconfig-a012-20210730
+x86_64               randconfig-a016-20210730
+i386                 randconfig-a013-20210730
+i386                 randconfig-a016-20210730
+i386                 randconfig-a012-20210730
+i386                 randconfig-a011-20210730
+i386                 randconfig-a014-20210730
+i386                 randconfig-a015-20210730
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-c001-20210730
+x86_64               randconfig-a001-20210730
+x86_64               randconfig-a004-20210730
+x86_64               randconfig-a002-20210730
+x86_64               randconfig-a003-20210730
+x86_64               randconfig-a006-20210730
+x86_64               randconfig-a005-20210730
+
 ---
- iwpmd/iwarp_pm_helper.c | 89 +----------------------------------------
- 1 file changed, 2 insertions(+), 87 deletions(-)
-
-diff --git a/iwpmd/iwarp_pm_helper.c b/iwpmd/iwarp_pm_helper.c
-index b82de5c8..5d75eb32 100644
---- a/iwpmd/iwarp_pm_helper.c
-+++ b/iwpmd/iwarp_pm_helper.c
-@@ -172,83 +172,6 @@ int send_iwpm_msg(void (*form_msg_type)(iwpm_wire_msg *, iwpm_msg_parms *),
- 	return add_iwpm_pending_msg(&send_msg);
- }
- 
--/**
-- * check_iwpm_ip_addr - Check if the local IP address is valid
-- * @local_addr:  local IP address to verify
-- *
-- * Check if the local IP address is used by the host ethernet interfaces
-- */
--static int check_iwpm_ip_addr(struct sockaddr_storage *local_addr)
--{
--	struct ifaddrs ifa;
--	struct ifaddrs *ifap = &ifa;
--	struct ifaddrs **ifa_list = &ifap;
--	struct ifaddrs *ifa_current;
--	int found_addr = 0;
--	int ret = -EINVAL;
--
--	/* get a list of host ethernet interfaces */
--	if ((ret = getifaddrs(ifa_list)) < 0) {
--		syslog(LOG_WARNING, "check_iwpm_ip_addr: Unable to get the list of interfaces (%s).\n",
--				strerror(errno));
--		return ret;
--	}
--	/* go through the list to make sure local IP address is valid */
--	ifa_current = *ifa_list;
--	while (ifa_current != NULL && !found_addr) {
--		if (local_addr->ss_family == ifa_current->ifa_addr->sa_family) {
--			switch (ifa_current->ifa_addr->sa_family) {
--			case AF_INET: {
--				if (!memcmp(&((struct sockaddr_in *)
--					ifa_current->ifa_addr)->sin_addr.s_addr,
--				   	&((struct sockaddr_in *)local_addr)->sin_addr.s_addr,
--					IWARP_PM_IPV4_ADDR)) {
--
--					found_addr = 1;
--				}
--				break;
--			}
--			case AF_INET6: {
--				if (!memcmp(&((struct sockaddr_in6 *)
--					ifa_current->ifa_addr)->sin6_addr.s6_addr,
--				    	&((struct sockaddr_in6 *)local_addr)->sin6_addr.s6_addr,
--					INET6_ADDRSTRLEN))
--
--					found_addr = 1;
--				break;
--			}
--			default:
--				break;
--			}
--		}
--		ifa_current = ifa_current->ifa_next;
--	}
--	if (found_addr)
--		ret = 0;
--
--	freeifaddrs(*ifa_list);
--	return ret;
--}
--
--/**
-- * get_iwpm_ip_addr - Get a mapped IP address
-- * @local_addr:  local IP address to map
-- * @mapped_addr: to store the mapped local IP address
-- *
-- * Currently, don't map the local IP address
-- */
--static int get_iwpm_ip_addr(struct sockaddr_storage *local_addr,
--					struct sockaddr_storage *mapped_addr)
--{
--	int ret = check_iwpm_ip_addr(local_addr);
--	if (!ret)
--		memcpy(mapped_addr, local_addr, sizeof(struct sockaddr_storage));
--	else
--		iwpm_debug(IWARP_PM_ALL_DBG, "get_iwpm_ip_addr: Invalid local IP address.\n");
--
--	return ret;
--}
--
- /**
-  * get_iwpm_tcp_port - Get a new TCP port from the host stack
-  * @addr_family: should be valid AF_INET or AF_INET6
-@@ -358,18 +281,14 @@ iwpm_mapped_port *create_iwpm_mapped_port(struct sockaddr_storage *local_addr, i
- 	struct sockaddr_storage mapped_addr;
- 	int new_sd;
- 
--	/* check the local IP address */
--	if (get_iwpm_ip_addr(local_addr, &mapped_addr))
--		goto create_mapped_port_error;
-+	memcpy(&mapped_addr, local_addr, sizeof(mapped_addr));
- 	/* get a tcp port from the host net stack */
- 	if (flags & IWPM_FLAGS_NO_PORT_MAP) {
--		mapped_addr = *local_addr;
- 		new_sd = -1;
- 	} else {
- 		if (get_iwpm_tcp_port(local_addr->ss_family, 0, &mapped_addr, &new_sd))
- 			goto create_mapped_port_error;
- 	}
--
- 	iwpm_port = get_iwpm_port(client_idx, local_addr, &mapped_addr, new_sd);
- 	return iwpm_port;
- 
-@@ -391,11 +310,7 @@ iwpm_mapped_port *reopen_iwpm_mapped_port(struct sockaddr_storage *local_addr,
- 	iwpm_mapped_port *iwpm_port;
- 	int new_sd = -1;
- 	const char *str_err = "";
--	int ret = check_iwpm_ip_addr(local_addr);
--	if (ret) {
--		str_err = "Invalid local IP address";
--		goto reopen_mapped_port_error;
--	}
-+
- 	if (local_addr->ss_family != mapped_addr->ss_family) {
- 		str_err = "Different local and mapped sockaddr families";
- 		goto reopen_mapped_port_error;
--- 
-2.32.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
