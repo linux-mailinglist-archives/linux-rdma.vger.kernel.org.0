@@ -2,103 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4759A3DDEB6
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 19:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2C43DDF23
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 20:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229622AbhHBRna (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Aug 2021 13:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229571AbhHBRn3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Aug 2021 13:43:29 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B51C06175F
-        for <linux-rdma@vger.kernel.org>; Mon,  2 Aug 2021 10:43:18 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id b6so12339154lff.10
-        for <linux-rdma@vger.kernel.org>; Mon, 02 Aug 2021 10:43:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zt3QYvOtMK3aS7Kre24BdNWSKzeAXGFSPj9ug3bpWP0=;
-        b=hMA1DAhxCAZWtvlxfR0ZwU3KkgRXhW1a2a9AsEf8rdXFCFLhWgGfnGfk1VKHiT2r/A
-         bS9wyJzmch1Etufr4tbJnGtcoj/pUnQCC7GAgfwlMaN3sj9FYxFlHOFkWTIhmHbv9+Fx
-         27SDVXopQVQsPPdYg9kqJ1XoR7tiCvqy72PaATIEm2jRkSjgP6rsf/zkVfp6lNaah07f
-         Z+aY7B+iM9TzBaywp9Tri406hpOascBHlTQKRynET7X314VEqEdkRRfaq+gNtBI265Ql
-         x8MgvD+sEA3lAgrR62Ysw3RiL6FkuRq82Ljyyy0p7A2AwYmKSEIsG6kTmmnGacMBMv8C
-         EShg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zt3QYvOtMK3aS7Kre24BdNWSKzeAXGFSPj9ug3bpWP0=;
-        b=AchVj92zf8Kn7POj7ajlLwNU90/AL08HzEH81DD0QaGbiHYjytA09XU4TfFE0b5LNy
-         mav2rf6q0FU1UMnEuhzoWtA+rRgtlebcY/pjd9nfk5ui40MS/9Elq4oab9GjWOMumzQA
-         q7ENh7s/K+OIoFtIUF8hb7P2yQHOeLyC0wtydhTVHE7pqdN/C/TBWUEZWfs908/ajfaw
-         xNl2MrO6ot7YcIALA99ZbXoHghzsRr1lTB9p3fiU19m6xcPteOUQCpKxyDJcgtYf4nAO
-         e3FyIlGiPMw9pH5xYwVSV8kY24nBliEVMgF6lxGYM6ER0LdIJ59kdUk07rrSjh+S2Q9v
-         bDrA==
-X-Gm-Message-State: AOAM5301PJhB6e8wPzqBJN0a+YEVXBZ+cASfPhTea6Mqx/k0V2HdHg4T
-        9fXA8/IyOHgNdtQYD3Sm6G32x6S0IjIjOWmhM0EN3Q==
-X-Google-Smtp-Source: ABdhPJzQd5B0p+XfwRaIxUCp1VTH4WY8jU58h9m5zxxi2z85fBQ9Ejzu9HHHigxDoBveqYg5yQ66qVesC+3STL8kWx4=
-X-Received: by 2002:a05:6512:537:: with SMTP id o23mr13060435lfc.58.1627926196515;
- Mon, 02 Aug 2021 10:43:16 -0700 (PDT)
+        id S229612AbhHBS3x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Aug 2021 14:29:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229551AbhHBS3w (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Aug 2021 14:29:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F5ED610FF;
+        Mon,  2 Aug 2021 18:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1627928983;
+        bh=wLXyblv1IR8M3cala1vUy/uIkGzkGtc+XiFAdHfe2pY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=D2jdk+xQUFnRFOSRUZzFt239J1BQKksm2uQmHPAHiOjEjfKUA2u26ENQ6/hZ6WynF
+         D8KY+N0Ym7yPjTbg4lvFvB7cmhkBrqUQZ7ifCCyGuyBbRPZBNKLvHUbHTWCvEBOtSG
+         XoU3tZ5L5qmiREJOfoPX5gbKnVlnDUjm4C2pt70l2zK8XaQ59EEsjN+CNdxvqUTZ79
+         D6XrFA/aS1W7BiDCYjR9+K5/fzCPBbqsq58NTCw3y/HpR9/I5ZZLFnepPk9OwYWcuO
+         kz3PDJKvtMVIcM4lT1fPu4cTA5c6K98eb06h02vpsWA0pLnZ/CtXKj5vDFrb72zYc2
+         iawonkl//dneQ==
+Received: by mail-wr1-f49.google.com with SMTP id b13so11668698wrs.3;
+        Mon, 02 Aug 2021 11:29:42 -0700 (PDT)
+X-Gm-Message-State: AOAM5328gfuDI6eE88MBMe0Ag60AFThVHI7NWQEcSList/k7MmBFqi7O
+        yl6PsXeebYSKLt8COujVNh3flC+vnTo+0oC7WTE=
+X-Google-Smtp-Source: ABdhPJwq0uZi3cQZZld48fcVUpftWF+zfHYl86BwwV49+GTtvbzkUho4A5X6ItxbtEAm0onOX2tbsV2iMxl9UX2BSJo=
+X-Received: by 2002:adf:fd90:: with SMTP id d16mr20072378wrr.105.1627928981585;
+ Mon, 02 Aug 2021 11:29:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210730131832.118865-1-jinpu.wang@ionos.com> <20210730131832.118865-10-jinpu.wang@ionos.com>
- <YQee8091rXaXU4vL@unreal> <CAJpMwyj6SjO+yNsA9uMDZP1Cu2gUfXHAeRGgaGf46xbxDBrk5g@mail.gmail.com>
- <YQge6yQTILQsQECO@unreal>
-In-Reply-To: <YQge6yQTILQsQECO@unreal>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Mon, 2 Aug 2021 19:43:05 +0200
-Message-ID: <CAJpMwygeu=LYdTWMHxWYHMe_==yHxB_KEsTstH3CWOaMWu0sgQ@mail.gmail.com>
-Subject: Re: [PATCH for-next 09/10] RDMA/rtrs: Add support to disable an IB
- port on the storage side
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Wang <jinpu.wang@ionos.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Md Haris Iqbal <haris.iqbal@cloud.ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>
+References: <20210802144813.1152762-1-arnd@kernel.org> <20210802162250.GA12345@corigine.com>
+In-Reply-To: <20210802162250.GA12345@corigine.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 2 Aug 2021 20:29:25 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0R1wvqNE=tGAZt0GPTZFQVw=0Y3AX0WCK4hMWewBc2qA@mail.gmail.com>
+Message-ID: <CAK8P3a0R1wvqNE=tGAZt0GPTZFQVw=0Y3AX0WCK4hMWewBc2qA@mail.gmail.com>
+Subject: Re: [PATCH] switchdev: add Kconfig dependencies for bridge
+To:     Simon Horman <simon.horman@corigine.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Networking <netdev@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        oss-drivers@corigine.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 2, 2021 at 6:36 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Mon, Aug 02, 2021 at 04:31:01PM +0200, Haris Iqbal wrote:
-> > On Mon, Aug 2, 2021 at 9:30 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > >
-> > > On Fri, Jul 30, 2021 at 03:18:31PM +0200, Jack Wang wrote:
-> > > > From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
-> > > >
-> > > > This commit adds support to reject connection on a specific IB port which
-> > > > can be specified in the added sysfs entry for the rtrs-server module.
-> > > >
-> > > > Example,
-> > > >
-> > > > $ echo "mlx4_0 1" > /sys/class/rtrs-server/ctl/disable_port
-> > > >
-> > > > When a connection request is received on the above IB port, rtrs_srv
-> > > > rejects the connection and notifies the client to disable reconnection
-> > > > attempts. A manual reconnect has to be triggerred in such a case.
-> > > >
-> > > > A manual reconnect can be triggered by doing the following,
-> > > >
-> > > > echo 1 > /sys/class/rtrs-client/blya/paths/<select-path>/reconnect
->
-> <...>
->
-> > >
-> > > And maybe Jason thinks differently, but I don't feel comfortable with
-> > > such new sysfs file at all.
->
-> This part is much more important and should be cleared before resending.
+On Mon, Aug 2, 2021 at 6:23 PM Simon Horman <simon.horman@corigine.com> wrote:
+> On Mon, Aug 02, 2021 at 04:47:28PM +0200, Arnd Bergmann wrote:
+> > ---
+> > This version seems to pass my randconfig builds for the moment,
+> > but that doesn't mean it's correct either. Please have a closer
+> > look before this gets applied.
 
-Agreed. I will wait for Jason to respond.
+Thank you for taking a look, it seems I have done a particularly bad
+job rebasing
+the patch on top of the previous fix, leaving only the wrong bits ;-)
 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> > index e1a5a79e27c7..3a752e57c1e5 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+> > @@ -12,6 +12,7 @@ config MLX5_CORE
+> >       depends on MLXFW || !MLXFW
+> >       depends on PTP_1588_CLOCK || !PTP_1588_CLOCK
+> >       depends on PCI_HYPERV_INTERFACE || !PCI_HYPERV_INTERFACE
+> > +     depends on NET_MAY_USE_SWITCHDEV
+> >       help
+> >         Core driver for low level functionality of the ConnectX-4 and
+> >         Connect-IB cards by Mellanox Technologies.
 >
-> > >
-> > > Thanks
+> MLX5_CORE does not appear to cover code that calls
+> switchdev_bridge_port_offload.
+
+Ah right, I did get a link failure with my test build, but it was an
+unrelated one:
+
+ld: drivers/net/ethernet/mellanox/mlx5/core/esw/sample.o: in function
+`mlx5_esw_sample_skb':
+sample.c:(.text+0x5b4): undefined reference to `psample_sample_packet'
+
+I think that one needs
+
+--- a/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
++++ b/drivers/net/ethernet/mellanox/mlx5/core/Kconfig
+@@ -90,6 +90,7 @@ config MLX5_BRIDGE
+ config MLX5_CLS_ACT
+        bool "MLX5 TC classifier action support"
+        depends on MLX5_ESWITCH && NET_CLS_ACT
++       depends on PSAMPLE=y || PSAMPLE=MLX5_CORE
+        default y
+        help
+          mlx5 ConnectX offloads support for TC classifier action (NET_CLS_ACT),
+
+but this is unrelated and I have not tested that.
+
+> > diff --git a/drivers/net/ethernet/mellanox/mlxsw/Kconfig b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+> > index 12871c8dc7c1..dee3925bdaea 100644
+> > --- a/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+> > +++ b/drivers/net/ethernet/mellanox/mlxsw/Kconfig
+> > @@ -5,6 +5,7 @@
+> >
+> >  config MLXSW_CORE
+> >       tristate "Mellanox Technologies Switch ASICs support"
+> > +     depends on NET_MAY_USE_SWITCHDEV
+> >       select NET_DEVLINK
+> >       select MLXFW
+> >       help
+>
+> I think it is MLXSW_SPECTRUM rather than MLXSW_CORE
+> that controls compilation of spectrum_switchdev.c
+> which calls switchdev_bridge_port_offload.
+>
+> But MLXSW_SPECTRUM seems to already depend on BRIDGE || BRIDGE=n
+
+Ok.
+
+> > diff --git a/drivers/net/ethernet/netronome/Kconfig b/drivers/net/ethernet/netronome/Kconfig
+> > index b82758d5beed..a298d19e8383 100644
+> > --- a/drivers/net/ethernet/netronome/Kconfig
+> > +++ b/drivers/net/ethernet/netronome/Kconfig
+> > @@ -21,6 +21,7 @@ config NFP
+> >       depends on PCI && PCI_MSI
+> >       depends on VXLAN || VXLAN=n
+> >       depends on TLS && TLS_DEVICE || TLS_DEVICE=n
+> > +     depends on NET_MAY_USE_SWITCHDEV
+> >       select NET_DEVLINK
+> >       select CRC32
+> >       help
+>
+> This seems wrong, the NFP driver doesn't call
+> switchdev_bridge_port_offload()
+
+Ah right, I actually noticed that earlier and then forgot to remove that hunk.
+
+Also: is this actually intended or should the driver call
+switchdev_bridge_port_offload() like the other switchdev drivers do?
+
+> > diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
+> > index 07192613256e..a73c6c236b25 100644
+> > --- a/drivers/net/ethernet/ti/Kconfig
+> > +++ b/drivers/net/ethernet/ti/Kconfig
+> > @@ -93,6 +93,7 @@ config TI_CPTS
+> >  config TI_K3_AM65_CPSW_NUSS
+> >       tristate "TI K3 AM654x/J721E CPSW Ethernet driver"
+> >       depends on OF && TI_K3_UDMA_GLUE_LAYER
+> > +     depends on NET_MAY_USE_SWITCHDEV
+> >       select NET_DEVLINK
+> >       select TI_DAVINCI_MDIO
+> >       imply PHY_TI_GMII_SEL
+>
+> I believe this has already been addressed by the following patch in net
+>
+> b0e81817629a ("net: build all switchdev drivers as modules when the bridge is a module")
+
+I think the fix was wrong here, and that hunk should be reverted.
+The dependency was added to a bool option, where it does not have
+the intended effect.
+
+I think this is the only remaining thing needed from my patch, so
+the NET_MAY_USE_SWITCHDEV option is not needed either,
+and it could be written as:
+
+diff --git a/drivers/net/ethernet/ti/Kconfig b/drivers/net/ethernet/ti/Kconfig
+index 07192613256e..e49006a96d49 100644
+--- a/drivers/net/ethernet/ti/Kconfig
++++ b/drivers/net/ethernet/ti/Kconfig
+@@ -93,6 +93,7 @@ config TI_CPTS
+ config TI_K3_AM65_CPSW_NUSS
+        tristate "TI K3 AM654x/J721E CPSW Ethernet driver"
+        depends on OF && TI_K3_UDMA_GLUE_LAYER
++       depends on (BRIDGE && NET_SWITCHDEV) || BRIDGE=n || NET_SWITCHDEV=n
+        select NET_DEVLINK
+        select TI_DAVINCI_MDIO
+        imply PHY_TI_GMII_SEL
+@@ -110,7 +111,6 @@ config TI_K3_AM65_CPSW_NUSS
+ config TI_K3_AM65_CPSW_SWITCHDEV
+        bool "TI K3 AM654x/J721E CPSW Switch mode support"
+        depends on TI_K3_AM65_CPSW_NUSS
+-       depends on BRIDGE || BRIDGE=n
+        depends on NET_SWITCHDEV
+        help
+         This enables switchdev support for TI K3 CPSWxG Ethernet
+
+If this looks correct to you, I can submit it as a standalone patch.
+
+      Arnd
