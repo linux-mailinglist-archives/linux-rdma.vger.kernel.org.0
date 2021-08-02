@@ -2,69 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2F03DD139
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 09:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0953DD1FD
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 10:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232196AbhHBHdJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Aug 2021 03:33:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44862 "EHLO mail.kernel.org"
+        id S229917AbhHBIak (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Aug 2021 04:30:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhHBHdJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Aug 2021 03:33:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B868C60F5A;
-        Mon,  2 Aug 2021 07:32:59 +0000 (UTC)
+        id S229595AbhHBIak (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 2 Aug 2021 04:30:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 763E061057;
+        Mon,  2 Aug 2021 08:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627889580;
-        bh=qP6XyTQW5v/s1xq73iZTqyR01yDHYItj69Ov9IBgzTE=;
+        s=k20201202; t=1627893031;
+        bh=f0r1hSkNYIx2tz2nq+hrJu+jMsXK3H9HOI0GpCW/+Ro=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a9KPi5Cy6rg9TK/giAE6PRRlMLPG5RAwcUHjL+iuQ8hEpQ1A12nWloZJv3+8aDJ7K
-         nWdfO7uQweL+tXB872sQSppTKo97vGZth4RG43b/ZFJ/qB6vSpbU+lVsCN0RzWfh1J
-         Q2Lwx3tuN4PWOqj48ZNE7RaHOlA+kbFaPh40LlTBIeEIDAfUgbvql3pSc0pEcG5wPQ
-         AyMVqUC4qKpspteeRcFg/s2P1XndUlB55NgR7rVCxV6UDZqxz1DshOLUz5zGfP8pv2
-         St7qTeGkmBSorS/zSY0GjPTODPUkJ4HbpQTbRlqYzJOh6Oo1i7h0IJQm9vVFfXBYEa
-         PGmQS+LGLcYqg==
-Date:   Mon, 2 Aug 2021 10:32:57 +0300
+        b=Piw0dn0Wn9DMdj6hwR/hIBgMV7wWwFdRkZbX8q6E+x/sI+4yPnsHsKAZ52w/uGt4n
+         n2QwXTZNPJZQOKvAOYZLTHyhgk9VM93NNidAXOlyqfF/tcxyZ5jMH7J5BJa7mesXRW
+         W42OoYW/Br1KMW8Sp01b7wk0DRetY/Hgk3lx07B/iWSW5/Vw1ifOfQvn9SWUeItyhN
+         ddlYDJr2vyIzdRw4frFm75XAsgZTTax/IXUAurxAn1+nazB34AXIdSPUhCER8WA5W3
+         kWum6GTONE6mOsdv0oafoG/vJ/fez82HSnnUPJql/V8v6c7bBnF8uK+v037qi4t7YI
+         rLW7tSOIviSqQ==
+Date:   Mon, 2 Aug 2021 11:30:27 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Wang <jinpu.wang@ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org,
-        dledford@redhat.com, jgg@ziepe.ca, haris.iqbal@ionos.com,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: Re: [PATCH for-next 10/10] RDMA/rtrs: remove (void) casting for
- functions
-Message-ID: <YQefqauic265deCw@unreal>
-References: <20210730131832.118865-1-jinpu.wang@ionos.com>
- <20210730131832.118865-11-jinpu.wang@ionos.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, xyjxyj2000@gmail.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 5/5] Providers/rxe: Support XRC traffic
+Message-ID: <YQetIxKBrtpBvL5Y@unreal>
+References: <20210730152157.67592-1-rpearsonhpe@gmail.com>
+ <20210730152157.67592-6-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210730131832.118865-11-jinpu.wang@ionos.com>
+In-Reply-To: <20210730152157.67592-6-rpearsonhpe@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jul 30, 2021 at 03:18:32PM +0200, Jack Wang wrote:
-> From: Gioh Kim <gi-oh.kim@ionos.com>
+On Fri, Jul 30, 2021 at 10:21:58AM -0500, Bob Pearson wrote:
+> Extended create_qp and create_qp_ex verbs to support XRC QP types.
+> Extended WRs to support XRC operations.
 > 
-> As recommended by Leon
-> https://www.spinics.net/lists/linux-rdma/msg102200.html
-> this patch removes (void) casting because that does nothing.
-> 
-> Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 > ---
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
+>  providers/rxe/rxe.c | 132 ++++++++++++++++++++++++++++++++------------
+>  1 file changed, 96 insertions(+), 36 deletions(-)
 
-I would write the commit message differently:
+<...>
 
-------
+> +static void wr_set_xrc_srqn(struct ibv_qp_ex *ibqp, uint32_t remote_srqn)
+> +{
+> +	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
+> +	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
+> +						   qp->cur_index - 1);
+> +
+> +	if (qp->err)
+> +		return;
 
-Casting to (void) does nothing, remove them.
+Why is that?
 
-Link: https://www.spinics.net/lists/linux-rdma/msg102200.html
-Suggested-by: Leon Romanovsky <leon@kernel.org>
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Reviewed-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> +
+> +	wqe->wr.wr.xrc.srq_num = remote_srqn;
+> +}
+> +
