@@ -2,72 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11BB3DD440
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 12:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531C63DD6B5
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 15:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhHBKqt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Aug 2021 06:46:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40786 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233317AbhHBKqt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Aug 2021 06:46:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4963A60FA0;
-        Mon,  2 Aug 2021 10:46:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627901199;
-        bh=cMY1dVVXuWwh7Mw1QFGFb/SAmJFkeBmI0+kfizR6KE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yf22NywVyjqAqlliL6uLGyfh87U7k0grKddfOnhMT7ogiHhrPYd4OLrU9R0s5l0Wg
-         n6PBDghWwA03E7z4zHin5vp9L7r50Bf+H6HQjcfIIcy/nzgz3+mJkWnGMJZX2R5Bxv
-         9FF1Jq2pdt6Z5/VThQP8KPtnY6v7eW+TlXiIOmL91eQ4HK6VT4i0bSDroYw87tIPqg
-         i2cbmSn54MTohTGD0voBQ8tLNJ2sdV/1LcdzCKxz57lge+uDoa30W7y/aLvmS5BAO7
-         r3gSx8XcSvY0NHJ/hWZEGhxNnd2hXUrHHwMyc26SwjFwgDY2tzcJNn3g9HaOLGuqxb
-         WEnyFSfsClHIQ==
-Date:   Mon, 2 Aug 2021 13:46:36 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>
-Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com, Yangyang Li <liyangyang20@huawei.com>
-Subject: Re: [PATCH for-rc] RDMA/hns: Fix the double unlock problem of
- poll_sem
-Message-ID: <YQfNDOuxWlDt3O8e@unreal>
-References: <1627887374-20019-1-git-send-email-liangwenpeng@huawei.com>
+        id S233777AbhHBNOD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 2 Aug 2021 09:14:03 -0400
+Received: from smtp-internal.canonical.com ([91.189.90.122]:34442 "EHLO
+        erinyes.canonical.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233646AbhHBNOD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Aug 2021 09:14:03 -0400
+Received: from alphecca.canonical.com ([91.189.89.254])
+        by erinyes.canonical.com with esmtp (Exim 4.93 #5 (Debian))
+        id 1mAXlQ-0000im-8G
+        for <linux-rdma@vger.kernel.org>; Mon, 02 Aug 2021 13:13:52 +0000
+Received: from alphecca.canonical.com (localhost [IPv6:::1])
+        by alphecca.canonical.com (Postfix) with ESMTP id 3997AE002A4
+        for <linux-rdma@vger.kernel.org>; Mon,  2 Aug 2021 13:13:52 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1627887374-20019-1-git-send-email-liangwenpeng@huawei.com>
+Content-Transfer-Encoding: 8BIT
+X-Launchpad-Message-Rationale: Creator @linux-rdma
+X-Launchpad-Message-For: linux-rdma
+X-Launchpad-Notification-Type: package-build-status
+X-Launchpad-Build-Arch: i386
+X-Launchpad-Build-Component: main
+X-Launchpad-Build-State: FAILEDTOBUILD
+X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
+X-Creator-Recipient: linux-rdma@vger.kernel.org
+X-Launchpad-PPA: linux-rdma-rdma-core-daily
+To:     Linux RDMA <linux-rdma@vger.kernel.org>
+From:   Launchpad Buildd System <noreply@launchpad.net>
+Subject: [Build #21832068] i386 build of rdma-core 37.0~202108021056+git971d76c8~ubuntu18.04.1 in ubuntu bionic RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
+Message-Id: <162791003222.5573.2742098130163731705.launchpad@alphecca.canonical.com>
+Date:   Mon, 02 Aug 2021 13:13:52 -0000
+Reply-To: Launchpad Buildd System <noreply@launchpad.net>
+Sender: noreply@launchpad.net
+X-Generated-By: Launchpad (canonical.com); Revision="8bd362bf86c4b35e805f897f03c203e3576a7006"; Instance="buildmaster"
+X-Launchpad-Hash: 61ec936fcfe789648b83e09858ab46f814a2bf5f
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 02, 2021 at 02:56:14PM +0800, Wenpeng Liang wrote:
-> From: Yangyang Li <liyangyang20@huawei.com>
-> 
-> If hns_roce_cmd_use_events() fails then it means that the poll_sem is not
-> obtained, but the poll_sem is released in hns_roce_cmd_use_polling(), this
-> will cause an unlock problem.
-> 
-> This is the static checker warning:
-> 	drivers/infiniband/hw/hns/hns_roce_main.c:926 hns_roce_init()
-> 	error: double unlocked '&hr_dev->cmd.poll_sem' (orig line 879)
-> 
-> Event mode and polling mode are mutually exclusive and resources are
-> separated, so there is no need to process polling mode resources in
-> event mode.
-> 
-> The initial mode of cmd is polling mode, so even if cmd fails to switch to
-> event mode, it is not necessary to switch to polling mode.
-> 
-> Fixes: a389d016c030 ("RDMA/hns: Enable all CMDQ context")
-> Fixes: 3d50503b3b33 ("RDMA/hns: Optimize cmd init and mode selection for hip08")
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
-> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-> ---
->  drivers/infiniband/hw/hns/hns_roce_cmd.c  | 7 +++----
->  drivers/infiniband/hw/hns/hns_roce_main.c | 4 +---
->  2 files changed, 4 insertions(+), 7 deletions(-)
-> 
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+ * Source Package: rdma-core
+ * Version: 37.0~202108021056+git971d76c8~ubuntu18.04.1
+ * Architecture: i386
+ * Archive: ~linux-rdma/ubuntu/rdma-core-daily
+ * Component: main
+ * State: Failed to build
+ * Duration: 8 minutes
+ * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/21832068/+files/buildlog_ubuntu-bionic-i386.rdma-core_37.0~202108021056+git971d76c8~ubuntu18.04.1_BUILDING.txt.gz
+ * Builder: https://launchpad.net/builders/lgw01-amd64-053
+ * Source: not available
+
+
+
+If you want further information about this situation, feel free to
+contact us by asking a question on Launchpad
+(https://answers.launchpad.net/launchpad/+addquestion).
+
+-- 
+i386 build of rdma-core 37.0~202108021056+git971d76c8~ubuntu18.04.1 in ubuntu bionic RELEASE
+https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/21832068
+
+You are receiving this email because you created this version of this
+package.
+
