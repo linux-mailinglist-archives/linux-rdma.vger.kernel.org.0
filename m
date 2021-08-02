@@ -2,81 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B083DCC76
-	for <lists+linux-rdma@lfdr.de>; Sun,  1 Aug 2021 17:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 790683DCF6B
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 Aug 2021 06:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232166AbhHAPhz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 1 Aug 2021 11:37:55 -0400
-Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:34980
-        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232117AbhHAPhy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 1 Aug 2021 11:37:54 -0400
-Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 5EE3A3F0A6;
-        Sun,  1 Aug 2021 15:37:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1627832265;
-        bh=iLN8TLgdbvtmYaSUrV7g9uz/p2+EVNuytQVWi86ahzk=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
-        b=t8Fam8VC535Ic8aJxhQoRDVyQCzWKu3d4lIVBZ/POU19Bi0STVDy2y8lyutq5WdAD
-         8Q8BHNSVEF63yv55++n7UOgmygzQcvouHNFDq28M8b6dhJgk9Zt+R99ewDHavGOyqR
-         Yu8khXUp6YYRbol1kJNsKAu+zPIr6CC/eteiCc7haB7MENS2p3FX1Dq3w15jqh45Lk
-         8AsVEzReRJNwxQg+GTFkqgqxtm7VvntT8dWYubiW/4wxyZOtjPDI3Wuh9G2l8VXKxe
-         Zxc3TObvjpl9iTgua6GC5RSg/vrTUYjAxJbdKnqHQUo/SBRlVWzLIdFpwUhjWzps1F
-         pVBGXzRqmML8w==
-From:   Colin King <colin.king@canonical.com>
-To:     Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net/mlx4: make the array states static const, makes object smaller
-Date:   Sun,  1 Aug 2021 16:37:42 +0100
-Message-Id: <20210801153742.147304-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S232138AbhHBEYd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 Aug 2021 00:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232152AbhHBEYa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 Aug 2021 00:24:30 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED89DC06179E
+        for <linux-rdma@vger.kernel.org>; Sun,  1 Aug 2021 21:24:20 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id z11so243483edb.11
+        for <linux-rdma@vger.kernel.org>; Sun, 01 Aug 2021 21:24:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
+        b=FtyL1jenxhHoD0FEqr0JzEzar9WxjQ0aFEwPIjOui/KxHqjdRIaWw+qc9fVrqT7/Dn
+         Pnh35Va41LybAL6U8YkeIBgROe6j/64zDWESXr3a3yRfbQQPGRB9fNiPFd+zLtRJzUIN
+         QuzzTY5SkBKHMhw3aNm828s4szNx+qezVfjbXBb1AnLosRqM3hZLsmXFs11UFe9XwQd0
+         8wSmR+hXWoecdn7C1dRJ3raMOO2OzRp8To/v4OIIenhLUR2Xi2bEwQKHQsPiMZ9RJ/f/
+         /P5G34L+RYG0gvY4mQKUVcv9jgYngramQoP+XViWVUuAojxufRmPTkFAnPt7xVda61k1
+         G8fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=JbMtpdZj7sghISs4e5T5yryQDvERMuYalazmdQP0RcA=;
+        b=r8/wMoVfw5DyI2JvjK88Rl6T34vvOtI2higd7U/F2skhwO8GC9HgI1eETsmjDRBiD4
+         hjqU4EiBwtqghuDUNL+t3FkZbHzOw/0fKg7fDkAqERXFfdPGt1E/mN4InaydCoUyf+yy
+         C2T1OIVYSM3r7KCo5Y3KtYY3ph5CMNCOos2/Cv9dJLGbsN7wapM915pBjyy8K8x4ufi5
+         M2/4S6NkMPYa2F35JNSTzNZlJfT+1QJRVfNgImIbhCLLdGDOMAhvER5IYE/heLSRsa5U
+         PG5KyNTNbMGFxV0YfMWZxk2t7q82St+s1r+hpJ1YsmqjFkfHeHcSW3xrJYK4WVdN6eJT
+         Am3g==
+X-Gm-Message-State: AOAM533mLPzcY2hcbSTgtIh5Rg63YVyI5OgXIRfQiWKSe6tx/Yt++aLU
+        KKW47g/oYZTMGI0J/nbeWXxMANtYAKQuX1hrh70qsRk4P8BbrA==
+X-Google-Smtp-Source: ABdhPJzys5yCwXnLOHH4NsCIcKA9f726GMnAOsN9NLlhSmyZNb7UhzU0IEwJ6FYKksyg3UeOKVwrbLA6pAJm2hMlOV0=
+X-Received: by 2002:aa7:c0d1:: with SMTP id j17mr16890014edp.217.1627878249276;
+ Sun, 01 Aug 2021 21:24:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a17:907:d0b:0:0:0:0 with HTTP; Sun, 1 Aug 2021 21:24:08
+ -0700 (PDT)
+Reply-To: ablahikazabl67@gmail.com
+From:   Abdoulahi Kazim <drwilliamcuthbert@gmail.com>
+Date:   Mon, 2 Aug 2021 05:24:08 +0100
+Message-ID: <CAKwBCXuzDf40zPCct3xg8L9LubxzXWgC230fQ80GXrmg_Yuttw@mail.gmail.com>
+Subject: More Authentic Information
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
-
-Don't populate the array states on the stack but instead it
-static const. Makes the object code smaller by 79 bytes.
-
-Before:
-   text   data   bss    dec    hex filename
-  21309   8304   192  29805   746d drivers/net/ethernet/mellanox/mlx4/qp.o
-
-After:
-   text   data   bss    dec    hex filename
-  21166   8368   192  29726   741e drivers/net/ethernet/mellanox/mlx4/qp.o
-
-(gcc version 10.2.0)
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/qp.c b/drivers/net/ethernet/mellanox/mlx4/qp.c
-index 427e7a31862c..2584bc038f94 100644
---- a/drivers/net/ethernet/mellanox/mlx4/qp.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/qp.c
-@@ -917,7 +917,7 @@ int mlx4_qp_to_ready(struct mlx4_dev *dev, struct mlx4_mtt *mtt,
- {
- 	int err;
- 	int i;
--	enum mlx4_qp_state states[] = {
-+	static const enum mlx4_qp_state states[] = {
- 		MLX4_QP_STATE_RST,
- 		MLX4_QP_STATE_INIT,
- 		MLX4_QP_STATE_RTR,
 -- 
-2.31.1
+Dear Partner,
 
+I am soliciting your partnership to relocate $12.5 Million to your
+country for investment on my behalf and you will be entitled to 30% of
+the sum once the transaction is successful made.
+
+Please indicate your genuine interest if you are capable so that i
+will send you the authentic details and documents of the transaction
+in awareness with some of my fellow Directors in the bank.
+
+If you are interested, here is my private Email address:
+(ablahikazabl67@gmail.com)
+For more authentic and legit information.
+
+
+Regards :  Abdoulahi Kazim
