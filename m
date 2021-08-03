@@ -2,336 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0530D3DF866
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 01:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075103DF887
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 01:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233958AbhHCXUm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Aug 2021 19:20:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38984 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233743AbhHCXUf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Aug 2021 19:20:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1510760F70;
-        Tue,  3 Aug 2021 23:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628032824;
-        bh=wPMbOjqoH1dBdJO1XE08P8TUVvPbWReG9PxCWFW6RTE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TXyLsvAg7vUfVeQZiTI971az1RFIJbbbInyZ/Pyiz2iwc0k1uZOLPx5lhxmT5RbXY
-         6V37Lk42+Zt6xKOXy0ytIc3gLWM5M/uMk1Te9pb04GB686BjQyOm9iV4tgwjYL/C0k
-         n3LRATgsI/CLSCUsVfNLerkacPAEZtt3N9pM+6UHzrDdcaOKH4u2Q4pa5blJejSukz
-         xjdWhn6gVtqWCkeFztG1cynIB9VCGezMCBJQcUfg2rQtpaZxH0bKjSCQGbqfozxOtm
-         ll4AaiMT6274LjZA2LD4HP3R1Hx37pDhu0oKJj63c1PosZkylbQO4AZAoqXRwDhA+A
-         7aPJyh8phggFQ==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Bloch <mbloch@nvidia.com>
-Subject: [PATCH mlx5-next 14/14] net/mlx5: Lag, Create shared FDB when in switchdev mode
-Date:   Tue,  3 Aug 2021 16:19:59 -0700
-Message-Id: <20210803231959.26513-15-saeed@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210803231959.26513-1-saeed@kernel.org>
-References: <20210803231959.26513-1-saeed@kernel.org>
+        id S234110AbhHCXds (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Aug 2021 19:33:48 -0400
+Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:36769
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231966AbhHCXdr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Aug 2021 19:33:47 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VOOJnzdUIkVUM9Re2mFBOxuWPpqs7ZqzagofOdz+xWIlZL4voKz099bsvhK+bnk8kJnIjf16z4lfYeh2MWYK1sQxfpbmfwgfl5G/yPoZx3KnQCP448YX9xg8sI6YfmL6IwGtkavSF7/U491m1rWYlsxvy5Y7pQjHY0PwSddPPo8HCSeeNaY3EVtvHQp6G7+ItaqSnA5uOsrypobFeZKbqu+CScXgy7G5FmGSuJLcgBfX0J9p4Idfp5OEZP+v7fsftON27HoSe+qWf97080htik6y0TVyjqGLAorgmY1BnNgUlKa+5Vwd258Xto8Lyx1I6c0gnssvQ7p0MYT04xLkyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XnMgJ2OFmhjdESmKwpF/X1seMoP2rRGz5Ja1j3hI0A=;
+ b=UlBxf3LAVsnBzSYR9qh9TpGuo87tknAuxacdWzXDdAWw+CYa1SOEnqzUQL189M1ue9Revce4O0n7eFbSQ+wVj3zcvM1rCXMsrg5mqwVDKQjFRYBh+aSn4nq8fkpz3+jkuo1TvnbJtoTGD+v+ycxNltnx7i9o1vg0vwKQSrGZV4nc/tEUZJ205yJpTYhA9jgArPtkY6FTTYKlXkkW2nWdrFdH8ZElW+g8sSMEQriHaG/esxP7pk3insUscNDa65I83D7N/AykTMRBw84Y994SVrQ90T1yxdivB7bbsRLm6fnP0h6pH0oDfa6/8MPxfLW9t05VGFqpfQ7JnOcJ1q1qDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2XnMgJ2OFmhjdESmKwpF/X1seMoP2rRGz5Ja1j3hI0A=;
+ b=WRnTZ7MsM7upeKZz5pwS34sOItxBIR1PI5tFHqy5Z9ytJ1ptnb9mbCW04SsCswW0OcUxhI2lk1t3oZnrY0TYoQz+FtPKA64XA0v38f0YtHCwTH0MFroeQiNXTAFmUvns4l/ZJ2FL8yDYfRj6OYVEHvuZTijoKkRqp/UCO9YAqLNh0amwYzAG3j7jAw+hfzTdWoI7CfIF15iofxSTRVamiubZeLt+ymzg98HB2RU4JX+63PJvauNW98t9giPMTFV563Hzd82pGUcEsNA+C/od/ACo2qTL8/lasi9j36Xiq3waEvj7jt+p47TI5IDnD0fQ8svrU+1rr0NFLcmv/bdHdQ==
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5096.namprd12.prod.outlook.com (2603:10b6:208:316::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.19; Tue, 3 Aug
+ 2021 23:33:33 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::d017:af2f:7049:5482%5]) with mapi id 15.20.4373.026; Tue, 3 Aug 2021
+ 23:33:33 +0000
+Date:   Tue, 3 Aug 2021 20:33:31 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markz@mellanox.com>,
+        Christoph Hellwig <hch@infradead.org>
+Subject: Re: [PATCH rdma-next v1 0/7] Separate user/kernel QP creation logic
+Message-ID: <20210803233331.GA2935025@nvidia.com>
+References: <cover.1626857976.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1626857976.git.leonro@nvidia.com>
+X-ClientProxiedBy: YT1PR01CA0035.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::48)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0035.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 23:33:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mB3ud-00CJXj-MQ; Tue, 03 Aug 2021 20:33:31 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4a785469-2dcd-45e1-531c-08d956d71bb2
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5096:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5096057EBC57C4B6C9DC1798C2F09@BL1PR12MB5096.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: hD0FEF1UzPqly0BvMcd9gVBrgDUbbi8HMTCaIs0Wc89kAQNgYGBXRLy6mCNBDZlmm0NZuUNAMPl1st1/BeMV6joJRyf9KsKqv5+nElhZ75MiFPbwdoCSSXSE7MBjdtpzSKNLTHbCnTmBI0bjH3vc3888+vu7jUx8hvI97v1AxgnRzr3hraUo6aqpCWt/PnbJKvW0+2Gbdd4ycUX69SaHNI+cvIhzi0XfXSYhg17AqD4N6XeVgRP88yr2KL96W1v60AIh2xKJWXjsQMFlkd4sj5TLTiWuJIPY6MHyy0qeg8A16N/1m062lqT0URL/ci68IPBC1TYR3HdmSns/eN4c5l6b1Zo/1A2TjJQ9Mtx/hYIw0QvVq4jRIXzkO6XMSaKgBHQRlCT/IjYswH8oembfMEUcCD3WdPqQzDXMTqTrBQ1IXIfhmNQb4GoA6rvXzOUdJDeGEPSmXtBkFv6VC/s0kmd7fDCtlVWHmxN0anYZv/nPaJ29rMnxW51yXSc8Im/qCZCEAv32xI2DB9PIzna7/YVKtWCGNho0fJNcDdqaWjuuywQ7VZfoyD6QDODCfQ87cCA/oPbIrMxP7G1+TmbDLV+00I48svEe1KIg1rc/k1jTKC6llCtXtcd/OFVwRKKSXyagPRl2wtW5Ipbv8cISSZlm2BBfHBT24A75g+wAVoc+16aJ/Cq50kxHHt+tdjIN7O/w+6KuVeD2VpeXBPpUKriHP0uYc9+Q1qG/RgRQvyk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(366004)(346002)(136003)(5660300002)(6916009)(2616005)(426003)(966005)(478600001)(33656002)(86362001)(83380400001)(8676002)(66946007)(66476007)(66556008)(36756003)(1076003)(26005)(2906002)(54906003)(9786002)(316002)(4326008)(9746002)(8936002)(38100700002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wnAdNKHuVkgZCKSLiYRK2tBawC1zJz3kFVBmJ4bo38piEVpPm4NuVv/aekPP?=
+ =?us-ascii?Q?vduyf9HRyw1MvOqhE2AQ9mkSSAytFk5fZJf72hU0swQSHWFSwC5H8EuYqSMr?=
+ =?us-ascii?Q?1ChA+GZgCMcjmZtUae9iU2q5+kH/zJuz7mNFaHzg1wePYOmzTSzEAoCRpbOd?=
+ =?us-ascii?Q?NVBE5UiLAEaiIDCdQ2bHS55iSm+kWoe+Ocnz9GyhDiXkuhczM/t5eBcng/ZN?=
+ =?us-ascii?Q?otigNYXAON5LvUJbNCN1dGY+eKXgyNzPPIFznKV62MrZZZxG2mNnhywVdtO9?=
+ =?us-ascii?Q?XjnsTM9pFdyAYjaVpuIp5K/BPtdr7Mg/G1V42rODLfeuIHsD+acXTSYgqe5v?=
+ =?us-ascii?Q?GQKof3JZHe11s2uyE1Ca1RkCMJ3GciKhGiY4yIwhqmIOY0zn7vVJiHvohv6y?=
+ =?us-ascii?Q?Igt8i85QSUHxCPQf62aMgSglwFUEn1J/joEfSAE8SbA6k+r9jE6f4mdbb5At?=
+ =?us-ascii?Q?tVoGEjYoT6JK05LogHpyoMkTTTXc4LNfVpy5Nuq78gay2ORVkgcbWV5vWH6P?=
+ =?us-ascii?Q?TT0HupG+ap/i304FZWupjO4R0D6GbTGugNVi4702O3+6yHloMiWpMGrJdPfw?=
+ =?us-ascii?Q?Hs1E/bBdnMsOMpTQWX4kkcjQx7clSAqbDjCXedYce5/2pYe0it8EiavtjW3S?=
+ =?us-ascii?Q?uEhwJPXXNOAM5eZDSdBd+T50xqLxtInCqm5OF+qNFdj9VxYqKQdfE5yNXYML?=
+ =?us-ascii?Q?JcXkqfDjliiRivRNBGj3CU+aumHrVVxOATpMkY7nYNjYZgSrvE77NooTx7gZ?=
+ =?us-ascii?Q?VVxqYeBqBwozhhZm+BzmC2YhfJsLn0bvLFE5Zs997OR50ASni4IIgbNqUdWI?=
+ =?us-ascii?Q?L5fRJ0e/rZJlv4vpOEnws0uUGbUgc5u1md3Jjt9/uuOjLSoSMhts4VfNK0p4?=
+ =?us-ascii?Q?XW48oB/bXaBbL5gInNNKypSRfLNKJzo5BVIIndUNQnRHtoGguGPNozbXihEv?=
+ =?us-ascii?Q?W7Q9LALnO3X5L6afuPLcobzcs4h0vBxh3yhNQ7SMSInXstE/KVms0RS2PPZi?=
+ =?us-ascii?Q?XfAngRfyVR4OH+w/3nD1rPt6FkvMqCPBJW4UWEJ4bOwQkWAdVf5suWOaQ8pm?=
+ =?us-ascii?Q?yH+AQWyFQFiZhxIZsJKTO7SM2noBJotKKpiqpsjmkIeXqGvGEYu628cCOFQB?=
+ =?us-ascii?Q?XpJqHdY0ZXYbkPFueQUMfoyWiWi6XJ0mlg/JoYuQZPzqB/ElKwgpSu6s2ZPj?=
+ =?us-ascii?Q?n49id+VaSoh9Rx3OjZ3sVRw9HvmBsNuMMxuZu5pqzAdpOBimlVF+WPrkAnj/?=
+ =?us-ascii?Q?XnaMN/1jfT6at6eB019Ejw6jALF2oaln2C4ozYovm8yZcrNJWZRXtON2kWWY?=
+ =?us-ascii?Q?O0M1uFmHIN6I6oIpuNTTsxvk?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a785469-2dcd-45e1-531c-08d956d71bb2
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 23:33:33.5540
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: APEBHeR5mBxpPHExbfWrQX1biMGPutuQO6BSqNFPmnb9+TL8DQq4iKngYMWQS7Sf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5096
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Bloch <mbloch@nvidia.com>
+On Wed, Jul 21, 2021 at 12:07:03PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Changelog:
+> iv1:
+>  * Fixed typo: incline -> inline/
+>  * Dropped ib_create_qp_uverbs() wrapper in favour of direct call.
+>  * Moved kernel-doc to the actual ib_create_qp() function that users will use.
+> v0: https://lore.kernel.org/lkml/cover.1626846795.git.leonro@nvidia.com
+> 
+> Hi,
+> 
+> The "QP allocation" series shows clearly how convoluted the create QP
+> flow and especially XRC_TGT flow, where it calls to kernel verb just
+> to pass some parameters as NULL to the user create QP verb.
+> 
+> This series is a small step to make clean XRC_TGT flow by providing
+> more clean user/kernel create QP verb separation.
+> 
+> It is based on the "QP allocation" series.
+> 
+> Thanks
+> 
+> Leon Romanovsky (7):
+>   RDMA/mlx5: Delete not-available udata check
+>   RDMA/core: Delete duplicated and unreachable code
+>   RDMA/core: Remove protection from wrong in-kernel API usage
+>   RDMA/core: Reorganize create QP low-level functions
+>   RDMA/core: Configure selinux QP during creation
+>   RDMA/core: Properly increment and decrement QP usecnts
+>   RDMA/core: Create clean QP creations interface for uverbs
 
-If both eswitches are in switchdev mode and the uplink representors
-are enslaved to the same bond device create a shared FDB configuration.
+Applied to for-next, thanks
 
-When moving to shared FDB mode not only the hardware needs be configured
-but the RDMA driver needs to reconfigure itself.
-
-When such change is done, unload the RDMA devices, configure the hardware
-and load the RDMA representors.
-
-When destroying the lag (can happen if a PCI function is unbinded,
-driver is unloaded or by just removing a netdev from the bond) make sure
-to restore the system to the previous state only if possible.
-
-For example, if a PCI function is unbinded there is no need to load the
-representors as the device is going away.
-
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/lag.c | 118 +++++++++++++++---
- drivers/net/ethernet/mellanox/mlx5/core/lag.h |   3 +-
- .../net/ethernet/mellanox/mlx5/core/lag_mp.c  |   2 +-
- 3 files changed, 105 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-index 89cd2b2af50a..f4dfa55c8c7e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.c
-@@ -32,7 +32,9 @@
- 
- #include <linux/netdevice.h>
- #include <linux/mlx5/driver.h>
-+#include <linux/mlx5/eswitch.h>
- #include <linux/mlx5/vport.h>
-+#include "lib/devcom.h"
- #include "mlx5_core.h"
- #include "eswitch.h"
- #include "lag.h"
-@@ -45,7 +47,7 @@
- static DEFINE_SPINLOCK(lag_lock);
- 
- static int mlx5_cmd_create_lag(struct mlx5_core_dev *dev, u8 remap_port1,
--			       u8 remap_port2)
-+			       u8 remap_port2, bool shared_fdb)
- {
- 	u32 in[MLX5_ST_SZ_DW(create_lag_in)] = {};
- 	void *lag_ctx = MLX5_ADDR_OF(create_lag_in, in, ctx);
-@@ -54,6 +56,7 @@ static int mlx5_cmd_create_lag(struct mlx5_core_dev *dev, u8 remap_port1,
- 
- 	MLX5_SET(lagc, lag_ctx, tx_remap_affinity_1, remap_port1);
- 	MLX5_SET(lagc, lag_ctx, tx_remap_affinity_2, remap_port2);
-+	MLX5_SET(lagc, lag_ctx, fdb_selection_mode, shared_fdb);
- 
- 	return mlx5_cmd_exec_in(dev, create_lag, in);
- }
-@@ -224,35 +227,59 @@ void mlx5_modify_lag(struct mlx5_lag *ldev,
- }
- 
- static int mlx5_create_lag(struct mlx5_lag *ldev,
--			   struct lag_tracker *tracker)
-+			   struct lag_tracker *tracker,
-+			   bool shared_fdb)
- {
- 	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
-+	struct mlx5_core_dev *dev1 = ldev->pf[MLX5_LAG_P2].dev;
-+	u32 in[MLX5_ST_SZ_DW(destroy_lag_in)] = {};
- 	int err;
- 
- 	mlx5_infer_tx_affinity_mapping(tracker, &ldev->v2p_map[MLX5_LAG_P1],
- 				       &ldev->v2p_map[MLX5_LAG_P2]);
- 
--	mlx5_core_info(dev0, "lag map port 1:%d port 2:%d",
--		       ldev->v2p_map[MLX5_LAG_P1], ldev->v2p_map[MLX5_LAG_P2]);
-+	mlx5_core_info(dev0, "lag map port 1:%d port 2:%d shared_fdb:%d",
-+		       ldev->v2p_map[MLX5_LAG_P1], ldev->v2p_map[MLX5_LAG_P2],
-+		       shared_fdb);
- 
- 	err = mlx5_cmd_create_lag(dev0, ldev->v2p_map[MLX5_LAG_P1],
--				  ldev->v2p_map[MLX5_LAG_P2]);
--	if (err)
-+				  ldev->v2p_map[MLX5_LAG_P2], shared_fdb);
-+	if (err) {
- 		mlx5_core_err(dev0,
- 			      "Failed to create LAG (%d)\n",
- 			      err);
-+		return err;
-+	}
-+
-+	if (shared_fdb) {
-+		err = mlx5_eswitch_offloads_config_single_fdb(dev0->priv.eswitch,
-+							      dev1->priv.eswitch);
-+		if (err)
-+			mlx5_core_err(dev0, "Can't enable single FDB mode\n");
-+		else
-+			mlx5_core_info(dev0, "Operation mode is single FDB\n");
-+	}
-+
-+	if (err) {
-+		MLX5_SET(destroy_lag_in, in, opcode, MLX5_CMD_OP_DESTROY_LAG);
-+		if (mlx5_cmd_exec_in(dev0, destroy_lag, in))
-+			mlx5_core_err(dev0,
-+				      "Failed to deactivate RoCE LAG; driver restart required\n");
-+	}
-+
- 	return err;
- }
- 
- int mlx5_activate_lag(struct mlx5_lag *ldev,
- 		      struct lag_tracker *tracker,
--		      u8 flags)
-+		      u8 flags,
-+		      bool shared_fdb)
- {
- 	bool roce_lag = !!(flags & MLX5_LAG_FLAG_ROCE);
- 	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
- 	int err;
- 
--	err = mlx5_create_lag(ldev, tracker);
-+	err = mlx5_create_lag(ldev, tracker, shared_fdb);
- 	if (err) {
- 		if (roce_lag) {
- 			mlx5_core_err(dev0,
-@@ -266,6 +293,7 @@ int mlx5_activate_lag(struct mlx5_lag *ldev,
- 	}
- 
- 	ldev->flags |= flags;
-+	ldev->shared_fdb = shared_fdb;
- 	return 0;
- }
- 
-@@ -278,6 +306,12 @@ static int mlx5_deactivate_lag(struct mlx5_lag *ldev)
- 
- 	ldev->flags &= ~MLX5_LAG_MODE_FLAGS;
- 
-+	if (ldev->shared_fdb) {
-+		mlx5_eswitch_offloads_destroy_single_fdb(ldev->pf[MLX5_LAG_P1].dev->priv.eswitch,
-+							 ldev->pf[MLX5_LAG_P2].dev->priv.eswitch);
-+		ldev->shared_fdb = false;
-+	}
-+
- 	MLX5_SET(destroy_lag_in, in, opcode, MLX5_CMD_OP_DESTROY_LAG);
- 	err = mlx5_cmd_exec_in(dev0, destroy_lag, in);
- 	if (err) {
-@@ -333,6 +367,10 @@ static void mlx5_lag_remove_devices(struct mlx5_lag *ldev)
- 		if (!ldev->pf[i].dev)
- 			continue;
- 
-+		if (ldev->pf[i].dev->priv.flags &
-+		    MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV)
-+			continue;
-+
- 		ldev->pf[i].dev->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
- 		mlx5_rescan_drivers_locked(ldev->pf[i].dev);
- 	}
-@@ -342,12 +380,15 @@ static void mlx5_disable_lag(struct mlx5_lag *ldev)
- {
- 	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
- 	struct mlx5_core_dev *dev1 = ldev->pf[MLX5_LAG_P2].dev;
-+	bool shared_fdb = ldev->shared_fdb;
- 	bool roce_lag;
- 	int err;
- 
- 	roce_lag = __mlx5_lag_is_roce(ldev);
- 
--	if (roce_lag) {
-+	if (shared_fdb) {
-+		mlx5_lag_remove_devices(ldev);
-+	} else if (roce_lag) {
- 		if (!(dev0->priv.flags & MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV)) {
- 			dev0->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
- 			mlx5_rescan_drivers_locked(dev0);
-@@ -359,8 +400,34 @@ static void mlx5_disable_lag(struct mlx5_lag *ldev)
- 	if (err)
- 		return;
- 
--	if (roce_lag)
-+	if (shared_fdb || roce_lag)
- 		mlx5_lag_add_devices(ldev);
-+
-+	if (shared_fdb) {
-+		if (!(dev0->priv.flags & MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV))
-+			mlx5_eswitch_reload_reps(dev0->priv.eswitch);
-+		if (!(dev1->priv.flags & MLX5_PRIV_FLAGS_DISABLE_ALL_ADEV))
-+			mlx5_eswitch_reload_reps(dev1->priv.eswitch);
-+	}
-+}
-+
-+static bool mlx5_shared_fdb_supported(struct mlx5_lag *ldev)
-+{
-+	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
-+	struct mlx5_core_dev *dev1 = ldev->pf[MLX5_LAG_P2].dev;
-+
-+	if (is_mdev_switchdev_mode(dev0) &&
-+	    is_mdev_switchdev_mode(dev1) &&
-+	    mlx5_eswitch_vport_match_metadata_enabled(dev0->priv.eswitch) &&
-+	    mlx5_eswitch_vport_match_metadata_enabled(dev1->priv.eswitch) &&
-+	    mlx5_devcom_is_paired(dev0->priv.devcom,
-+				  MLX5_DEVCOM_ESW_OFFLOADS) &&
-+	    MLX5_CAP_GEN(dev1, lag_native_fdb_selection) &&
-+	    MLX5_CAP_ESW(dev1, root_ft_on_other_esw) &&
-+	    MLX5_CAP_ESW(dev0, esw_shared_ingress_acl))
-+		return true;
-+
-+	return false;
- }
- 
- static void mlx5_do_bond(struct mlx5_lag *ldev)
-@@ -380,6 +447,8 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
- 	}
- 
- 	if (do_bond && !__mlx5_lag_is_active(ldev)) {
-+		bool shared_fdb = mlx5_shared_fdb_supported(ldev);
-+
- 		roce_lag = !mlx5_sriov_is_enabled(dev0) &&
- 			   !mlx5_sriov_is_enabled(dev1);
- 
-@@ -389,23 +458,40 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
- 			   dev1->priv.eswitch->mode == MLX5_ESWITCH_NONE;
- #endif
- 
--		if (roce_lag)
-+		if (shared_fdb || roce_lag)
- 			mlx5_lag_remove_devices(ldev);
- 
- 		err = mlx5_activate_lag(ldev, &tracker,
- 					roce_lag ? MLX5_LAG_FLAG_ROCE :
--					MLX5_LAG_FLAG_SRIOV);
-+						   MLX5_LAG_FLAG_SRIOV,
-+					shared_fdb);
- 		if (err) {
--			if (roce_lag)
-+			if (shared_fdb || roce_lag)
- 				mlx5_lag_add_devices(ldev);
- 
- 			return;
--		}
--
--		if (roce_lag) {
-+		} else if (roce_lag) {
- 			dev0->priv.flags &= ~MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
- 			mlx5_rescan_drivers_locked(dev0);
- 			mlx5_nic_vport_enable_roce(dev1);
-+		} else if (shared_fdb) {
-+			dev0->priv.flags &= ~MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
-+			mlx5_rescan_drivers_locked(dev0);
-+
-+			err = mlx5_eswitch_reload_reps(dev0->priv.eswitch);
-+			if (!err)
-+				err = mlx5_eswitch_reload_reps(dev1->priv.eswitch);
-+
-+			if (err) {
-+				dev0->priv.flags |= MLX5_PRIV_FLAGS_DISABLE_IB_ADEV;
-+				mlx5_rescan_drivers_locked(dev0);
-+				mlx5_deactivate_lag(ldev);
-+				mlx5_lag_add_devices(ldev);
-+				mlx5_eswitch_reload_reps(dev0->priv.eswitch);
-+				mlx5_eswitch_reload_reps(dev1->priv.eswitch);
-+				mlx5_core_err(dev0, "Failed to enable lag\n");
-+				return;
-+			}
- 		}
- 	} else if (do_bond && __mlx5_lag_is_active(ldev)) {
- 		mlx5_modify_lag(ldev, &tracker);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag.h b/drivers/net/ethernet/mellanox/mlx5/core/lag.h
-index e1d7a6671cf3..d4bae528954e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag.h
-@@ -73,7 +73,8 @@ void mlx5_modify_lag(struct mlx5_lag *ldev,
- 		     struct lag_tracker *tracker);
- int mlx5_activate_lag(struct mlx5_lag *ldev,
- 		      struct lag_tracker *tracker,
--		      u8 flags);
-+		      u8 flags,
-+		      bool shared_fdb);
- int mlx5_lag_dev_get_netdev_idx(struct mlx5_lag *ldev,
- 				struct net_device *ndev);
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-index c4bf8b679541..011b639b29bf 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c
-@@ -161,7 +161,7 @@ static void mlx5_lag_fib_route_event(struct mlx5_lag *ldev,
- 		struct lag_tracker tracker;
- 
- 		tracker = ldev->tracker;
--		mlx5_activate_lag(ldev, &tracker, MLX5_LAG_FLAG_MULTIPATH);
-+		mlx5_activate_lag(ldev, &tracker, MLX5_LAG_FLAG_MULTIPATH, false);
- 	}
- 
- 	mlx5_lag_set_port_affinity(ldev, MLX5_LAG_NORMAL_AFFINITY);
--- 
-2.31.1
-
+Jason
