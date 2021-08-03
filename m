@@ -2,242 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3F63DF4A1
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Aug 2021 20:21:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD063DF4A9
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Aug 2021 20:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239257AbhHCSV2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Aug 2021 14:21:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239149AbhHCSVP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 3 Aug 2021 14:21:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 859A760EE7;
-        Tue,  3 Aug 2021 18:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628014864;
-        bh=c2GE0xY1z8r30An/T1NDokLnnz9ZWXPGHzuq0npU8QE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P943ks6oKETRAS1KUwqvEKbVokSq7uqSS+vojxo5vKr0jDX1+nTXHP4NX3d7ERPSC
-         swmpLscMN5q5ZzFfvUbHCCz3/+ntM6h5oQeSD5+UXuj82kIuxsKTnisQ1j0QkuTQ4y
-         ZUWUosKkAStw4A5ZosEkHYezHa2oI8CZbp2Ln7slwg/J5kNFlj7y+zuQqqSjWNpL4g
-         HfLA/J45sCNjiT+Mrm/kBdGIKjXFw/CNptmJ5M8BUQYGYaFgRdJYDO2K8ITAVB1QJK
-         omxea8mtZz7qjK4vdevMgxk6TPSMRGymqnFZdS1BWpuB0WOKmAcE2WB2XDDa0oX8zr
-         JpcVLFO0xQR6g==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markz@mellanox.com>
-Subject: [PATCH rdma-next v2 7/7] RDMA/core: Create clean QP creations interface for uverbs
-Date:   Tue,  3 Aug 2021 21:20:38 +0300
-Message-Id: <5cd50e7d8ad9112545a1a61dea62799a5cb3224a.1628014762.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1628014762.git.leonro@nvidia.com>
-References: <cover.1628014762.git.leonro@nvidia.com>
+        id S239025AbhHCSVw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Aug 2021 14:21:52 -0400
+Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:55521
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239300AbhHCSVh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 3 Aug 2021 14:21:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nn6MKmzduyR7+9MhiasQvmxKLpw+GFGBHUYKmAg5XDwNwUr38UnfZktji9sX6yuA7pnnibTSpYF5UFh8eyTb0tqYNoJ80iuIdsSZrkOLgTSPiQdM7vPi3jza/fbl/6jX6eQLnS2e866K/6OoJqjVG6hZUhLBS7DuCYqJ/krn422V85jbLG41jyFEzAzDGlJEYxbM2SeSBF+1wHYgRKbmn2tYPJ1jqd87eh6p2v+5BCNRsU04TX+oVqgJWQtTyi+NN6PG6lIOUGk/nmDDSytu9YDrYQh3RPZEHrt6pl4KqGfvFOLIAVzNOpjC6/NuHtClq7GewPKI58zrksNDO715Fg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ecgU9yGGW61b8Lw3jhWWGB7at7JyWa2Swg6zkuEgm14=;
+ b=gbaUpwZlKgsUPr6uf/ytSC/8wM4T8NyUj41GclZmfQjiK9ImHpB42z0b7G8+zpQRGHhlg1Xp825h9wQc6PpdY5kFGNbr2PbCiD6uF0+FaxCtejKPCl4SpbCYTfBMydlCnh7vUGZzIM9Sqr/l8x+XRnoK25h/QIMLHooogYxlgauT25Jft6265WiKpda5GjuA5xSk69m9n5QC4qRZduWHf8bl1TgEERkaM+DGDSFTrnDohcPHhzox0iowyGimiNHH/iR0KVgIAUJL5Tyey1Y/6PJmNVpRSubgE9mBzgEoua7q2RVZ4sW2ATg2waVrxrAPrXPbyZ2MFR/xuzd+DVlFEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ecgU9yGGW61b8Lw3jhWWGB7at7JyWa2Swg6zkuEgm14=;
+ b=tPl2yYD5CqNOh8OKh1PWNvCNC0syptR+SzAr8ah0zxdaZTBmrhkkOt0pfCbg68KzxHeICWxa5fYCk/Kh8COR8ECPpAepOZqcgZySO1JQ6SkmpNXeV3OwbEAX8SsoG7IkB7wesWQk4X9Y7VqGy52wuC9A7bEH885y9MraPsaius8KXC6cM87EBSZobsmXi1zdB9OF94hT4ruRm7VUWTt30CihKQS4C52VEWub1ruXRY1/0B/GSVhjfteflLNfKnINUzUDcVXpY8SvG+QKh61AR6gQPsioLRST/6H+ZZr4zwec8+LVKxHQzjk/7uPr6wXFreGtWvVFxzkgJA6jozt6Fg==
+Received: from DM5PR2201CA0003.namprd22.prod.outlook.com (2603:10b6:4:14::13)
+ by BY5PR12MB5528.namprd12.prod.outlook.com (2603:10b6:a03:1c4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.18; Tue, 3 Aug
+ 2021 18:21:23 +0000
+Received: from DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:4:14:cafe::af) by DM5PR2201CA0003.outlook.office365.com
+ (2603:10b6:4:14::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend
+ Transport; Tue, 3 Aug 2021 18:21:23 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT032.mail.protection.outlook.com (10.13.173.93) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4373.18 via Frontend Transport; Tue, 3 Aug 2021 18:21:23 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug
+ 2021 18:21:22 +0000
+Received: from localhost (172.20.187.6) by DRHQMAIL107.nvidia.com (10.27.9.16)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 3 Aug 2021 18:21:21
+ +0000
+Date:   Tue, 3 Aug 2021 21:21:18 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, Mark Zhang <markz@mellanox.com>,
+        "Christoph Hellwig" <hch@infradead.org>
+Subject: Re: [PATCH rdma-next v1 0/7] Separate user/kernel QP creation logic
+Message-ID: <YQmJHvUBYXjr0cwD@unreal>
+References: <cover.1626857976.git.leonro@nvidia.com>
+ <YQmGsMPyLQ2decBD@unreal>
+ <20210803181312.GD1721383@nvidia.com>
+ <YQmIRgF7UOZLSX9W@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <YQmIRgF7UOZLSX9W@unreal>
+X-Originating-IP: [172.20.187.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b11c59f2-ca2f-492f-737d-08d956ab7fe9
+X-MS-TrafficTypeDiagnostic: BY5PR12MB5528:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB55282CBD605CAFC618C1D948BDF09@BY5PR12MB5528.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DdQULpOwlmHSHPWuqekVpMqkSsDYTkFHwatiRnRJhAbHPM4SgYPZBbUzaDJ7yzOj+wTptq6t03vK0TY1mKN+6ooE4f/+0r7kXgqzTL10B7ZSWE2d5/oEuYK4O95w8+MYvKcfXZ+v/BW0QAEpWswllHqIO+CwCsuAH0qq/XQmmh9Mx/moour5yUJVTAfSqkQE+CrpQ9lMlOzsBxu80awY6cqiG0RnYspJkNHxBPwzrJYXbzOv1m3yfEBRcTdiXZ5xdEc/AT8XZG3BeH5WDs8l5KP8/TVyXtW7Vx92H4ZglSd5AAHPXTku8xWKhvpqO47dXPwnlha6ya/+6s17czpZ8Zsu3jxImFz1A0E7XnxgVXMgUsczmCijliy9p3jP1LhDazN83MDaebOyaWyvqbtGIjXpQfPLu2gP+aPicq5UsP9Sp4rVjnfiuaNAxI+5bdXbUj7h3HPPAch17u+hG5jhhE2vPjcOSv6a81ig9aSdR9zYSdsuBs0PXlK7OkVrCLB5YhXEXCu4TAoURB4tW0EvrO9kRtwotIrLpQ+uqSJ/VjWgQWA5swC6e9gW6rHPgpB3zpc45o+IpIRkfj/06cuUagSNdNSFxBBkUxnih4OXjWYJCPwQ+xe96/G/8+5QFLwJjsXKbyAWLFri/ZmxA3U+vRWXH82+Nhfmb39V0A+5OCw8PhHBFJ8rV5X+odPHuKmZ3OwPJAt/b0SbXlCOdpa4lEP12J1p3PUZdxaCLcZe+iAQs8tfnI7YRqQX+4/T1q7fnGpIllUd8OQvmzw9XK+g5rARf10uM5yw29PqspVc+1g=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(136003)(396003)(39860400002)(376002)(346002)(36840700001)(46966006)(426003)(82310400003)(4326008)(70206006)(70586007)(47076005)(6636002)(6666004)(6862004)(26005)(36906005)(5660300002)(33716001)(86362001)(966005)(7636003)(186003)(83380400001)(16526019)(8676002)(8936002)(316002)(82740400003)(336012)(356005)(36860700001)(9686003)(54906003)(478600001)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Aug 2021 18:21:23.3439
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b11c59f2-ca2f-492f-737d-08d956ab7fe9
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB5528
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Tue, Aug 03, 2021 at 09:17:42PM +0300, Leon Romanovsky wrote:
+> On Tue, Aug 03, 2021 at 03:13:12PM -0300, Jason Gunthorpe wrote:
+> > On Tue, Aug 03, 2021 at 09:10:56PM +0300, Leon Romanovsky wrote:
+> > > On Wed, Jul 21, 2021 at 12:07:03PM +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > 
+> > > > Changelog:
+> > > > iv1:
+> > > >  * Fixed typo: incline -> inline/
+> > > >  * Dropped ib_create_qp_uverbs() wrapper in favour of direct call.
+> > > >  * Moved kernel-doc to the actual ib_create_qp() function that users will use.
+> > > > v0: https://lore.kernel.org/lkml/cover.1626846795.git.leonro@nvidia.com
+> > > > 
+> > > > Hi,
+> > > > 
+> > > > The "QP allocation" series shows clearly how convoluted the create QP
+> > > > flow and especially XRC_TGT flow, where it calls to kernel verb just
+> > > > to pass some parameters as NULL to the user create QP verb.
+> > > > 
+> > > > This series is a small step to make clean XRC_TGT flow by providing
+> > > > more clean user/kernel create QP verb separation.
+> > > > 
+> > > > It is based on the "QP allocation" series.
+> > > > 
+> > > > Thanks
+> > > > 
+> > > > Leon Romanovsky (7):
+> > > >   RDMA/mlx5: Delete not-available udata check
+> > > >   RDMA/core: Delete duplicated and unreachable code
+> > > >   RDMA/core: Remove protection from wrong in-kernel API usage
+> > > >   RDMA/core: Reorganize create QP low-level functions
+> > > >   RDMA/core: Configure selinux QP during creation
+> > > >   RDMA/core: Properly increment and decrement QP usecnts
+> > > >   RDMA/core: Create clean QP creations interface for uverbs
+> > > > 
+> > > >  drivers/infiniband/core/core_priv.h           |  59 +----
+> > > >  drivers/infiniband/core/uverbs_cmd.c          |  31 +--
+> > > >  drivers/infiniband/core/uverbs_std_types_qp.c |  29 +--
+> > > >  drivers/infiniband/core/verbs.c               | 208 +++++++++++-------
+> > > >  drivers/infiniband/hw/mlx5/qp.c               |   3 -
+> > > >  include/rdma/ib_verbs.h                       |  16 +-
+> > > >  6 files changed, 157 insertions(+), 189 deletions(-)
+> > > 
+> > > Jason,
+> > > 
+> > > Can we progress with this series too?
+> > 
+> > It doesn't apply, can you resend it quickly?
+> 
+> Why?
+> 
+> It is in my tree and it was on top of QP allocation patches.
 
-Unify create QP creation interface to make clean approach to create
-XRC_TGT and regular QPs.
+I resent the series.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/core_priv.h           |  9 +--
- drivers/infiniband/core/uverbs_cmd.c          | 13 +---
- drivers/infiniband/core/uverbs_std_types_qp.c | 10 +--
- drivers/infiniband/core/verbs.c               | 72 +++++++++++--------
- 4 files changed, 52 insertions(+), 52 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/core/core_priv.h b/drivers/infiniband/core/core_priv.h
-index d8f464b43dbc..f66f48d860ec 100644
---- a/drivers/infiniband/core/core_priv.h
-+++ b/drivers/infiniband/core/core_priv.h
-@@ -316,10 +316,11 @@ struct ib_device *ib_device_get_by_index(const struct net *net, u32 index);
- void nldev_init(void);
- void nldev_exit(void);
- 
--struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
--			    struct ib_qp_init_attr *attr,
--			    struct ib_udata *udata, struct ib_uqp_object *uobj,
--			    const char *caller);
-+struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
-+				struct ib_qp_init_attr *attr,
-+				struct ib_udata *udata,
-+				struct ib_uqp_object *uobj, const char *caller);
-+
- void ib_qp_usecnt_inc(struct ib_qp *qp);
- void ib_qp_usecnt_dec(struct ib_qp *qp);
- 
-diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
-index 62cafd768d89..740e6b2efe0e 100644
---- a/drivers/infiniband/core/uverbs_cmd.c
-+++ b/drivers/infiniband/core/uverbs_cmd.c
-@@ -1435,23 +1435,14 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
- 		attr.source_qpn = cmd->source_qpn;
- 	}
- 
--	if (cmd->qp_type == IB_QPT_XRC_TGT)
--		qp = ib_create_qp(pd, &attr);
--	else
--		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
--				   NULL);
--
-+	qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata, obj,
-+			       KBUILD_MODNAME);
- 	if (IS_ERR(qp)) {
- 		ret = PTR_ERR(qp);
- 		goto err_put;
- 	}
- 	ib_qp_usecnt_inc(qp);
- 
--	if (cmd->qp_type == IB_QPT_XRC_TGT) {
--		/* It is done in _ib_create_qp for other QP types */
--		qp->uobject = obj;
--	}
--
- 	obj->uevent.uobject.object = qp;
- 	obj->uevent.event_file = READ_ONCE(attrs->ufile->default_async_file);
- 	if (obj->uevent.event_file)
-diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
-index a0e734735ba5..dd1075466f61 100644
---- a/drivers/infiniband/core/uverbs_std_types_qp.c
-+++ b/drivers/infiniband/core/uverbs_std_types_qp.c
-@@ -248,12 +248,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 	set_caps(&attr, &cap, true);
- 	mutex_init(&obj->mcast_lock);
- 
--	if (attr.qp_type == IB_QPT_XRC_TGT)
--		qp = ib_create_qp(pd, &attr);
--	else
--		qp = _ib_create_qp(device, pd, &attr, &attrs->driver_udata, obj,
--				   NULL);
--
-+	qp = ib_create_qp_user(device, pd, &attr, &attrs->driver_udata, obj,
-+			       KBUILD_MODNAME);
- 	if (IS_ERR(qp)) {
- 		ret = PTR_ERR(qp);
- 		goto err_put;
-@@ -264,8 +260,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
- 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
- 					  uobject);
- 		atomic_inc(&obj->uxrcd->refcnt);
--		/* It is done in _ib_create_qp for other QP types */
--		qp->uobject = obj;
- 	}
- 
- 	obj->uevent.uobject.object = qp;
-diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
-index a568155b63f5..89a2b21976d6 100644
---- a/drivers/infiniband/core/verbs.c
-+++ b/drivers/infiniband/core/verbs.c
-@@ -1200,21 +1200,10 @@ static struct ib_qp *create_xrc_qp_user(struct ib_qp *qp,
- 	return qp;
- }
- 
--/**
-- * _ib_create_qp - Creates a QP associated with the specified protection domain
-- * @dev: IB device
-- * @pd: The protection domain associated with the QP.
-- * @attr: A list of initial attributes required to create the
-- *   QP.  If QP creation succeeds, then the attributes are updated to
-- *   the actual capabilities of the created QP.
-- * @udata: User data
-- * @uobj: uverbs obect
-- * @caller: caller's build-time module name
-- */
--struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
--			    struct ib_qp_init_attr *attr,
--			    struct ib_udata *udata, struct ib_uqp_object *uobj,
--			    const char *caller)
-+static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
-+			       struct ib_qp_init_attr *attr,
-+			       struct ib_udata *udata,
-+			       struct ib_uqp_object *uobj, const char *caller)
- {
- 	struct ib_udata dummy = {};
- 	struct ib_qp *qp;
-@@ -1272,7 +1261,43 @@ struct ib_qp *_ib_create_qp(struct ib_device *dev, struct ib_pd *pd,
- 	return ERR_PTR(ret);
- 
- }
--EXPORT_SYMBOL(_ib_create_qp);
-+
-+/**
-+ * ib_create_qp_user - Creates a QP associated with the specified protection
-+ *   domain.
-+ * @dev: IB device
-+ * @pd: The protection domain associated with the QP.
-+ * @attr: A list of initial attributes required to create the
-+ *   QP.  If QP creation succeeds, then the attributes are updated to
-+ *   the actual capabilities of the created QP.
-+ * @udata: User data
-+ * @uobj: uverbs obect
-+ * @caller: caller's build-time module name
-+ */
-+struct ib_qp *ib_create_qp_user(struct ib_device *dev, struct ib_pd *pd,
-+				struct ib_qp_init_attr *attr,
-+				struct ib_udata *udata,
-+				struct ib_uqp_object *uobj, const char *caller)
-+{
-+	struct ib_qp *qp, *xrc_qp;
-+
-+	if (attr->qp_type == IB_QPT_XRC_TGT)
-+		qp = create_qp(dev, pd, attr, NULL, NULL, caller);
-+	else
-+		qp = create_qp(dev, pd, attr, udata, uobj, NULL);
-+	if (attr->qp_type != IB_QPT_XRC_TGT || IS_ERR(qp))
-+		return qp;
-+
-+	xrc_qp = create_xrc_qp_user(qp, attr);
-+	if (IS_ERR(xrc_qp)) {
-+		ib_destroy_qp(qp);
-+		return xrc_qp;
-+	}
-+
-+	xrc_qp->uobject = uobj;
-+	return xrc_qp;
-+}
-+EXPORT_SYMBOL(ib_create_qp_user);
- 
- void ib_qp_usecnt_inc(struct ib_qp *qp)
- {
-@@ -1308,7 +1333,7 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 				  struct ib_qp_init_attr *qp_init_attr,
- 				  const char *caller)
- {
--	struct ib_device *device = pd ? pd->device : qp_init_attr->xrcd->device;
-+	struct ib_device *device = pd->device;
- 	struct ib_qp *qp;
- 	int ret;
- 
-@@ -1321,21 +1346,10 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
- 	if (qp_init_attr->cap.max_rdma_ctxs)
- 		rdma_rw_init_qp(device, qp_init_attr);
- 
--	qp = _ib_create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
-+	qp = create_qp(device, pd, qp_init_attr, NULL, NULL, caller);
- 	if (IS_ERR(qp))
- 		return qp;
- 
--	if (qp_init_attr->qp_type == IB_QPT_XRC_TGT) {
--		struct ib_qp *xrc_qp =
--			create_xrc_qp_user(qp, qp_init_attr);
--
--		if (IS_ERR(xrc_qp)) {
--			ret = PTR_ERR(xrc_qp);
--			goto err;
--		}
--		return xrc_qp;
--	}
--
- 	ib_qp_usecnt_inc(qp);
- 
- 	if (qp_init_attr->cap.max_rdma_ctxs) {
--- 
-2.31.1
-
+> 
+> Thanks
+> 
+> 
+> > 
+> > Jason
