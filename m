@@ -2,66 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF313DE4D8
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 Aug 2021 05:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAF23DE85A
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 Aug 2021 10:26:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhHCDzC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 Aug 2021 23:55:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233546AbhHCDyx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 2 Aug 2021 23:54:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADA8160EE7;
-        Tue,  3 Aug 2021 03:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1627962882;
-        bh=83R5gSJMs7720hS5FX9qKDbfLZ7OuHfix9yqVcSaYqo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=aXTtJIBMhSs/5urJwrwkSFtlno1qO6AqIHxGD5VRABOUou9QdkR8cIKhRuR+Pr8ki
-         OYWJuA1JfqbJgRR1033WLJEoi4nTrjvugEOY67LirKpVtpIo3s+Qidwy0PbYp+dtII
-         +3OBoAlQJMQcSGs8kw/E54dDao47sOraZtH20Sz7P+hSwVFgo3ZKTPvuEChWZ64XYl
-         Hm+DZY4Voiu26IyIveGMVr9BgWW1i3O1iHWnNF1QXgTIyQvAdA8VzG6Npkf7V94D3G
-         XGEGusGgAJR+PWHT9IW1H3pekw+nu9/DflJrE8KrP2NTKB25yKYBFrmt7umICmR00O
-         4qKtJ5XynFHAg==
-Message-ID: <848f7c251f1a51e74c186a202e34cfb5fb076b6d.camel@kernel.org>
-Subject: Re: [PATCH] net/mlx5: Fix typo in comments
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Cai Huoqing <caihuoqing@baidu.com>, leonro@nvidia.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Date:   Mon, 02 Aug 2021 20:54:42 -0700
-In-Reply-To: <20210730030300.2459-1-caihuoqing@baidu.com>
-References: <20210730030300.2459-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+        id S234539AbhHCI0c (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Aug 2021 04:26:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234513AbhHCI0b (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Aug 2021 04:26:31 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71957C06175F;
+        Tue,  3 Aug 2021 01:26:20 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1627979175;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/v0LmeMUy3UoCS0LwhBauvix/4HwA46AmbAhAkEbA8E=;
+        b=u7uFzTyEyADueCuQGCCxAAroQPqolEGeZFGM0AWRyD9c0QmJqCSSPgOlySpRiqtKmDlzc7
+        1P//NNrc9CkNxiqdgW0lDbaKRammriCQ04gpGdeDp/TKQdkdzs9UEcrR4glzWhHyj2952x
+        sPbgh3o6gwx+rCJp8G45//eAx5nO7Pw=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     davem@davemloft.net, kuba@kernel.org,
+        mathew.j.martineau@linux.intel.com, matthieu.baerts@tessares.net,
+        trond.myklebust@hammerspace.com, anna.schumaker@netapp.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, mptcp@lists.linux.dev,
+        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com,
+        linux-s390@vger.kernel.org, linux-nfs@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH net-next] net: Modify sock_set_keepalive() for more scenarios
+Date:   Tue,  3 Aug 2021 16:25:53 +0800
+Message-Id: <20210803082553.25194-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: yajun.deng@linux.dev
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 2021-07-30 at 11:03 +0800, Cai Huoqing wrote:
-> Fix typo:
-> *vectores  ==> vectors
-> *realeased  ==> released
-> *erros  ==> errors
-> *namepsace  ==> namespace
-> *trafic  ==> traffic
-> *proccessed  ==> processed
-> *retore  ==> restore
-> *Currenlty  ==> Currently
-> *crated  ==> created
-> *chane  ==> change
-> *cannnot  ==> cannot
-> *usuallly  ==> usually
-> *failes  ==> fails
-> *importent  ==> important
-> *reenabled  ==> re-enabled
-> *alocation  ==> allocation
-> *recived  ==> received
-> *tanslation  ==> translation
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+Add 2nd parameter in sock_set_keepalive(), let the caller decide
+whether to set. This can be applied to more scenarios.
 
-applied to net-next-mlx5, thanks !
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ include/net/sock.h    |  2 +-
+ net/core/filter.c     |  4 +---
+ net/core/sock.c       | 10 ++++------
+ net/mptcp/sockopt.c   |  4 +---
+ net/rds/tcp_listen.c  |  2 +-
+ net/smc/af_smc.c      |  2 +-
+ net/sunrpc/xprtsock.c |  2 +-
+ 7 files changed, 10 insertions(+), 16 deletions(-)
 
+diff --git a/include/net/sock.h b/include/net/sock.h
+index ff1be7e7e90b..0aae26159549 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -2772,7 +2772,7 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 
+ void sock_enable_timestamps(struct sock *sk);
+ void sock_no_linger(struct sock *sk);
+-void sock_set_keepalive(struct sock *sk);
++void sock_set_keepalive(struct sock *sk, bool valbool);
+ void sock_set_priority(struct sock *sk, u32 priority);
+ void sock_set_rcvbuf(struct sock *sk, int val);
+ void sock_set_mark(struct sock *sk, u32 val);
+diff --git a/net/core/filter.c b/net/core/filter.c
+index faf29fd82276..41b2bf140b89 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -4769,9 +4769,7 @@ static int _bpf_setsockopt(struct sock *sk, int level, int optname,
+ 			ret = sock_bindtoindex(sk, ifindex, false);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (sk->sk_prot->keepalive)
+-				sk->sk_prot->keepalive(sk, valbool);
+-			sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++			sock_set_keepalive(sk, !!valbool);
+ 			break;
+ 		case SO_REUSEPORT:
+ 			sk->sk_reuseport = valbool;
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 9671c32e6ef5..7041e6355ae1 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -892,12 +892,12 @@ int sock_set_timestamping(struct sock *sk, int optname,
+ 	return 0;
+ }
+ 
+-void sock_set_keepalive(struct sock *sk)
++void sock_set_keepalive(struct sock *sk, bool valbool)
+ {
+ 	lock_sock(sk);
+ 	if (sk->sk_prot->keepalive)
+-		sk->sk_prot->keepalive(sk, true);
+-	sock_valbool_flag(sk, SOCK_KEEPOPEN, true);
++		sk->sk_prot->keepalive(sk, valbool);
++	sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
+ 	release_sock(sk);
+ }
+ EXPORT_SYMBOL(sock_set_keepalive);
+@@ -1060,9 +1060,7 @@ int sock_setsockopt(struct socket *sock, int level, int optname,
+ 		break;
+ 
+ 	case SO_KEEPALIVE:
+-		if (sk->sk_prot->keepalive)
+-			sk->sk_prot->keepalive(sk, valbool);
+-		sock_valbool_flag(sk, SOCK_KEEPOPEN, valbool);
++		sock_set_keepalive(sk, !!valbool);
+ 		break;
+ 
+ 	case SO_OOBINLINE:
+diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
+index 8c03afac5ca0..879b8381055c 100644
+--- a/net/mptcp/sockopt.c
++++ b/net/mptcp/sockopt.c
+@@ -81,9 +81,7 @@ static void mptcp_sol_socket_sync_intval(struct mptcp_sock *msk, int optname, in
+ 			sock_valbool_flag(ssk, SOCK_DBG, !!val);
+ 			break;
+ 		case SO_KEEPALIVE:
+-			if (ssk->sk_prot->keepalive)
+-				ssk->sk_prot->keepalive(ssk, !!val);
+-			sock_valbool_flag(ssk, SOCK_KEEPOPEN, !!val);
++			sock_set_keepalive(ssk, !!val);
+ 			break;
+ 		case SO_PRIORITY:
+ 			ssk->sk_priority = val;
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 09cadd556d1e..b69ebb3f424a 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -44,7 +44,7 @@ void rds_tcp_keepalive(struct socket *sock)
+ 	int keepidle = 5; /* send a probe 'keepidle' secs after last data */
+ 	int keepcnt = 5; /* number of unack'ed probes before declaring dead */
+ 
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	/* KEEPINTVL is the interval between successive probes. We follow
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 898389611ae8..ad8f4302037f 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -68,7 +68,7 @@ static void smc_set_keepalive(struct sock *sk, int val)
+ {
+ 	struct smc_sock *smc = smc_sk(sk);
+ 
+-	smc->clcsock->sk->sk_prot->keepalive(smc->clcsock->sk, val);
++	sock_set_keepalive(smc->clcsock->sk, !!val);
+ }
+ 
+ static struct smc_hashinfo smc_v4_hashinfo = {
+diff --git a/net/sunrpc/xprtsock.c b/net/sunrpc/xprtsock.c
+index e573dcecdd66..306a332f8d28 100644
+--- a/net/sunrpc/xprtsock.c
++++ b/net/sunrpc/xprtsock.c
+@@ -2127,7 +2127,7 @@ static void xs_tcp_set_socket_timeouts(struct rpc_xprt *xprt,
+ 	spin_unlock(&xprt->transport_lock);
+ 
+ 	/* TCP Keepalive options */
+-	sock_set_keepalive(sock->sk);
++	sock_set_keepalive(sock->sk, true);
+ 	tcp_sock_set_keepidle(sock->sk, keepidle);
+ 	tcp_sock_set_keepintvl(sock->sk, keepidle);
+ 	tcp_sock_set_keepcnt(sock->sk, keepcnt);
+-- 
+2.32.0
 
