@@ -2,86 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912A73DFBD8
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 09:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4823DFC71
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 10:07:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235632AbhHDHOV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Aug 2021 03:14:21 -0400
-Received: from smtp-relay-services-0.canonical.com ([185.125.188.250]:43298
-        "EHLO smtp-relay-services-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235219AbhHDHOT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 03:14:19 -0400
-X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Aug 2021 03:14:19 EDT
-Received: from alphecca.canonical.com (alphecca.canonical.com [91.189.89.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 926DC4058A
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Aug 2021 07:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-        s=20210803; t=1628060944;
-        bh=yvovQsQTVHP0k10VP0uPI6s4U22l1csVjnCJfpIA8QY=;
-        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-         Reply-To;
-        b=BiHYOwa5IA1yf5gMn81d5cYyqJ3/oC1Ya4slvpNmx7YXAzCWnaS7IRz1SzN+NOyw7
-         RkhMAgLJIwv+fQ+MPmVpNtrWq8si1HlD+41Oj8NRoVsiuIUNmcg8PCTgBkML77g5Ic
-         yNaCZ48ggzAxFm14MyCRhCJJd6ZDFRa4W5xhC2j7fjJRK4ibIz5RLkmYZQVrpmaPVW
-         IC7epK4XCUDLzqlH0UAmEniSk+KM66tUUL2b/kWkqn9ccMRKtKW0Yv5vEd73MtFjOv
-         q4wO7oyLRt1qMl4x/EVNaRuyp6sksYs9JOzvIqVHHIRM8E2/D7kaRcb8HQ7hpH8m0T
-         wEXrhE+zwFIKA==
-Received: from alphecca.canonical.com (localhost [IPv6:::1])
-        by alphecca.canonical.com (Postfix) with ESMTP id 8A77DE0012F
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Aug 2021 07:09:04 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S236047AbhHDIHO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Aug 2021 04:07:14 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:50022 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S236089AbhHDIHN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 04:07:13 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AvB1CAq5mbF3wPcJIFQPXwPTXdLJyesId70hD?=
+ =?us-ascii?q?6qkRc20wTiX8ra2TdZsguyMc9wx6ZJhNo7G90cq7MBbhHPxOkOos1N6ZNWGIhI?=
+ =?us-ascii?q?LCFvAB0WKN+V3dMhy73utc+IMlSKJmFeD3ZGIQse/KpCW+DPYsqePqzJyV?=
+X-IronPort-AV: E=Sophos;i="5.84,293,1620662400"; 
+   d="scan'208";a="112378081"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 04 Aug 2021 16:06:59 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id ED6DE4D0D49B;
+        Wed,  4 Aug 2021 16:06:53 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Wed, 4 Aug 2021 16:06:53 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Wed, 4 Aug 2021 16:06:53 +0800
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+From:   =?UTF-8?B?TGksIFpoaWppYW4v5p2OIOaZuuWdmg==?= 
+        <lizhijian@cn.fujitsu.com>
+To:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+Message-ID: <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
+Date:   Wed, 4 Aug 2021 16:06:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Creator @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Build-Arch: i386
-X-Creator-Recipient: linux-rdma@vger.kernel.org
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-Component: main
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To:     Linux RDMA <linux-rdma@vger.kernel.org>
-From:   Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #21836398] i386 build of rdma-core 37.0~202108040620+git2d3dc48b~ubuntu18.04.1 in ubuntu bionic RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <162806094456.10026.5482257625980750683.launchpad@alphecca.canonical.com>
-Date:   Wed, 04 Aug 2021 07:09:04 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-X-Generated-By: Launchpad (canonical.com); Revision="8bd362bf86c4b35e805f897f03c203e3576a7006"; Instance="buildmaster"
-X-Launchpad-Hash: bed0faf0db858e67aa48160cd5a7d7c0bfb6d765
+In-Reply-To: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-yoursite-MailScanner-ID: ED6DE4D0D49B.A0A37
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+convert to text and send again
 
- * Source Package: rdma-core
- * Version: 37.0~202108040620+git2d3dc48b~ubuntu18.04.1
- * Architecture: i386
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/21836398/+files/buildlog_ubuntu-bionic-i386.rdma-core_37.0~2021=
-08040620+git2d3dc48b~ubuntu18.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/lgw01-amd64-042
- * Source: not available
+2021/8/4 15:55, Li, Zhijian wrote:
+>
+> Hey all:
+>
+> Recently, i reported a issue to rpmahttps://github.com/pmem/rpma/issues/1142
+> where we found that the native rpma + fsdax example failed in recent kernel.
+>
+> Below is the bisect log
+>
+> [lizhijian@yl linux]$ git bisect log
+> git bisect start
+> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+> git bisect good bbf5c979011a099af5dc76498918ed7df445635b
+> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+> git bisect bad 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+> # good: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
+> git bisect good 4d0e9df5e43dba52d38b251e3b909df8fa1110be
+> # bad: [6694875ef8045cdb1e6712ee9b68fe08763507d8] ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
+> git bisect bad 6694875ef8045cdb1e6712ee9b68fe08763507d8
+> # good: [14c914fcb515c424177bb6848cc2858ebfe717a8] Merge tag 'wireless-drivers-next-2020-10-02' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
+> git bisect good 14c914fcb515c424177bb6848cc2858ebfe717a8
+> # good: [6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c] Merge tag 'mtd/for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+> git bisect good 6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c
+> # bad: [bbe85027ce8019c73ab99ad1c2603e2dcd1afa49] Merge tag 'xfs-5.10-merge-5' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
+> git bisect bad bbe85027ce8019c73ab99ad1c2603e2dcd1afa49
+> # bad: [9d9af1007bc08971953ae915d88dc9bb21344b53] Merge tag 'perf-tools-for-v5.10-2020-10-15' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
+> git bisect bad 9d9af1007bc08971953ae915d88dc9bb21344b53
+> # good: [21c2fe94abb2abe894e6aabe6b4e84a255c8d339] RDMA/mthca: Combine special QP struct with mthca QP
+> git bisect good 21c2fe94abb2abe894e6aabe6b4e84a255c8d339
+> # good: [dbaa1b3d9afba3c050d365245a36616ae3f425a7] Merge branch 'perf/urgent' into perf/core
+> git bisect good dbaa1b3d9afba3c050d365245a36616ae3f425a7
+> # bad: [c7a198c700763ac89abbb166378f546aeb9afb33] RDMA/ucma: Fix use after free in destroy id flow
+> git bisect bad c7a198c700763ac89abbb166378f546aeb9afb33
+> # bad: [5ce2dced8e95e76ff7439863a118a053a7fc6f91] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+> git bisect bad 5ce2dced8e95e76ff7439863a118a053a7fc6f91
+> # bad: [a03bfc37d59de316436c46f5691c5a972ed57c82] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
+> git bisect bad a03bfc37d59de316436c46f5691c5a972ed57c82
+> # good: [a6f0b08dbaf289c3c57284e16ac8043140f2139b] RDMA/core: Remove ucontext->closing
+> git bisect good a6f0b08dbaf289c3c57284e16ac8043140f2139b
+> # bad: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+> git bisect bad 36f30e486dce22345c2dd3a3ba439c12cd67f6ba
+> # good: [2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e] RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
+> git bisect good 2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e
+> # first bad commit: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+>
+> Note: some commit have to apply a extra patch to avoid a kernel panic.
+> > git cherry-pick d4c5da5 # dax: Fix stack overflow when mounting fsdax pmem device
+>
+>
+> Thanks
+> Li
+>
+>
 
-
-
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
-
---=20
-i386 build of rdma-core 37.0~202108040620+git2d3dc48b~ubuntu18.04.1 in ubun=
-tu bionic RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/21=
-836398
-
-You are receiving this email because you created this version of this
-package.
 
