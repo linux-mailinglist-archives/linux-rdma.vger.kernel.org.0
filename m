@@ -2,97 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5013DF92A
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 03:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83A483DF954
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 03:39:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhHDBKG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 Aug 2021 21:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43592 "EHLO
+        id S229733AbhHDBj3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 Aug 2021 21:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbhHDBKG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Aug 2021 21:10:06 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF66EC06175F
-        for <linux-rdma@vger.kernel.org>; Tue,  3 Aug 2021 18:09:53 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id w6so966814oiv.11
-        for <linux-rdma@vger.kernel.org>; Tue, 03 Aug 2021 18:09:53 -0700 (PDT)
+        with ESMTP id S229833AbhHDBj2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 Aug 2021 21:39:28 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33176C06175F
+        for <linux-rdma@vger.kernel.org>; Tue,  3 Aug 2021 18:39:16 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so277921oth.7
+        for <linux-rdma@vger.kernel.org>; Tue, 03 Aug 2021 18:39:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=KhCEqoK9PozD4lG2vOd8B030yK5msuNRjt2qTmRSzHk=;
-        b=c8b/FUHTPynmJgIk++iy2aLEW9EEbo+LidjZwZ25kLk4OxxvNLzSq1fGtokahkz59Z
-         Hoi2sSSBb53oZinmBn/GI/wLf3P+hKqrUYPhAlhrVARm1eZ+GjKnGgCU/HLLhQLq7yI9
-         C9yMAzpY37xLayIkHBXloQoM5by/WzlxEgM/4VZDLnNu2h3P7rQJW83qFheVRHpUSs7J
-         BeNB2trAEGVN6grG8FMBq22hNjR0ZnfJXITVEsgJMnvo+OSelcS7nofjM/ZC1LLwzzcs
-         lbsnNyzTuCv6U40vUo1WSKaZ++3s5JuWH51MO4acT+ss8mvIxzWeyrMVj9cQEqYZwN5G
-         XoWQ==
+        bh=Q1kLQbNOb5/t7Es9xC1Zmm/T92ZlFUnnCCpVbDf9Ycs=;
+        b=k1b05GBrReFxeIGtydawg5U6xbN8oTdiLIYjwpnOfrNgTWG1SSy9jcNoVs49NuP/ro
+         1/gZ8YnoS7Dh6jKOnHQ49uvGl427PJLDiuzauzP/WHMRTUvratpeGCe/f6vJkaPY1byM
+         on+Jr39reMAVZ4BQLE4JnDM6x5FgZy9QwOVn0LzMWV0N9qx2VCpD6Rf/fFNkDDcvjlG3
+         ZZsJn0ndC4Vjsr6yEAg4qj8NJ+g1qGzZKkQQKnZjK/oZHTS5abS9fP6+sWK/KfRJ+Rkn
+         Y1kNTp/h4KjfNfloS4M6mmfJ1HJWxnZ6bEEXYvKjE48y6PZ2PqiQd67lUuSOLqUKioq4
+         wTkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=KhCEqoK9PozD4lG2vOd8B030yK5msuNRjt2qTmRSzHk=;
-        b=j7xP/ZdhT3coHS6fFInZEsibOby4pE1GIzT6OMXaV2ZlYhggdPHJnO7p40VkaKumNl
-         6ltydmary96crLRNHRcK+u9ZIGq6eJsBQ0NlBlsdHCTAkh1jLnuqecc/F0je64O0M8aA
-         WqqDXZJPB+DP362oOq4LdtAIo98R2yXEIz9uPVuGtpwaQPhQIQ/RxnofJrCUQR7iSTZF
-         zCHsDPfnqn0AzGAaMyiZv2zHWaAcCnJ/B6NWZisPtKEGc+J7LSA9IYUdM6gZy4dnEtIE
-         2GaTlsHDg7/hobCcq5iJqehM9YyFXWbOM5Hp5eaC5r+/FASy2avXggKvE3oXQ1TdNXeD
-         8WzQ==
-X-Gm-Message-State: AOAM533ZdQRsUxkdHVNkq+yHUGnebSGu9It1dhyUy/D6cDnNduVfAa8q
-        H9BlTEN7DM1E5lY3MfcBfY5lrz8TlJxwYy9qZQA=
-X-Google-Smtp-Source: ABdhPJxMyBsg2qA0pO8GwrCNb8SXsD7Vh0K0V081r0ntTuaO3+PJf3spErGglVEkf4sCM5dMrjsGJJpr+V0gyYTBgqc=
-X-Received: by 2002:a05:6808:490:: with SMTP id z16mr4992126oid.89.1628039393387;
- Tue, 03 Aug 2021 18:09:53 -0700 (PDT)
+        bh=Q1kLQbNOb5/t7Es9xC1Zmm/T92ZlFUnnCCpVbDf9Ycs=;
+        b=iqxqweYyub70DPzB/x5g9v2+XinGVKDSC5N1QsTl9BacdNg2/XnpyzHqOFyEEsgVFV
+         Y9wrgAk5LlELgGDZcw5nU6vjNgctRqai/ADOrEbbJ+5QJtORM89kT4zIVmreFA9nGY+T
+         jShUrBZa09YJdIo5GgCO4TClWnyfgXFdEVuABuSWcFX2pOJEqCVBkb1poKEAMgxHSG6C
+         i53UoM7PP+VjzC1ZrgzXhmJRIcR1u5LONM4NtsU3sv8M80A6r1hfmYYVi0zVh+borBvu
+         B+FsRZsnuSUv1GEIWehFh1hqwVnffbhTY9fyrsz/QRDn9TnsYloLJp6EHy+A05uBHhfx
+         byDA==
+X-Gm-Message-State: AOAM531BZWr76cbEcO5TQC3TjK06WOPQbZUPCeMgJM/JJ47+gNgcUmuk
+        NjSEIb+wXMn9wZBJl3cpCurnRdkhaWzsDRElrEg=
+X-Google-Smtp-Source: ABdhPJwMO06BCQalfUGkuZ/it/mqpBj4fzunn8TFvTqCrBOspHHjyBsyBAgXy2vu6IkPQyIV6cDXpiPP9rB/79+HPJ8=
+X-Received: by 2002:a05:6830:4188:: with SMTP id r8mr17469882otu.53.1628041155615;
+ Tue, 03 Aug 2021 18:39:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <YQmF9506lsmeaOBZ@unreal> <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
-In-Reply-To: <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
+References: <20210729220039.18549-1-rpearsonhpe@gmail.com> <20210803155814.GC2886223@nvidia.com>
+In-Reply-To: <20210803155814.GC2886223@nvidia.com>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 4 Aug 2021 09:09:41 +0800
-Message-ID: <CAD=hENfua2UXH6rVuhMPXYsNSavqG==T3h=z4f=huf+Fj+xiHA@mail.gmail.com>
-Subject: Re: RXE status in the upstream rping using rxe
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Olga Kornievskaia <aglo@umich.edu>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
+Date:   Wed, 4 Aug 2021 09:39:04 +0800
+Message-ID: <CAD=hENc0QMKKHcK+XTTq6TRJHOab-8GvY6e=a5sPDQMH1NbyGg@mail.gmail.com>
+Subject: Re: [PATCH for-next v2 0/3] Three rxe bug fixes
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 9:01 AM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+On Tue, Aug 3, 2021 at 11:58 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
 >
-> On Wed, Aug 4, 2021 at 2:07 AM Leon Romanovsky <leon@kernel.org> wrote:
+> On Thu, Jul 29, 2021 at 05:00:37PM -0500, Bob Pearson wrote:
+> > These patches fix three bugs currently in the rxe driver.
+> > One of these was released earlier. In this v2 version two other bug
+> > fixes are added.
 > >
-> > Hi,
-> >
-> > Can you please help me to understand the RXE status in the upstream?
-> >
-> > Does we still have crashes/interop issues/e.t.c?
+> > Bob Pearson (3):
+> >   RDMA/rxe: Fix bug in get_srq_wqe() in rxe_resp.c
+> >   RDMA/rxe: Fix bug in rxe_net.c
 >
-> I made some developments with the RXE in the upstream, from my usage
-> with latest RXE,
-> I found the following:
->
-> 1. rdma-core can not work well with latest RDMA git;
+> I fixed these up and applied them to for-rc
 
-The latest RDMA git is
-https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
+I will focus on the other 2 commits except the commit "RDMA/rxe: Fix
+bug in rxe_net.c" since this commit is reviewed and tested.
 
 Zhu Yanjun
-> 2. There are some problems with rxe in different kernel version;
+
 >
-> To 2, the commit
-> https://patchwork.kernel.org/project/linux-rdma/patch/20210729220039.18549-3-rpearsonhpe@gmail.com/
-> can relieve this problem,
-> not sure if some bugs still exist in RXE.
+> Please be careful that the fixes lines are correct and subjects should
+> be self descriptive not 'fix a bug in x'
 >
-> To 1, I will continue to make further investigations.
-> So we should have time to make tests, fix bugs and make rxe stable.
+> >   RDMA/rxe: Add memory barriers to kernel queues
 >
-> Zhu Yanjun
-> >
-> > Latest commit is:
-> > 20da44dfe8ef ("RDMA/mlx5: Drop in-driver verbs object creations")
-> >
-> > Thanks
+> This one can go to for-next
+>
+> Jason
