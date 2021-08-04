@@ -2,189 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF97E3DFD97
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 11:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDD13DFDA7
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 11:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235494AbhHDJFe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Aug 2021 05:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235471AbhHDJFe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 05:05:34 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A5AC0613D5
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Aug 2021 02:05:20 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id x15so2076040oic.9
-        for <linux-rdma@vger.kernel.org>; Wed, 04 Aug 2021 02:05:20 -0700 (PDT)
+        id S236932AbhHDJIw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Aug 2021 05:08:52 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:12184 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236928AbhHDJIw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 05:08:52 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17495T2J031302;
+        Wed, 4 Aug 2021 09:08:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2021-07-09;
+ bh=HWpD9yI/J3QwrcTjOklU+hWY1Abtvo7J1jpmXzJv8Ic=;
+ b=gkn6YB7LVrCKZDwqrn961bkMVdXwQiOdXHYE1HNanl62OXB5uxFHwxGaQvomgjCjI3n1
+ cxDkR/ZUGe7u9J69om2rNeUTnS+mNXUceJIm631YGqFKaPs2Igb9vO1L1YOdF5EVe9fN
+ LS4zfE5jb9geq1W+bzPIL6NPIWBCoU/Arc63VsouT3k9oN+EDUzYmDdyoUMIRj1jAG/N
+ JINYyK57dadj561q22D1tFEjJliOzn6xJ4+fZ+c7+ZjIcG+LpcJT7t+kt0XraHvsEyth
+ tp7CZirm9W6wCNRai0yAa3E/d7OenksZWLAYNw2eapQEvJ2fmKRt970AUTOXKJwquP3y VA== 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : content-type : mime-version; s=corp-2020-01-29;
+ bh=HWpD9yI/J3QwrcTjOklU+hWY1Abtvo7J1jpmXzJv8Ic=;
+ b=uL4r7DS0U24VjS7sLEgSMeNxW2/4KZGHYbLSiRhBzwO0rpfmgo2y2lOHc2DMv1xbnGHd
+ gyfLi2sg8voY4MKyqKBloK7sZoGdF+HHj+KeOV61C63Bb6tK6uF8Nbcqo5XAgey4HK7U
+ ZPYCRUGLw5xfx75L4LyJ+1+eSaFfdqO8lP7ZpyLFCBCkaELn5PmxdZArBjsM+64HW927
+ Rt2ozNINNjfQuQ+m/aedADiTp+whJKqZrP358ySUui3uEHFIUJZSdeX9d01kHMNLN4hq
+ lnlX9Lv7owahrRCAZ4VG1t9Ty1q5AjjLzV3UJ6QRdvne86kuorexTIkskSfZ91kTbUbK wA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3a7aq09f1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Aug 2021 09:08:38 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17495S0J196284;
+        Wed, 4 Aug 2021 09:08:37 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2044.outbound.protection.outlook.com [104.47.56.44])
+        by userp3030.oracle.com with ESMTP id 3a4un1avpc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Aug 2021 09:08:37 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AzvcJgVV8VB09TqeStA7w8XstrsWfZW09OCgz/dLz9P4LUz/plpF6Wh59u/gNoWXAEEIkf/ZEYd/IaCf7r8IpmZba02AKwL2Tn4YCOVYcnDgX3UxQ9CW2CH22b4M40oyeulo32ePzjsKb1nFNSW1V01ack/66zqw6FTwqfQ4D5O6x7zSo87DwJ5CdMfYlHjYVGkW7Wi7uJbjI/E0UoC6GkoW1jGc/Dj0un6Q4OyyWP+8wonJUTk5lxG+CFVHokJnN3rWmB0pACtuWgVSOEM5AOfNmpQ97mxugt8/ANdgGEkI/GPWaawV0ex1nq80qg2EmnydILQbwuBBzVXOz2BMbw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HWpD9yI/J3QwrcTjOklU+hWY1Abtvo7J1jpmXzJv8Ic=;
+ b=Nja4utOoZYBX8jOzmGff0p2oeFzZK9ap70YWY+8FXPcSLkWBCf9ab2NwFql936FLPOfZygW3PA3gn3OGUi6cQHfONV6t/QQ54wACzmjUk+m0/I4FekT2FrDHnU4ABnhtn4okld2Ya3V3bYltzKssDtVGRJgjQ8wqsfwQPmZ+KoEsq1CcLPQG4g10lwZFPT5tHnmExxfBAXLMe6XwnUeErM4K//3OYiMzWrdkXO6F/AcAroDWEpRylqojT+W5SNv5FUShz9UmVC4zw8dSzZE6Gd+AKdOAABplueCjWI+fAoQerPyINnDDVA6okxF7V1EkmdjlxdOvb3ccqxP+eM9QWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8oAEvvmk1z98JljRiNweu22nFX7edvRqRiTbIMgw7s8=;
-        b=Ym3RueaJzCDlYW8RoneWjNmdlj8K3eCSTZTZFHnfUAg0j8ydaAh8Lxh7X5ulJxbRFE
-         OLYv812QJaWcyylzoNsHiUs0yWPzCxA58Eu0/lek2HML/+3RCoOxbf1lAGJa3xBy4VwZ
-         KILffsi39ksnNERk3AEYwUDhy02P/z3OwyVWN9JqhD+2xBAOII7P+f9mrTpfSsff6Ndu
-         94kZ4yPgHE1Bgt6dqDYAjDHrwOZMX50d2ND7s3NROPm67qMYUHhi5gPG2AXdsDHwlBZ8
-         84k0H57gvuDfFhBpvDa3TrFjfgjU2NrE2ajTMr42w/2c8ukGmE3f6FP3/lfviV43sobY
-         UuZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8oAEvvmk1z98JljRiNweu22nFX7edvRqRiTbIMgw7s8=;
-        b=k3Rai+TwA9Hb2D07pkqzeD/iqXnZT+0MkVo/jixd0q0dK7+3Cb/V/DUNXEKUgUD45i
-         BtlWSys0AUuZ6HLgaPVlkiA9nCMlx+bhhyShvD1QZ98RrIJ1hHl5KLg3U5jyj6hRSutU
-         CHVsHybas0SF9cnfBAFraqtjhNs6iMYPsPyIr9xCmeGIbU5SEqZlqglE2QTy5F6KXF4S
-         MumNAPmt887deQ3n+u6xXL9ZpQxOf27pwUqu8r9GgSN8LHEkz33hWwXsx1J2CaNH+sbU
-         Q7yUnfSGb+Zsykn3tM8f5P4pE2ITgn5HjZEXi/WFAr4B96tfPiZc/S6gdRmKh3aldQl3
-         k//A==
-X-Gm-Message-State: AOAM531tFMVGWn9yzrZjvgyM3snohsaED6TBilZjQhstveEpw/EgUlQO
-        0c8CLgR/vxY2uZTcygk7YA6BLIn5k1R3TSNmZpQ=
-X-Google-Smtp-Source: ABdhPJy8O4j4UBXRZu/T7GQxsGyv/XFzbBErK7cgyFdeLK2xzQZk7I66/pyNMxq38Qc5x+QQSMvbQto66NnrlubRpQ4=
-X-Received: by 2002:a05:6808:490:: with SMTP id z16mr6032870oid.89.1628067919739;
- Wed, 04 Aug 2021 02:05:19 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HWpD9yI/J3QwrcTjOklU+hWY1Abtvo7J1jpmXzJv8Ic=;
+ b=PClubMT2Eepc70M5IE0y3gjORks6FndZpSnl1QGhsxrm2JO8UxE3zMvYksOvuTvHsNWe6P8kMcElPnOu9w5oCHwXS45Gb3NziqHoJUOywM4uuIjRvu3Wrhh1XyRaTXJqZxGBqh+VrvJrzGb+ZAYKEOBp2/K2b4Qa9UhaXr2a/EA=
+Authentication-Results: cisco.com; dkim=none (message not signed)
+ header.d=none;cisco.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28) by CO1PR10MB4578.namprd10.prod.outlook.com
+ (2603:10b6:303:9e::9) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15; Wed, 4 Aug
+ 2021 09:08:22 +0000
+Received: from MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268]) by MWHPR1001MB2365.namprd10.prod.outlook.com
+ ([fe80::5820:e42b:73d7:4268%7]) with mapi id 15.20.4373.026; Wed, 4 Aug 2021
+ 09:08:22 +0000
+Date:   Wed, 4 Aug 2021 12:08:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     umalhi@cisco.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [bug report] IB/usnic: Add Cisco VIC low-level hardware driver
+Message-ID: <20210804090810.GA6406@kili>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: ZR0P278CA0072.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:21::23) To MWHPR1001MB2365.namprd10.prod.outlook.com
+ (2603:10b6:301:2d::28)
 MIME-Version: 1.0
-References: <YQmF9506lsmeaOBZ@unreal> <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
- <CAD=hENfua2UXH6rVuhMPXYsNSavqG==T3h=z4f=huf+Fj+xiHA@mail.gmail.com> <YQoogK7uWCLHUzcs@unreal>
-In-Reply-To: <YQoogK7uWCLHUzcs@unreal>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 4 Aug 2021 17:05:08 +0800
-Message-ID: <CAD=hENcnUd-rTHGPq2DjyF7tDHVzCebDO2gtwZa9pw0M_QvaPA@mail.gmail.com>
-Subject: Re: RXE status in the upstream rping using rxe
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Olga Kornievskaia <aglo@umich.edu>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kili (102.222.70.252) by ZR0P278CA0072.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:21::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.16 via Frontend Transport; Wed, 4 Aug 2021 09:08:20 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1bc11a13-8bf4-463e-906b-08d957276872
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4578:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <CO1PR10MB45784E378B6D6E0E496BA4668EF19@CO1PR10MB4578.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:901;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2OJYU8+QuHgCinMOIerxR9O5PVm2YowI32FanV62ETySnEahoYUn2NWOTwUbBOTqeDQl+nFcEE5pZ0meyJj6Grnmdm5Vj1HoZZ8upU6xgElVV/uNoWe2c8OD3sQapZ409iRlntqNojIEEqpdzgTzEQRKHNdCqU4aM/ZzQxZrsNENi4x+kfwq9sChPEY1DTGQmy5+U2jnGVG6tS60kJG6Z05PeN4Q2MI07bcaufcVRnAzi2kDS/AJ2Y+N9Se6yMo1GvhVhcT2ncnH0Sn3BvmsKt0NTPYB8NuzcbQKNxfO6GkH0IYEInzIuYNJypT9X1vottgn690sAPH2836TSCH6XPWsw7XSXc4zd7stVh4D1k5HJZwlFeTFlMhnK47rTDRXzN1Y461lNP+mHSlnohjEWtgluxHmGVxolE8PZopmUA04ZzrNzBMGJv9YGcQLdcg5VXfGTAtvwqnqVtTTlY2qpn1HxsgWH3pAuSUmrLQHIoL7t2Bcbg1ouS19FJcOPzCt0bi2TQPLrML5SILUWzvBqn6BGuOyh4tGB2poatPUjnybT143WXeapgCYptwOjDiQ0bwQCw27Z7HyfLY6QifsZNl7c6USdU1DsgZpBf2ACEb47bfuAKXLf0hI3QRHSGMR3bb19J01U7Mwa4+94yS2L5o7NkV/16rAzNHE66FbDWl9KF+iU8L0SaFEZk4KtRd/4QsqXLVLqv940mRQICi+cQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1001MB2365.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(396003)(376002)(136003)(86362001)(8676002)(6666004)(33656002)(4326008)(8936002)(9576002)(55016002)(478600001)(83380400001)(5660300002)(956004)(44832011)(9686003)(33716001)(52116002)(1076003)(38350700002)(38100700002)(316002)(2906002)(6916009)(6496006)(26005)(186003)(66476007)(66556008)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N76qgRBKtPnBi+nwDNEtjYMWN2NBx09CxPVZkeZm775OeKV9abk8YDi6/Ixt?=
+ =?us-ascii?Q?ekzVQrSdGbgZcl4OOg9FgDm8ByvSsSV831tNCijtZPszZ1h25R+ccHmVY2KJ?=
+ =?us-ascii?Q?WiQ+6GkAvyJSqXAmswdVYydk5gRR5YQnyIYpgXPDcx0J8DKjzu0uguAcD/Qd?=
+ =?us-ascii?Q?NATEn5Lg5ajfUBt9X06YQ/BLDWK2xuV4BBXyj9kT5EgZBdaJGfw4vOmgckGk?=
+ =?us-ascii?Q?I9RCb52K0xxkiqjADbNx8aX3kgWDbxa/jcQiWypSEaGxQwLPjSOcQ1f7k+sq?=
+ =?us-ascii?Q?Jx18t9CCSVyXCkEdRSvJpkRMWi2ak10I54YMENin8U2CPFt5to0uU7DFxy8c?=
+ =?us-ascii?Q?HRUSGUGZTBK6bPgT55uEm8fP0Q/JdDLp/7PB+qz9RagnSsjhhopBWJeScO7k?=
+ =?us-ascii?Q?dBSEFgm6q1jjar8Tu5eEyp0SP1/4435Pk5ZexIGpA9XLoyGRbwaTaqDtk2TW?=
+ =?us-ascii?Q?IUhqI1+wpriKD1zGL58ETzlQhjEcU0qxiL8Sj/goBVjfq/ZHdb3XvOz0HOwz?=
+ =?us-ascii?Q?8PggCu89nXU8ZU4j4qPSVclYxmsrsvz3goFuQU9m8p94xcB26yfw9+0qbXkK?=
+ =?us-ascii?Q?ABVRa17QaoT22y0rEgVfWVyGpU1D4WNCHgmdBNv0w64A1QFiAmKZxVQRrlJj?=
+ =?us-ascii?Q?EQrT5l76F7krO+5bIMxgK8ipcLzaQooojXdbqbztQtrHfJEsldAuRdZa5UN0?=
+ =?us-ascii?Q?vaCGLc0VUfe+R5cMY29ElOxBel0Am2aZlUkDxOY/ter+7guX/9wbUe7n53GR?=
+ =?us-ascii?Q?XGiROUye/ndThK2VXXIqFEA1E99xXiyOr60bfwnZjcF6DkySYh1spH4Nke9T?=
+ =?us-ascii?Q?Q6W9quQalgcmSmbugF/P4hC6qsMv8M2IY+Z1CiSxo3VPNW9ucGPOn8VTFgvY?=
+ =?us-ascii?Q?+uR1JM95m+8fGKY+fqAgq1jmMZ3g8mYvvVK8u0lNxEXI3r3XQnXgXqPkddty?=
+ =?us-ascii?Q?KLt9dwYgFQqTJJRXchDgS1zNg9O1g0f3s0nMy8xxDP4ld4B2wi9bckhA8zHW?=
+ =?us-ascii?Q?1VITqIsL+Xsv9lMwhSDr9YBUtcF5uSO9Uvi+CljONyJKa7Egwxaa7UDrBHDw?=
+ =?us-ascii?Q?lWQTjqdbG7ijmEub5UPMfB5U5E5XjXpFIpIH2WY4w2XOaLaAooFnEDgyo8dg?=
+ =?us-ascii?Q?LrIaUYoqgQNluxcAwpe9SoqwJdoYNo40YlIrw20A58v9EIwyedtleEU7p3xZ?=
+ =?us-ascii?Q?AiawniItdYYHT/GydSGaTw7dxLy3DvlrDab7FMok9DbcJtI0XP9g7WEaru07?=
+ =?us-ascii?Q?dcwRLpySqXs191aGfV/W7OaD7DWTmgTrjJSWvrqBlBXZvoNWydlEvfvZQqFM?=
+ =?us-ascii?Q?//knlmbzai8OXzDO4Ky4HvgE?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1bc11a13-8bf4-463e-906b-08d957276872
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1001MB2365.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Aug 2021 09:08:22.1682
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YGs64A15CBw/AfbXuOyoQbS0pSxE1KkHS785SV6YcotIcF4PmMeT3Lqq/o/2NJWaQjwR99w7IC5Rj8nirb2hpHkj+dUU/6s3MRyzxpBmsjQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR10MB4578
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10065 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 malwarescore=0
+ suspectscore=0 mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2107140000
+ definitions=main-2108040045
+X-Proofpoint-ORIG-GUID: 6mK99gnur24ouPbtzC7IPvePcMtlu2fX
+X-Proofpoint-GUID: 6mK99gnur24ouPbtzC7IPvePcMtlu2fX
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 1:41 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, Aug 04, 2021 at 09:09:41AM +0800, Zhu Yanjun wrote:
-> > On Wed, Aug 4, 2021 at 9:01 AM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
-> > >
-> > > On Wed, Aug 4, 2021 at 2:07 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > Hi,
-> > > >
-> > > > Can you please help me to understand the RXE status in the upstream?
-> > > >
-> > > > Does we still have crashes/interop issues/e.t.c?
-> > >
-> > > I made some developments with the RXE in the upstream, from my usage
-> > > with latest RXE,
-> > > I found the following:
-> > >
-> > > 1. rdma-core can not work well with latest RDMA git;
-> >
-> > The latest RDMA git is
-> > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
->
-> "Latest" is a relative term, what SHA did you test?
-> Let's focus on fixing RXE before we will continue with new features.
+[ This is an ancient bug, but the bug is clear to see, but unfortunately
+  it's probably less easy to fix.  - dan ]
 
-Thanks a lot. I agree with you.
+Hello Upinder Malhi,
 
-rdma-core:
-313509f8 (HEAD -> master, origin/master, origin/HEAD) Merge pull
-request #1038 from selvintxavier/master
-2d3dc48b Merge pull request #1039 from amzn/pyverbs-mac-fix-pr
-327d45e0 tests: Add missing MAC element to args list
-66aba73d bnxt_re/lib: Move hardware queue to 16B aligned indices
-8754fb51 bnxt_re/lib: Use separate indices for shadow queue
-be4d8abf bnxt_re/lib: add a function to initialize software queue
+The patch e3cf00d0a87f: "IB/usnic: Add Cisco VIC low-level hardware
+driver" from Sep 10, 2013, leads to the following static checker
+warning:
 
-kernel rdma:
-0050a57638ca (HEAD -> for-next, origin/for-next, origin/HEAD)
-RDMA/qedr: Improve error logs for rdma_alloc_tid error return
-090473004b02 RDMA/qed: Use accurate error num in qed_cxt_dynamic_ilt_alloc
-991c4274dc17 RDMA/hfi1: Fix typo in comments
-8d7e415d5561 docs: Fix infiniband uverbs minor number
-bbafcbc2b1c9 RDMA/iwpm: Rely on the rdma_nl_[un]register() to ensure
-that requests are valid
-bdb0e4e3ff19 RDMA/iwpm: Remove not-needed reference counting
-e677b72a0647 RDMA/iwcm: Release resources if iw_cm module initialization fails
-a0293eb24936 RDMA/hfi1: Convert from atomic_t to refcount_t on
-hfi1_devdata->user_refcount
+	fs/kernfs/dir.c:476 kernfs_drain()
+	warn: sleeping in atomic context
 
-with the above kernel and rdma-core, the following messages will appear.
-"
-[   54.214608] rdma_rxe: loaded
-[   54.217089] infiniband rxe0: set active
-[   54.217101] infiniband rxe0: added enp0s8
-[  167.623200] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  167.645590] rdma_rxe: cqe(1) < current # elements in queue (6)
-[  167.733297] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  169.074755] rdma_rxe: check_rkey: no MW matches rkey 0x1000247
-[  169.074796] rdma_rxe: qp#27 moved to error state
-[  169.138851] rdma_rxe: check_rkey: no MW matches rkey 0x10005de
-[  169.138889] rdma_rxe: qp#30 moved to error state
-[  169.160565] rdma_rxe: check_rkey: no MW matches rkey 0x10006f7
-[  169.160601] rdma_rxe: qp#31 moved to error state
-[  169.182132] rdma_rxe: check_rkey: no MW matches rkey 0x1000782
-[  169.182170] rdma_rxe: qp#32 moved to error state
-[  169.667803] rdma_rxe: check_rkey: no MR matches rkey 0x18d8
-[  169.667850] rdma_rxe: qp#39 moved to error state
-[  198.872649] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  198.894829] rdma_rxe: cqe(1) < current # elements in queue (6)
-[  198.981839] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  200.332031] rdma_rxe: check_rkey: no MW matches rkey 0x1000887
-[  200.332086] rdma_rxe: qp#58 moved to error state
-[  200.396476] rdma_rxe: check_rkey: no MW matches rkey 0x1000b0d
-[  200.396514] rdma_rxe: qp#61 moved to error state
-[  200.417919] rdma_rxe: check_rkey: no MW matches rkey 0x1000c40
-[  200.417956] rdma_rxe: qp#62 moved to error state
-[  200.439616] rdma_rxe: check_rkey: no MW matches rkey 0x1000d24
-[  200.439654] rdma_rxe: qp#63 moved to error state
-[  200.933104] rdma_rxe: check_rkey: no MR matches rkey 0x37d8
-[  200.933153] rdma_rxe: qp#70 moved to error state
-[  206.880305] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  206.904030] rdma_rxe: cqe(1) < current # elements in queue (6)
-[  206.991494] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  208.359987] rdma_rxe: check_rkey: no MW matches rkey 0x1000e4d
-[  208.360028] rdma_rxe: qp#89 moved to error state
-[  208.425637] rdma_rxe: check_rkey: no MW matches rkey 0x1001136
-[  208.425675] rdma_rxe: qp#92 moved to error state
-[  208.447333] rdma_rxe: check_rkey: no MW matches rkey 0x10012d8
-[  208.447370] rdma_rxe: qp#93 moved to error state
-[  208.469511] rdma_rxe: check_rkey: no MW matches rkey 0x100137a
-[  208.469550] rdma_rxe: qp#94 moved to error state
-[  208.956691] rdma_rxe: check_rkey: no MR matches rkey 0x5670
-[  208.956731] rdma_rxe: qp#100 moved to error state
-[  216.879703] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  216.902199] rdma_rxe: cqe(1) < current # elements in queue (6)
-[  216.989264] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  218.363765] rdma_rxe: check_rkey: no MW matches rkey 0x10014d6
-[  218.363808] rdma_rxe: qp#119 moved to error state
-[  218.429474] rdma_rxe: check_rkey: no MW matches rkey 0x10017e4
-[  218.429513] rdma_rxe: qp#122 moved to error state
-[  218.451443] rdma_rxe: check_rkey: no MW matches rkey 0x1001895
-[  218.451481] rdma_rxe: qp#123 moved to error state
-[  218.473869] rdma_rxe: check_rkey: no MW matches rkey 0x1001910
-[  218.473908] rdma_rxe: qp#124 moved to error state
-[  218.963602] rdma_rxe: check_rkey: no MR matches rkey 0x757b
-[  218.963641] rdma_rxe: qp#130 moved to error state
-[  233.855140] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  233.877202] rdma_rxe: cqe(1) < current # elements in queue (6)
-[  233.963952] rdma_rxe: cqe(32768) > max_cqe(32767)
-[  235.305274] rdma_rxe: check_rkey: no MW matches rkey 0x1001ac2
-[  235.305319] rdma_rxe: qp#149 moved to error state
-[  235.368800] rdma_rxe: check_rkey: no MW matches rkey 0x1001db8
-[  235.368838] rdma_rxe: qp#152 moved to error state
-[  235.390155] rdma_rxe: check_rkey: no MW matches rkey 0x1001e4d
-[  235.390192] rdma_rxe: qp#153 moved to error state
-[  235.411336] rdma_rxe: check_rkey: no MW matches rkey 0x1001f4c
-[  235.411374] rdma_rxe: qp#154 moved to error state
-[  235.895784] rdma_rxe: check_rkey: no MR matches rkey 0x9482
-[  235.895828] rdma_rxe: qp#161 moved to error state
-"
-Not sure if they are problems.
-IMO, we should make further investigations.
+drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+   190          if (usnic_ib_share_vf) {
+   191                  /* Try to find resouces on a used vf which is in pd */
+   192                  dev_list = usnic_uiom_get_dev_list(pd->umem_pd);
+   193                  if (IS_ERR(dev_list))
+   194                          return ERR_CAST(dev_list);
+   195                  for (i = 0; dev_list[i]; i++) {
+   196                          dev = dev_list[i];
+   197                          vf = dev_get_drvdata(dev);
+   198                          spin_lock(&vf->lock);
+                                ^^^^^^^^^^^^^^^^^^^^^
+We're holding a spin lock.
 
-Thanks
-Zhu Yanjun
->
-> Thanks
+   199                          vnic = vf->vnic;
+   200                          if (!usnic_vnic_check_room(vnic, res_spec)) {
+   201                                  usnic_dbg("Found used vnic %s from %s\n",
+   202                                                  dev_name(&us_ibdev->ib_dev.dev),
+   203                                                  pci_name(usnic_vnic_get_pdev(
+   204                                                                          vnic)));
+   205                                  qp_grp = usnic_ib_qp_grp_create(us_ibdev->ufdev,
+                                                 ^^^^^^^^^^^^^^^^^^^^^^
+The create function calls usnic_ib_sysfs_qpn_add() which does a
+kobject_init_and_add().  Unfortunately kobject allocations have many
+sleeps inside them so it can't be done while holding a spinlock.
+
+Same thing for the other usnic_ib_qp_grp_create() later on in the same
+function.
+
+   206                                                                  vf, pd,
+   207                                                                  res_spec,
+   208                                                                  trans_spec);
+   209  
+   210                                  spin_unlock(&vf->lock);
+   211                                  goto qp_grp_check;
+   212                          }
+   213                          spin_unlock(&vf->lock);
+   214  
+   215                  }
+   216                  usnic_uiom_free_dev_list(dev_list);
+   217                  dev_list = NULL;
+   218          }
+
+regards,
+dan carpenter
+
