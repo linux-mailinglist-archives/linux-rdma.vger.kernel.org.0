@@ -2,139 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B053E1354
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 12:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 948673E14A4
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 14:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240614AbhHEK7M (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 06:59:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51512 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240080AbhHEK7L (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Aug 2021 06:59:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F181961102;
-        Thu,  5 Aug 2021 10:58:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628161137;
-        bh=jpkqtKgVH0TlomV9uVXBdAe4Wn7c/wCtXDz5usqUrOU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pE9xZA0Y5HxP2T+20HNxQvo8BInmCpOlCJMcB+2rRpDaFpCTZ9ei39sZeCcVo3nUd
-         zor/Ftyl+UcpK0KNqTHj3su1Veaf7rjT8wMETFKUJGFcg2pg9r2A+Ly2clPNgvwPux
-         G+gwhBu+jsK+veuLE8sfoxJ0xVtEfszZHNbtvuFeHpCwH/QsjOoarmEP703AJg9M9A
-         Ev/NniToNtQWNu35ykqTkUzTWPKtisS5XhG0Wrzl+rcd0z7CGVMSYGcIwb0FhE3Yy7
-         kp3tGuVfOW2v5LC8pd9Tgf4D534td0dU36H8cd437vE8PltSvSykBCUijWvKHWGNao
-         pbBAo/3JaKHAg==
-Date:   Thu, 5 Aug 2021 13:58:53 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     liangwenpeng@huawei.com, liweihang@huawei.com, dledford@redhat.com,
-        jgg@ziepe.ca, chenglang@huawei.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S238790AbhHEMX3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 08:23:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232651AbhHEMX2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 08:23:28 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08DBC061765
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Aug 2021 05:23:14 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id a19so6015194qkg.2
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Aug 2021 05:23:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S4zS+s1qVPIzTO0H85R2WuDkxmB2UlVm9z/KPt196HA=;
+        b=gp1H1Kzu98qgl2JIh9eTpxSNNmyA04LWKuZuMpDS+Lb3EPFLVquROPmsgbu4VZW0/g
+         2jppRAXJYrnyb3MhnBRIck40kopbFuXU7EPzz7naWo7ScJuIF3jaftVPI5KUyM4JIemt
+         wOHrKalIV0dzkH0x16xndWc7NuRnPraMNxpRCCxrw7N5zi3/dLTN776SJxHy5EcIAMOA
+         51GhF4K4pXsVb6HRR+IvqpTPvkitX76Ue4VRqBfFtqZ4au5/2TthkzsHM04k13kVFJYt
+         Xad67ihS1wXfF+8xpHlllgFuEy5G0dlaYijKkKlsO7+5mjs0tTezay46BKWtfV3QCQk1
+         0Osg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S4zS+s1qVPIzTO0H85R2WuDkxmB2UlVm9z/KPt196HA=;
+        b=VS1BX8E4Ii7wjeyAvC+H73Z6hxRS1l1QvkMkcvtGWoeVc/rore9LdAAQ38FD+rpvDQ
+         b+kzOWMikc2E6UmRGa0fcxVyu+T66bjGYTQxlYZJITkMNjlAhBIizyRVEKay4rWZxiaO
+         +ERq4F5t+bN1uOU4/q5I7K6+KFheKV9GVatjz7JjywKZ5yTEd0M9FXBrbmv+fK/aZ4Iz
+         cvTsk/dbvjWnPxwDBwCT5e1Et+AIiiyy8k8MiS9DZIg6oxAZjeMK5E4iKrKv+5YYLxgc
+         4T/FEY0jQLGdU/AEkeR/LQh5EXKfcxnMOAE/C6cSeOotQuJKKdGBlN7wKRYBb8HpZ6dT
+         dH7Q==
+X-Gm-Message-State: AOAM531AgEp/gqluHzxBBCdQDSoLVJFUosHClhCfa9ocaGw+2PYCsLgK
+        czU/FiWZ8HetPJiaRTsUFuO+WQ==
+X-Google-Smtp-Source: ABdhPJxPIESMe5yJCgv2TXoZZfltC98kYkOgvO1xmCb/FWPcCG+PZuA3W3UuQqsJ9qs5i04epGgJCg==
+X-Received: by 2002:a05:620a:4441:: with SMTP id w1mr4556493qkp.272.1628166193934;
+        Thu, 05 Aug 2021 05:23:13 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id g26sm2886229qkm.122.2021.08.05.05.23.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Aug 2021 05:23:13 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mBcP1-00DJR7-IM; Thu, 05 Aug 2021 09:23:11 -0300
+Date:   Thu, 5 Aug 2021 09:23:11 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     YueHaibing <yuehaibing@huawei.com>, liangwenpeng@huawei.com,
+        liweihang@huawei.com, dledford@redhat.com, chenglang@huawei.com,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
-Message-ID: <YQvEbUp9cE5G535E@unreal>
+Message-ID: <20210805122311.GJ543798@ziepe.ca>
 References: <20210804125939.20516-1-yuehaibing@huawei.com>
  <YQqb0U43eQUGK641@unreal>
  <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
  <YQtdswHgMXhC7Mf5@unreal>
  <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
+ <YQvEbUp9cE5G535E@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
+In-Reply-To: <YQvEbUp9cE5G535E@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 05:29:25PM +0800, YueHaibing wrote:
-> On 2021/8/5 11:40, Leon Romanovsky wrote:
-> > On Thu, Aug 05, 2021 at 10:36:03AM +0800, YueHaibing wrote:
-> >> On 2021/8/4 21:53, Leon Romanovsky wrote:
-> >>> On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
-> >>>> If re-registering an MR in hns_roce_rereg_user_mr(), we should
-> >>>> return NULL instead of pass 0 to ERR_PTR.
-> >>>>
-> >>>> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
-> >>>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> >>>> ---
-> >>>>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
-> >>>>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> >>>> index 006c84bb3f9f..7089ac780291 100644
-> >>>> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-> >>>> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> >>>> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
-> >>>>  free_cmd_mbox:
-> >>>>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
-> >>>>  
-> >>>> -	return ERR_PTR(ret);
-> >>>> +	if (ret)
-> >>>> +		return ERR_PTR(ret);
-> >>>> +	return NULL;
-> >>>>  }
-> >>>
-> >>> I don't understand this function, it returns or ERR_PTR() or NULL, but
-> >>> should return &mr->ibmr in success path. How does it work?
-> >>
-> >> Did you means hns_roce_reg_user_mr()?
-> >>
-> >> hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
-> >>
-> >> In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
-> >>
-> >>  829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
-> >>  830                                            cmd.hca_va, cmd.access_flags, new_pd,
-> >>  831                                            &attrs->driver_udata);
-> >>  832         if (IS_ERR(new_mr)) {
-> >>  833                 ret = PTR_ERR(new_mr);
-> >>  834                 goto put_new_uobj;
-> >>  835         }
-> >>  836         if (new_mr) {
-> >> .....
-> >>  860                 mr = new_mr;
-> >>  861         } else {
-> >>  862                 if (cmd.flags & IB_MR_REREG_PD) {
-> >>  863                         atomic_dec(&orig_pd->usecnt);
-> >>  864                         mr->pd = new_pd;
-> >>  865                         atomic_inc(&new_pd->usecnt);
-> >>  866                 }
-> >>  867                 if (cmd.flags & IB_MR_REREG_TRANS)
-> >>  868                         mr->iova = cmd.hca_va;
-> >>  869         }
-> > 
-> > You overwrite various fields in old_mr when executing hns_roce_rereg_user_mr().
-> > For example mr->access flags, which is not returned to the original
-> > state after all failures.
+On Thu, Aug 05, 2021 at 01:58:53PM +0300, Leon Romanovsky wrote:
+
+> > IMO, if ibv_rereg_mr failed, the mr is in undefined state, user
+> > needs to call ibv_dereg_mr in order to release it, so there no
+> > need to recover the original state.
 > 
-> IMO, if ibv_rereg_mr failed, the mr is in undefined state, user needs to call
-> ibv_dereg_mr in order to release it, so there no need to recover the original state.
+> The thing is that it undefined state in the kernel.  What will be if
+> user will change access_flags and try to use that "broken" MR
+> anyway? Will you catch it?
 
-The thing is that it undefined state in the kernel.
-What will be if user will change access_flags and try to use that
-"broken" MR anyway? Will you catch it?
+rereg is not atomic, if the rereg fails in the middle the mr should be
+left in some safe state.
 
-> 
-> Also， mlx4_ib_rereg_user_mr seems to do the same thing.
-
-mlx4 does many crazy things.
-
-> 
-> > 
-> > Also I'm not so sure about if it is valid to return NULL in all flows.
-> > 
-> > Thanks
-> > 
-> >>
-> >>
-> >>>
-> >>> Thanks
-> >>>
-> >>>>  
-> >>>>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-> >>>> -- 
-> >>>> 2.17.1
-> >>>>
-> >>> .
-> >>>
-> > .
-> > 
+Jason
