@@ -2,85 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 866303E091B
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 Aug 2021 22:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6776F3E0C7C
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 04:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240797AbhHDUBI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 Aug 2021 16:01:08 -0400
-Received: from smtp-relay-services-0.canonical.com ([185.125.188.250]:41926
-        "EHLO smtp-relay-services-0.canonical.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236868AbhHDUBH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 16:01:07 -0400
-Received: from alphecca.canonical.com (alphecca.canonical.com [91.189.89.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp-relay-services-0.canonical.com (Postfix) with ESMTPSA id 82EAB42674
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Aug 2021 20:00:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=launchpad.net;
-        s=20210803; t=1628107253;
-        bh=KZAsAS1Y/9P5hBrpg8IK93a30mFYLcN3tyJjkJEgUv4=;
-        h=Content-Type:MIME-Version:To:From:Subject:Message-Id:Date:
-         Reply-To;
-        b=KnA9jOxrixYS7rnAsOtJy6dUSSNs5GgVVGsM/0teG5AEzMSBhvk29pzJdFFrPAF+r
-         XxL0480619L8pnuVPK9NPWQWvTVGrtFYn5ZgeKlnJVyyJt228kp8H/shTkUn4jRaWS
-         BijSyQ9qHvuSb/vXNXxM2fEVq0rckH5yMzi20evfVGQbnrQQnuyXJJPpKTyGmIXUc4
-         sCTGtrMYFyPpRRMjtuk7RUApyWbvU7mXxan9DD1MwfQGxBSQ1sKPxa6V7zwUw101Ql
-         6qdNG3GABXWt8SvxF6KmSX4cGHMHo5pemsqE8EK43Ggus9XFv4imFEatzy9bW2igeC
-         CvoV4OWeDtURA==
-Received: from alphecca.canonical.com (localhost [IPv6:::1])
-        by alphecca.canonical.com (Postfix) with ESMTP id 48C94E00342
-        for <linux-rdma@vger.kernel.org>; Wed,  4 Aug 2021 20:00:53 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S230373AbhHECgV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 Aug 2021 22:36:21 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:7785 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229807AbhHECgV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 Aug 2021 22:36:21 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GgCQl1QDgzYlGn;
+        Thu,  5 Aug 2021 10:35:59 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 10:36:06 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 5 Aug 2021 10:36:04 +0800
+Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
+        <dledford@redhat.com>, <jgg@ziepe.ca>, <chenglang@huawei.com>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210804125939.20516-1-yuehaibing@huawei.com>
+ <YQqb0U43eQUGK641@unreal>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
+Date:   Thu, 5 Aug 2021 10:36:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Launchpad-Message-Rationale: Owner @linux-rdma
-X-Launchpad-Message-For: linux-rdma
-X-Launchpad-Notification-Type: package-build-status
-X-Launchpad-Archive: ~linux-rdma/ubuntu/rdma-core-daily
-X-Launchpad-Build-State: FAILEDTOBUILD
-X-Creator-Recipient: bdrung@posteo.de
-X-Launchpad-Build-Arch: i386
-X-Launchpad-Build-Component: main
-X-Launchpad-PPA: linux-rdma-rdma-core-daily
-To:     Linux RDMA <linux-rdma@vger.kernel.org>
-From:   Launchpad Buildd System <noreply@launchpad.net>
-Subject: [Build #21838531] i386 build of rdma-core 37.0~202108040743+git313509f8~ubuntu18.04.1 in ubuntu bionic RELEASE [~linux-rdma/ubuntu/rdma-core-daily]
-Message-Id: <162810725329.8972.6442681920407682185.launchpad@alphecca.canonical.com>
-Date:   Wed, 04 Aug 2021 20:00:53 -0000
-Reply-To: Launchpad Buildd System <noreply@launchpad.net>
-Sender: noreply@launchpad.net
-X-Generated-By: Launchpad (canonical.com); Revision="c08a1e23be9b835a8d0e7a32b2e55270fac05933"; Instance="buildmaster"
-X-Launchpad-Hash: ad34ce6b90d79fb890a06cbf55163d064dd80630
+In-Reply-To: <YQqb0U43eQUGK641@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 2021/8/4 21:53, Leon Romanovsky wrote:
+> On Wed, Aug 04, 2021 at 08:59:39PM +0800, YueHaibing wrote:
+>> If re-registering an MR in hns_roce_rereg_user_mr(), we should
+>> return NULL instead of pass 0 to ERR_PTR.
+>>
+>> Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_mr.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> index 006c84bb3f9f..7089ac780291 100644
+>> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+>> @@ -352,7 +352,9 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+>>  free_cmd_mbox:
+>>  	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+>>  
+>> -	return ERR_PTR(ret);
+>> +	if (ret)
+>> +		return ERR_PTR(ret);
+>> +	return NULL;
+>>  }
+> 
+> I don't understand this function, it returns or ERR_PTR() or NULL, but
+> should return &mr->ibmr in success path. How does it work?
 
- * Source Package: rdma-core
- * Version: 37.0~202108040743+git313509f8~ubuntu18.04.1
- * Architecture: i386
- * Archive: ~linux-rdma/ubuntu/rdma-core-daily
- * Component: main
- * State: Failed to build
- * Duration: 3 minutes
- * Build Log: https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-d=
-aily/+build/21838531/+files/buildlog_ubuntu-bionic-i386.rdma-core_37.0~2021=
-08040743+git313509f8~ubuntu18.04.1_BUILDING.txt.gz
- * Builder: https://launchpad.net/builders/lgw01-amd64-039
- * Source: not available
+Did you means hns_roce_reg_user_mr()?
+
+hns_roce_rereg_user_mr() returns ERR_PTR() on failure, and return NULL on success,
+
+In ib_uverbs_rereg_mr(), old mr will be used if rereg_user_mr() return NULL, see:
+
+ 829         new_mr = ib_dev->ops.rereg_user_mr(mr, cmd.flags, cmd.start, cmd.length,
+ 830                                            cmd.hca_va, cmd.access_flags, new_pd,
+ 831                                            &attrs->driver_udata);
+ 832         if (IS_ERR(new_mr)) {
+ 833                 ret = PTR_ERR(new_mr);
+ 834                 goto put_new_uobj;
+ 835         }
+ 836         if (new_mr) {
+.....
+ 860                 mr = new_mr;
+ 861         } else {
+ 862                 if (cmd.flags & IB_MR_REREG_PD) {
+ 863                         atomic_dec(&orig_pd->usecnt);
+ 864                         mr->pd = new_pd;
+ 865                         atomic_inc(&new_pd->usecnt);
+ 866                 }
+ 867                 if (cmd.flags & IB_MR_REREG_TRANS)
+ 868                         mr->iova = cmd.hca_va;
+ 869         }
 
 
-
-If you want further information about this situation, feel free to
-contact us by asking a question on Launchpad
-(https://answers.launchpad.net/launchpad/+addquestion).
-
---=20
-i386 build of rdma-core 37.0~202108040743+git313509f8~ubuntu18.04.1 in ubun=
-tu bionic RELEASE
-https://launchpad.net/~linux-rdma/+archive/ubuntu/rdma-core-daily/+build/21=
-838531
-
-You are receiving this email because your team Linux RDMA is the owner
-of this archive.
-
+> 
+> Thanks
+> 
+>>  
+>>  int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+>> -- 
+>> 2.17.1
+>>
+> .
+> 
