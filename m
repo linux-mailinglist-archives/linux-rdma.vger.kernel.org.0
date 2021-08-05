@@ -2,86 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4633E0E85
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 08:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230FA3E0EB6
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 08:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237333AbhHEGnv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 02:43:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40300 "EHLO mail.kernel.org"
+        id S232779AbhHEG44 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 02:56:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhHEGnu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Aug 2021 02:43:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62BF460462;
-        Thu,  5 Aug 2021 06:43:36 +0000 (UTC)
+        id S229470AbhHEG44 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Aug 2021 02:56:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7B3560EC0;
+        Thu,  5 Aug 2021 06:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628145817;
-        bh=VJd3dRzsYJ2FfUYxQrivjngv0CEl6bodWlWAEugcJRo=;
+        s=k20201202; t=1628146602;
+        bh=eE9abFSFd/KwJ9B9sJx14fz7BwuSyeThDwQqNlKc54I=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j7neluQDnMex0X+f/p2QgZB9pQ2LdnmtHPm+ah+7iwczNeN6J6CHL5OnKc1ACL6Vc
-         VePonkSTqVdV9E43syKf7CnntbdUKWj55yYWhbBpDG46T+aW83j/uA64vYeIcS9UaU
-         1YgaU83ji2vNK/je2adaGu3py7flEw8sDIyyOWP/ISIVz0jE+WgYS1GxGojsyRqWNS
-         43A/QGJug0Pf82JAON30YLwFqBMbfqPNlGUsxbeEM8U4ksTseyZwV2xqBbpz5aguW1
-         fvJWRxEQ1XHxtmNSkqZYggxojUffq2VHGBPbWnh350o9A9+MfH2KrOFTqdLG6My3Qb
-         NQE5trcKuB7Cw==
-Date:   Thu, 5 Aug 2021 09:43:33 +0300
+        b=SARwd2CRYoacgG7R0rd5Y1Dfjz2heO2jh2zbo8W/hiM9nEdklCtLMLw3xXVkz0FgY
+         6cE6jg2AlYpLx9SPv8DQgmTPvTksS2Pi87Q63PbOQPVsbayA0BojhlNctBouYqoj30
+         YcEQnoYTZUy8AHU9F0b0drdB2Rm/oYMP/kCUNwyD7on2TFfZmKvoxCjENuZQ+9Ez58
+         jyPoMtAR/Uu/EgELuT1NILqWevp2vnfEFm243Ifl0Wbn9LshZfSGL/OIO8cUuSHZhd
+         obUwBjnGQfqs8sVutT1msn3nLp29bRdflVR96F4m28iNKxbYSy/dIRhgW5i02WUsYR
+         NVViDbSHQ9SQg==
+Date:   Thu, 5 Aug 2021 09:56:38 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, dledford@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: return the EFAULT per ibv_advise_mr(3)
-Message-ID: <YQuIlUT9jZLeFPNH@unreal>
-References: <20210801092050.6322-1-lizhijian@cn.fujitsu.com>
- <20210803162507.GA2892108@nvidia.com>
- <YQmDZpbCy3uTS5jv@unreal>
- <20210803181341.GE1721383@nvidia.com>
- <YQonIu3VMTlGj0TJ@unreal>
- <20210804185022.GM1721383@nvidia.com>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH v3 0/1] RDMA/rxe: Bump up default maximum values used via
+ uverbs
+Message-ID: <YQuLpsA3NgzzBAT2@unreal>
+References: <CAD=hENcTYfV1LT1=_e=eCNxdjr1Nmi+R3hH_CQn70MGRTKG7LA@mail.gmail.com>
+ <eb24b781-396f-5bb9-89c7-3ca0f8b83849@oracle.com>
+ <20210729195034.GF543798@ziepe.ca>
+ <DF4PR8401MB1081385A8812159BA8E96A03BCEB9@DF4PR8401MB1081.NAMPRD84.PROD.OUTLOOK.COM>
+ <14b9f35a-0086-834a-c05f-361a26befc13@oracle.com>
+ <90ab34d4-92d1-986d-80e5-4253d208d073@oracle.com>
+ <CAD=hENdFbF9VKhgLhSBomvQ7KvDFJhTNiPt-AfdWsKBVfo58MQ@mail.gmail.com>
+ <7a1881c3-4955-5a24-7f90-4d60f2a607a8@oracle.com>
+ <CAD=hENeupnOm1Jie+VM-t7dgEAtTp85HXjnFB+tj6bPihp5JKQ@mail.gmail.com>
+ <37d69ea2-ab29-624b-1d02-44890cd078f4@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210804185022.GM1721383@nvidia.com>
+In-Reply-To: <37d69ea2-ab29-624b-1d02-44890cd078f4@oracle.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 03:50:22PM -0300, Jason Gunthorpe wrote:
-> On Wed, Aug 04, 2021 at 08:35:30AM +0300, Leon Romanovsky wrote:
-> > On Tue, Aug 03, 2021 at 03:13:41PM -0300, Jason Gunthorpe wrote:
-> > > On Tue, Aug 03, 2021 at 08:56:54PM +0300, Leon Romanovsky wrote:
-> > > > On Tue, Aug 03, 2021 at 01:25:07PM -0300, Jason Gunthorpe wrote:
-> > > > > On Sun, Aug 01, 2021 at 05:20:50PM +0800, Li Zhijian wrote:
-> > > > > > ibv_advise_mr(3) says:
-> > > > > > EFAULT In one of the following: o When the range requested is out of the  MR  bounds,
-> > > > > >        or  when  parts of it are not part of the process address space. o One of the
-> > > > > >        lkeys provided in the scatter gather list is invalid or with wrong write access
-> > > > > > 
-> > > > > > Actually get_prefetchable_mr() will return NULL if it see above conditions
-> > > > > 
-> > > > > No, get_prefetchable_mr() returns NULL if the mkey is invalid
-> > > > 
-> > > > And what is this?
-> > > >   1701 static struct mlx5_ib_mr *                         
-> > > >   1702 get_prefetchable_mr(struct ib_pd *pd, enum ib_uverbs_advise_mr_advice advice,
-> > > >   1703                     u32 lkey)
-> > > > 
-> > > > ...
-> > > > 
-> > > >   1721         /* prefetch with write-access must be supported by the MR */
-> > > >   1722         if (advice == IB_UVERBS_ADVISE_MR_ADVICE_PREFETCH_WRITE &&
-> > > >   1723             !mr->umem->writable) {
-> > > >   1724                 mr = NULL;
-> > > >   1725                 goto end;
-> > > >   1726         }
-> > > 
-> > > I would say that is an invalid mkey
-> > 
-> > I see it is as wrong write access.
+On Wed, Aug 04, 2021 at 09:10:22PM -0700, Shoaib Rao wrote:
 > 
-> It just means the man page is wrong
 
-ok, it can be a solution too.
+<...>
+
+> Can we please make sure that the code is working after the application of
+> each patch or else it is a moving target.
+
+We will stop to accept new features till RXE is stabilized again.
+https://lore.kernel.org/linux-rdma/YQmF9506lsmeaOBZ@unreal
 
 Thanks
-
-> 
-> Jason
