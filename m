@@ -2,104 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 123F33E168B
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 16:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6D93E1717
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 16:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbhHEOKt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 10:10:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241528AbhHEOKs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Aug 2021 10:10:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 90B7C6115C;
-        Thu,  5 Aug 2021 14:10:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628172634;
-        bh=4Z8VLYE1y+qrw4nB+ZeNB5E//il2UDJee+54t1t6L3M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iC7IEickWHwjAAFswvREI2gTQeqaraD/XvxwvEpDm5qVTuabYMXsFUFnIAY6ChOR0
-         2zrM9iv/5+FyftsgL5Rga2rGmqr4T8OriJXQNF7xezhk0Bo4YXJUiIAE3rcIS3883b
-         mqtsZZA+simi6M5vKD5o+IkPDc4+VxMxAlD59GsMug9kOPfE9fPM4TZ0WYIzvHsQii
-         D0tAOrY1xfdH/gAYifgJiRRinoOPN9HJXIoUaG4Ve357/wdsHlgmYY8xihe3YjxveR
-         FgMS1NLKPJx0wNEBKpHi+O0m69UbchLygxlwyPeVRNPog/I55+1PI98O2TYa5U/NSL
-         MHgJU9zwK455w==
-Received: by mail-wm1-f52.google.com with SMTP id n11so3448197wmd.2;
-        Thu, 05 Aug 2021 07:10:34 -0700 (PDT)
-X-Gm-Message-State: AOAM530N1pi/xhzulDM5w6IP+A7CqOXp7NP7U+RdvJ6paemYZp5fPgLD
-        QVzUEZRyxITE3N2UZPUOgVanrkh9g8kLrVAb9nM=
-X-Google-Smtp-Source: ABdhPJzQAohMHdz06THhaEA3LYpi23YUJBlheSpLquqgE8XMGV3KzgrnrXQ9QP/jhMoXa5Q40db60tm7XH+NvM1nTNM=
-X-Received: by 2002:a05:600c:414b:: with SMTP id h11mr15233076wmm.120.1628172633125;
- Thu, 05 Aug 2021 07:10:33 -0700 (PDT)
+        id S239457AbhHEOjL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 10:39:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237990AbhHEOjK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 10:39:10 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91003C061765
+        for <linux-rdma@vger.kernel.org>; Thu,  5 Aug 2021 07:38:55 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id u3so10019908ejz.1
+        for <linux-rdma@vger.kernel.org>; Thu, 05 Aug 2021 07:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=umich.edu; s=google-2016-06-03;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bUaEIz+0et2GLZACFLqMpbto4Y4+tyoI8JnXvvr1kuc=;
+        b=nqHCL+yY494Cx0Usym26ElFNrjrw7UNLJsVZi2kFBQOchloh9zBUMiQ9SHLEFxckDw
+         C68JcuoIueb63KOJ3p1Cp+a0XVNMb7qmrVkjJy0JpJMYZh/nUfHgmxyjFJhflKs/I/gh
+         0K9lIhX9K9ugW8rKVfVcvoK3tXMr/SI+ZONc/7YeDfZKzhe3E94+4uuIzkh/X0xJBr0o
+         VzWIpFp3Tf0Wisss723stsE3jnhFHhM9z1xyGbDOV7gwL52tFgsypOrB2rhPujK5rFRm
+         tlSw8/UMERgBeF4I+7KeKcDvvUT9CiIgRV66p3FRTHSVGmJOmMB5EHDfe0dTIRyRBKaI
+         u9XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=bUaEIz+0et2GLZACFLqMpbto4Y4+tyoI8JnXvvr1kuc=;
+        b=cYpDcr5+67LPXSmsL3kb7GdXEguhBNZTQrMYV0iQhlTPqclD0ux3U2eRKSEn2IwXz/
+         yZUdDcxexxjR//9npUKyvzFzpF8yh8dOAoOBTI/pvulMW2Q9Ax4nNrtK0558rhrQRxef
+         0vpOLTMOyfU/0wA3zyKCIqiFfKlNlvBsHAi3i6SD/iBNjgpDXd1o/jf63iJgXDFjt4IM
+         xWnxeT38ErqkVOQFwn5uzFVsEnrwM1V2V5VR1G8PlVpo6DBN9LVxqNJORCAO7pJswjgU
+         gknDhF8hOiN61jUq7wcDuDP1kzmA89gkmxnYZDk5KBUxSNIJZN1FN5Js0Cx68F+pxcQF
+         7X2g==
+X-Gm-Message-State: AOAM533Sh4QX13THCV6+Pr5vnzCPDLYXG5cCZEfxIORGtEsne/26MV2R
+        bTLriYfDwwdCFbU61IjXuc8gPh8F92gc97o9g5w2euqS
+X-Google-Smtp-Source: ABdhPJzkmLbaTPVyTA1mT5Dd/iZAXnR2l4H6eX0QySMw9FeNJS2H8mFSL4HW8zLOzXTryMKKcFB9stgveW9yam5Orow=
+X-Received: by 2002:a17:906:4e52:: with SMTP id g18mr5339566ejw.432.1628174333681;
+ Thu, 05 Aug 2021 07:38:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210805082253.3654591-1-arnd@kernel.org> <20210805133258.zvhn5kznjt7taqyu@skbuf>
-In-Reply-To: <20210805133258.zvhn5kznjt7taqyu@skbuf>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 5 Aug 2021 16:10:17 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2xrkSky0B0YZjBuooJy4QpQS2cCDb_ipYSgY78GzeEKw@mail.gmail.com>
-Message-ID: <CAK8P3a2xrkSky0B0YZjBuooJy4QpQS2cCDb_ipYSgY78GzeEKw@mail.gmail.com>
-Subject: Re: [PATCH net-next v4] ethernet: fix PTP_1588_CLOCK dependencies
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Shannon Nelson <snelson@pensando.io>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        drivers@pensando.io, Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Yangbo Lu <yangbo.lu@nxp.com>, Karen Xie <kxie@chelsio.com>,
-        Networking <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>
+From:   Olga Kornievskaia <aglo@umich.edu>
+Date:   Thu, 5 Aug 2021 10:38:42 -0400
+Message-ID: <CAN-5tyGiuTXBy2pcSd6PT3_Bdxx6H8QWzXaurSooMz7uhU2rrw@mail.gmail.com>
+Subject: Help understand use of MAC address resolution in RDMA
+To:     linux-rdma <linux-rdma@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 5, 2021 at 3:32 PM Vladimir Oltean <olteanv@gmail.com> wrote:
-> >
-> >  # Users should depend on NET_SWITCHDEV, HAS_IOMEM, BRIDGE
-> >  config MSCC_OCELOT_SWITCH_LIB
-> > +     depends on PTP_1588_CLOCK_OPTIONAL
->
-> No, don't make the MSCC_OCELOT_SWITCH_LIB depend on anything please,
-> since it is always "select"-ed, it shouldn't have dependencies, see
-> the comment above. If you want, add this to the comment: "Users should
-> depend on (...), PTP_1588_CLOCK_OPTIONAL".
->
+Hi folks,
 
-Changed now, but I only saw your message after I had already sent out v5 of
-the patch. I'll hold off on sending v6 for the moment, in case someone else
-notices something odd.
+Can somebody help me understand how RoCE (this is probably RDMA core
+and not specific to RoCE but I'm not sure) manages destination MAC
+addresses for its connection?
 
-I generally prefer having the extra dependencies like this, because it documents
-what the requirement is, and causes a config-time warning before the kernel
-runs into a link failure when someone else gets the dependency wrong later.
-I don't feel too strongly about it though, and I don't expect adding a comment
-would help much either here, so I'm leaving it without that line.
+Specifically the problem being observed is a server initiates an RDMA
+CM disconnect (client replies), client tries to reconnect. Server
+sends an ARP advertising a different MAC for the IP that the RDMA
+connection was using. RDMA code keeps sending the RDMA CM connect
+message to the old MAC for a certains period of time (90-100sec) then
+it finally sends it to the new MAC address.
 
-       Arnd
+Question: how does the core RDMA layer manage the MAC address for the
+connection. Why does it seem like it ignores the ARP updates?
+
+Thank you.
