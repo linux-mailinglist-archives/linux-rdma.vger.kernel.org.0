@@ -2,131 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE0873E14F4
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 14:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76633E1515
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 14:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbhHEMoD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 08:44:03 -0400
-Received: from stargate.chelsio.com ([12.32.117.8]:24858 "EHLO
-        stargate.chelsio.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233016AbhHEMoD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 08:44:03 -0400
-Received: from potato2.blr.asicdesigners.com (potato2.blr.asicdesigners.com [10.193.80.129])
-        by stargate.chelsio.com (8.14.7/8.14.7) with ESMTP id 175Chf7s015571;
-        Thu, 5 Aug 2021 05:43:42 -0700
-From:   Dakshaja Uppalapati <dakshaja@chelsio.com>
-To:     jgg@nvidia.com, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, bharat@chelsio.com,
-        dakshaja@chelsio.com
-Subject: [PATCH v1 for-rc] iw_cxgb4: Fix refcount underflow while destroying cqs.
-Date:   Thu,  5 Aug 2021 18:13:32 +0530
-Message-Id: <1628167412-12114-1-git-send-email-dakshaja@chelsio.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S241515AbhHEMxL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 08:53:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241504AbhHEMxK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 08:53:10 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67E2CC061765;
+        Thu,  5 Aug 2021 05:52:56 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id z2so10916271lft.1;
+        Thu, 05 Aug 2021 05:52:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BMHRHVG7FV528k0alS+dFJLWxY6mPvYTCXb2YBLZf+s=;
+        b=kEa5CSWKVFwS77IGuDPqemqQ99clYWFylqTxEnL25Hyq+COpjNrBCXnKqH/Z7sVVlt
+         ZFa4fHBYiVNjylDse/cLP9w9EII8/egPufYcYzDE3AmVWaaoV1yf2oN2R8SfuVhAngbT
+         y4h1Dc3m4Va/nC1f6Isa7D7xz24cyUOrIi0uwge7cgL5EZOe8gV9FT7Yqne1xded4uQ0
+         A+BJY4ThHNFwHUXZ76qFW04q3TXO+hEPTL+mpkIVRe9qZANnckcQj6ja+L6TxDwKi610
+         8r3wtm8Ow/eTn0dDNBtiCEgmqKU1AbbnLteA6e4Nh5y8vqXjqyGwJdER/aK+13TrvlZp
+         VDdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BMHRHVG7FV528k0alS+dFJLWxY6mPvYTCXb2YBLZf+s=;
+        b=ibwmpYC0ycykXD4ieACFJjnh5VTME137TweBMaC3osrKH1eUYRjJ5RHb3blwou1bdH
+         5aP260B9ccQh7tkW7qowQj3/iSoYF5uld8HqiQJzlp+tL65UIOtlbbQ2VcXh+fblC998
+         iPLSLCpvfUG0k8LJQvtjcp7YU6sdmsGp4bgpRGYapPe+rZOtZPzauL28dzUV/lQpJEKq
+         aHUdsShyFcJ+WeNcXx/0TxPTT0ZmXdLKQNQhq3V+qvYUqrcVnyAuE0SpA4trgoIl/fNC
+         6DZaZFRNXn8lfI1zJOLqvQ+3Uh7EDBZt2nv1Z/lPiMCs1li/34D/nIi7u3r7TDz11SjN
+         sXuw==
+X-Gm-Message-State: AOAM530b5EZqusfwEdfhDEZQ2jvQqfef3WbbeQAnNZjq2fzlUTCjpNoY
+        zBEWygbWbZMZ5ysott1wbjuYfwANKdW/eIsYsL0=
+X-Google-Smtp-Source: ABdhPJxPzVm6PuHZq3Z7RvCJpNktxLGos0h4n76WxvP0EJ2+mKO+ociYgvIFu92nnZx+dZTHvB1KPrZBPPxvucel0/g=
+X-Received: by 2002:a05:6512:3255:: with SMTP id c21mr3633829lfr.179.1628167973678;
+ Thu, 05 Aug 2021 05:52:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210805082253.3654591-1-arnd@kernel.org>
+In-Reply-To: <20210805082253.3654591-1-arnd@kernel.org>
+From:   Julian Calaby <julian.calaby@gmail.com>
+Date:   Thu, 5 Aug 2021 22:52:41 +1000
+Message-ID: <CAGRGNgV89tdRvUXyfBCgmYMa3CXQV4oYeMeCq_-g5u1MtUkdKQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v4] ethernet: fix PTP_1588_CLOCK dependencies
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Shannon Nelson <snelson@pensando.io>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        drivers@pensando.io, Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Yangbo Lu <yangbo.lu@nxp.com>, Karen Xie <kxie@chelsio.com>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-rdma@vger.kernel.org,
+        Linux SCSI List <linux-scsi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Previous atomic increment decrement logic expects the atomic count
-to be '0' after the final decrement. Replacing atomic count with
-refcount does not allow that, as refcount_dec() considers count of 1
-as underflow. Therefore fix the current refcount logic by decrementing
-the refcount and test if it is '0' on the final deref in
-c4iw_destroy_cq(). Use wait_for_completion() instead of wait_event().
+Hi Arnd,
 
-Fixes: 7183451f846d (RDMA/cxgb4: Use refcount_t instead of atomic_t for reference counting")
-Signed-off-by: Dakshaja Uppalapati <dakshaja@chelsio.com>
-Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
----
-changelog:
-v0->v1: used wait for completion instead of wait_event.
----
- drivers/infiniband/hw/cxgb4/cq.c       | 12 +++++++++---
- drivers/infiniband/hw/cxgb4/ev.c       |  6 ++----
- drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  3 ++-
- 3 files changed, 13 insertions(+), 8 deletions(-)
+On Thu, Aug 5, 2021 at 9:49 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The 'imply' keyword does not do what most people think it does, it only
+> politely asks Kconfig to turn on another symbol, but does not prevent
+> it from being disabled manually or built as a loadable module when the
+> user is built-in. In the ICE driver, the latter now causes a link failure:
+>
+> aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_eth_ioctl':
+> ice_main.c:(.text+0x13b0): undefined reference to `ice_ptp_get_ts_config'
+> ice_main.c:(.text+0x13b0): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_get_ts_config'
+> aarch64-linux-ld: ice_main.c:(.text+0x13bc): undefined reference to `ice_ptp_set_ts_config'
+> ice_main.c:(.text+0x13bc): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_set_ts_config'
+> aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_prepare_for_reset':
+> ice_main.c:(.text+0x31fc): undefined reference to `ice_ptp_release'
+> ice_main.c:(.text+0x31fc): relocation truncated to fit: R_AARCH64_CALL26 against undefined symbol `ice_ptp_release'
+> aarch64-linux-ld: drivers/net/ethernet/intel/ice/ice_main.o: in function `ice_rebuild':
+>
+> This is a recurring problem in many drivers, and we have discussed
+> it several times befores, without reaching a consensus. I'm providing
+> a link to the previous email thread for reference, which discusses
+> some related problems.
+>
+> To solve the dependency issue better than the 'imply' keyword, introduce a
+> separate Kconfig symbol "CONFIG_PTP_1588_CLOCK_OPTIONAL" that any driver
+> can depend on if it is able to use PTP support when available, but works
+> fine without it. Whenever CONFIG_PTP_1588_CLOCK=m, those drivers are
+> then prevented from being built-in, the same way as with a 'depends on
+> PTP_1588_CLOCK || !PTP_1588_CLOCK' dependency that does the same trick,
+> but that can be rather confusing when you first see it.
+>
+> Since this should cover the dependencies correctly, the IS_REACHABLE()
+> hack in the header is no longer needed now, and can be turned back
+> into a normal IS_ENABLED() check. Any driver that gets the dependency
+> wrong will now cause a link time failure rather than being unable to use
+> PTP support when that is in a loadable module.
+>
+> However, the two recently added ptp_get_vclocks_index() and
+> ptp_convert_timestamp() interfaces are only called from builtin code with
+> ethtool and socket timestamps, so keep the current behavior by stubbing
+> those out completely when PTP is in a loadable module. This should be
+> addressed properly in a follow-up.
+>
+> As Richard suggested, we may want to actually turn PTP support into a
+> 'bool' option later on, preventing it from being a loadable module
+> altogether, which would be one way to solve the problem with the ethtool
+> interface.
+>
+> Fixes: 06c16d89d2cb ("ice: register 1588 PTP clock device object for E810 devices")
+> Link: https://lore.kernel.org/netdev/20210804121318.337276-1-arnd@kernel.org/
+> Link: https://lore.kernel.org/netdev/CAK8P3a06enZOf=XyZ+zcAwBczv41UuCTz+=0FMf2gBz1_cOnZQ@mail.gmail.com/
+> Link: https://lore.kernel.org/netdev/CAK8P3a3=eOxE-K25754+fB_-i_0BZzf9a9RfPTX3ppSwu9WZXw@mail.gmail.com/
+> Link: https://lore.kernel.org/netdev/20210726084540.3282344-1-arnd@kernel.org/
+> Acked-by: Shannon Nelson <snelson@pensando.io>
+> Acked-by: Jacob Keller <jacob.e.keller@intel.com>
+> Acked-by: Richard Cochran <richardcochran@gmail.com>
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/drivers/infiniband/hw/cxgb4/cq.c b/drivers/infiniband/hw/cxgb4/cq.c
-index 6c8c910..53f52fc 100644
---- a/drivers/infiniband/hw/cxgb4/cq.c
-+++ b/drivers/infiniband/hw/cxgb4/cq.c
-@@ -967,6 +967,12 @@ int c4iw_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- 	return !err || err == -ENODATA ? npolled : err;
- }
- 
-+void c4iw_cq_rem_ref(struct c4iw_cq *chp)
-+{
-+	if (refcount_dec_and_test(&chp->refcnt))
-+                complete(&chp->cq_rel_comp);
-+}
-+
- int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- {
- 	struct c4iw_cq *chp;
-@@ -976,8 +982,8 @@ int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
- 	chp = to_c4iw_cq(ib_cq);
- 
- 	xa_erase_irq(&chp->rhp->cqs, chp->cq.cqid);
--	refcount_dec(&chp->refcnt);
--	wait_event(chp->wait, !refcount_read(&chp->refcnt));
-+	c4iw_cq_rem_ref(chp);
-+	wait_for_completion(&chp->cq_rel_comp);
- 
- 	ucontext = rdma_udata_to_drv_context(udata, struct c4iw_ucontext,
- 					     ibucontext);
-@@ -1081,7 +1087,7 @@ int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 	spin_lock_init(&chp->lock);
- 	spin_lock_init(&chp->comp_handler_lock);
- 	refcount_set(&chp->refcnt, 1);
--	init_waitqueue_head(&chp->wait);
-+	init_completion(&chp->cq_rel_comp);
- 	ret = xa_insert_irq(&rhp->cqs, chp->cq.cqid, chp, GFP_KERNEL);
- 	if (ret)
- 		goto err_destroy_cq;
-diff --git a/drivers/infiniband/hw/cxgb4/ev.c b/drivers/infiniband/hw/cxgb4/ev.c
-index 7798d090..34211a5 100644
---- a/drivers/infiniband/hw/cxgb4/ev.c
-+++ b/drivers/infiniband/hw/cxgb4/ev.c
-@@ -213,8 +213,7 @@ void c4iw_ev_dispatch(struct c4iw_dev *dev, struct t4_cqe *err_cqe)
- 		break;
- 	}
- done:
--	if (refcount_dec_and_test(&chp->refcnt))
--		wake_up(&chp->wait);
-+	c4iw_cq_rem_ref(chp);
- 	c4iw_qp_rem_ref(&qhp->ibqp);
- out:
- 	return;
-@@ -234,8 +233,7 @@ int c4iw_ev_handler(struct c4iw_dev *dev, u32 qid)
- 		spin_lock_irqsave(&chp->comp_handler_lock, flag);
- 		(*chp->ibcq.comp_handler)(&chp->ibcq, chp->ibcq.cq_context);
- 		spin_unlock_irqrestore(&chp->comp_handler_lock, flag);
--		if (refcount_dec_and_test(&chp->refcnt))
--			wake_up(&chp->wait);
-+		c4iw_cq_rem_ref(chp);
- 	} else {
- 		pr_debug("unknown cqid 0x%x\n", qid);
- 		xa_unlock_irqrestore(&dev->cqs, flag);
-diff --git a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-index 3883af3..ac5f581 100644
---- a/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-+++ b/drivers/infiniband/hw/cxgb4/iw_cxgb4.h
-@@ -428,7 +428,7 @@ struct c4iw_cq {
- 	spinlock_t lock;
- 	spinlock_t comp_handler_lock;
- 	refcount_t refcnt;
--	wait_queue_head_t wait;
-+	struct completion cq_rel_comp;
- 	struct c4iw_wr_wait *wr_waitp;
- };
- 
-@@ -979,6 +979,7 @@ struct ib_mr *c4iw_reg_user_mr(struct ib_pd *pd, u64 start,
- struct ib_mr *c4iw_get_dma_mr(struct ib_pd *pd, int acc);
- int c4iw_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata);
- int c4iw_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata);
-+void c4iw_cq_rem_ref(struct c4iw_cq *chp);
- int c4iw_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
- 		   struct ib_udata *udata);
- int c4iw_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags);
+> diff --git a/drivers/scsi/cxgbi/cxgb4i/Kconfig b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+> index 8b0deece9758..e78c07f08cdf 100644
+> --- a/drivers/scsi/cxgbi/cxgb4i/Kconfig
+> +++ b/drivers/scsi/cxgbi/cxgb4i/Kconfig
+> @@ -2,6 +2,7 @@
+>  config SCSI_CXGB4_ISCSI
+>         tristate "Chelsio T4 iSCSI support"
+>         depends on PCI && INET && (IPV6 || IPV6=n)
+> ++      depends on PTP_1588_CLOCK_OPTIONAL
+
+Extra +?
+
+Thanks,
+
 -- 
-1.8.3.1
+Julian Calaby
 
+Email: julian.calaby@gmail.com
+Profile: http://www.google.com/profiles/julian.calaby/
