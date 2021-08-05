@@ -2,87 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948673E14A4
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 14:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745023E14AC
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 Aug 2021 14:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238790AbhHEMX3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 08:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        id S238897AbhHEMZ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 08:25:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhHEMX2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 08:23:28 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08DBC061765
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Aug 2021 05:23:14 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id a19so6015194qkg.2
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Aug 2021 05:23:14 -0700 (PDT)
+        with ESMTP id S232651AbhHEMZ4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 08:25:56 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099D5C061765;
+        Thu,  5 Aug 2021 05:25:42 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id s22-20020a17090a1c16b0290177caeba067so14391484pjs.0;
+        Thu, 05 Aug 2021 05:25:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=S4zS+s1qVPIzTO0H85R2WuDkxmB2UlVm9z/KPt196HA=;
-        b=gp1H1Kzu98qgl2JIh9eTpxSNNmyA04LWKuZuMpDS+Lb3EPFLVquROPmsgbu4VZW0/g
-         2jppRAXJYrnyb3MhnBRIck40kopbFuXU7EPzz7naWo7ScJuIF3jaftVPI5KUyM4JIemt
-         wOHrKalIV0dzkH0x16xndWc7NuRnPraMNxpRCCxrw7N5zi3/dLTN776SJxHy5EcIAMOA
-         51GhF4K4pXsVb6HRR+IvqpTPvkitX76Ue4VRqBfFtqZ4au5/2TthkzsHM04k13kVFJYt
-         Xad67ihS1wXfF+8xpHlllgFuEy5G0dlaYijKkKlsO7+5mjs0tTezay46BKWtfV3QCQk1
-         0Osg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UJbk09k54JECCeJwupO/QMHjbng2VO6NZjwCFKC+4og=;
+        b=vIiUOLk4ymGEs3kUO0OWcoeOACqc67F3aml1Sb5fmkRU07Owvljl4FI9i17uDQ+o3H
+         MUNiCsgvqCGXkub+4h/T8GAjFUG5Qvssi3Cl2z6aS1LG638Fd+7L2x+ETRFF35WAF2MP
+         MIy9wW8qqhCQjkP8V8s1qilD/Uv0tTK8Cs5l+E+0sJU1k5yYBPjL0eN3F/lSt8eFSiO2
+         UONwmUHQ7fkOXIgEa71YlLWSOoKmgDyPTaxBvknMP1uV3+RuJ77S2Dm2rpnYDu0HQweV
+         DR49upmccKgF5/fIxwbK1KMdBPk6z3HCiKdHWVFcnobHcCPz7af2Kh7HvmvWey65JlwI
+         zLQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=S4zS+s1qVPIzTO0H85R2WuDkxmB2UlVm9z/KPt196HA=;
-        b=VS1BX8E4Ii7wjeyAvC+H73Z6hxRS1l1QvkMkcvtGWoeVc/rore9LdAAQ38FD+rpvDQ
-         b+kzOWMikc2E6UmRGa0fcxVyu+T66bjGYTQxlYZJITkMNjlAhBIizyRVEKay4rWZxiaO
-         +ERq4F5t+bN1uOU4/q5I7K6+KFheKV9GVatjz7JjywKZ5yTEd0M9FXBrbmv+fK/aZ4Iz
-         cvTsk/dbvjWnPxwDBwCT5e1Et+AIiiyy8k8MiS9DZIg6oxAZjeMK5E4iKrKv+5YYLxgc
-         4T/FEY0jQLGdU/AEkeR/LQh5EXKfcxnMOAE/C6cSeOotQuJKKdGBlN7wKRYBb8HpZ6dT
-         dH7Q==
-X-Gm-Message-State: AOAM531AgEp/gqluHzxBBCdQDSoLVJFUosHClhCfa9ocaGw+2PYCsLgK
-        czU/FiWZ8HetPJiaRTsUFuO+WQ==
-X-Google-Smtp-Source: ABdhPJxPIESMe5yJCgv2TXoZZfltC98kYkOgvO1xmCb/FWPcCG+PZuA3W3UuQqsJ9qs5i04epGgJCg==
-X-Received: by 2002:a05:620a:4441:: with SMTP id w1mr4556493qkp.272.1628166193934;
-        Thu, 05 Aug 2021 05:23:13 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id g26sm2886229qkm.122.2021.08.05.05.23.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UJbk09k54JECCeJwupO/QMHjbng2VO6NZjwCFKC+4og=;
+        b=svmDQX4KtNNDq+zyccH3C96P25HoeBxylKtVY1En60WwmiuMK8ZgAQeLEekfWUWwUE
+         loes9gSuvm+0kPZlEK32pNjjyL6Ve7dmqBhKp6/7pSvG0woofi7AZ3Hc9JEw2fYv8ZBV
+         nkmk4PSzLUV4ivgMv0COKvAVB8XJiyXScVKAjF5eGFfSAx4HPuvf8E/HmrR2t8xlUM+K
+         lHf58xqeLEo0aOBxUZw6Y20p9Rla3Z/r9+1cPF9U/DCv8uOG1LziRMBKYVy/um6NEhfN
+         rPGgPE3xDLONmHheQAh/0PhZiCW3JqgSgahKig3VtYYnSexi0UNlsYMYPZ7u6B0lhN+j
+         DHCg==
+X-Gm-Message-State: AOAM530RmezU4gRmHhE7opnntp3iZh7YiVQ4JrErMjpKfo1EMn7OgCoj
+        L9GMT3kIC5Y0Qxb181DE2abWfIMaQyRSLg==
+X-Google-Smtp-Source: ABdhPJwmkwA0iGRzHbQiSWzVXohzJrVc80mAqOSVmzENEENf11fckshBMIKix9T+tilGqhN3Qu8P/Q==
+X-Received: by 2002:a17:90a:ca93:: with SMTP id y19mr15517752pjt.142.1628166341613;
+        Thu, 05 Aug 2021 05:25:41 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.81])
+        by smtp.gmail.com with ESMTPSA id o8sm5970906pjm.21.2021.08.05.05.25.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Aug 2021 05:23:13 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mBcP1-00DJR7-IM; Thu, 05 Aug 2021 09:23:11 -0300
-Date:   Thu, 5 Aug 2021 09:23:11 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     YueHaibing <yuehaibing@huawei.com>, liangwenpeng@huawei.com,
-        liweihang@huawei.com, dledford@redhat.com, chenglang@huawei.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/hns: Fix return in hns_roce_rereg_user_mr()
-Message-ID: <20210805122311.GJ543798@ziepe.ca>
-References: <20210804125939.20516-1-yuehaibing@huawei.com>
- <YQqb0U43eQUGK641@unreal>
- <f0921aa3-a95d-f7e4-a13b-db15d4a5f259@huawei.com>
- <YQtdswHgMXhC7Mf5@unreal>
- <974d3309-3617-6413-5a8d-c92b1b2f8dfe@huawei.com>
- <YQvEbUp9cE5G535E@unreal>
+        Thu, 05 Aug 2021 05:25:41 -0700 (PDT)
+From:   Tuo Li <islituo@gmail.com>
+To:     mike.marciniszyn@cornelisnetworks.com,
+        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        baijiaju1990@gmail.com, Tuo Li <islituo@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>
+Subject: [PATCH] IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_descs()
+Date:   Thu,  5 Aug 2021 05:24:12 -0700
+Message-Id: <20210805122412.130007-1-islituo@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YQvEbUp9cE5G535E@unreal>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 01:58:53PM +0300, Leon Romanovsky wrote:
+kmalloc_array() is called to allocate memory for tx->descp. If it fails, 
+the function __sdma_txclean() is called:
+  __sdma_txclean(dd, tx);
 
-> > IMO, if ibv_rereg_mr failed, the mr is in undefined state, user
-> > needs to call ibv_dereg_mr in order to release it, so there no
-> > need to recover the original state.
-> 
-> The thing is that it undefined state in the kernel.  What will be if
-> user will change access_flags and try to use that "broken" MR
-> anyway? Will you catch it?
+However, in the function __sdma_txclean(), tx-descp is dereferenced if 
+tx->num_desc is not zero:
+  sdma_unmap_desc(dd, &tx->descp[0]);
 
-rereg is not atomic, if the rereg fails in the middle the mr should be
-left in some safe state.
+To fix this possible null-pointer dereference, assign 0 to tx->num_desc if
+kmalloc_array() returns NULL.
 
-Jason
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Tuo Li <islituo@gmail.com>
+---
+ drivers/infiniband/hw/hfi1/sdma.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/sdma.c b/drivers/infiniband/hw/hfi1/sdma.c
+index eb15c310d63d..00e29c3dfe96 100644
+--- a/drivers/infiniband/hw/hfi1/sdma.c
++++ b/drivers/infiniband/hw/hfi1/sdma.c
+@@ -3079,8 +3079,10 @@ static int _extend_sdma_tx_descs(struct hfi1_devdata *dd, struct sdma_txreq *tx)
+ 			MAX_DESC,
+ 			sizeof(struct sdma_desc),
+ 			GFP_ATOMIC);
+-	if (!tx->descp)
++	if (!tx->descp) {
++		tx->num_desc = 0;
+ 		goto enomem;
++	}
+ 
+ 	/* reserve last descriptor for coalescing */
+ 	tx->desc_limit = MAX_DESC - 1;
+-- 
+2.25.1
+
