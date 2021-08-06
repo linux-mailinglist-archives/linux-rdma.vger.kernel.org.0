@@ -2,158 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7483E2100
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 03:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57413E210F
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 03:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243201AbhHFB3L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 21:29:11 -0400
-Received: from mail-mw2nam08on2054.outbound.protection.outlook.com ([40.107.101.54]:5040
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        id S243206AbhHFBe3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 21:34:29 -0400
+Received: from mail-bn7nam10on2070.outbound.protection.outlook.com ([40.107.92.70]:62304
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S243191AbhHFB3L (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 5 Aug 2021 21:29:11 -0400
+        id S243204AbhHFBe3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 5 Aug 2021 21:34:29 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NuozgDPpt5V/67gELN3A9zPQUc4X2ewUjFlZ0QPk55TVdojBwq4CIpORn3VYJhkUfDgV8xUCkuuMouUXQJgjjP0r4vPhurL9FcQxdnF2rb3bTp+26I+XDmDCnHg/7HsdbBqUyqbdlUFzgS4wDcGcID1DtVG10wC6W4TpYSabf5sUl2MIomZj2Fh9B/ecl79xhRbKZ6I6BoSJz7ZVhQSNh6wPfJZM7Lff49jof9b0SiC0lUFrOxy2w5c/PuEjQ8rnavdQDq6CZBIEgPhRuw+9rdMZhTcysYPxl7xdb4NYBwPbmMVjNoEi7TGD6EpKDc5uGHrMlRJq4OlAKpEOkpdVUQ==
+ b=e0A5h/MNhq6mycFdxwH/HYPkjo8JyE1EYbmgzSu50SBsynEn6LIzFssay3MVgi9zWdZRtt4S8V44g1QgyjNfbUG1MhOnD4YKKA7Fqo2w8aW+e/lQe4qd3eXG22McOA+kXnQ+sLjVQWJQUbcVi4+9E8t5poHwdLbG3K0qqgiI3tpEX2i1SmRfsBgpw8CUJrSB9gJR6fjLPgE6vk4BiUxzxZK09zwo/QN8ubVZ6VKyiJFPPlFxKxZJaUBGX15QB0acy/5+Ko6nMneNfddLx/eGzRwuJoIYbVnlnSa9EA4e//hJCaF6aUFNlQ03yQ8xdc73Y9fFXn2G64Xn6DF2bnHhmA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFTxiGy/Zm8abmyXbloqOyFuq9OTEo+V8eUwGTOwqo8=;
- b=Dn/aG0WScScivw3zwy8dERlpIyPaqr7G78N2IbNILnIo9ZNXF4ZxpebJM5zLMfEpXu7EsmXIUbLIdv0eYGa92Qm0fXs0TsNyFxokn+LCoh0mBOQpoae7SzZSoJ+H4j8AsHDWw3ruE0thXJ4y27t8fdoFv3ddbfxdv4Wa9t4sGmsOgDBpN0gKOchL7mT2tcZOC8pckaD3RnTNaiuaIpirYMhEWYZv1d3Mnx3r6RZb4Pk+tR8D+dPyC1dAFW/eJbevavdawydm7ms8mCvo2Wgmb87UgwyAzPkxB/HXCyUItsnkUznaPRcTPwnM0W1fHt0eAW5+xu2Wgmi4CxETjR+Bwg==
+ bh=icb+QQmCOeANR+69foAWXEpPs0c/P5s7AbUUydc5Pjo=;
+ b=AXCY7n3ImpC2HTi+HYWhfQBC/iH4poyPK7/j4DCwuEXnx2JppfKKB1MPbWqzjGhIBzysxqbcuAIx6Rguo8NfH7r7HByHbKsw7JACm5xJU/pDeZ+jOSubzEVp/dMEOqNQrTiFiBjy0QyyeVPAF23F2JlnyOpt9ywtrva4BL+sdQ961kdxG6DKdtS2HJdrqlUoudC/hjlJXKto0xDwcP3P44h/D7FNBrUM1/lDmnYyI0A881KzLQeBcWuqE844PfQCD1WOCDL6/zWtbE57qPfpy9lBHJ5nSehJ6Wq37qNj6cFSEiLlyHVXyLALLnbxBp8XYVVFAIXoZW9sJiF6RdjMAw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TFTxiGy/Zm8abmyXbloqOyFuq9OTEo+V8eUwGTOwqo8=;
- b=MhMiacG61JCt5fMJKH6f1LsHnDf+kPJj0AKdcG47FPrY7+2NBQeLz1zQ8GL1DCqUC5k4AYPkm2umA+6Ux+Db7Gjnyw7/wzU6Qv+sll/jHLcJSZTSBST+Pai5/45Isx90fNNml/Ym3YM2ES55d1wDmwJ2SXgSX7IMX4qXpHQQZ3bvyvZNPShc+1gtozIyV+EV0zEcxOIJ/moAA7B/bJ4tt8jlhW9r8ur+BqXlISu5xYRB8bZAgkO/xRdkgeAF4cDbPv+kTcTaqpdJDHWW5/BfgDSBuODdAqZRwkH+3As0ODOUvdJFZGRIkS4n/gcbR2ZzwpN90LxxY5yvaCJljHMfEw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+ bh=icb+QQmCOeANR+69foAWXEpPs0c/P5s7AbUUydc5Pjo=;
+ b=iry1nS4ey/D7YpUGylOIWlKJHWqZnENmn5+RWCzPA/GyzGM98lgRh9F5EsxvtB+E8oseFQd75GLcvG9geK49N+eZjg8tIViDE4gKTTA1IEBVKrSJQ4tXAoSAPAjtL+3maotNfgII/yaj0pBMl3vZkzOQdtqq//Z+2Lg58LkT/GYTWR4Z3U9ylm8XjFIQjH3w9cSiUXE+KXTBS1rQCl618NNmCc77QzCa71HrjNBRCoQqCfJZvFFsfxilvCYbTxrwoICVNocMYWyzpTJLl3jdgI5nl82MRC0g7Oqba+TkIgIgbEpsmG0VIN1vHFfEl0p08IR3PL/wrw6TMrFv9N1V4Q==
+Authentication-Results: chelsio.com; dkim=none (message not signed)
+ header.d=none;chelsio.com; dmarc=none action=none header.from=nvidia.com;
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5379.namprd12.prod.outlook.com (2603:10b6:208:317::15) with
+ by BL1PR12MB5174.namprd12.prod.outlook.com (2603:10b6:208:31c::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.25; Fri, 6 Aug
- 2021 01:28:54 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.17; Fri, 6 Aug
+ 2021 01:34:13 +0000
 Received: from BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
  ([fe80::1de1:52a9:cf66:f336%7]) with mapi id 15.20.4394.018; Fri, 6 Aug 2021
- 01:28:54 +0000
-Date:   Thu, 5 Aug 2021 22:28:53 -0300
+ 01:34:13 +0000
+Date:   Thu, 5 Aug 2021 22:34:12 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-core] irdma: Restore full memory barrier for
- doorbell optimization
-Message-ID: <20210806012853.GP1721383@nvidia.com>
-References: <20210805161134.1234-1-tatyana.e.nikolova@intel.com>
+To:     Dakshaja Uppalapati <dakshaja@chelsio.com>
+Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, bharat@chelsio.com
+Subject: Re: [PATCH v1 for-rc] iw_cxgb4: Fix refcount underflow while
+ destroying cqs.
+Message-ID: <20210806013412.GA3319081@nvidia.com>
+References: <1628167412-12114-1-git-send-email-dakshaja@chelsio.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805161134.1234-1-tatyana.e.nikolova@intel.com>
-X-ClientProxiedBy: BL1PR13CA0420.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::35) To BL0PR12MB5506.namprd12.prod.outlook.com
+In-Reply-To: <1628167412-12114-1-git-send-email-dakshaja@chelsio.com>
+X-ClientProxiedBy: MN2PR07CA0022.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::32) To BL0PR12MB5506.namprd12.prod.outlook.com
  (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0420.namprd13.prod.outlook.com (2603:10b6:208:2c2::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.4 via Frontend Transport; Fri, 6 Aug 2021 01:28:54 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mBofN-00DtNg-TR; Thu, 05 Aug 2021 22:28:53 -0300
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR07CA0022.namprd07.prod.outlook.com (2603:10b6:208:1a0::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.15 via Frontend Transport; Fri, 6 Aug 2021 01:34:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mBokW-00DvSU-A4; Thu, 05 Aug 2021 22:34:12 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e5c9327e-9f73-4276-f3ad-08d958798e06
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5379:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5379F988F502271A77958F18C2F39@BL1PR12MB5379.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: a4588e30-83db-4475-eb46-08d9587a4bde
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5174:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5174EDE318EB5128A1848D6AC2F39@BL1PR12MB5174.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: w7Wc0ha/lKuykGvpSGJvWO4ZVA8lZkISVjmS/sFoGUAHap6viKV71u4WmcuX613Os5n3k062QiPY/Sd7rkTIMC8sZ2pvq1ddeXZ9SZtQA13ESuMB28V9Ckkuo0kh39FsyzdHQNnkvgPvfEyR3E8qPKRGdmJoB3xSeijedDECJyrlUOQjIeRwFch2mbrlNIMbqE3LFzqHdAVWEf47tQ0gxaC6rgpRvFniyxbj096fSVDejYoSMB2F2NCOkhCd6j3xqi6zSJPcNZHUVmOauLCzkgPhWJV1sdJwXPnEwZDuagInZYOk9molEMNS/sZmTtF+gD0SBCYksJAT9gAPmtho18holWPj48T5RTfdLByKYMqC9XgEguengc6q0qUjoITEqG78S7l8T9RcJ+rT+igtlSIxhzrHsQydZ4L7Ltp8vUvJspDDZszacnGqjKZ2COhitbtmf0r4lunlj4Np3jHaGtsyUgUMjXY5iIfiR9VUp7X7dw2Ql+uwDnpmFii3Wx86XB8/nbJ5kSM8PqX3he8Iv2/TqXgVUAVxMDoVonhP+hToSZ8p+KM0azB2oW6fiSaQMzrocLFasDn9WkGgwAf4uQqR28KEi/+RcKRuPLh0PNKuTNyAval2MdJ72lA/IECSS3pkLYC7J+gN+F8BioU411u9jok/x8dKAbrbjMybFqD7zH2KzGIbWjuibykk3IPaLBok11i7u9wj6d3vEN/YmQ5cAqC+wwZDzIAT1LUaCqw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(83380400001)(5660300002)(966005)(9786002)(2616005)(66556008)(186003)(26005)(8676002)(66946007)(2906002)(316002)(6916009)(4326008)(9746002)(66476007)(426003)(8936002)(86362001)(33656002)(1076003)(38100700002)(36756003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pjd4yO+69R1GSXtO2mIcTeN0GrsRcHxLaEMlYKMnH/UyfI8LMrblDSsZz7GM7ah7nm94zuMFKqTi8Wi3wA3pCQcgiC61t2s0PQDv/GeF9HrthWUjdPjJmXxaI4LhXmOsH3TY4fyEnrB1eB+NHIfL/63E2e0fYyOXbTH91uIHphPF3KIXIfPLY4Y3duiMkl7+WsrJRbZahSij0gNkxep8+G8ornEm0SzNVDV8+kWCNFnzew31wzjGPkDCDGWn5oilvlAC0CEXWD/xgMLCXg+aFVq7S3aMVQ+3qdWsgSnBSzYwBC3YkQ8rJ24Dyg8RXloKuTZFc2cu7cXayzGXtVV49OjRJWQfwokatQeOe1Mh8gQMW7n7Jd8faNTEIbAstxHX9kqOHuPJFAuMxk64U340T7AcE/GD6aKS63qxCjSVvV0U2KLDTPascCnw6xJvOU3YNwkm+KUvFS2gKa8hHEFK5zMpDEw9uByHmVynDWanH5Odiu38kTljY5MRZyc5SgZbohT4wgFHhih1HH/kIzl0D+hAmjcT74IrtGyGDxfB3tG+Sg64CBkMRgemN3q9BojwC8CAp+jC9vgBrGzYoWqXNYwd+NBYRZrf5h3ES/nHsXE2Uiu17ieVBZwO3JL6hZMvkyTxK+J/GWgUWFbWv0pZoQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(136003)(39850400004)(396003)(376002)(1076003)(4326008)(33656002)(36756003)(9746002)(38100700002)(86362001)(9786002)(478600001)(5660300002)(66946007)(2616005)(2906002)(316002)(26005)(186003)(66556008)(6916009)(8936002)(66476007)(83380400001)(8676002)(426003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DMzhTeKt0t/Q99Dw76GSNWPYyeU1bcsck2KdKbdv1vcWqmCy3hWv2rkelkgS?=
- =?us-ascii?Q?1yUkRmzrkhtPn/HlmHph1/vWn1YPF4MsFq67tbh9cShB4L+JgGxiuwuHc5Va?=
- =?us-ascii?Q?P3M1q96OLZVh5abIIzzR7dSSoeqBhS9QwaLXHJOYMOND5c8IM99rN0kelyXr?=
- =?us-ascii?Q?3AM4jUhN0Ff3QMrZ31xlHLg5B/HH+7adiK0JeRLbETUFeScrlTbcyF2hqqKl?=
- =?us-ascii?Q?01d+e9RhZpBHgDLKdEji2VfMdJEeTnDvHxdouyD5C/i1XvplOOtiYYYiNFlU?=
- =?us-ascii?Q?CAF5F/UfFYj/CXC6Iuvgit4Ybt5fEnCnoyg/LwMZ4VSF/C37fQr411wfoI/S?=
- =?us-ascii?Q?APgmgVkImnaGN5awS8bbu3/DpN1MxV8dT9GcjMmabI/p1LvfYiCSPe3dr+yy?=
- =?us-ascii?Q?NrnuOPfdLBsU9sqOvcP45UIU4eY7vxAvnNR+KbNxBpKwrB+g1mh27yMNAFeQ?=
- =?us-ascii?Q?cjM4mIO+X+LvxgdpX1tDILHPH0XS9v6h/Zvgt6U7KKJ2G3uoialQjRlc6hDI?=
- =?us-ascii?Q?1/p8ZOkQwTYdKLPJzPKoiqoYybRSDA82qiTGtwK5oBPFvMhs+0x5HzpyHrqk?=
- =?us-ascii?Q?X8+38WGDWGKcpKeID3MniGoV37EirrpwTgzOcK10ISmEN75xBZWH6XlaU+EF?=
- =?us-ascii?Q?F+37i0xqSzUfAbcwRWrl9Aok0k7bs4pAKycv4HbpGVzk3SrB6rXBri1IYewH?=
- =?us-ascii?Q?0Qx/3orHkHW9TAYrdUCmxpJmBGRoo69DhSnEQpYvBBWv8PhPF05rldvLXYM4?=
- =?us-ascii?Q?Xe6eiZlJIJJQKmg8oWpenhfGSaX8Bq/bL39WHNBAOsFrWSiqySz7VulfBz6R?=
- =?us-ascii?Q?koPSHWl+YYiN7+NJF4pYBWmGNcf7ypw53ApO5D11ubAspzE4CeBRSIDVE3Y7?=
- =?us-ascii?Q?cD1HaxzA4fZJ3o7/jtMPiRS0VmrDU4IwF3qKnND7s972d5dyxiqdYFyzYG9V?=
- =?us-ascii?Q?3nMfrCvcLlud1/Muw+WbAh0RWRMs0uDGU9dyJB7QwF4TTrUVnEIcy/hu8gh7?=
- =?us-ascii?Q?y+KT7cjuWjHTN6e526VJmtf3/M5c+JMo33naV5AdCiiue1kyxv0kkIKKO1Zq?=
- =?us-ascii?Q?ach2Qz0LldKLj8YEjxCkVKgSSMkntD4Rt4lsmuyo5/EO5hdecjO9igAo4OYh?=
- =?us-ascii?Q?AaoJBY33QcRdVklPObdA+pBSGTlGrC8zTF1QQoGRdyffQRqEUOsN6+3KYy8n?=
- =?us-ascii?Q?enb7vuLGv6RJwevMKCjabUkX0c0kc0xCe++Jfr9X4BmYmWVsrPosD5Lk0mQK?=
- =?us-ascii?Q?0fIFh/1MQVa5FGFqX7s2cWBmO4/5uOac6gDelq+XmZHP42RQ1YDzEbvBGzSd?=
- =?us-ascii?Q?qEWPTPANJuVtVR1JQ+yeBce9?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DYmTlAaGY53eHtLg6myfNrels/K0RNThp5lin2GmIXgM7K4Mun1tnpJnV7Vr?=
+ =?us-ascii?Q?Xme81TDSde+9OHB5ZXO/lt6NAvIuAAjEdUFvEKNDhLeCSJiDnp3WoPSMo/BQ?=
+ =?us-ascii?Q?DzOnOafxyS55g/kBy1q7o/c64TpHco7M40R3SWQwbRotGV3l40MnwOW6tpHf?=
+ =?us-ascii?Q?G8Apb0/vWHUhodWrWByNHXvKp06VEIYQRwSk8px9ZfaEZ2btdsYlmL4ZTm3N?=
+ =?us-ascii?Q?a4IL7Jy5g3+UXPpG9+vjWf6LT0pX7bOx9I44mLEpiXqjb4DWro6F7XqyGyXA?=
+ =?us-ascii?Q?aFdsV987b4oVcJJSZS/b2qxGoPtim2b5LID0n/j8AC6HaXbZuQuiB+1PCJdY?=
+ =?us-ascii?Q?SoOrvpQBdWtYNuLsaF6fdYfPN98AZqK+E5KQYkbgrd1PYyf2CHQ73sfhGyEg?=
+ =?us-ascii?Q?jiTRSHJZ4QPKnSFypQReyKaum8rpQqRnA8lzJv2xyepSr2EhLthg0QGl6WKQ?=
+ =?us-ascii?Q?SMTmM6Vu8nG5VzK8o+IKoDqyIScbt09w8NASGpWKH4rH5Yk+ErimRVkP5Otc?=
+ =?us-ascii?Q?MI3yoVaiYsBahwjV/GiKfCQIALMBcJX8wSpuRl8Y9DoCUJIbVPDUEoOQ8tzo?=
+ =?us-ascii?Q?95JYNYBqzqaUeHSw1nSLI2217li1UmugyPCFlh3q+byzR75rbpMPwCAhtsfy?=
+ =?us-ascii?Q?j3mw05fLlU4DPC8YvvUHtqh6rqrPN4v6ZOLFIij2VpsNitENmYzYv1Yv090u?=
+ =?us-ascii?Q?eFipfi1RiQd4phgJbqNyBORkOvmNNyjdmRYs4h3N9Zalf2XbJ3j1YXc/qBBy?=
+ =?us-ascii?Q?xsxW1qZMoKKm5ljcvMMF5wyjHwds0VefZ849wbNVDGH5tb/r+sPma9HHhXTJ?=
+ =?us-ascii?Q?A+tjZ6hFHdiV8LEVTrBhjeSZE7uWhIKx2ma0odAXLkTXqxcs5jhL7UNXtM4u?=
+ =?us-ascii?Q?Kp/ySfN/th4ukwMfNhbyKpijTl3/jHO8RnaLSyjB5FX2h7UG/XIwtkwEjqcp?=
+ =?us-ascii?Q?4K+g49XyxXLM+mzgNo9eD3bd189al+du8sIXMOaM/rbZRFbrRAIG192gpIRH?=
+ =?us-ascii?Q?MicLZFyUxsuWuBp2yXi6cob5vjLatVDy0KzTNya6CiuXtLDJs2AOB+Jns37i?=
+ =?us-ascii?Q?S/b+5cV6ucIInpoWggKPUfHe1+rrMR4nuB8JvG0lRu3SB5WRzHcw1wsEwxNG?=
+ =?us-ascii?Q?CPxNi/ztRP9bSlhh4l4tzE2NeMJaCQVdHpsNuSKN8G8TGA1pzAx0br3b+chi?=
+ =?us-ascii?Q?WGtun8nBeexL+wgMA2pPdUuV0PLHFXEQFSKigJMNKY4M/JwaUui/bfZAkRKF?=
+ =?us-ascii?Q?SQmH7G7F3Te7knVkG0KBeKa5ar1LNfI9o6+OlIhHphL2f9dCct8zu0RJlFvi?=
+ =?us-ascii?Q?6L4739vbqw8FjBHBsAb28kFb?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5c9327e-9f73-4276-f3ad-08d958798e06
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4588e30-83db-4475-eb46-08d9587a4bde
 X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 01:28:54.7957
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Aug 2021 01:34:13.3582
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: D+D0xjRq/ecXDw7K2qAJhuy5BbYwUquExy0S7dmBtp2phJqRjbeok702nk6PC0Y/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5379
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ok51J2j/CpAgFcZodD/r3ZdQkmEDdzVUJbpHV6Bf/2jcKFOfd90aluj26GEqnotp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5174
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 11:11:34AM -0500, Tatyana Nikolova wrote:
-> During the irdma library upstream submission we agreed to
-> replace atomic_thread_fence(memory_order_seq_cst) in the irdma
-> doorbell optimization algorithm with udma_to_device_barrier().
-> However, further regression testing uncovered cases where in
-> absence of a full memory barrier, the algorithm incorrectly
-> skips ringing the doorbell.
+On Thu, Aug 05, 2021 at 06:13:32PM +0530, Dakshaja Uppalapati wrote:
+> Previous atomic increment decrement logic expects the atomic count
+> to be '0' after the final decrement. Replacing atomic count with
+> refcount does not allow that, as refcount_dec() considers count of 1
+> as underflow. Therefore fix the current refcount logic by decrementing
+> the refcount and test if it is '0' on the final deref in
+> c4iw_destroy_cq(). Use wait_for_completion() instead of wait_event().
 > 
-> There has been a discussion about the necessity of a full
-> memory barrier for the doorbell optimization in the past:
-> https://lore.kernel.org/linux-rdma/20170301172920.GA11340@ssaleem-MOBL4.amr.corp.intel.com/
-> 
-> The algorithm decides whether to ring the doorbell based on input
-> from the shadow memory (hw_tail). If the hw_tail is behind the sq_head,
-> then the algorithm doesn't ring the doorbell, because it assumes that
-> the HW is still actively processing WQEs.
-> 
-> The shadow area indicates the last WQE processed by the HW and it is
-> okay if the shadow area value isn't the most current. However there
-> can't be a window of time between reading the shadow area and setting
-> the valid bit for the last WQE posted, because the HW may go idle and
-> the algorithm won't detect this.
-> 
-> The following two cases illustrate this issue and are identical,
-> except for ops ordering. The first case is an example of how
-> the wrong order results in not ringing the doorbell when the
-> HW has gone idle.
+> Fixes: 7183451f846d (RDMA/cxgb4: Use refcount_t instead of atomic_t for reference counting")
+> Signed-off-by: Dakshaja Uppalapati <dakshaja@chelsio.com>
+> Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
+> ---
+> changelog:
+> v0->v1: used wait for completion instead of wait_event.
+> ---
+>  drivers/infiniband/hw/cxgb4/cq.c       | 12 +++++++++---
+>  drivers/infiniband/hw/cxgb4/ev.c       |  6 ++----
+>  drivers/infiniband/hw/cxgb4/iw_cxgb4.h |  3 ++-
+>  3 files changed, 13 insertions(+), 8 deletions(-)
 
-I can't really understand this explanation. since this seemes to be
-about a concurrency problem can you please explain it using a normal
-ladder diagram? (eg 1a3402d93c73 ("posix-cpu-timers: Fix rearm racing
-against process tick") to pick an example at random)
-
-> diff --git a/providers/irdma/uk.c b/providers/irdma/uk.c
-> index c7053c52..d63996db 100644
-> +++ b/providers/irdma/uk.c
-> @@ -118,7 +118,7 @@ void irdma_uk_qp_post_wr(struct irdma_qp_uk *qp)
->  	__u32 sw_sq_head;
->  
->  	/* valid bit is written and loads completed before reading shadow */
-> -	udma_to_device_barrier();
-> +	atomic_thread_fence(memory_order_seq_cst);
-
-Because it certainly looks wrong to replace a DMA barrier with
-something that is not a DMA barrier.
-
-I'm guessing this problem is that the shadow memory is not locked and
-also not using using atomics to control concurrent access it? If so
-then the fix is to use atomics for the shadow memory and place the
-proper order requirement on the atomic itself.
-
+There were several errors in the patch, damaged white space, bad fixes
+line. Please be more careful in future. I corrected them and applied
+to for-rc, thanks
+ 
 Jason
