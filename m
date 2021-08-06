@@ -2,202 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B5F3E21AC
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 04:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D443E2226
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 05:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbhHFChc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 22:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhHFChc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 22:37:32 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46DB2C061798
-        for <linux-rdma@vger.kernel.org>; Thu,  5 Aug 2021 19:37:17 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id u3so12845640ejz.1
-        for <linux-rdma@vger.kernel.org>; Thu, 05 Aug 2021 19:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=umich.edu; s=google-2016-06-03;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kd1/7fWYVOU1QgbqQsHYKmc3WpEiQ2vr/ar/zxcgpng=;
-        b=oiQ/t+Hr1flgrYR9zYtijJTgUX0clKIoVGmiW2mCmIqEdbzhzI3syZYUL4698Y3w9q
-         PBTTyDE87cS+hWTdaApepp/CXKkFIxW4F03mM39riCYL9hPp55Ulc5XHHxjSMhTRZPZm
-         UYRFx+Loud0o21bA2j+VPJVxnnQAstXPL3KlftBynIp0EK/eI+lGjj3CslxZGSHS17h1
-         JP8NyOnGab5m2A6tGYbE+1bB7MfUDAOOLuK/HUV1fro+SXX3ekV/AJENKJc8A9idNwQ/
-         tG/qi+PpxizorJ9Kwhw19I5TZJD8GXgij85lae5GKM+lHaiE9WhXNP185rdwe2H7/a7f
-         sqhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kd1/7fWYVOU1QgbqQsHYKmc3WpEiQ2vr/ar/zxcgpng=;
-        b=sZxlnQANu4nwaSL2iI49wXZ7OExGcAlepTpPuUpKlPc5qkCqPyZvDqHGDIaQxSByiy
-         0UUWpTBgmIxISx3p6NrjPjqA3iwYyqm3qwoPoBCvIoy35nRuidlIhQBocE0OzLiDZ8Vj
-         NfvFFe4dy2uw52NQhJyn5olLFX0qFYs2lH6i+w5gzDTi/ifuBPbI8lhVp0IZAmCC+L8u
-         DDAvolhlyyK6c6Dt93jvnGx+qiuag6OoJOns1Rvjukw+Zh+TNrptTsYIn/FN4FgOm7A8
-         Jw7YOo2z3xxhRQ+ferxuMl/DWZ7c8FShzr5sR9gsuLKygkpGOlkPPJ13lZXMTgpK/sGf
-         6/Rw==
-X-Gm-Message-State: AOAM5333mK5HBtW0n6IQd+/yp4fwaGcrxWft0U50ADyvTRpy7kE0YNh3
-        I/2d5N8rcPapph/plimZZnVkEoclIvKRI4st8e0=
-X-Google-Smtp-Source: ABdhPJxN2gqReuZW1ybfmgzCbTZeWZrEn4mC9y7rraheZXptPwpy0PiQ9y8f/GytXayrSjmS3sbaEDV9Kk3j8Cut3NY=
-X-Received: by 2002:a17:906:4e52:: with SMTP id g18mr7966522ejw.432.1628217435744;
- Thu, 05 Aug 2021 19:37:15 -0700 (PDT)
+        id S236363AbhHFDVJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 Aug 2021 23:21:09 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:24958 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235548AbhHFDVJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 23:21:09 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AYYFE2KH4/Yw8RE4tpLqE1MeALOsnbusQ8zAX?=
+ =?us-ascii?q?PiFKOHhom6mj+vxG88506faKslwssR0b+OxoW5PwJE80l6QFgrX5VI3KNGbbUQ?=
+ =?us-ascii?q?CTXeNfBOXZowHIKmnX8+5x8eNaebFiNduYNzNHpPe/zA6mM9tI+rW6zJw=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,299,1620662400"; 
+   d="scan'208";a="112483857"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 06 Aug 2021 11:20:52 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id 6ED5B4D0D4A5;
+        Fri,  6 Aug 2021 11:20:47 +0800 (CST)
+Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 6 Aug 2021 11:20:47 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 6 Aug 2021 11:20:47 +0800
+Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
+To:     Jason Gunthorpe <jgg@ziepe.ca>, <nvdimm@lists.linux.dev>
+CC:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
+References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
+ <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
+ <20210806014559.GM543798@ziepe.ca>
+From:   =?UTF-8?B?TGksIFpoaWppYW4v5p2OIOaZuuWdmg==?= 
+        <lizhijian@cn.fujitsu.com>
+Message-ID: <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
+Date:   Fri, 6 Aug 2021 11:20:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-References: <YQmF9506lsmeaOBZ@unreal> <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
- <CAD=hENfua2UXH6rVuhMPXYsNSavqG==T3h=z4f=huf+Fj+xiHA@mail.gmail.com>
- <YQoogK7uWCLHUzcs@unreal> <CAD=hENcnUd-rTHGPq2DjyF7tDHVzCebDO2gtwZa9pw0M_QvaPA@mail.gmail.com>
-In-Reply-To: <CAD=hENcnUd-rTHGPq2DjyF7tDHVzCebDO2gtwZa9pw0M_QvaPA@mail.gmail.com>
-From:   Olga Kornievskaia <aglo@umich.edu>
-Date:   Thu, 5 Aug 2021 22:37:04 -0400
-Message-ID: <CAN-5tyG4kBYBEaCDPGr=gUTNGkcoznMUy8e4BwCzWZkSPG-=+Q@mail.gmail.com>
-Subject: Re: RXE status in the upstream rping using rxe
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210806014559.GM543798@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-yoursite-MailScanner-ID: 6ED5B4D0D4A5.AD4A0
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 4, 2021 at 5:05 AM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
->
-> On Wed, Aug 4, 2021 at 1:41 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Wed, Aug 04, 2021 at 09:09:41AM +0800, Zhu Yanjun wrote:
-> > > On Wed, Aug 4, 2021 at 9:01 AM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
-> > > >
-> > > > On Wed, Aug 4, 2021 at 2:07 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > >
-> > > > > Hi,
-> > > > >
-> > > > > Can you please help me to understand the RXE status in the upstream?
-> > > > >
-> > > > > Does we still have crashes/interop issues/e.t.c?
-> > > >
-> > > > I made some developments with the RXE in the upstream, from my usage
-> > > > with latest RXE,
-> > > > I found the following:
-> > > >
-> > > > 1. rdma-core can not work well with latest RDMA git;
-> > >
-> > > The latest RDMA git is
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git
-> >
-> > "Latest" is a relative term, what SHA did you test?
-> > Let's focus on fixing RXE before we will continue with new features.
->
-> Thanks a lot. I agree with you.
+Hi Jason
 
-I believe simple rping still doesn't work linux-to-linux. The last
-working version (of rping in rxe) was 5.13 I think. I have posted a
-number of crashes rping encounters (gotta get that working before I
-can even try NFSoRDMA).
+thank you for your advice.
 
-Thank you for working on the code.
+CCing nvdimm
 
-We (NFS community) do test NFSoRDMA every git pull using rxe and siw
-but lately have been encountering problems.
+both ext4 and xfs are impacted.
 
-> rdma-core:
-> 313509f8 (HEAD -> master, origin/master, origin/HEAD) Merge pull
-> request #1038 from selvintxavier/master
-> 2d3dc48b Merge pull request #1039 from amzn/pyverbs-mac-fix-pr
-> 327d45e0 tests: Add missing MAC element to args list
-> 66aba73d bnxt_re/lib: Move hardware queue to 16B aligned indices
-> 8754fb51 bnxt_re/lib: Use separate indices for shadow queue
-> be4d8abf bnxt_re/lib: add a function to initialize software queue
+Thanks
+
+
+at 2021/8/6 9:45, Jason Gunthorpe wrote:
+> On Wed, Aug 04, 2021 at 04:06:53PM +0800, Li, Zhijian/李 智坚 wrote:
+>> convert to text and send again
+>>
+>> 2021/8/4 15:55, Li, Zhijian wrote:
+>>> Hey all:
+>>>
+>>> Recently, i reported a issue to rpmahttps://github.com/pmem/rpma/issues/1142
+>>> where we found that the native rpma + fsdax example failed in recent kernel.
+>>>
+>>> Below is the bisect log
+>>>
+>>> [lizhijian@yl linux]$ git bisect log
+>>> git bisect start
+>>> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+>>> git bisect good bbf5c979011a099af5dc76498918ed7df445635b
+>>> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+>>> git bisect bad 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+>>> # good: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
+>>> git bisect good 4d0e9df5e43dba52d38b251e3b909df8fa1110be
+>>> # bad: [6694875ef8045cdb1e6712ee9b68fe08763507d8] ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
+>>> git bisect bad 6694875ef8045cdb1e6712ee9b68fe08763507d8
+>>> # good: [14c914fcb515c424177bb6848cc2858ebfe717a8] Merge tag 'wireless-drivers-next-2020-10-02' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
+>>> git bisect good 14c914fcb515c424177bb6848cc2858ebfe717a8
+>>> # good: [6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c] Merge tag 'mtd/for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
+>>> git bisect good 6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c
+>>> # bad: [bbe85027ce8019c73ab99ad1c2603e2dcd1afa49] Merge tag 'xfs-5.10-merge-5' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
+>>> git bisect bad bbe85027ce8019c73ab99ad1c2603e2dcd1afa49
+>>> # bad: [9d9af1007bc08971953ae915d88dc9bb21344b53] Merge tag 'perf-tools-for-v5.10-2020-10-15' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
+>>> git bisect bad 9d9af1007bc08971953ae915d88dc9bb21344b53
+>>> # good: [21c2fe94abb2abe894e6aabe6b4e84a255c8d339] RDMA/mthca: Combine special QP struct with mthca QP
+>>> git bisect good 21c2fe94abb2abe894e6aabe6b4e84a255c8d339
+>>> # good: [dbaa1b3d9afba3c050d365245a36616ae3f425a7] Merge branch 'perf/urgent' into perf/core
+>>> git bisect good dbaa1b3d9afba3c050d365245a36616ae3f425a7
+>>> # bad: [c7a198c700763ac89abbb166378f546aeb9afb33] RDMA/ucma: Fix use after free in destroy id flow
+>>> git bisect bad c7a198c700763ac89abbb166378f546aeb9afb33
+>>> # bad: [5ce2dced8e95e76ff7439863a118a053a7fc6f91] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
+>>> git bisect bad 5ce2dced8e95e76ff7439863a118a053a7fc6f91
+>>> # bad: [a03bfc37d59de316436c46f5691c5a972ed57c82] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
+>>> git bisect bad a03bfc37d59de316436c46f5691c5a972ed57c82
+>>> # good: [a6f0b08dbaf289c3c57284e16ac8043140f2139b] RDMA/core: Remove ucontext->closing
+>>> git bisect good a6f0b08dbaf289c3c57284e16ac8043140f2139b
+>>> # bad: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+>>> git bisect bad 36f30e486dce22345c2dd3a3ba439c12cd67f6ba
+>>> # good: [2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e] RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
+>>> git bisect good 2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e
+>>> # first bad commit: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
+> This is perhaps not so surprising, but I think you should report it to
+> the dax people that hmm_range_fault and dax don't work together..
 >
-> kernel rdma:
-> 0050a57638ca (HEAD -> for-next, origin/for-next, origin/HEAD)
-> RDMA/qedr: Improve error logs for rdma_alloc_tid error return
-> 090473004b02 RDMA/qed: Use accurate error num in qed_cxt_dynamic_ilt_alloc
-> 991c4274dc17 RDMA/hfi1: Fix typo in comments
-> 8d7e415d5561 docs: Fix infiniband uverbs minor number
-> bbafcbc2b1c9 RDMA/iwpm: Rely on the rdma_nl_[un]register() to ensure
-> that requests are valid
-> bdb0e4e3ff19 RDMA/iwpm: Remove not-needed reference counting
-> e677b72a0647 RDMA/iwcm: Release resources if iw_cm module initialization fails
-> a0293eb24936 RDMA/hfi1: Convert from atomic_t to refcount_t on
-> hfi1_devdata->user_refcount
+> Though I think it is supposed to, and I'm surprised it doesn't.
 >
-> with the above kernel and rdma-core, the following messages will appear.
-> "
-> [   54.214608] rdma_rxe: loaded
-> [   54.217089] infiniband rxe0: set active
-> [   54.217101] infiniband rxe0: added enp0s8
-> [  167.623200] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  167.645590] rdma_rxe: cqe(1) < current # elements in queue (6)
-> [  167.733297] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  169.074755] rdma_rxe: check_rkey: no MW matches rkey 0x1000247
-> [  169.074796] rdma_rxe: qp#27 moved to error state
-> [  169.138851] rdma_rxe: check_rkey: no MW matches rkey 0x10005de
-> [  169.138889] rdma_rxe: qp#30 moved to error state
-> [  169.160565] rdma_rxe: check_rkey: no MW matches rkey 0x10006f7
-> [  169.160601] rdma_rxe: qp#31 moved to error state
-> [  169.182132] rdma_rxe: check_rkey: no MW matches rkey 0x1000782
-> [  169.182170] rdma_rxe: qp#32 moved to error state
-> [  169.667803] rdma_rxe: check_rkey: no MR matches rkey 0x18d8
-> [  169.667850] rdma_rxe: qp#39 moved to error state
-> [  198.872649] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  198.894829] rdma_rxe: cqe(1) < current # elements in queue (6)
-> [  198.981839] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  200.332031] rdma_rxe: check_rkey: no MW matches rkey 0x1000887
-> [  200.332086] rdma_rxe: qp#58 moved to error state
-> [  200.396476] rdma_rxe: check_rkey: no MW matches rkey 0x1000b0d
-> [  200.396514] rdma_rxe: qp#61 moved to error state
-> [  200.417919] rdma_rxe: check_rkey: no MW matches rkey 0x1000c40
-> [  200.417956] rdma_rxe: qp#62 moved to error state
-> [  200.439616] rdma_rxe: check_rkey: no MW matches rkey 0x1000d24
-> [  200.439654] rdma_rxe: qp#63 moved to error state
-> [  200.933104] rdma_rxe: check_rkey: no MR matches rkey 0x37d8
-> [  200.933153] rdma_rxe: qp#70 moved to error state
-> [  206.880305] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  206.904030] rdma_rxe: cqe(1) < current # elements in queue (6)
-> [  206.991494] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  208.359987] rdma_rxe: check_rkey: no MW matches rkey 0x1000e4d
-> [  208.360028] rdma_rxe: qp#89 moved to error state
-> [  208.425637] rdma_rxe: check_rkey: no MW matches rkey 0x1001136
-> [  208.425675] rdma_rxe: qp#92 moved to error state
-> [  208.447333] rdma_rxe: check_rkey: no MW matches rkey 0x10012d8
-> [  208.447370] rdma_rxe: qp#93 moved to error state
-> [  208.469511] rdma_rxe: check_rkey: no MW matches rkey 0x100137a
-> [  208.469550] rdma_rxe: qp#94 moved to error state
-> [  208.956691] rdma_rxe: check_rkey: no MR matches rkey 0x5670
-> [  208.956731] rdma_rxe: qp#100 moved to error state
-> [  216.879703] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  216.902199] rdma_rxe: cqe(1) < current # elements in queue (6)
-> [  216.989264] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  218.363765] rdma_rxe: check_rkey: no MW matches rkey 0x10014d6
-> [  218.363808] rdma_rxe: qp#119 moved to error state
-> [  218.429474] rdma_rxe: check_rkey: no MW matches rkey 0x10017e4
-> [  218.429513] rdma_rxe: qp#122 moved to error state
-> [  218.451443] rdma_rxe: check_rkey: no MW matches rkey 0x1001895
-> [  218.451481] rdma_rxe: qp#123 moved to error state
-> [  218.473869] rdma_rxe: check_rkey: no MW matches rkey 0x1001910
-> [  218.473908] rdma_rxe: qp#124 moved to error state
-> [  218.963602] rdma_rxe: check_rkey: no MR matches rkey 0x757b
-> [  218.963641] rdma_rxe: qp#130 moved to error state
-> [  233.855140] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  233.877202] rdma_rxe: cqe(1) < current # elements in queue (6)
-> [  233.963952] rdma_rxe: cqe(32768) > max_cqe(32767)
-> [  235.305274] rdma_rxe: check_rkey: no MW matches rkey 0x1001ac2
-> [  235.305319] rdma_rxe: qp#149 moved to error state
-> [  235.368800] rdma_rxe: check_rkey: no MW matches rkey 0x1001db8
-> [  235.368838] rdma_rxe: qp#152 moved to error state
-> [  235.390155] rdma_rxe: check_rkey: no MW matches rkey 0x1001e4d
-> [  235.390192] rdma_rxe: qp#153 moved to error state
-> [  235.411336] rdma_rxe: check_rkey: no MW matches rkey 0x1001f4c
-> [  235.411374] rdma_rxe: qp#154 moved to error state
-> [  235.895784] rdma_rxe: check_rkey: no MR matches rkey 0x9482
-> [  235.895828] rdma_rxe: qp#161 moved to error state
-> "
-> Not sure if they are problems.
-> IMO, we should make further investigations.
+> Jason
 >
-> Thanks
-> Zhu Yanjun
-> >
-> > Thanks
+>
+
+
