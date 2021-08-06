@@ -2,122 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D443E2226
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 05:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09F93E2372
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 Aug 2021 08:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236363AbhHFDVJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 Aug 2021 23:21:09 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:24958 "EHLO
+        id S230002AbhHFGsB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 Aug 2021 02:48:01 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:40799 "EHLO
         heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235548AbhHFDVJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 Aug 2021 23:21:09 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AYYFE2KH4/Yw8RE4tpLqE1MeALOsnbusQ8zAX?=
- =?us-ascii?q?PiFKOHhom6mj+vxG88506faKslwssR0b+OxoW5PwJE80l6QFgrX5VI3KNGbbUQ?=
- =?us-ascii?q?CTXeNfBOXZowHIKmnX8+5x8eNaebFiNduYNzNHpPe/zA6mM9tI+rW6zJw=3D?=
+        with ESMTP id S236559AbhHFGsB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 Aug 2021 02:48:01 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ANvyxpaGs820JjTVXpLqFOpHXdLJyesId70hD?=
+ =?us-ascii?q?6qkvc3Fom52j/fxGws5x6faVslkssRAb6LS90cy7LU80mqQFhLX5UY3SPjUO21?=
+ =?us-ascii?q?HYV72Kj7GSuwEIcheWnoA9pNpdmsBFeaTN5DNB7foSjjPIcOrJl7K8gcaVbKrl?=
+ =?us-ascii?q?vgNQZDAvT5slwxZyCw6dHEEzbA5aBaAhHJ7ZwsZcvTKvdVkec8z+XxA+Lp7+ju?=
+ =?us-ascii?q?yOsKijTQ8NBhYh5gXLpTS06ITiGxzd+hsFSTtAzZor7GCAuQ3k4aeIte2913bn?=
+ =?us-ascii?q?phjuxqUTvOGk5spIBcSKhMRQAC7rkByUaINoXKDHlCwpocm0gWxa2uXkklMFBY?=
+ =?us-ascii?q?Be+nnRdma6rV/GwA/7ygsj7Hfk1BuxnWbjm8rkXzg3YvAxzr6xSiGpp3bIgesM?=
+ =?us-ascii?q?n56ihwmixtRq5FL77WzADuHzJlxXfhHemwtirQZ75EYvK7f3a9dq3P8iFQ1uYd?=
+ =?us-ascii?q?c99RnBmf8a+d9VfbHhDcZtAC+nhk/izxdSKfyXLwYO90S9Mz0/UvL86UkmoJkv?=
+ =?us-ascii?q?9Tp++CVYpAZIyK4A?=
 X-IronPort-AV: E=Sophos;i="5.84,299,1620662400"; 
-   d="scan'208";a="112483857"
+   d="scan'208";a="112491910"
 Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 06 Aug 2021 11:20:52 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id 6ED5B4D0D4A5;
-        Fri,  6 Aug 2021 11:20:47 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 6 Aug 2021 11:20:47 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 6 Aug 2021 11:20:47 +0800
-Subject: Re: RDMA/rpma + fsdax(ext4) was broken since 36f30e486d
-To:     Jason Gunthorpe <jgg@ziepe.ca>, <nvdimm@lists.linux.dev>
-CC:     Yishai Hadas <yishaih@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?WWFuZywgWGlhby/mnagg5pmT?= <yangx.jy@fujitsu.com>
-References: <8b2514bb-1d4b-48bb-a666-85e6804fbac0@cn.fujitsu.com>
- <68169bc5-075f-8260-eedc-80fdf4b0accd@cn.fujitsu.com>
- <20210806014559.GM543798@ziepe.ca>
-From:   =?UTF-8?B?TGksIFpoaWppYW4v5p2OIOaZuuWdmg==?= 
-        <lizhijian@cn.fujitsu.com>
-Message-ID: <b5e6c4cd-8842-59ef-c089-2802057f3202@cn.fujitsu.com>
-Date:   Fri, 6 Aug 2021 11:20:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+  by heian.cn.fujitsu.com with ESMTP; 06 Aug 2021 14:47:44 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 9458D4D0D4A6;
+        Fri,  6 Aug 2021 14:47:37 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 6 Aug 2021 14:47:38 +0800
+Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 6 Aug 2021 14:47:36 +0800
+From:   Xiao Yang <yangx.jy@fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <rpearsonhpe@gmail.com>, <zyjzyj2000@gmail.com>,
+        Xiao Yang <yangx.jy@fujitsu.com>
+Subject: [PATH rdma-core] providers/rxe: Set wqe->dma.resid to length for inline data
+Date:   Fri, 6 Aug 2021 15:20:17 +0800
+Message-ID: <20210806072017.15459-1-yangx.jy@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210806014559.GM543798@ziepe.ca>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-yoursite-MailScanner-ID: 6ED5B4D0D4A5.AD4A0
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 9458D4D0D4A6.A784A
 X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
 X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Jason
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+---
+ providers/rxe/rxe.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-thank you for your advice.
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index 3c3ea8bb..c3b267c3 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -1004,7 +1004,7 @@ static void wr_set_inline_data(struct ibv_qp_ex *ibqp, void *addr,
+ 
+ 	memcpy(wqe->dma.inline_data, addr, length);
+ 	wqe->dma.length = length;
+-	wqe->dma.resid = 0;
++	wqe->dma.resid = length;
+ }
+ 
+ static void wr_set_inline_data_list(struct ibv_qp_ex *ibqp, size_t num_buf,
+@@ -1473,8 +1473,6 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
+ 	if (ibwr->send_flags & IBV_SEND_INLINE) {
+ 		uint8_t *inline_data = wqe->dma.inline_data;
+ 
+-		wqe->dma.resid = 0;
+-
+ 		for (i = 0; i < num_sge; i++) {
+ 			memcpy(inline_data,
+ 			       (uint8_t *)(long)ibwr->sg_list[i].addr,
+-- 
+2.25.1
 
-CCing nvdimm
-
-both ext4 and xfs are impacted.
-
-Thanks
-
-
-at 2021/8/6 9:45, Jason Gunthorpe wrote:
-> On Wed, Aug 04, 2021 at 04:06:53PM +0800, Li, Zhijian/李 智坚 wrote:
->> convert to text and send again
->>
->> 2021/8/4 15:55, Li, Zhijian wrote:
->>> Hey all:
->>>
->>> Recently, i reported a issue to rpmahttps://github.com/pmem/rpma/issues/1142
->>> where we found that the native rpma + fsdax example failed in recent kernel.
->>>
->>> Below is the bisect log
->>>
->>> [lizhijian@yl linux]$ git bisect log
->>> git bisect start
->>> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
->>> git bisect good bbf5c979011a099af5dc76498918ed7df445635b
->>> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
->>> git bisect bad 2c85ebc57b3e1817b6ce1a6b703928e113a90442
->>> # good: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
->>> git bisect good 4d0e9df5e43dba52d38b251e3b909df8fa1110be
->>> # bad: [6694875ef8045cdb1e6712ee9b68fe08763507d8] ext4: indicate that fast_commit is available via /sys/fs/ext4/feature/...
->>> git bisect bad 6694875ef8045cdb1e6712ee9b68fe08763507d8
->>> # good: [14c914fcb515c424177bb6848cc2858ebfe717a8] Merge tag 'wireless-drivers-next-2020-10-02' of git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next
->>> git bisect good 14c914fcb515c424177bb6848cc2858ebfe717a8
->>> # good: [6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c] Merge tag 'mtd/for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux
->>> git bisect good 6f78b9acf04fbf9ede7f4265e7282f9fb39d2c8c
->>> # bad: [bbe85027ce8019c73ab99ad1c2603e2dcd1afa49] Merge tag 'xfs-5.10-merge-5' of git://git.kernel.org/pub/scm/fs/xfs/xfs-linux
->>> git bisect bad bbe85027ce8019c73ab99ad1c2603e2dcd1afa49
->>> # bad: [9d9af1007bc08971953ae915d88dc9bb21344b53] Merge tag 'perf-tools-for-v5.10-2020-10-15' of git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux
->>> git bisect bad 9d9af1007bc08971953ae915d88dc9bb21344b53
->>> # good: [21c2fe94abb2abe894e6aabe6b4e84a255c8d339] RDMA/mthca: Combine special QP struct with mthca QP
->>> git bisect good 21c2fe94abb2abe894e6aabe6b4e84a255c8d339
->>> # good: [dbaa1b3d9afba3c050d365245a36616ae3f425a7] Merge branch 'perf/urgent' into perf/core
->>> git bisect good dbaa1b3d9afba3c050d365245a36616ae3f425a7
->>> # bad: [c7a198c700763ac89abbb166378f546aeb9afb33] RDMA/ucma: Fix use after free in destroy id flow
->>> git bisect bad c7a198c700763ac89abbb166378f546aeb9afb33
->>> # bad: [5ce2dced8e95e76ff7439863a118a053a7fc6f91] RDMA/ipoib: Set rtnl_link_ops for ipoib interfaces
->>> git bisect bad 5ce2dced8e95e76ff7439863a118a053a7fc6f91
->>> # bad: [a03bfc37d59de316436c46f5691c5a972ed57c82] RDMA/mlx5: Sync device with CPU pages upon ODP MR registration
->>> git bisect bad a03bfc37d59de316436c46f5691c5a972ed57c82
->>> # good: [a6f0b08dbaf289c3c57284e16ac8043140f2139b] RDMA/core: Remove ucontext->closing
->>> git bisect good a6f0b08dbaf289c3c57284e16ac8043140f2139b
->>> # bad: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
->>> git bisect bad 36f30e486dce22345c2dd3a3ba439c12cd67f6ba
->>> # good: [2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e] RDMA/addr: Fix race with netevent_callback()/rdma_addr_cancel()
->>> git bisect good 2ee9bf346fbfd1dad0933b9eb3a4c2c0979b633e
->>> # first bad commit: [36f30e486dce22345c2dd3a3ba439c12cd67f6ba] IB/core: Improve ODP to use hmm_range_fault()
-> This is perhaps not so surprising, but I think you should report it to
-> the dax people that hmm_range_fault and dax don't work together..
->
-> Though I think it is supposed to, and I'm surprised it doesn't.
->
-> Jason
->
->
 
 
