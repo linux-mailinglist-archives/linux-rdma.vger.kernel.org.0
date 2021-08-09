@@ -2,138 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF803E4DC4
-	for <lists+linux-rdma@lfdr.de>; Mon,  9 Aug 2021 22:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FFF3E4DF5
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 Aug 2021 22:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232846AbhHIUZw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Aug 2021 16:25:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37652 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232730AbhHIUZv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 9 Aug 2021 16:25:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C05A60F25;
-        Mon,  9 Aug 2021 20:25:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628540731;
-        bh=2I41G0pH58F/mXPn0i8CVS7mNLrtnuqoU2jXg6qHdNg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=I+PSbUveNqDrAJwhp1g9LFO32c4xwB7x4MiulYs4q9CpmjWuxbX+0H2JpvsSIWtdN
-         oMCciEDw5EG80J5s0Oz5iXzCUa3TU+XFRB3XUVOj4vCKPDZWt99bk3Qm3KI20GwHxv
-         DmF/F+8mCF1Mq2R1bzc/7YiyHVaCtlgjaChAgF6QUVsQUfmXcGAHPU7riIGBUexZ5f
-         mSNngVzrMKl5klYqoNEe6ctnfrt77iIWJmTt5CpRFsUPsi8NsX2NKkKFAinGzXeO6e
-         3Gk4Jy+nMyG7TdXu1b8Z/y7XVTLwx9Th+nO+ooHAPkCbKDOX2eJcqHTUeVTZnfRmH7
-         o/K1xZ1aa2cug==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: pull-request: mlx5-next 2020-08-9
-Date:   Mon,  9 Aug 2021 13:25:22 -0700
-Message-Id: <20210809202522.316930-1-saeed@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S233933AbhHIUha (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 Aug 2021 16:37:30 -0400
+Received: from mail-bn7nam10on2070.outbound.protection.outlook.com ([40.107.92.70]:16001
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233894AbhHIUha (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 9 Aug 2021 16:37:30 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jWyl9Wz7bw5x3XL5cojtrc2m2WVtCAxZvpeBV8WjWRSByT2+0jiJRYMkey/uBG/IOGmr7Otm0r6HA2bKwj8pLec1C0tbp0Y0x/aSJqsycoO7zwEgLcTBGr1lmx6Di3MmhonRVzzD5V3AhW3Qxhlya7wUmRwnPNIPFFqdErknmg5Wj+f3FYsxXosBDJCfvZjyo+DG2QwK1iPB3+fapAXkWOC/+lhj5HPaDMiXrxSmSnSmiBRKJrrw8pXdSNIQyb9cprdWCPHpnf9CH/07sQ7WZCKagK7c0jaB+e7fmXrsb8Xcs8tEh+wnrGMKoVcBQO/ZGHe79+QSIhr29JAXuHfdfg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RRVK2olKBxicO2nymqJVfjtjQxcsLMZx63BGR7C8Wns=;
+ b=ZxcUwsplzmmt4TYWSxDT8Ou0k5YFqQO61lgm09ziMqRt9UsTW8n4ztfuHS1gROOhKuIvFBB/YIRD5WV4tRBqYM5uY59iGqYrwANyh8omgdFL+okxQg5mgXTlDiSnvuUpAbzFu+zKFdZFLt68zOQyOZG2fATLpQ56edadn5Q1U68tdz06h9elPlOmgXZEnvfbimtQKf8rzBSftpcwu/HyBMO/FoF9pBptkYDKTc3ga2mXcya/AM09iJ/Wle4b3hg+zUPYNbUfyc5g0cs5MWz2NjJjfJgPWrIbCwJI543SUZVhJ7HIUu7F12bnOEGHGj82+CYFKWHSHyblbDjAmwurNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RRVK2olKBxicO2nymqJVfjtjQxcsLMZx63BGR7C8Wns=;
+ b=WatGjW2zoP0qHj9xPj5SDqlv0gGsXCSbRxYJEffVzE2NATjsMZmvhyeJfaM4Qydspjp2rkQzYpe9hPuCG/jkIBrx9l1g+rmxlJ5bXv4GPSfzjCr9gMaS7akUFASsm+vjllCzN0O1lrjW4Mum0v59Sv+DrgL/JD5G5mOgg6vAOV8vzDx0MUcPwCoU3564KsJKDmpQjHnhsBI7NRDHIyI5bHinhOrgstbveVCfZc8K0R2S1Et1w7d+iOlNu5i2p4D4PT9JX5hb6RHjqEpvP3qZKJS2/DxLNPIMzrr61qTKwkG8MXft9av/WFJm7PSNZvsznAaOC4ab2zIUhfwisuxhmQ==
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by BYAPR12MB3093.namprd12.prod.outlook.com (2603:10b6:a03:dc::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Mon, 9 Aug
+ 2021 20:37:08 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::e000:8099:a5da:d74]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::e000:8099:a5da:d74%5]) with mapi id 15.20.4394.023; Mon, 9 Aug 2021
+ 20:37:07 +0000
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     "caihuoqing@baidu.com" <caihuoqing@baidu.com>,
+        "leon@kernel.org" <leon@kernel.org>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] net/mlx5e: Make use of pr_warn()
+Thread-Topic: [PATCH] net/mlx5e: Make use of pr_warn()
+Thread-Index: AQHXjP4ugjSAV+KcxUqFYL3OUnuGs6tq94cAgACrHwA=
+Date:   Mon, 9 Aug 2021 20:37:07 +0000
+Message-ID: <744a99a3de26300fc244d5b7702c87a9dd926e6e.camel@nvidia.com>
+References: <20210809090843.2456-1-caihuoqing@baidu.com>
+         <YRECZn/N9qSQkhKu@unreal>
+In-Reply-To: <YRECZn/N9qSQkhKu@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.40.3 (3.40.3-1.fc34) 
+authentication-results: baidu.com; dkim=none (message not signed)
+ header.d=none;baidu.com; dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7d58b854-2619-461d-21bd-08d95b7574dc
+x-ms-traffictypediagnostic: BYAPR12MB3093:
+x-microsoft-antispam-prvs: <BYAPR12MB309385C4B83C6B972C9B68F7B3F69@BYAPR12MB3093.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8lggWnBTEu8vAs8s7beqW3oCD1tF3c7v9DJRggEFGCJmkbq9k642EvsPNEFPwmfhlSDdC+e/qygkYcUXpZbTJejPQjHEoc2m1MBy0O0GeaLZ/+8fG5RWitp+K1PzygFcKD6bknlZ0nJpTeT64K8q0Qe5XDwe3O/DhrAkNc6luQPjMJGvtgx6QZ6eueOfrbxWOeiBheutQlSJjDEQR4A4lygkEvOsZAXsYQgTqIV3G1HqO5m9E2h2RdALQOf7HPoXU0cEbZZn/gQswnIgF/D9pUXgFSiN99LntxzGvWWuoaqDS6p/rMux0jV++yS+vY+uKICPSc4LJIOr+lVwYTETYByxXr3JEbKBeWuG5zTna0L1nv13MOPhn/5pEdXOxbaTbE4mvioruLo/UvsmsFahsrtziWU0mSLF5FLO91jhO4X9edXnu3Ui3kucyVFc45aV21k+3soUHKwidyHNJ19b2Bd7vIB/J6u3KymsQqoqIH5gEUD2jUIUJsh0bGXd/7iFda+JLjdEGy4TbsQh6VUcqOIyaDIrzQyDxHp4+knvvEelJWb+uNsf4eDfkOC3UXFjd9UbpaQM+m9iRXhg6kaKyKU+tbk25H0iYfq8TAGkpju6vBfcmBrGxwUXN6qtpqSaNazhSAhNzmmgsqoVH1ZDBHGX6Nb4WYNTBiFND15w8l0zigN/TeeYpjMYocq4Msr+8ggpVG2sJsHETRyRomKz9Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(366004)(396003)(376002)(4326008)(4744005)(6486002)(36756003)(8936002)(71200400001)(8676002)(6512007)(86362001)(66556008)(110136005)(38100700002)(66446008)(2616005)(2906002)(186003)(122000001)(66946007)(64756008)(66476007)(26005)(316002)(76116006)(478600001)(6506007)(38070700005)(83380400001)(54906003)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Rnp3L0h1MmtydFB5aDFWTWlQM0I2ODlCSGlTSmdqQ3R4ZGtNbzJDT29KMk8y?=
+ =?utf-8?B?M1NiTmRhb2F4eGZUcVR2aE1MbnZxR2xyRnh2Q0xtS2dmRGhBcFJYVUdvb3FB?=
+ =?utf-8?B?TDAxT1JVVk1hV0YxcXY3czRZMFA1RVhndk1nK2sxTW55ZmIyYTduNWRnRU1o?=
+ =?utf-8?B?NFFyLytjUFFQOEJ0TDN2eW5sUjJNV2tTUyt1a0kxY1B3V2tIZjI4RnpGcGJy?=
+ =?utf-8?B?Mm8wNXJXRW1wZXA1eWpaZTZWV0lJcElaZW9IbWdyczFmcXI0d0NSM0RsZ1c5?=
+ =?utf-8?B?V1BEck0wZWZrbE9NMml4TmVObHVIZnBUOE0wZUx1SlhraFJKWk15dUZlVi9Q?=
+ =?utf-8?B?aTFSc3Q3NzBJTWtBYXlXTENtR3g1NjRUMUVvY3ZmRlRRRFY4U2VPcXVsdDRO?=
+ =?utf-8?B?Qzd6eitzT2NPMHRKYW16N2x3bFRMNVZJV0FaSy9EZWVmNzVqSlJaWFY3dDRI?=
+ =?utf-8?B?Vnk0Tkw4c21EQldTMlRKVjh4d0hzcFhvQ3Rycm04Y01DT0V1WWVqNzJ1aWtF?=
+ =?utf-8?B?VGx0MzVmdEFIZzAvbHJoMkF1MlJ0NGFZcGQyaXppYitrMml4Y2k1Uk93T1BD?=
+ =?utf-8?B?RXU3c0RQZmxDRzh3QU5yMGlEbnBYNHptRGg5N05idUl0SXVyYnBGbmdQSDV5?=
+ =?utf-8?B?bjF1UEMrMkpWQW9OcE5RNW03cTZYZXhORHRiWmR1MUhFbnNjZkFranNWYXpV?=
+ =?utf-8?B?MmRjWDE2cHErWHAzclEzVFN3Vko0UGVVZ0gzNEc0UzVBM3BNa2thNVVtSWpW?=
+ =?utf-8?B?TnFOTjZiOW9ONDhzUXZHbjZ3d2RUT2lweFNKYVpKVmR1SUxQTEpJNGxrangv?=
+ =?utf-8?B?L3BNN1J3R282WkliOG40ZVp1TlBDRllNbGM2SzRJTkV4VGQ0YzJJMGRlZ0N3?=
+ =?utf-8?B?ZEVMTjZVOE5RM2thekVJM0IyVU5RNGZqN1hqRE9TSXN3bThBYkZUN082UHBH?=
+ =?utf-8?B?SFB3bUtRZEdTYmtYWTVZbkF5MzNRM0ZzZTFTTFBmZUNWTXlFemZnYm55UUNS?=
+ =?utf-8?B?alRXT2NiTGdyejU2SlNGcDZvWlhtZVpKUDNWNkFxWG1Iakx0SUphTnBpdFE2?=
+ =?utf-8?B?RXh4bTRkRXA3QmhMd3dzSHhyaExTcVRTb0VsaUpCTGE0cERkRXJ6eEw5ZkhG?=
+ =?utf-8?B?TkZ1cTVVV3U3Z3VrRmRqRVJpVlZFNG9talNQRXA1SjZTc1BTTGpTcmtoSUNN?=
+ =?utf-8?B?SVBLdEwzOVZEekNSOXVGSCs3YXB1dkxhcklNc3Z5ejN4LzNuRkJpVDE5d1N3?=
+ =?utf-8?B?bEhLTVVYdEtObFVFTmMrS25XcjB3bjhlQ3NNa3dVSUN1TDVZSVJERnVFb2hQ?=
+ =?utf-8?B?cXcwakNiV24vYm82SXZ3RnNYbEw5RVpYbFVlN1ZBN0FPbm5CU1hObmRBYXZk?=
+ =?utf-8?B?TS9HUC9sOUN2RjBHbHNnWWZCY0gxUS9VaTlLNENTYjRRbExkN2krVTAzOXUr?=
+ =?utf-8?B?QXJDNVpZRXBVUHl6cUFWVStTVkp2YVk0bTJGZmhTcHNFUzFqL05MUDE4MTRM?=
+ =?utf-8?B?L1pNOGJNUEd3c0F5NlRpMFJuaGFwWDJ3Q056NEpaZEVNOFBmTDhId2FLUFRE?=
+ =?utf-8?B?ajhaY3NSVUx4YzBmdFpOc0IvbDgxZ2lrcm8xRjZYMnVNV09KSERJbEd0SmI1?=
+ =?utf-8?B?aXpaRGdNK0Q0cnltSklrdWlJcDdLbEc5bEJBREpEL0RJeTFJaWdOd0pQZUdZ?=
+ =?utf-8?B?QTFKOE83SVFlQWJWU1Q1UDkxNU9EUEdaWjRzWmFkVWFrUHFWT01Icmt2ZlVC?=
+ =?utf-8?Q?WtyYqsiNUtBoSkaxvZGr6zu5RFZqVTFp10If9rN?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5D65BB753DBFF74B99357C84501B6BE7@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d58b854-2619-461d-21bd-08d95b7574dc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Aug 2021 20:37:07.7041
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4ZHGPrMWmdx8dKgfZ0akiYuH5D0AWl/b1oKVtLJ8Ibu4JhpbzreDEjVI92f/Jins+qVnnFSbGA1nZNeC3ZbXTw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3093
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Dave, Jakub and Jason,
-
-This pulls mlx5-next branch which includes patches already reviewed on
-net-next and rdma mailing lists.
-
-1) mlx5 single E-Switch FDB for lag
-
-2) IB/mlx5: Rename is_apu_thread_cq function to is_apu_cq 
-
-3) Add DCS caps & fields support
-
-[1] https://patchwork.kernel.org/project/netdevbpf/cover/20210803231959.26513-1-saeed@kernel.org/
-
-[2] https://patchwork.kernel.org/project/netdevbpf/patch/0e3364dab7e0e4eea5423878b01aa42470be8d36.1626609184.git.leonro@nvidia.com/
-
-[3] https://patchwork.kernel.org/project/netdevbpf/patch/55e1d69bef1fbfa5cf195c0bfcbe35c8019de35e.1624258894.git.leonro@nvidia.com/
-
-We need this in net-next as multiple features are dependent on the
-single FDB feature.
-
-Please pull and let me know if there's any problem.
-
-Thanks,
-Saeed.
-
----
-The following changes since commit e73f0f0ee7541171d89f2e2491130c7771ba58d3:
-
-  Linux 5.14-rc1 (2021-07-11 15:07:40 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
-
-for you to fetch changes up to 598fe77df855feeeca9dfda2ffe622ac7724e5c3:
-
-  net/mlx5: Lag, Create shared FDB when in switchdev mode (2021-08-05 13:50:52 -0700)
-
-----------------------------------------------------------------
-Ariel Levkovich (1):
-      net/mlx5: E-Switch, set flow source for send to uplink rule
-
-Lior Nahmanson (1):
-      net/mlx5: Add DCS caps & fields support
-
-Mark Bloch (11):
-      net/mlx5: Return mdev from eswitch
-      net/mlx5: Lag, add initial logic for shared FDB
-      RDMA/mlx5: Fill port info based on the relevant eswitch
-      {net, RDMA}/mlx5: Extend send to vport rules
-      RDMA/mlx5: Add shared FDB support
-      net/mlx5: E-Switch, Add event callback for representors
-      net/mlx5: Add send to vport rules on paired device
-      net/mlx5: Lag, properly lock eswitch if needed
-      net/mlx5: Lag, move lag destruction to a workqueue
-      net/mlx5: E-Switch, add logic to enable shared FDB
-      net/mlx5: Lag, Create shared FDB when in switchdev mode
-
-Roi Dayan (2):
-      net/mlx5e: Add an option to create a shared mapping
-      net/mlx5e: Use shared mappings for restoring from metadata
-
-Tal Gilboa (1):
-      IB/mlx5: Rename is_apu_thread_cq function to is_apu_cq
-
- drivers/infiniband/hw/mlx5/cq.c                    |   2 +-
- drivers/infiniband/hw/mlx5/devx.c                  |   7 +-
- drivers/infiniband/hw/mlx5/ib_rep.c                |  77 ++++-
- drivers/infiniband/hw/mlx5/main.c                  |  44 ++-
- drivers/infiniband/hw/mlx5/std_types.c             |  10 +-
- drivers/net/ethernet/mellanox/mlx5/core/cq.c       |   3 +-
- .../net/ethernet/mellanox/mlx5/core/en/mapping.c   |  45 +++
- .../net/ethernet/mellanox/mlx5/core/en/mapping.h   |   5 +
- drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c |   9 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.c   |  88 ++++-
- drivers/net/ethernet/mellanox/mlx5/core/en_rep.h   |   2 +
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |  21 +-
- .../mellanox/mlx5/core/esw/acl/egress_ofld.c       |  16 +
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.c  |  36 +-
- drivers/net/ethernet/mellanox/mlx5/core/eswitch.h  |  38 ++
- .../ethernet/mellanox/mlx5/core/eswitch_offloads.c | 383 ++++++++++++++++++++-
- .../net/ethernet/mellanox/mlx5/core/fpga/conn.c    |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_cmd.c   |  58 +++-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.h  |   2 +
- drivers/net/ethernet/mellanox/mlx5/core/lag.c      | 267 ++++++++++++--
- drivers/net/ethernet/mellanox/mlx5/core/lag.h      |   5 +-
- drivers/net/ethernet/mellanox/mlx5/core/lag_mp.c   |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/main.c     |   5 +-
- .../net/ethernet/mellanox/mlx5/core/mlx5_core.h    |   2 +
- .../ethernet/mellanox/mlx5/core/steering/dr_send.c |   2 +-
- drivers/vdpa/mlx5/net/mlx5_vnet.c                  |   2 +-
- include/linux/mlx5/driver.h                        |   3 +
- include/linux/mlx5/eswitch.h                       |  16 +
- include/linux/mlx5/mlx5_ifc.h                      |  19 +-
- 31 files changed, 1066 insertions(+), 109 deletions(-)
+T24gTW9uLCAyMDIxLTA4LTA5IGF0IDEzOjI0ICswMzAwLCBMZW9uIFJvbWFub3Zza3kgd3JvdGU6
+Cj4gT24gTW9uLCBBdWcgMDksIDIwMjEgYXQgMDU6MDg6NDNQTSArMDgwMCwgQ2FpIEh1b3Fpbmcg
+d3JvdGU6Cj4gCgpbLi4uXQoKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgcHJpbnRrKEtFUk5fV0FSTklORyAibWx4NTogY2FuJ3Qgc2V0IGFuZAo+ID4g
+YWRkIHRvIHRoZSBzYW1lIEhXIGZpZWxkICgleClcbiIsIGYtPmZpZWxkKTsKPiA+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcHJfd2FybigibWx4NTogY2Fu
+J3Qgc2V0IGFuZCBhZGQgdG8gdGhlCj4gPiBzYW1lIEhXIGZpZWxkICgleClcbiIsIGYtPmZpZWxk
+KTsKPiAKPiBJdCBzaG91bGQgYmUgIm1seDVfY29yZV93YXJuKHByaXYtPm1kZXYsIC4uLi4iKSBh
+bmQgbm90IHByX3dhcm4uCj4gCgpwbGVhc2UgdXNlOiBuZXRkZXZfd2Fybihwcml2LT5uZXRkZXYs
+Cgo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0
+dXJuIC1FT1BOT1RTVVBQOwo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4g
+PiDCoAo+ID4gQEAgLTI3NDEsOCArMjc0MSw4IEBAIHN0YXRpYyBpbnQgb2ZmbG9hZF9wZWRpdF9m
+aWVsZHMoc3RydWN0Cj4gPiBtbHg1ZV9wcml2ICpwcml2LAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqBpZiAoZmlyc3QgPCBuZXh0X3ogJiYgbmV4dF96IDwgbGFzdCkgewo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgTkxfU0VUX0VS
+Ul9NU0dfTU9EKGV4dGFjaywKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAicmV3cml0
+ZSBvZiBmZXcgc3ViLQo+ID4gZmllbGRzIGlzbid0IHN1cHBvcnRlZCIpOwo+ID4gLcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcmludGsoS0VSTl9XQVJOSU5H
+ICJtbHg1OiByZXdyaXRlIG9mIGZldwo+ID4gc3ViLWZpZWxkcyAobWFzayAlbHgpIGlzbid0IG9m
+ZmxvYWRlZFxuIiwKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIG1hc2spOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqBwcl93YXJuKCJtbHg1OiByZXdyaXRlIG9mIGZldyBzdWItZmll
+bGRzCj4gPiAobWFzayAlbHgpIGlzbid0IG9mZmxvYWRlZFxuIiwKPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoG1hc2spOwo+
+IAo+IGRpdHRvCj4gCgpzYW1lCg==
