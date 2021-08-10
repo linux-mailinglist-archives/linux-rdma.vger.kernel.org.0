@@ -2,163 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA403E5711
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Aug 2021 11:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC413E58A6
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Aug 2021 12:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237627AbhHJJfY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 Aug 2021 05:35:24 -0400
-Received: from mail-am6eur05on2076.outbound.protection.outlook.com ([40.107.22.76]:52097
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234188AbhHJJfX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 10 Aug 2021 05:35:23 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Rb6bWnJL/Jt5Xvph27YTqJEkSpHJZqeLVRqpS9LWu0emy9ovJx+ucGG6W3gNWDywqznnW+E2qf07H8XauTUmY15PMNGe6NrKLsWBh4x8xKxT6R/DsjMCHAef0FCmQVRW5mkJtLk1frYxPQIopsbZYd5dGlaRt1XL3zzcEL0KIwkPakOyb86mEaNA9aoMANR6QXgxcKV/Il4w0UQLrDpqn+PivLtuIyctNIjpLvT6OINbUJAp8v70ywfuMEcsX49mywqBw8XZ41KzAD2PJ2BCqamNCa7nioMYSIunfQrBsqPMfZuOJycWLV5TgKM0Dek5FxHSmANZcRh1hAeqm3IQOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ApJ5sLXC4cfgLIM6imu8gADWDLGOZAxD4WkS0TCOmFk=;
- b=nTkemH3MGNwKhJskJl4e9eKZyFssr3el/vdT9arOHkPGJ/rDeCkWLKoGU2z6CoGkxg5SAOIyPrEdP9BDi8EuWqp/TLOmpGIM898VGk3TbR6MHfFAJl44vTLkodpV03WuQWNd79F5d83lOhJCIZar4jOpTqUbI+Pq5Fpr0hcLfhY8bxoXZDzufAztfpjy+cfAhH0nAH54Tt1pIyfrMTPvMMTJICLcUSfm6dJUpKoN5Og62NXzBOzRDmcEZyCwKj4ycNqT68Ah0WIi5rJSVK5kOjx5+uZlVm44Tn8GiOfxs4YygJaDq1pd+XPGFAU4zsK1dytRMCpnpBfUWAdrmeC9+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ApJ5sLXC4cfgLIM6imu8gADWDLGOZAxD4WkS0TCOmFk=;
- b=XHo4+Lc6UY72wxWYr9xyMfVcnHdeIHnvIRiv9Sk/sBQ4FApyfg27JBKeKLv2x6NYW3DrBbX7EZ1e5SKRjPKq8kE+lBA83vz3u45J1b1NMTICaipKCjU8AQvpk2IfYyBWToZ4+SrW9UGFQoHc9VAugio7JT7rfdjwDOq/G/ZGyY4=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB4813.eurprd04.prod.outlook.com (2603:10a6:803:51::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4394.21; Tue, 10 Aug
- 2021 09:34:57 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::109:1995:3e6b:5bd0%2]) with mapi id 15.20.4394.023; Tue, 10 Aug 2021
- 09:34:57 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Vadym Kochan <vkochan@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Jianbo Liu <jianbol@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Ido Schimmel <idosch@idosch.org>
-Subject: Re: [PATCH net] net: switchdev: zero-initialize struct
- switchdev_notifier_fdb_info emitted by drivers towards the bridge
-Thread-Topic: [PATCH net] net: switchdev: zero-initialize struct
- switchdev_notifier_fdb_info emitted by drivers towards the bridge
-Thread-Index: AQHXjSAoM5FylMZBM0itAyPu8B/6WKtsTdGAgAAX6QCAAA/AAIAABjsA
-Date:   Tue, 10 Aug 2021 09:34:57 +0000
-Message-ID: <20210810093456.3ojqgvhe6ivo7sdr@skbuf>
-References: <20210809131152.509092-1-vladimir.oltean@nxp.com>
- <YRIhwQ3ji8eqPQOQ@unreal> <20210810081616.wjx6jnlh3qxqsfm2@skbuf>
- <20210810091238.GB1343@shell.armlinux.org.uk>
-In-Reply-To: <20210810091238.GB1343@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7288cdcd-b889-4044-a992-08d95be21e3b
-x-ms-traffictypediagnostic: VI1PR04MB4813:
-x-microsoft-antispam-prvs: <VI1PR04MB48132B08AA12EDB0B9B1D7AAE0F79@VI1PR04MB4813.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3631;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: n7IBXFFOOBzvdblMsAiCBQcyjJDfMMA6LNhCvZLDOtd+k5OI437OD6Ues+1+7QxfoApi6ihDO6rG2rCx9k0BfBL6XDjgkOhZvuRSd0AzQvcLrPwWeP7h7p9gjexQc3sxHQoxZCuKIL7YUmF9h26z+NEQpiMnqmf6eDO2VJaszEBqqJD7nmePuX9iy4fNC0yaNxpI811tv5XzD7zMuNJmBoCwSfmaj18Qve0EFHcdKmMkjJMFABnIm/WL5o9Rz27pHOPpquMid6tgKr0nknoF9EtytePaFddBdP/3RwzGg89w8djqZ7vRSp5akjcvbRYaoXBwc0/jK5Seo9qFtM8X52mpiPSMOI7EnW59uGMrWqItwJEJoOMV8xKCJQXI1a9GKqoORQW57UljG7NDPqoveyZsusrYtm9Zhw/ZHxE6WKuDgxqWle1MPXYFHZfi+RL5Bv1WcOlCTtML0D/Em9f49mNdg3POvQ7rwg7MXDGxZOSJmUFbegj80M3KeloVvpmxi2LPj0idzkTbrFRt2//7qgr2IxhBjh6yWsq3zXAVegobOCAOT7qiA/u0cdXCLcrfeUOr03fD1TSflhQihWVA0FieJXigRf6TnhhNEoTpT/DB/Wc96+M655u7BiLlDnX6YeIuOrLU656G63dGX7eK2EgFGFKNupuVrwV9JtPCIB+wBc745+vEnnUX6zTDZqOUqMa0uOh7uIeYTlmjag5ifw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(396003)(39860400002)(346002)(376002)(136003)(38070700005)(2906002)(6916009)(38100700002)(122000001)(83380400001)(66946007)(64756008)(6506007)(86362001)(4744005)(76116006)(91956017)(6512007)(66446008)(6486002)(9686003)(71200400001)(4326008)(5660300002)(8936002)(33716001)(54906003)(44832011)(7416002)(8676002)(26005)(7406005)(1076003)(66556008)(316002)(478600001)(186003)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?AdFSMIBUQ/cYhDRjaF/PJSR9ehCeLT+pN9T+UYnTxAqjKOHlGJRcBKRF5FV7?=
- =?us-ascii?Q?3dm343Dr6AlURBdKwIn1K1UY1VcWY6HpOvP/lvs/0EWL44FfcdVGSpq13N+8?=
- =?us-ascii?Q?VgYYyJHSe4xhXyknBx0F5RaEfUy+Nox8JV8jPbDKguQdJACNAHxphw7ri7Z3?=
- =?us-ascii?Q?vzYiojlLNaN+ZKWZAKKO+F6TYO0D2MNdWeEtmjnN0M4/+zb7JCvGGQuLJCPZ?=
- =?us-ascii?Q?wh4yHz+bDENkDgek6HWWqLJgIscsn+KJnb9OLtZ/PNMOU//PLyM1QASJ18Ng?=
- =?us-ascii?Q?1s1/Itde42xUS8ldvM8taaejziZJC9T2DmHufqV02s43LJQuzFPULj3yOEL0?=
- =?us-ascii?Q?TQKkRWWU+Le7YVwsNYjGI/7sJW4NsZD2qIqbHCmaQVOZMsSer76t99jJsL8U?=
- =?us-ascii?Q?QKB3G9TNX5ldWGkNgatKsI4i7J5JQnX/At6oBtPV9oYaj2NPMLtkFRLRH5Cn?=
- =?us-ascii?Q?KYQd+UTtrh0QO+D7BYkLgSBpX4+B1sb3y2SH7/NTdZyspkmvJAOcyWJPg2mk?=
- =?us-ascii?Q?Qff6bsEclqZ4cQUlqLbNYhXnAkhmT4Ffphha9NFuC7YaVFd2/MTc70rsB4Hl?=
- =?us-ascii?Q?0Fu3CJCrm+9HJBSr53kVCv4SCa8Lwh2wKeZcaLjryb7KJaXO0HcdrYTnGD6N?=
- =?us-ascii?Q?tBqc8CgDtLFIPbVg7o0Ag3rRCZGMgPxFcDSNB1/VVvZ0WvQN7K8qdmpd9zD5?=
- =?us-ascii?Q?3EGemSYAMQAIM100mAE4XQjNFblFiNSO4Uf4HiURTr7rLWLVbouc743+nw07?=
- =?us-ascii?Q?NwsfLAKb1QSjkJGJ9xFLlFXZhFvbUmpzKl4WLYwialNIuZ+G/6Ti8dA1ThQr?=
- =?us-ascii?Q?LXlIVbLQuNszIGiSeW3X/OReKrw4cyFcbzp933/oJ5NNGqaHqO9ZivuYa9Fg?=
- =?us-ascii?Q?vHiMbsbE63mGlQZCrtyj4sSMPaveHzZYOhqPQknrHAq6Vr1ZjKSMo08kCdGy?=
- =?us-ascii?Q?T3FFBG6HcVYRQBQRJtTf9mrRghsCN7R6J2Kpwbd0MyIo0M7ToQp2gwMUhg9J?=
- =?us-ascii?Q?d28MwX9w00iNM52fsMKZNMgGhmMuSH83sfrI/2KnT02LAACjgFYyGfIGAFnw?=
- =?us-ascii?Q?1LyrENaQVKrxPBYLzhwLlL1KaJttdLcW+zPra0zuPMq0yGTlW2rcb/ntYVZ/?=
- =?us-ascii?Q?WbXL+F+KkzClS/1eokTyJtdlduQTahrMCG2O/ZQKdsTu4G1BFasgYHuQtKlF?=
- =?us-ascii?Q?vzsm47KKzKcB+Ly6z/L4DIu6ASB3s86MvJQ251tZoZtQ2J8s60QY1D4kRd6M?=
- =?us-ascii?Q?B2k0ZQ9f70/rlXtWOS9lbPN2K953rCWIeQnOsn3prax/9Vnw/KAm10PdvZqw?=
- =?us-ascii?Q?DbKH4RXmEfaEMrKZDfGBo2Ty?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <191EF1BC60CEDA4BA54D63A66D8A2290@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S239934AbhHJKyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Aug 2021 06:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239946AbhHJKyj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 Aug 2021 06:54:39 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CD7C0613D3
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Aug 2021 03:54:15 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id x8so40639652lfe.3
+        for <linux-rdma@vger.kernel.org>; Tue, 10 Aug 2021 03:54:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1QkSp5J3Hvrsj4YNWtcb2tRi/kV4gKqkTdigi6eM6HA=;
+        b=bs7I9DaKjLQpPxkIc78koJ7zeO/Mu344/XAG6rfFhrmZ0wAoLeBsXt6GOH/MsoBkOs
+         zlaxDWQwsa2/mq32ju9pUUK2cLMDv6NU/GFiBhw+mIrwj+bzlnxD3VZB7SISBbseS5d7
+         RpmXOtsRQuAeTXDKA7uGrap//zwTgmw2pbZlqMyxLQij9vdADLWavQnuDHzaz93Ufkdq
+         TGkcPdH/SH6GBNFc1j9ZorkS4LJFrdV6C7XQmTa6e07czMHmprsACK2lrimWdZDcMic5
+         jAoY1f+unV5zHZFVklr4EgkBahPBLDSYiqz5y7IK7ypmY6y1f6A7OnAG8qtkgCQqKVNE
+         0FMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1QkSp5J3Hvrsj4YNWtcb2tRi/kV4gKqkTdigi6eM6HA=;
+        b=jgld2VUb33cRrWEpLAY9kM7xGqxWokGJibkl4ekk5rLzshaAYRUTcH1uNK14PGzVwt
+         NNjItSE/rDFAjWylF4FpUEsLEWwgR7orJtmu3o58ksDHK5F4hEUgtjRiks5WKK6ERZhw
+         xLMWCuzHlH6oLB12uPVxyEIXjdHC88X8cmKU3L0wuLhLnIkC94el3qi68ZVLvfSEyhbY
+         gy3jh8ez4/KBDhYIXNyuhhs+p7tQNUj+d17D/YPAPNY17h2CvJ4thmQ6v6KK0cXj2iI4
+         3UlQPgqqGoDjiUEBqbriUaJggWU+giRlfO9FSI5Y9wIko3c8xpEJ8TzSu/pzql2a+tUX
+         KV8Q==
+X-Gm-Message-State: AOAM533qJmGpZAjGoRmxAeKQPSwWBiPMdMzmhHaUnntHEfSiaKp/Jp00
+        SnASlGn49z16zAiH4e+p0ozuZC73U3XYZLzVJwn0AA==
+X-Google-Smtp-Source: ABdhPJycIpLAkHQPq+sE0AeJl82uJ4GXUUavpTTGg6YfjdmYsVq2M8XS8yj6XkWNudO1auMiow/wD8Wbt9MkTYcBUw8=
+X-Received: by 2002:a05:6512:e81:: with SMTP id bi1mr2951883lfb.58.1628592854021;
+ Tue, 10 Aug 2021 03:54:14 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7288cdcd-b889-4044-a992-08d95be21e3b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Aug 2021 09:34:57.5929
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: jot+X/jf4GTXyalIHpWZ7ajCVmN4bZQBGRT6bNIfdd1nD7N5agkvggXKd3UTcy6Mq8NJYvGeO51u+ndF38+ORg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4813
+References: <20210806112112.124313-1-haris.iqbal@ionos.com>
+ <20210806112112.124313-4-haris.iqbal@ionos.com> <YQ+d1Ssiw+G5THYe@unreal>
+ <CAD+HZHXM_MvTrNtAm=egQwKFhyHAi5WHDcXhTC0wvSegHbd4sg@mail.gmail.com> <YQ/AUHeLg5kaqMiH@unreal>
+In-Reply-To: <YQ/AUHeLg5kaqMiH@unreal>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Tue, 10 Aug 2021 12:54:03 +0200
+Message-ID: <CAJpMwyjUunS_sx9EoP6--Gau8ukP8E5H9Q6ckRbxYdJB6j9iOQ@mail.gmail.com>
+Subject: Re: [PATCH v2 for-next 3/6] RDMA/rtrs: Fix warning when use poll mode
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jack Wang <xjtuwjp@gmail.com>, Gioh Kim <gi-oh.kim@ionos.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jinpu Wang <jinpu.wang@ionos.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 10, 2021 at 10:12:38AM +0100, Russell King - ARM Linux admin wr=
-ote:
-> There's a difference between:
->=20
-> 	struct foo bar =3D { 0 };
->=20
-> and
->=20
-> 	struct foo bar =3D { };
->=20
-> The former tells the compiler that you wish to set the first member of
-> struct foo, which will be an integer type, to zero. The latter is an
-> empty initialiser where all members and sub-members of the structure
-> default to a zero value.
->=20
-> You should have no problem with the latter. You will encounter problems
-> with the former if the first member of struct foo is not an integer
-> type.
+On Sun, Aug 8, 2021 at 1:30 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Sun, Aug 08, 2021 at 01:07:29PM +0200, Jack Wang wrote:
+> > Leon Romanovsky <leon@kernel.org>=E4=BA=8E2021=E5=B9=B48=E6=9C=888=E6=
+=97=A5 =E5=91=A8=E6=97=A511:05=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > > On Fri, Aug 06, 2021 at 01:21:09PM +0200, Md Haris Iqbal wrote:
+> > > > From: Jack Wang <jinpu.wang@ionos.com>
+> > > >
+> > > > when test with poll mode, it will fail and lead to warning below:
+> > > > echo "sessname=3Dbla path=3Dgid:fe80::2:c903:4e:d0b3@gid:fe80::2:c9=
+03:8:ca17
+> > > > device_path=3D/dev/nullb2 nr_poll_queues=3D-1" |
+> > > > sudo tee /sys/devices/virtual/rnbd-client/ctl/map_device
+> > > >
+> > > > rnbd_client L597: Mapping device /dev/nullb2 on session bla,
+> > > > (access_mode: rw, nr_poll_queues: 8)
+> > > > WARNING: CPU: 3 PID: 9886 at drivers/infiniband/core/cq.c:447
+> > > ib_cq_pool_get+0x26f/0x2a0 [ib_core]
+> > > >
+> > > > The problem is, when poll_queues are used, there will be more
+> > > connections than
+> > > > number of cpus; and those extra connections will have ib poll conte=
+xt
+> > > set to
+> > > > IB_POLL_DIRECT, which is not allowed to be used for shared CQs.
+> > > >
+> > > > So, in case those extra connections when poll queues are used, use
+> > > > ib_alloc_cq/ib_free_cq.
+> > > >
+> > > > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> > > > Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
+> > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > > > ---
+> > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c |  1 +
+> > > >  drivers/infiniband/ulp/rtrs/rtrs.c     | 17 ++++++++++++++---
+> > > >  2 files changed, 15 insertions(+), 3 deletions(-)
+> > > >
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > index cd9a4ccf4c28..47775987f91a 100644
+> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
+> > > > @@ -1768,6 +1768,7 @@ static struct rtrs_srv_sess *__alloc_sess(str=
+uct
+> > > rtrs_srv *srv,
+> > > >       strscpy(sess->s.sessname, str, sizeof(sess->s.sessname));
+> > > >
+> > > >       sess->s.con_num =3D con_num;
+> > > > +     sess->s.irq_con_num =3D con_num;
+> > > >       sess->s.recon_cnt =3D recon_cnt;
+> > > >       uuid_copy(&sess->s.uuid, uuid);
+> gTgT> > >       spin_lock_init(&sess->state_lock);
+> > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > b/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > > index ca542e477d38..9bc323490ce3 100644
+> > > > --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> > > > @@ -228,7 +228,12 @@ static int create_cq(struct rtrs_con *con, int
+> > > cq_vector, int nr_cqe,
+> > > >       struct rdma_cm_id *cm_id =3D con->cm_id;
+> > > >       struct ib_cq *cq;
+> > > >
+> > > > -     cq =3D ib_cq_pool_get(cm_id->device, nr_cqe, cq_vector, poll_=
+ctx);
+> > > > +     if (con->cid >=3D con->sess->irq_con_num)
+> > > > +             cq =3D ib_alloc_cq(cm_id->device, con, nr_cqe, cq_vec=
+tor,
+> > > > +                              poll_ctx);
+> > > > +     else
+> > > > +             cq =3D ib_cq_pool_get(cm_id->device, nr_cqe, cq_vecto=
+r,
+> > > poll_ctx);
+> > >
+> > > I see same "if (con->c.cid >=3D sess->s.irq_con_num)" checks when cal=
+ling
+> > > to rtrs_cq_qp_create() that will take poll_ctx and convey it to
+> > > create_cq().
+> > >
+> > > Please take a look on nvme_rdma_create_cq() which does the same witho=
+ut
+> > > passing poll_ctx.
+> > >
+> > > Thanks
+> >
+> > Hi,
+> >
+> > The reason rtrs needs to have poll_ctx is rtrs-clt and rtrs-srv use
+> > different poll_ctx, and they all call into rtrs_cq_qp_create, while
+> > nvme_rdma_create_cq is only for host (client) side.
+> >
+> > I guess you wanted to convert the same if
+> > (con->c.cid>=3Dsess->s.irq_con_num), this can be done in a new patch.
+>
+> I don't want to see code that does something like that:
+>  if (a_cond)
+>    f(...)
+>       if (a_cond)
+>         do_X
+>        else
+>         do_Y
+>
+> The ideal flow should have minimal number of ifs to make the code
+> more clear and readable, and definitely shouldn't have same if()
+> checks in various places of the callstack.
+>
+> In your case, rtrs-srv uses IB_POLL_WORKQUEUE as poll_ctx which doesn't
+> look related to the issue stated in the commit message.
 
-Ok, that's good to know. Seeing that this patch has not been applied yet
-I'll go for a v2.=
+Thanks for the inputs Leon.
+
+This patch can be dropped. I will make the changes and send the patchset ag=
+ain.
+
+
+>
+> Thanks
+>
+> >
+> > Thanks
+> >
+> > >
+> > >
