@@ -2,122 +2,262 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CB553E5190
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 Aug 2021 05:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E1B3E53E2
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 Aug 2021 08:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236696AbhHJDlI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 9 Aug 2021 23:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbhHJDlH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 Aug 2021 23:41:07 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155DCC0613D3
-        for <linux-rdma@vger.kernel.org>; Mon,  9 Aug 2021 20:40:46 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id y18so26945108oiv.3
-        for <linux-rdma@vger.kernel.org>; Mon, 09 Aug 2021 20:40:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FF6iVliOM0JufIngiGfFZZPG2f3EBRnmy4ZEF/aR4Fo=;
-        b=gu5cldbQgnRTi2NQv/lfeaIrVCRY5PveLvaOPVI6u1EyHDxVjLVYGeg1Yc3UDGgglb
-         Pq+vQ9N2WXCPfm1Io57SiETLTz8wJY9coSOTIEaLDFmb1T/VRytkmZJajAryddgoYU3e
-         LjVv7g6SHsxnLVLBD1RirXxCGrCAv92xnozPhliJdMRLuFsXLTeaw6frNpSaCSz2qniz
-         0by55fyLbcnLyfcnyUy98jk7LAj7VgMhP7tx9wn/isKA6mv8SxFdL8phz8UZwbXrc2O9
-         GakfqNVC42+8+GceOY0B7q5796JcBIy217qI4rwEPE1TUVhp1t/18roeb06grfIyprcg
-         +zzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FF6iVliOM0JufIngiGfFZZPG2f3EBRnmy4ZEF/aR4Fo=;
-        b=fDVyj47EWEZznYzhLNUt2AqXgXybX5Wm+Bpo1Mia98vWM9f9v3G4vbt/VUN0UvL6HF
-         W4dUMzFxxmpXYzh7vb+4wa0pEax1vuynQ3hO31bbJ3xwpMXZ+hpWvUdIR19B4BZGWvFl
-         PoMaMd3zK0kRLUbdOlZ7V9xmVa5MQcEgVVogcr2hfhDdnpW6A+8nBXMhiE4b5jyeyfxo
-         iDMCdS43QvQZr6GOgy2Ry7SfMsP+LXkZp1oPoXhN8jB+iZLudLT9yS8WnVKFmioMW8UJ
-         Dilw0qhVUS3YXCu/OOcfhfIv/UKuD54bLKTkbC+6Ixugsk60tQg5IkwfSVcKOkF3CPzC
-         3o0w==
-X-Gm-Message-State: AOAM531WzZpceEOcHID+4AymZPM4pkd90p9C0G/2cre/DgLHn87ojzMx
-        MUfjycjfXrRNp6/ZkqvWgREQYrVvH3hvtwLqEWw=
-X-Google-Smtp-Source: ABdhPJzk6n7HIKTKbYNbyoLynPGss1+kEOJEfOQ02615he6UhnqH2rN3aHRPmWWxCLPzfcemU6yj2Cp/wcmLVDVAzmU=
-X-Received: by 2002:a05:6808:490:: with SMTP id z16mr1869402oid.89.1628566845490;
- Mon, 09 Aug 2021 20:40:45 -0700 (PDT)
+        id S233558AbhHJGvG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 Aug 2021 02:51:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231482AbhHJGvG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 10 Aug 2021 02:51:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E072961058;
+        Tue, 10 Aug 2021 06:50:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1628578244;
+        bh=JjReMicYs22Uk8N6pHcKsGXWWy4yMa3MVM4yZqWclpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmSRM6debqIguNMgoIJvU5/hS5KrulbaDN/jmM3CCB/e4Mj8Hn0Yb9QmB4xzxqzpN
+         MDrXLdQ4fsUuM7WwrBY6pUet9TV4+t8/pMTRUBkBrK6dPhRPahNuO/CnZm/gNGZpKs
+         dA3V2Hc5Px1iV0BfoiJ2erYfUOo2/Rq2cOC6YaPamNfKU6xRQJPRwng9Qdiy84B87o
+         ptYKg9IIN1W3YHm1heotEjrsc/MgxCbsu1tyYUhq+BzZaAvbAu5pLTn95Ixm6f2YHb
+         3ThByDlQ3XS1owI72yryXV88qugMv0dBn8fOoYcxyimLvFucXdIftTxfgwjtxmhjHB
+         pe3uQOS1J+WWA==
+Date:   Tue, 10 Aug 2021 09:50:41 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Jianbo Liu <jianbol@nvidia.com>,
+        Vlad Buslov <vladbu@nvidia.com>,
+        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+        linux-s390@vger.kernel.org, Ido Schimmel <idosch@idosch.org>
+Subject: Re: [PATCH net] net: switchdev: zero-initialize struct
+ switchdev_notifier_fdb_info emitted by drivers towards the bridge
+Message-ID: <YRIhwQ3ji8eqPQOQ@unreal>
+References: <20210809131152.509092-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-References: <20210809150738.150596-1-yangx.jy@fujitsu.com>
-In-Reply-To: <20210809150738.150596-1-yangx.jy@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 10 Aug 2021 11:40:34 +0800
-Message-ID: <CAD=hENd6StySon04rW1CPeJbN1KFPDDP1JFsYNBxXNYYegtF5A@mail.gmail.com>
-Subject: Re: [PATCH v2] providers/rxe: Set the correct value of resid for
- inline data
-To:     Xiao Yang <yangx.jy@fujitsu.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210809131152.509092-1-vladimir.oltean@nxp.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 9, 2021 at 10:43 PM Xiao Yang <yangx.jy@fujitsu.com> wrote:
->
-> Resid indicates the residual length of transmitted bytes but current
-> rxe sets it to zero for inline data at the beginning.  In this case,
-> request will transmit zero byte to responder wrongly.
+On Mon, Aug 09, 2021 at 04:11:52PM +0300, Vladimir Oltean wrote:
+> The blamed commit a new field to struct switchdev_notifier_fdb_info, but
+> did not make sure that all call paths set it to something valid. For
+> example, a switchdev driver may emit a SWITCHDEV_FDB_ADD_TO_BRIDGE
+> notifier, and since the 'is_local' flag is not set, it contains junk
+> from the stack, so the bridge might interpret those notifications as
+> being for local FDB entries when that was not intended.
+> 
+> To avoid that now and in the future, zero-initialize all
+> switchdev_notifier_fdb_info structures created by drivers such that all
+> newly added fields to not need to touch drivers again.
+> 
+> Fixes: 2c4eca3ef716 ("net: bridge: switchdev: include local flag in FDB notifications")
+> Reported-by: Ido Schimmel <idosch@idosch.org>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> ---
+>  drivers/net/ethernet/marvell/prestera/prestera_switchdev.c | 2 ++
+>  drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c       | 1 +
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c      | 2 ++
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c   | 1 +
+>  drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c    | 1 +
+>  drivers/net/ethernet/rocker/rocker_main.c                  | 1 +
+>  drivers/net/ethernet/rocker/rocker_ofdpa.c                 | 1 +
+>  drivers/net/ethernet/ti/am65-cpsw-switchdev.c              | 1 +
+>  drivers/net/ethernet/ti/cpsw_switchdev.c                   | 1 +
+>  drivers/s390/net/qeth_l2_main.c                            | 2 ++
+>  net/dsa/slave.c                                            | 1 +
+>  11 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> index 0b3e8f2db294..cf60e80dd3ba 100644
+> --- a/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> +++ b/drivers/net/ethernet/marvell/prestera/prestera_switchdev.c
+> @@ -750,6 +750,7 @@ prestera_fdb_offload_notify(struct prestera_port *port,
+>  {
+>  	struct switchdev_notifier_fdb_info send_info;
+>  
+> +	memset(&send_info, 0, sizeof(send_info));
 
-What are the symptoms if resid is set to zero?
+This can be written simpler.
+struct switchdev_notifier_fdb_info send_info = {};
+
+In all places.
 
 Thanks
-Zhu Yanjun
 
->
-> Resid should be set to the total length of transmitted bytes at the
-> beginning.
->
-> Note:
-> Just remove the useless setting of resid in init_send_wqe().
->
-> Fixes: 1a894ca10105 ("Providers/rxe: Implement ibv_create_qp_ex verb")
-> Fixes: 8337db5df125 ("Providers/rxe: Implement memory windows")
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-> ---
->  providers/rxe/rxe.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-> index 3c3ea8bb..3533a325 100644
-> --- a/providers/rxe/rxe.c
-> +++ b/providers/rxe/rxe.c
-> @@ -1004,7 +1004,7 @@ static void wr_set_inline_data(struct ibv_qp_ex *ibqp, void *addr,
->
->         memcpy(wqe->dma.inline_data, addr, length);
->         wqe->dma.length = length;
-> -       wqe->dma.resid = 0;
-> +       wqe->dma.resid = length;
->  }
->
->  static void wr_set_inline_data_list(struct ibv_qp_ex *ibqp, size_t num_buf,
-> @@ -1035,6 +1035,7 @@ static void wr_set_inline_data_list(struct ibv_qp_ex *ibqp, size_t num_buf,
->         }
->
->         wqe->dma.length = tot_length;
-> +       wqe->dma.resid = tot_length;
->  }
->
->  static void wr_set_sge(struct ibv_qp_ex *ibqp, uint32_t lkey, uint64_t addr,
-> @@ -1473,8 +1474,6 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
->         if (ibwr->send_flags & IBV_SEND_INLINE) {
->                 uint8_t *inline_data = wqe->dma.inline_data;
->
-> -               wqe->dma.resid = 0;
-> -
->                 for (i = 0; i < num_sge; i++) {
->                         memcpy(inline_data,
->                                (uint8_t *)(long)ibwr->sg_list[i].addr,
-> --
+>  	send_info.addr = info->addr;
+>  	send_info.vid = info->vid;
+>  	send_info.offloaded = true;
+> @@ -1146,6 +1147,7 @@ static void prestera_fdb_event(struct prestera_switch *sw,
+>  	if (!dev)
+>  		return;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = evt->fdb_evt.data.mac;
+>  	info.vid = evt->fdb_evt.vid;
+>  	info.offloaded = true;
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+> index a6e1d4f78268..77e09397a062 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/esw/bridge.c
+> @@ -71,6 +71,7 @@ mlx5_esw_bridge_fdb_offload_notify(struct net_device *dev, const unsigned char *
+>  {
+>  	struct switchdev_notifier_fdb_info send_info;
+>  
+> +	memset(&send_info, 0, sizeof(send_info));
+>  	send_info.addr = addr;
+>  	send_info.vid = vid;
+>  	send_info.offloaded = true;
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> index 7e221ef01437..8a7660f2d048 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> @@ -9086,6 +9086,7 @@ static void mlxsw_sp_rif_fid_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+>  	if (!dev)
+>  		return;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = mac;
+>  	info.vid = 0;
+>  	call_switchdev_notifiers(SWITCHDEV_FDB_DEL_TO_BRIDGE, dev, &info.info,
+> @@ -9137,6 +9138,7 @@ static void mlxsw_sp_rif_vlan_fdb_del(struct mlxsw_sp_rif *rif, const char *mac)
+>  	if (!dev)
+>  		return;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = mac;
+>  	info.vid = vid;
+>  	call_switchdev_notifiers(SWITCHDEV_FDB_DEL_TO_BRIDGE, dev, &info.info,
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> index c5ef9aa64efe..f016d909bead 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+> @@ -2510,6 +2510,7 @@ mlxsw_sp_fdb_call_notifiers(enum switchdev_notifier_type type,
+>  {
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = mac;
+>  	info.vid = vid;
+>  	info.offloaded = offloaded;
+> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+> index 0443f66b5550..fbc3f5e65882 100644
+> --- a/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_mactable.c
+> @@ -279,6 +279,7 @@ static void sparx5_fdb_call_notifiers(enum switchdev_notifier_type type,
+>  {
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = mac;
+>  	info.vid = vid;
+>  	info.offloaded = offloaded;
+> diff --git a/drivers/net/ethernet/rocker/rocker_main.c b/drivers/net/ethernet/rocker/rocker_main.c
+> index a46633606cae..49d548be9fe4 100644
+> --- a/drivers/net/ethernet/rocker/rocker_main.c
+> +++ b/drivers/net/ethernet/rocker/rocker_main.c
+> @@ -2717,6 +2717,7 @@ rocker_fdb_offload_notify(struct rocker_port *rocker_port,
+>  {
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = recv_info->addr;
+>  	info.vid = recv_info->vid;
+>  	info.offloaded = true;
+> diff --git a/drivers/net/ethernet/rocker/rocker_ofdpa.c b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> index 967a634ee9ac..7d954fd24134 100644
+> --- a/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> +++ b/drivers/net/ethernet/rocker/rocker_ofdpa.c
+> @@ -1824,6 +1824,7 @@ static void ofdpa_port_fdb_learn_work(struct work_struct *work)
+>  	bool learned = (lw->flags & OFDPA_OP_FLAG_LEARNED);
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = lw->addr;
+>  	info.vid = lw->vid;
+>  
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+> index 9c29b363e9ae..81d2b1765a66 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-switchdev.c
+> @@ -360,6 +360,7 @@ static void am65_cpsw_fdb_offload_notify(struct net_device *ndev,
+>  {
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = rcv->addr;
+>  	info.vid = rcv->vid;
+>  	info.offloaded = true;
+> diff --git a/drivers/net/ethernet/ti/cpsw_switchdev.c b/drivers/net/ethernet/ti/cpsw_switchdev.c
+> index f7fb6e17dadd..446bdab06bdd 100644
+> --- a/drivers/net/ethernet/ti/cpsw_switchdev.c
+> +++ b/drivers/net/ethernet/ti/cpsw_switchdev.c
+> @@ -370,6 +370,7 @@ static void cpsw_fdb_offload_notify(struct net_device *ndev,
+>  {
+>  	struct switchdev_notifier_fdb_info info;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = rcv->addr;
+>  	info.vid = rcv->vid;
+>  	info.offloaded = true;
+> diff --git a/drivers/s390/net/qeth_l2_main.c b/drivers/s390/net/qeth_l2_main.c
+> index 2abf86c104d5..843dd4f4d8d7 100644
+> --- a/drivers/s390/net/qeth_l2_main.c
+> +++ b/drivers/s390/net/qeth_l2_main.c
+> @@ -283,6 +283,7 @@ static void qeth_l2_dev2br_fdb_flush(struct qeth_card *card)
+>  
+>  	QETH_CARD_TEXT(card, 2, "fdbflush");
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = NULL;
+>  	/* flush all VLANs: */
+>  	info.vid = 0;
+> @@ -693,6 +694,7 @@ static void qeth_l2_dev2br_fdb_notify(struct qeth_card *card, u8 code,
+>  	if (qeth_is_my_net_if_token(card, token))
+>  		return;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = ntfy_mac;
+>  	/* don't report VLAN IDs */
+>  	info.vid = 0;
+> diff --git a/net/dsa/slave.c b/net/dsa/slave.c
+> index 532085da8d8f..1cb7f7e56784 100644
+> --- a/net/dsa/slave.c
+> +++ b/net/dsa/slave.c
+> @@ -2298,6 +2298,7 @@ dsa_fdb_offload_notify(struct dsa_switchdev_event_work *switchdev_work)
+>  	if (!dsa_is_user_port(ds, switchdev_work->port))
+>  		return;
+>  
+> +	memset(&info, 0, sizeof(info));
+>  	info.addr = switchdev_work->addr;
+>  	info.vid = switchdev_work->vid;
+>  	info.offloaded = true;
+> -- 
 > 2.25.1
->
->
->
+> 
