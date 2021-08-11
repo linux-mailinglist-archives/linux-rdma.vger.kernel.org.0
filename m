@@ -2,89 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A09533E91E0
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Aug 2021 14:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FBBC3E92D2
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 Aug 2021 15:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhHKMte (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Aug 2021 08:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48930 "EHLO mail.kernel.org"
+        id S231864AbhHKNkd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 Aug 2021 09:40:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230415AbhHKMt3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Aug 2021 08:49:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78F566056C;
-        Wed, 11 Aug 2021 12:49:03 +0000 (UTC)
+        id S231526AbhHKNka (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 11 Aug 2021 09:40:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 493CE60FE6;
+        Wed, 11 Aug 2021 13:40:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1628686144;
-        bh=bpylZYuOWSC5OaHJJAvdnfsUs4yPMAA8zho4ncVB7dg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qniE+DSYknL9skSWwx63GA1KYvaTLOmbnwHQsV9P48JPSOsBZ1PsQhaa9S3vnz3ok
-         wbxJ1OC4pMUPzHy/fWIB3wAy+RpZ8BSMqSy5Xm1cMr177PT6oJxprfMIkFETFUpKc1
-         IEoKGiIp7eFf3NXmTvuXf8+1XVsDA1Usk7Nu8sjx+lE1t/YX790UMQT0Oy3u7hhxfj
-         ICq0H2Cm8/nzcmcZB0jrAHl+nn6GL0ggL6z+KZFResbTzwjcTW1ROsxCI/UcqK+pE4
-         peeaWB3dMowDCS7c0W/dztRRvI2hy++XP0xlAXeGvClnL4GDGJHe3SmlI9FtQ6x1d0
-         bhAPAcqRkBQ9g==
-Date:   Wed, 11 Aug 2021 15:49:00 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Tuo Li <islituo@gmail.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baijiaju1990@gmail.com,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: Re: [PATCH] IB/mthca: Fix possible uninitialized-variable access in
- mthca_SYS_EN()
-Message-ID: <YRPHPP6mXPbohFHj@unreal>
-References: <20210811123415.8200-1-islituo@gmail.com>
+        s=k20201202; t=1628689207;
+        bh=IJaMgjE53BRCVC2INSvA22emIszu7E/N6SBSob5CYS4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=TLTjKFa4tS8ohTItiqsrNjxQa0oVLUNoiLGS6HiUe1u5p6kE0sC6luXlThneUGEpA
+         MgXwa7g8LQ1w3MT1N5fi4+RcE4PxwcNI0vX1B1S8Els10edChOIyw6+ZdtcoHjFoIT
+         +jH8hBnYqTzh8i8c2Gw7lqf1gniesSHhLZa4464kTxybCyTwNbXIrJcaK1tBvJ3WRV
+         8cqPmeTP9gcCwpjCy4qwyDzxUU88IyE5iOnGhasLV0Esqce6rD/I1OBsTXpSWgREFX
+         QfHemuAasXdr+46qQ4nlmC6XUHK1Y/CTaE32+UylNpK746p7QMqzGIszRmKIBMED6A
+         DmWhJVGN0wByQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3D9F960A3B;
+        Wed, 11 Aug 2021 13:40:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210811123415.8200-1-islituo@gmail.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND net-next 00/10] devlink: Control auxiliary devices
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162868920724.16245.8369444403907708271.git-patchwork-notify@kernel.org>
+Date:   Wed, 11 Aug 2021 13:40:07 +0000
+References: <20210810132424.9129-1-parav@nvidia.com>
+In-Reply-To: <20210810132424.9129-1-parav@nvidia.com>
+To:     Parav Pandit <parav@nvidia.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 11, 2021 at 05:34:15AM -0700, Tuo Li wrote:
-> The variable out is declared without initialization, and its address is 
-> passed to mthca_cmd_imm():
->   ret = mthca_cmd_imm(dev, 0, &out, 0, 0, CMD_SYS_EN, CMD_TIME_CLASS_D);
-> 
-> In this function, mthca_cmd_wait() or mthca_cmd_poll() will be called with 
-> the argument out_param, which is the address of the varialbe out. In these 
-> two called functions, mthca_cmd_post() will be called with *out_param, 
-> whose value comes from the uninitialized variable out.
->   err = mthca_cmd_post(dev, in_param, out_param ? *out_param : 0, ...)
-> 
-> In mthca_cmd_post(), mthca_cmd_post_dbell() or mthca_cmd_post_hcr() will 
-> be called, in which the value from the uninitialized varialble out may be
-> used:
->   __raw_writel((__force u32) cpu_to_be32(out_param >> 32), ptr + offs[3]);
-> 
-> To fix this possible uninitialized-variable access, initialized out to 0 
-> at the begining of mthca_SYS_EN().
-> 
-> Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-> Signed-off-by: Tuo Li <islituo@gmail.com>
-> ---
->  drivers/infiniband/hw/mthca/mthca_cmd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hello:
 
-Analysis is right, but I don't think that "out" value is important in
-this flow.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-Thanks
+On Tue, 10 Aug 2021 16:24:14 +0300 you wrote:
+> (Resend to CC RDMA and vdpa mailing lists).
+> 
+> Hi Dave, Jakub,
+> 
+> Currently, for mlx5 multi-function device, a user is not able to control
+> which functionality to enable/disable. For example, each PCI
+> PF, VF, SF function by default has netdevice, RDMA and vdpa-net
+> devices always enabled.
+> 
+> [...]
 
-> 
-> diff --git a/drivers/infiniband/hw/mthca/mthca_cmd.c b/drivers/infiniband/hw/mthca/mthca_cmd.c
-> index bdf5ed38de22..86584982e496 100644
-> --- a/drivers/infiniband/hw/mthca/mthca_cmd.c
-> +++ b/drivers/infiniband/hw/mthca/mthca_cmd.c
-> @@ -635,7 +635,7 @@ void mthca_free_mailbox(struct mthca_dev *dev, struct mthca_mailbox *mailbox)
->  
->  int mthca_SYS_EN(struct mthca_dev *dev)
->  {
-> -	u64 out;
-> +	u64 out = 0;
->  	int ret;
->  
->  	ret = mthca_cmd_imm(dev, 0, &out, 0, 0, CMD_SYS_EN, CMD_TIME_CLASS_D);
-> -- 
-> 2.25.1
-> 
+Here is the summary with links:
+  - [RESEND,net-next,01/10] devlink: Add new "enable_eth" generic device param
+    https://git.kernel.org/netdev/net-next/c/f13a5ad88186
+  - [RESEND,net-next,02/10] devlink: Add new "enable_rdma" generic device param
+    https://git.kernel.org/netdev/net-next/c/8ddaabee3c79
+  - [RESEND,net-next,03/10] devlink: Add new "enable_vnet" generic device param
+    https://git.kernel.org/netdev/net-next/c/076b2a9dbb28
+  - [RESEND,net-next,04/10] devlink: Create a helper function for one parameter registration
+    https://git.kernel.org/netdev/net-next/c/699784f7b728
+  - [RESEND,net-next,05/10] devlink: Add API to register and unregister single parameter
+    https://git.kernel.org/netdev/net-next/c/b40c51efefbc
+  - [RESEND,net-next,06/10] devlink: Add APIs to publish, unpublish individual parameter
+    https://git.kernel.org/netdev/net-next/c/9c4a7665b423
+  - [RESEND,net-next,07/10] net/mlx5: Fix unpublish devlink parameters
+    https://git.kernel.org/netdev/net-next/c/6f35723864b4
+  - [RESEND,net-next,08/10] net/mlx5: Support enable_eth devlink dev param
+    https://git.kernel.org/netdev/net-next/c/a17beb28ed9d
+  - [RESEND,net-next,09/10] net/mlx5: Support enable_rdma devlink dev param
+    https://git.kernel.org/netdev/net-next/c/87158cedf00e
+  - [RESEND,net-next,10/10] net/mlx5: Support enable_vnet devlink dev param
+    https://git.kernel.org/netdev/net-next/c/70862a5d609d
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
