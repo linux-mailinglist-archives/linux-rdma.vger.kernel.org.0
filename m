@@ -2,85 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3F83EA244
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Aug 2021 11:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2E093EA4D1
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Aug 2021 14:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbhHLJpL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Aug 2021 05:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbhHLJpL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Aug 2021 05:45:11 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA30C061765
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Aug 2021 02:44:46 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id i10-20020a05600c354ab029025a0f317abfso6619745wmq.3
-        for <linux-rdma@vger.kernel.org>; Thu, 12 Aug 2021 02:44:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=poedIdtczPM0nR5Uw7XJHeDTESq+tc78leZVLXve9xg=;
-        b=Ttv9CDgdfgQrBALlc+5ddOoQUMZK91eXmUomR3KuyDBsi5YNrNbLxUE6QDz/l2HCUq
-         9vzfM9Lo2ID9DjeNXLPD2ePIQ2Zqm8T0x6bEF/miqAoUZEZgsHKmVOVzOf2YwtaDm1Pq
-         BOwG1rnN3x0uUzvCdDozwAo7/fdwSkRh3tKc3o11hAz59uIeMhBEMVrtN3k6zu802a3E
-         lgT4L15xEwARmJ9Sxj5BRiEDfpwtTWvz/Zf8gqSXLbR/IahP3yQgbjG0Hm7bpTOyQp5+
-         s8cx6S79sFwzArW5BUFQR7BzQVWQEJ9bWmtNqXNpJX4tLLMyqkJKXuY11fuBVjVPXwjP
-         yuAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=poedIdtczPM0nR5Uw7XJHeDTESq+tc78leZVLXve9xg=;
-        b=jdNMX4HIYoOmb7t05oWFPML1nmdnUt5dYOt6hVCWSpzDshKdit9MpmYXleBpYXvWEM
-         R5kX3UBurUrbhQyUP7QOJDZf7jeA/NOEKWaDAfmr1hgk30H00j+nROH9SGfShLHk1/G6
-         Kq0T4RehJitO1cEYo6Ygbm0qrelqc2VjA6veHNNDVjLSiUJvgg7Qtl+8q45rlNuNcyky
-         E8xA7y+8orHgGVjSmqEE4sv1gRGlI+jF02pukJ8cOtvux6HfeieEP0xSy/i0+nadiWbq
-         CnF8qQ5TTNp/Cs81f2EmuXPjfDMcPcmFT48oFmb2ikYF42MJO5TO85vBvFW/eA13cwsQ
-         TrFg==
-X-Gm-Message-State: AOAM533hAyevr1ZchBHY72q7NezBLhiedOiVp0IApKJXn2DPlTp5s0Nb
-        RDK0lvdOE0eDH/yYcY6kZhYIvW5Pil0WzschV5k=
-X-Google-Smtp-Source: ABdhPJwzcjFfLe+ZEM5Z3KJhFsDCsM26BB2zsA5xnERxK9PYa3UbaL0rZosBol0VBolSrUpzOyq+u3OJZa1GYKP1DXk=
-X-Received: by 2002:a05:600c:2242:: with SMTP id a2mr3048929wmm.180.1628761484627;
- Thu, 12 Aug 2021 02:44:44 -0700 (PDT)
+        id S236439AbhHLMnL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Aug 2021 08:43:11 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:8405 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236323AbhHLMnL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Aug 2021 08:43:11 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4GlmT22rWBz84Gn;
+        Thu, 12 Aug 2021 20:38:46 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 12 Aug 2021 20:42:44 +0800
+Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 12 Aug
+ 2021 20:42:44 +0800
+Subject: Re: [PATCH v4 for-next 00/12] RDMA/hns: Add support for Dynamic
+ Context Attachment
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+References: <1627525163-1683-1-git-send-email-liangwenpeng@huawei.com>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <leon@kernel.org>
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+Message-ID: <e1577482-850b-7b15-9345-7990f9d0856c@huawei.com>
+Date:   Thu, 12 Aug 2021 20:42:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <20210811051650.14914-1-pkushwaha@marvell.com> <20210811114458.GA7008@nvidia.com>
-In-Reply-To: <20210811114458.GA7008@nvidia.com>
-From:   Prabhakar Kushwaha <prabhakar.pkin@gmail.com>
-Date:   Thu, 12 Aug 2021 15:14:08 +0530
-Message-ID: <CAJ2QiJLi+MQbkj4KVXYBZjsbj-YuAdLWKP56nJ=tDKaO+JgHcw@mail.gmail.com>
-Subject: Re: [PATCH for-next] qedr: Move variables reset to qedr_set_common_qp_params()
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Prabhakar Kushwaha <pkushwaha@marvell.com>,
-        linux-rdma@vger.kernel.org, dledford@redhat.com,
-        Michal Kalderon <mkalderon@marvell.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Shai Malin <smalin@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Shai Malin <malin1024@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1627525163-1683-1-git-send-email-liangwenpeng@huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.238.78]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear Jason,
 
-On Wed, Aug 11, 2021 at 5:15 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Aug 11, 2021 at 08:16:50AM +0300, Prabhakar Kushwaha wrote:
-> > Qedr code is tightly coupled with existing both INIT transitions.
-> > Here, during first INIT transition all variables are reset and
-> > the RESET state is checked in post_recv() before any posting.
-> >
-> > Commit dc70f7c3ed34 ("RDMA/cma: Remove unnecessary INIT->INIT
-> > transition") exposed this bug.
->
->
-> Since we are reverting this the patch still makse sense? Certainly
-> having a driver depend on two init->init transitions seems wrong to me
->
 
-Yes, definitely still makes sense, thanks.
+On 2021/7/29 10:19, Wenpeng Liang wrote:
+> The HIP09 introduces the DCA(Dynamic Context Attachment) feature which
+> supports many RC QPs to share the WQE buffer in a memory pool. If a QP
+> enables DCA feature, the WQE's buffer will not be allocated when creating
+> but when the users start to post WRs. This will reduce the memory
+> consumption when there are too many QPs are inactive.
+> 
+> The related userspace series is named "libhns: Add support for Dynamic Context Attachment".
 
--- prabhakar (pk)
+Hi
+Does anyone have an opinion about this patchset, thanks!
