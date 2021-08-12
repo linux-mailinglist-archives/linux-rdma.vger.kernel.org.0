@@ -2,145 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BB33EA84E
-	for <lists+linux-rdma@lfdr.de>; Thu, 12 Aug 2021 18:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6360A3EADA4
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Aug 2021 01:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231927AbhHLQN3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 12 Aug 2021 12:13:29 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:21190 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229791AbhHLQNH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 12 Aug 2021 12:13:07 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17CGC1RO003849;
-        Thu, 12 Aug 2021 16:12:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=NUw2a6auC0L90dEpKCoF3i0Ba5bslxpZhP1+vV6FvY0=;
- b=KydXpE2y8bgBWsiz2qgprrvA1LT9KDMl2epOF1BrwFhz6xnfMnXzhfqnftoVwqy/Yjz+
- XTambm/DYiF1NPF4C1AKiE/UJWJFq9SItNGOt6LbYjvgJOFLFQFiW626QQ9J/8QnIwBS
- VGjHkm9MRF629kYxPcu9wO/q14kbCq5u0I7sze0jyqPiSFyqkn5AKUBIajoEiODac4w8
- qJxlRyV8s6JsofQfUxQxQop0o74lG1hXeyey7pjGaKKKSOOLHQ5LfBPb3ne/5NtsPMEo
- du3qDYFNbFZderKmiJZOGDC42p0pNR7FsJV1PS2H+f/f/bTMA3CgcsFtp/XYR0aYDRn4 tQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=NUw2a6auC0L90dEpKCoF3i0Ba5bslxpZhP1+vV6FvY0=;
- b=xOWFmUtilHXkBGevJYk3DlWdQrKX5wki16TtO8wTVfseUCg35rOp3VBMhofdiW0HuxqQ
- R085tT/fDA2SomM6efoLKmk6a3zIFmHXKQpwlty8yFIKk+arFKsHmRiW3oyKeZib98RW
- Wg22/wiQwCYqKpG4QpH7se3KVbzNGIDZh3uwLd6wD/t0dDM24D2HhZybQqzMROz6Ikv3
- /AiZbuLfH6vBjFxwBH9sDiXk5+QYE1YlJYQw8qN0TZe6ACeEEOmxeyG4I1clIf/ucurk
- ohQQw8dpBYPJdzy+q/rH7bCnZ8bxHnLuKTaMQcc7KaHKYjeyZteBbjToENBVuOxXInIS jg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ad2ajgrke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Aug 2021 16:12:38 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17CGAHl7170908;
-        Thu, 12 Aug 2021 16:12:37 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by userp3030.oracle.com with ESMTP id 3abjw8vhjv-1;
-        Thu, 12 Aug 2021 16:12:37 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH for-next v2] RDMA/core/sa_query: Retry SA queries
-Date:   Thu, 12 Aug 2021 18:12:35 +0200
-Message-Id: <1628784755-28316-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231449AbhHLXdd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Aug 2021 19:33:33 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5033 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229703AbhHLXdd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 12 Aug 2021 19:33:33 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10074"; a="202662020"
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="202662020"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Aug 2021 16:33:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,317,1620716400"; 
+   d="scan'208";a="469924267"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP; 12 Aug 2021 16:33:06 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Thu, 12 Aug 2021 16:33:06 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10; Thu, 12 Aug 2021 16:33:06 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.10 via Frontend Transport; Thu, 12 Aug 2021 16:33:06 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.10; Thu, 12 Aug 2021 16:33:05 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TPCX4qI+JBRbhk3fViTyP/1GtnF/WlPbF5RJd3D5f/+Z6zl4rs5shuqSgs4f6+uI+4174dDGqd1r7WKETFL2trVcu1ghZGSIgbHjJixEUmnGBmNTJkqaU2+omeSQkvUAb+FmnpcXOmG46UA9JrhZOhWMIVMUSbEQj1OdgbHPYnyZhAcHayjkcrL/nA2nsFD5MPB8TC0XRBcOHvv9Clnn9aiEFkFi60eOjBN35U3U2Qg8ObsJ7qcF0FscAUl6rnsQX9sg0cO8cB5ijrgmVXf9aYqF5j23xplscee5scT4r7CkR2GSxD7CmW3Ql33sMO31BXo6maqRa1Io4Tkq88joNg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=feOvbk+agkvUU8T1Dt7PyxdLBf3eIrY8RJ2uuZUk8FQ=;
+ b=HGV0469jsL6lV//JGWNBNFIaJOnzQJ/CYAwWhjlIwOyff0pldNSJRWrMGYAYQXM0uXJfrpE8LQeG/jdDgdhxd5U60fU0cZYgcUYMcTjpmlyusmSuaLgib/LTwwcViCIxpSUAbEa7wquDWmoy37O701FJUYYnOOm+1WJtMwZCCDNV+pqfrHjnf0Zi/pcFnyR/oVaFdS6fFU+ffkRKE49Ju25jwywjVWgxwY1TB2hrPU53FS46cPtJelRNQJmmS1KK8kExwpE7aWIDaM3ugAGEWxHRn9xwyp55J1xNWKv2F1zZIjdL67Rd5ATCkhvmQ6Ld5klvHYiTYvrcWRlJPefIiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=feOvbk+agkvUU8T1Dt7PyxdLBf3eIrY8RJ2uuZUk8FQ=;
+ b=UzC79Hj00QpzXeWfK5a41lsv7d8XurcoTXjM53remge5MdlRfY2mdm80vcdo664OvZeRCirlMHrZMfPMdTZ0kJOXFIiyHWX/5kPq5X5hicl1W8gIxEpfKI+GWdOIWjEvJMT5mtFxro2lfyvvj4Y3BAcCaJPhL8DWzzE8Kk2GaHI=
+Received: from DM6PR11MB4692.namprd11.prod.outlook.com (2603:10b6:5:2aa::11)
+ by DM6PR11MB4642.namprd11.prod.outlook.com (2603:10b6:5:2a2::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.16; Thu, 12 Aug
+ 2021 23:33:04 +0000
+Received: from DM6PR11MB4692.namprd11.prod.outlook.com
+ ([fe80::a136:f190:7e89:d7c]) by DM6PR11MB4692.namprd11.prod.outlook.com
+ ([fe80::a136:f190:7e89:d7c%3]) with mapi id 15.20.4415.014; Thu, 12 Aug 2021
+ 23:33:04 +0000
+From:   "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH] irdma: Add ice and irdma to kernel-boot rules
+Thread-Topic: [PATCH] irdma: Add ice and irdma to kernel-boot rules
+Thread-Index: AQHXiuy2O6WjqvACUkanT+uendkIz6tmy/YAgAnA3AA=
+Date:   Thu, 12 Aug 2021 23:33:04 +0000
+Message-ID: <DM6PR11MB4692C424F3B5AB513B0EBBDACBF99@DM6PR11MB4692.namprd11.prod.outlook.com>
+References: <20210806175808.1463-1-tatyana.e.nikolova@intel.com>
+ <20210806182852.GS1721383@nvidia.com>
+In-Reply-To: <20210806182852.GS1721383@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 32edd4fd-289c-432a-75c8-08d95de98815
+x-ms-traffictypediagnostic: DM6PR11MB4642:
+x-microsoft-antispam-prvs: <DM6PR11MB464224482768E032E2C03DE6CBF99@DM6PR11MB4642.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0gdPzX92rYKdzEHf0nGSYKwjYv0SRsMZGH74W0FDuwlCMSF1XE7hUnHq66hKulPzAGU5sddQyDcIpfu0kuZOcj4iEyT920a1OgSFumZLzZMNiELJxWwrHevYxlkLUPG46HsD/xbt7jfU/hN7U5O/aObKP/wresV6xiUfOvOAKl8kLJAZi3i7a5e+svvFoA9mj+J8MwTnMGhSwF7Pz1ysg87KoZ32H7dAkUZ03XN7VXFuSXr8z70VVfDYrA1KQl+dqpdksRtDI3G0Q8Z+wimv2VKAFY/ebdgwK0maNlyHCPkffmfmIoUzaS5o2JNk3gYSTU73BM2vbQ8xVxrlp3D+BldtW/3hlF4LbJLO9e2FvvwzXfkbKsSqBcHUspOLXHFVkDU8qaWArT1DH8UM8dHkfhOvDs82B9AUpwoEtOfp879UL5BkkpVA4Dov4lA6+0oY2X+5xOw2ucaT42cddCF5rLimQNvaLB61GY9ZqtYJz/mkkMkTW/egE8ZW6XXd6KbQv16TVDII9Oy5U4Gx08de2IuAYB5wQwY0NtgBMcrH/vbz+ttSpfGuGvXSOb7AbJsLqh1lDJcTdDFd8tcOJHVW5iZmU22I2ReINpZCdB0Y/2HYiI9rUkQ2fUwyW7/RH8V2swsSPhBLYqU7bZ2KCR6/yOIJH5/MSBMQc+5GojSw9oVqX0jcqEHxhTwH84iT012sWs8Gb65MMGRb2dMmImze6A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4692.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(376002)(136003)(346002)(71200400001)(86362001)(122000001)(66476007)(4326008)(2906002)(186003)(66946007)(53546011)(6506007)(8936002)(6916009)(66556008)(478600001)(64756008)(7696005)(8676002)(76116006)(26005)(66446008)(5660300002)(33656002)(38070700005)(316002)(52536014)(55016002)(83380400001)(9686003)(38100700002)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?r2C36aTrwQxUgSGx377sx639CI1zuEHYmri1J46ma40AXAh6JnAUTGf9gezu?=
+ =?us-ascii?Q?i4Ql7SmrPybqr2y2ePi3oH/+eGJGyOrY6WYAbJn5e4MNbNCPtC5N0k5iFtqE?=
+ =?us-ascii?Q?7tC07ZC2x+euHYZoNsHv5MUXjac3pMorLHO5KTO0pKPmmEOdhNp8XsBdU6rW?=
+ =?us-ascii?Q?LhUmL/qn+aezvGCAOLkZBIA4abyi4plCwhLqVJrY2j+c5TpDeg+J9/QurpoL?=
+ =?us-ascii?Q?zhSf8c8J585QSvk1BhwZQeUQjAjniM8scFAWqtWURnIYPHMmogvurwzB5wig?=
+ =?us-ascii?Q?Le39dh7Yw2kVJ0VLLIov7LqvnaUei5TSJ7W0Fgc1Il5fxpLhoCzaqpMHxFq5?=
+ =?us-ascii?Q?SrGRZNZgEiyirhB2P6G5tYxfyH+7ZbxDfsDTkkadpZ9AF3UFtbWZfHqL+15Q?=
+ =?us-ascii?Q?2OAqJueN2SqGtGkYZzONiAreLsunIGoQgaGUzmxOaFM+T+7JTdhdvE1nrYqe?=
+ =?us-ascii?Q?Chg5cZ/VieUyIJKuelAC4UTWlLH0VCnIsQP2Agm055UkI8mQHanRymUUOwjS?=
+ =?us-ascii?Q?LoVD0hGq24lb5TXRUAnM8TJvLGeeFrXK1WL3wTbhao1g3n0LvIkqXHoYDfv+?=
+ =?us-ascii?Q?fKwKosvWUBI6VMbLLhZ9MLXBNxTzAhcUa68B+wdmPgVgUr129xKorIH6/Quo?=
+ =?us-ascii?Q?uLQl9F/OdQTxkcw7wP/I/EZuaxZezq3beRLMJnxSPWy3jzhDbR3BkX78jfzl?=
+ =?us-ascii?Q?THSRRI7sHUDtBOBaGqdPP4mfirpdXV0EwgrJeTMXLXcdHvBmDOu/dOY+tkiy?=
+ =?us-ascii?Q?5sWL8VoaJrfwdK7hpFtoWORceND+FkbhDDNDs0jdE5G5OjQfbJeZ7/J5UQob?=
+ =?us-ascii?Q?UeKSjjlFLQkdxdAmxeGGF0LDxqkbgGcZ073X9cGmqEuo4+UIjgfdnLRon6HP?=
+ =?us-ascii?Q?8w60Rr9nmUyJfi4OZbLcH9kSzlEaVoOdb/m77VxeBcJPWXEa1Sx5Ez/vdLeV?=
+ =?us-ascii?Q?pNnMR89fLOglX0n9iUVw63Tu6GYqtXWqtySzsnjZGfvNDKCdW/LLvA9Qgu4p?=
+ =?us-ascii?Q?XrNNoSGWNBJmOhWohMjqXW9Gn46K+aaV7ikCLqPxaoZx1zUCbkVjGalxg65t?=
+ =?us-ascii?Q?G3r8Ptw2GXGeSYGnHoMf/D5YnDYoehX9/9llyfE5rdo+Yk9ysUXEVtrHuf79?=
+ =?us-ascii?Q?r3njT1oDPx8A3nhuV+4O5XrWo1fKM6vhK8CP1os/VqNay1xfawHgZmwpnbRt?=
+ =?us-ascii?Q?usSV3T3HFxfY+AcBWfD2IFJYgZPlC9G86/Kvbeod/6FjZk1u4NgCvoLCL7bp?=
+ =?us-ascii?Q?eLKbSZmXa0YD0NXKeB5Lmec9IHWib14VRtnE8043Nsj6Uw1DXYULTsJOGY5a?=
+ =?us-ascii?Q?ASM=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10074 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 suspectscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108120105
-X-Proofpoint-ORIG-GUID: 1HoNaFdNUZtsG4Ay3MhkqjIj4k4hipuQ
-X-Proofpoint-GUID: 1HoNaFdNUZtsG4Ay3MhkqjIj4k4hipuQ
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4692.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32edd4fd-289c-432a-75c8-08d95de98815
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Aug 2021 23:33:04.0292
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p3Cp5ALFJmVzRWgbwaKVXLPml/Mvz/5JfRm4vQGt8cEskjnDrrmMciuNRVBgdecUxr6dXfxpRM73n3hIApNWjYnjss3zkJ1FQoD5gfJ9t0c=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4642
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-A MAD packet is sent as an unreliable datagram (UD). SA requests are
-sent as MAD packets. As such, SA requests or responses may be silently
-dropped.
 
-IB Core's MAD layer has a timeout and retry mechanism, which amongst
-other, is used by RDMA CM. But it is not used by SA queries. The lack
-of retries of SA queries leads to long specified timeout, and error
-being returned in case of packet loss. The ULP or user-land process
-has to perform the retry.
 
-Fix this by taking advantage of the MAD layer's retry mechanism.
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> Sent: Friday, August 6, 2021 1:29 PM
+> To: Nikolova, Tatyana E <tatyana.e.nikolova@intel.com>
+> Cc: dledford@redhat.com; leon@kernel.org; linux-rdma@vger.kernel.org
+> Subject: Re: [PATCH] irdma: Add ice and irdma to kernel-boot rules
+>=20
+> On Fri, Aug 06, 2021 at 12:58:08PM -0500, Tatyana Nikolova wrote:
+> > Add ice and irdma to kernel-boot rules so that these devices are
+> > recognized as iWARP and RoCE capable.
+> >
+> > Otherwise the port mapper service which is only relevant for iWARP
+> > devices may not start automatically after boot.
+> >
+> > Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+> > kernel-boot/rdma-description.rules | 2 ++
+> > kernel-boot/rdma-hw-modules.rules  | 1 +
+> >  2 files changed, 3 insertions(+)
+> >
+> > diff --git a/kernel-boot/rdma-description.rules
+> > b/kernel-boot/rdma-description.rules
+> > index 48a7ced..f2f7b38 100644
+> > +++ b/kernel-boot/rdma-description.rules
+> > @@ -24,11 +24,13 @@ DRIVERS=3D=3D"hfi1", ENV{ID_RDMA_OPA}=3D"1"
+> >  # Hardware that supports iWarp
+> >  DRIVERS=3D=3D"cxgb4", ENV{ID_RDMA_IWARP}=3D"1"
+> >  DRIVERS=3D=3D"i40e", ENV{ID_RDMA_IWARP}=3D"1"
+> > +DRIVERS=3D=3D"ice", ENV{ID_RDMA_IWARP}=3D"1"
+> >
+> >  # Hardware that supports RoCE
+> >  DRIVERS=3D=3D"be2net", ENV{ID_RDMA_ROCE}=3D"1"
+> >  DRIVERS=3D=3D"bnxt_en", ENV{ID_RDMA_ROCE}=3D"1"
+> >  DRIVERS=3D=3D"hns", ENV{ID_RDMA_ROCE}=3D"1"
+> > +DRIVERS=3D=3D"ice", ENV{ID_RDMA_ROCE}=3D"1"
+> >  DRIVERS=3D=3D"mlx4_core", ENV{ID_RDMA_ROCE}=3D"1"
+> >  DRIVERS=3D=3D"mlx5_core", ENV{ID_RDMA_ROCE}=3D"1"
+> >  DRIVERS=3D=3D"qede", ENV{ID_RDMA_ROCE}=3D"1"
+> > diff --git a/kernel-boot/rdma-hw-modules.rules
+> > b/kernel-boot/rdma-hw-modules.rules
+> > index 95eaf72..040deb3 100644
+> > +++ b/kernel-boot/rdma-hw-modules.rules
+> > @@ -12,6 +12,7 @@ ENV{ID_NET_DRIVER}=3D=3D"bnxt_en",
+> RUN{builtin}+=3D"kmod load bnxt_re"
+> >  ENV{ID_NET_DRIVER}=3D=3D"cxgb4", RUN{builtin}+=3D"kmod load iw_cxgb4"
+> >  ENV{ID_NET_DRIVER}=3D=3D"hns", RUN{builtin}+=3D"kmod load hns_roce"
+> >  ENV{ID_NET_DRIVER}=3D=3D"i40e", RUN{builtin}+=3D"kmod load i40iw"
+> > +ENV{ID_NET_DRIVER}=3D=3D"ice", RUN{builtin}+=3D"kmod load irdma"
+>=20
+> This should not be needed, right? The auxbux stuff triggers proper module
+> autoloading?
 
-First, a check against a zero timeout is added in
-rdma_resolve_route(). In send_mad(), we set the MAD layer timeout to
-one tenth of the specified timeout and the number of retries to
-10. The special case when timeout is less than 10 is handled.
+Hi Jason,
 
-With this fix:
-
- # ucmatose -c 1000 -S 1024 -C 1
-
-runs stable on an Infiniband fabric. Without this fix, we see an
-intermittent behavior and it errors out with:
-
-cmatose: event: RDMA_CM_EVENT_ROUTE_ERROR, error: -110
-
-(110 is ETIMEDOUT)
-
-Fixes: f75b7a529494 ("[PATCH] IB: Add automatic retries to MAD layer")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/cma.c      | 3 +++
- drivers/infiniband/core/sa_query.c | 9 ++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 515a7e9..c3f2fac 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -3117,6 +3117,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
- 	struct rdma_id_private *id_priv;
- 	int ret;
- 
-+	if (!timeout_ms)
-+		return -EINVAL;
-+
- 	id_priv = container_of(id, struct rdma_id_private, id);
- 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
- 		return -EINVAL;
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index b61576f..5a56082 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -1358,6 +1358,7 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- {
- 	unsigned long flags;
- 	int ret, id;
-+	const int nmbr_sa_query_retries = 10;
- 
- 	xa_lock_irqsave(&queries, flags);
- 	ret = __xa_alloc(&queries, &id, query, xa_limit_32b, gfp_mask);
-@@ -1365,7 +1366,13 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
- 	if (ret < 0)
- 		return ret;
- 
--	query->mad_buf->timeout_ms  = timeout_ms;
-+	query->mad_buf->timeout_ms  = timeout_ms / nmbr_sa_query_retries;
-+	query->mad_buf->retries = nmbr_sa_query_retries;
-+	if (!query->mad_buf->timeout_ms) {
-+		/* Special case, very small timeout_ms */
-+		query->mad_buf->timeout_ms = 1;
-+		query->mad_buf->retries = timeout_ms;
-+	}
- 	query->mad_buf->context[0] = query;
- 	query->id = id;
- 
--- 
-1.8.3.1
-
+Our module depends on the auxbus, but we don't know how the auxbus could tr=
+igger loading of irdma. Could you please explain?=20
+=20
+Thank you,
+Tatyana
