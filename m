@@ -2,325 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CCD03E96D1
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 Aug 2021 19:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 309513E9F7F
+	for <lists+linux-rdma@lfdr.de>; Thu, 12 Aug 2021 09:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhHKR0G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 Aug 2021 13:26:06 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:43974 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230474AbhHKR0G (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 11 Aug 2021 13:26:06 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 17BHKf45020401;
-        Wed, 11 Aug 2021 17:25:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=YBwUrtyCLgyOhIB3rIvRrcJuG1Or0dqagJYhHJ+pX24=;
- b=MTNh0kDOa0RhyVjIw/sm9cVhYiDbRsYeZyGlGKAXsVG5uDzReqxzSg4F3GWHqN37trwL
- Q1SO5i3ImRk/aJ/HEP1dST0fW6EnobbPtg/WLNlAMWdgij3ezAd64sBUy8PLOKWqqe39
- rki017KzbylQ3KRa/cWyokyc+gp+ElXmPnhvOdT69t496pCrBYIXLLF+47IgQUwpeoA6
- Trv5UAQCGiErWIsYNypgUK7zKxMvMTDmzdtnAi5Mm5lup4UohijFgTKjqbyfNlsQ0l+j
- aGTsH0vb0XMFQYl6G+qCpnABWN7kZXssz89KAvdhbf1fJsqtB5MP7Dnak/9kjx9Y3pK1 vw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=YBwUrtyCLgyOhIB3rIvRrcJuG1Or0dqagJYhHJ+pX24=;
- b=s3xXYo9byk+mPCDjsQn7FZ3SbQfYO6QF4EQndvUP74V/LSZaJhDbzXA6Pe2gYQLoT9TA
- cF1bNVdWC+Xi8ir6Um7FkmRldzjfE4r78ETNHYPL5a1y5Z7uCwwKGy8LLqMmoe/E00sT
- DaiJg8qYQBL57dbZsbSj1gv2yMGh585KdWlB81+pDyV3kh9kWI2yAWqh9SFT0KTMeoYe
- RmsO6RVjqxz2g1YbCqHEDXSlgx68yCmMcFz/bHyCfEjYraFDi1kc+wUq+KXD9G0ToC8h
- bqZk1w6eZL+R/PVP/yunC0Gv8WBYmIRlCFk2ONKjOqYODRP/twhgmI78FAJhcgbveo74 iA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3abt44ba5d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 11 Aug 2021 17:25:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 17BHKRbW038256;
-        Wed, 11 Aug 2021 17:25:38 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by aserp3020.oracle.com with ESMTP id 3accrad95a-1;
-        Wed, 11 Aug 2021 17:25:38 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH for-next v2] RDMA/core/sa_query: Remove unused function
-Date:   Wed, 11 Aug 2021 19:25:36 +0200
-Message-Id: <1628702736-12651-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234474AbhHLHgY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 12 Aug 2021 03:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234287AbhHLHgX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 12 Aug 2021 03:36:23 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4981C061765;
+        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id nt11so8004254pjb.2;
+        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=GlUzBZlaOoOtYGy1tVlXbHFbHEq0/VdkpbsBXQi4TMY=;
+        b=eqzi9gvT2lMC9XqsL+9KpCm38Ft48Q5vTN2LNQunBNY5dW+mN7sBmRpoAvQgjPo2pA
+         64YjMmxoBFejoJihn7watvLSvOBtwndYX1APMpqs402Lnizlg3eKvD2xjuzykNw8oEHU
+         /q62loPDvoYUnfGFAzRaxNTaKoU1B0vWtLWXZTNLo2W3qNuI6ij0PehPSoyqgD/d7GzL
+         B3aS8TwDjEXp7FCg6j6mcMHwfune2lQAdZsx7/UaVDIpAstGngNWS7fzmGlJF73FGpcc
+         ZGTxufCmMiOc8XyVl9TG0JbD6neUpa7KJ13Bihd3CTZwdPwlKuClpoYL8Td9/syoVLQi
+         Qr7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=GlUzBZlaOoOtYGy1tVlXbHFbHEq0/VdkpbsBXQi4TMY=;
+        b=kYbeV8XZElSoI74lnXvhIZ79ZE2PTekeKxPijrwi4zKRP1fA26L7Epz+IBcz2I9/27
+         sCNA4LgcXKda+OGJlF4XvwnqM/J9qQUmrMT2eo0TY0+IwFDPPJpqkwGfpzjiFwjTW3B3
+         kXAyWUMqumkD3ntK+rqkS3yEqUfx5L/PEhGBwbOhfswMLEIhda5UEB+NRg5Kol2IZx7M
+         /Xw+eMefUDVgvIQo8hPyCmlrjLzO7y942VL4upMHsYap/Gmv7uB5UhvBFvbk7WEgE6Oe
+         zBHRZ3GK0+dh2JE1SmLG1VAQophfRPpSC6uWl83OMdkPKpYKvuAqoqzlPyXknC1Gw4SS
+         qU1w==
+X-Gm-Message-State: AOAM533wf/RYwCcZc5lPOgaLODzZEksTIczR+ia23zgPWvjwluoxvLa6
+        8UxaIdxiJFLbDxrmtJ3sGG2GCLm5WV8Zpcymb+8=
+X-Google-Smtp-Source: ABdhPJzLvF5GeBGD6qJ04CbntLI8Wbna4sVs6a9G+KgpV7iCvYz6tzggA19z5mnap57WWgY8zVCglQ==
+X-Received: by 2002:aa7:800b:0:b029:330:455f:57a8 with SMTP id j11-20020aa7800b0000b0290330455f57a8mr2851456pfi.7.1628753758367;
+        Thu, 12 Aug 2021 00:35:58 -0700 (PDT)
+Received: from [10.178.0.26] ([85.203.23.37])
+        by smtp.gmail.com with ESMTPSA id y4sm1783698pjw.57.2021.08.12.00.35.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Aug 2021 00:35:57 -0700 (PDT)
+To:     "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>,
+        "baijiaju1990@gmail.com" <baijiaju1990@gmail.com>
+From:   Tuo Li <islituo@gmail.com>
+Subject: [BUG] RDMA/hw/qib/qib_iba6120: possible buffer underflow in
+ rcvctrl_6120_mod()
+Message-ID: <9c03a5f4-865b-000e-0206-9e01f876261a@gmail.com>
+Date:   Thu, 12 Aug 2021 15:35:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10073 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 spamscore=0 bulkscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2107140000 definitions=main-2108110118
-X-Proofpoint-ORIG-GUID: 9ra5Lzrlp9iOOYpYCyKCOO2QQuTRp5t2
-X-Proofpoint-GUID: 9ra5Lzrlp9iOOYpYCyKCOO2QQuTRp5t2
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-ib_sa_service_rec_query() was introduced in kernel v2.6.13 by commit
-cbae32c56314 ("[PATCH] IB: Add Service Record support to SA client")
-in 2005. It was not used then and have never been used since.
+Hello,
 
-Removing it and related functions/structs.
+Our static analysis tool reports a possible buffer underflow in 
+qib_iba6120.c in Linux 5.14.0-rc3:
 
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/sa_query.c | 177 -------------------------------------
- include/rdma/ib_sa.h               |  24 -----
- 2 files changed, 201 deletions(-)
+The variable ctxt is checked in:
+2110:    if (ctxt < 0)
 
-diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index b61576f..740499b 100644
---- a/drivers/infiniband/core/sa_query.c
-+++ b/drivers/infiniband/core/sa_query.c
-@@ -123,12 +123,6 @@ struct ib_sa_query {
- #define IB_SA_CANCEL			0x00000002
- #define IB_SA_QUERY_OPA			0x00000004
- 
--struct ib_sa_service_query {
--	void (*callback)(int, struct ib_sa_service_rec *, void *);
--	void *context;
--	struct ib_sa_query sa_query;
--};
--
- struct ib_sa_path_query {
- 	void (*callback)(int, struct sa_path_rec *, void *);
- 	void *context;
-@@ -502,54 +496,6 @@ struct ib_sa_mcmember_query {
- 	  .size_bits    = 23 },
- };
- 
--#define SERVICE_REC_FIELD(field) \
--	.struct_offset_bytes = offsetof(struct ib_sa_service_rec, field),	\
--	.struct_size_bytes   = sizeof_field(struct ib_sa_service_rec, field),	\
--	.field_name          = "sa_service_rec:" #field
--
--static const struct ib_field service_rec_table[] = {
--	{ SERVICE_REC_FIELD(id),
--	  .offset_words = 0,
--	  .offset_bits  = 0,
--	  .size_bits    = 64 },
--	{ SERVICE_REC_FIELD(gid),
--	  .offset_words = 2,
--	  .offset_bits  = 0,
--	  .size_bits    = 128 },
--	{ SERVICE_REC_FIELD(pkey),
--	  .offset_words = 6,
--	  .offset_bits  = 0,
--	  .size_bits    = 16 },
--	{ SERVICE_REC_FIELD(lease),
--	  .offset_words = 7,
--	  .offset_bits  = 0,
--	  .size_bits    = 32 },
--	{ SERVICE_REC_FIELD(key),
--	  .offset_words = 8,
--	  .offset_bits  = 0,
--	  .size_bits    = 128 },
--	{ SERVICE_REC_FIELD(name),
--	  .offset_words = 12,
--	  .offset_bits  = 0,
--	  .size_bits    = 64*8 },
--	{ SERVICE_REC_FIELD(data8),
--	  .offset_words = 28,
--	  .offset_bits  = 0,
--	  .size_bits    = 16*8 },
--	{ SERVICE_REC_FIELD(data16),
--	  .offset_words = 32,
--	  .offset_bits  = 0,
--	  .size_bits    = 8*16 },
--	{ SERVICE_REC_FIELD(data32),
--	  .offset_words = 36,
--	  .offset_bits  = 0,
--	  .size_bits    = 4*32 },
--	{ SERVICE_REC_FIELD(data64),
--	  .offset_words = 40,
--	  .offset_bits  = 0,
--	  .size_bits    = 2*64 },
--};
--
- #define CLASSPORTINFO_REC_FIELD(field) \
- 	.struct_offset_bytes = offsetof(struct ib_class_port_info, field),	\
- 	.struct_size_bytes   = sizeof_field(struct ib_class_port_info, field),	\
-@@ -1634,129 +1580,6 @@ int ib_sa_path_rec_get(struct ib_sa_client *client,
- }
- EXPORT_SYMBOL(ib_sa_path_rec_get);
- 
--static void ib_sa_service_rec_callback(struct ib_sa_query *sa_query,
--				    int status,
--				    struct ib_sa_mad *mad)
--{
--	struct ib_sa_service_query *query =
--		container_of(sa_query, struct ib_sa_service_query, sa_query);
--
--	if (mad) {
--		struct ib_sa_service_rec rec;
--
--		ib_unpack(service_rec_table, ARRAY_SIZE(service_rec_table),
--			  mad->data, &rec);
--		query->callback(status, &rec, query->context);
--	} else
--		query->callback(status, NULL, query->context);
--}
--
--static void ib_sa_service_rec_release(struct ib_sa_query *sa_query)
--{
--	kfree(container_of(sa_query, struct ib_sa_service_query, sa_query));
--}
--
--/**
-- * ib_sa_service_rec_query - Start Service Record operation
-- * @client:SA client
-- * @device:device to send request on
-- * @port_num: port number to send request on
-- * @method:SA method - should be get, set, or delete
-- * @rec:Service Record to send in request
-- * @comp_mask:component mask to send in request
-- * @timeout_ms:time to wait for response
-- * @gfp_mask:GFP mask to use for internal allocations
-- * @callback:function called when request completes, times out or is
-- * canceled
-- * @context:opaque user context passed to callback
-- * @sa_query:request context, used to cancel request
-- *
-- * Send a Service Record set/get/delete to the SA to register,
-- * unregister or query a service record.
-- * The callback function will be called when the request completes (or
-- * fails); status is 0 for a successful response, -EINTR if the query
-- * is canceled, -ETIMEDOUT is the query timed out, or -EIO if an error
-- * occurred sending the query.  The resp parameter of the callback is
-- * only valid if status is 0.
-- *
-- * If the return value of ib_sa_service_rec_query() is negative, it is an
-- * error code.  Otherwise it is a request ID that can be used to cancel
-- * the query.
-- */
--int ib_sa_service_rec_query(struct ib_sa_client *client,
--			    struct ib_device *device, u32 port_num, u8 method,
--			    struct ib_sa_service_rec *rec,
--			    ib_sa_comp_mask comp_mask,
--			    unsigned long timeout_ms, gfp_t gfp_mask,
--			    void (*callback)(int status,
--					     struct ib_sa_service_rec *resp,
--					     void *context),
--			    void *context,
--			    struct ib_sa_query **sa_query)
--{
--	struct ib_sa_service_query *query;
--	struct ib_sa_device *sa_dev = ib_get_client_data(device, &sa_client);
--	struct ib_sa_port   *port;
--	struct ib_mad_agent *agent;
--	struct ib_sa_mad *mad;
--	int ret;
--
--	if (!sa_dev)
--		return -ENODEV;
--
--	port  = &sa_dev->port[port_num - sa_dev->start_port];
--	agent = port->agent;
--
--	if (method != IB_MGMT_METHOD_GET &&
--	    method != IB_MGMT_METHOD_SET &&
--	    method != IB_SA_METHOD_DELETE)
--		return -EINVAL;
--
--	query = kzalloc(sizeof(*query), gfp_mask);
--	if (!query)
--		return -ENOMEM;
--
--	query->sa_query.port     = port;
--	ret = alloc_mad(&query->sa_query, gfp_mask);
--	if (ret)
--		goto err1;
--
--	ib_sa_client_get(client);
--	query->sa_query.client = client;
--	query->callback        = callback;
--	query->context         = context;
--
--	mad = query->sa_query.mad_buf->mad;
--	init_mad(&query->sa_query, agent);
--
--	query->sa_query.callback = callback ? ib_sa_service_rec_callback : NULL;
--	query->sa_query.release  = ib_sa_service_rec_release;
--	mad->mad_hdr.method	 = method;
--	mad->mad_hdr.attr_id	 = cpu_to_be16(IB_SA_ATTR_SERVICE_REC);
--	mad->sa_hdr.comp_mask	 = comp_mask;
--
--	ib_pack(service_rec_table, ARRAY_SIZE(service_rec_table),
--		rec, mad->data);
--
--	*sa_query = &query->sa_query;
--
--	ret = send_mad(&query->sa_query, timeout_ms, gfp_mask);
--	if (ret < 0)
--		goto err2;
--
--	return ret;
--
--err2:
--	*sa_query = NULL;
--	ib_sa_client_put(query->sa_query.client);
--	free_mad(&query->sa_query);
--
--err1:
--	kfree(query);
--	return ret;
--}
--EXPORT_SYMBOL(ib_sa_service_rec_query);
--
- static void ib_sa_mcmember_rec_callback(struct ib_sa_query *sa_query,
- 					int status,
- 					struct ib_sa_mad *mad)
-diff --git a/include/rdma/ib_sa.h b/include/rdma/ib_sa.h
-index ba3c808..3634d4c 100644
---- a/include/rdma/ib_sa.h
-+++ b/include/rdma/ib_sa.h
-@@ -366,20 +366,6 @@ struct ib_sa_mcmember_rec {
- 
- #define IB_DEFAULT_SERVICE_LEASE 	0xFFFFFFFF
- 
--struct ib_sa_service_rec {
--	u64		id;
--	union ib_gid	gid;
--	__be16 		pkey;
--	/* reserved */
--	u32		lease;
--	u8		key[16];
--	u8		name[64];
--	u8		data8[16];
--	u16		data16[8];
--	u32		data32[4];
--	u64		data64[2];
--};
--
- #define IB_SA_GUIDINFO_REC_LID		IB_SA_COMP_MASK(0)
- #define IB_SA_GUIDINFO_REC_BLOCK_NUM	IB_SA_COMP_MASK(1)
- #define IB_SA_GUIDINFO_REC_RES1		IB_SA_COMP_MASK(2)
-@@ -430,16 +416,6 @@ int ib_sa_path_rec_get(struct ib_sa_client *client, struct ib_device *device,
- 					void *context),
- 		       void *context, struct ib_sa_query **query);
- 
--int ib_sa_service_rec_query(struct ib_sa_client *client,
--			    struct ib_device *device, u32 port_num, u8 method,
--			    struct ib_sa_service_rec *rec,
--			    ib_sa_comp_mask comp_mask, unsigned long timeout_ms,
--			    gfp_t gfp_mask,
--			    void (*callback)(int status,
--					     struct ib_sa_service_rec *resp,
--					     void *context),
--			    void *context, struct ib_sa_query **sa_query);
--
- struct ib_sa_multicast {
- 	struct ib_sa_mcmember_rec rec;
- 	ib_sa_comp_mask		comp_mask;
--- 
-1.8.3.1
+This indicates that ctxt can be negative.
+If so, possible buffer underflows will occur:
+2120:    qib_write_kreg_ctxt(dd, kr_rcvhdrtailaddr, ctxt, 
+dd->rcd[ctxt]->rcvhdrqtailaddr_phys);
+2122:    qib_write_kreg_ctxt(dd, kr_rcvhdraddr, ctxt, 
+dd->rcd[ctxt]->rcvhdrq_phys);
 
+However, I am not sure whether ctxt < 0 and op & QIB_RCVCTRL_CTXT_ENB 
+can be true at the same time.
+
+Any feedback would be appreciated, thanks!
+
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+
+Best wishes,
+Tuo Li
