@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F93C3EBCE2
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Aug 2021 21:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A589A3EBCE3
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Aug 2021 21:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhHMT5r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Aug 2021 15:57:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
+        id S233780AbhHMT6A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Aug 2021 15:58:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230440AbhHMT5r (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Aug 2021 15:57:47 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC04C061756
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 12:57:20 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id e13-20020a9d63cd0000b02904fa42f9d275so13419075otl.1
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 12:57:20 -0700 (PDT)
+        with ESMTP id S230440AbhHMT57 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Aug 2021 15:57:59 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A533C061756
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 12:57:32 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id r5so17534597oiw.7
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 12:57:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
         bh=mbgUZ+Z6Y///A0q/kKjZB1lZrHxnpDT836P5OsBe+0k=;
-        b=nvq1vVZg7eV8We+U0Svc55AKufB2TkD6IKf6qwEQOhE6slBTxudWSLGAoK1Fy1BnCd
-         MrvG0d0VAVu6heQLOX/ULZCDoqPaoj473/GVqEaa2Mdovp5i1/iHK+exOqmV9Y9TxDUS
-         RsylMQCsmVEHoVYtN5+xKy+Iex8e2fLEPe2YEHPSjbUT232/2JCtGOYum4puIDkD2zLC
-         Wszo5MiTgdhwypjFckkdDyYY1uVk+j09TUrl2olPDjrRQAz44edUe5C6HMK7r8x1bDu0
-         ik3zmE/fIxjaS6jIsQ/SgESEMZMs3ghe40kgyg2QWvByUHe+OquVSt8WEYE28SPxtR2U
-         937Q==
+        b=K9QmmgP2JOjZBhfqYojOi2wS0tTl1UlQzG3BMcYR6LHPITHIMsCp+3ISk5xZ+0Jukz
+         WXcXdqhlFhLoETb9C789mgjuAKFc7NY/Jj5rUvi6lc4jEZCHkfokbA4jGwQIpuIbLPka
+         PP11Az8PTUA+fgVW5zMF7jea4iORZfxBtQwjkGpN5rz0yst0bl25QDye2U/RM5+x/Oq+
+         /3Uq6YQ19gwoKRf0bGHse7gUzkCSKyxsQtEo43qPrudBdZVBmHSJKlG5ZCOdhBCVbDhj
+         nhDY9uh0CBtUn4Uxlff6q+5xnQZct4FqWZTnXV+c/vMPlMldAotn2qa6zCm+Ua5joito
+         rQeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
         bh=mbgUZ+Z6Y///A0q/kKjZB1lZrHxnpDT836P5OsBe+0k=;
-        b=ap/k38zXF3s2t8sm6o+ltbZJdDPX3t6ZilkuHEhyomSGUowVYcBJFF6daWdDMXMBEE
-         nRqiZi2bJxcl7jkg72uAnJXiGN2vpoD6oWPhZ4y+mqRpecU/9jCLL0uPuN/7XAZnrndq
-         4iEIB66PWWCmgKoAmULr093utDTu0bLkzITxljWgRlUl7X3Aoy3S+ExOCr58O0MzvM7g
-         oYcmkxoYsh9ggyLfzfaHaOXuHA6Mw+UuzJgoTdMMIXLiGZ7tTxGqq5ILtLOSxdw6Fpkc
-         5IswcDrmkbglv8CeBrYcC2qU9b8DIJcYV2bcwIbLAse3SFHq6Uh1qT6kaJPhD213Xt+4
-         43jA==
-X-Gm-Message-State: AOAM533+jc/0afA3LJRAchBG0XPIRUSHCxMfJzTZbyj9KQZ2Vkwjsu5P
-        XUnNDSex4f4u/o3SMFXxEc1X8dvOgjA=
-X-Google-Smtp-Source: ABdhPJza4Z4A4JIwcewKP3Y4iY7ln9pXTq4oYu3ofuPmYiYz9F7qI4GALKDUugDsHlSDhPAiWnv5BQ==
-X-Received: by 2002:a9d:68d4:: with SMTP id i20mr3468985oto.63.1628884639147;
-        Fri, 13 Aug 2021 12:57:19 -0700 (PDT)
+        b=j7qinXRnziBeXX8Zxp5Hgn1xPbQ7ilk3545dp6IVhxSDFtbFZI00f99N+jTRjrHs+X
+         aWjpeWkKZ2KVJFfWcbpnanrpf+2RT5JL5zRF08lxD9WM5AoLddN+nRe6LbxbQbnqToph
+         n4ki/i1o0Kz+wT845l5pgRYCko32X5A+Gek9G2udevBSM17ES/CHp3o2Yu2owzckexB6
+         k3/Fod8RrecixEeLiNIEeqDYmMhvE/8oJ9a4u4ffv8WOVoT/4vIcPzeZXEkuJtmgkvVZ
+         gkBq3/XGDfZLYI/Xbb9wjyA1RgvaztdsxRcYP/ws6oUdWL76zhAzzqaMFaSDNOBw9nfP
+         VF0w==
+X-Gm-Message-State: AOAM530ClxJsFYUUFALd/jLqYc2C+LS7Apv+MNHJPqeEvAXe702m26Ge
+        gsK7BYg3jvtzn6JiSyKtoz2gO1YYjWI=
+X-Google-Smtp-Source: ABdhPJx5c9PDflkhcjQneuHzzdj6qKpwUVL/IYryEWLa4GOasVcN5qXdFVyHr85D7MPQuuS505AGuQ==
+X-Received: by 2002:aca:4587:: with SMTP id s129mr3400686oia.64.1628884650910;
+        Fri, 13 Aug 2021 12:57:30 -0700 (PDT)
 Received: from ?IPv6:2603:8081:140c:1a00:5f86:1d06:aef7:df6b? (2603-8081-140c-1a00-5f86-1d06-aef7-df6b.res6.spectrum.com. [2603:8081:140c:1a00:5f86:1d06:aef7:df6b])
-        by smtp.gmail.com with ESMTPSA id n4sm438030ooe.10.2021.08.13.12.57.18
+        by smtp.gmail.com with ESMTPSA id u18sm448183ooi.40.2021.08.13.12.57.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Aug 2021 12:57:18 -0700 (PDT)
+        Fri, 13 Aug 2021 12:57:30 -0700 (PDT)
 Subject: Re: [bug report] RDMA/rxe: Remove RXE_POOL_ATOMIC
 To:     Dan Carpenter <dan.carpenter@oracle.com>
 Cc:     linux-rdma@vger.kernel.org
 References: <20210811085441.GA20866@kili>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <c5aaf213-c931-f9fb-8cb4-a41dff71145e@gmail.com>
-Date:   Fri, 13 Aug 2021 14:57:13 -0500
+Message-ID: <d01036e9-da12-5d19-0c07-73b6fd8e8c79@gmail.com>
+Date:   Fri, 13 Aug 2021 14:57:25 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
