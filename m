@@ -2,91 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A591A3EBDB8
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 Aug 2021 23:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26C6F3EBDFB
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 Aug 2021 23:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbhHMVHU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 Aug 2021 17:07:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44370 "EHLO
+        id S234934AbhHMVk1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 Aug 2021 17:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234702AbhHMVHU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Aug 2021 17:07:20 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D351CC061756
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 14:06:52 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id o185so17748137oih.13
-        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 14:06:52 -0700 (PDT)
+        with ESMTP id S234547AbhHMVk0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 Aug 2021 17:40:26 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E64C061756
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 14:39:59 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id l36-20020a0568302b24b0290517526ce5e3so6238161otv.11
+        for <linux-rdma@vger.kernel.org>; Fri, 13 Aug 2021 14:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uvDVnegxwS+7MxkLjpl+EFWwbWDDk6PT3cCAhFlEBQ0=;
-        b=vS2TdWKR7hVk49jbGUueq46p7u0M4xzlQKW3sNa8wQHeroNY2qfA4CIuuuUDCyVxUz
-         sGMoMhIpUNZgIcwslhyXyPQb7uKhn1j+470j/+E2bh8r1IpKd/Y2Cc6LRhEICd0gBg5A
-         33xNESu9+CrjCuyYNzr48qtLeEQ8B7SBd4/y7wsEoZv6N8N0PeUqzL55ihhx3/8MslAx
-         YYIeqiFLVpAOtbFwNCnQZCvMeLUNTUVzmXulsAtennvRDo8pRrz38ilp+zz66uv5+Emg
-         19wnWPOOO9PoMTSG5GFt5tkKCKNfdi1nwsbIDC6S9v3ZNr92wL1mwnHV/FUiPI8xOWW5
-         SDnA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fqrVM8T4SNwCXH1L7KLAN8zVzHQDazRuzf3yqTvQb2k=;
+        b=N4Wb1tJIMu5d38i9Q0nr9McnaMcpUdQTI+DTil5KOj8dY0mGmMRQtuXBc3hroVXuoL
+         0gElKdjsBb4bvav5XnI5bmO4tEGOR/MbOtRKEV9XaQ9AW1cGYXyKKSiByozVmX5M8r3u
+         goa7VajvO4Kvd+iWqVchu1IqjO1oYxXtKfjOGjrsxOqN+psxNCDbEkqV+JIy9HoxsYlh
+         9XX5q3/j9rc5xxRLVwMUgyQhdeEHmbMHQRHtzbFBcgAuuEtIX1RW1NwnmgBt7Yudyt4W
+         6GT+3Fk+cJNLbEj3ewYm98VCMAjScD3KFS+ZIy2KS4LePu3nWvV2GzQp/tm/iq/byjBf
+         CxXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=uvDVnegxwS+7MxkLjpl+EFWwbWDDk6PT3cCAhFlEBQ0=;
-        b=QjHxTGHjBZLcWwVrQCZeL4Tg/va7yZhbIyx3PGr/dSKB9D5OFMYH/4TBPI54LIlT1E
-         ClmWd/U/rg3SoyVS7XUY3eLpKtJstD7h9L+aRS1FkWYxuIvGDMVQ90HfHAUANz8k8nbA
-         n2k0KvXvW9Ohvorneb6RZMkEHbTDUljxEhVNNlcdFuFIVFo0SVOntLWe8k3WDIVuMi4z
-         5V1nRlzcqyiIYvQQVrk2l68HdCVbSjgg/JGPHGxvKgw7V8nkiELC0rT+d8dpeGahGmK0
-         0IrilgoRE6VS1yG9h8PUz7JasoKVTLqrbP8wjj2A5+HsD/rf8WBa1bNF0nkVTMOZPxFj
-         M+1w==
-X-Gm-Message-State: AOAM533xSlWZFCO9uXpWa+gJ8w/V8NMmzKyOkAFU5UiFUBtPKg+SsDXe
-        PgX6n/KG+KxM4GDJwXhgalU=
-X-Google-Smtp-Source: ABdhPJwuibd8Rzrkkex2z24dvPjy1kJao2NifhULZgrlknP61qjDCPTS58axb8ls9DxWYy81x/UGKw==
-X-Received: by 2002:aca:2105:: with SMTP id 5mr3614504oiz.98.1628888812346;
-        Fri, 13 Aug 2021 14:06:52 -0700 (PDT)
-Received: from localhost (2603-8081-140c-1a00-5f86-1d06-aef7-df6b.res6.spectrum.com. [2603:8081:140c:1a00:5f86:1d06:aef7:df6b])
-        by smtp.gmail.com with ESMTPSA id g13sm314968oos.39.2021.08.13.14.06.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 14:06:51 -0700 (PDT)
+        bh=fqrVM8T4SNwCXH1L7KLAN8zVzHQDazRuzf3yqTvQb2k=;
+        b=IR5ifG0rS7o2LTVsY7Ul86eB0e5OlDzVf3p2SxxkX0cAnq3Iv/G7rZlSej2/9FF4vj
+         TIiXVi6yebnupLUhFteC4WlUFas+b6kM3TOQVEgIqvuAVbT9+Vh/Knc348PCk6XSYTw9
+         grsk5bl2YymMm0bzeoCztw1XZWgmIYUoHj4Av3ZKkliCMECdEiub6qUGP6qBHWKh64oo
+         bH6y8gqpBCyWoBojeEY6bXh2yLSi+L1yvZQVIUX0ZnLJUIUXRuQqiJqIWGRJGGGCDjEY
+         9x3+vHWjcl6Iyuhf+4CyOUDhq32DwmEKPg/A0HnI/bW59gnIZS9nhyWMMQy7tgF6Ueax
+         I8Yg==
+X-Gm-Message-State: AOAM533Gi+jITmYCRHUemoBE+E13Du9q43+uO00OEDAfN8yIsNsK9dfj
+        Ucqx+AVNRAwcIzTovjoE1nIYx+9DI0g=
+X-Google-Smtp-Source: ABdhPJynlD3WXeHxSPQSR6/jLZIYaDwdSsunRlr/lLSddBLNyNV9M2XEgSRtbPwTZYCFCyk9GDwsaA==
+X-Received: by 2002:a05:6830:2490:: with SMTP id u16mr3714409ots.356.1628890798905;
+        Fri, 13 Aug 2021 14:39:58 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:5f86:1d06:aef7:df6b? (2603-8081-140c-1a00-5f86-1d06-aef7-df6b.res6.spectrum.com. [2603:8081:140c:1a00:5f86:1d06:aef7:df6b])
+        by smtp.gmail.com with ESMTPSA id b5sm416378oif.44.2021.08.13.14.39.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Aug 2021 14:39:58 -0700 (PDT)
+Subject: Re: [PATCH 5/5] Providers/rxe: Support XRC traffic
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     jgg@nvidia.com, xyjxyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20210730152157.67592-1-rpearsonhpe@gmail.com>
+ <20210730152157.67592-6-rpearsonhpe@gmail.com> <YQetIxKBrtpBvL5Y@unreal>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, dan.carpenter@oracle.com,
-        linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next] RDMA/rxe: Fix memory allocation while locked
-Date:   Fri, 13 Aug 2021 16:06:26 -0500
-Message-Id: <20210813210625.4484-1-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
+Message-ID: <32738f39-840b-eace-4b4c-900b71fd6d05@gmail.com>
+Date:   Fri, 13 Aug 2021 16:39:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YQetIxKBrtpBvL5Y@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-rxe_mcast_add_grp_elem() in rxe_mcast.c calls rxe_alloc() while holding
-spinlocks which in turn calls kzalloc(size, GFP_KERNEL) which is incorrect.
-This patch replaces rxe_alloc() by rxe_alloc_locked() which uses GFP_ATOMIC.
-This bug was caused by the below mentioned commit and failing to handle the
-need for the atomic allocate.
+On 8/2/21 3:30 AM, Leon Romanovsky wrote:
+> On Fri, Jul 30, 2021 at 10:21:58AM -0500, Bob Pearson wrote:
+>> Extended create_qp and create_qp_ex verbs to support XRC QP types.
+>> Extended WRs to support XRC operations.
+>>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  providers/rxe/rxe.c | 132 ++++++++++++++++++++++++++++++++------------
+>>  1 file changed, 96 insertions(+), 36 deletions(-)
+> 
+> <...>
+> 
+>> +static void wr_set_xrc_srqn(struct ibv_qp_ex *ibqp, uint32_t remote_srqn)
+>> +{
+>> +	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
+>> +	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
+>> +						   qp->cur_index - 1);
+>> +
+>> +	if (qp->err)
+>> +		return;
+> 
+> Why is that?
+> 
+>> +
+>> +	wqe->wr.wr.xrc.srq_num = remote_srqn;
+>> +}
+>> +
 
-Fixes: 4276fd0dddc9 ("Remove RXE_POOL_ATOMIC")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_mcast.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+qp->err is used to detect overrun in the send WQ. Each of the 'builders' calls check_qp_queue_full()
+and sets qp->err if there isn't any more room in the send queue. Since the routines are of type void
+there is no way to tell the caller that something bad has happened. Once the builder fails the
+'setters' have to fail as well because there is no place to write the WQE parameters. If this happens
+the user space caller will will see the operations succeed up to the point that it ran out of room and
+then stop. This is sort of a half solution to the problem. The alternative is to say that the user can
+never make this mistake and just keep building WQEs wrapping around the queue.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 0ea9a5aa4ec0..1c1d1b53312d 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -85,7 +85,7 @@ int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		goto out;
- 	}
- 
--	elem = rxe_alloc(&rxe->mc_elem_pool);
-+	elem = rxe_alloc_locked(&rxe->mc_elem_pool);
- 	if (!elem) {
- 		err = -ENOMEM;
- 		goto out;
--- 
-2.30.2
+Bob
 
