@@ -2,64 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD72E3F0E0E
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 00:20:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB873F0E4B
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 00:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234569AbhHRWUl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 18:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
+        id S234703AbhHRWkn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 18:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234106AbhHRWUk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Aug 2021 18:20:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 976826103A;
-        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
+        id S234624AbhHRWkm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:40:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id B8532610D2;
+        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629325205;
-        bh=bqPkbAeTMqgeqxawU9F02qdmd7fXTAn8RsMvsk4nVng=;
+        s=k20201202; t=1629326406;
+        bh=ub4117PCBJL9tI8sXJcmEZA5GAcpq4QhJp59K8FOGCg=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=YDFrl/kA78wWRsT/USYoTIzatOADCn8Te2TSCb3wTIPS1M+s4zL8TUytpMysB3svg
-         uwvDqdlWt1nbf0Z3N5xirv+DBFnZacxD6J93k/jMSf6ZI+y2AQOsMhP8oyDH3IVRS4
-         MOLXEwSCkd8L0HU++50VQhTzDGxpG3aksZVbCDlk0ZdWz1MKeqRMpub1c7YOFNlSJD
-         LkYwjVJuVIqBqnCpQwljUbXSzDm173yB6ZJiq1MthG3aMdZhpnDJdqUf+agrH21BNj
-         Z2FR5qoi0UsSpPLIMDGCzVl5i3Xr0oVaX+wufYBHnjVbJvYBEzd1L5Rz4HgImvZRYN
-         YPu39E07qTqQA==
+        b=sZNV5qdbb3+fOs/E8z3dR0c/tCfOvkerE39Fmd5PzQ6ipRUatnOVFkdRNlq/LYiY3
+         Jv8EKJ/2Bto1+zxGc1fz8LRZ+STBwdzEIuEf6XDskt6HXGLZgZ4xkYn05XBOF5KfBr
+         dNC8sa8Qc6TmpPAx2iJ8zD0nA6+7I3iA4lX/ybBCumbmGnbGW6e0h3Db18sb8Vk2uP
+         ckeK29K+oFSHBXsrYdM/vZUQgQMMUMpH0MDpKskSSFzCda3dlHCrpemxDCJLtHklTH
+         HJQ7PH95qUxbBrFVYT6PoWDWPf0zG+jYEy6SJkO3jr6OirOqK5vCl8ThH7ZstTHCRE
+         4VaMxpHsdPWtQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8A688609EB;
-        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AEC6660A25;
+        Wed, 18 Aug 2021 22:40:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mlx4: Use ARRAY_SIZE to get an array's size
+Subject: Re: [PATCH net 1/1] net/rds: dma_map_sg is entitled to merge entries
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162932520556.31273.6111065884005742758.git-patchwork-notify@kernel.org>
-Date:   Wed, 18 Aug 2021 22:20:05 +0000
-References: <20210817121106.44189-1-wangborong@cdjrlc.com>
-In-Reply-To: <20210817121106.44189-1-wangborong@cdjrlc.com>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com,
+Message-Id: <162932640671.7744.17327639180995052321.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Aug 2021 22:40:06 +0000
+References: <60efc69f-1f35-529d-a7ef-da0549cad143@oracle.com>
+In-Reply-To: <60efc69f-1f35-529d-a7ef-da0549cad143@oracle.com>
+To:     Gerd Rausch <gerd.rausch@oracle.com>
+Cc:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org,
         netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        rds-devel@oss.oracle.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This patch was applied to netdev/net.git (refs/heads/master):
 
-On Tue, 17 Aug 2021 20:11:06 +0800 you wrote:
-> The ARRAY_SIZE macro is defined to get an array's size which is
-> more compact and more formal in linux source. Thus, we can replace
-> the long sizeof(arr)/sizeof(arr[0]) with the compact ARRAY_SIZE.
+On Tue, 17 Aug 2021 10:04:37 -0700 you wrote:
+> Function "dma_map_sg" is entitled to merge adjacent entries
+> and return a value smaller than what was passed as "nents".
 > 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Subsequently "ib_map_mr_sg" needs to work with this value ("sg_dma_len")
+> rather than the original "nents" parameter ("sg_len").
+> 
+> This old RDS bug was exposed and reliably causes kernel panics
+> (using RDMA operations "rds-stress -D") on x86_64 starting with:
+> commit c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
+> 
+> [...]
 
 Here is the summary with links:
-  - net/mlx4: Use ARRAY_SIZE to get an array's size
-    https://git.kernel.org/netdev/net-next/c/19b8ece42c56
+  - [net,1/1] net/rds: dma_map_sg is entitled to merge entries
+    https://git.kernel.org/netdev/net/c/fb4b1373dcab
 
 You are awesome, thank you!
 --
