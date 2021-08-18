@@ -2,56 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEED3EFC93
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 08:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C26D3EFBD4
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 08:16:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbhHRG0E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 02:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        id S238191AbhHRGQZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 02:16:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238341AbhHRGY4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 02:24:56 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A4AC0611C6
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:24:18 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id i21so1103411pfd.8
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:24:18 -0700 (PDT)
+        with ESMTP id S239351AbhHRGQC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 02:16:02 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B95C035436
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:14:20 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i21so1082670pfd.8
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:14:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cNmalVG+pbxPr3mreA9zKEEd2H4tBC2vGc39RgbA9Tk=;
-        b=T0mB0uwkd+Bwr8IQl/3YD/ORZ/h6GcZHHAfw4qTPS7nphYkQehERGSWj59cSMbAgzk
-         KKR0vMG5a88SolHec9ej2zYoy9ZdaOnCLwqfmIhA/oS2OWR89diIyEBz4j3SQO5zhg8O
-         FN6UWEuMg4e4CXhSW8Hsl565xQ91qeHwCgvM4=
+        bh=6F2rp4AnP3NGeIGZ05xMXWJjpPIK4Jb97h13JojrAko=;
+        b=YS7HjPWIYN/hi0zY9J/Qa3kdLiLH0jPYZVcT09h4hTpyhsDz72uJbEQwv0OM8Fb7ql
+         znv7CvxzeA0Qz0xPN1dyRP+5WGpweGQpGYgBdMyCMyHPS7sb4OP7X3quoy3fBQtKt91Q
+         43CDuW+AiWTyS8i2ju09BtUBAVM+UeJJMXG1A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cNmalVG+pbxPr3mreA9zKEEd2H4tBC2vGc39RgbA9Tk=;
-        b=c6dEbztsz/iA4XPq9hVfSCVuMxOOdyI/yTwAN3UxmoJjK5ItU2ae7UxKvUAxzHqmWc
-         Tg4LA2Bd333GdGP/15qvLWeBU6NcLobLbGRkh1/2PP3yCVSLSduU+mZb8uB7K8liCJqj
-         rblCiNtRH0x7cEfAaPQ3il82SDiLkMevqrwiD4yVMRSsnVSQEiCuO5woTcNVDskEsbYa
-         lXsCe0+Uzou39knRKBYO2uHfr3VDlIframFr1eulu2sFbHy6hhnOgbTNxyg1InbebDzV
-         1F2uTs6xxWnuqud9C/tSaHHf/kfWlY6ctCVBolsEuigWXCiOdmOfWuZsOH6y5zcD/yUW
-         Tu+w==
-X-Gm-Message-State: AOAM531VMWuuI1eW1d7YfIlYFZVZA23Qd3wvZSHx4rDiMDoBdoLXJWn0
-        yVKcqYcaiei/SWi1PdoSEmac+w==
-X-Google-Smtp-Source: ABdhPJzoElJdRbLlcznm9p1v4fqVMxPQQbVFbTyyeunVo+q1c4LPSW+dleh3870/C7uQRKu+J9kAIA==
-X-Received: by 2002:aa7:82cf:0:b029:3c4:4daa:fd68 with SMTP id f15-20020aa782cf0000b02903c44daafd68mr7700665pfn.66.1629267858224;
-        Tue, 17 Aug 2021 23:24:18 -0700 (PDT)
+        bh=6F2rp4AnP3NGeIGZ05xMXWJjpPIK4Jb97h13JojrAko=;
+        b=Y6am0RvQ+Q2p3721XLZCid8LT+EI7gHIh8Az34cNtshyIeDIwbamgtwrZXUwcyvrej
+         yNftbLaZFPO3hseUIyQLladVPNYlFPiaQnp5OB3p+rKwS4lu4XNfSZ2LLP+L+7rpT73Z
+         v6BF17hmI5au+fGkZO9FQr1N+EuRYQ6Nb/u8GrB+xGzsoZiE7XEz5WE21ahRUlBo0l3m
+         c4Raa5erXsgBIRtwSscBIQQSWS3E8D5/rrMhsmP1k/9zJkWEdwXImY5AaR1qo2HNL/03
+         fdtaevPdXKBaEB5MAmDk1XDSzt9Qwf1Ksm4l6BAMKB5fA/F8inUwQjYuS2j0zlWlhe0G
+         Radg==
+X-Gm-Message-State: AOAM5307LeDemsDNpkS9e5dHlwZVvCIPzDDr6/c2omPT1EhOrb3F99s+
+        NOWaTYAjZVVjBaYeZkim0cfrWg==
+X-Google-Smtp-Source: ABdhPJyzumo6IYb/F48cHTjkdOuaBCTlR115MA4uwjlzC1JKyL0YMWal0YnIIHyVxOdZVX+0g5WHNQ==
+X-Received: by 2002:a62:648c:0:b029:3e0:80dd:9b9e with SMTP id y134-20020a62648c0000b02903e080dd9b9emr7793195pfb.10.1629267260047;
+        Tue, 17 Aug 2021 23:14:20 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 64sm4749129pfy.114.2021.08.17.23.24.14
+        by smtp.gmail.com with ESMTPSA id q3sm5628541pgl.23.2021.08.17.23.14.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Aug 2021 23:24:15 -0700 (PDT)
+        Tue, 17 Aug 2021 23:14:19 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Raju Rangoju <rajur@chelsio.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -60,14 +62,14 @@ Cc:     Kees Cook <keescook@chromium.org>,
         linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
         Rasmus Villemoes <linux@rasmusvillemoes.dk>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH v2 21/63] net/mlx5e: Use struct_group() for memcpy() region
-Date:   Tue, 17 Aug 2021 23:04:51 -0700
-Message-Id: <20210818060533.3569517-22-keescook@chromium.org>
+Subject: [PATCH v2 46/63] iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl
+Date:   Tue, 17 Aug 2021 23:05:16 -0700
+Message-Id: <20210818060533.3569517-47-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210818060533.3569517-1-keescook@chromium.org>
 References: <20210818060533.3569517-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2287; h=from:subject; bh=H1NJrCbG/+gkFDDOH1HKv+jRsuxCwz9I+sItTuJPxig=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMie0CZ8QknrFWsSjQNv2Z5IJELFExqf7lN7Wwc 5aQQO+qJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjIgAKCRCJcvTf3G3AJhJRD/ 96K2w+o05X7hhRITOYKyJKbH37CP3Ty7ALSuqaRioqi5222xg1OlnDlOmTcxm36KPLSYb9gNOPa98l 7az22zZD/h+540iMnPR/nKUQpztke9KGCWfI6q0E264noieiOeBk645rAPlBm4GwcsyT0YYPKqC1ZQ UTpt6I53LSvfaDvqvAqf+r8OlgAEKrvseNyt6qPuA13XUHguBBpovSDddi8OEqv/t5Q2wj7UEMmW9J IV+m0C3UpQKXOeOhTy23oZX7PjawKd6/ah6FLBqp6AKcedGBTDdkEtjHbu8o9trfR1W1JUsvMCcv9S 8dO2gsGyuF0n5SykLaKxqeSKyvE8fjXBmALhef7xIECWwU3oMeXXcDnEKC00an8WKoTI/p3sdBuwGx hjBgHLa6fYkRSNX07ZrUHUpURPOef9SB6ijFamo9WBDRCJqk7AaNFp4cIkmEoupJpZdmr/Cm7s7jzG oQUq+6Tbv7TkwMP3GX9S0UgzY5hbFKCx8+nqIQ8qQxp/nmFHZZ9/B1u/uzYcV0mZ0Z2HD8SsYnTNtT +36VQ5kEs/5D+CCjDnJyxpY0zbiwB11VKD/JrZ8xY1p1Y4YjDHvtOjkykedRvOU0ltxWDBDoGf26q8 mtK38NkfvvezjBrpRzYDrxRYSxWAIcOs6jVAkBvNvKCrsZueeLXchKsyUi4w==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2404; h=from:subject; bh=rquyWjDPJAfPxGH6VKiA2jIuZnWvLU6UgPqN/0FyQ/s=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMoZBU+AZTLPLboKA2tsHcUYnxXofUjzUeVV5jM TIxpyi+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjKAAKCRCJcvTf3G3AJvHSD/ 44+6rU5jvReItNvFdWkzxvCu3Zfc98qUS6K5JULs74yaY9KObRjykrNvK0Am5wl91nOIUyOidTpbY8 gj5vdxz6Zn5qaupcsAyy9fMyJ/+o6OIVPQVkpg4q/1xaUe9XJBw7EuoHQ00xZOSITrFQxedJAa0OAv dDdUw2IJMSVp1BsKrqZ8zwnx6OGNmdcku1qJXAyXdUPATD3x8PsX1xW9/NxTPuIQTj7FklQQxnfOVi VM13p6OU2dfVTiA1MK0kBRp4tdKoR/yNDNbe6P8SBH4R+bXwe0CsulDmCc2+ySkpmoFz5Zs02RsCMW GqoOF37v9Un0rA9+BTw45+PmTWENIznqpoX86i1KrfPcRoQNLXy9z8wlq+eLzIvdRxFlRQ0KUXkX0f 0gvjYVFDNzhTQYMNABAPN1q4DUm5J4vXD2Na1e16bvF0v0fmgTDLw5ZjtW+s7lUQKEkjmMqeBNOT+Y xctphKqxjE0Q3GAfUhUMBlcKKfnVS0MkEPrQpdYePDhu92xpbEb1MR4J6wYY4kSlPNUtkpnSkccN1L /8vDJalPNghDaWw+eZU5YfymPY1LdOBA+9X5cVqUEglZUr356BU/Ynk+xpBRobnBRlejxkrHcHUA4g f+Tt4SJV/gbQboppXKrKMmuQZiynIRvgIxU13ahhCZLHHDEZKdsOOAbppgSQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -75,59 +77,66 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+field bounds checking for memset(), avoid intentionally writing across
+neighboring fields.
 
-Use struct_group() in struct vlan_ethhdr around members h_dest and
-h_source, so they can be referenced together. This will allow memcpy()
-and sizeof() to more easily reason about sizes, improve readability,
-and avoid future warnings about writing beyond the end of h_dest.
+Use memset_startat() so memset() doesn't get confused about writing
+beyond the destination member that is intended to be the starting point
+of zeroing through the end of the struct. Additionally, since everything
+appears to perform a roundup (including allocation), just change the
+size of the struct itself and add a build-time check to validate the
+expected size.
 
-"pahole" shows no size nor member offset changes to struct vlan_ethhdr.
-"objdump -d" shows no object code changes.
-
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
+Cc: Potnuri Bharat Teja <bharat@chelsio.com>
+Cc: Doug Ledford <dledford@redhat.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Raju Rangoju <rajur@chelsio.com>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
 Cc: linux-rdma@vger.kernel.org
+Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- include/linux/if_vlan.h                         | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c            | 5 +++--
+ drivers/net/ethernet/chelsio/cxgb4/t4_msg.h | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index c63d78eda606..39942a952736 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -207,7 +207,7 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
- 	int cpy1_sz = 2 * ETH_ALEN;
- 	int cpy2_sz = ihs - cpy1_sz;
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 291471d12197..6519ea8ebf23 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2471,7 +2471,8 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 	skb_get(skb);
+ 	rpl = cplhdr(skb);
+ 	if (!is_t4(adapter_type)) {
+-		skb_trim(skb, roundup(sizeof(*rpl5), 16));
++		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
++		skb_trim(skb, sizeof(*rpl5));
+ 		rpl5 = (void *)rpl;
+ 		INIT_TP_WR(rpl5, ep->hwtid);
+ 	} else {
+@@ -2487,7 +2488,7 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
+ 		opt2 |= T5_ISS_F;
+ 		rpl5 = (void *)rpl;
+-		memset(&rpl5->iss, 0, roundup(sizeof(*rpl5)-sizeof(*rpl), 16));
++		memset_after(rpl5, 0, iss);
+ 		if (peer2peer)
+ 			isn += 4;
+ 		rpl5->iss = cpu_to_be32(isn);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+index fed5f93bf620..26433a62d7f0 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
+ 	__be32 opt2;
+ 	__be64 opt0;
+ 	__be32 iss;
+-	__be32 rsvd;
++	__be32 rsvd[3];
+ };
  
--	memcpy(vhdr, skb->data, cpy1_sz);
-+	memcpy(&vhdr->addrs, skb->data, cpy1_sz);
- 	vhdr->h_vlan_proto = skb->vlan_proto;
- 	vhdr->h_vlan_TCI = cpu_to_be16(skb_vlan_tag_get(skb));
- 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
-diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
-index 41a518336673..45aad461aa34 100644
---- a/include/linux/if_vlan.h
-+++ b/include/linux/if_vlan.h
-@@ -46,8 +46,10 @@ struct vlan_hdr {
-  *	@h_vlan_encapsulated_proto: packet type ID or len
-  */
- struct vlan_ethhdr {
--	unsigned char	h_dest[ETH_ALEN];
--	unsigned char	h_source[ETH_ALEN];
-+	struct_group(addrs,
-+		unsigned char	h_dest[ETH_ALEN];
-+		unsigned char	h_source[ETH_ALEN];
-+	);
- 	__be16		h_vlan_proto;
- 	__be16		h_vlan_TCI;
- 	__be16		h_vlan_encapsulated_proto;
+ struct cpl_act_open_req {
 -- 
 2.30.2
 
