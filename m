@@ -2,133 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FE83F097A
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 18:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED313F0988
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 18:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231247AbhHRQqg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 12:46:36 -0400
-Received: from mail-bn7nam10on2051.outbound.protection.outlook.com ([40.107.92.51]:6561
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        id S229780AbhHRQsj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 12:48:39 -0400
+Received: from mail-dm6nam10on2063.outbound.protection.outlook.com ([40.107.93.63]:47776
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229623AbhHRQqf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Aug 2021 12:46:35 -0400
+        id S229768AbhHRQsi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Aug 2021 12:48:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nfCM53lYZsfl3nAKqQ6oeGPRkKGW+JZSaPVzvgsJSamZ0FRksZtNFoL9Eyu/dYB+s0m/4y9zBD7q0sikE4LFuvXDDlLCVdXCgsI8tH5zINZgdTRMfESYpj1S7t9ns/qhhN2SybRgWYgNKfNtqn8gJ6X7H1HsXMrTUW16y8ykZ0elhMXnHodtCTXdeC/URscIqf2oGoYPkFtS9NVqZizYG9rPO5p6pVyYfOuRIcyLvX4iBqDfzesHHP2VqVDWzrl2Vi/paljyxedakSPE0EjnnTfw4bKPMRtK+laav91qbGQePpDYTvYBNQbC/6mcqDKWapx51hKW16crjGNcwRTXvg==
+ b=IQkaZ7zvNLAf+XPXPI6BIugf2JBAE5AJvrW6QD92Ch5rVz+WG4edBetZAbM7R9vMsZK+grMfT1tr6XqA5DtVnilmC5Fux2YfBzxo8lweBa1Ga6RczNXs3FyKd6bQMdviPCbzOVW8M2PYJ6halWm84Zcy5Oz0HJn82iNKgsKm++mJskEDX1rn/IQTZiPsx5yLR8t59QNpTaZk0ZEj+HA0JGu8c31tklDrhUKbb04to3RsvuFdktvCgZsx4j4UKjdGPqc+81+F6bXd5A9yoDD7ZMQrVXTEPc2d+YAAg3+mBj2MQw9kWR/VMEuONkSiPiVEiTuQkohb/7RY/OA6I+yMeQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IBpt5yDM8IuZyIDp7RB/OwbNWHn7aDtNGEb7ljlfPaU=;
- b=Uub7a8N63i91elmPC/CVZCI+EtNUfwczDrre+GHr86lKTxfWaveMmIBx5pZxOgyOKQpb7O6x0ANkmmiT7lywqs1J1eGLtGux7vn02sVa58S/eDyc6iLwabo/uy/osUFULBU4K5zoeqUeWju+JLoyuwljdY+wNSSZ0lRETB2vPzztMjMzaztmsem1K2oXG+gee6XsTTx3yLurh1WTR/Aq/zoV8CtrroCLKsHT86WuHwklRnx8b+Idd6IUBiN0ob3HXFbeL21p7zGDHn8ShBB40rNiTJqUma9cIg4l20Qha4m57tmp43wnohVnchgkYcKVynLbqHidvdh53v//e1w96g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
+ bh=cwYK5ys9hV+RMI41OLxtXl6PO0pvm3AihKrj+s6Bu7A=;
+ b=mue9WYwf9zMk/BxLui69cNwRZ7mWrvoPRCcpws0CoO/ddZqkj8oGIZFOyh2XWI9Y9GBcEQmZkq9lNNzE0v4oy36ikYGR8PrA4fA40+5hM/CxRI6Yn4pB/3Zx6DIBEaL7IIDFau9YD/ecmlCY64LGAkzQGsCK9rDQVRFmaRRRLeELVB1JiDlJ//rdzIEig6pV643aohWjdKrWCNZYzcX8aJ3BpTkPpp4mWc5U7z26wZsQeI5ohWU0XGjgQ9lFQAWEMpPSg2u48yBzn5qSpvsCcKs92QvJAeEsIb7r0pCBd4OXS15Wv3S7zQZu3s+2HdqOF1uMpWA2lggKygjcooIlxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=nxp.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IBpt5yDM8IuZyIDp7RB/OwbNWHn7aDtNGEb7ljlfPaU=;
- b=kgQP/EG9wBcUd6UKl9iJl4fZqxHb//f6wGHEkVt8M/ZmdtboQiAtwRKi0lXLBu0v8JaA4VqlvRlsurbDNjzeAJ27vCcnSz7fqu0dLx4ID4ixj1XjrXFMLnXhm5hHOtsy2o5ILENBPmJsCrEwn0079jFwkEIsLdDDCNb+IMzvB+OCnf+GgAPLcULD58Q5GV6PFNdwrLRmr8KGwL8ePoPdt9ST2e3ZH8qvd/LPrMMhATtwm4I8VMBtiaoep/Vr5rVdkLcJzQmTVEikmScukkC6x6CBuwl7CF+3LaE+8C5nMNoa48ThdaWDCEC7meM4yUNj9Fq072px9485ZX82brAQkA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5270.namprd12.prod.outlook.com (2603:10b6:208:31e::7) with
+ bh=cwYK5ys9hV+RMI41OLxtXl6PO0pvm3AihKrj+s6Bu7A=;
+ b=Ivns/9ygmnm228caL0WpxyAFs5DF1YapouClU3cPFNaZCSM//+RzUxSIyAmgf3h1SkeSpvvNHS2Sc4ItZbl0RCRf4fgU5xXhQ4yacoDkwQe2wK+S6jotG7twUi5Evb34NsGXkQnLAIQzuHcXyZhO7wACSYiPquBlrNNDOuErSbTwP8Fixy5/825Eu+PzMjSDOlx2WM/cf8Rck4BV3JFVj/fdtQJSIrJIFncR41An2NZ7hh0mRk+/fGotve2tjzyW+Kic32DSLOtT4GRc9ijHBFKkiWhcxSm7np65m0ne2d7bvWL+BwubyP9XOyCyYVqR+YiBL/trmFqOjYZXXk+0rA==
+Received: from DM5PR13CA0026.namprd13.prod.outlook.com (2603:10b6:3:7b::12) by
+ BY5PR12MB4081.namprd12.prod.outlook.com (2603:10b6:a03:20e::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.17; Wed, 18 Aug
- 2021 16:45:59 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%7]) with mapi id 15.20.4415.024; Wed, 18 Aug 2021
- 16:45:59 +0000
-Date:   Wed, 18 Aug 2021 13:45:57 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Nikolova, Tatyana E" <tatyana.e.nikolova@intel.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] irdma: Add ice and irdma to kernel-boot rules
-Message-ID: <20210818164557.GB5673@nvidia.com>
-References: <20210806175808.1463-1-tatyana.e.nikolova@intel.com>
- <20210806182852.GS1721383@nvidia.com>
- <DM6PR11MB4692C424F3B5AB513B0EBBDACBF99@DM6PR11MB4692.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB4692C424F3B5AB513B0EBBDACBF99@DM6PR11MB4692.namprd11.prod.outlook.com>
-X-ClientProxiedBy: MN2PR06CA0020.namprd06.prod.outlook.com
- (2603:10b6:208:23d::25) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Wed, 18 Aug
+ 2021 16:48:02 +0000
+Received: from DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:7b:cafe::f9) by DM5PR13CA0026.outlook.office365.com
+ (2603:10b6:3:7b::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.9 via Frontend
+ Transport; Wed, 18 Aug 2021 16:48:01 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ DM6NAM11FT049.mail.protection.outlook.com (10.13.172.188) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 16:48:01 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 18 Aug
+ 2021 16:48:00 +0000
+Received: from reg-r-vrt-018-180.nvidia.com (172.20.187.5) by
+ DRHQMAIL107.nvidia.com (10.27.9.16) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 18 Aug 2021 16:47:57 +0000
+References: <20210818155210.14522-1-tim.gardner@canonical.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Vlad Buslov <vladbu@nvidia.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Tim Gardner <tim.gardner@canonical.com>
+CC:     <linux-kernel@vger.kernel.org>, Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Jianbo Liu" <jianbol@nvidia.com>, Mark Bloch <mbloch@nvidia.com>,
+        Roi Dayan <roid@nvidia.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized
+ variable in mlx5_esw_bridge_port_changeupper()
+In-Reply-To: <20210818155210.14522-1-tim.gardner@canonical.com>
+Date:   Wed, 18 Aug 2021 19:47:55 +0300
+Message-ID: <ygnh8s0ypumc.fsf@nvidia.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR06CA0020.namprd06.prod.outlook.com (2603:10b6:208:23d::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 18 Aug 2021 16:45:58 +0000
-Received: from jgg by jggl with local (Exim 4.94)       (envelope-from <jgg@nvidia.com>)        id 1mGOhR-0001Zf-Mg; Wed, 18 Aug 2021 13:45:57 -0300
+Content-Type: text/plain
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 01a17f26-eee9-48c3-90de-08d96267a801
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5270:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52702D3D1F7900C930EDFDA5C2FF9@BL1PR12MB5270.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: fd2fbb40-ce88-44d9-ccac-08d96267f10d
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4081:
+X-Microsoft-Antispam-PRVS: <BY5PR12MB4081105BEAB66BDD95A5EC9DA0FF9@BY5PR12MB4081.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X2EhdIWzgytGscFK9WlhF9QZz4OA1QR6fRxS/XMovQutgDN13cKRpwHOF/8X57md5okBO90cof2ZolCQ3lh4NDBJtV70nq0kJT8dxRjt/hhF+06Fro4WAfL8kvgjD4wPF7TByv4bFckOlFNTv5EDkFtAw43vVH8Py1F2sjD9zIfsi88oPwCTgwDe16f5p+A2Z1iW7TMKEOMrJWojQk4pAieKrFQDIe9qb5cm8fZmq6UMGEZaldheUOLdOzwh05BGYp5uWL9pwCpycovVG6HRkWgz1M65SL9hWlnWvdwJC48pWsgsK9WTyeR/uf1UXjuboaZAAgJx8f9IzoBCho1/bOFX8vCML0aaBQtQzIqFAnSrXfX9A3Pbp17pGVyX2kybRrqPytX/cWdlN907GwhXezKnwxbqoagngv3EPVzFc7opYmqnq88+UG4KcOERkwSg/s+GewT+T9r0xr8b+Fmy76tyZAVS8QnZEOtlk0ayYLHeaxajQd14F7RPEM08Hh5cqspNfoqv2OilA9E7ivXCGfMF3CIQC7PH9IQy2fy+Dxmy3mmngtGBORCrrIsDq8rY6DLSWXBVkFT8bmaJ/Lsd/8To3THgsamdlmjoVz2ZsrZtRjrzo0bnw3hiElG5APp1yqaJDpa9M7VQPtgj96/plw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(39860400002)(346002)(396003)(376002)(8676002)(66476007)(66556008)(54906003)(478600001)(66946007)(2906002)(426003)(1076003)(9746002)(9786002)(8936002)(6916009)(86362001)(186003)(26005)(4326008)(33656002)(2616005)(36756003)(5660300002)(316002)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SNBauAbI12P16lGOzQMbxpUBTTn/4fk+fI2ObEdSsRlWgVAYzO8tsxyb6sxf?=
- =?us-ascii?Q?yKQm7xwRc3GK3Th9y63fI8XJTsvgvfhp13efiNqc2oylk8PuwlqWJpR22li8?=
- =?us-ascii?Q?EmTLb81bLBT115ykghLM+IhRLPB0LthRwrtrsMvxBpPpmjkmjL61cyvOa2bM?=
- =?us-ascii?Q?5nbp6/QA7BEwVYjIGA8n00LMaBpljEYmj5Zby/le+j5Yh4atWFiMXLTb11kt?=
- =?us-ascii?Q?wiiQq/PAr0Vxmx1j2Duorq9idoRTdpWQhImiuL23M/wrGlkhVmAuzDzpiuOY?=
- =?us-ascii?Q?8ULjlNnF62xa/ui/DJCpgPQ/XrE5F+NWXS7ejPF4ETFG9KHcKMuMrtTTVdrh?=
- =?us-ascii?Q?gKSuxP8mwQOADKa5MZCvxxKDXre2j//k5ki9/tfELL58/t90oDPrA5wPKBWB?=
- =?us-ascii?Q?hZje3qRgAwJ9CqcSkxFpPJqk2U9ddlEbcGb/z7pDW1hlQae9DHPG4InOQ2vp?=
- =?us-ascii?Q?iBep9/b5XZTxLAslPMl3Olp0l3Zr/nyF1PdChFduM8oEleI9YC5ji0Fz9ngI?=
- =?us-ascii?Q?s5Qiv9yHuaq3BrLoYco58TuFI5rxYrmz0WV+Jzj2cnfleh0sx7XYJba7ql3l?=
- =?us-ascii?Q?078OU6oPOweWKoKSh7J0yZxQhZv1zzsEyipEUtx1xcL/NNyLpzr0VQp5CtvS?=
- =?us-ascii?Q?ovfcqLSxz+3Z9jJ7qEYHtE93F1lib6FgnPkLXBpbwkDpt7hQNP4hh5a7Oq0k?=
- =?us-ascii?Q?vprloLpDzhd4w5uqLteJ/17DF0XyeB/+Ao/pZ1m1RTSlgPHmUtwQRB6+R9Q2?=
- =?us-ascii?Q?9H0VaR5CxxVbiAA3y2az1X8HZKyBVygJtkhSQI/u/qfeH4GVcOZTwNpXCWTK?=
- =?us-ascii?Q?srJw1huFS3oVzlM+FmDMDM/3Bxjfk6Avcbf0+AAg5pkEekFAGY2xzSWM0feX?=
- =?us-ascii?Q?FhClhB/IXOhMT0GHbcL+1ll4fbRTiwFf5McjeNsUdvcab3fOTL4MX0+yN5pw?=
- =?us-ascii?Q?7Trkleq/LP55SrIkvKfV6R15lFz2kFGJ5h9RBxqAIDfX8ccCnvN7MMWZPxk/?=
- =?us-ascii?Q?HA6LFBJrsLdea7MTTktw2Fqhk2Ccqyc7hTH+u+e2ILXtc/X07A91cg3fsAVw?=
- =?us-ascii?Q?orJl5WLdxmou1LMZJIEActUaUshAbXCMJpuMMrCK9tNbtT5DFdcK+jaix9qM?=
- =?us-ascii?Q?f0e61HlLpCmHbAoem2MXoU77VBVTZ5Mn34JMAvVdeq49FP+59tiJgo3P3eP6?=
- =?us-ascii?Q?+4yw8G+JklRa5/ne54zA/wTTziCyGD0En+AFjeMPvCbjlw50RWfvAi5NMtnG?=
- =?us-ascii?Q?OIIs+J/2vEt73/CdwvJoGfTLUQVP2I4dpF4KVbTvs6+Ht7cqGFQyYYTg3DWj?=
- =?us-ascii?Q?aANfMne+VJFCSIKSG4siexAs?=
+X-Microsoft-Antispam-Message-Info: 9gQxEJP93APPMW573uJT9pRcDXzUiOqXnfdilBNOKdE6WryxCDp/a7Qw+BDARWbjwWX9tj7j5+rAmEucEw5IaRgUX0b9n4g2KXARIfEm89vVdMF50fbpZMQSdDU3RKzmL0lLJWxHzUKO0byAacbJoT8ia04alB5jc05tC8HT4iKvRYLIInKBA9oLzTTUScizOS9sR/m8JAOgE7I6DPtphRN+OTlQTRHdbur/Fae2uvvWPK2BDivq6IK5M+luD1xmhOs/E4VHxDvsQYC14+OyZWjcnm+UZ/760jqTDHRGrYh3gg/4+LPDbmrJImYtDmBI4n9DVazezE5T5uuBGWAO5YgKu8g9VQWbHmESQVF7xYaEbv+WKxA4mQxAa6zplGOgzT4mJGvpXO8m+EespZyrIOrxDL0H9URxr81MC18Wtp4+nh8E6AePmpcL6tzXABkvIt50wfn/+HxwJWVZcBeWpDhdeNQWMsW80uhWodt0DRU3WvjOQU56+QbawOYPbgJZUOs4vgU5i3L76lqni+rgXQ3Ezwp7/QgB2qdc4I2xdoXRuc9dZNrgnR/6y5BvQRbsCJ/Yujf1sw7TNGMpcotphez+bl0rpdu3Pj/Qy2prUrwPNdw4UR9humpO619/DwJnMxbgYWOxDuF3rkYEu1g44TLvFUwPc1THQQahrfGNK6+ODMb+rP6dD+u/IQy/hy/cAIjQzv/V0OjooDXOLaAzfw==
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(346002)(396003)(36840700001)(46966006)(86362001)(82740400003)(7636003)(8936002)(356005)(426003)(110136005)(316002)(8676002)(4326008)(82310400003)(54906003)(26005)(186003)(16526019)(2906002)(47076005)(5660300002)(70206006)(70586007)(36860700001)(336012)(2616005)(7696005)(36756003)(478600001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01a17f26-eee9-48c3-90de-08d96267a801
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 16:45:59.0733
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Aug 2021 16:48:01.3893
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: fd2fbb40-ce88-44d9-ccac-08d96267f10d
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xz8AXp/C3otcVWTXk52CMnssx9FjJzAx04Wvf6VFqgK8POEyru5gnoEHwSX6rw+2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5270
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT049.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4081
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 12, 2021 at 11:33:04PM +0000, Nikolova, Tatyana E wrote:
-> > > @@ -12,6 +12,7 @@ ENV{ID_NET_DRIVER}=="bnxt_en",
-> > RUN{builtin}+="kmod load bnxt_re"
-> > >  ENV{ID_NET_DRIVER}=="cxgb4", RUN{builtin}+="kmod load iw_cxgb4"
-> > >  ENV{ID_NET_DRIVER}=="hns", RUN{builtin}+="kmod load hns_roce"
-> > >  ENV{ID_NET_DRIVER}=="i40e", RUN{builtin}+="kmod load i40iw"
-> > > +ENV{ID_NET_DRIVER}=="ice", RUN{builtin}+="kmod load irdma"
-> > 
-> > This should not be needed, right? The auxbux stuff triggers proper module
-> > autoloading?
-> 
-> Hi Jason,
-> 
-> Our module depends on the auxbus, but we don't know how the auxbus
-> could trigger loading of irdma. Could you please explain?
+On Wed 18 Aug 2021 at 18:52, Tim Gardner <tim.gardner@canonical.com> wrote:
+> A recent change removed code that initialized the return code variable 'err'. It
+> is now possible for mlx5_esw_bridge_port_changeupper() to return an error code
+> using this uninitialized variable. Fix it by initializing to 0.
+>
+> Addresses-Coverity: ("Uninitialized scalar variable (UNINIT)")
+>
+> Cc: Saeed Mahameed <saeedm@nvidia.com>
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Vlad Buslov <vladbu@nvidia.com>
+> Cc: Jianbo Liu <jianbol@nvidia.com>
+> Cc: Mark Bloch <mbloch@nvidia.com>
+> Cc: Roi Dayan <roid@nvidia.com>
+> Cc: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+> ---
 
-It should simply happen automatically once the aux device is
-created. If it doesn't something is missing in the kernel.
+Tim, thanks for fixing this!
 
-It works the same way as any loading a module for any other struct
-device, the aux device exposes a modalias and the userspace matches it
-to the modules.alias file and then loads the specified module.
+Saeed, this is the second similar issue that I mentioned in my reply to
+Colin. Again, I've already submitted same patch internally and this one
+is as good as mine.
 
-Jason
+Reviewed-by: Vlad Buslov <vladbu@nvidia.com>
+
+[...]
+
+
