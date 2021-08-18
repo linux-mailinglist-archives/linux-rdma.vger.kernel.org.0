@@ -2,65 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18BEF3F0D0C
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 22:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD72E3F0E0E
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 00:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhHRU6W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 16:58:22 -0400
-Received: from saphodev.broadcom.com ([192.19.11.229]:41472 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233798AbhHRU6V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Aug 2021 16:58:21 -0400
-Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id DFBD77A21;
-        Wed, 18 Aug 2021 13:57:44 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com DFBD77A21
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1629320266;
-        bh=DwSY61xYq492Pv4BaUB7pMO5Me20+0qO76ocGtgwS94=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cdRzQGN0O7bttkZ3QwRDIQjdD2huraA+gG/7xLnssl7tMTFgMfj5s3pVQsXorxETn
-         Q9qxCbytaVE+haqt88Feu0sfsCdSHfT8sty7hbt9ks6xIW+omxnvJog4PDtDe+2FZx
-         Ht4ySbKQqSCev0hlmdyNjtexxUdAv5Q/KNI/9aBo=
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Subject: [PATCH rdma-rc 3/3] RDMA/bnxt_re: Fix query SRQ failure
-Date:   Wed, 18 Aug 2021 13:57:36 -0700
-Message-Id: <1629320256-4034-4-git-send-email-selvin.xavier@broadcom.com>
-X-Mailer: git-send-email 2.5.5
-In-Reply-To: <1629320256-4034-1-git-send-email-selvin.xavier@broadcom.com>
-References: <1629320256-4034-1-git-send-email-selvin.xavier@broadcom.com>
+        id S234569AbhHRWUl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 18:20:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234106AbhHRWUk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 18 Aug 2021 18:20:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 976826103A;
+        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629325205;
+        bh=bqPkbAeTMqgeqxawU9F02qdmd7fXTAn8RsMvsk4nVng=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=YDFrl/kA78wWRsT/USYoTIzatOADCn8Te2TSCb3wTIPS1M+s4zL8TUytpMysB3svg
+         uwvDqdlWt1nbf0Z3N5xirv+DBFnZacxD6J93k/jMSf6ZI+y2AQOsMhP8oyDH3IVRS4
+         MOLXEwSCkd8L0HU++50VQhTzDGxpG3aksZVbCDlk0ZdWz1MKeqRMpub1c7YOFNlSJD
+         LkYwjVJuVIqBqnCpQwljUbXSzDm173yB6ZJiq1MthG3aMdZhpnDJdqUf+agrH21BNj
+         Z2FR5qoi0UsSpPLIMDGCzVl5i3Xr0oVaX+wufYBHnjVbJvYBEzd1L5Rz4HgImvZRYN
+         YPu39E07qTqQA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8A688609EB;
+        Wed, 18 Aug 2021 22:20:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net/mlx4: Use ARRAY_SIZE to get an array's size
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162932520556.31273.6111065884005742758.git-patchwork-notify@kernel.org>
+Date:   Wed, 18 Aug 2021 22:20:05 +0000
+References: <20210817121106.44189-1-wangborong@cdjrlc.com>
+In-Reply-To: <20210817121106.44189-1-wangborong@cdjrlc.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, tariqt@nvidia.com,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fill the missing parameters for the FW command while
-querying SRQ.
+Hello:
 
-Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
----
- drivers/infiniband/hw/bnxt_re/qplib_fp.c | 2 ++
- 1 file changed, 2 insertions(+)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/drivers/infiniband/hw/bnxt_re/qplib_fp.c b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-index d4d4959..312bf25 100644
---- a/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-+++ b/drivers/infiniband/hw/bnxt_re/qplib_fp.c
-@@ -713,6 +713,8 @@ int bnxt_qplib_query_srq(struct bnxt_qplib_res *res,
- 	sbuf = bnxt_qplib_rcfw_alloc_sbuf(rcfw, sizeof(*sb));
- 	if (!sbuf)
- 		return -ENOMEM;
-+	req.resp_size = sizeof(*sb) / BNXT_QPLIB_CMDQE_UNITS;
-+	req.srq_cid = cpu_to_le32(srq->id);
- 	sb = sbuf->sb;
- 	rc = bnxt_qplib_rcfw_send_message(rcfw, (void *)&req, (void *)&resp,
- 					  (void *)sbuf, 0);
--- 
-2.5.5
+On Tue, 17 Aug 2021 20:11:06 +0800 you wrote:
+> The ARRAY_SIZE macro is defined to get an array's size which is
+> more compact and more formal in linux source. Thus, we can replace
+> the long sizeof(arr)/sizeof(arr[0]) with the compact ARRAY_SIZE.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx4/qp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+
+Here is the summary with links:
+  - net/mlx4: Use ARRAY_SIZE to get an array's size
+    https://git.kernel.org/netdev/net-next/c/19b8ece42c56
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
