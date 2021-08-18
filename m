@@ -2,100 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300D23EFF34
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 10:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFD63EFF1C
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 10:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238345AbhHRIfD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 04:35:03 -0400
-Received: from esa2.hc1455-7.c3s2.iphmx.com ([207.54.90.48]:57945 "EHLO
-        esa2.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238324AbhHRIfB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 18 Aug 2021 04:35:01 -0400
-X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Aug 2021 04:35:01 EDT
-IronPort-SDR: eZOYNhwR0QcwmckGAcHN1S7jtL4dKW61EFLfHs6Cz/Adw12ea2cO9bp8tuhDzyx03zjLDPnI0Y
- 5r7vFsdHR/Kig7nkqWgj3lAipTkqobTGBUv5WMDF3a2D/ErklBaWFFu5nBU5LL4b/uAKzqKKOZ
- TPTnHWjeZYZQiZYJt/aPqoJXWY0it9wWIK3y9XsV6tQ0SRGNeEgxfYJxmv/kpesX4f6EQDSl7e
- B2rRmk+VqJYWSe6qoxzDFurE5OXIkPEYq62ihctuqxl3xQ7n0PT3a8kZsqoqX5fZVx2NyVzz55
- pTp763m4mGriyN39giynBY+u
-X-IronPort-AV: E=McAfee;i="6200,9189,10079"; a="40636994"
-X-IronPort-AV: E=Sophos;i="5.84,330,1620658800"; 
-   d="scan'208";a="40636994"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP; 18 Aug 2021 17:27:15 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 42FFC6CCA0
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 17:27:14 +0900 (JST)
-Received: from m3050.s.css.fujitsu.com (msm.b.css.fujitsu.com [10.134.21.208])
-        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 98EB83918B
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 17:27:13 +0900 (JST)
-Received: from jegan.fujitsu.com (unknown [10.124.72.187])
-        by m3050.s.css.fujitsu.com (Postfix) with ESMTP id 74CA3A7;
-        Wed, 18 Aug 2021 17:27:13 +0900 (JST)
-From:   Yasunori Goto <y-goto@fujitsu.com>
-To:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     y-goto@fujitsu.com
-Subject: [PATCH] RDMA/core: EPERM should be returned when # of pined pages is over ulimit
-Date:   Wed, 18 Aug 2021 17:27:02 +0900
-Message-Id: <20210818082702.692117-1-y-goto@fujitsu.com>
-X-Mailer: git-send-email 2.31.1
+        id S238324AbhHRI31 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 04:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238168AbhHRI3Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 04:29:25 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED9CC061764
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so2011039oth.7
+        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1XTnu9ASnzFiqsNd5eZN9ZBy6DTLEA1Ohk+cA0uH6TQ=;
+        b=ri0dmF7U4Id3i18XJ327hSWbht0YxuEX31BY+rrgzRqU+m1eEC0tuK4QWGcwCEzRwi
+         LnZ8+Fv3pb9i95eAOe+swuqdpiNFC8yg9WgehfzsnsI1GS7drLJnbjYuIEAdI67Mog+p
+         y2W0jjjHp0OKT1GCIjgGsk3YDdtipuEbky5QoYuJr8cUqvW3LIVs65tmiND1c5NkBqGG
+         yaVYJS5tRzOjQjDaq/USSEpgZH9v8uR+qAyizFz1cDjjCbrrulpNHDto4qR51eOuXSe1
+         QJxV0kohFcdIvEOGsSnix51Uq/g7UKAzGPBJcX1h3PcsAawC+kghhcayPMov8R1SHBB0
+         6RgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1XTnu9ASnzFiqsNd5eZN9ZBy6DTLEA1Ohk+cA0uH6TQ=;
+        b=RV4zDiNvVsa1oATaam9r5i2o2wlGlSROLeGLw3dVKdmUSuWdNQaEw1f4v6h+YxmLiD
+         TR2T1i3SrnCvQxTLFHn9j997koPKF7q1V1A3azNG2GKSxKcSbbmzYeROlaR54KX1Kqim
+         vTpiiAVCcV8L1zqGjdiL+Kzva3SBPCPi9Gmh2syx6OQu0gXPDwlpxcz3t5KgnMe+ct4+
+         mgaeV2RLP8MCI8HBIOwcmlcg1Weom9AqWqm5XI0f5ZsyBQYFKuXMxIti7nBfN8rWF3vH
+         uOX2HtZAOGA+EU0/1K2MOGa5lZ8MdcmMDX4E9tecQWTwl/UVerE+Xsj0IhVb41jEm7yN
+         ccng==
+X-Gm-Message-State: AOAM531cMRF7dYVr0fZO6aJBAvU7kbPU2aTptuANJsNvK97za0fY+uJr
+        DWD1QLscQZPGV1K/feYcRsD6Odh1PSf9/agFt3U=
+X-Google-Smtp-Source: ABdhPJzvuXJrLUD9RRZvVJFxSUuT709NIY32Nr0cnTpErD4X6Mp3rqBrX8QEa+6/7Valg89KfVtsS68Y9pGVGpJR3go=
+X-Received: by 2002:a9d:541:: with SMTP id 59mr4260358otw.278.1629275330245;
+ Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
+References: <YQmF9506lsmeaOBZ@unreal> <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
+ <CAD=hENfua2UXH6rVuhMPXYsNSavqG==T3h=z4f=huf+Fj+xiHA@mail.gmail.com>
+ <YQoogK7uWCLHUzcs@unreal> <CAD=hENcnUd-rTHGPq2DjyF7tDHVzCebDO2gtwZa9pw0M_QvaPA@mail.gmail.com>
+ <CAN-5tyG4kBYBEaCDPGr=gUTNGkcoznMUy8e4BwCzWZkSPG-=+Q@mail.gmail.com>
+ <CAD=hENdqho3mRy=gUSE-vuXzLvZPkwJ7kEFrjRN-AxLwvQP18Q@mail.gmail.com>
+ <611CABE6.3010700@fujitsu.com> <CAD=hENezpPKyGFVB121fjhhniE02fwspULi5vaScU1dWcbY7gA@mail.gmail.com>
+ <611CBA42.9020002@fujitsu.com>
+In-Reply-To: <611CBA42.9020002@fujitsu.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Wed, 18 Aug 2021 16:28:39 +0800
+Message-ID: <CAD=hENcE12nKdRn04K9Zbd1CyOQureYb44fp9occ=R4P6XrgZQ@mail.gmail.com>
+Subject: Re: RXE status in the upstream rping using rxe
+To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+Cc:     Olga Kornievskaia <aglo@umich.edu>,
+        Leon Romanovsky <leon@kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Wed, Aug 18, 2021 at 3:44 PM yangx.jy@fujitsu.com
+<yangx.jy@fujitsu.com> wrote:
+>
+> On 2021/8/18 15:20, Zhu Yanjun wrote:
+> > Can you let me know how to reproduce the panic?
+> >
+> > 1. linux upstream<  ----rping---->  linux upstream?
+> rdma_client on v5.13<  --->  rdma_server on upstream kernel.
+>
+> > 2. just run rping?
+> Running rdma_client on v5.13 and rdma_server on upstream can reproduce
+> the issue.
+>
+> Note: running rping can reproduce the issue as well.
 
-When I started to use SoftRoCE, I'm very confused by
-ENOMEM error output even if I gave enough memory.
+rping and rdma_server/rdma_client are from the latest rdma-core?
 
-I think EPERM is more suitable for uses to solve error rather than
-ENOMEM at here of ib_umem_get() when # of pinned pages is over ulimit.
-This is not "memory is not enough" problem, because driver can
-succeed to pin enough amount of pages, but it is larger than ulimit value.
+Thanks
+Zhu Yanjun
 
-The hard limit of "max locked memory" can be changed by limit.conf.
-In addition, this checks also CAP_IPC_LOCK, it is indeed permmission check.
-So, I think the following patch.
-
-If there is a intention why ENOMEM is used here, please let me know.
-Otherwise, I'm glad if this is merged.
-
-Thanks.
-
-
----
-When # of pinned pages are larger than ulimit of "max locked memory"
-without CAP_IPC_LOCK, current ib_umem_get() returns ENOMEM.
-But it does not mean "not enough memory", because driver could succeed to
-pinned enough pages.
-This is just capability error. Even if a normal user is limited
-his/her # of pinned pages, system administrator can give permission
-by change hard limit of this ulimit value.
-To notify correct information to user, ib_umem_get()
-should return EPERM instead of ENOMEM at here.
-
-Signed-off-by: Yasunori Goto <y-goto@fujitsu.com>
----
- drivers/infiniband/core/umem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index 0eb40025075f..9771134649e9 100644
---- a/drivers/infiniband/core/umem.c
-+++ b/drivers/infiniband/core/umem.c
-@@ -205,7 +205,7 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
- 	new_pinned = atomic64_add_return(npages, &mm->pinned_vm);
- 	if (new_pinned > lock_limit && !capable(CAP_IPC_LOCK)) {
- 		atomic64_sub(npages, &mm->pinned_vm);
--		ret = -ENOMEM;
-+		ret = -EPERM;
- 		goto out;
- 	}
- 
--- 
-2.31.1
-
+> > 3. how do you create rxe? with rdma link or rxe_cfg?
+> rdma link add
+> > 4. do you make other operations?
+> No
+> > 5. other operations?
+> No
+> > Thanks.
+> > Zhu Yanjun
+> >
