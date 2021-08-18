@@ -2,97 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFD63EFF1C
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 10:28:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3903D3EFF56
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 10:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238324AbhHRI31 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 04:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238168AbhHRI3Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 04:29:25 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED9CC061764
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id h63-20020a9d14450000b02904ce97efee36so2011039oth.7
-        for <linux-rdma@vger.kernel.org>; Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
+        id S238533AbhHRIim (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 04:38:42 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:19281 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237883AbhHRIim (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 04:38:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1XTnu9ASnzFiqsNd5eZN9ZBy6DTLEA1Ohk+cA0uH6TQ=;
-        b=ri0dmF7U4Id3i18XJ327hSWbht0YxuEX31BY+rrgzRqU+m1eEC0tuK4QWGcwCEzRwi
-         LnZ8+Fv3pb9i95eAOe+swuqdpiNFC8yg9WgehfzsnsI1GS7drLJnbjYuIEAdI67Mog+p
-         y2W0jjjHp0OKT1GCIjgGsk3YDdtipuEbky5QoYuJr8cUqvW3LIVs65tmiND1c5NkBqGG
-         yaVYJS5tRzOjQjDaq/USSEpgZH9v8uR+qAyizFz1cDjjCbrrulpNHDto4qR51eOuXSe1
-         QJxV0kohFcdIvEOGsSnix51Uq/g7UKAzGPBJcX1h3PcsAawC+kghhcayPMov8R1SHBB0
-         6RgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XTnu9ASnzFiqsNd5eZN9ZBy6DTLEA1Ohk+cA0uH6TQ=;
-        b=RV4zDiNvVsa1oATaam9r5i2o2wlGlSROLeGLw3dVKdmUSuWdNQaEw1f4v6h+YxmLiD
-         TR2T1i3SrnCvQxTLFHn9j997koPKF7q1V1A3azNG2GKSxKcSbbmzYeROlaR54KX1Kqim
-         vTpiiAVCcV8L1zqGjdiL+Kzva3SBPCPi9Gmh2syx6OQu0gXPDwlpxcz3t5KgnMe+ct4+
-         mgaeV2RLP8MCI8HBIOwcmlcg1Weom9AqWqm5XI0f5ZsyBQYFKuXMxIti7nBfN8rWF3vH
-         uOX2HtZAOGA+EU0/1K2MOGa5lZ8MdcmMDX4E9tecQWTwl/UVerE+Xsj0IhVb41jEm7yN
-         ccng==
-X-Gm-Message-State: AOAM531cMRF7dYVr0fZO6aJBAvU7kbPU2aTptuANJsNvK97za0fY+uJr
-        DWD1QLscQZPGV1K/feYcRsD6Odh1PSf9/agFt3U=
-X-Google-Smtp-Source: ABdhPJzvuXJrLUD9RRZvVJFxSUuT709NIY32Nr0cnTpErD4X6Mp3rqBrX8QEa+6/7Valg89KfVtsS68Y9pGVGpJR3go=
-X-Received: by 2002:a9d:541:: with SMTP id 59mr4260358otw.278.1629275330245;
- Wed, 18 Aug 2021 01:28:50 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1629275889; x=1660811889;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=Cs2eoNXPps/j86YzVA6CeH9OzMSl/g0AtoxGtzsYxzY=;
+  b=qSapbQxehzaU32dJowTQiT9U5GMy1Wr/Wm99Ww4jPUbNgboz3Q6i9sRU
+   M3T48yGXJWEUnzClJfY6llfwzINb++3ADoPka39soto670rtKrRl3Pmy+
+   l08f/KN4DebOwXOq7TkM8UGxN2ykxof1Ll+lBfkVac4MJUYAzCPA6Rkxu
+   E=;
+X-IronPort-AV: E=Sophos;i="5.84,330,1620691200"; 
+   d="scan'208";a="134675497"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 18 Aug 2021 08:38:01 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1d-38ae4ad2.us-east-1.amazon.com (Postfix) with ESMTPS id E0809A299E;
+        Wed, 18 Aug 2021 08:37:56 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.160.90) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Wed, 18 Aug 2021 08:37:49 +0000
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+References: <20210818074352.29950-1-galpress@amazon.com>
+ <3abaef49-2733-8b5e-3eaa-662a2a57b96e@amd.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <01573693-cf7a-a160-2f60-5049dfba1ecd@amazon.com>
+Date:   Wed, 18 Aug 2021 11:37:31 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <YQmF9506lsmeaOBZ@unreal> <CAD=hENeBAG=eHZN05gvq1P9o4=TauL3tToj2Y9S7UW+WLwiA9A@mail.gmail.com>
- <CAD=hENfua2UXH6rVuhMPXYsNSavqG==T3h=z4f=huf+Fj+xiHA@mail.gmail.com>
- <YQoogK7uWCLHUzcs@unreal> <CAD=hENcnUd-rTHGPq2DjyF7tDHVzCebDO2gtwZa9pw0M_QvaPA@mail.gmail.com>
- <CAN-5tyG4kBYBEaCDPGr=gUTNGkcoznMUy8e4BwCzWZkSPG-=+Q@mail.gmail.com>
- <CAD=hENdqho3mRy=gUSE-vuXzLvZPkwJ7kEFrjRN-AxLwvQP18Q@mail.gmail.com>
- <611CABE6.3010700@fujitsu.com> <CAD=hENezpPKyGFVB121fjhhniE02fwspULi5vaScU1dWcbY7gA@mail.gmail.com>
- <611CBA42.9020002@fujitsu.com>
-In-Reply-To: <611CBA42.9020002@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 18 Aug 2021 16:28:39 +0800
-Message-ID: <CAD=hENcE12nKdRn04K9Zbd1CyOQureYb44fp9occ=R4P6XrgZQ@mail.gmail.com>
-Subject: Re: RXE status in the upstream rping using rxe
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Cc:     Olga Kornievskaia <aglo@umich.edu>,
-        Leon Romanovsky <leon@kernel.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3abaef49-2733-8b5e-3eaa-662a2a57b96e@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.90]
+X-ClientProxiedBy: EX13D42UWB003.ant.amazon.com (10.43.161.45) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 3:44 PM yangx.jy@fujitsu.com
-<yangx.jy@fujitsu.com> wrote:
->
-> On 2021/8/18 15:20, Zhu Yanjun wrote:
-> > Can you let me know how to reproduce the panic?
-> >
-> > 1. linux upstream<  ----rping---->  linux upstream?
-> rdma_client on v5.13<  --->  rdma_server on upstream kernel.
->
-> > 2. just run rping?
-> Running rdma_client on v5.13 and rdma_server on upstream can reproduce
-> the issue.
->
-> Note: running rping can reproduce the issue as well.
+On 18/08/2021 11:00, Christian König wrote:
+> Am 18.08.21 um 09:43 schrieb Gal Pressman:
+>> Hey all,
+>>
+>> Currently, the RDMA subsystem can only work with dynamic dmabuf
+>> attachments, which requires the RDMA device to support on-demand-paging
+>> (ODP) which is not common on most devices (only supported by mlx5).
+>>
+>> While the dynamic requirement makes sense for certain GPUs, some devices
+>> (such as habanalabs) have device memory that is always "pinned" and do
+>> not need/use the move_notify operation.
+>>
+>> The motivation of this RFC is to use habanalabs as the dmabuf exporter,
+>> and EFA as the importer to allow for peer2peer access through libibverbs.
+>>
+>> This draft patch changes the dmabuf driver to differentiate between
+>> static/dynamic attachments by looking at the move_notify op instead of
+>> the importer_ops struct, and allowing the peer2peer flag to be enabled
+>> in case of a static exporter.
+> 
+> Well NAK to the general approach, this can be solved much easier.
+> 
+> If you can't support dynamic moves while using the buffer then just pin all
+> buffers during import/export.
+> 
+> This avoids the move notification and the framework/exporter can still correctly
+> account for pinned buffers.
+> 
+> But please note that at least amdgpu never uses P2P support for pinned buffers
+> since we want to avoid that unmoveable buffers clutter video memory and create
+> conflicts with V4L and scanout.
+> 
+> If you don't have such concerns in habanalabs then you can implement the pinning
+> there while keeping P2P still enabled.
+Thanks Christian!
 
-rping and rdma_server/rdma_client are from the latest rdma-core?
-
-Thanks
-Zhu Yanjun
-
-> > 3. how do you create rxe? with rdma link or rxe_cfg?
-> rdma link add
-> > 4. do you make other operations?
-> No
-> > 5. other operations?
-> No
-> > Thanks.
-> > Zhu Yanjun
-> >
+Are you suggesting to pass an empty move_notify callback instead of passing NULL?
+Also, doesn't the pin operation move the memory from the device to host memory?
