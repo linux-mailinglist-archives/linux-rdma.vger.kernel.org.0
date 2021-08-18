@@ -2,154 +2,216 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09153EFA14
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 07:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D533EFAD1
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 Aug 2021 08:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237618AbhHRFbI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 01:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36150 "EHLO
+        id S238467AbhHRGGw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 02:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236055AbhHRFbI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 01:31:08 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 901C7C061764
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 22:30:33 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id w22-20020a056830411600b0048bcf4c6bd9so1345940ott.8
-        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 22:30:33 -0700 (PDT)
+        with ESMTP id S238069AbhHRGG0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 02:06:26 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D831C061292
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:05:52 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id n12so1146232plf.4
+        for <linux-rdma@vger.kernel.org>; Tue, 17 Aug 2021 23:05:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rQwS2RmRK5/K9FRuvip/E8i6e8PV350rtHh4i/F6PvA=;
-        b=RoonnfWNxGg34QJv0EENvNAfskfPF1s676HnRefH3Nm6PTg5JomewiRp546aERrny8
-         dMD5DpaIvF8XkaGFNCeds1UMhtQT+k1wivApK/AvbYP7HCnWm3LMkqBMqYBj0mZ3I2st
-         vJ1oFpjZJ+Tl7EstNABmcUKKzBc3pt+EL3yhism2W3WQ0TdIyeqaWNAMvMAE+hniUbbl
-         h35fe/EZPMizgPG5rutX0uGo8zZUl/S2Rp5JyD7yitadxQvkueM35Em0lBSp+MHodUv2
-         5s8MGZlAvgDiI3Efn5jyDVblZQrnd3wMJXcwOl3//h+CyQzMON0yNmoeJC3qUM7a543A
-         uePA==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=LmJ99teUGdinNbfoKjiCNsrT2KdowhAH1C31uHkGRNA=;
+        b=nM31lfFAOiAjN7A/57oWr+7r1nf5LH0zL9iGjsbjp3MpbJHgmIG6NRCpmLUP7+D6W+
+         t4F04NRBUCS+iw0PDoiIOVzk0Wj2g4cJjNrxxEc89wMxoLS0VW6PpJclNE4E0s/zvA+2
+         GvDDgfCH2tc0Ii1HL7ljlrTlZ3Bbzvg8rF1KM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rQwS2RmRK5/K9FRuvip/E8i6e8PV350rtHh4i/F6PvA=;
-        b=S7TQEpL+Py+8+OjzUp8fpYdmXW/ecNJZoPjrxOUMQXrD8l07a29IG3spkv+YK5n1c6
-         hR7O3GW7DY1wSqS3u7zl9dWHp6TtMVRA+TLv1MQyOBWKYSly9SwqSeUMwSRk9K9TqWvN
-         uV4iYuS9rQqSJDesORBCW7ef7D8XJSDpU9jDL1gX7E4M3AJZTvSJnMQmiYW3OOmfeS4e
-         iklFQGcoMRLSOdUTPr1mMOpN2e279+1DV6cgKqvvULt95iMmOiEGEzlIXj+NSOaSjAxc
-         /szlXl1A7zPIlxJW9lw6h+vu4nZ/Ewv3myce/PpOxQ4olNj6xkyDe60p79N8vu75FENS
-         q99w==
-X-Gm-Message-State: AOAM531ySf+0fqHuGha36ukH1Stc1CbBi2ZcH0/gqhkqxByCmmgV4k7e
-        Kl4Duy8m3MLS37kd7dC3LiSu/Y8gCdkZFEjE0UM=
-X-Google-Smtp-Source: ABdhPJznZa9XZ7d0+a5LirBLWlTrL6Cb0569TMrxoLLrvjgXwTyP6ITquN2WTBLDRI8h+12fIDugyQnyiJpz3jZu/rQ=
-X-Received: by 2002:a9d:541:: with SMTP id 59mr3749140otw.278.1629264632885;
- Tue, 17 Aug 2021 22:30:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=LmJ99teUGdinNbfoKjiCNsrT2KdowhAH1C31uHkGRNA=;
+        b=jZNwttd9LDC8a8b4uHfyFggwFEi/T97dexDH5AkeskjsTPYwD6orbzFJkho8VVRZ+8
+         jTlYGsYnjsHpkGL97PLoLLFApkchUc45lUBNwDz6t7ZWS3TL7PlhhtCVPy7NewZew2Vd
+         8EyvA1WqvarvfSAYgA1P6c01IYV0C9K2s3jVo7z+Otp7lpnBAcQWZVM8bQKB918FNhT5
+         71mn/wmoHJc7jTXwDCaCFLO5rqKD2RZqOF7Wo/DdfR47AtWiHapnLgfAMFUlt8HeWiYP
+         kbexeK46tiifs1LRLGPOyKtP6v/C/Pqpzk2OU+wtLAEW0mK1BnxcjNfiSPVsDu3QtWWM
+         T3sw==
+X-Gm-Message-State: AOAM531Sz5YWmcyLGcH7RjljDJe2fyax+NSEn3ROTWC53taAqywRV5C0
+        +pzwxslfeqtCmLBaxLJbus7r8Q==
+X-Google-Smtp-Source: ABdhPJzDDs2K6W8NeBw0p9VKqI2ppEEsxPx6pus3PTR7OTuglNs3DWBYKS4o7QYUFX3kjcJof49Kaw==
+X-Received: by 2002:a17:902:7b83:b029:12c:2758:1d2d with SMTP id w3-20020a1709027b83b029012c27581d2dmr5875382pll.80.1629266751880;
+        Tue, 17 Aug 2021 23:05:51 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id y7sm4717170pfp.102.2021.08.17.23.05.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Aug 2021 23:05:51 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-staging@lists.linux.dev, linux-block@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2 02/63] net/mlx5e: Avoid field-overflowing memcpy()
+Date:   Tue, 17 Aug 2021 23:04:32 -0700
+Message-Id: <20210818060533.3569517-3-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210818060533.3569517-1-keescook@chromium.org>
+References: <20210818060533.3569517-1-keescook@chromium.org>
 MIME-Version: 1.0
-References: <CAHj4cs_M_PJ-7U3QdUxG5=Ce56mBP+WUwko2JqBO6gu_3CqJwQ@mail.gmail.com>
- <CAD=hENeOwY-EgELJox7WkrJEdR-4tTS5VvFULWibxbRSB9OWww@mail.gmail.com>
-In-Reply-To: <CAD=hENeOwY-EgELJox7WkrJEdR-4tTS5VvFULWibxbRSB9OWww@mail.gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 18 Aug 2021 13:30:21 +0800
-Message-ID: <CAD=hENfMKGEJHQvkpDtE4-Z0thT5rK2QuRksoN_O679umhRdEw@mail.gmail.com>
-Subject: Re: [bug report] rdma_rxe doesn't work with blktests on 5.14.0-rc6
-To:     Yi Zhang <yi.zhang@redhat.com>
-Cc:     linux-nvme@lists.infradead.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5945; h=from:subject; bh=aAhXgOvjd8fFl6HHAOH2dNe1RpxfNiJeVAevXZn1G1s=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhHKMes55xLZsomlfyqNbHN963vbWsu6lq/7sGdDVv bsZ6eIyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYRyjHgAKCRCJcvTf3G3AJo6wD/ 9HEoTCQwJMnchXSExxpAugOa3YNMfNCtVVAxBYHvIWOemVW6gZ52KZ44NXt1hlyNky/uGCNGoJuopc JfQ8ClCOcrszDva14x4eDQZ9+KLwHWG9OaszUE83jFKhUfjuQ+sxeI6SxCBY74xBklApWgElkLOxfO 5EPS2Yi8kE85WxMqVEZlH6TZaxefdW3GANZEDH2w1lzj2bQgkpLg/VuTRPPnFj2F9dgZrRPgd04FZE yCShiKYs8Rii3ywLy3heZ5N7WjPIR7h2+D2gLcLgpb/SqpL+foxb0MrIrMlNw62Ovlzr+uUAzTNz6j gIYPvlKL05xZL2/YezlcTEApkB0nSeeZfShLOppBwxAf6Ipn5nVUnLfE2/ffn1WKeC9KhP3C9eEzeh sEE1YOz53a2RRLRUhtUVg88fCBtoOW1jvE87nMQq7Ym8GoF93q2V8ZYApl21Qp6oImjTU+ea9103Gg b0PngB8M2C9QtvT41T73F4XyVE5Trm8EghDfrx7myaE1x+YWCdwfizhG9314y8f5+miPuYaSO/3QHU M/e4LSbUv862bxYjUHhUnaO+OATI+TbGHqX73Yn+5IlG+NTwIc6lK3BmEZ7EzLdA7omPg9jv3grSV8 yvqB6LG7qp48lMGDpxMAeH9Ai7dby8FwWQVL49bwyuRiS9pW3oZhLm+3fh3A==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 1:09 PM Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
->
-> On Wed, Aug 18, 2021 at 12:57 PM Yi Zhang <yi.zhang@redhat.com> wrote:
-> >
-> > Hello
-> >
-> > I found rdma_rxe doesn't work with blktests on the latest upstream, is
-> > it a known issue, feel free to let me know if you need any info/test
-> > for it, thanks.
-> >
-> > # nvme_trtype=rdma ./check nvme/008
-> > nvme/008 (create an NVMeOF host with a block device-backed ns) [failed]
-> >     runtime  0.323s  ...  0.329s
-> >     --- tests/nvme/008.out 2021-08-18 00:18:35.380345954 -0400
-> >     +++ /root/blktests/results/nodev/nvme/008.out.bad 2021-08-18
-> > 00:35:11.126723074 -0400
-> >     @@ -1,5 +1,7 @@
-> >      Running nvme/008
-> >     -91fdba0d-f87b-4c25-b80f-db7be1418b9e
-> >     -uuid.91fdba0d-f87b-4c25-b80f-db7be1418b9e
-> >     -NQN:blktests-subsystem-1 disconnected 1 controller(s)
-> >     +Failed to write to /dev/nvme-fabrics: Cannot allocate memory
-> >     +cat: '/sys/class/nvme/nvme*/subsysnqn': No such file or directory
-> >     +cat: /sys/block/n1/uuid: No such file or directory
-> >     ...
-> >     (Run 'diff -u tests/nvme/008.out
-> > /root/blktests/results/nodev/nvme/008.out.bad' to see the entire diff)
-> >
-> >
-> > [  981.382774] run blktests nvme/008 at 2021-08-18 00:33:21
-> > [  981.470796] rdma_rxe: loaded
-> > [  981.474338] infiniband eno1_rxe: set active
-> > [  981.474340] infiniband eno1_rxe: added eno1
-> > [  981.476737] eno2 speed is unknown, defaulting to 1000
-> > [  981.481803] eno2 speed is unknown, defaulting to 1000
-> > [  981.486865] eno2 speed is unknown, defaulting to 1000
-> > [  981.492862] infiniband eno2_rxe: set down
-> > [  981.492864] infiniband eno2_rxe: added eno2
-> > [  981.492904] eno2 speed is unknown, defaulting to 1000
-> > [  981.497957] eno2 speed is unknown, defaulting to 1000
-> > [  981.504338] eno2 speed is unknown, defaulting to 1000
-> > [  981.510442] eno3 speed is unknown, defaulting to 1000
-> > [  981.515509] eno3 speed is unknown, defaulting to 1000
-> > [  981.520580] eno3 speed is unknown, defaulting to 1000
-> > [  981.526600] infiniband eno3_rxe: set down
-> > [  981.526601] infiniband eno3_rxe: added eno3
-> > [  981.526640] eno3 speed is unknown, defaulting to 1000
-> > [  981.531693] eno3 speed is unknown, defaulting to 1000
-> > [  981.538052] eno2 speed is unknown, defaulting to 1000
-> > [  981.543115] eno3 speed is unknown, defaulting to 1000
-> > [  981.549088] eno4 speed is unknown, defaulting to 1000
-> > [  981.554149] eno4 speed is unknown, defaulting to 1000
-> > [  981.559211] eno4 speed is unknown, defaulting to 1000
-> > [  981.565201] infiniband eno4_rxe: set down
-> > [  981.565203] infiniband eno4_rxe: added eno4
-> > [  981.565242] eno4 speed is unknown, defaulting to 1000
-> > [  981.570306] eno4 speed is unknown, defaulting to 1000
-> > [  981.576724] eno2 speed is unknown, defaulting to 1000
-> > [  981.581785] eno3 speed is unknown, defaulting to 1000
-> > [  981.586848] eno4 speed is unknown, defaulting to 1000
-> > [  981.599312] loop0: detected capacity change from 0 to 2097152
-> > [  981.612261] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
-> > [  981.614215] nvmet_rdma: enabling port 0 (10.16.221.116:4420)
-> > [  981.622586] nvmet: creating controller 1 for subsystem
-> > blktests-subsystem-1 for NQN
-> > nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0035-4b10-8044-b9c04f463333.
-> > [  981.622830] nvme nvme0: creating 32 I/O queues.
-> > [  981.634860] nvme nvme0: failed to initialize MR pool sized 128 for
-> > QID 32         ----------------------- failed here
->
-> Recently a lot of commits are merged into linux upstream, can you let
-> us know the kernel version
-> on which this problem occurs?
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-I mean, the earliest kernel version on which this problem occurs.
+Use flexible arrays instead of zero-element arrays (which look like they
+are always overflowing) and split the cross-field memcpy() into two halves
+that can be appropriately bounds-checked by the compiler.
 
-Zhu Yanjun
+We were doing:
 
->
-> Thanks
->
-> Zhu Yanjun
->
->
-> > [  981.772647] eno2 speed is unknown, defaulting to 1000
-> > [  981.641676] nvme nvme0: rdma connection establishment failed (-12)
-> > [  981.777715] eno3 speed is unknown, defaulting to 1000
-> > [  981.782780] eno4 speed is unknown, defaulting to 1000
-> > [  981.799443] rdma_rxe: unloaded
-> >
-> > --
-> > Best Regards,
-> >   Yi Zhang
-> >
+	#define ETH_HLEN  14
+	#define VLAN_HLEN  4
+	...
+	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
+	...
+        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
+	...
+        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
+        struct mlx5_wqe_data_seg *dseg = wqe->data;
+	...
+	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+
+target is wqe->eth.inline_hdr.start (which the compiler sees as being
+2 bytes in size), but copying 18, intending to write across start
+(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
+wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
+(8 bytes).
+
+struct mlx5e_tx_wqe {
+        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
+        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
+        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+
+        /* size: 32, cachelines: 1, members: 3 */
+        /* last cacheline: 32 bytes */
+};
+
+struct mlx5_wqe_eth_seg {
+        u8                         swp_outer_l4_offset;  /*     0     1 */
+        u8                         swp_outer_l3_offset;  /*     1     1 */
+        u8                         swp_inner_l4_offset;  /*     2     1 */
+        u8                         swp_inner_l3_offset;  /*     3     1 */
+        u8                         cs_flags;             /*     4     1 */
+        u8                         swp_flags;            /*     5     1 */
+        __be16                     mss;                  /*     6     2 */
+        __be32                     flow_table_metadata;  /*     8     4 */
+        union {
+                struct {
+                        __be16     sz;                   /*    12     2 */
+                        u8         start[2];             /*    14     2 */
+                } inline_hdr;                            /*    12     4 */
+                struct {
+                        __be16     type;                 /*    12     2 */
+                        __be16     vlan_tci;             /*    14     2 */
+                } insert;                                /*    12     4 */
+                __be32             trailer;              /*    12     4 */
+        };                                               /*    12     4 */
+
+        /* size: 16, cachelines: 1, members: 9 */
+        /* last cacheline: 16 bytes */
+};
+
+struct mlx5_wqe_data_seg {
+        __be32                     byte_count;           /*     0     4 */
+        __be32                     lkey;                 /*     4     4 */
+        __be64                     addr;                 /*     8     8 */
+
+        /* size: 16, cachelines: 1, members: 3 */
+        /* last cacheline: 16 bytes */
+};
+
+So, split the memcpy() so the compiler can reason about the buffer
+sizes.
+
+"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
+nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
+code changes (i.e. only source line number induced differences and
+optimizations).
+
+Cc: Saeed Mahameed <saeedm@nvidia.com>
+Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: linux-rdma@vger.kernel.org
+Cc: bpf@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en.h     | 4 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index 4f6897c1ea8d..8997476c20cc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -200,7 +200,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
+ struct mlx5e_tx_wqe {
+ 	struct mlx5_wqe_ctrl_seg ctrl;
+ 	struct mlx5_wqe_eth_seg  eth;
+-	struct mlx5_wqe_data_seg data[0];
++	struct mlx5_wqe_data_seg data[];
+ };
+ 
+ struct mlx5e_rx_wqe_ll {
+@@ -216,7 +216,7 @@ struct mlx5e_umr_wqe {
+ 	struct mlx5_wqe_ctrl_seg       ctrl;
+ 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
+ 	struct mlx5_mkey_seg           mkc;
+-	struct mlx5_mtt                inline_mtts[0];
++	struct mlx5_mtt                inline_mtts[];
+ };
+ 
+ extern const char mlx5e_self_tests[][ETH_GSTRING_LEN];
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+index 2f0df5cc1a2d..efae2444c26f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
+@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
+ 
+ 	/* copy the inline part if required */
+ 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
+-		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
++		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
+ 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
++		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
++		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
+ 		dma_len  -= MLX5E_XDP_MIN_INLINE;
+ 		dma_addr += MLX5E_XDP_MIN_INLINE;
+ 		dseg++;
+-- 
+2.30.2
+
