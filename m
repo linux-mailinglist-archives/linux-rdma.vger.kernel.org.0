@@ -2,36 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CFC73F1006
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 03:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 283333F1021
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 03:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhHSBkq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 21:40:46 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:8041 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235433AbhHSBkp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 21:40:45 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqnWL6ZCgzYr3y;
-        Thu, 19 Aug 2021 09:39:42 +0800 (CST)
+        id S235556AbhHSB53 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 21:57:29 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:13443 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235258AbhHSB53 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 21:57:29 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Gqnpp6pVRzdc7Z;
+        Thu, 19 Aug 2021 09:53:06 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 09:40:07 +0800
+ 15.1.2176.2; Thu, 19 Aug 2021 09:56:52 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 09:40:07 +0800
+ 15.1.2176.2; Thu, 19 Aug 2021 09:56:51 +0800
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 3/3] RDMA/hns: Delete unused hns bitmap interface
-Date:   Thu, 19 Aug 2021 09:36:20 +0800
-Message-ID: <1629336980-17499-4-git-send-email-liangwenpeng@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Restore mr status when rereg mr fails
+Date:   Thu, 19 Aug 2021 09:53:03 +0800
+Message-ID: <1629337984-24459-1-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1629336980-17499-1-git-send-email-liangwenpeng@huawei.com>
-References: <1629336980-17499-1-git-send-email-liangwenpeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
@@ -44,114 +42,76 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Yangyang Li <liyangyang20@huawei.com>
 
-The resources that use the hns bitmap interface:
-qp, cq, mr, pd, xrcd, uar, srq, have been changed to IDA interfaces, and
-the unused hns' own bitmap interfaces need to be deleted.
+If rereg_user_mr fails, mr needs to stay in a safe state. The mr state is
+backed up when entering the rereg_user_mr function, and the mr state is
+restored when the rereg fails.
 
+Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+Reported-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_alloc.c  | 70 -----------------------------
- drivers/infiniband/hw/hns/hns_roce_device.h |  5 ---
- 2 files changed, 75 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_alloc.c b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-index 1dc35dd..d4fa0fd 100644
---- a/drivers/infiniband/hw/hns/hns_roce_alloc.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_alloc.c
-@@ -36,76 +36,6 @@
- #include "hns_roce_device.h"
- #include <rdma/ib_umem.h>
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 006c84b..d0870b4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -285,6 +285,27 @@ struct ib_mr *hns_roce_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	return ERR_PTR(ret);
+ }
  
--int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj)
--{
--	int ret = 0;
--
--	spin_lock(&bitmap->lock);
--	*obj = find_next_zero_bit(bitmap->table, bitmap->max, bitmap->last);
--	if (*obj >= bitmap->max) {
--		bitmap->top = (bitmap->top + bitmap->max + bitmap->reserved_top)
--			       & bitmap->mask;
--		*obj = find_first_zero_bit(bitmap->table, bitmap->max);
--	}
--
--	if (*obj < bitmap->max) {
--		set_bit(*obj, bitmap->table);
--		bitmap->last = (*obj + 1);
--		if (bitmap->last == bitmap->max)
--			bitmap->last = 0;
--		*obj |= bitmap->top;
--	} else {
--		ret = -EINVAL;
--	}
--
--	spin_unlock(&bitmap->lock);
--
--	return ret;
--}
--
--void hns_roce_bitmap_free(struct hns_roce_bitmap *bitmap, unsigned long obj)
--{
--	obj &= bitmap->max + bitmap->reserved_top - 1;
--
--	spin_lock(&bitmap->lock);
--	clear_bit(obj, bitmap->table);
--
--	bitmap->last = min(bitmap->last, obj);
--	bitmap->top = (bitmap->top + bitmap->max + bitmap->reserved_top)
--		       & bitmap->mask;
--	spin_unlock(&bitmap->lock);
--}
--
--int hns_roce_bitmap_init(struct hns_roce_bitmap *bitmap, u32 num, u32 mask,
--			 u32 reserved_bot, u32 reserved_top)
--{
--	u32 i;
--
--	if (num != roundup_pow_of_two(num))
--		return -EINVAL;
--
--	bitmap->last = 0;
--	bitmap->top = 0;
--	bitmap->max = num - reserved_top;
--	bitmap->mask = mask;
--	bitmap->reserved_top = reserved_top;
--	spin_lock_init(&bitmap->lock);
--	bitmap->table = kcalloc(BITS_TO_LONGS(bitmap->max), sizeof(long),
--				GFP_KERNEL);
--	if (!bitmap->table)
--		return -ENOMEM;
--
--	for (i = 0; i < reserved_bot; ++i)
--		set_bit(i, bitmap->table);
--
--	return 0;
--}
--
--void hns_roce_bitmap_cleanup(struct hns_roce_bitmap *bitmap)
--{
--	kfree(bitmap->table);
--}
--
- void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf)
- {
- 	struct hns_roce_buf_list *trunks;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 4b6c3c0..2129da3 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -1152,11 +1152,6 @@ void hns_roce_cleanup_eq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_cq_table(struct hns_roce_dev *hr_dev);
- void hns_roce_cleanup_qp_table(struct hns_roce_dev *hr_dev);
++static void copy_mr(struct hns_roce_mr *dst, struct hns_roce_mr *src)
++{
++	dst->enabled = src->enabled;
++	dst->iova = src->iova;
++	dst->size = src->size;
++	dst->pd = src->pd;
++	dst->access = src->access;
++}
++
++static void store_rereg_mr(struct hns_roce_mr *mr_bak,
++				  struct hns_roce_mr *mr)
++{
++	copy_mr(mr_bak, mr);
++}
++
++static void restore_rereg_mr(struct hns_roce_mr *mr_bak,
++				    struct hns_roce_mr *mr)
++{
++	copy_mr(mr, mr_bak);
++}
++
+ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 				     u64 length, u64 virt_addr,
+ 				     int mr_access_flags, struct ib_pd *pd,
+@@ -294,9 +315,12 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 	struct ib_device *ib_dev = &hr_dev->ib_dev;
+ 	struct hns_roce_mr *mr = to_hr_mr(ibmr);
+ 	struct hns_roce_cmd_mailbox *mailbox;
++	struct hns_roce_mr mr_bak;
+ 	unsigned long mtpt_idx;
+ 	int ret;
  
--int hns_roce_bitmap_alloc(struct hns_roce_bitmap *bitmap, unsigned long *obj);
--void hns_roce_bitmap_free(struct hns_roce_bitmap *bitmap, unsigned long obj);
--int hns_roce_bitmap_init(struct hns_roce_bitmap *bitmap, u32 num, u32 mask,
--			 u32 reserved_bot, u32 resetrved_top);
--void hns_roce_bitmap_cleanup(struct hns_roce_bitmap *bitmap);
- void hns_roce_cleanup_bitmap(struct hns_roce_dev *hr_dev);
++	store_rereg_mr(&mr_bak, mr);
++
+ 	if (!mr->enabled)
+ 		return ERR_PTR(-EINVAL);
  
- int hns_roce_create_ah(struct ib_ah *ah, struct rdma_ah_init_attr *init_attr,
+@@ -349,7 +373,11 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 
+ 	mr->enabled = 1;
+ 
++	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return NULL;
++
+ free_cmd_mbox:
++	restore_rereg_mr(&mr_bak, mr);
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 
+ 	return ERR_PTR(ret);
 -- 
 2.8.1
 
