@@ -2,170 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 329AD3F1049
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 04:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1034A3F105B
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 04:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhHSCWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 Aug 2021 22:22:18 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:17042 "EHLO
+        id S235689AbhHSCaN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 Aug 2021 22:30:13 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:8042 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbhHSCWS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 22:22:18 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqpMS18FNzbfKr;
-        Thu, 19 Aug 2021 10:17:56 +0800 (CST)
+        with ESMTP id S235384AbhHSCaM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 Aug 2021 22:30:12 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GqpcQ5G22zYr5s;
+        Thu, 19 Aug 2021 10:29:10 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 10:21:41 +0800
+ 15.1.2176.2; Thu, 19 Aug 2021 10:29:35 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 19 Aug 2021 10:21:40 +0800
+ 15.1.2176.2; Thu, 19 Aug 2021 10:29:35 +0800
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [RESEND PATCH v2 for-next] RDMA/hns: Solve the problem that dma_pool is used during the reset
-Date:   Thu, 19 Aug 2021 10:17:54 +0800
-Message-ID: <1629339474-43445-1-git-send-email-liangwenpeng@huawei.com>
+Subject: [RESEND PATCH for-next] RDMA/hns: Restore mr status when rereg mr fails
+Date:   Thu, 19 Aug 2021 10:25:48 +0800
+Message-ID: <1629339948-32231-1-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+From: Yangyang Li <liyangyang20@huawei.com>
 
-During the reset, the driver calls dma_pool_destroy() to release the
-dma_pool resources. If the dma_pool_free interface is called during the
-modify_qp operation, an exception will occur.
+If rereg_user_mr fails, mr needs to stay in a safe state. The mr state is
+backed up when entering the rereg_user_mr function, and the mr state is
+restored when the rereg fails.
 
-[15834.440744] Unable to handle kernel paging request at virtual address
-ffffa2cfc7725678
-...
-[15834.660596] Call trace:
-[15834.663033]  queued_spin_lock_slowpath+0x224/0x308
-[15834.667802]  _raw_spin_lock_irqsave+0x78/0x88
-[15834.672140]  dma_pool_free+0x34/0x118
-[15834.675799]  hns_roce_free_cmd_mailbox+0x54/0x88 [hns_roce_hw_v2]
-[15834.681872]  hns_roce_v2_qp_modify.isra.57+0xcc/0x120 [hns_roce_hw_v2]
-[15834.688376]  hns_roce_v2_modify_qp+0x4d4/0x1ef8 [hns_roce_hw_v2]
-[15834.694362]  hns_roce_modify_qp+0x214/0x5a8 [hns_roce_hw_v2]
-[15834.699996]  _ib_modify_qp+0xf0/0x308
-[15834.703642]  ib_modify_qp+0x38/0x48
-[15834.707118]  rt_ktest_modify_qp+0x14c/0x998 [rdma_test]
-...
-[15837.269216] Unable to handle kernel paging request at virtual address
-000197c995a1d1b4
-...
-[15837.480898] Call trace:
-[15837.483335]  __free_pages+0x28/0x78
-[15837.486807]  dma_direct_free_pages+0xa0/0xe8
-[15837.491058]  dma_direct_free+0x48/0x60
-[15837.494790]  dma_free_attrs+0xa4/0xe8
-[15837.498449]  hns_roce_buf_free+0xb0/0x150 [hns_roce_hw_v2]
-[15837.503918]  mtr_free_bufs.isra.1+0x88/0xc0 [hns_roce_hw_v2]
-[15837.509558]  hns_roce_mtr_destroy+0x60/0x80 [hns_roce_hw_v2]
-[15837.515198]  hns_roce_v2_cleanup_eq_table+0x1d0/0x2a0 [hns_roce_hw_v2]
-[15837.521701]  hns_roce_exit+0x108/0x1e0 [hns_roce_hw_v2]
-[15837.526908]  __hns_roce_hw_v2_uninit_instance.isra.75+0x70/0xb8 [hns_roce_hw_v2]
-[15837.534276]  hns_roce_hw_v2_uninit_instance+0x64/0x80 [hns_roce_hw_v2]
-[15837.540786]  hclge_uninit_client_instance+0xe8/0x1e8 [hclge]
-[15837.546419]  hnae3_uninit_client_instance+0xc4/0x118 [hnae3]
-[15837.552052]  hnae3_unregister_client+0x16c/0x1f0 [hnae3]
-[15837.557346]  hns_roce_hw_v2_exit+0x34/0x50 [hns_roce_hw_v2]
-[15837.562895]  __arm64_sys_delete_module+0x208/0x268
-[15837.567665]  el0_svc_common.constprop.4+0x110/0x200
-[15837.572520]  do_el0_svc+0x34/0x98
-[15837.575821]  el0_svc+0x14/0x40
-[15837.578862]  el0_sync_handler+0xb0/0x2d0
-[15837.582766]  el0_sync+0x140/0x180
-
-It is caused by two concurrent processes:
-	uninit_instance->dma_pool_destroy(cmdq)
-	modify_qp->dma_poll_free(cmdq)
-
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Jiaran Zhang <zhangjiaran@huawei.com>
+Fixes: 4e9fc1dae2a9 ("RDMA/hns: Optimize the MR registration process")
+Reported-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cmd.c    | 12 ++++++++++++
- drivers/infiniband/hw/hns/hns_roce_device.h |  1 +
- 2 files changed, 13 insertions(+)
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index 8f68cc3..3dfb97a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -198,12 +198,16 @@ int hns_roce_cmd_init(struct hns_roce_dev *hr_dev)
- 	if (!hr_dev->cmd.pool)
- 		return -ENOMEM;
-
-+	init_rwsem(&hr_dev->cmd.mb_rwsem);
-+
- 	return 0;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index 006c84b..d0870b4 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -285,6 +285,27 @@ struct ib_mr *hns_roce_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
+ 	return ERR_PTR(ret);
  }
-
- void hns_roce_cmd_cleanup(struct hns_roce_dev *hr_dev)
- {
-+	down_write(&hr_dev->cmd.mb_rwsem);
- 	dma_pool_destroy(hr_dev->cmd.pool);
-+	up_write(&hr_dev->cmd.mb_rwsem);
- }
-
- int hns_roce_cmd_use_events(struct hns_roce_dev *hr_dev)
-@@ -237,8 +241,10 @@ void hns_roce_cmd_use_polling(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_cmdq *hr_cmd = &hr_dev->cmd;
-
-+	down_write(&hr_dev->cmd.mb_rwsem);
- 	kfree(hr_cmd->context);
- 	hr_cmd->use_events = 0;
-+	up_write(&hr_dev->cmd.mb_rwsem);
-
- 	up(&hr_cmd->poll_sem);
- }
-@@ -252,9 +258,12 @@ hns_roce_alloc_cmd_mailbox(struct hns_roce_dev *hr_dev)
- 	if (!mailbox)
- 		return ERR_PTR(-ENOMEM);
-
-+	down_read(&hr_dev->cmd.mb_rwsem);
- 	mailbox->buf =
- 		dma_pool_alloc(hr_dev->cmd.pool, GFP_KERNEL, &mailbox->dma);
- 	if (!mailbox->buf) {
-+		up_read(&hr_dev->cmd.mb_rwsem);
+ 
++static void copy_mr(struct hns_roce_mr *dst, struct hns_roce_mr *src)
++{
++	dst->enabled = src->enabled;
++	dst->iova = src->iova;
++	dst->size = src->size;
++	dst->pd = src->pd;
++	dst->access = src->access;
++}
 +
- 		kfree(mailbox);
- 		return ERR_PTR(-ENOMEM);
- 	}
-@@ -269,5 +278,8 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
- 		return;
-
- 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
++static void store_rereg_mr(struct hns_roce_mr *mr_bak,
++				  struct hns_roce_mr *mr)
++{
++	copy_mr(mr_bak, mr);
++}
 +
-+	up_read(&hr_dev->cmd.mb_rwsem);
++static void restore_rereg_mr(struct hns_roce_mr *mr_bak,
++				    struct hns_roce_mr *mr)
++{
++	copy_mr(mr, mr_bak);
++}
 +
- 	kfree(mailbox);
- }
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 0c3eb11..90d8ef8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -571,6 +571,7 @@ struct hns_roce_cmdq {
- 	 * close device, switch into poll mode(non event mode)
- 	 */
- 	u8			use_events;
-+	struct rw_semaphore	mb_rwsem;
- };
-
- struct hns_roce_cmd_mailbox {
---
+ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 				     u64 length, u64 virt_addr,
+ 				     int mr_access_flags, struct ib_pd *pd,
+@@ -294,9 +315,12 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 	struct ib_device *ib_dev = &hr_dev->ib_dev;
+ 	struct hns_roce_mr *mr = to_hr_mr(ibmr);
+ 	struct hns_roce_cmd_mailbox *mailbox;
++	struct hns_roce_mr mr_bak;
+ 	unsigned long mtpt_idx;
+ 	int ret;
+ 
++	store_rereg_mr(&mr_bak, mr);
++
+ 	if (!mr->enabled)
+ 		return ERR_PTR(-EINVAL);
+ 
+@@ -349,7 +373,11 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
+ 
+ 	mr->enabled = 1;
+ 
++	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return NULL;
++
+ free_cmd_mbox:
++	restore_rereg_mr(&mr_bak, mr);
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ 
+ 	return ERR_PTR(ret);
+-- 
 2.8.1
 
