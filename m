@@ -2,155 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0E83F1488
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 09:50:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7266E3F1928
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 Aug 2021 14:27:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbhHSHv3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Aug 2021 03:51:29 -0400
-Received: from mail-mw2nam12on2065.outbound.protection.outlook.com ([40.107.244.65]:57441
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235102AbhHSHv2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Aug 2021 03:51:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WQx9qd8SfK/tROIp5RKHLsOWmpeCiQYOz9Fh/o/Ei0UNe6urjD/kbkCIA9oRNukCuW9UiBcnzm/26EtHJ+lq7v3fF9ar5SWvVxTzPMA+oMgAyKIDKQl+FWP7oEYeGiaJjTUimqfPeJTntzBbPml+Q3gXRZBaFUSwg/BaC2CeGCwqsZMMZxktSrG/ZfdFFLKK1pLqy18/TvYwgpLuNNHRyyp9aOtKHj83UO7o0abi8O7WtSnimO9qavvOpd4jHqxoHS/uz2o21Y9k+ffULt8ShtciXh+qg9EBedqrpqYW2G0IPUNjs68IOqfxQZImkDVCdd1GrXAUNqB9iAV0a12ZRw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ErwqSMe4rJcugaPShLbLw8ACCRtV1YT6cefcuGLfNg=;
- b=Irk6xhWOSTbkH7iJ2Fr4Ok4khwg+LHMZ4MJmqY4gjtNUqcfNHAV6ss6TSrjwQnWPuWXcyKxXIJ4IGJdVeT2Z/cEHl8IH0Lm3RTfqUSgYXktnjqMcsTwdOqKTYRdcMtHzXjAMlPosn/PvasCqpFOoCXarrRKBUOQ1QHIvYX+XK1iVT7Hxz0kEWqeer9kE0iRf/q42Ok65kDmY+nXleDx+LUqOvUOET39h67zk1tC+X6/Vm3ztnH6QrAArKgnoXbpbmfEUT+2WWEVYl+P2f5W846vOIwxo2P9sroYYPsloKtDhqrBTgLk2p4rc0yDzpvklsyN4P2BebUZcrqGrh5MDjA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ErwqSMe4rJcugaPShLbLw8ACCRtV1YT6cefcuGLfNg=;
- b=gSUMuQGlq2965l0KmmvutLWsOEx0Ij22h1Z5JAExJtJahOeyh8BUY7astmJUW/P7fHczU73TbfMLPCjwbivSLPATPKL7yvI/FBgeMSZ5M+sSsRr2Y2qmnjHHDNp+g41bxl3UewqAYI2u3NGy39ZYcV7QKgxuhDOqUuGZAbM1G6mqCGsDqQlvKDTqaYRlL4CaLFq2imALSqZbtQbZ0GWjWAsIrXvBj98/8lV4qY9/cthYdgCf/lZ2hzK/hFBabXUImLnGxy5f+Bw8Gmmv+K8NKW+dky9WFY7vQfy7ZzzqrddWf51JJ+Q/AFnByVGVPIyBob1yiVLbL50DhBfrmzHeKg==
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
- by BYAPR12MB3637.namprd12.prod.outlook.com (2603:10b6:a03:da::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4415.14; Thu, 19 Aug
- 2021 07:50:51 +0000
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e000:8099:a5da:d74]) by BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::e000:8099:a5da:d74%5]) with mapi id 15.20.4436.019; Thu, 19 Aug 2021
- 07:50:51 +0000
-From:   Saeed Mahameed <saeedm@nvidia.com>
-To:     "tim.gardner@canonical.com" <tim.gardner@canonical.com>,
-        Vlad Buslov <vladbu@nvidia.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Roi Dayan <roid@nvidia.com>,
-        "vladimir.oltean@nxp.com" <vladimir.oltean@nxp.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Jianbo Liu <jianbol@nvidia.com>
-Subject: Re: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized variable
- in mlx5_esw_bridge_port_changeupper()
-Thread-Topic: [PATCH][linux-next] net/mlx5: Bridge, fix uninitialized variable
- in mlx5_esw_bridge_port_changeupper()
-Thread-Index: AQHXlEkLsgnnT4Q3m0+5x5/L0iS5QKt5eQOAgAD8RQA=
-Date:   Thu, 19 Aug 2021 07:50:51 +0000
-Message-ID: <f42ff8df9d10b6e171e3ca45247a3df9b9fba71c.camel@nvidia.com>
-References: <20210818155210.14522-1-tim.gardner@canonical.com>
-         <ygnh8s0ypumc.fsf@nvidia.com>
-In-Reply-To: <ygnh8s0ypumc.fsf@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.4 (3.40.4-1.fc34) 
-authentication-results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3b960698-78a4-4031-47ab-08d962e610e7
-x-ms-traffictypediagnostic: BYAPR12MB3637:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR12MB36374914D0D1E9054EC67173B3C09@BYAPR12MB3637.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nOrlvtx6ZxOD8kc2qsfxVDiGLzvBA+QgS4V8a1fjhSxhpQdDQbq6Q0LgTAtNmcdvm3H82SGx7/abj1dpzCFa0rS5V8pW/Tkhet5XxYlCcWTjouhshGX9BOs4uVilGjcbWOzwxL/njfUi2disY7R7j5L7s0ofYPoWP5RGuv5KhMdc0Afc4JXyFviUcgfREI8ZxPIOI4CXNmEMqTn25FHFRr2ZUQ8osMowhA+w139Rfyo2ANVe1aS4uztZxgYB2Vfq70mNQrq1BvG1/mCN7mzaTzoZ701oSOvqWmJ9JJ68BiI2S8SIFj8PrL2hP8G7VvNSvAS3whHRXcR+EXl1CsaKyDIR0FtTpHU6tARZpIz4uKOXY8UOAQyD5bDP0YR+jjlm/Az73q2awk949gf1lNibV4WzJ2kNlEFgQLAZhOnr4gxtik+bA9D+72hm/M4BEY/RhNaCn1fvCiv+qVBLem0mYQtwhQG7FL0/bIi5Y5Oced6/Rtvxlt9KiERRFwVl7k/lYXBlywqwhG+909QdnG2NvvkJHBIVdZhP/l1rMKkhLQ2Dm/6pNUAflVZP1aQ+z3eUvKEnJ6Iv+0EwIWwECSecEQKEqsMwM2k+BGQvzfH4SaCwhFJrf+nICkrvMcCJ/VObmeOTu9sFGLhIixz8IRArE1Xe6TaOx2WhvDOZB9dfRxFtZdAkc8k32rKN/JN5rc7lBkF0VnqYsDUrLlPQ9wQtcg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(136003)(396003)(366004)(8936002)(38100700002)(64756008)(122000001)(316002)(38070700005)(2906002)(6512007)(6486002)(66446008)(6506007)(76116006)(54906003)(26005)(66946007)(66556008)(36756003)(186003)(110136005)(66476007)(4326008)(5660300002)(6636002)(86362001)(107886003)(8676002)(478600001)(71200400001)(2616005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UWdCQ04zTjAwWFpGT1RvVDM1ZWJLTzh4WGhHZVArVTNMSjVUTUxMVVFEZnQz?=
- =?utf-8?B?WjVRaUR3enNXS21MN2hSU0xJYk5FbExwdVV2ekVuSE5sc25FWXlzbUdacks2?=
- =?utf-8?B?c2hHeXhIdnMvYXRSVlJKYWdXVnpsNHRGYXZVb2lEd29qZjQ4ZU9iTDBIVGl5?=
- =?utf-8?B?andzRi9LeHBTR2NzMGRBejZrT3M5UnFYVkpnbjVsVFpZY2kvMzVTaS8vcGd1?=
- =?utf-8?B?NFZRd0hXd0hwcDB5dnh5eVZ1UDdDV3I0Ny94Q1YwbEQ2STIrRElMVmVnZ3Qw?=
- =?utf-8?B?cVc3Ni9Ob2p3YytIVHN3eWZFWkl5U0JKWmZzWFFJTXpxUllMUmIwYlhLcmp0?=
- =?utf-8?B?YUpoL3EvTWhQc1k2LzR4YmhWRlEwd2gzbzlOQjBMTWIxOHFNSlZqZ3QrOUg4?=
- =?utf-8?B?UENQcDQ3VmtVSnl0aElkak1PS0VmdTZBZVJPUTZsODA0MS81STlZWWViU0JR?=
- =?utf-8?B?MFNNNk1CNGQ0ZzNJaTNkc2k0RzB0cTNNem41S08wKzJVL2FLRVJMQlI2MFNN?=
- =?utf-8?B?bmdTQSt4YzM3WnZvS0Q3K21NVk9BeVZWYTlFa1ROckx3OGFYcUdoUnM4eGF2?=
- =?utf-8?B?QjBOMk4yM0RDZGVFQkM0cys3Sys2YUh1U3RFN05ENUV1TURFQVIyTDFxaGoy?=
- =?utf-8?B?QnI2aHJ6OVpRRCtrNTlvMWc3RGZITDBvRmtrOXRhbFhGckJJSEw3b3hORjRC?=
- =?utf-8?B?dzM5Q3lDb0VmSFA0aG42S1diTlFSenlUaTR2b25WT3paWGZsUk4zU2lNT3RZ?=
- =?utf-8?B?MnVpUUdWemltMkJMSGQ3aVpGSTZjT1IvRlByVGVrTXNpbXplR2EvS0w1THFp?=
- =?utf-8?B?eXFXdEhzUEdYTytBT24rQ2QzNW9qMnA1bjRTQldMUVQ1WHdJSG1VWGRRb2Fq?=
- =?utf-8?B?UE03SGRMNGtXSFhZQXhqWXBjRFFoeW15R3Rvb3NRQWpiV3U3OGEwbTBPZ1BI?=
- =?utf-8?B?Vm5DOGI4MFFhNnp0RGdtbE90dmNnbXZXSFFZYjgxQmtoQktUd2luTHZrT3Vz?=
- =?utf-8?B?d0RtWnR0eWdjY0hJVVdmZXZLdi9ZUTBQeitRV2dUM2JEeUhsRkFiNHFXeEdH?=
- =?utf-8?B?bDFXK1lBZDlTVktPWHBadnZFRjYrVFl5NnV4c2dvdktibVdpYlg4T0xKRE5B?=
- =?utf-8?B?WGViV2g2a2h5aFRFZldUNExKeEkwdWpkM1AxbCs3SVVISXBvSk1Zcy90aVlK?=
- =?utf-8?B?UU1HWnRCYjNVZW0zS0MxYWRKVnZNanFHanlISEtjL2w0ZFhtY0N0dytpa1Ns?=
- =?utf-8?B?cEo3RGRnblkxeVRKNjJhS214R2ltZDN2blRkNm1rUnRCS2ZLQis0SnYvWHYw?=
- =?utf-8?B?dE11R0RYWklMbHpyRDB4cVF2b3NuSzVza1AyRmxTRzFPRGRyYS9YNCs2VEN5?=
- =?utf-8?B?SDR2VlZMbWNXQVZhczRHdXNUaFlacFNlaHd4OHI4NnNnMlY2V3dONlk4RlNR?=
- =?utf-8?B?NmhyWEYwYmFtYmc1eHdkU0NJNkl5b21oeUt3MVRGUzhIUU50NDl4UENNdjQx?=
- =?utf-8?B?dnZKRlR2bUMrdEs0Q041Z08xQW54dHZmQVE4eGhqSGZQK2gvUXdUbXF5RUx2?=
- =?utf-8?B?TFF2N1Z0RDZPSy9mdW41TDF0MWdpZEhSRm9lLzI4ZEpUUXZqemhieFZtMEdQ?=
- =?utf-8?B?UUhWa3d5a3J0QlQ4NVJpeTU2KzEyUzlrdTRrd3VuQlRHd0w1aUJJcUhSL2h0?=
- =?utf-8?B?djJJUnBOTVRObmZYQW4wZ2JoVFZCenY2WG5kSE5sbGFUbmJxY3BxaGVUbHM2?=
- =?utf-8?B?Wjk4QkpsNjlkU2U0WFlKVHRnRjBZOFpKRVAyY0x0QmlPN0YxZm52NExFWkRE?=
- =?utf-8?B?K3Buc3NIZktWTEtBTGV1QT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5F2283876EC812428C2EF345F87DD945@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S239094AbhHSM16 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Aug 2021 08:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239187AbhHSM15 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Aug 2021 08:27:57 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39F5C06175F
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Aug 2021 05:27:20 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id d2so4387530qto.6
+        for <linux-rdma@vger.kernel.org>; Thu, 19 Aug 2021 05:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5h8DRQ7Bx+eFzlj90sftRVtoQw5ByFsjYM5vOznvNjM=;
+        b=Lh2+mUHm/NzMtpiU3c8gY3ZdaGQ0hTG/m9kvEQgXEg1RKz+3FaF0xDsca30ygZMj4U
+         71tVT3HVfOJ+uq/ae3O+V2/wNz1ZKRL5oXrfJMrT9ZLS8IGqK1WZlS1VIy7/pMZF5p1U
+         iJ4mL0UEz55891lYfc4fFzXB5mnKfGVvXu5qR2IqQy99MvlG8TXgE0bJRzU78LOMzryT
+         7Xl+HKBwG9bWchW9H2+S/GBzGWNkuVy8E57+OfP+v2vJHi/dIPH6q7xZxwuYZQV9zBN7
+         98qA2j6Yif6IJCGo5nBcNVo6T60PWrjlYnFBGmvL3mwjjuqqvooktAaU5gBmctIMOXRS
+         0LWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5h8DRQ7Bx+eFzlj90sftRVtoQw5ByFsjYM5vOznvNjM=;
+        b=h6wiTHBpHcVPsfpKJlQETx7dNwCidhwdhCQX0Oe4Kd6BOWNIEZ7vr8qWJiuZQozp4k
+         akZaYDTP1pqVfkK20ZR8B493ItV3s531Ado0aQpS1RLcoFLrbJwQx79ecDIkuo7PjbNJ
+         12uru4tfsMWPA7ZY/PCoUGi4gHwNqt4v0J9knXoJrk7c0mVxlJA/n7lHsLAeNTMO8zHg
+         7LO8+Pkii/CGdZIZS9+wvYy47v4fl7HlEyaovMfn88+lf476Q85LJ1OXvGCQU16uH+e+
+         PWy3MypaZNgAY7S/KaFb01UgzNAwMTaGGbIUS387+4LIWcg1Rm0/nD1o/pDqmV1V3n6t
+         8iSA==
+X-Gm-Message-State: AOAM533Kl8Bq7FLqHRrig0KGX1Ymxf3TZ5jqH5vDAMS8CmUUJKHn+gQD
+        X3Kz/eEZi0e3G6ql9+BzBc+CNw==
+X-Google-Smtp-Source: ABdhPJxwk7vI3dEd2/mwgiJx7X4NGPWrwVGFe3LSMD/MyzGQMgDurTmsWQFQ5lpblgS6WBAbFYMPPg==
+X-Received: by 2002:a05:622a:11cc:: with SMTP id n12mr12404820qtk.363.1629376038633;
+        Thu, 19 Aug 2021 05:27:18 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d7sm1266808qth.70.2021.08.19.05.27.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 05:27:18 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mGh8e-0016LT-A5; Thu, 19 Aug 2021 09:27:16 -0300
+Date:   Thu, 19 Aug 2021 09:27:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-staging@lists.linux.dev,
+        linux-block@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2 56/63] RDMA/mlx5: Use struct_group() to zero struct
+ mlx5_ib_mr
+Message-ID: <20210819122716.GP543798@ziepe.ca>
+References: <20210818060533.3569517-1-keescook@chromium.org>
+ <20210818060533.3569517-57-keescook@chromium.org>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3b960698-78a4-4031-47ab-08d962e610e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2021 07:50:51.4725
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6+6f5kknpiU/xGBk50fqm7LRBh/nJUF26UHGKjOPiV7XxhcSJX/kd2srZO4oAhenz5M65CnHf0JLUGhqi9pW+w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3637
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818060533.3569517-57-keescook@chromium.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA4LTE4IGF0IDE5OjQ3ICswMzAwLCBWbGFkIEJ1c2xvdiB3cm90ZToNCj4g
-T24gV2VkIDE4IEF1ZyAyMDIxIGF0IDE4OjUyLCBUaW0gR2FyZG5lciA8dGltLmdhcmRuZXJAY2Fu
-b25pY2FsLmNvbT4NCj4gd3JvdGU6DQo+ID4gQSByZWNlbnQgY2hhbmdlIHJlbW92ZWQgY29kZSB0
-aGF0IGluaXRpYWxpemVkIHRoZSByZXR1cm4gY29kZQ0KPiA+IHZhcmlhYmxlICdlcnInLiBJdA0K
-PiA+IGlzIG5vdyBwb3NzaWJsZSBmb3IgbWx4NV9lc3dfYnJpZGdlX3BvcnRfY2hhbmdldXBwZXIo
-KSB0byByZXR1cm4gYW4NCj4gPiBlcnJvciBjb2RlDQo+ID4gdXNpbmcgdGhpcyB1bmluaXRpYWxp
-emVkIHZhcmlhYmxlLiBGaXggaXQgYnkgaW5pdGlhbGl6aW5nIHRvIDAuDQo+ID4gDQo+ID4gQWRk
-cmVzc2VzLUNvdmVyaXR5OiAoIlVuaW5pdGlhbGl6ZWQgc2NhbGFyIHZhcmlhYmxlIChVTklOSVQp
-IikNCj4gPiANCj4gPiBDYzogU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBudmlkaWEuY29tPg0KPiA+
-IENjOiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4NCj4gPiBDYzogIkRhdmlkIFMu
-IE1pbGxlciIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+DQo+ID4gQ2M6IEpha3ViIEtpY2luc2tpIDxr
-dWJhQGtlcm5lbC5vcmc+DQo+ID4gQ2M6IFZsYWQgQnVzbG92IDx2bGFkYnVAbnZpZGlhLmNvbT4N
-Cj4gPiBDYzogSmlhbmJvIExpdSA8amlhbmJvbEBudmlkaWEuY29tPg0KPiA+IENjOiBNYXJrIEJs
-b2NoIDxtYmxvY2hAbnZpZGlhLmNvbT4NCj4gPiBDYzogUm9pIERheWFuIDxyb2lkQG52aWRpYS5j
-b20+DQo+ID4gQ2M6IFZsYWRpbWlyIE9sdGVhbiA8dmxhZGltaXIub2x0ZWFuQG54cC5jb20+DQo+
-ID4gQ2M6IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmcNCj4gPiBDYzogbGludXgtcmRtYUB2Z2VyLmtl
-cm5lbC5vcmcNCj4gPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZw0KDQpKdXN0IHdv
-bmRlcmluZywgZG8gd2UgcmVhbGx5IG5lZWQgMTIgaW5saW5lIENDcyBmb3IgZml4aW5nIGEgcG9v
-cg0KY292ZXJpdHk/DQoNCj4gPiBTaWduZWQtb2ZmLWJ5OiBUaW0gR2FyZG5lciA8dGltLmdhcmRu
-ZXJAY2Fub25pY2FsLmNvbT4NCj4gPiAtLS0NCj4gDQo+IFRpbSwgdGhhbmtzIGZvciBmaXhpbmcg
-dGhpcyENCj4gDQo+IFNhZWVkLCB0aGlzIGlzIHRoZSBzZWNvbmQgc2ltaWxhciBpc3N1ZSB0aGF0
-IEkgbWVudGlvbmVkIGluIG15IHJlcGx5DQo+IHRvDQo+IENvbGluLiBBZ2FpbiwgSSd2ZSBhbHJl
-YWR5IHN1Ym1pdHRlZCBzYW1lIHBhdGNoIGludGVybmFsbHkgYW5kIHRoaXMNCj4gb25lDQo+IGlz
-IGFzIGdvb2QgYXMgbWluZS4NCg0KSSBkb24ndCBtaW5kIGJvdGggcGF0Y2hlcyBhcmUgcGVyZmVj
-dC4NCg0KPiANCj4gUmV2aWV3ZWQtYnk6IFZsYWQgQnVzbG92IDx2bGFkYnVAbnZpZGlhLmNvbT4N
-Cj4gDQo+IFsuLi5dDQo+IA0KPiANCg0K
+On Tue, Aug 17, 2021 at 11:05:26PM -0700, Kees Cook wrote:
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring fields.
+> 
+> Add struct_group() to mark region of struct mlx5_ib_mr that should be
+> initialized to zero.
+> 
+> Cc: Leon Romanovsky <leon@kernel.org>
+> Cc: Doug Ledford <dledford@redhat.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: linux-rdma@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> index bf20a388eabe..f63bf204a7a1 100644
+> --- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+> @@ -644,6 +644,7 @@ struct mlx5_ib_mr {
+>  	struct ib_umem *umem;
+>  
+>  	/* This is zero'd when the MR is allocated */
+> +	struct_group(cleared,
+>  	union {
+>  		/* Used only while the MR is in the cache */
+>  		struct {
+> @@ -691,12 +692,13 @@ struct mlx5_ib_mr {
+>  			bool is_odp_implicit;
+>  		};
+>  	};
+> +	);
+>  };
+>  
+>  /* Zero the fields in the mr that are variant depending on usage */
+>  static inline void mlx5_clear_mr(struct mlx5_ib_mr *mr)
+>  {
+> -	memset(mr->out, 0, sizeof(*mr) - offsetof(struct mlx5_ib_mr, out));
+> +	memset(&mr->cleared, 0, sizeof(mr->cleared));
+>  }
+
+Why not use the memset_after(mr->umem) here?
+
+Jason
