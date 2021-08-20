@@ -2,97 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DF23F2420
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 Aug 2021 02:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C8D3F24D0
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 Aug 2021 04:37:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234160AbhHTAhc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 Aug 2021 20:37:32 -0400
-Received: from esa3.hc1455-7.c3s2.iphmx.com ([207.54.90.49]:19409 "EHLO
-        esa3.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233644AbhHTAhb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 19 Aug 2021 20:37:31 -0400
-IronPort-SDR: MM1HAYNZlwxV8LIpjdsj81CEmEXtAtRxmqhtIFZdOniJXe0wlgTiGG0kOhaHclYqQrDNxugRKS
- H0TrwzADzoOtSlmaXfr3K6gHpS5nK9wWskxK99clz4m+p0Rh12j3lOZaQDZo3heIM+yzXR1qsr
- jFJh144+4idQRFlI3jVrZOaQBMza293K9zzJwLiU3LRpOUnMyYYDUU8TSjqi8oQD6smQmTBXQ2
- DjyRKCncrOjEYTDjlOIwDRiDyXOhsYJo082KW7XClLihFFvFbZx6Ty322+3VFpxl/7A3OmEiXU
- H27/oYEt6Awm20m5t3sMumJF
-X-IronPort-AV: E=McAfee;i="6200,9189,10081"; a="40997238"
-X-IronPort-AV: E=Sophos;i="5.84,336,1620658800"; 
-   d="scan'208";a="40997238"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP; 20 Aug 2021 09:36:54 +0900
-Received: from yto-m1.gw.nic.fujitsu.com (yto-nat-yto-m1.gw.nic.fujitsu.com [192.168.83.64])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 23264EB344
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Aug 2021 09:36:52 +0900 (JST)
-Received: from m3051.s.css.fujitsu.com (m3051.s.css.fujitsu.com [10.134.21.209])
-        by yto-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5D8C0C9CD5
-        for <linux-rdma@vger.kernel.org>; Fri, 20 Aug 2021 09:36:51 +0900 (JST)
-Received: from [10.133.114.24] (VPC-Y08P0560251.g01.fujitsu.local [10.133.114.24])
-        by m3051.s.css.fujitsu.com (Postfix) with ESMTP id 4C07C9E;
-        Fri, 20 Aug 2021 09:36:51 +0900 (JST)
-Subject: Re: [PATCH] RDMA/core: EPERM should be returned when # of pined pages
- is over ulimit
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-References: <20210818082702.692117-1-y-goto@fujitsu.com>
- <20210819231053.GA390234@nvidia.com>
-From:   Yasunori Goto <y-goto@fujitsu.com>
-Message-ID: <f784a0c6-27b7-5e30-b3ba-e1f4ebe95399@fujitsu.com>
-Date:   Fri, 20 Aug 2021 09:36:50 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S237269AbhHTCiN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 Aug 2021 22:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234797AbhHTCiN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 Aug 2021 22:38:13 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5047C061575;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id bl13so4797595qvb.5;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
+        b=halUh/5EkZaX/YBXMqTWvGtnH7NSWBlqI1rpxq0sMoxRkLhGjK4xQxOzJjbK4I6uRa
+         AJuNfyHWivm2mbLD0aKTnrqHLyzUJUL0/S/Vm9bmdd6TzPubOFNfvLulxuywrwBoZS3G
+         kUdDG3b7e9buH/sxmzB9m+KzZVpA1ZiUYMKSfBOSbqR5bSFcBwulODmFOEibRPzeWCJn
+         9qRhSpbcAT3Uy6yecQEgNmH0+gc7nBCpi0629uKGVUrILvS1aOUPt4S5KeaB4b1NN3pm
+         xd55CJba6wx/ZMu8Q9olzto3Te27JaE6tHfihuD9gJbZdMNXWTNfqHUmnr6cvCrh9aoV
+         MTZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wWMQ9DoOno+c3OyqFMSEWNvDVLmVwUI+Xz33Hz9sthU=;
+        b=D5h3/z1uoquL16MvABiF7vi3+Jo3ApUX6ShRfnamxp1smcH2KGP3o25e6GnlSNcpvz
+         gSTvhJiOYvkPBmWTpK/bAD5Hqn3bZmCaRhl3d9nyE0QOBQraP41gTiFnWV98wqPB2Kb0
+         MJj+qaQ9P5zIWHSrnV6z9uJMOGK4+tmhE7AB73atkVBcDODpHoioTyFG48tUVtx17hx0
+         fJB56NfOZn36JJ1TZf/Wduo72Mr4dyMBWmTq11BiO5eE6mYJ5F+mpWrVTSdqVb+hQSFZ
+         jW5mbPIwWdLbzjfeQwW2ICUQ+BU9YhksLzKVWcTY7Z4Y0NwJNSK135V5rTnaEl78sX+H
+         tBbw==
+X-Gm-Message-State: AOAM53017SmN8hQ8gcTbnKua6wsmkWCt993Eo+Gfdrt61u1vBv7kKVHK
+        q2T+T+uSbWKt9UnPIej1aoc=
+X-Google-Smtp-Source: ABdhPJxpWI66ECfv2tS7crK+5x37kpF5iynRBZkNqa/BPKoimx9JnWtPYDhB7OPwgoTw6vV6FNaiuA==
+X-Received: by 2002:a0c:ff48:: with SMTP id y8mr17901761qvt.29.1629427055094;
+        Thu, 19 Aug 2021 19:37:35 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id c1sm2114382qtj.36.2021.08.19.19.37.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Aug 2021 19:37:34 -0700 (PDT)
+From:   jing yangyang <cgel.zte@gmail.com>
+X-Google-Original-From: jing yangyang <jing.yangyang@zte.com.cn>
+To:     Jesse Brandeburg <jesse.brandeburg@intel.com>
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        jing yangyang <jing.yangyang@zte.com.cn>,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH linux-next] net: ethernet: fix returnvar.cocci warnings
+Date:   Thu, 19 Aug 2021 19:37:13 -0700
+Message-Id: <e2578530d099fbc0553c97585440192e548bd3dd.1629217036.git.jing.yangyang@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210819231053.GA390234@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Remove unneeded variables when "0" can be returned.
 
+Generated by: scripts/coccinelle/misc/returnvar.cocci
 
-On 2021/08/20 8:10, Jason Gunthorpe wrote:
-> On Wed, Aug 18, 2021 at 05:27:02PM +0900, Yasunori Goto wrote:
->> Hello,
->>
->> When I started to use SoftRoCE, I'm very confused by
->> ENOMEM error output even if I gave enough memory.
->>
->> I think EPERM is more suitable for uses to solve error rather than
->> ENOMEM at here of ib_umem_get() when # of pinned pages is over ulimit.
->> This is not "memory is not enough" problem, because driver can
->> succeed to pin enough amount of pages, but it is larger than ulimit value.
->>
->> The hard limit of "max locked memory" can be changed by limit.conf.
->> In addition, this checks also CAP_IPC_LOCK, it is indeed permmission check.
->> So, I think the following patch.
->>
->> If there is a intention why ENOMEM is used here, please let me know.
->> Otherwise, I'm glad if this is merged.
->>
->> Thanks.
->>
->>
->> ---
->> When # of pinned pages are larger than ulimit of "max locked memory"
->> without CAP_IPC_LOCK, current ib_umem_get() returns ENOMEM.
->> But it does not mean "not enough memory", because driver could succeed to
->> pinned enough pages.
->> This is just capability error. Even if a normal user is limited
->> his/her # of pinned pages, system administrator can give permission
->> by change hard limit of this ulimit value.
->> To notify correct information to user, ib_umem_get()
->> should return EPERM instead of ENOMEM at here.
-> 
-> I'm not convinced, can you find other places checking the ulimit and
-> list what codes they return?
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: jing yangyang <jing.yangyang@zte.com.cn>
+---
+ drivers/net/ethernet/intel/iavf/iavf_adminq.c | 4 +---
+ drivers/net/ethernet/mellanox/mlx4/port.c     | 8 ++------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
-Hmm, OK.
-
-I'll investigate it.
-
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_adminq.c b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+index 9fa3fa9..cd4e6a2 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_adminq.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_adminq.c
+@@ -551,15 +551,13 @@ enum iavf_status iavf_init_adminq(struct iavf_hw *hw)
+  **/
+ enum iavf_status iavf_shutdown_adminq(struct iavf_hw *hw)
+ {
+-	enum iavf_status ret_code = 0;
+-
+ 	if (iavf_check_asq_alive(hw))
+ 		iavf_aq_queue_shutdown(hw, true);
+ 
+ 	iavf_shutdown_asq(hw);
+ 	iavf_shutdown_arq(hw);
+ 
+-	return ret_code;
++	return 0;
+ }
+ 
+ /**
+diff --git a/drivers/net/ethernet/mellanox/mlx4/port.c b/drivers/net/ethernet/mellanox/mlx4/port.c
+index 256a06b..754c253 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/port.c
+@@ -1820,9 +1820,7 @@ int mlx4_SET_MCAST_FLTR_wrapper(struct mlx4_dev *dev, int slave,
+ 				struct mlx4_cmd_mailbox *outbox,
+ 				struct mlx4_cmd_info *cmd)
+ {
+-	int err = 0;
+-
+-	return err;
++	return 0;
+ }
+ 
+ int mlx4_SET_MCAST_FLTR(struct mlx4_dev *dev, u8 port,
+@@ -1840,9 +1838,7 @@ int mlx4_SET_VLAN_FLTR_wrapper(struct mlx4_dev *dev, int slave,
+ 			       struct mlx4_cmd_mailbox *outbox,
+ 			       struct mlx4_cmd_info *cmd)
+ {
+-	int err = 0;
+-
+-	return err;
++	return 0;
+ }
+ 
+ int mlx4_DUMP_ETH_STATS_wrapper(struct mlx4_dev *dev, int slave,
 -- 
-Yasunori Goto
+1.8.3.1
+
+
