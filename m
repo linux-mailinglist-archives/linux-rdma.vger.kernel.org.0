@@ -2,68 +2,328 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C543F40D1
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Aug 2021 20:24:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1513F4119
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Aug 2021 21:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229881AbhHVSZW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Aug 2021 14:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbhHVSZW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Aug 2021 14:25:22 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38363C061575
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 11:24:41 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id b5so9668736vsq.2
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 11:24:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=fz/QOMWRVaBYPZhPJ4zLv6WTjxE3TJcFieehZ+Lm/hM=;
-        b=O5P0LUmM4K2z1BjafJd///FtW8kAEo83UF+CKQX1rNX/cndD7AXrNAEjzZea8wmjX6
-         yXPkCwX3RaheVpCwdt9JwMDmQCrh3kIt/Us8MA0s38LvpiGOiPxcAEHf1FaYf7r/kwyl
-         ssNf20DfhlM/IT9yTCcuFGFM/3xyCfjsQHaVvxZa+2UkDV2fiXGbvlr9WaIAk4VNQ8YV
-         bn9wVifguaGW7uoJMUtvW/G8E9xzOtQKubVIvOh7PCQrv/3XEBIHSXc6NB47c+EJQrNb
-         itEH0I2JRqrBJFGNYgatsahRByJoJWKqYI0EmTaqSovlP/hFq7vj9Lwnoi9JVZ5YcPbT
-         i8pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=fz/QOMWRVaBYPZhPJ4zLv6WTjxE3TJcFieehZ+Lm/hM=;
-        b=dBrVjs7F7EMmoJ49oS3xDB4k1tL0OvgQF5zFXhh228w6C7Ihr0jxz62hBFud6KsSjI
-         Z6dJ899g24uBRMMBS3mKXaa4GYmQCIli6ANtN7QMD/QRMHQkbDUu0Cd/QpqtKEpt8rXA
-         LxDm98HK5bowHmC5Zfvxm8bU1uCXmkNLHl1ObRz7kD9cgUQ8tRMT1MF92harIeSJJEwO
-         qsRrU78tl/m2gBg+9DwdQ0ruLjqXZ+Im0CRJtE8MoIJnNc5gql4OyWSS2m39mgPHE8hl
-         87EYTw1babU+SPiiXNASWVZHQ20lqlZw/O+c3oaX8q1BbjNlZ3MJvB7ia/GkNoe/DZYd
-         gqmg==
-X-Gm-Message-State: AOAM533Pt+dqzOoX+1bqQFEvMIdDWWIg+OQHI5X6/MEUZZmi0REoZHBu
-        okD2jljtHTldwm/t4KlIc+pF4qLzyTBHMrcM27M=
-X-Google-Smtp-Source: ABdhPJwTdhwXyAxys8dplB23dQ9bfIuRodhfzBg3lfhLr3gHJaXXEg19nhFfDkozl0ItQv7uLFeQcb437z3rjQGQ0Jk=
-X-Received: by 2002:a67:e95a:: with SMTP id p26mr21593669vso.56.1629656680364;
- Sun, 22 Aug 2021 11:24:40 -0700 (PDT)
+        id S232495AbhHVTN0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Aug 2021 15:13:26 -0400
+Received: from out02.smtpout.orange.fr ([193.252.22.211]:33045 "EHLO
+        out.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232261AbhHVTNZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Aug 2021 15:13:25 -0400
+Received: from pop-os.home ([90.126.253.178])
+        by mwinf5d51 with ME
+        id kjCi250013riaq203jCiV0; Sun, 22 Aug 2021 21:12:42 +0200
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 22 Aug 2021 21:12:42 +0200
+X-ME-IP: 90.126.253.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        saeedm@nvidia.com, leon@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] net/mellanox: switch from 'pci_' to 'dma_' API
+Date:   Sun, 22 Aug 2021 21:12:41 +0200
+Message-Id: <33167c57d1aaec10f130fe7604d6db3a43cfa381.1629659490.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Received: by 2002:ab0:150a:0:0:0:0:0 with HTTP; Sun, 22 Aug 2021 11:24:39
- -0700 (PDT)
-Reply-To: Salemchantal2@mail.com
-From:   MRS Salem Chantal Lawrence <dericksunshine@gmail.com>
-Date:   Sun, 22 Aug 2021 19:24:39 +0100
-Message-ID: <CAN7dtm0jpOUatNi=pcyKoVgc873+uc_HY3h3jrYztA_44S8fvA@mail.gmail.com>
-Subject: Attention
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-You Have Been Compensated With The Sum Of 4.6 Million Dollars In This
-United Nation The Payment Will Be Issue Into Atm Visa Card And Send
-To You From The Santander Bank of Spain  We Need Your Address And Your
-Whatsapp Number,This is my whatsapp number Contact Me Now + 1 (360) 5979388
+The patch has been generated with the coccinelle script below.
 
-And My Email.id (Salemchantal2@mail.com)
+It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
+'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
+This is less verbose.
 
-THANKS
-MRS Salem Chantal Lawrence
+It has been compile tested.
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c     |  4 ++--
+ drivers/net/ethernet/mellanox/mlx4/en_tx.c     | 14 +++++++-------
+ drivers/net/ethernet/mellanox/mlx4/main.c      | 13 ++-----------
+ drivers/net/ethernet/mellanox/mlx5/core/main.c | 16 ++--------------
+ 4 files changed, 13 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 442991d91c15..7f6d3b82c29b 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -991,7 +991,7 @@ void mlx4_en_calc_rx_buf(struct net_device *dev)
+ 		 * expense of more costly truesize accounting
+ 		 */
+ 		priv->frag_info[0].frag_stride = PAGE_SIZE;
+-		priv->dma_dir = PCI_DMA_BIDIRECTIONAL;
++		priv->dma_dir = DMA_BIDIRECTIONAL;
+ 		priv->rx_headroom = XDP_PACKET_HEADROOM;
+ 		i = 1;
+ 	} else {
+@@ -1021,7 +1021,7 @@ void mlx4_en_calc_rx_buf(struct net_device *dev)
+ 			buf_size += frag_size;
+ 			i++;
+ 		}
+-		priv->dma_dir = PCI_DMA_FROMDEVICE;
++		priv->dma_dir = DMA_FROM_DEVICE;
+ 		priv->rx_headroom = 0;
+ 	}
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_tx.c b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+index 31b74bddb7cd..c56b9dba4c71 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_tx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_tx.c
+@@ -297,12 +297,12 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
+ 			dma_unmap_single(priv->ddev,
+ 					 tx_info->map0_dma,
+ 					 tx_info->map0_byte_count,
+-					 PCI_DMA_TODEVICE);
++					 DMA_TO_DEVICE);
+ 		else
+ 			dma_unmap_page(priv->ddev,
+ 				       tx_info->map0_dma,
+ 				       tx_info->map0_byte_count,
+-				       PCI_DMA_TODEVICE);
++				       DMA_TO_DEVICE);
+ 		/* Optimize the common case when there are no wraparounds */
+ 		if (likely((void *)tx_desc +
+ 			   (tx_info->nr_txbb << LOG_TXBB_SIZE) <= end)) {
+@@ -311,7 +311,7 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
+ 				dma_unmap_page(priv->ddev,
+ 					(dma_addr_t)be64_to_cpu(data->addr),
+ 					be32_to_cpu(data->byte_count),
+-					PCI_DMA_TODEVICE);
++					DMA_TO_DEVICE);
+ 			}
+ 		} else {
+ 			if ((void *)data >= end)
+@@ -325,7 +325,7 @@ u32 mlx4_en_free_tx_desc(struct mlx4_en_priv *priv,
+ 				dma_unmap_page(priv->ddev,
+ 					(dma_addr_t)be64_to_cpu(data->addr),
+ 					be32_to_cpu(data->byte_count),
+-					PCI_DMA_TODEVICE);
++					DMA_TO_DEVICE);
+ 			}
+ 		}
+ 	}
+@@ -831,7 +831,7 @@ static bool mlx4_en_build_dma_wqe(struct mlx4_en_priv *priv,
+ 
+ 		dma = dma_map_single(ddev, skb->data +
+ 				     lso_header_size, byte_count,
+-				     PCI_DMA_TODEVICE);
++				     DMA_TO_DEVICE);
+ 		if (dma_mapping_error(ddev, dma))
+ 			goto tx_drop_unmap;
+ 
+@@ -853,7 +853,7 @@ static bool mlx4_en_build_dma_wqe(struct mlx4_en_priv *priv,
+ 		++data;
+ 		dma_unmap_page(ddev, (dma_addr_t)be64_to_cpu(data->addr),
+ 			       be32_to_cpu(data->byte_count),
+-			       PCI_DMA_TODEVICE);
++			       DMA_TO_DEVICE);
+ 	}
+ 
+ 	return false;
+@@ -1170,7 +1170,7 @@ netdev_tx_t mlx4_en_xmit_frame(struct mlx4_en_rx_ring *rx_ring,
+ 	tx_info->nr_bytes = max_t(unsigned int, length, ETH_ZLEN);
+ 
+ 	dma_sync_single_range_for_device(priv->ddev, dma, frame->page_offset,
+-					 length, PCI_DMA_TODEVICE);
++					 length, DMA_TO_DEVICE);
+ 
+ 	data->addr = cpu_to_be64(dma + frame->page_offset);
+ 	dma_wmb();
+diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
+index 7267c6c6d2e2..5a6b0fcaf7f8 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/main.c
++++ b/drivers/net/ethernet/mellanox/mlx4/main.c
+@@ -3806,24 +3806,15 @@ static int __mlx4_init_one(struct pci_dev *pdev, int pci_dev_data,
+ 
+ 	pci_set_master(pdev);
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask\n");
+-		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+ 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting\n");
+ 			goto err_release_regions;
+ 		}
+ 	}
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (err) {
+-		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit consistent PCI DMA mask\n");
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-		if (err) {
+-			dev_err(&pdev->dev, "Can't set consistent PCI DMA mask, aborting\n");
+-			goto err_release_regions;
+-		}
+-	}
+ 
+ 	/* Allow large DMA segments, up to the firmware limit of 1 GB */
+ 	dma_set_max_seg_size(&pdev->dev, 1024 * 1024 * 1024);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index 80cabf9b1787..79482824c64f 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -252,28 +252,16 @@ static int set_dma_caps(struct pci_dev *pdev)
+ {
+ 	int err;
+ 
+-	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(64));
++	err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(64));
+ 	if (err) {
+ 		dev_warn(&pdev->dev, "Warning: couldn't set 64-bit PCI DMA mask\n");
+-		err = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
++		err = dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(32));
+ 		if (err) {
+ 			dev_err(&pdev->dev, "Can't set PCI DMA mask, aborting\n");
+ 			return err;
+ 		}
+ 	}
+ 
+-	err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(64));
+-	if (err) {
+-		dev_warn(&pdev->dev,
+-			 "Warning: couldn't set 64-bit consistent PCI DMA mask\n");
+-		err = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+-		if (err) {
+-			dev_err(&pdev->dev,
+-				"Can't set consistent PCI DMA mask, aborting\n");
+-			return err;
+-		}
+-	}
+-
+ 	dma_set_max_seg_size(&pdev->dev, 2u * 1024 * 1024 * 1024);
+ 	return err;
+ }
+-- 
+2.30.2
+
