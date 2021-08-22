@@ -2,106 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 824E63F3DFF
-	for <lists+linux-rdma@lfdr.de>; Sun, 22 Aug 2021 07:16:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736DF3F3EE1
+	for <lists+linux-rdma@lfdr.de>; Sun, 22 Aug 2021 11:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhHVFRD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 Aug 2021 01:17:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbhHVFRA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 Aug 2021 01:17:00 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98662C061757
-        for <linux-rdma@vger.kernel.org>; Sat, 21 Aug 2021 22:16:20 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id m17so1221426plc.6
-        for <linux-rdma@vger.kernel.org>; Sat, 21 Aug 2021 22:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=y8ajL1MXjnm98ftlu2xw9F3LVfgwHRHrIy4fib1NoNg=;
-        b=Y0a8GbxIDGsupMPfALs9c9spCnnTUj10GqcmI81qVhXcdsNXwx3+WXpuFT/OMEwdqV
-         ov72OppMgo1s3fFQNnWub4aPQ3g1ot25/8ftkZ5p3ZUdFTAy3eibMgeUHw1Ncik4DfoH
-         1fyvWtmEFxySeGpMWW3u1iMK9poENxq7thhvU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=y8ajL1MXjnm98ftlu2xw9F3LVfgwHRHrIy4fib1NoNg=;
-        b=jdkQZVpdd2oRm2XZ2kDHSsaPajX6m6izNvNvjy1wTZQOCyp7L8yvclk0z8f49vQBy0
-         sBso7TM5MEM1bgApffAIYm0ztF7TFOn3d5Vi611r1uqd715txatv0Lc45YY4pF+pPWgi
-         tnakOpaIcE6/Yz8ixXrFJ7bt8l32Md/8H2FNnXl/p17jVKmyaXGqAMA13KG0FT9aKsCv
-         iCj/fT+TAsQK4/n1QchxT1XmDR4n8k8zOB462/8rxlhjYL99JaTugMBqCZ07R1o/EnTP
-         OcOaxHkGeDCCPAZAIJ+SpxuL0ErRbfmg+5bv4ZCxPZwfdhJQ1Ir4QKV38JcIYFBeAI5P
-         CevA==
-X-Gm-Message-State: AOAM530jH9QXLo4tp0sHnHUdbPjR3FdHc9F7DNePTk4TUf+3BNqGrKLR
-        qJpi9V0uy7yrEKpOB54y2of19Q==
-X-Google-Smtp-Source: ABdhPJyR+NATVJLBLIhcM5YqAZh+Upqb5pIwMTUuXQGDWIR7A9ZoJQ38xuDUEW6TSdHtuwjl1NIx8w==
-X-Received: by 2002:a17:90a:5147:: with SMTP id k7mr11682056pjm.73.1629609380131;
-        Sat, 21 Aug 2021 22:16:20 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m194sm11771124pfd.58.2021.08.21.22.16.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 21 Aug 2021 22:16:19 -0700 (PDT)
-Date:   Sat, 21 Aug 2021 22:16:18 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        Stanislav Yakovlev <stas.yakovlev@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 0/3] net: Cleanups for FORTIFY_SOURCE
-Message-ID: <202108212215.35185C924B@keescook>
-References: <20210819202825.3545692-1-keescook@chromium.org>
- <20210820100151.25f7ccd4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <87tujjt8d9.fsf@codeaurora.org>
- <87eean9kby.fsf@tynnyri.adurom.net>
+        id S231147AbhHVJle (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 Aug 2021 05:41:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229719AbhHVJld (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 22 Aug 2021 05:41:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC64F61262
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 09:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1629625253;
+        bh=QXBaOhATXYrFkSeHUCyv97e/Nx4nJ//xyntHaWK+ARU=;
+        h=From:Date:Subject:To:Cc:From;
+        b=CpIoA9KFEtCituOTOk+BErL5c4s9jVXgph9dAMs1Vnc58QN/ZX9HRxBPe05bgsOtD
+         lwY163DhCjZEJekJSAkekYiqi2+CYLr584C2QGAdbT0/cmGWGqm/FKYJPETzgEgbu8
+         Cr1fUpCi+8aVvO17S4+neVVCzyUCCv60hO5T4dVEX0GTbx+9Th2WljJKAF4w1wCBQZ
+         Q7gT4ZAYWz4a/dOajPSh9SR1Qn8hktgFrreklVk9sovk22REqk7X826Iy4Kgyf6/Ia
+         44Voy9Z4h0oQlcUHqY37DqD2IqcYx7IGfJ6euE9tHqr/7mla4OueIpKauFOIcbPDQQ
+         It2VR0m/P/2xQ==
+Received: by mail-ot1-f52.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so27337006otk.9
+        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 02:40:52 -0700 (PDT)
+X-Gm-Message-State: AOAM532STU/x0QLOruFZ4YP2FKxT4LTmKF9On3c60+ALqvSbNOdD/onV
+        mpeR0xEKZp3PX+gJtKcLht4hCUmlelBFDLZ6dpQ=
+X-Google-Smtp-Source: ABdhPJypL3jeHlKBPOc7mZeh1vydSDdFeDt2so+noiv/NMoseeFR1Osvj6rSGnFN6yGjv45dFJbMdtLBUMNFNLyYYwg=
+X-Received: by 2002:a05:6830:614:: with SMTP id w20mr23655936oti.145.1629625252329;
+ Sun, 22 Aug 2021 02:40:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eean9kby.fsf@tynnyri.adurom.net>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Sun, 22 Aug 2021 12:40:26 +0300
+X-Gmail-Original-Message-ID: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+Message-ID: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+Subject: Creating new RDMA driver for habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Aug 21, 2021 at 01:13:37PM +0300, Kalle Valo wrote:
-> Kalle Valo <kvalo@codeaurora.org> writes:
-> 
-> > Jakub Kicinski <kuba@kernel.org> writes:
-> >
-> >> On Thu, 19 Aug 2021 13:28:22 -0700 Kees Cook wrote:
-> >>> Hi,
-> >>> 
-> >>> In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> >>> field bounds checking for memcpy(), memmove(), and memset(), avoid
-> >>> intentionally writing across neighboring fields.
-> >>> 
-> >>> These three changes have been living in my memcpy() series[1], but have
-> >>> no external dependencies. It's probably better to have these go via
-> >>> netdev.
-> >>
-> >> Thanks.
-> >>
-> >> Kalle, Saeed - would you like to take the relevant changes? Presumably
-> >> they would get into net-next anyway by the time the merge window opens.
-> >
-> > Ok, I'll take patch 1 to wireless-drivers-next.
-> 
-> Correction: I'll take patches 1 and 3 to wireless-drivers-next.
+Hi Jason,
 
-Great; thanks!
+I think that about a year ago we talked about the custom RDMA code of
+habanalabs. I tried to upstream it and you, rightfully, rejected that.
 
--- 
-Kees Cook
+Now that I have enough b/w to do this work, I want to start writing a
+proper RDMA driver for the habanalabs Gaudi device, which I will be
+able to upstream to the infiniband subsystem.
+
+I don't know if you remember but the Gaudi h/w is somewhat limited in
+its RDMA capabilities. We are not selling a stand-alone NIC :) We just
+use RDMA (or more precisely, ROCEv2) to connect between Gaudi devices.
+
+I'm sure I will have more specific questions down the line, but I had
+hoped you could point me to a basic/not-too-complex existing driver
+that I can use as a modern template. I'm also aware that I will need
+to write matching code in rdma-core.
+
+Also, I would like to add we will use the auxiliary bus feature to
+connect between this driver, the main (compute) driver and the
+Ethernet driver (which we are going to publish soon I hope).
+
+Thanks,
+Oded
