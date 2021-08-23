@@ -2,70 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A753F4962
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 13:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1B23F4A1C
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 13:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236357AbhHWLK6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 07:10:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60490 "EHLO mail.kernel.org"
+        id S236618AbhHWLxI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 07:53:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234865AbhHWLK5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 07:10:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4BB2F6136F;
-        Mon, 23 Aug 2021 11:10:15 +0000 (UTC)
+        id S235953AbhHWLxH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 07:53:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D704A6103B;
+        Mon, 23 Aug 2021 11:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629717015;
-        bh=diVsrQ7QHH8aTtcONyWLa4u5SXaOaypgsSkK0i8mBP8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=mPdw/Fy+SrzjzKgxzy57hnxrtxEgUht/yoTFYPxjLNBAZizQ/vqmesNdBYYmYvWwB
-         eJdu2nkbTtovCI/NHai0hETrHut009JhR0hpcWBzlByyg+LhkaCnovL3b5N1K/eZhm
-         V7T/0nkLLhYGOM+e2WoSdJtq1LlNDiCirfO4kcFIaLE6ZdwCBJutm5lK1wTqHNOJBI
-         vWnFDhJ3LJ12j7ipTFD0Jo5LG7tp/MBKK+PEfWDUXh+b+VzV9+1aZHn7CpVA6ZaxTv
-         dRCumE+9kpIrv8IscGUhhc6spf/aeZ3ZVZehSXy38/JSlWQr41EwkUIYKrcQPeviFo
-         zIWoR31dW5SMA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3F2B2609E6;
-        Mon, 23 Aug 2021 11:10:15 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1629719545;
+        bh=tEkKKQqjz5puZ5bUi2Vk4is1+z6fFRhVviR+ykAgSWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vNT5ZA/7YWVPCTRiXQF5MgqFreCeDO4cOd/0l7Z8/q0VAhxAgaSANuC4uycwpX6pj
+         YQfKduA3ENRbZJFFAgxtVH702vjqS0eA1FO4ulM8pxBgjZ5baDio10C/QqqQCBn6Kp
+         sszxijQ5NKbt0dss+1fFCq1S6nM4i0ZgW+jUa3I71/SUHLhV1EDncqcItbEV4D1LLC
+         TNz36Fy1ns0HK4R70jwYZuILmgfzMTW0phn//fPoWwLgIt3xOsI1g3bZ7THWqqYWH/
+         4UDkqfP0l4giH7TRsciymTk91M0CH4bY+c8YxdA64sQSCriX8kFEB7PqflFspmNZUv
+         5CnB1O1pkf5nA==
+Date:   Mon, 23 Aug 2021 14:52:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shai Malin <smalin@marvell.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, aelior@marvell.com, malin1024@gmail.com,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] qed: Enable RDMA relaxed ordering
+Message-ID: <YSOL9TNeLy3uHma6@unreal>
+References: <20210822185448.12053-1-smalin@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mellanox: switch from 'pci_' to 'dma_' API
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162971701525.8269.6988684791167013796.git-patchwork-notify@kernel.org>
-Date:   Mon, 23 Aug 2021 11:10:15 +0000
-References: <33167c57d1aaec10f130fe7604d6db3a43cfa381.1629659490.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <33167c57d1aaec10f130fe7604d6db3a43cfa381.1629659490.git.christophe.jaillet@wanadoo.fr>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        saeedm@nvidia.com, leon@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210822185448.12053-1-smalin@marvell.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
++RDMA
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Jakub, David
 
-On Sun, 22 Aug 2021 21:12:41 +0200 you wrote:
-> The wrappers in include/linux/pci-dma-compat.h should go away.
+Can we please ask that everything directly or indirectly related to RDMA
+will be sent to linux-rdma@ too?
+
+On Sun, Aug 22, 2021 at 09:54:48PM +0300, Shai Malin wrote:
+> Enable the RoCE and iWARP FW relaxed ordering.
 > 
-> The patch has been generated with the coccinelle script below.
+> Signed-off-by: Ariel Elior <aelior@marvell.com>
+> Signed-off-by: Shai Malin <smalin@marvell.com>
+> ---
+>  drivers/net/ethernet/qlogic/qed/qed_rdma.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> It has been hand modified to use 'dma_set_mask_and_coherent()' instead of
-> 'pci_set_dma_mask()/pci_set_consistent_dma_mask()' when applicable.
-> This is less verbose.
+> diff --git a/drivers/net/ethernet/qlogic/qed/qed_rdma.c b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+> index 4f4b79250a2b..496092655f26 100644
+> --- a/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+> +++ b/drivers/net/ethernet/qlogic/qed/qed_rdma.c
+> @@ -643,6 +643,8 @@ static int qed_rdma_start_fw(struct qed_hwfn *p_hwfn,
+>  				    cnq_id);
+>  	}
+>  
+> +	p_params_header->relaxed_ordering = 1;
+
+Maybe it is only description that needs to be updated, but I would
+expect to see call to pcie_relaxed_ordering_enabled() before setting
+relaxed_ordering to always true.
+
+If we are talking about RDMA, the IB_ACCESS_RELAXED_ORDERING flag should
+be taken into account too.
+
+Thanks
+
+> +
+>  	return qed_spq_post(p_hwfn, p_ent, NULL);
+>  }
+>  
+> -- 
+> 2.22.0
 > 
-> [...]
-
-Here is the summary with links:
-  - net/mellanox: switch from 'pci_' to 'dma_' API
-    https://git.kernel.org/netdev/net-next/c/eb9c5c0d3a73
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
