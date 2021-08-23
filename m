@@ -2,77 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AF83F4BD6
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 15:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DB0A3F4BF2
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 15:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229532AbhHWNql (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 09:46:41 -0400
-Received: from mail-dm3nam07on2060.outbound.protection.outlook.com ([40.107.95.60]:55616
+        id S229627AbhHWNzY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 09:55:24 -0400
+Received: from mail-dm3nam07on2065.outbound.protection.outlook.com ([40.107.95.65]:3520
         "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229477AbhHWNql (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 09:46:41 -0400
+        id S229518AbhHWNzX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 09:55:23 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZzXM5b8HL3yYerT6cPLnRLAlhJq7GLlbMqmxBaQ67O54u4D+vavR8MhDmHgBLqgcsH+ud5iUec1Y0U3GKJ6mo63g0ThsaCdSDZDHfUOD3iB98VpasI+Jqg0teJ0edUKUeQgkjcXtVLysUdxjjvpGc9q6ypvv5Txkr+ImYUQv1TEVZqzIQQRihWoF1J5f/D/rGffH30qQIcbVEauefT4wQNvKHwbqwjvVWD6HeN+O9GCtJo0tjq1uY7uMlTwip/dM56WaYRciFak9hJJXcSajT2Ag9uUMjGDlUTa8j5f4rCBcbX5wh+Xv5vGGrZR1hZDlLqGxPg2QZCbF7GZSBhR8FQ==
+ b=KDMG8AvDfslNRafDwmXV/EfNk9ZOhHvr0vscqAweIChN4ZiZH6uusQRWofo1l77uzVFL6IdLX047fc5kWtYNJFEjrGTYSxzEY+Np/CNdbDbXZX7728VgQ96i8lZCkQq1Yt1sLlXy/pI77th0argsP3XPoCZ66r2FWbKV+9FGvP0HOnPeocIBqwBO8rU0mHezX+vKStrPu5zD6FUrW+5UDl7PebPKmyhNDoFl78zBy4upPtbZbaq6hsj7s11+iDbRLXdgZYnhgg8mysPQoF1F6UNvK9nPjrvJY8fjn5m4pkfPeX38t5NIuD7uEjb2GiXqtJ1PMk0dsGhISKAeeFFVmw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85yl4QGuSYORHQfUE63D3OWqQFAmYhFQolIA5iGTp9k=;
- b=Uc3tFjMDMJEEPA95RxDPP9pDX14Z9+TqP7TX2Q0Ly69WsMFREB32E3V7hAd5d89KIg0PSLjFJ5l5T3FsFtpmCkPQcx0tAgUNlTeY8038/2tzjzS9SEdNMvhHgqVesWy9SOEPWRDebJX+9gGxzuWJeYfJvn9QVUAI0vJSEjqNCt4CURFa67uOsZGC2gNMVWQAz0zBF20gHW8GSJQ2ucEKfQyWc1jTjIacKj+1stZ9ccq583t2QNH4ZkBWRhO8H9OXVc5j5xR4hHAdcoo5UJraU3gCpkMIUSp62crSW41bufvORGEnOL/2XMS98ugc+Ma3CqJa0Cw/GomchST3EYwpdA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
+ bh=W8E2FlfnzgBWz8gKnDNQnCFom2qUpOZvrQM14eUbWJ4=;
+ b=MPXfKZbneL2xw0cXNuX439AjkME9J070lorxCGxYK7TsBuaECaWXE/fEtJmJkwGxDbN3eZGtbIEG1Ya4Vxo0d4ID2NDPYTCVr+KfFRS+m3s3sQ7WD9pE/DYpU7fEXEme2HJFQgGwQ8hBhpoYoBAgGEk1p9ZLOnft4mzQN0kE8DsiGYNfNV3vtnA++7b9BRUVKpydgF87Qcejo7asiPdW/njZpuxJSaRijHnbZQ6F3Mofcx2g7jGRnNhHQCWwYHFCaVFdNzwD6mZel7fU5MA8FacITvgt6S5VxXOkM4VAL2OJWSBlleRxN8NZLKk+Gv3uNf8lnYmnVGkcgcReEveo0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85yl4QGuSYORHQfUE63D3OWqQFAmYhFQolIA5iGTp9k=;
- b=TF13k0UGKJnwN0VF5gcOpfO0Qkn3sjg+NGHMWm5syFGSrMjjOGXF/90qLxvk5cQjgu1sl9tUcGU9sfcuEgS/KGF8rVvapjNGmTsKyDIWGRsXo0JDkcBNUbUO0YvIQcYuMTy9oD8wx/tuStCarJC/Dq8i8YIxi9oSPsJzeP/wE2w0+Z7A8dZpWk3+ijhMNW0SBEITKoKZYg95GZgNbDrnIxd3NGoFBCpbLT2OaZjbZP/oqBM5L0QDAeqR2+VCit2kyLjfAy1qlmJUVkMzucrZAwj/h4OmMDVIC7V8zH0YMSEXSJVDnU1rWaa8ew9kF+6I3LOlv2Ad4S7ee2j/Upvy5w==
-Received: from DM5PR22CA0003.namprd22.prod.outlook.com (2603:10b6:3:101::13)
- by MWHPR12MB1742.namprd12.prod.outlook.com (2603:10b6:300:112::13) with
+ bh=W8E2FlfnzgBWz8gKnDNQnCFom2qUpOZvrQM14eUbWJ4=;
+ b=rHMpI86Ko/nQjgQ28aUDAq83tB36090PFXrPrfSqJ39vZYfd7ls8nRE1fL4eCoQ84P7NZTfzrRGSpWg+qVce/PvzupXc86R8uA3GY6WU3GSRhTA2iiGE19Ug3E77xlIWSFKtMNe/oVt6mhTW9tkHc0x1ns9AaA49O4NNtNNmETJMYwPVlBBBamwBCS2zqykX6IPzxTYTvayqriC6R7t1LVr8T/7i6y54A7k3Y80R6007kI3k8+lGWrB3YyMjm98jHMR09zejfMjX67Lj3kD0qRX4+oCSsjZ3GTA2VBLE2tEXjRi9OF1qIFx/d2eeB6dfolwNclliFQUZ/jum7farLA==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5157.namprd12.prod.outlook.com (2603:10b6:208:308::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 13:45:56 +0000
-Received: from DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:101:cafe::56) by DM5PR22CA0003.outlook.office365.com
- (2603:10b6:3:101::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
- Transport; Mon, 23 Aug 2021 13:45:55 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT032.mail.protection.outlook.com (10.13.173.93) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 13:45:55 +0000
-Received: from [172.27.12.76] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 23 Aug
- 2021 13:45:48 +0000
-Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Mon, 23 Aug
+ 2021 13:54:39 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
+ 13:54:39 +0000
+Date:   Mon, 23 Aug 2021 10:54:37 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Maor Gottlieb <maorg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Christoph Hellwig <hch@infradead.org>,
         Ariel Elior <aelior@marvell.com>,
         Daniel Vetter <daniel@ffwll.ch>,
         David Airlie <airlied@linux.ie>,
-        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <intel-gfx@lists.freedesktop.org>,
-        "Jani Nikula" <jani.nikula@linux.intel.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Michal Kalderon <mkalderon@marvell.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Mustafa Ismail <mustafa.ismail@intel.com>,
         Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        "Roland Scheidegger" <sroland@vmware.com>,
+        Roland Scheidegger <sroland@vmware.com>,
         Shiraz Saleem <shiraz.saleem@intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         VMware Graphics <linux-graphics-maintainer@vmware.com>,
@@ -81,88 +67,126 @@ CC:     Leon Romanovsky <leon@kernel.org>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zack Rusin <zackr@vmware.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
+ orig_nents
+Message-ID: <20210823135437.GN1721383@nvidia.com>
 References: <cover.1627551226.git.leonro@nvidia.com>
  <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
  <20210820155425.GA530861@nvidia.com>
  <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
  <20210823124541.GM1721383@nvidia.com>
-From:   Maor Gottlieb <maorg@nvidia.com>
-Message-ID: <2aab4d71-c6d3-d24c-ed81-7ded355a1592@nvidia.com>
-Date:   Mon, 23 Aug 2021 16:45:45 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <20210823124541.GM1721383@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+ <2aab4d71-c6d3-d24c-ed81-7ded355a1592@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
+In-Reply-To: <2aab4d71-c6d3-d24c-ed81-7ded355a1592@nvidia.com>
+X-ClientProxiedBy: BL1PR13CA0190.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::15) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0190.namprd13.prod.outlook.com (2603:10b6:208:2be::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.10 via Frontend Transport; Mon, 23 Aug 2021 13:54:38 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIAPN-003Hac-F8; Mon, 23 Aug 2021 10:54:37 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3cecae26-0fff-47f0-7eec-08d9663c54e9
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1742:
-X-Microsoft-Antispam-PRVS: <MWHPR12MB1742AAB0F717166A1D62D391DEC49@MWHPR12MB1742.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: c9109e96-7b4e-42da-0f42-08d9663d8cb8
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5157:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5157C7B41DA8A16F31598C2DC2C49@BL1PR12MB5157.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: D0oEQ0yPwZXf9KN4sZEukM0cGSvnlQ1YfH1RMwaloSIff6T7OXL9ZB5fhceBkbkTgwBcfCL5mz9yPkafkjsvzJNMIBwcp+lSaV6buE+4Ez7FpLXOfUmrc7MCajpKR1UIwN7wCNx6U/4NZXNijQjv4GKnw2xmNQuapOsFyg1hOqksGpdmv/ukr4CuD/8k51A0iPK9NWROxw0Cwm0HCQAkHPPp1v4i1ljr4FnjWpLVABX/72FTG/R68XzRmRPK/4KV+SYs+5Sf0NFBGNpzJnaAbi3CXchgbbDfKmZazSuwZhu2h9QDFfqY2lYvullx9SFwKsjCdi8pg7pEH6Q/1AGqrdvjxp7IWAsTeJAVVIKaKSN3AM4nZ10B5cPjg/Fj8hJbq64Ukb3YFchBF8fl0CCFYiK4YFHmJuED2huZeYc+eYkfIGWDYd/H23kD6wpMhtZ+aZGHroqHAtP/934eIHEYgp6aqiB5l9HngncYLvmBlPGhFT4V4g+6hdwK0CZGZdi/CsVyvGctjhu8eWd9vJCOs8T7QZ3fs3T8zZDbIgAmQawn9PhZQ14VbTUKDMPxajI9leZN1iPsd1UupkerTdZrArd429gp2ajMBzXK1eRC4kz5rH8/ihkj8mhLKdvh56fbViULvCCIZ8c5f/yHfM7RJn7i980/2zGElSZp3JsUqj7EsxwrLpQPGcE24oQYqK4f5MGEQUdr0XVKZkS8W8YbqEmwXNt+oN8vQNF9uPvkjMg=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(396003)(136003)(36840700001)(46966006)(6636002)(5660300002)(16576012)(336012)(426003)(6862004)(47076005)(36860700001)(36906005)(2906002)(8936002)(53546011)(2616005)(186003)(26005)(37006003)(4326008)(316002)(70586007)(70206006)(31686004)(478600001)(54906003)(16526019)(36756003)(356005)(82310400003)(7636003)(6666004)(82740400003)(86362001)(8676002)(7416002)(31696002)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: j5X5tlkYnKDgnb/1eX53LstvGfTm9npHmnnF3QhwdUluLy/hmxPIOKHDijTW59ZlYddsI54JPUgbseKJPdkbysXS4zVh/q52drwdWQFqRTk8qtswveBE8BdedZow381lfFtUAVsHVqnESaaGqrFqsNUR2TY/ZO58pwU5OSAwgXpYSfN7xhp63Q5D6htoOa0vWl5baCbYez6AQ6ifme0HqqtdRbcGSF8vlP9XVRahJOdKg9EX6SmlBFzNJidaMvGGGrRDvyp2+xYSYUBrETBPnhwY50IHFALfwZkpmUNtzTGatXhpfNh86lKbJe0iJ6/+h+1HuPY5804M7PN0MfmvSlyz4dUzt6hkh1GpX9pc8jkqKkSw1RxOs6JLB/ur5jxeeHYRzysOuPmIoCg3M3GUZ60JfvAOGxEOQ2QN6rAWoLGNx4Tdvnsp+1FxSebLxpED5zssKH1d3ng8fJM1GPQfZYEqeka3SgAmIVm/fdR/hmxlxLXA0jjBqpCE4oIJsZ5XbGald7xUwFZe/0FOgYLJ9DNcAObqOfxh1zoYf1Mi+I6+tuain5am1daARYn1DA5KZJWJKVDuslRRU3SKFOtM/ueE0kYtOUEKxy7SC3JUhrNbbIEnnoTUySroM9nyunLiftOo4/BeejyAdADAt+w/nA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(136003)(346002)(396003)(5660300002)(86362001)(426003)(53546011)(478600001)(186003)(2906002)(8676002)(37006003)(316002)(54906003)(66556008)(6636002)(66946007)(1076003)(66476007)(4326008)(33656002)(2616005)(8936002)(9786002)(7416002)(38100700002)(9746002)(26005)(6862004)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QnlFSGxQVFMrUlpFZWZvSERYUWh2NWhMdC9DbktleExEQ05UV2I4TUdMdFlG?=
+ =?utf-8?B?cW5FZzNVemZabVpTK011Vlo4N2JCWWtBakdBbXArc05qK2dKY25wNFo4QXdr?=
+ =?utf-8?B?cS9tRVNaWVZqNTd5eHI0TTFSeExkMmpPcW0xVFpvVU8wc1FUTmN6Zkxya0No?=
+ =?utf-8?B?TUpxcE03azk1ZFFwV1ZwUHAxaUYraVFaVEk0ZlBkOFBTZ1U5U1J4OE15eGVh?=
+ =?utf-8?B?R2VLbFB5M0l0T0NmamZWWlFQaG5rT0RneER2SzFiRTZwQzNDbUxrUnlnVGV4?=
+ =?utf-8?B?MEdOdndIVEcwOUtiWG9way9xTENleitNZkNLeEM1bThGdXVSMGV5RmZRUGlr?=
+ =?utf-8?B?K2lkYWpONVJvTUczdnd1VGJPd0hWMGJjTDBrU2E0dmpaSXRReXdiVzB2WnZ5?=
+ =?utf-8?B?TTc5RnFaVDdmNEJ5WVRKeDdQVmIyeklNVXdCWm0vN2tXWUFQYkZ4eHdpcU9V?=
+ =?utf-8?B?Z2dZeERHa0lyWHJwMys4R1FwUU5rUWxUSkhlZ2p3bTBQT0RCaG9rQzRJOHhB?=
+ =?utf-8?B?WmpiYmU1YmI3UnAxeXdoSU5HSjdvemo5M0M3c2ZHbnBGQ3d4K2FnR21GLzdq?=
+ =?utf-8?B?S3F6U2pqbVJhL0R2UnVFT1lRN0ZMdnJnNWdFbEZ1QnBSaVc0WU9MNTRvUVBX?=
+ =?utf-8?B?TUFCSEVZcHptNHh2VS82Ymx3S3ZNbFJ5d21nOXp4U2l2aHBsdWJ0a0FVS2RS?=
+ =?utf-8?B?RjhENVF0WU5acEJZdlRWRVhzNnVURkxsSVdISGNiWHdsSDQzZ29zbnFzZE52?=
+ =?utf-8?B?cFYxY2ZTZVhIYzNOa1R3SUFiQzZyanFXKzl2NmhyMnM5azAyRlV6N2hBYlB4?=
+ =?utf-8?B?M2pkYUZNNzl2cTZySXpuRzluTmZUdWtNZXJyc2RTaG5hVlZsVnVLRSs2RXU0?=
+ =?utf-8?B?d01wenhlbEwwRjBuVUVXOFkyWFpieWRnNGhFRDFoR2lMSWpkSWs2VEZ6Nmow?=
+ =?utf-8?B?eEhWOTFRbnNQc0UyTm5xTHREQnpWbFlCamtFRlB5b1ZyK2Q2dXg0bHVNUHlC?=
+ =?utf-8?B?Wm9rbmJsaG03WUk2b1IwVjRkVGIzaDhZcEhjbU9Rd1kyaFdrR3FvTHdMRFQ3?=
+ =?utf-8?B?bEJDOTFWNTVENVNvcEd4eGc3SXlHdnZWVnpSUE5zWlowcGJsVWlzRGk5bnpB?=
+ =?utf-8?B?WVd5ZUkxYUNXazlSOGQ2TUd1Zy9WZ1VFbk8wYVRRSXRwTnR4clM0Yzhrc05R?=
+ =?utf-8?B?QXlSZERwdFBudnJ0V2ZnUDFtd3NZeE43R3dNelRzRGZ1UnFGWjNWVlJvRE5o?=
+ =?utf-8?B?MmFhR0dzSHowZG1URnAxeUtjTlN4aXg4OEVjcCs4NEZVbkdqQUg0N1NUdGJj?=
+ =?utf-8?B?dG9FNndyTmxncE5mTFJ1ejJ3WDBtdmNhMkQ3ZFhZRTU0VjhvZ1NPVVplVEc3?=
+ =?utf-8?B?SjhDRzJmOWZpWjE5SnVKOFFmRVZBckVNRithM1VBWjhiMWlMZHZXTkh4ekph?=
+ =?utf-8?B?QVM0amRTd25ocXlCWlZXSVVrdWdkRExvdCtsRm1IL3d3MVR2c2pqSW9KZVNU?=
+ =?utf-8?B?R0NkNXQ1TlJ6QW1ZTy8rQW95UXd5enRnc044VlNmTkFqOC9BZWFoMVpaYlRY?=
+ =?utf-8?B?YmxQejJESTFqcjJrKzFSblZXcmxJRW9xYnllWjR6M1BPbUFHVTQ1L3QwZDJI?=
+ =?utf-8?B?NnM1UVlBbVUzYVpEazJpeXN5L29waVBDWGYrbG1YTFp1Zjh1Mi9NZ0RWS2Fj?=
+ =?utf-8?B?bm1aZlBiM1gzSk9BVTk5bjFybkwxY2cycWU5Nkxwa09HZ0wwNUxHV1UxcTNz?=
+ =?utf-8?Q?ye7+P/IxCRe92dX8JMnM01piUIUpDCbhlP81s53?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 13:45:55.7245
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9109e96-7b4e-42da-0f42-08d9663d8cb8
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 13:54:39.4365
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3cecae26-0fff-47f0-7eec-08d9663c54e9
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT032.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1742
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VTqA+B+Zf7ybNB4jt6o30DQ6bCZG67ADuhOfE5up9/yPvjWKdkuec8cXiSP1gwxl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5157
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Mon, Aug 23, 2021 at 04:45:45PM +0300, Maor Gottlieb wrote:
+> 
+> On 8/23/2021 3:45 PM, Jason Gunthorpe wrote:
+> > On Mon, Aug 23, 2021 at 02:09:37PM +0300, Maor Gottlieb wrote:
+> > > On 8/20/2021 6:54 PM, Jason Gunthorpe wrote:
+> > > > On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
+> > > > 
+> > > > > +/**
+> > > > > + * __sg_free_table - Free a previously mapped sg table
+> > > > > + * @table:	The sg table header to use
+> > > > > + * @max_ents:	The maximum number of entries per single scatterlist
+> > > > > + * @total_ents:	The total number of entries in the table
+> > > > > + * @nents_first_chunk: Number of entries int the (preallocated) first
+> > > > > + *                     scatterlist chunk, 0 means no such preallocated
+> > > > > + *                     first chunk
+> > > > > + * @free_fn:	Free function
+> > > > > + *
+> > > > > + *  Description:
+> > > > > + *    Free an sg table previously allocated and setup with
+> > > > > + *    __sg_alloc_table().  The @max_ents value must be identical to
+> > > > > + *    that previously used with __sg_alloc_table().
+> > > > > + *
+> > > > > + **/
+> > > > > +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
+> > > > > +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
+> > > > > +{
+> > > > > +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
+> > > > > +			      table->orig_nents);
+> > > > > +}
+> > > > >    EXPORT_SYMBOL(__sg_free_table);
+> > > > This is getting a bit indirect, there is only one caller of
+> > > > __sg_free_table() in sg_pool.c, so may as well just export
+> > > > sg_free_table_entries have have it use that directly.
+> > > So I can just extend __sg_free_table to get number of entries. What do you
+> > > think?
+> > Isn't the point here that different paths to __sg_free_table require
+> > different entries? What do you mean?
+> 
+> I mean that  __sg_free_table will get the number of entries. sg_pool will
+> call it with table->orig_nents and sg_free_append_table will call it with
+> with total_nents.
 
-On 8/23/2021 3:45 PM, Jason Gunthorpe wrote:
-> On Mon, Aug 23, 2021 at 02:09:37PM +0300, Maor Gottlieb wrote:
->> On 8/20/2021 6:54 PM, Jason Gunthorpe wrote:
->>> On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
->>>
->>>> +/**
->>>> + * __sg_free_table - Free a previously mapped sg table
->>>> + * @table:	The sg table header to use
->>>> + * @max_ents:	The maximum number of entries per single scatterlist
->>>> + * @total_ents:	The total number of entries in the table
->>>> + * @nents_first_chunk: Number of entries int the (preallocated) first
->>>> + *                     scatterlist chunk, 0 means no such preallocated
->>>> + *                     first chunk
->>>> + * @free_fn:	Free function
->>>> + *
->>>> + *  Description:
->>>> + *    Free an sg table previously allocated and setup with
->>>> + *    __sg_alloc_table().  The @max_ents value must be identical to
->>>> + *    that previously used with __sg_alloc_table().
->>>> + *
->>>> + **/
->>>> +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
->>>> +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
->>>> +{
->>>> +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
->>>> +			      table->orig_nents);
->>>> +}
->>>>    EXPORT_SYMBOL(__sg_free_table);
->>> This is getting a bit indirect, there is only one caller of
->>> __sg_free_table() in sg_pool.c, so may as well just export
->>> sg_free_table_entries have have it use that directly.
->> So I can just extend __sg_free_table to get number of entries. What do you
->> think?
-> Isn't the point here that different paths to __sg_free_table require
-> different entries? What do you mean?
+That is sort of what you've done, just renamed __sg_free_table to
+sg_free_table_entries in the process, which seem fine enough
 
-I mean that  __sg_free_table will get the number of entries. sg_pool 
-will call it with table->orig_nents and sg_free_append_table will call 
-it with with total_nents.
-
-> Jason
+Jason
