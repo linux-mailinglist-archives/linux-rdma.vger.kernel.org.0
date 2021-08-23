@@ -2,126 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9FC43F453C
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 08:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FEC43F4614
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 09:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234868AbhHWGtV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 02:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35598 "EHLO
+        id S235339AbhHWHx7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 03:53:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233201AbhHWGtH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Aug 2021 02:49:07 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D24BEC061575
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 23:48:22 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id m7-20020a9d4c87000000b0051875f56b95so33700812otf.6
-        for <linux-rdma@vger.kernel.org>; Sun, 22 Aug 2021 23:48:22 -0700 (PDT)
+        with ESMTP id S235349AbhHWHx4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Aug 2021 03:53:56 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C43FC061756
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Aug 2021 00:53:14 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id l7-20020a0568302b0700b0051c0181deebso2401364otv.12
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Aug 2021 00:53:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7FvoLTH7araNBBj6tzE009qkOqdh4jZ0pDmMwOQ+2Wg=;
-        b=TixWsFGNh15iQ01IiwGGTjWe58hwqRlDeYuG9Wn4g3jfKUG9HbqcQusLggNwnmAfON
-         XVyKxNmgBLRYKjgDbONjaeVIpL5Rc0IqgtGuPeV73Qz0qjlck1GHbYFBKCFX5GBetCtS
-         o/K7IZEdo3HoZH1mAIwjBnPBESTmNWBRYmkE+w6LLiwc4fvz8axuCS/SZnZ+CGgt3Wa2
-         xGq9l7ql1etvqxlJPn7Wcsu1rBf6F3YCbjbUyE/TdDN3RYoTLo9Nho3xborbqCDSzUIt
-         KVqTanOODwcHWka9H7ZypEB9I00m2aqB4hyHYpfr9wRrUa6765r6IDBbST5JoNXUhggE
-         iZ/A==
+        bh=Fhbq2/abxYXzkMU0QUXWEbc9H+P74AmWaWw/g6ifL8I=;
+        b=GOVT2Tox2PhiQgLOv0jnAulASb3VzWaQiKRUBFttGj6atGFaqs1JjRsDLiOFJ8EZP1
+         NK84GPOoEZn+IjXoUnU6TS0uci1ki18t76KVgVIGolnWW4s68FFk1cxwDQB9zZfYJ+eg
+         1NtIz1UfK1siDOwg9pcTylU65bOTQcv3cILS/TJXok4pYzVKIX//4BjgXg0tYDd7pU2z
+         wnInkGuViNZV4CtL3ghxGyPyD/2g+8kQi7svDyQYq2hEza73ycsUcYm4e66wik8I6E+1
+         7FY2ERKupGDFithNpVYVGvdtYmXrGFzEHBmsgKAUJYNvnzdZ+tY1svb804TdIRzlWmht
+         Ae2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7FvoLTH7araNBBj6tzE009qkOqdh4jZ0pDmMwOQ+2Wg=;
-        b=gnAgZCZ4pKaHIhFci/kDemgTnf4LSLNZe12nfWzb9znEjRCMW1QBx1evv77q5gdVgp
-         x71Fz8WXja9N6L6vEDL/gSJBOhimyEG8Yu4+aAgtYW9dIlLTnZaKe9b4ZyicJOPRp86S
-         aiMcr5PkRmAbt85y4/i5YxNXkRdD20OfAWjg7K6N1ExYpIxelD3NiCLc8EtTHvSPFZQ5
-         grUGivBU0YFnwrmlinhUoU0L3m5X75bFNYL5GQeqtP7FC78gTI42cYXd6QnMAyMIwcFc
-         hH/HcedGgvTUjFn1N83xZYQYsyKL8Hs5+lvAS5kLhfcPo4Ea5foKF8PbcpxDD2zarII0
-         uFvw==
-X-Gm-Message-State: AOAM531f98UnNbKH7NJv6/L7KTEiB8fmsK/jonDjj8QyqVZhEqMhtYBp
-        l0Kis18w0qG+86rLaxU3Y6usEg282hwS2VLf5PI=
-X-Google-Smtp-Source: ABdhPJyoemVYB6dF/K9zE1s83XgkSGnQOMZXvrByusK8nE47dQCuHMYJjfahgvJMj/1CBeilWIYHVRPeOROeiuiWG3s=
-X-Received: by 2002:aca:2814:: with SMTP id 20mr10333852oix.89.1629701302337;
- Sun, 22 Aug 2021 23:48:22 -0700 (PDT)
+        bh=Fhbq2/abxYXzkMU0QUXWEbc9H+P74AmWaWw/g6ifL8I=;
+        b=pDUG+qQT4lRl8PmlH93NSKfsIZs+qbLiHmihbhkt1wsZTNH2GH8nC0BNfvTzymmYoD
+         FIrVZQl2eKWUpSuldUDvAQ4ycL0Ni0rx33jvIZ1ynFTHECzO4WwSSywAWTm2APig+qP8
+         gaHtze/hPerbo32YzldMXiIOffJU02nfmksLM7LupOCvZBYOuyYkGgUm8BkIgCnCTkYq
+         pQHFbwhI70tIRbEIveOwNB77uRLqGK4qxVmoshjZpatEUSnJqKo+P1Zn+4gwRQFOMqi/
+         u7sNIUg8L+s3bfiNL31hY+C5rFMT3a0RJItFOHqHvNQHRCuEQV5F0dzcxWQ9T3MQsZSm
+         1ZLg==
+X-Gm-Message-State: AOAM532dB87pxBSZolNoR87D+KahsZa1C9M208bt/78TfMYGgCiHn2AN
+        DygzD/0vFHJrY0ng3WQKLFTXL+4hWDRLYEh5ENI=
+X-Google-Smtp-Source: ABdhPJwsHbUWU+GieSw1/N+h+gHXaT96F6RIZYGzeDubFsjRzjOd8kblhnBGHCk4MmwdWeeKZuuHLzXng37jlhjJUMg=
+X-Received: by 2002:aca:2216:: with SMTP id b22mr10216674oic.163.1629705193663;
+ Mon, 23 Aug 2021 00:53:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210820111509.172500-1-yangx.jy@fujitsu.com> <CAD=hENffdb237oicsjwecE1Os9WZNhTkUrn7RUiM2YQwHP51fQ@mail.gmail.com>
- <61232609.7020500@fujitsu.com> <CAD=hENcMv9d-gTdEpXtgUwSm45d89LwWsHJiUALUUmhsEiU+Cg@mail.gmail.com>
- <61233DA7.7020006@fujitsu.com>
-In-Reply-To: <61233DA7.7020006@fujitsu.com>
+References: <YQmF9506lsmeaOBZ@unreal>
+In-Reply-To: <YQmF9506lsmeaOBZ@unreal>
 From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 23 Aug 2021 14:48:11 +0800
-Message-ID: <CAD=hENcaTYhvive_irxQXtTgRZREYPqi253XVane+Nz2WRHQLA@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Zero out index member of struct rxe_queue
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Olga Kornievskaia <aglo@umich.edu>,
+Date:   Mon, 23 Aug 2021 15:53:02 +0800
+Message-ID: <CAD=hENdad8RGTLo82UBf3k+koQVX1oHSXMz6HfRvUxrL4dttsw@mail.gmail.com>
+Subject: Re: RXE status in the upstream rping using rxe
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Olga Kornievskaia <aglo@umich.edu>,
         Bob Pearson <rpearsonhpe@gmail.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
+        linux-rdma <linux-rdma@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 2:18 PM yangx.jy@fujitsu.com
-<yangx.jy@fujitsu.com> wrote:
+On Wed, Aug 4, 2021 at 2:07 AM Leon Romanovsky <leon@kernel.org> wrote:
 >
-> On 2021/8/23 13:42, Zhu Yanjun wrote:
-> > On Mon, Aug 23, 2021 at 12:37 PM yangx.jy@fujitsu.com
-> > <yangx.jy@fujitsu.com>  wrote:
-> >> On 2021/8/21 15:21, Zhu Yanjun wrote:
-> >>> On Fri, Aug 20, 2021 at 6:44 PM Xiao Yang<yangx.jy@fujitsu.com>   wrote:
-> >>>> 1) New index member of struct rxe_queue is introduced but not zeroed
-> >>>>      so the initial value of index may be random.
-> >>>> 2) Current index is not masked off to index_mask.
-> >>>> In such case, producer_addr() and consumer_addr() will get an invalid
-> >>>> address by the random index and then accessing the invalid address
-> >>>> triggers the following panic:
-> >>>> "BUG: unable to handle page fault for address: ffff9ae2c07a1414"
-> >>>>
-> >>>> Fix the issue by using kzalloc() to zero out index member.
-> >>>>
-> >>>> Fixes: 5bcf5a59c41e ("RDMA/rxe: Protext kernel index from user space")
-> >>>> Signed-off-by: Xiao Yang<yangx.jy@fujitsu.com>
-> >>>> ---
-> >>>>    drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
-> >>>>    1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>>
-> >>>> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
-> >>>> index 85b812586ed4..72d95398e604 100644
-> >>>> --- a/drivers/infiniband/sw/rxe/rxe_queue.c
-> >>>> +++ b/drivers/infiniband/sw/rxe/rxe_queue.c
-> >>>> @@ -63,7 +63,7 @@ struct rxe_queue *rxe_queue_init(struct rxe_dev *rxe, int *num_elem,
-> >>>>           if (*num_elem<   0)
-> >>>>                   goto err1;
-> >>>>
-> >>>> -       q = kmalloc(sizeof(*q), GFP_KERNEL);
-> >>>> +       q = kzalloc(sizeof(*q), GFP_KERNEL);
-> >>> Perhaps this is why I can not reproduce this problem in the local host.
-> >> Hi Yanjun,
-> >>
-> >> I forgot to say that I reproduced the issue on my local vm.
-> > Which OS are you using to reproduce this problem?
+> Hi,
 >
-> OS is fedora31.
+> Can you please help me to understand the RXE status in the upstream?
 
-Can you reproduce this problem on Ubuntu 20.04?
+Hi, all
 
-Thanks,
-Zhu Yanjun
+On the Ubuntu 20.04, kernel: 5.4.0-80, with the latest rdma-core,
+
+"
+root@xxx:~/rdma-core# cat /etc/issue
+Ubuntu 20.04.2 LTS \n \l
+root@xxx:~/rdma-core# uname -a
+Linux 5.4.0-80-generic #90-Ubuntu SMP Fri Jul 9 22:49:44 UTC 2021
+x86_64 x86_64 x86_64 GNU/Linux
+root@xxx:~/rdma-core# git log -1 --oneline
+206a0cfd (HEAD -> master, origin/master, origin/HEAD) Merge pull
+request #1047 from yishaih/mlx5_misc
+"
+
+Run run_tests.py, I got the following errors.
+
+Not sure if it is a problem. Please comment on it.
+
+It is easy to reproduce on Ubuntu 20.04 + 5.4.0-80.
+
+"
+.............sssssssss..FFF........sssssssssssssss.sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.ssssssssssssssssssssssssss....s...ss..........s....s..s.......ssReceived
+the following exceptions: {'active': BrokenBarrierError()}
+EReceived the following exceptions: {'active': BrokenBarrierError()}
+E........ss
+======================================================================
+ERROR: test_rdmacm_async_ex_multicast_traffic (tests.test_rdmacm.CMTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/rdma-core/tests/utils.py", line 976, in inner
+    return func(instance)
+  File "/root/rdma-core/tests/test_rdmacm.py", line 42, in
+test_rdmacm_async_ex_multicast_traffic
+    self.two_nodes_rdmacm_traffic(CMAsyncConnection,
+  File "/root/rdma-core/tests/base.py", line 368, in two_nodes_rdmacm_traffic
+    raise(res)
+threading.BrokenBarrierError
+
+======================================================================
+ERROR: test_rdmacm_async_multicast_traffic (tests.test_rdmacm.CMTestCase)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/rdma-core/tests/utils.py", line 976, in inner
+    return func(instance)
+  File "/root/rdma-core/tests/test_rdmacm.py", line 36, in
+test_rdmacm_async_multicast_traffic
+    self.two_nodes_rdmacm_traffic(CMAsyncConnection,
+  File "/root/rdma-core/tests/base.py", line 368, in two_nodes_rdmacm_traffic
+    raise(res)
+threading.BrokenBarrierError
+
+======================================================================
+FAIL: test_phys_port_cnt_ex (tests.test_device.DeviceTest)
+Test phys_port_cnt_ex
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/rdma-core/tests/test_device.py", line 222, in
+test_phys_port_cnt_ex
+    self.assertEqual(phys_port_cnt, phys_port_cnt_ex,
+AssertionError: 1 != 0 : phys_port_cnt_ex and phys_port_cnt should be
+equal if number of ports is less than 256
+
+======================================================================
+FAIL: test_query_device (tests.test_device.DeviceTest)
+Test ibv_query_device()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/rdma-core/tests/test_device.py", line 63, in test_query_device
+    self.verify_device_attr(attr, dev)
+  File "/root/rdma-core/tests/test_device.py", line 187, in verify_device_attr
+    assert attr.vendor_id != 0
+AssertionError
+
+======================================================================
+FAIL: test_query_device_ex (tests.test_device.DeviceTest)
+Test ibv_query_device_ex()
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/root/rdma-core/tests/test_device.py", line 206, in test_query_device_ex
+    self.verify_device_attr(attr_ex.orig_attr, dev)
+  File "/root/rdma-core/tests/test_device.py", line 187, in verify_device_attr
+    assert attr.vendor_id != 0
+AssertionError
+
+----------------------------------------------------------------------
+Ran 205 tests in 40.112s
+
+FAILED (failures=3, errors=2, skipped=137)
+Traceback (most recent call last):
+  File "device.pyx", line 170, in pyverbs.device.Context.close
+AttributeError: 'NoneType' object has no attribute 'debug'
+Exception ignored in: 'pyverbs.device.Context.__dealloc__'
+Traceback (most recent call last):
+  File "device.pyx", line 170, in pyverbs.device.Context.close
+AttributeError: 'NoneType' object has no attribute 'debug'
+"
+
 
 >
-> > Zhu Yanjun
-> >
-> >> Best Regards,
-> >> Xiao Yang
-> >>> Zhu Yanjun
-> >>>
-> >>>>           if (!q)
-> >>>>                   goto err1;
-> >>>>
-> >>>> --
-> >>>> 2.25.1
-> >>>>
-> >>>>
-> >>>>
+> Does we still have crashes/interop issues/e.t.c?
+>
+> Latest commit is:
+> 20da44dfe8ef ("RDMA/mlx5: Drop in-driver verbs object creations")
+>
+> Thanks
