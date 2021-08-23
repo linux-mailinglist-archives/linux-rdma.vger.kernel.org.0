@@ -2,205 +2,136 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFE13F5063
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 20:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FCE3F5127
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 21:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhHWScK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 14:32:10 -0400
-Received: from mail-dm3nam07on2109.outbound.protection.outlook.com ([40.107.95.109]:39841
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        id S230332AbhHWTUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 15:20:12 -0400
+Received: from mail-bn8nam11on2044.outbound.protection.outlook.com ([40.107.236.44]:63904
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230316AbhHWScI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 14:32:08 -0400
+        id S230192AbhHWTUM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 15:20:12 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jVyuX8mB0xN6AnWeVkdBDxsgPrLNlPa3dHEtgspD2ovZsUGJQmUQV8ePj9UPZky2dd8E/Gwr4VM8OtJT+7ZHMUDNabwQZg9kqYNhZlqdAjcLN/rpLK0qq76L0dUxZAqp9SEAG/txL3uQeECNk1hhHNFpQzykMInspcc6bcnuE7HnHEPt6SwouSrrbM49PPZh44Wbn+3JzQlJM9X11ck9Vz3xaIRr+VfZXkYwCbCKwdm0hPcv/XgLjep61wd156/GsMl03O78gUoFWLwso9inrqZUOgdtqa5Oxc8zqHsL6AAa/FmelBnRQgausHh31tGT6ErQfCELlYho9FnMeDYHRA==
+ b=AnlSd6vZSzp8L5w3BScO6ExIEAxW4Ibvc3Dq1XSbmwao+uBhKBr+8CBudVuxCgDWMYamvFjC3jdaUCdCQIqdsCuEMBo9JgZ27Q7xJdeKfoXAb0nO2/+M28wUeXsDzekjhZS4cXARcmLYmbvJpiRZq0W8FIp32X136GjEFtPl4QO4+IUaH2skXztuh3nHxukEzibjWWWJ+7pMB2X0fqjBu9ke8zqlRkMiLNQjOeiq6pLT4regMXJBpwhtMqoFuuC3SqL9f8xAiUHbW4NRP3bn9IbB3hI4Xim5US2RK6O3xfWalqnyokqtdVJalNj7YdR1yEn7NojHr4BRvApt5cSiiw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hR9CMzEophVOuzhJNlE/tgA22SZeQM82SUb/2BS3HTk=;
- b=VjAvderfNEAac6tJqI0d6bvRurlcRMFIYcPSctM82W0P3LbIQYJDHAOjcFoan0vOwQKBqxS0OsaP7may16J23UmzYXq2lVLlw6DXB5QiAfLN0OnvKEgSBTDRyPvUIxffJ9dLmIUfTtxQA6KOsfnrsnSkkXZR4dHclWuNMpFJ2pAIiT0SOn2GzdoZkQKN/l+1Qf9YjqnoMcmjvQGkqmTfzlejarh8hC1vIoTmTyFnpLtI6zk70HCPw/1noLPQ/PlLGcv2t8GWOofKFvv0HPJdBNLMN/TZzUUHgBooz6goBlIC37S8g79oQl/yUYZCNe9jQ/xHjFuAE8A/3Mvz/TIomA==
+ bh=HOeL9bkBW6G+D3RARm/hjdV6sVFG43v9c3J6PkE2/A0=;
+ b=fjLcvXmITk+aIce4v0Ku6DQD/FKLlwjxZKhjGjg8Nsp/7sPpna4mNuYQBAVFTE+Wap05P7LBKtea5TRdApXspmLfT/nW2V9L79aStnBfqWKPxGkguuWWo+ovdNOEAj/2LUcb1z/C2oyXS32g0flbeEOJSyB+L7zRor3klxx6/7JtI7VuBG3iLgWefx1dK/jdHCaN6dwMWFjyp9AcxWj6B1IgeL/R6LvEXTruY8oKibVr9WkceFDT9VfEBU57ticg+qrB3OqqG2FpnhAB9+SwKxu4xnCkYGsD11uPPe0/Ut3rPtnrnqi2/pl1qNuTKAK4VLhfokqNAIfUAcvHEePxMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hR9CMzEophVOuzhJNlE/tgA22SZeQM82SUb/2BS3HTk=;
- b=iuvi4pXy6PtMib2HwotCMvqGpnAnvVw2IaYuk5BQs6CWrVM1g91fu3qfad8oHdMpdb5fZgpY8H+j8AX/FFMVnMbJkYhnJYcPhjuC05MaYlJi9PnFHmqyRw+BGZGZy0o4+npYpOu45n2u1QF1pqwIrI6sohDUhg6E0wRAXN5Son+/UOA6a80FBXF7XSsJoT1A7m/6mkbYtvkoeRmrj7hSrbGB9IeEBf+ktXdVJo+NLKz5hfG+++sTVGL1XmV+UqbDVqm4/mJW8GsmC87nOl/JyGqGR3iQ3Z8UFe8BhuGev6tvw6+YeD5WcHpTZhc4Pl9c1cMl30SoN7qg8XDX337HoQ==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6230.prod.exchangelabs.com (2603:10b6:510:12::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4436.19; Mon, 23 Aug 2021 18:31:23 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::5c02:2146:2b1:f1eb]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::5c02:2146:2b1:f1eb%7]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 18:31:22 +0000
-Subject: Re: [PATCH] RDMA/hfi1: Convert to SPDX identifier
-To:     Cai Huoqing <caihuoqing@baidu.com>,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org
-References: <20210823042622.109-1-caihuoqing@baidu.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <a9122be9-82c5-30d3-e1b3-b9a1a07536d0@cornelisnetworks.com>
-Date:   Mon, 23 Aug 2021 14:31:15 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
-In-Reply-To: <20210823042622.109-1-caihuoqing@baidu.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR02CA0007.namprd02.prod.outlook.com
- (2603:10b6:208:fc::20) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+ bh=HOeL9bkBW6G+D3RARm/hjdV6sVFG43v9c3J6PkE2/A0=;
+ b=VDd+8p3eX+EEDiAUkSj8YA6Q30k74Yvf4C9Y9ECqdwIl0M0i1IARG0EMdiQ/rTzfGVMiYPz2lDDpkTjknPB4H/OwgqTm6Be62gJgAaTYsv1VdFB4ZmJLI1O2pkmnF880V2j8Wbilj/cRhLziet7ng9KSRtzhK8Ke+bOlnKqQtV5LnmazjCu65NbTpA4Lf1RdmX1M9NAo2GokEm52mTJk5cUnQPJXIdviiH1oymhOpzU76gWEBy6XY1ZnlNDDxUFp3zAJcUFeLZOIKg6W1UcVLiBL36UyCWjlv+kDSPQfC+sBQrxcKAgf0K1HoptcVYa8SYttcAtVwTtT+jC7QNabaA==
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5553.namprd12.prod.outlook.com (2603:10b6:208:1c9::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
+ 2021 19:19:28 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
+ 19:19:28 +0000
+Date:   Mon, 23 Aug 2021 16:19:26 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mark Zhang <markzhang@nvidia.com>
+Cc:     dledford@redhat.com, saeedm@nvidia.com, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, aharonl@nvidia.com, netao@nvidia.com,
+        leonro@nvidia.com
+Subject: Re: [PATCH rdma-next 04/10] RDMA/mlx5: Add alloc_op_port_stats()
+ support
+Message-ID: <20210823191926.GA1002502@nvidia.com>
+References: <20210818112428.209111-1-markzhang@nvidia.com>
+ <20210818112428.209111-5-markzhang@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210818112428.209111-5-markzhang@nvidia.com>
+X-ClientProxiedBy: MN2PR10CA0012.namprd10.prod.outlook.com
+ (2603:10b6:208:120::25) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Denniss-MacBook-Pro.local (24.154.216.5) by MN2PR02CA0007.namprd02.prod.outlook.com (2603:10b6:208:fc::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.18 via Frontend Transport; Mon, 23 Aug 2021 18:31:21 +0000
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR10CA0012.namprd10.prod.outlook.com (2603:10b6:208:120::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 19:19:27 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIFTi-004Cov-UW; Mon, 23 Aug 2021 16:19:26 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cc485d52-8a3a-44c8-8634-08d966643503
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6230:
+X-MS-Office365-Filtering-Correlation-Id: a4444fdf-a158-470d-bcdc-08d9666aed10
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5553:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB6230FE4A3C036453C9F1F700F4C49@PH0PR01MB6230.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-Microsoft-Antispam-PRVS: <BL0PR12MB555358AD889CCCDFDB5BE398C2C49@BL0PR12MB5553.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2958;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2Y+3C52CaJ+uxO2bKQa7wkyR4N0YNenA7qJYgnX7mXpzvuJz5INvBcfK/Su9aNQHB9YgPWn1eql43yVYtKvUB60AeLkkOaIzscWwR5Qchlx5BWF8urK0VR0T5BXzNixqRCiT9vVznYEi7HrsZoeAlHJHgXnvClplrivfEEbvHY6w1KJ/Kc7KX38CHpvIaKWbovFHBJvOSG8cpD/iAc5WQLAfK1ILtnsuJT0RzU9R/zIfCSxZnp51XYRFWo0jv81g+HVv8IhTN7KFsRQ8xV3/6rfMmFodbRzGh4Nh7YbaD/oF7+Xp80HqQdwVjmxD2H2p0nOnZydL48z33/FSzTC/423CdUOsm5MS9rl2J6NLRzRnKl16KMhHr9Susw452QDP4gQ2Crnm6odLtR9RuTIVDLODBbJEnV29fl6jtrcLC8N6U89VNf1aKK5MZF8pxBUGCg7VD0EljSwOh7xZK3SoWCmdU4DokBDMfG7QHxnrwsiVh/0s6qWDoO7AZft04zJAuOIWPSw0nl6dsZffq3jlhux5gdtdCGlVDp7QTqUuoZpnxIJIbD4xC062Z78utSmdRdAR7gkFIeiXhAGFpSR7NDOthRd+KGOVzoHPKbYT8YZQT4YEFd7xpfnCpKS5FQjZldsolX3Oz/V9CtvyoKVDlG/XwcBtCZ22phNFe/dgKwG0RHcT2WrGNyFLUFWZzqb+VLyJ+Kangzce0YdZ6LX8+VgvOHzJdxTVerbgPsi710Cmbj9iCuSiNFlGat3H40Rc
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(346002)(39830400003)(2906002)(36756003)(2616005)(4326008)(956004)(186003)(31686004)(44832011)(478600001)(31696002)(316002)(6512007)(66556008)(38350700002)(38100700002)(83380400001)(6486002)(52116002)(26005)(6666004)(8936002)(8676002)(66476007)(66946007)(53546011)(6506007)(86362001)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: GQ7+UECIXtcg+paNkuV2THTMcviJBSgqhIJYzmtxuy1x4D9/7VGb0rUsWLkTUK0RtyMleVm0Xxm9z6g9wnoHG6IQgAv4DHfaSVjyM63kSlp5UGmn65NvR01Z38I5+0oW2m3zaTDpMYpLwr5d+cW4bNoUXUx5GvY4pG8vF9oOpKfKDAOv/rfLYP1ovNtPFszR2Nsnj6mqS1aXJsClYBvXtjBV1NveRYzc3CN+wA8lqVfZqbAr+WMAVGhAzY50lY8nYYYv8uW8cbMagMEyGF/OoawZxXYtKL3uWZK1thd5vKpP7nk/3vG7X2zo8H6Ku0ubVrX6GJ/A0PFY1T8TTZ6j1wBjCWoJRlnoM2j+5VnPHsibdDwPJ2XWG4jL5gMckcyYWS3sq3xTfAQ+H47Wh3No/5ivV2QEI99vTTYQcppQd5sp7+KC0u/fLwewa5GNMhQZID9R2dFhsHgBD+d9VAF6xnRcxpCNuce0LYHmBCAofaKAKhabxisq+k/OZP+T1FUdPyaVR+XdyzHmmuerYMcL0ZNMBUNiDQrarhJZI6eBRF09qnDgASW1aW+Zd1luoqVQZ33101H9vkc17QxhWhmyJZm357HsmiT9/5GG5pjy/ZAb+mXSGB8iGraoKGnVOI+esekP2mVd5WVhq/+j2x5e1A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(107886003)(66476007)(8936002)(66946007)(66556008)(4744005)(2616005)(316002)(4326008)(2906002)(1076003)(5660300002)(6636002)(37006003)(6862004)(86362001)(8676002)(26005)(33656002)(38100700002)(426003)(186003)(9786002)(9746002)(508600001)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZDFhVHVGQ0k2ZEpySXVyMVFlNG43UWc3U1F6emNLZFVWWGcrMlV4amhYWVVH?=
- =?utf-8?B?VFZSa2llWlY5bUVDSU1xRGpwK1ZNOVJxZXlDN1ZIeEZoOWxmUExJWlFmS25D?=
- =?utf-8?B?RWpnRU9RVkptZXE5QmsxblBWb2d6TC9ic3hCTWNIODR6Wmh6YU1rK0s2Z2Jt?=
- =?utf-8?B?N081R2MzR3hXT2ZFa3N2TExBREpCTWhZbFRTRTBMKzFJY2VVZTc0WmdSNVdG?=
- =?utf-8?B?Mk5aNSszRXZodWI3OHNFdW1tbTFpNlMrQ3owblR4YWh0NUpwdE52NHpQNk5D?=
- =?utf-8?B?cDNEQmVOVmQzVnF5L3ZFTTRIMnVCcWlYYmJTVUlrUnZ5QUNyOGVOZ0prc2Ry?=
- =?utf-8?B?NXptNXR6dUV6dS9GelkzRzVrTUk2bnVtS25SNHFlbFUxM3ZQcVYrNnZDNVV6?=
- =?utf-8?B?ZDZNK1liYTdNMi9DQXZOd3BndUV1dUZSMGR1LzNwN1p5RjRZajFBWHZKMUNz?=
- =?utf-8?B?ZnJtblFwZHVjM1hkK1NoWlpTRngzZXpXTVJ4Q05Mb3R0TzV6c2ZrK2t4WVdE?=
- =?utf-8?B?ZjhjS0x3elhVeVk2Y2ROQU9xMEVaL0VNZjZqd0dYUXU3MGh5cXZrc2cyU3dv?=
- =?utf-8?B?ajZ3RXlIQkZkVEpweWQ3YUpmaVdDR3RwTHF1c0FXdzYxTGlOM0tEWldPeVlr?=
- =?utf-8?B?TUYxaFY3MDJaZ2l0R2tYTzBaMlcwLzdwMVV1RmNZSkhPOUl5cE5VU2ZRYWg3?=
- =?utf-8?B?ODhPdWd3RmFkSnV6M2I1eTVXSUwxc1FjMjRqM2dRNEJnVUFHQTlkTnJKS01i?=
- =?utf-8?B?RVJ4bXZ3TEQyL0lvVW1HUVFST210aEtMRlJhQ0tvZURaUUNMcmNVOGw0TTNU?=
- =?utf-8?B?RVJGU0tLTzdGN2Q0UnB1Vm9tL1Nwb2VvenpWNUNwVGZVL1BOUEQyUzc2a2tm?=
- =?utf-8?B?Q0h0eXpXSGZEOU5ONThHaFlzKzdDVElEdjJTdkhhTUo5Qi95YktQY3QrYlpL?=
- =?utf-8?B?NWQvNVl4RDFLb25VN3ZPRTVWVWNlbStKUXRTNitYYXc5WVE3QmRNT0xIL2Vq?=
- =?utf-8?B?VjZSMlFBL0FIMTBiSEx4NHZ0QlExTUZHT0hnVmtaVjVJUUxudGJUL2FDU0VF?=
- =?utf-8?B?Z0dTNXdJT0xmamcwa3BKU09ndEJYeEF3SEJzM2VsU1J3bTcwSzBrNHlHbDR2?=
- =?utf-8?B?RXRnbExYVlA1OEU5aGZzRWxyUkpXYXBGNnRlNlkzNEhIUWdCQWRZVmRZQVpB?=
- =?utf-8?B?RjhTZ2ExQ3ZHNXNuUFJmK2Y5cUU2dzRmNUNLdklDSENlSXd4NldISmdDdXgx?=
- =?utf-8?B?d3Fyb0t4bFVDTTF4dVlTOXdZb0hYRnJXcDM3UXhza1lJbm8yQnNYK2MxNnQv?=
- =?utf-8?B?QlpNNmFUMzdieDZJeVBQM3lmRkJ0dmt1anU1QmZyaThCZ3lLamdGa2NzVXp6?=
- =?utf-8?B?UnhTVWY2dFpGQjNtelJucUdQeGNzVVFpZzZ6dFUweVZpVU10cmhCMkp3SkVB?=
- =?utf-8?B?YStaTXdocTlDbWowb1pIU1ZFS2s3WGFDTlVMaTRSVVdLRy9jVk9EcVVUQmx3?=
- =?utf-8?B?cWZETkhNWER4Tm1aSUZCU1lUZWxXZHRYbGt1QmtPWjRmdnlzK1AyY0VjMHhN?=
- =?utf-8?B?QnhHYmlaQVBWSnF0RWczOGN5VUlxSHE4VzU0VGZEMDZ2N0R0MmlvdytSNkxu?=
- =?utf-8?B?YnJmcVVVR0dpeXJvbnQ1V1BXWVVvamlISDBzNGlYVUpTUGVxNTBUMG5ZSVUz?=
- =?utf-8?B?WmtrbEUvSi9EVThSMkRNNFB5US91Rm5iRUx0clI3NDEydmMrMzZhZjl4TDVa?=
- =?utf-8?Q?O1+5oP7XuAR6dLq+/mTDnPl28A+mKNEbkU7ZVmL?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cc485d52-8a3a-44c8-8634-08d966643503
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sRZdvgDM2kaed4ftf4g/w2MVGu7vKin28noQnA0tXLZG2/r9TebWGcA40kOg?=
+ =?us-ascii?Q?4524f53Thq6TMV5oy8fTgVzYv8MRJW0sOVSJklE6gOt27yV2OrvP+8l2M68L?=
+ =?us-ascii?Q?vc8rnagJdWxZ5g/ZuDKpccY+3VKdtH9T6hzxVbYnPn2h2Wo4FNAqNzBJZZI8?=
+ =?us-ascii?Q?/Z7/sgb/SvN1c2AW2NRXefJbdtk0JDPlLBz3V/afFtb6WMg+E00g2DYQxshO?=
+ =?us-ascii?Q?TDO8Pe4i1cjAMiOJ97gFlW/tT3b83kLfWjNIFrHtLgJtQKxWyW/zmLbgdTS5?=
+ =?us-ascii?Q?pSXYXQN2RqXWwhhqSJ2lKHqagXNv1ICVYf+5sJ5suxpdehpfU1tPeVp8ip9P?=
+ =?us-ascii?Q?zUwtCjnZ3hp+eyr515JszBv/jWUFoLkFswQH4Pr1ulTZFRoSVkVCUWm48+LP?=
+ =?us-ascii?Q?erI427+CT2KHfdSfibNtpc8kCBwS8aFnr2g40rpoVIlr0nN/ApPTWN749RJV?=
+ =?us-ascii?Q?pMM/L0Ab0jZ/z/GYeWxIRVm7v/V5gAfgnOsI65VGTiOiD6AojzemQ9dQkk1H?=
+ =?us-ascii?Q?MaqVotRJWHn+9tBFtwCT4/ZBIcsa7UrBXdjQGq84TL7YFyP+VhVI6sdNQzlY?=
+ =?us-ascii?Q?lJVJYNi8FiznNzeFAbM6cxc6HevTJPyephzVuKS8p1ZmwQadlI7iWcwJiOXG?=
+ =?us-ascii?Q?ciAuUlXGYK3q9MR3I1x/dI5fNzwlpkWqf1gPU0eagkH9C+7exfEPsZvKPFdM?=
+ =?us-ascii?Q?3u8hhWoHOUJDfEITzXLzc6RbKg/RaMzPHfcdvjlYExnRg0PAvU888gBRUsOx?=
+ =?us-ascii?Q?FJD3FQLxvUR9hRl9n/N/Da868UHyeJ6QJki+gRnGSzbcazueCwWuJATtRxP8?=
+ =?us-ascii?Q?NpcTlHtRQAUHslAaiWXnDwAb97zBGLzZdCy+162ChFqtO4MVcKLam8n5AijW?=
+ =?us-ascii?Q?ADy5b9kadypI2RVHaQ6Bdt7HHnMHFzyCCMaFVPjX7OZyqwqQHZ9rSRaZo2aF?=
+ =?us-ascii?Q?M8o5LrYqEFhHzCvyrg+u2zDgouqCVHLhppxRQxvT+4WjuxnBfmxnLM2z5xC4?=
+ =?us-ascii?Q?bdClzzzd5Y7Kg6NrfMSMwZVj+k/Ed+ZoT8RB9UHueCbQuGT2X8+HOnIRQr9X?=
+ =?us-ascii?Q?1DR9cL4Y7f4OZ+3fcxHXOtt6GkCI7tgJgbDCFxWO6+4c8jpkCTieXMkmlOI6?=
+ =?us-ascii?Q?qGkWYZrrKmrjTT/YNF6uv4KoOaaf2nopIQlUa0QRG2I6XzOx0UGA8BisBVeB?=
+ =?us-ascii?Q?8YHLzAxbum77PFRuvgUzKAHYxoAb/Z9HzSTnTibf82BLYabvGIgTDaMuq41E?=
+ =?us-ascii?Q?ufg9CaoFqZ7oY3NK8d0ctPAwkGb1nlKt+W8wKykREDiZbzJ7BKwkdxZ8VQ5N?=
+ =?us-ascii?Q?lvjY9ZhscJ/qUlmTETkW2/5j?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4444fdf-a158-470d-bcdc-08d9666aed10
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 18:31:22.3444
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 19:19:28.1012
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hy3IlN2Y56P0RNH01n7jhuREHBClkWgfd4uBfbPND6b6K3WqbfoBAFH0JdjeqnPsVm9U3G/wQVHyTbx1/+yHO2xyxg1SMwXRs1x4PXv9y31WCOPbdNgWgOPxHyOFgd4D
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6230
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8nPLeTQ3LKRlLp71JMgea8qXcwi3CUzKbArnsU5xWAHfBa4k9wjRCHxGGuVbdd1c
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5553
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Aug 18, 2021 at 02:24:22PM +0300, Mark Zhang wrote:
 
+> +static struct rdma_op_stats *
+> +mlx5_ib_alloc_op_port_stats(struct ib_device *ibdev, u32 port_num)
+> +{
+> +	struct rdma_op_stats *opstats;
+> +	struct mlx5_ib_dev *dev = to_mdev(ibdev);
+> +	int num_opcounters, i, j = 0;
+> +
+> +	num_opcounters = ARRAY_SIZE(basic_op_cnts);
+> +
+> +	if (MLX5_CAP_FLOWTABLE(dev->mdev,
+> +			       ft_field_support_2_nic_receive_rdma.bth_opcode))
+> +		num_opcounters += ARRAY_SIZE(rdmarx_cnp_op_cnts);
+> +
+> +	if (MLX5_CAP_FLOWTABLE(dev->mdev,
+> +			       ft_field_support_2_nic_transmit_rdma.bth_opcode))
+> +		num_opcounters += ARRAY_SIZE(rdmatx_cnp_op_cnts);
+> +
+> +	opstats = kzalloc(sizeof(*opstats) +
+> +			  num_opcounters * sizeof(struct rdma_op_counter),
+> +			  GFP_KERNEL);
 
-On 8/23/21 12:26 AM, Cai Huoqing wrote:
-> use SPDX-License-Identifier instead of a verbose license text
-> 
-> Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> ---
->  drivers/infiniband/hw/hfi1/affinity.c       | 45 +------------------
->  drivers/infiniband/hw/hfi1/affinity.h       | 45 +------------------
->  drivers/infiniband/hw/hfi1/aspm.h           | 45 +------------------
->  drivers/infiniband/hw/hfi1/chip.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/chip.h           | 48 ++------------------
->  drivers/infiniband/hw/hfi1/chip_registers.h | 50 ++-------------------
->  drivers/infiniband/hw/hfi1/common.h         | 44 +-----------------
->  drivers/infiniband/hw/hfi1/debugfs.c        | 45 +------------------
->  drivers/infiniband/hw/hfi1/debugfs.h        | 49 ++------------------
->  drivers/infiniband/hw/hfi1/device.c         | 44 +-----------------
->  drivers/infiniband/hw/hfi1/device.h         | 49 ++------------------
->  drivers/infiniband/hw/hfi1/driver.c         | 44 +-----------------
->  drivers/infiniband/hw/hfi1/efivar.c         | 44 +-----------------
->  drivers/infiniband/hw/hfi1/efivar.h         | 45 +------------------
->  drivers/infiniband/hw/hfi1/eprom.c          | 45 +------------------
->  drivers/infiniband/hw/hfi1/eprom.h          | 44 +-----------------
->  drivers/infiniband/hw/hfi1/exp_rcv.c        | 44 +-----------------
->  drivers/infiniband/hw/hfi1/exp_rcv.h        | 48 ++------------------
->  drivers/infiniband/hw/hfi1/fault.c          | 45 +------------------
->  drivers/infiniband/hw/hfi1/fault.h          | 50 +++------------------
->  drivers/infiniband/hw/hfi1/file_ops.c       | 45 +------------------
->  drivers/infiniband/hw/hfi1/firmware.c       | 44 +-----------------
->  drivers/infiniband/hw/hfi1/hfi.h            | 49 ++------------------
->  drivers/infiniband/hw/hfi1/init.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/intr.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/iowait.h         | 49 ++------------------
->  drivers/infiniband/hw/hfi1/mad.c            | 44 +-----------------
->  drivers/infiniband/hw/hfi1/mad.h            | 45 +------------------
->  drivers/infiniband/hw/hfi1/mmu_rb.c         | 45 +------------------
->  drivers/infiniband/hw/hfi1/mmu_rb.h         | 45 +------------------
->  drivers/infiniband/hw/hfi1/msix.c           | 43 ------------------
->  drivers/infiniband/hw/hfi1/msix.h           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/opa_compat.h     | 48 ++------------------
->  drivers/infiniband/hw/hfi1/pcie.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/pio.c            | 44 +-----------------
->  drivers/infiniband/hw/hfi1/pio.h            | 48 ++------------------
->  drivers/infiniband/hw/hfi1/pio_copy.c       | 44 +-----------------
->  drivers/infiniband/hw/hfi1/platform.c       | 44 +-----------------
->  drivers/infiniband/hw/hfi1/platform.h       | 45 +------------------
->  drivers/infiniband/hw/hfi1/qp.c             | 44 +-----------------
->  drivers/infiniband/hw/hfi1/qp.h             | 48 ++------------------
->  drivers/infiniband/hw/hfi1/qsfp.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/qsfp.h           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/rc.c             | 44 +-----------------
->  drivers/infiniband/hw/hfi1/ruc.c            | 44 +-----------------
->  drivers/infiniband/hw/hfi1/sdma.c           | 44 +-----------------
->  drivers/infiniband/hw/hfi1/sdma.h           | 49 ++------------------
->  drivers/infiniband/hw/hfi1/sdma_txreq.h     | 44 +-----------------
->  drivers/infiniband/hw/hfi1/sysfs.c          | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace.c          | 44 +-----------------
->  drivers/infiniband/hw/hfi1/trace.h          | 44 +-----------------
->  drivers/infiniband/hw/hfi1/trace_ctxts.h    | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_dbg.h      | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_ibhdrs.h   | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_misc.h     | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_mmu.h      | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_rc.h       | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_rx.h       | 45 +------------------
->  drivers/infiniband/hw/hfi1/trace_tx.h       | 44 +-----------------
->  drivers/infiniband/hw/hfi1/uc.c             | 44 +-----------------
->  drivers/infiniband/hw/hfi1/ud.c             | 44 +-----------------
->  drivers/infiniband/hw/hfi1/user_exp_rcv.c   | 44 +-----------------
->  drivers/infiniband/hw/hfi1/user_exp_rcv.h   | 49 ++------------------
->  drivers/infiniband/hw/hfi1/user_pages.c     | 44 +-----------------
->  drivers/infiniband/hw/hfi1/user_sdma.c      | 45 +------------------
->  drivers/infiniband/hw/hfi1/user_sdma.h      | 49 ++------------------
->  drivers/infiniband/hw/hfi1/verbs.c          | 44 +-----------------
->  drivers/infiniband/hw/hfi1/verbs.h          | 44 +-----------------
->  drivers/infiniband/hw/hfi1/verbs_txreq.c    | 44 +-----------------
->  drivers/infiniband/hw/hfi1/verbs_txreq.h    | 44 +-----------------
->  drivers/infiniband/hw/hfi1/vnic.h           | 48 ++------------------
->  drivers/infiniband/hw/hfi1/vnic_main.c      | 44 +-----------------
->  drivers/infiniband/hw/hfi1/vnic_sdma.c      | 44 +-----------------
->  73 files changed, 133 insertions(+), 3170 deletions(-)
+This should use struct_size
 
-Never really seen the need for this large code churn. Is it really necessary?
-Maybe it would be better to just touch this up the next time we actaully have to
-patch a particular file.
-
--Denny
+Jason
