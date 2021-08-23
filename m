@@ -2,174 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2BB3F4B0F
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 14:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4583F4B53
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 Aug 2021 15:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235979AbhHWMq3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 08:46:29 -0400
-Received: from mail-dm6nam12on2063.outbound.protection.outlook.com ([40.107.243.63]:39265
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235954AbhHWMq3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 08:46:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PyK1KsLM6qzF2ITk6gI9sSwzogfLwXDHi66GVxnuU9udMMTuPQX8VrLX6YrqCQAPbZhKCJtgV3mHRYgLp18MxBlxd1CIKN09qvPccxvna+DRfK5Aiyx4va4SCZj8GXlHyw/+iO2a2YyXVQTQNagn6kQaMpOEv11EBN+CTutmJ0fx+k3tQTnsCzFDieG47vhE6GlftBjSfdy8M4D2RXm+WWJBB0Rx38zki1HCgKNxQBKJenpzYSsA7JTEGUon6PcrT9wGEzpXiVFqpnlEVBhGPsxrnu/ftvQe9FXDMJQpfDj+BH8azo4rVKkvSyNn4n9dUGyfXekxuCTQnEL8Ph+4KA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BVwzn8Qcpc0vuGrgA1qW/gP3vhZqdejICKXVwPf2N5I=;
- b=BVyp3J84NEKs3Qk3LZJUS8sIIzHsFpPU+BqBd3s77dePR4UeKD0r1F8Vg7VApKOvuFCGC4lebh3a1ULgOTKy7OQamC5C/6h4KaePilhMXWPegje+kNP7WWumunegxZi5My14vH0QF1wPc2em9QFM26q0//ZNybLi2sUKZtQuGJ7iRU0PkFcovG0uMfh7wy3ZfLPT6XyDMgx0tcm1XkfFW3SkGFYuisQezzgYmVTp0SStZlroyb94pKd97TBsB5ltF9Roak608/pDueMHSvTlBsFYppaQBktSol5j/K1t3kAH9lexGOTZWr1s+g67oLrwWTDmGJz3kSlN4RC0ElABLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BVwzn8Qcpc0vuGrgA1qW/gP3vhZqdejICKXVwPf2N5I=;
- b=LMyoJscTZmyIOruvdUC1g3TbYDKpvNVbNSMXf4mWuMI9TFCdFLPRkfR9Vdf17vZwjlMFMRMSmChkMFAqWQkxSnXoz/yij7+vylL9GM0Nr7UnDFZvbqJ1o/uPSP5E503VGrTCCUjmHjIGq5DyFXgU6dcOxPos2VWCqhU0MVMo6rlZ+iRDslh+tww0a/E1dsjrCe34Xe0D77boSfgvfqvsdlO7RWyROu4s+8021eB0PAJ/x37Ehd3FBw+av0o09G9kLIwXY5F2wNkmTqrPAzPCIC1lzgG8K8gUUGSvCF0jwa6JNVi9mJzeZmjzDlz8sz+7fx3BLNQqsDk5dLX+QvcEVg==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5112.namprd12.prod.outlook.com (2603:10b6:208:316::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Mon, 23 Aug
- 2021 12:45:43 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Mon, 23 Aug 2021
- 12:45:43 +0000
-Date:   Mon, 23 Aug 2021 09:45:41 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Maor Gottlieb <maorg@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ariel Elior <aelior@marvell.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        VMware Graphics <linux-graphics-maintainer@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH rdma-next v3 2/3] lib/scatterlist: Fix wrong update of
- orig_nents
-Message-ID: <20210823124541.GM1721383@nvidia.com>
-References: <cover.1627551226.git.leonro@nvidia.com>
- <460ae18dd1bbd6c1175e75f5d4e51ddb449acf8d.1627551226.git.leonro@nvidia.com>
- <20210820155425.GA530861@nvidia.com>
- <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
+        id S237161AbhHWNFE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 09:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237098AbhHWNFD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 Aug 2021 09:05:03 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAE2C061575
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Aug 2021 06:04:21 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id jv8so9591736qvb.3
+        for <linux-rdma@vger.kernel.org>; Mon, 23 Aug 2021 06:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=f50vC7zIeMwqepv4RFwpH7mORqkN8Mr21/+qOWLlAYI=;
+        b=fLBg8hJB3YxHLiRx6SMZ08NW60UMGWMS+FOsUqJMvTgltf9rnMZsu1cIxbm8f0yXKP
+         wg7SEWN1pCyevpBSaxrytzfvCdcUMCJ8fnTJBWhizDkNrWqocdQW4G0nntRvNWPGFJ0u
+         ZjfP0vTVwSEcpsqWif3oosDJVguCeEjHNyCAFfRUuXXViX9643iur529Q9KRGHyIcW6T
+         GRUzYrjGxEjQMqg5+9Q4S1N/daCQTX2Oc1OnDCsJCiCDbNR6ZgpxDem287KfPr24EFRb
+         CjaVTeZ6osyOmjwpdLVX2KHwMBthhnROibBefHDGUF1e20Bb0E2IaTMHcBeJ/y1AoLfg
+         1ARA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=f50vC7zIeMwqepv4RFwpH7mORqkN8Mr21/+qOWLlAYI=;
+        b=Gdu8J+3DDGTB0PXaHVIMhQNgN6+qWgwsjGU1CaYZe3+XFcoD8ypIfcTnDAqX2eHWrH
+         vqdrXMwoFnWXSWqGiPi70TcohwFY2v7H2L8KoE/JHyk/FoQdC1ijoGFrvZltewKohGQa
+         FlQ2ewttygX9Q2aGDP9UVYzS3P5amIolkNW+x0xRezS5GXDyY3V0A2t3lBICShv04yZh
+         e4pBGk8v1pYoCnDQy3IcUOmismCG4PuyVRYMnWwoM79GCU7EEElNcENQkT/Z0s7kvOLh
+         mC515Ubmg71Sa2IFikeXbc3MwDOwKY7IluE1MXZNk7pZ8fL0AcCbjL5oBN7gTQ8X6OuX
+         KV4w==
+X-Gm-Message-State: AOAM530dluGRnswv83kYPrnIbbqrhOUunPxRqvj3Fm3mK2FSJJXHV+Og
+        WlhaUu5mABEm2tWKhS4jQFaAXOtrVt0jlg==
+X-Google-Smtp-Source: ABdhPJyhXO416IdBDrNzxSPX6GBkG/NURoOzbhXsDjiUNJUg4POnRfuzLVC3Dv4qg5BUBG+QET1nNg==
+X-Received: by 2002:a05:6214:c69:: with SMTP id t9mr33312470qvj.28.1629723860598;
+        Mon, 23 Aug 2021 06:04:20 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id h13sm8264610qkk.67.2021.08.23.06.04.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Aug 2021 06:04:19 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mI9ch-003GE6-6D; Mon, 23 Aug 2021 10:04:19 -0300
+Date:   Mon, 23 Aug 2021 10:04:19 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: Creating new RDMA driver for habanalabs
+Message-ID: <20210823130419.GA543798@ziepe.ca>
+References: <CAFCwf12o_Hq8Ci4o1H9xvqDJT9DeVmXUc7d21EqZz1meNdU3qg@mail.gmail.com>
+ <20210822223128.GZ543798@ziepe.ca>
+ <CAFCwf10LXiAxf7Xr+pMcmSk-_q1FEY_YcBjoH05K0mkK9hMCYA@mail.gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <85542c97-c7e0-3db3-baa8-2413c00f75a4@nvidia.com>
-X-ClientProxiedBy: BL0PR1501CA0025.namprd15.prod.outlook.com
- (2603:10b6:207:17::38) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR1501CA0025.namprd15.prod.outlook.com (2603:10b6:207:17::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Mon, 23 Aug 2021 12:45:42 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mI9Kf-003Fxc-TX; Mon, 23 Aug 2021 09:45:41 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5b510070-c456-418c-316e-08d96633eb78
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5112:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51121944CBEF7C29D82C55A1C2C49@BL1PR12MB5112.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +kWCAL4uJpS/mx/glilhlYookhPPGda3/rlIWHPiMVnLEoKDvqGsIzBY5OWa2hT1top5A3DGeFhPsyoQgYZLrkKTZ68BX2J8Hd9UaeVtLXnGTKHeEZoN34q85ghNsIRw+idggXvO50UTlfYb3gP4LRY05JHz9LFMfVxVzs9Z7w0Medoo/cuR8QoPej8PZjoZ0F50lkBKmTW5iEZGmPZQXM7SDpkE4+Nt1X8CGDaGrjtGA1v1Q51gM01SCAY7fbVMKPe18xl0KlJKPCTOdFCWInYSfhGtL6DzalwHL1xt2eVjVsy0x16RGTR9/VGuRB15Kw7PNi50Y7M98UEnoRTsFTMLb/BHwI3fyNPoK8H56xQtALg5XdH7ZBNOHJwhDZDKthhYGEkvA9yB51XGmKCSkU26aZgYdMZ+cA+K87OTRvEb8OZAlG2zz5h5fsSwTOI8N58NdvBXVHVJ7Arm6pPKyvlgrJsNMtEZLBLXVO4fj/DJz6qhY0NcxaABlRfH7tYX7Rxgnfk+x0nLP//XAlfyNfqSb+UkvB+l2fhYc9VsBxhL30reFVF8jEN9Rnb/4TA33KyO35YCmB7ObwvW0N1nxZVNftRXlXV5A4nrWhC/CDOW94vpmXInv2YzqAwWucWlu/uCWNrDfjsTzDO+9WK3dQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(508600001)(36756003)(316002)(66476007)(9746002)(426003)(9786002)(26005)(8676002)(8936002)(53546011)(33656002)(2616005)(86362001)(1076003)(6862004)(6636002)(186003)(5660300002)(66946007)(54906003)(7416002)(2906002)(4326008)(66556008)(37006003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?t4mQSwyUKDc7j9WVHekJxghYyR44ujhEHjgh8o1jpyVz2m7xX6Ua3Qi3G8bA?=
- =?us-ascii?Q?pPHQFM35woVUFaCV6kVZjz08JOrrXhsck5bTEmTYs41rW/QD7RCBieLY535k?=
- =?us-ascii?Q?6dIapmrNCQ55Dr6eCNp/v6CAqHtF+eOvJl4qt8ZRtwWpr+bNBDoV/Kgc5vtj?=
- =?us-ascii?Q?NNx8vfOaagUjxVDoF7DQ7g/kl+OyzFpJW9s+Pf1Vu65iWfYG17kGUla8TJn5?=
- =?us-ascii?Q?pUB/n4DBx28t/ku8ZM8SLVGa7QVTx+z3yox4ke9/kFwjTBAG05c8kF0iOAqa?=
- =?us-ascii?Q?+fbEle8le8GpAh/eoJCrIhYGceqKoDovHooHj4rSRLp3juSt+RJHqfs9eoup?=
- =?us-ascii?Q?6prZqHGZE/yHAGnHxdBVZGznhUdYkAk4/rBexL7m53NcrS9juDOIOWQbeUOP?=
- =?us-ascii?Q?Jaq3nOkJS8yoiYQVVKios0Xr7OuKU7xdvnPStFqRvj6AE8fASu0gTAptZUMM?=
- =?us-ascii?Q?hpBp2aYAGR8FIVMBYULkaaXzc9cpLkA14XhbGoYGyJbDkxSvJbkGfoILXO1i?=
- =?us-ascii?Q?6cpmMZJygxOJQMOUTPvKP20ySGChbahRX1yX/iZLU2crx3mxdXXrT746RYnU?=
- =?us-ascii?Q?6K0ciCFWJstbEncDVGSU6M8su2Yo8BQGhL28fed4Y3ZEXKT9l2vBljWiAeBh?=
- =?us-ascii?Q?VwD1nWOwY07MtLZCVTc8tRYXdRPJPfltefDsaXlSi3lptgZ2tzrSgZqSAf9N?=
- =?us-ascii?Q?M1gHKl9MCPf8Wsgz9NBt3d6sdfs6AUc5EyJSe2vuDjDjaFQyw8S5bhQdHfCB?=
- =?us-ascii?Q?NUkTXNPQctGkAqwg9Tv390foaEZOtJHlO0C18XPVXh4b530O7Bv2ox8L13Go?=
- =?us-ascii?Q?vIu26LWdLT+OLotUivrOwM/kRhXQsry2wlinuG6l0nuhAXV6MXSf9DIJttRG?=
- =?us-ascii?Q?QvJGQc8qb8yH/IDMZYpqoZjFx4RBhfsL1/ZSMuX+cenXGkeQ1Krv/ICTdu+T?=
- =?us-ascii?Q?cTBCH3lvrK1qkqmvmRHPN3Td/u3Grf2PNc6dn5FMLs0PvYKar6NG2aGiEWic?=
- =?us-ascii?Q?1m8YQd5ghoKOavbWINSWBMTXfobbmlTwJgiR+jMyYNDIkRWTrPyufaonwga9?=
- =?us-ascii?Q?rg1ruMAZpOYQF4ysTFkvN5cP7kL+bL9nibSArfkj/3FAZK9Mjq3xg23VnLgE?=
- =?us-ascii?Q?nvTPT9Ye1xP/PcuPv8zuOh0dk5IEgFwfM7jCJkYa98vf3TINK9Akjp1xp6F5?=
- =?us-ascii?Q?ouWJOFG6NlPFfyJmgJX/KPFsGwncYKUZoZQ9y4Jd/D4D8cj5S5+C1P7wgAza?=
- =?us-ascii?Q?BCKqFXuD0sPuNuyg59icS2E1YY9g+yhUdKuZlxFJro7QGKmIpx5Q+tVWu0XB?=
- =?us-ascii?Q?/UiePkibXSVjryH4JQzZ5GzH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5b510070-c456-418c-316e-08d96633eb78
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Aug 2021 12:45:43.1893
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NQ3rA7XOZwwcI8NrLIYc5aIuHdCKGJb9WB+Hh6eG1B/aeet1MCBN5lZ59zzFcDyg
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5112
+In-Reply-To: <CAFCwf10LXiAxf7Xr+pMcmSk-_q1FEY_YcBjoH05K0mkK9hMCYA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 02:09:37PM +0300, Maor Gottlieb wrote:
-> 
-> On 8/20/2021 6:54 PM, Jason Gunthorpe wrote:
-> > On Thu, Jul 29, 2021 at 12:39:12PM +0300, Leon Romanovsky wrote:
-> > 
-> > > +/**
-> > > + * __sg_free_table - Free a previously mapped sg table
-> > > + * @table:	The sg table header to use
-> > > + * @max_ents:	The maximum number of entries per single scatterlist
-> > > + * @total_ents:	The total number of entries in the table
-> > > + * @nents_first_chunk: Number of entries int the (preallocated) first
-> > > + *                     scatterlist chunk, 0 means no such preallocated
-> > > + *                     first chunk
-> > > + * @free_fn:	Free function
-> > > + *
-> > > + *  Description:
-> > > + *    Free an sg table previously allocated and setup with
-> > > + *    __sg_alloc_table().  The @max_ents value must be identical to
-> > > + *    that previously used with __sg_alloc_table().
-> > > + *
-> > > + **/
-> > > +void __sg_free_table(struct sg_table *table, unsigned int max_ents,
-> > > +		     unsigned int nents_first_chunk, sg_free_fn *free_fn)
-> > > +{
-> > > +	sg_free_table_entries(table, max_ents, nents_first_chunk, free_fn,
-> > > +			      table->orig_nents);
-> > > +}
-> > >   EXPORT_SYMBOL(__sg_free_table);
-> > This is getting a bit indirect, there is only one caller of
-> > __sg_free_table() in sg_pool.c, so may as well just export
-> > sg_free_table_entries have have it use that directly.
-> 
-> So I can just extend __sg_free_table to get number of entries. What do you
-> think?
+On Mon, Aug 23, 2021 at 11:53:48AM +0300, Oded Gabbay wrote:
 
-Isn't the point here that different paths to __sg_free_table require
-different entries? What do you mean?
+> Do you see any issue with that ?
+
+It should work out, without a netdev you have to be more careful about
+addressing and can't really use the IP addressing modes. But you'd
+have a singular hardwired roce gid in this case and act more like an
+IB device than a roce device.
+
+Where you might start to run into trouble is you probably want to put
+all these ports under a single struct ib_device and we've been moving
+away from having significant per-port differences. But I suspect it
+can still work out.
 
 Jason
