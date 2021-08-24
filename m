@@ -2,95 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5993F3F5A1F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 10:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437013F5A6A
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 11:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235247AbhHXIu0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Aug 2021 04:50:26 -0400
-Received: from verein.lst.de ([213.95.11.211]:50894 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235167AbhHXIuZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Aug 2021 04:50:25 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 6100567373; Tue, 24 Aug 2021 10:49:35 +0200 (CEST)
-Date:   Tue, 24 Aug 2021 10:49:34 +0200
-From:   "hch@lst.de" <hch@lst.de>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "hch@lst.de" <hch@lst.de>, Tianyu Lan <ltykernel@gmail.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
-        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
-        "jgross@suse.com" <jgross@suse.com>,
-        "sstabellini@kernel.org" <sstabellini@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
-        "robin.murphy@arm.com" <robin.murphy@arm.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "pgonda@google.com" <pgonda@google.com>,
-        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "saravanand@fb.com" <saravanand@fb.com>,
-        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
-        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        vkuznets <vkuznets@redhat.com>,
-        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
-        "dave.hansen@intel.com" <dave.hansen@intel.com>,
-        linux-rdma@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com
-Subject: min_align_mask Re: [PATCH V3 13/13] HV/Storvsc: Add Isolation VM
- support for storvsc driver
-Message-ID: <20210824084934.GC29844@lst.de>
-References: <20210809175620.720923-1-ltykernel@gmail.com> <20210809175620.720923-14-ltykernel@gmail.com> <MWHPR21MB1593EEF30FFD5C60ED744985D7C09@MWHPR21MB1593.namprd21.prod.outlook.com> <20210820043237.GC26450@lst.de> <CY4PR21MB1586FEB6F6ADD592C04E541BD7C19@CY4PR21MB1586.namprd21.prod.outlook.com>
+        id S235375AbhHXJHM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Aug 2021 05:07:12 -0400
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:9239 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhHXJHK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Aug 2021 05:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1629795986; x=1661331986;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=rnUhlHPoIJ2Phd42u7TjZjB5NMBB69P1r79MOcj/MTY=;
+  b=PqZtOs1BBeDI2ajiL2U13PCv0cbPnEhAsnmMlFjsW/opFIeIMA87CXWp
+   8QhoB9H802isljSpB+oTknIWK3ikPwincD40Xc2uLURqyYGR4Azys0MQo
+   VoJvo36pZKdwSY1+dily67wCmOMfEa96x1pNaUXyB1NsUyRmjQcxcdXOo
+   E=;
+X-IronPort-AV: E=Sophos;i="5.84,346,1620691200"; 
+   d="scan'208";a="952569221"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-28209b7b.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 24 Aug 2021 09:06:18 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1e-28209b7b.us-east-1.amazon.com (Postfix) with ESMTPS id 3FB57BFD9A;
+        Tue, 24 Aug 2021 09:06:12 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.216) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Tue, 24 Aug 2021 09:06:05 +0000
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        John Hubbard <jhubbard@nvidia.com>
+References: <20210818074352.29950-1-galpress@amazon.com>
+ <CAKMK7uGZ_eX+XfYJU6EkKEOVrHz3q6QMxaEbyyD3_1iqj9YSjw@mail.gmail.com>
+ <20210819230602.GU543798@ziepe.ca>
+ <CAKMK7uGgQWcs4Va6TGN9akHSSkmTs1i0Kx+6WpeiXWhJKpasLA@mail.gmail.com>
+ <20210820123316.GV543798@ziepe.ca>
+ <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+ <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+Date:   Tue, 24 Aug 2021 12:06:00 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR21MB1586FEB6F6ADD592C04E541BD7C19@CY4PR21MB1586.namprd21.prod.outlook.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.162.216]
+X-ClientProxiedBy: EX13D10UWA003.ant.amazon.com (10.43.160.248) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 20, 2021 at 03:40:08PM +0000, Michael Kelley wrote:
-> I see that the swiotlb code gets and uses the min_align_mask field.  But
-> the NVME driver is the only driver that ever sets it, so the value is zero
-> in all other cases.  Does swiotlb just use PAGE_SIZE in that that case?  I
-> couldn't tell from a quick glance at the swiotlb code.
+On 23/08/2021 13:43, Christian König wrote:
+> Am 21.08.21 um 11:16 schrieb Gal Pressman:
+>> On 20/08/2021 17:32, Jason Gunthorpe wrote:
+>>> On Fri, Aug 20, 2021 at 03:58:33PM +0300, Gal Pressman wrote:
+>>>
+>>>> Though it would've been nicer if we could agree on a solution that could work
+>>>> for more than 1-2 RDMA devices, using the existing tools the RDMA subsystem
+>>>> has.
+>>> I don't think it can really be done, revoke is necessary, and isn't a
+>>> primitive we have today.
+>>>
+>>> Revoke is sort of like rereg MR, but with a guaranteed no-change to
+>>> the lkey/rkey
+>>>
+>>> Then there is the locking complexity of linking the mr creation and
+>>> destruction to the lifecycle of the pages, which is messy and maybe
+>>> not general. For instance mlx5 would call its revoke_mr, disconnect
+>>> the dmabuf then destroy the mkey - but this is only safe because mlx5
+>>> HW can handle concurrent revokes.
+>> Thanks, that makes sense.
+>>
+>>>> That's why I tried to approach this by denying such attachments for non-ODP
+>>>> importers instead of exposing a "limited" dynamic importer.
+>>> That is fine if there is no revoke - once revoke exists we must have
+>>> driver and HW support.
+>> Agree.
+>> IIUC, we're talking about three different exporter "types":
+>> - Dynamic with move_notify (requires ODP)
+>> - Dynamic with revoke_notify
+>> - Static
+>>
+>> Which changes do we need to make the third one work?
+> 
+> Basically none at all in the framework.
+> 
+> You just need to properly use the dma_buf_pin() function when you start using a
+> buffer (e.g. before you create an attachment) and the dma_buf_unpin() function
+> after you are done with the DMA-buf.
 
-The encoding isn't all that common.  I only know it for the RDMA memory
-registration format, and RDMA in general does not interact very well
-with swiotlb (although the in-kernel drivers should work fine, it is
-userspace RDMA that is the problem).  It seems recently a new driver
-using the format (mpi3mr) also showed up.  All these should probably set
-the min_align_mask.
+I replied to your previous mail, but I'll ask again.
+Doesn't the pin operation migrate the memory to host memory?
