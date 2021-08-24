@@ -2,137 +2,211 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536343F555F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 03:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79993F558E
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 03:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbhHXBIN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 21:08:13 -0400
-Received: from mx20.baidu.com ([111.202.115.85]:38058 "EHLO baidu.com"
+        id S233534AbhHXBpR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 21:45:17 -0400
+Received: from mail-bn8nam08on2045.outbound.protection.outlook.com ([40.107.100.45]:26080
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233585AbhHXBIN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 21:08:13 -0400
-Received: from BJHW-Mail-Ex13.internal.baidu.com (unknown [10.127.64.36])
-        by Forcepoint Email with ESMTPS id 0D789C2F76B8BD4F2E3D;
-        Tue, 24 Aug 2021 09:07:28 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Tue, 24 Aug 2021 09:07:27 +0800
-Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
- (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 24
- Aug 2021 09:07:27 +0800
-Date:   Tue, 24 Aug 2021 09:07:27 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        <mike.marciniszyn@cornelisnetworks.com>, <dledford@redhat.com>,
-        <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/hfi1: Convert to SPDX identifier
-Message-ID: <20210824010727.GA1106@LAPTOP-UKSR4ENP.internal.baidu.com>
-References: <20210823042622.109-1-caihuoqing@baidu.com>
- <a9122be9-82c5-30d3-e1b3-b9a1a07536d0@cornelisnetworks.com>
+        id S232186AbhHXBpR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 21:45:17 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eRziZ/m8Exg8R/MrbTMfFhkyI02ThwzH73a4JJ1b/2kStHQn96R3e5vJRiVSeD7EhAOL+JmpPTSPFHDst0yEEr7TEO/xA+n0Pih7iqn+KbJUUUViXXF8ki8sXJ/iY9UmjLDWbzJrXwk51fpVQ4nqYG3XQbf+1pFe2X8aJ9NUmurfx0j7Q2j5vzgHvflWTr7izlf1QjCzZBYaMskXTkZL8eGv3As1KkkFqhO4TufKzujUFUGPr0Vk+WGsRQiTuzScSD24CSrBQAGH/xjUo5c8kPmdm+9l61nfUtDKEBgyy0I+KPdWBRcH7kmCEEYD3tlsa6G8lbdNP+jO+3xA4oaUBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QlLjytztpngTkurKTHgWobOcTObKRlpXDFId6bJGZ0g=;
+ b=od4Ru2S0tbQd0jvI4l2ge9s+nRChDKBoqgD+YJKHP123X3xCn8FgcZS/cCmdxmFVcldg8kSK7Do70F0Au97uJe3fh+m0K2fRBndJ9BNceAeMY78lE3jsfGgVch25fm1o4NC1A4hRuIBIb6Jga0fBjY1nWxEgq6hcbyLFsVGZ/AS1fu9wcjAO9wr26LUBHz5Ygdg7S8vDyjGbNZMqGSS45N+hfIi0Qgx+BqTuL8tN9tD4J9fPKXNwpSS+U9iXKyCmf4Z1cjmMgPVW/72hohjmazp4Gn1OeO0jMYSWbfhnmmiSkIDADKOs2beFIV5zkOYFentBxYcpamQ3+yjeUxBwag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.35) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QlLjytztpngTkurKTHgWobOcTObKRlpXDFId6bJGZ0g=;
+ b=gPnCtZsZ2k9/F8joqMmWIIGKKxsee5glhPKgP+f76Bks/Lla6B3a89ahVrVFhguHS9Ufy8dHswLILmjmDn8A6uGEGquhg7ddazQxR1hiv6cLuQXnQK/3D3o61GKmBqobYgfgb/xN3EHyQDQIUMwPTLEGUM2eyfKIx+24McNHUTrfrImzbnnUt7bGwwVa1QU1zFFO7IwUakqG+W6ybxt4qWb4rYFQ9i2/oUH56WHl5EhCY1GabNmq3qPOJuWvu8j6BlMcJTe5P5EIOGX6iId1nN2Q4ddv5y77NFi5JTrAuULoUJeltJ0Whu+JGsILrbPvu0YMseAoumWFNPNJ6tsYpA==
+Received: from BN0PR04CA0078.namprd04.prod.outlook.com (2603:10b6:408:ea::23)
+ by BL1PR12MB5031.namprd12.prod.outlook.com (2603:10b6:208:31a::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Tue, 24 Aug
+ 2021 01:44:32 +0000
+Received: from BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:ea:cafe::58) by BN0PR04CA0078.outlook.office365.com
+ (2603:10b6:408:ea::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend
+ Transport; Tue, 24 Aug 2021 01:44:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.35; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.35) by
+ BN8NAM11FT063.mail.protection.outlook.com (10.13.177.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 01:44:32 +0000
+Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Aug
+ 2021 01:44:31 +0000
+Received: from [172.27.8.76] (172.20.187.5) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 24 Aug
+ 2021 01:44:29 +0000
+Subject: Re: [PATCH rdma-next 00/10] Optional counter statistics support
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     <dledford@redhat.com>, <saeedm@nvidia.com>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <aharonl@nvidia.com>, <netao@nvidia.com>, <leonro@nvidia.com>
+References: <20210818112428.209111-1-markzhang@nvidia.com>
+ <20210823193307.GA1006065@nvidia.com>
+From:   Mark Zhang <markzhang@nvidia.com>
+Message-ID: <36e3e090-2568-4c7e-868f-673ac6eca7f9@nvidia.com>
+Date:   Tue, 24 Aug 2021 09:44:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a9122be9-82c5-30d3-e1b3-b9a1a07536d0@cornelisnetworks.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex12.internal.baidu.com (172.31.51.52) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
-X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex13_2021-08-24 09:07:28:103
+In-Reply-To: <20210823193307.GA1006065@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ DRHQMAIL107.nvidia.com (10.27.9.16)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 54b9e3a5-258e-4710-ad58-08d966a0b882
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5031:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5031D13604F92CCF2B8FACF1C7C59@BL1PR12MB5031.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1051;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: S70MY442CPDM+HKNkW8jyk4f/erjgVXN9zPbD8Fvg8h8J3oa8cfrf23NSWekt9yt2HyRyvTO0Xo47X6BbZleH/zG/iZ2pWCq06BP8alLiy4u7Nb50+h03yWXeq/ldaf1Hx2qQbl8ah4QEfwbj8cQlfmVQXMRoeocQknhM/nwQtNY7ULU2H5gmAnuosUWQdxxGk20zXyDVmDhc0FbESdimqHV8s2mkoiSUgKbuobokoxZ2J3efK6Qfr1+CiF48tGYZqItjy3kxBU+aveLO6WyjubvdwuEa64h/BBVzQmnlvSHOIut3D665ytpJUy4tcJuZX2/KRvn9hvMmTbk6mXPAEtKD0pmz9i4E+XdyQTQWlN6M1C/MOAdD8ncsFEQpJwHu3fK3c2tLT4Jm6ThtW3sDNl+bSpC+PdXnXGPgCkYWtI3xdDjXxXqEcyfJwMZAvfj++LLdJwpfHRbDxtA+FhxuVHxd9pcF/bbaiOmL5R4JGt2FWbrA25KTXARegHpUlR8stL7xbTxYeSA6gi2GVuskDgdb3VKKPYJCeI7G9cW1AnskaiI2hMkU57H4qXIACfzACHxXX+ioJOLqQLV9UGgiEsdAdSPdrjQfH7OO2Yj3Ypug9NkS8dWK7azOZ2wDP/tFvnVMQjPtMa+djUofrz03AsXBxseqCTNeHdgACc91jrEknItW3l45gz9xt/4GyaUZ/w85TaLRso+cNjofAJyCmqLNp9YyIb7YAOzOKoo3eU=
+X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid04.nvidia.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(36840700001)(46966006)(26005)(5660300002)(82740400003)(107886003)(8936002)(37006003)(336012)(53546011)(186003)(54906003)(6666004)(16576012)(7636003)(83380400001)(478600001)(426003)(2616005)(31686004)(4326008)(6862004)(70206006)(356005)(70586007)(2906002)(82310400003)(36756003)(36860700001)(86362001)(8676002)(6636002)(31696002)(36906005)(316002)(16526019)(47076005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 01:44:32.4499
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54b9e3a5-258e-4710-ad58-08d966a0b882
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT063.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5031
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 23 Aug 21 14:31:15, Dennis Dalessandro wrote:
+On 8/24/2021 3:33 AM, Jason Gunthorpe wrote:
+> On Wed, Aug 18, 2021 at 02:24:18PM +0300, Mark Zhang wrote:
+>> Hi,
+>>
+>> This series from Aharon and Neta provides an extension to the rdma
+>> statistics tool that allows to add and remove optional counters
+>> dynamically, using new netlink commands.
+>>
+>> The idea of having optional counters is to provide to the users the
+>> ability to get statistics of counters that hurts performance.
+>>
+>> Once an optional counter was added, its statistics will be presented
+>> along with all the counters, using the show command.
+>>
+>> Binding objects to the optional counters is currently not supported,
+>> neither in auto mode nor in manual mode.
+>>
+>> To get the list of optional counters that are supported on this device,
+>> use "rdma statistic mode supported". To see which counters are currently
+>> enabled, use "rdma statistic mode".
+>>
+>> $ rdma statistic mode supported
+>> link rocep8s0f0/1
+>>      Optional-set: cc_rx_ce_pkts cc_rx_cnp_pkts cc_tx_cnp_pkts
+>> link rocep8s0f1/1
+>>      Optional-set: cc_rx_ce_pkts cc_rx_cnp_pkts cc_tx_cnp_pkts
+>>
+>> $ sudo rdma statistic add link rocep8s0f0/1 optional-set cc_rx_ce_pkts
+>> $ rdma statistic mode
+>> link rocep8s0f0/1
+>>      Optional-set: cc_rx_ce_pkts
+>> $ sudo rdma statistic add link rocep8s0f0/1 optional-set cc_tx_cnp_pkts
+>> $ rdma statistic mode
+>> link rocep8s0f0/1
+>>      Optional-set: cc_rx_ce_pkts cc_tx_cnp_pkts
 > 
-> 
-> On 8/23/21 12:26 AM, Cai Huoqing wrote:
-> > use SPDX-License-Identifier instead of a verbose license text
-> > 
-> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
-> > ---
-> >  drivers/infiniband/hw/hfi1/affinity.c       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/affinity.h       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/aspm.h           | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/chip.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/chip.h           | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/chip_registers.h | 50 ++-------------------
-> >  drivers/infiniband/hw/hfi1/common.h         | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/debugfs.c        | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/debugfs.h        | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/device.c         | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/device.h         | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/driver.c         | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/efivar.c         | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/efivar.h         | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/eprom.c          | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/eprom.h          | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/exp_rcv.c        | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/exp_rcv.h        | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/fault.c          | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/fault.h          | 50 +++------------------
-> >  drivers/infiniband/hw/hfi1/file_ops.c       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/firmware.c       | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/hfi.h            | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/init.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/intr.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/iowait.h         | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/mad.c            | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/mad.h            | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/mmu_rb.c         | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/mmu_rb.h         | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/msix.c           | 43 ------------------
-> >  drivers/infiniband/hw/hfi1/msix.h           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/opa_compat.h     | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/pcie.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/pio.c            | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/pio.h            | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/pio_copy.c       | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/platform.c       | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/platform.h       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/qp.c             | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/qp.h             | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/qsfp.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/qsfp.h           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/rc.c             | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/ruc.c            | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/sdma.c           | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/sdma.h           | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/sdma_txreq.h     | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/sysfs.c          | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace.c          | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/trace.h          | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/trace_ctxts.h    | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_dbg.h      | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_ibhdrs.h   | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_misc.h     | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_mmu.h      | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_rc.h       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_rx.h       | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/trace_tx.h       | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/uc.c             | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/ud.c             | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/user_exp_rcv.c   | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/user_exp_rcv.h   | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/user_pages.c     | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/user_sdma.c      | 45 +------------------
-> >  drivers/infiniband/hw/hfi1/user_sdma.h      | 49 ++------------------
-> >  drivers/infiniband/hw/hfi1/verbs.c          | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/verbs.h          | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/verbs_txreq.c    | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/verbs_txreq.h    | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/vnic.h           | 48 ++------------------
-> >  drivers/infiniband/hw/hfi1/vnic_main.c      | 44 +-----------------
-> >  drivers/infiniband/hw/hfi1/vnic_sdma.c      | 44 +-----------------
-> >  73 files changed, 133 insertions(+), 3170 deletions(-)
-> 
-> Never really seen the need for this large code churn. Is it really necessary?
-> Maybe it would be better to just touch this up the next time we actaully have to
-> patch a particular file.
-> 
-> -Denny
+> This doesn't look like the right output to iproute to me, the two
+> command should not be using the same tag and the output of iproute
+> should always be formed to be valid input to iproute
 
-thanks for your feedback, I just try to change them in only one patch
-it is a good refator, replace 40+ lines with one line :)
+So it should be like this:
+
+$ rdma statistic mode supported
+link rocep8s0f0/1 optional-set cc_rx_ce_pkts cc_rx_cnp_pkts  cc_tx_cnp_pkts
+link rocep8s0f1/1 optional-set cc_rx_ce_pkts cc_rx_cnp_pkts cc_tx_cnp_pkts
+
+$ sudo rdma statistic add link rocep8s0f0/1 optional-set cc_rx_ce_pkts
+$ rdma statistic mode
+link rocep8s0f0/1 optional-set cc_rx_ce_pkts
+$ sudo rdma statistic add link rocep8s0f0/1 optional-set cc_tx_cnp_pkts
+$ rdma statistic mode
+link rocep8s0f0/1 optional-set cc_rx_ce_pkts cc_tx_cnp_pkts
+
+> 
+>> $ rdma statistic show link rocep8s0f0/1
+>> link rocep8s0f0/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests 0 out_of_buffer 0
+>> out_of_sequence 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err 0 implied_nak_seq_err 0
+>> local_ack_timeout_err 0 resp_local_length_error 0 resp_cqe_error 0 req_cqe_error 0
+>> req_remote_invalid_request 0 req_remote_access_errors 0 resp_remote_access_errors 0
+>> resp_cqe_flush_error 0 req_cqe_flush_error 0 roce_adp_retrans 0 roce_adp_retrans_to 0
+>> roce_slow_restart 0 roce_slow_restart_cnps 0 roce_slow_restart_trans 0 rp_cnp_ignored 0
+>> rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0 rx_icrc_encapsulated 0
+>>      Optional-set: cc_rx_ce_pkts 0 cc_tx_cnp_pkts 0
+> 
+> Also looks bad, optional counters should not be marked specially at
+> this point.
+
+Will put optional counters in the last, like this:
+
+$ rdma statistic show link rocep8s0f0/1
+link rocep8s0f0/1 rx_write_requests 0 rx_read_requests 0 
+rx_atomic_requests 0 out_of_buffer 0
+out_of_sequence 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err 
+0 implied_nak_seq_err 0
+local_ack_timeout_err 0 resp_local_length_error 0 resp_cqe_error 0 
+req_cqe_error 0
+req_remote_invalid_request 0 req_remote_access_errors 0 
+resp_remote_access_errors 0
+resp_cqe_flush_error 0 req_cqe_flush_error 0 roce_adp_retrans 0 
+roce_adp_retrans_to 0
+roce_slow_restart 0 roce_slow_restart_cnps 0 roce_slow_restart_trans 0 
+rp_cnp_ignored 0
+rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0 
+rx_icrc_encapsulated 0 cc_rx_ce_pkts 0 cc_tx_cnp_pkts 0
+
+>> Aharon Landau (9):
+>>    net/mlx5: Add support in bth_opcode as a match criteria
+>>    net/mlx5: Add priorities for counters in RDMA namespaces
+>>    RDMA/counters: Support to allocate per-port optional counter
+>>      statistics
+>>    RDMA/mlx5: Add alloc_op_port_stats() support
+>>    RDMA/mlx5: Add steering support in optional flow counters
+>>    RDMA/nldev: Add support to add and remove optional counters
+>>    RDMA/mlx5: Add add_op_stat() and remove_op_stat() support
+>>    RDMA/mlx5: Add get_op_stats() support
+>>    RDMA/nldev: Add support to get current enabled optional counters
+>>
+>> Neta Ostrovsky (1):
+>>    RDMA/nldev: Add support to get optional counters statistics
+> 
+> This series is in a poor order, all the core update should come first
+> and the commit messages should explain what is going on when building
+> out the new APIs.
+> 
+> The RDMA/mlx5 patches can go last
+
+Will fix it, thanks Jason.
+
+> Jason
+> 
+
