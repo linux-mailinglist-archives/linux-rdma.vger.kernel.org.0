@@ -2,195 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84CAE3F585B
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 08:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5993F3F5A1F
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 10:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231435AbhHXGks (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Aug 2021 02:40:48 -0400
-Received: from mga11.intel.com ([192.55.52.93]:46171 "EHLO mga11.intel.com"
+        id S235247AbhHXIu0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Aug 2021 04:50:26 -0400
+Received: from verein.lst.de ([213.95.11.211]:50894 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231269AbhHXGkr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Aug 2021 02:40:47 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10085"; a="214123169"
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="214123169"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2021 23:40:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.84,346,1620716400"; 
-   d="scan'208";a="455343492"
-Received: from lkp-server02.sh.intel.com (HELO 181e7be6f509) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Aug 2021 23:40:01 -0700
-Received: from kbuild by 181e7be6f509 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mIQ6K-0000Nx-KI; Tue, 24 Aug 2021 06:40:00 +0000
-Date:   Tue, 24 Aug 2021 14:39:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- f8c549afd1e76ad78b1d044a307783c9b94ae3ab
-Message-ID: <61249430.zLfmnAb10/fz9cnw%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235167AbhHXIuZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Aug 2021 04:50:25 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6100567373; Tue, 24 Aug 2021 10:49:35 +0200 (CEST)
+Date:   Tue, 24 Aug 2021 10:49:34 +0200
+From:   "hch@lst.de" <hch@lst.de>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     "hch@lst.de" <hch@lst.de>, Tianyu Lan <ltykernel@gmail.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "boris.ostrovsky@oracle.com" <boris.ostrovsky@oracle.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
+        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        "pgonda@google.com" <pgonda@google.com>,
+        "martin.b.radev@gmail.com" <martin.b.radev@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "saravanand@fb.com" <saravanand@fb.com>,
+        "krish.sadhukhan@oracle.com" <krish.sadhukhan@oracle.com>,
+        "aneesh.kumar@linux.ibm.com" <aneesh.kumar@linux.ibm.com>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "parri.andrea@gmail.com" <parri.andrea@gmail.com>,
+        "dave.hansen@intel.com" <dave.hansen@intel.com>,
+        linux-rdma@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com
+Subject: min_align_mask Re: [PATCH V3 13/13] HV/Storvsc: Add Isolation VM
+ support for storvsc driver
+Message-ID: <20210824084934.GC29844@lst.de>
+References: <20210809175620.720923-1-ltykernel@gmail.com> <20210809175620.720923-14-ltykernel@gmail.com> <MWHPR21MB1593EEF30FFD5C60ED744985D7C09@MWHPR21MB1593.namprd21.prod.outlook.com> <20210820043237.GC26450@lst.de> <CY4PR21MB1586FEB6F6ADD592C04E541BD7C19@CY4PR21MB1586.namprd21.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CY4PR21MB1586FEB6F6ADD592C04E541BD7C19@CY4PR21MB1586.namprd21.prod.outlook.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: f8c549afd1e76ad78b1d044a307783c9b94ae3ab  RDMA/hns: Ownerbit mode add control field
+On Fri, Aug 20, 2021 at 03:40:08PM +0000, Michael Kelley wrote:
+> I see that the swiotlb code gets and uses the min_align_mask field.  But
+> the NVME driver is the only driver that ever sets it, so the value is zero
+> in all other cases.  Does swiotlb just use PAGE_SIZE in that that case?  I
+> couldn't tell from a quick glance at the swiotlb code.
 
-elapsed time: 736m
-
-configs tested: 137
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                        spear6xx_defconfig
-mips                malta_qemu_32r6_defconfig
-sh                          sdk7786_defconfig
-xtensa                       common_defconfig
-powerpc                    adder875_defconfig
-m68k                         apollo_defconfig
-openrisc                            defconfig
-powerpc                      bamboo_defconfig
-arm                         s5pv210_defconfig
-powerpc                     skiroot_defconfig
-arm                         bcm2835_defconfig
-mips                           rs90_defconfig
-powerpc                       ppc64_defconfig
-arm                       versatile_defconfig
-sh                             shx3_defconfig
-arm                          collie_defconfig
-arm                     davinci_all_defconfig
-mips                           ip32_defconfig
-arm                        multi_v7_defconfig
-arc                          axs101_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                         ap325rxa_defconfig
-mips                          rm200_defconfig
-arm                       netwinder_defconfig
-openrisc                    or1ksim_defconfig
-mips                     loongson2k_defconfig
-mips                           mtx1_defconfig
-m68k                       m5249evb_defconfig
-m68k                       m5275evb_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                     mpc5200_defconfig
-powerpc                      chrp32_defconfig
-mips                           ip28_defconfig
-s390                          debug_defconfig
-mips                        qi_lb60_defconfig
-arm                       spear13xx_defconfig
-sh                           se7705_defconfig
-arm                        cerfcube_defconfig
-riscv             nommu_k210_sdcard_defconfig
-sh                        dreamcast_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210822
-x86_64               randconfig-a006-20210822
-x86_64               randconfig-a001-20210822
-x86_64               randconfig-a003-20210822
-x86_64               randconfig-a004-20210822
-x86_64               randconfig-a002-20210822
-i386                 randconfig-a006-20210822
-i386                 randconfig-a001-20210822
-i386                 randconfig-a002-20210822
-i386                 randconfig-a005-20210822
-i386                 randconfig-a003-20210822
-i386                 randconfig-a004-20210822
-x86_64               randconfig-a005-20210824
-x86_64               randconfig-a006-20210824
-x86_64               randconfig-a001-20210824
-x86_64               randconfig-a003-20210824
-x86_64               randconfig-a004-20210824
-x86_64               randconfig-a002-20210824
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-i386                 randconfig-c001-20210822
-s390                 randconfig-c005-20210822
-arm                  randconfig-c002-20210822
-riscv                randconfig-c006-20210822
-powerpc              randconfig-c003-20210822
-x86_64               randconfig-c007-20210822
-mips                 randconfig-c004-20210822
-x86_64               randconfig-a014-20210822
-x86_64               randconfig-a016-20210822
-x86_64               randconfig-a015-20210822
-x86_64               randconfig-a013-20210822
-x86_64               randconfig-a012-20210822
-x86_64               randconfig-a011-20210822
-i386                 randconfig-a011-20210822
-i386                 randconfig-a016-20210822
-i386                 randconfig-a012-20210822
-i386                 randconfig-a014-20210822
-i386                 randconfig-a013-20210822
-i386                 randconfig-a015-20210822
-hexagon              randconfig-r041-20210824
-hexagon              randconfig-r045-20210824
-riscv                randconfig-r042-20210824
-s390                 randconfig-r044-20210824
-hexagon              randconfig-r041-20210822
-hexagon              randconfig-r045-20210822
-riscv                randconfig-r042-20210822
-s390                 randconfig-r044-20210822
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The encoding isn't all that common.  I only know it for the RDMA memory
+registration format, and RDMA in general does not interact very well
+with swiotlb (although the in-kernel drivers should work fine, it is
+userspace RDMA that is the problem).  It seems recently a new driver
+using the format (mpi3mr) also showed up.  All these should probably set
+the min_align_mask.
