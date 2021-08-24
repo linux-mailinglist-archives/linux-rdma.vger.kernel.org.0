@@ -2,89 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5195D3F5511
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 02:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 536343F555F
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 03:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233901AbhHXA7Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 20:59:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234486AbhHXA5P (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:57:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01EEC615E0;
-        Tue, 24 Aug 2021 00:55:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629766544;
-        bh=AUH35JSSsY17ol35rLqw1Deg7KdQeZy6AL5d2IXjs4Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IIM31lmdIrjqVySZD0b7vE6vgIm+yIlfFdy4VjeiwqgON8v+fUkXuDCBPXr0717fz
-         iOf/aVygGLxmznWhfPlZGE58/8p4jkCCVKaYl5wIgtRp1peEjTJHesIx/rJ/fyVtZR
-         w89jgF1paaqpDit2L5QQ1I6KOZGwLE5BE/tbzJJWzLpsB8tg8ZX2ZcH7amJqVWdo3s
-         CU94E318VnQ1UB41lTiDYYj7kXe3oNOn2KQ1qr1u5yfKxLS+aNfCf/GKP36KZJupW2
-         0QGhMXHrN1M5X1f5en5o9VngNQ25uwc7vzj3+MZnQnZqoF/+ncYfYY/+pgojNHoC2l
-         4ozyN7asFZAvw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 4.9 3/3] net/rds: dma_map_sg is entitled to merge entries
-Date:   Mon, 23 Aug 2021 20:55:39 -0400
-Message-Id: <20210824005539.631820-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824005539.631820-1-sashal@kernel.org>
-References: <20210824005539.631820-1-sashal@kernel.org>
+        id S233602AbhHXBIN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 21:08:13 -0400
+Received: from mx20.baidu.com ([111.202.115.85]:38058 "EHLO baidu.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233585AbhHXBIN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 21:08:13 -0400
+Received: from BJHW-Mail-Ex13.internal.baidu.com (unknown [10.127.64.36])
+        by Forcepoint Email with ESMTPS id 0D789C2F76B8BD4F2E3D;
+        Tue, 24 Aug 2021 09:07:28 +0800 (CST)
+Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
+ BJHW-Mail-Ex13.internal.baidu.com (10.127.64.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.14; Tue, 24 Aug 2021 09:07:27 +0800
+Received: from localhost (172.31.63.8) by BJHW-MAIL-EX27.internal.baidu.com
+ (10.127.64.42) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2308.14; Tue, 24
+ Aug 2021 09:07:27 +0800
+Date:   Tue, 24 Aug 2021 09:07:27 +0800
+From:   Cai Huoqing <caihuoqing@baidu.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        <mike.marciniszyn@cornelisnetworks.com>, <dledford@redhat.com>,
+        <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH] RDMA/hfi1: Convert to SPDX identifier
+Message-ID: <20210824010727.GA1106@LAPTOP-UKSR4ENP.internal.baidu.com>
+References: <20210823042622.109-1-caihuoqing@baidu.com>
+ <a9122be9-82c5-30d3-e1b3-b9a1a07536d0@cornelisnetworks.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <a9122be9-82c5-30d3-e1b3-b9a1a07536d0@cornelisnetworks.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [172.31.63.8]
+X-ClientProxiedBy: BC-Mail-Ex12.internal.baidu.com (172.31.51.52) To
+ BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+X-Baidu-BdMsfe-DateCheck: 1_BJHW-Mail-Ex13_2021-08-24 09:07:28:103
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gerd Rausch <gerd.rausch@oracle.com>
+On 23 Aug 21 14:31:15, Dennis Dalessandro wrote:
+> 
+> 
+> On 8/23/21 12:26 AM, Cai Huoqing wrote:
+> > use SPDX-License-Identifier instead of a verbose license text
+> > 
+> > Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
+> > ---
+> >  drivers/infiniband/hw/hfi1/affinity.c       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/affinity.h       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/aspm.h           | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/chip.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/chip.h           | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/chip_registers.h | 50 ++-------------------
+> >  drivers/infiniband/hw/hfi1/common.h         | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/debugfs.c        | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/debugfs.h        | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/device.c         | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/device.h         | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/driver.c         | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/efivar.c         | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/efivar.h         | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/eprom.c          | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/eprom.h          | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/exp_rcv.c        | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/exp_rcv.h        | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/fault.c          | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/fault.h          | 50 +++------------------
+> >  drivers/infiniband/hw/hfi1/file_ops.c       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/firmware.c       | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/hfi.h            | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/init.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/intr.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/iowait.h         | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/mad.c            | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/mad.h            | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/mmu_rb.c         | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/mmu_rb.h         | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/msix.c           | 43 ------------------
+> >  drivers/infiniband/hw/hfi1/msix.h           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/opa_compat.h     | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/pcie.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/pio.c            | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/pio.h            | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/pio_copy.c       | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/platform.c       | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/platform.h       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/qp.c             | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/qp.h             | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/qsfp.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/qsfp.h           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/rc.c             | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/ruc.c            | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/sdma.c           | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/sdma.h           | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/sdma_txreq.h     | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/sysfs.c          | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace.c          | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/trace.h          | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/trace_ctxts.h    | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_dbg.h      | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_ibhdrs.h   | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_misc.h     | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_mmu.h      | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_rc.h       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_rx.h       | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/trace_tx.h       | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/uc.c             | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/ud.c             | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/user_exp_rcv.c   | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/user_exp_rcv.h   | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/user_pages.c     | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/user_sdma.c      | 45 +------------------
+> >  drivers/infiniband/hw/hfi1/user_sdma.h      | 49 ++------------------
+> >  drivers/infiniband/hw/hfi1/verbs.c          | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/verbs.h          | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/verbs_txreq.c    | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/verbs_txreq.h    | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/vnic.h           | 48 ++------------------
+> >  drivers/infiniband/hw/hfi1/vnic_main.c      | 44 +-----------------
+> >  drivers/infiniband/hw/hfi1/vnic_sdma.c      | 44 +-----------------
+> >  73 files changed, 133 insertions(+), 3170 deletions(-)
+> 
+> Never really seen the need for this large code churn. Is it really necessary?
+> Maybe it would be better to just touch this up the next time we actaully have to
+> patch a particular file.
+> 
+> -Denny
 
-[ Upstream commit fb4b1373dcab086d0619c29310f0466a0b2ceb8a ]
-
-Function "dma_map_sg" is entitled to merge adjacent entries
-and return a value smaller than what was passed as "nents".
-
-Subsequently "ib_map_mr_sg" needs to work with this value ("sg_dma_len")
-rather than the original "nents" parameter ("sg_len").
-
-This old RDS bug was exposed and reliably causes kernel panics
-(using RDMA operations "rds-stress -D") on x86_64 starting with:
-commit c588072bba6b ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
-
-Simply put: Linux 5.11 and later.
-
-Signed-off-by: Gerd Rausch <gerd.rausch@oracle.com>
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-Link: https://lore.kernel.org/r/60efc69f-1f35-529d-a7ef-da0549cad143@oracle.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/rds/ib_frmr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/rds/ib_frmr.c b/net/rds/ib_frmr.c
-index 3d9c4c6397c3..20d045faf07c 100644
---- a/net/rds/ib_frmr.c
-+++ b/net/rds/ib_frmr.c
-@@ -112,9 +112,9 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
- 		cpu_relax();
- 	}
- 
--	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_len,
-+	ret = ib_map_mr_sg_zbva(frmr->mr, ibmr->sg, ibmr->sg_dma_len,
- 				&off, PAGE_SIZE);
--	if (unlikely(ret != ibmr->sg_len))
-+	if (unlikely(ret != ibmr->sg_dma_len))
- 		return ret < 0 ? ret : -EINVAL;
- 
- 	/* Perform a WR for the fast_reg_mr. Each individual page
--- 
-2.30.2
-
+thanks for your feedback, I just try to change them in only one patch
+it is a good refator, replace 40+ lines with one line :)
