@@ -2,205 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA523F6030
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 16:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A963F6050
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 16:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236268AbhHXOX5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Aug 2021 10:23:57 -0400
-Received: from mail-bn8nam12on2046.outbound.protection.outlook.com ([40.107.237.46]:54144
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        id S237636AbhHXO07 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Aug 2021 10:26:59 -0400
+Received: from mail-dm6nam12on2057.outbound.protection.outlook.com ([40.107.243.57]:46304
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232311AbhHXOX5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 24 Aug 2021 10:23:57 -0400
+        id S235997AbhHXO06 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Aug 2021 10:26:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=erIDxU0RBTzAFGi6xU9wHQ4wFFoGVTLjxphiSlfZuBJl+tVB/Y0cjLeDa8SfDlje8BJHfLF0x6wWrXcJxbztGdIlI5YI7oQi/J/aO7YVLaqK7pAja753WGhXGvVTklQPUKGkj497G+t9uI1FSU6RoB8ogb6Zx36FKc+7RBOKyEoeXGsxuVzQ5zEUVkTh+p9zSlvrpqxzHaweGLtGVlpxldIRc/LFwobVR3tn9sRo4Rh392mSE6TEXZ8Ycw6rzxoC3L7ybC63AHCvozjPm4H5NMCOcsZHxcHKHkhTnnRJVsY3Lxy4HEwzlVgfBtQGqm3UKIkxvjkzBv1MMkhB+MPKGg==
+ b=H4UZNNTTkE9c45fO/B7qigb8ZDCX7lH2CvJDlp0Ub+SVlu6K9KH4qdD+TvnpQfytFkfYGfqqNAOOe8NIvGZ5v/VK8WWDeEuXwS4K+C448yV51lhCBS80t5nha6qZRj8ff+ZFM8Iik1dvMo5cmWnfXvmGQNuBGmb5FgL6KVHCWqXKJEFC5nAfFI1hi6xt5zFo5FWP77x1kmlPVeSsA6n8ZUNSJUP76ycvo7NU2sSgJpgiODwj614kxBY3NHuhXAngTiaunmYUX0sihjAR6d7tUJGGeKelAvj5n2ToyVs5kIX5FGdAj/4qm/92d0V253Q1H2kmTqkOvY+4FiIfZAVYTQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySLhDAK1VrxOTNE7AAe+l/E29lmViuxos+JrRO6q80=;
- b=TD0P7PjPVranvL9T4kNsuUywrRfMcSfBs2zD11ABa7DpU4AU47KFkoiCFOy4aWAnnmrVWSvYdyujGDjm9w9b46jCA0nJKV2NBEeLvBp+76LPCpUo17VkEPFrD4MkmlXBSLryu/7kNFo1qTgI19StyTXU2axWEbZPLxKsZD7e9EpPnphdnXTHmd14yKKufFmDwxr4mP7WQZNOizB/Ix181j8tX5jLDPMm/Ns6DmvAZH2oSqf0IXyF5MTysWwzd1Th65jJ4wjA56LaZE2fkkvYKigKH2kb93awMW862iYoYUogSRcHJTu0sSuHQ3rtRK2uFujNBP2mWXioIEmuW5IDgw==
+ bh=tICK7hyLXmBY5ozbXGN9uqiU69CpaP3UI8kSB7j3tnI=;
+ b=V9HTvXWNCcNec9uGJAJMgWaGaUd7knBm3dbDVounGLxJEZaTDNOZpBrNfCmBxU13tp2rjR7/6lBOertLHrtHT8DpHHKupqsPPegfkGk6EGdU1oBIqWHsnZHjwXbHH8qEtj0pW5pRQ+Wil5Wst4lJMdmieCEJF7pIJsymhbCfcp9bdM4/JMh2o/aRCz64wUbfXKvg3R+LgrXVEn2utNF7c3qhHgIctKkmt7/Vq2bt+KXKUSmuDjv5AsXxtmJ0pgUzEEfY2ii4PTK6eDGFl+Q4EyPYaRk3PhapGDz5dLX0rij7qmY6kkFjorlraWe/g5wrAxndIP3eXneUkl1wt2y89A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MySLhDAK1VrxOTNE7AAe+l/E29lmViuxos+JrRO6q80=;
- b=OgfGXlnG3/2dqyG96nt8T8KmnOpJI8LQY60oKw10/sqdWvRrPkMm/qw7TOvNMvU1XsxunEXohZbmoUZw4GYn6AOYH2AlbX/D+B4bKKJB19Uf0fxhebXgSmqTKiEEYLRMAg5BaDsprtve7y/m3PYwmqKn0FdsaTd2xveOJiZu45RjfWBus/XIfKN/NyOh3HEilvE/XsR/I3eGGqKMicdh5x1448RT/INh/41npyF3tQ5XgBiolcRMX41ceEOXPNKmslM6Q8AZ8QxehUXMI4LFh8s8aNC+Po3QumyXekdbzduK+wn+FWSY3ZGOs1RFDH05MdMtJ5Co3uV5/fr45bJiGw==
-Authentication-Results: linux-foundation.org; dkim=none (message not signed)
- header.d=none;linux-foundation.org; dmarc=none action=none
- header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5508.namprd12.prod.outlook.com (2603:10b6:208:1c1::17) with
+ bh=tICK7hyLXmBY5ozbXGN9uqiU69CpaP3UI8kSB7j3tnI=;
+ b=phZEFHPema1SUYcFW0LS2yLRwklkqpYT4CGmUQl8wtH0yZqWQXegZjJ9EWSOE56lFWbGHz6msJP/UqtHD+Urnp9Ef/O2PhHYFCTM05qYuCXs9w6QUc04Avp3xESLh78v+GpB0LsRSOWBv4huMl/1W0yAvwOqQsS4DGHvk78gWXNMmyuSZnIX4CtsjtnpzM+eR7DbEz1/UXhKt0x3UJI7jDBY6RK/77Q595C1nomECqbZSWuQM5C93MaaWch+hDybk29ZdK6oKoeNDupZtA93VJwXeQFBRexZHSay6lcW41/oUjh/AAFaa1FUkPdeYfGcyvfxiWA47rwvSBnSnRMqLQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com (2603:10b6:5:39d::21)
+ by DM8PR12MB5400.namprd12.prod.outlook.com (2603:10b6:8:3b::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19; Tue, 24 Aug
- 2021 14:23:12 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Tue, 24 Aug 2021
- 14:23:12 +0000
-Date:   Tue, 24 Aug 2021 11:23:10 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Please pull RDMA subsystem changes
-Message-ID: <20210824142310.GA1070942@nvidia.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
-Content-Disposition: inline
-X-ClientProxiedBy: BLAP220CA0005.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:208:32c::10) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Tue, 24 Aug
+ 2021 14:26:13 +0000
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::c064:2c9a:c2e2:29d5]) by DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::c064:2c9a:c2e2:29d5%9]) with mapi id 15.20.4436.025; Tue, 24 Aug 2021
+ 14:26:13 +0000
+From:   Maor Gottlieb <maorg@nvidia.com>
+To:     dledford@redhat.com, jgg@nvidia.com, hch@infradead.org,
+        leonro@nvidia.com
+Cc:     aelior@marvell.com, daniel@ffwll.ch, airlied@linux.ie,
+        dennis.dalessandro@cornelisnetworks.com,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        mkalderon@marvell.com, mike.marciniszyn@cornelisnetworks.com,
+        mustafa.ismail@intel.com, rodrigo.vivi@intel.com,
+        sroland@vmware.com, shiraz.saleem@intel.com, tzimmermann@suse.de,
+        linux-graphics-maintainer@vmware.com, liweihang@huawei.com,
+        liangwenpeng@huawei.com, yishaih@nvidia.com, zackr@vmware.com,
+        zyjzyj2000@gmail.com
+Subject: [PATCH rdma-next v4 0/3] SG fix together with update to RDMA umem
+Date:   Tue, 24 Aug 2021 17:25:28 +0300
+Message-Id: <20210824142531.3877007-1-maorg@nvidia.com>
+X-Mailer: git-send-email 2.25.4
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR02CA0191.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28e::28) To DM4PR12MB5296.namprd12.prod.outlook.com
+ (2603:10b6:5:39d::21)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.113.129) by BLAP220CA0005.NAMP220.PROD.OUTLOOK.COM (2603:10b6:208:32c::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 14:23:11 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIXKY-004Ucr-TV; Tue, 24 Aug 2021 11:23:10 -0300
+Received: from dev-l-vrt-201.mtl.labs.mlnx (94.188.199.18) by AM0PR02CA0191.eurprd02.prod.outlook.com (2603:10a6:20b:28e::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Tue, 24 Aug 2021 14:26:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1782f0ae-1513-4d7c-638f-08d9670ab420
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5508:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5508AB6FBA0A5C1138D6B3D1C2C59@BL0PR12MB5508.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1013;
+X-MS-Office365-Filtering-Correlation-Id: d6fa567d-07fd-41eb-59c6-08d9670b1fea
+X-MS-TrafficTypeDiagnostic: DM8PR12MB5400:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM8PR12MB5400D603B293D92BCE2998A0DEC59@DM8PR12MB5400.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IwXQ0ae3FW78PVueFaxZ51Ga+U78sqdBHQ4L3FsNtx9W4dagwHhDkQMkZlMj/D2xtFcDbPeck8YSJwsy1bCD3dyQyf5fhUio5ImhH8404qTXAeEccsmriWURPQUsDBd+qdYdxw5NlhSVsqGv8WVyuDztyuMYvVQJMmoRNx3tK52En3v3uRPjCDMOsGSndnXJHN5S/rqU6OTUr5KDXKFri6MO9qbWhyl2qnQeaNRJYszc6Ha8mCHzR+gJA6qPQtvKfU3WN6mLlobDD4D1yJF80W7q5fTA0U1HSKgIgxquQMyqPrlCYzuA8jSXXmRKHCcsR0eZ1aLG6ofzgW4qI+UVDHIPg3TjFCkOzQ1alyjrCUYPVMEqSzQCwcHDuT26yGFy9/AdUNyu1S5xd0SEl7Uz2sMhUUYztGLOgwiq0xyq3r9R20RwtTbDa5npLq9fqeX8soCfODR6yPDjrOj4Sj4VSthi7DFFuAaO7rX4CwKdXkkY3ClwjL/D5iL7+cAsrId1brSkTXYVzCCw8Q4m3jKVhYF3tNZawdceS9D9ZBdN6BZYGmS+2awYEG1tqb66E8vAi8idPCERPEBLDj4Sh1Jl/9p1W+xl2n8qxDzJnf4upoHgmuxpGxapxF5ib65LFEdtmx5dVuz6jIj9565UutB+i8PCEY/Flwr8dChzagUd9QtbKSK3a5FGiJ7P0XHbUmAltwSdq4QBSJXSJxSbayMpdQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(39860400002)(136003)(376002)(366004)(86362001)(38100700002)(1076003)(36756003)(426003)(83380400001)(186003)(8676002)(8936002)(66476007)(26005)(9746002)(66556008)(9786002)(21480400003)(2906002)(110136005)(316002)(4326008)(33656002)(5660300002)(66946007)(478600001)(44144004)(2616005)(2700100001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: o7/hzfdJCmSM76cQD0858Omy/WXDOe2gRZXGP/S7qUW1UVoFPLAEQ7Ij7dn/T/LpBIDVfOfypVaq34WQIjMOdz2x8WFkJ992Owprq4PvqVC2FKaF0g8IRx3JLrtsVGNNlWC1yRyVVvzcJ6FDuZjwpVgaqvBwsiWU43LMLg/5yn+hUscwAWRKM3pZxrTKw5SghkUKt820QA/AvVm2H0kD/zVbXjlHNnlfocKAaHOiWOoa41WbZTlAoyCzljHaMNbA4Da8VJsDyoH/Su8JaqUwtohUtKh3+4VNUiA6jiIh1JDOwp3eNDn7GDW4tskFwO9BH6O5SWI0O7UF/4EGL6XIQRT20Bs0/XyZ6eHmW1RorWMdiTIGdHuGpImeD08h3XctadelP7jK2vVS7cKw8J/BsirCSx4Ym2C/w4djRnTb7PGb2bMoc5Zg5bdx7Ik+zTFqM5klYDo8z0Gc53O3NZTiUzSuLYIG3kJixmrxXS5qrznwlPQPTmnLHZhVFAeC+90hVk1Ihp0Cjts3mUop/LeCebyUM42jqwKHqq7PXyTcIsi7GkDE0oF1aEYiUCrtN8pdIB6MLptGnero3Spgjww6RdX5CFOdvpm00L1cVEj+2nz21xGrz9p54hFxskMU3f4wcAAkyr2o5DVNS0mNDWicu7iEqw6HQpreFekVGvTUdsVfDzcUIJm7Gq5OzANtXCnjMbX9NU9OAlOr9+LJ3uO2Ju0H5qhqw5TdG1bT6WEJPJNG8t7TJPT47YKj+E5jzCX/aQ+RIw6S2YKAayRD5BIii6p27pKbHpD+1Rz2B6ZdIIoPPlF5B6HZhqZApyrdm4ZwPD8wr3XNtnAlI6CME6wpAQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5296.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(7416002)(1076003)(83380400001)(8936002)(316002)(956004)(2906002)(36756003)(6486002)(6666004)(26005)(2616005)(15650500001)(38100700002)(6636002)(4326008)(966005)(66946007)(6506007)(508600001)(186003)(5660300002)(86362001)(52116002)(6512007)(66476007)(38350700002)(66556008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Jipne8kceQYz4LlXaDmAujlz9Iywe3BjIM0gJmxPtKVjjkwy425bac+uHqCq?=
- =?us-ascii?Q?kb3JplK759cGX9GlVtLP/RD9LvIZhbdmZJnf5ZRQJDS7FhcW8KkMcOhgxHNH?=
- =?us-ascii?Q?Rrb13sNS6Nm+13xPYfxbwHVWoTpTLSpKF6jS2MvHuodwRe0zP6D3nX1S9Zql?=
- =?us-ascii?Q?QiJND6FPmUT3cuuk3VamrZaTJNJSlSeuyUKoo/ptHeaHtfiRqL4ZgNcoYN0S?=
- =?us-ascii?Q?ze6Qhlxr7GnSpjsKUr91CeCzWJ40iiV0Fkd6M2ZYGarFRfduW0dGgikOlc+X?=
- =?us-ascii?Q?jEt/VAhucZfAQs7pDYF6Rxrh4Vy7n96Io7XNUS7wEnQ0fUQ+oomxx132NRwH?=
- =?us-ascii?Q?bpQIc4AW52BIazFbILC/HEbVrdHgPqoKI3tvZ5E9tgzGjb0iYAneij+/9P/S?=
- =?us-ascii?Q?x0TOu1mNPrQ33ugjnheizVCXNo0BnzODxjRxYtMz4s7z0ySg5UK5w6iTGnKL?=
- =?us-ascii?Q?sJA4JDb2lVuhWLd35rchI9Vb+/UCLQNRltZJRAtOsIBilfaI9sqpfAun0d4U?=
- =?us-ascii?Q?7cN95qa9CnYX5FKnLPRVnn+fSBEJHFYQVVcLij7ma7e3EHC1r+nFUK88JWAJ?=
- =?us-ascii?Q?I4qZ19/gNRMQAdnChp3GB7+cJTXj6daHY9TFVIOxKRt9SZoKmvcvyiBxeB84?=
- =?us-ascii?Q?qmJf/Nsbp22oR4oJIZRDYJsqrxRznHG/WkoPXsDpetZP3ORe/emFI49va6o7?=
- =?us-ascii?Q?IofDhXgkwmx43WK8BOWz+vnLdnJt8lfgOZhOrU4DSmubYAp5cMmdOHLaTumr?=
- =?us-ascii?Q?ig072kCrxuk8vxSFVV8bo56BMQ+ERCchx+6Cq3cxQpE4MreSj6iqNCf3676X?=
- =?us-ascii?Q?N+K/klWFOMns9KnE7yH/uQ+IqYkWnm50R+HC7n6ywU6Ysg19aUEIHaMQjwHo?=
- =?us-ascii?Q?g4GreSENb3SAhsScGs+ZQ5WnWOMeEi9dOHqOfrh6crMTd8mnmuhdrY5DAjGA?=
- =?us-ascii?Q?/cVwjsnl3MtXGvdu5GuoQ6nsVhefrv375voyblFh1bH0qINd7vQsNxPxb0Ww?=
- =?us-ascii?Q?RMayzsSab+Y1h6Um0YIkFZ+PXHZzzVgGycXntzMAiqYrQAGagDVQRk4eVW1I?=
- =?us-ascii?Q?rMvgK4Vvcj3oQeu/hdxWGAC0qyYIsYax6XxMrUxNpI/xiANTL0wVOTAWCHHP?=
- =?us-ascii?Q?9mXtud1U3ulreiBmHeRbgwFg0T5MUyYdI+J37Xqxz8Izo+M10S3f/pYeLuPl?=
- =?us-ascii?Q?cTgKHzESXWxAQ2YkhifPZvKrxeWvch/yK7dsmeYjRPe9cDQ4rMPMlML3NiyB?=
- =?us-ascii?Q?m3FA73II+Qr/gwQNGy5IBNl6mYyeZIW9uE4MWrqWywlm7EJztVqa4PWsWgvP?=
- =?us-ascii?Q?G2YY9JXF2dobtCbKAqJy0go0?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?wbxYfXdZJgDxUEvZ2rVcVs+KGJnmk3R9cdGFYR9jwGCmxLAorEtRTA6auQOf?=
+ =?us-ascii?Q?2z4vKpnPcWcpo9/pyhtbXlzOrW2Z1hOLiYkgb9J36KcxaLc4jcIuRxrrAI9D?=
+ =?us-ascii?Q?TT2pr/AERqgFJQCOSjJudiGTp1uN7FnQCkR9JYBDYRW2lyvVlCyIGzS0JrmV?=
+ =?us-ascii?Q?gTJut4C2Liyvo+JzrUq82Ub2jZWLUmvDXzNLDCbEPCLDEepCqheySN+o1QXs?=
+ =?us-ascii?Q?aMcp9j2a9IVg37593GdyY/tczVqnDNa9rdeQwLhsvgAkg/Jo6yTPXekyq+NG?=
+ =?us-ascii?Q?lVHyi/eNg9ve0gD6ibcpQhx3YwJEk81RpBd808QyouWuHNjD+1jT5DGsfoCM?=
+ =?us-ascii?Q?w2DEzvcR3N4OxNJTJVTGL/YayRCxeARQXY+VzpdXowoLG7MdYvFIFt7+6qKK?=
+ =?us-ascii?Q?dTnYuTkv6+Yynp8z/UmjKp/1fxQXyxgX6kud+svqsDNMdj+0i3KKR+LfuUeT?=
+ =?us-ascii?Q?nqRfHKrW5+7ez8fnZfdvG7R0M50oCDNdwQnoLegPSZNOXXy1FaDOUQkgBhhb?=
+ =?us-ascii?Q?24FJMH9KbJoW2G54nBPfpj6VavQHRlnBwX7KHYi70r3z90R1QTRAuxkSE9qT?=
+ =?us-ascii?Q?4Lo+ON9ib60vbRzU6Wf2om+8Xd80GLHhbxk/n4L6tsWrvhkIyHbHLgUKhVO2?=
+ =?us-ascii?Q?HpqhgZOMSLvEgeUDyT8E1xXZASwfzAPL1pKb9YrNr/S3euBIW3xFFOlwLaZt?=
+ =?us-ascii?Q?bMh5ndJ01944MxwC1ilv6whilxlfiVP3p/yVTqsAIbTIATu1ClRrle22HrZp?=
+ =?us-ascii?Q?Y8XCgohZadKWwIgE+/myH2liQHV42TPwRCXuddX0pNIbc/TSJy4f47Hc2OQe?=
+ =?us-ascii?Q?ljLat4apvAzIrSIZdnPZMv6rnw/X3J47Pi8cB4teJg4svlNSVJvk+KAp7cko?=
+ =?us-ascii?Q?cSyovzaeY73FHqNUBuwv3r8hv44J5qAdqzyuMZ4Hu22khQOUFZWfRw3mmGbW?=
+ =?us-ascii?Q?FSFsByuUPhKsp4vAV9RYRLWrB3OJPygthFvUKjJgZjikC8idDqkgWCmUFzaT?=
+ =?us-ascii?Q?7KFkW20feJYG0Ho8NZloZ/aJiKoX+PEUiDTYoF8sNVj83jnKDNpqhmf3WdAY?=
+ =?us-ascii?Q?YBz5QNOLqsF4Pn48nAHhEdG1/Ur1DsOnl/dJPG+B40UTX/ugkpS0AgMr/uKc?=
+ =?us-ascii?Q?nBcW8HYxzGIKozE2W3P1jzKDBHPWSUz92tkx3a/i1xTWCahIK30Jxgk0zSRv?=
+ =?us-ascii?Q?1fvc3X5hVaXf8bpLzceCVdR9tBkNW6JCmh88FZoC88lOa07RyhIN091kzK2c?=
+ =?us-ascii?Q?Y3xXDJ0IsEiTyyVtXSlsNfLNPPeH/l14O6LdrJaxYeVXgzC3jJKaXAUwvLWB?=
+ =?us-ascii?Q?0e1FYRR74zREQdKqg66DBDHD?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1782f0ae-1513-4d7c-638f-08d9670ab420
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6fa567d-07fd-41eb-59c6-08d9670b1fea
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5296.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 14:23:12.1131
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Aug 2021 14:26:13.0186
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kOD2wpH2wVnu5n7/tcqH92gKBSjCu9XH5n1ml9ULdMROe1B6z7IFaZ4Xf1KVPf8N
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5508
+X-MS-Exchange-CrossTenant-UserPrincipalName: hJmcnLDh4g7pAUSX5Onknoy8nFs36OagBltMuB60b3//v5RJFwcV73a4GMOzF9vHqVlv0qq9ct4/A845fknbhg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR12MB5400
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---d6Gm4EdcadzBjdND
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+From: Maor Gottlieb <maorg@nvidia.com>
 
-Hi Linus,
+Changelog:
+v4:
+ * Unify sg_free_table_entries with __sg_free_table
+v3: https://lore.kernel.org/lkml/cover.1627551226.git.leonro@nvidia.com/
+ * Rewrote to new API suggestion
+ * Split for more patches
+v2: https://lore.kernel.org/lkml/cover.1626605893.git.leonro@nvidia.com
+ * Changed implementation of first patch, based on our discussion with
+ * Christoph.
+   https://lore.kernel.org/lkml/YNwaVTT0qmQdxaZz@infradead.org/
+v1: https://lore.kernel.org/lkml/cover.1624955710.git.leonro@nvidia.com/
+ * Fixed sg_page with a _dma_ API in the umem.c
+v0: https://lore.kernel.org/lkml/cover.1624361199.git.leonro@nvidia.com
 
-The first three items are significant for rc and the rest is error
-flow fixes and other minor things.
+Maor Gottlieb (3):
+  lib/scatterlist: Provide a dedicated function to support table append
+  lib/scatterlist: Fix wrong update of orig_nents
+  RDMA: Use the sg_table directly and remove the opencoded version from
+    umem
 
-Thanks,
-Jason
+ drivers/gpu/drm/drm_prime.c                 |  13 +-
+ drivers/gpu/drm/i915/gem/i915_gem_userptr.c |  11 +-
+ drivers/gpu/drm/vmwgfx/vmwgfx_ttm_buffer.c  |  14 +-
+ drivers/infiniband/core/umem.c              |  56 ++++---
+ drivers/infiniband/core/umem_dmabuf.c       |   5 +-
+ drivers/infiniband/hw/hns/hns_roce_db.c     |   4 +-
+ drivers/infiniband/hw/irdma/verbs.c         |   2 +-
+ drivers/infiniband/hw/mlx4/doorbell.c       |   3 +-
+ drivers/infiniband/hw/mlx4/mr.c             |   4 +-
+ drivers/infiniband/hw/mlx5/doorbell.c       |   3 +-
+ drivers/infiniband/hw/mlx5/mr.c             |   3 +-
+ drivers/infiniband/hw/qedr/verbs.c          |   2 +-
+ drivers/infiniband/sw/rdmavt/mr.c           |   2 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c          |   2 +-
+ include/linux/scatterlist.h                 |  56 +++++--
+ include/rdma/ib_umem.h                      |  11 +-
+ include/rdma/ib_verbs.h                     |  28 ++++
+ lib/scatterlist.c                           | 155 ++++++++++++--------
+ lib/sg_pool.c                               |   3 +-
+ tools/testing/scatterlist/main.c            |  38 +++--
+ 20 files changed, 258 insertions(+), 157 deletions(-)
 
-The following changes since commit 7c60610d476766e128cc4284bb6349732cbd6606:
+-- 
+2.25.4
 
-  Linux 5.14-rc6 (2021-08-15 13:40:53 -1000)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-
-for you to fetch changes up to cc4f596cf85e97ca6606e1bd10b3b9851ef52ddf:
-
-  RDMA/rxe: Zero out index member of struct rxe_queue (2021-08-20 15:48:58 -0300)
-
-----------------------------------------------------------------
-RDMA v5.14 third rc Pull Request
-
-Several small fixes, the first three are significant:
-
-- mlx5 crash unloading drivers with a rare HW config
-
-- Missing userspace reporting for the new dmabuf objects
-
-- Random rxe failure due to missing memory zeroing
-
-- Static checker/etc reports: missing spin lock init, null pointer deref on
-  error,  extra unlock on error path, memory allocation under spinlock,
-  missing IRQ vector cleanup
-
-- kconfig typo in the new irdma driver
-
-----------------------------------------------------------------
-Bob Pearson (1):
-      RDMA/rxe: Fix memory allocation while in a spin lock
-
-Dinghao Liu (1):
-      RDMA/bnxt_re: Remove unpaired rtnl unlock in bnxt_re_dev_init()
-
-Gal Pressman (2):
-      RDMA/uverbs: Track dmabuf memory regions
-      RDMA/efa: Free IRQ vectors on error flow
-
-Lukas Bulwahn (1):
-      RDMA/irdma: Use correct kconfig symbol for AUXILIARY_BUS
-
-Maor Gottlieb (1):
-      RDMA/mlx5: Fix crash when unbind multiport slave
-
-Naresh Kumar PBS (1):
-      RDMA/bnxt_re: Add missing spin lock initialization
-
-Tuo Li (1):
-      IB/hfi1: Fix possible null-pointer dereference in _extend_sdma_tx_descs()
-
-Xiao Yang (1):
-      RDMA/rxe: Zero out index member of struct rxe_queue
-
- drivers/infiniband/core/uverbs_std_types_mr.c | 3 +++
- drivers/infiniband/hw/bnxt_re/ib_verbs.c      | 1 +
- drivers/infiniband/hw/bnxt_re/main.c          | 1 -
- drivers/infiniband/hw/efa/efa_main.c          | 1 +
- drivers/infiniband/hw/hfi1/sdma.c             | 9 ++++-----
- drivers/infiniband/hw/irdma/Kconfig           | 2 +-
- drivers/infiniband/hw/mlx5/main.c             | 3 ++-
- drivers/infiniband/sw/rxe/rxe_mcast.c         | 2 +-
- drivers/infiniband/sw/rxe/rxe_queue.c         | 2 +-
- 9 files changed, 14 insertions(+), 10 deletions(-)
-
---d6Gm4EdcadzBjdND
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAmElAMwACgkQOG33FX4g
-mxpkfw/7BSFUTo+AJ7UB4sdSbXZC4ylFr9rBrHpbCGB3pVy/grpQNyFNIPW1CYC9
-t4v6cPOEviwBdHX5WLrtdof8ES37RkBM75X6JPZifHCKLy4MZuh8mKWusoHhknb7
-jB0kOhH5ac42YSH+xMnUggwTdfvm01RRkpGXbVLVZ0mKWjmUWOBcEcZeHqIWbdVp
-KIwrr/bUBYq5A916t8ajwV8Nts3pyCUgLQbqNzjvcwdnlCL0eDun0DeQsbgECGsh
-rdSQJ5Kne1dP51arHDsf4DTqciyhAHRBg9VDewwm7oTbPvnTlm0USN3gEealwpZL
-+oYSxc0nNAtcerUa2YFIdapb7BBdy6llNZqVrKvef4KbVG9Yyy5sYZ5x8fct3QIc
-kYdPgQkfghX5jFv5/icQnJa9bt15Pucu7hKd7Hzl+buPb8CTCTHczPuGceCNHMLB
-f4MkuXGQ2D0VP3cD1Rq1aCFJFlwMjP6Vqpszs6zajb43W51M7Ngx9hXl5ykAxoPH
-tdIgqWl2DW/8xEE6nYudo2yqWbEbtGwI3QcNmXvQTxU25LfS+6zujoV+EFeyiqrH
-oQcd5FDrhmoEypT1KJwmdk92lIIoNm+cio2hYJU+cy+DAbxSZAi6HYw5xlJyPqnd
-9lZ2NfM/zkoCaJ3C+FKcGf+kmfiLNOJxrjek2MDD57xL0VWPHNI=
-=8LFg
------END PGP SIGNATURE-----
-
---d6Gm4EdcadzBjdND--
