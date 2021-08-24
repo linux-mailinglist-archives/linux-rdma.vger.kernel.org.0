@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E233F54CC
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 02:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA173F54EA
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 Aug 2021 02:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233626AbhHXA4o (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 Aug 2021 20:56:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47578 "EHLO mail.kernel.org"
+        id S234464AbhHXA5e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 Aug 2021 20:57:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234556AbhHXAzz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 23 Aug 2021 20:55:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21811615A7;
-        Tue, 24 Aug 2021 00:54:56 +0000 (UTC)
+        id S234139AbhHXA4N (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 23 Aug 2021 20:56:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 31F876162E;
+        Tue, 24 Aug 2021 00:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629766497;
-        bh=mhnDZFp6Bvgo7d3AsSNxcg0qsh7TMyBGCIQMQVcAJ2w=;
+        s=k20201202; t=1629766512;
+        bh=lKfRqbPBA5wqqoVsOu1k9FXGDg1cI20CZHXQg7wY26A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JKk41D2ZAoYLGPOlIkQcECjOsBzBvEFGdvKlgzyRxuDvY29j8DDMl/wJznqJQedyV
-         xQO0AEr+J8pwocI8PO4L4Fh9y5Qjw+5j317btY3MwqKiYaS3GOEH7ufKOKRIde08Nv
-         jk5/I6L6sput/yEb2LPNlzZJkVi2tX6xsghIxycjMXfjNZIulgMGXWAHkwux+ZYJGB
-         lWkUYUT/GSUIcr7w3spWHqtEfp6T1YEVm16sH+/DxHeHpf1HwMRrcsU6HkYZPk02RA
-         0tyvrMgz5YuTNnjou1FsgzbsYyz/WufwH3tKRWikDYC0KVfxdR4+ic/nJCFck4JbL2
-         llGKv8yU8n1Cg==
+        b=OQFqvCKd0PeU2SpZZQWRlyZ4qcdEUctjtkYvResmcct2G8KxY5qXgM8J1wLphWEDG
+         lOFDoPL4qesHaa8lNiSNlMEf61Xx0JC9NPGAqJCPyIybBXyQ6uZbdlTKUOSuWVI7dH
+         t0PaueiA6mm5U4Qwt5o+7tCNFzr22oJK8n4GF4gYwSjljWj+hZAEPi3zVkMXN6hExF
+         O53C5Lpe0A3pAv9e/O/h/vK5oBBSxSqm0/MGjumXzP1SS8eQofGja4WxeWRpg9SI4f
+         2qMVPkcGdHl92b/SC729HNaf44n2ITRBUEka65j42YbB/ljpm2Q/p+18iQhqNaMhZp
+         k33J2lKkW0ZHQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
@@ -30,12 +30,12 @@ Cc:     Gerd Rausch <gerd.rausch@oracle.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com
-Subject: [PATCH AUTOSEL 5.10 18/18] net/rds: dma_map_sg is entitled to merge entries
-Date:   Mon, 23 Aug 2021 20:54:32 -0400
-Message-Id: <20210824005432.631154-18-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 10/10] net/rds: dma_map_sg is entitled to merge entries
+Date:   Mon, 23 Aug 2021 20:54:57 -0400
+Message-Id: <20210824005458.631377-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210824005432.631154-1-sashal@kernel.org>
-References: <20210824005432.631154-1-sashal@kernel.org>
+In-Reply-To: <20210824005458.631377-1-sashal@kernel.org>
+References: <20210824005458.631377-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -70,7 +70,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/net/rds/ib_frmr.c b/net/rds/ib_frmr.c
-index 9b6ffff72f2d..28c1b0022178 100644
+index 06ecf9d2d4bf..ef6acd721118 100644
 --- a/net/rds/ib_frmr.c
 +++ b/net/rds/ib_frmr.c
 @@ -131,9 +131,9 @@ static int rds_ib_post_reg_frmr(struct rds_ib_mr *ibmr)
