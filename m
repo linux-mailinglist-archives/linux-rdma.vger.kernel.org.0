@@ -2,167 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361A33F7464
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 13:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB803F74F1
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 14:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239414AbhHYLdZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Aug 2021 07:33:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239211AbhHYLdZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Aug 2021 07:33:25 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA9DC061757
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 04:32:39 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id b7so36471728edu.3
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 04:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ubD0lluMmm/P4l3W+EBkn7Eodgx5wiTPb1j+qSFDx5Q=;
-        b=LiWiO0npk88YTxEPcV8PmfZZG0JYxaSXb7OL1k8V8hQUQdrrcGBh8MZ0696++ZuABY
-         14pAVZLNIusV8oDLoxHrrQX0aTDSPfZC8sHZMIik6C+oklgZQmAV9HJsewPx4t58mGEP
-         42+MRP6ITOyF7+BFxmsDKY8GGY47Cd9LpS76M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ubD0lluMmm/P4l3W+EBkn7Eodgx5wiTPb1j+qSFDx5Q=;
-        b=eV/uBlupxrqYrVsO3eDwus1ulAm8OYIwM1HZiupBiyAGusK0FZDVAmwu+a1LPhaQcc
-         do5iEorQKgo8F0sVlAJ/AYXr5OPvhHQJ+4zAW2+WO6ltMZqN2W2EZezeMLmuiGm9Ezzp
-         KomMXqp11W8EzqoyOq720b+Hf0Jw/v2TErhVSp82xiASTBj2xRJuo9i57rrQfiGK+05B
-         mph8JfeV+kZQJAC1hswTw9GBiiN0TCQxt/5vgwg4maPqohH7OfEcNUMDjabK6uMBt60R
-         KC7hmu9kdfQd+JuWhulpAqaRwkE30MaHVjQ3+w+xfyAxfHX+GOQnA1630+03bg0QoL+0
-         om9w==
-X-Gm-Message-State: AOAM532C3y/RXWE4kTvpGhU5KBpdNEUMtb9l3XSj2R1KcaxnrGnNB9Ub
-        U8tQFjmIVos2P4W/jVPjwNiym3JS6zEIXXBZIVN7/Q==
-X-Google-Smtp-Source: ABdhPJxzBWrqO7cLYxqgNKHzpZH/D/UvUN9pkSapZDqvCauvbh+QCUwfVdE5oGM1BOq2R1EiNR03Jrr/OsHWA+UBWjA=
-X-Received: by 2002:a05:6402:270a:: with SMTP id y10mr48378667edd.385.1629891157795;
- Wed, 25 Aug 2021 04:32:37 -0700 (PDT)
+        id S240800AbhHYMT3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Aug 2021 08:19:29 -0400
+Received: from mail-bn1nam07on2059.outbound.protection.outlook.com ([40.107.212.59]:8162
+        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S240680AbhHYMT2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Aug 2021 08:19:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=STl1Vk4FlnptiZzgjxT0GRGzzb8mpwxUjFc2f4XskTOxPosMMPnW69SJRUyqJZK/NUJ6cfA7LHSV5xG4QPN62l6phrItZZ4RMRtqoHgKIVgd8jvVG8UTYuL+Vs/r1kJT11Wk+fzIKGK48q2GiBBrKny8J7mRel/x6+NCTA70A/h8hryujXycyr2vdJI/KEz43zN8qBALG3sL9WfJh0B+s0n5VcfP/WgBca+HurcgAqjXw/qBwatEonYrd/g2XX5AEANTDwXHBQPx6whPELXbNQAJtoL10p8B+1enIuRhLZkQNybNuokd1tXy3erHgLsJ9B5hkoeemLkD/LLKSboDhw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ml52sVTKQvbTnRZ9M+5hW9T/l85b2oSs8TP//zrJRM=;
+ b=BeS1s8WTL6S2rHkJCchLDliA/oi6UCPm6caohLPyzD6Dz29PZ8PDi2//WzddBoj0yxzygbSDN9+/zp1eSbqAR5cy7kvxF9cF7hX7nsGfY7gN0X3Q+2CSbZlDrQrNvPlSkuKjN+suXYIhjpK1lEtFOVgrVYCoWuahaEwUPPWo75yomjkHntKZ9D97WgaOoHAw3Sb0PMkTuOEA2u3QAxCY+t2If5xXrIDkbwKy9kBKT+OR9yHPj+tQdndyAv6fBWrGdkp71mVe5hDrktx9ZmuhmbfCLrl5Q4sMXuoRzRaHvZFD8ZQfeFhZd39ahtQAproFnpCWWuaZFn3w9LKcnuVMYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+ml52sVTKQvbTnRZ9M+5hW9T/l85b2oSs8TP//zrJRM=;
+ b=U3fcnB0ELx5zQ5THggDV+qrXbK3pyixYVUlEMCtXRMbOurXdZQu/uKv9lz3ZBWOmhRRE8DbcCUo8APfM3UoP85ErkTUwzn0uifIGdUmTTQtXN/1mDbDM4/WuUJ/OEZjNCPz5xyjt0OanwY6REYF1zKYoHd4r8TZyGewdfBNVR2eR1uJR4Yed7zO0xTXInUVXE+x6q8maj0faqfi7XZQktvdaZ6S2FUEAzU4tRBBPRgdKJyigRmQYC92hx6tRbLoBuf3yqTwaXPxhWozpZMjeZ+WWGRcxMv5Snk2oSHMn9K1jXHudl4ugweu9gPrBIpvSTFT4ep9a8CkVQJeHJYE/bg==
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5159.namprd12.prod.outlook.com (2603:10b6:208:318::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.21; Wed, 25 Aug
+ 2021 12:18:34 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 12:18:34 +0000
+Date:   Wed, 25 Aug 2021 09:18:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+Message-ID: <20210825121832.GA1162709@nvidia.com>
+References: <20210820123316.GV543798@ziepe.ca>
+ <0fc94ac0-2bb9-4835-62b8-ea14f85fe512@amazon.com>
+ <20210820143248.GX543798@ziepe.ca>
+ <da6364b7-9621-a384-23b0-9aa88ae232e5@amazon.com>
+ <fa124990-ee0c-7401-019e-08109e338042@amd.com>
+ <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
+ <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
+ <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
+ <20210824173228.GE543798@ziepe.ca>
+ <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
+X-ClientProxiedBy: BL1P222CA0014.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:208:2c7::19) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-References: <1629343553-5843-1-git-send-email-selvin.xavier@broadcom.com>
- <1629343553-5843-4-git-send-email-selvin.xavier@broadcom.com> <20210819131854.GA275255@nvidia.com>
-In-Reply-To: <20210819131854.GA275255@nvidia.com>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Wed, 25 Aug 2021 17:02:26 +0530
-Message-ID: <CA+sbYW3xf0Zzhgo5K8CujoeCiVATbyCMM9wLY5NPrXu8QOgrsg@mail.gmail.com>
-Subject: Re: [PATCH rdma-rc v2 3/3] RDMA/bnxt_re: Fix query SRQ failure
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000080121805ca609b22"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.113.129) by BL1P222CA0014.NAMP222.PROD.OUTLOOK.COM (2603:10b6:208:2c7::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17 via Frontend Transport; Wed, 25 Aug 2021 12:18:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIrrU-004sY9-Mi; Wed, 25 Aug 2021 09:18:32 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a0a6bf21-0972-4e60-c0d6-08d967c27525
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5159:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB515904A4BFF8876199914058C2C69@BL1PR12MB5159.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jafOpewWunYo3aVUJXRi40/2w3WTqVaotCsRR09TJw8Cv7dzrQYLrq+2/Y/1ZhOZoxlGBVYKRHi0FckAtTrmaOR8EI+ZW8YoZGv+THTPVksNTvlYMNmjQUyjZO2nS9U1VxGuqRUV/9NmWE+HT9WqBuW599zqcE1sa2JyH9Lahx0CqACs4Ez4lLdnD5qitMsGy09qiM6ifJA0F0gyIiKwUOAbgYh2oDikfh/O4fEACA8XLNNzRsilcxIg69Ld4pqnO4uvhKo8s7oxr7e0BYzj/pGNSEVWE2yHZGBkxfP7+di7zQXO7uGjQyYs32voxsCj0JfegGgoEGI1lRxjToJ7nUbSju2IeZVFtfYTZ7275cDcCONQaZL/D1d3VLKWe15EjOYASsDOmQQQFR9SLNWqq2v9o2cCF5iB4B8HQ3V5gfcZWo2N3NbwKAU5Z4e0QDydSC8IsApl3mW1wtglydy1xSD3M/26YNdRT6wiJVcwc18z1dtYPNZ/LERbih89cs4VWE0ldfsVjXf27WFnPxVv2KxxaXHDwuKpLstRCSeFZbqts9+pNAn7ffUgTVQDyg44SIrJ6GyUSmou0zitphdtykoy4pt3dNfQZiISZ5bhz7F7igPzvj1Cwd8BI3l3NgYVuEh6pS7DsbQRkgDnro+t5w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(136003)(346002)(366004)(1076003)(54906003)(316002)(8936002)(2906002)(9786002)(7416002)(83380400001)(8676002)(36756003)(66476007)(9746002)(26005)(6916009)(2616005)(38100700002)(4326008)(66946007)(426003)(478600001)(186003)(86362001)(5660300002)(66556008)(33656002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z0lHRTZLSnFhNFdvVmU3MWFSRUdLVERrNmlaSEh1bmVMc3l4NFZMTHVYbUlj?=
+ =?utf-8?B?bm4zL3pmZS9qdnhjeWpYSTBNUDFLRjJweVlPVmhXVG4rWUJBS0t0VDA4Zith?=
+ =?utf-8?B?MHozL1VlM1NVWHBlWUZJa3kxQjk4MGlxWWhUbXlPam0yRjdWMFU1cTM2UG5D?=
+ =?utf-8?B?Uk5UU09SOEpuMmtiVlZZSFhvWThIbzlXZGRhcXJWc0lFZnhib0N4eFRIemFM?=
+ =?utf-8?B?OCtta3k3S3ZKNDVXMTdBVlVjRnhnSVpTLzRzZk1raWR0T0V5am5KdS9BRGF0?=
+ =?utf-8?B?a0FyWmRDYW5aT09sbmp0WEhFZHRoT0s4T0xPL1owMDBiSHljdFdldjJFc1h5?=
+ =?utf-8?B?cjdrRmYrY2U0SXJYblExdVNOaUppOFd3djJGN3NjWVlwTGZXbTNtYldXeXJx?=
+ =?utf-8?B?QzR4ZmVqT3h6SzFyRitGa1poMyt6bnhFWGFQYldpV2hMSkJRTmVEMzBWUVlD?=
+ =?utf-8?B?SFZpRzZVZWxKQ1dRQ0dOOEc0L2ZISXRMaFltcXE0NVUyd24zaWNNeklOaXY1?=
+ =?utf-8?B?cmtzdXJJQzJFOE0xcDlxOUdIZGpVWFVNS0F5a09ISkc3c1dmMVdSd0ZVYjdz?=
+ =?utf-8?B?UnpuL0tkbG1UeUlyVkxLNDhwSEFvNDZpcWNraXdBRTAyQ3BqOE9EcWs5MnFm?=
+ =?utf-8?B?NUl2QzZuR0kzeWdYOVNXZitDbUIrTURybndiU2dXS3drQ296SWdaNE9zZkpV?=
+ =?utf-8?B?NGlVVnk1cGdud0owODZRK3loR2pRYWFZZTRiakFla1BuMjQxQU5tOWlmc2ll?=
+ =?utf-8?B?Yk4ybGNjL3BPcXkzeHVaUy8vR045UEFVMGRWUUsxZTdsdkx1ZDJINXBTMVlF?=
+ =?utf-8?B?TEJoTUZrb0M0Vm83SHJjRllYL1NUeU53dGJXRExZaEFhU0xpbTFUQmlJVy9h?=
+ =?utf-8?B?TSt2aHM0TG5mRHRTc2pZbnEvZ2U2cmpVVk51Mlhsck1pZG5YelluVlVmaGh6?=
+ =?utf-8?B?QmU5a1JEa2JZNjY2cWVRNGdDQ25HcUxaZkRNLzAvWnNJTHBxT1RJK0k2UXNL?=
+ =?utf-8?B?T05zSlF2eDFwZ25YOTBtODQyKzRJb2pjakU0akxkSzh6ME14dE1WRlFMUFN1?=
+ =?utf-8?B?SFRtc0VFUE0zWWRZUVE2Y3FPR3RLdGk1aDVFa0FQYzZhZWJKOVNweG04U3Yw?=
+ =?utf-8?B?ZWdOMUtZaFAyWnQyTGJKeFdUSE5EdHdhYzliaW85SmV5Y2RrNENzUFQ5bGd2?=
+ =?utf-8?B?Y3RTTi90RFB4bzBhN0Jyei9ERW1DM2FDcS9JeHBEZVcva2tDTVQ1WFExUlcz?=
+ =?utf-8?B?TktodHd5ZnNIODBEZWE2bmNxL054SzdrSmlVWitweTFoTTRldFQ0VE5jWkRj?=
+ =?utf-8?B?eDUxRDZBMTg5V0s2UVByWjN2SHZYbmpGWVdEY2Y2UlpKQWFXWjYyRG1VQ01v?=
+ =?utf-8?B?TVdGQ1M2UnYwZDRrTEduck1DM1prM0ViejZHcVRTejBHRkk0MEJtajlBZHBt?=
+ =?utf-8?B?bFJIQTJoU25SdnJFcktPbzhobml1ejlyV2lvclpXU041SVhXeWxTaUdmZHo5?=
+ =?utf-8?B?ZUg1REtOV0hPbmNYN3FZTW1Nc3YzdFNHZ1cycjVEL1BEcFNmUTl2NEFZdm1w?=
+ =?utf-8?B?eGZkZ0hqK0toVk54YmVqNmZhbEdUZW9OOE5uNzlOZUsxMFBrTVNZallyQkNt?=
+ =?utf-8?B?dlRGQXFnRWF0Tnl4VzdIMzRYMXVmb0xGdVk2VmZjenNwZ3RkOFFBZ2ZaZ2Fj?=
+ =?utf-8?B?WmQ1cExHMml0SHEwNi90b1JLaXQvN1Z4amNwbisxTVZCeExsSUNWWSsyN1cz?=
+ =?utf-8?Q?3DIoJs18aTMHZXc+Ymu38IYpGEotM5kro4q1MEf?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0a6bf21-0972-4e60-c0d6-08d967c27525
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 12:18:34.1567
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YMBCd4sE+h1evta+0jXNpG9YmlPFLMildPIZuAozEN4SLXpCr6wdiOdQf7W/tpr/
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5159
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000080121805ca609b22
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Aug 25, 2021 at 08:17:51AM +0200, Christian König wrote:
 
-On Thu, Aug 19, 2021 at 6:48 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Aug 18, 2021 at 08:25:53PM -0700, Selvin Xavier wrote:
-> > Fill the missing parameters for the FW command while
-> > querying SRQ.
-> >
-> > Fixes: 37cb11acf1f7 ("RDMA/bnxt_re: Add SRQ support for Broadcom adapters")
-> > Signed-off-by: Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>
-> > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/qplib_fp.c | 2 ++
-> >  1 file changed, 2 insertions(+)
->
-> This commit message is not good enough for -rc, especially with a
-> fixes line so old.
->
-> What is the user impact, how did this ever work?
->
-This never worked. It's an issue with the query_srq only.  So was
-missed in the testing of normal srq traffic.
-Will post it for rdma-next along with other patches.
-Thanks
+> The only real option where you could do P2P with buffer pinning are those
+> compute boards where we know that everything is always accessible to
+> everybody and we will never need to migrate anything. But even then you want
+> some mechanism like cgroups to take care of limiting this. Otherwise any
+> runaway process can bring down your whole system.
+ 
+Why? It is not the pin that is the problem, it was allocating GPU
+dedicated memory in the first place. pinning it just changes the
+sequence to free it. No different than CPU memory.
 
-> Jason
+> Key question at least for me as GPU maintainer is if we are going to see
+> modern compute boards together with old non-ODP setups. 
 
---00000000000080121805ca609b22
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+You should stop thinking about it as 'old non-ODP setups'.  ODP is
+very much a special case that allows a narrow set of functionality to
+work in a narrow situation. It has a high performance penalty and
+narrow HW support.
 
-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
-od7PzGNQ3SgTYKl5XslMq+gpy+K8+egxMxo3D07c8snwyfU7Y7NQ8I1M986gsj9RUcp3oo0N+T1W
-rwVchQXTGD/Hwqc11XBU1H3JKSRkn7cTa9bMFnp0Asr3Y4/kB+4t6PhYi50ORwIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6uPX
-5eOTTGwUwIAAoXKF4qVZLfgwDQYJKoZIhvcNAQELBQADggEBAKAn7gHcWCrqvZPX7lw4FJEOMJ2s
-cPoLqoiJLhVttehI3r8nFmNe5WanBDnClSbn1WMa5fHtttEjxZkHOFZqWLHYRI/hnXtVBjF9YV/1
-Hs3HTO02pYpYyHue4CSXgBtj45ZVZ0FjQNxgoLFvJOq3iSsy/tS2uVH5Pe1AW495cxp8+p5b3VGe
-HRzGet524jE0vZx0A/6qrYo6C7z4Djrt/QU2MZDbPb+kwkkomwcn0Nvr91KWSrbhhHtZ/EfXi08L
-x3R3oHtWjbmIW1nYkwVk4pQZoaLkRWkfTSGpwDwilhrd2F+d5rhCbAbfACk4Oly51GV4SI7jUm0D
-VbZWyuIx85gxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxea+GNYSvtMZZyJzwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIFBPM05j9pUK
-IrHd+AmyRA81MmKNk+h5ILugWeRV17oqMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIxMDgyNTExMzIzOFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBAszEyPM7Io3RQyKbMJU8ns08IFQya
-F9N6LzXSJJ2qYJCPGLlf9XLRCbbO5GX5lG6q/HwY67jFKkjPDOlIX6pDqcsxX1o5EvBfD4fN9r9k
-9Yo14SrOUvN92thRIBcUsdWswCoCf+Hluj0WA8mhWY5pgrZP8ROQZJn1W5sO2OYXWEUyfO0ud2xv
-FAbfePBOk0v+jyKarrC6Jc/IJpPs24Kk3NwZK6WQoQIo6nykDt8i88BJvI3mlob4Rk04aU8sIleY
-ruQcVXFVu/T+voSGeUI+dyhzo/TBAyuqf09W0y3u4gOIaQj9nRWIqpY3q3vBJ3W9Zgf/wbCy3Gi+
-OVj/98eq
---00000000000080121805ca609b22--
+So yes, compute boards are routinely used in scenarios where ODP is
+not available, today and for the foreseeable future.
+
+Jason
