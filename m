@@ -2,43 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 010E93F7814
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 17:14:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C3523F7967
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 17:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240844AbhHYPPG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Aug 2021 11:15:06 -0400
-Received: from mail-dm6nam10on2086.outbound.protection.outlook.com ([40.107.93.86]:19841
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S237860AbhHYPuB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Aug 2021 11:50:01 -0400
+Received: from mail-co1nam11on2054.outbound.protection.outlook.com ([40.107.220.54]:32224
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240585AbhHYPPF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 25 Aug 2021 11:15:05 -0400
+        id S241145AbhHYPuB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 25 Aug 2021 11:50:01 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lAyWUsumwcsxLKgj2W93KZRWf6i1GL4c/1vEsKKlJ8jZi75IhEmBsvVdFj7/OK0ptjCUGuGaucCe/jA33VXumLJXijA20wLpo8p8Nl6Qm/2/N1aIvgU8UGL4dWdpfcYtJ+A3SoY42XUeXXXn25kznLYGIshttekOt8cz87q0uNey8ADZd7ir26HyPDIkk79bw3NPFPZDFdHSqVwJz/TvTAesIh7y2x8hLV0d+HJti/LFlCmduZHdZsrKUl6jFeKU/qTewy8k+YHNJJZHEiQp4jTEPXScGfVFCo1oNgs5Ia5s/aNcsfdcR2q5v3P7ojlTAJMwPIhdcnUnqOjRgUvwKw==
+ b=dpPIZMZPQtwxZ+ULNCBicoRmHIxwoAwtmpJlAKU8MXT1SBKxLwlGTBlRuPKBK5nQbW52TWtfvXTUk6YfLV6xDaEGh05ZismMx/dtF7DdyTV0XZenPKje/1DzKjcqww32gZRvCmuglcjBp5O7Uw63nEzZlC187pk6qtpEHv9CwF06t7XCMK1y6l9dDv54wmJ46cQS/gf/G5ypyndcZRIDTDLVQLMr4L60yKZsYFXSN4n+XTeQRObEaotZMsSsY3yIgJtpsxlF4HH5HBeFXRXz2npXapS4q/pvHhtZt/swYUfYs3JQyE2wnTnhqbXcE0KOPADhTdnw8Nsw0jUoDTM54Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fOO5FKGIX96K2tTeT5pKpWLfDkHmVMnSo4Lbue3zFAE=;
- b=QhGicfC7QlJUOkPFsPcKI7WyrOGh6qtJv3tw4eGxDtZeO6pBOWCqmFi8c15rU9yJ9WubGrH/0INJaKF0r3tor2XW/gMlcikvC8E8KWxGpV0yD3b1xfwczxs467/9DzkF+CnGBOq+/vpohGKappP4Y4q9yUtrdNpp664sjH7YL9+LEhuQYgtGpuqrVMbwFQ5rLzqIzMFuBBjBqFDR3LvTjHX+KyTB9SdwC0hnyPFGCfg7zXr61tHocVfEW4lz3vBOrzdoixJEFBrOufo0oU+1g90hCUanjHHe6ffL7rS89wJ9uFx5MJEf7fWfWiXdOozugahpopugLlYT9GX3dXv8bQ==
+ bh=DB8ls7PhLBIagBD9GH0qEPAo/4hnjUlWRITxP+EVhLI=;
+ b=CpSWDsyfOIB/UmmWMlxkpn5ZNjj1ymxsP83vY4aUZdFPUq9HAg8b5pFfY1FM66/KAHTpoTUzRT8ZfFX7ywKt726hhKe1PhvIDV6XZudDdwl8duib9TWSv8SXe0e2gpyw72ZdXieQndOGb8UWp8xwsOGovUBgDtz4yMMRbYPhqQCtAjDqyj/j+KPVC6HTcEsgsDIQP+YeBD6jvqta6lJpzWtCjDvi7OQRaaz2z8TMp+3jKythsz47Xcu5TTYEkwmZSXph9UBCDM56OatqcaGfx2+lG4GhrKuVyNj8fXi2D+hb1A7iG3wSyz5YcrELn+xU2FNKqt5dOOi/3F+dEwp55g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fOO5FKGIX96K2tTeT5pKpWLfDkHmVMnSo4Lbue3zFAE=;
- b=fld7MQ3+ZWDFSh6rjnn1u5yxuNe6GfvwEiZ4Z2wL4uBWWXzm24idUzfcfdXG03/BoIdgqhhXD/mtVveoN0r2jRvCsKqrdEMcmqiM6TKxkZDhl8Mk+bh8+qM7Oxlu+FMqpSBQOc8+MqeYBrF3hdG1uLp/ayJVeqUBvcZD9j9Vmow=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by BL0PR12MB2387.namprd12.prod.outlook.com (2603:10b6:207:44::15) with
+ bh=DB8ls7PhLBIagBD9GH0qEPAo/4hnjUlWRITxP+EVhLI=;
+ b=iTXPOke+W3cfEHwi2EuP0BlUaAENwtXyZkh3o3drptJk0YOsXlu0BHm6gxaZ20MOsbiV8/7gshJcTCb19tFtuft4gpO3xIQEQI5kS34xmmFMH/VKzofUigQ0NF6DmZrCWD++cH10QcRfWnqWMTySYiqCdJtPsaFJQqNjIX2UF/8wTzZKy67xDsoood5h+KiuY2eIqOHKrjzd+p3z8CdOVkXdsBbx34ntGASXKVxuKU3/E8m/If70yvCXmpAcEdfipv+HmtQV1jNDMcITCxas6NYd6j2bY533F11Xa+jOqqwkZKpsSLC7Z/QrDmjWSriN0VTM/KF9Xe+OfK/ZscIsHA==
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5238.namprd12.prod.outlook.com (2603:10b6:208:31e::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.25; Wed, 25 Aug
- 2021 15:14:15 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::dce2:96e5:aba2:66fe%6]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
- 15:14:15 +0000
-Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
-To:     Jason Gunthorpe <jgg@nvidia.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.17; Wed, 25 Aug
+ 2021 15:49:09 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::1de1:52a9:cf66:f336%8]) with mapi id 15.20.4436.024; Wed, 25 Aug 2021
+ 15:49:09 +0000
+Date:   Wed, 25 Aug 2021 12:49:08 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
 Cc:     John Hubbard <jhubbard@nvidia.com>,
         Gal Pressman <galpress@amazon.com>,
         Daniel Vetter <daniel@ffwll.ch>,
@@ -55,9 +57,9 @@ Cc:     John Hubbard <jhubbard@nvidia.com>,
         Alexander Matushevsky <matua@amazon.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jianxin Xiong <jianxin.xiong@intel.com>
-References: <fa124990-ee0c-7401-019e-08109e338042@amd.com>
- <e2c47256-de89-7eaa-e5c2-5b96efcec834@amazon.com>
- <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
+Subject: Re: [RFC] Make use of non-dynamic dmabuf in RDMA
+Message-ID: <20210825154908.GH1721383@nvidia.com>
+References: <6b819064-feda-b70b-ea69-eb0a4fca6c0c@amd.com>
  <a9604a39-d08f-6263-4c5b-a2bc9a70583d@nvidia.com>
  <20210824173228.GE543798@ziepe.ca>
  <a716ae41-2d8c-c75a-a779-cc85b189fea2@amd.com>
@@ -66,156 +68,83 @@ References: <fa124990-ee0c-7401-019e-08109e338042@amd.com>
  <20210825123802.GD1721383@nvidia.com>
  <9c9ebc3b-44d0-0a81-04cc-d500e7f6da8d@amd.com>
  <20210825144736.GG1721383@nvidia.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <92ae1a45-3903-8228-c299-7ba1506079bb@amd.com>
-Date:   Wed, 25 Aug 2021 17:14:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-In-Reply-To: <20210825144736.GG1721383@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ <92ae1a45-3903-8228-c299-7ba1506079bb@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: PR0P264CA0089.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:100:18::29) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+In-Reply-To: <92ae1a45-3903-8228-c299-7ba1506079bb@amd.com>
+X-ClientProxiedBy: MN2PR01CA0014.prod.exchangelabs.com (2603:10b6:208:10c::27)
+ To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:de26:aaa6:84e1:c609] (2a02:908:1252:fb60:de26:aaa6:84e1:c609) by PR0P264CA0089.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:18::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 25 Aug 2021 15:14:11 +0000
+Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR01CA0014.prod.exchangelabs.com (2603:10b6:208:10c::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4436.19 via Frontend Transport; Wed, 25 Aug 2021 15:49:09 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mIv9I-004xtS-49; Wed, 25 Aug 2021 12:49:08 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c887efa7-1a7b-4822-74a0-08d967daffe4
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2387:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB238726A3B85129972D47D47183C69@BL0PR12MB2387.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
+X-MS-Office365-Filtering-Correlation-Id: 1e7f1947-307f-42c7-41d9-08d967dfe06f
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5238:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5238F9866DDAD6711D878203C2C69@BL1PR12MB5238.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: d3F8mTeYE/WWiW6BZuIAbsIxHM1DgYUM7hw2W51LAsLcHhnqzErkO20Fgypc9NSyCkq/Pw8jOc3zpggyxVBmZDiEW+JmJdWfiDEwU0CA2l2TxX6sE8tTHarTj7VzPXHupNGQT41SpAX0OG/MvXAF03+1KWJov3IhOpm2hwW/g10jTfPbncsgJCNDUJdweg4+G6AmWneNhBjovxT1nMHmsbOIwAOUhRo2xGRxckJQUbHXbRHjWqvHBbb5Q16iyGl/CZX7StnBk17Q+Wwd2CqxlBUmadQnR9HXTP/hl92E882gid2LjtCMFxeHO7NuuEF0SWW8/R5XykT/EcXuUPTUS/Ty8zMcB7AmZW0NE8gjz9o40SQvNxsVD+5vehOw2gOK3T6txHScfj1RZappa5zWk+Kfi1frGkwi/Tu7mLOyaxWltdDGIrnvn3OUtL1jSm5y85m1blm2+lrZR9wx1+ig7Y1vfENMXTQTKSgDoBP9Gnldk8vIfe9jMt8cOdiCPvPxbU2kTKRP2YayNfUr+/cmwt2TPmrVVbAlLHvMkVkUXz356pBFm2jgvkB9i0ZC9eDfqsF+BusAYMmdoyRM0mjashJxMbhNj3Cf0S6iIxLgnx4WDx9lgZbrRII9wQd3K4T+WY2/Bn9Cyod4zFYSLHA684cDEFdLTFxeAy5VrwydnhtUul8slGBYa75L2JleQV9Z166BooYRwjSYgHXZtbTfJI0FeG02k4m99YmZmCIh26kHLQaIMEja7QVN/2M/lBqG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(136003)(39860400002)(346002)(4326008)(478600001)(5660300002)(36756003)(8676002)(38100700002)(66574015)(66946007)(2906002)(31696002)(6666004)(83380400001)(86362001)(186003)(316002)(54906003)(2616005)(66476007)(66556008)(6486002)(7416002)(8936002)(31686004)(6916009)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: /zKsNangZ3okG8NAiUKr8sDvYzSLupyVgc+gLQnbmefBuMhyQtzUL7Va3ngUWcJiMNP6HG8f1dwaHjOkMmpW9MDKnJ0oY6UlV7o6R6bG7EHfkJBe87erlmrjuX9nCXFzG+2ceClGimi0MZNFbwyPRLyZG32Ca109t/nIiL/rLeMiZBwh4E9NY0ni9PQM1BmBDCwYFDS+k5z5FwGEtGQDWfweoL/jCHAOszPSAOIDlD5cToj62GiEmfdG5UC/x/BpGxN2QePF/i+W2v0G2iAyXqjil02CnskXVNi7wZovYaKb9y15pkReXRLz5bauoHCD08rUW59SUPWThsFI0CwYZuri4ek15UQqsTmA4nZTYI1JiDzjbmny+KgYKJoqdHvWUtTzNQOMGi7ze2rwGkQjtEMs9txuDto78LEiDuZw1csP5LeM+5dt/cYjXavfWVVaCFESJCFFU6XJwRQ7tonTY4tmUSr/73FYu6oPZNZzMFedslPI8NYsTUf3TRDIRJJIO050At0B45pHXsoEeWUavWO+BuLDtbCOWMgDjZR8f7AiCHgpoPMETV+N6omT47w6ZcEOrRdBNd/RMmhmLWTRIFgKd9tzmTyWIezeII5oo2wErKg45eb0+IlZXjeyfIgkp4VuI4cwLCH5LFB420mZgQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(26005)(186003)(508600001)(38100700002)(9746002)(9786002)(8676002)(36756003)(8936002)(426003)(1076003)(7416002)(83380400001)(4744005)(4326008)(2616005)(316002)(5660300002)(54906003)(33656002)(6916009)(2906002)(66556008)(66476007)(66946007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?WnhxckpoNU1qSFBVWWY4LzVqZjI1MnZMdk56QmtJVW9QRGhLUEVDcHg4eGxX?=
- =?utf-8?B?VzVYUi9RWGR0a0hBYVk1VXJnallCSHY5K05RdFhnTGVETllPT2VVb21KT1gv?=
- =?utf-8?B?Vmp1S2xMT2hacGx0bXNPRVc0cG5DYVlESXl6VkhzM09FWGwyampHY3hnazBP?=
- =?utf-8?B?QTZHTm9nWGoyNWFYQTFoaU9GTkZPdnNkN2xqa3c3UzkwRFFuRTFCQmovUk80?=
- =?utf-8?B?ZVlvdnlPeGp6eWZtSEdrMzBTYzdxM3Z3TE9sZ1NkaTZOS0d4K3JiMmtRYXNr?=
- =?utf-8?B?UytEbVF3cUpROGpsdURIYXpFNTc4VFVGcko0K2IxQWNXdHBxcXJFcTR2c1ZX?=
- =?utf-8?B?bGZiK2RzL0xTbktXdGFqQUw4eG4wdHdLNTR1dzFEZk1XTGpvLzgza0JsWjJS?=
- =?utf-8?B?eFdFclRTMTNFaE1BOWJBeGZTeHUyRkx0Y3V2cmYyRkpabmp5QkFKWVlKUEhr?=
- =?utf-8?B?TWlKcnQrclg1NWRIMnFVTEhVTkdqRzlIMGZ2YmZveEtNMys3ZjFMcmlVVUZv?=
- =?utf-8?B?QnpQekg2dXhJaGJna3dWTzEySDJSTXRnaDJxdUwvRE1aOEY3Zkw5RTIrZ2Zu?=
- =?utf-8?B?UDJRYnhRR1hhY003RWdnS0JvN2FFWmN4Z2ZNTjUxR2s5TnU1OTV3UC80NjVq?=
- =?utf-8?B?Q0JFVFJHZXExWm9ZNkx2MTdjNkFpLzdTOElxTkZqYmJ5VXBsOEhXdUhLZUtV?=
- =?utf-8?B?VFRvbXE2MFRSeUdLWXhmRllaeVpxZ2pwWHdhVkYwQUtpNGhxZHdIc3VkUmFP?=
- =?utf-8?B?SXNDL2hxRXY4c3VVcy9kUWgyN0w4d0FwNng4YnMrU2s0OWdiRWhkNC9XR1pC?=
- =?utf-8?B?WmFKdWxHM2phOTljT2J1aVZrS08rYkpmdVFTWlJST2V4R01wY1E5MjNGOW53?=
- =?utf-8?B?VEdkV2pkUHBjMzNOcHBsMzQ3VUQ5dm1WNWRmVUM3ZEZibXJMUllDM1prZ0Jr?=
- =?utf-8?B?M0FGeGh6alNwbkE0K2xkNUcvQkhmZGZ6NWVhRjgvSjRTYUVNUW5kaXJGcUJB?=
- =?utf-8?B?N1h2cVYzYjk2Uk9RUVAyKy9sa0hZbXFDbHpRQ3JoWFdLMnlhNXFFOUxaTFNy?=
- =?utf-8?B?bEZnb3dBbk9VRWR4T1l5d24xMWpnRktXSVlUejlVaTRQbGV5dDl3aUw1YUZo?=
- =?utf-8?B?SEhORlFaY1BsQkRzSTVkV3JHOTlZbkQzdkJDOTNOWnJXcTBDeHpSUE9NTlAz?=
- =?utf-8?B?cVRaYXpKK2FnYkJiaXRRWncwWXF4dUYzaWg5TE1ha0VNUnVRTWtBd3c2T05R?=
- =?utf-8?B?Tlp0OE9VYU0wRjN0M2JCQmQxYUxleXphZFFDMkNQWmNteVRsbjdwSFBmOHB0?=
- =?utf-8?B?OEl6TXBmMEFxMU9Zby9CajhaVUZidnY1MmpRVkgyVW95THdsMkhHcjZwWVk2?=
- =?utf-8?B?aDVjdW9jUFJGZGlhb3piUmVHOWlZNXVmWlV3enhOOHl6dUlleDdWdy9EVlpX?=
- =?utf-8?B?WDFWQ2JUbTNwdE1RalFRRHVtWmR5MUdhY1g2Vks3RE9KS1FCeVBwWWpIU2p6?=
- =?utf-8?B?WHU3Rng1Yk42bVlTVVNpUDN2YllPMHdiZmY3bTk3d3VldWhldlZmV0JJaGpl?=
- =?utf-8?B?WVdVUnJoUGJNMEM0TWczNmlRY0p0KzVyVHVTSU55T1FwakpCTnBPY0pKKytj?=
- =?utf-8?B?STNaM2VLbTZ2MUE2ZTBldWVjdG5uRjJYM2g3S3g2TnFzR2IzZmVXL0dZMEhH?=
- =?utf-8?B?dU04aGFRODhER2RsN1Mvb29JODgwQkNXRjBBZUlSVEFhVXp0VDFRUG41Qk5B?=
- =?utf-8?B?N2xRVk0yeXNkaWtaNyt3bTZPTTEyZDJkSS9QK29SRGlicEhQcXc1K0duMFR1?=
- =?utf-8?B?bzBWc3poS3VLZUN2OHcvamxiQVVOWGdqVDk5UUlJSGVZMWZiejJNdUNSVlNM?=
- =?utf-8?Q?ZlKn4hX7A6rMC?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c887efa7-1a7b-4822-74a0-08d967daffe4
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VHNjS0M1a3VualVQQjNUczNFY1hEOGRrSzRWVkNPWUxraGo1OURXeXFPSlZL?=
+ =?utf-8?B?R2xWTVIzUHg4TnNTWUtGWE1QUEFYSlBxZTZtUWdXVjdOVlJZd0ZrRFBuZnRS?=
+ =?utf-8?B?UEN2WCs2MjIydWdsTlB5UnBYUlcxWU5uUVc4ZU9mNWZGajZhUTJVWUJHV01T?=
+ =?utf-8?B?elJ0YnlqT05UUDVwQ2VsLzAzaUg0NUd1MXJqK25nZk5Cd1RMK1c2T0ZLZXUr?=
+ =?utf-8?B?TGUrek1hazI4S0xTVGVFaldCNE9wLzBia2VZdHRCcUt5akVTUGN0OVU0YUVL?=
+ =?utf-8?B?Um5ubzBXMWNnNEdqS0Z2aG54OGpHSVJXNWhDWGt4YjF5ZTVwM0RLVUpmei9W?=
+ =?utf-8?B?bFUzb0dMcXl2UldOeWc4eDNobFdSa0VSZnpvaUY0WFhudmpkVHdQRlZvdkNB?=
+ =?utf-8?B?d2QrMUdJM3Irc0ZBZ1dmNVdHY1VMSWErM0tzd2ExaVRLU1F0YmE2dGV5YWIx?=
+ =?utf-8?B?clBJN0ttekI4RlVrbWJtZlQ0aFRsTlJUSkdxcEkraTFKRFVsMERUZDhrbXB0?=
+ =?utf-8?B?UDdBQlJrZlZJZ1BxQmd1MndmeFhLRHY5amlsODZNeDduOCtXMTMwOGRSVllT?=
+ =?utf-8?B?ejVEa25ub2FGck5HODUwNGt0NzBOcTZCRXpnMit5KzJ5WmNSZW5YbUFHeWVO?=
+ =?utf-8?B?aWJQTFhuaTJoV09ab01ZNjh4QkxHbjA4MEMxSFBTYVAvQ0dKLzdFR01sS0My?=
+ =?utf-8?B?SXNJSjJtbWVOd0R3bzVkRFdId05Jc1NUM0wwbUdiZ0FvQkIxMVU2VldjaG01?=
+ =?utf-8?B?QUhpUFNvU00yeExzd3NnOGlGUjhUK002bWJ3cCtmK2ZCWUhkdjhzaGdPUHpO?=
+ =?utf-8?B?M283ZE5FT1AyYzJ4OEdSVVZzZEw0SUdNS05VZUxHV0pjV3JYQ0lDMTgyc25G?=
+ =?utf-8?B?LzA2MGNqeWNDUWY3M2JYM0tVVFpnVGl3cS9OcjBmbTJxTHpxSjU2eDdYZmk0?=
+ =?utf-8?B?bnY3U0szUWNtMWNTdE4xOExadWg1dk53MmdzdHpQWWdQYk9mMkNoWTBWTlJN?=
+ =?utf-8?B?a2F3NTcyYzNkTmZDSk9wMGU5Yi9ZaEFZZ25XRFJSNjBjS3VTK2hjdi9QTXJC?=
+ =?utf-8?B?dnV1ZjZ5U0QvdE80anMxUXN5ZGtNQ09Sb2pJOG1NVy9sMkwvcThTaU84SlNC?=
+ =?utf-8?B?enJNUUg5ZmIvZTNpVUU2c093S3V5bkdyeFFJQTV2NVRvb0Z0Qm9rNWRxTmJl?=
+ =?utf-8?B?WEQrbExvYUtWNjRzTTd0a2pLblNKdTRObk45MDRDNGV5MnlJSXVteTlYV0ha?=
+ =?utf-8?B?UGM0OVRNdDZUVlZKZHA0a1ViM1pUTnRKN2EzaE9iVXMvdS9WUDBrSlBBZDhv?=
+ =?utf-8?B?NUZzcEF3bXhkdFdHVjlLVU56V25hdUVpQlRGbHUxdS9ZMWRDeWNrYVM4Q1Iy?=
+ =?utf-8?B?NlNoNmd6OThFd1hlUC9YVUNjQUYrN1lWclRnRTdPU3N4U25oUUMzdGd1cFB5?=
+ =?utf-8?B?R3VhU2tyWlV0NHlHUVZDTmRQOWd1Qnh0UTAvdU1tdXQ4Ynk0MXFJNUdlczJp?=
+ =?utf-8?B?SkpUcnZwWTZXb3Z4YUZSQkUyelFXVDQ0NmwzV0ZnbHBqSnpKczFaN1ZFZHhN?=
+ =?utf-8?B?Rk5IdjVkV1BPK2EwRFB3Z3M1V0dSYXkxSTdBeE0vWHlpSTIyOHJSWVpRVHFP?=
+ =?utf-8?B?cFlKVWtXZGU1bm1OOHJXbld0WFpibEt6Tk1sdVBvNVJpYU81NytyUzM3VG1x?=
+ =?utf-8?B?azdrdkFPWDA2WmlwWGtibE5XRnZ6VGlseFhhVUt2UWpIWEFScGpzUHRSaHoz?=
+ =?utf-8?Q?rH+ucSYOMtEqvKoTtE7jBgoitVFTQ/bH38lHsAT?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e7f1947-307f-42c7-41d9-08d967dfe06f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 15:14:15.0745
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Aug 2021 15:49:09.3348
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pBG22QAwxxrSWzjPdOh2ICK3pBYx4LfExDrg50EQ25joZXNcTdILPB150qbI/xbP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2387
+X-MS-Exchange-CrossTenant-UserPrincipalName: ecP/WlWvbnUCDejauyDVNQkgDmWuVG8cRgXattUGbZY4D7R5QUP6pE1zP3uWBLHC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5238
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 25.08.21 um 16:47 schrieb Jason Gunthorpe:
-> On Wed, Aug 25, 2021 at 03:51:14PM +0200, Christian König wrote:
->> Am 25.08.21 um 14:38 schrieb Jason Gunthorpe:
->>> On Wed, Aug 25, 2021 at 02:27:08PM +0200, Christian König wrote:
->>>> Am 25.08.21 um 14:18 schrieb Jason Gunthorpe:
->>>>> On Wed, Aug 25, 2021 at 08:17:51AM +0200, Christian König wrote:
->>>>>
->>>>>> The only real option where you could do P2P with buffer pinning are those
->>>>>> compute boards where we know that everything is always accessible to
->>>>>> everybody and we will never need to migrate anything. But even then you want
->>>>>> some mechanism like cgroups to take care of limiting this. Otherwise any
->>>>>> runaway process can bring down your whole system.
->>>>> Why? It is not the pin that is the problem, it was allocating GPU
->>>>> dedicated memory in the first place. pinning it just changes the
->>>>> sequence to free it. No different than CPU memory.
->>>> Pinning makes the memory un-evictable.
->>>>
->>>> In other words as long as we don't pin anything we can support as many
->>>> processes as we want until we run out of swap space. Swapping sucks badly
->>>> because your applications become pretty much unuseable, but you can easily
->>>> recover from it by killing some process.
->>>>
->>>> With pinning on the other hand somebody sooner or later receives an -ENOMEM
->>>> or -ENOSPC and there is no guarantee that this goes to the right process.
->>> It is not really different - you have the same failure mode once the
->>> system runs out of swap.
->>>
->>> This is really the kernel side trying to push a policy to the user
->>> side that the user side doesn't want..
->> But which is still the right thing to do as far as I can see. See userspace
->> also doesn't want proper process isolation since it takes extra time.
-> Why? You are pushing a policy of resource allocation/usage which
-> more properly belongs in userspace.
->
->> Kernel development is driven by exposing the hardware functionality in a
->> save and manageable manner to userspace, and not by fulfilling userspace
->> requirements.
-> I don't agree with this, that is a 1980's view of OS design. So much
-> these days in the kernel is driven entirely by boutique userspace
-> requirements and is very much not about the classical abstract role of
-> an OS.
+On Wed, Aug 25, 2021 at 05:14:06PM +0200, Christian König wrote:
 
-But it's still true never the less. Otherwise you would have libraries 
-for filesystem accesses and no system security to speak of.
+> Yeah, that's exactly what I'm talking about by adding cgroup or similar. You
+> need a knob to control this.
 
->>> Dedicated systems are a significant use case here and should be
->>> supported, even if the same solution wouldn't be applicable to someone
->>> running a desktop.
->> And exactly that approach is not acceptable.
-> We have knobs and settings all over the place to allow Linux to
-> support a broad set of use cases from Android to servers, to HPC. So
-> long as they can co-exist and the various optional modes do not
-> critically undermine the security of the kernel, it is well in line
-> with how things have been evolving in the last 15 years.
+We have the pinned memory ulimit today.
 
-Yeah, that's exactly what I'm talking about by adding cgroup or similar. 
-You need a knob to control this.
+A pinned memory cgroup might be interesting, but even containrs are
+covered under the ulimit (IIRC), so the driver to do this work might
+not be so strong.
 
-> Here you are talking entirely about policy to control memory
-> allocation, which is already well trodden ground for CPU memory.
->
-> There are now endless boutique ways to deal with this, it is a very
-> narrow view to say that GPU memory is so special and different that
-> only one way can be the correct/allowed way.
-
-Well I'm not talking about GPU memory in particular here. This is 
-mandatory for any memory or saying more general any resource.
-
-E.g. you are not allowed to pin large amount of system memory on a 
-default installation for exactly those reasons as well.
-
-That you can have a knob to disable this behavior for your HPC system is 
-perfectly fine, but I thing what Dave notes here as well that this is 
-most likely not the default behavior we want.
-
-Christian.
-
->
-> Jason
-
+Jason
