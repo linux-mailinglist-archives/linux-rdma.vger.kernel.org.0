@@ -2,101 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54E983F6D98
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 05:02:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FE33F6D99
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 05:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237229AbhHYDDT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 Aug 2021 23:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbhHYDDL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 Aug 2021 23:03:11 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA1BC061757;
-        Tue, 24 Aug 2021 20:02:26 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id x10-20020a056830408a00b004f26cead745so51800824ott.10;
-        Tue, 24 Aug 2021 20:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6CJu4ryWmmhPfIqi+5GEQZx1ws6z7aiz7H2DyEgUiD0=;
-        b=bUvX0Wqsi/ScMzguDUhCOkuCSpWbyqEGIiW5GtyHdwfL5MHC/2miqSVPyWG+siNH7F
-         5vyszzE+XRlzUOffljQPGW1VkU1pNwbqJYF6anFXFpYOFXiL1db4XRAgFtqZtJlc0O6i
-         NYMoQj4Nf8/UpPZbIBsK0RYIJCMAT1t5+kv/f12M8lVfvyWP4OZBqB4uzuJEcZVr5W65
-         g3Rr89f5u8fKcDK7fKMtvjOXTdEFtBWv8ft81gHOm7W5fzLqi1iW5rrRZOLE4ZcZkYbG
-         CmnPaTVglo8Yxgu9G+AFAanjXg/+pehgAvvZdU/nUh+mdf/q16dFNhQGQNGv3TN7A1q7
-         1VPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6CJu4ryWmmhPfIqi+5GEQZx1ws6z7aiz7H2DyEgUiD0=;
-        b=cLV+hOjKUyJmUjq6sYzp3O470WoO27HWPx5EG6Z9+UYlMStdhAZzNBxPNrY4efgNpL
-         cgsaKlBWa+NMu+cG0rbjLwwWoVXF7R8G5/TPV0Ns1gRO2AB0bkFxl/1FrUnrisRw0E38
-         9+pf35s9KcHCJ1qiuBpfWo+qeroUIY495NDXQxL0gFG9JxssgONEB/0zmUP93AKlfhub
-         Igv/++k109E7uTcjou3kTC1OBA8WdNw8oQmsLjS9WNxsYRklFUApNfINUadaptTf04xe
-         563M5PgRTCBxruXMs+xWRkeCIwPUzyiHtfytOk4XN+o3qPyN9NFggAwu6FWgAvysqAb4
-         iidw==
-X-Gm-Message-State: AOAM532P4CPrKVFOeYJzUpuz5E1c8ii4O7M8b3Qzm/3alNpNWOHYyLC6
-        SVhsxqksdBm5aU7k6tjeT6HO2v3M9Qx1hW7OqyI=
-X-Google-Smtp-Source: ABdhPJy1p5I+xDIjsqcsw/BcyZ4dbCp03S8J7YhMHmQiCaFw4hOvoBf0h5jHc05iRp3zejVLPtCv/GLcEnnYlagLtZs=
-X-Received: by 2002:aca:2216:: with SMTP id b22mr5005428oic.163.1629860545872;
- Tue, 24 Aug 2021 20:02:25 -0700 (PDT)
+        id S236811AbhHYDIO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 Aug 2021 23:08:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45047 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230021AbhHYDIK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 24 Aug 2021 23:08:10 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10086"; a="214315122"
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="214315122"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2021 20:07:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.84,349,1620716400"; 
+   d="scan'208";a="515948604"
+Received: from lkp-server02.sh.intel.com (HELO 181e7be6f509) ([10.239.97.151])
+  by fmsmga004.fm.intel.com with ESMTP; 24 Aug 2021 20:07:22 -0700
+Received: from kbuild by 181e7be6f509 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mIjG5-00015p-R9; Wed, 25 Aug 2021 03:07:21 +0000
+Date:   Wed, 25 Aug 2021 11:07:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ f0a64199195e5adfff921cb7bf4e4e67e1916401
+Message-ID: <6125b3e4.2mdrdVOnCC94bUpK%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org>
-In-Reply-To: <c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 25 Aug 2021 11:02:14 +0800
-Message-ID: <CAD=hENcriq-mwnvzY3UdowuGpKb=Uekvk-v8Lj0G=QB-qK0kJg@mail.gmail.com>
-Subject: Re: v5.14 RXE driver broken?
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 24, 2021 at 11:02 AM Bart Van Assche <bvanassche@acm.org> wrote:
->
-> Hi Bob,
->
-> If I run the following test against Linus' master branch then that test
-> passes (commit d5ae8d7f85b7 ("Revert "media: dvb header files: move some
-> headers to staging"")):
->
-> # export use_siw=1 && modprobe brd && (cd blktests && ./check -q srp/002)
-> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [passed]
->     runtime    ...  48.849s
->
-> The following test fails:
->
-> # export use_siw= && modprobe brd && (cd blktests && ./check -q srp/002)
-> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [failed]
->     runtime  48.849s  ...  15.024s
->     --- tests/srp/002.out       2018-09-08 19:43:42.291664821 -0700
->     +++ /home/bart/software/blktests/results/nodev/srp/002.out.bad      2021-08-23 19:51:05.182958728 -0700
->     @@ -1,2 +1 @@
->      Configured SRP target driver
->     -Passed
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: f0a64199195e5adfff921cb7bf4e4e67e1916401  RDMA/hns: Delete unused hns bitmap interface
 
-Can this commit "RDMA/rxe: Zero out index member of struct rxe_queue"
-in the link https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-rc
-fix this problem?
+elapsed time: 735m
 
-And the commit will be merged into linux upstream very soon.
+configs tested: 135
+configs skipped: 3
 
-Zhu Yanjun
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
-> The only difference between these two tests is that test (1) use the siw
-> (soft-iWARP) driver while test (2) uses the rdma_rxe driver (soft-RoCE).
-> Both tests run reliably against previous Linux kernel versions, e.g.
-> v5.13. Can you take a look at this? The blktests software is available at
-> https://github.com/osandov/blktests/.
->
-> Thanks,
->
-> Bart.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210824
+sh                           se7722_defconfig
+powerpc                    mvme5100_defconfig
+powerpc                     ep8248e_defconfig
+sh                          sdk7786_defconfig
+arm                           viper_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc                    adder875_defconfig
+powerpc                       ebony_defconfig
+arm                            xcep_defconfig
+riscv                          rv32_defconfig
+sh                          rsk7201_defconfig
+riscv                            alldefconfig
+sparc64                             defconfig
+arc                           tb10x_defconfig
+arm                          pxa910_defconfig
+powerpc                        fsp2_defconfig
+sh                           se7750_defconfig
+ia64                      gensparse_defconfig
+xtensa                  cadence_csp_defconfig
+powerpc                     pq2fads_defconfig
+mips                      malta_kvm_defconfig
+powerpc                     pseries_defconfig
+arc                              alldefconfig
+arm                           tegra_defconfig
+sh                      rts7751r2d1_defconfig
+x86_64                           alldefconfig
+mips                          ath79_defconfig
+arm                            lart_defconfig
+mips                           mtx1_defconfig
+mips                    maltaup_xpa_defconfig
+riscv                    nommu_k210_defconfig
+arm                        realview_defconfig
+powerpc                      pmac32_defconfig
+arm                         cm_x300_defconfig
+powerpc                       maple_defconfig
+sh                               j2_defconfig
+sh                        sh7763rdp_defconfig
+i386                                defconfig
+arm                          ixp4xx_defconfig
+powerpc                   lite5200b_defconfig
+arm                             rpc_defconfig
+powerpc                     mpc83xx_defconfig
+powerpc                     kilauea_defconfig
+m68k                         apollo_defconfig
+sh                           se7721_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210824
+x86_64               randconfig-a006-20210824
+x86_64               randconfig-a001-20210824
+x86_64               randconfig-a003-20210824
+x86_64               randconfig-a004-20210824
+x86_64               randconfig-a002-20210824
+i386                 randconfig-a006-20210824
+i386                 randconfig-a001-20210824
+i386                 randconfig-a002-20210824
+i386                 randconfig-a005-20210824
+i386                 randconfig-a003-20210824
+i386                 randconfig-a004-20210824
+x86_64               randconfig-a014-20210825
+x86_64               randconfig-a015-20210825
+x86_64               randconfig-a016-20210825
+x86_64               randconfig-a013-20210825
+x86_64               randconfig-a012-20210825
+x86_64               randconfig-a011-20210825
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20210824
+s390                 randconfig-c005-20210824
+arm                  randconfig-c002-20210824
+riscv                randconfig-c006-20210824
+x86_64               randconfig-c007-20210824
+mips                 randconfig-c004-20210824
+powerpc              randconfig-c003-20210824
+x86_64               randconfig-a014-20210824
+x86_64               randconfig-a015-20210824
+x86_64               randconfig-a016-20210824
+x86_64               randconfig-a013-20210824
+x86_64               randconfig-a012-20210824
+x86_64               randconfig-a011-20210824
+i386                 randconfig-a011-20210824
+i386                 randconfig-a016-20210824
+i386                 randconfig-a012-20210824
+i386                 randconfig-a014-20210824
+i386                 randconfig-a013-20210824
+i386                 randconfig-a015-20210824
+hexagon              randconfig-r041-20210824
+hexagon              randconfig-r045-20210824
+riscv                randconfig-r042-20210824
+s390                 randconfig-r044-20210824
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
