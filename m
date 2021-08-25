@@ -2,104 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3373F7A99
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 18:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9243F7AAD
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 Aug 2021 18:34:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241442AbhHYQdH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 Aug 2021 12:33:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42150 "EHLO
+        id S241316AbhHYQfG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 Aug 2021 12:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241550AbhHYQdH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Aug 2021 12:33:07 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43D0CC0613C1
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 09:32:21 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id a66so9488216qkc.1
-        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 09:32:21 -0700 (PDT)
+        with ESMTP id S242022AbhHYQfG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 Aug 2021 12:35:06 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6A4C061757
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 09:34:20 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id z2so245283qvl.10
+        for <linux-rdma@vger.kernel.org>; Wed, 25 Aug 2021 09:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=3Uui9UOCw0Rxj5md1ZToAucZFiRj12lefabiBhlvxZ0=;
-        b=lDmO14Qb90STa9Dfiwi7N1A7QJw8CynEG1VOFU0mcZDqrX1HoV69empswjAJqNER7X
-         nxQWth/zv2KCS42VMQMXtrDRJkPvJxVn63dzh3j0ZxaECOPC2ru/bW7xh0I4XnY07HLz
-         FC5aciuzUJuHWUMPJg797Av3/QDczlAOGIYslFOx907dV6jZ61twwt3RxupBGKu5HZ4h
-         5fbVWHEEqQ2iHkrG5mrAYPI7+MnORIRPLMNzt5fEqzKSMzrXFOHuuwkCcx6JEFGX9FPd
-         3twMCICxLlBoc547+fb0iqcs6eDj3S3Pjz8/B18N93MaVcri5HF8FtkSxqJOexXU/Ugj
-         45/Q==
+        bh=36MIO5C4PfqOVOJlv5grTM2lIS78XuJLicCO0EKKj/Q=;
+        b=G8VgxzDl5Bi52T7zRG98U6tZTrnd8fVTfdDOuo52pAtNLEGBDxeuXH7w25e91+0qsR
+         SqPi54uKckqWKi7Pc36H5gSlf3j2JtKG2pLQQbbzi3UBxb4F8niSGfpp41M6+MA4Iqru
+         y4s7skuQzJMoBppDmbaPnFKOD24ZaLaXVnMwT4WcOEXkMVzLwrB8jXdhmUsWjqOiRAg1
+         2GudBA6HehJUf7ehDzPJf6+ivGHdtsGfZNFZdJ3FYNEQRZpBJiJGY7Gt6fSCD/4N9LJH
+         1ey8w7BOxrwvGUaC9q1OP8pao9uUkU7IDJ9XTz2OQT+2lfZ03WR9qNruWFHQ68kcro/B
+         bLBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3Uui9UOCw0Rxj5md1ZToAucZFiRj12lefabiBhlvxZ0=;
-        b=R/kKFVD+TBfqCrCLKEw4bLCMg1lwFvszszeDpL4wxPfQuw6Mgyr3C7FXN/K+d2K+JK
-         N3Z2Snv/iYW6pfGp2IW7VMZUSAmRfffqNDtW+k/XmXAg3ay4Q+u5pYuB4R0TzW3VbeSN
-         rAHdATXWuIrzFwQWNkFizmKOXDGMk0H7RtCCxZvZdZS4zO+7mNEZucJbDYsYn6TEVSy7
-         CfFQb9Zr5UGDC3cCNB171KTCuuirpoaSuW6P3KTbRYitAxYBqTujnltGXpCvc0JOrQ3A
-         RkGOWrvuX/4chFEdOXhdGa/1sdMfGKYuOr9KTm6RjdHsHyrilVam33xBMsN4OAFJWNdw
-         zYOA==
-X-Gm-Message-State: AOAM532coKhXCquhx1kX27qe/CBty6+wl2tuZOx2p6jbol/tRLJFoX/w
-        CFxKn5WeUpYAmoag+xIxy94wNA==
-X-Google-Smtp-Source: ABdhPJweMp/84QzOtbO5Oh79VuPkzY7QfOuSshGi3pHYB52uAxRxzrROMD6ot6amUhYJW7vvLy0bAw==
-X-Received: by 2002:a37:6114:: with SMTP id v20mr33083127qkb.348.1629909140457;
-        Wed, 25 Aug 2021 09:32:20 -0700 (PDT)
+        bh=36MIO5C4PfqOVOJlv5grTM2lIS78XuJLicCO0EKKj/Q=;
+        b=cLvfr+Oh/kz1LR/jNzbuaE0DhKtGS73m/1JttkMXuxKAzVy9g8UHcePZyqKcXexzHt
+         TmVdSt2l7NccKID/yHGIOEl3uXHacnTWLo+2c/sSIkRFl6UO1j/mfhwpg0RwJjRSJh5G
+         Wuv8a2EnhATuuc5J2NfUVEbzUIuaYTk5AQtbeRfSgAXrbDklM7hHTb6665lz4Kwj3BxJ
+         YuVj06dqi73QCjwuSusQnMdLcrP04TJtfNlSD6SjWICGFONV1zAhAmCi1cQl4wBsUHSY
+         wE496WNd9zFIc2OO+q78k2svLQrlmZheymXfr6zREizzXq5on/Vf2a1NeOPe0luiYQtp
+         sKiA==
+X-Gm-Message-State: AOAM530Gu4/W2xig4KS0Y2B8yco3eLIUf8y8chjkWcqN442N8R1P5SmU
+        HnV1nVJKSIeVqWRFKgaV2kEsrQ==
+X-Google-Smtp-Source: ABdhPJzd4aTWwbHgLiVehRwNu/Aww9ldlPDvwXMqq5Fbgr6Ede34sqCa/CxjNtH/W7wHm0dhAn0xbA==
+X-Received: by 2002:ad4:5247:: with SMTP id s7mr13638736qvq.58.1629909259570;
+        Wed, 25 Aug 2021 09:34:19 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id j26sm367922qki.26.2021.08.25.09.32.19
+        by smtp.gmail.com with ESMTPSA id q184sm365040qkd.35.2021.08.25.09.34.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Aug 2021 09:32:20 -0700 (PDT)
+        Wed, 25 Aug 2021 09:34:19 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1mIvp5-004zSz-Gw; Wed, 25 Aug 2021 13:32:19 -0300
-Date:   Wed, 25 Aug 2021 13:32:19 -0300
+        id 1mIvr0-004zVb-Ks; Wed, 25 Aug 2021 13:34:18 -0300
+Date:   Wed, 25 Aug 2021 13:34:18 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Subject: Re: v5.14 RXE driver broken?
-Message-ID: <20210825163219.GY543798@ziepe.ca>
-References: <c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org>
- <CAD=hENcriq-mwnvzY3UdowuGpKb=Uekvk-v8Lj0G=QB-qK0kJg@mail.gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: [bug report] RDMA/devices: Re-organize device.c locking
+Message-ID: <20210825163418.GZ543798@ziepe.ca>
+References: <20210810085252.GC23998@kili>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAD=hENcriq-mwnvzY3UdowuGpKb=Uekvk-v8Lj0G=QB-qK0kJg@mail.gmail.com>
+In-Reply-To: <20210810085252.GC23998@kili>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Aug 25, 2021 at 11:02:14AM +0800, Zhu Yanjun wrote:
-> On Tue, Aug 24, 2021 at 11:02 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> >
-> > Hi Bob,
-> >
-> > If I run the following test against Linus' master branch then that test
-> > passes (commit d5ae8d7f85b7 ("Revert "media: dvb header files: move some
-> > headers to staging"")):
-> >
-> > # export use_siw=1 && modprobe brd && (cd blktests && ./check -q srp/002)
-> > srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [passed]
-> >     runtime    ...  48.849s
-> >
-> > The following test fails:
-> >
-> > # export use_siw= && modprobe brd && (cd blktests && ./check -q srp/002)
-> > srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [failed]
-> >     runtime  48.849s  ...  15.024s
-> >     +++ /home/bart/software/blktests/results/nodev/srp/002.out.bad      2021-08-23 19:51:05.182958728 -0700
-> >     @@ -1,2 +1 @@
-> >      Configured SRP target driver
-> >     -Passed
+On Tue, Aug 10, 2021 at 12:18:42PM +0300, Dan Carpenter wrote:
+> Hello Jason Gunthorpe,
 > 
-> Can this commit "RDMA/rxe: Zero out index member of struct rxe_queue"
-> in the link https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-rc
-> fix this problem?
+> The patch 921eab1143aa: "RDMA/devices: Re-organize device.c locking"
+> from Feb 6, 2019, leads to the following static checker warning:
 > 
-> And the commit will be merged into linux upstream very soon.
+> 	drivers/infiniband/core/device.c:712 add_client_context()
+> 	warn: missing error code 'ret'
+> 
+> drivers/infiniband/core/device.c
+>     689 static int add_client_context(struct ib_device *device,
+>     690 			      struct ib_client *client)
+>     691 {
+>     692 	int ret = 0;
+>     693 
+>     694 	if (!device->kverbs_provider && !client->no_kverbs_req)
+>     695 		return 0;
+>     696 
+>     697 	down_write(&device->client_data_rwsem);
+>     698 	/*
+>     699 	 * So long as the client is registered hold both the client and device
+>     700 	 * unregistration locks.
+>     701 	 */
+>     702 	if (!refcount_inc_not_zero(&client->uses))
+>     703 		goto out_unlock;
+>     704 	refcount_inc(&device->refcount);
+>     705 
+>     706 	/*
+>     707 	 * Another caller to add_client_context got here first and has already
+>     708 	 * completely initialized context.
+>     709 	 */
+>     710 	if (xa_get_mark(&device->client_data, client->client_id,
+>     711 		    CLIENT_DATA_REGISTERED))
+> --> 712 		goto out;
+> 
+> Hard to tell if ret should be zero or negative.
 
-Please let me know Bart, if the rxe driver is still broken I will
-definitely punt all the changes for RXE to the next cycle until it can
-be fixed.
+It should be 0, this collision is success, the xarray has the correct
+data, it was just put there by another thread.
 
 Jason
