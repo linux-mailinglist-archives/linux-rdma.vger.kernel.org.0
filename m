@@ -2,17 +2,17 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393563F893A
-	for <lists+linux-rdma@lfdr.de>; Thu, 26 Aug 2021 15:41:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32A03F8939
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 Aug 2021 15:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242723AbhHZNmc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S242696AbhHZNmc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 26 Aug 2021 09:42:32 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:18979 "EHLO
+Received: from szxga01-in.huawei.com ([45.249.212.187]:18980 "EHLO
         szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242737AbhHZNmb (ORCPT
+        with ESMTP id S242738AbhHZNmb (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Aug 2021 09:42:31 -0400
 Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GwP6l4wpJzbj2p;
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4GwP6l58FjzbjH9;
         Thu, 26 Aug 2021 21:37:51 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
@@ -26,9 +26,9 @@ From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <dledford@redhat.com>, <jgg@nvidia.com>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 6/7] RDMA/hns: Encapsulate the qp db as a function
-Date:   Thu, 26 Aug 2021 21:37:35 +0800
-Message-ID: <1629985056-57004-7-git-send-email-liangwenpeng@huawei.com>
+Subject: [PATCH for-next 7/7] RDMA/hns: Delete unnecessary blank lines.
+Date:   Thu, 26 Aug 2021 21:37:36 +0800
+Message-ID: <1629985056-57004-8-git-send-email-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1629985056-57004-1-git-send-email-liangwenpeng@huawei.com>
 References: <1629985056-57004-1-git-send-email-liangwenpeng@huawei.com>
@@ -42,178 +42,62 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+From: Xinhao Liu <liuxinhao5@hisilicon.com>
 
-Encapsulate qp db into two functions: user and kernel.
+Just delete unnecessary blank lines.
 
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+Signed-off-by: Xinhao Liu <liuxinhao5@hisilicon.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_qp.c | 135 +++++++++++++++++++-------------
- 1 file changed, 82 insertions(+), 53 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 --
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 1 -
+ drivers/infiniband/hw/hns/hns_roce_qp.c    | 1 -
+ 3 files changed, 4 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index d45beed..74c9101 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -823,75 +823,104 @@ static inline bool kernel_qp_has_rdb(struct hns_roce_dev *hr_dev,
- 		hns_roce_qp_has_rq(init_attr));
- }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index c27dc68..5b99531 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -5220,7 +5220,6 @@ static int hns_roce_v2_destroy_qp_common(struct hns_roce_dev *hr_dev,
  
-+static int alloc_user_qp_db(struct hns_roce_dev *hr_dev,
-+			    struct hns_roce_qp *hr_qp,
-+			    struct ib_qp_init_attr *init_attr,
-+			    struct ib_udata *udata,
-+			    struct hns_roce_ib_create_qp *ucmd,
-+			    struct hns_roce_ib_create_qp_resp *resp)
-+{
-+	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(udata,
-+		struct hns_roce_ucontext, ibucontext);
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	int ret;
-+
-+	if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
-+		ret = hns_roce_db_map_user(uctx, ucmd->sdb_addr, &hr_qp->sdb);
-+		if (ret) {
-+			ibdev_err(ibdev,
-+				  "failed to map user SQ doorbell, ret = %d.\n",
-+				  ret);
-+			goto err_out;
-+		}
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
-+	}
-+
-+	if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
-+		ret = hns_roce_db_map_user(uctx, ucmd->db_addr, &hr_qp->rdb);
-+		if (ret) {
-+			ibdev_err(ibdev,
-+				  "failed to map user RQ doorbell, ret = %d.\n",
-+				  ret);
-+			goto err_sdb;
-+		}
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
-+	}
-+
-+	return 0;
-+
-+err_sdb:
-+	if (hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
-+		hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
-+err_out:
-+	return ret;
-+}
-+
-+static int alloc_kernel_qp_db(struct hns_roce_dev *hr_dev,
-+			      struct hns_roce_qp *hr_qp,
-+			      struct ib_qp_init_attr *init_attr)
-+{
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	int ret;
-+
-+	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		hr_qp->sq.db_reg = hr_dev->mem_base +
-+				   HNS_ROCE_DWQE_SIZE * hr_qp->qpn;
-+	else
-+		hr_qp->sq.db_reg = hr_dev->reg_base + hr_dev->sdb_offset +
-+				   DB_REG_OFFSET * hr_dev->priv_uar.index;
-+
-+	hr_qp->rq.db_reg = hr_dev->reg_base + hr_dev->odb_offset +
-+			   DB_REG_OFFSET * hr_dev->priv_uar.index;
-+
-+	if (kernel_qp_has_rdb(hr_dev, init_attr)) {
-+		ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
-+		if (ret) {
-+			ibdev_err(ibdev,
-+				  "failed to alloc kernel RQ doorbell, ret = %d.\n",
-+				  ret);
-+			return ret;
-+		}
-+		*hr_qp->rdb.db_record = 0;
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
-+	}
-+
-+	return 0;
-+}
-+
- static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		       struct ib_qp_init_attr *init_attr,
- 		       struct ib_udata *udata,
- 		       struct hns_roce_ib_create_qp *ucmd,
- 		       struct hns_roce_ib_create_qp_resp *resp)
- {
--	struct hns_roce_ucontext *uctx = rdma_udata_to_drv_context(
--		udata, struct hns_roce_ucontext, ibucontext);
--	struct ib_device *ibdev = &hr_dev->ib_dev;
- 	int ret;
- 
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_SDI_MODE)
- 		hr_qp->en_flags |= HNS_ROCE_QP_CAP_OWNER_DB;
- 
- 	if (udata) {
--		if (user_qp_has_sdb(hr_dev, init_attr, udata, resp, ucmd)) {
--			ret = hns_roce_db_map_user(uctx, ucmd->sdb_addr,
--						   &hr_qp->sdb);
--			if (ret) {
--				ibdev_err(ibdev,
--					  "failed to map user SQ doorbell, ret = %d.\n",
--					  ret);
--				goto err_out;
--			}
--			hr_qp->en_flags |= HNS_ROCE_QP_CAP_SQ_RECORD_DB;
--		}
+ 		if (send_cq && send_cq != recv_cq)
+ 			__hns_roce_v2_cq_clean(send_cq, hr_qp->qpn, NULL);
 -
--		if (user_qp_has_rdb(hr_dev, init_attr, udata, resp)) {
--			ret = hns_roce_db_map_user(uctx, ucmd->db_addr,
--						   &hr_qp->rdb);
--			if (ret) {
--				ibdev_err(ibdev,
--					  "failed to map user RQ doorbell, ret = %d.\n",
--					  ret);
--				goto err_sdb;
--			}
--			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
--		}
-+		ret = alloc_user_qp_db(hr_dev, hr_qp, init_attr, udata, ucmd,
-+				       resp);
-+		if (ret)
-+			return ret;
- 	} else {
--		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
--			hr_qp->sq.db_reg = hr_dev->mem_base +
--					   HNS_ROCE_DWQE_SIZE * hr_qp->qpn;
--		else
--			hr_qp->sq.db_reg =
--				hr_dev->reg_base + hr_dev->sdb_offset +
--				DB_REG_OFFSET * hr_dev->priv_uar.index;
--
--		hr_qp->rq.db_reg = hr_dev->reg_base + hr_dev->odb_offset +
--				   DB_REG_OFFSET * hr_dev->priv_uar.index;
--
--		if (kernel_qp_has_rdb(hr_dev, init_attr)) {
--			ret = hns_roce_alloc_db(hr_dev, &hr_qp->rdb, 0);
--			if (ret) {
--				ibdev_err(ibdev,
--					  "failed to alloc kernel RQ doorbell, ret = %d.\n",
--					  ret);
--				goto err_out;
--			}
--			*hr_qp->rdb.db_record = 0;
--			hr_qp->en_flags |= HNS_ROCE_QP_CAP_RQ_RECORD_DB;
--		}
-+		ret = alloc_kernel_qp_db(hr_dev, hr_qp, init_attr);
-+		if (ret)
-+			return ret;
  	}
  
- 	return 0;
--err_sdb:
--	if (udata && hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
--		hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
--err_out:
--	return ret;
- }
+ 	hns_roce_qp_remove(hr_dev, hr_qp);
+@@ -6360,7 +6359,6 @@ static int hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
  
- static void free_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 	handle->rinfo.instance_state = HNS_ROCE_STATE_INITED;
+ 
+-
+ 	return 0;
+ 
+ reset_chk_err:
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 0b91a1a..4d904d5 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1407,7 +1407,6 @@ struct hns_roce_cmq_desc {
+ 			__le32 rsv[4];
+ 		} func_info;
+ 	};
+-
+ };
+ 
+ struct hns_roce_v2_cmq_ring {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 74c9101..9af4509 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -715,7 +715,6 @@ static int alloc_rq_inline_buf(struct hns_roce_qp *hr_qp,
+ 	/* allocate recv inline buf */
+ 	wqe_list = kcalloc(wqe_cnt, sizeof(struct hns_roce_rinl_wqe),
+ 			   GFP_KERNEL);
+-
+ 	if (!wqe_list)
+ 		goto err;
+ 
 -- 
 2.8.1
 
