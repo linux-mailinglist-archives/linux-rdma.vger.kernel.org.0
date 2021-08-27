@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CE03F93C6
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 06:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEF913F93CB
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 06:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhH0Es4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Aug 2021 00:48:56 -0400
-Received: from mga05.intel.com ([192.55.52.43]:41243 "EHLO mga05.intel.com"
+        id S229645AbhH0Et7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Aug 2021 00:49:59 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38821 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229645AbhH0Es4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 27 Aug 2021 00:48:56 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="303469880"
+        id S234394AbhH0Et6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Aug 2021 00:49:58 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="217931468"
 X-IronPort-AV: E=Sophos;i="5.84,355,1620716400"; 
-   d="scan'208";a="303469880"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 21:48:07 -0700
+   d="scan'208";a="217931468"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2021 21:49:10 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.84,355,1620716400"; 
-   d="scan'208";a="517160818"
+   d="scan'208";a="575963173"
 Received: from lkp-server01.sh.intel.com (HELO 4fbc2b3ce5aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 26 Aug 2021 21:48:06 -0700
+  by orsmga004.jf.intel.com with ESMTP; 26 Aug 2021 21:49:08 -0700
 Received: from kbuild by 4fbc2b3ce5aa with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mJTmf-0001y9-I4; Fri, 27 Aug 2021 04:48:05 +0000
-Date:   Fri, 27 Aug 2021 12:47:36 +0800
+        id 1mJTnf-0001yY-Ml; Fri, 27 Aug 2021 04:49:07 +0000
+Date:   Fri, 27 Aug 2021 12:48:53 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 145eba1aaec9f6798c30842d201920a80f9049a3
-Message-ID: <61286e68.4LGFa7SpeC6FH1Av%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 1a0182785a6d2f9e626b861406bdd587642b218e
+Message-ID: <61286eb5.2++2H1y5j+jUrS2j%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 145eba1aaec9f6798c30842d201920a80f9049a3  RDMA/hfi1: Convert to SPDX identifier
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 1a0182785a6d2f9e626b861406bdd587642b218e  RDMA/hns: Delete unnecessary blank lines.
 
-elapsed time: 741m
+elapsed time: 742m
 
-configs tested: 225
+configs tested: 198
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -56,24 +56,13 @@ arm64                            allyesconfig
 arm64                               defconfig
 arm                              allyesconfig
 arm                              allmodconfig
-i386                 randconfig-c001-20210827
 i386                 randconfig-c001-20210826
-powerpc              randconfig-c003-20210826
+i386                 randconfig-c001-20210827
 sh                           se7722_defconfig
 powerpc                     powernv_defconfig
+um                             i386_defconfig
 powerpc                        warp_defconfig
 mips                      loongson3_defconfig
-um                             i386_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                         microdev_defconfig
-arm                       netwinder_defconfig
-arm                         mv78xx0_defconfig
-arm                    vt8500_v6_v7_defconfig
-xtensa                    xip_kc705_defconfig
-mips                     loongson1b_defconfig
-powerpc                      ppc64e_defconfig
-parisc                generic-32bit_defconfig
-arm                          ep93xx_defconfig
 powerpc                         ps3_defconfig
 sh                               alldefconfig
 arm                            lart_defconfig
@@ -81,13 +70,10 @@ sh                         apsh4a3a_defconfig
 arm                           viper_defconfig
 powerpc                    amigaone_defconfig
 m68k                       m5249evb_defconfig
+sh                         microdev_defconfig
 arm                            mmp2_defconfig
 powerpc                       eiger_defconfig
 powerpc                 canyonlands_defconfig
-arm                         cm_x300_defconfig
-mips                           ip27_defconfig
-powerpc                 mpc8313_rdb_defconfig
-s390                             alldefconfig
 nds32                            alldefconfig
 powerpc                    ge_imp3a_defconfig
 sh                          rsk7269_defconfig
@@ -103,7 +89,7 @@ powerpc                   lite5200b_defconfig
 riscv                    nommu_virt_defconfig
 arm                         vf610m4_defconfig
 arm                          collie_defconfig
-ia64                        generic_defconfig
+powerpc                 mpc834x_itx_defconfig
 sh                          rsk7264_defconfig
 arm                      pxa255-idp_defconfig
 powerpc                    gamecube_defconfig
@@ -120,31 +106,19 @@ arm                        realview_defconfig
 m68k                            mac_defconfig
 mips                      pistachio_defconfig
 ia64                          tiger_defconfig
-sh                                  defconfig
-openrisc                            defconfig
-powerpc                     asp8347_defconfig
-sparc                       sparc64_defconfig
-sh                            shmin_defconfig
 s390                          debug_defconfig
 powerpc                 mpc8272_ads_defconfig
 arc                            hsdk_defconfig
 arm                           h5000_defconfig
 arm                            mps2_defconfig
 powerpc                 mpc836x_mds_defconfig
-sh                           se7712_defconfig
-m68k                        m5272c3_defconfig
-xtensa                  cadence_csp_defconfig
-xtensa                generic_kc705_defconfig
-arm                         lpc18xx_defconfig
-powerpc                          g5_defconfig
-xtensa                          iss_defconfig
-ia64                      gensparse_defconfig
 powerpc                     akebono_defconfig
 arm                             ezx_defconfig
 powerpc                 mpc85xx_cds_defconfig
 mips                           ip28_defconfig
 arc                    vdk_hs38_smp_defconfig
 powerpc                   microwatt_defconfig
+m68k                        m5272c3_defconfig
 xtensa                  nommu_kc705_defconfig
 riscv                    nommu_k210_defconfig
 sh                          landisk_defconfig
@@ -152,10 +126,6 @@ arm                           corgi_defconfig
 sh                ecovec24-romimage_defconfig
 mips                            e55_defconfig
 arm                        oxnas_v6_defconfig
-mips                        qi_lb60_defconfig
-powerpc                         wii_defconfig
-mips                           ci20_defconfig
-mips                   sb1250_swarm_defconfig
 arm                       aspeed_g4_defconfig
 sh                           se7724_defconfig
 powerpc                    mvme5100_defconfig
@@ -173,7 +143,9 @@ arm                           omap1_defconfig
 powerpc                  storcenter_defconfig
 arm                       spear13xx_defconfig
 ia64                             alldefconfig
+arm                    vt8500_v6_v7_defconfig
 arm                          pcm027_defconfig
+sparc                       sparc64_defconfig
 microblaze                      mmu_defconfig
 m68k                          amiga_defconfig
 mips                        maltaup_defconfig
