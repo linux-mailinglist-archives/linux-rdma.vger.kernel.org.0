@@ -2,124 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA893F92D4
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 05:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 043AC3F9377
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 06:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244169AbhH0DTJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Aug 2021 23:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244100AbhH0DTJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Aug 2021 23:19:09 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BC5C061757;
-        Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id c79so7638585oib.11;
-        Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HkiUCwn+INwVF7n2fHOf14UuZAzqGm715MmqTg6MEAA=;
-        b=KTKbytqUsklpN0IGxbIplhgOTdO07otuT08QHpjqgrRzhF71OInEO9qOYwDktesG1H
-         kaPN/YbW0Zp7SFBmNBiNzAjraqPm+5xHdK4mozHej7eOsdOUhH8VwyNrlAYLWl2DFC0B
-         SiPBRGWDPvTnPf8Yt+54r24eemAStR+hWIuceiMu60q1JX1cNlJ/x1YKqrbQzwPzcmmS
-         LakqYFQILf+ZYBrrHhlRsoDjD9foHY8znT8dPGnL4eDD6n/xiML/LWpNGFEIx9hpyqZk
-         b/ZjQHeAqR1bIteBtb2YW4kxwcO74A4TxCq5oui3ed7tN430xALxJ42ESERFnXs9FPkH
-         HO4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HkiUCwn+INwVF7n2fHOf14UuZAzqGm715MmqTg6MEAA=;
-        b=uAjcnAIsNS1sX+1Xyc4rjmXoSTHQ0islOPqXqteBxYv0FPouBgxhOjacMYmmYMowhE
-         RA4/C0P5QRIRWrW1uN70M0RX2t/tDGd9pjcpQwAajI1tRo1We8vKGAJen84098V2EaIr
-         LYSZKVr9QM7NUwNVJWWzwFrsfaCkfe9KoieJpm7fr6GHzbOfRUdBrJZCxTn/nkOc9cFk
-         HiBILQBa/gxa1vGdYFvBLKAjxzMwkQHlE2XtmX+M0mwlv81j/G/6udfXbnf0MbBv/kCN
-         K7YNS5bZJm6/ZLbqsF9QNtcg7NoCJyKBqPyscrhwE2H/m8YDgZw4JzZrRF/L1s53c0E0
-         O5+Q==
-X-Gm-Message-State: AOAM531/Q+YQL5mam2lYBpNZUkoeu6/mxeR1F0j631PfCh6UH2afr2bb
-        bH5UiUm5hyEEW70DdmGK4cH8w2OJD/slT+xyxm5SjJex
-X-Google-Smtp-Source: ABdhPJyBeovfknMfzqNbVIN5r2wmR5Az7NPNz+7BFNncrnIwQyLmtSnS6jaeZg66/i6YQBzP9Sb1JovrdrbCJyY3Se4=
-X-Received: by 2002:aca:2814:: with SMTP id 20mr12989870oix.89.1630034300095;
- Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org> <CAD=hENcriq-mwnvzY3UdowuGpKb=Uekvk-v8Lj0G=QB-qK0kJg@mail.gmail.com>
- <20210825163219.GY543798@ziepe.ca> <5ab2f7f1-2e76-b3f2-7dee-39d38dfeb25e@gmail.com>
-In-Reply-To: <5ab2f7f1-2e76-b3f2-7dee-39d38dfeb25e@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 27 Aug 2021 11:18:08 +0800
-Message-ID: <CAD=hENcgJSFoU0a0M8HMdLRcssfAmv73LjS=2n-yrFmOhwTJKA@mail.gmail.com>
-Subject: Re: v5.14 RXE driver broken?
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234394AbhH0EQj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Aug 2021 00:16:39 -0400
+Received: from lpdvsmtp10.broadcom.com ([192.19.11.229]:33180 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233903AbhH0EQj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 27 Aug 2021 00:16:39 -0400
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 9CAFA828C;
+        Thu, 26 Aug 2021 21:15:49 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 9CAFA828C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1630037750;
+        bh=l9TC0vQFA6jMtynQXYrqTKNEolpr2oGFKu8AfyqlfmQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=l8T2TTqaZpU5aLKXe4nSpNptZfBD/oIItx4UOF+d5WyHL1gI6zAM7AoR/hT89Bcly
+         C0dpdTCwp9zC5RoctPd6ugOApEH06UklSyXDKC2sWB+xJXx0DEiF4yE3orDaVNtTz3
+         KWykfKhUpOePHnsZwOG1oMeABTMT55wVdv+o6tyU=
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org,
+        Selvin Xavier <selvin.xavier@broadcom.com>
+Subject: [PATCH rdma-rc] RDMA/bnxt_re: Disable atomic support on VFs
+Date:   Thu, 26 Aug 2021 21:15:38 -0700
+Message-Id: <1630037738-20276-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 3:03 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 8/25/21 11:32 AM, Jason Gunthorpe wrote:
-> > On Wed, Aug 25, 2021 at 11:02:14AM +0800, Zhu Yanjun wrote:
-> >> On Tue, Aug 24, 2021 at 11:02 AM Bart Van Assche <bvanassche@acm.org> wrote:
-> >>>
-> >>> Hi Bob,
-> >>>
-> >>> If I run the following test against Linus' master branch then that test
-> >>> passes (commit d5ae8d7f85b7 ("Revert "media: dvb header files: move some
-> >>> headers to staging"")):
-> >>>
-> >>> # export use_siw=1 && modprobe brd && (cd blktests && ./check -q srp/002)
-> >>> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [passed]
-> >>>     runtime    ...  48.849s
-> >>>
-> >>> The following test fails:
-> >>>
-> >>> # export use_siw= && modprobe brd && (cd blktests && ./check -q srp/002)
-> >>> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [failed]
-> >>>     runtime  48.849s  ...  15.024s
-> >>>     +++ /home/bart/software/blktests/results/nodev/srp/002.out.bad      2021-08-23 19:51:05.182958728 -0700
-> >>>     @@ -1,2 +1 @@
-> >>>      Configured SRP target driver
-> >>>     -Passed
-> >>
-> >> Can this commit "RDMA/rxe: Zero out index member of struct rxe_queue"
-> >> in the link https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-rc
-> >> fix this problem?
-> >>
-> >> And the commit will be merged into linux upstream very soon.
-> >
-> > Please let me know Bart, if the rxe driver is still broken I will
-> > definitely punt all the changes for RXE to the next cycle until it can
-> > be fixed.
-> >
-> > Jason
-> >
->
-> Jason, Bart, Zhu
->
-> I have succeeded in getting blktest to pass on 5.14. There is a bug in rxe that I had to fix. In
-> loopback mode when an RNR NAK is received it requests the requester to start a retry sequence
-> before the rnr timer fires which results in the command being retried immediately regardless of the
-> value of the timeout. I made a small change which requires the requester to wait for either the
-> timer to fire or an ack to arrive. The srp/002 test case in blktest spends a long time before posting
+Following Host crash is observed when pci_enable_atomic_ops_to_root
+is called with VF PCI device.
 
-Can this problem be reproduced with 5.13? From Bart, this problem will
-not occur with v5.13.
+PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
+ #0 [ffff9a94817136d8] machine_kexec at ffffffffb90601a4
+ #1 [ffff9a9481713728] __crash_kexec at ffffffffb9190d5d
+ #2 [ffff9a94817137f0] crash_kexec at ffffffffb9191c4d
+ #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
+ #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
+ #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
+ #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
+    [exception RIP: pcie_capability_read_dword+28]
+    RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
+    RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
+    RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
+    RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
+    R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
+    R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
+    ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+ #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
+ #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
+ #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
+    RIP: 00007f450602f648  RSP: 00007ffe880869e8  RFLAGS: 00000246
+    RAX: ffffffffffffffda  RBX: 0000000000000002  RCX: 00007f450602f648
+    RDX: 0000000000000002  RSI: 0000555c566c4a60  RDI: 0000000000000001
+    RBP: 0000555c566c4a60   R8: 000000000000000a   R9: 00007f45060c2580
+    R10: 000000000000000a  R11: 0000000000000246  R12: 00007f45063026e0
+    R13: 0000000000000002  R14: 00007f45062fd880  R15: 0000000000000002
+    ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
 
-Thanks
-Zhu Yanjun
+To avoid system crash when VFs are created, enable atomics only for PF now.
 
-> a receive in some cases which caused a soft lockup. There is a second non-bug which is the number of
-> MRs was too small to run the test. I increased these by a factor of 256 which fixed that.
->
-> My test setup has for-next + 5 recent rxe fix patches applied in addition to the RNR timing one above.
->
-> I will submit a patch for the rnr fix.
->
-> Bob
->
+Fixes: 35f5ace5dea4 ("RDMA/bnxt_re: Enable global atomic ops if platform supports")
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+---
+ drivers/infiniband/hw/bnxt_re/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
+index 4678bd6..04d5c7d 100644
+--- a/drivers/infiniband/hw/bnxt_re/main.c
++++ b/drivers/infiniband/hw/bnxt_re/main.c
+@@ -129,7 +129,7 @@ static int bnxt_re_setup_chip_ctx(struct bnxt_re_dev *rdev, u8 wqe_mode)
+ 	rdev->rcfw.res = &rdev->qplib_res;
+ 
+ 	bnxt_re_set_drv_mode(rdev, wqe_mode);
+-	if (bnxt_qplib_determine_atomics(en_dev->pdev))
++	if (!BNXT_VF(bp) && bnxt_qplib_determine_atomics(en_dev->pdev))
+ 		ibdev_info(&rdev->ibdev,
+ 			   "platform doesn't support global atomics.");
+ 	return 0;
+-- 
+2.5.5
+
