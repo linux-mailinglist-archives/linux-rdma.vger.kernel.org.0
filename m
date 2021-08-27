@@ -2,77 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB783F910E
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 01:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118D83F9144
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 02:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231509AbhHZXqf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Aug 2021 19:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhHZXqe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Aug 2021 19:46:34 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8498C061757
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Aug 2021 16:45:46 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id m21so5340237qkm.13
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Aug 2021 16:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h95rwMevQgrjwgD8IusJfbAMN++x7kUpyNxQIkWfpu4=;
-        b=Jr0RqVQXrVBwg/WplMIISJq6SObpCdm7TlOhvVmQiUCk8Nqlcg8oql467emVnIsJse
-         i80uCE8IWRQtLud2b0PhjXXJM18Pga5poJIZL4CLSi+snaeLFZ420gzoyBvAelGB2gu3
-         7HPjOFiKfmWBpjP/Vy2XErhFmMGiwkjV7ORlczX58VV4HBFjv1+Wg+TIO3Yrq0wqdPJs
-         f4Pg/5FNJDOMXv3tmiXGUJpGvsdMOR9Wb4Q0ttg4y03UUOp1KvCAzpqGVA1R6XfdK3PL
-         F0ZTPWhBrWzSwnphAISVVTrG1Z2T+8EY+JgaqPfSEaft+LI780PNt8i9MS9jfiLgLvZu
-         ZI0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h95rwMevQgrjwgD8IusJfbAMN++x7kUpyNxQIkWfpu4=;
-        b=X4dSK9dbrrER+tEbblcIe83JCS+xvlJcv+iC9++uFAwfgcmSZZq5vg/B6k4fu7b3rJ
-         glUz98YUR95d9hIvg/6F1MXM9SDQEma8vuys0oarsexroO96AkswqcN8dQD+xarURbOY
-         ILL42AAZcs8oL6R/Ve5VwJIvUuW5Pf+M4Mu5r/HMRhBOk+ZvxImCRCa9rHce025BdYX6
-         hjQEMZUGjn+oL+iOsW6PXM7JQmrIDRabXtYsi97WJOqx+/fMsxf8/a6KDJm3OMc6BcKn
-         Z5GY8tIqVpg84AVi9z3zFxpwZHy1dG3PXmxrGwehjMJMrabjG94g7bsjABpPQyiOGMDM
-         MPxg==
-X-Gm-Message-State: AOAM530KZWZXTFfWv+xDQGLs2VUiBJwJ+eGFYRbDXDB/LouLhCLz9K8E
-        1X1pnWZg4k6Nx3onIBg0fVfUYXoz7knwvQ==
-X-Google-Smtp-Source: ABdhPJxyD8pj/CMViWM+7vaIQYmIYlhkCzJpvuUx7N+jBAMeDl/orrJFFPl9W0WColwO2lStcqEV4w==
-X-Received: by 2002:a37:6103:: with SMTP id v3mr6551356qkb.12.1630021546046;
-        Thu, 26 Aug 2021 16:45:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p125sm3766669qkd.49.2021.08.26.16.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Aug 2021 16:45:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mJP44-005VLQ-N6; Thu, 26 Aug 2021 20:45:44 -0300
-Date:   Thu, 26 Aug 2021 20:45:44 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Chuck Lever III <chuck.lever@oracle.com>
-Cc:     linux-rdma <linux-rdma@vger.kernel.org>,
-        "Kornievskaia, Olga" <Olga.Kornievskaia@netapp.com>
-Subject: Re: IB_MR_TYPE_SG_GAPS support
-Message-ID: <20210826234544.GE1200268@ziepe.ca>
-References: <D87B6648-A4C4-4D0B-A390-EA1F0A240C08@oracle.com>
+        id S243823AbhH0AQr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Aug 2021 20:16:47 -0400
+Received: from esa11.hc1455-7.c3s2.iphmx.com ([207.54.90.137]:36156 "EHLO
+        esa11.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229710AbhH0AQq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 26 Aug 2021 20:16:46 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Thu, 26 Aug 2021 20:16:46 EDT
+IronPort-SDR: tDlE7IzEo2sL2cEEhTEPSYXCrgJ4+R8QbYGMVwb7PIkkITzCrNEDrmfAfFwcxqhnXeLQXQS9kn
+ B/3iAJOUl2jp0Fd9oHeFBIx1zI2RAXvzjsPfpx0kOrjB9KTIfN5Y2jfr+CFkNCbyN8meyJVXRD
+ PdlqIoh3kIIyrDuN1/tqiR9LiRC8YkLVborwMLNTWwkYKWRTIpxGvF5nq54erPWH5X0/fxL5xr
+ 92VEeqcFfNyjZXvlCkxxNBKanbhMDA6qMtl+BsyC/aK6J5NWmq5hPbW6HPEZ3mIYZUWFUOpNMF
+ hwtUlxbPsCIFj0oONAZi/tWz
+X-IronPort-AV: E=McAfee;i="6200,9189,10088"; a="21570539"
+X-IronPort-AV: E=Sophos;i="5.84,354,1620658800"; 
+   d="scan'208";a="21570539"
+Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP; 27 Aug 2021 09:08:47 +0900
+Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
+        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 2C683EB340
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Aug 2021 09:08:46 +0900 (JST)
+Received: from m3051.s.css.fujitsu.com (m3051.s.css.fujitsu.com [10.134.21.209])
+        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 87AC2C5561
+        for <linux-rdma@vger.kernel.org>; Fri, 27 Aug 2021 09:08:45 +0900 (JST)
+Received: from [10.28.62.240] (FCCLS0014044.g01.fujitsu.local [10.28.62.240])
+        by m3051.s.css.fujitsu.com (Postfix) with ESMTP id 4AF24A1;
+        Fri, 27 Aug 2021 09:08:45 +0900 (JST)
+Subject: Re: [PATCH] RDMA/core: EPERM should be returned when # of pined pages
+ is over ulimit
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Yasunori Goto <y-goto@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+References: <20210818082702.692117-1-y-goto@fujitsu.com>
+ <20210819231053.GA390234@nvidia.com>
+ <f784a0c6-27b7-5e30-b3ba-e1f4ebe95399@fujitsu.com>
+ <e3cb3dee-9c32-8024-1396-8dfd975a7b23@fujitsu.com>
+ <20210826133244.GQ1721383@nvidia.com>
+From:   =?UTF-8?B?R290b3UsIFlhc3Vub3JpL+S6lOWztiDlurfmloc=?= 
+        <y-goto@jp.fujitsu.com>
+Message-ID: <484727f0-38c1-1fdf-8eb7-d9b39b1ed2b7@jp.fujitsu.com>
+Date:   Fri, 27 Aug 2021 09:08:44 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <D87B6648-A4C4-4D0B-A390-EA1F0A240C08@oracle.com>
+In-Reply-To: <20210826133244.GQ1721383@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Aug 26, 2021 at 05:26:11PM +0000, Chuck Lever III wrote:
+On 2021/08/26 22:32, Jason Gunthorpe wrote:
+> On Fri, Aug 20, 2021 at 05:45:54PM +0900, Yasunori Goto wrote:
+> 
+>> static struct page **sev_pin_memory(struct kvm *kvm, unsigned long uaddr,
+>>     :
+>>     :
+>>          if (locked > lock_limit && !capable(CAP_IPC_LOCK)) {
+>>                  pr_err("SEV: %lu locked pages exceed the lock limit of
+>> %lu.\n", locked, lock_limit);
+>>                  return ERR_PTR(-ENOMEM);
+>>          }
+>>
+>> I think it is better than nothing. How do you think?
+> 
+> Unprivileged user space should not be allowed to cause the kernel to
+> print messages.
 
-> If GPU and CPU pages are not considered contiguous, then some
-> additional loop termination logic is needed here so that at
-> a boundary between page types, xprtrdma will simply move
-> into a fresh MR instead of coalescing.
+Hmm... Ok. I see.
 
-Upstream Linux does not have support for GPU pages in the RDMA stack.
+Thank you for your answer!
 
-Jason
+Bye,
+---
+Yasunori Goto
+
