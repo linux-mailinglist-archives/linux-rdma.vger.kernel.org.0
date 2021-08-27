@@ -2,72 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2067E3F9285
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 04:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA893F92D4
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 05:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244085AbhH0CoZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 26 Aug 2021 22:44:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57940 "EHLO
+        id S244169AbhH0DTJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 26 Aug 2021 23:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243968AbhH0CoZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Aug 2021 22:44:25 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F00C0617AD
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Aug 2021 19:43:36 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so8056568wrh.10
-        for <linux-rdma@vger.kernel.org>; Thu, 26 Aug 2021 19:43:36 -0700 (PDT)
+        with ESMTP id S244100AbhH0DTJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 26 Aug 2021 23:19:09 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3BC5C061757;
+        Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id c79so7638585oib.11;
+        Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=JcCnNkxtHweN6ApEPCItRB3oqJyAr4ORMY/4f0Zly6Y=;
-        b=oQICvEVdYwAUqNTzWpb8/l7kSvds45XXdlddo87uN1NJQXofX3ebHttVEzZReNjahL
-         3Kx/WAP+NTVh6RImZtFU7EKGlmBkRKEisOBYCmX2oIxO4bMKFfBPhMxckANR9U6csEGA
-         2JLFumqEzSBeli8e+LuUaG2BrNtLOQrVMGlyfg886jaYttJW2XvrEHVxVkeoCbr8txPa
-         AkNhhuU4NqQr+tGEZtonwKhZxM0FveqLUKfN8i243Fi2DJPgIYhBgP5iWEpDPb+bpOQ+
-         XRz0fTPtn2Tttrv6cDacJ3R3lGtdMc4Z6CiS4Ott/Yk7z7dlcz7crDD8UYGfUmNeqToY
-         sqJA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HkiUCwn+INwVF7n2fHOf14UuZAzqGm715MmqTg6MEAA=;
+        b=KTKbytqUsklpN0IGxbIplhgOTdO07otuT08QHpjqgrRzhF71OInEO9qOYwDktesG1H
+         kaPN/YbW0Zp7SFBmNBiNzAjraqPm+5xHdK4mozHej7eOsdOUhH8VwyNrlAYLWl2DFC0B
+         SiPBRGWDPvTnPf8Yt+54r24eemAStR+hWIuceiMu60q1JX1cNlJ/x1YKqrbQzwPzcmmS
+         LakqYFQILf+ZYBrrHhlRsoDjD9foHY8znT8dPGnL4eDD6n/xiML/LWpNGFEIx9hpyqZk
+         b/ZjQHeAqR1bIteBtb2YW4kxwcO74A4TxCq5oui3ed7tN430xALxJ42ESERFnXs9FPkH
+         HO4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=JcCnNkxtHweN6ApEPCItRB3oqJyAr4ORMY/4f0Zly6Y=;
-        b=fe+C9HZa3yn+l8hEJ8nbLvINEl1vlXz0kRmBamh1bylPlgPLRSqoiHTrxgyi72mxvx
-         AuLL1dSLs2K6Fo3/xjmnGI/BlAmZErfKfWba9A870gjUeLP4/eAWs5eZ4MM19W5yRQ5J
-         6S+69SLvikv2Q/4CRTPqWKoFfGEmnutB6cN+RWZi/nY67LKxtrtXhjE7zcOXamByfKbI
-         jyYXhv/Es5KlLp/jCBrpvqiYGUkzTr/1N16sf08bXmD+NJAaQjNV5/QbJB2Blpjhto0G
-         mwE8QKy22jBCRQ1qJ67V8PI1aOTf6YfwF5m6v+V3P4OsjYsjDASRM43NGfSzaMlawz4b
-         KQdQ==
-X-Gm-Message-State: AOAM531KFiBxje7ML2J+AIWhOiNr4sKyHwC/jHVOuXv6yOkUBuZInp3m
-        5MV7N7+kEDZTVRXhHxyYkJA6zVOF8IKeYgc4uwk=
-X-Google-Smtp-Source: ABdhPJxxHn36mD9X7gnFi/vDQ/NT94z4Z9Y/VJNvZu6F0svpW3RYr67hK5dD71rLERqFPGnIUeVbU7wOTTr1I7D+6PY=
-X-Received: by 2002:adf:f984:: with SMTP id f4mr7452796wrr.331.1630032215135;
- Thu, 26 Aug 2021 19:43:35 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HkiUCwn+INwVF7n2fHOf14UuZAzqGm715MmqTg6MEAA=;
+        b=uAjcnAIsNS1sX+1Xyc4rjmXoSTHQ0islOPqXqteBxYv0FPouBgxhOjacMYmmYMowhE
+         RA4/C0P5QRIRWrW1uN70M0RX2t/tDGd9pjcpQwAajI1tRo1We8vKGAJen84098V2EaIr
+         LYSZKVr9QM7NUwNVJWWzwFrsfaCkfe9KoieJpm7fr6GHzbOfRUdBrJZCxTn/nkOc9cFk
+         HiBILQBa/gxa1vGdYFvBLKAjxzMwkQHlE2XtmX+M0mwlv81j/G/6udfXbnf0MbBv/kCN
+         K7YNS5bZJm6/ZLbqsF9QNtcg7NoCJyKBqPyscrhwE2H/m8YDgZw4JzZrRF/L1s53c0E0
+         O5+Q==
+X-Gm-Message-State: AOAM531/Q+YQL5mam2lYBpNZUkoeu6/mxeR1F0j631PfCh6UH2afr2bb
+        bH5UiUm5hyEEW70DdmGK4cH8w2OJD/slT+xyxm5SjJex
+X-Google-Smtp-Source: ABdhPJyBeovfknMfzqNbVIN5r2wmR5Az7NPNz+7BFNncrnIwQyLmtSnS6jaeZg66/i6YQBzP9Sb1JovrdrbCJyY3Se4=
+X-Received: by 2002:aca:2814:: with SMTP id 20mr12989870oix.89.1630034300095;
+ Thu, 26 Aug 2021 20:18:20 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a1c:a341:0:0:0:0:0 with HTTP; Thu, 26 Aug 2021 19:43:34
- -0700 (PDT)
-From:   johno williams <johnow614@gmail.com>
-Date:   Thu, 26 Aug 2021 14:43:34 -1200
-Message-ID: <CADzD+E34REXhgwwNE0=Cnh1Mo3Fs-9k6yKtyGEH7UqL8+FcxDQ@mail.gmail.com>
-Subject: CONFIRM YOUR DETAILS TO ENABLE US START,
-To:     undisclosed-recipients:;
+References: <c3d1a966-b9b0-d015-38ec-86270b5045fc@acm.org> <CAD=hENcriq-mwnvzY3UdowuGpKb=Uekvk-v8Lj0G=QB-qK0kJg@mail.gmail.com>
+ <20210825163219.GY543798@ziepe.ca> <5ab2f7f1-2e76-b3f2-7dee-39d38dfeb25e@gmail.com>
+In-Reply-To: <5ab2f7f1-2e76-b3f2-7dee-39d38dfeb25e@gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Fri, 27 Aug 2021 11:18:08 +0800
+Message-ID: <CAD=hENcgJSFoU0a0M8HMdLRcssfAmv73LjS=2n-yrFmOhwTJKA@mail.gmail.com>
+Subject: Re: v5.14 RXE driver broken?
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear Beneficiary,
+On Fri, Aug 27, 2021 at 3:03 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> On 8/25/21 11:32 AM, Jason Gunthorpe wrote:
+> > On Wed, Aug 25, 2021 at 11:02:14AM +0800, Zhu Yanjun wrote:
+> >> On Tue, Aug 24, 2021 at 11:02 AM Bart Van Assche <bvanassche@acm.org> wrote:
+> >>>
+> >>> Hi Bob,
+> >>>
+> >>> If I run the following test against Linus' master branch then that test
+> >>> passes (commit d5ae8d7f85b7 ("Revert "media: dvb header files: move some
+> >>> headers to staging"")):
+> >>>
+> >>> # export use_siw=1 && modprobe brd && (cd blktests && ./check -q srp/002)
+> >>> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [passed]
+> >>>     runtime    ...  48.849s
+> >>>
+> >>> The following test fails:
+> >>>
+> >>> # export use_siw= && modprobe brd && (cd blktests && ./check -q srp/002)
+> >>> srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [failed]
+> >>>     runtime  48.849s  ...  15.024s
+> >>>     +++ /home/bart/software/blktests/results/nodev/srp/002.out.bad      2021-08-23 19:51:05.182958728 -0700
+> >>>     @@ -1,2 +1 @@
+> >>>      Configured SRP target driver
+> >>>     -Passed
+> >>
+> >> Can this commit "RDMA/rxe: Zero out index member of struct rxe_queue"
+> >> in the link https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git/commit/?h=wip/jgg-for-rc
+> >> fix this problem?
+> >>
+> >> And the commit will be merged into linux upstream very soon.
+> >
+> > Please let me know Bart, if the rxe driver is still broken I will
+> > definitely punt all the changes for RXE to the next cycle until it can
+> > be fixed.
+> >
+> > Jason
+> >
+>
+> Jason, Bart, Zhu
+>
+> I have succeeded in getting blktest to pass on 5.14. There is a bug in rxe that I had to fix. In
+> loopback mode when an RNR NAK is received it requests the requester to start a retry sequence
+> before the rnr timer fires which results in the command being retried immediately regardless of the
+> value of the timeout. I made a small change which requires the requester to wait for either the
+> timer to fire or an ack to arrive. The srp/002 test case in blktest spends a long time before posting
 
-Following your pending fund for years and the delay you imposed in
-receiving it,We have called back your fund to this office as directed
-by the Finance Office and we will be paying you directly through the
-BANK OF AMERICA.(BOA) NEW YORK BRANCH AND ALL YOU NEED NOW IS TO
-RE-CONFIRM YOUR BANKING DETAILS FOR THE TRANSFER IMMEDIATELY WITHOUT
-ANY FURTHER DELAY.
+Can this problem be reproduced with 5.13? From Bart, this problem will
+not occur with v5.13.
 
-NOTE THAT WE WILL PAY ALL THE EXPENSES INVOLVED FOR YOU TO RECEIVE
-THIS FUND AND ALL WE NEED FROM YOU IS YOUR CO-OPERATION.
+Thanks
+Zhu Yanjun
 
-Send your full details with Banking details to enable us commence the
-transfer process immediately through the BOA BANK IN NEW YORK,USA OR
-DO YOU WANT TO RECEIVE THIS FUND VIA ATM CARD ????????.
-
-John O.Williams.
+> a receive in some cases which caused a soft lockup. There is a second non-bug which is the number of
+> MRs was too small to run the test. I increased these by a factor of 256 which fixed that.
+>
+> My test setup has for-next + 5 recent rxe fix patches applied in addition to the RNR timing one above.
+>
+> I will submit a patch for the rnr fix.
+>
+> Bob
+>
