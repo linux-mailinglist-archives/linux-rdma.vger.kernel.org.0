@@ -2,62 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DAA3F9E3F
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 Aug 2021 19:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F893FA2A7
+	for <lists+linux-rdma@lfdr.de>; Sat, 28 Aug 2021 03:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238454AbhH0Rrs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 Aug 2021 13:47:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhH0Rrr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Aug 2021 13:47:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44CE2C061757;
-        Fri, 27 Aug 2021 10:46:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=svL56QiGuEqf74xWCkOR06NnNiaAxd4UTs5cmuB+uic=; b=PT+RxIeEjsZlkUc1VjNjOaOMiF
-        bZc/XQ7l9FKq6rVIFXSEbJGKnq/ZCw/6tcc7EpK+3fs6wfmcsx5+UVa/C7UK/Cg2imNvGtEFi956B
-        glG5v0qAWJ2VOwyF7cwesHoezvHmUg7FOQqXiw/xoW76HlrRC1ypjm0V4+x+XhySc8AJdPv+SammD
-        UxOsNMxA/aG3bjansIeQLlSizbEdDvl7IoRiZCv7Px29LgzgZw6ZFt/rL4Kr2A6wyCmQrXmkH1414
-        M+NFYJIjyzVOudLlpNWzTW9qaimcwDkjR0WQwCQ9WRW98S0ZbkST8FYBGVUXreaLz4+BSgTHpbo8d
-        qPjOWg2A==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mJfvD-00EozX-1t; Fri, 27 Aug 2021 17:45:54 +0000
-Date:   Fri, 27 Aug 2021 18:45:43 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Li Zhijian <lizhijian@cn.fujitsu.com>, linux-mm@kvack.org,
-        linux-rdma@vger.kernel.org, akpm@linux-foundation.org,
-        jglisse@redhat.com, yishaih@nvidia.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/hmm: bypass devmap pte when all pfn requested flags
- are fulfilled
-Message-ID: <YSkkx6Tci3n+qN54@infradead.org>
-References: <20210827144500.2148-1-lizhijian@cn.fujitsu.com>
- <20210827162852.GL1200268@ziepe.ca>
+        id S232910AbhH1BAp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 Aug 2021 21:00:45 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:47504 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232693AbhH1BAo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 Aug 2021 21:00:44 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AEQLKFazEJguRdXz/ox3XKrPwEL1zdoMgy1kn?=
+ =?us-ascii?q?xilNoH1uA6ilfqWV8cjzuiWbtN9vYhsdcLy7WZVoIkmskKKdg7NhXotKNTOO0A?=
+ =?us-ascii?q?SVxepZnOnfKlPbexHWx6p00KdMV+xEAsTsMF4St63HyTj9P9E+4NTvysyVuds?=
+ =?us-ascii?q?=3D?=
+X-IronPort-AV: E=Sophos;i="5.84,358,1620662400"; 
+   d="scan'208";a="113590778"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 28 Aug 2021 08:59:53 +0800
+Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
+        by cn.fujitsu.com (Postfix) with ESMTP id 33F9B4D0D4BC;
+        Sat, 28 Aug 2021 08:59:52 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Sat, 28 Aug 2021 08:59:51 +0800
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Sat, 28 Aug 2021 08:59:52 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Sat, 28 Aug 2021 08:59:50 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <linux-mm@kvack.org>, <linux-rdma@vger.kernel.org>,
+        <akpm@linux-foundation.org>, <jglisse@redhat.com>, <jgg@ziepe.ca>,
+        <hch@infradead.org>
+CC:     <yishaih@nvidia.com>, <linux-kernel@vger.kernel.org>,
+        Li Zhijian <lizhijian@cn.fujitsu.com>, <stable@vger.kernel.org>
+Subject: [PATCH v2] mm/hmm: bypass devmap pte when all pfn requested flags are fulfilled
+Date:   Sat, 28 Aug 2021 09:04:41 +0800
+Message-ID: <20210828010441.3702-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827162852.GL1200268@ziepe.ca>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 33F9B4D0D4BC.AE3AF
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 01:28:52PM -0300, Jason Gunthorpe wrote:
-> > +	/*
-> > +	 * just bypass devmap pte such as DAX page when all pfn requested
-> > +	 * flags(pfn_req_flags) are fulfilled.
-> > +	 */
-> > +	if (pte_devmap(pte))
-> > +		goto out;
-> 
-> I liked your ealier version better where this was added to the
-> pte_special test - logically this is about disambiguating the
-> pte_special and the devmap case as they are different things.
+Previously, we noticed the one rpma example was failed[1] since 36f30e486d,
+where it will use ODP feature to do RDMA WRITE between fsdax files.
 
-Yes, I think that is much more logical.  Also please capitalize the
-first word in multi-line comments.
+After digging into the code, we found hmm_vma_handle_pte() will still
+return EFAULT even though all the its requesting flags has been
+fulfilled. That's because a DAX page will be marked as
+(_PAGE_SPECIAL | PAGE_DEVMAP) by pte_mkdevmap().
+
+[1]: https://github.com/pmem/rpma/issues/1142
+
+CC: stable@vger.kernel.org
+Fixes: 405506274922 ("mm/hmm: add missing call to hmm_pte_need_fault in HMM_PFN_SPECIAL handling")
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+---
+ mm/hmm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/mm/hmm.c b/mm/hmm.c
+index fad6be2bf072..d324fb1a5352 100644
+--- a/mm/hmm.c
++++ b/mm/hmm.c
+@@ -295,10 +295,13 @@ static int hmm_vma_handle_pte(struct mm_walk *walk, unsigned long addr,
+ 		goto fault;
+ 
+ 	/*
++	 * Bypass devmap pte such as DAX page when all pfn requested
++	 * flags(pfn_req_flags) are fulfilled.
+ 	 * Since each architecture defines a struct page for the zero page, just
+ 	 * fall through and treat it like a normal page.
+ 	 */
+-	if (pte_special(pte) && !is_zero_pfn(pte_pfn(pte))) {
++	if (!pte_devmap(pte) && pte_special(pte) &&
++	    !is_zero_pfn(pte_pfn(pte))) {
+ 		if (hmm_pte_need_fault(hmm_vma_walk, pfn_req_flags, 0)) {
+ 			pte_unmap(ptep);
+ 			return -EFAULT;
+-- 
+2.31.1
+
+
+
