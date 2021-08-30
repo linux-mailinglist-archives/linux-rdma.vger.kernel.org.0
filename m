@@ -2,154 +2,176 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12713FAF97
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 Aug 2021 03:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C038F3FB158
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 Aug 2021 08:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236148AbhH3Bmi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 29 Aug 2021 21:42:38 -0400
-Received: from esa8.fujitsucc.c3s2.iphmx.com ([68.232.159.88]:52249 "EHLO
-        esa8.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232077AbhH3Bmi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 29 Aug 2021 21:42:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1630287706; x=1661823706;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=uVme5BmdFuSxQmqj9jmQO4NAOPxFHrcZBdOe9bol1Q0=;
-  b=KT9Kno/F9fUz6VJDx7M0rWdPcgsv0E6S7oNxAQHVAKGcoTAhcygGb79v
-   W0j6ibuPdIKlXGRByGuqF9PDWtdGi2MfoiwlwjC2YOJntAieUDcoiUT7h
-   MlNgGkFf1Rb2Mt81+/R/rJQ357gij57nWX37eMeWoX3U/kLiFpduvzorB
-   jpalbfWZCBiWXkIRzU81EYlsLdnIvY6XswCgc2IkX4OtpD1ZSmIVNiiRE
-   E4k/QcijppByptyYBS90Tch9bsUYgyHMsRD2oFTpE6lc+qGR75ndaNtF0
-   FbHnWdPP3VLDHS3iPiYDgwApam3H6ZYfBDrxXslIeOENTNv+t/ZvYfVMN
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10091"; a="37965155"
-X-IronPort-AV: E=Sophos;i="5.84,362,1620658800"; 
-   d="scan'208";a="37965155"
-Received: from mail-ty1jpn01lp2052.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.52])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2021 10:41:43 +0900
+        id S232358AbhH3GrW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 Aug 2021 02:47:22 -0400
+Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:20449
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231839AbhH3GrV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 30 Aug 2021 02:47:21 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N2OOaZwf/dQjJ1Zb5UA42/TVbLGGoCrDLUuHB5qNbvM7RKjCKBXOEN4qKHhf3yidekO29F3SUT7SeebSwVAg21AZ79SPt1ZiTL9ni/PevqybQ9EMYVPvJLm8iwKQccls+ytHEpsb7QXAuI6Sww+X+qRSxRvPYogKwQQ4EDuTZb6R0RiYixOUFdetlcfzDzzrLB9dHTvRj3nurRXtykojtxDb8ZGCQmUrWFCAi01IFGkdOKc5KBIBuwyHKELTjx6nWp3rbA1k4Aee4icdjSaAdno7Mw8FBYm1LLvKk7SElIzrSOW4Qk2F2rSDc2GqAzhwqTePHZtnS/B8YF+c8wvE6w==
+ b=dHnbX6jQ/kZBRJjY7L29r/VHZ4NQ2AdzoOP4x0nAAC4Sz/oXfU6H0mK/XaBzKvIioc5Z+O9d0vr/C+/prAnaTwjJbeotE4W6PomGJhmerH2SqR9jyzxeFVKmywLQbYTHKQqWDfSKaYz4BdDR8NkuxsxcVHkRR/wzOrZfiVV8nsgY9HbBx89HfJ/rIjWh7abCBR/Ocp4awlJMvZVyGFqVvPldtDfJD2r39kHSDVlpAUdgEv8eUJxI7AF5PtngeG6GB5QXGS6zHx19EJxC/h/JpWrYXGmDz63GPfSE0JWhdFU0EKjGQFhb6tllPcX+DNbrCOaa6UzbKFfgZKMrRhU5+w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uVme5BmdFuSxQmqj9jmQO4NAOPxFHrcZBdOe9bol1Q0=;
- b=GfRZ11vWZl/YjweFUhCgZVZ9NU+xmaMDIyhqFnmE2AjK8bz+XmgqXWiqAhzCVcGhPFzRxvd+TGtsErZ/Ylh6izv6sMha0xfjZrGdTufXNc95ZxNsWRhYunGYxbE1cUqHWaRLIO+EbW14+LXh+HXemYBxEfvCaitKT33f4gwkPHsdND9ZAXiN9t8PitDKmbWkyJE1eWZqn8j+evRCKbJFVv1wlofKZYbCJNMwLI1P4HsWKyq+yHZWRMdbtsTwFkfrl/zoAGeqkBB75X+577tyg+WF0yZ7Q1kVPur/ZIMmD50tIy+wmnYryIISTQBx6YGFix7iw7XrAN34MVWyhJMF4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ bh=cyPr+9GwDnuZdx5DEk/HT1JvcOmX0piAwrSCuudENmY=;
+ b=STEwWJS4w1KkEtzQyYpFwRqOBQvtXGKoAEC4sWLBZ3wgN7D532vAJzVvVx8ZngKlaUQ10jXOn4in3raMCQJA/z+ArVZVdpR13pCXoXeuzYCzkp724wx2YIfJZJ4CUFfW7P0c0LncYTK4D5PsoMvU/U4N/+w/132fo8E5UDChWkOQZjZeXL1Vwn+MHvxEqGkJaC/PuWn5tLV1RI3IERvd50PdxQ40NlxWnYaUQ1QZmHxAsR0RRNAjhh5Q6kPGt4tUXrQr/9IEz+vQX+RCIlI5Y5ppi9M8Mg3eu+XmaVvk7Qchn/DLQ7mD6iuaPJlW/gWE3vPq1wuCo83RXEhjqkhDWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.36) smtp.rcpttodomain=oracle.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uVme5BmdFuSxQmqj9jmQO4NAOPxFHrcZBdOe9bol1Q0=;
- b=HO5GxQ+bqa5NUqhE694ooDFjUNUCxfCLIM88pfIXJsjN5F4bx+FUL69ccfhLP85dn9Bj2BMuhqRp6WVFTGT0xFWUskrElai40R4Hqy/gSeKkrHSskyRBKIukJv6mbh48SFAjaOip34yQqX5XRVcaFMF98KE5JWSMQE+3KRPYRN0=
-Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com (2603:1096:604:104::9)
- by OSAPR01MB4500.jpnprd01.prod.outlook.com (2603:1096:604:69::10) with
+ bh=cyPr+9GwDnuZdx5DEk/HT1JvcOmX0piAwrSCuudENmY=;
+ b=lmFAc4JAnGvflFy9fKtihaA3YL2bj23sJayiq27F50x5YUuL/63W4GFWlxSz10EPI3xtSVA2ZMmB24+X2WVsBZRB1mNOeCeqAKtYt3GuPGbxQFA5dXClLLrQw0ll7d2YxCnfGXhN5S1Yv0jKgBw7eNBw2V/akaEFV+8sAhxI0ZFlTw562CukD0ZwSpDcJawur1K/Ij7W5poAnk5xY0XHhOpWoBrRNLBsQ5DFHSx5PBd+2hXH+I+ngSuPN3S9Y4Q3ze59K7XgdNdgyHggz/8jKSD22Zub3ZNbDRyLtVGC/pC2NkgT4zM0ls4KhcNyMC0zJYZ5BP9LoYKridKxzJs+Ug==
+Received: from BN9PR03CA0850.namprd03.prod.outlook.com (2603:10b6:408:13d::15)
+ by BN6PR1201MB0227.namprd12.prod.outlook.com (2603:10b6:405:4e::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.19; Mon, 30 Aug
- 2021 01:41:40 +0000
-Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com
- ([fe80::8070:55d2:d09b:14a2]) by OS0PR01MB6371.jpnprd01.prod.outlook.com
- ([fe80::8070:55d2:d09b:14a2%6]) with mapi id 15.20.4457.024; Mon, 30 Aug 2021
- 01:41:39 +0000
-From:   "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: Re: [PATCH 0/3] RDMA/rxe: Do some cleanup
-Thread-Topic: [PATCH 0/3] RDMA/rxe: Do some cleanup
-Thread-Index: AQHXl/wNmuOngg/VRkGQ6TrFRIfIo6uHbrqAgAPhpAA=
-Date:   Mon, 30 Aug 2021 01:41:39 +0000
-Message-ID: <612C3750.9040705@fujitsu.com>
-References: <20210823092256.287154-1-yangx.jy@fujitsu.com>
- <20210827142513.GA1359754@nvidia.com>
-In-Reply-To: <20210827142513.GA1359754@nvidia.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 935e9ab1-671f-457e-09b1-08d96b575016
-x-ms-traffictypediagnostic: OSAPR01MB4500:
-x-microsoft-antispam-prvs: <OSAPR01MB4500633C1C9EEB59575FD43B83CB9@OSAPR01MB4500.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: yTqvbSKQWUjhpUbItkXaGBD/YoyJpc8VYMtGpHTsoboeUGQdH8ptO1b7mXsWwV0nkVwBIxcS+bNvaJjCxhEKYCL4yJsaWBSdDY6pZ0JciJPjuJYZ4/UL7Dv33O4eQdFOi3AeToWIde+z8LCZ3G7OFrnuuGbxWGPplcqFjO8annE9b0mp3syfywh/nuJdvdIAU/81eYXEfpxPB6OEk/DK3H/Z7Kwjoy0ac5ep9B2e7+5wKLrANPqLnts5qtPY0tm5psKKYHwVprcoZTRMFiGlSqFVJ20KwwqD45re9OKjHtaT/+ggKNDre6Nc5jEgfg4PWQ+Gg4fyTX5Oe+v/5lAHNONuurMjOMYy8o9cYYYrsdkw6mVMcAGOQFi1KODskSSrM/H9WtdmecDp51Y2Edegv+qsrKuCZ3sqAmoJQS3okOTbiTZE0eWTNumAGBaPFVzzjr1aBaepFbar54itJJf0hlDofHjmKZBvTMsnbws9xCUEX+1MwY/+ZN85X21AjlRY5Dto+GEREW6rKJ9qQQsTINuvYnBFIdkKfZDbSFYuLLFywmJmuJcx5ujJ7U9s+NATxFgk0nwMM2vQpxcU0T9MQzsyeoJ+euQvTbwbyHZraaWOX4VjWAIZ6i2sInmUFMdjYMLaJiPYF+DXT3+7SX3hWCn9JLlaZaMNrs3vtnRyllmAahZXdS/PGA7OPdKjqKiNxvXZvFVB2JcqATZyboVHPQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB6371.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(376002)(346002)(396003)(136003)(87266011)(2906002)(83380400001)(6916009)(478600001)(2616005)(122000001)(38100700002)(5660300002)(6486002)(54906003)(66946007)(26005)(66446008)(33656002)(6512007)(85182001)(316002)(38070700005)(8936002)(86362001)(4744005)(64756008)(53546011)(6506007)(66476007)(186003)(76116006)(66556008)(4326008)(8676002)(71200400001)(36756003)(91956017);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?dFVBdTZKUElaWjZ6Um96NlVUMnhDdlptOGQ0UmZLdnpzU2wvRGZjbFRsb3h5?=
- =?gb2312?B?QUdTNDVRNS9maVVKR0t3U2F1MUxJZ3ZqNW5XclIyVFpaVHZxcElLS1J6R3BK?=
- =?gb2312?B?WStuMjlsVzhka3NYYWZsYjZoYnNDa2ZRZ0p3dzgzWDEweGRLOEpCVEN6WlNa?=
- =?gb2312?B?QjhCVjgvZzRKQUJIVERyc0RIMWhxN2dFb25ueDlSWFNKVnBEYk04djJMVVM2?=
- =?gb2312?B?SzV6eFA2d3RMNFQ1amp1VjdON0tjOGJPMitZZ0IzS1M2c2xmNGpaNm1GSnpC?=
- =?gb2312?B?MDlLdnRIVExnK1ZGK3l3T2tDdlhidTh6S1JFQ1JQSHUySTdxWjlkMTJ1bEFW?=
- =?gb2312?B?T0I4eUQ5MU5GSkhrMHNFL2J5a0NIM1lkKys3QzFKOG92dXNEWWt2U0thMHZv?=
- =?gb2312?B?REVYZHhWV0hGWjFYUG84UUdhMmxYTlFndWtSdWhTZksvWldRSlo1ejhvbFhT?=
- =?gb2312?B?NnpYanpoUVZZMUNwVDlrZUhkY3o0N2JXV0hWbG93UjIxcFJJWlhYd25Ed1ox?=
- =?gb2312?B?OEQ5VS9LNnJJM1dudnVEMHpJc1FXcUlQVWMrak16UFczREJNeGFHUnlKNFZo?=
- =?gb2312?B?TE1vQUxJMW1takhTVTNnRVNNWE1Yc05VVDczSTQ3dnpSbEZSZWVmQld6Wk1G?=
- =?gb2312?B?SDJSUCtXTjdGc2N4YzFMU3dPZUVib3NXWDJtYWhCNzNBWFZnbmRiTDNxY2dv?=
- =?gb2312?B?a0FhU3R0S2V2TDZXdEtDVUtUYnR5NjFMYkRNVWlpWDd6QkJ3b0x3WjI5bEpL?=
- =?gb2312?B?NW9mbnREUHkrTmJQVnluSjFjUjFobVNsNjVpR0xEbHA2aE15OE1LZjczYmRP?=
- =?gb2312?B?cUQzWUEvVUZwTWE0ZzdadFFaMHNmVUpseVBRL0tPZGcwY0NwUEZMVmc4b2tG?=
- =?gb2312?B?cHZGZ2RidHBDUTVJTEhtWjNhNi8rcU1aTGtsUGhiVlp0VEFrQjRHVWRpTDln?=
- =?gb2312?B?MHM3MTk4ZVV1WXgyRlhKdlpkMWIyc1ltL25pZng4QnZONlNKYnJWQnNzNVQ0?=
- =?gb2312?B?VGZPMElCdEc1TVJqWVhNWVNNN1BpU1VqRnV0NG9kR05Iai8yaGJNbmdwSDJ0?=
- =?gb2312?B?OVBNUzg4dWc0Sk5TN2RvSHhIVU0zWGx3dUQzNG4zUDVpSWhXMWZyYTVaRi9X?=
- =?gb2312?B?NThuMkJGTkI2NmlKQk5tZU5VMnFza1ZqYVpDTjgwb0MwbmIySjEyWlBLaE1I?=
- =?gb2312?B?Z0IyMytUNHhBVE41K0E3Q1FNK1M4ajdiVkNDWHBobWpnSStNWks5T0tzMm1Q?=
- =?gb2312?B?VDZrbTVXcVZQd1lOZEFISTBSSC9ZZkFEVTNVRmU2NjFVUFRRQVRPajZQWmxz?=
- =?gb2312?B?czVhY1IyRlRJcnd4V0EzUU1xZEowcmhUU0RVcHpwSi9vdnJGY012OThZK1Zr?=
- =?gb2312?B?bDFSM1lJU3BDd0YxQjltbzQxYVhzOWdJVWcwYm0wa3hKV0duYzJKQVdnTWxT?=
- =?gb2312?B?MVV4Z0dkQlpOMnIrangzNmJKOVVmVEc4ZjlxdmN4VkFMWk4xZmQ3M2xqMVNL?=
- =?gb2312?B?VTN5L3VPNmZhS0NyaWNteWozakFRNHkrK2RpRm9PSGxBYmJqM09qUjhjLzkx?=
- =?gb2312?B?NjBFV3B0QWN4SlpQbjh1Y1VNeWk4TWxiOFhNbU1tNHdhUUl4djFUd1dsNm42?=
- =?gb2312?B?SW42VHAxNkZnTWc5bmthL0hnVng4VE9LS2E1bkZBV0c2dndCUWFYT2tDaW51?=
- =?gb2312?B?cEZZbERnSlVNR2x6aUhNcXlZNENleWdoR2pUZHNzbmphSTlET3pjbTNtN25Q?=
- =?gb2312?Q?Qe3qByStmSvnRRzUBjQaQ1oodh6tEqxYcv5CMRi?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-ID: <37D900BD18312D4DA538DDD9283ED7A1@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23; Mon, 30 Aug
+ 2021 06:46:15 +0000
+Received: from BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:13d:cafe::55) by BN9PR03CA0850.outlook.office365.com
+ (2603:10b6:408:13d::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4457.23 via Frontend
+ Transport; Mon, 30 Aug 2021 06:46:15 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.36)
+ smtp.mailfrom=nvidia.com; oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.36 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.36; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.36) by
+ BN8NAM11FT016.mail.protection.outlook.com (10.13.176.97) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4457.17 via Frontend Transport; Mon, 30 Aug 2021 06:46:15 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL101.nvidia.com
+ (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 30 Aug
+ 2021 06:46:14 +0000
+Received: from [10.212.111.1] (172.20.187.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 30 Aug 2021 06:46:14 +0000
+From:   Dmytro Linkin <dlinkin@nvidia.com>
+Subject: Re: [bug report] net/mlx5: E-switch, Allow setting share/max tx rate
+ limits of rate groups
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <linux-rdma@vger.kernel.org>
+References: <20210825085655.GA28138@kili>
+Message-ID: <40790b29-35e6-30d2-2656-5b2efac7db94@nvidia.com>
+Date:   Mon, 30 Aug 2021 09:46:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB6371.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 935e9ab1-671f-457e-09b1-08d96b575016
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Aug 2021 01:41:39.9026
+In-Reply-To: <20210825085655.GA28138@kili>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 82593bc3-59cd-4ff4-bc7e-08d96b81dd4c
+X-MS-TrafficTypeDiagnostic: BN6PR1201MB0227:
+X-Microsoft-Antispam-PRVS: <BN6PR1201MB0227C9DC2968B12F5B78540DCBCB9@BN6PR1201MB0227.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1775;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6H7KPR0lHvq/jWGpH8uNwSkvtbW84zwxlTvk9F+HNR4IqfYerLBaC+8j+VwKKi4vcTAsyv+fYhBteWOdpBnmc8Dn+mbL1dg3Gjq59v00xVyFqQdhRmDo5kAIP/YxST8DJJ+jF/SXxcgjIkiinKbYbBz9UwNs7LFDU6FJ5hZM9u04RLIk47o9K148Iwei6AgbA2ZNjbNJAJYSlpCISFUAra9M9J+lVfhdSfVrWMTwWUsFUlEK03AB3KAhxRINN514jrvt3HR3GfiL0cGzpPlxxKEIOFx2WWcKvv6GFFmkGN51yYlXUvvvmh6bKeCJSjbRMOxEwLCYi9Cx9d/80zFuWlrNyo+U4eVnrHtwx2WbR//sGnYiQ37+IoqqbW7y/UIkTP9m7W84zHmVyYZRgch4SGnHFfkjSVjoCa3LUDgJh5TE6kxyMoacUiweNvX99ZfLEfuZ5Ms/aY0gg2z5k02VwpVMJEQpIf87tBrqOmxdbcgBJ+EiPDqpGmYR79KyGCRtUrmnidw1FqBgqIgEe9I7eh0MMZjR0p3ifD9GyirD5tKokVDxKjmC+0QI02/5q1nAX2DZCA94FLSufLdZzG+5/bv6wfH5zmRi7wh9kykwv0bfQhO8LA3ADXXbMwDAfUDCihwDEUM2U48RxgW+sec3jwsMPaiqluc/WxbWnp9RXJ+SJCioxx7PXdE8d85TK+cpu8oe2ljQWTg6i2aRLbaUOyyKWNDrGYeSU5+je/Q1d+8=
+X-Forefront-Antispam-Report: CIP:216.228.112.36;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid05.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(39860400002)(346002)(136003)(36840700001)(46966006)(8936002)(53546011)(4326008)(6916009)(2906002)(336012)(83380400001)(5660300002)(8676002)(316002)(16576012)(7636003)(70586007)(36756003)(36906005)(82740400003)(186003)(356005)(2616005)(36860700001)(26005)(70206006)(82310400003)(31686004)(426003)(47076005)(86362001)(31696002)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Aug 2021 06:46:15.5613
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Xx3tOoptzYe/K29QKLfVN1EeCv0XGc4evUlmp85o8HvvUWrTtKO8dM7yI9urz63QlIqfhup9UsxkiHWjJLvCwg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB4500
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82593bc3-59cd-4ff4-bc7e-08d96b81dd4c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.36];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT016.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0227
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAyMS84LzI3IDIyOjI1LCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+IE9uIE1vbiwgQXVn
-IDIzLCAyMDIxIGF0IDA1OjIyOjUzUE0gKzA4MDAsIFhpYW8gWWFuZyB3cm90ZToNCj4+IFhpYW8g
-WWFuZyAoMyk6DQo+PiAgICBSRE1BL3J4ZTogUmVtb3ZlIHVubmVjZXNzYXJ5IGNoZWNrIGZvciBx
-cC0+aXNfdXNlci9jcS0+aXNfdXNlcg0KPj4gICAgUkRNQS9yeGU6IFJlbW92ZSB0aGUgY29tbW9u
-IGlzX3VzZXIgbWVtYmVyIG9mIHN0cnVjdCByeGVfcXANCj4+ICAgIFJETUEvcnhlOiBDaGFuZ2Ug
-dGhlIGlzX3VzZXIgbWVtYmVyIG9mIHN0cnVjdCByeGVfY3EgdG8gYm9vbA0KPj4NCj4+ICAgZHJp
-dmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfY29tcC5jICB8ICA2ICsrLS0NCj4+ICAgZHJpdmVy
-cy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfY3EuYyAgICB8ICAzICstDQo+PiAgIGRyaXZlcnMvaW5m
-aW5pYmFuZC9zdy9yeGUvcnhlX3FwLmMgICAgfCAgNSArKy0tDQo+PiAgIGRyaXZlcnMvaW5maW5p
-YmFuZC9zdy9yeGUvcnhlX3JlcS5jICAgfCAgNCArLS0NCj4+ICAgZHJpdmVycy9pbmZpbmliYW5k
-L3N3L3J4ZS9yeGVfcmVzcC5jICB8IDEwICsrKy0tLS0NCj4+ICAgZHJpdmVycy9pbmZpbmliYW5k
-L3N3L3J4ZS9yeGVfdmVyYnMuYyB8IDQyICsrKysrKystLS0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4g
-ICBkcml2ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV92ZXJicy5oIHwgIDMgKy0NCj4+ICAgNyBm
-aWxlcyBjaGFuZ2VkLCAyNSBpbnNlcnRpb25zKCspLCA0OCBkZWxldGlvbnMoLSkNCj4gVGhpcyB3
-aWxsIGhhdmUgdG8gd2FpdCB1bnRpbCB2NS4xNS1yYzENCj4NCj4gSmFzb24NCkhpIEphc29uLA0K
-DQpJdCBpcyBmaW5lIHRvIG1lLiAgVGhhbmtzIGZvciB5b3VyIHJlbWluZC4NCg0KQmVzdCBSZWdh
-cmRzLA0KWGlhbyBZYW5nDQo=
+On 8/25/21 11:56 AM, Dan Carpenter wrote:
+> Hello Dmytro Linkin,
+> 
+> The patch f47e04eb96e0: "net/mlx5: E-switch, Allow setting share/max
+> tx rate limits of rate groups" from May 31, 2021, leads to the
+> following Smatch static checker warning:
+> 
+> 	drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c:483 esw_qos_create_rate_group()
+> 	warn: passing zero to 'ERR_PTR'
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/esw/qos.c
+>     434 static struct mlx5_esw_rate_group *
+>     435 esw_qos_create_rate_group(struct mlx5_eswitch *esw, struct netlink_ext_ack *extack)
+>     436 {
+>     437 	u32 tsar_ctx[MLX5_ST_SZ_DW(scheduling_context)] = {};
+>     438 	struct mlx5_esw_rate_group *group;
+>     439 	u32 divider;
+>     440 	int err;
+>     441 
+>     442 	if (!MLX5_CAP_QOS(esw->dev, log_esw_max_sched_depth))
+>     443 		return ERR_PTR(-EOPNOTSUPP);
+>     444 
+>     445 	group = kzalloc(sizeof(*group), GFP_KERNEL);
+>     446 	if (!group)
+>     447 		return ERR_PTR(-ENOMEM);
+>     448 
+>     449 	MLX5_SET(scheduling_context, tsar_ctx, parent_element_id,
+>     450 		 esw->qos.root_tsar_ix);
+>     451 	err = mlx5_create_scheduling_element_cmd(esw->dev,
+>     452 						 SCHEDULING_HIERARCHY_E_SWITCH,
+>     453 						 tsar_ctx,
+>     454 						 &group->tsar_ix);
+>     455 	if (err) {
+>     456 		NL_SET_ERR_MSG_MOD(extack, "E-Switch create TSAR for group failed");
+>     457 		goto err_sched_elem;
+>     458 	}
+>     459 
+>     460 	list_add_tail(&group->list, &esw->qos.groups);
+>     461 
+>     462 	divider = esw_qos_calculate_min_rate_divider(esw, group, true);
+>     463 	if (divider) {
+>     464 		err = esw_qos_normalize_groups_min_rate(esw, divider, extack);
+>     465 		if (err) {
+>     466 			NL_SET_ERR_MSG_MOD(extack, "E-Switch groups normalization failed");
+>     467 			goto err_min_rate;
+> 
+> Wouldn't we want to we want to propagate this error code
+> 
+> 
+>     468 		}
+>     469 	}
+>     470 	trace_mlx5_esw_group_qos_create(esw->dev, group, group->tsar_ix);
+>     471 
+>     472 	return group;
+>     473 
+>     474 err_min_rate:
+>     475 	list_del(&group->list);
+>     476 	err = mlx5_destroy_scheduling_element_cmd(esw->dev,
+>     477 						  SCHEDULING_HIERARCHY_E_SWITCH,
+>     478 						  group->tsar_ix);
+> 
+> instead of this one?  Also if this succeeds we return succeess?
+> 
+>     479 	if (err)
+>     480 		NL_SET_ERR_MSG_MOD(extack, "E-Switch destroy TSAR for group failed");
+>     481 err_sched_elem:
+>     482 	kfree(group);
+> --> 483 	return ERR_PTR(err);
+>     484 }
+> 
+> regards,
+> dan carpenter
+> 
+
+Hello Dan,
+Thanks for reporting.
+
+Do I need additional reference to Your report except Reported-by?
+
+Regards,
+Dmytro
