@@ -2,95 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716253FC645
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 13:33:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8403FC6E1
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 14:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237852AbhHaKtK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Aug 2021 06:49:10 -0400
-Received: from smtp37.cstnet.cn ([159.226.251.37]:55398 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S241280AbhHaKtJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 31 Aug 2021 06:49:09 -0400
-Received: by ajax-webmail-APP-12 (Coremail) ; Tue, 31 Aug 2021 18:47:50
- +0800 (GMT+08:00)
-X-Originating-IP: [202.189.3.195]
-Date:   Tue, 31 Aug 2021 18:47:50 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?5bq35a6B?= <kangning18z@ict.ac.cn>
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     haakon.bugge@oracle.com, linux-rdma@vger.kernel.org
-Subject: Re: Re: [PATCH v3] Fix one error in mthca_alloc
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn cnic.cn
-In-Reply-To: <YS371Qgef1FTTrHZ@unreal>
-References: <20210827005228.15671-1-kangning18z@ict.ac.cn>
- <YS371Qgef1FTTrHZ@unreal>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S241552AbhHaLzp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Aug 2021 07:55:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231628AbhHaLzp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 31 Aug 2021 07:55:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AAB4C6101B;
+        Tue, 31 Aug 2021 11:54:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1630410890;
+        bh=Ox0lhZCByUP4QsMjn41XmjOtaZGdBI7+jmZMUNxd1Yw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E+8AjalRMjshTjba6XLqfVoBwFC7mw5twndfVHD9xTm2H6KTDrHRzwzWGkLr/qFu9
+         8RneQhk/EWBnFAuDLC0zFbR02AXHGY2KZnp2oEonOyb5F7bVGpLIo28W6FN/VbUoYf
+         mhFjeksqOQ/b7dCyd1V+nw4/tkSy7vICxB3FLwGElLEihO6uNaUgrnK7pfsi1vcmvh
+         tiEJAtCJ81ziiofl3BaRdpE45y8DQjkPL3iXkzl0ubkSHRF23LjCvp8sIlzO6oy4E/
+         WFPIzTa4xeiWewrDcMqAzCqoU9vdEj27iX2YuMQOw2Zd0nLR2kaFq5EdYr/zYcJBpb
+         mg0ExdK2VcD9g==
+Date:   Tue, 31 Aug 2021 14:54:46 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Junji Wei <weijunji@bytedance.com>
+Cc:     zyjzyj2000@gmail.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xieyongji@bytedance.com
+Subject: Re: [PATCH] RDMA/rxe: Fix wrong port_cap_flags
+Message-ID: <YS4YhjUvveSsf7iG@unreal>
+References: <20210831083223.65797-1-weijunji@bytedance.com>
 MIME-Version: 1.0
-Message-ID: <4f5c2d60.1e3a3.17b9bd28580.Coremail.kangning18z@ict.ac.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: tgCowABHivXXCC5hjTwEAA--.18198W
-X-CM-SenderInfo: pndqw0plqjimn26lu3wodfhubq/1tbiCggKClz4j6QSgwACse
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210831083223.65797-1-weijunji@bytedance.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-CiZndDsKJmd0OyBPbiBGcmksIEF1ZyAyNywgMjAyMSBhdCAwODo1MjoyOEFNICswODAwLCBrYW5n
-bmluZyB3cm90ZToKJmd0OyAmZ3Q7IGRyaXZlcnMvaW5maW5pYmFuZC9ody9tdGhjYS9tdGhjYV9h
-bGxvY2F0b3IuYzogYWxsb2MtJmd0O2xhc3QgbGVmdCB1bmNoYW5nZWQgaW4gbXRoY2FfYWxsb2Ms
-IHdoaWNoCiZndDsgJmd0OyBoYXMgaW1wYWN0IG9uIHBlcmZvcm1hbmNlIG9mIGZ1bmN0aW9uIGZp
-bmRfbmV4dF96ZXJvX2JpdCBpbiBtdGhjYV9hbGxvYy4KJmd0OyAKJmd0OyBJIGRvbid0IGtub3cg
-d2hhdCB0aGUgc2VudGVuY2UgYWJvdmUgbWVhbnMsIGJ1dCB0aGUgY2hhbmdlIGlzIHVubGlrZWx5
-CiZndDsgdG8gYmUgY29ycmVjdC4KJmd0OyAKJmd0OyBXaGVuIGFsbG9jLSZndDtsYXN0IHN0YXJ0
-cyB0byBiZSBlcXVhbCB0byBhbGxvYy0mZ3Q7bWF4LCB0aGUKJmd0OyBmaW5kX25leHRfemVyb19i
-aXQoKSB3aWxsIGFsd2F5cyByZXR1cm4gYWxsb2MtJmd0O21heC4gd2hpY2ggd2lsbCBlbnN1cmUK
-Jmd0OyB0aGF0IHRoZSBmb2xsb3dpbmcgY29kZSBpcyBleGVjdXRlZC4KJmd0OyAKJmd0OyAgICA0
-OCAgICAgICAgIGlmIChvYmogJmd0Oz0gYWxsb2MtJmd0O21heCkgewomZ3Q7ICAgIDQ5ICAgICAg
-ICAgICAgICAgICBhbGxvYy0mZ3Q7dG9wID0gKGFsbG9jLSZndDt0b3AgKyBhbGxvYy0mZ3Q7bWF4
-KSAmYW1wOyBhbGxvYy0mZ3Q7bWFzazsKJmd0OyAgICA1MCAgICAgICAgICAgICAgICAgb2JqID0g
-ZmluZF9maXJzdF96ZXJvX2JpdChhbGxvYy0mZ3Q7dGFibGUsIGFsbG9jLSZndDttYXgpOwomZ3Q7
-ICAgIDUxICAgICAgICAgfQomZ3Q7IAoKVGhhbmtzIGZvciB5b3VyIHJldmlldy4KWW91ciBhbmFs
-eXNpcyBpcyByaWdodC4gSG93ZXZlciwgdGhpcyBpcyBhIGJpdG1hcCBhbGxvY2F0b3IgZm9yIHJl
-c291cmNlIGlkIGFsbG9jYXRpb24gKGxpa2UgUVAsIGFuZCBDUSkuIApXZSBmaXJzdCBsb29rIGF0
-IHRoZSBzaXR1YXRpb24gd2hlcmUgbm8gcmVzb3VyY2UgaWQgaXMgcmVsZWFzZWQuCldoZW4gdGhl
-IHZhbHVlIG9mIGFsbG9jLSZndDtsYXN0IHN0YXJ0cyB0byByZWFjaGVzIGFsbG9jLSZndDttYXgs
-IHRoZSBiaXRtYXAgd2lsbCAKYmUgZnVsbC4gSW4gdGhpcyBjYXNlLCBpdCdzIG5vcm1hbCB0byBy
-ZXR1cm4gYW4gaW52YWxpZCB2YWx1ZS4KCk5vdywgbGV0J3MgYWRkIHJlc291cmNlIHJlbGVhc2lu
-ZyBpbnRvIGNvbnNpZGVyYXRpb24uIApUaGUgZm9sbG93aW5nIGNvZGUgaXMgcGFydCBvZiBtdGhj
-YV9mcmVlKCnvvJoKCjcwCXNwaW5fbG9ja19pcnFzYXZlKCZhbXA7YWxsb2MtJmd0O2xvY2ssIGZs
-YWdzKTsKNzEKNzIJY2xlYXJfYml0KG9iaiwgYWxsb2MtJmd0O3RhYmxlKTsKNzMJYWxsb2MtJmd0
-O2xhc3QgPSBtaW4oYWxsb2MtJmd0O2xhc3QsIG9iaik7Cjc0CWFsbG9jLSZndDt0b3AgPSAoYWxs
-b2MtJmd0O3RvcCArIGFsbG9jLSZndDttYXgpICZhbXA7IGFsbG9jLSZndDttYXNrOwoKbXRoY2Ff
-ZnJlZSgpIGlzIHVzZWQgdG8gcmVsZWFzZSB0aGUgYWxsb2NhdGVkIHJlc291cmNlIGlkLiBJdCB3
-aWxsIHVwZGF0ZSBhbGxvYy0mZ3Q7bGFzdCB3aGVuIG9iaiBpcyBmcmVlZC4gClNvLCBpZiB0aGUg
-Yml0bWFwIGhhcyBzcGFjZSBmb3IgYWxsb2NhdGlvbiwgbXkgbW9kaWZpY2F0aW9uIGNhbiBjb250
-aW51b3VzbHkgd29yay4KCiZndDsgCiZndDsgSG93ZXZlciB0aGUgbXRoY2FfYWxsb2MoKSBmdW5j
-dGlvbiBoYXMgb3RoZXIgZXJyb3IsIGl0IHJldHVybnMgLTEgd2hpbGUKJmd0OyBiYXNlZCBvbiBp
-dHMgZGVjbGFyYXRpb24gaXQgbmVlZHMgdG8gYmUgdW5zaWduZWQsCgpJIHRoaW5rIHlvdSBhcmUg
-cmlnaHQgYWJvdXQgdGhpcy4gQnV0IG9iaiBpcyB0aGUgcmV0dXJuIHZhbHVlIG9mIHUzMiB0eXBl
-LCB3aGljaCBpcyB0aGUgcmVxdWlyZW1lbnQgb2YgcmVzb3VyY2UgaWQgCih0aG91Z2ggaXQgbWF5
-IG5vdCBmdWxseSB1c2UgMzIgYml0cykuIEkgaGF2ZSBubyBpZGVhIG9mIGhvdyB0byBmaXggaXQu
-CgpUaGFua3MuCgomZ3Q7IAomZ3Q7IFRoYW5rcwomZ3Q7IAomZ3Q7ICZndDsgCiZndDsgJmd0OyBT
-aWduZWQtb2ZmLWJ5OiBrYW5nbmluZyA8a2FuZ25pbmcxOHpAaWN0LmFjLmNuPgomZ3Q7ICZndDsg
-LS0tCiZndDsgJmd0OyAgCiZndDsgJmd0OyAgSSBzcXVhc2hlZCB0d28gY29tbWl0cyBpbnRvIG9u
-ZSBpbiB0aGlzIHZlcnNpb24uCiZndDsgJmd0OyAgCiZndDsgJmd0OyAgZHJpdmVycy9pbmZpbmli
-YW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jIHwgMyArKysKJmd0OyAmZ3Q7ICAxIGZpbGUg
-Y2hhbmdlZCwgMyBpbnNlcnRpb25zKCspCiZndDsgJmd0OyAKJmd0OyAmZ3Q7IGRpZmYgLS1naXQg
-YS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMgYi9kcml2ZXJz
-L2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMKJmd0OyAmZ3Q7IGluZGV4IGFl
-ZjFkMjc0YTE0ZS4uMTE0MTY5NTA5M2U3IDEwMDY0NAomZ3Q7ICZndDsgLS0tIGEvZHJpdmVycy9p
-bmZpbmliYW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jCiZndDsgJmd0OyArKysgYi9kcml2
-ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMKJmd0OyAmZ3Q7IEBAIC01
-MSw2ICs1MSw5IEBAIHUzMiBtdGhjYV9hbGxvYyhzdHJ1Y3QgbXRoY2FfYWxsb2MgKmFsbG9jKQom
-Z3Q7ICZndDsgIAl9CiZndDsgJmd0OyAgCiZndDsgJmd0OyAgCWlmIChvYmogJmx0OyBhbGxvYy0m
-Z3Q7bWF4KSB7CiZndDsgJmd0OyArCQlhbGxvYy0mZ3Q7bGFzdCA9IG9iaiArIDE7CiZndDsgJmd0
-OyArCQlpZiAoYWxsb2MtJmd0O2xhc3QgPT0gYWxsb2MtJmd0O21heCkKJmd0OyAmZ3Q7ICsJCQlh
-bGxvYy0mZ3Q7bGFzdCA9IDA7CiZndDsgJmd0OyAgCQlzZXRfYml0KG9iaiwgYWxsb2MtJmd0O3Rh
-YmxlKTsKJmd0OyAmZ3Q7ICAJCW9iaiB8PSBhbGxvYy0mZ3Q7dG9wOwomZ3Q7ICZndDsgIAl9IGVs
-c2UKJmd0OyAmZ3Q7IC0tIAomZ3Q7ICZndDsgMi4xNy4xCiZndDsgJmd0OyAKPC9rYW5nbmluZzE4
-ekBpY3QuYWMuY24+
+On Tue, Aug 31, 2021 at 04:32:23PM +0800, Junji Wei wrote:
+> The port->attr.port_cap_flags should be set to enum
+> ib_port_capability_mask_bits in ib_mad.h,
+> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
+> 
+> Signed-off-by: Junji Wei <weijunji@bytedance.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
