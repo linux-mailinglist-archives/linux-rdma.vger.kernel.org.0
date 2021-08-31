@@ -2,87 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35193FC537
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 11:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66B63FC633
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 13:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240743AbhHaJxU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Aug 2021 05:53:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240724AbhHaJxU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 31 Aug 2021 05:53:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8304B60295;
-        Tue, 31 Aug 2021 09:52:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630403545;
-        bh=vE7HLXrEAlCbXwAGOXyMOu7xe8UoqsW9N4CCYvjwDVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DTOhk1RC/dExqc09TaejeWq0UWBrhZHpxp35z80JtUq6c7ql9xmNGgCmRR1yvl27w
-         MPRlLiQbfkyJ70+FLxjL7b6FNtvWbuO8AMpIjqKZsf1LqMX+Zk5v/MYic8ruyOfxy9
-         wU9zSf/42jBLd7FFQakI8bW49CQNs0cjech+deyiFdZ+Sp6yZ6ZmUuDdlp2aLmyuld
-         10Mb5qG6LuuW6yjv1Ncd9Gt1NrPTe72jBD2ZLqg3//2BpGcJ9mIMHEhyYa73GLARk1
-         JwTa0Yn2dCZ1soZ6lIkFFk05qD2ytgPdNXzMwfVHYHGbVWF5m9C9ui1A3Z66H5oSSe
-         LYKOUYXVVm8uw==
-Date:   Tue, 31 Aug 2021 12:52:21 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     kangning <kangning18z@ict.ac.cn>
+        id S241123AbhHaKl7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Aug 2021 06:41:59 -0400
+Received: from smtp37.cstnet.cn ([159.226.251.37]:54026 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S241087AbhHaKlz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 31 Aug 2021 06:41:55 -0400
+Received: by ajax-webmail-APP-12 (Coremail) ; Tue, 31 Aug 2021 18:40:38
+ +0800 (GMT+08:00)
+X-Originating-IP: [202.189.3.195]
+Date:   Tue, 31 Aug 2021 18:40:38 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   =?UTF-8?B?5bq35a6B?= <kangning18z@ict.ac.cn>
+To:     "Leon Romanovsky" <leon@kernel.org>
 Cc:     haakon.bugge@oracle.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v3] Fix one error in mthca_alloc
-Message-ID: <YS371Qgef1FTTrHZ@unreal>
+Subject: Re: Re: [PATCH v3] Fix one error in mthca_alloc
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn cnic.cn
+In-Reply-To: <YS371Qgef1FTTrHZ@unreal>
 References: <20210827005228.15671-1-kangning18z@ict.ac.cn>
+ <YS371Qgef1FTTrHZ@unreal>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210827005228.15671-1-kangning18z@ict.ac.cn>
+Message-ID: <30f8792b.1e35e.17b9bcbf058.Coremail.kangning18z@ict.ac.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: tgCowACX2vUnBy5hZzsEAA--.17740W
+X-CM-SenderInfo: pndqw0plqjimn26lu3wodfhubq/1tbiBgkKCl0Tfh4KygAAsh
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Aug 27, 2021 at 08:52:28AM +0800, kangning wrote:
-> drivers/infiniband/hw/mthca/mthca_allocator.c: alloc->last left unchanged in mthca_alloc, which
-> has impact on performance of function find_next_zero_bit in mthca_alloc.
-
-I don't know what the sentence above means, but the change is unlikely
-to be correct.
-
-When alloc->last starts to be equal to alloc->max, the
-find_next_zero_bit() will always return alloc->max. which will ensure
-that the following code is executed.
-
-   48         if (obj >= alloc->max) {
-   49                 alloc->top = (alloc->top + alloc->max) & alloc->mask;
-   50                 obj = find_first_zero_bit(alloc->table, alloc->max);
-   51         }
-
-
-However the mthca_alloc() function has other error, it returns -1 while
-based on its declaration it needs to be unsigned,
-
-Thanks
-
-> 
-> Signed-off-by: kangning <kangning18z@ict.ac.cn>
-> ---
->  
->  I squashed two commits into one in this version.
->  
->  drivers/infiniband/hw/mthca/mthca_allocator.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/infiniband/hw/mthca/mthca_allocator.c b/drivers/infiniband/hw/mthca/mthca_allocator.c
-> index aef1d274a14e..1141695093e7 100644
-> --- a/drivers/infiniband/hw/mthca/mthca_allocator.c
-> +++ b/drivers/infiniband/hw/mthca/mthca_allocator.c
-> @@ -51,6 +51,9 @@ u32 mthca_alloc(struct mthca_alloc *alloc)
->  	}
->  
->  	if (obj < alloc->max) {
-> +		alloc->last = obj + 1;
-> +		if (alloc->last == alloc->max)
-> +			alloc->last = 0;
->  		set_bit(obj, alloc->table);
->  		obj |= alloc->top;
->  	} else
-> -- 
-> 2.17.1
-> 
+Jmd0OyAKJmd0OyBPbiBGcmksIEF1ZyAyNywgMjAyMSBhdCAwODo1MjoyOEFNICswODAwLCBrYW5n
+bmluZyB3cm90ZToKJmd0OyAmZ3Q7IGRyaXZlcnMvaW5maW5pYmFuZC9ody9tdGhjYS9tdGhjYV9h
+bGxvY2F0b3IuYzogYWxsb2MtJmd0O2xhc3QgbGVmdCB1bmNoYW5nZWQgaW4gbXRoY2FfYWxsb2Ms
+IHdoaWNoCiZndDsgJmd0OyBoYXMgaW1wYWN0IG9uIHBlcmZvcm1hbmNlIG9mIGZ1bmN0aW9uIGZp
+bmRfbmV4dF96ZXJvX2JpdCBpbiBtdGhjYV9hbGxvYy4KJmd0OyAKJmd0OyBJIGRvbid0IGtub3cg
+d2hhdCB0aGUgc2VudGVuY2UgYWJvdmUgbWVhbnMsIGJ1dCB0aGUgY2hhbmdlIGlzIHVubGlrZWx5
+CiZndDsgdG8gYmUgY29ycmVjdC4KJmd0OyAKJmd0OyBXaGVuIGFsbG9jLSZndDtsYXN0IHN0YXJ0
+cyB0byBiZSBlcXVhbCB0byBhbGxvYy0mZ3Q7bWF4LCB0aGUKJmd0OyBmaW5kX25leHRfemVyb19i
+aXQoKSB3aWxsIGFsd2F5cyByZXR1cm4gYWxsb2MtJmd0O21heC4gd2hpY2ggd2lsbCBlbnN1cmUK
+Jmd0OyB0aGF0IHRoZSBmb2xsb3dpbmcgY29kZSBpcyBleGVjdXRlZC4KJmd0OyAKJmd0OyAgICA0
+OCAgICAgICAgIGlmIChvYmogJmd0Oz0gYWxsb2MtJmd0O21heCkgewomZ3Q7ICAgIDQ5ICAgICAg
+ICAgICAgICAgICBhbGxvYy0mZ3Q7dG9wID0gKGFsbG9jLSZndDt0b3AgKyBhbGxvYy0mZ3Q7bWF4
+KSAmYW1wOyBhbGxvYy0mZ3Q7bWFzazsKJmd0OyAgICA1MCAgICAgICAgICAgICAgICAgb2JqID0g
+ZmluZF9maXJzdF96ZXJvX2JpdChhbGxvYy0mZ3Q7dGFibGUsIGFsbG9jLSZndDttYXgpOwomZ3Q7
+ICAgIDUxICAgICAgICAgfQomZ3Q7IAoKVGhhbmtzIGZvciB5b3VyIHJldmlldy4KWWVzLCB5b3Vy
+IGFuYWx5c2lzIGlzIHJpZ2h0LiBIb3dldmVyLCB0aGlzIGlzIGEgYml0bWFwIGFsbG9jYXRvciBm
+b3IgcmVzb3VyY2UgaWQgYWxsb2NhdGlvbiAobGlrZSBRUCwgYW5kIENRKS4gCldlIGZpcnN0IGxv
+b2sgYXQgdGhlIHNpdHVhdGlvbiB3aGVyZSBubyByZXNvdXJjZSBpZCBpcyByZWxlYXNlZC4KV2hl
+biB0aGUgdmFsdWUgb2YgYWxsb2MtJmd0O2xhc3Qgc3RhcnRzIHRvIHJlYWNoZXMgYWxsb2MtJmd0
+O21heCwgdGhlIGJpdG1hcCB3aWxsIApiZSBmdWxsLiBJbiB0aGlzIGNhc2UsIGl0J3Mgbm9ybWFs
+IHRvIHJldHVybiBhbiBpbnZhbGlkIHZhbHVlLgoKTm93LCBsZXQncyBhZGQgcmVzb3VyY2UgcmVs
+ZWFzaW5nIGludG8gY29uc2lkZXJhdGlvbi4gClRoZSBmb2xsb3dpbmcgY29kZSBpcyBwYXJ0IG9m
+IG10aGNhX2ZyZWXvvJoKCjcwCXNwaW5fbG9ja19pcnFzYXZlKCZhbXA7YWxsb2MtJmd0O2xvY2ss
+IGZsYWdzKTsKNzEKNzIJY2xlYXJfYml0KG9iaiwgYWxsb2MtJmd0O3RhYmxlKTsKNzMJYWxsb2Mt
+Jmd0O2xhc3QgPSBtaW4oYWxsb2MtJmd0O2xhc3QsIG9iaik7Cjc0CWFsbG9jLSZndDt0b3AgPSAo
+YWxsb2MtJmd0O3RvcCArIGFsbG9jLSZndDttYXgpICZhbXA7IGFsbG9jLSZndDttYXNrOwoKbXRo
+Y2FfZnJlZSgpIGlzIHVzZWQgdG8gcmVsZWFzZSB0aGUgYWxsb2NhdGVkIHJlc291cmNlIGlkLiBJ
+dCB3aWxsIHVwZGF0ZSBhbGxvYy0mZ3Q7bGFzdCB3aGVuIG9iaiBpcyBmcmVlZC4gClNvLCBpZiB0
+aGUgYml0bWFwIGhhcyBzcGFjZSBmb3IgYWxsb2NhdGlvbiwgbXkgbW9kaWZpY2F0aW9uIGNhbiBj
+b250aW51b3VzbHkgd29yay4KCiZndDsgCiZndDsgSG93ZXZlciB0aGUgbXRoY2FfYWxsb2MoKSBm
+dW5jdGlvbiBoYXMgb3RoZXIgZXJyb3IsIGl0IHJldHVybnMgLTEgd2hpbGUKJmd0OyBiYXNlZCBv
+biBpdHMgZGVjbGFyYXRpb24gaXQgbmVlZHMgdG8gYmUgdW5zaWduZWQsCgpJIHRoaW5rIHlvdSBh
+cmUgcmlnaHQgYWJvdXQgdGhpcy4gQnV0IG9iaiBpcyB0aGUgcmV0dXJuIHZhbHVlIG9mIHUzMiB0
+eXBlLCB3aGljaCBpcyB0aGUgcmVxdWlyZW1lbnQgb2YgcmVzb3VyY2UgaWQgCih0aG91Z2ggaXQg
+bWF5IG5vdCBmdWxseSB1c2UgMzIgYml0cykuIEkgaGF2ZSBubyBpZGVhIG9mIGhvdyB0byBmaXgg
+aXQuCgpUaGFua3MuCgomZ3Q7IAomZ3Q7IFRoYW5rcwomZ3Q7IAomZ3Q7ICZndDsgCiZndDsgJmd0
+OyBTaWduZWQtb2ZmLWJ5OiBrYW5nbmluZyA8a2FuZ25pbmcxOHpAaWN0LmFjLmNuPgomZ3Q7ICZn
+dDsgLS0tCiZndDsgJmd0OyAgCiZndDsgJmd0OyAgSSBzcXVhc2hlZCB0d28gY29tbWl0cyBpbnRv
+IG9uZSBpbiB0aGlzIHZlcnNpb24uCiZndDsgJmd0OyAgCiZndDsgJmd0OyAgZHJpdmVycy9pbmZp
+bmliYW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jIHwgMyArKysKJmd0OyAmZ3Q7ICAxIGZp
+bGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspCiZndDsgJmd0OyAKJmd0OyAmZ3Q7IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMgYi9kcml2
+ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMKJmd0OyAmZ3Q7IGluZGV4
+IGFlZjFkMjc0YTE0ZS4uMTE0MTY5NTA5M2U3IDEwMDY0NAomZ3Q7ICZndDsgLS0tIGEvZHJpdmVy
+cy9pbmZpbmliYW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jCiZndDsgJmd0OyArKysgYi9k
+cml2ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2NhdG9yLmMKJmd0OyAmZ3Q7IEBA
+IC01MSw2ICs1MSw5IEBAIHUzMiBtdGhjYV9hbGxvYyhzdHJ1Y3QgbXRoY2FfYWxsb2MgKmFsbG9j
+KQomZ3Q7ICZndDsgIAl9CiZndDsgJmd0OyAgCiZndDsgJmd0OyAgCWlmIChvYmogJmx0OyBhbGxv
+Yy0mZ3Q7bWF4KSB7CiZndDsgJmd0OyArCQlhbGxvYy0mZ3Q7bGFzdCA9IG9iaiArIDE7CiZndDsg
+Jmd0OyArCQlpZiAoYWxsb2MtJmd0O2xhc3QgPT0gYWxsb2MtJmd0O21heCkKJmd0OyAmZ3Q7ICsJ
+CQlhbGxvYy0mZ3Q7bGFzdCA9IDA7CiZndDsgJmd0OyAgCQlzZXRfYml0KG9iaiwgYWxsb2MtJmd0
+O3RhYmxlKTsKJmd0OyAmZ3Q7ICAJCW9iaiB8PSBhbGxvYy0mZ3Q7dG9wOwomZ3Q7ICZndDsgIAl9
+IGVsc2UKJmd0OyAmZ3Q7IC0tIAomZ3Q7ICZndDsgMi4xNy4xCiZndDsgJmd0OyAKPC9rYW5nbmlu
+ZzE4ekBpY3QuYWMuY24+
