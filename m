@@ -2,127 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7817C3FC6E7
-	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 14:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B62DE3FC731
+	for <lists+linux-rdma@lfdr.de>; Tue, 31 Aug 2021 14:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhHaMBG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 Aug 2021 08:01:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45672 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231628AbhHaMBG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 31 Aug 2021 08:01:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5DC9B60698;
-        Tue, 31 Aug 2021 12:00:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1630411211;
-        bh=ZFNfZfl6mxHUw1BbBnsrpBxFD/PkIeH8i0iIstK7Ax0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Qwa98a0S/WoF27sbrqu6L5GbtO7FRvnn67IpsP9e51mw5236R/LddXVcCxB6Mr8/1
-         AvnTXGJQPIG2gxlXoJZJ7Wn8LScNgQVmK5mZbgkEpW6bU5so7HtaNOob0Vtx+pLbxl
-         kjegD7XFZT7p4WtiexRLVBlKDvGf6JFpvmswSet+ppf0uxLEtF+T2nQC20T6dhdZOj
-         U7Ro1riXh95Ku5NOJcRAySwVnYXg7fIminTBWfVw0o1s46WKllEdPTuFUsoNo8sTyD
-         88S1kGKTQ1+qyxq1LtG47JRmMmJ+NNeL8wtpTiUNbXxvR78Gn5rReSkzMZGvMc4mW4
-         Wvd5fr6LrQXxQ==
-Date:   Tue, 31 Aug 2021 15:00:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     =?utf-8?B?5bq35a6B?= <kangning18z@ict.ac.cn>
-Cc:     haakon.bugge@oracle.com, linux-rdma@vger.kernel.org
+        id S240536AbhHaMSH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 31 Aug 2021 08:18:07 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:59608 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238661AbhHaMSB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 31 Aug 2021 08:18:01 -0400
+Received: from Corning (unknown [202.189.3.195])
+        by APP-01 (Coremail) with SMTP id qwCowADH8tCsHS5hHoMKAQ--.8541S2;
+        Tue, 31 Aug 2021 20:16:45 +0800 (CST)
+Date:   Tue, 31 Aug 2021 20:16:43 +0800
+From:   "kangning18z@ict.ac.cn" <kangning18z@ict.ac.cn>
+To:     leon <leon@kernel.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
 Subject: Re: Re: [PATCH v3] Fix one error in mthca_alloc
-Message-ID: <YS4Zx30hAa9FuL5E@unreal>
-References: <20210827005228.15671-1-kangning18z@ict.ac.cn>
- <YS371Qgef1FTTrHZ@unreal>
- <30f8792b.1e35e.17b9bcbf058.Coremail.kangning18z@ict.ac.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30f8792b.1e35e.17b9bcbf058.Coremail.kangning18z@ict.ac.cn>
+References: <20210827005228.15671-1-kangning18z@ict.ac.cn>, 
+        <YS371Qgef1FTTrHZ@unreal>, 
+        <30f8792b.1e35e.17b9bcbf058.Coremail.kangning18z@ict.ac.cn>, 
+        <YS4Zx30hAa9FuL5E@unreal>
+X-Priority: 3
+X-GUID: BC88C2EC-5BA4-4F2F-8DED-7A52A14847F0
+X-Has-Attach: no
+X-Mailer: Foxmail 7.2.22.188[cn]
+Mime-Version: 1.0
+Message-ID: <2021083120164275537317@ict.ac.cn>
+Content-Type: text/plain;
+        charset="GB2312"
+Content-Transfer-Encoding: base64
+X-CM-TRANSID: qwCowADH8tCsHS5hHoMKAQ--.8541S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZFWxJr15tFyUAr1xXF4rGrg_yoWrGFW5pw
+        4fKayj9ryFvr1UZa1kWrWrXwnIkasruwn8GrZ8X3Wrurn8ArZ5Gr1DtryFq34Uur1UWF4x
+        Xry5XryUCF1Yya7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Gb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWxJVW8Jr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4xvF2IEb7IF0Fy264kE64k0
+        F24lFcxC0VAYjxAxZF0Ex2IqxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UMVCEFcxC0V
+        AYjxAxZFUvcSsGvfC2KfnxnUUI43ZEXa7IU5qtC3UUUUU==
+X-Originating-IP: [202.189.3.195]
+X-CM-SenderInfo: pndqw0plqjimn26lu3wodfhubq/1tbiCggKClz4j6RSlwAAsI
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 06:40:38PM +0800, 康宁 wrote:
-> &gt; 
-> &gt; On Fri, Aug 27, 2021 at 08:52:28AM +0800, kangning wrote:
-> &gt; &gt; drivers/infiniband/hw/mthca/mthca_allocator.c: alloc-&gt;last left unchanged in mthca_alloc, which
-> &gt; &gt; has impact on performance of function find_next_zero_bit in mthca_alloc.
-> &gt; 
-> &gt; I don't know what the sentence above means, but the change is unlikely
-> &gt; to be correct.
-> &gt; 
-> &gt; When alloc-&gt;last starts to be equal to alloc-&gt;max, the
-> &gt; find_next_zero_bit() will always return alloc-&gt;max. which will ensure
-> &gt; that the following code is executed.
-> &gt; 
-> &gt;    48         if (obj &gt;= alloc-&gt;max) {
-> &gt;    49                 alloc-&gt;top = (alloc-&gt;top + alloc-&gt;max) &amp; alloc-&gt;mask;
-> &gt;    50                 obj = find_first_zero_bit(alloc-&gt;table, alloc-&gt;max);
-> &gt;    51         }
-> &gt; 
-> 
-> Thanks for your review.
-> Yes, your analysis is right. However, this is a bitmap allocator for resource id allocation (like QP, and CQ). 
-> We first look at the situation where no resource id is released.
-> When the value of alloc-&gt;last starts to reaches alloc-&gt;max, the bitmap will 
-> be full. In this case, it's normal to return an invalid value.
-> 
-> Now, let's add resource releasing into consideration. 
-> The following code is part of mthca_free：
-> 
-> 70	spin_lock_irqsave(&amp;alloc-&gt;lock, flags);
-> 71
-> 72	clear_bit(obj, alloc-&gt;table);
-> 73	alloc-&gt;last = min(alloc-&gt;last, obj);
-> 74	alloc-&gt;top = (alloc-&gt;top + alloc-&gt;max) &amp; alloc-&gt;mask;
-> 
-> mthca_free() is used to release the allocated resource id. It will update alloc-&gt;last when obj is freed. 
-> So, if the bitmap has space for allocation, my modification can continuously work.
+PiBPbiBUdWUsIEF1ZyAzMSwgMjAyMSBhdCAwNjo0MDozOFBNICswODAwLCC/tcT+IHdyb3RlOgo+
+ID4gJmd0Owo+ID4gJmd0OyBPbiBGcmksIEF1ZyAyNywgMjAyMSBhdCAwODo1MjoyOEFNICswODAw
+LCBrYW5nbmluZyB3cm90ZToKPiA+ICZndDsgJmd0OyBkcml2ZXJzL2luZmluaWJhbmQvaHcvbXRo
+Y2EvbXRoY2FfYWxsb2NhdG9yLmM6IGFsbG9jLSZndDtsYXN0IGxlZnQgdW5jaGFuZ2VkIGluIG10
+aGNhX2FsbG9jLCB3aGljaAo+ID4gJmd0OyAmZ3Q7IGhhcyBpbXBhY3Qgb24gcGVyZm9ybWFuY2Ug
+b2YgZnVuY3Rpb24gZmluZF9uZXh0X3plcm9fYml0IGluIG10aGNhX2FsbG9jLgo+ID4gJmd0Owo+
+ID4gJmd0OyBJIGRvbid0IGtub3cgd2hhdCB0aGUgc2VudGVuY2UgYWJvdmUgbWVhbnMsIGJ1dCB0
+aGUgY2hhbmdlIGlzIHVubGlrZWx5Cj4gPiAmZ3Q7IHRvIGJlIGNvcnJlY3QuCj4gPiAmZ3Q7Cj4g
+PiAmZ3Q7IFdoZW4gYWxsb2MtJmd0O2xhc3Qgc3RhcnRzIHRvIGJlIGVxdWFsIHRvIGFsbG9jLSZn
+dDttYXgsIHRoZQo+ID4gJmd0OyBmaW5kX25leHRfemVyb19iaXQoKSB3aWxsIGFsd2F5cyByZXR1
+cm4gYWxsb2MtJmd0O21heC4gd2hpY2ggd2lsbCBlbnN1cmUKPiA+ICZndDsgdGhhdCB0aGUgZm9s
+bG93aW5nIGNvZGUgaXMgZXhlY3V0ZWQuCj4gPiAmZ3Q7Cj4gPiAmZ3Q7ICAgIDQ4ICAgICAgICAg
+aWYgKG9iaiAmZ3Q7PSBhbGxvYy0mZ3Q7bWF4KSB7Cj4gPiAmZ3Q7ICAgIDQ5ICAgICAgICAgICAg
+ICAgICBhbGxvYy0mZ3Q7dG9wID0gKGFsbG9jLSZndDt0b3AgKyBhbGxvYy0mZ3Q7bWF4KSAmYW1w
+OyBhbGxvYy0mZ3Q7bWFzazsKPiA+ICZndDsgICAgNTAgICAgICAgICAgICAgICAgIG9iaiA9IGZp
+bmRfZmlyc3RfemVyb19iaXQoYWxsb2MtJmd0O3RhYmxlLCBhbGxvYy0mZ3Q7bWF4KTsKPiA+ICZn
+dDsgICAgNTEgICAgICAgICB9Cj4gPiAmZ3Q7Cj4gPgo+ID4gVGhhbmtzIGZvciB5b3VyIHJldmll
+dy4KPiA+IFllcywgeW91ciBhbmFseXNpcyBpcyByaWdodC4gSG93ZXZlciwgdGhpcyBpcyBhIGJp
+dG1hcCBhbGxvY2F0b3IgZm9yIHJlc291cmNlIGlkIGFsbG9jYXRpb24gKGxpa2UgUVAsIGFuZCBD
+USkuCj4gPiBXZSBmaXJzdCBsb29rIGF0IHRoZSBzaXR1YXRpb24gd2hlcmUgbm8gcmVzb3VyY2Ug
+aWQgaXMgcmVsZWFzZWQuCj4gPiBXaGVuIHRoZSB2YWx1ZSBvZiBhbGxvYy0mZ3Q7bGFzdCBzdGFy
+dHMgdG8gcmVhY2hlcyBhbGxvYy0mZ3Q7bWF4LCB0aGUgYml0bWFwIHdpbGwKPiA+IGJlIGZ1bGwu
+IEluIHRoaXMgY2FzZSwgaXQncyBub3JtYWwgdG8gcmV0dXJuIGFuIGludmFsaWQgdmFsdWUuCj4g
+Pgo+ID4gTm93LCBsZXQncyBhZGQgcmVzb3VyY2UgcmVsZWFzaW5nIGludG8gY29uc2lkZXJhdGlv
+bi4KPiA+IFRoZSBmb2xsb3dpbmcgY29kZSBpcyBwYXJ0IG9mIG10aGNhX2ZyZWWjugo+ID4KPiA+
+IDcwCXNwaW5fbG9ja19pcnFzYXZlKCZhbXA7YWxsb2MtJmd0O2xvY2ssIGZsYWdzKTsKPiA+IDcx
+Cj4gPiA3MgljbGVhcl9iaXQob2JqLCBhbGxvYy0mZ3Q7dGFibGUpOwo+ID4gNzMJYWxsb2MtJmd0
+O2xhc3QgPSBtaW4oYWxsb2MtJmd0O2xhc3QsIG9iaik7Cj4gPiA3NAlhbGxvYy0mZ3Q7dG9wID0g
+KGFsbG9jLSZndDt0b3AgKyBhbGxvYy0mZ3Q7bWF4KSAmYW1wOyBhbGxvYy0mZ3Q7bWFzazsKPiA+
+Cj4gPiBtdGhjYV9mcmVlKCkgaXMgdXNlZCB0byByZWxlYXNlIHRoZSBhbGxvY2F0ZWQgcmVzb3Vy
+Y2UgaWQuIEl0IHdpbGwgdXBkYXRlIGFsbG9jLSZndDtsYXN0IHdoZW4gb2JqIGlzIGZyZWVkLgo+
+ID4gU28sIGlmIHRoZSBiaXRtYXAgaGFzIHNwYWNlIGZvciBhbGxvY2F0aW9uLCBteSBtb2RpZmlj
+YXRpb24gY2FuIGNvbnRpbnVvdXNseSB3b3JrLgo+IAo+IEFmdGVyIGFsbG9jLT5sYXN0IHN0YXJ0
+cyB0byBiZSBlcXVhbCB0byBhbGxvYy0+bWF4LCB0aGUgYml0bWFwIGlzCj4gc2VhcmNoZXMgd2l0
+aCBmaW5kX2ZpcnN0X3plcm9fYml0KCkgY2FsbC4gVGhhdCB3aWxsIGVuc3VyZSB0aGF0IHdlIGxv
+b2sKPiBmb3IgYW55IGJpdCBiZXR3ZWVuIDAgYW5kIGFsbG9jLT5tYXguCj4gCj4gU28gbm8sIHlv
+dXIgY2hhbmdlIGNhbid0IGJlIHJpZ2h0LgoKSWYgeW91IG5ldmVyIGNhbGwgZnVuY3Rpb24gbXRo
+Y2FfZnJlZSgpLCB5b3Ugd2lsbCBuZXZlciBmaW5kIGEgdmFsaWQgYml0ICBpbiBbMCwgYWxsb2Mt
+Pm1heF0Kd2l0aCBmaW5kX2ZpcnN0X3plcm9fYml0KCkgY2FsbC4gQ2F1c2UgZXZlcnkgYml0cyBi
+ZXR3ZWVuIDAgYW5kIGFsbG9jLT5tYXggYXJlIGFsbG9hY3RlZC4KCkJ1dCBpZiB5b3UgY2FsbGVk
+IG10aGNhX2ZyZWUoKSBiZWZvcmUsIHRoZSBmcmVlZCBvYmogaXMgYXNzaWduZWQgdG8gYWxsb2Mt
+Pmxhc3QsIGFuZCB3ZSAKc3RpbGwgY2FuIGFsbG9jYXRlIHRoZSBiaXRtYXAuCgpNeSBtb2RpZmlj
+YXRpb24gaXMgY29ycmVjdC4gCgo+IAo+IFRoYW5rcwo+IAo+ID4KPiA+ICZndDsKPiA+ICZndDsg
+SG93ZXZlciB0aGUgbXRoY2FfYWxsb2MoKSBmdW5jdGlvbiBoYXMgb3RoZXIgZXJyb3IsIGl0IHJl
+dHVybnMgLTEgd2hpbGUKPiA+ICZndDsgYmFzZWQgb24gaXRzIGRlY2xhcmF0aW9uIGl0IG5lZWRz
+IHRvIGJlIHVuc2lnbmVkLAo+ID4KPiA+IEkgdGhpbmsgeW91IGFyZSByaWdodCBhYm91dCB0aGlz
+LiBCdXQgb2JqIGlzIHRoZSByZXR1cm4gdmFsdWUgb2YgdTMyIHR5cGUsIHdoaWNoIGlzIHRoZSBy
+ZXF1aXJlbWVudCBvZiByZXNvdXJjZSBpZAo+ID4gKHRob3VnaCBpdCBtYXkgbm90IGZ1bGx5IHVz
+ZSAzMiBiaXRzKS4gSSBoYXZlIG5vIGlkZWEgb2YgaG93IHRvIGZpeCBpdC4KPiA+Cj4gPiBUaGFu
+a3MuCj4gPgo+ID4gJmd0Owo+ID4gJmd0OyBUaGFua3MKPiA+ICZndDsKPiA+ICZndDsgJmd0Owo+
+ID4gJmd0OyAmZ3Q7IFNpZ25lZC1vZmYtYnk6IGthbmduaW5nIDxrYW5nbmluZzE4ekBpY3QuYWMu
+Y24+Cj4gPiAmZ3Q7ICZndDsgLS0tCj4gPiAmZ3Q7ICZndDsgCj4gPiAmZ3Q7ICZndDsgIEkgc3F1
+YXNoZWQgdHdvIGNvbW1pdHMgaW50byBvbmUgaW4gdGhpcyB2ZXJzaW9uLgo+ID4gJmd0OyAmZ3Q7
+IAo+ID4gJmd0OyAmZ3Q7ICBkcml2ZXJzL2luZmluaWJhbmQvaHcvbXRoY2EvbXRoY2FfYWxsb2Nh
+dG9yLmMgfCAzICsrKwo+ID4gJmd0OyAmZ3Q7ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25z
+KCspCj4gPiAmZ3Q7ICZndDsKPiA+ICZndDsgJmd0OyBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZp
+bmliYW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3
+L210aGNhL210aGNhX2FsbG9jYXRvci5jCj4gPiAmZ3Q7ICZndDsgaW5kZXggYWVmMWQyNzRhMTRl
+Li4xMTQxNjk1MDkzZTcgMTAwNjQ0Cj4gPiAmZ3Q7ICZndDsgLS0tIGEvZHJpdmVycy9pbmZpbmli
+YW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jCj4gPiAmZ3Q7ICZndDsgKysrIGIvZHJpdmVy
+cy9pbmZpbmliYW5kL2h3L210aGNhL210aGNhX2FsbG9jYXRvci5jCj4gPiAmZ3Q7ICZndDsgQEAg
+LTUxLDYgKzUxLDkgQEAgdTMyIG10aGNhX2FsbG9jKHN0cnVjdCBtdGhjYV9hbGxvYyAqYWxsb2Mp
+Cj4gPiAmZ3Q7ICZndDsgIH0KPiA+ICZndDsgJmd0OyAKPiA+ICZndDsgJmd0OyAgaWYgKG9iaiAm
+bHQ7IGFsbG9jLSZndDttYXgpIHsKPiA+ICZndDsgJmd0OyArCWFsbG9jLSZndDtsYXN0ID0gb2Jq
+ICsgMTsKPiA+ICZndDsgJmd0OyArCWlmIChhbGxvYy0mZ3Q7bGFzdCA9PSBhbGxvYy0mZ3Q7bWF4
+KQo+ID4gJmd0OyAmZ3Q7ICsJYWxsb2MtJmd0O2xhc3QgPSAwOwo+ID4gJmd0OyAmZ3Q7ICBzZXRf
+Yml0KG9iaiwgYWxsb2MtJmd0O3RhYmxlKTsKPiA+ICZndDsgJmd0OyAgb2JqIHw9IGFsbG9jLSZn
+dDt0b3A7Cj4gPiAmZ3Q7ICZndDsgIH0gZWxzZQo+ID4gJmd0OyAmZ3Q7IC0tCj4gPiAmZ3Q7ICZn
+dDsgMi4xNy4xCj4gPiAmZ3Q7ICZndDsKPiA+IDwva2FuZ25pbmcxOHpAaWN0LmFjLmNuPgo=
 
-After alloc->last starts to be equal to alloc->max, the bitmap is
-searches with find_first_zero_bit() call. That will ensure that we look
-for any bit between 0 and alloc->max.
-
-So no, your change can't be right.
-
-Thanks
-
-> 
-> &gt; 
-> &gt; However the mthca_alloc() function has other error, it returns -1 while
-> &gt; based on its declaration it needs to be unsigned,
-> 
-> I think you are right about this. But obj is the return value of u32 type, which is the requirement of resource id 
-> (though it may not fully use 32 bits). I have no idea of how to fix it.
-> 
-> Thanks.
-> 
-> &gt; 
-> &gt; Thanks
-> &gt; 
-> &gt; &gt; 
-> &gt; &gt; Signed-off-by: kangning <kangning18z@ict.ac.cn>
-> &gt; &gt; ---
-> &gt; &gt;  
-> &gt; &gt;  I squashed two commits into one in this version.
-> &gt; &gt;  
-> &gt; &gt;  drivers/infiniband/hw/mthca/mthca_allocator.c | 3 +++
-> &gt; &gt;  1 file changed, 3 insertions(+)
-> &gt; &gt; 
-> &gt; &gt; diff --git a/drivers/infiniband/hw/mthca/mthca_allocator.c b/drivers/infiniband/hw/mthca/mthca_allocator.c
-> &gt; &gt; index aef1d274a14e..1141695093e7 100644
-> &gt; &gt; --- a/drivers/infiniband/hw/mthca/mthca_allocator.c
-> &gt; &gt; +++ b/drivers/infiniband/hw/mthca/mthca_allocator.c
-> &gt; &gt; @@ -51,6 +51,9 @@ u32 mthca_alloc(struct mthca_alloc *alloc)
-> &gt; &gt;  	}
-> &gt; &gt;  
-> &gt; &gt;  	if (obj &lt; alloc-&gt;max) {
-> &gt; &gt; +		alloc-&gt;last = obj + 1;
-> &gt; &gt; +		if (alloc-&gt;last == alloc-&gt;max)
-> &gt; &gt; +			alloc-&gt;last = 0;
-> &gt; &gt;  		set_bit(obj, alloc-&gt;table);
-> &gt; &gt;  		obj |= alloc-&gt;top;
-> &gt; &gt;  	} else
-> &gt; &gt; -- 
-> &gt; &gt; 2.17.1
-> &gt; &gt; 
-> </kangning18z@ict.ac.cn>
