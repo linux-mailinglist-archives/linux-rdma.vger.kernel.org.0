@@ -2,86 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361403FF4BF
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 22:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E658E3FF5BC
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 23:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345838AbhIBUSo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 16:18:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
+        id S1347069AbhIBVmQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 17:42:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345880AbhIBUSn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 16:18:43 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE164C061575
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 13:17:44 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id b7so4125881iob.4
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 13:17:44 -0700 (PDT)
+        with ESMTP id S1347065AbhIBVmQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 17:42:16 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CF64C061575
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 14:41:17 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id g4-20020a4ab044000000b002900bf3b03fso989320oon.1
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 14:41:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
-        b=T31RHCmp5+UxwbuWALjJv1MHfTVq9G+pRe4awPP2uXH9cJZG0q8CP8Ekx5maC2djtr
-         Jmb3V8Pka0NBB56ynSPM2dLfyXiZDxHKqrs5VYvMxmyV18pE/kQGqo5DWGmrXQdR1u+M
-         bmXQ1SB/ggGDPzKzBHBFUtLjcqi/DUsZwfB8jpqRrG3WrcqaetsCaVXuPCHf1F8LlVYi
-         AXAi3FxVVdb384hFUlRFxqWBhrzi19pXM47kw6Oy0WT+xRggpHXXiqfQABi8pEzL/rTN
-         AD45o7WvDd9DT40fRZhdgwMsTxrlfkGl7z4zQ/ETLr23+CfdVfoT3QscBvzGHqOZdE3a
-         jPZw==
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=cx4qVIqAIUlKi2nKucEur7d6HYlykzwuplF2bqq/RfM=;
+        b=MmizLW7gczE1l+FV92TldCt/o1CyvPdI9P3A/MT7Pgt1UBlZng7PIfs8JI8e58pgKh
+         CSabWLg0m1crqo9DqRvzZYsXx/OjFP223G8FsHwUneG5HecWX5DhbhWA88SBB55yQVmI
+         LXMbJHxWY88r+M1mMVQMS76hUjJafeuQZopQ3a+O2MjR6sXetTl1VBQ2gwf6r2lcGDwZ
+         U1SCIfPduR5ae1af9SMlNVgrF7TiaHwj3qVIln2ix/Oe/NzCMK96r8ba6HqFqUuLvXnt
+         WaNgvLO6iV9fqGq7y9ZTMg0/jTI3yT2llkIPhHwu557FpmR2VkebY/1AqhsjdxlOhgun
+         PkVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
-        b=s1f7DPJafWuEOZhPj3Sj3o+Q/Bt0926M1cLI08MBm4BHJCvdlTA0oiLr4153g5Nnf6
-         1uX8yIyyttMF+ZcPYR8/Lxh8PAMZPXXG+DWi8uGoFqoDtOur91wsJwJXGZvLvmj7DVnT
-         KuAhqsJtyWcH8OJEpBLzb6hepyp9CQZCTn9Mm0YdkhODNO/YETwGMMqvwxP9qqRiakvV
-         8FvFjAcq5EiVow1xAb76E4gZms25URGc2byxAnuRBJXaN2gfJ0KJsOXkjWkYwSWwtO8T
-         YJLh3cuHmzBhWpqeD7B3Oue73DTts0lQIXhnNuYl3BJXR3DgI8jyiDJqd+TmBKlgNPiS
-         LOZA==
-X-Gm-Message-State: AOAM531tspN7y9OcgAkXH5LbfI9PJSYy+FVuRapfizoXyC7pXB9AULbV
-        f5qyjisXic15fBmowuLWuC3aTeaxxMV7XmJZsME=
-X-Google-Smtp-Source: ABdhPJwUQgag+QPxvVRvBV1TDBb2W9tMjtMfkJdR2Am3IEG4HSws7IUlE/bUM0HBQWpEA0Y9DGo/qS86nUhs6yI9XEw=
-X-Received: by 2002:a5e:8403:: with SMTP id h3mr128182ioj.136.1630613863584;
- Thu, 02 Sep 2021 13:17:43 -0700 (PDT)
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=cx4qVIqAIUlKi2nKucEur7d6HYlykzwuplF2bqq/RfM=;
+        b=YQJ/ad4PnVBrrAb7NGtoVFvqbpGX3w8zQT4oG8FVMjWhcNJCtowsqfvhAMB1wCiD4r
+         E875TqA3YYa4E1i/H5CRseg4/wUGPORwuxIYOghkG4OgAZqkvu2TDzgLd+v1eefNTveJ
+         Yy5obUvMQ3Pnzl68cZG84aPCTX1bAQtAEdUp4jx0vs8SrXnZWsZ2uW/+FXbREve6cFuO
+         UCSge7lXCAGjneeThQ/pQgZbF1AdOrZcsUaXo8RGeioDAt0ti6ngzK8Ecwcc954drvmc
+         xkj5xOgPPID6OdbHvq5ArmvjhsG1vuRyBbZAjSZfJe8Gz6/abBuXVL5p/TMyytFzSw4I
+         AstA==
+X-Gm-Message-State: AOAM532ao/1Sp2D8qskf/6NwfBxclXcs4YhDvW6vZSPI9NbFrLvPzoHW
+        gqMN/G4sjvd7GIC4jKvIBXBy+zA/NWk=
+X-Google-Smtp-Source: ABdhPJyCuouXvEplaGDbpILjRK4MRT8RMSSiemJEcBI54XX3HSt28weVE2u8gC4cWR3hiZ8qPHK4lg==
+X-Received: by 2002:a4a:cb19:: with SMTP id r25mr211181ooq.39.1630618876469;
+        Thu, 02 Sep 2021 14:41:16 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:4e8b:d9ac:5f99:519a? (2603-8081-140c-1a00-4e8b-d9ac-5f99-519a.res6.spectrum.com. [2603:8081:140c:1a00:4e8b:d9ac:5f99:519a])
+        by smtp.gmail.com with ESMTPSA id u15sm658887oon.35.2021.09.02.14.41.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 Sep 2021 14:41:16 -0700 (PDT)
+To:     Bart Van Assche <bvanassche@acm.org>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Subject: blktest/rxe almost working
+Message-ID: <c7557529-d07d-3e35-0f03-2bbe867af4a1@gmail.com>
+Date:   Thu, 2 Sep 2021 16:41:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Sender: khwajasalman7@gmail.com
-Received: by 2002:a05:6e02:1c2a:0:0:0:0 with HTTP; Thu, 2 Sep 2021 13:17:42
- -0700 (PDT)
-From:   "Mrs.Nicole  Marois" <nicole1563marois@gmail.com>
-Date:   Thu, 2 Sep 2021 20:17:42 +0000
-X-Google-Sender-Auth: QHPx-kHSkWSA4qTuKKeAfHqlWfI
-Message-ID: <CAKO8o9MBdVhPszFiGkJCqYCRHUntYNbKJpsaP3gkd68fsGGL5g@mail.gmail.com>
-Subject: Hello Dear,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Dear,
+Now that for-next is on 5.14.0-rc6+ blktest srp/002 is very close to working for rxe but there is
+still one error. After adding MW support I added a test to local invalidate to check and see if the l/rkey matched the key actually contained in the MR/MW when local invalidate is called. This is failing
+for srp/002 with the key portion of the rkey off by one. Looking at ib_srp.c I see code that does in fact
+increment the rkey by one and also has code that posts a local invalidate. This was never checked before
+and is now failing to match. If I mask off the key portion in the test the whole test case passes so
+the other problems appear to have been fixed. If the increment and invalidate are out of sync this could
+result in the error. I suspect this may be a bug in srp. Worst case I can remove this test but I would
+rather not.
 
-Please do not feel disturbed for contacting you, based on the critical
-condition I find mine self though, it's not financial problem, but my
-health you might have know that cancer is not what to talk home about,
-I am married to Mr.Duclos Marois who worked with Tunisia embassy in
-Burkina Faso for nine years before he died in the year 2012.We were
-married for eleven years without a child. He died after a brief
-illness that lasted for five days.
-
-Since his death I decided not to remarry, When my late husband was
-alive he deposited the sum of US$ 9.2m (Nine million two hundred
-thousand dollars) in a bank in Burkina Faso, Presently this money is
-still in bank. And My Doctor told me that I don't have much time to
-live because of the cancer problem, Having known my condition I
-decided to hand you over this fond to take care of the less-privileged
-people, you will utilize this money the way I am going to instruct
-herein. I want you to take 30 Percent of the total money for your
-personal use While 70% of the money will go to charity" people and
-helping the orphanage.
-
-I don't want my husband's efforts to be used by the Government. I grew
-up as an Orphan and I don't have anybody as my family member,
-
-Regards,
-
-Mrs.Nicole Marois.
-written from Hospital.
+Bob
