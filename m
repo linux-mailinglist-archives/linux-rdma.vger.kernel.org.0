@@ -2,87 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 252F63FEFF1
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 17:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D81C3FEFFB
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 17:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345713AbhIBPRa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 11:17:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54038 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229941AbhIBPR3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 11:17:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1630595790;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=P+xP+wLYOPrkRCNRBb2x5tHhjBwlMaOVmyphk+jfNrg=;
-        b=a/sadIS+LBBb9N+0/mKDaM3h25RwI0xAL1jVOpBBBxbpnDJucLleovGv1/VzNg+uwu1GLh
-        GMU/ku/ZpJy4JKI+VJk01qYE0JbHJeyI5VuKzDu+MrmmLLto6hR+zlHQZUiiPrdMBB3bUo
-        woU/No7e+yg784H/Rr950Qm0PU7Xppo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-410-FdhtbVkBMSuSGL6m_p2PwQ-1; Thu, 02 Sep 2021 11:16:28 -0400
-X-MC-Unique: FdhtbVkBMSuSGL6m_p2PwQ-1
-Received: by mail-ed1-f69.google.com with SMTP id e6-20020a056402088600b003c73100e376so1113403edy.17
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 08:16:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P+xP+wLYOPrkRCNRBb2x5tHhjBwlMaOVmyphk+jfNrg=;
-        b=SYB1E+IzOHZclGQ1NAadCP1FbKi/zLqK1ZWq+KrejJm/dxe4z1sakUMmZlz3QMfxlg
-         MQMHuO66UR2QAtc5ztH0g6ykct/Grhi8cdeGHeosXc4xGQ1Vg5CkHxgDWtG8Pyne/xZo
-         dGK88qn2viIp9qOUbleEfvVIIAMvVnKnTu1Mrv2GWmSxsBDqH470MB1E+yTsPVAMWtpn
-         tvbcikbAn9fIZtUOAuXHjqqKxXsymB0/N5SVEfXS3E+xgGd2jsMl7S2+x2D3JsWyooXK
-         e1+mpLkSbPzdjzFq2ldwsOCwwn+++3nH5Pq5In/+682HNyVlye5mCzuW6XeUVnuznKWB
-         VRXg==
-X-Gm-Message-State: AOAM532f9eRuHbgLw/CKm5FQC4ml0TyQ+xFT0zukhXDEMfJI6aW29iU1
-        4T9wWcrDmjhXaf41KivLFg38N2MhQSuu3SHeARLr/JRaT/04h1xGERXn4g6i04jGmvlOJri2BCg
-        lVjQ4SCx7+rOXXH7KMuKIrw==
-X-Received: by 2002:a05:6402:2909:: with SMTP id ee9mr3940283edb.377.1630595787551;
-        Thu, 02 Sep 2021 08:16:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxvdswIUfKGCpx598o8TrM8YiJqz9vjAp7AEL9/nn4zRuT+kpCK9mYHSHPKCJI7JCs7p2TIFQ==
-X-Received: by 2002:a05:6402:2909:: with SMTP id ee9mr3940266edb.377.1630595787408;
-        Thu, 02 Sep 2021 08:16:27 -0700 (PDT)
-Received: from redhat.com ([2.55.140.175])
-        by smtp.gmail.com with ESMTPSA id bx11sm1366868ejb.107.2021.09.02.08.16.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Sep 2021 08:16:26 -0700 (PDT)
-Date:   Thu, 2 Sep 2021 11:16:22 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Junji Wei <weijunji@bytedance.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, jasowang@redhat.com,
-        yuval.shaia.ml@gmail.com, marcel.apfelbaum@gmail.com,
-        cohuck@redhat.com, hare@suse.de, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, linux-rdma@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-Subject: Re: [RFC 5/5] hw/virtio-rdma: VirtIO rdma device
-Message-ID: <20210902111601-mutt-send-email-mst@kernel.org>
-References: <20210902130625.25277-1-weijunji@bytedance.com>
- <20210902130625.25277-6-weijunji@bytedance.com>
+        id S1345725AbhIBPTD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 11:19:03 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:28324 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345637AbhIBPTD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 11:19:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630595885; x=1662131885;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=AEWAFlWodzdnWfamwNCRO6MJw3xBisAlvOHgNm/ekC8=;
+  b=otbYHFUlOhLHG6wWDoJQh0GVIcLTwy+m3gwfxA1sGuXH//6rexjeD+TH
+   53EGs8FObQBn8JXFIV00aT7GCh8zsFi3+YR0CJsbzCyIo6HIYNyPVxJ82
+   UFuR8fVau4CIaozCB9wNqQ7rLE/kVW46U8WU0cv4lKRcztPKN/JL3YKtW
+   I=;
+X-IronPort-AV: E=Sophos;i="5.85,262,1624320000"; 
+   d="scan'208";a="138869229"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-bc1c0a21.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 02 Sep 2021 15:17:56 +0000
+Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-bc1c0a21.us-east-1.amazon.com (Postfix) with ESMTPS id 63102A1727;
+        Thu,  2 Sep 2021 15:17:55 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.161.161) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Thu, 2 Sep 2021 15:17:50 +0000
+Subject: Re: [PATCH for-next 4/4] RDMA/efa: CQ notifications
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20210811151131.39138-1-galpress@amazon.com>
+ <20210811151131.39138-5-galpress@amazon.com>
+ <20210820182702.GA550455@nvidia.com>
+ <7a4963ea-f028-e787-a5ba-fabf907c6d6b@amazon.com>
+ <20210901115716.GG1721383@nvidia.com>
+ <c8549e51-47a2-1426-b44b-f1c4ade3dce2@amazon.com>
+ <20210901153659.GL1721383@nvidia.com>
+ <d1b2dc01-5a42-371e-c4b6-2f9b3425f5b6@amazon.com>
+ <20210902130255.GR1721383@nvidia.com>
+ <3a5fb37a-dd72-e322-f7c6-790ee4e04efa@amazon.com>
+ <20210902151029.GV1721383@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <f80c3b52-d38b-3045-0fcc-b27f1f7b8c0d@amazon.com>
+Date:   Thu, 2 Sep 2021 18:17:45 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210902130625.25277-6-weijunji@bytedance.com>
+In-Reply-To: <20210902151029.GV1721383@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.161.161]
+X-ClientProxiedBy: EX13P01UWA001.ant.amazon.com (10.43.160.213) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 09:06:25PM +0800, Junji Wei wrote:
-> diff --git a/include/standard-headers/linux/virtio_ids.h b/include/standard-headers/linux/virtio_ids.h
-> index b052355ac7..4c2151bffb 100644
-> --- a/include/standard-headers/linux/virtio_ids.h
-> +++ b/include/standard-headers/linux/virtio_ids.h
-> @@ -48,5 +48,6 @@
->  #define VIRTIO_ID_FS           26 /* virtio filesystem */
->  #define VIRTIO_ID_PMEM         27 /* virtio pmem */
->  #define VIRTIO_ID_MAC80211_HWSIM 29 /* virtio mac80211-hwsim */
-> +#define VIRTIO_ID_RDMA         30 /* virtio rdma */
+On 02/09/2021 18:10, Jason Gunthorpe wrote:
+> On Thu, Sep 02, 2021 at 06:09:39PM +0300, Gal Pressman wrote:
+>> On 02/09/2021 16:02, Jason Gunthorpe wrote:
+>>> On Thu, Sep 02, 2021 at 10:03:16AM +0300, Gal Pressman wrote:
+>>>> On 01/09/2021 18:36, Jason Gunthorpe wrote:
+>>>>> On Wed, Sep 01, 2021 at 05:24:43PM +0300, Gal Pressman wrote:
+>>>>>> On 01/09/2021 14:57, Jason Gunthorpe wrote:
+>>>>>>> On Wed, Sep 01, 2021 at 02:50:42PM +0300, Gal Pressman wrote:
+>>>>>>>> On 20/08/2021 21:27, Jason Gunthorpe wrote:
+>>>>>>>>> On Wed, Aug 11, 2021 at 06:11:31PM +0300, Gal Pressman wrote:
+>>>>>>>>>> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+>>>>>>>>>> index 417dea5f90cf..29db4dec02f0 100644
+>>>>>>>>>> +++ b/drivers/infiniband/hw/efa/efa_main.c
+>>>>>>>>>> @@ -67,6 +67,46 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
+>>>>>>>>>>      pci_release_selected_regions(pdev, release_bars);
+>>>>>>>>>>  }
+>>>>>>>>>>
+>>>>>>>>>> +static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
+>>>>>>>>>> +{
+>>>>>>>>>> +    u16 cqn = eqe->u.comp_event.cqn;
+>>>>>>>>>> +    struct efa_cq *cq;
+>>>>>>>>>> +
+>>>>>>>>>> +    cq = xa_load(&dev->cqs_xa, cqn);
+>>>>>>>>>> +    if (unlikely(!cq)) {
+>>>>>>>>>
+>>>>>>>>> This seems unlikely to be correct, what prevents cq from being
+>>>>>>>>> destroyed concurrently?
+>>>>>>>>>
+>>>>>>>>> A comp_handler cannot be running after cq destroy completes.
+>>>>>>>>
+>>>>>>>> Sorry for the long turnaround, was OOO.
+>>>>>>>>
+>>>>>>>> The CQ cannot be destroyed until all completion events are acked.
+>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/man/ibv_get_cq_event.3#L45
+>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/cmd_cq.c#L208
+>>>>>>>
+>>>>>>> That is something quite different, and in userspace.
+>>>>>>>
+>>>>>>> What in the kernel prevents tha xa_load and the xa_erase from racing together?
+>>>>>>
+>>>>>> Good point.
+>>>>>> I think we need to surround efa_process_comp_eqe() with an rcu_read_lock() and
+>>>>>> have a synchronize_rcu() after removing it from the xarray in
+>>>>>> destroy_cq.
+>>>>>
+>>>>> Try to avoid synchronize_rcu()
+>>>>
+>>>> I don't see how that's possible?
+>>>
+>>> Usually people use call_rcu() instead
+>>
+>> Oh nice, thanks.
+>>
+>> I think the code would be much simpler using synchronize_rcu(), and the
+>> destroy_cq flow is usually on the cold path anyway. I also prefer to be certain
+>> that the CQ is freed once the destroy verb returns and not rely on the callback
+>> scheduling.
+> 
+> I would not be happy to see synchronize_rcu on uverbs destroy
+> functions, it is too easy to DOS the kernel with that.
 
-You can start by registering this with the virtio TC.
+OK, but isn't the fact that the uverb can return before the CQ is actually
+destroyed problematic?
 
->  #endif /* _LINUX_VIRTIO_IDS_H */
-> -- 
-> 2.11.0
-
+Maybe it's an extreme corner case, but if I created max_cq CQs, destroyed one,
+and try to create another one, it is not guaranteed that the create operation
+would succeed - even though the destroy has finished.
