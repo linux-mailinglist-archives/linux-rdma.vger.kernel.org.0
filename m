@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F4F3FEE5A
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 15:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F533FEE5B
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 15:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344936AbhIBNIb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 09:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1344945AbhIBNIq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 09:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbhIBNI2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 09:08:28 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752C0C061757
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 06:07:30 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so1409573pjw.2
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 06:07:30 -0700 (PDT)
+        with ESMTP id S1344895AbhIBNIm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 09:08:42 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A317BC061575
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 06:07:43 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id j2so1156310pll.1
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 06:07:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tlu2B2vMPrU3SXKIjOqJEI0aXPDLkRUxkJa7dAhyKjE=;
-        b=pJuJJ6DXaRoCGXEw0dTDnSqDqH5w9GOq7eyjMqiQoJ4UtD/SMxEOAzwaol/qLcSzN3
-         62Y0YYENk/Yn09udevOJiC/qWipZuYHIkkRPTBveAM9WRp1wUOD5MonDQT0Gd9FNajUp
-         IBGlc+oRIv+WH0pjZ9Q6wERiGcB3ZmuwiZgzTzx151SRIhd14p+FDh0HIVclMSiaj+ae
-         Sn+AKhC2X07ToOZ8a02tfSvR2lTUxGIY3zVtmh3u3VqBbh0R+e/DDnc87/fRV86BQkv9
-         U2ETMXIFkz8eKxt4iivTi8vF7XKiiE0gDtiXZp3puoh/wDg3ms8j110l+ab5WewPsnrs
-         INzg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1+KQApy27Pwh7068h0D2zGaCRSkYzXO0P+waVXIyCeQ=;
+        b=MUpIX6ppBPvVdPOfLWIkJl6ntbdlNu1GiL7WMrkCWr8BKk65bUq311FCcHbJ3R9X4L
+         2AsR5gYCAuG33c2XKWtYU8Ykw5Z/s/2rZQij0cgcscxoBDVxgqjVah/edCdSugtZOVcz
+         ZCOwLSaSiNk+tXO1XZdHmIctorGXdwMmFE1vd7MJrDBLZIsb2XZ4meLmbRMXV+i3z5WZ
+         wXrXQDhoSy2FNuuhcWyEOr/y/3X9VVGUpowbXorqxnWeugMnvSuXP/EKQH1YCZjYb+Pp
+         fAt0kW0b5spftaE9TEP37rhir28IJw68gvvk7OEh0G4Mb3cS5c7EWRyNP95HEvzhg6Jq
+         Lozg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tlu2B2vMPrU3SXKIjOqJEI0aXPDLkRUxkJa7dAhyKjE=;
-        b=q1QXej/Ygkx7bH4J5gATt5bCduvsxIbeRFKSH+E4Skc/iBXDgix5Hkl5CVtSrQAIKK
-         xuE71iWBeD15ms428U4Jz+grZjX5OtbEfXl/pgPM6cyRObkWYvS3Ij4xwoZBb1EIGRSR
-         lkGrUlV3xvlWxcNiqg47t0cyC9RXMwxWbFu82rSa8YW+v2+qsOoVjXdRF8HkZmtt4/F+
-         Ygl4BFwzei605anRItYAclpQEsAOsgrDGR5BlpM16wcsvnVm9dEDIDhUdF7F1iokUH+/
-         IqJGfDXG5KKQLm7sxOvuZV9+lXVFGLiyIlqFVJAX/9596rpnOVZv0Kj9fikiaHZIF7YF
-         X39w==
-X-Gm-Message-State: AOAM532KDf8nUBSBdUFHH819Zp3vXdKGk3YJcAVra7bJESLsQW7VwwaT
-        PCwdf3121SZNk/lP9a8QNxnGYg==
-X-Google-Smtp-Source: ABdhPJwzBbMxoJ3vXfsWbjXb5S1vXV4ArrFBAb8yGGbduSb1HZou/OYm2WgHnTGNK0wHWsDZ0yB3IA==
-X-Received: by 2002:a17:90a:4a05:: with SMTP id e5mr3765653pjh.58.1630588049596;
-        Thu, 02 Sep 2021 06:07:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1+KQApy27Pwh7068h0D2zGaCRSkYzXO0P+waVXIyCeQ=;
+        b=GcdWVIwOFWONw1HJ06DR+JeCdaiPbTEWhNDKnvfypl9gIba89HyKvDIw6o+zQ8Npna
+         4LOVr5mgwxsBRZefhHjbZTagcvu3JB2JDivJX/rsRCmxggsQYJu8i4/EhiBuQznhRA4N
+         GGdyGn5dKXwU6YbWPaqqEr2qYC2kjFs9UjVkZ3aFb3dFu7RkXldkkxvdcjGYZlOu8F9E
+         ZP+tBJnyhDsUnBIIMlFRLPk4d99Kx5y+eUcVE9cM8/dNN71ocPLTwFgGA5H/KK13oySL
+         B0x9k+szLE0IC4UYacEX3DvhFdpfi8vlbrZakY3FJ+kufZY9sBc0nKNRpJcOXGFFpBt8
+         GCyw==
+X-Gm-Message-State: AOAM532ACenW1kd5iCzvcnJlDfp9fLeuIWxtURHO5yBjnqcCEI2MBywc
+        WzUK91KsUmHgmaXieUgGfHyhTw==
+X-Google-Smtp-Source: ABdhPJzXk5YzVIdD/wPxYI+0kFmEvMa+i4B89MvNEK7CEoXbjjmyKCfRO1C6RvAq4n6k7DAIU0bAfw==
+X-Received: by 2002:a17:902:b48c:b0:139:eec4:737c with SMTP id y12-20020a170902b48c00b00139eec4737cmr2896262plr.11.1630588061634;
+        Thu, 02 Sep 2021 06:07:41 -0700 (PDT)
 Received: from C02FR1DUMD6V.bytedance.net ([139.177.225.225])
-        by smtp.gmail.com with ESMTPSA id d6sm2307415pfa.135.2021.09.02.06.07.24
+        by smtp.gmail.com with ESMTPSA id d6sm2307415pfa.135.2021.09.02.06.07.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 02 Sep 2021 06:07:28 -0700 (PDT)
+        Thu, 02 Sep 2021 06:07:41 -0700 (PDT)
 From:   Junji Wei <weijunji@bytedance.com>
 To:     dledford@redhat.com, jgg@ziepe.ca, mst@redhat.com,
         jasowang@redhat.com, yuval.shaia.ml@gmail.com,
@@ -54,110 +54,365 @@ To:     dledford@redhat.com, jgg@ziepe.ca, mst@redhat.com,
 Cc:     xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
         weijunji@bytedance.com, linux-rdma@vger.kernel.org,
         virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
-Subject: [RFC 0/5] VirtIO RDMA
-Date:   Thu,  2 Sep 2021 21:06:20 +0800
-Message-Id: <20210902130625.25277-1-weijunji@bytedance.com>
+Subject: [RFC 1/5] RDMA/virtio-rdma Introduce a new core cap prot
+Date:   Thu,  2 Sep 2021 21:06:21 +0800
+Message-Id: <20210902130625.25277-2-weijunji@bytedance.com>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20210902130625.25277-1-weijunji@bytedance.com>
+References: <20210902130625.25277-1-weijunji@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
+Introduce a new core cap prot RDMA_CORE_CAP_PROT_VIRTIO
+to support virtio-rdma
 
-This RFC aims to reopen the discussion of Virtio RDMA.
-Now this is based on Yuval Shaia's RFC "VirtIO RDMA"
-which implemented a frame for Virtio RDMA and a simple
-control path (Not sure if Yuval Shaia has any further
-plan for it).
+Currently RDMA_CORE_CAP_PROT_VIRTIO is as same as
+RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP except rdma_query_gid,
+we need to get get gid from host device.
 
-We try to extend this work and implement a simple
-data-path and a completed control path. Now this can
-work with SEND, RECV and REG_MR in kernel. There is a
-simple test module in this patch that can communicate
-with ibv_rc_pingpong in rdma-core.
+Signed-off-by: Junji Wei <weijunji@bytedance.com>
+---
+ drivers/infiniband/core/cache.c         |  9 ++++++---
+ drivers/infiniband/core/cm.c            |  4 ++--
+ drivers/infiniband/core/cma.c           | 20 ++++++++++----------
+ drivers/infiniband/core/device.c        |  4 ++--
+ drivers/infiniband/core/multicast.c     |  2 +-
+ drivers/infiniband/core/nldev.c         |  2 ++
+ drivers/infiniband/core/roce_gid_mgmt.c |  3 ++-
+ drivers/infiniband/core/ucma.c          |  2 +-
+ drivers/infiniband/core/verbs.c         |  2 +-
+ include/rdma/ib_verbs.h                 | 28 +++++++++++++++++++++++++---
+ 10 files changed, 52 insertions(+), 24 deletions(-)
 
-During doing this work, we have found some problems and
-would like to ask for some suggestions from community:
-1. Each qp need two VQ, but qemu default only support 1024 VQ.
-   I think it is possible to multiplex the VQ, since the
-   cmd_post_send carry the qpn in request.
-
-2. The virtio-rdma device's gid should equal to host rdma
-   device's gid. This means that we cannot use gid cache in
-   rdma subsystem. And theoretically the gid should also equal
-   to the device's netdev's ip address, how can we deal with
-   this conflict.
-
-3. How to support DMA mr? The verbs in host cannot support it.
-   And it seems hard to ping whole guest physical memory in qemu.
-
-4. The FRMR api need to set key of MR through IB_WR_REG_MR.
-   But it is impossible to change a key of mr using uverbs.
-   In our implementation, we change the key of WR while post_send,
-   but this means the MR can only work with SEND and RECV since we
-   cannot change the key in the remote. The final solution may be to
-   implement an urdma device based on rxe in qemu, through this we
-   can get full control of MR.
-
-5. The GSI is not supported now. And we think it's a problem that
-   when the host receive a GSI package, it doesn't know which
-   device it belongs to.
-
-Any further thoughts will be greatly welcomed. And we noticed that
-there seems to be no existing work for virtio-rdma spec, we are
-happy to start it from this RFC.
-
-How to test with test module:
-
-1. Set test module's SERVER_ADDR and SERVER_PORT
-2. Build kernel and qemu
-3. Build rdmacm-mux in qemu/contrib and run it in backend
-4. Boot kernel with qemu with following args using libvirt
-<interface type='bridge'>
-  <mac address='00:16:3e:5d:aa:a8'/>
-  <source bridge='virbr0'/>
-  <target dev='vnet1'/>
-  <model type='virtio'/>
-  <alias name='net0'/>
-  <address type='pci' domain='0x0000' bus='0x00' slot='0x02'
-   function='0x0' multifunction='on'/>
-</interface>
-
-<qemu:commandline>
-  <qemu:arg value='-chardev'/>
-  <qemu:arg value='socket,path=/var/run/rdmacm-mux-rxe0-1,id=mads'/>
-  <qemu:arg value='-device'/>
-  <qemu:arg value='virtio-rdma-pci,disable-legacy=on,addr=2.1,
-   ibdev=rxe0,netdev=bridge0,mad-chardev=mads'/>
-  <qemu:arg value='-object'/>
-  <qemu:arg value='memory-backend-ram,id=mb1,size=1G,share'/>
-  <qemu:arg value='-numa'/>
-  <qemu:arg value='node,memdev=mb1'/>
-</qemu:commandline>
-
-Note that virtio-net and virtio-rdma should be in same slot's
-function 0 and function 1.
-
-5. Run "ibv_rc_pingpong -g 1 -n 500 -s 20480" as server
-6. Run "insmod virtio_rdma_rc_pingping_client.ko" in guest
-
-One note regarding the patchset.
-We know it's not standard to collaps patches from two repos. But in
-order to display the whole work of Virtio RDMA, we still did it.
-
-Thanks.
-
-patch1: RDMA/virtio-rdma Introduce a new core cap prot (linux)
-patch2: RDMA/virtio-rdma: VirtIO RDMA driver (linux)
-        The main patch of virtio-rdma driver in linux kernel
-patch3: RDMA/virtio-rdma: VirtIO RDMA test module (linux)
-        A test module
-patch4: virtio-net: Move some virtio-net-pci decl to include/hw/virtio (qemu)
-        Patch from Yuval Shaia
-patch5: hw/virtio-rdma: VirtIO rdma device (qemu)
-        The main patch of virtio-rdma device in linux kernel
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index c9e9fc81447e..3c0a0c9896b4 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -396,7 +396,7 @@ static void del_gid(struct ib_device *ib_dev, u32 port,
+ 	/*
+ 	 * For non RoCE protocol, GID entry slot is ready to use.
+ 	 */
+-	if (!rdma_protocol_roce(ib_dev, port))
++	if (!rdma_protocol_virtio_or_roce(ib_dev, port))
+ 		table->data_vec[ix] = NULL;
+ 	write_unlock_irq(&table->rwlock);
+ 
+@@ -448,7 +448,7 @@ static int add_modify_gid(struct ib_gid_table *table,
+ 	if (!entry)
+ 		return -ENOMEM;
+ 
+-	if (rdma_protocol_roce(attr->device, attr->port_num)) {
++	if (rdma_protocol_virtio_or_roce(attr->device, attr->port_num)) {
+ 		ret = add_roce_gid(entry);
+ 		if (ret)
+ 			goto done;
+@@ -960,6 +960,9 @@ int rdma_query_gid(struct ib_device *device, u32 port_num,
+ 	if (!rdma_is_port_valid(device, port_num))
+ 		return -EINVAL;
+ 
++	if (rdma_protocol_virtio(device, port_num))
++		return device->ops.query_gid(device, port_num, index, gid);
++
+ 	table = rdma_gid_table(device, port_num);
+ 	read_lock_irqsave(&table->rwlock, flags);
+ 
+@@ -1482,7 +1485,7 @@ ib_cache_update(struct ib_device *device, u32 port, bool update_gids,
+ 		goto err;
+ 	}
+ 
+-	if (!rdma_protocol_roce(device, port) && update_gids) {
++	if (!rdma_protocol_virtio_or_roce(device, port) && update_gids) {
+ 		ret = config_non_roce_gid_cache(device, port,
+ 						tprops->gid_tbl_len);
+ 		if (ret)
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index c903b74f46a4..a707f5de1c2e 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -3288,7 +3288,7 @@ static int cm_lap_handler(struct cm_work *work)
+ 	/* Currently Alternate path messages are not supported for
+ 	 * RoCE link layer.
+ 	 */
+-	if (rdma_protocol_roce(work->port->cm_dev->ib_device,
++	if (rdma_protocol_virtio_or_roce(work->port->cm_dev->ib_device,
+ 			       work->port->port_num))
+ 		return -EINVAL;
+ 
+@@ -3381,7 +3381,7 @@ static int cm_apr_handler(struct cm_work *work)
+ 	/* Currently Alternate path messages are not supported for
+ 	 * RoCE link layer.
+ 	 */
+-	if (rdma_protocol_roce(work->port->cm_dev->ib_device,
++	if (rdma_protocol_virtio_or_roce(work->port->cm_dev->ib_device,
+ 			       work->port->port_num))
+ 		return -EINVAL;
+ 
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 5d3b8b8d163d..5d29de352ed8 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -573,7 +573,7 @@ cma_validate_port(struct ib_device *device, u32 port,
+ 	if ((dev_type != ARPHRD_INFINIBAND) && rdma_protocol_ib(device, port))
+ 		return ERR_PTR(-ENODEV);
+ 
+-	if (dev_type == ARPHRD_ETHER && rdma_protocol_roce(device, port)) {
++	if (dev_type == ARPHRD_ETHER && rdma_protocol_virtio_or_roce(device, port)) {
+ 		ndev = dev_get_by_index(dev_addr->net, bound_if_index);
+ 		if (!ndev)
+ 			return ERR_PTR(-ENODEV);
+@@ -626,7 +626,7 @@ static int cma_acquire_dev_by_src_ip(struct rdma_id_private *id_priv)
+ 	mutex_lock(&lock);
+ 	list_for_each_entry(cma_dev, &dev_list, list) {
+ 		rdma_for_each_port (cma_dev->device, port) {
+-			gidp = rdma_protocol_roce(cma_dev->device, port) ?
++			gidp = rdma_protocol_virtio_or_roce(cma_dev->device, port) ?
+ 			       &iboe_gid : &gid;
+ 			gid_type = cma_dev->default_gid_type[port - 1];
+ 			sgid_attr = cma_validate_port(cma_dev->device, port,
+@@ -669,7 +669,7 @@ static int cma_ib_acquire_dev(struct rdma_id_private *id_priv,
+ 	    id_priv->id.ps == RDMA_PS_IPOIB)
+ 		return -EINVAL;
+ 
+-	if (rdma_protocol_roce(req->device, req->port))
++	if (rdma_protocol_virtio_or_roce(req->device, req->port))
+ 		rdma_ip2gid((struct sockaddr *)&id_priv->id.route.addr.src_addr,
+ 			    &gid);
+ 	else
+@@ -1525,7 +1525,7 @@ static struct net_device *cma_get_net_dev(const struct ib_cm_event *ib_event,
+ 	if (err)
+ 		return ERR_PTR(err);
+ 
+-	if (rdma_protocol_roce(req->device, req->port))
++	if (rdma_protocol_virtio_or_roce(req->device, req->port))
+ 		net_dev = roce_get_net_dev_by_cm_event(ib_event);
+ 	else
+ 		net_dev = ib_get_net_dev_by_params(req->device, req->port,
+@@ -1583,7 +1583,7 @@ static bool cma_protocol_roce(const struct rdma_cm_id *id)
+ 	struct ib_device *device = id->device;
+ 	const u32 port_num = id->port_num ?: rdma_start_port(device);
+ 
+-	return rdma_protocol_roce(device, port_num);
++	return rdma_protocol_virtio_or_roce(device, port_num);
+ }
+ 
+ static bool cma_is_req_ipv6_ll(const struct cma_req_info *req)
+@@ -1813,7 +1813,7 @@ static void destroy_mc(struct rdma_id_private *id_priv,
+ 	if (rdma_cap_ib_mcast(id_priv->id.device, id_priv->id.port_num))
+ 		ib_sa_free_multicast(mc->sa_mc);
+ 
+-	if (rdma_protocol_roce(id_priv->id.device, id_priv->id.port_num)) {
++	if (rdma_protocol_virtio_or_roce(id_priv->id.device, id_priv->id.port_num)) {
+ 		struct rdma_dev_addr *dev_addr =
+ 			&id_priv->id.route.addr.dev_addr;
+ 		struct net_device *ndev = NULL;
+@@ -2296,7 +2296,7 @@ void rdma_read_gids(struct rdma_cm_id *cm_id, union ib_gid *sgid,
+ 		return;
+ 	}
+ 
+-	if (rdma_protocol_roce(cm_id->device, cm_id->port_num)) {
++	if (rdma_protocol_virtio_or_roce(cm_id->device, cm_id->port_num)) {
+ 		if (sgid)
+ 			rdma_ip2gid((struct sockaddr *)&addr->src_addr, sgid);
+ 		if (dgid)
+@@ -2919,7 +2919,7 @@ int rdma_set_ib_path(struct rdma_cm_id *id,
+ 		goto err;
+ 	}
+ 
+-	if (rdma_protocol_roce(id->device, id->port_num)) {
++	if (rdma_protocol_virtio_or_roce(id->device, id->port_num)) {
+ 		ndev = cma_iboe_set_path_rec_l2_fields(id_priv);
+ 		if (!ndev) {
+ 			ret = -ENODEV;
+@@ -3139,7 +3139,7 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
+ 	cma_id_get(id_priv);
+ 	if (rdma_cap_ib_sa(id->device, id->port_num))
+ 		ret = cma_resolve_ib_route(id_priv, timeout_ms);
+-	else if (rdma_protocol_roce(id->device, id->port_num))
++	else if (rdma_protocol_virtio_or_roce(id->device, id->port_num))
+ 		ret = cma_resolve_iboe_route(id_priv);
+ 	else if (rdma_protocol_iwarp(id->device, id->port_num))
+ 		ret = cma_resolve_iw_route(id_priv);
+@@ -4766,7 +4766,7 @@ int rdma_join_multicast(struct rdma_cm_id *id, struct sockaddr *addr,
+ 	mc->id_priv = id_priv;
+ 	mc->join_state = join_state;
+ 
+-	if (rdma_protocol_roce(id->device, id->port_num)) {
++	if (rdma_protocol_virtio_or_roce(id->device, id->port_num)) {
+ 		ret = cma_iboe_join_multicast(id_priv, mc);
+ 		if (ret)
+ 			goto out_err;
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index fa20b1824fb8..fadf17246574 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -2297,7 +2297,7 @@ void ib_enum_roce_netdev(struct ib_device *ib_dev,
+ 	u32 port;
+ 
+ 	rdma_for_each_port (ib_dev, port)
+-		if (rdma_protocol_roce(ib_dev, port)) {
++		if (rdma_protocol_virtio_or_roce(ib_dev, port)) {
+ 			struct net_device *idev =
+ 				ib_device_get_netdev(ib_dev, port);
+ 
+@@ -2429,7 +2429,7 @@ int ib_modify_port(struct ib_device *device,
+ 		rc = device->ops.modify_port(device, port_num,
+ 					     port_modify_mask,
+ 					     port_modify);
+-	else if (rdma_protocol_roce(device, port_num) &&
++	else if (rdma_protocol_virtio_or_roce(device, port_num) &&
+ 		 ((port_modify->set_port_cap_mask & ~IB_PORT_CM_SUP) == 0 ||
+ 		  (port_modify->clr_port_cap_mask & ~IB_PORT_CM_SUP) == 0))
+ 		rc = 0;
+diff --git a/drivers/infiniband/core/multicast.c b/drivers/infiniband/core/multicast.c
+index a236532a9026..eaeea1002177 100644
+--- a/drivers/infiniband/core/multicast.c
++++ b/drivers/infiniband/core/multicast.c
+@@ -745,7 +745,7 @@ int ib_init_ah_from_mcmember(struct ib_device *device, u32 port_num,
+ 	 */
+ 	if (rdma_protocol_ib(device, port_num))
+ 		ndev = NULL;
+-	else if (!rdma_protocol_roce(device, port_num))
++	else if (!rdma_protocol_virtio_or_roce(device, port_num))
+ 		return -EINVAL;
+ 
+ 	sgid_attr = rdma_find_gid_by_port(device, &rec->port_gid,
+diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
+index e9b4b2cccaa0..e41cbf6bef0b 100644
+--- a/drivers/infiniband/core/nldev.c
++++ b/drivers/infiniband/core/nldev.c
+@@ -296,6 +296,8 @@ static int fill_dev_info(struct sk_buff *msg, struct ib_device *device)
+ 		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_DEV_PROTOCOL, "iw");
+ 	else if (rdma_protocol_roce(device, port))
+ 		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_DEV_PROTOCOL, "roce");
++	else if (rdma_protocol_virtio(device, port))
++		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_DEV_PROTOCOL, "virtio");
+ 	else if (rdma_protocol_usnic(device, port))
+ 		ret = nla_put_string(msg, RDMA_NLDEV_ATTR_DEV_PROTOCOL,
+ 				     "usnic");
+diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+index 68197e576433..5ea87b89dae6 100644
+--- a/drivers/infiniband/core/roce_gid_mgmt.c
++++ b/drivers/infiniband/core/roce_gid_mgmt.c
+@@ -75,6 +75,7 @@ static const struct {
+ } PORT_CAP_TO_GID_TYPE[] = {
+ 	{rdma_protocol_roce_eth_encap, IB_GID_TYPE_ROCE},
+ 	{rdma_protocol_roce_udp_encap, IB_GID_TYPE_ROCE_UDP_ENCAP},
++	{rdma_protocol_virtio, IB_GID_TYPE_ROCE_UDP_ENCAP},
+ };
+ 
+ #define CAP_TO_GID_TABLE_SIZE	ARRAY_SIZE(PORT_CAP_TO_GID_TYPE)
+@@ -84,7 +85,7 @@ unsigned long roce_gid_type_mask_support(struct ib_device *ib_dev, u32 port)
+ 	int i;
+ 	unsigned int ret_flags = 0;
+ 
+-	if (!rdma_protocol_roce(ib_dev, port))
++	if (!rdma_protocol_virtio_or_roce(ib_dev, port))
+ 		return 1UL << IB_GID_TYPE_IB;
+ 
+ 	for (i = 0; i < CAP_TO_GID_TABLE_SIZE; i++)
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 2b72c4fa9550..f748db3f0414 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -849,7 +849,7 @@ static ssize_t ucma_query_route(struct ucma_file *file,
+ 
+ 	if (rdma_cap_ib_sa(ctx->cm_id->device, ctx->cm_id->port_num))
+ 		ucma_copy_ib_route(&resp, &ctx->cm_id->route);
+-	else if (rdma_protocol_roce(ctx->cm_id->device, ctx->cm_id->port_num))
++	else if (rdma_protocol_virtio_or_roce(ctx->cm_id->device, ctx->cm_id->port_num))
+ 		ucma_copy_iboe_route(&resp, &ctx->cm_id->route);
+ 	else if (rdma_protocol_iwarp(ctx->cm_id->device, ctx->cm_id->port_num))
+ 		ucma_copy_iw_route(&resp, &ctx->cm_id->route);
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 7036967e4c0b..f5037ff0c2e5 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -822,7 +822,7 @@ int ib_init_ah_attr_from_wc(struct ib_device *device, u32 port_num,
+ 	rdma_ah_set_sl(ah_attr, wc->sl);
+ 	rdma_ah_set_port_num(ah_attr, port_num);
+ 
+-	if (rdma_protocol_roce(device, port_num)) {
++	if (rdma_protocol_virtio_or_roce(device, port_num)) {
+ 		u16 vlan_id = wc->wc_flags & IB_WC_WITH_VLAN ?
+ 				wc->vlan_id : 0xffff;
+ 
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index 371df1c80aeb..779d4d09aec1 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -623,6 +623,7 @@ static inline struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
+ #define RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP 0x00800000
+ #define RDMA_CORE_CAP_PROT_RAW_PACKET   0x01000000
+ #define RDMA_CORE_CAP_PROT_USNIC        0x02000000
++#define RDMA_CORE_CAP_PROT_VIRTIO		0x04000000
+ 
+ #define RDMA_CORE_PORT_IB_GRH_REQUIRED (RDMA_CORE_CAP_IB_GRH_REQUIRED \
+ 					| RDMA_CORE_CAP_PROT_ROCE     \
+@@ -654,6 +655,14 @@ static inline struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
+ 
+ #define RDMA_CORE_PORT_USNIC		(RDMA_CORE_CAP_PROT_USNIC)
+ 
++/* in most time, RDMA_CORE_PORT_VIRTIO is same as RDMA_CORE_PORT_IBA_ROCE_UDP_ENCAP */
++#define RDMA_CORE_PORT_VIRTIO    \
++                    (RDMA_CORE_CAP_PROT_VIRTIO \
++					| RDMA_CORE_CAP_IB_MAD  \
++					| RDMA_CORE_CAP_IB_CM   \
++					| RDMA_CORE_CAP_AF_IB   \
++					| RDMA_CORE_CAP_ETH_AH)
++
+ struct ib_port_attr {
+ 	u64			subnet_prefix;
+ 	enum ib_port_state	state;
+@@ -3031,6 +3040,18 @@ static inline bool rdma_protocol_ib(const struct ib_device *device,
+ 	       RDMA_CORE_CAP_PROT_IB;
+ }
+ 
++static inline bool rdma_protocol_virtio(const struct ib_device *device, u8 port_num)
++{
++	return device->port_data[port_num].immutable.core_cap_flags &
++	       RDMA_CORE_CAP_PROT_VIRTIO;
++}
++
++static inline bool rdma_protocol_virtio_or_roce(const struct ib_device *device, u8 port_num)
++{
++	return device->port_data[port_num].immutable.core_cap_flags &
++	       (RDMA_CORE_CAP_PROT_VIRTIO | RDMA_CORE_CAP_PROT_ROCE | RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP);
++}
++
+ static inline bool rdma_protocol_roce(const struct ib_device *device,
+ 				      u32 port_num)
+ {
+@@ -3063,7 +3084,8 @@ static inline bool rdma_ib_or_roce(const struct ib_device *device,
+ 				   u32 port_num)
+ {
+ 	return rdma_protocol_ib(device, port_num) ||
+-		rdma_protocol_roce(device, port_num);
++		rdma_protocol_roce(device, port_num) ||
++		rdma_protocol_virtio(device, port_num);
+ }
+ 
+ static inline bool rdma_protocol_raw_packet(const struct ib_device *device,
+@@ -3322,7 +3344,7 @@ static inline size_t rdma_max_mad_size(const struct ib_device *device,
+ static inline bool rdma_cap_roce_gid_table(const struct ib_device *device,
+ 					   u32 port_num)
+ {
+-	return rdma_protocol_roce(device, port_num) &&
++	return rdma_protocol_virtio_or_roce(device, port_num) &&
+ 		device->ops.add_gid && device->ops.del_gid;
+ }
+ 
+@@ -4502,7 +4524,7 @@ void rdma_move_ah_attr(struct rdma_ah_attr *dest, struct rdma_ah_attr *src);
+ static inline enum rdma_ah_attr_type rdma_ah_find_type(struct ib_device *dev,
+ 						       u32 port_num)
+ {
+-	if (rdma_protocol_roce(dev, port_num))
++	if (rdma_protocol_virtio_or_roce(dev, port_num))
+ 		return RDMA_AH_ATTR_TYPE_ROCE;
+ 	if (rdma_protocol_ib(dev, port_num)) {
+ 		if (rdma_cap_opa_ah(dev, port_num))
 -- 
 2.11.0
 
