@@ -2,90 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41D83FEA7B
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 10:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFC03FEE42
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 15:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244263AbhIBIQS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 04:16:18 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:53032 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S243655AbhIBIQN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 04:16:13 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AzweUcqGznso9YInWpLqE1MeALOsnbusQ8zAX?=
- =?us-ascii?q?PiFKOHhom6mj+vxG88506faKslwssR0b+OxoW5PwJE80l6QFgrX5VI3KNGbbUQ?=
- =?us-ascii?q?CTXeNfBOXZowHIKmnX8+5x8eNaebFiNduYNzNHpPe/zA6mM9tI+rW6zJw=3D?=
-X-IronPort-AV: E=Sophos;i="5.84,371,1620662400"; 
-   d="scan'208";a="113894823"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 02 Sep 2021 16:15:14 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id D66214D0D497;
-        Thu,  2 Sep 2021 16:15:08 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 2 Sep 2021 16:15:09 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 2 Sep 2021 16:15:07 +0800
-From:   Xiao Yang <yangx.jy@fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <rpearsonhpe@gmail.com>, <zyjzyj2000@gmail.com>, <jgg@nvidia.com>,
-        <leon@kernel.org>, Xiao Yang <yangx.jy@fujitsu.com>
-Subject: [PATCH v2 5/5] RDMA/rxe: Remove duplicate settings
-Date:   Thu, 2 Sep 2021 16:46:40 +0800
-Message-ID: <20210902084640.679744-6-yangx.jy@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210902084640.679744-1-yangx.jy@fujitsu.com>
-References: <20210902084640.679744-1-yangx.jy@fujitsu.com>
+        id S1344810AbhIBNDQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 09:03:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344741AbhIBNDO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 09:03:14 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DD3BC061757
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 06:02:16 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c10so1865814qko.11
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 06:02:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UCu55kiJCX6mJViRmr/eENMHpPFVeqIo7LOJv0CLC+4=;
+        b=GPYJbsKBPZHk7YRefO5swT16U9j6xnzSPnHDbTB+xcq11Ss+h2as1vkTZWsPPPGISs
+         mf/a5FfbnuO50Hxkrh0/pPSjSc6HpWjfJ3lQDDSjn1J2d5DSEXx4G7YNfQ6xAEQTw3aE
+         ZuYPDxV4HYoVOt50H0haNwwYrTCfRu6leMuqsc+9skMfyla4yn8/S73ZzL0nSfISko9w
+         8N8OSpd0q82sHMrEz10Vv4p3WTJT/gScUEMc04N5augiKoSJby9E9kmWDQq2Q93V3Lkt
+         9iCDocMXSaQrUPwRmAPatBvEylLdzXRQ1BgIZeoyj7f+Ro5BK/TX/rcvFEK40ZWDFUqh
+         R2rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UCu55kiJCX6mJViRmr/eENMHpPFVeqIo7LOJv0CLC+4=;
+        b=NO8InT95VB1084vpK4NLxdFegcWUUTVGLlhPKJgnfPmLyfj7wBfXwrabwxTlZSa49l
+         aIK2CXVeSSpnlOdnnWL2oEociAVAeSkicdVpjMFPInOJ6QE7WxjxPcIlrHjpSAVywhYA
+         T4g/OI3rT2TwSgkjfXqfcecK2ohLWCdkigdmM4rTTuoeADii0OCka3ZXVpYig9UZaAz6
+         vgKSnQ4+16PHah2t3xlMbmF5S1s5xeiGe6O91HG7JrSrY63KMVfsTkDS4VKx6VlO9jQR
+         t+KiaZlY7Z1sRJaiSKR0LhFtJvshgP3pSPQzAZDyz5yyaI9hTIIufRqO7k3ksTEBnRDG
+         J58A==
+X-Gm-Message-State: AOAM533ZstcjFrReTOlJVTDlA+gTNgT72oLmYOuTekQMN3xoucXJVeEq
+        cmbLs6+1NsK63AhsgMARR+iJ5ury7MeO7Q==
+X-Google-Smtp-Source: ABdhPJyL2WDSeNZlzKCOWstVlPJ5pP/UeeuwWi6oRpzbxZLiS1OME6ngV6gWTzdqahh99zWnePDm0g==
+X-Received: by 2002:a05:620a:15e8:: with SMTP id p8mr3067520qkm.27.1630587735114;
+        Thu, 02 Sep 2021 06:02:15 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id j18sm1354866qke.75.2021.09.02.06.02.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Sep 2021 06:02:14 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mLmM9-00AJnb-CL; Thu, 02 Sep 2021 10:02:13 -0300
+Date:   Thu, 2 Sep 2021 10:02:13 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: rdma link add NAME type rxe netdev IFACE stopped working
+Message-ID: <20210902130213.GT1200268@ziepe.ca>
+References: <f1c73298-b37f-8589-bdb1-a727c3b7c844@gmail.com>
+ <b4a1e866-95ed-7bf1-f9da-bca5700db7e1@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: D66214D0D497.A617C
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b4a1e866-95ed-7bf1-f9da-bca5700db7e1@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Remove duplicate settings for vendor_err and qp_num.
+On Wed, Sep 01, 2021 at 10:25:25PM -0500, Bob Pearson wrote:
+> On 9/1/21 10:04 PM, Bob Pearson wrote:
+> > rdma link has started to fail today reporting an error as follows after working before.
+> > 
+> > bob@ubunto-21:~$ sudo rdma link add rxe0 type rxe netdev enp0s3
+> > 
+> > error: Invalid argument
+> > 
+> > bob@ubunto-21:
+> > 
+> > Nothing has changed in the past day or two except I pulled recent changes into rdma-core. This runs after
+> > typing
+> > 
+> > export LD_LIBRARY_PATH=/home/bob/src/rdma-core/build/lib/:/usr/local/lib:/usr/lib
+> > 
+> > which is also the same. Any ideas?
+> > 
+> > Bob
+> > 
+> 
+> Update. I then recompiled the kernel after pulling latest changes
+> and now it works. In theory this shouldn't be necessary. The kernel
+> APIs should be beckwards compatible.
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_resp.c | 4 ----
- 1 file changed, 4 deletions(-)
+I don't think anything has changed here in a long time, so I have no
+guess
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index 71406a49fca3..ce89ade59527 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -893,7 +893,6 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 		wc->opcode = (pkt->mask & RXE_IMMDT_MASK &&
- 				pkt->mask & RXE_WRITE_MASK) ?
- 					IB_WC_RECV_RDMA_WITH_IMM : IB_WC_RECV;
--		wc->vendor_err = 0;
- 		wc->byte_len = (pkt->mask & RXE_IMMDT_MASK &&
- 				pkt->mask & RXE_WRITE_MASK) ?
- 					qp->resp.length : wqe->dma.length - wqe->dma.resid;
-@@ -914,8 +913,6 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 				uwc->ex.invalidate_rkey = ieth_rkey(pkt);
- 			}
- 
--			uwc->qp_num		= qp->ibqp.qp_num;
--
- 			if (pkt->mask & RXE_DETH_MASK)
- 				uwc->src_qp = deth_sqp(pkt);
- 
-@@ -947,7 +944,6 @@ static enum resp_states do_complete(struct rxe_qp *qp,
- 			if (pkt->mask & RXE_DETH_MASK)
- 				wc->src_qp = deth_sqp(pkt);
- 
--			wc->qp			= &qp->ibqp;
- 			wc->port_num		= qp->attr.port_num;
- 		}
- 	}
--- 
-2.23.0
+'rdma link' has no relation to rdma-core either
 
+Perhaps your kernel got in a bad state?
 
-
+Jason
