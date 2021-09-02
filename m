@@ -2,106 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3DF3FF458
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 21:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361403FF4BF
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 22:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231670AbhIBTuO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 15:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S1345838AbhIBUSo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 16:18:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231467AbhIBTuK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 15:50:10 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54C9C061575
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 12:49:11 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso4025525otu.0
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 12:49:11 -0700 (PDT)
+        with ESMTP id S1345880AbhIBUSn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 16:18:43 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE164C061575
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 13:17:44 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id b7so4125881iob.4
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 13:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=EzyrU+xa0Yrkk9Q3P/3AlPjyEmcIvLAv99Z9aOwVVvo=;
-        b=XUyymOwsXKkB9Dfk0BjcvSdj4fJGG7dLlsVJgBW3FE8dCgHDiy/JeLrqj6e3eXkBdp
-         yEj0nnRZh8PR/D2Y6u+pIHzQuWhdSMomQ9UCKzAHHQPZGcFmVYRCtCATF8VUHTEGvoGb
-         y0kvPnupdfaU01p2ImdzNAWeezf7h92/qMRba20NyO+tRFT6bDTsAsv2iFPA+6aV62ZZ
-         Qz3o5eBQzUWS7P5HPeIDQntptPnEkDvnbrV63r3GujoZZQpQY/nzYNTKrB/1Hw7b+Hs8
-         DA8eWkCYYuIQJaWIijo21CYy7/RMBsVh/tYtqEfi79OgLBv/Knsq4MpYCCDZXdnINvwb
-         /Xaw==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
+        b=T31RHCmp5+UxwbuWALjJv1MHfTVq9G+pRe4awPP2uXH9cJZG0q8CP8Ekx5maC2djtr
+         Jmb3V8Pka0NBB56ynSPM2dLfyXiZDxHKqrs5VYvMxmyV18pE/kQGqo5DWGmrXQdR1u+M
+         bmXQ1SB/ggGDPzKzBHBFUtLjcqi/DUsZwfB8jpqRrG3WrcqaetsCaVXuPCHf1F8LlVYi
+         AXAi3FxVVdb384hFUlRFxqWBhrzi19pXM47kw6Oy0WT+xRggpHXXiqfQABi8pEzL/rTN
+         AD45o7WvDd9DT40fRZhdgwMsTxrlfkGl7z4zQ/ETLr23+CfdVfoT3QscBvzGHqOZdE3a
+         jPZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EzyrU+xa0Yrkk9Q3P/3AlPjyEmcIvLAv99Z9aOwVVvo=;
-        b=iOrnTscKEPw5Fm8VEyeR4TxTY0jyPRbuHF90Yx3Br70mlaQaTGPoyTFwQE49cK3SKR
-         Ht9j7bbRCU5WKViy5r4xZ3M5EYV85mp+yU3dZx4zdnTOI9laxb0qDna5erKgx+BZ9mo0
-         Qf4kiNDFwdO3zFRNJ1+egN1hs2U/eTzLydE7cMS8qAYo9r/tJIOArEDqJjYSRJBJtmwz
-         F5ubtFxYRjeC5eQGWlj0cRBwcVh1ssCQ3AMGMYDd+110aAt6xmcgKf43wHJa/sRvOk93
-         P/rM7fLTSn81Q5XoSJ44JFwGBp/roQg6+ee16lfIaesgRcjbFSIBhmos6N2l4zs2eanG
-         5O2A==
-X-Gm-Message-State: AOAM530T388HIu+Tqebup+SaIsyloNKSzgQ6e3y6YgyO6feUP/a5/CwE
-        2VL+Padrm530hGbXBFcboTT4f1GcVRg=
-X-Google-Smtp-Source: ABdhPJxcYuesZtdUSY2GF4PWaxLVy7JXNkY9N+4TOnHp6muWEhhCcgqWf5uSgZG3sQohcHm4hrF/Ug==
-X-Received: by 2002:a9d:70cc:: with SMTP id w12mr4014255otj.306.1630612151094;
-        Thu, 02 Sep 2021 12:49:11 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:4eab:3b55:82a2:257? (2603-8081-140c-1a00-4eab-3b55-82a2-0257.res6.spectrum.com. [2603:8081:140c:1a00:4eab:3b55:82a2:257])
-        by smtp.gmail.com with ESMTPSA id bi41sm565947oib.54.2021.09.02.12.49.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Sep 2021 12:49:10 -0700 (PDT)
-Subject: Re: rdma link add NAME type rxe netdev IFACE stopped working
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <f1c73298-b37f-8589-bdb1-a727c3b7c844@gmail.com>
- <b4a1e866-95ed-7bf1-f9da-bca5700db7e1@gmail.com>
- <20210902130213.GT1200268@ziepe.ca>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <629283f9-2833-62c1-c3cc-e22084bb076a@gmail.com>
-Date:   Thu, 2 Sep 2021 14:49:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=Qdp0SHs3xmfRjgLIyqNwEa9EGz3sQom2u8TOqtBT/Zc=;
+        b=s1f7DPJafWuEOZhPj3Sj3o+Q/Bt0926M1cLI08MBm4BHJCvdlTA0oiLr4153g5Nnf6
+         1uX8yIyyttMF+ZcPYR8/Lxh8PAMZPXXG+DWi8uGoFqoDtOur91wsJwJXGZvLvmj7DVnT
+         KuAhqsJtyWcH8OJEpBLzb6hepyp9CQZCTn9Mm0YdkhODNO/YETwGMMqvwxP9qqRiakvV
+         8FvFjAcq5EiVow1xAb76E4gZms25URGc2byxAnuRBJXaN2gfJ0KJsOXkjWkYwSWwtO8T
+         YJLh3cuHmzBhWpqeD7B3Oue73DTts0lQIXhnNuYl3BJXR3DgI8jyiDJqd+TmBKlgNPiS
+         LOZA==
+X-Gm-Message-State: AOAM531tspN7y9OcgAkXH5LbfI9PJSYy+FVuRapfizoXyC7pXB9AULbV
+        f5qyjisXic15fBmowuLWuC3aTeaxxMV7XmJZsME=
+X-Google-Smtp-Source: ABdhPJwUQgag+QPxvVRvBV1TDBb2W9tMjtMfkJdR2Am3IEG4HSws7IUlE/bUM0HBQWpEA0Y9DGo/qS86nUhs6yI9XEw=
+X-Received: by 2002:a5e:8403:: with SMTP id h3mr128182ioj.136.1630613863584;
+ Thu, 02 Sep 2021 13:17:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210902130213.GT1200268@ziepe.ca>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Sender: khwajasalman7@gmail.com
+Received: by 2002:a05:6e02:1c2a:0:0:0:0 with HTTP; Thu, 2 Sep 2021 13:17:42
+ -0700 (PDT)
+From:   "Mrs.Nicole  Marois" <nicole1563marois@gmail.com>
+Date:   Thu, 2 Sep 2021 20:17:42 +0000
+X-Google-Sender-Auth: QHPx-kHSkWSA4qTuKKeAfHqlWfI
+Message-ID: <CAKO8o9MBdVhPszFiGkJCqYCRHUntYNbKJpsaP3gkd68fsGGL5g@mail.gmail.com>
+Subject: Hello Dear,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/2/21 8:02 AM, Jason Gunthorpe wrote:
-> On Wed, Sep 01, 2021 at 10:25:25PM -0500, Bob Pearson wrote:
->> On 9/1/21 10:04 PM, Bob Pearson wrote:
->>> rdma link has started to fail today reporting an error as follows after working before.
->>>
->>> bob@ubunto-21:~$ sudo rdma link add rxe0 type rxe netdev enp0s3
->>>
->>> error: Invalid argument
->>>
->>> bob@ubunto-21:
->>>
->>> Nothing has changed in the past day or two except I pulled recent changes into rdma-core. This runs after
->>> typing
->>>
->>> export LD_LIBRARY_PATH=/home/bob/src/rdma-core/build/lib/:/usr/local/lib:/usr/lib
->>>
->>> which is also the same. Any ideas?
->>>
->>> Bob
->>>
->>
->> Update. I then recompiled the kernel after pulling latest changes
->> and now it works. In theory this shouldn't be necessary. The kernel
->> APIs should be beckwards compatible.
-> 
-> I don't think anything has changed here in a long time, so I have no
-> guess
-> 
-> 'rdma link' has no relation to rdma-core either
-> 
-> Perhaps your kernel got in a bad state?
-> 
-> Jason
-> 
+Hello Dear,
 
-Must have. Thanks. -- Bob
+Please do not feel disturbed for contacting you, based on the critical
+condition I find mine self though, it's not financial problem, but my
+health you might have know that cancer is not what to talk home about,
+I am married to Mr.Duclos Marois who worked with Tunisia embassy in
+Burkina Faso for nine years before he died in the year 2012.We were
+married for eleven years without a child. He died after a brief
+illness that lasted for five days.
+
+Since his death I decided not to remarry, When my late husband was
+alive he deposited the sum of US$ 9.2m (Nine million two hundred
+thousand dollars) in a bank in Burkina Faso, Presently this money is
+still in bank. And My Doctor told me that I don't have much time to
+live because of the cancer problem, Having known my condition I
+decided to hand you over this fond to take care of the less-privileged
+people, you will utilize this money the way I am going to instruct
+herein. I want you to take 30 Percent of the total money for your
+personal use While 70% of the money will go to charity" people and
+helping the orphanage.
+
+I don't want my husband's efforts to be used by the Government. I grew
+up as an Orphan and I don't have anybody as my family member,
+
+Regards,
+
+Mrs.Nicole Marois.
+written from Hospital.
