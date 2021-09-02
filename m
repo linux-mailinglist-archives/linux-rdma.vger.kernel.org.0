@@ -2,166 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D233FEE44
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 15:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F4F3FEE5A
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Sep 2021 15:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234322AbhIBND5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 09:03:57 -0400
-Received: from mail-dm3nam07on2050.outbound.protection.outlook.com ([40.107.95.50]:60362
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234054AbhIBND4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Sep 2021 09:03:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=chN0KicyYSRfV1VairJeAgQlYGIkEoZ8Rf/Lmti962B2pA+SP3nca9I53J/DikBbRXVgTArkSnqGuN0Zf5Paeuw24mYH4/vFWId95legNr6I6xc9MRSYmDEsrbmmhwc1Ze8xgyTe1xMRstvk6e2p3d9yGejAJ8NNLv5XG4vz0OG3CVo24KcWCNkousy1L/Nr8KdB+0XshE6KVqydDKJQ132kP59x8XignWOwfirYrJBISDu5+tU9Far9ykn5UXG75crb9yMFVRfJU3b3U5jz15H740aDMzhupjsXIHR8qn7hwhgDW/3AowwmF0ZWA8OxyqMt18xRxCB0bRoR925zkA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=xH4+HkFoRMYQKv77u+92aE5kJxVFg7i5Z/dZQ/PIQBY=;
- b=jFk7yLJPlNT1uM5XLS98vwDI+bx3xXvLP1x68Jsu5f7LV2B/C+lOk8RWk8KYPQ0QZr6HZQDvA9DPlCewW7GMDsLTGrz3pwAL6Zo3YfEqEfDPcxkbgXgkUReMv+XVQ68ce5m7/cUZH8/gJjoUbpPiG+2TGyUaOUFxJUXG/Otq3eFZPzk6oBgPni2cvMlyllPf+CJNv8MhzKoKKFS0qwImdxYdJNJsAEvaPtUX203Dj0H2g1lcqXiOMa05kehj+hif6OWyJMqUYsy18LCwZsZuipxoH8ndBhfyoCB68jA/8JC5iyqJfRj8f3gDI3Znk6qx85x3qf9qOodjH24/pP3yow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xH4+HkFoRMYQKv77u+92aE5kJxVFg7i5Z/dZQ/PIQBY=;
- b=GPMcGbn6ljpKDVxsYG6PqaVtiW0Mn7heoijSk2+WM4cmLXByLzmQcyoDLe60/amNqI2+0A0tQzg4n7848p1rHCen5FSvrtPpJia1OhWD8SByIgCrXfDkoyEYmMP8MBhhYkQqUxI+z9Sn12FxTQEIkwr30rJtJuUAIxVOSh9rrB5DgeS+DX/PaJm9dR+ESby+cZiPvAllYtuviytcwhbjhAByA7qpbjLg+FOC2urr8JN+wOrsNIMLMEtmay/prIE+7k6Zp04DFQ0ZANTVkApHSRD5kDUpVS5gH1s7w++k35vMIfqcnuZN48dv+MpLTQT6ODiWrJRrRBRzANWQzaMacg==
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.19; Thu, 2 Sep
- 2021 13:02:57 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4478.020; Thu, 2 Sep 2021
- 13:02:56 +0000
-Date:   Thu, 2 Sep 2021 10:02:55 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 4/4] RDMA/efa: CQ notifications
-Message-ID: <20210902130255.GR1721383@nvidia.com>
-References: <20210811151131.39138-1-galpress@amazon.com>
- <20210811151131.39138-5-galpress@amazon.com>
- <20210820182702.GA550455@nvidia.com>
- <7a4963ea-f028-e787-a5ba-fabf907c6d6b@amazon.com>
- <20210901115716.GG1721383@nvidia.com>
- <c8549e51-47a2-1426-b44b-f1c4ade3dce2@amazon.com>
- <20210901153659.GL1721383@nvidia.com>
- <d1b2dc01-5a42-371e-c4b6-2f9b3425f5b6@amazon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d1b2dc01-5a42-371e-c4b6-2f9b3425f5b6@amazon.com>
-X-ClientProxiedBy: MN2PR15CA0057.namprd15.prod.outlook.com
- (2603:10b6:208:237::26) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S1344936AbhIBNIb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Sep 2021 09:08:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234054AbhIBNI2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 09:08:28 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752C0C061757
+        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 06:07:30 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id j10-20020a17090a94ca00b00181f17b7ef7so1409573pjw.2
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 06:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tlu2B2vMPrU3SXKIjOqJEI0aXPDLkRUxkJa7dAhyKjE=;
+        b=pJuJJ6DXaRoCGXEw0dTDnSqDqH5w9GOq7eyjMqiQoJ4UtD/SMxEOAzwaol/qLcSzN3
+         62Y0YYENk/Yn09udevOJiC/qWipZuYHIkkRPTBveAM9WRp1wUOD5MonDQT0Gd9FNajUp
+         IBGlc+oRIv+WH0pjZ9Q6wERiGcB3ZmuwiZgzTzx151SRIhd14p+FDh0HIVclMSiaj+ae
+         Sn+AKhC2X07ToOZ8a02tfSvR2lTUxGIY3zVtmh3u3VqBbh0R+e/DDnc87/fRV86BQkv9
+         U2ETMXIFkz8eKxt4iivTi8vF7XKiiE0gDtiXZp3puoh/wDg3ms8j110l+ab5WewPsnrs
+         INzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tlu2B2vMPrU3SXKIjOqJEI0aXPDLkRUxkJa7dAhyKjE=;
+        b=q1QXej/Ygkx7bH4J5gATt5bCduvsxIbeRFKSH+E4Skc/iBXDgix5Hkl5CVtSrQAIKK
+         xuE71iWBeD15ms428U4Jz+grZjX5OtbEfXl/pgPM6cyRObkWYvS3Ij4xwoZBb1EIGRSR
+         lkGrUlV3xvlWxcNiqg47t0cyC9RXMwxWbFu82rSa8YW+v2+qsOoVjXdRF8HkZmtt4/F+
+         Ygl4BFwzei605anRItYAclpQEsAOsgrDGR5BlpM16wcsvnVm9dEDIDhUdF7F1iokUH+/
+         IqJGfDXG5KKQLm7sxOvuZV9+lXVFGLiyIlqFVJAX/9596rpnOVZv0Kj9fikiaHZIF7YF
+         X39w==
+X-Gm-Message-State: AOAM532KDf8nUBSBdUFHH819Zp3vXdKGk3YJcAVra7bJESLsQW7VwwaT
+        PCwdf3121SZNk/lP9a8QNxnGYg==
+X-Google-Smtp-Source: ABdhPJwzBbMxoJ3vXfsWbjXb5S1vXV4ArrFBAb8yGGbduSb1HZou/OYm2WgHnTGNK0wHWsDZ0yB3IA==
+X-Received: by 2002:a17:90a:4a05:: with SMTP id e5mr3765653pjh.58.1630588049596;
+        Thu, 02 Sep 2021 06:07:29 -0700 (PDT)
+Received: from C02FR1DUMD6V.bytedance.net ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id d6sm2307415pfa.135.2021.09.02.06.07.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 02 Sep 2021 06:07:28 -0700 (PDT)
+From:   Junji Wei <weijunji@bytedance.com>
+To:     dledford@redhat.com, jgg@ziepe.ca, mst@redhat.com,
+        jasowang@redhat.com, yuval.shaia.ml@gmail.com,
+        marcel.apfelbaum@gmail.com, cohuck@redhat.com, hare@suse.de
+Cc:     xieyongji@bytedance.com, chaiwen.cc@bytedance.com,
+        weijunji@bytedance.com, linux-rdma@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, qemu-devel@nongnu.org
+Subject: [RFC 0/5] VirtIO RDMA
+Date:   Thu,  2 Sep 2021 21:06:20 +0800
+Message-Id: <20210902130625.25277-1-weijunji@bytedance.com>
+X-Mailer: git-send-email 2.30.1 (Apple Git-130)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR15CA0057.namprd15.prod.outlook.com (2603:10b6:208:237::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.17 via Frontend Transport; Thu, 2 Sep 2021 13:02:56 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mLmMp-00AJoW-OT; Thu, 02 Sep 2021 10:02:55 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 95c84eb4-3637-4030-6a18-08d96e11fbb5
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5160:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5160871740A6074E1CAC76A1C2CE9@BL1PR12MB5160.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cYHFYaPI/KksleukwF2Z0llNwtbyQpUaC2Az1dI4L+TcN9K60/nc8haGqiNYNMW/JdtrqDWdBSsZcM9f5tmRCdk8hJ/eIUfhNzVh7gJEUl2CulSrWfW15JvCu8Kclj4paiTI3l6nUhz0ilFs4RKlN0B2BdZn7f6KaRLV3FrQ6BY35yiN2LkNRSztk18SuAIxP9IaoG6h2hnLUWWwo2VJ7AeR6qDWLqjlNX52QAEcmPpx/t9a03/dSKDr6W8yRs2U4rrRbgn2ZdSH+WsoBW5oCj5S+NdMqYU7edq9M+LCLbVn8icbC0fKiosw2nkswpDzTrMaiyys6IDGx1yEkGtrQpt8aEUjP73nWCeNf4Z1veSPKOusBDAo2DHHhRMsWtB3HhdW19yz4ZkhbDnWWfItwA1n54QbQi7p5+2ZoFM0v9/S9rYxegXTB4n7pZ0rJe7yajBiborHrqCKl/nfW7mwmyYCuDnEtoAk9FSEkjhZnVDf5XPzUbSfKqf30r8na2gBcuVnXRUFDeDFAH1MR9Z0sRCw5a1wdqD4ZurkjTzUNz5uTyp3+/zKTiQWcx+r2beKStH0EEjoOD5UE7p/MfGwFZf5KFpU+hfAy7WA8af8PnQlj3LRk7lF7TMXU7ZQ9jf8iTP4h/oECHBdTH///TIfzJ2i3oqfSsIq0jqWKav7B06ySiA3k/k81T/K3t+NwiIsmbCpN7mmPEhNNrA2Amo5ONpsH8p2t8hII0WxJIpZDkI4l4Zj8eetG6fxarnKj8vFb+R9y0gyyFrBVwkrH/dvFA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(346002)(366004)(396003)(376002)(1076003)(9786002)(9746002)(53546011)(66946007)(86362001)(66556008)(66476007)(478600001)(33656002)(6916009)(38100700002)(83380400001)(54906003)(2906002)(966005)(316002)(8676002)(2616005)(426003)(186003)(36756003)(4326008)(26005)(5660300002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Z+Qu6blT0uYCVPHzxNWxFEP9U+SGJGw5N2jg3RCLyg1nFQth77Yc32PFRzah?=
- =?us-ascii?Q?UWIJJ4CQAtGY/0tZTTI/42VmSEaThYR7G/ha6yDRlye12FfQN1PaR3Y6KxG9?=
- =?us-ascii?Q?2rjMVWcTycTEXRYp89/Qtwh9ultbYysF+Wy1ywSSxTt38nTXIwBP+MlZ7gLf?=
- =?us-ascii?Q?BVilZlJpPkwKsfA07l7WuOwluY040GM2s7ghmBIadoBgmVEfaJh0f+D6ybiW?=
- =?us-ascii?Q?gbWtJZLPWuhUT+Ia+Tg32K/quwmFPKbD2JLhAIdFL4mx6Td1R/gXU5aZe1p9?=
- =?us-ascii?Q?uyvLePGBpePRWMY1SHqM7n+jYd9DVogtlkct2QrqxLFbtQfxXySRNQxp3AKm?=
- =?us-ascii?Q?F7nclwp6ORr/TSz4GjIhQtvKtHzRY2RY6XwVcJKC2ZEx3I7I2uJ2j8NpU8o1?=
- =?us-ascii?Q?Erfm9lnxJ4pK+ds9t6YEvAr37vIyjZjn6HLH3olKicCtRUnV263JB7yJv07X?=
- =?us-ascii?Q?o86yC+SmNYj+61/88gaqUr+lB1b+tebp5rSz2ouOcLYWPs+XU+w6Rto/tiM+?=
- =?us-ascii?Q?cyRkLpXvv89MfktPgmbRAzTZude9YFLvh1PzIwwx5e+6PF77E5es4HCkU6VV?=
- =?us-ascii?Q?R5NpIkTQzq+JonsDgYizi7apRkH2xLERA1i2P+7lidB7E8XOmJDmwxoM12n4?=
- =?us-ascii?Q?Cl+hOOsSf4vjHhDcc4HryUQMXR5DNAbA+JttfN5rpGLgjwIesAdbosO42fS0?=
- =?us-ascii?Q?lnKePbC8ZBlIfHbrNA1/ZaXvc9FUcidwrZnC/kS2T622Up4CsTv3rCZNjMAZ?=
- =?us-ascii?Q?lnJ8FP/9jrlINpiGMZ3Lh6REmr4XW8Ibn6uqgDEpj8K2HsFY76el1nys7kAJ?=
- =?us-ascii?Q?ZsRY8eD9Pcq6hV8LSM0LRstZHdO39oXn8EEUlC3P++A/4vt6ziWFYnK4q8Qn?=
- =?us-ascii?Q?X8Qz3j8ZzmTjeFOuce8vKuU19kmlgFgvi0ITsvvo4/d7L4gxgiSJqnBiDoK9?=
- =?us-ascii?Q?rhWgPh4qJ9tJozb4uZKOpWVTGKFrdSFPywh29sOJ2J9aZQyPrK8u5ml/VMBJ?=
- =?us-ascii?Q?IHiJAj5FIjhzZt7ZpBa+I5W+rtESxV/BECHl0VPVy87zpoAL960ditmknhYA?=
- =?us-ascii?Q?5E6iWL80Ha+fOvx4DKrKaV0fpbaAijBB8OmEzLPjBbX1L9jTB/dMw5D9V1DS?=
- =?us-ascii?Q?lSm1kjjZ2Fh2dmLJ/fhrGFX6lvb1bSp7DiSr/z+e5nzOE24yoEDLGEPefTLR?=
- =?us-ascii?Q?hM8IrqmuExcWiMgZBIL7ke1uljI8SDzMkgXOUJXUs9TxAPUv7gPr9Ih7Kenn?=
- =?us-ascii?Q?MnpkOrEMyjBss2yfmpA235zhLw1r2dzrhFd3U7X82r1BCvb8+Ch/j5APlI3q?=
- =?us-ascii?Q?FY3uXrXXRgdBUHN3h/4n16iJ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95c84eb4-3637-4030-6a18-08d96e11fbb5
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2021 13:02:56.8226
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: V77U/s8Yws/KWRMqcM8vdytMxabQpacWSUzdJ4aHRXbvpO4MtCwlVEtRr2eNltJ4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 02, 2021 at 10:03:16AM +0300, Gal Pressman wrote:
-> On 01/09/2021 18:36, Jason Gunthorpe wrote:
-> > On Wed, Sep 01, 2021 at 05:24:43PM +0300, Gal Pressman wrote:
-> >> On 01/09/2021 14:57, Jason Gunthorpe wrote:
-> >>> On Wed, Sep 01, 2021 at 02:50:42PM +0300, Gal Pressman wrote:
-> >>>> On 20/08/2021 21:27, Jason Gunthorpe wrote:
-> >>>>> On Wed, Aug 11, 2021 at 06:11:31PM +0300, Gal Pressman wrote:
-> >>>>>> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-> >>>>>> index 417dea5f90cf..29db4dec02f0 100644
-> >>>>>> +++ b/drivers/infiniband/hw/efa/efa_main.c
-> >>>>>> @@ -67,6 +67,46 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
-> >>>>>>  	pci_release_selected_regions(pdev, release_bars);
-> >>>>>>  }
-> >>>>>>  
-> >>>>>> +static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
-> >>>>>> +{
-> >>>>>> +	u16 cqn = eqe->u.comp_event.cqn;
-> >>>>>> +	struct efa_cq *cq;
-> >>>>>> +
-> >>>>>> +	cq = xa_load(&dev->cqs_xa, cqn);
-> >>>>>> +	if (unlikely(!cq)) {
-> >>>>>
-> >>>>> This seems unlikely to be correct, what prevents cq from being
-> >>>>> destroyed concurrently?
-> >>>>>
-> >>>>> A comp_handler cannot be running after cq destroy completes.
-> >>>>
-> >>>> Sorry for the long turnaround, was OOO.
-> >>>>
-> >>>> The CQ cannot be destroyed until all completion events are acked.
-> >>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/man/ibv_get_cq_event.3#L45
-> >>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/cmd_cq.c#L208
-> >>>
-> >>> That is something quite different, and in userspace.
-> >>>
-> >>> What in the kernel prevents tha xa_load and the xa_erase from racing together?
-> >>
-> >> Good point.
-> >> I think we need to surround efa_process_comp_eqe() with an rcu_read_lock() and
-> >> have a synchronize_rcu() after removing it from the xarray in
-> >> destroy_cq.
-> > 
-> > Try to avoid synchronize_rcu()
-> 
-> I don't see how that's possible?
+Hi all,
 
-Usually people use call_rcu() instead
+This RFC aims to reopen the discussion of Virtio RDMA.
+Now this is based on Yuval Shaia's RFC "VirtIO RDMA"
+which implemented a frame for Virtio RDMA and a simple
+control path (Not sure if Yuval Shaia has any further
+plan for it).
 
-> Sure, I wasn't sure if it's OK to nest rcu_read_lock() calls.
+We try to extend this work and implement a simple
+data-path and a completed control path. Now this can
+work with SEND, RECV and REG_MR in kernel. There is a
+simple test module in this patch that can communicate
+with ibv_rc_pingpong in rdma-core.
 
-It is OK
+During doing this work, we have found some problems and
+would like to ask for some suggestions from community:
+1. Each qp need two VQ, but qemu default only support 1024 VQ.
+   I think it is possible to multiplex the VQ, since the
+   cmd_post_send carry the qpn in request.
 
-Jason
+2. The virtio-rdma device's gid should equal to host rdma
+   device's gid. This means that we cannot use gid cache in
+   rdma subsystem. And theoretically the gid should also equal
+   to the device's netdev's ip address, how can we deal with
+   this conflict.
+
+3. How to support DMA mr? The verbs in host cannot support it.
+   And it seems hard to ping whole guest physical memory in qemu.
+
+4. The FRMR api need to set key of MR through IB_WR_REG_MR.
+   But it is impossible to change a key of mr using uverbs.
+   In our implementation, we change the key of WR while post_send,
+   but this means the MR can only work with SEND and RECV since we
+   cannot change the key in the remote. The final solution may be to
+   implement an urdma device based on rxe in qemu, through this we
+   can get full control of MR.
+
+5. The GSI is not supported now. And we think it's a problem that
+   when the host receive a GSI package, it doesn't know which
+   device it belongs to.
+
+Any further thoughts will be greatly welcomed. And we noticed that
+there seems to be no existing work for virtio-rdma spec, we are
+happy to start it from this RFC.
+
+How to test with test module:
+
+1. Set test module's SERVER_ADDR and SERVER_PORT
+2. Build kernel and qemu
+3. Build rdmacm-mux in qemu/contrib and run it in backend
+4. Boot kernel with qemu with following args using libvirt
+<interface type='bridge'>
+  <mac address='00:16:3e:5d:aa:a8'/>
+  <source bridge='virbr0'/>
+  <target dev='vnet1'/>
+  <model type='virtio'/>
+  <alias name='net0'/>
+  <address type='pci' domain='0x0000' bus='0x00' slot='0x02'
+   function='0x0' multifunction='on'/>
+</interface>
+
+<qemu:commandline>
+  <qemu:arg value='-chardev'/>
+  <qemu:arg value='socket,path=/var/run/rdmacm-mux-rxe0-1,id=mads'/>
+  <qemu:arg value='-device'/>
+  <qemu:arg value='virtio-rdma-pci,disable-legacy=on,addr=2.1,
+   ibdev=rxe0,netdev=bridge0,mad-chardev=mads'/>
+  <qemu:arg value='-object'/>
+  <qemu:arg value='memory-backend-ram,id=mb1,size=1G,share'/>
+  <qemu:arg value='-numa'/>
+  <qemu:arg value='node,memdev=mb1'/>
+</qemu:commandline>
+
+Note that virtio-net and virtio-rdma should be in same slot's
+function 0 and function 1.
+
+5. Run "ibv_rc_pingpong -g 1 -n 500 -s 20480" as server
+6. Run "insmod virtio_rdma_rc_pingping_client.ko" in guest
+
+One note regarding the patchset.
+We know it's not standard to collaps patches from two repos. But in
+order to display the whole work of Virtio RDMA, we still did it.
+
+Thanks.
+
+patch1: RDMA/virtio-rdma Introduce a new core cap prot (linux)
+patch2: RDMA/virtio-rdma: VirtIO RDMA driver (linux)
+        The main patch of virtio-rdma driver in linux kernel
+patch3: RDMA/virtio-rdma: VirtIO RDMA test module (linux)
+        A test module
+patch4: virtio-net: Move some virtio-net-pci decl to include/hw/virtio (qemu)
+        Patch from Yuval Shaia
+patch5: hw/virtio-rdma: VirtIO rdma device (qemu)
+        The main patch of virtio-rdma device in linux kernel
+-- 
+2.11.0
+
