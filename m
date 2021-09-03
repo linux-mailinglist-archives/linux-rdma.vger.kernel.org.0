@@ -2,170 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401BC3FF921
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Sep 2021 05:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D777B3FFB3A
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Sep 2021 09:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234465AbhICDgD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Sep 2021 23:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59238 "EHLO
+        id S234815AbhICHnF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Sep 2021 03:43:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234277AbhICDgD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Sep 2021 23:36:03 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA19C061575
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Sep 2021 20:35:04 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso5192900otu.0
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Sep 2021 20:35:04 -0700 (PDT)
+        with ESMTP id S234722AbhICHnE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Sep 2021 03:43:04 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C642AC061575
+        for <linux-rdma@vger.kernel.org>; Fri,  3 Sep 2021 00:42:04 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id u11-20020a17090adb4b00b00181668a56d6so3343840pjx.5
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Sep 2021 00:42:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NHdOlbf0cPuMEbpfwIohExe1C6Lajv+o8RoiZnO1x+k=;
-        b=St1veLN7w1ZFos0VnE+H7SxbU9DWjs4WPIFC49iM0fCEy/TRGLRs9s2zOBG4OzJcAK
-         Ja/bnEgV1ZKQbAw/QjKmYqNikS1GcNTjfGcigebVGJoJMTwuVdvjtp4iYyE72K1KWdcf
-         ky+ECzKWDMiMGe3N0fFC2Vv+62CwHQ7C/roL3D7HXWOMAUnrMBSu386nsyg6E/8wzlsR
-         GUebnNZPSYVfqyJtHt5tNa9Yil8zFrnWp6aksstl/EcQLzswn/lMPEnzEXfZxcXq9lGH
-         ix0YTBj6TfxzaFZCbvBeMe3SuuBn8GhBLoARDzvHGOdGZzxTzBMpfGXmugcXDOqIw4Gv
-         pc9A==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=nXREGH7UcssxsGls4TpqN/3My2ILjgwwjSnTKo7Ckl4=;
+        b=KiXEQsXdfuZJShCri4LUNWJ9o+nCGc+6qCDmPFb67nPxAkxIsZ/yUP1bHvd6wnlSEv
+         rTozjTwxXQHPdTlHIYLC2ZFsdmdCTCzktNnQ7aXNdDi5978cszU/V78KWGnYsk/b5WlE
+         fHmJcxv/sXp5/rtlqW8K5VOg+uXnmWmkBVpRgU1OmlsUUu5BEBNIiWwKxOmJ2/DN45xN
+         lvb3bpM8pVjWIAhf+PIuwiWQ1M5HI0AGpyU0yrFCB7Lmf8sL+ywxZLuKL/Zb0xxSQboT
+         wh6Oa0M9LM/zi2RzjgzLTdU4TokBi1SL9YQKFYmSIMkDKELGEhw/XZz3yiIVkjrYv0DS
+         dveA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NHdOlbf0cPuMEbpfwIohExe1C6Lajv+o8RoiZnO1x+k=;
-        b=N23bE2li53xoORH+qaydz2R+WHdQ9mQzRjg8LrJOA3il+ke6JGlu1mnrPZp9BzFn4z
-         VLXEcVfG1oTvvOTteDI+zbjIJ107ANYTO/BIwP88hiD3vJb9vStth7wIVmVNGumBMUtP
-         tIAQQ+N+TCXrfe9y9OZPMvg1p3FnkfJ2/MjM5FDlnUVzEaVnrEVOIyospjAv9ebkiYbl
-         pQli7aMXTm8haUnXLUYePI0ioA82ZZw1uKxgD1Ff2P3gKBxAKeJluzoObG8iTCBYYFfy
-         Ne4U/FjqOANsTzZPna/p+0azqlNTsmhWutrbHZe45QuZeHAx7UlKMK/rFrc0Elq2tW2I
-         MD+Q==
-X-Gm-Message-State: AOAM532zyocVryvPUmcchCav7g28yfi315vfkuWCBVl8CMbEHkDzR3Ag
-        A4t5i99/lWY4BtSmCU1mD851ys0XLKp3Eh3+2BM=
-X-Google-Smtp-Source: ABdhPJxFu1pJ2zgGrp8RpvjeCXV5W2xQwI+BBJk61qSGvadvL5IzxGpWP3stfKw5ZF2jGmEWCQKyXqzJ3jC7OVxo++Y=
-X-Received: by 2002:a05:6830:149a:: with SMTP id s26mr1253972otq.59.1630640103466;
- Thu, 02 Sep 2021 20:35:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210809150738.150596-1-yangx.jy@fujitsu.com> <7279c618-d373-d7ce-c67c-97e519b48e94@gmail.com>
- <CAD=hENc2gt98YyhOC=EsSTsN0=-EZ7Pz1Kht96HYNA+qvdfWyQ@mail.gmail.com>
- <324764c2-4f41-0106-70e0-aaccb3c50c15@gmail.com> <6122FAE1.4080306@fujitsu.com>
- <YSYQ6hLAebrnGow6@unreal> <61308B01.9050706@fujitsu.com>
-In-Reply-To: <61308B01.9050706@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 3 Sep 2021 11:34:51 +0800
-Message-ID: <CAD=hENedW_tGctDrBUvx=YH82zrH=Zr0Fov8GZcfsZGRK05Rzw@mail.gmail.com>
-Subject: Re: [PATCH v2] providers/rxe: Set the correct value of resid for
- inline data
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=nXREGH7UcssxsGls4TpqN/3My2ILjgwwjSnTKo7Ckl4=;
+        b=UzOc+4mThic4RRq68wsUt+TpEx+olh49aRLaw3gJbS4sm7gNJUOM2p95QfonabUJOv
+         BGXof6ZyQWaFkcCc27J7qtxkFSi4GztSw42Zb2Hnmm/qMx+ea+TOtWdIuvVp0MNWAff8
+         H5Rdd+vsdJoWHDOSeX05FnSzeOl9zQvVtSdyjAn/j7ko07R/dXlUnXRWYGnW1nngQhKo
+         RIOlThUZ7rkYYJT23Th7d0xvka+pV0afEQAxG1pXVhmX3qTnmPLMnegVT4X3pCMmcoJ/
+         A0FdbZI3dUTo6EUSl43891NDxkhouUGnMWRKWs1kz9oK5BCJ3JrJXhIAGMtj9f2b3bqd
+         jt9A==
+X-Gm-Message-State: AOAM532V/bys/4pKSXkMfRwD2IjcqCf93aNzTJoGhPecILE0hUN+0Uj7
+        hp7JsTqEIfIYGPsrZS2KF17JDg==
+X-Google-Smtp-Source: ABdhPJx9jFfBu+nlD8vhSJGr3W8ucdz7n747tSwepSc5EQ6/yAYK1sNLaqT1nRm3XypVmOJ/vRgOqQ==
+X-Received: by 2002:a17:90a:c89:: with SMTP id v9mr2482459pja.175.1630654924349;
+        Fri, 03 Sep 2021 00:42:04 -0700 (PDT)
+Received: from smtpclient.apple ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id u24sm4656287pfm.81.2021.09.03.00.41.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 03 Sep 2021 00:42:03 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [RFC 0/5] VirtIO RDMA
+From:   =?utf-8?B?6a2P5L+K5ZCJ?= <weijunji@bytedance.com>
+In-Reply-To: <CACGkMEsz4HQKpaw3P=ODXvN2AuqO+_YE0UHpzOFk5GbzX13V4A@mail.gmail.com>
+Date:   Fri, 3 Sep 2021 15:41:57 +0800
+Cc:     dledford@redhat.com, jgg@ziepe.ca, mst <mst@redhat.com>,
+        yuval.shaia.ml@gmail.com, marcel.apfelbaum@gmail.com,
+        Cornelia Huck <cohuck@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        linux-rdma@vger.kernel.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        qemu-devel <qemu-devel@nongnu.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <4ED3B57F-A9D1-4A61-AA1D-94D14A932012@bytedance.com>
+References: <20210902130625.25277-1-weijunji@bytedance.com>
+ <CACGkMEsz4HQKpaw3P=ODXvN2AuqO+_YE0UHpzOFk5GbzX13V4A@mail.gmail.com>
+To:     Jason Wang <jasowang@redhat.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 2, 2021 at 4:27 PM yangx.jy@fujitsu.com
-<yangx.jy@fujitsu.com> wrote:
->
-> Hi Yanjun, Bob
->
-> Ping. :
 
-Sorry. It is late to reply.
-My concern is if this will introduce other risks or not.
-If you can confirm that this will not introduce other risks,
-I am fine with this commit.
+> On Sep 3, 2021, at 8:57 AM, Jason Wang <jasowang@redhat.com> wrote:
+> 
+> On Thu, Sep 2, 2021 at 9:07 PM Junji Wei <weijunji@bytedance.com> wrote:
+>> 
+>> Hi all,
+>> 
+>> This RFC aims to reopen the discussion of Virtio RDMA.
+>> Now this is based on Yuval Shaia's RFC "VirtIO RDMA"
+>> which implemented a frame for Virtio RDMA and a simple
+>> control path (Not sure if Yuval Shaia has any further
+>> plan for it).
+>> 
+>> We try to extend this work and implement a simple
+>> data-path and a completed control path. Now this can
+>> work with SEND, RECV and REG_MR in kernel. There is a
+>> simple test module in this patch that can communicate
+>> with ibv_rc_pingpong in rdma-core.
+>> 
+>> During doing this work, we have found some problems and
+>> would like to ask for some suggestions from community:
+> 
+> I think it would be beneficial if you can post a spec patch.
 
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Ok, I will do it.
 
->
-> Best Regards,
-> Xiao Yang
-> On 2021/8/25 17:44, Leon Romanovsky wrote:
-> > On Mon, Aug 23, 2021 at 01:33:24AM +0000, yangx.jy@fujitsu.com wrote:
-> >> Hi Leon,
-> >>
-> >> Could you review the patch?
-> > There is no need, I trust to Zhu's and Bob's review.
-> >
-> > Thanks
-> >
-> >> Best Regards,
-> >> Xiao Yang
-> >> On 2021/8/17 2:52, Bob Pearson wrote:
-> >>> On 8/15/21 10:55 PM, Zhu Yanjun wrote:
-> >>>> On Sat, Aug 14, 2021 at 6:11 AM Bob Pearson<rpearsonhpe@gmail.com>  =
- wrote:
-> >>>>> On 8/9/21 10:07 AM, Xiao Yang wrote:
-> >>>>>> Resid indicates the residual length of transmitted bytes but curre=
-nt
-> >>>>>> rxe sets it to zero for inline data at the beginning.  In this cas=
-e,
-> >>>>>> request will transmit zero byte to responder wrongly.
-> >>>>>>
-> >>>>>> Resid should be set to the total length of transmitted bytes at th=
-e
-> >>>>>> beginning.
-> >>>>>>
-> >>>>>> Note:
-> >>>>>> Just remove the useless setting of resid in init_send_wqe().
-> >>>>>>
-> >>>>>> Fixes: 1a894ca10105 ("Providers/rxe: Implement ibv_create_qp_ex ve=
-rb")
-> >>>>>> Fixes: 8337db5df125 ("Providers/rxe: Implement memory windows")
-> >>>>>> Signed-off-by: Xiao Yang<yangx.jy@fujitsu.com>
-> >>>>>> ---
-> >>>>>>    providers/rxe/rxe.c | 5 ++---
-> >>>>>>    1 file changed, 2 insertions(+), 3 deletions(-)
-> >>>>>>
-> >>>>>> diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-> >>>>>> index 3c3ea8bb..3533a325 100644
-> >>>>>> --- a/providers/rxe/rxe.c
-> >>>>>> +++ b/providers/rxe/rxe.c
-> >>>>>> @@ -1004,7 +1004,7 @@ static void wr_set_inline_data(struct ibv_qp=
-_ex *ibqp, void *addr,
-> >>>>>>
-> >>>>>>         memcpy(wqe->dma.inline_data, addr, length);
-> >>>>>>         wqe->dma.length =3D length;
-> >>>>>> -     wqe->dma.resid =3D 0;
-> >>>>>> +     wqe->dma.resid =3D length;
-> >>>>>>    }
-> >>>>>>
-> >>>>>>    static void wr_set_inline_data_list(struct ibv_qp_ex *ibqp, siz=
-e_t num_buf,
-> >>>>>> @@ -1035,6 +1035,7 @@ static void wr_set_inline_data_list(struct i=
-bv_qp_ex *ibqp, size_t num_buf,
-> >>>>>>         }
-> >>>>>>
-> >>>>>>         wqe->dma.length =3D tot_length;
-> >>>>>> +     wqe->dma.resid =3D tot_length;
-> >>>>>>    }
-> >>>>>>
-> >>>>>>    static void wr_set_sge(struct ibv_qp_ex *ibqp, uint32_t lkey, u=
-int64_t addr,
-> >>>>>> @@ -1473,8 +1474,6 @@ static int init_send_wqe(struct rxe_qp *qp, =
-struct rxe_wq *sq,
-> >>>>>>         if (ibwr->send_flags&   IBV_SEND_INLINE) {
-> >>>>>>                 uint8_t *inline_data =3D wqe->dma.inline_data;
-> >>>>>>
-> >>>>>> -             wqe->dma.resid =3D 0;
-> >>>>>> -
-> >>>>>>                 for (i =3D 0; i<   num_sge; i++) {
-> >>>>>>                         memcpy(inline_data,
-> >>>>>>                                (uint8_t *)(long)ibwr->sg_list[i].a=
-ddr,
-> >>>>>>
-> >>>>> Signed-off-by: Bob Pearson<rpearsonhpe@gmail.com>
-> >>>> The Signed-off-by: tag indicates that the signer was involved in the
-> >>>> development of the patch, or that he/she was in the patch=E2=80=99s =
-delivery
-> >>>> path.
-> >>>>
-> >>>> Zhu Yanjun
-> >>>>
-> >>> Sorry, my misunderstanding. Then I want to say
-> >>>
-> >>> Reviewed-by: Bob Pearson<rpearsonhpe@gmail.com>
-> >>>
-> >>> The patch looks correct to me.
+Thanks
+
