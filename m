@@ -2,145 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C423B400E91
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Sep 2021 09:28:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C2D400E9C
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Sep 2021 09:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236451AbhIEH0l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Sep 2021 03:26:41 -0400
-Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:65422 "EHLO
-        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229984AbhIEH0k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Sep 2021 03:26:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1630826737; x=1662362737;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ryTnZq6a6Z8KGGM7DCnpGd8sUM4SP7U/9c+IXKpu6+E=;
-  b=fqo+M6CyRUIoUp3nE3HhRiGuOjOB12k/OrYk+TGswSiwnV+iAtEolQX+
-   Q+6KYDcitRIEbTU9rsZ/3VlmwvSUdymz8BsowYc8lUG7NoZ6awQL/i0wG
-   MjG9qmCHmojY/47b/ws7vkVwaxwFiIyofPM/iE+tnDiQEcLj8ehpewpic
-   8=;
-X-IronPort-AV: E=Sophos;i="5.85,269,1624320000"; 
-   d="scan'208";a="24587052"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-42f764a0.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 05 Sep 2021 07:25:28 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1e-42f764a0.us-east-1.amazon.com (Postfix) with ESMTPS id C78EFB050F;
-        Sun,  5 Sep 2021 07:25:26 +0000 (UTC)
-Received: from 8c85908914bf.ant.amazon.com (10.43.160.241) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Sun, 5 Sep 2021 07:25:22 +0000
-Subject: Re: [PATCH for-next 4/4] RDMA/efa: CQ notifications
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-References: <20210820182702.GA550455@nvidia.com>
- <7a4963ea-f028-e787-a5ba-fabf907c6d6b@amazon.com>
- <20210901115716.GG1721383@nvidia.com>
- <c8549e51-47a2-1426-b44b-f1c4ade3dce2@amazon.com>
- <20210901153659.GL1721383@nvidia.com>
- <d1b2dc01-5a42-371e-c4b6-2f9b3425f5b6@amazon.com>
- <20210902130255.GR1721383@nvidia.com>
- <3a5fb37a-dd72-e322-f7c6-790ee4e04efa@amazon.com>
- <20210902151029.GV1721383@nvidia.com>
- <f80c3b52-d38b-3045-0fcc-b27f1f7b8c0d@amazon.com>
- <20210902154124.GX1721383@nvidia.com>
-From:   Gal Pressman <galpress@amazon.com>
-Message-ID: <9ffde1c4-d748-0091-0d7d-b2e2eb63aa51@amazon.com>
-Date:   Sun, 5 Sep 2021 10:25:17 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.13.0
+        id S233418AbhIEHvS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Sep 2021 03:51:18 -0400
+Received: from mout.gmx.net ([212.227.17.20]:55495 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229599AbhIEHvS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 5 Sep 2021 03:51:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1630828204;
+        bh=v00yWsL4XEVZ7bXh82uXAMAbo31Pik3HWj63p8nK5ns=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=apyYQxqSCwjarPgAD2Z1HvI3n2Kfe3wUZ+nPu1NK+8/cdCXbvBuPsBR1olC7ZsFmO
+         AqehUNL5LG4Pw1VHxuRhLiOGAfoTNdpAWx8DWqDLI8xlcKgk0bv1Aw+aWBY3Xnx6nm
+         efF1KR3w49g1agVJgL/67Xol8v1XoKyxbDkvz3Mw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([79.150.72.99]) by mail.gmx.net
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MhlGq-1mrhoy112O-00dp8K; Sun, 05 Sep 2021 09:50:04 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Len Baker <len.baker@gmx.com>, Kees Cook <keescook@chromium.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Date:   Sun,  5 Sep 2021 09:49:36 +0200
+Message-Id: <20210905074936.15723-1-len.baker@gmx.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210902154124.GX1721383@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.241]
-X-ClientProxiedBy: EX13D47UWC002.ant.amazon.com (10.43.162.83) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tMmxEffSTzXE4Bi0GOPfWgJ6Vy1HEY4xMiDcYJTvywx5Mza37MF
+ PmNQJkymVUswaYdAYscm/4NDeeMcF+tHqrKrHlxbCfIJUzJMJjV6UbrnE68DCivadHpJwSG
+ dKo4rqy8zC547KFXwBL//PVXo/AGBJK1BycTM72eCa7IVpIs5erhyQI2JeSS/IsH8p+WrUV
+ Vk/ZxgwCMV33Hu6FJBSvg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NC7nl/kio1g=:Lyy8rF7rv2sr05B4FXhdIA
+ RchAvfWvhDd+il/3FeEXeE7E3zyTbXFYQG7DSf8heIvW9VnmoxYjUiQ7cJcuB2JWQsZ96a4Fh
+ 1f0QIeGcceqQychifaFMZwELZeGPwlru3cfS1x+cb7ucAZIiL16cLvic1wrEuy+Uq1poRSxvH
+ N+5Y0N3bk/z8/pnbAHuvNexa7VbTe3382V4eDWTODXeSndH5LN+jQsX3KNIOJeAhHP51ns7H/
+ a1LI08HwoH+h+Ze+lqz6kp841tCzsXXvDE0q8GKurisrQDW/RFS9VGminFczEq8bO41reKZ7M
+ xFtTidXgUV3aM/W1sdYQ5+2iqyoOeXaWjiEwp86z/ZrB/QxAZhbiXqIEEbe1vkHsIPTFo/nAc
+ 7HRnjxOKk0Oev4JdvQoF/+e6aN1vdV5g69TV5WuDhFt0zqsp2yXf+P7sbdv25rCOsQRyh/utc
+ U1FX7spXejq+zx4shI4NYplzfQEeXgTTUii/Xh5D19cONFZO+unmFTOb1huXa/sxeLduyfPUH
+ SKRuf79unO4jyJkuxQ45tJuRKfsL0apsMWrMdg2hhPFolOAHC5CrU6Y8GnyirTrZbEGTIj5KO
+ Q26gPBJY3oU07lO+C/6yKENcopGMMtAqWr28pzovoCeolH9dBWS7rv3vR5nw73Ke+Y9591E+N
+ duLeSM42IEG4mYGg5NEjEVkkSrd/W4zkWlqA90EFyuOPBf8iRgX8R+pBSkzy2nY/SF8wwqTMZ
+ H/BkNOWdJdYO5jPah2CMPCVNZxr4wfEidBA9aAyHsjS7USO1qyGra+XF4dshjzEzH7X1euFjo
+ /6lf/4/LJF6r+0flOsVTlVDeNg9gsSeVkITEDAk2AA3Tx1GjMRgPWnqAC+QMaOOpcOXbfvqOr
+ hItBhmP4c5kYmbLChFI/b2BKyujxgcFZnN/fKa3qolfn/SneNEKQYHSj0nRUX3Iq5Os76JFOc
+ 6vpCCDhMcwSdHPHS1IKdXuIDttMb/2jXTal3rf9OzaGGJ7nzgZTXuPhtmRPtBy2U6CcX4F9X+
+ 4krhITW26G2x8nipTFPbqbjfdV9XbA3+nofjvPzTd6FBaOMevHAjJ9c0gqrnlQUJAGMK/Lhdj
+ NET18qMvqsJ1QwqtnoeEX0NvMkcDTkhhzTbVGuIjQzgZ4PjxoFXmfW+UA==
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 02/09/2021 18:41, Jason Gunthorpe wrote:
-> On Thu, Sep 02, 2021 at 06:17:45PM +0300, Gal Pressman wrote:
->> On 02/09/2021 18:10, Jason Gunthorpe wrote:
->>> On Thu, Sep 02, 2021 at 06:09:39PM +0300, Gal Pressman wrote:
->>>> On 02/09/2021 16:02, Jason Gunthorpe wrote:
->>>>> On Thu, Sep 02, 2021 at 10:03:16AM +0300, Gal Pressman wrote:
->>>>>> On 01/09/2021 18:36, Jason Gunthorpe wrote:
->>>>>>> On Wed, Sep 01, 2021 at 05:24:43PM +0300, Gal Pressman wrote:
->>>>>>>> On 01/09/2021 14:57, Jason Gunthorpe wrote:
->>>>>>>>> On Wed, Sep 01, 2021 at 02:50:42PM +0300, Gal Pressman wrote:
->>>>>>>>>> On 20/08/2021 21:27, Jason Gunthorpe wrote:
->>>>>>>>>>> On Wed, Aug 11, 2021 at 06:11:31PM +0300, Gal Pressman wrote:
->>>>>>>>>>>> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
->>>>>>>>>>>> index 417dea5f90cf..29db4dec02f0 100644
->>>>>>>>>>>> +++ b/drivers/infiniband/hw/efa/efa_main.c
->>>>>>>>>>>> @@ -67,6 +67,46 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
->>>>>>>>>>>>      pci_release_selected_regions(pdev, release_bars);
->>>>>>>>>>>>  }
->>>>>>>>>>>>
->>>>>>>>>>>> +static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
->>>>>>>>>>>> +{
->>>>>>>>>>>> +    u16 cqn = eqe->u.comp_event.cqn;
->>>>>>>>>>>> +    struct efa_cq *cq;
->>>>>>>>>>>> +
->>>>>>>>>>>> +    cq = xa_load(&dev->cqs_xa, cqn);
->>>>>>>>>>>> +    if (unlikely(!cq)) {
->>>>>>>>>>>
->>>>>>>>>>> This seems unlikely to be correct, what prevents cq from being
->>>>>>>>>>> destroyed concurrently?
->>>>>>>>>>>
->>>>>>>>>>> A comp_handler cannot be running after cq destroy completes.
->>>>>>>>>>
->>>>>>>>>> Sorry for the long turnaround, was OOO.
->>>>>>>>>>
->>>>>>>>>> The CQ cannot be destroyed until all completion events are acked.
->>>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/man/ibv_get_cq_event.3#L45
->>>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/cmd_cq.c#L208
->>>>>>>>>
->>>>>>>>> That is something quite different, and in userspace.
->>>>>>>>>
->>>>>>>>> What in the kernel prevents tha xa_load and the xa_erase from racing together?
->>>>>>>>
->>>>>>>> Good point.
->>>>>>>> I think we need to surround efa_process_comp_eqe() with an rcu_read_lock() and
->>>>>>>> have a synchronize_rcu() after removing it from the xarray in
->>>>>>>> destroy_cq.
->>>>>>>
->>>>>>> Try to avoid synchronize_rcu()
->>>>>>
->>>>>> I don't see how that's possible?
->>>>>
->>>>> Usually people use call_rcu() instead
->>>>
->>>> Oh nice, thanks.
->>>>
->>>> I think the code would be much simpler using synchronize_rcu(), and the
->>>> destroy_cq flow is usually on the cold path anyway. I also prefer to be certain
->>>> that the CQ is freed once the destroy verb returns and not rely on the callback
->>>> scheduling.
->>>
->>> I would not be happy to see synchronize_rcu on uverbs destroy
->>> functions, it is too easy to DOS the kernel with that.
->>
->> OK, but isn't the fact that the uverb can return before the CQ is actually
->> destroyed problematic?
-> 
-> Yes, you can't allow that, something other than RCU needs to prevent
-> that
-> 
->> Maybe it's an extreme corner case, but if I created max_cq CQs, destroyed one,
->> and try to create another one, it is not guaranteed that the create operation
->> would succeed - even though the destroy has finished.
-> 
-> More importantly a driver cannot call completion callbacks once
-> destroy cq has returned.
+As noted in the "Deprecated Interfaces, Language Features, Attributes,
+and Conventions" documentation [1], size calculations (especially
+multiplication) should not be performed in memory allocator (or similar)
+function arguments due to the risk of them overflowing. This could lead
+to values wrapping around and a smaller allocation being made than the
+caller was expecting. Using those allocations could lead to linear
+overflows of heap memory and other misbehaviors.
 
-So how is having some kind of synchronization to wait for the call_rcu()
-callback to finish different than using synchronize_rcu()? We'll have to wait
-for the readers to finish before returning.
+So, refactor the code a bit to use the purpose specific kcalloc()
+function instead of the argument size * count in the kzalloc() function.
+
+[1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-cod=
+ed-arithmetic-in-allocator-arguments
+
+Signed-off-by: Len Baker <len.baker@gmx.com>
+=2D--
+ .../net/ethernet/mellanox/mlx5/core/steering/dr_action.c  | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c =
+b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+index 6475ba35cf6b..e8957dad3bb1 100644
+=2D-- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+@@ -716,6 +716,7 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domai=
+n *dmn,
+ 	struct mlx5dr_action *action;
+ 	bool reformat_req =3D false;
+ 	u32 num_of_ref =3D 0;
++	u32 ref_act_cnt;
+ 	int ret;
+ 	int i;
+
+@@ -724,11 +725,14 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_dom=
+ain *dmn,
+ 		return NULL;
+ 	}
+
+-	hw_dests =3D kzalloc(sizeof(*hw_dests) * num_of_dests, GFP_KERNEL);
++	hw_dests =3D kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
+ 	if (!hw_dests)
+ 		return NULL;
+
+-	ref_actions =3D kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP_KER=
+NEL);
++	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
++		goto free_hw_dests;
++
++	ref_actions =3D kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
+ 	if (!ref_actions)
+ 		goto free_hw_dests;
+
+=2D-
+2.25.1
+
