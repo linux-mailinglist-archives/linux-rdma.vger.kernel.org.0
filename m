@@ -2,115 +2,158 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D24400F1D
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Sep 2021 12:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51934400F28
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Sep 2021 12:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237767AbhIEK3k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Sep 2021 06:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54612 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237602AbhIEK3W (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Sep 2021 06:29:22 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36906C061575
-        for <linux-rdma@vger.kernel.org>; Sun,  5 Sep 2021 03:28:19 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id v10so4617519ybm.5
-        for <linux-rdma@vger.kernel.org>; Sun, 05 Sep 2021 03:28:19 -0700 (PDT)
+        id S237643AbhIEKrC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Sep 2021 06:47:02 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:26642 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230145AbhIEKrC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Sep 2021 06:47:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=AQI+gaP3gRr3DWEJsbHrkGhbGs7Zx+5Z3tcCL1B09EM=;
-        b=hGDJJkWSW05bNl19CJkknXhJXhdqAVTFPKt8R8ypbO9bENcCVqwNYNjiSU4nUMP486
-         HZ/YGcjWrbQMmxERfXgXLCDFTg6lEDm30cygaD3HHUm0c618kwRaEYiOmWuVkdqFJujX
-         VFXi0u1aCBJgz1mnTaoOMvvnJ/7jx89Ndv4DfKLm3UDr6eu1BTUZTLv11uiYEjhnWq7s
-         1+hFOxIW+vx3SfsmV+O6cbh8MFs2yDHv0COxQ8JkB8gMnbXBQ0AF3974xoSpWgWVFI3t
-         AkcEngGewqdpW2cAojMw7CGVA0IDPTc7/7PyKyZ3XBJcVtORiGwlYaR07H3Ub3dgXRkp
-         HbUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=AQI+gaP3gRr3DWEJsbHrkGhbGs7Zx+5Z3tcCL1B09EM=;
-        b=LBg45ujx0eAmB1NpphRSEVK/rjMWlulcrEAUf/GhSfskU2Hf7CPlqWmj1tuyz9vwFb
-         0660qX2HPp0391gZabfZA/e6MSMEDfQ7mKcl/J5McOgo+DfDXlqF94ZSqRA+Xw4BR9Ly
-         e2q/QZRUr+YUGhc07oqSfKnEvrEN0uvG21w6ExOfCj3l98cjIELC+V1ngXVYvPRTG80O
-         r11bLbVmLDjVKzJ/1hnG1ql15J4gC7v00qh2atZPIlTl4eqkVY3FdxfNDaEeSp8xdHfh
-         5H6Gdu/lO9aKE9X73ts2xKq5lpVakrXdIHVwwUNzEeYVR+UkzQShSsMW2DlqcES3AZPL
-         ZEsQ==
-X-Gm-Message-State: AOAM5301h3VFXcErvyr7qrldBBRaA/rPBHGz+rmydsCKy31F4U/2rEYb
-        RuezhPLujY7zRlrHd9040hRx0nY+K3WjO17klKXGrpCYOizK+w==
-X-Google-Smtp-Source: ABdhPJwUMjpiClPMnVypnfptUylRaktIv0wJ9B2H/+UCZ38X0rqhKmYEOjyQpFyVnf3CKn6DETL4fJkPaTAzeQBjUsI=
-X-Received: by 2002:a25:ba08:: with SMTP id t8mr9911518ybg.111.1630837698320;
- Sun, 05 Sep 2021 03:28:18 -0700 (PDT)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1630838760; x=1662374760;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=RuuOWmKQO5yFPBsPzCzkybuo8TTWuiM0wqcVuSHb1M8=;
+  b=KUwkqqbRH+3qkSQODBhnebOsDXUvBWMsBnlxW9Ts0wrYowXzaFfPtT/0
+   wQzDDlT2Crepn81tgxyg+sWNCc7coebm2zaxM0aYHUSqpTurQzT828z7o
+   LbHSfH/kJEfotR4HQ2wTLEqT2NAg6PG0N1Hg4zhAboBmu8OBpagSH18p3
+   s=;
+X-IronPort-AV: E=Sophos;i="5.85,269,1624320000"; 
+   d="scan'208";a="24603550"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-2a-22cc717f.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 05 Sep 2021 10:45:53 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-2a-22cc717f.us-west-2.amazon.com (Postfix) with ESMTPS id 4FA07A0727;
+        Sun,  5 Sep 2021 10:45:52 +0000 (UTC)
+Received: from 8c85908914bf.ant.amazon.com (10.43.162.164) by
+ EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sun, 5 Sep 2021 10:45:47 +0000
+Subject: Re: [PATCH for-next 4/4] RDMA/efa: CQ notifications
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20210901115716.GG1721383@nvidia.com>
+ <c8549e51-47a2-1426-b44b-f1c4ade3dce2@amazon.com>
+ <20210901153659.GL1721383@nvidia.com>
+ <d1b2dc01-5a42-371e-c4b6-2f9b3425f5b6@amazon.com>
+ <20210902130255.GR1721383@nvidia.com>
+ <3a5fb37a-dd72-e322-f7c6-790ee4e04efa@amazon.com>
+ <20210902151029.GV1721383@nvidia.com>
+ <f80c3b52-d38b-3045-0fcc-b27f1f7b8c0d@amazon.com>
+ <20210902154124.GX1721383@nvidia.com>
+ <9ffde1c4-d748-0091-0d7d-b2e2eb63aa51@amazon.com> <YTR4yhTyYi323lqe@unreal>
+From:   Gal Pressman <galpress@amazon.com>
+Message-ID: <dc14a576-c696-bba7-f7a4-1fc00ff3d293@amazon.com>
+Date:   Sun, 5 Sep 2021 13:45:41 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.13.0
 MIME-Version: 1.0
-From:   Turritopsis Dohrnii Teo En Ming <ceo.teo.en.ming@gmail.com>
-Date:   Sun, 5 Sep 2021 18:28:08 +0800
-Message-ID: <CAMEJMGFDhtq4e3kYo0ZOsO71dX3MJDX4OyPB4TbLQ0Y98Tph5Q@mail.gmail.com>
-Subject: Introduction: I am a Linux and open source software enthusiast
-To:     linux-rdma@vger.kernel.org
-Cc:     ceo@teo-en-ming-corp.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YTR4yhTyYi323lqe@unreal>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.162.164]
+X-ClientProxiedBy: EX13d09UWA001.ant.amazon.com (10.43.160.247) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Subject: Introduction: I am a Linux and open source software enthusiast
+On 05/09/2021 10:59, Leon Romanovsky wrote:
+> On Sun, Sep 05, 2021 at 10:25:17AM +0300, Gal Pressman wrote:
+>> On 02/09/2021 18:41, Jason Gunthorpe wrote:
+>>> On Thu, Sep 02, 2021 at 06:17:45PM +0300, Gal Pressman wrote:
+>>>> On 02/09/2021 18:10, Jason Gunthorpe wrote:
+>>>>> On Thu, Sep 02, 2021 at 06:09:39PM +0300, Gal Pressman wrote:
+>>>>>> On 02/09/2021 16:02, Jason Gunthorpe wrote:
+>>>>>>> On Thu, Sep 02, 2021 at 10:03:16AM +0300, Gal Pressman wrote:
+>>>>>>>> On 01/09/2021 18:36, Jason Gunthorpe wrote:
+>>>>>>>>> On Wed, Sep 01, 2021 at 05:24:43PM +0300, Gal Pressman wrote:
+>>>>>>>>>> On 01/09/2021 14:57, Jason Gunthorpe wrote:
+>>>>>>>>>>> On Wed, Sep 01, 2021 at 02:50:42PM +0300, Gal Pressman wrote:
+>>>>>>>>>>>> On 20/08/2021 21:27, Jason Gunthorpe wrote:
+>>>>>>>>>>>>> On Wed, Aug 11, 2021 at 06:11:31PM +0300, Gal Pressman wrote:
+>>>>>>>>>>>>>> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+>>>>>>>>>>>>>> index 417dea5f90cf..29db4dec02f0 100644
+>>>>>>>>>>>>>> +++ b/drivers/infiniband/hw/efa/efa_main.c
+>>>>>>>>>>>>>> @@ -67,6 +67,46 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
+>>>>>>>>>>>>>>      pci_release_selected_regions(pdev, release_bars);
+>>>>>>>>>>>>>>  }
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> +static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
+>>>>>>>>>>>>>> +{
+>>>>>>>>>>>>>> +    u16 cqn = eqe->u.comp_event.cqn;
+>>>>>>>>>>>>>> +    struct efa_cq *cq;
+>>>>>>>>>>>>>> +
+>>>>>>>>>>>>>> +    cq = xa_load(&dev->cqs_xa, cqn);
+>>>>>>>>>>>>>> +    if (unlikely(!cq)) {
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> This seems unlikely to be correct, what prevents cq from being
+>>>>>>>>>>>>> destroyed concurrently?
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> A comp_handler cannot be running after cq destroy completes.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Sorry for the long turnaround, was OOO.
+>>>>>>>>>>>>
+>>>>>>>>>>>> The CQ cannot be destroyed until all completion events are acked.
+>>>>>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/man/ibv_get_cq_event.3#L45
+>>>>>>>>>>>> https://github.com/linux-rdma/rdma-core/blob/7fd01f0c6799f0ecb99cae03c22cf7ff61ffbf5a/libibverbs/cmd_cq.c#L208
+>>>>>>>>>>>
+>>>>>>>>>>> That is something quite different, and in userspace.
+>>>>>>>>>>>
+>>>>>>>>>>> What in the kernel prevents tha xa_load and the xa_erase from racing together?
+>>>>>>>>>>
+>>>>>>>>>> Good point.
+>>>>>>>>>> I think we need to surround efa_process_comp_eqe() with an rcu_read_lock() and
+>>>>>>>>>> have a synchronize_rcu() after removing it from the xarray in
+>>>>>>>>>> destroy_cq.
+>>>>>>>>>
+>>>>>>>>> Try to avoid synchronize_rcu()
+>>>>>>>>
+>>>>>>>> I don't see how that's possible?
+>>>>>>>
+>>>>>>> Usually people use call_rcu() instead
+>>>>>>
+>>>>>> Oh nice, thanks.
+>>>>>>
+>>>>>> I think the code would be much simpler using synchronize_rcu(), and the
+>>>>>> destroy_cq flow is usually on the cold path anyway. I also prefer to be certain
+>>>>>> that the CQ is freed once the destroy verb returns and not rely on the callback
+>>>>>> scheduling.
+>>>>>
+>>>>> I would not be happy to see synchronize_rcu on uverbs destroy
+>>>>> functions, it is too easy to DOS the kernel with that.
+>>>>
+>>>> OK, but isn't the fact that the uverb can return before the CQ is actually
+>>>> destroyed problematic?
+>>>
+>>> Yes, you can't allow that, something other than RCU needs to prevent
+>>> that
+>>>
+>>>> Maybe it's an extreme corner case, but if I created max_cq CQs, destroyed one,
+>>>> and try to create another one, it is not guaranteed that the create operation
+>>>> would succeed - even though the destroy has finished.
+>>>
+>>> More importantly a driver cannot call completion callbacks once
+>>> destroy cq has returned.
+>>
+>> So how is having some kind of synchronization to wait for the call_rcu()
+>> callback to finish different than using synchronize_rcu()? We'll have to wait
+>> for the readers to finish before returning.
+> 
+> Why do you need to do anything special in addition to nullify
+> completion callback which will ensure that no new readers are
+> coming and call_rcu to make sure that existing readers finished?
 
-Greetings from Singapore,
+I ensure there are no new readers by removing the CQ from the xarray.
+Then I must wait for all existing readers before returning from efa_destroy_cq
+and freeing the cq struct (which is done by ib_core).
 
-My name is Mr. Turritopsis Dohrnii Teo En Ming, 43 years old as of 5
-September 2021. My country is Singapore. Presently I am an IT
-Consultant with a System Integrator (SI)/computer firm in Singapore. I
-am also a Linux and open source software and information technology
-enthusiast.
-
-You can read my autobiography on my redundant blogs. The title of my
-autobiography is:
-
-"Autobiography of Singaporean Targeted Individual Mr. Turritopsis
-Dohrnii Teo En Ming (Very First Draft, Lots More to Add in Future)"
-
-Links to my redundant blogs (Blogger and Wordpress) can be found in my
-email signature below.
-
-I have three other redundant blogs, namely:
-
-https://teo-en-ming.tumblr.com/
-
-https://teo-en-ming.medium.com/
-
-https://teo-en-ming.livejournal.com/
-
-Future/subsequent versions of my autobiography will be published on my
-redundant blogs.
-
-My Blog Books are also available for download on my redundant blogs.
-
-Thank you very much.
-
-
-
-
------BEGIN EMAIL SIGNATURE-----
-
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link:
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's
-Academic Qualifications as at 14 Feb 2019 and refugee seeking attempts
-at the United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan
-(5 Aug 2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+call_rcu() don't really fit this use case.
