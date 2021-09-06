@@ -2,95 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6B34016ED
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Sep 2021 09:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3790401753
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Sep 2021 09:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239895AbhIFHXE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Sep 2021 03:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48222 "EHLO
+        id S239750AbhIFHyh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Sep 2021 03:54:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbhIFHXE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Sep 2021 03:23:04 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB0DC061575;
-        Mon,  6 Sep 2021 00:22:00 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id v2so7831328oie.6;
-        Mon, 06 Sep 2021 00:22:00 -0700 (PDT)
+        with ESMTP id S239548AbhIFHyg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Sep 2021 03:54:36 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53819C061575
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Sep 2021 00:53:32 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so3783690pjr.1
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Sep 2021 00:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jma2HyPnKZSUv1JWcMBX0ytnVUkyGu5hD420f9iCjs8=;
-        b=N7KoiW7aKaGJFUTKwwof1u/UFQrjCCFhPnHUfW9J6dH5gox+zQncAYURgr/fNU9pL6
-         M5s3xShudIVLcWCoOJ1GSVFvf6hvNqeZLw1Nlh825cfHCfxQXvm5X5W7Rl6J1XlHbkyF
-         O/4Y+9d+cpSdzKEBNFtGcVWzdDw9xtcLGhX7rleGhu2bfIqIhAEctKXsuhR/MEfYsxx/
-         x4c6JYO9QWyIKwunL/DSPoJ7WK+wYDRWJGH+i9POBCk5lqtKAEPilOqQrlR/er2nE+w1
-         y/u60/GYCSUgAUoDk4vjFXk+JWyGt7cU8wqS2TAFZQZNpRD4W7cHr0wh7CP8BRCIvCfW
-         vEgQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
+        b=BtRbsXztmfeZlr2eUdjZKt9p9ijpkUx2lzClwVoY2p+cL5DtkINv+VBUC5HA/0cC9U
+         D+V/ARnbijw3EDe9D/Izm9eF4TSs48nFdOzd7Dzb0DRdEDzMvrilQT/45YqLDvI/KZm3
+         EKIZbEdYvh+6Q8g9b1LVCi46LqynSrdTq3gKN8T41M+M/8AHFRhEeMxhcpCke0jqb8hl
+         HmprZ8o2b/bicn7KWMqYz2cIWuUquUsmouoVYz/0ODP0ca6tXyD6CKjaHIW9UiIxQ3iF
+         bgGeWnoEIkP+G0lZh7l4+wWcJPj24POIMG/kb/ORG7yh4+pOOhUgnLL9Z/sW/Xn4row+
+         cddg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jma2HyPnKZSUv1JWcMBX0ytnVUkyGu5hD420f9iCjs8=;
-        b=oo2J0ftgIXvSEgOkTMcT+9X+FR2vw3PcBKNvrPP+C87FWcIjN+NvpfjNMhkk/c8t4f
-         VMZFExKU0TMbCJCrvkugDghWFO3K17uaxuvobcFBmnSbXjALzoNc/9T9aGfSu7EhKtHf
-         UIGUZi9wzSwIf3wydHqzvIijScK/ONwKiJltKlJ1xgVVxZT5X2OZ2Cwa0W4oyUFEfHU3
-         wZMRIFCVQa+83un689fXfxrGHFBpR4a4rUug+7syOsj5APwPbNFvD0NMVOTfeM9sbRw+
-         WumD+mckH1aEG7z9jN2Qt7L5ZTLQeGcGglNWj4ktFjkrDl3zfiPt/xWAPS9IgWNa5pnH
-         53cg==
-X-Gm-Message-State: AOAM532phqVW6OJ0QuvoKzyCLXLW+pobX0vJWlS63R0uGxICTsSfhuYF
-        Ug/NXv0rf/E3Ff06cO+zH1tP+TrsOISqU3jaFiXQ055ZNwc=
-X-Google-Smtp-Source: ABdhPJxb86tMFWpbtRCjUQUFmxhOtcjeT7oflkgnjyzOJjzzzfx/QrjIjaqa64MnwR90LSoJ+tm177qnzDjU5WQkt9c=
-X-Received: by 2002:a05:6808:55c:: with SMTP id i28mr7385954oig.169.1630912919714;
- Mon, 06 Sep 2021 00:21:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210831083223.65797-1-weijunji@bytedance.com>
-In-Reply-To: <20210831083223.65797-1-weijunji@bytedance.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Mon, 6 Sep 2021 15:21:48 +0800
-Message-ID: <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlaLLiMPNdX6nNJMxLikoTvHO7/HZLWVppl3vRWfr5k=;
+        b=UWctDB5CENpMhmG2BwkDgxhFzqas7Ucd1SR6hsZcOHHhftGE5JOdptJwc5rJK3G/Ar
+         yisg34rW55FvFiI5l9PEnJnjct68bBI+fbz+IH0/yxJjIs0BSSLZZv1rn/feaGnEY1F7
+         4f1rtOevqSxbPE4EtsT/Fm4+3ij6Yb9MkvJoagidac8C7pWRmFdRtlyOywcLQAEoFlgm
+         iyQLb00dVOQT446N1OW+IegrWG70W6CCLDRNup1mDWvYk7FSP8PNJdRGfGoCwybSYFED
+         3tVBD8o12owM1Cyp8pioPzf+zmFLVNRj12dKMra7Xfs6H4KVZMPplWfZTiLr/pm5PIIc
+         ++Pg==
+X-Gm-Message-State: AOAM530hKg85fHP3AXTuFwVVlafvfMnT3DoGlHIKV2Ad9TUkCxnOu2IU
+        hle+b7jz9EfNarExVnwilSsRlg==
+X-Google-Smtp-Source: ABdhPJxa7VODnGLnMj+iLcEo8Wj2OTDHWE5rnzJIJ+Lx07zI/gpZnKfxGEBWVVe5i46jYcdr7xG+3g==
+X-Received: by 2002:a17:90b:105:: with SMTP id p5mr12902957pjz.183.1630914811820;
+        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
+Received: from smtpclient.apple ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id g11sm7027760pgn.41.2021.09.06.00.53.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Sep 2021 00:53:31 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
 Subject: Re: [PATCH] RDMA/rxe: Fix wrong port_cap_flags
-To:     Junji Wei <weijunji@bytedance.com>
+From:   Junji Wei <weijunji@bytedance.com>
+In-Reply-To: <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
+Date:   Mon, 6 Sep 2021 15:53:26 +0800
 Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, xieyongji@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <DB1899F3-88A0-44A2-8F44-A380D625A98F@bytedance.com>
+References: <20210831083223.65797-1-weijunji@bytedance.com>
+ <CAD=hENcbvs3_Mu7tjTPfrj8h1xTDb03y-5bACU3cckOpmPJveg@mail.gmail.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Aug 31, 2021 at 4:32 PM Junji Wei <weijunji@bytedance.com> wrote:
->
-> The port->attr.port_cap_flags should be set to enum
-> ib_port_capability_mask_bits in ib_mad.h,
-> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
->
-> Signed-off-by: Junji Wei <weijunji@bytedance.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h b/drivers/infiniband/sw/rxe/rxe_param.h
-> index 742e6ec93686..b5a70cbe94aa 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_param.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
-> @@ -113,7 +113,7 @@ enum rxe_device_param {
->  /* default/initial rxe port parameters */
->  enum rxe_port_param {
->         RXE_PORT_GID_TBL_LEN            = 1024,
-> -       RXE_PORT_PORT_CAP_FLAGS         = RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
-> +       RXE_PORT_PORT_CAP_FLAGS         = IB_PORT_CM_SUP,
 
-RXE_PORT_PORT_CAP_FLAGS         = IB_PORT_CM_SUP |
+> On Sep 6, 2021, at 3:21 PM, Zhu Yanjun <zyjzyj2000@gmail.com> wrote:
+>=20
+> On Tue, Aug 31, 2021 at 4:32 PM Junji Wei <weijunji@bytedance.com> =
+wrote:
+>>=20
+>> The port->attr.port_cap_flags should be set to enum
+>> ib_port_capability_mask_bits in ib_mad.h,
+>> not RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP.
+>>=20
+>> Signed-off-by: Junji Wei <weijunji@bytedance.com>
+>> ---
+>> drivers/infiniband/sw/rxe/rxe_param.h | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_param.h =
+b/drivers/infiniband/sw/rxe/rxe_param.h
+>> index 742e6ec93686..b5a70cbe94aa 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_param.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_param.h
+>> @@ -113,7 +113,7 @@ enum rxe_device_param {
+>> /* default/initial rxe port parameters */
+>> enum rxe_port_param {
+>>        RXE_PORT_GID_TBL_LEN            =3D 1024,
+>> -       RXE_PORT_PORT_CAP_FLAGS         =3D =
 RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
+>> +       RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP,
+>=20
+> RXE_PORT_PORT_CAP_FLAGS         =3D IB_PORT_CM_SUP |
+> RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP,
+>=20
+> Is it better?
+>=20
+> Zhu Yanjun
 
-Is it better?
+I don=E2=80=99t think so.
 
-Zhu Yanjun
+Because RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP(0x800000)
+means IB_PORT_BOOT_MGMT_SUP(1 << 23) in ib_mad.h.
+RDMA_CORE_CAP_PROT_ROCE_UDP_ENCAP should be used for
+port=E2=80=99s core_cap_flags.
 
->         RXE_PORT_MAX_MSG_SZ             = 0x800000,
->         RXE_PORT_BAD_PKEY_CNTR          = 0,
->         RXE_PORT_QKEY_VIOL_CNTR         = 0,
-> --
-> 2.30.1 (Apple Git-130)
->
+>=20
+>>        RXE_PORT_MAX_MSG_SZ             =3D 0x800000,
+>>        RXE_PORT_BAD_PKEY_CNTR          =3D 0,
+>>        RXE_PORT_QKEY_VIOL_CNTR         =3D 0,
+>> --
+>> 2.30.1 (Apple Git-130)
+>>=20
+
