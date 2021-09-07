@@ -2,134 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7754027C5
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Sep 2021 13:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B72402824
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Sep 2021 14:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235413AbhIGLco (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Sep 2021 07:32:44 -0400
-Received: from mail-bn8nam12on2056.outbound.protection.outlook.com ([40.107.237.56]:5058
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242785AbhIGLco (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Sep 2021 07:32:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YWy4Fcu+NWGpfd9bkVxVejGc+5QxTI0WjI7Kivw1DrcKbeROmWWA9ELZuCdQYgfg/huEbBRyDP7LfdJmfAT1Py8qW+QamWESDaPea5GJAud0eguh9M1CL+E7KwuK17BNKO70PsZac4Omm6y7mcKkjohr5myrruTJTKpBJgnU21A76bux0nE96UOfLfUKXuoTEr/0vjk7TgiIOzNgld85bO7uFqYNnk/qWC4/VnNa8I0yhHdNZrkT5hMoeMAZOPd+Cq+NXMVsTtbPn1Kq6D8yo9XHO4rM5N5RzJG/e4gEbM/TdNDzsmD/yWKo5DXqm9T9LkvPAREKH7ZIa45bXTg/yQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=m8Fu1i+miVCOjpE8S8pXDHKfVXIhdqVDoEqKk2Ipr7k=;
- b=H+LNg27O65vquY/7MRa3QVGSkHpWVZ7zB2o6BQ7EhZalfwJ99Cuh3tSkDy299q+2rv0jpV5FeRkPRlpnoSsLvi2HXFjmHaIc9JH4Quj+t5NhNPHS5hh1b8mcgZD1IZiAHTu4qbRNeNTa0nRYW/jsli2V6UNdDCzVlqz8Kj6H8D+iDiucZ8YH4ArhA0v8YcEa5AXmaHnOogeBjbcY5GmChzUNDKnSRTZQfBIZ64/8fETmFUIztH7vuDYpxTI2eZIsbNfdFpGzigM3ixHHjhPV8i4TFdF3+fpb19JmIJC+Bl4e4SCn03Ocr/mK2Ngr2bz0ognaBhT8815jP8eoHZ5enQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m8Fu1i+miVCOjpE8S8pXDHKfVXIhdqVDoEqKk2Ipr7k=;
- b=P5ujOAiZDHU0FL1+IpOjqp+4nfu3NKIv/FGMI/eT688pQWo4B6y0OLDXHAs5/rczX6vFfZ16KP+QdAyej85/pE3ua4LfaZ8p6eIYO2AiPp8Kr4F8nxJ+YSUzTBr7/y0Hc8dbcVNZFuecRCDU5zVQCP0n6Hl/Pj/ZzoOQfcsJ90xO7UmgfrYU2WaG27a9/U26uu2EsTOK/20SEXdA1yxerQQ1LS0YrHDKgrcZzI6Yqh5rSiEB5tnBMqb/Uh18fHIewOAlRDMDQwILrpzGeWaucy4AKdMdSYFxUnnnmbhPaGduSddVRVOJJv4eJFj/Oa0j/9NDwCeLQJ8u7MHjUHFXMQ==
-Authentication-Results: amazon.com; dkim=none (message not signed)
- header.d=none;amazon.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5157.namprd12.prod.outlook.com (2603:10b6:208:308::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.21; Tue, 7 Sep
- 2021 11:31:36 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.014; Tue, 7 Sep 2021
- 11:31:36 +0000
-Date:   Tue, 7 Sep 2021 08:31:35 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>
-Subject: Re: [PATCH for-next 4/4] RDMA/efa: CQ notifications
-Message-ID: <20210907113135.GE2505917@nvidia.com>
-References: <20210902151029.GV1721383@nvidia.com>
- <f80c3b52-d38b-3045-0fcc-b27f1f7b8c0d@amazon.com>
- <20210902154124.GX1721383@nvidia.com>
- <9ffde1c4-d748-0091-0d7d-b2e2eb63aa51@amazon.com>
- <YTR4yhTyYi323lqe@unreal>
- <dc14a576-c696-bba7-f7a4-1fc00ff3d293@amazon.com>
- <YTSh+wU572k00WVS@unreal>
- <2231dfa4-2f99-5187-fa83-56052dad9979@amazon.com>
- <YTTCycq4KTBk6r/s@unreal>
- <ed19464f-d046-bc10-ec17-180f7c54ef13@amazon.com>
+        id S236985AbhIGMDF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Sep 2021 08:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233864AbhIGMDE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Sep 2021 08:03:04 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF2EC061575
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Sep 2021 05:01:58 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id p17so5598707qvo.8
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Sep 2021 05:01:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rb65xiM3+qNannYBt9/w71RublvsJvlJ/2ZzS7fc31U=;
+        b=ORfJmEfqJsgOcoMwEBISUaRr47IazJi+jHBXFZUYYNUnSfSsjdw0ut95tscMWRHPy5
+         T/IOVHeaaFAYRlgA6o1q3AyJ7XzjKnKlTzzZuZ8I6GiUChjl5cifgYcSnNNhNZrWtgZK
+         sADPgiPlOT7+YseRyZpJlhEt6PvADqIQJMhVdBjxUcJS3XiNE5XVb0n5hOKRXbHxAhMc
+         cyJNGTgAQkEXzM66mxIMMtF8zwTg87Zo7gZfE5pYBfjjU8YnBbweR4U7oEEmiX5UlrHZ
+         /Kns1icaICh5XdMbxh1XKZJEGZ430UattTrQ+7+76UI/rfByXvD4a794rMf3ITjyHe0R
+         3Pug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rb65xiM3+qNannYBt9/w71RublvsJvlJ/2ZzS7fc31U=;
+        b=C87MW9nuhQXdzKlbdX4PVGHofZ3vh6M+jbVTCB7Sxd+XFce3fjWdo0rxQsXlTyGnoH
+         E6EisXg+/2gTRwfRxXgKdenpSfWIn2f7uwqTHu90eP5U2rnD88ud2nWJPaGMRj06wY7j
+         vQrlPIQ5hck9GL0lJ+0TO9NFt5QPUVGe3QrmN560QON6gAuPoVEp7w14tX6UD5lt2E9N
+         7uOfMgaPE04qbKz6JEN6GdbU0slvvbfHaQh3JZRPgTTWX5HJ2sedJEQylxhrdasl+W7x
+         yRbemB6Leg2xW6KuKU/yEwdunACCNTHTuPM3u/wNWeUsQ7ve9KZkpzotsSsGPzoPZNvS
+         FEdw==
+X-Gm-Message-State: AOAM531sDJJvL99Goy+YNnH5hgdWDJnFYkbZYWPjC/Fvhvwi3b12tGdd
+        HCob2o48EcFhcRdtzZI7YtOjDd2SaCWVnw==
+X-Google-Smtp-Source: ABdhPJypcSnsBdXNF6ynIPy9POYs/FIacErXyVrdj53+RZ5noz4QjfWlSdzo04yDpZDy+LWMyVtc7Q==
+X-Received: by 2002:a0c:e1cf:: with SMTP id v15mr16473658qvl.50.1631016117663;
+        Tue, 07 Sep 2021 05:01:57 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id b7sm7090782qtt.12.2021.09.07.05.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Sep 2021 05:01:56 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mNZnY-00CDl5-8I; Tue, 07 Sep 2021 09:01:56 -0300
+Date:   Tue, 7 Sep 2021 09:01:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: blktest/rxe almost working
+Message-ID: <20210907120156.GV1200268@ziepe.ca>
+References: <c7557529-d07d-3e35-0f03-2bbe867af4a1@gmail.com>
+ <20210902233853.GB2505917@nvidia.com>
+ <1610313b-e5d0-a687-a409-d1275baf7f95@gmail.com>
+ <711c089d-ce66-63e8-4d80-0bd19f22607c@acm.org>
+ <20210904223056.GC2505917@nvidia.com>
+ <fcf6f57e-972b-f88e-84bf-d1618fd3e23e@gmail.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ed19464f-d046-bc10-ec17-180f7c54ef13@amazon.com>
-X-ClientProxiedBy: BL1P221CA0029.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::25) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1P221CA0029.NAMP221.PROD.OUTLOOK.COM (2603:10b6:208:2c5::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4478.20 via Frontend Transport; Tue, 7 Sep 2021 11:31:35 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mNZKB-00CDH6-0a; Tue, 07 Sep 2021 08:31:35 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ef3ceac5-8417-4c14-8456-08d971f30cf4
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5157:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5157E5B25E52D636EFF3EF78C2D39@BL1PR12MB5157.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ViV4gZSdOfNxxDa+LtaZ9Ybv5VcRyiQzeNIHu+8ylJT1ZBbOENllVuvNPyALx/UkG6pmYKrMummhfOAdzFgYfkQ2L3Ixy7hXaqK/Ibycz/VsVJxpW3Ju4owTQesn1WSL2SBKyS5WIs+Z/CBlWJCZmSJ0woZBGB5/MvgDecH2YU8UIYrUPBhC/EW8VQ9KXfDBy2c3JHh4ByShFJzfaT1sBRsit3aREcYImsvtha36DMC3eT1OO4AfEZO9Q4/rn/y7MH8dqjVyQt7o7CZaw1C4e5lN8GbT0pgS9lpdk3Onx4Ztwd/dAWBLsjcilngT2pXYYxwxktpU75rfMICZcCIL1p9BeOfU2Rw3HdvxrC5YDVRKMekX2cATpC2wY42nzSDRKSfjwvUJ0KzuhE7lX6sfYI/ZKUVhHT3oOBb0OLWg0c8YwardlGuevcA/f7Bf8rPgxAU/2DwJYk8EtnJKnWwqSvxJdGXxHZj2GLztXugj6ngC6eACZC6ydklw+pfCfHNJIwKCZlHydhiADxX1upyv9XZDnWodcMYL0V0ZBjFfEUlCPstwkpynL5TiJVq/5GFcq7gMfDmKTfL/5v68iPs6KLEIm0GIQrG9kmbt5huSFdqepKqfDG0oxoX282n5v6OZmV2oEWy9oc23ODpOCNOsIQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(38100700002)(4326008)(33656002)(36756003)(426003)(4744005)(1076003)(2906002)(66946007)(86362001)(83380400001)(2616005)(54906003)(5660300002)(316002)(26005)(478600001)(6916009)(8936002)(8676002)(66476007)(9786002)(9746002)(186003)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?OzxnhPIJ3yjxxjQJ7aoHQb3UcQn+6ZlMD6whLZ3815LAw0sGEJIISQ7AjKOM?=
- =?us-ascii?Q?3G5C7CBQpzxp12EVix6bGx7l5jq8Wl0CYNMlnRpDo9xqUAxYUJi4W+v+OGXT?=
- =?us-ascii?Q?v/AQkWOc1Oay6InLI0QRdkOrAm2IbahuOf9S1W3SOM3PABqEH7f005WG1n9U?=
- =?us-ascii?Q?R0PQvtXrxUj1JTjyxLbNPKaqs2e/dCxXkgw035Ma9gFUEjzU3af4kR06MncT?=
- =?us-ascii?Q?+jZyf2rWgj72UH99g9scnD7P/KJaZT98yV7XDCg/keaP6bzFum9X/PZ9TlFk?=
- =?us-ascii?Q?3zyzdb8F/apuHamLZRu8etG8UnJJoDeMvnbvn5NYNIthMVu1OoKz8p3fZBXs?=
- =?us-ascii?Q?lw+p7OFTFayH/zXptYyD4/daV3puKyre6i8cuhXssUcUVTBUgfZVkpG2sfEA?=
- =?us-ascii?Q?c9U9cTTRRoIPSad+lOvn0Z3aDhUBNqZiw+Xpzjb87lrtoS3xdMLyn8RkFxUe?=
- =?us-ascii?Q?Y4ZKE6yMObYg0xfmekBWzr+XAKbLV7Ny7ogWJCQk0xMqqW/TgQv+6YJQWcvl?=
- =?us-ascii?Q?lyTazaHdLGIuAEi7XmScsOkVOF77h9Bs62x3FZz0Yv7XjZc/tFXceoU7xWgj?=
- =?us-ascii?Q?dmtDYVZdpOHLfWNOQaLKQYpJCcxZAls3VisyIVgbsyNOgS8ayiE6fk0+bjfV?=
- =?us-ascii?Q?SDTbI+pkepw3lKh/xGGAtmNuRrXfWN74UQjqRCx3BeVu2Horb1K1hnmXKdmG?=
- =?us-ascii?Q?OPJe+rLwEjtQLQmW03W3oDmwwSKBuq7w8O37nUMgiFTuW5SXzZTDoiET535g?=
- =?us-ascii?Q?vRJ1vCJooJD9zzwxb5vhslZdiVihQM6C0UF5uUn/YFJ1lA4LCN2OwowH17Qi?=
- =?us-ascii?Q?83ldfSZfecPBdo0e2I7IJMgqySf8HPC/t74CkdzPs3wvaZVW5XJzi9s+M27y?=
- =?us-ascii?Q?pRqppzCjmBky5ctHtLf5QGQe4fyvjoMzTmM2pW/MttKqXJ3mlUC15u7xdp2C?=
- =?us-ascii?Q?8io2eXHaQRG99+6L74SkKNSINWbWaLDUFO9cnbtLpkgyGGssjxtXUiyn1wpV?=
- =?us-ascii?Q?cXFXrPaf7LEbVkHZJ9HakGGjC3x4L0XsXQfo+CP0MoEco9OM46uxmmFHED78?=
- =?us-ascii?Q?mMlp/NU/53wiehziS3luv8aOLcxbowYNZKPEzbgdzOWBFa+qAowZhyaF+Q7+?=
- =?us-ascii?Q?4P1cq0fqQhoJ97exPPhi0i9ODonuu/5DeCJr841GfpigMkjZ8UX02A5r9Y4Z?=
- =?us-ascii?Q?5sQ47oeJWbcPhChJQVN9qiUF9Hmezdf0wk3BRCHKrgpQfLw+t9X9+6NzyOTv?=
- =?us-ascii?Q?4LGbyhFVdnSERwZ9MEec67gLbqSOcO/F7uqAAQVXHMrUkETp/r5Oo+H/yH1y?=
- =?us-ascii?Q?+TIrMN6nQoMT4JALibxbvBL1?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef3ceac5-8417-4c14-8456-08d971f30cf4
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2021 11:31:36.2488
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Puh0zsDLbDw/3ft6H2o5kHoll2N/EV5RaTizaebiElMvnyQFHzA9iIKBTpSXDJCl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5157
+In-Reply-To: <fcf6f57e-972b-f88e-84bf-d1618fd3e23e@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 05:36:23PM +0300, Gal Pressman wrote:
-
-> > I can't say if it is needed or not, just wanted to understand why you need
-> > complexity in destroy_cq path.
+On Sun, Sep 05, 2021 at 01:02:45PM -0500, Bob Pearson wrote:
+> On 9/4/21 5:30 PM, Jason Gunthorpe wrote:
+> > On Fri, Sep 03, 2021 at 04:13:22PM -0700, Bart Van Assche wrote:
+> >> On 9/3/21 3:18 PM, Bob Pearson wrote:
+> >>> On 9/2/21 6:38 PM, Jason Gunthorpe wrote:
+> >>>> On Thu, Sep 02, 2021 at 04:41:15PM -0500, Bob Pearson wrote:
+> >>>>> Now that for-next is on 5.14.0-rc6+ blktest srp/002 is very close to
+> >>>>> working for rxe but there is still one error. After adding MW
+> >>>>> support I added a test to local invalidate to check and see if the
+> >>>>> l/rkey matched the key actually contained in the MR/MW when local
+> >>>>> invalidate is called. This is failing for srp/002 with the key
+> >>>>> portion of the rkey off by one. Looking at ib_srp.c I see code that
+> >>>>> does in fact increment the rkey by one and also has code that posts
+> >>>>> a local invalidate. This was never checked before and is now failing
+> >>>>> to match. If I mask off the key portion in the test the whole test
+> >>>>> case passes so the other problems appear to have been fixed. If the
+> >>>>> increment and invalidate are out of sync this could result in the
+> >>>>> error. I suspect this may be a bug in srp. Worst case I can remove
+> >>>>> this test but I would rather not.
+> >>>>
+> >>>> I didn't check the spec, but since SRP works with HW devices I wonder
+> >>>> if invalidation is supposed to ignore the variant bits in the mkey?
+> >>>
+> >>> I am a little worried. srp is pretty complex but roughly it looks like it maintains a pool of
+> >>> MRs which it recycles. Each time it reuses the MR it increments the key portion of the rkey. Before
+> >>> that it uses local invalidate WRs to invalidate the MRs presumably to prevent stray accesses
+> >>> to the old version of the MR from e.g. replicated packets. It posts these WRs to a send queue but I
+> >>> don't see where it closes the loop by waiting for a WC so there may be a race between the invalidate
+> >>> and the subsequent map_sg call. The invalidate marks the MR as not usable so this must all happen
+> >>> before the MR is turned on again.
+> >>
+> >> Hi Bob,
+> >>
+> >> If there would be any code in the SRP driver that is not compliant with the
+> >> IBTA specification then I can fix it.
+> >>
+> >> Regarding the invalidate work requests submitted by the ib_srp driver: these
+> >> are submitted before srp_fr_pool_put() is called. A new registration request
+> >> is submitted after srp_fr_pool_get() succeeds. There is one MR pool per RDMA
+> >> channel and there is one QP per RDMA channel. In other words,
+> >> (re)registration requests are submitted to the same QP as unregistration
+> >> requests after local invalidate requests. I think the IBTA requires does not
+> >> allow to reorder a local invalidate followed by a fast registration request.
+> > 
+> > Right
+> > 
+> > Jason
+> > 
 > 
-> Well, as I said, I don't think the restrack protection is enough in this case as
-> it isn't aware of the concurrent eq flow.
+> srp_inv_rkey()
+> 	wr = ...			builds local invalidate WR
+> 	wr.send_flags = 0		i.e. not signaled
+> 	ib_post_send()			posts the WR for delayed execution
 > 
-> I guess I can put a synchronize_irq() on destroy_cq flow to get rid of the race.
+> srp_unmap_data()
+> 	srp_inv_rkey()			schedules invalidate of each rkey in req
+> 	srp_fr_pool_put()		puts each desc entry on free list
+> 
+> srp_map_finish_fr()
+> 	...				misc checks not relevant
+> 	desc = srp_fr_pool_get()	returns desc from free list
+> 	rkey = ib_inc_rkey()		gets a new rkey one larger than the last one
+> 	ib_update_fast_reg_key()	immediately changes mr->rkey to new value
+> 	ib_map_mr_sg()			immediately updates buffer list in MR to new values
+> 	wr = ...			set WR to REG_MR work request not signaled
+> 	wr.key = new rkey
+> 	ib_post_send()			wr is posted for delayed execution
+> 
+> So as soon as the MR has had a WR posted to invalidate it the code goes ahead and adds it to the
+> free list and then as soon as a new MR is gotten from the free list the rkey and mappings are
+> changed and then a WR is posted to 'register' the MR which marks it as valid again. The register
+> WR *also* resets the rkey which is redundant with the ib_update_fast_reg_key() call.
+> 
+> All the work except for setting the state valid is done immediately regardless of the status of the
+> completion of the previous invalidate and can complete before the MR is marked FREE. Because the WR
+> is not signaled no one is checking the WC for these operations unless there is an error.
 
-That is a better choice that synchronize_rcu(), IIRC
+"HW" is not supposed to look at mr->rkey.
 
-synchronize_rcu should be avoided compared to all other forms of
-synchronization because it can take seconds per call to complete, and
-in a reasonable verbs app this means potentially minutes to close the
-verbs FD and destroy many CQs.
+"HW" has a hidden cache of mr->rkey which is manipulated through
+WQEs, and is then synchronous with the WQE stream as Bart said.
+
+So it sounds like the problem is rxe is crossing the HW and SW layers
+and checking the mr->rkey from HW logic instead of holding a 2nd HW
+specific value for HW to use.
 
 Jason
