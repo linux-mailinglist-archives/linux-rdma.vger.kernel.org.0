@@ -2,180 +2,197 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165A5402A74
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Sep 2021 16:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA11402CE4
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Sep 2021 18:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhIGONY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Sep 2021 10:13:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S238089AbhIGQg0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Sep 2021 12:36:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhIGONX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Sep 2021 10:13:23 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5E2C061575
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Sep 2021 07:12:17 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id s25so14194606edw.0
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Sep 2021 07:12:16 -0700 (PDT)
+        with ESMTP id S231378AbhIGQg0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Sep 2021 12:36:26 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6445C061575
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Sep 2021 09:35:19 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id k12-20020a056830150c00b0051abe7f680bso13524010otp.1
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Sep 2021 09:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zmHBk46/gYZI1Bt0Lz6xKWjU/HioQ2nyjhMLj4gtxKg=;
-        b=TqVukg8uxIdZcnIhrSi/ap3SVKObidt/LjZo5GokAiqdvyWT/7/s37Klyyqek0fNqw
-         g+DS7SfGCDu6RewGBAZo7bEVOPTBNatn2MzGYcfKKkkoSCfXE+9v8gknokfm6qnlsouL
-         uLgRUWS66OJwg8JwkVOHYLBscJlMGPghhuTeQ=
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=PxAOXNyXGvc6GA+L4efBnKL4YAk6IfQVk17G78O+RRE=;
+        b=JUfM8gmSzMETVCKch6P+Kv3IFIlwYQ469xIKfGof4zAAeeJHLu580va9pUocH5bR4k
+         LBNIHWln0+uXhIghTMCuzTqFvm2lOx2sBzc4LF+1QBaMPxusnuw1aEil+YtAasnYqioe
+         1pGsLUyBJjxxW50IcGpzJWeZHekKsbRXTO1MDVSOQQIPR1JFZqWzV5hydETHlBulmYKk
+         wVUWh2eyqTEAKTI1GDXUjSVFXWnIZddIuMq380RJrGDZe1pTU0JO9cuXS0Dbby5LF6gq
+         kB6C5RHTmFEOyun6LLm8ykQ/2VG9ter6Fimwp0e5aHuX0fE5vJtO/e03GpjgoOWY7qG7
+         Q88A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zmHBk46/gYZI1Bt0Lz6xKWjU/HioQ2nyjhMLj4gtxKg=;
-        b=oBGh4t1tVt5QtrZTpbIGg2569/4Lpd4mdGXFdvcqR3rCbZxK5+h9ceB/Mv7ygyqQIG
-         yTa2mU8Ck8ECE44rD6NMHSNZI6inRWysE4biBYANYNNkLIctIKuDwL9GdYvQRE1V3eFq
-         yjcTh7nNwNRQHO9Mp9geSOs9koyOBhaYxQPqdalArefhZ7YEgLfTGFI9Pp8fp9Uxvo1+
-         cynuKWShue4h4WT3vTGEnLGk+KLYXxSKoV6QjYJXURdtI5mSwOiqQNZFTQqhamCFPx3O
-         tHTtixCLz9ZNleOe68bMC3NDji2qdY1LHa91VGG7vEM0pcvMqzyViS4o/5tDynj0erbY
-         qGOA==
-X-Gm-Message-State: AOAM530oVQ1vMfIAred+Tfl2YT2GGpsqlGeHQGqInzIYtYZrnb7ZOVmy
-        JgY6ejOqdsVj3C75lBED3lqXARtcQpuo5eMlvvWvZw==
-X-Google-Smtp-Source: ABdhPJyEWcW/caxnL4kTvdHDS+45FF3fHWSPqWbeYWXqXDjl+CF8AKyOy1ogt/mxTktA5vVNYYj59gZmlnh31/ODHSE=
-X-Received: by 2002:aa7:c311:: with SMTP id l17mr18486326edq.320.1631023935434;
- Tue, 07 Sep 2021 07:12:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PxAOXNyXGvc6GA+L4efBnKL4YAk6IfQVk17G78O+RRE=;
+        b=rfh2WMNRofQfBxMtf0TbDcGFpneyV94RL3BoBZiXBk97n1rZPechQg/qwXLpcsfUsP
+         GBONkcYD/JZmkClC1Evn8BZ0Epg5ZMSn5R+HLTQaIvma4pZ2dnkuR7O8m4fhaqa/9RT6
+         EhZPyh0MgdicyoMJvuCquPaeuqrKOgLaCd5TEXxmDpUK9ABPPCvJjaSlpts2UUsTmTQC
+         XPtpNtkIC5CAri5WfVFNKyzUDqQYCty7xxHyKf9Xe81PV+WGIjZHcJOGbzwq8dH0vUM0
+         xErrUM4HLgUFU0moaAJ2E6kZbC/AaGT6eQLP66+rfH9i5NagFxT+MMVY16vXKU7w9Z2C
+         wL5g==
+X-Gm-Message-State: AOAM530NQiwWWzd1EycXKKmfz3NWYaizpZP0kvJC9NamZx8G+EfzRZOO
+        fLFuLbhvCsijqxFjAFXhV2k0bhJp9eA=
+X-Google-Smtp-Source: ABdhPJya3uBPjfBJd9lGrQJqqWz8pKMWzUOfjRcRAtec54j9E5les9jjm6dUJCCtWmubG1k5hfCKjw==
+X-Received: by 2002:a9d:450b:: with SMTP id w11mr16753297ote.254.1631032518673;
+        Tue, 07 Sep 2021 09:35:18 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:bc73:7f2:84bb:9731? (2603-8081-140c-1a00-bc73-07f2-84bb-9731.res6.spectrum.com. [2603:8081:140c:1a00:bc73:7f2:84bb:9731])
+        by smtp.gmail.com with ESMTPSA id o126sm2180786oig.21.2021.09.07.09.35.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Sep 2021 09:35:18 -0700 (PDT)
+Subject: Re: blktest/rxe almost working
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <c7557529-d07d-3e35-0f03-2bbe867af4a1@gmail.com>
+ <20210902233853.GB2505917@nvidia.com>
+ <1610313b-e5d0-a687-a409-d1275baf7f95@gmail.com>
+ <711c089d-ce66-63e8-4d80-0bd19f22607c@acm.org>
+ <20210904223056.GC2505917@nvidia.com>
+ <fcf6f57e-972b-f88e-84bf-d1618fd3e23e@gmail.com>
+ <20210907120156.GV1200268@ziepe.ca>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <9e6783d0-554c-17de-c72f-fae766099480@gmail.com>
+Date:   Tue, 7 Sep 2021 11:35:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-References: <20210905081812.17113-1-len.baker@gmx.com> <YTSaIMAlelivBGEv@unreal>
-In-Reply-To: <YTSaIMAlelivBGEv@unreal>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Tue, 7 Sep 2021 19:42:03 +0530
-Message-ID: <CA+sbYW0YMFc-ohPUWu=a-NNasbM+Yk4dH5v-yYZuAjmZcAJysg@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/bnxt_re: Prefer kcalloc over open coded arithmetic
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Len Baker <len.baker@gmx.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>, linux-rdma@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000508a7b05cb685ad7"
+In-Reply-To: <20210907120156.GV1200268@ziepe.ca>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---000000000000508a7b05cb685ad7
-Content-Type: text/plain; charset="UTF-8"
+On 9/7/21 7:01 AM, Jason Gunthorpe wrote:
+> On Sun, Sep 05, 2021 at 01:02:45PM -0500, Bob Pearson wrote:
+>> On 9/4/21 5:30 PM, Jason Gunthorpe wrote:
+>>> On Fri, Sep 03, 2021 at 04:13:22PM -0700, Bart Van Assche wrote:
+>>>> On 9/3/21 3:18 PM, Bob Pearson wrote:
+>>>>> On 9/2/21 6:38 PM, Jason Gunthorpe wrote:
+>>>>>> On Thu, Sep 02, 2021 at 04:41:15PM -0500, Bob Pearson wrote:
+>>>>>>> Now that for-next is on 5.14.0-rc6+ blktest srp/002 is very close to
+>>>>>>> working for rxe but there is still one error. After adding MW
+>>>>>>> support I added a test to local invalidate to check and see if the
+>>>>>>> l/rkey matched the key actually contained in the MR/MW when local
+>>>>>>> invalidate is called. This is failing for srp/002 with the key
+>>>>>>> portion of the rkey off by one. Looking at ib_srp.c I see code that
+>>>>>>> does in fact increment the rkey by one and also has code that posts
+>>>>>>> a local invalidate. This was never checked before and is now failing
+>>>>>>> to match. If I mask off the key portion in the test the whole test
+>>>>>>> case passes so the other problems appear to have been fixed. If the
+>>>>>>> increment and invalidate are out of sync this could result in the
+>>>>>>> error. I suspect this may be a bug in srp. Worst case I can remove
+>>>>>>> this test but I would rather not.
+>>>>>>
+>>>>>> I didn't check the spec, but since SRP works with HW devices I wonder
+>>>>>> if invalidation is supposed to ignore the variant bits in the mkey?
+>>>>>
+>>>>> I am a little worried. srp is pretty complex but roughly it looks like it maintains a pool of
+>>>>> MRs which it recycles. Each time it reuses the MR it increments the key portion of the rkey. Before
+>>>>> that it uses local invalidate WRs to invalidate the MRs presumably to prevent stray accesses
+>>>>> to the old version of the MR from e.g. replicated packets. It posts these WRs to a send queue but I
+>>>>> don't see where it closes the loop by waiting for a WC so there may be a race between the invalidate
+>>>>> and the subsequent map_sg call. The invalidate marks the MR as not usable so this must all happen
+>>>>> before the MR is turned on again.
+>>>>
+>>>> Hi Bob,
+>>>>
+>>>> If there would be any code in the SRP driver that is not compliant with the
+>>>> IBTA specification then I can fix it.
+>>>>
+>>>> Regarding the invalidate work requests submitted by the ib_srp driver: these
+>>>> are submitted before srp_fr_pool_put() is called. A new registration request
+>>>> is submitted after srp_fr_pool_get() succeeds. There is one MR pool per RDMA
+>>>> channel and there is one QP per RDMA channel. In other words,
+>>>> (re)registration requests are submitted to the same QP as unregistration
+>>>> requests after local invalidate requests. I think the IBTA requires does not
+>>>> allow to reorder a local invalidate followed by a fast registration request.
+>>>
+>>> Right
+>>>
+>>> Jason
+>>>
+>>
+>> srp_inv_rkey()
+>> 	wr = ...			builds local invalidate WR
+>> 	wr.send_flags = 0		i.e. not signaled
+>> 	ib_post_send()			posts the WR for delayed execution
+>>
+>> srp_unmap_data()
+>> 	srp_inv_rkey()			schedules invalidate of each rkey in req
+>> 	srp_fr_pool_put()		puts each desc entry on free list
+>>
+>> srp_map_finish_fr()
+>> 	...				misc checks not relevant
+>> 	desc = srp_fr_pool_get()	returns desc from free list
+>> 	rkey = ib_inc_rkey()		gets a new rkey one larger than the last one
+>> 	ib_update_fast_reg_key()	immediately changes mr->rkey to new value
+>> 	ib_map_mr_sg()			immediately updates buffer list in MR to new values
+>> 	wr = ...			set WR to REG_MR work request not signaled
+>> 	wr.key = new rkey
+>> 	ib_post_send()			wr is posted for delayed execution
+>>
+>> So as soon as the MR has had a WR posted to invalidate it the code goes ahead and adds it to the
+>> free list and then as soon as a new MR is gotten from the free list the rkey and mappings are
+>> changed and then a WR is posted to 'register' the MR which marks it as valid again. The register
+>> WR *also* resets the rkey which is redundant with the ib_update_fast_reg_key() call.
+>>
+>> All the work except for setting the state valid is done immediately regardless of the status of the
+>> completion of the previous invalidate and can complete before the MR is marked FREE. Because the WR
+>> is not signaled no one is checking the WC for these operations unless there is an error.
+> 
+> "HW" is not supposed to look at mr->rkey.
+> 
+> "HW" has a hidden cache of mr->rkey which is manipulated through
+> WQEs, and is then synchronous with the WQE stream as Bart said.
+> 
+> So it sounds like the problem is rxe is crossing the HW and SW layers
+> and checking the mr->rkey from HW logic instead of holding a 2nd HW
+> specific value for HW to use.
+> 
+> Jason
+> 
 
-On Sun, Sep 5, 2021 at 3:51 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Sun, Sep 05, 2021 at 10:18:12AM +0200, Len Baker wrote:
-> > As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> > and Conventions" documentation [1], size calculations (especially
-> > multiplication) should not be performed in memory allocator (or similar)
-> > function arguments due to the risk of them overflowing. This could lead
-> > to values wrapping around and a smaller allocation being made than the
-> > caller was expecting. Using those allocations could lead to linear
-> > overflows of heap memory and other misbehaviors.
-> >
-> > In this case this is not actually dynamic sizes: both sides of the
-> > multiplication are constant values. However it is best to refactor this
-> > anyway, just to keep the open-coded math idiom out of code.
-> >
-> > So, use the purpose specific kcalloc() function instead of the argument
-> > size * count in the kzalloc() function.
-> >
-> > Also, remove the unnecessary initialization of the sqp_tbl variable
-> > since it is set a few lines later.
-> >
-> > [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> >
-> > Signed-off-by: Len Baker <len.baker@gmx.com>
-> > ---
-> >  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
->
-> Thanks,
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Acked-by: Selvin Xavier <selvin.xavier@broadcom.com>
+Interesting. But if that is the case the bigger problem is the ib_map_mr_sg() call which updates the
+mapping. rxe definitely does look at the mr->rkey value but we could fix that. It also looks at the
+mapping which is updated by ib_map_mr_sg(). My impression is that HW also uses this mapping or does
+HW also copy all the FMRs into SRAM? By not closing the loop on the invalidate by looking at the CQE
+the srp driver exposes the MR with changing mappings to the new values through either the old or new
+rkey depending on whether you cache the rkey.
 
---000000000000508a7b05cb685ad7
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+There is a suggestive comment in ib_verbs.h
+        /*
 
-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
-od7PzGNQ3SgTYKl5XslMq+gpy+K8+egxMxo3D07c8snwyfU7Y7NQ8I1M986gsj9RUcp3oo0N+T1W
-rwVchQXTGD/Hwqc11XBU1H3JKSRkn7cTa9bMFnp0Asr3Y4/kB+4t6PhYi50ORwIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6uPX
-5eOTTGwUwIAAoXKF4qVZLfgwDQYJKoZIhvcNAQELBQADggEBAKAn7gHcWCrqvZPX7lw4FJEOMJ2s
-cPoLqoiJLhVttehI3r8nFmNe5WanBDnClSbn1WMa5fHtttEjxZkHOFZqWLHYRI/hnXtVBjF9YV/1
-Hs3HTO02pYpYyHue4CSXgBtj45ZVZ0FjQNxgoLFvJOq3iSsy/tS2uVH5Pe1AW495cxp8+p5b3VGe
-HRzGet524jE0vZx0A/6qrYo6C7z4Djrt/QU2MZDbPb+kwkkomwcn0Nvr91KWSrbhhHtZ/EfXi08L
-x3R3oHtWjbmIW1nYkwVk4pQZoaLkRWkfTSGpwDwilhrd2F+d5rhCbAbfACk4Oly51GV4SI7jUm0D
-VbZWyuIx85gxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxea+GNYSvtMZZyJzwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDqZ4+LCuPz0
-b2+XmpBDoNmFpYvtPPMt9Egd6l2YLv2UMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIxMDkwNzE0MTIxNVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQBpBcFTtHhZjm+mky+xOsHVrZBUI63j
-IrYlVlbQimwNGXX4RFTvBmE40YOwfY2vCiHlBCqiiPoSFbET2MY7wVXHehOcPCe+LsglJeRjiQjI
-KqHl9FMOL2TQPZbCDNHZKFZQkYUPHIEl7z/DjDDAPyHZemQMH3rLD5AIr4DTHxcUZy3eQL3JG/2u
-qw+ogvQJFyGF0mwOBkU+pyGj0MzWKoLTlsv/1F8IULOl6cdjgTm/yDgng2ifACGMlVWuUwEBJJcW
-E9xt1+e48/dCnFOMHMDcs3jTqrYHWAYi2LFvHG2BJcpGDKmN/5oBJ8jyA20O0bHXJLyFZ1L/oU5K
-ak199ot1
---000000000000508a7b05cb685ad7--
+         * Kernel users should universally support relaxed ordering (RO), as
+
+         * they are designed to read data only after observing the CQE and use
+
+         * the DMA API correctly.
+
+         *
+
+         * Some drivers implicitly enable RO if platform supports it.
+
+         */
+
+        int (*map_mr_sg)(struct ib_mr *mr, struct scatterlist *sg, int sg_nents,
+
+                         unsigned int *sg_offset);
+
+There seems to be an assumption that users will be looking at CQE.
+
+Bob
+
+
+
+
