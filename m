@@ -2,136 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3F84041D4
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 01:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A89904041DD
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 01:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244633AbhIHXfH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Sep 2021 19:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236746AbhIHXfF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Sep 2021 19:35:05 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09901C061757
-        for <linux-rdma@vger.kernel.org>; Wed,  8 Sep 2021 16:33:57 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id w8so97335qvt.0
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Sep 2021 16:33:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gwQYHck7BMUKkGamYdSoRVg09azr+jdJw6rIsi6S+vk=;
-        b=DrMOX6OWFsDUPMEr61rWc//+OocHVa+BlQarE2QJLAroD7R834CN2CdA60vYdbScf+
-         06N2f9l0l9yQsJMNqKiXWFC8qRCdSHEkL0z7qpPDEx2pcy/iqghV3mhf+lT96tT8KR5c
-         zKrOn5qw5MuX0+8xUDY53Hs1qmEQMNm72cW0DnCRjzHATsLp7ee9UPFA7Y5M+ZdvICfi
-         m38Zys2Ll4OFtUhgbn2gBw4pYwgDQeXhHOEqOQ3jEUZ/VGKaj4JVHQaoa42ay/2by832
-         SQU9JPiK8z3x26iLy2h3TE5rJAI+j+sxvKNfhOItDU2bg8Eu2rR8tMqXnlIyS03xfjsy
-         Vbgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gwQYHck7BMUKkGamYdSoRVg09azr+jdJw6rIsi6S+vk=;
-        b=ZXQ9Opra0tv4jvzY8XEHO9uoS+frinH+DCXGw5+Qsqu97F6Dky04Uz8nTeG16/kWGo
-         pdCncvhYImRi83qtUP8MecFrUda27XrEtHPcYFG+yHWeto0SV3/0+9zztOLkI1xYNmBH
-         KoFKJh1n3JKe20YsyITqi6dHCBgJnMUEOCh4EO5PvxMK1Yt7pWX0Z55nR8nnWNHruJD1
-         1JB+eNgK9a1XRP7uc61dnrZ1V9F3tqWYVi5qUg9laB+w2+9zfXtQMLyI/WLZ+NE4TfcX
-         3jYHbM/8fygll8sj8s4trYrOm49WrDpyqQvMwSKnTLmSD9b7VchWXR3CmYVlSVfHpV+I
-         NwZg==
-X-Gm-Message-State: AOAM5311LmlZg9qaLOUhtehC8tdP0nZBrD9/fQjMEULA7GaNBPOamFNb
-        bYD1/mVbAMkekU16JTHdLXHB2g==
-X-Google-Smtp-Source: ABdhPJwNA/77xtIMS3uTVLRdtquJh/PSHYWAq5zpTf6KOpMK4j8ysc8NRWaKQIZlIxbLoD95rKXBXg==
-X-Received: by 2002:a05:6214:104d:: with SMTP id l13mr69910qvr.13.1631144036203;
-        Wed, 08 Sep 2021 16:33:56 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id x3sm78338qkx.62.2021.09.08.16.33.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Sep 2021 16:33:55 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mO74k-00EsBp-Ob; Wed, 08 Sep 2021 20:33:54 -0300
-Date:   Wed, 8 Sep 2021 20:33:54 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Shunsuke Mie <mie@igel.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma
- device
-Message-ID: <20210908233354.GB3544071@ziepe.ca>
-References: <20210908061611.69823-1-mie@igel.co.jp>
- <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org>
- <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org>
- <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca>
- <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
- <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S235669AbhIHXlo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Sep 2021 19:41:44 -0400
+Received: from mail-dm6nam11on2054.outbound.protection.outlook.com ([40.107.223.54]:18615
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235595AbhIHXln (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 8 Sep 2021 19:41:43 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ocI+VftSnOP69ejuJWObX5cgFoMajHu1GMLb+cS7hZddCkYV0UFhwSzt6pbZWE/8qGCKCz/p0iL4Mnm1n/YyxWEEXJLQdYXr0rsHjj706dHWdL+fQytdXI96pNXd+U4FuXzlGNXyO/uIwClm3JM6sRV39r+Bb37zkf4pls6D0kvOkw5AsjTN9hJ4+QdUdwYIVG1bDtuJ51Jsc+df+M8mEFlK9+vqA1X4Xplyh8HZUOypCw/2OWGv73KSDRcaxfoY9gt4/THAUV9j2xBV18iNC41WeVgVcb1idpKj1oag0s2V27n0RHwp0nxoHny92GIjYEzlnpisVJ9GVTMpKJYk+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=niKDznqEkhR+VQRnxKv5DPlbYBdwwvocqaoH4ew8e/M=;
+ b=Qw5ZOAe7JCOnNa7n5TeceGA1Hl831pkY6u8ooGoGCX52+oZX3GerDk/Fp4HonakB9GD/+1+EA5PNQ6/WopYaZDp7xMFai0lwOy6AwKdN1gXQoNQOXyuLBZBVqYSa2oglFfHh6qi6KCIzhfTALQFA5mbVeDSS/bzTTy16LgarPjgpTN8b59bBHVUtdEYS2IFhBn3VtnnQnwCwmW0jklFdKcoVnIE2hFecN/dy1iZ13Uofm+JzGCTowzYEUscJNpiBfxu4+DCsNG5UWcFL26VOcIeUxh7Iw7NxEPR6XRqagiBDiQdrYEpn4QvzYlrpAb4+5iQLbGhV1J4pyZqnyCyKGw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=niKDznqEkhR+VQRnxKv5DPlbYBdwwvocqaoH4ew8e/M=;
+ b=J8Ol+XMO7d0U2wR6jfY8Q69V+vmeF0I3C9sSr7mb22zt3r269ta48KpFJdt3hi/SUo5AHtu2dZJpdkUSblN/s9tX51Mg2/iFyEET2UMc4SqaIlHmQL3W1diHaEERtJ5vkcbK2haIPlrD8dfY1yXCrG0+HydHBX/dpxJtnaHOKSHybHw/OoRBNxAmiv5uc5l0JD3Gc2FNorqtYtfEABhr/drs9A45GJ67yysGcQqj9CkKLC6s5F8lvBbzRjhczUZOhitfVzuKamgwqtI1u6GRKLZAlaBH7GdUGWyXtlwRuojuvXxIrMO+kN7W2PxHGucp8M40S36oDM5ax1edrj7pyg==
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5047.namprd12.prod.outlook.com (2603:10b6:208:31a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Wed, 8 Sep
+ 2021 23:40:33 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.014; Wed, 8 Sep 2021
+ 23:40:33 +0000
+Date:   Wed, 8 Sep 2021 20:40:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20210908234032.GA3545321@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="IJpNTDwzlM2Ie8A6"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+X-ClientProxiedBy: BL0PR02CA0144.namprd02.prod.outlook.com
+ (2603:10b6:208:35::49) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+Received: from mlx.ziepe.ca (142.162.113.129) by BL0PR02CA0144.namprd02.prod.outlook.com (2603:10b6:208:35::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14 via Frontend Transport; Wed, 8 Sep 2021 23:40:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mO7BA-00EsKl-KY; Wed, 08 Sep 2021 20:40:32 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3501227f-5c1a-4d8b-d677-08d973220d0a
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5047:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB50477CF6670CD6A5FCE7D6C8C2D49@BL1PR12MB5047.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 96mlg04Ld1wgWGWUUbA+48avsVj9A0tRLnz3sBDt3lhoPApyKOJ6zzHHGqT5i0QMyMs32Yz/cB+IoI6GpO0v/e2ykxDSOTsHq4Q0rS8tARAUlxgOR9zXspHnuGURluoxxvQfNSrEaCe/PelQxs6pSoxbKxj6GoXeymntgJ5ueE2eJI/sAgxfhysUlCGyNbgMHREpUURrjrYyiGBaRlzRioAlZPM5u0IvtKBqRMG7TSaEF145oUBZ3d3laEaeO6y5WnHZ8oVkXno9T33HtMV4A3evwyyxD9/vZV62RHX1TRZhlcSDzEfGiyj5M7J0QIvdnSgixpwtX5oEYvNC7wiouXjv0FGLbLc7e3J7sBS/sczQ4AaoMbGAyxvsLit9tQgJEmFrtvDBPA5PXcxWlMb8AzyP1ul3HNjBy/ZhLXUfGs6rcc4TDlFPqyE1ceFw4CADCh4j22E4apWtnUR1ZpkO97WGGsCFDtFmVZzyD9dP0u4LKMaqIfTNxBUvpKsw6K4SCN6AOo5sN1xIQAJXTYEOqNlyKWFnPa5+V8mCgMIardWVWASA/gPuVOgbYUSteA+J65qcpjXWQSlLHjvXIMGf/KdmWPFibZMgugkhapfibxF9vIhrJ954sH7M1zZrzfTha4ZmTjMOAKQRw5w0LjlVbK6LlIq9eKZHt/yk9rrXKpDGARsud2Tvxskn5G0G6g1hawrKtAhD4fUTE0sW7l9cJg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(376002)(396003)(346002)(136003)(2616005)(316002)(8936002)(44144004)(9786002)(110136005)(2906002)(4326008)(86362001)(9746002)(426003)(66476007)(478600001)(1076003)(5660300002)(33656002)(66946007)(66556008)(26005)(8676002)(186003)(83380400001)(36756003)(38100700002)(21480400003)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4KYmtqaCP1+x1Re0j0mo/OyypFFWYaGZ4ljR/hscL1aUofRfHcCsdM7+TptX?=
+ =?us-ascii?Q?cKPjpDRYdSJvhGJqNDv9KnHNq4zAV0xVcH7U75/eRShmqWPAZGqP0n+QhfZE?=
+ =?us-ascii?Q?gMNDT8QCATqKsYgTW7FCZRlWT6uX3v/8l4l9txY7YRt48Inh948++S0/0Oij?=
+ =?us-ascii?Q?Iql01Wtxrk3UwMqNVJsp4HyXo3uurdAiG7I0We+1tO0FSqDbk7O0RHAxZmjd?=
+ =?us-ascii?Q?1WSWUW6NOBFMkSu/PQmscxbcItdM8Uq5EIoBkbhNxwjZ9HNQbjd4ae3NY+6l?=
+ =?us-ascii?Q?8Xz/JEYkhE3Lj6RO8JhCzeRbMqJ9Gc86uEQTest1bwGbVVQp52YtnKwA6ysh?=
+ =?us-ascii?Q?WUy0hei9vtHClOpOBOqmoM7hLUSIIcV8FKwd+b1NXHQL1j8gvqMsACJgGpGE?=
+ =?us-ascii?Q?SogiovLGnXASzwYd+oSk1Tbok9VzqU+Xz2bMUCt+KWJYvMK7SJN9ReI7+Qhj?=
+ =?us-ascii?Q?fZD7laDmQPXrB+46tZvqWtCvIe0JMT43oFUf4bc/2nXDYRXlDt9U4A+p1PDP?=
+ =?us-ascii?Q?87nVfTxu81OmJL/h+2YNtxzg7V5gIlUC4JiDHYdhp76M3oyPJOI2hw5XUZtl?=
+ =?us-ascii?Q?NMgToJWEyCtVJqPQeBBc23Up8O4YvZCvEk9EwNUGQbQ0ZclaTloJ2nSRxEwU?=
+ =?us-ascii?Q?S4jsHYo8MGJCJJMNU9GPdN7g/oPl/TysKotPhBZKnFNVRWkHAMwt3KWASkkB?=
+ =?us-ascii?Q?FrQMdbdpUf2qZEk8cg9mKnv+8Z2jjiZ/rgq5j4DbImKEToN/M8KtMl9B/gOb?=
+ =?us-ascii?Q?Uv4MRifANFEICHj07mn4n5iomvUNM6LqfNQ1m9ucPQK4pLrjLnX8mPPZDEs5?=
+ =?us-ascii?Q?sOhMAGHfqUImQVLx9fnzRh6tnETCdaF3CZQt2iuUXZUnBUdV6UL6z+tbslmW?=
+ =?us-ascii?Q?D5hyLSZj1wi29/TYPSgRJlNvuDsey2uLUk+INz+Eci0WidYY/m1Plp0U1T9Q?=
+ =?us-ascii?Q?Mxi0YBSAAzg2fDGmMNzajvz9MzPHyhkWDY6hULnt4zV5ogmDCnaHucz+HHnE?=
+ =?us-ascii?Q?0A2TgKB1ZUs9CUF1c9tzW8LAVXRvjASMhIjDEoxGT6o1RCe15X34Een+J2VL?=
+ =?us-ascii?Q?wTVW/F/fqJMOdmL1kD5XJ/hrP9hnwe3/RjRE9nxNbCtyMTmwfcr3Hlqg0027?=
+ =?us-ascii?Q?IVbB6nNNXXhr3OqmwxNc2mLyZjQN6RY5XO4Zta5vphlQp8WqGkQ7ZJ/PIyS1?=
+ =?us-ascii?Q?HxKjRWlpOzNNa+rznHciFy+M98I+Lm7vGp43FDJxPY7UN4YG1RC0XL476TnO?=
+ =?us-ascii?Q?gx3s1N6KV/KQi7FMPhqZKtrR5iqlI0/gzR+9qheMH5zcKU8zUlR79/Z+8pQP?=
+ =?us-ascii?Q?4Jfy2Qt09oouoBPXifGXfM3t?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3501227f-5c1a-4d8b-d677-08d973220d0a
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Sep 2021 23:40:33.7250
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s8ARMBUfEohoenGxj+HXANl0sJHltxNXpSxelS35zjzpntiQ7LtJ/khfPvMY2Uhk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5047
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
-> On Wed, Sep 8, 2021 at 3:33 PM Christian König <christian.koenig@amd.com> wrote:
-> > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> > >> 2021年9月8日(水) 16:20 Christoph Hellwig <hch@infradead.org>:
-> > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
-> > >>>> Thank you for your comment.
-> > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
-> > >>>>>> To share memory space using dma-buf, a API of the dma-buf requires dma
-> > >>>>>> device, but devices such as rxe do not have a dma device. For those case,
-> > >>>>>> change to specify a device of struct ib instead of the dma device.
-> > >>>>> So if dma-buf doesn't actually need a device to dma map why do we ever
-> > >>>>> pass the dma_device here?  Something does not add up.
-> > >>>> As described in the dma-buf api guide [1], the dma_device is used by dma-buf
-> > >>>> exporter to know the device buffer constraints of importer.
-> > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=ARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=0
-> > >>> Which means for rxe you'd also have to pass the one for the underlying
-> > >>> net device.
-> > >> I thought of that way too. In that case, the memory region is constrained by the
-> > >> net device, but rxe driver copies data using CPU. To avoid the constraints, I
-> > >> decided to use the ib device.
-> > > Well, that is the whole problem.
-> > >
-> > > We can't mix the dmabuf stuff people are doing that doesn't fill in
-> > > the CPU pages in the SGL with RXE - it is simply impossible as things
-> > > currently are for RXE to acess this non-struct page memory.
-> >
-> > Yeah, agree that doesn't make much sense.
-> >
-> > When you want to access the data with the CPU then why do you want to
-> > use DMA-buf in the first place?
-> >
-> > Please keep in mind that there is work ongoing to replace the sg table
-> > with an DMA address array and so make the underlying struct page
-> > inaccessible for importers.
-> 
-> Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
-> for cpu access. Which intentionally does not require any device. No
-> idea why there's a dma_buf_attach involved. Now not all exporters
-> support this, but that's fixable, and you must call
-> dma_buf_begin/end_cpu_access for cache management if the allocation
-> isn't cpu coherent. But it's all there, no need to apply hacks of
-> allowing a wrong device or other fun things.
+--IJpNTDwzlM2Ie8A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Can rxe leave the vmap in place potentially forever?
+Hi Linus,
 
+I don't usually send a second PR in the merge window, but the fix to
+mlx5 is significant enough that it should start going through the
+process ASAP. Along with it comes some of the usual -rc stuff that
+would normally wait for a -rc2 or so.
+
+Thanks,
 Jason
+
+The following changes since commit 6a217437f9f5482a3f6f2dc5fcd27cf0f62409ac:
+
+  Merge branch 'sg_nents' into rdma.git for-next (2021-08-30 09:49:59 -0300)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to 2169b908894df2ce83e7eb4a399d3224b2635126:
+
+  IB/hfi1: make hist static (2021-09-08 08:33:04 -0300)
+
+----------------------------------------------------------------
+RDMA v5.15 merge window 2nd Pull Request
+
+An important error case regression fixes in mlx5:
+
+- Wrong size used when computing the error path smaller allocation request
+  leads to corruption
+
+- Confusing but ultimately harmless alignment mis-calculation
+
+- Static checker warnings:
+    Null pointer subtraction in qib
+    kcalloc in bnxt_re
+    Missing static on global variable in hfi1
+
+----------------------------------------------------------------
+Jason Gunthorpe (1):
+      IB/qib: Fix null pointer subtraction compiler warning
+
+Len Baker (1):
+      RDMA/bnxt_re: Prefer kcalloc over open coded arithmetic
+
+Niklas Schnelle (2):
+      RDMA/mlx5: Fix number of allocated XLT entries
+      RDMA/mlx5: Fix xlt_chunk_align calculation
+
+chongjiapeng (1):
+      IB/hfi1: make hist static
+
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 4 ++--
+ drivers/infiniband/hw/hfi1/trace.c       | 2 +-
+ drivers/infiniband/hw/mlx5/mr.c          | 4 ++--
+ drivers/infiniband/hw/qib/qib_sysfs.c    | 4 +++-
+ 4 files changed, 8 insertions(+), 6 deletions(-)
+
+--IJpNTDwzlM2Ie8A6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAmE5Se0ACgkQOG33FX4g
+mxrN0w/6A03D6TXwI13Ldjh8d03OBUwOz5UQL30peaTS2Gg0dMIxqGmP21j1fRc3
+y2x4ifDbGQ4KnH0OS4Iw/Vu8HxsECX5Z6q2NA9JypN1wY0ACjK7YsMPamEIRvi18
+zGbmwpPe475pYtKCmxa+QFHIGK8xvmq2IFdC1NVptTjQ+Zf7UahAZAREArtNyis6
+CcpxVVbNPjBYhyBHQYccnaePdO3mtmdP0lpPBtzLlw19+1VytzrvBTFeZB1Vivq9
+HDd4O1tJQkGcEZSqR12MSlknDGJ7SpGIK9zQDd8UZrdsVvSNWOuDxVHVoS+mKJ5P
+CFKbG8ps004rMJVfk2pDfYihewraLHUgsxNwwiK0LJ5ktpPvc31ZczGH+/ARFU5p
+WjhTkDYJ/4VFk2UyQn+lwRc3NuKLuEW6XEzSAW8jDxhvs9/OJPxg5Y80U3KqyB2q
+BD2vD6/AtSU+EAHaXL4C7ZZNZJlr7DXEd42jrR+Ya2SlGhdIeL3l1PMt6mkv5Jdp
+QIWlTwKLYAjYthb7KsEjg7Gy5edD90ZkKs54l27zzjy/rR6WuChbTfA8CFbRo2z+
+5SDadsw3NQC8ZqwKRG9qpnhdqXi489h2OSRZ+iCU6ODOUyWdZfjiectH6y9/uYLI
+Gidb2hUHW21lfZaiX8PPbi1I2IEnTjg8CieGPdqx8lU/LOEw850=
+=7mp0
+-----END PGP SIGNATURE-----
+
+--IJpNTDwzlM2Ie8A6--
