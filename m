@@ -2,61 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F37E40575A
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 15:41:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC141405D07
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 20:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354384AbhIINdw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Sep 2021 09:33:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40718 "EHLO mail.kernel.org"
+        id S237417AbhIIS4B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 14:56:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1358060AbhIINbv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 Sep 2021 09:31:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66ED360555;
-        Thu,  9 Sep 2021 13:30:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1631194241;
-        bh=TwE5ieLltQT1dAuj4+qxelD1xElQNJNdGPiXzXPxTtc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OkVimI2MX61gciZOGFagbIvRicVWt2kjUC3pBlGR6Thu8KIKMZUuc6lt6umQLcnhN
-         CPolFhE+gHMNMNElNUlmG87gH2rJc3YnXdO4RrLeLMSCtSbWSUAj/qXEiPD0W8TvfG
-         UfzOmR8BvpPPagcO7xjHJnR1TmANlewHTahS+pxU=
-Date:   Thu, 9 Sep 2021 15:30:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux-Net <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guillaume Nault <gnault@redhat.com>
-Subject: Re: Please add 2dce224f469f ("netns: protect netns ID lookups with
- RCU") to LTS
-Message-ID: <YToMf8zUVNVDCAKX@kroah.com>
-References: <7F058034-8A2B-4C19-A39E-12B0DB117328@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7F058034-8A2B-4C19-A39E-12B0DB117328@oracle.com>
+        id S232029AbhIIS4A (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 9 Sep 2021 14:56:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BEB396113A;
+        Thu,  9 Sep 2021 18:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631213690;
+        bh=IiV6BnLJaJ+FV+6kSSF2RYEdIVVXISpDEMd1BcgdO/w=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=P8Z2RrHD+zbbdbqQN49muFSRPzfo1soud/Dk84C1YDTkPPmDvVMsYk8dkrkUtyrs4
+         sCFQ4pAsbofxpA0n+at27a8C9Vj/s4YMtX+p/qadHN7pWcPihpoYn7qO8ZhE9krTnO
+         1B8g3jifb0Bhk+48+dhHsfj/8o2AN/zZmdkP6JMORP+++Cdo0aLh6ftdS7zQYftkjA
+         2KKaJsATsjzrdU/z1XUAhvEOR73SM0ka8rRKDT5ZyEVi2rObUVKQNB7AKLP4tZaqmp
+         Q82jEirpoXZo6h77Bd1nXgT/CsHeuL2Lzq13qlWxhsuCL01nYOWQHEoyMSJLcJ68tP
+         jyEUhZF+4nhEA==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id ABD1D60978;
+        Thu,  9 Sep 2021 18:54:50 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210908234032.GA3545321@nvidia.com>
+References: <20210908234032.GA3545321@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210908234032.GA3545321@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 2169b908894df2ce83e7eb4a399d3224b2635126
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4b105f4a256ae629522a7ed1611aba28fd282bd5
+Message-Id: <163121369064.14164.18212912952254007610.pr-tracker-bot@kernel.org>
+Date:   Thu, 09 Sep 2021 18:54:50 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 09, 2021 at 01:10:05PM +0000, Haakon Bugge wrote:
-> Hi Greg & Sasha,
-> 
-> 
-> tl;dr: Please add 2dce224f469f ("netns: protect netns ID lookups with
-> RCU") to the stable releases from v5.4 and older. It fixes a
-> spin_unlock_bh() in peernet2id() called with IRQs off. I think this
-> neat side-effect of commit 2dce224f469f was quite un-intentional,
-> hence no Fixes: tag or CC: stable.
+The pull request you sent on Wed, 8 Sep 2021 20:40:32 -0300:
 
-Please provide a working backport for all of the relevant kernel
-verisons, as it does not apply cleanly on it's own.
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-thanks,
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4b105f4a256ae629522a7ed1611aba28fd282bd5
 
-greg k-h
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
