@@ -2,66 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9945D404415
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 05:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA59404524
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 07:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232744AbhIIDyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Sep 2021 23:54:03 -0400
-Received: from mail-pl1-f175.google.com ([209.85.214.175]:36720 "EHLO
-        mail-pl1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230153AbhIIDyD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Sep 2021 23:54:03 -0400
-Received: by mail-pl1-f175.google.com with SMTP id w6so212955pll.3
-        for <linux-rdma@vger.kernel.org>; Wed, 08 Sep 2021 20:52:54 -0700 (PDT)
+        id S230515AbhIIFrC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 01:47:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350827AbhIIFrC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Sep 2021 01:47:02 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B62E4C061575;
+        Wed,  8 Sep 2021 22:45:53 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id q26-20020a4adc5a000000b002918a69c8eeso202418oov.13;
+        Wed, 08 Sep 2021 22:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Pv/SG3tA7yrSb48sLZzZKagPhqs7Dod2/pQrk+267E=;
+        b=MGpgdDSkN+o4FYqEt4gdXdwpa7SfDBsHOhdPE7LwhR5FmrIbZQ9kwpx2JXpmKEp9Lp
+         XiibZh4zGE7W+QQ3ztxPw4aH4lHKGq2gEdwgKbK6L4N7vES6/1rrGNj4kSHhdbaF/VdJ
+         BSxP8PF2fMrKIXmUY3wnCFWZXPzpXVrm/Qbw81VeLBQsV1QpGnPvjc83snjiI1erliHc
+         WYlMrWPqTzGJTVZ/dAKGWcwtoFi2xtNWgS53HsxLJz1dkqdYFQ0JWCuMjvggoattBsB8
+         8vLhB2S2ddvZjLhNIbNFKGvri50KAnYw6PSflQrL2mggk9utb/hKtKqz9HzHjvgkOK0J
+         IT7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ej2KiOGrICD2K69vERWbpdoAh4tvfug+oniqAX5CvSM=;
-        b=QMz8io9UnX6POqmQ+H6Gv8yiUzoV7NEi8nZPfzGOgeA10dq1YxTkx/PvBq+jmNlat/
-         N88lQwtxz+/gfjuSIk3VOKPgiWnN3v7kydtekFrz0NRwGEaIJk/5Tc+MqIKEwKv56CQQ
-         sCn5ZNJfgM7OYfR1CgYt07FgD8dg+QChYzDAbneiFh0nUW+QwrHsZKBcHa3UjieadXqk
-         7cgBoX/p8y8tWclAeHbdK0S6VZMaB4N+089p7RpESoSQR6qYC1C/Q43ajs8wUG53qyN5
-         gKxutpS3COvOYx5TeDG7tDanJRn/4ezVDh5Pvc8fJBYOx4VhuNUxIHxBCgbkwa5Coc5b
-         1a9Q==
-X-Gm-Message-State: AOAM531GXgMLEv/Zbi6btqc0x2QzZTVbgK6annrwfrJzTyquUR8rKMuQ
-        KkbB7D4GJv5nU7gC09hXuoQ=
-X-Google-Smtp-Source: ABdhPJzjO+sBuxK/I7ah62Abg4CAAMu03IVN35HPgCEaQj816W+oV7nT3nJvxUSXZmWVF5vTuhXBPQ==
-X-Received: by 2002:a17:90a:130f:: with SMTP id h15mr1102250pja.183.1631159574465;
-        Wed, 08 Sep 2021 20:52:54 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:1d79:8736:6331:7ea1? ([2601:647:4000:d7:1d79:8736:6331:7ea1])
-        by smtp.gmail.com with UTF8SMTPSA id b27sm409266pge.52.2021.09.08.20.52.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 Sep 2021 20:52:53 -0700 (PDT)
-Message-ID: <c6e80fc3-6417-a770-d90a-46eb9955f82f@acm.org>
-Date:   Wed, 8 Sep 2021 20:52:52 -0700
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Pv/SG3tA7yrSb48sLZzZKagPhqs7Dod2/pQrk+267E=;
+        b=2rWMVuLqEnQ2BENyOV2nIv3jtBkovrWEVNkwU9S3/3jLn0jrKmZRYhOniIp/ABCHRs
+         60C2FlsEMFq2MfYwjD3xyXJqrOAdkkHuDhBUkypHAOuw9vnZ1kFiopvdpejT/YpCiwOK
+         KT2q9Qo0hFP4Bgs1PlrJG8/Rq+f0rxjAt14M3AtIFLUaeM3/vjpr7+KrdVjRApkPVrbV
+         N9Lx2cJ01lEGqpn+h8j0ozj/mFjvcSyPtI/+eJmcOeMG+pxZYHHq2JvMJU0h7+qdsIqj
+         aKLM1rc0iOMyHvgx0NLXl39nxuUIXQlXhIG18QfaTiMhZJ/TJ71QetGNFIKLe+y9UXQL
+         Vfmw==
+X-Gm-Message-State: AOAM5332Gtdk42Qy3cGS7Mb4dCuGF0AcYEaxLGH1EP7A+rtP1x93JD6V
+        QmLW/gGSQXmurX4WdhyCM5b9uXELO0bdFfqly7E9buEZ
+X-Google-Smtp-Source: ABdhPJyZqqIln9S03n1DUtOd+twg50f5kxz5HF0f9k3QrRU8LpNtc0XqrL6Fodh9fIMHIgzSBjbqVsYpZ62Nnhx9uzQ=
+X-Received: by 2002:a05:6820:235:: with SMTP id j21mr1086605oob.75.1631166352576;
+ Wed, 08 Sep 2021 22:45:52 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.0.1
-Subject: Re: [PATCH for-next 0/5] RDMA/rxe: Various bug fixes.
-Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-References: <20210908052928.17375-1-rpearsonhpe@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20210908052928.17375-1-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20210908061611.69823-1-mie@igel.co.jp>
+In-Reply-To: <20210908061611.69823-1-mie@igel.co.jp>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 9 Sep 2021 13:45:41 +0800
+Message-ID: <CAD=hENcYPRQXB4NVfpm+_R2qn3czW3oSOS6rS=CEKWwhHEfkZA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        dhobsong@igel.co.jp, taki@igel.co.jp, etom@igel.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/7/21 22:29, Bob Pearson wrote:
-> The first patch is a repeat of an earlier patch after rebasing to
-> for-next version 5.14.0-rc6+.
+On Wed, Sep 8, 2021 at 2:16 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+> This patch series add a support for rxe driver.
 
-Hi Bob,
+After applying the patches, please run rdma-core tests with the patched kernel.
+Then fix all the problems in rdma-core.
 
-What is for-next version 5.14.0-rc6+? I tried to apply this series on 
-v5.14, v5.14-rc6 and Jason's for-rc branch but 'git am' refused to apply 
-this series on all these kernel versions ...
+Thanks
+Zhu Yanjun
 
-Thanks,
-
-Bart.
+>
+> A dma-buf based memory registering has beed introduced to use the memory
+> region that lack of associated page structures (e.g. device memory and CMA
+> managed memory) [1]. However, to use the dma-buf based memory, each rdma
+> device drivers require add some implementation. The rxe driver has not
+> support yet.
+>
+> [1] https://www.spinics.net/lists/linux-rdma/msg98592.html
+>
+> To enable to use the memories in rxe rdma device, add some changes and
+> implementation in this patch series.
+>
+> This series consists of three patches. The first patch changes the IB core
+> to support for rdma drivers that have not real dma device. The second
+> patch extracts a memory mapping process of rxe as a common function to use
+> a dma-buf support. The third patch adds the dma-buf support to rxe driver.
+>
+> Related user space RDMA library changes are provided as a separate
+> patch.
+>
+> Shunsuke Mie (3):
+>   RDMA/umem: Change for rdma devices has not dma device
+>   RDMA/rxe: Extract a mapping process into a function
+>   RDMA/rxe: Support dma-buf as memory region
+>
+>  drivers/infiniband/core/umem_dmabuf.c |   2 +-
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |   3 +
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 186 +++++++++++++++++++++-----
+>  drivers/infiniband/sw/rxe/rxe_verbs.c |  36 +++++
+>  4 files changed, 193 insertions(+), 34 deletions(-)
+>
+> --
+> 2.17.1
+>
