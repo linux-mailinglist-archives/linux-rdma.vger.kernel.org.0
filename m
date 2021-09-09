@@ -2,39 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2196C4057EE
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 15:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE88540549F
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 15:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239765AbhIINoM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Sep 2021 09:44:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40990 "EHLO mail.kernel.org"
+        id S1355013AbhIINAn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 09:00:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41728 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1352861AbhIIMrH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 Sep 2021 08:47:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 614726321C;
-        Thu,  9 Sep 2021 11:56:24 +0000 (UTC)
+        id S1352852AbhIIMvX (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 9 Sep 2021 08:51:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5839163156;
+        Thu,  9 Sep 2021 11:57:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631188585;
-        bh=TAK3zWuiiK3K2bVBG95XemzgVJ/xddGw6AnGraNwrmY=;
+        s=k20201202; t=1631188638;
+        bh=7X5tW0vkiweF1UonXwW8M/dDVIrWkufNyhzFGEKT+iU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4WNLtg7tZUtQQ594pjH/PYO/6V4zgpF43+GGC5f87Zi4zolyCAz4O+thRZ+EIvAk
-         GMA7arSievm2pzlbRxBNkgF9wqXJMNfNtmCHnNS7WcUDeZK5Z5l+Q9lZ0s9m112nnP
-         CILMupcucqOiyLY2bn+ktwvzgxKQ3vai6PCpHzIgLfX3MXv93WKHlQQaC9dozE64Lc
-         xZ6BwQGSwKa3I8xI1WoM6dER/VSc6neIoHbUEYLOHOQA7x7OgCnQAZHAaB+VgP5/Mw
-         19Vx6AmP6e8wDlsRksqkiQhJtErSomeyd1iSKqxOQzj9LYU9EiaoIYnvlfV7Yu7bMP
-         wmzuVTvqvspew==
+        b=ETplFBBXrVnpoFmsodm6oqSHZb1FHhm9ShaaQOWPFCBh3FoBXrZrXrNLq00PAH+3v
+         +QhM0BsOIAbniB5luxBupGvuPfM3J/M50xjgCQMucmJQ2oy6b9+WkUY37bD/0Ft3VO
+         dbHUdlm+zfuVB+I3IG5ZilT7qyUiyVyqnMYSYdJgbslO3mhGrNd+zR8CRZ9D7MrSlK
+         EWkEPi6/SobswNx6bj70I/3e1VxpMvmu+LRw9th5etBDB3Babytcccbo9nQJ2VdTHW
+         0QtZJIFj8zjGhSC0G38BUhU4MdsWILUJNf8fPKQscbf36xg7T4sIwd+Kr7yHJ27Bix
+         8uO6pmKX209fA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eran Ben Elisha <eranbe@nvidia.com>,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
+Cc:     Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 061/109] net/mlx5: Fix variable type to match 64bit
-Date:   Thu,  9 Sep 2021 07:54:18 -0400
-Message-Id: <20210909115507.147917-61-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 103/109] net/mlx5: DR, Enable QP retransmission
+Date:   Thu,  9 Sep 2021 07:55:00 -0400
+Message-Id: <20210909115507.147917-103-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210909115507.147917-1-sashal@kernel.org>
 References: <20210909115507.147917-1-sashal@kernel.org>
@@ -46,65 +44,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Eran Ben Elisha <eranbe@nvidia.com>
+From: Yevgeny Kliteynik <kliteyn@nvidia.com>
 
-[ Upstream commit 979aa51967add26b37f9d77e01729d44a2da8e5f ]
+[ Upstream commit ec449ed8230cd30769de3cb70ee0fce293047372 ]
 
-Fix the following smatch warning:
-wait_func_handle_exec_timeout() warn: should '1 << ent->idx' be a 64 bit type?
+Under high stress, SW steering might get stuck on polling for completion
+that never comes.
+For such cases QP needs to have protocol retransmission mechanism enabled.
+Currently the retransmission timeout is defined as 0 (unlimited). Fix this
+by defining a real timeout.
 
-Use 1ULL, to have a 64 bit type variable.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Eran Ben Elisha <eranbe@nvidia.com>
-Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+Reviewed-by: Alex Vesker <valex@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/cmd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-index 76547d35cd0e..bf091a6c0cd2 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
-@@ -865,7 +865,7 @@ static void cb_timeout_handler(struct work_struct *work)
- 	ent->ret = -ETIMEDOUT;
- 	mlx5_core_warn(dev, "cmd[%d]: %s(0x%x) Async, timeout. Will cause a leak of a command resource\n",
- 		       ent->idx, mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
--	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+index f012aac83b10..401564b94eb1 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_send.c
+@@ -603,6 +603,7 @@ static int dr_cmd_modify_qp_rtr2rts(struct mlx5_core_dev *mdev,
+ 	MLX5_SET(qpc, qpc, log_ack_req_freq, 0);
+ 	MLX5_SET(qpc, qpc, retry_count, attr->retry_cnt);
+ 	MLX5_SET(qpc, qpc, rnr_retry, attr->rnr_retry);
++	MLX5_SET(qpc, qpc, primary_address_path.ack_timeout, 0x8); /* ~1ms */
  
- out:
- 	cmd_ent_put(ent); /* for the cmd_ent_get() took on schedule delayed work */
-@@ -977,7 +977,7 @@ static void cmd_work_handler(struct work_struct *work)
- 		MLX5_SET(mbox_out, ent->out, status, status);
- 		MLX5_SET(mbox_out, ent->out, syndrome, drv_synd);
- 
--		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
- 		return;
- 	}
- 
-@@ -991,7 +991,7 @@ static void cmd_work_handler(struct work_struct *work)
- 		poll_timeout(ent);
- 		/* make sure we read the descriptor after ownership is SW */
- 		rmb();
--		mlx5_cmd_comp_handler(dev, 1UL << ent->idx, (ent->ret == -ETIMEDOUT));
-+		mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, (ent->ret == -ETIMEDOUT));
- 	}
- }
- 
-@@ -1051,7 +1051,7 @@ static void wait_func_handle_exec_timeout(struct mlx5_core_dev *dev,
- 		       mlx5_command_str(msg_to_opcode(ent->in)), msg_to_opcode(ent->in));
- 
- 	ent->ret = -ETIMEDOUT;
--	mlx5_cmd_comp_handler(dev, 1UL << ent->idx, true);
-+	mlx5_cmd_comp_handler(dev, 1ULL << ent->idx, true);
- }
- 
- static int wait_func(struct mlx5_core_dev *dev, struct mlx5_cmd_work_ent *ent)
+ 	return mlx5_core_qp_modify(mdev, MLX5_CMD_OP_RTR2RTS_QP, 0, qpc,
+ 				   &dr_qp->mqp);
 -- 
 2.30.2
 
