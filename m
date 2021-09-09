@@ -2,93 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DDB405E34
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 22:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29660405E3F
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 22:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345646AbhIIUri (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Sep 2021 16:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
+        id S233991AbhIIU7x (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 16:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345692AbhIIUrg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Sep 2021 16:47:36 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E277C061762
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Sep 2021 13:46:25 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id y128so4281207oie.4
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Sep 2021 13:46:25 -0700 (PDT)
+        with ESMTP id S233573AbhIIU7x (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Sep 2021 16:59:53 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644C1C061574
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Sep 2021 13:58:43 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id c42-20020a05683034aa00b0051f4b99c40cso4315035otu.0
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Sep 2021 13:58:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cPoJTfPdHp/LeXcgMLIb9FBaUbIGu0QL53pSwedsxQU=;
-        b=oNWFCla1zLtQosn75qeObcldMeg3xP3x2SYDmQD63sGbb6sYdYt/Hs/ijV/Sd2L/rW
-         eaPOQ66LEc/ZXQRvFm3VoCv0uQkyc7kjd9UzxDAcA+oHnd9xdX2bw7WS1X10Q14pocat
-         vQrLB850jiVHEPt/EHongwZjwWe4j2CBND49HuNp73gVLS2T0VZ4t2ArWan19cyrbAoq
-         XUv/nrMEibvffMc35i2Fkg0j6Z0mJiMtKQpdraS0tOAFWhrs9FmEm2iZzIIgcqfBBrho
-         wD0xVFShVuQG8lRfORKlcWNtwhkANy3X3LE9BT7/jaZ9JmYMIs2rvPfph/0F30GkdkpE
-         8FxA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=Ls9Mi1s9abK5D2OhiJT8bub+9zcZXx/7nvgAl3/QSEo=;
+        b=dgvPZDb1keoHHCj5VocD2aNQEYUcmfO07/BETVm/cxCpx2lKj6SCD/F6Qj+5BmCuQv
+         nneuFfMY3sCv6ebZvtqBqJ+bK31qoP1lXwM/h+RXODEn53bLp7Tr7JZjoxCj7PzbEdB5
+         +X8pFH/7zLBVJftPx9ORyDOJEkZZ0Id5jq82CPrZpk9kIAP7seVQIu8cAM32/7naM+1D
+         rtLXCou13CXuVtkkAe5GFtjVnV7u4My+r7WlFFPP/YofSGRb88XRVjIIy/iBm3+gUgfp
+         gTRRG7+yyI15tjyLHYIJylEZUQu9Lm+KqaXGCX+hUozdAcFCg7Xp6RDimtVxObVGixbw
+         ++NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cPoJTfPdHp/LeXcgMLIb9FBaUbIGu0QL53pSwedsxQU=;
-        b=gTErsH4N2egEmrUPvZUBswHebcRwZFNLUqJTjcyLONvYc/2Q9XA2T+mhxOOczSsaBx
-         mh2vAV4VhA31Yx/pqkAR49SOk16D/XsA8hUi1Zm11T3kBWwg+g64cXqnp2ppZrQ6v38C
-         /XHLwVmth/pI5PJmuwbXx3trSX+qwUN+TMngfnFonmfjikeIN2NRdQm5B8StWuSWCo3R
-         W98HE2xCMwtzNPGFec8gffbIaa3S5/WwENG7iNrBd6Oonkqf0MeuMCMx8m+5aJy2Gmp2
-         0n0Kv6zk6ES/JBArs/CWGYipQnxBKdPMNqIUmCMW+oOKDXPe/HMod4YDMidXKv8dCKyB
-         Eb9Q==
-X-Gm-Message-State: AOAM533bxo5yCHBYqdrs8V/VBq3VGuPGVyl4DhYRB0JXgkS02Fhjzs6a
-        LV3MW04UnD8dAuE2C7Ztl9o=
-X-Google-Smtp-Source: ABdhPJzWtEjUBDWkhJTY+RON5dIwbdHr1Rvde3UUTfiEErJyro0Gtk714KYhqkyGiAm/MQqKSxo1BQ==
-X-Received: by 2002:a05:6808:657:: with SMTP id z23mr1511574oih.113.1631220384783;
-        Thu, 09 Sep 2021 13:46:24 -0700 (PDT)
-Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-a0a5-b98f-837d-887f.res6.spectrum.com. [2603:8081:140c:1a00:a0a5:b98f:837d:887f])
-        by smtp.gmail.com with ESMTPSA id i9sm719892otp.18.2021.09.09.13.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Sep 2021 13:46:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Ls9Mi1s9abK5D2OhiJT8bub+9zcZXx/7nvgAl3/QSEo=;
+        b=VDlH1gPSnlFqUnVnoWEGw/kUtnvK3kM36aOFgS8L5INHqznu5OTkkZj/jZ8v8g1IzP
+         pLHcHQDA8fUH+UT2Lzcu/csGGyulDOXXo9afg2ZV68mVP3mFXUBxBoNQLBoGkzj2GtKW
+         SPKLKjKDGT3TA1FaPfnjvORypBwOL1KU0vGxq/pO68dSymkDIkyMTjjrgB9CRW+WNeAO
+         RGQqza50dppwPT5MxwE0AzCOOscohuxIrvJVqCgGoDjNPYoaTMPN03PU32gcrvOI8rvt
+         LvY7LOlilke/RLytnwJMt1S5e3LydT869E0288OTVKrKfXG8hSKO2H/ymjioRQgvFhnH
+         RSjw==
+X-Gm-Message-State: AOAM531ClFWVmJTSso7/P61/KxpsVfBKwU9RF51OdCXEAKuWqDXTpJYW
+        QqkCqWZPqfls8exA//ntVyKFxxSNaukgRA==
+X-Google-Smtp-Source: ABdhPJz9WUfZ/M3iUkX2wZzltquUQC4JUOU1ZvaFBJOox5+56uQmeGBlthVghGSq9dmjftw+VYBbNA==
+X-Received: by 2002:a05:6830:1105:: with SMTP id w5mr1599262otq.85.1631221122698;
+        Thu, 09 Sep 2021 13:58:42 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:5ca5:4fba:424d:ae92? (2603-8081-140c-1a00-5ca5-4fba-424d-ae92.res6.spectrum.com. [2603:8081:140c:1a00:5ca5:4fba:424d:ae92])
+        by smtp.gmail.com with ESMTPSA id c75sm654812oob.47.2021.09.09.13.58.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Sep 2021 13:58:42 -0700 (PDT)
+Subject: Re: [PATCH for-next 0/5] RDMA/rxe: Various bug fixes.
+To:     Bart Van Assche <bvanassche@acm.org>, jgg@nvidia.com,
+        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20210908052928.17375-1-rpearsonhpe@gmail.com>
+ <c6e80fc3-6417-a770-d90a-46eb9955f82f@acm.org>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
-        mie@igel.co.jp, bvanassche@acm.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-rc v3 6/6] RDMA/rxe: Only allow invalidate for appropriate MRs
-Date:   Thu,  9 Sep 2021 15:44:57 -0500
-Message-Id: <20210909204456.7476-7-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210909204456.7476-1-rpearsonhpe@gmail.com>
-References: <20210909204456.7476-1-rpearsonhpe@gmail.com>
+Message-ID: <08eb3b4a-5302-2765-ae6c-979c22fcb0e4@gmail.com>
+Date:   Thu, 9 Sep 2021 15:58:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6e80fc3-6417-a770-d90a-46eb9955f82f@acm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Local and remote invalidate operations are not allowed by IBA for
-MRs created by (re)register memory verbs. This patch checks the
-MR type in rxe_invalidate_mr().
+On 9/8/21 10:52 PM, Bart Van Assche wrote:
+> On 9/7/21 22:29, Bob Pearson wrote:
+>> The first patch is a repeat of an earlier patch after rebasing to
+>> for-next version 5.14.0-rc6+.
+> 
+> Hi Bob,
+> 
+> What is for-next version 5.14.0-rc6+? I tried to apply this series on v5.14, v5.14-rc6 and Jason's for-rc branch but 'git am' refused to apply this series on all these kernel versions ...
+> 
+> Thanks,
+> 
+> Bart.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_mr.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Bart,
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 8d658d42abed..53271df10e47 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -605,6 +605,12 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
- 		goto err_drop_ref;
- 	}
- 
-+	if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
-+		pr_warn("%s: mr->type (%d) is wrong type\n", __func__, mr->type);
-+		ret = -EINVAL;
-+		goto err_drop_ref;
-+	}
-+
- 	mr->state = RXE_MR_STATE_FREE;
- 	ret = 0;
- 
--- 
-2.30.2
+I think I fixed the git am issue and resubmitted to the correct queue. You were on copy. Please
+try to see if this gets you to joy for blktest. The one case you mentioned srp/002 is working
+OK for me now.
 
+Bob
