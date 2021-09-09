@@ -2,222 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D72404316
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 03:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDD084043EE
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Sep 2021 05:26:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbhIIBqj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Sep 2021 21:46:39 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46987 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230457AbhIIBqi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 8 Sep 2021 21:46:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10101"; a="200847885"
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="200847885"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Sep 2021 18:45:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,279,1624345200"; 
-   d="scan'208";a="525167668"
-Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Sep 2021 18:45:25 -0700
-Received: from kbuild by 730d49888f40 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mO981-0002qj-0d; Thu, 09 Sep 2021 01:45:25 +0000
-Date:   Thu, 09 Sep 2021 09:45:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 2169b908894df2ce83e7eb4a399d3224b2635126
-Message-ID: <61396724.77r6ku0zo3oqsF3T%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1348438AbhIID1V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Sep 2021 23:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347312AbhIID0m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Sep 2021 23:26:42 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF17C061575
+        for <linux-rdma@vger.kernel.org>; Wed,  8 Sep 2021 20:25:32 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so726479otq.7
+        for <linux-rdma@vger.kernel.org>; Wed, 08 Sep 2021 20:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:references:to:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=UiwvpggGm8gyLIB/pShqLXDwNusX7+/f6iPoD9llerg=;
+        b=oKvbRTSO/z8/AzfnKmtfdRifiMN21RapS5DROAG49y3Xu14u9viaLy4+vCsoStCbXG
+         TB8uhgoBKIjyt92UVJjvNWpx3nsjBv7cB5W7xbbYQTXDBvF2p82RzeNZo8qa8ZtEymHf
+         kSqmt1OE5NwzNfHMjrJ9kmc63jizos6scwdJzz8343nm7wVpo465kIxrpzZgidv1acJb
+         alLO1f/mOqLICx8lzmkGqTVyKlV4UC6/Tn2G2YREzWoYzMevQcz1DaEc7uS9gpWiGkv7
+         8yVk09PI6oNQaD6OANEjdSJwP3eaAKeSJ/CZk08bqvar+Yux8u1E7QdXl3pGSJDXjdo1
+         WdQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:references:to:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UiwvpggGm8gyLIB/pShqLXDwNusX7+/f6iPoD9llerg=;
+        b=Mezz96IwM4nflqAYfLRTwPw3pTZPHlJOjJljR7lqmQv3KDy1O+zZ/6UhA3eDPH61+3
+         ahtRCW9YHm1e35Qxs7y6khZAkbR9EC3vB1ck3+8NREYY+D/rVUBhsQHiI1HsVLrYZn1n
+         J82bSSqukEYxPJo5D3iOSsSA7K33ZXXrms3mk1LNddV2DVq3w9jxe6Zhh/2igvp8tqLt
+         nxl/obHyXPMmlidmniRdc9n/c31U10Wyn7fFKNPXoSjZLDR6eUKqNYYuk0e57lIggBnB
+         GeoYH1dxqR8v1w1JJfq+vs7ZE8Xm1z3V/k1oMQ50yw25Epsa2u5wZ1mkBXLsxEJstNIJ
+         XShA==
+X-Gm-Message-State: AOAM530nqf1swzr4d+rDG/4YZzegr6GLZGN9ow8yKm5yoi4BujKNzBEU
+        tNbd+cchsktC3oNcb8OlbSL94tzbaGhVdQ==
+X-Google-Smtp-Source: ABdhPJz6mQ1BdTs+ds8lwxm4vngb3T5+YnNZ36Jw2OgueI0zIQBrkri8/m0HqK3kmOhNbzd5MCqADg==
+X-Received: by 2002:a05:6830:815:: with SMTP id r21mr621880ots.219.1631157931552;
+        Wed, 08 Sep 2021 20:25:31 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:7465:96d8:e8db:b915? (2603-8081-140c-1a00-7465-96d8-e8db-b915.res6.spectrum.com. [2603:8081:140c:1a00:7465:96d8:e8db:b915])
+        by smtp.gmail.com with ESMTPSA id j8sm114185ooc.21.2021.09.08.20.25.31
+        for <linux-rdma@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 Sep 2021 20:25:31 -0700 (PDT)
+Subject: Fwd: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
+References: <86086421-225c-0bde-00be-f49a028ed06d@gmail.com>
+To:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+X-Forwarded-Message-Id: <86086421-225c-0bde-00be-f49a028ed06d@gmail.com>
+Message-ID: <4284422c-0fd3-a4b7-4c18-cdb7aa177b2f@gmail.com>
+Date:   Wed, 8 Sep 2021 22:25:30 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <86086421-225c-0bde-00be-f49a028ed06d@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 2169b908894df2ce83e7eb4a399d3224b2635126  IB/hfi1: make hist static
 
-elapsed time: 762m
 
-configs tested: 163
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-------- Forwarded Message --------
+Subject: Re: [RFC PATCH 0/3] RDMA/rxe: Add dma-buf support
+Date: Wed, 8 Sep 2021 22:23:53 -0500
+From: Bob Pearson <rpearsonhpe@gmail.com>
+To: Shunsuke Mie <mie@igel.co.jp>
+CC: Jason Gunthorpe <jgg@nvidia.com>
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20210908
-nds32                            alldefconfig
-mips                      bmips_stb_defconfig
-powerpc                     rainier_defconfig
-powerpc                     tqm8548_defconfig
-arm                       multi_v4t_defconfig
-powerpc                      obs600_defconfig
-powerpc                      walnut_defconfig
-powerpc                 mpc8313_rdb_defconfig
-powerpc                       ppc64_defconfig
-sh                        edosk7705_defconfig
-h8300                    h8300h-sim_defconfig
-sh                           se7750_defconfig
-sh                           se7722_defconfig
-mips                     loongson1c_defconfig
-powerpc                       holly_defconfig
-m68k                                defconfig
-arm                         nhk8815_defconfig
-sh                           se7751_defconfig
-mips                         bigsur_defconfig
-m68k                          amiga_defconfig
-arm                            pleb_defconfig
-m68k                            mac_defconfig
-s390                          debug_defconfig
-powerpc                    socrates_defconfig
-sparc                               defconfig
-xtensa                  cadence_csp_defconfig
-arm                           sama5_defconfig
-powerpc                     taishan_defconfig
-m68k                        m5272c3_defconfig
-microblaze                      mmu_defconfig
-arm                       aspeed_g4_defconfig
-sh                          rsk7264_defconfig
-arm                        mvebu_v5_defconfig
-m68k                        mvme147_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                   lite5200b_defconfig
-arm                             rpc_defconfig
-arm                     am200epdkit_defconfig
-powerpc                     skiroot_defconfig
-m68k                       m5208evb_defconfig
-m68k                        m5407c3_defconfig
-openrisc                            defconfig
-arm                       versatile_defconfig
-arm                        cerfcube_defconfig
-arm                          ixp4xx_defconfig
-powerpc                     pq2fads_defconfig
-mips                           rs90_defconfig
-mips                       bmips_be_defconfig
-arm                        oxnas_v6_defconfig
-arm                         socfpga_defconfig
-mips                           xway_defconfig
-mips                          rb532_defconfig
-ia64                             allmodconfig
-arm                         at91_dt_defconfig
-powerpc                      ppc6xx_defconfig
-arm                        multi_v5_defconfig
-powerpc                     kilauea_defconfig
-mips                        workpad_defconfig
-powerpc                        warp_defconfig
-arm                         mv78xx0_defconfig
-sh                           se7343_defconfig
-sh                      rts7751r2d1_defconfig
-arc                      axs103_smp_defconfig
-sh                          sdk7780_defconfig
-powerpc                        fsp2_defconfig
-arm                       netwinder_defconfig
-arm                        keystone_defconfig
-mips                     cu1830-neo_defconfig
-mips                           ip27_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                        sh7785lcr_defconfig
-sh                          landisk_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                 linkstation_defconfig
-sh                               j2_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                            qcom_defconfig
-sh                        apsh4ad0a_defconfig
-arm                        spear3xx_defconfig
-x86_64               randconfig-c001-20210908
-arm                  randconfig-c002-20210908
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-parisc                              defconfig
-s390                                defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                             allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210908
-x86_64               randconfig-a006-20210908
-x86_64               randconfig-a003-20210908
-x86_64               randconfig-a001-20210908
-x86_64               randconfig-a005-20210908
-x86_64               randconfig-a002-20210908
-i386                 randconfig-a005-20210908
-i386                 randconfig-a004-20210908
-i386                 randconfig-a006-20210908
-i386                 randconfig-a002-20210908
-i386                 randconfig-a001-20210908
-i386                 randconfig-a003-20210908
-arc                  randconfig-r043-20210908
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+On 9/8/21 9:17 PM, Shunsuke Mie wrote:
+> Hi Bob,
+> 
+> I agree with you. The fix has to be merged firstly. I'd like to know
+> the patches.
+> Is the patch for that bug fix at the following link?
+> https://lore.kernel.org/linux-rdma/20210908052928.17375-1-rpearsonhpe@gmail.com/
+> 
+> Thanks,
+> 
+> 2021年9月9日(木) 7:52 Bob Pearson <rpearsonhpe@gmail.com>:
+>>
+>> On 9/8/21 1:16 AM, Shunsuke Mie wrote:
+>>> This patch series add a support for rxe driver.
+>>>
+>>> A dma-buf based memory registering has beed introduced to use the memory
+>>> region that lack of associated page structures (e.g. device memory and CMA
+>>> managed memory) [1]. However, to use the dma-buf based memory, each rdma
+>>> device drivers require add some implementation. The rxe driver has not
+>>> support yet.
+>>>
+>>> [1] https://www.spinics.net/lists/linux-rdma/msg98592.html
+>>>
+>>> To enable to use the memories in rxe rdma device, add some changes and
+>>> implementation in this patch series.
+>>>
+>>> This series consists of three patches. The first patch changes the IB core
+>>> to support for rdma drivers that have not real dma device. The second
+>>> patch extracts a memory mapping process of rxe as a common function to use
+>>> a dma-buf support. The third patch adds the dma-buf support to rxe driver.
+>>>
+>>> Related user space RDMA library changes are provided as a separate
+>>> patch.
+>>>
+>>> Shunsuke Mie (3):
+>>>   RDMA/umem: Change for rdma devices has not dma device
+>>>   RDMA/rxe: Extract a mapping process into a function
+>>>   RDMA/rxe: Support dma-buf as memory region
+>>>
+>>>  drivers/infiniband/core/umem_dmabuf.c |   2 +-
+>>>  drivers/infiniband/sw/rxe/rxe_loc.h   |   3 +
+>>>  drivers/infiniband/sw/rxe/rxe_mr.c    | 186 +++++++++++++++++++++-----
+>>>  drivers/infiniband/sw/rxe/rxe_verbs.c |  36 +++++
+>>>  4 files changed, 193 insertions(+), 34 deletions(-)
+>>>
+>>
+>> Mie,
+>>
+>> This looks very interesting. But, I am afraid we are going to collide. I just submitted some patches
+>> to fix blktest which will very likely overlap with yours. Please take a look. It should be easy to
+>> merge them. I am anxious to clear the blktest bug ASAP though.
+>>
+>> Bob Pearson
 
-clang tested configs:
-s390                 randconfig-c005-20210908
-powerpc              randconfig-c003-20210908
-mips                 randconfig-c004-20210908
-i386                 randconfig-c001-20210908
-x86_64               randconfig-a016-20210908
-x86_64               randconfig-a011-20210908
-x86_64               randconfig-a012-20210908
-x86_64               randconfig-a015-20210908
-x86_64               randconfig-a014-20210908
-x86_64               randconfig-a013-20210908
-i386                 randconfig-a012-20210908
-i386                 randconfig-a015-20210908
-i386                 randconfig-a011-20210908
-i386                 randconfig-a013-20210908
-i386                 randconfig-a014-20210908
-i386                 randconfig-a016-20210908
-riscv                randconfig-r042-20210908
-hexagon              randconfig-r045-20210908
-s390                 randconfig-r044-20210908
-hexagon              randconfig-r041-20210908
+Mie,
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I just forwarded to you the emails in the patch series. 1/5 and 2/5 are mostly elsewhere. But 2-5/5 are directly changing rxe_mr.c and especially 4/5 touches the SG to page list code. Per a recent exchange
+with Jason we needed to keep two copies of the buffer list so that the kernel space API could be
+used as intended and allow overlap of invalidating one MR while a new one is getting built and then
+registered. In case, you can look at all the emails at https://lore.kernel.org/linux-rdma/.
+
+Bob
