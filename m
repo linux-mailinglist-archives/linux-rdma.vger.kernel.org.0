@@ -2,678 +2,169 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE35A406516
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 03:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DEAD40655F
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 03:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231328AbhIJBYC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Sep 2021 21:24:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51416 "EHLO
+        id S229488AbhIJBrl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 21:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238984AbhIJBXu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Sep 2021 21:23:50 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2941C0613E8
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Sep 2021 18:19:39 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id g66-20020a9d12c8000000b0051aeba607f1so119494otg.11
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Sep 2021 18:19:39 -0700 (PDT)
+        with ESMTP id S229445AbhIJBrk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Sep 2021 21:47:40 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BF1C061574
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Sep 2021 18:46:30 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id t19so742550lfe.13
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Sep 2021 18:46:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0wGpg4fM1zZp86jqoPZVXF8MvZSkLcwIpcqPZopPNKg=;
-        b=bC/Z7xwGX1OsWglig35wGoK+/BKUhX1rKjWRfjrw5ZW8ClvYq7uKMV3J7XnLx/dVBz
-         24m64w24v6h8aVHtB8CLeXwfDVrs3eWg4PXg393ScpoHq1cV/KvKVs+y5upd75KXAB8N
-         x17Rm3DiJ1QH/RlR4XCuYZrCmbBUd7Q+kFf/nQH+q69J6pCgbMlo4c1CIosvf1LIKn81
-         +bGkmzz8S5Ei5xzSCsuRHep1qwOVwlZ1QhEZdq7By78IdU/Kbvy4FC1OLLW4vpmvTA8W
-         ep2FFQHrIlWzqhWXVzzGBhXb0xW3ugCyKHiQvtC4Vqka/nbkwQ4inKgsYajb0Ka2zH/9
-         +4mw==
+         :cc:content-transfer-encoding;
+        bh=oI/LTBnGx8tsMH92BXl9TylxJCNSHKhi0QiJerVLXGo=;
+        b=sXsCND7EDImjW5ay/AxrcG6JlKNdyzLJuZwVRKq9BSVweWds9UvhXX2cxxA6kHdqvp
+         rvIrL75fRp7S65LlOLpYuAV3A+4XK0cGkKfnDK3fdmK7+9LrYBsMU5/WG3qQlipl/JHD
+         EBmpCHISNVj+keaUstyu/nJcrz06FdMeKmL1VYQxCwUigGK1OuSfvmCxtD+MtkKkYEhF
+         I/7xIaxoY7rLUXecG3amxOoxaLeir7kME+KiQKSW5ruG9d3R1XJRc3R9lOnioUtoxeQE
+         fDGHrjY/GfPwnsGC1p9iUryioErkLFiyM5GzFmimU+wPYpMwg0S8FafaqMETXrfahT9g
+         2gpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0wGpg4fM1zZp86jqoPZVXF8MvZSkLcwIpcqPZopPNKg=;
-        b=Fu37HkX/HHzeufJy9lUFtlNQ/6qXuE5jXpI94PVqXsv9zH9CUcwcblz3Fz9COHTP1A
-         MxK8kNUFLdfSOx519kDY0CawwuW1nf2qD9K0Al1Y2p1u3nrGj7ALksI2HhU8vAke1nAM
-         H5QQdg7uLCnEkjyuXTYUGqJlCe8S8rnjmlgL+mILPxpA/JnVLyz58pkDUsDpe1E+YC35
-         /82IhDIqHZIRboWTPzBdvD+3xCASoUkddM5G2KD1Rjkj+YWG0bzTngtIQZTgitc37si7
-         3uaLrQgjuqPUpDgb0VqGkG8WsdhbErGLgHfPJ+xO8BlcMLVzgi8o67ctFm4ba0TvRZwM
-         7+GQ==
-X-Gm-Message-State: AOAM530Z0Y0bBc6HLMpjonSiRcdopYciiaK+d2UMdKKK+in6f3NKsxJR
-        RzDrX+sQwHao8dnmnaU41Zx4MoSLkXgSvcseuIX6TsOty3o=
-X-Google-Smtp-Source: ABdhPJzQSrxgbrP8P1FejtEBLGt1eDKiiIlHFSF0M+eZXco6cD3bKh5WZvS6FZmyRoTJXjNUp6lMPfkNiGIuQSc3HGY=
-X-Received: by 2002:a05:6830:1df6:: with SMTP id b22mr2420934otj.335.1631236778885;
- Thu, 09 Sep 2021 18:19:38 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oI/LTBnGx8tsMH92BXl9TylxJCNSHKhi0QiJerVLXGo=;
+        b=gZxGQff1exYC8kTypx2yi+3Z34n1ngPXESn6+Mk2RPopSbzfTU4Q77kx+S5Qq2lFzd
+         xEbUB5A4DUTbXk778HJmbo9JDBDK7QT7WP1R5/ZWTN1cj595f7roNbgIRsf9QLMvziIv
+         ZWn312HAZkRwfwFO5rYgXUjZ2BM4H2BKW9Qa2l+5NN9DUd9+/9leUwavN5sVlBoIGUP9
+         8TDduE6sEObVhazF2ffz/yvUueJaNtVO9z6yMrn4gzPkY1UvTp7ql/YwzrSrkmenWBXn
+         ZHQYf+IcDFp/Wvn5odhnxTKsobpq3DQxugozj1hiobKko1IVw0xiFkisDLgOhvvz23ug
+         iXrw==
+X-Gm-Message-State: AOAM532Ycq8BlVZAE1NYSApAL9mN9hKSS1jrQTf3HeDIGNH3HxuRTVL5
+        48ah1FCqyJ48cedxwmLVDyLqZMH0OvBe3Tii6mr0cA==
+X-Google-Smtp-Source: ABdhPJzfWNILKvqGRz6A+aK+XomjFnWM6XD9pcwhNUW5BHAhGL426BL0qOlVh0kOMVK5La3a+IkBBe9QSXZ8Gm+lKh8=
+X-Received: by 2002:a05:6512:139c:: with SMTP id p28mr1883625lfa.523.1631238386987;
+ Thu, 09 Sep 2021 18:46:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210909204456.7476-1-rpearsonhpe@gmail.com> <20210909204456.7476-2-rpearsonhpe@gmail.com>
-In-Reply-To: <20210909204456.7476-2-rpearsonhpe@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Fri, 10 Sep 2021 09:19:27 +0800
-Message-ID: <CAD=hENdMigPXzSsHX5jg=tNimZYVHVdKPfOCmn5WfTXA_Upy1w@mail.gmail.com>
-Subject: Re: [PATCH for-rc v3 1/6] RDMA/rxe: Add memory barriers to kernel queues
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        mie@igel.co.jp, Bart Van Assche <bvanassche@acm.org>
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+ <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+ <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+In-Reply-To: <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Fri, 10 Sep 2021 10:46:15 +0900
+Message-ID: <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 10, 2021 at 4:46 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> Earlier patches added memory barriers to protect user space to kernel
-> space communications. The user space queues were previously shown to
-> have occasional memory synchonization errors which were removed by
-> adding smp_load_acquire, smp_store_release barriers.
->
-> This patch extends that to the case where queues are used between kernel
-> space threads.
->
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_comp.c  | 10 +---
->  drivers/infiniband/sw/rxe/rxe_cq.c    | 25 ++-------
->  drivers/infiniband/sw/rxe/rxe_qp.c    | 10 ++--
->  drivers/infiniband/sw/rxe/rxe_queue.h | 73 ++++++++-------------------
->  drivers/infiniband/sw/rxe/rxe_req.c   | 21 ++------
->  drivers/infiniband/sw/rxe/rxe_resp.c  | 38 ++++----------
->  drivers/infiniband/sw/rxe/rxe_srq.c   |  2 +-
->  drivers/infiniband/sw/rxe/rxe_verbs.c | 53 ++++---------------
->  8 files changed, 55 insertions(+), 177 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index d2d802c776fd..ed4e3f29bd65 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -142,10 +142,7 @@ static inline enum comp_state get_wqe(struct rxe_qp *qp,
->         /* we come here whether or not we found a response packet to see if
->          * there are any posted WQEs
->          */
-> -       if (qp->is_user)
-> -               wqe = queue_head(qp->sq.queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               wqe = queue_head(qp->sq.queue, QUEUE_TYPE_KERNEL);
-
-This commit is very similar to the commit in
-https://lore.kernel.org/linux-rdma/20210902084640.679744-5-yangx.jy@fujitsu.com/T/
-
-Zhu Yanjun
-
-> +       wqe = queue_head(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
->         *wqe_p = wqe;
->
->         /* no WQE or requester has not started it yet */
-> @@ -432,10 +429,7 @@ static void do_complete(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
->         if (post)
->                 make_send_cqe(qp, wqe, &cqe);
->
-> -       if (qp->is_user)
-> -               advance_consumer(qp->sq.queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               advance_consumer(qp->sq.queue, QUEUE_TYPE_KERNEL);
-> +       advance_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
->
->         if (post)
->                 rxe_cq_post(qp->scq, &cqe, 0);
-> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-> index aef288f164fd..4e26c2ea4a59 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-> @@ -25,11 +25,7 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
->         }
->
->         if (cq) {
-> -               if (cq->is_user)
-> -                       count = queue_count(cq->queue, QUEUE_TYPE_TO_USER);
-> -               else
-> -                       count = queue_count(cq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +               count = queue_count(cq->queue, QUEUE_TYPE_TO_CLIENT);
->                 if (cqe < count) {
->                         pr_warn("cqe(%d) < current # elements in queue (%d)",
->                                 cqe, count);
-> @@ -65,7 +61,7 @@ int rxe_cq_from_init(struct rxe_dev *rxe, struct rxe_cq *cq, int cqe,
->         int err;
->         enum queue_type type;
->
-> -       type = uresp ? QUEUE_TYPE_TO_USER : QUEUE_TYPE_KERNEL;
-> +       type = QUEUE_TYPE_TO_CLIENT;
->         cq->queue = rxe_queue_init(rxe, &cqe,
->                         sizeof(struct rxe_cqe), type);
->         if (!cq->queue) {
-> @@ -117,11 +113,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->
->         spin_lock_irqsave(&cq->cq_lock, flags);
->
-> -       if (cq->is_user)
-> -               full = queue_full(cq->queue, QUEUE_TYPE_TO_USER);
-> -       else
-> -               full = queue_full(cq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +       full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
->         if (unlikely(full)) {
->                 spin_unlock_irqrestore(&cq->cq_lock, flags);
->                 if (cq->ibcq.event_handler) {
-> @@ -134,17 +126,10 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->                 return -EBUSY;
->         }
->
-> -       if (cq->is_user)
-> -               addr = producer_addr(cq->queue, QUEUE_TYPE_TO_USER);
-> -       else
-> -               addr = producer_addr(cq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +       addr = producer_addr(cq->queue, QUEUE_TYPE_TO_CLIENT);
->         memcpy(addr, cqe, sizeof(*cqe));
->
-> -       if (cq->is_user)
-> -               advance_producer(cq->queue, QUEUE_TYPE_TO_USER);
-> -       else
-> -               advance_producer(cq->queue, QUEUE_TYPE_KERNEL);
-> +       advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
->
->         spin_unlock_irqrestore(&cq->cq_lock, flags);
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 1ab6af7ddb25..2e923af642f8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -231,7 +231,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->         qp->sq.max_inline = init->cap.max_inline_data = wqe_size;
->         wqe_size += sizeof(struct rxe_send_wqe);
->
-> -       type = uresp ? QUEUE_TYPE_FROM_USER : QUEUE_TYPE_KERNEL;
-> +       type = QUEUE_TYPE_FROM_CLIENT;
->         qp->sq.queue = rxe_queue_init(rxe, &qp->sq.max_wr,
->                                 wqe_size, type);
->         if (!qp->sq.queue)
-> @@ -248,12 +248,8 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
->                 return err;
->         }
->
-> -       if (qp->is_user)
->                 qp->req.wqe_index = producer_index(qp->sq.queue,
-> -                                               QUEUE_TYPE_FROM_USER);
-> -       else
-> -               qp->req.wqe_index = producer_index(qp->sq.queue,
-> -                                               QUEUE_TYPE_KERNEL);
-> +                                       QUEUE_TYPE_FROM_CLIENT);
->
->         qp->req.state           = QP_STATE_RESET;
->         qp->req.opcode          = -1;
-> @@ -293,7 +289,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
->                 pr_debug("qp#%d max_wr = %d, max_sge = %d, wqe_size = %d\n",
->                          qp_num(qp), qp->rq.max_wr, qp->rq.max_sge, wqe_size);
->
-> -               type = uresp ? QUEUE_TYPE_FROM_USER : QUEUE_TYPE_KERNEL;
-> +               type = QUEUE_TYPE_FROM_CLIENT;
->                 qp->rq.queue = rxe_queue_init(rxe, &qp->rq.max_wr,
->                                         wqe_size, type);
->                 if (!qp->rq.queue)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.h b/drivers/infiniband/sw/rxe/rxe_queue.h
-> index 2702b0e55fc3..d465aa9342e1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_queue.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_queue.h
-> @@ -35,9 +35,8 @@
->
->  /* type of queue */
->  enum queue_type {
-> -       QUEUE_TYPE_KERNEL,
-> -       QUEUE_TYPE_TO_USER,
-> -       QUEUE_TYPE_FROM_USER,
-> +       QUEUE_TYPE_TO_CLIENT,
-> +       QUEUE_TYPE_FROM_CLIENT,
->  };
->
->  struct rxe_queue {
-> @@ -87,20 +86,16 @@ static inline int queue_empty(struct rxe_queue *q, enum queue_type type)
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
->                 cons = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               cons = q->buf->consumer_index;
-> -               break;
->         }
->
->         return ((prod - cons) & q->index_mask) == 0;
-> @@ -112,20 +107,16 @@ static inline int queue_full(struct rxe_queue *q, enum queue_type type)
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
->                 cons = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               cons = q->buf->consumer_index;
-> -               break;
->         }
->
->         return ((prod + 1 - cons) & q->index_mask) == 0;
-> @@ -138,20 +129,16 @@ static inline unsigned int queue_count(const struct rxe_queue *q,
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
->                 cons = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               cons = q->buf->consumer_index;
-> -               break;
->         }
->
->         return (prod - cons) & q->index_mask;
-> @@ -162,7 +149,7 @@ static inline void advance_producer(struct rxe_queue *q, enum queue_type type)
->         u32 prod;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 pr_warn_once("Normally kernel should not write user space index\n");
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
-> @@ -170,15 +157,11 @@ static inline void advance_producer(struct rxe_queue *q, enum queue_type type)
->                 /* same */
->                 smp_store_release(&q->buf->producer_index, prod);
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 q->index = (prod + 1) & q->index_mask;
->                 q->buf->producer_index = q->index;
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               q->buf->producer_index = (prod + 1) & q->index_mask;
-> -               break;
->         }
->  }
->
-> @@ -187,12 +170,12 @@ static inline void advance_consumer(struct rxe_queue *q, enum queue_type type)
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 cons = q->index;
->                 q->index = (cons + 1) & q->index_mask;
->                 q->buf->consumer_index = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 pr_warn_once("Normally kernel should not write user space index\n");
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
-> @@ -200,10 +183,6 @@ static inline void advance_consumer(struct rxe_queue *q, enum queue_type type)
->                 /* same */
->                 smp_store_release(&q->buf->consumer_index, cons);
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               cons = q->buf->consumer_index;
-> -               q->buf->consumer_index = (cons + 1) & q->index_mask;
-> -               break;
->         }
->  }
->
-> @@ -212,17 +191,14 @@ static inline void *producer_addr(struct rxe_queue *q, enum queue_type type)
->         u32 prod;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
->                 prod &= q->index_mask;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               break;
->         }
->
->         return q->buf->data + (prod << q->log2_elem_size);
-> @@ -233,17 +209,14 @@ static inline void *consumer_addr(struct rxe_queue *q, enum queue_type type)
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 cons = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
->                 cons &= q->index_mask;
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               cons = q->buf->consumer_index;
-> -               break;
->         }
->
->         return q->buf->data + (cons << q->log2_elem_size);
-> @@ -255,17 +228,14 @@ static inline unsigned int producer_index(struct rxe_queue *q,
->         u32 prod;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 /* protect user space index */
->                 prod = smp_load_acquire(&q->buf->producer_index);
->                 prod &= q->index_mask;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 prod = q->index;
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               prod = q->buf->producer_index;
-> -               break;
->         }
->
->         return prod;
-> @@ -277,17 +247,14 @@ static inline unsigned int consumer_index(struct rxe_queue *q,
->         u32 cons;
->
->         switch (type) {
-> -       case QUEUE_TYPE_FROM_USER:
-> +       case QUEUE_TYPE_FROM_CLIENT:
->                 cons = q->index;
->                 break;
-> -       case QUEUE_TYPE_TO_USER:
-> +       case QUEUE_TYPE_TO_CLIENT:
->                 /* protect user space index */
->                 cons = smp_load_acquire(&q->buf->consumer_index);
->                 cons &= q->index_mask;
->                 break;
-> -       case QUEUE_TYPE_KERNEL:
-> -               cons = q->buf->consumer_index;
-> -               break;
->         }
->
->         return cons;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 3894197a82f6..22c3edb28945 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -49,13 +49,8 @@ static void req_retry(struct rxe_qp *qp)
->         unsigned int cons;
->         unsigned int prod;
->
-> -       if (qp->is_user) {
-> -               cons = consumer_index(q, QUEUE_TYPE_FROM_USER);
-> -               prod = producer_index(q, QUEUE_TYPE_FROM_USER);
-> -       } else {
-> -               cons = consumer_index(q, QUEUE_TYPE_KERNEL);
-> -               prod = producer_index(q, QUEUE_TYPE_KERNEL);
-> -       }
-> +       cons = consumer_index(q, QUEUE_TYPE_FROM_CLIENT);
-> +       prod = producer_index(q, QUEUE_TYPE_FROM_CLIENT);
->
->         qp->req.wqe_index       = cons;
->         qp->req.psn             = qp->comp.psn;
-> @@ -121,15 +116,9 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
->         unsigned int cons;
->         unsigned int prod;
->
-> -       if (qp->is_user) {
-> -               wqe = queue_head(q, QUEUE_TYPE_FROM_USER);
-> -               cons = consumer_index(q, QUEUE_TYPE_FROM_USER);
-> -               prod = producer_index(q, QUEUE_TYPE_FROM_USER);
-> -       } else {
-> -               wqe = queue_head(q, QUEUE_TYPE_KERNEL);
-> -               cons = consumer_index(q, QUEUE_TYPE_KERNEL);
-> -               prod = producer_index(q, QUEUE_TYPE_KERNEL);
-> -       }
-> +       wqe = queue_head(q, QUEUE_TYPE_FROM_CLIENT);
-> +       cons = consumer_index(q, QUEUE_TYPE_FROM_CLIENT);
-> +       prod = producer_index(q, QUEUE_TYPE_FROM_CLIENT);
->
->         if (unlikely(qp->req.state == QP_STATE_DRAIN)) {
->                 /* check to see if we are drained;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 5501227ddc65..596be002d33d 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -303,10 +303,7 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
->
->         spin_lock_bh(&srq->rq.consumer_lock);
->
-> -       if (qp->is_user)
-> -               wqe = queue_head(q, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               wqe = queue_head(q, QUEUE_TYPE_KERNEL);
-> +       wqe = queue_head(q, QUEUE_TYPE_FROM_CLIENT);
->         if (!wqe) {
->                 spin_unlock_bh(&srq->rq.consumer_lock);
->                 return RESPST_ERR_RNR;
-> @@ -322,13 +319,8 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
->         memcpy(&qp->resp.srq_wqe, wqe, size);
->
->         qp->resp.wqe = &qp->resp.srq_wqe.wqe;
-> -       if (qp->is_user) {
-> -               advance_consumer(q, QUEUE_TYPE_FROM_USER);
-> -               count = queue_count(q, QUEUE_TYPE_FROM_USER);
-> -       } else {
-> -               advance_consumer(q, QUEUE_TYPE_KERNEL);
-> -               count = queue_count(q, QUEUE_TYPE_KERNEL);
-> -       }
-> +       advance_consumer(q, QUEUE_TYPE_FROM_CLIENT);
-> +       count = queue_count(q, QUEUE_TYPE_FROM_CLIENT);
->
->         if (srq->limit && srq->ibsrq.event_handler && (count < srq->limit)) {
->                 srq->limit = 0;
-> @@ -357,12 +349,8 @@ static enum resp_states check_resource(struct rxe_qp *qp,
->                         qp->resp.status = IB_WC_WR_FLUSH_ERR;
->                         return RESPST_COMPLETE;
->                 } else if (!srq) {
-> -                       if (qp->is_user)
-> -                               qp->resp.wqe = queue_head(qp->rq.queue,
-> -                                               QUEUE_TYPE_FROM_USER);
-> -                       else
-> -                               qp->resp.wqe = queue_head(qp->rq.queue,
-> -                                               QUEUE_TYPE_KERNEL);
-> +                       qp->resp.wqe = queue_head(qp->rq.queue,
-> +                                       QUEUE_TYPE_FROM_CLIENT);
->                         if (qp->resp.wqe) {
->                                 qp->resp.status = IB_WC_WR_FLUSH_ERR;
->                                 return RESPST_COMPLETE;
-> @@ -389,12 +377,8 @@ static enum resp_states check_resource(struct rxe_qp *qp,
->                 if (srq)
->                         return get_srq_wqe(qp);
->
-> -               if (qp->is_user)
-> -                       qp->resp.wqe = queue_head(qp->rq.queue,
-> -                                       QUEUE_TYPE_FROM_USER);
-> -               else
-> -                       qp->resp.wqe = queue_head(qp->rq.queue,
-> -                                       QUEUE_TYPE_KERNEL);
-> +               qp->resp.wqe = queue_head(qp->rq.queue,
-> +                               QUEUE_TYPE_FROM_CLIENT);
->                 return (qp->resp.wqe) ? RESPST_CHK_LENGTH : RESPST_ERR_RNR;
->         }
->
-> @@ -936,12 +920,8 @@ static enum resp_states do_complete(struct rxe_qp *qp,
->         }
->
->         /* have copy for srq and reference for !srq */
-> -       if (!qp->srq) {
-> -               if (qp->is_user)
-> -                       advance_consumer(qp->rq.queue, QUEUE_TYPE_FROM_USER);
-> -               else
-> -                       advance_consumer(qp->rq.queue, QUEUE_TYPE_KERNEL);
-> -       }
-> +       if (!qp->srq)
-> +               advance_consumer(qp->rq.queue, QUEUE_TYPE_FROM_CLIENT);
->
->         qp->resp.wqe = NULL;
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
-> index 610c98d24b5c..a9e7817e2732 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_srq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_srq.c
-> @@ -93,7 +93,7 @@ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
->         spin_lock_init(&srq->rq.producer_lock);
->         spin_lock_init(&srq->rq.consumer_lock);
->
-> -       type = uresp ? QUEUE_TYPE_FROM_USER : QUEUE_TYPE_KERNEL;
-> +       type = QUEUE_TYPE_FROM_CLIENT;
->         q = rxe_queue_init(rxe, &srq->rq.max_wr,
->                         srq_wqe_size, type);
->         if (!q) {
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 267b5a9c345d..dc70e3edeba6 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -218,11 +218,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->         int num_sge = ibwr->num_sge;
->         int full;
->
-> -       if (rq->is_user)
-> -               full = queue_full(rq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               full = queue_full(rq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +       full = queue_full(rq->queue, QUEUE_TYPE_FROM_CLIENT);
->         if (unlikely(full)) {
->                 err = -ENOMEM;
->                 goto err1;
-> @@ -237,11 +233,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->         for (i = 0; i < num_sge; i++)
->                 length += ibwr->sg_list[i].length;
->
-> -       if (rq->is_user)
-> -               recv_wqe = producer_addr(rq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               recv_wqe = producer_addr(rq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +       recv_wqe = producer_addr(rq->queue, QUEUE_TYPE_FROM_CLIENT);
->         recv_wqe->wr_id = ibwr->wr_id;
->         recv_wqe->num_sge = num_sge;
->
-> @@ -254,10 +246,7 @@ static int post_one_recv(struct rxe_rq *rq, const struct ib_recv_wr *ibwr)
->         recv_wqe->dma.cur_sge           = 0;
->         recv_wqe->dma.sge_offset        = 0;
->
-> -       if (rq->is_user)
-> -               advance_producer(rq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               advance_producer(rq->queue, QUEUE_TYPE_KERNEL);
-> +       advance_producer(rq->queue, QUEUE_TYPE_FROM_CLIENT);
->
->         return 0;
->
-> @@ -633,27 +622,17 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->
->         spin_lock_irqsave(&qp->sq.sq_lock, flags);
->
-> -       if (qp->is_user)
-> -               full = queue_full(sq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               full = queue_full(sq->queue, QUEUE_TYPE_KERNEL);
-> +       full = queue_full(sq->queue, QUEUE_TYPE_FROM_CLIENT);
->
->         if (unlikely(full)) {
->                 spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
->                 return -ENOMEM;
->         }
->
-> -       if (qp->is_user)
-> -               send_wqe = producer_addr(sq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               send_wqe = producer_addr(sq->queue, QUEUE_TYPE_KERNEL);
-> -
-> +       send_wqe = producer_addr(sq->queue, QUEUE_TYPE_FROM_CLIENT);
->         init_send_wqe(qp, ibwr, mask, length, send_wqe);
->
-> -       if (qp->is_user)
-> -               advance_producer(sq->queue, QUEUE_TYPE_FROM_USER);
-> -       else
-> -               advance_producer(sq->queue, QUEUE_TYPE_KERNEL);
-> +       advance_producer(sq->queue, QUEUE_TYPE_FROM_CLIENT);
->
->         spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
->
-> @@ -845,18 +824,12 @@ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
->
->         spin_lock_irqsave(&cq->cq_lock, flags);
->         for (i = 0; i < num_entries; i++) {
-> -               if (cq->is_user)
-> -                       cqe = queue_head(cq->queue, QUEUE_TYPE_TO_USER);
-> -               else
-> -                       cqe = queue_head(cq->queue, QUEUE_TYPE_KERNEL);
-> +               cqe = queue_head(cq->queue, QUEUE_TYPE_TO_CLIENT);
->                 if (!cqe)
->                         break;
->
->                 memcpy(wc++, &cqe->ibwc, sizeof(*wc));
-> -               if (cq->is_user)
-> -                       advance_consumer(cq->queue, QUEUE_TYPE_TO_USER);
-> -               else
-> -                       advance_consumer(cq->queue, QUEUE_TYPE_KERNEL);
-> +               advance_consumer(cq->queue, QUEUE_TYPE_TO_CLIENT);
->         }
->         spin_unlock_irqrestore(&cq->cq_lock, flags);
->
-> @@ -868,10 +841,7 @@ static int rxe_peek_cq(struct ib_cq *ibcq, int wc_cnt)
->         struct rxe_cq *cq = to_rcq(ibcq);
->         int count;
->
-> -       if (cq->is_user)
-> -               count = queue_count(cq->queue, QUEUE_TYPE_TO_USER);
-> -       else
-> -               count = queue_count(cq->queue, QUEUE_TYPE_KERNEL);
-> +       count = queue_count(cq->queue, QUEUE_TYPE_TO_CLIENT);
->
->         return (count > wc_cnt) ? wc_cnt : count;
->  }
-> @@ -887,10 +857,7 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
->         if (cq->notify != IB_CQ_NEXT_COMP)
->                 cq->notify = flags & IB_CQ_SOLICITED_MASK;
->
-> -       if (cq->is_user)
-> -               empty = queue_empty(cq->queue, QUEUE_TYPE_TO_USER);
-> -       else
-> -               empty = queue_empty(cq->queue, QUEUE_TYPE_KERNEL);
-> +       empty = queue_empty(cq->queue, QUEUE_TYPE_TO_CLIENT);
->
->         if ((flags & IB_CQ_REPORT_MISSED_EVENTS) && !empty)
->                 ret = 1;
+2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <daniel.ve=
+tter@ffwll.ch>:
+>
+> On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
+> > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.koenig=
+@amd.com> wrote:
+> > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
+> > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph Hel=
+lwig <hch@infradead.org>:
+> > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrote:
+> > > > >>>> Thank you for your comment.
+> > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wrote:
+> > > > >>>>>> To share memory space using dma-buf, a API of the dma-buf re=
+quires dma
+> > > > >>>>>> device, but devices such as rxe do not have a dma device. Fo=
+r those case,
+> > > > >>>>>> change to specify a device of struct ib instead of the dma d=
+evice.
+> > > > >>>>> So if dma-buf doesn't actually need a device to dma map why d=
+o we ever
+> > > > >>>>> pass the dma_device here?  Something does not add up.
+> > > > >>>> As described in the dma-buf api guide [1], the dma_device is u=
+sed by dma-buf
+> > > > >>>> exporter to know the device buffer constraints of importer.
+> > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3Dhttp=
+s%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian.koe=
+nig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11a82d=
+994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wL=
+jAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=3DAR=
+wQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> > > > >>> Which means for rxe you'd also have to pass the one for the und=
+erlying
+> > > > >>> net device.
+> > > > >> I thought of that way too. In that case, the memory region is co=
+nstrained by the
+> > > > >> net device, but rxe driver copies data using CPU. To avoid the c=
+onstraints, I
+> > > > >> decided to use the ib device.
+> > > > > Well, that is the whole problem.
+> > > > >
+> > > > > We can't mix the dmabuf stuff people are doing that doesn't fill =
+in
+> > > > > the CPU pages in the SGL with RXE - it is simply impossible as th=
+ings
+> > > > > currently are for RXE to acess this non-struct page memory.
+> > > >
+> > > > Yeah, agree that doesn't make much sense.
+> > > >
+> > > > When you want to access the data with the CPU then why do you want =
+to
+> > > > use DMA-buf in the first place?
+> > > >
+> > > > Please keep in mind that there is work ongoing to replace the sg ta=
+ble
+> > > > with an DMA address array and so make the underlying struct page
+> > > > inaccessible for importers.
+> > >
+> > > Also if you do have a dma-buf, you can just dma_buf_vmap() the buffer
+> > > for cpu access. Which intentionally does not require any device. No
+> > > idea why there's a dma_buf_attach involved. Now not all exporters
+> > > support this, but that's fixable, and you must call
+> > > dma_buf_begin/end_cpu_access for cache management if the allocation
+> > > isn't cpu coherent. But it's all there, no need to apply hacks of
+> > > allowing a wrong device or other fun things.
+> >
+> > Can rxe leave the vmap in place potentially forever?
+>
+> Yeah, it's like perma-pinning the buffer into system memory for
+> non-p2p dma-buf sharing. We just squint and pretend that can't be
+> abused too badly :-) On 32bit you'll run out of vmap space rather
+> quickly, but that's not something anyone cares about here either. We
+> have a bunch of more sw modesetting drivers in drm which use
+> dma_buf_vmap() like this, so it's all fine.
+> -Daniel
 > --
-> 2.30.2
->
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+
+Thanks for your comments.
+
+In the first place, the CMA region cannot be used for RDMA because the
+region has no struct page. In addition, some GPU drivers use CMA and share
+the region as dma-buf. As a result, RDMA cannot transfer for the region. To
+solve this problem, rxe dma-buf support is better I thought.
+
+I'll consider and redesign the rxe dma-buf support using the dma_buf_vmap()
+instead of the dma_buf_dynamic_attach().
+
+Regards,
+Shunsuke
