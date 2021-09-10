@@ -2,41 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F8B4062D6
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 02:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1330E406352
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 02:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242192AbhIJAq1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Sep 2021 20:46:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
+        id S232303AbhIJAq2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Sep 2021 20:46:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232320AbhIJASu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:18:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B89DE611AF;
-        Fri, 10 Sep 2021 00:17:19 +0000 (UTC)
+        id S232602AbhIJATB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:19:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C067611F2;
+        Fri, 10 Sep 2021 00:17:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233040;
-        bh=Xc80m41CTa4kaBCal91WGgV5kDYT3pZpVk6WxXUeaDQ=;
+        s=k20201202; t=1631233061;
+        bh=6oBto96Th+BkbM66z6AN4ZhGG1ClsajUHmrosdJqLl4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aBKHcvxnuXEQid7tZItr2WlZ0NIRvmlr5a5R5cRmeFwBmHfhUr9oImZlgge2dlXj2
-         TbC4s3hNQq+xxDzlDmSMC74v4C5QXiZ14F8SzFXqbZUp7CDcIaLjwHj241uxGHiCO2
-         LHM10GmY3h/VcrRPU7Wgjm9kh8Gb9RBTc4LJvVncynsikRYLJQSZ/tXdL2FsEry6T8
-         ObeYrpw/JDBSP+2f3G2nKJtK1HAbi9JdKbjHEwxboWEKnOfhIJFihPUttCiFyoegQJ
-         GINvM1YI8dL80DHtL31VtGQL7r2ZWg411Bj4uFql4TYbZe8JwthWtNQ3wxaNTWcRWn
-         XiHyxTjuBswuA==
+        b=jSmlItrQDeAjjLmT+zIWlI18AT24GVT+ZFEbHkG+2zBMrr/W6h/6u7k5rSwCsv6TH
+         1otf/I/0pz2S1mspuqRim11zkQqLxBZ4Nuxk79DS0TwtBMvYiC8Rld1a/IynlsvKt+
+         F4HwG/nVj9Y+hZT/+BfNM7iFUnHxSq8Da4UhfUVYtgczeDsJ2rOk24hY0EGs2fLZoB
+         g3UFz6y4gLlgOYYR2I4q2dNRNkHV7vXPUCqhpJvGRsQyrSbzlnkCIzMZkqLCHWjfqO
+         PQHiBlijecEd3BkLlUcQOMcy0+tpZgjDIC5jz4AJe2GaImG/IWIPYbUTzyTZb5+r/F
+         4RWTZ9zg+PoFg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gioh Kim <gi-oh.kim@ionos.com>, Jack Wang <jinpu.wang@ionos.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
+Cc:     =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 59/99] RDMA/rtrs-clt: Fix counting inflight IO
-Date:   Thu,  9 Sep 2021 20:15:18 -0400
-Message-Id: <20210910001558.173296-59-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 74/99] RDMA/core/sa_query: Retry SA queries
+Date:   Thu,  9 Sep 2021 20:15:33 -0400
+Message-Id: <20210910001558.173296-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210910001558.173296-1-sashal@kernel.org>
 References: <20210910001558.173296-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -44,107 +43,87 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@ionos.com>
+From: Håkon Bugge <haakon.bugge@oracle.com>
 
-[ Upstream commit 0d8f2cfa23f04ca01f6d4bba09933cb6310193aa ]
+[ Upstream commit 5f5a650999d5718af766fc70a120230b04235a6f ]
 
-There are mis-match at counting inflight IO after changing the multipath
-policy.
+A MAD packet is sent as an unreliable datagram (UD). SA requests are sent
+as MAD packets. As such, SA requests or responses may be silently dropped.
 
-For example, we started fio test with round-robin policy and then we
-changed the policy to min-inflight. IOs created under the RR policy is
-finished under the min-inflight policy and inflight counter only
-decreased. So the counter would be negative value.  And also we started
-fio test with min-inflight policy and changed the policy to the
-round-robin. IOs created under the min-inflight policy increased the
-inflight IO counter but the inflight IO counter was not decreased because
-the policy was the round-robin when IO was finished.
+IB Core's MAD layer has a timeout and retry mechanism, which amongst
+other, is used by RDMA CM. But it is not used by SA queries. The lack of
+retries of SA queries leads to long specified timeout, and error being
+returned in case of packet loss. The ULP or user-land process has to
+perform the retry.
 
-So it should count IOs only if the IO is created under the min-inflight
-policy. It should not care the policy when the IO is finished.
+Fix this by taking advantage of the MAD layer's retry mechanism.
 
-This patch adds a field mp_policy in struct rtrs_clt_io_req and stores the
-multipath policy when an object of rtrs_clt_io_req is created. Then
-rtrs-clt checks the mp_policy of only struct rtrs_clt_io_req instead of
-the struct rtrs_clt.
+First, a check against a zero timeout is added in rdma_resolve_route(). In
+send_mad(), we set the MAD layer timeout to one tenth of the specified
+timeout and the number of retries to 10. The special case when timeout is
+less than 10 is handled.
 
-Link: https://lore.kernel.org/r/20210806112112.124313-6-haris.iqbal@ionos.com
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+With this fix:
+
+ # ucmatose -c 1000 -S 1024 -C 1
+
+runs stable on an Infiniband fabric. Without this fix, we see an
+intermittent behavior and it errors out with:
+
+cmatose: event: RDMA_CM_EVENT_ROUTE_ERROR, error: -110
+
+(110 is ETIMEDOUT)
+
+Link: https://lore.kernel.org/r/1628784755-28316-1-git-send-email-haakon.bugge@oracle.com
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c | 2 +-
- drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 7 ++++---
- drivers/infiniband/ulp/rtrs/rtrs-clt.h       | 1 +
- 3 files changed, 6 insertions(+), 4 deletions(-)
+ drivers/infiniband/core/cma.c      | 3 +++
+ drivers/infiniband/core/sa_query.c | 9 ++++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-index 26bbe5d6dff5..553e173975fb 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-@@ -180,7 +180,7 @@ void rtrs_clt_update_all_stats(struct rtrs_clt_io_req *req, int dir)
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 5d3b8b8d163d..c40791baced5 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -3132,6 +3132,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
+ 	struct rdma_id_private *id_priv;
+ 	int ret;
  
- 	len = req->usr_len + req->data_len;
- 	rtrs_clt_update_rdma_stats(stats, len, dir);
--	if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
-+	if (req->mp_policy == MP_POLICY_MIN_INFLIGHT)
- 		atomic_inc(&stats->inflight);
- }
++	if (!timeout_ms)
++		return -EINVAL;
++
+ 	id_priv = container_of(id, struct rdma_id_private, id);
+ 	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
+ 		return -EINVAL;
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index b61576f702b8..5a560820f6e0 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1358,6 +1358,7 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
+ {
+ 	unsigned long flags;
+ 	int ret, id;
++	const int nmbr_sa_query_retries = 10;
  
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index f2c40e50f25e..3b3bc77d02cc 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -438,7 +438,7 @@ static void complete_rdma_req(struct rtrs_clt_io_req *req, int errno,
- 	}
- 	if (!refcount_dec_and_test(&req->ref))
- 		return;
--	if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
-+	if (req->mp_policy == MP_POLICY_MIN_INFLIGHT)
- 		atomic_dec(&sess->stats->inflight);
+ 	xa_lock_irqsave(&queries, flags);
+ 	ret = __xa_alloc(&queries, &id, query, xa_limit_32b, gfp_mask);
+@@ -1365,7 +1366,13 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
+ 	if (ret < 0)
+ 		return ret;
  
- 	req->in_use = false;
-@@ -963,6 +963,7 @@ static void rtrs_clt_init_req(struct rtrs_clt_io_req *req,
- 	req->need_inv_comp = false;
- 	req->inv_errno = 0;
- 	refcount_set(&req->ref, 1);
-+	req->mp_policy = sess->clt->mp_policy;
+-	query->mad_buf->timeout_ms  = timeout_ms;
++	query->mad_buf->timeout_ms  = timeout_ms / nmbr_sa_query_retries;
++	query->mad_buf->retries = nmbr_sa_query_retries;
++	if (!query->mad_buf->timeout_ms) {
++		/* Special case, very small timeout_ms */
++		query->mad_buf->timeout_ms = 1;
++		query->mad_buf->retries = timeout_ms;
++	}
+ 	query->mad_buf->context[0] = query;
+ 	query->id = id;
  
- 	iov_iter_kvec(&iter, READ, vec, 1, usr_len);
- 	len = _copy_from_iter(req->iu->buf, usr_len, &iter);
-@@ -1153,7 +1154,7 @@ static int rtrs_clt_write_req(struct rtrs_clt_io_req *req)
- 			    "Write request failed: error=%d path=%s [%s:%u]\n",
- 			    ret, kobject_name(&sess->kobj), sess->hca_name,
- 			    sess->hca_port);
--		if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
-+		if (req->mp_policy == MP_POLICY_MIN_INFLIGHT)
- 			atomic_dec(&sess->stats->inflight);
- 		if (req->sg_cnt)
- 			ib_dma_unmap_sg(sess->s.dev->ib_dev, req->sglist,
-@@ -1259,7 +1260,7 @@ static int rtrs_clt_read_req(struct rtrs_clt_io_req *req)
- 			    "Read request failed: error=%d path=%s [%s:%u]\n",
- 			    ret, kobject_name(&sess->kobj), sess->hca_name,
- 			    sess->hca_port);
--		if (sess->clt->mp_policy == MP_POLICY_MIN_INFLIGHT)
-+		if (req->mp_policy == MP_POLICY_MIN_INFLIGHT)
- 			atomic_dec(&sess->stats->inflight);
- 		req->need_inv = false;
- 		if (req->sg_cnt)
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.h b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-index e276a2dfcf7c..12eaea44c1f9 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.h
-@@ -102,6 +102,7 @@ struct rtrs_clt_io_req {
- 	unsigned int		usr_len;
- 	void			*priv;
- 	bool			in_use;
-+	enum rtrs_mp_policy     mp_policy;
- 	struct rtrs_clt_con	*con;
- 	struct rtrs_sg_desc	*desc;
- 	struct ib_sge		*sge;
 -- 
 2.30.2
 
