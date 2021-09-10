@@ -2,52 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 857C04072D7
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 23:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E74F407313
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 23:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhIJVSG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Sep 2021 17:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36722 "EHLO
+        id S234564AbhIJVs0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Sep 2021 17:48:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229669AbhIJVSF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Sep 2021 17:18:05 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EEBC061574
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Sep 2021 14:16:54 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id c19-20020a9d6153000000b0051829acbfc7so4044985otk.9
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Sep 2021 14:16:54 -0700 (PDT)
+        with ESMTP id S234306AbhIJVsZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Sep 2021 17:48:25 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4E6C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Sep 2021 14:47:14 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id w144so4861248oie.13
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Sep 2021 14:47:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=B6iWj9rP5R9pKZbOpKW2cBDKfth1pDK75Us/Qgtp2fM=;
-        b=lDHUAI306zaWOnggFTRrmQXGx2n86m9jC5Ju+bWQpuKKvVF38WHQGaHilWVftMNXRx
-         wwkynb+yqlbVhsoS/zA5Xv6P4g633jVaT3VRRDtyrRjGowSnGolUGDGMYuQFRn6+YOX8
-         qLmgQxpanW5cNHrP3eukzG40f87tZdKM10twuqJuaU5Fb7FI1FPR0Xn3IH/9MgzVUeGd
-         Xaeej7iC0bYeg3EBRlphAtUC6cBbT30Uc+FT69FAsLUvnMbL9zw8h1QlgigNc90rQoWS
-         d9ZUYzvMVqe6Xs79i/yNAcHUpcnYrXOZIVYytK6UIY89hTGgmqYRyE/rbwwcDR9TBoh/
-         h7tw==
+        bh=abpxKC7dCEgzuUcyOxjWNXNH6dWpFqSlAZ99pTR5MYk=;
+        b=GKCVWnlbS6GE2cwLGx2sQgn78tKbwdyLbXQVwN8ju0XSBmrs/lQ3Q1gwmzhyA0T/CL
+         KfouF5G6dmmPWIq7HtOnRudIiC9Yy9xxcD9YuVA0C3kKpKEriyQAPP+m08ykFgU+7YtO
+         ZK+3sXziaVO80+kj7IRMA2TmcePlMZVyfYneJmfDvgNa/SnLdDKW6c+cr0V5plN4Og5v
+         QfUN8n7G4MidRI3Ma/6guRUipSI5XlLtEIW4IJno1wAh/gpwMwC9dnDxVj3xbyCPTLvu
+         UoIlGyN684o7Zzo+eLHUigXBbQym6bS1j9rdUIivNzRKAmnL89AM+bboJVAFCvTyHE2s
+         z/3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=B6iWj9rP5R9pKZbOpKW2cBDKfth1pDK75Us/Qgtp2fM=;
-        b=4GwkLJCulN0InB8v9cYE99GV887ifBTXt85ipxsaq+6XY/04EJk1J3SY9Q0XA7oeg5
-         Dn4YdaKzq216FUWoABJhfUHVRlAZewGal7n6MsTXHP6hPcWPxUinP0hZyv18clFTaszx
-         iq8fGNVYrESH4AOhNeRCTgPIEGe9Scg7RSdtnjSGBdNI43ifbEckeJJXoo5rCwm7j1mg
-         DZIjvWnMXj2ZgIOW0pRhJcA0emcSp+/N4TmjLYz+kjugX/WKR9SL6em/Cs1qomN7k1VQ
-         IyxVaRnTROHCDiiTq7/BjB9fecxuWmk/H65jw/ocKRgTNjuHrCB9hXyI2z5dlTFmGcP+
-         LotQ==
-X-Gm-Message-State: AOAM531BAEsgqiNBSBeSLn0umJQ3reJEO5Vh5LjyEqzCVxeV03kH7aEA
-        dYxZofzhm+GNb5/DXNvFVCQ=
-X-Google-Smtp-Source: ABdhPJzkzVeVgLAPeyX+mg6nyaBvxL+B5m+xQ0SXxpNveIKKFt5ZoJrhxOIpR3Dan8oMARUFmKf5Ug==
-X-Received: by 2002:a05:6830:2470:: with SMTP id x48mr6050068otr.103.1631308612630;
-        Fri, 10 Sep 2021 14:16:52 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:8a0c:d6d2:db4e:d565? (2603-8081-140c-1a00-8a0c-d6d2-db4e-d565.res6.spectrum.com. [2603:8081:140c:1a00:8a0c:d6d2:db4e:d565])
-        by smtp.gmail.com with ESMTPSA id s24sm1563939oic.34.2021.09.10.14.16.51
+        bh=abpxKC7dCEgzuUcyOxjWNXNH6dWpFqSlAZ99pTR5MYk=;
+        b=WRzAKuM8HjZZWQtlANkYttdNGFTWYIypFiq8K4qTvDn5GnJVQvYG7rBJFuJm3gXzze
+         s3Hp/IlwiIG1MMykvHL8uFfNjhNtFNoeHjVxOFuCTOmSBKZSlwXFl3pbtgTQZqeUmTGX
+         bcE+Nox32ses2FPtAiwOKFg/pEq37m/QKtHMFjiB9shGwYqXScXZpDLvicrJ+ahQuqBE
+         FzzHfTfofNStHs8nZx0jDdOgM26cH5OGWqK27Y+OiL0ngbyGbpDcOyCnziDDclrPvJMM
+         adiroNHZJGepAPpgviv7ZW8QeM9Ndc+qSJ3RDLc1WujhidPA0nDAmZCk4QHgJGZ3C79/
+         lp7w==
+X-Gm-Message-State: AOAM531lPejxqh1akJCNpSmbAKNrI3QeGIM7kL4keyeG9e7cpW19YdZP
+        V6Z7K9kmwg/YQon/gSelmIM=
+X-Google-Smtp-Source: ABdhPJzrxISzdxOTev94tnktd9W38/GDm+GLy+wVhelZAt8ADsEKUjsGqEo2AxzO43Ie+IsWj+GPzw==
+X-Received: by 2002:a05:6808:604:: with SMTP id y4mr6034790oih.86.1631310433742;
+        Fri, 10 Sep 2021 14:47:13 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:4191:9245:1adc:b45? (2603-8081-140c-1a00-4191-9245-1adc-0b45.res6.spectrum.com. [2603:8081:140c:1a00:4191:9245:1adc:b45])
+        by smtp.gmail.com with ESMTPSA id a6sm1518885oto.36.2021.09.10.14.47.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Sep 2021 14:16:52 -0700 (PDT)
+        Fri, 10 Sep 2021 14:47:13 -0700 (PDT)
 Subject: Re: [PATCH for-rc v3 0/6] RDMA/rxe: Various bug fixes.
 To:     Bart Van Assche <bvanassche@acm.org>,
         "Pearson, Robert B" <robert.pearson2@hpe.com>,
@@ -60,8 +60,8 @@ References: <20210909204456.7476-1-rpearsonhpe@gmail.com>
  <CS1PR8401MB10777EEC9CF95C00D1BA62ABBCD69@CS1PR8401MB1077.NAMPRD84.PROD.OUTLOOK.COM>
  <2cb4e1cb-4552-9391-164a-88f638dd3acf@acm.org>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <b1d256ce-93ad-26cb-8aca-6935f9aa620d@gmail.com>
-Date:   Fri, 10 Sep 2021 16:16:51 -0500
+Message-ID: <cf358367-5cb8-0482-28e6-993a4f6bb047@gmail.com>
+Date:   Fri, 10 Sep 2021 16:47:12 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
@@ -99,25 +99,35 @@ On 9/10/21 3:23 PM, Bart Van Assche wrote:
 > 
 > 
 
-You'd be surprised how much I don't know. I do know the numbers are unique but I
-haven't the faintest idea how to decode them into useful strings.
+OK I checked out the kernel with the SHA number above and applied the patch series
+and rebuilt and reinstalled the kernel. I checked out v36.0 of rdma-core and rebuilt
+that. rdma is version 5.9.0 but I doubt that will have any effect. My startup script
+is
 
-In theory you are correct and rdma-core and kernels are supposed to be forwards and
-backwards compatible but that is a goal and sometimes regressions do occur. I can try
-to run with that version just to make sure.
+    export LD_LIBRARY_PATH=/home/bob/src/rdma-core/build/lib/:/usr/local/lib:/usr/lib
 
-There is a problem I have seen where some newer distros do not create the default IPV6
-address from the MAC address. They randomize it (Ubuntu does this) and rxe is broken
-as a result. I end up having to add a line like 
 
-sudo ip addr add dev enp6s0 fe80::b62e:99ff:fef9:fa2e/64
-  (where the MAC address is b4:2e:99:f9:fa:2e) just before the line
-sudo rdma link add rxe_1 type rxe netdev enp6s0
 
-But, when this is an issue rxe is really broken and almost nothing works so that may not
-be an issue for you.
+    sudo ip link set dev enp0s3 mtu 8500
 
-I will try to recreate your setup and retest.
+    sudo ip addr add dev enp0s3 fe80::0a00:27ff:fe94:8a69/64
+
+    sudo rdma link add rxe0 type rxe netdev enp0s3
+
+
+I am running on a Virtualbox VM instance of Ubuntu 21.04 with 20 cores and 8GB of RAM.
+
+The test looks like
+
+    sudo ./check -q srp/001
+
+    srp/001 (Create and remove LUNs)                             [passed]
+
+        runtime  1.174s  ...  1.236s
+
+There were no issues. 
+
+Any guesses what else to look at?
 
 Thanks,
 
