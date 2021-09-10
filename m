@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958F54062E1
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 02:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F9CD4062E2
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Sep 2021 02:45:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhIJAqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S242234AbhIJAqa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 9 Sep 2021 20:46:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48164 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:48960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232193AbhIJAWe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:22:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 36F0261101;
-        Fri, 10 Sep 2021 00:21:24 +0000 (UTC)
+        id S234515AbhIJAXb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:23:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 337B360FDA;
+        Fri, 10 Sep 2021 00:22:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233284;
-        bh=sCrOixLBrggAy8UuwUOsH3dCzA0RrFFnX++Bn6WdxiU=;
+        s=k20201202; t=1631233341;
+        bh=CwhQ68CEcb5Xp6duDNuoiPXaTXRQUvHQERNLQ17GpNE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JoAbE1XJyZ5GPsC8dfK2L4TSX8xUmnIqmgwdapIL+W24r9ZDgkSstyEH29VgQkkBR
-         ureUAHo+tTe03PA+qwp5Nd++PPRtFiREuheLQFblsbbj0nKNF2vXYrjGrbffeIos19
-         Vtc/uf96bqrQFjEa39oFXHIgWTXjomc/AczBzQBHxAKUuyANZVYYghrhgElUgyjDj7
-         5cRM8JmAtsTEggqkMSQyYAE7LVBStv7YZUwEcDbaEsdyevGwPnFWpzf7ayY5yDlLKP
-         r/RK9rAbRYMgwmLgKI42AyRNUp1+NMPWqeaegFHcc8kz9N+YDdnaFFYheAaYztL5fK
-         T/Dnxhwmj3f3g==
+        b=bOuk0d3hIupZMuQERms1qhw0qx+I2UqxMHmbGd7ElXL9Amaigkswr6qnPZfUuxfah
+         T5XBQWDzwUVnyLYCXTTXdaZjB47t7NhETPa5wAIgOCNh1JyYLtDsswqh4NW6V351E0
+         LI17YkkBcx1q7uQb7rcvAR6cxrco32KRbmzyYo6Fkkg3IIFZu4s4RIRc3SOuWJ+uKP
+         HhvHi0bRi5FOFv3gdOPh3UlcrkmdTxSEGkLY5oZnPBsiOW78Kwn5v16gPpkqcNl44q
+         xM8O53d+U/5Y9nu/GJAlS/5ll6aBkNfTisArbcpFlYq/XOFKAAATigShm6v7AIBLRy
+         63Gj+50cOlXTA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 41/53] RDMA/core/sa_query: Retry SA queries
-Date:   Thu,  9 Sep 2021 20:20:16 -0400
-Message-Id: <20210910002028.175174-41-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 29/37] RDMA/core/sa_query: Retry SA queries
+Date:   Thu,  9 Sep 2021 20:21:34 -0400
+Message-Id: <20210910002143.175731-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210910002028.175174-1-sashal@kernel.org>
-References: <20210910002028.175174-1-sashal@kernel.org>
+In-Reply-To: <20210910002143.175731-1-sashal@kernel.org>
+References: <20210910002143.175731-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -84,10 +84,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 34b94e525390..3fef344df3a5 100644
+index ec9e9598894f..261d284e5ff3 100644
 --- a/drivers/infiniband/core/cma.c
 +++ b/drivers/infiniband/core/cma.c
-@@ -3096,6 +3096,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
+@@ -2937,6 +2937,9 @@ int rdma_resolve_route(struct rdma_cm_id *id, unsigned long timeout_ms)
  	struct rdma_id_private *id_priv;
  	int ret;
  
@@ -98,7 +98,7 @@ index 34b94e525390..3fef344df3a5 100644
  	if (!cma_comp_exch(id_priv, RDMA_CM_ADDR_RESOLVED, RDMA_CM_ROUTE_QUERY))
  		return -EINVAL;
 diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
-index 8c930bf1df89..9f263642e845 100644
+index d2d70c89193f..8c0ff50cbcfc 100644
 --- a/drivers/infiniband/core/sa_query.c
 +++ b/drivers/infiniband/core/sa_query.c
 @@ -1360,6 +1360,7 @@ static int send_mad(struct ib_sa_query *query, unsigned long timeout_ms,
