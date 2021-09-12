@@ -2,34 +2,34 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A99F407F2D
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Sep 2021 20:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04D85407F2E
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Sep 2021 20:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhILSQu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 12 Sep 2021 14:16:50 -0400
-Received: from lpdvsmtp10.broadcom.com ([192.19.11.229]:34450 "EHLO
+        id S229653AbhILSQw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Sep 2021 14:16:52 -0400
+Received: from lpdvsmtp10.broadcom.com ([192.19.11.229]:34458 "EHLO
         relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229653AbhILSQt (ORCPT
+        by vger.kernel.org with ESMTP id S234680AbhILSQv (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 12 Sep 2021 14:16:49 -0400
+        Sun, 12 Sep 2021 14:16:51 -0400
 Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 9B4427DBA;
-        Sun, 12 Sep 2021 11:15:33 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 9B4427DBA
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 7483F80F0;
+        Sun, 12 Sep 2021 11:15:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 7483F80F0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1631470535;
-        bh=KfFmFixnj3RBZXAS/9IKqgbEOMkwh5+o/upqydfDRI4=;
+        s=dkimrelay; t=1631470536;
+        bh=ZfQFo6ZXsVUHfX8aRrgFhj2C3kg6uJBgTkvnB4LuuVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SWaE8C0v00z4JVLVRDB5suN64R3x9Ti7QuAOeWcp6ZnOB3mf5iZsTsuyKrMyFxkfq
-         fZ8xoZfO+xApqqS2CHuojR+EGnyB+Loa1WfrRjewh8kj5CyeNtHg/HMzuPtKtWNSrw
-         sQqaB8apvjqoTSw8XX706PXBGWzTmBsSZEcPmk/A=
+        b=mK5g5LYe85/4/VXYfoQ3+sHmvXVhBKDN6CHTRCeD06FeGiN8kRGqgIoBfqiVVIHjO
+         Jz0kvlOI9RCy0mGFeoF6SATrog6EDPWBmYpbJsh4l7o0wDCssIM+5ag7GLhO7YhbGh
+         h5hCb9NZ0MBQP4F77cPAY428ZGNcK+yNv8DjAoY0=
 From:   Selvin Xavier <selvin.xavier@broadcom.com>
 To:     dledford@redhat.com, jgg@nvidia.com
-Cc:     linux-rdma@vger.kernel.org, Edwin Peer <edwin.peer@broadcom.com>,
+Cc:     linux-rdma@vger.kernel.org,
         Selvin Xavier <selvin.xavier@broadcom.com>
-Subject: [PATCH for-next 03/12] RDMA/bnxt_re: Use separate response buffer for stat_ctx_free
-Date:   Sun, 12 Sep 2021 11:15:17 -0700
-Message-Id: <1631470526-22228-4-git-send-email-selvin.xavier@broadcom.com>
+Subject: [PATCH for-next 04/12] RDMA/bnxt_re: Reduce the delay in polling for hwrm command completion
+Date:   Sun, 12 Sep 2021 11:15:18 -0700
+Message-Id: <1631470526-22228-5-git-send-email-selvin.xavier@broadcom.com>
 X-Mailer: git-send-email 2.5.5
 In-Reply-To: <1631470526-22228-1-git-send-email-selvin.xavier@broadcom.com>
 References: <1631470526-22228-1-git-send-email-selvin.xavier@broadcom.com>
@@ -37,43 +37,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Edwin Peer <edwin.peer@broadcom.com>
+Driver has 1ms delay between the polling for atomic command completion.
+Polling immediately after issuing command usually doesn't report
+any completions. So all commands in the blocking path needs two
+iterations. So effectively 1ms spend on each command. HW requires
+much lesser time for each command. So reduce the delay to 1us
+and increase the iteration count to wait for the same time.
 
-Use separate buffers for the request and response data. Eventhough
-the response data is not used, providing the correct length is
-appropriate.
-
-Signed-off-by: Edwin Peer <edwin.peer@broadcom.com>
 Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 ---
- drivers/infiniband/hw/bnxt_re/main.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/bnxt_re/main.c b/drivers/infiniband/hw/bnxt_re/main.c
-index e4f39d8..4214674 100644
---- a/drivers/infiniband/hw/bnxt_re/main.c
-+++ b/drivers/infiniband/hw/bnxt_re/main.c
-@@ -525,7 +525,8 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
- 				      u32 fw_stats_ctx_id)
- {
- 	struct bnxt_en_dev *en_dev = rdev->en_dev;
--	struct hwrm_stat_ctx_free_input req = {0};
-+	struct hwrm_stat_ctx_free_input req = {};
-+	struct hwrm_stat_ctx_free_output resp = {};
- 	struct bnxt_fw_msg fw_msg;
- 	int rc = -EINVAL;
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+index 5d384de..947e8c5 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
+@@ -78,7 +78,7 @@ static int __block_for_resp(struct bnxt_qplib_rcfw *rcfw, u16 cookie)
+ 	if (!test_bit(cbit, cmdq->cmdq_bitmap))
+ 		goto done;
+ 	do {
+-		mdelay(1); /* 1m sec */
++		udelay(1);
+ 		bnxt_qplib_service_creq(&rcfw->creq.creq_tasklet);
+ 	} while (test_bit(cbit, cmdq->cmdq_bitmap) && --count);
+ done:
+diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+index 9474c00..82faa4e 100644
+--- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
++++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.h
+@@ -96,7 +96,7 @@ static inline void bnxt_qplib_set_cmd_slots(struct cmdq_base *req)
  
-@@ -539,8 +540,8 @@ static int bnxt_re_net_stats_ctx_free(struct bnxt_re_dev *rdev,
+ #define RCFW_MAX_COOKIE_VALUE		0x7FFF
+ #define RCFW_CMD_IS_BLOCKING		0x8000
+-#define RCFW_BLOCKED_CMD_WAIT_COUNT	0x4E20
++#define RCFW_BLOCKED_CMD_WAIT_COUNT	20000000UL /* 20 sec */
  
- 	bnxt_re_init_hwrm_hdr(rdev, (void *)&req, HWRM_STAT_CTX_FREE, -1, -1);
- 	req.stat_ctx_id = cpu_to_le32(fw_stats_ctx_id);
--	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&req,
--			    sizeof(req), DFLT_HWRM_CMD_TIMEOUT);
-+	bnxt_re_fill_fw_msg(&fw_msg, (void *)&req, sizeof(req), (void *)&resp,
-+			    sizeof(resp), DFLT_HWRM_CMD_TIMEOUT);
- 	rc = en_dev->en_ops->bnxt_send_fw_msg(en_dev, BNXT_ROCE_ULP, &fw_msg);
- 	if (rc)
- 		ibdev_err(&rdev->ibdev, "Failed to free HW stats context %#x",
+ #define HWRM_VERSION_RCFW_CMDQ_DEPTH_CHECK 0x1000900020011ULL
+ 
 -- 
 2.5.5
 
