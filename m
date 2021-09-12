@@ -2,59 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C04407DCC
-	for <lists+linux-rdma@lfdr.de>; Sun, 12 Sep 2021 16:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C52F9407DCE
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Sep 2021 16:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhILOmS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 12 Sep 2021 10:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        id S235577AbhILOnt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Sep 2021 10:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhILOmS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Sep 2021 10:42:18 -0400
+        with ESMTP id S229653AbhILOns (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Sep 2021 10:43:48 -0400
 Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366F5C061574
-        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:41:04 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso9682085otv.3
-        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:41:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C0B3C061574
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:42:34 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id q11-20020a9d4b0b000000b0051acbdb2869so9683690otf.2
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:42:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=UXCAAWzsAc248j8W3csJz6aHG+VVFLBGCnJBr/UxOsU=;
-        b=e7qmXb5sclb6NDl67Q7zsbuuWbI2EDB6JMmAG4jiww8czfcijo8/5M9R4scwCflgrR
-         JgQn1WJ573lWVOR2gvUqiY74mrAmYgw3EPIYo8n3nMxQHlBTc3O/sD4QuQG+J1XU9VFB
-         b7pwp1ryz7bQXNiTyrWzL14mOdRjeOYoi5MeN0EUvNrH8Bu+xzQW1UNs2GtVK/IICNxI
-         egs4clBkIVUrgHmKCtOsYj2uroNTSnI6fiyNqWZyUf0J3SqoVqAnBprGv4QKmHOS3W56
-         ZziqJT+9GwE6dg4QahLMHZCXiGBFTLtsnvx1UzZZ8r+3V/T7khakQMFlefuokzEUL+Ex
-         7NdA==
+        bh=J1v2c+lqfnHoX58ukPWRffbWKpbAtbfqDpazu3tqymA=;
+        b=AJ9E2cjr7DllX5YQgyOm5uFtkzSCaxDkNSAXyH/pEcr5jnJPqbo1nu+1NCDB5mRhPo
+         CapXTWBgzCRDLDez4FgHwpvOYbfxI76lk9FbEC2obrOM1oeHymo1qlo8F16C7E6BwbYk
+         fgJRcqX1xOLn50SK4MuOacCCoK+4uO+YXdnhd9udBk5duWmMNimHcpITnw9PCvsc11gE
+         9tfvfjRzzRIh7rhTxd7t/qb8z3VlmrwgWPhMQD3BlVXzTEqSD09Al8dsZYBm9GWUuxQP
+         yV1Jzgbf4wlWAd8zE3M4AWua9HxvVwbVWT1jne7jFCSrTmA4sCZ45Hanamks2M4XNvv+
+         Kw7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=UXCAAWzsAc248j8W3csJz6aHG+VVFLBGCnJBr/UxOsU=;
-        b=soucoNfMB06YId9cN8849rXJ59U4AzyFBokjhiimH1SfVR4EI+QcAkrjWBlgKrzWaS
-         OKjZcgYsK2gsZ9WH2JtTuVF+7UyTRUy1iPlJGhKZvoJ442mlMyjJVeiGOIxrU4vSpdwf
-         +YI10YSQa14MB0fMaVdpMKwZqozFzq1WJvVmRkwlZxM8SV0HwVHYAlbHYyccmhkFHXY9
-         FhYwK5hLgvPAsnicuIMlbB6KV4r8qnq5T5AW5uo41rf+hafjKFlgH3xcOPjgaYHoUbb+
-         1To71I+QMqCAZpVNgIuv0Te3y9wr31pyIlbtJzPU9YvxjOFK4eWewLngyEz9j8uI2hrb
-         s3RA==
-X-Gm-Message-State: AOAM53239oztQ6bDhkmCiDj/zPGFaYOxQjPByLG68CjqBw0WvsXr2xwV
-        YlYoEhGXZPYPfBeeHNUQxFM=
-X-Google-Smtp-Source: ABdhPJwLCXkJ8TtUmkiHWkZgsdirvCwIm1b68aImruzBH8mspZT2zV736DDSj6qi/siJ8PJpNIJPag==
-X-Received: by 2002:a05:6830:2b2c:: with SMTP id l44mr6272967otv.238.1631457663581;
-        Sun, 12 Sep 2021 07:41:03 -0700 (PDT)
+        bh=J1v2c+lqfnHoX58ukPWRffbWKpbAtbfqDpazu3tqymA=;
+        b=5/7XdfWg5UrT9+Erk4gY0plYnhytmAXHQaXxtooW9W+qZ+65dlM3dgpCJqNrYnJ2z+
+         4d//Di3PNn58cq4SK/vb5oL5P4jcFJKI1E5zx1Ri26CImYJ4azU9kqx16yrSBokdD3mO
+         3qPLl+vJBh3LFrhCd/KiP6xwbDWBjALSiDY6lJ38bgWwXfJBpwQKFDIH010Sdus8nvop
+         SWwYc14OwuCfKW9HNg9HtPmX5gji7AvDKgtWd3eV4NWZtRNn+90TqIydYpR3ZYAcfo/i
+         hkZQIT1akKS7O+r5nNj5rW+71KFihvtwYGd06cqXlbcfVXQ1N/gu8e37rDlW3hVVbvXF
+         vbPw==
+X-Gm-Message-State: AOAM531/0PrS58Ta6WlKmqqSxLRjppbwrkG/ja7Fpl/A+bWp0XaCnilR
+        qI+UUBhnI/73gT0r0rBwMzE=
+X-Google-Smtp-Source: ABdhPJyn5TP5yMIs9FKF34owgm3dKvBzCjWLXTZB+Ky2ERSQ29i5q9DX671PVNY6pS6jVinBaOI1Mg==
+X-Received: by 2002:a9d:1b46:: with SMTP id l64mr5966095otl.201.1631457753601;
+        Sun, 12 Sep 2021 07:42:33 -0700 (PDT)
 Received: from ?IPv6:2603:8081:140c:1a00:3af0:978b:868:ab47? (2603-8081-140c-1a00-3af0-978b-0868-ab47.res6.spectrum.com. [2603:8081:140c:1a00:3af0:978b:868:ab47])
-        by smtp.gmail.com with ESMTPSA id h3sm1164393otu.7.2021.09.12.07.41.02
+        by smtp.gmail.com with ESMTPSA id q36sm1048371oiw.35.2021.09.12.07.42.33
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Sep 2021 07:41:03 -0700 (PDT)
+        Sun, 12 Sep 2021 07:42:33 -0700 (PDT)
 Subject: Re: [PATCH for-rc v3 0/6] RDMA/rxe: Various bug fixes.
 To:     Bart Van Assche <bvanassche@acm.org>,
         "Pearson, Robert B" <robert.pearson2@hpe.com>,
         "jgg@nvidia.com" <jgg@nvidia.com>,
         "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "mie@igel.co.jp" <mie@igel.co.jp>, Xiao Yang <yangx.jy@fujitsu.com>
+        "mie@igel.co.jp" <mie@igel.co.jp>
 References: <20210909204456.7476-1-rpearsonhpe@gmail.com>
  <f0d96a3c-d49d-651d-93e0-a33a5eca9f1b@acm.org>
  <CS1PR8401MB10777EEC9CF95C00D1BA62ABBCD69@CS1PR8401MB1077.NAMPRD84.PROD.OUTLOOK.COM>
@@ -62,8 +62,8 @@ References: <20210909204456.7476-1-rpearsonhpe@gmail.com>
  <cf358367-5cb8-0482-28e6-993a4f6bb047@gmail.com>
  <918787c7-de06-ef67-80ac-ae2e7643dd61@acm.org>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <557a5fd9-2a30-5752-d09b-05183ab3c43b@gmail.com>
-Date:   Sun, 12 Sep 2021 09:41:02 -0500
+Message-ID: <a048c223-a649-749a-2309-866d10c3e645@gmail.com>
+Date:   Sun, 12 Sep 2021 09:42:32 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.13.0
 MIME-Version: 1.0
@@ -149,52 +149,4 @@ On 9/10/21 5:07 PM, Bart Van Assche wrote:
 > 
 > Bart.
 
-The most likely cause of this was fixed by a patch submitted 8/20/2021 by Xiao Yang. It is copied here
-
-From: Xiao Yang <yangx.jy@fujitsu.com>
-To: <linux-rdma@vger.kernel.org>
-Cc: <aglo@umich.edu>, <rpearsonhpe@gmail.com>, <zyjzyj2000@gmail.com>,
-	<jgg@nvidia.com>, <leon@kernel.org>,
-	Xiao Yang <yangx.jy@fujitsu.com>
-Subject: [PATCH] RDMA/rxe: Zero out index member of struct rxe_queue
-Date: Fri, 20 Aug 2021 19:15:09 +0800	[thread overview]
-Message-ID: <20210820111509.172500-1-yangx.jy@fujitsu.com> (raw)
-
-1) New index member of struct rxe_queue is introduced but not zeroed
-   so the initial value of index may be random.
-2) Current index is not masked off to index_mask.
-In such case, producer_addr() and consumer_addr() will get an invalid
-address by the random index and then accessing the invalid address
-triggers the following panic:
-"BUG: unable to handle page fault for address: ffff9ae2c07a1414"
-
-Fix the issue by using kzalloc() to zero out index member.
-
-Fixes: 5bcf5a59c41e ("RDMA/rxe: Protext kernel index from user space")
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
-index 85b812586ed4..72d95398e604 100644
---- a/drivers/infiniband/sw/rxe/rxe_queue.c
-+++ b/drivers/infiniband/sw/rxe/rxe_queue.c
-@@ -63,7 +63,7 @@ struct rxe_queue *rxe_queue_init(struct rxe_dev *rxe, int *num_elem,
- 	if (*num_elem < 0)
- 		goto err1;
- 
--	q = kmalloc(sizeof(*q), GFP_KERNEL);
-+	q = kzalloc(sizeof(*q), GFP_KERNEL);
- 	if (!q)
- 		goto err1;
- 
--- 
-2.25.1
-
-If kmalloc returns a dirty block of memory you could get random values in the q index which could
-easily give a page fault. Once the rxe driver writes a new value it will be masked before storing
-and should always be in the allocated buffer. I am not seeing this error perhaps because I am
-running in a VM. I just don't know. It should be added to the other fixes.
-
-Bob
+By the way I did rebuild the kernel with your config file. No change. - Bob
