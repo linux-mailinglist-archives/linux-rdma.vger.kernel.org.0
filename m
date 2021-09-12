@@ -2,231 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70153407895
-	for <lists+linux-rdma@lfdr.de>; Sat, 11 Sep 2021 16:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44C04407DCC
+	for <lists+linux-rdma@lfdr.de>; Sun, 12 Sep 2021 16:41:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236067AbhIKOEF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 11 Sep 2021 10:04:05 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:51412 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236106AbhIKOEE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 11 Sep 2021 10:04:04 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18BCjc1T032579;
-        Sat, 11 Sep 2021 14:02:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=7gkzNNSHrsclaAJzy9Tpqx1IGp0KP7TP28LEij8pdNo=;
- b=H3y1j45ZJiWDUCG3i4mb0C/wEs1lIWYtw0kJPZnnMLfeUHk9DEFZYKoeQJw8XWTIhEDL
- GyvFuPLO+6bnwTqcCLf3T9AaTM43tHwc2EpLbdd98Lh3/fzmBKoLCyQMmIybWfWsv04a
- ACODVK7hAQWvgY8snl6Ty77chO9PMpTvo+haK2yDW0ifyvBlNFZWmUUj5W0n/BQ/vl4B
- p2Be1AtQpLWZaAHh11XQLEb7Utkp3MEntyxEqGId3NM22DNUYR/lIyF+/0r/kziQpCVn
- 06LZzG0dtcdZMguOWGIgUQ+kjLh393OmnAxqmQs2MniXV01U6yDrJhiskTZBje8gBxs9 iA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=7gkzNNSHrsclaAJzy9Tpqx1IGp0KP7TP28LEij8pdNo=;
- b=MwDt0/hBKPaZmb0gZkHTRCnHn7SseZr8RtRAfEUk3e8+0yVIHVwtZkkBFxgBOxhSHt2o
- /cDY+1KnquSX3hKmZc1kd+Zp7UxIDM7wOszRgmEjm0J4uydbMkk4GjJXUS1hCoT6Y9a3
- gonWgadKuiPDRBOGXOSAPRBdWQMG9WUpfT9oJOyTEw7thAPtrJMyCc6eEeKzxrWOEpIS
- AWlUwtoQQEaM4p9JfPCq4ZUxKVcyOu/wp7P2ilLh6/MWTu9VFO5M/N4ig2WwMVmzO9VL
- SZKfTx2YWGtCN/qJUH2TLvfkdDRJ198wH6S+skvS4fTdupHrlKAk5hR2+HqePftEdMnf EA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b0jvdrke3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 11 Sep 2021 14:02:45 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18BE0FZh103948;
-        Sat, 11 Sep 2021 14:02:45 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by aserp3020.oracle.com with ESMTP id 3b0m932djr-1;
-        Sat, 11 Sep 2021 14:02:44 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     gregkh@linuxfoundation.org, sashal@kernel.org
-Cc:     davem@davemloft.net, netdev@vger.kernel.org,
-        stable@vger.kernel.org, dledford@redhat.com, jgg@nvidia.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gnault@redhat.com
-Subject: [PATCH 4.14] netns: protect netns ID lookups with RCU
-Date:   Sat, 11 Sep 2021 16:02:42 +0200
-Message-Id: <1631368962-22835-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232251AbhILOmS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 12 Sep 2021 10:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229653AbhILOmS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 12 Sep 2021 10:42:18 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366F5C061574
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:41:04 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso9682085otv.3
+        for <linux-rdma@vger.kernel.org>; Sun, 12 Sep 2021 07:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=UXCAAWzsAc248j8W3csJz6aHG+VVFLBGCnJBr/UxOsU=;
+        b=e7qmXb5sclb6NDl67Q7zsbuuWbI2EDB6JMmAG4jiww8czfcijo8/5M9R4scwCflgrR
+         JgQn1WJ573lWVOR2gvUqiY74mrAmYgw3EPIYo8n3nMxQHlBTc3O/sD4QuQG+J1XU9VFB
+         b7pwp1ryz7bQXNiTyrWzL14mOdRjeOYoi5MeN0EUvNrH8Bu+xzQW1UNs2GtVK/IICNxI
+         egs4clBkIVUrgHmKCtOsYj2uroNTSnI6fiyNqWZyUf0J3SqoVqAnBprGv4QKmHOS3W56
+         ZziqJT+9GwE6dg4QahLMHZCXiGBFTLtsnvx1UzZZ8r+3V/T7khakQMFlefuokzEUL+Ex
+         7NdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UXCAAWzsAc248j8W3csJz6aHG+VVFLBGCnJBr/UxOsU=;
+        b=soucoNfMB06YId9cN8849rXJ59U4AzyFBokjhiimH1SfVR4EI+QcAkrjWBlgKrzWaS
+         OKjZcgYsK2gsZ9WH2JtTuVF+7UyTRUy1iPlJGhKZvoJ442mlMyjJVeiGOIxrU4vSpdwf
+         +YI10YSQa14MB0fMaVdpMKwZqozFzq1WJvVmRkwlZxM8SV0HwVHYAlbHYyccmhkFHXY9
+         FhYwK5hLgvPAsnicuIMlbB6KV4r8qnq5T5AW5uo41rf+hafjKFlgH3xcOPjgaYHoUbb+
+         1To71I+QMqCAZpVNgIuv0Te3y9wr31pyIlbtJzPU9YvxjOFK4eWewLngyEz9j8uI2hrb
+         s3RA==
+X-Gm-Message-State: AOAM53239oztQ6bDhkmCiDj/zPGFaYOxQjPByLG68CjqBw0WvsXr2xwV
+        YlYoEhGXZPYPfBeeHNUQxFM=
+X-Google-Smtp-Source: ABdhPJwLCXkJ8TtUmkiHWkZgsdirvCwIm1b68aImruzBH8mspZT2zV736DDSj6qi/siJ8PJpNIJPag==
+X-Received: by 2002:a05:6830:2b2c:: with SMTP id l44mr6272967otv.238.1631457663581;
+        Sun, 12 Sep 2021 07:41:03 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:3af0:978b:868:ab47? (2603-8081-140c-1a00-3af0-978b-0868-ab47.res6.spectrum.com. [2603:8081:140c:1a00:3af0:978b:868:ab47])
+        by smtp.gmail.com with ESMTPSA id h3sm1164393otu.7.2021.09.12.07.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Sep 2021 07:41:03 -0700 (PDT)
+Subject: Re: [PATCH for-rc v3 0/6] RDMA/rxe: Various bug fixes.
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "Pearson, Robert B" <robert.pearson2@hpe.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "mie@igel.co.jp" <mie@igel.co.jp>, Xiao Yang <yangx.jy@fujitsu.com>
+References: <20210909204456.7476-1-rpearsonhpe@gmail.com>
+ <f0d96a3c-d49d-651d-93e0-a33a5eca9f1b@acm.org>
+ <CS1PR8401MB10777EEC9CF95C00D1BA62ABBCD69@CS1PR8401MB1077.NAMPRD84.PROD.OUTLOOK.COM>
+ <2cb4e1cb-4552-9391-164a-88f638dd3acf@acm.org>
+ <cf358367-5cb8-0482-28e6-993a4f6bb047@gmail.com>
+ <918787c7-de06-ef67-80ac-ae2e7643dd61@acm.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <557a5fd9-2a30-5752-d09b-05183ab3c43b@gmail.com>
+Date:   Sun, 12 Sep 2021 09:41:02 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <918787c7-de06-ef67-80ac-ae2e7643dd61@acm.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10103 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109110096
-X-Proofpoint-GUID: bs98uoJgA5W4VYvXp7lP9BJgcCMmR_BR
-X-Proofpoint-ORIG-GUID: bs98uoJgA5W4VYvXp7lP9BJgcCMmR_BR
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Guillaume Nault <gnault@redhat.com>
+On 9/10/21 5:07 PM, Bart Van Assche wrote:
+> On 9/10/21 2:47 PM, Bob Pearson wrote:
+>> OK I checked out the kernel with the SHA number above and applied the patch series
+>> and rebuilt and reinstalled the kernel. I checked out v36.0 of rdma-core and rebuilt
+>> that. rdma is version 5.9.0 but I doubt that will have any effect. My startup script
+>> is
+>>
+>>      export LD_LIBRARY_PATH=/home/bob/src/rdma-core/build/lib/:/usr/local/lib:/usr/lib
+>>
+>>
+>>
+>>      sudo ip link set dev enp0s3 mtu 8500
+>>
+>>      sudo ip addr add dev enp0s3 fe80::0a00:27ff:fe94:8a69/64
+>>
+>>      sudo rdma link add rxe0 type rxe netdev enp0s3
+>>
+>>
+>> I am running on a Virtualbox VM instance of Ubuntu 21.04 with 20 cores and 8GB of RAM.
+>>
+>> The test looks like
+>>
+>>      sudo ./check -q srp/001
+>>
+>>      srp/001 (Create and remove LUNs)                             [passed]
+>>
+>>          runtime  1.174s  ...  1.236s
+>>
+>> There were no issues.
+>>
+>> Any guesses what else to look at?
+> 
+> The test I ran is different. I did not run any of the ip link / ip addr /
+> rdma link commands since the blktests scripts already run the rdma link
+> command. The bug I reported in my previous email is reproducible and
+> triggers a VM halt.
+> 
+> Are we using the same kernel config? I attached my kernel config to my
+> previous email. The source code location of the crash address is as
+> follows:
+> 
+> (gdb) list *(rxe_completer+0x96d)
+> 0x228d is in rxe_completer (drivers/infiniband/sw/rxe/rxe_comp.c:149).
+> 144              */
+> 145             wqe = queue_head(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
+> 146             *wqe_p = wqe;
+> 147
+> 148             /* no WQE or requester has not started it yet */
+> 149             if (!wqe || wqe->state == wqe_state_posted)
+> 150                     return pkt ? COMPST_DONE : COMPST_EXIT;
+> 151
+> 152             /* WQE does not require an ack */
+> 153             if (wqe->state == wqe_state_done)
+> 
+> The disassembly output is as follows:
+> 
+> drivers/infiniband/sw/rxe/rxe_comp.c:
+> 149             if (!wqe || wqe->state == wqe_state_posted)
+>    0x0000000000002277 <+2391>:  test   %r12,%r12
+>    0x000000000000227a <+2394>:  je     0x2379 <rxe_completer+2649>
+>    0x0000000000002280 <+2400>:  lea    0x94(%r12),%rdi
+>    0x0000000000002288 <+2408>:  call   0x228d <rxe_completer+2413>
+>    0x000000000000228d <+2413>:  mov    0x94(%r12),%eax
+>    0x0000000000002295 <+2421>:  test   %eax,%eax
+>    0x0000000000002297 <+2423>:  je     0x237c <rxe_completer+2652>
+> 
+> So the instruction that triggers the crash is "mov 0x94(%r12),%eax".
+> Does consumer_addr() perhaps return an invalid address under certain
+> circumstances?
+> 
+> Thanks,
+> 
+> Bart.
 
-__peernet2id() can be protected by RCU as it only calls idr_for_each(),
-which is RCU-safe, and never modifies the nsid table.
+The most likely cause of this was fixed by a patch submitted 8/20/2021 by Xiao Yang. It is copied here
 
-rtnl_net_dumpid() can also do lockless lookups. It does two nested
-idr_for_each() calls on nsid tables (one direct call and one indirect
-call because of rtnl_net_dumpid_one() calling __peernet2id()). The
-netnsid tables are never updated. Therefore it is safe to not take the
-nsid_lock and run within an RCU-critical section instead.
+From: Xiao Yang <yangx.jy@fujitsu.com>
+To: <linux-rdma@vger.kernel.org>
+Cc: <aglo@umich.edu>, <rpearsonhpe@gmail.com>, <zyjzyj2000@gmail.com>,
+	<jgg@nvidia.com>, <leon@kernel.org>,
+	Xiao Yang <yangx.jy@fujitsu.com>
+Subject: [PATCH] RDMA/rxe: Zero out index member of struct rxe_queue
+Date: Fri, 20 Aug 2021 19:15:09 +0800	[thread overview]
+Message-ID: <20210820111509.172500-1-yangx.jy@fujitsu.com> (raw)
 
-Signed-off-by: Guillaume Nault <gnault@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+1) New index member of struct rxe_queue is introduced but not zeroed
+   so the initial value of index may be random.
+2) Current index is not masked off to index_mask.
+In such case, producer_addr() and consumer_addr() will get an invalid
+address by the random index and then accessing the invalid address
+triggers the following panic:
+"BUG: unable to handle page fault for address: ffff9ae2c07a1414"
 
-A nice side-effect of replacing spin_{lock,unlock}_bh() with
-rcu_spin_{lock,unlock}() in peernet2id() is that it avoids the
-situation where SoftIRQs get enabled whilst IRQs are turned off.
+Fix the issue by using kzalloc() to zero out index member.
 
-From bugzilla.redhat.com/show_bug.cgi?id=1384179 (an ancient
-4.9.0-0.rc0 kernel):
-
-dump_stack+0x86/0xc3
-__warn+0xcb/0xf0
-warn_slowpath_null+0x1d/0x20
-__local_bh_enable_ip+0x9d/0xc0
-_raw_spin_unlock_bh+0x35/0x40
-peernet2id+0x54/0x80
-netlink_broadcast_filtered+0x220/0x3c0
-netlink_broadcast+0x1d/0x20
-audit_log+0x6a/0x90
-security_set_bools+0xee/0x200
-[]
-
-Note, security_set_bools() calls write_lock_irq(). peernet2id() calls
-spin_unlock_bh().
-
-From an internal (UEK) stack trace based on the v4.14.35 kernel (LTS
-4.14.231):
-
-queued_spin_lock_slowpath+0xb/0xf
-_raw_spin_lock_irqsave+0x46/0x48
-send_mad+0x3d2/0x590 [ib_core]
-ib_sa_path_rec_get+0x223/0x4d0 [ib_core]
-path_rec_start+0xa3/0x140 [ib_ipoib]
-ipoib_start_xmit+0x2b0/0x6a0 [ib_ipoib]
-dev_hard_start_xmit+0xb2/0x237
-sch_direct_xmit+0x114/0x1bf
-__dev_queue_xmit+0x592/0x818
-dev_queue_xmit+0x10/0x12
-arp_xmit+0x38/0xa6
-arp_send_dst.part.16+0x61/0x84
-arp_process+0x825/0x889
-arp_rcv+0x140/0x1c9
-__netif_receive_skb_core+0x401/0xb39
-__netif_receive_skb+0x18/0x59
-netif_receive_skb_internal+0x45/0x119
-napi_gro_receive+0xd8/0xf6
-ipoib_ib_handle_rx_wc+0x1ca/0x520 [ib_ipoib]
-ipoib_poll+0xcd/0x150 [ib_ipoib]
-net_rx_action+0x289/0x3f4
-__do_softirq+0xe1/0x2b5
-do_softirq_own_stack+0x2a/0x35
-</IRQ>
-do_softirq+0x4d/0x6a
-__local_bh_enable_ip+0x57/0x59
-_raw_spin_unlock_bh+0x23/0x25
-peernet2id+0x51/0x73
-netlink_broadcast_filtered+0x223/0x41b
-netlink_broadcast+0x1d/0x1f
-rdma_nl_multicast+0x22/0x30 [ib_core]
-send_mad+0x3e5/0x590 [ib_core]
-ib_sa_path_rec_get+0x223/0x4d0 [ib_core]
-rdma_resolve_route+0x287/0x810 [rdma_cm]
-rds_rdma_cm_event_handler_cmn+0x311/0x7d0 [rds_rdma]
-rds_rdma_cm_event_handler_worker+0x22/0x30 [rds_rdma]
-process_one_work+0x169/0x3a6
-worker_thread+0x4d/0x3e5
-kthread+0x105/0x138
-ret_from_fork+0x24/0x49
-
-Here, pay attention to ib_nl_make_request() which calls
-spin_lock_irqsave() on a global lock just before calling
-rdma_nl_multicast(). Thereafter, peernet2id() enables SoftIRQs, and
-ipoib starts and calls the same path and ends up trying to acquire the
-same global lock again.
-
-(cherry picked from commit 2dce224f469f060b9998a5a869151ef83c08ce77)
-Fixes: fba143c66abb ("netns: avoid disabling irq for netns id")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-
-Conflicts:
-	net/core/net_namespace.c
-
-		* rtnl_valid_dump_net_req() has a very minimal
-                  implementation in 4.14, hence only a simple
-                  substituting of spin_{lock,unlock}_bh() with
-                  rcu_spin_{lock,unlock}() was required
+Fixes: 5bcf5a59c41e ("RDMA/rxe: Protext kernel index from user space")
+Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 ---
- net/core/net_namespace.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/net_namespace.c b/net/core/net_namespace.c
-index 1af25d5..37f4313 100644
---- a/net/core/net_namespace.c
-+++ b/net/core/net_namespace.c
-@@ -181,9 +181,9 @@ static int net_eq_idr(int id, void *net, void *peer)
- 	return 0;
- }
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index 85b812586ed4..72d95398e604 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -63,7 +63,7 @@ struct rxe_queue *rxe_queue_init(struct rxe_dev *rxe, int *num_elem,
+ 	if (*num_elem < 0)
+ 		goto err1;
  
--/* Should be called with nsid_lock held. If a new id is assigned, the bool alloc
-- * is set to true, thus the caller knows that the new id must be notified via
-- * rtnl.
-+/* Must be called from RCU-critical section or with nsid_lock held. If
-+ * a new id is assigned, the bool alloc is set to true, thus the
-+ * caller knows that the new id must be notified via rtnl.
-  */
- static int __peernet2id_alloc(struct net *net, struct net *peer, bool *alloc)
- {
-@@ -207,7 +207,7 @@ static int __peernet2id_alloc(struct net *net, struct net *peer, bool *alloc)
- 	return NETNSA_NSID_NOT_ASSIGNED;
- }
+-	q = kmalloc(sizeof(*q), GFP_KERNEL);
++	q = kzalloc(sizeof(*q), GFP_KERNEL);
+ 	if (!q)
+ 		goto err1;
  
--/* should be called with nsid_lock held */
-+/* Must be called from RCU-critical section or with nsid_lock held */
- static int __peernet2id(struct net *net, struct net *peer)
- {
- 	bool no = false;
-@@ -240,9 +240,10 @@ int peernet2id(struct net *net, struct net *peer)
- {
- 	int id;
- 
--	spin_lock_bh(&net->nsid_lock);
-+	rcu_read_lock();
- 	id = __peernet2id(net, peer);
--	spin_unlock_bh(&net->nsid_lock);
-+	rcu_read_unlock();
-+
- 	return id;
- }
- EXPORT_SYMBOL(peernet2id);
-@@ -761,6 +762,7 @@ struct rtnl_net_dump_cb {
- 	int s_idx;
- };
- 
-+/* Runs in RCU-critical section. */
- static int rtnl_net_dumpid_one(int id, void *peer, void *data)
- {
- 	struct rtnl_net_dump_cb *net_cb = (struct rtnl_net_dump_cb *)data;
-@@ -791,9 +793,9 @@ static int rtnl_net_dumpid(struct sk_buff *skb, struct netlink_callback *cb)
- 		.s_idx = cb->args[0],
- 	};
- 
--	spin_lock_bh(&net->nsid_lock);
-+	rcu_read_lock();
- 	idr_for_each(&net->netns_ids, rtnl_net_dumpid_one, &net_cb);
--	spin_unlock_bh(&net->nsid_lock);
-+	rcu_read_unlock();
- 
- 	cb->args[0] = net_cb.idx;
- 	return skb->len;
 -- 
-1.8.3.1
+2.25.1
 
+If kmalloc returns a dirty block of memory you could get random values in the q index which could
+easily give a page fault. Once the rxe driver writes a new value it will be masked before storing
+and should always be in the allocated buffer. I am not seeing this error perhaps because I am
+running in a VM. I just don't know. It should be added to the other fixes.
+
+Bob
