@@ -2,77 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43E714089E4
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 13:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD3274089E8
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 13:11:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239238AbhIMLMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Sep 2021 07:12:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57562 "EHLO mail.kernel.org"
+        id S239364AbhIMLMy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Sep 2021 07:12:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239218AbhIMLMS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Sep 2021 07:12:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27B3860FE6;
-        Mon, 13 Sep 2021 11:11:01 +0000 (UTC)
+        id S239218AbhIMLMw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Sep 2021 07:12:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42D806044F;
+        Mon, 13 Sep 2021 11:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631531462;
-        bh=imV1HdFIM3pWMGHcbCzgqQqzQy79AxR5aFL/ExL4tEQ=;
+        s=k20201202; t=1631531496;
+        bh=K+x98JBHxDq3P/AVC1aKULNv7cVBVV/rJtv6t2OpywI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p/KGibOz3nPy6r4cvtm2PXB7OLjYg8CN2IE40G2XaeZfknjt8cY0STBPghvSjyvsw
-         mkWujswNCdI0hyw7SxjXPiiEf1h3UiHOV0BbZIbXUXhZoLOIon53xtVD+E7arjJRc1
-         lBb4hMOZ3lrFZQdXWRtFcvH9x6KukBZpdswJB/KNc+e3m1AlA6tVNmaDHjjA3nFhZ+
-         F0LOTGzwVrDeyye/dKHOcjmBObXrNmhxOJjWxhvpTR4hsNxlpkW/1OVrMIJp6RaMiU
-         14LQarEIZvKsU9vDSf7C1LqM/bP2+PYc63JknQUMTfgDDWVzSxVX3VM+520F9FrHTN
-         Jvm1n0fNkEFfQ==
-Date:   Mon, 13 Sep 2021 14:10:58 +0300
+        b=BgissV4fpF7ZsKDfHqQ6yZjFChUDn5VAjQcKVVi5bokSUri/pvx89M9Bgoy+ci8ph
+         je9e1Avfzj5fKqt4I2Acf+NTkb+vJ42ijCm583TVGzqPT7QQJhS6DhqQl7T2KyQoD3
+         lnPAggTvO3/Tl6wya0EgPHT8g+XRvS8AZTv2Tc/nzT3p7QH+Fl15DRYhiZ/0JMv0Eh
+         hBl7l/PWXulQA1L0rmkkV3Tz690h1poGXGdfdJluzcgJ5xibRVU2X3WlKxpwHKCzbe
+         SdPByh++nz8kOKfW5Yel0j2GyoA14+O2amyxzBQhVgHHtHjgxo8bVk87kNNOImg0Zj
+         KQ6qaBeounxEg==
+Date:   Mon, 13 Sep 2021 14:11:33 +0300
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Selvin Xavier <selvin.xavier@broadcom.com>
 Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 09/12] RDMA/bnxt_re: Use GFP_KERNEL in non
- atomic context
-Message-ID: <YT8xwteMlzaUuEkb@unreal>
+Subject: Re: [PATCH for-next 10/12] RDMA/bnxt_re: Correct FRMR size
+ calculation
+Message-ID: <YT8x5XnIrJJ5JXGF@unreal>
 References: <1631470526-22228-1-git-send-email-selvin.xavier@broadcom.com>
- <1631470526-22228-10-git-send-email-selvin.xavier@broadcom.com>
+ <1631470526-22228-11-git-send-email-selvin.xavier@broadcom.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1631470526-22228-10-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <1631470526-22228-11-git-send-email-selvin.xavier@broadcom.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 12, 2021 at 11:15:23AM -0700, Selvin Xavier wrote:
-> Use GFP_KERNEL instead of GFP_ATOMIC while allocating
-> control path structures which will be only called from
-> non atomic context
+On Sun, Sep 12, 2021 at 11:15:24AM -0700, Selvin Xavier wrote:
+> FRMR WQE requires to provide the log2 value of the
+> PBL and page size.
+> Use the standard ilog2 to calculate the log2 value
 > 
 > Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 > ---
->  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/infiniband/hw/bnxt_re/ib_verbs.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> index 947e8c5..3de8547 100644
-> --- a/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> +++ b/drivers/infiniband/hw/bnxt_re/qplib_rcfw.c
-> @@ -848,13 +848,13 @@ struct bnxt_qplib_rcfw_sbuf *bnxt_qplib_rcfw_alloc_sbuf(
->  {
->  	struct bnxt_qplib_rcfw_sbuf *sbuf;
->  
-> -	sbuf = kzalloc(sizeof(*sbuf), GFP_ATOMIC);
-> +	sbuf = kzalloc(sizeof(*sbuf), GFP_KERNEL);
->  	if (!sbuf)
->  		return NULL;
 
-I think that you can do same change in bnxt_re_netdev_event() too.
-
->  
->  	sbuf->size = size;
->  	sbuf->sb = dma_alloc_coherent(&rcfw->pdev->dev, sbuf->size,
-> -				      &sbuf->dma_addr, GFP_ATOMIC);
-> +				      &sbuf->dma_addr, GFP_KERNEL);
->  	if (!sbuf->sb)
->  		goto bail;
->  
-> -- 
-> 2.5.5
-> 
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
