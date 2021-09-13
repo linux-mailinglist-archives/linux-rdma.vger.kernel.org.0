@@ -2,105 +2,150 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADBC3408543
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 09:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20E1540860D
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 10:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhIMHWM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Sep 2021 03:22:12 -0400
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:41667 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbhIMHWM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Sep 2021 03:22:12 -0400
-Received: by mail-vk1-f170.google.com with SMTP id g18so3022024vkq.8;
-        Mon, 13 Sep 2021 00:20:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sa0Gb92rSOdfFNnzmGv1L64+0DeNzZyeNwu+ustj1Gw=;
-        b=l2u0kJmXnwSYSPFodqVJy8qLwbQNkks+UCVlLclOKZsTBOX++P8pkwhPdWGVgCV5xV
-         DbCu3F1eB3YsvBKT5CzUzJYTW776TsRpf4Uni7U+i6j6eHtOmRQjKT6D4xWz6GKapt3/
-         btrzDS9d2tNzvRwnR1EzDd0Q29SZ1vC7wzUXBNMeh2pnOZjodDmXLHo4H/9nyyFbSbvc
-         qsWGJJ3R39qE/VLeugPKqCC7oSGEuMBblgH14Qn+yr8dn7N0vxrRDpiXiwgVGajyVMtQ
-         rcUp5fr0bHKiZmXxsr+dzUvbLxPDxNE7hCnh9akJZ5xME2RBYuYGJZdqVZloPTo9DS4k
-         8CeA==
-X-Gm-Message-State: AOAM5339C7Bas42b6kQjFwBBD3IeljP99GTRfrOd2VYK0XAkHKJMppn4
-        rSNVqWFYMa0T6pEDhyY151pWSiApdrPPru8oG5yk0/uaVOk=
-X-Google-Smtp-Source: ABdhPJwl+0wsm0ZjKRzSjXaJRF2ZV+LHRgbqlKU8XOItXXa12ME5I8OiXI/D00E9eSbOP18LxIEUKpUUVo6V097P61o=
-X-Received: by 2002:a05:6122:21ab:: with SMTP id j43mr3447373vkd.19.1631517655938;
- Mon, 13 Sep 2021 00:20:55 -0700 (PDT)
+        id S237800AbhIMIGC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Sep 2021 04:06:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46044 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237722AbhIMIGC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Sep 2021 04:06:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 61F62603E9;
+        Mon, 13 Sep 2021 08:04:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631520287;
+        bh=rVe4HDHK9cNVDerCC4itOhS17WRTvIQ0r26T5esxSKY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aIkQLgHsRAfGKQkkRSQv8Zy5Ot5hazUW91/FuxUVwnUUvbgSnrc9w/mHLJTUEBtaa
+         HyMyo9o3TXGXg/aUcpQyZz1cWYSgq96AvoiQH6oZMUTXAXa9rNKMvcP62AEpC9WXC4
+         mzYUNMo03v3yr1yTMX0EKtV6vi0zd8wP5MyZviypfoKTVRZwBwIVw+ElY6T78g/xOX
+         UoEMQte3+1MYyX136pknNjK9UAWvmt+QCMcwMtsVzttVz5Jva/7LpfVAYjMlray0ZA
+         SzcyjnZVv5dy2uJk4K102UY1GQvpSy0i4VLdaJaagIj0ZBiFZZOPT5bZqPF1rHCToH
+         AvxQN0MQk/4GA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-rdma@vger.kernel.org, Nelson Escobar <neescoba@cisco.com>
+Subject: [PATCH rdma-rc] RDMA/usnic: Lock VF with mutex instead of spinlock
+Date:   Mon, 13 Sep 2021 11:04:42 +0300
+Message-Id: <2a0e295786c127e518ebee8bb7cafcb819a625f6.1631520231.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210913070906.1941147-1-geert@linux-m68k.org>
-In-Reply-To: <20210913070906.1941147-1-geert@linux-m68k.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Sep 2021 09:20:44 +0200
-Message-ID: <CAMuHMdWHDOC2WedHfgYh2nwijEsqnb3+LXgHwST29TaLugiTdA@mail.gmail.com>
-Subject: Re: Build regressions/improvements in v5.15-rc1
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Wenpeng Liang <liangwenpeng@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 9:10 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> Below is the list of build error/warning regressions/improvements in
-> v5.15-rc1[1] compared to v5.14[2].
->
-> Summarized:
->   - build errors: +62/-12
+From: Leon Romanovsky <leonro@nvidia.com>
 
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1859' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
->   + /kisskb/src/include/linux/compiler_types.h: error: call to '__compiletime_assert_1866' declared with attribute error: FIELD_PREP: value too large for the field:  => 322:38
+Usnic VF doesn't need lock in atomic context to create QPs, so it is safe
+to use mutex instead of spinlock. Such change fixes the following smatch
+error.
 
-Actual error in drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+Smatch static checker warning:
 
-arm64-gcc5.4/arm64-allmodconfig
-arm64-gcc8/arm64-allmodconfig
+   lib/kobject.c:289 kobject_set_name_vargs()
+    warn: sleeping in atomic context
 
->   + error: modpost: "__aeabi_ldivmod" [drivers/block/nbd.ko] undefined!:  => N/A
->   + error: nbd.c: undefined reference to `__aeabi_ldivmod':  => .text+0x246c), .text+0x2334)
+Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/usnic/usnic_ib.h       |  2 +-
+ drivers/infiniband/hw/usnic/usnic_ib_main.c  |  2 +-
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 16 ++++++++--------
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-arm-gcc4.9/imote2_defconfig
-arm-gcc4.9/ep93xx_defconfig
-arm-gcc4.9/colibri_pxa270_defconfig
-arm-gcc4.9/ezx_defconfig
-arm-gcc4.9/mini2440_defconfig
-arm-gcc4.9/trizeps4_defconfig
-
->   + error: modpost: "__divdi3" [drivers/block/nbd.ko] undefined!:  => N/A
->   + error: nbd.c: undefined reference to `__divdi3':  => .text+0x24a0), .text+0x2458)
-
-powerpc-gcc4.9/corenet32_smp_defconfig
-powerpc-gcc4.9/mpc85xx_defconfig
-powerpc-gcc4.9/ppc6xx_defconfig
-mips-gcc4.9/malta_defconfig
-arm-gcc4.9/iop32x_defconfig
-arm-gcc4.9/s3c2410_defconfig
-arm-gcc4.9/badge4_defconfig
-arm-gcc4.9/footbridge_defconfig
-arm-gcc4.9/jornada720_defconfig
-arm-gcc4.9/lpd270_defconfig
-
-The others are fallout of -Werror.  Still, it would be good to get them
-fixed, too.
-
->   - build warnings: +6/-267
-
-Amazing, we still have new build warnings ;-)
-
-> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f/ (all 182 configs)
-> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/7d2a07b769330c34b4deabeed939325c77a7ec2f/ (all 182 configs)
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib.h b/drivers/infiniband/hw/usnic/usnic_ib.h
+index 84dd682d2334..b350081aeb5a 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib.h
++++ b/drivers/infiniband/hw/usnic/usnic_ib.h
+@@ -90,7 +90,7 @@ struct usnic_ib_dev {
+ 
+ struct usnic_ib_vf {
+ 	struct usnic_ib_dev		*pf;
+-	spinlock_t			lock;
++	struct mutex			lock;
+ 	struct usnic_vnic		*vnic;
+ 	unsigned int			qp_grp_ref_cnt;
+ 	struct usnic_ib_pd		*pd;
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_main.c b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+index 228e9a36dad0..d346dd48e731 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_main.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_main.c
+@@ -572,7 +572,7 @@ static int usnic_ib_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	vf->pf = pf;
+-	spin_lock_init(&vf->lock);
++	mutex_init(&vf->lock);
+ 	mutex_lock(&pf->usdev_lock);
+ 	list_add_tail(&vf->link, &pf->vf_dev_list);
+ 	/*
+diff --git a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+index 06a4e9d4545d..756a83bcff58 100644
+--- a/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
++++ b/drivers/infiniband/hw/usnic/usnic_ib_verbs.c
+@@ -196,7 +196,7 @@ find_free_vf_and_create_qp_grp(struct ib_qp *qp,
+ 		for (i = 0; dev_list[i]; i++) {
+ 			dev = dev_list[i];
+ 			vf = dev_get_drvdata(dev);
+-			spin_lock(&vf->lock);
++			mutex_lock(&vf->lock);
+ 			vnic = vf->vnic;
+ 			if (!usnic_vnic_check_room(vnic, res_spec)) {
+ 				usnic_dbg("Found used vnic %s from %s\n",
+@@ -208,10 +208,10 @@ find_free_vf_and_create_qp_grp(struct ib_qp *qp,
+ 							     vf, pd, res_spec,
+ 							     trans_spec);
+ 
+-				spin_unlock(&vf->lock);
++				mutex_unlock(&vf->lock);
+ 				goto qp_grp_check;
+ 			}
+-			spin_unlock(&vf->lock);
++			mutex_unlock(&vf->lock);
+ 
+ 		}
+ 		usnic_uiom_free_dev_list(dev_list);
+@@ -220,7 +220,7 @@ find_free_vf_and_create_qp_grp(struct ib_qp *qp,
+ 
+ 	/* Try to find resources on an unused vf */
+ 	list_for_each_entry(vf, &us_ibdev->vf_dev_list, link) {
+-		spin_lock(&vf->lock);
++		mutex_lock(&vf->lock);
+ 		vnic = vf->vnic;
+ 		if (vf->qp_grp_ref_cnt == 0 &&
+ 		    usnic_vnic_check_room(vnic, res_spec) == 0) {
+@@ -228,10 +228,10 @@ find_free_vf_and_create_qp_grp(struct ib_qp *qp,
+ 						     vf, pd, res_spec,
+ 						     trans_spec);
+ 
+-			spin_unlock(&vf->lock);
++			mutex_unlock(&vf->lock);
+ 			goto qp_grp_check;
+ 		}
+-		spin_unlock(&vf->lock);
++		mutex_unlock(&vf->lock);
+ 	}
+ 
+ 	usnic_info("No free qp grp found on %s\n",
+@@ -253,9 +253,9 @@ static void qp_grp_destroy(struct usnic_ib_qp_grp *qp_grp)
+ 
+ 	WARN_ON(qp_grp->state != IB_QPS_RESET);
+ 
+-	spin_lock(&vf->lock);
++	mutex_lock(&vf->lock);
+ 	usnic_ib_qp_grp_destroy(qp_grp);
+-	spin_unlock(&vf->lock);
++	mutex_unlock(&vf->lock);
+ }
+ 
+ static int create_qp_validate_user_data(struct usnic_ib_create_qp_cmd cmd)
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
