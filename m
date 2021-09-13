@@ -2,98 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBE940967E
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 16:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C6F4097D3
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Sep 2021 17:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346430AbhIMOvu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Sep 2021 10:51:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42744 "EHLO mail.kernel.org"
+        id S1343918AbhIMPvl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 13 Sep 2021 11:51:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:23935 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347079AbhIMOsL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 13 Sep 2021 10:48:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 482B760698;
-        Mon, 13 Sep 2021 14:45:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631544308;
-        bh=kDrijgADMkD1GAJHX9DR6GmGqB3tm6umwruHur5C6c4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vBoyc3dkR8tgKt++AaQUfiD0jOja2FiZsFePRHKuFQnrZpVzlmNvSBD4zoKHnBEd2
-         PvczU+kfZYul6nSltiS6+YpHxmnf5qykIgm0+F7sg9NP7RFX+4FMOwNlbeqBC+bZWF
-         jXzx2ykTYIDefQSExN7zKvgaeg0U6hYnVawqepPWwgOk5CZ1wtDIV27lk5g/2ujYos
-         ofJbY+QeiWAtMbjd0vvv0R87yJu3PX6l2k7AnjeDHmlixAC2Ve1K2uymfwpeU+jFER
-         Q5vo43iIQbZzpLzXGRBzOyY2INwhGi9J71Id4OpEbHIm/E0EGr2u/FjuI4RnE45fcW
-         hBvRwsBUvnF0A==
-Date:   Mon, 13 Sep 2021 17:45:04 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shai Malin <smalin@marvell.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@ziepe.ca, aelior@marvell.com,
-        malin1024@gmail.com, Michal Kalderon <mkalderon@marvell.com>
-Subject: Re: [PATCH net] qed: rdma - don't wait for resources under hw error
- recovery flow
-Message-ID: <YT9j8Mq67CpHsaGO@unreal>
-References: <20210913121442.10189-1-smalin@marvell.com>
+        id S244469AbhIMPvW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 13 Sep 2021 11:51:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10105"; a="208941499"
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="208941499"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Sep 2021 08:49:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,290,1624345200"; 
+   d="scan'208";a="469496135"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Sep 2021 08:49:44 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 13 Sep 2021 08:49:44 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Mon, 13 Sep 2021 08:49:43 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.012;
+ Mon, 13 Sep 2021 08:49:43 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     Leon Romanovsky <leon@kernel.org>,
+        "Ertman, David M" <david.m.ertman@intel.com>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "yongxin.liu@windriver.com" <yongxin.liu@windriver.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "Singhai, Anjali" <anjali.singhai@intel.com>,
+        "Parikh, Neerav" <neerav.parikh@intel.com>,
+        "Samudrala, Sridhar" <sridhar.samudrala@intel.com>
+Subject: RE: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Thread-Topic: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+ support RDMA
+Thread-Index: AQHXpcrK/jEhT3UrxEqhAh51dcd/n6udc5YA///U4xA=
+Date:   Mon, 13 Sep 2021 15:49:43 +0000
+Message-ID: <4bc2664ac89844a79242339f5e971335@intel.com>
+References: <20210909151223.572918-1-david.m.ertman@intel.com>
+ <YTsjDsFbBggL2X/8@unreal>
+In-Reply-To: <YTsjDsFbBggL2X/8@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210913121442.10189-1-smalin@marvell.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 03:14:42PM +0300, Shai Malin wrote:
-> If the HW device is during recovery, the HW resources will never return,
-> hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
-> This fix speeds up the error recovery flow.
+> Subject: Re: [PATCH RESEND net] ice: Correctly deal with PFs that do not
+> support RDMA
 > 
-> Fixes: 64515dc899df ("qed: Add infrastructure for error detection and recovery")
-> Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-> Signed-off-by: Ariel Elior <aelior@marvell.com>
-> Signed-off-by: Shai Malin <smalin@marvell.com>
-> ---
->  drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 7 +++++++
->  drivers/net/ethernet/qlogic/qed/qed_roce.c  | 7 +++++++
->  2 files changed, 14 insertions(+)
+> On Thu, Sep 09, 2021 at 08:12:23AM -0700, Dave Ertman wrote:
+> > There are two cases where the current PF does not support RDMA
+> > functionality.  The first is if the NVM loaded on the device is set to
+> > not support RDMA (common_caps.rdma is false).  The second is if the
+> > kernel bonding driver has included the current PF in an active link
+> > aggregate.
+> >
+> > When the driver has determined that this PF does not support RDMA,
+> > then auxiliary devices should not be created on the auxiliary bus.
 > 
-> diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> index fc8b3e64f153..4967e383c31a 100644
-> --- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> +++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> @@ -1323,6 +1323,13 @@ static int qed_iwarp_wait_for_all_cids(struct qed_hwfn *p_hwfn)
->  	int rc;
->  	int i;
->  
-> +	/* If the HW device is during recovery, all resources are immediately
-> +	 * reset without receiving a per-cid indication from HW. In this case
-> +	 * we don't expect the cid_map to be cleared.
-> +	 */
-> +	if (p_hwfn->cdev->recov_in_prog)
-> +		return 0;
+> This part is wrong, auxiliary devices should always be created, in your case it will
+> be one eth device only without extra irdma device.
 
-How do you ensure that this doesn't race with recovery flow?
+It is worth considering having an eth aux device/driver but is it a hard-and-fast rule?
+In this case, the RDMA-capable PCI network device spawns an auxiliary device for RDMA
+and the core driver is a network driver.
 
-> +
->  	rc = qed_iwarp_wait_cid_map_cleared(p_hwfn,
->  					    &p_hwfn->p_rdma_info->tcp_cid_map);
->  	if (rc)
-> diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> index f16a157bb95a..aff5a2871b8f 100644
-> --- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> +++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> @@ -71,6 +71,13 @@ void qed_roce_stop(struct qed_hwfn *p_hwfn)
->  	struct qed_bmap *rcid_map = &p_hwfn->p_rdma_info->real_cid_map;
->  	int wait_count = 0;
->  
-> +	/* If the HW device is during recovery, all resources are immediately
-> +	 * reset without receiving a per-cid indication from HW. In this case
-> +	 * we don't expect the cid bitmap to be cleared.
-> +	 */
-> +	if (p_hwfn->cdev->recov_in_prog)
-> +		return;
-> +
->  	/* when destroying a_RoCE QP the control is returned to the user after
->  	 * the synchronous part. The asynchronous part may take a little longer.
->  	 * We delay for a short while if an async destroy QP is still expected.
-> -- 
-> 2.22.0
 > 
+> Your "bug" is that you mixed auxiliary bus devices with "regular" ones and created
+> eth device not as auxiliary one. This is why you are calling to auxiliary_device_init()
+> for RDMA only and fallback to non-auxiliary mode.
+
+It's a design choice on how you carve out function(s) off your PCI core device to be
+managed by auxiliary driver(s) and not a bug.
+
+Shiraz
