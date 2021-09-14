@@ -2,119 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA3F440B7C2
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 21:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA79740B7C3
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 21:18:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhINTTL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 15:19:11 -0400
-Received: from mail-bn1nam07on2069.outbound.protection.outlook.com ([40.107.212.69]:36997
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229869AbhINTTL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Sep 2021 15:19:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JEo0n1ziFnkOvRPVMYpU0vTlFPomU9C7scn0OGY1ADgJdzWELGtfdeaxeQyM/uBAzchXOFAxU//XAcvhn7wSlqkifB7T+b8U+QNYSxiKrBxyyxLzVHwcp/aIez7hbbKrL/HLSSiN29hbRoGSsyIJRopbjHlnVguKOGJd00WcUavp7rXJeBdq6JZU5FV4YuvHNhfDT0G1CpzOSz9KkmTJxDyEJKDeFt07DpnlviwLaGAUIb1aRo29QcQsJ2xAomPHMes9yMTjgLV1NaKSS/T3rvBxdcQuCC7P9vSE2sB8YGlDxSrnumlG0dc9UPwaQf9fpf+jr1R1spQWKUlzY801Ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=q3HmMNCVlb8oqC5LDzl1zdoGHrIdNK8aN1iiox//dY8=;
- b=Rt1BozEsDsOE+gZ8Nqavg+XsfG4hNBhhoNADYCpAsd+NRaGC39MRlBbkM02aHpAaeQvNivGFJalHQJAqg2Yk1ZiqqJJDvmY8NFiTfyv2GTRkDrsTphS3gqUhNxzsMDZUJS/Q/LOENZBlZ2A8WUHJvizo8QAWRVAv1dF3rSB+9jjZsQ4Sb3MatjOTIAEM9JtwSv1yXAFxky4eEAzQxsc6iHn0G+HupbibZPykUuKnlD5he6fLZVaANVYX3iNwRlVEIProxa91TZSIfWtQ8UooW6JEJ6GiU2AV+o6Vv65NxCt14JvgmhgBO0AgEYF5P3FUxD229c+MQloMGX72H5YBMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q3HmMNCVlb8oqC5LDzl1zdoGHrIdNK8aN1iiox//dY8=;
- b=Q1gSojkYbuII4UN9hyPWwXnfuZQeCONzF0t3gYMvR1cIkO6LF1HpJq0+AfRE6XO0Y6acrH4jPaXyIykFZtowA7+F2w29eBv1m39fZ3p6xLkJJfVmwMMLOUIVoRWhnXn1hkdolxAD8TXsvzQsbiCm6VihLJ9GaQpU+pTD50j7/YB0dU0fDXqQnMur5y6bkugXk95zAi7E7zcW7JC551oCdTwmuyvDDVrdz4qi1B/slBGMGaaZOjIQDOAl66LSuGkHJ77s2BQwLCgWSBEmPJjK3SEbA+uXV4ME12wlMZL3rQPpNCGe6TZzfcX7XFLDQPFuEcRrfeRXYD+cpQLm0F4tZw==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5351.namprd12.prod.outlook.com (2603:10b6:208:317::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
- 2021 19:17:52 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 19:17:52 +0000
-Date:   Tue, 14 Sep 2021 16:17:51 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leonro@nvidia.com,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [PATCH 1/1] RDMA/rxe: remove the unnecessary variable
-Message-ID: <20210914191751.GB149861@nvidia.com>
-References: <20210915075128.482919-1-yanjun.zhu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210915075128.482919-1-yanjun.zhu@intel.com>
-X-ClientProxiedBy: MN2PR01CA0023.prod.exchangelabs.com (2603:10b6:208:10c::36)
- To BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+        id S232535AbhINTUH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 15:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229869AbhINTUG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 15:20:06 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6ADC061574
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 12:18:48 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id i25so655318lfg.6
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 12:18:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/YxCg+Ff5e18Lo5SLxz2RohY8wIeS7mnNr94SiNjtXE=;
+        b=MAAULZ4URU5MTmtKRWymxurd+Zu6ETEEDIunC1m5EtPyL8I0MQlFAdKvzoK6qKJomw
+         qw+saZ9NCqKKF9FlwDUGiOyvAmlXYwOF7O3XP4wRG7NSrfOZmJl87gAFOG1J81g9q+cH
+         6RYe0cCAP/vNZGkM9eljVjR19I9Wsiig/vp+dlTY3kKRu6LBouisQGPCSZevvSD+j1Qm
+         IMpSzG0iUHG2aS7hXlnBYZkL121q/rK08HRxTbmFHXzxag0mEdnq45lBKQTVY9k1hege
+         j3iPe+iLBkLXELjnu+2QuWmJYHoxfj2wYKlz1JgJc8TN2fiasfHOhgBpaAzPDjrKMCHn
+         CIUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/YxCg+Ff5e18Lo5SLxz2RohY8wIeS7mnNr94SiNjtXE=;
+        b=Gcc47bYPym90izaSpEe4FiHIQfoJrPJY9pQZ7u98zIFNYvnkOT30CqtbJGc0wHfRNx
+         2dYBYK3c9vBPFJLMhEjs1SW9o4+eNwM9Kq1HRQbZYW4Xtz7rMZMWLYnMfEZa8EhhNPLj
+         1GmFDgOtvnLg4l3MG47ZE8JxLXuTVFw7KIJ9UiQnzXgKOO0UjLYTRS7jbFkm6zMo9aGF
+         wIvbxvucUMXKTCRHCQcaQz5sZDvkytnv3WkWjSUoX/BBXWvzGPhZXt6ZLkReGF8qlrXH
+         +0shUNjVPXaaD+g9y1un6pHnffCF1XWwdZ+xAbJWSgZdsYO707xUXZOD6tafzKzPaHNK
+         OwaA==
+X-Gm-Message-State: AOAM531K6kcUDvbpWEavEjjGND5x60t5Qm8MDNkE64jrX56hCByD+uLw
+        L/5d3J0ffxJBna7Kfi5qNalMyzEy2kFamYtUXrO7sg==
+X-Google-Smtp-Source: ABdhPJw16ccf80fVUt2Ftx18ZwpsavjrFkyaXZ38lNAQGEztzwddr/2uECAcEJCIiz5gjGcanzI2I0+0jH3Kicyx5S0=
+X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr14931868lfe.444.1631647126453;
+ Tue, 14 Sep 2021 12:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR01CA0023.prod.exchangelabs.com (2603:10b6:208:10c::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Tue, 14 Sep 2021 19:17:52 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQDwF-000d0U-47; Tue, 14 Sep 2021 16:17:51 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e65f3918-5a27-4773-9285-08d977b45928
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5351:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5351F3ECDE018D532257918BC2DA9@BL1PR12MB5351.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2733;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: seoAhGAdvbRcN+aKR/hBHNpovlG1Fkk/qqpa1KUOzuEDIKdCq9zgxJ7Y8jj2bjnY+Y+fxVPe8we3n/qn5foJoE/kfay2sGs82kboqzfc1plUxvR4y6xEmUdWGySW0QOlyKvtKd613+rD7Fze7QSnr8PjJccGtea2NLXWKby/Vsfqgu0wc8a7ooPiCkcbyrhdQKTb8cEEOR/KScqy0MJVXilL5mdZzsmHtjCG3IzYDtlu21BsEsXm7U3fBGSB+8haUZf1WfrW+kAGQtR0VpoKu9iwCaPW2R83Y8HdaAP79wFdnHPIS7fT6nab7kFtL56E0Qh6HYOM4MDjv/Zfl86NILP0aeTO5mGQbbzx195lh6dzMNynawiP0YSnVWdMe4/2CkfbZAsgU71udIhy4sNAIfzQUCpVdcymOoTftCabeO7/Q6XVzMYJMTFLAfVRdABK3FBpp/CkIZ2YiJT/r2e+RuFLchQfhHc+rUYXIau/2Er6p2gpCKhHgSyOBRBYWzzoEn/1gKEycCwSboJ6QUqeIs3VWdJdoK3c9kQKOA6f7DuxE2OnYNHtiKFvKM5dTBLIJfCyyNPJQByPq8syrtwP2sf0iC2ee9tkhiX9vm+m1B1Zqrji5adqSr4LHTEEWXOoYslSX98g/cBBfjs4ynOFw38lux98aiSzRqwt9Ek2zrZHdhm+zhAJoetwHqsJH3/FmLJN/koBKM/7WMLFk0QlQA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(396003)(346002)(136003)(376002)(4744005)(5660300002)(478600001)(86362001)(83380400001)(9786002)(66476007)(26005)(2906002)(36756003)(8676002)(8936002)(38100700002)(33656002)(9746002)(2616005)(426003)(316002)(186003)(4326008)(1076003)(66556008)(6916009)(66946007)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4o0TfxPCG2BGL/q73uXnErOV3HQckXKRKHzgNQ+lANQcpMaMLKuKcBEJhE11?=
- =?us-ascii?Q?WxkFXzdWC0LcQ7ZCOKWvtG42BEj4OoxiiK43jOJU5Zo9I3vBEQTlctYwChez?=
- =?us-ascii?Q?e2K+zvnxSAfbbOTQ9GGlNXEbR2vE28S0DNGTDKolSVCEHVg5B7rEKznNpXCP?=
- =?us-ascii?Q?Uf1imj0uxGLTvFw5OhEqDQN2eSOH6M/BritkBJDiyxXE6nv3uh7HDA+Fj0xE?=
- =?us-ascii?Q?6pBprHkugd2MTIewiQzfQwchXP7MAOWaB/ylqulFnBNZKxvvzd8V3iUK0Y7D?=
- =?us-ascii?Q?PKtdeN8aY8+OJ2AewchAc2lzhoacnUk8B7VyeVcAfYdbRmXUvIU77OxnEooU?=
- =?us-ascii?Q?DwTyFc1ALBSC1d8RFKOHNRkrh8eDlF6iMNWzAU0ehE5FF/v4RVrvaQVvc1bF?=
- =?us-ascii?Q?eTkrfVqHvl+oPsLSWZHLH2X1ui78WFwU5sJDoegh5Td9vFhsxOZwLlGurU+K?=
- =?us-ascii?Q?4mH3vmpxAtmefycsZjudwFH74kkbBrT7p3iIdRkZyAAZ5c3basv24aVxNs2O?=
- =?us-ascii?Q?0G9FQE7OAnNGnkrxkoG8xcpE2r4lFQ/8aRDaGvKr8NWHMrDQ25Vehq8bLpJx?=
- =?us-ascii?Q?QXYXhiBNz9aNYSwXfVKLHRBmT+AgoeEyzbqzQVk2WC2hL/Thd7XfddJjhA1K?=
- =?us-ascii?Q?OxiKf2ply5gewB3KfSDTUxaoAzTDshXjtvdl8o4YNLelkqdLo+PBv5C+FfF5?=
- =?us-ascii?Q?PE/3DM4YEXtoaOfsiNaxA7NUCxsQ0TrrraVEdm2RpnWYyJkoGXAi/oGLNmAH?=
- =?us-ascii?Q?rx2vwSHUgLRQSy26+BX10IqpyW0gm1BINSdt7gq38Huif6BqtfsjXpyZ/sya?=
- =?us-ascii?Q?PkQDS+MFMG4A9LJSoCNf6yaUfcac+PEiGFSB0076lxRZNRvpPAN+APyMc+im?=
- =?us-ascii?Q?lmCsA/iAl6VVT+2LNVq5f4eq4Xspw+KjUrWQyfYCyx680TSVFWozHH7LfP3h?=
- =?us-ascii?Q?kYGLLsEv345VhUCSBkMab//q/aixe9HqNceA+cFUs9xmEtwTscEIvpfj48WD?=
- =?us-ascii?Q?ZEzWe5UqcKwUH0wJtXhBp/MdeH4kJlt0tU4nfxmadgSblPRrGQH1U2nZETs2?=
- =?us-ascii?Q?c7eox7tmbOkx5QaQVuHUW6SXYVgK5mH660wlYJJhuMpGR+XJ9V2kGrlthQdd?=
- =?us-ascii?Q?PoX+hn2yZ53lbvd4D+JA82GuFQBpUO/dJ+rSa1FpiYTw9KbupvnvxQq1Oj/Z?=
- =?us-ascii?Q?cEI48T0on8lJu0VS70JI73SN2vRJFMRYaifn1gLgK4EKH5g5XPQM7Q5OVek0?=
- =?us-ascii?Q?Dp/6aFwAijVCy4b4mVoSk6VahjdnKGyIRd+nxedr4rfC5ejV7CNOK8G5LGFS?=
- =?us-ascii?Q?OgeyvrRuk0ajtK5YFrtwN28P?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e65f3918-5a27-4773-9285-08d977b45928
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Sep 2021 19:17:52.6401
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: q3lDxPp1ICSMG949MJ/4bh83UOAE8I0PU2YEl/6YShrDokV3njMUMT9H1PHitj+J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5351
+References: <0-v1-1b789bd4dbd4+14b16-clang-fix_jgg@nvidia.com>
+In-Reply-To: <0-v1-1b789bd4dbd4+14b16-clang-fix_jgg@nvidia.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 14 Sep 2021 12:18:35 -0700
+Message-ID: <CAKwvOd=Py3qAmn5e1gqWPe9bhzQ6pwmjRsRyqf+KBtwd7OQbyg@mail.gmail.com>
+Subject: Re: [PATCH rc] IB/qib: Fix clang confusion of NULL pointer comparison
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 03:51:28AM -0400, Zhu Yanjun wrote:
-> From: Zhu Yanjun <zyjzyj2000@gmail.com>
-> 
-> In the struct rxe_qp, the variable send_pkts is never used.
-> So remove it.
-> 
-> Signed-off-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+On Tue, Sep 14, 2021 at 12:01 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> clang becomes confused due to the comparision to NULL in a contexpr context:
+
+s/comparision/comparison/
+
+s/contexpr/Integer Constant Expression/
+
+I don't think constexpr is the equivalent to an ICE. We know what you
+mean though. :^)
+
+>
+>  >> drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error: static_assert expression is not an integral constant expression
+>     QIB_DIAGC_ATTR(rc_resends);
+>     ^~~~~~~~~~~~~~~~~~~~~~~~~~
+>     drivers/infiniband/hw/qib/qib_sysfs.c:406:16: note: expanded from macro 'QIB_DIAGC_ATTR'
+>             static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
+>
+> Nick found __same_type that solves this problem nicely, so use it instead.
+
+Sorry, Nathan found that.  Should be:
+
+Suggested-by: Nathan Chancellor <nathan@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks for the patch.
+
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 > ---
->  drivers/infiniband/sw/rxe/rxe_qp.c    | 2 --
->  drivers/infiniband/sw/rxe/rxe_verbs.h | 1 -
->  2 files changed, 3 deletions(-)
+>  drivers/infiniband/hw/qib/qib_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> Hopefully third time is the charm here..
 
-Applied to for-next, thanks
+:^)
 
-Jason
+>
+> diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
+> index 452e2355d24eeb..0a3b28142c05b6 100644
+> --- a/drivers/infiniband/hw/qib/qib_sysfs.c
+> +++ b/drivers/infiniband/hw/qib/qib_sysfs.c
+
+Consider explicitly including <linux/compiler_types.h> in this
+translation unit.  I know it may compile today, and it might just be
+our internal style guide talking here...
+
+> @@ -403,7 +403,7 @@ static ssize_t diagc_attr_store(struct ib_device *ibdev, u32 port_num,
+>  }
+>
+>  #define QIB_DIAGC_ATTR(N)                                                      \
+> -       static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
+> +       static_assert(__same_type(((struct qib_ibport *)0)->rvp.n_##N, u64));  \
+>         static struct qib_diagc_attr qib_diagc_attr_##N = {                    \
+>                 .attr = __ATTR(N, 0664, diagc_attr_show, diagc_attr_store),    \
+>                 .counter =                                                     \
+>
+> base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
+> --
+> 2.33.0
+>
+
+
+-- 
+Thanks,
+~Nick Desaulniers
