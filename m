@@ -2,203 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E4C40A6A8
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 08:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DBBC40A722
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 09:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240054AbhINGYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 02:24:25 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:48766 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239908AbhINGYY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Sep 2021 02:24:24 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18DN5NlV009361;
-        Mon, 13 Sep 2021 23:23:04 -0700
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2173.outbound.protection.outlook.com [104.47.57.173])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3b2380uuah-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Sep 2021 23:23:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KBq/bEOV518QbM2N+PnbZuTzvnjYCjicVrCSBqrCaWubt5o9xDAG91d/iAuVo3XaVhxUu9uLLXx3hQZlUiOYv3C8cEZFou7nksjtIaLNdU48sSIw92NIhVDaRazG2JEFso9pNoS7IHtZ4KyItQgxRgpxXMSiqziNt2BAF1fjkBNE3GSFiw1Vq1aMDVhvWiHHTbrY+8jqXSFKqMPRDUR6m17S8LWnPANv5g1U7TMu53UiiA9Om5Uz6V+O74aBfV+7gf3oRA8O51aiO1VWIx0pAwOX+jwcAEdcUeuM+2ZCaaLmHGHli1oo3hCPV/0oplLK9V0Oi4Xek1++2Gfbvv2ktg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=b03kM01ODuDSIEVuSf1sY+mem3jLq2Zhd4YHE0bT4BY=;
- b=fZRuxVEOSZjqgxEfBeVS6K0+IFsgHaoy3YeuKavFKFadp46K81ob+9RnUOwaBpps9EfWu3dJ3VoNYcTtjZGRpLpX0A7N2zI9rnqGmzyKw+GpC+WJ1YPLmDJNLKR4Jt48cPlrOXrj31n/elfA7G+DBMrDvt3XxQOC25lK0skkZvlb8fSXWbtNxYGFfEprqt3kmD2lYOH4jiG74qK3vwR1Ws/HRhXx3M6zJGhAqlqdPk5cf9Z+mdi1VAJ7wi66F1jMUkm5P5Anw9N6dw07b2iUFK7+cw60lBuqj4fWgQynpK08fVxes4ZZNVBxrVEpHk0XTln4DJZ7P81yu6sHJyN9mA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        id S240341AbhINHNI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 03:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240566AbhINHNE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 03:13:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8889C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 00:11:47 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id i7so10503294lfr.13
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 00:11:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=b03kM01ODuDSIEVuSf1sY+mem3jLq2Zhd4YHE0bT4BY=;
- b=OQOZqTvm1coLpA4FpUfdZ62IzwodR/8QyeMdFqWDgz1O0rPf6pcZ8HQKupMb8G3hKublfsgzy/uT0pOqW9DMQHYQzvUOIjGDwWA4QKfffyOFuu7xzIyQNAgzf4dVSDzrpSM5vLUGbrcAuzGXu/NJdSlxI99LzDoPm6V/dydMI+Y=
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com (2603:10b6:a03:2c8::13)
- by BYAPR18MB2501.namprd18.prod.outlook.com (2603:10b6:a03:131::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.18; Tue, 14 Sep
- 2021 06:23:02 +0000
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::c38:a710:6617:82a5]) by SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::c38:a710:6617:82a5%4]) with mapi id 15.20.4500.019; Tue, 14 Sep 2021
- 06:23:02 +0000
-From:   Shai Malin <smalin@marvell.com>
-To:     Leon Romanovsky <leon@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, Ariel Elior <aelior@marvell.com>,
-        "malin1024@gmail.com" <malin1024@gmail.com>,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: Re: [PATCH net] qed: rdma - don't wait for resources under hw error
- recovery flow
-Thread-Topic: [PATCH net] qed: rdma - don't wait for resources under hw error
- recovery flow
-Thread-Index: AdepMH6krEZHu5kxSOKllNhVhRVcsg==
-Date:   Tue, 14 Sep 2021 06:23:02 +0000
-Message-ID: <SJ0PR18MB3882BDDFA81A7FD3A541C282CCDA9@SJ0PR18MB3882.namprd18.prod.outlook.com>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=marvell.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1054b52d-676c-47b0-e578-08d977481b01
-x-ms-traffictypediagnostic: BYAPR18MB2501:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR18MB250133097BB04CFD88D00450CCDA9@BYAPR18MB2501.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qFIgSCR1Y0ZN/78qpcdJ9nN2JrnvQyAJ67TRrdGXavfX2R/XEwmPuBPnlxLC7yH2go7bpuDvFYquZ1iX0dTtXMOU1mnjvYKUHGCroTO3EKB9PXOdFiVN9KzipcZ3YzpOJOcmZZfJKKlwMzm6cPNjgyr1wu0pSaFgmRQ81sitsKKnuSLeOYBzKhgrnjlvOlUYx8FytKew63yjcbBYWigj4IObOBgppE/XlgzphLikqLuwuLU7AlYUO8uP/Q5qQx7jOHsW89wFgXFrtYiHB73S33kc7JyDBKWC0r+AtyxE5/hFKapKkd/ETFf5SeS7hBp6dpDwrkDcdcp4VXyjgNHLae3pMpC1cyGNpsSDSFzJi8/MDDHA1hJygUmvR4ubDo+Lapin0zBNsDblJQQNLIj1z/Z9BXm/GajhSWibocj9bIakFcvTMGOjTl005eY0sYB9+u9Azjjy6ZNUd6EHBU05mCUsjSuKexUp1zIheoqsbAMrlQZekuz9hoj6tvS+PNn5s2UWp18BjxWeAxdDzIPxkJcZyK0rfV/nlGPHomueclGHAUV0UptkTbXFcOtrcYtl3IpXVtXuPMMmBEAoAIr4rSRd9evGQ2dNuAQDueR+OE1Ta0pIKZvrBRnHQNgoTi/ak1GH9aQfHcSKI0JC5DHd9QERcklpc3jeJ2xkuhmGV0p1p8c+l7ru9rbedNox67xhGO38xRZm857GEa0hEG9H/A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB3882.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(346002)(396003)(376002)(39860400002)(2906002)(33656002)(71200400001)(8676002)(38070700005)(6506007)(86362001)(107886003)(55016002)(7696005)(6916009)(186003)(4326008)(54906003)(9686003)(66556008)(64756008)(83380400001)(76116006)(66446008)(316002)(122000001)(38100700002)(52536014)(478600001)(66946007)(66476007)(8936002)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?uIQI8F3p7xDaqf9xK9b+PJ+audAbVNjBQO01indp8X3Qsfe5ES/UY3V4R8el?=
- =?us-ascii?Q?haprvcKNjvC+zRrh7nkFKyuzyjPcfViZL1aOfaUdja/7ATR7VtK+FQmbyRf1?=
- =?us-ascii?Q?6C+blbBbB4+ymQlsBPFdU8LMKeeqtY6vCPTx05rFqMroKku4xNZyb82GSkdJ?=
- =?us-ascii?Q?4qEexGc+Ij+FrgpkkpqrNRkIfft854UziwUm7Q/pZxDqqZmZo63CGYG1q0Sd?=
- =?us-ascii?Q?LvpH7ZEgCX3MZoqWyyUrAzjPxq51r6604fLAVNK3FEKIJnt07iFRv16Bdh9S?=
- =?us-ascii?Q?dLonpXhoOky6ThQpQy5MTpdqBMk45YrSxJkvdmDBP91iNlu2Ukd02w4DAq0B?=
- =?us-ascii?Q?9l6SlQSR23Kv+6VAqARmCJZ+YsWiicbAE36eBslr4/lu5g1I3qDWesRNBAHU?=
- =?us-ascii?Q?zpa9vNn9dipn48WNZP1FXObxkVSJ1c7TDDAJjcY3X/t6pEeBvYvrGhTmQYat?=
- =?us-ascii?Q?Fk/bDK581a0m4mv4/05pspOdLYvA8Wg05dMTj4ZEdTQZQj+XYxY3WuEk0Lyo?=
- =?us-ascii?Q?rDRf8vaMt7pEz9gFhsDZO17YRV910Tqwh+zMnvW/NI1LW3lPx0XLyT8amZFr?=
- =?us-ascii?Q?0Rq9Zhv7pd38W2aTmOdPTTI/uL0IWCsm8+89bx1y365V8Xhc8Rb9it+AUYAS?=
- =?us-ascii?Q?it/rIWHirU5b8yM2vr1NC9wrXy6b/oj3gB/Wb7cVmXYHFyfbLD668gRcTov4?=
- =?us-ascii?Q?HpGfEghlG9Lw+T9yLSToo2h0LpqFuMq+Yh5TQ5Hb0GUU1LpzjWzqCsilLzV2?=
- =?us-ascii?Q?egCMhNUYgrf5qwTZkGojODLdvFr9RzC2qKQow+g7pbUmk7FIelrvWJQC4FW/?=
- =?us-ascii?Q?/lJaqX5zvh4cTitQvICQW39qsFBe4xrvgLGaeU7ObIqledeMRU1DkzD9Qztk?=
- =?us-ascii?Q?kIe34udb0cpNo14PLGkvT95oZS1VtyBqtl9+xPH7t09C+d0WEiKdO1fAMaqH?=
- =?us-ascii?Q?qAYNdMLEerFX8Ggi7Kssd7DbyWeSA2EGXrQ1T5dgCf0WRWOZyVszbFrGQS2m?=
- =?us-ascii?Q?QOHA/GwKsIOBfecuypFDcpwT/OxDsUEFWk8FQU2VypJnOgj1Fmqa8SYfRAlJ?=
- =?us-ascii?Q?4rxkfHZBnz2rOaST/srcWFnUZ0J5TQX6h4Gn2XpWacTFjv2Gxu3ovx+xiPTs?=
- =?us-ascii?Q?uA/ebb9rNawOQlxKYzLDmNpSyBrab7cvNjHerRqlaNGhOm87ELFVUqBjCWOk?=
- =?us-ascii?Q?z6GOakg+3P2La7b/Tg5Cejq18wfFHLXOc0lSa0cO/mB4gNXswNjJqkYD/iIU?=
- =?us-ascii?Q?UbRtswarbXzv7gBpUbVNN0Vu3WS/cT8L172RZwcqLbGAL9ejPOq8+qZ9qKor?=
- =?us-ascii?Q?VjNkVswh1Wm/mTekBL8RA0Kj0pL6N037JwgKSLtaFj243PzQvTW6hL7iWGx3?=
- =?us-ascii?Q?wUkqi90=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
+        b=1JlTTQK545gD4gENkjtzDBBttLJSew1xXd5vdCvxPNjtrEIr1RUw7tM82TRpRzJNnD
+         /EweNJnNWjq1AHSY2ilH3NKTgEK6aSlHrC/cYSoQgrDhyxKlV4HASpkpcw9hiwqANtkT
+         nVH8j+GyM+5w/H3xnUYFiRy60ViBW8qKEHd12BUB5+doy9xEp0mQ5VnBz/tnavt/Aamo
+         PL2+LC5vzWc0cLDQn584bgIJ//1HRv6aQv8Knu52ewfQOpCZ7JV/2/+imPZ0YoSa0cP2
+         Y0jpslrkGOQysod+TPif+nc6oL8QzdZSFzdAccSdIIN1OOhIuUF0x0qw3FaqOrw6NEaT
+         4x4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
+        b=5OIpJvKgDVtljz5S6hPTFKf+DLPvfX8VfMRaUM//dmVtGJKKi+cNG/jdQnwfxllwxo
+         HsM/D1peuRaaqKWolGFjujp/3BbSzHSBAoLWO1I8k8Rr7+IIXckexazsyMmIOwI9tDUW
+         K/TNn8kdsV6R5LIQZVfVMjMIAoxO0Ro/tEw1xP1EHT9k+xGtWK8Pu0bryF4rc7XXRfOa
+         JLIBQ4eKPCi3rkaxb+8o6P887Oc17hxB+pmQx4jBenJlHDQf5I+7+ArUsw3P7o+H2iOc
+         fRMFQ+t3zW7Z2MVczad8WNv++sRR+0ef5o5FW2zyB7S85BYitGoDgeZo3f3+5JZXA0qt
+         9ITQ==
+X-Gm-Message-State: AOAM530kghg2ZZQnrg2DCHLktSKTxiuJmY9drUK/ysjBL/1yOW+YHFgd
+        +QMLrKQqkVryzKJbBGsznjHVV5enSwouOO01fhCSrQ==
+X-Google-Smtp-Source: ABdhPJzPI3Q6eKZTET4UijO1AFuDxaLYa0iCHAyZUs/1HTcP7gkzVgBvmuq8ziEB04O0rJuEZ9fYk1pqrgztgz0/PzQ=
+X-Received: by 2002:a05:6512:38a1:: with SMTP id o1mr12050131lft.645.1631603506141;
+ Tue, 14 Sep 2021 00:11:46 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB3882.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1054b52d-676c-47b0-e578-08d977481b01
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 06:23:02.2870
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7VNt96Hnz+mxs9jajtnVi58nYRvW56ljUcZnOebyKoyVG4hGj0zhvm8ZsH4k4eX42Btv2Xbq3m2HdRNvPmVRYw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR18MB2501
-X-Proofpoint-ORIG-GUID: oNdLpI4JOv5z8suTKdX7bvkLMDBxHe0w
-X-Proofpoint-GUID: oNdLpI4JOv5z8suTKdX7bvkLMDBxHe0w
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-13_09,2021-09-09_01,2020-04-07_01
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+ <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+ <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+ <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com> <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
+In-Reply-To: <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Tue, 14 Sep 2021 16:11:34 +0900
+Message-ID: <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 13, 2021 at 5:45:00PM +0300, Leon Romanovsky wrote:
-> On Mon, Sep 13, 2021 at 03:14:42PM +0300, Shai Malin wrote:
-> > If the HW device is during recovery, the HW resources will never return=
-,
-> > hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
-> > This fix speeds up the error recovery flow.
+2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 4:23 Daniel Vetter <daniel.ve=
+tter@ffwll.ch>:
+>
+> On Fri, Sep 10, 2021 at 3:46 AM Shunsuke Mie <mie@igel.co.jp> wrote:
 > >
-> > Fixes: 64515dc899df ("qed: Add infrastructure for error detection and
-> recovery")
-> > Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-> > Signed-off-by: Ariel Elior <aelior@marvell.com>
-> > Signed-off-by: Shai Malin <smalin@marvell.com>
-> > ---
-> >  drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 7 +++++++
-> >  drivers/net/ethernet/qlogic/qed/qed_roce.c  | 7 +++++++
-> >  2 files changed, 14 insertions(+)
+> > 2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <danie=
+l.vetter@ffwll.ch>:
+> > >
+> > > On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
+> > > > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.ko=
+enig@amd.com> wrote:
+> > > > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > > > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
+> > > > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph=
+ Hellwig <hch@infradead.org>:
+> > > > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrot=
+e:
+> > > > > > >>>> Thank you for your comment.
+> > > > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wr=
+ote:
+> > > > > > >>>>>> To share memory space using dma-buf, a API of the dma-bu=
+f requires dma
+> > > > > > >>>>>> device, but devices such as rxe do not have a dma device=
+. For those case,
+> > > > > > >>>>>> change to specify a device of struct ib instead of the d=
+ma device.
+> > > > > > >>>>> So if dma-buf doesn't actually need a device to dma map w=
+hy do we ever
+> > > > > > >>>>> pass the dma_device here?  Something does not add up.
+> > > > > > >>>> As described in the dma-buf api guide [1], the dma_device =
+is used by dma-buf
+> > > > > > >>>> exporter to know the device buffer constraints of importer=
+.
+> > > > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3D=
+https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian=
+.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11=
+a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
+C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=
+=3DARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> > > > > > >>> Which means for rxe you'd also have to pass the one for the=
+ underlying
+> > > > > > >>> net device.
+> > > > > > >> I thought of that way too. In that case, the memory region i=
+s constrained by the
+> > > > > > >> net device, but rxe driver copies data using CPU. To avoid t=
+he constraints, I
+> > > > > > >> decided to use the ib device.
+> > > > > > > Well, that is the whole problem.
+> > > > > > >
+> > > > > > > We can't mix the dmabuf stuff people are doing that doesn't f=
+ill in
+> > > > > > > the CPU pages in the SGL with RXE - it is simply impossible a=
+s things
+> > > > > > > currently are for RXE to acess this non-struct page memory.
+> > > > > >
+> > > > > > Yeah, agree that doesn't make much sense.
+> > > > > >
+> > > > > > When you want to access the data with the CPU then why do you w=
+ant to
+> > > > > > use DMA-buf in the first place?
+> > > > > >
+> > > > > > Please keep in mind that there is work ongoing to replace the s=
+g table
+> > > > > > with an DMA address array and so make the underlying struct pag=
+e
+> > > > > > inaccessible for importers.
+> > > > >
+> > > > > Also if you do have a dma-buf, you can just dma_buf_vmap() the bu=
+ffer
+> > > > > for cpu access. Which intentionally does not require any device. =
+No
+> > > > > idea why there's a dma_buf_attach involved. Now not all exporters
+> > > > > support this, but that's fixable, and you must call
+> > > > > dma_buf_begin/end_cpu_access for cache management if the allocati=
+on
+> > > > > isn't cpu coherent. But it's all there, no need to apply hacks of
+> > > > > allowing a wrong device or other fun things.
+> > > >
+> > > > Can rxe leave the vmap in place potentially forever?
+> > >
+> > > Yeah, it's like perma-pinning the buffer into system memory for
+> > > non-p2p dma-buf sharing. We just squint and pretend that can't be
+> > > abused too badly :-) On 32bit you'll run out of vmap space rather
+> > > quickly, but that's not something anyone cares about here either. We
+> > > have a bunch of more sw modesetting drivers in drm which use
+> > > dma_buf_vmap() like this, so it's all fine.
+> > > -Daniel
+> > > --
+> > > Daniel Vetter
+> > > Software Engineer, Intel Corporation
+> > > http://blog.ffwll.ch
 > >
-> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > index fc8b3e64f153..4967e383c31a 100644
-> > --- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > +++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > @@ -1323,6 +1323,13 @@ static int qed_iwarp_wait_for_all_cids(struct
-> qed_hwfn *p_hwfn)
-> >  	int rc;
-> >  	int i;
+> > Thanks for your comments.
 > >
-> > +	/* If the HW device is during recovery, all resources are immediately
-> > +	 * reset without receiving a per-cid indication from HW. In this case
-> > +	 * we don't expect the cid_map to be cleared.
-> > +	 */
-> > +	if (p_hwfn->cdev->recov_in_prog)
-> > +		return 0;
->=20
-> How do you ensure that this doesn't race with recovery flow?
+> > In the first place, the CMA region cannot be used for RDMA because the
+> > region has no struct page. In addition, some GPU drivers use CMA and sh=
+are
+> > the region as dma-buf. As a result, RDMA cannot transfer for the region=
+. To
+> > solve this problem, rxe dma-buf support is better I thought.
+> >
+> > I'll consider and redesign the rxe dma-buf support using the dma_buf_vm=
+ap()
+> > instead of the dma_buf_dynamic_attach().
+>
+> btw for next version please cc dri-devel. get_maintainers.pl should
+> pick it up for these patches.
+A CC list of these patches is generated by get_maintainers.pl but it
+didn't pick up the dri-devel. Should I add the dri-devel to the cc
+manually?
 
-The HW recovery will start with the management FW which will detect and rep=
-ort
-the problem to the driver and it also set "cdev->recov_in_prog =3D ture" fo=
-r all=20
-the devices on the same HW.
-The qedr recovery flow is actually the qedr_remove flow but if=20
-"cdev->recov_in_prog =3D true" it will "ignore" the FW/HW resources.
-The changes introduced with this patch are part of this qedr remove flow.
-The cdev->recov_in_prog will be set to false only as part of the following=
-=20
-probe and after the HW was re-initialized.
-
->=20
-> > +
-> >  	rc =3D qed_iwarp_wait_cid_map_cleared(p_hwfn,
-> >  					    &p_hwfn->p_rdma_info-
-> >tcp_cid_map);
-> >  	if (rc)
-> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > index f16a157bb95a..aff5a2871b8f 100644
-> > --- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > +++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > @@ -71,6 +71,13 @@ void qed_roce_stop(struct qed_hwfn *p_hwfn)
-> >  	struct qed_bmap *rcid_map =3D &p_hwfn->p_rdma_info->real_cid_map;
-> >  	int wait_count =3D 0;
-> >
-> > +	/* If the HW device is during recovery, all resources are immediately
-> > +	 * reset without receiving a per-cid indication from HW. In this case
-> > +	 * we don't expect the cid bitmap to be cleared.
-> > +	 */
-> > +	if (p_hwfn->cdev->recov_in_prog)
-> > +		return;
-> > +
-> >  	/* when destroying a_RoCE QP the control is returned to the user afte=
-r
-> >  	 * the synchronous part. The asynchronous part may take a little long=
-er.
-> >  	 * We delay for a short while if an async destroy QP is still expecte=
-d.
-> > --
-> > 2.22.0
-> >
+Regards,
+Shunsuke
