@@ -2,113 +2,157 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C485C40B8D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 22:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4318440BBE0
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Sep 2021 01:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhINUR0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 16:17:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35170 "EHLO mail.kernel.org"
+        id S234320AbhINXIy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 19:08:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232545AbhINUR0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Sep 2021 16:17:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D22A6112E;
-        Tue, 14 Sep 2021 20:16:08 +0000 (UTC)
+        id S231559AbhINXIx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Sep 2021 19:08:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2E7661165;
+        Tue, 14 Sep 2021 23:07:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631650568;
-        bh=bQuXuadugMPq2p+gOELbPrJSItCsb8DjM1vt4IuwMX8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jzV1T7OulM4aA9kbhHUQiXqKnCGVibM+0hk6onpqF2G7PILh57swo2Ag7yaV3/+Ff
-         2LcrD2LXLagahvxnJO3MYUOvjLEwOS92bYr3sDJELVE6LzFsRreBS+7NJwOGDOsVlg
-         0R+iGNtf5Gp6PwCAjaHbajSP73ZT7X2mejQRkEAdiynB4qWVzEN1drwVLj+i8wMqjp
-         fPzwuixeyEPgCKVkoEOwi0cl+rKAu6VpObd4jfv5FznqjefN9t+oZUOnY2elrb87YI
-         mW4X2s773POZz697usRexOKeie0w+9NMomwoBnsESeQ0WcGXT9JHkDSFyRavTa1dy/
-         46c9+N0dnRrmA==
-Date:   Tue, 14 Sep 2021 15:16:06 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com,
-        dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
-        Felix.Kuehling@amd.com, Shaoyun.Liu@amd.com, Jay.Cornwall@amd.com,
-        andrew.gospodarek@broadcom.com, michael.chan@broadcom.com
-Subject: Re: [PATCH] PCI: Do not enable pci atomics on VFs
-Message-ID: <20210914201606.GA1452219@bjorn-Precision-5520>
+        s=k20201202; t=1631660855;
+        bh=AvmdHBEV9K2J31gkeEwlU6AlZerrMIwB/huPokwGtJQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Cj5dHOClv9iMhicqFN+mL8qB5LxUrQmghyPQLF48OTXzoZDrKAnFP7XzXL4NXiwdf
+         SeGDhHSX6T/FyJktZn7qs8T4FqWGrlbooOMcgfwa1g0xpvpBRwrKlmoT20LIpgwUZU
+         dPM5iATnmK7lcMZbSIrixEUuNZGvqH21P6JEJNvONbszEDMqU9xj3TbSKB8Yrdiz2U
+         k5XSo/mYoeCYK6pYIXRUCxWTMPSjW9vVfL2H3oGV4JJfO+nSahweAo9WFf/tKPDH8P
+         SKEzMnCrG6H6o3rmfY201I1gHufPy8AMwuZ7z6pEgK+fWwTEamGrtc/GhyKYsrFAeE
+         TtIiY3qyKWu2g==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v1 00/11] Optional counter statistics support
+Date:   Wed, 15 Sep 2021 02:07:19 +0300
+Message-Id: <cover.1631660727.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1631354585-16597-1-git-send-email-selvin.xavier@broadcom.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 11, 2021 at 03:03:05AM -0700, Selvin Xavier wrote:
-> Host crashes when pci_enable_atomic_ops_to_root is called for VFs
-> with virtual buses. The virtual buses added to SR-IOV has bus->self
-> set to  NULL and host crashes due to this.
-> 
-> PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
->  #0 [ffff9a94817136d8] machine_kexec at ffffffffb90601a4
->  #1 [ffff9a9481713728] __crash_kexec at ffffffffb9190d5d
->  #2 [ffff9a94817137f0] crash_kexec at ffffffffb9191c4d
->  #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
->  #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
->  #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
->  #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
->     [exception RIP: pcie_capability_read_dword+28]
->     RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
->     RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
->     RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
->     RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
->     R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
->     R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
->     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
->  #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
->  #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
->  #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
->     RIP: 00007f450602f648  RSP: 00007ffe880869e8  RFLAGS: 00000246
->     RAX: ffffffffffffffda  RBX: 0000000000000002  RCX: 00007f450602f648
->     RDX: 0000000000000002  RSI: 0000555c566c4a60  RDI: 0000000000000001
->     RBP: 0000555c566c4a60   R8: 000000000000000a   R9: 00007f45060c2580
->     R10: 000000000000000a  R11: 0000000000000246  R12: 00007f45063026e0
->     R13: 0000000000000002  R14: 00007f45062fd880  R15: 0000000000000002
->     ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
-> 
-> AtomicOp Requester Enable bit in the Device Control 2 register
-> is reserved for VFs and drivers shouldn't enable it for VFs.
-> Adding a check to return EINVAL if pci_enable_atomic_ops_to_root
-> is called with VF pci device.
-> 
-> Fixes: 35f5ace5dea4 ("RDMA/bnxt_re: Enable global atomic ops if platform supports")
-> Fixes: 430a23689dea ("PCI: Add pci_enable_atomic_ops_to_root()")
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Applied to pci/enumeration for v5.16, thanks!
+Change Log:
+v1:
+* Add a descriptor structure to replace name in struct rdma_hw_stats;
+* Add a bitmap in struct rdma_hw_stats to indicate the enable/disable
+  status of all counters;
+* Add a "flag" field in counter descriptor and define
+  IB_STAT_FLAG_OPTIONAL flag;
+* add/remove_op_stat() are replaced by modify_op_stat();
+* Use "set/unset" in command line and send full opcounters list through
+  netlink, and send opcounter indexes instead of names;
+* Patches are re-ordered.
+v0: https://lore.kernel.org/all/20210818112428.209111-1-markzhang@nvidia.com
 
-I fixed the extra space and rewrapped the code comment so it fits in
-80 columns.
+----------------------------------------------------------------------
+Hi,
 
-> ---
->  drivers/pci/pci.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index aacf575..d968a36 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3702,6 +3702,14 @@ int pci_enable_atomic_ops_to_root(struct pci_dev *dev, u32 cap_mask)
->  	struct pci_dev *bridge;
->  	u32 cap, ctl2;
->  
-> +	/*
-> +	 * As per PCIe r5.0, sec 9.3.5.10, the AtomicOp Requester Enable
-> +	 * bit in the Device Control 2 register is reserved in VFs and the PF
-> +	 * value applies to all associated VFs. Return -EINVAL if called for VFs.
-> +	 */
-> +	if (dev->is_virtfn)
-> +		return -EINVAL;
-> +
->  	if (!pci_is_pcie(dev))
->  		return -EINVAL;
->  
-> -- 
-> 2.5.5
-> 
+This series from Neta and Aharon provides an extension to the rdma
+statistics tool that allows to set optional counters dynamically, using
+netlink.
+
+The idea of having optional counters is to provide to the users the
+ability to get statistics of counters that hurts performance.
+
+Once an optional counter was added, its statistics will be presented
+along with all the counters, using the show command.
+
+Binding objects to the optional counters is currently not supported,
+neither in auto mode nor in manual mode.
+
+To get the list of optional counters that are supported on this device,
+use "rdma statistic mode supported". To see which counters are currently
+enabled, use "rdma statistic mode".
+
+Examples:
+
+$ rdma statistic mode supported
+link rocep8s0f0/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
+link rocep8s0f1/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
+
+$ sudo rdma statistic set link rocep8s0f0/1 optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts
+$ rdma statistic mode link rocep8s0f0/1
+link rocep8s0f0/1 optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts
+
+$ rdma statistic show link rocep8s0f0/1
+link rocep8s0f0/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests 0 out_of_buffer 0
+out_of_sequence 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err 0 implied_nak_seq_err 0
+local_ack_timeout_err 0 resp_local_length_error 0 resp_cqe_error 0 req_cqe_error 0
+req_remote_invalid_request 0 req_remote_access_errors 0 resp_remote_access_errors 0
+resp_cqe_flush_error 0 req_cqe_flush_error 0 roce_adp_retrans 0 roce_adp_retrans_to 0
+roce_slow_restart 0 roce_slow_restart_cnps 0 roce_slow_restart_trans 0 rp_cnp_ignored 0
+rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0 rx_icrc_encapsulated 0 cc_rx_ce_pkts 0
+cc_rx_cnp_pkts 0
+
+$ sudo rdma statistic set link rocep8s0f0/1 optional-counters cc_rx_ce_pkts
+$ rdma statistic mode link rocep8s0f0/1
+link rocep8s0f0/1 optional-counters cc_rx_ce_pkts
+
+Thanks
+
+Aharon Landau (11):
+  net/mlx5: Add ifc bits to support optional counters
+  net/mlx5: Add priorities for counters in RDMA namespaces
+  RDMA/counter: Add a descriptor in struct rdma_hw_stats
+  RDMA/counter: Add an is_disabled field in struct rdma_hw_stats
+  RDMA/counter: Add optional counter support
+  RDMA/nldev: Add support to get status of all counters
+  RDMA/nldev: Allow optional-counter status configuration through RDMA
+    netlink
+  RDMA/mlx5: Support optional counters in hw_stats initialization
+  RDMA/mlx5: Add steering support in optional flow counters
+  RDMA/mlx5: Add modify_op_stat() support
+  RDMA/mlx5: Add optional counter support in get_hw_stats callback
+
+ drivers/infiniband/core/counters.c            |  30 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/nldev.c               | 289 +++++++++++++-----
+ drivers/infiniband/core/sysfs.c               |  41 ++-
+ drivers/infiniband/hw/bnxt_re/hw_counters.c   | 114 +++----
+ drivers/infiniband/hw/cxgb4/provider.c        |  22 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  19 +-
+ drivers/infiniband/hw/hfi1/verbs.c            |  43 +--
+ drivers/infiniband/hw/irdma/verbs.c           |  98 +++---
+ drivers/infiniband/hw/mlx4/main.c             |  37 +--
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   2 +-
+ drivers/infiniband/hw/mlx5/counters.c         | 280 ++++++++++++++---
+ drivers/infiniband/hw/mlx5/fs.c               | 187 ++++++++++++
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  28 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c   |  42 +--
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  54 +++-
+ include/linux/mlx5/device.h                   |   2 +
+ include/linux/mlx5/fs.h                       |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |  22 +-
+ include/rdma/ib_hdrs.h                        |   1 +
+ include/rdma/ib_verbs.h                       |  48 ++-
+ include/rdma/rdma_counter.h                   |   2 +
+ include/uapi/rdma/rdma_netlink.h              |   3 +
+ 23 files changed, 1041 insertions(+), 326 deletions(-)
+
+-- 
+2.31.1
+
