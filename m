@@ -2,191 +2,221 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C0840AA0B
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 10:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBECC40AB05
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 11:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230063AbhINI72 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 04:59:28 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:22846 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229656AbhINI71 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Sep 2021 04:59:27 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18E8gfVG017980;
-        Tue, 14 Sep 2021 08:58:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=qoFonkgEGVlyYBCmC1aKpY218+3mTWU468b4HHy3dFg=;
- b=fkwwoQFtXlKUzXbSVekL3tdxeKrf11eQmjpsVDIlfbPwI9qkF0pru05ceYVZepS9W3Fn
- UtGO/8MecMNnXg2j6zEfYsPuIBudh+ozm+daPGYlqZstyBlJFxy/OBD0oeFK8sKdcE+M
- BLo0ONlODH29GAfAXw+UkpvVrYKH7tKTGBA1TC3S4bY8aj48xmDbMXeEz+srzEC/Shac
- 3oTTPGELi5umwb/zJJkClWUA9f6ciKndTEyCrFjnphxwJDNEwS/5ec5wORLdRlV73cgP
- JZP80+2WOmEtxdxHQBWnUqRAUcl+WeVukyBnmjxGEMHMUV5lP7ZdJA4rw3huGcZsiMYW FA== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=qoFonkgEGVlyYBCmC1aKpY218+3mTWU468b4HHy3dFg=;
- b=xQALr79OMOjsjfSsfwb5q8J3U4YOhvyL23w85/SR67HWTS3S+7qQNGN87bxFd/5LWspF
- kLu920wws2aYJQM+YCTnno/N6QOlXFG5BxKKAhm000eEpwhKtWq+pkD4kwgNVtS+26DW
- 1dZcaFK6tvzSeUHzXPjJA937zP3PGVgafWBlM7zV0p7FFER1G06jh5KhOwde0EFMTnwa
- JyDjLZRTcgHl0q/H8G8ejkfgacZ+/ycwor27T7g26+UvmyqJHFycL5IYDT+BpHdl2tvq
- bO5INam+9kZ/g3GHx4MtkTOmsw9Pm8Sy+xwALB82AjVqaj+EFEsTY24TBcOQAwJJVclN Sw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3b2kj5s0sm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 08:58:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18E8uMBp140344;
-        Tue, 14 Sep 2021 08:58:02 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2044.outbound.protection.outlook.com [104.47.66.44])
-        by aserp3020.oracle.com with ESMTP id 3b0m960c6m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Sep 2021 08:58:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AuJkihgp6UMt17O8eFr8gamV2N3fRnDHUuwZC2wkz/CoRnYdOjWcLXJQA4WcrJbxHuxS2dLgvK5QtAKFq8Mw94A8uL61cJ2aWiZXhiPGxZF/OzWJgEN4v57V47KH8BS/FJRmYUcEv2K7v5HPmozP+Ywj+Wzlp4ABWJSiyhh1C19yd3cceAeJgWu2YjkoF4UGTcmKjGzNQR6Ln6ZxJVMSktN47OFKqdeVZzvgmV/gq/0cnFpGRaLCJ4oN/IivpE7TrMQS/PwoS1RtTHsPFWph4Ti+q8/Mj3Cu5iqeMcuiE/GcIo2xqrzup6ShQOPNJmFUHCsi1/6qlf8NQsWbaa/5VA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=qoFonkgEGVlyYBCmC1aKpY218+3mTWU468b4HHy3dFg=;
- b=SjHUkNnndDWWgI56kTVrd60VNlC6SX1UVa2J2nntpmOBPVPIoDBf6qCPy1P9WrqcincMHXlqYItIDpEtaZavvKP3BO8Ip0At0UQJhWz+47XQCwt46kQpDq7WsgW1c/Q5m2sYMtEuOjqRS84boi54eH7euNfBFod2AfHjG1dsg973GjMRVK0XGm4fHcVdgiDaXWbzrpxsPfbjZDJNY70mjXKhI3IhAjZtfPQA3Y5jkpvJOygXhbgdkhQZjVSEdqToehWh9PG/Rmq+mgBkzz+c3PD/PKLTL+qV0nDwFArclBxWjVzqfCZ78SpgpiPqW3HD+0Tvk5boD7wje7cAvVei6w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S229686AbhINJjv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 05:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhINJjr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 05:39:47 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D31B7C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 02:38:30 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id a20-20020a0568300b9400b0051b8ca82dfcso17537158otv.3
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 02:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qoFonkgEGVlyYBCmC1aKpY218+3mTWU468b4HHy3dFg=;
- b=h0Kr6s5+pqUyywv3D0JrI77u5f3OWelZBEaBTdPzru1j/qHzJpBtkqwBfH5dRyFDK9lxSIXnq22ZVSEjH7tNod5dPqNuSWyB5OZacitSzj5LpXTeBHL8RKpN5zMxq388o+ElaX1nL54XvwusnHX/vldzNTl/3F4+G62hQ8Mwg24=
-Received: from DS7PR10MB4863.namprd10.prod.outlook.com (2603:10b6:5:297::17)
- by DS7PR10MB5054.namprd10.prod.outlook.com (2603:10b6:5:38e::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4500.14; Tue, 14 Sep
- 2021 08:58:00 +0000
-Received: from DS7PR10MB4863.namprd10.prod.outlook.com
- ([fe80::847d:80e0:a298:6489]) by DS7PR10MB4863.namprd10.prod.outlook.com
- ([fe80::847d:80e0:a298:6489%7]) with mapi id 15.20.4500.018; Tue, 14 Sep 2021
- 08:58:00 +0000
-From:   Haakon Bugge <haakon.bugge@oracle.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     Sasha Levin <sashal@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux-Net <netdev@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Guillaume Nault <gnault@redhat.com>
-Subject: Re: Please add 2dce224f469f ("netns: protect netns ID lookups with
- RCU") to LTS
-Thread-Topic: Please add 2dce224f469f ("netns: protect netns ID lookups with
- RCU") to LTS
-Thread-Index: AQHXpXwB9uiZyfI9lkyCqWjXsXAVU6ubssmAgAGg04CABFgRgIABlpUA
-Date:   Tue, 14 Sep 2021 08:58:00 +0000
-Message-ID: <1158D253-0B41-46F5-A1D2-8F49136B3C20@oracle.com>
-References: <7F058034-8A2B-4C19-A39E-12B0DB117328@oracle.com>
- <YToMf8zUVNVDCAKX@kroah.com>
- <756E20E4-399D-45ED-AA9A-BB351C865C65@oracle.com>
- <YT8PBf0FiniWR0zm@kroah.com>
-In-Reply-To: <YT8PBf0FiniWR0zm@kroah.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: linuxfoundation.org; dkim=none (message not signed)
- header.d=none;linuxfoundation.org; dmarc=none action=none
- header.from=oracle.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 502aee69-6570-48b6-ab8f-08d9775dc114
-x-ms-traffictypediagnostic: DS7PR10MB5054:
-x-microsoft-antispam-prvs: <DS7PR10MB5054795E052675D93B26C578FDDA9@DS7PR10MB5054.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ruw4GZ9tS/iuMYkocVuq8IVQ8jF/dMdgc6IYxA0FuVIWzMtCo/pM5Ar2xsiTlPPf6yPc80PkZ6rVJOuBPzlbcHjcbhNfWh7HUDd3j2bLSXG89edYiSbClqBeZWPzb5UGAVEw+0TOM5QXDPN9B2x3IJz2G3ttWU8EhdYG6fePn70qHAaAkx0jywdx7P0etRiL/djsym1Lv99Gw3PKr9n07URiDsvbvZo3YRx5Ub4uYF8cCiShOSjHS1Z/MtKI17Okvg35pKBsywN+EJ0gM/t9UQrwGFMjZTekyEqmP528vTzsDqdcu0gHGtbiT7z9blhZ1sFiXAByX/0dOv/H9h6vgpMzYwSJr+DOqYAKZHF6LwDLBMaOPPqSeNxzE+1vah5UJsHWk2wTk94yOCfwlWBL7szhEbdRgaZKLXYst19z2oo0t/JSHcxW+DlT6t+HInM/9AVKH0jTslICb5U8vMWEzQccxMffuCa7EKk6ixwyGuJ9XOIHA8dZyn+7zfkWI3K4VFjWLvzjoVYlabjXUJ2xqPXF8rlY/LOC/yHvem+tlEhBwoAIW1tO2oDFuZJqGve5iEsAzZDPgXatO6dgJnCQbrvD0dBxkXi5JZcb2e9K0GUP2x+nYMkmtAlGmNfaS4frdpZa/dYA1vQOaJdYyElHpWtuDmFBNy3shhU3r/ABdJTWwWQUk96HNFGTYhpbQLrSR2tDLY+iuf2LdLwx/Bc6f+ZTuGMJ8uNz45+iFPRfKztIsKD8cGL1G9pMDhc2oZpo
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR10MB4863.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(366004)(346002)(376002)(39860400002)(66574015)(83380400001)(6486002)(6506007)(38070700005)(44832011)(6512007)(53546011)(186003)(5660300002)(36756003)(8676002)(38100700002)(2616005)(66946007)(66476007)(64756008)(66556008)(66446008)(54906003)(122000001)(478600001)(8936002)(7416002)(2906002)(316002)(71200400001)(6916009)(91956017)(76116006)(86362001)(33656002)(4326008)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cTFxQzhDeUFCMitUV09rcjByNXpiOFVKTEJXUXI3Qkt0aXF3R1VSeEo4clBx?=
- =?utf-8?B?aFNwbnY3NW5FNGwxVnV6KzVWeGZkaEtTRUhGc0h6NHJXaVdmTlpCUlBRa0NN?=
- =?utf-8?B?S3k5ZktKYSszU0dtRG0xS2lrY1dtNGFOYjZBU08rUEhBbnZiazFGZXQ5NG85?=
- =?utf-8?B?QSsyRGRwSndnMnBMMnF2a1dqUXlnZzhhbFRBeDVKb2hIdnd0YW8zWWd1NDZj?=
- =?utf-8?B?NU1USHNwb3pEMDBxMXprZHVVSHBmV05TT1JSNURUckNyK09FVGVaVjJtd0JC?=
- =?utf-8?B?NFV5OUh4RE5rN2psb2xOdVBxUnhsQmZ4RDZ2VERZLzRHZFFsc3dXWDdIVjdn?=
- =?utf-8?B?VkJQNURlb2dxUituanl5QSt3R3I3YmxRK2dUY2JBeEMzeFp3WkZuMHFiR2Zo?=
- =?utf-8?B?bi9VWUMwMG9OVlovalZJK0VJeHFMbGtUeVJOZGlNRnpkajVaNkF5am90c09h?=
- =?utf-8?B?RTdXdTBLenc5NHpHU3loQ3dYbFdHS2dhcCt1ZHlDemVtdmVEa3Q0WmZrTEV3?=
- =?utf-8?B?ZWs0UW4wSllXWUlWVTJOOVRTbURmZzJwSjV2YmZ0Qi9MMkM5VTZXSHhybVVm?=
- =?utf-8?B?aHFORU9pQ1lxRUtwRVViS3lPU29BV29PaHg1NktBc3pvRm0zZ2ExeG94SGhG?=
- =?utf-8?B?UTBINnJKNis5T1BKRjZpRk54MkphYURNd0lkUFNlenZpUGhHMXU2emlBaURE?=
- =?utf-8?B?clNrZ0JtMGFrYzVHSjdmdlFsMVN2dURNZHRVT0lTVjhUODRjY05nK05vQ0ZU?=
- =?utf-8?B?V055eS9qdHIzL3owSmwwcUp4QkNsTkRwWjF3UDNzUzl3RXVuNFEwSFZ4WXVj?=
- =?utf-8?B?ckY0bytaaythSkFNOXBWM2FMeHpMYzdyZzRucTNFclVsdEhHRXU1YXBGcjU0?=
- =?utf-8?B?NlhPcWJ2b0NCSU9Jcm9IQ2FoMUNYTFIzQnNWSm5TZ0phUTlqd3VZUjZYMkJU?=
- =?utf-8?B?R2ROdy9WYTdWUzdtcS9JYU5QeGdWeVlIeTk1K0FObWZuYTcrQmdvbGtVVzdu?=
- =?utf-8?B?WDc4U2ttSTRscGMvZEFqYW1QcCtMa3IwYk4vWEJEdHdMdGgvR0lITGhxSVNm?=
- =?utf-8?B?OVRWV2xTblh3K0MzQ1NianZRaG9DcVRnenJPbTVzbS9uVXBaV1Y5eWRpNkdU?=
- =?utf-8?B?cm5pb0tVajAzOWFSSUVSeGlzbjVsR3loWXBsVkZ2aGJnUEJkSjhvNDYzbHhw?=
- =?utf-8?B?QTdoNXVRTnpaU045RmRtQXVobGdTUlpidlVEdGVsdkIxaVN1VXNZdUNJTjZO?=
- =?utf-8?B?bStJM1VYQjhBOW1CcG5YUVpaR0ptUWdQa0ZwSmk4ZVFiNHMzVjBzMkNITzVs?=
- =?utf-8?B?WksvMEZ6MFFjRHA4WVJqOE5qUEFyaDFkcFRSNUtFdkR6VHNpRU9NckFFMmVK?=
- =?utf-8?B?MHR5ZFJ4Q0l4a1pJTmJVZGFEZC9JTmVSOUFNemNjU2o1Q3puUmJxVjNZZlNL?=
- =?utf-8?B?SEhDOFMvL3BhNVlQVU5FSzFiNzFJTWhyRUZYem90RGcrLzRBODg0K3IwaDdP?=
- =?utf-8?B?aUZPUDJVRWFLREN3NUJocjNEcWtwRFRma0YwdklMN1JlSlplWW9SR0JqaEJG?=
- =?utf-8?B?bGhQNy9WZHhFTkJqdFlhY2VhRGx0S3hMbHJ6a0ROdkNaTUU0L3podUxFcDNG?=
- =?utf-8?B?SzB5bWtPcFJSTEV3NTRDZXJpKzVqOWZUT3dOTEhZWXYrbVIxaGZMdUdBNDJC?=
- =?utf-8?B?bmpja3NnYkZ5U0sybzhXQzJpcVphamdWR2gxcnZrNHZXckFqNThrS21Sd1pC?=
- =?utf-8?B?b0FSYmxTMTAxSStrbDI3dmYzRGNTMHNiRTcxMDhnTUt2THlRMDdQako3Snd6?=
- =?utf-8?B?d2JWVXl5bWplSER5ZXU1TzlHQUNKcStqRHRYMVQ5VlpKS0JkeENEUTV4Z0lm?=
- =?utf-8?B?UFRrQ2ZCQ21hSVlKV1NGczRpZWkzTEJ6RW5mQWRlT1JVQ2c9PQ==?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4141A463C67A424ABAE386F0F2ACF507@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7KFN+kOEbLRU1oyPcn4BCimcXnbrpcLqySWxj76DlhI=;
+        b=JgVbjJ75UrN18+bBF/j8/i+LBvcB0MZGfdx4xOshFvwcMRJ9NPc6EV9engeZNVyhIC
+         7QiIuvzHXu2cxIr4Wmmn6J1izEk86IRYYGJnM78xdrIx/q1g5YMhFfAvcmtyiAd59Wly
+         1G3bK/DaFcn/PrCCk7VETq8KaQhk0QxAsysxo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7KFN+kOEbLRU1oyPcn4BCimcXnbrpcLqySWxj76DlhI=;
+        b=xf6RxXQasZxE7uXjbwtU9CWVjJVmKHZB7RrvJc1Nu1k5HbIGf5cxaor+iiORADk9B7
+         xODVMJsq2k9Rp+7ARdOXXIoz/+vqXUbs33ZdmEcWFUNLjXCz4ybWsZUPn3E7M0dOCV+U
+         31VD8fkSMbxJ5qDTsQn+NZe5Fjav5BQG99MiymvdpPvZysCZoYkDM1stpjC5/GEtOTcX
+         84HabB8VUiQTac6Cpde0ol1oiF98UEwqbGrOiV506E7Xkq0vPQYbfxSdNOC4HWOmGdyp
+         wKSzAHpMuqsbJmkwS8r/Rt3c4wGYcumCmKri4CnIgoq0bKiS7rK4u7ISHL66clttqxiT
+         EhXQ==
+X-Gm-Message-State: AOAM532Ex7HxdIrYUT7kvMFmxFoHBO3vQx0S5zGeiJ5mtFCFL+M2JmME
+        ZQ9tQbp1mtMHFm99ufe7tHBuJ4tOb2GtzMzAY4aNrQ==
+X-Google-Smtp-Source: ABdhPJwKH2tOW/CaIyEIXPAZeV5hHj6hSHYMa81lXis87njsxExJlKwCiUdBXL4uQQHYu4Zpo9i5or65E1BU2aEgrgU=
+X-Received: by 2002:a9d:67c1:: with SMTP id c1mr13774657otn.239.1631612310212;
+ Tue, 14 Sep 2021 02:38:30 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR10MB4863.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 502aee69-6570-48b6-ab8f-08d9775dc114
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Sep 2021 08:58:00.3910
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sdKUA9QIGfbYUt8QukEQSftloHUQ1nbBjOZO48mcLPdgjWxSyGaVX+k7pDz3KDl17XCpsmoaIt3fExRNR8knTw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB5054
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10106 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 malwarescore=0
- adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109030001
- definitions=main-2109140054
-X-Proofpoint-ORIG-GUID: wzDFAzOh8yc18nLjwijkcp_LxcjifLhT
-X-Proofpoint-GUID: wzDFAzOh8yc18nLjwijkcp_LxcjifLhT
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+ <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+ <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+ <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com>
+ <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com> <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com>
+In-Reply-To: <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Tue, 14 Sep 2021 11:38:19 +0200
+Message-ID: <CAKMK7uH0RcUOjMyS=AW7HnrKpbTvA6Z-heuQTrvLg7Dw=+cB_A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gT24gMTMgU2VwIDIwMjEsIGF0IDEwOjQyLCBHcmVnIEtIIDxncmVna2hAbGludXhmb3Vu
-ZGF0aW9uLm9yZz4gd3JvdGU6DQo+IA0KPiBPbiBGcmksIFNlcCAxMCwgMjAyMSBhdCAwMjoyMjoz
-MlBNICswMDAwLCBIYWFrb24gQnVnZ2Ugd3JvdGU6DQo+PiANCj4+IA0KPj4+IE9uIDkgU2VwIDIw
-MjEsIGF0IDE1OjMwLCBHcmVnIEtIIDxncmVna2hAbGludXhmb3VuZGF0aW9uLm9yZz4gd3JvdGU6
-DQo+Pj4gDQo+Pj4gT24gVGh1LCBTZXAgMDksIDIwMjEgYXQgMDE6MTA6MDVQTSArMDAwMCwgSGFh
-a29uIEJ1Z2dlIHdyb3RlOg0KPj4+PiBIaSBHcmVnICYgU2FzaGEsDQo+Pj4+IA0KPj4+PiANCj4+
-Pj4gdGw7ZHI6IFBsZWFzZSBhZGQgMmRjZTIyNGY0NjlmICgibmV0bnM6IHByb3RlY3QgbmV0bnMg
-SUQgbG9va3VwcyB3aXRoDQo+Pj4+IFJDVSIpIHRvIHRoZSBzdGFibGUgcmVsZWFzZXMgZnJvbSB2
-NS40IGFuZCBvbGRlci4gSXQgZml4ZXMgYQ0KPj4+PiBzcGluX3VubG9ja19iaCgpIGluIHBlZXJu
-ZXQyaWQoKSBjYWxsZWQgd2l0aCBJUlFzIG9mZi4gSSB0aGluayB0aGlzDQo+Pj4+IG5lYXQgc2lk
-ZS1lZmZlY3Qgb2YgY29tbWl0IDJkY2UyMjRmNDY5ZiB3YXMgcXVpdGUgdW4taW50ZW50aW9uYWws
-DQo+Pj4+IGhlbmNlIG5vIEZpeGVzOiB0YWcgb3IgQ0M6IHN0YWJsZS4NCj4+PiANCj4+PiBQbGVh
-c2UgcHJvdmlkZSBhIHdvcmtpbmcgYmFja3BvcnQgZm9yIGFsbCBvZiB0aGUgcmVsZXZhbnQga2Vy
-bmVsDQo+Pj4gdmVyaXNvbnMsIGFzIGl0IGRvZXMgbm90IGFwcGx5IGNsZWFubHkgb24gaXQncyBv
-d24uDQo+PiANCj4+IEkndmUgZG9uZSB0aGUgYmFja3BvcnRzLiA0LjkgaXMgYWN0dWFsbHkgbm90
-IG5lZWRlZCwgYmVjYXVzZSBpdCB1c2VzIHNwaW5fe2xvY2ssdW5sb2NrfV9pcnFzYXZlKCkgaW4g
-cGVlcm5ldDJpZCgpLiBIZW5jZSwgd2UgaGF2ZSBhbiAib2ZmZW5kaW5nIiBjb21taXQgd2hpY2gg
-dGhpcyBvbmUgZml4ZXM6DQo+PiANCj4+IGZiYTE0M2M2NmFiYiAoIm5ldG5zOiBhdm9pZCBkaXNh
-YmxpbmcgaXJxIGZvciBuZXRucyBpZCIpDQo+PiANCj4+IFdpbGwgZ2V0J20gb3V0IGR1cmluZyB0
-aGUgd2Vla2VuZC4NCj4gDQo+IEFsbCBub3cgcXVldWVkIHVwLCB0aGFua3MuDQoNClRoYW5rcyBm
-b3IgaGVscGluZyBtZSBvdXQgaGVyZSwgR3JlZyENCg0KDQpBcHByZWNpYXRlZCwgSMOla29uDQoN
-Cj4gDQo+IGdyZWcgay1oDQoNCg==
+On Tue, Sep 14, 2021 at 9:11 AM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+> 2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 4:23 Daniel Vetter <daniel.=
+vetter@ffwll.ch>:
+> >
+> > On Fri, Sep 10, 2021 at 3:46 AM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > >
+> > > 2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <dan=
+iel.vetter@ffwll.ch>:
+> > > >
+> > > > On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote=
+:
+> > > > > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
+> > > > > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.=
+koenig@amd.com> wrote:
+> > > > > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > > > > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrot=
+e:
+> > > > > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christo=
+ph Hellwig <hch@infradead.org>:
+> > > > > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wr=
+ote:
+> > > > > > > >>>> Thank you for your comment.
+> > > > > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie =
+wrote:
+> > > > > > > >>>>>> To share memory space using dma-buf, a API of the dma-=
+buf requires dma
+> > > > > > > >>>>>> device, but devices such as rxe do not have a dma devi=
+ce. For those case,
+> > > > > > > >>>>>> change to specify a device of struct ib instead of the=
+ dma device.
+> > > > > > > >>>>> So if dma-buf doesn't actually need a device to dma map=
+ why do we ever
+> > > > > > > >>>>> pass the dma_device here?  Something does not add up.
+> > > > > > > >>>> As described in the dma-buf api guide [1], the dma_devic=
+e is used by dma-buf
+> > > > > > > >>>> exporter to know the device buffer constraints of import=
+er.
+> > > > > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=
+=3Dhttps%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchrist=
+ian.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608=
+e11a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIj=
+oiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sda=
+ta=3DARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> > > > > > > >>> Which means for rxe you'd also have to pass the one for t=
+he underlying
+> > > > > > > >>> net device.
+> > > > > > > >> I thought of that way too. In that case, the memory region=
+ is constrained by the
+> > > > > > > >> net device, but rxe driver copies data using CPU. To avoid=
+ the constraints, I
+> > > > > > > >> decided to use the ib device.
+> > > > > > > > Well, that is the whole problem.
+> > > > > > > >
+> > > > > > > > We can't mix the dmabuf stuff people are doing that doesn't=
+ fill in
+> > > > > > > > the CPU pages in the SGL with RXE - it is simply impossible=
+ as things
+> > > > > > > > currently are for RXE to acess this non-struct page memory.
+> > > > > > >
+> > > > > > > Yeah, agree that doesn't make much sense.
+> > > > > > >
+> > > > > > > When you want to access the data with the CPU then why do you=
+ want to
+> > > > > > > use DMA-buf in the first place?
+> > > > > > >
+> > > > > > > Please keep in mind that there is work ongoing to replace the=
+ sg table
+> > > > > > > with an DMA address array and so make the underlying struct p=
+age
+> > > > > > > inaccessible for importers.
+> > > > > >
+> > > > > > Also if you do have a dma-buf, you can just dma_buf_vmap() the =
+buffer
+> > > > > > for cpu access. Which intentionally does not require any device=
+. No
+> > > > > > idea why there's a dma_buf_attach involved. Now not all exporte=
+rs
+> > > > > > support this, but that's fixable, and you must call
+> > > > > > dma_buf_begin/end_cpu_access for cache management if the alloca=
+tion
+> > > > > > isn't cpu coherent. But it's all there, no need to apply hacks =
+of
+> > > > > > allowing a wrong device or other fun things.
+> > > > >
+> > > > > Can rxe leave the vmap in place potentially forever?
+> > > >
+> > > > Yeah, it's like perma-pinning the buffer into system memory for
+> > > > non-p2p dma-buf sharing. We just squint and pretend that can't be
+> > > > abused too badly :-) On 32bit you'll run out of vmap space rather
+> > > > quickly, but that's not something anyone cares about here either. W=
+e
+> > > > have a bunch of more sw modesetting drivers in drm which use
+> > > > dma_buf_vmap() like this, so it's all fine.
+> > > > -Daniel
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> > >
+> > > Thanks for your comments.
+> > >
+> > > In the first place, the CMA region cannot be used for RDMA because th=
+e
+> > > region has no struct page. In addition, some GPU drivers use CMA and =
+share
+> > > the region as dma-buf. As a result, RDMA cannot transfer for the regi=
+on. To
+> > > solve this problem, rxe dma-buf support is better I thought.
+> > >
+> > > I'll consider and redesign the rxe dma-buf support using the dma_buf_=
+vmap()
+> > > instead of the dma_buf_dynamic_attach().
+> >
+> > btw for next version please cc dri-devel. get_maintainers.pl should
+> > pick it up for these patches.
+> A CC list of these patches is generated by get_maintainers.pl but it
+> didn't pick up the dri-devel. Should I add the dri-devel to the cc
+> manually?
+
+Hm yes, on rechecking the regex doesn't match since you're not
+touching any dma-buf code directly. Or not directly enough for
+get_maintainers.pl to pick it up.
+
+DMA BUFFER SHARING FRAMEWORK
+M:    Sumit Semwal <sumit.semwal@linaro.org>
+M:    Christian K=C3=B6nig <christian.koenig@amd.com>
+L:    linux-media@vger.kernel.org
+L:    dri-devel@lists.freedesktop.org
+L:    linaro-mm-sig@lists.linaro.org (moderated for non-subscribers)
+S:    Maintained
+T:    git git://anongit.freedesktop.org/drm/drm-misc
+F:    Documentation/driver-api/dma-buf.rst
+F:    drivers/dma-buf/
+F:    include/linux/*fence.h
+F:    include/linux/dma-buf*
+F:    include/linux/dma-resv.h
+K:    \bdma_(?:buf|fence|resv)\b
+
+Above is the MAINTAINERS entry that's always good to cc for anything
+related to dma_buf/fence/resv and any of these related things.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
