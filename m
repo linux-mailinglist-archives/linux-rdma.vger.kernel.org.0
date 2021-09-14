@@ -2,177 +2,156 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 850A740BBFE
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Sep 2021 01:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6111540BC04
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Sep 2021 01:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbhINXJq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 19:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45774 "EHLO mail.kernel.org"
+        id S236128AbhINXKF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 19:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236023AbhINXJ1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Sep 2021 19:09:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B272C61165;
-        Tue, 14 Sep 2021 23:08:08 +0000 (UTC)
+        id S236360AbhINXJs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Sep 2021 19:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C592E60F46;
+        Tue, 14 Sep 2021 23:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631660889;
-        bh=AXYVdRfc4tw37Rv3J+S77liopuKThea9wDm664VbZvM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YhWaE23/2KpwIT2KbB3TsEkVaf68+bQ9WnmbhgeKov+XJ47SfbAr3RvAe7jd3yjc3
-         fs0aiJ3I5XvW8XrmP9By8ug7RnTaSYbzRUVfy1yQ1X9mnWpJDn3JnGM/djAaAM72Ha
-         xlIgDd6mr2QhOCbxiuhpfI9lihq3noABDmNME2nFOQ670xb9w8LZUATO8KcA7yE4MQ
-         TKGqgkm/esjJ6bd/ClbIln+4RJMeVPT+GAHaXrpgAe41XQgcc7iBn1pMe7Jz1qsltP
-         q5gsMkvhGK9xANQPbfvek4WS4/QPACe56BVCu0eQ6gtwjlZO2A8vkzIpQTKZQCVl85
-         Bx6XZDaGgRH8g==
+        s=k20201202; t=1631660910;
+        bh=3Kkx0Uhy+H9fUZSLKru8YYLp+dTH4+uckqZAhNytfIg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rTs9bn0OGrsUmjOb6MNOL2HT5UL+xrK/lbYDRJYKMsTvEeZ1nD9BuAYkvnVrG+sWV
+         ynMfrRSEZD1eQSv6nTCkVXUjtjM2kG+q3WgFDlUHPegKvUfce2KLdrMHfkWA4w7f/3
+         3CwbeOzQFwhKnJGERGGuWL13JCdGiNMuY365TWk1PRuTBry46B6H2eJfm86MbUg6po
+         bdp276TGbsQBjUHsIezlou/T0/erKVb5ruRG0otz9ckB2UFrBLX+tVk5wwq0Q27LnU
+         De3VQzt1cnsIWqq6JQWBgLqTceFqbtrB4uX9oTLFPxVKCOBkvrqQwgLNj63SR3+jW6
+         zjg8CeN4LHkZg==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next v1 11/11] RDMA/mlx5: Add optional counter support in get_hw_stats callback
-Date:   Wed, 15 Sep 2021 02:07:30 +0300
-Message-Id: <584d4fb2a5e3fe4b6390f5ea43cf96f65625b026.1631660727.git.leonro@nvidia.com>
+Cc:     Alaa Hleihel <alaa@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/mlx5: Add dummy umem to IB_MR_TYPE_DM
+Date:   Wed, 15 Sep 2021 02:08:25 +0300
+Message-Id: <9c6478b70dc23cfec3a7bfc345c30ff817e7e799.1631660866.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1631660727.git.leonro@nvidia.com>
-References: <cover.1631660727.git.leonro@nvidia.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+From: Alaa Hleihel <alaa@nvidia.com>
 
-When get_hw_stats is called, query and return the optional counter
-statistic as well.
+After the cited patch, and for the case of IB_MR_TYPE_DM that doesn't
+have a umem (even though it is a user MR), function mlx5_free_priv_descs()
+will think that it's a kernel MR, leading to wrongly accessing mr->descs
+that will get wrong values in the union which leads to attempting to
+release resources that were not allocated in the first place.
 
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+For example:
+ DMA-API: mlx5_core 0000:08:00.1: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=0 bytes]
+ WARNING: CPU: 8 PID: 1021 at kernel/dma/debug.c:961 check_unmap+0x54f/0x8b0
+ RIP: 0010:check_unmap+0x54f/0x8b0
+ Call Trace:
+  debug_dma_unmap_page+0x57/0x60
+  mlx5_free_priv_descs+0x57/0x70 [mlx5_ib]
+  mlx5_ib_dereg_mr+0x1fb/0x3d0 [mlx5_ib]
+  ib_dereg_mr_user+0x60/0x140 [ib_core]
+  uverbs_destroy_uobject+0x59/0x210 [ib_uverbs]
+  uobj_destroy+0x3f/0x80 [ib_uverbs]
+  ib_uverbs_cmd_verbs+0x435/0xd10 [ib_uverbs]
+  ? uverbs_finalize_object+0x50/0x50 [ib_uverbs]
+  ? lock_acquire+0xc4/0x2e0
+  ? lock_acquired+0x12/0x380
+  ? lock_acquire+0xc4/0x2e0
+  ? lock_acquire+0xc4/0x2e0
+  ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+  ? lock_release+0x28a/0x400
+  ib_uverbs_ioctl+0xc0/0x140 [ib_uverbs]
+  ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+  __x64_sys_ioctl+0x7f/0xb0
+  do_syscall_64+0x38/0x90
+
+Fix it by adding a dummy umem to IB_MR_TYPE_DM MRs.
+
+Fixes: f18ec4223117 ("RDMA/mlx5: Use a union inside mlx5_ib_mr")
+Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/counters.c | 88 ++++++++++++++++++++++++++-
- 1 file changed, 85 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/umem.c  | 21 +++++++++++++++++++++
+ drivers/infiniband/hw/mlx5/mr.c |  5 +++++
+ include/rdma/ib_umem.h          |  5 +++++
+ 3 files changed, 31 insertions(+)
 
-diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
-index 627077514e14..4ba2dafe62b5 100644
---- a/drivers/infiniband/hw/mlx5/counters.c
-+++ b/drivers/infiniband/hw/mlx5/counters.c
-@@ -270,9 +270,9 @@ static int mlx5_ib_query_ext_ppcnt_counters(struct mlx5_ib_dev *dev,
- 	return ret;
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 44a0f0b2570f..518682a64daf 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -299,6 +299,27 @@ struct ib_umem *ib_umem_get_peer(struct ib_device *device, unsigned long addr,
  }
+ EXPORT_SYMBOL(ib_umem_get_peer);
  
--static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
--				struct rdma_hw_stats *stats,
--				u32 port_num, int index)
-+static int do_get_hw_stats(struct ib_device *ibdev,
-+			   struct rdma_hw_stats *stats,
-+			   u32 port_num, int index)
- {
- 	struct mlx5_ib_dev *dev = to_mdev(ibdev);
- 	const struct mlx5_ib_counters *cnts = get_counters(dev, port_num - 1);
-@@ -324,6 +324,88 @@ static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
- 	return num_counters;
- }
- 
-+static int do_get_op_stat(struct ib_device *ibdev,
-+			  struct rdma_hw_stats *stats,
-+			  u32 port_num, int index)
++/**
++ * ib_umem_get_dummy - Create an empty umem
++ *
++ * @device: IB device to connect UMEM
++ */
++struct ib_umem *ib_umem_get_dummy(struct ib_device *device)
 +{
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+	const struct mlx5_ib_op_fc *opfcs;
-+	u64 packets = 0, bytes;
-+	u32 type;
-+	int ret;
++	struct ib_umem *umem;
 +
-+	cnts = get_counters(dev, port_num - 1);
-+	opfcs = cnts->opfcs;
-+	type = *(u32 *)cnts->descs[index].priv;
-+	if (type >= MLX5_IB_OPCOUNTER_MAX)
-+		return -EINVAL;
++	umem = kzalloc(sizeof(*umem), GFP_KERNEL);
++	if (!umem)
++		return ERR_PTR(-ENOMEM);
 +
-+	if (!opfcs[type].fc)
-+		goto out;
++	umem->ibdev = device;
++	umem->owning_mm = current->mm;
++	mmgrab(umem->owning_mm);
 +
-+	ret = mlx5_fc_query(dev->mdev, opfcs[type].fc,
-+			    &packets, &bytes);
-+	if (ret)
-+		return ret;
-+
-+out:
-+	stats->value[index] = packets;
-+	return index;
++	return umem;
 +}
++EXPORT_SYMBOL(ib_umem_get_dummy);
 +
-+static int do_get_op_stats(struct ib_device *ibdev,
-+			   struct rdma_hw_stats *stats,
-+			   u32 port_num)
-+{
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+	int index, ret, num_hw_counters;
-+
-+	cnts = get_counters(dev, port_num - 1);
-+	num_hw_counters = cnts->num_q_counters + cnts->num_cong_counters +
-+			  cnts->num_ext_ppcnt_counters;
-+	for (index = num_hw_counters;
-+	     index < num_hw_counters + cnts->num_op_counters; index++) {
-+		ret = do_get_op_stat(ibdev, stats, port_num, index);
-+		if (ret != index)
-+			return ret;
+ /**
+  * ib_umem_release - release memory pinned with ib_umem_get
+  * @umem: umem struct to release
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 94f2c0c0f42c..2d54db152e54 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1386,6 +1386,11 @@ static struct ib_mr *mlx5_ib_get_dm_mr(struct ib_pd *pd, u64 start_addr,
+ 	kfree(in);
+ 
+ 	set_mr_fields(dev, mr, length, acc);
++	mr->umem = ib_umem_get_dummy(&dev->ib_dev);
++	if (IS_ERR(mr->umem)) {
++		err = PTR_ERR(mr->umem);
++		goto err_free;
 +	}
-+
-+	return cnts->num_op_counters;
-+}
-+
-+static int mlx5_ib_get_hw_stats(struct ib_device *ibdev,
-+				struct rdma_hw_stats *stats,
-+				u32 port_num, int index)
-+{
-+	int num_counters, num_hw_counters, num_op_counters;
-+	struct mlx5_ib_dev *dev = to_mdev(ibdev);
-+	const struct mlx5_ib_counters *cnts;
-+
-+	cnts = get_counters(dev, port_num - 1);
-+	num_hw_counters = cnts->num_q_counters + cnts->num_cong_counters +
-+		cnts->num_ext_ppcnt_counters;
-+	num_counters = num_hw_counters + cnts->num_op_counters;
-+
-+	if ((index < 0) || (index > num_counters))
-+		return -EINVAL;
-+	else if (index < num_hw_counters)
-+		return do_get_hw_stats(ibdev, stats, port_num, index);
-+	else if (index < num_counters)
-+		return do_get_op_stat(ibdev, stats, port_num, index);
-+
-+	num_hw_counters = do_get_hw_stats(ibdev, stats, port_num, index);
-+	if (num_hw_counters < 0)
-+		return num_hw_counters;
-+
-+	num_op_counters = do_get_op_stats(ibdev, stats, port_num);
-+	if (num_op_counters < 0)
-+		return num_op_counters;
-+
-+	return num_hw_counters + num_op_counters;
-+}
-+
- static struct rdma_hw_stats *
- mlx5_ib_counter_alloc_stats(struct rdma_counter *counter)
+ 
+ 	return &mr->ibmr;
+ 
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index bd64e6749951..18ea9c25207d 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -106,6 +106,7 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
+ 
+ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 			    size_t size, int access);
++struct ib_umem *ib_umem_get_dummy(struct ib_device *device);
+ void ib_umem_release(struct ib_umem *umem);
+ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+ 		      size_t length);
+@@ -167,6 +168,10 @@ static inline struct ib_umem *ib_umem_get(struct ib_device *device,
  {
+ 	return ERR_PTR(-EOPNOTSUPP);
+ }
++static struct ib_umem *ib_umem_get_dummy(struct ib_device *device)
++{
++	return ERR_PTR(-EOPNOTSUPP);
++}
+ static inline void ib_umem_release(struct ib_umem *umem) { }
+ static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+ 		      		    size_t length) {
 -- 
 2.31.1
 
