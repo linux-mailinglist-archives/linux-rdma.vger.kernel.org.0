@@ -2,127 +2,255 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA79740B7C3
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 21:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 980D040B833
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 21:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhINTUH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 15:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229869AbhINTUG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 15:20:06 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E6ADC061574
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 12:18:48 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id i25so655318lfg.6
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 12:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/YxCg+Ff5e18Lo5SLxz2RohY8wIeS7mnNr94SiNjtXE=;
-        b=MAAULZ4URU5MTmtKRWymxurd+Zu6ETEEDIunC1m5EtPyL8I0MQlFAdKvzoK6qKJomw
-         qw+saZ9NCqKKF9FlwDUGiOyvAmlXYwOF7O3XP4wRG7NSrfOZmJl87gAFOG1J81g9q+cH
-         6RYe0cCAP/vNZGkM9eljVjR19I9Wsiig/vp+dlTY3kKRu6LBouisQGPCSZevvSD+j1Qm
-         IMpSzG0iUHG2aS7hXlnBYZkL121q/rK08HRxTbmFHXzxag0mEdnq45lBKQTVY9k1hege
-         j3iPe+iLBkLXELjnu+2QuWmJYHoxfj2wYKlz1JgJc8TN2fiasfHOhgBpaAzPDjrKMCHn
-         CIUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/YxCg+Ff5e18Lo5SLxz2RohY8wIeS7mnNr94SiNjtXE=;
-        b=Gcc47bYPym90izaSpEe4FiHIQfoJrPJY9pQZ7u98zIFNYvnkOT30CqtbJGc0wHfRNx
-         2dYBYK3c9vBPFJLMhEjs1SW9o4+eNwM9Kq1HRQbZYW4Xtz7rMZMWLYnMfEZa8EhhNPLj
-         1GmFDgOtvnLg4l3MG47ZE8JxLXuTVFw7KIJ9UiQnzXgKOO0UjLYTRS7jbFkm6zMo9aGF
-         wIvbxvucUMXKTCRHCQcaQz5sZDvkytnv3WkWjSUoX/BBXWvzGPhZXt6ZLkReGF8qlrXH
-         +0shUNjVPXaaD+g9y1un6pHnffCF1XWwdZ+xAbJWSgZdsYO707xUXZOD6tafzKzPaHNK
-         OwaA==
-X-Gm-Message-State: AOAM531K6kcUDvbpWEavEjjGND5x60t5Qm8MDNkE64jrX56hCByD+uLw
-        L/5d3J0ffxJBna7Kfi5qNalMyzEy2kFamYtUXrO7sg==
-X-Google-Smtp-Source: ABdhPJw16ccf80fVUt2Ftx18ZwpsavjrFkyaXZ38lNAQGEztzwddr/2uECAcEJCIiz5gjGcanzI2I0+0jH3Kicyx5S0=
-X-Received: by 2002:a05:6512:318a:: with SMTP id i10mr14931868lfe.444.1631647126453;
- Tue, 14 Sep 2021 12:18:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <0-v1-1b789bd4dbd4+14b16-clang-fix_jgg@nvidia.com>
-In-Reply-To: <0-v1-1b789bd4dbd4+14b16-clang-fix_jgg@nvidia.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 14 Sep 2021 12:18:35 -0700
-Message-ID: <CAKwvOd=Py3qAmn5e1gqWPe9bhzQ6pwmjRsRyqf+KBtwd7OQbyg@mail.gmail.com>
-Subject: Re: [PATCH rc] IB/qib: Fix clang confusion of NULL pointer comparison
+        id S232759AbhINThq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 15:37:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:58666 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232934AbhINThb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 14 Sep 2021 15:37:31 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10107"; a="283111656"
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="283111656"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Sep 2021 12:36:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,292,1624345200"; 
+   d="scan'208";a="699630824"
+Received: from lkp-server01.sh.intel.com (HELO 730d49888f40) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 14 Sep 2021 12:36:11 -0700
+Received: from kbuild by 730d49888f40 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mQEDy-0008hP-Ui; Tue, 14 Sep 2021 19:36:10 +0000
+Date:   Wed, 15 Sep 2021 03:36:03 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 1b789bd4dbd48a92f5427d9c37a72a8f6ca17754
+Message-ID: <6140f9a3.vGpjWKPXMHCbVi2m%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 12:01 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> clang becomes confused due to the comparision to NULL in a contexpr context:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: 1b789bd4dbd48a92f5427d9c37a72a8f6ca17754  IB/qib: Fix clang confusion of NULL pointer comparison
 
-s/comparision/comparison/
+elapsed time: 1363m
 
-s/contexpr/Integer Constant Expression/
+configs tested: 193
+configs skipped: 4
 
-I don't think constexpr is the equivalent to an ICE. We know what you
-mean though. :^)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
->
->  >> drivers/infiniband/hw/qib/qib_sysfs.c:413:1: error: static_assert expression is not an integral constant expression
->     QIB_DIAGC_ATTR(rc_resends);
->     ^~~~~~~~~~~~~~~~~~~~~~~~~~
->     drivers/infiniband/hw/qib/qib_sysfs.c:406:16: note: expanded from macro 'QIB_DIAGC_ATTR'
->             static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
->
-> Nick found __same_type that solves this problem nicely, so use it instead.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20210913
+i386                 randconfig-c001-20210914
+nds32                            alldefconfig
+parisc                generic-64bit_defconfig
+powerpc                          g5_defconfig
+mips                         mpc30x_defconfig
+powerpc                      acadia_defconfig
+sh                        sh7785lcr_defconfig
+powerpc                   motionpro_defconfig
+arm                         axm55xx_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                        m5307c3_defconfig
+powerpc                      ppc6xx_defconfig
+sh                   sh7724_generic_defconfig
+sh                          kfr2r09_defconfig
+sh                     sh7710voipgw_defconfig
+mips                 decstation_r4k_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                         rt305x_defconfig
+mips                     loongson1b_defconfig
+powerpc                   lite5200b_defconfig
+powerpc                 xes_mpc85xx_defconfig
+xtensa                    xip_kc705_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                             mxs_defconfig
+arm                     davinci_all_defconfig
+powerpc                     redwood_defconfig
+arm                       netwinder_defconfig
+powerpc                        cell_defconfig
+mips                      maltasmvp_defconfig
+sh                      rts7751r2d1_defconfig
+arm                          gemini_defconfig
+arm                           h3600_defconfig
+arm                         lubbock_defconfig
+powerpc                           allnoconfig
+sh                                  defconfig
+mips                           ip27_defconfig
+powerpc                      katmai_defconfig
+powerpc                     tqm8555_defconfig
+arm                          ixp4xx_defconfig
+mips                   sb1250_swarm_defconfig
+arm                           corgi_defconfig
+m68k                            mac_defconfig
+xtensa                          iss_defconfig
+arm                           sama5_defconfig
+arm                          lpd270_defconfig
+arc                          axs101_defconfig
+alpha                            alldefconfig
+powerpc                    mvme5100_defconfig
+microblaze                      mmu_defconfig
+um                                  defconfig
+mips                        omega2p_defconfig
+ia64                        generic_defconfig
+sh                           se7721_defconfig
+arm                       aspeed_g5_defconfig
+riscv                    nommu_virt_defconfig
+xtensa                  audio_kc705_defconfig
+alpha                               defconfig
+s390                             alldefconfig
+sh                           se7206_defconfig
+arm                            qcom_defconfig
+arc                         haps_hs_defconfig
+m68k                          sun3x_defconfig
+arm                        neponset_defconfig
+arm                        spear6xx_defconfig
+mips                           xway_defconfig
+arm                            mmp2_defconfig
+powerpc                        fsp2_defconfig
+arc                              alldefconfig
+x86_64               randconfig-c001-20210914
+arm                  randconfig-c002-20210914
+x86_64               randconfig-c001-20210913
+arm                  randconfig-c002-20210913
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+parisc                              defconfig
+s390                                defconfig
+s390                             allmodconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a002-20210913
+x86_64               randconfig-a003-20210913
+x86_64               randconfig-a006-20210913
+x86_64               randconfig-a004-20210913
+x86_64               randconfig-a005-20210913
+x86_64               randconfig-a001-20210913
+i386                 randconfig-a004-20210913
+i386                 randconfig-a005-20210913
+i386                 randconfig-a002-20210913
+i386                 randconfig-a006-20210913
+i386                 randconfig-a003-20210913
+i386                 randconfig-a001-20210913
+x86_64               randconfig-a013-20210914
+x86_64               randconfig-a016-20210914
+x86_64               randconfig-a012-20210914
+x86_64               randconfig-a011-20210914
+x86_64               randconfig-a014-20210914
+x86_64               randconfig-a015-20210914
+i386                 randconfig-a016-20210914
+i386                 randconfig-a015-20210914
+i386                 randconfig-a011-20210914
+i386                 randconfig-a012-20210914
+i386                 randconfig-a013-20210914
+i386                 randconfig-a014-20210914
+arc                  randconfig-r043-20210915
+arc                  randconfig-r043-20210913
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allyesconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
 
-Sorry, Nathan found that.  Should be:
+clang tested configs:
+riscv                randconfig-c006-20210914
+x86_64               randconfig-c007-20210914
+powerpc              randconfig-c003-20210914
+arm                  randconfig-c002-20210914
+i386                 randconfig-c001-20210914
+s390                 randconfig-c005-20210914
+riscv                randconfig-c006-20210913
+x86_64               randconfig-c007-20210913
+mips                 randconfig-c004-20210913
+powerpc              randconfig-c003-20210913
+i386                 randconfig-c001-20210913
+arm                  randconfig-c002-20210913
+s390                 randconfig-c005-20210913
+i386                 randconfig-a004-20210914
+i386                 randconfig-a005-20210914
+i386                 randconfig-a006-20210914
+i386                 randconfig-a002-20210914
+i386                 randconfig-a001-20210914
+i386                 randconfig-a003-20210914
+x86_64               randconfig-a016-20210913
+x86_64               randconfig-a013-20210913
+x86_64               randconfig-a012-20210913
+x86_64               randconfig-a011-20210913
+x86_64               randconfig-a014-20210913
+x86_64               randconfig-a015-20210913
+i386                 randconfig-a011-20210915
+i386                 randconfig-a012-20210915
+i386                 randconfig-a013-20210915
+i386                 randconfig-a016-20210913
+i386                 randconfig-a011-20210913
+i386                 randconfig-a015-20210913
+i386                 randconfig-a012-20210913
+i386                 randconfig-a013-20210913
+i386                 randconfig-a014-20210913
+x86_64               randconfig-a002-20210914
+x86_64               randconfig-a003-20210914
+x86_64               randconfig-a004-20210914
+x86_64               randconfig-a006-20210914
+x86_64               randconfig-a005-20210914
+x86_64               randconfig-a001-20210914
+hexagon              randconfig-r045-20210914
+hexagon              randconfig-r041-20210914
+hexagon              randconfig-r045-20210915
+hexagon              randconfig-r041-20210915
+riscv                randconfig-r042-20210913
+hexagon              randconfig-r045-20210913
+s390                 randconfig-r044-20210913
+hexagon              randconfig-r041-20210913
+riscv                randconfig-r042-20210915
+s390                 randconfig-r044-20210915
 
-Suggested-by: Nathan Chancellor <nathan@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Thanks for the patch.
-
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->  drivers/infiniband/hw/qib/qib_sysfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> Hopefully third time is the charm here..
-
-:^)
-
->
-> diff --git a/drivers/infiniband/hw/qib/qib_sysfs.c b/drivers/infiniband/hw/qib/qib_sysfs.c
-> index 452e2355d24eeb..0a3b28142c05b6 100644
-> --- a/drivers/infiniband/hw/qib/qib_sysfs.c
-> +++ b/drivers/infiniband/hw/qib/qib_sysfs.c
-
-Consider explicitly including <linux/compiler_types.h> in this
-translation unit.  I know it may compile today, and it might just be
-our internal style guide talking here...
-
-> @@ -403,7 +403,7 @@ static ssize_t diagc_attr_store(struct ib_device *ibdev, u32 port_num,
->  }
->
->  #define QIB_DIAGC_ATTR(N)                                                      \
-> -       static_assert(&((struct qib_ibport *)0)->rvp.n_##N != (u64 *)NULL);    \
-> +       static_assert(__same_type(((struct qib_ibport *)0)->rvp.n_##N, u64));  \
->         static struct qib_diagc_attr qib_diagc_attr_##N = {                    \
->                 .attr = __ATTR(N, 0664, diagc_attr_show, diagc_attr_store),    \
->                 .counter =                                                     \
->
-> base-commit: 6880fa6c56601bb8ed59df6c30fd390cc5f6dd8f
-> --
-> 2.33.0
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
