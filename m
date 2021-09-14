@@ -2,395 +2,239 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14CC40AB68
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 12:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E119140AB78
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 12:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230382AbhINKID (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 06:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32998 "EHLO
+        id S229968AbhINKPB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 06:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230282AbhINKID (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 06:08:03 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0D0C061574;
-        Tue, 14 Sep 2021 03:06:46 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id u13-20020a17090abb0db0290177e1d9b3f7so1734977pjr.1;
-        Tue, 14 Sep 2021 03:06:46 -0700 (PDT)
+        with ESMTP id S231392AbhINKPA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 06:15:00 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5573C061766
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 03:13:42 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id k4so27658771lfj.7
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 03:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MO5pCuoV5w67nLR/zK2U+0MryvrqUOnOJ+Q65vu4SBE=;
-        b=Jg8KYPWrs204fWXWVFN6Ia1h7Wt/y3WgG4KfOISTuoXkSYXfYr4gfVyXMCt+YMP9Om
-         3tWFDozAIyvNGDkPcFFNPtJtyHeF1O3fY7Klkp+QXddlHQFGhe0iYPC4XZ9DoE0Y7A9I
-         e1mpsBJtbbsMGPF//mALQVJPpHoKh660MByCJ6FlmHIlqxb4BWv9LHJddiDzH3aQKEtg
-         OPgE0/73yYoCuv6CDim/W1L32j5jrHasrwiY3iPzfCQFUS7+Yvv6mv5Jad36RTjKiCho
-         K9/OkhuAcg+LhOM0O+LUImgRNMijCcD8yoR+sQmsE4BVCsuNLL0e237Pp4ojuhNUvHgO
-         0ZCg==
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ayzPNtRNfY0z+RpTkRRnA3Io/5qC6jVpVhpucCF4zt0=;
+        b=z1ATTbEjr8tFhdfO4IecWUBapOPq+9+DyCj1G0yctetzU4paiFLNOec+ljEKDa0kx2
+         cO1YydNOw1JiJX0ZooC10x1o0AeziWL9ty8c9WlTygXiED0mPG6ek+Q21L+mywHZTh6E
+         /PZ08nVHA8rmnl3rRlQ/D6uGqyBcZyNvKZv8WJ2UT2X5LVzMvVUc+hCqGt+GKhYBNmCN
+         oMj27X9hesHYz3y4Xij8LQLBgJXttBFF8nUyEUl1lruzWLn4RM63RRK0W9JC77uw0dwZ
+         q9deoBs0mCiQQ9Nn0sEDSaa31lUEcctS6+Ty6qbijr1Xjh1kxxoOgWqMntTiR/ddB6iW
+         l/NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MO5pCuoV5w67nLR/zK2U+0MryvrqUOnOJ+Q65vu4SBE=;
-        b=ADzeD606n3UadzWj2iOb9fvsmW50f+o9Es8Oec1Cr+rzb6Ml+iuLbQVPm+cJah6ed3
-         y8ImKhOZhLBFEqP4ivqPB7gA3/og5H+nM3lCx/XPjOnT2gx1Kq+ZAB3dcUZzofjVXHNt
-         mqCNXkFnqcDLcu8MYnX1rW0GG4d9WEePhrwHu5hXDcYRzu4ceTTQTvAIih4xv0/NELSn
-         yhPas/Dq6zREfa7bQaDXNHMzSrPVU7DNt1zKEIU9qHXekFfyoEC7yHhQkT+RESjn53Yx
-         lACNRZ8c+uv0q5jGKPNGr2Aw5GD4VTxhsen4nzS3sGVG5k/etFL/yD2SqwXSlYbM9MMk
-         BjCQ==
-X-Gm-Message-State: AOAM531j6DeBlFiC2WGrJ6vVkrxEV4IgjWwUC9fNpj9CPN9vuoPiyvNt
-        MDZbh4rynJtl/yoEodRnRvYe7gnRhOn/JuDL1Y8=
-X-Google-Smtp-Source: ABdhPJzLWDohFg33rnTJT5H2OJbsKXV6AJW1jzPAWi9d7G/nfcta2P8QSvFRqK/Dam7XL9uH2B/LIw==
-X-Received: by 2002:a17:902:6bc1:b0:137:10b6:972f with SMTP id m1-20020a1709026bc100b0013710b6972fmr14080602plt.69.1631614005656;
-        Tue, 14 Sep 2021 03:06:45 -0700 (PDT)
-Received: from arn.com ([49.206.7.248])
-        by smtp.googlemail.com with ESMTPSA id z9sm9787034pfa.2.2021.09.14.03.06.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Sep 2021 03:06:45 -0700 (PDT)
-From:   Abhiram R N <abhiramrn@gmail.com>
-To:     roid@nvidia.com
-Cc:     arn@redhat.com, hakhande@redhat.com, saeedm@nvidia.com,
-        Abhiram R N <abhiramrn@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3] net/mlx5e: Add extack msgs related to TC for better debug
-Date:   Tue, 14 Sep 2021 15:36:01 +0530
-Message-Id: <20210914100601.32515-1-abhiramrn@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <76ab8d32-4457-8dd2-8df0-d31919d8441f@nvidia.com>
-References: <76ab8d32-4457-8dd2-8df0-d31919d8441f@nvidia.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ayzPNtRNfY0z+RpTkRRnA3Io/5qC6jVpVhpucCF4zt0=;
+        b=xOn5K65fG2oBuX5DpxkzUlw4J3pn/ut18dxzt/sm5J0/HHLYs31TRdtyLzGOpK6DN7
+         E6spypeDZM4IyUVQvazttwJAxYAjq484IwSqQCk93WdtVilSEeEe826txBPAFBzTH7So
+         ST+1I+MBOan68UCVL1AF6HE1GfQML+RDKsA8n4H6rbJWcUTT9NhjckE46yQ0NOupWXlq
+         tuR/zLmA1dZu1kGtzO1BKzVqb/rkcU/wzukzfrx/IlIGJwu+BpbNV0bFID7Qt5hErAb7
+         xcz0w4MZOcv9J8qPPP8pgOrfoUwaxbmnt7HSe8WkV1Qc+pWK7WplJUkr6Y0fO0DmzbTa
+         DhKg==
+X-Gm-Message-State: AOAM532Lduzdxx3bzMRxiu2C0LXAvhsG8qp61HFfSCMfnUEhvayaUum0
+        KrkLP7Rc4TlNpTe+m7p2m0wALcyrpAhzddD5jcIwiw==
+X-Google-Smtp-Source: ABdhPJxZFUL9W+F8+8EX8Vfmbkrh/mu7w2oQdInkBZSmCMKsMzzi/QzGXkjw12ZjRyTx39dgEXThk6bpM5XauPS5wJw=
+X-Received: by 2002:a19:6b18:: with SMTP id d24mr12332496lfa.46.1631614421035;
+ Tue, 14 Sep 2021 03:13:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
+ <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
+ <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
+ <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
+ <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
+ <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
+ <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com>
+ <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
+ <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com> <CAKMK7uH0RcUOjMyS=AW7HnrKpbTvA6Z-heuQTrvLg7Dw=+cB_A@mail.gmail.com>
+In-Reply-To: <CAKMK7uH0RcUOjMyS=AW7HnrKpbTvA6Z-heuQTrvLg7Dw=+cB_A@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Tue, 14 Sep 2021 19:13:29 +0900
+Message-ID: <CANXvt5qNjmN7pW-ZGqzmfXDEBUbca9Ctq501kdcpkV=TpkHxFw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-As multiple places EOPNOTSUPP and EINVAL is returned from driver
-it becomes difficult to understand the reason only with error code.
-With the netlink extack message exact reason will be known and will
-aid in debugging.
+2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 18:38 Daniel Vetter <daniel.v=
+etter@ffwll.ch>:
+>
+> On Tue, Sep 14, 2021 at 9:11 AM Shunsuke Mie <mie@igel.co.jp> wrote:
+> >
+> > 2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 4:23 Daniel Vetter <danie=
+l.vetter@ffwll.ch>:
+> > >
+> > > On Fri, Sep 10, 2021 at 3:46 AM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > > >
+> > > > 2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <d=
+aniel.vetter@ffwll.ch>:
+> > > > >
+> > > > > On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wro=
+te:
+> > > > > > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
+> > > > > > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christia=
+n.koenig@amd.com> wrote:
+> > > > > > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
+> > > > > > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wr=
+ote:
+> > > > > > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Chris=
+toph Hellwig <hch@infradead.org>:
+> > > > > > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie =
+wrote:
+> > > > > > > > >>>> Thank you for your comment.
+> > > > > > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mi=
+e wrote:
+> > > > > > > > >>>>>> To share memory space using dma-buf, a API of the dm=
+a-buf requires dma
+> > > > > > > > >>>>>> device, but devices such as rxe do not have a dma de=
+vice. For those case,
+> > > > > > > > >>>>>> change to specify a device of struct ib instead of t=
+he dma device.
+> > > > > > > > >>>>> So if dma-buf doesn't actually need a device to dma m=
+ap why do we ever
+> > > > > > > > >>>>> pass the dma_device here?  Something does not add up.
+> > > > > > > > >>>> As described in the dma-buf api guide [1], the dma_dev=
+ice is used by dma-buf
+> > > > > > > > >>>> exporter to know the device buffer constraints of impo=
+rter.
+> > > > > > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?ur=
+l=3Dhttps%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchris=
+tian.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e60=
+8e11a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWI=
+joiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sd=
+ata=3DARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
+> > > > > > > > >>> Which means for rxe you'd also have to pass the one for=
+ the underlying
+> > > > > > > > >>> net device.
+> > > > > > > > >> I thought of that way too. In that case, the memory regi=
+on is constrained by the
+> > > > > > > > >> net device, but rxe driver copies data using CPU. To avo=
+id the constraints, I
+> > > > > > > > >> decided to use the ib device.
+> > > > > > > > > Well, that is the whole problem.
+> > > > > > > > >
+> > > > > > > > > We can't mix the dmabuf stuff people are doing that doesn=
+'t fill in
+> > > > > > > > > the CPU pages in the SGL with RXE - it is simply impossib=
+le as things
+> > > > > > > > > currently are for RXE to acess this non-struct page memor=
+y.
+> > > > > > > >
+> > > > > > > > Yeah, agree that doesn't make much sense.
+> > > > > > > >
+> > > > > > > > When you want to access the data with the CPU then why do y=
+ou want to
+> > > > > > > > use DMA-buf in the first place?
+> > > > > > > >
+> > > > > > > > Please keep in mind that there is work ongoing to replace t=
+he sg table
+> > > > > > > > with an DMA address array and so make the underlying struct=
+ page
+> > > > > > > > inaccessible for importers.
+> > > > > > >
+> > > > > > > Also if you do have a dma-buf, you can just dma_buf_vmap() th=
+e buffer
+> > > > > > > for cpu access. Which intentionally does not require any devi=
+ce. No
+> > > > > > > idea why there's a dma_buf_attach involved. Now not all expor=
+ters
+> > > > > > > support this, but that's fixable, and you must call
+> > > > > > > dma_buf_begin/end_cpu_access for cache management if the allo=
+cation
+> > > > > > > isn't cpu coherent. But it's all there, no need to apply hack=
+s of
+> > > > > > > allowing a wrong device or other fun things.
+> > > > > >
+> > > > > > Can rxe leave the vmap in place potentially forever?
+> > > > >
+> > > > > Yeah, it's like perma-pinning the buffer into system memory for
+> > > > > non-p2p dma-buf sharing. We just squint and pretend that can't be
+> > > > > abused too badly :-) On 32bit you'll run out of vmap space rather
+> > > > > quickly, but that's not something anyone cares about here either.=
+ We
+> > > > > have a bunch of more sw modesetting drivers in drm which use
+> > > > > dma_buf_vmap() like this, so it's all fine.
+> > > > > -Daniel
+> > > > > --
+> > > > > Daniel Vetter
+> > > > > Software Engineer, Intel Corporation
+> > > > > http://blog.ffwll.ch
+> > > >
+> > > > Thanks for your comments.
+> > > >
+> > > > In the first place, the CMA region cannot be used for RDMA because =
+the
+> > > > region has no struct page. In addition, some GPU drivers use CMA an=
+d share
+> > > > the region as dma-buf. As a result, RDMA cannot transfer for the re=
+gion. To
+> > > > solve this problem, rxe dma-buf support is better I thought.
+> > > >
+> > > > I'll consider and redesign the rxe dma-buf support using the dma_bu=
+f_vmap()
+> > > > instead of the dma_buf_dynamic_attach().
+> > >
+> > > btw for next version please cc dri-devel. get_maintainers.pl should
+> > > pick it up for these patches.
+> > A CC list of these patches is generated by get_maintainers.pl but it
+> > didn't pick up the dri-devel. Should I add the dri-devel to the cc
+> > manually?
+>
+> Hm yes, on rechecking the regex doesn't match since you're not
+> touching any dma-buf code directly. Or not directly enough for
+> get_maintainers.pl to pick it up.
+>
+> DMA BUFFER SHARING FRAMEWORK
+> M:    Sumit Semwal <sumit.semwal@linaro.org>
+> M:    Christian K=C3=B6nig <christian.koenig@amd.com>
+> L:    linux-media@vger.kernel.org
+> L:    dri-devel@lists.freedesktop.org
+> L:    linaro-mm-sig@lists.linaro.org (moderated for non-subscribers)
+> S:    Maintained
+> T:    git git://anongit.freedesktop.org/drm/drm-misc
+> F:    Documentation/driver-api/dma-buf.rst
+> F:    drivers/dma-buf/
+> F:    include/linux/*fence.h
+> F:    include/linux/dma-buf*
+> F:    include/linux/dma-resv.h
+> K:    \bdma_(?:buf|fence|resv)\b
+>
+> Above is the MAINTAINERS entry that's always good to cc for anything
+> related to dma_buf/fence/resv and any of these related things.
+> -Daniel
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
+Yes, the dma-buf was not directly included in my changes. However, this is
+related to dma-buf. So I'll add the dma-buf related ML and members
+to cc using
+`./scripts/get_maintainer.pl -f drivers/infiniband/core/umem_dmabuf.c`.
+I think it is enough to list the email addresses.
 
-Signed-off-by: Abhiram R N <abhiramrn@gmail.com>
----
- .../net/ethernet/mellanox/mlx5/core/en_tc.c   | 106 +++++++++++++-----
- 1 file changed, 76 insertions(+), 30 deletions(-)
+Thank you for letting me know that.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index d273758255c3..3096f9eb812b 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1894,8 +1894,10 @@ static int parse_tunnel_attr(struct mlx5e_priv *priv,
- 	bool needs_mapping, sets_mapping;
- 	int err;
- 
--	if (!mlx5e_is_eswitch_flow(flow))
-+	if (!mlx5e_is_eswitch_flow(flow)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Match on tunnel is not supported");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	needs_mapping = !!flow->attr->chain;
- 	sets_mapping = !flow->attr->chain && flow_has_tc_fwd_action(f);
-@@ -2267,8 +2269,10 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 		addr_type = match.key->addr_type;
- 
- 		/* the HW doesn't support frag first/later */
--		if (match.mask->flags & FLOW_DIS_FIRST_FRAG)
-+		if (match.mask->flags & FLOW_DIS_FIRST_FRAG) {
-+			NL_SET_ERR_MSG_MOD(extack, "Match on frag first/later is not supported");
- 			return -EOPNOTSUPP;
-+		}
- 
- 		if (match.mask->flags & FLOW_DIS_IS_FRAGMENT) {
- 			MLX5_SET(fte_match_set_lyr_2_4, headers_c, frag, 1);
-@@ -2435,8 +2439,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 		switch (ip_proto) {
- 		case IPPROTO_ICMP:
- 			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
--			      MLX5_FLEX_PROTO_ICMP))
-+			      MLX5_FLEX_PROTO_ICMP)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "Match on Flex protocols for ICMP is not supported");
- 				return -EOPNOTSUPP;
-+			}
- 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmp_type,
- 				 match.mask->type);
- 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmp_type,
-@@ -2448,8 +2455,11 @@ static int __parse_cls_flower(struct mlx5e_priv *priv,
- 			break;
- 		case IPPROTO_ICMPV6:
- 			if (!(MLX5_CAP_GEN(priv->mdev, flex_parser_protocols) &
--			      MLX5_FLEX_PROTO_ICMPV6))
-+			      MLX5_FLEX_PROTO_ICMPV6)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "Match on Flex protocols for ICMPV6 is not supported");
- 				return -EOPNOTSUPP;
-+			}
- 			MLX5_SET(fte_match_set_misc3, misc_c_3, icmpv6_type,
- 				 match.mask->type);
- 			MLX5_SET(fte_match_set_misc3, misc_v_3, icmpv6_type,
-@@ -2555,15 +2565,19 @@ static int pedit_header_offsets[] = {
- #define pedit_header(_ph, _htype) ((void *)(_ph) + pedit_header_offsets[_htype])
- 
- static int set_pedit_val(u8 hdr_type, u32 mask, u32 val, u32 offset,
--			 struct pedit_headers_action *hdrs)
-+			 struct pedit_headers_action *hdrs,
-+			 struct netlink_ext_ack *extack)
- {
- 	u32 *curr_pmask, *curr_pval;
- 
- 	curr_pmask = (u32 *)(pedit_header(&hdrs->masks, hdr_type) + offset);
- 	curr_pval  = (u32 *)(pedit_header(&hdrs->vals, hdr_type) + offset);
- 
--	if (*curr_pmask & mask)  /* disallow acting twice on the same location */
-+	if (*curr_pmask & mask) {  /* disallow acting twice on the same location */
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "curr_pmask and new mask same. Acting twice on same location");
- 		goto out_err;
-+	}
- 
- 	*curr_pmask |= mask;
- 	*curr_pval  |= (val & mask);
-@@ -2893,7 +2907,7 @@ parse_pedit_to_modify_hdr(struct mlx5e_priv *priv,
- 	val = act->mangle.val;
- 	offset = act->mangle.offset;
- 
--	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd]);
-+	err = set_pedit_val(htype, ~mask, val, offset, &hdrs[cmd], extack);
- 	if (err)
- 		goto out_err;
- 
-@@ -2913,8 +2927,10 @@ parse_pedit_to_reformat(struct mlx5e_priv *priv,
- 	u32 mask, val, offset;
- 	u32 *p;
- 
--	if (act->id != FLOW_ACTION_MANGLE)
-+	if (act->id != FLOW_ACTION_MANGLE) {
-+		NL_SET_ERR_MSG_MOD(extack, "Unsupported action id");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	if (act->mangle.htype != FLOW_ACT_MANGLE_HDR_TYPE_ETH) {
- 		NL_SET_ERR_MSG_MOD(extack, "Only Ethernet modification is supported");
-@@ -3363,12 +3379,16 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
- 	u32 action = 0;
- 	int err, i;
- 
--	if (!flow_action_has_entries(flow_action))
-+	if (!flow_action_has_entries(flow_action)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Flow Action doesn't have any entries");
- 		return -EINVAL;
-+	}
- 
- 	if (!flow_action_hw_stats_check(flow_action, extack,
--					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-+					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check not supported");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	nic_attr = attr->nic_attr;
- 
-@@ -3459,7 +3479,8 @@ static int parse_tc_nic_actions(struct mlx5e_priv *priv,
- 			flow_flag_set(flow, CT);
- 			break;
- 		default:
--			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "The offload action is not supported in NIC action");
- 			return -EOPNOTSUPP;
- 		}
- 	}
-@@ -3514,19 +3535,25 @@ static bool is_merged_eswitch_vfs(struct mlx5e_priv *priv,
- static int parse_tc_vlan_action(struct mlx5e_priv *priv,
- 				const struct flow_action_entry *act,
- 				struct mlx5_esw_flow_attr *attr,
--				u32 *action)
-+				u32 *action,
-+				struct netlink_ext_ack *extack)
- {
- 	u8 vlan_idx = attr->total_vlan;
- 
--	if (vlan_idx >= MLX5_FS_VLAN_DEPTH)
-+	if (vlan_idx >= MLX5_FS_VLAN_DEPTH) {
-+		NL_SET_ERR_MSG_MOD(extack, "Total vlans used is greater than supported");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	switch (act->id) {
- 	case FLOW_ACTION_VLAN_POP:
- 		if (vlan_idx) {
- 			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
--								 MLX5_FS_VLAN_DEPTH))
-+								 MLX5_FS_VLAN_DEPTH)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "vlan pop action is not supported");
- 				return -EOPNOTSUPP;
-+			}
- 
- 			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_POP_2;
- 		} else {
-@@ -3542,20 +3569,27 @@ static int parse_tc_vlan_action(struct mlx5e_priv *priv,
- 
- 		if (vlan_idx) {
- 			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev,
--								 MLX5_FS_VLAN_DEPTH))
-+								 MLX5_FS_VLAN_DEPTH)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "vlan push action is not supported for vlan depth > 1");
- 				return -EOPNOTSUPP;
-+			}
- 
- 			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH_2;
- 		} else {
- 			if (!mlx5_eswitch_vlan_actions_supported(priv->mdev, 1) &&
- 			    (act->vlan.proto != htons(ETH_P_8021Q) ||
--			     act->vlan.prio))
-+			     act->vlan.prio)) {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "vlan push action is not supported");
- 				return -EOPNOTSUPP;
-+			}
- 
- 			*action |= MLX5_FLOW_CONTEXT_ACTION_VLAN_PUSH;
- 		}
- 		break;
- 	default:
-+		NL_SET_ERR_MSG_MOD(extack, "Unexpected action id for VLAN");
- 		return -EINVAL;
- 	}
- 
-@@ -3589,7 +3623,8 @@ static struct net_device *get_fdb_out_dev(struct net_device *uplink_dev,
- static int add_vlan_push_action(struct mlx5e_priv *priv,
- 				struct mlx5_flow_attr *attr,
- 				struct net_device **out_dev,
--				u32 *action)
-+				u32 *action,
-+				struct netlink_ext_ack *extack)
- {
- 	struct net_device *vlan_dev = *out_dev;
- 	struct flow_action_entry vlan_act = {
-@@ -3600,7 +3635,7 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
- 	};
- 	int err;
- 
--	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-+	err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
- 	if (err)
- 		return err;
- 
-@@ -3611,14 +3646,15 @@ static int add_vlan_push_action(struct mlx5e_priv *priv,
- 		return -ENODEV;
- 
- 	if (is_vlan_dev(*out_dev))
--		err = add_vlan_push_action(priv, attr, out_dev, action);
-+		err = add_vlan_push_action(priv, attr, out_dev, action, extack);
- 
- 	return err;
- }
- 
- static int add_vlan_pop_action(struct mlx5e_priv *priv,
- 			       struct mlx5_flow_attr *attr,
--			       u32 *action)
-+			       u32 *action,
-+			       struct netlink_ext_ack *extack)
- {
- 	struct flow_action_entry vlan_act = {
- 		.id = FLOW_ACTION_VLAN_POP,
-@@ -3628,7 +3664,7 @@ static int add_vlan_pop_action(struct mlx5e_priv *priv,
- 	nest_level = attr->parse_attr->filter_dev->lower_level -
- 						priv->netdev->lower_level;
- 	while (nest_level--) {
--		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action);
-+		err = parse_tc_vlan_action(priv, &vlan_act, attr->esw_attr, action, extack);
- 		if (err)
- 			return err;
- 	}
-@@ -3751,12 +3787,16 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 	int err, i, if_count = 0;
- 	bool mpls_push = false;
- 
--	if (!flow_action_has_entries(flow_action))
-+	if (!flow_action_has_entries(flow_action)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Flow action doesn't have any entries");
- 		return -EINVAL;
-+	}
- 
- 	if (!flow_action_hw_stats_check(flow_action, extack,
--					FLOW_ACTION_HW_STATS_DELAYED_BIT))
-+					FLOW_ACTION_HW_STATS_DELAYED_BIT)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check is not supported");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	esw_attr = attr->esw_attr;
- 	parse_attr = attr->parse_attr;
-@@ -3900,14 +3940,14 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 				if (is_vlan_dev(out_dev)) {
- 					err = add_vlan_push_action(priv, attr,
- 								   &out_dev,
--								   &action);
-+								   &action, extack);
- 					if (err)
- 						return err;
- 				}
- 
- 				if (is_vlan_dev(parse_attr->filter_dev)) {
- 					err = add_vlan_pop_action(priv, attr,
--								  &action);
-+								  &action, extack);
- 					if (err)
- 						return err;
- 				}
-@@ -3953,10 +3993,13 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 			break;
- 		case FLOW_ACTION_TUNNEL_ENCAP:
- 			info = act->tunnel;
--			if (info)
-+			if (info) {
- 				encap = true;
--			else
-+			} else {
-+				NL_SET_ERR_MSG_MOD(extack,
-+						   "Zero tunnel attributes is not supported");
- 				return -EOPNOTSUPP;
-+			}
- 
- 			break;
- 		case FLOW_ACTION_VLAN_PUSH:
-@@ -3970,7 +4013,7 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 							      act, parse_attr, hdrs,
- 							      &action, extack);
- 			} else {
--				err = parse_tc_vlan_action(priv, act, esw_attr, &action);
-+				err = parse_tc_vlan_action(priv, act, esw_attr, &action, extack);
- 			}
- 			if (err)
- 				return err;
-@@ -4023,7 +4066,8 @@ static int parse_tc_fdb_actions(struct mlx5e_priv *priv,
- 			flow_flag_set(flow, SAMPLE);
- 			break;
- 		default:
--			NL_SET_ERR_MSG_MOD(extack, "The offload action is not supported");
-+			NL_SET_ERR_MSG_MOD(extack,
-+					   "The offload action is not supported in FDB action");
- 			return -EOPNOTSUPP;
- 		}
- 	}
-@@ -4731,8 +4775,10 @@ static int scan_tc_matchall_fdb_actions(struct mlx5e_priv *priv,
- 		return -EOPNOTSUPP;
- 	}
- 
--	if (!flow_action_basic_hw_stats_check(flow_action, extack))
-+	if (!flow_action_basic_hw_stats_check(flow_action, extack)) {
-+		NL_SET_ERR_MSG_MOD(extack, "Flow Action HW stats check is not supported");
- 		return -EOPNOTSUPP;
-+	}
- 
- 	flow_action_for_each(i, act, flow_action) {
- 		switch (act->id) {
--- 
-2.27.0
-
+Regards,
+Shunsuke,
