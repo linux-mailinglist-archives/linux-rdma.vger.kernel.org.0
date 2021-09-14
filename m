@@ -2,191 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBBC40A722
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 09:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7915440A766
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Sep 2021 09:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240341AbhINHNI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Sep 2021 03:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240566AbhINHNE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 03:13:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8889C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 00:11:47 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id i7so10503294lfr.13
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Sep 2021 00:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
-        b=1JlTTQK545gD4gENkjtzDBBttLJSew1xXd5vdCvxPNjtrEIr1RUw7tM82TRpRzJNnD
-         /EweNJnNWjq1AHSY2ilH3NKTgEK6aSlHrC/cYSoQgrDhyxKlV4HASpkpcw9hiwqANtkT
-         nVH8j+GyM+5w/H3xnUYFiRy60ViBW8qKEHd12BUB5+doy9xEp0mQ5VnBz/tnavt/Aamo
-         PL2+LC5vzWc0cLDQn584bgIJ//1HRv6aQv8Knu52ewfQOpCZ7JV/2/+imPZ0YoSa0cP2
-         Y0jpslrkGOQysod+TPif+nc6oL8QzdZSFzdAccSdIIN1OOhIuUF0x0qw3FaqOrw6NEaT
-         4x4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mmfjy5Th0WsOwkJt7Ir/JFNee8szHt3Y0EugGTp0ia0=;
-        b=5OIpJvKgDVtljz5S6hPTFKf+DLPvfX8VfMRaUM//dmVtGJKKi+cNG/jdQnwfxllwxo
-         HsM/D1peuRaaqKWolGFjujp/3BbSzHSBAoLWO1I8k8Rr7+IIXckexazsyMmIOwI9tDUW
-         K/TNn8kdsV6R5LIQZVfVMjMIAoxO0Ro/tEw1xP1EHT9k+xGtWK8Pu0bryF4rc7XXRfOa
-         JLIBQ4eKPCi3rkaxb+8o6P887Oc17hxB+pmQx4jBenJlHDQf5I+7+ArUsw3P7o+H2iOc
-         fRMFQ+t3zW7Z2MVczad8WNv++sRR+0ef5o5FW2zyB7S85BYitGoDgeZo3f3+5JZXA0qt
-         9ITQ==
-X-Gm-Message-State: AOAM530kghg2ZZQnrg2DCHLktSKTxiuJmY9drUK/ysjBL/1yOW+YHFgd
-        +QMLrKQqkVryzKJbBGsznjHVV5enSwouOO01fhCSrQ==
-X-Google-Smtp-Source: ABdhPJzPI3Q6eKZTET4UijO1AFuDxaLYa0iCHAyZUs/1HTcP7gkzVgBvmuq8ziEB04O0rJuEZ9fYk1pqrgztgz0/PzQ=
-X-Received: by 2002:a05:6512:38a1:: with SMTP id o1mr12050131lft.645.1631603506141;
- Tue, 14 Sep 2021 00:11:46 -0700 (PDT)
+        id S240685AbhINHci (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Sep 2021 03:32:38 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:27973 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S240665AbhINHch (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Sep 2021 03:32:37 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3AqB1KVKMq/h/lDnDvrR2dlcFynXyQoLVcMsFnjC/?=
+ =?us-ascii?q?WdQW81G4g3j0DzmscDTqEPvaOZGX3Kdx1PY2w80IG7ZbTm99gGjLY11k3ESsS9?=
+ =?us-ascii?q?pCt6fd1j6vIF3rLaJWFFSqL1u1GAjX7BJ1yHiK0SiuFaOC79CEtjP3QH9IQNca?=
+ =?us-ascii?q?fUsxPbV49IMseoUI78wIJqtYAbemRW2thi/uryyHsEAPNNwpPD44hw/nrRCWDE?=
+ =?us-ascii?q?xjFkGhwUlQWPZintbJF/pUfJMp3yaqZdxMUTmTId9NWSdovzJnhlo/Y1xwrTN2?=
+ =?us-ascii?q?4kLfnaVBMSbnXVeSMoiMOHfH83V4Z/Wpvuko4HKN0hUN/mjyPkMA3ysRlu4GyS?=
+ =?us-ascii?q?BsyI+vHn+F1vxxwSngiYfAYp+SYSZS4mYnJp6HcSFP+0vd8HUNsZdVA0ulyCGB?=
+ =?us-ascii?q?Ks/cfLVglahGFmvLz2r6+Q8Fyick5asrmJoUSvjdn1z6xJfQpTrjRQqjS6JlT1?=
+ =?us-ascii?q?V8NampmdRrFT5NBL2MxM1KbOFsSUmr7wakWxI+A7kQTuRUBwL5NmZcK3g=3D?=
+ =?us-ascii?q?=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ApzxWMKtv7tX1z9ITnaSz3hZn7skC5YMji2hC?=
+ =?us-ascii?q?6mlwRA09TyXGra6TdaUguiMc1gx8ZJhBo7C90KnpewK7yXdQ2/htAV7EZnibhI?=
+ =?us-ascii?q?LIFvAZ0WKG+Vzd8kLFh4tgPMtbAsxD4ZjLfCdHZKXBkXmF+rQbsaG6GcmT7I+0?=
+ =?us-ascii?q?pRodLnAJGtJdBkVCe32m+yVNNXh77PECZeOhD6R81l2dkSN9VLXEOpBJZZmOm/?=
+ =?us-ascii?q?T70LbdJTIWDR8u7weDyRuu9b7BChCdmjMTSSlGz7sO+XXM11WR3NTsj9iLjjvn?=
+ =?us-ascii?q?k0PD5ZVfn9XsjvNFGcy3k8AQbhHhkByhaohNU6CL+Bo1vOaswlA3l8SkmWZuA+?=
+ =?us-ascii?q?1Dr1fqOk2lqxrk3AftlB4o9n/Z0FedxUDupMToLQhKQPZptMZ8SF/0+kAgtNZz?=
+ =?us-ascii?q?3OZgxGSCradaChvGgWDU+8XIfwsCrDv2nVMS1cooy1BPW4oXb7Fc6aYF+llOLZ?=
+ =?us-ascii?q?sGFCXmrKg6DehVCt3G7vo+SyLbU5nghBgr/DWQZAV2Iv/fKXJy/fB9kgIm3UyR?=
+ =?us-ascii?q?9nFohvD2xRw7hdQAo5ot3ZWNDk0nrsAWcie6BZgNc9vpevHHf1Aldyi8eV56EW?=
+ =?us-ascii?q?6XZp3vBEi936IfwI9Frt1CK6Z4gafbpvz6ISVlXCgJChrTNfE=3D?=
+X-IronPort-AV: E=Sophos;i="5.85,292,1624291200"; 
+   d="scan'208";a="114456737"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 14 Sep 2021 15:31:18 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 211324D0D9DF;
+        Tue, 14 Sep 2021 15:31:15 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Tue, 14 Sep 2021 15:31:14 +0800
+Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Tue, 14 Sep 2021 15:31:14 +0800
+From:   Xiao Yang <yangx.jy@fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>
+CC:     <zyjzyj2000@gmail.com>, <jgg@ziepe.ca>,
+        Xiao Yang <yangx.jy@fujitsu.com>
+Subject: [PATCH 0/3] RDMA/rxe: Do some cleanup for macros
+Date:   Tue, 14 Sep 2021 16:02:50 +0800
+Message-ID: <20210914080253.1145353-1-yangx.jy@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210908061611.69823-1-mie@igel.co.jp> <20210908061611.69823-2-mie@igel.co.jp>
- <YThXe4WxHErNiwgE@infradead.org> <CANXvt5ojNPpyPVnE0D5o9873hGz6ijF7QfTd9z08Ds-ex3Ye-Q@mail.gmail.com>
- <YThj70ByPvZNQjgU@infradead.org> <CANXvt5rCCBku7LpAG5TV7LxkQ1bZnB6ACybKxJnTrRA1LE8e6Q@mail.gmail.com>
- <20210908111804.GX1200268@ziepe.ca> <1c0356f5-19cf-e883-3d96-82a87d0cffcb@amd.com>
- <CAKMK7uE=mQwgcSaTcT8U3GgCeeKOmPqS=YOqkn+SEnbbUNM1=A@mail.gmail.com>
- <20210908233354.GB3544071@ziepe.ca> <CAKMK7uHx+bDEkbg3RcwdGr9wbUgt2wx8zfx4N7G-K6d4HSY7XA@mail.gmail.com>
- <CANXvt5rYxr0xBrdbmqqKAV8ctCZaJrxEM7F0Hpt2k98wBvah7Q@mail.gmail.com> <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
-In-Reply-To: <CAKMK7uE8Nzq05aGcZ9kwRwwxRbgnzk=wkWNJix5WEy6pNBYQtg@mail.gmail.com>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Tue, 14 Sep 2021 16:11:34 +0900
-Message-ID: <CANXvt5p4H5cSR3jBFM8++TwWKP2FaaiJ4kESEvnwZdDoxXhi-w@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/3] RDMA/umem: Change for rdma devices has not dma device
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 211324D0D9DF.A59FA
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=8814=E6=97=A5(=E7=81=AB) 4:23 Daniel Vetter <daniel.ve=
-tter@ffwll.ch>:
->
-> On Fri, Sep 10, 2021 at 3:46 AM Shunsuke Mie <mie@igel.co.jp> wrote:
-> >
-> > 2021=E5=B9=B49=E6=9C=889=E6=97=A5(=E6=9C=A8) 18:26 Daniel Vetter <danie=
-l.vetter@ffwll.ch>:
-> > >
-> > > On Thu, Sep 9, 2021 at 1:33 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > On Wed, Sep 08, 2021 at 09:22:37PM +0200, Daniel Vetter wrote:
-> > > > > On Wed, Sep 8, 2021 at 3:33 PM Christian K=C3=B6nig <christian.ko=
-enig@amd.com> wrote:
-> > > > > > Am 08.09.21 um 13:18 schrieb Jason Gunthorpe:
-> > > > > > > On Wed, Sep 08, 2021 at 05:41:39PM +0900, Shunsuke Mie wrote:
-> > > > > > >> 2021=E5=B9=B49=E6=9C=888=E6=97=A5(=E6=B0=B4) 16:20 Christoph=
- Hellwig <hch@infradead.org>:
-> > > > > > >>> On Wed, Sep 08, 2021 at 04:01:14PM +0900, Shunsuke Mie wrot=
-e:
-> > > > > > >>>> Thank you for your comment.
-> > > > > > >>>>> On Wed, Sep 08, 2021 at 03:16:09PM +0900, Shunsuke Mie wr=
-ote:
-> > > > > > >>>>>> To share memory space using dma-buf, a API of the dma-bu=
-f requires dma
-> > > > > > >>>>>> device, but devices such as rxe do not have a dma device=
-. For those case,
-> > > > > > >>>>>> change to specify a device of struct ib instead of the d=
-ma device.
-> > > > > > >>>>> So if dma-buf doesn't actually need a device to dma map w=
-hy do we ever
-> > > > > > >>>>> pass the dma_device here?  Something does not add up.
-> > > > > > >>>> As described in the dma-buf api guide [1], the dma_device =
-is used by dma-buf
-> > > > > > >>>> exporter to know the device buffer constraints of importer=
-.
-> > > > > > >>>> [1] https://nam11.safelinks.protection.outlook.com/?url=3D=
-https%3A%2F%2Flwn.net%2FArticles%2F489703%2F&amp;data=3D04%7C01%7Cchristian=
-.koenig%40amd.com%7C4d18470a94df4ed24c8108d972ba5591%7C3dd8961fe4884e608e11=
-a82d994e183d%7C0%7C0%7C637666967356417448%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
-C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C2000&amp;sdata=
-=3DARwQyo%2BCjMohaNbyREofToHIj2bndL5L0HaU9cOrYq4%3D&amp;reserved=3D0
-> > > > > > >>> Which means for rxe you'd also have to pass the one for the=
- underlying
-> > > > > > >>> net device.
-> > > > > > >> I thought of that way too. In that case, the memory region i=
-s constrained by the
-> > > > > > >> net device, but rxe driver copies data using CPU. To avoid t=
-he constraints, I
-> > > > > > >> decided to use the ib device.
-> > > > > > > Well, that is the whole problem.
-> > > > > > >
-> > > > > > > We can't mix the dmabuf stuff people are doing that doesn't f=
-ill in
-> > > > > > > the CPU pages in the SGL with RXE - it is simply impossible a=
-s things
-> > > > > > > currently are for RXE to acess this non-struct page memory.
-> > > > > >
-> > > > > > Yeah, agree that doesn't make much sense.
-> > > > > >
-> > > > > > When you want to access the data with the CPU then why do you w=
-ant to
-> > > > > > use DMA-buf in the first place?
-> > > > > >
-> > > > > > Please keep in mind that there is work ongoing to replace the s=
-g table
-> > > > > > with an DMA address array and so make the underlying struct pag=
-e
-> > > > > > inaccessible for importers.
-> > > > >
-> > > > > Also if you do have a dma-buf, you can just dma_buf_vmap() the bu=
-ffer
-> > > > > for cpu access. Which intentionally does not require any device. =
-No
-> > > > > idea why there's a dma_buf_attach involved. Now not all exporters
-> > > > > support this, but that's fixable, and you must call
-> > > > > dma_buf_begin/end_cpu_access for cache management if the allocati=
-on
-> > > > > isn't cpu coherent. But it's all there, no need to apply hacks of
-> > > > > allowing a wrong device or other fun things.
-> > > >
-> > > > Can rxe leave the vmap in place potentially forever?
-> > >
-> > > Yeah, it's like perma-pinning the buffer into system memory for
-> > > non-p2p dma-buf sharing. We just squint and pretend that can't be
-> > > abused too badly :-) On 32bit you'll run out of vmap space rather
-> > > quickly, but that's not something anyone cares about here either. We
-> > > have a bunch of more sw modesetting drivers in drm which use
-> > > dma_buf_vmap() like this, so it's all fine.
-> > > -Daniel
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
-> >
-> > Thanks for your comments.
-> >
-> > In the first place, the CMA region cannot be used for RDMA because the
-> > region has no struct page. In addition, some GPU drivers use CMA and sh=
-are
-> > the region as dma-buf. As a result, RDMA cannot transfer for the region=
-. To
-> > solve this problem, rxe dma-buf support is better I thought.
-> >
-> > I'll consider and redesign the rxe dma-buf support using the dma_buf_vm=
-ap()
-> > instead of the dma_buf_dynamic_attach().
->
-> btw for next version please cc dri-devel. get_maintainers.pl should
-> pick it up for these patches.
-A CC list of these patches is generated by get_maintainers.pl but it
-didn't pick up the dri-devel. Should I add the dri-devel to the cc
-manually?
+Xiao Yang (3):
+  RDMA/rxe: Add new RXE_READ_OR_WRITE_MASK
+  RDMA/rxe: Add MASK suffix for RXE_READ_OR_ATOMIC and RXE_WRITE_OR_SEND
+  RDMA/rxe: Remove unused WR_READ_WRITE_OR_SEND_MASK
 
-Regards,
-Shunsuke
+ drivers/infiniband/sw/rxe/rxe_opcode.h | 6 +++---
+ drivers/infiniband/sw/rxe/rxe_req.c    | 6 +++---
+ drivers/infiniband/sw/rxe/rxe_resp.c   | 6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+-- 
+2.23.0
+
+
+
