@@ -2,94 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB07040C28E
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Sep 2021 11:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1B040C54B
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Sep 2021 14:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhIOJOK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Sep 2021 05:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237404AbhIOJOC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Sep 2021 05:14:02 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05492C061766;
-        Wed, 15 Sep 2021 02:12:44 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id r2so2044174pgl.10;
-        Wed, 15 Sep 2021 02:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=6f6pDvm1KB1BUD+UI80GJZw/FNQsGRi1bsEqgFCm1SA=;
-        b=hwNLoJUW1SUbnq/yZHao0sjUZE+wXWmWOViRlZnW+hMrbBnucncgcekehk2vPARNUu
-         NiigLrgjZGQQC0VwTHexgjPyKx3V5fqy8ZruVQnbMJwvQEP6fv9e+4gAZBLnH4f4UbrP
-         1Wr7VLZdz0tUsfMeD8yxKZOXfS0Bpwa3fKTtSS3Q5GEOSmsF09RIgoaO2FVV1PH/HUjB
-         aRdWGoiw7ITTidyTPW9xcNrYpTkHNLTGeJ89ScvLORVglr0LNdZI9mlIwdUojhYeOgeT
-         XoAxC4vV7C8J+YhkXXS4+PP1MMN6WwuuJJzyfEDcQSv6sDDaaq7LFwcVN497+38MRecA
-         TTng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:subject:to:cc:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=6f6pDvm1KB1BUD+UI80GJZw/FNQsGRi1bsEqgFCm1SA=;
-        b=KNef8vavpdT2COOvGRNCtA3+R8rnUYSzbDEm222M4aeaGrunGJUiYaS+kiHyU3zQuY
-         JKpV7lvpfJeyWSJgp15JnX/LmLjMqWAno7adazuey8UVSR8gm38j5FTxXJpsLhbxJGvc
-         maRwVFr2XzrJcJI26TkeqRr9fUVM/xJJZ3RZ/Tgrp1gwwnmL2wyf12ExTp/I7poKkiF1
-         Doj2KOsGPDyn/R5XAZmwnx49fRLXehjzQKio2pK3PCbEgCJywX/Wetnu031Rmvp0mxiH
-         uNAot3v0ZUtwBt0X1EUJ0Jt4ygsh7138oJAnvCqlICCZoWfkp/UGwEvlGVw2orY6lS8Q
-         SERA==
-X-Gm-Message-State: AOAM5330lznjDDtvv+6YUMQxdqofhFvm447fLCq/Ag7tyq9lD8wteLX/
-        YpljcAQ4u7St5wyuiEgCU72Vvp4fZuo=
-X-Google-Smtp-Source: ABdhPJxHdj75JxKB720E6P1osyeykhY+XTLKNbbtP4v+0Esti9LpljtFzOHFsex4JMJvfghcfC8DiA==
-X-Received: by 2002:a63:1717:: with SMTP id x23mr19536519pgl.182.1631697163202;
-        Wed, 15 Sep 2021 02:12:43 -0700 (PDT)
-Received: from [10.114.0.6] ([45.145.248.139])
-        by smtp.gmail.com with ESMTPSA id i1sm1520945pja.26.2021.09.15.02.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Sep 2021 02:12:42 -0700 (PDT)
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] infiniband: hw: hfi1: possible ABBA deadlock in pio_wait() and
- sc_disable()
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <857df2fa-7d60-bff3-70f2-642201888977@gmail.com>
-Date:   Wed, 15 Sep 2021 17:12:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        id S237745AbhIOMeK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Sep 2021 08:34:10 -0400
+Received: from lpdvsmtp09.broadcom.com ([192.19.166.228]:46804 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233011AbhIOMeG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 15 Sep 2021 08:34:06 -0400
+Received: from dhcp-10-192-206-197.iig.avagotech.net.net (dhcp-10-123-156-118.dhcp.broadcom.net [10.123.156.118])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 59AC722586;
+        Wed, 15 Sep 2021 05:32:46 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 59AC722586
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1631709167;
+        bh=Dvxy4dp58wU/IqBtBrVHgExJeimO8KzAjG+m8UAKsd4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZVh+NcaTfTDDvrvEDIbEuvu/iGClZOusrx3lUFjFN7OPJOLgPQV16R+yWHXGb3uik
+         Ad4u7JafU8D2BFDwRsBn5O2EtpE2cA/FwdQfVN/KB+iaQ4ICUncIsdVvIBiuJlw+8m
+         jutwU/4w7T65zYpkWf7+tU9ulzXn+HXPDx0d2z84=
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+To:     dledford@redhat.com, jgg@nvidia.com
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH for-next v2 00/12] RDMA/bnxt_re: Driver update
+Date:   Wed, 15 Sep 2021 05:32:31 -0700
+Message-Id: <1631709163-2287-1-git-send-email-selvin.xavier@broadcom.com>
+X-Mailer: git-send-email 2.5.5
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+Includes some feature updates and bug fixes for bnxt_re driver.
 
-My static analysis tool reports a possible ABBA deadlock in the hfi1 
-driver in Linux 5.10:
+Please review and apply.
 
-sc_disable()
-   write_seqlock(&sc->waitlock); --> Line 956 (Lock A)
-   hfi1_qp_wakeup()
-     spin_lock_irqsave(&qp->s_lock, flags); --> Line 441 (Lock B)
+Thanks,
+Selvin Xavier
 
-pio_wait()
-   spin_lock_irqsave(&qp->s_lock, flags); --> Line 939 (Lock B)
-   write_seqlock(&sc->waitlock); --> Line 941 (Lock A)
+v1->v2:
+ Fixed review comments from Leon
 
-When sc_disable() and pio_wait() are concurrently executed, the deadlock 
-can occur.
+Edwin Peer (1):
+  RDMA/bnxt_re: Use separate response buffer for stat_ctx_free
 
-I am not quite sure whether this possible deadlock is real and how to 
-fix it if it is real.
-Any feedback would be appreciated, thanks :)
+Selvin Xavier (11):
+  RDMA/bnxt_re: Add extended statistics counters
+  RDMA/bnxt_re: Update statistics counter name
+  RDMA/bnxt_re: Reduce the delay in polling for hwrm command completion
+  RDMA/bnxt_re: Support multiple page sizes
+  RDMA/bnxt_re: Suppress unwanted error messages
+  RDMA/bnxt_re: Fix query SRQ failure
+  RDMA/bnxt_re: Fix FRMR issue with single page MR allocation
+  RDMA/bnxt_re: Use GFP_KERNEL in non atomic context
+  RDMA/bnxt_re: Correct FRMR size calculation
+  RDMA/bnxt_re: Check if the vlan is valid before reporting
+  MAINTAINERS: Update Broadcom RDMA maintainers
 
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+ MAINTAINERS                                 |   1 -
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h     |  19 +-
+ drivers/infiniband/hw/bnxt_re/hw_counters.c | 277 ++++++++++++++++++----------
+ drivers/infiniband/hw/bnxt_re/hw_counters.h |  30 ++-
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c    |  35 +++-
+ drivers/infiniband/hw/bnxt_re/main.c        |  13 +-
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c    |  15 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c  |   6 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.h  |   2 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.c   |   5 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h   |   9 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c    |  51 +++++
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h    |  28 +++
+ drivers/infiniband/hw/bnxt_re/roce_hsi.h    |  85 +++++++++
+ 14 files changed, 439 insertions(+), 137 deletions(-)
 
+-- 
+2.5.5
 
-Best wishes,
-Jia-Ju Bai
