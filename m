@@ -2,113 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55AED40EA84
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 21:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A7A40EA90
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 21:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346188AbhIPTDZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 15:03:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
+        id S233367AbhIPTEv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 15:04:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243531AbhIPTDW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 15:03:22 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1910EC0AF65C
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 11:35:22 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id w19so6665802pfn.12
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 11:35:22 -0700 (PDT)
+        with ESMTP id S1346331AbhIPTES (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 15:04:18 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6349FC0C6CA4
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id m26so6783875pff.3
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 11:36:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=KmKz/oKKvyTAXz0Cud+ADkHJcZLLdaDQdhsrhOzh7Y8=;
-        b=S1hCQ1gqH7tTeoSKb3urUcgEEyWyDk6pc8xfNQY0y3Ls/MdvNEri6/3gHFt/COJPaI
-         lv72wuqi7Hfjk7beqOFWzoEyOGhWxb059bujhtFF/kDsIm+o+P4OxcNZKmdPFDq3hJjL
-         sTDHOUOLRdOXGjAs7EhzTkA8KP+PThCn/GF/4LCFo2UmEiys7bpu4GJRir86Q9FcpeLS
-         b6D7iYMVMprHpCmY9KFcaJQD7Zg7U0+cJ5HMUD/5UZi5/Fg2GttK/tifCGuZbc6zwRMe
-         sZj0f7tJygaEyKlwAd9W9Z7aTh7FkL8fI0iTcxQYbRIdxAmHo9KKB42jO9O6KEs6dDo4
-         rqTQ==
+         :content-disposition:in-reply-to;
+        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
+        b=fQ61flgpbxr+3ScvmslX6Y6UYzBrHyw+jxLOpGznkQ26CXbogaME6z2xm8KhJSqTnn
+         77lgkkMT6qVpSVnIMa9CA4IUAN0kgb27nXujFw1dSciBp8EZicTCozWpovAxRZAevT+M
+         3PJgfF7BblG4eAokXOWjQ1ObtUEq1NA0DMPduSUtk/8Z6AptRA77vHC+lN+6CI0dZ7iS
+         TlrJPbz77xVRa9MxLxts1RuG0yon5hKXJbxU7TTYE0S0roeX8RCMGqTTcoRHQiEheJWR
+         ZtJBPpysHanNjaKBKtSZ1ZOhPjcngD+VZRRKp1jNeA1evJj3KV7+WwMeqZhIbT+A+5CN
+         d3Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=KmKz/oKKvyTAXz0Cud+ADkHJcZLLdaDQdhsrhOzh7Y8=;
-        b=q4uQJql24E3HXHBt3GRlqlfooAPRBu6AV3dHVrxX5PZm734PGjf5veuGF92s72Hggk
-         nF1EL8u6yyBaXwY6X7RLpot99D9rsiXXxTDfGG+UOPIkChOCIa/G4Ar1PcDiPX7Pj9Qd
-         WM2fKfIb/Tk5eSqBFXl3q2ODeDnfSm/E0LQeifYbZqbNNN4sXKAibsXy9a8Avyz2vRAN
-         mhtXKDmuIXeOLN+XtA4CZTqgw6iL3bkhiBnYh5sDVmC1CsZrAI80pcPE4e6942bNBU1n
-         pO2H8BXNcBD35hR7LMXq3ya/fWrTyrE78sCxzyIBQPRKaJdUy5D4RBU4JELiOtR7Z8Vv
-         tRHw==
-X-Gm-Message-State: AOAM533KRgorSQ9iwaRkkLR6YnWHY4EoQKhAEVj9mEKZ0Y+bGDQm8nO6
-        7aZhAKv6hDXeGKTW47efQ37HqhbPerjbTQ==
-X-Google-Smtp-Source: ABdhPJwChbS/ly5G8J0Juxyfxa+sZ1KjB0vKVlICTLq8mRuXtIasctAIdmn9sJAOq488HaeMyze+jg==
-X-Received: by 2002:a62:1ad6:0:b0:440:3aef:46b7 with SMTP id a205-20020a621ad6000000b004403aef46b7mr6386273pfa.86.1631817321559;
-        Thu, 16 Sep 2021 11:35:21 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=eF3yoGSWauBjlP/PEtThaGKhCaV9nfWn2WtwyHMH5NA=;
+        b=Pl0NDXc9h7qyFg0h814GLA4fffsttfcVEmphUmB33021WSeCho6AU5/48YfCWg/M1S
+         FRkWcjUURlWDLHw8LyRf5wXtsnNOLGAQT5m1ALjwzNeqtcJoJaCLBfBoeMYb6mSPKGlM
+         VcXlNqeC5m352ZmNn/nzlBiqViF5I7Qqo4/SLOG5J0qG224WJIdtkiwI9r6skB6t1i5/
+         r/PcUR+LTiQY7y3gwElYSOp6rbs3IVE7wSouCZ1FF6hRlyfmeICIAFycYAU01MwzcTVM
+         6yqCemUGGR0qeV1q0tfPPn7sYzJ2TyAC9xWCH6ZD2z2aacXXxAm++4I5O6YIfWDU6zrs
+         AYnQ==
+X-Gm-Message-State: AOAM530Vzby0gllppBoGXgBZzOKsjVivApVaGZA/aWcUEyYEvy0rCZUZ
+        +sD+WhptySY9T3Ag29nvjhESCA==
+X-Google-Smtp-Source: ABdhPJwLJjgKEcXSC9TA+AobePDdZy/P1mekisB/+SUfd6z0VLYVgxBHgOvJIavtKHhdqdSbJdImwA==
+X-Received: by 2002:a65:5643:: with SMTP id m3mr6176916pgs.224.1631817418780;
+        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
 Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id t2sm8430584pje.5.2021.09.16.11.35.20
+        by smtp.gmail.com with ESMTPSA id t14sm3895421pga.62.2021.09.16.11.36.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 11:35:21 -0700 (PDT)
+        Thu, 16 Sep 2021 11:36:58 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1mQwEA-001qpc-Lm; Thu, 16 Sep 2021 15:35:18 -0300
-Date:   Thu, 16 Sep 2021 15:35:18 -0300
+        id 1mQwFk-001qrZ-OF; Thu, 16 Sep 2021 15:36:56 -0300
+Date:   Thu, 16 Sep 2021 15:36:56 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Hao Sun <sunhao.th@gmail.com>
 Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-Message-ID: <20210916183518.GR3544071@ziepe.ca>
-References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
- <20210413133359.GG227011@ziepe.ca>
- <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
- <20210413134458.GI227011@ziepe.ca>
- <CACkBjsY-CNzO74XGo0uJrcaZTubC+Yw9Sg1bNNi+evUOGaZTCg@mail.gmail.com>
+Subject: Re: INFO: task hung in _destroy_id
+Message-ID: <20210916183656.GS3544071@ziepe.ca>
+References: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsY-CNzO74XGo0uJrcaZTubC+Yw9Sg1bNNi+evUOGaZTCg@mail.gmail.com>
+In-Reply-To: <CACkBjsYvt46E2WqeJwEuemUr7pST_uk3=wvEBmdtdiAPmG40vQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 10:19:25PM +0800, Hao Sun wrote:
-> Jason Gunthorpe <jgg@ziepe.ca> 于2021年4月13日周二 下午9:45写道：
-> >
-> > On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
-> > > Jason Gunthorpe <jgg@ziepe.ca> 于2021年4月13日周二 下午9:34写道：
-> > > >
-> > > > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
-> > > > > Hi
-> > > > >
-> > > > > When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
-> > > > > the Linux kernel, I found two use-after-free bugs which have been
-> > > > > reported a long time ago by Syzbot.
-> > > > > Although the corresponding patches have been merged into upstream,
-> > > > > these two bugs can still be triggered easily.
-> > > > > The original information about Syzbot report can be found here:
-> > > > > https://syzkaller.appspot.com/bug?id=8dc0bcd9dd6ec915ba10b3354740eb420884acaa
-> > > > > https://syzkaller.appspot.com/bug?id=95f89b8fb9fdc42e28ad586e657fea074e4e719b
-> > > >
-> > > > Then why hasn't syzbot seen this in a year's time? Seems strange
-> > > >
-> > >
-> > > Seems strange to me too, but the fact is that the reproduction program
-> > > in attachment can trigger these two bugs quickly.
-> >
-> > Do you have this in the C format?
-> >
+On Fri, Sep 03, 2021 at 03:44:54PM +0800, Hao Sun wrote:
+> Hello,
 > 
-> Just tried to use syz-prog2c to convert the repro-prog to C format.
-> The repro program of  rdma_listen was successfully reproduced
-> (uploaded in attachment), the other one failed. it looks like
-> syz-prog2c may not be able to do the equivalent conversion.
-> You can use syz-execprog to execute the reprogram directly, this
-> method can reproduce both crashes, I have tried it.
+> When using Healer to fuzz the latest Linux kernel, the following crash
+> was triggered.
+> 
+> HEAD commit: 9e9fb7655ed58-Merge tag 'net-next-5.15'
+> git tree: upstream
+> console output:
+> https://drive.google.com/file/d/19ZvzEBJnFYlQJIn-TklSjE9ZWsxoEF7X/view?usp=sharing
+> kernel config: https://drive.google.com/file/d/1zgxbwaYkrM26KEmJ-5sUZX57gfXtRrwA/view?usp=sharing
+> 
+> Sorry, I don't have a reproducer for this crash, hope the symbolized
+> report can help.
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: Hao Sun <sunhao.th@gmail.com>
 
-Can you check this patch that should solve it?
+I think this is probably fixed by this:
 
-https://patchwork.kernel.org/project/linux-rdma/patch/0-v1-9fbb33f5e201+2a-cma_listen_jgg@nvidia.com/
+https://lore.kernel.org/r/20210913093344.17230-1-thomas.liu@ucloud.cn
 
-Thanks,
 Jason
