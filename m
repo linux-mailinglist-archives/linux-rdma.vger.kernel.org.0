@@ -2,171 +2,214 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602B840DD8B
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 17:05:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AA740DD8E
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 17:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235531AbhIPPG5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 11:06:57 -0400
-Received: from mail-bn7nam10on2084.outbound.protection.outlook.com ([40.107.92.84]:47456
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231702AbhIPPGy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Sep 2021 11:06:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QYcUsKi60QJQTT5Db7ZpOAS6/Rq0rGkpYtwFnaD44dZy5l5P/rWPrbZuSLsGY0MOEjTdfr3T83bvb0BENw4o9EGPsTJ1Gz7wJfWETqYxSq91zgSe1lF5dONhHaORk1ugngnchHrm+ljpuUrXL9zxYtWbcsGYy6f7jpox+6hBE90bariSBZHEu9sWO7Uo5G4/0mNdVUc7LpxTUyMx8KRj9UMw326IvuIvmkAajB19Hjj6E6kiDyTGsJGmHiHLSu7I3mAnzhUGaS6VXOT4IyhWwN4mLoSmmKYEHD1+WZtXBsqEKVTt8DPiLAyVYkbNxY7YcpAAS79nWCWQlCswSx5nxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=cWqVQw3iupqqpKNhZGYY3m84gw9mqHM5LYw4V8Q9Q9s=;
- b=PXKl/gomV50LE5k2fjOHh6fBGMttfc6gxkFWOiIRFd8DPVN4Urfki2s/0470wMoIOpiu20rwoF9kpqbt/IqBjBVNuu8wGiaOgAjjN/87Ug1WaGsVDn/AEJyL+GJPKI6WotoBGlFJ/c8dhEasdi3A9ifbcgJ/HdWHeZR8aLMxtIPvnTpWOmba2sRzhRuIPhiu1aCYvzm8UMLEXgWI7Q2QnNHtvxp+/OxlTqkflCJgB+MKW95kJvpGsnb912Oft9HnNhPtOiFwvOvPm/Fhyz6g/UXtrvm0iXkslG38zcc1RSnY5WigEsCEsUsGsAodOvm9aDzzmKPg++6/UyUShTO20Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cWqVQw3iupqqpKNhZGYY3m84gw9mqHM5LYw4V8Q9Q9s=;
- b=jLgZss/o1gZhC1U/89U5hp2o6VQdnBwoZFMV5KPWPEFC97SleIWa1OOf88JEnDJkh0Sd0ZdcOPtkoQQtDwuGDYZfyeE5D16Fk0LmxuKHBhml0+S8EXzFp4a9tR+KImWFqgEpchDGsPl47P4hHHenSuSXep0fMA60nS2Y1xNmlliFIVYpUpX+XK4Tww5h1/d58M3zy4QWrgOTmtTn1EzaZ3knz7CtvA/u/GBtiRCoLwbtoWeVA4si3uG9zgJ6kLbOoqNqL4iRgZVqkFlYfnycB9nZ/0DGj64Z9lT7QkKdndLjiJw67zMkpB3ZqDMwO4TslnyEyyyzFgWP5s/6330IqQ==
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5126.namprd12.prod.outlook.com (2603:10b6:208:312::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 15:05:31 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 15:05:31 +0000
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>, linux-rdma@vger.kernel.org
-Cc:     Lang Cheng <chenglang@huawei.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Weihang Li <liweihang@huawei.com>
-Subject: [PATCH] RDMA/hns: Work around broken constant propogation in gcc 8
-Date:   Thu, 16 Sep 2021 12:05:28 -0300
-Message-Id: <0-v1-c773ecb137bc+11f-hns_gcc8_jgg@nvidia.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR03CA0015.namprd03.prod.outlook.com
- (2603:10b6:a03:33a::20) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S238492AbhIPPHP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 11:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231702AbhIPPHO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 11:07:14 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE09C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:05:53 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id c22so18002795edn.12
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:05:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RJnCavhowP/p+nS5hk4Q9AneZDB9AlGoWFI+WBn67HM=;
+        b=OK83LxVZGWztRHJ+SNAKqI+r5S+mFyDqzqwf1le6OT/7czngU1WHnwYtUNhyqFJ1D8
+         0BRDyDOPC2nLbrCFXz5imPZFT91cw0r1di9FcFw6/JtylU/0DSYXCY98NN/l4vyacneM
+         5s0O/LSe5LWx89R5i3v8BB7VumDrkKzzbSniE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RJnCavhowP/p+nS5hk4Q9AneZDB9AlGoWFI+WBn67HM=;
+        b=xvpdPRBgeMTM9H5V/orvMiDYOzAsLxmb3rZj7z5whmwC9ZgCsBjJipVnNkluvJS1nH
+         HCF2uhnk4hG34FfYVLZ4jUpyRrgjyIe9Iq61JCPTyi8ChSqYHbc36gOUm4J4W5DYBP82
+         Jdc/jk8upaHABaILyjLZkgAAylciOUBNljCAX9hLzmgSCJ7rDFs/kF5lsLgkA+RXXMch
+         sBF3OlZX2YIlLLXkGmdJWCPGav/yNj1UZi51sZ8Agf95RDQQf/nUa7xgOELvWMUiXDRx
+         VxrzTmwprXbH+bIfnJdSm666nKkoubiD1YvOnztU5yHj3dK1lY1+GDwQNPGeHSwsQGYZ
+         tdIA==
+X-Gm-Message-State: AOAM530REksDYGBW50O8EbiqmktgpWQFXCHtVAX2fykjtFnTlwitS4/j
+        WXcLB56ydQDQ6BxCrKvf41n/dcf3pb69PQYCvLLvyQ==
+X-Google-Smtp-Source: ABdhPJz3c9rbAVjJhKISaxx/2mVMdvUlaNvNYR12/4xqkCP96AeQ9P7G3hIW1yDgxLFhJFViD6bkWeVkDT0Pf95HBgA=
+X-Received: by 2002:a17:907:77d0:: with SMTP id kz16mr6898375ejc.334.1631804748247;
+ Thu, 16 Sep 2021 08:05:48 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by SJ0PR03CA0015.namprd03.prod.outlook.com (2603:10b6:a03:33a::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 15:05:31 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQsx6-001mTs-P2; Thu, 16 Sep 2021 12:05:28 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: de6714cf-1c55-4e38-41f7-08d979236d55
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5126:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB51265941CB86228EF45B16FAC2DC9@BL1PR12MB5126.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IqbzuOsDuaI6VkXNRf6yHHheYFQcM6fCwW9aZbxs7QP3aGTqz56PF9tT/0R8NjZjyWfjm8OqS51MJjbJXpvyOiNXoDstge6ZYF30KnRbHSeYIKHTe6PQ9aMnIxodqovTsjZnLazew9wuVXvyRL7Ld6DyCN3zevZyMDfiue+VpESX9F9enYuNlk1GKff/qDyyStO9iscxAx6EwY7Y5l3mZodJ5cYi9/Yq+LXo4H/vEpYO44T2pR77Mo5M+ogu460FV5aKTI5D8yliri9dNGXbPkA24EthNcidTsmlt4jrA0xRNUpVkdjYaY8liMd+JQ7q6DA2FpABO/MEbCm0AgA+Zk8+mbyzp0xvsg6EPCPyYRFe/IQMmMkpFYhvVE7vfoHddkEHV6bCsVdpU4yvjvCpNoms5pNiQ6JQslPX/aQe7DUoKaFVHgCISrfZ5r1wfmz8L3VnBkCAPGRQqu3Br5Ga6hTcTVI7ov5SRrOJCldlkD2kDs6+GmBk34LtxE/+54Cza9JfSG6pD5dwKorVkwWmQxoQ/sBv/z4AK/0IZlwRw1pr9bN1mR06aT8vX2BnzCcgPAxoFizr/wxUP/eWpQQYwU/Tfvoq8MZTungTWFbJzw7vcyVbvOXPg+/sXdhkgfg9LAa1FH4/jIM+CRW2rXM7EinwYuhbPGD56WyecCUAhv1B6uEMCMEH4RuUFZdawyha
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(396003)(376002)(346002)(316002)(478600001)(54906003)(38100700002)(36756003)(86362001)(4326008)(83380400001)(40140700001)(8676002)(66556008)(66946007)(9746002)(2906002)(9786002)(186003)(66476007)(8936002)(26005)(2616005)(5660300002)(426003)(4216001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zAc+pc3W0h4k/U77Rkq20XD5IGPfeXElckj+8gx0akJvJI5HvGGQ+iDcR0hp?=
- =?us-ascii?Q?6AgcTaUtGpttIME364u0Ihcx2oBVyfYS/gWXrJQMEpdv3lgeMP+6+HV3AQu9?=
- =?us-ascii?Q?IzHi7oq2qO99DM9y1oljOR03ntblZIYefsiWRpvOdKe/z63ws6xayCHNMz/Q?=
- =?us-ascii?Q?sx/P+huVtprkwlF/4YBYd6fet5QPGvHsSOPOxSOEwyrnExyATKRfh2MSz2sO?=
- =?us-ascii?Q?oVn8rnhVgRCt8fEZHxpTiWrdLAucgfVLNYMODwsZp3v1u6oV5XejbikenkOk?=
- =?us-ascii?Q?6xu2N5QFksduYGD3gLDhqs/JkwazWF5rQxJii9hp8CGVqSKrkvWen66lLByW?=
- =?us-ascii?Q?3iAGhmNYYxio1CQjG9ZZw3j5bpmtAhbXF4MBc34hkqxaHkd3Ss7ZQ6lC0ADa?=
- =?us-ascii?Q?C6tvylRPcpC+pGlthAaWRIZ9ZLyYgVk2Zip4LNJmBjY4TLOzOCeu9mN+h/sW?=
- =?us-ascii?Q?rq+4qBIRWLUJlaBkNj4FTs2j4EqHKnRe9CDZb3ZShKX6P8saNep9Zor5l2Dg?=
- =?us-ascii?Q?Zz+upC6p5BJ63FaCnVqSjqWnPkxVmKowBcOu+AmzSxafhj8hFQPOdwWop0CZ?=
- =?us-ascii?Q?fCZjfwehJ5e3e4qc2HTf2FOlgEdQsIPtUOlyN7iln8OoCtbh/kOQmV4FpaKL?=
- =?us-ascii?Q?KFerL5ZgYhDmWECJ6n1YGScXXtoo3YicVe+kZPiEwOjHsUQoXbxPSnu9sL5g?=
- =?us-ascii?Q?qXKgQXZULU876jaeT9RAEYqseRmFEsP/8cOAUOoe8FeRoPfz9diA4oJpcI2E?=
- =?us-ascii?Q?rR9UZBMoqNym34ladKbOdweHBx/8uJu91doRABEFWgokfBku5jzrR2PVV1MM?=
- =?us-ascii?Q?/R+64+DIDAqaIi2Oz7axBh9rmt0amnFV2Ggk4hsL1VssOjdfqxw4J+j8Zxob?=
- =?us-ascii?Q?d0zG4k7r3vjxZNsoIhXTrheum7V4OoMUvYdVCdxbYJM92zW6JmqZfRIc1ra/?=
- =?us-ascii?Q?ExO2Qi+vFp/Vu5h+yfcmGq9HhCc7n+1vpMwCFYDCMjr36xQKQxNVi5rF/y5H?=
- =?us-ascii?Q?a45EuDQp6rcJUYq/kAzRKBwiFJGQg/DEbxFNwUMDlLOhloQ6QD8UopZcf5vu?=
- =?us-ascii?Q?53ue3XZoQKv65iFOnp2NVOo0E8M89sYnXhy76ldELw34OMVNt2X/OFXsqsZm?=
- =?us-ascii?Q?/aY0dATnt+8oghBvjNhBIuQgR1EVWBDfbFAo6eTmp8Q9CnSYdnYQ1LLXAVhO?=
- =?us-ascii?Q?/BmO6hkSreMfIVRcQh3ClxFZbgOGV1Bj7LARRgyk5SreOAGWn8GECzz4lFqO?=
- =?us-ascii?Q?G45AnjnT+mdHIP4GPo76RSDjvYAb30q18d4e8nB9hQ67cKbmd1OzcXLhkkO7?=
- =?us-ascii?Q?lWiWIVrQ9OtHUizljWQWODfP?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: de6714cf-1c55-4e38-41f7-08d979236d55
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 15:05:31.5582
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0vRO8jkYtpJiMMhVVdYc9w2R3chVFwW0NA9KNOVy80ILbYtcypBJYzt6Li8WPGMM
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5126
+References: <1630037738-20276-1-git-send-email-selvin.xavier@broadcom.com>
+ <20210827123146.GH1200268@ziepe.ca> <CA+sbYW1GoGu_U1c_zKEbXyqgK-t+Mwe1aaFY1vsH1T0QCj6KAA@mail.gmail.com>
+ <20210901115016.GQ1200268@ziepe.ca>
+In-Reply-To: <20210901115016.GQ1200268@ziepe.ca>
+From:   Selvin Xavier <selvin.xavier@broadcom.com>
+Date:   Thu, 16 Sep 2021 20:35:37 +0530
+Message-ID: <CA+sbYW1uhvNFjwK27UarY-KPA=tLSMVeGXzcD4i8aWnqeGsUiQ@mail.gmail.com>
+Subject: Re: [PATCH rdma-rc] RDMA/bnxt_re: Disable atomic support on VFs
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000062e02605cc1e26fc"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-gcc 8.3 and 5.4 throw this:
+--00000000000062e02605cc1e26fc
+Content-Type: text/plain; charset="UTF-8"
 
-In function 'modify_qp_init_to_rtr',
-././include/linux/compiler_types.h:322:38: error: call to '__compiletime_assert_1859' declared with attribute error: FIELD_PREP: value too large for the field
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-[..]
-drivers/infiniband/hw/hns/hns_roce_common.h:91:52: note: in expansion of macro 'FIELD_PREP'
-   *((__le32 *)ptr + (field_h) / 32) |= cpu_to_le32(FIELD_PREP(   \
-                                                    ^~~~~~~~~~
-drivers/infiniband/hw/hns/hns_roce_common.h:95:39: note: in expansion of macro '_hr_reg_write'
- #define hr_reg_write(ptr, field, val) _hr_reg_write(ptr, field, val)
-                                       ^~~~~~~~~~~~~
-drivers/infiniband/hw/hns/hns_roce_hw_v2.c:4412:2: note: in expansion of macro 'hr_reg_write'
-  hr_reg_write(context, QPC_LP_PKTN_INI, lp_pktn_ini);
+On Wed, Sep 1, 2021 at 5:20 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Tue, Aug 31, 2021 at 09:27:14PM +0530, Selvin Xavier wrote:
+> > On Fri, Aug 27, 2021 at 6:01 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Thu, Aug 26, 2021 at 09:15:38PM -0700, Selvin Xavier wrote:
+> > > > Following Host crash is observed when pci_enable_atomic_ops_to_root
+> > > > is called with VF PCI device.
+> > > >
+> > > > PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
+> > > >  #0 [ffff9a94817136d8] machine_kexec at ffffffffb90601a4
+> > > >  #1 [ffff9a9481713728] __crash_kexec at ffffffffb9190d5d
+> > > >  #2 [ffff9a94817137f0] crash_kexec at ffffffffb9191c4d
+> > > >  #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
+> > > >  #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
+> > > >  #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
+> > > >  #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
+> > > >     [exception RIP: pcie_capability_read_dword+28]
+> > > >     RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
+> > > >     RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
+> > > >     RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
+> > > >     RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
+> > > >     R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
+> > > >     R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
+> > > >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
+> > > >  #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
+> > > >  #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
+> > > >  #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
+> > > >     RIP: 00007f450602f648  RSP: 00007ffe880869e8  RFLAGS: 00000246
+> > > >     RAX: ffffffffffffffda  RBX: 0000000000000002  RCX: 00007f450602f648
+> > > >     RDX: 0000000000000002  RSI: 0000555c566c4a60  RDI: 0000000000000001
+> > > >     RBP: 0000555c566c4a60   R8: 000000000000000a   R9: 00007f45060c2580
+> > > >     R10: 000000000000000a  R11: 0000000000000246  R12: 00007f45063026e0
+> > > >     R13: 0000000000000002  R14: 00007f45062fd880  R15: 0000000000000002
+> > > >     ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
+> > >
+> > Apologies for the delay in my response.  I was exploring internally to
+> > see if it is a specific issue
+> > with the adapter/host. I see the problem in multiple systems.
+> >
+> > > This feels like a bug in pci_enable_atomic_ops_to_root()? I assume it
+> > > hit a case where bus->self == NULL?
+> > yes. This crashes because of bus->self is NULL. Is it expected for VF?
+>
+> I'm not sure, you should ask the PCI lists
+>
+> > > Why not fix it there?
+> > Since its a functional breakage in 5.14, I posted a quick fix for
+> > 5.14. Also, we haven't done any testing on VF for this
+> > feature. So I wanted to avoid claiming support for VF anyway.
+> >
+> > I see that other drivers also use pci_enable_atomic_ops_to_root
+> > without vf/pf check. Anyone seeing this issue?
+>
+> Which is why I suspect the core code should be fixed not the driver..
+Hi Jason,
+A patch that avoids the crash is merged to the linux-pci tree.
+https://lore.kernel.org/linux-pci/20210914201606.GA1452219@bjorn-Precision-5520/T/
+With the pci patch, the host will not crash. But driver will get
+following error message when called for VF
+""platform doesn't support global atomics."
 
-Because gcc has miscalculated the constantness of lp_pktn_ini:
+we want to prevent calling pci_enable_atomic_ops_to_root for VF
+anyway. Can you please pull this patch in bnxt_re?
 
-	mtu = ib_mtu_enum_to_int(ib_mtu);
-	if (WARN_ON(mtu < 0)) [..]
-	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / mtu);
+Thanks
+Selvin
 
-Since mtu is limited to {256,512,1024,2048,4096} lp_pktn_ini is between 4
-and 8 which is compatible with the 4 bit field in the FIELD_PREP.
+>
+> Jason
 
-Work around this broken compiler by adding a 'can never be true'
-constraint on lp_pktn_ini's value which clears out the problem.
+--00000000000062e02605cc1e26fc
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-Fixes: f0cb411aad23 ("RDMA/hns: Use new interface to modify QP context")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 5b9953105752c3..a9c00a2e8ebdbb 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -4397,7 +4397,12 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 	hr_qp->path_mtu = ib_mtu;
- 
- 	mtu = ib_mtu_enum_to_int(ib_mtu);
--	if (WARN_ON(mtu < 0))
-+	if (WARN_ON(mtu <= 0))
-+		return -EINVAL;
-+#define MAX_LP_MSG_LEN 65536
-+	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
-+	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / mtu);
-+	if (WARN_ON(lp_pktn_ini >= 0xF))
- 		return -EINVAL;
- 
- 	if (attr_mask & IB_QP_PATH_MTU) {
-@@ -4405,10 +4410,6 @@ static int modify_qp_init_to_rtr(struct ib_qp *ibqp,
- 		hr_reg_clear(qpc_mask, QPC_MTU);
- 	}
- 
--#define MAX_LP_MSG_LEN 65536
--	/* MTU * (2 ^ LP_PKTN_INI) shouldn't be bigger than 64KB */
--	lp_pktn_ini = ilog2(MAX_LP_MSG_LEN / mtu);
--
- 	hr_reg_write(context, QPC_LP_PKTN_INI, lp_pktn_ini);
- 	hr_reg_clear(qpc_mask, QPC_LP_PKTN_INI);
- 
-
-base-commit: ad17bbef3dd573da937816edc0ab84fed6a17fa6
--- 
-2.33.0
-
+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
+od7PzGNQ3SgTYKl5XslMq+gpy+K8+egxMxo3D07c8snwyfU7Y7NQ8I1M986gsj9RUcp3oo0N+T1W
+rwVchQXTGD/Hwqc11XBU1H3JKSRkn7cTa9bMFnp0Asr3Y4/kB+4t6PhYi50ORwIDAQABo4IB2zCC
+AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
+L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
+Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
+YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
+cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
+MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
+MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
+BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6uPX
+5eOTTGwUwIAAoXKF4qVZLfgwDQYJKoZIhvcNAQELBQADggEBAKAn7gHcWCrqvZPX7lw4FJEOMJ2s
+cPoLqoiJLhVttehI3r8nFmNe5WanBDnClSbn1WMa5fHtttEjxZkHOFZqWLHYRI/hnXtVBjF9YV/1
+Hs3HTO02pYpYyHue4CSXgBtj45ZVZ0FjQNxgoLFvJOq3iSsy/tS2uVH5Pe1AW495cxp8+p5b3VGe
+HRzGet524jE0vZx0A/6qrYo6C7z4Djrt/QU2MZDbPb+kwkkomwcn0Nvr91KWSrbhhHtZ/EfXi08L
+x3R3oHtWjbmIW1nYkwVk4pQZoaLkRWkfTSGpwDwilhrd2F+d5rhCbAbfACk4Oly51GV4SI7jUm0D
+VbZWyuIx85gxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
+IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
+Agxea+GNYSvtMZZyJzwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGsGxtikCcZl
+CvVQ7eQVVObGLiJ8flwbVB6nWItYL0pEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTIxMDkxNjE1MDU0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
+YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
+AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCtK5KU4Otqkqnr21O+egN0S6HSv5U4
+25yNncdZgBpNcnPNAJXkUEqY5i0iHkkdTn0j2GV+qajA75ATErKFImjB7SFL8WG1K+EnMI4kfEGo
+DGzCRWAdnYkrkbHKQpv/dpNoyAnrVfYzYfgvywR9uezmTFxfPCCZrJOcQq5oTo9Gticiwq1jDG6u
+bjN0c6GdMXRUNwBlLjfu7F6G1d/4UiZxzZ6zKo/NCFUH5CoDFQvOiGDN7OPHG1IID3mpQlgxXuCH
+nKkWmhNk1l6ye9jsrnhtViBohveCBG3hCQDFKgkpUR5WS8T1J/0wgOSEKDKtTsk8duz29HHfTNFf
+6YBsx/Tb
+--00000000000062e02605cc1e26fc--
