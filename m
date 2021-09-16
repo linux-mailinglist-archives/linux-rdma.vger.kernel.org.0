@@ -2,60 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CBB40DAC1
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 15:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4340140DAE3
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 15:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239931AbhIPNLi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 09:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239765AbhIPNLh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 09:11:37 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7072FC061574
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id j13so557138qtq.6
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 06:10:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
-        b=SCLGmpBOIX1LyEWjCtTQu5NsbhW1Y4X5/DmQl1XQ9jzusvOLM7zvEkOwz6LOAv+Yok
-         sIWQ6uZy+RXJ3cFeYjVefKkQH0Bt0fEt6Hxm02pQYIdfhNmnfHNX2wDQS3f9HxEUckLT
-         uEUNakxQ26CbdQlN/sagwI+fXugp4FI45KUk2U0+TghLUrgqPs4hSAaLgC+UJKOxxT4E
-         Mc+H12o6j9K7ZldUlePbIj3QazJSlLYL+zG9bxUEh82jSSu4c3hLfm8TlsPXKZBK8Vfn
-         QyTQKfWMizwsKJYk7EULgbEvpNxSTjzFuIhJlbPIm2aqRKQQZUDbcvQh309a66LJBzjd
-         rwyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=J1aPRVnPtvaDDmo3fez14oc8rYGiEsDWBCXDH/Wat7k=;
-        b=BmdSKtwQ/ciGXBdFQDaaYMB3xxOiq60Z4Xtwu4rP6uzU0n9bsKQK8yJiJkXHChW2y3
-         gFbE6+wD0RFjef8YQA+miPfQ4kzwofGyvsqgl5NE7pXa8+Z8ZfQfTC+xvlyiCYf+32K8
-         0iL7xSTqfR/RTHFpexYuz5od+acNfpCBu66/eQuGZ097oiTf0iygvaCOoGJNAjWwp/D3
-         fhNWh+ZoPi3DSc1xwiV4gR+BKKhqo2GhhRLFDo3m3m9tsDxwc7oKRdGdX4FRhhUqgWf1
-         ZfiWipFcthXudl5cBa+i1l4qCA+NpNVxnFvafe1kESxdzEVp+6LCQ4cNB2tr1glqT8gA
-         HBkg==
-X-Gm-Message-State: AOAM53317Q1nq3nOS1ERWmReS38goWB4p7OKdcRqy4ZydLrlR2K86NyX
-        ZI/D3s1DGajp7kqAfaDpwUe2wA==
-X-Google-Smtp-Source: ABdhPJwoUHOat0GVnmJtcI3QwOrvQdDqw4k+r1J+CwosMJhqmF7+hz2G8rRCHLhPrxcT6+12hGdkXg==
-X-Received: by 2002:ac8:7d42:: with SMTP id h2mr4861309qtb.220.1631797816616;
-        Thu, 16 Sep 2021 06:10:16 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id r23sm1992140qtp.60.2021.09.16.06.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Sep 2021 06:10:15 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mQr9a-001MiL-Tq; Thu, 16 Sep 2021 10:10:14 -0300
-Date:   Thu, 16 Sep 2021 10:10:14 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        id S239959AbhIPNRy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 09:17:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239805AbhIPNRv (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 16 Sep 2021 09:17:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F5CC61209;
+        Thu, 16 Sep 2021 13:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1631798191;
+        bh=2SG+H3kPevlJgkQQvQK9AWnLbdaQxjj73VmdBEz2Wec=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uBB97KZcafpcr9Fvmgxvt3cex2msqbDU833CT4y17phe93ZFrk+tasiQfh9bRUXTV
+         lAFpyotnHfPKhe53lFUNoer4RLfO4P3T2/eB24OS8LSoXCX3v7tk8A22RQucMqvGda
+         ENYrGzxn4SrST1ZwMk+qy8ehrg3OgY7CYdchkXE5AjKe62/PJiQA94XUjs2wVDxotm
+         FxmadI38cxNwaCIfbUwTIs6IObCc4xT1XLghPGTosfQ6/qNOFsj1qgjf3/oJ0qV3p4
+         oFGW7umR+E5aZbSItLQT6GKyp+gYWISx/voRSUzEitrSAozO5Oywx3EOJB7glEBdO8
+         MllPzht7VdI4w==
+Received: by mail-oi1-f179.google.com with SMTP id v2so8976495oie.6;
+        Thu, 16 Sep 2021 06:16:31 -0700 (PDT)
+X-Gm-Message-State: AOAM531qcvlLyCPEd0he8iYOfP0YSGJpSDQCKPX7709//7omKCl9YniU
+        +TAA7gTFm87AvmPyTzPb02iwWgI4rEbXoExudhE=
+X-Google-Smtp-Source: ABdhPJyWoWAIpzSgckjrkOLA2KkBsw0T+bKIQh+jiBBw5MwfbN0tvv8J0mgdDyzVFL2WGjrHToyOcCbn0yXbXM7VGbo=
+X-Received: by 2002:a05:6808:2193:: with SMTP id be19mr8915077oib.102.1631798190674;
+ Thu, 16 Sep 2021 06:16:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local> <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+In-Reply-To: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Thu, 16 Sep 2021 16:16:03 +0300
+X-Gmail-Original-Message-ID: <CAFCwf12H=Pu2R6695LagUGoQwf+tUon1PKcv5=XZCVc42++pDg@mail.gmail.com>
+Message-ID: <CAFCwf12H=Pu2R6695LagUGoQwf+tUon1PKcv5=XZCVc42++pDg@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         Gal Pressman <galpress@amazon.com>,
         Yossi Leybovich <sleybo@amazon.com>,
         Maling list - DRI developers 
@@ -69,85 +58,43 @@ To:     Oded Gabbay <ogabbay@kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <20210916131014.GK3544071@ziepe.ca>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca>
- <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+        <linaro-mm-sig@lists.linaro.org>, dsinger@habana.ai
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
-> On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > Hi,
-> > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > compiler and runtime library.
-> > > > >
-> > > > > I would appreciate a review on this.
-> > > >
-> > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > >
-> > > > I think there's a few options:
-> > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > >   hold-up was again that makes this a no-go?
-> > >
-> > > RDMA HW can't do revoke.
-> 
-> Like why? I'm assuming when the final open handle or whatever for that MR
-> is closed, you do clean up everything? Or does that MR still stick around
-> forever too?
+On Thu, Sep 16, 2021 at 3:44 PM Oded Gabbay <ogabbay@kernel.org> wrote:
+>
+> On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > Maybe I got the device security model all wrong, but I thought Guadi is
+> > single user, and the only thing it protects is the system against the
+> > Gaudi device trhough iommu/device gart. So roughly the following can
+> > happen:
+> >
+> > 1. User A opens gaudi device, sets up dma-buf export
+> >
+> > 2. User A registers that with RDMA, or anything else that doesn't support
+> > revoke.
+> >
+> > 3. User A closes gaudi device
+> This can not happen without User A closing the FD of the dma-buf it exported.
+> We prevent User A from closing the device because when it exported the
+> dma-buf, the driver's code took a refcnt of the user's private
+> structure. You can see that in export_dmabuf_common() in the 2nd
+> patch. There is a call there to hl_ctx_get.
+> So even if User A calls close(device_fd), the driver won't let any
+> other user open the device until User A closes the fd of the dma-buf
+> object.
+>
+> Moreover, once User A will close the dma-buf fd and the device is
+> released, the driver will scrub the device memory (this is optional
+> for systems who care about security).
+>
+> And AFAIK, User A can't close the dma-buf fd once it registered it
+> with RDMA, without doing unregister.
+> This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
+> which does fget(fd)
 
-It is a combination of uAPI and HW specification.
-
-revoke here means you take a MR object and tell it to stop doing DMA
-without causing the MR object to be destructed.
-
-All the drivers can of course destruct the MR, but doing such a
-destruction without explicit synchronization with user space opens
-things up to a serious use-after potential that could be a security
-issue.
-
-When the open handle closes the userspace is synchronized with the
-kernel and we can destruct the HW objects safely.
-
-So, the special HW feature required is 'stop doing DMA but keep the
-object in an error state' which isn't really implemented, and doesn't
-extend very well to other object types beyond simple MRs.
-
-> 1. User A opens gaudi device, sets up dma-buf export
-> 
-> 2. User A registers that with RDMA, or anything else that doesn't support
-> revoke.
-> 
-> 3. User A closes gaudi device
-> 
-> 4. User B opens gaudi device, assumes that it has full control over the
-> device and uploads some secrets, which happen to end up in the dma-buf
-> region user A set up
-
-I would expect this is blocked so long as the DMABUF exists - eg the
-DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
-that #3 can't actually happen.
-
-> It's not mlocked memory, it's mlocked memory and I can exfiltrate
-> it.
-
-That's just bug, don't make buggy drivers :)
-
-Jason
+Adding Daniel, I don't know how his email got dropped when I replied to him...
