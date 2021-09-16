@@ -2,132 +2,240 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7283540DC93
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 16:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED7840DD20
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 16:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234701AbhIPOTY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 10:19:24 -0400
-Received: from mail-dm6nam12on2083.outbound.protection.outlook.com ([40.107.243.83]:17270
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235557AbhIPOTY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Sep 2021 10:19:24 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BmuQjbgPvpnrO23lnNFLWyWcRj7dLJLtAQr1RQbdG6FJpVNjYhk1CskQ9kx+DO5oXsq5GLnQc+bOvX1ZDlvmuyIPIYN99f8n/4ojPVSh+KYiLtZgbKAHbSGTPQMtltSKdYSvnFsRj3ixFxV5CqOcsfrnZpHt2oef/jntiNU96oL+8YNs2GlV6AsVVHF78snnNVRf07WhuQa62+hL3NnN41kg8KfB5Cc/xV57hkyDiBUk5lwqDiu2Ut9A2EApLDKBtcpBSjmw+igdk+cT/H/uQmwrckPDZ6M5hCdacad18yrFoQdVR9gAm9ME6cNq6E6ISzqMHuNGWydCsBo8chL2Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=gEGnLowHY3soqd9DN05geJ9YvqXNyeD/GRiYHUC8fz0=;
- b=INhF04uPHjjYclT2j7vEj9q9VplBZL4DfFrwnp0m5EgYqkuSI5TQnEBfRGVOov1Rk78JYPcq0eXOAGApyYWNsAFNNTF/em5P+txQFnxtbvGXockyUcw9NjOtEJc4AcPEMcHdHfzogb80mEaUmjKUr84vPFL1iXn42fx2l/tian22/YcK41sgT9NKG3gjMAroPw+wSakaP+OU3t4ZpBgUQPm4GyQTX0FrDBsrjBpCvFNoCessWuWPny7yW88NtqJrcYtvDtQR4pVj7oDiaIf65PmKUyhmM+0YYYMAHnu0f0h+rTlu/ucCVO2kU1k/qCTkgQDWZftOJMcx7gApwD3NAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gEGnLowHY3soqd9DN05geJ9YvqXNyeD/GRiYHUC8fz0=;
- b=TKd7Y4zH4n9wy3qJmOpgbwt/27lBNcdAnnMCySaB6HCyuTjv5fZvLo3jukfS/hVJLKIqvGvQoOEF/nO8SZ2aTpxSwKOZ9XrR3TvmYjQ4M58qEyhMbH8mplfL2oHK2v1qRDXx/qSjg258pYz26rD3LAJ7aNdxnl2Bsqfnx6tcuD43O4L+JAaHHVszRX5zAldsCbmTNWxK8aMo7noUdANIRPYoD+ktkDs3+4SyFFvW+4zUN3zX0pJiSt1J0nfY8RW2wzIl4+3EW0l+3BG2FGobdavkDO677WsLFgmvN80GsRLX8uj7DiWPYJByyGD6sLIUDxOr/R4xUR787h9PursEYw==
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5352.namprd12.prod.outlook.com (2603:10b6:208:314::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Thu, 16 Sep
- 2021 14:18:02 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4523.016; Thu, 16 Sep 2021
- 14:18:02 +0000
-Date:   Thu, 16 Sep 2021 11:17:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] RDMA/cma: Split apart the multiple uses of the same list
- heads
-Message-ID: <20210916141759.GC327412@nvidia.com>
-References: <0-v1-a5ead4a0c19d+c3a-cma_list_head_jgg@nvidia.com>
- <67155640-e38d-ed1a-5af9-693f9c860f21@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <67155640-e38d-ed1a-5af9-693f9c860f21@nvidia.com>
-X-ClientProxiedBy: YT3PR01CA0043.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:82::10) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S238445AbhIPOrA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 10:47:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238243AbhIPOrA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 10:47:00 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16061C061764
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 07:45:40 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 6so9347723oiy.8
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 07:45:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=CP4scM8pp+DlZTyVyeXfxnSxb/UebNzvQjfUoHlTLZ4=;
+        b=CY1t2c5Rnym6zcTPA41ni0M442UCoyLkunbGgIWSBz+jw+xfSLdrRRszlM6T4Sgq+V
+         PzrPUhxzgHL9D8RByv7rRv7GTZhPhtMh9b7ZSLFImo1PZfH3P5SGN5oHB5T5oOubN+TP
+         qQEKlR7AbdWbe2r7BkUxllgMUSnj8Mx/hBQtFllqFO9McLPad8X3hsDsA1cnyNOYHprL
+         7QgsaU5GLO9+8T782w5MOeKfFJbsnED7gDI45bdsj35zjuCJGimddOkkjbDzWGIgNkSE
+         wvks59mGfeumKVVybI12SU+8/83NwGO/fHDnaLLbPE12x6sEeTy0qT+JIX/6w0sBpcsc
+         P//A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=CP4scM8pp+DlZTyVyeXfxnSxb/UebNzvQjfUoHlTLZ4=;
+        b=AfXHUr+da8+50cO7Rx6aw2OPctjdsZ/yPD3pFvLppTrabl2qH/CpZsVkfoWh5SQfO1
+         JIUBiOAFOJwgQRqaeAltb2q3dKjZKNS8xmkcF9t8ToHjCD4huu4++6U3617ZWbt1179+
+         F0HgGKt6e1pN0O3E1pxxqNR+NkgzHakHT9vDFGx6kCeMnwmyE2ocn49uIDjp4WiQHBxX
+         ekFgyMAm0xZiWoBOkpfFmsDatlLf9Qzc3VXOGKQjWWue7g4z2gIZd8+Gcw2/yDF7VKXy
+         e6eXEkppLL9q9h59ZGLM/cJ1zADBPtr8YwcTXc27kiaORwPc71peGO8bkzf2Bh5ip1Sp
+         5gkQ==
+X-Gm-Message-State: AOAM530xjDP6qiRQtgka87uVRUDyAj9VyvIGYQ3nYX0Rg3Dr/jY0GxWq
+        G9rbl5wYbDokl5pFwsKh1Jw+LknCuQvQuMnO9QKXKg==
+X-Google-Smtp-Source: ABdhPJzhCBi6agDZfIOvDRZ9K7XlaQFyPijNiXmAorcRe1UK5wu9Bnw8IT4dtXXUykZlq0kXsoEUsvmci9+5w4h2FI0=
+X-Received: by 2002:aca:f189:: with SMTP id p131mr9723425oih.128.1631803539118;
+ Thu, 16 Sep 2021 07:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by YT3PR01CA0043.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:82::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend Transport; Thu, 16 Sep 2021 14:18:01 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mQsD9-001O3E-Rw; Thu, 16 Sep 2021 11:17:59 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 222b8588-b380-44fe-efb1-08d9791ccae8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5352:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53521CE053D5CED021E0DC0FC2DC9@BL1PR12MB5352.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: i4UilSDHnPihGuEvlm2SyMUOy3T+UB4sd08wmmbbx0KkYKh849UwDQEYTxUgOUZJeyXcoc2KWlr9ecb1YEcQ7GKprmolx9Dq5ZDiEf1xCSsfxdS6guAUMM76XvkYVelASUBGtArg0Obd13Re03fAR/TdvOxLWd5OUKpiowrdkjpU+HrA62ADwZWVvYq5giI/ygb1u9aDCcZL+Ls8dHgLo9Xy/+rQJEf11nlspK0m3hS3Ue4kamko58LXZKTTBXb6ZhJBTV4qUAlHUCZnpLSWqEwb7lwnotUKKr7huGRXBxjXt3tEqvhxeXx/qzUQfCN+nUHPmEdX+2ZVr7XndX/oSiHAEWKWSLwpwM/AilV/C8CqSPry4/xY4lzTa8iHqGnSjegplTV8k+y4W4+866wwu1YnGqbIlT1qFBiv4BxpuegW9nUTTv/AUaFckvyIXs3eU2JozNtq+cA3jqQrNJye/lK6vnwsNteigIMnkGQvGw//mrsmAjzIU+e5d7ABLzpAVZbw24a2lYxCVk2rPfGhogz+uPbxE00AFENLEJjx6R9fJKdFDao9z0d551zEzI3kJjS2xFrumK2fKKrwsm8w+tqz7sM3UzdJ7ylrjFsAdoCGJ64YRLV8ufdgJHlaJmPvlVjFWA63dhPnxcIujUHyGAGXpCGXRXrQNUv6gYKxJLrO3riYJBRaUNSmyzstTVWS
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(136003)(346002)(376002)(316002)(6862004)(37006003)(6636002)(36756003)(83380400001)(1076003)(86362001)(5660300002)(478600001)(66476007)(4744005)(66946007)(66556008)(8676002)(2616005)(26005)(33656002)(186003)(426003)(38100700002)(8936002)(9786002)(9746002)(4326008)(2906002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9A6NtbFFFsDSyPjjytqrbsjqRyATEQeyJJFrVf0QJ9TxOS6PCPi/G5M5hfqg?=
- =?us-ascii?Q?8iuTC8uSlUGTIr515OLNj5ma92/MHeGZ5S7kF2MAwZ/xNfff4dphysWUDciA?=
- =?us-ascii?Q?ZodNKogSEvZe+zmXCVPFabZpVnrq5PtIbxL79/4fX8yMApXHa6WmzME8lIoP?=
- =?us-ascii?Q?u8/WUPzBYefYsaO7IJFyGx+MwD60ebRRjkqohzwtsg5gZW8b4jnAyUTStFox?=
- =?us-ascii?Q?ZvnD/OEQSoMN8t3SISLx6jdTTIlgamvEzbAiSdAfTRmm4xB5mEX5TbI4sIo9?=
- =?us-ascii?Q?7BOA0xv+8fzYU+rc3jj139eIefGwpKqYHXbXXUXqJaqPr/ksv+Ql3owD7vEB?=
- =?us-ascii?Q?mHmGNshv0WuIzwzenG1RiP2kzIMbr2I4eBGHvbNoxGSQw3Oil5f4qYvRS1Nw?=
- =?us-ascii?Q?pyMiiN9CvwccLSgNHr5X4Yy/prfAZcdgU+Ef3+gBUeqSrpSMeFTmKExHtYm5?=
- =?us-ascii?Q?20AwE8loV8Ebk0b/UFnMLVpjp9Y+H8gmoTCigENVyGcImPGmPAyNgLNiwRCb?=
- =?us-ascii?Q?o2vabMmEceJicZww5mgutKm/qtuuzO38yJIhD2DQfSAyd4De3C7fimP5pDE0?=
- =?us-ascii?Q?stG12bLRqMLghfHS32Z7KY6HTHqA9ARHZIUgwu4l8B7vCHQ3i8QW0YFxZpwz?=
- =?us-ascii?Q?qJUMuJVTA+91A4yin1nVSp9Gqrx18rxX/qXHSFNsbvhDxx24o3/muL/oNl/c?=
- =?us-ascii?Q?bhF+sGNFAo9RP3fRr/fsu+/HRzfdRfV9+TnjnYUPHCggLO4rkhEZGga52ZM3?=
- =?us-ascii?Q?XeZILogJpvauBBTRnzuPIqZ+bjwEEvVRjr9Lmf1on12E0uKl241d/4ijLYim?=
- =?us-ascii?Q?Y3XBDmYoSq0nevcKcCG4GT6agLdpJ50aOD5hW+q1PjFYngM7fQS9g2YYsgst?=
- =?us-ascii?Q?UU6rt5Mk+lhjRxLI1BOMrwwSSD+sChHjl1BwU0QNfCaAw6BEwQs8/+voFCwo?=
- =?us-ascii?Q?m47ZNk0rN9S4UNo/HthlmGzVBHQDcVtKkghIzc9w7d6erg3y/V2z6hnWWZZ9?=
- =?us-ascii?Q?NZDNsdX8SojHwEYm7wEjjmm8rzEmBhzpCgfpmpfMbH9L1MMdwrdgVsTDDLGJ?=
- =?us-ascii?Q?kOKgzZ8DFV9CgWfvsmqZj/WWlb4DNMDETKIXJW9e1E+eHkl5+R6SR05oXXvt?=
- =?us-ascii?Q?L7gwEONGov/PTX9q2mhPl1jdU7SzkSWeAyH7iLnjxsTrbNxFlIGZGHH4jHgY?=
- =?us-ascii?Q?IZpwgFlVrpgQ2UTXA3zX667EACedsDRcg4GEUsI8yw96f5kGFvJuyppSMCwI?=
- =?us-ascii?Q?8iJkuDgaY2O+bpIXpJAXNKZZo26V5UQhrtyFbj6LZ6fhJAwKkhjADUOY8Qr/?=
- =?us-ascii?Q?xPMHZoVAG0/0hl6jScjXHhAA?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 222b8588-b380-44fe-efb1-08d9791ccae8
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Sep 2021 14:18:02.1646
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d/fFOoD2fi2vIdYYQ/dq9D3jjsI/os51E3Fvc/LECOFK44XC6vwttHyii+mpAg6G
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5352
+References: <000000000000ffdae005cc08037e@google.com> <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com> <20210916130459.GJ3544071@ziepe.ca>
+In-Reply-To: <20210916130459.GJ3544071@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 16 Sep 2021 16:45:27 +0200
+Message-ID: <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 01:11:14PM +0800, Mark Zhang wrote:
-> > @@ -4928,10 +4930,10 @@ static void cma_process_remove(struct cma_device *cma_dev)
-> >          mutex_lock(&lock);
-> >          while (!list_empty(&cma_dev->id_list)) {
-> >                  struct rdma_id_private *id_priv = list_first_entry(
-> > -                       &cma_dev->id_list, struct rdma_id_private, list);
-> > +                       &cma_dev->id_list, struct rdma_id_private, device_item);
-> > 
-> > -               list_del(&id_priv->listen_list);
-> > -               list_del_init(&id_priv->list);
-> > +               list_del_init(&id_priv->listen_item);
-> 
-> Should it still be
->     list_del(&id_priv->listen_list);
-> as it isn't dev_id_priv?
+On Thu, 16 Sept 2021 at 15:05, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Thu, Sep 16, 2021 at 09:43:19AM +0200, Dmitry Vyukov wrote:
+> > On Wed, 15 Sept 2021 at 21:36, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > >
+> > > On Wed, Sep 15, 2021 at 05:41:22AM -0700, syzbot wrote:
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    926de8c4326c Merge tag 'acpi-5.15-rc1-3' of git://g=
+it.kern..
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D11fd67e=
+d300000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D37df9ef=
+5660a8387
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Ddc3dfba01=
+0d7671e05f5
+> > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU =
+Binutils for Debian) 2.35.1
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
+e commit:
+> > > > Reported-by: syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
+> > >
+> > > #syz dup: KASAN: use-after-free Write in addr_resolve (2)
+> > >
+> > > Frankly, I still can't figure out how this is happening
+> > >
+> > > RDMA_USER_CM_CMD_RESOLVE_IP triggers a background work and
+> > > RDMA_USER_CM_CMD_DESTROY_ID triggers destruction of the memory the
+> > > work touches.
+> > >
+> > > rdma_addr_cancel() is supposed to ensure that the work isn't and won'=
+t
+> > > run.
+> > >
+> > > So to hit this we have to either not call rdma_addr_cancel() when it
+> > > is need, or rdma_addr_cancel() has to be broken and continue to allow
+> > > the work.
+> > >
+> > > I could find nothing along either path, though rdma_addr_cancel()
+> > > relies on some complicated properties of the workqueues I'm not
+> > > entirely positive about.
+> >
+> > I stared at the code, but it's too complex to grasp it all entirely.
+> > There are definitely lots of tricky concurrent state transitions and
+> > potential for unexpected interleavings. My bet would be on some tricky
+> > hard-to-trigger thread interleaving.
+>
+> From a uapi perspective the entire thing is serialized with a mutex..
+>
+> > The only thing I can think of is adding more WARNINGs to the code to
+> > check more of these assumptions. But I don't know if there are any
+> > useful testable assumptions...
+>
+> Do you have any idea why we can't get a reproduction out of syzkaller
+> here?
+>
+> I feel less comfortable with syzkaller's debug output, can you give
+> some idea what it might be doing concurrently?
 
-Yes, probably should stay here, but it isn't entirely sane
+It looks like a very hard to trigger race (few crashes, no reproducer,
+but KASAN reports look sensible). That's probably the reason syzkaller
+can't create a reproducer.
+From the log it looks like it was triggered by one of these programs
+below. But I tried to reproduce manually and had no success.
+We are currently doing some improvements to race triggering code in
+syzkaller, and may try to use this as a litmus test to see if
+syzkaller will do any better:
+https://github.com/google/syzkaller/issues/612#issuecomment-920961538
 
-The next code block must trigger the list_del or the
-wait_for_completion() below will block forever.
+Answering your question re what was running concurrently with what.
+Each of the syscalls in these programs can run up to 2 times and
+ultimately any of these calls can race with any. Potentially syzkaller
+can predict values kernel will return (e.g. id's) before kernel
+actually returned them. I guess this does not restrict search area for
+the bug a lot...
 
-The whole RDMA_CM_EVENT_DEVICE_REMOVAL bit is kind of insane and needs
-some cleaning. For instance I think it is a bug if any ULP doesn't
-return 1 from the event.
 
-Jason
+11:16:53 executing program 3:
+write$RDMA_USER_CM_CMD_CONNECT(0xffffffffffffffff,
+&(0x7f0000000280)=3D{0x6, 0x118, 0xfa00, {{0xfffffff7, 0x6a492eae,
+"e0e55819482a40c1c535b72b0bc0bc5e4478995957e1d0fe2311a39ee3960d3488407d52fb=
+ef30809118fcbaef590c27d04918aa1348b409d45ba277d9f73bd18868a9c4fde7560288298=
+bde7e9a96c1ef280ca62f4a6f591a2181f2e3d3cf52212fa5ae101aa1bf975763cef32e3a2c=
+73b79d0af1d2e58b82243731e6082cab1cb1c643b7bbec2e6d45bca8a6980f148aaefb71f19=
+33ffa50534b83267139b2324e51ffecb57959bf7e98b60516cebc8f05838a7976cef33b6441=
+0626c14dca7dcb22f0902aeb045b88656268a6dd922d6a0e7b7002e8ea90020650dced31905=
+0db3130089e5011994d90340a93088e0a8b03ea61ac3f53312342b3d6e038ae",
+0xfc, 0xe1, 0xb2, 0xd0, 0x7, 0x40, 0x0, 0x1}}}, 0x120)
+r0 =3D openat$pfkey(0xffffffffffffff9c, &(0x7f00000001c0), 0x80800, 0x0)
+r1 =3D syz_io_uring_setup(0x1c7, &(0x7f0000000080)=3D{0x0, 0x0, 0x0, 0x0,
+0x7f, 0x0, r0}, &(0x7f00007b6000/0x2000)=3Dnil,
+&(0x7f0000ffd000/0x3000)=3Dnil, &(0x7f0000000140)=3D<r2=3D>0x0,
+&(0x7f0000000100)=3D<r3=3D>0x0)
+socketpair$unix(0x1, 0x5, 0x0, &(0x7f0000000040)=3D{0xffffffffffffffff,
+<r4=3D>0xffffffffffffffff})
+r5 =3D openat(0xffffffffffffff9c,
+&(0x7f0000000000)=3D'/proc/self/exe\x00', 0x0, 0x0)
+mmap(&(0x7f0000000000/0x800000)=3Dnil, 0x800000, 0x0, 0x12, r5, 0x0)
+r6 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+write$RDMA_USER_CM_CMD_CREATE_ID(r6, &(0x7f0000000080)=3D{0x0, 0x18,
+0xfa00, {0xffffffffffffffff,
+&(0x7f0000000000)=3D{<r7=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r6, &(0x7f0000000100)=3D{0x3, 0x40,
+0xfa00, {{}, {0xa, 0x0, 0x0, @mcast2}, r7}}, 0x48)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r6, &(0x7f0000000180)=3D{0x3, 0x40,
+0xfa00, {{0xa, 0x0, 0x0, @local}, {0xa, 0x0, 0x0, @mcast1}, r7}},
+0x48)
+write$RDMA_USER_CM_CMD_DESTROY_ID(r6, &(0x7f0000000280)=3D{0x1, 0x10,
+0xfa00, {&(0x7f0000000240), r7}}, 0x18)
+write$RDMA_USER_CM_CMD_CONNECT(r5, &(0x7f00000003c0)=3D{0x6, 0x118,
+0xfa00, {{0x9, 0x9,
+"f703ff619e427c1d7d50fc023c22feb64ea5083376891585a4a8b539bead7f61210a9010d8=
+8379b67ebe7a1fc77fbdd4dccaec4b498eafe4b08e7e5b28e9fe54606f87e9618b9ade4e28b=
+66e04c73fe4660de33c075bb9b1a43c59e485dcc259fb21fed21380f9ec2c61e8d29b606978=
+6e8bc3da0f3bded0acd13548d2d76af6e701a258307fbce30c0f452b6a25f39209c830fe557=
+de6f1fb3fdfe4347be3a9fdfeaca47b97e333a266013beef7cb7d7ea746bca1d3a929747a26=
+9df24d019e3e413309e58095182dd5dc3c8a088e94abf8d5cd389749cc80e4e452c8dabe7ea=
+add8144e2c4392e35c1b5ad3369ee7b2f855e5ebe9bdc0e8a464e8a9e4f54c0",
+0x2, 0xff, 0x1, 0x8f, 0x6, 0x3, 0x6}, r7}}, 0x120)
+syz_io_uring_submit(r2, r3,
+&(0x7f0000000180)=3D@IORING_OP_READ=3D@pass_buffer=3D{0x16, 0x4, 0x0,
+@fd=3Dr4, 0x0, &(0x7f0000000000)=3D""/7, 0x7}, 0x0)
+syz_io_uring_submit(r2, r3,
+&(0x7f0000002f80)=3D@IORING_OP_LINK_TIMEOUT=3D{0xf, 0x0, 0x0, 0x0, 0x0,
+&(0x7f0000000240)=3D{0x0, 0x3938700}}, 0x10000007)
+io_uring_enter(r1, 0x45f5, 0x0, 0x0, 0x0, 0xf5ff)
+
+
+
+11:16:55 executing program 4:
+r0 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+write$RDMA_USER_CM_CMD_CREATE_ID(r0, &(0x7f0000000080)=3D{0x0, 0x18,
+0xfa00, {0xffffffffffffffff,
+&(0x7f0000000000)=3D{<r1=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r0, &(0x7f0000000100)=3D{0x3, 0x40,
+0xfa00, {{0xa, 0xfffd}, {0xa, 0x0, 0x10000000, @ipv4=3D{'\x00',
+'\xff\xff', @broadcast}, 0x3}, r1, 0xfffffffe}}, 0x48)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r0, &(0x7f0000000180)=3D{0x3, 0x40,
+0xfa00, {{0xa, 0x2, 0x0, @ipv4=3D{'\x00', '\xff\xff', @multicast2}},
+{0xa, 0x0, 0x0, @initdev=3D{0xfe, 0x88, '\x00', 0x1, 0x0}}, r1}}, 0xd5)
+write$RDMA_USER_CM_CMD_DESTROY_ID(r0, &(0x7f0000000280)=3D{0x1, 0x10,
+0xfa00, {&(0x7f0000000240), r1}}, 0x18)
+write$RDMA_USER_CM_CMD_BIND_IP(0xffffffffffffffff,
+&(0x7f0000000000)=3D{0x2, 0x28, 0xfa00, {0x0, {0xa, 0x4e23, 0x9,
+@ipv4=3D{'\x00', '\xff\xff', @rand_addr=3D0x64010102}, 0x100}, r1}}, 0x30)
+openat$qrtrtun(0xffffffffffffff9c, &(0x7f0000002740), 0x101002)
+io_setup(0x8, &(0x7f0000000600)=3D<r2=3D>0x0)
+clock_getres(0xfffffffffffffffd, 0x0)
+r3 =3D openat$hwrng(0xffffffffffffff9c, &(0x7f0000000040), 0x400, 0x0)
+r4 =3D openat$vcsa(0xffffffffffffff9c, &(0x7f00000002c0), 0x8000, 0x0)
+r5 =3D openat$rdma_cm(0xffffffffffffff9c, &(0x7f0000000540), 0x2, 0x0)
+write$RDMA_USER_CM_CMD_CREATE_ID(r5, &(0x7f0000000080)=3D{0x0, 0x18,
+0xfa00, {0xffffffffffffffff,
+&(0x7f0000000000)=3D{<r6=3D>0xffffffffffffffff}, 0x13f}}, 0x20)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r5, &(0x7f0000000100)=3D{0x3, 0x40,
+0xfa00, {{}, {0xa, 0x0, 0x0, @mcast2}, r6}}, 0x48)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r5, &(0x7f0000000180)=3D{0x3, 0x40,
+0xfa00, {{0xa, 0x0, 0x0, @local}, {0xa, 0x0, 0x0, @mcast1}, r6}},
+0x48)
+write$RDMA_USER_CM_CMD_DESTROY_ID(r5, &(0x7f0000000280)=3D{0x1, 0x10,
+0xfa00, {&(0x7f0000000240), r6}}, 0x18)
+pipe2(&(0x7f0000000340)=3D{<r7=3D>0xffffffffffffffff}, 0x800)
+write$RDMA_USER_CM_CMD_RESOLVE_IP(r7, &(0x7f0000000380)=3D{0x3, 0x40,
+0xfa00, {{0xa, 0x4e23, 0x8, @remote, 0x3ff}, {0xa, 0x4e22, 0x8000,
+@initdev=3D{0xfe, 0x88, '\x00', 0x1, 0x0}, 0x8}, r1, 0x1f}}, 0x48)
+write$RDMA_USER_CM_CMD_LISTEN(r4, &(0x7f0000000300)=3D{0x7, 0x8, 0xfa00,
+{r6, 0x8}}, 0x10)
+io_submit(r2, 0x1, &(0x7f0000000200)=3D[&(0x7f00000000c0)=3D{0x0, 0x0,
+0x0, 0x1, 0x0, 0xffffffffffffffff,
+&(0x7f0000000400)=3D"03a0a445bc5d7a9d6c", 0x9, 0x7fffffff, 0x0, 0x0,
+r3}])
