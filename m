@@ -2,164 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9459C40DA3B
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 14:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8792340D997
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 14:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239561AbhIPMqO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 08:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230299AbhIPMqN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 16 Sep 2021 08:46:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF4761108;
-        Thu, 16 Sep 2021 12:44:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631796293;
-        bh=KLzBiW3VVJ+O27eDAUHuH818CfcF0FIggjnNJ955TqI=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=Ufylq44NB1rynFax2+iP0pEyc1lFGZxtmemt4XTmxqqQXVkOF9rYMFRXt5I6zC1jY
-         2eYV6JOxKPkcQUuAeumz6QOIM6NJBa8ziT9lFeDqMlyL1Ycvtyb3U9GmCbHBkhpZMx
-         EXB5Eq7occlceD/WiPQ2kPhoTBl7twxT+nFovEAE9QE4/pAtCmwA33rUowdoPMCI+F
-         ZeVevgvTXw21w3Eo3TslI1jqLMAoybOMV2ihcZGyKgbOimzwSYxuy+4RYMOTE5g/t2
-         c/Tx7icnJShaG/sQHI8DazpmhP0/GIoOMYQSGAkyVNOLb7f7f/iu9071Hqjmd5RpK6
-         so0eXkmFZge8w==
-Received: by mail-ot1-f54.google.com with SMTP id 97-20020a9d006a000000b00545420bff9eso1217864ota.8;
-        Thu, 16 Sep 2021 05:44:52 -0700 (PDT)
-X-Gm-Message-State: AOAM530x00I2kdKGpggE8AKliBULgRyIwUrGvMep5brVQmFssuqzsBW9
-        eLgvZa5WIBBF+xv8hSw8aDP9uk/PnTl6JPpcUlo=
-X-Google-Smtp-Source: ABdhPJzYLUSJZsh0jo8CcdLUrWa60FoaIm/wgPz4w5rfGXbsO/CMqYBIPFe4um0VFr4rFpmdHQF7TW4xUd8HJFD8LqY=
-X-Received: by 2002:a05:6830:12d7:: with SMTP id a23mr4519312otq.102.1631796292308;
- Thu, 16 Sep 2021 05:44:52 -0700 (PDT)
+        id S239371AbhIPMQe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 08:16:34 -0400
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:30260 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S239161AbhIPMQe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 08:16:34 -0400
+IronPort-Data: =?us-ascii?q?A9a23=3AxKB4WaM4+gi/dqPvrR1HlcFynXyQoLVcMsFnjC/?=
+ =?us-ascii?q?WdQTq1TkhhjUCm2EaWTjSP/uCYmfwKIp3ao3ko0lSsZHcm99gGjLY11k3ESsS9?=
+ =?us-ascii?q?pCt6fd1j6vIF3rLaJWFFSqL1u1GAjX7BJ1yHiK0SiuFaOC79CEtjP/QHNIQNca?=
+ =?us-ascii?q?fUsxPbV49IMseoUI78wIJqtYAbemRW2thi/uryyHsEAPNNwpPD44hw/nrRCWDE?=
+ =?us-ascii?q?xjFkGhwUlQWPZintbJF/pUfJMp3yaqZdxMUTmTId9NWSdovzJnhlo/Y1xwrTN2?=
+ =?us-ascii?q?4kLfnaVBMSbnXVeSMoiMOHfH83V4Z/Wpvuko4HKN0hUN/mjyPkMA3ysRlu4GyS?=
+ =?us-ascii?q?BsyI+vHn+F1vxxwSngiYPIcoOKcSZS4mYnJp6HcSFP22/hnFloxO40A9854BGh?=
+ =?us-ascii?q?P8boTLzVlRgKShfCnwujjErFEicEqLc2tN4Qa0llkwDbfJfUrW5bOR+PN/9Aw9?=
+ =?us-ascii?q?DU/iehIA/fSZsNfYj1qBDzEYhtSKhINBJc3tPmni2O5cDBCrl+R460t7ADuIKZ?=
+ =?us-ascii?q?ZuFT2GIONPIXUGoMOxQDFzl8qNl/RWnkyXOFzAxLcmp50utLyoA=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A+/35DaFd/+cAu70lpLqEjceALOsnbusQ8zAX?=
+ =?us-ascii?q?PiFKKSC9Hfb0qynDpp4mPHzP6Qr5OktOpTnoAsDpKk80naQFgrX5Vo3PYOCJgg?=
+ =?us-ascii?q?WVEL0=3D?=
+X-IronPort-AV: E=Sophos;i="5.85,298,1624291200"; 
+   d="scan'208";a="114572053"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 16 Sep 2021 20:15:12 +0800
+Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
+        by cn.fujitsu.com (Postfix) with ESMTP id E16664D0DC6E;
+        Thu, 16 Sep 2021 20:15:11 +0800 (CST)
+Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
+ G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 20:15:12 +0800
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Thu, 16 Sep 2021 20:15:11 +0800
+Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Thu, 16 Sep 2021 20:15:10 +0800
+From:   Xiao Yang <yangx.jy@fujitsu.com>
+To:     <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>
+CC:     <rpearsonhpe@gmail.com>, <zyjzyj2000@gmail.com>, <leon@kernel.org>,
+        "Xiao Yang" <yangx.jy@fujitsu.com>
+Subject: [PATCH v3 0/5] RDMA/rxe: Do some cleanup
+Date:   Thu, 16 Sep 2021 20:46:47 +0800
+Message-ID: <20210916124652.1304649-1-yangx.jy@fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
-In-Reply-To: <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Thu, 16 Sep 2021 15:44:25 +0300
-X-Gmail-Original-Message-ID: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
-Message-ID: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-To:     Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: E16664D0DC6E.A6E98
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > Hi,
-> > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > compiler and runtime library.
-> > > > >
-> > > > > I would appreciate a review on this.
-> > > >
-> > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > >
-> > > > I think there's a few options:
-> > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > >   hold-up was again that makes this a no-go?
-> > >
-> > > RDMA HW can't do revoke.
->
-> Like why? I'm assuming when the final open handle or whatever for that MR
-> is closed, you do clean up everything? Or does that MR still stick around
-> forever too?
->
-> > > So we have to exclude almost all the HW and several interesting use
-> > > cases to enable a revoke operation.
-> > >
-> > > >   - For non-revokable things like these dma-buf we'd keep a drm_master
-> > > >     reference around. This would prevent the next open to acquire
-> > > >     ownership rights, which at least prevents all the nasty potential
-> > > >     problems.
-> > >
-> > > This is what I generally would expect, the DMABUF FD and its DMA
-> > > memory just floats about until the unrevokable user releases it, which
-> > > happens when the FD that is driving the import eventually gets closed.
-> > This is exactly what we are doing in the driver. We make sure
-> > everything is valid until the unrevokable user releases it and that
-> > happens only when the dmabuf fd gets closed.
-> > And the user can't close it's fd of the device until he performs the
-> > above, so there is no leakage between users.
->
-> Maybe I got the device security model all wrong, but I thought Guadi is
-> single user, and the only thing it protects is the system against the
-> Gaudi device trhough iommu/device gart. So roughly the following can
-> happen:
->
-> 1. User A opens gaudi device, sets up dma-buf export
->
-> 2. User A registers that with RDMA, or anything else that doesn't support
-> revoke.
->
-> 3. User A closes gaudi device
-This can not happen without User A closing the FD of the dma-buf it exported.
-We prevent User A from closing the device because when it exported the
-dma-buf, the driver's code took a refcnt of the user's private
-structure. You can see that in export_dmabuf_common() in the 2nd
-patch. There is a call there to hl_ctx_get.
-So even if User A calls close(device_fd), the driver won't let any
-other user open the device until User A closes the fd of the dma-buf
-object.
+V2->V3:
+1) Rebase on the latest kernel
+2) Drop the ternary expression
 
-Moreover, once User A will close the dma-buf fd and the device is
-released, the driver will scrub the device memory (this is optional
-for systems who care about security).
+Xiao Yang (5):
+  RDMA/rxe: Remove unnecessary check for qp->is_user/cq->is_user
+  RDMA/rxe: Remove the common is_user member of struct rxe_qp
+  RDMA/rxe: Change the is_user member of struct rxe_cq to bool
+  RDMA/rxe: Set partial attributes when completion status !=
+    IBV_WC_SUCCESS
+  RDMA/rxe: Remove duplicate settings
 
-And AFAIK, User A can't close the dma-buf fd once it registered it
-with RDMA, without doing unregister.
-This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
-which does fget(fd)
+ drivers/infiniband/sw/rxe/rxe_comp.c  | 51 +++++++++++++++------------
+ drivers/infiniband/sw/rxe/rxe_cq.c    |  3 +-
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  5 +--
+ drivers/infiniband/sw/rxe/rxe_req.c   |  4 +--
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 14 +++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 41 +++++----------------
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  3 +-
+ 7 files changed, 49 insertions(+), 72 deletions(-)
+
+-- 
+2.25.1
 
 
->
-> 4. User B opens gaudi device, assumes that it has full control over the
-> device and uploads some secrets, which happen to end up in the dma-buf
-> region user A set up
->
-> 5. User B extracts secrets.
->
-> > > I still don't think any of the complexity is needed, pinnable memory
-> > > is a thing in Linux, just account for it in mlocked and that is
-> > > enough.
->
-> It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
-> Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
-> if you didn't munlock then the next mlock from a completely different user
-> will alias with your stuff.
->
-> Or is there something that prevents that? Oded at least explain that gaudi
-> works like a gpu from 20 years ago, single user, no security at all within
-> the device.
-> -Daniel
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+
