@@ -2,214 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AA740DD8E
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 17:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063A140DD99
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Sep 2021 17:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238492AbhIPPHP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 11:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
+        id S232051AbhIPPKN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Sep 2021 11:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231702AbhIPPHO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 11:07:14 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE09C061574
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:05:53 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id c22so18002795edn.12
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:05:53 -0700 (PDT)
+        with ESMTP id S231702AbhIPPKN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 11:10:13 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1462C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t1so6442540pgv.3
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RJnCavhowP/p+nS5hk4Q9AneZDB9AlGoWFI+WBn67HM=;
-        b=OK83LxVZGWztRHJ+SNAKqI+r5S+mFyDqzqwf1le6OT/7czngU1WHnwYtUNhyqFJ1D8
-         0BRDyDOPC2nLbrCFXz5imPZFT91cw0r1di9FcFw6/JtylU/0DSYXCY98NN/l4vyacneM
-         5s0O/LSe5LWx89R5i3v8BB7VumDrkKzzbSniE=
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WJkNM/xMmKX6sPuM9GYihXmKT4k9g9uXLWNaRS8FvpY=;
+        b=Lpii0tXvNXhCFogtIrCW7tJj37+9qjyt5pZfAVGGVDyD7jVBrHlezlF5Hnp6j9NJqP
+         LvIZ6Z+THH/B+6jAqOhNj+vtAdQsDedafZwuzZ08S2Vwmykts7+rJ9nsyIkO+wvc/MKc
+         iBB3KpZvafauK3Hr2Kov+izg925MtgPew/XuzUm2KDmWNSfiCN3++llYB9RZoS/frZFN
+         I3DFLGuR77lDnkxc8pCFoxv0KkG0j507w++LqxSN1L9Jmd71rXUvIJb6bLYKQ9CF+tFh
+         MQ5uZJFUYu9RZ/d5OzMHY0WNuGBKbUXvOW/K66FDx41If/LghN9dzBKB63MTslJ0D4YF
+         HO/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RJnCavhowP/p+nS5hk4Q9AneZDB9AlGoWFI+WBn67HM=;
-        b=xvpdPRBgeMTM9H5V/orvMiDYOzAsLxmb3rZj7z5whmwC9ZgCsBjJipVnNkluvJS1nH
-         HCF2uhnk4hG34FfYVLZ4jUpyRrgjyIe9Iq61JCPTyi8ChSqYHbc36gOUm4J4W5DYBP82
-         Jdc/jk8upaHABaILyjLZkgAAylciOUBNljCAX9hLzmgSCJ7rDFs/kF5lsLgkA+RXXMch
-         sBF3OlZX2YIlLLXkGmdJWCPGav/yNj1UZi51sZ8Agf95RDQQf/nUa7xgOELvWMUiXDRx
-         VxrzTmwprXbH+bIfnJdSm666nKkoubiD1YvOnztU5yHj3dK1lY1+GDwQNPGeHSwsQGYZ
-         tdIA==
-X-Gm-Message-State: AOAM530REksDYGBW50O8EbiqmktgpWQFXCHtVAX2fykjtFnTlwitS4/j
-        WXcLB56ydQDQ6BxCrKvf41n/dcf3pb69PQYCvLLvyQ==
-X-Google-Smtp-Source: ABdhPJz3c9rbAVjJhKISaxx/2mVMdvUlaNvNYR12/4xqkCP96AeQ9P7G3hIW1yDgxLFhJFViD6bkWeVkDT0Pf95HBgA=
-X-Received: by 2002:a17:907:77d0:: with SMTP id kz16mr6898375ejc.334.1631804748247;
- Thu, 16 Sep 2021 08:05:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WJkNM/xMmKX6sPuM9GYihXmKT4k9g9uXLWNaRS8FvpY=;
+        b=ZhWueSbo1i/Z2mpFD2qldpMF14OM6QU8NnVY0AsTbIv5GDHFbF3yA/JFWHUUMIKSlo
+         t/I+neU0Zwl5PbTXQuFTtMt6RTchrJ24cqFg0bbSLKpUl9PoAM78CnF8KywX5romGMHj
+         N7k8Tj8ZvFTjSfzpPHph3QjQxEPe3Gf9VKHx3eT7ecvJGKju5VNgeKoFL8erk+D+MqzS
+         9gxnCWXk+LwRNxgovxPZYTyKzrFEQqt8upiIyH+MenoOHp0kr2LAgwFYl5BVLDIePkgC
+         uVehVZTWqOm4cj73h9hhQ6nUYV+mbJEc675d4TdJJX2CHix5ovROpmuWDVBNmiUiuHRZ
+         j1HA==
+X-Gm-Message-State: AOAM532fqUz/oAGJcihlz1eNUiw4594AGrGb15n0/mhAGT+XUkPuRt6f
+        UfceWc/VmL5BQeRabuPnpMn12g==
+X-Google-Smtp-Source: ABdhPJz9s4X2hqqgVh5+wNVkI9McM26vR77EykgQ5qDe32ykmFwS/lAJFbopVaug6VSGX/wwGwmJLw==
+X-Received: by 2002:a63:3449:: with SMTP id b70mr5372824pga.315.1631804932296;
+        Thu, 16 Sep 2021 08:08:52 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id a71sm3496584pfd.86.2021.09.16.08.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Sep 2021 08:08:51 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mQt0M-001mZM-6a; Thu, 16 Sep 2021 12:08:50 -0300
+Date:   Thu, 16 Sep 2021 12:08:50 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com>,
+        dledford@redhat.com, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in addr_handler (4)
+Message-ID: <20210916150850.GN3544071@ziepe.ca>
+References: <000000000000ffdae005cc08037e@google.com>
+ <20210915193601.GI3544071@ziepe.ca>
+ <CACT4Y+bxDuLggCzkLAchrGkKQxC2v4bhc01ciBg+oc17q2=HHw@mail.gmail.com>
+ <20210916130459.GJ3544071@ziepe.ca>
+ <CACT4Y+aUFbj3_+iBpeP2qrQ=RbGrssr0-6EZv1nx73at7fdbfA@mail.gmail.com>
+ <CACT4Y+ZrQL3n=N2GOfJ6vLNW2_4MdiwywXvZpQ=as_NbJ8PXjw@mail.gmail.com>
+ <CACT4Y+ZrXft1cMg0X48TrvbLj0moCb5nyWs1HG0WAZkpKmiBaA@mail.gmail.com>
 MIME-Version: 1.0
-References: <1630037738-20276-1-git-send-email-selvin.xavier@broadcom.com>
- <20210827123146.GH1200268@ziepe.ca> <CA+sbYW1GoGu_U1c_zKEbXyqgK-t+Mwe1aaFY1vsH1T0QCj6KAA@mail.gmail.com>
- <20210901115016.GQ1200268@ziepe.ca>
-In-Reply-To: <20210901115016.GQ1200268@ziepe.ca>
-From:   Selvin Xavier <selvin.xavier@broadcom.com>
-Date:   Thu, 16 Sep 2021 20:35:37 +0530
-Message-ID: <CA+sbYW1uhvNFjwK27UarY-KPA=tLSMVeGXzcD4i8aWnqeGsUiQ@mail.gmail.com>
-Subject: Re: [PATCH rdma-rc] RDMA/bnxt_re: Disable atomic support on VFs
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="00000000000062e02605cc1e26fc"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+ZrXft1cMg0X48TrvbLj0moCb5nyWs1HG0WAZkpKmiBaA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000062e02605cc1e26fc
-Content-Type: text/plain; charset="UTF-8"
+On Thu, Sep 16, 2021 at 04:55:16PM +0200, Dmitry Vyukov wrote:
 
-On Wed, Sep 1, 2021 at 5:20 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Aug 31, 2021 at 09:27:14PM +0530, Selvin Xavier wrote:
-> > On Fri, Aug 27, 2021 at 6:01 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Thu, Aug 26, 2021 at 09:15:38PM -0700, Selvin Xavier wrote:
-> > > > Following Host crash is observed when pci_enable_atomic_ops_to_root
-> > > > is called with VF PCI device.
-> > > >
-> > > > PID: 4481   TASK: ffff89c6941b0000  CPU: 53  COMMAND: "bash"
-> > > >  #0 [ffff9a94817136d8] machine_kexec at ffffffffb90601a4
-> > > >  #1 [ffff9a9481713728] __crash_kexec at ffffffffb9190d5d
-> > > >  #2 [ffff9a94817137f0] crash_kexec at ffffffffb9191c4d
-> > > >  #3 [ffff9a9481713808] oops_end at ffffffffb9025cd6
-> > > >  #4 [ffff9a9481713828] page_fault_oops at ffffffffb906e417
-> > > >  #5 [ffff9a9481713888] exc_page_fault at ffffffffb9a0ad14
-> > > >  #6 [ffff9a94817138b0] asm_exc_page_fault at ffffffffb9c00ace
-> > > >     [exception RIP: pcie_capability_read_dword+28]
-> > > >     RIP: ffffffffb952fd5c  RSP: ffff9a9481713960  RFLAGS: 00010246
-> > > >     RAX: 0000000000000001  RBX: ffff89c6b1096000  RCX: 0000000000000000
-> > > >     RDX: ffff9a9481713990  RSI: 0000000000000024  RDI: 0000000000000000
-> > > >     RBP: 0000000000000080   R8: 0000000000000008   R9: ffff89c64341a2f8
-> > > >     R10: 0000000000000002  R11: 0000000000000000  R12: ffff89c648bab000
-> > > >     R13: 0000000000000000  R14: 0000000000000000  R15: ffff89c648bab0c8
-> > > >     ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0018
-> > > >  #7 [ffff9a9481713988] pci_enable_atomic_ops_to_root at ffffffffb95359a6
-> > > >  #8 [ffff9a94817139c0] bnxt_qplib_determine_atomics at ffffffffc08c1a33 [bnxt_re]
-> > > >  #9 [ffff9a94817139d0] bnxt_re_dev_init at ffffffffc08ba2d1 [bnxt_re]
-> > > >     RIP: 00007f450602f648  RSP: 00007ffe880869e8  RFLAGS: 00000246
-> > > >     RAX: ffffffffffffffda  RBX: 0000000000000002  RCX: 00007f450602f648
-> > > >     RDX: 0000000000000002  RSI: 0000555c566c4a60  RDI: 0000000000000001
-> > > >     RBP: 0000555c566c4a60   R8: 000000000000000a   R9: 00007f45060c2580
-> > > >     R10: 000000000000000a  R11: 0000000000000246  R12: 00007f45063026e0
-> > > >     R13: 0000000000000002  R14: 00007f45062fd880  R15: 0000000000000002
-> > > >     ORIG_RAX: 0000000000000001  CS: 0033  SS: 002b
-> > >
-> > Apologies for the delay in my response.  I was exploring internally to
-> > see if it is a specific issue
-> > with the adapter/host. I see the problem in multiple systems.
+> > I noticed we also had 2 KCSAN reports that mention rdma_resolve_addr.
 > >
-> > > This feels like a bug in pci_enable_atomic_ops_to_root()? I assume it
-> > > hit a case where bus->self == NULL?
-> > yes. This crashes because of bus->self is NULL. Is it expected for VF?
->
-> I'm not sure, you should ask the PCI lists
->
-> > > Why not fix it there?
-> > Since its a functional breakage in 5.14, I posted a quick fix for
-> > 5.14. Also, we haven't done any testing on VF for this
-> > feature. So I wanted to avoid claiming support for VF anyway.
+> > On commit 1df0d896:
+> > ==================================================================
+> > BUG: KCSAN: data-race in addr_handler / cma_check_port
 > >
-> > I see that other drivers also use pci_enable_atomic_ops_to_root
-> > without vf/pf check. Anyone seeing this issue?
->
-> Which is why I suspect the core code should be fixed not the driver..
-Hi Jason,
-A patch that avoids the crash is merged to the linux-pci tree.
-https://lore.kernel.org/linux-pci/20210914201606.GA1452219@bjorn-Precision-5520/T/
-With the pci patch, the host will not crash. But driver will get
-following error message when called for VF
-""platform doesn't support global atomics."
+> > write to 0xffff88809fa40a1c of 4 bytes by task 21 on cpu 1:
+> >  cma_comp_exch drivers/infiniband/core/cma.c:426 [inline]
+> >  addr_handler+0x9f/0x2b0 drivers/infiniband/core/cma.c:3141
+> >  process_one_req+0x22f/0x300 drivers/infiniband/core/addr.c:645
+> >  process_one_work+0x3e1/0x9a0 kernel/workqueue.c:2269
+> >  worker_thread+0x665/0xbe0 kernel/workqueue.c:2415
+> >  kthread+0x20d/0x230 kernel/kthread.c:291
+> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+> >
+> > read to 0xffff88809fa40a1c of 4 bytes by task 11997 on cpu 0:
+> >  cma_check_port+0xbd/0x700 drivers/infiniband/core/cma.c:3506
 
-we want to prevent calling pci_enable_atomic_ops_to_root for VF
-anyway. Can you please pull this patch in bnxt_re?
+This has since been fixed, cma_check_port() no longer reads state
 
-Thanks
-Selvin
+> > and on commit 5863cc79:
 
->
-> Jason
+I can't find this commit? Current rdma_resolve_addr should not trigger
+this KCSAN.
 
---00000000000062e02605cc1e26fc
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+> This does not immediately explain the use-after-free for me, but these
+> races suggest that everything is not protected by a single mutex and
+> that there may be some surprising interleavings.
+> E.g. rdma_resolve_addr checks status, and then conditionally executes
+> cma_bind_addr, but the status can change concurrently.
 
-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
-od7PzGNQ3SgTYKl5XslMq+gpy+K8+egxMxo3D07c8snwyfU7Y7NQ8I1M986gsj9RUcp3oo0N+T1W
-rwVchQXTGD/Hwqc11XBU1H3JKSRkn7cTa9bMFnp0Asr3Y4/kB+4t6PhYi50ORwIDAQABo4IB2zCC
-AdcwDgYDVR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDov
-L3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAu
-Y3J0MEEGCCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29u
-YWxzaWduMmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0
-cHM6Ly93d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBA
-MD6gPKA6hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2Ey
-MDIwLmNybDAlBgNVHREEHjAcgRpzZWx2aW4ueGF2aWVyQGJyb2FkY29tLmNvbTATBgNVHSUEDDAK
-BggrBgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQU6uPX
-5eOTTGwUwIAAoXKF4qVZLfgwDQYJKoZIhvcNAQELBQADggEBAKAn7gHcWCrqvZPX7lw4FJEOMJ2s
-cPoLqoiJLhVttehI3r8nFmNe5WanBDnClSbn1WMa5fHtttEjxZkHOFZqWLHYRI/hnXtVBjF9YV/1
-Hs3HTO02pYpYyHue4CSXgBtj45ZVZ0FjQNxgoLFvJOq3iSsy/tS2uVH5Pe1AW495cxp8+p5b3VGe
-HRzGet524jE0vZx0A/6qrYo6C7z4Djrt/QU2MZDbPb+kwkkomwcn0Nvr91KWSrbhhHtZ/EfXi08L
-x3R3oHtWjbmIW1nYkwVk4pQZoaLkRWkfTSGpwDwilhrd2F+d5rhCbAbfACk4Oly51GV4SI7jUm0D
-VbZWyuIx85gxggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWdu
-IG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIw
-Agxea+GNYSvtMZZyJzwwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGsGxtikCcZl
-CvVQ7eQVVObGLiJ8flwbVB6nWItYL0pEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTIxMDkxNjE1MDU0OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJ
-YIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcN
-AQEHMAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCtK5KU4Otqkqnr21O+egN0S6HSv5U4
-25yNncdZgBpNcnPNAJXkUEqY5i0iHkkdTn0j2GV+qajA75ATErKFImjB7SFL8WG1K+EnMI4kfEGo
-DGzCRWAdnYkrkbHKQpv/dpNoyAnrVfYzYfgvywR9uezmTFxfPCCZrJOcQq5oTo9Gticiwq1jDG6u
-bjN0c6GdMXRUNwBlLjfu7F6G1d/4UiZxzZ6zKo/NCFUH5CoDFQvOiGDN7OPHG1IID3mpQlgxXuCH
-nKkWmhNk1l6ye9jsrnhtViBohveCBG3hCQDFKgkpUR5WS8T1J/0wgOSEKDKtTsk8duz29HHfTNFf
-6YBsx/Tb
---00000000000062e02605cc1e26fc--
+It is true, they weren't, however I've fixed them all. These hits look
+like they all from before it got fixed up..
+
+Jason
