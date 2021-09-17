@@ -2,283 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA36540EF15
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Sep 2021 04:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0BF40F1D2
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Sep 2021 08:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234873AbhIQCFC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Sep 2021 22:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbhIQCFB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Sep 2021 22:05:01 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92458C061574;
-        Thu, 16 Sep 2021 19:03:40 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d18so5109587pll.11;
-        Thu, 16 Sep 2021 19:03:40 -0700 (PDT)
+        id S244801AbhIQGBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Sep 2021 02:01:49 -0400
+Received: from esa18.fujitsucc.c3s2.iphmx.com ([216.71.158.38]:5586 "EHLO
+        esa18.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230133AbhIQGBt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Sep 2021 02:01:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1631858427; x=1663394427;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=Zhayir+Jc3oBmWZGGkJOdF/8ncsTkTytrM+uC3IN+bs=;
+  b=HQclABUKxjX+7wvMKqFat/ZaVCUoJgaFqf7e3Eq6mbaHAL94G3q89U9K
+   ijm7eCZsIVWXu9QrsVzbr1lVLAs6Vu3yJjXq9lyVcGXl8orw3xgC+XQNL
+   hxCEAGC4aatjnr9akueeSXFRta7VeS6/TroAWt4zgJNxbunsIO5glwxSO
+   9haCkrlTe4mQ48zGjx7ZyNrGoWuuQ1rErZMDj34GxGBFTp8poKBB4oIgE
+   dXEdONoluFyIG+NYL6CxsOpCibzdKfzu80vSaDrffUY5k8Tcb5kTtId7I
+   QEm2dCUcdKTcNIs5Fihrg0S6oG4D7hud1VkfrasBP9YF7tUcOrjT6+5am
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10109"; a="40033261"
+X-IronPort-AV: E=Sophos;i="5.85,300,1624287600"; 
+   d="scan'208";a="40033261"
+Received: from mail-os2jpn01lp2057.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.57])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2021 15:00:24 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QstI2foxmCZyB6YHuTdX8In2MZ0iPn+tnlBXCQyIO2izfi6JK9sNjseJYbD8reMkl8avGnAQ8BBGLyODTq2oYbrlhx0IVJxHA1ehtJkEKpA83qGl8w30wqqdz4Jdf2gplBPiXGKogSEAxAZ+uPps8L6FYGN5kZMdr0spRIzLMlmFEV7Ymk4dgmU8/sqvyAejF63cssqQTr/QVDapmS2qepsOQcsWSJNjMNk0/fNq/Sr8L+bh7x8S71z8np7u4XEoae6znff9suedVJe4vEwa66xXbtNmnU4NfLV1yNtU1ee/ZteDZrMQ09WE7KwmUSQGpRfHKZTNx6/8ju8oWOJRcg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Zhayir+Jc3oBmWZGGkJOdF/8ncsTkTytrM+uC3IN+bs=;
+ b=b9N/24ebqtLpjvHcvILmhlrxSFyRCIVjXjmkUtgV/Ih/5BHsHmm820Hccs/D1OGbBpoq7AOCfv02BbYbKtl1nhu141S6T7aRlR5+UXxBdNGNPoPYRUaKl/q5/55t9lgwnKPX2CWTrASxivJ2rZ+19ZIn7a5kiSGXQ6+mC1YvYA3uKdCwfUCQcnwja6SEhWC99pbaCVeyqyCsj454Cu+UzeLZ2WRagKTsEXI/8opyx+G/7Nx1ueBcdiDKws/gqzHUoIiJMVoD1fQ1FOXYhbzIuf0a+t8avtejTcLmF3+GFJ0UL0D2l7NDoHtncJ4+/tBCfSs/Xk3HSeOezUcx//u0Ow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ZW+88bHVtNLTHD1JZeZR9DkyRHIpMDlYnlNEb4JXekw=;
-        b=dOri+gaYNV6Aw3eCSY6triyQuFNTZSFqk0LxOxgYZsIgrtLSSuokjQhUf3xOiijpMx
-         syqefNpfyYpAN9KGJJO0Q95jUyWqF9XhQkmoIaAf6m3XkGcPG2MKXvfT8eWZTGOPw3w/
-         zQ6oftxvsc0JQ8Nij74oEPCaTbYSBUBrGEN6ZQHJyvfxNWoqja17AbOWTUjmFILcElQT
-         j+56mDPXYFEMKeW3u9RljnBHnPCIqKvIdK6nIklwSklZdWTm1MW7fMvNA6owCMZfv5Bb
-         zBrWPT2MLP5wMcM5Kuhhop6nyOZf66FhE4JCou+kglERiOLfGYVYvkSM4sEPMp28dDOi
-         KdZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ZW+88bHVtNLTHD1JZeZR9DkyRHIpMDlYnlNEb4JXekw=;
-        b=VR6RxjLXd0DgsjC/2yUCBTWQelKrtRjwClVQ/EQpBIkqfRMlCeUsBNlnvRf4brxRuT
-         MzPuw4e2owuLF288Q/fT4lmFtSlMou1CJwF+7GqTEoILEDjNL2hTcqy8O+TToP/t2K54
-         gMlLz3SY5i6pxrNnHgqKC3E7yFA/QZN6+kogHVXq11fEjVkP6eGWrLZwN+C8e7cltbqx
-         dTPQm7t22HzZEFgI4bvZcPsqMuc4JrIJhASSDgEzCANsiGmhk7bERWsCXGbI+CoedSbq
-         Mq20YdVqwE5DCVy5plI0kgD3wWOakOOAEVBVCYDvXRUBwkeSsvUk9A4ulD+OMLfLfgKG
-         xMbQ==
-X-Gm-Message-State: AOAM531ho2f8L07AIkX4cuE2TynAdefEEbkcmZPwUcJ3u5ZrEtcNTDps
-        kC5fNDB+JW4rxTkDCmmadUbOSJw+OhiL0yA/Bg==
-X-Google-Smtp-Source: ABdhPJxxZa/epP8XAvSZn6oHhTWniLLRq7ikOqNmiLXqfkTytZzUuSyGnETUL3zUUCK8eVDs98365MmlGZmQy0HRfFs=
-X-Received: by 2002:a17:902:f08c:b0:13d:8e59:caf5 with SMTP id
- p12-20020a170902f08c00b0013d8e59caf5mr964492pla.38.1631844219917; Thu, 16 Sep
- 2021 19:03:39 -0700 (PDT)
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Zhayir+Jc3oBmWZGGkJOdF/8ncsTkTytrM+uC3IN+bs=;
+ b=El+eOl/eghuLiQMRks30v6M2IHOXj45pVtzGOED4sKg+nSrF1qUXLLa9CQDqdR0Bz57SxMq/Fc4bG0CQH1IY0PmBSFIOcbD4opjKmEOn2Sb7FvMnCT643O5kKEue4TrLeY+hWrXE1mOw2JCcQs0rwYthHwhjEWAtnbtrGx9+uJ4=
+Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com (2603:1096:604:104::9)
+ by OSAPR01MB5204.jpnprd01.prod.outlook.com (2603:1096:604:64::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 06:00:22 +0000
+Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com
+ ([fe80::fde4:1df:1601:768a]) by OS0PR01MB6371.jpnprd01.prod.outlook.com
+ ([fe80::fde4:1df:1601:768a%5]) with mapi id 15.20.4523.017; Fri, 17 Sep 2021
+ 06:00:21 +0000
+From:   "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "leon@kernel.org" <leon@kernel.org>
+Subject: Re: [PATCH v2 1/5] RDMA/rxe: Remove unnecessary check for
+ qp->is_user/cq->is_user
+Thread-Topic: [PATCH v2 1/5] RDMA/rxe: Remove unnecessary check for
+ qp->is_user/cq->is_user
+Thread-Index: AQHXn9KmQhbBlDeCCUmyKF3Qo+jU4quj7iYAgAKJPYCAAETUgIABFqoA
+Date:   Fri, 17 Sep 2021 06:00:21 +0000
+Message-ID: <61442EE6.7040601@fujitsu.com>
+References: <20210902084640.679744-1-yangx.jy@fujitsu.com>
+ <20210902084640.679744-2-yangx.jy@fujitsu.com>
+ <20210914183240.GA136302@nvidia.com> <61430B67.5000301@fujitsu.com>
+ <20210916132243.GO4065468@nvidia.com>
+In-Reply-To: <20210916132243.GO4065468@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 48a0d83e-f658-418e-6f57-08d979a06f5f
+x-ms-traffictypediagnostic: OSAPR01MB5204:
+x-microsoft-antispam-prvs: <OSAPR01MB5204F879481C180CD7AF9D2083DD9@OSAPR01MB5204.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:962;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7aeT2BcurY0rY0Zlm8X0E1qyolAcx/nHqpPHbQkvez823tyBOOy9VVAqOhPoTFeUjWpPPKoS/t0jCooBBgsxBHqQiOQaHVi5L327HFFLt3IR2CvuF7ncjrnQOen+m/oor+2ILauGXqE4+AtAUfZzub68Vgz24aHGCED6CTvWcjFdWnPN+aiCYDKwZZ2TtJrQnJ6NXOXOjPfbWf95IN8WLj5lPrTDtFmGbgjac3+QO257wJtaTJuDYoWJcT6GvzOx423TGfv4X6K4YFZzdc3TNWOLVSBSUeNgzUdpD+D8VyLSj/WbVHChwcXvuBHSzdjHAXB3p+rMUQumVxxRZlXAB1045oVHTB6RGR+dBJ1B2e4J1PiI/Qq2WsdSxPK1U25Cziy4tVA9LI0k35R/oHOYbm/STSpsuFU/+8TBMJJZ169zPClXSMvZZ6xzhV6gTXMNTnhhRmu7C/AYiSoFKbcBMWZFKMTakiKCEcX3J3WXgJ63VEYY8S3qkFMi6gi/8Fj5ZTH3OllSuB1xfEJVtd9RYY1zoHDH7ddrb2JDTgB1SKtUO6R4hnjAQDJBpURf7ssku40cA5ixzdCNYKTrAfoAKpuJomGEcRM6DF+xG5jK7snvZZIpzyorZKRhwKuM3uP+5GngK15ceglX2zPcwR+5UP9JddrOYsZf0QUZyjoIDcwmWUk0vS9sMkCZIv2RP4qk/+7dnyhlJYB7JuLOCPvStA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB6371.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(136003)(396003)(346002)(316002)(91956017)(76116006)(64756008)(66446008)(86362001)(66946007)(122000001)(36756003)(71200400001)(2616005)(66556008)(4326008)(38100700002)(6486002)(83380400001)(478600001)(8676002)(6512007)(54906003)(66476007)(53546011)(87266011)(26005)(6916009)(4744005)(85182001)(2906002)(186003)(33656002)(6506007)(8936002)(38070700005)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?gb2312?B?MnQvYW42VTBZd2kwYmFPNFczMHlZL3VoMVR0bkROVXdwbEhRMzFObmVYOVVa?=
+ =?gb2312?B?cDFFUnFnQXNpS2tQVU55c3YzVSs0SjlPRGdzZ3NzWWZiMXhKeW91QW9ETncr?=
+ =?gb2312?B?cUt3ZzU1OEszZXNoTklDM1c4SzJFbGtIc3NVaGNpc1ErWUJCZzFjV3VBSDdR?=
+ =?gb2312?B?eHlNNTJSdmE2MFVteEljN29kMCtLNjRUb1dZSVE1STQzSnROV2J2eGZKdFNk?=
+ =?gb2312?B?cDdFMlJjZTN4Sk1pbmlHUXVQTS9Feno3M3RhSklFQWxLRWQrSWNPQU9BSHVi?=
+ =?gb2312?B?MktvSkozS1Ixd3dVTlV5V08weS9CMHVTR25lRTBVVkpxY0g5Vit5T2tIdnRl?=
+ =?gb2312?B?V1NBaEhITzVqU1luMG9BVGF3SENPYmFkL2NZK2hoaXFGak9QcmpTNUl6dDkw?=
+ =?gb2312?B?a3l2MVljVDBPTFZ1Y01LQnZsUmFtcENpWUtlaTZrNzVKdE5nYktwWndpdkli?=
+ =?gb2312?B?L2NVYXlFSURud3pWWHJzN2wyRGRlQ0trKzl3UlVyOTFnaXhoUy9lMjVaK2Fp?=
+ =?gb2312?B?TktTWWhPNXNpTDNjcUY4OTNOQXBYa1RyWElkOXVCVGNhRkxQYVJIUXBuZ0VF?=
+ =?gb2312?B?QmdDcS9YR1BBbVdZUU1JNjFBa0o5UGdoRHlBeGVvNVpZZUtFQWdNeTFZeTMr?=
+ =?gb2312?B?N3JnTDNCVzJ5anp0aWk5YXpPVkxBU1JqWFpOT3VDVXhhV05vdG1LaTVmYTJz?=
+ =?gb2312?B?Q291VDhMVlVQRFE4NkxySzhvVEwvVk1GbWhXbThTL2Jsdm9HOUV2Q2NWVm9B?=
+ =?gb2312?B?dSsyNzVhSW04NmxQc2tlT3JzMHIvRUVjd1FsSHl6RVUxcFNZb1V4WEN4T1Vq?=
+ =?gb2312?B?bmpFZDJOaFUwVk9kY1l5SWZ4TTRCaGpTUzU0Z01iMm8wamZCL3RXM2dvTWl6?=
+ =?gb2312?B?d3RlZ0k3K2tKQ2dLZFl0OFNiZFdWb244WVd1NnJtOGp5QmlkSCtjRHJLQ2pz?=
+ =?gb2312?B?UzhETktFWjhGK3VGanltamF1bmFlSFJ6OFMyYzk5TkNQWXgydkZqdmVyRmht?=
+ =?gb2312?B?WnIvOFZKOTV6czFFajhwZk9oK2ZES0YwbDhCdmsvbXZ0SWdZOTd3ZEJMSEZJ?=
+ =?gb2312?B?MXUrTnFLY1l1VUV6eTVTb1NwTFRDS0JYblYvY2ZVSjlDV0FYei8vTDA2UGNk?=
+ =?gb2312?B?azRhS2dFSWJuWmc0RDNCVzRESC9LR2FaaW5JNXVMSjFCZ05meVV4d0VPV2c2?=
+ =?gb2312?B?R2g4alpBazhkQmlSNVVBSE5DR0dYL0tIRGRtdFAxZGlEeGdiMmpIa2Znalh5?=
+ =?gb2312?B?MmZSeTJ4WkZJR05ZZmdvOUxTZkdVeHNBN0FMR3VqOVBtbm0wSDJvWXVUb04x?=
+ =?gb2312?B?Mkw4YTFUa0R2WDA0LzVtVkNlbTNZYnBkUUcrMU5uZ2d4QmZjZk1zYVJjSFBS?=
+ =?gb2312?B?dElEdmdqVHJNM0F0aGtKRUhSZFFLMUxMek9OOUVOclAvNnA3ZnY3OVpUVS9K?=
+ =?gb2312?B?dlh3TVlEQnlQOTBoWCsvM0pPcUF6eFptOGNxNE9kam5zVnNVU28yYTlnU0ox?=
+ =?gb2312?B?eXhWNm5CU2FuRStOb3oyTVh2ZkZ4bGR1cnQyUU1uSmRwbDlpcGwwcjAwb2tp?=
+ =?gb2312?B?WU1YcGUzdXZzYU43L2svVVI3OXp0ZGxHSTNkU1lWL0luUXBGblREN0JpVDFD?=
+ =?gb2312?B?eHZvR1ZMZlNuMVFwaERRVFZrL0NKenljdUlZTzlBZldVaXBRUzJrdFJPM0Mr?=
+ =?gb2312?B?WUJQYkovWmdkOHdEemFkS21SQjBYL2JNSnFGYkU4V080M3phcEdLVWpSeVY5?=
+ =?gb2312?B?SzB1WThUWTFXYWRZdUxxbjRzMDlZK01XaUJWNUFoUUZDZ0xwUjBHUnJ3dUk0?=
+ =?gb2312?B?ci85NXd6M2dZWG41R3VaUT09?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="gb2312"
+Content-ID: <6AF8C557B0F0844EB2610675E7EF93E1@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CACkBjsY5-rKKzh-9GedNs53Luk6m_m3F67HguysW-=H1pdnH5Q@mail.gmail.com>
- <20210413133359.GG227011@ziepe.ca> <CACkBjsb2QU3+J3mhOT2nb0YRB0XodzKoNTwF3RCufFbSoXNm6A@mail.gmail.com>
- <20210413134458.GI227011@ziepe.ca> <CACkBjsY-CNzO74XGo0uJrcaZTubC+Yw9Sg1bNNi+evUOGaZTCg@mail.gmail.com>
- <20210916183518.GR3544071@ziepe.ca> <CACkBjsa3Fqkp-OkHFQ0LCL+VbP2H3xvpaArFkTPsdw8Cka27sw@mail.gmail.com>
-In-Reply-To: <CACkBjsa3Fqkp-OkHFQ0LCL+VbP2H3xvpaArFkTPsdw8Cka27sw@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Fri, 17 Sep 2021 10:03:28 +0800
-Message-ID: <CACkBjsZVPNPeDSJsHDDfygrAR6fgYZuOGgNs-78ME44-7SxHrw@mail.gmail.com>
-Subject: Re: KASAN: use-after-free Read in cma_cancel_operation, rdma_listen
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     dledford@redhat.com, linux-rdma@vger.kernel.org, leon@kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB6371.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48a0d83e-f658-418e-6f57-08d979a06f5f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 06:00:21.9162
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: jkl9v1z3pvU+BkdZ7DMqzFbeABqugY/5XIl5uPG3VzW/jyhl9sIMXq/0pIQ83xBXxQ9XFrh+ZbbkKVpr8ykgyQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB5204
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hao Sun <sunhao.th@gmail.com> =E4=BA=8E2021=E5=B9=B49=E6=9C=8817=E6=97=A5=
-=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=889:01=E5=86=99=E9=81=93=EF=BC=9A
->
-> Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B49=E6=9C=8817=E6=97=
-=A5=E5=91=A8=E4=BA=94 =E4=B8=8A=E5=8D=882:35=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Tue, Apr 13, 2021 at 10:19:25PM +0800, Hao Sun wrote:
-> > > Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:45=E5=86=99=E9=81=93=EF=BC=9A
-> > > >
-> > > > On Tue, Apr 13, 2021 at 09:42:43PM +0800, Hao Sun wrote:
-> > > > > Jason Gunthorpe <jgg@ziepe.ca> =E4=BA=8E2021=E5=B9=B44=E6=9C=8813=
-=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=889:34=E5=86=99=E9=81=93=EF=BC=
-=9A
-> > > > > >
-> > > > > > On Tue, Apr 13, 2021 at 11:36:41AM +0800, Hao Sun wrote:
-> > > > > > > Hi
-> > > > > > >
-> > > > > > > When using Healer(https://github.com/SunHao-0/healer/tree/dev=
-) to fuzz
-> > > > > > > the Linux kernel, I found two use-after-free bugs which have =
-been
-> > > > > > > reported a long time ago by Syzbot.
-> > > > > > > Although the corresponding patches have been merged into upst=
-ream,
-> > > > > > > these two bugs can still be triggered easily.
-> > > > > > > The original information about Syzbot report can be found her=
-e:
-> > > > > > > https://syzkaller.appspot.com/bug?id=3D8dc0bcd9dd6ec915ba10b3=
-354740eb420884acaa
-> > > > > > > https://syzkaller.appspot.com/bug?id=3D95f89b8fb9fdc42e28ad58=
-6e657fea074e4e719b
-> > > > > >
-> > > > > > Then why hasn't syzbot seen this in a year's time? Seems strang=
-e
-> > > > > >
-> > > > >
-> > > > > Seems strange to me too, but the fact is that the reproduction pr=
-ogram
-> > > > > in attachment can trigger these two bugs quickly.
-> > > >
-> > > > Do you have this in the C format?
-> > > >
-> > >
-> > > Just tried to use syz-prog2c to convert the repro-prog to C format.
-> > > The repro program of  rdma_listen was successfully reproduced
-> > > (uploaded in attachment), the other one failed. it looks like
-> > > syz-prog2c may not be able to do the equivalent conversion.
-> > > You can use syz-execprog to execute the reprogram directly, this
-> > > method can reproduce both crashes, I have tried it.
-> >
-> > Can you check this patch that should solve it?
-> >
-> > https://patchwork.kernel.org/project/linux-rdma/patch/0-v1-9fbb33f5e201=
-+2a-cma_listen_jgg@nvidia.com/
-> >
->
-> Just executed the original Syz prog on the latest Linux kernel
-> (ff1ffd71d5f0 Merge tag 'hyperv-fixes-signed-20210915'), it did not
-> crash the kernel. I've checked that the above patch has not been
-> merged into the latest commit. Therefore, there might be some other
-> commits that fixed that issue.
->
-
-Sorry, I made a mistake. The C reproducer can still crash the latest
-version of the Linux kernel **without** patching the code from here
-(https://patchwork.kernel.org/project/linux-rdma/patch/0-v1-9fbb33f5e201+2a=
--cma_listen_jgg@nvidia.com/).
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-BUG: KASAN: use-after-free in __list_add_valid+0x93/0xa0 lib/list_debug.c:2=
-6
-Read of size 8 at addr ffff8880189211e0 by task a.out/6637
-
-CPU: 0 PID: 6637 Comm: a.out Not tainted 5.15.0-rc1+ #6
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_address_description.constprop.0.cold+0x93/0x334 mm/kasan/report.c:25=
-6
- __kasan_report mm/kasan/report.c:442 [inline]
- kasan_report.cold+0x83/0xdf mm/kasan/report.c:459
- __list_add_valid+0x93/0xa0 lib/list_debug.c:26
- __list_add include/linux/list.h:67 [inline]
- list_add_tail include/linux/list.h:100 [inline]
- cma_listen_on_all drivers/infiniband/core/cma.c:2563 [inline]
- rdma_listen+0x7d2/0xeb0 drivers/infiniband/core/cma.c:3813
- ucma_listen+0x16a/0x210 drivers/infiniband/core/ucma.c:1102
- ucma_write+0x25c/0x350 drivers/infiniband/core/ucma.c:1732
- vfs_write+0x22a/0xae0 fs/read_write.c:592
- ksys_write+0x1ee/0x250 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f3352746469
-Code: 00 f3 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 8b 0d ff 49 2b 00 f7 d8 64 89 01 48
-RSP: 002b:00007ffc7cfa3f68 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000200003a8 RCX: 00007f3352746469
-RDX: 0000000000000010 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00007ffc7cfa4070 R08: 4e22224e4e24244e R09: 4e22224e4e24244e
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000561d50400fb0
-R13: 00007ffc7cfa41b0 R14: 0000000000000000 R15: 0000000000000000
-
-Allocated by task 6636:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc mm/kasan/common.c:513 [inline]
- ____kasan_kmalloc mm/kasan/common.c:472 [inline]
- __kasan_kmalloc+0xa4/0xd0 mm/kasan/common.c:522
- kasan_kmalloc include/linux/kasan.h:264 [inline]
- kmem_cache_alloc_trace+0x186/0x340 mm/slub.c:3233
- kmalloc include/linux/slab.h:591 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- __rdma_create_id+0x5b/0x550 drivers/infiniband/core/cma.c:839
- rdma_create_user_id+0x79/0xd0 drivers/infiniband/core/cma.c:893
- ucma_create_id+0x162/0x360 drivers/infiniband/core/ucma.c:461
- ucma_write+0x25c/0x350 drivers/infiniband/core/ucma.c:1732
- vfs_write+0x22a/0xae0 fs/read_write.c:592
- ksys_write+0x1ee/0x250 fs/read_write.c:647
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 6636:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:360
- ____kasan_slab_free mm/kasan/common.c:366 [inline]
- ____kasan_slab_free mm/kasan/common.c:328 [inline]
- __kasan_slab_free+0x100/0x140 mm/kasan/common.c:374
- kasan_slab_free include/linux/kasan.h:230 [inline]
- slab_free_hook mm/slub.c:1700 [inline]
- slab_free_freelist_hook mm/slub.c:1725 [inline]
- slab_free mm/slub.c:3483 [inline]
- kfree+0xfc/0x700 mm/slub.c:4543
- ucma_close_id+0x4c/0x90 drivers/infiniband/core/ucma.c:185
- ucma_destroy_private_ctx+0x887/0xb00 drivers/infiniband/core/ucma.c:576
- ucma_close+0x10a/0x180 drivers/infiniband/core/ucma.c:1797
- __fput+0x288/0x9f0 fs/file_table.c:280
- task_work_run+0xe0/0x1a0 kernel/task_work.c:164
- exit_task_work include/linux/task_work.h:32 [inline]
- do_exit+0xbbe/0x2dd0 kernel/exit.c:825
- do_group_exit+0x125/0x340 kernel/exit.c:922
- __do_sys_exit_group kernel/exit.c:933 [inline]
- __se_sys_exit_group kernel/exit.c:931 [inline]
- __x64_sys_exit_group+0x3a/0x50 kernel/exit.c:931
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888018921000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 480 bytes inside of
- 2048-byte region [ffff888018921000, ffff888018921800)
-The buggy address belongs to the page:
-page:ffffea0000624800 refcount:1 mapcount:0 mapping:0000000000000000
-index:0x0 pfn:0x18920
-head:ffffea0000624800 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=3D0|zone=3D1|lastcpupid=3D0x7ff)
-raw: 00fff00000010200 0000000000000000 0000000300000001 ffff888010c42000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask
-0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEM=
-ALLOC),
-pid 1, ts 12722123527, free_ts 0
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook mm/page_alloc.c:2418 [inline]
- prep_new_page+0x1a5/0x240 mm/page_alloc.c:2424
- get_page_from_freelist+0x1f10/0x3b70 mm/page_alloc.c:4153
- __alloc_pages+0x306/0x6e0 mm/page_alloc.c:5375
- alloc_page_interleave+0x1e/0x1f0 mm/mempolicy.c:2042
- alloc_pages+0x1e4/0x240 mm/mempolicy.c:2192
- alloc_slab_page mm/slub.c:1763 [inline]
- allocate_slab mm/slub.c:1900 [inline]
- new_slab+0x34a/0x480 mm/slub.c:1963
- ___slab_alloc+0xa9f/0x10d0 mm/slub.c:2994
- __slab_alloc.isra.0+0x4d/0xa0 mm/slub.c:3081
- slab_alloc_node mm/slub.c:3172 [inline]
- slab_alloc mm/slub.c:3214 [inline]
- __kmalloc+0x32e/0x390 mm/slub.c:4387
- kmalloc include/linux/slab.h:596 [inline]
- kzalloc include/linux/slab.h:721 [inline]
- __register_sysctl_table+0xc3/0x1000 fs/proc/proc_sysctl.c:1318
- __devinet_sysctl_register+0x156/0x280 net/ipv4/devinet.c:2577
- devinet_sysctl_register net/ipv4/devinet.c:2617 [inline]
- devinet_sysctl_register+0x160/0x230 net/ipv4/devinet.c:2607
- inetdev_init+0x269/0x570 net/ipv4/devinet.c:276
- inetdev_event+0xdde/0x12f0 net/ipv4/devinet.c:1530
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info net/core/dev.c:1996 [inline]
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:1981
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888018921080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888018921100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888018921180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                       ^
- ffff888018921200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888018921280: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-However, after patching the code, the crash can not be reproduced.
-Therefore, that patch did fix the problem.
-
-Regards
-Hao
+T24gMjAyMS85LzE2IDIxOjIyLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+IFllcywgYnV0IHJk
+bWEtY29yZSBkb2Vzbid0IG1hdHRlci4NCj4NCj4gVGhlIHF1ZXN0aW9uIGlzIHdoeSBpcyB0aGlz
+IHNhZmUgYW5kIHRoZSByZWFzb24gaXMgcnhlIGRvZXNuJ3Qgc2V0DQo+IElCX1VTRVJfVkVSQlNf
+Q01EX1BPTExfQ1EgaW4gdXZlcmJzX2NtZF9tYXNrLg0KPg0KPiBJJ2QgYmUgYSBiaXQgaGFwcGll
+ciBzZWVpbmcgdGhpcyBmaXhlZCBzbyB3ZSBoYXZlIGEgcG9sbF9rZXJuZWxfY3ENCj4gcG9sbF91
+c2VyX2NxIG9wIGFuZCB0aGlzIGlzbid0IHNvIHRyaWNreS4NCkhpIEphc29uLA0KDQpJIHNhdyB5
+b3UgcmVtb3ZlZCBJQl9VU0VSX1ZFUkJTX0NNRF9QT0xMX0NRIGZyb20gdXZlcmJzX2NtZF9tYXNr
+IGJ5DQpjb21taXQgNjI4YzAyYmYzOGFhICgiUkRNQTogUmVtb3ZlIHV2ZXJicyBjbWRzIGZyb20g
+ZHJpdmVycyB0aGF0IGRvbid0IA0KdXNlIHRoZW0iKQ0KDQpJIHRoaW5rIEkgZG9uJ3QgbmVlZCB0
+byB1cGRhdGUgdGhlIHBhdGNoLCByaWdodD8gOi0pDQoNCkJlc3QgUmVnYXJkcywNClhpYW8gWWFu
+Zw0KPiBKYXNvbg0K
