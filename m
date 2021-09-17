@@ -2,272 +2,208 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019A040F404
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Sep 2021 10:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329AB40F770
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Sep 2021 14:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238078AbhIQIZA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Sep 2021 04:25:00 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20760 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233853AbhIQIZA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Sep 2021 04:25:00 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18H6upso007049;
-        Fri, 17 Sep 2021 04:23:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : message-id : mime-version : references :
- content-type : content-transfer-encoding; s=pp1;
- bh=s4+vPuYbUE1KaqMf19N/hf8WgRZvcSvFH64qNSrNPiQ=;
- b=dssTAXlmKAzRaTRLP1whT6LjeDhvfbrZ5+webvT/0cfAYbe/98NDLvWzepW6zru8Z87J
- 9WpJ8JfhmfMLcDnB/7lD59XViIa3SpojPWjKJr1vNJoDus9ivUTiwsbZ0IohaofHGE1Z
- nYBwvj9vwjfoaVPJ7HT963vVh9SoxQHvLiXxIy4bVDehbyC5POyc23eXT/xP0HlG5f+8
- VRZCJYm5o+Sg0sFAvJoM0+kas9EwJtdwJz7TasoAkI3M3eXpHAfIlIHzOGcqPOZ3olb6
- V1d2+ZTa14+k7Kyd8qowthh1I88H0Jl4dBfHtmnOobaqfSgz5/jHaHB/g8r+ZyE/OiHM 7A== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3b4g6f8nyk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 04:23:35 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 18H8CDrY003032;
-        Fri, 17 Sep 2021 08:23:35 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 3b0m3dby5d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Sep 2021 08:23:34 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 18H8NXge34275740
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Sep 2021 08:23:33 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 882357806D;
-        Fri, 17 Sep 2021 08:23:33 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6C20A78063;
-        Fri, 17 Sep 2021 08:23:33 +0000 (GMT)
-Received: from mww0302.dal12m.mail.ibm.com (unknown [9.208.69.16])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTPS;
-        Fri, 17 Sep 2021 08:23:33 +0000 (GMT)
-In-Reply-To: <CAHj4cs9Rzte5zbgy7o158m7JA8dbSEpxy5oR-+K0NQCK1gxG=Q@mail.gmail.com>
-Subject: Re: Re: Issus with blktest/srp on 5.15-rc1 and rdma_rxe
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Yi Zhang" <yi.zhang@redhat.com>
-Cc:     "Robert Pearson" <rpearsonhpe@gmail.com>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "Jason Gunthorpe" <jgg@nvidia.com>,
-        "Bart Van Assche" <bvanassche@acm.org>
-Date:   Fri, 17 Sep 2021 08:23:32 +0000
-Message-ID: <OFC7347FF0.D24DF679-ON00258753.002DFE5F-00258753.002E19D7@ibm.com>
+        id S243711AbhIQM0w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Sep 2021 08:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242722AbhIQM0u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Sep 2021 08:26:50 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C87C061764
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id t18so14954166wrb.0
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Sep 2021 05:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
+        b=DBbT+Z73wXFx7Ix5ddCqc9nQajcrsU49nmmjtksdzvj4VIUhu9a12X6mxydVGcyr31
+         hkbTnOZYoHZBblsPGhC4cqiN5vTy2EZ/ap7N566BgNdEzkAG+xpa6VwhSk6rstGS1sPD
+         4IZWgIghyDL60XFxmzUrIJNR7pW0cc0ak4VI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=B4xbw9gEcqky1hkIaKGJsZCnwDYURbkYMy8wOSBcFZM=;
+        b=ESpV4Wag6Ya2wdGheV66BatjEeTo75nYKjkCSNWRMNxkTtGm+zQCNgqlWJpNrK/4gF
+         BHLdcLzYnLtU6dMWZ+2My4CYtsLFzxFlop6XXCeFloqTWbClY98C+y5gjkkTf+l2KJIO
+         zzXiLYlCrWbIEWetnMK3yuM9neDxYTOZimna9CDhV5cipLwm+6wHc0eRMA5ntuPy+mK5
+         BQQ22sKVgK5c3yjKfBJYZ9sMuEw4EkKIuaCGx0GTtF6J/ll7RsdGuBW/N6jsaKh0Hucv
+         fN8Uaq98883/ZdBuZ2wqHhnELg5Ie+/PyL6tIbmq32GPdgigsj4ADfo60j5bt0tLszF0
+         ev/Q==
+X-Gm-Message-State: AOAM5313f20Vj7l+pjUag33+Y86yLKiEEAZEfwXnz1PLCWtgoflHSuqQ
+        fWTc3lZ1g0RqBxkESyTrM1pFmg==
+X-Google-Smtp-Source: ABdhPJyMTcWyIQ8nzIGUt+EPkzWzvWClhn2Q1W8KmqNiWLuXSRA7doL/03EbIbn3t2AAXB96e7Moyg==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr12033899wro.362.1631881522631;
+        Fri, 17 Sep 2021 05:25:22 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id m18sm6529557wrn.85.2021.09.17.05.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Sep 2021 05:25:21 -0700 (PDT)
+Date:   Fri, 17 Sep 2021 14:25:19 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Oded Gabbay <ogabbay@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>
+Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
+Message-ID: <YUSJL9ml1MljOwzB@phenom.ffwll.local>
+Mail-Followup-To: Oded Gabbay <ogabbay@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
+References: <20210912165309.98695-1-ogabbay@kernel.org>
+ <YUCvNzpyC091KeaJ@phenom.ffwll.local>
+ <20210914161218.GF3544071@ziepe.ca>
+ <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
+ <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
+ <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <CAHj4cs9Rzte5zbgy7o158m7JA8dbSEpxy5oR-+K0NQCK1gxG=Q@mail.gmail.com>,<OF54F8428F.7EA7E570-ON00258752.006AB21B-00258752.006BBB93@ibm.com>
- <CAFc_bgaH=fYMtKO-pJ0=KMU=d1wafDwWid8AoZsPhjpT9GdSDQ@mail.gmail.com>
-X-Mailer: Lotus Domino Web Server Release 11.0.1FP2HF114   September 2, 2021
-X-MIMETrack: Serialize by http on MWW0302/03/M/IBM at 09/17/2021 08:23:32,Serialize
- complete at 09/17/2021 08:23:32
-X-KeepSent: C7347FF0:D24DF679-00258753:002DFE5F; name=$KeepSent; type=4
-X-Disclaimed: 41619
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oRzV3_WiV9WuTpSgB2WhgBf7GRtqBf1u
-X-Proofpoint-ORIG-GUID: oRzV3_WiV9WuTpSgB2WhgBf7GRtqBf1u
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-17_04,2021-09-16_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- adultscore=0 clxscore=1015 mlxscore=0 impostorscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2109030001 definitions=main-2109170051
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFCwf10MnK5KPBaeWar4tALGz9n8+-B8toXnqurcebZ8Y_Jjpw@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-8-amd64 
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Yi Zhang" <yi.zhang@redhat.com> wrote: -----
+On Thu, Sep 16, 2021 at 03:44:25PM +0300, Oded Gabbay wrote:
+> On Thu, Sep 16, 2021 at 3:31 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
+> > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
+> > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
+> > > > > > Hi,
+> > > > > > Re-sending this patch-set following the release of our user-space TPC
+> > > > > > compiler and runtime library.
+> > > > > >
+> > > > > > I would appreciate a review on this.
+> > > > >
+> > > > > I think the big open we have is the entire revoke discussions. Having the
+> > > > > option to let dma-buf hang around which map to random local memory ranges,
+> > > > > without clear ownership link and a way to kill it sounds bad to me.
+> > > > >
+> > > > > I think there's a few options:
+> > > > > - We require revoke support. But I've heard rdma really doesn't like that,
+> > > > >   I guess because taking out an MR while holding the dma_resv_lock would
+> > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
+> > > > >   hold-up was again that makes this a no-go?
+> > > >
+> > > > RDMA HW can't do revoke.
+> >
+> > Like why? I'm assuming when the final open handle or whatever for that MR
+> > is closed, you do clean up everything? Or does that MR still stick around
+> > forever too?
+> >
+> > > > So we have to exclude almost all the HW and several interesting use
+> > > > cases to enable a revoke operation.
+> > > >
+> > > > >   - For non-revokable things like these dma-buf we'd keep a drm_master
+> > > > >     reference around. This would prevent the next open to acquire
+> > > > >     ownership rights, which at least prevents all the nasty potential
+> > > > >     problems.
+> > > >
+> > > > This is what I generally would expect, the DMABUF FD and its DMA
+> > > > memory just floats about until the unrevokable user releases it, which
+> > > > happens when the FD that is driving the import eventually gets closed.
+> > > This is exactly what we are doing in the driver. We make sure
+> > > everything is valid until the unrevokable user releases it and that
+> > > happens only when the dmabuf fd gets closed.
+> > > And the user can't close it's fd of the device until he performs the
+> > > above, so there is no leakage between users.
+> >
+> > Maybe I got the device security model all wrong, but I thought Guadi is
+> > single user, and the only thing it protects is the system against the
+> > Gaudi device trhough iommu/device gart. So roughly the following can
+> > happen:
+> >
+> > 1. User A opens gaudi device, sets up dma-buf export
+> >
+> > 2. User A registers that with RDMA, or anything else that doesn't support
+> > revoke.
+> >
+> > 3. User A closes gaudi device
+> This can not happen without User A closing the FD of the dma-buf it exported.
+> We prevent User A from closing the device because when it exported the
+> dma-buf, the driver's code took a refcnt of the user's private
+> structure. You can see that in export_dmabuf_common() in the 2nd
+> patch. There is a call there to hl_ctx_get.
+> So even if User A calls close(device_fd), the driver won't let any
+> other user open the device until User A closes the fd of the dma-buf
+> object.
+> 
+> Moreover, once User A will close the dma-buf fd and the device is
+> released, the driver will scrub the device memory (this is optional
+> for systems who care about security).
+> 
+> And AFAIK, User A can't close the dma-buf fd once it registered it
+> with RDMA, without doing unregister.
+> This can be seen in ib_umem_dmabuf_get() which calls dma_buf_get()
+> which does fget(fd)
 
->To: "Robert Pearson" <rpearsonhpe@gmail.com>
->From: "Yi Zhang" <yi.zhang@redhat.com>
->Date: 09/17/2021 09:29AM
->Cc: "Bernard Metzler" <BMT@zurich.ibm.com>, "linux-rdma"
-><linux-rdma@vger.kernel.org>, "Jason Gunthorpe" <jgg@nvidia.com>,
->"Bart Van Assche" <bvanassche@acm.org>
->Subject: [EXTERNAL] Re: Issus with blktest/srp on 5.15-rc1 and
->rdma_rxe
->
->                    On Fri, Sep 17, 2021 at 6:21 AM Robert Pearson
-><rpearsonhpe@gmail.com> wrote: Bernard, That would indicate that you
->have not applied the patch series RDMA/rxe: Fix various bugs which
->fixes the rkey not match rxe bug. I do not know how
->
->=20=20=20=20=20
->
->
->On Fri, Sep 17, 2021 at 6:21 AM Robert Pearson
-><rpearsonhpe@gmail.com> wrote:
->Bernard,
-> That would indicate that you have not applied the patch series
-> RDMA/rxe: Fix various bugs which fixes the rkey not match rxe bug.
-> I do not know how to get it to select the siw device instead of the
->rxe
-> device but Bart does.
->=20
->
->Just try use_siw=3D1 ./check -q srp/005
+Yeah that's essentially what I was looking for. This is defacto
+hand-rolling the drm_master owner tracking stuff. As long as we have
+something like this in place it should be fine I think.
+-Daniel
 
-srp/015 seem to be dedicated to siw testing. It selects siw if available.
-I think this is how Bart found it.
-Unfortunately, for some reason I am not aware of, testing defaults to
-rxe only for the other tests. Maybe at least the helper should
-talk about this hidden option.
+> > 4. User B opens gaudi device, assumes that it has full control over the
+> > device and uploads some secrets, which happen to end up in the dma-buf
+> > region user A set up
+> >
+> > 5. User B extracts secrets.
+> >
+> > > > I still don't think any of the complexity is needed, pinnable memory
+> > > > is a thing in Linux, just account for it in mlocked and that is
+> > > > enough.
+> >
+> > It's not mlocked memory, it's mlocked memory and I can exfiltrate it.
+> > Mlock is fine, exfiltration not so much. It's mlock, but a global pool and
+> > if you didn't munlock then the next mlock from a completely different user
+> > will alias with your stuff.
+> >
+> > Or is there something that prevents that? Oded at least explain that gaudi
+> > works like a gpu from 20 years ago, single user, no security at all within
+> > the device.
+> > -Daniel
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
 
-Thanks,
-Bernard.
-
->  Bob
->=20
-> On Thu, Sep 16, 2021 at 2:36 PM Bernard Metzler <BMT@zurich.ibm.com>
->wrote:
-> >
-> > Hi,
-> >
-> > if I run the complete srp test series from the blktests suite,
-> > the dmesg log contains many rdma_rxe messages of type:
-> >
-> > rdma_rxe: rxe_invalidate_mr: rkey (n) doesn't match mr->ibmr.rkey
->(n + 1)
-> >
-> > where 'n' is the current key. I expect this is not intended
-> > behavior.
-> >
-> > I am at commit 1b789bd4dbd48a92f5427d9c37a72a8f6ca17754
-> >
-> >
-> >
-> > Furthermore, running ./check -q srp/005 sometimes I get this:
-> >
-> > [  308.903330] sd 11:0:0:1: [sde] Attached SCSI disk
-> > [  308.917293] scsi 11:0:0:1: alua: Detached
-> > [  308.918191] BUG: kernel NULL pointer dereference, address:
->0000000000000000
-> > [  308.918223] #PF: supervisor instruction fetch in kernel mode
-> > [  308.918242] #PF: error_code(0x0010) - not-present page
-> > [  308.918259] PGD 0 P4D 0
-> > [  308.918271] Oops: 0010 [#1] SMP PTI
-> > [  308.918285] CPU: 1 PID: 4214 Comm: kworker/1:255 Not tainted
->5.15.0-rc1+ #4
-> > [  308.918309] Hardware name: To Be Filled By O.E.M. To Be Filled
->By O.E.M./Z77 Extreme6, BIOS P2.80 07/01/2013
-> > [  308.918338] Workqueue: srp_remove srp_remove_work [ib_srp]
-> > [  308.918362] RIP: 0010:0x0
-> > [  308.918375] Code: Unable to access opcode bytes at RIP
->0xffffffffffffffd6.
-> > [  308.918397] RSP: 0018:ffffb6124b9a3b68 EFLAGS: 00010086
-> > [  308.918414] RAX: 0000000000000001 RBX: ffffb6124b9a3ce0 RCX:
->0000000000000000
-> > [  308.918437] RDX: 0000000000000000 RSI: ffffb6124b9a3c50 RDI:
->ffff966063a27a00
-> > [  308.918459] RBP: ffffb6124b9a3bb0 R08: ffff966067481c00 R09:
->ffffeb578489b808
-> > [  308.918481] R10: ffff966043c0f200 R11: ffffb6124b9a3d00 R12:
->ffff966063a27a00
-> > [  308.918503] R13: 0000000000000004 R14: 0000000000000000 R15:
->ffffb6124b9a3c50
-> > [  308.918524] FS:  0000000000000000(0000)
->GS:ffff966157680000(0000) knlGS:0000000000000000
-> > [  308.918550] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  308.918568] CR2: ffffffffffffffd6 CR3: 000000005060a004 CR4:
->00000000001706e0
-> > [  308.918590] Call Trace:
-> > [  308.918601]  __ib_process_cq+0x89/0x150 [ib_core]
-> > [  308.918640]  ib_process_cq_direct+0x30/0x50 [ib_core]
-> > [  308.918669]  ? xas_store+0x331/0x640
-> > [  308.918684]  ? free_unref_page_commit.isra.135+0x91/0x140
-> > [  308.918705]  ? free_unref_page+0x6e/0xd0
-> > [  308.918719]  ? __free_pages+0xa3/0xc0
-> > [  308.918733]  ? kfree+0x32f/0x3b0
-> > [  308.918748]  srp_destroy_qp+0x24/0x40 [ib_srp]
-> > [  308.918767]  srp_free_ch_ib+0x77/0x180 [ib_srp]
-> > [  308.918784]  srp_remove_work+0xde/0x1a0 [ib_srp]
-> > [  308.918801]  process_one_work+0x1d0/0x380
-> > [  308.918817]  worker_thread+0x37/0x390
-> > [  308.918831]  ? process_one_work+0x380/0x380
-> > [  308.918846]  kthread+0x12f/0x150
-> > [  308.918859]  ? set_kthread_struct+0x40/0x40
-> > [  308.918874]  ret_from_fork+0x22/0x30
-> >
-> >
-> > With ./check -q srp/008 I sometimes get something similar:
-> >
-> > [ 1772.149274] sd 11:0:0:1: [sde] Attached SCSI disk
-> > [ 1772.150096] scsi 11:0:0:2: alua: Detached
-> > [ 1772.150184] blk_update_request: I/O error, dev sde, sector 8 op
->0x0:(READ) flags 0x80700 phys_seg 1 prio class 0
-> > [ 1772.151653] blk_update_request: I/O error, dev sde, sector 8 op
->0x0:(READ) flags 0x0 phys_seg 1 prio class 0
-> > [ 1772.153080] Buffer I/O error on dev sde, logical block 1, async
->page read
-> > [ 1772.169139] scsi 11:0:0:1: alua: Detached
-> > [ 1772.169446] BUG: kernel NULL pointer dereference, address:
->0000000000000000
-> > [ 1772.170881] #PF: supervisor instruction fetch in kernel mode
-> > [ 1772.172297] #PF: error_code(0x0010) - not-present page
-> > [ 1772.173751] PGD 0 P4D 0
-> > [ 1772.175165] Oops: 0010 [#1] SMP PTI
-> > [ 1772.176575] CPU: 3 PID: 8654 Comm: kworker/3:60 Not tainted
->5.15.0-rc1+ #4
-> > [ 1772.177995] Hardware name: To Be Filled By O.E.M. To Be Filled
->By O.E.M./Z77 Extreme6, BIOS P2.80 07/01/2013
-> > [ 1772.179430] Workqueue: srp_remove srp_remove_work [ib_srp]
-> > [ 1772.180859] RIP: 0010:0x0
-> > [ 1772.182276] Code: Unable to access opcode bytes at RIP
->0xffffffffffffffd6.
-> > [ 1772.183705] RSP: 0018:ffffa9710a2f7b68 EFLAGS: 00010086
-> > [ 1772.185129] RAX: 0000000000000001 RBX: ffffa9710a2f7c50 RCX:
->0000000000000000
-> > [ 1772.186566] RDX: 0000000000000000 RSI: ffffa9710a2f7c08 RDI:
->ffff91a703825a00
-> > [ 1772.187994] RBP: ffffa9710a2f7bb0 R08: ffff91a7184f8300 R09:
->0000000000000000
-> > [ 1772.189425] R10: ffff91a7869ce000 R11: ffffa9710a2f7d00 R12:
->ffff91a703825a00
-> > [ 1772.190848] R13: 0000000000000002 R14: 0000000000000000 R15:
->ffffa9710a2f7c08
-> > [ 1772.192270] FS:  0000000000000000(0000)
->GS:ffff91a817780000(0000) knlGS:0000000000000000
-> > [ 1772.193689] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [ 1772.195118] CR2: ffffffffffffffd6 CR3: 0000000111458006 CR4:
->00000000001706e0
-> > [ 1772.196558] Call Trace:
-> > [ 1772.197975]  __ib_process_cq+0x89/0x150 [ib_core]
-> > [ 1772.199402]  ib_process_cq_direct+0x30/0x50 [ib_core]
-> > [ 1772.200830]  ? put_cpu_partial+0x98/0xb0
-> > [ 1772.202260]  ? __slab_free+0x226/0x3c0
-> > [ 1772.203664]  ? __slab_free+0x226/0x3c0
-> > [ 1772.205038]  ? xas_store+0x331/0x640
-> > [ 1772.206404]  ? rxe_elem_release+0x4f/0x60 [rdma_rxe]
-> > [ 1772.207763]  ? kfree+0x372/0x3b0
-> > [ 1772.209101]  ? srp_destroy_fr_pool+0x43/0x50 [ib_srp]
-> > [ 1772.210439]  srp_destroy_qp+0x24/0x40 [ib_srp]
-> > [ 1772.211759]  srp_free_ch_ib+0x77/0x180 [ib_srp]
-> > [ 1772.213093]  srp_remove_work+0xde/0x1a0 [ib_srp]
-> > [ 1772.214417]  process_one_work+0x1d0/0x380
-> > [ 1772.215756]  worker_thread+0x37/0x390
-> > [ 1772.217082]  ? process_one_work+0x380/0x380
-> > [ 1772.218422]  kthread+0x12f/0x150
-> > [ 1772.219744]  ? set_kthread_struct+0x40/0x40
-> > [ 1772.221059]  ret_from_fork+0x22/0x30
-> >
-> >
-> > Many thanks,
-> > Bernard.
-> >
-> >
->=20
->=20
->
->--=20
->Best Regards,
->  Yi Zhang=20=20
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
