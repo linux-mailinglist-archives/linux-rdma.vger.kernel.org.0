@@ -2,189 +2,182 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A5540F77C
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Sep 2021 14:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42B84102E9
+	for <lists+linux-rdma@lfdr.de>; Sat, 18 Sep 2021 04:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235941AbhIQMb3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Sep 2021 08:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231237AbhIQMb1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Sep 2021 08:31:27 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516B4C061574
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Sep 2021 05:30:04 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id q11so14900525wrr.9
-        for <linux-rdma@vger.kernel.org>; Fri, 17 Sep 2021 05:30:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ohehD+AgX2cOYuT0Vdlc+XEexxlJP7h+rPjbbPGV0JI=;
-        b=R10SS4VV0BCpiZybmOMrjaWEfv3d2ZD+2k6TYKYqIZCusUIZXiqYs5rTuV6bruYLls
-         zYGmlZhSOPyZgErxGr8GftAAzypBiEQnXw94kdl46vb10zeP8O7zkrXWklJipXggLivr
-         Ihoa4mj+eAbhnzb6QO020N9VvyKryVDicfnPg=
+        id S239473AbhIRCO6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Sep 2021 22:14:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30504 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236883AbhIRCO5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Sep 2021 22:14:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1631931213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tjitqpwTy38JoaIHBb+NnNSDVnoAnWMVKTXpp/9lEug=;
+        b=WmovUBkqK3L++pKJlK6jc6I95Y0ttLsHdcd7cyGNw8VRy+HnlVTGzV/iy59T89xsfOTVm8
+        1xb6nCMQwwWSTzw1ze8PSyl3Fbw1UyNidEFhM/QrMWB6PnixvpGamGVdCGTk/kiICbcMVw
+        aYVM4JKBr29XqHBj9S/0PX1ykD75RVs=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-UwzQtMGMPqSMLEqGBhNdiA-1; Fri, 17 Sep 2021 22:13:32 -0400
+X-MC-Unique: UwzQtMGMPqSMLEqGBhNdiA-1
+Received: by mail-qv1-f70.google.com with SMTP id l18-20020a056214039200b0037e4da8b408so101967090qvy.6
+        for <linux-rdma@vger.kernel.org>; Fri, 17 Sep 2021 19:13:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=ohehD+AgX2cOYuT0Vdlc+XEexxlJP7h+rPjbbPGV0JI=;
-        b=GE1zYt/qIUhUWOofPZgluCYQm7YvswR44k+Aak8ge8vXJHbs7wH9pTB1KdrSqN+x8I
-         17fKsbSIqJBW9YY95KPS7kiGBztSf+Y3j/M4D4xqNBSBZpTAP0cuHCgsSj3zZvEJF6BN
-         VHFKHYerZrurf50Aiw4GEFVOBd7PRU+53E3G+r8Wh17xlIZVirDjOhpLiozGTvaCxKLP
-         gwXjyF3uZRtT+4+SjZRo7hPwgGupm1HY3uAeohRQEjsp1X52YcReuKdygVfwxodFYSby
-         JTAaeLcBYdctCC7l59orTnoJC4QoRHHKdvvcIs9llVeaNgOYeW9P+ykoNyjCCEmi7TtY
-         Cy8g==
-X-Gm-Message-State: AOAM533aNrS3XMsig/a5tIw3xq4lHnSRJS+fuIu4bEKhz2+htbN3K52z
-        8ZlO0f7txab9XtYF5ELqs5a/wA==
-X-Google-Smtp-Source: ABdhPJxbi7SvIHU6eF4mLO2NNjFKYkKbUTWnBTtOPShG0ZBGp4wQE5JGTFm/UZzjlZerlKL7ilx7Kg==
-X-Received: by 2002:a05:6000:124b:: with SMTP id j11mr11906176wrx.147.1631881802837;
-        Fri, 17 Sep 2021 05:30:02 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z6sm6483202wmp.1.2021.09.17.05.30.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Sep 2021 05:30:02 -0700 (PDT)
-Date:   Fri, 17 Sep 2021 14:30:00 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-Message-ID: <YUSKSHBC9uI49wZZ@phenom.ffwll.local>
-Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>, Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>
-References: <20210912165309.98695-1-ogabbay@kernel.org>
- <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca>
- <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local>
- <20210916131014.GK3544071@ziepe.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tjitqpwTy38JoaIHBb+NnNSDVnoAnWMVKTXpp/9lEug=;
+        b=rldqM1BCVV9Bq1piYqvbT66CyY4nIUTAjBJRmsv6neqqL1GkEn5XsvfkgdV7CzvmgX
+         qfctegzfYOc4TgWSPX+3IhbsPbQs740noD6vkcRywkZuYNNrTiIbQxf+Dveaa7J5bkhQ
+         F0NbljbiS1cLkLvMe8ob8KSNfdl2NMnJ9MnKkSgPMBHs+7c6X8q+zkDsgaimS+FoRKDp
+         51OgQd+vLGwuGHwcnGvai+eMprglltCJmLD88rkRy0wjmfVbtmDtja5n3Y1G5k2YZAsD
+         +Bp0dSedt7fywj5d34mt8UvUVIhcbchRADgevGbrtdZZyzWMi5jQjdx6k4rfQrhut1Ii
+         2R4g==
+X-Gm-Message-State: AOAM530rpsGlIijM3AuyRNACjK6o37kz/nmlMrJ7vmFQbN2PH1FIXf9l
+        AU09rIGpCNIcONuwNlkgq10gUwFDd2LmNLlcEyWvFYpIJH8MC3g1lHzgSOYVDQdzP0zruetNZhh
+        +tkp+O4ltdJxSKAvnNikNvqhzG8V1CPYQCopfxg==
+X-Received: by 2002:a05:6902:56d:: with SMTP id a13mr17900950ybt.512.1631931211967;
+        Fri, 17 Sep 2021 19:13:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwp+4RMPSjX2Qu8VDE5/WGLG6n+nrkO88J0ayjq7ilWiMXqq2My2ElLdlLAowuEr+tc+REKTe7ZK87U8wTHW/I=
+X-Received: by 2002:a05:6902:56d:: with SMTP id a13mr17900926ybt.512.1631931211739;
+ Fri, 17 Sep 2021 19:13:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210916131014.GK3544071@ziepe.ca>
-X-Operating-System: Linux phenom 5.10.0-8-amd64 
+References: <20210914164206.19768-1-rpearsonhpe@gmail.com>
+In-Reply-To: <20210914164206.19768-1-rpearsonhpe@gmail.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Sat, 18 Sep 2021 10:13:19 +0800
+Message-ID: <CAHj4cs_nO40bY0rDo8KB52QRCi4Qz6nVAQCSBJmgm84FtvM-BA@mail.gmail.com>
+Subject: Re: [PATCH for-rc v4 0/5] RDMA/rxe: Various bug fixes.
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>, mie@igel.co.jp,
+        rao.shoaib@oracle.com, Sagi Grimberg <sagi@grimberg.me>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 16, 2021 at 10:10:14AM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
-> > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > > Hi,
-> > > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > > compiler and runtime library.
-> > > > > >
-> > > > > > I would appreciate a review on this.
-> > > > >
-> > > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > > >
-> > > > > I think there's a few options:
-> > > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > > >   hold-up was again that makes this a no-go?
-> > > >
-> > > > RDMA HW can't do revoke.
-> > 
-> > Like why? I'm assuming when the final open handle or whatever for that MR
-> > is closed, you do clean up everything? Or does that MR still stick around
-> > forever too?
-> 
-> It is a combination of uAPI and HW specification.
-> 
-> revoke here means you take a MR object and tell it to stop doing DMA
-> without causing the MR object to be destructed.
-> 
-> All the drivers can of course destruct the MR, but doing such a
-> destruction without explicit synchronization with user space opens
-> things up to a serious use-after potential that could be a security
-> issue.
-> 
-> When the open handle closes the userspace is synchronized with the
-> kernel and we can destruct the HW objects safely.
-> 
-> So, the special HW feature required is 'stop doing DMA but keep the
-> object in an error state' which isn't really implemented, and doesn't
-> extend very well to other object types beyond simple MRs.
+Hi Bob
+With this patch serious, the blktests nvme-rdma still can be failed
+with the below error. and the test can be pass with siw.
 
-Yeah revoke without destroying the MR doesn't work, and it sounds like
-revoke by destroying the MR just moves the can of worms around to another
-place.
+[ 1702.140090] loop0: detected capacity change from 0 to 2097152
+[ 1702.150729] nvmet: adding nsid 1 to subsystem blktests-subsystem-1
+[ 1702.151425] nvmet_rdma: enabling port 0 (10.16.221.116:4420)
+[ 1702.158810] nvmet: creating controller 1 for subsystem
+blktests-subsystem-1 for NQN
+nqn.2014-08.org.nvmexpress:uuid:4c4c4544-0035-4b10-8044-b9c04f463333.
+[ 1702.159037] nvme nvme0: creating 32 I/O queues.
+[ 1702.171671] nvme nvme0: failed to initialize MR pool sized 128 for QID 32
+[ 1702.178482] nvme nvme0: rdma connection establishment failed (-12)
+[ 1702.292261] eno2 speed is unknown, defaulting to 1000
+[ 1702.297325] eno3 speed is unknown, defaulting to 1000
+[ 1702.302389] eno4 speed is unknown, defaulting to 1000
+[ 1702.317991] rdma_rxe: unloaded
 
-> > 1. User A opens gaudi device, sets up dma-buf export
-> > 
-> > 2. User A registers that with RDMA, or anything else that doesn't support
-> > revoke.
-> > 
-> > 3. User A closes gaudi device
-> > 
-> > 4. User B opens gaudi device, assumes that it has full control over the
-> > device and uploads some secrets, which happen to end up in the dma-buf
-> > region user A set up
-> 
-> I would expect this is blocked so long as the DMABUF exists - eg the
-> DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
-> that #3 can't actually happen.
-> 
-> > It's not mlocked memory, it's mlocked memory and I can exfiltrate
-> > it.
-> 
-> That's just bug, don't make buggy drivers :)
+Failure from:
+        /*
+         * Currently we don't use SG_GAPS MR's so if the first entry is
+         * misaligned we'll end up using two entries for a single data page,
+         * so one additional entry is required.
+         */
+        pages_per_mr = nvme_rdma_get_max_fr_pages(ibdev, queue->pi_support) + 1;
+        ret = ib_mr_pool_init(queue->qp, &queue->qp->rdma_mrs,
+                              queue->queue_size,
+                              IB_MR_TYPE_MEM_REG,
+                              pages_per_mr, 0);
+        if (ret) {
+                dev_err(queue->ctrl->ctrl.device,
+                        "failed to initialize MR pool sized %d for QID %d\n",
+                        queue->queue_size, nvme_rdma_queue_idx(queue));
+                goto out_destroy_ring;
+        }
 
-Well yeah, but given that habanalabs hand rolled this I can't just check
-for the usual things we have to enforce this in drm. And generally you can
-just open chardevs arbitrarily, and multiple users fighting over each
-another. The troubles only start when you have private state or memory
-allocations of some kind attached to the struct file (instead of the
-underlying device), or something else that requires device exclusivity.
-There's no standard way to do that.
 
-Plus in many cases you really want revoke on top (can't get that here
-unfortunately it seems), and the attempts to get towards a generic
-revoke() just never went anywhere. So again it's all hand-rolled
-per-subsystem. *insert lament about us not having done this through a
-proper subsystem*
+On Wed, Sep 15, 2021 at 12:43 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> This series of patches implements several bug fixes and minor
+> cleanups of the rxe driver. Specifically these fix a bug exposed
+> by blktest.
+>
+> They apply cleanly to both
+> commit 1b789bd4dbd48a92f5427d9c37a72a8f6ca17754 (origin/for-rc)
+> commit 6a217437f9f5482a3f6f2dc5fcd27cf0f62409ac (origin/for-next)
+>
+> The first patch is a rewrite of an earlier patch.
+> It adds memory barriers to kernel to kernel queues. The logic for this
+> is the same as an earlier patch that only treated user to kernel queues.
+> Without this patch kernel to kernel queues are expected to intermittently
+> fail at low frequency as was seen for the other queues.
+>
+> The second patch cleans up the state and type enums used by MRs.
+>
+> The third patch separates the keys in rxe_mr and ib_mr. This allows
+> the following sequence seen in the srp driver to work correctly.
+>
+>         do {
+>                 ib_post_send( IB_WR_LOCAL_INV )
+>                 ib_update_fast_reg_key()
+>                 ib_map_mr_sg()
+>                 ib_post_send( IB_WR_REG_MR )
+>         } while ( !done )
+>
+> The fourth patch creates duplicate mapping tables for fast MRs. This
+> prevents rkeys referencing fast MRs from accessing data from an updated
+> map after the call to ib_map_mr_sg() call by keeping the new and old
+> mappings separate and atomically swapping them when a reg mr WR is
+> executed.
+>
+> The fifth patch checks the type of MRs which receive local or remote
+> invalidate operations to prevent invalidating user MRs.
+>
+> v3->v4:
+> Two of the patches in v3 were accepted in v5.15 so have been dropped
+> here.
+>
+> The first patch was rewritten to correctly deal with queue operations
+> in rxe_verbs.c where the code is the client and not the server.
+>
+> v2->v3:
+> The v2 version had a typo which broke clean application to for-next.
+> Additionally in v3 the order of the patches was changed to make
+> it a little cleaner.
+>
+> Bob Pearson (5):
+>   RDMA/rxe: Add memory barriers to kernel queues
+>   RDMA/rxe: Cleanup MR status and type enums
+>   RDMA/rxe: Separate HW and SW l/rkeys
+>   RDMA/rxe: Create duplicate mapping tables for FMRs
+>   RDMA/rxe: Only allow invalidate for appropriate MRs
+>
+>  drivers/infiniband/sw/rxe/rxe_comp.c  |  12 +-
+>  drivers/infiniband/sw/rxe/rxe_cq.c    |  25 +--
+>  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+>  drivers/infiniband/sw/rxe/rxe_mr.c    | 267 ++++++++++++++++-------
+>  drivers/infiniband/sw/rxe/rxe_mw.c    |  36 ++--
+>  drivers/infiniband/sw/rxe/rxe_qp.c    |  12 +-
+>  drivers/infiniband/sw/rxe/rxe_queue.c |  30 ++-
+>  drivers/infiniband/sw/rxe/rxe_queue.h | 292 +++++++++++---------------
+>  drivers/infiniband/sw/rxe/rxe_req.c   |  51 ++---
+>  drivers/infiniband/sw/rxe/rxe_resp.c  |  40 +---
+>  drivers/infiniband/sw/rxe/rxe_srq.c   |   2 +-
+>  drivers/infiniband/sw/rxe/rxe_verbs.c |  92 ++------
+>  drivers/infiniband/sw/rxe/rxe_verbs.h |  48 ++---
+>  13 files changed, 438 insertions(+), 471 deletions(-)
+>
+> --
+> 2.30.2
+>
 
-Anyway it sounds like the code takes care of that.
--Daniel
+
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Best Regards,
+  Yi Zhang
+
