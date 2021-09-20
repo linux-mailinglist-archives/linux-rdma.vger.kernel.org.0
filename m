@@ -2,57 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC5A411567
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Sep 2021 15:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F115041156C
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Sep 2021 15:21:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236028AbhITNU6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Sep 2021 09:20:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
+        id S239230AbhITNXC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Sep 2021 09:23:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233770AbhITNU6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Sep 2021 09:20:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0358360EB6;
-        Mon, 20 Sep 2021 13:19:30 +0000 (UTC)
+        id S239225AbhITNXB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Sep 2021 09:23:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76CED60C51;
+        Mon, 20 Sep 2021 13:21:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632143971;
-        bh=YWwpJ6GdOtb6FvbH6VGrRbz+SxIszfnSPHL8mrjIXfM=;
+        s=k20201202; t=1632144095;
+        bh=OJgspc3gS6oHE+t6nF6emlo6dfdxyN2zT0UVxnU7KLM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZPyvg5ddQHULU1ePzSqHaQadoYcdvoEpjqFz1xtfqjhMUuwEGQ9+6Ml24xqD/wdft
-         n4vXbySJTW+f3RRF+Or/M6IQ978AxmFHFEk8R4dYiEC3nsedg+Y89G0+gv0pJdkuKj
-         SRxQ+/qda3gvIsHdM9/yXQrDklrkShxnO0UCi9FPoDmkO7LEzLVLq+oZ12AGOZiFF3
-         /xUne9EnIylEj5YiZS1gPE5lyRgWgN5pvYlFILTwnlvaaziQtHI8HUJOcjoI09+XlB
-         JdzQQb76LP8gDmuPD0hWbNqA/shCE+FnvY1+l/2VTC+DvlfMiYRzdpyJY4l4J6VbY9
-         p5UpCF/ZY2waA==
-Date:   Mon, 20 Sep 2021 16:19:28 +0300
+        b=gYdQfGQJ72nkJAHnF++hg+o/w58Wcmxq7gPz+urIsM1ZyFc4hMohrCueB7mvbUuEH
+         0yNqD7ehet+X08VfrGH2DBdc4RaeGHu2Of/4adNwk7vtjAE84HK8ID1SjE+W/hfK6C
+         SN7k1SDIk97d1w3RsnSDh7pX2aKsXeZobugV/A11Z9vaOV1ygMVg3dzKi/QDbAht7T
+         ZdFi7WAfa184dLQfDMMuw49vGM7zM0/jjJhT7SqTsTsADtBJtuSNGqZSVxbPpdrGWK
+         4slBrSZQntr8Cy9+ZVCjmFoQxuw9iO9zVSTyhQgOvEnD9U4IpNtP2CCEsP9K4o0EHB
+         iyoZrKR+maCPQ==
+Date:   Mon, 20 Sep 2021 16:21:31 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Selvin Xavier <selvin.xavier@broadcom.com>
-Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v2 09/12] RDMA/bnxt_re: Use GFP_KERNEL in non
- atomic context
-Message-ID: <YUiKYESLcUjfvWgC@unreal>
-References: <1631709163-2287-1-git-send-email-selvin.xavier@broadcom.com>
- <1631709163-2287-10-git-send-email-selvin.xavier@broadcom.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Meir Lichtinger <meirl@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH rdma-next 2/2] IB/mlx5: Enable UAR to have DevX UID
+Message-ID: <YUiK28VZR5glIRav@unreal>
+References: <cover.1631660943.git.leonro@nvidia.com>
+ <b6580419a845f750014df75f6ee1916cc3f0d2d7.1631660943.git.leonro@nvidia.com>
+ <20210915134753.GA212159@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1631709163-2287-10-git-send-email-selvin.xavier@broadcom.com>
+In-Reply-To: <20210915134753.GA212159@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 15, 2021 at 05:32:40AM -0700, Selvin Xavier wrote:
-> Use GFP_KERNEL instead of GFP_ATOMIC while allocating
-> control path structures which will be only called from
-> non atomic context
+On Wed, Sep 15, 2021 at 10:47:53AM -0300, Jason Gunthorpe wrote:
+> On Wed, Sep 15, 2021 at 02:11:23AM +0300, Leon Romanovsky wrote:
+> > From: Meir Lichtinger <meirl@nvidia.com>
+> > 
+> > UID field was added to alloc_uar and dealloc_uar PRM command, to specify
+> > DevX UID for UAR. This change enables firmware validating user access to
+> > its own UAR resources.
+> > 
+> > For the kernel allocated UARs the UID will stay 0 as of today.
+> > 
+> > Signed-off-by: Meir Lichtinger <meirl@nvidia.com>
+> > Reviewed-by: Yishai Hadas <yishaih@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >  drivers/infiniband/hw/mlx5/cmd.c  | 24 ++++++++++++++
+> >  drivers/infiniband/hw/mlx5/cmd.h  |  2 ++
+> >  drivers/infiniband/hw/mlx5/main.c | 55 +++++++++++++++++--------------
+> >  3 files changed, 57 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/drivers/infiniband/hw/mlx5/cmd.c b/drivers/infiniband/hw/mlx5/cmd.c
+> > index a8db8a051170..0fe3c4ceec43 100644
+> > +++ b/drivers/infiniband/hw/mlx5/cmd.c
+> > @@ -206,3 +206,27 @@ int mlx5_cmd_mad_ifc(struct mlx5_core_dev *dev, const void *inb, void *outb,
+> >  	kfree(in);
+> >  	return err;
+> >  }
+> > +
+> > +int mlx5_ib_cmd_uar_alloc(struct mlx5_core_dev *dev, u32 *uarn, u16 uid)
+> > +{
+> > +	u32 out[MLX5_ST_SZ_DW(alloc_uar_out)] = {};
+> > +	u32 in[MLX5_ST_SZ_DW(alloc_uar_in)] = {};
+> > +	int err;
+> > +
+> > +	MLX5_SET(alloc_uar_in, in, opcode, MLX5_CMD_OP_ALLOC_UAR);
+> > +	MLX5_SET(alloc_uar_in, in, uid, uid);
+> > +	err = mlx5_cmd_exec_inout(dev, alloc_uar, in, out);
+> > +	if (!err)
+> > +		*uarn = MLX5_GET(alloc_uar_out, out, uar);
 > 
-> Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
-> ---
-> v1->v2:
-> 	Using GFP_KERNEL in bnxt_re_netdev_event also
->  drivers/infiniband/hw/bnxt_re/main.c       | 2 +-
->  drivers/infiniband/hw/bnxt_re/qplib_rcfw.c | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
+> Success oriented flow:
 > 
+>  if (err)
+>      return err;
+>  *uarn = MLX5_GET(alloc_uar_out, out, uar);
+>  return 0;
+> 
+> And why did we add entirely new functions instead of just adding a uid
+> argument to the core ones? Or, why doesn't this delete the old core
+> functions that look unused outside of IB anyhow?
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+We didn't want to add not-needed for mlx5_core uid field, the rest
+comments are valid and I'm sorry that I missed them.
+
+Thanks
+
+> 
+> Jason
