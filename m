@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC8A412765
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Sep 2021 22:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1254127B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Sep 2021 23:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbhITUmp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Sep 2021 16:42:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54012 "EHLO mail.kernel.org"
+        id S233615AbhITVHi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Sep 2021 17:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59162 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhITUkp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Sep 2021 16:40:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E215604DC;
-        Mon, 20 Sep 2021 20:39:16 +0000 (UTC)
+        id S232859AbhITVFh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Sep 2021 17:05:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB76B61159;
+        Mon, 20 Sep 2021 21:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632170358;
-        bh=HSGus3tms+/naFCRfd2OqZSYp0GX+lVXfRB0c7xZaaE=;
+        s=k20201202; t=1632171850;
+        bh=PqdFM5XpCW4SO8VwVFeVL8/W3ovMxPa8/cSLHK/1cCU=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VOyWXLhIjft27gGpCqTFtBF9Lad4X9qm6BBibJf/CTf+N7LjMSljUrew/M6TLGR7r
-         995V8mfqkgdxuO+JzwcfwJUpf7n886+Z1UwpCQSWcuePUzg1jHnnMC1MQqJWszFNaI
-         b5jWc3vH5Ll8FL+zizrkKWFquAZ6Jelv9JXVuYcpDifuC56KUXEV0S/ryQdzVKIHH5
-         Kb0Nd7b0Z4hBVJuMbEeTpWASjbFsfMFt0QotnAxqpEmiCjoIG3VTYi9Gnn1tWtYPY8
-         QWvxlVLr5N4MSYEVTo+J3DCgZzIZxBV/14Fm0a6kZwIGOC8niagziQNAmuSpPkxCZ3
-         SmHf4AEdMHqXQ==
-Date:   Mon, 20 Sep 2021 13:39:15 -0700
+        b=l4hTPB4s2MuadFq2p5e6Xplm6rWChHn0TAe148keYBM4PyhsT4Z0dnrIVf4x/yUrW
+         TvJNAHPIAWaiTrxwhZP6PjK5F01TpWMMxEJxSL5YmcFiv4SSbVUbrrQeuDWiUNgj6w
+         dOitjMtSyPq5FUu0W9nnZU/e1BI2V6ZFfsIn0zAowC7cN5qZaRb9YgUmUZHBtokOKA
+         Sg0JzWzyV4CyUUiAVLRJR5PotXNmfupXMRQum0qomXQ8OQvbh/E3LGEGB3qd6Zqwbt
+         sXDu5phtaLCaLXsfYXXjpW92B+QfVofmgWfVAGj9rugEoExMyHyr4E3uskHK2JwC8c
+         VEhwLWOugkKRQ==
+Date:   Mon, 20 Sep 2021 14:04:07 -0700
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     "David S . Miller" <davem@davemloft.net>,
@@ -69,9 +69,10 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         Yisen Zhuang <yisen.zhuang@huawei.com>
 Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
-Message-ID: <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+Message-ID: <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+        <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -79,17 +80,21 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:
+> On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> > 
+> > devlink_register() can't fail and always returns success, but all drivers
+> > are obligated to check returned status anyway. This adds a lot of boilerplate
+> > code to handle impossible flow.
+> > 
+> > Make devlink_register() void and simplify the drivers that use that
+> > API call.  
 > 
-> devlink_register() can't fail and always returns success, but all drivers
-> are obligated to check returned status anyway. This adds a lot of boilerplate
-> code to handle impossible flow.
-> 
-> Make devlink_register() void and simplify the drivers that use that
-> API call.
+> Unlike unused functions bringing back error handling may be
+> non-trivial. I'd rather you deferred such cleanups until you're 
+> ready to post your full rework and therefore give us some confidence 
+> the revert will not be needed.
 
-Unlike unused functions bringing back error handling may be
-non-trivial. I'd rather you deferred such cleanups until you're 
-ready to post your full rework and therefore give us some confidence 
-the revert will not be needed.
+If you disagree you gotta repost, new devlink_register call got added
+in the meantime.
