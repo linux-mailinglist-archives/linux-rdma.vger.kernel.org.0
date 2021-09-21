@@ -2,123 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C70412CFD
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 04:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49D85412DAC
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 06:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhIUCvm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Sep 2021 22:51:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344291AbhIUCUi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Sep 2021 22:20:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 946B461245;
-        Tue, 21 Sep 2021 02:19:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632190750;
-        bh=Z+11tE516+e0V1bcSE+sqc/byA+rMuk9RbFhyqq7PYk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d90ZZKy8uQqKCKsdlcPvk8V+Wg37YRYMGkKcES9+Dp7tMmqpK2DNANFneNOaJcTI2
-         b4ZDwbRcpjJEi59AMJct89FFTyI2XQW4U9OVG94kCpYOwKDtoGxIhrZlFEkfukoQmJ
-         LVcx4Of36Y+mtMne9kJFCnfjgN6NS0kQnG+SRqLlC01hSPA4UAKh2FaFK8hmeTPGr4
-         u4KgNPsbR2urWO0se7ZrGB+6/jd1GfpBe2FRo9FVU6f1MJIb8X2jCdbh8Sv1pDd+Hl
-         i4qvy5Uyr2VqLXN8sv0VpTZHYtbCOGjhcAZDU/DJTWaGXnZQbwKgVg+ZCO8QyLw+Wy
-         Mqc3qkth7VV4g==
-Date:   Tue, 21 Sep 2021 05:19:06 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
-Message-ID: <YUlBGk2Mq3iYhtku@unreal>
-References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
- <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S230318AbhIUEIM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Sep 2021 00:08:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231345AbhIUEIF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Sep 2021 00:08:05 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDD8C061574
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id c4so12478004pls.6
+        for <linux-rdma@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
+        b=Mplo5+lxH3SP68tQyWmFu/JWZyX9HRHbKiM7MH93oAMFkjf89geoL5h+W5avJnSX0u
+         qupSiaeZZ7SpByvqSFmys6LAoCfR91AB5YSr4tEfj2gLJ1B9VV3Ol4hqfOgCbnoqgWBl
+         N2eHgmNlgp50nHZcJKq7lnH7V8nTo4FmRu3Bo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
+        b=Lx4R3fMTc3WL4EoZjj4eIzG8tg3Hu6WzFokEMx6BNY9p71Lhz7IhErakMxXsOqfww1
+         DeNxfjF+wWm/A6KxUwPpTaQk0fTVW1faDoNwuY8gmDwhWxYRxWwcG70fHbyN7OT77CY/
+         2UYq6YqTdeLfeOKfZByU+De5Nn3iVHWL0682mlf8jQQ08V7NsjdEKxYfwGQu2ItXtebj
+         kTzoxr58magAvMaUD1SuaLSwMCSaq20MoZ5rSEUL+5xzxqTZ5G+WWhFD8CZ2nUvxA0Ws
+         HUkWPAFRpp5chHL6SIAe5M7yzADjYAE+hh1M1PX/rA8+D8NUU2mFJKOCy58J+mRp2s7s
+         suyg==
+X-Gm-Message-State: AOAM5338ANdLyGqGmOazyU0HWTjRkTwyLZmyGGnxk8cBga8i/XSybaC+
+        1mWfr/VlZM+Lbvq7S0fSZ9zhQg==
+X-Google-Smtp-Source: ABdhPJyx5YX9MminKBo66Os9ZmhaP/fJEgBHFu0WDHKC3YgKNy061CfxIN6SG+aQUmV8dm/D3dlZQg==
+X-Received: by 2002:a17:90b:4a82:: with SMTP id lp2mr2861629pjb.57.1632197196917;
+        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v3sm15675641pfc.193.2021.09.20.21.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
+Date:   Mon, 20 Sep 2021 21:06:35 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Len Baker <len.baker@gmx.com>
+Cc:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Message-ID: <202109202105.9E901893@keescook>
+References: <20210905074936.15723-1-len.baker@gmx.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210905074936.15723-1-len.baker@gmx.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 20, 2021 at 02:04:07PM -0700, Jakub Kicinski wrote:
-> On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:
-> > On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
-> > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > 
-> > > devlink_register() can't fail and always returns success, but all drivers
-> > > are obligated to check returned status anyway. This adds a lot of boilerplate
-> > > code to handle impossible flow.
-> > > 
-> > > Make devlink_register() void and simplify the drivers that use that
-> > > API call.  
-> > 
-> > Unlike unused functions bringing back error handling may be
-> > non-trivial. I'd rather you deferred such cleanups until you're 
-> > ready to post your full rework and therefore give us some confidence 
-> > the revert will not be needed.
+On Sun, Sep 05, 2021 at 09:49:36AM +0200, Len Baker wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
-> If you disagree you gotta repost, new devlink_register call got added
-> in the meantime.
+> So, refactor the code a bit to use the purpose specific kcalloc()
+> function instead of the argument size * count in the kzalloc() function.
+> 
+> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
+> 
+> Signed-off-by: Len Baker <len.baker@gmx.com>
+> ---
+>  .../net/ethernet/mellanox/mlx5/core/steering/dr_action.c  | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> index 6475ba35cf6b..e8957dad3bb1 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
+> @@ -716,6 +716,7 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
+>  	struct mlx5dr_action *action;
+>  	bool reformat_req = false;
+>  	u32 num_of_ref = 0;
+> +	u32 ref_act_cnt;
+>  	int ret;
+>  	int i;
+> 
+> @@ -724,11 +725,14 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
+>  		return NULL;
+>  	}
+> 
+> -	hw_dests = kzalloc(sizeof(*hw_dests) * num_of_dests, GFP_KERNEL);
+> +	hw_dests = kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
+>  	if (!hw_dests)
+>  		return NULL;
+> 
+> -	ref_actions = kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP_KERNEL);
+> +	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
+> +		goto free_hw_dests;
+> +
+> +	ref_actions = kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
 
-This is exactly what I afraid, new devlink API users are added faster
-than I can cleanup them.
+In the future, consider array3_size(), but this is fine too. :)
 
-For example, let's take a look on newly added ipc_devlink_init(), it is
-called conditionally "if (stage == IPC_MEM_EXEC_STAGE_BOOT) {". How can
-it be different stage if we are in driver .probe() routine?
+-Kees
 
-They also introduced devlink_sio.devlink_read_pend and
-devlink_sio.read_sem to protect from something that right position of
-devlink_register() will fix. I also have serious doubts that their
-current protection is correct, once they called to devlink_params_publish()
-the user can crash the system, because he can access the parameters before
-they initialized their protection.
+>  	if (!ref_actions)
+>  		goto free_hw_dests;
+> 
+> --
+> 2.25.1
+> 
 
-So yes, I disagree. We will need to make sure that devlink_register()
-can't fail and it will make life easier for everyone (no need to unwind)
-while we put that command  being last in probe sequence.
-
-If I repost, will you take it? I don't want to waste anyone time if it
-is not.
-
-Thanks
+-- 
+Kees Cook
