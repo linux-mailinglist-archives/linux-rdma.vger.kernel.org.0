@@ -2,128 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D85412DAC
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 06:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470EA412E9C
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 08:28:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhIUEIM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Sep 2021 00:08:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231345AbhIUEIF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Sep 2021 00:08:05 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDD8C061574
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id c4so12478004pls.6
-        for <linux-rdma@vger.kernel.org>; Mon, 20 Sep 2021 21:06:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
-        b=Mplo5+lxH3SP68tQyWmFu/JWZyX9HRHbKiM7MH93oAMFkjf89geoL5h+W5avJnSX0u
-         qupSiaeZZ7SpByvqSFmys6LAoCfR91AB5YSr4tEfj2gLJ1B9VV3Ol4hqfOgCbnoqgWBl
-         N2eHgmNlgp50nHZcJKq7lnH7V8nTo4FmRu3Bo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zn1EkZZtYwu+/CqIaImEzdF2wzQ3/Q4ICvhMSwY9pc4=;
-        b=Lx4R3fMTc3WL4EoZjj4eIzG8tg3Hu6WzFokEMx6BNY9p71Lhz7IhErakMxXsOqfww1
-         DeNxfjF+wWm/A6KxUwPpTaQk0fTVW1faDoNwuY8gmDwhWxYRxWwcG70fHbyN7OT77CY/
-         2UYq6YqTdeLfeOKfZByU+De5Nn3iVHWL0682mlf8jQQ08V7NsjdEKxYfwGQu2ItXtebj
-         kTzoxr58magAvMaUD1SuaLSwMCSaq20MoZ5rSEUL+5xzxqTZ5G+WWhFD8CZ2nUvxA0Ws
-         HUkWPAFRpp5chHL6SIAe5M7yzADjYAE+hh1M1PX/rA8+D8NUU2mFJKOCy58J+mRp2s7s
-         suyg==
-X-Gm-Message-State: AOAM5338ANdLyGqGmOazyU0HWTjRkTwyLZmyGGnxk8cBga8i/XSybaC+
-        1mWfr/VlZM+Lbvq7S0fSZ9zhQg==
-X-Google-Smtp-Source: ABdhPJyx5YX9MminKBo66Os9ZmhaP/fJEgBHFu0WDHKC3YgKNy061CfxIN6SG+aQUmV8dm/D3dlZQg==
-X-Received: by 2002:a17:90b:4a82:: with SMTP id lp2mr2861629pjb.57.1632197196917;
-        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v3sm15675641pfc.193.2021.09.20.21.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Sep 2021 21:06:36 -0700 (PDT)
-Date:   Mon, 20 Sep 2021 21:06:35 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Len Baker <len.baker@gmx.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yevgeny Kliteynik <kliteyn@nvidia.com>,
-        Alex Vesker <valex@nvidia.com>,
-        Erez Shitrit <erezsh@nvidia.com>,
-        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
-Message-ID: <202109202105.9E901893@keescook>
-References: <20210905074936.15723-1-len.baker@gmx.com>
+        id S229624AbhIUG31 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Sep 2021 02:29:27 -0400
+Received: from mail-co1nam11on2059.outbound.protection.outlook.com ([40.107.220.59]:49598
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229826AbhIUG3Y (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Sep 2021 02:29:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TxOfA8Hir3hT/4o5KX4GaDHEAjhnGoL5dzFZUbU2Wy3WNefxxRcC3XptNp1MOUARWmDOl/UiEDh5hNs9IuKEAKDG5bvnAH8cHScM8tbKQaMAQnbrc97XR5UtgTMYtj4a9CgF4RTkSMZxQ1QBiLerj1iBUE2jVYde38U4XsCqpC3nuG5yp9Szgbkhx1uprVMspz1U7Kgxgjlgn1e/FXiy2V+UjPU2/S7Bs5OMJaT/s/p6QE41RovsYDxztGjj0isDtFnfezJGJPTTlMfukhAITMehfqCeBoyDbGeDni9WQZikdBKbEhoIAEDimGR9gPDvOa6txtWDUDzz0wkczX5SOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=zXpASqH+1illgAJcAaM76eEHUxCuRv1yBbRm1p3K6Qc=;
+ b=cFOJH9kNzoRGnb+2ygWFw1/rsCSY81smF4pVI5nZcFQ53smNaUz4QuQ5eQoMmzcX5ZYR0MrOaHGTw10JEoFjCkYhp4MJ6bBjw57NjrmxcHSCSQmhGWTJHGAVoe3tJ6esBc+8LXiBzKTNUSIWbUWZsAbYyyDZ1RfTH7rsC9KUvr3WGTF876BAupodUcdChSwhDFZjL9PPlZ/6Tx5g4+WAV2ynzeZDc4mh8SHmsl4BJi8EzcPvDC3tnX4tooW5Fnbpqp/sxJkBLhHOp5M+dcvYrl2TQJeb6UhxxUgmoIL8SZCLbB8lnlrkiyG2LoEVfObqIKRUzxnZewLuL6ydsevSCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.32) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zXpASqH+1illgAJcAaM76eEHUxCuRv1yBbRm1p3K6Qc=;
+ b=DrTslbMxrZHx7T3MnFAVtHx7eqtZJSa4cUxTjnqsfwCT4lDPRkicMz3tCc6Lw1TpqWY/JOmGeWwJRJswzjNVB5ouFXtKxuaaNrWmfTb1y46gzzmFTBX+dNLDjmde+5LZRcUT7bYz20Ka2iv5gWI9sXDGmr/ocQXRrSYNA+mE7u5hLTws4ov16w0TY8NRUv/pFijQPX1SVQXO46PwN9G0JTHWS/ug0sV3Z1+KaKU6tfHJNNHR1uFwwyhuEDQuRs+Njl2gS72bHMvArxB+ahxH9tqnjlPYZaSqOLxnvpUAKdLhx9ERTWm3WJe4ecovVU6oZPoMLh0ikrlbsN2XOLvWNg==
+Received: from MW4PR03CA0325.namprd03.prod.outlook.com (2603:10b6:303:dd::30)
+ by DM6PR12MB4105.namprd12.prod.outlook.com (2603:10b6:5:217::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Tue, 21 Sep
+ 2021 06:27:54 +0000
+Received: from CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:dd:cafe::46) by MW4PR03CA0325.outlook.office365.com
+ (2603:10b6:303:dd::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14 via Frontend
+ Transport; Tue, 21 Sep 2021 06:27:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.32; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.32) by
+ CO1NAM11FT026.mail.protection.outlook.com (10.13.175.67) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4523.14 via Frontend Transport; Tue, 21 Sep 2021 06:27:54 +0000
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL109.nvidia.com
+ (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 20 Sep
+ 2021 23:27:53 -0700
+Received: from vdi.nvidia.com (172.20.187.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Tue, 21 Sep 2021 06:27:52 +0000
+From:   Mark Zhang <markzhang@nvidia.com>
+To:     <jgg@nvidia.com>, <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>, <aharonl@nvidia.com>,
+        <netao@nvidia.com>, <leonro@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>
+Subject: [PATCH iproute2-next 0/3] Optional counter statistics support
+Date:   Tue, 21 Sep 2021 09:27:23 +0300
+Message-ID: <20210921062726.79973-1-markzhang@nvidia.com>
+X-Mailer: git-send-email 2.8.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210905074936.15723-1-len.baker@gmx.com>
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 20b984b3-4bcc-4694-ee1a-08d97cc8f212
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4105:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB410587E1B0C65F114911A474C7A19@DM6PR12MB4105.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aFL7iwDvguP3KEOhuuVom0kMSNj3gfa1OWulMMWE+ATfNa0zJQGPbZWeJARhC4ZtTM2H3vJ55GZLuJo+kMJnSfTKixEAB35NFNmunmM7tQ4RXJMY4nGupB01czygTl6YSxyWpD04bkj7ohquHVAbYg9tZwzBjkjdKrp0wM0Rsw3KfnguruHWA/4OPk0fN9MKBxuZin0FTtf5V7vrSPpsbGzX2JzvK5CX/CmFctRFUk8RriJ71bMrAG7Pt+ARy4WG1OG9ASX7+PL8gJ375o55OJ/XaXbsoc+atNyktX8NJGvGDuSvOytvwf1rbfZEYGAm0ToKPFtg47l0Z9l2BHyAV/sU0e9l+Sf2Y5RDLwctu9NfAkmUVpuSP4hKoUS7qwSG15CAeyjNWeW3EGqje90sGCrOePfQu/8GL946MUPys1GbqOiN/Nx2D71ZADsUu2a6JJb/CZ8Q43uBgf8t/zWwCP7xFNhh9QPHRIWNqlSmG7d43OLWkV6ib7LIhoIKSrcG58u3pmbKM+N2rzZ83yzB66onCzNS7ldLbKJJeFteEyPeaHNeAkDYQchBRqgqCR+3mBMsse49Dwnb/z05vwf/SFzv2BJXHwxXmY6Pc563HvdWPAPgkx0eZrcpXJTXnkV1cD7eJEzZXrF5dVo/4OfxacD016+VMPZzhDAOSwBM/KZZTCYAvyJw9D9uJU1PhX2JksT2LhyDjI93xIT/dCproU9MLXI6Pqqo0MOtvEtjQBvLAX9c8Q5ZOmbbWy728AKg1MIFpQKFEpoeDjT8Dm/VnA==
+X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(966005)(2616005)(186003)(36860700001)(36756003)(508600001)(6666004)(47076005)(70206006)(8676002)(7696005)(426003)(336012)(82310400003)(316002)(83380400001)(54906003)(70586007)(1076003)(8936002)(7636003)(5660300002)(26005)(86362001)(4326008)(2906002)(107886003)(4744005)(356005)(110136005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2021 06:27:54.5066
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20b984b3-4bcc-4694-ee1a-08d97cc8f212
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4105
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Sep 05, 2021 at 09:49:36AM +0200, Len Baker wrote:
-> As noted in the "Deprecated Interfaces, Language Features, Attributes,
-> and Conventions" documentation [1], size calculations (especially
-> multiplication) should not be performed in memory allocator (or similar)
-> function arguments due to the risk of them overflowing. This could lead
-> to values wrapping around and a smaller allocation being made than the
-> caller was expecting. Using those allocations could lead to linear
-> overflows of heap memory and other misbehaviors.
-> 
-> So, refactor the code a bit to use the purpose specific kcalloc()
-> function instead of the argument size * count in the kzalloc() function.
-> 
-> [1] https://www.kernel.org/doc/html/v5.14/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments
-> 
-> Signed-off-by: Len Baker <len.baker@gmx.com>
-> ---
->  .../net/ethernet/mellanox/mlx5/core/steering/dr_action.c  | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-> index 6475ba35cf6b..e8957dad3bb1 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_action.c
-> @@ -716,6 +716,7 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
->  	struct mlx5dr_action *action;
->  	bool reformat_req = false;
->  	u32 num_of_ref = 0;
-> +	u32 ref_act_cnt;
->  	int ret;
->  	int i;
-> 
-> @@ -724,11 +725,14 @@ mlx5dr_action_create_mult_dest_tbl(struct mlx5dr_domain *dmn,
->  		return NULL;
->  	}
-> 
-> -	hw_dests = kzalloc(sizeof(*hw_dests) * num_of_dests, GFP_KERNEL);
-> +	hw_dests = kcalloc(num_of_dests, sizeof(*hw_dests), GFP_KERNEL);
->  	if (!hw_dests)
->  		return NULL;
-> 
-> -	ref_actions = kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP_KERNEL);
-> +	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
-> +		goto free_hw_dests;
-> +
-> +	ref_actions = kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNEL);
+---------------------------------
+Kernel patch is not accepted yet.
+---------------------------------
 
-In the future, consider array3_size(), but this is fine too. :)
+Hi,
 
--Kees
+This is supplementary part of kernel series [1], which provides an
+extension to the rdma statistics tool that allows to set or list
+optional counters dynamically, using netlink.
 
->  	if (!ref_actions)
->  		goto free_hw_dests;
-> 
-> --
-> 2.25.1
-> 
+Thanks
+
+[1] https://www.spinics.net/lists/linux-rdma/msg105567.html
+
+Neta Ostrovsky (3):
+  rdma: Update uapi headers
+  rdma: Add stat "mode" support
+  rdma: Add optional-counters set/unset support
+
+ man/man8/rdma-statistic.8             |  55 +++++
+ rdma/include/uapi/rdma/rdma_netlink.h |   3 +
+ rdma/stat.c                           | 327 ++++++++++++++++++++++++++
+ 3 files changed, 385 insertions(+)
 
 -- 
-Kees Cook
+2.26.2
+
