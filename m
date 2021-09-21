@@ -2,57 +2,31 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F764412EF2
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 09:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA61441336C
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Sep 2021 14:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhIUHDz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Sep 2021 03:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230035AbhIUHDy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Sep 2021 03:03:54 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A825C061756
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Sep 2021 00:02:26 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id t8so36153972wrq.4
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Sep 2021 00:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fusWwRhGhDwMDvQIF2rL+xIXyvzxwvV+7P1DjBX2OMs=;
-        b=17ypAGfGNToM0JSjgeiOeGU851YZP0qvqVdPT5/wmSGdUXJ3vAdN4BAOh9A7cDHB5a
-         AnweVmVoZRkGEn+GBVrYIQJd5My/8znNb84Dvybfp4W0w9vScptNps5QF4U38ECx8tco
-         2CUiLk/agsteCVIQEkd6qe8/ZujmvYC530UJdreb3wyzUMUX856xFPlfx76NWSoFwnG1
-         TJ/Ec8u3HAEpAo2vhZp3kkGaHNZllUxLafsuh5no2ljfi6wB0kQS2njBg3M1W6AX7AaO
-         aSE5wCot9OdHYI6j7SWUcVGhTfLuNKk3qPN4/rl2YtlAcak1FryT5nuJWc9hr7UMCrut
-         ETNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fusWwRhGhDwMDvQIF2rL+xIXyvzxwvV+7P1DjBX2OMs=;
-        b=pYYSw+2MN1WZiTTaNPH/+X8bmNCDB2kQ8+KPGUiLpfIBpHKO/8M1aROdUWTfGhMu/G
-         fCQTg8fb99jy0Z0jkr55XERZJC1Pz3n49Ioxp21t02Zq4ym10uHJjbvJMjJKU3hmdAM9
-         arx8TVWKjzNb/olBW4QO2s4KRL2HE3O7JdF2GLw8sMwXOH+Q8FeQzr7KuCqSnYZHHDIm
-         s/WsgiOQJL1bGI16L6vIxIrBbtwsd1LaubSTE/4spRyNSOeYQgO9lVo0HHL9cWa/O7eh
-         PYg9ZDxTxCkJ/P8Pwn19wZRBgCXAD9eEfvcJxCXvp1nixIxuQG1sTNo6hKSbMUlQrsQl
-         C7nw==
-X-Gm-Message-State: AOAM531/40V80MQICTriHRUpBKyLVihHXC2YS2DnOtF005vJfGOdZcnP
-        w7vunxynngYoX7yno+mxTk9Okg==
-X-Google-Smtp-Source: ABdhPJz0OlMS4q0UvEdCzO4nXU7/PwGZ8ozvQmNUB80OlTlbJwb+ceMDZjLzoyimOSm5UKvaW2UlrA==
-X-Received: by 2002:a5d:6c6d:: with SMTP id r13mr17856595wrz.439.1632207745235;
-        Tue, 21 Sep 2021 00:02:25 -0700 (PDT)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id r25sm19674308wrc.26.2021.09.21.00.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Sep 2021 00:02:24 -0700 (PDT)
-Date:   Tue, 21 Sep 2021 09:02:23 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Leon Romanovsky <leonro@nvidia.com>,
+        id S232656AbhIUMl2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Sep 2021 08:41:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230052AbhIUMl1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 21 Sep 2021 08:41:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5F6E60EE4;
+        Tue, 21 Sep 2021 12:39:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632227999;
+        bh=dX+cwcBtXlRU2Cy6ZCzeR+J9bsOcN6ZcV8RsSQI80Tc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rJfygDD0FiSpM1F9bZSz6k8lJNpdXjVV2EP4sEnWe2jlXIdydFW86nrMr7EMBdLn0
+         VWUFpgURddaCHdZSmTuyThkPIKs4v5M3/nSjv2NtgJ0Q2EisX/IzpbfOdYoNQhXlGP
+         BvboNEPiV/Cl74u4hOvdBQUUujkkjhscfoMU9uBCmmovD2/Aa4jQoZzDodvGtqvFNN
+         Sbb7MOM33wcHSi77wrnJBq7vXX/ETS/jqTbRsLrSh1zb46dQNXL//zQ7L2USoT4Iew
+         dXNVdc83dt+NKtv3XktQnVk5aa3olkrpsrqy7sojj9EGjavU0zRo2xS9BcfsclKPMR
+         9zlABopkzywKA==
+Date:   Tue, 21 Sep 2021 05:39:56 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
         Bin Luo <luobin9@huawei.com>,
@@ -94,34 +68,54 @@ Cc:     Leon Romanovsky <leon@kernel.org>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         Yisen Zhuang <yisen.zhuang@huawei.com>
 Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
-Message-ID: <YUmDf3KdLS/4FwoT@nanopsycho>
+Message-ID: <20210921053956.11ac7156@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YUlBGk2Mq3iYhtku@unreal>
 References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
- <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YUlBGk2Mq3iYhtku@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Mon, Sep 20, 2021 at 10:39:15PM CEST, kuba@kernel.org wrote:
->On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:
->> From: Leon Romanovsky <leonro@nvidia.com>
->> 
->> devlink_register() can't fail and always returns success, but all drivers
->> are obligated to check returned status anyway. This adds a lot of boilerplate
->> code to handle impossible flow.
->> 
->> Make devlink_register() void and simplify the drivers that use that
->> API call.
->
->Unlike unused functions bringing back error handling may be
->non-trivial. I'd rather you deferred such cleanups until you're 
->ready to post your full rework and therefore give us some confidence 
->the revert will not be needed.
+On Tue, 21 Sep 2021 05:19:06 +0300 Leon Romanovsky wrote:
+> On Mon, Sep 20, 2021 at 02:04:07PM -0700, Jakub Kicinski wrote:
+> > On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:  
+> > > On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:  
+>  [...]  
+> > > 
+> > > Unlike unused functions bringing back error handling may be
+> > > non-trivial. I'd rather you deferred such cleanups until you're 
+> > > ready to post your full rework and therefore give us some confidence 
+> > > the revert will not be needed.  
+> > 
+> > If you disagree you gotta repost, new devlink_register call got added
+> > in the meantime.  
+> 
+> This is exactly what I afraid, new devlink API users are added faster
+> than I can cleanup them.
+> 
+> For example, let's take a look on newly added ipc_devlink_init(), it is
+> called conditionally "if (stage == IPC_MEM_EXEC_STAGE_BOOT) {". How can
+> it be different stage if we are in driver .probe() routine?
+> 
+> They also introduced devlink_sio.devlink_read_pend and
+> devlink_sio.read_sem to protect from something that right position of
+> devlink_register() will fix. I also have serious doubts that their
+> current protection is correct, once they called to devlink_params_publish()
+> the user can crash the system, because he can access the parameters before
+> they initialized their protection.
+> 
+> So yes, I disagree. We will need to make sure that devlink_register()
+> can't fail and it will make life easier for everyone (no need to unwind)
+> while we put that command  being last in probe sequence.
 
-Well, that was the original reason why I made it to return int, so the
-drivers are prepared. But truth is that given the time this is on and
-the need to return int never really materialized, I tend to ack with the
-cleanup.
+Remains to be seen if return type makes people follow correct ordering.
+
+> If I repost, will you take it? I don't want to waste anyone time if it
+> is not.
+
+Yeah, go for it.
