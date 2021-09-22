@@ -2,71 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481D04151D3
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 22:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6EC4415320
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 23:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbhIVU4f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 16:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237829AbhIVU4d (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 16:56:33 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64ED0C061768
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 13:55:03 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id q81so10803132qke.5
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 13:55:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
-        b=KdXnhe/3zkHeZgixn9BpXiRXniwMgDmhauf6YTuxP0wgB5yzxGI3euReyxhx9TVrxq
-         3Od5gARvk08SiaQHEdbK80uTPJiKvZD1mvaXmFEi2OlRGGLVxi9qjTdQEJHDNx6GrhQf
-         +YDVSfcVXX6hJ9tzkOuxVlwY0IK/v4ECFsMgPN0YbEUFjdWw7wtLO6HU7k0GlwYOwBU7
-         g0u5ZrnjkFj9bDNBfxTJ+EZszn5R+MIWkE1noseX+tMOjLt3VKfnAtHOf7zGnzUi7/Ss
-         4zORj2FhCL6VBd/6ui6VhZsTJDlTQFr3MO12bpjTdn18irITsVHBfbJQd5ezVh5SqLsC
-         4EBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=ijKrByR1/KtEp2Ut8Wj0vMi00kBZm/A/r1gPwOEYZIg=;
-        b=4p3xILSbs4Viz+BL2PrGRlTHETxcWbKOlfdOfoUerZTxtLNnfrnDy7+bUlSksv2kMh
-         yJzJQif3Wh1dlavy9zHUPyI3Wa/D+Du2V7hpJFmWNZ3Xp42n6/w22zMTfVOvvtx5gVxN
-         jJT871K7HWpj2vDR9ZB24Btn6BHJwetdSXHWkYGrzT5KPnl3KmBUkS5TjHuBfvaxsu0Q
-         PcD8Bbunva2YfOt8IW/vlhGXmMXtEg+YqLsevGK4B52Ls9JKgYZY1lAvTCZ4gTg7WMja
-         qC3VunwRyoITpPomX0SSEj9tKpu6lABXN5G1+gur3MVViJzHFWcgm12Q2eI3RZPEb+9r
-         2KpA==
-X-Gm-Message-State: AOAM530zbjL5K2gtiddZcwGMr+EGDqLeeEKRyTVXhly6b5wN87GM+Pt+
-        m4Vgj78FpD341r5DGIn3Xwe6ouaYahqREzMk4e8=
-X-Google-Smtp-Source: ABdhPJwsLqRgkk9jb+wC1ECBTFJXrEEB4mmlIo/Kaul20LfIYdlAYLv9tmwaB5Pxv0AmysZSk6ZePRs2dvYCH/qVqH0=
-X-Received: by 2002:a05:6902:150a:: with SMTP id q10mr1344586ybu.515.1632344102557;
- Wed, 22 Sep 2021 13:55:02 -0700 (PDT)
+        id S233248AbhIVWBD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 18:01:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232149AbhIVWBC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Sep 2021 18:01:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE7D60FA0;
+        Wed, 22 Sep 2021 21:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632347972;
+        bh=ngjmm4cmMiMIEt95rrv698WM+E37o6Vz7k4Cz4Cp860=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WRahBnhh2n5TtOHLfkI2yKoMFBFM6uv28SVms/qst3AmMm7Xxb6n1r+BgKIryPtWW
+         49nFZ3LsP4KsyXIjtXSFeaX+EVzUnSZroxam9q4uoJ6WBhKspYNgdiFuQsGcM+M/87
+         2yBIG+UO9twSZhNisZM+bepJYB//HhYK3Lzcc5WMKFCppJQ4s5EPH0hrB0QnHcZUOL
+         N3up/PKxaas5DDt25escY15N1HgYShl2M/99oPZgYKnsk6LHZgFzSeeWCYlz+f1Bt+
+         vdjXllmIFpz/7MTwUFOdxM9IqYrk2JrHz+m9aBbCjmYWBmqGjEO/39s/qRqlhrzKYp
+         eVpS5ZJsssdUQ==
+Date:   Wed, 22 Sep 2021 16:59:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <20210922215930.GA231505@bhelgaas>
 MIME-Version: 1.0
-Sender: pablogboy98@gmail.com
-Received: by 2002:a05:7000:1903:0:0:0:0 with HTTP; Wed, 22 Sep 2021 13:55:02
- -0700 (PDT)
-From:   Aisha Al-Qaddafi <aisha.gdaffi24@gmail.com>
-Date:   Wed, 22 Sep 2021 21:55:02 +0100
-X-Google-Sender-Auth: EgWN-7KeHIzBWxs5WISil-9jI9s
-Message-ID: <CAFZ0LQG=HorOEh0B82pMRaOtrfukA2tHOBoX92F9fX48+pG2cA@mail.gmail.com>
-Subject: My Dear Friend
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d5bba9a6a1067989c3291fa2929528578812334.1632305919.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Assalamu alaikum,
-I came across your e-mail contact prior to a private search while in
-need of your assistance. I am Aisha Al-Qaddafi, the only biological,
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children. I have investment funds
-worth Twenty Seven Million Five Hundred Thousand United State Dollar
-($27.500.000.00 ) and i need a trusted  investment Manager/Partner
-because of my current refugee status, however, I am interested in you
-for investment project assistance in your country. If you are willing
-to handle this project on my behalf kindly reply urgently to enable me
-to provide you more information about the investment
-funds.
-Best Regards
+On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> The PCI core uses the VF index internally, often called the vf_id,
+> during the setup of the VF, eg pci_iov_add_virtfn().
+> 
+> This index is needed for device drivers that implement live migration
+> for their internal operations that configure/control their VFs.
+>
+> Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> from this series needs it and not the bus/device/function which is
+> exposed today.
+> 
+> Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> was used to create the bus/device/function.
+> 
+> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+
+mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+same thing as pci_iov_vf_id() by iterating through VFs until it finds
+one with a matching devfn (although it *doesn't* check for a matching
+bus number, which seems like a bug).
+
+Maybe that should use pci_iov_vf_id()?
+
+> ---
+>  drivers/pci/iov.c   | 14 ++++++++++++++
+>  include/linux/pci.h |  7 ++++++-
+>  2 files changed, 20 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
+> index dafdc652fcd0..e7751fa3fe0b 100644
+> --- a/drivers/pci/iov.c
+> +++ b/drivers/pci/iov.c
+> @@ -33,6 +33,20 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_iov_virtfn_devfn);
+>  
+> +int pci_iov_vf_id(struct pci_dev *dev)
+> +{
+> +	struct pci_dev *pf;
+> +
+> +	if (!dev->is_virtfn)
+> +		return -EINVAL;
+> +
+> +	pf = pci_physfn(dev);
+> +	return (((dev->bus->number << 8) + dev->devfn) -
+> +		((pf->bus->number << 8) + pf->devfn + pf->sriov->offset)) /
+> +	       pf->sriov->stride;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_iov_vf_id);
+> +
+>  /*
+>   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
+>   * change when NumVFs changes.
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index cd8aa6fce204..4d6c73506e18 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2153,7 +2153,7 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
+>  #ifdef CONFIG_PCI_IOV
+>  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
+>  int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
+> -
+> +int pci_iov_vf_id(struct pci_dev *dev);
+>  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
+>  void pci_disable_sriov(struct pci_dev *dev);
+>  
+> @@ -2181,6 +2181,11 @@ static inline int pci_iov_virtfn_devfn(struct pci_dev *dev, int id)
+>  {
+>  	return -ENOSYS;
+>  }
+> +static inline int pci_iov_vf_id(struct pci_dev *dev)
+> +{
+> +	return -ENOSYS;
+> +}
+> +
+
+Drop the blank line to match the surrounding stubs.
+
+>  static inline int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn)
+>  { return -ENODEV; }
+
