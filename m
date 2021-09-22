@@ -2,122 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE50414898
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 14:15:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFEE241492A
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 14:41:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbhIVMRV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 08:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235380AbhIVMRV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 08:17:21 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8ABC061757
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:15:51 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id u18so6169113wrg.5
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:15:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Pa+fl9Rsega8suhbx2cwWWJOokOEYcTuSXNs1BTWnJU=;
-        b=cJ/kSg2kCbV/XSyL2FhCOA/bzv02g/NCMYSAF6UpI9bCXs0COpTXzSiBWtyi2D4fVp
-         NwZ4fZpXSbOyRTPVbHPUFRDvZin9TNrPa+wI1n5IbPcERRXoVQ6F6AQ72ymmaiP5Ai2r
-         +wkKQFgbcUxTP+ODLR+vqUuciFIJYm+6gNl4GP4wTnt+yCrlCHtJdypBNOjRoFZU283d
-         mvJANPj+dAZ1qauLVbTyhKzighKwgFIZclr3S+pJgnea3OJ02f2b2Iz32gslIrBorvKS
-         Z2Se8zpwT0QiFRaHQzBGz2a3uQ0VG/6uDNlUygJT5sHEwffe+tQl9+X86Zfhg87idCue
-         3b7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Pa+fl9Rsega8suhbx2cwWWJOokOEYcTuSXNs1BTWnJU=;
-        b=2RxIpvRFxM4hJL3bUYzTCB/uXPmI1qSIsLoq63k9wD2DD4GUYYo1a0yivHSF9E8HFA
-         QmfY0exoz3aOHnB4v3jQ/RGWj7Id6HFosf+DaPIT0bUVfA8XTCCzflXD28VuEKQMcUIK
-         Nin4Kunj506KIj2IZBptE+QuqF94ULcMabjfD0dIu2LL+aTf9/b5IprwAE4A2ttCT1dp
-         0HbKdRuB/9HhocbgD2dEEZw49NlrlnxmcQPVUb0hMBYK0qZb8a+qhPhMXtTMvenit4PD
-         QYiKPNvHltwuasZfB1+IkrPL+irUfdWbp92YDf09NKQUR9Bs3HaacE4KMECZB1OwPBpl
-         wcTw==
-X-Gm-Message-State: AOAM531GsThHv1I7/H+j0429DF/0iddexGZPDjADudTAcznBAVz6+c7U
-        U+mkGHA6YqNxVWkEswDq4RiP1Q==
-X-Google-Smtp-Source: ABdhPJzCZMzjCAO3TxbrSgQDj+5uKJEPtELabH+RXmVdZfiHM6v4eHIkMHhrowjuyXTI3sw5YUsdig==
-X-Received: by 2002:a05:600c:35d0:: with SMTP id r16mr9995852wmq.26.1632312949996;
-        Wed, 22 Sep 2021 05:15:49 -0700 (PDT)
-Received: from localhost ([85.163.43.78])
-        by smtp.gmail.com with ESMTPSA id n68sm5849702wmn.13.2021.09.22.05.15.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 05:15:49 -0700 (PDT)
-Date:   Wed, 22 Sep 2021 14:15:48 +0200
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Manish Chopra <manishc@marvell.com>,
-        M Chetan Kumar <m.chetan.kumar@intel.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1] devlink: Make devlink_register to be void
-Message-ID: <YUsedPzvmA9u3msV@nanopsycho>
-References: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
+        id S236022AbhIVMme (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 08:42:34 -0400
+Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:53428 "EHLO
+        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236023AbhIVMmd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 08:42:33 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 Sep 2021 08:42:32 EDT
+Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
+        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 580D91008CBC0;
+        Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 428A3200B574E;
+        Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+X-Virus-Scanned: amavisd-new at 
+Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id gJlAHgw_BhhY; Wed, 22 Sep 2021 20:33:52 +0800 (CST)
+Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 750692008D5E6;
+        Wed, 22 Sep 2021 20:33:44 +0800 (CST)
+From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
+To:     mike.marciniszyn@cornelisnetworks.com,
+        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>
+Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Date:   Wed, 22 Sep 2021 20:33:41 +0800
+Message-Id: <20210922123341.601450-1-qtxuning1999@sjtu.edu.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Wed, Sep 22, 2021 at 10:58:03AM CEST, leon@kernel.org wrote:
->From: Leon Romanovsky <leonro@nvidia.com>
->
->devlink_register() can't fail and always returns success, but all drivers
->are obligated to check returned status anyway. This adds a lot of boilerplate
->code to handle impossible flow.
->
->Make devlink_register() void and simplify the drivers that use that
->API call.
->
->Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Pointers should be printed with %p or %px rather than
+cast to (unsigned long long) and printed with %llx.
+Change %llx to %p to print the pointer.
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+---
+ drivers/infiniband/hw/hfi1/ipoib_tx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index e74ddbe4658..7381f352311 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -876,13 +876,13 @@ void hfi1_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
+ 	struct hfi1_ipoib_txq *txq = &priv->txqs[q];
+ 	u64 completed = atomic64_read(&txq->complete_txreqs);
+ 
+-	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d no_desc %d ring_full %d\n",
++	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
+ 		    (unsigned long long)txq, q,
+ 		    __netif_subqueue_stopped(dev, txq->q_idx),
+ 		    atomic_read(&txq->stops),
+ 		    atomic_read(&txq->no_desc),
+ 		    atomic_read(&txq->ring_full));
+-	dd_dev_info(priv->dd, "sde %llx engine %u\n",
++	dd_dev_info(priv->dd, "sde %p engine %u\n",
+ 		    (unsigned long long)txq->sde,
+ 		    txq->sde ? txq->sde->this_idx : 0);
+ 	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
+-- 
+2.33.0
+
