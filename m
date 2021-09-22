@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7113B4149C3
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 14:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81A644149C5
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 14:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhIVMzP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 08:55:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S236087AbhIVMzT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 08:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236035AbhIVMzP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 08:55:15 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB5FC061574
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:53:45 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id w29so6437515wra.8
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:53:45 -0700 (PDT)
+        with ESMTP id S236104AbhIVMzQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 08:55:16 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFD5C061760
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:53:46 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id t18so6679668wrb.0
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 05:53:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=t1QtuaSx1IRGfCpES7GFcGPcaoZguarMvSswnYe+X4c=;
-        b=VGiOq2CjGYzvVZzPzguwmSnLvJXZK9afLG9bTcyh2ye1Ye+pHVY5YqiJDC+WHCZT7z
-         WZK9wEuhkXnoN9ih1tKsXiKhy3F5QQhV7pK14/WCSGaH3Uwv05NXTPWpp3gTqFUyOIjM
-         WzX0nbSRtEE5gpMQ90DIbGyZBpmLT1+Rn2uLHmySNPqJuCz4Q8aojbPUtzWsfVDhkQz4
-         iZ09FWrza/+4PBuEA8S+yUtuoN95/Mgc9BF1w4eViImFc2RdYBvJ7d5+7wN4G0VgDWNQ
-         yfj2j/Wimex5JweZ1zgIlKa+EAnrbg+TvU8EgMskGDtMVGNZTjYsoVBI9UQMbNTSeNpy
-         hpnA==
+        bh=O8fqFcUdXM0mw2Oj6jRNvBtR9RrzATj3ICpSKMfB0SU=;
+        b=RN85SmZFlOqvGitOlSzORDmWvAEq9F6TIa5H2ET6lC6+n2SbzRiQqxLKOMm3bRg1Sp
+         qcmRtd1NogQ+IITlnQJ7rQPRb8da1XQ1sR42ihYA/8kCaZ1kroI6DBbFeul0Jq+A7l6K
+         OwyQhoMkFyT56Ivo4fW74EH8pl7lxOZBehCMfdsli6Lsr1EGWfTrl9cdyFEzirNoGruI
+         AqhlL8cV+nZaaVlovaMihePZPg70LfjqzD8Orof1AyuYa6M1OxvqDY8+zSKIPzwFBvxX
+         zqYxSN4KbHfL5ErF0PcgIDC4qzAKRzwtGTtlNvsu+CW0obnn0dVC2KafZMD/DwDzwAzN
+         VdkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=t1QtuaSx1IRGfCpES7GFcGPcaoZguarMvSswnYe+X4c=;
-        b=60+at0NBuTe+kzGg9PuSJrbrn3zg6aaZHuNNFv9kLRH8aqj0W4xzOKPHCBfkW/gKYF
-         QF6vU3H97od6eXqre9DR5FOdzmYEWcGv1V8ry4P24fmNCO09kq7zgY3nrWcgUUTVEiIi
-         6aKmiug2TiCNVd31G+a30D5u0ZaoAu10oy704MYGbhlyz+pSzX9efWmq819tv8HJB5bE
-         nE5I82XRq8CQwzyLL8Zt5tfsGOgnkHngX5nU08DXU4pDQ6Y/W3LcCGY1i11pDCnA4V1X
-         KThFdU+HqkjuX7MSpf2KY7ZGw4JrZXzy6gGRaLyXSasxl+lOmJBINJLljvD4g4TjZ6GS
-         drTA==
-X-Gm-Message-State: AOAM532PlzbhMu2l+lEH3SWFCNcSTiavkvDFVAxwSrLfBTWKkkeruAFK
-        bcj9h1V8fvGndsYZqQ7DzwGFCtBsS+jWLw==
-X-Google-Smtp-Source: ABdhPJw0rE5wYyvU2auninJO9NipKfEJZpazuCzx1iar87d4Y5JLAh/AHz2fnjfXKsSCtIobtVI4ZQ==
-X-Received: by 2002:a7b:cf09:: with SMTP id l9mr10084701wmg.115.1632315223900;
-        Wed, 22 Sep 2021 05:53:43 -0700 (PDT)
+        bh=O8fqFcUdXM0mw2Oj6jRNvBtR9RrzATj3ICpSKMfB0SU=;
+        b=YGbKKzCRlA23S7G3vUsd6h0ldf45cYylLCLf16bA0fhUBFngYqEmSHaKNG/2XjkQDM
+         T+71r9XulRZz0htAicMHrA9ylSvynqoxUk5sY0UsPMaLzYEcOCr8pf/KwOvOTmkfNgSb
+         8YvkKpPOavWS0/SJp7TlO3YGRa5+Gel3S1LoOKcav2Kxkn26Ff0bt9E+36kFSoqzFAHT
+         Se9x5JLsU4SOYnGstKyVv3DXBv0N0KGDXeASwGGgq+6dFPTOtjPkiz5LRqu2nuaHaj3A
+         lXsd1xlTyLGH2PAkE9besb6YzUUl5FcV8kULJD4l4DtJfLbf74TvBGBDXYqglBjkIUUQ
+         jz3Q==
+X-Gm-Message-State: AOAM532GFpSy/rUSvvF7hmXb3ikcwCrLAGbNV49kBevtqVJn9jmbCzCU
+        /RFONOSU/2d1Img48ZaFeUtWUbQTgarDRw==
+X-Google-Smtp-Source: ABdhPJwouu+gjQkBSrAS1hSTqqdkqgshPbTW8fvxLX2sQBlMSXHT0zpfJ8fAgiUOHKx1Q0e/f1k8mg==
+X-Received: by 2002:a1c:7d4d:: with SMTP id y74mr10245973wmc.181.1632315224898;
+        Wed, 22 Sep 2021 05:53:44 -0700 (PDT)
 Received: from nb01533.pb.local ([2001:1438:4010:2540:40a5:9868:5a83:f3b9])
-        by smtp.gmail.com with ESMTPSA id j20sm2173685wrb.5.2021.09.22.05.53.43
+        by smtp.gmail.com with ESMTPSA id j20sm2173685wrb.5.2021.09.22.05.53.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Sep 2021 05:53:43 -0700 (PDT)
+        Wed, 22 Sep 2021 05:53:44 -0700 (PDT)
 From:   Md Haris Iqbal <haris.iqbal@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
         jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
-Subject: [PATCH for-next 4/7] RDMA/rtrs: Replace duplicate check with is_pollqueue helper
-Date:   Wed, 22 Sep 2021 14:53:30 +0200
-Message-Id: <20210922125333.351454-5-haris.iqbal@ionos.com>
+Subject: [PATCH for-next 5/7] RDMA/rtrs: Introduce destroy_cq helper
+Date:   Wed, 22 Sep 2021 14:53:31 +0200
+Message-Id: <20210922125333.351454-6-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210922125333.351454-1-haris.iqbal@ionos.com>
 References: <20210922125333.351454-1-haris.iqbal@ionos.com>
@@ -63,59 +63,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Jack Wang <jinpu.wang@ionos.com>
-
-if (con->cid >= con->sess->irq_con_num) check can be replaced with
-a is_pollqueue helper.
+The same code snip used twice, to avoid duplicate, replace
+it with a destroy_cq helper.
 
 Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
-index 9bc323490ce3..ac83cd97f838 100644
+index ac83cd97f838..37952c8e768c 100644
 --- a/drivers/infiniband/ulp/rtrs/rtrs.c
 +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
-@@ -222,13 +222,18 @@ static void qp_event_handler(struct ib_event *ev, void *ctx)
- 	}
+@@ -279,6 +279,17 @@ static int create_qp(struct rtrs_con *con, struct ib_pd *pd,
+ 	return ret;
  }
  
-+static bool is_pollqueue(struct rtrs_con *con)
++static void destroy_cq(struct rtrs_con *con)
 +{
-+	return con->cid >= con->sess->irq_con_num;
++	if (con->cq) {
++		if (is_pollqueue(con))
++			ib_free_cq(con->cq);
++		else
++			ib_cq_pool_put(con->cq, con->nr_cqe);
++	}
++	con->cq = NULL;
 +}
 +
- static int create_cq(struct rtrs_con *con, int cq_vector, int nr_cqe,
- 		     enum ib_poll_context poll_ctx)
- {
- 	struct rdma_cm_id *cm_id = con->cm_id;
- 	struct ib_cq *cq;
- 
--	if (con->cid >= con->sess->irq_con_num)
-+	if (is_pollqueue(con))
- 		cq = ib_alloc_cq(cm_id->device, con, nr_cqe, cq_vector,
- 				 poll_ctx);
- 	else
-@@ -288,7 +293,7 @@ int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
+ int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
+ 		       u32 max_send_sge, int cq_vector, int nr_cqe,
+ 		       u32 max_send_wr, u32 max_recv_wr,
+@@ -293,11 +304,7 @@ int rtrs_cq_qp_create(struct rtrs_sess *sess, struct rtrs_con *con,
  	err = create_qp(con, sess->dev->ib_pd, max_send_wr, max_recv_wr,
  			max_send_sge);
  	if (err) {
--		if (con->cid >= con->sess->irq_con_num)
-+		if (is_pollqueue(con))
- 			ib_free_cq(con->cq);
- 		else
- 			ib_cq_pool_put(con->cq, con->nr_cqe);
-@@ -308,7 +313,7 @@ void rtrs_cq_qp_destroy(struct rtrs_con *con)
+-		if (is_pollqueue(con))
+-			ib_free_cq(con->cq);
+-		else
+-			ib_cq_pool_put(con->cq, con->nr_cqe);
+-		con->cq = NULL;
++		destroy_cq(con);
+ 		return err;
+ 	}
+ 	con->sess = sess;
+@@ -312,13 +319,7 @@ void rtrs_cq_qp_destroy(struct rtrs_con *con)
+ 		rdma_destroy_qp(con->cm_id);
  		con->qp = NULL;
  	}
- 	if (con->cq) {
--		if (con->cid >= con->sess->irq_con_num)
-+		if (is_pollqueue(con))
- 			ib_free_cq(con->cq);
- 		else
- 			ib_cq_pool_put(con->cq, con->nr_cqe);
+-	if (con->cq) {
+-		if (is_pollqueue(con))
+-			ib_free_cq(con->cq);
+-		else
+-			ib_cq_pool_put(con->cq, con->nr_cqe);
+-		con->cq = NULL;
+-	}
++	destroy_cq(con);
+ }
+ EXPORT_SYMBOL_GPL(rtrs_cq_qp_destroy);
+ 
 -- 
 2.25.1
 
