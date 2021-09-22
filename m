@@ -2,193 +2,166 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C1B414707
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 12:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAD141484F
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 14:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhIVK5E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 06:57:04 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:48636 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235009AbhIVK44 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Sep 2021 06:56:56 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18M6IKhS013527;
-        Wed, 22 Sep 2021 03:55:23 -0700
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3b7q5dje0n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 22 Sep 2021 03:55:23 -0700
+        id S235884AbhIVMCy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 08:02:54 -0400
+Received: from mail-bn8nam12on2138.outbound.protection.outlook.com ([40.107.237.138]:24574
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235848AbhIVMCx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Sep 2021 08:02:53 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KP87Aj9PPbmHL0rJHIqbO6ipHXL1bchstHZS9HRkRH6/t33QymjajJoJOTyzLEZcLQvsGw8DOHeG2OanqtaPAQSuM4XLYdZt8v4iq2UA8+ouvU0maToxzN7i6CIM5wPmQs+0MCK4HgszvChW0Ri2/Yu5pAnBTApoLNC6VE7fSDlMNfI3NtCgQSaChOO1bfTT+PHUoTigmggzWlIlY7pYNSaNep1xfJsIrYAmS1yccWTROyJtqPIbIvN6d+7FjOa9pFiLnlxxe+8bjFFBSmvMjtTZarZEATnw4vzs9R+QlyJlr8Dfu0XCuaqa+cRhtQxPq6LidBiyQPjsDVAkIBWopA==
+ b=j7zgdUHnck9wVdKrbPmu7tIBnHrTGQAqEQ5+FKQfavxJkZ0uLyGP5Lgu26NGVmhIvS7L2O+hTdnMRDybO4tbQ8MBh1bfbAtfHaiiHwR9mEE/V1l7IP+jINfWcgjaK8+ETE2EOE1SHMOj9VLqv3QqTwGfe9alSsGjgHecjmvaluyR+qPGlf1pBfd0+t0JqTpTfsvnC0+Jliin8a6eBSZ2ig5lHNarR3nldHm8GNr9qnWV2mR7eFMaGV1kRe2Wg8E5QlkkpmQArhIexJE1nhVzqLX2xWKP9NiWNyPl2lrnoPyDad4CUQIWGHrb2z73UXgFx4MtCb+XyNd+rWFB7OqApA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/Cjkx8wAHCX3vVOaCBKLh1bA1D6pnK1uLZIhPkuVMF4=;
- b=E4i8zeJLygtiuVrGsBRxwT40rPk4CSUgao/uxRwRWPTf2pIvCOgq1YkrJYNXiIY4XHTLfVt+qjEP1v2moCWs+HlGbuy0cCWpxp7D2lJuFOVgM8+7DJTuR0t2zLgQ+iS5l9Mkpu3D3HAtIZmFogyc+V3E53cEvsOd/ZmZtSPCmo3j1eWiz2u/gslzvZ2bBrtSuWS0ECItTyiyXFeOVSyEi8vwt+qthqk2dHKzV2lw9o24njyzOVzTGFMjnb9mgOFM69M1uTd/ZtABv/QyAi78uZsEaHPJsBeOkXUaALZUItuidvUFxIIf57OLEsNtQRz1eJPVbkVI7FG7dh4mA9UyuA==
+ bh=ACAThf4iifXFc+YnNcieQ30gD67W737PY9dxOIMFL94=;
+ b=NjCCgrM2lyTZrd0n19VydirmRk+ehvEXCg5vGqeYJ8DkQWUfydag3XC4SqMi7qgdpGCa96hDp4fHhkynE2tKjpvdBJhPB6WtH684JRlTmQt3/im8SuoT3WV2fqqyiJ2zAHXc8UMmCOVAofLlC9oISk1IMABFev8qLr30w2BqfePkZuC2DWY34rV895/9xoBmDPhvWFjF6GELbg3kMCgxpJLtxlwldXLMO5F4TqvKGx4ggiiLIxj5QgxoaWAJybEia7C1FIOfRrAkE5cGW7OwVI2FG4yvc6/oxSyeLUdU9EiQlpWYX/WaIs7FbJVdLA8L0Eb3vjeFEyFTYvLYIp2eAA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+ smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
+ dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/Cjkx8wAHCX3vVOaCBKLh1bA1D6pnK1uLZIhPkuVMF4=;
- b=CGEdNzqXTRmBzlkxW9Rf1WcJDOvjtCSG6q//T+DTBulvHdRYPBUoMZ1TMVJcQkkA850kW/Q2S1OEAwmH/4XW5oaj1JP5p/fwptQs5LAHyHxU3JYxXehNR2EPVW/gWnp6FxnlcrtIVh63iBj3HGI9Z3Jx+LCeIEGtcyFm88rXnVI=
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com (2603:10b6:a03:2c8::13)
- by SJ0PR18MB4010.namprd18.prod.outlook.com (2603:10b6:a03:2ea::21) with
+ bh=ACAThf4iifXFc+YnNcieQ30gD67W737PY9dxOIMFL94=;
+ b=Jk6EUfMg26eVEyzn91QwW2c3xUmPnjg8BY1RRlIeBqYyglF0cy2AmT0droy5JULRT14Q7spntophOFSK6Plqqd5CYEBPRnA9At2ectWOySz11NnGRreNXBC2mqSHZtDLQRShoB4M4u0sKUz7dD8X8Jdaxe03jHhzMm79vvbNylE=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=corigine.com;
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
+ by PH0PR13MB5639.namprd13.prod.outlook.com (2603:10b6:510:12a::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Wed, 22 Sep
- 2021 10:55:22 +0000
-Received: from SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::fddb:40f4:506d:f608]) by SJ0PR18MB3882.namprd18.prod.outlook.com
- ([fe80::fddb:40f4:506d:f608%9]) with mapi id 15.20.4544.014; Wed, 22 Sep 2021
- 10:55:22 +0000
-From:   Shai Malin <smalin@marvell.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.5; Wed, 22 Sep
+ 2021 12:01:19 +0000
+Received: from PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::e1d9:64d0:cb4f:3e90]) by PH0PR13MB4842.namprd13.prod.outlook.com
+ ([fe80::e1d9:64d0:cb4f:3e90%9]) with mapi id 15.20.4544.013; Wed, 22 Sep 2021
+ 12:01:19 +0000
+Date:   Wed, 22 Sep 2021 14:01:05 +0200
+From:   Simon Horman <simon.horman@corigine.com>
 To:     Leon Romanovsky <leon@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, Ariel Elior <aelior@marvell.com>,
-        "malin1024@gmail.com" <malin1024@gmail.com>,
-        Michal Kalderon <mkalderon@marvell.com>
-Subject: RE: [PATCH net v2] qed: rdma - don't wait for resources under hw
- error recovery flow
-Thread-Topic: [PATCH net v2] qed: rdma - don't wait for resources under hw
- error recovery flow
-Thread-Index: AdevoEzeEO9No2e7Rb6QRw9VKTnEMQ==
-Date:   Wed, 22 Sep 2021 10:55:21 +0000
-Message-ID: <SJ0PR18MB3882BCB095875CF5B09DC88CCCA29@SJ0PR18MB3882.namprd18.prod.outlook.com>
-Accept-Language: he-IL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 24def24a-dfcb-48b4-7561-08d97db7797e
-x-ms-traffictypediagnostic: SJ0PR18MB4010:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SJ0PR18MB40109AFF7946C1B3025CB385CCA29@SJ0PR18MB4010.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1148;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NPTT3Pu43WJaPiKeGtfrewEFn8DqAJSiKGJaqDBsh8ie0LgfQqJrj6IckmdLimgAW11G6qb52Vbnyw5TES++Gbxif1vY5EmfgwklI++LO6UW/ofgMatcuZoCUy21xcIqi6Z6Yg2GQ7Ef+jdle5hA+PNj2+lJ+cEuqg26/VSVm+9Owl2Ve0O5aVm4MCzIjm4MXfX35bn4iJtYGHX3lI+PLfibI2HHhqnGxUCfuPsnhsJhQicr9qzXGZsu9RR05s7/f88Bs9C7Me8N/I62KXoAczyx1+G7Nd/c2+68dD+O5+cxvffR0rbUCJlLKL5MqJVY1vA3aOp8b6gdZXfG6+5X8p14PVUNiAMoKYQc3bkdy4IGUD9OpxCJ4NmVibUi4CXWB/wX/Vo81NVKMSXQocK8ScBp7vw5Wuf+/dSQGk68+apBeFjucJQ4sXdtqAvOuRMtD+LMrDNarSan0tgfMa0n70CH9wWy4sJAkFDUaZeI0QrYnAP++3Ll0Z2o8ErAlTVadX/ryMVXW+Q/HPZWB1tkHdxOL7pHgCEONqonAooXjrAUiLWmL+H1VbMbxgdP7Dvum2cpIHAGvbDQwQQnGiuZHzvR04+mODf9Ik21AmnHLKOE+dK3FKEHib5HR7ak4ggBW4K1DnU1RSxp66avW2ilAedYHIZfc8YmgM5X0vwARtYN9yMZWGG3M5cD+POVZ/u6KmIEZWm/wAl591+5ZdSWyA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR18MB3882.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(66946007)(86362001)(66556008)(54906003)(2906002)(316002)(8936002)(38070700005)(4326008)(66476007)(83380400001)(71200400001)(64756008)(66446008)(6916009)(9686003)(107886003)(52536014)(38100700002)(508600001)(7696005)(55016002)(5660300002)(186003)(8676002)(76116006)(33656002)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?JIhhHARfnN+DmILQfaJkZmJAmhDEtX0LSPHWj1Bof3lH5cbYyE8+0EmpZz2Y?=
- =?us-ascii?Q?GYuN3Z6SCmc1/nGd53vb1XIsKPPE4evbNA+IW3FCe2lQd/hB3Oh6yYQZfaiC?=
- =?us-ascii?Q?jFDCHvWXCIUSzzclhB7mA9URKIKvynL6lpn1nsf7ghOKkRKCJgm7wDxbzulO?=
- =?us-ascii?Q?Ueluwx8+xuSOjVynnydaf93du3XteT9AHqXNYeKYIw8H4hCq3UwMmrvjLAzA?=
- =?us-ascii?Q?s9NvEGQ/T03GJ7byg1tCYx0OxK3sIPVzZV35Nwp6OFrA/kmuRmrIphjnJwUm?=
- =?us-ascii?Q?3WDy9HgI55MG4+xEowlgyI3SjTEf/51lHpUZmpqTm6dg1XxmVAKE+t+f3QHZ?=
- =?us-ascii?Q?AU0CUBDol2tsFOl51KXxYgPjuauZxYg1MAtSMI/UxPly1D34g03IcyTwC5mH?=
- =?us-ascii?Q?PZXXZnJ6nObYH17rHeGDG6KbJ15hqflTukQDjmJCmP2nrnb0cP84uUDSoCmA?=
- =?us-ascii?Q?mNSUgS7v8uKQiyfTPXEK1sth6/bxlobOvdVMwmQvdGvxZMFbXQuEXSqXtfOm?=
- =?us-ascii?Q?jmtsBgiHkukYlp94wnl9afbw/ciyjtBDEj0Av1ZKtYGf9hTeG2YmPncJXwQB?=
- =?us-ascii?Q?0BMobJmmhdFvMKKZR3EpjoJCJkXYe+lbRx2V0aMMwre6WEdWaVNxkop+gTGF?=
- =?us-ascii?Q?KhGU++Qx2eH8SWvRnGScCBekDWZz6HGj3SksJ+sieZtIsPfCyNk9i9ZsBl3U?=
- =?us-ascii?Q?XHCznFZPXOYdwnzp/vzjdT4D/Ayl0WuxNbIhnoZkhmVcsq4G9pBrNFFfSXGg?=
- =?us-ascii?Q?IoeagXQoA8ZUOKzBc9dcT7h1lkOPc42tOies1Ryh42wfSMw7tiPqSCoCQIrt?=
- =?us-ascii?Q?I+XWtrwGmSBdIwDlPi7nneEgfF4L6u9D8X0QyoyFl80adshm+FshYEBsx4xj?=
- =?us-ascii?Q?NableHXN6xrtXJi+It0zHIf+k/csAcs1hPSTJrDTI5SRKMR0wkqft8S3cwVL?=
- =?us-ascii?Q?Ddm51RB1LtRU2Vfk0xaGOG20rO8pJV6SRfkJwWueESzzRMKP0Qg89iGoKgXE?=
- =?us-ascii?Q?LtBVJMKkPsIbwX9sGX86pBr3Hxa4YkR3csocmPG7ya0/iD65SSCqxQyDQqyv?=
- =?us-ascii?Q?V5vb7pHQvXXhoes5xJU1nHAvmSEG/L+dZwwWNfIz+Ok6Yjv7M4WU6GiNRflh?=
- =?us-ascii?Q?gmpGYaObH8re4jxKzDoaYxS/qpmHj2ar8e1XeJoppNo2iyS9P9JPJR8aOq7c?=
- =?us-ascii?Q?eZBLkBYbTljBhTT6uFi19mBUw4FehbtTvzBUXsP7RqMBf71E+VDPtGcZ8WwL?=
- =?us-ascii?Q?XWQv1PyqadGGfEJMxa7+jHz+McaZnt9klJM+U35NlnQ7rtjDzDY3VKUCyJJp?=
- =?us-ascii?Q?sKZok9EjE9pjkFQ4gUwzntdvLoUIs9GUYDKerjIWs3mjKJxPn8OSP/EKvMKW?=
- =?us-ascii?Q?8UzzjD8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1] devlink: Make devlink_register to be void
+Message-ID: <20210922120105.GA2994@corigine.com>
+References: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <311a6c7e74ad612474446890a12c9d310b9507ed.1632300324.git.leonro@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: AM0PR04CA0111.eurprd04.prod.outlook.com
+ (2603:10a6:208:55::16) To PH0PR13MB4842.namprd13.prod.outlook.com
+ (2603:10b6:510:78::6)
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
+Received: from corigine.com (2001:982:7ed1:403:201:8eff:fe22:8fea) by AM0PR04CA0111.eurprd04.prod.outlook.com (2603:10a6:208:55::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend Transport; Wed, 22 Sep 2021 12:01:09 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7c862ff7-3688-4c32-87b0-08d97dc0af7f
+X-MS-TrafficTypeDiagnostic: PH0PR13MB5639:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR13MB56390EFCCDC1EAA7A92975E1E8A29@PH0PR13MB5639.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:425;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HaqCIVHkqP0utT+GN1R8KKWaZpledsQ0DG4QCGP+DeU+cainAT/EY6cQe52Pf5+z7jKw8txJQvcC2sMMuR4PJkGbxeACR5Grq8KoUwF3vdrZg3moQeL8p2BApiOz/TNPGn7yyM7xuEzstiAXD1KY49Kly0mRafS5e+wdR7pK/lcJ1ZRtozWgXwKXfAXC35hqcU3dGs6t9esXTzjkTLQxt2SK45+N55UXx7RiN/IBb+HvMl7KwvvTSNR0gHCvxn2Tah6aK9+h5Og71Xl/xtuuMS18CIUicDGckFIPvBqpCf3SOFq2Y8HTX3hHT2Nu9Sg4Ciq97qrDFKQy4f86DNDMkQV+cGtX/vI4l5ujEFEJQeOjqES+UinC5NVG+e3n5rQMc8Pr6giAoP+sE30V8cTrK+pCXzo1W4Zbyskyp/F9O18aHu3ncWo/fb/Wd6v56xCbPA8s4z5FmENtmskVYCXMXqUa/N5EZJcqRcawYYuamdu5BjwqDlYLWf/Nm29xgGsxG73oxdSirK64DRyYv4KPTjfvCK6cYw8si1/8yQ4H+ynMVTtjneM1gKXt4QFJz+GsLgVJrHoCC0kf/nzWDsAxK2r6S4vwAP0U7b99xgQDETufxdgiq64LmQLQlMnXAdyuk9DvteHjkHzYznouPiKZyg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(376002)(39830400003)(366004)(346002)(6666004)(2906002)(186003)(54906003)(36756003)(2616005)(66946007)(66476007)(7366002)(8936002)(86362001)(38100700002)(1076003)(8676002)(6916009)(52116002)(8886007)(5660300002)(55016002)(7696005)(66556008)(508600001)(44832011)(7416002)(316002)(4744005)(7406005)(33656002)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/LfH1fATqQ+jIP19QhGXIsg3npFfDRircl5GZ2mUKCWtze1nrD3yhsm25G7J?=
+ =?us-ascii?Q?gL1kB2EUU0Go5mM+FmEIIJIP7xZZDneOrmAvjb+MMzj9KxT+s6X1OiDAd0Ar?=
+ =?us-ascii?Q?N7iFaF+kpvfYAlI3UdgrmpW+Xh3ZQTKDYsWpvul4KVQgZpCz//wnINVWuiO7?=
+ =?us-ascii?Q?LHzAvxlFTfXZqyAibVb0n+xD+zFkzi3PJCxSBZ7L7F5SJh5diiMBo05gi33t?=
+ =?us-ascii?Q?7tSFKU3tQ6stEftSyr3qDF9O+2KPanuYDszft0OyVNMvAfztpWaN+86XppAu?=
+ =?us-ascii?Q?psjGN5u53sBYQDDx4rgdxm+FwP1KxbfhhTFzYEduH7YViOFnwut1SqQyWsFJ?=
+ =?us-ascii?Q?RfxScxz2w235X3I+oomAV4nsnULRzPY9fa1UUuvubdphBeVGEg84pN+FJRBq?=
+ =?us-ascii?Q?xTisbiIELA65s4iJhLaTn/IsfKAXRZmwtH8U2/3tTWbAPUXpv8DrepO7RF0t?=
+ =?us-ascii?Q?+Z3hwa6KUepBrcSP1oQxBxkIVt1EdASyQfPeiGyWETxitJWYlkki78QNsV/J?=
+ =?us-ascii?Q?b5e0wft/UsOTVKXH8wKq5isp/PWLh2feZHUhXRt8XVP3tzbiAVtof9XxA7QR?=
+ =?us-ascii?Q?jkDTEQbOAo8MlTSl2RRBfkl87EdvVGWVkGr/2STkNiZMtoVRWZLzk85LQ4CZ?=
+ =?us-ascii?Q?0pTdw54e5wAXqDFfkUGm4WbBjBUh7ypjY6tK/HlZ3MRQFbN4OFgXknZiL0Ik?=
+ =?us-ascii?Q?7PB5DGk2OLq5nJrqCKXyJdp4DOXnGBOWeuBKJg0evenGmT3nj94ouFrKdVkP?=
+ =?us-ascii?Q?RsOSjwkRNSUhRNHwaqVJJPgXMP9BKe1KGL5w8RrGiz/THYESzvOrubUSDaEN?=
+ =?us-ascii?Q?tkMLfYtIOsLI6YFO3TNL1n0A5ZWQNm2Aa4EjNtfYuW1yBS7lbWxVaKzVlOra?=
+ =?us-ascii?Q?VGUoOdVM7VacWyi8sWi5kVbjexwDgoW4/tkmfHfjZh3Nw0+sIL9DYECpWjGv?=
+ =?us-ascii?Q?g7c8CuEpafFB9Dj2Zw11Sre46gwSp0/PkYc+fNS4hGVM+cA7RSjTz9TQeYRy?=
+ =?us-ascii?Q?rS72ZOv4IzzcEWSTMzG25ZPvvX1iH6QjyToaisIBV2Ic1tZJ3tzjWiPbuY8M?=
+ =?us-ascii?Q?wgDZR+e1+OQ3+TqbRWuHuybOi1qauLkgtp+oPqpMhLTLVHGgty1wIrDshTQ8?=
+ =?us-ascii?Q?pEtvCggwTBrvUtK7tweQlIOxYPNSIQJ+PaKqDxNddV+qZ9BNIS1YbMF879Nc?=
+ =?us-ascii?Q?9eg6ik3s7FkYZAg52dR+Z0NJAkdrouCeQDdRRsHY7bjphob+KvwOSQinLr8s?=
+ =?us-ascii?Q?AY2BqswSf+wGfJyLiI+bweeZH/T0koqxMgleZ99dLwiwS0aSfT+9nq+u1FQX?=
+ =?us-ascii?Q?aCYbuXZLqExjp9WtqodTJTTDkoS8xYWknA+YIF2o0sXw764xvU9Q4xezZrFc?=
+ =?us-ascii?Q?51F2es6h1IDS8x+PpF6Hhwd2otie?=
+X-OriginatorOrg: corigine.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c862ff7-3688-4c32-87b0-08d97dc0af7f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR18MB3882.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 24def24a-dfcb-48b4-7561-08d97db7797e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Sep 2021 10:55:21.9199
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Sep 2021 12:01:18.7431
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YUwPkSmR9b6tOHnEdUrjRwTQrjhpp9O4/SCZEtZzTmDmfL92t7XO08rtH5454nJ7f7MVmZ1mPxSmtQZMDAQlSQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR18MB4010
-X-Proofpoint-GUID: FHRXZPBg69bruc8qEC1HspSInOJdT_-a
-X-Proofpoint-ORIG-GUID: FHRXZPBg69bruc8qEC1HspSInOJdT_-a
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-09-22_03,2021-09-20_01,2020-04-07_01
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JxfnXCG52sDW2zk9SsKGRBmFYG52UnjgSD8QmaSYnMag6C5JvtSXHRTcw8l70zz2Ii+7fmYFJdfeoaJBMKWes0PR2wdnL/Td7bPQsMXchwE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB5639
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 22 Sept 2021 at 12:40, Leon Romanovsky <leon@kernel.org> wrote:
-> On Wed, Sep 22, 2021 at 10:36:31AM +0300, Shai Malin wrote:
-> > If the HW device is during recovery, the HW resources will never return=
-,
-> > hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
-> > This fix speeds up the error recovery flow.
-> >
-> > Changes since v1:
-> > - Fix race condition (thanks to Leon Romanovsky).
->=20
-> Please put changelog under "---", there is a little value for them in the
-> commit message.
+On Wed, Sep 22, 2021 at 11:58:03AM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> devlink_register() can't fail and always returns success, but all drivers
+> are obligated to check returned status anyway. This adds a lot of boilerplate
+> code to handle impossible flow.
+> 
+> Make devlink_register() void and simplify the drivers that use that
+> API call.
+> 
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-Sure. Thanks.
+NFP portion:
 
->=20
-> >
-> > Fixes: 64515dc899df ("qed: Add infrastructure for error detection and
-> recovery")
-> > Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-> > Signed-off-by: Ariel Elior <aelior@marvell.com>
-> > Signed-off-by: Shai Malin <smalin@marvell.com>
-> > ---
-> >  drivers/net/ethernet/qlogic/qed/qed_iwarp.c | 8 ++++++++
-> >  drivers/net/ethernet/qlogic/qed/qed_roce.c  | 8 ++++++++
-> >  2 files changed, 16 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > index fc8b3e64f153..186d0048a9d1 100644
-> > --- a/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > +++ b/drivers/net/ethernet/qlogic/qed/qed_iwarp.c
-> > @@ -1297,6 +1297,14 @@ qed_iwarp_wait_cid_map_cleared(struct qed_hwfn
-> *p_hwfn, struct qed_bmap *bmap)
-> >  	prev_weight =3D weight;
-> >
-> >  	while (weight) {
-> > +		/* If the HW device is during recovery, all resources are
-> > +		 * immediately reset without receiving a per-cid indication
-> > +		 * from HW. In this case we don't expect the cid_map to be
-> > +		 * cleared.
-> > +		 */
-> > +		if (p_hwfn->cdev->recov_in_prog)
-> > +			return 0;
-> > +
-> >  		msleep(QED_IWARP_MAX_CID_CLEAN_TIME);
-> >
-> >  		weight =3D bitmap_weight(bmap->bitmap, bmap->max_count);
-> > diff --git a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > index f16a157bb95a..cf5baa5e59bc 100644
-> > --- a/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > +++ b/drivers/net/ethernet/qlogic/qed/qed_roce.c
-> > @@ -77,6 +77,14 @@ void qed_roce_stop(struct qed_hwfn *p_hwfn)
-> >  	 * Beyond the added delay we clear the bitmap anyway.
-> >  	 */
-> >  	while (bitmap_weight(rcid_map->bitmap, rcid_map->max_count)) {
-> > +		/* If the HW device is during recovery, all resources are
-> > +		 * immediately reset without receiving a per-cid indication
-> > +		 * from HW. In this case we don't expect the cid bitmap to be
-> > +		 * cleared.
-> > +		 */
-> > +		if (p_hwfn->cdev->recov_in_prog)
-> > +			return;
-> > +
-> >  		msleep(100);
-> >  		if (wait_count++ > 20) {
-> >  			DP_NOTICE(p_hwfn, "cid bitmap wait timed out\n");
-> > --
-> > 2.27.0
-> >
+Acked-by: Simon Horman <simon.horman@corigine.com>
+
