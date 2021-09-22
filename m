@@ -2,92 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10558414AAA
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 883B3414ACA
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:40:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232243AbhIVNjk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 09:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230512AbhIVNjk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 09:39:40 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0421AC061574
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 06:38:10 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id z24so11975355lfu.13
-        for <linux-rdma@vger.kernel.org>; Wed, 22 Sep 2021 06:38:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+7/vDhCfCO8GWmmOXQpC6JsvYwIxZSEZsQxTfXaYv84=;
-        b=Uz2MxzdoNDX6dhOp3IF4xD36aO4yTDgSbarHOatUa/6SEUxBBs9B65S72lOjRcir+3
-         LQO0S81gpRY0/YtTCExxSfLwLiJY4PoAcrEdwmr2zJXx3oTSD/z8wUZ5WDGRkbKKLvau
-         0PqSIPkXWwN5I5ZXcb1B2nYKA+sBFZgHUZFZs6XDUd/kdvoGfyKroXcu10aBrHYcg6FQ
-         EcbxYA3ZEZkOclUCNljq+ptjnU7qKE7rfBEx33RXDdje19VxROu2iKcN9+qwdzb1Yo9H
-         sM9OOAmff+GaVK4KJ4TKyGLcsO7mkxLmA8ICWQRv12OduMPchMmMnUTYEvFFzMkgy/aQ
-         Urmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+7/vDhCfCO8GWmmOXQpC6JsvYwIxZSEZsQxTfXaYv84=;
-        b=bZKVcOpBot4AXyljFMu5bzdL9t54StUpHov1z1miJMf+dZvqd6XMekKJF/jKlrs55B
-         MKoyV45ejMI0NxwVdP6OMQnzsL02JqNgwVLocf+faIPQYqzO3ydkZcsfspX4JX+8Qf8U
-         MkouWdWcebtlF1fME6Az9qfCtZe4S2s5O5svPKFY6/FgKZm+ch0+MgvcTcmEkEMErBXR
-         5VxXNQ2l4xRnKipSsKiRGbmjYSm6XQRqxMRIPj/EtP9hE6mTkQ2hbBmOpaHtwLUznmR7
-         1teMWpiNGMwX90fIQcqF6bRmiO3XM96WSVgylCmT+l0yhCX5ZdD66eJsEAUMSJ7vW92+
-         7+Kw==
-X-Gm-Message-State: AOAM530NOkdd9OMWtVxlIQqpcLmt/xm3i6BA2ONyBDxRBhZHUoo0BlEI
-        izbp35C22czgJW+ZJRYYlVSUiYh3t/0af1bwgIsLKg==
-X-Google-Smtp-Source: ABdhPJy4U/Qykgh56rsm1XZU4iCOHZMNsgVDIHSbm3kDqtpvbS42/cDQJ3rB1ATulDZXKq9b8/9Gt0dMgBvDBrrYvMI=
-X-Received: by 2002:ac2:59c7:: with SMTP id x7mr25401159lfn.662.1632317869289;
- Wed, 22 Sep 2021 06:37:49 -0700 (PDT)
+        id S232777AbhIVNli (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 09:41:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232677AbhIVNlh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Sep 2021 09:41:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 03E0E611C9;
+        Wed, 22 Sep 2021 13:40:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632318007;
+        bh=AdtfQG4rLvA8AhCp2uE3qUlCt8ZO8mooGwPnslgZic0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=lczqeXZjbdoRqjd1uo83E3tg6MjONWt1GKvVuvQbDAzcnK8zVGvGif32hq32KcuPv
+         5Ohx/lnWmg0QE6SEEYai7b/Mj3B8OeFAb17a5EacAoj5OSHd/jxI9jc79Se1Chf85H
+         2aYhMA4wsYgilypKNLbr0l7g52G1Xi2m3X7Dv6X2z/9DgZCxt9FQy3upqTKruxsjB+
+         4G69x8oTD4+iXAbJn7Egb4pRBRCYiq74NJ0ZkYgWYpBK9nYQlrwjwZnExd/Jbanc5a
+         1rXl/CE2uu/QATcQ852hMqojbQqfKL/+Twa9m3I3AUHD+0rs5g6Z/gvUK9odAAqC70
+         WFHNX7h3Tg0yQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EBA9560A88;
+        Wed, 22 Sep 2021 13:40:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210902130625.25277-1-weijunji@bytedance.com>
- <20210915134301.GA211485@nvidia.com> <E8353F66-4F9E-4A6A-8AB2-2A7F84DF4104@bytedance.com>
- <YUsqQY5zY00bj4ul@unreal>
-In-Reply-To: <YUsqQY5zY00bj4ul@unreal>
-From:   =?UTF-8?B?6a2P5L+K5ZCJ?= <weijunji@bytedance.com>
-Date:   Wed, 22 Sep 2021 21:37:37 +0800
-Message-ID: <CAGH6tLV=9ceaUH_zdevtTyL5ft4ZxxX8d0axops4DmbFdFYFjQ@mail.gmail.com>
-Subject: Re: Re: [RFC 0/5] VirtIO RDMA
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>, mst <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>, yuval.shaia.ml@gmail.com,
-        marcel.apfelbaum@gmail.com, Cornelia Huck <cohuck@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        qemu-devel <qemu-devel@nongnu.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v3] qed: rdma - don't wait for resources under hw error
+ recovery flow
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163231800696.24457.18388174527817340428.git-patchwork-notify@kernel.org>
+Date:   Wed, 22 Sep 2021 13:40:06 +0000
+References: <20210922105326.10653-1-smalin@marvell.com>
+In-Reply-To: <20210922105326.10653-1-smalin@marvell.com>
+To:     Shai Malin <smalin@marvell.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@ziepe.ca, leon@kernel.org,
+        aelior@marvell.com, malin1024@gmail.com, mkalderon@marvell.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 9:06 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, Sep 22, 2021 at 08:08:44PM +0800, Junji Wei wrote:
-> > > On Sep 15, 2021, at 9:43 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> <...>
->
-> > >> 4. The FRMR api need to set key of MR through IB_WR_REG_MR.
-> > >>   But it is impossible to change a key of mr using uverbs.
-> > >
-> > > FRMR is more like memory windows in user space, you can't support it
-> > > using just regular MRs.
-> >
-> > It is hard to support this using uverbs, but it is easy to support
-> > with uRDMA that we can get full control of mrs.
->
-> What is uRDMA?
+Hello:
 
-uRDMA is a software implementation of the RoCEv2 protocol like rxe.
-We will implement it in QEMU with VFIO or DPDK.
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Thanks.
-Junji
+On Wed, 22 Sep 2021 13:53:26 +0300 you wrote:
+> If the HW device is during recovery, the HW resources will never return,
+> hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
+> This fix speeds up the error recovery flow.
+> 
+> Fixes: 64515dc899df ("qed: Add infrastructure for error detection and recovery")
+> Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
+> Signed-off-by: Ariel Elior <aelior@marvell.com>
+> Signed-off-by: Shai Malin <smalin@marvell.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v3] qed: rdma - don't wait for resources under hw error recovery flow
+    https://git.kernel.org/netdev/net/c/1ea781232600
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
