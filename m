@@ -2,76 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F552414B08
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21144414B3E
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbhIVNuv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 09:50:51 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:53874 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbhIVNuu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 09:50:50 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 7113C1008CBC0;
-        Wed, 22 Sep 2021 21:49:16 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 4ED9C200B574F;
-        Wed, 22 Sep 2021 21:49:16 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nGkeTN7hz__Y; Wed, 22 Sep 2021 21:49:16 +0800 (CST)
-Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 3BE1A200B5750;
-        Wed, 22 Sep 2021 21:49:01 +0800 (CST)
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guo Zhi <qtxuning1999@sjtu.edu.cn>
-Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Date:   Wed, 22 Sep 2021 21:48:57 +0800
-Message-Id: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
-X-Mailer: git-send-email 2.33.0
+        id S232243AbhIVOBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 10:01:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232199AbhIVOBJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Sep 2021 10:01:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DB94611C9;
+        Wed, 22 Sep 2021 13:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632319179;
+        bh=36IWk6It8GnKx4IJa/NIBW4AEPYji1iLwvfilDyjCXs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pekUNLVhn+YYL/CO9fT43ZTrfotwbsqxmeiiHiPuOBIeanmiMbOApgFDPqoNg+gAi
+         FNfFzj4CVqKEkpWuEoityr4Fee26sPBLpdCW39J/fCQEof/s14b+FPdM/QbKO0vPyo
+         mdSeGCVBCTeMvzIkPSLrKd0d4dAJTVt0TG1x2DifZ3HpedfaMgO3YSeDZYjyc41pqE
+         +ynfgXqeKMTFJyJPIXU3ubLtBvCUSwAbLWtUjZWVRAmReoXHHKPsgq2use649Fq3Mu
+         YcRyiBs2S/5gpSCSaQtZHwJwQ93fUbCD5ariOReFV469g6gw2K8SBJBO5JFRJDR8wU
+         XbbWiNMzFfhpQ==
+Date:   Wed, 22 Sep 2021 16:59:35 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     =?utf-8?B?6a2P5L+K5ZCJ?= <weijunji@bytedance.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>, mst <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>, yuval.shaia.ml@gmail.com,
+        marcel.apfelbaum@gmail.com, Cornelia Huck <cohuck@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        qemu-devel <qemu-devel@nongnu.org>
+Subject: Re: Re: [RFC 0/5] VirtIO RDMA
+Message-ID: <YUs2x9tUEgdC5lpr@unreal>
+References: <20210902130625.25277-1-weijunji@bytedance.com>
+ <20210915134301.GA211485@nvidia.com>
+ <E8353F66-4F9E-4A6A-8AB2-2A7F84DF4104@bytedance.com>
+ <YUsqQY5zY00bj4ul@unreal>
+ <CAGH6tLV=9ceaUH_zdevtTyL5ft4ZxxX8d0axops4DmbFdFYFjQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGH6tLV=9ceaUH_zdevtTyL5ft4ZxxX8d0axops4DmbFdFYFjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Pointers should be printed with %p or %px rather than
-cast to (unsigned long long) and printed with %llx.
-Change %llx to %p to print the pointer.
+On Wed, Sep 22, 2021 at 09:37:37PM +0800, 魏俊吉 wrote:
+> On Wed, Sep 22, 2021 at 9:06 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Wed, Sep 22, 2021 at 08:08:44PM +0800, Junji Wei wrote:
+> > > > On Sep 15, 2021, at 9:43 PM, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> >
+> > <...>
+> >
+> > > >> 4. The FRMR api need to set key of MR through IB_WR_REG_MR.
+> > > >>   But it is impossible to change a key of mr using uverbs.
+> > > >
+> > > > FRMR is more like memory windows in user space, you can't support it
+> > > > using just regular MRs.
+> > >
+> > > It is hard to support this using uverbs, but it is easy to support
+> > > with uRDMA that we can get full control of mrs.
+> >
+> > What is uRDMA?
+> 
+> uRDMA is a software implementation of the RoCEv2 protocol like rxe.
+> We will implement it in QEMU with VFIO or DPDK.
 
-Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
----
- drivers/infiniband/hw/hfi1/ipoib_tx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ok, thanks
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index e74ddbe4658..15b0cb0f363 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -876,14 +876,14 @@ void hfi1_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
- 	struct hfi1_ipoib_txq *txq = &priv->txqs[q];
- 	u64 completed = atomic64_read(&txq->complete_txreqs);
- 
--	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d no_desc %d ring_full %d\n",
--		    (unsigned long long)txq, q,
-+	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
-+		    txq, q,
- 		    __netif_subqueue_stopped(dev, txq->q_idx),
- 		    atomic_read(&txq->stops),
- 		    atomic_read(&txq->no_desc),
- 		    atomic_read(&txq->ring_full));
--	dd_dev_info(priv->dd, "sde %llx engine %u\n",
--		    (unsigned long long)txq->sde,
-+	dd_dev_info(priv->dd, "sde %p engine %u\n",
-+		    txq->sde,
- 		    txq->sde ? txq->sde->this_idx : 0);
- 	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
- 	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
--- 
-2.33.0
-
+> 
+> Thanks.
+> Junji
