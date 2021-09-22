@@ -2,75 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C85A4143EF
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 10:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3049414444
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 10:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbhIVIpI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 04:45:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34718 "EHLO mail.kernel.org"
+        id S234036AbhIVI5d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 04:57:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233349AbhIVIpH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Sep 2021 04:45:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8301B61267;
-        Wed, 22 Sep 2021 08:43:37 +0000 (UTC)
+        id S233741AbhIVI5d (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Sep 2021 04:57:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 90550611C9;
+        Wed, 22 Sep 2021 08:56:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632300218;
-        bh=YTFdSl4to16Pi/CX0EYd+Fki7elCQyxBW/8jOHA95G4=;
+        s=k20201202; t=1632300963;
+        bh=ZlnvapL793yQzZFPHVVIukRWUJoqaFV/IHNY32G0IlQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XLGIKGesvSAf/dDWqUwTPFsyUPepS1DSFTjzVkHo5SlFNZBwDJQXBgAmbteAdsW7n
-         m58zU+UJs3jhgqObB77qa05J4O4N9bGdt1uraM1QITJYK/Tn4GP7iFE6e+vd1kG993
-         Xo0ziGVvnG+06RDiZfTDtkJ+7VZa/6r2S3S8KUx7c46yZSL1fAiiLD1SFKcDyY7B1B
-         bNpnKSuknYHQBs2L0dclfvTxIAcHx/AbmIEzch3TqkXXxnlmLCi2VDy05NTgOBaNTx
-         +TkCTfF469sS9PJL+OsfbxMp1cUwRLFuJF/JgLwsbtN7JyrtLrKpvgyI5I0wH9SVs/
-         QhvBu5TUvHpQw==
-Date:   Wed, 22 Sep 2021 11:43:34 +0300
+        b=C0ZL2G+WH5ld+26By0SIeqjlmNXA9aTsVaqjyWvjD+fXIoV6KjXPZW3R/cuCe8Ipc
+         NT4TxFj/DepwhV1jEqU6y8pW90Wlk1mLQf007ynJYQ+HIs+wGuhnOS8IVE4rBFxIdQ
+         trMCX92lhV6XijYBAUk7KWsf8tY1U+iTaqA7MrNzPJChWWLrn+y/LonzAkUue5ePRs
+         IxuSq1PZsstX7G4VhfrD+I24MblQ3FiyAxlY8V9FBGuJYldH6lpMfRuULnyICZRGrT
+         yxE+oNtSkbGsmcc3v5xoSRBC0MDzTpp6nmn0wpmB49jl6kcFOQ0vlOAXx7KyJn1FTF
+         tCK+tfUhEmF9A==
+Date:   Wed, 22 Sep 2021 11:55:59 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     jgg@nvidia.com, dledford@redhat.com, linux-rdma@vger.kernel.org,
-        aharonl@nvidia.com, netao@nvidia.com,
-        linux-netdev <netdev@vger.kernel.org>,
-        David Ahern <dsahern@gmail.com>
-Subject: Re: [PATCH iproute2-next 0/3] Optional counter statistics support
-Message-ID: <YUrstuHiCmegk96w@unreal>
-References: <20210921062726.79973-1-markzhang@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next] devlink: Make devlink_register to be void
+Message-ID: <YUrvn3ss4NTL+QKY@unreal>
+References: <2e089a45e03db31bf451d768fc588c02a2f781e8.1632148852.git.leonro@nvidia.com>
+ <20210920133915.59ddfeef@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210920140407.0732b3d0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YUlBGk2Mq3iYhtku@unreal>
+ <20210921053956.11ac7156@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210921062726.79973-1-markzhang@nvidia.com>
+In-Reply-To: <20210921053956.11ac7156@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 21, 2021 at 09:27:23AM +0300, Mark Zhang wrote:
-> ---------------------------------
-> Kernel patch is not accepted yet.
-> ---------------------------------
+On Tue, Sep 21, 2021 at 05:39:56AM -0700, Jakub Kicinski wrote:
+> On Tue, 21 Sep 2021 05:19:06 +0300 Leon Romanovsky wrote:
+> > On Mon, Sep 20, 2021 at 02:04:07PM -0700, Jakub Kicinski wrote:
+> > > On Mon, 20 Sep 2021 13:39:15 -0700 Jakub Kicinski wrote:  
+> > > > On Mon, 20 Sep 2021 17:41:44 +0300 Leon Romanovsky wrote:  
+> >  [...]  
+> > > > 
+> > > > Unlike unused functions bringing back error handling may be
+> > > > non-trivial. I'd rather you deferred such cleanups until you're 
+> > > > ready to post your full rework and therefore give us some confidence 
+> > > > the revert will not be needed.  
+> > > 
+> > > If you disagree you gotta repost, new devlink_register call got added
+> > > in the meantime.  
+> > 
+> > This is exactly what I afraid, new devlink API users are added faster
+> > than I can cleanup them.
+> > 
+> > For example, let's take a look on newly added ipc_devlink_init(), it is
+> > called conditionally "if (stage == IPC_MEM_EXEC_STAGE_BOOT) {". How can
+> > it be different stage if we are in driver .probe() routine?
+> > 
+> > They also introduced devlink_sio.devlink_read_pend and
+> > devlink_sio.read_sem to protect from something that right position of
+> > devlink_register() will fix. I also have serious doubts that their
+> > current protection is correct, once they called to devlink_params_publish()
+> > the user can crash the system, because he can access the parameters before
+> > they initialized their protection.
+> > 
+> > So yes, I disagree. We will need to make sure that devlink_register()
+> > can't fail and it will make life easier for everyone (no need to unwind)
+> > while we put that command  being last in probe sequence.
+> 
+> Remains to be seen if return type makes people follow correct ordering.
 
-You need to add netdev and David to CC list and resubmit.
+They will :)
 
-Thanks
-
+After I'll fix all drivers that uses devlink_register :(, I'll add annotation to
+all exported devlink calls will have one of three options:
+1. WARN_ON(!xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED)) - call must be after devlink_register().
+2. WARN_ON(xa_get_mark(&devlinks, devlink->index, DEVLINK_REGISTERED)) - call must be before devlink_register().
+3. don't care - should be small number of such APIs and very good rationale why.
 > 
-> Hi,
+> > If I repost, will you take it? I don't want to waste anyone time if it
+> > is not.
 > 
-> This is supplementary part of kernel series [1], which provides an
-> extension to the rdma statistics tool that allows to set or list
-> optional counters dynamically, using netlink.
-> 
-> Thanks
-> 
-> [1] https://www.spinics.net/lists/linux-rdma/msg105567.html
-> 
-> Neta Ostrovsky (3):
->   rdma: Update uapi headers
->   rdma: Add stat "mode" support
->   rdma: Add optional-counters set/unset support
-> 
->  man/man8/rdma-statistic.8             |  55 +++++
->  rdma/include/uapi/rdma/rdma_netlink.h |   3 +
->  rdma/stat.c                           | 327 ++++++++++++++++++++++++++
->  3 files changed, 385 insertions(+)
-> 
-> -- 
-> 2.26.2
-> 
+> Yeah, go for it.
