@@ -2,71 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883B3414ACA
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F552414B08
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 15:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhIVNli (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 09:41:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55026 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232677AbhIVNlh (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Sep 2021 09:41:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 03E0E611C9;
-        Wed, 22 Sep 2021 13:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632318007;
-        bh=AdtfQG4rLvA8AhCp2uE3qUlCt8ZO8mooGwPnslgZic0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=lczqeXZjbdoRqjd1uo83E3tg6MjONWt1GKvVuvQbDAzcnK8zVGvGif32hq32KcuPv
-         5Ohx/lnWmg0QE6SEEYai7b/Mj3B8OeFAb17a5EacAoj5OSHd/jxI9jc79Se1Chf85H
-         2aYhMA4wsYgilypKNLbr0l7g52G1Xi2m3X7Dv6X2z/9DgZCxt9FQy3upqTKruxsjB+
-         4G69x8oTD4+iXAbJn7Egb4pRBRCYiq74NJ0ZkYgWYpBK9nYQlrwjwZnExd/Jbanc5a
-         1rXl/CE2uu/QATcQ852hMqojbQqfKL/+Twa9m3I3AUHD+0rs5g6Z/gvUK9odAAqC70
-         WFHNX7h3Tg0yQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EBA9560A88;
-        Wed, 22 Sep 2021 13:40:06 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232577AbhIVNuv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Sep 2021 09:50:51 -0400
+Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:53874 "EHLO
+        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232383AbhIVNuu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 09:50:50 -0400
+Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
+        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 7113C1008CBC0;
+        Wed, 22 Sep 2021 21:49:16 +0800 (CST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 4ED9C200B574F;
+        Wed, 22 Sep 2021 21:49:16 +0800 (CST)
+X-Virus-Scanned: amavisd-new at 
+Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
+        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id nGkeTN7hz__Y; Wed, 22 Sep 2021 21:49:16 +0800 (CST)
+Received: from guozhi-ipads.ipads-lab.se.sjtu.edu.cn (unknown [202.120.40.82])
+        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
+        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 3BE1A200B5750;
+        Wed, 22 Sep 2021 21:49:01 +0800 (CST)
+From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
+To:     mike.marciniszyn@cornelisnetworks.com,
+        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>
+Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Date:   Wed, 22 Sep 2021 21:48:57 +0800
+Message-Id: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v3] qed: rdma - don't wait for resources under hw error
- recovery flow
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163231800696.24457.18388174527817340428.git-patchwork-notify@kernel.org>
-Date:   Wed, 22 Sep 2021 13:40:06 +0000
-References: <20210922105326.10653-1-smalin@marvell.com>
-In-Reply-To: <20210922105326.10653-1-smalin@marvell.com>
-To:     Shai Malin <smalin@marvell.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-rdma@vger.kernel.org, jgg@ziepe.ca, leon@kernel.org,
-        aelior@marvell.com, malin1024@gmail.com, mkalderon@marvell.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+Pointers should be printed with %p or %px rather than
+cast to (unsigned long long) and printed with %llx.
+Change %llx to %p to print the pointer.
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
+---
+ drivers/infiniband/hw/hfi1/ipoib_tx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-On Wed, 22 Sep 2021 13:53:26 +0300 you wrote:
-> If the HW device is during recovery, the HW resources will never return,
-> hence we shouldn't wait for the CID (HW context ID) bitmaps to clear.
-> This fix speeds up the error recovery flow.
-> 
-> Fixes: 64515dc899df ("qed: Add infrastructure for error detection and recovery")
-> Signed-off-by: Michal Kalderon <mkalderon@marvell.com>
-> Signed-off-by: Ariel Elior <aelior@marvell.com>
-> Signed-off-by: Shai Malin <smalin@marvell.com>
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v3] qed: rdma - don't wait for resources under hw error recovery flow
-    https://git.kernel.org/netdev/net/c/1ea781232600
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+index e74ddbe4658..15b0cb0f363 100644
+--- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
++++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
+@@ -876,14 +876,14 @@ void hfi1_ipoib_tx_timeout(struct net_device *dev, unsigned int q)
+ 	struct hfi1_ipoib_txq *txq = &priv->txqs[q];
+ 	u64 completed = atomic64_read(&txq->complete_txreqs);
+ 
+-	dd_dev_info(priv->dd, "timeout txq %llx q %u stopped %u stops %d no_desc %d ring_full %d\n",
+-		    (unsigned long long)txq, q,
++	dd_dev_info(priv->dd, "timeout txq %p q %u stopped %u stops %d no_desc %d ring_full %d\n",
++		    txq, q,
+ 		    __netif_subqueue_stopped(dev, txq->q_idx),
+ 		    atomic_read(&txq->stops),
+ 		    atomic_read(&txq->no_desc),
+ 		    atomic_read(&txq->ring_full));
+-	dd_dev_info(priv->dd, "sde %llx engine %u\n",
+-		    (unsigned long long)txq->sde,
++	dd_dev_info(priv->dd, "sde %p engine %u\n",
++		    txq->sde,
+ 		    txq->sde ? txq->sde->this_idx : 0);
+ 	dd_dev_info(priv->dd, "flow %x\n", txq->flow.as_int);
+ 	dd_dev_info(priv->dd, "sent %llu completed %llu used %llu\n",
+-- 
+2.33.0
 
