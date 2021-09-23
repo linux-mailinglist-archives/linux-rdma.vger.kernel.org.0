@@ -2,169 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55399415AD4
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Sep 2021 11:23:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30AFE415BFD
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Sep 2021 12:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240033AbhIWJY7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Sep 2021 05:24:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46458 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240135AbhIWJY5 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Sep 2021 05:24:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C932E61263;
-        Thu, 23 Sep 2021 09:23:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632389005;
-        bh=569bnNYpES6eJYp9Sh/W/cLEjYEtuiHWkMl00AUFATo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fQJtSnrfM/uDFOLC4+sEDSw5EB7H7cxc8dK5vTSSeTl710WpHddWJx0Hr66Ca9HQM
-         8qC0g9I7MlLwDPXitIG8z2/ArzDVSn1E1QwlbZ67XIdhF+Ja4z1a6VQP87+2Ew13hY
-         NMDaSLdjxwRTfdaUrmXM+q1Z0KXVVlHsMfIIjeIptrczoGFBVc6gIrL3pSlu/nV6/X
-         zmkouwRPfo7eUKGjRTAktnMg3Si1PEqJmp10feLI1nNENxLKxtpJi5nB0okentxAF1
-         Ed6Cca1Uj7LqyVrGwE5L9TMO1BiJEWLbFTcYdIGeq5kTK+xWBJ8vsJNwzR3Owxklu0
-         P//3pQMqoV6tw==
-Received: by mail-oi1-f177.google.com with SMTP id 24so8898905oix.0;
-        Thu, 23 Sep 2021 02:23:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531/4s/3WrnYfbH7uC9ye6czQ/3cCbU7+xhvC41ibaPvdXugowHS
-        Sn1A5jlpiIKjEhXtvlrfomFhMNowUct1SWK5eds=
-X-Google-Smtp-Source: ABdhPJwKBW01i95TFVqcwwbcPPgUwOWxzKr7jYu4H/HoqIheB/NC+qNNGiwFvXSSXyXpLyrB2yaAMvBWhJmz0vqOyW4=
-X-Received: by 2002:aca:230f:: with SMTP id e15mr11840674oie.154.1632389005065;
- Thu, 23 Sep 2021 02:23:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210912165309.98695-1-ogabbay@kernel.org> <YUCvNzpyC091KeaJ@phenom.ffwll.local>
- <20210914161218.GF3544071@ziepe.ca> <CAFCwf13322953Txr3Afa_MomuD148vnfpEog0xzW7FPWH9=6fg@mail.gmail.com>
- <YUM5JoMMK7gceuKZ@phenom.ffwll.local> <20210916131014.GK3544071@ziepe.ca>
- <YUSKSHBC9uI49wZZ@phenom.ffwll.local> <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
-In-Reply-To: <CAFCwf12o-+wtbk8J8k8hP4_k0a8Lco4m9f4s1vBobkQwNtn39w@mail.gmail.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Thu, 23 Sep 2021 12:22:57 +0300
-X-Gmail-Original-Message-ID: <CAFCwf11UFVh-88Z=d=EH07_nx=3tf9kQkHhJ4pF6hfgO=80u0g@mail.gmail.com>
-Message-ID: <CAFCwf11UFVh-88Z=d=EH07_nx=3tf9kQkHhJ4pF6hfgO=80u0g@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add p2p via dmabuf to habanalabs
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        id S240331AbhIWKeo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 23 Sep 2021 06:34:44 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3852 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231392AbhIWKeo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Sep 2021 06:34:44 -0400
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4HFWdw4R79z67bWP;
+        Thu, 23 Sep 2021 18:30:44 +0800 (CST)
+Received: from lhreml717-chm.china.huawei.com (10.201.108.68) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 12:33:10 +0200
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ lhreml717-chm.china.huawei.com (10.201.108.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 23 Sep 2021 11:33:10 +0100
+Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
+ lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
+ 15.01.2308.008; Thu, 23 Sep 2021 11:33:10 +0100
+From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
+To:     Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Gunthorpe <jgg@nvidia.com>
+CC:     Yishai Hadas <yishaih@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "Kirti Wankhede" <kwankhede@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: RE: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Thread-Topic: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Thread-Index: AQHXr54pt96rmXk0YUaXSN2Kf89+2auxakgA
+Date:   Thu, 23 Sep 2021 10:33:10 +0000
+Message-ID: <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com>
+References: <cover.1632305919.git.leonro@nvidia.com>
+ <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+In-Reply-To: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.47.85.235]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 18, 2021 at 11:38 AM Oded Gabbay <ogabbay@kernel.org> wrote:
->
-> On Fri, Sep 17, 2021 at 3:30 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Thu, Sep 16, 2021 at 10:10:14AM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Sep 16, 2021 at 02:31:34PM +0200, Daniel Vetter wrote:
-> > > > On Wed, Sep 15, 2021 at 10:45:36AM +0300, Oded Gabbay wrote:
-> > > > > On Tue, Sep 14, 2021 at 7:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > > >
-> > > > > > On Tue, Sep 14, 2021 at 04:18:31PM +0200, Daniel Vetter wrote:
-> > > > > > > On Sun, Sep 12, 2021 at 07:53:07PM +0300, Oded Gabbay wrote:
-> > > > > > > > Hi,
-> > > > > > > > Re-sending this patch-set following the release of our user-space TPC
-> > > > > > > > compiler and runtime library.
-> > > > > > > >
-> > > > > > > > I would appreciate a review on this.
-> > > > > > >
-> > > > > > > I think the big open we have is the entire revoke discussions. Having the
-> > > > > > > option to let dma-buf hang around which map to random local memory ranges,
-> > > > > > > without clear ownership link and a way to kill it sounds bad to me.
-> > > > > > >
-> > > > > > > I think there's a few options:
-> > > > > > > - We require revoke support. But I've heard rdma really doesn't like that,
-> > > > > > >   I guess because taking out an MR while holding the dma_resv_lock would
-> > > > > > >   be an inversion, so can't be done. Jason, can you recap what exactly the
-> > > > > > >   hold-up was again that makes this a no-go?
-> > > > > >
-> > > > > > RDMA HW can't do revoke.
-> > > >
-> > > > Like why? I'm assuming when the final open handle or whatever for that MR
-> > > > is closed, you do clean up everything? Or does that MR still stick around
-> > > > forever too?
-> > >
-> > > It is a combination of uAPI and HW specification.
-> > >
-> > > revoke here means you take a MR object and tell it to stop doing DMA
-> > > without causing the MR object to be destructed.
-> > >
-> > > All the drivers can of course destruct the MR, but doing such a
-> > > destruction without explicit synchronization with user space opens
-> > > things up to a serious use-after potential that could be a security
-> > > issue.
-> > >
-> > > When the open handle closes the userspace is synchronized with the
-> > > kernel and we can destruct the HW objects safely.
-> > >
-> > > So, the special HW feature required is 'stop doing DMA but keep the
-> > > object in an error state' which isn't really implemented, and doesn't
-> > > extend very well to other object types beyond simple MRs.
-> >
-> > Yeah revoke without destroying the MR doesn't work, and it sounds like
-> > revoke by destroying the MR just moves the can of worms around to another
-> > place.
-> >
-> > > > 1. User A opens gaudi device, sets up dma-buf export
-> > > >
-> > > > 2. User A registers that with RDMA, or anything else that doesn't support
-> > > > revoke.
-> > > >
-> > > > 3. User A closes gaudi device
-> > > >
-> > > > 4. User B opens gaudi device, assumes that it has full control over the
-> > > > device and uploads some secrets, which happen to end up in the dma-buf
-> > > > region user A set up
-> > >
-> > > I would expect this is blocked so long as the DMABUF exists - eg the
-> > > DMABUF will hold a fget on the FD of #1 until the DMABUF is closed, so
-> > > that #3 can't actually happen.
-> > >
-> > > > It's not mlocked memory, it's mlocked memory and I can exfiltrate
-> > > > it.
-> > >
-> > > That's just bug, don't make buggy drivers :)
-> >
-> > Well yeah, but given that habanalabs hand rolled this I can't just check
-> > for the usual things we have to enforce this in drm. And generally you can
-> > just open chardevs arbitrarily, and multiple users fighting over each
-> > another. The troubles only start when you have private state or memory
-> > allocations of some kind attached to the struct file (instead of the
-> > underlying device), or something else that requires device exclusivity.
-> > There's no standard way to do that.
-> >
-> > Plus in many cases you really want revoke on top (can't get that here
-> > unfortunately it seems), and the attempts to get towards a generic
-> > revoke() just never went anywhere. So again it's all hand-rolled
-> > per-subsystem. *insert lament about us not having done this through a
-> > proper subsystem*
-> >
-> > Anyway it sounds like the code takes care of that.
-> > -Daniel
->
-> Daniel, Jason,
-> Thanks for reviewing this code.
->
-> Can I get an R-B / A-B from you for this patch-set ?
->
-> Thanks,
-> Oded
 
-A kind reminder.
+
+> -----Original Message-----
+> From: Leon Romanovsky [mailto:leon@kernel.org]
+> Sent: 22 September 2021 11:39
+> To: Doug Ledford <dledford@redhat.com>; Jason Gunthorpe <jgg@nvidia.com>
+> Cc: Yishai Hadas <yishaih@nvidia.com>; Alex Williamson
+> <alex.williamson@redhat.com>; Bjorn Helgaas <bhelgaas@google.com>; David
+> S. Miller <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; Kirti
+> Wankhede <kwankhede@nvidia.com>; kvm@vger.kernel.org;
+> linux-kernel@vger.kernel.org; linux-pci@vger.kernel.org;
+> linux-rdma@vger.kernel.org; netdev@vger.kernel.org; Saeed Mahameed
+> <saeedm@nvidia.com>
+> Subject: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+> transition validity
+> 
+> From: Yishai Hadas <yishaih@nvidia.com>
+> 
+> Add an API in the core layer to check migration state transition validity
+> as part of a migration flow.
+> 
+> The valid transitions follow the expected usage as described in
+> uapi/vfio.h and triggered by QEMU.
+> 
+> This ensures that all migration implementations follow a consistent
+> migration state machine.
+> 
+> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
+>  drivers/vfio/vfio.c  | 41 +++++++++++++++++++++++++++++++++++++++++
+>  include/linux/vfio.h |  1 +
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> index 3c034fe14ccb..c3ca33e513c8 100644
+> --- a/drivers/vfio/vfio.c
+> +++ b/drivers/vfio/vfio.c
+> @@ -1664,6 +1664,47 @@ static int vfio_device_fops_release(struct inode
+> *inode, struct file *filep)
+>  	return 0;
+>  }
+> 
+> +/**
+> + * vfio_change_migration_state_allowed - Checks whether a migration state
+> + *   transition is valid.
+> + * @new_state: The new state to move to.
+> + * @old_state: The old state.
+> + * Return: true if the transition is valid.
+> + */
+> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state)
+> +{
+> +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
+> +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
+> +		[VFIO_DEVICE_STATE_STOP] = {
+> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+> +			[VFIO_DEVICE_STATE_RESUMING] = 1,
+> +		},
+> +		[VFIO_DEVICE_STATE_RUNNING] = {
+> +			[VFIO_DEVICE_STATE_STOP] = 1,
+> +			[VFIO_DEVICE_STATE_SAVING] = 1,
+> +			[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING]
+> = 1,
+
+Do we need to allow _RESUMING state here or not? As per the "State transitions"
+section from uapi/linux/vfio.h, 
+
+" * 4. To start the resuming phase, the device state should be transitioned from
+ *    the _RUNNING to the _RESUMING state."
+
+IIRC, I have seen that transition happening on the destination dev while testing the 
+HiSilicon ACC dev migration. 
 
 Thanks,
-Oded
+Shameer
+
+> +		},
+> +		[VFIO_DEVICE_STATE_SAVING] = {
+> +			[VFIO_DEVICE_STATE_STOP] = 1,
+> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+> +		},
+> +		[VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING] = {
+> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+> +			[VFIO_DEVICE_STATE_SAVING] = 1,
+> +		},
+> +		[VFIO_DEVICE_STATE_RESUMING] = {
+> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
+> +			[VFIO_DEVICE_STATE_STOP] = 1,
+> +		},
+> +	};
+> +
+> +	if (new_state > MAX_STATE || old_state > MAX_STATE)
+> +		return false;
+> +
+> +	return vfio_from_state_table[old_state][new_state];
+> +}
+> +EXPORT_SYMBOL_GPL(vfio_change_migration_state_allowed);
+> +
+>  static long vfio_device_fops_unl_ioctl(struct file *filep,
+>  				       unsigned int cmd, unsigned long arg)
+>  {
+> diff --git a/include/linux/vfio.h b/include/linux/vfio.h
+> index b53a9557884a..e65137a708f1 100644
+> --- a/include/linux/vfio.h
+> +++ b/include/linux/vfio.h
+> @@ -83,6 +83,7 @@ extern struct vfio_device
+> *vfio_device_get_from_dev(struct device *dev);
+>  extern void vfio_device_put(struct vfio_device *device);
+> 
+>  int vfio_assign_device_set(struct vfio_device *device, void *set_id);
+> +bool vfio_change_migration_state_allowed(u32 new_state, u32 old_state);
+> 
+>  /* events for the backend driver notify callback */
+>  enum vfio_iommu_notify_type {
+> --
+> 2.31.1
+
