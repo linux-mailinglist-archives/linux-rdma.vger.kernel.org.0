@@ -2,134 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EC4415320
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Sep 2021 23:59:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6702A41555A
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Sep 2021 04:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhIVWBD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Sep 2021 18:01:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232149AbhIVWBC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Sep 2021 18:01:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDE7D60FA0;
-        Wed, 22 Sep 2021 21:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632347972;
-        bh=ngjmm4cmMiMIEt95rrv698WM+E37o6Vz7k4Cz4Cp860=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=WRahBnhh2n5TtOHLfkI2yKoMFBFM6uv28SVms/qst3AmMm7Xxb6n1r+BgKIryPtWW
-         49nFZ3LsP4KsyXIjtXSFeaX+EVzUnSZroxam9q4uoJ6WBhKspYNgdiFuQsGcM+M/87
-         2yBIG+UO9twSZhNisZM+bepJYB//HhYK3Lzcc5WMKFCppJQ4s5EPH0hrB0QnHcZUOL
-         N3up/PKxaas5DDt25escY15N1HgYShl2M/99oPZgYKnsk6LHZgFzSeeWCYlz+f1Bt+
-         vdjXllmIFpz/7MTwUFOdxM9IqYrk2JrHz+m9aBbCjmYWBmqGjEO/39s/qRqlhrzKYp
-         eVpS5ZJsssdUQ==
-Date:   Wed, 22 Sep 2021 16:59:30 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <20210922215930.GA231505@bhelgaas>
+        id S238912AbhIWCF2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 22 Sep 2021 22:05:28 -0400
+Received: from smtp179.sjtu.edu.cn ([202.120.2.179]:37220 "EHLO
+        smtp179.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238884AbhIWCFX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Sep 2021 22:05:23 -0400
+Received: from mta03.sjtu.edu.cn (mta03.sjtu.edu.cn [202.121.179.7])
+        by smtp179.sjtu.edu.cn (Postfix) with ESMTPS id 8B372100B0959;
+        Thu, 23 Sep 2021 10:03:49 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by mta03.sjtu.edu.cn (Postfix) with ESMTP id 70848D6EFD;
+        Thu, 23 Sep 2021 10:03:49 +0800 (CST)
+X-Virus-Scanned: amavisd-new at mta03.sjtu.edu.cn
+Received: from mta03.sjtu.edu.cn ([127.0.0.1])
+        by localhost (mta03.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4C6s5MCwP_CS; Thu, 23 Sep 2021 10:03:49 +0800 (CST)
+Received: from mstore105.sjtu.edu.cn (unknown [10.118.0.105])
+        by mta03.sjtu.edu.cn (Postfix) with ESMTP id 529AAD6EF7;
+        Thu, 23 Sep 2021 10:03:49 +0800 (CST)
+Date:   Thu, 23 Sep 2021 10:03:49 +0800 (CST)
+From:   =?gb2312?B?ufnWvg==?= <qtxuning1999@sjtu.edu.cn>
+To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Message-ID: <469291264.232666.1632362629275.JavaMail.zimbra@sjtu.edu.cn>
+In-Reply-To: <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn> <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d5bba9a6a1067989c3291fa2929528578812334.1632305919.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [202.120.40.82]
+X-Mailer: Zimbra 8.8.15_GA_4125 (ZimbraWebClient - GC92 (Linux)/8.8.15_GA_3928)
+Thread-Topic: infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Thread-Index: AQHXr7imk55risfKAUmS2+aCDTMROauwTzmgJgnZbt8=
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> From: Jason Gunthorpe <jgg@nvidia.com>
+I will change %p to %px and submit a new patch.
+
+Thanks.
+
+Guo
+
+----- 原始邮件 -----
+发件人: "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
+收件人: "Guo Zhi" <qtxuning1999@sjtu.edu.cn>, "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>, dledford@redhat.com
+抄送: linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+发送时间: 星期四, 2021年 9 月 23日 上午 1:51:08
+主题: RE: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+
+> Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
 > 
-> The PCI core uses the VF index internally, often called the vf_id,
-> during the setup of the VF, eg pci_iov_add_virtfn().
+> Pointers should be printed with %p or %px rather than cast to (unsigned long
+> long) and printed with %llx.
+> Change %llx to %p to print the pointer.
 > 
-> This index is needed for device drivers that implement live migration
-> for their internal operations that configure/control their VFs.
->
-> Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> from this series needs it and not the bus/device/function which is
-> exposed today.
-> 
-> Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> was used to create the bus/device/function.
-> 
-> Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
 
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+The unsigned long long was originally used to insure the entire accurate pointer as emitted.
 
-mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-same thing as pci_iov_vf_id() by iterating through VFs until it finds
-one with a matching devfn (although it *doesn't* check for a matching
-bus number, which seems like a bug).
+This is to ensure the pointers in prints and event traces match values in stacks and register dumps.
 
-Maybe that should use pci_iov_vf_id()?
+I think the %p will obfuscate the pointer so %px is correct for our use case.
 
-> ---
->  drivers/pci/iov.c   | 14 ++++++++++++++
->  include/linux/pci.h |  7 ++++++-
->  2 files changed, 20 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
-> index dafdc652fcd0..e7751fa3fe0b 100644
-> --- a/drivers/pci/iov.c
-> +++ b/drivers/pci/iov.c
-> @@ -33,6 +33,20 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
->  }
->  EXPORT_SYMBOL_GPL(pci_iov_virtfn_devfn);
->  
-> +int pci_iov_vf_id(struct pci_dev *dev)
-> +{
-> +	struct pci_dev *pf;
-> +
-> +	if (!dev->is_virtfn)
-> +		return -EINVAL;
-> +
-> +	pf = pci_physfn(dev);
-> +	return (((dev->bus->number << 8) + dev->devfn) -
-> +		((pf->bus->number << 8) + pf->devfn + pf->sriov->offset)) /
-> +	       pf->sriov->stride;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_iov_vf_id);
-> +
->  /*
->   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
->   * change when NumVFs changes.
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index cd8aa6fce204..4d6c73506e18 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2153,7 +2153,7 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
->  #ifdef CONFIG_PCI_IOV
->  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
->  int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
-> -
-> +int pci_iov_vf_id(struct pci_dev *dev);
->  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
->  void pci_disable_sriov(struct pci_dev *dev);
->  
-> @@ -2181,6 +2181,11 @@ static inline int pci_iov_virtfn_devfn(struct pci_dev *dev, int id)
->  {
->  	return -ENOSYS;
->  }
-> +static inline int pci_iov_vf_id(struct pci_dev *dev)
-> +{
-> +	return -ENOSYS;
-> +}
-> +
-
-Drop the blank line to match the surrounding stubs.
-
->  static inline int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn)
->  { return -ENODEV; }
-
+Mike
