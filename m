@@ -2,170 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D00415845
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Sep 2021 08:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91319415867
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Sep 2021 08:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239334AbhIWGhH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Sep 2021 02:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44534 "EHLO mail.kernel.org"
+        id S239334AbhIWGr1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Sep 2021 02:47:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239312AbhIWGhG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Sep 2021 02:37:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFE0F6103D;
-        Thu, 23 Sep 2021 06:35:34 +0000 (UTC)
+        id S237097AbhIWGr0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 23 Sep 2021 02:47:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 286036109E;
+        Thu, 23 Sep 2021 06:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632378935;
-        bh=DEKVsUEz3rB/lWfDPCmtwUG21EgoliQ4AdWEdVy1G4U=;
+        s=k20201202; t=1632379555;
+        bh=DcdqZe/8oJKOdfie1myAF2t6sQK3xoiQdpivVylQs10=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TYUzK6CIkvGFuMRyNE99h2HYsmLBhwlwdophnZordr6fK3vWI6QJ9YcWz2N4XDaab
-         3qUohiEm+tsTsS+R3ftMBKqBt3PIubaDE3FGnu5HRSE8GPA7wV3dDIC21aSAZihvgy
-         zO5z/S+AYuWJic/RgUSDTj8REgFAgMbf7xzxlOngNezsYacei0HI12BT1iGEAwqxmA
-         SPycfdhf0XK/VvZSWAu+cBsqq0pcpbo/BAj5tEVydyxYY/lfV9gJh5UZY+26l32f7B
-         z7gZwU5EHhV+G/MKWDkxzjHMhTXcV6EpKwLwsXLGymVQRSPXntArvr/W3vHeix2gLs
-         c+0W+FZoW5BMA==
-Date:   Thu, 23 Sep 2021 09:35:32 +0300
+        b=Vba/voXJQYEjDRI2BX4tTGX4a8ruUtFFi6dBHOxW8t4/xFSiZE6hurA28+ib2f2RN
+         5HnvKot/+/dhKZ8topDFTrxGLYKlDl1d1Ri9OZqJ933FbeQGTAZusPFWQI8bDUoGME
+         V41JzpZ7TZAw5XNc9Djjg8Qto6qgnpUBpd34JdEGOTOVoqTJNnAOYazfA7NSp7kei9
+         pYEHbYmnulveAChVrduVJJt0yJHFZuNG919VMlmENR83NZcb6/fIYT7JyMB02Bq6Ad
+         +m0uiPbfgGqfo69x1F4uRLqRlhGRCRuVNSzwmFI823cbQ0NOKYGjFkut02gE3eDKmA
+         36IeHpIDeEYow==
+Date:   Thu, 23 Sep 2021 09:45:51 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <YUwgNPL++APsFJ49@unreal>
-References: <8d5bba9a6a1067989c3291fa2929528578812334.1632305919.git.leonro@nvidia.com>
- <20210922215930.GA231505@bhelgaas>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+Message-ID: <YUwin2cn8X5GGjyY@unreal>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+ <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+ <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210922215930.GA231505@bhelgaas>
+In-Reply-To: <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
-> On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
+On Wed, Sep 22, 2021 at 11:05:42AM -0700, Bart Van Assche wrote:
+> On 9/22/21 10:51 AM, Marciniszyn, Mike wrote:
+> > > Subject: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
+> > > 
+> > > Pointers should be printed with %p or %px rather than cast to (unsigned long
+> > > long) and printed with %llx.
+> > > Change %llx to %p to print the pointer.
+> > > 
+> > > Signed-off-by: Guo Zhi <qtxuning1999@sjtu.edu.cn>
 > > 
-> > The PCI core uses the VF index internally, often called the vf_id,
-> > during the setup of the VF, eg pci_iov_add_virtfn().
+> > The unsigned long long was originally used to insure the entire accurate pointer as emitted.
 > > 
-> > This index is needed for device drivers that implement live migration
-> > for their internal operations that configure/control their VFs.
-> >
-> > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> > from this series needs it and not the bus/device/function which is
-> > exposed today.
+> > This is to ensure the pointers in prints and event traces match values in stacks and register dumps.
 > > 
-> > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> > was used to create the bus/device/function.
-> > 
-> > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > I think the %p will obfuscate the pointer so %px is correct for our use case.
 > 
-> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> How about applying Guo's patch and adding a configuration option to the
+> kernel for disabling pointer hashing for %p and related format specifiers?
+
+Isn't kptr_restrict sysctl is for that?
+
+> Pointer hashing is useful on production systems but not on development
+> systems.
 > 
-> mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-> same thing as pci_iov_vf_id() by iterating through VFs until it finds
-> one with a matching devfn (although it *doesn't* check for a matching
-> bus number, which seems like a bug).
+> Thanks,
 > 
-> Maybe that should use pci_iov_vf_id()?
-
-Yes, I gave same comment internally and we decided to simply reduce the
-amount of changes in mlx5_core to have less distractions and submit as a
-followup. Most likely will add this hunk in v1.
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-index e8185b69ac6c..b66be0b4244a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sriov.c
-@@ -209,15 +209,8 @@ int mlx5_core_sriov_set_msix_vec_count(struct pci_dev *vf, int msix_vec_count)
-        /* Reversed translation of PCI VF function number to the internal
-         * function_id, which exists in the name of virtfn symlink.
-         */
--       for (id = 0; id < pci_num_vf(pf); id++) {
--               if (!sriov->vfs_ctx[id].enabled)
--                       continue;
--
--               if (vf->devfn == pci_iov_virtfn_devfn(pf, id))
--                       break;
--       }
--
--       if (id == pci_num_vf(pf) || !sriov->vfs_ctx[id].enabled)
-+       id = pci_iov_vf_id(vf);
-+       if (id < 0 || !sriov->vfs_ctx[id].enabled)
-                return -EINVAL;
-
-        return mlx5_set_msix_vec_count(dev, id + 1, msix_vec_count);
-
-Thanks
-
-> 
-> > ---
-> >  drivers/pci/iov.c   | 14 ++++++++++++++
-> >  include/linux/pci.h |  7 ++++++-
-> >  2 files changed, 20 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/iov.c b/drivers/pci/iov.c
-> > index dafdc652fcd0..e7751fa3fe0b 100644
-> > --- a/drivers/pci/iov.c
-> > +++ b/drivers/pci/iov.c
-> > @@ -33,6 +33,20 @@ int pci_iov_virtfn_devfn(struct pci_dev *dev, int vf_id)
-> >  }
-> >  EXPORT_SYMBOL_GPL(pci_iov_virtfn_devfn);
-> >  
-> > +int pci_iov_vf_id(struct pci_dev *dev)
-> > +{
-> > +	struct pci_dev *pf;
-> > +
-> > +	if (!dev->is_virtfn)
-> > +		return -EINVAL;
-> > +
-> > +	pf = pci_physfn(dev);
-> > +	return (((dev->bus->number << 8) + dev->devfn) -
-> > +		((pf->bus->number << 8) + pf->devfn + pf->sriov->offset)) /
-> > +	       pf->sriov->stride;
-> > +}
-> > +EXPORT_SYMBOL_GPL(pci_iov_vf_id);
-> > +
-> >  /*
-> >   * Per SR-IOV spec sec 3.3.10 and 3.3.11, First VF Offset and VF Stride may
-> >   * change when NumVFs changes.
-> > diff --git a/include/linux/pci.h b/include/linux/pci.h
-> > index cd8aa6fce204..4d6c73506e18 100644
-> > --- a/include/linux/pci.h
-> > +++ b/include/linux/pci.h
-> > @@ -2153,7 +2153,7 @@ void __iomem *pci_ioremap_wc_bar(struct pci_dev *pdev, int bar);
-> >  #ifdef CONFIG_PCI_IOV
-> >  int pci_iov_virtfn_bus(struct pci_dev *dev, int id);
-> >  int pci_iov_virtfn_devfn(struct pci_dev *dev, int id);
-> > -
-> > +int pci_iov_vf_id(struct pci_dev *dev);
-> >  int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn);
-> >  void pci_disable_sriov(struct pci_dev *dev);
-> >  
-> > @@ -2181,6 +2181,11 @@ static inline int pci_iov_virtfn_devfn(struct pci_dev *dev, int id)
-> >  {
-> >  	return -ENOSYS;
-> >  }
-> > +static inline int pci_iov_vf_id(struct pci_dev *dev)
-> > +{
-> > +	return -ENOSYS;
-> > +}
-> > +
-> 
-> Drop the blank line to match the surrounding stubs.
-
-Sure, thanks
-
-> 
-> >  static inline int pci_enable_sriov(struct pci_dev *dev, int nr_virtfn)
-> >  { return -ENODEV; }
+> Bart.
 > 
