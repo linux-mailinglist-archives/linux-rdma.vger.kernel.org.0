@@ -2,105 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E03416866
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Sep 2021 01:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88A5416959
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Sep 2021 03:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243533AbhIWXTD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Sep 2021 19:19:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236363AbhIWXTD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Sep 2021 19:19:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BBB760E94;
-        Thu, 23 Sep 2021 23:17:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632439048;
-        bh=zWojNpcodUwXnDCo0cXDCL2hbC6x/VnA2xVqVzva5kQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lgqk8MDJL1AeZJLSIWxfWoaiWtrzKeBz5W7dCpVzGo7bpDYtYEqvoG6W5ImjIwzvO
-         ubjqW6ZnTPa2haqBVpS6a5zV+EI/3sYPItN5+zLEocXbdwBQVGZJiJkxvOQskFlVqC
-         SInbUrd1tMoui54CuW79tQd/TzcaNT4xrvDUH7uwObwu6qUSo/AbVkD1E9AztAl61K
-         EQYU6eC1Jp5kFRfbeS0yNtDvsSfbVZGpp7wn9JLj9i/aYp4ZZgV/pdpeht8C3589r1
-         rO8k4t5WuIcMzbpcBkDKBeUzG2gcSpsXmOIY+/pxKxHPqBonGsncL6JZgKexRf5Nzx
-         khIoqwyra4S1Q==
-Date:   Fri, 24 Sep 2021 02:17:24 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Dmitry Vyukov <dvyukov@google.com>, linux-rdma@vger.kernel.org,
-        syzbot+dc3dfba010d7671e05f5@syzkaller.appspotmail.com
-Subject: Re: [PATCH rc] RDMA/cma: Ensure rdma_addr_cancel() happens before
- issuing more requests
-Message-ID: <YU0LBKU81wm75dw4@unreal>
-References: <0-v1-3bc675b8006d+22-syz_cancel_uaf_jgg@nvidia.com>
- <YUri44sX8Lp3muc4@unreal>
- <20210922144119.GV327412@nvidia.com>
- <YUwVUjrqT2PyVEO7@unreal>
- <20210923114557.GI964074@nvidia.com>
- <YUzEUM8RPlFZSbJx@unreal>
- <20210923200358.GR964074@nvidia.com>
+        id S243676AbhIXB11 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Sep 2021 21:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240863AbhIXB1Z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Sep 2021 21:27:25 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8492C061574
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id 24so12435778oix.0
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TtvJt2oni6LkmWs+0o77ybVSQFmA3nb0CxIaDC2Rzaw=;
+        b=EjPrGpWrG38K0dqNM6rvturl6BNh7ZmXIV+l4aSDnNTK3GO94VfvoIJH2bX4JyMYFB
+         kBgA4OUy6jWr+FHPu5kGpZEfOeN168BP5p6RT6N+ECa2i91FUxV0FljB34l6ICWv7cU5
+         JjZBgB2zqGS3kQEp+QD9mocMm4XHLCzlChhhUYxVBNi52b/c3k47bvNWPCLul9tEqP2T
+         lUhJpV+Bn01ZonrOX+HwZkWUV8IdOkz0Wab0vp4+ozlVvQ0ZdvepyAZeAYsGZvl4JJPr
+         XU0xos/meJBm8YTwBqCF6C+MdU/IMbG24/8L4VQ73PIcw/gwp1AOzXfOFQ98KYbqSs4R
+         WULQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TtvJt2oni6LkmWs+0o77ybVSQFmA3nb0CxIaDC2Rzaw=;
+        b=Tcp660o3wrFsD9LBQk92lbokkwNnmw6AL1C/qE/G3i1VB0ht9a5GDes6WdrTETlBFj
+         LEKhYZNHDMQuO29U4ojXraTd439MnJMQFmXz1olNWGY1lJ8VvZARhDKz8Jm3U5xFDmyb
+         sFFyD/itlS9mMgg5/p/5I3VWTNl/buLgjGp1qyafFg9t1SsZsb1uvSAs8Wgi34H3F1Vu
+         IKJW8sPEGkp3M18yRME6ZzYRaBI19QCISg7khCCxoFpSe3QHMZEs7oSd5Fa8WYKu/XZA
+         Ry/+20HNQyfdvOopJ0Ko8c4CMXuPJnX9YDSynu8Dtqz/3IcH8FckvsoBIPn2sry8Y0WU
+         aqWA==
+X-Gm-Message-State: AOAM531trUO1+Bn8jgJqjUdmoBxf39rQc3hAM2C6AzxMy4788L46ZzX7
+        LnOUzfFKM9A9G8KdaEdEAec=
+X-Google-Smtp-Source: ABdhPJxg81NZjQcFVatKNkWfPlauSfa+TpLVo/w/u/UWtfN3l1cXFQGKo/L8AWhBETdDoyyY1fjksg==
+X-Received: by 2002:a05:6808:999:: with SMTP id a25mr6148042oic.105.1632446752132;
+        Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:1f57:e7c7:fed2:ae25? (2603-8081-140c-1a00-1f57-e7c7-fed2-ae25.res6.spectrum.com. [2603:8081:140c:1a00:1f57:e7c7:fed2:ae25])
+        by smtp.gmail.com with ESMTPSA id i4sm1694867otj.9.2021.09.23.18.25.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Sep 2021 18:25:51 -0700 (PDT)
+Subject: Re: [PATCH for-rc v4 0/5] RDMA/rxe: Various bug fixes.
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Yi Zhang <yi.zhang@redhat.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>, bvanassche@acm.org,
+        mie@igel.co.jp, rao.shoaib@oracle.com
+References: <20210914164206.19768-1-rpearsonhpe@gmail.com>
+ <CAN-5tyF6vJQEK3+FJ44+7T223nMqs_dSXYKOKz-fPJ=3OHK12Q@mail.gmail.com>
+ <20210923195629.GQ964074@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <b67381d8-89d2-7239-981e-dd50ea6929bd@gmail.com>
+Date:   Thu, 23 Sep 2021 20:25:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210923200358.GR964074@nvidia.com>
+In-Reply-To: <20210923195629.GQ964074@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 23, 2021 at 05:03:58PM -0300, Jason Gunthorpe wrote:
-> On Thu, Sep 23, 2021 at 09:15:44PM +0300, Leon Romanovsky wrote:
-> > On Thu, Sep 23, 2021 at 08:45:57AM -0300, Jason Gunthorpe wrote:
-> > > On Thu, Sep 23, 2021 at 08:49:06AM +0300, Leon Romanovsky wrote:
-> > > > On Wed, Sep 22, 2021 at 11:41:19AM -0300, Jason Gunthorpe wrote:
-> > > > > On Wed, Sep 22, 2021 at 11:01:39AM +0300, Leon Romanovsky wrote:
-> > > > > 
-> > > > > > > +			/* The FSM can return back to RDMA_CM_ADDR_BOUND after
-> > > > > > > +			 * rdma_resolve_ip() is called, eg through the error
-> > > > > > > +			 * path in addr_handler. If this happens the existing
-> > > > > > > +			 * request must be canceled before issuing a new one.
-> > > > > > > +			 */
-> > > > > > > +			if (id_priv->used_resolve_ip)
-> > > > > > > +				rdma_addr_cancel(&id->route.addr.dev_addr);
-> > > > > > > +			else
-> > > > > > > +				id_priv->used_resolve_ip = 1;
-> > > > > > 
-> > > > > > Why don't you never clear this field?
-> > > > > 
-> > > > > The only case where it can be cleared is if we have called
-> > > > > rdma_addr_cancel(), and since this is the only place that does it and
-> > > > > immediately calls rdma_resolve_ip() again, there is no reason to ever
-> > > > > clear it.
-> > > > 
-> > > > IMHO, it is better to clear instead to rely on "the only place" semantic.
-> > > 
-> > > Then the code looks really silly:
-> > > 
-> > > 	if (id_priv->used_resolve_ip) {
-> > > 		rdma_addr_cancel(&id->route.addr.dev_addr);
-> > >                 id_priv->used_resolve_ip = 0;
-> > >         }
-> > >         id_priv->used_resolve_ip = 1;
-> > 
-> > So write comment why you don't need to clear used_resolve_ip, but don't
-> > leave it as it is now, where readers need to guess.
-> >
-> 
-> I think it is a bit wordy, but I put this:
-> 
-> 			/*
-> 			 * The FSM can return back to RDMA_CM_ADDR_BOUND after
-> 			 * rdma_resolve_ip() is called, eg through the error
-> 			 * path in addr_handler(). If this happens the existing
-> 			 * request must be canceled before issuing a new one.
-> 			 * Since canceling a request is a bit slow and this
-> 			 * oddball path is rare, keep track once a request has
-> 			 * been issued. The track turns out to be a permanent
-> 			 * state since this is the only cancel as it is
-> 			 * immediately before rdma_resolve_ip().
-> 			 */
-> 
-> And into for-rc
 
-Thanks
-
+>>
+>> Hi Bob,
+>>
+>> After applying these patches only top of 5.15-rc1. rping and mount
+>> NFSoRDMA works.
+> 
+> I've lost track with all the mails, are we good on this series now or
+> was there still more fixing needed?
 > 
 > Jason
+> 
+
+There is one remaining report of a problem from Yi Zhang, on 9/17/21, who sees an error in blktest.
+Unfortunately I am unable to figure out how to reproduce the error and the code he shows is not directly
+in rxe. I suspect it may be related to resource limits if anything which has nothing to do with
+the patch series. I believe they are all good.
+
+Bob
