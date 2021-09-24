@@ -2,92 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88A5416959
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Sep 2021 03:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DE8416A1F
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Sep 2021 04:47:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243676AbhIXB11 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Sep 2021 21:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240863AbhIXB1Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Sep 2021 21:27:25 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8492C061574
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 24so12435778oix.0
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TtvJt2oni6LkmWs+0o77ybVSQFmA3nb0CxIaDC2Rzaw=;
-        b=EjPrGpWrG38K0dqNM6rvturl6BNh7ZmXIV+l4aSDnNTK3GO94VfvoIJH2bX4JyMYFB
-         kBgA4OUy6jWr+FHPu5kGpZEfOeN168BP5p6RT6N+ECa2i91FUxV0FljB34l6ICWv7cU5
-         JjZBgB2zqGS3kQEp+QD9mocMm4XHLCzlChhhUYxVBNi52b/c3k47bvNWPCLul9tEqP2T
-         lUhJpV+Bn01ZonrOX+HwZkWUV8IdOkz0Wab0vp4+ozlVvQ0ZdvepyAZeAYsGZvl4JJPr
-         XU0xos/meJBm8YTwBqCF6C+MdU/IMbG24/8L4VQ73PIcw/gwp1AOzXfOFQ98KYbqSs4R
-         WULQ==
+        id S243907AbhIXCsd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Sep 2021 22:48:33 -0400
+Received: from mail-pl1-f177.google.com ([209.85.214.177]:40735 "EHLO
+        mail-pl1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234930AbhIXCsc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Sep 2021 22:48:32 -0400
+Received: by mail-pl1-f177.google.com with SMTP id j15so4015434plh.7;
+        Thu, 23 Sep 2021 19:47:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=TtvJt2oni6LkmWs+0o77ybVSQFmA3nb0CxIaDC2Rzaw=;
-        b=Tcp660o3wrFsD9LBQk92lbokkwNnmw6AL1C/qE/G3i1VB0ht9a5GDes6WdrTETlBFj
-         LEKhYZNHDMQuO29U4ojXraTd439MnJMQFmXz1olNWGY1lJ8VvZARhDKz8Jm3U5xFDmyb
-         sFFyD/itlS9mMgg5/p/5I3VWTNl/buLgjGp1qyafFg9t1SsZsb1uvSAs8Wgi34H3F1Vu
-         IKJW8sPEGkp3M18yRME6ZzYRaBI19QCISg7khCCxoFpSe3QHMZEs7oSd5Fa8WYKu/XZA
-         Ry/+20HNQyfdvOopJ0Ko8c4CMXuPJnX9YDSynu8Dtqz/3IcH8FckvsoBIPn2sry8Y0WU
-         aqWA==
-X-Gm-Message-State: AOAM531trUO1+Bn8jgJqjUdmoBxf39rQc3hAM2C6AzxMy4788L46ZzX7
-        LnOUzfFKM9A9G8KdaEdEAec=
-X-Google-Smtp-Source: ABdhPJxg81NZjQcFVatKNkWfPlauSfa+TpLVo/w/u/UWtfN3l1cXFQGKo/L8AWhBETdDoyyY1fjksg==
-X-Received: by 2002:a05:6808:999:: with SMTP id a25mr6148042oic.105.1632446752132;
-        Thu, 23 Sep 2021 18:25:52 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:1f57:e7c7:fed2:ae25? (2603-8081-140c-1a00-1f57-e7c7-fed2-ae25.res6.spectrum.com. [2603:8081:140c:1a00:1f57:e7c7:fed2:ae25])
-        by smtp.gmail.com with ESMTPSA id i4sm1694867otj.9.2021.09.23.18.25.50
+        bh=Ez9AZhmbkqgjmKUjZFTyGc3YPzKzZZ/EAaN5J8pQEd4=;
+        b=3YYEsB1qAGcjW1MPTBAAGE/skn1YVeb1dIIa0c2CpxDgbUiDiP2joudQHF0cxnP2uX
+         dD09QKc8SjBFMEXaGsntzlf7VbNuDiHeIkqzJ5Kpkl3ftK306YJSKrnWt+ntWpvTq5xB
+         YnKXIvLjNm+U0+G+zddzqzqWE/cy8WJZZngClQX84MgwDk3hnPCXim1FZpNLa7Gr1Ey6
+         iMW8dKDGQIxVC8PCNJ8nvD6ahDOcrkt92N9vMtFI1BFgxXmudz6zeVimZ2/XlFwrBg95
+         q2Ks9qXVCL/c8+2bgkEjOyLtmzHjcGr1pNLlyJRSNR59iNeENWu3D8BMueKfU0F99dmv
+         zUQA==
+X-Gm-Message-State: AOAM53378jNE8Ges7cIvUQuzbrUbxHmJ2eo738UgNim9VoWjRVXKillt
+        /4xKXX6M+BYlweKg8tHjVHY=
+X-Google-Smtp-Source: ABdhPJyqURa1kHq2oz+fi/L296+n+h2t3Q/HL1nhe6p81CuXq452zeLFzqpeDpb3um15BwbCwaESeg==
+X-Received: by 2002:a17:90a:7d11:: with SMTP id g17mr9233637pjl.150.1632451619389;
+        Thu, 23 Sep 2021 19:46:59 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:cbba:97c1:e6a:66d5? ([2601:647:4000:d7:cbba:97c1:e6a:66d5])
+        by smtp.gmail.com with ESMTPSA id i8sm7009301pfq.22.2021.09.23.19.46.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 Sep 2021 18:25:51 -0700 (PDT)
-Subject: Re: [PATCH for-rc v4 0/5] RDMA/rxe: Various bug fixes.
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Olga Kornievskaia <aglo@umich.edu>,
-        Yi Zhang <yi.zhang@redhat.com>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>, bvanassche@acm.org,
-        mie@igel.co.jp, rao.shoaib@oracle.com
-References: <20210914164206.19768-1-rpearsonhpe@gmail.com>
- <CAN-5tyF6vJQEK3+FJ44+7T223nMqs_dSXYKOKz-fPJ=3OHK12Q@mail.gmail.com>
- <20210923195629.GQ964074@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Message-ID: <b67381d8-89d2-7239-981e-dd50ea6929bd@gmail.com>
-Date:   Thu, 23 Sep 2021 20:25:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        Thu, 23 Sep 2021 19:46:58 -0700 (PDT)
+Message-ID: <9cda0704-0e63-39b2-7874-fd679314eb2b@acm.org>
+Date:   Thu, 23 Sep 2021 19:46:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <20210923195629.GQ964074@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.1.0
+Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
 Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Guo Zhi <qtxuning1999@sjtu.edu.cn>,
+        "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
+ <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
+ <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <YUwin2cn8X5GGjyY@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 9/22/21 23:45, Leon Romanovsky wrote:
+> Isn't kptr_restrict sysctl is for that?
 
->>
->> Hi Bob,
->>
->> After applying these patches only top of 5.15-rc1. rping and mount
->> NFSoRDMA works.
-> 
-> I've lost track with all the mails, are we good on this series now or
-> was there still more fixing needed?
-> 
-> Jason
-> 
+Hi Leon,
 
-There is one remaining report of a problem from Yi Zhang, on 9/17/21, who sees an error in blktest.
-Unfortunately I am unable to figure out how to reproduce the error and the code he shows is not directly
-in rxe. I suspect it may be related to resource limits if anything which has nothing to do with
-the patch series. I believe they are all good.
+After I sent my email I discovered the following commit: 5ead723a20e0
+("lib/vsprintf: no_hash_pointers prints all addresses as unhashed"; v5.12).
+I think that commit does what we need?
 
-Bob
+Thanks,
+
+Bart.
+
+
+commit 5ead723a20e0447bc7db33dc3070b420e5f80aa6
+Author: Timur Tabi <timur@kernel.org>
+Date:   Sun Feb 14 10:13:48 2021 -0600
+
+     lib/vsprintf: no_hash_pointers prints all addresses as unhashed
+
+     If the no_hash_pointers command line parameter is set, then
+     printk("%p") will print pointers as unhashed, which is useful for
+     debugging purposes.  This change applies to any function that uses
+     vsprintf, such as print_hex_dump() and seq_buf_printf().
+
+     A large warning message is displayed if this option is enabled.
+     Unhashed pointers expose kernel addresses, which can be a security
+     risk.
+
+     Also update test_printf to skip the hashed pointer tests if the
+     command-line option is set.
+
+     Signed-off-by: Timur Tabi <timur@kernel.org>
+     Acked-by: Petr Mladek <pmladek@suse.com>
+     Acked-by: Randy Dunlap <rdunlap@infradead.org>
+     Acked-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+     Acked-by: Vlastimil Babka <vbabka@suse.cz>
+     Acked-by: Marco Elver <elver@google.com>
+     Signed-off-by: Petr Mladek <pmladek@suse.com>
+     Link: https://lore.kernel.org/r/20210214161348.369023-4-timur@kernel.org
