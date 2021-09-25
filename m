@@ -2,82 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A694A417E96
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 02:21:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03817418031
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 09:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239410AbhIYAWe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Sep 2021 20:22:34 -0400
-Received: from smtp181.sjtu.edu.cn ([202.120.2.181]:59676 "EHLO
-        smtp181.sjtu.edu.cn" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhIYAWe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Sep 2021 20:22:34 -0400
-Received: from proxy02.sjtu.edu.cn (smtp188.sjtu.edu.cn [202.120.2.188])
-        by smtp181.sjtu.edu.cn (Postfix) with ESMTPS id 8276B1008CBC0;
-        Sat, 25 Sep 2021 08:20:58 +0800 (CST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTP id 6B08C200B5750;
-        Sat, 25 Sep 2021 08:20:58 +0800 (CST)
-X-Virus-Scanned: amavisd-new at 
-Received: from proxy02.sjtu.edu.cn ([127.0.0.1])
-        by localhost (proxy02.sjtu.edu.cn [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WZm9hljEh1F3; Sat, 25 Sep 2021 08:20:58 +0800 (CST)
-Received: from [192.168.10.98] (unknown [202.120.40.82])
-        (Authenticated sender: qtxuning1999@sjtu.edu.cn)
-        by proxy02.sjtu.edu.cn (Postfix) with ESMTPSA id 43222200B574F;
-        Sat, 25 Sep 2021 08:20:46 +0800 (CST)
-Message-ID: <9439f81a-9bcb-816e-4187-2b37a388db19@sjtu.edu.cn>
-Date:   Sat, 25 Sep 2021 08:20:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.1.1
-Subject: Re: [PATCH] infiniband hfi1: fix misuse of %x in ipoib_tx.c
-Content-Language: en-US
-To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S231983AbhIYHaz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Sep 2021 03:30:55 -0400
+Received: from mout.gmx.net ([212.227.15.15]:32783 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230029AbhIYHay (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Sep 2021 03:30:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1632554949;
+        bh=yFDb4A4/GKbkjkwFKbZYWrHFDEh/iWmCyJIjxuX4JRg=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=lQyskH9jAMoAMLP8KqTdBeTKpV2iLZwv9fcEazU1jz5jWCygaADc7xZwfFAZEjnLo
+         1jJYQTYic+gVR9HzrtX8ZkdhujDOT5frDs2ZcM2w4DjwxOVD2CffTpNRbLQ1XY2VX5
+         BhGKBvloCZNnLPiwdQ1srgr/fbFocg/0tWEFRWg8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from titan ([79.150.72.99]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MPog5-1mGVJX2PCN-00Mpcl; Sat, 25
+ Sep 2021 09:29:08 +0200
+Date:   Sat, 25 Sep 2021 09:28:56 +0200
+From:   Len Baker <len.baker@gmx.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Len Baker <len.baker@gmx.com>, Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20210922134857.619602-1-qtxuning1999@sjtu.edu.cn>
- <CH0PR01MB71536ECA05AA44C4FAD83502F2A29@CH0PR01MB7153.prod.exchangelabs.com>
- <276b9343-c23d-ac15-bb73-d7b42e7e7f0f@acm.org> <YUwin2cn8X5GGjyY@unreal>
- <9cda0704-0e63-39b2-7874-fd679314eb2b@acm.org>
- <CH0PR01MB71533CD295D5799DC26CF857F2A49@CH0PR01MB7153.prod.exchangelabs.com>
-From:   Guo Zhi <qtxuning1999@sjtu.edu.cn>
-In-Reply-To: <CH0PR01MB71533CD295D5799DC26CF857F2A49@CH0PR01MB7153.prod.exchangelabs.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Alex Vesker <valex@nvidia.com>,
+        Erez Shitrit <erezsh@nvidia.com>,
+        Jianbo Liu <jianbol@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/mlx5: DR, Prefer kcalloc over open coded arithmetic
+Message-ID: <20210925072856.GA1660@titan>
+References: <20210905074936.15723-1-len.baker@gmx.com>
+ <202109202105.9E901893@keescook>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202109202105.9E901893@keescook>
+X-Provags-ID: V03:K1:klFNjD6m3a+ozEsOsMiNydZCSb43iYDcQ8ER9QidygMym4OfgPs
+ D9DtkkRLi3ZZLQzUoPdPvUueBxaFGJ09EFhSOAnovKo0oykH/2m9ht2LYjSVkBHikPUR/NO
+ nwHLaiuNX4XKvYtw+U9zh58/aH0ruKUtDK/R+ySTuwYChsrS/OdTQn5vGO1WTIx1QZNEL9S
+ hrGDj9gq/rqkARZauO9VA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Mtn6d7yNuYc=:QIJZrerQqy1JFr3BD4QVi1
+ 8Hs+Gy7pD5ODJrHge8xFCB0aTtWpuEGp2Rm3LDZMAQOODunpOKMG4goWxz1pWF1dTJ5jjUR6T
+ iljjCjAmHCYgAbsVBtBuu5us00hz7bKnuimm4yAbuncpeS/IDHIJAKTfBBIkLPo0cIPQ81Z9p
+ IMCpUvtBaHVtNwIhHZuZQb1OOPt4/G9ExyJp+kj6+7Epg5Y5himx4sJkWaQuQpr2lHQeK81oD
+ gZ7r+JYhbfsl2m1HV0FXiMX6boItp5EEM+OWSo2JhYPNb4TP+WtbjsEf3gaciIPwWMGoOxTTi
+ pNBU8houNdiwCmqvUpLcM0I9aAAOSX8jzVfTIKrga3qiRNZpyTsKVy+Omg44DSSKr82kyIYHB
+ RjmUm5jhQxJ/rkJVRQ8Ug2ytlz71BF1pogB8+Xf9BiChyG4gWj6fkrQEXQ8GyrmASry+yXnSk
+ gpSFN9eHBC6rAfpDzpt5CGBdVbBUjkagDmjjJpDtYADRKxEhzU0OILeL/NgqrfeyLzU8400vk
+ 9WngvC8jeNhhzX00Xw7uq1QC50Og/z2n482Tm567np0uqPI0bCCplXWeZVNxe5q1yAIqyNUbb
+ 16BkZFRT49ejfWLW0+g94xe0jSYyKHjIPjl1Z6EZ+i0C9c4a+H49BtYw6pccvQziFbvTrcKmM
+ mndA//4qjzFP77acRB80LcuVyXGRrdQZNNCJj8bTDwrKbG/ZgM7mhrfg48C+inV116saPeWwk
+ gFVZObGd03nmRqC/9r5fPOPeH5OP4HjHhYi0K1CZawZlcfTXRUkh0QVwQCch0YPyj/3v/aT6m
+ 71kULj2Qy/IIm9HqDOsUA6eIIZfu4t6+xuV/JFiLro1uuW/K4upm2SjAJeW3hMy1gOaWket3V
+ dssrnEbJ855YZQ9RWyhJozq8mRrCbTzmDBXmWHjHEArDT3NbEa/EIUNf5yXcIgLpUGUui7pNv
+ 2L7FPM6s3cTdvMurH5cUUI4OQitLhtjrF5dlWDLB5qhbZoH2lxYws3UIiEoTdIMio3TOKpRhE
+ 6sQ2UP3LF0MBMTzowXUY7UPsJGF5cUxhvoj84DciCxH4fynRAC2bqqGMKBrg+KD1C34M5NS2R
+ bMIaeMkGzVJil0=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/9/24 22:43, Marciniszyn, Mike wrote:
->> On 9/22/21 23:45, Leon Romanovsky wrote:
->>> Isn't kptr_restrict sysctl is for that?
->> Hi Leon,
->>
->> After I sent my email I discovered the following commit: 5ead723a20e0
->> ("lib/vsprintf: no_hash_pointers prints all addresses as unhashed"; v5.12).
->> I think that commit does what we need?
->>
-> Thanks Bart,
+Hi,
+
+On Mon, Sep 20, 2021 at 09:06:35PM -0700, Kees Cook wrote:
+> >
+> > -	ref_actions =3D kzalloc(sizeof(*ref_actions) * num_of_dests * 2, GFP=
+_KERNEL);
+> > +	if (unlikely(check_mul_overflow(num_of_dests, 2u, &ref_act_cnt)))
+> > +		goto free_hw_dests;
+> > +
+> > +	ref_actions =3D kcalloc(ref_act_cnt, sizeof(*ref_actions), GFP_KERNE=
+L);
 >
-> I agree.
->
-> Jason, as to traces, I suspect we need to do the same %p thing there for existing code and any new work.
->
-> For situations for debugging in the wild, a command line arg can show the actual value.   I'm ok with that.
->
-> Mike
+> In the future, consider array3_size(), but this is fine too. :)
 
-Can this patch which changes %llx to %p in infiniband hfi1 to avoid 
-kernel pointer release be applied?
+Ok, thanks for the advise.
 
-
-Thanks.
-
-
-Guo
-
+Regards,
+Len
