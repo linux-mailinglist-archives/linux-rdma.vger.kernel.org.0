@@ -2,125 +2,192 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB174180F9
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 12:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F26418136
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 13:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241912AbhIYKPn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Sep 2021 06:15:43 -0400
-Received: from mail-mw2nam12on2064.outbound.protection.outlook.com ([40.107.244.64]:43629
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235805AbhIYKPn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 25 Sep 2021 06:15:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mEADE7td2pLSV+2TxPdxCglIpVlhag6wBheYB0QiU3HIow5trqB4Uqomg4Cp9wgvJF+36n3n3dGTrpK3hoxvHXsO5FyyqxwNP0NjTnsikOm12LdfCJSroyAH9JGbnAynBfJn/jt6br4GTkqClYPc9iPzlpihczMAmJInTNeA5rKRdYHnQJ1kt/8rU4aJ1br5Z06lRIdQECaO9H6Y9fae/lrY1hdu6lkAQmf0P6ASRrzV7fKG4FL62B6J020/XjA11iLOXWfBf5wiHB+9eB7Q6Eb8KPTna9EzG1Lqnb1fwHaLWu+NVj10FgBZKzkOpZzb84mH45T4V2N+vfqfNkZMgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=WPlhY/KzKHXNnIRdhVSBUbeRjxVyLBUb4WD3eWiPvxw=;
- b=R2KJS/YxVW09SsFOlsQUpgmAUj0aoAFgtq7LIUh8CB7g+4zbCsthkomjZUPDHyekHy1kOUqU7EcSnx5JtVkyFeL97Z/ZESQoSI6nlxlg1SowxKLVtAD32g+ZgoZHapBcbkQiOYDLfgxi4yNRgbOWG03DHi/dBOFnqjbtpSMIdiKvct4MSU0pHA8zQrlngOai/mlJgiWp1gSRXukEfmg45iiSd8sYhE9JvhyU3lDe1ziWXvlBOIijF+bav9t+YzprCewA8fPvNcOxRX0VF/O7KTZ5kIIRksTF9abXw+38tfK05HB4olYXrbJjouJaLfR7O46A3KmwxVSnSZ1mKuJweg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=suse.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WPlhY/KzKHXNnIRdhVSBUbeRjxVyLBUb4WD3eWiPvxw=;
- b=sC4SkzAzBZh0qJvnf+5DSmmSbnAzOIpE56o81LElz7SAZbTEACF+Ejeg7+K/qpgocTdGfI/S6swpY23L7Sg84mMbejTFgmJ1dyVFAfhileQZcYfqmmx2ZlsEaWYG1zcWG+qN9tfRiwnqCyci7wXlvQI08LWwOQIhNXJS35JLbgHFHMZUFTY3je5Sbcpxwn6Y8FcUV7hFmlqq8iIyFJKMEI1/MuwmZUikJMb8buhMGRBd1ZuxMNzfQp2RmxGLDuCp2QBLdFm42uj84ksDWG4YHvsqdCokRAXxEy+zDanSSZxnlZITJQHO1UmFKywqmYO2JDEYSAFbLslvdX+mRTYWbg==
-Received: from BN0PR08CA0001.namprd08.prod.outlook.com (2603:10b6:408:142::6)
- by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Sat, 25 Sep
- 2021 10:14:07 +0000
-Received: from BN8NAM11FT049.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:142:cafe::13) by BN0PR08CA0001.outlook.office365.com
- (2603:10b6:408:142::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Sat, 25 Sep 2021 10:14:07 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT049.mail.protection.outlook.com (10.13.177.157) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Sat, 25 Sep 2021 10:14:07 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sat, 25 Sep
- 2021 10:14:06 +0000
-Received: from localhost (172.20.187.5) by DRHQMAIL107.nvidia.com (10.27.9.16)
- with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sat, 25 Sep 2021 10:14:05
- +0000
-Date:   Sat, 25 Sep 2021 13:14:02 +0300
-From:   Leon Romanovsky <leonro@nvidia.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        <linux-rdma@vger.kernel.org>
-Subject: Re: rdma-core and travis CI
-Message-ID: <YU72ald4CCMHnslo@unreal>
-References: <20210923215746.GS964074@nvidia.com>
- <cab3a248-717c-9b6c-28b7-c767d7fe5f15@suse.com>
- <20210924114549.GU964074@nvidia.com>
+        id S244519AbhIYLYm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Sep 2021 07:24:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236171AbhIYLYl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Sep 2021 07:24:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 10A496103B;
+        Sat, 25 Sep 2021 11:23:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632568986;
+        bh=9vQ7Jy6vxv+17KL8sYGHu0D+tMeIG2i6YIeiCDwml2M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hpCTP/IfVfGHBzOHP5/ERVih7Np+6S1CF2jaWxQBoSaPpWxvmWDrfmi7KtqGbIaVj
+         4OMP9F328p7IEKsQzcAUW5dQQZYTXDjoQuwu64EE7m2nYqbjppu/uR38XLj8XZIz7k
+         tRfvIx0CnP2L6dSIHqOzY5bRfwrLvqQDlcJnq1VfFHVYWyTvhdVEHmtM8lyZU08CB5
+         pGGeo0dbRn2QmrPwLTpyFDlqv0X0xbge20cSdYgMMwH28HeTweZHf7K4m97G8m+PMS
+         HvoMMFLiqX8Bo6SQ1BDgqdXOzuUK17iTJZMKO1OupxzLl6OnuXkShCsq0tTaFU/EGp
+         tBeh0G+D96Qhw==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net-next v1 00/21] Move devlink_register to be last devlink command
+Date:   Sat, 25 Sep 2021 14:22:40 +0300
+Message-Id: <cover.1632565508.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210924114549.GU964074@nvidia.com>
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3cd544c-89ea-4158-9881-08d9800d35c8
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5318D9346E56332CA337AF1DBDA59@BL1PR12MB5318.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /FRK2SB7F+ULdoJEj0sMWYwU+8L558f/XgdYTP8uL+0MPFSw87IvcY+VcSfyyBcqHLjzRtRtornvaXvli5Vzsbi+TjBtblvvDvjFRPKv6YmaZ/2GiBy0roJynTnrlrCUPDAGXG4U1zj7nzoMBQxVLxDORKHCRhARyzV+WFSlELTxj1Ui6tDeNuqyWZs1oyh5uNaYf8wddV0Ua1h9zwp9wJf+RNE70lwCZfmZfC4jVLm/73ioHyQizTnZrY6ulW93W7EfLkZysQ6eM0nqSQdQ7ejUDNiZDLLPfgwYpBtBsONhFvZO3U2Wf/LFZ33/Ae4in5EfVyVBFEdsL8mS/hDOrXH8yOvKD5SS8G9+laF6vwx05UwYd9GL8RkcgNpd/5I++wSr/v0hqfibk2g0MoSTDJePrpsXbEdRM19vQPRahpgrZ4CoTbKMtRzSwA7ryE5g3iQViXxoiG+771I3FdO0wuDmpW98Iszt4ik7gTkrPmUErX/k+xXRsmF94biC8VLc+zKZssuFx2RESYpIILaQ2wHrzju4JdWwCWregg4wvifo0amb+yhm9TS4+eTQF2sWNELN4Z3aI4lDZNmOgpxdupAUYryDJdeZ0xSEu1zboZFzGSVcesze/aHKk2ReRJNigDA/I3P6djsqV/NxBE5zO/icpqH5D7Bz7ArzeZzsigmYlpPUOoPX0NMOqLmha9m87Z5YcxzF+fBY0sjGoTLPRf00xj4aemYc21fWA8WNXJJHsGqxD/Leso2/ZfsNPmQg619vp2d5/X/dynbaXuWgMXrFVow7VkjaBsjQGx/xE2o=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(36840700001)(46966006)(2906002)(8936002)(33716001)(6666004)(5660300002)(53546011)(966005)(6862004)(86362001)(6636002)(47076005)(3480700007)(8676002)(36906005)(26005)(82310400003)(70586007)(83380400001)(70206006)(316002)(36860700001)(508600001)(9686003)(356005)(54906003)(426003)(16526019)(186003)(4326008)(7636003)(336012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Sep 2021 10:14:07.3225
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3cd544c-89ea-4158-9881-08d9800d35c8
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT049.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Sep 24, 2021 at 08:45:49AM -0300, Jason Gunthorpe wrote:
-> On Fri, Sep 24, 2021 at 08:02:51AM +0200, Nicolas Morey-Chaisemartin wrote:
-> > 
-> > 
-> > On 9/23/21 11:57 PM, Jason Gunthorpe wrote:
-> > > Due to the security issue with travis, and the general fact I no
-> > > longer have any idea what we had/have configured there, I would like
-> > > to permanently switch travis off and revoke all its tokens for
-> > > github/etc
-> > > 
-> > > The only thing still using it is the CI for stable branches
-> > > v17,v16,v15 this all all 2018 vintange stuff and I think it is
-> > > probably OK to let them go at this point.
-> > > 
-> > 
-> > All these branches were retired at their last releases:
-> > https://lore.kernel.org/linux-rdma/046b9cdc-881c-c02f-57ad-f929a5b8803f@suse.com/
-> > 
-> > So yes everything is on Azure nowadays. Feel free to drop travis completely.
-> 
-> OK, Leon can you cancel the travis accounts? I think you have the
-> login..
+From: Leon Romanovsky <leonro@nvidia.com>
 
-I revoked access to whole linux-rdma organization.
+This is second version of patch series
+https://lore.kernel.org/netdev/cover.1628599239.git.leonro@nvidia.com/
+
+The main change is addition of delayed notification logic that will
+allowed us to delete devlink_params_publish API (future series will
+remove it completely) and conversion of all drivers to have devlink_register
+being last commend.
+
+The series itself is pretty straightforward, except liquidio driver
+which performs initializations in various workqueues without proper
+locks. That driver doesn't hole device_lock and it is clearly broken
+for any parallel driver core flows (modprobe + devlink + PCI reset will
+100% crash it).
+
+In order to annotate devlink_register() will lockdep of holding
+device_lock, I added workaround in this driver.
 
 Thanks
 
-> 
-> Jason
+----------------------
+From previous cover letter:
+Hi Dave and Jakub,
+
+This series prepares code to remove devlink_reload_enable/_disable API
+and in order to do, we move all devlink_register() calls to be right
+before devlink_reload_enable().
+
+The best place for such a call should be right before exiting from
+the probe().
+
+This is done because devlink_register() opens devlink netlink to the
+users and gives them a venue to issue commands before initialization
+is finished.
+
+1. Some drivers were aware of such "functionality" and tried to protect
+themselves with extra locks, state machines and devlink_reload_enable().
+Let's assume that it worked for them, but I'm personally skeptical about
+it.
+
+2. Some drivers copied that pattern, but without locks and state
+machines. That protected them from reload flows, but not from any _set_
+routines.
+
+3. And all other drivers simply didn't understand the implications of early
+devlink_register() and can be seen as "broken".
+
+Thanks
+
+Leon Romanovsky (21):
+  devlink: Notify users when objects are accessible
+  bnxt_en: Register devlink instance at the end devlink configuration
+  liquidio: Overcome missing device lock protection in init/remove flows
+  dpaa2-eth: Register devlink instance at the end of probe
+  net: hinic: Open device for the user access when it is ready
+  ice: Open devlink when device is ready
+  octeontx2: Move devlink registration to be last devlink command
+  net/prestera: Split devlink and traps registrations to separate
+    routines
+  net/mlx4: Move devlink_register to be the last initialization command
+  net/mlx5: Accept devlink user input after driver initialization
+    complete
+  mlxsw: core: Register devlink instance last
+  net: mscc: ocelot: delay devlink registration to the end
+  nfp: Move delink_register to be last command
+  ionic: Move devlink registration to be last devlink command
+  qed: Move devlink registration to be last devlink command
+  net: ethernet: ti: Move devlink registration to be last devlink
+    command
+  netdevsim: Move devlink registration to be last devlink command
+  net: wwan: iosm: Move devlink_register to be last devlink command
+  ptp: ocp: Move devlink registration to be last devlink command
+  staging: qlge: Move devlink registration to be last devlink command
+  net: dsa: Move devlink registration to be last devlink command
+
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |  15 +--
+ .../net/ethernet/cavium/liquidio/lio_main.c   |  19 ++--
+ .../freescale/dpaa2/dpaa2-eth-devlink.c       |  14 ++-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.c  |   9 +-
+ .../net/ethernet/freescale/dpaa2/dpaa2-eth.h  |   5 +-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |   7 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   6 +-
+ .../marvell/octeontx2/af/rvu_devlink.c        |  10 +-
+ .../marvell/octeontx2/nic/otx2_devlink.c      |  15 +--
+ .../marvell/prestera/prestera_devlink.c       |  29 +----
+ .../marvell/prestera/prestera_devlink.h       |   4 +-
+ .../ethernet/marvell/prestera/prestera_main.c |   8 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   8 +-
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   9 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |   2 +
+ .../mellanox/mlx5/core/sf/dev/driver.c        |   2 +
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  19 +---
+ drivers/net/ethernet/mscc/ocelot_vsc7514.c    |   5 +-
+ .../ethernet/netronome/nfp/devlink_param.c    |   9 +-
+ .../net/ethernet/netronome/nfp/nfp_net_main.c |   5 +-
+ .../ethernet/pensando/ionic/ionic_devlink.c   |   4 +-
+ drivers/net/ethernet/qlogic/qed/qed_devlink.c |   7 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  15 +--
+ drivers/net/ethernet/ti/cpsw_new.c            |   7 +-
+ drivers/net/netdevsim/dev.c                   |   8 +-
+ drivers/net/wwan/iosm/iosm_ipc_devlink.c      |   7 +-
+ drivers/ptp/ptp_ocp.c                         |   6 +-
+ drivers/staging/qlge/qlge_main.c              |   8 +-
+ net/core/devlink.c                            | 107 +++++++++++++++---
+ net/dsa/dsa2.c                                |  10 +-
+ 30 files changed, 202 insertions(+), 177 deletions(-)
+
+-- 
+2.31.1
+
