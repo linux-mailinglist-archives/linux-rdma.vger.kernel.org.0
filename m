@@ -2,74 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0DE4180BA
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 11:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A3624180F4
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Sep 2021 12:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238011AbhIYJIG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Sep 2021 05:08:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237469AbhIYJID (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Sep 2021 05:08:03 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE881C061765
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Sep 2021 02:06:28 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id c21so45356749edj.0
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Sep 2021 02:06:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=2CaMT67JGvjj6NGe2S2VjY6oPmovcyKsp2PXXZFQz1M=;
-        b=fWMbBIROLrV8+0l34qk/EIq42mnvNn6x8tJ4jmxfup6+tKWE7qGS8eJ49Ebf7uDpmi
-         itSY/A3BujM33IPkI+0pnu60pJgTaSxV3nCEX9lJl+cljTsnhJvzNRK6pCxB9lEN/I1H
-         ndEEjcH0/X5RHKfwdTPSz7hA1y4La3GxaHA9mlCtuGuOpeaFqL+du/S0w4fwHFQZF212
-         dWNJX0NIr2AJm6SQiTj56sXfVp9/Uojk5Pd6v7HD7ztZ4kD/7DKzff+6qIKjPQpJbL0N
-         Xg2OUNWa+2sRND0vi6XyfTgVFYhyaQaK0OpKIG2gcMAbUw1HA1u/kbWtnZZeabWouELm
-         tLVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=2CaMT67JGvjj6NGe2S2VjY6oPmovcyKsp2PXXZFQz1M=;
-        b=UoCb9RI6XpdBs0vu8VUJvrxU4q0iCDO7cDA0vT+AAAC72pwuhBySAd1B4R2Zbv4NvC
-         VQfWxocFuxEbw/H5ZErNiLEreacE8jZln53ymeDtq3xvWs7P8UsRG/7DoU+qCYwwla70
-         uavaf/Dv/8KbkSeMx+/NzSrYjDFbgu9iA2j9GpL91n7UMzA3T9G1WDPRJKBuFmvbijig
-         9NoLHlkzDV9cmzPQCCTrrZDqjoR15tEGolCu77d4aKpSmWtUk7EnUn/q3ZYxJS0ME+l3
-         Bq4D8WPu96o3tn6cJo0utxYhFRGF8U/F1Wdz+qIAeBaNW3akpMCkVpa+0hT6PYYi+9Rx
-         egPA==
-X-Gm-Message-State: AOAM530GvVBybb6IwU7NHYRjQeY9hgbzWHfJpUPLd66tcy4aMHWHIFZq
-        KxD0/MGvrjesBtlWw4eAqZm6oDk7CxGUNE48+TA=
-X-Google-Smtp-Source: ABdhPJxTt+LzU6a7s39EjHiZpzT/J6sGyHOCy23G0BDDkFNM5lEg+FzSVL7pAUBslQ35uAQebNAlp93T/tTg3f9i/ZY=
-X-Received: by 2002:a17:907:9602:: with SMTP id gb2mr15319919ejc.354.1632560787140;
- Sat, 25 Sep 2021 02:06:27 -0700 (PDT)
+        id S240182AbhIYKMS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Sep 2021 06:12:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235805AbhIYKMS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 25 Sep 2021 06:12:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D64C7610C9;
+        Sat, 25 Sep 2021 10:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632564643;
+        bh=7g5nUt6S+63DfyoI33cOS6neqOn00oZEYSazRW7icKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e87ZqnKl688T/SQGcH9+jwjV014Tulyt7Hb3OxSjdxnCIm7oEZ/EpJ73lS0FYFky+
+         w/MwitlU/UyQB3xXw7YZVKNcVS1KmP9X01uvgwDkuwXB3yUvmCneQ2EumdVqaGD+I7
+         oibmJ1i0v7DyUubmNeADkZerUZmsr3tXNZMwt0s8MRMAeW7hHPrw4A+cQuh+Lqyp70
+         RjO6S23V10pYJOBLZ5Kht/XmdgA0nn9Dt2OR+EqVL/1QjYUirI/PZ/Zx+ct6/4fNyT
+         QALmldECZr9nyTMlqDDYKWOytn11twX33WlFOnstjzbJUB9Lv9EIXUppsidnGUqccs
+         g6W9kC9yAb3ew==
+Date:   Sat, 25 Sep 2021 13:10:39 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <YU71n4WSIztOdpbw@unreal>
+References: <YUwgNPL++APsFJ49@unreal>
+ <20210924130845.GA410176@bhelgaas>
 MIME-Version: 1.0
-Sender: bankform3@gmail.com
-Received: by 2002:a50:3585:0:0:0:0:0 with HTTP; Sat, 25 Sep 2021 02:06:26
- -0700 (PDT)
-From:   Mrs Aisha Al-Qaddafi <mrsaishag6555@gmail.com>
-Date:   Sat, 25 Sep 2021 02:06:26 -0700
-X-Google-Sender-Auth: 2UimrWr4mNZXK_bVn7Xp8VPSEk8
-Message-ID: <CAO=+CVQsf7wtPgpLfZRN=dRfn8ypCma8A_uDTn1G95H3vN1VHA@mail.gmail.com>
-Subject: hello dear friend please can i trust you
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210924130845.GA410176@bhelgaas>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear Friend,
-I came across your e-mail contact prior a private search while in need
-of your assistance. I am Aisha Al-Qaddafi, the only biological
-Daughter of Former President of Libya Col. Muammar Al-Qaddafi. Am a
-single Mother and a Widow with three Children.
-I have investment funds worth Twenty Seven Million Five Hundred
-Thousand United State Dollar ($27.500.000.00 ) and i need a trusted
-investment Manager/Partner because of my current refugee status,
-however, I am interested in you for investment project assistance in
-your country, may be from there, we can build business relationship in
-the nearest future.
-If you are willing to handle this project on my behalf kindly reply
-urgent to enable me provide you more information about the investment
-funds.
-Your Urgent Reply Will Be Appreciated
-Mrs Aisha Al-Qaddafi
+On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
+> On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
+> > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
+> > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > 
+> > > > The PCI core uses the VF index internally, often called the vf_id,
+> > > > during the setup of the VF, eg pci_iov_add_virtfn().
+> > > > 
+> > > > This index is needed for device drivers that implement live migration
+> > > > for their internal operations that configure/control their VFs.
+> > > >
+> > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> > > > from this series needs it and not the bus/device/function which is
+> > > > exposed today.
+> > > > 
+> > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> > > > was used to create the bus/device/function.
+> > > > 
+> > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > 
+> > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+> > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
+> > > one with a matching devfn (although it *doesn't* check for a matching
+> > > bus number, which seems like a bug).
+> > > 
+> > > Maybe that should use pci_iov_vf_id()?
+> > 
+> > Yes, I gave same comment internally and we decided to simply reduce the
+> > amount of changes in mlx5_core to have less distractions and submit as a
+> > followup. Most likely will add this hunk in v1.
+> 
+> I guess it backfired as far as reducing distractions, because now it
+> just looks like a job half-done.
+
+Partially :)
+I didn't expect to see acceptance of this series in v0, we wanted to
+gather feedback as early as possible.
+
+> 
+> And it still looks like the existing code is buggy.  This is called
+> via sysfs, so if the PF is on bus X and the user writes to
+> sriov_vf_msix_count for a VF on bus X+1, it looks like
+> mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
+> VF.
+
+In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
+to PF which has "struct mlx5_core_dev". My expectation is that they share
+same bus as that PF was the one who created VFs. The mlx5 devices supports
+upto 256 VFs and it is far below the bus split mentioned in PCI spec.
+
+How can VF and their respective PF have different bus numbers?
+
+Thanks
+
+> 
+> Bjorn
