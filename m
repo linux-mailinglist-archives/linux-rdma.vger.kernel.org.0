@@ -2,99 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14EFC4186AC
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 08:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55E44186BC
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 08:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231154AbhIZGNP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Sep 2021 02:13:15 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:49068 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231146AbhIZGNJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:13:09 -0400
-Received: from BC-Mail-Ex09.internal.baidu.com (unknown [172.31.51.49])
-        by Forcepoint Email with ESMTPS id 23073A7C24971CC6AF0C;
-        Sun, 26 Sep 2021 14:11:31 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex09.internal.baidu.com (172.31.51.49) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Sun, 26 Sep 2021 14:11:31 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Sun, 26 Sep 2021 14:11:30 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Doug Ledford <dledford@redhat.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] RDMA/irdma: Use dma_alloc_coherent() instead of kmalloc/dma_map_single()
-Date:   Sun, 26 Sep 2021 14:11:23 +0800
-Message-ID: <20210926061124.335-1-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
+        id S231127AbhIZGi3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Sep 2021 02:38:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229578AbhIZGi2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Sep 2021 02:38:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DE660F93;
+        Sun, 26 Sep 2021 06:36:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632638213;
+        bh=28oArhi0u0AmWqG/AavBH4MgxWMN2/sjbeEH/mw3iKc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=alEjSWcDpCdzhQkOkBFYOPhQNwQERF9Tn/YsFDW8gnRwmMD+pV9bW5cH5Neq2KOKG
+         feKkdg4nYEaqHCdzrSBmjudBlqrHfUNzqA/NBZacoIuPCnOCNnEZZJaOmDfhXiGdRp
+         cjfrnBdpDn+fpbdHb3QBlYVip6+jiXHavCTr3ZKe2I2FT/IsWmceILP/hl8WaxWaar
+         621N16CbPuOt11ohNfn2B8Zqfh1doNB9mx1SJBFTljQOTpUxqX4zcW1wKqJaf650Ul
+         +BEjjEc7RNPpoBXJZDWU6uMW4HXRRNu/JIKh14FmoCK1LTis+0vc5W4socNPC5BeOq
+         Jd1mXdW/1pYvA==
+Date:   Sun, 26 Sep 2021 09:36:49 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
+Message-ID: <YVAVAfU3aL6JJg3i@unreal>
+References: <YU71n4WSIztOdpbw@unreal>
+ <20210925174115.GA511131@bhelgaas>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex15.internal.baidu.com (172.31.51.55) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210925174115.GA511131@bhelgaas>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Replacing kmalloc/kfree/dma_map_single/dma_unmap_single()
-with dma_alloc_coherent/dma_free_coherent() helps to reduce
-code size, and simplify the code, and coherent DMA will not
-clear the cache every time.
+On Sat, Sep 25, 2021 at 12:41:15PM -0500, Bjorn Helgaas wrote:
+> On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
+> > On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
+> > > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
+> > > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
+> > > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
+> > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > > 
+> > > > > > The PCI core uses the VF index internally, often called the vf_id,
+> > > > > > during the setup of the VF, eg pci_iov_add_virtfn().
+> > > > > > 
+> > > > > > This index is needed for device drivers that implement live migration
+> > > > > > for their internal operations that configure/control their VFs.
+> > > > > >
+> > > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
+> > > > > > from this series needs it and not the bus/device/function which is
+> > > > > > exposed today.
+> > > > > > 
+> > > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
+> > > > > > was used to create the bus/device/function.
+> > > > > > 
+> > > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
+> > > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > > > 
+> > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > > > 
+> > > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
+> > > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
+> > > > > one with a matching devfn (although it *doesn't* check for a matching
+> > > > > bus number, which seems like a bug).
+> > ...
+> 
+> > > And it still looks like the existing code is buggy.  This is called
+> > > via sysfs, so if the PF is on bus X and the user writes to
+> > > sriov_vf_msix_count for a VF on bus X+1, it looks like
+> > > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
+> > > VF.
+> > 
+> > In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
+> > to PF which has "struct mlx5_core_dev". My expectation is that they share
+> > same bus as that PF was the one who created VFs. The mlx5 devices supports
+> > upto 256 VFs and it is far below the bus split mentioned in PCI spec.
+> > 
+> > How can VF and their respective PF have different bus numbers?
+> 
+> See PCIe r5.0, sec 9.2.1.2.  For example,
+> 
+>   PF 0 on bus 20
+>     First VF Offset   1
+>     VF Stride         1
+>     NumVFs          511
+>   VF 0,1   through VF 0,255 on bus 20
+>   VF 0,256 through VF 0,511 on bus 21
+> 
+> This is implemented in pci_iov_add_virtfn(), which computes the bus
+> number and devfn from the VF ID.
+> 
+> pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
+> the user writes to sriov_vf_msix_count for VF 0,256, it looks like
+> we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
- drivers/infiniband/hw/irdma/puda.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+This is PCI spec split that I mentioned.
 
-diff --git a/drivers/infiniband/hw/irdma/puda.c b/drivers/infiniband/hw/irdma/puda.c
-index 58e7d875643b..feafe21b12c6 100644
---- a/drivers/infiniband/hw/irdma/puda.c
-+++ b/drivers/infiniband/hw/irdma/puda.c
-@@ -151,24 +151,15 @@ static struct irdma_puda_buf *irdma_puda_alloc_buf(struct irdma_sc_dev *dev,
- 
- 	buf = buf_mem.va;
- 	buf->mem.size = len;
--	buf->mem.va = kzalloc(buf->mem.size, GFP_KERNEL);
-+	buf->mem.va = dma_alloc_coherent(dev->hw->device, len,
-+					 &buf->mem.pa, GFP_KERNEL);
- 	if (!buf->mem.va)
--		goto free_virt;
--	buf->mem.pa = dma_map_single(dev->hw->device, buf->mem.va,
--				     buf->mem.size, DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(dev->hw->device, buf->mem.pa)) {
--		kfree(buf->mem.va);
--		goto free_virt;
--	}
-+		return NULL;
- 
- 	buf->buf_mem.va = buf_mem.va;
- 	buf->buf_mem.size = buf_mem.size;
- 
- 	return buf;
--
--free_virt:
--	kfree(buf_mem.va);
--	return NULL;
- }
- 
- /**
-@@ -179,9 +170,7 @@ static struct irdma_puda_buf *irdma_puda_alloc_buf(struct irdma_sc_dev *dev,
- static void irdma_puda_dele_buf(struct irdma_sc_dev *dev,
- 				struct irdma_puda_buf *buf)
- {
--	dma_unmap_single(dev->hw->device, buf->mem.pa, buf->mem.size,
--			 DMA_BIDIRECTIONAL);
--	kfree(buf->mem.va);
-+	dma_free_coherent(dev->hw->device, buf->mem.size, buf->mem.va, buf->mem.pa);
- 	kfree(buf->buf_mem.va);
- }
- 
--- 
-2.25.1
+> 
+> The spec encourages devices that require no more than 256 devices to
+> locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
+> only have 255 VFs, you may avoid the problem.
+> 
+> But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
+> is safe to assume the bus number is the same.
 
+No problem, we will make it more clear.
+
+> 
+> Bjorn
