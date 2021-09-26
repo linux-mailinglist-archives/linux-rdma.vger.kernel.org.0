@@ -2,215 +2,242 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECCD418A1A
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 18:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E0C418A5F
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 19:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhIZQSv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Sep 2021 12:18:51 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:20370 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231178AbhIZQSv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Sep 2021 12:18:51 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HHW5M23ZhzRPLx;
-        Mon, 27 Sep 2021 00:12:55 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (7.193.23.208) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 00:17:10 +0800
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.8; Mon, 27 Sep 2021 00:17:09 +0800
-Received: from lhreml710-chm.china.huawei.com ([169.254.81.184]) by
- lhreml710-chm.china.huawei.com ([169.254.81.184]) with mapi id
- 15.01.2308.008; Sun, 26 Sep 2021 17:17:07 +0100
-From:   Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Kirti Wankhede" <kwankhede@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        liulongfang <liulongfang@huawei.com>
-Subject: RE: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Topic: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Thread-Index: AQHXr54pt96rmXk0YUaXSN2Kf89+2auxakgA///+2wCAACw6gIABM1JQgAMzv4CAAIdJsA==
-Date:   Sun, 26 Sep 2021 16:17:07 +0000
-Message-ID: <85743eabdae04d08bb5eba7b6857496e@huawei.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <42729adc4df649f7b3ce5dc95e66e2dc@huawei.com> <YUxiPqShZT4bk0uL@unreal>
- <60989aa8-4231-0cdf-47bb-1e2026bd1f17@nvidia.com>
- <164439bb579d41639edf9a01a538a5ef@huawei.com>
- <078fc846-1f72-adc0-339c-1b638c6c6e33@nvidia.com>
-In-Reply-To: <078fc846-1f72-adc0-339c-1b638c6c6e33@nvidia.com>
-Accept-Language: en-GB, en-US
+        id S229511AbhIZRhp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Sep 2021 13:37:45 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:31044 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229496AbhIZRho (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Sep 2021 13:37:44 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18QEc7hV017464;
+        Sun, 26 Sep 2021 17:36:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=yCgU201JjRqF39cgfV0u+zlU33dhrBl888vpj74kwTc=;
+ b=OfvLkTFWUu5jrGlX+qduQWqjDybTuVVBe4Id3S7MrJwUAh1M11GxLN4Fo0+m9fDbJv1Q
+ rDq5HHuneEr3yfAr406jWqYtSYbcvIChkDbMVJwDx1ozRNVUbazF6tkBigzE4YqNuE2U
+ ZstM92s7jD3dV/58iedVxfdKl+Lb1pB7WbkrV9JE4IhElPxx7bBV1okDSpaaWEaOPdkg
+ KSq7JAYa0Dl+/U3z1T+8HfgDbmQt/k5gOGE6w09TMQw85sgwx8yxvfr9fxd+j+Wpns2S
+ rwdAJfUwk3s6PriqQn9FQs7Q3hp/Iu+h4ytRdG2ASu4m7AvvxNzB7dYWHopEcMCu0+AY TQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bap3e8r0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 Sep 2021 17:36:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18QHZDIL073037;
+        Sun, 26 Sep 2021 17:36:05 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2108.outbound.protection.outlook.com [104.47.70.108])
+        by aserp3030.oracle.com with ESMTP id 3b9stbnjjb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 Sep 2021 17:36:05 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Paq7tCixuOTSwSAjMFo/hPOLFKc3Tq9SDrEcN7O9OorflzqXUtjpUx2WFGNtQ0ltio/0FjA3clOVPNxeJnp1u4nRqi8UJGiGKP3KHzWQBvy8H2lJ2AXh+KrRVEjymGvuEr59EkhulI6SfD7WJspKF+FIANxZWEQ/vTl/kFNNzf7M6wAQz/bgoc8OYRL38xqZMY1elwFXUIm3HfYK6na/rUe4RYoOeMoYC78QeWjndAqLhXhuEtzWPQhDKl8QuzLIda9KViXOllUfu/WiLK5gemKEXEGkv28+XGDRfEYCRG9bPoN3P2LAsE8TZ2D93tUmE8dSEYWpuSxsoBq/1BUQrw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=yCgU201JjRqF39cgfV0u+zlU33dhrBl888vpj74kwTc=;
+ b=CwDd5N9juwAXi3+g+Hirk6X3+imrOuF/92lz38t2cJLBlC2/ejLxqlVY4J+rSB6+wjQbNBHXq1ePaxcDIbfR7tv8hyEwzfSh/n+ohbTa2ff/kP4WdE8LeC6v26f0y9XLgqR1GetGuM8rzltkGlRAiULRRbgcfop4GYzz7oYcrTfm8H+/X6rxJx/iNYI3q2YniPurn+AEHDAha/wS6M8PZN749KCRqL6z+MSnkC1qsnJhaLOPOgWwDqn2LJ6KkkoQmTYcgXs7sC2SSDPwDYa+qQNEti1EMDXeKo5MbWyLACgQwFHQkJL9xRrg8zh7Krvo2buY0IJeviSDTsDuhjzHlA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yCgU201JjRqF39cgfV0u+zlU33dhrBl888vpj74kwTc=;
+ b=n99IKlEWU+rZQhgk9XGODRXCFEwRhnyf/AMan9dem1FUVM10qPZyq2dqjjvAcmwt97b8GCvhEvQtNSuHccHdwbMTYRUNaBC43udkyy8KxmGKHO/W7/rO7ahbILalfRVL+bOMo/LtKQoPsfvT4ADOasuDjoiBg66X261gLfzql2g=
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com (2603:10b6:a03:2db::24)
+ by BYAPR10MB3046.namprd10.prod.outlook.com (2603:10b6:a03:8e::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.19; Sun, 26 Sep
+ 2021 17:36:02 +0000
+Received: from SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::f4fe:5b4:6bd9:4c5b]) by SJ0PR10MB4688.namprd10.prod.outlook.com
+ ([fe80::f4fe:5b4:6bd9:4c5b%5]) with mapi id 15.20.4544.021; Sun, 26 Sep 2021
+ 17:36:01 +0000
+From:   Chuck Lever III <chuck.lever@oracle.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "bugzilla-daemon@bugzilla.kernel.org" 
+        <bugzilla-daemon@bugzilla.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [Bug 214523] New: RDMA Mellanox RoCE drivers are unresponsive to
+ ARP updates during a reconnect
+Thread-Topic: [Bug 214523] New: RDMA Mellanox RoCE drivers are unresponsive to
+ ARP updates during a reconnect
+Thread-Index: AQHXsVmwbSiP3NBTSkWByRHQxitaiqu19wMAgACgO4A=
+Date:   Sun, 26 Sep 2021 17:36:01 +0000
+Message-ID: <EC1346C3-3888-4FFB-B302-1DB200AAE00D@oracle.com>
+References: <bug-214523-11804@https.bugzilla.kernel.org/>
+ <YVApGIbSLsU2Ap0k@unreal>
+In-Reply-To: <YVApGIbSLsU2Ap0k@unreal>
+Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-originating-ip: [10.47.87.241]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f7c8ec62-7017-415f-acd5-08d981141c03
+x-ms-traffictypediagnostic: BYAPR10MB3046:
+x-microsoft-antispam-prvs: <BYAPR10MB3046913917719EB72DFBD9C593A69@BYAPR10MB3046.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: D3CEIngCjS0Wn5SysKmLJin04v7f+Cw6zYzaIZ+atWjuEDlTNjI2tlJDYDpDynq5VLXb9UvcYf/j/3XRFw78uOgjZiB7xrmWof7RrSqv33glTSYiI9jJhvscNclQZTwRcyq6CXJOZVdU26t8FgwYL2+q6tCA0Fn1hJ2EMXIdHswNK/GJz8cMj0+ndev5DCNy/6b79pEJ1Rkr2P/9cYa+CA8fpv/m+m5Qi0yp2Y/5jSuSufxZq8LWO8yszk43KWEgwWi45UrJwBEdp3XUWUH7T37dFwl1EJr3TJoD5DgkIyBpW5bNfow0eLQRJWI6vYXLK+UkndR8vR5jNMdAftVYyYghDtU/I9zkqWcBHhTEOyulA25v0+SMRtPYqe3xpvjHbdELE4kapeFmvCGZOLAZa+ulFxNxQalo0R/ItoqijYx1TwxZokXFMWb9FP35Zz0G7M13l33ltSoYNEF0qyQKdWhFVvA4xQXR+R7rKt7igknnUi53gwzYSWtvmARVrqm69IeOohx8/uf/fQ8pXKtNnmW/LEwHyaQ+s0WysDj+OiCSTx+V9KsuhI5hMfWmlNKGSjBPU1OAB1VJvw9OKxkRK1P9t4Pr2jyIGbjlAYuDsNZJr0YsFO50Fz7lirO+ld5fordwFsjqk9LOwjSADBwRw+nmSngSfA4sVoBj8V9WZPQkDdg+sL0UD71vBZtdWds01gnLfJ1HNXBzHAG8yNmU2GLtltEZ2FaYBtPtYsZcOfhDielVdGOQnWNWF4wDb8vlWvcU4tRePc2uYcSoQD7ISnQNrlzHB2fYd2gViyE27+o8klbiIcIn48vLcvD2C64K
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4688.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(122000001)(966005)(54906003)(33656002)(6512007)(6506007)(53546011)(83380400001)(508600001)(4326008)(8936002)(76116006)(91956017)(66446008)(15650500001)(8676002)(6486002)(2616005)(71200400001)(2906002)(186003)(86362001)(38100700002)(66476007)(5660300002)(26005)(316002)(36756003)(64756008)(38070700005)(66946007)(66556008)(6916009)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Rt/HVUmifms/wv9OlPvC8rF49P7ttWkMvLe0DIeM5NbOkWNpzvjdMQX6U/hV?=
+ =?us-ascii?Q?ekWoCyX5IndNuy6EpNWXq4lkAl9QHp2c/RtxKIvbJwg+Oj/+0OC8NmaarxIb?=
+ =?us-ascii?Q?Q1fdiN1ZSDqCQyMZ+gl9LSLuFCPRq5GDvHXViWGYbLNFaZ7ZSEFtQAW/Hx9f?=
+ =?us-ascii?Q?VvlBuaybQ546wCDJ0T2YZL0ej5lDEFDBcdfwGwrMoCAxCTiZi4d+d0i266pX?=
+ =?us-ascii?Q?GE5zLdbm0zswsi4CR12PpOwEn4wY6KL/rqmKIf32ma5Q+sBvo7x9pcqwKolZ?=
+ =?us-ascii?Q?L5ZJMmxnEOqDoTs5GjSoWBKzktxVrkBP+i29LUUUaIYvJXI61gzNGe1m225E?=
+ =?us-ascii?Q?w0oCxwBBSwqL7EvTZDJWredUVyGWeorhxTNdWWHFiqCFMbRrXWHPXAhoercp?=
+ =?us-ascii?Q?FD7q2D9g/5icgsA7gWZozcGLZM8JZHsZVG0u8p0t7VW5E6bm2+C+CUn8/L2o?=
+ =?us-ascii?Q?oblAiTNH1erhg6Lg91ZSFrqXIMQScudAhonQz6IDiAjSCUuJkKhjaxcWgM6z?=
+ =?us-ascii?Q?ArYrgSf1cPYe6gZGEmDIraWfP0m2LGpWK1cXFV5Yjs1JbntVjcWyhI4xaeLa?=
+ =?us-ascii?Q?C1hgGLRRNnWazeiiDhGsqG7dM0SOu2YtREVfhvHlwHkce2yxR9R+Kjj2hgbi?=
+ =?us-ascii?Q?FExKzSPa2DFpqlDm7kP8KxVPdDi1fvXDE8cToG5/qwDKipyvup3gcnUPfTvX?=
+ =?us-ascii?Q?qqVVUW6lMl4aktMy9y6pnEsq6AqE958TrkbKjZjanYfRzjHvn2Sw92feAlow?=
+ =?us-ascii?Q?xjBN7b1TvFinc/XgO4Mi6w4JE+NUGmuYcmMzB0ikP3sgS22tyAjIxC6l8rR3?=
+ =?us-ascii?Q?w6KmzGvMXx0Dnu/UlgJmhPPxRdp5FSZWiXlNKtl+AnPTgX3ABy2kreVE7GaS?=
+ =?us-ascii?Q?t78ypvAd6dMT/sEzVVtiLkD4bTJT3v5n+0GKiua9IV8eFbPpJWAHhcPdTOiI?=
+ =?us-ascii?Q?VLZnSZbUu165k5EzWXrz23zgXrcmlq3bQHA/8nn0bmrPZ+WIscfU80ksZwQL?=
+ =?us-ascii?Q?HaagOAXMfAjeWiv1DaHikfO3kP1PyLP8R7phbdDELdnIyDoxGuNBNXyMbAAA?=
+ =?us-ascii?Q?s6B7QgDohrzw5KJv5QUzssi3drsW3LfNcq2svHvtU8FPrMKcniFFbv+yc0he?=
+ =?us-ascii?Q?QcW/PolAHNsckcegGvHzr/eam5p9Lqlzt5HTpw4Ulm2gbcyE03ZxvhLws2Ps?=
+ =?us-ascii?Q?uM6oKEeDiniKuMa3TaPhT5HuwSWRR5pJTv/FS24Js1U7ffYznNKaigjFqF9S?=
+ =?us-ascii?Q?FxsdLP6f5CCraKSZ7k3pdgzhKLT0nYiW7EMEiRcyPdFk32ruEDD20UxJz4l5?=
+ =?us-ascii?Q?W9/4OGQNF5mDA9HyBWOF9Yu+?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <FC7A821EE01AF941924608B56A6CD0A8@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4688.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f7c8ec62-7017-415f-acd5-08d981141c03
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2021 17:36:01.7474
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +fT+Nc1afM12+nEPoDiweGvK1hTDDbcZBd6pxobLAT7/Bl5t4cvqNFqSoHgIu6UPGezqOJcZiPYzI6FF+HYW9w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3046
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10119 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 spamscore=0 phishscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109260122
+X-Proofpoint-GUID: bL4GcN0xA7vLHPCFXQQ3inbsQRU6GBXK
+X-Proofpoint-ORIG-GUID: bL4GcN0xA7vLHPCFXQQ3inbsQRU6GBXK
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTWF4IEd1cnRvdm95IFtt
-YWlsdG86bWd1cnRvdm95QG52aWRpYS5jb21dDQo+IFNlbnQ6IDI2IFNlcHRlbWJlciAyMDIxIDEw
-OjEwDQo+IFRvOiBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpIDxzaGFtZWVyYWxpLmtvbG90aHVt
-LnRob2RpQGh1YXdlaS5jb20+Ow0KPiBMZW9uIFJvbWFub3Zza3kgPGxlb25Aa2VybmVsLm9yZz4N
-Cj4gQ2M6IERvdWcgTGVkZm9yZCA8ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3Jw
-ZQ0KPiA8amdnQG52aWRpYS5jb20+OyBZaXNoYWkgSGFkYXMgPHlpc2hhaWhAbnZpZGlhLmNvbT47
-IEFsZXggV2lsbGlhbXNvbg0KPiA8YWxleC53aWxsaWFtc29uQHJlZGhhdC5jb20+OyBCam9ybiBI
-ZWxnYWFzIDxiaGVsZ2Fhc0Bnb29nbGUuY29tPjsgRGF2aWQNCj4gUy4gTWlsbGVyIDxkYXZlbUBk
-YXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47IEtpcnRpDQo+
-IFdhbmtoZWRlIDxrd2Fua2hlZGVAbnZpZGlhLmNvbT47IGt2bUB2Z2VyLmtlcm5lbC5vcmc7DQo+
-IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7
-DQo+IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBT
-YWVlZCBNYWhhbWVlZA0KPiA8c2FlZWRtQG52aWRpYS5jb20+OyBsaXVsb25nZmFuZyA8bGl1bG9u
-Z2ZhbmdAaHVhd2VpLmNvbT4NCj4gU3ViamVjdDogUmU6IFtQQVRDSCBtbHg1LW5leHQgMi83XSB2
-ZmlvOiBBZGQgYW4gQVBJIHRvIGNoZWNrIG1pZ3JhdGlvbiBzdGF0ZQ0KPiB0cmFuc2l0aW9uIHZh
-bGlkaXR5DQo+IA0KPiANCj4gT24gOS8yNC8yMDIxIDEwOjQ0IEFNLCBTaGFtZWVyYWxpIEtvbG90
-aHVtIFRob2RpIHdyb3RlOg0KPiA+DQo+ID4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+
-ID4+IEZyb206IE1heCBHdXJ0b3ZveSBbbWFpbHRvOm1ndXJ0b3ZveUBudmlkaWEuY29tXQ0KPiA+
-PiBTZW50OiAyMyBTZXB0ZW1iZXIgMjAyMSAxNDo1Ng0KPiA+PiBUbzogTGVvbiBSb21hbm92c2t5
-IDxsZW9uQGtlcm5lbC5vcmc+OyBTaGFtZWVyYWxpIEtvbG90aHVtIFRob2RpDQo+ID4+IDxzaGFt
-ZWVyYWxpLmtvbG90aHVtLnRob2RpQGh1YXdlaS5jb20+DQo+ID4+IENjOiBEb3VnIExlZGZvcmQg
-PGRsZWRmb3JkQHJlZGhhdC5jb20+OyBKYXNvbiBHdW50aG9ycGUNCj4gPj4gPGpnZ0BudmlkaWEu
-Y29tPjsgWWlzaGFpIEhhZGFzIDx5aXNoYWloQG52aWRpYS5jb20+OyBBbGV4IFdpbGxpYW1zb24N
-Cj4gPj4gPGFsZXgud2lsbGlhbXNvbkByZWRoYXQuY29tPjsgQmpvcm4gSGVsZ2FhcyA8YmhlbGdh
-YXNAZ29vZ2xlLmNvbT47DQo+ID4+IERhdmlkIFMuIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5l
-dD47IEpha3ViIEtpY2luc2tpDQo+ID4+IDxrdWJhQGtlcm5lbC5vcmc+OyBLaXJ0aSBXYW5raGVk
-ZSA8a3dhbmtoZWRlQG52aWRpYS5jb20+Ow0KPiA+PiBrdm1Admdlci5rZXJuZWwub3JnOyBsaW51
-eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOw0KPiA+PiBsaW51eC1wY2lAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsNCj4gPj4gbmV0ZGV2QHZnZXIua2VybmVsLm9y
-ZzsgU2FlZWQgTWFoYW1lZWQgPHNhZWVkbUBudmlkaWEuY29tPg0KPiA+PiBTdWJqZWN0OiBSZTog
-W1BBVENIIG1seDUtbmV4dCAyLzddIHZmaW86IEFkZCBhbiBBUEkgdG8gY2hlY2sNCj4gPj4gbWln
-cmF0aW9uIHN0YXRlIHRyYW5zaXRpb24gdmFsaWRpdHkNCj4gPj4NCj4gPj4NCj4gPj4gT24gOS8y
-My8yMDIxIDI6MTcgUE0sIExlb24gUm9tYW5vdnNreSB3cm90ZToNCj4gPj4+IE9uIFRodSwgU2Vw
-IDIzLCAyMDIxIGF0IDEwOjMzOjEwQU0gKzAwMDAsIFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkN
-Cj4gPj4gd3JvdGU6DQo+ID4+Pj4+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4+Pj4+
-IEZyb206IExlb24gUm9tYW5vdnNreSBbbWFpbHRvOmxlb25Aa2VybmVsLm9yZ10NCj4gPj4+Pj4g
-U2VudDogMjIgU2VwdGVtYmVyIDIwMjEgMTE6MzkNCj4gPj4+Pj4gVG86IERvdWcgTGVkZm9yZCA8
-ZGxlZGZvcmRAcmVkaGF0LmNvbT47IEphc29uIEd1bnRob3JwZQ0KPiA+PiA8amdnQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IENjOiBZaXNoYWkgSGFkYXMgPHlpc2hhaWhAbnZpZGlhLmNvbT47IEFsZXgg
-V2lsbGlhbXNvbg0KPiA+Pj4+PiA8YWxleC53aWxsaWFtc29uQHJlZGhhdC5jb20+OyBCam9ybiBI
-ZWxnYWFzIDxiaGVsZ2Fhc0Bnb29nbGUuY29tPjsNCj4gPj4gRGF2aWQNCj4gPj4+Pj4gUy4gTWls
-bGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIgS2ljaW5za2kgPGt1YmFAa2VybmVsLm9y
-Zz47DQo+ID4+Pj4+IEtpcnRpIFdhbmtoZWRlIDxrd2Fua2hlZGVAbnZpZGlhLmNvbT47IGt2bUB2
-Z2VyLmtlcm5lbC5vcmc7DQo+ID4+Pj4+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxp
-bnV4LXBjaUB2Z2VyLmtlcm5lbC5vcmc7DQo+ID4+Pj4+IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwu
-b3JnOyBuZXRkZXZAdmdlci5rZXJuZWwub3JnOyBTYWVlZCBNYWhhbWVlZA0KPiA+Pj4+PiA8c2Fl
-ZWRtQG52aWRpYS5jb20+DQo+ID4+Pj4+IFN1YmplY3Q6IFtQQVRDSCBtbHg1LW5leHQgMi83XSB2
-ZmlvOiBBZGQgYW4gQVBJIHRvIGNoZWNrIG1pZ3JhdGlvbg0KPiA+Pj4+PiBzdGF0ZSB0cmFuc2l0
-aW9uIHZhbGlkaXR5DQo+ID4+Pj4+DQo+ID4+Pj4+IEZyb206IFlpc2hhaSBIYWRhcyA8eWlzaGFp
-aEBudmlkaWEuY29tPg0KPiA+Pj4+Pg0KPiA+Pj4+PiBBZGQgYW4gQVBJIGluIHRoZSBjb3JlIGxh
-eWVyIHRvIGNoZWNrIG1pZ3JhdGlvbiBzdGF0ZSB0cmFuc2l0aW9uDQo+ID4+Pj4+IHZhbGlkaXR5
-IGFzIHBhcnQgb2YgYSBtaWdyYXRpb24gZmxvdy4NCj4gPj4+Pj4NCj4gPj4+Pj4gVGhlIHZhbGlk
-IHRyYW5zaXRpb25zIGZvbGxvdyB0aGUgZXhwZWN0ZWQgdXNhZ2UgYXMgZGVzY3JpYmVkIGluDQo+
-ID4+Pj4+IHVhcGkvdmZpby5oIGFuZCB0cmlnZ2VyZWQgYnkgUUVNVS4NCj4gPj4+Pj4NCj4gPj4+
-Pj4gVGhpcyBlbnN1cmVzIHRoYXQgYWxsIG1pZ3JhdGlvbiBpbXBsZW1lbnRhdGlvbnMgZm9sbG93
-IGENCj4gPj4+Pj4gY29uc2lzdGVudCBtaWdyYXRpb24gc3RhdGUgbWFjaGluZS4NCj4gPj4+Pj4N
-Cj4gPj4+Pj4gU2lnbmVkLW9mZi1ieTogWWlzaGFpIEhhZGFzIDx5aXNoYWloQG52aWRpYS5jb20+
-DQo+ID4+Pj4+IFJldmlld2VkLWJ5OiBLaXJ0aSBXYW5raGVkZSA8a3dhbmtoZWRlQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IEphc29uIEd1bnRob3JwZSA8amdnQG52aWRpYS5j
-b20+DQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IExlb24gUm9tYW5vdnNreSA8bGVvbnJvQG52aWRp
-YS5jb20+DQo+ID4+Pj4+IC0tLQ0KPiA+Pj4+PiAgICBkcml2ZXJzL3ZmaW8vdmZpby5jICB8IDQx
-DQo+ID4+ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4+Pj4+
-ICAgIGluY2x1ZGUvbGludXgvdmZpby5oIHwgIDEgKw0KPiA+Pj4+PiAgICAyIGZpbGVzIGNoYW5n
-ZWQsIDQyIGluc2VydGlvbnMoKykNCj4gPj4+Pj4NCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvdmZpby92ZmlvLmMgYi9kcml2ZXJzL3ZmaW8vdmZpby5jIGluZGV4DQo+ID4+Pj4+IDNjMDM0
-ZmUxNGNjYi4uYzNjYTMzZTUxM2M4IDEwMDY0NA0KPiA+Pj4+PiAtLS0gYS9kcml2ZXJzL3ZmaW8v
-dmZpby5jDQo+ID4+Pj4+ICsrKyBiL2RyaXZlcnMvdmZpby92ZmlvLmMNCj4gPj4+Pj4gQEAgLTE2
-NjQsNiArMTY2NCw0NyBAQCBzdGF0aWMgaW50IHZmaW9fZGV2aWNlX2ZvcHNfcmVsZWFzZShzdHJ1
-Y3QNCj4gPj4gaW5vZGUNCj4gPj4+Pj4gKmlub2RlLCBzdHJ1Y3QgZmlsZSAqZmlsZXApDQo+ID4+
-Pj4+ICAgIAlyZXR1cm4gMDsNCj4gPj4+Pj4gICAgfQ0KPiA+Pj4+Pg0KPiA+Pj4+PiArLyoqDQo+
-ID4+Pj4+ICsgKiB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dlZCAtIENoZWNrcyB3
-aGV0aGVyIGENCj4gPj4+Pj4gK21pZ3JhdGlvbg0KPiA+PiBzdGF0ZQ0KPiA+Pj4+PiArICogICB0
-cmFuc2l0aW9uIGlzIHZhbGlkLg0KPiA+Pj4+PiArICogQG5ld19zdGF0ZTogVGhlIG5ldyBzdGF0
-ZSB0byBtb3ZlIHRvLg0KPiA+Pj4+PiArICogQG9sZF9zdGF0ZTogVGhlIG9sZCBzdGF0ZS4NCj4g
-Pj4+Pj4gKyAqIFJldHVybjogdHJ1ZSBpZiB0aGUgdHJhbnNpdGlvbiBpcyB2YWxpZC4NCj4gPj4+
-Pj4gKyAqLw0KPiA+Pj4+PiArYm9vbCB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dl
-ZCh1MzIgbmV3X3N0YXRlLCB1MzINCj4gPj4gb2xkX3N0YXRlKQ0KPiA+Pj4+PiArew0KPiA+Pj4+
-PiArCWVudW0geyBNQVhfU1RBVEUgPSBWRklPX0RFVklDRV9TVEFURV9SRVNVTUlORyB9Ow0KPiA+
-Pj4+PiArCXN0YXRpYyBjb25zdCB1OCB2ZmlvX2Zyb21fc3RhdGVfdGFibGVbTUFYX1NUQVRFICsg
-MV1bTUFYX1NUQVRFICsNCj4gPj4gMV0gPSB7DQo+ID4+Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFU
-RV9TVE9QXSA9IHsNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXSA9IDEs
-DQo+ID4+Pj4+ICsJCQlbVkZJT19ERVZJQ0VfU1RBVEVfUkVTVU1JTkddID0gMSwNCj4gPj4+Pj4g
-KwkJfSwNCj4gPj4+Pj4gKwkJW1ZGSU9fREVWSUNFX1NUQVRFX1JVTk5JTkddID0gew0KPiA+Pj4+
-PiArCQkJW1ZGSU9fREVWSUNFX1NUQVRFX1NUT1BdID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RF
-VklDRV9TVEFURV9TQVZJTkddID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9T
-QVZJTkcgfA0KPiA+PiBWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXQ0KPiA+Pj4+PiA9IDEsDQo+
-ID4+Pj4gRG8gd2UgbmVlZCB0byBhbGxvdyBfUkVTVU1JTkcgc3RhdGUgaGVyZSBvciBub3Q/IEFz
-IHBlciB0aGUgIlN0YXRlDQo+ID4+IHRyYW5zaXRpb25zIg0KPiA+Pj4+IHNlY3Rpb24gZnJvbSB1
-YXBpL2xpbnV4L3ZmaW8uaCwNCj4gPj4+IEl0IGxvb2tzIGxpa2Ugd2UgbWlzc2VkIHRoaXMgc3Rh
-dGUgdHJhbnNpdGlvbi4NCj4gPj4+DQo+ID4+PiBUaGFua3MNCj4gPj4gSSdtIG5vdCBzdXJlIHRo
-aXMgc3RhdGUgdHJhbnNpdGlvbiBpcyB2YWxpZC4NCj4gPj4NCj4gPj4gS2lydGksIFdoZW4gd2Ug
-d291bGQgbGlrZSB0byBtb3ZlIGZyb20gUlVOTklORyB0byBSRVNVTUlORyA/DQo+ID4gSSBndWVz
-cyBpdCBkZXBlbmRzIG9uIHdoYXQgeW91IHJlcG9ydCBhcyB5b3VyIGRldiBkZWZhdWx0IHN0YXRl
-Lg0KPiA+DQo+ID4gRm9yIEhpU2lsaWNvbiBBQ0MgbWlncmF0aW9uIGRyaXZlciwgd2Ugc2V0IHRo
-ZSBkZWZhdWx0IHRvIF9SVU5OSU5HLg0KPiANCj4gV2hlcmUgZG8geW91IHNldCBpdCBhbmQgcmVw
-b3J0IGl0ID8NCg0KQ3VycmVudGx5LCBpbiBfb3Blbl9kZXZpY2UoKSB3ZSBzZXQgdGhlIGRldmlj
-ZV9zdGF0ZSB0byBfUlVOTklORy4NCg0KSSB0aGluayBpbiB5b3VyIGNhc2UgdGhlIGRlZmF1bHQg
-b2Ygdm1pZy0+dmZpb19kZXZfc3RhdGUgPT0gMCAoX1NUT1ApLg0KDQo+IA0KPiA+DQo+ID4gQW5k
-IHdoZW4gdGhlIG1pZ3JhdGlvbiBzdGFydHMsIHRoZSBkZXN0aW5hdGlvbiBzaWRlIFFlbXUsIHNl
-dCB0aGUNCj4gPiBkZXZpY2Ugc3RhdGUgdG8gX1JFU1VNSU5HKHZmaW9fbG9hZF9zdGF0ZSgpKS4N
-Cj4gPg0KPiA+ICBGcm9tIHRoZSBkb2N1bWVudGF0aW9uLCBpdCBsb29rcyBsaWtlIHRoZSBhc3N1
-bXB0aW9uIG9uIGRlZmF1bHQgc3RhdGUNCj4gPiBvZiB0aGUgVkZJTyBkZXYgaXMgX1JVTk5JTkcu
-DQo+ID4NCj4gPiAiDQo+ID4gKiAgMDAxYiA9PiBEZXZpY2UgcnVubmluZywgd2hpY2ggaXMgdGhl
-IGRlZmF1bHQgc3RhdGUgIg0KPiA+DQo+ID4+IFNhbWVlcmFsaSwgY2FuIHlvdSBwbGVhc2UgcmUt
-dGVzdCBhbmQgdXBkYXRlIGlmIHlvdSBzZWUgdGhpcyB0cmFuc2l0aW9uID8NCj4gPiBZZXMuIEFu
-ZCBpZiBJIGNoYW5nZSB0aGUgZGVmYXVsdCBzdGF0ZSB0byBfU1RPUCwgdGhlbiB0aGUgdHJhbnNp
-dGlvbg0KPiA+IGlzIGZyb20gX1NUT1AgLS0+IF9SRVNVTUlORy4NCj4gPg0KPiA+IEJ1dCB0aGUg
-ZG9jdW1lbnRhdGlvbiBvbiBTdGF0ZSB0cmFuc2l0aW9ucyBkb2Vzbid0IGhhdmUgX1NUT1AgLS0+
-DQo+ID4gX1JFU1VNSU5HIHRyYW5zaXRpb24gYXMgdmFsaWQuDQo+ID4NCj4gPiBUaGFua3MsDQo+
-ID4gU2hhbWVlcg0KPiA+DQo+ID4+DQo+ID4+Pj4gIiAqIDQuIFRvIHN0YXJ0IHRoZSByZXN1bWlu
-ZyBwaGFzZSwgdGhlIGRldmljZSBzdGF0ZSBzaG91bGQgYmUNCj4gPj4+PiB0cmFuc2l0aW9uZWQN
-Cj4gPj4gZnJvbQ0KPiA+Pj4+ICAgICogICAgdGhlIF9SVU5OSU5HIHRvIHRoZSBfUkVTVU1JTkcg
-c3RhdGUuIg0KPiA+Pj4+DQo+ID4+Pj4gSUlSQywgSSBoYXZlIHNlZW4gdGhhdCB0cmFuc2l0aW9u
-IGhhcHBlbmluZyBvbiB0aGUgZGVzdGluYXRpb24gZGV2DQo+ID4+Pj4gd2hpbGUNCj4gPj4gdGVz
-dGluZyB0aGUNCj4gPj4+PiBIaVNpbGljb24gQUNDIGRldiBtaWdyYXRpb24uDQo+ID4+Pj4NCj4g
-Pj4+PiBUaGFua3MsDQo+ID4+Pj4gU2hhbWVlcg0KPiA+Pj4+DQo+ID4+Pj4+ICsJCX0sDQo+ID4+
-Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFURV9TQVZJTkddID0gew0KPiA+Pj4+PiArCQkJW1ZGSU9f
-REVWSUNFX1NUQVRFX1NUT1BdID0gMSwNCj4gPj4+Pj4gKwkJCVtWRklPX0RFVklDRV9TVEFURV9S
-VU5OSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCX0sDQo+ID4+Pj4+ICsJCVtWRklPX0RFVklDRV9TVEFU
-RV9TQVZJTkcgfCBWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXQ0KPiA+PiA9IHsNCj4gPj4+Pj4g
-KwkJCVtWRklPX0RFVklDRV9TVEFURV9SVU5OSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCQlbVkZJT19E
-RVZJQ0VfU1RBVEVfU0FWSU5HXSA9IDEsDQo+ID4+Pj4+ICsJCX0sDQo+ID4+Pj4+ICsJCVtWRklP
-X0RFVklDRV9TVEFURV9SRVNVTUlOR10gPSB7DQo+ID4+Pj4+ICsJCQlbVkZJT19ERVZJQ0VfU1RB
-VEVfUlVOTklOR10gPSAxLA0KPiA+Pj4+PiArCQkJW1ZGSU9fREVWSUNFX1NUQVRFX1NUT1BdID0g
-MSwNCj4gPj4+Pj4gKwkJfSwNCj4gPj4+Pj4gKwl9Ow0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJaWYg
-KG5ld19zdGF0ZSA+IE1BWF9TVEFURSB8fCBvbGRfc3RhdGUgPiBNQVhfU1RBVEUpDQo+ID4+Pj4+
-ICsJCXJldHVybiBmYWxzZTsNCj4gPj4+Pj4gKw0KPiA+Pj4+PiArCXJldHVybiB2ZmlvX2Zyb21f
-c3RhdGVfdGFibGVbb2xkX3N0YXRlXVtuZXdfc3RhdGVdOw0KPiA+Pj4+PiArfQ0KPiA+Pj4+PiAr
-RVhQT1JUX1NZTUJPTF9HUEwodmZpb19jaGFuZ2VfbWlncmF0aW9uX3N0YXRlX2FsbG93ZWQpOw0K
-PiA+Pj4+PiArDQo+ID4+Pj4+ICAgIHN0YXRpYyBsb25nIHZmaW9fZGV2aWNlX2ZvcHNfdW5sX2lv
-Y3RsKHN0cnVjdCBmaWxlICpmaWxlcCwNCj4gPj4+Pj4gICAgCQkJCSAgICAgICB1bnNpZ25lZCBp
-bnQgY21kLCB1bnNpZ25lZCBsb25nIGFyZykNCj4gPj4+Pj4gICAgew0KPiA+Pj4+PiBkaWZmIC0t
-Z2l0IGEvaW5jbHVkZS9saW51eC92ZmlvLmggYi9pbmNsdWRlL2xpbnV4L3ZmaW8uaCBpbmRleA0K
-PiA+Pj4+PiBiNTNhOTU1Nzg4NGEuLmU2NTEzN2E3MDhmMSAxMDA2NDQNCj4gPj4+Pj4gLS0tIGEv
-aW5jbHVkZS9saW51eC92ZmlvLmgNCj4gPj4+Pj4gKysrIGIvaW5jbHVkZS9saW51eC92ZmlvLmgN
-Cj4gPj4+Pj4gQEAgLTgzLDYgKzgzLDcgQEAgZXh0ZXJuIHN0cnVjdCB2ZmlvX2RldmljZQ0KPiA+
-Pj4+PiAqdmZpb19kZXZpY2VfZ2V0X2Zyb21fZGV2KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ID4+
-Pj4+ICAgIGV4dGVybiB2b2lkIHZmaW9fZGV2aWNlX3B1dChzdHJ1Y3QgdmZpb19kZXZpY2UgKmRl
-dmljZSk7DQo+ID4+Pj4+DQo+ID4+Pj4+ICAgIGludCB2ZmlvX2Fzc2lnbl9kZXZpY2Vfc2V0KHN0
-cnVjdCB2ZmlvX2RldmljZSAqZGV2aWNlLCB2b2lkDQo+ID4+Pj4+ICpzZXRfaWQpOw0KPiA+Pj4+
-PiArYm9vbCB2ZmlvX2NoYW5nZV9taWdyYXRpb25fc3RhdGVfYWxsb3dlZCh1MzIgbmV3X3N0YXRl
-LCB1MzINCj4gPj4gb2xkX3N0YXRlKTsNCj4gPj4+Pj4gICAgLyogZXZlbnRzIGZvciB0aGUgYmFj
-a2VuZCBkcml2ZXIgbm90aWZ5IGNhbGxiYWNrICovDQo+ID4+Pj4+ICAgIGVudW0gdmZpb19pb21t
-dV9ub3RpZnlfdHlwZSB7DQo+ID4+Pj4+IC0tDQo+ID4+Pj4+IDIuMzEuMQ0K
+Hi Leon-
+
+Thanks for the suggestion! More below.
+
+> On Sep 26, 2021, at 4:02 AM, Leon Romanovsky <leon@kernel.org> wrote:
+>=20
+> On Fri, Sep 24, 2021 at 03:34:32PM +0000, bugzilla-daemon@bugzilla.kernel=
+.org wrote:
+>> https://bugzilla.kernel.org/show_bug.cgi?id=3D214523
+>>=20
+>>            Bug ID: 214523
+>>           Summary: RDMA Mellanox RoCE drivers are unresponsive to ARP
+>>                    updates during a reconnect
+>>           Product: Drivers
+>>           Version: 2.5
+>>    Kernel Version: 5.14
+>>          Hardware: All
+>>                OS: Linux
+>>              Tree: Mainline
+>>            Status: NEW
+>>          Severity: normal
+>>          Priority: P1
+>>         Component: Infiniband/RDMA
+>>          Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
+>>          Reporter: kolga@netapp.com
+>>        Regression: No
+>>=20
+>> RoCE RDMA connection uses CMA protocol to establish an RDMA connection. =
+During
+>> the setup the code uses hard coded timeout/retry values. These values ar=
+e used
+>> for when Connect Request is not being answered to to re-try the request.=
+ During
+>> the re-try attempts the ARP updates of the destination server are ignore=
+d.
+>> Current timeout values lead to 4+minutes long attempt at connecting to a=
+ server
+>> that no longer owns the IP since the ARP update happens.=20
+>>=20
+>> The ask is to make the timeout/retry values configurable via procfs or s=
+ysfs.
+>> This will allow for environments that use RoCE to reduce the timeouts to=
+ a more
+>> reasonable values and be able to react to the ARP updates faster. Other =
+CMA
+>> users (eg IB or others) can continue to use existing values.
+
+I would rather not add a user-facing tunable. The fabric should
+be better at detecting addressing changes within a reasonable
+time. It would be helpful to provide a history of why the ARP
+timeout is so lax -- do certain ULPs rely on it being long?
+
+
+>> The problem exist in all kernel versions but bugzilla is filed for 5.14 =
+kernel.
+>>=20
+>> The use case is (RoCE-based) NFSoRDMA where a server went down and anoth=
+er
+>> server was brought up in its place. RDMA layer introduces 4+ minutes in =
+being
+>> able to re-establish an RDMA connection and let IO resume, due to inabil=
+ity to
+>> react to the ARP update.
+>=20
+> RDMA-CM has many different timeouts, so I hope that my answer is for the
+> right timeout.
+>=20
+> We probably need to extend rdma_connect() to receive remote_cm_response_t=
+imeout
+> value, so NFSoRDMA will set it to whatever value its appropriate.
+>=20
+> The timewait will be calculated based it in ib_send_cm_req().
+
+I hope a mechanism can be found that behaves the same or nearly the
+same way for all RDMA fabrics.
+
+For those who are not NFS-savvy:
+
+Simple NFS server failover is typically implemented with a heartbeat
+between two similar platforms that both access the same backend
+storage. When one platform fails, the other detects it and takes over
+the failing platform's IP address. Clients detect connection loss
+with the failing platform, and upon reconnection to that IP address
+are transparently directed to the other platform.
+
+NFS server vendors have tried to extend this behavior to RDMA fabrics,
+with varying degrees of success.
+
+In addition to enforcing availability SLAs, the time it takes to
+re-establish a working connection is critical for NFSv4 because each
+client maintains a lease to prevent the server from purging open and
+lock state. If the reconnect takes too long, the client's lease is
+jeopardized because other clients can then access files that client
+might still have locked or open.
+
+
+--
+Chuck Lever
+
+
+
