@@ -2,125 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55E44186BC
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 08:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF16418741
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Sep 2021 10:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbhIZGi3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Sep 2021 02:38:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39858 "EHLO mail.kernel.org"
+        id S230334AbhIZIEN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Sep 2021 04:04:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229578AbhIZGi2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 26 Sep 2021 02:38:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DE660F93;
-        Sun, 26 Sep 2021 06:36:52 +0000 (UTC)
+        id S230247AbhIZIEM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 26 Sep 2021 04:04:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E14BB60F45;
+        Sun, 26 Sep 2021 08:02:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632638213;
-        bh=28oArhi0u0AmWqG/AavBH4MgxWMN2/sjbeEH/mw3iKc=;
+        s=k20201202; t=1632643356;
+        bh=R0UAhiOjX2xdqfs4+6SI95QfEZV2fFxZqVXmTCQ+l1U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=alEjSWcDpCdzhQkOkBFYOPhQNwQERF9Tn/YsFDW8gnRwmMD+pV9bW5cH5Neq2KOKG
-         feKkdg4nYEaqHCdzrSBmjudBlqrHfUNzqA/NBZacoIuPCnOCNnEZZJaOmDfhXiGdRp
-         cjfrnBdpDn+fpbdHb3QBlYVip6+jiXHavCTr3ZKe2I2FT/IsWmceILP/hl8WaxWaar
-         621N16CbPuOt11ohNfn2B8Zqfh1doNB9mx1SJBFTljQOTpUxqX4zcW1wKqJaf650Ul
-         +BEjjEc7RNPpoBXJZDWU6uMW4HXRRNu/JIKh14FmoCK1LTis+0vc5W4socNPC5BeOq
-         Jd1mXdW/1pYvA==
-Date:   Sun, 26 Sep 2021 09:36:49 +0300
+        b=ctRb4ee4kpkTVLFcmy/g9NCCgOfpwDiIK8XzmcZDkpeQDgQyPb7boEoK1rWwK5LmB
+         105MBnDHR5dreWHIIR4ZNfXxz0HSnx+Pv7qJ1Gxx+O5luN6mbgtXsHuXk/P+HnLETz
+         40fe2NWmQ6klipwsBWd35jaC2hyknXcHuOtxl08aVn+9KTlN5sKa+OwAN4wtOV5G1j
+         1kzlI7HiERo9oxgKcr/q4ctBh9UjGwVnSZTRBVeDYXHj6yI8qZ7jRz5bV9rQnUspUy
+         paxVwMl6H3cQabr+j66NI3Za/3Uoxi9GxOYoHXCLszQTe+7twRjC8h4Pvj6S3knPVo
+         eavnEWn3n/eYw==
+Date:   Sun, 26 Sep 2021 11:02:32 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <YVAVAfU3aL6JJg3i@unreal>
-References: <YU71n4WSIztOdpbw@unreal>
- <20210925174115.GA511131@bhelgaas>
+To:     bugzilla-daemon@bugzilla.kernel.org
+Cc:     linux-rdma@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>
+Subject: Re: [Bug 214523] New: RDMA Mellanox RoCE drivers are unresponsive to
+ ARP updates during a reconnect
+Message-ID: <YVApGIbSLsU2Ap0k@unreal>
+References: <bug-214523-11804@https.bugzilla.kernel.org/>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210925174115.GA511131@bhelgaas>
+In-Reply-To: <bug-214523-11804@https.bugzilla.kernel.org/>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Sep 25, 2021 at 12:41:15PM -0500, Bjorn Helgaas wrote:
-> On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
-> > On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
-> > > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
-> > > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
-> > > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > 
-> > > > > > The PCI core uses the VF index internally, often called the vf_id,
-> > > > > > during the setup of the VF, eg pci_iov_add_virtfn().
-> > > > > > 
-> > > > > > This index is needed for device drivers that implement live migration
-> > > > > > for their internal operations that configure/control their VFs.
-> > > > > >
-> > > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> > > > > > from this series needs it and not the bus/device/function which is
-> > > > > > exposed today.
-> > > > > > 
-> > > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> > > > > > was used to create the bus/device/function.
-> > > > > > 
-> > > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > 
-> > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > 
-> > > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-> > > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
-> > > > > one with a matching devfn (although it *doesn't* check for a matching
-> > > > > bus number, which seems like a bug).
-> > ...
+On Fri, Sep 24, 2021 at 03:34:32PM +0000, bugzilla-daemon@bugzilla.kernel.org wrote:
+> https://bugzilla.kernel.org/show_bug.cgi?id=214523
 > 
-> > > And it still looks like the existing code is buggy.  This is called
-> > > via sysfs, so if the PF is on bus X and the user writes to
-> > > sriov_vf_msix_count for a VF on bus X+1, it looks like
-> > > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
-> > > VF.
-> > 
-> > In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
-> > to PF which has "struct mlx5_core_dev". My expectation is that they share
-> > same bus as that PF was the one who created VFs. The mlx5 devices supports
-> > upto 256 VFs and it is far below the bus split mentioned in PCI spec.
-> > 
-> > How can VF and their respective PF have different bus numbers?
+>             Bug ID: 214523
+>            Summary: RDMA Mellanox RoCE drivers are unresponsive to ARP
+>                     updates during a reconnect
+>            Product: Drivers
+>            Version: 2.5
+>     Kernel Version: 5.14
+>           Hardware: All
+>                 OS: Linux
+>               Tree: Mainline
+>             Status: NEW
+>           Severity: normal
+>           Priority: P1
+>          Component: Infiniband/RDMA
+>           Assignee: drivers_infiniband-rdma@kernel-bugs.osdl.org
+>           Reporter: kolga@netapp.com
+>         Regression: No
 > 
-> See PCIe r5.0, sec 9.2.1.2.  For example,
+> RoCE RDMA connection uses CMA protocol to establish an RDMA connection. During
+> the setup the code uses hard coded timeout/retry values. These values are used
+> for when Connect Request is not being answered to to re-try the request. During
+> the re-try attempts the ARP updates of the destination server are ignored.
+> Current timeout values lead to 4+minutes long attempt at connecting to a server
+> that no longer owns the IP since the ARP update happens. 
 > 
->   PF 0 on bus 20
->     First VF Offset   1
->     VF Stride         1
->     NumVFs          511
->   VF 0,1   through VF 0,255 on bus 20
->   VF 0,256 through VF 0,511 on bus 21
+> The ask is to make the timeout/retry values configurable via procfs or sysfs.
+> This will allow for environments that use RoCE to reduce the timeouts to a more
+> reasonable values and be able to react to the ARP updates faster. Other CMA
+> users (eg IB or others) can continue to use existing values.
 > 
-> This is implemented in pci_iov_add_virtfn(), which computes the bus
-> number and devfn from the VF ID.
+> The problem exist in all kernel versions but bugzilla is filed for 5.14 kernel.
 > 
-> pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
-> the user writes to sriov_vf_msix_count for VF 0,256, it looks like
-> we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
+> The use case is (RoCE-based) NFSoRDMA where a server went down and another
+> server was brought up in its place. RDMA layer introduces 4+ minutes in being
+> able to re-establish an RDMA connection and let IO resume, due to inability to
+> react to the ARP update.
 
-This is PCI spec split that I mentioned.
+RDMA-CM has many different timeouts, so I hope that my answer is for the
+right timeout.
+
+We probably need to extend rdma_connect() to receive remote_cm_response_timeout
+value, so NFSoRDMA will set it to whatever value its appropriate.
+
+The timewait will be calculated based it in ib_send_cm_req().
+
+Thanks
 
 > 
-> The spec encourages devices that require no more than 256 devices to
-> locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
-> only have 255 VFs, you may avoid the problem.
+> -- 
+> You may reply to this email to add a comment.
 > 
-> But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
-> is safe to assume the bus number is the same.
-
-No problem, we will make it more clear.
-
-> 
-> Bjorn
+> You are receiving this mail because:
+> You are watching the assignee of the bug.
