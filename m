@@ -2,132 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976544196A8
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Sep 2021 16:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E75E419880
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Sep 2021 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhI0Oth (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Sep 2021 10:49:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234782AbhI0Otg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Sep 2021 10:49:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EBD460FC2;
-        Mon, 27 Sep 2021 14:47:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632754078;
-        bh=zqckSjMs/haPVLnH/e6bvk6XUWFiniRiJgluMdxeWvM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jolkaP4PVHGIwcta4Q+Jfqy+PV2WJ6vfPkLXHN03Q7s6mil8+zYCcayHdOxNMoliJ
-         iEOr1/wM3wUxnYAOjW4sXhFZPOsPPGB4aVh4UFCJjYLmKqsZERIt2c2nlxz3ZYESaF
-         4+yywiWuKo9au59rileA3AWx0iHoybNjbHAObXFnP118MO+GwjUCmHyNqD42MP3ac6
-         jDnZRYo30bjudSmKZmycnwEs7yaD5+fUJRax1E8v939zGaqDH1hw6kYKoRw0uNT2Hu
-         h2fJzGiqgvR38omIAI2bBwl6RkndEmoGhIq3PJDu94RWvEQL/iQqICHN7bK96dU5E3
-         E5lB8hMnYfNVw==
-Date:   Mon, 27 Sep 2021 09:47:56 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        id S235383AbhI0QIt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Sep 2021 12:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235377AbhI0QIs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Sep 2021 12:08:48 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E36BC061604
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Sep 2021 09:07:10 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id y186so6886165pgd.0
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Sep 2021 09:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pensando.io; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=XTLDjg6tKpXO0n3tGXRecJAHRamIK6iZPCPoGCwwYoA=;
+        b=n+WFlH5sDsKJBIqbhXBL0q86YID/cm95Hb4Pn7OgXho2+PQI0nSIdRbWypwC1UKBDc
+         DLGkfkLNRgU/4Jp5PtjVk8wlNcPXFV82TekHIAWzakfClYLV1up37fwMMsaFds99YrVu
+         hNhlWvvXJ7s5t7jexJWYFgrPnilemlVeEY6QOZlKBD8momja0/KMxsagYQWYBX3Swb0R
+         IBff6ti5Yo9g23SYXpecR6u2VLeocqeAEBuEh7d2TS0npVBk3zwvJ6xEwnVe9dM1BC3A
+         QwKM/wGB/13xUZ8eKf1kP0LtQtr2a4f5cOQEzBeZGmRFBfWO/kxwb9qc8cB5gj0PVpiy
+         36Gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=XTLDjg6tKpXO0n3tGXRecJAHRamIK6iZPCPoGCwwYoA=;
+        b=y4zb0ln4VDH98+jwkoQYvTpMMuWICAes8RrKlRS823VCDJOZlcH6a5dKFDudKbdxeC
+         tL53Xj86SZhlAscNQJnFtt8E+47hlL/ZcEol2sP/xGkkXxwzAIf7eHXlEEVFosQdMcIc
+         nFxdH3JQ6mFwOsH4uKlUrNQ8+wbuvDNXDUPqHYebmkIjsuJ3j4WsFuiZbnLZl/ttbJ3F
+         KhNJw2QK/meapjE1vXoKM6n7XEWb6ULIzSuXvCxXs1ygAIOp3rZrofSkebPH8HZSn4n7
+         zwd6tx/ODCEgFJ9YQs4CGlCUntutSrF8bYJtiQR/rdZ5BeWHrq+GwHcP6kGh+DUrPW7v
+         y25g==
+X-Gm-Message-State: AOAM533Q3K03t9hkHLS9udVcBG3lJCQbKDy4Rnb4GWbyHrR7SAqreLFq
+        2QQgLRHAKOqfcBc/NUFHWq95qw==
+X-Google-Smtp-Source: ABdhPJwR7BDUtOf/PI25/vpcHZm+mNUz7FflOv5PSidwcLqI4zYdDEmizFXZbBjNUgQkz/U1dIeC3A==
+X-Received: by 2002:aa7:94aa:0:b0:43e:2cf:d326 with SMTP id a10-20020aa794aa000000b0043e02cfd326mr447025pfl.62.1632758829714;
+        Mon, 27 Sep 2021 09:07:09 -0700 (PDT)
+Received: from Shannons-MacBook-Pro.local ([50.53.47.17])
+        by smtp.gmail.com with ESMTPSA id 77sm17358967pfu.219.2021.09.27.09.07.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Sep 2021 09:07:09 -0700 (PDT)
+Subject: Re: [PATCH net-next v1 14/21] ionic: Move devlink registration to be
+ last devlink command
+To:     Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Intel Corporation <linuxwwan@intel.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Manish Chopra <manishc@marvell.com>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Michael Guralnik <michaelgur@mellanox.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH mlx5-next 1/7] PCI/IOV: Provide internal VF index
-Message-ID: <20210927144756.GA643630@bhelgaas>
+        Satanand Burla <sburla@marvell.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+References: <cover.1632565508.git.leonro@nvidia.com>
+ <cb187a035b75dbcc27f6dd10d72f18f1101bad44.1632565508.git.leonro@nvidia.com>
+From:   Shannon Nelson <snelson@pensando.io>
+Message-ID: <f1d3e167-a991-13cb-d263-6466110fa8c4@pensando.io>
+Date:   Mon, 27 Sep 2021 09:07:03 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YVGxLH+hi1NN0oq5@unreal>
+In-Reply-To: <cb187a035b75dbcc27f6dd10d72f18f1101bad44.1632565508.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Sep 27, 2021 at 02:55:24PM +0300, Leon Romanovsky wrote:
-> On Sun, Sep 26, 2021 at 03:23:41PM -0500, Bjorn Helgaas wrote:
-> > On Sun, Sep 26, 2021 at 09:36:49AM +0300, Leon Romanovsky wrote:
-> > > On Sat, Sep 25, 2021 at 12:41:15PM -0500, Bjorn Helgaas wrote:
-> > > > On Sat, Sep 25, 2021 at 01:10:39PM +0300, Leon Romanovsky wrote:
-> > > > > On Fri, Sep 24, 2021 at 08:08:45AM -0500, Bjorn Helgaas wrote:
-> > > > > > On Thu, Sep 23, 2021 at 09:35:32AM +0300, Leon Romanovsky wrote:
-> > > > > > > On Wed, Sep 22, 2021 at 04:59:30PM -0500, Bjorn Helgaas wrote:
-> > > > > > > > On Wed, Sep 22, 2021 at 01:38:50PM +0300, Leon Romanovsky wrote:
-> > > > > > > > > From: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > > > > 
-> > > > > > > > > The PCI core uses the VF index internally, often called the vf_id,
-> > > > > > > > > during the setup of the VF, eg pci_iov_add_virtfn().
-> > > > > > > > > 
-> > > > > > > > > This index is needed for device drivers that implement live migration
-> > > > > > > > > for their internal operations that configure/control their VFs.
-> > > > > > > > >
-> > > > > > > > > Specifically, mlx5_vfio_pci driver that is introduced in coming patches
-> > > > > > > > > from this series needs it and not the bus/device/function which is
-> > > > > > > > > exposed today.
-> > > > > > > > > 
-> > > > > > > > > Add pci_iov_vf_id() which computes the vf_id by reversing the math that
-> > > > > > > > > was used to create the bus/device/function.
-> > > > > > > > > 
-> > > > > > > > > Signed-off-by: Yishai Hadas <yishaih@nvidia.com>
-> > > > > > > > > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> > > > > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > > > 
-> > > > > > > > Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > > > > > > 
-> > > > > > > > mlx5_core_sriov_set_msix_vec_count() looks like it does basically the
-> > > > > > > > same thing as pci_iov_vf_id() by iterating through VFs until it finds
-> > > > > > > > one with a matching devfn (although it *doesn't* check for a matching
-> > > > > > > > bus number, which seems like a bug).
-> > > > > ...
-> > > > 
-> > > > > > And it still looks like the existing code is buggy.  This is called
-> > > > > > via sysfs, so if the PF is on bus X and the user writes to
-> > > > > > sriov_vf_msix_count for a VF on bus X+1, it looks like
-> > > > > > mlx5_core_sriov_set_msix_vec_count() will set the count for the wrong
-> > > > > > VF.
-> > > > > 
-> > > > > In mlx5_core_sriov_set_msix_vec_count(), we receive VF that is connected
-> > > > > to PF which has "struct mlx5_core_dev". My expectation is that they share
-> > > > > same bus as that PF was the one who created VFs. The mlx5 devices supports
-> > > > > upto 256 VFs and it is far below the bus split mentioned in PCI spec.
-> > > > > 
-> > > > > How can VF and their respective PF have different bus numbers?
-> > > > 
-> > > > See PCIe r5.0, sec 9.2.1.2.  For example,
-> > > > 
-> > > >   PF 0 on bus 20
-> > > >     First VF Offset   1
-> > > >     VF Stride         1
-> > > >     NumVFs          511
-> > > >   VF 0,1   through VF 0,255 on bus 20
-> > > >   VF 0,256 through VF 0,511 on bus 21
-> > > > 
-> > > > This is implemented in pci_iov_add_virtfn(), which computes the bus
-> > > > number and devfn from the VF ID.
-> > > > 
-> > > > pci_iov_virtfn_devfn(VF 0,1) == pci_iov_virtfn_devfn(VF 0,256), so if
-> > > > the user writes to sriov_vf_msix_count for VF 0,256, it looks like
-> > > > we'll call mlx5_set_msix_vec_count() for VF 0,1 instead of VF 0,256.
-> > > 
-> > > This is PCI spec split that I mentioned.
-> > > 
-> > > > 
-> > > > The spec encourages devices that require no more than 256 devices to
-> > > > locate them all on the same bus number (PCIe r5.0, sec 9.1), so if you
-> > > > only have 255 VFs, you may avoid the problem.
-> > > > 
-> > > > But in mlx5_core_sriov_set_msix_vec_count(), it's not obvious that it
-> > > > is safe to assume the bus number is the same.
-> > > 
-> > > No problem, we will make it more clear.
-> > 
-> > IMHO you should resolve it by using the new interface.  Better
-> > performing, unambiguous regardless of how many VFs the device
-> > supports.  What's the down side?
-> 
-> I don't see any. My previous answer worth to be written.
-> "No problem, we will make it more clear with this new function".
+On 9/25/21 4:22 AM, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> This change prevents from users to access device before devlink is
+> fully configured.
+>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
-Great, sorry I missed that nuance :)
+Thanks for the work,
+
+Acked-by: Shannon Nelson <snelson@pensando.io>
+
+
+> ---
+>   drivers/net/ethernet/pensando/ionic/ionic_devlink.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+> index 93282394d332..2267da95640b 100644
+> --- a/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+> +++ b/drivers/net/ethernet/pensando/ionic/ionic_devlink.c
+> @@ -82,7 +82,6 @@ int ionic_devlink_register(struct ionic *ionic)
+>   	struct devlink_port_attrs attrs = {};
+>   	int err;
+>   
+> -	devlink_register(dl);
+>   	attrs.flavour = DEVLINK_PORT_FLAVOUR_PHYSICAL;
+>   	devlink_port_attrs_set(&ionic->dl_port, &attrs);
+>   	err = devlink_port_register(dl, &ionic->dl_port, 0);
+> @@ -93,6 +92,7 @@ int ionic_devlink_register(struct ionic *ionic)
+>   	}
+>   
+>   	devlink_port_type_eth_set(&ionic->dl_port, ionic->lif->netdev);
+> +	devlink_register(dl);
+>   	return 0;
+>   }
+>   
+> @@ -100,6 +100,6 @@ void ionic_devlink_unregister(struct ionic *ionic)
+>   {
+>   	struct devlink *dl = priv_to_devlink(ionic);
+>   
+> -	devlink_port_unregister(&ionic->dl_port);
+>   	devlink_unregister(dl);
+> +	devlink_port_unregister(&ionic->dl_port);
+>   }
+
