@@ -2,84 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 395FB419549
-	for <lists+linux-rdma@lfdr.de>; Mon, 27 Sep 2021 15:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1640D419672
+	for <lists+linux-rdma@lfdr.de>; Mon, 27 Sep 2021 16:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234414AbhI0No6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Sep 2021 09:44:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S234756AbhI0OeF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Sep 2021 10:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234114AbhI0No6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Sep 2021 09:44:58 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2C4EC061575;
-        Mon, 27 Sep 2021 06:43:20 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 67-20020a9d0449000000b00546e5a8062aso24441007otc.9;
-        Mon, 27 Sep 2021 06:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3HB/k/I8QIn61ekO+bGy12NdBrVnuuc7rW3xgyTXOkM=;
-        b=VMdzJOTMPuyYImQkcriovhY8uaX/CTuVP3a+mcriuHSJ/BHIWtMTaPiE5si3BJy54W
-         apvKBtQ0p1nmPcVZaLZOx2Te6rW5sPSsK9YnFyyegNnUKR5zF9/cD2hm35NhhzHF8/nd
-         RVymoZR/pWlVnxH/jOJVEXwsEgO9eVf6Ll233WFVu/QPdDsfDTFaiCRcioRdD88Yrzu9
-         0D0nTwp+MBlHsjsgOS6lNpi69emqPr/jJs1ff762IY3EK94sjzx7RoEXf5CyCQ87BC1A
-         9FpvEtllJifTeaxQOazInhBtqM6ahAe3UFTZmPkm3ifta2LTuM1db2N1WWzHcPs1Pn//
-         1UrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3HB/k/I8QIn61ekO+bGy12NdBrVnuuc7rW3xgyTXOkM=;
-        b=ZHCzuene99ZElMqnfM3Hdx85K9VAZkc/qd3V5C4oc5KmbVQnTcKNWZhrMSMamWZ/FB
-         Rd/QWL/TpK0TaJuSfNnQO9/UrzsfioYCEbMQv3oCdGzonkAiFxwzbid9WwjAtYjtzDI9
-         bxczwDRzcb3VLIJqIPNhFRmkZAJdyXt6xBWS0DZ2YkFhdUBZ9zS/EF0+vzdEZnjT+SSm
-         G3UM7VGMf0hjXvULhccMYXaqy23RL19mE/rYfGqACpxyg+gScJwthsppgQ1HVA9Biq+U
-         HXLK1/YzdDjDnDhacMdLvfZfWFzUEn5hRf7vR+MGZWia+pyD2QR9kQaQRlASr1bNkZlw
-         czcA==
-X-Gm-Message-State: AOAM5319VCNynaXmLGzb0WGLhm0EP9w0EsSN9P1xPFWhs8j0JpjdyHoV
-        LzHq/isiYdZzTIsFBAcBln2XrO/iFcOcEQ==
-X-Google-Smtp-Source: ABdhPJxAkbVx4BQS9zLZUK5bRuTjTgvXhbNu7syGeBKaa3ntgxnYnlYpkm+fYXRGbhq5OTNu9dEAEw==
-X-Received: by 2002:a05:6830:793:: with SMTP id w19mr76512ots.23.1632750199971;
-        Mon, 27 Sep 2021 06:43:19 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id p9sm3728198ots.66.2021.09.27.06.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 27 Sep 2021 06:43:19 -0700 (PDT)
-Subject: Re: [PATCH net-next v4 2/3] net: ipv6: check return value of
- rhashtable_init
-To:     MichelleJin <shjy180909@gmail.com>, davem@davemloft.net,
-        kuba@kernel.org, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        johannes@sipsolutions.net
-Cc:     saeedm@nvidia.com, leon@kernel.org, roid@nvidia.com,
-        paulb@nvidia.com, ozsh@nvidia.com, lariel@nvidia.com,
-        cmi@nvidia.com, netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-wireless@vger.kernel.org
-References: <20210927033457.1020967-1-shjy180909@gmail.com>
- <20210927033457.1020967-3-shjy180909@gmail.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <f1e72a4a-3a85-71d9-81cc-8ca835565a50@gmail.com>
-Date:   Mon, 27 Sep 2021 07:43:17 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        with ESMTP id S234722AbhI0OeF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Sep 2021 10:34:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D809C061575;
+        Mon, 27 Sep 2021 07:32:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=orJGo1RuUFHCIf3obfYqUs4fubLhRP1M2sWxBbv1mU0=; b=ht+Sduz34yQKStv2n3ObCtkKTF
+        wEkl7m9tES10q3fvTT/ZgjHf++1D9neqPG10q/SCc4zYqu0m5zLSV9ElZvGW3FuN8ljAHf6lA50cv
+        phHA/+Qm4chrVL+6hn18lr1fLTfMDp9yMES5q+R1dmQMqvmo2tfkRjoPoDcc7q4wTx6F/KvFOHeDJ
+        IlgHfblRGAzSK8C8FEYPttOqNiw7gfmdcxrlT4xxsasLXsHSiL+Y9uJwkx50dM0KgQoXbXVLo8ktl
+        fx6wcj2Ogr4H8nqkgkOJyfmK3VbJq+jylYRfpCTi55hRWBnd1jiuZ3O6IE0BygKeH7aunVZB9bUZz
+        t3BJDHEw==;
+Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mUreZ-009pcs-JC; Mon, 27 Sep 2021 14:31:29 +0000
+Date:   Mon, 27 Sep 2021 15:30:47 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Cai Huoqing <caihuoqing@baidu.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/irdma: Use dma_alloc_coherent() instead of
+ kmalloc/dma_map_single()
+Message-ID: <YVHVlzvu58wJlA0t@infradead.org>
+References: <20210926061124.335-1-caihuoqing@baidu.com>
+ <20210927120235.GB3544071@ziepe.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210927033457.1020967-3-shjy180909@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210927120235.GB3544071@ziepe.ca>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/26/21 9:34 PM, MichelleJin wrote:
-> When rhashtable_init() fails, it returns -EINVAL.
-> However, since error return value of rhashtable_init is not checked,
-> it can cause use of uninitialized pointers.
-> So, fix unhandled errors of rhashtable_init.
+On Mon, Sep 27, 2021 at 09:02:35AM -0300, Jason Gunthorpe wrote:
+> This I'm not sure about, I see lots of calls to dma_sync_single_* for
+> this memory and it is not unconditionally true that using coherent
+> memory is better than doing the cache flushes. It depends very much
+> on the access pattern.
 > 
-> Signed-off-by: MichelleJin <shjy180909@gmail.com>
-> ---
+> At the very least if you convert to coherent memory I expect to see
+> the sync's removed too..
 
-Reviewed-by: David Ahern <dsahern@kernel.org>
+In general coherent memory actually is worse for not cache coherent
+architectures when you hav chance, an should mkae no difference for
+cache coherent ones.  So I'd like to see numbers here instead of a
+claim.
