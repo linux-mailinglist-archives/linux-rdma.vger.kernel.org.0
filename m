@@ -2,164 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1674541AB8F
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 11:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6689D41AC22
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 11:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239752AbhI1JOd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Sep 2021 05:14:33 -0400
-Received: from mail-sn1anam02on2059.outbound.protection.outlook.com ([40.107.96.59]:64325
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S239712AbhI1JOc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:14:32 -0400
+        id S239995AbhI1Jna (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 05:43:30 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:60028 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239549AbhI1Jn3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:43:29 -0400
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S8oMPl002954;
+        Tue, 28 Sep 2021 09:41:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=6AAoh3ecIAX+fz5AD8+hrUaQapO29tLrgIqfurlWrSk=;
+ b=fYDhagXj5dIhKX7FW2lVASZWXYeVGx/CYzJG3w8fVxjQYa9BVlKf2UnlpnZmCes4EQGP
+ 76y8mo5lQAHE60Gbp0/44ApF4O0wcmCrzYz41x4zbmWq91HppTdruXh0ByYikkm8ceLl
+ MIrTgUiBdsQjnlrHpUHnOMqYpWgUGCpFofR+XM4CwKpld4OleA4JGiriq04ca22tQSPW
+ SLvmSffnRL6Happa6huW0fURkJAj/JqDhsOW/MQZiJC4XsXei5NeTFro0/xOrg5AGJ09
+ 0tRpsjiPaez+AkYiX28rgpEBtKb/ZElGJvnQEYDWEyNZGZmLRl5ohL6S9JimEVxpxqc4 KQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bbj90mr4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 09:41:46 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18S9VQa1010424;
+        Tue, 28 Sep 2021 09:41:44 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2105.outbound.protection.outlook.com [104.47.55.105])
+        by aserp3020.oracle.com with ESMTP id 3b9x51u7tg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 09:41:44 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T1Vm6R9vbSoi256K2tV9/Kq6jxlFJgYqPKYmgPaLXFMRhFHELsJHS5IorH7MvS2hHtiQIJwyZqJHY3KZfh1inx+2NU+rh5hW26txbRPaD27nlGd7SpePUdRpwlpUl7i4HZnUAV+HWm1tb9/S3colvsF2tjSrrMBi8ttdnNqm07ptvbkdxv8eZP4cSNRo7R8Xc1Km4uE3YtEAaiRFSPjFqq8IOy23UMSOmA3U87gMWZERT6L3wJrVK/NAqWHEAHORPgRJwGbvx561fxPhBPaqxfuhv314mfOZ829czjmVF8IfHW3qX8sES6VqnWrWzQX6OyRCcJbw/nB6Miq5zlqwHg==
+ b=PB41Rm/EVZJKaZxNsdNFPqR0V1ApUuSS2Qg6qhu7BRjMhN71uNtxpoYV0KyapI/UMPR2bauvuWX8m9/zAemWI/cQbhX7UckcQcgNNnB0ABeeZV4hjpjEGF9r+dHh1YIjVg9/CXrtikXsfsTaEbN2VixgxWPURkwDapPgqsJiwJU46mdEV4sKMvhbBiZ/c19kvwcfu7OZJg7OtV0OezJGxfX5WnoU3F+GLMVXqf7Ljqo/soiZ4k4HEmTMfqFPuSXrsBeVJxu1moaCE7GOd9HAhH9HaZ18d/h4mU+GruvbgbsqvZMGLnXcfgl/YXvFMJt2Ur927BOGEqheMr6yNDlTrQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=qkuBLM/PzhqudKzcV0GBqwa3pd2Yj5UJP4ebUSdJ0to=;
- b=FKDVW+k6GVcy0d96JzIXEi4PrWpmeGx8o7KXRstxsvVbNsXG0byh1PFr4yXNaB7OKB6ZUDxAkoq8tdnOThJKSukx70Iw8GTN5nsBVCegPttBTEeUhCTTP8k/d1/DLjsDBLc/lEkZ4OkK+Gae8qP0VB2hYQaQjc/fWq8Twe3prgVTN9XVJtjhZFdTFToQ94jRzQBMamqTjxU3XYCrFIpBQf3xW6kcZ2U1H6J1vxZ9RlwH1/JY8K0tx415312oRwW8iNmkKS3h2d5kAGV3i+2tYKcgI14MpD+D0b8zMaXXFuMvxgQDsBPXhXN3rf3zCDWtIasvVfwemkApcWtB/nlOrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=6AAoh3ecIAX+fz5AD8+hrUaQapO29tLrgIqfurlWrSk=;
+ b=bTGdXJAlHNGhFnftRdoZjzxbUg+tx0h59AgIzNKfnxOilNDkx4W68x9zRiZIBpS/kZGrbqzN5KBEZLCUJCY4kiKukO5k7KlT8QEmMYv/p9dXjF1XBLrgt4B0B5/3UASgvV13ytL2jK4v1h0dkaF3vhaTVmKL6U7hULs3WDnhvQYaiV0WpMsl/tNslxYIWUOeh2mQAho2o2cJJTCm4KBLPEqfC138+bZ3EAn6eQ/NY7zGF+15cfIBGnH9zg5JBMyL4kTvpNZnTv8Bku/lUO4jAHTF8IOp3dZQhmPjDyTbEWe0BDPH8Hu5v2N05aQGv4vJ/Dhu0bisKeCIvFLBqD54YQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qkuBLM/PzhqudKzcV0GBqwa3pd2Yj5UJP4ebUSdJ0to=;
- b=ob2D7ZL5aSB0KEAt0wcTMcuQH5yV81zl1+ZpcVAeUtnX5yEfzahuxkd2j2iRq0u5gl3RVbMXhz7gaUe0T9efpr6azQWjNOyL5QxUy41HJxCDn4OLC7fdn+wzZrfssRH3SL8hT+YTc1Mw+L8GZG3yTWFgIIO3sQMLn1SK9ovOjYvJjITsuhSR8HyXTJE6mrbbN2XVGCxJ9fquT/t75lmgdyF2Ap2DEpWXmGC7UnsqJYZyR7Jt7/3GRQvgIcuMDMUgn5/0zHgmslduiKs0VS9OfCOj4jcHW7UO1LgickiBO2djIy3zDuvXC3rF4nWZWNMI/QELM0ywUxiz37+n2MJDXA==
-Received: from MWHPR22CA0001.namprd22.prod.outlook.com (2603:10b6:300:ef::11)
- by BN6PR1201MB2483.namprd12.prod.outlook.com (2603:10b6:404:a6::16) with
+ bh=6AAoh3ecIAX+fz5AD8+hrUaQapO29tLrgIqfurlWrSk=;
+ b=kaVedqHdzXptbdOQzFIOrIXvV7KhXVOYM91u76MUvSEztUQKdES5Npsa6+uUJfOvUDQj5SJYEn5uQxfQuAdPkt3Os4zfYp8ZVkCSIv5veShdm1vnQEC7y7uxvD+sYih2nCAVU1jq8TZuU2878hN46vjoL5YYRMqiJ7gWzA9mQBk=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
+ by BY5PR10MB3826.namprd10.prod.outlook.com (2603:10b6:a03:1ff::30) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Tue, 28 Sep
- 2021 09:12:48 +0000
-Received: from CO1NAM11FT020.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ef:cafe::12) by MWHPR22CA0001.outlook.office365.com
- (2603:10b6:300:ef::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend
- Transport; Tue, 28 Sep 2021 09:12:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT020.mail.protection.outlook.com (10.13.174.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 09:12:48 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 02:12:47 -0700
-Received: from [172.27.4.189] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 09:12:41 +0000
-Subject: Re: [PATCH rdma-next v1 06/11] RDMA/nldev: Add support to get status
- of all counters
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Neta Ostrovsky <netao@nvidia.com>, <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        "Saeed Mahameed" <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1631660727.git.leonro@nvidia.com>
- <86b8a508d7e782b003d60acb06536681f0d4c721.1631660727.git.leonro@nvidia.com>
- <20210927173001.GD1529966@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <d812f553-1fc5-f228-18cb-07dce02eeb85@nvidia.com>
-Date:   Tue, 28 Sep 2021 17:12:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Tue, 28 Sep
+ 2021 09:41:42 +0000
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::d41c:d8ff:89d6:8457]) by SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::d41c:d8ff:89d6:8457%9]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
+ 09:41:42 +0000
+Subject: Re: [PATCH v1] RDMA/rxe: Bump up default maximum values used via
+ uverbs
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210915011220.307585-1-Rao.Shoaib@oracle.com>
+ <20210927191907.GA1582097@nvidia.com>
+ <CAD=hENd0BDMS6BL_M2rDT7N8sZySQHLbzDEfWZ0AvSd6nmFmoQ@mail.gmail.com>
+ <6a6cede4-32c3-45aa-86f9-4cd35d90ab4f@oracle.com>
+ <CAD=hENeQrNPxjgxbPN0KuKF1XHT+GbEADKX1D3pP0qv=gNXN2Q@mail.gmail.com>
+From:   Shoaib Rao <rao.shoaib@oracle.com>
+Message-ID: <24e4ea29-557d-b2f6-8bef-30af19613b16@oracle.com>
+Date:   Tue, 28 Sep 2021 02:41:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210927173001.GD1529966@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAD=hENeQrNPxjgxbPN0KuKF1XHT+GbEADKX1D3pP0qv=gNXN2Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
+Content-Language: en-US
+X-ClientProxiedBy: SJ0PR13CA0205.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::30) To SJ0PR10MB4494.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d4::12)
+MIME-Version: 1.0
+Received: from [IPv6:2606:b400:400:7444:8000::7e0] (2606:b400:8301:1010::16aa) by SJ0PR13CA0205.namprd13.prod.outlook.com (2603:10b6:a03:2c3::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.7 via Frontend Transport; Tue, 28 Sep 2021 09:41:42 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: fd8fe218-386d-4d16-545c-08d982602406
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB2483:
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB2483E35D0BFA8529EB8BD7B9C7A89@BN6PR1201MB2483.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Office365-Filtering-Correlation-Id: 569da776-7022-4761-395f-08d982642da3
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3826:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB38265063CBDADEE05CF5C126EFA89@BY5PR10MB3826.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KQhe85z0XBxCUoVtMvbHHcPJ8UMEoBbgyGAT/qS58Lfqzn0v89BoHh6BdkGSq4NDR5eu60qi1zeOTniu3TwEyoNj5ajeDs/7J/N8zM0svWF8+taHENQfUd/qB5ZYiBKIkFQBog7qXoLBgvXLZb8sCNl59HXpOsXb03bPv8LI/Yh96uVHKj82OtlRdn5RC8XvmtXoD1DCt+99S7kInMzsJdNia14ggyYZ4qklicMOmJrI4lBtdKfjN0o05ZakSAF5OzhL/HUi0vT0fybBVpyUY4flzQ4bzxWazkSYCVFTArI8craiCJ/jGRhCvjTzvlEZ+NVOfcnfk9CW1phcfptu2wf5K3aFUDerdhvjT6YmbobhSibhO3ai25lKF13ALhm5BQfCpPNsSO0QRvakljjWYuDyIMxVCy9JDP2y0aXypqcw/5y6pkFpnXcW+G3BLFqgdjjIv4DLBsvomqYQVwHHc1AaVnrfnS7DY8gzoOjw2qve+yNgnK8aqHtvMHrjuD88ha9393a7zDUVYMMlNkmtv8TvQ4MurfFhehNd3NQ3zsEgWDtR0URfE9Y+cLU+tuhvoR48nUXO2xfA4++TbaV3vu46l7WIiB6u+6XPuC5gCE4zrRRLYT1gyOHq92W9JnxfxArh7xfQhkkM0QqN8QdqT/TRewVQP6HNiF9216qrnHSOws8+0bJafaNT89n61xGhOXhTejCVDcUWo5kWIZULjxiOqVMSCk9QAGCUcdtc6ss=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(110136005)(31696002)(7416002)(4326008)(26005)(426003)(54906003)(2906002)(53546011)(86362001)(7636003)(508600001)(36860700001)(31686004)(336012)(82310400003)(16576012)(316002)(8936002)(356005)(186003)(2616005)(36756003)(8676002)(16526019)(70206006)(5660300002)(47076005)(70586007)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 09:12:48.1442
+X-Microsoft-Antispam-Message-Info: mANzju09/xxB/h3pXKdbBXIMIldqUpTBemlgakwPIkyM/+g6LvDGKiZYXv95RJgPAf5cj4m1fK0PLyQUb+aBalhWJmUX+eUSrmoEl5ANlzgwEJw2zkCpqZxQTOE4Y1vxY2vScfou6NJ520tXa9QxbukDHO58ERy/xUGcIW8McmkNBXA3kh/YEG1546r1fSnFfmrVG5Jpz/t3vQNVwWaRMsI7p3ZADSk6U4J2EP/pIX+wte+Cr7tCct5QOIQWyclz4vEuHqXdtLKtUP7sX8Tr+GbOIGf8rkwsBA4jS7FmixIGGD372q/V60UH/y1NnK//xxnuKxDvnsHISgLhreFRmiD4G+Ckv7bGZhnmvS3Nf59+XYklc22TdTdf8X/MrXt1/F4EEBSuuNAi9y2kN8kHYmdVoE4qJH739ngWUDqb0kDbvf+eCuvtPeh0ELmseDLXCWdYbe8i4MXcC4QnFEvJswUIuJz2jnQWUikFpm2hQ5DW9mOBf1011qDjhTpefV8FZqNviuBGu+tWovsGg20JHAtHnZSHT+sy2B8f09GA0eoUDCPjQneFO77zshFiVagMALnKaQrVap9d4yWsxiDN9brAgxDINuG2rudA+EfjbVDwLbOI9tSdVVBRmSbrIpJAx60dD1RnVaYEfwlPDpNTO+A6xaf8a4us/qIVCOVR/PDWc0dloI+vJ4BlLNmhmjUsoPs3K8FLQhhkxE39ziUvCM+rTai4+UfdMEXiKZr8AOU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(83380400001)(53546011)(2906002)(316002)(8676002)(66476007)(6486002)(31686004)(8936002)(86362001)(5660300002)(54906003)(66556008)(38100700002)(6916009)(36756003)(2616005)(186003)(66946007)(4326008)(508600001)(31696002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MHlaY0NoZ2ZmOXUwTEVEaGVrWUZlQldLZzJnR3hqcTZyQTFPNDR1aEJXY2pE?=
+ =?utf-8?B?akRNTTJhZDhlbm1XYUtTR3gxRFVOZkF1UHAvZU9SbjBMZ1E2OHJmNmNpU25v?=
+ =?utf-8?B?RldrKzBKaG5wZ3pLdnlWQXAzbXFjYStGb1Qvc1l6ZlNXRXJXRmtGRXJvSldB?=
+ =?utf-8?B?N2ZnS1NENTJ0ajlkdEtxQzFqTlNoNHUvUmxSMWtNZldqVnlIZDRzMnNEZzB4?=
+ =?utf-8?B?Y0NpWlp2QmRJalNHdXBjK3Aza3ptU25uKzVGSUprQ0psL1dPRUhwNm1veEpo?=
+ =?utf-8?B?N1N6a2xKbnlmY3RCbXhUcmtvY0dacG9jSnhXazZSNmoxeEtBRmpEL00waHhw?=
+ =?utf-8?B?OXBzQWhZNU4rRE4zOHZGcGREaWtYNEdtYTRMNkI5UVdYVWxTN090UkdxK0JM?=
+ =?utf-8?B?WVNxdkFSUlk1Ly9hVlZtdmpEMldMQ2hkSGhUcHVISzRja3YyQ0dHS3RpZVRW?=
+ =?utf-8?B?M0JwWjJKRmtPNVNKcWlHUG92TjBsUDdYcW45c2ErL1ZvVHgyS2dWZDY3em1L?=
+ =?utf-8?B?aE53TXlsUWt2czZveTlOK1g1eTdIMzAxVG5WY0ovKzlaR3JZMi9PWTE0disy?=
+ =?utf-8?B?VEdEQUcwbytQbU9ZejhxWkhVU3podjA0ZGVEc25YM3NYYW5qaUE3S3Z0UGJ5?=
+ =?utf-8?B?MDA5KzhieDFkQWlWU3J0dzlDd1pPbmJFcmVpNkRkSk13bWhNdlJSeG1lRXVV?=
+ =?utf-8?B?ZXFhZEQ4Q2F0UlZxWkl2OG5EOFpLY3BENHM0UkJWUGxsdVpVRUJWb3BtTWUx?=
+ =?utf-8?B?MUM2anZmSFo3bzNPdjBMbmJIak9XVkJ3dEs2bEVYalVRcWlaK09veDdYaU5R?=
+ =?utf-8?B?K1MxWWx4TWVyUyt1RmJRZ2xoYUVTLzdxNlhhWGd3djlnSDBnWjlKL2lQcjJa?=
+ =?utf-8?B?aTJFTUcySXR0MzU5OWdGdjVxTTUzZlJQQlBwYktkV1IxSmVUR05wL2FSMWto?=
+ =?utf-8?B?OGtic3kyMC9CY01xK21OdGxpWHNGemVnT01xNC9DNTBzRmwzcVJYV1JnWVlB?=
+ =?utf-8?B?alFDS09Uenp6M2VGcjdsVXZNNWhhNDhmNVJocUhYcWJPZGF1em9nZEF4S0Vl?=
+ =?utf-8?B?RjFCT0RVMjV1VXlpTDBVUHVuWHhYcUZRM0didkdMU0ZwVnBXb3loNGJDUXFX?=
+ =?utf-8?B?aVJ1S3hIWkRsUjRTbC84TlAvb3dnM1lsSTFqOHd6a0x4Ry91WlQrOS9TN2hF?=
+ =?utf-8?B?M1ZTNFdkdWZya2prcmhpWE0yeWtuanRlcm0zVnRlQllmQno1OWkrVnlneFNH?=
+ =?utf-8?B?RDUxaHVubHVpY09zaHZrdzRXV3d2eWxxOUdUbGE2QW5NRkJBVjZMNlROaFlM?=
+ =?utf-8?B?VlUwNDR2cTFyNTdWd0pkK0puK1J0UVFDQzJQOGpaWUtubkZ6TXhvWFNJeU5B?=
+ =?utf-8?B?NmhMdUVyaUJSV3c5UHNUQ1FtcUhoQUYyRE82UU0zZFZQUUNtVkpVenpBTWl3?=
+ =?utf-8?B?MVpaN2VKVEpTck5wRU5ackphR3gzVGJGV0FnRFJvT3FuUzdpazlsWEpMeXpG?=
+ =?utf-8?B?aUUySUJuNUZVNnkrdTl6TFRYTnRKZjkwZzkvMGlaRERKcFZ6ZUpRcHcwSXN1?=
+ =?utf-8?B?STNndFEzYXFaSlMwV1FyUlBOVzNwR2xvMnR1YVErNHZkYUR4bFhDUVVwN3Nj?=
+ =?utf-8?B?c3pRYjBmOWNIRzNVVkpoaUg1WUtZbVBQOUhkdm1PQkV3M3FoTG9hbThBdjI0?=
+ =?utf-8?B?cFJXcXQ3N1VnOFhvTXdhSCtaWllpUk51NXd3SEJib09iS1M3OXBjdXRRRVhS?=
+ =?utf-8?B?UW9CTjZ3emJ5NVBzVSszeWpzdWFRZVVMbXNISG9IOXJnTE9PcjltQU16TlFZ?=
+ =?utf-8?Q?WdK2Z6Z1gDvvolMEYhjDiVi2PD1dm3aLpbYPE=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 569da776-7022-4761-395f-08d982642da3
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 09:41:42.5330
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: fd8fe218-386d-4d16-545c-08d982602406
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT020.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB2483
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WGMNCO6XuJ8LlemxGhMvH4kY4AeOxnnIz9BZ2PlxLQpbW4MHi/DfAJzelKQm6j9euAWggOL1dwPwX3v3XsRC5A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3826
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10120 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109280056
+X-Proofpoint-GUID: rpVo4ua0d68x_cDGUuSE6fsblUo4Ny9y
+X-Proofpoint-ORIG-GUID: rpVo4ua0d68x_cDGUuSE6fsblUo4Ny9y
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/28/2021 1:30 AM, Jason Gunthorpe wrote:
-> On Wed, Sep 15, 2021 at 02:07:25AM +0300, Leon Romanovsky wrote:
->> +static int stat_get_doit_default_counter(struct sk_buff *skb,
->> +					 struct nlmsghdr *nlh,
->> +					 struct netlink_ext_ack *extack,
->> +					 struct nlattr *tb[])
->> +{
->> +	struct rdma_hw_stats *stats;
->> +	struct ib_device *device;
->> +	u32 index, port;
->> +	int ret;
->> +
->> +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
->> +		return -EINVAL;
->> +
->> +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
->> +	device = ib_device_get_by_index(sock_net(skb->sk), index);
->> +	if (!device)
->> +		return -EINVAL;
->> +
->> +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
->> +	if (!rdma_is_port_valid(device, port)) {
->> +		ret = -EINVAL;
->> +		goto end;
->> +	}
->> +
->> +	stats = ib_get_hw_stats_port(device, port);
->> +	if (!stats) {
->> +		ret = -EINVAL;
->> +		goto end;
->> +	}
->> +
->> +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
->> +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
->> +					       device, port, stats);
->> +	else
->> +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
->> +						 port, stats);
-> 
-> This seems strange, why is the output of a get contingent on a ignored
-> input attribute? Shouldn't the HWCOUNTER_DYNAMIC just always be
-> emitted?
 
-The CMD_STAT_GET is originally used to get the default hwcounter 
-statistic (the value of all hwstats), now we also want to use this 
-command to get a list of counters (just name and status), so kernel 
-differentiates these 2 cases based on HWCOUNTER_DYNAMIC attr.
+On 9/27/21 11:55 PM, Zhu Yanjun wrote:
+> On Tue, Sep 28, 2021 at 12:38 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
+>>
+>> On 9/27/21 6:46 PM, Zhu Yanjun wrote:
+>>> On Tue, Sep 28, 2021 at 3:19 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>>>> On Tue, Sep 14, 2021 at 06:12:20PM -0700, Rao Shoaib wrote:
+>>>>> In our internal testing we have found that
+>>>>> default maximum values are too small.
+>>>>> Ideally there should be no limits, but since
+>>>>> maximum values are reported via ibv_query_device,
+>>>>> we have to return some value. So, the default
+>>>>> maximums have been changed to large values.
+>>>>>
+>>>>> Signed-off-by: Rao Shoaib <Rao.Shoaib@oracle.com>
+>>>>> ---
+>>>>>
+>>>>> Resubmitting the patch after applying Bob's latest patches and testing
+>>>>> using via rping.
+>>>>>
+>>>>>    drivers/infiniband/sw/rxe/rxe_param.h | 30 ++++++++++++++-------------
+>>>>>    1 file changed, 16 insertions(+), 14 deletions(-)
+>>>> So are we good with this? Bob? Zhu?
+>>> I have already checked this commit. And I have found 2 problems with
+>>> this commit.
+>>> This commit changes many MAXs.
+>>> And now rxe is not stable enough. Not sure this commit will cause the
+>>> new problems.
+>>>
+>>> Zhu Yanjun
+>> Hi Zhu,
+>>
+>> A generic statement without any technical data does not help. As far as
+>> I am aware, currently there are no outstanding issues. If there are,
+>> please provide data that clearly shows that the issue is caused by this
+>> patch.
+> Hi, Shoaib
+>
+> With this commit, I found 2 problems.
+> This is why I suspect that this commit will introduce risks.
 
+Hi Zhu,
+
+I did full testing before I sent the patch, that is how I found that 
+rping did not work. What are the issues that you found? How to I 
+reproduce those issues?
+
+Shoaib
+
+>
+> Before a commit is sent to the upstream, please make full tests with it.
+>
+> Zhu Yanjun
+>
+>> Thanks you.
+>>
+>> Shoaib
+>>
+>>>>> -     RXE_MAX_MR_INDEX                = 0x00010000,
+>>>>> +     RXE_MAX_MR_INDEX                = DEFAULT_MAX_VALUE,
+>>>>> +     RXE_MAX_MR                      = DEFAULT_MAX_VALUE - RXE_MIN_MR_INDEX,
+>>>> Bob, were you saying this was what needed to be bigger to pass
+>>>> blktests??
+>>>>
+>>>> Jason
