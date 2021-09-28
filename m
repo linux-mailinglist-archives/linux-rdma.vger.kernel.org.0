@@ -2,96 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689B241B7A7
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 21:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0748641B832
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 22:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237134AbhI1Thc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Sep 2021 15:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242464AbhI1Thc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Sep 2021 15:37:32 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9230EC06174E
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id j15so200598ila.6
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 12:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
-        b=Y+whdzRKhZBi4F0e10aKGWY8V/H37d7/fT7EfJLwEzHf9sW/3ImWPZ9ET2U5Weu4yz
-         ZBjRIgLcc3KjeErqmbig8bPdI+Ka8EUE0FIf5dIotawpBRnC5dom3MQafQisZ8LWVawZ
-         r1pRp649QhA/oJDCUS6senPdUWmeY4p6YtiBUjiG6faSu5HSv5lEtbfP7y0ezWGarR4D
-         pC1C6h2vjPZw+Rer1rFu40SivFJbautH9NtQFhC6bCu4Cmm1NNk6ZDeWvKI3J5H/YtB0
-         q0/KXjB+kwRbKGl91HsUrqE0Z03rLt11AcxhXGBqB4TNHeHroEl+vdN1zscWzQQApUAZ
-         M1nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=64evIw52oRekIZbHwSiCOQxkuAatfjf85RCST3duN+k=;
-        b=SX5PL7C1J84YwSmMfrcZCy8GBxB7YU0zaJv0QxhEqXYEFOh4pYXU1xcUIQyY54YVFJ
-         EPQpGwYB0t1K3vUj8pIQUMCnRr0ng+ki7f9mfKRTWwvaFd9y3zaTx1g+tjPJjhTPTeX0
-         4jM+cclpOlT48DbEEFTlkpsaWHYdeMrsSysvcKrbVU7/7iwWd7vy3882k25Kz75JCZ/c
-         EPLFht5COmK/QbHhR9gVfoZz6U2tKq0G/B38uQACxmzmf00+qgjHcRcvMecfazLVXs6K
-         ird/emmY8AUnoleMHLxUEqSV3NQh4qFUhJlGHo+89zUeY5EI1bYgUSlkfWFOaj1VCbTr
-         K+qw==
-X-Gm-Message-State: AOAM5325/+ZX99/qcVjnMHpnlwlb1cv3FC9rEmamgbPwym50hAEr+zwP
-        r5x35DDqNOBxxTJ8DH1Q/O2Mjw==
-X-Google-Smtp-Source: ABdhPJzFSVZGvIenvKrDxicIDxRtjRj8KENPEhcmGHIrbBWFLg+wtwG6D65MA29+I55UEiSKkXhAsQ==
-X-Received: by 2002:a05:6e02:1d1c:: with SMTP id i28mr5559430ila.33.1632857751863;
-        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id d6sm11787173ile.51.2021.09.28.12.35.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Sep 2021 12:35:51 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mVItK-007GOs-GL; Tue, 28 Sep 2021 16:35:50 -0300
-Date:   Tue, 28 Sep 2021 16:35:50 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        id S242571AbhI1UPM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 16:15:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232756AbhI1UPL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Sep 2021 16:15:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4177C601FC;
+        Tue, 28 Sep 2021 20:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632860011;
+        bh=po+9kYDDgjfbfvvYQ07OcmfQEVl4eYh+maNs0aRKbX8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bA+3AIRTcidhuvV1nYj45uxbCWRdRX6cpp+ty9s7D9DcO0rrdFyFelzsNjgPVrJgw
+         JouZu5y8kogDClaJO7PWZh2sex67nJZraAy7LiQvVmBK0/lkZ8K0uARxyO48DKfzKe
+         tC4nKUVaLKfmbZgkeQDrpY8NT9TGZWQv4yYcQUXv/T3iD5cQlrl6xNniJlF7yW1LRJ
+         oLC9w4AdvzbNyoVso4kWJnR0sedTowyv4jJoWWlAxWH3SPq18hZ6G9cGEZlq+yvy87
+         zKeDpgje6hhv8yXB7+wDZZFTekimUYHMbUtmBMakjMmn/3KEyf0vO2Y8BYfxRdB0Ii
+         4tMJu168f8oSw==
+Date:   Tue, 28 Sep 2021 15:17:33 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Tariq Toukan <tariqt@nvidia.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-Message-ID: <20210928193550.GR3544071@ziepe.ca>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <20210927164648.1e2d49ac.alex.williamson@redhat.com>
- <20210927231239.GE3544071@ziepe.ca>
- <20210928131958.61b3abec.alex.williamson@redhat.com>
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][net-next] net/mlx4: Use array_size() helper in copy_to_user()
+Message-ID: <20210928201733.GA268467@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210928131958.61b3abec.alex.williamson@redhat.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 01:19:58PM -0600, Alex Williamson wrote:
+Use array_size() helper instead of the open-coded version in
+copy_to_user(). These sorts of multiplication factors need
+to be wrapped in array_size().
 
-> In defining the device state, we tried to steer away from defining it
-> in terms of the QEMU migration API, but rather as a set of controls
-> that could be used to support that API to leave us some degree of
-> independence that QEMU implementation might evolve.
+Link: https://github.com/KSPP/linux/issues/160
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx4/cq.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-That is certainly a different perspective, it would have been
-better to not express this idea as a FSM in that case...
+diff --git a/drivers/net/ethernet/mellanox/mlx4/cq.c b/drivers/net/ethernet/mellanox/mlx4/cq.c
+index f7053a74e6a8..4d4f9cf9facb 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/cq.c
++++ b/drivers/net/ethernet/mellanox/mlx4/cq.c
+@@ -314,7 +314,8 @@ static int mlx4_init_user_cqes(void *buf, int entries, int cqe_size)
+ 			buf += PAGE_SIZE;
+ 		}
+ 	} else {
+-		err = copy_to_user((void __user *)buf, init_ents, entries * cqe_size) ?
++		err = copy_to_user((void __user *)buf, init_ents,
++				   array_size(entries, cqe_size)) ?
+ 			-EFAULT : 0;
+ 	}
+ 
+-- 
+2.27.0
 
-So each state in mlx5vf_pci_set_device_state() should call the correct
-combination of (un)freeze, (un)quiesce and so on so each state
-reflects a defined operation of the device?
-
-Jason
