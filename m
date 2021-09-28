@@ -2,80 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA67441B2FE
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 17:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D22B41B4B2
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 19:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241650AbhI1PeO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Sep 2021 11:34:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241509AbhI1PeM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Sep 2021 11:34:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F02610FC;
-        Tue, 28 Sep 2021 15:32:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632843153;
-        bh=7B8Tzqd8GFJxYTnmwPnsNGyyRt0vFWnob+bE2vuVpXw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EUJOfwTwhE1q5I1Xnz7xCx/ICxEKVn2xhZa4vPYrD8SHO6H5GNsoOVYbORv5xkkwh
-         DIcMGTIeOe8T0wfPWsx69AnAFmL79d2XEDP5HixFO4jmQUPENSE9AXgAMCJ6m7yjiT
-         wzmJUJDMp4WblubSatYN30n9SN8uCYOidbdxmmTpWDCHgLqmfXTvJ2j4sF+K2s6hp2
-         NB5XteLcBwgoUdgerv97U2n8EmrwD8pJ7ALptKEz5zyA85hrq22dE6s9KgyyK29Vun
-         3vSnH5IkFrxQYEdXr/cRcbtFpM1Eybp79Gi6WPVQbqcbdX3jYjOyf4b3k9B1m4vktq
-         NWceXf0F0SjLw==
-Date:   Tue, 28 Sep 2021 18:32:29 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        Meir Lichtinger <meirl@nvidia.com>, netdev@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Yishai Hadas <yishaih@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 0/2] Extend UAR to have DevX UID
-Message-ID: <YVM1jRqtKBG0rbwE@unreal>
-References: <cover.1632299184.git.leonro@nvidia.com>
- <20210928150904.GA1675481@nvidia.com>
+        id S241580AbhI1RJj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 13:09:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240975AbhI1RJj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Sep 2021 13:09:39 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A9BC06161C
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 10:07:59 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id b22so3849070pls.1
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 10:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=efxDK1uU7DkE4cVJ9myazVuQ4eaJnIyftNcM+xFzvi0=;
+        b=ocuFrkTJ1NDTWvxq4eaFgxHYMRJtuYRiBQSOWuW0rtIn9wpNBwtsOAP8CBJIGte151
+         WJiKqJ3tjcliraKrIJ9SuYZ39UOt4+VfvyovB4Use2jCorP1hJjQDFG/U7Tz2HAsVRBN
+         o+KaNkha0fNchzfziZUJTiwyQri/VuxdPb/DxBlr9DxtmBwHzL6mWEMdUgh2UX5BIVzK
+         wu81kY/dQwV2nh/vEJpKXoyhSokBXSxB7qm8vqn9tUa6nO07M3NT9oKk73oxyvJODyDJ
+         dpvcrUqBbqSCJQRtMrjlhTuG5TCRtiCylqMxe9o31JNyWG74P961LZw113BU0X/VIPQB
+         VMqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=efxDK1uU7DkE4cVJ9myazVuQ4eaJnIyftNcM+xFzvi0=;
+        b=rK/S5hLDcX7tCtQZkqudOnOeaPjMvpGVCpWvnjsaqP5Ptf9MKq+pqysDiYkIQxT9xO
+         EOGeBm1IrtdLeLm2QxE0zQKOLFKT7GHdqqZE5lOIt28sVBxlIcChFks8mq5SM+UkAtPC
+         lnqPPseYLFRa9Oo+s7pnoEovPegI3T9Hp6tZpJCCWU/LBSiBwYyIuvkl7vkaVS+At/cS
+         4vQrEzM3gsJL9Bm1ZX1bRXNhqeb5lH35HJFL7y0shgfnOcpWuOHc4ZlVKYM6syAEjieW
+         qDegcqtp0JDdd09rsEjKj7LCHIPSvkPoPQV1IA+cKius7eDhpZ25cb5vdmV3LEJLzHFm
+         0Mfg==
+X-Gm-Message-State: AOAM531KmpF1f+ZQuakUUU/hdDjtWYDHdRMCBfu5/L1qfRyRfQCn5qv9
+        UUTZD2LCVnfhDREHIn4VRHHHfWZq+JKbzcqNF/M=
+X-Google-Smtp-Source: ABdhPJwSoS73XvkzhPzyhn8PYjcSG0FXOO+jBlBlQQM5596bl7NDsl5k+oHFw9yQTucGLKdIKnRCNilDz2nJKFMhHHw=
+X-Received: by 2002:a17:902:bf42:b0:13d:b79f:a893 with SMTP id
+ u2-20020a170902bf4200b0013db79fa893mr5676309pls.1.1632848879316; Tue, 28 Sep
+ 2021 10:07:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210928150904.GA1675481@nvidia.com>
+Received: by 2002:a17:90b:1e44:0:0:0:0 with HTTP; Tue, 28 Sep 2021 10:07:58
+ -0700 (PDT)
+Reply-To: fionahill.usa@hotmail.com
+From:   Fiona Hill <sylviajones046@gmail.com>
+Date:   Tue, 28 Sep 2021 10:07:58 -0700
+Message-ID: <CAGH1ixuzw8yuzz_R_+jQaFaNaMkGXgO6TUJ_rkCr8V10SxtZeg@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 12:09:04PM -0300, Jason Gunthorpe wrote:
-> On Wed, Sep 22, 2021 at 11:28:49AM +0300, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Changelog:
-> > v1:
-> >  * Renamed functions and unexport mlx5_core uar calls.
-> > v0: https://lore.kernel.org/all/cover.1631660943.git.leonro@nvidia.com
-> > ----------------------------------------------------------------------
-> >
-> > Hi,
-> > 
-> > This is short series from Meir that adds DevX UID to the UAR.
-> > 
-> > Thanks
-> > 
-> > Meir Lichtinger (2):
-> >   net/mlx5: Add uid field to UAR allocation structures
-> >   IB/mlx5: Enable UAR to have DevX UID
-> > 
-> >  drivers/infiniband/hw/mlx5/cmd.c              | 26 +++++++++
-> >  drivers/infiniband/hw/mlx5/cmd.h              |  2 +
-> >  drivers/infiniband/hw/mlx5/main.c             | 55 +++++++++++--------
-> >  drivers/net/ethernet/mellanox/mlx5/core/uar.c | 14 ++---
-> >  include/linux/mlx5/driver.h                   |  2 -
-> >  include/linux/mlx5/mlx5_ifc.h                 |  4 +-
-> >  6 files changed, 68 insertions(+), 35 deletions(-)
-> 
-> This seems fine, can you update the shared branch please
-
-Done, thanks
-d2c8a1554c10 IB/mlx5: Enable UAR to have DevX UID
-8de1e9b01b03 net/mlx5: Add uid field to UAR allocation structures
-
-> 
-> Jason
+-- 
+Diid you see my  message i send to you ? I'm waiting for your urgent respond,
