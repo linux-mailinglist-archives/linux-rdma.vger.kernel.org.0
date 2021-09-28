@@ -2,173 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC37441AF6A
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 14:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF0841AFFF
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 15:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240721AbhI1MxD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Sep 2021 08:53:03 -0400
-Received: from mail-mw2nam12on2079.outbound.protection.outlook.com ([40.107.244.79]:20449
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240712AbhI1MxC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Sep 2021 08:53:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eLOvzj5SgkGktEx17TS8CQrj8L3/6CluRkTSUI9Wmx74fXj+yN9C9rdZ2ic+grQ59EklIwBKGgsuD0hz3pjAhYVqgahzNj+1k2+gLLNiuHdps2cddX2pMdUWfZ2/EuB8VRSN5ZAMiqVdFSeAIVJtjYjWA1KB9oqGLbPSY4du5aU+thUG9e33KCVzrJBHD2MyGG6+7WPu4FEMP2MD1N9+JgjkVjiVBkR2NtxDYRST3IU6E/Carf3XD+7RawAtS0JB4ELQsuzLbMNKvi52mgCl8u1g4YWNC2lo4KZ9XG88IS3/t3xyEXyU9yGFb3OJkNSlRmUgSxq8DAAbt/nfE+fkkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=/pGJhUmkjtSoyz0F+/965Pf821lp2qWIY7MWifaYRsw=;
- b=kCyLVrrdksmoppS87O5izw0R9784GblXfZ+51RTC8jU/uAbVs3BeD8NRa6TEvCtC6uWvDaIhuB+gYE4XciGC77CSzKo4GYY+sk7qZcJnvKE+YS9Z0HuvEA0713ym+cyu0qTxZwsE0nEFIJOm40vg6zc6rjVPpvtYG+grU6TGCXf6u+AawEvr5MZZSC6MWRG/YK9ZpcdpNdkfvlLvTC0YAKBxLpaVZpaF4janZxS/yOuYOrPnciJLGTZYCCSVrFRsLc0NY8IX1/57xSivj4ArNwEHUn/ydCu0qzUar4x65aWsNiZnUyKAizTsoHGyvfu/fWIjAG3vA1Sht6cCEAAyCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.35) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/pGJhUmkjtSoyz0F+/965Pf821lp2qWIY7MWifaYRsw=;
- b=AWFc8W7KArTkEcwuXc9DV+baWlESHBVD+aacE2YfqMlQGupChZUmtiGCIusl2joEr6+Kmli8v172hN4+N4VpGFojwyKiIgvYXFfO/zeZlFeNtSg/5vQ0pexAuJV328dn3Ou+iX7VYrdkVv+1r+DNggwEJT0HLEUfjQ/qmElDIfEQKi/rka3TJtEh1ZEMsCsJ6cPih7NpPdu+P2e26UhDZy0mnl+FqCbqJgVf1EAjVsfmshP3TKrA7rZfvxrwfSJupFfkOM0xsX6Hqo2Me6J0hNpfjypEKAb1CKZvaJd0EIoNHDwORw0yqdIk6RaYq+FzPpTV6cikMo7OSP8TXi/UVg==
-Received: from MWHPR19CA0063.namprd19.prod.outlook.com (2603:10b6:300:94::25)
- by BL1PR12MB5253.namprd12.prod.outlook.com (2603:10b6:208:30b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14; Tue, 28 Sep
- 2021 12:51:21 +0000
-Received: from CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:94:cafe::aa) by MWHPR19CA0063.outlook.office365.com
- (2603:10b6:300:94::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend
- Transport; Tue, 28 Sep 2021 12:51:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.35)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.35 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.35; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.35) by
- CO1NAM11FT042.mail.protection.outlook.com (10.13.174.250) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 12:51:20 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 12:51:19 +0000
-Received: from [172.27.4.189] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 12:51:14 +0000
-Subject: Re: [PATCH rdma-next v1 06/11] RDMA/nldev: Add support to get status
- of all counters
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Neta Ostrovsky <netao@nvidia.com>, <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        "Saeed Mahameed" <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1631660727.git.leonro@nvidia.com>
- <86b8a508d7e782b003d60acb06536681f0d4c721.1631660727.git.leonro@nvidia.com>
- <20210927173001.GD1529966@nvidia.com>
- <d812f553-1fc5-f228-18cb-07dce02eeb85@nvidia.com>
- <20210928115217.GI964074@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <d71e2841-43b1-9be2-40f5-e9fb50400904@nvidia.com>
-Date:   Tue, 28 Sep 2021 20:51:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S240528AbhI1N2d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 09:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233878AbhI1N2c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Sep 2021 09:28:32 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49A73C061575;
+        Tue, 28 Sep 2021 06:26:53 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id 138so40173963qko.10;
+        Tue, 28 Sep 2021 06:26:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=RHL6JZa8EAnILkEzg08qxNM2V7eltepufz30/GOy0a8=;
+        b=VNmAl3HuXqZ3h88WrHO6AEiHj5XNCYICoC6s9tx17Xj0cEk0kKv9bfJXwofrKSM65V
+         0HGCmrKwyInqFid1biTCpZM8cKNw3bSu9x5FH5M09Zv4CvD/7DHtw0IWgyQvfGuxXv8L
+         ywgk36aC8H2j0jQlYW0mXioqh/ZcDhngbBHQgG7lwGfhekom0PbZZhDwo7YtINfaqlct
+         UiO8p49TL+TPM3XihphVY9ICAmTP+hBiTnkNhchK8Up8mSvBjC0AvvR8WJQqYdwAHsK9
+         JdYlC2cSxOcgp4T7feQ4UXH6Y+N76tgBNm71gKvIb0xqMs/5aQEm+J7pd6Tv9AfSMZL6
+         QeuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=RHL6JZa8EAnILkEzg08qxNM2V7eltepufz30/GOy0a8=;
+        b=mFj1l4K/nqBq8eH2YKxb4GgLtKQvjhajGeI2rhaF6F2flgci/ZIVviWtz67+veXw7w
+         6rVztm+c0vbLYoCfRo72yCUf388AocZDqVaeHTKavP5ztPP1g+8R3C3iw6D2BHWftB3+
+         3zLRRuU9phcVifocFa97ILGY+Vs1FIW68ys/UHJMOjLjpMvxBMV/fmGsuwU+Pefi+1pY
+         UJyT/SGzqaflomTgp8XOOU2h8mM1nBqv/xmdR5ESHFUS6eAwygvtH+vNFNKFQl0ZF1Nu
+         kvJmV/N0qXXhY/Mc5q2bpNzox5emarDHVh+zzlbxue8fySHrY2lXsPNX6pacMLy0CtCU
+         emyQ==
+X-Gm-Message-State: AOAM531e5VhIbITfIm4oUsuuRHrj/W///5lRyc4ha3Yo8OwFxy/jVSO2
+        U+D0rpAysfbbm3arzUPOy1sS19/UeKejCg==
+X-Google-Smtp-Source: ABdhPJztGAYHpMfCs90Rq3lMs0XN6uvUaNGsEGa5iW3IcORsJzUKJeTHxx8+8j4xyWqfSwNk8Xlh0g==
+X-Received: by 2002:a37:6895:: with SMTP id d143mr5275997qkc.217.1632835612125;
+        Tue, 28 Sep 2021 06:26:52 -0700 (PDT)
+Received: from vpp.lan (h112.166.20.98.dynamic.ip.windstream.net. [98.20.166.112])
+        by smtp.gmail.com with ESMTPSA id d82sm1673492qke.55.2021.09.28.06.26.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 06:26:51 -0700 (PDT)
+From:   Joshua Roys <roysjosh@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Joshua Roys <roysjosh@gmail.com>, ast@kernel.org,
+        davem@davemloft.net, hawk@kernel.org, john.fastabend@gmail.com,
+        daniel@iogearbox.net, kuba@kernel.org, bpf@vger.kernel.org,
+        tariqt@nvidia.com, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next] net: mlx4: Add XDP_REDIRECT statistics
+Date:   Tue, 28 Sep 2021 09:26:02 -0400
+Message-Id: <20210928132602.1488-1-roysjosh@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <8d7773a0-054a-84d5-e0b6-66a13509149e@gmail.com>
+References: <8d7773a0-054a-84d5-e0b6-66a13509149e@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210928115217.GI964074@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2dc4264b-011d-4fd7-183d-08d9827eab8b
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5253:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB525394DA8476D5B6B851E004C7A89@BL1PR12MB5253.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: vaxGgrdDIc/IauIeJEo/ttwNgxrhm1hc0uYdg8VIdjsi5WS+p9XaKGRuexsrvX6n9sa47bb0dSWG0atdWtLwaHl0vodNgJLk6xPXW/KUeKKpo0SuKxSQcy5V4jy1U7X039oou6ItZmWPLPZTXlGVE637kCBxEE1W7LCooc7J7SabeZfAi1i9BQ/jdvf4sn4AC+UcWI35KxY/xSd+8JI5UV1px7LyVhIZFgyCpXENEOvunlUqQ1AfNfnlrcn0wCWG2UQaqORjg1Z2xhNp6kJZIpQRuKbVadCsrDM1g9yZVOHvX903I4hpJ+/ceRfAKoGyEiBJ6cnMC6X1kxVvGe9qcP83Yv5Q9Y4wnKNlh0UP5u4ljp3d1iAg/7agRcwI+qV+FzungYX3R6fXdvNHElCTOpeQBJcYi3kqdDtDbntCb227DW7SD3YCVUgO9bDshFzCiI9Bzc3X+BENhQ7lIrdx/XrOSsEpFDtK9C3Jc2qO+7ye35V1YReCE5ijXGFSGXNDM6JojvGLyJ+59jm3wHU0uT/H8hknwrG2JbLa/KUkyLnpMXdpS+h7bSQW1X76bqEWYuogbuuhH7rM4u2ahJ2U9eL51JA5etv2VKMmInQ6dHP8OxScV8NFHUD30P/iqi0n2BjA/cILmy34k7agOX9Q74yVTYY73HEYdwkXNy8BCwxKjVeC4lrYOWXrWt8FA8BvQ5OSeit2FbUsJvTHX18FhSwiy3V5Ar80vrYar2Krk9Q=
-X-Forefront-Antispam-Report: CIP:216.228.112.35;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid02.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(36860700001)(53546011)(6862004)(16576012)(508600001)(47076005)(356005)(316002)(31696002)(7636003)(54906003)(6636002)(186003)(37006003)(16526019)(8936002)(31686004)(70586007)(6666004)(336012)(36756003)(4326008)(426003)(26005)(86362001)(2906002)(5660300002)(82310400003)(8676002)(2616005)(70206006)(7416002)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 12:51:20.3996
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2dc4264b-011d-4fd7-183d-08d9827eab8b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.35];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT042.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5253
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/28/2021 7:52 PM, Jason Gunthorpe wrote:
-> On Tue, Sep 28, 2021 at 05:12:39PM +0800, Mark Zhang wrote:
->> On 9/28/2021 1:30 AM, Jason Gunthorpe wrote:
->>> On Wed, Sep 15, 2021 at 02:07:25AM +0300, Leon Romanovsky wrote:
->>>> +static int stat_get_doit_default_counter(struct sk_buff *skb,
->>>> +					 struct nlmsghdr *nlh,
->>>> +					 struct netlink_ext_ack *extack,
->>>> +					 struct nlattr *tb[])
->>>> +{
->>>> +	struct rdma_hw_stats *stats;
->>>> +	struct ib_device *device;
->>>> +	u32 index, port;
->>>> +	int ret;
->>>> +
->>>> +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
->>>> +		return -EINVAL;
->>>> +
->>>> +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
->>>> +	device = ib_device_get_by_index(sock_net(skb->sk), index);
->>>> +	if (!device)
->>>> +		return -EINVAL;
->>>> +
->>>> +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
->>>> +	if (!rdma_is_port_valid(device, port)) {
->>>> +		ret = -EINVAL;
->>>> +		goto end;
->>>> +	}
->>>> +
->>>> +	stats = ib_get_hw_stats_port(device, port);
->>>> +	if (!stats) {
->>>> +		ret = -EINVAL;
->>>> +		goto end;
->>>> +	}
->>>> +
->>>> +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
->>>> +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
->>>> +					       device, port, stats);
->>>> +	else
->>>> +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
->>>> +						 port, stats);
->>>
->>> This seems strange, why is the output of a get contingent on a ignored
->>> input attribute? Shouldn't the HWCOUNTER_DYNAMIC just always be
->>> emitted?
->>
->> The CMD_STAT_GET is originally used to get the default hwcounter statistic
->> (the value of all hwstats), now we also want to use this command to get a
->> list of counters (just name and status), so kernel differentiates these 2
->> cases based on HWCOUNTER_DYNAMIC attr.
-> 
-> Don't do that, it is not how netlink works. Either the whole attribute
-> should be returned or you need a new get command
+Address feedback for XDP_REDIRECT patch.
 
-Will add a new get command for backward compatibility, thanks.
+Signed-off-by: Joshua Roys <roysjosh@gmail.com>
+---
+ .../net/ethernet/mellanox/mlx4/en_ethtool.c    |  8 ++++++++
+ drivers/net/ethernet/mellanox/mlx4/en_port.c   | 18 +++++++++++-------
+ drivers/net/ethernet/mellanox/mlx4/en_rx.c     |  4 +++-
+ drivers/net/ethernet/mellanox/mlx4/mlx4_en.h   |  2 ++
+ .../net/ethernet/mellanox/mlx4/mlx4_stats.h    |  4 +++-
+ 5 files changed, 27 insertions(+), 9 deletions(-)
+
+Tested with VPP 21.06 on Fedora 34.
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index ef518b1040f7..66c8ae29bc7a 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -197,6 +197,8 @@ static const char main_strings[][ETH_GSTRING_LEN] = {
+ 
+ 	/* xdp statistics */
+ 	"rx_xdp_drop",
++	"rx_xdp_redirect",
++	"rx_xdp_redirect_fail",
+ 	"rx_xdp_tx",
+ 	"rx_xdp_tx_full",
+ 
+@@ -428,6 +430,8 @@ static void mlx4_en_get_ethtool_stats(struct net_device *dev,
+ 		data[index++] = priv->rx_ring[i]->bytes;
+ 		data[index++] = priv->rx_ring[i]->dropped;
+ 		data[index++] = priv->rx_ring[i]->xdp_drop;
++		data[index++] = priv->rx_ring[i]->xdp_redirect;
++		data[index++] = priv->rx_ring[i]->xdp_redirect_fail;
+ 		data[index++] = priv->rx_ring[i]->xdp_tx;
+ 		data[index++] = priv->rx_ring[i]->xdp_tx_full;
+ 	}
+@@ -519,6 +523,10 @@ static void mlx4_en_get_strings(struct net_device *dev,
+ 				"rx%d_dropped", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+ 				"rx%d_xdp_drop", i);
++			sprintf(data + (index++) * ETH_GSTRING_LEN,
++				"rx%d_xdp_redirect", i);
++			sprintf(data + (index++) * ETH_GSTRING_LEN,
++				"rx%d_xdp_redirect_fail", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+ 				"rx%d_xdp_tx", i);
+ 			sprintf(data + (index++) * ETH_GSTRING_LEN,
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_port.c b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+index 0158b88bea5b..043cc9d75b3e 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_port.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+@@ -239,13 +239,15 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+ 
+ 	mlx4_en_fold_software_stats(dev);
+ 
+-	priv->port_stats.rx_chksum_good = 0;
+-	priv->port_stats.rx_chksum_none = 0;
+-	priv->port_stats.rx_chksum_complete = 0;
+-	priv->port_stats.rx_alloc_pages = 0;
+-	priv->xdp_stats.rx_xdp_drop    = 0;
+-	priv->xdp_stats.rx_xdp_tx      = 0;
+-	priv->xdp_stats.rx_xdp_tx_full = 0;
++	priv->port_stats.rx_chksum_good      = 0;
++	priv->port_stats.rx_chksum_none      = 0;
++	priv->port_stats.rx_chksum_complete  = 0;
++	priv->port_stats.rx_alloc_pages      = 0;
++	priv->xdp_stats.rx_xdp_drop          = 0;
++	priv->xdp_stats.rx_xdp_redirect      = 0;
++	priv->xdp_stats.rx_xdp_redirect_fail = 0;
++	priv->xdp_stats.rx_xdp_tx            = 0;
++	priv->xdp_stats.rx_xdp_tx_full       = 0;
+ 	for (i = 0; i < priv->rx_ring_num; i++) {
+ 		const struct mlx4_en_rx_ring *ring = priv->rx_ring[i];
+ 
+@@ -255,6 +257,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+ 		priv->port_stats.rx_chksum_complete += READ_ONCE(ring->csum_complete);
+ 		priv->port_stats.rx_alloc_pages += READ_ONCE(ring->rx_alloc_pages);
+ 		priv->xdp_stats.rx_xdp_drop	+= READ_ONCE(ring->xdp_drop);
++		priv->xdp_stats.rx_xdp_redirect += READ_ONCE(ring->xdp_redirect);
++		priv->xdp_stats.rx_xdp_redirect_fail += READ_ONCE(ring->xdp_redirect_fail);
+ 		priv->xdp_stats.rx_xdp_tx	+= READ_ONCE(ring->xdp_tx);
+ 		priv->xdp_stats.rx_xdp_tx_full	+= READ_ONCE(ring->xdp_tx_full);
+ 	}
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+index 557d7daac2d3..8f09b1de4125 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+@@ -793,11 +793,13 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+ 			case XDP_PASS:
+ 				break;
+ 			case XDP_REDIRECT:
+-				if (xdp_do_redirect(dev, &xdp, xdp_prog) >= 0) {
++				if (!xdp_do_redirect(dev, &xdp, xdp_prog)) {
++					ring->xdp_redirect++;
+ 					xdp_redir_flush = true;
+ 					frags[0].page = NULL;
+ 					goto next;
+ 				}
++				ring->xdp_redirect_fail++;
+ 				trace_xdp_exception(dev, xdp_prog, act);
+ 				goto xdp_drop_no_cnt;
+ 			case XDP_TX:
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+index f3d1a20201ef..f6c90e97b4cd 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+@@ -340,6 +340,8 @@ struct mlx4_en_rx_ring {
+ 	unsigned long csum_complete;
+ 	unsigned long rx_alloc_pages;
+ 	unsigned long xdp_drop;
++	unsigned long xdp_redirect;
++	unsigned long xdp_redirect_fail;
+ 	unsigned long xdp_tx;
+ 	unsigned long xdp_tx_full;
+ 	unsigned long dropped;
+diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+index 7b51ae8cf759..e9cd4bb6f83d 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
++++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+@@ -42,9 +42,11 @@ struct mlx4_en_port_stats {
+ 
+ struct mlx4_en_xdp_stats {
+ 	unsigned long rx_xdp_drop;
++	unsigned long rx_xdp_redirect;
++	unsigned long rx_xdp_redirect_fail;
+ 	unsigned long rx_xdp_tx;
+ 	unsigned long rx_xdp_tx_full;
+-#define NUM_XDP_STATS		3
++#define NUM_XDP_STATS		5
+ };
+ 
+ struct mlx4_en_phy_stats {
+-- 
+2.31.1
+
