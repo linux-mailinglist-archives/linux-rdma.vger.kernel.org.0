@@ -2,146 +2,193 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D51B41A610
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 05:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D4041A6A5
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 06:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238847AbhI1Dac (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Sep 2021 23:30:32 -0400
-Received: from mail-dm6nam12on2046.outbound.protection.outlook.com ([40.107.243.46]:38773
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S238805AbhI1Daa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 27 Sep 2021 23:30:30 -0400
+        id S231785AbhI1EkU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 00:40:20 -0400
+Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:19980 "EHLO
+        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229493AbhI1EkU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Sep 2021 00:40:20 -0400
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18S3Bkrs003190;
+        Tue, 28 Sep 2021 04:38:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=blqoNK8CGM9ty+M3u5ilSRFL5IY6T/fQ4UHZRH8HYhw=;
+ b=WhsaVWW3jPnd4zu/XuNsjC5/xjik3ly7wf9XjAnXg5vpa2sVGHBrnxrkMyNzCTZDFHnM
+ qX3/LqhgrqUMCvXMYlhhWSUBGPgtMQowsOU79t6IuroMwTgkxK8pym7kXynIsBJLDMg9
+ 2jQNJCQSIEDp1B5HQ1z/MrO9naze2Nh8V8pS7H33sj2jHIG+GjT/gSTa0sSWWySSMF/Q
+ ZGZ5f8N9zzpLtWnHXvtumIW+E/rzDAvPa/IZ97MChCRE7XnFMYEH05HqTm6naEaEOaZ5
+ rxK53tRIDQEn3to3y0QQdKIYPxLZMyYqhVHxmeVclUraZrnU6MdzoYxlPHg1E9EJytYd OQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3bbejee62n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 04:38:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18S4Z8rT082936;
+        Tue, 28 Sep 2021 04:38:36 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by aserp3020.oracle.com with ESMTP id 3b9x51e9sp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 28 Sep 2021 04:38:36 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Cf6xnkJx+SWGfWBArWkGaVpxWQIb6vF4lRC8R19DaLHq5B/J2CbQYERtNxwsjJQgx/VuYBtL/MidvaBxrPeKngfpyFEvZXDXPZ6Y1G2S5E0dkR8SX1QHdXuupTmGMXQ+QOHLcaOCoW4AIDGvQf4jV4lWnmwvPT7cyfAlbYpM12hy4YuPBwzxvorO/0ntfSRpCEy6OfX56VBdg/xZm6A0wLnZHQRIqVaYSs19YCDKnoFBttKqewF/TivhJBurFyGif1Tp50DYDCUnLI6EwPfsPUfipfh+60AQCg2cyxV1HIgA5pZ1pV8+NV9O44emPwhQhMNh1KWxtRDWq/eCOpbuiA==
+ b=ZYwhE+N1w1XLsknWb8fANT65DR8whKU3zaJ6Ljcda4goC4kyJN9TfPS5ImIfg1XZXlYYe8zXu2C3r/zWAdADmg+xYnYbvIDnt+gjNaAXzREIs4nxARGTAwUKsQIux/SUaSxluEysyRUxxt0XglzMYz5VNFksaEae8LnSkYxNOxMvSlbetqKGze4X8iBYgCDDWWeT2P4JQEP4LseRswFY97MROrkRZgb8g/BOGRIRzCAJILTyfNoJiEy9IaQ/VDwFPQr+ycD/JuC7tAC9CSgO/I2Jnoo1kBcRuPmDdPMD9+omMZLNMEZm4PJN2zwyYgU+NicCfyNxI684AmgfHhwhvQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=EsQoe7aRpkfWuIWwHYp6iG+Jbm97mCmzPQUKS71lLu8=;
- b=ex4nADOJgG+5L4Q+xTwrRzKY1ApfSMzCv4HBlpKUHieeoYy01nkNjebVmWCZdrrklE6Y7MW9n426zi1C2aZZ/0COLwqKU3f658j9WiSGvS6eZG29lPisBSYDEDL73oCpVwDMTnzpZJ84ooOSDDs2Eq5D+VknydEMzdaH+iD6Gg3yD2O5JYX0NQawX1NJSy9u0sSXkK6+s1TCRB5Dk89h3PcvBioRoqb2TmrmIekOL2xQ+FhVytzWJe01gOzT9LHmHt7aLHMy7d5mwIXUi4CRaLV6qtcoMefdf//fd5SgOfVO6TT0ePH2CitsZgtLmEEn5yiUp+lczVsBRLW5vX4ADw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=blqoNK8CGM9ty+M3u5ilSRFL5IY6T/fQ4UHZRH8HYhw=;
+ b=BvArph480TwRkjnBNl5SaHOWh4Q3yTT+Bw2OeVcV4DCXHlwx/dmT2tO6Eez+6ACFXrTgWIWx3wRC8s8GfqUP03vExju78pWmtWYGDe6YoP+LGqSV4VOD77DxK9TByyCEzH4UpNDBEy7LfWzTrn/xgEjs0xF+Ew402AhRraecljSbEP5ugAKHXVI8xZcZ9HKEHCdCnxYC83RtA80OX/AbOi3kOSa5d+J45r2vofZErafT9+W606eUWM7MSdioXtm9sYHHyE5v1K6rwapVLwEPz7z6DoUnXJqtwOFmYu5w/0iAAjG8Ph8PEScrsvpuC9w2Wnz5YtRTJWV087zmRieVtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EsQoe7aRpkfWuIWwHYp6iG+Jbm97mCmzPQUKS71lLu8=;
- b=QvfyuODXpeTVP48fGG/v/lDh3mrgxVAX4beCaviLsOTYXUE1F7909mRGyhaIUtHZ+gWv94wYI2Hn7cQbcxGTpMeoIO82ry67rPtXgEynGSqDScHSojJd/EbL5R5ZSsNHJ/9yZAp4MIGkevSwd1rLJLLa2pfzKmaIh8UfM9sGidEyQ2oYp9op+tFvIrJe435L90psQ+Q3Ss6AIkRBxOHU/emmli25ujGQqNZKJdH8W2xpQB/AVmDpiaXTAOC+coSIAZPxG2mvewDVE423zVRVz8fDRPiQFXMFNCrt+fm820xdcYSeGI24FHiDTZERPjR8lV6Rki1mu6huwEWdp4Nubg==
-Received: from MWHPR20CA0038.namprd20.prod.outlook.com (2603:10b6:300:ed::24)
- by CO6PR12MB5441.namprd12.prod.outlook.com (2603:10b6:303:13b::15) with
+ bh=blqoNK8CGM9ty+M3u5ilSRFL5IY6T/fQ4UHZRH8HYhw=;
+ b=mjXWw6Eb2biZyeEaJGoounbHMcjAld0K8qpeXX+9wsmUTjP6vyVIFrch0pYOXIsMXoygNnu2rhRHaxr7vpvJkFgspG8OEQ73BOzN09LvlHCj9WyPbsmJX94GndC7cQR9EG/3W1AVAg6WD5mlEac480//db1J28gdpR6luCPmDdQ=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
+ by BYAPR10MB3461.namprd10.prod.outlook.com (2603:10b6:a03:11e::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Tue, 28 Sep
- 2021 03:28:50 +0000
-Received: from CO1NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:ed:cafe::89) by MWHPR20CA0038.outlook.office365.com
- (2603:10b6:300:ed::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.14 via Frontend
- Transport; Tue, 28 Sep 2021 03:28:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT010.mail.protection.outlook.com (10.13.175.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 03:28:49 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Mon, 27 Sep
- 2021 20:28:49 -0700
-Received: from [172.27.4.189] (172.20.187.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 28 Sep
- 2021 03:28:42 +0000
-Subject: Re: [PATCH rdma-next v1 04/11] RDMA/counter: Add an is_disabled field
- in struct rdma_hw_stats
-To:     Jason Gunthorpe <jgg@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-CC:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Gal Pressman <galpress@amazon.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Mustafa Ismail <mustafa.ismail@intel.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        <netdev@vger.kernel.org>, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        "Yishai Hadas" <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <cover.1631660727.git.leonro@nvidia.com>
- <97ef07eab2b56b39f3c93e12364237d5aec2acb6.1631660727.git.leonro@nvidia.com>
- <20210927165352.GA1529966@nvidia.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-Message-ID: <6c473b40-cd38-d5d7-78e7-b3f03142eee1@nvidia.com>
-Date:   Tue, 28 Sep 2021 11:28:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15; Tue, 28 Sep
+ 2021 04:38:34 +0000
+Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::d41c:d8ff:89d6:8457]) by SJ0PR10MB4494.namprd10.prod.outlook.com
+ ([fe80::d41c:d8ff:89d6:8457%9]) with mapi id 15.20.4544.021; Tue, 28 Sep 2021
+ 04:38:34 +0000
+Subject: Re: [PATCH v1] RDMA/rxe: Bump up default maximum values used via
+ uverbs
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>, Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20210915011220.307585-1-Rao.Shoaib@oracle.com>
+ <20210927191907.GA1582097@nvidia.com>
+ <CAD=hENd0BDMS6BL_M2rDT7N8sZySQHLbzDEfWZ0AvSd6nmFmoQ@mail.gmail.com>
+From:   Shoaib Rao <rao.shoaib@oracle.com>
+Message-ID: <6a6cede4-32c3-45aa-86f9-4cd35d90ab4f@oracle.com>
+Date:   Mon, 27 Sep 2021 21:38:32 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210927165352.GA1529966@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+In-Reply-To: <CAD=hENd0BDMS6BL_M2rDT7N8sZySQHLbzDEfWZ0AvSd6nmFmoQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
+Content-Language: en-US
+X-ClientProxiedBy: SA0PR12CA0010.namprd12.prod.outlook.com
+ (2603:10b6:806:6f::15) To SJ0PR10MB4494.namprd10.prod.outlook.com
+ (2603:10b6:a03:2d4::12)
+MIME-Version: 1.0
+Received: from [IPv6:2606:b400:400:7444:8000::7e0] (2606:b400:8301:1010::16aa) by SA0PR12CA0010.namprd12.prod.outlook.com (2603:10b6:806:6f::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13 via Frontend Transport; Tue, 28 Sep 2021 04:38:33 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 89f717b2-e2d5-4fd5-d90d-08d9823016a7
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5441:
-X-Microsoft-Antispam-PRVS: <CO6PR12MB54410145779969D4105DBC3CC7A89@CO6PR12MB5441.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Office365-Filtering-Correlation-Id: 8249a7d0-2d8f-41ec-722f-08d98239d458
+X-MS-TrafficTypeDiagnostic: BYAPR10MB3461:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB34614DAFA4EA040FE14BD79FEFA89@BYAPR10MB3461.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: j8mjvlrcoqYIB2B82zNiRkrqVi6Z0nN5jaRGa2OoBM+GpDPwmCK/BS5RhhL3ulIf0wffAZupy791cLakGA5KQwCer4Pf2nZldgxGi/dMa2vk11e0GOOIYTopkbdbkuqpF4U4o1k8jaxkK56Lwe3jg1MzWn+CZXgD8FtrYYgasvSVRltaRdEv4BpcK3RZFgaVwcpHvf2rKuJvUjlnkw95Q6REq4y1elpbLAKMi8Kv2wA3ZhW6/CMDlmVs7Prxcf8uq+mCSJNRAWXYma5AuIuQlUrnsi23tZRP7kutHQ5MnsD1xUKcbVJSxFPqvzF90wmg6zgkJNuKK1ev6ooChNUCd+uGYrreMXf5LcQf/h76qjQdFwJ+PzdXK0bcsHPuUYUYn6vz3YEIhsNSZP1G5nrDw71mqPaqGDD+5sxp49oDIWox9JfEa92v8kNAS0e5GCd9yvNFkomeFXoSw8OeGnGVX3ZVG8HeHfX3hJ/f5kYggS8czjrpIjH3s5p7CxpwlbK5uxnXkcia0ESNHWLLe2cdl+riFoj6CehStGSkqQNQshCOVYyV8KudNbe9I5SPo/3cGKs5F5sMnDHoZqc7oYyMG1Q+GwI6jiBd3dds9rlctyr22KDGkPxoCgYcbh+o+gZ2VWiRp8i4Bm9fNk7akHxCOXBh1ZU2iAm7mscGyF3KLH0BUPRP3hXN64k24OUznRpJohSOUz5WGqsylb9oF0Kx9dmBTFVVM6hY9/UvZoF2SiU=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(46966006)(36840700001)(2906002)(70206006)(82310400003)(7636003)(6666004)(186003)(426003)(16526019)(26005)(316002)(8936002)(70586007)(86362001)(36756003)(36860700001)(4326008)(31696002)(53546011)(7416002)(5660300002)(356005)(336012)(110136005)(47076005)(54906003)(8676002)(508600001)(2616005)(31686004)(83380400001)(16576012)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 03:28:49.8576
+X-Microsoft-Antispam-Message-Info: /3H/7fltyO/OhDeaHho6UAE2FoUlmFIg8t6Rx3+g3ae/VzNSlTrC9tHfrxV/MPiNq9mxh52MRve1HG894wA3m9NnNy3iieCZCw3Ac9Deetcw1YMFltJYlcrg8pF03JlAxWRNi5k8Q5iiCZS/N8ZHyrcNhDstXuY+HebIs0Zp2EcmKSwwd0tmFe6edp4ABc++LutQiOzps6mHXhAc3SWSW9vbfrR7VJ1LxaujwOq7rYIIdelsMvcQFuGCz6fW5fYkY5kqdP1tVmX9Q1MUeTRhvKWXvAzx9f5IvNkgejxy9wkitTjKvzAMZFYCmRXfYh8NiqN7ftduCtkS+UcXGiIb8AUtf2MrRLNhx9OGx5/oD0RYQv3yEyET+eWklnaFzv/ToX4A0b7mLj/EeO6p1N3oTBb1hi8Ln+piRgBXL9M+Fcl7RcrZX5aK5zen2nLW3E2l8IzY0FO7WEawo+xfHR7ZKDXBgcrE3pJIhuq8MHfDfWLuSVurDH6ROMMH69ozKnx5281bxGxETwwNaYKWajXbVYn5e3xoAeTMRz6gD7adYrTF0zWdehNYXAKdayXd8GRq+zjSsoeSWaw+YANPTGdOvxPF7WYc++LcTi5j91GLJniLsH3Cagz9LWwftn0ivB0NGglb5hWzmQLrpnpn0MEY7FFGwXXdXmpLQ81ZPOaPxHb1earLca5zLj01TjHrDDIdv1Tu30/b3WcS6YqUac5GrraNL4onBL+hQSvmYp27Sto=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66476007)(83380400001)(38100700002)(4326008)(2906002)(2616005)(86362001)(66556008)(54906003)(508600001)(8676002)(186003)(66946007)(8936002)(5660300002)(110136005)(31686004)(316002)(53546011)(36756003)(31696002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eXVlblpQOE8zVDZsUmw4bGN2ZHA5OEF4UW5LazIwaGdpNHlqNlYxSnRIVG9p?=
+ =?utf-8?B?WWxzR3p3S2JETUlDQWsybTVuc0t4S3ZFSkc1TDk5M0JEOWdvY05rT1FPaFJM?=
+ =?utf-8?B?VHYzM0cvY3gxRTN0T3kxK3E1ZS9yaEplMEVjUVVmSzNGaE5FMEQwdE5KWjNP?=
+ =?utf-8?B?SWRYbWRSZjI5YllMWEdLYW9uaTlXRmdaVDhHd2FnbmZwZEczUnJuV05VSVJF?=
+ =?utf-8?B?WE1ycUNneHl4cnh3TWxCbFovY2Nmb2xjTm5lRzhrZzQybzFGc29WRzh4V2dx?=
+ =?utf-8?B?dVBCVUJkNU9SMm42cnplcEpQb0FJY21ZTmhvQlUzWlIrZE1jd21jZXlhb21M?=
+ =?utf-8?B?V3hnK2lVd1h0S3ZsMms2SDk1NnJzVTRidGkrcW1rckFMZnlpZEtPUWFBYTlu?=
+ =?utf-8?B?enVrckRUZ0QzRTlVcXFrUWdFYXRIRW4wYlJuUkdjNzFhUTRNSFIrRlRRNnRl?=
+ =?utf-8?B?SDdzOFhqQlJkallxODl4NnFZVnY4VEhZdjVXTlYxdzlwL1I4REFScUZKY0x3?=
+ =?utf-8?B?WTIvZzROdDdxUUFSalQ2YzluS0M3dm9XVThXOUY5ODBNb1pMa0FONVpwdkVv?=
+ =?utf-8?B?SmU5bm4wczFUSldUWUU4ZXNXNTE3WHZVY01TZlJsWUN0VVFGcTdOTU13YmpE?=
+ =?utf-8?B?RVZ3OTdBUnNzWVF5cEJlc1F4cEFoeUJyYkE3WmJDbzkwbEtNVkI1Y1NYSWF5?=
+ =?utf-8?B?czkzZG9YdUlybGFFT0RtMkVMYzkra01YZmRFZUlweDY3eEtyYVphQzVYY0Iw?=
+ =?utf-8?B?dlRrTk1YdzJlRnF6ODdyamxCajFjamdPcVBIQTYrWEQyWDIvczZsTitVWmxk?=
+ =?utf-8?B?NGlTUmFRUFRWbTl4WVZUb0g0MHlzSUNJcCs3NU85UkFWTTNRVzF6VWJ4blUz?=
+ =?utf-8?B?UWh4Wi9kb1lKaEk3M2lRRitXazM1a3JPUUNZSThJU043MWJuUldUakhidzli?=
+ =?utf-8?B?cGxXT0FEbzdDc1huUThrelVLVis3MlNhWGFaN2JROG54cGZRd2VvcFRMc085?=
+ =?utf-8?B?cmZNWWhNaGpicXF5NTdUVGpOWFVYdWRoTVdORXRRYXNWNGdVdFZhQ0Fod1N4?=
+ =?utf-8?B?Sy9Fb3U4VnFyUXplekgwNWhsYkVjNnRzb1EvdGlmdjQ1dncwZWthR05QQ0w0?=
+ =?utf-8?B?RXZLK3RJTW5SeXk4MlV5NzRCVklVRk5VVHhTdnFveUt1QmNZczNCcDZwa3Np?=
+ =?utf-8?B?bm9jN2xqUkR2ZHR2Y1U2T3ZmV3orSmliQS9FQUFqQ3VjZlJPWHFDWVhxOXdi?=
+ =?utf-8?B?K0Q4YVJuWXViSVZOOXhlY2VkemNGN2syYXR2Yy9ucWxNdWZuam9wN090WXhH?=
+ =?utf-8?B?RDFZeDhpOTVTR3dYUE4wNjF1RDN4Znl6RDVra3hkM2JwOWViODVlNTRZaE1B?=
+ =?utf-8?B?TFUzSU9wVmgxcHZaVzQrUnFCcVdiRGE2WVhpVHRPZEVYMGRrMWFqQmU4Vlpv?=
+ =?utf-8?B?RXc0UDlOWXNTdVRuMDVpMlBBTVFWdVp2WkF4VTBoYVBCSnZTYkRZREx4VE9R?=
+ =?utf-8?B?bVdvdmdIRkVQKzVaTkJkaFRSM3RFQ05sZVJOVmx6ODBITHQwM3lzRTFxOEhv?=
+ =?utf-8?B?Tm9icjN1S1pMSXpUeWg3MENuM05jQVZjRDRobnNVOFpzM2VydnJ5T05wVCtl?=
+ =?utf-8?B?OGxtTU0rT0x0UGpaMVlwcllQUGpoMHlmS0dZcUQyaDhhUndoSG50b1ovcndQ?=
+ =?utf-8?B?YmFrcy9DYUdoc3VtaGxnZWw1L25Ccm5xVXlpM1hibGFtRG9ySldQMUhwWHg3?=
+ =?utf-8?B?U0l5eWIzME5VcENWQ3d0N0RxMUdqcVFaL2syaHkwajQ4YjBISXQxanFZV3Q3?=
+ =?utf-8?Q?D24jQ291i9GLuHaK/qsLaDapCRKUlk9amhMJg=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8249a7d0-2d8f-41ec-722f-08d98239d458
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2021 04:38:34.2295
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 89f717b2-e2d5-4fd5-d90d-08d9823016a7
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5441
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VAWFULauSZ8FNznFe9zBDsJxoc0CsW8/xMyu4iDXa9Ua3xSJb0zQOt49dfgnDmU0NBo6k6X8aoybviZ6tE0G5g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3461
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10120 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 adultscore=0
+ mlxscore=0 malwarescore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
+ definitions=main-2109280029
+X-Proofpoint-GUID: v5R2liIK7g2xqea5MyMUUFm_2Jrwtupk
+X-Proofpoint-ORIG-GUID: v5R2liIK7g2xqea5MyMUUFm_2Jrwtupk
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 9/28/2021 12:53 AM, Jason Gunthorpe wrote:
-> On Wed, Sep 15, 2021 at 02:07:23AM +0300, Leon Romanovsky wrote:
-> 
->> diff --git a/drivers/infiniband/core/nldev.c b/drivers/infiniband/core/nldev.c
->> index 3f6b98a87566..67519730b1ac 100644
->> +++ b/drivers/infiniband/core/nldev.c
->> @@ -968,15 +968,21 @@ static int fill_stat_counter_hwcounters(struct sk_buff *msg,
->>   	if (!table_attr)
->>   		return -EMSGSIZE;
->> @@ -601,11 +604,20 @@ static inline struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
->>   	if (!stats)
->>   		return NULL;
->>   
->> +	stats->is_disabled = kcalloc(BITS_TO_LONGS(num_counters),
->> +				      sizeof(long), GFP_KERNEL);
->> +	if (!stats->is_disabled)
->> +		goto err;
->> +
-> 
-> Please de-inline this function and make a rdma_free_hw_stats_struct()
-> call to pair with it. The hw_stats_data kfree should be in there. If
-> you do this as a precursor patch this patch will be much smaller.
-> 
-> Also, the
-> 
->          stats = kzalloc(sizeof(*stats) + num_counters * sizeof(u64),
->                          GFP_KERNEL);
-> 
-> Should be using array_size
-Maybe use struct_size:
-   stats = kzalloc(struct_size(stats, value, num_counters), GFP_KERNEL);
+
+On 9/27/21 6:46 PM, Zhu Yanjun wrote:
+> On Tue, Sep 28, 2021 at 3:19 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>> On Tue, Sep 14, 2021 at 06:12:20PM -0700, Rao Shoaib wrote:
+>>> In our internal testing we have found that
+>>> default maximum values are too small.
+>>> Ideally there should be no limits, but since
+>>> maximum values are reported via ibv_query_device,
+>>> we have to return some value. So, the default
+>>> maximums have been changed to large values.
+>>>
+>>> Signed-off-by: Rao Shoaib <Rao.Shoaib@oracle.com>
+>>> ---
+>>>
+>>> Resubmitting the patch after applying Bob's latest patches and testing
+>>> using via rping.
+>>>
+>>>   drivers/infiniband/sw/rxe/rxe_param.h | 30 ++++++++++++++-------------
+>>>   1 file changed, 16 insertions(+), 14 deletions(-)
+>> So are we good with this? Bob? Zhu?
+> I have already checked this commit. And I have found 2 problems with
+> this commit.
+> This commit changes many MAXs.
+> And now rxe is not stable enough. Not sure this commit will cause the
+> new problems.
+>
+> Zhu Yanjun
+
+Hi Zhu,
+
+A generic statement without any technical data does not help. As far as 
+I am aware, currently there are no outstanding issues. If there are, 
+please provide data that clearly shows that the issue is caused by this 
+patch.
+
+Thanks you.
+
+Shoaib
+
+>>> -     RXE_MAX_MR_INDEX                = 0x00010000,
+>>> +     RXE_MAX_MR_INDEX                = DEFAULT_MAX_VALUE,
+>>> +     RXE_MAX_MR                      = DEFAULT_MAX_VALUE - RXE_MIN_MR_INDEX,
+>> Bob, were you saying this was what needed to be bigger to pass
+>> blktests??
+>>
+>> Jason
