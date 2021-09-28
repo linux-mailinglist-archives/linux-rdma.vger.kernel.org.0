@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF36641B99F
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Sep 2021 23:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4960841B9C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 00:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242600AbhI1Vvt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Sep 2021 17:51:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59604 "EHLO mail.kernel.org"
+        id S242664AbhI1WCZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Sep 2021 18:02:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241482AbhI1Vvs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 28 Sep 2021 17:51:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3799C6127A;
-        Tue, 28 Sep 2021 21:50:08 +0000 (UTC)
+        id S242626AbhI1WCZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 28 Sep 2021 18:02:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D5B6136F;
+        Tue, 28 Sep 2021 22:00:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632865808;
-        bh=OHwpnjwm82cj6sJjtQtvCN3PkpAY98SAptr+7neTpeA=;
+        s=k20201202; t=1632866445;
+        bh=CaN2PnlNMh9LsZR0N5tYAAay0l8HEHjBKEMkhUPznzQ=;
         h=Date:From:To:Cc:Subject:From;
-        b=GOHttJZ8dM0gRk1EolNJ3bxuhNWc75vnpW/Yzpt8Ii3gRolWMvdQfavyXhdhnMBY7
-         yvbrehz/jQCus9ZiTkggNVk7FfHHtfpKkRAXSv7RkBzOxYX6qqB8V4r4h1k2J56M5r
-         Uk7BJ/lH39jgjqsmGJA1O2cJmnP07AwMJRtXhGqXDPCMn/01w4qmgm38q0Kvh1+fG2
-         d6aFXcI70saF869FLR/E6zV6kgchD6Wc+uqXrAEHGBODkrtarn/fHnD28+x/jvyfba
-         UzuPubxBgHifGe56rIi8eC8+4oxFuUdpQ5IgA2bpslMAZ9Ijj8hQ1ZREi4nu2xBu9H
-         A2OQABoVKehGQ==
-Date:   Tue, 28 Sep 2021 16:54:10 -0500
+        b=BKHBD8FnQdKH6wMU5ofemXpNnD0H52CNuPBjV2gTMiso9N74ACN+SEFCrslu3BQ6D
+         c4Jx/ukbxWtFH5B8DKhJfeIAzcRkQAjJ8MQBVcTroeBKrifr0hITH00zum3dgqlri3
+         XLtF6+y+2vcD6JFodrCWNXfaBJ0HBw14rTuArkbEn3+3l/Vol1WAk93HXdzvxrwWAP
+         yRLfllZTK9Ixf6zOhuihp1ByRfRyhz/tchHuyexzSPCd5Z7HkonZg4ppaAvTm/b4aa
+         yndxb8YIlc3Q5FIXUGmHbZGcVHWh3sy4eI5gQUR8BVID+StpFno958qgOJJrZ8aXiD
+         tvLzGaJfZNPyg==
+Date:   Tue, 28 Sep 2021 17:04:47 -0500
 From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
 To:     Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
@@ -33,8 +33,8 @@ Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         "Gustavo A. R. Silva" <gustavoars@kernel.org>,
         linux-hardening@vger.kernel.org
-Subject: [PATCH][net-next] net/mlx5e: Use array_size() helper
-Message-ID: <20210928215410.GA275646@embeddedor>
+Subject: [PATCH][net-next] net/mlx5: Use kvcalloc() instead of kvzalloc()
+Message-ID: <20210928220447.GA276861@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -42,45 +42,50 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use array_size() helper to aid in 2-factor allocation instances.
+Use 2-factor argument form kvcalloc() instead of kvzalloc().
 
-Link: https://github.com/KSPP/linux/issues/160
+Link: https://github.com/KSPP/linux/issues/162
 Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c              | 2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 3fd515e7bf30..3ab5929ff131 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -930,9 +930,10 @@ static int mlx5e_alloc_xdpsq_fifo(struct mlx5e_xdpsq *sq, int numa)
- 	struct mlx5e_xdp_info_fifo *xdpi_fifo = &sq->db.xdpi_fifo;
- 	int wq_sz        = mlx5_wq_cyc_get_size(&sq->wq);
- 	int dsegs_per_wq = wq_sz * MLX5_SEND_WQEBB_NUM_DS;
-+	size_t size;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+index db5dfff585c9..4dc3a822907a 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/cmd.c
+@@ -2058,7 +2058,7 @@ int mlx5_cmd_init(struct mlx5_core_dev *dev)
+ 		return -EINVAL;
+ 	}
  
--	xdpi_fifo->xi = kvzalloc_node(sizeof(*xdpi_fifo->xi) * dsegs_per_wq,
--				      GFP_KERNEL, numa);
-+	size = array_size(sizeof(*xdpi_fifo->xi), dsegs_per_wq);
-+	xdpi_fifo->xi = kvzalloc_node(size, GFP_KERNEL, numa);
- 	if (!xdpi_fifo->xi)
+-	cmd->stats = kvzalloc(MLX5_CMD_OP_MAX * sizeof(*cmd->stats), GFP_KERNEL);
++	cmd->stats = kvcalloc(MLX5_CMD_OP_MAX, sizeof(*cmd->stats), GFP_KERNEL);
+ 	if (!cmd->stats)
  		return -ENOMEM;
  
-@@ -946,10 +947,11 @@ static int mlx5e_alloc_xdpsq_fifo(struct mlx5e_xdpsq *sq, int numa)
- static int mlx5e_alloc_xdpsq_db(struct mlx5e_xdpsq *sq, int numa)
- {
- 	int wq_sz = mlx5_wq_cyc_get_size(&sq->wq);
-+	size_t size;
- 	int err;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+index 0d461e38add3..4e1628f25265 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+@@ -1009,7 +1009,7 @@ mlx5_eswitch_add_send_to_vport_meta_rules(struct mlx5_eswitch *esw)
+ 	u16 vport_num;
  
--	sq->db.wqe_info = kvzalloc_node(sizeof(*sq->db.wqe_info) * wq_sz,
--					GFP_KERNEL, numa);
-+	size = array_size(sizeof(*sq->db.wqe_info), wq_sz);
-+	sq->db.wqe_info = kvzalloc_node(size, GFP_KERNEL, numa);
- 	if (!sq->db.wqe_info)
+ 	num_vfs = esw->esw_funcs.num_vfs;
+-	flows = kvzalloc(num_vfs * sizeof(*flows), GFP_KERNEL);
++	flows = kvcalloc(num_vfs, sizeof(*flows), GFP_KERNEL);
+ 	if (!flows)
  		return -ENOMEM;
  
+@@ -1188,7 +1188,7 @@ static int esw_add_fdb_peer_miss_rules(struct mlx5_eswitch *esw,
+ 
+ 	peer_miss_rules_setup(esw, peer_dev, spec, &dest);
+ 
+-	flows = kvzalloc(nvports * sizeof(*flows), GFP_KERNEL);
++	flows = kvcalloc(nvports, sizeof(*flows), GFP_KERNEL);
+ 	if (!flows) {
+ 		err = -ENOMEM;
+ 		goto alloc_flows_err;
 -- 
 2.27.0
 
