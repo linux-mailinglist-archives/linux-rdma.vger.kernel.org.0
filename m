@@ -2,75 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18F8D41CBFF
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 20:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F9F41CC5F
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 21:11:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346320AbhI2SkJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 14:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34378 "EHLO mail.kernel.org"
+        id S1346465AbhI2TMs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 15:12:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346308AbhI2SkA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 14:40:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E5D861216;
-        Wed, 29 Sep 2021 18:38:18 +0000 (UTC)
+        id S1346459AbhI2TMr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Sep 2021 15:12:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEB456152B;
+        Wed, 29 Sep 2021 19:11:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632940699;
-        bh=D1OW1odBQV/5U8jRZ04+ORhf0sZ+4cKzL42iq1jdVe8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rUVPB0YavgvNxSo4VHX6JeqndeB7O8eFEN8fEguCnEqY+Zbk7z0ekW+3VS0PrSVss
-         +1btiZtII4sWf3qTGqwLJUEEZrctsSUL+09b0ko94/3lWDMyGKPnjZuzt60TnKrznT
-         d4NJs8lV5vvSrNaYZszzvDhrwETdLcTXXFpL/31FIs5zWW3zkQKUXfSA0jKXqrNiJU
-         eGzloGW0iwnSmSxAnen08lVBJnxV9yTCyIHuoy6+VcfakPNmqf/nf0tERjh9ddcjHY
-         ZfW8iUOVbwlCTzVM3ZEg/pwdUPYdXn9tkm6ihCK/Wk+mb2k5/V1q6v4/GawsZJ4feA
-         s3cSYELdS662g==
-Date:   Wed, 29 Sep 2021 11:38:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Prabhakar Kushwaha <pkushwaha@marvell.com>
-Cc:     <netdev@vger.kernel.org>, <davem@davemloft.net>,
-        <linux-rdma@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <aelior@marvell.com>,
-        <smalin@marvell.com>, <jhasan@marvell.com>,
-        <mrangankar@marvell.com>, <prabhakar.pkin@gmail.com>,
-        <malin1024@gmail.com>, Omkar Kulkarni <okulkarni@marvell.com>
-Subject: Re: [PATCH 04/12] qed: Update qed_mfw_hsi.h for FW ver 8.59.1.0
-Message-ID: <20210929113817.06da736a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210929121215.17864-5-pkushwaha@marvell.com>
-References: <20210929121215.17864-1-pkushwaha@marvell.com>
-        <20210929121215.17864-5-pkushwaha@marvell.com>
+        s=k20201202; t=1632942665;
+        bh=KLrloZPzLW18c3xvNXLpZsRmlo/8Db+xpwDUJ6mpspw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g/Y6B1hsAFTG9hM7y/eREJP0dV2b20GYaTs3YeZ4KaTMtiHknXZf3ADcL0bTTnWPC
+         Kc76CU3P4x3ye3SQjW+Pz7UeT6FmOn/m5jNHrqgZ560+HE8bsAQ8BBtbm9rDGctA43
+         z4EuglKmsLwW9FSKlZXsxGNWqFa9pmBQpUbVw/3cgO1TEMKo1I+QBzUgSkcyDYGWYt
+         3pE7btqaH0EXIoQ5/Zo3bI28GzOczDegU7PsSamKO0GVRCuqOObO+AxpPsm56Ko141
+         MrQS2LRnvXbbElRArzKioa6wZC6QSjnirE8DucXayN16mJfNEc1BpHjXI3nFBMB9Lc
+         kXMFaYz3zTNMw==
+Date:   Wed, 29 Sep 2021 22:11:01 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
+        oss-drivers@corigine.com,
+        Richard Cochran <richardcochran@gmail.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
+ fix
+Message-ID: <YVS6RQfcp2YVxrv3@unreal>
+References: <cover.1632916329.git.leonro@nvidia.com>
+ <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YVR0iKIRYDXQbD+o@unreal>
+ <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YVSG55i75awUpAmn@unreal>
+ <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 29 Sep 2021 15:12:07 +0300 Prabhakar Kushwaha wrote:
-> The qed_mfw_hsi.h contains HSI (Hardware Software Interface) changes
-> related to management firmware. It has been updated to support new FW
-> version 8.59.1.0 with below changes.
->  - New defines for VF bitmap.
->  - fec_mode and extended_speed defines updated in struct eth_phy_cfg.
->  - Updated structutres lldp_system_tlvs_buffer_s, public_global,
->    public_port, public_func, drv_union_data, public_drv_mb
->    with all dependent new structures.
->  - Updates in NVM related structures and defines.
->  - Msg defines are added in enum drv_msg_code and fw_msg_code.
->  - Updated/added new defines.
->=20
-> This patch also fixes the existing checkpatch warnings and few important
-> checks.
->=20
-> Signed-off-by: Ariel Elior <aelior@marvell.com>
-> Signed-off-by: Omkar Kulkarni <okulkarni@marvell.com>
-> Signed-off-by: Shai Malin <smalin@marvell.com>
-> Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+On Wed, Sep 29, 2021 at 10:55:37AM -0700, Jakub Kicinski wrote:
+> On Wed, 29 Sep 2021 18:31:51 +0300 Leon Romanovsky wrote:
+> > On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
+> > > On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:  
+> > > > We don't need to advertise counters for feature that is not supported.
+> > > > In multiport mlx5 devices, the reload functionality is not supported, so
+> > > > this change at least make that device to behave like all other netdev
+> > > > devices that don't support devlink reload.
+> > > > 
+> > > > The ops structure is set very early to make sure that internal devlink
+> > > > routines will be able access driver back during initialization (btw very
+> > > > questionable design choice)  
+> > > 
+> > > Indeed, is this fixable? Or now that devlink_register() was moved to 
+> > > the end of probe netdev can call ops before instance is registered?
+> > >   
+> > > > and at that stage the driver doesn't know
+> > > > yet which device type it is going to drive.
+> > > > 
+> > > > So the answer is:
+> > > > 1. Can't have two structures.  
+> > > 
+> > > I still don't understand why. To be clear - swapping full op structures
+> > > is probably acceptable if it's a pure upgrade (existing pointers match).
+> > > Poking new ops into a structure (in alphabetical order if I understand
+> > > your reply to Greg, not destructor-before-contructor) is what I deem
+> > > questionable.  
+> > 
+> > It is sorted simply for readability and not for any other technical
+> > reason.
+> > 
+> > Regarding new ops, this is how we are setting callbacks in RDMA based on
+> > actual device support. It works like a charm.
+> > 
+> > > > 2. Same behaviour across all netdev devices.  
+> > > 
+> > > Unclear what this is referring to.  
+> > 
+> > If your device doesn't support devlink reload, it won't print any
+> > reload counters at all. It is not the case for the multiport mlx5
+> > device. It doesn't support, but still present these counters.
+> 
+> There's myriad ways you can hide features.
+> 
+> Swapping ops is heavy handed and prone to data races, I don't like it.
 
-drivers/net/ethernet/qlogic/qed/qed_main.c:102:18: warning: =E2=80=98qed_mf=
-w_ext_20g=E2=80=99 defined but not used [-Wunused-const-variable=3D]
-  102 | static const u32 qed_mfw_ext_20g[] __initconst =3D {
-      |                  ^~~~~~~~~~~~~~~
+I'm not swapping, but setting only in supported devices.
 
+Anyway, please give me a chance to present improved version of this
+mechanism and we will continue from there.
 
-Plus you add a whole bunch on kdoc warnings with those patches.
-Please make sure no new kdoc warnings and no new compilation warnings
-(with C=3D1 W=3D1 flags!)
+Thanks
