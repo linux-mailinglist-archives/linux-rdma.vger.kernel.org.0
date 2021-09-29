@@ -2,151 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69B241C440
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 14:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 764AC41C462
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 14:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245225AbhI2MGb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 08:06:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53928 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245211AbhI2MGb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:06:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7141D61406;
-        Wed, 29 Sep 2021 12:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632917090;
-        bh=OmNdazFoMZCKQ8r4ReuRZKLs38PLrawSuhZV6i5Gql0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pFbvC0gwC5XJG2wnE8cftn0JFyJh++cnHSw5Y0bfFsBCEz1UoB7O4xQqBpHSn+oMZ
-         a9rc1Uppa/Q4K+hjr2UlPkIBHz/eHvynhVtf9Lv6v89aNyaRZF99csS+wRzppomGMf
-         TQRHK4ts55in7YWK3QhatMqKddMXFK0ympW9bkr5tUc0BJVwP2mkhIDJT3PYRClUam
-         AqvAzvwuUBUI6ecs8hz2n4U5T6lOGG3TNAUFtF7JEbjaUKNwZsaFlQhWC1rn2j7bCf
-         /ojKUxMnsuJ9m2PgAQpvBef2QT+I/XIrdVLSWaKNoCUswd4WTFaZdu++Ujjgpi+1KC
-         djxg3Cqa6tb8A==
-Date:   Wed, 29 Sep 2021 15:04:46 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jack Wang <xjtuwjp@gmail.com>
-Cc:     Md Haris Iqbal <haris.iqbal@ionos.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>
-Subject: Re: [PATCH for-next 6/7] RDMA/rtrs: Do not allow sessname to contain
- special symbols / and .
-Message-ID: <YVRWXim7T0mReBu/@unreal>
-References: <20210922125333.351454-1-haris.iqbal@ionos.com>
- <20210922125333.351454-7-haris.iqbal@ionos.com>
- <YVG3cme0KX9CD4oh@unreal>
- <CAD+HZHWTZY=6W4MNEGwVi=e64MJtntVE1Hwm6Lt_m=UaAW2W-A@mail.gmail.com>
- <YVLEIVz1mCV0cZlC@unreal>
- <CAD+HZHW5u1MiB-+C784yYXZc9Q-F0yB+1EvRKb4sAQJe4p2Yeg@mail.gmail.com>
+        id S1343704AbhI2MQL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 08:16:11 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:5520 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1343566AbhI2MQL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:16:11 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18TBKfbx014735;
+        Wed, 29 Sep 2021 05:12:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pfpt0220;
+ bh=MX5uqXWCePYkA3aMi1IuiknY/mxJ4knP5JFMrx5TtKc=;
+ b=a2NksK8xVm9s7KZm5+T3zK7ffekuDJZE6BnXgudRLk2t2EdGgOU/Jm3SYvfB/CsO1HiY
+ flcY8RuSGE3muJW2Cwki3upo3jzgyj7LIqYi/TC4986emRRBqEcceEZLPL2JZfX9WXDt
+ xBkxeUv9/UKumRgkGYgsVzS3k8Fff1qUaKwclWNh1tR6oIcEfPysLDCw1lHhKAUXMHPC
+ zbyROWqL0UyVt9arHMSrRJoZN09Bkxx9PlPynmGPpDqXHijuTp4CnuD1GyamW01+emK1
+ cw8bHdkTWlDD0yqerOiJDy9oMR1vs4v1Aw71zvVHJOfv9bH1a3Ut8Rk4WR/5U3ETakI5 Sg== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3bcq67g5wp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 29 Sep 2021 05:12:25 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
+ 2021 05:12:24 -0700
+Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
+ DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server id
+ 15.0.1497.18 via Frontend Transport; Wed, 29 Sep 2021 05:12:21 -0700
+From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
+To:     <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <martin.petersen@oracle.com>, <aelior@marvell.com>,
+        <smalin@marvell.com>, <jhasan@marvell.com>,
+        <mrangankar@marvell.com>, <pkushwaha@marvell.com>,
+        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>
+Subject: [PATCH 00/12] qed: new firmware version 8.59.1.0 support
+Date:   Wed, 29 Sep 2021 15:12:03 +0300
+Message-ID: <20210929121215.17864-1-pkushwaha@marvell.com>
+X-Mailer: git-send-email 2.16.6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD+HZHW5u1MiB-+C784yYXZc9Q-F0yB+1EvRKb4sAQJe4p2Yeg@mail.gmail.com>
+X-Proofpoint-ORIG-GUID: ngX1wBKostFjF1AkQtPj75m1OFWawcHR
+X-Proofpoint-GUID: ngX1wBKostFjF1AkQtPj75m1OFWawcHR
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-29_05,2021-09-29_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 09:00:56AM +0200, Jack Wang wrote:
-> Leon Romanovsky <leon@kernel.org> 于2021年9月28日周二 上午9:28写道：
-> >
-> > On Tue, Sep 28, 2021 at 09:08:26AM +0200, Jack Wang wrote:
-> > > Leon Romanovsky <leon@kernel.org> 于2021年9月27日周一 下午2:23写道：
-> > > >
-> > > > On Wed, Sep 22, 2021 at 02:53:32PM +0200, Md Haris Iqbal wrote:
-> > > > > Allowing these characters in sessname can lead to unexpected results,
-> > > > > particularly because / is used as a separator between files in a path,
-> > > > > and . points to the current directory.
-> > > > >
-> > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > > > > Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > > > Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-> > > > > ---
-> > > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
-> > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
-> > > > >  2 files changed, 11 insertions(+)
-> > > >
-> > > > It will be safer if you check for only allowed symbols and disallow
-> > > > everything else. Check for: a-Z, 0-9 and "-".
-> > > >
-> > > Hi Leon,
-> > >
-> > > Thanks for your suggestions.
-> > > The reasons we choose to do disallow only '/' and '.':
-> > > 1 more flexible, most UNIX filenames allow any 8-bit set, except '/' and null.
-> >
-> > So you need to add all possible protections and checks that VFS has to allow "random" name.
-> It's only about sysfs here, as we use sessname to create dir in sysfs,
-> and I checked the code, it allows any 8-bit set, and convert '/' to
-> '!', see https://elixir.bootlin.com/linux/latest/source/lib/kobject.c#L299
-> >
-> > > 2 matching for 2 characters is faster than checking all the allowed
-> > > symbols during session establishment.
-> >
-> > Extra CPU cycles won't make any difference here.
-> As we can have hundreds of sessions, in the end, it matters.
+This series integrate new firmware version 8.59.1.0, along with updated
+HSI (hardware software interface) to use the FW, into the family of
+qed drivers (fastlinq devices). This FW does not reside in the NVRAM.
+It needs to be programmed to device during driver load as the part of
+initialization sequence.
 
-Your rtrs_clt_open() function is far from being optimized for
-performance. It allocates memory, iterates over all paths, creates
-sysfs and kobject.
+Similar to previous FW support series, this FW is tightly linked to
+software and pf function driver. This means FW release is not backward
+compatible, and driver should always run with the FW it was designed
+against.
 
-So no, it doesn't matter here.
+FW binary blob is already submitted & accepted in linux-firmware repo.
 
-Thanks
+Patches in the series include:
+patch 1     - qed: Remove e4_ and _e4 from FW HSI
+patch 2     - qed: split huge qed_hsi.h header file
+patch 3-7   - HSI (hardware software interface) changes
+patch 8     - qed: Add '_GTT' suffix to the IRO RAM macros
+patch 9     - qed: Update debug related changes
+patch 10    - qed: rdma: Update TCP silly-window-syndrome timeout
+patch 11    - qed: Update the TCP active termination 2  MSL timer
+patch 12    - qed: fix ll2 establishment during load of RDMA driver
 
-> 
-> Thanks
-> >
-> > > 3 we do use hostnameA@hostnameB for production usage right now, we
-> > > don't want to break the user space.
-> >
-> > You can add "@" into the list of accepted symbols.
-> >
-> > >
-> > > I hope this makes sense to you.
-> > >
-> > > Regards!
-> > >
-> > > >
-> > > > >
-> > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > > index bc8824b4ee0d..15c0077dd27e 100644
-> > > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > > > > @@ -2788,6 +2788,12 @@ struct rtrs_clt *rtrs_clt_open(struct rtrs_clt_ops *ops,
-> > > > >       struct rtrs_clt *clt;
-> > > > >       int err, i;
-> > > > >
-> > > > > +     if (strchr(sessname, '/') || strchr(sessname, '.')) {
-> > > > > +             pr_err("sessname cannot contain / and .\n");
-> > > > > +             err = -EINVAL;
-> > > > > +             goto out;
-> > > > > +     }
-> > > > > +
-> > > > >       clt = alloc_clt(sessname, paths_num, port, pdu_sz, ops->priv,
-> > > > >                       ops->link_ev,
-> > > > >                       reconnect_delay_sec,
-> > > > > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-srv.c b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > index 078a1cbac90c..7df71f8cf149 100644
-> > > > > --- a/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > +++ b/drivers/infiniband/ulp/rtrs/rtrs-srv.c
-> > > > > @@ -803,6 +803,11 @@ static int process_info_req(struct rtrs_srv_con *con,
-> > > > >               return err;
-> > > > >       }
-> > > > >
-> > > > > +     if (strchr(msg->sessname, '/') || strchr(msg->sessname, '.')) {
-> > > > > +             rtrs_err(s, "sessname cannot contain / and .\n");
-> > > > > +             return -EINVAL;
-> > > > > +     }
-> > > > > +
-> > > > >       if (exist_sessname(sess->srv->ctx,
-> > > > >                          msg->sessname, &sess->srv->paths_uuid)) {
-> > > > >               rtrs_err(s, "sessname is duplicated: %s\n", msg->sessname);
-> > > > > --
-> > > > > 2.25.1
-> > > > >
+In addition, this patch series also fixes existing checkpatch warnings
+and checks which are missing.
+
+
+Manish Chopra (1):
+  qed: fix ll2 establishment during load of RDMA driver
+
+Nikolay Assa (1):
+  qed: Update TCP silly-window-syndrome timeout for iwarp, scsi
+
+Omkar Kulkarni (2):
+  qed: Split huge qed_hsi.h header file
+  qed: Update FW init functions to support FW 8.59.1.0
+
+Prabhakar Kushwaha (7):
+  qed: Update common_hsi for FW ver 8.59.1.0
+  qed: Update qed_mfw_hsi.h for FW ver 8.59.1.0
+  qed: Update qed_hsi.h for fw 8.59.1.0
+  qed: Use enum as per FW 8.59.1.0 in qed_iro_hsi.h
+  qed: Add '_GTT' suffix to the IRO RAM macros
+  qed: Update debug related changes
+  qed: Update the TCP active termination 2 MSL timer ("TIME_WAIT")
+
+Shai Malin (1):
+  qed: Remove e4_ and _e4 from FW HSI
+
+ drivers/infiniband/hw/qedr/main.c             |     2 +-
+ drivers/net/ethernet/qlogic/qed/qed.h         |    35 +-
+ drivers/net/ethernet/qlogic/qed/qed_cxt.c     |    16 +-
+ drivers/net/ethernet/qlogic/qed/qed_cxt.h     |     5 +-
+ drivers/net/ethernet/qlogic/qed/qed_dbg_hsi.h |  1478 ++
+ drivers/net/ethernet/qlogic/qed/qed_dcbx.h    |    11 +-
+ drivers/net/ethernet/qlogic/qed/qed_debug.c   |  1398 +-
+ drivers/net/ethernet/qlogic/qed/qed_debug.h   |     7 +-
+ drivers/net/ethernet/qlogic/qed/qed_dev.c     |   122 +-
+ drivers/net/ethernet/qlogic/qed/qed_dev_api.h |     6 +-
+ drivers/net/ethernet/qlogic/qed/qed_fcoe.c    |    25 +-
+ drivers/net/ethernet/qlogic/qed/qed_hsi.h     | 12265 ++++++----------
+ .../ethernet/qlogic/qed/qed_init_fw_funcs.c   |   405 +-
+ .../net/ethernet/qlogic/qed/qed_init_ops.c    |    98 +-
+ .../net/ethernet/qlogic/qed/qed_init_ops.h    |     2 +-
+ drivers/net/ethernet/qlogic/qed/qed_int.c     |     4 +-
+ drivers/net/ethernet/qlogic/qed/qed_int.h     |     2 +-
+ drivers/net/ethernet/qlogic/qed/qed_iro_hsi.h |   500 +
+ drivers/net/ethernet/qlogic/qed/qed_iscsi.c   |    15 +-
+ drivers/net/ethernet/qlogic/qed/qed_iwarp.c   |     2 +
+ drivers/net/ethernet/qlogic/qed/qed_l2.c      |    18 +-
+ drivers/net/ethernet/qlogic/qed/qed_l2.h      |     5 +-
+ drivers/net/ethernet/qlogic/qed/qed_ll2.c     |    64 +-
+ drivers/net/ethernet/qlogic/qed/qed_ll2.h     |     1 -
+ drivers/net/ethernet/qlogic/qed/qed_main.c    |    17 +-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.c     |    64 +-
+ drivers/net/ethernet/qlogic/qed/qed_mcp.h     |    11 +-
+ drivers/net/ethernet/qlogic/qed/qed_mfw_hsi.h |  2474 ++++
+ drivers/net/ethernet/qlogic/qed/qed_rdma.c    |     7 +-
+ drivers/net/ethernet/qlogic/qed/qed_rdma.h    |     7 +-
+ .../net/ethernet/qlogic/qed/qed_reg_addr.h    |    95 +-
+ drivers/net/ethernet/qlogic/qed/qed_roce.c    |     1 -
+ drivers/net/ethernet/qlogic/qed/qed_sp.h      |     8 +-
+ .../net/ethernet/qlogic/qed/qed_sp_commands.c |    10 +-
+ drivers/net/ethernet/qlogic/qed/qed_spq.c     |    63 +-
+ drivers/net/ethernet/qlogic/qed/qed_sriov.c   |   200 +-
+ drivers/net/ethernet/qlogic/qed/qed_sriov.h   |    26 +-
+ drivers/net/ethernet/qlogic/qed/qed_vf.c      |    11 +-
+ drivers/net/ethernet/qlogic/qed/qed_vf.h      |    11 +-
+ drivers/net/ethernet/qlogic/qede/qede_main.c  |     2 +-
+ drivers/scsi/qedf/drv_fcoe_fw_funcs.c         |     8 +-
+ drivers/scsi/qedf/drv_fcoe_fw_funcs.h         |     2 +-
+ drivers/scsi/qedf/qedf.h                      |     4 +-
+ drivers/scsi/qedf/qedf_els.c                  |     2 +-
+ drivers/scsi/qedf/qedf_io.c                   |    12 +-
+ drivers/scsi/qedf/qedf_main.c                 |     8 +-
+ drivers/scsi/qedi/qedi_debugfs.c              |     4 +-
+ drivers/scsi/qedi/qedi_fw.c                   |    40 +-
+ drivers/scsi/qedi/qedi_fw_api.c               |    22 +-
+ drivers/scsi/qedi/qedi_fw_iscsi.h             |     2 +-
+ drivers/scsi/qedi/qedi_iscsi.h                |     2 +-
+ drivers/scsi/qedi/qedi_main.c                 |    11 +-
+ include/linux/qed/common_hsi.h                |   141 +-
+ include/linux/qed/eth_common.h                |     1 +
+ include/linux/qed/fcoe_common.h               |   362 +-
+ include/linux/qed/iscsi_common.h              |   360 +-
+ include/linux/qed/nvmetcp_common.h            |    18 +-
+ include/linux/qed/qed_if.h                    |     8 +-
+ include/linux/qed/rdma_common.h               |     1 +
+ 59 files changed, 11687 insertions(+), 8814 deletions(-)
+ create mode 100644 drivers/net/ethernet/qlogic/qed/qed_dbg_hsi.h
+ create mode 100644 drivers/net/ethernet/qlogic/qed/qed_iro_hsi.h
+ create mode 100644 drivers/net/ethernet/qlogic/qed/qed_mfw_hsi.h
+
+-- 
+2.24.1
+
