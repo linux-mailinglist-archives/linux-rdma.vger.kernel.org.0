@@ -2,140 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F9F41CC5F
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 21:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C4141CE56
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 23:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346465AbhI2TMs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 15:12:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46490 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346459AbhI2TMr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 15:12:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEB456152B;
-        Wed, 29 Sep 2021 19:11:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632942665;
-        bh=KLrloZPzLW18c3xvNXLpZsRmlo/8Db+xpwDUJ6mpspw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g/Y6B1hsAFTG9hM7y/eREJP0dV2b20GYaTs3YeZ4KaTMtiHknXZf3ADcL0bTTnWPC
-         Kc76CU3P4x3ye3SQjW+Pz7UeT6FmOn/m5jNHrqgZ560+HE8bsAQ8BBtbm9rDGctA43
-         z4EuglKmsLwW9FSKlZXsxGNWqFa9pmBQpUbVw/3cgO1TEMKo1I+QBzUgSkcyDYGWYt
-         3pE7btqaH0EXIoQ5/Zo3bI28GzOczDegU7PsSamKO0GVRCuqOObO+AxpPsm56Ko141
-         MrQS2LRnvXbbElRArzKioa6wZC6QSjnirE8DucXayN16mJfNEc1BpHjXI3nFBMB9Lc
-         kXMFaYz3zTNMw==
-Date:   Wed, 29 Sep 2021 22:11:01 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <YVS6RQfcp2YVxrv3@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR0iKIRYDXQbD+o@unreal>
- <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVSG55i75awUpAmn@unreal>
- <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S1346464AbhI2Vof (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 17:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345966AbhI2Vof (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Sep 2021 17:44:35 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F914C06161C
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 14:42:53 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so4718676otb.1
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 14:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kKL2rx4Se7LRynbifpHicrI0FvCrVSYu9niLii4bCRQ=;
+        b=axQYjN4VYIV4KTCI8sepZhr1MMHFbIhq56kkCQIBNxKUJ/wGRGlHEaVEZWcDvNt1AR
+         Ftuhv5C8LMw5pujhNc6XaUOX9SI93zgGfbFBPMiGp6fLfCy3LoHm//dArhPjc1JTD2WE
+         5d93gX7/xJalhbc05TXFmpiReHoSdhHWtX0n9M9onIVmB4VYMD1UVkqZE7avPtVzGAZ0
+         b/y8ONfdrjUvBEf35tj+F4Wwx1ghSCfOPMyZk9GCPBpx2amd2xs0ICOsuE8DR7pkWYlk
+         tTSxTbDOiBTi7JXmAv/YFOJnigJT49ZMU5D8OFHsJ5DFZWFN4CGNPP3XysX1C30hYDKq
+         +uaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kKL2rx4Se7LRynbifpHicrI0FvCrVSYu9niLii4bCRQ=;
+        b=iu1CZR/ih7Xa9Kjz0PVZozsN/AMAwh9oR0tkscWa1752v78mUnoEGC6ClwN2F1Am7T
+         aunopIDAS5+FqYvFaYQYneCu38mbYHf9nlGOiE3hD7o+UKFw6vTOKppiTHnfzX8rjNT3
+         kcmgkGKotf04z6FQqgbt8N5EI5fyyNsugXRetKyB6wRHa4/RfzsESDLgWttH3bzTbpBZ
+         /CyFq2j+dHTKGJvL13wW100O5XAQJ++NGwjeFsA0BIqedu30Q2151EURNeDL4u0pcCRq
+         O6ILiW7Cm1lR2F2ddXMxWNC7z4J7nUolfuVtmwBGXdz2Ys09hOEMqgPXXuj2x/W0IEQZ
+         X1Vw==
+X-Gm-Message-State: AOAM532Pm1ktGVAkZBbmgDtRaZZeINXxA9wuzcbuZq1M/pTCgVYhDswW
+        GhtwXK78lQvY7xiXczQuFOqDtvvayUJ4Xg==
+X-Google-Smtp-Source: ABdhPJyXmMoA8KcIX1QH5FaQSppjbzs6lMC3QVXIRWhu+rewTOBmm/L0l1HxFlUPW410ZEwYoGlFeg==
+X-Received: by 2002:a9d:4c11:: with SMTP id l17mr2028731otf.106.1632951772212;
+        Wed, 29 Sep 2021 14:42:52 -0700 (PDT)
+Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-81c5-5403-9877-a213.res6.spectrum.com. [2603:8081:140c:1a00:81c5:5403:9877:a213])
+        by smtp.gmail.com with ESMTPSA id v16sm187534otq.6.2021.09.29.14.42.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 14:42:51 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@nvidia.com
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH] Provider/rxe: Remove printf()
+Date:   Wed, 29 Sep 2021 16:42:15 -0500
+Message-Id: <20210929214214.18767-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210929105537.758d5d85@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 10:55:37AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 18:31:51 +0300 Leon Romanovsky wrote:
-> > On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
-> > > On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:  
-> > > > We don't need to advertise counters for feature that is not supported.
-> > > > In multiport mlx5 devices, the reload functionality is not supported, so
-> > > > this change at least make that device to behave like all other netdev
-> > > > devices that don't support devlink reload.
-> > > > 
-> > > > The ops structure is set very early to make sure that internal devlink
-> > > > routines will be able access driver back during initialization (btw very
-> > > > questionable design choice)  
-> > > 
-> > > Indeed, is this fixable? Or now that devlink_register() was moved to 
-> > > the end of probe netdev can call ops before instance is registered?
-> > >   
-> > > > and at that stage the driver doesn't know
-> > > > yet which device type it is going to drive.
-> > > > 
-> > > > So the answer is:
-> > > > 1. Can't have two structures.  
-> > > 
-> > > I still don't understand why. To be clear - swapping full op structures
-> > > is probably acceptable if it's a pure upgrade (existing pointers match).
-> > > Poking new ops into a structure (in alphabetical order if I understand
-> > > your reply to Greg, not destructor-before-contructor) is what I deem
-> > > questionable.  
-> > 
-> > It is sorted simply for readability and not for any other technical
-> > reason.
-> > 
-> > Regarding new ops, this is how we are setting callbacks in RDMA based on
-> > actual device support. It works like a charm.
-> > 
-> > > > 2. Same behaviour across all netdev devices.  
-> > > 
-> > > Unclear what this is referring to.  
-> > 
-> > If your device doesn't support devlink reload, it won't print any
-> > reload counters at all. It is not the case for the multiport mlx5
-> > device. It doesn't support, but still present these counters.
-> 
-> There's myriad ways you can hide features.
-> 
-> Swapping ops is heavy handed and prone to data races, I don't like it.
+Currently the rxe provider issues a print statement if it detects
+an invalid work request and also returns an error. A recently
+added python test case triggers such a message which is expected
+since the test is deliberately constructing invalid work requests.
 
-I'm not swapping, but setting only in supported devices.
+This patch removes the print statement which has no practical use.
 
-Anyway, please give me a chance to present improved version of this
-mechanism and we will continue from there.
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ providers/rxe/rxe.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Thanks
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index 3533a325..42fc447c 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -1513,10 +1513,8 @@ static int post_one_send(struct rxe_qp *qp, struct rxe_wq *sq,
+ 		length += ibwr->sg_list[i].length;
+ 
+ 	err = validate_send_wr(qp, ibwr, length);
+-	if (err) {
+-		printf("validate send failed\n");
++	if (err)
+ 		return err;
+-	}
+ 
+ 	wqe = (struct rxe_send_wqe *)producer_addr(sq->queue);
+ 
+-- 
+2.30.2
+
