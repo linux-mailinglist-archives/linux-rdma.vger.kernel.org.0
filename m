@@ -2,107 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884A741C4A5
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 14:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F45D41C4B3
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 14:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343715AbhI2M0y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 08:26:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
+        id S1343795AbhI2M2O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 08:28:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343657AbhI2M0p (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 08:26:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F09DB6134F;
-        Wed, 29 Sep 2021 12:25:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1632918304;
-        bh=wWhYoJmf5o0goYtd67yiGvYSKB/JovKlR7TP3Zqi99g=;
+        id S1343801AbhI2M2K (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Sep 2021 08:28:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A7D6134F;
+        Wed, 29 Sep 2021 12:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632918389;
+        bh=koikjoePa7AY6dydALCEgN1Mu+kNaM/UxhhdxgxoFB8=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FOgYB8oD4xLYiT0MCbtWOdRGH09IaQNPSb9EOFkBWsnpoxLHGflJa7ENoq5BBegTA
-         /idNuAQ88djuyX6GEANEa3D9oBEdUuEjGy3rDzcd4GQcWFa+2U/Gw+KtNXffW4v0Ud
-         7oDuoKWmOB12QpwjmS0H8zNQahoQsoL0nRw6FaFU=
-Date:   Wed, 29 Sep 2021 14:25:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
+        b=G+pdHb7OjDKhePfUMG41+ZYS0MuoT2n8aX0GJhjUa8TaGytboes4QUP1fumUJIZ0w
+         tQ3RhI+OGb7IPQDGng/EMauWFIW6DqUOooKAkLTIPWbAYx3ZUSEA4Ff0WzHj7I4rc7
+         44Ou3seNoPI9FCcPPYeNKnjbDFsXbYry++6sBMC0fagrklbA+Bb+B04824a+1p2lN+
+         Wb8T5gdLTRIqSolYo9FSxVFh3FIBfCkIYNpWsn5hh/PpTGjwH1JlomyWsce3QVWYB5
+         noxTaH1y+tBcn6+anr10yZnryCnizoaBkNs5IAigfvBpVu5m8O2vZRdx0g/jiL9CBi
+         mdfV8c1AbRnRQ==
+Date:   Wed, 29 Sep 2021 15:26:25 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mark Zhang <markzhang@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <YVRbHMODzcciHa2p@kroah.com>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <aac64d4861d6207a90a6d45245ee5ed59114659a.1632916329.git.leonro@nvidia.com>
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v1 06/11] RDMA/nldev: Add support to get status
+ of all counters
+Message-ID: <YVRbcXJL/LBaSLLJ@unreal>
+References: <cover.1631660727.git.leonro@nvidia.com>
+ <86b8a508d7e782b003d60acb06536681f0d4c721.1631660727.git.leonro@nvidia.com>
+ <20210927173001.GD1529966@nvidia.com>
+ <d812f553-1fc5-f228-18cb-07dce02eeb85@nvidia.com>
+ <20210928115217.GI964074@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aac64d4861d6207a90a6d45245ee5ed59114659a.1632916329.git.leonro@nvidia.com>
+In-Reply-To: <20210928115217.GI964074@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 03:00:44PM +0300, Leon Romanovsky wrote:
-> +void devlink_set_ops(struct devlink *devlink, struct devlink_ops *ops)
-> +{
-> +	struct devlink_ops *dev_ops = devlink->ops;
-> +
-> +	WARN_ON(!devlink_reload_actions_valid(ops));
-> +
-> +#define SET_DEVICE_OP(ptr, op, name)                                           \
-> +	do {                                                                   \
-> +		if ((op)->name)                                                \
-> +			if (!((ptr)->name))                                    \
-> +				(ptr)->name = (op)->name;                      \
-> +	} while (0)
-> +
-> +	/* Keep sorted */
-> +	SET_DEVICE_OP(dev_ops, ops, reload_actions);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_down);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_limits);
-> +	SET_DEVICE_OP(dev_ops, ops, reload_up);
+On Tue, Sep 28, 2021 at 08:52:17AM -0300, Jason Gunthorpe wrote:
+> On Tue, Sep 28, 2021 at 05:12:39PM +0800, Mark Zhang wrote:
+> > On 9/28/2021 1:30 AM, Jason Gunthorpe wrote:
+> > > On Wed, Sep 15, 2021 at 02:07:25AM +0300, Leon Romanovsky wrote:
+> > > > +static int stat_get_doit_default_counter(struct sk_buff *skb,
+> > > > +					 struct nlmsghdr *nlh,
+> > > > +					 struct netlink_ext_ack *extack,
+> > > > +					 struct nlattr *tb[])
+> > > > +{
+> > > > +	struct rdma_hw_stats *stats;
+> > > > +	struct ib_device *device;
+> > > > +	u32 index, port;
+> > > > +	int ret;
+> > > > +
+> > > > +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
+> > > > +	device = ib_device_get_by_index(sock_net(skb->sk), index);
+> > > > +	if (!device)
+> > > > +		return -EINVAL;
+> > > > +
+> > > > +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+> > > > +	if (!rdma_is_port_valid(device, port)) {
+> > > > +		ret = -EINVAL;
+> > > > +		goto end;
+> > > > +	}
+> > > > +
+> > > > +	stats = ib_get_hw_stats_port(device, port);
+> > > > +	if (!stats) {
+> > > > +		ret = -EINVAL;
+> > > > +		goto end;
+> > > > +	}
+> > > > +
+> > > > +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
+> > > > +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
+> > > > +					       device, port, stats);
+> > > > +	else
+> > > > +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
+> > > > +						 port, stats);
+> > > 
+> > > This seems strange, why is the output of a get contingent on a ignored
+> > > input attribute? Shouldn't the HWCOUNTER_DYNAMIC just always be
+> > > emitted?
+> > 
+> > The CMD_STAT_GET is originally used to get the default hwcounter statistic
+> > (the value of all hwstats), now we also want to use this command to get a
+> > list of counters (just name and status), so kernel differentiates these 2
+> > cases based on HWCOUNTER_DYNAMIC attr.
+> 
+> Don't do that, it is not how netlink works. Either the whole attribute
+> should be returned or you need a new get command
 
-Keep sorted in what order?  And why?
+The netlink way is to be independent on returned parameter, if it not
+supported, this parameter won't be available at all. This makes HWCOUNTER_DYNAMIC
+to work exactly as netlink would do.
 
-thanks,
+Thanks
 
-greg k-h
+> 
+> Jason 
