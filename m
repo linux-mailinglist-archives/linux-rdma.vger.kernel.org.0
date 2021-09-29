@@ -2,149 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32F141C879
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 17:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBB741C9E0
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 18:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345208AbhI2Pdh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 11:33:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40962 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1345178AbhI2Pdg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 11:33:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 87BE661159;
-        Wed, 29 Sep 2021 15:31:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632929515;
-        bh=HXwoS1HjJA1S0yfWFpWczWoEmqeqJ8/hI4qGlsQfiLE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a8sMw03Rp6PGGokI/cGFo4lnq8A92MECDtnNRH0qAYiC9K1Vj5DaLvJfztY1rEwx2
-         J3FjihL9ii52e8Zfc1LoVAXfQPLIFtkcWyusSyw6hrLPxYhHTnB49JgfL17mN5pY50
-         8YPYUUzVPu6Gkd6TA90y1EU7fcrWlEMBwJGhL7hOX7n7IYjBvJbjvmnzc7myNa6TOJ
-         xOL0M+HYncEtqnaVZr7i4ot3tZbMpp7lbMxXHKZaRL6OYsWT1I2t1Q0jXuKcshj3+i
-         EhRojJsY7u7SHu6Llx2j3/ql9Ac0a4DTztxk62AfY9CPj7ePahwroyGlhgI7Xfabug
-         yDOSXw/s46Y1Q==
-Date:   Wed, 29 Sep 2021 18:31:51 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
+        id S1345311AbhI2QQT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 12:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344907AbhI2QQQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Sep 2021 12:16:16 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4124AC06161C
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 09:14:35 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id r16so2780096qtw.11
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 09:14:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2/DOweLZi1LYkI2NBZkoCxBZv2x+eGa4aLJUobv2L1o=;
+        b=PboCFsQCjD2723LhLYT/hgjkJdWoO/Qr7CahpEILXMofMHRSJifpiRAfKU1XinqG67
+         AhaKbB8c6M8JSRC5xiTi7/mAm/tA9MPNU7KxHCJwsT3TcNZEvni9gIYQHpEE2twn3Lb1
+         XEQAd+awFGQvrjYTvZmCM8JGYWsNB3RPHyweKekQKlu0doslil+cuRJjDW4QCgq+lEPM
+         +n+cIMyeEp1R/IhkNJfh1Av4WkSJThIfSSnZIbzDvJEu3PUwI3+Rbi/hzxYhv46mrVo4
+         C2Ww+6AXHWKS7AbB4UjQ/vimBLFOVmr7X6zBKKsORWg5TkRoxZSArV+Enk/yQJYpQidO
+         Yk+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2/DOweLZi1LYkI2NBZkoCxBZv2x+eGa4aLJUobv2L1o=;
+        b=PoMPGyY2InFSacM7Z80ay02FWkMjFoMELG8MqKFT6A7xuUR1pu4JtD0KhfYMIA+4bY
+         NlQR2rCIv9W+PoPca22YV6ZaYpKmSRVxqnTOkAsANMI928mX0wdyI/k3JCnuOUJz6r8y
+         oa8eRlOjfmiytvJ4yNkfr4Gai4NEFZ1SblXfcXC5mwsVTMbJPaHUTGF2CfafF4IfRKS4
+         fXCk7hlSFb9JTrVnnZqwqafG+HJDuGKuunK2WHbHmd+ILqx/FLmAju0Up6v4P2ikocwy
+         nNi8c5vFfpkgVnK+pSw5v9fiR2u6TXgfOlCE5xjxl6Ak9d9jHHiTHlfXzxDv8ITealXf
+         jOFQ==
+X-Gm-Message-State: AOAM532C5gKyfHoMrQdEst5WDhVDWsrFH1IOJLKIArzGWw6O3MpXcC6Q
+        lm6cQbFXw+0lA9FkEsXt1rU5hQ==
+X-Google-Smtp-Source: ABdhPJz3genm3m/pxNLME0A8yc2mxcvVNovagYhEOWLyS+VtXcmuaVaqUzXPZnkRrIL56CYjTIjNqA==
+X-Received: by 2002:ac8:610f:: with SMTP id a15mr758684qtm.387.1632932074489;
+        Wed, 29 Sep 2021 09:14:34 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id v17sm163354qkp.75.2021.09.29.09.14.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Sep 2021 09:14:33 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVcE5-007cDu-62; Wed, 29 Sep 2021 13:14:33 -0300
+Date:   Wed, 29 Sep 2021 13:14:33 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v1 0/5] Devlink reload and missed notifications
- fix
-Message-ID: <YVSG55i75awUpAmn@unreal>
-References: <cover.1632916329.git.leonro@nvidia.com>
- <20210929064004.3172946e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVR0iKIRYDXQbD+o@unreal>
- <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Cornelia Huck <cohuck@redhat.com>
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+Message-ID: <20210929161433.GA1808627@ziepe.ca>
+References: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
+ <20210927164648.1e2d49ac.alex.williamson@redhat.com>
+ <20210927231239.GE3544071@ziepe.ca>
+ <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
+ <20210929063551.47590fbb.alex.williamson@redhat.com>
+ <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
+ <20210929075019.48d07deb.alex.williamson@redhat.com>
+ <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+ <20210929091712.6390141c.alex.williamson@redhat.com>
+ <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210929073940.5d7ed022@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 07:39:40AM -0700, Jakub Kicinski wrote:
-> On Wed, 29 Sep 2021 17:13:28 +0300 Leon Romanovsky wrote:
-> > On Wed, Sep 29, 2021 at 06:40:04AM -0700, Jakub Kicinski wrote:
-> > > On Wed, 29 Sep 2021 15:00:41 +0300 Leon Romanovsky wrote:  
-> > > > This series starts from the fixing the bug introduced by implementing
-> > > > devlink delayed notifications logic, where I missed some of the
-> > > > notifications functions.
-> > > > 
-> > > > The rest series provides a way to dynamically set devlink ops that is
-> > > > needed for mlx5 multiport device and starts cleanup by removing
-> > > > not-needed logic.
-> > > > 
-> > > > In the next series, we will delete various publish API, drop general
-> > > > lock, annotate the code and rework logic around devlink->lock.
-> > > > 
-> > > > All this is possible because driver initialization is separated from the
-> > > > user input now.  
-> > > 
-> > > Swapping ops is a nasty hack in my book.
-> > > 
-> > > And all that to avoid having two op structures in one driver.
-> > > Or to avoid having counters which are always 0?  
-> > 
-> > We don't need to advertise counters for feature that is not supported.
-> > In multiport mlx5 devices, the reload functionality is not supported, so
-> > this change at least make that device to behave like all other netdev
-> > devices that don't support devlink reload.
-> > 
-> > The ops structure is set very early to make sure that internal devlink
-> > routines will be able access driver back during initialization (btw very
-> > questionable design choice)
-> 
-> Indeed, is this fixable? Or now that devlink_register() was moved to 
-> the end of probe netdev can call ops before instance is registered?
-> 
-> > and at that stage the driver doesn't know
-> > yet which device type it is going to drive.
-> > 
-> > So the answer is:
-> > 1. Can't have two structures.
-> 
-> I still don't understand why. To be clear - swapping full op structures
-> is probably acceptable if it's a pure upgrade (existing pointers match).
-> Poking new ops into a structure (in alphabetical order if I understand
-> your reply to Greg, not destructor-before-contructor) is what I deem
-> questionable.
+On Wed, Sep 29, 2021 at 06:28:44PM +0300, Max Gurtovoy wrote:
 
-It is sorted simply for readability and not for any other technical
-reason.
-
-Regarding new ops, this is how we are setting callbacks in RDMA based on
-actual device support. It works like a charm.
-
+> > So you have a device that's actively modifying its internal state,
+> > performing I/O, including DMA (thereby dirtying VM memory), all while
+> > in the _STOP state?  And you don't see this as a problem?
 > 
-> > 2. Same behaviour across all netdev devices.
-> 
-> Unclear what this is referring to.
+> I don't see how is it different from vfio-pci situation.
 
-If your device doesn't support devlink reload, it won't print any
-reload counters at all. It is not the case for the multiport mlx5
-device. It doesn't support, but still present these counters.
+vfio-pci provides no way to observe the migration state. It isn't
+"000b"
 
-Thanks
+> Maybe we need to rename STOP state. We can call it READY or LIVE or
+> NON_MIGRATION_STATE.
+
+It was a poor choice to use 000b as stop, but it doesn't really
+matter. The mlx5 driver should just pre-init this readable to running.
+
+Jason
