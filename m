@@ -2,173 +2,232 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C1741C58D
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 15:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A76341C5A6
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 15:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231166AbhI2N2r (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 09:28:47 -0400
-Received: from mail-mw2nam10on2055.outbound.protection.outlook.com ([40.107.94.55]:6496
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        id S1344183AbhI2NbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 09:31:23 -0400
+Received: from mail-eopbgr60060.outbound.protection.outlook.com ([40.107.6.60]:49032
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229846AbhI2N2q (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 09:28:46 -0400
+        id S1344171AbhI2NbV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 29 Sep 2021 09:31:21 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SopQUUjKKmWehp9/Po4GBq9wjcXYagtrXTnXLPg8qkFSDhNzqVmUC3TrCCLYBelECHk7ggBjOPHTiYYDRcen3ENw9NlENfTXbHd44pHSV3N+d8JZpBWnBvUCH7ruguuWCTtii7RTr64JFurQib2iVGltCiqIHHhsTH2/pum/UjVNjfdQCdiqcbciI2AGDaT+I4N5ts44JIZjXSVrEIKtYBQFMkQm11Evbq19J7TOdzOWk9t4h/qJsyLlA7GuKK6uZfb5qCrn2ofPpwspfFqDwVCRuBGI7R2siqRNrfJLNg7jGoBr0qqQ/4YZB7f1iH2GmnpdGGFzSVFIy7kEXPFesw==
+ b=eliaqHzQjRNGZtDwlfIGyI6Qp1bRrswntEVdLphX4StE5wTj/8WY9/MqP03FQuX9bXyd+bWJ3JsVpDtowdLc45muuzzvKdUJQWD48Zc7v2eXDlfHnJqI3dgtswYsKsIOkc0Q2N8ni6Bcg1OLhanDC3ftzsdhcpRr12RKxYEBr7k2U3eEKiY96tqwPUVTquPJLcFfZH88ykQipmx5NVNqFISFSy2kjHWAiGTsr6/x7IG4EPZqZKyAWwbdzPmtfnwQ1SBq0xO62AlRmV9+p0BXuOHTf58ClZOWS8Pqa6LgV3x2nzaZNa0MhXl38sNbVl6KAgUX8M3JrbSGSqHGKsmL6g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=ZqSAvNtWdfLXwX07aABQ8OVg/GsMy6vHqsPVY4vNNMU=;
- b=P7c8HcCxGExMsH0nC4ufkmQ5FI9LfszbMOuaeElNmi4tTzWSHOqHvUdA3V5KkcxJ9TUmTUwTUOT+ShXukiBTJZQqgHqrnSVpuVp0eKN8a+5wR0N7LSaCUD13d7hMqIdXQJn+9yYRUr8iIWaK4GAvEzXPvqFNrVmB1Zr31LHxUfDKRH8JiPJaqrBgtDwoVg8hQtpTCnRsvQOU1tUNa0EP81B8zuX4IeIeCVuAlqfg9bVXfoYJkJaqpblVTR4SfmwuInUmSnnWgscHWar9hsGdz4o9v5onhDQZ+Dkb/vB2h/uj99pSj2SZEazd476hVEJyIHmnUM2rf9DeNOMUGPipGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.32) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ bh=9fe0gqesOAPD6nIyD+HwiLivs0LnML75ncKU5Da/5K4=;
+ b=lfbIfSZQ/n95fy4LhCnxlwCawUE/AX1Y9nrdYZl32J5QDegMP6efyxNJ0aptZjA9obOTbqJWN4iFvrevuA3X0vbAEv2NYGK8t/NzTknnY/aDi5jAQ1tWCJ1KUe2l2dFUXnT+5aL+K8i7UXz2Irgf7i5mKWc2exYgc1AeN+IZCKSuCmShCD2FdX2qMU2zpS3lxyYrhCU8kuDbl35kgzCe5sCUlEvTkU7aBh3QLA9Gdz9KD/z/KPfwLGsxEB2X/U8C/51yV2fJFloC6F2sPqqrmhWv3ubFHGBk/GftTrxnUAOsdBLrWdS5oOwq5fUYHeqjcah3O1YNGOtxffGvj76yug==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZqSAvNtWdfLXwX07aABQ8OVg/GsMy6vHqsPVY4vNNMU=;
- b=hh6Ld2P9G1IhAN4NVMRhDXFExkSbYneg/L8YeotXyiFpyK+quBheOQv+zTkHSwod5LkVaj5+m8dUxBKPrsycp6aho+wN/GK4nxply7TjoZ2YbOhWMYipfu2Zya8C2xbJkgHTwNcBSqWbS8acL788dKrI5OByAalGZLi0kvScKc98h9Pk2tAv0NpeFNG7YApfEpDNRtzLDQE0dLfC8XWAUR3M3iym3xLRMsPR2Uxt4be+9pCkCmrlscI8Mjd0ok8oLAmgj8fhh4BTxsiX5gjnl0w1Xpi/mXxbQbmbMxon7/6qYVLBp4blpTV/+eELta+D+gMU/WRigq2nO/sS55y4gA==
-Received: from CO2PR06CA0075.namprd06.prod.outlook.com (2603:10b6:104:3::33)
- by DM6PR12MB4986.namprd12.prod.outlook.com (2603:10b6:5:16f::13) with
+ bh=9fe0gqesOAPD6nIyD+HwiLivs0LnML75ncKU5Da/5K4=;
+ b=aWodotAJ13EcatTEI/Wu+FKP5itK/m51v5fLvc9Wz0NDrczh1BQTn8g0aavbHc49b6wuMPyJvK5E5zKd127xJXkUxYO49rb7A96Cnj5Jnw8jc08UpcXP0Pi/DI25wNZ+uGSRbOKg6qg/LJGEKkdgpeAoBXNaBe7s8QGKPw4kCD0=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB4221.eurprd04.prod.outlook.com (2603:10a6:803:3e::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.18; Wed, 29 Sep
- 2021 13:27:03 +0000
-Received: from CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
- (2603:10b6:104:3:cafe::bc) by CO2PR06CA0075.outlook.office365.com
- (2603:10b6:104:3::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend
- Transport; Wed, 29 Sep 2021 13:27:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.32)
- smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.32 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.32; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.32) by
- CO1NAM11FT017.mail.protection.outlook.com (10.13.175.108) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4566.14 via Frontend Transport; Wed, 29 Sep 2021 13:27:03 +0000
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
- 2021 06:27:02 -0700
-Received: from [172.27.14.186] (172.20.187.6) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 29 Sep
- 2021 13:26:58 +0000
-Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
- transition validity
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        "Doug Ledford" <dledford@redhat.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        "Bjorn Helgaas" <bhelgaas@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Wed, 29 Sep
+ 2021 13:29:37 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e157:3280:7bc3:18c4%5]) with mapi id 15.20.4544.022; Wed, 29 Sep 2021
+ 13:29:37 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
+        Bin Luo <luobin9@huawei.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Coiby Xu <coiby.xu@gmail.com>,
+        Derek Chickles <dchickles@marvell.com>,
+        "drivers@pensando.io" <drivers@pensando.io>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "GR-everest-linux-l2@marvell.com" <GR-everest-linux-l2@marvell.com>,
+        "GR-Linux-NIC-Dev@marvell.com" <GR-Linux-NIC-Dev@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
+        Manish Chopra <manishc@marvell.com>,
+        Michael Chan <michael.chan@broadcom.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "oss-drivers@corigine.com" <oss-drivers@corigine.com>,
+        Richard Cochran <richardcochran@gmail.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>
-References: <cover.1632305919.git.leonro@nvidia.com>
- <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
- <20210927164648.1e2d49ac.alex.williamson@redhat.com>
- <20210927231239.GE3544071@ziepe.ca>
- <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
- <20210929063551.47590fbb.alex.williamson@redhat.com>
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-Message-ID: <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-Date:   Wed, 29 Sep 2021 16:26:55 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20210929063551.47590fbb.alex.williamson@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+        Salil Mehta <salil.mehta@huawei.com>,
+        Satanand Burla <sburla@marvell.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Shay Drory <shayd@nvidia.com>,
+        Simon Horman <simon.horman@corigine.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v1 1/5] devlink: Add missed notifications
+ iterators
+Thread-Topic: [PATCH net-next v1 1/5] devlink: Add missed notifications
+ iterators
+Thread-Index: AQHXtSmu5y6IvLJs4EG01H02pouwAqu7AcQA
+Date:   Wed, 29 Sep 2021 13:29:37 +0000
+Message-ID: <20210929132936.hnts7lmweewqedxi@skbuf>
+References: <cover.1632916329.git.leonro@nvidia.com>
+ <2ed1159291f2a589b013914f2b60d8172fc525c1.1632916329.git.leonro@nvidia.com>
+In-Reply-To: <2ed1159291f2a589b013914f2b60d8172fc525c1.1632916329.git.leonro@nvidia.com>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4b7e28e5-c5e5-4d78-1dc1-08d9834cd31c
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4986:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4986D3F991AFC79EF025DF52DEA99@DM6PR12MB4986.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qBVgrJNAi4KQ0iM3aqB49o1Q+aofJqCVxTxnb/t6cRCGp4HS3pGT00NK8DjUZrYmooOdVqTi2WpZSImoUfFOaQrAklH9UvVFW5zPkQrQjABhr8eA2o8ZNhSlmEVzasYoF8tRpVodxmR//RNrAPKXeWg+feIWJBEa8EwK4BSlTw8IIaa6R5Jz5tMnWsa7sinES6wJD4aQaqTY4xGQVzepVxJArfqXEIx27gdWse6ZvmZYp2FBKVkuj/CSOM4JB65zHEqgHPvjdT3Gp2Zy8JD4+CsQkaPt5FHuZyCKLn5p2qiBsXL52Ze4uyaWyC7DVmMitB9tfroDmXPD/ik30Kqwk4N+Ck9xPuR8/Z0+TOwV0tOe6kmbeWyIjvbsbyEBtIa81kY0VUPjbgg0rbag23vdSH1Udc8jlceseaFxfPoYF3nARFG4susRlSYDxtxF8fjXWRN9bTnmQF+vCkxRA7rd650nO5D/CFJCiYHaIGtfS82moWY5zmLkHy2I+j2HUbLG1n9EbFb1gg/+Vgla0gPGXrWRhaWvwyRgBYbaj+nBkZO1sjUh7w5osu0sb5pxukmqTsBhTpbIBRCQ4vIGKID69PDKOIMfehzo6J8OmCJfE42Bad9IEsPvwoJfjMR4AIFxx+uQ5S7pod8HgUujX6VwoWVj+0Y25gxVNmqTi8sVlXebqD6jaK6mzQAl+5mWhBwPZNvXvnsWmBjV0m3xUBrVkJItM3V622ItTweZHjPqDw4=
-X-Forefront-Antispam-Report: CIP:216.228.112.32;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid01.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(36860700001)(2906002)(70586007)(36756003)(336012)(316002)(356005)(7416002)(5660300002)(7636003)(16576012)(8676002)(31686004)(70206006)(426003)(6666004)(26005)(53546011)(186003)(6916009)(16526019)(4326008)(47076005)(82310400003)(86362001)(54906003)(8936002)(31696002)(508600001)(2616005)(83380400001)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 13:27:03.1034
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 699720a7-d124-458d-55e2-08d9834d2ef2
+x-ms-traffictypediagnostic: VI1PR04MB4221:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB4221FA7372B088D72601803DE0A99@VI1PR04MB4221.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:335;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ANHiEdpsWFGjJ7vb04XqOn+O57jtmPSLqAv0kfp2p6rwWen6uQ60Z82J20ws3lFqGWSqtO1Lg/HQNISb+G9bFbuY3yKJ82ro6bLzHgsPwsorQ6bNYqJ7j0xrqowoWjESjRu3cUaV15N1JAcuU5EqOdhOC80+rsHg8dj8h6TKiPfIBbkbxvb2GhC2wX3B3ASUa5ctmruKEy96y3v0Bezp0xVOF9n4mc/H6Re4HMhQNLpkWw9hRi4/DOofefPImendzbgw+mjViAluznpNK92HkRNe9QBGc5+lyn88Jw/eyw3WawGqbaYgXSCFXYS1fmfIhTNvPaVXC/dNJJvhk897fJxEcGo+rqBKwZWbe2Vj0bd+udaMP6Ffqc3VllqljFODFQlCUn/CqCZJk/IZptbIL95nk5Ih/H1JWbmxUTJYYrjkMr8alGmzmINrzMkbbq/uqaJnnHAko/wdPTxS0I0QbqZ2FitgGp82r5/YiPFdiooBlp+gMuehl8NZWB3pgZnaeyQSO8vKloj3ZqEkf9py2gMkzl9k6JZG5AspJS/ZHncGZ2rqjuP4awrDAPVYMNpRvZlYGLS5oSwRfU5rUGRBb3NVDdAeht1rYO+UEvcQpI+jarpTECe63tmPbXIudm7aKlCTke2A43c8oySaY9YN8E1EtN7jsWHUvFeWRXcLBfQHRHQvqu4fsrGUXi1OzT+2j+0RxV5ZpxOSzpEzRqEKZQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(366004)(66446008)(64756008)(91956017)(76116006)(66946007)(8676002)(33716001)(7406005)(66476007)(66556008)(2906002)(7366002)(7416002)(8936002)(15650500001)(6486002)(45080400002)(86362001)(1076003)(316002)(54906003)(26005)(508600001)(5660300002)(4326008)(6916009)(6506007)(44832011)(9686003)(6512007)(71200400001)(186003)(38070700005)(38100700002)(122000001)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0XZ66elNCE/08GsOQxDNMuLWXfqXRSiD/S/bjUHBLZRGvmQtTfwR/y6ajXIR?=
+ =?us-ascii?Q?dx5UTFFkNHHJG9d98n/NyGLzCjULosvoDMbiT8eRFCm7M7Gmqn1SfF4aRVrI?=
+ =?us-ascii?Q?U8WRdA8t38T32tgxTlXoQU4Dx5IVt6+WYRWHgX7RMB28YwGGtl6X0t3pjMyd?=
+ =?us-ascii?Q?SOGKsWCUGk8ha0QvSIRKzPxmiCqo53YDO7ghQ0TfYGYXCfYxwamEDd0cgxYX?=
+ =?us-ascii?Q?UD5yDjo3xJZ+5fprfuyjWNeMjcyWpaz9vENSAt6cpUwASOe7shfuqRZn43Mz?=
+ =?us-ascii?Q?yzObcnU/ETFxJAEKUX7VzmB/vcMDZDmOiYp+fM1MKsd1s/MnN4Y6nTgh1GkO?=
+ =?us-ascii?Q?j1VFs9zLM9WyRB+fzbDHAGphSVmFzDVEfRU3pYRmyBMXQR2dzggL5RIRlELM?=
+ =?us-ascii?Q?J1IhkAyXDqfWzeIMjFaFeBySU7kCFFBUg/EQ0wYykG5wKjQtMqkrUDXpmlTM?=
+ =?us-ascii?Q?JfzufRqS6Rk4S16nMcrIq1kN4phfSMGxaETcIGLTaYP5VxKevIrSTud48ysC?=
+ =?us-ascii?Q?rQf27Gj9lTEaI95GwvXM46TyGYh/fDKPr4Y8CqyOEyXlA7jkP13SGR8SIPo1?=
+ =?us-ascii?Q?cUAVxbyu31p8yF4fJIkPRR05BX7haAx5BE1qUlzTdFAQQk+19ePG+U/ch/pB?=
+ =?us-ascii?Q?yTN0I+8yFVDLBVuU2pHoAXG6PC3ECQ0KXU8QzrGeGpxl37LjgxahXJbyWgYY?=
+ =?us-ascii?Q?Z0BGWQeNmmT9Po1lp5JRZjnWaQYkCwDmVkmYJEO795R9NVVxA/O5jFWmb3zf?=
+ =?us-ascii?Q?sj87/rJjyP/eVWVnX6qEOQvRk797KhkYIDZV0GZPdpwNIkjOQxsq7wKNh2Vq?=
+ =?us-ascii?Q?ySMvgqYfXVnwJdVTUh2SIIp/9+rqUeyigtUUdfm1KpnnOLHy7Kr2lnSBFK4w?=
+ =?us-ascii?Q?yAa4znlsNXX9D8oqN41gCLnbvNMQCsqd2hjeCpVAWrezFJbRljTaTnxanAX+?=
+ =?us-ascii?Q?HALnbPGfbQVeabdQatAZpPapwiEPbyxn3lbmpKxRUXgW+lPSZBB8G7wnp7D+?=
+ =?us-ascii?Q?Z6HTR/RhiAaS5clZZKbKu6JpadUiwKf8c7S4bBblK7znpIr3VCRgeMwRUVfN?=
+ =?us-ascii?Q?Bc6oCjj5WKuW/gq4l0ReVuei7j/PK2W2bc2T325p0NR6eXOwLb1jCrMweMcC?=
+ =?us-ascii?Q?/gh5ECXB3CGRELxn0W/AsxjCX4MNgUhDaNgEUHee+IqX6scoxBU9579xLq+M?=
+ =?us-ascii?Q?GCn6/LzbcFB/4AiM+j3k6a+2UPU8Ln8OskqQdhQLIKScP4u5AlTu9h/jQkgA?=
+ =?us-ascii?Q?QFKJrl253pdhZNpCd2UYJSamnstAQ+1TB4pqWwSnVkoMvi9BgeeUh0Esl8C8?=
+ =?us-ascii?Q?9zeSuFxPMFe+uTN2Es/oUx3G?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E9D2422D8EA0984AB0F78FA2ED8B56E5@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 699720a7-d124-458d-55e2-08d9834d2ef2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Sep 2021 13:29:37.1990
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b7e28e5-c5e5-4d78-1dc1-08d9834cd31c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.32];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT017.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4986
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 874E3XGpVhXRoxyBB5sw13xGweMfS5gdq+7X8oi54LtQC0r1ZkJuyyb7iLWLloPWRCaoosr1gU4PUXvUEwMbVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4221
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Sep 29, 2021 at 03:00:42PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+>=20
+> The commit mentioned in Fixes line missed a couple of notifications that
+> were registered before devlink_register() and should be delayed too.
+>=20
+> As such, the too early placed WARN_ON() check spotted it.
+>=20
+> WARNING: CPU: 1 PID: 6540 at net/core/devlink.c:5158 devlink_nl_region_no=
+tify+0x184/0x1e0 net/core/devlink.c:5158
+> Modules linked in:
+> CPU: 1 PID: 6540 Comm: syz-executor.0 Not tainted 5.15.0-rc2-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/01/2011
+> RIP: 0010:devlink_nl_region_notify+0x184/0x1e0 net/core/devlink.c:5158
+> Code: 38 41 b8 c0 0c 00 00 31 d2 48 89 ee 4c 89 e7 e8 72 1a 26 00 48 83 c=
+4 08 5b 5d 41 5c 41 5d 41 5e e9 01 bd 41 fa
+> e8 fc bc 41 fa <0f> 0b e9 f7 fe ff ff e8 f0 bc 41 fa 0f 0b eb da 4c 89 e7=
+ e8 c4 18
+> RSP: 0018:ffffc90002d6f658 EFLAGS: 00010293
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: ffff88801f08d580 RSI: ffffffff87344e94 RDI: 0000000000000003
+> RBP: ffff88801ee42100 R08: 0000000000000000 R09: 0000000000000000
+> R10: ffffffff87344d8a R11: 0000000000000000 R12: ffff88801c1dc000
+> R13: 0000000000000000 R14: 000000000000002c R15: ffff88801c1dc070
+> FS:  0000555555e8e400(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 000055dd7c590310 CR3: 0000000069a09000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  devlink_region_create+0x39f/0x4c0 net/core/devlink.c:10327
+>  nsim_dev_dummy_region_init drivers/net/netdevsim/dev.c:481 [inline]
+>  nsim_dev_probe+0x5f6/0x1150 drivers/net/netdevsim/dev.c:1479
+>  call_driver_probe drivers/base/dd.c:517 [inline]
+>  really_probe+0x245/0xcc0 drivers/base/dd.c:596
+>  __driver_probe_device+0x338/0x4d0 drivers/base/dd.c:751
+>  driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:781
+>  __device_attach_driver+0x20b/0x2f0 drivers/base/dd.c:898
+>  bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:427
+>  __device_attach+0x228/0x4a0 drivers/base/dd.c:969
+>  bus_probe_device+0x1e4/0x290 drivers/base/bus.c:487
+>  device_add+0xc35/0x21b0 drivers/base/core.c:3359
+>  nsim_bus_dev_new drivers/net/netdevsim/bus.c:435 [inline]
+>  new_device_store+0x48b/0x770 drivers/net/netdevsim/bus.c:302
+>  bus_attr_store+0x72/0xa0 drivers/base/bus.c:122
+>  sysfs_kf_write+0x110/0x160 fs/sysfs/file.c:139
+>  kernfs_fop_write_iter+0x342/0x500 fs/kernfs/file.c:296
+>  call_write_iter include/linux/fs.h:2163 [inline]
+>  new_sync_write+0x429/0x660 fs/read_write.c:507
+>  vfs_write+0x7cf/0xae0 fs/read_write.c:594
+>  ksys_write+0x12d/0x250 fs/read_write.c:647
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> RIP: 0033:0x7f328409d3ef
+> Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 99 fd ff ff 48 8b 54 24 1=
+8 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01
+> 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 cc fd=
+ ff ff 48
+> RSP: 002b:00007ffdc6851140 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f328409d3ef
+> RDX: 0000000000000003 RSI: 00007ffdc6851190 RDI: 0000000000000004
+> RBP: 0000000000000004 R08: 0000000000000000 R09: 00007ffdc68510e0
+> R10: 0000000000000000 R11: 0000000000000293 R12: 00007f3284144971
+> R13: 00007ffdc6851190 R14: 0000000000000000 R15: 00007ffdc6851860
+>=20
+> Fixes: 474053c980a0 ("devlink: Notify users when objects are accessible")
+> Reported-by: Eric Dumazet <eric.dumazet@gmail.com>
+> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> ---
 
-On 9/29/2021 3:35 PM, Alex Williamson wrote:
-> On Wed, 29 Sep 2021 13:44:10 +0300
-> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
->
->> On 9/28/2021 2:12 AM, Jason Gunthorpe wrote:
->>> On Mon, Sep 27, 2021 at 04:46:48PM -0600, Alex Williamson wrote:
->>>>> +	enum { MAX_STATE = VFIO_DEVICE_STATE_RESUMING };
->>>>> +	static const u8 vfio_from_state_table[MAX_STATE + 1][MAX_STATE + 1] = {
->>>>> +		[VFIO_DEVICE_STATE_STOP] = {
->>>>> +			[VFIO_DEVICE_STATE_RUNNING] = 1,
->>>>> +			[VFIO_DEVICE_STATE_RESUMING] = 1,
->>>>> +		},
->>>> Our state transition diagram is pretty weak on reachable transitions
->>>> out of the _STOP state, why do we select only these two as valid?
->>> I have no particular opinion on specific states here, however adding
->>> more states means more stuff for drivers to implement and more risk
->>> driver writers will mess up this uAPI.
->> _STOP == 000b => Device Stopped, not saving or resuming (from UAPI).
->>
->> This is the default initial state and not RUNNING.
->>
->> The user application should move device from STOP => RUNNING or STOP =>
->> RESUMING.
->>
->> Maybe we need to extend the comment in the UAPI file.
->
-> include/uapi/linux/vfio.h:
-> ...
->   *  +------- _RESUMING
->   *  |+------ _SAVING
->   *  ||+----- _RUNNING
->   *  |||
->   *  000b => Device Stopped, not saving or resuming
->   *  001b => Device running, which is the default state
->                              ^^^^^^^^^^^^^^^^^^^^^^^^^^
-> ...
->   * State transitions:
->   *
->   *              _RESUMING  _RUNNING    Pre-copy    Stop-and-copy   _STOP
->   *                (100b)     (001b)     (011b)        (010b)       (000b)
->   * 0. Running or default state
->   *                             |
->                   ^^^^^^^^^^^^^
-> ...
->   * 0. Default state of VFIO device is _RUNNING when the user application starts.
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
-> The uAPI is pretty clear here.  A default state of _STOP is not
-> compatible with existing devices and userspace that does not support
-> migration.  Thanks,
-
-Why do you need this state machine for userspace that doesn't support 
-migration ?
-
-What is the definition of RUNNING state for a paused VM that is waiting 
-for incoming migration blob ?
-
->
-> Alex
->
+Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>=
