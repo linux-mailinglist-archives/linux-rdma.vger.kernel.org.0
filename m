@@ -2,148 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBDD41CF5B
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 00:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF20241CFD5
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 01:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347308AbhI2Wp7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 18:45:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30923 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S245276AbhI2Wp6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 18:45:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1632955453;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
-        b=PV7kY0JHbqRzJy5V0K5Y6wpr/SmJ8JQ6BKg+AaHZzxnKSNIyerDzyvf4JUWHX0FRRY2C9m
-        XfFMQHEIiz8XOyOpexXqszNUETFKD9z0aktvP0z8HwVHlAW7vYD2Lu+D6vuOsyKlwzgfO/
-        O0vHw6yfCNXELo9Pm5OpytuVaEPzzOE=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-djQ5vf6UPyOGTBO9f3sy8Q-1; Wed, 29 Sep 2021 18:44:12 -0400
-X-MC-Unique: djQ5vf6UPyOGTBO9f3sy8Q-1
-Received: by mail-oo1-f69.google.com with SMTP id f2-20020a4a2202000000b0028c8a8074deso3263764ooa.20
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 15:44:12 -0700 (PDT)
+        id S1347506AbhI2XWx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 19:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1347372AbhI2XWw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Sep 2021 19:22:52 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A291C06161C
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 16:21:11 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id dk4so2515641qvb.2
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 16:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vURlTPvciLNHVwm+qpgsVwGxUhwNfUJPxfecQWzYJYA=;
+        b=Zj4wWBdj3VdNHSQijjwB6d/B3Z0yaCN8DLkQcxtzl1osWudJFB0cEUVGPKm3xAsaSO
+         HAOWJFSL0bavVQUI0mkFRIWZCyMFsO+STG0IJHU/nSxslRhlvXPgAxlcy+Ci6caw+Z6d
+         qgJ9x+zAprvCKR0pseEjjuHFnYOORSg847Q4TTGYP+yH+tG3MwHf/9b7whw+grtiqA1M
+         znK7SI7VWx2TjKhDixK8WX2KKNeL4YOkI2oMVStoZVnsQm2iJzHjHx8UMmMVmhJTS/Ka
+         QqWnrgWcNOccgipN9UllCHzX852wNHqdchB2nxleAJaYT7DDZN85NjS6IiTjaZw5impT
+         tdBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yDnZg0/6giW9XllEqIndueSNzorfdQE2gNriGLCrs+s=;
-        b=703Ccn2s4UAWPJ2l+3/PggwTHz2HTAdb+sFYKVgujDJq/rqDD08kuoMC7p9tayf/VX
-         Iucs4oHrZWALxMymyZg/9oRFUoHBBsMMB5VPA+LETFWhxmZ4MIPl8+ZNFvuYgnuJZpbL
-         6J0A1xv4RBaTyfIUuQlSRk+rzlxwCHCZI+iTjbXEU/OWzO1CVvbHl25kz9e4tNjWbAb0
-         Vmcwdpk0fPH8/DgiFlhU9bQYLDyuJEp/erPZjNi2ICCu5wsqRsd+FInj+oXdxMHSULB0
-         r6eId6WPev6PdpzH3vlkMlYvXb6AQrjLgxv++FsuHTeogNq3LXfCM+ONKwzEH/yiblnB
-         09XQ==
-X-Gm-Message-State: AOAM5337Fu7XsZc5pEOajjm+4T7f4H0wItMeIiW1VefeGcaOFjipVlov
-        R8ov/RNb3LmcvG68plTxkCPyrilTAlQy8zUZ3T7dSx3w30+DxqxjYlpklSCWqJnYdi+m7NVorJc
-        BNJ3KAnVtXDRIYdfkxTt9hg==
-X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78460oiw.98.1632955451616;
-        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyVU6jEU+ZG3AcZVTtnnVZT8dq+yX76s5pQMOm4ir4e1zUDW6chJsiIv463tHWR/ZUtQthMIQ==
-X-Received: by 2002:a05:6808:1595:: with SMTP id t21mr78446oiw.98.1632955451416;
-        Wed, 29 Sep 2021 15:44:11 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id d21sm229884ooh.43.2021.09.29.15.44.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vURlTPvciLNHVwm+qpgsVwGxUhwNfUJPxfecQWzYJYA=;
+        b=0uxBrOj/w8oQAw44gYTCWuhn9HDGahUzTEt9LKaZYHzv7bRd5/BNzSa48zOwcRcCzT
+         yKLO+48EV8HmRhBe0pSsoOsUSx4n+ZgaM8sDaZqD637/JvNX3boW/MIzXQYAqZZGaUgX
+         JCAx9x5yQel47TRE8hRGJ/qHOBPQGMupFK4kBWNvRKvw9cvkAQizbesRv8nDuE+V6ysV
+         1X/c/Zsm3xwjs60llX7qneL0+f7qUMGMDt0cNOW1jE45TL6NmwzJwJbsg9w5kWh6dsue
+         a9f8kojGItyhX5XFOnGRrpKI0uWjjTgO+rvtKZPd5Y8G0hT78XOm96xpEbbP7X1sQ2/O
+         rmTg==
+X-Gm-Message-State: AOAM532J4tKisosnXLwig0WKafmmDpxodULF9J86ss4na9i+WCufoSrr
+        sTOhIW7tZYkUDj8o4A8X1RlAjA==
+X-Google-Smtp-Source: ABdhPJwA55qGt9RWeuL6e34LCWU3u3YFVjjxfHPaXpdwUVW8hGe1+xdfhpM0nZTosoDMpP4WenkAkw==
+X-Received: by 2002:a0c:c2c4:: with SMTP id c4mr2519771qvi.30.1632957670497;
+        Wed, 29 Sep 2021 16:21:10 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id i11sm469774qki.28.2021.09.29.16.21.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 15:44:10 -0700 (PDT)
-Date:   Wed, 29 Sep 2021 16:44:09 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
+        Wed, 29 Sep 2021 16:21:10 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mVisv-007ihB-2W; Wed, 29 Sep 2021 20:21:09 -0300
+Date:   Wed, 29 Sep 2021 20:21:09 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
         Doug Ledford <dledford@redhat.com>,
         Yishai Hadas <yishaih@nvidia.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Cornelia Huck <cohuck@redhat.com>
 Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
  transition validity
-Message-ID: <20210929164409.3c33e311.alex.williamson@redhat.com>
-In-Reply-To: <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
-References: <c87f55d6fec77a22b110d3c9611744e6b28bba46.1632305919.git.leonro@nvidia.com>
-        <20210927164648.1e2d49ac.alex.williamson@redhat.com>
-        <20210927231239.GE3544071@ziepe.ca>
-        <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
-        <20210929063551.47590fbb.alex.williamson@redhat.com>
-        <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
-        <20210929075019.48d07deb.alex.williamson@redhat.com>
-        <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
-        <20210929091712.6390141c.alex.williamson@redhat.com>
-        <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
-        <20210929161433.GA1808627@ziepe.ca>
-        <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+Message-ID: <20210929232109.GC3544071@ziepe.ca>
+References: <20210927231239.GE3544071@ziepe.ca>
+ <25c97be6-eb4a-fdc8-3ac1-5628073f0214@nvidia.com>
+ <20210929063551.47590fbb.alex.williamson@redhat.com>
+ <1eba059c-4743-4675-9f72-1a26b8f3c0f6@nvidia.com>
+ <20210929075019.48d07deb.alex.williamson@redhat.com>
+ <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+ <20210929091712.6390141c.alex.williamson@redhat.com>
+ <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
+ <20210929161433.GA1808627@ziepe.ca>
+ <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 30 Sep 2021 00:48:55 +0300
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-
+On Thu, Sep 30, 2021 at 12:48:55AM +0300, Max Gurtovoy wrote:
+> 
 > On 9/29/2021 7:14 PM, Jason Gunthorpe wrote:
 > > On Wed, Sep 29, 2021 at 06:28:44PM +0300, Max Gurtovoy wrote:
-> >  
-> >>> So you have a device that's actively modifying its internal state,
-> >>> performing I/O, including DMA (thereby dirtying VM memory), all while
-> >>> in the _STOP state?  And you don't see this as a problem?  
-> >> I don't see how is it different from vfio-pci situation.  
+> > 
+> > > > So you have a device that's actively modifying its internal state,
+> > > > performing I/O, including DMA (thereby dirtying VM memory), all while
+> > > > in the _STOP state?  And you don't see this as a problem?
+> > > I don't see how is it different from vfio-pci situation.
 > > vfio-pci provides no way to observe the migration state. It isn't
-> > "000b"  
+> > "000b"
 > 
 > Alex said that there is a problem of compatibility.
-> 
-> I migration SW is not involved, nobody will read this migration state.
 
-The _STOP state has a specific meaning regardless of whether userspace
-reads the device state value.  I think what you're suggesting is that
-the device reports itself as _STOP'd but it's actually _RUNNING.  Is
-that the compatibility workaround, create a self inconsistency?
+Yes, when a vfio_device first opens it must be running - ie able to do
+DMA and otherwise operational.
 
-We cannot impose on userspace to move a device from _STOP to _RUNNING
-simply because the device supports the migration region, nor should we
-report a device state that is inconsistent with the actual device state.
+When we add the migration extension this cannot change, so after
+open_device() the device should be operational.
 
-> >> Maybe we need to rename STOP state. We can call it READY or LIVE or
-> >> NON_MIGRATION_STATE.  
+The reported state in the migration region should accurately reflect
+what the device is currently doing. If the device is operational then
+it must report running, not stopped.
+
+Thus a driver cannot just zero initalize the migration "registers",
+they have to be accurate.
+
+> > > Maybe we need to rename STOP state. We can call it READY or LIVE or
+> > > NON_MIGRATION_STATE.
 > > It was a poor choice to use 000b as stop, but it doesn't really
-> > matter. The mlx5 driver should just pre-init this readable to running.  
+> > matter. The mlx5 driver should just pre-init this readable to running.
 > 
-> I guess we can do it for this reason. There is no functional problem nor 
+> I guess we can do it for this reason. There is no functional problem nor
 > compatibility issue here as was mentioned.
 > 
-> But still we need the kernel to track transitions. We don't want to 
-> allow moving from RESUMING to SAVING state for example. How this 
-> transition can be allowed ?
-> 
-> In this case we need to fail the request from the migration SW...
+> But still we need the kernel to track transitions. We don't want to allow
+> moving from RESUMING to SAVING state for example. How this transition can be
+> allowed ?
 
-_RESUMING to _SAVING seems like a good way to test round trip migration
-without running the device to modify the state.  Potentially it's a
-means to update a saved device migration data stream to a newer format
-using an intermediate driver version.
+It seems semantically fine to me, as per Alex's note what will happen
+is defined:
 
-If a driver is written such that it simply sees clearing the _RESUME
-bit as an indicator to de-serialize the data stream to the device, and
-setting the _SAVING flag as an indicator to re-serialize that data
-stream from the device, then this is just a means to make use of
-existing data paths.
+driver will see RESUMING toggle off so it will trigger a
+de-serialization
 
-The uAPI specifies a means for drivers to reject a state change, but
-that risks failing to support a transition which might find mainstream
-use cases.  I don't think common code should be responsible for
-filtering out viable transitions.  Thanks,
+driver will see SAVING toggled on so it will serialize the new state
+(either the pre-copy state or the post-copy state dpending on the
+running bit)
 
-Alex
+Depending on the running bit the device may or may not be woken up.
 
+If de-serialization fails then the state goes to error and SAVING is
+ignored.
+
+The driver logic probably looks something like this:
+
+// Running toggles off
+if (oldstate & RUNNING != newstate & RUNNING && oldstate & RUNNING)
+    queice
+    freeze
+
+// Resuming toggles off
+if (oldstate & RESUMING != newstate & RESUMING && oldstate & RESUMING)
+   deserialize
+
+// Saving toggles on
+if (oldstate & SAVING != newstate & SAVING && newstate & SAVING)
+   if (!(newstate & RUNNING))
+     serialize post copy
+
+// Running toggles on
+if (oldstate & RUNNING != newstate & RUNNING && newstate & RUNNING)
+   unfreeze
+   unqueice
+
+I'd have to check that carefully against the state chart from my last
+email though..
+
+And need to check how the "Stop Active Transactions" bit fits in there
+
+Jason
