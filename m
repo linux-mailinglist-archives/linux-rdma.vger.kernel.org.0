@@ -2,354 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B429441C27D
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 12:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C14741C299
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 12:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245456AbhI2KSs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 06:18:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245462AbhI2KSi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 06:18:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EB1661246;
-        Wed, 29 Sep 2021 10:16:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632910618;
-        bh=7rEFpyIGKlucXE4xEPtNn0Hz+pgVLOTNObgLDBYgrnA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ddtySAv2BqzvKP5K6lDHhoZkc2rrMrvP+v806YYvO72Lo67gfNbPP8TdPT3xS2JRy
-         Uuz54kYtXbVrNhcH0kByOTW0ZezWtqg+7dOyVAL8sxLI9PMjuJU5zxiA6mpJulNSaH
-         IiKyhBScGxdhiGYvaMBnitinlBNhiggVeUKChE4aJY0sDBM5ASN6E6dnmB5dOcaZRn
-         eWzrI7KVAeJ7dqwhFchmxN5shZBrj7F4k4mTdhW3HMaAnQ7ygoVRsa8JXq+1lm2lgI
-         Y1C5wtiuAq97Eu83coJy+oEIofJ6sqShQQ+Rq7WBskSpApNzPzfIQJzwo3klA3pn2P
-         KIcToTTJTWwVQ==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Ariel Elior <aelior@marvell.com>,
-        Bin Luo <luobin9@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Coiby Xu <coiby.xu@gmail.com>,
-        Derek Chickles <dchickles@marvell.com>, drivers@pensando.io,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Felix Manlunas <fmanlunas@marvell.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        GR-everest-linux-l2@marvell.com, GR-Linux-NIC-Dev@marvell.com,
-        hariprasad <hkelam@marvell.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-staging@lists.linux.dev,
-        Manish Chopra <manishc@marvell.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Moshe Shemesh <moshe@nvidia.com>, netdev@vger.kernel.org,
-        oss-drivers@corigine.com,
-        Richard Cochran <richardcochran@gmail.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Satanand Burla <sburla@marvell.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Shay Drory <shayd@nvidia.com>,
-        Simon Horman <simon.horman@corigine.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com, Vadym Kochan <vkochan@marvell.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: [PATCH net-next 5/5] devlink: Delete reload enable/disable interface
-Date:   Wed, 29 Sep 2021 13:16:39 +0300
-Message-Id: <2fb74547865c46c11194cf0d4e699f377719757c.1632909221.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1632909221.git.leonro@nvidia.com>
-References: <cover.1632909221.git.leonro@nvidia.com>
+        id S245319AbhI2KU6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 06:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245125AbhI2KU4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Sep 2021 06:20:56 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06926C06161C;
+        Wed, 29 Sep 2021 03:19:16 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id dn26so6523960edb.13;
+        Wed, 29 Sep 2021 03:19:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bx/2C+HXBotIPqznZhQEX8s1vNGSCbDgiHrtAcPp7ks=;
+        b=AY3G2dwDY10Je5oEMZqoZqLvv8DoF63AOwbgCdP2bd27LiggDdf03oqAqpJVjMa+U7
+         OwL8lUUebg0KLcGQy1DMZjcnkT+2KmjkghKxxCGJvm/76OAEpSUIE96/en2g8jPpPs7g
+         l2NHrW96iLGAJsHAflfLKGPbyJC1MMyy4PHTiU7CA7ntITLCeyS+roritsdFgUfzSZ73
+         YuGsOiIEUQG4oPReApkdgWiSQAYULNZjQdmuXox63KjRdQKcK83F8eVU77V3f/rTb/Mb
+         TX0aBoZwOWGVbToo2JkoloRBHnTvvrD7SdfCzKnPAvAX6bJ7icWj4xzZ3XiljDUs0Np/
+         Mp+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bx/2C+HXBotIPqznZhQEX8s1vNGSCbDgiHrtAcPp7ks=;
+        b=6R2rzYB6N5hQspjX3weZ53kO/Mh0G+p18pUaTE/DyPtqb7++uvKO3VxYuffTCkoUT6
+         0NTLd79B2MpHJNhwk0yIy95iimCAdMlENwQJi9NftfhrZeqhKgGk36zw+k+1CeY2V3fe
+         vVDijHBHe3lKJ5fT/2BpLu4pyDNY1HuzV6JjfpC/ksPUYVGNVhyggzdDgwdbUprmfrRf
+         cBhU6Yfv7B/VUVrxiKFx4gufNumH9ZIQIydQyUWFFv8EMr5nXgTDDx7PEekibNVE8Ud5
+         E0vAWOpHNyvC6ISVzftaDGOHjvFgsERwzOFzSgWVGcFAbH4Lgkq3adfArkieuugiBfJA
+         87Rw==
+X-Gm-Message-State: AOAM530UTTXBvSy4bgTkmSpKuhh00GduXqKFKXeR8CrC+nLk0OMSknIR
+        C/4LCOXzF1tYxMGjyTM/N5ywflGRsgQ=
+X-Google-Smtp-Source: ABdhPJwFazyWhbockLmljqCImO6SEjvWsq2N53AGWc8uUHlhLZc1fFuY56HxIfrjDtQFwHi8YUsYOg==
+X-Received: by 2002:a05:6402:34d2:: with SMTP id w18mr14046853edc.222.1632910754458;
+        Wed, 29 Sep 2021 03:19:14 -0700 (PDT)
+Received: from [192.168.0.108] ([176.228.98.2])
+        by smtp.gmail.com with ESMTPSA id y4sm1092881ejr.101.2021.09.29.03.19.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Sep 2021 03:19:14 -0700 (PDT)
+Subject: Re: [PATCH net-next] net: mlx4: Add XDP_REDIRECT statistics
+To:     Joshua Roys <roysjosh@gmail.com>, netdev@vger.kernel.org
+Cc:     ast@kernel.org, davem@davemloft.net, hawk@kernel.org,
+        john.fastabend@gmail.com, daniel@iogearbox.net, kuba@kernel.org,
+        bpf@vger.kernel.org, tariqt@nvidia.com, linux-rdma@vger.kernel.org
+References: <8d7773a0-054a-84d5-e0b6-66a13509149e@gmail.com>
+ <20210928132602.1488-1-roysjosh@gmail.com>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <490d45ff-187a-8e20-7eeb-ce73cfa2e335@gmail.com>
+Date:   Wed, 29 Sep 2021 13:19:11 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210928132602.1488-1-roysjosh@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
 
-After changes to allow dynamically set the reload_up/_down callbacks,
-we ensure that properly supported devlink ops are not accessible before
-devlink_register, which is last command in the initialization sequence.
+For changes in the mlx4 ethernet driver, please use "net/mlx4_en" prefix 
+in patch subject.
 
-It makes devlink_reload_enable/_disable not relevant anymore and can be
-safely deleted.
+On 9/28/2021 4:26 PM, Joshua Roys wrote:
+> Address feedback for XDP_REDIRECT patch.
+> 
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- .../hisilicon/hns3/hns3pf/hclge_devlink.c     |  3 --
- .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |  3 --
- drivers/net/ethernet/mellanox/mlx4/main.c     |  2 -
- .../net/ethernet/mellanox/mlx5/core/main.c    |  3 --
- .../mellanox/mlx5/core/sf/dev/driver.c        |  5 +--
- drivers/net/ethernet/mellanox/mlxsw/core.c    | 10 ++---
- drivers/net/netdevsim/dev.c                   |  3 --
- include/net/devlink.h                         |  5 +--
- net/core/devlink.c                            | 40 -------------------
- 9 files changed, 5 insertions(+), 69 deletions(-)
+Description is not helpful at all.
+Please provide technical description of the content, motivation, why it 
+is needed, etc...
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-index 329b020c688d..63fab1cd33d7 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_devlink.c
-@@ -120,7 +120,6 @@ int hclge_devlink_init(struct hclge_dev *hdev)
- 	hdev->devlink = devlink;
- 
- 	devlink_register(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- }
- 
-@@ -128,8 +127,6 @@ void hclge_devlink_uninit(struct hclge_dev *hdev)
- {
- 	struct devlink *devlink = hdev->devlink;
- 
--	devlink_reload_disable(devlink);
--
- 	devlink_unregister(devlink);
- 
- 	devlink_free(devlink);
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-index 1d9eecc928a5..26f4d20de40d 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_devlink.c
-@@ -122,7 +122,6 @@ int hclgevf_devlink_init(struct hclgevf_dev *hdev)
- 	hdev->devlink = devlink;
- 
- 	devlink_register(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- }
- 
-@@ -130,8 +129,6 @@ void hclgevf_devlink_uninit(struct hclgevf_dev *hdev)
- {
- 	struct devlink *devlink = hdev->devlink;
- 
--	devlink_reload_disable(devlink);
--
- 	devlink_unregister(devlink);
- 
- 	devlink_free(devlink);
-diff --git a/drivers/net/ethernet/mellanox/mlx4/main.c b/drivers/net/ethernet/mellanox/mlx4/main.c
-index ab805b6f23d4..8389845d5c9e 100644
---- a/drivers/net/ethernet/mellanox/mlx4/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/main.c
-@@ -4026,7 +4026,6 @@ static int mlx4_init_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	pci_save_state(pdev);
- 	devlink_register(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- 
- err_params_unregister:
-@@ -4135,7 +4134,6 @@ static void mlx4_remove_one(struct pci_dev *pdev)
- 	struct devlink *devlink = priv_to_devlink(priv);
- 	int active_vfs = 0;
- 
--	devlink_reload_disable(devlink);
- 	devlink_unregister(devlink);
- 
- 	if (mlx4_is_slave(dev))
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-index 92b08fa07efa..261f18d57916 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
-@@ -1538,8 +1538,6 @@ static int probe_one(struct pci_dev *pdev, const struct pci_device_id *id)
- 
- 	pci_save_state(pdev);
- 	devlink_register(devlink);
--	if (!mlx5_core_is_mp_slave(dev))
--		devlink_reload_enable(devlink);
- 	return 0;
- 
- err_init_one:
-@@ -1559,7 +1557,6 @@ static void remove_one(struct pci_dev *pdev)
- 	struct mlx5_core_dev *dev  = pci_get_drvdata(pdev);
- 	struct devlink *devlink = priv_to_devlink(dev);
- 
--	devlink_reload_disable(devlink);
- 	devlink_unregister(devlink);
- 	mlx5_crdump_disable(dev);
- 	mlx5_drain_health_wq(dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-index 3cf272fa2164..7b4783ce213e 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/sf/dev/driver.c
-@@ -47,7 +47,6 @@ static int mlx5_sf_dev_probe(struct auxiliary_device *adev, const struct auxilia
- 		goto init_one_err;
- 	}
- 	devlink_register(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- 
- init_one_err:
-@@ -62,10 +61,8 @@ static int mlx5_sf_dev_probe(struct auxiliary_device *adev, const struct auxilia
- static void mlx5_sf_dev_remove(struct auxiliary_device *adev)
- {
- 	struct mlx5_sf_dev *sf_dev = container_of(adev, struct mlx5_sf_dev, adev);
--	struct devlink *devlink;
-+	struct devlink *devlink = priv_to_devlink(sf_dev->mdev);
- 
--	devlink = priv_to_devlink(sf_dev->mdev);
--	devlink_reload_disable(devlink);
- 	devlink_unregister(devlink);
- 	mlx5_uninit_one(sf_dev->mdev);
- 	iounmap(sf_dev->mdev->iseg);
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/core.c b/drivers/net/ethernet/mellanox/mlxsw/core.c
-index 1012279008f9..efbcee8d5ea9 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/core.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/core.c
-@@ -2007,11 +2007,8 @@ __mlxsw_core_bus_device_register(const struct mlxsw_bus_info *mlxsw_bus_info,
- 			goto err_driver_init;
- 	}
- 
--	if (!reload) {
-+	if (!reload)
- 		devlink_register(devlink);
--		devlink_reload_enable(devlink);
--	}
--
- 	return 0;
- 
- err_driver_init:
-@@ -2075,10 +2072,9 @@ void mlxsw_core_bus_device_unregister(struct mlxsw_core *mlxsw_core,
- {
- 	struct devlink *devlink = priv_to_devlink(mlxsw_core);
- 
--	if (!reload) {
--		devlink_reload_disable(devlink);
-+	if (!reload)
- 		devlink_unregister(devlink);
--	}
-+
- 	if (devlink_is_reload_failed(devlink)) {
- 		if (!reload)
- 			/* Only the parts that were not de-initialized in the
-diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
-index 466d2c27e868..c66c40afb19f 100644
---- a/drivers/net/netdevsim/dev.c
-+++ b/drivers/net/netdevsim/dev.c
-@@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
- 
- 	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
- 	devlink_register(devlink);
--	devlink_reload_enable(devlink);
- 	return 0;
- 
- err_psample_exit:
-@@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
- 	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
- 	struct devlink *devlink = priv_to_devlink(nsim_dev);
- 
--	devlink_reload_disable(devlink);
- 	devlink_unregister(devlink);
--
- 	nsim_dev_reload_destroy(nsim_dev);
- 
- 	nsim_bpf_dev_exit(nsim_dev);
-diff --git a/include/net/devlink.h b/include/net/devlink.h
-index 305be548ac21..9403d13617af 100644
---- a/include/net/devlink.h
-+++ b/include/net/devlink.h
-@@ -54,8 +54,7 @@ struct devlink {
- 	struct mutex lock; /* Serializes access to devlink instance specific objects such as
- 			    * port, sb, dpipe, resource, params, region, traps and more.
- 			    */
--	u8 reload_failed:1,
--	   reload_enabled:1;
-+	u8 reload_failed:1;
- 	refcount_t refcount;
- 	struct completion comp;
- 	char priv[0] __aligned(NETDEV_ALIGN);
-@@ -1568,8 +1567,6 @@ static inline struct devlink *devlink_alloc(struct devlink_ops *ops,
- void devlink_set_ops(struct devlink *devlink, struct devlink_ops *ops);
- void devlink_register(struct devlink *devlink);
- void devlink_unregister(struct devlink *devlink);
--void devlink_reload_enable(struct devlink *devlink);
--void devlink_reload_disable(struct devlink *devlink);
- void devlink_free(struct devlink *devlink);
- int devlink_port_register(struct devlink *devlink,
- 			  struct devlink_port *devlink_port,
-diff --git a/net/core/devlink.c b/net/core/devlink.c
-index 71d0c5671f43..acf26c34ffa7 100644
---- a/net/core/devlink.c
-+++ b/net/core/devlink.c
-@@ -3959,9 +3959,6 @@ static int devlink_reload(struct devlink *devlink, struct net *dest_net,
- 	struct net *curr_net;
- 	int err;
- 
--	if (!devlink->reload_enabled)
--		return -EOPNOTSUPP;
--
- 	memcpy(remote_reload_stats, devlink->stats.remote_reload_stats,
- 	       sizeof(remote_reload_stats));
- 
-@@ -9105,49 +9102,12 @@ void devlink_unregister(struct devlink *devlink)
- 	wait_for_completion(&devlink->comp);
- 
- 	mutex_lock(&devlink_mutex);
--	WARN_ON(devlink_reload_supported(devlink->ops) &&
--		devlink->reload_enabled);
- 	devlink_notify_unregister(devlink);
- 	xa_clear_mark(&devlinks, devlink->index, DEVLINK_REGISTERED);
- 	mutex_unlock(&devlink_mutex);
- }
- EXPORT_SYMBOL_GPL(devlink_unregister);
- 
--/**
-- *	devlink_reload_enable - Enable reload of devlink instance
-- *
-- *	@devlink: devlink
-- *
-- *	Should be called at end of device initialization
-- *	process when reload operation is supported.
-- */
--void devlink_reload_enable(struct devlink *devlink)
--{
--	mutex_lock(&devlink_mutex);
--	devlink->reload_enabled = true;
--	mutex_unlock(&devlink_mutex);
--}
--EXPORT_SYMBOL_GPL(devlink_reload_enable);
--
--/**
-- *	devlink_reload_disable - Disable reload of devlink instance
-- *
-- *	@devlink: devlink
-- *
-- *	Should be called at the beginning of device cleanup
-- *	process when reload operation is supported.
-- */
--void devlink_reload_disable(struct devlink *devlink)
--{
--	mutex_lock(&devlink_mutex);
--	/* Mutex is taken which ensures that no reload operation is in
--	 * progress while setting up forbidded flag.
--	 */
--	devlink->reload_enabled = false;
--	mutex_unlock(&devlink_mutex);
--}
--EXPORT_SYMBOL_GPL(devlink_reload_disable);
--
- /**
-  *	devlink_free - Free devlink instance resources
-  *
--- 
-2.31.1
+> Signed-off-by: Joshua Roys <roysjosh@gmail.com>
+> ---
+>   .../net/ethernet/mellanox/mlx4/en_ethtool.c    |  8 ++++++++
+>   drivers/net/ethernet/mellanox/mlx4/en_port.c   | 18 +++++++++++-------
+>   drivers/net/ethernet/mellanox/mlx4/en_rx.c     |  4 +++-
+>   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h   |  2 ++
+>   .../net/ethernet/mellanox/mlx4/mlx4_stats.h    |  4 +++-
+>   5 files changed, 27 insertions(+), 9 deletions(-)
+> 
+> Tested with VPP 21.06 on Fedora 34.
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> index ef518b1040f7..66c8ae29bc7a 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> @@ -197,6 +197,8 @@ static const char main_strings[][ETH_GSTRING_LEN] = {
+>   
+>   	/* xdp statistics */
+>   	"rx_xdp_drop",
+> +	"rx_xdp_redirect",
+> +	"rx_xdp_redirect_fail",
+>   	"rx_xdp_tx",
+>   	"rx_xdp_tx_full",
+>   
+> @@ -428,6 +430,8 @@ static void mlx4_en_get_ethtool_stats(struct net_device *dev,
+>   		data[index++] = priv->rx_ring[i]->bytes;
+>   		data[index++] = priv->rx_ring[i]->dropped;
+>   		data[index++] = priv->rx_ring[i]->xdp_drop;
+> +		data[index++] = priv->rx_ring[i]->xdp_redirect;
+> +		data[index++] = priv->rx_ring[i]->xdp_redirect_fail;
+>   		data[index++] = priv->rx_ring[i]->xdp_tx;
+>   		data[index++] = priv->rx_ring[i]->xdp_tx_full;
+>   	}
+> @@ -519,6 +523,10 @@ static void mlx4_en_get_strings(struct net_device *dev,
+>   				"rx%d_dropped", i);
+>   			sprintf(data + (index++) * ETH_GSTRING_LEN,
+>   				"rx%d_xdp_drop", i);
+> +			sprintf(data + (index++) * ETH_GSTRING_LEN,
+> +				"rx%d_xdp_redirect", i);
+> +			sprintf(data + (index++) * ETH_GSTRING_LEN,
+> +				"rx%d_xdp_redirect_fail", i);
+>   			sprintf(data + (index++) * ETH_GSTRING_LEN,
+>   				"rx%d_xdp_tx", i);
+>   			sprintf(data + (index++) * ETH_GSTRING_LEN,
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_port.c b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+> index 0158b88bea5b..043cc9d75b3e 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_port.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_port.c
+> @@ -239,13 +239,15 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+>   
+>   	mlx4_en_fold_software_stats(dev);
+>   
+> -	priv->port_stats.rx_chksum_good = 0;
+> -	priv->port_stats.rx_chksum_none = 0;
+> -	priv->port_stats.rx_chksum_complete = 0;
+> -	priv->port_stats.rx_alloc_pages = 0;
+> -	priv->xdp_stats.rx_xdp_drop    = 0;
+> -	priv->xdp_stats.rx_xdp_tx      = 0;
+> -	priv->xdp_stats.rx_xdp_tx_full = 0;
+> +	priv->port_stats.rx_chksum_good      = 0;
+> +	priv->port_stats.rx_chksum_none      = 0;
+> +	priv->port_stats.rx_chksum_complete  = 0;
+> +	priv->port_stats.rx_alloc_pages      = 0;
+> +	priv->xdp_stats.rx_xdp_drop          = 0;
+> +	priv->xdp_stats.rx_xdp_redirect      = 0;
+> +	priv->xdp_stats.rx_xdp_redirect_fail = 0;
+> +	priv->xdp_stats.rx_xdp_tx            = 0;
+> +	priv->xdp_stats.rx_xdp_tx_full       = 0;
 
+No need to touch existing lines.
+Add yours without fixing the existing indintations.
+
+>   	for (i = 0; i < priv->rx_ring_num; i++) {
+>   		const struct mlx4_en_rx_ring *ring = priv->rx_ring[i];
+>   
+> @@ -255,6 +257,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
+>   		priv->port_stats.rx_chksum_complete += READ_ONCE(ring->csum_complete);
+>   		priv->port_stats.rx_alloc_pages += READ_ONCE(ring->rx_alloc_pages);
+>   		priv->xdp_stats.rx_xdp_drop	+= READ_ONCE(ring->xdp_drop);
+> +		priv->xdp_stats.rx_xdp_redirect += READ_ONCE(ring->xdp_redirect);
+> +		priv->xdp_stats.rx_xdp_redirect_fail += READ_ONCE(ring->xdp_redirect_fail);
+>   		priv->xdp_stats.rx_xdp_tx	+= READ_ONCE(ring->xdp_tx);
+>   		priv->xdp_stats.rx_xdp_tx_full	+= READ_ONCE(ring->xdp_tx_full);
+>   	}
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index 557d7daac2d3..8f09b1de4125 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -793,11 +793,13 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
+>   			case XDP_PASS:
+>   				break;
+>   			case XDP_REDIRECT:
+> -				if (xdp_do_redirect(dev, &xdp, xdp_prog) >= 0) {
+> +				if (!xdp_do_redirect(dev, &xdp, xdp_prog)) {
+
+use likely()
+
+> +					ring->xdp_redirect++;
+>   					xdp_redir_flush = true;
+>   					frags[0].page = NULL;
+>   					goto next;
+>   				}
+> +				ring->xdp_redirect_fail++;
+>   				trace_xdp_exception(dev, xdp_prog, act);
+>   				goto xdp_drop_no_cnt;
+>   			case XDP_TX:
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> index f3d1a20201ef..f6c90e97b4cd 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
+> @@ -340,6 +340,8 @@ struct mlx4_en_rx_ring {
+>   	unsigned long csum_complete;
+>   	unsigned long rx_alloc_pages;
+>   	unsigned long xdp_drop;
+> +	unsigned long xdp_redirect;
+> +	unsigned long xdp_redirect_fail;
+>   	unsigned long xdp_tx;
+>   	unsigned long xdp_tx_full;
+>   	unsigned long dropped;
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+> index 7b51ae8cf759..e9cd4bb6f83d 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
+> @@ -42,9 +42,11 @@ struct mlx4_en_port_stats {
+>   
+>   struct mlx4_en_xdp_stats {
+>   	unsigned long rx_xdp_drop;
+> +	unsigned long rx_xdp_redirect;
+> +	unsigned long rx_xdp_redirect_fail;
+>   	unsigned long rx_xdp_tx;
+>   	unsigned long rx_xdp_tx_full;
+> -#define NUM_XDP_STATS		3
+> +#define NUM_XDP_STATS		5
+>   };
+>   
+>   struct mlx4_en_phy_stats {
+> 
