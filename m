@@ -2,259 +2,122 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 754FC41BDD7
-	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 06:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C871F41BDE7
+	for <lists+linux-rdma@lfdr.de>; Wed, 29 Sep 2021 06:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229559AbhI2EDm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 29 Sep 2021 00:03:42 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:27948 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229452AbhI2EDl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 29 Sep 2021 00:03:41 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 18T2ECr9013615;
-        Wed, 29 Sep 2021 04:01:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=Gp/0PSi0ZruyQsIBOuU5ui+bHdk1ggdq2s3uwxt8kBo=;
- b=X21+gxCL2Hq/dfIrZT+LIR0Gtk9TryFcCewnAKS0Qo+zCh0ozbERhR7nrLGk/EeM23EK
- x8O/fbeFu/e6qN2jIwHvxn4aSPwHPtHM5yrYjzzAePi0NNmgpUp3sBYr5TtRsleSfb9P
- CU6AOYj7hE7Kb9g9SRC+/F5KxXyR/PDLFLd06RONeblne12ivg+4/o/NWgu8KwqGvXjz
- OhzxPzLjGzC75hIpfpsTY+v7kLtFA64NdEJQRK9ZkjloyHCr0ZV527VVc1xHRJY5VY4y
- PfQ4ODkncpISex6rU7UnAqvcjKo1IWAoFXM00+d9KMJ4BYUbP6wv6SlPTGgxlar6EUfI kQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3bcf6crame-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 04:01:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 18T3tePT077542;
-        Wed, 29 Sep 2021 04:01:58 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by aserp3020.oracle.com with ESMTP id 3bceu4u97b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 29 Sep 2021 04:01:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h0neyRlR7owyQOB5dXL7CCfx3zJaKkHRdGIOToZ29psTHLPXxsBlR/slisekum6nm/eSntzU2JjsjghgL+rp4242TVTwCD//fBb1v4XNIXD30V3k8IWLbViUGmhwGLbq1Cbp2yieW0tWt1aaXBwHr08ImuRX8n/Ki5L3KC7YjBQryuXUR93t9UFLqhF4PkM2bw9RawPxiLS5jRb6KricTDpYjjrp7PULcMnGVO2X7WL9JHD2/dmex7UoaPuozu02hes0fGN95BA2V1Nu5F/A1zhDke68Kf41hZl1pBFPlvUewR6BM04MwJCqTp9xvg8rvN5dDRsqLZO5mUX7Npx2BQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=Gp/0PSi0ZruyQsIBOuU5ui+bHdk1ggdq2s3uwxt8kBo=;
- b=fkqQGpzSNnTlga+CaVmr9wqOVEchEMymRfj3t2VOVRJdrxry+e7sHorIooIEYd3o+Ln46qPnk297Jg66HxIqu7o/UaqQZYaEIGRmhhC0eXLDKU31qdS3WSFdsHlosT0dZWViQ2w5cG07tmO3VY5cUOLt3Naj+pgRsuuMExH67eGyFvRiOqFNiB+NZuFeuaLgnqI3JG++/RTusIzLQa25aNruaj48OzpTs0p5WVwGQIFppsijmSQ9P5TCjH18eyrB9QE4IpfAhRxhI34vqhbqjuxrLlRElFWfmQP3KAdpzXVs3IS8IRvtFVtZo9RnQyLa4db1Im89GSfmbGe0NLEvnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        id S240419AbhI2EVC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 29 Sep 2021 00:21:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45386 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240312AbhI2EVC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 29 Sep 2021 00:21:02 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 986AEC061749
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 21:19:21 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id l16-20020a9d6a90000000b0053b71f7dc83so1294517otq.7
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Sep 2021 21:19:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Gp/0PSi0ZruyQsIBOuU5ui+bHdk1ggdq2s3uwxt8kBo=;
- b=YHrtEfuuF8i/hLUhLoOp3D/q+iAKm+nkqbVxVaW568pBXGTNpdWAokZzHoK0O+YFTBy99HC9mnfoWlHmmmkzKF6PLCyzqbzr60v0H41r/Xoknu0a/X1UHNMl0FdouNzrRFJ9TYJoNKP7Xuv+wqIURJWaistdQrCPI2pZ7rr+es4=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
- by SJ0PR10MB4447.namprd10.prod.outlook.com (2603:10b6:a03:2dc::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.13; Wed, 29 Sep
- 2021 04:01:56 +0000
-Received: from SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::d41c:d8ff:89d6:8457]) by SJ0PR10MB4494.namprd10.prod.outlook.com
- ([fe80::d41c:d8ff:89d6:8457%9]) with mapi id 15.20.4544.021; Wed, 29 Sep 2021
- 04:01:56 +0000
-Subject: Re: [PATCH v1] RDMA/rxe: Bump up default maximum values used via
- uverbs
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3pnOoOe4H3uxisLbZYlvxtJ/hfJYJIe9/PJe31s9cPs=;
+        b=NKFeRVZewTzimFlcsgeFS3uSkCR4J87AN7Ccy2GhzJvJs61zvHTCbIrXcXuF9A37Z3
+         bOAczXU1HRiNyEokRPa4xvFlmLTUqSX2ieVAcFATfw24gsBJK1LfJxj6uUhCOM2M0yUM
+         hwQ0u6udUkzg4mMpVYK8Ckebdrb8V8gT0ndANmFXxsDAogwCcZrwvaB58nL/P9Gf2Jlr
+         jYoC6GYrCjWlFuM8CBLMcbMxi350112bv+4s89WjKlkG2bTHlLSQ2vSkapSpsaa/eY5O
+         TmhV6DgYEnoyGjTgV7tQovgi6B1rQld0vC+8aiBh9VI+KiBrYj9fe0UuWdazT8V2MXI8
+         7FHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3pnOoOe4H3uxisLbZYlvxtJ/hfJYJIe9/PJe31s9cPs=;
+        b=WnxA+M8p8UtJcKhpOSD9OJ50mGNK9hQGGwrBkaIPwLgU17XFNFv2bAkoa65CVZI0ry
+         ZvBfVzpqCoggPxghquI1ngqzhzHAwe0c3oioPzKr85s0pDqHzV5VU/aujzCCan5ltjCW
+         r0pax2s9UYUvTVS2xUorGPyo8PFP+bwS+f3faYJO17+Lcbl7cYyZSMpLXFhygBJoxIgw
+         02j1iACG3mMetr1lSYryjXL/+0h6OV3YarCKQvaHcHicyboyZxUbwUL/+boUu7QmNqO2
+         LRgcCSORdLZ/NxkO+bTjFcUNaN8TnQM5I0GsLWpLonkLy68YWKr6jhIOeZL7fWx/U33z
+         W2sA==
+X-Gm-Message-State: AOAM5328M8K9+nhr2UuBKR60HYtKttb4pkDAFIXoPK0KFj5jiM+rqv0B
+        ZutWakOL9Shaixo0Uq2kxX7RlKa0m6oMn3fk
+X-Google-Smtp-Source: ABdhPJwp25Cz3J0zfuH70GHFOw3bQVPteyKSacgNo4gNqbV449fcUU2N51PPLDIKqcNUaNIegMPbuA==
+X-Received: by 2002:a9d:184:: with SMTP id e4mr8359740ote.209.1632889160876;
+        Tue, 28 Sep 2021 21:19:20 -0700 (PDT)
+Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
+        by smtp.gmail.com with ESMTPSA id p2sm240861ooe.34.2021.09.28.21.19.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Sep 2021 21:19:20 -0700 (PDT)
+From:   Shunsuke Mie <mie@igel.co.jp>
 To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20210915011220.307585-1-Rao.Shoaib@oracle.com>
- <20210927191907.GA1582097@nvidia.com>
- <CAD=hENd0BDMS6BL_M2rDT7N8sZySQHLbzDEfWZ0AvSd6nmFmoQ@mail.gmail.com>
- <6a6cede4-32c3-45aa-86f9-4cd35d90ab4f@oracle.com>
- <CAD=hENeQrNPxjgxbPN0KuKF1XHT+GbEADKX1D3pP0qv=gNXN2Q@mail.gmail.com>
- <24e4ea29-557d-b2f6-8bef-30af19613b16@oracle.com>
- <CAD=hENcn6vZMx4YM3n4Kdo_kBCM_aHK8NOa+QgaAPnNk9jK60w@mail.gmail.com>
-From:   Shoaib Rao <rao.shoaib@oracle.com>
-Message-ID: <cd243ca0-859f-42b5-6851-6b0be7385a7e@oracle.com>
-Date:   Tue, 28 Sep 2021 21:01:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <CAD=hENcn6vZMx4YM3n4Kdo_kBCM_aHK8NOa+QgaAPnNk9jK60w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SN2PR01CA0045.prod.exchangelabs.com (2603:10b6:800::13) To
- SJ0PR10MB4494.namprd10.prod.outlook.com (2603:10b6:a03:2d4::12)
+Cc:     Shunsuke Mie <mie@igel.co.jp>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
+        etom@igel.co.jp
+Subject: [RFC PATCH v2 0/2] RDMA/rxe: Add dma-buf support
+Date:   Wed, 29 Sep 2021 13:19:03 +0900
+Message-Id: <20210929041905.126454-1-mie@igel.co.jp>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Received: from [IPv6:2606:b400:400:7444:8000::7e0] (2606:b400:8301:1010::16aa) by SN2PR01CA0045.prod.exchangelabs.com (2603:10b6:800::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4544.15 via Frontend Transport; Wed, 29 Sep 2021 04:01:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4f0c26f1-cc71-45a1-10cb-08d982fde0c2
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4447:
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4447CC8CADF287A3F6978927EFA99@SJ0PR10MB4447.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: l9PohxLmEOP5g2CbnzHsmfN7x39QfR9KaPZXKEqNdGkXv47cwOngEZ2E7PEcqE9nByXkLD8WLf0Y5KaIl3Tv5k0lnGsBvMzpW+l55nhTSk7RtkSQ3AQK+A1sbkjffXSzOFFV6z3W4HdVxh+iT5WyWWpTxqEGGck9Iufi+KrfIxXBPb5FX24l9Jtmf+lulEcuevk4Oi2EggA4h/G+7kvZWrephNWW1BkAomQHkHYlv059g1cKpY0brSHntTs49NbsOhRIM/M7cMOBCLvA90DMFMIn02ksScqgAa5DxwiizQVN0KTLH2Um1B7IrtYczVjAI9OYNuTpTbzyYi0P7vA+dZt9vkHqLNSDEF/17CFWOIMoObQ9SktP6WiwzYlJ7eFST1XoKhHFMYTC5oFXRftdqMK3OiXpCBUG/V77XWe1XtAR2wg1XStfSLvJPY1BnPSkGyzFs4uj/ezLGOnBzJZ33N8HxWnEfoSHh90f1WZAeTBQ9202H+nWdE2iW2WM7EAx9UgzuZK9SZKVd4S5wL7UP6MDZRjmTbAnD8bDtEOJl1Mjq/0p4mpOavaFfGoKHPWFzaCAr7doQWpYVL9B8nHPSbOrLy/3E1zt6XcDnGRZjFkzx4ya0NlBZ2HEZyYxDPLjJ0g8BpMDL74Fd0jxABmIr1Bk1oDEtNeko+KaTIojA6gltAoGxrdryDSPM2tKGoui7hLGflEBim0uttjarBoQqFzYJACDycrtmKSVBmejBQnDRikOMIn57U5xLyNP5Ko/nVehoMaZAbizNotCO9W/xA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4494.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(53546011)(6486002)(38100700002)(5660300002)(8676002)(8936002)(186003)(508600001)(31686004)(966005)(316002)(6916009)(54906003)(66946007)(66556008)(66476007)(2616005)(36756003)(83380400001)(2906002)(86362001)(31696002)(4326008)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bDgzdEZYa3VMQ0N0WGZaUGZKbmIvZm83RHNndFlWWUcxVVpUcFBQRWZMbnJz?=
- =?utf-8?B?ZFBYZXIrdEkvTVY0NHNFUjZpeUthbndIWS81SktxbCs3RjBmcmNGbnNmNkE3?=
- =?utf-8?B?UlAzQ2VkeVVRNXg4SXcvK2NkT3ROTVBMakJJUGFnc2piYWl1QXBPTmtYZDBJ?=
- =?utf-8?B?M3Z6ODJ1S2pEUDQ2Zk9WTGlzVVlsb053dmFhbm9NRi9reEY2a1VsWUsrbGRG?=
- =?utf-8?B?NUhxbk81MkxpZWRCdStWd1JoZEhqTllYbUlJZGROZjZtWkVFK2E0eFAyRWM2?=
- =?utf-8?B?NW1RMGorc2VJdG5uS2dNc3lVeGJjYlB6OVQ1bkRFTkRMM0trdlhTaTNjTXZi?=
- =?utf-8?B?MTd6VUFlYVJFcWkveWlRVW4rWE9WZUJpdzk4OWtZa1l1K2FHMTRpYWhiNGZE?=
- =?utf-8?B?a3VVSUxwc1BkRnZqVjBWZjE4emk1REVwU1NuYkhqbUNiQmpFeWlJTnl5TTc0?=
- =?utf-8?B?K3hucnVaem1sUm1DeHdrN1BacnZNT1ZqVkRGYXpUcVJuQ04xNFUyUlprU0RT?=
- =?utf-8?B?dFEyTHdkbU4wUEZ0eGtLRVZKc1dRUEFCUm14Nk9pNmtsUkQzR3hZV3NkR2Fr?=
- =?utf-8?B?WTlqRUJNcWZJYVBlMWN5VGlkbHpHT3FwM0k0RHRSM2hCVkZNOC8wdnN1eFFY?=
- =?utf-8?B?QmkyQzhiNjYyRGVKUmZkSG1KVFpHeURTcHpRSHpsL0hUbnRjMzV4R1dPNmlY?=
- =?utf-8?B?bG9vYUFBSmNDaGZRSFkzdElJV3hsT3F5L0dNZmFaT2RkSlAyTEhaNGhaUHVr?=
- =?utf-8?B?cmNMZ2lhQWhDc3dCbFgxK0d0bUlOL0JkRjgyVkpNTGFSOHhOQUExUnMzVGt5?=
- =?utf-8?B?cERxSmc2SjkyZHlXbXZrNlVQSzVNRDAvUysreURsbnBKeURCQTh1QWt2LzdQ?=
- =?utf-8?B?RkVPRzBTM0JuL01pV1Z4eHp2N2V0alJpTFByd3dwa2xoc3gwbHBFZmdZVHNo?=
- =?utf-8?B?N3lsY0pTc1VFcXl6MGRqZjY5SUhPTUFPb1YybXpBa2pHRDEweVBFSDQxelJ5?=
- =?utf-8?B?SStFcWNueS9DUEI0c3Y3ZFkzWmcyVjI4M29zbWVNMTQvMjMrUlQ1VmVxejVO?=
- =?utf-8?B?VHJDUWFoQktpNG1icjVSWFBkL2gxY1BzNWZ3Z2htNjd0N2g0ZlczRTFIZmta?=
- =?utf-8?B?bml5SVZMZi90UWlkbUQxTC9JUkRiUmRyaHNUeWJzR1MxeTVyU2lEK2ZtT3lF?=
- =?utf-8?B?WU5sVnlNY3ZCMjdSRXVnb3ltSVlpemo4azlWVFpPTGFHVVMwV2gwSGp1RVNk?=
- =?utf-8?B?MjA5N0tMajNzd3BYK2NjQWc0YU1YZnk1RGEwWTlpMWJReUpGZSttZEtrMW1t?=
- =?utf-8?B?Y09wbnN5czBZZmE4U3F1U0tUZnZ0OVNkNVRBWWVHS1NpUXpVYUZPYUg5MGtv?=
- =?utf-8?B?Wi80Zzliejg0Yk85ZlJNczAydXdySGovd3lzZHgvZmlUT0Z6cENKZTVLa2x5?=
- =?utf-8?B?OG5QZ3RzYnlkUy9sdTBNOGxPeVpWVzEwUUNvbFJXS3ZRcDY1Y2xZS28rcU96?=
- =?utf-8?B?OGIvTlRKZ2h0dHFzUWZ4am9vZEd0Y2hLN3VIMmF4aWptQ0J3WTJqVkczV09S?=
- =?utf-8?B?bGNGTWZIU3lqZFI4YTl1RnhHdDd3U3JJVnd1Q0c1MTBvbGFlZFM5aUhiQ1B6?=
- =?utf-8?B?ejNHZkM0U1BmdHVPUndGaExIUW8xcDZjVVhKQWtqR3B2bnZEZ0dlWGJkUlh4?=
- =?utf-8?B?SFNjQUtmM1Fqbk1yNmJ1QXFnZldWRTNwd1lZckNJL2ordFY4Z010Z0NXS05P?=
- =?utf-8?B?WXJjT2ZxRS9WemVQd0FQaU9iRVBvR3NraC9ybHhmbWwyYkJRUFRLZ0xldDJa?=
- =?utf-8?B?b3NpeFgxZzI5UFkrcU5TQT09?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4f0c26f1-cc71-45a1-10cb-08d982fde0c2
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4494.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2021 04:01:56.1326
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jVCXpcCrcz9Jh7HH70gRfdvF7Z38R+/xdRBPkUfvZoBiGS7RwdfTakUiwY/z6FZzQSYpdL96T79ITzmK0LJuqQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4447
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10121 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 spamscore=0
- adultscore=0 bulkscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2109230001
- definitions=main-2109290023
-X-Proofpoint-GUID: jHMsAThK5L2D00zds-_f0rlvAt5RkVof
-X-Proofpoint-ORIG-GUID: jHMsAThK5L2D00zds-_f0rlvAt5RkVof
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This patch series add a dma-buf support for rxe driver.
 
-On 9/28/21 2:58 AM, Zhu Yanjun wrote:
-> On Tue, Sep 28, 2021 at 5:41 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
->>
->> On 9/27/21 11:55 PM, Zhu Yanjun wrote:
->>> On Tue, Sep 28, 2021 at 12:38 PM Shoaib Rao <rao.shoaib@oracle.com> wrote:
->>>> On 9/27/21 6:46 PM, Zhu Yanjun wrote:
->>>>> On Tue, Sep 28, 2021 at 3:19 AM Jason Gunthorpe <jgg@nvidia.com> wrote:
->>>>>> On Tue, Sep 14, 2021 at 06:12:20PM -0700, Rao Shoaib wrote:
->>>>>>> In our internal testing we have found that
->>>>>>> default maximum values are too small.
->>>>>>> Ideally there should be no limits, but since
->>>>>>> maximum values are reported via ibv_query_device,
->>>>>>> we have to return some value. So, the default
->>>>>>> maximums have been changed to large values.
->>>>>>>
->>>>>>> Signed-off-by: Rao Shoaib <Rao.Shoaib@oracle.com>
->>>>>>> ---
->>>>>>>
->>>>>>> Resubmitting the patch after applying Bob's latest patches and testing
->>>>>>> using via rping.
->>>>>>>
->>>>>>>     drivers/infiniband/sw/rxe/rxe_param.h | 30 ++++++++++++++-------------
->>>>>>>     1 file changed, 16 insertions(+), 14 deletions(-)
->>>>>> So are we good with this? Bob? Zhu?
->>>>> I have already checked this commit. And I have found 2 problems with
->>>>> this commit.
->>>>> This commit changes many MAXs.
->>>>> And now rxe is not stable enough. Not sure this commit will cause the
->>>>> new problems.
->>>>>
->>>>> Zhu Yanjun
->>>> Hi Zhu,
->>>>
->>>> A generic statement without any technical data does not help. As far as
->>>> I am aware, currently there are no outstanding issues. If there are,
->>>> please provide data that clearly shows that the issue is caused by this
->>>> patch.
->>> Hi, Shoaib
->>>
->>> With this commit, I found 2 problems.
->>> This is why I suspect that this commit will introduce risks.
->> Hi Zhu,
->>
->> I did full testing before I sent the patch, that is how I found that
->> rping did not work. What are the issues that you found? How to I
->> reproduce those issues?
-> Sorry. What tests do you make?
->
-> Do you make tests with the followings:
->
-> 1. your commit + latest kernel  <------rping------- > 5.10 stable kernel
-> 2. your commit + latest kernel < ------rping------- > 5.11 stable kernel
-> 3. your commit + latest kernel < ------rping------- > 5.12 stable kernel
-> 4. your commit + latest kernel < ------rping------- > 5.13 stable kernel
-> 5. your commit + latest kernel < ------rping------- > 5.14 stable kernel
-> 6. rdma-core tests with your commit + latest kernel
->
-> Zhu Yanjun
+A dma-buf based memory registering has beed introduced to use the memory
+region that lack of associated page structures (e.g. device memory and CMA
+managed memory) [1]. However, to use the dma-buf based memory, each rdma
+device drivers require add some implementation. The rxe driver has not
+support yet.
 
-Hi Zhu,
+[1] https://www.spinics.net/lists/linux-rdma/msg98592.html
 
-With all due respect, I am a little surprised by the special treatment 
-being given to this rather simple patch. Normally comments to a patch 
-are submitted with technical data to back them up. In this case none 
-have been provided. If we are going by gut feelings, then there are more 
-involved patches that are being accepted without any tests as listed above.
+To enable to use the dma-buf memory in rxe rdma device, add some changes
+and implementation in this patch series.
 
-My initial patch increased the value of 3 variables but the community 
-suggested that values of other variables should be increased as well. 
-The discussion happened on this mailing list and no objections were raised.
+This series consists of two patches. The first patch changes the IB core
+to support for rdma drivers that has not dma device. The secound patch adds
+the dma-buf support to rxe driver.
 
-The two issues that you mention were mechanical issues, (one reported by 
-you and one by the kernel bot) that have been fixed. They had nothing to 
-do with the values being increased. As I have said I have tested the 
-patch several times, most recently about a week or so ago with Bob's 
-latest change.
+Related user space RDMA library changes are provided as a separate patch.
 
-I am not keen on changing the values of any other parameters, but the 3 
-that were contained in my original patch. The link to those patches is
+v2:
+* Rebase to the latest linux-rdma 'for-next' branch (5.15.0-rc1+)
+* Instead of using a dummy dma_device to attach dma-buf, just store
+  dma-buf to use software RDMA driver
+* Use dma-buf vmap() interface
+* Check to pass tests of rdma-core
+v1: https://www.spinics.net/lists/linux-rdma/msg105376.html
+* The initial patch set
+* Use ib_device as dma_device.
+* Use dma-buf dynamic attach interface
+* Add dma-buf support to rxe device
 
-https://www.spinics.net/lists/linux-rdma/msg103570.html
+Shunsuke Mie (2):
+  RDMA/umem: Change for rdma devices has not dma device
+  RDMA/rxe: Add dma-buf support
 
-Please let me know if those are acceptable. They have been tested 
-*extensively* running several different kinds of Oracle DB workloads.
+ drivers/infiniband/core/umem_dmabuf.c |  20 ++++-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+ drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
+ include/rdma/ib_umem.h                |   1 +
+ 6 files changed, 173 insertions(+), 4 deletions(-)
 
-Regards,
+-- 
+2.17.1
 
-Shoaib
-
->
->> Shoaib
->>
->>> Before a commit is sent to the upstream, please make full tests with it.
->>>
->>> Zhu Yanjun
->>>
->>>> Thanks you.
->>>>
->>>> Shoaib
->>>>
->>>>>>> -     RXE_MAX_MR_INDEX                = 0x00010000,
->>>>>>> +     RXE_MAX_MR_INDEX                = DEFAULT_MAX_VALUE,
->>>>>>> +     RXE_MAX_MR                      = DEFAULT_MAX_VALUE - RXE_MIN_MR_INDEX,
->>>>>> Bob, were you saying this was what needed to be bigger to pass
->>>>>> blktests??
->>>>>>
->>>>>> Jason
