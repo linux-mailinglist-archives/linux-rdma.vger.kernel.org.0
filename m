@@ -2,128 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E862C41D3BE
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 08:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9AEF41D3D2
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 09:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348435AbhI3G76 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 02:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348393AbhI3G74 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 02:59:56 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31CDCC06161C
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 23:58:13 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id m3so20900540lfu.2
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 23:58:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AM58cnJzWheq7pN6e6L+Di8EyxwT/TZuwdLAOFe5lTM=;
-        b=zUA02mDiD7ySh4VXdtJEkfF+YdiTY26SnB/zKlU6AV6H7K06hWuMhIkqyICSRgwmLh
-         mMJqj75qYMRjZUryj8QznGOt1/uDr4q20FUyRlmfjvyWGDa9fNh1/KqmeTmllPC6LWsE
-         x4UA5ycScWSfPjOhkCW04pIaQRZYoSk1kxBDhV5iIfdgOPXgQIurppjGXWQBQKV44tdK
-         e3xYCw8TWtFK4EQHVWDRiAj+PrQUHjPo23h+iyjT1HwajPzvid5J/T6xDSKDma7HJFnH
-         Cj5iu6tWUHc/wClUvPhMJJqFlksmjgvu0yQ5HqUPJilAeIxDFCaEgOlTE9y+38eHL9g4
-         81Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AM58cnJzWheq7pN6e6L+Di8EyxwT/TZuwdLAOFe5lTM=;
-        b=IQJbTOodddui5SvSh9Z41PaMrfiQdMQ138VG4Kx3w6ybjSwb2aegPxwym6Sb0SG009
-         XfguZqO/ZGMjvz+ve1f+KaLd4gX410fmhkeSMcc7Rm8dN/Fe1Z8VSAgXLuddt0ksdsvU
-         dx31s2lLC9Uhy0qnV9lsKBduVN7SNF9zHdiSY0onjGCr8H5+6vXk1reeJTAAYw4mwDDk
-         pWcmPJc7QRZwbZY77lfDGlCyfefzWGiMNTbq0h15xToEUkKpqqdG/4cgHQWZzyqmFfGn
-         e/mmq4upFosk0gErrHRF830pzbF5cZUoV9xvnTTcF30H+idyhAK96T5aOgLM0EmzIYh4
-         FQWQ==
-X-Gm-Message-State: AOAM531QLslqXwfdjz7NjxRK3ZC4CISTyOOJPM3lFLmuMjjJMkCYroU/
-        4JbZVplkXy3iFzsetw1zXzxA1IlFNwcPXen5D1R//w==
-X-Google-Smtp-Source: ABdhPJyBqEgHtMpNYqgONgpO8bSsYcGCUmFFaeLYGEyFgNwtKcwbfga4y3No6ih2UN25mIxw8sdz+lK6j2VMsBbQMOg=
-X-Received: by 2002:a19:f507:: with SMTP id j7mr4119788lfb.645.1632985091555;
- Wed, 29 Sep 2021 23:58:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
- <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
-In-Reply-To: <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Thu, 30 Sep 2021 15:58:00 +0900
-Message-ID: <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        id S1348423AbhI3HDA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 03:03:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233661AbhI3HC7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Sep 2021 03:02:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A1A6615E1;
+        Thu, 30 Sep 2021 07:01:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1632985277;
+        bh=x0UZfrwganxoeSy7+inNzF3N9vJmbnkB8uOpKidAVLc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q7lyBvNxwJFi+5OUM1UtZ+tThkI8hWT2W2kGhcnfxr83nhazu8OWvOem0e0G72lgm
+         oH8C8jfk4VLWJKUsz0V8Kj0R8k12YB73xIcfo+TepQk3l+R0de4bmxKMX8/xwFRVA1
+         wZtD1prc8uzwFmv4SUu4M6EyXGyA6fgPBh9+2m6RLGed9VzktN/OJgDmC+0BbKhIIG
+         qENM6X9m+CSMmm/341b3MuF43/KNozVLKWXTUI38fzTJmvqgnLP37bcYcUxfeJQ3YK
+         KklixLh4qeh/u095MwGL4lDWpB91gaqaAxOP9KdtYPEi6IbAHO0v5G9c1kcZtMZ2PQ
+         Lr3LN2VUR5x4g==
+Date:   Thu, 30 Sep 2021 10:01:14 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     Jack Wang <xjtuwjp@gmail.com>,
+        Md Haris Iqbal <haris.iqbal@ionos.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Bart Van Assche <bvanassche@acm.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Gioh Kim <gi-oh.kim@ionos.com>,
+        Aleksei Marov <aleksei.marov@ionos.com>
+Subject: Re: [PATCH for-next 6/7] RDMA/rtrs: Do not allow sessname to contain
+ special symbols / and .
+Message-ID: <YVVgunT1hSIzu1tA@unreal>
+References: <20210922125333.351454-1-haris.iqbal@ionos.com>
+ <20210922125333.351454-7-haris.iqbal@ionos.com>
+ <YVG3cme0KX9CD4oh@unreal>
+ <CAD+HZHWTZY=6W4MNEGwVi=e64MJtntVE1Hwm6Lt_m=UaAW2W-A@mail.gmail.com>
+ <YVLEIVz1mCV0cZlC@unreal>
+ <CAD+HZHW5u1MiB-+C784yYXZc9Q-F0yB+1EvRKb4sAQJe4p2Yeg@mail.gmail.com>
+ <YVRWXim7T0mReBu/@unreal>
+ <CAMGffE=mv8jJYeNC7BjiGbOt4qEFAQhXWROk4Uwzg5ED4a0sug@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMGffE=mv8jJYeNC7BjiGbOt4qEFAQhXWROk4Uwzg5ED4a0sug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyjzyj2000@=
-gmail.com>:
->
-> On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+On Thu, Sep 30, 2021 at 08:03:40AM +0200, Jinpu Wang wrote:
+> On Wed, Sep 29, 2021 at 2:04 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > Implement a new provider method for dma-buf base memory registration.
+> > On Wed, Sep 29, 2021 at 09:00:56AM +0200, Jack Wang wrote:
+> > > Leon Romanovsky <leon@kernel.org> 于2021年9月28日周二 上午9:28写道：
+> > > >
+> > > > On Tue, Sep 28, 2021 at 09:08:26AM +0200, Jack Wang wrote:
+> > > > > Leon Romanovsky <leon@kernel.org> 于2021年9月27日周一 下午2:23写道：
+> > > > > >
+> > > > > > On Wed, Sep 22, 2021 at 02:53:32PM +0200, Md Haris Iqbal wrote:
+> > > > > > > Allowing these characters in sessname can lead to unexpected results,
+> > > > > > > particularly because / is used as a separator between files in a path,
+> > > > > > > and . points to the current directory.
+> > > > > > >
+> > > > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > > > > > > Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
+> > > > > > > Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
+> > > > > > > ---
+> > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
+> > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
+> > > > > > >  2 files changed, 11 insertions(+)
+> > > > > >
+> > > > > > It will be safer if you check for only allowed symbols and disallow
+> > > > > > everything else. Check for: a-Z, 0-9 and "-".
+> > > > > >
+> > > > > Hi Leon,
+> > > > >
+> > > > > Thanks for your suggestions.
+> > > > > The reasons we choose to do disallow only '/' and '.':
+> > > > > 1 more flexible, most UNIX filenames allow any 8-bit set, except '/' and null.
+> > > >
+> > > > So you need to add all possible protections and checks that VFS has to allow "random" name.
+> > > It's only about sysfs here, as we use sessname to create dir in sysfs,
+> > > and I checked the code, it allows any 8-bit set, and convert '/' to
+> > > '!', see https://elixir.bootlin.com/linux/latest/source/lib/kobject.c#L299
+> > > >
+> > > > > 2 matching for 2 characters is faster than checking all the allowed
+> > > > > symbols during session establishment.
+> > > >
+> > > > Extra CPU cycles won't make any difference here.
+> > > As we can have hundreds of sessions, in the end, it matters.
 > >
-> > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
-> > ---
-> >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
+> > Your rtrs_clt_open() function is far from being optimized for
+> > performance. It allocates memory, iterates over all paths, creates
+> > sysfs and kobject.
 > >
-> > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-> > index 3c3ea8bb..84e00e60 100644
-> > --- a/providers/rxe/rxe.c
-> > +++ b/providers/rxe/rxe.c
-> > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd=
-, void *addr, size_t length,
-> >         return &vmr->ibv_mr;
-> >  }
+> > So no, it doesn't matter here.
 > >
-> > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t of=
-fset,
-> > +                                       size_t length, uint64_t iova, i=
-nt fd,
-> > +                                       int access)
-> > +{
-> > +       struct verbs_mr *vmr;
-> > +       int ret;
-> > +
-> > +       vmr =3D malloc(sizeof(*vmr));
-> > +       if (!vmr)
-> > +               return NULL;
-> > +
->
-> Do we need to set vmr to zero like the following?
->
-> memset(vmr, 0, sizeof(*vmr));
->
-> Zhu Yanjun
-Thank you for your quick response.
+> Let me reiterate, why do we want to further slow it down, what do you
+> anticipate if we only do the disallow approach
+> as we do it now?
 
-I think it is better to clear the vmr. Actually the mlx5 driver allocates
-the vmr using calloc().
+It is common practice to sanitize user input and explicitly allow known
+good input, instead of relying on deny of bad input. We don't know the
+future and can't be sure that "deny" is actually closed all holes.
 
-In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the malloc
-and not clear the vmr. I think It has to be fixed too. Should I make
-another patch to fix this problem?
-
-Thanks a lot.
-Shunsuke
-
-~
+Thanks
