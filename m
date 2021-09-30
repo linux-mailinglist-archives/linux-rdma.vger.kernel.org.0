@@ -2,150 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B85F441DF49
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 18:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C14B841DF98
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 18:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352202AbhI3Qmk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 12:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351765AbhI3Qmj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 12:42:39 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAEF6C06176F
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 09:40:56 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id h30so8132702vsq.3
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 09:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=FV+sR2jqeq3a30q0fwwes6WIJUL0Aly1jHDpEuRKN4E5hFr75A8Lw1Hf7FsKbd3IgX
-         Y0NETW3LIdrr+GfiFqDiRliDmaT3s6ks2SCzQ8xKiQWqtfryMEQxZRm/Ehnv8sx9IvZA
-         muPVzb5TbIR8gh03qrKvvPLKt+CWDdsXkBUBiZw2JG/VPZRXtjF2vQGNdWqMtE0+KYCn
-         puyxTyxmsl+RwXB2mIAoqF5n+/rz1oAVYvnPo9p/4N+LHs01uAkZKBx+0yd7aFh3bUHG
-         h/EeRqLYRyFYlkHNLt6EEQaizEMQ1XNxoB1ZM7qr+/WnP5xBCG7P4Ey4iY0NmkRmr8S1
-         mh4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=/T9drlD1s9vO6lHEMs4LJzmDo2MKXEHBXvFYaWoQWpk=;
-        b=anmeXpP4TVICgwPnQOkAK2fQqachWW8uXYxiEGnpb0vO8DRnTpPlybasDI+p87dE1s
-         IUkxtUeJ1P05nR8tK0HxT694ZkA3YO1hEMW5GjNNVlHDpXr/XsgmIaSOe98DNmRqquSP
-         BsUhj7WOKi/94+nE0JfqLLITG9JHvJlF6S5XzRV2CdWRMUMab2qZYeJy/OuO+WWLTxzq
-         1r6n8FW9Z0a79Jd+HG0/rvFIxxZb9IyF73FTCbNW1OLMe8yXOmKqaul92GgQ6jgA+3KD
-         sF+vSr3myFQTSDrYA4yW91cH1TTSaBjxg2HyW8hNPANm4ZWoghVdMG/HerjRKGZehLJs
-         EEKQ==
-X-Gm-Message-State: AOAM531YA0COCUXDoTzIiBWPVlef9iwe69wFr9tvC08y7Lmr6o0bRhwr
-        eSrqlup0/oG4xOQXsIz+ZA0yhnlpY31YcTa6Hz4=
-X-Google-Smtp-Source: ABdhPJyrlzTC2MbiFYv9Onunj6ymT4OoDGeF1Rs8K96BASDJdMf5G8ZjaV568mQ5Ecmy8bt02e07EU6x/22RNi/kmb0=
-X-Received: by 2002:a67:ce14:: with SMTP id s20mr148117vsl.34.1633020056080;
- Thu, 30 Sep 2021 09:40:56 -0700 (PDT)
+        id S1352381AbhI3QxS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 12:53:18 -0400
+Received: from mail-bn8nam08on2042.outbound.protection.outlook.com ([40.107.100.42]:36032
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1352419AbhI3QxO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Sep 2021 12:53:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S3Xi0VYnMy4oEUtXZrx7WX/w8DQYaOZ6DonHHz3qBtIVoy6TN34Yea2KAYHDq+DRBAb4yLg7U+oBk49N8t/t1x4AhKHT6FLfWhLNeRROT3iKc3GwJ746LhKMkor08AS2dMSDALqc5thsFhEiPLq38dBqyrwV2CbwUfYqYlvzp8tO0JdS6MtBUlM0H5EsCENlyomTsMGgXxOiYcnYwG4tvMS089WXSmwTM3+k6m6x/XOZyZx5mOr/JF+66i9pyzolsHTiIjotTmxK1x2OzjtgGgB01qMz9nLpHTSvoyo9UK4d+bJCDbkJjw9d13g9+V3DMtX4jkW1IpWOJQtJ3FRlPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=C+Vdy5kiiDYxQAWolO6PXlgR52bLolA6OuKiabJWXUY=;
+ b=cMi6xKBFVVfFun08+riZSD34orOeMEAvClugIyyschFP/IHEs4pKa0GZv8qh5Jcd29UOQ7XDcniqOY1sGV04Gz9rIO2PKMPpndmKhdbn+AXHG+0O4E4df5zRIg2LUTv4iYYg2fBdpUk6U0XtPTRioPianjTDjXgt+y8uoEu4SZlbjgkrXzYPitV6fT745WAvuKZS82P8sa8hDgCp8MJGuHKHzg6RmxkXRoPWMpiGQCWcs3BkG1k6Qye0/fXmoWhXnx4VqXK9kAE+5t61CTWT9fRaRMA8v6dAOiywyqZva43AfFIncPdyT9RAJ+0R/3UasW51IolhbePCl2lPm1K5PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C+Vdy5kiiDYxQAWolO6PXlgR52bLolA6OuKiabJWXUY=;
+ b=oINJYTyCRR/DY2OgDEuWsFoAL3K5XLB0+szf4q3qKrXGpFMQUfVI03BycWy5c+yOatlqJfAvE45GYga9AwLmrUyW4k8aAvFyVSlZGaYzdYpQXWNG6afl6Vs3dRAO/VU31LGMSK8OtNaCbdpx+O3fgH++PMp3XpBLPiel3NmKErKZ2v59g164blrAdaYkyxryNfNczIhhtowm1SmKI8NXoxqi+UyelQJ8N/sFj+ACDNjNMU7ES1XVMfeCxqRvi/d7GY3EINeXy9G+Ku5i+gQwMP0ahxsUZUfihD2WkmYltPOEebVO4qtrA3Wu7ymUXU/0T8zy3ke1jhQzePJWB05T6w==
+Received: from DM5PR20CA0041.namprd20.prod.outlook.com (2603:10b6:3:13d::27)
+ by DM5PR1201MB0217.namprd12.prod.outlook.com (2603:10b6:4:54::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Thu, 30 Sep
+ 2021 16:51:29 +0000
+Received: from DM6NAM11FT027.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:13d:cafe::15) by DM5PR20CA0041.outlook.office365.com
+ (2603:10b6:3:13d::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.13 via Frontend
+ Transport; Thu, 30 Sep 2021 16:51:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT027.mail.protection.outlook.com (10.13.172.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4566.14 via Frontend Transport; Thu, 30 Sep 2021 16:51:29 +0000
+Received: from [172.27.13.136] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 30 Sep
+ 2021 16:51:25 +0000
+Subject: Re: [PATCH mlx5-next 2/7] vfio: Add an API to check migration state
+ transition validity
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     Alex Williamson <alex.williamson@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kirti Wankhede <kwankhede@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>
+References: <20210929075019.48d07deb.alex.williamson@redhat.com>
+ <d2e94241-a146-c57d-cf81-8b7d8d00e62d@nvidia.com>
+ <20210929091712.6390141c.alex.williamson@redhat.com>
+ <e1ba006f-f181-0b89-822d-890396e81c7b@nvidia.com>
+ <20210929161433.GA1808627@ziepe.ca>
+ <29835bf4-d094-ae6d-1a32-08e65847b52c@nvidia.com>
+ <20210929232109.GC3544071@ziepe.ca>
+ <d8324d96-c897-b914-16c6-ad0bbb9b13a5@nvidia.com>
+ <20210930144752.GA67618@ziepe.ca>
+ <d5b68bb7-d4d3-e9d8-1834-dba505bb8595@nvidia.com>
+ <20210930162442.GB67618@ziepe.ca>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <c7a18080-3ffc-488b-577c-1e3b356bf66e@nvidia.com>
+Date:   Thu, 30 Sep 2021 19:51:22 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Received: by 2002:a59:ab2e:0:b0:22d:7f44:603a with HTTP; Thu, 30 Sep 2021
- 09:40:55 -0700 (PDT)
-Reply-To: irenezakari24@gmail.com
-From:   Irene zakari <irenezakari88@gmail.com>
-Date:   Thu, 30 Sep 2021 09:40:55 -0700
-Message-ID: <CAFT8PFEuTDyM7AWv4-LAqHpR0VFES6VrRn3W0Yw7s4vRmk+-jg@mail.gmail.com>
-Subject: PLEASE I NEED YOUR HELP
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210930162442.GB67618@ziepe.ca>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c64e0dfd-630b-4e26-2350-08d984328cb6
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0217:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0217228F28BB847CEA8FBAD3DEAA9@DM5PR1201MB0217.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LMzFQaKWXumMt5+hX2d3jdplGEdX2SxJp15vBAjgaVhXnw7ruKiJo+aUhKX0CG16PweCkUWXPAiEPbtU+xmid2vHxvmF7v61EnZXn7Tp2OkWemRMfkhhv0sSnNcqlE0m8iWxvTsp5m3YYamWdzZ1YBNDw/nGQmYbQIaJ3Fg4UY2IKEdjQlJwHHI5EBW22iBv3ulriQGBq26eq6T6lGS8OXfSdHQX5Z2QNvTULEsKz92AK2L96kY5WmIS3Dowx/9HgstZ/GIiRTD2jCtW+lDpI0oRyDcpfeHSoWXeerm671nz8PIjeECYoysh9MZTuMq/B3ZZKscyeUKbvmphy2CnGgK1PoRBNHrH6hjMfxFX01aJqORguhXr7rW3Nu2Z6bPlLXVmvCqk7dJSI3LnzPFte5fETHhiGg/ImBjwSUOFq3ycoyuIwjMPHHvQ33UswrZ1FArKAw+amf1+Aw8KjmW9eEkgajVHgKCtuqaptZ+a4MyhEAxjGL+AIb4x/oLnBD2o7w62FPm1nteHjvoo9iAWYMnIbzRs0Rv4b91m3f1TO4RB4cJtgCYZUbL87SE290RTj0V5oeLCeA/6UNiMABmLaYimiYTWGvnbiIAR0u+/Et0I+50+Ab15TEwbnqJS9FpWYmyDG9VpdWl8kVLHV5aAmmGZyO4hthjZ2y5/S/BtQS/N7H5I2MrQVaFYr3vBJlhgk5ErcdOSiFLSGUF9uj5KehWV/Z6FH+pGscbnswTB8dE=
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(16526019)(7636003)(5660300002)(31686004)(36860700001)(7416002)(8676002)(426003)(86362001)(2616005)(186003)(4326008)(316002)(36756003)(31696002)(6666004)(356005)(6916009)(16576012)(336012)(82310400003)(47076005)(8936002)(54906003)(26005)(53546011)(2906002)(508600001)(83380400001)(70586007)(70206006)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2021 16:51:29.2505
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c64e0dfd-630b-4e26-2350-08d984328cb6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT027.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0217
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello   ..
 
-How do you do over there? I hope you are doing well?
+On 9/30/2021 7:24 PM, Jason Gunthorpe wrote:
+> On Thu, Sep 30, 2021 at 06:32:07PM +0300, Max Gurtovoy wrote:
+>>> Just prior to open device the vfio pci layer will generate a FLR to
+>>> the function so we expect that post open_device has a fresh from reset
+>>> fully running device state.
+>> running also mean that the device doesn't have a clue on its internal state
+>> ? or running means unfreezed and unquiesced ?
+> The device just got FLR'd and it should be in a clean state and
+> operating. Think the VM is booting for the first time.
 
-My name is Irene. (24 years), i am single, from Gambia, the only child
-of late Eng. Bernard Bakary Zakaria. the Director of Bajam Enterprise
-(Building Construction Company in The Gambia) also the CEO of Bernard
-Import and Export (GAMBIA).
+During the resume phase in the dst, the VM is paused and not booting. 
+Migration SW is waiting to get memory and state from SRC. The device 
+will start from the exact point that was in the src.
 
-As a matter of fact my mother died when i was barely 4 years old
-according to my late father and because of the type of love he had for
-my mother made him to remain UN-married till he left the ghost..
+it's exactly "000b => Device Stopped, not saving or resuming"
 
-So after the death of my father as a result of assassinate, his brother (My
-Uncle) who is the purchasing and marketing sale manager of my late
-fathers company named (Mr. James Tokunbo Oriade Zakaria) wanted to
-convert all the properties and resources of my late father into his
-which i quarreled with him and it made him to lay his anger on me to
-the extent of hiring an assassins to kill me but to God be the glory i
-succeeded by making a way to Burkina faso for my dear life.
-Honestly i do live a fearful life even here in Burkina faso because of
-those Assassins coming after me .
+>
+>>>>> driver will see RESUMING toggle off so it will trigger a
+>>>>> de-serialization
+>>>> You mean stop serialization ?
+>>> No, I mean it will take all the migration data that has been uploaded
+>>> through the migration region and de-serialize it into active device
+>>> state.
+>> you should feed the device way before that.
+> I don't know what this means, when the resuming bit is set the
+> migration data buffer is wiped and userspace should beging loading
+> it. When the resuming bit is cleared whatever is in the migration
+> buffer is deserialized into the current device internal state.
 
-I would want to live and study in your country for my better future.
-because my father same blood brother wanted to force me into undecided
-marriage, just for me to leave my father home and went and live with
-another man I never know as he want to occupied all my father home
-and maybe to sold it as my father no longer alive, I'm the only child
-daughter my father born, '' but he don't know that i am not
-interesting in any of my father properties or early marriage for now,
-because i still have future to think about and to focus on my studies
-first as i was doing my first year in the University before the death
-of my father.
+Well, this is your design for the driver implementation. Nobody is 
+preventing other drivers to start deserializing device state into the 
+device during RESUMING bit on.
 
-Actually what I want to discuss with you is about my personal issue
-concern funds my late father deposited in a bank outside my country,
-worth $4.5 million united state dollars. i need your assistance to
-receive and invest this funds in your country.
+Or is this a must ?
 
-Please help me, I am sincere to you and I want to be member of your
-family as well if you wouldn't mind to accept me and lead me to better
-future in your country.
+>
+> It is the opposite of saving. When the saving bit is set the current
+> device state is serialized into the migration buffer and userspace and
+> reads it out.
 
-All the documents the bank issue to my father during time of deposit
-is with me now.
-I already notify the bank on phone about the death of my father and
-they are surprise for the news and accept that my father is their good
-customer.
-I will be happy if this money can be invested in any business of your
-choice and it will be under your control till i finished my education,
-also I'm assuring you good relationship and I am ready to discuss the
-amount of money to give you from this money for your help.
+This is not new.
 
-Therefore, I shall give you the bank contact and other necessary
-information in my next email if you will only promise me that you will
-not/never betray and disclosed this matter to anybody, because, this
-money is the only hope i have for survival on earth since I have lost
-my parents.
+>> 1. you initialize at  _RUNNING bit == 001b. No problem.
+>>
+>> 2. state stream arrives, migration SW raise _RESUMING bit. should it be 101b
+>> or 100b ? for now it's 100b. But according to your statement is should be
+>> 101b (invalid today) since device state can change. right ?
+> Running means the device state chanages independently, the controlled
+> change of the device state via deserializing the migration buffer is
+> different. Both running and saving commands need running to be zero.
+>
+> ie commands that are marked invalid in the uapi comment are rejected
+> at the start - and that is probably the core helper we should provide.
+>
+>> 3. Then you should indicate that all the state was serialized to the device
+>> (actually to all the pci devices). 100b mean RESUMING and not RUNNING so
+>> maybe this can say RESUMED and state can't change now ?
+> State is not loaded into the device until the resuming bit is
+> cleared. There is no RESUMED state until we incorporate Artem's
+> proposal for an additional bit eg 1001b - running with DMA master
+> disabled.
 
-Moreover I have the FUND PLACEMENT CERTIFICATE and the DEATH
-CERTIFICATE here with me, but before I give you further information, i
-will like to know your full data
+So if we moved from 100b to 010b somehow, one should deserialized its 
+buffer to the device, and then serialize it to migration region again ?
 
-1. Full Name: ........................
-2. Address: ..................
-3. Nationality: ........... Sex................
-4. Age:........... Date of Birth:................
-5. Occupation:...................
-.....
-6. Phone: ........... Fax:.........................
-7. State of Origin: .......Country:..............
-8. Occupation:...................
-................
-9. Marital status........... E-mail address's: ............
-10. Scan copy of your ID card or Driving License/Photo:............
-DECLARATION:
+I guess its doable since the device is freeze and quiesced. But moving 
+from 100b to 011b is not possible, right ?
 
-so that i will be fully sure that i am not trusting the wrong person.
-and it will also give me the mind to send you the bank contact for you
-to communicate with them for more verification about this money. and
-to know you more better.
-
-Meanwhile, you can reach me through my pastor,his name is Pastor Paul
-any time you call, tell him that you want to speak with me because
-right now i am living in the church here in Burkina faso and i don't
-want to stay here any longer,
-send for me to speak with you his phone number is this(+226 75213646)
-
-I will stop here and i will be waiting for your reply and feel free
-ask any thing you want to know about me.
-Please help me, I would be highly appreciated
-Have nice day.
-From Irene
+>
+> Jason
