@@ -2,103 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E3641D266
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 06:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A8641D26A
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 06:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347733AbhI3E3B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 00:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S229595AbhI3Eh6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 00:37:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347937AbhI3E27 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 00:28:59 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94607C06176A
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 21:27:17 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so5707641otv.4
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 21:27:17 -0700 (PDT)
+        with ESMTP id S229509AbhI3Eh6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 00:37:58 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE88C06161C
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 21:36:16 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id r43-20020a05683044ab00b0054716b40005so5727689otv.4
+        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 21:36:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fo+XA5ZhNhrA0pZdOhXylGStZB1nDPPpygrSUz+ZKz8=;
-        b=qLClRVegKJJOpqtO0PJ3KHIya6GOv0HA3uaEcOO8il507mNKvkzReF6SOmdpDRItpL
-         4OhFANN/5XT2DWQFGGLWrog9uW4gl6w7mlFEoOXQjGoY3y70eI9DYtmAQoO5W73A15SV
-         uKf5Jd/FPKJhWrHtLv42zZpu0Lz58buHk/ZvbMkcYgIIqTTQ2SF/PhbeXTBeAcSPzRtW
-         RFKVTs6Wo19TsgMtKFI4LBSBgn0zkdZ7mUTxRiBKks0wk+ry31X0Ugukt2KE9/d+Rd+s
-         LwZasa2+lzOhOuNhXUmpptJ2PZjItP0ZzXshfjjgDp4sF0iDds26SO8XjyZdBBBRBisk
-         TUWw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s33vfDTM3u/gg/OqVuHlVDVgfZH1xXj14XVqlhx0JUk=;
+        b=JNGZj5FiM17g9txy0nIgpvYtzIYvbuZbPbXMTrvWT7A0X7sumBmTiooFGksjc9M3O3
+         oF07isW/G8ToD0D97/D/D65DN570TUz665yfwCPOzNBhwNNABAjLVL7s0pDNURsAmD3r
+         M2otxztbBl2X9YHzF74QUW2i17G6aYrUxP7KzxbIWyB0ZmexK4rixSqQR2/6R48MP4R6
+         unES8e50mPxqWoa7XJ08XDaO7bd0f1HOvk9kHEybk9+0udNupKIaeBLsOVPVXxlc+eu/
+         +yqguzsZIlXkRBzWMg7yPKrraGi2zsWX/cIX5OeBrXwK1QQv0irm2sADr3Frgyu40Z4Z
+         F13Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fo+XA5ZhNhrA0pZdOhXylGStZB1nDPPpygrSUz+ZKz8=;
-        b=QsWpkDkWsklJ1wL7KlIC862EaFyNY5FxePr2qxT1R6d8C5IllGO27B7LfBzsU8AGG9
-         X+0IMwV0xAZTRzXz/BIY0rLJad1PmJ2PSYUm8bky7OJnE5Xk/SgtpH9ALkzbITlb9anx
-         nZYTqF1U0zTeuvTRlhmlfK9+d7+yEUq2Tqcre+xQOPWJg70HpNRTWdGcWoWnBSAWAANj
-         sLy372dlTkvFLmGZT547GZs/3dSdAbIRIDWoj5dbAJerMWrbO6rJyyQ7/AJj1eWi+/Qe
-         ws/YJs751nEgroOHGWw8AoRaID3E7SXTkOcF5+AuE/VAnMHLggxH2UpQQYdLzIncRBcJ
-         fcEQ==
-X-Gm-Message-State: AOAM532Apm5BEWfV7cxMEQMptJvYqxzOf1a14w6Uo4TGsGYLg3JUmRm+
-        hprGxwUBQ7YuU4BNq45Stg0=
-X-Google-Smtp-Source: ABdhPJwMFHLTVcA/mhoQ9ePpwao4bKju4UhGKh2fqKhBeCMl/7E9SyU++6dg5jfytPnlDWuhI6KzyQ==
-X-Received: by 2002:a9d:f04:: with SMTP id 4mr3164432ott.307.1632976037009;
-        Wed, 29 Sep 2021 21:27:17 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=s33vfDTM3u/gg/OqVuHlVDVgfZH1xXj14XVqlhx0JUk=;
+        b=bx6Ls/YHNMbJHNRcbBlAFpxedw7yOpxvJAZwJa5gKz3fIGMKJveh2sooj6Z7nYzQkw
+         jd/5KZzqOsqQOimJoAWljovkKj0tf4jbXQTC9yYsFRJouUPuyllkyWLsSKvhTAuGdiBm
+         YJqyvkR7eJ60jghaRWF2hTQeGSoKy/8bV3AKsMxiyO6rDE8D8KKXCFdgNTbUS1cz/XQt
+         6+JNGpajzSubjrAxrbiBJ0C7S15iP8dq07KkciTam2GfT+R4Wegf/afnhSP9VXzVAzww
+         5ruOpf8RF8+LKA+jDhnooOeUYvN2OmFRYspBMtNRQdCsDdclmUoUwoHprJmWnsW28gbI
+         KNAg==
+X-Gm-Message-State: AOAM530TrqBAoe9CIQqh7S2vcT7uPFaxyMXYlL2HywwyuIhUdsOyOrle
+        ctVCB0YT3n6qsA7ad6g+xTd6PhtF1T+/lg==
+X-Google-Smtp-Source: ABdhPJz7lln5wzvQhcqXx1BUACluZSf01k4HeDvlcyd/Rp9H9qDNBO+EVmN1SHrqG9ytteGnlXJ0lg==
+X-Received: by 2002:a9d:12ec:: with SMTP id g99mr3271392otg.197.1632976575525;
+        Wed, 29 Sep 2021 21:36:15 -0700 (PDT)
 Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-48b3-0edc-a395-cab0.res6.spectrum.com. [2603:8081:140c:1a00:48b3:edc:a395:cab0])
-        by smtp.gmail.com with ESMTPSA id a23sm373661otp.44.2021.09.29.21.27.16
+        by smtp.gmail.com with ESMTPSA id k15sm389427ooh.41.2021.09.29.21.36.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 21:27:16 -0700 (PDT)
+        Wed, 29 Sep 2021 21:36:15 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v4 6/6] RDMA/rxe: Convert kernel UD post send to use ah_num
-Date:   Wed, 29 Sep 2021 23:26:04 -0500
-Message-Id: <20210930042603.4318-7-rpearsonhpe@gmail.com>
+Subject: [PATCH resending v2 0/2] Providers/rxe: Replace AV by AH for UD sends
+Date:   Wed, 29 Sep 2021 23:35:01 -0500
+Message-Id: <20210930043502.4941-1-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210930042603.4318-1-rpearsonhpe@gmail.com>
-References: <20210930042603.4318-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Modify ib_post_send for kernel UD sends to put the AH index into the
-WQE instead of the address vector.
+These patches contains the changes to the rxe provider to match the
+kernel patch series with a similar name.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+This patch series is identical to the one sent with the v3 RDMA/rxe:
+kernel patch set but still cleanly applied to the current rdma-core tree.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 8854ace63acd..b808777e2221 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -537,8 +537,11 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
- 	if (qp_type(qp) == IB_QPT_UD ||
- 	    qp_type(qp) == IB_QPT_SMI ||
- 	    qp_type(qp) == IB_QPT_GSI) {
-+		struct ib_ah *ibah = ud_wr(ibwr)->ah;
-+
- 		wr->wr.ud.remote_qpn = ud_wr(ibwr)->remote_qpn;
- 		wr->wr.ud.remote_qkey = ud_wr(ibwr)->remote_qkey;
-+		wr->wr.ud.ah_num = to_rah(ibah)->ah_num;
- 		if (qp_type(qp) == IB_QPT_GSI)
- 			wr->wr.ud.pkey_index = ud_wr(ibwr)->pkey_index;
- 		if (wr->opcode == IB_WR_SEND_WITH_IMM)
-@@ -610,12 +613,6 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 		return;
- 	}
- 
--	if (qp_type(qp) == IB_QPT_UD ||
--	    qp_type(qp) == IB_QPT_SMI ||
--	    qp_type(qp) == IB_QPT_GSI)
--		memcpy(&wqe->wr.wr.ud.av, &to_rah(ud_wr(ibwr)->ah)->av,
--		       sizeof(struct rxe_av));
--
- 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
- 		copy_inline_data_to_wqe(wqe, ibwr);
- 	else
+commit 0217e47de29c5429679c7ebf73d38a95623d2785 (master)
+
+v2:
+  As suggested by Jason Gunthorp moved the AV struct out of rxe_send_wqe
+  and into rxe_wr in the ud struct in the wr union at the original offset.
+  This maintains ABI compatibility with old kernels or rdma-core but
+  simplifies the code.
+
+Bob Pearson (2):
+  Update kernel headers
+  Providers/rxe: Replace AV by AH for UD sends
+
+ kernel-headers/rdma/rdma_user_rxe.h |  16 +++-
+ providers/rxe/rxe-abi.h             |   2 +
+ providers/rxe/rxe.c                 | 117 ++++++++++++++++++----------
+ providers/rxe/rxe.h                 |   8 +-
+ 4 files changed, 100 insertions(+), 43 deletions(-)
+
 -- 
 2.30.2
 
