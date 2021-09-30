@@ -2,125 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FF941D4D5
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 09:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A96F41D4FD
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 10:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348801AbhI3HzW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 03:55:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58478 "EHLO mail.kernel.org"
+        id S1349010AbhI3IGH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 04:06:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348793AbhI3HzV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Sep 2021 03:55:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5D961452;
-        Thu, 30 Sep 2021 07:53:38 +0000 (UTC)
+        id S1348954AbhI3IEb (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Sep 2021 04:04:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E239061555;
+        Thu, 30 Sep 2021 08:02:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632988419;
-        bh=wfufoGrDSlfUs9Me8/1bNDZ0YZoqlCww6ODrn49dbNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GNI69UF4V1CvlWRm/QV6RJYhAKi4GlTMlqxuNG0fGjMGs44HuMD2nomQJT19yd48w
-         M7p9jQH0lWhblY8T+9NlOALrKM4/+jsquy4eIaTM18tvBWBG53bGnzAop+dvHG2w7o
-         iXkHuDU1T3USJA6nXrz2jBfWzS301xT7BRyjz81QaZwmMkp5slxYKpzUUi4jKwD1Oc
-         tVUTTebjHZYqVYVUozHJ4pV3R/Ap/qGE/ml2ybDn2FNBOv1m19Xk1Z00hiGe+hQquS
-         /tm4oPFd0zZf33u+wg9JvV44xtTiGSD8pivXYPQEyE3fGg0LhxVG0meTPzaTS5aPA8
-         rp9Z2ZvumKPWg==
-Date:   Thu, 30 Sep 2021 10:53:36 +0300
+        s=k20201202; t=1632988954;
+        bh=TyRhh5K2Ce94vSMeWuR/PAsi56m6bDxsuSdtwtKOoB8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=rgoNgIuWn6U/ny58nucBbqQ/alWU4y4gG3KncetgZy003mOg5SwInUziivQLUf1HQ
+         oVowdM5+G3IY6sLo5zDuyIy/cLB4oz/wyIHBs2genC23dYAUbwcuHl9cG3xrPkEwNz
+         D7uOkvm6KyC39/q2jIEZoiOD22KICUHcGKyDeTcuLcFUPz9sjcoPYL7tVpftlH+XxB
+         gwyDR+udlfA0Gcv/b0NMqwvEuWrrc+OnqFjcMagBjtITJciWZcduc/36g12eiW8zBg
+         adJk+MOZJf1BuNl/nyLezWOSXaohQtC5kPRRtljWUqg9aAqCuvzz2WAevV/POnMmR7
+         FCzbwFA8REu4w==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     Jack Wang <xjtuwjp@gmail.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Gioh Kim <gi-oh.kim@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>
-Subject: Re: [PATCH for-next 6/7] RDMA/rtrs: Do not allow sessname to contain
- special symbols / and .
-Message-ID: <YVVtAFtOj0mPzSAR@unreal>
-References: <20210922125333.351454-1-haris.iqbal@ionos.com>
- <20210922125333.351454-7-haris.iqbal@ionos.com>
- <YVG3cme0KX9CD4oh@unreal>
- <CAD+HZHWTZY=6W4MNEGwVi=e64MJtntVE1Hwm6Lt_m=UaAW2W-A@mail.gmail.com>
- <YVLEIVz1mCV0cZlC@unreal>
- <CAD+HZHW5u1MiB-+C784yYXZc9Q-F0yB+1EvRKb4sAQJe4p2Yeg@mail.gmail.com>
- <YVRWXim7T0mReBu/@unreal>
- <CAMGffE=mv8jJYeNC7BjiGbOt4qEFAQhXWROk4Uwzg5ED4a0sug@mail.gmail.com>
- <YVVgunT1hSIzu1tA@unreal>
- <CAMGffE=NP-iNcAQyVF57tbeJ1QcyMt7=savh=5BLxaC9TuAkTw@mail.gmail.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next v2 00/13] Optional counter statistics support
+Date:   Thu, 30 Sep 2021 11:02:16 +0300
+Message-Id: <cover.1632988543.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMGffE=NP-iNcAQyVF57tbeJ1QcyMt7=savh=5BLxaC9TuAkTw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 09:10:33AM +0200, Jinpu Wang wrote:
-> On Thu, Sep 30, 2021 at 9:01 AM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Thu, Sep 30, 2021 at 08:03:40AM +0200, Jinpu Wang wrote:
-> > > On Wed, Sep 29, 2021 at 2:04 PM Leon Romanovsky <leon@kernel.org> wrote:
-> > > >
-> > > > On Wed, Sep 29, 2021 at 09:00:56AM +0200, Jack Wang wrote:
-> > > > > Leon Romanovsky <leon@kernel.org> 于2021年9月28日周二 上午9:28写道：
-> > > > > >
-> > > > > > On Tue, Sep 28, 2021 at 09:08:26AM +0200, Jack Wang wrote:
-> > > > > > > Leon Romanovsky <leon@kernel.org> 于2021年9月27日周一 下午2:23写道：
-> > > > > > > >
-> > > > > > > > On Wed, Sep 22, 2021 at 02:53:32PM +0200, Md Haris Iqbal wrote:
-> > > > > > > > > Allowing these characters in sessname can lead to unexpected results,
-> > > > > > > > > particularly because / is used as a separator between files in a path,
-> > > > > > > > > and . points to the current directory.
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > > > > > > > > Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > > > > > > > Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-> > > > > > > > > ---
-> > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
-> > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
-> > > > > > > > >  2 files changed, 11 insertions(+)
-> > > > > > > >
-> > > > > > > > It will be safer if you check for only allowed symbols and disallow
-> > > > > > > > everything else. Check for: a-Z, 0-9 and "-".
-> > > > > > > >
-> > > > > > > Hi Leon,
-> > > > > > >
-> > > > > > > Thanks for your suggestions.
-> > > > > > > The reasons we choose to do disallow only '/' and '.':
-> > > > > > > 1 more flexible, most UNIX filenames allow any 8-bit set, except '/' and null.
-> > > > > >
-> > > > > > So you need to add all possible protections and checks that VFS has to allow "random" name.
-> > > > > It's only about sysfs here, as we use sessname to create dir in sysfs,
-> > > > > and I checked the code, it allows any 8-bit set, and convert '/' to
-> > > > > '!', see https://elixir.bootlin.com/linux/latest/source/lib/kobject.c#L299
-> > > > > >
-> > > > > > > 2 matching for 2 characters is faster than checking all the allowed
-> > > > > > > symbols during session establishment.
-> > > > > >
-> > > > > > Extra CPU cycles won't make any difference here.
-> > > > > As we can have hundreds of sessions, in the end, it matters.
-> > > >
-> > > > Your rtrs_clt_open() function is far from being optimized for
-> > > > performance. It allocates memory, iterates over all paths, creates
-> > > > sysfs and kobject.
-> > > >
-> > > > So no, it doesn't matter here.
-> > > >
-> > > Let me reiterate, why do we want to further slow it down, what do you
-> > > anticipate if we only do the disallow approach
-> > > as we do it now?
-> >
-> > It is common practice to sanitize user input and explicitly allow known
-> > good input, instead of relying on deny of bad input. We don't know the
-> > future and can't be sure that "deny" is actually closed all holes.
-> 
-> Thanks for the clarification, but still what kind of holes do you have
-> in mind, the input string length is already checked and it's
-> not duplicated with other sessname. and sysfs does allow all 8 bit set IIUC.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-As an example, symbols like "/" and "\".
+Change Log:
+v2:
+ * Add rdma_free_hw_stats_struct() helper API (with a new patch)
+ * In sysfs add a WARN_ON to check if optional stats are always at the end
+ * Add a new nldev command to get the counter status
+ * Improve nldev_stat_set_counter_dynamic_doit() by creating a target state bitmap
+v1: https://lore.kernel.org/all/cover.1631660727.git.leonro@nvidia.com
+* Add a descriptor structure to replace name in struct rdma_hw_stats;
+* Add a bitmap in struct rdma_hw_stats to indicate the enable/disable
+  status of all counters;
+* Add a "flag" field in counter descriptor and define
+  IB_STAT_FLAG_OPTIONAL flag;
+* add/remove_op_stat() are replaced by modify_op_stat();
+* Use "set/unset" in command line and send full opcounters list through
+  netlink, and send opcounter indexes instead of names;
+* Patches are re-ordered.
+v0: https://lore.kernel.org/all/20210818112428.209111-1-markzhang@nvidia.com
 
-> 
-> Thanks!
-> 
-> > Thanks
+----------------------------------------------------------------------
+Hi,
+
+This series from Neta and Aharon provides an extension to the rdma
+statistics tool that allows to set optional counters dynamically, using
+netlink.
+
+The idea of having optional counters is to provide to the users the
+ability to get statistics of counters that hurts performance.
+
+Once an optional counter was added, its statistics will be presented
+along with all the counters, using the show command.
+
+Binding objects to the optional counters is currently not supported,
+neither in auto mode nor in manual mode.
+
+To get the list of optional counters that are supported on this device,
+use "rdma statistic mode supported". To see which counters are currently
+enabled, use "rdma statistic mode".
+
+Examples:
+
+$ rdma statistic mode supported
+link rocep8s0f0/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
+link rocep8s0f1/1 supported optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts,cc_tx_cnp_pkts
+
+$ sudo rdma statistic set link rocep8s0f0/1 optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts
+$ rdma statistic mode link rocep8s0f0/1
+link rocep8s0f0/1 optional-counters cc_rx_ce_pkts,cc_rx_cnp_pkts
+
+$ rdma statistic show link rocep8s0f0/1
+link rocep8s0f0/1 rx_write_requests 0 rx_read_requests 0 rx_atomic_requests 0 out_of_buffer 0
+out_of_sequence 0 duplicate_request 0 rnr_nak_retry_err 0 packet_seq_err 0 implied_nak_seq_err 0
+local_ack_timeout_err 0 resp_local_length_error 0 resp_cqe_error 0 req_cqe_error 0
+req_remote_invalid_request 0 req_remote_access_errors 0 resp_remote_access_errors 0
+resp_cqe_flush_error 0 req_cqe_flush_error 0 roce_adp_retrans 0 roce_adp_retrans_to 0
+roce_slow_restart 0 roce_slow_restart_cnps 0 roce_slow_restart_trans 0 rp_cnp_ignored 0
+rp_cnp_handled 0 np_ecn_marked_roce_packets 0 np_cnp_sent 0 rx_icrc_encapsulated 0 cc_rx_ce_pkts 0
+cc_rx_cnp_pkts 0
+
+$ sudo rdma statistic set link rocep8s0f0/1 optional-counters cc_rx_ce_pkts
+$ rdma statistic mode link rocep8s0f0/1
+link rocep8s0f0/1 optional-counters cc_rx_ce_pkts
+
+Thanks
+
+Aharon Landau (12):
+  net/mlx5: Add ifc bits to support optional counters
+  net/mlx5: Add priorities for counters in RDMA namespaces
+  RDMA/counter: Add a descriptor in struct rdma_hw_stats
+  RDMA/counter: Add an is_disabled field in struct rdma_hw_stats
+  RDMA/counter: Add optional counter support
+  RDMA/nldev: Add support to get status of all counters
+  RDMA/nldev: Allow optional-counter status configuration through RDMA
+    netlink
+  RDMA/mlx5: Support optional counters in hw_stats initialization
+  RDMA/mlx5: Add steering support in optional flow counters
+  RDMA/mlx5: Add modify_op_stat() support
+  RDMA/mlx5: Add optional counter support in get_hw_stats callback
+  RDMA/nldev: Add support to get status of all counters
+
+Mark Zhang (1):
+  RDMA/core: Add a helper API rdma_free_hw_stats_struct
+
+ drivers/infiniband/core/counters.c            |  38 +-
+ drivers/infiniband/core/device.c              |   1 +
+ drivers/infiniband/core/nldev.c               | 388 ++++++++++++++----
+ drivers/infiniband/core/sysfs.c               |  52 ++-
+ drivers/infiniband/core/verbs.c               |  36 ++
+ drivers/infiniband/hw/bnxt_re/hw_counters.c   | 137 +++----
+ drivers/infiniband/hw/cxgb4/provider.c        |  22 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  19 +-
+ drivers/infiniband/hw/hfi1/verbs.c            |  47 ++-
+ drivers/infiniband/hw/irdma/verbs.c           |  98 ++---
+ drivers/infiniband/hw/mlx4/main.c             |  37 +-
+ drivers/infiniband/hw/mlx4/mlx4_ib.h          |   2 +-
+ drivers/infiniband/hw/mlx5/counters.c         | 280 +++++++++++--
+ drivers/infiniband/hw/mlx5/fs.c               | 187 +++++++++
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |  28 +-
+ drivers/infiniband/sw/rxe/rxe_hw_counters.c   |  42 +-
+ .../net/ethernet/mellanox/mlx5/core/fs_core.c |  54 ++-
+ include/linux/mlx5/device.h                   |   2 +
+ include/linux/mlx5/fs.h                       |   2 +
+ include/linux/mlx5/mlx5_ifc.h                 |  22 +-
+ include/rdma/ib_hdrs.h                        |   1 +
+ include/rdma/ib_verbs.h                       |  57 ++-
+ include/rdma/rdma_counter.h                   |   2 +
+ include/uapi/rdma/rdma_netlink.h              |   5 +
+ 24 files changed, 1199 insertions(+), 360 deletions(-)
+
+-- 
+2.31.1
+
