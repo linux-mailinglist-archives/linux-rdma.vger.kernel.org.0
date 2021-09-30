@@ -2,101 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15BB41D826
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 12:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA89441D867
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 13:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350129AbhI3K5u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 06:57:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49444 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350123AbhI3K5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 06:57:50 -0400
-Date:   Thu, 30 Sep 2021 12:56:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1632999366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO79hiGNy3ejhyXEBBMc8ntGofuutpY57wCe1cCdsao=;
-        b=aRVrXY608v1lm5NmXBWtys3GI0cqnjpqM6yWA9ORZmodACl6ZBshHLrQCOEBXouM1ROzJ5
-        mi7dazTMs868ycP5IWzgybbnJn3ba/7cuypxs/bPW25FyC8wY58L2L1PL8yIr+QFPcEXJK
-        JtAnKYJ0p21tySMn4tqiJKf7ndAmIshBwXYOtTWFPKyZnTyEG0tsuu8KhDr3Ryl2KhHHE9
-        0ibJXrffS2tsDluDWFPXchxrk3sTzC6SUKg8nV5VLd3sIqPR8fUY3WDO/lvCBheiE3/mJJ
-        +iGQ+RqQ44PNkrlSPErxPr4KRDn8doVt+cDkp6z2VHFlGT/DO0VE6PRt8w2M0A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1632999366;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BO79hiGNy3ejhyXEBBMc8ntGofuutpY57wCe1cCdsao=;
-        b=YVuxTtJ68IpBCIvH/+TNUgTVZypiYXKDGJxT07dwWeNCCFgZy9uV9u1t457wBIq5tqngzh
-        dN+JotErBVkENlCA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Subbu Seetharaman <subbu.seetharaman@broadcom.com>,
-        Ketan Mukadam <ketan.mukadam@broadcom.com>,
-        Jitendra Bhivare <jitendra.bhivare@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Manoj N. Kumar" <manoj@linux.ibm.com>,
-        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Uma Krishnan <ukrishn@linux.ibm.com>,
-        Brian King <brking@us.ibm.com>,
-        James Smart <james.smart@broadcom.com>,
-        Dick Kennedy <dick.kennedy@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
-        megaraidlinux.pdl@broadcom.com,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com
-Subject: [RFC] Is lib/irq_poll still considered useful?
-Message-ID: <20210930105605.ofyayf3uwk75u25s@linutronix.de>
-References: <20210930103754.2128949-1-bigeasy@linutronix.de>
+        id S1350345AbhI3LIS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 07:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1350373AbhI3LIP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 07:08:15 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F16B5C06176A
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 04:06:32 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id g41so23604502lfv.1
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 04:06:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Hx1z0Pj0GS4/tUfd4pnSP67CAPCyRWqRNmIUPcowuII=;
+        b=OJ4uZsJwV182DcalBRZYBoqbUwKgzPLb3AvWlbx0nO9e5rIolS8SlVDutUiTeD1C/X
+         fS9bjA78G2HNmjq0+vZdZESEkSMR9lug5mBNuCKRaKwGV0LqTAkGHRiuHnsThS43TvD8
+         YoGUTl8edDquVLUToIqvF/573jxlP0yNvPrSL0BfP3V66/fQsx2JEQxR25WNl7F7ldPd
+         0cp/7NM8U+yV0emLsUOlUBtiIe0Nr9qNmHAKUEyaVrYGz5lbYwvv4uX+TDQbCFxxCsAv
+         /SPxyUEMSJwrPDXmuaWCxw5j2rqEIGkfU6w1wEnnbp1PlE0+J5TBJpa4Q4TkXJ1i8P4r
+         s83w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Hx1z0Pj0GS4/tUfd4pnSP67CAPCyRWqRNmIUPcowuII=;
+        b=7ONihL1L7RpjI1AdQ5RqYA1kjECELVgc5BE8w9/ZEY1FunnRh7BjSjyZ1s5u3hBDjm
+         GXQz86KU1eSqBxEOrHLuvEJj+FXZ1ssW3mwmK6AGieauu+ZylYwzxgR8nhDtyC2oGn7P
+         ful6vozMGgokR0VL+k/e3f/EPaFpZQPba0tMffWPBPZ43CxilDZIc0XwWW9TzE4h3Q7V
+         BDxH+FTciGoVVbwQIg9726KPwRmav0iJjhcKHsdjM0xlt9hswFOAl7KvJp4FiBCwY29C
+         sm6vtuTZnp86YgklguS01eMOROqSJisMaHoqNcbHJY0/JKSJBg2JrYFcW+dDBSRZhblq
+         kexw==
+X-Gm-Message-State: AOAM531tv7uiTMc0u6HKS+i2t9saCYL36Pr38lEI+hugu0QdUV+1lPvu
+        Fzk5mc4ePOoWjbrs/trw6W2tnwBLCu5kbH1HuxULHA==
+X-Google-Smtp-Source: ABdhPJxKPRxrbe5NsZ+oT2GuKcakf16+GbMKbAstyqKx6i7dnCgOjsjnMxJC7/+s61S9e60hDcCFzI+NqatuX6dwj8Y=
+X-Received: by 2002:ac2:4d99:: with SMTP id g25mr5255275lfe.175.1632999991335;
+ Thu, 30 Sep 2021 04:06:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210930103754.2128949-1-bigeasy@linutronix.de>
+References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
+ <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com>
+ <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com> <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+In-Reply-To: <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Thu, 30 Sep 2021 20:06:17 +0900
+Message-ID: <CANXvt5oZp=Ap3fEm4nsiP2WfG_c_8o57mN4+PHrQAGHcp-EH2A@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I was looking at irq_poll and for missing scheduling points.
-It raised the question why are there 7 driver still using irq_poll and
-not moved on to something else like threaded interrupts or kworker.
+2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 16:23 Zhu Yanjun <zyjzyj2000@=
+gmail.com>:
+>
+> On Thu, Sep 30, 2021 at 2:58 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> >
+> > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyjzyj2=
+000@gmail.com>:
+> > >
+> > > On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > > >
+> > > > Implement a new provider method for dma-buf base memory registratio=
+n.
+> > > >
+> > > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > > > ---
+> > > >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
+> > > >  1 file changed, 21 insertions(+)
+> > > >
+> > > > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> > > > index 3c3ea8bb..84e00e60 100644
+> > > > --- a/providers/rxe/rxe.c
+> > > > +++ b/providers/rxe/rxe.c
+> > > > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd=
+ *pd, void *addr, size_t length,
+> > > >         return &vmr->ibv_mr;
+> > > >  }
+> > > >
+> > > > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_=
+t offset,
+> > > > +                                       size_t length, uint64_t iov=
+a, int fd,
+> > > > +                                       int access)
+> > > > +{
+> > > > +       struct verbs_mr *vmr;
+> > > > +       int ret;
+> > > > +
+> > > > +       vmr =3D malloc(sizeof(*vmr));
+> > > > +       if (!vmr)
+> > > > +               return NULL;
+> > > > +
+> > >
+> > > Do we need to set vmr to zero like the following?
+> > >
+> > > memset(vmr, 0, sizeof(*vmr));
+> > >
+> > > Zhu Yanjun
+> > Thank you for your quick response.
+> >
+> > I think it is better to clear the vmr. Actually the mlx5 driver allocat=
+es
+> > the vmr using calloc().
+> >
+> > In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the malloc
+> > and not clear the vmr. I think It has to be fixed too. Should I make
+> > another patch to fix this problem?
+>
+> Yes. Please.
+>
+> Zhu Yanjun
+>
+> >
+> > Thanks a lot.
+> > Shunsuke
+> >
+> > ~
 
-There is:
-- Infiband can complete direct, irq_poll and kworker.
-- be2iscsi only irq_poll.
-- cxlflash only irq_poll. Not sure how IRQs are acked.
-- ipr direct or irq_poll, can be configured. Now sure how IRQs are acked.
-- lpfc kworker and/or irq_poll. Not sure all invocations are from
-  interrupts like context [0].
-- megaraid irq_poll. Not sure all invocations are from interrupts like
-  context [0].
-- mpt3sas irq_poll or io_uring io poll. Not sure all invocations are
-  from interrupts like context [0].
+I looked into the vmr more, but there was no need to clear it. Moreover,
+some implementations also use malloc without memory clear.
 
-[0] If irq_poll_sched() is not used from an interrupt (as in interrupt
-service routine, timer handler, tasklet (not encouraging just noticed))
-but from task context (as in kworker for instance) then irq-poll handler
-will not be invoked right away. Instead it will be delayed to random
-point in time until an interrupt fires or something down the stack
-performs a pending softirq check.
-Waking ksoftirqd itself isn't helping much since it will set a
-NEED_RESCHED bit in the task_struct which local_irq_restore() isn't
-testing for. So the scheduling event is delayed until spin_unlock() for
-instance.
-
-Is there a reason for the remaining user of irq_poll to keep using it?
-
-Sebastian
+Thanks,
+Shunsuke
