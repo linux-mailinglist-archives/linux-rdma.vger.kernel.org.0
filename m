@@ -2,123 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5319A41D337
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 08:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC55941D382
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 08:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348293AbhI3GW3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 02:22:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348287AbhI3GW3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 02:22:29 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18FA6C06176C
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 23:20:47 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id c26-20020a056830349a00b0054d96d25c1eso5951314otu.9
-        for <linux-rdma@vger.kernel.org>; Wed, 29 Sep 2021 23:20:47 -0700 (PDT)
+        id S1348254AbhI3GjE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 02:39:04 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:51624 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348034AbhI3GjB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 02:39:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=i2cDjHFp2D2fj9lJTnJF4bsUIHxqYSPf+C49ab40XcM=;
-        b=lIZkjVfAqaVUd1GtL2O+rDAuSxwrbA5nzwiQnZYjWDjr1lrbm+RiwmjHgNZOnmdLpE
-         1QB6chWzbzuG7Xm8PAz4/zmqyJvk+IyXdhU0ZPYJXXsA7w2ZP13659TNWPX7NP+PA7MC
-         Fq6DEccpMQUNmhXIzZBX8YwrqF6KMgn9t78lI61Wd9TaVwARAaC4zW8rWYSF12gzryVX
-         Duivm9aUhQ98d+6GvUdTpNha40siqwI1F1+sEU0cKabA2xAXWlVY0573K/2Xa+S3fHLB
-         mKbnVJjj6JhX+X1k8EK3kCRE5igF4d81ox6JV6FBfflPiV6IvWmdnJUsJUUqr2eIe1u5
-         bD7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=i2cDjHFp2D2fj9lJTnJF4bsUIHxqYSPf+C49ab40XcM=;
-        b=lpKQN8cCd1sRONhnRjixBVq/HEfZkwpJeolT1Xf8x0GMLgMY6Zfo89+3275NsNP3oW
-         vy1pQUJ1C7IYh5gkaCdiS/YcW2orkd2DjQZ/RtOZq1Zitq5DXi8gH+4kvrvCtfeoxi/S
-         YitjgohG4VihF04U0Q2tFmpUhVbR2Z9T2SPigEOlKw1i8r8tl+sYvgR9IJdqAdgyNbuu
-         wo1XYjEvo3Mgr3oHsSLHcRQ+eDn6oqBEx8x2O+mXLrN1NotGbG1InzdaPcX8QJyVUNst
-         T0p1LwmSfj8QdY3r1oXGHK+5KR8UvkJhKpZIxnFJ8eLb9luEdQ8nFpehFgAYjqlilLrd
-         jE/Q==
-X-Gm-Message-State: AOAM532mpXfrCh1S1cHkK+KEwTLH3Nd2yOsupq7cyeBDvi2z09O2/9T1
-        h5o1nxT8I5R5pUeHXQOHuvvMaw==
-X-Google-Smtp-Source: ABdhPJxNI0XzDYJEcld97bpEE3r3fX0uX6RXWm8xF6ug6VChx9utYQKThX8aQ9xukWdbbu6fQJxRGg==
-X-Received: by 2002:a9d:2c22:: with SMTP id f31mr3636211otb.303.1632982846503;
-        Wed, 29 Sep 2021 23:20:46 -0700 (PDT)
-Received: from tyrell.hq.igel.co.jp (napt.igel.co.jp. [219.106.231.132])
-        by smtp.gmail.com with ESMTPSA id x4sm421228otq.25.2021.09.29.23.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Sep 2021 23:20:46 -0700 (PDT)
-From:   Shunsuke Mie <mie@igel.co.jp>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Shunsuke Mie <mie@igel.co.jp>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, dhobsong@igel.co.jp, taki@igel.co.jp,
-        etom@igel.co.jp
-Subject: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
-Date:   Thu, 30 Sep 2021 15:20:14 +0900
-Message-Id: <20210930062014.38200-2-mie@igel.co.jp>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210930062014.38200-1-mie@igel.co.jp>
-References: <20210930062014.38200-1-mie@igel.co.jp>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1632983840; x=1664519840;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=L3MfTYk/nzne0QjEFXIXt5n/VY8O11I6D1+HqZ/8uTw=;
+  b=A2NFOYsj3bsYfREK+Gz5EvJMdJcmNXnCK1XHIQhnI5xB1ycpXG9KZ5c1
+   om3fALNGzC1MRLhQf7PI1/s6Xha31PffqrmX8VYhI2uDra3RNNsKTsi4L
+   dOsqQLT6D5HjdFdDQ1/qBFt/84SzXd0aCRqEBpQzuayTyI09ZMkg3fONo
+   M=;
+X-IronPort-AV: E=Sophos;i="5.85,335,1624320000"; 
+   d="scan'208";a="141151538"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 30 Sep 2021 06:37:11 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-cb1ffea5.us-west-2.amazon.com (Postfix) with ESMTPS id D90D460D38;
+        Thu, 30 Sep 2021 06:37:10 +0000 (UTC)
+Received: from [10.95.88.219] (10.43.160.106) by EX13D19EUB003.ant.amazon.com
+ (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Thu, 30 Sep
+ 2021 06:37:05 +0000
+Message-ID: <e93eb617-b8db-2774-f577-32ae9f874c34@amazon.com>
+Date:   Thu, 30 Sep 2021 09:36:57 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.1
+Subject: Re: [PATCH for-next v2] RDMA/efa: CQ notifications
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>
+References: <20210913120406.61745-1-galpress@amazon.com>
+ <20210927230411.GA1590967@nvidia.com>
+From:   Gal Pressman <galpress@amazon.com>
+In-Reply-To: <20210927230411.GA1590967@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.43.160.106]
+X-ClientProxiedBy: EX13D24UWA001.ant.amazon.com (10.43.160.138) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Implement a new provider method for dma-buf base memory registration.
+On 28/09/2021 2:04, Jason Gunthorpe wrote:
+> On Mon, Sep 13, 2021 at 03:04:04PM +0300, Gal Pressman wrote:
+> 
+>> @@ -993,15 +1002,24 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+>>  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
+>>  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
+>>  
+>> -	rdma_user_mmap_entry_remove(cq->mmap_entry);
+>> +	efa_cq_user_mmap_entries_remove(cq);
+>>  	efa_destroy_cq_idx(dev, cq->cq_idx);
+>> +	xa_erase(&dev->cqs_xa, cq->cq_idx);
+>> +	if (cq->eq)
+>> +		synchronize_irq(cq->eq->irq.irqn);
+> 
+> Why is this conditional? The whole thing should be conditional,
+> including putting it in the XA in the first place if that is the
+> intention
+> 
+> A comment on the xa_load would also be good to explain that it is safe
+> because this must be a irq and snychronize_irq() manages lifetime
 
-Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
----
- providers/rxe/rxe.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
-index 3c3ea8bb..84e00e60 100644
---- a/providers/rxe/rxe.c
-+++ b/providers/rxe/rxe.c
-@@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
- 	return &vmr->ibv_mr;
- }
- 
-+static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t offset,
-+					size_t length, uint64_t iova, int fd,
-+					int access)
-+{
-+	struct verbs_mr *vmr;
-+	int ret;
-+
-+	vmr = malloc(sizeof(*vmr));
-+	if (!vmr)
-+		return NULL;
-+
-+	ret = ibv_cmd_reg_dmabuf_mr(pd, offset, length, iova, fd, access, vmr);
-+	if (ret) {
-+		free(vmr);
-+		return NULL;
-+	}
-+
-+	return &vmr->ibv_mr;
-+}
-+
- static int rxe_dereg_mr(struct verbs_mr *vmr)
- {
- 	int ret;
-@@ -1706,6 +1726,7 @@ static const struct verbs_context_ops rxe_ctx_ops = {
- 	.alloc_pd = rxe_alloc_pd,
- 	.dealloc_pd = rxe_dealloc_pd,
- 	.reg_mr = rxe_reg_mr,
-+	.reg_dmabuf_mr = rxe_reg_dmabuf_mr,
- 	.dereg_mr = rxe_dereg_mr,
- 	.alloc_mw = rxe_alloc_mw,
- 	.dealloc_mw = rxe_dealloc_mw,
--- 
-2.17.1
-
+Will do, thanks.
