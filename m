@@ -2,195 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703BF41D467
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 09:19:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95AAA41D479
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Sep 2021 09:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348596AbhI3HVK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 03:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47786 "EHLO
+        id S1348636AbhI3HZF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 03:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348542AbhI3HVK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 03:21:10 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65C4C06161C;
-        Thu, 30 Sep 2021 00:19:27 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id dn26so18271174edb.13;
-        Thu, 30 Sep 2021 00:19:27 -0700 (PDT)
+        with ESMTP id S1348699AbhI3HZE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 03:25:04 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1F2C06161C;
+        Thu, 30 Sep 2021 00:23:22 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so6169354otb.1;
+        Thu, 30 Sep 2021 00:23:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IGscHQDcj5f5OOq0t4VfEFHBd8tbIZ0eSx7ZGXQG3Tg=;
-        b=h1r5QZFqMVmtW+uMlhNFVGScty/qAjRdRpVWxepldiXF0s6V5tTtWherlTzWJ9gq1P
-         w4R7IaXhtm1UcF8AZirl465whGzjrU95KzqItrN6Vtp7PNcIzK2KDsGhzXQ+jPfi1WMW
-         SwgcNCNoacdN8BpOlxaGDIykzUUDJmVje+4TYpfGP8KgpvCYYSjaTeYciYf2+hqawUPv
-         2Yb4IHjRxZ6IRGeOG9vMkV7rzv04qe2IA+mb1W0zSA1RDTp/mr82gALN/9rdxzmXjuGl
-         6jv1VJvERVWVPNx7b8AemetJuFEwejqzdw0dZsYxFx/JYKTUtoRqvLbkebBRQ9fNNbVq
-         mGCw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1I1nXLI6APgtAXVlnSH2tDSE1F+gk/nTZkMd/P13QnM=;
+        b=AM00vJx8YutY2y03FGwOzMB4F65tCdTPaWerM11qRrgq55yZhS8ZGBFp0tpAVyO6Wb
+         gUwNrDppdPLFqCHICaRzrcwXawyxIM1xDLWZTR4XVuNzTgSUC02vUfp8LzCl7S/VOFS7
+         ixqY5BL4KNH9gHHnwpnTTstkk7zIt/1fY/vKdXaW07IkHOvo7iskocXGhAcSWZcDHc+9
+         pq6xubaraFJR+yZ6ZDBB2CK7GaOL0fjp52QcsGtdnG5Cq/zzyxIo/UL05C6//UP+ZNtI
+         mnGXbC+CLflXmPAY7glOl3xYRbPBxliG0LxRCw2ZtDSsfhE3jDSaWvqfAHkic75hGp5c
+         eCZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IGscHQDcj5f5OOq0t4VfEFHBd8tbIZ0eSx7ZGXQG3Tg=;
-        b=CT8rJC+wEVhiQOep9UfkabkaII4MhpQD2SC/FqPfEqFhkPWdMYbWFHr8k65SJ0Z25C
-         jPG7W8NEcmIOYs4mkxRb/LTCA20dC6n8koikD9CaQ/Rrs569mNr6WHFyXxq/pYlCxMXs
-         07YHQq7/vtG3M+0XuI6RZ/y4HKPRwZ2uE+H4ykHChWKk77rpOaviiRQclm1ShhznJslM
-         cC7z84/m2aB1cR4jJsOEHK3DybewUj+3D7wS/AfJY+k91rYziIZyf8eAXFoqMRNN+WOU
-         viOf2wEUZ1G4L3lFLnTDq/DhbXrMGsVJin5QiGktizSuwT8zCR+PjvjwfTUsQoPMtwzt
-         5lng==
-X-Gm-Message-State: AOAM530cZ8pvokunSnLW4qtCfDK+dmWKSIgCEcoZxW7QB7ngLBw+81Us
-        6toXcaNRssfhaua1iI1K7ofBCeM7zJc=
-X-Google-Smtp-Source: ABdhPJzJL9OJCMu5yyFUH4lpB5G6TBjolavM2FH4JVZ+L05rleHdoX5TNoOT6GWfUt83XoIZ4My9eA==
-X-Received: by 2002:a17:906:9485:: with SMTP id t5mr5201749ejx.66.1632986365259;
-        Thu, 30 Sep 2021 00:19:25 -0700 (PDT)
-Received: from [192.168.0.108] ([176.228.98.2])
-        by smtp.gmail.com with ESMTPSA id n23sm991273edw.75.2021.09.30.00.19.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Sep 2021 00:19:24 -0700 (PDT)
-Subject: Re: [PATCH net-next v3] net/mlx4_en: Add XDP_REDIRECT statistics
-To:     Joshua Roys <roysjosh@gmail.com>, netdev@vger.kernel.org
-Cc:     ast@kernel.org, davem@davemloft.net, hawk@kernel.org,
-        john.fastabend@gmail.com, daniel@iogearbox.net, kuba@kernel.org,
-        bpf@vger.kernel.org, tariqt@nvidia.com, linux-rdma@vger.kernel.org
-References: <20210928132602.1488-1-roysjosh@gmail.com>
- <20210930023023.245528-1-roysjosh@gmail.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <7e72f6d7-f770-c19e-f634-0e4fbed569b4@gmail.com>
-Date:   Thu, 30 Sep 2021 10:19:22 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1I1nXLI6APgtAXVlnSH2tDSE1F+gk/nTZkMd/P13QnM=;
+        b=GZI7ZG7aS88+dP9KYjFMRQGWc3PodWtXgFFF+EjRFe27iUwpyPtEHrjbeL4mVRnOZD
+         E8jPU6q1KJZX8K2XWYbuT0UsEKOHMk6ONlC9hTYdSh9F/zYPYhEDNat0q1sfg0pn6DhY
+         3Gim5HFzKIQ1/E/nkyJYeIYOA2KNwqO7VgDyBWlMYtjvzD+cVllqv2Cj/zsRR5jIycrH
+         HpbOSVXT2yGWJYiY2nLTt6eVvba62s7Zg4ZiZcEUiZ2MrRXqCa8FS5ZF9Kd99vLENd3f
+         SItE65hgwwuG+GuLZO9PttxZh+fGhi2KbzJI0YAIAjyrTF/uBibVMlC57e3iM/NolT5H
+         g2qA==
+X-Gm-Message-State: AOAM532RJEs7SnEIxk82ZY86sEjNJMw0tohUC24Sa7EeCuhF3lw2Cgnm
+        RdHAtG8v4JePgFe9Yb1f1jP3gion0EgTq/9qX1o=
+X-Google-Smtp-Source: ABdhPJzkx0SiPJkTwjnw/szFDmj1KPx6Cg36LPLPfN3a1aV1RvHl2MDEPnGNEoGlyj86D+iBI4eONraBUbwXekv8q/s=
+X-Received: by 2002:a05:6830:1089:: with SMTP id y9mr3930400oto.335.1632986602241;
+ Thu, 30 Sep 2021 00:23:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210930023023.245528-1-roysjosh@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210930062014.38200-1-mie@igel.co.jp> <20210930062014.38200-2-mie@igel.co.jp>
+ <CAD=hENdzYGNp14fm9y9+A71D2BJSjV5GewHMkSJKUzNOs0hqWg@mail.gmail.com> <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com>
+In-Reply-To: <CANXvt5pcHbRVa9=Uqi-MN6RY1g6OY1MDecyhdedqL8Xmv0y6QQ@mail.gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Thu, 30 Sep 2021 15:23:10 +0800
+Message-ID: <CAD=hENcANb07bZiAuDYmozsWmZ4uA23Rqca=400+v23QQua_bg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/1] Providers/rxe: Add dma-buf support
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Thu, Sep 30, 2021 at 2:58 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+>
+> 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 15:37 Zhu Yanjun <zyjzyj200=
+0@gmail.com>:
+> >
+> > On Thu, Sep 30, 2021 at 2:20 PM Shunsuke Mie <mie@igel.co.jp> wrote:
+> > >
+> > > Implement a new provider method for dma-buf base memory registration.
+> > >
+> > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > > ---
+> > >  providers/rxe/rxe.c | 21 +++++++++++++++++++++
+> > >  1 file changed, 21 insertions(+)
+> > >
+> > > diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+> > > index 3c3ea8bb..84e00e60 100644
+> > > --- a/providers/rxe/rxe.c
+> > > +++ b/providers/rxe/rxe.c
+> > > @@ -239,6 +239,26 @@ static struct ibv_mr *rxe_reg_mr(struct ibv_pd *=
+pd, void *addr, size_t length,
+> > >         return &vmr->ibv_mr;
+> > >  }
+> > >
+> > > +static struct ibv_mr *rxe_reg_dmabuf_mr(struct ibv_pd *pd, uint64_t =
+offset,
+> > > +                                       size_t length, uint64_t iova,=
+ int fd,
+> > > +                                       int access)
+> > > +{
+> > > +       struct verbs_mr *vmr;
+> > > +       int ret;
+> > > +
+> > > +       vmr =3D malloc(sizeof(*vmr));
+> > > +       if (!vmr)
+> > > +               return NULL;
+> > > +
+> >
+> > Do we need to set vmr to zero like the following?
+> >
+> > memset(vmr, 0, sizeof(*vmr));
+> >
+> > Zhu Yanjun
+> Thank you for your quick response.
+>
+> I think it is better to clear the vmr. Actually the mlx5 driver allocates
+> the vmr using calloc().
+>
+> In addition, rxe_reg_mr() (not rxe_reg_dmabuf_mr()) is used the malloc
+> and not clear the vmr. I think It has to be fixed too. Should I make
+> another patch to fix this problem?
 
+Yes. Please.
 
-On 9/30/2021 5:30 AM, Joshua Roys wrote:
-> Add counters for XDP REDIRECT success and failure. This brings the
-> redirect path in line with metrics gathered via the other XDP paths.
-> 
-> Signed-off-by: Joshua Roys <roysjosh@gmail.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 8 ++++++++
->   drivers/net/ethernet/mellanox/mlx4/en_port.c    | 4 ++++
->   drivers/net/ethernet/mellanox/mlx4/en_rx.c      | 4 +++-
->   drivers/net/ethernet/mellanox/mlx4/mlx4_en.h    | 2 ++
->   drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h | 4 +++-
->   5 files changed, 20 insertions(+), 2 deletions(-)
-> 
-> Sorry, this version fixes the full/fail typo.
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-> index ef518b1040f7..66c8ae29bc7a 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-> @@ -197,6 +197,8 @@ static const char main_strings[][ETH_GSTRING_LEN] = {
->   
->   	/* xdp statistics */
->   	"rx_xdp_drop",
-> +	"rx_xdp_redirect",
-> +	"rx_xdp_redirect_fail",
->   	"rx_xdp_tx",
->   	"rx_xdp_tx_full",
->   
-> @@ -428,6 +430,8 @@ static void mlx4_en_get_ethtool_stats(struct net_device *dev,
->   		data[index++] = priv->rx_ring[i]->bytes;
->   		data[index++] = priv->rx_ring[i]->dropped;
->   		data[index++] = priv->rx_ring[i]->xdp_drop;
-> +		data[index++] = priv->rx_ring[i]->xdp_redirect;
-> +		data[index++] = priv->rx_ring[i]->xdp_redirect_fail;
->   		data[index++] = priv->rx_ring[i]->xdp_tx;
->   		data[index++] = priv->rx_ring[i]->xdp_tx_full;
->   	}
-> @@ -519,6 +523,10 @@ static void mlx4_en_get_strings(struct net_device *dev,
->   				"rx%d_dropped", i);
->   			sprintf(data + (index++) * ETH_GSTRING_LEN,
->   				"rx%d_xdp_drop", i);
-> +			sprintf(data + (index++) * ETH_GSTRING_LEN,
-> +				"rx%d_xdp_redirect", i);
-> +			sprintf(data + (index++) * ETH_GSTRING_LEN,
-> +				"rx%d_xdp_redirect_fail", i);
->   			sprintf(data + (index++) * ETH_GSTRING_LEN,
->   				"rx%d_xdp_tx", i);
->   			sprintf(data + (index++) * ETH_GSTRING_LEN,
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_port.c b/drivers/net/ethernet/mellanox/mlx4/en_port.c
-> index 0158b88bea5b..f25794a92241 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_port.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_port.c
-> @@ -244,6 +244,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
->   	priv->port_stats.rx_chksum_complete = 0;
->   	priv->port_stats.rx_alloc_pages = 0;
->   	priv->xdp_stats.rx_xdp_drop    = 0;
-> +	priv->xdp_stats.rx_xdp_redirect = 0;
-> +	priv->xdp_stats.rx_xdp_redirect_fail = 0;
->   	priv->xdp_stats.rx_xdp_tx      = 0;
->   	priv->xdp_stats.rx_xdp_tx_full = 0;
->   	for (i = 0; i < priv->rx_ring_num; i++) {
-> @@ -255,6 +257,8 @@ int mlx4_en_DUMP_ETH_STATS(struct mlx4_en_dev *mdev, u8 port, u8 reset)
->   		priv->port_stats.rx_chksum_complete += READ_ONCE(ring->csum_complete);
->   		priv->port_stats.rx_alloc_pages += READ_ONCE(ring->rx_alloc_pages);
->   		priv->xdp_stats.rx_xdp_drop	+= READ_ONCE(ring->xdp_drop);
-> +		priv->xdp_stats.rx_xdp_redirect += READ_ONCE(ring->xdp_redirect);
-> +		priv->xdp_stats.rx_xdp_redirect_fail += READ_ONCE(ring->xdp_redirect_fail);
->   		priv->xdp_stats.rx_xdp_tx	+= READ_ONCE(ring->xdp_tx);
->   		priv->xdp_stats.rx_xdp_tx_full	+= READ_ONCE(ring->xdp_tx_full);
->   	}
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> index 557d7daac2d3..650e6a1844ae 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
-> @@ -793,11 +793,13 @@ int mlx4_en_process_rx_cq(struct net_device *dev, struct mlx4_en_cq *cq, int bud
->   			case XDP_PASS:
->   				break;
->   			case XDP_REDIRECT:
-> -				if (xdp_do_redirect(dev, &xdp, xdp_prog) >= 0) {
-> +				if (likely(!xdp_do_redirect(dev, &xdp, xdp_prog))) {
-> +					ring->xdp_redirect++;
->   					xdp_redir_flush = true;
->   					frags[0].page = NULL;
->   					goto next;
->   				}
-> +				ring->xdp_redirect_fail++;
->   				trace_xdp_exception(dev, xdp_prog, act);
->   				goto xdp_drop_no_cnt;
->   			case XDP_TX:
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> index f3d1a20201ef..f6c90e97b4cd 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_en.h
-> @@ -340,6 +340,8 @@ struct mlx4_en_rx_ring {
->   	unsigned long csum_complete;
->   	unsigned long rx_alloc_pages;
->   	unsigned long xdp_drop;
-> +	unsigned long xdp_redirect;
-> +	unsigned long xdp_redirect_fail;
->   	unsigned long xdp_tx;
->   	unsigned long xdp_tx_full;
->   	unsigned long dropped;
-> diff --git a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
-> index 7b51ae8cf759..e9cd4bb6f83d 100644
-> --- a/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
-> +++ b/drivers/net/ethernet/mellanox/mlx4/mlx4_stats.h
-> @@ -42,9 +42,11 @@ struct mlx4_en_port_stats {
->   
->   struct mlx4_en_xdp_stats {
->   	unsigned long rx_xdp_drop;
-> +	unsigned long rx_xdp_redirect;
-> +	unsigned long rx_xdp_redirect_fail;
->   	unsigned long rx_xdp_tx;
->   	unsigned long rx_xdp_tx_full;
-> -#define NUM_XDP_STATS		3
-> +#define NUM_XDP_STATS		5
->   };
->   
->   struct mlx4_en_phy_stats {
-> 
+Zhu Yanjun
 
-Thanks for your patch.
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+>
+> Thanks a lot.
+> Shunsuke
+>
+> ~
