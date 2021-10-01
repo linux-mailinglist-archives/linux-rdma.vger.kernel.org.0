@@ -2,1331 +2,372 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8A8841E501
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Oct 2021 01:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3965C41E652
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Oct 2021 05:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230167AbhI3XdO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Sep 2021 19:33:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348832AbhI3XdN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Sep 2021 19:33:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C99F161AA3;
-        Thu, 30 Sep 2021 23:31:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633044690;
-        bh=EVe+Ve3xa7BVRRzqwlf0ckyYwi/l18jTXZwHLHPIZcs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AqbNEzav8TjzznTi2ZVMh7Fwnyv2ninvA9NPsqgCKS3/To4uH6pice/zS1xlLfwSt
-         QjViAoaLog1fUm8h7nCV+mwm9Kcj/aUP871OvcuL2bwwpSYm/yfJPex75VYaYcUz2A
-         9oQSdco3Aei7ceI2N5KDdWTvR+bnTNjR3GZ2ThaQvyzdfuVhbc5i5otB80oTWDSCkg
-         UGh6hv1lUJoDLX1RCHnl7a6bki7O1COsdkc0A5OsGQGhIw5LePrRO/tvuEGGSDEGen
-         7ll6KUwKYiNevYxlW7G/mCdTDjMYj0pErGr/vMDT0pEX2C4GAhy4WCMWRNJnJ3Z2jc
-         uhoc9zkK422lw==
-Date:   Fri, 1 Oct 2021 02:31:25 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        Alexander Matushevsky <matua@amazon.com>,
-        Firas JahJah <firasj@amazon.com>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH for-next v3] RDMA/efa: CQ notifications
-Message-ID: <YVZIzdu6c/zuZUZK@unreal>
-References: <20210930121602.63131-1-galpress@amazon.com>
+        id S1351870AbhJAD6s (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Sep 2021 23:58:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1351858AbhJAD6r (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Sep 2021 23:58:47 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4D0C06176C
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 20:57:03 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id u18so33899091lfd.12
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Sep 2021 20:57:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=fXb8y+bXmPuBOybIV2eflC1DwdU53PBuIEygazZp4sE=;
+        b=I6iV7EgHSf3PWPEgWYk8/lXb4YQgFwerV7wYq10LjwA5U1uSfmGntSEUnMGh1raMdn
+         dDx+oQLSLVkkNS/4LTxT05M5iK7iuLXscIt02E76rpvHP0Xt5QyF4ll2d8CCnEfRJKaX
+         cvJvTuPa7kP9qlrNYfoeayoAbS8PBEclCyUvoTIuwANks7VralukuBJ2tVE9lWrj+Ho+
+         aJuPpOA+M9HGqGFXyGEfTc4zy0vRA/OaA806TR56tvpNAdGwwKPlEu9g3w339CBezGc1
+         0t6ReYftPPzHvnIao93YWyr2j3BdBHe4XGkpZ4MDfj0kwb0V0JnGX3IULzRibQvsnzPv
+         XHUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=fXb8y+bXmPuBOybIV2eflC1DwdU53PBuIEygazZp4sE=;
+        b=R6jcSVbFzrjfs1XMoW0bh8TpIIyQTvPj8qhEC9TXqnbJdILLQBrPUHyj2XyUp2zlQn
+         BXZFnCZgOXFy4xQvPe9t9y8CnCT4JTrsZKjlHGh7lxUUzkQw5nBbBnTBRY9gXC9mvU7Z
+         eMRztUDeCqQFLYVxjaT9DFxJRoZasAdbm9wLhHWG3SMZw8/oceVC42q3MGdUzmRREQg4
+         wXNPfIlP4HCO5Ho4kUKUoJX7VqqhIQan7wVc5CH/FFW2bo1AQ+wMR68IX8+Q4y04ZTZB
+         7yXr3vCcr/eE5tTFiB+pUYaBiUpMsEkRKL2R3Pc2gVVsMlr1nIAd0g+PbfswPWgjNIS1
+         qrUA==
+X-Gm-Message-State: AOAM532iostOwIzFvRjJVJwR2zPwCbwbwl459P7WOc8+KoG9E4NyhS3D
+        18wznwraYV06wfLGfW5XCBlHKkpbp2X4P3Gl6wRDyA==
+X-Google-Smtp-Source: ABdhPJxu9R18JSn4uqcGw0bcr1AkLe7/RY4D8aUUTW2lyZcpxgk2Fa1CJ0RvF7MLSHGJYX1eabn6aa7E6IWWS8QaLrY=
+X-Received: by 2002:a05:651c:1795:: with SMTP id bn21mr9891765ljb.525.1633060621324;
+ Thu, 30 Sep 2021 20:57:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210930121602.63131-1-galpress@amazon.com>
+References: <20210929041905.126454-1-mie@igel.co.jp> <20210929041905.126454-3-mie@igel.co.jp>
+ <YVXMkSDXybju88TU@phenom.ffwll.local>
+In-Reply-To: <YVXMkSDXybju88TU@phenom.ffwll.local>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Fri, 1 Oct 2021 12:56:48 +0900
+Message-ID: <CANXvt5rD82Lvvag_k9k+XE-Sj1S6Qwp5uf+-feUTvez1-t4xUA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Add dma-buf support
+To:     Shunsuke Mie <mie@igel.co.jp>, Zhu Yanjun <zyjzyj2000@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Sean Hefty <sean.hefty@intel.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
+        Takanari Hayama <taki@igel.co.jp>,
+        Tomohito Esaki <etom@igel.co.jp>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 03:16:00PM +0300, Gal Pressman wrote:
-> This patch adds support for CQ notifications through the standard verbs
-> api.
-> 
-> In order to achieve that, a new event queue (EQ) object is introduced,
-> which is in charge of reporting completion events to the driver.
-> On driver load, EQs are allocated and their affinity is set to a single
-> cpu. When a user app creates a CQ with a completion channel, the
-> completion vector number is converted to a EQ number, which is in charge
-> of reporting the CQ events.
-> 
-> In addition, the CQ creation admin command now returns an offset for the
-> CQ doorbell, which is mapped to the userspace provider and is used to
-> arm the CQ when requested by the user.
-> 
-> The EQs use a single doorbell (located on the registers BAR), which
-> encodes the EQ number and arm as part of the doorbell value.
-> The EQs are polled by the driver on each new EQE, and arm it when the
-> poll is completed.
-> 
-> Reviewed-by: Firas JahJah <firasj@amazon.com>
-> Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
-> Signed-off-by: Gal Pressman <galpress@amazon.com>
-> ---
-> PR was sent:
-> https://github.com/linux-rdma/rdma-core/pull/1044
-> 
-> Changelog -
-> v2->v3: https://lore.kernel.org/linux-rdma/20210913120406.61745-1-galpress@amazon.com/
-> * Only store CQs with interrupts enabled in the CQs xarray
-> * Add a comment before the xa_load to explain why it is safe
-> 
-> v1->v2: https://lore.kernel.org/linux-rdma/20210811151131.39138-1-galpress@amazon.com/
-> * Replace xa_init_flags() with xa_init()
-> * Add a synchronize_irq() in destroy_cq flow to prevent a race with
->   interrupt flow.
-> ---
->  drivers/infiniband/hw/efa/efa.h               |  19 +-
->  .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 100 +++++++++-
->  drivers/infiniband/hw/efa/efa_admin_defs.h    |  41 ++++
->  drivers/infiniband/hw/efa/efa_com.c           | 171 ++++++++++++++++
->  drivers/infiniband/hw/efa/efa_com.h           |  38 +++-
->  drivers/infiniband/hw/efa/efa_com_cmd.c       |  35 +++-
->  drivers/infiniband/hw/efa/efa_com_cmd.h       |  10 +-
->  drivers/infiniband/hw/efa/efa_main.c          | 185 +++++++++++++++---
->  drivers/infiniband/hw/efa/efa_regs_defs.h     |   7 +-
->  drivers/infiniband/hw/efa/efa_verbs.c         |  67 ++++++-
->  include/uapi/rdma/efa-abi.h                   |  18 +-
->  11 files changed, 636 insertions(+), 55 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
-> index 87b1dadeb7fe..587d4bfbb3d1 100644
-> --- a/drivers/infiniband/hw/efa/efa.h
-> +++ b/drivers/infiniband/hw/efa/efa.h
-> @@ -20,14 +20,14 @@
->  
->  #define EFA_IRQNAME_SIZE        40
->  
-> -/* 1 for AENQ + ADMIN */
-> -#define EFA_NUM_MSIX_VEC                  1
->  #define EFA_MGMNT_MSIX_VEC_IDX            0
-> +#define EFA_COMP_EQS_VEC_BASE             1
->  
->  struct efa_irq {
->  	irq_handler_t handler;
->  	void *data;
->  	u32 irqn;
-> +	u32 vector;
->  	cpumask_t affinity_hint_mask;
->  	char name[EFA_IRQNAME_SIZE];
->  };
-> @@ -61,6 +61,13 @@ struct efa_dev {
->  	struct efa_irq admin_irq;
->  
->  	struct efa_stats stats;
-> +
-> +	/* Array of completion EQs */
-> +	struct efa_eq *eqs;
-> +	unsigned int neqs;
-> +
-> +	/* Only stores CQs with interrupts enabled */
-> +	struct xarray cqs_xa;
->  };
->  
->  struct efa_ucontext {
-> @@ -84,8 +91,11 @@ struct efa_cq {
->  	dma_addr_t dma_addr;
->  	void *cpu_addr;
->  	struct rdma_user_mmap_entry *mmap_entry;
-> +	struct rdma_user_mmap_entry *db_mmap_entry;
->  	size_t size;
->  	u16 cq_idx;
-> +	/* NULL  when no interrupts requested */
-> +	struct efa_eq *eq;
->  };
->  
->  struct efa_qp {
-> @@ -116,6 +126,11 @@ struct efa_ah {
->  	u8 id[EFA_GID_SIZE];
->  };
->  
-> +struct efa_eq {
-> +	struct efa_com_eq eeq;
-> +	struct efa_irq irq;
-> +};
-> +
->  int efa_query_device(struct ib_device *ibdev,
->  		     struct ib_device_attr *props,
->  		     struct ib_udata *udata);
-> diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-> index fa38b34eddb8..0b0b93b529f3 100644
-> --- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-> +++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
-> @@ -28,7 +28,9 @@ enum efa_admin_aq_opcode {
->  	EFA_ADMIN_DEALLOC_PD                        = 15,
->  	EFA_ADMIN_ALLOC_UAR                         = 16,
->  	EFA_ADMIN_DEALLOC_UAR                       = 17,
-> -	EFA_ADMIN_MAX_OPCODE                        = 17,
-> +	EFA_ADMIN_CREATE_EQ                         = 18,
-> +	EFA_ADMIN_DESTROY_EQ                        = 19,
-> +	EFA_ADMIN_MAX_OPCODE                        = 19,
->  };
->  
->  enum efa_admin_aq_feature_id {
-> @@ -38,6 +40,7 @@ enum efa_admin_aq_feature_id {
->  	EFA_ADMIN_QUEUE_ATTR                        = 4,
->  	EFA_ADMIN_HW_HINTS                          = 5,
->  	EFA_ADMIN_HOST_INFO                         = 6,
-> +	EFA_ADMIN_EVENT_QUEUE_ATTR                  = 7,
->  };
->  
->  /* QP transport type */
-> @@ -430,8 +433,8 @@ struct efa_admin_create_cq_cmd {
->  	/*
->  	 * 4:0 : reserved5 - MBZ
->  	 * 5 : interrupt_mode_enabled - if set, cq operates
-> -	 *    in interrupt mode (i.e. CQ events and MSI-X are
-> -	 *    generated), otherwise - polling
-> +	 *    in interrupt mode (i.e. CQ events and EQ elements
-> +	 *    are generated), otherwise - polling
->  	 * 6 : virt - If set, ring base address is virtual
->  	 *    (IOVA returned by MR registration)
->  	 * 7 : reserved6 - MBZ
-> @@ -448,8 +451,11 @@ struct efa_admin_create_cq_cmd {
->  	/* completion queue depth in # of entries. must be power of 2 */
->  	u16 cq_depth;
->  
-> -	/* msix vector assigned to this cq */
-> -	u32 msix_vector_idx;
-> +	/* EQ number assigned to this cq */
-> +	u16 eqn;
-> +
-> +	/* MBZ */
-> +	u16 reserved;
->  
->  	/*
->  	 * CQ ring base address, virtual or physical depending on 'virt'
-> @@ -480,6 +486,15 @@ struct efa_admin_create_cq_resp {
->  
->  	/* actual cq depth in number of entries */
->  	u16 cq_actual_depth;
-> +
-> +	/* CQ doorbell address, as offset to PCIe DB BAR */
-> +	u32 db_offset;
-> +
-> +	/*
-> +	 * 0 : db_valid - If set, doorbell offset is valid.
-> +	 *    Always set when interrupts are requested.
-> +	 */
-> +	u32 flags;
->  };
->  
->  struct efa_admin_destroy_cq_cmd {
-> @@ -669,6 +684,17 @@ struct efa_admin_feature_queue_attr_desc {
->  	u16 max_tx_batch;
->  };
->  
-> +struct efa_admin_event_queue_attr_desc {
-> +	/* The maximum number of event queues supported */
-> +	u32 max_eq;
-> +
-> +	/* Maximum number of EQEs per Event Queue */
-> +	u32 max_eq_depth;
-> +
-> +	/* Supported events bitmask */
-> +	u32 event_bitmask;
-> +};
-> +
->  struct efa_admin_feature_aenq_desc {
->  	/* bitmask for AENQ groups the device can report */
->  	u32 supported_groups;
-> @@ -727,6 +753,8 @@ struct efa_admin_get_feature_resp {
->  
->  		struct efa_admin_feature_queue_attr_desc queue_attr;
->  
-> +		struct efa_admin_event_queue_attr_desc event_queue_attr;
-> +
->  		struct efa_admin_hw_hints hw_hints;
->  	} u;
->  };
-> @@ -810,6 +838,60 @@ struct efa_admin_dealloc_uar_resp {
->  	struct efa_admin_acq_common_desc acq_common_desc;
->  };
->  
-> +struct efa_admin_create_eq_cmd {
-> +	struct efa_admin_aq_common_desc aq_common_descriptor;
-> +
-> +	/* Size of the EQ in entries, must be power of 2 */
-> +	u16 depth;
-> +
-> +	/* MSI-X table entry index */
-> +	u8 msix_vec;
-> +
-> +	/*
-> +	 * 4:0 : entry_size_words - size of EQ entry in
-> +	 *    32-bit words
-> +	 * 7:5 : reserved - MBZ
-> +	 */
-> +	u8 caps;
-> +
-> +	/* EQ ring base address */
-> +	struct efa_common_mem_addr ba;
-> +
-> +	/*
-> +	 * Enabled events on this EQ
-> +	 * 0 : completion_events - Enable completion events
-> +	 * 31:1 : reserved - MBZ
-> +	 */
-> +	u32 event_bitmask;
-> +
-> +	/* MBZ */
-> +	u32 reserved;
-> +};
-> +
-> +struct efa_admin_create_eq_resp {
-> +	struct efa_admin_acq_common_desc acq_common_desc;
-> +
-> +	/* EQ number */
-> +	u16 eqn;
-> +
-> +	/* MBZ */
-> +	u16 reserved;
-> +};
-> +
-> +struct efa_admin_destroy_eq_cmd {
-> +	struct efa_admin_aq_common_desc aq_common_descriptor;
-> +
-> +	/* EQ number */
-> +	u16 eqn;
-> +
-> +	/* MBZ */
-> +	u16 reserved;
-> +};
-> +
-> +struct efa_admin_destroy_eq_resp {
-> +	struct efa_admin_acq_common_desc acq_common_desc;
-> +};
-> +
->  /* asynchronous event notification groups */
->  enum efa_admin_aenq_group {
->  	EFA_ADMIN_FATAL_ERROR                       = 1,
-> @@ -899,10 +981,18 @@ struct efa_admin_host_info {
->  #define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
->  #define EFA_ADMIN_CREATE_CQ_CMD_CQ_ENTRY_SIZE_WORDS_MASK    GENMASK(4, 0)
->  
-> +/* create_cq_resp */
-> +#define EFA_ADMIN_CREATE_CQ_RESP_DB_VALID_MASK              BIT(0)
-> +
->  /* feature_device_attr_desc */
->  #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK   BIT(0)
->  #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RNR_RETRY_MASK   BIT(1)
->  
-> +/* create_eq_cmd */
-> +#define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
-> +#define EFA_ADMIN_CREATE_EQ_CMD_VIRT_MASK                   BIT(6)
-> +#define EFA_ADMIN_CREATE_EQ_CMD_COMPLETION_EVENTS_MASK      BIT(0)
-> +
->  /* host_info */
->  #define EFA_ADMIN_HOST_INFO_DRIVER_MODULE_TYPE_MASK         GENMASK(7, 0)
->  #define EFA_ADMIN_HOST_INFO_DRIVER_SUB_MINOR_MASK           GENMASK(15, 8)
-> diff --git a/drivers/infiniband/hw/efa/efa_admin_defs.h b/drivers/infiniband/hw/efa/efa_admin_defs.h
-> index 78ff9389ae25..83f20c38a840 100644
-> --- a/drivers/infiniband/hw/efa/efa_admin_defs.h
-> +++ b/drivers/infiniband/hw/efa/efa_admin_defs.h
-> @@ -118,6 +118,43 @@ struct efa_admin_aenq_entry {
->  	u32 inline_data_w4[12];
->  };
->  
-> +enum efa_admin_eqe_event_type {
-> +	EFA_ADMIN_EQE_EVENT_TYPE_COMPLETION         = 0,
-> +};
-> +
-> +/* Completion event */
-> +struct efa_admin_comp_event {
-> +	/* CQ number */
-> +	u16 cqn;
-> +
-> +	/* MBZ */
-> +	u16 reserved;
-> +
-> +	/* MBZ */
-> +	u32 reserved2;
-> +};
-> +
-> +/* Event Queue Element */
-> +struct efa_admin_eqe {
-> +	/*
-> +	 * 0 : phase
-> +	 * 8:1 : event_type - Event type
-> +	 * 31:9 : reserved - MBZ
-> +	 */
-> +	u32 common;
-> +
-> +	/* MBZ */
-> +	u32 reserved;
-> +
-> +	union {
-> +		/* Event data */
-> +		u32 event_data[2];
-> +
-> +		/* Completion Event */
-> +		struct efa_admin_comp_event comp_event;
-> +	} u;
-> +};
-> +
->  /* aq_common_desc */
->  #define EFA_ADMIN_AQ_COMMON_DESC_COMMAND_ID_MASK            GENMASK(11, 0)
->  #define EFA_ADMIN_AQ_COMMON_DESC_PHASE_MASK                 BIT(0)
-> @@ -131,4 +168,8 @@ struct efa_admin_aenq_entry {
->  /* aenq_common_desc */
->  #define EFA_ADMIN_AENQ_COMMON_DESC_PHASE_MASK               BIT(0)
->  
-> +/* eqe */
-> +#define EFA_ADMIN_EQE_PHASE_MASK                            BIT(0)
-> +#define EFA_ADMIN_EQE_EVENT_TYPE_MASK                       GENMASK(8, 1)
-> +
->  #endif /* _EFA_ADMIN_H_ */
-> diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
-> index 0d523ad736c7..c00c7f526067 100644
-> --- a/drivers/infiniband/hw/efa/efa_com.c
-> +++ b/drivers/infiniband/hw/efa/efa_com.c
-> @@ -56,11 +56,19 @@ static const char *efa_com_cmd_str(u8 cmd)
->  	EFA_CMD_STR_CASE(DEALLOC_PD);
->  	EFA_CMD_STR_CASE(ALLOC_UAR);
->  	EFA_CMD_STR_CASE(DEALLOC_UAR);
-> +	EFA_CMD_STR_CASE(CREATE_EQ);
-> +	EFA_CMD_STR_CASE(DESTROY_EQ);
->  	default: return "unknown command opcode";
->  	}
->  #undef EFA_CMD_STR_CASE
->  }
->  
-> +void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low)
-> +{
-> +	*addr_low = lower_32_bits(addr);
-> +	*addr_high = upper_32_bits(addr);
-> +}
-> +
->  static u32 efa_com_reg_read32(struct efa_com_dev *edev, u16 offset)
->  {
->  	struct efa_com_mmio_read *mmio_read = &edev->mmio_read;
-> @@ -1081,3 +1089,166 @@ int efa_com_dev_reset(struct efa_com_dev *edev,
->  
->  	return 0;
->  }
-> +
-> +static int efa_com_create_eq(struct efa_com_dev *edev,
-> +			     struct efa_com_create_eq_params *params,
-> +			     struct efa_com_create_eq_result *result)
-> +{
-> +	struct efa_com_admin_queue *aq = &edev->aq;
-> +	struct efa_admin_create_eq_resp resp = {};
-> +	struct efa_admin_create_eq_cmd cmd = {};
-> +	int err;
-> +
-> +	cmd.aq_common_descriptor.opcode = EFA_ADMIN_CREATE_EQ;
-> +	EFA_SET(&cmd.caps, EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS,
-> +		params->entry_size_in_bytes / 4);
-> +	cmd.depth = params->depth;
-> +	cmd.event_bitmask = params->event_bitmask;
-> +	cmd.msix_vec = params->msix_vec;
-> +
-> +	efa_com_set_dma_addr(params->dma_addr, &cmd.ba.mem_addr_high,
-> +			     &cmd.ba.mem_addr_low);
-> +
-> +	err = efa_com_cmd_exec(aq,
-> +			       (struct efa_admin_aq_entry *)&cmd,
-> +			       sizeof(cmd),
-> +			       (struct efa_admin_acq_entry *)&resp,
-> +			       sizeof(resp));
-> +	if (err) {
-> +		ibdev_err_ratelimited(edev->efa_dev,
-> +				      "Failed to create eq[%d]\n", err);
-> +		return err;
-> +	}
-> +
-> +	result->eqn = resp.eqn;
-> +
-> +	return 0;
-> +}
-> +
-> +static int efa_com_destroy_eq(struct efa_com_dev *edev,
-> +			      struct efa_com_destroy_eq_params *params)
-> +{
+2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 23:41 Daniel Vetter <daniel@f=
+fwll.ch>:
+>
+> On Wed, Sep 29, 2021 at 01:19:05PM +0900, Shunsuke Mie wrote:
+> > Implement a ib device operation =E2=80=98reg_user_mr_dmabuf=E2=80=99. G=
+enerate a
+> > rxe_map from the memory space linked the passed dma-buf.
+> >
+> > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> > ---
+> >  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
+> >  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++++++
+> >  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
+> >  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
+> >  4 files changed, 156 insertions(+)
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/s=
+w/rxe/rxe_loc.h
+> > index 1ca43b859d80..8bc19ea1a376 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> > +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> > @@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
+> >  void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr *mr)=
+;
+> >  int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iov=
+a,
+> >                    int access, struct rxe_mr *mr);
+> > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 =
+length,
+> > +                         u64 iova, int access, struct rxe_mr *mr);
+> >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *=
+mr);
+> >  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int length,
+> >               enum rxe_mr_copy_dir dir);
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw=
+/rxe/rxe_mr.c
+> > index 53271df10e47..af6ef671c3a5 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > @@ -4,6 +4,7 @@
+> >   * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+> >   */
+> >
+> > +#include <linux/dma-buf.h>
+> >  #include "rxe.h"
+> >  #include "rxe_loc.h"
+> >
+> > @@ -245,6 +246,120 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start=
+, u64 length, u64 iova,
+> >       return err;
+> >  }
+> >
+> > +static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
+> > +                          struct ib_umem_dmabuf *umem_dmabuf)
+> > +{
+> > +     struct rxe_map_set *set;
+> > +     struct rxe_phys_buf *buf =3D NULL;
+> > +     struct rxe_map **map;
+> > +     void *vaddr, *vaddr_end;
+> > +     int num_buf =3D 0;
+> > +     int err;
+> > +     size_t remain;
+> > +
+> > +     mr->dmabuf_map =3D kzalloc(sizeof &mr->dmabuf_map, GFP_KERNEL);
+>
+> dmabuf_maps are just tagged pointers (and we could shrink them to actuall=
+y
+> just a tagged pointer if anyone cares about the overhead of the separate
+> bool), allocating them seperately is overkill.
 
-Single caller of this function is not interested in return value from
-this function. It is worth to make it void from the beginning.
+I agree with you. However, I think it is needed to unmap by
+dma_buf_vunmap(). If there is another simple way to unmap it. It is not
+needed I think. What do you think about it?
 
-Thanks
+> > +     if (!mr->dmabuf_map) {
+> > +             err =3D -ENOMEM;
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     err =3D dma_buf_vmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> > +     if (err)
+> > +             goto err_free_dmabuf_map;
+> > +
+> > +     set =3D mr->cur_map_set;
+> > +     set->page_shift =3D PAGE_SHIFT;
+> > +     set->page_mask =3D PAGE_SIZE - 1;
+> > +
+> > +     map =3D set->map;
+> > +     buf =3D map[0]->buf;
+> > +
+> > +     vaddr =3D mr->dmabuf_map->vaddr;
+>
+> dma_buf_map can be an __iomem too, you shouldn't dig around in this, but
+> use the dma-buf-map.h helpers instead. On x86 (and I think also on most
+> arm) it doesn't matter, but it's kinda not very nice in a pure software
+> driver.
+>
+> If anything is missing in dma-buf-map.h wrappers just add more.
+>
+> Or alternatively you need to fail the import if you can't handle __iomem.
+>
+> Aside from these I think the dma-buf side here for cpu access looks
+> reasonable now.
+> -Daniel
+I'll see the dma-buf-map.h and consider the error handling that you suggest=
+ed.
+I appreciate your support.
 
-> +	struct efa_com_admin_queue *aq = &edev->aq;
-> +	struct efa_admin_destroy_eq_resp resp = {};
-> +	struct efa_admin_destroy_eq_cmd cmd = {};
-> +	int err;
-> +
-> +	cmd.aq_common_descriptor.opcode = EFA_ADMIN_DESTROY_EQ;
-> +	cmd.eqn = params->eqn;
-> +
-> +	err = efa_com_cmd_exec(aq,
-> +			       (struct efa_admin_aq_entry *)&cmd,
-> +			       sizeof(cmd),
-> +			       (struct efa_admin_acq_entry *)&resp,
-> +			       sizeof(resp));
-> +
-> +	if (err) {
-> +		ibdev_err_ratelimited(edev->efa_dev,
-> +				      "Failed to destroy EQ-%u [%d]\n", cmd.eqn,
-> +				      err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void efa_com_arm_eq(struct efa_com_dev *edev, struct efa_com_eq *eeq)
-> +{
-> +	u32 val = 0;
-> +
-> +	EFA_SET(&val, EFA_REGS_EQ_DB_EQN, eeq->eqn);
-> +	EFA_SET(&val, EFA_REGS_EQ_DB_ARM, 1);
-> +
-> +	writel(val, edev->reg_bar + EFA_REGS_EQ_DB_OFF);
-> +}
-> +
-> +void efa_com_eq_comp_intr_handler(struct efa_com_dev *edev,
-> +				  struct efa_com_eq *eeq)
-> +{
-> +	struct efa_admin_eqe *eqe;
-> +	u32 processed = 0;
-> +	u8 phase;
-> +	u32 ci;
-> +
-> +	ci = eeq->cc & (eeq->depth - 1);
-> +	phase = eeq->phase;
-> +	eqe = &eeq->eqes[ci];
-> +
-> +	/* Go over all the events */
-> +	while ((READ_ONCE(eqe->common) & EFA_ADMIN_EQE_PHASE_MASK) == phase) {
-> +		/*
-> +		 * Do not read the rest of the completion entry before the
-> +		 * phase bit was validated
-> +		 */
-> +		dma_rmb();
-> +
-> +		eeq->cb(eeq, eqe);
-> +
-> +		/* Get next event entry */
-> +		ci++;
-> +		processed++;
-> +
-> +		if (ci == eeq->depth) {
-> +			ci = 0;
-> +			phase = !phase;
-> +		}
-> +
-> +		eqe = &eeq->eqes[ci];
-> +	}
-> +
-> +	eeq->cc += processed;
-> +	eeq->phase = phase;
-> +	efa_com_arm_eq(eeq->edev, eeq);
-> +}
-> +
-> +int efa_com_eq_destroy(struct efa_com_dev *edev, struct efa_com_eq *eeq)
-> +{
-> +	struct efa_com_destroy_eq_params params = {
-> +		.eqn = eeq->eqn,
-> +	};
-> +
-> +	efa_com_destroy_eq(edev, &params);
-> +	dma_free_coherent(edev->dmadev, eeq->depth * sizeof(*eeq->eqes),
-> +			  eeq->eqes, eeq->dma_addr);
-> +
-> +	return 0;
-> +}
-> +
-> +int efa_com_eq_init(struct efa_com_dev *edev, struct efa_com_eq *eeq,
-> +		    efa_eqe_handler cb, u16 depth, u8 msix_vec)
-> +{
-> +	struct efa_com_create_eq_params params = {};
-> +	struct efa_com_create_eq_result result = {};
-> +	int err;
-> +
-> +	params.depth = depth;
-> +	params.entry_size_in_bytes = sizeof(*eeq->eqes);
-> +	EFA_SET(&params.event_bitmask,
-> +		EFA_ADMIN_CREATE_EQ_CMD_COMPLETION_EVENTS, 1);
-> +	params.msix_vec = msix_vec;
-> +
-> +	eeq->eqes = dma_alloc_coherent(edev->dmadev,
-> +				       params.depth * sizeof(*eeq->eqes),
-> +				       &params.dma_addr, GFP_KERNEL);
-> +	if (!eeq->eqes)
-> +		return -ENOMEM;
-> +
-> +	err = efa_com_create_eq(edev, &params, &result);
-> +	if (err)
-> +		goto err_free_coherent;
-> +
-> +	eeq->eqn = result.eqn;
-> +	eeq->edev = edev;
-> +	eeq->dma_addr = params.dma_addr;
-> +	eeq->phase = 1;
-> +	eeq->depth = params.depth;
-> +	eeq->cb = cb;
-> +	efa_com_arm_eq(edev, eeq);
-> +
-> +	return 0;
-> +
-> +err_free_coherent:
-> +	dma_free_coherent(edev->dmadev, params.depth * sizeof(*eeq->eqes),
-> +			  eeq->eqes, params.dma_addr);
-> +	return err;
-> +}
-> diff --git a/drivers/infiniband/hw/efa/efa_com.h b/drivers/infiniband/hw/efa/efa_com.h
-> index 5e4c88877ddb..0fe241cd48e7 100644
-> --- a/drivers/infiniband/hw/efa/efa_com.h
-> +++ b/drivers/infiniband/hw/efa/efa_com.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->  /*
-> - * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #ifndef _EFA_COM_H_
-> @@ -80,6 +80,9 @@ struct efa_com_admin_queue {
->  };
->  
->  struct efa_aenq_handlers;
-> +struct efa_com_eq;
-> +typedef void (*efa_eqe_handler)(struct efa_com_eq *eeq,
-> +				struct efa_admin_eqe *eqe);
->  
->  struct efa_com_aenq {
->  	struct efa_admin_aenq_entry *entries;
-> @@ -112,6 +115,33 @@ struct efa_com_dev {
->  	struct efa_com_mmio_read mmio_read;
->  };
->  
-> +struct efa_com_eq {
-> +	struct efa_com_dev *edev;
-> +	struct efa_admin_eqe *eqes;
-> +	dma_addr_t dma_addr;
-> +	u32 cc; /* Consumer counter */
-> +	u16 eqn;
-> +	u16 depth;
-> +	u8 phase;
-> +	efa_eqe_handler cb;
-> +};
-> +
-> +struct efa_com_create_eq_params {
-> +	dma_addr_t dma_addr;
-> +	u32 event_bitmask;
-> +	u16 depth;
-> +	u8 entry_size_in_bytes;
-> +	u8 msix_vec;
-> +};
-> +
-> +struct efa_com_create_eq_result {
-> +	u16 eqn;
-> +};
-> +
-> +struct efa_com_destroy_eq_params {
-> +	u16 eqn;
-> +};
-> +
->  typedef void (*efa_aenq_handler)(void *data,
->  	      struct efa_admin_aenq_entry *aenq_e);
->  
-> @@ -121,9 +151,13 @@ struct efa_aenq_handlers {
->  	efa_aenq_handler unimplemented_handler;
->  };
->  
-> +void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
->  int efa_com_admin_init(struct efa_com_dev *edev,
->  		       struct efa_aenq_handlers *aenq_handlers);
->  void efa_com_admin_destroy(struct efa_com_dev *edev);
-> +int efa_com_eq_init(struct efa_com_dev *edev, struct efa_com_eq *eeq,
-> +		    efa_eqe_handler cb, u16 depth, u8 msix_vec);
-> +int efa_com_eq_destroy(struct efa_com_dev *edev, struct efa_com_eq *eeq);
->  int efa_com_dev_reset(struct efa_com_dev *edev,
->  		      enum efa_regs_reset_reason_types reset_reason);
->  void efa_com_set_admin_polling_mode(struct efa_com_dev *edev, bool polling);
-> @@ -140,5 +174,7 @@ int efa_com_cmd_exec(struct efa_com_admin_queue *aq,
->  		     struct efa_admin_acq_entry *comp,
->  		     size_t comp_size);
->  void efa_com_aenq_intr_handler(struct efa_com_dev *edev, void *data);
-> +void efa_com_eq_comp_intr_handler(struct efa_com_dev *edev,
-> +				  struct efa_com_eq *eeq);
->  
->  #endif /* _EFA_COM_H_ */
-> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
-> index f752ef64159c..fb405da4e1db 100644
-> --- a/drivers/infiniband/hw/efa/efa_com_cmd.c
-> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
-> @@ -1,17 +1,11 @@
->  // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->  /*
-> - * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #include "efa_com.h"
->  #include "efa_com_cmd.h"
->  
-> -void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low)
-> -{
-> -	*addr_low = lower_32_bits(addr);
-> -	*addr_high = upper_32_bits(addr);
-> -}
-> -
->  int efa_com_create_qp(struct efa_com_dev *edev,
->  		      struct efa_com_create_qp_params *params,
->  		      struct efa_com_create_qp_result *res)
-> @@ -157,7 +151,7 @@ int efa_com_create_cq(struct efa_com_dev *edev,
->  		      struct efa_com_create_cq_params *params,
->  		      struct efa_com_create_cq_result *result)
->  {
-> -	struct efa_admin_create_cq_resp cmd_completion;
-> +	struct efa_admin_create_cq_resp cmd_completion = {};
->  	struct efa_admin_create_cq_cmd create_cmd = {};
->  	struct efa_com_admin_queue *aq = &edev->aq;
->  	int err;
-> @@ -169,6 +163,11 @@ int efa_com_create_cq(struct efa_com_dev *edev,
->  	create_cmd.cq_depth = params->cq_depth;
->  	create_cmd.num_sub_cqs = params->num_sub_cqs;
->  	create_cmd.uar = params->uarn;
-> +	if (params->interrupt_mode_enabled) {
-> +		EFA_SET(&create_cmd.cq_caps_1,
-> +			EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED, 1);
-> +		create_cmd.eqn = params->eqn;
-> +	}
->  
->  	efa_com_set_dma_addr(params->dma_addr,
->  			     &create_cmd.cq_ba.mem_addr_high,
-> @@ -187,6 +186,9 @@ int efa_com_create_cq(struct efa_com_dev *edev,
->  
->  	result->cq_idx = cmd_completion.cq_idx;
->  	result->actual_depth = params->cq_depth;
-> +	result->db_off = cmd_completion.db_offset;
-> +	result->db_valid = EFA_GET(&cmd_completion.flags,
-> +				   EFA_ADMIN_CREATE_CQ_RESP_DB_VALID);
->  
->  	return 0;
->  }
-> @@ -497,6 +499,23 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
->  	       sizeof(resp.u.network_attr.addr));
->  	result->mtu = resp.u.network_attr.mtu;
->  
-> +	if (efa_com_check_supported_feature_id(edev,
-> +					       EFA_ADMIN_EVENT_QUEUE_ATTR)) {
-> +		err = efa_com_get_feature(edev, &resp,
-> +					  EFA_ADMIN_EVENT_QUEUE_ATTR);
-> +		if (err) {
-> +			ibdev_err_ratelimited(
-> +				edev->efa_dev,
-> +				"Failed to get event queue attributes %d\n",
-> +				err);
-> +			return err;
-> +		}
-> +
-> +		result->max_eq = resp.u.event_queue_attr.max_eq;
-> +		result->max_eq_depth = resp.u.event_queue_attr.max_eq_depth;
-> +		result->event_bitmask = resp.u.event_queue_attr.event_bitmask;
-> +	}
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
-> index eea4ebfbe6ec..c33010bbf9e8 100644
-> --- a/drivers/infiniband/hw/efa/efa_com_cmd.h
-> +++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->  /*
-> - * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #ifndef _EFA_COM_CMD_H_
-> @@ -73,7 +73,9 @@ struct efa_com_create_cq_params {
->  	u16 cq_depth;
->  	u16 num_sub_cqs;
->  	u16 uarn;
-> +	u16 eqn;
->  	u8 entry_size_in_bytes;
-> +	bool interrupt_mode_enabled;
->  };
->  
->  struct efa_com_create_cq_result {
-> @@ -81,6 +83,8 @@ struct efa_com_create_cq_result {
->  	u16 cq_idx;
->  	/* actual cq depth in # of entries */
->  	u16 actual_depth;
-> +	u32 db_off;
-> +	bool db_valid;
->  };
->  
->  struct efa_com_destroy_cq_params {
-> @@ -125,6 +129,9 @@ struct efa_com_get_device_attr_result {
->  	u32 max_llq_size;
->  	u32 max_rdma_size;
->  	u32 device_caps;
-> +	u32 max_eq;
-> +	u32 max_eq_depth;
-> +	u32 event_bitmask; /* EQ events bitmask */
->  	u16 sub_cqs_per_cq;
->  	u16 max_sq_sge;
->  	u16 max_rq_sge;
-> @@ -260,7 +267,6 @@ union efa_com_get_stats_result {
->  	struct efa_com_rdma_read_stats rdma_read_stats;
->  };
->  
-> -void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
->  int efa_com_create_qp(struct efa_com_dev *edev,
->  		      struct efa_com_create_qp_params *params,
->  		      struct efa_com_create_qp_result *res);
-> diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
-> index 417dea5f90cf..8a3409b4dfbb 100644
-> --- a/drivers/infiniband/hw/efa/efa_main.c
-> +++ b/drivers/infiniband/hw/efa/efa_main.c
-> @@ -67,6 +67,47 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
->  	pci_release_selected_regions(pdev, release_bars);
->  }
->  
-> +static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
-> +{
-> +	u16 cqn = eqe->u.comp_event.cqn;
-> +	struct efa_cq *cq;
-> +
-> +	/* Safe to load as we're in irq and removal calls synchronize_irq() */
-> +	cq = xa_load(&dev->cqs_xa, cqn);
-> +	if (unlikely(!cq)) {
-> +		ibdev_err_ratelimited(&dev->ibdev,
-> +				      "Completion event on non-existent CQ[%u]",
-> +				      cqn);
-> +		return;
-> +	}
-> +
-> +	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
-> +}
-> +
-> +static void efa_process_eqe(struct efa_com_eq *eeq, struct efa_admin_eqe *eqe)
-> +{
-> +	struct efa_dev *dev = container_of(eeq->edev, struct efa_dev, edev);
-> +
-> +	if (likely(EFA_GET(&eqe->common, EFA_ADMIN_EQE_EVENT_TYPE) ==
-> +			   EFA_ADMIN_EQE_EVENT_TYPE_COMPLETION))
-> +		efa_process_comp_eqe(dev, eqe);
-> +	else
-> +		ibdev_err_ratelimited(&dev->ibdev,
-> +				      "Unknown event type received %lu",
-> +				      EFA_GET(&eqe->common,
-> +					      EFA_ADMIN_EQE_EVENT_TYPE));
-> +}
-> +
-> +static irqreturn_t efa_intr_msix_comp(int irq, void *data)
-> +{
-> +	struct efa_eq *eq = data;
-> +	struct efa_com_dev *edev = eq->eeq.edev;
-> +
-> +	efa_com_eq_comp_intr_handler(edev, &eq->eeq);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static irqreturn_t efa_intr_msix_mgmnt(int irq, void *data)
->  {
->  	struct efa_dev *dev = data;
-> @@ -77,26 +118,43 @@ static irqreturn_t efa_intr_msix_mgmnt(int irq, void *data)
->  	return IRQ_HANDLED;
->  }
->  
-> -static int efa_request_mgmnt_irq(struct efa_dev *dev)
-> +static int efa_request_irq(struct efa_dev *dev, struct efa_irq *irq)
->  {
-> -	struct efa_irq *irq;
->  	int err;
->  
-> -	irq = &dev->admin_irq;
->  	err = request_irq(irq->irqn, irq->handler, 0, irq->name, irq->data);
->  	if (err) {
-> -		dev_err(&dev->pdev->dev, "Failed to request admin irq (%d)\n",
-> -			err);
-> +		dev_err(&dev->pdev->dev, "Failed to request irq %s (%d)\n",
-> +			irq->name, err);
->  		return err;
->  	}
->  
-> -	dev_dbg(&dev->pdev->dev, "Set affinity hint of mgmnt irq to %*pbl (irq vector: %d)\n",
-> -		nr_cpumask_bits, &irq->affinity_hint_mask, irq->irqn);
->  	irq_set_affinity_hint(irq->irqn, &irq->affinity_hint_mask);
->  
->  	return 0;
->  }
->  
-> +static void efa_setup_comp_irq(struct efa_dev *dev, struct efa_eq *eq,
-> +			       int vector)
-> +{
-> +	u32 cpu;
-> +
-> +	cpu = vector - EFA_COMP_EQS_VEC_BASE;
-> +	snprintf(eq->irq.name, EFA_IRQNAME_SIZE, "efa-comp%d@pci:%s", cpu,
-> +		 pci_name(dev->pdev));
-> +	eq->irq.handler = efa_intr_msix_comp;
-> +	eq->irq.data = eq;
-> +	eq->irq.vector = vector;
-> +	eq->irq.irqn = pci_irq_vector(dev->pdev, vector);
-> +	cpumask_set_cpu(cpu, &eq->irq.affinity_hint_mask);
-> +}
-> +
-> +static void efa_free_irq(struct efa_dev *dev, struct efa_irq *irq)
-> +{
-> +	irq_set_affinity_hint(irq->irqn, NULL);
-> +	free_irq(irq->irqn, irq->data);
-> +}
-> +
->  static void efa_setup_mgmnt_irq(struct efa_dev *dev)
->  {
->  	u32 cpu;
-> @@ -105,8 +163,9 @@ static void efa_setup_mgmnt_irq(struct efa_dev *dev)
->  		 "efa-mgmnt@pci:%s", pci_name(dev->pdev));
->  	dev->admin_irq.handler = efa_intr_msix_mgmnt;
->  	dev->admin_irq.data = dev;
-> -	dev->admin_irq.irqn =
-> -		pci_irq_vector(dev->pdev, dev->admin_msix_vector_idx);
-> +	dev->admin_irq.vector = dev->admin_msix_vector_idx;
-> +	dev->admin_irq.irqn = pci_irq_vector(dev->pdev,
-> +					     dev->admin_msix_vector_idx);
->  	cpu = cpumask_first(cpu_online_mask);
->  	cpumask_set_cpu(cpu,
->  			&dev->admin_irq.affinity_hint_mask);
-> @@ -115,20 +174,11 @@ static void efa_setup_mgmnt_irq(struct efa_dev *dev)
->  		 dev->admin_irq.name);
->  }
->  
-> -static void efa_free_mgmnt_irq(struct efa_dev *dev)
-> -{
-> -	struct efa_irq *irq;
-> -
-> -	irq = &dev->admin_irq;
-> -	irq_set_affinity_hint(irq->irqn, NULL);
-> -	free_irq(irq->irqn, irq->data);
-> -}
-> -
->  static int efa_set_mgmnt_irq(struct efa_dev *dev)
->  {
->  	efa_setup_mgmnt_irq(dev);
->  
-> -	return efa_request_mgmnt_irq(dev);
-> +	return efa_request_irq(dev, &dev->admin_irq);
->  }
->  
->  static int efa_request_doorbell_bar(struct efa_dev *dev)
-> @@ -234,6 +284,76 @@ static void efa_set_host_info(struct efa_dev *dev)
->  	dma_free_coherent(&dev->pdev->dev, bufsz, hinf, hinf_dma);
->  }
->  
-> +static int efa_destroy_eq(struct efa_dev *dev, struct efa_eq *eq)
-> +{
-> +	efa_com_eq_destroy(&dev->edev, &eq->eeq);
-> +	efa_free_irq(dev, &eq->irq);
-> +
-> +	return 0;
-> +}
-> +
-> +static int efa_create_eq(struct efa_dev *dev, struct efa_eq *eq, u8 msix_vec)
-> +{
-> +	int err;
-> +
-> +	efa_setup_comp_irq(dev, eq, msix_vec);
-> +	err = efa_request_irq(dev, &eq->irq);
-> +	if (err)
-> +		return err;
-> +
-> +	err = efa_com_eq_init(&dev->edev, &eq->eeq, efa_process_eqe,
-> +			      dev->dev_attr.max_eq_depth, msix_vec);
-> +	if (err)
-> +		goto err_free_comp_irq;
-> +
-> +	return 0;
-> +
-> +err_free_comp_irq:
-> +	efa_free_irq(dev, &eq->irq);
-> +	return err;
-> +}
-> +
-> +static int efa_create_eqs(struct efa_dev *dev)
-> +{
-> +	unsigned int neqs = dev->dev_attr.max_eq;
-> +	int err;
-> +	int i;
-> +
-> +	neqs = min_t(unsigned int, neqs, num_online_cpus());
-> +	dev->neqs = neqs;
-> +	dev->eqs = kcalloc(neqs, sizeof(*dev->eqs), GFP_KERNEL);
-> +	if (!dev->eqs)
-> +		return -ENOMEM;
-> +
-> +	for (i = 0; i < neqs; i++) {
-> +		err = efa_create_eq(dev, &dev->eqs[i],
-> +				    i + EFA_COMP_EQS_VEC_BASE);
-> +		if (err)
-> +			goto err_destroy_eqs;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_destroy_eqs:
-> +	for (i--; i >= 0; i--)
-> +		efa_destroy_eq(dev, &dev->eqs[i]);
-> +	kfree(dev->eqs);
-> +
-> +	return err;
-> +}
-> +
-> +static int efa_destroy_eqs(struct efa_dev *dev)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < dev->neqs; i++)
-> +		efa_destroy_eq(dev, &dev->eqs[i]);
-> +
-> +	kfree(dev->eqs);
-> +
-> +	return 0;
-> +}
-> +
->  static const struct ib_device_ops efa_dev_ops = {
->  	.owner = THIS_MODULE,
->  	.driver_id = RDMA_DRIVER_EFA,
-> @@ -300,23 +420,29 @@ static int efa_ib_device_add(struct efa_dev *dev)
->  	if (err)
->  		goto err_release_doorbell_bar;
->  
-> +	err = efa_create_eqs(dev);
-> +	if (err)
-> +		goto err_release_doorbell_bar;
-> +
->  	efa_set_host_info(dev);
->  
->  	dev->ibdev.node_type = RDMA_NODE_UNSPECIFIED;
->  	dev->ibdev.phys_port_cnt = 1;
-> -	dev->ibdev.num_comp_vectors = 1;
-> +	dev->ibdev.num_comp_vectors = dev->neqs ?: 1;
->  	dev->ibdev.dev.parent = &pdev->dev;
->  
->  	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
->  
->  	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
->  	if (err)
-> -		goto err_release_doorbell_bar;
-> +		goto err_destroy_eqs;
->  
->  	ibdev_info(&dev->ibdev, "IB device registered\n");
->  
->  	return 0;
->  
-> +err_destroy_eqs:
-> +	efa_destroy_eqs(dev);
->  err_release_doorbell_bar:
->  	efa_release_doorbell_bar(dev);
->  	return err;
-> @@ -324,9 +450,10 @@ static int efa_ib_device_add(struct efa_dev *dev)
->  
->  static void efa_ib_device_remove(struct efa_dev *dev)
->  {
-> -	efa_com_dev_reset(&dev->edev, EFA_REGS_RESET_NORMAL);
->  	ibdev_info(&dev->ibdev, "Unregister ib device\n");
->  	ib_unregister_device(&dev->ibdev);
-> +	efa_destroy_eqs(dev);
-> +	efa_com_dev_reset(&dev->edev, EFA_REGS_RESET_NORMAL);
->  	efa_release_doorbell_bar(dev);
->  }
->  
-> @@ -339,8 +466,12 @@ static int efa_enable_msix(struct efa_dev *dev)
->  {
->  	int msix_vecs, irq_num;
->  
-> -	/* Reserve the max msix vectors we might need */
-> -	msix_vecs = EFA_NUM_MSIX_VEC;
-> +	/*
-> +	 * Reserve the max msix vectors we might need, one vector is reserved
-> +	 * for admin.
-> +	 */
-> +	msix_vecs = min_t(int, pci_msix_vec_count(dev->pdev),
-> +			  num_online_cpus() + 1);
->  	dev_dbg(&dev->pdev->dev, "Trying to enable MSI-X, vectors %d\n",
->  		msix_vecs);
->  
-> @@ -421,6 +552,7 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
->  	edev->efa_dev = dev;
->  	edev->dmadev = &pdev->dev;
->  	dev->pdev = pdev;
-> +	xa_init(&dev->cqs_xa);
->  
->  	bars = pci_select_bars(pdev, IORESOURCE_MEM) & EFA_BASE_BAR_MASK;
->  	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
-> @@ -476,7 +608,7 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
->  	return dev;
->  
->  err_free_mgmnt_irq:
-> -	efa_free_mgmnt_irq(dev);
-> +	efa_free_irq(dev, &dev->admin_irq);
->  err_disable_msix:
->  	efa_disable_msix(dev);
->  err_reg_read_destroy:
-> @@ -499,11 +631,12 @@ static void efa_remove_device(struct pci_dev *pdev)
->  
->  	edev = &dev->edev;
->  	efa_com_admin_destroy(edev);
-> -	efa_free_mgmnt_irq(dev);
-> +	efa_free_irq(dev, &dev->admin_irq);
->  	efa_disable_msix(dev);
->  	efa_com_mmio_reg_read_destroy(edev);
->  	devm_iounmap(&pdev->dev, edev->reg_bar);
->  	efa_release_bars(dev, EFA_BASE_BAR_MASK);
-> +	xa_destroy(&dev->cqs_xa);
->  	ib_dealloc_device(&dev->ibdev);
->  	pci_disable_device(pdev);
->  }
-> diff --git a/drivers/infiniband/hw/efa/efa_regs_defs.h b/drivers/infiniband/hw/efa/efa_regs_defs.h
-> index 4017982fe13b..714ae6258800 100644
-> --- a/drivers/infiniband/hw/efa/efa_regs_defs.h
-> +++ b/drivers/infiniband/hw/efa/efa_regs_defs.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
->  /*
-> - * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #ifndef _EFA_REGS_H_
-> @@ -42,6 +42,7 @@ enum efa_regs_reset_reason_types {
->  #define EFA_REGS_MMIO_REG_READ_OFF                          0x5c
->  #define EFA_REGS_MMIO_RESP_LO_OFF                           0x60
->  #define EFA_REGS_MMIO_RESP_HI_OFF                           0x64
-> +#define EFA_REGS_EQ_DB_OFF                                  0x68
->  
->  /* version register */
->  #define EFA_REGS_VERSION_MINOR_VERSION_MASK                 0xff
-> @@ -93,4 +94,8 @@ enum efa_regs_reset_reason_types {
->  #define EFA_REGS_MMIO_REG_READ_REQ_ID_MASK                  0xffff
->  #define EFA_REGS_MMIO_REG_READ_REG_OFF_MASK                 0xffff0000
->  
-> +/* eq_db register */
-> +#define EFA_REGS_EQ_DB_EQN_MASK                             0xffff
-> +#define EFA_REGS_EQ_DB_ARM_MASK                             0x80000000
-> +
->  #endif /* _EFA_REGS_H_ */
-> diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
-> index e5f9d90aad5e..3353ad4925ee 100644
-> --- a/drivers/infiniband/hw/efa/efa_verbs.c
-> +++ b/drivers/infiniband/hw/efa/efa_verbs.c
-> @@ -245,6 +245,9 @@ int efa_query_device(struct ib_device *ibdev,
->  		if (EFA_DEV_CAP(dev, RNR_RETRY))
->  			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RNR_RETRY;
->  
-> +		if (dev->neqs)
-> +			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
-> +
->  		err = ib_copy_to_udata(udata, &resp,
->  				       min(sizeof(resp), udata->outlen));
->  		if (err) {
-> @@ -984,6 +987,12 @@ static int efa_destroy_cq_idx(struct efa_dev *dev, int cq_idx)
->  	return efa_com_destroy_cq(&dev->edev, &params);
->  }
->  
-> +static void efa_cq_user_mmap_entries_remove(struct efa_cq *cq)
-> +{
-> +	rdma_user_mmap_entry_remove(cq->db_mmap_entry);
-> +	rdma_user_mmap_entry_remove(cq->mmap_entry);
-> +}
-> +
->  int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->  {
->  	struct efa_dev *dev = to_edev(ibcq->device);
-> @@ -993,15 +1002,25 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
->  		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
->  		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
->  
-> -	rdma_user_mmap_entry_remove(cq->mmap_entry);
-> +	efa_cq_user_mmap_entries_remove(cq);
->  	efa_destroy_cq_idx(dev, cq->cq_idx);
-> +	if (cq->eq) {
-> +		xa_erase(&dev->cqs_xa, cq->cq_idx);
-> +		synchronize_irq(cq->eq->irq.irqn);
-> +	}
->  	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
->  			DMA_FROM_DEVICE);
->  	return 0;
->  }
->  
-> +static struct efa_eq *efa_vec2eq(struct efa_dev *dev, int vec)
-> +{
-> +	return &dev->eqs[vec];
-> +}
-> +
->  static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
-> -				 struct efa_ibv_create_cq_resp *resp)
-> +				 struct efa_ibv_create_cq_resp *resp,
-> +				 bool db_valid)
->  {
->  	resp->q_mmap_size = cq->size;
->  	cq->mmap_entry = efa_user_mmap_entry_insert(&cq->ucontext->ibucontext,
-> @@ -1011,6 +1030,21 @@ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
->  	if (!cq->mmap_entry)
->  		return -ENOMEM;
->  
-> +	if (db_valid) {
-> +		cq->db_mmap_entry =
-> +			efa_user_mmap_entry_insert(&cq->ucontext->ibucontext,
-> +						   dev->db_bar_addr + resp->db_off,
-> +						   PAGE_SIZE, EFA_MMAP_IO_NC,
-> +						   &resp->db_mmap_key);
-> +		if (!cq->db_mmap_entry) {
-> +			rdma_user_mmap_entry_remove(cq->mmap_entry);
-> +			return -ENOMEM;
-> +		}
-> +
-> +		resp->db_off &= ~PAGE_MASK;
-> +		resp->comp_mask |= EFA_CREATE_CQ_RESP_DB_OFF;
-> +	}
-> +
->  	return 0;
->  }
->  
-> @@ -1019,8 +1053,8 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  {
->  	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(
->  		udata, struct efa_ucontext, ibucontext);
-> +	struct efa_com_create_cq_params params = {};
->  	struct efa_ibv_create_cq_resp resp = {};
-> -	struct efa_com_create_cq_params params;
->  	struct efa_com_create_cq_result result;
->  	struct ib_device *ibdev = ibcq->device;
->  	struct efa_dev *dev = to_edev(ibdev);
-> @@ -1065,7 +1099,7 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  		goto err_out;
->  	}
->  
-> -	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_50)) {
-> +	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_58)) {
->  		ibdev_dbg(ibdev,
->  			  "Incompatible ABI params, unknown fields in udata\n");
->  		err = -EINVAL;
-> @@ -1101,29 +1135,45 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  	params.dma_addr = cq->dma_addr;
->  	params.entry_size_in_bytes = cmd.cq_entry_size;
->  	params.num_sub_cqs = cmd.num_sub_cqs;
-> +	if (cmd.flags & EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL) {
-> +		cq->eq = efa_vec2eq(dev, attr->comp_vector);
-> +		params.eqn = cq->eq->eeq.eqn;
-> +		params.interrupt_mode_enabled = true;
-> +	}
-> +
->  	err = efa_com_create_cq(&dev->edev, &params, &result);
->  	if (err)
->  		goto err_free_mapped;
->  
-> +	resp.db_off = result.db_off;
->  	resp.cq_idx = result.cq_idx;
->  	cq->cq_idx = result.cq_idx;
->  	cq->ibcq.cqe = result.actual_depth;
->  	WARN_ON_ONCE(entries != result.actual_depth);
->  
-> -	err = cq_mmap_entries_setup(dev, cq, &resp);
-> +	err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
->  	if (err) {
->  		ibdev_dbg(ibdev, "Could not setup cq[%u] mmap entries\n",
->  			  cq->cq_idx);
->  		goto err_destroy_cq;
->  	}
->  
-> +	if (cq->eq) {
-> +		err = xa_err(xa_store(&dev->cqs_xa, cq->cq_idx, cq, GFP_KERNEL));
-> +		if (err) {
-> +			ibdev_dbg(ibdev, "Failed to store cq[%u] in xarray\n",
-> +				  cq->cq_idx);
-> +			goto err_remove_mmap;
-> +		}
-> +	}
-> +
->  	if (udata->outlen) {
->  		err = ib_copy_to_udata(udata, &resp,
->  				       min(sizeof(resp), udata->outlen));
->  		if (err) {
->  			ibdev_dbg(ibdev,
->  				  "Failed to copy udata for create_cq\n");
-> -			goto err_remove_mmap;
-> +			goto err_xa_erase;
->  		}
->  	}
->  
-> @@ -1132,8 +1182,11 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
->  
->  	return 0;
->  
-> +err_xa_erase:
-> +	if (cq->eq)
-> +		xa_erase(&dev->cqs_xa, cq->cq_idx);
->  err_remove_mmap:
-> -	rdma_user_mmap_entry_remove(cq->mmap_entry);
-> +	efa_cq_user_mmap_entries_remove(cq);
->  err_destroy_cq:
->  	efa_destroy_cq_idx(dev, cq->cq_idx);
->  err_free_mapped:
-> diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
-> index f89fbb5b1e8d..08035ccf1fff 100644
-> --- a/include/uapi/rdma/efa-abi.h
-> +++ b/include/uapi/rdma/efa-abi.h
-> @@ -1,6 +1,6 @@
->  /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
->  /*
-> - * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
-> + * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
->   */
->  
->  #ifndef EFA_ABI_USER_H
-> @@ -52,11 +52,20 @@ struct efa_ibv_alloc_pd_resp {
->  	__u8 reserved_30[2];
->  };
->  
-> +enum {
-> +	EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL = 1 << 0,
-> +};
-> +
->  struct efa_ibv_create_cq {
->  	__u32 comp_mask;
->  	__u32 cq_entry_size;
->  	__u16 num_sub_cqs;
-> -	__u8 reserved_50[6];
-> +	__u8 flags;
-> +	__u8 reserved_58[5];
-> +};
-> +
-> +enum {
-> +	EFA_CREATE_CQ_RESP_DB_OFF = 1 << 0,
->  };
->  
->  struct efa_ibv_create_cq_resp {
-> @@ -65,7 +74,9 @@ struct efa_ibv_create_cq_resp {
->  	__aligned_u64 q_mmap_key;
->  	__aligned_u64 q_mmap_size;
->  	__u16 cq_idx;
-> -	__u8 reserved_d0[6];
-> +	__u8 reserved_d0[2];
-> +	__u32 db_off;
-> +	__aligned_u64 db_mmap_key;
->  };
->  
->  enum {
-> @@ -106,6 +117,7 @@ struct efa_ibv_create_ah_resp {
->  enum {
->  	EFA_QUERY_DEVICE_CAPS_RDMA_READ = 1 << 0,
->  	EFA_QUERY_DEVICE_CAPS_RNR_RETRY = 1 << 1,
-> +	EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
->  };
->  
->  struct efa_ibv_ex_query_device_resp {
-> 
-> base-commit: d30ef6d5c013c19e907f2a3a3d6eee04fcd3de0d
-> -- 
-> 2.33.0
-> 
+Thanks a lot,
+Shunsuke.
+
+> > +     vaddr_end =3D vaddr + umem_dmabuf->dmabuf->size;
+> > +     remain =3D umem_dmabuf->dmabuf->size;
+> > +
+> > +     for (; remain; vaddr +=3D PAGE_SIZE) {
+> > +             if (num_buf >=3D RXE_BUF_PER_MAP) {
+> > +                     map++;
+> > +                     buf =3D map[0]->buf;
+> > +                     num_buf =3D 0;
+> > +             }
+> > +
+> > +             buf->addr =3D (uintptr_t)vaddr;
+> > +             if (remain >=3D PAGE_SIZE)
+> > +                     buf->size =3D PAGE_SIZE;
+> > +             else
+> > +                     buf->size =3D remain;
+> > +             remain -=3D buf->size;
+> > +
+> > +             num_buf++;
+> > +             buf++;
+> > +     }
+> > +
+> > +     return 0;
+> > +
+> > +err_free_dmabuf_map:
+> > +     kfree(mr->dmabuf_map);
+> > +err_out:
+> > +     return err;
+> > +}
+> > +
+> > +static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
+> > +{
+> > +     struct ib_umem_dmabuf *umem_dmabuf =3D to_ib_umem_dmabuf(mr->umem=
+);
+> > +
+> > +     dma_buf_vunmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
+> > +     kfree(mr->dmabuf_map);
+> > +}
+> > +
+> > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, u64 =
+length,
+> > +                         u64 iova, int access, struct rxe_mr *mr)
+> > +{
+> > +     struct ib_umem_dmabuf *umem_dmabuf;
+> > +     struct rxe_map_set *set;
+> > +     int err;
+> > +
+> > +     umem_dmabuf =3D ib_umem_dmabuf_get(pd->ibpd.device, start, length=
+, fd,
+> > +                                      access, NULL);
+> > +     if (IS_ERR(umem_dmabuf)) {
+> > +             err =3D PTR_ERR(umem_dmabuf);
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     rxe_mr_init(access, mr);
+> > +
+> > +     err =3D rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem), 0=
+);
+> > +     if (err) {
+> > +             pr_warn("%s: Unable to allocate memory for map\n", __func=
+__);
+> > +             goto err_release_umem;
+> > +     }
+> > +
+> > +     mr->ibmr.pd =3D &pd->ibpd;
+> > +     mr->umem =3D &umem_dmabuf->umem;
+> > +     mr->access =3D access;
+> > +     mr->state =3D RXE_MR_STATE_VALID;
+> > +     mr->type =3D IB_MR_TYPE_USER;
+> > +
+> > +     set =3D mr->cur_map_set;
+> > +     set->length =3D length;
+> > +     set->iova =3D iova;
+> > +     set->va =3D start;
+> > +     set->offset =3D ib_umem_offset(mr->umem);
+> > +
+> > +     err =3D rxe_map_dmabuf_mr(mr, umem_dmabuf);
+> > +     if (err)
+> > +             goto err_free_map_set;
+> > +
+> > +     return 0;
+> > +
+> > +err_free_map_set:
+> > +     rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
+> > +err_release_umem:
+> > +     ib_umem_release(&umem_dmabuf->umem);
+> > +err_out:
+> > +     return err;
+> > +}
+> > +
+> >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_mr *=
+mr)
+> >  {
+> >       int err;
+> > @@ -703,6 +818,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+> >  {
+> >       struct rxe_mr *mr =3D container_of(arg, typeof(*mr), pelem);
+> >
+> > +     if (mr->umem && mr->umem->is_dmabuf)
+> > +             rxe_unmap_dmabuf_mr(mr);
+> > +
+> >       ib_umem_release(mr->umem);
+> >
+> >       if (mr->cur_map_set)
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband=
+/sw/rxe/rxe_verbs.c
+> > index 9d0bb9aa7514..6191bb4f434d 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> > @@ -916,6 +916,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd =
+*ibpd,
+> >       return ERR_PTR(err);
+> >  }
+> >
+> > +static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u64 st=
+art,
+> > +                                         u64 length, u64 iova, int fd,
+> > +                                         int access, struct ib_udata *=
+udata)
+> > +{
+> > +     int err;
+> > +     struct rxe_dev *rxe =3D to_rdev(ibpd->device);
+> > +     struct rxe_pd *pd =3D to_rpd(ibpd);
+> > +     struct rxe_mr *mr;
+> > +
+> > +     mr =3D rxe_alloc(&rxe->mr_pool);
+> > +     if (!mr) {
+> > +             err =3D -ENOMEM;
+> > +             goto err2;
+> > +     }
+> > +
+> > +     rxe_add_index(mr);
+> > +
+> > +     rxe_add_ref(pd);
+> > +
+> > +     err =3D rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, acce=
+ss, mr);
+> > +     if (err)
+> > +             goto err3;
+> > +
+> > +     return &mr->ibmr;
+> > +
+> > +err3:
+> > +     rxe_drop_ref(pd);
+> > +     rxe_drop_index(mr);
+> > +     rxe_drop_ref(mr);
+> > +err2:
+> > +     return ERR_PTR(err);
+> > +}
+> > +
+> >  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type =
+mr_type,
+> >                                 u32 max_num_sg)
+> >  {
+> > @@ -1081,6 +1114,7 @@ static const struct ib_device_ops rxe_dev_ops =3D=
+ {
+> >       .query_qp =3D rxe_query_qp,
+> >       .query_srq =3D rxe_query_srq,
+> >       .reg_user_mr =3D rxe_reg_user_mr,
+> > +     .reg_user_mr_dmabuf =3D rxe_reg_user_mr_dmabuf,
+> >       .req_notify_cq =3D rxe_req_notify_cq,
+> >       .resize_cq =3D rxe_resize_cq,
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband=
+/sw/rxe/rxe_verbs.h
+> > index c807639435eb..0aa95ab06b6e 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> > @@ -334,6 +334,8 @@ struct rxe_mr {
+> >
+> >       struct rxe_map_set      *cur_map_set;
+> >       struct rxe_map_set      *next_map_set;
+> > +
+> > +     struct dma_buf_map *dmabuf_map;
+> >  };
+> >
+> >  enum rxe_mw_state {
+> > --
+> > 2.17.1
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
