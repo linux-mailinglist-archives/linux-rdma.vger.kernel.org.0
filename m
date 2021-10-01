@@ -2,168 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956C041EDAC
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Oct 2021 14:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340FA41EEAC
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Oct 2021 15:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhJAMmV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Oct 2021 08:42:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231352AbhJAMmV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Oct 2021 08:42:21 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5498C061775
-        for <linux-rdma@vger.kernel.org>; Fri,  1 Oct 2021 05:40:36 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id dj4so35292612edb.5
-        for <linux-rdma@vger.kernel.org>; Fri, 01 Oct 2021 05:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OOmtX6mJkaDbS5DNm6EbCpXXD5iJSh45SP9r/Bt47XI=;
-        b=glNWjM/ZNPQs0n9fOTeEcrgSQce5oOSBcQYTRcr0wIB+sLNYPZxDnlmlS2Vv7zE+Jn
-         yG5Al964p/wlBSi6gmxGzZtjBmJ9n0DeGgHRGI+3GyaWBLMvwZTjkng0Ks+7HsVepyVe
-         lYOYzVU6WO+G+SsiU7ulIk5uOpvDQ0XMNtBGHujZCvcxQjFx1v3iB1nb/WRRRfhj5VAs
-         NHRR2LIBf9I8M0A2kR85bTCaQvFkRMrd5z7M/OQ3GBfsFbKsAN9MVC0hT1qDbwmQvYSv
-         S6jCtV0dHNmN7+Ani8HvKFSIn7sGxVD12boqFzfIu2yfBqGhC2dmjVNfJhuR9R7Q1SL5
-         klpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OOmtX6mJkaDbS5DNm6EbCpXXD5iJSh45SP9r/Bt47XI=;
-        b=yFsU5PAh9AqYL8n838e7D6C24BAHkVSL6CJOR9AXRt6tZ/TU029MxDBKkIdGOCh2IM
-         UFxzhrX3NOSD/TMlvsTpNSyi9YuQlRVSoP5dArTMBL7apfjvHvR7tOEBmZYZ8/ztjpcP
-         DtWrEaq+MrAmp79abyWJNgl5GGlDdB2RhOoRMdpjQzqYdmfwX0rkkHi0k5XuRGeUsxSE
-         p6uo+T/ws3G17LVp7j2hzqQ2dqWuX/+k+8Rdnp/0U5y4kVWiowe9i+Kwsnc1niH6sAP1
-         Cr555CqZVf9dlskwALKkUsjcikQd8o07NZX8fRzDiZcs5u2JiqKyHSYn2J1/smRbJs1k
-         dHHw==
-X-Gm-Message-State: AOAM533gEtuBPNWylj+sMWyYtCurdvED+bXRz+QrmmecZsVNhdvtnfHz
-        yvKt6L0Y1BCbVUUgrE5nog8E63mQC9/MtTbTpcf8gA==
-X-Google-Smtp-Source: ABdhPJwxomNE9fK6H+7wEVsmWlkpn5PfKOS2ZlkExtFc1XwjkFLfrIWsVlUYiyliPUW+DF96Z8ZhXFySo4kaApCRmdY=
-X-Received: by 2002:a05:6402:3133:: with SMTP id dd19mr14606407edb.172.1633092035416;
- Fri, 01 Oct 2021 05:40:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210922125333.351454-1-haris.iqbal@ionos.com>
- <20210922125333.351454-7-haris.iqbal@ionos.com> <YVG3cme0KX9CD4oh@unreal>
- <CAD+HZHWTZY=6W4MNEGwVi=e64MJtntVE1Hwm6Lt_m=UaAW2W-A@mail.gmail.com>
- <YVLEIVz1mCV0cZlC@unreal> <CAD+HZHW5u1MiB-+C784yYXZc9Q-F0yB+1EvRKb4sAQJe4p2Yeg@mail.gmail.com>
- <YVRWXim7T0mReBu/@unreal> <CAMGffE=mv8jJYeNC7BjiGbOt4qEFAQhXWROk4Uwzg5ED4a0sug@mail.gmail.com>
- <YVVgunT1hSIzu1tA@unreal> <CAMGffE=NP-iNcAQyVF57tbeJ1QcyMt7=savh=5BLxaC9TuAkTw@mail.gmail.com>
- <YVVtAFtOj0mPzSAR@unreal>
-In-Reply-To: <YVVtAFtOj0mPzSAR@unreal>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Fri, 1 Oct 2021 14:40:24 +0200
-Message-ID: <CAMGffEmYObHjk1Fk6jZqBnUPCE5o9=EpHHYqvevA8kKLjQG6aQ@mail.gmail.com>
-Subject: Re: [PATCH for-next 6/7] RDMA/rtrs: Do not allow sessname to contain
- special symbols / and .
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jack Wang <xjtuwjp@gmail.com>,
-        Md Haris Iqbal <haris.iqbal@ionos.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
+        id S1353433AbhJANiX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Oct 2021 09:38:23 -0400
+Received: from smtprelay0155.hostedemail.com ([216.40.44.155]:41606 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231416AbhJANiW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Oct 2021 09:38:22 -0400
+X-Greylist: delayed 314 seconds by postgrey-1.27 at vger.kernel.org; Fri, 01 Oct 2021 09:38:22 EDT
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id 7A58B802F945
+        for <linux-rdma@vger.kernel.org>; Fri,  1 Oct 2021 13:31:25 +0000 (UTC)
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 0674D181CC40F;
+        Fri,  1 Oct 2021 13:31:24 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id A9644315D7D;
+        Fri,  1 Oct 2021 13:31:22 +0000 (UTC)
+Message-ID: <256e577b57eb21555de96846d1ac4cfa3b8ee238.camel@perches.com>
+Subject: Re: [PATCH v2 1/1] infiniband: hf1: Use string_upper() instead of
+ open coded variant
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cai Huoqing <caihuoqing@baidu.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vadim Pasternak <vadimp@mellanox.com>
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Gioh Kim <gi-oh.kim@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Fri, 01 Oct 2021 06:31:21 -0700
+In-Reply-To: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
+References: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.0-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: A9644315D7D
+X-Spam-Status: No, score=-1.81
+X-Stat-Signature: g9ygsf6tgcr1r6sycycn3e33ide4qgm8
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19xWmYIescM5VhJLkm8KXhZgeIgpmZJRoI=
+X-HE-Tag: 1633095082-359233
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Sep 30, 2021 at 9:53 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Sep 30, 2021 at 09:10:33AM +0200, Jinpu Wang wrote:
-> > On Thu, Sep 30, 2021 at 9:01 AM Leon Romanovsky <leon@kernel.org> wrote=
-:
-> > >
-> > > On Thu, Sep 30, 2021 at 08:03:40AM +0200, Jinpu Wang wrote:
-> > > > On Wed, Sep 29, 2021 at 2:04 PM Leon Romanovsky <leon@kernel.org> w=
-rote:
-> > > > >
-> > > > > On Wed, Sep 29, 2021 at 09:00:56AM +0200, Jack Wang wrote:
-> > > > > > Leon Romanovsky <leon@kernel.org> =E4=BA=8E2021=E5=B9=B49=E6=9C=
-=8828=E6=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=889:28=E5=86=99=E9=81=93=
-=EF=BC=9A
-> > > > > > >
-> > > > > > > On Tue, Sep 28, 2021 at 09:08:26AM +0200, Jack Wang wrote:
-> > > > > > > > Leon Romanovsky <leon@kernel.org> =E4=BA=8E2021=E5=B9=B49=
-=E6=9C=8827=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=882:23=E5=86=99=E9=
-=81=93=EF=BC=9A
-> > > > > > > > >
-> > > > > > > > > On Wed, Sep 22, 2021 at 02:53:32PM +0200, Md Haris Iqbal =
-wrote:
-> > > > > > > > > > Allowing these characters in sessname can lead to unexp=
-ected results,
-> > > > > > > > > > particularly because / is used as a separator between f=
-iles in a path,
-> > > > > > > > > > and . points to the current directory.
-> > > > > > > > > >
-> > > > > > > > > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > > > > > > > > > Reviewed-by: Gioh Kim <gi-oh.kim@ionos.com>
-> > > > > > > > > > Reviewed-by: Aleksei Marov <aleksei.marov@ionos.com>
-> > > > > > > > > > ---
-> > > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 6 ++++++
-> > > > > > > > > >  drivers/infiniband/ulp/rtrs/rtrs-srv.c | 5 +++++
-> > > > > > > > > >  2 files changed, 11 insertions(+)
-> > > > > > > > >
-> > > > > > > > > It will be safer if you check for only allowed symbols an=
-d disallow
-> > > > > > > > > everything else. Check for: a-Z, 0-9 and "-".
-> > > > > > > > >
-> > > > > > > > Hi Leon,
-> > > > > > > >
-> > > > > > > > Thanks for your suggestions.
-> > > > > > > > The reasons we choose to do disallow only '/' and '.':
-> > > > > > > > 1 more flexible, most UNIX filenames allow any 8-bit set, e=
-xcept '/' and null.
-> > > > > > >
-> > > > > > > So you need to add all possible protections and checks that V=
-FS has to allow "random" name.
-> > > > > > It's only about sysfs here, as we use sessname to create dir in=
- sysfs,
-> > > > > > and I checked the code, it allows any 8-bit set, and convert '/=
-' to
-> > > > > > '!', see https://elixir.bootlin.com/linux/latest/source/lib/kob=
-ject.c#L299
-> > > > > > >
-> > > > > > > > 2 matching for 2 characters is faster than checking all the=
- allowed
-> > > > > > > > symbols during session establishment.
-> > > > > > >
-> > > > > > > Extra CPU cycles won't make any difference here.
-> > > > > > As we can have hundreds of sessions, in the end, it matters.
-> > > > >
-> > > > > Your rtrs_clt_open() function is far from being optimized for
-> > > > > performance. It allocates memory, iterates over all paths, create=
-s
-> > > > > sysfs and kobject.
-> > > > >
-> > > > > So no, it doesn't matter here.
-> > > > >
-> > > > Let me reiterate, why do we want to further slow it down, what do y=
-ou
-> > > > anticipate if we only do the disallow approach
-> > > > as we do it now?
-> > >
-> > > It is common practice to sanitize user input and explicitly allow kno=
-wn
-> > > good input, instead of relying on deny of bad input. We don't know th=
-e
-> > > future and can't be sure that "deny" is actually closed all holes.
-> >
-> > Thanks for the clarification, but still what kind of holes do you have
-> > in mind, the input string length is already checked and it's
-> > not duplicated with other sessname. and sysfs does allow all 8 bit set =
-IIUC.
->
-> As an example, symbols like "/" and "\".
-"/" aside, we already disable it.
-I did a test, there is no problem to use "\" as sysfs name.
+On Fri, 2021-10-01 at 15:31 +0300, Andy Shevchenko wrote:
+> Use string_upper() from string helper module instead of open coded variant.
 
-Thanks!
->
-> >
-> > Thanks!
-> >
-> > > Thanks
+Perhaps these string_upper and string_lower utility functions
+should return dst not void so these functions could be used in
+output calls.
+
+So instead of:
+
++		string_upper(prefix_name, prefix_name);
+ 		snprintf(name, sizeof(name), "%s-%s", prefix_name, kind);
+
+this could be consolidated:
+
+		snprintf(name, sizeof(name), "%s-%s", string_upper(prefix_name), kind);
+
+Perhaps:
+---
+ include/linux/string_helpers.h | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/string_helpers.h b/include/linux/string_helpers.h
+index 68189c4a2eb11..ef92a9471f2a9 100644
+--- a/include/linux/string_helpers.h
++++ b/include/linux/string_helpers.h
+@@ -81,18 +81,26 @@ static inline int string_escape_str_any_np(const char *src, char *dst,
+ 	return string_escape_str(src, dst, sz, ESCAPE_ANY_NP, only);
+ }
+ 
+-static inline void string_upper(char *dst, const char *src)
++static inline char *string_upper(char *dst, const char *src)
+ {
++	char *rtn = dst;
++
+ 	do {
+ 		*dst++ = toupper(*src);
+ 	} while (*src++);
++
++	return rtn;
+ }
+ 
+-static inline void string_lower(char *dst, const char *src)
++static inline char *string_lower(char *dst, const char *src)
+ {
++	char *rtn = dst;
++
+ 	do {
+ 		*dst++ = tolower(*src);
+ 	} while (*src++);
++
++	return rtn;
+ }
+ 
+ char *kstrdup_quotable(const char *src, gfp_t gfp);
+
+
