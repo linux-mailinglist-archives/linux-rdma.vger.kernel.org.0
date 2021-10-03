@@ -2,791 +2,1327 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87AAC4200F8
-	for <lists+linux-rdma@lfdr.de>; Sun,  3 Oct 2021 11:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C64242013F
+	for <lists+linux-rdma@lfdr.de>; Sun,  3 Oct 2021 12:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhJCJKm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 3 Oct 2021 05:10:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229785AbhJCJKm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 3 Oct 2021 05:10:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D3F861B3E;
-        Sun,  3 Oct 2021 09:08:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633252135;
-        bh=FTSW12Q325NMQiu1sjkINye8OJms+zGari3Brb9BsTc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RLaLbEWve/Ls8UrrrtefLmjT/2zWgvd/kDMNGNbMqSyFtuoF029G38Qqlp2GJPyUj
-         WEwNkZB1ep1lau35Yf2k/yROqekMgQJ66ePq7loBBmJ0NA3q12q8MO6qe4V+9n5sV6
-         TLDJaCFfDX6f9y11eh1XotCOtC3zAAIeT0SxrzM9LEJUjcCHbUTb2Qt0koaG+kxVGh
-         Cn6Steg7w+SjLkM6dOIdRS/UmqKICUU1xVd3EbBvrGeMdgK1R3LeFq9VC596mLAuTe
-         hYpPTIffZSelaNgD8ZyeeCWnHNxtXrdBDvedCBDbbCFYG0TVhi7rpqEHC+Wt2SN2BP
-         YzMJ/q9z5GoVw==
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        jgg@ziepe.ca, airlied@gmail.com
-Cc:     christian.koenig@amd.com, daniel.vetter@ffwll.ch,
-        galpress@amazon.com, sleybo@amazon.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-media@vger.kernel.org, dledford@redhat.com,
-        alexander.deucher@amd.com, leonro@nvidia.com, hch@lst.de,
-        amd-gfx@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH v7 2/2] habanalabs: add support for dma-buf exporter
-Date:   Sun,  3 Oct 2021 12:07:56 +0300
-Message-Id: <20211003090756.117809-3-ogabbay@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211003090756.117809-1-ogabbay@kernel.org>
-References: <20211003090756.117809-1-ogabbay@kernel.org>
+        id S230086AbhJCK6O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 3 Oct 2021 06:58:14 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:41740 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229994AbhJCK6M (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 3 Oct 2021 06:58:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1633258586; x=1664794586;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qVZWGKthctfkg59WMJzjgzNos7wsLUcu69Y3PwoPsCw=;
+  b=F0a2ganz1f5dJsrTQ/ZmFCUSXeSlcYNzdaqmFnVWo7Qa7jqw5e30VCOt
+   FCEZDrufXNC0MGZFny4AeOs9nkBT2eW+2SpKKNeMc/MKo9+21iSgn+h/i
+   KqniBDSgmNMZSIsjGztXR6EwblKCYNJtZHgVIXxP8NIeFEk9uLX0jZtFS
+   g=;
+X-IronPort-AV: E=Sophos;i="5.85,343,1624320000"; 
+   d="scan'208";a="151393621"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-54c9d11f.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-33001.sea14.amazon.com with ESMTP; 03 Oct 2021 10:56:18 +0000
+Received: from EX13D19EUA003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1e-54c9d11f.us-east-1.amazon.com (Postfix) with ESMTPS id ADB4CC09D2;
+        Sun,  3 Oct 2021 10:56:16 +0000 (UTC)
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D19EUA003.ant.amazon.com (10.43.165.175) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Sun, 3 Oct 2021 10:56:15 +0000
+Received: from 8c85908914bf.ant.amazon.com.com (10.1.212.15) by
+ mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Sun, 3 Oct 2021 10:56:12 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Doug Ledford <dledford@redhat.com>
+CC:     <linux-rdma@vger.kernel.org>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Firas JahJah <firasj@amazon.com>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: [PATCH for-next v4] RDMA/efa: CQ notifications
+Date:   Sun, 3 Oct 2021 13:56:04 +0300
+Message-ID: <20211003105605.29222-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+This patch adds support for CQ notifications through the standard verbs
+api.
 
-Implement the calls to the dma-buf kernel api to create a dma-buf
-object backed by FD.
+In order to achieve that, a new event queue (EQ) object is introduced,
+which is in charge of reporting completion events to the driver.
+On driver load, EQs are allocated and their affinity is set to a single
+cpu. When a user app creates a CQ with a completion channel, the
+completion vector number is converted to a EQ number, which is in charge
+of reporting the CQ events.
 
-We block the option to mmap the DMA-BUF object because we don't support
-DIRECT_IO and implicit P2P. We only implement support for explicit P2P
-through importing the FD of the DMA-BUF.
+In addition, the CQ creation admin command now returns an offset for the
+CQ doorbell, which is mapped to the userspace provider and is used to
+arm the CQ when requested by the user.
 
-In the export phase, we provide to the DMA-BUF object an array of pages
-that represent the device's memory area. During the map callback,
-we convert the array of pages into an SGT. We split/merge the pages
-according to the dma max segment size of the importer.
+The EQs use a single doorbell (located on the registers BAR), which
+encodes the EQ number and arm as part of the doorbell value.
+The EQs are polled by the driver on each new EQE, and arm it when the
+poll is completed.
 
-To get the DMA address of the PCI bar, we use the dma_map_resources()
-kernel API, because our device memory is not backed by page struct
-and this API doesn't need page struct to map the physical address to
-a DMA address.
-
-We set the orig_nents member of the SGT to be 0, to indicate to other
-drivers that we don't support CPU mappings.
-
-Note that in Habanalabs's ASICs, the device memory is pinned and
-immutable. Therefore, there is no need for dynamic mappings and pinning
-callbacks.
-
-Also note that in GAUDI we don't have an MMU towards the device memory
-and the user works on physical addresses. Therefore, the user doesn't
-pass through the kernel driver to allocate memory there. As a result,
-only for GAUDI we receive from the user a device memory physical address
-(instead of a handle) and a size.
-
-We check the p2p distance using pci_p2pdma_distance_many() and refusing
-to map dmabuf in case the distance doesn't allow p2p.
-
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
-Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
-Reviewed-by: Gal Pressman <galpress@amazon.com>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+Reviewed-by: Firas JahJah <firasj@amazon.com>
+Reviewed-by: Yossi Leybovich <sleybo@amazon.com>
+Signed-off-by: Gal Pressman <galpress@amazon.com>
 ---
-Changes in v7:
- - rename structure hl_dmabuf_wrapper to hl_dmabuf_priv
- - remove change that wasn't relevant to this patch
- - set orig_nents to 0 at end of alloc_sgt_from_device_pages()
-   to avoid undoing that set in case of error
- - remove silent ignore of upper 32 bits of handle received
-   from user in export_dmabuf_from_handle
- - replace all dev_err that triggered by user actions to dev_dbg
- - change alloc_sgt_from_device_pages() to return pointer to
-   struct sg_table or ERR_PTR
- - add comment why we use DMA_ATTR_SKIP_CPU_SYNC in dmabuf unmap
+PR was sent:
+https://github.com/linux-rdma/rdma-core/pull/1044
 
- drivers/misc/habanalabs/Kconfig             |   1 +
- drivers/misc/habanalabs/common/habanalabs.h |  22 +
- drivers/misc/habanalabs/common/memory.c     | 514 +++++++++++++++++++-
- drivers/misc/habanalabs/gaudi/gaudi.c       |   1 +
- drivers/misc/habanalabs/goya/goya.c         |   1 +
- 5 files changed, 536 insertions(+), 3 deletions(-)
+Changelog -
+v3->v4: https://lore.kernel.org/linux-rdma/20210930121602.63131-1-galpress@amazon.com/
+* Change destroy EQ functions' return value to void
 
-diff --git a/drivers/misc/habanalabs/Kconfig b/drivers/misc/habanalabs/Kconfig
-index 293d79811372..c82d2e7b2035 100644
---- a/drivers/misc/habanalabs/Kconfig
-+++ b/drivers/misc/habanalabs/Kconfig
-@@ -8,6 +8,7 @@ config HABANA_AI
- 	depends on PCI && HAS_IOMEM
- 	select GENERIC_ALLOCATOR
- 	select HWMON
-+	select DMA_SHARED_BUFFER
- 	help
- 	  Enables PCIe card driver for Habana's AI Processors (AIP) that are
- 	  designed to accelerate Deep Learning inference and training workloads.
-diff --git a/drivers/misc/habanalabs/common/habanalabs.h b/drivers/misc/habanalabs/common/habanalabs.h
-index f8e23ca18a57..ba5a424a4f3e 100644
---- a/drivers/misc/habanalabs/common/habanalabs.h
-+++ b/drivers/misc/habanalabs/common/habanalabs.h
-@@ -26,6 +26,7 @@
- #include <linux/sched/signal.h>
- #include <linux/io-64-nonatomic-lo-hi.h>
- #include <linux/coresight.h>
-+#include <linux/dma-buf.h>
+v2->v3: https://lore.kernel.org/linux-rdma/20210913120406.61745-1-galpress@amazon.com/
+* Only store CQs with interrupts enabled in the CQs xarray
+* Add a comment before the xa_load to explain why it is safe
+
+v1->v2: https://lore.kernel.org/linux-rdma/20210811151131.39138-1-galpress@amazon.com/
+* Replace xa_init_flags() with xa_init()
+* Add a synchronize_irq() in destroy_cq flow to prevent a race with
+  interrupt flow.
+---
+ drivers/infiniband/hw/efa/efa.h               |  19 +-
+ .../infiniband/hw/efa/efa_admin_cmds_defs.h   | 100 +++++++++-
+ drivers/infiniband/hw/efa/efa_admin_defs.h    |  41 ++++
+ drivers/infiniband/hw/efa/efa_com.c           | 164 ++++++++++++++++
+ drivers/infiniband/hw/efa/efa_com.h           |  38 +++-
+ drivers/infiniband/hw/efa/efa_com_cmd.c       |  35 +++-
+ drivers/infiniband/hw/efa/efa_com_cmd.h       |  10 +-
+ drivers/infiniband/hw/efa/efa_main.c          | 181 +++++++++++++++---
+ drivers/infiniband/hw/efa/efa_regs_defs.h     |   7 +-
+ drivers/infiniband/hw/efa/efa_verbs.c         |  67 ++++++-
+ include/uapi/rdma/efa-abi.h                   |  18 +-
+ 11 files changed, 625 insertions(+), 55 deletions(-)
+
+diff --git a/drivers/infiniband/hw/efa/efa.h b/drivers/infiniband/hw/efa/efa.h
+index 87b1dadeb7fe..e0c9ba4c70f4 100644
+--- a/drivers/infiniband/hw/efa/efa.h
++++ b/drivers/infiniband/hw/efa/efa.h
+@@ -20,14 +20,14 @@
  
- #define HL_NAME				"habanalabs"
+ #define EFA_IRQNAME_SIZE        40
  
-@@ -1352,6 +1353,23 @@ struct hl_cs_counters_atomic {
- 	atomic64_t validation_drop_cnt;
+-/* 1 for AENQ + ADMIN */
+-#define EFA_NUM_MSIX_VEC                  1
+ #define EFA_MGMNT_MSIX_VEC_IDX            0
++#define EFA_COMP_EQS_VEC_BASE             1
+ 
+ struct efa_irq {
+ 	irq_handler_t handler;
+ 	void *data;
+ 	u32 irqn;
++	u32 vector;
+ 	cpumask_t affinity_hint_mask;
+ 	char name[EFA_IRQNAME_SIZE];
+ };
+@@ -61,6 +61,13 @@ struct efa_dev {
+ 	struct efa_irq admin_irq;
+ 
+ 	struct efa_stats stats;
++
++	/* Array of completion EQs */
++	struct efa_eq *eqs;
++	unsigned int neqs;
++
++	/* Only stores CQs with interrupts enabled */
++	struct xarray cqs_xa;
  };
  
-+/**
-+ * struct hl_dmabuf_priv - a dma-buf private object.
-+ * @dmabuf: pointer to dma-buf object.
-+ * @ctx: pointer to the dma-buf owner's context.
-+ * @phys_pg_pack: pointer to physical page pack if the dma-buf was exported for
-+ *                memory allocation handle.
-+ * @device_address: physical address of the device's memory. Relevant only
-+ *                  if phys_pg_pack is NULL (dma-buf was exported from address).
-+ *                  The total size can be taken from the dmabuf object.
-+ */
-+struct hl_dmabuf_priv {
-+	struct dma_buf			*dmabuf;
-+	struct hl_ctx			*ctx;
-+	struct hl_vm_phys_pg_pack	*phys_pg_pack;
-+	uint64_t			device_address;
+ struct efa_ucontext {
+@@ -84,8 +91,11 @@ struct efa_cq {
+ 	dma_addr_t dma_addr;
+ 	void *cpu_addr;
+ 	struct rdma_user_mmap_entry *mmap_entry;
++	struct rdma_user_mmap_entry *db_mmap_entry;
+ 	size_t size;
+ 	u16 cq_idx;
++	/* NULL when no interrupts requested */
++	struct efa_eq *eq;
+ };
+ 
+ struct efa_qp {
+@@ -116,6 +126,11 @@ struct efa_ah {
+ 	u8 id[EFA_GID_SIZE];
+ };
+ 
++struct efa_eq {
++	struct efa_com_eq eeq;
++	struct efa_irq irq;
 +};
 +
- /**
-  * struct hl_ctx - user/kernel context.
-  * @mem_hash: holds mapping from virtual address to virtual memory area
-@@ -1662,6 +1680,7 @@ struct hl_vm_hw_block_list_node {
-  * @npages: num physical pages in the pack.
-  * @total_size: total size of all the pages in this list.
-  * @mapping_cnt: number of shared mappings.
-+ * @exporting_cnt: number of dma-buf exporting.
-  * @asid: the context related to this list.
-  * @page_size: size of each page in the pack.
-  * @flags: HL_MEM_* flags related to this list.
-@@ -1676,6 +1695,7 @@ struct hl_vm_phys_pg_pack {
- 	u64			npages;
- 	u64			total_size;
- 	atomic_t		mapping_cnt;
-+	u32			exporting_cnt;
- 	u32			asid;
- 	u32			page_size;
- 	u32			flags;
-@@ -2396,6 +2416,7 @@ struct multi_cs_data {
-  *                          the error will be ignored by the driver during
-  *                          device initialization. Mainly used to debug and
-  *                          workaround firmware bugs
-+ * @dram_pci_bar_start: start bus address of PCIe bar towards DRAM.
-  * @last_successful_open_jif: timestamp (jiffies) of the last successful
-  *                            device open.
-  * @last_open_session_duration_jif: duration (jiffies) of the last device open
-@@ -2537,6 +2558,7 @@ struct hl_device {
- 	u64				max_power;
- 	u64				clock_gating_mask;
- 	u64				boot_error_status_mask;
-+	u64				dram_pci_bar_start;
- 	u64				last_successful_open_jif;
- 	u64				last_open_session_duration_jif;
- 	u64				open_counter;
-diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/habanalabs/common/memory.c
-index 33986933aa9e..c026e005403d 100644
---- a/drivers/misc/habanalabs/common/memory.c
-+++ b/drivers/misc/habanalabs/common/memory.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+ int efa_query_device(struct ib_device *ibdev,
+ 		     struct ib_device_attr *props,
+ 		     struct ib_udata *udata);
+diff --git a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+index fa38b34eddb8..0b0b93b529f3 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_cmds_defs.h
+@@ -28,7 +28,9 @@ enum efa_admin_aq_opcode {
+ 	EFA_ADMIN_DEALLOC_PD                        = 15,
+ 	EFA_ADMIN_ALLOC_UAR                         = 16,
+ 	EFA_ADMIN_DEALLOC_UAR                       = 17,
+-	EFA_ADMIN_MAX_OPCODE                        = 17,
++	EFA_ADMIN_CREATE_EQ                         = 18,
++	EFA_ADMIN_DESTROY_EQ                        = 19,
++	EFA_ADMIN_MAX_OPCODE                        = 19,
+ };
  
- /*
-- * Copyright 2016-2019 HabanaLabs, Ltd.
-+ * Copyright 2016-2021 HabanaLabs, Ltd.
-  * All Rights Reserved.
-  */
+ enum efa_admin_aq_feature_id {
+@@ -38,6 +40,7 @@ enum efa_admin_aq_feature_id {
+ 	EFA_ADMIN_QUEUE_ATTR                        = 4,
+ 	EFA_ADMIN_HW_HINTS                          = 5,
+ 	EFA_ADMIN_HOST_INFO                         = 6,
++	EFA_ADMIN_EVENT_QUEUE_ATTR                  = 7,
+ };
  
-@@ -11,12 +11,14 @@
+ /* QP transport type */
+@@ -430,8 +433,8 @@ struct efa_admin_create_cq_cmd {
+ 	/*
+ 	 * 4:0 : reserved5 - MBZ
+ 	 * 5 : interrupt_mode_enabled - if set, cq operates
+-	 *    in interrupt mode (i.e. CQ events and MSI-X are
+-	 *    generated), otherwise - polling
++	 *    in interrupt mode (i.e. CQ events and EQ elements
++	 *    are generated), otherwise - polling
+ 	 * 6 : virt - If set, ring base address is virtual
+ 	 *    (IOVA returned by MR registration)
+ 	 * 7 : reserved6 - MBZ
+@@ -448,8 +451,11 @@ struct efa_admin_create_cq_cmd {
+ 	/* completion queue depth in # of entries. must be power of 2 */
+ 	u16 cq_depth;
  
- #include <linux/uaccess.h>
- #include <linux/slab.h>
-+#include <linux/pci-p2pdma.h>
- 
- #define HL_MMU_DEBUG	0
- 
- /* use small pages for supporting non-pow2 (32M/40M/48M) DRAM phys page sizes */
- #define DRAM_POOL_PAGE_SIZE SZ_8M
- 
+-	/* msix vector assigned to this cq */
+-	u32 msix_vector_idx;
++	/* EQ number assigned to this cq */
++	u16 eqn;
 +
- /*
-  * The va ranges in context object contain a list with the available chunks of
-  * device virtual memory.
-@@ -347,6 +349,12 @@ static int free_device_memory(struct hl_ctx *ctx, struct hl_mem_in *args)
- 			return -EINVAL;
- 		}
++	/* MBZ */
++	u16 reserved;
  
-+		if (phys_pg_pack->exporting_cnt) {
-+			dev_dbg(hdev->dev, "handle %u is exported, cannot free\n", handle);
-+			spin_unlock(&vm->idr_lock);
-+			return -EINVAL;
+ 	/*
+ 	 * CQ ring base address, virtual or physical depending on 'virt'
+@@ -480,6 +486,15 @@ struct efa_admin_create_cq_resp {
+ 
+ 	/* actual cq depth in number of entries */
+ 	u16 cq_actual_depth;
++
++	/* CQ doorbell address, as offset to PCIe DB BAR */
++	u32 db_offset;
++
++	/*
++	 * 0 : db_valid - If set, doorbell offset is valid.
++	 *    Always set when interrupts are requested.
++	 */
++	u32 flags;
+ };
+ 
+ struct efa_admin_destroy_cq_cmd {
+@@ -669,6 +684,17 @@ struct efa_admin_feature_queue_attr_desc {
+ 	u16 max_tx_batch;
+ };
+ 
++struct efa_admin_event_queue_attr_desc {
++	/* The maximum number of event queues supported */
++	u32 max_eq;
++
++	/* Maximum number of EQEs per Event Queue */
++	u32 max_eq_depth;
++
++	/* Supported events bitmask */
++	u32 event_bitmask;
++};
++
+ struct efa_admin_feature_aenq_desc {
+ 	/* bitmask for AENQ groups the device can report */
+ 	u32 supported_groups;
+@@ -727,6 +753,8 @@ struct efa_admin_get_feature_resp {
+ 
+ 		struct efa_admin_feature_queue_attr_desc queue_attr;
+ 
++		struct efa_admin_event_queue_attr_desc event_queue_attr;
++
+ 		struct efa_admin_hw_hints hw_hints;
+ 	} u;
+ };
+@@ -810,6 +838,60 @@ struct efa_admin_dealloc_uar_resp {
+ 	struct efa_admin_acq_common_desc acq_common_desc;
+ };
+ 
++struct efa_admin_create_eq_cmd {
++	struct efa_admin_aq_common_desc aq_common_descriptor;
++
++	/* Size of the EQ in entries, must be power of 2 */
++	u16 depth;
++
++	/* MSI-X table entry index */
++	u8 msix_vec;
++
++	/*
++	 * 4:0 : entry_size_words - size of EQ entry in
++	 *    32-bit words
++	 * 7:5 : reserved - MBZ
++	 */
++	u8 caps;
++
++	/* EQ ring base address */
++	struct efa_common_mem_addr ba;
++
++	/*
++	 * Enabled events on this EQ
++	 * 0 : completion_events - Enable completion events
++	 * 31:1 : reserved - MBZ
++	 */
++	u32 event_bitmask;
++
++	/* MBZ */
++	u32 reserved;
++};
++
++struct efa_admin_create_eq_resp {
++	struct efa_admin_acq_common_desc acq_common_desc;
++
++	/* EQ number */
++	u16 eqn;
++
++	/* MBZ */
++	u16 reserved;
++};
++
++struct efa_admin_destroy_eq_cmd {
++	struct efa_admin_aq_common_desc aq_common_descriptor;
++
++	/* EQ number */
++	u16 eqn;
++
++	/* MBZ */
++	u16 reserved;
++};
++
++struct efa_admin_destroy_eq_resp {
++	struct efa_admin_acq_common_desc acq_common_desc;
++};
++
+ /* asynchronous event notification groups */
+ enum efa_admin_aenq_group {
+ 	EFA_ADMIN_FATAL_ERROR                       = 1,
+@@ -899,10 +981,18 @@ struct efa_admin_host_info {
+ #define EFA_ADMIN_CREATE_CQ_CMD_VIRT_MASK                   BIT(6)
+ #define EFA_ADMIN_CREATE_CQ_CMD_CQ_ENTRY_SIZE_WORDS_MASK    GENMASK(4, 0)
+ 
++/* create_cq_resp */
++#define EFA_ADMIN_CREATE_CQ_RESP_DB_VALID_MASK              BIT(0)
++
+ /* feature_device_attr_desc */
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RDMA_READ_MASK   BIT(0)
+ #define EFA_ADMIN_FEATURE_DEVICE_ATTR_DESC_RNR_RETRY_MASK   BIT(1)
+ 
++/* create_eq_cmd */
++#define EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS_MASK       GENMASK(4, 0)
++#define EFA_ADMIN_CREATE_EQ_CMD_VIRT_MASK                   BIT(6)
++#define EFA_ADMIN_CREATE_EQ_CMD_COMPLETION_EVENTS_MASK      BIT(0)
++
+ /* host_info */
+ #define EFA_ADMIN_HOST_INFO_DRIVER_MODULE_TYPE_MASK         GENMASK(7, 0)
+ #define EFA_ADMIN_HOST_INFO_DRIVER_SUB_MINOR_MASK           GENMASK(15, 8)
+diff --git a/drivers/infiniband/hw/efa/efa_admin_defs.h b/drivers/infiniband/hw/efa/efa_admin_defs.h
+index 78ff9389ae25..83f20c38a840 100644
+--- a/drivers/infiniband/hw/efa/efa_admin_defs.h
++++ b/drivers/infiniband/hw/efa/efa_admin_defs.h
+@@ -118,6 +118,43 @@ struct efa_admin_aenq_entry {
+ 	u32 inline_data_w4[12];
+ };
+ 
++enum efa_admin_eqe_event_type {
++	EFA_ADMIN_EQE_EVENT_TYPE_COMPLETION         = 0,
++};
++
++/* Completion event */
++struct efa_admin_comp_event {
++	/* CQ number */
++	u16 cqn;
++
++	/* MBZ */
++	u16 reserved;
++
++	/* MBZ */
++	u32 reserved2;
++};
++
++/* Event Queue Element */
++struct efa_admin_eqe {
++	/*
++	 * 0 : phase
++	 * 8:1 : event_type - Event type
++	 * 31:9 : reserved - MBZ
++	 */
++	u32 common;
++
++	/* MBZ */
++	u32 reserved;
++
++	union {
++		/* Event data */
++		u32 event_data[2];
++
++		/* Completion Event */
++		struct efa_admin_comp_event comp_event;
++	} u;
++};
++
+ /* aq_common_desc */
+ #define EFA_ADMIN_AQ_COMMON_DESC_COMMAND_ID_MASK            GENMASK(11, 0)
+ #define EFA_ADMIN_AQ_COMMON_DESC_PHASE_MASK                 BIT(0)
+@@ -131,4 +168,8 @@ struct efa_admin_aenq_entry {
+ /* aenq_common_desc */
+ #define EFA_ADMIN_AENQ_COMMON_DESC_PHASE_MASK               BIT(0)
+ 
++/* eqe */
++#define EFA_ADMIN_EQE_PHASE_MASK                            BIT(0)
++#define EFA_ADMIN_EQE_EVENT_TYPE_MASK                       GENMASK(8, 1)
++
+ #endif /* _EFA_ADMIN_H_ */
+diff --git a/drivers/infiniband/hw/efa/efa_com.c b/drivers/infiniband/hw/efa/efa_com.c
+index 0d523ad736c7..16a24a05fc2a 100644
+--- a/drivers/infiniband/hw/efa/efa_com.c
++++ b/drivers/infiniband/hw/efa/efa_com.c
+@@ -56,11 +56,19 @@ static const char *efa_com_cmd_str(u8 cmd)
+ 	EFA_CMD_STR_CASE(DEALLOC_PD);
+ 	EFA_CMD_STR_CASE(ALLOC_UAR);
+ 	EFA_CMD_STR_CASE(DEALLOC_UAR);
++	EFA_CMD_STR_CASE(CREATE_EQ);
++	EFA_CMD_STR_CASE(DESTROY_EQ);
+ 	default: return "unknown command opcode";
+ 	}
+ #undef EFA_CMD_STR_CASE
+ }
+ 
++void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low)
++{
++	*addr_low = lower_32_bits(addr);
++	*addr_high = upper_32_bits(addr);
++}
++
+ static u32 efa_com_reg_read32(struct efa_com_dev *edev, u16 offset)
+ {
+ 	struct efa_com_mmio_read *mmio_read = &edev->mmio_read;
+@@ -1081,3 +1089,159 @@ int efa_com_dev_reset(struct efa_com_dev *edev,
+ 
+ 	return 0;
+ }
++
++static int efa_com_create_eq(struct efa_com_dev *edev,
++			     struct efa_com_create_eq_params *params,
++			     struct efa_com_create_eq_result *result)
++{
++	struct efa_com_admin_queue *aq = &edev->aq;
++	struct efa_admin_create_eq_resp resp = {};
++	struct efa_admin_create_eq_cmd cmd = {};
++	int err;
++
++	cmd.aq_common_descriptor.opcode = EFA_ADMIN_CREATE_EQ;
++	EFA_SET(&cmd.caps, EFA_ADMIN_CREATE_EQ_CMD_ENTRY_SIZE_WORDS,
++		params->entry_size_in_bytes / 4);
++	cmd.depth = params->depth;
++	cmd.event_bitmask = params->event_bitmask;
++	cmd.msix_vec = params->msix_vec;
++
++	efa_com_set_dma_addr(params->dma_addr, &cmd.ba.mem_addr_high,
++			     &cmd.ba.mem_addr_low);
++
++	err = efa_com_cmd_exec(aq,
++			       (struct efa_admin_aq_entry *)&cmd,
++			       sizeof(cmd),
++			       (struct efa_admin_acq_entry *)&resp,
++			       sizeof(resp));
++	if (err) {
++		ibdev_err_ratelimited(edev->efa_dev,
++				      "Failed to create eq[%d]\n", err);
++		return err;
++	}
++
++	result->eqn = resp.eqn;
++
++	return 0;
++}
++
++static void efa_com_destroy_eq(struct efa_com_dev *edev,
++			       struct efa_com_destroy_eq_params *params)
++{
++	struct efa_com_admin_queue *aq = &edev->aq;
++	struct efa_admin_destroy_eq_resp resp = {};
++	struct efa_admin_destroy_eq_cmd cmd = {};
++	int err;
++
++	cmd.aq_common_descriptor.opcode = EFA_ADMIN_DESTROY_EQ;
++	cmd.eqn = params->eqn;
++
++	err = efa_com_cmd_exec(aq,
++			       (struct efa_admin_aq_entry *)&cmd,
++			       sizeof(cmd),
++			       (struct efa_admin_acq_entry *)&resp,
++			       sizeof(resp));
++	if (err)
++		ibdev_err_ratelimited(edev->efa_dev,
++				      "Failed to destroy EQ-%u [%d]\n", cmd.eqn,
++				      err);
++}
++
++static void efa_com_arm_eq(struct efa_com_dev *edev, struct efa_com_eq *eeq)
++{
++	u32 val = 0;
++
++	EFA_SET(&val, EFA_REGS_EQ_DB_EQN, eeq->eqn);
++	EFA_SET(&val, EFA_REGS_EQ_DB_ARM, 1);
++
++	writel(val, edev->reg_bar + EFA_REGS_EQ_DB_OFF);
++}
++
++void efa_com_eq_comp_intr_handler(struct efa_com_dev *edev,
++				  struct efa_com_eq *eeq)
++{
++	struct efa_admin_eqe *eqe;
++	u32 processed = 0;
++	u8 phase;
++	u32 ci;
++
++	ci = eeq->cc & (eeq->depth - 1);
++	phase = eeq->phase;
++	eqe = &eeq->eqes[ci];
++
++	/* Go over all the events */
++	while ((READ_ONCE(eqe->common) & EFA_ADMIN_EQE_PHASE_MASK) == phase) {
++		/*
++		 * Do not read the rest of the completion entry before the
++		 * phase bit was validated
++		 */
++		dma_rmb();
++
++		eeq->cb(eeq, eqe);
++
++		/* Get next event entry */
++		ci++;
++		processed++;
++
++		if (ci == eeq->depth) {
++			ci = 0;
++			phase = !phase;
 +		}
 +
- 		/*
- 		 * must remove from idr before the freeing of the physical
- 		 * pages as the refcount of the pool is also the trigger of the
-@@ -1487,13 +1495,487 @@ int hl_hw_block_mmap(struct hl_fpriv *hpriv, struct vm_area_struct *vma)
++		eqe = &eeq->eqes[ci];
++	}
++
++	eeq->cc += processed;
++	eeq->phase = phase;
++	efa_com_arm_eq(eeq->edev, eeq);
++}
++
++void efa_com_eq_destroy(struct efa_com_dev *edev, struct efa_com_eq *eeq)
++{
++	struct efa_com_destroy_eq_params params = {
++		.eqn = eeq->eqn,
++	};
++
++	efa_com_destroy_eq(edev, &params);
++	dma_free_coherent(edev->dmadev, eeq->depth * sizeof(*eeq->eqes),
++			  eeq->eqes, eeq->dma_addr);
++}
++
++int efa_com_eq_init(struct efa_com_dev *edev, struct efa_com_eq *eeq,
++		    efa_eqe_handler cb, u16 depth, u8 msix_vec)
++{
++	struct efa_com_create_eq_params params = {};
++	struct efa_com_create_eq_result result = {};
++	int err;
++
++	params.depth = depth;
++	params.entry_size_in_bytes = sizeof(*eeq->eqes);
++	EFA_SET(&params.event_bitmask,
++		EFA_ADMIN_CREATE_EQ_CMD_COMPLETION_EVENTS, 1);
++	params.msix_vec = msix_vec;
++
++	eeq->eqes = dma_alloc_coherent(edev->dmadev,
++				       params.depth * sizeof(*eeq->eqes),
++				       &params.dma_addr, GFP_KERNEL);
++	if (!eeq->eqes)
++		return -ENOMEM;
++
++	err = efa_com_create_eq(edev, &params, &result);
++	if (err)
++		goto err_free_coherent;
++
++	eeq->eqn = result.eqn;
++	eeq->edev = edev;
++	eeq->dma_addr = params.dma_addr;
++	eeq->phase = 1;
++	eeq->depth = params.depth;
++	eeq->cb = cb;
++	efa_com_arm_eq(edev, eeq);
++
++	return 0;
++
++err_free_coherent:
++	dma_free_coherent(edev->dmadev, params.depth * sizeof(*eeq->eqes),
++			  eeq->eqes, params.dma_addr);
++	return err;
++}
+diff --git a/drivers/infiniband/hw/efa/efa_com.h b/drivers/infiniband/hw/efa/efa_com.h
+index 5e4c88877ddb..77282234ce68 100644
+--- a/drivers/infiniband/hw/efa/efa_com.h
++++ b/drivers/infiniband/hw/efa/efa_com.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_COM_H_
+@@ -80,6 +80,9 @@ struct efa_com_admin_queue {
+ };
+ 
+ struct efa_aenq_handlers;
++struct efa_com_eq;
++typedef void (*efa_eqe_handler)(struct efa_com_eq *eeq,
++				struct efa_admin_eqe *eqe);
+ 
+ struct efa_com_aenq {
+ 	struct efa_admin_aenq_entry *entries;
+@@ -112,6 +115,33 @@ struct efa_com_dev {
+ 	struct efa_com_mmio_read mmio_read;
+ };
+ 
++struct efa_com_eq {
++	struct efa_com_dev *edev;
++	struct efa_admin_eqe *eqes;
++	dma_addr_t dma_addr;
++	u32 cc; /* Consumer counter */
++	u16 eqn;
++	u16 depth;
++	u8 phase;
++	efa_eqe_handler cb;
++};
++
++struct efa_com_create_eq_params {
++	dma_addr_t dma_addr;
++	u32 event_bitmask;
++	u16 depth;
++	u8 entry_size_in_bytes;
++	u8 msix_vec;
++};
++
++struct efa_com_create_eq_result {
++	u16 eqn;
++};
++
++struct efa_com_destroy_eq_params {
++	u16 eqn;
++};
++
+ typedef void (*efa_aenq_handler)(void *data,
+ 	      struct efa_admin_aenq_entry *aenq_e);
+ 
+@@ -121,9 +151,13 @@ struct efa_aenq_handlers {
+ 	efa_aenq_handler unimplemented_handler;
+ };
+ 
++void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
+ int efa_com_admin_init(struct efa_com_dev *edev,
+ 		       struct efa_aenq_handlers *aenq_handlers);
+ void efa_com_admin_destroy(struct efa_com_dev *edev);
++int efa_com_eq_init(struct efa_com_dev *edev, struct efa_com_eq *eeq,
++		    efa_eqe_handler cb, u16 depth, u8 msix_vec);
++void efa_com_eq_destroy(struct efa_com_dev *edev, struct efa_com_eq *eeq);
+ int efa_com_dev_reset(struct efa_com_dev *edev,
+ 		      enum efa_regs_reset_reason_types reset_reason);
+ void efa_com_set_admin_polling_mode(struct efa_com_dev *edev, bool polling);
+@@ -140,5 +174,7 @@ int efa_com_cmd_exec(struct efa_com_admin_queue *aq,
+ 		     struct efa_admin_acq_entry *comp,
+ 		     size_t comp_size);
+ void efa_com_aenq_intr_handler(struct efa_com_dev *edev, void *data);
++void efa_com_eq_comp_intr_handler(struct efa_com_dev *edev,
++				  struct efa_com_eq *eeq);
+ 
+ #endif /* _EFA_COM_H_ */
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.c b/drivers/infiniband/hw/efa/efa_com_cmd.c
+index f752ef64159c..fb405da4e1db 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.c
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.c
+@@ -1,17 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #include "efa_com.h"
+ #include "efa_com_cmd.h"
+ 
+-void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low)
+-{
+-	*addr_low = lower_32_bits(addr);
+-	*addr_high = upper_32_bits(addr);
+-}
+-
+ int efa_com_create_qp(struct efa_com_dev *edev,
+ 		      struct efa_com_create_qp_params *params,
+ 		      struct efa_com_create_qp_result *res)
+@@ -157,7 +151,7 @@ int efa_com_create_cq(struct efa_com_dev *edev,
+ 		      struct efa_com_create_cq_params *params,
+ 		      struct efa_com_create_cq_result *result)
+ {
+-	struct efa_admin_create_cq_resp cmd_completion;
++	struct efa_admin_create_cq_resp cmd_completion = {};
+ 	struct efa_admin_create_cq_cmd create_cmd = {};
+ 	struct efa_com_admin_queue *aq = &edev->aq;
+ 	int err;
+@@ -169,6 +163,11 @@ int efa_com_create_cq(struct efa_com_dev *edev,
+ 	create_cmd.cq_depth = params->cq_depth;
+ 	create_cmd.num_sub_cqs = params->num_sub_cqs;
+ 	create_cmd.uar = params->uarn;
++	if (params->interrupt_mode_enabled) {
++		EFA_SET(&create_cmd.cq_caps_1,
++			EFA_ADMIN_CREATE_CQ_CMD_INTERRUPT_MODE_ENABLED, 1);
++		create_cmd.eqn = params->eqn;
++	}
+ 
+ 	efa_com_set_dma_addr(params->dma_addr,
+ 			     &create_cmd.cq_ba.mem_addr_high,
+@@ -187,6 +186,9 @@ int efa_com_create_cq(struct efa_com_dev *edev,
+ 
+ 	result->cq_idx = cmd_completion.cq_idx;
+ 	result->actual_depth = params->cq_depth;
++	result->db_off = cmd_completion.db_offset;
++	result->db_valid = EFA_GET(&cmd_completion.flags,
++				   EFA_ADMIN_CREATE_CQ_RESP_DB_VALID);
+ 
+ 	return 0;
+ }
+@@ -497,6 +499,23 @@ int efa_com_get_device_attr(struct efa_com_dev *edev,
+ 	       sizeof(resp.u.network_attr.addr));
+ 	result->mtu = resp.u.network_attr.mtu;
+ 
++	if (efa_com_check_supported_feature_id(edev,
++					       EFA_ADMIN_EVENT_QUEUE_ATTR)) {
++		err = efa_com_get_feature(edev, &resp,
++					  EFA_ADMIN_EVENT_QUEUE_ATTR);
++		if (err) {
++			ibdev_err_ratelimited(
++				edev->efa_dev,
++				"Failed to get event queue attributes %d\n",
++				err);
++			return err;
++		}
++
++		result->max_eq = resp.u.event_queue_attr.max_eq;
++		result->max_eq_depth = resp.u.event_queue_attr.max_eq_depth;
++		result->event_bitmask = resp.u.event_queue_attr.event_bitmask;
++	}
++
  	return 0;
  }
  
-+static int set_dma_sg(struct scatterlist *sg, u64 bar_address, u64 chunk_size,
-+			struct device *dev, enum dma_data_direction dir)
+diff --git a/drivers/infiniband/hw/efa/efa_com_cmd.h b/drivers/infiniband/hw/efa/efa_com_cmd.h
+index eea4ebfbe6ec..c33010bbf9e8 100644
+--- a/drivers/infiniband/hw/efa/efa_com_cmd.h
++++ b/drivers/infiniband/hw/efa/efa_com_cmd.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_COM_CMD_H_
+@@ -73,7 +73,9 @@ struct efa_com_create_cq_params {
+ 	u16 cq_depth;
+ 	u16 num_sub_cqs;
+ 	u16 uarn;
++	u16 eqn;
+ 	u8 entry_size_in_bytes;
++	bool interrupt_mode_enabled;
+ };
+ 
+ struct efa_com_create_cq_result {
+@@ -81,6 +83,8 @@ struct efa_com_create_cq_result {
+ 	u16 cq_idx;
+ 	/* actual cq depth in # of entries */
+ 	u16 actual_depth;
++	u32 db_off;
++	bool db_valid;
+ };
+ 
+ struct efa_com_destroy_cq_params {
+@@ -125,6 +129,9 @@ struct efa_com_get_device_attr_result {
+ 	u32 max_llq_size;
+ 	u32 max_rdma_size;
+ 	u32 device_caps;
++	u32 max_eq;
++	u32 max_eq_depth;
++	u32 event_bitmask; /* EQ events bitmask */
+ 	u16 sub_cqs_per_cq;
+ 	u16 max_sq_sge;
+ 	u16 max_rq_sge;
+@@ -260,7 +267,6 @@ union efa_com_get_stats_result {
+ 	struct efa_com_rdma_read_stats rdma_read_stats;
+ };
+ 
+-void efa_com_set_dma_addr(dma_addr_t addr, u32 *addr_high, u32 *addr_low);
+ int efa_com_create_qp(struct efa_com_dev *edev,
+ 		      struct efa_com_create_qp_params *params,
+ 		      struct efa_com_create_qp_result *res);
+diff --git a/drivers/infiniband/hw/efa/efa_main.c b/drivers/infiniband/hw/efa/efa_main.c
+index 417dea5f90cf..d2a445f6f8e5 100644
+--- a/drivers/infiniband/hw/efa/efa_main.c
++++ b/drivers/infiniband/hw/efa/efa_main.c
+@@ -67,6 +67,47 @@ static void efa_release_bars(struct efa_dev *dev, int bars_mask)
+ 	pci_release_selected_regions(pdev, release_bars);
+ }
+ 
++static void efa_process_comp_eqe(struct efa_dev *dev, struct efa_admin_eqe *eqe)
 +{
-+	dma_addr_t addr;
-+	int rc;
++	u16 cqn = eqe->u.comp_event.cqn;
++	struct efa_cq *cq;
 +
-+	addr = dma_map_resource(dev, bar_address, chunk_size, dir,
-+				DMA_ATTR_SKIP_CPU_SYNC);
-+	rc = dma_mapping_error(dev, addr);
-+	if (rc)
-+		return rc;
++	/* Safe to load as we're in irq and removal calls synchronize_irq() */
++	cq = xa_load(&dev->cqs_xa, cqn);
++	if (unlikely(!cq)) {
++		ibdev_err_ratelimited(&dev->ibdev,
++				      "Completion event on non-existent CQ[%u]",
++				      cqn);
++		return;
++	}
 +
-+	sg_set_page(sg, NULL, chunk_size, 0);
-+	sg_dma_address(sg) = addr;
-+	sg_dma_len(sg) = chunk_size;
++	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
++}
++
++static void efa_process_eqe(struct efa_com_eq *eeq, struct efa_admin_eqe *eqe)
++{
++	struct efa_dev *dev = container_of(eeq->edev, struct efa_dev, edev);
++
++	if (likely(EFA_GET(&eqe->common, EFA_ADMIN_EQE_EVENT_TYPE) ==
++			   EFA_ADMIN_EQE_EVENT_TYPE_COMPLETION))
++		efa_process_comp_eqe(dev, eqe);
++	else
++		ibdev_err_ratelimited(&dev->ibdev,
++				      "Unknown event type received %lu",
++				      EFA_GET(&eqe->common,
++					      EFA_ADMIN_EQE_EVENT_TYPE));
++}
++
++static irqreturn_t efa_intr_msix_comp(int irq, void *data)
++{
++	struct efa_eq *eq = data;
++	struct efa_com_dev *edev = eq->eeq.edev;
++
++	efa_com_eq_comp_intr_handler(edev, &eq->eeq);
++
++	return IRQ_HANDLED;
++}
++
+ static irqreturn_t efa_intr_msix_mgmnt(int irq, void *data)
+ {
+ 	struct efa_dev *dev = data;
+@@ -77,26 +118,43 @@ static irqreturn_t efa_intr_msix_mgmnt(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static int efa_request_mgmnt_irq(struct efa_dev *dev)
++static int efa_request_irq(struct efa_dev *dev, struct efa_irq *irq)
+ {
+-	struct efa_irq *irq;
+ 	int err;
+ 
+-	irq = &dev->admin_irq;
+ 	err = request_irq(irq->irqn, irq->handler, 0, irq->name, irq->data);
+ 	if (err) {
+-		dev_err(&dev->pdev->dev, "Failed to request admin irq (%d)\n",
+-			err);
++		dev_err(&dev->pdev->dev, "Failed to request irq %s (%d)\n",
++			irq->name, err);
+ 		return err;
+ 	}
+ 
+-	dev_dbg(&dev->pdev->dev, "Set affinity hint of mgmnt irq to %*pbl (irq vector: %d)\n",
+-		nr_cpumask_bits, &irq->affinity_hint_mask, irq->irqn);
+ 	irq_set_affinity_hint(irq->irqn, &irq->affinity_hint_mask);
+ 
+ 	return 0;
+ }
+ 
++static void efa_setup_comp_irq(struct efa_dev *dev, struct efa_eq *eq,
++			       int vector)
++{
++	u32 cpu;
++
++	cpu = vector - EFA_COMP_EQS_VEC_BASE;
++	snprintf(eq->irq.name, EFA_IRQNAME_SIZE, "efa-comp%d@pci:%s", cpu,
++		 pci_name(dev->pdev));
++	eq->irq.handler = efa_intr_msix_comp;
++	eq->irq.data = eq;
++	eq->irq.vector = vector;
++	eq->irq.irqn = pci_irq_vector(dev->pdev, vector);
++	cpumask_set_cpu(cpu, &eq->irq.affinity_hint_mask);
++}
++
++static void efa_free_irq(struct efa_dev *dev, struct efa_irq *irq)
++{
++	irq_set_affinity_hint(irq->irqn, NULL);
++	free_irq(irq->irqn, irq->data);
++}
++
+ static void efa_setup_mgmnt_irq(struct efa_dev *dev)
+ {
+ 	u32 cpu;
+@@ -105,8 +163,9 @@ static void efa_setup_mgmnt_irq(struct efa_dev *dev)
+ 		 "efa-mgmnt@pci:%s", pci_name(dev->pdev));
+ 	dev->admin_irq.handler = efa_intr_msix_mgmnt;
+ 	dev->admin_irq.data = dev;
+-	dev->admin_irq.irqn =
+-		pci_irq_vector(dev->pdev, dev->admin_msix_vector_idx);
++	dev->admin_irq.vector = dev->admin_msix_vector_idx;
++	dev->admin_irq.irqn = pci_irq_vector(dev->pdev,
++					     dev->admin_msix_vector_idx);
+ 	cpu = cpumask_first(cpu_online_mask);
+ 	cpumask_set_cpu(cpu,
+ 			&dev->admin_irq.affinity_hint_mask);
+@@ -115,20 +174,11 @@ static void efa_setup_mgmnt_irq(struct efa_dev *dev)
+ 		 dev->admin_irq.name);
+ }
+ 
+-static void efa_free_mgmnt_irq(struct efa_dev *dev)
+-{
+-	struct efa_irq *irq;
+-
+-	irq = &dev->admin_irq;
+-	irq_set_affinity_hint(irq->irqn, NULL);
+-	free_irq(irq->irqn, irq->data);
+-}
+-
+ static int efa_set_mgmnt_irq(struct efa_dev *dev)
+ {
+ 	efa_setup_mgmnt_irq(dev);
+ 
+-	return efa_request_mgmnt_irq(dev);
++	return efa_request_irq(dev, &dev->admin_irq);
+ }
+ 
+ static int efa_request_doorbell_bar(struct efa_dev *dev)
+@@ -234,6 +284,72 @@ static void efa_set_host_info(struct efa_dev *dev)
+ 	dma_free_coherent(&dev->pdev->dev, bufsz, hinf, hinf_dma);
+ }
+ 
++static void efa_destroy_eq(struct efa_dev *dev, struct efa_eq *eq)
++{
++	efa_com_eq_destroy(&dev->edev, &eq->eeq);
++	efa_free_irq(dev, &eq->irq);
++}
++
++static int efa_create_eq(struct efa_dev *dev, struct efa_eq *eq, u8 msix_vec)
++{
++	int err;
++
++	efa_setup_comp_irq(dev, eq, msix_vec);
++	err = efa_request_irq(dev, &eq->irq);
++	if (err)
++		return err;
++
++	err = efa_com_eq_init(&dev->edev, &eq->eeq, efa_process_eqe,
++			      dev->dev_attr.max_eq_depth, msix_vec);
++	if (err)
++		goto err_free_comp_irq;
 +
 +	return 0;
++
++err_free_comp_irq:
++	efa_free_irq(dev, &eq->irq);
++	return err;
 +}
 +
-+static struct sg_table *alloc_sgt_from_device_pages(struct hl_device *hdev, u64 *pages, u64 npages,
-+						u64 page_size, struct device *dev,
-+						enum dma_data_direction dir)
++static int efa_create_eqs(struct efa_dev *dev)
 +{
-+	u64 chunk_size, bar_address, dma_max_seg_size;
-+	struct asic_fixed_properties *prop;
-+	int rc, i, j, nents, cur_page;
-+	struct scatterlist *sg;
-+	struct sg_table *sgt;
-+
-+	prop = &hdev->asic_prop;
-+
-+	dma_max_seg_size = dma_get_max_seg_size(dev);
-+
-+	/* We would like to align the max segment size to PAGE_SIZE, so the
-+	 * SGL will contain aligned addresses that can be easily mapped to
-+	 * an MMU
-+	 */
-+	dma_max_seg_size = ALIGN_DOWN(dma_max_seg_size, PAGE_SIZE);
-+	if (dma_max_seg_size < PAGE_SIZE) {
-+		dev_err_ratelimited(hdev->dev,
-+				"dma_max_seg_size %llu can't be smaller than PAGE_SIZE\n",
-+				dma_max_seg_size);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
-+	if (!sgt)
-+		return ERR_PTR(-ENOMEM);
-+
-+	/* If the size of each page is larger than the dma max segment size,
-+	 * then we can't combine pages and the number of entries in the SGL
-+	 * will just be the
-+	 * <number of pages> * <chunks of max segment size in each page>
-+	 */
-+	if (page_size > dma_max_seg_size)
-+		nents = npages * DIV_ROUND_UP_ULL(page_size, dma_max_seg_size);
-+	else
-+		/* Get number of non-contiguous chunks */
-+		for (i = 1, nents = 1, chunk_size = page_size ; i < npages ; i++) {
-+			if (pages[i - 1] + page_size != pages[i] ||
-+					chunk_size + page_size > dma_max_seg_size) {
-+				nents++;
-+				chunk_size = page_size;
-+				continue;
-+			}
-+
-+			chunk_size += page_size;
-+		}
-+
-+	rc = sg_alloc_table(sgt, nents, GFP_KERNEL | __GFP_ZERO);
-+	if (rc)
-+		goto error_free;
-+
-+	cur_page = 0;
-+
-+	if (page_size > dma_max_seg_size) {
-+		u64 size_left, cur_device_address = 0;
-+
-+		size_left = page_size;
-+
-+		/* Need to split each page into the number of chunks of
-+		 * dma_max_seg_size
-+		 */
-+		for_each_sgtable_dma_sg(sgt, sg, i) {
-+			if (size_left == page_size)
-+				cur_device_address =
-+					pages[cur_page] - prop->dram_base_address;
-+			else
-+				cur_device_address += dma_max_seg_size;
-+
-+			chunk_size = min(size_left, dma_max_seg_size);
-+
-+			bar_address = hdev->dram_pci_bar_start + cur_device_address;
-+
-+			rc = set_dma_sg(sg, bar_address, chunk_size, dev, dir);
-+			if (rc)
-+				goto error_unmap;
-+
-+			if (size_left > dma_max_seg_size) {
-+				size_left -= dma_max_seg_size;
-+			} else {
-+				cur_page++;
-+				size_left = page_size;
-+			}
-+		}
-+	} else {
-+		/* Merge pages and put them into the scatterlist */
-+		for_each_sgtable_dma_sg(sgt, sg, i) {
-+			chunk_size = page_size;
-+			for (j = cur_page + 1 ; j < npages ; j++) {
-+				if (pages[j - 1] + page_size != pages[j] ||
-+						chunk_size + page_size > dma_max_seg_size)
-+					break;
-+
-+				chunk_size += page_size;
-+			}
-+
-+			bar_address = hdev->dram_pci_bar_start +
-+					(pages[cur_page] - prop->dram_base_address);
-+
-+			rc = set_dma_sg(sg, bar_address, chunk_size, dev, dir);
-+			if (rc)
-+				goto error_unmap;
-+
-+			cur_page = j;
-+		}
-+	}
-+
-+	/* Because we are not going to include a CPU list we want to have some
-+	 * chance that other users will detect this by setting the orig_nents
-+	 * to 0 and using only nents (length of DMA list) when going over the
-+	 * sgl
-+	 */
-+	sgt->orig_nents = 0;
-+
-+	return sgt;
-+
-+error_unmap:
-+	for_each_sgtable_dma_sg(sgt, sg, i) {
-+		if (!sg_dma_len(sg))
-+			continue;
-+
-+		dma_unmap_resource(dev, sg_dma_address(sg),
-+					sg_dma_len(sg), dir,
-+					DMA_ATTR_SKIP_CPU_SYNC);
-+	}
-+
-+	sg_free_table(sgt);
-+
-+error_free:
-+	kfree(sgt);
-+	return ERR_PTR(rc);
-+}
-+
-+static int hl_dmabuf_attach(struct dma_buf *dmabuf,
-+				struct dma_buf_attachment *attachment)
-+{
-+	struct hl_dmabuf_priv *hl_dmabuf;
-+	struct hl_device *hdev;
-+	int rc;
-+
-+	hl_dmabuf = dmabuf->priv;
-+	hdev = hl_dmabuf->ctx->hdev;
-+
-+	rc = pci_p2pdma_distance_many(hdev->pdev, &attachment->dev, 1, true);
-+
-+	if (rc < 0)
-+		attachment->peer2peer = false;
-+	return 0;
-+}
-+
-+static struct sg_table *hl_map_dmabuf(struct dma_buf_attachment *attachment,
-+					enum dma_data_direction dir)
-+{
-+	struct dma_buf *dma_buf = attachment->dmabuf;
-+	struct hl_vm_phys_pg_pack *phys_pg_pack;
-+	struct hl_dmabuf_priv *hl_dmabuf;
-+	struct hl_device *hdev;
-+	struct sg_table *sgt;
-+
-+	hl_dmabuf = dma_buf->priv;
-+	hdev = hl_dmabuf->ctx->hdev;
-+	phys_pg_pack = hl_dmabuf->phys_pg_pack;
-+
-+	if (!attachment->peer2peer) {
-+		dev_dbg(hdev->dev, "Failed to map dmabuf because p2p is disabled\n");
-+		return ERR_PTR(-EPERM);
-+	}
-+
-+	if (phys_pg_pack)
-+		sgt = alloc_sgt_from_device_pages(hdev,
-+						phys_pg_pack->pages,
-+						phys_pg_pack->npages,
-+						phys_pg_pack->page_size,
-+						attachment->dev,
-+						dir);
-+	else
-+		sgt = alloc_sgt_from_device_pages(hdev,
-+						&hl_dmabuf->device_address,
-+						1,
-+						hl_dmabuf->dmabuf->size,
-+						attachment->dev,
-+						dir);
-+
-+	if (IS_ERR(sgt))
-+		dev_err(hdev->dev, "failed (%ld) to initialize sgt for dmabuf\n", PTR_ERR(sgt));
-+
-+	return sgt;
-+}
-+
-+static void hl_unmap_dmabuf(struct dma_buf_attachment *attachment,
-+				  struct sg_table *sgt,
-+				  enum dma_data_direction dir)
-+{
-+	struct scatterlist *sg;
++	unsigned int neqs = dev->dev_attr.max_eq;
++	int err;
 +	int i;
 +
-+	/* The memory behind the dma-buf has *always* resided on the device itself, i.e. it lives
-+	 * only in the 'device' domain (after all, it maps a PCI bar address which points to the
-+	 * device memory).
-+	 *
-+	 * Therefore, it was never in the 'CPU' domain and hence, there is no need to perform
-+	 * a sync of the memory to the CPU's cache, as it never resided inside that cache.
-+	 */
-+	for_each_sgtable_dma_sg(sgt, sg, i)
-+		dma_unmap_resource(attachment->dev, sg_dma_address(sg),
-+					sg_dma_len(sg), dir,
-+					DMA_ATTR_SKIP_CPU_SYNC);
-+
-+	/* Need to restore orig_nents because sg_free_table use that field */
-+	sgt->orig_nents = sgt->nents;
-+	sg_free_table(sgt);
-+	kfree(sgt);
-+}
-+
-+static void hl_release_dmabuf(struct dma_buf *dmabuf)
-+{
-+	struct hl_dmabuf_priv *hl_dmabuf = dmabuf->priv;
-+	struct hl_ctx *ctx = hl_dmabuf->ctx;
-+	struct hl_device *hdev = ctx->hdev;
-+	struct hl_vm *vm = &hdev->vm;
-+
-+	if (hl_dmabuf->phys_pg_pack) {
-+		spin_lock(&vm->idr_lock);
-+		hl_dmabuf->phys_pg_pack->exporting_cnt--;
-+		spin_unlock(&vm->idr_lock);
-+	}
-+
-+	hl_ctx_put(hl_dmabuf->ctx);
-+
-+	kfree(hl_dmabuf);
-+}
-+
-+static const struct dma_buf_ops habanalabs_dmabuf_ops = {
-+	.attach = hl_dmabuf_attach,
-+	.map_dma_buf = hl_map_dmabuf,
-+	.unmap_dma_buf = hl_unmap_dmabuf,
-+	.release = hl_release_dmabuf,
-+};
-+
-+static int export_dmabuf_common(struct hl_ctx *ctx,
-+				struct hl_dmabuf_priv *hl_dmabuf,
-+				u64 total_size, int flags, int *dmabuf_fd)
-+{
-+	DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
-+	struct hl_device *hdev = ctx->hdev;
-+	int rc, fd;
-+
-+	exp_info.ops = &habanalabs_dmabuf_ops;
-+	exp_info.size = total_size;
-+	exp_info.flags = flags;
-+	exp_info.priv = hl_dmabuf;
-+
-+	hl_dmabuf->dmabuf = dma_buf_export(&exp_info);
-+	if (IS_ERR(hl_dmabuf->dmabuf)) {
-+		dev_err(hdev->dev, "failed to export dma-buf\n");
-+		return PTR_ERR(hl_dmabuf->dmabuf);
-+	}
-+
-+	fd = dma_buf_fd(hl_dmabuf->dmabuf, flags);
-+	if (fd < 0) {
-+		dev_err(hdev->dev, "failed to get a file descriptor for a dma-buf\n");
-+		rc = fd;
-+		goto err_dma_buf_put;
-+	}
-+
-+	hl_dmabuf->ctx = ctx;
-+	hl_ctx_get(hdev, hl_dmabuf->ctx);
-+
-+	*dmabuf_fd = fd;
-+
-+	return 0;
-+
-+err_dma_buf_put:
-+	dma_buf_put(hl_dmabuf->dmabuf);
-+	return rc;
-+}
-+
-+/**
-+ * export_dmabuf_from_addr() - export a dma-buf object for the given memory
-+ *                             address and size.
-+ * @ctx: pointer to the context structure.
-+ * @device_addr:  device memory physical address.
-+ * @size: size of device memory.
-+ * @flags: DMA-BUF file/FD flags.
-+ * @dmabuf_fd: pointer to result FD that represents the dma-buf object.
-+ *
-+ * Create and export a dma-buf object for an existing memory allocation inside
-+ * the device memory, and return a FD which is associated with the dma-buf
-+ * object.
-+ *
-+ * Return: 0 on success, non-zero for failure.
-+ */
-+static int export_dmabuf_from_addr(struct hl_ctx *ctx, u64 device_addr,
-+					u64 size, int flags, int *dmabuf_fd)
-+{
-+	struct hl_dmabuf_priv *hl_dmabuf;
-+	struct hl_device *hdev = ctx->hdev;
-+	struct asic_fixed_properties *prop;
-+	u64 bar_address;
-+	int rc;
-+
-+	prop = &hdev->asic_prop;
-+
-+	if (!IS_ALIGNED(device_addr, PAGE_SIZE)) {
-+		dev_dbg(hdev->dev,
-+			"exported device memory address 0x%llx should be aligned to 0x%lx\n",
-+			device_addr, PAGE_SIZE);
-+		return -EINVAL;
-+	}
-+
-+	if (size < PAGE_SIZE) {
-+		dev_dbg(hdev->dev,
-+			"exported device memory size %llu should be equal to or greater than %lu\n",
-+			size, PAGE_SIZE);
-+		return -EINVAL;
-+	}
-+
-+	if (device_addr < prop->dram_user_base_address ||
-+				device_addr + size > prop->dram_end_address ||
-+				device_addr + size < device_addr) {
-+		dev_dbg(hdev->dev,
-+			"DRAM memory range 0x%llx (+0x%llx) is outside of DRAM boundaries\n",
-+			device_addr, size);
-+		return -EINVAL;
-+	}
-+
-+	bar_address = hdev->dram_pci_bar_start +
-+			(device_addr - prop->dram_base_address);
-+
-+	if (bar_address + size >
-+			hdev->dram_pci_bar_start + prop->dram_pci_bar_size ||
-+			bar_address + size < bar_address) {
-+		dev_dbg(hdev->dev,
-+			"DRAM memory range 0x%llx (+0x%llx) is outside of PCI BAR boundaries\n",
-+			device_addr, size);
-+		return -EINVAL;
-+	}
-+
-+	hl_dmabuf = kzalloc(sizeof(*hl_dmabuf), GFP_KERNEL);
-+	if (!hl_dmabuf)
++	neqs = min_t(unsigned int, neqs, num_online_cpus());
++	dev->neqs = neqs;
++	dev->eqs = kcalloc(neqs, sizeof(*dev->eqs), GFP_KERNEL);
++	if (!dev->eqs)
 +		return -ENOMEM;
 +
-+	hl_dmabuf->device_address = device_addr;
-+
-+	rc = export_dmabuf_common(ctx, hl_dmabuf, size, flags, dmabuf_fd);
-+	if (rc)
-+		goto err_free_dmabuf_wrapper;
++	for (i = 0; i < neqs; i++) {
++		err = efa_create_eq(dev, &dev->eqs[i],
++				    i + EFA_COMP_EQS_VEC_BASE);
++		if (err)
++			goto err_destroy_eqs;
++	}
 +
 +	return 0;
 +
-+err_free_dmabuf_wrapper:
-+	kfree(hl_dmabuf);
-+	return rc;
++err_destroy_eqs:
++	for (i--; i >= 0; i--)
++		efa_destroy_eq(dev, &dev->eqs[i]);
++	kfree(dev->eqs);
++
++	return err;
 +}
 +
-+/**
-+ * export_dmabuf_from_handle() - export a dma-buf object for the given memory
-+ *                               handle.
-+ * @ctx: pointer to the context structure.
-+ * @handle: device memory allocation handle.
-+ * @flags: DMA-BUF file/FD flags.
-+ * @dmabuf_fd: pointer to result FD that represents the dma-buf object.
-+ *
-+ * Create and export a dma-buf object for an existing memory allocation inside
-+ * the device memory, and return a FD which is associated with the dma-buf
-+ * object.
-+ *
-+ * Return: 0 on success, non-zero for failure.
-+ */
-+static int export_dmabuf_from_handle(struct hl_ctx *ctx, u64 handle, int flags,
-+					int *dmabuf_fd)
++static void efa_destroy_eqs(struct efa_dev *dev)
 +{
-+	struct hl_vm_phys_pg_pack *phys_pg_pack;
-+	struct hl_dmabuf_priv *hl_dmabuf;
-+	struct hl_device *hdev = ctx->hdev;
-+	struct asic_fixed_properties *prop;
-+	struct hl_vm *vm = &hdev->vm;
-+	u64 bar_address;
-+	int rc, i;
++	int i;
 +
-+	prop = &hdev->asic_prop;
++	for (i = 0; i < dev->neqs; i++)
++		efa_destroy_eq(dev, &dev->eqs[i]);
 +
-+	if (upper_32_bits(handle)) {
-+		dev_dbg(hdev->dev, "no match for handle 0x%llx\n", handle);
-+		return -EINVAL;
++	kfree(dev->eqs);
++}
++
+ static const struct ib_device_ops efa_dev_ops = {
+ 	.owner = THIS_MODULE,
+ 	.driver_id = RDMA_DRIVER_EFA,
+@@ -300,23 +416,29 @@ static int efa_ib_device_add(struct efa_dev *dev)
+ 	if (err)
+ 		goto err_release_doorbell_bar;
+ 
++	err = efa_create_eqs(dev);
++	if (err)
++		goto err_release_doorbell_bar;
++
+ 	efa_set_host_info(dev);
+ 
+ 	dev->ibdev.node_type = RDMA_NODE_UNSPECIFIED;
+ 	dev->ibdev.phys_port_cnt = 1;
+-	dev->ibdev.num_comp_vectors = 1;
++	dev->ibdev.num_comp_vectors = dev->neqs ?: 1;
+ 	dev->ibdev.dev.parent = &pdev->dev;
+ 
+ 	ib_set_device_ops(&dev->ibdev, &efa_dev_ops);
+ 
+ 	err = ib_register_device(&dev->ibdev, "efa_%d", &pdev->dev);
+ 	if (err)
+-		goto err_release_doorbell_bar;
++		goto err_destroy_eqs;
+ 
+ 	ibdev_info(&dev->ibdev, "IB device registered\n");
+ 
+ 	return 0;
+ 
++err_destroy_eqs:
++	efa_destroy_eqs(dev);
+ err_release_doorbell_bar:
+ 	efa_release_doorbell_bar(dev);
+ 	return err;
+@@ -324,9 +446,10 @@ static int efa_ib_device_add(struct efa_dev *dev)
+ 
+ static void efa_ib_device_remove(struct efa_dev *dev)
+ {
+-	efa_com_dev_reset(&dev->edev, EFA_REGS_RESET_NORMAL);
+ 	ibdev_info(&dev->ibdev, "Unregister ib device\n");
+ 	ib_unregister_device(&dev->ibdev);
++	efa_destroy_eqs(dev);
++	efa_com_dev_reset(&dev->edev, EFA_REGS_RESET_NORMAL);
+ 	efa_release_doorbell_bar(dev);
+ }
+ 
+@@ -339,8 +462,12 @@ static int efa_enable_msix(struct efa_dev *dev)
+ {
+ 	int msix_vecs, irq_num;
+ 
+-	/* Reserve the max msix vectors we might need */
+-	msix_vecs = EFA_NUM_MSIX_VEC;
++	/*
++	 * Reserve the max msix vectors we might need, one vector is reserved
++	 * for admin.
++	 */
++	msix_vecs = min_t(int, pci_msix_vec_count(dev->pdev),
++			  num_online_cpus() + 1);
+ 	dev_dbg(&dev->pdev->dev, "Trying to enable MSI-X, vectors %d\n",
+ 		msix_vecs);
+ 
+@@ -421,6 +548,7 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
+ 	edev->efa_dev = dev;
+ 	edev->dmadev = &pdev->dev;
+ 	dev->pdev = pdev;
++	xa_init(&dev->cqs_xa);
+ 
+ 	bars = pci_select_bars(pdev, IORESOURCE_MEM) & EFA_BASE_BAR_MASK;
+ 	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
+@@ -476,7 +604,7 @@ static struct efa_dev *efa_probe_device(struct pci_dev *pdev)
+ 	return dev;
+ 
+ err_free_mgmnt_irq:
+-	efa_free_mgmnt_irq(dev);
++	efa_free_irq(dev, &dev->admin_irq);
+ err_disable_msix:
+ 	efa_disable_msix(dev);
+ err_reg_read_destroy:
+@@ -499,11 +627,12 @@ static void efa_remove_device(struct pci_dev *pdev)
+ 
+ 	edev = &dev->edev;
+ 	efa_com_admin_destroy(edev);
+-	efa_free_mgmnt_irq(dev);
++	efa_free_irq(dev, &dev->admin_irq);
+ 	efa_disable_msix(dev);
+ 	efa_com_mmio_reg_read_destroy(edev);
+ 	devm_iounmap(&pdev->dev, edev->reg_bar);
+ 	efa_release_bars(dev, EFA_BASE_BAR_MASK);
++	xa_destroy(&dev->cqs_xa);
+ 	ib_dealloc_device(&dev->ibdev);
+ 	pci_disable_device(pdev);
+ }
+diff --git a/drivers/infiniband/hw/efa/efa_regs_defs.h b/drivers/infiniband/hw/efa/efa_regs_defs.h
+index 4017982fe13b..714ae6258800 100644
+--- a/drivers/infiniband/hw/efa/efa_regs_defs.h
++++ b/drivers/infiniband/hw/efa/efa_regs_defs.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause */
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
+ 
+ #ifndef _EFA_REGS_H_
+@@ -42,6 +42,7 @@ enum efa_regs_reset_reason_types {
+ #define EFA_REGS_MMIO_REG_READ_OFF                          0x5c
+ #define EFA_REGS_MMIO_RESP_LO_OFF                           0x60
+ #define EFA_REGS_MMIO_RESP_HI_OFF                           0x64
++#define EFA_REGS_EQ_DB_OFF                                  0x68
+ 
+ /* version register */
+ #define EFA_REGS_VERSION_MINOR_VERSION_MASK                 0xff
+@@ -93,4 +94,8 @@ enum efa_regs_reset_reason_types {
+ #define EFA_REGS_MMIO_REG_READ_REQ_ID_MASK                  0xffff
+ #define EFA_REGS_MMIO_REG_READ_REG_OFF_MASK                 0xffff0000
+ 
++/* eq_db register */
++#define EFA_REGS_EQ_DB_EQN_MASK                             0xffff
++#define EFA_REGS_EQ_DB_ARM_MASK                             0x80000000
++
+ #endif /* _EFA_REGS_H_ */
+diff --git a/drivers/infiniband/hw/efa/efa_verbs.c b/drivers/infiniband/hw/efa/efa_verbs.c
+index e5f9d90aad5e..3353ad4925ee 100644
+--- a/drivers/infiniband/hw/efa/efa_verbs.c
++++ b/drivers/infiniband/hw/efa/efa_verbs.c
+@@ -245,6 +245,9 @@ int efa_query_device(struct ib_device *ibdev,
+ 		if (EFA_DEV_CAP(dev, RNR_RETRY))
+ 			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_RNR_RETRY;
+ 
++		if (dev->neqs)
++			resp.device_caps |= EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS;
++
+ 		err = ib_copy_to_udata(udata, &resp,
+ 				       min(sizeof(resp), udata->outlen));
+ 		if (err) {
+@@ -984,6 +987,12 @@ static int efa_destroy_cq_idx(struct efa_dev *dev, int cq_idx)
+ 	return efa_com_destroy_cq(&dev->edev, &params);
+ }
+ 
++static void efa_cq_user_mmap_entries_remove(struct efa_cq *cq)
++{
++	rdma_user_mmap_entry_remove(cq->db_mmap_entry);
++	rdma_user_mmap_entry_remove(cq->mmap_entry);
++}
++
+ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ {
+ 	struct efa_dev *dev = to_edev(ibcq->device);
+@@ -993,15 +1002,25 @@ int efa_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+ 		  "Destroy cq[%d] virt[0x%p] freed: size[%lu], dma[%pad]\n",
+ 		  cq->cq_idx, cq->cpu_addr, cq->size, &cq->dma_addr);
+ 
+-	rdma_user_mmap_entry_remove(cq->mmap_entry);
++	efa_cq_user_mmap_entries_remove(cq);
+ 	efa_destroy_cq_idx(dev, cq->cq_idx);
++	if (cq->eq) {
++		xa_erase(&dev->cqs_xa, cq->cq_idx);
++		synchronize_irq(cq->eq->irq.irqn);
++	}
+ 	efa_free_mapped(dev, cq->cpu_addr, cq->dma_addr, cq->size,
+ 			DMA_FROM_DEVICE);
+ 	return 0;
+ }
+ 
++static struct efa_eq *efa_vec2eq(struct efa_dev *dev, int vec)
++{
++	return &dev->eqs[vec];
++}
++
+ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+-				 struct efa_ibv_create_cq_resp *resp)
++				 struct efa_ibv_create_cq_resp *resp,
++				 bool db_valid)
+ {
+ 	resp->q_mmap_size = cq->size;
+ 	cq->mmap_entry = efa_user_mmap_entry_insert(&cq->ucontext->ibucontext,
+@@ -1011,6 +1030,21 @@ static int cq_mmap_entries_setup(struct efa_dev *dev, struct efa_cq *cq,
+ 	if (!cq->mmap_entry)
+ 		return -ENOMEM;
+ 
++	if (db_valid) {
++		cq->db_mmap_entry =
++			efa_user_mmap_entry_insert(&cq->ucontext->ibucontext,
++						   dev->db_bar_addr + resp->db_off,
++						   PAGE_SIZE, EFA_MMAP_IO_NC,
++						   &resp->db_mmap_key);
++		if (!cq->db_mmap_entry) {
++			rdma_user_mmap_entry_remove(cq->mmap_entry);
++			return -ENOMEM;
++		}
++
++		resp->db_off &= ~PAGE_MASK;
++		resp->comp_mask |= EFA_CREATE_CQ_RESP_DB_OFF;
 +	}
 +
-+	spin_lock(&vm->idr_lock);
-+
-+	phys_pg_pack = idr_find(&vm->phys_pg_pack_handles, (u32) handle);
-+	if (!phys_pg_pack) {
-+		spin_unlock(&vm->idr_lock);
-+		dev_dbg(hdev->dev, "no match for handle 0x%x\n", (u32) handle);
-+		return -EINVAL;
+ 	return 0;
+ }
+ 
+@@ -1019,8 +1053,8 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ {
+ 	struct efa_ucontext *ucontext = rdma_udata_to_drv_context(
+ 		udata, struct efa_ucontext, ibucontext);
++	struct efa_com_create_cq_params params = {};
+ 	struct efa_ibv_create_cq_resp resp = {};
+-	struct efa_com_create_cq_params params;
+ 	struct efa_com_create_cq_result result;
+ 	struct ib_device *ibdev = ibcq->device;
+ 	struct efa_dev *dev = to_edev(ibdev);
+@@ -1065,7 +1099,7 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 		goto err_out;
+ 	}
+ 
+-	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_50)) {
++	if (cmd.comp_mask || !is_reserved_cleared(cmd.reserved_58)) {
+ 		ibdev_dbg(ibdev,
+ 			  "Incompatible ABI params, unknown fields in udata\n");
+ 		err = -EINVAL;
+@@ -1101,29 +1135,45 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	params.dma_addr = cq->dma_addr;
+ 	params.entry_size_in_bytes = cmd.cq_entry_size;
+ 	params.num_sub_cqs = cmd.num_sub_cqs;
++	if (cmd.flags & EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL) {
++		cq->eq = efa_vec2eq(dev, attr->comp_vector);
++		params.eqn = cq->eq->eeq.eqn;
++		params.interrupt_mode_enabled = true;
 +	}
 +
-+	/* increment now to avoid freeing device memory while exporting */
-+	phys_pg_pack->exporting_cnt++;
-+
-+	spin_unlock(&vm->idr_lock);
-+
-+	if (phys_pg_pack->vm_type != VM_TYPE_PHYS_PACK) {
-+		dev_dbg(hdev->dev, "handle 0x%llx does not represent DRAM memory\n", handle);
-+		rc = -EINVAL;
-+		goto err_dec_exporting_cnt;
-+	}
-+
-+	for (i = 0 ; i < phys_pg_pack->npages ; i++) {
-+
-+		bar_address = hdev->dram_pci_bar_start +
-+						(phys_pg_pack->pages[i] -
-+						prop->dram_base_address);
-+
-+		if (bar_address + phys_pg_pack->page_size >
-+			hdev->dram_pci_bar_start + prop->dram_pci_bar_size ||
-+			bar_address + phys_pg_pack->page_size < bar_address) {
-+
-+			dev_dbg(hdev->dev,
-+				"DRAM memory range 0x%llx (+0x%x) is outside of PCI BAR boundaries\n",
-+				phys_pg_pack->pages[i],
-+				phys_pg_pack->page_size);
-+
-+			rc = -EINVAL;
-+			goto err_dec_exporting_cnt;
+ 	err = efa_com_create_cq(&dev->edev, &params, &result);
+ 	if (err)
+ 		goto err_free_mapped;
+ 
++	resp.db_off = result.db_off;
+ 	resp.cq_idx = result.cq_idx;
+ 	cq->cq_idx = result.cq_idx;
+ 	cq->ibcq.cqe = result.actual_depth;
+ 	WARN_ON_ONCE(entries != result.actual_depth);
+ 
+-	err = cq_mmap_entries_setup(dev, cq, &resp);
++	err = cq_mmap_entries_setup(dev, cq, &resp, result.db_valid);
+ 	if (err) {
+ 		ibdev_dbg(ibdev, "Could not setup cq[%u] mmap entries\n",
+ 			  cq->cq_idx);
+ 		goto err_destroy_cq;
+ 	}
+ 
++	if (cq->eq) {
++		err = xa_err(xa_store(&dev->cqs_xa, cq->cq_idx, cq, GFP_KERNEL));
++		if (err) {
++			ibdev_dbg(ibdev, "Failed to store cq[%u] in xarray\n",
++				  cq->cq_idx);
++			goto err_remove_mmap;
 +		}
 +	}
 +
-+	hl_dmabuf = kzalloc(sizeof(*hl_dmabuf), GFP_KERNEL);
-+	if (!hl_dmabuf) {
-+		rc = -ENOMEM;
-+		goto err_dec_exporting_cnt;
-+	}
-+
-+	hl_dmabuf->phys_pg_pack = phys_pg_pack;
-+
-+	rc = export_dmabuf_common(ctx, hl_dmabuf, phys_pg_pack->total_size,
-+				flags, dmabuf_fd);
-+	if (rc)
-+		goto err_free_dmabuf_wrapper;
-+
-+	return 0;
-+
-+err_free_dmabuf_wrapper:
-+	kfree(hl_dmabuf);
-+
-+err_dec_exporting_cnt:
-+	spin_lock(&vm->idr_lock);
-+	phys_pg_pack->exporting_cnt--;
-+	spin_unlock(&vm->idr_lock);
-+
-+	return rc;
-+}
-+
- static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
- {
- 	struct hl_device *hdev = hpriv->hdev;
- 	struct hl_ctx *ctx = hpriv->ctx;
- 	u64 block_handle, device_addr = 0;
- 	u32 handle = 0, block_size;
--	int rc;
-+	int rc, dmabuf_fd = -EBADF;
- 
- 	switch (args->in.op) {
- 	case HL_MEM_OP_ALLOC:
-@@ -1542,6 +2024,16 @@ static int mem_ioctl_no_mmu(struct hl_fpriv *hpriv, union hl_mem_args *args)
- 		args->out.block_size = block_size;
- 		break;
- 
-+	case HL_MEM_OP_EXPORT_DMABUF_FD:
-+		rc = export_dmabuf_from_addr(ctx,
-+				args->in.export_dmabuf_fd.handle,
-+				args->in.export_dmabuf_fd.mem_size,
-+				args->in.flags,
-+				&dmabuf_fd);
-+		memset(args, 0, sizeof(*args));
-+		args->out.fd = dmabuf_fd;
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Unknown opcode for memory IOCTL\n");
- 		rc = -ENOTTY;
-@@ -1560,7 +2052,7 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 	struct hl_ctx *ctx = hpriv->ctx;
- 	u64 block_handle, device_addr = 0;
- 	u32 handle = 0, block_size;
--	int rc;
-+	int rc, dmabuf_fd = -EBADF;
- 
- 	if (!hl_device_operational(hdev, &status)) {
- 		dev_warn_ratelimited(hdev->dev,
-@@ -1651,6 +2143,22 @@ int hl_mem_ioctl(struct hl_fpriv *hpriv, void *data)
- 		args->out.block_size = block_size;
- 		break;
- 
-+	case HL_MEM_OP_EXPORT_DMABUF_FD:
-+		if (hdev->asic_prop.dram_supports_virtual_memory)
-+			rc = export_dmabuf_from_handle(ctx,
-+					args->in.export_dmabuf_fd.handle,
-+					args->in.flags,
-+					&dmabuf_fd);
-+		else
-+			rc = export_dmabuf_from_addr(ctx,
-+					args->in.export_dmabuf_fd.handle,
-+					args->in.export_dmabuf_fd.mem_size,
-+					args->in.flags,
-+					&dmabuf_fd);
-+		memset(args, 0, sizeof(*args));
-+		args->out.fd = dmabuf_fd;
-+		break;
-+
- 	default:
- 		dev_err(hdev->dev, "Unknown opcode for memory IOCTL\n");
- 		rc = -ENOTTY;
-diff --git a/drivers/misc/habanalabs/gaudi/gaudi.c b/drivers/misc/habanalabs/gaudi/gaudi.c
-index 14da87b38e83..8c34898e13d1 100644
---- a/drivers/misc/habanalabs/gaudi/gaudi.c
-+++ b/drivers/misc/habanalabs/gaudi/gaudi.c
-@@ -795,6 +795,7 @@ static int gaudi_early_init(struct hl_device *hdev)
+ 	if (udata->outlen) {
+ 		err = ib_copy_to_udata(udata, &resp,
+ 				       min(sizeof(resp), udata->outlen));
+ 		if (err) {
+ 			ibdev_dbg(ibdev,
+ 				  "Failed to copy udata for create_cq\n");
+-			goto err_remove_mmap;
++			goto err_xa_erase;
+ 		}
  	}
  
- 	prop->dram_pci_bar_size = pci_resource_len(pdev, HBM_BAR_ID);
-+	hdev->dram_pci_bar_start = pci_resource_start(pdev, HBM_BAR_ID);
+@@ -1132,8 +1182,11 @@ int efa_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
  
- 	/* If FW security is enabled at this point it means no access to ELBI */
- 	if (hdev->asic_prop.fw_security_enabled) {
-diff --git a/drivers/misc/habanalabs/goya/goya.c b/drivers/misc/habanalabs/goya/goya.c
-index 031c1849da14..65e4a4bb9323 100644
---- a/drivers/misc/habanalabs/goya/goya.c
-+++ b/drivers/misc/habanalabs/goya/goya.c
-@@ -622,6 +622,7 @@ static int goya_early_init(struct hl_device *hdev)
- 	}
+ 	return 0;
  
- 	prop->dram_pci_bar_size = pci_resource_len(pdev, DDR_BAR_ID);
-+	hdev->dram_pci_bar_start = pci_resource_start(pdev, DDR_BAR_ID);
++err_xa_erase:
++	if (cq->eq)
++		xa_erase(&dev->cqs_xa, cq->cq_idx);
+ err_remove_mmap:
+-	rdma_user_mmap_entry_remove(cq->mmap_entry);
++	efa_cq_user_mmap_entries_remove(cq);
+ err_destroy_cq:
+ 	efa_destroy_cq_idx(dev, cq->cq_idx);
+ err_free_mapped:
+diff --git a/include/uapi/rdma/efa-abi.h b/include/uapi/rdma/efa-abi.h
+index f89fbb5b1e8d..08035ccf1fff 100644
+--- a/include/uapi/rdma/efa-abi.h
++++ b/include/uapi/rdma/efa-abi.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR BSD-2-Clause) */
+ /*
+- * Copyright 2018-2020 Amazon.com, Inc. or its affiliates. All rights reserved.
++ * Copyright 2018-2021 Amazon.com, Inc. or its affiliates. All rights reserved.
+  */
  
- 	/* If FW security is enabled at this point it means no access to ELBI */
- 	if (hdev->asic_prop.fw_security_enabled) {
+ #ifndef EFA_ABI_USER_H
+@@ -52,11 +52,20 @@ struct efa_ibv_alloc_pd_resp {
+ 	__u8 reserved_30[2];
+ };
+ 
++enum {
++	EFA_CREATE_CQ_WITH_COMPLETION_CHANNEL = 1 << 0,
++};
++
+ struct efa_ibv_create_cq {
+ 	__u32 comp_mask;
+ 	__u32 cq_entry_size;
+ 	__u16 num_sub_cqs;
+-	__u8 reserved_50[6];
++	__u8 flags;
++	__u8 reserved_58[5];
++};
++
++enum {
++	EFA_CREATE_CQ_RESP_DB_OFF = 1 << 0,
+ };
+ 
+ struct efa_ibv_create_cq_resp {
+@@ -65,7 +74,9 @@ struct efa_ibv_create_cq_resp {
+ 	__aligned_u64 q_mmap_key;
+ 	__aligned_u64 q_mmap_size;
+ 	__u16 cq_idx;
+-	__u8 reserved_d0[6];
++	__u8 reserved_d0[2];
++	__u32 db_off;
++	__aligned_u64 db_mmap_key;
+ };
+ 
+ enum {
+@@ -106,6 +117,7 @@ struct efa_ibv_create_ah_resp {
+ enum {
+ 	EFA_QUERY_DEVICE_CAPS_RDMA_READ = 1 << 0,
+ 	EFA_QUERY_DEVICE_CAPS_RNR_RETRY = 1 << 1,
++	EFA_QUERY_DEVICE_CAPS_CQ_NOTIFICATIONS = 1 << 2,
+ };
+ 
+ struct efa_ibv_ex_query_device_resp {
+
+base-commit: d30ef6d5c013c19e907f2a3a3d6eee04fcd3de0d
 -- 
-2.17.1
+2.33.0
 
