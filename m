@@ -2,125 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4E24216E2
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Oct 2021 20:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D70EB4216E4
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Oct 2021 21:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236440AbhJDS7t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Oct 2021 14:59:49 -0400
-Received: from mail-mw2nam12on2071.outbound.protection.outlook.com ([40.107.244.71]:55265
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236851AbhJDS7t (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 4 Oct 2021 14:59:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k0+E6M2Med6Zhb1ElXtiDVo4ZKCphiamhFpnWG9dh71+DCqXqrhHljnTIFYmaAUILHt/Yiq5wOv+jCDHkQkb6oox7iKKVgeG4WRxXTtuJeS6x5voYAzJVNoR8pHYEJKHsaDlVDhD0+UDFuebRR48YzIJljE1GAklH4kjZ0jzANid56e+Avd7F+pk+ZMDR+mkkuOOglqKnIyU0WJKlVuz5OnMiGtlfTI9lIw+Ql3ZV78o++66t6QBuRjm9GJ5N7/NkkPGwg8g5bvabub7kn9owBJYtYqOl0/WgPNI0vebHk8b2gTbUZnO61JdRJ1F1zTLY2viuLzN2oO8IJ4ArAw/oA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vcCrM9d3wL+zRkqwmPvjsU2XbK/GLvvr03sxSOG4x/U=;
- b=NwIl0gCaX6uxXno0hufF2oktczx9zA1VfcqC0+JQu/DFFGUQKpcUwGWKqi7OIeV8KgaDYdGTZwPclhWF7/AodOh/5GJTaEmYGvw07kZ2+6W19bEmMkilgTgcfMBffxKeh4x6gwQ4tWmeUdE5KRMibTS0gMYuTeIoeZrWvKefE9IkoQ3UaTFD1t5nRB8r6jgWIJ3jPziZgv4sF6stn8nwdWUd+1iattvI91L8fUnmN72rrLQQF1VXntYQYUKJ3rPa7lWj4u3UjApc3Uet775HiouYy6nZ0JUeSKcv2ZiH2CtiF1ytEYtlB0AJPdxXhJaaa/JqkfBY8MiStqHety1VWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vcCrM9d3wL+zRkqwmPvjsU2XbK/GLvvr03sxSOG4x/U=;
- b=PrGVJ+ywQeARQexjOvhS8CB2kLpVo3ZVe815rsBipfD4P6CQlKW8W/SFnNAk5bCo2r1dH1iXQAyeowSVOy+RJ7CckF6KWlPocvNlKT0svfC5jIocxib/v/q1j4loENY5g5N1wu8JmS3JkbHZgBD00sjrLeA75//18tEqWAiniq55mOYC/YTiVUCSBXTqCnMGXMR5DRPnAKq8Rmpk2+cSiLUu9ewi3XxNfag4Ljd11EF3QuEvqzfWhvTY8+GhsmPEVexgyeSGVETldXQ2I3XkD8m/Vca9ZbJA9IlHjjyjvmVCjdxdjfIol+ZnNgRnjdnQLVMxmEhTL+n79XYeKlCYZA==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5556.namprd12.prod.outlook.com (2603:10b6:208:1cf::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.14; Mon, 4 Oct
- 2021 18:57:58 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4566.022; Mon, 4 Oct 2021
- 18:57:58 +0000
-Date:   Mon, 4 Oct 2021 15:57:56 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Rao Shoaib <Rao.Shoaib@oracle.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v1] RDMA/rxe: Bump up default maximum values used via
- uverbs
-Message-ID: <20211004185756.GA2534043@nvidia.com>
-References: <20210915011220.307585-1-Rao.Shoaib@oracle.com>
+        id S237016AbhJDTEB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Oct 2021 15:04:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236871AbhJDTD7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 4 Oct 2021 15:03:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DB08D610C9;
+        Mon,  4 Oct 2021 19:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633374130;
+        bh=ums4GQN0hZsGykpaXdF4ywDi56bYq6IogSUjYVxl8jc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tof7535P9szlEJzEUNXb1UiENraBp7dHy173RGKQSYjSVKAughXi6MSyz6Yf84XrH
+         gQt19jOUfXXFOigzu7xg7gRmSuJsOZyaCIEsToeXu61Z/QugRK3Ljj9oX2aldLC4wz
+         CFrLjxbXlB660i5C8nR/F6WrZUxHGWlP0+mHzGTC4V5Ts0PKpTRBvqfbsR1oneL3i4
+         e/mYDb/CTAw45EnUuYG3sreQk+wN1S4FrUkHWwx4JozS7oc6dgpaMawqPgfgjkaJxj
+         3RBgIvJX00wpDkcu4AOaOtBZOPLf1cS6s+el7sAP/Rlzio7H0XlQs6joEOcEeGC2xT
+         Dyqq9ZaoCqP8A==
+Date:   Mon, 4 Oct 2021 22:02:06 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v2 5/5] devlink: Delete reload enable/disable
+ interface
+Message-ID: <YVtPruw9kzOQvhZu@unreal>
+References: <cover.1633284302.git.leonro@nvidia.com>
+ <06ebba9e115d421118b16ac4efda61c2e08f4d50.1633284302.git.leonro@nvidia.com>
+ <YVsNfLzhGULiifw2@shredder>
+ <YVshg3a9OpotmOQg@unreal>
+ <YVsxqsEGkV0A5lvO@shredder>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210915011220.307585-1-Rao.Shoaib@oracle.com>
-X-ClientProxiedBy: BL1PR13CA0417.namprd13.prod.outlook.com
- (2603:10b6:208:2c2::32) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0417.namprd13.prod.outlook.com (2603:10b6:208:2c2::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.11 via Frontend Transport; Mon, 4 Oct 2021 18:57:57 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mXT9w-00AdEc-Nf; Mon, 04 Oct 2021 15:57:56 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9b8915c7-be2d-44d0-aabc-08d98768e151
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5556:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB555682132B60D8BAE05EB7DEC2AE9@BL0PR12MB5556.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VhETJsbqwjruWzlLzY0ywt19aeUSBp0SyHN6RIL+TmAN5fbcUH8js7JssUwkiRUgdB7moVZNClPd24UuZbez6Qinubltphe23YOg3QS2q7B0jRUdFB3DPXi2V+4gg5nRH9858yXm6UTKlfqfF/oVnVGKOJEaXf/jS/VYL/Pp3J1QcZmqL6jLHNg6iFPpb2I46HdAhes4NmobqJfpZ3t1J0ejMY88qQdVjb1xccUNjt6EmOLiaqrquL4SXq/lE191B/1EbxAbwHe2bRm/jpPp8WX1zAzz5dn7W8LHXOUESSjlKNeBGeCKx7qS7C1H7gb7g0L264xclLPCcOqXwgXmgzXIMf3OJtkSyof8P98WS/9F1831Rcoo7GJHtmjhmkqW0UYVE0R+vP0y3aYILaOPa1f707sMQTWfRX6qQiUoaT2sPAECrsiu8aID2CiOF4VIRgzOZ4PxZBDFm+FPtYNZNCL3MaAY4mtCeIPykNN3yT0r8B8lXdQZv9l+Eew79bWFS8hOSj7ZckNn6sO4sfz9KEkwreqn4XLYxH6chUnGY72DGYHBrQDaoy5P/go9w4OppfWERXQ11YMT6oWXY0FFl+S+aIG046UzZf0HJzTQqwRleHrUEKivCU4NG4MxPKGjOishmhFQ757LzkaWbwZZIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(316002)(8676002)(426003)(4744005)(508600001)(38100700002)(83380400001)(8936002)(9746002)(9786002)(2906002)(26005)(86362001)(33656002)(6916009)(66946007)(66556008)(4326008)(66476007)(1076003)(186003)(36756003)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mBHHwNun8vik5ksv2Ajzu5jDyI9dGaDkHvrDmvLpyPfID9k1uLXzoUP9DJSb?=
- =?us-ascii?Q?YI/A6Ul+vmx6PVcvGwbvDxEG77WOTQvGE+5RnGj5y74DmgEI0tbwr76CQGO9?=
- =?us-ascii?Q?D/N83uFtLv/0iEV13HhbDarjqOoFEcK0yswLZkPtsyr8k6ct/NfxTeX5fNI0?=
- =?us-ascii?Q?LuCkSNWoMohX8IcmqTYa/I4jluCRCtDntmvlT3BZYZkklZmgpCty+n1bC3yx?=
- =?us-ascii?Q?jeA8Xx6nshQTxf2oPsqVWmE96Qm/r8O6PLgcjwnRScc8j/TD3noaTEFfyB//?=
- =?us-ascii?Q?hwVI5ky1VKKsT3ClbWwMa7wDC1uujw3vV2vUO7BnpFeQsPKLF+8XeS1OZJ4w?=
- =?us-ascii?Q?llpITE6FGtJfgeK/1TWWdln8BlMbkFaxJjptSVFV3JV26IgnzJcUzNludIyW?=
- =?us-ascii?Q?E8zOBW6If2Q1p/lRGbglj/cbZb11Fk3450mRRroo66iIuRUunFGHSAJ6pXnV?=
- =?us-ascii?Q?67HfawH6Urrwf5C01sJ7jTBoL5oIe3GhYMpKzEDvWV8TB20eqTdJJk6CHsdD?=
- =?us-ascii?Q?+h2ljoJ+nAu9zWD7jj2f02Vb5lK9Rfy8zILxJ1KqwqPnb6kIUT4W4OPMK9hc?=
- =?us-ascii?Q?/d8tuDf5UD0mgYd9zOAMc1joOEHBLy9ztVAQECXQEHaFUs0v7FODqaBxvg5Y?=
- =?us-ascii?Q?XJhq6l0Cb8QcCkO1jgU3qPH3gzFTXZWWSgGe8165fNE+ar9oKLZl3R8IUoGE?=
- =?us-ascii?Q?le7o0gIrUF1iV4MSq7CbrDn50b7tm6hMSYCrIe1q+uqq+V9eS5ERSWSGaGmM?=
- =?us-ascii?Q?ETSS2L4GDssma66AbRnnCFyiG7vZdppC1lJR8SVlspBYeJqLwdgSXPJMGWun?=
- =?us-ascii?Q?4SUeycXXzZ45qmhlvj30fm5MlUovqLNr0IT+U+gmdg85VY5ygvWcfg3B8tpb?=
- =?us-ascii?Q?zoSwtWMohchRm27JzZxargoRtbqiw8TZIZLoLD5GkOTh05tEC3+0SublACNp?=
- =?us-ascii?Q?l2v/1X+P330KF+KSGUnpTSyp7SDo1ioJuWEGVERHcmI3cRUIMPIXQboZxVP8?=
- =?us-ascii?Q?OGNSY3+/dEi6AHsidSrPgg5sSkhcATBgejIN4ygoUF2Amd0rjLE0EfZ4Y+q9?=
- =?us-ascii?Q?lQu56zsZBD6kDZt02C8HqJRuz0y8M8C3F549XgcpxN7nSDeiD0+hQJs5qglK?=
- =?us-ascii?Q?GvcnaA9Fh369NiostqBqTZtHdHefeFylaxxrCpBHVZtX7+/Tu7wN5m6m8IP9?=
- =?us-ascii?Q?hWKL3hTy/RbdoknNzeexlhwYGpBXR1mru48D6Fgq/t392G+67Xnkf76UYIbe?=
- =?us-ascii?Q?nt2YUFQQ97GABczLvp3F8m7xq/Tw4G48TGLyE2Amggkl4FPFVdLMnL9EeBTZ?=
- =?us-ascii?Q?tdv0bo/U9Ch6bS7U9s0OhrGZ?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8915c7-be2d-44d0-aabc-08d98768e151
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Oct 2021 18:57:57.9605
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yaAmVxsSi3PLouvNPUirvpBp/OPzpKrlyZAUUlXnBr6NUuN011t9xcf4tG5q8jW5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5556
+In-Reply-To: <YVsxqsEGkV0A5lvO@shredder>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Sep 14, 2021 at 06:12:20PM -0700, Rao Shoaib wrote:
-> In our internal testing we have found that
-> default maximum values are too small.
-> Ideally there should be no limits, but since
-> maximum values are reported via ibv_query_device,
-> we have to return some value. So, the default
-> maximums have been changed to large values.
+On Mon, Oct 04, 2021 at 07:54:02PM +0300, Ido Schimmel wrote:
+> On Mon, Oct 04, 2021 at 06:45:07PM +0300, Leon Romanovsky wrote:
+> > On Mon, Oct 04, 2021 at 05:19:40PM +0300, Ido Schimmel wrote:
+> > > On Sun, Oct 03, 2021 at 09:12:06PM +0300, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > > 
+> > > > After changes to allow dynamically set the reload_up/_down callbacks,
+> > > > we ensure that properly supported devlink ops are not accessible before
+> > > > devlink_register, which is last command in the initialization sequence.
+> > > > 
+> > > > It makes devlink_reload_enable/_disable not relevant anymore and can be
+> > > > safely deleted.
+> > > > 
+> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > [...]
+> > > 
+> > > > diff --git a/drivers/net/netdevsim/dev.c b/drivers/net/netdevsim/dev.c
+> > > > index cb6645012a30..09e48fb232a9 100644
+> > > > --- a/drivers/net/netdevsim/dev.c
+> > > > +++ b/drivers/net/netdevsim/dev.c
+> > > > @@ -1512,7 +1512,6 @@ int nsim_dev_probe(struct nsim_bus_dev *nsim_bus_dev)
+> > > >  
+> > > >  	nsim_dev->esw_mode = DEVLINK_ESWITCH_MODE_LEGACY;
+> > > >  	devlink_register(devlink);
+> > > > -	devlink_reload_enable(devlink);
+> > > >  	return 0;
+> > > >  
+> > > >  err_psample_exit:
+> > > > @@ -1566,9 +1565,7 @@ void nsim_dev_remove(struct nsim_bus_dev *nsim_bus_dev)
+> > > >  	struct nsim_dev *nsim_dev = dev_get_drvdata(&nsim_bus_dev->dev);
+> > > >  	struct devlink *devlink = priv_to_devlink(nsim_dev);
+> > > >  
+> > > > -	devlink_reload_disable(devlink);
+> > > >  	devlink_unregister(devlink);
+> > > > -
+> > > >  	nsim_dev_reload_destroy(nsim_dev);
+> > > >  
+> > > >  	nsim_bpf_dev_exit(nsim_dev);
+> > > 
+> > > I didn't remember why devlink_reload_{enable,disable}() were added in
+> > > the first place so it was not clear to me from the commit message why
+> > > they can be removed. It is described in commit a0c76345e3d3 ("devlink:
+> > > disallow reload operation during device cleanup") with a reproducer.
+> > 
+> > It was added because devlink ops were accessible by the user space very
+> > early in the driver lifetime. All my latest devlink patches are the
+> > attempt to fix this arch/design/implementation issue.
 > 
-> Signed-off-by: Rao Shoaib <Rao.Shoaib@oracle.com>
-> ---
+> The reproducer in the commit message executed the reload after the
+> device was fully initialized. IIRC, the problem there was that nothing
+> prevented these two tasks from racing:
 > 
-> Resubmitting the patch after applying Bob's latest patches and testing
-> using via rping.
+> devlink dev reload netdevsim/netdevsim10
+> echo 10 > /sys/bus/netdevsim/del_device
+> 
+> The title also talks about forbidding reload during device cleanup.
 
-Since nobody points to something wrong with this and Bob says it fixes
-a blktests problem..
+It is incomplete title and reproducer. In our verification, we observed
+more than 40 bugs related to devlink reload flows and races around it.
 
-Applied to for-next, thanks
+> 
+> > 
+> > > 
+> > > Tried the reproducer with this series and I cannot reproduce the issue.
+> > > Wasn't quite sure why, but it does not seem to be related to "changes to
+> > > allow dynamically set the reload_up/_down callbacks", as this seems to
+> > > be specific to mlx5.
+> > 
+> > You didn't reproduce because of my series that moved
+> > devlink_register()/devlink_unregister() to be last/first commands in
+> > .probe()/.remove() flows.
+> 
+> Agree, that is what I wrote in the next paragraph of my reply.
+> 
+> > 
+> > Patch to allow dynamically set ops was needed because mlx5 had logic
+> > like this:
+> >  if(something)
+> >     devlink_reload_enable()
+> > 
+> > And I needed a way to keep this if ... condition.
+> > 
+> > > 
+> > > IIUC, the reason that the race described in above mentioned commit can
+> > > no longer happen is related to the fact that devlink_unregister() is
+> > > called first in the device dismantle path, after your previous patches.
+> > > Since both the reload operation and devlink_unregister() hold
+> > > 'devlink_mutex', it is not possible for the reload operation to race
+> > > with device dismantle.
+> > > 
+> > > Agree? If so, I think it would be good to explain this in the commit
+> > > message unless it's clear to everyone else.
+> > 
+> > I don't agree for very simple reason that devlink_mutex is going to be
+> > removed very soon and it is really not a reason why devlink reload is
+> > safer now when before.
+> > 
+> > The reload can't race due to:
+> > 1. devlink_unregister(), which works as a barrier to stop accesses
+> > from the user space.
+> > 2. reference counting that ensures that all in-flight commands are counted.
+> > 3. wait_for_completion that blocks till all commands are done.
+> 
+> So the wait_for_completion() is what prevents the race, not
+> 'devlink_mutex' that is taken later. This needs to be explained in the
+> commit message to make it clear why the removal is safe.
 
-Jason
+Can you please suggest what exactly should I write in the commit message
+to make it clear?
+
+I'm too much into this delvink stuff already and for me this patch is
+trivial. IMHO, that change doesn't need an explanation at all because
+coding pattern of refcount + wait_for_completion is pretty common in the
+kernel. So I think that I explained good enough: move of
+devlink_register/devlink_unregister obsoletes the devlink_reload_* APIs.
+
+I have no problem to update the commit message, just help me with the
+message.
+
+Thanks
+
+> 
+> Thanks
