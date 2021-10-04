@@ -2,98 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB133420AC6
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Oct 2021 14:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEBC1420B0E
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Oct 2021 14:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhJDMV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Oct 2021 08:21:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49524 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233134AbhJDMV7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 4 Oct 2021 08:21:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 854D3613A2;
-        Mon,  4 Oct 2021 12:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633350010;
-        bh=DMFxEWTqfbnq1ZABZ316JYtNGzInIZEnFJF/Sr6NcIo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=neOu2rpEKv/cI+7zfUa47vyjK7828WWiIo2X0+YsB0ZF2KMzjnD+0VzZCruLGDe6s
-         +EFZEW733ELPWz7mG5RbWQiAqcyGrOQaCqGw92e7QeZXKNBa9DBmlsYcXO9TLnui+H
-         drNjwtQTQ/tOXOnZFOHFo3zL5wkGfHZPSY++GQZ+iN3eax7SBi8GCkjvQIvExEOAyD
-         QYb73eMKrUcVKvRdzBDBQertzbV4F25P4/z9+sAf8Ho/jcLlDkbXXfkPK5pG+xT+Vt
-         4hKJ6vxxvn/RKzutwllTRRbc9cKZybqY56xGymy5C56dAaHE+NTIfwNStu01YKaihF
-         rkMOJfbkLn12Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7979F608AF;
-        Mon,  4 Oct 2021 12:20:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233209AbhJDMoN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Oct 2021 08:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233179AbhJDMoM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Oct 2021 08:44:12 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F0BC061746
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Oct 2021 05:42:23 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id 5-20020a9d0685000000b0054706d7b8e5so21327097otx.3
+        for <linux-rdma@vger.kernel.org>; Mon, 04 Oct 2021 05:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4OVSwl/mXXto5uL+RrHEGqRvQahW/ZfpPh6/yhUtWjo=;
+        b=HJ8uQ7DxBnpPf3XPuZlSbUWz53S0T4RwhN6VuHCS4wRZHfCz1LLXdiKQ+ydLW2RUdb
+         28+OYtF8ML2eKXjc4NSQy6X8cgloCI86P+SoUO/A6tXiVvjjX7OLR5IQ9p3+sgO3VjWj
+         3DPXtdDUBhgaDGOhfLs2Humqr5sF3G5z+ggWRR8TXO98f753b/LAue0gZHq9NTBe9T3f
+         0HMjIhyx/4tuYVo0U9QqCbYtMhoutvd7X47QydD51LkEhByiJNhaOR4KvoEwSrHKQo5k
+         Vimq0ULM2EvDxO1DFDjQXQIJK8kp2ZuK9qzCTwc3zVBrT7Fv4UWvW1lygVatwvXDNeN/
+         ObDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4OVSwl/mXXto5uL+RrHEGqRvQahW/ZfpPh6/yhUtWjo=;
+        b=M+w2qBSZICd2zlBYswzw4f9+R0Uw5NaH7RjoPv9nEIKRTQKwcPz+JXG5/QlRQjOf+j
+         UEsQ1wFhFHr6IeytDX1n0aYOYna6y9/BRDKj23z6Fe0RZboTFBv1O3iQ41D41dctd8FP
+         Ghh6OgPpK7rq5WnsVElovxL3BlTTaWeY4AutaDp2dNfmkKLhMCGtoj1RZpvkVaM6yg5n
+         D85Ir02rHS8wlrLUJg1mnew/74NRRUufBZKyvz1uh4uEFi3ttEjGesYDn6dNHJ/LxvGb
+         GxyA75kPSzw6zdQ3WRdVWJEc2U/zrYsHJ+ynKaPb2HPSJup4vPJEPPND1y9giwTulZO2
+         Jmgw==
+X-Gm-Message-State: AOAM530aKpxrBSsI8sU54tiV8fIi7JNr0ikcoz62rMVXjRoszUao9hln
+        MkAk6EO8tQRirTaD7EJvRE5mU215ULfitVrxHbuGEw==
+X-Google-Smtp-Source: ABdhPJx2JwdrPZUg8v0yUg8VLP/XIba3nx9KYrRusMF5XCEooJWRHYSk4ge6U+8iAFiktjHfoRdkf6bu/rBFKBMDWSE=
+X-Received: by 2002:a9d:2f28:: with SMTP id h37mr9040432otb.196.1633351342781;
+ Mon, 04 Oct 2021 05:42:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 00/13] qed: new firmware version 8.59.1.0 support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163335001049.30570.14249227941766939428.git-patchwork-notify@kernel.org>
-Date:   Mon, 04 Oct 2021 12:20:10 +0000
-References: <20211004065851.1903-1-pkushwaha@marvell.com>
-In-Reply-To: <20211004065851.1903-1-pkushwaha@marvell.com>
-To:     Prabhakar Kushwaha <pkushwaha@marvell.com>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-        martin.petersen@oracle.com, aelior@marvell.com, smalin@marvell.com,
-        jhasan@marvell.com, mrangankar@marvell.com,
-        prabhakar.pkin@gmail.com, malin1024@gmail.com
+References: <0000000000005a800a05cd849c36@google.com>
+In-Reply-To: <0000000000005a800a05cd849c36@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 4 Oct 2021 14:42:11 +0200
+Message-ID: <CACT4Y+ZRrxmLoor53nkD54sA5PJcRjWqheo262tudjrLO2rXzQ@mail.gmail.com>
+Subject: Re: [syzbot] BUG: RESTRACK detected leak of resources
+To:     Doug Ledford <dledford@redhat.com>,
+        syzbot <syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
+On Mon, 4 Oct 2021 at 12:45, syzbot
+<syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    c7b4d0e56a1d Add linux-next specific files for 20210930
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=104be6cb300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=c9a1f6685aeb48bd
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3a992c9e4fd9f0e6fd0e
+> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com
 
-This series was applied to netdev/net-next.git (refs/heads/master):
++RESTRACK maintainers
 
-On Mon, 4 Oct 2021 09:58:38 +0300 you wrote:
-> This series integrate new firmware version 8.59.1.0, along with updated
-> HSI (hardware software interface) to use the FW, into the family of
-> qed drivers (fastlinq devices). This FW does not reside in the NVRAM.
-> It needs to be programmed to device during driver load as the part of
-> initialization sequence.
-> 
-> Similar to previous FW support series, this FW is tightly linked to
-> software and pf function driver. This means FW release is not backward
-> compatible, and driver should always run with the FW it was designed
-> against.
-> 
-> [...]
+(it would also be good if RESTRACK would print a more standard oops
+with stack/filenames, so that testing systems can attribute issues to
+files/maintainers).
 
-Here is the summary with links:
-  - [v2,01/13] qed: Fix kernel-doc warnings
-    https://git.kernel.org/netdev/net-next/c/19198e4ec97d
-  - [v2,02/13] qed: Remove e4_ and _e4 from FW HSI
-    https://git.kernel.org/netdev/net-next/c/fb09a1ed5c6e
-  - [v2,03/13] qed: Split huge qed_hsi.h header file
-    https://git.kernel.org/netdev/net-next/c/ee824f4bcc10
-  - [v2,04/13] qed: Update common_hsi for FW ver 8.59.1.0
-    https://git.kernel.org/netdev/net-next/c/484563e230a8
-  - [v2,05/13] qed: Update qed_mfw_hsi.h for FW ver 8.59.1.0
-    https://git.kernel.org/netdev/net-next/c/f2a74107f1e1
-  - [v2,06/13] qed: Update qed_hsi.h for fw 8.59.1.0
-    https://git.kernel.org/netdev/net-next/c/fe40a830dcde
-  - [v2,07/13] qed: Use enum as per FW 8.59.1.0 in qed_iro_hsi.h
-    https://git.kernel.org/netdev/net-next/c/3091be065f11
-  - [v2,08/13] qed: Update FW init functions to support FW 8.59.1.0
-    https://git.kernel.org/netdev/net-next/c/b90cb5385af7
-  - [v2,09/13] qed: Add '_GTT' suffix to the IRO RAM macros
-    https://git.kernel.org/netdev/net-next/c/e2dbc2237692
-  - [v2,10/13] qed: Update debug related changes
-    https://git.kernel.org/netdev/net-next/c/6c95dd8f0aa1
-  - [v2,11/13] qed: Update TCP silly-window-syndrome timeout for iwarp, scsi
-    https://git.kernel.org/netdev/net-next/c/3a6f5d0cbda3
-  - [v2,12/13] qed: Update the TCP active termination 2 MSL timer ("TIME_WAIT")
-    https://git.kernel.org/netdev/net-next/c/a64aa0a8b991
-  - [v2,13/13] qed: fix ll2 establishment during load of RDMA driver
-    https://git.kernel.org/netdev/net-next/c/17696cada74f
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> rdma_rxe: rxe-pd pool destroyed with unfree'd elem
+> rdma_rxe: rxe-mr pool destroyed with unfree'd elem
+> restrack: ------------[ cut here ]------------
+> infiniband syz0: BUG: RESTRACK detected leak of resources
+> restrack: Kernel PD object allocated by rds_rdma is not freed
+> restrack: ------------[ cut here ]------------
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
