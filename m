@@ -2,121 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB2A422FE8
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Oct 2021 20:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4056E42300F
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Oct 2021 20:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhJESZ3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Oct 2021 14:25:29 -0400
-Received: from mail-dm3nam07on2062.outbound.protection.outlook.com ([40.107.95.62]:56288
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229796AbhJESZ0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Oct 2021 14:25:26 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i5oJUHjlF8qy+f0cAjJ5J3FvTMA7qGJhQYxOA27yXRRhJr5EKGKQgFXuUUvGSlRdprzRfaBVxMZI14aQQrj1BFBAVTVj/xpDlxFe6dUlUPVHrNEyYbI3XgUFFGyc0IBZEqpSzQZbngI06FtQvdhYq9ZE1r/QvwwmbTkMSS9PTEIV38T6Cf7vJxSYYi8LSqhrBxve5t/2IxTW5bUtl+gqD7vap0Ns5V4oocmXyx/Pw46g6WDmIHD4RRlcdwQfUbjl1XGOWeU+otApVKKJlRPuk/Y5NIsk0eD+GYi6sXVJ1K86swPo4/TiD0ZWbimufhHCfWjcgntL2xf25NI/xkMYQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EkhZDIlNRX4jr0/BvV9loFgB5uWuTLU1gxSadBiRTQs=;
- b=Yx7kOocTlrculz/iYOJ7cDEZESVW4F8iW7RhpT+pc0FB/+994UkY+cjI8hqS+FpysQATpYd9fg6BW/jmPh+ACZYOHcP8nZ034ARnNmUCXPRF+HF/enTWQ4WnhnlYovTIxBw7CLLfODT6iqPgOUEspk1YXXIRCQTNJYQCSlmXLT4tIE8jOyF+OX8I1omX+I+Qb9QjypIB8KSkUaMJai6tJErGm4T65J+sAIRHesozO4dpigeS+1i4gWTm+vw8b7RHrAGfEFatcyOovF1y3z4csVpmKFVH/Fl03Uzk/8EHbP5L0hptFgfrfZhhNZrZmdWUttiZ5bE6xCpnt7tU1Wql7Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EkhZDIlNRX4jr0/BvV9loFgB5uWuTLU1gxSadBiRTQs=;
- b=RuMDxVT/baeWadF/NBIOJoU37ec7cz0WvZqphOYjGXT4Wc3ez/Y5QWYIB/tERJEqY+K29d5QHZMaoamSmjuZLGFFaOUQ9VMXOMvvip+pLFayRjcDafQHBklAMaphPAvad+QjukKQONmIYi6IK5HL2qCdO5mrGK8JeJJEH7bNRy5MEOqrei3GiJlGox1A0VLLZ635TTQIrA/inaiSQ7Imv7Fh3RMG9I2jrpi3o95LbpIWf2DmDm8Xjk3SoDhvC+MqmrEXcKwZeBDbXceeHMQlZ7gflA/hEvVMzglsKHk5x3EkQeXKO7U7xdi0v8L9FcbVHoKD63YeVaXRQqq93bomug==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5093.namprd12.prod.outlook.com (2603:10b6:208:309::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18; Tue, 5 Oct
- 2021 18:23:34 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::e8af:232:915e:2f95%7]) with mapi id 15.20.4587.018; Tue, 5 Oct 2021
- 18:23:34 +0000
-Date:   Tue, 5 Oct 2021 15:23:32 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Cai Huoqing <caihuoqing@baidu.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [PATCH v2 1/1] infiniband: hf1: Use string_upper() instead of
- open coded variant
-Message-ID: <20211005182332.GA2681844@nvidia.com>
-References: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211001123153.67379-1-andriy.shevchenko@linux.intel.com>
-X-ClientProxiedBy: BL1PR13CA0219.namprd13.prod.outlook.com
- (2603:10b6:208:2bf::14) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S233671AbhJESeH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Oct 2021 14:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229626AbhJESeG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 5 Oct 2021 14:34:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B3FD610FC;
+        Tue,  5 Oct 2021 18:32:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633458735;
+        bh=fWiFxnLxlEYJaeb4vqHUXjVPIw59E/Lp4hGMAvlSYAo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BAPwjPOQLG7w7zAx4AnjgMhZwqXELQcZGskKEhXSDsb6E7PKRwr3e42VEt8sWqfbw
+         EVM20EWdWgF1FL7AO54vHDEFWdJV3yYOd99w+fIWVTvoI6AT+KICXDMZrdIs1ZhJOJ
+         fTC9cHEp8sFmQpwcgwAnkKZnXm99V8a6kRXJmmfrjjIpaw/BukRwS0I+uu9IP06YzV
+         ZUJMm9P2iO/JmED0HuPwmxO+r7f73aCAVjZZadccs+tttbl/KvO4XT+jFrBnhIJFgh
+         v9DMbrlupU4F9uU0l4phg8bOET3O6YY/KTs8iJBAzbiCRxKutwjFNx2O5QEygh0p7e
+         yhJDa1F/kPkjQ==
+Date:   Tue, 5 Oct 2021 11:32:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Shay Drory <shayd@nvidia.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>
+Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
+ callbacks dynamically
+Message-ID: <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YVv/nUe63nO8o8wz@unreal>
+References: <cover.1633284302.git.leonro@nvidia.com>
+        <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
+        <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YVv/nUe63nO8o8wz@unreal>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by BL1PR13CA0219.namprd13.prod.outlook.com (2603:10b6:208:2bf::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.9 via Frontend Transport; Tue, 5 Oct 2021 18:23:34 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mXp6C-00BFgI-Uw; Tue, 05 Oct 2021 15:23:32 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0462ea3e-e151-446b-e4f8-08d9882d3e15
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5093:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5093EDE1F06300F65FFB0C8BC2AF9@BL1PR12MB5093.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WI9zYWPynq9rdSbWHv3gC6R3ZLEF0+ocJzjrXUomFmvQp3gEXd76lpeiNdNsk6pG2s6fTPWZenWxy7JcMEl31XGNZ1ZxlU214RLIdNRWXCFpNO4HzPONAHgbBuY+z49JeFGTrQKxCmgSsV7NW/Q5Rif/lQSRZHwtV9g5HI4EIMOaQxxlUE+3ls9LzyBK/nv/j/CaAo7fI4uKZOYd6J2vuMUnNCH4RnHj+W18h7d2B8keHJiPRdwHyNCXWK0gskIyefWyr/nVSvqXonPKKXIqBou+ptyy6uq/oOX7yMqvyruWRv17LUokHDoeyeq1UJLu+kWnkTYaE2k0c+S3GHeXBtPKEL6zsTsH1PKmMaxHVhE0p68G9+lmVItRu2nfVW0FWN5EyvvoDc5mkvOkutM/6LKGeM84OeeyeDO0431WVl9EDSujohkjeqaEpCqcgF63Iwrs8H1MWL7Imun5nymiQuyT/+Gs2yMxDi/C4iGSgoIHVqeLubiGOiM9hk0Aktap1VycXF26y/ueqPRlevmCkwwhNTEHGVI3Adt22Oi3hI1ycM71f4yFJF+toKyIYplfe0An+NqeJFmqwaRU/LsMDpP85ZoktrC/gf0aOl1klNc7Fvsch5BMtvH3DkHDl4lYRfJAc2X1BnCU5H+fPVnlMg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(426003)(33656002)(316002)(8676002)(4744005)(86362001)(36756003)(83380400001)(508600001)(26005)(54906003)(1076003)(66476007)(38100700002)(2906002)(8936002)(66946007)(5660300002)(66556008)(4326008)(6916009)(186003)(2616005)(9786002)(9746002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ftWNmQGFE+zhCrtVFTi9WcQ8IRT8XlfCDYosv79KXWRvxTheGCDaTfePKJwp?=
- =?us-ascii?Q?fI3k58RoB6t3Tc7n9YqnVuHSYElZqmmpf/iL+bZYxr/oLXcvVq1KwLq4tLh/?=
- =?us-ascii?Q?8z70usrwdjcCpYR8XF2ZK8pzRsK/N/PKuI5VCNVNnXrWHf+4VXGEZjcXWuOu?=
- =?us-ascii?Q?C9EOvuoHHokt9WLBb+atwJoQ5FNA3Q+Z3AGch/kpDWPPGD0y1woScRf0x8De?=
- =?us-ascii?Q?QjrDwRKgQpTu6hneOhBvlrYP5RvvxaGQEztgSs6+2DcayibAES8SBmW0U9zu?=
- =?us-ascii?Q?mfZa4mc9aFQAXtFOm8iArxseXSN8MBvJZPvE5Mmo5NTMpBpxTSyChpFn+23o?=
- =?us-ascii?Q?F/EMX5qItUIxLQW7UDE/Sf/KCDNy26CrN/k8zW733nmTm1CuGF0agNPxGi+q?=
- =?us-ascii?Q?Thn/cE2+1kRjUaO3mPN10I+l1CpMDRCOWDBXtN183xRk+L0sPaPeBT9vc3DW?=
- =?us-ascii?Q?+e5q9s+Jhy24s5z06ZfmqsfLCQQKhUsIuMcVrdjkPlAcGU2jOZR4TSlmFp0Z?=
- =?us-ascii?Q?QXEpobxJVcDfBtGCJ6PaXdW4EtltI4VofPZzl/0eopbuOlN9+kTujJLYPs7K?=
- =?us-ascii?Q?9huN2EJNRCnEVWcmuCNY1HwZhpxmar95bAEaLSrVswDcGsjBZv2kLuMdr0Vc?=
- =?us-ascii?Q?MQ1DaPrzM8kcNhdBqox3r/+ZiU1hvgtkExMFOk+K2NThmd1qiKlgis/nz0hX?=
- =?us-ascii?Q?5lLBpondvhWw/XPPiRmgtn9TBM/jXn2YZvwcV34bXExfWEtKmKWi5T3d30V1?=
- =?us-ascii?Q?tm+wpk/O1HuMibrvRpnrW8knjIl7nradkrenZtP5UyJ5e6NBq+Zd4uxGRfqx?=
- =?us-ascii?Q?wV2hDCbdI7oLh+t4kK9qXHvlnH2nc7ZC0DFfyedxle4hnFNY9BaQJrdqsL+V?=
- =?us-ascii?Q?479LnMRvySOpyTT18cDV55pzeYSfXijPvq3LOLnlYqLcIpzYcdSp4NLvuTRx?=
- =?us-ascii?Q?57NHkrK9MOHWf+tiAQXwq/cy/3w5rRfSDOPH7cf7mHszcFFK159XiPtC505B?=
- =?us-ascii?Q?/l3g1hZzJm3npIGbh72h9Wbm9ZU/6pOIlF60xyfjYojJLzOUkbr+LHQIRkEQ?=
- =?us-ascii?Q?of0bjKlJoCu2KM3op0OXLAKCz8CcyTUJlxfZh8t9FRSrAcsVXBHXqGoKpGjx?=
- =?us-ascii?Q?zutvRJpNAMd8I4vIGp2lQ7/wc1/UIPg7HJu55pSttVVmfBz0NPmEci6ZBOBl?=
- =?us-ascii?Q?eDmwQwsU0wYyENIVf0yejcWlQGkmiBVCc+uQuh+Z70y+Cs2mN1Qirs4sNfpu?=
- =?us-ascii?Q?WFkqoqtkqgUFame+fILGa+T0WQt7BDbRKGiSPgvNHwgMRM78b8AtV+cgTc8n?=
- =?us-ascii?Q?WiCSEPDfiRw9hhoFdruCQGjQoFYFVXf4+maUaDQrKIrWTA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0462ea3e-e151-446b-e4f8-08d9882d3e15
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Oct 2021 18:23:34.7796
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: QuVqeEBZ9pT5hNtuny/GhcERp/05v37O3cfoWuVP3mzVfgR7mHUg4QrErR4Kmu7t
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5093
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 01, 2021 at 03:31:53PM +0300, Andy Shevchenko wrote:
-> Use string_upper() from string helper module instead of open coded variant.
+On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:
+> On Mon, Oct 04, 2021 at 04:44:13PM -0700, Jakub Kicinski wrote:
+> > On Sun,  3 Oct 2021 21:12:04 +0300 Leon Romanovsky wrote:  
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > 
+> > > Introduce new devlink call to set specific ops callback during
+> > > device initialization phase after devlink_alloc() is already
+> > > called.
+> > > 
+> > > This allows us to set specific ops based on device property which
+> > > is not known at the beginning of driver initialization.
+> > > 
+> > > For the sake of simplicity, this API lacks any type of locking and
+> > > needs to be called before devlink_register() to make sure that no
+> > > parallel access to the ops is possible at this stage.  
+> > 
+> > The fact that it's not registered does not mean that the callbacks
+> > won't be invoked. Look at uses of devlink_compat_flash_update().  
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> v2: fixed compilation error (Jason)
->  drivers/infiniband/hw/hfi1/efivar.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+> It is impossible, devlink_register() is part of .probe() flow and if it
+> wasn't called -> probe didn't success -> net_device doesn't exist.
 
-Applied to for-next, thanks
+Are you talking about reality or the bright future brought by auxbus?
 
-Jason
+> We are not having net_device without "connected" device beneath, aren't we?
+> 
+> At least drivers that I checked are not prepared at all to handle call
+> to devlink->ops.flash_update() if they didn't probe successfully.
+
+Last time I checked you moved the devlink_register() at the end of
+probe which for all no-auxbus drivers means after register_netdev().
+
+> > > diff --git a/net/core/devlink.c b/net/core/devlink.c
+> > > index 4e484afeadea..25c2aa2b35cd 100644
+> > > --- a/net/core/devlink.c
+> > > +++ b/net/core/devlink.c
+> > > @@ -53,7 +53,7 @@ struct devlink {
+> > >  	struct list_head trap_list;
+> > >  	struct list_head trap_group_list;
+> > >  	struct list_head trap_policer_list;
+> > > -	const struct devlink_ops *ops;
+> > > +	struct devlink_ops ops;  
+> > 
+> > Security people like ops to live in read-only memory. You're making
+> > them r/w for every devlink instance now.  
+> 
+> Yes, but we are explicitly copy every function pointer, which is safe.
+
+The goal is for ops to live in pages which are mapped read-only,
+so that heap overflows can overwrite the pointers.
+
+> > >  	struct xarray snapshot_ids;
+> > >  	struct devlink_dev_stats stats;
+> > >  	struct device *dev;  
+
+> > > +EXPORT_SYMBOL_GPL(devlink_set_ops);  
+> > 
+> > I still don't like this. IMO using feature bits to dynamically mask-off
+> > capabilities has much better properties. We already have static caps
+> > in devlink_ops (first 3 members), we should build on top of that.   
+> 
+> These capabilities are for specific operation, like flash or reload.
+> They control how these flows will work, they don't control if this flow
+> is valid or not.
+> 
+> You are too focused on reload caps, but mutliport mlx5 device doesn't
+> support eswitch too. I just didn't remove the eswitch callbacks to
+> stay focused on more important work - making devlink better. :)
+> 
+> Even if we decide to use new flag in devlink_ops, we will still need to
+> add this devlink_set_ops() patch, because the value of that new flag
+> will be known very late in initialization phase, after FW capabilities
+> are known and I will need to overwrite RO memory.
+
+Yes, you can change the caps at run time, that's perfectly reasonable.
+You'll also be able to define more fine grained caps going forward as
+needed.
+
+> Jakub,
+> 
+> Can we please continue with the current approach? It doesn't expose any
+> user visible API and everything here will be easy rewrite differently
+> if such needs arise.
+> 
+> We have so much ahead, like removing devlink_lock, rewriting devlink->lock,
+> fixing devlink reload of IB part, e.t.c
+
+I don't like it. If you're feeling strongly please gather support of
+other developers. Right now it's my preference against yours. I don't
+even see you making arguments that your approach is better, just that
+mine is not perfect and requires some similar changes.
