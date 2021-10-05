@@ -2,97 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC17422363
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Oct 2021 12:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334C7422441
+	for <lists+linux-rdma@lfdr.de>; Tue,  5 Oct 2021 13:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbhJEKaS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Oct 2021 06:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbhJEKaR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Oct 2021 06:30:17 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED7BC06161C;
-        Tue,  5 Oct 2021 03:28:27 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id p13so48563757edw.0;
-        Tue, 05 Oct 2021 03:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ShOmW/2RWuxjsq4/QuGLlOjUEiq6tFtOZJVvEHgoGug=;
-        b=LDHrbn7aoB+cQkNUG+FKJzSRxh3FGMaHoTMs12H3MCvRTB/9tIvK7NOHsJLesPDVh4
-         EzlcmQowczdMBNzUenbcFcQCf7ADV1cFmCBI5vmgEOF0B43ZC8iiW3a7Wi6a71kFtIG3
-         l7q+82K77CNL14Yta4fokwaywc0epu/NKmJt7BB/yrd3xv7L30JZzuvU74+xoXfRf43D
-         Y/hdovmns3Js/QDY0BEMhNJby+g+qIsaKSfGcN16HgBzro9oXX0zJGDkPQkSqbUjQFpC
-         QpQSpwi+zMwicFIejFpAEPUK/ENwgb7dsnnmOf5LjGYua16JAQaiiTM0G42dY2DizTpQ
-         lzWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ShOmW/2RWuxjsq4/QuGLlOjUEiq6tFtOZJVvEHgoGug=;
-        b=r0TNIodil6+/5m12oRAeL3oecFd1W7elZpv+9HI75kuMEVJPNDgs81Q0uXGcS1gbDS
-         fNozELWMawT1wNMMMKaq74KedUoKLidzu89WUOoS4k+dvU0tQvzIHECTAN89QX8d1pBX
-         1fT0AiUu3X3vTT3oYjzZ8m3QXcxgPPet1DOg/6e7GbfAc4BpHmiuJzC5QXv28g5f1qso
-         Fm73tkymeQL/CwcBQUtwKGh9jFYTFYRmInzXJ+peNExzQOTDFEyxUYNkptY108J1C/kR
-         UOqI1ls13vyE+zXAHzcWtsMgpx2CPgTsBmvF3KO5Mc5ag5R+viNNlyPDt1949hvWWR8b
-         6Sgg==
-X-Gm-Message-State: AOAM533dqkZF/cJsm1m1mN6LRQl13lLvHDDLUPYvUyjaLL5022MY4IzJ
-        GDzvtsY7RXLEwXLxb9b7cVakkm/PH6w=
-X-Google-Smtp-Source: ABdhPJyYB6zKyhj5+BkQuBUj1gr4St7CvGZHGHlYKNvvV9oT2LcIzG31A4tMcrxU/yt+8LWqppSuqw==
-X-Received: by 2002:a17:906:d107:: with SMTP id b7mr23711400ejz.541.1633429705854;
-        Tue, 05 Oct 2021 03:28:25 -0700 (PDT)
-Received: from [192.168.0.108] ([176.228.98.2])
-        by smtp.gmail.com with ESMTPSA id g9sm7671660ejo.60.2021.10.05.03.28.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Oct 2021 03:28:25 -0700 (PDT)
-Subject: Re: [PATCH net-next 0/4] mlx4: prep for constant dev->dev_addr
-To:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net
-Cc:     netdev@vger.kernel.org, tariqt@nvidia.com, yishaih@nvidia.com,
-        linux-rdma@vger.kernel.org
-References: <20211004191446.2127522-1-kuba@kernel.org>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <d2c490a9-7f52-bc6d-ad58-48011d1816aa@gmail.com>
-Date:   Tue, 5 Oct 2021 13:28:23 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S234374AbhJELC3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Oct 2021 07:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234376AbhJELCA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 5 Oct 2021 07:02:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B933861139;
+        Tue,  5 Oct 2021 11:00:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1633431609;
+        bh=v5FbJo5qrVUlbMZ3ddNVAYvu1mAUooqD0BmTMDlbz5k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xqck704VhP00sB3C9xaIHqb0opFwk5rr4RrKGlmHwh0EWL6l8+WCC8JySWIaECkaK
+         rrH/af/kA/hxkUStFGDoonuPFVPhGxcqDdIckeuUqoGLj1SxV3fWaUqh9X+Ol9N1XV
+         XlcgxMLyorZsPoqNQCFsEXvrsqkuqaEWK/GOsQg1ISFdEHJm41gEQrFHLdalOtmYcy
+         btM7o8bjeJBQShzOXbKOQ9CjDt26gDSenSgKqkmjR9FlMLAB4brYy5sKD1dqTSdFUp
+         cbc7Dm9AtOmLHl37TiL/Nrrf3B57aCprbV/nEtPBd/3MZrvPWM0sVNrWA8jrxTFEea
+         1F90rekWBDfJg==
+Date:   Tue, 5 Oct 2021 14:00:05 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Aharon Landau <aharonl@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Gal Pressman <galpress@amazon.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Neta Ostrovsky <netao@nvidia.com>, netdev@vger.kernel.org,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v2 13/13] RDMA/nldev: Add support to get status
+ of all counters
+Message-ID: <YVwwNTiBBOl591nZ@unreal>
+References: <cover.1632988543.git.leonro@nvidia.com>
+ <e4f07e8ff4c79eabc12fd8cd859deb7b3c6391f0.1632988543.git.leonro@nvidia.com>
+ <20211004180714.GE2515663@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <20211004191446.2127522-1-kuba@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211004180714.GE2515663@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 10/4/2021 10:14 PM, Jakub Kicinski wrote:
-> This patch converts mlx4 for dev->dev_addr being const. It converts
-> to use of common helpers but also removes some seemingly unnecessary
-> idiosyncrasies.
+On Mon, Oct 04, 2021 at 03:07:14PM -0300, Jason Gunthorpe wrote:
+> On Thu, Sep 30, 2021 at 11:02:29AM +0300, Leon Romanovsky wrote:
+> > +static int stat_get_doit_default_counter(struct sk_buff *skb,
+> > +					 struct nlmsghdr *nlh,
+> > +					 struct netlink_ext_ack *extack,
+> > +					 struct nlattr *tb[])
+> > +{
+> > +	struct rdma_hw_stats *stats;
+> > +	struct ib_device *device;
+> > +	u32 index, port;
+> > +	int ret;
+> > +
+> > +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_PORT_INDEX])
+> > +		return -EINVAL;
+> > +
+> > +	index = nla_get_u32(tb[RDMA_NLDEV_ATTR_DEV_INDEX]);
+> > +	device = ib_device_get_by_index(sock_net(skb->sk), index);
+> > +	if (!device)
+> > +		return -EINVAL;
+> > +
+> > +	port = nla_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
+> > +	if (!rdma_is_port_valid(device, port)) {
+> > +		ret = -EINVAL;
+> > +		goto end;
+> > +	}
+> > +
+> > +	stats = ib_get_hw_stats_port(device, port);
+> > +	if (!stats) {
+> > +		ret = -EINVAL;
+> > +		goto end;
+> > +	}
+> > +
+> > +	if (tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
+> > +		ret = stat_get_doit_stats_list(skb, nlh, extack, tb,
+> > +					       device, port, stats);
+> > +	else
+> > +		ret = stat_get_doit_stats_values(skb, nlh, extack, tb, device,
+> > +						 port, stats);
 > 
-> Please review.
+> And this is still here - 'gets' do not act differently depending on
+> inputs..
 
-Thanks for your series.
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
+This patch shouldn't be sent at all. Sorry for the noise.
+
+Thanks
 
 > 
-> Jakub Kicinski (4):
->    mlx4: replace mlx4_mac_to_u64() with ether_addr_to_u64()
->    mlx4: replace mlx4_u64_to_mac() with u64_to_ether_addr()
->    mlx4: remove custom dev_addr clearing
->    mlx4: constify args for const dev_addr
-> 
->   drivers/infiniband/hw/mlx4/main.c             |  2 +-
->   drivers/infiniband/hw/mlx4/qp.c               |  2 +-
->   drivers/net/ethernet/mellanox/mlx4/cmd.c      |  4 +-
->   .../net/ethernet/mellanox/mlx4/en_netdev.c    | 37 +++++++------------
->   drivers/net/ethernet/mellanox/mlx4/fw.c       |  2 +-
->   drivers/net/ethernet/mellanox/mlx4/mcg.c      |  2 +-
->   include/linux/mlx4/device.h                   |  2 +-
->   include/linux/mlx4/driver.h                   | 22 -----------
->   8 files changed, 21 insertions(+), 52 deletions(-)
-> 
+> Jason
