@@ -2,138 +2,204 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F4C94230A0
-	for <lists+linux-rdma@lfdr.de>; Tue,  5 Oct 2021 21:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09260423404
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Oct 2021 01:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhJETRh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Oct 2021 15:17:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58762 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235157AbhJETRf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 5 Oct 2021 15:17:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE49261372;
-        Tue,  5 Oct 2021 19:15:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633461344;
-        bh=QlG3sQglseWfkURiKCWMosrqdWfH4HRYzxEXsFR8ogU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aa62h0WA4S9B48zmGcRHtpgkleEHVI2Tl2yoNhpNulTAl6uOBH5rqDOwhaiSTgUnF
-         Ov1K0eAn9r4wzPnVvMjOHRES4Ik7L9szrL/CXt7L3//p/DerptWqI+O/ceY1j1UMJs
-         xp6li8DLI0HOIid9eQGxoWrMw8lsOxkeb+wJ/nlCax6eRNbv779FyhCU7j+S1uWPUb
-         WVahoYc2ByBRUQez5/wT7jDflYwebnZpeNYJ/JvQ+xqFMN2oN+HoZUYIBMrNAbo10E
-         R9dFxaJYU7ZZBkPNFl6DD6outONhCVAmPqy00Dnor0krlV2wVtlPAByhEXwG+80G3r
-         JOAyXNnHkBrAw==
-Date:   Tue, 5 Oct 2021 22:15:40 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <YVykXLY7mX4K1ScW@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
- <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
- <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YVv/nUe63nO8o8wz@unreal>
- <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        id S236974AbhJEXDS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Oct 2021 19:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237059AbhJEXDM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Oct 2021 19:03:12 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82E5DC061793;
+        Tue,  5 Oct 2021 16:01:20 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id j11-20020a9d190b000000b00546fac94456so848205ota.6;
+        Tue, 05 Oct 2021 16:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0YL6VWajjTGQ1GgtkINChYvgF1AEvaNuFX3QoY8zTxs=;
+        b=jwmbRbXRHVHU+kk1NzJqRMosaE3RGbpCbon7EvbvZSfk1N1fm2rpB+1k7RWn+z9+in
+         FpeJvYAUrkZptWrlgmxj6dBw2egzSwHTzsNYwJjCt/nmEFom6xV5RbP59GD9Z/BwLS3V
+         O4+pCfpoaWMyIOx0/y9DwbOJhNOeUCdwwT0asI2UBRVnSPmc1kEu9l7Z2D1VnSI0R5jj
+         C7j7dZ0XGkZU8YezFo22odkvW9nBV0u/C8iCkHawzG4iDAUh4nJ130IwROZ9jqmKMxys
+         jDtMZPu5vv4Cd+bd187sBYZta1COMfT9gIFda3UUgj5ZCTgOEHJ+8JMvOM9yyD5qaFVn
+         brtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0YL6VWajjTGQ1GgtkINChYvgF1AEvaNuFX3QoY8zTxs=;
+        b=cF2/w2zgCoDAH1W362bQWoyMn0JvNsM23GkOUzlMzxEYUZtWym9Cfo0ggtbS104mhb
+         PGz+xZhQxo300kK96w+MiTtnlrOOPhyXMcenOh2p2rwdJ1cojn2dEEIAWCK5bvkV6Wio
+         4dyc/e+yhr+XvrKBVhZYrC8UeA59zdo8HA8ztfhqcujBGagT0TMK6R4z81dPtwqUkL14
+         b2N8GNSQee7+gJo4NhfecyOUEiX4v9q+5mJMp4941MKVmm4VUcgt4L6m3piErzdjR5Y/
+         9/yhH7h0LZr7mG2JFFYFBJFnEcY4nkxTxhP3RBWRrZ1JP5MQJc0X7TVfuWPvG3jl4anE
+         dVIw==
+X-Gm-Message-State: AOAM532yALp4hTNH0AFJzk6aZ8x8zkl1vhlw5xgXacZLBN7rZb77ettc
+        kNnLMNr4IUNnP4pQ+dGqYxk=
+X-Google-Smtp-Source: ABdhPJxIGOdFpVbucv9WmwxH811ywlzWNVKxf0pA9mFuEeXpbU6Fe/IFqtyr17ygo5niN4VC91IQFQ==
+X-Received: by 2002:a9d:6396:: with SMTP id w22mr16385771otk.26.1633474879522;
+        Tue, 05 Oct 2021 16:01:19 -0700 (PDT)
+Received: from ?IPv6:2603:8081:140c:1a00:1df4:5ddc:54c4:9e0f? (2603-8081-140c-1a00-1df4-5ddc-54c4-9e0f.res6.spectrum.com. [2603:8081:140c:1a00:1df4:5ddc:54c4:9e0f])
+        by smtp.gmail.com with ESMTPSA id u6sm3794283ooh.15.2021.10.05.16.01.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Oct 2021 16:01:18 -0700 (PDT)
+Subject: Re: [syzbot] BUG: RESTRACK detected leak of resources
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>,
+        syzbot <syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
+References: <0000000000005a800a05cd849c36@google.com>
+ <CACT4Y+ZRrxmLoor53nkD54sA5PJcRjWqheo262tudjrLO2rXzQ@mail.gmail.com>
+ <20211004131516.GV3544071@ziepe.ca>
+ <CACT4Y+bTB3DCGnem7V2ODpwgmiQdGuJae+h93kfniYn1Pr_x2g@mail.gmail.com>
+ <4F4604B1-6EF7-4435-BB12-87664EF852C3@oracle.com>
+ <CAD=hENdbCdjPCEnfz0-to81qGGAN4ONkHdrhQEPc1bC+-peYMQ@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Message-ID: <50f592c2-38e8-19ce-c0d1-c16683bc4eb8@gmail.com>
+Date:   Tue, 5 Oct 2021 18:01:17 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAD=hENdbCdjPCEnfz0-to81qGGAN4ONkHdrhQEPc1bC+-peYMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 05, 2021 at 11:32:13AM -0700, Jakub Kicinski wrote:
-> On Tue, 5 Oct 2021 10:32:45 +0300 Leon Romanovsky wrote:
-> > On Mon, Oct 04, 2021 at 04:44:13PM -0700, Jakub Kicinski wrote:
-> > > On Sun,  3 Oct 2021 21:12:04 +0300 Leon Romanovsky wrote:  
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > Introduce new devlink call to set specific ops callback during
-> > > > device initialization phase after devlink_alloc() is already
-> > > > called.
-> > > > 
-> > > > This allows us to set specific ops based on device property which
-> > > > is not known at the beginning of driver initialization.
-> > > > 
-> > > > For the sake of simplicity, this API lacks any type of locking and
-> > > > needs to be called before devlink_register() to make sure that no
-> > > > parallel access to the ops is possible at this stage.  
-> > > 
-> > > The fact that it's not registered does not mean that the callbacks
-> > > won't be invoked. Look at uses of devlink_compat_flash_update().  
-> > 
-> > It is impossible, devlink_register() is part of .probe() flow and if it
-> > wasn't called -> probe didn't success -> net_device doesn't exist.
+On 10/5/21 8:11 AM, Zhu Yanjun wrote:
+> On Tue, Oct 5, 2021 at 1:56 AM Haakon Bugge <haakon.bugge@oracle.com> wrote:
+>>
+>>
+>>
+>>> On 4 Oct 2021, at 15:22, Dmitry Vyukov <dvyukov@google.com> wrote:
+>>>
+>>> On Mon, 4 Oct 2021 at 15:15, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>>>>
+>>>> On Mon, Oct 04, 2021 at 02:42:11PM +0200, Dmitry Vyukov wrote:
+>>>>> On Mon, 4 Oct 2021 at 12:45, syzbot
+>>>>> <syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com> wrote:
+>>>>>>
+>>>>>> Hello,
+>>>>>>
+>>>>>> syzbot found the following issue on:
+>>>>>>
+>>>>>> HEAD commit:    c7b4d0e56a1d Add linux-next specific files for 20210930
+>>>>>> git tree:       linux-next
+>>>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=104be6cb300000
+>>>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=c9a1f6685aeb48bd
+>>>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=3a992c9e4fd9f0e6fd0e
+>>>>>> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+>>>>>>
+>>>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>>>>
+>>>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>>>> Reported-by: syzbot+3a992c9e4fd9f0e6fd0e@syzkaller.appspotmail.com
+>>>>>
+>>>>> +RESTRACK maintainers
+>>>>>
+>>>>> (it would also be good if RESTRACK would print a more standard oops
+>>>>> with stack/filenames, so that testing systems can attribute issues to
+>>>>> files/maintainers).
+>>>>
+>>>> restrack certainly should trigger a WARN_ON to stop the kernel.. But I
+>>>> don't know what stack track would be useful here. The culprit is
+>>>> always the underlying driver, not the core code..
+>>>
+>>> There seems to be a significant overlap between
+>>> drivers/infiniband/core/restrack.c and drivers/infiniband/sw/rxe/rxe.c
+>>> maintainers, so perhaps restrack.c is good enough approximation to
+>>> extract relevant people (definitely better then no CC at all :))
+>>
+>> Looks to me as this is rxe:
+>>
+>> [ 1892.778632][ T8958] BUG: KASAN: use-after-free in __rxe_drop_index_locked+0xb5/0x100
+>> [snip]
+>> [ 1892.822375][ T8958] Call Trace:
+>> [ 1892.825655][ T8958]  <TASK>
+>> [ 1892.828594][ T8958]  dump_stack_lvl+0xcd/0x134
+>> [ 1892.833273][ T8958]  print_address_description.constprop.0.cold+0x6c/0x30c
+>> [ 1892.840316][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
+>> [ 1892.845864][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
+>> [ 1892.851424][ T8958]  kasan_report.cold+0x83/0xdf
+>> [ 1892.856200][ T8958]  ? __rxe_drop_index_locked+0xb5/0x100
+>> [ 1892.861761][ T8958]  kasan_check_range+0x13d/0x180
+>> [ 1892.866780][ T8958]  __rxe_drop_index_locked+0xb5/0x100
+>> [ 1892.872164][ T8958]  __rxe_drop_index+0x3f/0x60
+>> [ 1892.876850][ T8958]  rxe_dereg_mr+0x14b/0x240
+>> [ 1892.881381][ T8958]  ib_dealloc_pd_user+0x96/0x230
+>> [ 1892.886566][ T8958]  rds_ib_dev_free+0xd4/0x3a0
+>>
+>> So, RDS de-allocs its PD, ib core must first de-register the PD's local MR, calls rxe_dereg_mr(), ...
 > 
-> Are you talking about reality or the bright future brought by auxbus?
-
-I looked on all the drivers which called to devlink_alloc() which is
-starting point before devlink_register(). All of them used it in the
-probe. My annotation patch checks that too.
-
-https://lore.kernel.org/linux-rdma/f65772d429d2c259bbc18cf5b1bbe61e39eb7081.1633284302.git.leonro@nvidia.com/T/#u
-
-So IMHO, it is reality.
-
+> int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+> {
+>         struct rxe_mr *mr = to_rmr(ibmr);
 > 
-> > We are not having net_device without "connected" device beneath, aren't we?
-> > 
-> > At least drivers that I checked are not prepared at all to handle call
-> > to devlink->ops.flash_update() if they didn't probe successfully.
+>         if (atomic_read(&mr->num_mw) > 0) {
+>                 pr_warn("%s: Attempt to deregister an MR while bound to MWs\n",
+>                         __func__);
+>                 return -EINVAL;
+>         }
 > 
-> Last time I checked you moved the devlink_register() at the end of
-> probe which for all no-auxbus drivers means after register_netdev().
-
-I need to add a check of if(devlink_register) inside devlink_compat_flash_update().
-
+>         mr->state = RXE_MR_STATE_ZOMBIE;
+>         rxe_drop_ref(mr_pd(mr));
+>         rxe_drop_index(mr);            <-------This is call trace beginning.
+>         rxe_drop_ref(mr);
 > 
-> > > > diff --git a/net/core/devlink.c b/net/core/devlink.c
-> > > > index 4e484afeadea..25c2aa2b35cd 100644
-> > > > --- a/net/core/devlink.c
-> > > > +++ b/net/core/devlink.c
-> > > > @@ -53,7 +53,7 @@ struct devlink {
-> > > >  	struct list_head trap_list;
-> > > >  	struct list_head trap_group_list;
-> > > >  	struct list_head trap_policer_list;
-> > > > -	const struct devlink_ops *ops;
-> > > > +	struct devlink_ops ops;  
-> > > 
-> > > Security people like ops to live in read-only memory. You're making
-> > > them r/w for every devlink instance now.  
-> > 
-> > Yes, but we are explicitly copy every function pointer, which is safe.
+>         return 0;
+> }
 > 
-> The goal is for ops to live in pages which are mapped read-only,
-> so that heap overflows can overwrite the pointers.
+> struct rxe_mr {
+>         struct rxe_pool_entry   pelem; <-----A ref_cnt in this struct.
+>         struct ib_mr            ibmr;
+> 
+>         struct ib_umem          *umem;
+> 
+> struct rxe_pool_entry {
+>         struct rxe_pool         *pool;
+>         struct kref             ref_cnt;        <-------This ref_cnt may help.
+>         struct list_head        list;
+> 
+> Zhu Yanjun
+> 
+>>
+>>
+>> Thxs, Håkon
+>>
+>>
+>>>
+>>>> Anyhow, this report is either rxe or rds by the look of it.
+>>>>
+>>>> Jason
+>>
 
-<...>
+It looks like not all the objects are getting freed before the CA is deallocated.
+If this happens the pool cleanup code issues the warning that the pool is being
+cleaned up with some objects still in the pool. It then goes ahead and frees the
+index table for indexed objects (like MRs). If the MR is later freed it tries to
+remove its index in the index bit map which has already been freed causing the oops.
+The MR not getting freed in time is the cause of the late deallocation of the PD
+which was noticed by restrak. I am not sure if these late deletions are just the
+normal flow of the program or caused by rdma core trying to clean up afterwards.
 
-> I don't like it. If you're feeling strongly please gather support of
-> other developers. Right now it's my preference against yours. I don't
-> even see you making arguments that your approach is better, just that
-> mine is not perfect and requires some similar changes.
+Normally MRs get a reference taken when they are created and dropped when they are
+freed. Additionally references are taken when an lkey or rkey is looked up an turned
+into a pointer to the MR object. These are normally dropped when the key goes out
+of scope. If an error occurs it may be possible that the key goes out of scope without
+dropping the reference to the MR which would cause what we are seeing. In this case
+in order for the late deletion of the MR someone would have to call dereg mr a second
+time to remove the lost ref count.
 
-I have an idea of how to keep static ops and allow devlink_set_ops()
-like functionality.
-
-What about if I group ops by some sort of commonalities?
-
-In my case, it will be devlink_reload_ops, which will include reload
-relevant callbacks and provide devlink_set_reload_ops() wrapper to set
-them?
-
-It will ensure that all pointers are const without need to have feature
-bits.
-
-Thanks
+It would be helpful to have a test case to trigger this oops.
