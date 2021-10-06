@@ -2,77 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E833423F6B
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Oct 2021 15:36:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A22423F71
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Oct 2021 15:36:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237861AbhJFNhw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Oct 2021 09:37:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51036 "EHLO mail.kernel.org"
+        id S238724AbhJFNiI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 6 Oct 2021 09:38:08 -0400
+Received: from mga09.intel.com ([134.134.136.24]:34862 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230023AbhJFNhw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 Oct 2021 09:37:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1BDB61076;
-        Wed,  6 Oct 2021 13:35:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633527360;
-        bh=a0QQ3BdKFzREAG4YgeXQxom6x0nBUGn5ofM28WH6ccg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Wjx6J/vP4Otob/UYgwjFKW/sJsmRTZftLGR07UXTSyuNmnCdrce8IcccWTBb28Mta
-         Q+z5I7t1xm8Jnerq3+kVI7i4H/82JHrGTbJUmsy3JMLnycYPnFlC5YLXn2GEiWCJHc
-         oQZKB+yFKkeve4aidu0yMTtX1B7usMQ2X2ivmik4VtEZ5dEQoFp9Rr8BGxP4BMzrQF
-         4l4o8GjHZjAzC8vFKRuIhlX8UW0BGoOvMxD4dnz+/TqFi14tLYzqrJuJffljPPc/T+
-         wp7esuL1Ftnb5HLwW5bsLjqhhdzD6QSRWFWS9ZN5ZZ9a/X74jc9cdQvbi3zkSLcTi4
-         FSyMuHAfryZQQ==
-Date:   Wed, 6 Oct 2021 06:35:58 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v2 3/5] devlink: Allow set specific ops
- callbacks dynamically
-Message-ID: <20211006063558.6f4ee82d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YV0aCADY4WkLySv4@unreal>
-References: <cover.1633284302.git.leonro@nvidia.com>
-        <92971648bcad41d095d12f5296246fc44ab8f5c7.1633284302.git.leonro@nvidia.com>
-        <20211004164413.60e9ce80@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YVv/nUe63nO8o8wz@unreal>
-        <20211005113213.0ee61358@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YVykXLY7mX4K1ScW@unreal>
-        <20211005173940.35bc7bfa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YV0aCADY4WkLySv4@unreal>
+        id S238704AbhJFNiH (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 Oct 2021 09:38:07 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10128"; a="225883452"
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="225883452"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Oct 2021 06:36:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,350,1624345200"; 
+   d="scan'208";a="589768173"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga004.jf.intel.com with ESMTP; 06 Oct 2021 06:36:15 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 6 Oct 2021 06:36:15 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Wed, 6 Oct 2021 06:36:14 -0700
+Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
+ fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.012;
+ Wed, 6 Oct 2021 06:36:14 -0700
+From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
+To:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "dledford@redhat.com" <dledford@redhat.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH 1/1] RDMA/irdma: compact the header file
+Thread-Topic: [PATCH 1/1] RDMA/irdma: compact the header file
+Thread-Index: AQHXuq70faBWaIBCEEeUosPImRAUKKvF+G5A
+Date:   Wed, 6 Oct 2021 13:36:14 +0000
+Message-ID: <decee89cae9b482c85f54ad2891bade8@intel.com>
+References: <20211006201531.469650-1-yanjun.zhu@linux.dev>
+In-Reply-To: <20211006201531.469650-1-yanjun.zhu@linux.dev>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.6.200.16
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 6 Oct 2021 06:37:44 +0300 Leon Romanovsky wrote:
-> Let's chose random kernel version (v5.11)
-> https://elixir.bootlin.com/linux/v5.11/source/net/core/devlink.c#L10245
-> as you can see, it doesn't hold ANY driver core locks,
+> Subject: [PATCH 1/1] RDMA/irdma: compact the header file
+> 
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> The struct irdma_bth is not used, so remove it.
+> 
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+>  drivers/infiniband/hw/irdma/cm.h | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
 
-Nope, that is not what I see.
+Thanks!
 
-> so it can be called in any time during driver .probe() or .remove(). 
-
-Having a callback invoked after registering to a subsystem (which used
-to be the case for devlink before the changes) is _normal_.
-
-You keep talking about .probe() like it's some magic period of complete
-quiescence.
-
-> Drivers that have implemented ops.flash_update() have no idea about that.
-
-I bet.
-
-I don't think this discussion is going anywhere, count me out.
+Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
