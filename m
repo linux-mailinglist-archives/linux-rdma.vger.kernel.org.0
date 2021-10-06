@@ -2,95 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A689423A8F
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Oct 2021 11:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBAD423A93
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Oct 2021 11:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229824AbhJFJcr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Oct 2021 05:32:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36972 "EHLO mail.kernel.org"
+        id S230143AbhJFJdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Oct 2021 05:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237852AbhJFJcn (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 6 Oct 2021 05:32:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 013FF60FC0;
-        Wed,  6 Oct 2021 09:30:44 +0000 (UTC)
+        id S230131AbhJFJdu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 6 Oct 2021 05:33:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84D0E61027;
+        Wed,  6 Oct 2021 09:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633512645;
-        bh=4tjNezoaeMvFYX6HtvLOnUgP5bviSoGlZfZLRSEk4lc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jQ73KeaLTEKDP6gHWsUUhi0qmci/nlVoVkjb5Zdx6dOhUIOJZLr/Zzvwd1mBalNSO
-         yweHuF4CgaOUXGbXOO2AzYm8JRNY1+zhgWvIbEh++s2YJNE6KEgoVAOGbzjJQuOz3T
-         Ps21mUYFOiHcBNJ841A2j6cAz0CFIzsBTAMNBoJeOOm3aQjHT5RWZwXF7VPEkFy/ME
-         oDGs8OBWyupAHjYxN5RvdfQ6ZjesnesGswaaMPE185Le99b6b9SQ7nhagQM6Xof7xA
-         353xNFLtxVURLps1Ob90qm26b/CwYs0opjnzdu3RQvRqyXzH/C+HNJfwPpgDqAqzqx
-         obAd3959ITzKQ==
-Date:   Wed, 6 Oct 2021 12:30:41 +0300
+        s=k20201202; t=1633512718;
+        bh=wkPh8VPQX3uKN6sbRN2T/KwlSV3P42KzsuLogBDgxuA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=asQ2kD/QiLooDpu9ujQKmLTzuM9TLPt/Ezy9YJyR3azj7ll/+cSnBSGzOwQu/+l93
+         f282E2jr7DFxOEMsM+DV1Plpaer9+kSv8Yil4Nm7xi6EQ8Jey3nymjm6/h9Ee/GZjE
+         6S0sSZXIsLGyQsBBTEDJxz95nMQ52JVtPSZAMzl4llWy0iJbwwTVI5u8FoDzv9XPZC
+         TvFsGyF974obK7IF0eId0Zd5v4tx8A/BfFQkFHCYVhZ+5cdkoynN2wzJOQk6u/SSG0
+         a8idtF2Bp8owaWznJxxLXo8TAvNmP9Ccl/wKVB051hcnxGcdamK+EoK9JsOzWPMjRH
+         JQIZnG8gO90+w==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Aharon Landau <aharonl@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: Avoid taking MRs from larger MR
- cache pools when a pool is empty
-Message-ID: <YV1swbl1VMQqoR1x@unreal>
-References: <71af2770c737b936f7b10f457f0ef303ffcf7ad7.1632644527.git.leonro@nvidia.com>
- <20211004230003.GA2602856@nvidia.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Patrisious Haddad <phaddad@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Moni Shoua <monis@mellanox.com>,
+        Yishai Hadas <yishaih@mellanox.com>
+Subject: [PATCH rdma-rc] RDMA/mlx5: Set user priority for DCT
+Date:   Wed,  6 Oct 2021 12:31:53 +0300
+Message-Id: <5fd2d94a13f5742d8803c218927322257d53205c.1633512672.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211004230003.GA2602856@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 04, 2021 at 08:00:03PM -0300, Jason Gunthorpe wrote:
-> On Sun, Sep 26, 2021 at 11:31:43AM +0300, Leon Romanovsky wrote:
-> > From: Aharon Landau <aharonl@nvidia.com>
-> > 
-> > Currently, if a cache entry is empty, the driver will try to take MRs
-> > from larger cache entries. This behavior consumes a lot of memory.
-> > In addition, when searching for an mkey in an entry, the entry is locked.
-> > When using a multithreaded application with the old behavior, the threads
-> > will block each other more often, which can hurt performance as can be
-> > seen in the table below.
-> > 
-> > Therefore, avoid it by creating a new mkey when the requested cache entry
-> > is empty.
-> > 
-> > The test was performed on a machine with
-> > Intel(R) Xeon(R) CPU E5-2699 v4 @ 2.20GHz 44 cores.
-> > 
-> > Here are the time measures for allocating MRs of 2^6 pages. The search in
-> > the cache started from entry 6.
-> > 
-> > +------------+---------------------+---------------------+
-> > |            |     Old behavior    |     New behavior    |
-> > |            +----------+----------+----------+----------+
-> > |            | 1 thread | 5 thread | 1 thread | 5 thread |
-> > +============+==========+==========+==========+==========+
-> > |  1,000 MRs |   14 ms  |   30 ms  |   14 ms  |   80 ms  |
-> > +------------+----------+----------+----------+----------+
-> > | 10,000 MRs |  135 ms  |   6 sec  |  173 ms  |  880 ms  |
-> > +------------+----------+----------+----------+----------+
-> > |100,000 MRs | 11.2 sec |  57 sec  | 1.74 sec |  8.8 sec |
-> > +------------+----------+----------+----------+----------+
-> > 
-> > Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> >  drivers/infiniband/hw/mlx5/mr.c | 26 +++++++++-----------------
-> >  1 file changed, 9 insertions(+), 17 deletions(-)
-> 
-> I'm surprised the cost is so high, I assume this has alot to do with
-> repeated calls to queue_adjust_cache_locked()? Maybe this should be
-> further investigated?
+From: Patrisious Haddad <phaddad@nvidia.com>
 
-I don't think so, most of the overhead comes from entry lock, which
-effectively stops any change to that shared entry.
+Currently, the driver doesn't set the PCP-based priority for DCT,
+hence DCT response packets are transmitted without user priority.
 
-> 
-> Anyhow, applied to for-next, thanks
+Fix it by setting user provided priority in the eth_prio field
+in the DCT context, which in turn sets the value in the transmitted packet.
 
-Thanks
+Fixes: 776a3906b692 ("IB/mlx5: Add support for DC target QP")
+Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx5/qp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> 
-> Jason
+diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
+index b2fca110346c..e5abbcfc1d57 100644
+--- a/drivers/infiniband/hw/mlx5/qp.c
++++ b/drivers/infiniband/hw/mlx5/qp.c
+@@ -4458,6 +4458,8 @@ static int mlx5_ib_modify_dct(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 		MLX5_SET(dctc, dctc, mtu, attr->path_mtu);
+ 		MLX5_SET(dctc, dctc, my_addr_index, attr->ah_attr.grh.sgid_index);
+ 		MLX5_SET(dctc, dctc, hop_limit, attr->ah_attr.grh.hop_limit);
++		if (attr->ah_attr.type == RDMA_AH_ATTR_TYPE_ROCE)
++			MLX5_SET(dctc, dctc, eth_prio, attr->ah_attr.sl & 0x7);
+ 
+ 		err = mlx5_core_create_dct(dev, &qp->dct.mdct, qp->dct.in,
+ 					   MLX5_ST_SZ_BYTES(create_dct_in), out,
+-- 
+2.31.1
+
