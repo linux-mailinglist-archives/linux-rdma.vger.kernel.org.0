@@ -2,121 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9BD42571B
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 17:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D0B54259A7
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 19:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhJGPyz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Oct 2021 11:54:55 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:52192 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241993AbhJGPyz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Oct 2021 11:54:55 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197E1Vax012178;
-        Thu, 7 Oct 2021 08:52:56 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pfpt0220;
- bh=6ioPN4uo+K4hsAg7R8Z942Zzjq+nqlKg+G+8OgsM8qc=;
- b=kw6oHNf9FZNcDgcmRIcIW/+WVDtHpGFjP1Rl+YvyLUFWNpn0a5GUejpstblj2cpFXKVY
- u6sUJh10TUpWbrl1QxSNdrbBenl1Ax8hVYiU2E36B2UkehQdW8oP4EXAXU6UUHAsbxkr
- bzc9XRm7Aan/o9UTeM3tYIXWNowT1cCT86xcJK9SIzgO+9k4pDoqYm+RGvyZtAXFV6SQ
- I0au/8U5je2H5253asB0ApoBpDfBUCF0FUsDZZVoX0paYFcr6dg4O+JrhKumQLd5vTaZ
- IJOZaExj/OM6w/iR/bxk1e0QoRiOHiX2KbUjhXO0GBDO9ChS/JGTWpQGTgFZF8+Egas2 qw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3bhrg2axrd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 08:52:56 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 7 Oct
- 2021 08:52:53 -0700
-Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
- DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server id
- 15.0.1497.18 via Frontend Transport; Thu, 7 Oct 2021 08:52:50 -0700
-From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
-To:     <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <aelior@marvell.com>,
-        <smalin@marvell.com>, <jhasan@marvell.com>,
-        <mrangankar@marvell.com>, <pkushwaha@marvell.com>,
-        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>,
-        <naresh.kamboju@linaro.org>, Omkar Kulkarni <okulkarni@marvell.com>
-Subject: [PATCH][v2] qed: Fix compilation for CONFIG_QED_SRIOV undefined scenario
-Date:   Thu, 7 Oct 2021 18:52:38 +0300
-Message-ID: <20211007155238.4487-1-pkushwaha@marvell.com>
-X-Mailer: git-send-email 2.16.6
+        id S243322AbhJGRln (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Oct 2021 13:41:43 -0400
+Received: from smtp-relay-canonical-0.canonical.com ([185.125.188.120]:35518
+        "EHLO smtp-relay-canonical-0.canonical.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242882AbhJGRlm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Oct 2021 13:41:42 -0400
+Received: from localhost (1.general.cking.uk.vpn [10.172.193.212])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id 1FF973F22C;
+        Thu,  7 Oct 2021 17:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1633628383;
+        bh=AGmPEyKfrMO2SB0GuUzpEOSqBSptCQbYUMRwx/G05Wg=;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type;
+        b=PDcBRlwNR0KSI7F21Iul29r+ViC10Ua6ZyXlsT5HvH0BLFL3fYopja0pAHYHDLUJQ
+         xRyMa2BIYSVpQaAhTDarxTrDS52rCHwaXvm0McpIsRmtHL3Y3ikyaqha1LvL8EapoG
+         O39oj+Vz3yGirhMoxJGHNKYuNJqll5uCAP5KdT9+vnqEjf4g/I/4xF9EH7NOmuLfIA
+         lgE0dUqEEmRptGkNTticRSB6UevJGsGJFp7VUiEUeNB7gHL/q8MxCvQ/5USooMNIL9
+         5gGs/1dZ7BzzU/FhS37koLmo17bUjBZ24QwyH202qgaxrXDfIIQnyQIBdopkZnvF62
+         JW2g8VM5MlZ5A==
+From:   Colin King <colin.king@canonical.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] RDMA/iwpm: Remove redundant initialization of pointer err_str
+Date:   Thu,  7 Oct 2021 18:39:42 +0100
+Message-Id: <20211007173942.21933-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: rPUOTMY9-Gjcy6lJiXUb21cr9pxpkxvN
-X-Proofpoint-ORIG-GUID: rPUOTMY9-Gjcy6lJiXUb21cr9pxpkxvN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_02,2021-10-07_02,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch fixes below compliation error in case CONFIG_QED_SRIOV not
-defined.
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function
-‘qed_fw_err_handler’:
-drivers/net/ethernet/qlogic/qed/qed_dev.c:2390:3: error: implicit
-declaration of function ‘qed_sriov_vfpf_malicious’; did you mean
-‘qed_iov_vf_task’? [-Werror=implicit-function-declaration]
-   qed_sriov_vfpf_malicious(p_hwfn, &data->err_data);
-   ^~~~~~~~~~~~~~~~~~~~~~~~
-   qed_iov_vf_task
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function
-‘qed_common_eqe_event’:
-drivers/net/ethernet/qlogic/qed/qed_dev.c:2410:10: error: implicit
-declaration of function ‘qed_sriov_eqe_event’; did you mean
-‘qed_common_eqe_event’? [-Werror=implicit-function-declaration]
-   return qed_sriov_eqe_event(p_hwfn, opcode, echo, data,
-          ^~~~~~~~~~~~~~~~~~~
-          qed_common_eqe_event
+From: Colin Ian King <colin.king@canonical.com>
 
-Fixes: fe40a830dcde ("qed: Update qed_hsi.h for fw 8.59.1.0")
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: Omkar Kulkarni <okulkarni@marvell.com>
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+The pointer err_str is being initialized with a value that is
+never read, it is being updated later on. The assignment is
+redundant and can be removed.
+
+Addresses-Coverity: ("Unused value")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-This patch is targeted for the repo
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+ drivers/infiniband/core/iwpm_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes for v2:
-  - Fixed patchwork's netdev/verify_fixes "error".
-
-
- drivers/net/ethernet/qlogic/qed/qed_sriov.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.h b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-index 1edf9c44dc67..f448e3dd6c8b 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-+++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-@@ -478,6 +478,18 @@ static inline int qed_sriov_disable(struct qed_dev *cdev, bool pci_enabled)
- static inline void qed_inform_vf_link_state(struct qed_hwfn *hwfn)
+diff --git a/drivers/infiniband/core/iwpm_util.c b/drivers/infiniband/core/iwpm_util.c
+index 54f4feb604d8..358a2db38d23 100644
+--- a/drivers/infiniband/core/iwpm_util.c
++++ b/drivers/infiniband/core/iwpm_util.c
+@@ -762,7 +762,7 @@ int iwpm_send_hello(u8 nl_client, int iwpm_pid, u16 abi_version)
  {
- }
-+
-+static inline void qed_sriov_vfpf_malicious(struct qed_hwfn *p_hwfn,
-+					    struct fw_err_data *p_data)
-+{
-+}
-+
-+static inline int qed_sriov_eqe_event(struct qed_hwfn *p_hwfn, u8 opcode,
-+				      __le16 echo, union event_ring_data *data,
-+				      u8  fw_return_code)
-+{
-+	return 0;
-+}
- #endif
+ 	struct sk_buff *skb = NULL;
+ 	struct nlmsghdr *nlh;
+-	const char *err_str = "";
++	const char *err_str;
+ 	int ret = -EINVAL;
  
- #define qed_for_each_vf(_p_hwfn, _i)			  \
+ 	skb = iwpm_create_nlmsg(RDMA_NL_IWPM_HELLO, &nlh, nl_client);
 -- 
-2.24.1
+2.32.0
 
