@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85A425DBC
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 22:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76609425DBE
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 22:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhJGUn3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Oct 2021 16:43:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
+        id S238605AbhJGUna (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Oct 2021 16:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
         with ESMTP id S230467AbhJGUn3 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Oct 2021 16:43:29 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1163FC061570
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FC42C061760
         for <linux-rdma@vger.kernel.org>; Thu,  7 Oct 2021 13:41:35 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so9145381otb.1
+Received: by mail-ot1-x32f.google.com with SMTP id 77-20020a9d0ed3000000b00546e10e6699so9124851otj.2
         for <linux-rdma@vger.kernel.org>; Thu, 07 Oct 2021 13:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R28ci1vfu6y2BAkpjnPtPdKQKjUHlIJGx5SO1oi5Sfc=;
-        b=M68TJDklFdmZlj222a99vVIRadmoUMvId+iOk+pBun4sJ3aiLfVvYSQ+pzO3yl6xq/
-         MQcZVx1E5DBrXsWldOmfMOKPLcUpZw3SM+jftKJs+o9sd0789BZNGLgxk/VgF1MYKsZh
-         nl4ZUlKSb0pRm4J8KAWVuFpoJpcJTPlpcstFfPzCE9R8JkI+IyFDmivmDU2/4/RiesDx
-         iL8Tt2mihlrNpY8yKUV31JAl7T/7vjczxEEHMa1glsk+WfdyfQH4rJFMy4Jq5NR3VwXX
-         xkjIHcQe4nkJiSfga+8vp3SKakaeTKJjsiZ+gz8oRiYsKjUjh6aGD7WyNcSXnBIrlBG2
-         5ekA==
+        bh=Fo+XA5ZhNhrA0pZdOhXylGStZB1nDPPpygrSUz+ZKz8=;
+        b=iDrdrnhdQM9PLEKBJQUGjc67pUr5MnTaC1lR87D8wAlk9KhXe7ZfHb60HpF7kkAi4H
+         uKYLGUcDbTI7xr47MKWOjtBGFHG5xTEOhdXv+Rnf5bkI73Fl53HHqFWXO/tkjskqKPqt
+         bilfTwBIjeEsamhBU3l27ooTH2znaq4VFOaTZaJnv6iRyt8dWUA7qBzp1IlU0sojnVYp
+         ElWlYFvhO1SE6+5oPU/AWoF9jfkmeIA82zHA6bDsZM5p6+U/i36/8knxxUkxrX6X6AAy
+         jrExvYoiqIIIPcuT6fglQRVtOWLEGdpK1+owYiY7LQB7K7Al8NVRzE6Tz2A90pQNeuG8
+         RLJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R28ci1vfu6y2BAkpjnPtPdKQKjUHlIJGx5SO1oi5Sfc=;
-        b=TZ7qOqjkuKOjecQ7NJRgtEWMCS0lRJU66NBREIu54hzCQcdZCCPwCZq22pm4xZrcuf
-         oImuOEoto7boJlnbGs+mHTqSSbN7vuvf7iZRDbjbqvNIKA2TgaRlar4GCpwxohyqo80E
-         G1BeBz8/jKbY9D4/t87ecLFTD8kWZte8ak+zJtpQhYB8MqmPBXvkuwoLrNk2mX9/sEpA
-         /1fSXF4RisE1pkOg4PdKTQCwkKgiX1jJiXb//esbPNJa6XquC4nsH/KN+1rcyUE3hvV1
-         JQPcyCd73X58GBtPcy0meJOq3aqGvBn+5tKq/H2LgTImj8sCtj8G2XFCuLglkFnOr5He
-         RQ3w==
-X-Gm-Message-State: AOAM533myS40jD4fO5uuZmUzW50KETcsWBjhrQcwM44cMibMqOoQxXvz
-        dcaDlpmDhGeaHlUkmGlIc94lF/cG3Cs=
-X-Google-Smtp-Source: ABdhPJzLZwC75WgkRpB4GJ5Dhp0ZEVPoZFxRCCHnPdHon4NSOggtjp5TULUrGfTEOag/fbYeXQyKYQ==
-X-Received: by 2002:a05:6830:1f54:: with SMTP id u20mr5298815oth.207.1633639294461;
-        Thu, 07 Oct 2021 13:41:34 -0700 (PDT)
+        bh=Fo+XA5ZhNhrA0pZdOhXylGStZB1nDPPpygrSUz+ZKz8=;
+        b=EfOMCqflXgGe2GnzFIttEUQCCV886S4vhEuJztqcQ0HLdypkYqRRInNgDmvEV5M0Sn
+         IRfWKCSLd3+kVUGOGdcRh12APtVej+CmJPpicTeTYcpo19jq+noexEplN5IkSt+/+xww
+         zSIgCW8OmI+7bl/zqMy2nhbh042fVQlA8j+nR1JWO17s9bPB5gevphzyi/frtRkboR5R
+         jIXpViKLx2QxK351UAbJXQqA15/kP60y3hE5BZdfe8okWUvARfx278A67p/nLbSU6OmZ
+         l5/hRAn/RIiD221FFmnD+uQ+ZG5XobDprCvR2jmuVlUvHTVDQcJAPX7ABBY85YdRWoY+
+         o5Xw==
+X-Gm-Message-State: AOAM530j8nYmpH9hN5VbBy1xSIQ4BfBCuS6YtJPlfbDK3TRbkX7ddobP
+        +xDssAAdrJhsqDUG7xdUuweTTrUnOro=
+X-Google-Smtp-Source: ABdhPJz3XVQDEmiP4GWWyJWvRGAyBxQOylnXGbZuGJYsmFC0PK34FfX2b55LCRQVTlCOS3HFWBZN+g==
+X-Received: by 2002:a05:6830:438a:: with SMTP id s10mr5504644otv.173.1633639295033;
+        Thu, 07 Oct 2021 13:41:35 -0700 (PDT)
 Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-1259-16f0-10f5-1724.res6.spectrum.com. [2603:8081:140c:1a00:1259:16f0:10f5:1724])
         by smtp.gmail.com with ESMTPSA id f10sm71607ooh.42.2021.10.07.13.41.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -50,9 +50,9 @@ Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-1259-16f0-10f5-1724.res6
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v6 5/6] RDMA/rxe: Lookup kernel AH from ah index in UD WQEs
-Date:   Thu,  7 Oct 2021 15:40:51 -0500
-Message-Id: <20211007204051.10086-6-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v6 6/6] RDMA/rxe: Convert kernel UD post send to use ah_num
+Date:   Thu,  7 Oct 2021 15:40:52 -0500
+Message-Id: <20211007204051.10086-7-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211007204051.10086-1-rpearsonhpe@gmail.com>
 References: <20211007204051.10086-1-rpearsonhpe@gmail.com>
@@ -62,78 +62,43 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add code to rxe_get_av in rxe_av.c to use the AH index in UD send WQEs
-to lookup the kernel AH. For old user providers continue to use the AV
-passed in WQEs. Move setting pkt->rxe to before the call to rxe_get_av()
-to get access to the AH pool.
+Modify ib_post_send for kernel UD sends to put the AH index into the
+WQE instead of the address vector.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_av.c  | 20 +++++++++++++++++++-
- drivers/infiniband/sw/rxe/rxe_req.c |  8 +++++---
- 2 files changed, 24 insertions(+), 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_av.c b/drivers/infiniband/sw/rxe/rxe_av.c
-index 85580ea5eed0..38c7b6fb39d7 100644
---- a/drivers/infiniband/sw/rxe/rxe_av.c
-+++ b/drivers/infiniband/sw/rxe/rxe_av.c
-@@ -101,11 +101,29 @@ void rxe_av_fill_ip_info(struct rxe_av *av, struct rdma_ah_attr *attr)
- 
- struct rxe_av *rxe_get_av(struct rxe_pkt_info *pkt)
- {
-+	struct rxe_ah *ah;
-+	u32 ah_num;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 8854ace63acd..b808777e2221 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -537,8 +537,11 @@ static void init_send_wr(struct rxe_qp *qp, struct rxe_send_wr *wr,
+ 	if (qp_type(qp) == IB_QPT_UD ||
+ 	    qp_type(qp) == IB_QPT_SMI ||
+ 	    qp_type(qp) == IB_QPT_GSI) {
++		struct ib_ah *ibah = ud_wr(ibwr)->ah;
 +
- 	if (!pkt || !pkt->qp)
- 		return NULL;
+ 		wr->wr.ud.remote_qpn = ud_wr(ibwr)->remote_qpn;
+ 		wr->wr.ud.remote_qkey = ud_wr(ibwr)->remote_qkey;
++		wr->wr.ud.ah_num = to_rah(ibah)->ah_num;
+ 		if (qp_type(qp) == IB_QPT_GSI)
+ 			wr->wr.ud.pkey_index = ud_wr(ibwr)->pkey_index;
+ 		if (wr->opcode == IB_WR_SEND_WITH_IMM)
+@@ -610,12 +613,6 @@ static void init_send_wqe(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 		return;
+ 	}
  
- 	if (qp_type(pkt->qp) == IB_QPT_RC || qp_type(pkt->qp) == IB_QPT_UC)
- 		return &pkt->qp->pri_av;
- 
--	return (pkt->wqe) ? &pkt->wqe->wr.wr.ud.av : NULL;
-+	if (!pkt->wqe)
-+		return NULL;
-+
-+	ah_num = pkt->wqe->wr.wr.ud.ah_num;
-+	if (ah_num) {
-+		/* only new user provider or kernel client */
-+		ah = rxe_pool_get_index(&pkt->rxe->ah_pool, ah_num);
-+		if (!ah || ah->ah_num != ah_num || rxe_ah_pd(ah) != pkt->qp->pd) {
-+			pr_warn("Unable to find AH matching ah_num\n");
-+			return NULL;
-+		}
-+		return &ah->av;
-+	}
-+
-+	/* only old user provider for UD sends*/
-+	return &pkt->wqe->wr.wr.ud.av;
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index fe275fcaffbd..0c9d2af15f3d 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -379,9 +379,8 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
- 	/* length from start of bth to end of icrc */
- 	paylen = rxe_opcode[opcode].length + payload + pad + RXE_ICRC_SIZE;
- 
--	/* pkt->hdr, rxe, port_num and mask are initialized in ifc
--	 * layer
--	 */
-+	/* pkt->hdr, port_num and mask are initialized in ifc layer */
-+	pkt->rxe	= rxe;
- 	pkt->opcode	= opcode;
- 	pkt->qp		= qp;
- 	pkt->psn	= qp->req.psn;
-@@ -391,6 +390,9 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
- 
- 	/* init skb */
- 	av = rxe_get_av(pkt);
-+	if (!av)
-+		return NULL;
-+
- 	skb = rxe_init_packet(rxe, av, paylen, pkt);
- 	if (unlikely(!skb))
- 		return NULL;
+-	if (qp_type(qp) == IB_QPT_UD ||
+-	    qp_type(qp) == IB_QPT_SMI ||
+-	    qp_type(qp) == IB_QPT_GSI)
+-		memcpy(&wqe->wr.wr.ud.av, &to_rah(ud_wr(ibwr)->ah)->av,
+-		       sizeof(struct rxe_av));
+-
+ 	if (unlikely(ibwr->send_flags & IB_SEND_INLINE))
+ 		copy_inline_data_to_wqe(wqe, ibwr);
+ 	else
 -- 
 2.30.2
 
