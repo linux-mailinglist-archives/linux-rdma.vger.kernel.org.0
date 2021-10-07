@@ -2,118 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B95425510
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 16:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6585D425566
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Oct 2021 16:28:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241986AbhJGOM2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Oct 2021 10:12:28 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:57804 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241812AbhJGOM2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Oct 2021 10:12:28 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 197E7MJC012419;
-        Thu, 7 Oct 2021 07:10:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pfpt0220;
- bh=OxiBiwIOUqnU4gg64pI9Pm96DeK+92bZIXZXOoMjTy8=;
- b=QiCHUzp1FGFBiJaHs+RhMax7/YjrIh4JTpHwynTIp1nS/zM/fHVFCqVzFYnQhqS87fBy
- h0xrwZCCCovtDtY29xpK5Dibz6PvTDqBeIb9m1z6t4WWNqrGRdlhiUgR367TUuFjhzFR
- IqgqJkrlg0Jlq8gvzMYmwIrD9aOdqDmvJHJTp79tUZYtdszAgdHgllZ2mn6UvP3b++Fk
- lCoN+vENZADMkfcXc67BK35fdV5IPc51PxDPfUieLZ8pvQqz9SUqbOfKJ4t02lYUjTSD
- ynjFGSP8E4kbPgAyg3KIAzzne9JB7VOYLXapZWQJYzxj/wFC7Q5tkdMuTDTvMw1x0Wxp Jg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3bhrg2ah94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 07 Oct 2021 07:09:03 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 7 Oct
- 2021 07:09:01 -0700
-Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
- DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server id
- 15.0.1497.18 via Frontend Transport; Thu, 7 Oct 2021 07:08:57 -0700
-From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
-To:     <netdev@vger.kernel.org>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <aelior@marvell.com>,
-        <smalin@marvell.com>, <pkushwaha@marvell.com>,
-        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>,
-        <naresh.kamboju@linaro.org>, <jhasan@marvell.com>,
-        <mrangankar@marvell.com>, Omkar Kulkarni <okulkarni@marvell.com>
-Subject: [PATCH] qed: Fix compilation for CONFIG_QED_SRIOV undefined scenario
-Date:   Thu, 7 Oct 2021 17:08:39 +0300
-Message-ID: <20211007140839.21672-1-pkushwaha@marvell.com>
-X-Mailer: git-send-email 2.16.6
+        id S242043AbhJGOa2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Oct 2021 10:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242040AbhJGOa1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Oct 2021 10:30:27 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1FB4C061570
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Oct 2021 07:28:33 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id m21so5788025pgu.13
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Oct 2021 07:28:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=LKMdW8eXJJQoIzur5jtUB7TYD/pVRqgw99BRVM74YbM=;
+        b=gpSbUuitHr/KPy2OW4lw4SywaowAPcr/+acJ03K2DtYgkrClGsjyNe2AzzlLaby4ic
+         tufmj1pfjJDl2LhTdRuxUMHibYmGiY9YvdWyLUCH4Y55GE509y0uP5rCBFmGRqlVFBl4
+         tqaekUHLKppuM4TQuflg8LLvXWPgiM4hYOKRqrWQcvuL829esR/fDxsFcmBATlkw1G5x
+         BS07aw1CfHWT/PYyuix6CdAp+WkRKkRGaR+8KNCcmArz50J0oe6SQs+DqxBSa4TVBfCp
+         7hkp3jtbKIAQ0rZwP1DrW1vGjdtltj6/N7+oidTW+le7ePoqNj/k+xvcMmgD5XzHHrln
+         e2jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=LKMdW8eXJJQoIzur5jtUB7TYD/pVRqgw99BRVM74YbM=;
+        b=qq0hseBc6/NlQ/cTknxxxPjXaB34YvqExdxJ0vrWAxyM5SiI+vnPrKTM7AcIO/V/Hy
+         essXmoja+2gcDGUgBI0n3J1XDYuIg6eOKOHjTdGAhk8vSjfqOSm9zKMqdE8mFAdh7JLG
+         BngaEQHoO41cgbJWH7XqTTMFfAVCztnoLWXiDEuG1JSu2bxwGnSbSA7pajCVMB5KNTAa
+         fV8HPaUrd394ObVM1nmyivNeomBerXdiwjbC7Xdz8pchp6zeRMH53LYkk5wMMWu1BUP/
+         2nv++2qmiuKUmg8757bakbxVz50L1vqr7z1iP16H0oZq9/NuhzfbxQHwa6oSPMmYpa3H
+         h8gw==
+X-Gm-Message-State: AOAM532zcOQw6Iwevjf2K2q2iz+Ld6coQkRVVooeSnY16uPR3BL4zmn0
+        fYao5+sd4rv4fAQWghWvJP/8vq1AOHxerhkoHx4=
+X-Google-Smtp-Source: ABdhPJw9VGoWg2xYtkRZSSbCUqDlw4ljZJtxvEZLvCpB2nMAhempkirbz3oeSji4KEbEV+UYJL+/QOnjTgYBDYZpn9M=
+X-Received: by 2002:a63:1e4c:: with SMTP id p12mr3671854pgm.275.1633616913293;
+ Thu, 07 Oct 2021 07:28:33 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a05:7300:76cb:b0:3f:de06:fa40 with HTTP; Thu, 7 Oct 2021
+ 07:28:32 -0700 (PDT)
+Reply-To: lydiawright836@gmail.com
+From:   LYDIA WRIGHT <bryanwalker534@gmail.com>
+Date:   Thu, 7 Oct 2021 17:28:32 +0300
+Message-ID: <CAKxfBbQ8fsA8ZzuPuiHZWwU4-Vk58ebOfd=n6t7mb_Aj0W1HnA@mail.gmail.com>
+Subject: Best Regards
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: FEdk8M5le2vUBEDg2D7m3f23zv4u0IH3
-X-Proofpoint-ORIG-GUID: FEdk8M5le2vUBEDg2D7m3f23zv4u0IH3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
- definitions=2021-10-07_01,2021-10-07_02,2020-04-07_01
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch fixes below compliation error in case CONFIG_QED_SRIOV not
-defined.
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function
-‘qed_fw_err_handler’:
-drivers/net/ethernet/qlogic/qed/qed_dev.c:2390:3: error: implicit
-declaration of function ‘qed_sriov_vfpf_malicious’; did you mean
-‘qed_iov_vf_task’? [-Werror=implicit-function-declaration]
-   qed_sriov_vfpf_malicious(p_hwfn, &data->err_data);
-   ^~~~~~~~~~~~~~~~~~~~~~~~
-   qed_iov_vf_task
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function
-‘qed_common_eqe_event’:
-drivers/net/ethernet/qlogic/qed/qed_dev.c:2410:10: error: implicit
-declaration of function ‘qed_sriov_eqe_event’; did you mean
-‘qed_common_eqe_event’? [-Werror=implicit-function-declaration]
-   return qed_sriov_eqe_event(p_hwfn, opcode, echo, data,
-          ^~~~~~~~~~~~~~~~~~~
-          qed_common_eqe_event
+Greetings dear,
 
-Fixes: fe40a830dcde ("qed: Update qed_hsi.h for fw 8.59.1.0")
+My name is Lydia A. Wright, and I'm from Akron, Ohio. The U.S.A, This
+message will most likely surprise you. I'm dying of cancer, which I
+was diagnosed with around two years ago, and I'm recovering from a
+stroke that has made walking difficult.
+Mr. L=C3=A9vi Wright, my husband, passed away in mid-March 2011 from a
+heart attack. I'll be having surgery soon.  I only have a few years
+left in this world, my late spouse has  $10.5 million as a family
+valuable , which I intend to gift to charity.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Cc: Naresh Kamboju <naresh.kamboju@linaro.org>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: Omkar Kulkarni <okulkarni@marvell.com>
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
----
-This patch is targeted for the repo
-git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
+For more information, please contact me at (lydiawright836@gmail.com)
+. Thank you sincerely!
 
- drivers/net/ethernet/qlogic/qed/qed_sriov.h | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_sriov.h b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-index 1edf9c44dc67..f448e3dd6c8b 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-+++ b/drivers/net/ethernet/qlogic/qed/qed_sriov.h
-@@ -478,6 +478,18 @@ static inline int qed_sriov_disable(struct qed_dev *cdev, bool pci_enabled)
- static inline void qed_inform_vf_link_state(struct qed_hwfn *hwfn)
- {
- }
-+
-+static inline void qed_sriov_vfpf_malicious(struct qed_hwfn *p_hwfn,
-+					    struct fw_err_data *p_data)
-+{
-+}
-+
-+static inline int qed_sriov_eqe_event(struct qed_hwfn *p_hwfn, u8 opcode,
-+				      __le16 echo, union event_ring_data *data,
-+				      u8  fw_return_code)
-+{
-+	return 0;
-+}
- #endif
- 
- #define qed_for_each_vf(_p_hwfn, _i)			  \
--- 
-2.24.1
-
+Mrs. Lydia A. Wright
+Rosalind Ct, Akron, Ohio , U.S.A
