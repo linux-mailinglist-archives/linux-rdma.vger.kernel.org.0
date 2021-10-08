@@ -2,100 +2,209 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FAC426173
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Oct 2021 02:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33EAB426322
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Oct 2021 05:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232867AbhJHAqr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Oct 2021 20:46:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53052 "EHLO mail.kernel.org"
+        id S229696AbhJHDjV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Oct 2021 23:39:21 -0400
+Received: from mga01.intel.com ([192.55.52.88]:51257 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229487AbhJHAqr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 Oct 2021 20:46:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 12D3A61056;
-        Fri,  8 Oct 2021 00:44:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633653892;
-        bh=3Nq6CakiX02/jiCPVuoYRZGiZcNauO7mQNhGl4vQgNA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tDeRF1qEnthEbVTxHG0t/sK+HKOtE0Fi7Nm6p0lRSVE4URBRZO/E32Y9+qtAslNo5
-         sUbsLuZWp5y87qDQ6jTRbZTeroVkHMeXoRDWVIYI4spC48JoE7sfg6SvvX27QxfAXO
-         oBeGJ60rRYEOf9QFeO48rFW/0qVNmZ6mK3apXgPZ2AenwJTg18648sq/YDcbdvTNCV
-         SPRX/g2SAjFGQqbOy/CsS+bpul7u/ACoTMx3TtDvp3W+so74SsEOOclnhJlzi061RQ
-         Pu5Gq0FT5fkVBKH7wWHhBuzC0gu7b+njVP4aox7k5SZG9nj/xhsH382A5jFnruCoE6
-         WjWouylgRMj+Q==
-Date:   Fri, 8 Oct 2021 03:44:48 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Ido Schimmel <idosch@nvidia.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Pirko <jiri@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        mlxsw@nvidia.com, Moshe Shemesh <moshe@nvidia.com>,
-        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v3 1/5] devlink: Reduce struct devlink exposure
-Message-ID: <YV+UgAEYz2GH8LIW@unreal>
-References: <cover.1633589385.git.leonro@nvidia.com>
- <39692583a2aace1b9e435399344f097c72073522.1633589385.git.leonro@nvidia.com>
- <20211007155800.1ff26948@gandalf.local.home>
+        id S236460AbhJHDjV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:39:21 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="249784043"
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="249784043"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:37:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
+   d="scan'208";a="440507319"
+Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 07 Oct 2021 20:37:24 -0700
+Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mYghI-0007td-1m; Fri, 08 Oct 2021 03:37:24 +0000
+Date:   Fri, 08 Oct 2021 11:36:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/for-testing] BUILD SUCCESS
+ c78d218fc5a9995d6b50aa38814bef4fbc88a77d
+Message-ID: <615fbcd5.RfDLGjQAJAKxEfjn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211007155800.1ff26948@gandalf.local.home>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 03:58:00PM -0400, Steven Rostedt wrote:
-> On Thu,  7 Oct 2021 09:55:15 +0300
-> Leon Romanovsky <leon@kernel.org> wrote:
-> 
-> > +void *devlink_priv(struct devlink *devlink)
-> > +{
-> > +	BUG_ON(!devlink);
-> 
-> Do we really want to bring down the kernel in this case?
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/for-testing
+branch HEAD: c78d218fc5a9995d6b50aa38814bef4fbc88a77d  Merge tag 'v5.15-rc4' into rdma.get for-next
 
-It was before.
+elapsed time: 1216m
 
-> 
-> Can't we just have:
-> 
-> 	if (WARN_ON(!devlink))
-> 		return NULL;
-> ?
+configs tested: 149
+configs skipped: 3
 
-Callers of devlink_priv() are not prepared to have NULL here, they don't
-check return value at all,and this BUG_ON() can't happen at all.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> Same for the below as well.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+m68k                       m5475evb_defconfig
+powerpc                     tqm5200_defconfig
+m68k                       m5249evb_defconfig
+powerpc                     skiroot_defconfig
+powerpc                   motionpro_defconfig
+arc                 nsimosci_hs_smp_defconfig
+m68k                          atari_defconfig
+powerpc                      ppc40x_defconfig
+powerpc                     stx_gp3_defconfig
+m68k                          multi_defconfig
+sh                          landisk_defconfig
+powerpc                      pcm030_defconfig
+mips                          malta_defconfig
+mips                        qi_lb60_defconfig
+mips                       bmips_be_defconfig
+powerpc                     tqm8560_defconfig
+sh                         microdev_defconfig
+powerpc                       ppc64_defconfig
+mips                          ath25_defconfig
+arm                         orion5x_defconfig
+arm                          collie_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                   microwatt_defconfig
+arm                        multi_v5_defconfig
+xtensa                       common_defconfig
+m68k                        m5272c3_defconfig
+s390                       zfcpdump_defconfig
+sparc                            alldefconfig
+sparc                       sparc64_defconfig
+sh                        sh7757lcr_defconfig
+sh                          rsk7264_defconfig
+mips                       capcella_defconfig
+arm                           h5000_defconfig
+sh                            migor_defconfig
+openrisc                    or1ksim_defconfig
+arc                          axs101_defconfig
+sh                          kfr2r09_defconfig
+mips                        maltaup_defconfig
+mips                      loongson3_defconfig
+sh                   sh7724_generic_defconfig
+arm                           viper_defconfig
+arm                          simpad_defconfig
+powerpc                         ps3_defconfig
+h8300                            allyesconfig
+powerpc                      pasemi_defconfig
+powerpc64                           defconfig
+arm                          moxart_defconfig
+arm                           sama5_defconfig
+arc                     nsimosci_hs_defconfig
+m68k                        stmark2_defconfig
+arm                       omap2plus_defconfig
+mips                           ip27_defconfig
+mips                      malta_kvm_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                     davinci_all_defconfig
+sh                          polaris_defconfig
+xtensa                          iss_defconfig
+arm                       multi_v4t_defconfig
+powerpc                     ksi8560_defconfig
+mips                        bcm63xx_defconfig
+x86_64               randconfig-c001-20211003
+i386                 randconfig-c001-20211003
+arm                  randconfig-c002-20211003
+x86_64               randconfig-c001-20211004
+i386                 randconfig-c001-20211004
+arm                  randconfig-c002-20211004
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+xtensa                           allyesconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                             allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+powerpc                          allyesconfig
+x86_64               randconfig-a015-20211004
+x86_64               randconfig-a012-20211004
+x86_64               randconfig-a016-20211004
+x86_64               randconfig-a014-20211004
+x86_64               randconfig-a013-20211004
+x86_64               randconfig-a011-20211004
+i386                 randconfig-a013-20211004
+i386                 randconfig-a016-20211004
+i386                 randconfig-a014-20211004
+i386                 randconfig-a011-20211004
+i386                 randconfig-a012-20211004
+i386                 randconfig-a015-20211004
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                           allyesconfig
 
-I can send followup patch.
+clang tested configs:
+x86_64               randconfig-c007-20211003
+i386                 randconfig-c001-20211003
+arm                  randconfig-c002-20211003
+s390                 randconfig-c005-20211003
+powerpc              randconfig-c003-20211003
+riscv                randconfig-c006-20211003
+mips                 randconfig-c004-20211003
+x86_64               randconfig-a003-20211004
+x86_64               randconfig-a005-20211004
+x86_64               randconfig-a001-20211004
+x86_64               randconfig-a002-20211004
+x86_64               randconfig-a004-20211004
+x86_64               randconfig-a006-20211004
+i386                 randconfig-a001-20211004
+i386                 randconfig-a003-20211004
+i386                 randconfig-a005-20211004
+i386                 randconfig-a002-20211004
+i386                 randconfig-a004-20211004
+i386                 randconfig-a006-20211004
+hexagon              randconfig-r045-20211007
+hexagon              randconfig-r041-20211007
+s390                 randconfig-r044-20211007
+riscv                randconfig-r042-20211007
 
-Thanks
-
-> 
-> -- Steve
-> 
-> > +	return &devlink->priv;
-> > +}
-> > +EXPORT_SYMBOL_GPL(devlink_priv);
-> > +
-> > +struct devlink *priv_to_devlink(void *priv)
-> > +{
-> > +	BUG_ON(!priv);
-> > +	return container_of(priv, struct devlink, priv);
-> > +}
-> > +EXPORT_SYMBOL_GPL(priv_to_devlink);
-> > +
-> > +struct device *devlink_to_dev(const struct devlink *devlink)
-> > +{
-> > +	return devlink->dev;
-> > +}
-> > +EXPORT_SYMBOL_GPL(devlink_to_dev);
-> > +
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
