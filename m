@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0CA42632F
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Oct 2021 05:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0951426344
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Oct 2021 05:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241526AbhJHDmX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Oct 2021 23:42:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:40953 "EHLO mga14.intel.com"
+        id S236926AbhJHDpX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Oct 2021 23:45:23 -0400
+Received: from mga06.intel.com ([134.134.136.31]:22576 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242459AbhJHDmW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 7 Oct 2021 23:42:22 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="226714080"
+        id S236949AbhJHDpW (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 7 Oct 2021 23:45:22 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10130"; a="287307916"
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="226714080"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:40:27 -0700
+   d="scan'208";a="287307916"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Oct 2021 20:43:27 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,356,1624345200"; 
-   d="scan'208";a="439781773"
+   d="scan'208";a="590407810"
 Received: from lkp-server01.sh.intel.com (HELO 72c3bd3cf19c) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 07 Oct 2021 20:40:25 -0700
+  by orsmga004.jf.intel.com with ESMTP; 07 Oct 2021 20:43:26 -0700
 Received: from kbuild by 72c3bd3cf19c with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mYgkC-0007w7-Tn; Fri, 08 Oct 2021 03:40:24 +0000
-Date:   Fri, 08 Oct 2021 11:39:41 +0800
+        id 1mYgn7-0007z0-O6; Fri, 08 Oct 2021 03:43:25 +0000
+Date:   Fri, 08 Oct 2021 11:42:42 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 1ab52ac1e9bc9391f592c9fa8340a6e3e9c36286
-Message-ID: <615fbd7d.ElB/cmphe/v31Pej%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 2a152512a155aaf27c3e67834ffafaed9525a7b5
+Message-ID: <615fbe32.0xK7DaAS5BmQyTJb%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,10 +39,10 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 1ab52ac1e9bc9391f592c9fa8340a6e3e9c36286  RDMA/mlx5: Set user priority for DCT
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 2a152512a155aaf27c3e67834ffafaed9525a7b5  RDMA/efa: CQ notifications
 
-elapsed time: 1218m
+elapsed time: 1221m
 
 configs tested: 149
 configs skipped: 3
