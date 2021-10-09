@@ -2,141 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218DB42780D
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Oct 2021 10:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C21AC427841
+	for <lists+linux-rdma@lfdr.de>; Sat,  9 Oct 2021 11:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbhJIISa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 9 Oct 2021 04:18:30 -0400
-Received: from mail-co1nam11on2073.outbound.protection.outlook.com ([40.107.220.73]:36544
+        id S230427AbhJIJG3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 9 Oct 2021 05:06:29 -0400
+Received: from mail-co1nam11on2074.outbound.protection.outlook.com ([40.107.220.74]:27712
         "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229618AbhJIIS1 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 9 Oct 2021 04:18:27 -0400
+        id S229995AbhJIJG3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sat, 9 Oct 2021 05:06:29 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=axIM4Q+1cbdbdUNhEXrFIB3xpHKXcksn6xXTf+rwkeS7Hhlj/DfpJJmlOAkATwmVW52xP8fA6tUiIcGj8L+sxPp/UUo59M5znKCxXR2H8yoiN8RbJru1FUyaOkfn70Qdr6EgiGbFANdR9XWyZy1m/thReipucwjqjpSPpPX9LmKa5IkUGU1+3TVUVCBZXB3VuIZlDOLQC6AA0swSdGaXjMfd0/BI+X328KYPQBbDMTODIxhC8ZncjXaQ17zvd9Nhp+feQpHFmkOgFkhk5ghHQAJdEnMw3ffI/fCfFYky+fGbhc9sHo58+v4Z7eSbBvAfPI4YUvRWwP8lKrKdL9Jbow==
+ b=U7bgtx38s4I9F6jFq/29lQTqlIShJSS4v7C2eUsWQfU7K5AxF0ozoNXibu2DfcKCM4MNGpZ0tgypOEsnZaU5M8PSxsTUWQkO6uPdFHk7EUcehV0ShmIZyOCWFGn6XaEsqNax/+7nsBFivlSxMcXybh/gqSP00ut3H9SkJycDJS1j/Uv3LwDKlq92UsW5X9IOX0IvLTvz2nyUa/sDPn7PrLF869mTukFh24TSAe2x40bEQUMgpUb1yKaHoArIocycqkRiJT2MXil/W+Me8Y5RKoNm3ekSeGpuYKHBfo+7+l6Xmuusb2KJrezstK2U3ruCxhbqbLRf4FKh9bDIURnv6g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=NvYMzoby6ncxVwcUUqS+N/rtFd1uWuUFn9wTaAq6hu4=;
- b=Rzo4YywPYbM9Xq9TtWd2B/ajNRzm38oqvxqTz8gLL+wPXjxWTpOBUZW+0P8xJW1zQW0acu4glD8JrQ8oBJWAE/HWURjnMO/I1p+RxzPGrz657JktSWKqjLOSmyznUxtKdq8HSwZcVbv3dFrEygHvNIj0mBG9JEAdmi167MgWiN4DncrfyiEx3BSo8VR/VJEwIsnQQM19iR7zJoj/depv+c+HdKtTZ2VLU7gTGgzupaB07UUjXaDlHYRzlqkGV149a5qsxkB5edI/kvW5aZISmuFJwylXM1tRgW5VutplVnGesRNKok8dST6ScLeEu+Xz2AYjTcvas1SZqhcx6uh+BQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
+ bh=PcHpVXSKrCXNdeO7M0WCdHyH08yBiDir6cI61ZOJ8BU=;
+ b=Tcfyu4QZtqYmuSa4BDa93PGn2A2QGzZwvDiZCl2xzj/gpIJQjHJneGhZ1dKesqobJOOv8GaVhAbKZtZONU99DKpKxZf/MISotuFQnT7vpsOjpiU0eXazOFIyUU36zqo/NzZU1+U0grRCLPdSzdRD5I8Op3aosHzuWn6FxUMI0FiFmrryNZ33noBcnKubMV70V7zgEzvB+4nJ3CnjgvZFITdj/uc5tjabscbUJ8Z/+Jpf3xpvSCTuQOB4yU/jBv3MY7yt2ReDr+wWKxz0TkN5FXMIwV5w41tUKUZwmRwvGmPd8t1U+bMiIsYV3sLZun/QwW1GMP2KYwMQa3E0Svz+8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=temperror (sender ip
+ is 216.228.112.34) smtp.rcpttodomain=chelsio.com smtp.mailfrom=nvidia.com;
+ dmarc=temperror action=none header.from=nvidia.com; dkim=none (message not
+ signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NvYMzoby6ncxVwcUUqS+N/rtFd1uWuUFn9wTaAq6hu4=;
- b=hOBt+AwtGbe0p2tss8uTJpF92O+eQuGD2zqzl9zSPfmEKWzE8LJ2zHyd81+GV5I0h0bvWhxpDm8ePJ8Etjgx/jk9cmicVF7IKOpvczGHubtfBLSK4xNTy+s7p0cMjhiW+QuPgiegm7DbRuF9erG/EYVOjOgow8JN1rEdmBealbs2zFV54nZLGQH+ajIZ5A/MiRG2C0VDjCvkgYWVIZk0BPCtcLQ1DvhcmO+rgtGfNHPnKDepEQpavJVtIoIJR4dJuX9fGfy0LcePfmjOoeLBO4BJ+R/r/T71Rl7CP3WNGBRt/vAQjbEH8iE6wjCcsQueJZwXq8K5cy312FM41lp2Qw==
-Received: from DM6PR02CA0092.namprd02.prod.outlook.com (2603:10b6:5:1f4::33)
- by CY4PR12MB1416.namprd12.prod.outlook.com (2603:10b6:903:44::7) with
+ bh=PcHpVXSKrCXNdeO7M0WCdHyH08yBiDir6cI61ZOJ8BU=;
+ b=MSjsMa0lzTJLtAb1JpM/JHSGkvnLyESpymwU1IxSsy41cJW0jK1mjtbHzrRJDGrqGoFjC7/A9jPlt4sez0SZMDAJlznaYePx/KlMpQcsVzOf8bsPPw5hWstGm8xvHGOTCeutjF+WyMe6MD8QuQP3XRGOT5r6+rgZCzlzXdT2iDy80s8HewgcoU+F6EqQ5XZMp0ypui3ZU9veaJ7IwhBtNSTrJsN8ePsR4Jbi0VDpGWg69lvwU6mhx3ycx4ZL04pCUiHqYUhV4Jb294mgMrfCTXiGDN4S19lSNFB1bqOHzaMbUEiQdIjk96OzbVrzXynYaL7gviHtBYVjYwQetwy0+A==
+Received: from DM6PR08CA0013.namprd08.prod.outlook.com (2603:10b6:5:80::26) by
+ CY4PR1201MB0247.namprd12.prod.outlook.com (2603:10b6:910:1b::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.24; Sat, 9 Oct
- 2021 08:16:28 +0000
-Received: from DM6NAM11FT050.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:1f4:cafe::d5) by DM6PR02CA0092.outlook.office365.com
- (2603:10b6:5:1f4::33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4566.20; Sat, 9 Oct
+ 2021 09:04:31 +0000
+Received: from DM6NAM11FT023.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:80:cafe::e3) by DM6PR08CA0013.outlook.office365.com
+ (2603:10b6:5:80::26) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.18 via Frontend
- Transport; Sat, 9 Oct 2021 08:16:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
+ Transport; Sat, 9 Oct 2021 09:04:31 +0000
+X-MS-Exchange-Authentication-Results: spf=temperror (sender IP is
+ 216.228.112.34) smtp.mailfrom=nvidia.com; chelsio.com; dkim=none (message not
+ signed) header.d=none;chelsio.com; dmarc=temperror action=none
+ header.from=nvidia.com;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of nvidia.com: DNS Timeout)
 Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT050.mail.protection.outlook.com (10.13.173.111) with Microsoft SMTP
+ DM6NAM11FT023.mail.protection.outlook.com (10.13.173.96) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4587.18 via Frontend Transport; Sat, 9 Oct 2021 08:16:28 +0000
-Received: from localhost (172.20.187.6) by HQMAIL107.nvidia.com
+ 15.20.4587.18 via Frontend Transport; Sat, 9 Oct 2021 09:04:29 +0000
+Received: from localhost (172.20.187.5) by HQMAIL107.nvidia.com
  (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Sat, 9 Oct
- 2021 08:16:26 +0000
-Date:   Sat, 9 Oct 2021 11:16:22 +0300
+ 2021 09:04:28 +0000
+Date:   Sat, 9 Oct 2021 12:04:24 +0300
 From:   Leon Romanovsky <leonro@nvidia.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Ido Schimmel <idosch@nvidia.com>, Ingo Molnar <mingo@redhat.com>,
-        "Jiri Pirko" <jiri@nvidia.com>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <mlxsw@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>, <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Shay Drory <shayd@nvidia.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>
-Subject: Re: [PATCH net-next v3 0/5] devlink reload simplification
-Message-ID: <YWFP1imsLsAP4Zwq@unreal>
-References: <cover.1633589385.git.leonro@nvidia.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     Mark Zhang <markzhang@nvidia.com>, <dledford@redhat.com>,
+        <saeedm@nvidia.com>, <linux-rdma@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <aharonl@nvidia.com>, <netao@nvidia.com>,
+        <dennis.dalessandro@cornelisnetworks.com>, <galpress@amazon.com>,
+        <kuba@kernel.org>, <maorg@nvidia.com>,
+        <mike.marciniszyn@cornelisnetworks.com>,
+        <mustafa.ismail@intel.com>, <bharat@chelsio.com>,
+        <selvin.xavier@broadcom.com>, <shiraz.saleem@intel.com>,
+        <yishaih@nvidia.com>, <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next v4 00/13] Optional counter statistics support
+Message-ID: <YWFbGLPdXanAeDAG@unreal>
+References: <20211008122439.166063-1-markzhang@nvidia.com>
+ <20211008185736.GP2744544@nvidia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <cover.1633589385.git.leonro@nvidia.com>
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+In-Reply-To: <20211008185736.GP2744544@nvidia.com>
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
  HQMAIL107.nvidia.com (172.20.187.13)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 32b0ccd7-7e02-4e4b-588f-08d98afd17f3
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1416:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB141627FB104C77FAFA29C004BDB39@CY4PR12MB1416.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Office365-Filtering-Correlation-Id: a625d7d4-80b8-44ca-fa7d-08d98b03cd70
+X-MS-TrafficTypeDiagnostic: CY4PR1201MB0247:
+X-Microsoft-Antispam-PRVS: <CY4PR1201MB0247867FCA4218487407B884BDB39@CY4PR1201MB0247.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UDYIUdCJsGvRdwNlVNZZEjY1CPoYeZG8q1DFBTW+yACu6CVUKOwQ9Vfv0r346r9d04rJKOgUWnFRAYuRlBoeuFyBAuLAef/BtJH1J7jG6Lwp7zAhDp6d4ZRCtEcFQdzJRXcqmetT0Afd8A6pZbI2khVLIzaMER9LlNP0scZ5Thw+X2419Jc4YJfnkGQ5advnvXaOE96jnlORsr2Qc0D1d8Mjo8I0XI6NMr07kehDPHvQ/Nfq5q/mCZTM2zaf4qLXZunYheHE+8TGUQYrbLt3GvtneMg7Nu0EbAlCWI4fEWPseyntGU1wmO+y7dy163p/4S7/YgciKS3+t1QkL4+UHOPm21sH4b/fodxB1qMoC0tq2+4GpVVMALkw8NcjrMq0oMzXUNu0mp7BhMpXoraSnDy2PeJY9ddsR4BybYNgK+WwYL0BwLcpEon2d0N+u2M4BNJF1+NusejlxZ26kypdUjwyvivXg1yf1XZmF42FL5t06T1/zHJhoeAIckciAozufwH2KPKLWWZIiA6OCuldj8EgEb9Zd9AuqpO3YTb9U6t2AfZTomLJZdShoS3jde3Kp+nn5zGU+jbt6cNuzODPh1e0sLT1z7OiuVJuI6YQFX+Bvth3FswhOln8R+YaHIS16Ki3WZz7ifvVhtI26mimy8dG4ta+AdkuG0jiRT3aosU+eYfXMDeVH4Iy9+TIE0qc07R99lYyUg1IxeNw42I9AzeqM7/INh0HZI0Z4X4fLHNV3E+RVb8rEq5eMx4pzWPTgBwEQKAvbvKdoVVXDkjPOo6pH84ISJpAi57gbA8eGBI=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(7916004)(46966006)(36840700001)(82310400003)(36860700001)(2906002)(9686003)(508600001)(4326008)(426003)(54906003)(5660300002)(33716001)(316002)(110136005)(186003)(7636003)(86362001)(16526019)(70206006)(356005)(70586007)(336012)(26005)(6666004)(8676002)(47076005)(966005)(83380400001)(8936002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 24bcC/amDYUen3yd7fWheIB5r+xA6TW7u/3xDy5EMz8+RAmiAe5dCjb9TVFJ7DCdmcQXJcU/NtzZS78hXJUBSzB6s5TDrz9Ah1f3BJ2h93/+S7XSKIeswFkuOBG+QgXo2+sMWLiSV/Bhu2p/MmspFv7/qVUycD/bOgRTiWmdAD8xtNC45lJEAhz1hII9O6tPvrl9npB7Rev9lqGf/DCIlzZtmZDRQrHm1hMH4dyNWm4mohFJtPdn/dsvSNvZaaPA13TK6SZMuSFTHRuny3xMi9S/21Jd/JrLJvY3OzJcpexvv0bDoGrhAAMsZ+/566J6+43eGXpL34VtX8HLgdIKMVu3d3QCgH8/PDlRatHW4ayaNTZjOIMfZ7XhlbNAh5FimZzHf/ZXRzTxvypKus6047uWXdB4t9l6i5AuPCsB5Jl+siFd/g3ga7mRldbTvj5FDx4NUeC7yM36/Fm7GXSzcqPGOPmXA6sQhbMzcw7Irzwo+AVUSU6kRyOdb5wuUYSvNz24oNFW0yxUwWXP3EmN0njtFn8FlI5CzIkJkr1aK9k+Ej5CuZt5DFSydYUR8EqjL9FyO6H0VgIXcx/J8Vdq62lBHBgG2FoRWI+GTjYrQI1bp7Gsg1vfB/lbVyd+VwJFlHFsXkS2X5JGUyljvzUf1lmQx+DrN2ak2PDdanU4oB1dxExSd6OgcNGM6xOb6Eps+08KlwQ/zHk1kFpSYjtRbQ==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(7916004)(4636009)(46966006)(36840700001)(336012)(70206006)(356005)(5660300002)(26005)(70586007)(86362001)(186003)(16526019)(63370400001)(7636003)(426003)(508600001)(63350400001)(6636002)(6862004)(83380400001)(36860700001)(82310400003)(47076005)(33716001)(8676002)(54906003)(316002)(8936002)(2906002)(9686003)(7416002)(4326008)(6666004);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2021 08:16:28.1709
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Oct 2021 09:04:29.6482
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32b0ccd7-7e02-4e4b-588f-08d98afd17f3
+X-MS-Exchange-CrossTenant-Network-Message-Id: a625d7d4-80b8-44ca-fa7d-08d98b03cd70
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT050.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT023.eop-nam11.prod.protection.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1416
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1201MB0247
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 09:55:14AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Fri, Oct 08, 2021 at 03:57:36PM -0300, Jason Gunthorpe wrote:
+> On Fri, Oct 08, 2021 at 03:24:26PM +0300, Mark Zhang wrote:
+> > 
+> > Aharon Landau (12):
+> >   net/mlx5: Add ifc bits to support optional counters
+> >   net/mlx5: Add priorities for counters in RDMA namespaces
+> >   RDMA/counter: Add a descriptor in struct rdma_hw_stats
+> >   RDMA/counter: Add an is_disabled field in struct rdma_hw_stats
+> >   RDMA/counter: Add optional counter support
+> >   RDMA/nldev: Add support to get status of all counters
+> >   RDMA/nldev: Split nldev_stat_set_mode_doit out of nldev_stat_set_doit
+> >   RDMA/nldev: Allow optional-counter status configuration through RDMA
+> >     netlink
+> >   RDMA/mlx5: Support optional counters in hw_stats initialization
+> >   RDMA/mlx5: Add steering support in optional flow counters
+> >   RDMA/mlx5: Add modify_op_stat() support
+> >   RDMA/mlx5: Add optional counter support in get_hw_stats callback
+> > 
+> > Mark Zhang (1):
+> >   RDMA/core: Add a helper API rdma_free_hw_stats_struct
+> 
+> This seems fine now, please update the shared branch
 
-<...>
+Thanks, applied
 
-> Leon Romanovsky (5):
->   devlink: Reduce struct devlink exposure
->   devlink: Annotate devlink API calls
->   devlink: Allow set reload ops callbacks separately
->   net/mlx5: Separate reload devlink ops for multiport device
->   devlink: Delete reload enable/disable interface
-
-Hi,
-
-I see in patchworks that state of this series was marked as "Rejected".
-https://patchwork.kernel.org/project/netdevbpf/list/?series=558901&state=*
-
-Can I ask why? How can we proceed with the series?
-
-Thanks
-
+b8dfed636fc6 net/mlx5: Add priorities for counters in RDMA namespaces
+8208461d3912 net/mlx5: Add ifc bits to support optional counters
 
 > 
->  .../hisilicon/hns3/hns3pf/hclge_devlink.c     |   7 +-
->  .../hisilicon/hns3/hns3vf/hclgevf_devlink.c   |   7 +-
->  drivers/net/ethernet/mellanox/mlx4/main.c     |  10 +-
->  .../net/ethernet/mellanox/mlx5/core/devlink.c |  13 +-
->  .../net/ethernet/mellanox/mlx5/core/main.c    |   3 -
->  .../mellanox/mlx5/core/sf/dev/driver.c        |   5 +-
->  drivers/net/ethernet/mellanox/mlxfw/mlxfw.h   |   2 +-
->  drivers/net/ethernet/mellanox/mlxsw/core.c    |  19 +-
->  drivers/net/netdevsim/dev.c                   |  13 +-
->  include/net/devlink.h                         |  79 ++------
->  include/trace/events/devlink.h                |  72 ++++----
->  net/core/devlink.c                            | 170 ++++++++++++------
->  12 files changed, 216 insertions(+), 184 deletions(-)
-> 
-> -- 
-> 2.31.1
-> 
+> Jason
