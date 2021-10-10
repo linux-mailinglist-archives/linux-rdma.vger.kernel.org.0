@@ -2,80 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD25428041
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Oct 2021 11:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11501428060
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Oct 2021 12:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhJJJos (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Oct 2021 05:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53826 "EHLO mail.kernel.org"
+        id S231367AbhJJKFm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Oct 2021 06:05:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230412AbhJJJos (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Oct 2021 05:44:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3006460F9D;
-        Sun, 10 Oct 2021 09:42:48 +0000 (UTC)
+        id S231192AbhJJKFl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 10 Oct 2021 06:05:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8C6660F92;
+        Sun, 10 Oct 2021 10:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1633858969;
-        bh=sAqR25dwG7tSbeuGzfn5VLMZuFullgGtTpopfC+YhHk=;
+        s=k20201202; t=1633860223;
+        bh=o2SZAeyo0LTn4nX1V2bIT59RoNIlKcGwC6k2nikfsYk=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WVvMNbCIrxD092Jxow2lPbbJukkIbUBzbuOD7H2+xX2zfQRGcobutaocMycqBKeBk
-         mbRxo1xFX/ZSpPL9VuinjFq3dYVMMo+C6RvKN6Iq4HbY9zD4SgZR0f+HB7nWCsiTFh
-         TH9bwWUgjEs+8v8ilupwhJXKOZjLH/65ZV6NIN/Oktq38Mmx55in5wglo/flbdWVJX
-         0OxR4wtryQ10WOJ/R0TjdivA4PRN9R5gFtQ2zy2MIUo6bZmvONMgLGfnSC3+bAW7zF
-         O8U+Bg/Xa4ckZC7Ovtr52WubSteIBOg88ylvJX/R6jxAaBmYQ0FcTIVfEcjDUQZrhO
-         46pesFOpDHkQQ==
-Date:   Sun, 10 Oct 2021 12:42:45 +0300
+        b=JGaWf2+KSMSmxQ7sc1z5qhvWJuZ+k4GFZ8S+mUGBMGYi0K6gSRFhAnerstcjOog0C
+         Lw8BKKal6+hV6ZvK/5UqU4MoDuHi+onYA9uF+ld6tQxR++dDSbAIbKUm18ctSa+Yme
+         D64Y7oX/+nExZADKojyKZjaRIHZVsmEfMMC8qsJTrtoXACIkoGbReyJIfZAvecIH6j
+         kIc3ZsVxCYzICxYMeeoM/TZWjYESTjtYOjhWTHSJRR/HcDkxOjXLg5HvgPCJeQ74Oz
+         cUkLryaVN2lTDFIRe8ycyIM3dcp6RRxmHMh7UBJdVxMnZSZfwjTtz8kIl8r32R9Gum
+         K+yn8x87Xhuyw==
+Date:   Sun, 10 Oct 2021 13:03:39 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Tatyana Nikolova <tatyana.e.nikolova@intel.com>
-Cc:     jgg@nvidia.com, dledford@redhat.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH v2 rdma-core] irdma: Add ice and irdma to kernel-boot
- rules
-Message-ID: <YWK1lZS/1SbMHyqn@unreal>
-References: <20210823154816.2027-1-tatyana.e.nikolova@intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     thomas.lendacky@amd.com, davem@davemloft.net, kuba@kernel.org,
+        rmody@marvell.com, skalluru@marvell.com,
+        GR-Linux-NIC-Dev@marvell.com, dchickles@marvell.com,
+        sburla@marvell.com, fmanlunas@marvell.com,
+        ajit.khaparde@broadcom.com, sriharsha.basavapatna@broadcom.com,
+        somnath.kotur@broadcom.com, sgoutham@marvell.com,
+        lcherian@marvell.com, gakula@marvell.com, jerinj@marvell.com,
+        hkelam@marvell.com, sbhatta@marvell.com, tariqt@nvidia.com,
+        saeedm@nvidia.com, aelior@marvell.com,
+        GR-everest-linux-l2@marvell.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] ethernet: Remove redundant 'flush_workqueue()' calls
+Message-ID: <YWK6e2+hDGS9xblC@unreal>
+References: <3dadac919f6f4a991953965ddbb975f2586e6ecf.1633848953.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210823154816.2027-1-tatyana.e.nikolova@intel.com>
+In-Reply-To: <3dadac919f6f4a991953965ddbb975f2586e6ecf.1633848953.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 10:48:16AM -0500, Tatyana Nikolova wrote:
-> Add ice and irdma to kernel-boot rules so that
-> these devices are recognized as iWARP and RoCE capable.
+On Sun, Oct 10, 2021 at 09:01:32AM +0200, Christophe JAILLET wrote:
+> 'destroy_workqueue()' already drains the queue before destroying it, so
+> there is no need to flush it explicitly.
 > 
-> Otherwise the port mapper service which is only relevant
-> for iWARP devices may not start automatically after boot.
+> Remove the redundant 'flush_workqueue()' calls.
 > 
-> Signed-off-by: Tatyana Nikolova <tatyana.e.nikolova@intel.com>
+> This was generated with coccinelle:
+> 
+> @@
+> expression E;
+> @@
+> - 	flush_workqueue(E);
+> 	destroy_workqueue(E);
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  kernel-boot/rdma-description.rules | 2 ++
->  1 file changed, 2 insertions(+)
-
-Tatyana,
-
-Are you planning to resubmit it?
-
-Thanks
-
+>  drivers/net/ethernet/amd/xgbe/xgbe-drv.c                 | 2 --
+>  drivers/net/ethernet/brocade/bna/bnad.c                  | 1 -
+>  drivers/net/ethernet/cavium/liquidio/lio_core.c          | 1 -
+>  drivers/net/ethernet/emulex/benet/be_main.c              | 1 -
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.c          | 1 -
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu.c          | 2 --
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c      | 1 -
+>  drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c     | 1 -
+>  drivers/net/ethernet/mellanox/mlx4/cmd.c                 | 2 --
+>  drivers/net/ethernet/mellanox/mlx4/en_main.c             | 1 -
+>  drivers/net/ethernet/mellanox/mlx5/core/diag/fw_tracer.c | 1 -
+>  drivers/net/ethernet/qlogic/qed/qed_sriov.c              | 1 -
+>  12 files changed, 15 deletions(-)
 > 
-> diff --git a/kernel-boot/rdma-description.rules b/kernel-boot/rdma-description.rules
-> index 48a7ced..f2f7b38 100644
-> --- a/kernel-boot/rdma-description.rules
-> +++ b/kernel-boot/rdma-description.rules
-> @@ -24,11 +24,13 @@ DRIVERS=="hfi1", ENV{ID_RDMA_OPA}="1"
->  # Hardware that supports iWarp
->  DRIVERS=="cxgb4", ENV{ID_RDMA_IWARP}="1"
->  DRIVERS=="i40e", ENV{ID_RDMA_IWARP}="1"
-> +DRIVERS=="ice", ENV{ID_RDMA_IWARP}="1"
->  
->  # Hardware that supports RoCE
->  DRIVERS=="be2net", ENV{ID_RDMA_ROCE}="1"
->  DRIVERS=="bnxt_en", ENV{ID_RDMA_ROCE}="1"
->  DRIVERS=="hns", ENV{ID_RDMA_ROCE}="1"
-> +DRIVERS=="ice", ENV{ID_RDMA_ROCE}="1"
->  DRIVERS=="mlx4_core", ENV{ID_RDMA_ROCE}="1"
->  DRIVERS=="mlx5_core", ENV{ID_RDMA_ROCE}="1"
->  DRIVERS=="qede", ENV{ID_RDMA_ROCE}="1"
-> -- 
-> 1.8.3.1
-> 
+
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com> #mlx*
