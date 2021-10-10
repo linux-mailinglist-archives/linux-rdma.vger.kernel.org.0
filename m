@@ -2,127 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CAF42824B
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Oct 2021 17:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3704428433
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Oct 2021 01:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhJJPeO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Oct 2021 11:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48256 "EHLO
+        id S233290AbhJKABm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Oct 2021 20:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232043AbhJJPeM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Oct 2021 11:34:12 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 038C6C061570;
-        Sun, 10 Oct 2021 08:32:12 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id x27so62566181lfu.5;
-        Sun, 10 Oct 2021 08:32:11 -0700 (PDT)
+        with ESMTP id S231481AbhJKABm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Oct 2021 20:01:42 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2831FC061570
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Oct 2021 16:59:43 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id w12-20020a056830410c00b0054e7ceecd88so1605904ott.2
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Oct 2021 16:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1rpdPrFDqjSDlQM4/xeyql1J912iBebRnv6liKAQE0g=;
-        b=j6iQjh1tToVrzJtt7fH1P0Ms8/WhjifKtfcvmZ9+CgCIbQq/8NeHwRceEEKa1uhbqs
-         n9ls8nIxVPVjmoweNSTdwEMD1cH9ppZYtIAoLDxqxBZUCczX3kjfHE8GO+gQ0nGi4ysp
-         xZ1iGRAYTjKEfimvl8BYJVXwndQHhHUk1ZPbdK3lRgE4W664gerwwxY6939vg+QvlnEy
-         Q7AzUKIRgcd1E05hReiExfiV/nSialR3/u69MRpUij4F7r2JFS5AMg813S5nK1KfEUL0
-         y5xGdjU6SDULP4cvDSoxEuEw1VkZJ4xMq+eZsXR4PUWYRkPDmf4Ge6bTlkezlNg5duUU
-         EENQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CfzNNK+SA16X8YB8cikrXZEZk4xuDMqzUoAZhuLU3xA=;
+        b=JYl8/xtSwJIA4f8ZGvvgrWVDjiTYi58rcsskTOApzwV1cZiMhX9cDgAdvIbIYMAu1G
+         85+045RgtH4AciK9mzFggGUSQxRTzsXM7m1mCN9QI66xTAX5rPlzzV6bkshgNyGmH6eg
+         rKr+3QT5LRhokdTjCzFFJK5bANG+hDONeIPwr7ZIemYbrCEipsRA8aQnRyOgOGppRELQ
+         kpCLJofVaZE4Jo3YbM7MZ8W5ca+y/8hf0o8csEtkWKZmklvUcKt+t2efnmS9EaaSfJXc
+         DRikOxAb86WY/BzHlC7KCyskAU5vuNkom/tKi1zd4Cmsq3B8T8L6DkvWojWhgrslLN8L
+         akkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1rpdPrFDqjSDlQM4/xeyql1J912iBebRnv6liKAQE0g=;
-        b=RfxmmX7LEULjjx/hO0Te6Dx9mjgQgsOHVshdgg7uj09ZNKFm7gz7JdjagQe4qJt2r7
-         UGIyBNUZCUz5hBnz/V6ocxQDo8dsg70/gTabT6tH8xA0Ja+UOnO3RAoMEduQ3XVJAZQU
-         BkROPajZEBUo4KN5/p81x/BlX5hCgkDbm2KOes821iu7dbsANyLwWPofgtI9h9YEkZL3
-         7vo9tbWdC+P+T9bFYI4Qp9W9jrFZerIz/St58DyLJOytbmtiSNJh5Lha0T/tlYp9pTDt
-         myrW3glhNpxnXS8ZX7RXKWKuecFW8XPaKi0q9oz7REWxLlApK3cCuOW5cTmJrXid4pHW
-         Argg==
-X-Gm-Message-State: AOAM532k3x6fScCoCUxnqaYHWJlQ125HQzh0ZQuhHqm2+t/Cm9R3xz3A
-        OZhD3Cn8HMEayt8Q8gUYut5PSVFzp4NJ4ceF1jQ=
-X-Google-Smtp-Source: ABdhPJxlXX56rnWAN26VHPoa1prBkAG9E1MGtFp9RJVf2LbBsuT9cbojKXYLD55A1Pb8Rr3Dtn1X54gTIwsrGQAuafM=
-X-Received: by 2002:a05:651c:230e:: with SMTP id bi14mr15752888ljb.467.1633879930288;
- Sun, 10 Oct 2021 08:32:10 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CfzNNK+SA16X8YB8cikrXZEZk4xuDMqzUoAZhuLU3xA=;
+        b=dcJ1fhae45jMT/y9IlKld9QT2HvBgNIE4h003GFNC3RwtQQORUhbvWi11JYlRBDZ2B
+         APEEKgD8w+Uz4kLsGBZkreY2Dmz5fg1ptS6baZyIWVsiMD6BL5JW61bCIyRS5fr8h7zj
+         y+IoEiVDqWeeG/gMAhXKA/Aape3zeDd1KSHeobrhBTj/Gbjob9BgdiJnz3r7PDSR26qy
+         YnlaV9ldrxQLGCHb85jEa/oZBmujMhdXIcycRR10KNgqbwA2zvWse2IOLpR6xwQIPyFy
+         LQsrJPUWmVxYLPqT0Ic0vrnGtYZdBUJElcvRZp2Ozqz0MF9t0LGRU9/bXWYH2R76adZS
+         niYw==
+X-Gm-Message-State: AOAM5324j3bxiDap3f8WKXK4M9wdMSwvkLlrKXOTqG35fUaXQ5ojTUPf
+        M3oRhAj7jZgt0weN4VMPyDA=
+X-Google-Smtp-Source: ABdhPJxmdSH7iL8c4R+sAiQm9i9f5I9e0Ksv51tuzlq2ag+gpN5XLfA82foa5Ydi6vmlqrmdRmvjLQ==
+X-Received: by 2002:a9d:715e:: with SMTP id y30mr18202433otj.104.1633910382187;
+        Sun, 10 Oct 2021 16:59:42 -0700 (PDT)
+Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-f9d4-70f1-9065-ca26.res6.spectrum.com. [2603:8081:140c:1a00:f9d4:70f1:9065:ca26])
+        by smtp.gmail.com with ESMTPSA id c21sm1375379oiy.18.2021.10.10.16.59.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Oct 2021 16:59:41 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next 0/6] RDMA/rxe: Fix potential races
+Date:   Sun, 10 Oct 2021 18:59:25 -0500
+Message-Id: <20211010235931.24042-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210929041905.126454-1-mie@igel.co.jp>
-In-Reply-To: <20210929041905.126454-1-mie@igel.co.jp>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Sun, 10 Oct 2021 23:31:58 +0800
-Message-ID: <CAD=hENexf1asHuHROrxh-X8BUn22LM9fzvFRS1zq_XeO3DCyMA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/2] RDMA/rxe: Add dma-buf support
-To:     Shunsuke Mie <mie@igel.co.jp>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 12:19 PM Shunsuke Mie <mie@igel.co.jp> wrote:
->
-> This patch series add a dma-buf support for rxe driver.
->
-> A dma-buf based memory registering has beed introduced to use the memory
-> region that lack of associated page structures (e.g. device memory and CMA
-> managed memory) [1]. However, to use the dma-buf based memory, each rdma
-> device drivers require add some implementation. The rxe driver has not
-> support yet.
->
-> [1] https://www.spinics.net/lists/linux-rdma/msg98592.html
+There are possible race conditions related to attempting to access
+rxe pool objects at the same time as the pools or elements are being
+freed. This series of patches addresses these races.
 
-It seems that dma-buf is in discussion. We will focus on this discussion.
-After dma-buf is accepted, we will check this dma-buf on rxe.
+Bob Pearson (6):
+  RDMA/rxe: Make rxe_alloc() take pool lock
+  RDMA/rxe: Copy setup parameters into rxe_pool
+  RDMA/rxe: Save object pointer in pool element
+  RDMA/rxe: Combine rxe_add_index with rxe_alloc
+  RDMA/rxe: Combine rxe_add_key with rxe_alloc
+  RDMA/rxe: Fix potential race condition in rxe_pool
 
-Zhu Yanjun
+ drivers/infiniband/sw/rxe/rxe_mcast.c |   5 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c    |   1 -
+ drivers/infiniband/sw/rxe/rxe_mw.c    |   5 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 235 +++++++++++++-------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  67 +++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  10 --
+ 6 files changed, 140 insertions(+), 183 deletions(-)
 
->
-> To enable to use the dma-buf memory in rxe rdma device, add some changes
-> and implementation in this patch series.
->
-> This series consists of two patches. The first patch changes the IB core
-> to support for rdma drivers that has not dma device. The secound patch adds
-> the dma-buf support to rxe driver.
->
-> Related user space RDMA library changes are provided as a separate patch.
->
-> v2:
-> * Rebase to the latest linux-rdma 'for-next' branch (5.15.0-rc1+)
-> * Instead of using a dummy dma_device to attach dma-buf, just store
->   dma-buf to use software RDMA driver
-> * Use dma-buf vmap() interface
-> * Check to pass tests of rdma-core
-> v1: https://www.spinics.net/lists/linux-rdma/msg105376.html
-> * The initial patch set
-> * Use ib_device as dma_device.
-> * Use dma-buf dynamic attach interface
-> * Add dma-buf support to rxe device
->
-> Shunsuke Mie (2):
->   RDMA/umem: Change for rdma devices has not dma device
->   RDMA/rxe: Add dma-buf support
->
->  drivers/infiniband/core/umem_dmabuf.c |  20 ++++-
->  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
->  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++++++
->  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
->  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
->  include/rdma/ib_umem.h                |   1 +
->  6 files changed, 173 insertions(+), 4 deletions(-)
->
-> --
-> 2.17.1
->
+-- 
+2.30.2
+
