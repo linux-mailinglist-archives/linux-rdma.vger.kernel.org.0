@@ -2,109 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB2F427C3A
-	for <lists+linux-rdma@lfdr.de>; Sat,  9 Oct 2021 19:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0F6427F68
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Oct 2021 08:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232057AbhJIRDy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 9 Oct 2021 13:03:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65332 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhJIRDy (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 9 Oct 2021 13:03:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10132"; a="224084154"
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="224084154"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Oct 2021 10:01:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,360,1624345200"; 
-   d="scan'208";a="440257541"
-Received: from unknown (HELO intel-73.bj.intel.com) ([10.238.154.73])
-  by orsmga006.jf.intel.com with ESMTP; 09 Oct 2021 10:01:54 -0700
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev, leonro@nvidia.com
-Subject: [PATCH 4/4] RDMA/irdma: compat the file
-Date:   Sat,  9 Oct 2021 20:41:10 -0400
-Message-Id: <20211010004110.3842-5-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211010004110.3842-1-yanjun.zhu@linux.dev>
-References: <20211010004110.3842-1-yanjun.zhu@linux.dev>
+        id S229916AbhJJGwm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Oct 2021 02:52:42 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:54823 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229697AbhJJGwm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Oct 2021 02:52:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1633848645; x=1665384645;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=KP6hoaLqxS7CuDq+2tVqjhX+TIOLgyNhBq/ixB8TFnc=;
+  b=utNj0s7jktjAQXSDoq7u//o/3/6PaMf40CUCjIaVSh+9/S6lBN6BEFRM
+   DY0fd+XzjKIn0RCJWf6LNpy0kAIypuIjs+tX3XwJpcYXFhlGBYLC0Nay8
+   qM2eomP7ASapgL9PSaRx43ccJA7BEuq0vDAT/KOObBtiVRkfJzcokNL56
+   A=;
+X-IronPort-AV: E=Sophos;i="5.85,362,1624320000"; 
+   d="scan'208";a="165923525"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-05e8af15.us-west-2.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 10 Oct 2021 06:50:37 +0000
+Received: from EX13D19EUB003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-05e8af15.us-west-2.amazon.com (Postfix) with ESMTPS id C55F1A2855;
+        Sun, 10 Oct 2021 06:50:36 +0000 (UTC)
+Received: from [192.168.22.40] (10.43.160.215) by EX13D19EUB003.ant.amazon.com
+ (10.43.166.69) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Sun, 10 Oct
+ 2021 06:50:29 +0000
+Message-ID: <ed04e512-ffad-58c8-4e8b-83c6b6099f0f@amazon.com>
+Date:   Sun, 10 Oct 2021 09:50:23 +0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.1.2
+Subject: Re: [RFC PATCH 1/2] dma-buf: Fix pin callback comment
+Content-Language: en-US
+To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Yossi Leybovich <sleybo@amazon.com>,
+        Alexander Matushevsky <matua@amazon.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jianxin Xiong <jianxin.xiong@intel.com>,
+        Firas Jahjah <firasj@amazon.com>
+References: <20211007104301.76693-1-galpress@amazon.com>
+ <20211007104301.76693-2-galpress@amazon.com>
+ <747d423e-9073-9bed-778a-292e47adf0f6@amd.com>
+From:   Gal Pressman <galpress@amazon.com>
+In-Reply-To: <747d423e-9073-9bed-778a-292e47adf0f6@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.43.160.215]
+X-ClientProxiedBy: EX13D39UWB002.ant.amazon.com (10.43.161.116) To
+ EX13D19EUB003.ant.amazon.com (10.43.166.69)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On 07/10/2021 13:44, Christian König wrote:
+> Am 07.10.21 um 12:42 schrieb Gal Pressman:
+>> The pin callback does not necessarily have to move the memory to system
+>> memory, remove the sentence from the comment.
+>>
+>> Signed-off-by: Gal Pressman <galpress@amazon.com>
+>> ---
+>>   include/linux/dma-buf.h | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+>> index efdc56b9d95f..93830731a9a3 100644
+>> --- a/include/linux/dma-buf.h
+>> +++ b/include/linux/dma-buf.h
+>> @@ -86,9 +86,7 @@ struct dma_buf_ops {
+>>        * @pin:
+>>        *
+>>        * This is called by dma_buf_pin() and lets the exporter know that the
+>> -     * DMA-buf can't be moved any more. The exporter should pin the buffer
+>> -     * into system memory to make sure it is generally accessible by other
+>> -     * devices.
+> 
+> Maybe change that to something like "Ideally the exporter should pin the buffer
+> so that it is generally accessible by all devices".
 
-The function irdma_cqp_up_map_cmd is not used. So remove it.
-
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/hw/irdma/protos.h |  2 --
- drivers/infiniband/hw/irdma/utils.c  | 34 ----------------------------
- 2 files changed, 36 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/protos.h b/drivers/infiniband/hw/irdma/protos.h
-index 78f598fdbccf..a17c0ffb0cc8 100644
---- a/drivers/infiniband/hw/irdma/protos.h
-+++ b/drivers/infiniband/hw/irdma/protos.h
-@@ -37,8 +37,6 @@ void irdma_hw_stats_read_all(struct irdma_vsi_pestat *stats,
- enum irdma_status_code
- irdma_cqp_ws_node_cmd(struct irdma_sc_dev *dev, u8 cmd,
- 		      struct irdma_ws_node_info *node_info);
--enum irdma_status_code irdma_cqp_up_map_cmd(struct irdma_sc_dev *dev, u8 cmd,
--					    struct irdma_up_info *map_info);
- enum irdma_status_code irdma_cqp_ceq_cmd(struct irdma_sc_dev *dev,
- 					 struct irdma_sc_ceq *sc_ceq, u8 op);
- enum irdma_status_code irdma_cqp_aeq_cmd(struct irdma_sc_dev *dev,
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 84bc7b659d76..0ebce57e8756 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -2048,40 +2048,6 @@ irdma_cqp_ws_node_cmd(struct irdma_sc_dev *dev, u8 cmd,
- 	return status;
- }
- 
--/**
-- * irdma_cqp_up_map_cmd - Set the up-up mapping
-- * @dev: pointer to device structure
-- * @cmd: map command
-- * @map_info: pointer to up map info
-- */
--enum irdma_status_code irdma_cqp_up_map_cmd(struct irdma_sc_dev *dev, u8 cmd,
--					    struct irdma_up_info *map_info)
--{
--	struct irdma_pci_f *rf = dev_to_rf(dev);
--	struct irdma_cqp *iwcqp = &rf->cqp;
--	struct irdma_sc_cqp *cqp = &iwcqp->sc_cqp;
--	struct irdma_cqp_request *cqp_request;
--	struct cqp_cmds_info *cqp_info;
--	enum irdma_status_code status;
--
--	cqp_request = irdma_alloc_and_get_cqp_request(iwcqp, false);
--	if (!cqp_request)
--		return IRDMA_ERR_NO_MEMORY;
--
--	cqp_info = &cqp_request->info;
--	memset(cqp_info, 0, sizeof(*cqp_info));
--	cqp_info->cqp_cmd = cmd;
--	cqp_info->post_sq = 1;
--	cqp_info->in.u.up_map.info = *map_info;
--	cqp_info->in.u.up_map.cqp = cqp;
--	cqp_info->in.u.up_map.scratch = (uintptr_t)cqp_request;
--
--	status = irdma_handle_cqp_op(rf, cqp_request);
--	irdma_put_cqp_request(&rf->cqp, cqp_request);
--
--	return status;
--}
--
- /**
-  * irdma_ah_cqp_op - perform an AH cqp operation
-  * @rf: RDMA PCI function
--- 
-2.27.0
-
+Sure, thanks.
