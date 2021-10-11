@@ -2,109 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F9742858F
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Oct 2021 05:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB6B4287B9
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Oct 2021 09:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233838AbhJKDYU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Oct 2021 23:24:20 -0400
-Received: from mga09.intel.com ([134.134.136.24]:47094 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233841AbhJKDYT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:24:19 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226688608"
-X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
-   d="scan'208";a="226688608"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2021 20:22:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
-   d="scan'208";a="479677465"
-Received: from unknown (HELO intel-73.bj.intel.com) ([10.238.154.73])
-  by orsmga007.jf.intel.com with ESMTP; 10 Oct 2021 20:22:18 -0700
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        leonro@nvidia.com, yanjun.zhu@linux.dev
-Subject: [PATCH 4/4] RDMA/irdma: compact the file uk.c
-Date:   Mon, 11 Oct 2021 07:01:28 -0400
-Message-Id: <20211011110128.4057-5-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211011110128.4057-1-yanjun.zhu@linux.dev>
-References: <20211011110128.4057-1-yanjun.zhu@linux.dev>
+        id S234374AbhJKHg5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Oct 2021 03:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231974AbhJKHg5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Oct 2021 03:36:57 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3068FC061570
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Oct 2021 00:34:57 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id e3so19414031wrc.11
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Oct 2021 00:34:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QAVg72Jt+lGtXjAEZvBgf5t6NkxtFQa6ajJbavHqU3g=;
+        b=Qq2sQQl9CUUV/7AxKywcXRVaL3KqGt5A8/LDx8AGrL33k8ZijWp4o1SQVCIGTxyZ25
+         Xl2RonDFUoJH7vjglGrG8cX7Hahqp6moSV0G14hoBxOkj/V4kz0vBiCnzK27IGKRMu6/
+         KXW8kVc9mbD2gCPlE8xZIHv2LnJLyEKFeoHo3u4e5Oowfe8mk7hxuwaHo2ircju8N7Tu
+         7kvc8hOrl7i4wXkeCiLTvLD1DIb3AteUn5ccQ13qbcKFWAtC4R9fh6hfGcl/cWuvRZrN
+         vNrtEG6K/4HqS7ueZusC8K3st+tZzbef3Xc3NWN0jfMRnJcUvZSP0tRijiXvmAlhJ4wS
+         rEcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QAVg72Jt+lGtXjAEZvBgf5t6NkxtFQa6ajJbavHqU3g=;
+        b=mXWFdKCCImlEzN+JVazcTWYF5BbYLYwWJP/HhNqfrcXqnBCMS6/PlVKNq2FGildpwH
+         Yf69Ya5UMkQUBCz/rC1MTdb1DYo90hhK25eZaUm9nTxmV5Yvk76JHQ/0wNx7JbEJdZif
+         fc8HulnJ4UIeF+u3zfeCtxHREe7RXm8GnIzGJacj3CVAsTBEc9ftG88NHs0EaA4rRILS
+         ei8chYVYCfLJ/FmLqztpL9LZHurxoLYWTDS7AQlXTmCjNxnXAdbAQF96X0Gp1SItc6+3
+         qK3DCJCH6COmVU3ws6ZHf/S/TY7IQFvbzm4+Q/F8R38vpyBpMolYke6bxf04esDK4+JU
+         p6FA==
+X-Gm-Message-State: AOAM530dB/pdiYRjgl/TRGlfXFssa/J7j75DcKwscA8FOKsKYibdCkui
+        lvENtH3pxKoFybtOlnTNJcaIC540ee5Z3fG0s8g=
+X-Google-Smtp-Source: ABdhPJzAwXlyU75kYTXTKZPRZSyWyAPGmus+uVHkbV5rssGSmogXdyAg1DOtXFIwynNvBxbgxApurOIzdtzQlpp+GA0=
+X-Received: by 2002:a05:600c:154f:: with SMTP id f15mr2117666wmg.195.1633937695605;
+ Mon, 11 Oct 2021 00:34:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:600c:3b85:0:0:0:0 with HTTP; Mon, 11 Oct 2021 00:34:55
+ -0700 (PDT)
+Reply-To: jennifermbaya@yandex.com
+From:   Mrs Jennifer Mbaya <caminataidrissa@gmail.com>
+Date:   Mon, 11 Oct 2021 00:34:55 -0700
+Message-ID: <CAK04T3WE49uyd-9F+jtvbF4fHuC6v1SyZWFkfth9_hLaUSzTHw@mail.gmail.com>
+Subject: Yours Sincerely,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Hello,
 
-The function irdma_cqp_up_map_cmd is not used. So remove it.
+My name is Mrs.Jennifer Mbaya, I am writing to invite you to my
+Charity project, I will be ready to donate some money for you to carry
+on the project in your country.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/hw/irdma/protos.h |  2 --
- drivers/infiniband/hw/irdma/utils.c  | 34 ----------------------------
- 2 files changed, 36 deletions(-)
+Yours Sincerely,
 
-diff --git a/drivers/infiniband/hw/irdma/protos.h b/drivers/infiniband/hw/irdma/protos.h
-index 78f598fdbccf..a17c0ffb0cc8 100644
---- a/drivers/infiniband/hw/irdma/protos.h
-+++ b/drivers/infiniband/hw/irdma/protos.h
-@@ -37,8 +37,6 @@ void irdma_hw_stats_read_all(struct irdma_vsi_pestat *stats,
- enum irdma_status_code
- irdma_cqp_ws_node_cmd(struct irdma_sc_dev *dev, u8 cmd,
- 		      struct irdma_ws_node_info *node_info);
--enum irdma_status_code irdma_cqp_up_map_cmd(struct irdma_sc_dev *dev, u8 cmd,
--					    struct irdma_up_info *map_info);
- enum irdma_status_code irdma_cqp_ceq_cmd(struct irdma_sc_dev *dev,
- 					 struct irdma_sc_ceq *sc_ceq, u8 op);
- enum irdma_status_code irdma_cqp_aeq_cmd(struct irdma_sc_dev *dev,
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 84bc7b659d76..0ebce57e8756 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -2048,40 +2048,6 @@ irdma_cqp_ws_node_cmd(struct irdma_sc_dev *dev, u8 cmd,
- 	return status;
- }
- 
--/**
-- * irdma_cqp_up_map_cmd - Set the up-up mapping
-- * @dev: pointer to device structure
-- * @cmd: map command
-- * @map_info: pointer to up map info
-- */
--enum irdma_status_code irdma_cqp_up_map_cmd(struct irdma_sc_dev *dev, u8 cmd,
--					    struct irdma_up_info *map_info)
--{
--	struct irdma_pci_f *rf = dev_to_rf(dev);
--	struct irdma_cqp *iwcqp = &rf->cqp;
--	struct irdma_sc_cqp *cqp = &iwcqp->sc_cqp;
--	struct irdma_cqp_request *cqp_request;
--	struct cqp_cmds_info *cqp_info;
--	enum irdma_status_code status;
--
--	cqp_request = irdma_alloc_and_get_cqp_request(iwcqp, false);
--	if (!cqp_request)
--		return IRDMA_ERR_NO_MEMORY;
--
--	cqp_info = &cqp_request->info;
--	memset(cqp_info, 0, sizeof(*cqp_info));
--	cqp_info->cqp_cmd = cmd;
--	cqp_info->post_sq = 1;
--	cqp_info->in.u.up_map.info = *map_info;
--	cqp_info->in.u.up_map.cqp = cqp;
--	cqp_info->in.u.up_map.scratch = (uintptr_t)cqp_request;
--
--	status = irdma_handle_cqp_op(rf, cqp_request);
--	irdma_put_cqp_request(&rf->cqp, cqp_request);
--
--	return status;
--}
--
- /**
-  * irdma_ah_cqp_op - perform an AH cqp operation
-  * @rf: RDMA PCI function
--- 
-2.27.0
-
+Mrs Jennifer Mbaya
