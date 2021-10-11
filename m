@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D74A42858C
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Oct 2021 05:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C4842858D
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Oct 2021 05:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhJKDYQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Oct 2021 23:24:16 -0400
+        id S233710AbhJKDYS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Oct 2021 23:24:18 -0400
 Received: from mga09.intel.com ([134.134.136.24]:47094 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233710AbhJKDYP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 10 Oct 2021 23:24:15 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226688602"
+        id S231578AbhJKDYR (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 10 Oct 2021 23:24:17 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10133"; a="226688605"
 X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
-   d="scan'208";a="226688602"
+   d="scan'208";a="226688605"
 Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2021 20:22:16 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Oct 2021 20:22:18 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.85,363,1624345200"; 
-   d="scan'208";a="479677450"
+   d="scan'208";a="479677454"
 Received: from unknown (HELO intel-73.bj.intel.com) ([10.238.154.73])
-  by orsmga007.jf.intel.com with ESMTP; 10 Oct 2021 20:22:14 -0700
+  by orsmga007.jf.intel.com with ESMTP; 10 Oct 2021 20:22:16 -0700
 From:   yanjun.zhu@linux.dev
 To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
         dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
         leonro@nvidia.com, yanjun.zhu@linux.dev
-Subject: [PATCH 2/4] RDMA/irdma: compact the ctrl.c
-Date:   Mon, 11 Oct 2021 07:01:26 -0400
-Message-Id: <20211011110128.4057-3-yanjun.zhu@linux.dev>
+Subject: [PATCH 3/4] RDMA/irdma: compact the utils.c file
+Date:   Mon, 11 Oct 2021 07:01:27 -0400
+Message-Id: <20211011110128.4057-4-yanjun.zhu@linux.dev>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20211011110128.4057-1-yanjun.zhu@linux.dev>
 References: <20211011110128.4057-1-yanjun.zhu@linux.dev>
@@ -39,76 +39,48 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-The function irdma_sc_send_lsmm_nostag is not used. So remove it.
+The function irdma_get_hw_addr is not used. So remove it.
 
 Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
- drivers/infiniband/hw/irdma/ctrl.c | 38 ------------------------------
- drivers/infiniband/hw/irdma/type.h |  2 +-
- 2 files changed, 1 insertion(+), 39 deletions(-)
+ drivers/infiniband/hw/irdma/osdep.h |  1 -
+ drivers/infiniband/hw/irdma/utils.c | 11 -----------
+ 2 files changed, 12 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index f1e5515256e0..729fa8a3f6f8 100644
---- a/drivers/infiniband/hw/irdma/ctrl.c
-+++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -1419,44 +1419,6 @@ void irdma_sc_send_lsmm(struct irdma_sc_qp *qp, void *lsmm_buf, u32 size,
- 		irdma_sc_gen_rts_ae(qp);
+diff --git a/drivers/infiniband/hw/irdma/osdep.h b/drivers/infiniband/hw/irdma/osdep.h
+index b2ab52335ca6..63d8bb3a6903 100644
+--- a/drivers/infiniband/hw/irdma/osdep.h
++++ b/drivers/infiniband/hw/irdma/osdep.h
+@@ -37,7 +37,6 @@ struct irdma_hw;
+ struct irdma_pci_f;
+ 
+ struct ib_device *to_ibdev(struct irdma_sc_dev *dev);
+-u8 __iomem *irdma_get_hw_addr(void *dev);
+ void irdma_ieq_mpa_crc_ae(struct irdma_sc_dev *dev, struct irdma_sc_qp *qp);
+ enum irdma_status_code irdma_vf_wait_vchnl_resp(struct irdma_sc_dev *dev);
+ bool irdma_vf_clear_to_send(struct irdma_sc_dev *dev);
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index ac91ea5296db..84bc7b659d76 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -767,17 +767,6 @@ struct ib_qp *irdma_get_qp(struct ib_device *device, int qpn)
+ 	return &iwdev->rf->qp_table[qpn]->ibqp;
  }
  
 -/**
-- * irdma_sc_send_lsmm_nostag - for privilege qp
-- * @qp: sc qp struct
-- * @lsmm_buf: buffer with lsmm message
-- * @size: size of lsmm buffer
+- * irdma_get_hw_addr - return hw addr
+- * @par: points to shared dev
 - */
--void irdma_sc_send_lsmm_nostag(struct irdma_sc_qp *qp, void *lsmm_buf, u32 size)
+-u8 __iomem *irdma_get_hw_addr(void *par)
 -{
--	__le64 *wqe;
--	u64 hdr;
--	struct irdma_qp_uk *qp_uk;
+-	struct irdma_sc_dev *dev = par;
 -
--	qp_uk = &qp->qp_uk;
--	wqe = qp_uk->sq_base->elem;
--
--	set_64bit_val(wqe, 0, (uintptr_t)lsmm_buf);
--
--	if (qp->qp_uk.uk_attrs->hw_rev == IRDMA_GEN_1)
--		set_64bit_val(wqe, 8,
--			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_LEN, size));
--	else
--		set_64bit_val(wqe, 8,
--			      FIELD_PREP(IRDMAQPSQ_FRAG_LEN, size) |
--			      FIELD_PREP(IRDMAQPSQ_VALID, qp->qp_uk.swqe_polarity));
--	set_64bit_val(wqe, 16, 0);
--
--	hdr = FIELD_PREP(IRDMAQPSQ_OPCODE, IRDMAQP_OP_RDMA_SEND) |
--	      FIELD_PREP(IRDMAQPSQ_STREAMMODE, 1) |
--	      FIELD_PREP(IRDMAQPSQ_WAITFORRCVPDU, 1) |
--	      FIELD_PREP(IRDMAQPSQ_VALID, qp->qp_uk.swqe_polarity);
--	dma_wmb(); /* make sure WQE is written before valid bit is set */
--
--	set_64bit_val(wqe, 24, hdr);
--
--	print_hex_dump_debug("WQE: SEND_LSMM_NOSTAG WQE", DUMP_PREFIX_OFFSET,
--			     16, 8, wqe, IRDMA_QP_WQE_MIN_SIZE, false);
+-	return dev->hw->hw_addr;
 -}
 -
  /**
-  * irdma_sc_send_rtt - send last read0 or write0
-  * @qp: sc qp struct
-diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
-index 874bc25a938b..4312f2070534 100644
---- a/drivers/infiniband/hw/irdma/type.h
-+++ b/drivers/infiniband/hw/irdma/type.h
-@@ -1256,7 +1256,7 @@ enum irdma_status_code irdma_sc_qp_modify(struct irdma_sc_qp *qp,
- 					  u64 scratch, bool post_sq);
- void irdma_sc_send_lsmm(struct irdma_sc_qp *qp, void *lsmm_buf, u32 size,
- 			irdma_stag stag);
--void irdma_sc_send_lsmm_nostag(struct irdma_sc_qp *qp, void *lsmm_buf, u32 size);
-+
- void irdma_sc_send_rtt(struct irdma_sc_qp *qp, bool read);
- void irdma_sc_qp_setctx(struct irdma_sc_qp *qp, __le64 *qp_ctx,
- 			struct irdma_qp_host_ctx_info *info);
+  * irdma_remove_cqp_head - return head entry and remove
+  * @dev: device
 -- 
 2.27.0
 
