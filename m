@@ -2,128 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FBE04299D3
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 01:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB713429DA6
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 08:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235695AbhJKXan (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Oct 2021 19:30:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229822AbhJKXam (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Oct 2021 19:30:42 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A1EC061570
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id z40so16515056qko.7
-        for <linux-rdma@vger.kernel.org>; Mon, 11 Oct 2021 16:28:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
-        b=HgSVsa1leI1AlSIfToVWroe+BjAOI3ghwR21CHGPDVexnWIRNvq+Q6E9d3FU+ST+no
-         ocS0/TW3SNZ8jyMLrwCJrPh0ePUJ+a688MNeO/SOH6dsbggdYjQGAUsJxiPe5U0kF/4c
-         XY58+grwbQEppK31zpbsIZaW6qYJZ2vewp8ofGFLbXaclZQIMcZ93nEBHioo26AFAdN3
-         o9ugEBJiQo11Zaj9DuRnUJDPPLYMfgS8KowTy+yVz6++iq5k4ln0p/MdXC+vaaQP/YGk
-         4LaDhUUPgzqijbwXAaNpf83nIDlspt7EVCcaadtiRVk58NDA1pLNB31/ejPvhAokpOj1
-         4Y3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hKTDl4kdaWB0vdYudkwpZowlFD1zaZpzSpL3qYnGjpI=;
-        b=NolLZ6XCqjUg+rKwKwUCfzUh3ofZkaLYBb9C4uUS0LSKqoDqQSF7ApcMJH9/ZoWj4I
-         QJBLW9nTkcw5a+Na98K+ppX4MItyOUsYD2FLm6+9dHRz++HmPWtyIhjYbN0pFx4akv/j
-         +56foUNi25J5WaAuYJDZLGs6gRiGIwYtY0ihsceISkK7gsepcpFFWRZram2pZW91tTJb
-         4DFwpTQSRc4rjT/69wYWUxWXh+anuCS9OlaGH74AT7Vyi2QCqXcZAVwxHxw1CAiF48B/
-         bcgngxaidDQwQNi0a2QtiBAqEwpwYEtsXdMxcmsQFWjEew3wuy3TB5PkwI9Np1puhvmw
-         tbMw==
-X-Gm-Message-State: AOAM5300bbVXnBYfFVhlqeDi0CS/HK2YMaJO0q3Xnzi8SukE7vvLIPgY
-        /FToqUXLoFdAHLI7RevqFVD5FQ==
-X-Google-Smtp-Source: ABdhPJztEyniOAoNC1NU3iq7Ij0MXitTU2tCF7xYZyS71yMXt88Vb38CmA4delGadNYZaeqqHQ8bqQ==
-X-Received: by 2002:a37:f71a:: with SMTP id q26mr16843729qkj.3.1633994921355;
-        Mon, 11 Oct 2021 16:28:41 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id d5sm5245821qtr.61.2021.10.11.16.28.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Oct 2021 16:28:40 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1ma4il-00Dk4y-VJ; Mon, 11 Oct 2021 20:28:39 -0300
-Date:   Mon, 11 Oct 2021 20:28:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Gal Pressman <galpress@amazon.com>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Oded Gabbay <ogabbay@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Yossi Leybovich <sleybo@amazon.com>,
-        Alexander Matushevsky <matua@amazon.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Message-ID: <20211011232839.GF2688930@ziepe.ca>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
- <20211007114018.GD2688930@ziepe.ca>
- <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+        id S233117AbhJLGZU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Oct 2021 02:25:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56556 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233085AbhJLGZT (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Oct 2021 02:25:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19C5560EDF;
+        Tue, 12 Oct 2021 06:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634019798;
+        bh=GdcaW52Qft7w3IzkVpFppX5OfAJA+jde2Qeea4ajf00=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MtXbXT9dgjwLHd0+J5Ez9y5dpn8ebX8/WKkKae6bIyFpfrI34iBFImb3DEfW4xDMw
+         4rjSku5U1W8QHnAIueMK8WbqbGLf4+DAaWt9NUikDrGbdHnG8lt6lGs5qzpcipYrlV
+         uYSz8fw0qFrimABHT22OQ2vJzUkSbLUQPockPoQWRGZwUY2NsUYgTfTsgyk2R5ZsNA
+         aA/MkoM/uHzxHUUdmtN2GHusHgn33LHf+VFrTmlfiN9JzeUvKu78FentKlRCb2IKs6
+         mKF/I7iLiEf5J/GZl+Ne8QD0rIJ6u9dYBetq3O9R46pgrgldowianuRjvJOS7Djtq/
+         iCb54/ImmnPSg==
+Date:   Tue, 12 Oct 2021 09:23:14 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, bharat@chelsio.com,
+        yishaih@nvidia.com, bmt@zurich.ibm.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA: Remove redundant 'flush_workqueue()' calls
+Message-ID: <YWUp0s6TD6R1cse8@unreal>
+References: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
+In-Reply-To: <ca7bac6e6c9c5cc8d04eec3944edb13de0e381a3.1633874776.git.christophe.jaillet@wanadoo.fr>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
-> On 07/10/2021 14:40, Jason Gunthorpe wrote:
-> > On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
-> > 
-> >> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
-> >>  	return 0;
-> >>  }
-> >>  
-> >> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
-> >> -			 u64 virt_addr, int access_flags,
-> >> -			 struct ib_udata *udata)
-> >> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
-> >> +{
-> >> +	WARN_ON_ONCE(1,
-> >> +		     "Invalidate callback should not be called when memory is pinned\n");
-> >> +}
-> >> +
-> >> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
-> >> +	.allow_peer2peer = true,
-> >> +	.move_notify = efa_dmabuf_invalidate_cb,
-> >> +};
-> > 
-> > Shouldn't move_notify really just be left as NULL? I mean fixing
-> > whatever is preventing that?
+On Sun, Oct 10, 2021 at 04:08:10PM +0200, Christophe JAILLET wrote:
+> 'destroy_workqueue()' already drains the queue before destroying it, so
+> there is no need to flush it explicitly.
 > 
-> That's what I had in the previous RFC and I think Christian didn't really like it.
-
-Well, having drivers define a dummy function that only fails looks
-a lot worse to me. If not null then it should be a general
-'dmabuf_unsupported_move_notify' shared function
-
-> >> +	err = ib_umem_dmabuf_map_pages(umem_dmabuf);
-> >> +	if (err) {
-> >> +		ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
-> >> +		goto err_unpin;
-> >> +	}
-> >> +	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
-> > 
-> > If it is really this simple the core code should have this logic,
-> > 'ib_umem_dmabuf_get_pinned()' or something
+> Remove the redundant 'flush_workqueue()' calls.
 > 
-> Should get_pinned do just get + dma_buf_pin, or should it do
-> ib_umem_dmabuf_map_pages as well?
+> This was generated with coccinelle:
+> 
+> @@
+> expression E;
+> @@
+> - 	flush_workqueue(E);
+> 	destroy_workqueue(E);
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/infiniband/core/sa_query.c        | 1 -
+>  drivers/infiniband/hw/cxgb4/cm.c          | 1 -
+>  drivers/infiniband/hw/cxgb4/device.c      | 1 -
+>  drivers/infiniband/hw/mlx4/alias_GUID.c   | 4 +---
+>  drivers/infiniband/sw/siw/siw_cm.c        | 4 +---
+>  drivers/infiniband/ulp/ipoib/ipoib_main.c | 1 -
+>  6 files changed, 2 insertions(+), 10 deletions(-)
+> 
 
-Yes the map_pages too, a umem is supposed to be dma mapped after
-creation.
-
-Jason
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
