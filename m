@@ -2,368 +2,128 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB4142A212
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 12:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3429042A2EF
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 13:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235963AbhJLK3K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Oct 2021 06:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41976 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236039AbhJLK3E (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Oct 2021 06:29:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B173F610D1;
-        Tue, 12 Oct 2021 10:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634034423;
-        bh=rzUaznX8/js0eCYRNTaJ5ZVAThgQadrCo2aJv/HqEi4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SxHaeHsYC//kEYPDLaUWX3a+Rc28jyD+ZMm+1ljXQb5/C0nR99wFf6XYilMBzlFWo
-         xqN29SIzMPCGvnGZGV8WKINm4PJjhVtWUXxswZ856MEGGbYw/PCtumoCdiuYrIYv04
-         OKzqCfcfV80d47DtxlzezlakrfAZhJ9CdbJqhP+jtPydwo+39oWxNBPmRceOLon6uW
-         N3qrNrXulto34ndWNohcdupyZqQ3VJIRw/mDCD8BC5YgUtxshgIhbbGRrKKP631KYk
-         WKHlMRKUUsX7NDU6MSNF0OgjZGMvmdDLEb5TkNM6sZfbP61Z+B6zuz2tKYDXWbnyJ9
-         l0WB697Xw6MYw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Aharon Landau <aharonl@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        id S232791AbhJLLSb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Oct 2021 07:18:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48543 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232771AbhJLLSb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Oct 2021 07:18:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634037389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AMHiyzyJjXVhzhg0cTh0LW9oKsDVObYUCPUOFXh30gg=;
+        b=FinNHiUKBH372GQd5fBmsqvGj4N0TTcIb1/TLWbk8JKI1Q+sJquzJOPjc712uE2HsJJ9oF
+        lzNq5yGlcIuuFFrpiFHU9sTvLsnwiphNwp/iXIm441nkUiH4NC8Bemn4QrYOo3Mtxsey/m
+        s8tuViHDD5aB7zpRnMEvnMFXOBWOOFk=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-544-XjHmF4qZPhC5jh8ECR5GEw-1; Tue, 12 Oct 2021 07:16:12 -0400
+X-MC-Unique: XjHmF4qZPhC5jh8ECR5GEw-1
+Received: by mail-ed1-f70.google.com with SMTP id cy14-20020a0564021c8e00b003db8c9a6e30so6195435edb.1
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Oct 2021 04:16:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AMHiyzyJjXVhzhg0cTh0LW9oKsDVObYUCPUOFXh30gg=;
+        b=U5z1y+85Zc7HRFmbmUlW5ZCOXupXHU3qoUD1rffERAzt1NvUEu4IS6Ova7TUJTYJ9S
+         uJAyD1dtA9sixQ/4Jxb5pSkM8OXzIgNT3dcqW2tYDPNr7+d4BHqy1/pwd1WtexL518Dm
+         5MA/dn5WMEk7mmSw0dxLwFPVeZPf5FQNjumgEBKRkJ5b+JuWK9o1XspQg6AKJGY5HVNX
+         grAmzAwRnjU4qJRpjgG9L1fhYv+uNg6AQUqWBhsTMcud8h1We/ytusiIRW2hZ8oEk3h1
+         BQ1UjWAFWdtk+S/bTmVJQ4zEjgAkKyXoutkr0rhM0V2pxBPz9NfOLuAQciyf7QMfS9Dp
+         1WEA==
+X-Gm-Message-State: AOAM5334C9DqGWcO8O/xbMjLI/extX8DUrqhsmJikpPfyPBDzRSMxQsl
+        JSbRVEaT0N4Vf8ac/pJQPxvZXkrlt/zg07ivmgnX5skq7rIsGDhqNYUviURKsvj0shVmPleu7sK
+        nDxRZBrITJyjkr6oPvBGIEA==
+X-Received: by 2002:a50:fe03:: with SMTP id f3mr9292185edt.136.1634037371072;
+        Tue, 12 Oct 2021 04:16:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxd/URL5pw6izXClolZNFJ+6uNDxVtrZRO7cbO0TSudUpwyflf8/yGeb3BNrZM4At2dztwdvw==
+X-Received: by 2002:a50:fe03:: with SMTP id f3mr9292158edt.136.1634037370890;
+        Tue, 12 Oct 2021 04:16:10 -0700 (PDT)
+Received: from redhat.com ([2.55.159.57])
+        by smtp.gmail.com with ESMTPSA id o12sm5673421edw.84.2021.10.12.04.16.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Oct 2021 04:16:10 -0700 (PDT)
+Date:   Tue, 12 Oct 2021 07:16:05 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Aharon Landau <aharonl@nvidia.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Jason Wang <jasowang@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@nvidia.com>, netdev@vger.kernel.org,
         Saeed Mahameed <saeedm@nvidia.com>,
         Shay Drory <shayd@nvidia.com>,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH mlx5-next 7/7] RDMA/mlx5: Attach ndescs to mlx5_ib_mkey
-Date:   Tue, 12 Oct 2021 13:26:35 +0300
-Message-Id: <4bf22f9401a01df13804b90f9c7e90e36c788bd9.1634033957.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1634033956.git.leonro@nvidia.com>
+Subject: Re: [PATCH mlx5-next 0/7] Clean MR key use across mlx5_* modules
+Message-ID: <20211012071555-mutt-send-email-mst@kernel.org>
 References: <cover.1634033956.git.leonro@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1634033956.git.leonro@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Aharon Landau <aharonl@nvidia.com>
+On Tue, Oct 12, 2021 at 01:26:28PM +0300, Leon Romanovsky wrote:
+> From: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Hi,
+> 
+> This is cleanup series of mlx5_* MR mkey management.
+> 
+> Thanks
 
-Generalize the use of ndescs by adding it to mlx5_ib_mkey.
 
-Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-Reviewed-by: Shay Drory <shayd@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/devx.c    | 10 ++++------
- drivers/infiniband/hw/mlx5/devx.h    |  2 +-
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  8 +-------
- drivers/infiniband/hw/mlx5/mr.c      | 24 ++++++++++++------------
- drivers/infiniband/hw/mlx5/odp.c     | 22 ++--------------------
- drivers/infiniband/hw/mlx5/wr.c      | 10 +++++-----
- 6 files changed, 25 insertions(+), 51 deletions(-)
+Looks fine superficially
 
-diff --git a/drivers/infiniband/hw/mlx5/devx.c b/drivers/infiniband/hw/mlx5/devx.c
-index 2778b10ffd48..2baecf0367e5 100644
---- a/drivers/infiniband/hw/mlx5/devx.c
-+++ b/drivers/infiniband/hw/mlx5/devx.c
-@@ -1292,18 +1292,16 @@ static int devx_handle_mkey_indirect(struct devx_obj *obj,
- 				     struct mlx5_ib_dev *dev,
- 				     void *in, void *out)
- {
--	struct mlx5_ib_devx_mr *devx_mr = &obj->devx_mr;
--	struct mlx5_ib_mkey *mkey;
-+	struct mlx5_ib_mkey *mkey = &obj->mkey;
- 	void *mkc;
- 	u8 key;
- 
--	mkey = &devx_mr->mmkey;
- 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
- 	key = MLX5_GET(mkc, mkc, mkey_7_0);
- 	mkey->key = mlx5_idx_to_mkey(
- 			MLX5_GET(create_mkey_out, out, mkey_index)) | key;
- 	mkey->type = MLX5_MKEY_INDIRECT_DEVX;
--	devx_mr->ndescs = MLX5_GET(mkc, mkc, translations_octword_size);
-+	mkey->ndescs = MLX5_GET(mkc, mkc, translations_octword_size);
- 	init_waitqueue_head(&mkey->wait);
- 
- 	return mlx5r_store_odp_mkey(dev, mkey);
-@@ -1381,13 +1379,13 @@ static int devx_obj_cleanup(struct ib_uobject *uobject,
- 	dev = mlx5_udata_to_mdev(&attrs->driver_udata);
- 	if (obj->flags & DEVX_OBJ_FLAGS_INDIRECT_MKEY &&
- 	    xa_erase(&obj->ib_dev->odp_mkeys,
--		     mlx5_base_mkey(obj->devx_mr.mmkey.key)))
-+		     mlx5_base_mkey(obj->mkey.key)))
- 		/*
- 		 * The pagefault_single_data_segment() does commands against
- 		 * the mmkey, we must wait for that to stop before freeing the
- 		 * mkey, as another allocation could get the same mkey #.
- 		 */
--		mlx5r_deref_wait_odp_mkey(&obj->devx_mr.mmkey);
-+		mlx5r_deref_wait_odp_mkey(&obj->mkey);
- 
- 	if (obj->flags & DEVX_OBJ_FLAGS_DCT)
- 		ret = mlx5_core_destroy_dct(obj->ib_dev, &obj->core_dct);
-diff --git a/drivers/infiniband/hw/mlx5/devx.h b/drivers/infiniband/hw/mlx5/devx.h
-index 1f69866aed16..ee2213275fd6 100644
---- a/drivers/infiniband/hw/mlx5/devx.h
-+++ b/drivers/infiniband/hw/mlx5/devx.h
-@@ -16,7 +16,7 @@ struct devx_obj {
- 	u32			dinbox[MLX5_MAX_DESTROY_INBOX_SIZE_DW];
- 	u32			flags;
- 	union {
--		struct mlx5_ib_devx_mr	devx_mr;
-+		struct mlx5_ib_mkey	mkey;
- 		struct mlx5_core_dct	core_dct;
- 		struct mlx5_core_cq	core_cq;
- 		u32			flow_counter_bulk_size;
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index ef6087a9f93b..ed173af8ae75 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -637,6 +637,7 @@ enum mlx5_mkey_type {
- struct mlx5_ib_mkey {
- 	u32			key;
- 	enum mlx5_mkey_type	type;
-+	int			ndescs;
- 	struct wait_queue_head wait;
- 	refcount_t usecount;
- };
-@@ -681,7 +682,6 @@ struct mlx5_ib_mr {
- 			void *descs_alloc;
- 			dma_addr_t desc_map;
- 			int max_descs;
--			int ndescs;
- 			int desc_size;
- 			int access_mode;
- 
-@@ -736,12 +736,6 @@ static inline bool is_dmabuf_mr(struct mlx5_ib_mr *mr)
- struct mlx5_ib_mw {
- 	struct ib_mw		ibmw;
- 	struct mlx5_ib_mkey	mmkey;
--	int			ndescs;
--};
--
--struct mlx5_ib_devx_mr {
--	struct mlx5_ib_mkey	mmkey;
--	int			ndescs;
- };
- 
- struct mlx5_ib_umr_context {
-diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 675be5b1de9c..0c4a5ac2544c 100644
---- a/drivers/infiniband/hw/mlx5/mr.c
-+++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -2335,7 +2335,7 @@ int mlx5_ib_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
- 
- 	mw->mmkey.type = MLX5_MKEY_MW;
- 	ibmw->rkey = mw->mmkey.key;
--	mw->ndescs = ndescs;
-+	mw->mmkey.ndescs = ndescs;
- 
- 	resp.response_length =
- 		min(offsetofend(typeof(resp), response_length), udata->outlen);
-@@ -2431,7 +2431,7 @@ mlx5_ib_map_pa_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	mr->meta_length = 0;
- 	if (data_sg_nents == 1) {
- 		n++;
--		mr->ndescs = 1;
-+		mr->mmkey.ndescs = 1;
- 		if (data_sg_offset)
- 			sg_offset = *data_sg_offset;
- 		mr->data_length = sg_dma_len(data_sg) - sg_offset;
-@@ -2484,7 +2484,7 @@ mlx5_ib_sg_to_klms(struct mlx5_ib_mr *mr,
- 	if (sg_offset_p)
- 		*sg_offset_p = sg_offset;
- 
--	mr->ndescs = i;
-+	mr->mmkey.ndescs = i;
- 	mr->data_length = mr->ibmr.length;
- 
- 	if (meta_sg_nents) {
-@@ -2517,11 +2517,11 @@ static int mlx5_set_page(struct ib_mr *ibmr, u64 addr)
- 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
- 	__be64 *descs;
- 
--	if (unlikely(mr->ndescs == mr->max_descs))
-+	if (unlikely(mr->mmkey.ndescs == mr->max_descs))
- 		return -ENOMEM;
- 
- 	descs = mr->descs;
--	descs[mr->ndescs++] = cpu_to_be64(addr | MLX5_EN_RD | MLX5_EN_WR);
-+	descs[mr->mmkey.ndescs++] = cpu_to_be64(addr | MLX5_EN_RD | MLX5_EN_WR);
- 
- 	return 0;
- }
-@@ -2531,11 +2531,11 @@ static int mlx5_set_page_pi(struct ib_mr *ibmr, u64 addr)
- 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
- 	__be64 *descs;
- 
--	if (unlikely(mr->ndescs + mr->meta_ndescs == mr->max_descs))
-+	if (unlikely(mr->mmkey.ndescs + mr->meta_ndescs == mr->max_descs))
- 		return -ENOMEM;
- 
- 	descs = mr->descs;
--	descs[mr->ndescs + mr->meta_ndescs++] =
-+	descs[mr->mmkey.ndescs + mr->meta_ndescs++] =
- 		cpu_to_be64(addr | MLX5_EN_RD | MLX5_EN_WR);
- 
- 	return 0;
-@@ -2551,7 +2551,7 @@ mlx5_ib_map_mtt_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	struct mlx5_ib_mr *pi_mr = mr->mtt_mr;
- 	int n;
- 
--	pi_mr->ndescs = 0;
-+	pi_mr->mmkey.ndescs = 0;
- 	pi_mr->meta_ndescs = 0;
- 	pi_mr->meta_length = 0;
- 
-@@ -2585,7 +2585,7 @@ mlx5_ib_map_mtt_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 		 * metadata offset at the first metadata page
- 		 */
- 		pi_mr->pi_iova = (iova & page_mask) +
--				 pi_mr->ndescs * ibmr->page_size +
-+				 pi_mr->mmkey.ndescs * ibmr->page_size +
- 				 (pi_mr->ibmr.iova & ~page_mask);
- 		/*
- 		 * In order to use one MTT MR for data and metadata, we register
-@@ -2616,7 +2616,7 @@ mlx5_ib_map_klm_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 	struct mlx5_ib_mr *pi_mr = mr->klm_mr;
- 	int n;
- 
--	pi_mr->ndescs = 0;
-+	pi_mr->mmkey.ndescs = 0;
- 	pi_mr->meta_ndescs = 0;
- 	pi_mr->meta_length = 0;
- 
-@@ -2651,7 +2651,7 @@ int mlx5_ib_map_mr_sg_pi(struct ib_mr *ibmr, struct scatterlist *data_sg,
- 
- 	WARN_ON(ibmr->type != IB_MR_TYPE_INTEGRITY);
- 
--	mr->ndescs = 0;
-+	mr->mmkey.ndescs = 0;
- 	mr->data_length = 0;
- 	mr->data_iova = 0;
- 	mr->meta_ndescs = 0;
-@@ -2707,7 +2707,7 @@ int mlx5_ib_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 	struct mlx5_ib_mr *mr = to_mmr(ibmr);
- 	int n;
- 
--	mr->ndescs = 0;
-+	mr->mmkey.ndescs = 0;
- 
- 	ib_dma_sync_single_for_cpu(ibmr->device, mr->desc_map,
- 				   mr->desc_size * mr->max_descs,
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 8dd9d8457767..31596d8c5212 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -797,21 +797,6 @@ static bool mkey_is_eq(struct mlx5_ib_mkey *mmkey, u32 key)
- 	return mmkey->key == key;
- }
- 
--static int get_indirect_num_descs(struct mlx5_ib_mkey *mmkey)
--{
--	struct mlx5_ib_mw *mw;
--	struct mlx5_ib_devx_mr *devx_mr;
--
--	if (mmkey->type == MLX5_MKEY_MW) {
--		mw = container_of(mmkey, struct mlx5_ib_mw, mmkey);
--		return mw->ndescs;
--	}
--
--	devx_mr = container_of(mmkey, struct mlx5_ib_devx_mr,
--			       mmkey);
--	return devx_mr->ndescs;
--}
--
- /*
-  * Handle a single data segment in a page-fault WQE or RDMA region.
-  *
-@@ -836,7 +821,6 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
- 	struct mlx5_klm *pklm;
- 	u32 *out = NULL;
- 	size_t offset;
--	int ndescs;
- 
- 	io_virt += *bytes_committed;
- 	bcnt -= *bytes_committed;
-@@ -885,8 +869,6 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
- 
- 	case MLX5_MKEY_MW:
- 	case MLX5_MKEY_INDIRECT_DEVX:
--		ndescs = get_indirect_num_descs(mmkey);
--
- 		if (depth >= MLX5_CAP_GEN(dev->mdev, max_indirection)) {
- 			mlx5_ib_dbg(dev, "indirection level exceeded\n");
- 			ret = -EFAULT;
-@@ -894,7 +876,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
- 		}
- 
- 		outlen = MLX5_ST_SZ_BYTES(query_mkey_out) +
--			sizeof(*pklm) * (ndescs - 2);
-+			sizeof(*pklm) * (mmkey->ndescs - 2);
- 
- 		if (outlen > cur_outlen) {
- 			kfree(out);
-@@ -916,7 +898,7 @@ static int pagefault_single_data_segment(struct mlx5_ib_dev *dev,
- 		offset = io_virt - MLX5_GET64(query_mkey_out, out,
- 					      memory_key_mkey_entry.start_addr);
- 
--		for (i = 0; bcnt && i < ndescs; i++, pklm++) {
-+		for (i = 0; bcnt && i < mmkey->ndescs; i++, pklm++) {
- 			if (offset >= be32_to_cpu(pklm->bcount)) {
- 				offset -= be32_to_cpu(pklm->bcount);
- 				continue;
-diff --git a/drivers/infiniband/hw/mlx5/wr.c b/drivers/infiniband/hw/mlx5/wr.c
-index 8841620af82f..51e48ca9016e 100644
---- a/drivers/infiniband/hw/mlx5/wr.c
-+++ b/drivers/infiniband/hw/mlx5/wr.c
-@@ -217,7 +217,7 @@ static __be64 sig_mkey_mask(void)
- static void set_reg_umr_seg(struct mlx5_wqe_umr_ctrl_seg *umr,
- 			    struct mlx5_ib_mr *mr, u8 flags, bool atomic)
- {
--	int size = (mr->ndescs + mr->meta_ndescs) * mr->desc_size;
-+	int size = (mr->mmkey.ndescs + mr->meta_ndescs) * mr->desc_size;
- 
- 	memset(umr, 0, sizeof(*umr));
- 
-@@ -374,7 +374,7 @@ static void set_reg_mkey_seg(struct mlx5_mkey_seg *seg,
- 			     struct mlx5_ib_mr *mr,
- 			     u32 key, int access)
- {
--	int ndescs = ALIGN(mr->ndescs + mr->meta_ndescs, 8) >> 1;
-+	int ndescs = ALIGN(mr->mmkey.ndescs + mr->meta_ndescs, 8) >> 1;
- 
- 	memset(seg, 0, sizeof(*seg));
- 
-@@ -439,7 +439,7 @@ static void set_reg_data_seg(struct mlx5_wqe_data_seg *dseg,
- 			     struct mlx5_ib_mr *mr,
- 			     struct mlx5_ib_pd *pd)
- {
--	int bcount = mr->desc_size * (mr->ndescs + mr->meta_ndescs);
-+	int bcount = mr->desc_size * (mr->mmkey.ndescs + mr->meta_ndescs);
- 
- 	dseg->addr = cpu_to_be64(mr->desc_map);
- 	dseg->byte_count = cpu_to_be32(ALIGN(bcount, 64));
-@@ -861,7 +861,7 @@ static int set_reg_wr(struct mlx5_ib_qp *qp,
- 	struct mlx5_ib_mr *mr = to_mmr(wr->mr);
- 	struct mlx5_ib_pd *pd = to_mpd(qp->ibqp.pd);
- 	struct mlx5_ib_dev *dev = to_mdev(pd->ibpd.device);
--	int mr_list_size = (mr->ndescs + mr->meta_ndescs) * mr->desc_size;
-+	int mr_list_size = (mr->mmkey.ndescs + mr->meta_ndescs) * mr->desc_size;
- 	bool umr_inline = mr_list_size <= MLX5_IB_SQ_UMR_INLINE_THRESHOLD;
- 	bool atomic = wr->access & IB_ACCESS_REMOTE_ATOMIC;
- 	u8 flags = 0;
-@@ -1111,7 +1111,7 @@ static int handle_reg_mr_integrity(struct mlx5_ib_dev *dev,
- 		memset(&pa_pi_mr, 0, sizeof(struct mlx5_ib_mr));
- 		/* No UMR, use local_dma_lkey */
- 		pa_pi_mr.ibmr.lkey = mr->ibmr.pd->local_dma_lkey;
--		pa_pi_mr.ndescs = mr->ndescs;
-+		pa_pi_mr.mmkey.ndescs = mr->mmkey.ndescs;
- 		pa_pi_mr.data_length = mr->data_length;
- 		pa_pi_mr.data_iova = mr->data_iova;
- 		if (mr->meta_ndescs) {
--- 
-2.31.1
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+> Aharon Landau (7):
+>   RDMA/mlx5: Don't set esc_size in user mr
+>   RDMA/mlx5: Remove iova from struct mlx5_core_mkey
+>   RDMA/mlx5: Remove size from struct mlx5_core_mkey
+>   RDMA/mlx5: Remove pd from struct mlx5_core_mkey
+>   RDMA/mlx5: Replace struct mlx5_core_mkey by u32 key
+>   RDMA/mlx5: Move struct mlx5_core_mkey to mlx5_ib
+>   RDMA/mlx5: Attach ndescs to mlx5_ib_mkey
+> 
+>  drivers/infiniband/hw/mlx5/devx.c             | 13 +--
+>  drivers/infiniband/hw/mlx5/devx.h             |  2 +-
+>  drivers/infiniband/hw/mlx5/mlx5_ib.h          | 31 ++++---
+>  drivers/infiniband/hw/mlx5/mr.c               | 82 +++++++++----------
+>  drivers/infiniband/hw/mlx5/odp.c              | 38 +++------
+>  drivers/infiniband/hw/mlx5/wr.c               | 10 +--
+>  .../mellanox/mlx5/core/diag/fw_tracer.c       |  6 +-
+>  .../mellanox/mlx5/core/diag/fw_tracer.h       |  2 +-
+>  .../mellanox/mlx5/core/diag/rsc_dump.c        | 10 +--
+>  drivers/net/ethernet/mellanox/mlx5/core/en.h  |  2 +-
+>  .../net/ethernet/mellanox/mlx5/core/en/ptp.c  |  2 +-
+>  .../net/ethernet/mellanox/mlx5/core/en/trap.c |  2 +-
+>  .../ethernet/mellanox/mlx5/core/en_common.c   |  6 +-
+>  .../net/ethernet/mellanox/mlx5/core/en_main.c | 13 ++-
+>  .../ethernet/mellanox/mlx5/core/fpga/conn.c   | 10 +--
+>  .../ethernet/mellanox/mlx5/core/fpga/core.h   |  2 +-
+>  drivers/net/ethernet/mellanox/mlx5/core/mr.c  | 27 +++---
+>  .../mellanox/mlx5/core/steering/dr_icm_pool.c | 10 +--
+>  .../mellanox/mlx5/core/steering/dr_send.c     | 11 ++-
+>  .../mellanox/mlx5/core/steering/dr_types.h    |  2 +-
+>  drivers/vdpa/mlx5/core/mlx5_vdpa.h            |  8 +-
+>  drivers/vdpa/mlx5/core/mr.c                   |  8 +-
+>  drivers/vdpa/mlx5/core/resources.c            | 13 +--
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c             |  2 +-
+>  include/linux/mlx5/driver.h                   | 30 ++-----
+>  25 files changed, 147 insertions(+), 195 deletions(-)
+> 
+> -- 
+> 2.31.1
 
