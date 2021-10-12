@@ -2,47 +2,44 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3E42A386
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 13:41:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E6842A3F3
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 14:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236346AbhJLLns (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Oct 2021 07:43:48 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:62447 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236338AbhJLLnn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Oct 2021 07:43:43 -0400
+        id S236196AbhJLMLa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Oct 2021 08:11:30 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:13763 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232665AbhJLML3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Oct 2021 08:11:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1634038903; x=1665574903;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vhUkg9h0xV9ZvVTvkdqrzA9Qz3YC8T3rVvXz96y15vQ=;
-  b=RRTwmqyFWvTt0IT8903LhGpFaxOMUtz1yLKG5TvhKF+tDKa555qn1dfU
-   KXfgjTh0IGmv8aYexjw4SOpK2vOhVorBGpUBWJNnQiz5hSTXrs+zUhY49
-   Y8fD2KB8iY6IyBDUqc9kzGSMOyCv2Rz2xQkgHGHFY7ojUhdttmGc6JDVz
-   c=;
+  t=1634040568; x=1665576568;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Cu9aT9PKxubFeRU3gw1Gjtc6Ldb5NRA5s/4pefgZcj0=;
+  b=QRa8JGzONRKvpfdfZGJxZ+Zljhht969ejd/GrHt3qSmtov5LQIJG9M9r
+   KhWp5Y0VQ+n3j2IGRspJ1+DxIT3CenxA2gwTgYhMzACNL+zfUuq3HfI1a
+   QkrC9VcDp52rPSRGAenripZUM0XG9Q2SngxAgm7cG29C7aYUXR2s5u0rK
+   4=;
 X-IronPort-AV: E=Sophos;i="5.85,367,1624320000"; 
-   d="scan'208";a="148529692"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-6001.iad6.amazon.com with ESMTP; 12 Oct 2021 11:41:34 +0000
-Received: from EX13D19EUB003.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1a-686c2610.us-east-1.amazon.com (Postfix) with ESMTPS id 935D460EA7;
-        Tue, 12 Oct 2021 11:41:30 +0000 (UTC)
-Received: from [192.168.29.157] (10.43.160.241) by
- EX13D19EUB003.ant.amazon.com (10.43.166.69) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23; Tue, 12 Oct 2021 11:41:23 +0000
-Message-ID: <50bd7a39-b5ed-c15e-096f-2823d22cc5cc@amazon.com>
-Date:   Tue, 12 Oct 2021 14:41:17 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [RFC PATCH 2/2] RDMA/efa: Add support for dmabuf memory regions
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+   d="scan'208";a="147112800"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-1c682de1.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-6002.iad6.amazon.com with ESMTP; 12 Oct 2021 12:09:19 +0000
+Received: from EX13D13EUA004.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-iad-1d-1c682de1.us-east-1.amazon.com (Postfix) with ESMTPS id 98058A20F0;
+        Tue, 12 Oct 2021 12:09:16 +0000 (UTC)
+Received: from EX13MTAUEA002.ant.amazon.com (10.43.61.77) by
+ EX13D13EUA004.ant.amazon.com (10.43.165.22) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23; Tue, 12 Oct 2021 12:09:15 +0000
+Received: from 8c85908914bf.ant.amazon.com.com (10.1.212.21) by
+ mail-relay.amazon.com (10.43.61.169) with Microsoft SMTP Server id
+ 15.0.1497.23 via Frontend Transport; Tue, 12 Oct 2021 12:09:11 +0000
+From:   Gal Pressman <galpress@amazon.com>
+To:     Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         Doug Ledford <dledford@redhat.com>,
-        <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
         <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
         Oded Gabbay <ogabbay@habana.ai>,
         Tomer Tayar <ttayar@habana.ai>,
@@ -50,71 +47,65 @@ CC:     Sumit Semwal <sumit.semwal@linaro.org>,
         Alexander Matushevsky <matua@amazon.com>,
         Leon Romanovsky <leonro@nvidia.com>,
         Jianxin Xiong <jianxin.xiong@intel.com>,
-        Firas Jahjah <firasj@amazon.com>
-References: <20211007104301.76693-1-galpress@amazon.com>
- <20211007104301.76693-3-galpress@amazon.com>
- <20211007114018.GD2688930@ziepe.ca>
- <77082c57-29f8-1eba-b260-7cb658ec34d1@amazon.com>
- <20211011232839.GF2688930@ziepe.ca>
-From:   Gal Pressman <galpress@amazon.com>
-In-Reply-To: <20211011232839.GF2688930@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.43.160.241]
-X-ClientProxiedBy: EX13D47UWA001.ant.amazon.com (10.43.163.6) To
- EX13D19EUB003.ant.amazon.com (10.43.166.69)
+        Firas Jahjah <firasj@amazon.com>,
+        Gal Pressman <galpress@amazon.com>
+Subject: [PATCH for-next 0/3] EFA dmabuf memory regions
+Date:   Tue, 12 Oct 2021 15:09:00 +0300
+Message-ID: <20211012120903.96933-1-galpress@amazon.com>
+X-Mailer: git-send-email 2.33.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/10/2021 2:28, Jason Gunthorpe wrote:
-> On Sun, Oct 10, 2021 at 09:55:49AM +0300, Gal Pressman wrote:
->> On 07/10/2021 14:40, Jason Gunthorpe wrote:
->>> On Thu, Oct 07, 2021 at 01:43:00PM +0300, Gal Pressman wrote:
->>>
->>>> @@ -1491,26 +1493,29 @@ static int efa_create_pbl(struct efa_dev *dev,
->>>>    return 0;
->>>>  }
->>>>
->>>> -struct ib_mr *efa_reg_mr(struct ib_pd *ibpd, u64 start, u64 length,
->>>> -                   u64 virt_addr, int access_flags,
->>>> -                   struct ib_udata *udata)
->>>> +static void efa_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
->>>> +{
->>>> +  WARN_ON_ONCE(1,
->>>> +               "Invalidate callback should not be called when memory is pinned\n");
->>>> +}
->>>> +
->>>> +static struct dma_buf_attach_ops efa_dmabuf_attach_ops = {
->>>> +  .allow_peer2peer = true,
->>>> +  .move_notify = efa_dmabuf_invalidate_cb,
->>>> +};
->>>
->>> Shouldn't move_notify really just be left as NULL? I mean fixing
->>> whatever is preventing that?
->>
->> That's what I had in the previous RFC and I think Christian didn't really like it.
-> 
-> Well, having drivers define a dummy function that only fails looks
-> a lot worse to me. If not null then it should be a general
-> 'dmabuf_unsupported_move_notify' shared function
+Hey all,
 
-Will do.
+This is a followup to my previous RFCs [1][2], which now adds a new api
+to the RDMA subsystem that allows drivers to get a pinned dmabuf memory
+region without requiring an implementation of the move_notify callback.
+The new api makes use of the dynamic attachment api implemented in the
+RDMA subsystem, but calls dma_buf_pin() in order to make sure that the
+callback will not be called, as suggested by Christian.
 
->>>> +  err = ib_umem_dmabuf_map_pages(umem_dmabuf);
->>>> +  if (err) {
->>>> +          ibdev_dbg(&dev->ibdev, "Failed to map dmabuf pages\n");
->>>> +          goto err_unpin;
->>>> +  }
->>>> +  dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
->>>
->>> If it is really this simple the core code should have this logic,
->>> 'ib_umem_dmabuf_get_pinned()' or something
->>
->> Should get_pinned do just get + dma_buf_pin, or should it do
->> ib_umem_dmabuf_map_pages as well?
-> 
-> Yes the map_pages too, a umem is supposed to be dma mapped after
-> creation.
+As explained in the previous RFC, move_notify requires the RDMA device
+to support on-demand-paging (ODP) which is not common on most devices
+(only supported by mlx5).
 
-Will do, thanks Jason.
+While the dynamic requirement makes sense for certain GPUs, some devices
+(such as habanalabs) have device memory that is always "pinned" and do
+not need/use the move_notify operation.
+
+Patch #1 changes the dmabuf documentation to make it clear that pinning
+does not necessarily mean the memory must be moved to system memory, it
+is up to the exporter to decide.
+Patch #2 adds the RDMA api that allows drivers to get pinned dmabuf
+memory regions.
+Patch #3 adds the EFA implementation of the dmabuf importer.
+
+The motivation of this submission is to use habanalabs as the dmabuf
+exporter, and EFA as the importer to allow for peer2peer access through
+libibverbs.
+
+[1] https://lore.kernel.org/linux-rdma/20210818074352.29950-1-galpress@amazon.com/
+[2] https://lore.kernel.org/linux-rdma/20211007104301.76693-1-galpress@amazon.com/
+
+Thanks
+
+Gal Pressman (3):
+  dma-buf: Fix pin callback comment
+  RDMA/umem: Allow pinned dmabuf umem usage
+  RDMA/efa: Add support for dmabuf memory regions
+
+ drivers/infiniband/core/umem_dmabuf.c |  51 +++++++++++
+ drivers/infiniband/hw/efa/efa.h       |   4 +
+ drivers/infiniband/hw/efa/efa_main.c  |   1 +
+ drivers/infiniband/hw/efa/efa_verbs.c | 127 +++++++++++++++++++-------
+ include/linux/dma-buf.h               |   4 +-
+ include/rdma/ib_umem.h                |  12 +++
+ 6 files changed, 166 insertions(+), 33 deletions(-)
+
+-- 
+2.33.0
+
