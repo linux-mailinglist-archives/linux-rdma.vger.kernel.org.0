@@ -2,68 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA18C429DCA
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 08:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22CCB429EA0
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Oct 2021 09:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhJLGhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Oct 2021 02:37:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58492 "EHLO mail.kernel.org"
+        id S232530AbhJLHau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Oct 2021 03:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232340AbhJLGhB (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 12 Oct 2021 02:37:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D181560E94;
-        Tue, 12 Oct 2021 06:34:59 +0000 (UTC)
+        id S232500AbhJLHau (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 12 Oct 2021 03:30:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 134AE6108F;
+        Tue, 12 Oct 2021 07:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634020500;
-        bh=6tfLVaefD1roogNKAU4dyj9lb08CMuOf4tQ5HnLLmBo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=h0znyG/AbTjoqtgVka6QLkUO8S4+dIlGvPo66TWyADZjqnChse84Q2AdaNfOZcqPQ
-         9t1vRww9x2QL/isj23cOc/AF92feFeLLyp9TCwDwzQ7shmQ2xhpNEBfh0Obl5qc5Gx
-         yOuUhtS4kmgfqnsP1B+w7pWtCT/UBWQlE19RkyrwcT/eEmORXbcvJ/C72Pyl50gTZi
-         kXDA8/Ras0geYeTUJr0BAFqD3btt9M9ytkpVvl+RlGx9XxtJuKKLT84383e4tVbYAi
-         wHM6vM5Sy0t+IlVOizoDXqdbatk2+qSuLT+u++Up65iEdIblzZzlJhmqpXq26KOPi7
-         /UPjkHReUT+9Q==
-Date:   Tue, 12 Oct 2021 09:34:56 +0300
+        s=k20201202; t=1634023728;
+        bh=Vw7yAdNZuRR+JFWTGL++rcQPXKi75JyotcQgHBK2vwA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=uiw/+oWlg31bGKYZ5oSDe1VgAZdxyySq/aEDShR4JJcQbsmH21exUhnp7QulfXCIh
+         t1zUvv7kwCn+qEzf9VdeGDZhD0zi+MWA0nmv4LWb0PEuyONBr/JetoP7phJFFLRrPz
+         eGnkey3mbf9j5DNcDy0JCA6pxL9KMZhtLFexyuJjl0Z7YZ9B/226HM86ik1Kxoykdf
+         HyE60Jf1G5Suwn3QRcHFqw3PYAQe1hYPepjjSgguLBT7c4Hr9rMESVL3x0a2mPbpkR
+         1aotArCFrHNTaNtlo+5BcYylfLQtl5U/aqGzYh0di1y69bAykFGAIUV17ZScuD8WYg
+         AowJ6puYX3YXQ==
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next 0/6] RDMA/rxe: Fix potential races
-Message-ID: <YWUskJBU5ZHrIhhS@unreal>
-References: <20211010235931.24042-1-rpearsonhpe@gmail.com>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-next] RDMA/mlx4: Return missed an error if device doesn't support steering
+Date:   Tue, 12 Oct 2021 10:28:43 +0300
+Message-Id: <91c61f6e60eb0240f8bbc321fda7a1d2986dd03c.1634023677.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211010235931.24042-1-rpearsonhpe@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Oct 10, 2021 at 06:59:25PM -0500, Bob Pearson wrote:
-> There are possible race conditions related to attempting to access
-> rxe pool objects at the same time as the pools or elements are being
-> freed. This series of patches addresses these races.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Can we get rid of this pool?
+The error flow fixed in this patch is not possible because all kernel
+users of create QP interface check that device supports steering before
+set IB_QP_CREATE_NETIF_QP flag.
 
-Thanks
+Fixes: c1c98501121e ("IB/mlx4: Add support for steerable IB UD QPs")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/hw/mlx4/qp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> 
-> Bob Pearson (6):
->   RDMA/rxe: Make rxe_alloc() take pool lock
->   RDMA/rxe: Copy setup parameters into rxe_pool
->   RDMA/rxe: Save object pointer in pool element
->   RDMA/rxe: Combine rxe_add_index with rxe_alloc
->   RDMA/rxe: Combine rxe_add_key with rxe_alloc
->   RDMA/rxe: Fix potential race condition in rxe_pool
-> 
->  drivers/infiniband/sw/rxe/rxe_mcast.c |   5 +-
->  drivers/infiniband/sw/rxe/rxe_mr.c    |   1 -
->  drivers/infiniband/sw/rxe/rxe_mw.c    |   5 +-
->  drivers/infiniband/sw/rxe/rxe_pool.c  | 235 +++++++++++++-------------
->  drivers/infiniband/sw/rxe/rxe_pool.h  |  67 +++-----
->  drivers/infiniband/sw/rxe/rxe_verbs.c |  10 --
->  6 files changed, 140 insertions(+), 183 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 8662f462e2a5..3a1a4ac9dd33 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -1099,8 +1099,10 @@ static int create_qp_common(struct ib_pd *pd, struct ib_qp_init_attr *init_attr,
+ 			if (dev->steering_support ==
+ 			    MLX4_STEERING_MODE_DEVICE_MANAGED)
+ 				qp->flags |= MLX4_IB_QP_NETIF;
+-			else
++			else {
++				err = -EINVAL;
+ 				goto err;
++			}
+ 		}
+ 
+ 		err = set_kernel_sq_size(dev, &init_attr->cap, qp_type, qp);
+-- 
+2.31.1
+
