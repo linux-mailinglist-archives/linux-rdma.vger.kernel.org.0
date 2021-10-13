@@ -2,149 +2,148 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D0D42C2AC
-	for <lists+linux-rdma@lfdr.de>; Wed, 13 Oct 2021 16:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E31842C2C2
+	for <lists+linux-rdma@lfdr.de>; Wed, 13 Oct 2021 16:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236349AbhJMOSW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Oct 2021 10:18:22 -0400
-Received: from mail-dm6nam11on2137.outbound.protection.outlook.com ([40.107.223.137]:53601
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        id S233590AbhJMOVM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 13 Oct 2021 10:21:12 -0400
+Received: from mail-mw2nam12on2121.outbound.protection.outlook.com ([40.107.244.121]:58368
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236409AbhJMOST (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 13 Oct 2021 10:18:19 -0400
+        id S229562AbhJMOVF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 13 Oct 2021 10:21:05 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mlAKpCuPhpozYEJJqn5whCJ/vDCEIhcXHq4iywJHNN7h52QjQd9Xdcd56tKcJMI+WQLtCkR9zWthkIbnOreQQgTraI0Fkx9PDofxqr66TdC8vusc1xET1wTjV+snvWa/GNqDZaH+Mn0V6rLdOnCb9O95KoCqYo+4DCNRv9dcrL6Ki+di+vRCjQM5oF9O01k76dikzFapNnJKn8oyoTQWQ9GMpd8dglEIY/gxQHWXbKp2g52Vtw1t7TO2xOMHaOidWY4Pzod1K4FptXaWUxoTXCJi8bIXEJ8dXuf/Hh03atxBJ3GuzZmvnKKV7VGAkpzHNmITlfstc+OhU8NFP5nDCQ==
+ b=ibs0JPSEo0L5h05DN0/8b7bh3oMz6iywro+Jmf77uIh0il6jFdizC3hA75kLqCgkXOSfbhvlC35aC9dBIHIV4ppBt+dGqxdBkFrBNbparzRVp4Cz7Bd6blxxgB3pRRgiGu0zP9xeNpCUjGnMP+q7qbIiT+TllfhvqFaXlmpeoNTY9EU07asoZl1iUWT7cBET5pbRvB2yQegDA7PhD8DNRMLajnqhpEnYsbL770aEAC9oAUdV+yPqpolKxVuszPY9DY/UPHSQrZkOd3vQPDWYocsDsRW2WYIOyQ4nFwQ0w8tlduHzbnIBQr+ULwscLezPXn4NdLa5dVVbFg4CW6GGiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O4HSSWl5MpmNDhyX0OGZaI6Wk/qy3GBh35DrO7J+6Yo=;
- b=L24VE4ofTj2wX92ZVo1KdJzOZ64DrMohMfCvDYkrJhaPC/VxKW7jvv637ARVgFcvRDY2DQMPzP0n+C3R4VpiNr88ZNtje0yng9VeV/cpEIhHbPHMYJISk/9tM4AYOib6igyDacAdQ9GC+grakucgNIDMtHMXHgeV00N8PogpWpSNRHdyDpzekys6KbgqzX/9+zrfjz1Tcb04wPTPkII9Vv6w1fXQDIN8hRkc7/KvWT9M4W7pG7x+yVcF8DPkNZflcIbzGmVG8TGako1Sd7tbAj0bHWEYTF9gN1pTF9+I5F8JsA51hbb71tLZ4txA6O9glwAZeDmrS3XmFHeRXNLgnw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
+ bh=xqhAu3wp/H5GMkbZ6+xRBj+qGqfhh445xeS3g45xwwU=;
+ b=abl1pQJXKl6ytAKh5p8ccD34xg2mr8pXVggrGjKN1n14R1gO6w122tokN8G2sEwZh6zetCRTo+RnJ4I/GQYoqyDgxYPvvZDiBPkl5stuDk6jRHwHqpw1XAz97wXRPrFUJEig//FESRI+e11jkQqTWvHBC6ooYFcNJqvDsPZuXsjIHA2NU7n/fj45LvZzRETbH+9NfhxaHASOERqJI22XYsJO8Lfx+AeZU4lVeVRJS4SWzFKlYJFqYdb8u+tbcI6HE10KMsMlKk9hNPldNNly/4WgdHIFMf58FE36i3SvjkEnP39zDKfrmCoqi/1+Mm144SjroDHqpreAAVNMIqdIWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 208.255.156.42) smtp.rcpttodomain=tsinghua.edu.cn
+ smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O4HSSWl5MpmNDhyX0OGZaI6Wk/qy3GBh35DrO7J+6Yo=;
- b=LeZG2row6XaBizLcoWQUGDySaDrOzRIYHMNekv88OcmOBTUHC7kyZT2mkLheAbwprAsjeFkzKX+dKmdrGK0PN4uxcau13ZErVf2lSQfskwbcz6dAqBGUft+WMDzk9CcfdwdYNY//kWomxiK5wFBT1UQr2Cp9GAOLtdkvhac3W4tBv7xW2+nicEhsUSMsxU6PVrmfjX98Hu6D/LAJgdeiSnXxRfvSstXbSVnqQ6C8zaZkmYyy+95BaEwNlMVK2y8qMwxjz/wlrnjYC+rAGgLjeNr14UE+Q8asd+5u0j5cNKAxGv6kmEqFitnrmM44ad/uSGkbhtQBBeaeo43PVgld7Q==
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6408.prod.exchangelabs.com (2603:10b6:510:12::15) with Microsoft
+ bh=xqhAu3wp/H5GMkbZ6+xRBj+qGqfhh445xeS3g45xwwU=;
+ b=h+x3xZY7QG34Zf5FYFC8O80f0cU3uAgHYLOt7FY5Kc2WxekVwK3tQe008FH9Np0xsAdpY8na4MgwfK2+t5oGUTGK+zyESK9ctyVwil92gmXk6Kv82hsrc6SeIy2UDszKBdRxbWflHsGpRnT7eFLWFKJqA9TA3Zqp1r5MSgzIE4tklENqakQmmkHVASerCppOfr9bhU59ojUAHC259vIRCpa2Dr8t7BgQS/bYiKZkxN2dQZY4EnF9XIwB6+lEMzi+xASiEnhsc9AVu9UpqleTcGvaGVhrYWZc9hHmfm2KH3jI24LdNEND6GUhqsIdpcIVJgtj0qP+KwN69iPrOFPt5Q==
+Received: from MWHPR22CA0061.namprd22.prod.outlook.com (2603:10b6:300:12a::23)
+ by BYAPR01MB5000.prod.exchangelabs.com (2603:10b6:a03:7f::29) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4608.16; Wed, 13 Oct 2021 14:16:14 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::88df:62ca:347:917f]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::88df:62ca:347:917f%7]) with mapi id 15.20.4587.026; Wed, 13 Oct 2021
- 14:16:14 +0000
-Message-ID: <f9ef1de3-6aba-1656-a478-1b7af60ffcec@cornelisnetworks.com>
-Date:   Wed, 13 Oct 2021 10:16:08 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.1.2
-Subject: Re: [PATCH] RDMA/rdmavt: fix error code in rvt_create_qp()
-Content-Language: en-US
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Gal Pressman <galpress@amazon.com>, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20211013080645.GD6010@kili>
+ 15.20.4587.25; Wed, 13 Oct 2021 14:18:56 +0000
+Received: from CO1NAM11FT038.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:12a:cafe::3c) by MWHPR22CA0061.outlook.office365.com
+ (2603:10b6:300:12a::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.15 via Frontend
+ Transport; Wed, 13 Oct 2021 14:18:56 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
+ smtp.mailfrom=cornelisnetworks.com; tsinghua.edu.cn; dkim=none (message not
+ signed) header.d=none;tsinghua.edu.cn; dmarc=bestguesspass action=none
+ header.from=cornelisnetworks.com;
+Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
+ designates 208.255.156.42 as permitted sender)
+ receiver=protection.outlook.com; client-ip=208.255.156.42;
+ helo=awfm-01.cornelisnetworks.com;
+Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by
+ CO1NAM11FT038.mail.protection.outlook.com (10.13.174.231) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4608.15 via Frontend Transport; Wed, 13 Oct 2021 14:18:55 +0000
+Received: from awfm-01.cornelisnetworks.com (localhost [127.0.0.1])
+        by awfm-01.cornelisnetworks.com (8.14.7/8.14.7) with ESMTP id 19DEIqUH128130;
+        Wed, 13 Oct 2021 10:18:52 -0400
+Subject: [PATCH for-next] IB/hfi1: Fix abba locking issue with sc_disable()
 From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20211013080645.GD6010@kili>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MN2PR17CA0006.namprd17.prod.outlook.com
- (2603:10b6:208:15e::19) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+To:     jgg@ziepe.ca, dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, TOTE Robot <oslab@tsinghua.edu.cn>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Date:   Wed, 13 Oct 2021 10:18:52 -0400
+Message-ID: <20211013141852.128104.2682.stgit@awfm-01.cornelisnetworks.com>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Received: from [192.168.40.173] (24.154.216.5) by MN2PR17CA0006.namprd17.prod.outlook.com (2603:10b6:208:15e::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.16 via Frontend Transport; Wed, 13 Oct 2021 14:16:12 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7937f4c6-ff99-4e55-572b-08d98e540366
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6408:
+X-MS-Office365-Filtering-Correlation-Id: 8c548a87-7914-4128-2b13-08d98e54644a
+X-MS-TrafficTypeDiagnostic: BYAPR01MB5000:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB64087962BDC9CA09098849D1F4B79@PH0PR01MB6408.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1824;
+X-Microsoft-Antispam-PRVS: <BYAPR01MB50008D6F332A2326C5FFBA8BF4B79@BYAPR01MB5000.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:800;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9nuz3Bd5+sZNR57IX2g0IQHS+5Hq7/B+O/EelXH/XOHYI51uvouPC5s2csAUyrKYiSUiwYcd6PR0f+wvCgz5f5EIKvYpx6Hiw5Loa018jOc78rVKESidm4TYXniMtdZtnWOomUi7BYURtS/y/vSl/GGY4MM4U2L36JwEfOVx1Y34aCywhtOATuf0xaGWUyOP9qENmEqrLawbEdsyiiyzRwNtzQsN1o5uH29Tz4rIrItTbA1C7c1ay+ipDmerg1Pi8X8wy5g8r4kVMLvRHWNVGDKqpEQN+2KYnrZfmSskPYqdhG72xQB3GBFKz+Tp3EgqX3Ru7l/junb4JYLmstvjO6KiSmipZUZI2K2AtH+CEurUUdAC8JQQcfsdRCjOZbIvHXOM9XnRKee31C8w5x43sBWTBjzzQRM6qCR1YjOvxogLtPhadvaHLAwunreScif8MSwnK7Y7xFOGvwAtw5Q2fo56XZP48VZwH1gEJ+qSE2s5nvrnrhobhYUV5clQKO4lf9Vs3vxfVRfKW2SyuMEpv1g4Jp0r4ZBEZ3LgiJ+9fcPDb7o6MuhwfR23QtzaC1Gyx8NegseceeAY9Jupl+78gpwiTSZOBSxl/CsdtGy0wsyS5SHoxMfnCU+xGehC1ZQj0k9XdRcol1sSlKrKXwodra+le1fvSe6GJKla/1hMSpmiahx5fyFoGVDkGkJxrytH9YppDkbN9XMTxJKfZPzq1oMcBLt5jc72kr2ZlSTbiDolrZhDpjtUw+z7ybGGxy4mXytRoIvP+Y39rHeA2XS4fw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(39840400004)(136003)(396003)(8936002)(2906002)(44832011)(6666004)(66556008)(66476007)(31686004)(26005)(54906003)(6486002)(110136005)(4326008)(5660300002)(186003)(16576012)(316002)(36756003)(508600001)(31696002)(8676002)(86362001)(83380400001)(38100700002)(38350700002)(53546011)(956004)(66946007)(2616005)(52116002)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?S1pEalpjSzJwbVYxY3RrQzloRWFRTG5ZVlJuWEhPdnVrZzQ5UFNrWEdRYWZo?=
- =?utf-8?B?cmJoUFYwYmtJNTVQTHE5UktzdWFvOEtLU0pSQlAwWFNBM0djb2xySkgvbVV2?=
- =?utf-8?B?Szd6UG9HYjNHZmxwdk5Mcm9KbTNsWHhReFgvRU5Za24wSXhaVERsUkg2UTJO?=
- =?utf-8?B?OGhRcjFtb1ZkRm9DNnlNenJZejROMXhnd2s5dTR1ci8yNytwa0lGMDNXMVFO?=
- =?utf-8?B?NmRLa2ppZkt5OFlCK3ZUQ0RiSk5kZG9KUURCR2RCSTBPYmZNL1ZrM3dpN2Y1?=
- =?utf-8?B?dGlmbFN2aWVSU1FMUitlNXlqcklZSDd4d3lTaVB4MldSWHdRNFBGcU9xMkg5?=
- =?utf-8?B?dFp0Z0k4VENWZk5NWnZWdWVSdnNtcnhOczBxdys1dzVDekpwZ1RjaE8zOWNy?=
- =?utf-8?B?K21ROGlpZGJGZG1PaWRwdEdZUktoQm9KR1YvdkIzcXU4RlBRdUhaQ3ZNNWVt?=
- =?utf-8?B?M0lWSzFZT1V3TG96YUNISEJ1YXdsOWFMQkxRKy9PQXNMR0lEa2VvM01ZVHJ3?=
- =?utf-8?B?azFtSzJ0QTIzL3J3bmoyRXFrUzdYSk5VWkMxNzZib1prMFRpRW96bmNtRHN4?=
- =?utf-8?B?ZTc4eGZkQmJ0dURpQjZBcDdUSVIrQmZzYUdUbGZxdWU0UWxuZ1cxbGF5OXVG?=
- =?utf-8?B?VmVqdThSR09ZSGNOOHQvM1V0L3ovTzQ3ZWFEckFkVFlPa29rYW43UzdtalJ5?=
- =?utf-8?B?d0c4T3lSeDVTd08vSlJCVFVRU0xuVzVWWi9vNE10TzFNMGNuSGFRdXdnTTNv?=
- =?utf-8?B?Vk1CenhNeGNvdzZ6Q3N4SkZkRE5kVW93U291UHE1dUZFZUJKYmQxYkswWXhX?=
- =?utf-8?B?MGZSbW8xRlI2MEdnV1B0WXUybkJVd2xtdGdMMW1GNzdRZTNBMVorZ1JzUmhL?=
- =?utf-8?B?NFdxclU1YWtSakk2anJ4bW1aZ3laMExSOE5ZazhpdWJSdjRWa1VQUWpPL0kx?=
- =?utf-8?B?R0MvZGYwT2pTeEtaUzdjSFMzTWU2bTVwVFQ0bFhqQUxsay9QUCtjSWVwcm5O?=
- =?utf-8?B?MjAvTUFQWmtUZXFPS2lNK20zVVdUbFJwOVpRdmFZeDhuMHFtN1hQMUlzSUJ2?=
- =?utf-8?B?d0VYZ1RYWmlkdUNJQVNDYzBhMnJHc0xiS1NlNlFnMElQWG45K1ZkeTRmQ0xh?=
- =?utf-8?B?Vk5PbGlsODhHMHpmbENNQTFSaG5IUklHR0JRcHRubUJzTkhwTm53MDZ4UU5T?=
- =?utf-8?B?aEk1T3FMRStVMFhCZmZYSDVVQ0Y3Y1JiMVJ3UmhOT0tZKzB2U1pzUy8zUEdE?=
- =?utf-8?B?Y2VIUEVoY1d2L1VjNE9GMFVsOWlrNzUyUmFnVVduKzg0LzJ5Y1VPRmpLUWdZ?=
- =?utf-8?B?L1h1L2JEYm9qblV1eUlSd21Fa05nYVNjWFJnMmNLamMwWXNTcWJPY0N3amgw?=
- =?utf-8?B?TlU1RU1adlFnSGFlVkJHd2dORE5jU09NWU5HTXVBNU1KRFd6aEx2bDZKK2Qz?=
- =?utf-8?B?blVURzBtZTRCWVdzUnlyWjd5c2hRclFlWTk2NHcvemVMdithMjI3YnhnK3lr?=
- =?utf-8?B?ZkJVT21iUlhaQnYwYkZhZW1QSmxsZVk5SkJMVkttK2d1UmUyLzJoQWFiZWI5?=
- =?utf-8?B?UlRncHJUU0VzM1lWNm1kdlkrcEVTUmhZNFJ2MDNSMVY5K2pkV0tReGt5RXZu?=
- =?utf-8?B?NmZtQ1RjUHFCZXZRSEN2NlhIV2pIbUNQWTVad1U5eXVGL3FncGFrVzlLMGcr?=
- =?utf-8?B?dVkxL3RaVExiRkhQOWpwUStoam85YVZXcXAvREw2ZGd5WEtodkhQczdxNFMx?=
- =?utf-8?Q?sMlZXPGBw00iO67T4wvPaaAAsDBd5EeGhKqKnyN?=
+X-Microsoft-Antispam-Message-Info: cYr+6GfudQb7345MN7npsG2GoHunx5upv9OZwMNIhGZEpZN7+RGQeLDXSv3qxOAKGUv9FNXUHObqf0yRrP2adyiiJsqWI5PDLkjS1E4iBd82bhiITogHTgFEPgvbnFra1ZQWLy2LJ9Afz3uJb9ucQ4s+Ng33BH+aDjofeDZFn17HBQSwUB74/yTjh5ibLoHZ6fHxqReJF3eMACrc5XIGxDWF+g4+Jc14Q5Ismo9IVPkDFA90OOuvbX0/wndK2yOzDbpHKpV0DJv2L1oJc3vpzzOGNeyl5RUmPu+REPQy9SbbKStC6dCWufuWtBuP2T7BAmCWTLHA+SHOX8DCtLdN6MFqW+749dvo5xHf24Za7hVjMw4mBTS4wwe3KAeMtkBds/5FVs1cU/PTVzmDykEa3GYZ8Rud/ehmejzUJUQrfnc3ZUa8X7HZkIE3YgrA1y6jJ91brG3wPhipPtqU9Qts/AP3ZJrBYDqkf4Vky9UXZne1A3T/inJCQhxW7+8aOPe6Ae0ZXbGpq+3wAh47hvebGIxj3em0RfmENccDgnQQ9ZRz6hyk9lWM6SNCfyzo7quypDnbxiSxHWuWl4L6E6ZUs4aTaRF1ARb6Y5vI9qJFPLkgICCCforGLgQ54HhjGCsFmouMEM2/EDYFcP4K1ip3wuO2ZvI2O4ko4S6M6og9ct4TqA+sTSrGb/0fz8XRdRcXUIKDYlTuAQqlBskAbXRdcSHia6aBfEbs4WD682kHiuA=
+X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-01.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(39840400004)(396003)(346002)(376002)(46966006)(36840700001)(2906002)(316002)(4326008)(86362001)(36906005)(83380400001)(36860700001)(7126003)(336012)(186003)(426003)(8676002)(7696005)(44832011)(103116003)(8936002)(47076005)(54906003)(26005)(508600001)(82310400003)(5660300002)(81166007)(70206006)(356005)(1076003)(55016002)(70586007)(107886003)(36900700001);DIR:OUT;SFP:1102;
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7937f4c6-ff99-4e55-572b-08d98e540366
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 14:16:13.8725
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2021 14:18:55.8996
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8c548a87-7914-4128-2b13-08d98e54644a
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hYefI7ASJxy7pYwkKe1mGCjwau3vtISgQ2BjzmBL1S1gMFxZDE47TkNGZumSjA6DQKYV92PR5JqMPXwYKzERsiAp3Ql6Q3xsO0OW+0rJb/+iTjtD0JNOBoPIlTQaIx2c
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6408
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-01.cornelisnetworks.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT038.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB5000
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/13/21 4:06 AM, Dan Carpenter wrote:
-> Return negative -ENOMEM instead of positive ENOMEM.  Returning a postive
-> value will cause an Oops because it becomes an ERR_PTR() in the
-> create_qp() function.
-> 
-> Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/infiniband/sw/rdmavt/qp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
-> index 49bdd78ac664..3305f2744bfa 100644
-> --- a/drivers/infiniband/sw/rdmavt/qp.c
-> +++ b/drivers/infiniband/sw/rdmavt/qp.c
-> @@ -1223,7 +1223,7 @@ int rvt_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init_attr,
->  	spin_lock(&rdi->n_qps_lock);
->  	if (rdi->n_qps_allocated == rdi->dparms.props.max_qp) {
->  		spin_unlock(&rdi->n_qps_lock);
-> -		ret = ENOMEM;
-> +		ret = -ENOMEM;
->  		goto bail_ip;
->  	}
->  
-> 
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-Thanks Dan.
+sc_disable() after having disabled the send context wakes up
+any waiters by calling hfi1_qp_wakeup() while holding the
+waitlock for the sc.
 
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+This is contrary to the model for all other calls to hfi1_qp_wakeup()
+where the waitlock is dropped and a local is used to drive calls
+to hfi1_qp_wakeup().
+
+Fix by moving the sc->piowait into a local list and driving the wakeup
+calls from the list.
+
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+---
+ drivers/infiniband/hw/hfi1/pio.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/pio.c b/drivers/infiniband/hw/hfi1/pio.c
+index 489b436..3d42bd2 100644
+--- a/drivers/infiniband/hw/hfi1/pio.c
++++ b/drivers/infiniband/hw/hfi1/pio.c
+@@ -878,6 +878,7 @@ void sc_disable(struct send_context *sc)
+ {
+ 	u64 reg;
+ 	struct pio_buf *pbuf;
++	LIST_HEAD(wake_list);
+ 
+ 	if (!sc)
+ 		return;
+@@ -912,19 +913,21 @@ void sc_disable(struct send_context *sc)
+ 	spin_unlock(&sc->release_lock);
+ 
+ 	write_seqlock(&sc->waitlock);
+-	while (!list_empty(&sc->piowait)) {
++	if (!list_empty(&sc->piowait))
++		list_move(&sc->piowait, &wake_list);
++	write_sequnlock(&sc->waitlock);
++	while (!list_empty(&wake_list)) {
+ 		struct iowait *wait;
+ 		struct rvt_qp *qp;
+ 		struct hfi1_qp_priv *priv;
+ 
+-		wait = list_first_entry(&sc->piowait, struct iowait, list);
++		wait = list_first_entry(&wake_list, struct iowait, list);
+ 		qp = iowait_to_qp(wait);
+ 		priv = qp->priv;
+ 		list_del_init(&priv->s_iowait.list);
+ 		priv->s_iowait.lock = NULL;
+ 		hfi1_qp_wakeup(qp, RVT_S_WAIT_PIO | HFI1_S_WAIT_PIO_DRAIN);
+ 	}
+-	write_sequnlock(&sc->waitlock);
+ 
+ 	spin_unlock_irq(&sc->alloc_lock);
+ }
+
