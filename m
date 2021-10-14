@@ -2,104 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D991242DF5D
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 18:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C8342DF8C
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 18:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232283AbhJNQpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Oct 2021 12:45:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232422AbhJNQpq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Oct 2021 12:45:46 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB45CC061755
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 09:43:40 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id g62-20020a9d2dc4000000b0054752cfbc59so9074474otb.1
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 09:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=ZoXRBu1KoAkoz4DAnGzN2/tSYWvjsTEoBtnwscWZ/Rw=;
-        b=MY+37dNwZ9FLFiTf8HU8jJgN5DOIe9WG0MI+ldoeqf3VJV6lvnfBWb0/H5tETwFnaA
-         wCpc+zM7lGryGZCA1rMYSrS7NhIyrllxQV2m7bmuzx9umHw4+AYhf3VBcidz8Zenp0Xp
-         lYYzrRV4KC4Ccc2aKfcVFu8nMU7uJNxxU0yRiL4tIu6Bm8QVQX9f7JriARreqxvSdAsw
-         5JP/lJdWqIG0nBPXAiHlyvmwy8N4rRxAUMgd6jFYLFurWe6u5G0lDx2hx386MtuTnAHG
-         1H7MuBXROXilKNpPVxDjfVniKca2fppBR4oJ1qpe2SSy2Z06jY6rOnAGizl+c2DLD23u
-         8YjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZoXRBu1KoAkoz4DAnGzN2/tSYWvjsTEoBtnwscWZ/Rw=;
-        b=Rx/qZXK17XHeg25400mdC/ewqNCDFq8ZBgS+E/KF/On3aktGk8z6FuKZPg6xwsCuSN
-         3WHsaMbRD7sKum+OoNW6PXUvG92qDQ73vOV5ctxAuxxEF7FF7mNAxSTQ56uUdHbXVAXx
-         5JSmfdUGDUvepKF9b+QF+zWJP7AviP7JwVhjurhpsllvBeEImc63K/fUujdKzCAUKUUA
-         8UCt6xaDXeP3VW4NOWA0SH4gmI+tlESWMrkOu3kQi8Ik6WpnUmtTIInyHqBwdG+mUIPE
-         OnQp7ZaeYIewodqBvLqq2JNWIquot7jucxa+xEN07MIALqEUfaHknCAMnBSPstSSCUS3
-         ZPDg==
-X-Gm-Message-State: AOAM531m16mZDyemvAZ6sY/hfpXrfRynJm3/aSnANCVHX7cjHpmpIf+e
-        o/t+SXWy9rsMVCpTuFIvckE49M8d0Lo=
-X-Google-Smtp-Source: ABdhPJwTKRfGinExx7TB+2PJmh0laBtCGk5ld2XIS96mbbwYha1HLMgDStoHtM7aP0FdAhFPQC4cfA==
-X-Received: by 2002:a9d:4b83:: with SMTP id k3mr3576722otf.294.1634229820180;
-        Thu, 14 Oct 2021 09:43:40 -0700 (PDT)
-Received: from ?IPv6:2603:8081:140c:1a00:487b:eaab:6345:1a9? (2603-8081-140c-1a00-487b-eaab-6345-01a9.res6.spectrum.com. [2603:8081:140c:1a00:487b:eaab:6345:1a9])
-        by smtp.gmail.com with ESMTPSA id r4sm642264oti.27.2021.10.14.09.43.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 14 Oct 2021 09:43:39 -0700 (PDT)
-Subject: Re: Bad behavior by rdma-core ?
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <414e99de-9b1b-edcc-4547-f8002adecd69@gmail.com>
- <3bda5d0b-dc04-7640-b832-867858ef7a12@gmail.com>
-Message-ID: <11f8d34c-5ad1-f6b3-18c8-c3edd906f171@gmail.com>
-Date:   Thu, 14 Oct 2021 11:43:39 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
+        id S233374AbhJNQuy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Oct 2021 12:50:54 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65448 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232496AbhJNQuv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 14 Oct 2021 12:50:51 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19EGUiZ1003161;
+        Thu, 14 Oct 2021 12:48:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=m8MvNHUp7uWpH0JtP1UpT7gLDncA2QZjKLaP7beoh94=;
+ b=DEVkUo9d5pgYq4T3ZhNoTTTYVnFesNFLnAnMONMqFGYXfw3H/MPe00rs9vCLfWtQT1KE
+ JGTRIS+gaxBjUpb+ST0Vgt1Qo7rzXEkjh2ecwr0UCJzPSR2otH98tBZcM4xHwxae6a2u
+ rY/QK+Pwcg0Sy1rEIeklENolWLN/LLKUUkURVUbkyBs9v/QG6eweGG38AKp5m0VWNw+c
+ eZok5hujGNSfYxQa04CDNK3e3p1tgeyC+qMdkBtAJPoCFcmKxzwqCwRLLVsrgmkQL0yl
+ DAp+SIfR+EliOhfcumaT1A2F/ktxms4T8Jum4MylyJzD/Hu/pfqcwKuPpcK41wwJ8Gkm Lw== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3bpgv4mktg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 12:48:42 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19EGbpxG011898;
+        Thu, 14 Oct 2021 16:48:40 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 3bk2qavkaw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 14 Oct 2021 16:48:40 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19EGmb1G61604168
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 14 Oct 2021 16:48:37 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DCBDBA405C;
+        Thu, 14 Oct 2021 16:48:36 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE97FA405F;
+        Thu, 14 Oct 2021 16:48:36 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 14 Oct 2021 16:48:36 +0000 (GMT)
+From:   Karsten Graul <kgraul@linux.ibm.com>
+To:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next v2 00/11] net/smc: introduce SMC-Rv2 support
+Date:   Thu, 14 Oct 2021 18:47:41 +0200
+Message-Id: <20211014164752.3647027-1-kgraul@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5S6gpfzkkJzQV_NPiQiyOSz5qEZePZRo
+X-Proofpoint-ORIG-GUID: 5S6gpfzkkJzQV_NPiQiyOSz5qEZePZRo
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <3bda5d0b-dc04-7640-b832-867858ef7a12@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-14_09,2021-10-14_02,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ mlxscore=0 priorityscore=1501 mlxlogscore=800 impostorscore=0
+ malwarescore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109230001 definitions=main-2110140095
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/14/21 11:14 AM, Bob Pearson wrote:
-> On 10/14/21 9:57 AM, Bob Pearson wrote:
->> I have been chasing a bug in the rxe driver seen in the python tests (test_cq_events_ud).
->> The following occurs
->>
->> 	The first time I execute this test it creates two AHs which are allocated by
->> 	rdma-core and passed to rxe_create_ah. The test attempts to destroy them
->> 	(i.e. rxe_destroy_ah is called in the provider driver) but rdma-core does not
->> 	destroy them (i.e. rxe_destroy_ah is not called in the kernel).
->>
->> 	The rxe driver saves the AV state and some metadata for these AHs and keeps it
->> 	since it thinks they are still active.
->>
->> 	The second or third time I execute this test two new AHs are created by
->> 	rxe_create_ah but the memory passed in from rdma-core is the same as the first
->> 	test. I.e. it has recycled them but they are still active in the driver so
->> 	the result is chaos.
->>
->> Somehow rdma-core thinks it has destroyed the AHs but it does not call down to the
->> driver. This only occurs for AHs AFAIK.
->>
->> Bob 
->>
-> 
-> The cause seems simple enough.
-> 
-> In uverbs_cmd.c ib_uverbs_create_ah() calls rdma_create_user_ah() which
-> eventually calls device->ops.create_user_ah() or device->ops.create_ah().
-> 
-> But ib_uverbs_destroy_ah does *not* call rdma_uverbs_destroy_ah() it just
-should be                                  rdma_destroy_user_ah()
-> deletes the object.
-> 
+Please apply the following patch series for smc to netdev's net-next tree.
+
+SMC-Rv2 support (see https://www.ibm.com/support/pages/node/6326337)
+provides routable RoCE support for SMC-R, eliminating the current
+same-subnet restriction, by exploiting the UDP encapsulation feature
+of the RoCE adapter hardware.
+
+Patch 1 ("net/smc: improved fix wait on already cleared link") is
+already applied on netdevs net tree but its changes are needed for
+this series on net-next. The patch is unchanged compared to the
+version on the net tree.
+
+v2: resend of the v1 patch series, and CC linux-rdma this time
+
+Karsten Graul (11):
+  net/smc: improved fix wait on already cleared link
+  net/smc: save stack space and allocate smc_init_info
+  net/smc: prepare for SMC-Rv2 connection
+  net/smc: add SMC-Rv2 connection establishment
+  net/smc: add listen processing for SMC-Rv2
+  net/smc: add v2 format of CLC decline message
+  net/smc: retrieve v2 gid from IB device
+  net/smc: add v2 support to the work request layer
+  net/smc: extend LLC layer for SMC-Rv2
+  net/smc: add netlink support for SMC-Rv2
+  net/smc: stop links when their GID is removed
+
+ include/uapi/linux/smc.h |  17 +-
+ net/smc/af_smc.c         | 431 +++++++++++++++++-------
+ net/smc/smc.h            |  20 +-
+ net/smc/smc_cdc.c        |   7 +-
+ net/smc/smc_clc.c        | 147 +++++++--
+ net/smc/smc_clc.h        |  55 +++-
+ net/smc/smc_core.c       | 193 +++++++----
+ net/smc/smc_core.h       |  50 ++-
+ net/smc/smc_ib.c         | 160 ++++++++-
+ net/smc/smc_ib.h         |  16 +-
+ net/smc/smc_llc.c        | 684 ++++++++++++++++++++++++++++++---------
+ net/smc/smc_llc.h        |  12 +-
+ net/smc/smc_pnet.c       |  41 ++-
+ net/smc/smc_tx.c         |  22 +-
+ net/smc/smc_wr.c         | 237 ++++++++++++--
+ net/smc/smc_wr.h         |  22 ++
+ 16 files changed, 1691 insertions(+), 423 deletions(-)
+
+-- 
+2.25.1
 
