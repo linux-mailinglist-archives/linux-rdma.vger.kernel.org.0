@@ -2,409 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681DE42CEFD
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 01:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3715B42D3BA
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 09:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbhJMXMk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 13 Oct 2021 19:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S230072AbhJNHer (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Oct 2021 03:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhJMXMj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 13 Oct 2021 19:12:39 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8107C061746
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Oct 2021 16:10:35 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id g36so1801906lfv.3
-        for <linux-rdma@vger.kernel.org>; Wed, 13 Oct 2021 16:10:35 -0700 (PDT)
+        with ESMTP id S230020AbhJNHeq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Oct 2021 03:34:46 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E6AC061570;
+        Thu, 14 Oct 2021 00:32:41 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id d9so20388213edh.5;
+        Thu, 14 Oct 2021 00:32:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Qan44gaKVp95l/9iJFC+LzKNkAC30U78FrBM+ZiMrrU=;
-        b=7piTNBSNTjA2ol5lFwaYf7ug6QtfCqjriJYrmkgKWWgsfc08kKXo7kRGfM8VhE612T
-         TTQxqwX38SbU81y7fDeS83IcIwQBu1o0pNwN52fh9UX735Gz6+MbkDRcyX8l3B/CkFlE
-         7jPSUiGtydhn5FfEXoKDuJWZsH4Alo4Q6WVtxv4NLWqzQrgxMc5r+RFwxPHN0vyqnEzM
-         +k6vnTqmgWEemsStU0Ug2wAv1WnxDn6t9cDV8mZsvbcx1SZYoQ0HHqijrSl8SSlqwAA1
-         CTE6qotMFNJjfWGe6G8DiIkIOx+mUoD0NSxFGOjnKmnV/AYes0Xi+UbCn3FputAdY313
-         Z9bA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/xnuWJhrmVX8nyyGJLLTy8NHku+iwZR/WIywmchnebU=;
+        b=HjIUz+Rvwj98w+qvdmPVUc1QeSFXY0FdDjWouIgMtOf3MaLNC7GnUxXM06HUklwppi
+         xESR7dt7gOdjzurnqrWvLOEUsucbPPzentW8sHvoNa1AJfkAaJSyVkqwHH2KKobkzTNS
+         I0tAfo9QrU8ZGOWpIjHGgHxOVypBcRtVDLUGP/qASSNmRV++B/Cx8MbugHamDCgMPC90
+         aJHLzhbExKx2tXS7Mcc7xZwM+mi6IxzZDALVe7BojeCXDNRt56OTlCYzIx+TymPWO4b4
+         99YQCp7S3JPeDL40mbtMMHqL7UhXG2NkP6ChaDigbeOb9F5C3YyAlmb8yLZGPN7MHEAc
+         U93w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Qan44gaKVp95l/9iJFC+LzKNkAC30U78FrBM+ZiMrrU=;
-        b=mCjHwu7sgosGuNqacmFE3c2uL+Wj7tkH9AjArLmxjZIjP5wjpdkbVdDj0Gm+32Kcj1
-         +vKfqztfxWLRHr/JpGaun6X47aGU/z6anIBMC+jZbPIA8Lx7/SgdxIz1EKl/iwZMBvud
-         MqUbNvUuZJXniUfxuhybrbp8k8WriXZO6IuGNRCUSWeeZ20SCTH4VnSHOdPcOZttbWXh
-         j3F4TJ1LItsI452cJv7+y2lmONK3olSSvW5QqduS0F7kcZALPqN0RerCItF0JjsIp7qj
-         u/qFlUX/n8gv8hXxtiStcObfyAVtj/7FkLjoCeHOfKiaWZPSsk1C+PaRk0AlHobjtLUT
-         xGrw==
-X-Gm-Message-State: AOAM530wzeAZmpK/lvbKoKZQuq4G2DRq1rq7CkHVNKLV7yWe2rw+WBba
-        QxWaiqvvaaAk97IegNdPZUCvk0pNFbWjErRXA4nZYA==
-X-Google-Smtp-Source: ABdhPJwYyNB1JughgQdu2dMcMWEqOVJtkITltUfCjnBI9pRp+XszKtQdKVln2wetCF4ZjYgGLL2xLlWbJEpPvv5mY/E=
-X-Received: by 2002:a2e:7807:: with SMTP id t7mr2177891ljc.449.1634166633676;
- Wed, 13 Oct 2021 16:10:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210929041905.126454-1-mie@igel.co.jp> <20210929041905.126454-3-mie@igel.co.jp>
- <YVXMkSDXybju88TU@phenom.ffwll.local> <CANXvt5rD82Lvvag_k9k+XE-Sj1S6Qwp5uf+-feUTvez1-t4xUA@mail.gmail.com>
- <YWbGFkzkFRHmBcpa@phenom.ffwll.local>
-In-Reply-To: <YWbGFkzkFRHmBcpa@phenom.ffwll.local>
-From:   Shunsuke Mie <mie@igel.co.jp>
-Date:   Thu, 14 Oct 2021 08:10:22 +0900
-Message-ID: <CANXvt5p3Oo7VBq1DSDaPH8QexAus9+Q4DuzFo0JO583C7ZS9Gw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Add dma-buf support
-To:     Shunsuke Mie <mie@igel.co.jp>, Zhu Yanjun <zyjzyj2000@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jianxin Xiong <jianxin.xiong@intel.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/xnuWJhrmVX8nyyGJLLTy8NHku+iwZR/WIywmchnebU=;
+        b=UxPBfkvMBCD0q23FvJvYZgXNjz1ET+EIiHyr3CvEfZmwB2SIn0RozB2uGsEGLnu0Ba
+         fIh2gpR6bqd2vpFkugUX6lyYjlFTeymzDGB/N1UG94FNxEd4oTNva6w9ydroPgQ1w/hh
+         xZ/gVQm6XLDjt+7sWv6++drSa4LZkrTPInWroMMaPdAHS9e+hJF0jTJ3WM0wAp+MctoO
+         ji94M5YeAK6k1K8d0nA0A4tSrwagoiYWkzO9URP1eHPvIesNPLZy8dOJU3xXJKIzECh1
+         sg931cbVQwxMDc2pgcFK7KM8mLOfIjyDxjxw+qs0VER7j6GZsJV49hJ4+SLUD5WFnkwK
+         J2Fw==
+X-Gm-Message-State: AOAM531ctiM5QVigzlfK1QABDTbhOPAGGwg4Yd3O6+oEYoaytejA4rNL
+        NlrmpU0cc5pMhPo9tKh1JiI=
+X-Google-Smtp-Source: ABdhPJyyjIMh1xd4Ym8Ox9fBtHbG79BkxSytyUuvq14SiywJv7AAC86o8jdnEtTepgGOcQ9MkRx1+A==
+X-Received: by 2002:a05:6402:40d3:: with SMTP id z19mr6448091edb.393.1634196760221;
+        Thu, 14 Oct 2021 00:32:40 -0700 (PDT)
+Received: from [192.168.0.108] ([176.228.71.216])
+        by smtp.gmail.com with ESMTPSA id w18sm1868067edc.4.2021.10.14.00.32.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 14 Oct 2021 00:32:39 -0700 (PDT)
+Subject: Re: [PATCH] mlx5: allow larger xsk chunk_size
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Sean Hefty <sean.hefty@intel.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Damian Hobson-Garcia <dhobsong@igel.co.jp>,
-        Takanari Hayama <taki@igel.co.jp>,
-        Tomohito Esaki <etom@igel.co.jp>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Aya Levin <ayal@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
+        Vladyslav Tarasiuk <vladyslavt@nvidia.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+References: <20211013150232.2942146-1-arnd@kernel.org>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+Message-ID: <328f581e-7f1d-efc3-036c-66e729297e9c@gmail.com>
+Date:   Thu, 14 Oct 2021 10:32:36 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211013150232.2942146-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-2021=E5=B9=B410=E6=9C=8813=E6=97=A5(=E6=B0=B4) 20:42 Daniel Vetter <daniel@=
-ffwll.ch>:
->
-> On Fri, Oct 01, 2021 at 12:56:48PM +0900, Shunsuke Mie wrote:
-> > 2021=E5=B9=B49=E6=9C=8830=E6=97=A5(=E6=9C=A8) 23:41 Daniel Vetter <dani=
-el@ffwll.ch>:
-> > >
-> > > On Wed, Sep 29, 2021 at 01:19:05PM +0900, Shunsuke Mie wrote:
-> > > > Implement a ib device operation =E2=80=98reg_user_mr_dmabuf=E2=80=
-=99. Generate a
-> > > > rxe_map from the memory space linked the passed dma-buf.
-> > > >
-> > > > Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
-> > > > ---
-> > > >  drivers/infiniband/sw/rxe/rxe_loc.h   |   2 +
-> > > >  drivers/infiniband/sw/rxe/rxe_mr.c    | 118 ++++++++++++++++++++++=
-++++
-> > > >  drivers/infiniband/sw/rxe/rxe_verbs.c |  34 ++++++++
-> > > >  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 +
-> > > >  4 files changed, 156 insertions(+)
-> > > >
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniba=
-nd/sw/rxe/rxe_loc.h
-> > > > index 1ca43b859d80..8bc19ea1a376 100644
-> > > > --- a/drivers/infiniband/sw/rxe/rxe_loc.h
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-> > > > @@ -75,6 +75,8 @@ u8 rxe_get_next_key(u32 last_key);
-> > > >  void rxe_mr_init_dma(struct rxe_pd *pd, int access, struct rxe_mr =
-*mr);
-> > > >  int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64=
- iova,
-> > > >                    int access, struct rxe_mr *mr);
-> > > > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, =
-u64 length,
-> > > > +                         u64 iova, int access, struct rxe_mr *mr);
-> > > >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_=
-mr *mr);
-> > > >  int rxe_mr_copy(struct rxe_mr *mr, u64 iova, void *addr, int lengt=
-h,
-> > > >               enum rxe_mr_copy_dir dir);
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniban=
-d/sw/rxe/rxe_mr.c
-> > > > index 53271df10e47..af6ef671c3a5 100644
-> > > > --- a/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > > @@ -4,6 +4,7 @@
-> > > >   * Copyright (c) 2015 System Fabric Works, Inc. All rights reserve=
-d.
-> > > >   */
-> > > >
-> > > > +#include <linux/dma-buf.h>
-> > > >  #include "rxe.h"
-> > > >  #include "rxe_loc.h"
-> > > >
-> > > > @@ -245,6 +246,120 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 s=
-tart, u64 length, u64 iova,
-> > > >       return err;
-> > > >  }
-> > > >
-> > > > +static int rxe_map_dmabuf_mr(struct rxe_mr *mr,
-> > > > +                          struct ib_umem_dmabuf *umem_dmabuf)
-> > > > +{
-> > > > +     struct rxe_map_set *set;
-> > > > +     struct rxe_phys_buf *buf =3D NULL;
-> > > > +     struct rxe_map **map;
-> > > > +     void *vaddr, *vaddr_end;
-> > > > +     int num_buf =3D 0;
-> > > > +     int err;
-> > > > +     size_t remain;
-> > > > +
-> > > > +     mr->dmabuf_map =3D kzalloc(sizeof &mr->dmabuf_map, GFP_KERNEL=
-);
-> > >
-> > > dmabuf_maps are just tagged pointers (and we could shrink them to act=
-ually
-> > > just a tagged pointer if anyone cares about the overhead of the separ=
-ate
-> > > bool), allocating them seperately is overkill.
-> >
-> > I agree with you. However, I think it is needed to unmap by
-> > dma_buf_vunmap(). If there is another simple way to unmap it. It is not
-> > needed I think. What do you think about it?
->
-> dma_buf_vunmap does not kfree the dma_buf_map argument, so that's no
-> reason to allocate it separately. Or I'm confused.
-I had a misunderstood. Yes, It is not needed to allocate an object.
-Actually some
-implementations don't alloc/free the argument.
-e.g. gpu/drm/drm_gem_cma_helper.c
-I'll fix it.
 
-> Also apologies, I'm way behind on mails.
-No problem. Thank you for your answer.
 
-Thanks,
-Shunsuke
+On 10/13/2021 6:02 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When building with 64KB pages, clang points out that xsk->chunk_size
+> can never be PAGE_SIZE:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
+>          if (xsk->chunk_size > PAGE_SIZE ||
+>              ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+> 
+> I'm not familiar with the details of this code, but from a quick look
+> I found that it gets assigned from a 32-bit variable that can be
+> PAGE_SIZE, and that the layout of 'xsk' is not part of an ABI or
+> a hardware structure, so extending the members to 32 bits as well
+> should address both the behavior on 64KB page kernels, and the
+> warning I saw.
+> 
+> In older versions of this code, using PAGE_SIZE was the only
+> possibility, so this would have never worked on 64KB page kernels,
+> but the patch apparently did not address this case completely.
+> 
+> Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   drivers/net/ethernet/mellanox/mlx5/core/en/params.h | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> index 879ad46d754e..b4167350b6df 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/params.h
+> @@ -7,8 +7,8 @@
+>   #include "en.h"
+>   
+>   struct mlx5e_xsk_param {
+> -	u16 headroom;
+> -	u16 chunk_size;
+> +	u32 headroom;
+> +	u32 chunk_size;
 
-> -Daniel
->
-> >
-> > > > +     if (!mr->dmabuf_map) {
-> > > > +             err =3D -ENOMEM;
-> > > > +             goto err_out;
-> > > > +     }
-> > > > +
-> > > > +     err =3D dma_buf_vmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
-> > > > +     if (err)
-> > > > +             goto err_free_dmabuf_map;
-> > > > +
-> > > > +     set =3D mr->cur_map_set;
-> > > > +     set->page_shift =3D PAGE_SHIFT;
-> > > > +     set->page_mask =3D PAGE_SIZE - 1;
-> > > > +
-> > > > +     map =3D set->map;
-> > > > +     buf =3D map[0]->buf;
-> > > > +
-> > > > +     vaddr =3D mr->dmabuf_map->vaddr;
-> > >
-> > > dma_buf_map can be an __iomem too, you shouldn't dig around in this, =
-but
-> > > use the dma-buf-map.h helpers instead. On x86 (and I think also on mo=
-st
-> > > arm) it doesn't matter, but it's kinda not very nice in a pure softwa=
-re
-> > > driver.
-> > >
-> > > If anything is missing in dma-buf-map.h wrappers just add more.
-> > >
-> > > Or alternatively you need to fail the import if you can't handle __io=
-mem.
-> > >
-> > > Aside from these I think the dma-buf side here for cpu access looks
-> > > reasonable now.
-> > > -Daniel
-> > I'll see the dma-buf-map.h and consider the error handling that you sug=
-gested.
-> > I appreciate your support.
-> >
-> > Thanks a lot,
-> > Shunsuke.
-> >
-> > > > +     vaddr_end =3D vaddr + umem_dmabuf->dmabuf->size;
-> > > > +     remain =3D umem_dmabuf->dmabuf->size;
-> > > > +
-> > > > +     for (; remain; vaddr +=3D PAGE_SIZE) {
-> > > > +             if (num_buf >=3D RXE_BUF_PER_MAP) {
-> > > > +                     map++;
-> > > > +                     buf =3D map[0]->buf;
-> > > > +                     num_buf =3D 0;
-> > > > +             }
-> > > > +
-> > > > +             buf->addr =3D (uintptr_t)vaddr;
-> > > > +             if (remain >=3D PAGE_SIZE)
-> > > > +                     buf->size =3D PAGE_SIZE;
-> > > > +             else
-> > > > +                     buf->size =3D remain;
-> > > > +             remain -=3D buf->size;
-> > > > +
-> > > > +             num_buf++;
-> > > > +             buf++;
-> > > > +     }
-> > > > +
-> > > > +     return 0;
-> > > > +
-> > > > +err_free_dmabuf_map:
-> > > > +     kfree(mr->dmabuf_map);
-> > > > +err_out:
-> > > > +     return err;
-> > > > +}
-> > > > +
-> > > > +static void rxe_unmap_dmabuf_mr(struct rxe_mr *mr)
-> > > > +{
-> > > > +     struct ib_umem_dmabuf *umem_dmabuf =3D to_ib_umem_dmabuf(mr->=
-umem);
-> > > > +
-> > > > +     dma_buf_vunmap(umem_dmabuf->dmabuf, mr->dmabuf_map);
-> > > > +     kfree(mr->dmabuf_map);
-> > > > +}
-> > > > +
-> > > > +int rxe_mr_dmabuf_init_user(struct rxe_pd *pd, int fd, u64 start, =
-u64 length,
-> > > > +                         u64 iova, int access, struct rxe_mr *mr)
-> > > > +{
-> > > > +     struct ib_umem_dmabuf *umem_dmabuf;
-> > > > +     struct rxe_map_set *set;
-> > > > +     int err;
-> > > > +
-> > > > +     umem_dmabuf =3D ib_umem_dmabuf_get(pd->ibpd.device, start, le=
-ngth, fd,
-> > > > +                                      access, NULL);
-> > > > +     if (IS_ERR(umem_dmabuf)) {
-> > > > +             err =3D PTR_ERR(umem_dmabuf);
-> > > > +             goto err_out;
-> > > > +     }
-> > > > +
-> > > > +     rxe_mr_init(access, mr);
-> > > > +
-> > > > +     err =3D rxe_mr_alloc(mr, ib_umem_num_pages(&umem_dmabuf->umem=
-), 0);
-> > > > +     if (err) {
-> > > > +             pr_warn("%s: Unable to allocate memory for map\n", __=
-func__);
-> > > > +             goto err_release_umem;
-> > > > +     }
-> > > > +
-> > > > +     mr->ibmr.pd =3D &pd->ibpd;
-> > > > +     mr->umem =3D &umem_dmabuf->umem;
-> > > > +     mr->access =3D access;
-> > > > +     mr->state =3D RXE_MR_STATE_VALID;
-> > > > +     mr->type =3D IB_MR_TYPE_USER;
-> > > > +
-> > > > +     set =3D mr->cur_map_set;
-> > > > +     set->length =3D length;
-> > > > +     set->iova =3D iova;
-> > > > +     set->va =3D start;
-> > > > +     set->offset =3D ib_umem_offset(mr->umem);
-> > > > +
-> > > > +     err =3D rxe_map_dmabuf_mr(mr, umem_dmabuf);
-> > > > +     if (err)
-> > > > +             goto err_free_map_set;
-> > > > +
-> > > > +     return 0;
-> > > > +
-> > > > +err_free_map_set:
-> > > > +     rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
-> > > > +err_release_umem:
-> > > > +     ib_umem_release(&umem_dmabuf->umem);
-> > > > +err_out:
-> > > > +     return err;
-> > > > +}
-> > > > +
-> > > >  int rxe_mr_init_fast(struct rxe_pd *pd, int max_pages, struct rxe_=
-mr *mr)
-> > > >  {
-> > > >       int err;
-> > > > @@ -703,6 +818,9 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
-> > > >  {
-> > > >       struct rxe_mr *mr =3D container_of(arg, typeof(*mr), pelem);
-> > > >
-> > > > +     if (mr->umem && mr->umem->is_dmabuf)
-> > > > +             rxe_unmap_dmabuf_mr(mr);
-> > > > +
-> > > >       ib_umem_release(mr->umem);
-> > > >
-> > > >       if (mr->cur_map_set)
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infini=
-band/sw/rxe/rxe_verbs.c
-> > > > index 9d0bb9aa7514..6191bb4f434d 100644
-> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > > > @@ -916,6 +916,39 @@ static struct ib_mr *rxe_reg_user_mr(struct ib=
-_pd *ibpd,
-> > > >       return ERR_PTR(err);
-> > > >  }
-> > > >
-> > > > +static struct ib_mr *rxe_reg_user_mr_dmabuf(struct ib_pd *ibpd, u6=
-4 start,
-> > > > +                                         u64 length, u64 iova, int=
- fd,
-> > > > +                                         int access, struct ib_uda=
-ta *udata)
-> > > > +{
-> > > > +     int err;
-> > > > +     struct rxe_dev *rxe =3D to_rdev(ibpd->device);
-> > > > +     struct rxe_pd *pd =3D to_rpd(ibpd);
-> > > > +     struct rxe_mr *mr;
-> > > > +
-> > > > +     mr =3D rxe_alloc(&rxe->mr_pool);
-> > > > +     if (!mr) {
-> > > > +             err =3D -ENOMEM;
-> > > > +             goto err2;
-> > > > +     }
-> > > > +
-> > > > +     rxe_add_index(mr);
-> > > > +
-> > > > +     rxe_add_ref(pd);
-> > > > +
-> > > > +     err =3D rxe_mr_dmabuf_init_user(pd, fd, start, length, iova, =
-access, mr);
-> > > > +     if (err)
-> > > > +             goto err3;
-> > > > +
-> > > > +     return &mr->ibmr;
-> > > > +
-> > > > +err3:
-> > > > +     rxe_drop_ref(pd);
-> > > > +     rxe_drop_index(mr);
-> > > > +     rxe_drop_ref(mr);
-> > > > +err2:
-> > > > +     return ERR_PTR(err);
-> > > > +}
-> > > > +
-> > > >  static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_t=
-ype mr_type,
-> > > >                                 u32 max_num_sg)
-> > > >  {
-> > > > @@ -1081,6 +1114,7 @@ static const struct ib_device_ops rxe_dev_ops=
- =3D {
-> > > >       .query_qp =3D rxe_query_qp,
-> > > >       .query_srq =3D rxe_query_srq,
-> > > >       .reg_user_mr =3D rxe_reg_user_mr,
-> > > > +     .reg_user_mr_dmabuf =3D rxe_reg_user_mr_dmabuf,
-> > > >       .req_notify_cq =3D rxe_req_notify_cq,
-> > > >       .resize_cq =3D rxe_resize_cq,
-> > > >
-> > > > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infini=
-band/sw/rxe/rxe_verbs.h
-> > > > index c807639435eb..0aa95ab06b6e 100644
-> > > > --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> > > > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> > > > @@ -334,6 +334,8 @@ struct rxe_mr {
-> > > >
-> > > >       struct rxe_map_set      *cur_map_set;
-> > > >       struct rxe_map_set      *next_map_set;
-> > > > +
-> > > > +     struct dma_buf_map *dmabuf_map;
-> > > >  };
-> > > >
-> > > >  enum rxe_mw_state {
-> > > > --
-> > > > 2.17.1
-> > > >
-> > >
-> > > --
-> > > Daniel Vetter
-> > > Software Engineer, Intel Corporation
-> > > http://blog.ffwll.ch
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Hi Arnd,
+
+I agree with your arguments about chunk_size.
+Yet I have mixed feelings about extending the headroom. Predating 
+in-driver code uses u16 for headroom (i.e. [1]), while 
+xsk_pool_get_headroom returns u32.
+
+[1] drivers/net/ethernet/mellanox/mlx5/core/en/params.c :: 
+mlx5e_get_linear_rq_headroom
+
+As this patch is a fix, let's keep it minimal, only addressing the issue 
+described in title and description.
+We might want to move headroom to u32 all around the driver in a 
+separate patch to -next.
+
+>   };
+>   
+>   struct mlx5e_lro_param {
+> 
