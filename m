@@ -2,301 +2,186 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9DF42E2EA
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 22:56:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E953842E41A
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Oct 2021 00:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhJNU64 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Oct 2021 16:58:56 -0400
-Received: from mga04.intel.com ([192.55.52.120]:10288 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232132AbhJNU6z (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 14 Oct 2021 16:58:55 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10137"; a="226559539"
-X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
-   d="scan'208";a="226559539"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Oct 2021 13:56:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,373,1624345200"; 
-   d="scan'208";a="492190071"
-Received: from lkp-server02.sh.intel.com (HELO 08b2c502c3de) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 14 Oct 2021 13:56:47 -0700
-Received: from kbuild by 08b2c502c3de with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mb7mQ-0006hJ-Ut; Thu, 14 Oct 2021 20:56:46 +0000
-Date:   Fri, 15 Oct 2021 04:56:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- ac0fffa0859b8e1e991939663b3ebdd80bf979e6
-Message-ID: <6168998b.b1leTvGcR2Bbvw1Y%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234201AbhJNWZ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Oct 2021 18:25:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229632AbhJNWZ4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Oct 2021 18:25:56 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932D2C061570
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 15:23:50 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id bj31so4157191qkb.2
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 15:23:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=L5FbFHDt82gq72AeamS55JhkriRGh9HPCqy/+ZBXeC8=;
+        b=Nv+II/I6Rxp+jIXHB/OwJsgKMS65qDgCi6gcPbaZXLs+93pYfEoJxF4vi3uWdDA4Fc
+         NGNxpfY41aiPX/grohsiy8KZKQrNUVyGLG41qrqVeolgEyBNtPhxlvpYagKYkXcuyykW
+         N/Dho6hlXzRiGjyXh43MpwD5ukSM3EUlXqrZ+CGdEdu9uHBNLqbS889kP5JzfDXIegAe
+         XGeCBWN3rl3qO/IW98eR+MYgWd6rSpaDwavWR+wmZuLFpe6qpQGhzi21SAv9kl8RtEZB
+         yh+Sok7hUSKGykFw5vEPjLuu0/+gAjomJXLlW/OVzO6HgI2BQtSM+8WAddAZcL/tFaP5
+         022Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L5FbFHDt82gq72AeamS55JhkriRGh9HPCqy/+ZBXeC8=;
+        b=pwUwffuj7eBLfBmZeBUfw9hSHCm0vqmxYPimtIJCRyWJnd17HBdYGGNOClaebhrX+n
+         EZqZG+QoJm7y0RRZZY+liczoNJWcvqJavSRI17QMUEW2ditupyznkndrq+IcWsTJMrHO
+         W16kToE0hAGTeGpH1Xxr2OwPlbUYNQs2Z/vpogVi62+Ry0sH6BSK8Ek8rckB4vZuaF3m
+         RbJQ6+Hau0zerHSlN/pfUM+6wU+JNXbIfCP5WMp107R5r6Xt2J0LZk0MvI75qz07MQw8
+         if1y5HWykuWyqbHP1gys2fFyrWyrXSledWffj9Aqn/2fQ860XH7lMreJtAzkiaFrm8ht
+         5JSA==
+X-Gm-Message-State: AOAM531fqeN0Yni8Zi2T4z0sElZ62k6G+j4YXXBNpDRG+dhk21rDAAT2
+        wB3213wiCrfwWQaPSSP4cCcvIw==
+X-Google-Smtp-Source: ABdhPJywYNDaGn9W3ZA4/hE4KjmIX5JIQ4CpRpSHNeloBi0gr4d7dtWd/tNYpyw5lbaV4w5MTOOKHw==
+X-Received: by 2002:ae9:ebc2:: with SMTP id b185mr7028681qkg.491.1634250229560;
+        Thu, 14 Oct 2021 15:23:49 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id i11sm1850010qki.28.2021.10.14.15.23.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Oct 2021 15:23:48 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mb98e-00F4b3-4g; Thu, 14 Oct 2021 19:23:48 -0300
+Date:   Thu, 14 Oct 2021 19:23:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Si-Wei Liu <siwliu.kernel@gmail.com>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Enabling RO on a VF
+Message-ID: <20211014222348.GP2688930@ziepe.ca>
+References: <48FF6F8E-95E2-4A29-A059-12EF614B381C@oracle.com>
+ <20211001115455.GJ3544071@ziepe.ca>
+ <4EAE3BC9-26B6-41E3-B040-2ADAB77D96CE@oracle.com>
+ <20211001120153.GL3544071@ziepe.ca>
+ <CAPWQSg0wODmw7evfzdtP4gW-toVgoVfigP5t0CVosOAkarNTTg@mail.gmail.com>
+ <20211005232834.GB2688930@ziepe.ca>
+ <CAPWQSg0EYPcudN9Gc--ges68sLmW4mJ4eYHxmmRq8FAzq8C5WQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAPWQSg0EYPcudN9Gc--ges68sLmW4mJ4eYHxmmRq8FAzq8C5WQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: ac0fffa0859b8e1e991939663b3ebdd80bf979e6  RDMA/core: Set sgtable nents when using ib_dma_virt_map_sg()
+On Tue, Oct 12, 2021 at 10:57:16AM -0700, Si-Wei Liu wrote:
+> On Tue, Oct 5, 2021 at 4:28 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Tue, Oct 05, 2021 at 04:09:54PM -0700, Si-Wei Liu wrote:
+> > > On Fri, Oct 1, 2021 at 6:02 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Fri, Oct 01, 2021 at 11:59:15AM +0000, Haakon Bugge wrote:
+> > > > >
+> > > > >
+> > > > > > On 1 Oct 2021, at 13:54, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > > > >
+> > > > > > On Fri, Oct 01, 2021 at 11:05:15AM +0000, Haakon Bugge wrote:
+> > > > > >> Hey,
+> > > > > >>
+> > > > > >>
+> > > > > >> Commit 1477d44ce47d ("RDMA/mlx5: Enable Relaxed Ordering by default
+> > > > > >> for kernel ULPs") uses pcie_relaxed_ordering_enabled() to check if
+> > > > > >> RO can be enabled. This function checks if the Enable Relaxed
+> > > > > >> Ordering bit in the Device Control register is set. However, on a
+> > > > > >> VF, this bit is RsvdP (Reserved for future RW
+> > > > > >> implementations. Register bits are read-only and must return zero
+> > > > > >> when read. Software must preserve the value read for writes to
+> > > > > >> bits.).
+> > > > > >>
+> > > > > >> Hence, AFAICT, RO will not be enabled when using a VF.
+> > > > > >>
+> > > > > >> How can that be fixed?
+> > > > > >
+> > > > > > When qemu takes a VF and turns it into a PF in a VM it must emulate
+> > > > > > the RO bit and return one
+> > > > >
+> > > > > I have a pass-through VF:
+> > > > >
+> > > > > # lspci -s ff:00.0 -vvv
+> > > > > ff:00.0 Ethernet controller: Mellanox Technologies MT28800 Family [ConnectX-5 Ex Virtual Function]
+> > > > > []
+> > > > >               DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+> > > > >                       RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop- FLReset-
+> > > >
+> > > > Like I said, it is a problem in the qemu area..
+> > > >
+> > > > Jason
+> > > Can you clarify why this is a problem in the QEMU area?
+> > >
+> > > Even though Mellanox device might well support it (on VF), there's no
+> > > way for QEMU to really know if an arbitrary passthrough device may
+> > > support RO.
+> >
+> > That isn't what the cap bit means
+> >
+> > The cap bit on the PF completely disables generation of RO at the
+> > device at all.
+> >
+> > If the PF's cap bit is disabled then no VF can generate RO, and qemu
+> > should expose a wired to zero RO bit in the emulated PF.
+> >
+> > If the cap bit is enabled then the VFs could generate RO, depending on
+> > their drivers, and qemu should generate defaulted to 1 bit in the
+> > emulated PF.
+> 
+> Set the broken root port and the P2P DMA cases aside, let's say we
+> have a RO enabled PF where there's a working root port upstream that
+> well supports RO. As VF mostly inherits PF's state/config, no matter
+> what value the DevCtl RlxdOrd bit presents in the host it doesn't mean
+> anything,
 
-elapsed time: 1439m
+Not quite if the guest sees RlxdOrd enabled then it means the guest
+can expect that the device can send TLPs with relaxed ordering sent.
 
-configs tested: 241
-configs skipped: 4
+> although we know getting RO disabled on the PF implies
+> prohibiting RO TLP being sent by all its child VFs. There's no
+> question for this part. The real problem though, is if the RlxdOrd cap
+> bit for the VF can be controlled individually similar to the way the
+> toggling on PF is done?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+It cannot.
 
-gcc tested configs:
-arm                              allmodconfig
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20211013
-i386                 randconfig-c001-20211014
-sh                         microdev_defconfig
-powerpc                   lite5200b_defconfig
-powerpc                      cm5200_defconfig
-powerpc                  iss476-smp_defconfig
-powerpc                     akebono_defconfig
-mips                         tb0226_defconfig
-mips                        nlm_xlr_defconfig
-sh                             shx3_defconfig
-sh                           se7705_defconfig
-powerpc                      chrp32_defconfig
-mips                      pic32mzda_defconfig
-arm                         orion5x_defconfig
-arm                       aspeed_g5_defconfig
-sh                          sdk7786_defconfig
-sparc                            alldefconfig
-ia64                         bigsur_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arm                            zeus_defconfig
-sh                           se7206_defconfig
-sh                         ap325rxa_defconfig
-sh                   sh7724_generic_defconfig
-arm                           spitz_defconfig
-arm                       multi_v4t_defconfig
-xtensa                           alldefconfig
-sh                          polaris_defconfig
-powerpc                     rainier_defconfig
-arm                             ezx_defconfig
-s390                             alldefconfig
-mips                 decstation_r4k_defconfig
-arm                          collie_defconfig
-arm                       omap2plus_defconfig
-mips                        bcm47xx_defconfig
-arm                        multi_v5_defconfig
-arm                      jornada720_defconfig
-arm                        shmobile_defconfig
-powerpc                      mgcoge_defconfig
-arm                        spear6xx_defconfig
-mips                          ath79_defconfig
-arm                      integrator_defconfig
-xtensa                    xip_kc705_defconfig
-mips                      maltaaprp_defconfig
-powerpc                         ps3_defconfig
-powerpc                 mpc8560_ads_defconfig
-um                             i386_defconfig
-csky                                defconfig
-arm                        vexpress_defconfig
-powerpc                 mpc837x_mds_defconfig
-powerpc               mpc834x_itxgp_defconfig
-m68k                          amiga_defconfig
-mips                           xway_defconfig
-m68k                         amcore_defconfig
-arm                        mini2440_defconfig
-mips                         tb0287_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-mips                         bigsur_defconfig
-xtensa                    smp_lx200_defconfig
-m68k                           sun3_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                    adder875_defconfig
-arc                        nsim_700_defconfig
-arm                       aspeed_g4_defconfig
-arm                     eseries_pxa_defconfig
-mips                        omega2p_defconfig
-powerpc                 mpc836x_mds_defconfig
-arc                        vdk_hs38_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm64                            alldefconfig
-sh                        sh7757lcr_defconfig
-riscv                    nommu_k210_defconfig
-sh                           se7722_defconfig
-arm                         s3c6400_defconfig
-sparc                       sparc32_defconfig
-powerpc                     tqm8540_defconfig
-arm                         shannon_defconfig
-alpha                            allyesconfig
-powerpc                   currituck_defconfig
-powerpc                    klondike_defconfig
-arm                        magician_defconfig
-mips                           ip32_defconfig
-powerpc                    amigaone_defconfig
-parisc                              defconfig
-powerpc                      arches_defconfig
-m68k                             alldefconfig
-nds32                               defconfig
-mips                         tb0219_defconfig
-sh                          urquell_defconfig
-arm                        mvebu_v5_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                     tqm8541_defconfig
-nios2                         3c120_defconfig
-mips                      fuloong2e_defconfig
-powerpc                        warp_defconfig
-openrisc                    or1ksim_defconfig
-arm                         lpc18xx_defconfig
-sh                          landisk_defconfig
-powerpc                 xes_mpc85xx_defconfig
-m68k                       m5475evb_defconfig
-m68k                        mvme147_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                         mpc30x_defconfig
-arm                         vf610m4_defconfig
-x86_64                              defconfig
-sh                           sh2007_defconfig
-powerpc                     skiroot_defconfig
-powerpc                      ppc64e_defconfig
-powerpc                 canyonlands_defconfig
-mips                        bcm63xx_defconfig
-sh                           se7780_defconfig
-powerpc                      pmac32_defconfig
-sh                             sh03_defconfig
-powerpc                     ep8248e_defconfig
-m68k                       m5249evb_defconfig
-ia64                      gensparse_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                     sequoia_defconfig
-m68k                        m5307c3_defconfig
-m68k                       m5208evb_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                    gamecube_defconfig
-arm                          ixp4xx_defconfig
-powerpc                     stx_gp3_defconfig
-m68k                          hp300_defconfig
-sh                          rsk7269_defconfig
-riscv                          rv32_defconfig
-powerpc                   motionpro_defconfig
-arm                          pcm027_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            qcom_defconfig
-xtensa                       common_defconfig
-powerpc                      ppc44x_defconfig
-arm                  randconfig-c002-20211014
-x86_64               randconfig-c001-20211014
-arm                  randconfig-c002-20211013
-x86_64               randconfig-c001-20211013
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-alpha                               defconfig
-nios2                            allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-xtensa                           allyesconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-s390                             allmodconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20211014
-x86_64               randconfig-a004-20211014
-x86_64               randconfig-a001-20211014
-x86_64               randconfig-a005-20211014
-x86_64               randconfig-a002-20211014
-x86_64               randconfig-a003-20211014
-i386                 randconfig-a003-20211014
-i386                 randconfig-a001-20211014
-i386                 randconfig-a005-20211014
-i386                 randconfig-a004-20211014
-i386                 randconfig-a002-20211014
-i386                 randconfig-a006-20211014
-x86_64               randconfig-a015-20211013
-x86_64               randconfig-a012-20211013
-x86_64               randconfig-a016-20211013
-x86_64               randconfig-a014-20211013
-x86_64               randconfig-a013-20211013
-x86_64               randconfig-a011-20211013
-i386                 randconfig-a016-20211013
-i386                 randconfig-a014-20211013
-i386                 randconfig-a011-20211013
-i386                 randconfig-a015-20211013
-i386                 randconfig-a012-20211013
-i386                 randconfig-a013-20211013
-arc                  randconfig-r043-20211013
-s390                 randconfig-r044-20211013
-riscv                randconfig-r042-20211013
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allyesconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                           allyesconfig
+Just like today where qemu wrongly reports disabled for a VF RlxdOrd
+it doesn't mean that the VF cannot or does not issue Relaxed Ordering
+TLPs.
 
-clang tested configs:
-arm                  randconfig-c002-20211014
-i386                 randconfig-c001-20211014
-s390                 randconfig-c005-20211014
-x86_64               randconfig-c007-20211014
-powerpc              randconfig-c003-20211014
-riscv                randconfig-c006-20211014
-x86_64               randconfig-a004-20211013
-x86_64               randconfig-a006-20211013
-x86_64               randconfig-a001-20211013
-x86_64               randconfig-a005-20211013
-x86_64               randconfig-a002-20211013
-x86_64               randconfig-a003-20211013
-i386                 randconfig-a001-20211013
-i386                 randconfig-a003-20211013
-i386                 randconfig-a004-20211013
-i386                 randconfig-a005-20211013
-i386                 randconfig-a002-20211013
-i386                 randconfig-a006-20211013
-x86_64               randconfig-a012-20211014
-x86_64               randconfig-a015-20211014
-x86_64               randconfig-a016-20211014
-x86_64               randconfig-a014-20211014
-x86_64               randconfig-a011-20211014
-x86_64               randconfig-a013-20211014
-i386                 randconfig-a016-20211014
-i386                 randconfig-a014-20211014
-i386                 randconfig-a011-20211014
-i386                 randconfig-a015-20211014
-i386                 randconfig-a012-20211014
-i386                 randconfig-a013-20211014
-hexagon              randconfig-r041-20211013
-hexagon              randconfig-r045-20211013
-hexagon              randconfig-r041-20211014
-s390                 randconfig-r044-20211014
-riscv                randconfig-r042-20211014
-hexagon              randconfig-r045-20211014
+Since the HW cannot have this level of fine grained control a full
+emulation of the RlxdOrd bit is not possible for VFs.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> For e.g, suppose the RO cap bit for the VF
+> emulated by QEMU defaults to enabled where the backing PF and all
+> child VFs have RO enabled. Will a PCI write of zero to the bit be able
+> to prevent RO ULP initiated by that specific VF from being sent out,
+> which is to resemble PF's behaviour? 
+
+Nope. HW can't do it.
+
+> This being the Mellanox VF's specifics? 
+
+It is not Mellanox specific, this is all PCI spec.
+
+> More broadly, should the VFs for arbitrary PCIe devices have that
+> kind of control on an individual VF's level? I don't find it
+> anywhere in the PCIe SR-IOV spec that this should be the case.
+
+They don't and for this discussion it doesn't matter.
+
+Your question was about how to enable relaxed ordering in guests, and
+the answer is for qemu to report enabled on rlxdord in the VF using
+PCI config space emulation and continue to not support changing the
+relaxed ordering mode of a VF (ie wired to enabled)
+
+Jason
