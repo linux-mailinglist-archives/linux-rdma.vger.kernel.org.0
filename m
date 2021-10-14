@@ -2,108 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 505F742D965
-	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 14:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B092042DA26
+	for <lists+linux-rdma@lfdr.de>; Thu, 14 Oct 2021 15:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhJNMjF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Oct 2021 08:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230126AbhJNMjF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Oct 2021 08:39:05 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2688BC061570
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 05:37:00 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id r19so25821997lfe.10
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Oct 2021 05:37:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rWAwdoBPkLQkTmqMVKCOJ6kTzAAkptw/rnO0I6zV/TY=;
-        b=micKAPGzz4leSXJ+PXa07Sa7Uf9aDswutv+ykR7aqBGGa9ia1Ywe7qP3U/8aaYqJKs
-         EhRGKR00379vJRFXp/o3WPpoBj7LJJGTHNLczkvDDbgYjq4e7bKAuEOUwjRcgwSpyDP7
-         vVj4odkVx3lV7cA8sXe+AMxPqDtggHs/BG+CZglEqZEVEEiVjkSQTyEcsfNzxoGDG8AX
-         to/Z5s0Dav1aCm481VtAdiZ3/Z/S0fkGbzdUAVWsvp7WVOqUVDZhdAIAcqm+xiprDDe5
-         F7JTzYNIIentu2ULVhJrd2OZnLPYKegGF7ylrUhDz4yqGrusuErxanCDzG32J/vf9uam
-         BW9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rWAwdoBPkLQkTmqMVKCOJ6kTzAAkptw/rnO0I6zV/TY=;
-        b=usWXkFfasp9Rk52y4Mjigwqb8uFKZGsj0Zg1XdsBlNzxCDrJpwn+wSND6SFRQJYYwN
-         /l3Cg/mXCJQa4Ius3N9W1ac/v1MSRsma+y0VxKqgJxJpGHiCOLQQpC3kkxo7dTpYEWjD
-         sLY3QTWGalT71IEfOILYiT+Do1LVeo6KV9WGXrSY7Z7aMFVwuAJagaJol8y7lfmuR7tQ
-         jO6jSaY3T2bBGMiAhgW4SpTedTN6dHxQOz9wlCaG2Bd9NtZaRY9inlvD/RkWuQN/sC4O
-         JWcMcTn0zbkHd6L5GcRaHXl2S4fIGYYUT6QBnnnyRg5iUuftKdrGvc0bnzaxRUfmL3ZX
-         R0PA==
-X-Gm-Message-State: AOAM530X/gNiDUnUmAwTz6YYyKFUbaplelY1enUAZtDA4aNwI2iHvzz8
-        EY03mr9T+6Ml0vcpOQI8fczpVZwuZ4B0U0ULXMA=
-X-Google-Smtp-Source: ABdhPJxC84hlNpdRMznRwaJoJRqHTXTOtyc1IDBfJO/BnQWSiKWVlt7XulLQR5/6ywcnF6jSs6xtXMT/G3rhnkblHKM=
-X-Received: by 2002:a05:6512:39d0:: with SMTP id k16mr4934049lfu.571.1634215015999;
- Thu, 14 Oct 2021 05:36:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <34a9a53f-1f1f-bddb-0c8e-63ec5fbcd28e@gmail.com> <20211013150045.GG2744544@nvidia.com>
-In-Reply-To: <20211013150045.GG2744544@nvidia.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 14 Oct 2021 20:36:44 +0800
-Message-ID: <CAD=hENcvfUbbhJ_fZ58A7KeyY74mGP2v4Q7D84nCnwJnBVmzBQ@mail.gmail.com>
-Subject: Re: 10 more python test cases for rxe
+        id S230336AbhJNNVS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Oct 2021 09:21:18 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:28942 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229637AbhJNNVR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Oct 2021 09:21:17 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HVVHN4dvDzbn14;
+        Thu, 14 Oct 2021 21:14:40 +0800 (CST)
+Received: from kwepemm600001.china.huawei.com (7.193.23.3) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 21:19:09 +0800
+Received: from [10.174.176.245] (10.174.176.245) by
+ kwepemm600001.china.huawei.com (7.193.23.3) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.8; Thu, 14 Oct 2021 21:19:08 +0800
+Subject: Re: [PATCH] IB/cm: Fix possible use-after-free in ib_cm_cleanup()
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Edward Srouji <edwards@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+CC:     <dledford@redhat.com>, <leon@kernel.org>, <markzhang@nvidia.com>,
+        <liangwenpeng@huawei.com>, <liweihang@huawei.com>,
+        <haakon.bugge@oracle.com>, <rolandd@cisco.com>,
+        <sean.hefty@intel.com>, <linux-rdma@vger.kernel.org>,
+        <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211013093016.3869299-1-wanghai38@huawei.com>
+ <20211013182448.GA3489723@nvidia.com>
+From:   "wanghai (M)" <wanghai38@huawei.com>
+Message-ID: <787f463c-85e9-c1f3-c772-1233e82a71b5@huawei.com>
+Date:   Thu, 14 Oct 2021 21:19:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20211013182448.GA3489723@nvidia.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.245]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600001.china.huawei.com (7.193.23.3)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Oct 13, 2021 at 11:00 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+
+ÔÚ 2021/10/14 2:24, Jason Gunthorpe Ð´µÀ:
+> On Wed, Oct 13, 2021 at 05:30:16PM +0800, Wang Hai wrote:
+>> This module's remove path calls cancel_delayed_work(). However, that
+>> function does not wait until the work function finishes. This means
+>> that the callback function may still be running after the driver's
+>> remove function has finished, which would result in a use-after-free.
+>>
+>> Fix by calling cancel_delayed_work_sync(), which ensures that
+>> the work is properly cancelled, no longer running, and unable
+>> to re-schedule itself.
+>>
+>> Fixes: 8575329d4f85 ("IB/cm: Fix timewait crash after module unload")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+>>   drivers/infiniband/core/cm.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+>> index c903b74f46a4..ae0af63f3271 100644
+>> +++ b/drivers/infiniband/core/cm.c
+>> @@ -4508,7 +4508,7 @@ static void __exit ib_cm_cleanup(void)
+>>   
+>>   	spin_lock_irq(&cm.lock);
+>>   	list_for_each_entry(timewait_info, &cm.timewait_list, list)
+>> -		cancel_delayed_work(&timewait_info->work.work);
+>> +		cancel_delayed_work_sync(&timewait_info->work.work);
+>>   	spin_unlock_irq(&cm.lock);
+> No, this will deadlock:
 >
-> On Wed, Oct 13, 2021 at 09:43:28AM -0500, Bob Pearson wrote:
-> > Zhu,
-> >
-> > There are about 10 test cases in the python suite that do not run for rxe because
-> >
-> >       ... skipped "Device rxe0 doesn't have net interface"
-> >
-> > Clearly this is wrong and I don't know how to address the root cause yet but the following
-> > hack where enp0s3 is the actual net device that rxe0 is based on in my case enables these
-> > test cases to run and it appears they all do.
-> >
-> > diff --git a/tests/base.py b/tests/base.py
-> >
-> > index 3460c546..d6fd29b8 100644
-> >
-> >
-> > +++ b/tests/base.py
-> >
-> > @@ -240,10 +240,11 @@ class RDMATestCase(unittest.TestCase):
-> >
-> >              if self.gid_type is not None and ctx.query_gid_type(port, idx) != \
-> >
-> >                      self.gid_type:
-> >
-> >                  continue
-> >
-> > -            if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
-> >
-> > -                self.args.append([dev, port, idx, None, None])
-> >
-> > -                continue
-> >
-> > -            net_name = self.get_net_name(dev)
-> >
-> > +            #if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
+> static int cm_timewait_handler(struct cm_work *work)
+> {
+> 	struct cm_timewait_info *timewait_info;
+> 	struct cm_id_private *cm_id_priv;
 >
-> The pytests code is wrong - it should be querying the netdev through
-> the verbs APIs, not hacking in sysfs like this.
-
-Got it. Thanks
-
-Zhu Yanjun
-
+> 	timewait_info = container_of(work, struct cm_timewait_info, work);
+> 	spin_lock_irq(&cm.lock);
+>           ^^^^^^^^^^^^
+>
+> Holds the same lock
+>
+> What is your bug? The destroy_wq() a few lines below will flush out
+> all the work so it is already not possible that work can still exist
+> after the driver's remove function has finished.
 >
 > Jason
+> .
+Sorry, this is a wrong bugfix, thank you for pointing it out.
+
+I was studying the code here and thought there might be a null
+pointer reference problem.
+
+You are right, I didn't take into account destroy_workqueue().
+There are no bugs here. sorry for making this problematic patch.
+
+Please ignore this patch.
+
+-- 
+Wang Hai
+
