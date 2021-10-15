@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3019E42FE3A
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 00:34:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56B842FE39
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 00:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243377AbhJOWgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S239073AbhJOWgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 15 Oct 2021 18:36:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54472 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243358AbhJOWgE (ORCPT
+        with ESMTP id S243357AbhJOWgE (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Oct 2021 18:36:04 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C52CCC061762
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C95C061570
         for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:33:57 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso26434otl.4
+Received: by mail-ot1-x330.google.com with SMTP id p6-20020a9d7446000000b0054e6bb223f3so14811024otk.3
         for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:33:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UBcwCYstuuqp0cZ1Z44eMdFaEG91I+fxLxvc5AY+B4Q=;
-        b=bqN30SM97yobF4QOk7OYMq2iKiVCycKqI0lkhtOqPya7I5TyeMsH2bsA4Hrv7Ms9PM
-         Iu6DHnaMzlP8yNrlvVxibnYuKCkps8T/TepO0yhoIJtLIvKvuaR8GpzF0/wBW9Dy4pdT
-         WftNxejjxdxzcPHEDF3Umfi76NmRWABuw8jyedcQ2Zp1LTac7scRGstI+eD65RxrFWQl
-         ZY4YbFBaWuAHfK6t0CIHwxyCR8CWz3/7Gm9olfNwHySlLMHq9KvftiXJ08qpCa9oK5hx
-         Burq6/GIW4o69Om8xZ8BPlPKlNogQRRxOc2uu8a+1eS9DhR3JwKeqFTQvDtqr2sLkfVW
-         J5tA==
+        bh=YYccv7B1RGBLN3kZ6DsUk/IlZiQ2zSGNu9sCcppMK0o=;
+        b=D/wneBUSueb9GXQqVrgk9rBLLoOIXnwsceaSVzXQLSIvs0kbflqwS2+88hJ4Fu9CTq
+         60KPa8W3e2cXk9uxoozmGk6fBc3n4WOrcRLKUxUeQ61x38LwEi3U965QeVkTUoB/hm6G
+         XwR1Zrg+FW/SbcZaMpkbUiikG5Dy6BKWxUwyFCjNw9TyvpGJscogAg1vJ2ZDwhHzZxEH
+         f5RcawW0g1PY6yxiW1S1FUJyUIQTMaRUW3+hBiLk2RBgjJmT5/V2cdxOB1SbGrXdadFW
+         zeuqXhXQVhqRLSRdHhN7BrT0CKdXB6xmpZV8Nz4mWD+dH0MOWrDF0hC1QncNlyqnbHzd
+         kaEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UBcwCYstuuqp0cZ1Z44eMdFaEG91I+fxLxvc5AY+B4Q=;
-        b=2Egir/YawH91dPql2b1txhqp8hcLR8i8ikmll+sPopnXzDqG7oY0IAkb9Lya093TqQ
-         K2jZqR9YxyzxRWWG4RO/a///ddXb198a/6+SeknSQWYmEhI9Je+NY/7bDONNycKRc763
-         Oim9RY18Siwx0M/P/vp8DkdDSZIZ55Nk2pIm3OAsb9gTveGVCaT7O5yypuOyEEb0Y6bZ
-         oNsmXtyzIWVM+6Ugu9GttFAXO7wyVxIFW39fbnBSLc8yXkF8wiw0bgUvXkDr+atVevO4
-         xNYqLxJhawerIp/lC/SZxSagr+pt72oLrQuVSXjHsvchZZH3tqFIOMGrHK+CaStq7QxZ
-         bbbA==
-X-Gm-Message-State: AOAM530909FBdxjp8yo0FOozIu6q0ppdPiSNW2jQgNW4bB2LbpGPTIZ2
-        mwnZeyoFGr0zEYEOxPz1TIU=
-X-Google-Smtp-Source: ABdhPJxCWXSE1ngv0v2rRVEQNXCasBlIGVYXzAt2QeYm90leIX0WwEK2fyWWXZGIQPsn6RX/4EfvYA==
-X-Received: by 2002:a9d:7403:: with SMTP id n3mr763766otk.9.1634337236133;
-        Fri, 15 Oct 2021 15:33:56 -0700 (PDT)
+        bh=YYccv7B1RGBLN3kZ6DsUk/IlZiQ2zSGNu9sCcppMK0o=;
+        b=k1Ks/vPWuOXlpC+AgZA0uqtgZyXImL0CafrXrhhwCZX87rfiHtfcI1RxOZLTFFnksR
+         JrvAd6lPnEkO4DlntYI4/CNnqlQ4MAyXJ0ZJztW8FRIyNzHyx2FxEHjMiASM/4V9YOEx
+         fGw1ws4NgwEI+D+dcs3MiZmJJgOTatVFU8c1LtFbZ9T859MmaENuZ8Zz+YW+f5rUOl8y
+         8xfHayJyYz1LajgjPb5WLbbwlbbpHFroENcfIhtIVP+Rc2cAymVsVgOVa5E0c2rsX4Nc
+         QdIMrNdOFrdajYvRWdIHgjwaSdOKSbQecpV2QpX3+PQI/MsHlAuSnVD/9oYuGAwXefMS
+         rMqA==
+X-Gm-Message-State: AOAM5339yREbotxbkEM8gU0m6keRWCaEob2pc27xSQ37MVUqpryaYIa+
+        Cc+bGOcEZ9nzUpdMv6PKAVhZ4OwyGwc=
+X-Google-Smtp-Source: ABdhPJxdOPLoqj0EiTsPDAZ8SBVWVeCyALADJcnVF4aMxqYbIE8+DOTkt/HH4ZP9k+0ereAnpCgi9Q==
+X-Received: by 2002:a05:6830:30a4:: with SMTP id g4mr10208227ots.312.1634337237074;
+        Fri, 15 Oct 2021 15:33:57 -0700 (PDT)
 Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-191f-cddf-7836-208c.res6.spectrum.com. [2603:8081:140c:1a00:191f:cddf:7836:208c])
-        by smtp.gmail.com with ESMTPSA id v22sm1193896ott.80.2021.10.15.15.33.55
+        by smtp.gmail.com with ESMTPSA id v22sm1193896ott.80.2021.10.15.15.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 15:33:55 -0700 (PDT)
+        Fri, 15 Oct 2021 15:33:56 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 02/10] RDMA/rxe: Copy setup parameters into rxe_pool
-Date:   Fri, 15 Oct 2021 17:32:43 -0500
-Message-Id: <20211015223250.6501-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 03/10] RDMA/rxe: Save object pointer in pool element
+Date:   Fri, 15 Oct 2021 17:32:44 -0500
+Message-Id: <20211015223250.6501-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211015223250.6501-1-rpearsonhpe@gmail.com>
 References: <20211015223250.6501-1-rpearsonhpe@gmail.com>
@@ -62,202 +62,147 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In rxe_pool.c copy remaining pool setup parameters from rxe_pool_info into
-rxe_pool. This saves looking up rxe_pool_info in the performance path.
+In rxe_pool.c currently there are many cases where it is necessary to
+compute the offset from a pool element struct to the object containing
+the pool element in a type independent way. By saving a pointer to the
+object when they are created extra work can be saved.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.c | 49 ++++++++++++----------------
- drivers/infiniband/sw/rxe/rxe_pool.h |  6 ++--
- 2 files changed, 23 insertions(+), 32 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_pool.c | 25 ++++++++++++++-----------
+ drivers/infiniband/sw/rxe/rxe_pool.h |  1 +
+ 2 files changed, 15 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 6553ea160d4f..7250c40037b5 100644
+index 7250c40037b5..bbc8dc63f53d 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.c
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -7,9 +7,8 @@
- #include "rxe.h"
- #include "rxe_loc.h"
+@@ -220,7 +220,8 @@ static int rxe_insert_key(struct rxe_pool *pool, struct rxe_pool_entry *new)
+ 		elem = rb_entry(parent, struct rxe_pool_entry, key_node);
  
--/* info about object pools
-- */
--struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
-+/* info about object pools */
-+static const struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
- 	[RXE_TYPE_UC] = {
- 		.name		= "rxe-uc",
- 		.size		= sizeof(struct rxe_ucontext),
-@@ -88,11 +87,6 @@ struct rxe_type_info rxe_type_info[RXE_NUM_TYPES] = {
- 	},
- };
+ 		cmp = memcmp((u8 *)elem + pool->key.key_offset,
+-			     (u8 *)new + pool->key.key_offset, pool->key.key_size);
++			     (u8 *)new + pool->key.key_offset,
++			     pool->key.key_size);
  
--static inline const char *pool_name(struct rxe_pool *pool)
--{
--	return rxe_type_info[pool->type].name;
--}
--
- static int rxe_pool_init_index(struct rxe_pool *pool, u32 max, u32 min)
- {
- 	int err = 0;
-@@ -127,35 +121,36 @@ int rxe_pool_init(
- 	enum rxe_elem_type	type,
- 	unsigned int		max_elem)
- {
-+	const struct rxe_type_info *info = &rxe_type_info[type];
- 	int			err = 0;
--	size_t			size = rxe_type_info[type].size;
- 
- 	memset(pool, 0, sizeof(*pool));
- 
- 	pool->rxe		= rxe;
-+	pool->name		= info->name;
- 	pool->type		= type;
- 	pool->max_elem		= max_elem;
--	pool->elem_size		= ALIGN(size, RXE_POOL_ALIGN);
--	pool->flags		= rxe_type_info[type].flags;
-+	pool->elem_size		= ALIGN(info->size, RXE_POOL_ALIGN);
-+	pool->elem_offset	= info->elem_offset;
-+	pool->flags		= info->flags;
- 	pool->index.tree	= RB_ROOT;
- 	pool->key.tree		= RB_ROOT;
--	pool->cleanup		= rxe_type_info[type].cleanup;
-+	pool->cleanup		= info->cleanup;
- 
- 	atomic_set(&pool->num_elem, 0);
- 
- 	rwlock_init(&pool->pool_lock);
- 
--	if (rxe_type_info[type].flags & RXE_POOL_INDEX) {
--		err = rxe_pool_init_index(pool,
--					  rxe_type_info[type].max_index,
--					  rxe_type_info[type].min_index);
-+	if (info->flags & RXE_POOL_INDEX) {
-+		err = rxe_pool_init_index(pool, info->max_index,
-+					  info->min_index);
- 		if (err)
- 			goto out;
- 	}
- 
--	if (rxe_type_info[type].flags & RXE_POOL_KEY) {
--		pool->key.key_offset = rxe_type_info[type].key_offset;
--		pool->key.key_size = rxe_type_info[type].key_size;
-+	if (info->flags & RXE_POOL_KEY) {
-+		pool->key.key_offset = info->key_offset;
-+		pool->key.key_size = info->key_size;
- 	}
- 
- out:
-@@ -166,7 +161,7 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
- {
- 	if (atomic_read(&pool->num_elem) > 0)
- 		pr_warn("%s pool destroyed with unfree'd elem\n",
--			pool_name(pool));
-+			pool->name);
- 
- 	kfree(pool->index.table);
- }
-@@ -329,18 +324,17 @@ void __rxe_drop_index(struct rxe_pool_entry *elem)
- 
+ 		if (cmp == 0) {
+ 			pr_warn("key already exists!\n");
+@@ -325,7 +326,7 @@ void __rxe_drop_index(struct rxe_pool_entry *elem)
  void *rxe_alloc_locked(struct rxe_pool *pool)
  {
--	struct rxe_type_info *info = &rxe_type_info[pool->type];
  	struct rxe_pool_entry *elem;
- 	u8 *obj;
+-	u8 *obj;
++	void *obj;
  
  	if (atomic_inc_return(&pool->num_elem) > pool->max_elem)
  		goto out_cnt;
- 
--	obj = kzalloc(info->size, GFP_ATOMIC);
-+	obj = kzalloc(pool->elem_size, GFP_ATOMIC);
- 	if (!obj)
- 		goto out_cnt;
- 
--	elem = (struct rxe_pool_entry *)(obj + info->elem_offset);
-+	elem = (struct rxe_pool_entry *)(obj + pool->elem_offset);
+@@ -337,6 +338,7 @@ void *rxe_alloc_locked(struct rxe_pool *pool)
+ 	elem = (struct rxe_pool_entry *)(obj + pool->elem_offset);
  
  	elem->pool = pool;
++	elem->obj = obj;
  	kref_init(&elem->ref_cnt);
-@@ -384,14 +378,13 @@ void rxe_elem_release(struct kref *kref)
+ 
+ 	return obj;
+@@ -349,7 +351,7 @@ void *rxe_alloc_locked(struct rxe_pool *pool)
+ void *rxe_alloc(struct rxe_pool *pool)
+ {
+ 	unsigned long flags;
+-	u8 *obj;
++	void *obj;
+ 
+ 	write_lock_irqsave(&pool->pool_lock, flags);
+ 	obj = rxe_alloc_locked(pool);
+@@ -364,6 +366,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_entry *elem)
+ 		goto out_cnt;
+ 
+ 	elem->pool = pool;
++	elem->obj = (u8 *)elem - pool->elem_offset;
+ 	kref_init(&elem->ref_cnt);
+ 
+ 	return 0;
+@@ -378,13 +381,13 @@ void rxe_elem_release(struct kref *kref)
  	struct rxe_pool_entry *elem =
  		container_of(kref, struct rxe_pool_entry, ref_cnt);
  	struct rxe_pool *pool = elem->pool;
--	struct rxe_type_info *info = &rxe_type_info[pool->type];
- 	u8 *obj;
+-	u8 *obj;
++	void *obj;
  
  	if (pool->cleanup)
  		pool->cleanup(elem);
  
  	if (!(pool->flags & RXE_POOL_NO_ALLOC)) {
--		obj = (u8 *)elem - info->elem_offset;
-+		obj = (u8 *)elem - pool->elem_offset;
+-		obj = (u8 *)elem - pool->elem_offset;
++		obj = elem->obj;
  		kfree(obj);
  	}
  
-@@ -400,7 +393,6 @@ void rxe_elem_release(struct kref *kref)
- 
- void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
+@@ -395,7 +398,7 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
  {
--	struct rxe_type_info *info = &rxe_type_info[pool->type];
  	struct rb_node *node;
  	struct rxe_pool_entry *elem;
- 	u8 *obj;
-@@ -420,7 +412,7 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
+-	u8 *obj;
++	void *obj;
+ 
+ 	node = pool->index.tree.rb_node;
+ 
+@@ -412,7 +415,7 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
  
  	if (node) {
  		kref_get(&elem->ref_cnt);
--		obj = (u8 *)elem - info->elem_offset;
-+		obj = (u8 *)elem - pool->elem_offset;
+-		obj = (u8 *)elem - pool->elem_offset;
++		obj = elem->obj;
  	} else {
  		obj = NULL;
  	}
-@@ -442,7 +434,6 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
+@@ -422,7 +425,7 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
  
- void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
+ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
  {
--	struct rxe_type_info *info = &rxe_type_info[pool->type];
+-	u8 *obj;
++	void *obj;
+ 	unsigned long flags;
+ 
+ 	read_lock_irqsave(&pool->pool_lock, flags);
+@@ -436,7 +439,7 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
+ {
  	struct rb_node *node;
  	struct rxe_pool_entry *elem;
- 	u8 *obj;
-@@ -466,7 +457,7 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
+-	u8 *obj;
++	void *obj;
+ 	int cmp;
+ 
+ 	node = pool->key.tree.rb_node;
+@@ -457,7 +460,7 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
  
  	if (node) {
  		kref_get(&elem->ref_cnt);
--		obj = (u8 *)elem - info->elem_offset;
-+		obj = (u8 *)elem - pool->elem_offset;
+-		obj = (u8 *)elem - pool->elem_offset;
++		obj = elem->obj;
  	} else {
  		obj = NULL;
  	}
+@@ -467,7 +470,7 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
+ 
+ void *rxe_pool_get_key(struct rxe_pool *pool, void *key)
+ {
+-	u8 *obj;
++	void *obj;
+ 	unsigned long flags;
+ 
+ 	read_lock_irqsave(&pool->pool_lock, flags);
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index 1feca1bffced..fb10e0098415 100644
+index fb10e0098415..e9bda4b14f86 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.h
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -44,8 +44,6 @@ struct rxe_type_info {
- 	size_t			key_size;
- };
+@@ -46,6 +46,7 @@ struct rxe_type_info {
  
--extern struct rxe_type_info rxe_type_info[];
--
  struct rxe_pool_entry {
  	struct rxe_pool		*pool;
++	void			*obj;
  	struct kref		ref_cnt;
-@@ -61,14 +59,16 @@ struct rxe_pool_entry {
+ 	struct list_head	list;
  
- struct rxe_pool {
- 	struct rxe_dev		*rxe;
-+	const char		*name;
- 	rwlock_t		pool_lock; /* protects pool add/del/search */
--	size_t			elem_size;
- 	void			(*cleanup)(struct rxe_pool_entry *obj);
- 	enum rxe_pool_flags	flags;
- 	enum rxe_elem_type	type;
- 
- 	unsigned int		max_elem;
- 	atomic_t		num_elem;
-+	size_t			elem_size;
-+	size_t			elem_offset;
- 
- 	/* only used if indexed */
- 	struct {
 -- 
 2.30.2
 
