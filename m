@@ -2,284 +2,261 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0831042FE40
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 00:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE1F42FE8A
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 01:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243379AbhJOWgK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Oct 2021 18:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243386AbhJOWgI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Oct 2021 18:36:08 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75429C061766
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:34:01 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id x33-20020a9d37a4000000b0054733a85462so14761695otb.10
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=A0W0lrzLvesrS4NTRZlqKXS7YNvdwbyHsjppKRKOK8g=;
-        b=k8/mLughY0nQO2brs7jtnUFDg67kNIuD81l+7K7wHUWEvhIGivlt2V5hWcI91uHsJS
-         OBPU+GfHpWcI10EmCPQRt3HxWYdUjelzXaBcuwZu7EK1Q3nM1NecqtFRZZaitoakguZw
-         QdCdR7MyI1T3D9fD1ToM6PEKD5+YshUaYYsAZ21AmV8m1dyH0/ShpKyBqVwsav6Bh4q4
-         BLj4TmXPV5UNQqWm6TkZGFMhybLqYwq3/tQzCz7m28ZZVeehX2UpAv9yy/Juw2XTBUtZ
-         SXrsRgR+unDEDtbudeX2+KOhnFI/ukgUwigtlncarJpXuuEqoY5ltBfjcOk33/Zl/ALS
-         1Tag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=A0W0lrzLvesrS4NTRZlqKXS7YNvdwbyHsjppKRKOK8g=;
-        b=RyWedWYMqWRHIW7CLMV5fu8EfngdKm3AHTwYp2kgnZRpbyGL/01ms0eKF28AmYKKoT
-         1TuciEUVGDsfq/IE56r5CF6OKP5EMIAaBoGBwaI/qZMjYZe7MIl0L6MWxZyioU78iH8Z
-         tzZ7tZcz84W9jFDWc4VY5XZxUhLSGN02Kid33uiTfbU5vTSqAUeXJJbl/AUrMl/ShHla
-         rleuxop6XU1yhTYe9v4uRCuLeKvKPtiapu0xYF/Bz9lxuENgniWnLQ26Gl0QAD7oF9yS
-         Hx/9BvN6AsaP7IGRR5HZIGzx6uZQLuQhYCIKuhifagRcUgkiz56qHpdBUur67H164atB
-         WNew==
-X-Gm-Message-State: AOAM532JwvcihmxeYhLXItxrZiSF67pclbTAjmp0fiHjnc8zJO+gS86M
-        C932YABF+t61sZiniRxjB0lpwClS478=
-X-Google-Smtp-Source: ABdhPJyHZta2opOQKrQvuE9SYFzXtY+EvhUPlxebAFxzUjmUcnao5gTXER2LcWvBUdz1HNKEwiu4tQ==
-X-Received: by 2002:a05:6830:4021:: with SMTP id i1mr10726195ots.69.1634337240860;
-        Fri, 15 Oct 2021 15:34:00 -0700 (PDT)
-Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-191f-cddf-7836-208c.res6.spectrum.com. [2603:8081:140c:1a00:191f:cddf:7836:208c])
-        by smtp.gmail.com with ESMTPSA id v22sm1193896ott.80.2021.10.15.15.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Oct 2021 15:34:00 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 10/10] RDMA/rxe: Replace mr by rkey in responder resources
-Date:   Fri, 15 Oct 2021 17:32:51 -0500
-Message-Id: <20211015223250.6501-11-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20211015223250.6501-1-rpearsonhpe@gmail.com>
-References: <20211015223250.6501-1-rpearsonhpe@gmail.com>
+        id S235755AbhJOXL7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Oct 2021 19:11:59 -0400
+Received: from mga17.intel.com ([192.55.52.151]:50967 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243451AbhJOXL7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 15 Oct 2021 19:11:59 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10138"; a="208803399"
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="208803399"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Oct 2021 16:09:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.85,376,1624345200"; 
+   d="scan'208";a="492745586"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga008.jf.intel.com with ESMTP; 15 Oct 2021 16:09:39 -0700
+Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12; Fri, 15 Oct 2021 16:09:39 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.12 via Frontend Transport; Fri, 15 Oct 2021 16:09:39 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2242.12; Fri, 15 Oct 2021 16:09:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ecf+CxYVNtL6qgEDU4clvSNIZ9TWmnlrLXDldDndDM21DADwdN/4qxl77qP2gS4jiU91kf2FbKoLHdQ+gJ2xnBVZtgcAc1lN82P1o+bhngLXDOr6bh5uAj9HtcKk+MQ8GxsPPl6IZe3Md+OoD2ROHUHkhF+oLZjfgZVCN5IXYkkpFKv8/Hudf3zg3YgxxegEVUkLA1yel9eKZLms3nblRC7CqSQLaSkE07cR1rksoi5EF5cjRfuH3dxk1sR8lzZvueHTa61pMhMvv/sJNjgSteP/uGh9hghwIsHJw9yw0MX7HjLgRqujnzXMB3hpxxCNBigaA10/2hR3DUJgrXTBTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0WkkYqSiMMMIIa0uWijZd9+hweUrS2aDtulcd4Zd7ig=;
+ b=VEL8YbzJgc8UW2R7kQFlu3/uyk0wExFNQvZuOlmpVgXJj3S3J/DFBKrdWNDpqSprz5hDff5w9154hI5kpiat641t0UOQmrg2cxWYtzakelngevU9rVPIcIX6ycSu30kBofOOPymEbJHRQ+LWT3sPFoJu6yfjzo5Ot7f+a7k9Nubah1lBl4L/LeAE0d/TGausAh1g1vYGSABS4bkx+Dc6Y+8Hj9qNEyl5xMentHlgWL3hJSbwSWfN2IlWhjANe2OUSgNohPPzN0WKacoR8ylHMMrRM9raNAMcO5yBeFjl2/26gIykuBHyLqUA3mfpBVYW3nnqsRVOGbpl/DB8qLx2fQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0WkkYqSiMMMIIa0uWijZd9+hweUrS2aDtulcd4Zd7ig=;
+ b=lZIzL2yN+GmRA4uMiboWvsTEnUrqRqsIX8weS7JaG0kszh4QEkMLdqt4SyBLXhd2ijiKMIDT+mz4OaYWeifWK7DfryHADuw6EvAItojqmXrixYgB5C0tI3/uYiK9FHYEqtBG+zTClSsjUbEUdVb5nPR/m3w7KCdL+rXHWsNN+gY=
+Received: from SA2PR11MB4953.namprd11.prod.outlook.com (2603:10b6:806:117::15)
+ by SN6PR11MB2960.namprd11.prod.outlook.com (2603:10b6:805:d4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4587.22; Fri, 15 Oct
+ 2021 23:09:37 +0000
+Received: from SA2PR11MB4953.namprd11.prod.outlook.com
+ ([fe80::4c59:5b71:1565:c713]) by SA2PR11MB4953.namprd11.prod.outlook.com
+ ([fe80::4c59:5b71:1565:c713%9]) with mapi id 15.20.4608.017; Fri, 15 Oct 2021
+ 23:09:37 +0000
+From:   "Devale, Sindhu" <sindhu.devale@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Subject: RE: Question on PD validation
+Thread-Topic: Question on PD validation
+Thread-Index: Ade+81LejqFTfzQERh6UiH7MG/FbmgAkEkqAAKVxekA=
+Date:   Fri, 15 Oct 2021 23:09:37 +0000
+Message-ID: <SA2PR11MB4953C4290A30F50305F7077EF3B99@SA2PR11MB4953.namprd11.prod.outlook.com>
+References: <SA2PR11MB495343C46850C730BA4203C1F3B59@SA2PR11MB4953.namprd11.prod.outlook.com>
+ <20211012161001.GK2688930@ziepe.ca>
+In-Reply-To: <20211012161001.GK2688930@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a84323e3-2399-4340-c76b-08d99030dc36
+x-ms-traffictypediagnostic: SN6PR11MB2960:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB2960EBE69F7805D266885CE9F3B99@SN6PR11MB2960.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xMLapjwAVHgL+k6qQEu/F+yh5Nl/tX+wmcMbVWN89RGzLb2dfdkYr5QEasEJILJLeC3CdrSEMtx5pEgUbVaTl5JMsII2PQ7BJDgEouku2a4TqB/JRcvsGJlBRx3u69bzsRUdJUNjguNwxt9X1NV9y4JuCrQTUxigiw9DlKvYVGYrmyXHQR5NAORqLW9rQyJRvqjPZjQfAHG/3IVKpVZCcJVdNFxh/MLRBAiNvMRoUshZHO0iHKHdwFhibAfSOsmmRkPiGVdYTwAtCT+76R4ft09UhmAVPcr5701+N53N5qVMvq+Uh6ewuqFARPwOddB2BZDACUh0uYRsqB79j+fQiuf8Yig34T6hmoinP3Hxr3VTuqb3q7Jrhm7gfGzCI5/RpoVW3DZgArZb36M0AmnmQk0yaHozwZtAxT7QcuyblVowxZSrIyBz9SpHqHz85Qd+pEmp6m92xjiqNkHK1Sb6eK3CrU0elzig/IrGxZDzCVW3Z/dXL7I0ihVFz9BgJzgaoGW2//jwRxRzKnrWrGGQG43tAoJjCCWiThtVsuJIx8UrPvVde7t8HqlkMGfRGwuse+sxvhYYug1r9UNynUZN+UOlc/k+eyLaSj5+sXGzXlq5R853yvqhnNnTlXB0tF0/Y1Vy9dsPN0V2yODXpDAv7kiJtjgo9I9w2Ipw/lpId/Z8cnsPF8n6TlDnyR3VIVstcviZBJh0H28+e/+zQ5vx+w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB4953.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(76116006)(54906003)(6916009)(66946007)(83380400001)(508600001)(2906002)(33656002)(7696005)(66476007)(66446008)(71200400001)(316002)(66556008)(64756008)(107886003)(86362001)(53546011)(6506007)(8936002)(122000001)(26005)(9686003)(82960400001)(5660300002)(55016002)(38070700005)(4326008)(52536014)(186003)(8676002)(38100700002)(3480700007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TCOH2ojHpOzWMozbj5xEiHsBf03zCrOWA2YCt4GrAucs+m1H6NwbGLrEV0JZ?=
+ =?us-ascii?Q?ZTU4b4CR0Ia3WIOfHwesKzHIUm4rJgM7hfOntZaBrKS59uZIN+xRU88pMR2u?=
+ =?us-ascii?Q?/gF+IiBE3cB0WK/xSxi3HzEsHrKQf65bUmHW3W4vrxIxnRdaIwrO1hU4qQVk?=
+ =?us-ascii?Q?WvwDNaJIjfuTUrbnPuij3ovMbZdTDQFK5hHrTPJEJNFOx2V2Dr27JTspFUaz?=
+ =?us-ascii?Q?Bep22tpegZoN7VQrTh+IXEZb0fSCQfOqm2LwGy9rRSV+4KsfskLdNJKMN8jW?=
+ =?us-ascii?Q?/qsCZxi7vEvekG4dZ77rh3M5sGXT6WELmHhZO01JXdgehElsi6R1niUE9ijx?=
+ =?us-ascii?Q?gk+xk1nEzTMdvCRslu47VGnZWJ1RzrizgNJm3B8PGA6knYll0c+fwLPS3Pea?=
+ =?us-ascii?Q?hEfXWQCcZdxHuqwB6Y6F43MugeObMTqADaD8asXPDro9ptBumQuKPbiUPunO?=
+ =?us-ascii?Q?F2ggJHf6YCiSXKLqekV/0qyP3xOFNLIFv0UFrPxtQohhnUnuADiilCbHQ4NG?=
+ =?us-ascii?Q?fOCHO84UgHA8EsIQQhl/6kK68TuPHBhWNvXjLS3srTkqHVtYV1Njw5VY0/dA?=
+ =?us-ascii?Q?Ul4moH7W0bMOVED/y3gAr9DrcL1AJk0L/iUFCQxvOao/gFusJbLTwCjB5G4O?=
+ =?us-ascii?Q?EUFZfSfswh/rkoOw9gan/Sb5L8EyP3yMB8JBmdryZ66TzlJn+Z8oUkEpagZK?=
+ =?us-ascii?Q?VWFgHvWhJygcvBPcJ1uA3QhvjsvwbuHoYMDFLRDoIAuyI62SRVteqKXWfc/W?=
+ =?us-ascii?Q?8b0MGxDqgky+78RCSLAB25f6F8PW8g27L5QwOtYK24sC1oXCMOzvzIx2afbw?=
+ =?us-ascii?Q?2UhgNpUkg4Cdpdn8icSirG0vyZJHgvzmETeUGPo+LEO6a33tapgx9veYedps?=
+ =?us-ascii?Q?jT4pf8Nvd3Y+12IxnNTgCBniBMGPj4jkF2/5FQnAtibSVJWk+XZIORg0BYL+?=
+ =?us-ascii?Q?OSVlL4J+KXLw+dEPtY1m1nhCMcwaFSZMQ3zamor1Xyde+pg3iI03oXWtqaF0?=
+ =?us-ascii?Q?YDK3+rq1Cw5Z4b4QSacNOql/YJU4y0T8lUaOOa6NWOLDtAPUorw4OaDfx7BF?=
+ =?us-ascii?Q?t4V76qdIRjZ6Hui3nfoRoLYlzHkqbmNoYPRTNTuZ2ArySgDxBNqfWx5SSRR7?=
+ =?us-ascii?Q?gJUrxqALbR3ckxYbm6mEz+l5FrrP6qhEgImwI55px0EEqVfD4F4h1tkAMC7b?=
+ =?us-ascii?Q?JNxlrqnTawZWQab3RWEH/MtiMFlb3BzqvF677T+uf5PjdfKq3sRexqr8KcLE?=
+ =?us-ascii?Q?oTbCqih+5c75mbNhNsQuitWBTut34zwrr4zt3nQdehx/Kb5DhNVOggbezpyT?=
+ =?us-ascii?Q?edg=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB4953.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a84323e3-2399-4340-c76b-08d99030dc36
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2021 23:09:37.6077
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: XpFdjxc/O65P3covnwgApfqrEJMwpssUlab7z0INXZQlQrrrJTSQB3D1WFqxUIZmmqXno2QhzucfQaDZmYFdGg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2960
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently rxe saves a copy of MR in responder resources for RDMA reads.
-Since the responder resources are never freed just over written if
-more are needed this MR may not have a reference freed until the QP
-is destroyed. This patch uses the rkey instead of the MR and on
-subsequent packets of a multipacket read reply message it looks up the
-MR from the rkey for each packet. This makes it possible for a user
-to deregister an MR or unbind a MW on the fly and get correct behaviour.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_qp.c    |  10 +--
- drivers/infiniband/sw/rxe/rxe_resp.c  | 123 ++++++++++++++++++--------
- drivers/infiniband/sw/rxe/rxe_verbs.h |   1 -
- 3 files changed, 87 insertions(+), 47 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 7503aebddcf4..23b4ffe23c4f 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -135,12 +135,8 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
- 
- void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
- {
--	if (res->type == RXE_ATOMIC_MASK) {
-+	if (res->type == RXE_ATOMIC_MASK)
- 		kfree_skb(res->atomic.skb);
--	} else if (res->type == RXE_READ_MASK) {
--		if (res->read.mr)
--			rxe_drop_ref(res->read.mr);
--	}
- 	res->type = 0;
- }
- 
-@@ -816,10 +812,8 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
- 	if (qp->pd)
- 		rxe_drop_ref(qp->pd);
- 
--	if (qp->resp.mr) {
-+	if (qp->resp.mr)
- 		rxe_drop_ref(qp->resp.mr);
--		qp->resp.mr = NULL;
--	}
- 
- 	if (qp_type(qp) == IB_QPT_RC)
- 		sk_dst_reset(qp->sk->sk);
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index f589f4dde35c..c776289842e5 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -641,6 +641,78 @@ static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
- 	return skb;
- }
- 
-+static struct resp_res *rxe_prepare_read_res(struct rxe_qp *qp,
-+					struct rxe_pkt_info *pkt)
-+{
-+	struct resp_res *res;
-+	u32 pkts;
-+
-+	res = &qp->resp.resources[qp->resp.res_head];
-+	rxe_advance_resp_resource(qp);
-+	free_rd_atomic_resource(qp, res);
-+
-+	res->type = RXE_READ_MASK;
-+	res->replay = 0;
-+	res->read.va = qp->resp.va + qp->resp.offset;
-+	res->read.va_org = qp->resp.va + qp->resp.offset;
-+	res->read.resid = qp->resp.resid;
-+	res->read.length = qp->resp.resid;
-+	res->read.rkey = qp->resp.rkey;
-+
-+	pkts = max_t(u32, (reth_len(pkt) + qp->mtu - 1)/qp->mtu, 1);
-+	res->first_psn = pkt->psn;
-+	res->cur_psn = pkt->psn;
-+	res->last_psn = (pkt->psn + pkts - 1) & BTH_PSN_MASK;
-+
-+	res->state = rdatm_res_state_new;
-+
-+	return res;
-+}
-+
-+/**
-+ * rxe_recheck_mr - revalidate MR from rkey and get a reference
-+ * @qp: the qp
-+ * @rkey: the rkey
-+ *
-+ * This code allows the MR to be invalidated or deregistered or
-+ * the MW if one was used to be invalidated or deallocated.
-+ * It is assumed that the access permissions if originally good
-+ * are OK and the mappings to be unchanged.
-+ *
-+ * Return: mr on success else NULL
-+ */
-+static struct rxe_mr *rxe_recheck_mr(struct rxe_qp *qp, u32 rkey)
-+{
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	struct rxe_mr *mr;
-+	struct rxe_mw *mw;
-+
-+	if (rkey_is_mw(rkey)) {
-+		mw = rxe_pool_get_index(&rxe->mw_pool, rkey >> 8);
-+		if (!mw || mw->rkey != rkey)
-+			return NULL;
-+
-+		if (mw->state != RXE_MW_STATE_VALID) {
-+			rxe_drop_ref(mw);
-+			return NULL;
-+		}
-+
-+		mr = mw->mr;
-+		rxe_drop_ref(mw);
-+	} else {
-+		mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
-+		if (!mr || mr->rkey != rkey)
-+			return NULL;
-+	}
-+
-+	if (mr->state != RXE_MR_STATE_VALID) {
-+		rxe_drop_ref(mr);
-+		return NULL;
-+	}
-+
-+	return mr;
-+}
-+
- /* RDMA read response. If res is not NULL, then we have a current RDMA request
-  * being processed or replayed.
-  */
-@@ -655,53 +727,26 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	int opcode;
- 	int err;
- 	struct resp_res *res = qp->resp.res;
-+	struct rxe_mr *mr;
- 
- 	if (!res) {
--		/* This is the first time we process that request. Get a
--		 * resource
--		 */
--		res = &qp->resp.resources[qp->resp.res_head];
--
--		free_rd_atomic_resource(qp, res);
--		rxe_advance_resp_resource(qp);
--
--		res->type		= RXE_READ_MASK;
--		res->replay		= 0;
--
--		res->read.va		= qp->resp.va +
--					  qp->resp.offset;
--		res->read.va_org	= qp->resp.va +
--					  qp->resp.offset;
--
--		res->first_psn		= req_pkt->psn;
--
--		if (reth_len(req_pkt)) {
--			res->last_psn	= (req_pkt->psn +
--					   (reth_len(req_pkt) + mtu - 1) /
--					   mtu - 1) & BTH_PSN_MASK;
--		} else {
--			res->last_psn	= res->first_psn;
--		}
--		res->cur_psn		= req_pkt->psn;
--
--		res->read.resid		= qp->resp.resid;
--		res->read.length	= qp->resp.resid;
--		res->read.rkey		= qp->resp.rkey;
--
--		/* note res inherits the reference to mr from qp */
--		res->read.mr		= qp->resp.mr;
--		qp->resp.mr		= NULL;
--
--		qp->resp.res		= res;
--		res->state		= rdatm_res_state_new;
-+		res = rxe_prepare_read_res(qp, req_pkt);
-+		qp->resp.res = res;
- 	}
- 
- 	if (res->state == rdatm_res_state_new) {
-+		mr = qp->resp.mr;
-+		qp->resp.mr = NULL;
-+
- 		if (res->read.resid <= mtu)
- 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY;
- 		else
- 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_FIRST;
- 	} else {
-+		mr = rxe_recheck_mr(qp, res->read.rkey);
-+		if (!mr)
-+			return RESPST_ERR_RKEY_VIOLATION;
-+
- 		if (res->read.resid > mtu)
- 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE;
- 		else
-@@ -717,10 +762,12 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 	if (!skb)
- 		return RESPST_ERR_RNR;
- 
--	err = rxe_mr_copy(res->read.mr, res->read.va, payload_addr(&ack_pkt),
-+	err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
- 			  payload, RXE_FROM_MR_OBJ);
- 	if (err)
- 		pr_err("Failed copying memory\n");
-+	if (mr)
-+		rxe_drop_ref(mr);
- 
- 	if (bth_pad(&ack_pkt)) {
- 		u8 *pad = payload_addr(&ack_pkt) + payload;
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 4f1d7777f755..0cfbef7a36c9 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -157,7 +157,6 @@ struct resp_res {
- 			struct sk_buff	*skb;
- 		} atomic;
- 		struct {
--			struct rxe_mr	*mr;
- 			u64		va_org;
- 			u32		rkey;
- 			u32		length;
--- 
-2.30.2
+> -----Original Message-----
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Tuesday, October 12, 2021 11:10 AM
+> To: Devale, Sindhu <sindhu.devale@intel.com>
+> Cc: linux-rdma@vger.kernel.org; Saleem, Shiraz <shiraz.saleem@intel.com>
+> Subject: Re: Question on PD validation
+>=20
+> On Mon, Oct 11, 2021 at 11:05:02PM +0000, Devale, Sindhu wrote:
+> > Hi all,
+> >
+> > Currently, when an application creates a PD, the ib uverbs creates a PD
+> uobj resource and tracks it through the xarray which is looked up using a=
+n
+> uobj id/pd_handle.
+> >
+> > If a user application were to create a verb resource, example QP, with
+> some random ibv_pd object  [i.e. one not allocated by user process], whos=
+e
+> pd_handle happens to match the id of created PDs, the QP creation would
+> succeed though one would expect it to fail For example:
+> > During an alloc PD:
+> > irdma_ualloc_pd, 122], pd_id: 44, ibv_pd: 0x8887c0, pd_handle: 0
+> >
+> > During create QP:
+> > [irdma_ucreate_qp, 1480], ibv_pd: 0x8889f0, pd_handle: 0
+> >
+> >
+> > Clearly, the ibv_pd that the application wants the QP to be associated
+> > with is not the same as the ibv_pd created during the allocation of
+> > PD. Yet, the creation of the QP is successful as the pd handle of 0
+> > matches.
+>=20
+> Most likely handle 0 is a PD, generally all uobj's require a PD to be cre=
+ated so
+> PD is usually the thing in slot 0.
+>=20
+> The validation that the index type matches is done here:
+>=20
+> 	UVERBS_ATTR_IDR(UVERBS_ATTR_CREATE_QP_PD_HANDLE,
+> 			UVERBS_OBJECT_PD,
+> 			UVERBS_ACCESS_READ,
+> 			UA_OPTIONAL),
+> Which is passed into this:
+>=20
+> static int uverbs_process_attr(struct bundle_priv *pbundle,
+> 			       const struct uverbs_api_attr *attr_uapi,
+> 			       struct ib_uverbs_attr *uattr, u32 attr_bkey) {
+> 	case UVERBS_ATTR_TYPE_IDR:
+> 		o_attr->uobject =3D uverbs_get_uobject_from_file(
+> 			spec->u.obj.obj_type, spec->u.obj.access,
+> 			uattr->data_s64, &pbundle->bundle);
+>=20
+> Which eventually goes down into this check:
+>=20
+>=20
+> struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object
+> *obj,
+> 					   struct ib_uverbs_file *ufile, s64 id,
+> 					   enum rdma_lookup_mode mode,
+> 					   struct uverbs_attr_bundle *attrs) {
+>=20
+> 		if (uobj->uapi_object !=3D obj) {
+> 			ret =3D -EINVAL;
+> 			goto free;
+> 		}
+>=20
+> Which check the uobj the user provided is the same type as the schema
+> requires.
+>=20
+> The legacy path is similar, we start here:
+>=20
+> 		pd =3D uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd-
+> >pd_handle,
+> 				       attrs);
+>=20
+> Which also calls rdma_lookup_get_uobject() and does the same check.
+>=20
+> Jason
+
+Hi Jason,
+
+Thank you for responding.=20
+
+>struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object =
+*obj,
+					   struct ib_uverbs_file *ufile, s64 id,
+					   enum rdma_lookup_mode mode,
+					   struct uverbs_attr_bundle *attrs) {
+				=09
+The lookup for a uobj in the above function happens based on the uobj id.
+
+When an application creates a PD, ib_uverbs_alloc_pd() creates a uobj for t=
+he corresponding and assigns id of the uobj to the response pd_handle:
+
+resp.pd_handle =3D uobj->id;
+
+For example, I am creating two PDs:
+
+ibv_pd: 0x21a4d00, pd_handle: 0
+[ib_uverbs_alloc_pd, 458], allocated: 00000000d8facf77, uobject: 0000000015=
+84c2c2, pd_handle: 0
+
+ibv_pd: 0x21b7a70, pd_handle: 1
+[ib_uverbs_alloc_pd, 458], allocated: 0000000048001c84, uobject: 00000000a9=
+cacf67, pd_handle: 1
+
+
+Now, if a rogue application tries to create a QP using a different PD other=
+ than the above two but it's pd_handle "HAPPENS" to match one of the above:
+
+What's going into create_qp:
+
+ibv_pd: 0x21b3c90, pd_handle: 0
+[create_qp, 1392], cmd->pd_handle: 0
+[rdma_lookup_get_uobject, 381], id to lookup: 0
+[rdma_lookup_get_uobject, 396], uobj retrieved: 000000001584c2c2
+[create_qp, 1399], pd: 00000000d8facf77
+
+It creates the QP with this invalid PD as the core retrieves the PD uobj ba=
+sed on pd_handle 0.=20
+
+Is this the correct behavior?=20
+
+Can we do the lookup of uobj based on the object itself instead of the uobj=
+ id?
+
+Thank you,
+Sindhu   =20
 
