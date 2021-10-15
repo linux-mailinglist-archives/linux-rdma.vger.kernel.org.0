@@ -2,93 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3713A42F6F1
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Oct 2021 17:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6139742FE37
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 00:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240955AbhJOPXL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Oct 2021 11:23:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32990 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232267AbhJOPXI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 15 Oct 2021 11:23:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C747A60E0C;
-        Fri, 15 Oct 2021 15:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634311261;
-        bh=CG/9/aX/UXAFY8vz2mkwopf7IgGPkJ6BVBlhZp8bxPc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=gSKDa8hbc7yOywBMCHX2toABg5IUJY89Bj5WPNwk2nvmwNyvtboqakO13M6lveH8f
-         49SO/3+btyQsPMbdMwMXqO0p3TBG+jrHNFi44kUMjvqIe8+/A0EX5VR9EiQ6fvw39x
-         8pXnYw0K9TUG5KdFUwwa+AZa5fuj1zAY5fV58M5BhLygV/FNeLzjW/Aq6p4nA3376D
-         iWJlOF9cbbf2xYEMCRB8X2k0+BZHqbExBtm07Ez+508aaohg0t2mJ2Cgbwd1tQ4kVU
-         vdxdvXJrBTXDScYorJBwBLTZqdH4hZPCr2GiIZ3MLXUpxIaIbCSMzrHONFW3b3KE+b
-         RSSlIoGzgvBuw==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Aya Levin <ayal@nvidia.com>,
-        Eran Ben Elisha <eranbe@nvidia.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] [v2] mlx5: stop warning for 64KB pages
-Date:   Fri, 15 Oct 2021 17:20:33 +0200
-Message-Id: <20211015152056.2434853-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S238951AbhJOWgC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Oct 2021 18:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235622AbhJOWgC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Oct 2021 18:36:02 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B35C061570
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:33:55 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id b4-20020a9d7544000000b00552ab826e3aso26404otl.4
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Oct 2021 15:33:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xskp/o7QW00xPsVaG9NEVhHHdvi+7sg4x+byGi20wIE=;
+        b=WBmJE84nSEXUwd0yoylky2hQ2pyGitD6HK+MXf3d9MGl4p7Do4Ry5a1yc4jk3EAM+E
+         uitjnFp8MM/OW9PjNID9NWt5G66QutPRWS5XgWmvUB4g58+dV7PfhkgrvHuEl8Y9cTYS
+         6d7O8mQia/4l3LRMF9CLB+IImzDFMI79z2dcqbjkLRTphF7yH98+TbLjtbFZOiLEeFeU
+         Hp+7lamypI8v/xpi7ovNOlyVkVrbUOmZnCWUN9OzSUqfPMH/PLFG6qI/mcQ5dVLWqnzn
+         +xmC3FrvpB4BthZ7T2N2dbM1BP4jqMJmi0T4IICw8PE2Szus2tY9Z30sp9dJbS8e7XB3
+         7M7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xskp/o7QW00xPsVaG9NEVhHHdvi+7sg4x+byGi20wIE=;
+        b=3BiybwYFbEh7s+cHRzsrzpL60PzDfHNHdfWopGg5q2kgbm+xh1JH7RTRxZ1b7lZWZV
+         uU7nHco+0HKKgJQIRzUiJQlxijNPH5M9CkJBSnoWxHADeCRYYeiqGlkzPjo2L2UKfxXV
+         t416pe5Nu7hXL2KiIkBY2K9ONPPFYetg93ivKn5FmTtrbeBz2ekE40f7lS+H6iwnK9W2
+         LUi1GwLp8OQTrCNItzwzoKBYKuDmHJ27zHdtCpno02CrZ6JgRBfHcJ8XP9Mo93s7z2eJ
+         2QVkVQCzWvkvTQp1MvkeJ5qMO7s8aAPJNS7ZJ5jCS2xb1vIJKCj38W1Ntf3LE0CxP4c6
+         oWAQ==
+X-Gm-Message-State: AOAM533TvhWK0jE+Ts5pfM1haIRLrqq1Zv9u1rwFTVHWCqr2HhUKWmYn
+        050bp74ykMush9ORfSIMrnvoiYEjv6s=
+X-Google-Smtp-Source: ABdhPJwieAmdV/bFv8xlX99Lc5O8N3qJUDyEqu5vxFRNRj1QDPpH1HXY2Ztlm94D3AY4JTGlPCtlMg==
+X-Received: by 2002:a05:6830:43aa:: with SMTP id s42mr10614368otv.136.1634337235006;
+        Fri, 15 Oct 2021 15:33:55 -0700 (PDT)
+Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-191f-cddf-7836-208c.res6.spectrum.com. [2603:8081:140c:1a00:191f:cddf:7836:208c])
+        by smtp.gmail.com with ESMTPSA id v22sm1193896ott.80.2021.10.15.15.33.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Oct 2021 15:33:54 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2 00/10] Correct race conditions in rdma_rxe
+Date:   Fri, 15 Oct 2021 17:32:41 -0500
+Message-Id: <20211015223250.6501-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+There are several potential race conditions discovered in the rdma_rxe
+driver. These patches correct them. They mostly relate to races between
+normal operations and destroying objects.
 
-When building with 64KB pages, clang points out that xsk->chunk_size
-can never be PAGE_SIZE:
+This patch series applies cleanly to current for-next.
+commit 3b87e0824272414cec79763afef6720c7c908c44 (for-next)
 
-drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (xsk->chunk_size > PAGE_SIZE ||
-            ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-
-In older versions of this code, using PAGE_SIZE was the only
-possibility, so this would have never worked on 64KB page kernels,
-but the patch apparently did not address this case completely.
-
-As Maxim Mikityanskiy suggested, 64KB chunks are really not all that
-useful, so just shut up the warning by adding a cast.
-
-Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
-Link: https://lore.kernel.org/netdev/20211013150232.2942146-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+v2
+  Rebased to current for-next.
+  Added 4 additional patches
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-index 538bc2419bd8..228257010f32 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-@@ -15,8 +15,10 @@ bool mlx5e_validate_xsk_param(struct mlx5e_params *params,
- 			      struct mlx5e_xsk_param *xsk,
- 			      struct mlx5_core_dev *mdev)
- {
--	/* AF_XDP doesn't support frames larger than PAGE_SIZE. */
--	if (xsk->chunk_size > PAGE_SIZE ||
-+	/* AF_XDP doesn't support frames larger than PAGE_SIZE,
-+	 * and xsk->chunk_size is limited to 65535 bytes.
-+	 */
-+	if ((size_t)xsk->chunk_size > PAGE_SIZE ||
- 			xsk->chunk_size < MLX5E_MIN_XSK_CHUNK_SIZE)
- 		return false;
- 
+Bob Pearson (10):
+  RDMA/rxe: Make rxe_alloc() take pool lock
+  RDMA/rxe: Copy setup parameters into rxe_pool
+  RDMA/rxe: Save object pointer in pool element
+  RDMA/rxe: Combine rxe_add_index with rxe_alloc
+  RDMA/rxe: Combine rxe_add_key with rxe_alloc
+  RDMA/rxe: Fix potential race condition in rxe_pool
+  RDMA/rxe: Separate out last rxe_drop_ref
+  RDMA/rxe: Rewrite rxe_mcast.c
+  RDMA/rxe: Fix ref error in rxe_av.c
+  RDMA/rxe: Replace mr by rkey in responder resources
+
+ drivers/infiniband/sw/rxe/rxe.c       |   8 -
+ drivers/infiniband/sw/rxe/rxe_av.c    |  24 +-
+ drivers/infiniband/sw/rxe/rxe_cq.c    |   9 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  19 +-
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 210 ++++++++++-----
+ drivers/infiniband/sw/rxe/rxe_mr.c    |  11 +-
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  28 +-
+ drivers/infiniband/sw/rxe/rxe_net.c   |  39 +--
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 374 ++++++++++++++++----------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  86 +++---
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  11 +-
+ drivers/infiniband/sw/rxe/rxe_req.c   |  55 ++--
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 125 ++++++---
+ drivers/infiniband/sw/rxe/rxe_srq.c   |   8 +
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  65 ++---
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   4 +-
+ 16 files changed, 611 insertions(+), 465 deletions(-)
+
 -- 
-2.29.2
+2.30.2
 
