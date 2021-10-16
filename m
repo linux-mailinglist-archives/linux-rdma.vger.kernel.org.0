@@ -2,147 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49AB042FF43
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 01:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 922AA42FF88
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 02:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbhJOX6k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Oct 2021 19:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44686 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235896AbhJOX6f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Oct 2021 19:58:35 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCB7C061570;
-        Fri, 15 Oct 2021 16:56:28 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id q129so15402971oib.0;
-        Fri, 15 Oct 2021 16:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7cuQKyRo8VwWnrKSZqEjby++qEMEDn98shw21ePswis=;
-        b=DTAlrs5lawIcHNKMkDsVFpsUnbe/RApPndHoGvA4uMu8Bd0+h05InLaOreTm9qoPp8
-         Gsz7n5r4009xFEnw7Nc8j5c3ulsd89xTQLObrxQ6bSo23FYp/Ewq8HN4z7qC/LlSowk0
-         OgAIo0hu/haakwrin2XoDtzZOAUFbTg9FFiLcijalh/vWzsBBz2n6kEdFrtc6aXY2cOX
-         s+LVFKLNdQKPXGvz2rkXMFaauPManGtK0ggHLbt48etYsRcG0ZK1Ew7yRp9NsLxPVIvL
-         L2JQ2GwvS9a5yr1c8G7lAlfgowpqsyyIm/gxAkpIjLvijzR8NRMZOW+JN5IC2MUxsgJS
-         Oxzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7cuQKyRo8VwWnrKSZqEjby++qEMEDn98shw21ePswis=;
-        b=i3DOIJnOLz+Ko1IfLJj0kHJKvQKJTZNh0XmAhY0nkDuOQmV/iMrYbyB4z2Y0mic+60
-         +t5rMvA5oRq7xb8CuALXRpFcaakp8U6odfT+x+KxMzaMh+Cy2UpHyhrrQwdwfLKsf8IY
-         zqZ0O77kJoxKvVRGC81U1GRTJ3aIdD8j01QqUyW+LjvrWYeTpx7O1XeZZTKyg1loZE84
-         wMXFokpez7H5WQkehMEQPuxNuxEAr3bF4nNYUNdUDkC4dC65nOVPjtXjwUjln7gES2cp
-         OC6gOdDAALI6gXxEps5+CjOom3ZHwwUy/9WUlSDyFd5ntraKMR9byvOCKVKypP81YHT/
-         JCvQ==
-X-Gm-Message-State: AOAM530BME3B6eZxpOU1qBqgo+zIW8lJid62b1izABSNl7Ia1TUMNanY
-        VBzU3rPe9Ua2Vxruij66AEFPhYU7XsBbkA==
-X-Google-Smtp-Source: ABdhPJzP8XCGDMiZ2DvlGAjvtaHS7914IxZVLdV88hxxy+wmUMHk+1O6jCOUKtQ4hROfPYB1cgeHSg==
-X-Received: by 2002:aca:3bd7:: with SMTP id i206mr10557473oia.166.1634342187455;
-        Fri, 15 Oct 2021 16:56:27 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.34])
-        by smtp.googlemail.com with ESMTPSA id w2sm1278923ooa.26.2021.10.15.16.56.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Oct 2021 16:56:26 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v1 2/3] rdma: Add stat "mode" support
-To:     Mark Zhang <markzhang@nvidia.com>, jgg@nvidia.com,
-        dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        aharonl@nvidia.com, netao@nvidia.com, leonro@nvidia.com
-References: <20211014075358.239708-1-markzhang@nvidia.com>
- <20211014075358.239708-3-markzhang@nvidia.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <a01a1b0e-90a4-c14f-fa5f-35a698d5b730@gmail.com>
-Date:   Fri, 15 Oct 2021 17:56:25 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        id S236573AbhJPAwQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Oct 2021 20:52:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234607AbhJPAwP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 15 Oct 2021 20:52:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 929346124B;
+        Sat, 16 Oct 2021 00:50:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634345408;
+        bh=k6JZthnvltBnxbQPdVsj7V5FEkmK1pFdhnHkzxEjwwU=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=SXO/mYnRmFw0GYW2MTTucD9CRRZcZpsc2ueDz8kEnlso2LEBhWGyVEZ91cxHC1QeZ
+         vP4OKqjTNOEnotM/sH75eViqj4lLWUADWSfoMZAyJtIgZwAgddhp0tuwIYbTIEYUzk
+         TOM5cnO/GpRTMheZ3O7jxBwfXwrL992/7aaMHJETt1Y+kB3VTduTMp8cGjKVeysfbI
+         EWYSw9548UPZ4eTbUXBPci6t/aHVZlINQG7NxmEwMTNzHGriNGPmnas3A/vi2DBVXX
+         kCzyak3TJaxcdixj2oiSmDN+d87cDe5w1cCgcyyVosjC6gePqbaDo/Q8oBX1zTQsiy
+         2aMxQwWmlXeiw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 86062609ED;
+        Sat, 16 Oct 2021 00:50:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20211014075358.239708-3-markzhang@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/4][pull request] Intel Wired LAN Driver Updates
+ 2021-10-14
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163434540854.9644.5390320523220662313.git-patchwork-notify@kernel.org>
+Date:   Sat, 16 Oct 2021 00:50:08 +0000
+References: <20211014181953.3538330-1-anthony.l.nguyen@intel.com>
+In-Reply-To: <20211014181953.3538330-1-anthony.l.nguyen@intel.com>
+To:     Tony Nguyen <anthony.l.nguyen@intel.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, shiraz.saleem@intel.com
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/14/21 1:53 AM, Mark Zhang wrote:
-> +static int do_stat_mode_parse_cb(const struct nlmsghdr *nlh, void *data,
-> +				 bool supported)
-> +{
-> +	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
-> +	struct nlattr *nla_entry;
-> +	const char *dev, *name;
-> +	struct rd *rd = data;
-> +	int enabled, err = 0;
-> +	bool isfirst = true;
-> +	uint32_t port;
-> +
-> +	mnl_attr_parse(nlh, 0, rd_attr_cb, tb);
-> +	if (!tb[RDMA_NLDEV_ATTR_DEV_INDEX] || !tb[RDMA_NLDEV_ATTR_DEV_NAME] ||
-> +	    !tb[RDMA_NLDEV_ATTR_PORT_INDEX] ||
-> +	    !tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTERS])
-> +		return MNL_CB_ERROR;
-> +
-> +	dev = mnl_attr_get_str(tb[RDMA_NLDEV_ATTR_DEV_NAME]);
-> +	port = mnl_attr_get_u32(tb[RDMA_NLDEV_ATTR_PORT_INDEX]);
-> +
-> +	mnl_attr_for_each_nested(nla_entry,
-> +				 tb[RDMA_NLDEV_ATTR_STAT_HWCOUNTERS]) {
-> +		struct nlattr *cnt[RDMA_NLDEV_ATTR_MAX] = {};
-> +
-> +		err  = mnl_attr_parse_nested(nla_entry, rd_attr_cb, cnt);
-> +		if ((err != MNL_CB_OK) ||
-> +		    (!cnt[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_ENTRY_NAME]))
-> +			return -EINVAL;
-> +
-> +		if (!cnt[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC])
-> +			continue;
-> +
-> +		enabled = mnl_attr_get_u8(cnt[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_DYNAMIC]);
-> +		name = mnl_attr_get_str(cnt[RDMA_NLDEV_ATTR_STAT_HWCOUNTER_ENTRY_NAME]);
-> +		if (supported || enabled) {
-> +			if (isfirst) {
-> +				open_json_object(NULL);
+Hello:
 
-I don't see the close_json_object(). Did you verify json output is proper?
+This series was applied to netdev/net.git (master)
+by Tony Nguyen <anthony.l.nguyen@intel.com>:
 
+On Thu, 14 Oct 2021 11:19:49 -0700 you wrote:
+> This series contains updates to ice driver only.
+> 
+> Brett ensures RDMA nodes are removed during release and rebuild. He also
+> corrects fw.mgmt.api to include the patch number for proper
+> identification.
+> 
+> Dave stops ida_free() being called when an IDA has not been allocated.
+> 
+> [...]
 
-> +				print_color_string(PRINT_ANY, COLOR_NONE,
-> +						   "ifname", "link %s/", dev);
-> +				print_color_uint(PRINT_ANY, COLOR_NONE, "port",
-> +						 "%u ", port);
-> +				if (supported)
-> +					open_json_array(PRINT_ANY,
-> +						"supported optional-counters");
-> +				else
-> +					open_json_array(PRINT_ANY,
-> +							"optional-counters");
-> +				print_color_string(PRINT_FP, COLOR_NONE, NULL,
-> +						   " ", NULL);
-> +				isfirst = false;
-> +			} else {
-> +				print_color_string(PRINT_FP, COLOR_NONE, NULL,
-> +						   ",", NULL);
-> +			}
-> +			if (rd->pretty_output && !rd->json_output)
-> +				newline_indent(rd);
-> +
-> +			print_color_string(PRINT_ANY, COLOR_NONE, NULL, "%s",
-> +					   name);
-> +		}
-> +	}
-> +
-> +	if (!isfirst) {
-> +		close_json_array(PRINT_JSON, NULL);
-> +		newline(rd);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
+Here is the summary with links:
+  - [net,1/4] ice: Fix failure to re-add LAN/RDMA Tx queues
+    https://git.kernel.org/netdev/net/c/ff7e93219442
+  - [net,2/4] ice: Avoid crash from unnecessary IDA free
+    https://git.kernel.org/netdev/net/c/73e30a62b19b
+  - [net,3/4] ice: fix getting UDP tunnel entry
+    https://git.kernel.org/netdev/net/c/e4c2efa1393c
+  - [net,4/4] ice: Print the api_patch as part of the fw.mgmt.api
+    https://git.kernel.org/netdev/net/c/b726ddf984a5
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
