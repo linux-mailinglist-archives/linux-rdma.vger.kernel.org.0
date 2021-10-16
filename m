@@ -2,193 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA711430328
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 17:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25068430464
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 20:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236901AbhJPPHj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 16 Oct 2021 11:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
+        id S240602AbhJPSzf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Oct 2021 14:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234554AbhJPPHi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Oct 2021 11:07:38 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FBBC061570
-        for <linux-rdma@vger.kernel.org>; Sat, 16 Oct 2021 08:05:30 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id h20so6824967qko.13
-        for <linux-rdma@vger.kernel.org>; Sat, 16 Oct 2021 08:05:30 -0700 (PDT)
+        with ESMTP id S231497AbhJPSzf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Oct 2021 14:55:35 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1661C061765;
+        Sat, 16 Oct 2021 11:53:26 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so290742ooh.7;
+        Sat, 16 Oct 2021 11:53:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FMSUVK42h9kVn8JAi1haAUF7g3jblVN1qN3foaiI4Ho=;
-        b=Q7Wdx2ZQsg+BmREsfycU7LZPpxV4Am6Xq602HGGcgSQluxyzUEeVf1FAQgTS7vILw3
-         XnI/YpLFIZqusbUAOTKwWMg876KmtRjvy16b6ogxeREqMv9MA16FWbUckH/haGzLd4MD
-         RuVtKKjsP4qnuTYfPj9TRQd7MlwokZrgbhk9SFcnF8ROKjkBHqTHp79z4G6aKAilots9
-         DWI2KUAf8p8yROWtBAHYOIxAEZU5/fKuqT/5z3sZDf3QHdZMMYBmF5BG4kr/1D2+Csxo
-         IaMILni3TLZuXtmkJKedB4zxGyyaRSEHl9AGEdMki87zWv6SfMH3VoaBg8erL+rjItY1
-         sAFA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VbZjgfgW1ldJeZo80k5WOQardHbQMA5bFJ+6MeL1R1o=;
+        b=Jmxs9cuCs11h1RBcRizumYEXSCz7RVDgr/y504qog9DwRDmYfItQ8bkrNilc7CC6aC
+         6FpI3fSXQP7vfU9lI3ga0SglHsZz5QdRC9AwcspsCGF5AW2/9xUgFrNVPU7HI58uMERI
+         YEyTq4ZfDIjPbXoEeM3uQZWkSUrgOCmFareIcB0EDa9NMn2jMoQ+aDfQOXjXaZv4EeAG
+         U3edPNOGLGx8o51VqMVvVMx35RgZCDOkR90781d21BkIadxBc6ir5qQUuovvYfNsUuyt
+         1WpyWmpTU3mTyy4uCX02NRoiygQc2Tm3NCUYxywFKgBYZaxZT5CjAZaQ+DSj6ktML+ZC
+         17jQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FMSUVK42h9kVn8JAi1haAUF7g3jblVN1qN3foaiI4Ho=;
-        b=0+bXZuqsO+xhdaK834TqYGGrorXspQJnzAMnTrWJmrXJl/AvSXeRdlVw1hvd+Fsc1V
-         V3CEsfUGVxZy+w8UGpnTpvaiqR48RiVbne2SXnZpHqwOTEdqIIliQhH05RRUhdweJGS0
-         59EUKwgzsvvLbzR24pBvx7i1t1CKOs7doZnndzntHSd/JgNrogfP1/N6TXLY4KHHRVNZ
-         zccErsc5on8rD5k6GZsKY+dElouDUSzAL4TZLAsLYq3nOu9oE6p5Yg2wTweQdTGv/QXp
-         UHQ7JS/GFa+njr6Vr8BxjWxY1fLKSrZB7hCSAGXapcapymLD8BEr3Ax4RfpqeJdx5pOj
-         hK8w==
-X-Gm-Message-State: AOAM533opB2eDZFMY+ufryjxk00xq1unS0RuHmS6hoppBy7axSWJ0Ums
-        1O9cQWBsx7Hpbwcoo4uAT/S3JH9WLT0=
-X-Google-Smtp-Source: ABdhPJzhC9xvXjkXWILEJa5/zV27lFsEF03SazUnWYsRfbi4U1gdPObaC4rrADqnOYSnfGgIJ4b1sg==
-X-Received: by 2002:a37:6c83:: with SMTP id h125mr14576960qkc.486.1634396729809;
-        Sat, 16 Oct 2021 08:05:29 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id e4sm4512224qty.59.2021.10.16.08.05.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Oct 2021 08:05:29 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1mblFY-00FhE2-9E; Sat, 16 Oct 2021 12:05:28 -0300
-Date:   Sat, 16 Oct 2021 12:05:28 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Devale, Sindhu" <sindhu.devale@intel.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Subject: Re: Question on PD validation
-Message-ID: <20211016150528.GA3686969@ziepe.ca>
-References: <SA2PR11MB495343C46850C730BA4203C1F3B59@SA2PR11MB4953.namprd11.prod.outlook.com>
- <20211012161001.GK2688930@ziepe.ca>
- <SA2PR11MB4953C4290A30F50305F7077EF3B99@SA2PR11MB4953.namprd11.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VbZjgfgW1ldJeZo80k5WOQardHbQMA5bFJ+6MeL1R1o=;
+        b=FCWTdUUS+qrlz6rdGqWuxMoMmPTKKptBi+zLfsruTBOew9GR0RlSSZ9sc6PcIgCevn
+         bkEX9KdO+LYhMfPF0bA/UprSOFS0SePv/P5TC949WWRKLCSSmSWPVdaV95kOSIEVr4AF
+         a7cw+U7aTDqNLzXB+gJD8mt5Ca6WAIQL2TMakZo0p5qIKmyd13kx7jQKCLfwJd2qdq7z
+         4+k6X1nJaF2s/A9rV6mTxW4jlm7wowtehaHKoY4Uz0rdaFDrLBN9jCQ+L+dzzWiZngRj
+         q4tOu2+iRSYEdqcJ2b0Y92r9//WYgLsqu5BdnbS75MMj0rBSzwpqtj+fbp1A3vp1SFQE
+         hfFA==
+X-Gm-Message-State: AOAM532DBCmiifxs3LGfMStilTXD4PpcOT4KHvdqHqFDjpLdO5frZjDN
+        lHCbeWdyraZjb+t9YIC4QQBey9hyYZLKGw==
+X-Google-Smtp-Source: ABdhPJy8oK8I1raNXH9a5z/8m+hVRVRvom2Ya6wzdeUhQr58UGm8Aw9F4b03J0JzpGBCNRMoSZ/K8g==
+X-Received: by 2002:a05:6820:35a:: with SMTP id m26mr14609121ooe.45.1634410405893;
+        Sat, 16 Oct 2021 11:53:25 -0700 (PDT)
+Received: from Davids-MacBook-Pro.local ([8.48.134.34])
+        by smtp.googlemail.com with ESMTPSA id 16sm2078397oty.20.2021.10.16.11.53.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Oct 2021 11:53:25 -0700 (PDT)
+Subject: Re: [PATCH iproute2-next v1 0/3] Optional counter statistics support
+To:     Mark Zhang <markzhang@nvidia.com>, jgg@nvidia.com,
+        dledford@redhat.com
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        aharonl@nvidia.com, netao@nvidia.com, leonro@nvidia.com
+References: <20211014075358.239708-1-markzhang@nvidia.com>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <3ce4df7a-eca8-b58b-62e6-f841dbd831f1@gmail.com>
+Date:   Sat, 16 Oct 2021 12:53:24 -0600
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SA2PR11MB4953C4290A30F50305F7077EF3B99@SA2PR11MB4953.namprd11.prod.outlook.com>
+In-Reply-To: <20211014075358.239708-1-markzhang@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Oct 15, 2021 at 11:09:37PM +0000, Devale, Sindhu wrote:
+On 10/14/21 1:53 AM, Mark Zhang wrote:
+> Change Log:
+> v1:
+>  * Add a new nldev command to get the counter status;
+>  * Some cosmetic changes.
+> v0: https://lore.kernel.org/all/20210922093038.141905-1-markzhang@nvidia.com/
 > 
+> ----------------------------------------------------------------------
+> Hi,
 > 
-> > From: Jason Gunthorpe <jgg@ziepe.ca>
-> > Sent: Tuesday, October 12, 2021 11:10 AM
-> > To: Devale, Sindhu <sindhu.devale@intel.com>
-> > Cc: linux-rdma@vger.kernel.org; Saleem, Shiraz <shiraz.saleem@intel.com>
-> > Subject: Re: Question on PD validation
-> > 
-> > On Mon, Oct 11, 2021 at 11:05:02PM +0000, Devale, Sindhu wrote:
-> > > Hi all,
-> > >
-> > > Currently, when an application creates a PD, the ib uverbs creates a PD
-> > uobj resource and tracks it through the xarray which is looked up using an
-> > uobj id/pd_handle.
-> > >
-> > > If a user application were to create a verb resource, example QP, with
-> > some random ibv_pd object  [i.e. one not allocated by user process], whose
-> > pd_handle happens to match the id of created PDs, the QP creation would
-> > succeed though one would expect it to fail For example:
-> > > During an alloc PD:
-> > > irdma_ualloc_pd, 122], pd_id: 44, ibv_pd: 0x8887c0, pd_handle: 0
-> > >
-> > > During create QP:
-> > > [irdma_ucreate_qp, 1480], ibv_pd: 0x8889f0, pd_handle: 0
-> > >
-> > >
-> > > Clearly, the ibv_pd that the application wants the QP to be associated
-> > > with is not the same as the ibv_pd created during the allocation of
-> > > PD. Yet, the creation of the QP is successful as the pd handle of 0
-> > > matches.
-> > 
-> > Most likely handle 0 is a PD, generally all uobj's require a PD to be created so
-> > PD is usually the thing in slot 0.
-> > 
-> > The validation that the index type matches is done here:
-> > 
-> > 	UVERBS_ATTR_IDR(UVERBS_ATTR_CREATE_QP_PD_HANDLE,
-> > 			UVERBS_OBJECT_PD,
-> > 			UVERBS_ACCESS_READ,
-> > 			UA_OPTIONAL),
-> > Which is passed into this:
-> > 
-> > static int uverbs_process_attr(struct bundle_priv *pbundle,
-> > 			       const struct uverbs_api_attr *attr_uapi,
-> > 			       struct ib_uverbs_attr *uattr, u32 attr_bkey) {
-> > 	case UVERBS_ATTR_TYPE_IDR:
-> > 		o_attr->uobject = uverbs_get_uobject_from_file(
-> > 			spec->u.obj.obj_type, spec->u.obj.access,
-> > 			uattr->data_s64, &pbundle->bundle);
-> > 
-> > Which eventually goes down into this check:
-> > 
-> > 
-> > struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object
-> > *obj,
-> > 					   struct ib_uverbs_file *ufile, s64 id,
-> > 					   enum rdma_lookup_mode mode,
-> > 					   struct uverbs_attr_bundle *attrs) {
-> > 
-> > 		if (uobj->uapi_object != obj) {
-> > 			ret = -EINVAL;
-> > 			goto free;
-> > 		}
-> > 
-> > Which check the uobj the user provided is the same type as the schema
-> > requires.
-> > 
-> > The legacy path is similar, we start here:
-> > 
-> > 		pd = uobj_get_obj_read(pd, UVERBS_OBJECT_PD, cmd-
-> > >pd_handle,
-> > 				       attrs);
-> > 
-> > Which also calls rdma_lookup_get_uobject() and does the same check.
-> > 
-> > Jason
+> This is supplementary part of kernel series [1], which provides an
+> extension to the rdma statistics tool that allows to set or list
+> optional counters dynamically, using netlink.
 > 
-> Hi Jason,
+> Thanks
 > 
-> Thank you for responding. 
+> [1] https://www.spinics.net/lists/linux-rdma/msg106283.html
 > 
-> >struct ib_uobject *rdma_lookup_get_uobject(const struct uverbs_api_object *obj,
-> 					   struct ib_uverbs_file *ufile, s64 id,
-> 					   enum rdma_lookup_mode mode,
-> 					   struct uverbs_attr_bundle *attrs) {
-> 					
-> The lookup for a uobj in the above function happens based on the uobj id.
+> Neta Ostrovsky (3):
+>   rdma: Update uapi headers
+>   rdma: Add stat "mode" support
+>   rdma: Add optional-counters set/unset support
 > 
-> When an application creates a PD, ib_uverbs_alloc_pd() creates a uobj for the corresponding and assigns id of the uobj to the response pd_handle:
+>  man/man8/rdma-statistic.8             |  55 +++++
+>  rdma/include/uapi/rdma/rdma_netlink.h |   5 +
+>  rdma/stat.c                           | 341 ++++++++++++++++++++++++++
+>  3 files changed, 401 insertions(+)
 > 
-> resp.pd_handle = uobj->id;
-> 
-> For example, I am creating two PDs:
-> 
-> ibv_pd: 0x21a4d00, pd_handle: 0
-> [ib_uverbs_alloc_pd, 458], allocated: 00000000d8facf77, uobject: 000000001584c2c2, pd_handle: 0
-> 
-> ibv_pd: 0x21b7a70, pd_handle: 1
-> [ib_uverbs_alloc_pd, 458], allocated: 0000000048001c84, uobject: 00000000a9cacf67, pd_handle: 1
-> 
-> What's going into create_qp:
-> 
-> ibv_pd: 0x21b3c90, pd_handle: 0
-> [create_qp, 1392], cmd->pd_handle: 0
-> [rdma_lookup_get_uobject, 381], id to lookup: 0
-> [rdma_lookup_get_uobject, 396], uobj retrieved: 000000001584c2c2
-> [create_qp, 1399], pd: 00000000d8facf77
 
-I don't know what you are trying to explain. You allocated a PD on
-handle 0 and asked for a PD on handle 0 - and got back the same
-pointer.
-
-What is the problem?
-
-> Now, if a rogue application tries to create a QP using a different
-> PD other than the above two but it's pd_handle "HAPPENS" to match
-> one of the above:
-
-The xarray that holds the handles is scoped inside the ib_uverbs_file
-- which is unique per file descriptor. A "rouge application" cannot
-access handles outside its file descriptor.
-
-Jason
+applied to iproute2-next
