@@ -2,99 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25068430464
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Oct 2021 20:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3EB43072D
+	for <lists+linux-rdma@lfdr.de>; Sun, 17 Oct 2021 10:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240602AbhJPSzf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 16 Oct 2021 14:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231497AbhJPSzf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Oct 2021 14:55:35 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1661C061765;
-        Sat, 16 Oct 2021 11:53:26 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id j11-20020a4a92cb000000b002902ae8cb10so290742ooh.7;
-        Sat, 16 Oct 2021 11:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VbZjgfgW1ldJeZo80k5WOQardHbQMA5bFJ+6MeL1R1o=;
-        b=Jmxs9cuCs11h1RBcRizumYEXSCz7RVDgr/y504qog9DwRDmYfItQ8bkrNilc7CC6aC
-         6FpI3fSXQP7vfU9lI3ga0SglHsZz5QdRC9AwcspsCGF5AW2/9xUgFrNVPU7HI58uMERI
-         YEyTq4ZfDIjPbXoEeM3uQZWkSUrgOCmFareIcB0EDa9NMn2jMoQ+aDfQOXjXaZv4EeAG
-         U3edPNOGLGx8o51VqMVvVMx35RgZCDOkR90781d21BkIadxBc6ir5qQUuovvYfNsUuyt
-         1WpyWmpTU3mTyy4uCX02NRoiygQc2Tm3NCUYxywFKgBYZaxZT5CjAZaQ+DSj6ktML+ZC
-         17jQ==
+        id S245043AbhJQIRk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 17 Oct 2021 04:17:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42511 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232530AbhJQIRk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 17 Oct 2021 04:17:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1634458530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=ZVlVgQKPt6Z+S+JoXsal/iuedKSh1Uk0cEoZKdQzYRI=;
+        b=XkuY+tNa1xF/KyyAZ/fzl9uq18hwXI/tvXGHCcaqA/W0Z2mAE8LQuyhWQux1fgLS3fb4w2
+        dOjwkI0aCp6Mtg3VmEr8wOPOzhjsODXTwbjqKqJbUjv86rJ/sySSa1WkwPzJWppI6rz1mJ
+        F5b6mVrIl8GRNo3H4bDT1Coooy+BRiI=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-38-xFeQFWamMTCfpDdYcQ0I4A-1; Sun, 17 Oct 2021 04:15:29 -0400
+X-MC-Unique: xFeQFWamMTCfpDdYcQ0I4A-1
+Received: by mail-yb1-f199.google.com with SMTP id b126-20020a251b84000000b005bd8aca71a2so16319445ybb.4
+        for <linux-rdma@vger.kernel.org>; Sun, 17 Oct 2021 01:15:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VbZjgfgW1ldJeZo80k5WOQardHbQMA5bFJ+6MeL1R1o=;
-        b=FCWTdUUS+qrlz6rdGqWuxMoMmPTKKptBi+zLfsruTBOew9GR0RlSSZ9sc6PcIgCevn
-         bkEX9KdO+LYhMfPF0bA/UprSOFS0SePv/P5TC949WWRKLCSSmSWPVdaV95kOSIEVr4AF
-         a7cw+U7aTDqNLzXB+gJD8mt5Ca6WAIQL2TMakZo0p5qIKmyd13kx7jQKCLfwJd2qdq7z
-         4+k6X1nJaF2s/A9rV6mTxW4jlm7wowtehaHKoY4Uz0rdaFDrLBN9jCQ+L+dzzWiZngRj
-         q4tOu2+iRSYEdqcJ2b0Y92r9//WYgLsqu5BdnbS75MMj0rBSzwpqtj+fbp1A3vp1SFQE
-         hfFA==
-X-Gm-Message-State: AOAM532DBCmiifxs3LGfMStilTXD4PpcOT4KHvdqHqFDjpLdO5frZjDN
-        lHCbeWdyraZjb+t9YIC4QQBey9hyYZLKGw==
-X-Google-Smtp-Source: ABdhPJy8oK8I1raNXH9a5z/8m+hVRVRvom2Ya6wzdeUhQr58UGm8Aw9F4b03J0JzpGBCNRMoSZ/K8g==
-X-Received: by 2002:a05:6820:35a:: with SMTP id m26mr14609121ooe.45.1634410405893;
-        Sat, 16 Oct 2021 11:53:25 -0700 (PDT)
-Received: from Davids-MacBook-Pro.local ([8.48.134.34])
-        by smtp.googlemail.com with ESMTPSA id 16sm2078397oty.20.2021.10.16.11.53.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Oct 2021 11:53:25 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v1 0/3] Optional counter statistics support
-To:     Mark Zhang <markzhang@nvidia.com>, jgg@nvidia.com,
-        dledford@redhat.com
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        aharonl@nvidia.com, netao@nvidia.com, leonro@nvidia.com
-References: <20211014075358.239708-1-markzhang@nvidia.com>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <3ce4df7a-eca8-b58b-62e6-f841dbd831f1@gmail.com>
-Date:   Sat, 16 Oct 2021 12:53:24 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.14.0
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=ZVlVgQKPt6Z+S+JoXsal/iuedKSh1Uk0cEoZKdQzYRI=;
+        b=0kZ3SBoyQMyXZYJyrZL+a6vrV7lR93AK+fnj33oX39uxFfozETC4yuBsltI0lgwsr8
+         3mp6OXO+XJh3mJKHzkwtqRqoMJr6nDAx3P/uDpNKGVbo+WLahk4Ql6Jcy0YIX9qs+g6e
+         b2oiMsBFozUXodL6e3uUo4L7bVXSN7+shCTFyGqSMQiehch5Vazp3fsCbCT8bdGEK/dA
+         WLfCMx/pRMuEti++m6MHpdXBaK3z/sCjgkS5bxN5xJKqR8Qbrx8aHcxy9+j4WyvZLwjE
+         LFvD/sfq5Cd6a+dm3pmAEsJiaYvmzLK6bCPn0NGflHtgfFgFEcA4oOkjWglPXZJcbpmh
+         4nhw==
+X-Gm-Message-State: AOAM5307mPzX6x6Yu7nEGjNdQ/7iX8wHuWTfhoGZYvwA92xpfpo4qHBL
+        m8q4cPB7AFDC+YT0aa0Hm82iD52xzmkDktveuPBT1ht2WRIGErG6pO79NY2F0hwKS2UKI8oHNb0
+        6Bo3LtxK8ERsDzMLqU7j76ZZIVbYxJDSf22VNVA==
+X-Received: by 2002:a25:bd03:: with SMTP id f3mr21560313ybk.412.1634458528301;
+        Sun, 17 Oct 2021 01:15:28 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv+7jmnd4aKtaJG2iHTBu0mc9Le3M8FvRapdVBSnricARFJ5etiMt+qLyUdZ8H5U/nHx6i1cpDQuwSLkEzpc0=
+X-Received: by 2002:a25:bd03:: with SMTP id f3mr21560304ybk.412.1634458528051;
+ Sun, 17 Oct 2021 01:15:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20211014075358.239708-1-markzhang@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Sun, 17 Oct 2021 16:15:17 +0800
+Message-ID: <CAHj4cs9EuKWfTbRP2-4wqSBNd4K7XsqgHZ7WmztFhfHsVj8p1A@mail.gmail.com>
+Subject: [regression]blktests srp/014 hang at "ib_srpt enP5p1s0f0_siw_1:
+ waiting for unregistration of 128 sessions ..."
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     Bart Van Assche <bvanassche@acm.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/14/21 1:53 AM, Mark Zhang wrote:
-> Change Log:
-> v1:
->  * Add a new nldev command to get the counter status;
->  * Some cosmetic changes.
-> v0: https://lore.kernel.org/all/20210922093038.141905-1-markzhang@nvidia.com/
-> 
-> ----------------------------------------------------------------------
-> Hi,
-> 
-> This is supplementary part of kernel series [1], which provides an
-> extension to the rdma statistics tool that allows to set or list
-> optional counters dynamically, using netlink.
-> 
-> Thanks
-> 
-> [1] https://www.spinics.net/lists/linux-rdma/msg106283.html
-> 
-> Neta Ostrovsky (3):
->   rdma: Update uapi headers
->   rdma: Add stat "mode" support
->   rdma: Add optional-counters set/unset support
-> 
->  man/man8/rdma-statistic.8             |  55 +++++
->  rdma/include/uapi/rdma/rdma_netlink.h |   5 +
->  rdma/stat.c                           | 341 ++++++++++++++++++++++++++
->  3 files changed, 401 insertions(+)
-> 
+Hello
 
-applied to iproute2-next
+I'd like to report this regression issue which was introduced from
+5.15-rc1, the blktests srp/014 hang there with dmesg[2].
+I've copied the full log [3], and it cannot be reproduced on 5.14.
+
+[1]
+# use_siw=1 ./check srp/014
+srp/014 (Run sg_reset while I/O is ongoing)                  [passed]
+    runtime  34.907s  ...  35.560s
+
+[2]
+[  180.392856] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-246
+[  180.392912] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-248
+[  180.392959] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-250
+[  180.393005] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-252
+[  180.393052] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-254
+[  180.393102] ib_srpt:srpt_release_channel_work: ib_srpt
+2620:0052:0000:10d6:0a94:efff:fe80:823f-256
+[  187.070176] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+[  192.110402] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+[  197.150568] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+--snip--
+[  207.230923] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+[  212.271078] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+[  217.311295] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+[  222.351446] ib_srpt enP5p1s0f0_siw_1: waiting for unregistration of
+128 sessions ...
+
+[3]
+https://pastebin.com/0UC0Q21z
+
+
+-- 
+Best Regards,
+  Yi Zhang
+
