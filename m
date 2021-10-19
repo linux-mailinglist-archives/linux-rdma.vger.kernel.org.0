@@ -2,73 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C762D432B32
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 02:26:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44839432DF7
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 08:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhJSA3K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Oct 2021 20:29:10 -0400
-Received: from out20-37.mail.aliyun.com ([115.124.20.37]:56583 "EHLO
-        out20-37.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhJSA3K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Oct 2021 20:29:10 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1764493|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00316141-0.000298427-0.99654;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047192;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LduqRbi_1634603216;
-Received: from T640.e16-tech.com(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LduqRbi_1634603216)
-          by smtp.aliyun-inc.com(10.147.41.121);
-          Tue, 19 Oct 2021 08:26:56 +0800
-From:   wangyugui <wangyugui@e16-tech.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     selvin.xavier@broadcom.com, eddie.wai@broadcom.com,
-        wangyugui@e16-tech.com
-Subject: [PATCH] infiniband: change some kmalloc to kvmalloc to support CONFIG_PROVE_LOCKING=y
-Date:   Tue, 19 Oct 2021 08:26:56 +0800
-Message-Id: <20211019002656.17745-1-wangyugui@e16-tech.com>
-X-Mailer: git-send-email 2.32.0
+        id S234174AbhJSGST (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Oct 2021 02:18:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234157AbhJSGSS (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Oct 2021 02:18:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA11260FD8;
+        Tue, 19 Oct 2021 06:16:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634624166;
+        bh=mx/BkxT0o8Xb5VpFFH8AkWfA1dK+acaE7dGk1O65ts8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=qF1riMWAcm6LnyBf8yBTOGBE7s10q4a++uW/BehxggTqrejzar0Wh2HguhQeb4TK4
+         ofRPU0EOWCva3d5EQzEqRQrptw5FEnSZYPiem3xcchgaOErjGcn2SM0ONQhn0dJAmk
+         3uIGb3+JLq6sQJ+XNz1g+I8knEf9PpM5CmvOYsfw7bJdkACWcX3oEb2lTgokK31Y9s
+         ++q+QO4piqpm20AvgxF9kTfMCBJZnRb+1Si7gGwj6yH9rD6pNmM24HrBkJUuUoXs9U
+         ygcD8VsVvvLmOtH/KXdrR2ok4YzKuE400e++vKCy0KQA2LmwA6l7jQcs21n4wWtP6L
+         J47d2HdpBUY5w==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Aharon Landau <aharonl@nvidia.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Mark Bloch <mbloch@nvidia.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [RFC] RDMA/mlx5: fix build error with INFINIBAND_USER_ACCESS=n
+Date:   Tue, 19 Oct 2021 08:15:45 +0200
+Message-Id: <20211019061602.3062196-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-When CONFIG_PROVE_LOCKING=y, one kmalloc of infiniband hit the max alloc size limitation.
+From: Arnd Bergmann <arnd@arndb.de>
 
-WARNING: CPU: 36 PID: 8 at mm/page_alloc.c:5350 __alloc_pages+0x27e/0x3e0
- Call Trace:
-  kmalloc_order+0x2a/0xb0
-  kmalloc_order_trace+0x19/0xf0
-  __kmalloc+0x231/0x270
-  ib_setup_port_attrs+0xd8/0x870 [ib_core]
-  ib_register_device+0x419/0x4e0 [ib_core]
-  bnxt_re_task+0x208/0x2d0 [bnxt_re]
+The mlx5_ib_fs_add_op_fc/mlx5_ib_fs_remove_op_fc functions are
+only available when user access is enabled, without that we
+run into a link error:
 
-change this kmalloc to kvmalloc to support CONFIG_PROVE_LOCKING=y
+ERROR: modpost: "mlx5_ib_fs_add_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
+ERROR: modpost: "mlx5_ib_fs_remove_op_fc" [drivers/infiniband/hw/mlx5/mlx5_ib.ko] undefined!
 
-Signed-off-by: wangyugui <wangyugui@e16-tech.com>
+Conditionally compiling the newly added code section makes
+it build, though this is probably not a correct fix.
+
+Fixes: a29b934ceb4c ("RDMA/mlx5: Add modify_op_stat() support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/infiniband/core/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/mlx5/counters.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 6146c3c1cbe5..8d709986b88c 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -757,7 +757,7 @@ static void ib_port_release(struct kobject *kobj)
- 	if (port->hw_stats_data)
- 		kfree(port->hw_stats_data->stats);
- 	kfree(port->hw_stats_data);
--	kfree(port);
-+	kvfree(port);
- }
+diff --git a/drivers/infiniband/hw/mlx5/counters.c b/drivers/infiniband/hw/mlx5/counters.c
+index 6f1c4b57110e..945758f39523 100644
+--- a/drivers/infiniband/hw/mlx5/counters.c
++++ b/drivers/infiniband/hw/mlx5/counters.c
+@@ -641,9 +641,9 @@ static void mlx5_ib_dealloc_counters(struct mlx5_ib_dev *dev)
+ 			if (!dev->port[i].cnts.opfcs[j].fc)
+ 				continue;
  
- static void ib_port_gid_attr_release(struct kobject *kobj)
-@@ -1189,7 +1189,7 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
- 	struct ib_port *p;
- 	int ret;
+-			mlx5_ib_fs_remove_op_fc(dev,
+-						&dev->port[i].cnts.opfcs[j],
+-						j);
++			if (IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS))
++				mlx5_ib_fs_remove_op_fc(dev,
++					&dev->port[i].cnts.opfcs[j], j);
+ 			mlx5_fc_destroy(dev->mdev,
+ 					dev->port[i].cnts.opfcs[j].fc);
+ 			dev->port[i].cnts.opfcs[j].fc = NULL;
+@@ -885,7 +885,8 @@ static const struct ib_device_ops hw_stats_ops = {
+ 	.counter_dealloc = mlx5_ib_counter_dealloc,
+ 	.counter_alloc_stats = mlx5_ib_counter_alloc_stats,
+ 	.counter_update_stats = mlx5_ib_counter_update_stats,
+-	.modify_hw_stat = mlx5_ib_modify_stat,
++	.modify_hw_stat = IS_ENABLED(CONFIG_INFINIBAND_USER_ACCESS) ?
++			  mlx5_ib_modify_stat : NULL,
+ };
  
--	p = kzalloc(struct_size(p, attrs_list,
-+	p = kvzalloc(struct_size(p, attrs_list,
- 				attr->gid_tbl_len + attr->pkey_tbl_len),
- 		    GFP_KERNEL);
- 	if (!p)
+ static const struct ib_device_ops hw_switchdev_stats_ops = {
 -- 
-2.32.0
+2.29.2
 
