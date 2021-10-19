@@ -2,113 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 421C8433049
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 09:58:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52B4C4330F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 10:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbhJSIAc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Oct 2021 04:00:32 -0400
-Received: from mga12.intel.com ([192.55.52.136]:60009 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhJSIAa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:00:30 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10141"; a="208549502"
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="208549502"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Oct 2021 00:58:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.85,383,1624345200"; 
-   d="scan'208";a="526563383"
-Received: from unknown (HELO intel-73.bj.intel.com) ([10.238.154.73])
-  by orsmga001.jf.intel.com with ESMTP; 19 Oct 2021 00:58:12 -0700
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev, leon@kernel.org
-Subject: [PATCH 1/1] RDMA/irdma: remove the check to the returned value of irdma_uk_cq_init
-Date:   Tue, 19 Oct 2021 11:37:17 -0400
-Message-Id: <20211019153717.3836-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        id S234567AbhJSIYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Oct 2021 04:24:39 -0400
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57584 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234658AbhJSIYj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Oct 2021 04:24:39 -0400
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J2rTJw009227;
+        Tue, 19 Oct 2021 01:22:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pfpt0220;
+ bh=o9oc2+A3xTVy8mMP32u7nQOtUNaoEPYjyMs11gbPFJk=;
+ b=OMBp/QZKJoipDX5dSIfDQ/95I184Ma9N+CI+MRHegMrV/NMPT9n1WwPfN9GCdC4ud8bq
+ zFNoLgoOM09VKFkDc8zi15xLbFXuG9aSnX0WiGr3+ix+PzrkFk89/fvUNjgB/9PUZBst
+ +poviHobj5rRn2ARgWOtf1hDkDFTKJczemt8CJmAwk+PiNo8Jn3mdYQ9td15rFv+tQk5
+ Rt9jIyvDeCVfW2AyBu25QPDgNN6mb9AqCN9Wc0DF4GfA8/383KanH9tEbmzr9MIppJ7s
+ sTKQtFcx+TAu31Uo6tFdKnIxxNX7XuUsx44LDHpOJ3ucyQaRAdLx7pBajiVVmTfnwgON DQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 3bsnmq1dgw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 19 Oct 2021 01:22:18 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 19 Oct
+ 2021 01:22:16 -0700
+Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
+ DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server id
+ 15.0.1497.18 via Frontend Transport; Tue, 19 Oct 2021 01:22:14 -0700
+From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
+To:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
+        <jgg@nvidia.com>, <mkalderon@marvell.com>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <smalin@marvell.com>,
+        <aelior@marvell.com>, <palok@marvell.com>, <pkushwaha@marvell.com>,
+        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>
+Subject: [PATCH for-rc] rdma/qedr: Fix crash due to redundant release of device's qp memory
+Date:   Tue, 19 Oct 2021 11:22:12 +0300
+Message-ID: <20211019082212.7052-1-pkushwaha@marvell.com>
+X-Mailer: git-send-email 2.16.6
 MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: Xj6jtfw9SpDzsH2okC6jkL-PjHdzd63Z
+X-Proofpoint-ORIG-GUID: Xj6jtfw9SpDzsH2okC6jkL-PjHdzd63Z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Device's QP memory should only be allocated and released by IB layer.
+This patch removes the redundant release of the device's qp memory
+and uses completion APIs to make sure that .destroy_qp() only return,
+when qp reference becomes 0.
 
-Since the function irdma_uk_cq_init always returns 0, so remove the check
-to the returned value of the function irdma_uk_cq_init.
-
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
+Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: Alok Prasad <palok@marvell.com>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
 ---
- drivers/infiniband/hw/irdma/ctrl.c | 5 +----
- drivers/infiniband/hw/irdma/uk.c   | 6 ++----
- drivers/infiniband/hw/irdma/user.h | 4 ++--
- 3 files changed, 5 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/qedr/qedr.h       | 1 +
+ drivers/infiniband/hw/qedr/qedr_iw_cm.c | 2 +-
+ drivers/infiniband/hw/qedr/verbs.c      | 5 ++++-
+ 3 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index 729fa8a3f6f8..7264f8c2f7d5 100644
---- a/drivers/infiniband/hw/irdma/ctrl.c
-+++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -2463,7 +2463,6 @@ static inline void irdma_sc_cq_ack(struct irdma_sc_cq *cq)
- enum irdma_status_code irdma_sc_cq_init(struct irdma_sc_cq *cq,
- 					struct irdma_cq_init_info *info)
- {
--	enum irdma_status_code ret_code;
- 	u32 pble_obj_cnt;
+diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
+index 3cb4febaad0f..8def88cfa300 100644
+--- a/drivers/infiniband/hw/qedr/qedr.h
++++ b/drivers/infiniband/hw/qedr/qedr.h
+@@ -455,6 +455,7 @@ struct qedr_qp {
+ 	/* synchronization objects used with iwarp ep */
+ 	struct kref refcnt;
+ 	struct completion iwarp_cm_comp;
++	struct completion qp_rel_comp;
+ 	unsigned long iwarp_cm_flags; /* enum iwarp_cm_flags */
+ };
  
- 	pble_obj_cnt = info->dev->hmc_info->hmc_obj[IRDMA_HMC_IW_PBLE].cnt;
-@@ -2475,9 +2474,7 @@ enum irdma_status_code irdma_sc_cq_init(struct irdma_sc_cq *cq,
- 	cq->ceq_id = info->ceq_id;
- 	info->cq_uk_init_info.cqe_alloc_db = cq->dev->cq_arm_db;
- 	info->cq_uk_init_info.cq_ack_db = cq->dev->cq_ack_db;
--	ret_code = irdma_uk_cq_init(&cq->cq_uk, &info->cq_uk_init_info);
--	if (ret_code)
--		return ret_code;
-+	irdma_uk_cq_init(&cq->cq_uk, &info->cq_uk_init_info);
- 
- 	cq->virtual_map = info->virtual_map;
- 	cq->pbl_chunk_size = info->pbl_chunk_size;
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index ebcd93bb9e9d..cc578974ad0e 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -1446,8 +1446,8 @@ enum irdma_status_code irdma_uk_qp_init(struct irdma_qp_uk *qp,
-  * @cq: hw cq
-  * @info: hw cq initialization info
-  */
--enum irdma_status_code irdma_uk_cq_init(struct irdma_cq_uk *cq,
--					struct irdma_cq_uk_init_info *info)
-+void irdma_uk_cq_init(struct irdma_cq_uk *cq,
-+		      struct irdma_cq_uk_init_info *info)
+diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+index 1715fbe0719d..a51fc6854984 100644
+--- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
++++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
+@@ -83,7 +83,7 @@ static void qedr_iw_free_qp(struct kref *ref)
  {
- 	cq->cq_base = info->cq_base;
- 	cq->cq_id = info->cq_id;
-@@ -1458,8 +1458,6 @@ enum irdma_status_code irdma_uk_cq_init(struct irdma_cq_uk *cq,
- 	cq->avoid_mem_cflct = info->avoid_mem_cflct;
- 	IRDMA_RING_INIT(cq->cq_ring, cq->cq_size);
- 	cq->polarity = 1;
--
--	return 0;
+ 	struct qedr_qp *qp = container_of(ref, struct qedr_qp, refcnt);
+ 
+-	kfree(qp);
++	complete(&qp->qp_rel_comp);
  }
  
- /**
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index 31d5e4e3f442..66e00660fbaa 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -316,8 +316,8 @@ void irdma_uk_cq_request_notification(struct irdma_cq_uk *cq,
- 				      enum irdma_cmpl_notify cq_notify);
- void irdma_uk_cq_resize(struct irdma_cq_uk *cq, void *cq_base, int size);
- void irdma_uk_cq_set_resized_cnt(struct irdma_cq_uk *qp, u16 cnt);
--enum irdma_status_code irdma_uk_cq_init(struct irdma_cq_uk *cq,
--					struct irdma_cq_uk_init_info *info);
-+void irdma_uk_cq_init(struct irdma_cq_uk *cq,
-+		      struct irdma_cq_uk_init_info *info);
- enum irdma_status_code irdma_uk_qp_init(struct irdma_qp_uk *qp,
- 					struct irdma_qp_uk_init_info *info);
- struct irdma_sq_uk_wr_trk_info {
+ static void
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index 3fbf172dbbef..dcb3653db72d 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -1357,6 +1357,7 @@ static void qedr_set_common_qp_params(struct qedr_dev *dev,
+ 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
+ 		kref_init(&qp->refcnt);
+ 		init_completion(&qp->iwarp_cm_comp);
++		init_completion(&qp->qp_rel_comp);
+ 	}
+ 
+ 	qp->pd = pd;
+@@ -2857,8 +2858,10 @@ int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 
+ 	qedr_free_qp_resources(dev, qp, udata);
+ 
+-	if (rdma_protocol_iwarp(&dev->ibdev, 1))
++	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
+ 		qedr_iw_qp_rem_ref(&qp->ibqp);
++		wait_for_completion(&qp->qp_rel_comp);
++	}
+ 
+ 	return 0;
+ }
 -- 
-2.27.0
+2.24.1
 
