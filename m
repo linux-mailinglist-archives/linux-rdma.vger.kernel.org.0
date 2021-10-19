@@ -2,126 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52B4C4330F9
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 10:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC0643336C
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 12:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234567AbhJSIYj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Oct 2021 04:24:39 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57584 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234658AbhJSIYj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 19 Oct 2021 04:24:39 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19J2rTJw009227;
-        Tue, 19 Oct 2021 01:22:18 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=pfpt0220;
- bh=o9oc2+A3xTVy8mMP32u7nQOtUNaoEPYjyMs11gbPFJk=;
- b=OMBp/QZKJoipDX5dSIfDQ/95I184Ma9N+CI+MRHegMrV/NMPT9n1WwPfN9GCdC4ud8bq
- zFNoLgoOM09VKFkDc8zi15xLbFXuG9aSnX0WiGr3+ix+PzrkFk89/fvUNjgB/9PUZBst
- +poviHobj5rRn2ARgWOtf1hDkDFTKJczemt8CJmAwk+PiNo8Jn3mdYQ9td15rFv+tQk5
- Rt9jIyvDeCVfW2AyBu25QPDgNN6mb9AqCN9Wc0DF4GfA8/383KanH9tEbmzr9MIppJ7s
- sTKQtFcx+TAu31Uo6tFdKnIxxNX7XuUsx44LDHpOJ3ucyQaRAdLx7pBajiVVmTfnwgON DQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 3bsnmq1dgw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 19 Oct 2021 01:22:18 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 19 Oct
- 2021 01:22:16 -0700
-Received: from lbtlvb-pcie154.il.qlogic.org (10.69.176.80) by
- DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server id
- 15.0.1497.18 via Frontend Transport; Tue, 19 Oct 2021 01:22:14 -0700
-From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
-To:     <linux-rdma@vger.kernel.org>, <dledford@redhat.com>,
-        <jgg@nvidia.com>, <mkalderon@marvell.com>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <smalin@marvell.com>,
-        <aelior@marvell.com>, <palok@marvell.com>, <pkushwaha@marvell.com>,
-        <prabhakar.pkin@gmail.com>, <malin1024@gmail.com>
-Subject: [PATCH for-rc] rdma/qedr: Fix crash due to redundant release of device's qp memory
-Date:   Tue, 19 Oct 2021 11:22:12 +0300
-Message-ID: <20211019082212.7052-1-pkushwaha@marvell.com>
-X-Mailer: git-send-email 2.16.6
+        id S230042AbhJSKZe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Oct 2021 06:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34684 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230123AbhJSKZe (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Oct 2021 06:25:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E64660F59;
+        Tue, 19 Oct 2021 10:23:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634638999;
+        bh=c/ckGflpy2Zo4cO7xwomLOpW7Os/GCPswxoaXtZKR1U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=r2xvY/bqlbdf8sTi0hWSnXdXa2l2w8r/YSl4UHMFM9qo7/QgzDogObztveBrWYKJ5
+         VY9GOZWGGbgqlSJbC8n87lIdlNhXDk/h6KnvNRtoCMKlL044Ld2s0orvpPabXfgLiU
+         uQPlk2YIAOTP0tXu5HYFYQ7SBbecwmv3dg1Wtl5X6QMfKXn5CPSSsxjnEZYh7AQIbS
+         1QfZpwS3OvgazkASUrayqLzZGXAjgiMfXb7+0+husejaFwmVDv8fdbuzBg0HVE/Uk6
+         lb60ve0QmLrWKUrbv3/e2yIFq59dVjT+Vu92o4ahr140EjfLPK+YSRJnlY7H+LU2Ec
+         3luD9djxfwEOQ==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alaa Hleihel <alaa@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH RESEND rdma-rc] RDMA/mlx5: Add dummy umem to IB_MR_TYPE_DM
+Date:   Tue, 19 Oct 2021 13:23:13 +0300
+Message-Id: <e13b7014857ea296285ee5cfcdaaada9007f6978.1634638695.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: Xj6jtfw9SpDzsH2okC6jkL-PjHdzd63Z
-X-Proofpoint-ORIG-GUID: Xj6jtfw9SpDzsH2okC6jkL-PjHdzd63Z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-18_07,2021-10-18_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Device's QP memory should only be allocated and released by IB layer.
-This patch removes the redundant release of the device's qp memory
-and uses completion APIs to make sure that .destroy_qp() only return,
-when qp reference becomes 0.
+From: Alaa Hleihel <alaa@nvidia.com>
 
-Fixes: 514aee660df4 ("RDMA: Globally allocate and release QP memory")
-Acked-by: Michal Kalderon <michal.kalderon@marvell.com>
-Signed-off-by: Ariel Elior <aelior@marvell.com>
-Signed-off-by: Shai Malin <smalin@marvell.com>
-Signed-off-by: Alok Prasad <palok@marvell.com>
-Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+After the cited patch, and for the case of IB_MR_TYPE_DM that doesn't
+have a umem (even though it is a user MR), function mlx5_free_priv_descs()
+will think that it's a kernel MR, leading to wrongly accessing mr->descs
+that will get wrong values in the union which leads to attempting to
+release resources that were not allocated in the first place.
+
+For example:
+ DMA-API: mlx5_core 0000:08:00.1: device driver tries to free DMA memory it has not allocated [device address=0x0000000000000000] [size=0 bytes]
+ WARNING: CPU: 8 PID: 1021 at kernel/dma/debug.c:961 check_unmap+0x54f/0x8b0
+ RIP: 0010:check_unmap+0x54f/0x8b0
+ Call Trace:
+  debug_dma_unmap_page+0x57/0x60
+  mlx5_free_priv_descs+0x57/0x70 [mlx5_ib]
+  mlx5_ib_dereg_mr+0x1fb/0x3d0 [mlx5_ib]
+  ib_dereg_mr_user+0x60/0x140 [ib_core]
+  uverbs_destroy_uobject+0x59/0x210 [ib_uverbs]
+  uobj_destroy+0x3f/0x80 [ib_uverbs]
+  ib_uverbs_cmd_verbs+0x435/0xd10 [ib_uverbs]
+  ? uverbs_finalize_object+0x50/0x50 [ib_uverbs]
+  ? lock_acquire+0xc4/0x2e0
+  ? lock_acquired+0x12/0x380
+  ? lock_acquire+0xc4/0x2e0
+  ? lock_acquire+0xc4/0x2e0
+  ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+  ? lock_release+0x28a/0x400
+  ib_uverbs_ioctl+0xc0/0x140 [ib_uverbs]
+  ? ib_uverbs_ioctl+0x7c/0x140 [ib_uverbs]
+  __x64_sys_ioctl+0x7f/0xb0
+  do_syscall_64+0x38/0x90
+
+Fix it by adding a dummy umem to IB_MR_TYPE_DM MRs.
+
+Fixes: f18ec4223117 ("RDMA/mlx5: Use a union inside mlx5_ib_mr")
+Signed-off-by: Alaa Hleihel <alaa@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/qedr/qedr.h       | 1 +
- drivers/infiniband/hw/qedr/qedr_iw_cm.c | 2 +-
- drivers/infiniband/hw/qedr/verbs.c      | 5 ++++-
- 3 files changed, 6 insertions(+), 2 deletions(-)
+RESEND: https://lore.kernel.org/all/9c6478b70dc23cfec3a7bfc345c30ff817e7e799.1631660866.git.leonro@nvidia.com
 
-diff --git a/drivers/infiniband/hw/qedr/qedr.h b/drivers/infiniband/hw/qedr/qedr.h
-index 3cb4febaad0f..8def88cfa300 100644
---- a/drivers/infiniband/hw/qedr/qedr.h
-+++ b/drivers/infiniband/hw/qedr/qedr.h
-@@ -455,6 +455,7 @@ struct qedr_qp {
- 	/* synchronization objects used with iwarp ep */
- 	struct kref refcnt;
- 	struct completion iwarp_cm_comp;
-+	struct completion qp_rel_comp;
- 	unsigned long iwarp_cm_flags; /* enum iwarp_cm_flags */
- };
- 
-diff --git a/drivers/infiniband/hw/qedr/qedr_iw_cm.c b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-index 1715fbe0719d..a51fc6854984 100644
---- a/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-+++ b/drivers/infiniband/hw/qedr/qedr_iw_cm.c
-@@ -83,7 +83,7 @@ static void qedr_iw_free_qp(struct kref *ref)
- {
- 	struct qedr_qp *qp = container_of(ref, struct qedr_qp, refcnt);
- 
--	kfree(qp);
-+	complete(&qp->qp_rel_comp);
+Our request to drop that original patch was because mr-->umem pointer is checked
+in rereg flow for the DM MRs with expectation to have NULL there. However DM is
+blocked for the rereg path in the commit 5ccbf63f87a3 ("IB/uverbs: Prevent
+reregistration of DM_MR to regular MR"), and the checks in mlx5_ib are redundant.
+
+Thanks
+---
+ drivers/infiniband/core/umem.c  | 21 +++++++++++++++++++++
+ drivers/infiniband/hw/mlx5/mr.c |  5 +++++
+ include/rdma/ib_umem.h          |  5 +++++
+ 3 files changed, 31 insertions(+)
+
+diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
+index 86d479772fbc..a2f9c922bdd9 100644
+--- a/drivers/infiniband/core/umem.c
++++ b/drivers/infiniband/core/umem.c
+@@ -260,6 +260,27 @@ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
  }
+ EXPORT_SYMBOL(ib_umem_get);
  
- static void
-diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
-index 3fbf172dbbef..dcb3653db72d 100644
---- a/drivers/infiniband/hw/qedr/verbs.c
-+++ b/drivers/infiniband/hw/qedr/verbs.c
-@@ -1357,6 +1357,7 @@ static void qedr_set_common_qp_params(struct qedr_dev *dev,
- 	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
- 		kref_init(&qp->refcnt);
- 		init_completion(&qp->iwarp_cm_comp);
-+		init_completion(&qp->qp_rel_comp);
- 	}
++/**
++ * ib_umem_get_dummy - Create an empty umem
++ *
++ * @device: IB device to connect UMEM
++ */
++struct ib_umem *ib_umem_get_dummy(struct ib_device *device)
++{
++	struct ib_umem *umem;
++
++	umem = kzalloc(sizeof(*umem), GFP_KERNEL);
++	if (!umem)
++		return ERR_PTR(-ENOMEM);
++
++	umem->ibdev = device;
++	umem->owning_mm = current->mm;
++	mmgrab(umem->owning_mm);
++
++	return umem;
++}
++EXPORT_SYMBOL(ib_umem_get_dummy);
++
+ /**
+  * ib_umem_release - release memory pinned with ib_umem_get
+  * @umem: umem struct to release
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 3be36ebbf67a..6fbc281a8881 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1389,6 +1389,11 @@ static struct ib_mr *mlx5_ib_get_dm_mr(struct ib_pd *pd, u64 start_addr,
+ 	kfree(in);
  
- 	qp->pd = pd;
-@@ -2857,8 +2858,10 @@ int qedr_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 
- 	qedr_free_qp_resources(dev, qp, udata);
- 
--	if (rdma_protocol_iwarp(&dev->ibdev, 1))
-+	if (rdma_protocol_iwarp(&dev->ibdev, 1)) {
- 		qedr_iw_qp_rem_ref(&qp->ibqp);
-+		wait_for_completion(&qp->qp_rel_comp);
+ 	set_mr_fields(dev, mr, length, acc);
++	mr->umem = ib_umem_get_dummy(&dev->ib_dev);
++	if (IS_ERR(mr->umem)) {
++		err = PTR_ERR(mr->umem);
++		goto err_free;
 +	}
  
- 	return 0;
+ 	return &mr->ibmr;
+ 
+diff --git a/include/rdma/ib_umem.h b/include/rdma/ib_umem.h
+index 5ae9dff74dac..fd20b1610050 100644
+--- a/include/rdma/ib_umem.h
++++ b/include/rdma/ib_umem.h
+@@ -98,6 +98,7 @@ static inline void __rdma_umem_block_iter_start(struct ib_block_iter *biter,
+ 
+ struct ib_umem *ib_umem_get(struct ib_device *device, unsigned long addr,
+ 			    size_t size, int access);
++struct ib_umem *ib_umem_get_dummy(struct ib_device *device);
+ void ib_umem_release(struct ib_umem *umem);
+ int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+ 		      size_t length);
+@@ -153,6 +154,10 @@ static inline struct ib_umem *ib_umem_get(struct ib_device *device,
+ {
+ 	return ERR_PTR(-EOPNOTSUPP);
  }
++static struct ib_umem *ib_umem_get_dummy(struct ib_device *device)
++{
++	return ERR_PTR(-EOPNOTSUPP);
++}
+ static inline void ib_umem_release(struct ib_umem *umem) { }
+ static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
+ 		      		    size_t length) {
 -- 
-2.24.1
+2.31.1
 
