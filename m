@@ -2,103 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C18433630
-	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 14:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064F14336AC
+	for <lists+linux-rdma@lfdr.de>; Tue, 19 Oct 2021 15:07:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhJSMp2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Oct 2021 08:45:28 -0400
-Received: from out20-13.mail.aliyun.com ([115.124.20.13]:51163 "EHLO
-        out20-13.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhJSMp1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Oct 2021 08:45:27 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.04606774|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.014655-0.000226005-0.985119;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=wangyugui@e16-tech.com;NM=1;PH=DS;RN=4;RT=4;SR=0;TI=SMTPD_---.LeQNB3l_1634647393;
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.LeQNB3l_1634647393)
-          by smtp.aliyun-inc.com(10.147.40.26);
-          Tue, 19 Oct 2021 20:43:13 +0800
-Date:   Tue, 19 Oct 2021 20:43:16 +0800
-From:   Wang Yugui <wangyugui@e16-tech.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH] infiniband: change some kmalloc to kvmalloc to support CONFIG_PROVE_LOCKING=y
-Cc:     linux-rdma@vger.kernel.org, selvin.xavier@broadcom.com,
-        eddie.wai@broadcom.com
-In-Reply-To: <20211019113722.GG3686969@ziepe.ca>
-References: <20211019002656.17745-1-wangyugui@e16-tech.com> <20211019113722.GG3686969@ziepe.ca>
-Message-Id: <20211019204315.A760.409509F4@e16-tech.com>
+        id S230267AbhJSNJ4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 19 Oct 2021 09:09:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230097AbhJSNJz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 19 Oct 2021 09:09:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5157C61372;
+        Tue, 19 Oct 2021 13:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634648863;
+        bh=xIBTPWQR5ZPFkk+4gY/S2gqrKW83K9myDIP0ThTqbHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mPU1KKl3HTTNfnM3/gYk71rHsHlIGR0ppywxb8GDCzFqc5WWti1/3V/k1PCgN0GZE
+         pYMNV44u79A5rKG9QP6TQ+5RrcXEPNxiVvZJJN/xxnH8vrDTtFoYib7NYHAleTLCux
+         T7uE1Iuu2cp1Kh/JhZvIo7+2UAty1cxto9ndLO4eZPY7yk+Vo7G1UtHdsmcsLflrst
+         zQsF6MlA1N2zpEnVTnh0oUJym0HRYWF2mt4sNxKClSTNagTG2iVCfru0N25C/ZBlXq
+         1Wrr8W0naUOUzJ3IpTV6QMvtMr714PUOsix4JY69pDZJ/6fibRBGSBgMdV4PjhdBUV
+         LZ7dM2TG83cOA==
+Date:   Tue, 19 Oct 2021 16:07:38 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next 0/6] RDMA/rxe: Fix potential races
+Message-ID: <YW7DGrG04eJwbf7d@unreal>
+References: <20211010235931.24042-1-rpearsonhpe@gmail.com>
+ <YWUskJBU5ZHrIhhS@unreal>
+ <bfb21e28-2f92-e372-871e-32c5f72338f4@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.75.04 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bfb21e28-2f92-e372-871e-32c5f72338f4@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
-
-> On Tue, Oct 19, 2021 at 08:26:56AM +0800, wangyugui wrote:
-> > When CONFIG_PROVE_LOCKING=y, one kmalloc of infiniband hit the max alloc size limitation.
+On Tue, Oct 12, 2021 at 03:19:46PM -0500, Bob Pearson wrote:
+> On 10/12/21 1:34 AM, Leon Romanovsky wrote:
+> > On Sun, Oct 10, 2021 at 06:59:25PM -0500, Bob Pearson wrote:
+> >> There are possible race conditions related to attempting to access
+> >> rxe pool objects at the same time as the pools or elements are being
+> >> freed. This series of patches addresses these races.
 > > 
-> > WARNING: CPU: 36 PID: 8 at mm/page_alloc.c:5350 __alloc_pages+0x27e/0x3e0
-> >  Call Trace:
-> >   kmalloc_order+0x2a/0xb0
-> >   kmalloc_order_trace+0x19/0xf0
-> >   __kmalloc+0x231/0x270
-> >   ib_setup_port_attrs+0xd8/0x870 [ib_core]
-> >   ib_register_device+0x419/0x4e0 [ib_core]
-> >   bnxt_re_task+0x208/0x2d0 [bnxt_re]
+> > Can we get rid of this pool?
 > > 
-> > change this kmalloc to kvmalloc to support CONFIG_PROVE_LOCKING=y
+> > Thanks
 > > 
-> > Signed-off-by: wangyugui <wangyugui@e16-tech.com>
-> > ---
-> >  drivers/infiniband/core/sysfs.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >>
+> >> Bob Pearson (6):
+> >>   RDMA/rxe: Make rxe_alloc() take pool lock
+> >>   RDMA/rxe: Copy setup parameters into rxe_pool
+> >>   RDMA/rxe: Save object pointer in pool element
+> >>   RDMA/rxe: Combine rxe_add_index with rxe_alloc
+> >>   RDMA/rxe: Combine rxe_add_key with rxe_alloc
+> >>   RDMA/rxe: Fix potential race condition in rxe_pool
+> >>
+> >>  drivers/infiniband/sw/rxe/rxe_mcast.c |   5 +-
+> >>  drivers/infiniband/sw/rxe/rxe_mr.c    |   1 -
+> >>  drivers/infiniband/sw/rxe/rxe_mw.c    |   5 +-
+> >>  drivers/infiniband/sw/rxe/rxe_pool.c  | 235 +++++++++++++-------------
+> >>  drivers/infiniband/sw/rxe/rxe_pool.h  |  67 +++-----
+> >>  drivers/infiniband/sw/rxe/rxe_verbs.c |  10 --
+> >>  6 files changed, 140 insertions(+), 183 deletions(-)
+> >>
+> >> -- 
+> >> 2.30.2
+> >>
 > 
-> Huh? what causes ib_port to get larger than MAX_ORDER?
-> 
-> The only array is attrs_list and I don't see something that scales
-> with
+> Not sure which 'this' you mean? This set of patches is motivated by someone at HPE
+> running into seg faults caused very infrequently by rdma packets causing seg faults
+> when trying to copy data to or from an MR. This can only happen (other than just dumb
+> bug which doesn't seem to be the case) by a late packet arriving after the MR is
+> de-registered. The root cause of that is the way rxe currently defers cleaning up
+> objects with krefs and potential races between cleanup and new packets looking up
+> rkeys. I found a lot of potential race conditions and tried to close them off. There
+> are another couple of patches coming as well.
 
-The array size is not fixed. so it maybe a little big in some case.
+I have no doubts that this series fixes RXE, but my request was more general.
+Is there way/path to remove everything declared in rxe_pool.c|h?
 
-struct ib_port {
-	struct kobject kobj;
-	struct ib_device *ibdev;
-	struct gid_attr_group *gid_attr_group;
-	struct hw_stats_port_data *hw_stats_data;
-
-	struct attribute_group groups[3];
-	const struct attribute_group *groups_list[5];
-	u32 port_num;
-	struct port_table_attribute attrs_list[];
-};
-
-=>
-struct port_table_attribute {
-	struct ib_port_attribute attr;
-
-=>
-struct ib_port_attribute {
-	struct attribute attr;
-
-=>
-struct attribute {
-	const char		*name;
-	umode_t			mode;
-#ifdef CONFIG_DEBUG_LOCK_ALLOC
-	bool			ignore_lockdep:1;
-	struct lock_class_key	*key;
-	struct lock_class_key	skey;
-#endif
-};
-
-When CONFIG_PROVE_LOCKING=y, we need CONFIG_DEBUG_LOCK_ALLOC=y too.
-
-This problem happen when CONFIG_PROVE_LOCKING=y(CONFIG_DEBUG_LOCK_ALLOC=y),
-but not happen when CONFIG_PROVE_LOCKING=n(CONFIG_DEBUG_LOCK_ALLOC=n).
-
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2021/10/19
-
-
-
+Thanks
