@@ -2,116 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A0E434293
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Oct 2021 02:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C20434714
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Oct 2021 10:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhJTAbO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 19 Oct 2021 20:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbhJTAbO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 19 Oct 2021 20:31:14 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 005B8C06161C
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Oct 2021 17:29:00 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id s64so11245657yba.11
-        for <linux-rdma@vger.kernel.org>; Tue, 19 Oct 2021 17:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=fXSINN/OKY+rvwvV/MKDzL/cEDllyzluTyYUiGJFCW8=;
-        b=liAOV/BCf9xSEd2OUkzSd7imXUsR7BoKukkVMQTdGG7X0HqmeMmXYf6UINhvYgXAvB
-         T2HSpbWMemRCdgFahVnXeO6prMc2xsCr2rD6/nS80LjhpNN8R3Z8hlIvOa53hi8J+jRE
-         GYXC5nykFX3vsfewwQ+rCjmrU7naEXGYjWz1Mhw9bCwwVLkhxKnZZxvO/aehiqlFGeHm
-         K8UsPfMhSrkROM7p/IcQ55bualmNBb+laDcLWcXc5p//hOJ+nv3BAMzayYCKrfC0qZVY
-         0qzg2cD0SSdG9ZIOIi7nFPBelcClx4T+dYOR9dcwnP4BCcXEzA9NCxTVJE5ads4Z/IcQ
-         X5yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=fXSINN/OKY+rvwvV/MKDzL/cEDllyzluTyYUiGJFCW8=;
-        b=5Xigsds0Y5j/Beit+Wjp1fxaCS7fxDXg+1YOc2kBFA232nqyOmoFUgQiezRAkbA1XG
-         jMmtgxZn2Tu5gMhz0W5lpzHD3nrfY4epLq3eamu909jw211Vdc7hW/SuqqZwvYWzkAFf
-         8RuUB+WdfmdclwGyaGuDuHGdRaEY5tGurFEUmHW0vHRDvn9SV1miKwkeD9iitO/QVXPs
-         7DX+2NOJmZIMpnD/ed12erldv2SvWfuaUJY6Ecp0uyHQZQylgMl1GYeo+SA37sVW7/bJ
-         7PddMCvIQafMECvQRMzVasHTogMJaEJ9nU8RW5JW9qX6sZ97UghL5CdiPk6mcgaPv2wC
-         IVWw==
-X-Gm-Message-State: AOAM5307Gu4kSIEI8OkCSbINgNvbTGW2jRUkRaanhFQycWtioozfmSOR
-        S64KgMg7hHGBFlJv5djLwEyDFt9alLcySm6S7Ww=
-X-Google-Smtp-Source: ABdhPJw0NJjFvjyGXNOBZ4ILSqCCVIMjN0eIee0tidLNvD19RCPaKaIgCPDk+EZ0yXlLa+fLw1dSZYKiQdZ9nSNUnrA=
-X-Received: by 2002:a25:698f:: with SMTP id e137mr39263866ybc.323.1634689740129;
- Tue, 19 Oct 2021 17:29:00 -0700 (PDT)
+        id S229878AbhJTImP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 20 Oct 2021 04:42:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41979 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229627AbhJTImO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 20 Oct 2021 04:42:14 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-26-9od0xuhxN2eU-4dqV5Rppg-1; Wed, 20 Oct 2021 09:39:58 +0100
+X-MC-Unique: 9od0xuhxN2eU-4dqV5Rppg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Wed, 20 Oct 2021 09:39:56 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.023; Wed, 20 Oct 2021 09:39:56 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>
+CC:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@nvidia.com>,
+        Aya Levin <ayal@nvidia.com>,
+        "Eran Ben Elisha" <eranbe@nvidia.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
+Subject: RE: [PATCH] [v2] mlx5: stop warning for 64KB pages
+Thread-Topic: [PATCH] [v2] mlx5: stop warning for 64KB pages
+Thread-Index: AQHXwdhG9T7OOxgcJU2hLtnyJfvXJqvbl/VQ
+Date:   Wed, 20 Oct 2021 08:39:56 +0000
+Message-ID: <b12bfefcace143bd9aed95213e1bd8f1@AcuMS.aculab.com>
+References: <20211015152056.2434853-1-arnd@kernel.org>
+In-Reply-To: <20211015152056.2434853-1-arnd@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Received: by 2002:a05:7010:4eab:b0:198:7287:8c with HTTP; Tue, 19 Oct 2021
- 17:28:59 -0700 (PDT)
-Reply-To: AnsleyHansenHamdok@outlook.com
-From:   "My Name Mrs. Ansley Hansen Hamdok" 
-        <ivoiiriennedeebanquesi@gmail.com>
-Date:   Wed, 20 Oct 2021 00:28:59 +0000
-Message-ID: <CAJcQ56-SVOPLQn=c9n_nfXvStaX+KJaf2SNEpM0Ucdo8m0LGjA@mail.gmail.com>
-Subject: I am in search of a property to buy in your country
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I am in search of a property to buy in your country
+From: Arnd Bergmann
+> Sent: 15 October 2021 16:21
+> 
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When building with 64KB pages, clang points out that xsk->chunk_size
+> can never be PAGE_SIZE:
+> 
+> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant
+> 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-
+> constant-out-of-range-compare]
+>         if (xsk->chunk_size > PAGE_SIZE ||
+>             ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
+> 
+> In older versions of this code, using PAGE_SIZE was the only
+> possibility, so this would have never worked on 64KB page kernels,
+> but the patch apparently did not address this case completely.
+> 
+> As Maxim Mikityanskiy suggested, 64KB chunks are really not all that
+> useful, so just shut up the warning by adding a cast.
+> 
+> Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
+> Link: https://lore.kernel.org/netdev/20211013150232.2942146-1-arnd@kernel.org/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+> b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+> index 538bc2419bd8..228257010f32 100644
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
+> @@ -15,8 +15,10 @@ bool mlx5e_validate_xsk_param(struct mlx5e_params *params,
+>  			      struct mlx5e_xsk_param *xsk,
+>  			      struct mlx5_core_dev *mdev)
+>  {
+> -	/* AF_XDP doesn't support frames larger than PAGE_SIZE. */
+> -	if (xsk->chunk_size > PAGE_SIZE ||
+> +	/* AF_XDP doesn't support frames larger than PAGE_SIZE,
+> +	 * and xsk->chunk_size is limited to 65535 bytes.
+> +	 */
+> +	if ((size_t)xsk->chunk_size > PAGE_SIZE ||
+>  			xsk->chunk_size < MLX5E_MIN_XSK_CHUNK_SIZE)
+>  		return false;
 
+How much smaller does the kernel get if you change 'chunk_size' from
+_u16 to 'unsigned int'. ?
+Especially for a non-x86 build?
+Or is it a hardware constrained size??
 
+	David
 
-This is one of those stories that won=E2=80=99t come easy. It=E2=80=99s gen=
-uinely one
-where I=E2=80=99ll have to =E2=80=9Csit down and open a vein.=E2=80=9DIt=E2=
-=80=99s very personal, and
-maybe I should not speak publicly about it, but I need your help,I
-have no desire to hide any part of my life. Because, through it all, I
-know I did the best I could. A lot of things happen as a result of
-people looking back into their homes. There haven=E2=80=99t been too many
-unexpected revelations in my family=E2=80=99s case, although we discovered =
-a
-few surprising fact
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-
-
-I am in search of a property to buy in your country; I intended to
-come over to your country for investment? I believe that I have to
-partner with a citizen to be safe in investing in your country. My
-name is Ms. Ansley Hansen Hamdok, My late husband deals on Crude Oil
-with Federal Government of Sudan and we have a private Oil firm in
-Bentiu Oil zone town and Upper Nile city.
-
-What I have experience physically, I don't wish to experience it again
-in my life due to the recent civil and Ethnic crises caused by our
-President Mr. Salva Kiir and the rebel leader Mr. Riek Machar, I have
-been Under United Nation refugee camp in Rue De Bass am west Africa,
-to save my life and that of my little daughter.
-
-
-I want to solicit for your partnership with trust to transfer and
-invest with my fund deposited at Bank by my late husband, I will
-disclose the Amount to you as we proceed. I need your help to move
-this fund to your country, because my life is no longer safe in
-Africa, since the rebels are looking for the families of all the oil
-business partners in the country, very scaring I wish you will
-understand my predicaments.
-
-But the truth is that I and my daughter was lucky to be part of the
-badge taken by UN KEEPING FORCE to Addis Ababa our Neighboring country
-where we took a flight to Abidjan Ivory Coast, We left Sudan and move
-to Addis Ababa our neighboring country with the few days ceasefire
-which was announced by United Nation Peace keeping Force., Because of
-face-to-face peace meeting accord coordinated by US Secretary of
-State, and United Nations in Ethiopia (Addis Ababa) between The
-sitting President Mr. Salva Kiir and the rebel leader Mr. Riek Machar
-to stop this war.
-
-I will send you the document of the fund with other details for your
-acknowledgement and prove.
-
-
-With love from
-Ms.Ansley Hansen Hamdok
