@@ -2,123 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96C20434714
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Oct 2021 10:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC8C434741
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Oct 2021 10:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229878AbhJTImP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Wed, 20 Oct 2021 04:42:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41979 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229627AbhJTImO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 20 Oct 2021 04:42:14 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-26-9od0xuhxN2eU-4dqV5Rppg-1; Wed, 20 Oct 2021 09:39:58 +0100
-X-MC-Unique: 9od0xuhxN2eU-4dqV5Rppg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Wed, 20 Oct 2021 09:39:56 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.023; Wed, 20 Oct 2021 09:39:56 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Aya Levin <ayal@nvidia.com>,
-        "Eran Ben Elisha" <eranbe@nvidia.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>
-Subject: RE: [PATCH] [v2] mlx5: stop warning for 64KB pages
-Thread-Topic: [PATCH] [v2] mlx5: stop warning for 64KB pages
-Thread-Index: AQHXwdhG9T7OOxgcJU2hLtnyJfvXJqvbl/VQ
-Date:   Wed, 20 Oct 2021 08:39:56 +0000
-Message-ID: <b12bfefcace143bd9aed95213e1bd8f1@AcuMS.aculab.com>
-References: <20211015152056.2434853-1-arnd@kernel.org>
-In-Reply-To: <20211015152056.2434853-1-arnd@kernel.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S229627AbhJTIuT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Oct 2021 04:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhJTIuT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Oct 2021 04:50:19 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D77C06161C
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Oct 2021 01:48:05 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id q189so10202417ybq.1
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Oct 2021 01:48:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=8hhOONSzPI4Kduxex/ETyUH+jghLAd9KAEIAnuetR5w=;
+        b=epVpz70OXfhDL7IeECB2+T+QK2+IPUtxVH8BR4JW7C8poQI5z5VfS8RI82v5oHyCFs
+         2Ec6DxDiJn5fQzdwf6ClLYqqWgQglyPsRnm3KGHa80kdsh8z3iVtqL/D2XKO4FXMzHbv
+         zuJNrOPI1QUNodpAExMymTph5FwW47KnyxR88UE4r/6ix297Y9n3/uAQxlysjeoPI80b
+         UZUIbRGuvxkoHlBdzAw4zQYc2eFwlYj8FCM4tCXvjjl7f243WnU4vnYcrjh2PxNSf3uS
+         eBZdVd7YA7ixw1zWiJvsUkljWvLQq+pT/mOW7zjUoo/YXBlj8o1FjVrJAJEzYLBdpvVk
+         IYeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=8hhOONSzPI4Kduxex/ETyUH+jghLAd9KAEIAnuetR5w=;
+        b=Q4Z6Zl167UHkDR1YngDGZHKYheHV9uXSIFz3GbHqvl5w5YvvrfL03AWTL8wUYEJmdM
+         GsNqCPFpIZIEvpPZA1KYwZGa8A+xDwkDj9MFzZL7knPosACnNuAIMPzcW0d4S3w5u9WT
+         iHRoU80a9N+zPFowA9t7r9k6YR5zDMDdu3vUVXsHSASrGvkBRFOoVlYoI5b01ybO+0bd
+         OKeWIzNntcUVWhL0uKAerK/zf1W4/GjtOtXnPRz7dzmOxi1FDYjmw1NySPff0yFJ8J5M
+         PX1hKMlZbA1v4eL7OsbzIbWVhWp546zDzqFKMqPg37mEbjqjZVgm+UNPXe5UsRIbYVYC
+         xctQ==
+X-Gm-Message-State: AOAM5335Ar8BlTixc3AokD1RxGl51bqnbvjmZBCXsmamfF3thsefm8F2
+        LfRAP+3TDCF78oN9w3tSvoMKb0aiv2ncj6dD8b0=
+X-Google-Smtp-Source: ABdhPJy1sZQ5jqIksjI1zkAJIYBHVUb7+VlGFXR0w5eLufgvsyT0EvaJekHZs2xsHslPpvMYeb87Hv+41HdV9vcUJy8=
+X-Received: by 2002:a25:1b86:: with SMTP id b128mr45295442ybb.20.1634719684790;
+ Wed, 20 Oct 2021 01:48:04 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Sender: wedenimboma74@gmail.com
+Received: by 2002:a05:7110:233:b0:fa:4255:e6a1 with HTTP; Wed, 20 Oct 2021
+ 01:48:04 -0700 (PDT)
+From:   Kayla Manthey <sgtkaylamanthey612@gmail.com>
+Date:   Wed, 20 Oct 2021 08:48:04 +0000
+X-Google-Sender-Auth: _6ybpeJyTiMq0xmAt84tZp3rMMw
+Message-ID: <CADTv18CGz4qDM-92Zpgqv6EdhFDifTZr13pVWVQqREzue=Pt0w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann
-> Sent: 15 October 2021 16:21
-> 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When building with 64KB pages, clang points out that xsk->chunk_size
-> can never be PAGE_SIZE:
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c:19:22: error: result of comparison of constant
-> 65536 with expression of type 'u16' (aka 'unsigned short') is always false [-Werror,-Wtautological-
-> constant-out-of-range-compare]
->         if (xsk->chunk_size > PAGE_SIZE ||
->             ~~~~~~~~~~~~~~~ ^ ~~~~~~~~~
-> 
-> In older versions of this code, using PAGE_SIZE was the only
-> possibility, so this would have never worked on 64KB page kernels,
-> but the patch apparently did not address this case completely.
-> 
-> As Maxim Mikityanskiy suggested, 64KB chunks are really not all that
-> useful, so just shut up the warning by adding a cast.
-> 
-> Fixes: 282c0c798f8e ("net/mlx5e: Allow XSK frames smaller than a page")
-> Link: https://lore.kernel.org/netdev/20211013150232.2942146-1-arnd@kernel.org/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-> b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-> index 538bc2419bd8..228257010f32 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xsk/setup.c
-> @@ -15,8 +15,10 @@ bool mlx5e_validate_xsk_param(struct mlx5e_params *params,
->  			      struct mlx5e_xsk_param *xsk,
->  			      struct mlx5_core_dev *mdev)
->  {
-> -	/* AF_XDP doesn't support frames larger than PAGE_SIZE. */
-> -	if (xsk->chunk_size > PAGE_SIZE ||
-> +	/* AF_XDP doesn't support frames larger than PAGE_SIZE,
-> +	 * and xsk->chunk_size is limited to 65535 bytes.
-> +	 */
-> +	if ((size_t)xsk->chunk_size > PAGE_SIZE ||
->  			xsk->chunk_size < MLX5E_MIN_XSK_CHUNK_SIZE)
->  		return false;
-
-How much smaller does the kernel get if you change 'chunk_size' from
-_u16 to 'unsigned int'. ?
-Especially for a non-x86 build?
-Or is it a hardware constrained size??
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+0JfQtNGA0LDQstC10LnRgtC1LCDQv9C+0LvRg9GH0LjRhdGC0LUg0LvQuCDQtNCy0LDRgtCwINC8
+0Lgg0L/RgNC10LTQuNGI0L3QuCDQuNC80LXQudC70LA/INC80L7Qu9GPINC/0YDQvtCy0LXRgNC1
+0YLQtSDQuCDQvNC4DQrQvtGC0LPQvtCy0L7RgNC10YLQtS4NCg==
