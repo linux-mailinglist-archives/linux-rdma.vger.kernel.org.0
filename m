@@ -2,39 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B384367D0
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABE14367D5
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 18:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhJUQda (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Oct 2021 12:33:30 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:35746 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhJUQda (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Oct 2021 12:33:30 -0400
-Received: by mail-pj1-f53.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso3577815pjd.0;
-        Thu, 21 Oct 2021 09:31:14 -0700 (PDT)
+        id S231574AbhJUQeC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Oct 2021 12:34:02 -0400
+Received: from mail-pl1-f182.google.com ([209.85.214.182]:40488 "EHLO
+        mail-pl1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhJUQeC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Oct 2021 12:34:02 -0400
+Received: by mail-pl1-f182.google.com with SMTP id v20so788927plo.7;
+        Thu, 21 Oct 2021 09:31:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=7q6vzNxfbvYKvr+skK0udmjoYoQnE4oH6D4ZVnH1FZ4=;
-        b=TWW9vURnCOwhlWzba1aofI6NQq6KAU+i3bp576Ywcm4yX090DORTTdEn0Qb0rnzvFC
-         eUtUlTypufeMvK5XvUP8Q/vBuj/WBkG/ea2mXqh+sYkSdzjO/62iKfMbwxFTgUeBr2jn
-         u5VEAyN1PW7LcWsuqvGA4MdhiK3K1GLYTjcG+0IjAyBT1P1ZH2z7GoTpd6VubyR+E5zK
-         DQXDmrOBvUpTVzB9QiqAX7+VwLISBPzCcSM7dxyZkZdP1QsE2CZE32JXvz7S55MeYjB1
-         ooYu5Fwh080O7I3iALgaWmNOykgeFgsRiClHtlniy6rZukVIwDPvB+271Qfust/zx5hE
-         fluQ==
-X-Gm-Message-State: AOAM532DTaPcN4P2St/D+3l1qTYgE9tbykVk43tEw2TA7ApqYyQZHcHN
-        d3j5Hc6huQonKP74iC7raWs3hUfTFQQ=
-X-Google-Smtp-Source: ABdhPJzAsVfKsg0f6FiCdPf1f4WeSRQiymq+aFkY/xYpHKJYMpz+xbtEmtli9yVVwHBYBRTQbFaAMg==
-X-Received: by 2002:a17:90b:2382:: with SMTP id mr2mr7961105pjb.186.1634833873331;
-        Thu, 21 Oct 2021 09:31:13 -0700 (PDT)
+        bh=DxZp4AcO+bnX5f5oSeqX9Zw466R7NR9oWDq0l2ri9l8=;
+        b=J3GUpmVQf9TsgpMGAoS0wuIAL+RRwGI/4XSXpFuz4pyJFg3SMgF1+KY4rCXjswvw65
+         OAat+UYTTGjIGb1FbPQdaqZOrUAG61B2IOPEownY8ZKh1F0pMGxLfrB6dw4DaCaDf2H1
+         bPp+8b5Qc6ZL+2YRnh76mseNj2MBtUA/R859KBocoI1rYt3VAoDql2OVAyi5cZ2MaopQ
+         rCqA/ogqt/JcW8tnXKiu/k0DG8mxaq8rOLN051wLPpOC+DG4JXA6hF/PbKh6Ba+sKakb
+         Zy8T8mbk0GabMBux2TgXNHptrc+hiqj6sGKxkMXIORS9G7iTOeacZUlvPg3Ufs77+9MJ
+         XV9w==
+X-Gm-Message-State: AOAM5338DM/HhOBOXrhhjZKgAPdwFqL7j0V4+xVuOH9glb/yuTB+nbGw
+        w4RTCFLSu1O2V6bKg6tz3tIOxrsWKaM=
+X-Google-Smtp-Source: ABdhPJxnOy3ZKIC8kNYfkGWbl74R29IiC3/6mcPvfNteVUDLoKdFOuocZueEu97aVMVWesrJ7Eq/Lg==
+X-Received: by 2002:a17:90a:c901:: with SMTP id v1mr7879191pjt.162.1634833905367;
+        Thu, 21 Oct 2021 09:31:45 -0700 (PDT)
 Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:452c:8e0d:d8a1:4d6])
-        by smtp.gmail.com with ESMTPSA id me12sm11035926pjb.27.2021.10.21.09.31.11
+        by smtp.gmail.com with ESMTPSA id u66sm6759232pfc.114.2021.10.21.09.31.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Oct 2021 09:31:12 -0700 (PDT)
-Subject: Re: [PATCH v2 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+        Thu, 21 Oct 2021 09:31:44 -0700 (PDT)
+Subject: Re: [PATCH v2 6/6] trace/hwlat: Make use of the helper macro
+ kthread_run_on_cpu()
 To:     Cai Huoqing <caihuoqing@baidu.com>
 Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
         Doug Ledford <dledford@redhat.com>,
@@ -51,13 +52,14 @@ Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
         rcu@vger.kernel.org
 References: <20211021122758.3092-1-caihuoqing@baidu.com>
+ <20211021122758.3092-7-caihuoqing@baidu.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <52540892-ced9-5d7a-5046-917526c84381@acm.org>
-Date:   Thu, 21 Oct 2021 09:31:11 -0700
+Message-ID: <6c767079-e4fa-3ba3-1e0e-7b5c0d0a50c5@acm.org>
+Date:   Thu, 21 Oct 2021 09:31:43 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.14.0
 MIME-Version: 1.0
-In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
+In-Reply-To: <20211021122758.3092-7-caihuoqing@baidu.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,10 +68,9 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 10/21/21 5:27 AM, Cai Huoqing wrote:
-> the helper macro kthread_run_on_cpu() inculdes
+> Repalce kthread_create_on_cpu/wake_up_process()
 
-Consider using a spelling checker (inculdes -> includes).
-
+Repalce -> Replace ?
 
 Thanks,
 
