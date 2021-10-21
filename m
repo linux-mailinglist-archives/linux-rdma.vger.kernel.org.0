@@ -2,73 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F46D43663A
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 17:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B384367D0
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 18:31:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhJUP3h (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Oct 2021 11:29:37 -0400
-Received: from mga17.intel.com ([192.55.52.151]:22512 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231958AbhJUP3g (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Oct 2021 11:29:36 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10144"; a="209858820"
-X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
-   d="scan'208";a="209858820"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2021 08:27:16 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,170,1631602800"; 
-   d="scan'208";a="484248298"
-Received: from unknown (HELO intel-73.bj.intel.com) ([10.238.154.73])
-  by orsmga007.jf.intel.com with ESMTP; 21 Oct 2021 08:27:13 -0700
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev, leon@kernel.org
-Subject: [PATCH 1/1] RDMA/irdma: remove the unused spin lock in struct irdma_qp_uk
-Date:   Thu, 21 Oct 2021 19:06:12 -0400
-Message-Id: <20211021230612.153812-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        id S231962AbhJUQda (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Oct 2021 12:33:30 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:35746 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229702AbhJUQda (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Oct 2021 12:33:30 -0400
+Received: by mail-pj1-f53.google.com with SMTP id a15-20020a17090a688f00b001a132a1679bso3577815pjd.0;
+        Thu, 21 Oct 2021 09:31:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7q6vzNxfbvYKvr+skK0udmjoYoQnE4oH6D4ZVnH1FZ4=;
+        b=TWW9vURnCOwhlWzba1aofI6NQq6KAU+i3bp576Ywcm4yX090DORTTdEn0Qb0rnzvFC
+         eUtUlTypufeMvK5XvUP8Q/vBuj/WBkG/ea2mXqh+sYkSdzjO/62iKfMbwxFTgUeBr2jn
+         u5VEAyN1PW7LcWsuqvGA4MdhiK3K1GLYTjcG+0IjAyBT1P1ZH2z7GoTpd6VubyR+E5zK
+         DQXDmrOBvUpTVzB9QiqAX7+VwLISBPzCcSM7dxyZkZdP1QsE2CZE32JXvz7S55MeYjB1
+         ooYu5Fwh080O7I3iALgaWmNOykgeFgsRiClHtlniy6rZukVIwDPvB+271Qfust/zx5hE
+         fluQ==
+X-Gm-Message-State: AOAM532DTaPcN4P2St/D+3l1qTYgE9tbykVk43tEw2TA7ApqYyQZHcHN
+        d3j5Hc6huQonKP74iC7raWs3hUfTFQQ=
+X-Google-Smtp-Source: ABdhPJzAsVfKsg0f6FiCdPf1f4WeSRQiymq+aFkY/xYpHKJYMpz+xbtEmtli9yVVwHBYBRTQbFaAMg==
+X-Received: by 2002:a17:90b:2382:: with SMTP id mr2mr7961105pjb.186.1634833873331;
+        Thu, 21 Oct 2021 09:31:13 -0700 (PDT)
+Received: from bvanassche-linux.mtv.corp.google.com ([2620:15c:211:201:452c:8e0d:d8a1:4d6])
+        by smtp.gmail.com with ESMTPSA id me12sm11035926pjb.27.2021.10.21.09.31.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 21 Oct 2021 09:31:12 -0700 (PDT)
+Subject: Re: [PATCH v2 0/6] kthread: Add the helper macro kthread_run_on_cpu()
+To:     Cai Huoqing <caihuoqing@baidu.com>
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rcu@vger.kernel.org
+References: <20211021122758.3092-1-caihuoqing@baidu.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <52540892-ced9-5d7a-5046-917526c84381@acm.org>
+Date:   Thu, 21 Oct 2021 09:31:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On 10/21/21 5:27 AM, Cai Huoqing wrote:
+> the helper macro kthread_run_on_cpu() inculdes
 
-The spin lock in struct irdma_qp_uk is not used. So remove it.
+Consider using a spelling checker (inculdes -> includes).
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/hw/irdma/user.h  | 1 -
- drivers/infiniband/hw/irdma/verbs.c | 1 -
- 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index 3dcbb1fbf2c6..e0e9512ad3d5 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -369,7 +369,6 @@ struct irdma_qp_uk {
- 	bool rq_flush_complete:1; /* Indicates flush was seen and RQ was empty after the flush */
- 	bool destroy_pending:1; /* Indicates the QP is being destroyed */
- 	void *back_qp;
--	spinlock_t *lock;
- 	u8 dbg_rq_flushed;
- 	u8 sq_flush_seen;
- 	u8 rq_flush_seen;
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 7110ebf834f9..02ca1f80968e 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -833,7 +833,6 @@ static int irdma_create_qp(struct ib_qp *ibqp,
- 
- 	qp = &iwqp->sc_qp;
- 	qp->qp_uk.back_qp = iwqp;
--	qp->qp_uk.lock = &iwqp->lock;
- 	qp->push_idx = IRDMA_INVALID_PUSH_PAGE_INDEX;
- 
- 	iwqp->iwdev = iwdev;
--- 
-2.27.0
+Thanks,
 
+Bart.
