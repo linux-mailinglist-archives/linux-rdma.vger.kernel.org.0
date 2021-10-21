@@ -2,26 +2,26 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BE343619C
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 14:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C3D43619E
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 14:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhJUMai (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Oct 2021 08:30:38 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:41958 "EHLO baidu.com"
+        id S231691AbhJUMal (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Oct 2021 08:30:41 -0400
+Received: from mx22.baidu.com ([220.181.50.185]:42056 "EHLO baidu.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230231AbhJUMaf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:30:35 -0400
-Received: from BC-Mail-Ex27.internal.baidu.com (unknown [172.31.51.21])
-        by Forcepoint Email with ESMTPS id 3F6F534FBF30B5CA697B;
-        Thu, 21 Oct 2021 20:28:18 +0800 (CST)
+        id S231641AbhJUMai (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Oct 2021 08:30:38 -0400
+Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
+        by Forcepoint Email with ESMTPS id 36D4860908AFF032E941;
+        Thu, 21 Oct 2021 20:28:21 +0800 (CST)
 Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex27.internal.baidu.com (172.31.51.21) with Microsoft SMTP Server
+ BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Thu, 21 Oct 2021 20:28:18 +0800
+ 15.1.2176.2; Thu, 21 Oct 2021 20:28:21 +0800
 Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
  BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 21 Oct 2021 20:28:17 +0800
+ 15.1.2308.14; Thu, 21 Oct 2021 20:28:20 +0800
 From:   Cai Huoqing <caihuoqing@baidu.com>
 To:     <caihuoqing@baidu.com>
 CC:     Bernard Metzler <bmt@zurich.ibm.com>,
@@ -38,9 +38,9 @@ CC:     Bernard Metzler <bmt@zurich.ibm.com>,
         Daniel Bristot de Oliveira <bristot@kernel.org>,
         <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <rcu@vger.kernel.org>
-Subject: [PATCH v2 2/6] RDMA/siw: Make use of the helper macro kthread_run_on_cpu()
-Date:   Thu, 21 Oct 2021 20:27:53 +0800
-Message-ID: <20211021122758.3092-3-caihuoqing@baidu.com>
+Subject: [PATCH v2 3/6] ring-buffer: Make use of the helper macro kthread_run_on_cpu()
+Date:   Thu, 21 Oct 2021 20:27:54 +0800
+Message-ID: <20211021122758.3092-4-caihuoqing@baidu.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
 References: <20211021122758.3092-1-caihuoqing@baidu.com>
@@ -58,32 +58,32 @@ with kthread_run_on_cpu() to simplify the code.
 
 Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
 ---
- drivers/infiniband/sw/siw/siw_main.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ kernel/trace/ring_buffer.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/siw/siw_main.c b/drivers/infiniband/sw/siw/siw_main.c
-index 9093e6a80b26..e5c586913d0b 100644
---- a/drivers/infiniband/sw/siw/siw_main.c
-+++ b/drivers/infiniband/sw/siw/siw_main.c
-@@ -98,15 +98,14 @@ static int siw_create_tx_threads(void)
- 			continue;
- 
- 		siw_tx_thread[cpu] =
--			kthread_create(siw_run_sq, (unsigned long *)(long)cpu,
--				       "siw_tx/%d", cpu);
-+			kthread_run_on_cpu(siw_run_sq,
-+					   (unsigned long *)(long)cpu,
-+					   cpu, "siw_tx/%u");
- 		if (IS_ERR(siw_tx_thread[cpu])) {
- 			siw_tx_thread[cpu] = NULL;
- 			continue;
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index c5a3fbf19617..afb306e21e5b 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -5898,16 +5898,13 @@ static __init int test_ringbuffer(void)
+ 		rb_data[cpu].buffer = buffer;
+ 		rb_data[cpu].cpu = cpu;
+ 		rb_data[cpu].cnt = cpu;
+-		rb_threads[cpu] = kthread_create(rb_test, &rb_data[cpu],
+-						 "rbtester/%d", cpu);
++		rb_threads[cpu] = kthread_run_on_cpu(rb_test, &rb_data[cpu],
++						     cpu, "rbtester/%u");
+ 		if (WARN_ON(IS_ERR(rb_threads[cpu]))) {
+ 			pr_cont("FAILED\n");
+ 			ret = PTR_ERR(rb_threads[cpu]);
+ 			goto out_free;
  		}
--		kthread_bind(siw_tx_thread[cpu], cpu);
- 
--		wake_up_process(siw_tx_thread[cpu]);
- 		assigned++;
+-
+-		kthread_bind(rb_threads[cpu], cpu);
+- 		wake_up_process(rb_threads[cpu]);
  	}
- 	return assigned;
+ 
+ 	/* Now create the rb hammer! */
 -- 
 2.25.1
 
