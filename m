@@ -2,91 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EC04361A3
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 14:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 142D1436233
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Oct 2021 14:58:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhJUMau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 21 Oct 2021 08:30:50 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:42398 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230190AbhJUMar (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 21 Oct 2021 08:30:47 -0400
-Received: from BC-Mail-Ex23.internal.baidu.com (unknown [172.31.51.17])
-        by Forcepoint Email with ESMTPS id 7E137C6C204F9F897255;
-        Thu, 21 Oct 2021 20:28:29 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex23.internal.baidu.com (172.31.51.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.12; Thu, 21 Oct 2021 20:28:29 +0800
-Received: from LAPTOP-UKSR4ENP.internal.baidu.com (172.31.63.8) by
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2308.14; Thu, 21 Oct 2021 20:28:28 +0800
-From:   Cai Huoqing <caihuoqing@baidu.com>
-To:     <caihuoqing@baidu.com>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        "Steven Rostedt" <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <rcu@vger.kernel.org>
-Subject: [PATCH v2 6/6] trace/hwlat: Make use of the helper macro kthread_run_on_cpu()
-Date:   Thu, 21 Oct 2021 20:27:57 +0800
-Message-ID: <20211021122758.3092-7-caihuoqing@baidu.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211021122758.3092-1-caihuoqing@baidu.com>
-References: <20211021122758.3092-1-caihuoqing@baidu.com>
+        id S230425AbhJUNAo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Oct 2021 09:00:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230285AbhJUNAk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 21 Oct 2021 09:00:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2EC7E6109F;
+        Thu, 21 Oct 2021 12:58:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1634821104;
+        bh=349TnA80VU7qhPZUrG4YvQkB4+qf9yYTVh7Ph2VsEYE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=s6huM0Vu9LUBJzJm8rYtArox2Twf+dfN4c6Ujv7/EY6GcqscyZrCaT5pxwMzBwbGa
+         LNlRpkxtVqE99xPMhm7rN4nMXSxAfdZj9zPDSxmgkBUO6y3JhTsVWoKr1GNZpE/ry4
+         nvDe3TE18JiQ2rmiyYU8LuhMyipIaOGg9Q3YRAbAQNWySgxqECvKG10Cs0TAx0z5Gv
+         waIj2mrPQ70RkprLhQZcHuSKFBmecOkt/uEEeJ3/hLkAuFgUdtokfy+dV0HUmdk7Jl
+         SYTSnRwPWwrNGuSOluGFdeeLRo71K5DUU1AjYJ7hrUVddSfcHYgi3NtJLNG3juTq7E
+         jfCPB2ASZkUFA==
+Date:   Thu, 21 Oct 2021 05:58:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     dledford@redhat.com, jgg@nvidia.com, linux-rdma@vger.kernel.org,
+        saeedm@nvidia.com
+Subject: Re: [PATCH rdma-next 2/3] mlx5: use dev_addr_mod()
+Message-ID: <20211021055823.2319a4c8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YXE3wblxcVY/1siJ@unreal>
+References: <20211019182604.1441387-1-kuba@kernel.org>
+        <20211019182604.1441387-3-kuba@kernel.org>
+        <YXE3wblxcVY/1siJ@unreal>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [172.31.63.8]
-X-ClientProxiedBy: BC-Mail-Ex10.internal.baidu.com (172.31.51.50) To
- BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Repalce kthread_create_on_cpu/wake_up_process()
-with kthread_run_on_cpu() to simplify the code.
+On Thu, 21 Oct 2021 12:49:53 +0300 Leon Romanovsky wrote:
+> > -	dev->dev_addr[1] = (ipriv->qpn >> 16) & 0xff;
 
-Signed-off-by: Cai Huoqing <caihuoqing@baidu.com>
----
-v1->v2: Update changelog.
+                      ^ the original modifies starting at offset 1
 
- kernel/trace/trace_hwlat.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-index 1b83d75eb103..0e555335f095 100644
---- a/kernel/trace/trace_hwlat.c
-+++ b/kernel/trace/trace_hwlat.c
-@@ -491,18 +491,14 @@ static void stop_per_cpu_kthreads(void)
- static int start_cpu_kthread(unsigned int cpu)
- {
- 	struct task_struct *kthread;
--	char comm[24];
- 
--	snprintf(comm, 24, "hwlatd/%d", cpu);
--
--	kthread = kthread_create_on_cpu(kthread_fn, NULL, cpu, comm);
-+	kthread = kthread_run_on_cpu(kthread_fn, NULL, cpu, "hwlatd/%u");
- 	if (IS_ERR(kthread)) {
- 		pr_err(BANNER "could not start sampling thread\n");
- 		return -ENOMEM;
- 	}
- 
- 	per_cpu(hwlat_per_cpu_data, cpu).kthread = kthread;
--	wake_up_process(kthread);
- 
- 	return 0;
- }
--- 
-2.25.1
-
+> > -	dev->dev_addr[2] = (ipriv->qpn >>  8) & 0xff;
+> > -	dev->dev_addr[3] = (ipriv->qpn) & 0xff;
+> > +	addr_mod[0] = (ipriv->qpn >> 16) & 0xff;
+> > +	addr_mod[1] = (ipriv->qpn >>  8) & 0xff;
+> > +	addr_mod[2] = (ipriv->qpn) & 0xff;
+> > +	dev_addr_mod(dev, 1, addr_mod, sizeof(addr_mod));  
+>                          ^^^ It should be 0, no?
