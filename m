@@ -2,99 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E587437211
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Oct 2021 08:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CBE7437415
+	for <lists+linux-rdma@lfdr.de>; Fri, 22 Oct 2021 10:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhJVGte (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Oct 2021 02:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231991AbhJVGtd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Oct 2021 02:49:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8E0160FE7;
-        Fri, 22 Oct 2021 06:47:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1634885236;
-        bh=dZfeTaEbXXLP/qmwnJNpC77V3RzRnTM4fFBelnrubhA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=cYaquShgz7lL/mis13ATVxEMijlZLt0EVc9QeVdt8mmTyrIgx542AldvpfVypusI6
-         u5za2WY0uV3NtuRYZiuZMU2HOBlM3KH7tvmmZqOFp7jFQFFnUWB+6qeZpII31N5GKd
-         Vbrz1aQ2hoccw08icgRI2DoHfor4uJfBENKsNwVk5iJQRB5fr2uD00QLD6m9ugREoO
-         uts6u3un/gcfyDjQz2pm1nOjgeLT1AaB5VI8UoTLYQ4ffyFd1qpy3VLEYV+MPLVzqs
-         BXhIndch1n8X2lizXIZuCj/FxmbZZ742XYNr9LAvWL5oMrjGDYTTrYXqSku98KUpg7
-         HpculnfupWmpg==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Moosa Baransi <moosab@nvidia.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Meir Lichtinger <meirl@nvidia.com>,
-        Yufeng Mo <moyufeng@huawei.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net/mlx5i: avoid unused function warning for mlx5i_flow_type_mask
-Date:   Fri, 22 Oct 2021 08:47:03 +0200
-Message-Id: <20211022064710.4158669-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S232441AbhJVI6f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Oct 2021 04:58:35 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:25310 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232440AbhJVI6f (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Oct 2021 04:58:35 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HbJ4D4xKFzbhJV;
+        Fri, 22 Oct 2021 16:51:40 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 22 Oct 2021 16:56:14 +0800
+Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.15; Fri, 22 Oct
+ 2021 16:56:14 +0800
+Subject: Re: [PATCH v2 for-next] RDMA/hns: Add a new mmap implementation
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20211012124155.12329-1-liangwenpeng@huawei.com>
+ <20211020231500.GA27862@nvidia.com>
+CC:     <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+Message-ID: <57276fd3-72d3-b1ba-3e83-c7c190d553d5@huawei.com>
+Date:   Fri, 22 Oct 2021 16:56:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211020231500.GA27862@nvidia.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.238.78]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 2021/10/21 7:15, Jason Gunthorpe wrote:
+> On Tue, Oct 12, 2021 at 08:41:55PM +0800, Wenpeng Liang wrote:
+>> From: Chengchang Tang <tangchengchang@huawei.com>
+>>
+>> Add a new implementation for mmap by using the new mmap entry API.
+>>
+>> The new implementation prepares for subsequent features and is compatible
+>> with the old implementation. And the old implementation using hard-coded
+>> offset will not be extended in the future.
+>>
+>> Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
+>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+>>  drivers/infiniband/hw/hns/hns_roce_device.h |  23 +++
+>>  drivers/infiniband/hw/hns/hns_roce_main.c   | 208 +++++++++++++++++---
+>>  include/uapi/rdma/hns-abi.h                 |  21 +-
+>>  3 files changed, 225 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> index 9467c39e3d28..1d4cf3f083c2 100644
+>> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+>> @@ -225,11 +225,25 @@ struct hns_roce_uar {
+>>  	unsigned long	logic_idx;
+>>  };
+>>  
+>> +struct hns_user_mmap_entry {
+>> +	struct rdma_user_mmap_entry rdma_entry;
+>> +	u64 address;
+>> +	u8 mmap_flag;
+> 
+> Call this mmap_type and use the enum:
+> 
+>  enum hns_roce_mmap_type mmap_type
+> 
 
-Without CONFIG_MLX5_EN_RXNFC, the function is unused, breaking the
-build with CONFIG_WERROR:
+I will fix it in v3, thanks!
 
-mlx5/core/ipoib/ethtool.c:36:12: error: unused function 'mlx5i_flow_type_mask' [-Werror,-Wunused-function]
-static u32 mlx5i_flow_type_mask(u32 flow_type)
+>> +struct hns_user_mmap_entry *hns_roce_user_mmap_entry_insert(
+>> +				struct ib_ucontext *ucontext, u64 address,
+>> +				size_t length, u8 mmap_flag)
+>> +{
+>> +#define HNS_ROCE_PGOFFSET_TPTR 1
+>> +#define HNS_ROCE_PGOFFSET_DB 0
+>> +	struct hns_roce_ucontext *context = to_hr_ucontext(ucontext);
+>> +	struct hns_user_mmap_entry *entry;
+>> +	int ret;
+>> +
+>> +	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
+>> +	if (!entry)
+>> +		return NULL;
+>> +
+>> +	entry->address = address;
+>> +	entry->mmap_flag = mmap_flag;
+>> +
+>> +	if (context->mmap_key_support) {
+>> +		ret = rdma_user_mmap_entry_insert(ucontext, &entry->rdma_entry,
+>> +						  length);
+>> +	} else {
+>> +		switch (mmap_flag) {
+>> +		case HNS_ROCE_MMAP_TYPE_DB:
+>> +			ret = rdma_user_mmap_entry_insert_range(ucontext,
+>> +						&entry->rdma_entry, length,
+>> +						HNS_ROCE_PGOFFSET_DB,
+>> +						HNS_ROCE_PGOFFSET_DB);
+> 
+> Please add this to avoid the odd #defines:
+> 
+> static inline int
+> rdma_user_mmap_entry_insert_exact(struct ib_ucontext *ucontext,
+>                                   struct rdma_user_mmap_entry *entry,
+>                                   size_t length, u32 pgoff)
+> {
+>         return rdma_user_mmap_entry_insert_range(ucontext, entry, length, pgoff,
+>                                                  pgoff);
+> }
+> 
 
-We could add another #ifdef or mark this function inline, but
-replacing the existing #ifdef with a __maybe_unused seems best
-because that improves build coverage and avoids introducing
-similar problems the next time this code changes.
+ditto.
 
-Fixes: 9fbe1c25ecca ("net/mlx5i: Enable Rx steering for IPoIB via ethtool")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- .../net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c    | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+>> -static int hns_roce_mmap(struct ib_ucontext *context,
+>> -			 struct vm_area_struct *vma)
+>> +static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
+>>  {
+>> -	struct hns_roce_dev *hr_dev = to_hr_dev(context->device);
+>> -
+>> -	switch (vma->vm_pgoff) {
+>> -	case 0:
+>> -		return rdma_user_mmap_io(context, vma,
+>> -					 to_hr_ucontext(context)->uar.pfn,
+>> -					 PAGE_SIZE,
+>> -					 pgprot_noncached(vma->vm_page_prot),
+>> -					 NULL);
+>> -
+>> -	/* vm_pgoff: 1 -- TPTR */
+>> -	case 1:
+>> -		if (!hr_dev->tptr_dma_addr || !hr_dev->tptr_size)
+>> -			return -EINVAL;
+>> +	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
+>> +	struct ib_device *ibdev = &hr_dev->ib_dev;
+>> +	struct rdma_user_mmap_entry *rdma_entry;
+>> +	struct hns_user_mmap_entry *entry;
+>> +	phys_addr_t pfn;
+>> +	pgprot_t prot;
+>> +	int ret;
+>> +
+>> +	rdma_entry = rdma_user_mmap_entry_get_pgoff(uctx, vma->vm_pgoff);
+>> +	if (!rdma_entry) {
+>> +		ibdev_err(ibdev, "Invalid entry vm_pgoff %lu.\n",
+>> +			  vma->vm_pgoff);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	entry = to_hns_mmap(rdma_entry);
+>> +	pfn = entry->address >> PAGE_SHIFT;
+>> +	prot = vma->vm_page_prot;
+> 
+> Just write
+> 
+>  if (entry->mmap_type != HNS_ROCE_MMAP_TYPE_TPTR)
+>     prot = pgprot_noncached(prot);
+>  ret = rdma_user_mmap_io(uctx, vma, pfn,
+> 			rdma_entry->npages * PAGE_SIZE,
+> 			pgprot_noncached(prot), rdma_entry);
+> 
+> No need for the big case statement
+> 
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-index ee0eb4a4b819..ae95677a01f0 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/ipoib/ethtool.c
-@@ -222,8 +222,8 @@ static int mlx5i_get_link_ksettings(struct net_device *netdev,
- 	return 0;
- }
- 
--#ifdef CONFIG_MLX5_EN_RXNFC
--static int mlx5i_set_rxnfc(struct net_device *dev, struct ethtool_rxnfc *cmd)
-+static __maybe_unused int mlx5i_set_rxnfc(struct net_device *dev,
-+					  struct ethtool_rxnfc *cmd)
- {
- 	struct mlx5e_priv *priv = mlx5i_epriv(dev);
- 	struct ethtool_rx_flow_spec *fs = &cmd->fs;
-@@ -234,14 +234,14 @@ static int mlx5i_set_rxnfc(struct net_device *dev, struct ethtool_rxnfc *cmd)
- 	return mlx5e_ethtool_set_rxnfc(priv, cmd);
- }
- 
--static int mlx5i_get_rxnfc(struct net_device *dev, struct ethtool_rxnfc *info,
--			   u32 *rule_locs)
-+static __maybe_unused int mlx5i_get_rxnfc(struct net_device *dev,
-+					  struct ethtool_rxnfc *info,
-+					  u32 *rule_locs)
- {
- 	struct mlx5e_priv *priv = mlx5i_epriv(dev);
- 
- 	return mlx5e_ethtool_get_rxnfc(priv, info, rule_locs);
- }
--#endif
- 
- const struct ethtool_ops mlx5i_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_USECS |
--- 
-2.29.2
+There will be new features added to this switch branch in a later patch.
 
+>> diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+>> index 42b177655560..ce1e39f21d73 100644
+>> +++ b/include/uapi/rdma/hns-abi.h
+>> @@ -83,11 +83,30 @@ struct hns_roce_ib_create_qp_resp {
+>>  	__aligned_u64 cap_flags;
+>>  };
+>>  
+>> +enum hns_roce_alloc_uctx_comp_flag {
+>> +	HNS_ROCE_ALLOC_UCTX_COMP_CONFIG = 1 << 0,
+>> +};
+>> +
+>> +enum hns_roce_alloc_uctx_resp_config {
+>> +	HNS_ROCE_UCTX_RESP_MMAP_KEY_EN = 1 << 0,
+>> +};
+>> +
+>> +enum hns_roce_alloc_uctx_req_config {
+>> +	HNS_ROCE_UCTX_REQ_MMAP_KEY_EN = 1 << 0,
+>> +};
+>> +
+>> +struct hns_roce_ib_alloc_ucontext {
+>> +	__u32 comp;
+>> +	__u32 config;
+>> +};
+>> +
+>>  struct hns_roce_ib_alloc_ucontext_resp {
+>>  	__u32	qp_tab_size;
+>>  	__u32	cqe_size;
+>>  	__u32	srq_tab_size;
+>> -	__u32	reserved;
+>> +	__u8    config;
+>> +	__u8    rsv[3];
+>> +	__aligned_u64 db_mmap_key;
+> 
+> I'm confused, this doesn't change the uAPI, so why add this stuff?
+> This should go in a later patch?
+> 
+> Jason
+> .
+> 
+
+The related userspace series is named "libhns: Add a new mmap implementation".
+
+Thanks,
+Wenpeng
