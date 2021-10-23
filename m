@@ -2,78 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97BA438082
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Oct 2021 01:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2103B43824F
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Oct 2021 10:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbhJVXTQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Fri, 22 Oct 2021 19:19:16 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45678 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230086AbhJVXTQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 22 Oct 2021 19:19:16 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10145"; a="315610574"
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="315610574"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2021 16:16:57 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,173,1631602800"; 
-   d="scan'208";a="528097372"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP; 22 Oct 2021 16:16:57 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 22 Oct 2021 16:16:56 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.12; Fri, 22 Oct 2021 16:16:56 -0700
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2242.012;
- Fri, 22 Oct 2021 16:16:56 -0700
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>
-Subject: RE: [PATCH 1/1] RDMA/irdma: remove the unused spin lock in struct
- irdma_qp_uk
-Thread-Topic: [PATCH 1/1] RDMA/irdma: remove the unused spin lock in struct
- irdma_qp_uk
-Thread-Index: AQHXxpAhVSKP0ZARDkONC0BFdS2XD6vfp9Rg
-Date:   Fri, 22 Oct 2021 23:16:56 +0000
-Message-ID: <dd7d10deb0c94e7d88460818d33e7821@intel.com>
-References: <20211021230612.153812-1-yanjun.zhu@linux.dev>
-In-Reply-To: <20211021230612.153812-1-yanjun.zhu@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229819AbhJWIQp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 23 Oct 2021 04:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhJWIQo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 23 Oct 2021 04:16:44 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23E7C061764
+        for <linux-rdma@vger.kernel.org>; Sat, 23 Oct 2021 01:14:25 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id ec8so821356edb.6
+        for <linux-rdma@vger.kernel.org>; Sat, 23 Oct 2021 01:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=lpTj1qbBhUjsFO3ShCuhQlstpCRBWbI+98sXsatNNS0=;
+        b=UigQpy3AYCIA/yK3amyYB01Q1a6qoof83HazD0JtNdju45vLWQRwPgGXPLGOrsc0rH
+         Qs7SLKaDydCr2x4X8Ttwv1oUCePYe+ElOWyxy3zmfGHZwf9iYCPAAEHg456HMOpz+rKY
+         RsQg2k5UB0x9+mmaLZJrzPJYAW45hqgl18peWKtulc3fRW1QEjjqHIv1vybcSCw09IHQ
+         JDkpSxn8VA/xqao+ELCOGdzsP+FOo/f2sWksldp7DKtdeN/V5CbvhvmMBa3wP8puPwvi
+         ZhxDIiGeazK5u63qLJ7gvR2Q9LLjaEcFqX54ZvnptVCCb8l0hBwiiONOq/AzATJXUpYO
+         lMfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=lpTj1qbBhUjsFO3ShCuhQlstpCRBWbI+98sXsatNNS0=;
+        b=zfQPLTixtTKWFXV3gB9ZiMBhoTMRjftAc8gWkRjGoxJgim22ylgE/xqBOSTYh4Q3AZ
+         tQEUY9jc8jY+k20YGyVypF3kSZKp4Tb9GE4N8kcHbzDIeVkEp1CpuMkKrFjKhZpR80MD
+         3eXgH2mxUCGpMKh42lSKsiJaub5EzRT8nw1zr1EZV9qy90E2zt9OHzKVy9g6JyV+46gD
+         EYDjxoZaOp+ser0v7zYiKRUGMvpOp8yVkUEZ3wHwziRClri7vqTet4h5V+QXaxGYIJkX
+         k9WtJ0YQo67SKcz+2bUoXB6fPnD4pkzPZCuKCtkR1f1MneT2RXoARbdJUCQlxkYchQrb
+         gv7A==
+X-Gm-Message-State: AOAM531KfqpbFpi3rNG/5PFduFtrkxiFQ2lMUAlNLmLlTNtOgx7V5M5m
+        12AdzKjXKOqFNH3TGVatjuHHwnymnijWtzhggjI=
+X-Google-Smtp-Source: ABdhPJxX6eYmVY4FIxG1RUpBfTWvoMMZgfKCEp8lCXbo8xGp/MWjjtYDn9dCuRgF1x/UjS7pIVnRsqmh7XmHjFY/gcY=
+X-Received: by 2002:a05:6402:84d:: with SMTP id b13mr7324484edz.110.1634976864233;
+ Sat, 23 Oct 2021 01:14:24 -0700 (PDT)
 MIME-Version: 1.0
+Received: by 2002:a17:906:d9:0:0:0:0 with HTTP; Sat, 23 Oct 2021 01:14:23
+ -0700 (PDT)
+Reply-To: westernunion.collector@collector.org
+From:   WESTERN UNION MONEY TRANSFER OFFICE <mr.grecadams@gmail.com>
+Date:   Sat, 23 Oct 2021 01:14:23 -0700
+Message-ID: <CAEjXcM0zgV6nRRG9DMoUS0NY0by6XJkyoD-cuez+Lx8kiD3BtA@mail.gmail.com>
+Subject: THE MONEY HAS BEEN SENT, PLEASE COMPLY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH 1/1] RDMA/irdma: remove the unused spin lock in struct
-> irdma_qp_uk
-> 
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> The spin lock in struct irdma_qp_uk is not used. So remove it.
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
->  drivers/infiniband/hw/irdma/user.h  | 1 -  drivers/infiniband/hw/irdma/verbs.c | 1 -
->  2 files changed, 2 deletions(-)
-> 
+-- 
 
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+
+Dear Beneficiary;
+
+Our Operation Manager has extract your 1st payment of $5,000.00 out of
+your total fund of ($1.5million) We need your full  information for
+the transfer.
+
+We scheduled installment sums of USD $5,000.00 daily through the cash
+fast Western Union, payment at counter as directed and we have
+commenced the relevant programming and the documentations of the said
+fund, as we are instructed to make the first payment of USD$5,000.00
+MTCN available in your name upon the receipt of your information from
+you as follows.
+
+Your Name,
+
+Address,
+
+Telephone
+
+ID CARD
+
+Contact our Operational Manager,Mr WETAYEM MYSHEAR through our office
+email for more enlightenment on your money.
+
+Email (westernunion.collector@collector.org)
+
+Thanks
+
+Managnment
