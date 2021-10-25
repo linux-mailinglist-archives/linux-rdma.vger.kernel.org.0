@@ -2,197 +2,187 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5B8439445
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Oct 2021 12:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C0A439475
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Oct 2021 13:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhJYK5Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Oct 2021 06:57:16 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:11946 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232306AbhJYK5P (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Oct 2021 06:57:15 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19P91ZmX015145;
-        Mon, 25 Oct 2021 03:54:51 -0700
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-        by mx0b-0016f401.pphosted.com with ESMTP id 3bwdj3abma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 25 Oct 2021 03:54:51 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PIWmKbJfBEPN94FEiUulr/4gkHC3Wo/d7ntNX5JM3Nh13cY6Uc432oUDilGO2o68mrGkL2DW6Ff92b9wtZ6cq3oFgOwwY6tdPfbnIUlz+7wabltHI6T8/2YGxC1x26aPq8pYNiU41QM9C4ijzbwaVHBtFkChSLEWzLUlGsKGclSFD37nbi2PXOxLDo7EhZsH4yDyH/QF5eFCpAD8mBgltRvZ7zMUl9NIysqFMFi856P/gIeP0G+YIFJKzU41YEEQYREAqJNLkeIrTUqP8IIj30tqAOS0TvIa88mnCpSz3qthrCL7rzTHn1FQW4ibd75Uaol7H5lZIaLurXB7P7GrDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o4BwGOM+uANglxywYd2KTiU1fIX7cNMOJl5XBBOijYw=;
- b=V74ItNeZ+Gl141Rg6wF3N9wvFfJo3O1bicVmcVl/S2LtD56YsYnlQ6k1kp7PtVRGkopes11n6EAdgPBqCs+rqr0F3RB69O7WiQnzpYrCvsrx671PZi66Px8EBuoYpVzQ8QFsR0aZrKuk5H5HH0frYElUU+fDzBP2HSXGxJN6R7lBo62e8r/bWrrnz/iiz9MVkkkkRqTx/CtnoK/A5xtypuCkRjd3BjCVZLoMhUwviG3BOyY2UwShTXwDWT6kYncW8a+fnr5agWcQHlRJRkJc/2H84TlL/qj8ko00I3MNamLPA0l5zVn031czkaCTfcDlwpPc+6I2z962TlrfDQS0Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o4BwGOM+uANglxywYd2KTiU1fIX7cNMOJl5XBBOijYw=;
- b=QJGAYChHY9Y1++rmI5IICeaWAGusyst7dXgCWu0cL3/T/6d4eCUxS6riohzxrIi4AAXMKsL8PmNS7wvtTHau7gAOGhkqyzgtdJhyd31rsMnFbeNXI/mpcTkNdvIHiXfMiS9285wCQ13fwrUm1Nd4/+AFmtFJbMrlf0Eq1iyKE70=
-Received: from DM5PR1801MB2057.namprd18.prod.outlook.com (2603:10b6:4:63::16)
- by DM6PR18MB3227.namprd18.prod.outlook.com (2603:10b6:5:1c5::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4628.18; Mon, 25 Oct
- 2021 10:54:49 +0000
-Received: from DM5PR1801MB2057.namprd18.prod.outlook.com
- ([fe80::a8de:65b:4fe0:32e3]) by DM5PR1801MB2057.namprd18.prod.outlook.com
- ([fe80::a8de:65b:4fe0:32e3%4]) with mapi id 15.20.4628.020; Mon, 25 Oct 2021
- 10:54:49 +0000
-From:   Prabhakar Kushwaha <pkushwaha@marvell.com>
-To:     Kamal Heib <kamalheib1@gmail.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        "dledford@redhat.com" <dledford@redhat.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, Ariel Elior <aelior@marvell.com>,
-        Alok Prasad <palok@marvell.com>
-Subject: RE: [EXT] Re: [PATCH for-next] RDMA/qedr: Remove unsupported
- qedr_resize_cq callback
-Thread-Topic: [EXT] Re: [PATCH for-next] RDMA/qedr: Remove unsupported
- qedr_resize_cq callback
-Thread-Index: AdfJgSWJM4G+JcdHTbe+udu9aj7oqgABuPIAAAF+z5A=
-Date:   Mon, 25 Oct 2021 10:54:49 +0000
-Message-ID: <DM5PR1801MB2057BE3C59E04DEE68C3FF64B2839@DM5PR1801MB2057.namprd18.prod.outlook.com>
-References: <DM5PR1801MB20576F5ED830B11E8F83A037B2839@DM5PR1801MB2057.namprd18.prod.outlook.com>
- <YXaBvtre1/BzFJYy@fedora>
-In-Reply-To: <YXaBvtre1/BzFJYy@fedora>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 91b9842b-5fde-4160-b6dc-08d997a5ddca
-x-ms-traffictypediagnostic: DM6PR18MB3227:
-x-microsoft-antispam-prvs: <DM6PR18MB3227C8A326ABCC754FE7F534B2839@DM6PR18MB3227.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:346;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i/QXJapeGErocwyqaMd7xhipbMuxZJGV9dI0FIPPgnXhbkvO984v3eIOKYqRHTKL2996zZf5GEOB2IWQ1ymArcRm6stCfOcZLGQ9bTGnP7KYUBkME1ZSfDyQ4u9ljfKhgs+QoekTC3PAFffASSH1O6QzNoEphVsPqsg5FYUSPsgW8s4/PxB1boh6ykoX6XJokUkMEXZeZfTWraPrP9P7JW7qWsjgssFmWW6yO/Qw2C9snlmL7/MvxgtxhmoZ+oX6miT0hh8VGR8JgFDAP/dkHb9hQVE6vcIuKWT0aMJ0P5ajIL2NHAepOAY2YISYr8ghR7pOdsIAZmFzhxFV5C3Yeg4mW96WBsbk63K0qWgZ/dfku7wfhn1OgxDgsGIOFxDQRxPqk64d5Nr9leVMmEbW239Bv4SmLQJNHS4PGCedTn3bK/ELGrt8J8TkwXEVfZ4bfGsQIBAg/sTXfEMrehYxSBxb84jRr7o/m20UH8tyTw8Lutk3Um6L0UtsoKNKv3qkyoM7PNiLZbeyF08G7JCLRuc9oZz79ib6DWeMwWOSP0xjuwHfhU2qu92AjqfhVxx8qhYQe4SZCCLkGZvai8JB13bxm9wrEbUVa/2GyhbLx0EI1ldsRvD8BIEZCAgGOow+3zD0Wp5ZtKtTuIGu0a2Z7DCRp6r95Ukk2LR8ZJ/KJZG8szf86wiSqt3e+VPSZq60KH0Hroxlyd8s4Qe51nf2Ww==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1801MB2057.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(66946007)(66446008)(55016002)(2906002)(53546011)(83380400001)(6506007)(38070700005)(76116006)(4326008)(64756008)(6916009)(86362001)(52536014)(26005)(5660300002)(122000001)(9686003)(38100700002)(508600001)(316002)(186003)(33656002)(7696005)(54906003)(71200400001)(8936002)(66556008)(107886003)(8676002)(66476007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VdUyRMyEpn60KMOkAbU1XaKLfZ8d8DPNhra9dRsmEm+ChSOfDA4eTEBC1lQQ?=
- =?us-ascii?Q?aoh5HwqXLSjhVaOQyxhFQyBiiVgxZ2SF7U1WnA6A/FLbhEt6xC9+0WjoGdS1?=
- =?us-ascii?Q?vuykUpEaojQa0d/5jo4Jc5rcBq+0iM81OjniEo7pqc5nGIVDaXnBOBiSiJzh?=
- =?us-ascii?Q?KkXWBwMJhSxgwsyuqCkZBPalaYkHd/H4h+g0OEusa2esd8YzM+abY0UGIoYj?=
- =?us-ascii?Q?xM0c5uVYlLJnOqbZdF+rdVbnaY628gFoIV7jB6Ae65ZkOIiuIrWRgM8ECO5v?=
- =?us-ascii?Q?kp36xO+MLDcLcNYBPDct7/XeonmAvVGxPsVLpmuEgi8/jRfqEj5m/XK9zXvc?=
- =?us-ascii?Q?mpzrIWPoCONUZ/WkxmJz7DKhQYOaTCtUi8ZCamMWkCHvp1Eb7YcMhTHes3fA?=
- =?us-ascii?Q?tRivbGrPS+jy+xX+pR3fDgjWTRmrz0IMHfKbIm5dbiL6oTyw2R8BqJGIbSWx?=
- =?us-ascii?Q?zMA/RAydrMrleZGmuasUqzH/Z1xTA6/jxID2A46UGhrkHfM9ro/aAgxiAMXp?=
- =?us-ascii?Q?RrDCHNVxNzlouyEWkSseYhAueQjHwXD+VfWTZmcKnXVJlwAmH6Bn0Gz4rKAJ?=
- =?us-ascii?Q?MOd7Qaq7fcaRyw8wx8k+u1p2rPs/pAfaNmFp/VNLfN2+hOlLtkYIj2/Yxvfj?=
- =?us-ascii?Q?H0p+hmt74ZXFXc2SPix+96VXHjQYbACj2bNwRCfocRXGYO0tPAPEzGZ15Yiz?=
- =?us-ascii?Q?fsxcaTxq7cFzMdgTSaVCgBO1ysdNfqXXsxG/CMMhS/3HBLwXofdEbnCMuSVu?=
- =?us-ascii?Q?0eat9WfPtAqUBOXdTnMDoXJMPPgHL8HZIxJO22CLuzA/t8/6Sy8kRurpjDFE?=
- =?us-ascii?Q?MkErYYYjXNA2vbZaedshjEkcuUhVMdgsAncCKn/i79m5nL2f525fQI/2FnSU?=
- =?us-ascii?Q?3fnZflusLA9zB5g13TSGohvKKCSH+RUd4pqGfu4NR0oOx3B9UvoqRHJU6JUj?=
- =?us-ascii?Q?7mOud9zmfdoYoKRaFLjvV93kZZEqpD1A2vtjCJ4ZbOHaeKUbwuClD921KhtN?=
- =?us-ascii?Q?SklWYmb17vGNjhGHK0+1CQap07MTpdW897Ei9FGEcqNbk5POOGE4dJ0Pe8uk?=
- =?us-ascii?Q?PJn3COvlESkhweb4mxjqyfaDygYsA9fBRIAGiWMNF6UEoZ1baIDpczc+DPhe?=
- =?us-ascii?Q?WVfuiHvoFO8pqYayGXhnnEzOq9c34CILdAGBs2YO7Y6YzkCiC/Gx4Ay1glBJ?=
- =?us-ascii?Q?5iSCNPC7wq8VBKAdYg5TtJ+zmGpgpJ8ned5TFJjiU30tXgOOk9WK7U+BEFic?=
- =?us-ascii?Q?vJuXLMgCvWy9c1IwyYJImteDVMJSNYdUOF8Wrk5WYARklCfTrctGjTY6q+eX?=
- =?us-ascii?Q?z9Ix5bym4a8x1ecCACarao+Teprkwy/nnbHSk3yIIj/wVygyoeY54VNXkZ2L?=
- =?us-ascii?Q?a/j6Z2JK3BltWkWyDiIQtyujgYak4yPkWe+k9juAelk4ur3m3rsJtiF7l1Aw?=
- =?us-ascii?Q?J3AlpuDoRmK7waKxLvAJov6zgMzkDd3od+c1PROW9yCM6zC6hbj62pUtls6B?=
- =?us-ascii?Q?QcowQnuFUjN4xErlU7lfvgbPVOLcbMlG18pbTbfMZD7zU4eBKPDNgalI5NE+?=
- =?us-ascii?Q?34Nw29f0OBfzwLK48qVmo7bzyU5tbcc8Ok478Ros4y0jaEezXeylnp6MogA9?=
- =?us-ascii?Q?zaPEdnTaEaoFU167E84Gwa4=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232745AbhJYLIa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Oct 2021 07:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231133AbhJYLI3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 25 Oct 2021 07:08:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E840F604AC;
+        Mon, 25 Oct 2021 11:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635159967;
+        bh=gnVibMBLKO5DOKmJFj8OxeJZBQGQGJ62kqCFi2dNI6M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wq0JqFgjSaOEhPU4iuM2ghR1BYqugrNsvLZoZyepj3PyNn75a+O3MtzmTZO3uvEl/
+         iz1x4CpMH8LFMm4lihDSTcD0KZaaDMb1o3o3rEC17bI9HPz9ari4CHWlLbpO+YJg8U
+         yxmbefPs0xQOi2k6WJHJ5+iOvxxfbmZ/pqqK32fRbqgAeZZcK6TqapT+OWV2YbmWGs
+         jLZqMDFIASNlIuZQFQKOYxHssGQTSRh1ihhlilwcq1X08BssDfyd5MCJ6xCHZWWKG8
+         vkzkqA7w6l2Zul67WnZZ2foI3INPQ8yr0rgpW85PTtSjPiSBIqQFbiI2fQgvs2V5K4
+         bqqJMDQT1jIQA==
+Date:   Mon, 25 Oct 2021 14:06:03 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, mbloch@nvidia.com,
+        jinpu.wang@ionos.com, lee.jones@linaro.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
+ process
+Message-ID: <YXaPm6oTI/lk5GoT@unreal>
+References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+ <YXZdsyifJVY+jOaH@unreal>
+ <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1801MB2057.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 91b9842b-5fde-4160-b6dc-08d997a5ddca
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2021 10:54:49.4654
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U5gyAILhqHfYr8H64aSec3CTf0760NzSAXSrvfsHE6jYvK0hfZhUwtFvCc8T5SRzbBlLN5bJtFHk4AtGQpBqmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3227
-X-Proofpoint-GUID: TkAB-3cwlhFZmEWIkCFQIOkBbuthXtCM
-X-Proofpoint-ORIG-GUID: TkAB-3cwlhFZmEWIkCFQIOkBbuthXtCM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-25_04,2021-10-25_02,2020-04-07_01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Kamal,
+On Mon, Oct 25, 2021 at 04:37:41PM +0800, Ziyang Xuan (William) wrote:
+> > On Mon, Oct 25, 2021 at 11:42:58AM +0800, Ziyang Xuan wrote:
+> >> When a vlan netdev enter netdevice_event process although it is not a
+> >> roce netdev, it will be passed to netdevice_event_work_handler() to
+> >> process. In order to hold the netdev of netdevice_event after
+> >> netdevice_event() return, call dev_hold() to hold the netdev in
+> >> netdevice_queue_work(). But that did not consider the real_dev of a vlan
+> >> netdev, the real_dev can be freed within netdevice_event_work_handler()
+> >> be scheduled. It would trigger the UAF problem for the real_dev like
+> >> following:
+> >>
+> >> ==================================================================
+> >> BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
+> >> Read of size 4 at addr ffff88801648a0c4 by task kworker/u8:0/8
+> >> Workqueue: gid-cache-wq netdevice_event_work_handler
+> >> Call Trace:
+> >>  dump_stack_lvl+0xcd/0x134
+> >>  print_address_description.constprop.0.cold+0x93/0x334
+> >>  kasan_report.cold+0x83/0xdf
+> >>  vlan_dev_real_dev+0xf9/0x120
+> >>  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
+> >>  is_eth_port_of_netdev_filter+0x28/0x40
+> >>  ib_enum_roce_netdev+0x1a3/0x300
+> >>  ib_enum_all_roce_netdevs+0xc7/0x140
+> >>  netdevice_event_work_handler+0x9d/0x210
+> >> ...
+> >>
+> >> Allocated by task 9289:
+> >>  kasan_save_stack+0x1b/0x40
+> >>  __kasan_kmalloc+0x9b/0xd0
+> >>  __kmalloc_node+0x20a/0x330
+> >>  kvmalloc_node+0x61/0xf0
+> >>  alloc_netdev_mqs+0x9d/0x1140
+> >>  rtnl_create_link+0x955/0xb70
+> >>  __rtnl_newlink+0xe10/0x15b0
+> >>  rtnl_newlink+0x64/0xa0
+> >> ...
+> >>
+> >> Freed by task 9288:
+> >>  kasan_save_stack+0x1b/0x40
+> >>  kasan_set_track+0x1c/0x30
+> >>  kasan_set_free_info+0x20/0x30
+> >>  __kasan_slab_free+0xfc/0x130
+> >>  slab_free_freelist_hook+0xdd/0x240
+> >>  kfree+0xe4/0x690
+> >>  kvfree+0x42/0x50
+> >>  device_release+0x9f/0x240
+> >>  kobject_put+0x1c8/0x530
+> >>  put_device+0x1b/0x30
+> >>  free_netdev+0x370/0x540
+> >>  ppp_destroy_interface+0x313/0x3d0
+> >>  ppp_release+0x1bf/0x240
+> >> ...
+> >>
+> >> Hold the real_dev for a vlan netdev in netdevice_event_work_handler()
+> >> to fix the UAF problem.
+> >>
+> >> Fixes: 238fdf48f2b5 ("IB/core: Add RoCE table bonding support")
+> >> Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
+> >> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+> >> ---
+> >>  drivers/infiniband/core/roce_gid_mgmt.c | 16 +++++++++++++++-
+> >>  1 file changed, 15 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+> >> index 68197e576433..063dbe72b7c2 100644
+> >> --- a/drivers/infiniband/core/roce_gid_mgmt.c
+> >> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
+> >> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>  {
+> >>  	struct netdev_event_work *work =
+> >>  		container_of(_work, struct netdev_event_work, work);
+> >> +	struct net_device *real_dev;
+> >>  	unsigned int i;
+> >>  
+> >>  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
+> >> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>  					 work->cmds[i].filter_ndev,
+> >>  					 work->cmds[i].cb,
+> >>  					 work->cmds[i].ndev);
+> >> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
+> >> +		if (real_dev)
+> >> +			dev_put(real_dev);
+> >> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
+> >> +		if (real_dev)
+> >> +			dev_put(real_dev);
+> >>  		dev_put(work->cmds[i].ndev);
+> >>  		dev_put(work->cmds[i].filter_ndev);
+> >>  	}
+> >> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+> >>  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+> >>  				struct net_device *ndev)
+> >>  {
+> >> -	unsigned int i;
+> >>  	struct netdev_event_work *ndev_work =
+> >>  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
+> >> +	struct net_device *real_dev;
+> >> +	unsigned int i;
+> >>  
+> >>  	if (!ndev_work)
+> >>  		return NOTIFY_DONE;
+> >> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+> >>  			ndev_work->cmds[i].filter_ndev = ndev;
+> >>  		dev_hold(ndev_work->cmds[i].ndev);
+> >>  		dev_hold(ndev_work->cmds[i].filter_ndev);
+> >> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+> >> +		if (real_dev)
+> >> +			dev_hold(real_dev);
+> >> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
+> >> +		if (real_dev)
+> >> +			dev_hold(real_dev);
+> >>  	}
+> >>  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
+> > 
+> > Probably, this is the right change, but I don't know well enough that
+> > part of code. What prevents from "real_dev" to disappear right after
+> > your call to rdma_vlan_dev_real_dev()?
+> > 
+> 
+> It is known that free the net_device until its dev_refcnt is one. The
+> detail realization see netdev_run_todo().The real_dev's dev_refcnt of
+> a vlan net_device will reach one after unregister_netdevice(&real_dev)
+> and unregister_vlan_dev(&vlan_ndev, ...) but the dev_refcnt of the vlan
+> net_device is bigger than one because netdevice_queue_work() will hold
+> the vlan net_device. So my solution is hold the real_dev too in
+> netdevice_queue_work().
 
-> -----Original Message-----
-> From: Kamal Heib <kamalheib1@gmail.com>
-> Sent: Monday, October 25, 2021 3:37 PM
-> To: Prabhakar Kushwaha <pkushwaha@marvell.com>
-> Cc: linux-rdma@vger.kernel.org; Michal Kalderon <mkalderon@marvell.com>;
-> dledford@redhat.com; jgg@ziepe.ca; Ariel Elior <aelior@marvell.com>; Alok
-> Prasad <palok@marvell.com>
-> Subject: Re: [PATCH for-next] RDMA/qedr: Remove unsupported
-> qedr_resize_cq callback
->=20
-=20
-> ----------------------------------------------------------------------
-> On Mon, Oct 25, 2021 at 09:24:41AM +0000, Prabhakar Kushwaha wrote:
-> > Dear Kamal,
-> >
->=20
-> Hi Prabhakar,
->=20
-> > > -----Original Message-----
-> > > From: Kamal Heib <kamalheib1@gmail.com>
-> > > Sent: Monday, October 25, 2021 9:27 AM
-> > > To: linux-rdma@vger.kernel.org
-> > > Cc: Michal Kalderon <mkalderon@marvell.com>; Ariel Elior
-> > > <aelior@marvell.com>; Doug Ledford <dledford@redhat.com>; Jason
-> > > Gunthorpe <jgg@ziepe.ca>; Kamal Heib <kamalheib1@gmail.com>
-> > > Subject:  [PATCH for-next] RDMA/qedr: Remove unsupported
-> > > qedr_resize_cq callback
-> > >
-
-> > > ---------------------------------------------------------------------=
--
-> > > There is no need to return always zero for function which is not supp=
-orted.
-> > >
-> > > Fixes: a7efd7773e31 ("qedr: Add support for PD,PKEY and CQ verbs")
-> > > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-> > > ---
-> > >  drivers/infiniband/hw/qedr/main.c  |  1 -
-> drivers/infiniband/hw/qedr/verbs.c |
-> > > 10 ----------  drivers/infiniband/hw/qedr/verbs.h |  1 -
-> > >  3 files changed, 12 deletions(-)
-> >
-> > Have you tested this patch? I afraid, there may be a crash because of  =
-this
-> >
->=20
-> I do not think that we will face a crash, because the libqedr in the
-> rdma-core package dose not implement the resize_cq() callback.
->=20
-> Furthermore, if there is a bug in the kernel rdma core this doesn't mean
-> that the qedr driver need to fake supporting resize_cq() to avoid a crash=
-!.
->=20
-
-a7efd7773e31 is quite old commit.  Not sure about the reason behind such fu=
-nction definition.
-But a patch should consider the possible side-effects.=20
+              dev_hold(ndev_work->cmds[i].filter_ndev);
+ +            real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+ +            if (real_dev)
+                  <------------ real_dev is released here.
+ +                    dev_hold(real_dev);
 
 
-> Anyway, To be in the safe side we I'll prepare another patch that checks
-> for NULL in the core and return -EOPNOTSUPP if resize_cq() is not set
-> by the driver.
->=20
-
-Thanks!!
-
---pk
-
+> 
+> > Thanks
+> > 
+> >>  
+> >> -- 
+> >> 2.25.1
+> >>
+> > .
+> > 
