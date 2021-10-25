@@ -2,165 +2,189 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B69F439069
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Oct 2021 09:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D8A043913F
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Oct 2021 10:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231467AbhJYHfd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Oct 2021 03:35:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229521AbhJYHfd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 25 Oct 2021 03:35:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D58F60FBF;
-        Mon, 25 Oct 2021 07:33:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635147191;
-        bh=/WTo8gT4C36+u/hWUhjLtKwzMxjmL26OMQjKDxO3Y5c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nt1WuOF0B1WJP8Abkjys8x1EdvG9/R92M1H/XiHWmmmVaiL8HXA3RBpZUgeqIFkD0
-         RtDxnQ+mNpAPZEYy8tNcy9GOVRGOyLzY18+S7uzNE70qs/L0TjKvFqm6g0mxLR7PM8
-         hvfaPvUHLlk9uuLR9XMjigpOM7LGKPmroJWZUV+MMy/oqvda0st91HOFfZb2WZMVVf
-         ZSxl7gEfCQbNcDrk/dM3z5Rb/8aCsxVW3ZIgpva8Oo2rnI6gMd9/IMm6osZJFYM8GY
-         nVeRwIMq+DNQAfaaBX5e/1toCDrP2rzeORtMnN+CjnYugdcxvbz0Oh7YrI/gwG5HhJ
-         tQkMx/Mwn140Q==
-Date:   Mon, 25 Oct 2021 10:33:07 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     dledford@redhat.com, jgg@ziepe.ca, mbloch@nvidia.com,
-        jinpu.wang@ionos.com, lee.jones@linaro.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
- process
-Message-ID: <YXZdsyifJVY+jOaH@unreal>
-References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+        id S232131AbhJYIgF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Oct 2021 04:36:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhJYIgE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Oct 2021 04:36:04 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0759CC061745;
+        Mon, 25 Oct 2021 01:33:43 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gn3so7715160pjb.0;
+        Mon, 25 Oct 2021 01:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=baWGvL41dy19+4BZX6uDav+aolsx9Dk7kQUgS64bb1g=;
+        b=as4g3fNzeC53JV1QW9l3PceZ7FSLOqm+yJq6vNLpKffQFUNwOQ+76VDeleJozGL7V5
+         iIlFN02m6BFIhPRcEpe89vDEbCKxXwF0QDCz+IjNrDjf7Ob6aZdvBz2N/w4XeY5Fsyo/
+         HVIzT0+QzJxtY5uoGe4XRnu56S79bMx0ec9tlZ7EBU7jt1MXf7O/Ljv5tf7eAYgyeeFB
+         Hr/mNV8SFuF6TX8jVuKlzv985B1MruvJuXFg/kLvO/xXhxVRdiHnIgIRaToqE9uYh8ku
+         UWborlia3oFOLcABtOiMjP7UPbJZuv5ik1GjBmrgKJxHZHS+xlL7r2v7mKniBRH6ng4V
+         3r4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=baWGvL41dy19+4BZX6uDav+aolsx9Dk7kQUgS64bb1g=;
+        b=JyM9pOinhbe3Dx/ak2td5DFtWBMmhhnCWX+3gWwe88vZlf+4bIh3hADgEoA/GCZU1q
+         mHSPxunAFzfViLb2kIQQqAd45wpV4HEbjyTgfQjd60Dq3N5Ng3YyFp88d1T8jBKZsswf
+         Fc2OMQ0ORHPhU06NcvkXDLmQIvE+uscgbCRDcSrjjMjlZEVoDEGha1dZWlkPzylOnbUO
+         n8eqtJo6++t4iHU2tQoXE9pTuF24enBmSS7f7UMut/Avm8XRxwhUcrv4muLYU7yM2Veu
+         b/KCEc9AL5jqOj9CfvBayuj7ybl4SSM+q8t2mpVW8aXma2Rfd0JvJ/HbuAOFptcfEV9R
+         gqHg==
+X-Gm-Message-State: AOAM5332xMsSp74YeD/m6SwoQJRrtUbmEqQoHWP1R53lphvUqu0x1nly
+        ILfwQ/CJGoUFf9NEkWlfjRM=
+X-Google-Smtp-Source: ABdhPJwKKV3YHe5Kx2TD+5yPgrUQbt8S2s5EfBAbZQQPLcMJjqzjQTN1qjux7zaNTymJGxsM9r7acw==
+X-Received: by 2002:a17:90b:2247:: with SMTP id hk7mr4087767pjb.159.1635150822423;
+        Mon, 25 Oct 2021 01:33:42 -0700 (PDT)
+Received: from localhost.localdomain ([140.82.17.67])
+        by smtp.gmail.com with ESMTPSA id p13sm2495694pfo.102.2021.10.25.01.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Oct 2021 01:33:42 -0700 (PDT)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     akpm@linux-foundation.org, keescook@chromium.org,
+        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
+        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
+        qiang.zhang@windriver.com, robdclark@chromium.org,
+        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v6 00/12] extend task comm from 16 to 24
+Date:   Mon, 25 Oct 2021 08:33:03 +0000
+Message-Id: <20211025083315.4752-1-laoar.shao@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 11:42:58AM +0800, Ziyang Xuan wrote:
-> When a vlan netdev enter netdevice_event process although it is not a
-> roce netdev, it will be passed to netdevice_event_work_handler() to
-> process. In order to hold the netdev of netdevice_event after
-> netdevice_event() return, call dev_hold() to hold the netdev in
-> netdevice_queue_work(). But that did not consider the real_dev of a vlan
-> netdev, the real_dev can be freed within netdevice_event_work_handler()
-> be scheduled. It would trigger the UAF problem for the real_dev like
-> following:
-> 
-> ==================================================================
-> BUG: KASAN: use-after-free in vlan_dev_real_dev+0xf9/0x120
-> Read of size 4 at addr ffff88801648a0c4 by task kworker/u8:0/8
-> Workqueue: gid-cache-wq netdevice_event_work_handler
-> Call Trace:
->  dump_stack_lvl+0xcd/0x134
->  print_address_description.constprop.0.cold+0x93/0x334
->  kasan_report.cold+0x83/0xdf
->  vlan_dev_real_dev+0xf9/0x120
->  is_eth_port_of_netdev_filter.part.0+0xb1/0x2c0
->  is_eth_port_of_netdev_filter+0x28/0x40
->  ib_enum_roce_netdev+0x1a3/0x300
->  ib_enum_all_roce_netdevs+0xc7/0x140
->  netdevice_event_work_handler+0x9d/0x210
-> ...
-> 
-> Allocated by task 9289:
->  kasan_save_stack+0x1b/0x40
->  __kasan_kmalloc+0x9b/0xd0
->  __kmalloc_node+0x20a/0x330
->  kvmalloc_node+0x61/0xf0
->  alloc_netdev_mqs+0x9d/0x1140
->  rtnl_create_link+0x955/0xb70
->  __rtnl_newlink+0xe10/0x15b0
->  rtnl_newlink+0x64/0xa0
-> ...
-> 
-> Freed by task 9288:
->  kasan_save_stack+0x1b/0x40
->  kasan_set_track+0x1c/0x30
->  kasan_set_free_info+0x20/0x30
->  __kasan_slab_free+0xfc/0x130
->  slab_free_freelist_hook+0xdd/0x240
->  kfree+0xe4/0x690
->  kvfree+0x42/0x50
->  device_release+0x9f/0x240
->  kobject_put+0x1c8/0x530
->  put_device+0x1b/0x30
->  free_netdev+0x370/0x540
->  ppp_destroy_interface+0x313/0x3d0
->  ppp_release+0x1bf/0x240
-> ...
-> 
-> Hold the real_dev for a vlan netdev in netdevice_event_work_handler()
-> to fix the UAF problem.
-> 
-> Fixes: 238fdf48f2b5 ("IB/core: Add RoCE table bonding support")
-> Reported-by: syzbot+e4df4e1389e28972e955@syzkaller.appspotmail.com
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
-> ---
->  drivers/infiniband/core/roce_gid_mgmt.c | 16 +++++++++++++++-
->  1 file changed, 15 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
-> index 68197e576433..063dbe72b7c2 100644
-> --- a/drivers/infiniband/core/roce_gid_mgmt.c
-> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
-> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->  {
->  	struct netdev_event_work *work =
->  		container_of(_work, struct netdev_event_work, work);
-> +	struct net_device *real_dev;
->  	unsigned int i;
->  
->  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
-> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->  					 work->cmds[i].filter_ndev,
->  					 work->cmds[i].cb,
->  					 work->cmds[i].ndev);
-> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
-> +		if (real_dev)
-> +			dev_put(real_dev);
-> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
-> +		if (real_dev)
-> +			dev_put(real_dev);
->  		dev_put(work->cmds[i].ndev);
->  		dev_put(work->cmds[i].filter_ndev);
->  	}
-> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
->  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
->  				struct net_device *ndev)
->  {
-> -	unsigned int i;
->  	struct netdev_event_work *ndev_work =
->  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
-> +	struct net_device *real_dev;
-> +	unsigned int i;
->  
->  	if (!ndev_work)
->  		return NOTIFY_DONE;
-> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
->  			ndev_work->cmds[i].filter_ndev = ndev;
->  		dev_hold(ndev_work->cmds[i].ndev);
->  		dev_hold(ndev_work->cmds[i].filter_ndev);
-> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
-> +		if (real_dev)
-> +			dev_hold(real_dev);
-> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
-> +		if (real_dev)
-> +			dev_hold(real_dev);
->  	}
->  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
+There're many truncated kthreads in the kernel, which may make trouble
+for the user, for example, the user can't get detailed device
+information from the task comm.
 
-Probably, this is the right change, but I don't know well enough that
-part of code. What prevents from "real_dev" to disappear right after
-your call to rdma_vlan_dev_real_dev()?
+This patchset tries to improve this problem fundamentally by extending
+the task comm size from 16 to 24. In order to do that, we have to do
+some cleanups first.
 
-Thanks
+1. Make the copy of task comm always safe no matter what the task
+   comm size is. For example,
 
->  
-> -- 
-> 2.25.1
-> 
+      Unsafe                 Safe
+      strlcpy                strscpy_pad
+      strncpy                strscpy_pad
+      bpf_probe_read_kernel  bpf_probe_read_kernel_str
+                             bpf_core_read_str
+                             bpf_get_current_comm
+                             perf_event__prepare_comm
+                             prctl(2)
+
+   After this step, the comm size change won't make any trouble to the 
+   kernel or the in-tree tools for example perf, BPF programs.
+
+2. Cleanup some old hard-coded 16
+   Actually we don't need to convert all of them to TASK_COMM_LEN or
+   TASK_COMM_LEN_16, what we really care about is if the convert can
+   make the code more reasonable or easier to understand. For
+   example, some in-tree tools read the comm from sched:sched_switch
+   tracepoint, as it is derived from the kernel, we'd better make them
+   consistent with the kernel.
+
+3. Extend the task comm size from 16 to 24
+   task_struct is growing rather regularly by 8 bytes. This size change
+   should be acceptable. We used to think about extending the size for
+   CONFIG_BASE_FULL only, but that would be a burden for maintenance 
+   and introduce code complexity.
+
+4. Print a warning if the kthread comm is still truncated.
+
+5. What will happen to the out-of-tree tools after this change?
+   If the tool get task comm through kernel API, for example prctl(2),
+   bpf_get_current_comm() and etc, then it doesn't matter how large the
+   user buffer is, because it will always get a string with a nul
+   terminator. While if it gets the task comm through direct string copy,
+   the user tool must make sure the copied string has a nul terminator
+   itself. As TASK_COMM_LEN is not exposed to userspace, there's no
+   reason that it must require a fixed-size task comm.
+
+Changes since v5:
+- extend the comm size for both CONFIG_BASE_{FULL, SMALL} that could
+  make the code more simple and easier to maintain.
+- avoid changing too much hard-coded 16 in BPF programs per Andrii. 
+
+Changes since v4:
+- introduce TASK_COMM_LEN_16 and TASK_COMM_LEN_24 per Steven
+- replace hard-coded 16 with TASK_COMM_LEN_16 per Kees
+- use strscpy_pad() instead of strlcpy()/strncpy() per Kees
+- make perf test adopt to task comm size change per Arnaldo and Mathieu
+- fix warning reported by kernel test robot
+
+Changes since v3:
+- fixes -Wstringop-truncation warning reported by kernel test robot
+
+Changes since v2:
+- avoid change UAPI code per Kees
+- remove the description of out of tree code from commit log per Peter
+
+Changes since v1:
+- extend task comm to 24bytes, per Petr
+- improve the warning per Petr
+- make the checkpatch warning a separate patch
+
+Yafang Shao (12):
+  fs/exec: make __set_task_comm always set a nul ternimated string
+  fs/exec: make __get_task_comm always get a nul terminated string
+  drivers/connector: make connector comm always nul ternimated
+  drivers/infiniband: make setup_ctxt always get a nul terminated task
+    comm
+  elfcore: make prpsinfo always get a nul terminated task comm
+  samples/bpf/test_overhead_kprobe_kern: make it adopt to task comm size
+    change
+  samples/bpf/offwaketime_kern: make sched_switch tracepoint args adopt
+    to comm size change
+  tools/bpf/bpftool/skeleton: make it adopt to task comm size change
+  tools/perf/test: make perf test adopt to task comm size change
+  tools/testing/selftests/bpf: make it adopt to task comm size change
+  sched.h: extend task comm from 16 to 24
+  kernel/kthread: show a warning if kthread's comm is truncated
+
+ drivers/connector/cn_proc.c                   |  5 +++-
+ drivers/infiniband/hw/qib/qib.h               |  2 +-
+ drivers/infiniband/hw/qib/qib_file_ops.c      |  2 +-
+ fs/binfmt_elf.c                               |  2 +-
+ fs/exec.c                                     |  5 ++--
+ include/linux/elfcore-compat.h                |  3 ++-
+ include/linux/elfcore.h                       |  4 +--
+ include/linux/sched.h                         |  9 +++++--
+ kernel/kthread.c                              |  7 ++++-
+ samples/bpf/offwaketime_kern.c                |  4 +--
+ samples/bpf/test_overhead_kprobe_kern.c       | 11 ++++----
+ samples/bpf/test_overhead_tp_kern.c           |  5 ++--
+ tools/bpf/bpftool/skeleton/pid_iter.bpf.c     |  4 +--
+ tools/include/linux/sched.h                   | 11 ++++++++
+ tools/perf/tests/evsel-tp-sched.c             | 26 ++++++++++++++-----
+ .../selftests/bpf/progs/test_stacktrace_map.c |  6 ++---
+ .../selftests/bpf/progs/test_tracepoint.c     |  6 ++---
+ 17 files changed, 77 insertions(+), 35 deletions(-)
+ create mode 100644 tools/include/linux/sched.h
+
+-- 
+2.17.1
+
