@@ -2,160 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8AD43B38A
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 16:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CF0243B54B
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 17:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhJZOFi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Oct 2021 10:05:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbhJZOFg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Oct 2021 10:05:36 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0E2C061745;
-        Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id y67so20530792iof.10;
-        Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jiKBRIJ90WYjcORFiV3ORltYZSK2q2sAgdSrdSfFfbc=;
-        b=B5oi/7UCVk36Kltqk5jv0UWKsgnlcJbT+p8jfJZ/39b+wWQ3ihMQCSae2vo2AfNYOV
-         rGFEUlC++DoWLCCqPMJWHJOt1HSJyZFJtvVv49eAiawK7btNdoGSa1NDCwrmtXk1QKNU
-         vSBGb2llMudk+OZOc4MAqtj9ZyDt/GRG5Xmh0lZMLJUQfXLqcWmfnbKyPUvZsUevSp7r
-         Uav5pLsgxuo7NBSBiLlXImmOZ8jx2FcsOPxBS44VwbmHXKYUQ4BPjNlZX9zlsc+Tru3f
-         yRRWGvhcXHKmK3hoxpjQGpduRdkJH6Mb3jiEyDSm0HHk/BZg1ycg8Ak+iPaRmnDBUB5W
-         DujA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jiKBRIJ90WYjcORFiV3ORltYZSK2q2sAgdSrdSfFfbc=;
-        b=JKmwxkkuMTKXFa90Thvjdh0ADxxPITJbFnr9TxxQpGIOeClQzQjWpmyC4sAWRawLGJ
-         UzNthgk5zd74rGJTOH4bwhuOUsDDsU9rLlXtFXsONRNuIj7CDlSnkPYa8b7+1aQ9fMtB
-         OrZFOKemdfjfg5j6h9d3S9/2stCoILE7UY9qmrNlefSP8xOQW+7eN+34/rAYuFK0Xg7N
-         wtDu695kVwfiwmpjHz5x5PzL14+HUbZm7YXbtxD7+0ZqIW6+UnH5QIOqCgToqHfTBs/N
-         JKu0W7Rv1zVFpMJr6+a5pqcfKQrrq8mAMv7Ix4Q2u85hVOPFyYHwXpRox4Z9AvacDDiG
-         i3QQ==
-X-Gm-Message-State: AOAM531ZEV9xo19PMmyMOejzjjpz5FduXyXAymyzOSyTQctKxHvf3xsQ
-        4Sh6s3VSDgjC5PogcEDBQm8eDakQ8rVMUrAAtog=
-X-Google-Smtp-Source: ABdhPJxnJMo1zj33+9fiUewOfzyLCzx56/LSGr86u1/7PYep88hWbWvGY1Pv8LiKwv9ITmco8NPZCwRW9GVoSd8560c=
-X-Received: by 2002:a05:6638:2257:: with SMTP id m23mr249515jas.139.1635256992171;
- Tue, 26 Oct 2021 07:03:12 -0700 (PDT)
+        id S235616AbhJZPTM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Oct 2021 11:19:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57420 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235007AbhJZPTK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Oct 2021 11:19:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635261406;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QvA05aXxutxxuf4alvCn/tpNnAap84Nz2gzVRaRAagI=;
+        b=ODXHmgFWpeGnXkQCDitq7ZBj5z2xDhSYtJwpCuADgvhp6tLgRsPdy1QSK6N2M26cKRbJRE
+        g672rsYKV84w6Q4DqBRrZLoykrDiT/Wx7C+clLg6qK/q+GB2A9PQpow6Ok/iO/sbhwId3x
+        Sll3s+CIEnS/+deK1x+34BWylDfd1jk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-WTS0u1CtO12nii2zTtgFcA-1; Tue, 26 Oct 2021 11:16:44 -0400
+X-MC-Unique: WTS0u1CtO12nii2zTtgFcA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B63F2112A0A1;
+        Tue, 26 Oct 2021 15:16:43 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.5])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF23169117;
+        Tue, 26 Oct 2021 15:16:41 +0000 (UTC)
+Date:   Tue, 26 Oct 2021 17:16:38 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     Eli Cohen <eli@mellanox.com>
+Cc:     linux-rdma@vger.kernel.org, Liran Liss <liranl@mellanox.com>,
+        Or Gerlitz <ogerlitz@mellanox.com>,
+        Doug Ledford <dledford@redhat.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH for-next 01/10] net/core: Add support for configuring VF
+ GUIDs
+Message-ID: <20211026151408.GA18227@asgard.redhat.com>
+References: <1456851143-138332-1-git-send-email-eli@mellanox.com>
+ <1456851143-138332-2-git-send-email-eli@mellanox.com>
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-9-laoar.shao@gmail.com>
- <202110251421.7056ACF84@keescook> <CALOAHbDPs-pbr5CnmuRv+b+CgMdEkzi4Yr2fSO9pKCE-chr3Yg@mail.gmail.com>
- <20211026091211.569a7ba2@gandalf.local.home> <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
-In-Reply-To: <CALOAHbBAKqbZEMvk5PVMrqFR_kjbi_kotGTNTGEW+=JWnC+_uA@mail.gmail.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 26 Oct 2021 22:02:36 +0800
-Message-ID: <CALOAHbAa-iMD4k2DEOun+RivUXiSMKR6ndCsqGZMseUbX_9+ww@mail.gmail.com>
-Subject: Re: [PATCH v6 08/12] tools/bpf/bpftool/skeleton: make it adopt to
- task comm size change
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1456851143-138332-2-git-send-email-eli@mellanox.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 9:55 PM Yafang Shao <laoar.shao@gmail.com> wrote:
->
-> On Tue, Oct 26, 2021 at 9:12 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > On Tue, 26 Oct 2021 10:18:51 +0800
-> > Yafang Shao <laoar.shao@gmail.com> wrote:
-> >
-> > > > So, if we're ever going to copying these buffers out of the kernel (I
-> > > > don't know what the object lifetime here in bpf is for "e", etc), we
-> > > > should be zero-padding (as get_task_comm() does).
-> > > >
-> > > > Should this, instead, be using a bounce buffer?
-> > >
-> > > The comment in bpf_probe_read_kernel_str_common() says
-> > >
-> > >   :      /*
-> > >   :       * The strncpy_from_kernel_nofault() call will likely not fill the
-> > >   :       * entire buffer, but that's okay in this circumstance as we're probing
-> > >   :       * arbitrary memory anyway similar to bpf_probe_read_*() and might
-> > >   :       * as well probe the stack. Thus, memory is explicitly cleared
-> > >   :       * only in error case, so that improper users ignoring return
-> > >   :       * code altogether don't copy garbage; otherwise length of string
-> > >   :       * is returned that can be used for bpf_perf_event_output() et al.
-> > >   :       */
-> > >
-> > > It seems that it doesn't matter if the buffer is filled as that is
-> > > probing arbitrary memory.
-> > >
-> > > >
-> > > > get_task_comm(comm, task->group_leader);
-> > >
-> > > This helper can't be used by the BPF programs, as it is not exported to BPF.
-> > >
-> > > > bpf_probe_read_kernel_str(&e.comm, sizeof(e.comm), comm);
-> >
-> > I guess Kees is worried that e.comm will have something exported to user
-> > space that it shouldn't. But since e is part of the BPF program, does the
-> > BPF JIT take care to make sure everything on its stack is zero'd out, such
-> > that a user BPF couldn't just read various items off its stack and by doing
-> > so, see kernel memory it shouldn't be seeing?
-> >
->
+On Tue, Mar 01, 2016 at 06:52:14PM +0200, Eli Cohen wrote:
+> +struct ifla_vf_guid {
+> +	__u32 vf;
+> +	__u64 guid;
+> +};
 
-Ah, you mean the BPF JIT has already avoided leaking information to user.
-I will check the BPF JIT code first.
+This type definition differs in size on 64-bit and (most of) 32-bit
+architectures, and it breaks 32-on-64-bit compat applications, as a result.
 
-> Understood.
-> It can leak information to the user if the user buffer is large enough.
->
->
-> > I'm guessing it does, otherwise this would be a bigger issue than this
-> > patch series.
-> >
->
-> I will think about how to fix it.
-> At first glance, it seems we'd better introduce a new BPF helper like
-> bpf_probe_read_kernel_str_pad().
->
-> --
-> Thanks
-> Yafang
-
-
-
--- 
-Thanks
-Yafang
