@@ -2,105 +2,184 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DB643AE1C
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 10:33:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879BB43AE47
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 10:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhJZIfN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Oct 2021 04:35:13 -0400
-Received: from mx22.baidu.com ([220.181.50.185]:35872 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234435AbhJZIfM (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Oct 2021 04:35:12 -0400
-Received: from BC-Mail-Ex26.internal.baidu.com (unknown [172.31.51.20])
-        by Forcepoint Email with ESMTPS id BA0F310589D61CEC0ABC;
-        Tue, 26 Oct 2021 16:32:30 +0800 (CST)
-Received: from BJHW-MAIL-EX27.internal.baidu.com (10.127.64.42) by
- BC-Mail-Ex26.internal.baidu.com (172.31.51.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 26 Oct 2021 16:32:30 +0800
-Received: from BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) by
- BJHW-MAIL-EX27.internal.baidu.com ([169.254.58.247]) with mapi id
- 15.01.2308.014; Tue, 26 Oct 2021 16:32:30 +0800
-From:   "Cai,Huoqing" <caihuoqing@baidu.com>
-To:     "rostedt@goodmis.org" <rostedt@goodmis.org>
-CC:     Bernard Metzler <bmt@zurich.ibm.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        "Ingo Molnar" <mingo@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>
-Subject: RE: [PATCH v3 1/6] kthread: Add the helper function
- kthread_run_on_cpu()
-Thread-Topic: [PATCH v3 1/6] kthread: Add the helper function
- kthread_run_on_cpu()
-Thread-Index: AQHXxvDG6BMxoeagk0Ch2rpac1seKavk+Xww
-Date:   Tue, 26 Oct 2021 08:32:30 +0000
-Message-ID: <40fae23eb02c4363bc75649e23f78c1c@baidu.com>
-References: <20211022025711.3673-1-caihuoqing@baidu.com>
- <20211022025711.3673-2-caihuoqing@baidu.com>
-In-Reply-To: <20211022025711.3673-2-caihuoqing@baidu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.21.146.48]
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S233236AbhJZIpi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Oct 2021 04:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233821AbhJZIpc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 26 Oct 2021 04:45:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A11AD60F0F;
+        Tue, 26 Oct 2021 08:43:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635237789;
+        bh=h43NCwa9ubJX4Wst6s4xQvESgGFgW4Qr8HEznAtMvLo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hEIMK5wFoFUSNYyEwIgrA3+kv0wZXUvyJ2C8qweR4lEfDyLos4FI6qrw3vKeF1Tkb
+         qUAp2DIEo9HW4xGVPoLWNZ0h9FEMG9cWfGHVyywa8dA4F+JwnALt9y3i2l+7ygAySs
+         dDlB+RzGktfU26mgkXCy5lUaXOOTxfWDrEs7jNVoPwsBH5ridFI0yRq/qzYCe0SYyL
+         cDiV8LtO+mbnzLjagNf1LgVrnNwT5iPmWTRDwlm403d4kv57TL/2sBT/ecC2L+H+RZ
+         JA+i3YVM87xI5lD+NC3GpGaEz6aUBVXDvcBFV14zwpGRfKP956bHC2TEqYuSnzwR6c
+         s0Sqx8io9XP6g==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mark Zhang <markzhang@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Maor Gottlieb <maorg@nvidia.com>
+Subject: [PATCH rdma-next v1] RDMA/core: Initialize lock when allocate a rdma_hw_stats structure
+Date:   Tue, 26 Oct 2021 11:43:03 +0300
+Message-Id: <4a22986c4685058d2c735d91703ee7d865815bb9.1635237668.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGVsbG8sDQpKdXN0IGEgcGluZywgdG8gc2VlIGlmIHRoZXJlIGFyZSBhbnkgbW9yZSBjb21tZW50
-cyA6LVANCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogQ2FpLEh1b3Fpbmcg
-PGNhaWh1b3FpbmdAYmFpZHUuY29tPg0KPiBTZW50OiAyMDIxxOoxMNTCMjLI1SAxMDo1Nw0KPiBT
-dWJqZWN0OiBbUEFUQ0ggdjMgMS82XSBrdGhyZWFkOiBBZGQgdGhlIGhlbHBlciBmdW5jdGlvbiBr
-dGhyZWFkX3J1bl9vbl9jcHUoKQ0KPiANCj4gdGhlIGhlbHBlciBmdW5jdGlvbiBrdGhyZWFkX3J1
-bl9vbl9jcHUoKSBpbmNsdWRlcw0KPiBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUvd2FrZV91cF9wcm9j
-ZXNzKCkuDQo+IEluIHNvbWUgY2FzZXMsIHVzZSBrdGhyZWFkX3J1bl9vbl9jcHUoKSBkaXJlY3Rs
-eSBpbnN0ZWFkIG9mDQo+IGt0aHJlYWRfY3JlYXRlX29uX25vZGUva3RocmVhZF9iaW5kL3dha2Vf
-dXBfcHJvY2VzcygpIG9yDQo+IGt0aHJlYWRfY3JlYXRlX29uX2NwdS93YWtlX3VwX3Byb2Nlc3Mo
-KSBvcg0KPiBrdGhyZWFkZF9jcmVhdGUva3RocmVhZF9iaW5kL3dha2VfdXBfcHJvY2VzcygpIHRv
-IHNpbXBsaWZ5IHRoZSBjb2RlLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2FpIEh1b3FpbmcgPGNh
-aWh1b3FpbmdAYmFpZHUuY29tPg0KPiAtLS0NCj4gdjEtPnYyOg0KPiAJKlJlbW92ZSBjcHVfdG9f
-bm9kZSBmcm9tIGt0aHJlYWRfY3JlYXRlX29uX2NwdSBwYXJhbXMuDQo+IAkqVXBkYXRlZCB0aGUg
-bWFjcm8gZGVzY3JpcHRpb24gY29tbWVudC4NCj4gdjItPnYzOg0KPiAJKkNvbnZlcnQgdGhpcyBo
-ZWxwZXIgbWFjcm8gdG8gc3RhdGljIGlubGluZSBmdW5jdGlvbg0KPiAJKkZpeCB0eXBvIGluIGNo
-YW5nZWxvZw0KPiANCj4gdjEgbGluazoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwv
-MjAyMTEwMjExMjAxMzUuMzAwMy0yLQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gdjIgbGlu
-azoNCj4gCWh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTEwMjExMjI3NTguMzA5Mi0y
-LQ0KPiBjYWlodW9xaW5nQGJhaWR1LmNvbS8NCj4gDQo+ICBpbmNsdWRlL2xpbnV4L2t0aHJlYWQu
-aCB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAyNSBp
-bnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgg
-Yi9pbmNsdWRlL2xpbnV4L2t0aHJlYWQuaA0KPiBpbmRleCAzNDZiMGYyNjkxNjEuLmRiNDdhYWU3
-YzQ4MSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9saW51eC9rdGhyZWFkLmgNCj4gKysrIGIvaW5j
-bHVkZS9saW51eC9rdGhyZWFkLmgNCj4gQEAgLTU2LDYgKzU2LDMxIEBAIGJvb2wga3RocmVhZF9p
-c19wZXJfY3B1KHN0cnVjdCB0YXNrX3N0cnVjdCAqayk7DQo+ICAJX19rOwkJCQkJCQkJICAgXA0K
-PiAgfSkNCj4gDQo+ICsvKioNCj4gKyAqIGt0aHJlYWRfcnVuX29uX2NwdSAtIGNyZWF0ZSBhbmQg
-d2FrZSBhIGNwdSBib3VuZCB0aHJlYWQuDQo+ICsgKiBAdGhyZWFkZm46IHRoZSBmdW5jdGlvbiB0
-byBydW4gdW50aWwgc2lnbmFsX3BlbmRpbmcoY3VycmVudCkuDQo+ICsgKiBAZGF0YTogZGF0YSBw
-dHIgZm9yIEB0aHJlYWRmbi4NCj4gKyAqIEBjcHU6IFRoZSBjcHUgb24gd2hpY2ggdGhlIHRocmVh
-ZCBzaG91bGQgYmUgYm91bmQsDQo+ICsgKiBAbmFtZWZtdDogcHJpbnRmLXN0eWxlIG5hbWUgZm9y
-IHRoZSB0aHJlYWQuIEZvcm1hdCBpcyByZXN0cmljdGVkDQo+ICsgKgkgICAgIHRvICJuYW1lLiol
-dSIuIENvZGUgZmlsbHMgaW4gY3B1IG51bWJlci4NCj4gKyAqDQo+ICsgKiBEZXNjcmlwdGlvbjog
-Q29udmVuaWVudCB3cmFwcGVyIGZvciBrdGhyZWFkX2NyZWF0ZV9vbl9jcHUoKQ0KPiArICogZm9s
-bG93ZWQgYnkgd2FrZV91cF9wcm9jZXNzKCkuICBSZXR1cm5zIHRoZSBrdGhyZWFkIG9yDQo+ICsg
-KiBFUlJfUFRSKC1FTk9NRU0pLg0KPiArICovDQo+ICtzdGF0aWMgaW5saW5lIHN0cnVjdCB0YXNr
-X3N0cnVjdCAqDQo+ICtrdGhyZWFkX3J1bl9vbl9jcHUoaW50ICgqdGhyZWFkZm4pKHZvaWQgKmRh
-dGEpLCB2b2lkICpkYXRhLA0KPiArCQkJdW5zaWduZWQgaW50IGNwdSwgY29uc3QgY2hhciAqbmFt
-ZWZtdCkNCj4gK3sNCj4gKwlzdHJ1Y3QgdGFza19zdHJ1Y3QgKnA7DQo+ICsNCj4gKwlwID0ga3Ro
-cmVhZF9jcmVhdGVfb25fY3B1KHRocmVhZGZuLCBkYXRhLCBjcHUsIG5hbWVmbXQpOw0KPiArCWlm
-ICghSVNfRVJSKHApKQ0KPiArCQl3YWtlX3VwX3Byb2Nlc3MocCk7DQo+ICsNCj4gKwlyZXR1cm4g
-cDsNCj4gK30NCj4gKw0KPiAgdm9pZCBmcmVlX2t0aHJlYWRfc3RydWN0KHN0cnVjdCB0YXNrX3N0
-cnVjdCAqayk7DQo+ICB2b2lkIGt0aHJlYWRfYmluZChzdHJ1Y3QgdGFza19zdHJ1Y3QgKmssIHVu
-c2lnbmVkIGludCBjcHUpOw0KPiAgdm9pZCBrdGhyZWFkX2JpbmRfbWFzayhzdHJ1Y3QgdGFza19z
-dHJ1Y3QgKmssIGNvbnN0IHN0cnVjdCBjcHVtYXNrICptYXNrKTsNCj4gLS0NCj4gMi4yNS4xDQoN
-Cg==
+From: Mark Zhang <markzhang@nvidia.com>
+
+Initialize the rdma_hw_stats "lock" field when do allocation, to fix the
+warning below. Then we don't need to initialize it in sysfs, remove it.
+
+ DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+ WARNING: CPU: 4 PID: 64464 at kernel/locking/mutex.c:575 __mutex_lock+0x9c3/0x12b0
+ Modules linked in: bonding ip_gre mlx5_ib geneve ib_ipoib ip6_gre gre nf_tables ip6_tunnel tunnel6 ib_umad mlx5_core rdma_ucm ib_uverbs ipip tunnel4 openvswitch nsh xt_conntrack xt_MASQUERADE nf_conntrack_netlink nfnetlink xt_addrtype iptable_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 br_netfilter rpcrdma ib_iser libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core overlay fuse [last unloaded: nf_tables]
+ CPU: 4 PID: 64464 Comm: rdma Not tainted 5.15.0-rc5_for_upstream_debug_2021_10_14_11_06 #1
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:__mutex_lock+0x9c3/0x12b0
+ Code: 08 84 d2 0f 85 cd 08 00 00 8b 05 00 7e 70 01 85 c0 0f 85 51 f7 ff ff 48 c7 c6 00 a4 89 83 48 c7 c7 c0 a1 89 83 e8 b8 97 f0 ff <0f> 0b e9 37 f7 ff ff 48 8b 44 24 40 48 8d b8 f0 06 00 00 48 89 f8
+ RSP: 0018:ffff88822d016d18 EFLAGS: 00010282
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+ RDX: 0000000000000027 RSI: 0000000000000004 RDI: ffffed1045a02d95
+ RBP: 0000000000000000 R08: 0000000000000001 R09: ffff8884d322f8fb
+ R10: ffffed109a645f1f R11: 0000000000000001 R12: dffffc0000000000
+ R13: ffff88819f846000 R14: ffff888102ad6060 R15: ffff88819f846000
+ FS:  00007f149943f800(0000) GS:ffff8884d3200000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007fff4fd8cff8 CR3: 000000017c108001 CR4: 0000000000370ea0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  ? fill_res_counter_entry+0x6ee/0x1020 [ib_core]
+  ? mutex_lock_io_nested+0x1130/0x1130
+  ? fill_res_counter_entry+0x5c7/0x1020 [ib_core]
+  ? lock_downgrade+0x6e0/0x6e0
+  ? memcpy+0x39/0x60
+  ? nla_put+0x15f/0x1c0
+  fill_res_counter_entry+0x6ee/0x1020 [ib_core]
+  ? fill_res_srq_entry+0x940/0x940 [ib_core]
+  ? rdma_restrack_count+0x440/0x440 [ib_core]
+  ? memcpy+0x39/0x60
+  ? nla_put+0x15f/0x1c0
+  res_get_common_dumpit+0x907/0x10a0 [ib_core]
+  ? fill_res_srq_entry+0x940/0x940 [ib_core]
+  ? _nldev_get_dumpit+0x4c0/0x4c0 [ib_core]
+  ? mark_lock+0xf7/0x2e60
+  ? nla_get_range_signed+0x540/0x540
+  ? mark_lock+0xf7/0x2e60
+  ? lock_chain_count+0x20/0x20
+  nldev_stat_get_dumpit+0x20a/0x290 [ib_core]
+  ? res_get_common_dumpit+0x10a0/0x10a0 [ib_core]
+  ? memset+0x20/0x40
+  ? __build_skb_around+0x1f8/0x2b0
+  ? netlink_skb_set_owner_r+0xc6/0x1e0
+  netlink_dump+0x451/0x1040
+  ? netlink_deliver_tap+0xb10/0xb10
+  ? __netlink_dump_start+0x222/0x830
+  __netlink_dump_start+0x583/0x830
+  rdma_nl_rcv_msg+0x3f3/0x7c0 [ib_core]
+  ? rdma_nl_chk_listeners+0xb0/0xb0 [ib_core]
+  ? res_get_common_dumpit+0x10a0/0x10a0 [ib_core]
+  ? netlink_deliver_tap+0xbc/0xb10
+  rdma_nl_rcv+0x264/0x410 [ib_core]
+  ? rdma_nl_rcv_msg+0x7c0/0x7c0 [ib_core]
+  ? netlink_deliver_tap+0x140/0xb10
+  ? netlink_deliver_tap+0x14c/0xb10
+  ? _copy_from_iter+0x282/0xbe0
+  netlink_unicast+0x433/0x700
+  ? netlink_attachskb+0x740/0x740
+  ? __alloc_skb+0x117/0x2c0
+  netlink_sendmsg+0x707/0xbf0
+  ? netlink_unicast+0x700/0x700
+  ? netlink_unicast+0x700/0x700
+  sock_sendmsg+0xb0/0xe0
+  __sys_sendto+0x193/0x240
+  ? __x64_sys_getpeername+0xb0/0xb0
+  ? _copy_to_user+0x94/0xb0
+  ? __x64_sys_connect+0xb0/0xb0
+  ? __x64_sys_socketpair+0xf0/0xf0
+  ? __sys_socket+0x11a/0x1a0
+  ? sock_ioctl+0x610/0x610
+  __x64_sys_sendto+0xdd/0x1b0
+  ? syscall_enter_from_user_mode+0x1d/0x50
+  do_syscall_64+0x3d/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+ RIP: 0033:0x7f1499622cba
+ Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb b8 0f 1f 00 f3 0f 1e fa 41 89 ca 64 8b 04 25 18 00 00 00 85 c0 75 15 b8 2c 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 76 c3 0f 1f 44 00 00 55 48 83 ec 30 44 89 4c
+ RSP: 002b:00007fff4fd8e9a8 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
+ RAX: ffffffffffffffda RBX: 00007fff4fd8ec70 RCX: 00007f1499622cba
+ RDX: 0000000000000028 RSI: 0000000000c43910 RDI: 0000000000000004
+ RBP: 00007fff4fd8ec70 R08: 00007f14996ee000 R09: 000000000000000c
+ R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000c44940
+ R13: 0000000000000000 R14: 00007fff4fd8ec90 R15: 00007fff4fd8ec70
+ irq event stamp: 44063
+ hardirqs last  enabled at (44063): [<ffffffff83349157>] _raw_spin_unlock_irqrestore+0x47/0x50
+ hardirqs last disabled at (44062): [<ffffffff83348f50>] _raw_spin_lock_irqsave+0x50/0x60
+ softirqs last  enabled at (43932): [<ffffffff82a74532>] netlink_insert+0x172/0x11d0
+ softirqs last disabled at (43930): [<ffffffff828490db>] release_sock+0x1b/0x170
+ ---[ end trace 48c63b35e252a166 ]---
+
+Fixes: 0a0800ce2a6a ("RDMA/core: Add a helper API rdma_free_hw_stats_struct")
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+Changelog:
+v1:
+ * Changed Fixes line
+ * Removed timestamps from the kernel panic
+ * Change target from rdma-rc to rdma-next
+v0:
+https://lore.kernel.org/all/89baeee29503df46dd28a6a5edbad9ec1a1d86f1.1635055496.git.leonro@nvidia.com/
+---
+ drivers/infiniband/core/sysfs.c | 2 --
+ drivers/infiniband/core/verbs.c | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
+index 8626dfbf2199..a3f84b50c46a 100644
+--- a/drivers/infiniband/core/sysfs.c
++++ b/drivers/infiniband/core/sysfs.c
+@@ -911,7 +911,6 @@ alloc_hw_stats_device(struct ib_device *ibdev)
+ 	if (!data->group.attrs)
+ 		goto err_free_data;
+ 
+-	mutex_init(&stats->lock);
+ 	data->group.name = "hw_counters";
+ 	data->stats = stats;
+ 	return data;
+@@ -1018,7 +1017,6 @@ alloc_hw_stats_port(struct ib_port *port, struct attribute_group *group)
+ 	if (!group->attrs)
+ 		goto err_free_data;
+ 
+-	mutex_init(&stats->lock);
+ 	group->name = "hw_counters";
+ 	data->stats = stats;
+ 	return data;
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index 47cf273d0678..692d5ff657df 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -3002,6 +3002,7 @@ struct rdma_hw_stats *rdma_alloc_hw_stats_struct(
+ 	stats->descs = descs;
+ 	stats->num_counters = num_counters;
+ 	stats->lifespan = msecs_to_jiffies(lifespan);
++	mutex_init(&stats->lock);
+ 
+ 	return stats;
+ 
+-- 
+2.31.1
+
