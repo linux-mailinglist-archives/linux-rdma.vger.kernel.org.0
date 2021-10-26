@@ -2,137 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E784C43A5FD
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Oct 2021 23:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29C043A9DB
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 03:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhJYViM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Oct 2021 17:38:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53926 "EHLO
+        id S232566AbhJZBvr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Oct 2021 21:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234200AbhJYViG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Oct 2021 17:38:06 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26E8FC061226
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id u12so5246382pjy.1
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Oct 2021 14:35:44 -0700 (PDT)
+        with ESMTP id S230183AbhJZBvq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Oct 2021 21:51:46 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B1EC061745;
+        Mon, 25 Oct 2021 18:49:24 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id s20so4420358ioa.4;
+        Mon, 25 Oct 2021 18:49:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
-        b=Reu7Zfhwb2ow26i8wER7gTUYsj+/+vm3SHpVkiU5o03ZeeoZzyL2Vgkqxh4inOpYnO
-         sIv6S7DVrUX4hxLj1wywwk4ilQARf94QkoGSKt86yRTCISAioxSgdb+DyznYDGjhuSoo
-         ZelV/oR2YAMluKuDU0FY/KCCbUgaliM74RtVk=
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q9ixNJMryetrNkf64Gif/9S4GmDdPd1m0A8YYlrDxDA=;
+        b=TBnfJZ2THlgi6EJWoe2MO5u+LFFM0EWaiS+gotcqJjfIh8zd+i2c6molpxOgo/9s4D
+         dFOGYLm+q0OhSm73HgMzBOqjy2LkiZ+kuDPMyr4SFVGL5gxwrAXFIhbwonRW2eC7qEAi
+         2K8GtjicsqXI4vzFSsCcedGOgub8jloVy1yjHvaPn9352ZIndl5Ea4DrrTu7ZAAqMD6J
+         QogrxjLepRtyf4KjhS9R4PcbYPfrlWzBubvr+fLQWsihUtby/5E+e0AX6/dw9h9USG1r
+         A5SxerUB1p4uMYV8rL9Pf7naaoIsGCSa6jAI2ewjP+7NXDjJEMyjy+fqlQ0t6wtZiIpc
+         /BXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iHfgSZESuBtNRWpoQ0O3+KS410Lf4cM3SnOfKO347UQ=;
-        b=GUR49+PPsH6YMSv0n1eTeDWkk8xm8zN7l0Zxbi8TUYZiccEPzSFNRdCnEzgJTPEtg9
-         McbIsIrJyFrxfX3UuH9N/VxClDcvsOh9BYDyO1uuBltYh/tRY2SwIvlCFd/mqki7q0Lt
-         g7iFBo23KniUeMCa6HCGZDBjqBAV17xmGTT0Hdc2D5JCbVFEoFkf+2igYC0mgHodZbAc
-         duxyNLQV66OFktTvQBbq+isOtzmGJ6S0B5ZtJWKGF078CmIFU1t1zgp4AsWe4PVZ3JNh
-         5HHwHANijHZKWAqotnSPBsXoGxjYDygtRPiRue5TKbXIe+xXKTCB7C9yqZcOegvAHqST
-         UmRA==
-X-Gm-Message-State: AOAM533kDV29t2fCi6d4M0h8xpatt93cYSnGHGdBqMvXZ99Pq8IpEooz
-        SVTwq/Ifj+CGgE40ZU19ZHlR6A==
-X-Google-Smtp-Source: ABdhPJwx8sYf8AzkITaCuxfOfNpuYr9vEkvn+zKf5942IhmP91Qr049qj3smEeLELnoSGilSTESh2g==
-X-Received: by 2002:a17:902:e5cb:b0:13f:25b7:4d50 with SMTP id u11-20020a170902e5cb00b0013f25b74d50mr18287509plf.38.1635197743615;
-        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id a20sm19562774pfn.136.2021.10.25.14.35.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Oct 2021 14:35:43 -0700 (PDT)
-Date:   Mon, 25 Oct 2021 14:35:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     akpm@linux-foundation.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, arnaldo.melo@gmail.com,
-        pmladek@suse.com, peterz@infradead.org, viro@zeniv.linux.org.uk,
-        valentin.schneider@arm.com, qiang.zhang@windriver.com,
-        robdclark@chromium.org, christian@brauner.io,
-        dietmar.eggemann@arm.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q9ixNJMryetrNkf64Gif/9S4GmDdPd1m0A8YYlrDxDA=;
+        b=x+VBGtmcVhXarrTfCv5jki00LJBVb7N8Q7oyZyh3qRML7v8Hnf+qnUGEBpCjQvQnqc
+         UWYr5CWD3DDF9M88dWN18IrPc7sLFGNdFPBkI1iHbvGUttIPUMJYE5gH236dsLrAfLOR
+         V3zFv2hSz4q70p2VL3/sfrw3hjhmxy4gRhM1otQ26UqxIHPLBCKFdSjkWm01+ljZac4r
+         BIlwEQzg3Gxr5WjkKIfvRC68Zjiji9Jni68Tnqt2N1/Fn88w5qPNX5RgClHUYw9pRZv6
+         I/i/yBmoWvtJHLMpgCHu7e+izNGBub+b9GUu0d2mwgUFftqr6pw6ac/lxoVoTdVHZ3PW
+         3BEw==
+X-Gm-Message-State: AOAM531rkXc9CofYeWFBiNZ16HoVVoHyLBW12usTaIo4YBrJZgDTlQkD
+        V5PoE/YSFvtxp5Kv6TysJpa4KP/bj7JO60p5D4M=
+X-Google-Smtp-Source: ABdhPJxyqz6JE4o8mcyL8jtdYd9fyB0EJ9+xMphQ3cQq2Z6znTX7NDxCDSShbtRLSLDUkJdu8VHSeeQUDN0xgh39/eo=
+X-Received: by 2002:a05:6602:1514:: with SMTP id g20mr13536302iow.9.1635212963546;
+ Mon, 25 Oct 2021 18:49:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-2-laoar.shao@gmail.com>
+ <202110251407.6FD1411ECB@keescook>
+In-Reply-To: <202110251407.6FD1411ECB@keescook>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 26 Oct 2021 09:48:47 +0800
+Message-ID: <CALOAHbB43jP=TKfCNqNRaEhFj-JyYhSO-3udYYQvjDST=jUoDw@mail.gmail.com>
+Subject: Re: [PATCH v6 01/12] fs/exec: make __set_task_comm always set a nul
+ ternimated string
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
         dennis.dalessandro@cornelisnetworks.com,
         mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's
- comm is truncated
-Message-ID: <202110251431.F594652F@keescook>
-References: <20211025083315.4752-1-laoar.shao@gmail.com>
- <20211025083315.4752-13-laoar.shao@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211025083315.4752-13-laoar.shao@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> Show a warning if task comm is truncated. Below is the result
-> of my test case:
-> 
-> truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> 
-> Suggested-by: Petr Mladek <pmladek@suse.com>
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+On Tue, Oct 26, 2021 at 5:07 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Mon, Oct 25, 2021 at 08:33:04AM +0000, Yafang Shao wrote:
+> > Make sure the string set to task comm is always nul ternimated.
+>
+> typo nit: "terminated"
+>
+
+Thanks for pointing this out. I will correct lt.
+
+> >
+> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+>
 > Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Al Viro <viro@zeniv.linux.org.uk>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> ---
->  kernel/kthread.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/kthread.c b/kernel/kthread.c
-> index 5b37a8567168..46b924c92078 100644
-> --- a/kernel/kthread.c
-> +++ b/kernel/kthread.c
-> @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
->  	if (!IS_ERR(task)) {
->  		static const struct sched_param param = { .sched_priority = 0 };
->  		char name[TASK_COMM_LEN];
-> +		int len;
->  
->  		/*
->  		 * task is already visible to other tasks, so updating
->  		 * COMM must be protected.
->  		 */
-> -		vsnprintf(name, sizeof(name), namefmt, args);
-> +		len = vsnprintf(name, sizeof(name), namefmt, args);
-> +		if (len >= TASK_COMM_LEN) {
+>
 
-And since this failure case is slow-path, we could improve the warning
-as other had kind of suggested earlier with something like this instead:
-
-			char *full_comm;
-
-			full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
-			pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-				full_comm, name);
-
-			kfree(full_comm);
-		}
->  		set_task_comm(task, name);
->  		/*
->  		 * root may have changed our (kthreadd's) priority or CPU mask.
-> -- 
-> 2.17.1
-> 
+Thanks for the review.
 
 -- 
-Kees Cook
+Thanks
+Yafang
