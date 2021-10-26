@@ -2,162 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C74E43AA4B
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 04:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FC443AAA3
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Oct 2021 05:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234074AbhJZC04 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Oct 2021 22:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229998AbhJZC0y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Oct 2021 22:26:54 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12123C061745;
-        Mon, 25 Oct 2021 19:24:31 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id n10so8740705iod.13;
-        Mon, 25 Oct 2021 19:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/GAImBcqzGF4ZlKPfVyKeIteXxvhu81c3zR5LkKqlwY=;
-        b=HckTWrHAKpA9NZaDoBD2BNIf8fBKYacL3yGZ+CmJTO2viT8TEvn6v4CXE5/MtmD3wy
-         eAoYl2oIe7HeG5FcGIaPzaE6CEuiH6ZkKKQ9dLnt7VuKtJeea3Mjpw21tZOjWjlS+8vO
-         zLbZeiwh3xYW6HpdYXoz4CkXS+cf/UMI8DG0JVazxbno27ArXIfeY4GaTnsP1sydjXFr
-         ayX5Ge09SgMHgIoClCs/l+KSLWg0OURLJGKdRC62NTmdIC7Cb+NOI3rNPLrEQsuxg8J5
-         zCJvRfrF17lPOWTDUF0EgqHPKuoreW6wCp/PfyWozgwykrOfyHraYfRztxnTZEshUVoN
-         HydQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/GAImBcqzGF4ZlKPfVyKeIteXxvhu81c3zR5LkKqlwY=;
-        b=50ufQ+j4y1mtTzGM01tTtAOmWbjQk2AeRcBgelhcRDjrU6jWYmmfsDA/svyg1xNidQ
-         EqEgYQPkAyCtwaGvMv6uH4BIVlX/PiiLx6OB/ujUNb58JbOvwnAdNwboi0jaLfEoq1JX
-         DRplhUeJTDocL5M6nhle4dci0+XgsILVFtC3cbcxXOR4Bm0mw5mr7as6sjwD7Fr8hEaI
-         Ymv2ilJmzwfTWAkGz5jNdQvbgOP0Mu/Vu8SXhGFutFh2JxmXQbjqLE+jmdN17YrvO7H3
-         4yGEn4p1Oc92oRKMOTW6pq6dh9/tnE84HO2VrNLKvpP6ZjLv2+Iqxuvf59VIvvvveKQl
-         AmYA==
-X-Gm-Message-State: AOAM532B5GTYo0JhW/4eSULTgG5Q0xl87MLGBSUhQG90IcjlgZI/9p3j
-        kj5qFUP+w2Vnq8/JCcAXIglZA2nsAk4h1f1vCjs=
-X-Google-Smtp-Source: ABdhPJxvXEqIO8vqTWxsYX6HC3Vxi6T3FWqsGQ75A1upKsImFHiyikOsYrF3Livq3yt5hVdH592yN3ANmyCD09/8e8c=
-X-Received: by 2002:a02:a483:: with SMTP id d3mr3945986jam.23.1635215070448;
- Mon, 25 Oct 2021 19:24:30 -0700 (PDT)
+        id S234558AbhJZDQa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Oct 2021 23:16:30 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:26121 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233243AbhJZDQ3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Oct 2021 23:16:29 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HdcLc1H5Xz1DHrc;
+        Tue, 26 Oct 2021 11:12:08 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Tue, 26 Oct 2021 11:14:01 +0800
+Subject: Re: [PATCH rdma-rc] IB/core: fix a UAF for netdev in netdevice_event
+ process
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     <dledford@redhat.com>, <jgg@ziepe.ca>, <mbloch@nvidia.com>,
+        <jinpu.wang@ionos.com>, <lee.jones@linaro.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20211025034258.2426872-1-william.xuanziyang@huawei.com>
+ <YXZdsyifJVY+jOaH@unreal> <00f99243-919a-d697-646a-0e200c0aef81@huawei.com>
+ <YXaPm6oTI/lk5GoT@unreal>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <07239ae2-8994-20a6-1cba-c3018c9b0117@huawei.com>
+Date:   Tue, 26 Oct 2021 11:14:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
- <202110251431.F594652F@keescook>
-In-Reply-To: <202110251431.F594652F@keescook>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 26 Oct 2021 10:23:54 +0800
-Message-ID: <CALOAHbA40qJZjdiM6+_e+t-qrE3kdHROPSTE4ttv4JT-HKCG-g@mail.gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
- is truncated
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YXaPm6oTI/lk5GoT@unreal>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 5:35 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> > Show a warning if task comm is truncated. Below is the result
-> > of my test case:
-> >
-> > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> >
-> > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Petr Mladek <pmladek@suse.com>
-> > ---
-> >  kernel/kthread.c | 7 ++++++-
-> >  1 file changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > index 5b37a8567168..46b924c92078 100644
-> > --- a/kernel/kthread.c
-> > +++ b/kernel/kthread.c
-> > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> >       if (!IS_ERR(task)) {
-> >               static const struct sched_param param = { .sched_priority = 0 };
-> >               char name[TASK_COMM_LEN];
-> > +             int len;
-> >
-> >               /*
-> >                * task is already visible to other tasks, so updating
-> >                * COMM must be protected.
-> >                */
-> > -             vsnprintf(name, sizeof(name), namefmt, args);
-> > +             len = vsnprintf(name, sizeof(name), namefmt, args);
-> > +             if (len >= TASK_COMM_LEN) {
->
-> And since this failure case is slow-path, we could improve the warning
-> as other had kind of suggested earlier with something like this instead:
->
+>>>> diff --git a/drivers/infiniband/core/roce_gid_mgmt.c b/drivers/infiniband/core/roce_gid_mgmt.c
+>>>> index 68197e576433..063dbe72b7c2 100644
+>>>> --- a/drivers/infiniband/core/roce_gid_mgmt.c
+>>>> +++ b/drivers/infiniband/core/roce_gid_mgmt.c
+>>>> @@ -621,6 +621,7 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>>>  {
+>>>>  	struct netdev_event_work *work =
+>>>>  		container_of(_work, struct netdev_event_work, work);
+>>>> +	struct net_device *real_dev;
+>>>>  	unsigned int i;
+>>>>  
+>>>>  	for (i = 0; i < ARRAY_SIZE(work->cmds) && work->cmds[i].cb; i++) {
+>>>> @@ -628,6 +629,12 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>>>  					 work->cmds[i].filter_ndev,
+>>>>  					 work->cmds[i].cb,
+>>>>  					 work->cmds[i].ndev);
+>>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].ndev);
+>>>> +		if (real_dev)
+>>>> +			dev_put(real_dev);
+>>>> +		real_dev = rdma_vlan_dev_real_dev(work->cmds[i].filter_ndev);
+>>>> +		if (real_dev)
+>>>> +			dev_put(real_dev);
+>>>>  		dev_put(work->cmds[i].ndev);
+>>>>  		dev_put(work->cmds[i].filter_ndev);
+>>>>  	}
+>>>> @@ -638,9 +645,10 @@ static void netdevice_event_work_handler(struct work_struct *_work)
+>>>>  static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+>>>>  				struct net_device *ndev)
+>>>>  {
+>>>> -	unsigned int i;
+>>>>  	struct netdev_event_work *ndev_work =
+>>>>  		kmalloc(sizeof(*ndev_work), GFP_KERNEL);
+>>>> +	struct net_device *real_dev;
+>>>> +	unsigned int i;
+>>>>  
+>>>>  	if (!ndev_work)
+>>>>  		return NOTIFY_DONE;
+>>>> @@ -653,6 +661,12 @@ static int netdevice_queue_work(struct netdev_event_work_cmd *cmds,
+>>>>  			ndev_work->cmds[i].filter_ndev = ndev;
+>>>>  		dev_hold(ndev_work->cmds[i].ndev);
+>>>>  		dev_hold(ndev_work->cmds[i].filter_ndev);
+>>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+>>>> +		if (real_dev)
+>>>> +			dev_hold(real_dev);
+>>>> +		real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].filter_ndev);
+>>>> +		if (real_dev)
+>>>> +			dev_hold(real_dev);
+>>>>  	}
+>>>>  	INIT_WORK(&ndev_work->work, netdevice_event_work_handler);
+>>>
+>>> Probably, this is the right change, but I don't know well enough that
+>>> part of code. What prevents from "real_dev" to disappear right after
+>>> your call to rdma_vlan_dev_real_dev()?
+>>>
+>>
+>> It is known that free the net_device until its dev_refcnt is one. The
+>> detail realization see netdev_run_todo().The real_dev's dev_refcnt of
+>> a vlan net_device will reach one after unregister_netdevice(&real_dev)
+>> and unregister_vlan_dev(&vlan_ndev, ...) but the dev_refcnt of the vlan
+>> net_device is bigger than one because netdevice_queue_work() will hold
+>> the vlan net_device. So my solution is hold the real_dev too in
+>> netdevice_queue_work().
+> 
+>               dev_hold(ndev_work->cmds[i].filter_ndev);
+>  +            real_dev = rdma_vlan_dev_real_dev(ndev_work->cmds[i].ndev);
+>  +            if (real_dev)
+>                   <------------ real_dev is released here.
+>  +                    dev_hold(real_dev);
 
-It Makes sense to me.  I will do it as you suggested.
+At first, I thought the real_dev's dev_refcnt is bigger than one before
+NETDEV_UNREGISTER notifier event of the vlan net_device because it calls
+dev_put(real_dev) after calling unregister_netdevice_queue(dev, head).
+I thought unregister_netdevice_queue() would issue NETDEV_UNREGISTER
+notifier event of the vlan net_device, I can hold the real_dev in
+NETDEV_UNREGISTER notifier event handler netdevice_queue_work().
 
->                         char *full_comm;
->
->                         full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
->                         pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
->                                 full_comm, name);
->
->                         kfree(full_comm);
->                 }
-> >               set_task_comm(task, name);
-> >               /*
-> >                * root may have changed our (kthreadd's) priority or CPU mask.
-> > --
-> > 2.17.1
-> >
->
-> --
-> Kees Cook
+But I read unregister_vlan_dev() again, found unregister_netdevice_queue()
+in unregister_vlan_dev() just move the vlan net_device to a list to unregister
+later. So it is possible the real_dev has been freed when we access in
+netdevice_queue_work() although the probability is very small.
 
+So the modification need to improve. For example set vlan->real_dev = NULL
+after dev_put(real_dev) in unregister_vlan_dev() proposed by Jason Gunthorpe.
 
+Do you have any other good ideas?
 
--- 
-Thanks
-Yafang
+Thank you!
