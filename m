@@ -2,60 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1F7D43CFF7
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 19:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E67143D0FB
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 20:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbhJ0Rqy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Oct 2021 13:46:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhJ0Rqx (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 27 Oct 2021 13:46:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3BA2F60F92;
-        Wed, 27 Oct 2021 17:44:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635356668;
-        bh=EulqxgmjceC1LVbVqFWb6wDGB2f/xh8sw3zbeePgYp0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=AfrmE6xftmd0d1bneqZDdA1zuFCIV3Yvj99Zbm9b58cG1xQQc2uPH5biPL7UOQ5hQ
-         wpNktLqEraHu+jTlRBh2x6wYQGB6rzTNzT6JD+kd5D44X02rwHVCzvE3FvuBlYG09R
-         FTbld5Wpm4cGEbcXGmpfgydLzRYkspVzqB6cbuDTye1+D0GYrB9tfpA13eH6y6uMhO
-         yzvZt++Im6pT3LlWDD4Hx7pMdT+r8tcxTIUvGlikaPWNgiQDL8DwMj+fEBAzekt5au
-         50niIIiVdKP+ndQ9qAnlVSDHB7cDtBAmcH6gV3wsIUBSMZJIT4NTshFe0OBtN9cOsO
-         DnkAokNZHLqIA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 29156609CD;
-        Wed, 27 Oct 2021 17:44:28 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211027124955.GA602533@nvidia.com>
-References: <20211027124955.GA602533@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211027124955.GA602533@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 64733956ebba7cc629856f4a6ee35a52bc9c023f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab2aa486f48c79b0c9df77e3827922d29c60df0c
-Message-Id: <163535666810.24725.9575781473570444786.pr-tracker-bot@kernel.org>
-Date:   Wed, 27 Oct 2021 17:44:28 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Doug Ledford <dledford@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S238382AbhJ0SqW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Oct 2021 14:46:22 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:26253 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238612AbhJ0SqV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Oct 2021 14:46:21 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19RFW6Ep032300;
+        Wed, 27 Oct 2021 11:43:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=98dNcYsPjwddTwGgLcFF0TluNytwHx2pcgecuYIXurQ=;
+ b=bTOfZO1806qwM4EQWZUOP1E0aTA7yH7AogUZvtJg/2GpkRt/OYyx0ypZV3nmpm8d5vK9
+ ab9GQ9sePO0P31JajXWDWl6NI9ny+ZXEFapo0nTGdWDhs42eWGVZwP8/JEhpUoaTTffi
+ pxu0cjjrLDRd/ip6EfteaWXVwA5seUZLal6d5C1SlLLmOenqUX7lfZ35dtU3qUu4Romu
+ VFz7to9SASZamyzkOfSpeaIAjHnBwMu2XTcsRtlO3aLZaRgDKO5jaD3nA5nDRgWKlrcB
+ ZVkVcAQdgmx6WtKINyHmJEvPGjnGnenL+Y4k/pZSJ1QXi9BoSxTUuq7/I3gUvloyqk9h NA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0b-0016f401.pphosted.com with ESMTP id 3by1cab0kx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 27 Oct 2021 11:43:49 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 27 Oct
+ 2021 11:43:48 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.18 via Frontend
+ Transport; Wed, 27 Oct 2021 11:43:47 -0700
+Received: from alpha-dell-r720.punelab.qlogic.com032qlogic.org032qlogic.com032mv.qlogic.com032av.na032marvell.com (unknown [10.30.46.139])
+        by maili.marvell.com (Postfix) with ESMTP id 12A353F706D;
+        Wed, 27 Oct 2021 11:43:44 -0700 (PDT)
+From:   Alok Prasad <palok@marvell.com>
+To:     <jgg@ziepe.ca>, <dledford@redhat.com>
+CC:     <michal.kalderon@marvell.com>, <ariel.elior@marvell.com>,
+        <linux-rdma@vger.kernel.org>, <smalin@marvell.com>,
+        <aelior@marvell.com>, <palok@marvell.com>,
+        <alok.prasad7@gmail.com>,
+        Prabhakar Kushwaha <pkushwaha@marvell.com>
+Subject: [v3,for-rc] RDMA/qedr: qedr crash while running rdma-tool
+Date:   Wed, 27 Oct 2021 18:43:29 +0000
+Message-ID: <20211027184329.18454-1-palok@marvell.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-GUID: 3c5HbqpVqgX_ZjtgS-JPre-view9k14J
+X-Proofpoint-ORIG-GUID: 3c5HbqpVqgX_ZjtgS-JPre-view9k14J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-27_05,2021-10-26_01,2020-04-07_01
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Wed, 27 Oct 2021 09:49:55 -0300:
+    This patch fixes crash caused by querying qp.
+    Also corrects the state of gsi qp.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+    Below call trace is generated while using iproute2 utility
+    "rdma res show -dd qp" on rdma interface.
+    ======================================================================
+    [  302.569794] BUG: kernel NULL pointer dereference, address: 0000000000000034
+    ..
+    [  302.570378] Hardware name: Dell Inc. PowerEdge R720/0M1GCR, BIOS 1.2.6 05/10/2012
+    [  302.570500] RIP: 0010:qed_rdma_query_qp+0x33/0x1a0 [qed]
+    [  302.570861] RSP: 0018:ffffba560a08f580 EFLAGS: 00010206
+    [  302.570979] RAX: 0000000200000000 RBX: ffffba560a08f5b8 RCX: 0000000000000000
+    [  302.571100] RDX: ffffba560a08f5b8 RSI: 0000000000000000 RDI: ffff9807ee458090
+    [  302.571221] RBP: ffffba560a08f5a0 R08: 0000000000000000 R09: ffff9807890e7048
+    [  302.571342] R10: ffffba560a08f658 R11: 0000000000000000 R12: 0000000000000000
+    [  302.571462] R13: ffff9807ee458090 R14: ffff9807f0afb000 R15: ffffba560a08f7ec
+    [  302.571583] FS:  00007fbbf8bfe740(0000) GS:ffff980aafa00000(0000) knlGS:0000000000000000
+    [  302.571729] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    [  302.571847] CR2: 0000000000000034 CR3: 00000001720ba001 CR4: 00000000000606f0
+    [  302.571968] Call Trace:
+    [  302.572083]  qedr_query_qp+0x82/0x360 [qedr]
+    [  302.572211]  ib_query_qp+0x34/0x40 [ib_core]
+    [  302.572361]  ? ib_query_qp+0x34/0x40 [ib_core]
+    [  302.572503]  fill_res_qp_entry_query.isra.26+0x47/0x1d0 [ib_core]
+    [  302.572670]  ? __nla_put+0x20/0x30
+    [  302.572788]  ? nla_put+0x33/0x40
+    [  302.572901]  fill_res_qp_entry+0xe3/0x120 [ib_core]
+    [  302.573058]  res_get_common_dumpit+0x3f8/0x5d0 [ib_core]
+    [  302.573213]  ? fill_res_cm_id_entry+0x1f0/0x1f0 [ib_core]
+    [  302.573377]  nldev_res_get_qp_dumpit+0x1a/0x20 [ib_core]
+    [  302.573529]  netlink_dump+0x156/0x2f0
+    [  302.573648]  __netlink_dump_start+0x1ab/0x260
+    [  302.573765]  rdma_nl_rcv+0x1de/0x330 [ib_core]
+    [  302.573918]  ? nldev_res_get_cm_id_dumpit+0x20/0x20 [ib_core]
+    [  302.574074]  netlink_unicast+0x1b8/0x270
+    [  302.574191]  netlink_sendmsg+0x33e/0x470
+    [  302.574307]  sock_sendmsg+0x63/0x70
+    [  302.574421]  __sys_sendto+0x13f/0x180
+    [  302.574536]  ? setup_sgl.isra.12+0x70/0xc0
+    [  302.574655]  __x64_sys_sendto+0x28/0x30
+    [  302.574769]  do_syscall_64+0x3a/0xb0
+    [  302.574884]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+    =====================================================================
+Signed-off-by: Ariel Elior <aelior@marvell.com>
+Signed-off-by: Shai Malin <smalin@marvell.com>
+Signed-off-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Alok Prasad <palok@marvell.com>
+---
+v3:(from [2]):
+         - Call query qp callback only in case of non-gsi qp as
+           suggested by Kamal.
+  [2] https://patchwork.kernel.org/project/linux-rdma/patch/20211023164557.7921-1-palok@marvell.com/
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab2aa486f48c79b0c9df77e3827922d29c60df0c
+v2:(from [1]):
+         - Change description.
+         - Corrected enum type.
+  [1] https://patchwork.kernel.org/project/linux-rdma/patch/20210821074339.16614-1-palok@marvell.com/
+---
+ drivers/infiniband/hw/qedr/verbs.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Thank you!
-
+diff --git a/drivers/infiniband/hw/qedr/verbs.c b/drivers/infiniband/hw/qedr/verbs.c
+index dcb3653db72d..3d4e4a766574 100644
+--- a/drivers/infiniband/hw/qedr/verbs.c
++++ b/drivers/infiniband/hw/qedr/verbs.c
+@@ -2744,15 +2744,18 @@ int qedr_query_qp(struct ib_qp *ibqp,
+ 	int rc = 0;
+ 
+ 	memset(&params, 0, sizeof(params));
+-
+-	rc = dev->ops->rdma_query_qp(dev->rdma_ctx, qp->qed_qp, &params);
+-	if (rc)
+-		goto err;
+-
+ 	memset(qp_attr, 0, sizeof(*qp_attr));
+ 	memset(qp_init_attr, 0, sizeof(*qp_init_attr));
+ 
+-	qp_attr->qp_state = qedr_get_ibqp_state(params.state);
++	if (qp->qp_type != IB_QPT_GSI) {
++		rc = dev->ops->rdma_query_qp(dev->rdma_ctx, qp->qed_qp, &params);
++		if (rc)
++			goto err;
++		qp_attr->qp_state = qedr_get_ibqp_state(params.state);
++	} else {
++		qp_attr->qp_state = qedr_get_ibqp_state(QED_ROCE_QP_STATE_RTS);
++	}
++
+ 	qp_attr->cur_qp_state = qedr_get_ibqp_state(params.state);
+ 	qp_attr->path_mtu = ib_mtu_int_to_enum(params.mtu);
+ 	qp_attr->path_mig_state = IB_MIG_MIGRATED;
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.17.1
+
