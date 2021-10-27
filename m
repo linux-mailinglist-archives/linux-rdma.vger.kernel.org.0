@@ -2,313 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8843C7F1
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 12:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A68F43C902
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 13:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241526AbhJ0KsW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Oct 2021 06:48:22 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:13981 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239765AbhJ0KsV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Oct 2021 06:48:21 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HfQKS0V0VzZcVY;
-        Wed, 27 Oct 2021 18:43:56 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 18:45:48 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Wed, 27 Oct 2021 18:45:48 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>
-Subject: [PATCH v3 for-next] RDMA/hns: Add a new mmap implementation
-Date:   Wed, 27 Oct 2021 18:41:29 +0800
-Message-ID: <20211027104129.36902-1-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.33.0
+        id S240144AbhJ0MAE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Oct 2021 08:00:04 -0400
+Received: from mail-bn7nam10on2068.outbound.protection.outlook.com ([40.107.92.68]:14049
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231717AbhJ0MAD (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Oct 2021 08:00:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ls3L8PLt4QwAXwg/oS9dHpSR21PNvFHSdUi5NhdR7mZdHO3Ic+ugmYesV9C95IF/YDKnchfsNG4BiVa1u1mZKyLu7gnPlXd6UjLRvMC8TZZmD9zlIvq55ChgqBR09XQoJ1mioavSVwJFWRpM/fjCc+JfzLRkfzTysmpnak6WKqL+HxkqjIFtXNMI3G/7PKrDMSCnbij4z3UbLi3K+vk5CwjTfbwiP4wu7vUY9jPJS7rS/BwxaWJ/HThUjIythNCpuhVcM8XEikVetWksOosZ/Ng+UejFA6Y0pKT7gxQzs15boTHqSwQu4JPhzYXIKVwgwNXG3VWONkibaauj6mHSGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Sh3KYZPk0fyW4EsW4IzAnZpbFkOrx/sTi7F9OS0llxw=;
+ b=Tp016S3KnN8sZQ/EHn8xcnG4/JVahpLSh0P9Y0BC3uMXoeTEuIS3ufq/0cvLhODNfDbXQCru73eu8D9OaIha2nsgDMqflVlktDcTaazeo5avxGrxJiPQYIAOexXYdtHQfUVb3kXJagA7cH/i4vuZixcgb2DNz/von0RnfjROS2XPey8W1GIzUVbBJTxURVeAXu+cFy3QYIsv9cRJjEXJ70pstk1S1xMsOZL/4+h71DXzLDM0wnEy6bQOV8VGna/zmphHmCwvg2prFzjehAFEC2BX5vqf9hzBF/DwG7A1g1mams55T05dPvtcMa8dE4Q0mnWYlQ/08BEezcXpePrfaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Sh3KYZPk0fyW4EsW4IzAnZpbFkOrx/sTi7F9OS0llxw=;
+ b=RauwsEf9VEx7Dp8mIXD6qr+HMoI6+eirXSJBSJLH8U8DkkuBN9HjpuaCKKv0Cu2XevmBoebCuoxCoEzDAbWZZZBZUve47VV/8K4Fu4DN2lmw4jHzuOO9Q75i8t9w5CW6pDps4MmZxFBk2avxrh50jG3iUwhB7tduMtCfTQPErWp0etC592yX71vr6rT3JicrA4l/s7JXZAx7RfDGQFtwSdDDcTUxn0liLn8RDioArddrMLslcR53u+9sQCeEmrF0wq2iL697rlMyPqaJcCaRbwPdPUzP0Yzs78XmFISYoCs93RUKTFKNWpfypcfACcNPo8TsQu7/w4OUxB/5xcwwKQ==
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5206.namprd12.prod.outlook.com (2603:10b6:208:31c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.14; Wed, 27 Oct
+ 2021 11:57:36 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::e8af:232:915e:2f95%8]) with mapi id 15.20.4649.015; Wed, 27 Oct 2021
+ 11:57:36 +0000
+Date:   Wed, 27 Oct 2021 08:57:35 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: attach multicast verb
+Message-ID: <20211027115735.GD2744544@nvidia.com>
+References: <f5703260-46ab-2d96-e2db-70e9801741e2@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5703260-46ab-2d96-e2db-70e9801741e2@gmail.com>
+X-ClientProxiedBy: CH2PR11CA0011.namprd11.prod.outlook.com
+ (2603:10b6:610:54::21) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Received: from mlx.ziepe.ca (206.223.160.26) by CH2PR11CA0011.namprd11.prod.outlook.com (2603:10b6:610:54::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4649.13 via Frontend Transport; Wed, 27 Oct 2021 11:57:36 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mfhYl-002LQd-DF; Wed, 27 Oct 2021 08:57:35 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 00a2f487-03f1-4c25-db2f-08d99940f7e1
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5206:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5206804CCC0A5508809F5CCFC2859@BL1PR12MB5206.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LndAjSY6o7ew1w9Fc2ZNS+wOU7OvKjKjwlCS6592nd/K+ZPpVGFayEQ2+wsX5//8WpHUi3ug+KstiWcc5OtCxbroI7l7L6g0DMxyLQ5wauCRxCmjMIi2cMIPT2EZXS5FVS+vYyNqKt05cimn2HQO7TQXyq3nCAhhFiCAs8vMsvFAgYGFvF/5YYe436FYLuob+xAQ8O40pa+cLxexG45RRKCmUhjgr/2nRFsoorbZHlrMlM/O7HTWgWVELY/2y9qxfB6LQQAZPnmWgfI8WGWhIMBGr9Huu6rO52dwKVb/jDwCEnsmWZiCNiDJg533fo3rAZwpZwH+pTxkRP8kxXwV3WxfKxzayu19hRa9Mu79cfbbk+3O6lbu6LF4vpej1sd1r55ZjYsmPWlF9ItrPXmr1HcwCg2BmvedowwFo/tfcnnC3IGk3wKiP4VKG96s6OhHAS9wmZpadJGahG6coAJQ1dUfkshGUVt/dPTv5wtUMZ1o3VNR4wH0Zozi2j9hIFZ+AOGbJoL3m0T7Ia5LemexmV2lSm4WRgwLFAehTRQVtL+G8RRWrNysEtP8V9yATcVMqhyY4HTDFKOvEtbpm/c8L9wWxECS9ob4EOgircLljnclegAgG8Dcvw+q5/i4PRnHp3AMZ2/PH2cXencvU586rg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(38100700002)(508600001)(9786002)(9746002)(2616005)(86362001)(426003)(4326008)(2906002)(5660300002)(66946007)(66556008)(66476007)(8936002)(3480700007)(26005)(7116003)(186003)(33656002)(1076003)(8676002)(316002)(6916009)(36756003)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?o8rnyM1OooB8U5KGA/WQMQX9JScfhSA2A6Pj0wHlVKZTC//AZzA5SOCcu3rv?=
+ =?us-ascii?Q?GDsIjvgBAAdWcESnfEQ51YOpIdYuf+KItMfWbS9540nxAonqEhgN3Qg6EYR9?=
+ =?us-ascii?Q?NVQ+g9BWEmmrpW5oQUHLjmHkXnTb39Mk6LoeKTw03rf7P/0iduSpTqmGdWT8?=
+ =?us-ascii?Q?55UW23fdXVx68HUF7EQozA3kp+mlWvKR90288eS0/7Xfpi9YE+pzbQ/3dYpB?=
+ =?us-ascii?Q?m4iNooDPaDWeLCYj3suyWCN/V6HExhfupedp45kxsTUFeZbLzVXrkO4M8Hus?=
+ =?us-ascii?Q?3+bNfJ3v1jR1KHGI9ER5T9+Mh3/g9pfOTQNLhbdSw/Wb9JfJ6TSWhW7uzp2G?=
+ =?us-ascii?Q?9ecTpUcLeUMWYZ0SBPFybmq/hBdacnezqJyzddGSVLpHq7xOaKGHvqCzuiBj?=
+ =?us-ascii?Q?WuxbBkMQz77c6fhbN8k7NnwD8fmK9qLxyZvrt+WYFwZm7W1Bvr59xDF9s/si?=
+ =?us-ascii?Q?rM+xXXDU1XdT+BBPp4eS+jY2mx78cgtjCUQ5pyqyq4BDwE3i3LuJszLA8cRm?=
+ =?us-ascii?Q?/cO2NiQJJKUOD5Bg4ttSidddXDrLfqR56CrLDFfu23ta8m8FqtS2b3FS3bJ/?=
+ =?us-ascii?Q?krunapEtRdugbCPMU4wxj13qy9f+YH2rHHz/m5Egr7b0YvJB2wmERmWbfNbB?=
+ =?us-ascii?Q?m6cpp0HM/gpDKOGOkjGb+hCF4UYEwahtWGuw4jmorGfsqkiuY9UBbvhoisEx?=
+ =?us-ascii?Q?D4dlvVGnvx2Urks7DlWrZrcX4QXt79Y7krhwHRr6Uawr+nNAVLbwIS1BrKSa?=
+ =?us-ascii?Q?7vppwkp1o4le4DN2NjbsMhKe6+Dt+1r0M1Jp1SkwMPJPVAmHn7TAvCRzwZ6m?=
+ =?us-ascii?Q?KOn0q0nIE3Dsyxq0P+yFgYanbfEDymZ0B50uiPRBFag4Ec3MqMyzRHVkkYCs?=
+ =?us-ascii?Q?EKgtGzGg5tTphOGa66spds8wIUG9b1TmqDThuEjGKCGufwlN6YksJKLvg1VG?=
+ =?us-ascii?Q?JCbK5lggSUJNkiYs5cdyjMevLxG6VzbKEF9jMW4BtQmcwsa0ASdvFKnZuq8e?=
+ =?us-ascii?Q?bTkoqYo9keytY283dOplVFIqs0OgYdJ1WZA3Qqrf7JVg9UDYqyNK97c3omaa?=
+ =?us-ascii?Q?RdAZhBvGjo3DvEgpMHKEOQI+CAe73JmarT0pBHDq7n0ctdi6waaoEJkOfPFO?=
+ =?us-ascii?Q?ZmyCp4Y2l85b3blm175T2YzICoxkXB4gG9G2A+N07g4WIEH4UXfdHJaKJnaV?=
+ =?us-ascii?Q?1K35zz2L7lAJW0jHl79cTow4ZZ/Pci7th1FpZnaQEEGX1ez/zGBWDcajEHuk?=
+ =?us-ascii?Q?vYGPA5OVpQd29vRFZLu4WwGv4waZhS/jq0e14P8kJMhDyoXIyxvW9gRAgDQi?=
+ =?us-ascii?Q?fsexMbl9bi/kakwoAYjNcvtq4wimJH2oIwU0Bz/8Zw2fGoYbuWURIrS6S9Ql?=
+ =?us-ascii?Q?aP6jiKXMotU2nZKag2XUhWjgmzAep1qw4vYO8EQRc1rEykfEpDmL8fesoGGm?=
+ =?us-ascii?Q?TRk9Foo/x3M8XdY42rLyMGnO0WzZQ8eEuPiWNEjPvMEnsn2pUmqsiJd6DMvh?=
+ =?us-ascii?Q?wkt7wsp/AwzKBpx2lvz9kQ6iTWas/i7b2GHpIG2wBNJzdHtoY2PfOtc2O/Ef?=
+ =?us-ascii?Q?hZpBcqH2wzLLUj8W5+8=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 00a2f487-03f1-4c25-db2f-08d99940f7e1
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Oct 2021 11:57:36.7776
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ReHEftYAt9cieEuASHLNxLjgEPKP7jK0N0Iq9JomqAqkqZl/hxi8P6PYu+nFa2Op
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5206
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Chengchang Tang <tangchengchang@huawei.com>
+On Tue, Oct 26, 2021 at 12:03:49AM -0500, Bob Pearson wrote:
+> I spent some time looking at the current code for attach multicast and it seems likely not to work. Unfortunately there isn't very much test code for multicast over RoCEv2. Currently the rxe receive code maps all ipv4 multicast addresses ([224-239].x.x.x) to IPV6 unicast addresses using the 46 mapping 0::0000:ffff:aabb:ccdd where the IPV4 address is aa.bb.cc.dd.
+> This is then mapped to a 48 bit MAC address using the IPV6 to MAC mapping
+> 
+> IPV6 mcast addr = FFts:xxxx:xxxx:xxxx::xxxx:xxxx:aabb:ccdd -> 33, 33, aa, bb, cc, dd.
+> The 33, 33 identifies the mac address as a mapped IPV6 address. The real mapping from
+> IPV4 address to MAC address is
+> 
+> Ea.bb.cc.dd -> 01, 00, 5E, bb, cc, dd with the msb of the bb set to zero. The 01, 00, 5E
+> identifies the address as a mapped IPV4 address. The mapped MAC addresses create a filter
+> to allow the (non unique sets of) multicast addresses to be accepted by the NIC.
+> 
+> Real IPV4 multicast traffic is not likely to be accepted by this.
+> 
+> Is there any documentation on how mcast is supposed to work for RoCEv2? Or an expert
+> I can direct questions to?
 
-Add a new implementation for mmap by using the new mmap entry API.
+Can't say I know which is right either
 
-Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  23 ++++
- drivers/infiniband/hw/hns/hns_roce_main.c   | 139 ++++++++++++++++----
- include/rdma/ib_verbs.h                     |   8 ++
- 3 files changed, 144 insertions(+), 26 deletions(-)
+I'd rather expect someone creating a rocev2 IPv4 multicast group to
+stay in ipv4 land though
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index e5dadcd118ac..b624799624dc 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -225,11 +225,24 @@ struct hns_roce_uar {
- 	unsigned long	logic_idx;
- };
- 
-+enum hns_roce_mmap_type {
-+	HNS_ROCE_MMAP_TYPE_DB = 1,
-+	HNS_ROCE_MMAP_TYPE_TPTR,
-+};
-+
-+struct hns_user_mmap_entry {
-+	struct rdma_user_mmap_entry rdma_entry;
-+	enum hns_roce_mmap_type mmap_type;
-+	u64 address;
-+};
-+
- struct hns_roce_ucontext {
- 	struct ib_ucontext	ibucontext;
- 	struct hns_roce_uar	uar;
- 	struct list_head	page_list;
- 	struct mutex		page_mutex;
-+	struct hns_user_mmap_entry *db_mmap_entry;
-+	struct hns_user_mmap_entry *tptr_mmap_entry;
- };
- 
- struct hns_roce_pd {
-@@ -1050,6 +1063,12 @@ static inline struct hns_roce_srq *to_hr_srq(struct ib_srq *ibsrq)
- 	return container_of(ibsrq, struct hns_roce_srq, ibsrq);
- }
- 
-+static inline struct hns_user_mmap_entry *to_hns_mmap(
-+					struct rdma_user_mmap_entry *rdma_entry)
-+{
-+	return container_of(rdma_entry, struct hns_user_mmap_entry, rdma_entry);
-+}
-+
- static inline void hns_roce_write64_k(__le32 val[2], void __iomem *dest)
- {
- 	writeq(*(u64 *)val, dest);
-@@ -1260,4 +1279,8 @@ int hns_roce_init(struct hns_roce_dev *hr_dev);
- void hns_roce_exit(struct hns_roce_dev *hr_dev);
- int hns_roce_fill_res_cq_entry(struct sk_buff *msg,
- 			       struct ib_cq *ib_cq);
-+struct hns_user_mmap_entry *hns_roce_user_mmap_entry_insert(
-+				struct ib_ucontext *ucontext,
-+				u64 address, size_t length,
-+				enum hns_roce_mmap_type mmap_type);
- #endif /* _HNS_ROCE_DEVICE_H */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index b3595b6079b5..8630377ab99c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -292,6 +292,76 @@ static int hns_roce_modify_device(struct ib_device *ib_dev, int mask,
- 	return 0;
- }
- 
-+struct hns_user_mmap_entry *hns_roce_user_mmap_entry_insert(
-+				struct ib_ucontext *ucontext,
-+				u64 address, size_t length,
-+				enum hns_roce_mmap_type mmap_type)
-+{
-+	struct hns_user_mmap_entry *entry;
-+	int ret;
-+
-+	entry = kzalloc(sizeof(*entry), GFP_KERNEL);
-+	if (!entry)
-+		return NULL;
-+
-+	entry->address = address;
-+	entry->mmap_type = mmap_type;
-+
-+	ret = rdma_user_mmap_entry_insert_exact(
-+			ucontext, &entry->rdma_entry, length,
-+			mmap_type == HNS_ROCE_MMAP_TYPE_DB ? 0 : 1);
-+	if (ret) {
-+		kfree(entry);
-+		return NULL;
-+	}
-+
-+	return entry;
-+}
-+
-+static void hns_roce_dealloc_uar_entry(struct hns_roce_ucontext *context)
-+{
-+	if (context->db_mmap_entry)
-+		rdma_user_mmap_entry_remove(
-+				&context->db_mmap_entry->rdma_entry);
-+
-+	if (context->tptr_mmap_entry)
-+		rdma_user_mmap_entry_remove(
-+				&context->tptr_mmap_entry->rdma_entry);
-+}
-+
-+static int hns_roce_alloc_uar_entry(struct ib_ucontext *uctx)
-+{
-+	struct hns_roce_ucontext *context = to_hr_ucontext(uctx);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
-+	u64 address;
-+	int ret;
-+
-+	address = context->uar.pfn << PAGE_SHIFT;
-+	context->db_mmap_entry =
-+		hns_roce_user_mmap_entry_insert(uctx, address, PAGE_SIZE,
-+						HNS_ROCE_MMAP_TYPE_DB);
-+	if (!context->db_mmap_entry)
-+		return -ENOMEM;
-+
-+	if (!hr_dev->tptr_dma_addr || !hr_dev->tptr_size)
-+		return 0;
-+
-+	context->tptr_mmap_entry =
-+		hns_roce_user_mmap_entry_insert(uctx, hr_dev->tptr_dma_addr,
-+						hr_dev->tptr_size,
-+						HNS_ROCE_MMAP_TYPE_TPTR);
-+	if (!context->tptr_mmap_entry) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	hns_roce_dealloc_uar_entry(context);
-+	return ret;
-+}
-+
- static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 				   struct ib_udata *udata)
- {
-@@ -310,6 +380,10 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 	if (ret)
- 		goto error_fail_uar_alloc;
- 
-+	ret = hns_roce_alloc_uar_entry(uctx);
-+	if (ret)
-+		goto error_fail_uar_entry;
-+
- 	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
- 	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB) {
- 		INIT_LIST_HEAD(&context->page_list);
-@@ -326,6 +400,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
- 	return 0;
- 
- error_fail_copy_to_udata:
-+	hns_roce_dealloc_uar_entry(context);
-+
-+error_fail_uar_entry:
- 	ida_free(&hr_dev->uar_ida.ida, (int)context->uar.logic_idx);
- 
- error_fail_uar_alloc:
-@@ -337,39 +414,48 @@ static void hns_roce_dealloc_ucontext(struct ib_ucontext *ibcontext)
- 	struct hns_roce_ucontext *context = to_hr_ucontext(ibcontext);
- 	struct hns_roce_dev *hr_dev = to_hr_dev(ibcontext->device);
- 
-+	hns_roce_dealloc_uar_entry(context);
-+
- 	ida_free(&hr_dev->uar_ida.ida, (int)context->uar.logic_idx);
- }
- 
--static int hns_roce_mmap(struct ib_ucontext *context,
--			 struct vm_area_struct *vma)
-+static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
- {
--	struct hns_roce_dev *hr_dev = to_hr_dev(context->device);
--
--	switch (vma->vm_pgoff) {
--	case 0:
--		return rdma_user_mmap_io(context, vma,
--					 to_hr_ucontext(context)->uar.pfn,
--					 PAGE_SIZE,
--					 pgprot_noncached(vma->vm_page_prot),
--					 NULL);
--
--	/* vm_pgoff: 1 -- TPTR */
--	case 1:
--		if (!hr_dev->tptr_dma_addr || !hr_dev->tptr_size)
--			return -EINVAL;
--		/*
--		 * FIXME: using io_remap_pfn_range on the dma address returned
--		 * by dma_alloc_coherent is totally wrong.
--		 */
--		return rdma_user_mmap_io(context, vma,
--					 hr_dev->tptr_dma_addr >> PAGE_SHIFT,
--					 hr_dev->tptr_size,
--					 vma->vm_page_prot,
--					 NULL);
-+	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct rdma_user_mmap_entry *rdma_entry;
-+	struct hns_user_mmap_entry *entry;
-+	phys_addr_t pfn;
-+	pgprot_t prot;
-+	int ret;
- 
--	default:
-+	rdma_entry = rdma_user_mmap_entry_get_pgoff(uctx, vma->vm_pgoff);
-+	if (!rdma_entry) {
-+		ibdev_err(ibdev, "Invalid entry vm_pgoff %lu.\n",
-+			  vma->vm_pgoff);
- 		return -EINVAL;
- 	}
-+
-+	entry = to_hns_mmap(rdma_entry);
-+	pfn = entry->address >> PAGE_SHIFT;
-+	prot = vma->vm_page_prot;
-+
-+	if (entry->mmap_type != HNS_ROCE_MMAP_TYPE_TPTR)
-+		prot = pgprot_noncached(prot);
-+
-+	ret = rdma_user_mmap_io(uctx, vma, pfn, rdma_entry->npages * PAGE_SIZE,
-+				prot, rdma_entry);
-+
-+	rdma_user_mmap_entry_put(rdma_entry);
-+
-+	return ret;
-+}
-+
-+static void hns_roce_free_mmap(struct rdma_user_mmap_entry *rdma_entry)
-+{
-+	struct hns_user_mmap_entry *entry = to_hns_mmap(rdma_entry);
-+
-+	kfree(entry);
- }
- 
- static int hns_roce_port_immutable(struct ib_device *ib_dev, u32 port_num,
-@@ -445,6 +531,7 @@ static const struct ib_device_ops hns_roce_dev_ops = {
- 	.get_link_layer = hns_roce_get_link_layer,
- 	.get_port_immutable = hns_roce_port_immutable,
- 	.mmap = hns_roce_mmap,
-+	.mmap_free = hns_roce_free_mmap,
- 	.modify_device = hns_roce_modify_device,
- 	.modify_qp = hns_roce_modify_qp,
- 	.query_ah = hns_roce_query_ah,
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 61c73adccbbd..301689d31438 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -2914,6 +2914,14 @@ int rdma_user_mmap_entry_insert_range(struct ib_ucontext *ucontext,
- 				      size_t length, u32 min_pgoff,
- 				      u32 max_pgoff);
- 
-+static inline int rdma_user_mmap_entry_insert_exact(struct ib_ucontext *ucontext,
-+				      struct rdma_user_mmap_entry *entry,
-+				      size_t length, u32 pgoff)
-+{
-+	return rdma_user_mmap_entry_insert_range(ucontext, entry, length,
-+						 pgoff, pgoff);
-+}
-+
- struct rdma_user_mmap_entry *
- rdma_user_mmap_entry_get_pgoff(struct ib_ucontext *ucontext,
- 			       unsigned long pgoff);
--- 
-2.33.0
+The transform to IPV6 multicast is something that rocev1 only should
+do.
 
+Jason
