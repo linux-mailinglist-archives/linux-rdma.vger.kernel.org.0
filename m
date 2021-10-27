@@ -2,108 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C9943BE88
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 02:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0542743C58E
+	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 10:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhJ0Amq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Oct 2021 20:42:46 -0400
-Received: from mga01.intel.com ([192.55.52.88]:1320 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230373AbhJ0Amp (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 26 Oct 2021 20:42:45 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10149"; a="253591715"
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="253591715"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2021 17:40:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,184,1631602800"; 
-   d="scan'208";a="486422570"
-Received: from lkp-server01.sh.intel.com (HELO 072b454ebba8) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2021 17:40:19 -0700
-Received: from kbuild by 072b454ebba8 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mfWzK-0000gI-Mg; Wed, 27 Oct 2021 00:40:18 +0000
-Date:   Wed, 27 Oct 2021 08:40:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- e058953c0ed18b5d2e125edec1cb6a258aa52446
-Message-ID: <61789feb.3EywFf5P6VwOuEVL%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S239614AbhJ0Iy7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Oct 2021 04:54:59 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60377 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235961AbhJ0Iy5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 27 Oct 2021 04:54:57 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0Uts5tlX_1635324749;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0Uts5tlX_1635324749)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 27 Oct 2021 16:52:30 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, davem@davemloft.net, kuba@kernel.org,
+        ubraun@linux.ibm.com
+Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
+        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
+        dust.li@linux.alibaba.com
+Subject: [PATCH net 0/4] Fixes for SMC
+Date:   Wed, 27 Oct 2021 16:52:05 +0800
+Message-Id: <20211027085208.16048-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: e058953c0ed18b5d2e125edec1cb6a258aa52446  RDMA/qedr: Remove unsupported qedr_resize_cq callback
+From: Tony Lu <tony.ly@linux.alibaba.com>
 
-elapsed time: 1715m
+We are using SMC to replace TCP, and find some issues when running TCP's
+test cases.
 
-configs tested: 52
-configs skipped: 3
+Tony Lu (2):
+  Revert "net/smc: don't wait for send buffer space when data was
+    already sent"
+  net/smc: Fix smc_link->llc_testlink_time overflow
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Wen Gu (2):
+  net/smc: Correct spelling mistake to TCPF_SYN_RECV
+  net/smc: Fix wq mismatch issue caused by smc fallback
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
+ net/smc/af_smc.c  | 17 ++++++++++++++++-
+ net/smc/smc_llc.c |  2 +-
+ net/smc/smc_tx.c  |  7 ++++---
+ 3 files changed, 21 insertions(+), 5 deletions(-)
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+2.19.1.6.gb485710b
+
