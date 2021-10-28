@@ -2,73 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36C7843E3F4
-	for <lists+linux-rdma@lfdr.de>; Thu, 28 Oct 2021 16:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A243E439
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Oct 2021 16:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhJ1Ok5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Oct 2021 10:40:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231338AbhJ1Okz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 Oct 2021 10:40:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1CD5060FC4;
-        Thu, 28 Oct 2021 14:38:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1635431908;
-        bh=kPrstnTyZrITONhAWz59+Ws0V6aoLXFaxlZSrZphT1s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=qJlOUK9yWpdYog1QmDYKgc/hfyVMq8OyxFdemYP2ReEKku9QbtEr4bjCr5p5zgXdo
-         raQCZF8l+mtMMBR2yMuehecd9h447JuwbrfHpKde3af9JRhVr4waH5SAHshj7nfST2
-         7f6SGMBKHIwmKplemKFdCypMlHhd0CBiNRp8FeGyOuMplEIi/5S1nHxFnooAFjrzk7
-         cTLbzGSTnHeFQV25fqJnLK33sYonMh9uGC/zghFDmfNMwTdGmtXbX5SBo8lgmSPH3c
-         /my70EkQbFPq0nfxmOHrlZ/dUvBB2QHMLtwtU5Ct613onogsM4d0eS/b6FnFZapkMZ
-         Bi7Y4DeJyG6Ww==
-Date:   Thu, 28 Oct 2021 07:38:27 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Karsten Graul <kgraul@linux.ibm.com>
-Cc:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
-        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
-        dust.li@linux.alibaba.com
-Subject: Re: [PATCH net 1/4] Revert "net/smc: don't wait for send buffer
- space when data was already sent"
-Message-ID: <20211028073827.421a68d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <c6396899-cf99-e695-fc90-3e21e95245ed@linux.ibm.com>
-References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
-        <20211027085208.16048-2-tonylu@linux.alibaba.com>
-        <9bbd05ac-5fa5-7d7a-fe69-e7e072ccd1ab@linux.ibm.com>
-        <20211027080813.238b82ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <06ae0731-0b9b-a70d-6479-de6fe691e25d@linux.ibm.com>
-        <20211027084710.1f4a4ff1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <c6396899-cf99-e695-fc90-3e21e95245ed@linux.ibm.com>
+        id S231251AbhJ1Ova (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Oct 2021 10:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231303AbhJ1OvY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 28 Oct 2021 10:51:24 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FE98C061767
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Oct 2021 07:48:57 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id s19so11123752ljj.11
+        for <linux-rdma@vger.kernel.org>; Thu, 28 Oct 2021 07:48:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bQYOKWP1C7Rd4HcGekbbE4bThlPYrIF1N8BjxdF9KQc=;
+        b=ftNfZ7CqT6i/brHYoL9DweGDPyRZfdLEvywvA/Ok+K5n1dgZeq1WlGM69BpPBM4wE4
+         k72EG5KGIj7VyJcVV6D3ZYNBAyj6sV7C8kKLhVCc83SWfSxnAQrrmjtw/cs6EDMucH2a
+         kSmOltHtVQF0ApLEcgUQ+qxZmF+fD6NcMGyg0t+ga+/S+hraeixzAOvebkdBHknUVC0q
+         Wua6j8BcplO0BFDyaLt/yZgAra0YrEit0JcNXD0tmNM0WmdzIbNx5JjZUKycEI+hIcwO
+         J3kMsU2UBBy4seKugAhYUKWTo7O50Jmt86PMlrGKKpIZGpUhRM8zjbNdJ8Gbq2cxBEoM
+         s1zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=bQYOKWP1C7Rd4HcGekbbE4bThlPYrIF1N8BjxdF9KQc=;
+        b=elMDDLp8uZXRWMZqKkUg8AAxAMh48SqsT53tN6Pwm6QOLZ1BqDhrBmY0XlbRmlz0/V
+         X9ZpShuHNdEbIBBoS3GNeHgGRMGqi74aAIPqzYPk8yy6rcWyEF8fq8z8ZVyUIKKODYlv
+         GWlsOY9Kff6hFiGza8gLLURRanJJhEQBahgmdefpLYwkqWRpxs4ZcEsqE/R7V0iS3vbe
+         6+X6L8gV2x7v4k1lZ5EoIs6dIMSy1g/KjsUsAGMVNDIGcQPpyYmeEepSuiZMNvyUvSdP
+         6gByi9nTm0E725bzMtnROAWzd1s0aZhdF5NAnbnQzbMnq3lfrMEx3B5SUyxn1IFzPMB1
+         VNTQ==
+X-Gm-Message-State: AOAM531jpRvmV1xj9TcMCnA2XmsSXi/zybeDkGiSwj4RWbrPqemnv02b
+        u36mww1pvumh0/4/RATEzBs1i3ivHM83ocvKhO9NwphD5kfB4w==
+X-Google-Smtp-Source: ABdhPJz9tUwstdMSnZiZZq6p9+Xe8MkBMUSlLz1PDSkjsSIJZrXi7U/CvpmuyjHqc5NHIjxKdzCtlcP/XumlyYYBlpA=
+X-Received: by 2002:a05:651c:10b1:: with SMTP id k17mr5156634ljn.243.1635432535117;
+ Thu, 28 Oct 2021 07:48:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Venkata Ramana Boinipelli <venkataramana.boinipelli@ionos.com>
+Date:   Thu, 28 Oct 2021 16:48:44 +0200
+Message-ID: <CAKxXbW5KX=SGg0Bj5qBOF3LoH1wjFz=EPX3JNrc0O6wGgWjr1g@mail.gmail.com>
+Subject: Opensm crash 3.3.21
+To:     linux-rdma@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 28 Oct 2021 13:57:55 +0200 Karsten Graul wrote:
-> So how to deal with all of this? Is it an accepted programming error
-> when a user space program gets itself into this kind of situation?
-> Since this problem depends on internal send/recv buffer sizes such a
-> program might work on one system but not on other systems.
+Dear Developers
 
-It's a gray area so unless someone else has a strong opinion we can
-leave it as is.
+We are  experiencing opensm (V 3.3.21 ) crash from time to time on
+debian hosts, our developers suspect that it's something at lash
+algorithm, Please can you advise a fix here.
 
-> At the end the question might be if either such kind of a 'deadlock'
-> is acceptable, or if it is okay to have send() return lesser bytes
-> than requested.
+Also we are using m_key Protection feature ,
 
-Yeah.. the thing is we have better APIs for applications to ask not to
-block than we do for applications to block. If someone really wants to
-wait for all data to come out for performance reasons they will
-struggle to get that behavior. 
+short info from crash report
 
-We also have the small yet pernicious case where the buffer is
-completely full at sendmsg() time, IOW we didn't send a single byte.
-We won't be able to return "partial" results and deadlock. IDK if your
-application can hit this, but it should really use non-blocking send if
-it doesn't want blocking behavior..
+Signal: 11
+SourcePackage: opensm
+Stacktrace:
+ #0 0x00005636f04835a9 in get_next_switch (p_lash=0x1, link=<optimized
+out>, sw=0) at osm_ucast_lash.c:337
+ No locals.
+ #1 generate_cdg_for_sp (p_lash=p_lash@entry=0x5636f0eef0b0,
+sw=sw@entry=0, dest_switch=dest_switch@entry=1, lane=lane@entry=0) a
+t osm_ucast_lash.c:337
+        num_switches = 13
+        switches = 0x7f501c2a7d20
+        cdg_vertex_matrix = 0x7f501c2d0e00
+        next_switch = <optimized out>
+        output_link = <optimized out>
+        j = <optimized out>
+        exists = <optimized out>
+        v = <optimized out>
+        prev = 0x0
+
+ #2 0x00005636f0484aa8 in lash_core (p_lash=<optimized out>) at
+osm_ucast_lash.c:842
+        lanes_needed = 1
+        k = <optimized out>
+        dest_switch = 1
+        output_link = <optimized out>
+        cycle_found2 = <optimized out>
+        num_switches = <optimized out>
+        switches = <optimized out>
+        output_link2 = <optimized out>
+
+attached is a crash dump and opensm conf for your reference.
+
+
+Please advise here with a possible solution, help much appreciated.
+
+
+Thank you in advance
+
+Best Regards
+Ram Boinipelli
