@@ -2,151 +2,198 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B94743D358
-	for <lists+linux-rdma@lfdr.de>; Wed, 27 Oct 2021 22:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B28A43D8C7
+	for <lists+linux-rdma@lfdr.de>; Thu, 28 Oct 2021 03:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244110AbhJ0U5f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 27 Oct 2021 16:57:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S229700AbhJ1Bpz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 27 Oct 2021 21:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240812AbhJ0U5f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Oct 2021 16:57:35 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E5A9C061570
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Oct 2021 13:55:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id s14so3398479wrb.3
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Oct 2021 13:55:09 -0700 (PDT)
+        with ESMTP id S229638AbhJ1Bpy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 27 Oct 2021 21:45:54 -0400
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2A36C061570;
+        Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
+Received: by mail-io1-xd2b.google.com with SMTP id v65so6113407ioe.5;
+        Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IW2eGfdIHmDCqJ5qCfXqkepVtjSNDX1Q5BfyH0jo9dc=;
-        b=fddbyTsU7njwVYzzZ30bjXlqd86PMy5tBgUQlcHa0hSLqFaKDhQBjXoljCHw6og+OE
-         zM35omHQkMcTIzh5k0aI3AGPPIw+J08T8gspAwkNmPU0ykmXY122hNpxYmFRAYI56Mq0
-         QL/6BzDKb6dvu3qt09ruOq+WMg0hPCbNQ3XTiDFKCIGw3tDGbKRzOHcfsIO+TkvpPDxF
-         bXliZwyFuBdhEFA3/8uTrP7yJ1ghfayrgf86P57HlFbOdMYpfMH4kN9IVDs/tkV7q1Cu
-         DGAOaziOiBBh9syzB6boLj28WKwS+QiEdCN/tzFozrwZ62EaCLCgXbnilbrEqN7kNZRu
-         VZ+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q2MWT3ltBpEutemWMnO5IV+Dli3w0cr7Jk2rYKN1WKo=;
+        b=VYaQyXfWM6sOanx3t6qAvPWFfD338jdnTaM7L2F4EXwJrISOsX2ByFuKTHv7xNRkTG
+         7BWciBeSY2irXsWhnWRi6OVqJxQs7/ZO79rLcIDs/aiVFWgHfJlvuVpfUToWcVFBDw49
+         BCfecdSa2WUEjL+TN94OyEqsucM5rEaK9DgGgCJaOCYNRUwXGRjWaKZseUmGso3F9gxw
+         di+uY+S3e+rK3xyX3eI/JiQ9ICTO+6tm+0hZ1D5dbOqVvxb2fQEWj7uSPsf/vcKdxhy1
+         StoSWoyz4zwvhiyUgYfxfRiYrspymffEwoasFZiknT2hQbvSdzCZRqpNBiWlqe1b6cj1
+         mybQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=IW2eGfdIHmDCqJ5qCfXqkepVtjSNDX1Q5BfyH0jo9dc=;
-        b=Au7QsNdKnHShe65+XcRKyeEQQkmIFz+msZsrqyWjsgu5mDokf5DpW5Y7ffIS3IfQUP
-         37w5Kze+HndpyZQi7LKEvdU93Dl5I9gppnQ1OWX1tdt+ClEwH74JeewEFdP2NF2mgFJD
-         PeSrTzylJj6ZyY99iDHpHR02rTKX+OUDjNvM0LgqMCYNymEsI8z4VqlCoYHFW0GoU2pu
-         giqBDeaK53XjuuA4NfTgPViPuf0NbZ0VfJvx+S2RVWsAFq5GCDrvKp19m3TK4Qi3nXAa
-         pG8lyYyCZ9Lg0SnmWejs89a/yyYvJvwARsaTBRkpT0l8N/fKmKEHMr/X5BN2oFLa7Lo7
-         xYug==
-X-Gm-Message-State: AOAM53221AefJYnrJQqVVoPMvGF/sI0ENtSUZPzdbkw2t5+CpRZ/K1S0
-        60iy0BIUI7fysOobmDQ3M3FHFkzvuWsfAQ==
-X-Google-Smtp-Source: ABdhPJw1I5wuPqaLbet/xKI1maMM1Tb7MCQKnAmtjZGlEVR5Fb/GygdYy7zlRyHKdJH/Gegirw1lfg==
-X-Received: by 2002:adf:f091:: with SMTP id n17mr15105789wro.351.1635368107829;
-        Wed, 27 Oct 2021 13:55:07 -0700 (PDT)
-Received: from fedora.redhat.com ([2a00:a040:19b:e02f::1003])
-        by smtp.gmail.com with ESMTPSA id f8sm905208wrj.41.2021.10.27.13.55.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 13:55:07 -0700 (PDT)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Aharon Landau <aharonl@nvidia.com>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH for-next] RDMA/bnxt_re: Fix kernel panic when trying to access bnxt_re_stat_descs
-Date:   Wed, 27 Oct 2021 23:54:48 +0300
-Message-Id: <20211027205448.127821-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q2MWT3ltBpEutemWMnO5IV+Dli3w0cr7Jk2rYKN1WKo=;
+        b=5GtjatUqJ3P9/HnNIN95alD9Bu6whWZ9XVH5ktL/d+9Y3X89z5iUXVvwstLkiMjlFh
+         hC0T0712eP4l1p0mDmyu5STkFNR9g/cCuoBFFLCV62gMSpF4zwqp788gqcLN1dTxVywT
+         5qQ9wYhSEAijAef1im6uXAFA2apjq5ewm3Ae2/isLPWeAutvFD1husaS/pkPBIA3dE8t
+         KCkzdsFUsrcoaeDGsP6trlq2ypDDWFRtQshtZogN5AyzuTfZE+Gi5lx4/KsOtzrHyWBD
+         XM9Dr8AC3LgvMDp0hYdRRLA8ifS6PBqYsQJxe3H0MsMQTWMv0yc2NUF2Pksh870R8cOH
+         SO3Q==
+X-Gm-Message-State: AOAM533MCB28MCWGOamJ3U8rP8FlBSMyDsmopkaAF7lQwf9LT/NoZXEn
+        /S17W2MLejSuW/NLZahlp0d1KcSH8CgbVh6cZdQ=
+X-Google-Smtp-Source: ABdhPJwNQClWNir1jhV830HzS4FTBIIlwJORqskR1S8FYGa8OK7RlivKeHpt/M/ZKHGSsheR5GLY1mxrQk02MMgYFuc=
+X-Received: by 2002:a02:cb9c:: with SMTP id u28mr1005721jap.95.1635385408343;
+ Wed, 27 Oct 2021 18:43:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
+ <202110251431.F594652F@keescook> <YXmySeDsxxbA7hcq@alley>
+In-Reply-To: <YXmySeDsxxbA7hcq@alley>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 28 Oct 2021 09:42:52 +0800
+Message-ID: <CALOAHbB4LT8t6g5NseRygGAaAbHzKXfuWzg+TnLeg1tRUuwePg@mail.gmail.com>
+Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
+ is truncated
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-For some reason when introducing 13f30b0fa0a9 commit the "active_pds" and
-"active_ahs" descriptors got dropped, which lead to the following panic
-when trying to access the first entry in the descriptors. Avoid this by
-return the dropped hunks.
+On Thu, Oct 28, 2021 at 4:10 AM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Mon 2021-10-25 14:35:42, Kees Cook wrote:
+> > On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
+> > > Show a warning if task comm is truncated. Below is the result
+> > > of my test case:
+> > >
+> > > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
+> > >
+> > > Suggested-by: Petr Mladek <pmladek@suse.com>
+> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> > > Reviewed-by: Kees Cook <keescook@chromium.org>
+> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
+> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> > > Cc: Peter Zijlstra <peterz@infradead.org>
+> > > Cc: Steven Rostedt <rostedt@goodmis.org>
+> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Cc: Petr Mladek <pmladek@suse.com>
+> > > ---
+> > >  kernel/kthread.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/kthread.c b/kernel/kthread.c
+> > > index 5b37a8567168..46b924c92078 100644
+> > > --- a/kernel/kthread.c
+> > > +++ b/kernel/kthread.c
+> > > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
+> > >     if (!IS_ERR(task)) {
+> > >             static const struct sched_param param = { .sched_priority = 0 };
+> > >             char name[TASK_COMM_LEN];
+> > > +           int len;
+> > >
+> > >             /*
+> > >              * task is already visible to other tasks, so updating
+> > >              * COMM must be protected.
+> > >              */
+> > > -           vsnprintf(name, sizeof(name), namefmt, args);
+> > > +           len = vsnprintf(name, sizeof(name), namefmt, args);
+> > > +           if (len >= TASK_COMM_LEN) {
+> >
+> > And since this failure case is slow-path, we could improve the warning
+> > as other had kind of suggested earlier with something like this instead:
+> >
+> >                       char *full_comm;
+> >
+> >                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
+>
+> You need to use va_copy()/va_end() if you want to use the same va_args
+> twice.
+>
+> For example, see how kvasprintf() is implemented. It calls
+> vsnprintf() twice and it uses va_copy()/va_end() around the the first call.
+>
 
- bnxt_re: Broadcom NetXtreme-C/E RoCE Driver
- BUG: kernel NULL pointer dereference, address: 0000000000000000
- #PF: supervisor read access in kernel mode
- #PF: error_code(0x0000) - not-present page
- PGD 0 P4D 0
- Oops: 0000 [#1] SMP PTI
- CPU: 2 PID: 594 Comm: kworker/u32:1 Not tainted 5.15.0-rc6+ #2
- Hardware name: Dell Inc. PowerEdge R430/0CN7X8, BIOS 2.12.1 12/07/2020
- Workqueue: bnxt_re bnxt_re_task [bnxt_re]
- RIP: 0010:strlen+0x0/0x20
- Code: 48 89 f9 74 09 48 83 c1 01 80 39 00 75 f7 31 d2 44 0f b6 04 16 44 88 04 11 48 83 c2 01 45 84 c0 75 ee c3 0f 1f 80 00 00 00 00 <80> 3f 00 74 10 48 89 f8 48 83 c0 01 80 31
- RSP: 0018:ffffb25fc47dfbb0 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000008100
- RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
- RBP: 0000000000000000 R08: 00000000fffffff4 R09: 0000000000000000
- R10: ffff8a05c71fc028 R11: 0000000000000000 R12: 0000000000000000
- R13: 0000000000000000 R14: 0000000000000000 R15: ffff8a05c3dee800
- FS:  0000000000000000(0000) GS:ffff8a092fc40000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000048d3da001 CR4: 00000000001706e0
- Call Trace:
-  kernfs_name_hash+0x12/0x80
-  kernfs_find_ns+0x35/0xd0
-  kernfs_remove_by_name_ns+0x32/0x90
-  remove_files+0x2b/0x60
-  create_files+0x1d3/0x1f0
-  internal_create_group+0x17b/0x1f0
-  internal_create_groups.part.0+0x3d/0xa0
-  setup_port+0x180/0x3b0 [ib_core]
-  ? __cond_resched+0x16/0x40
-  ? kmem_cache_alloc_trace+0x278/0x3d0
-  ib_setup_port_attrs+0x99/0x240 [ib_core]
-  ib_register_device+0xcc/0x160 [ib_core]
-  bnxt_re_task+0xba/0x170 [bnxt_re]
-  process_one_work+0x1eb/0x390
-  worker_thread+0x53/0x3d0
-  ? process_one_work+0x390/0x390
-  kthread+0x10f/0x130
-  ? set_kthread_struct+0x40/0x40
-  ret_from_fork+0x22/0x30
- Modules linked in: bnxt_re kvm ib_uverbs dell_wmi_descriptor rfkill video iTCO_wdt iTCO_vendor_support irqbypass dcdbas ib_core ipmi_ssif rapl intel_cstate intel_uncore pcspke
- CR2: 0000000000000000
- ---[ end trace b4637e4c4e3001af ]---
- RIP: 0010:strlen+0x0/0x20
- Code: 48 89 f9 74 09 48 83 c1 01 80 39 00 75 f7 31 d2 44 0f b6 04 16 44 88 04 11 48 83 c2 01 45 84 c0 75 ee c3 0f 1f 80 00 00 00 00 <80> 3f 00 74 10 48 89 f8 48 83 c0 01 80 31
- RSP: 0018:ffffb25fc47dfbb0 EFLAGS: 00010246
- RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000008100
- RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
- RBP: 0000000000000000 R08: 00000000fffffff4 R09: 0000000000000000
- R10: ffff8a05c71fc028 R11: 0000000000000000 R12: 0000000000000000
- R13: 0000000000000000 R14: 0000000000000000 R15: ffff8a05c3dee800
- FS:  0000000000000000(0000) GS:ffff8a092fc40000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000000000000000 CR3: 000000048d3da001 CR4: 00000000001706e0
- Kernel panic - not syncing: Fatal exception
- Kernel Offset: 0x400000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
- ---[ end Kernel panic - not syncing: Fatal exception ]---
+Does it mean that if we want to call vsnprintf() three times, we must
+use va_copy()/va_end() around the first call and the second call ?
+IOW, if we call vsnprintf() multiple times, all the calls except the
+last call should be protected by va_copy()/va_end().
+Actually I don't quite understand why we should do it like this. I
+will try to understand it, and appreciate it if you could explain it
+in detail.
 
-Fixes: 13f30b0fa0a9 ("RDMA/counter: Add a descriptor in struct rdma_hw_stats")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
- drivers/infiniband/hw/bnxt_re/hw_counters.c | 2 ++
- 1 file changed, 2 insertions(+)
+BTW,  can we use va_copy()/va_end() in vsnprintf(), then the caller
+doesn't need to care how many times it will call vsnprintf().
 
-diff --git a/drivers/infiniband/hw/bnxt_re/hw_counters.c b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-index 78ca6dfd182b..825d512799d9 100644
---- a/drivers/infiniband/hw/bnxt_re/hw_counters.c
-+++ b/drivers/infiniband/hw/bnxt_re/hw_counters.c
-@@ -58,6 +58,8 @@
- #include "hw_counters.h"
- 
- static const struct rdma_stat_desc bnxt_re_stat_descs[] = {
-+	[BNXT_RE_ACTIVE_PD].name		=  "active_pds",
-+	[BNXT_RE_ACTIVE_AH].name		=  "active_ahs",
- 	[BNXT_RE_ACTIVE_QP].name		=  "active_qps",
- 	[BNXT_RE_ACTIVE_SRQ].name		=  "active_srqs",
- 	[BNXT_RE_ACTIVE_CQ].name		=  "active_cqs",
+> kvasprintf() could also return NULL if there is not enough memory.
+
+Right. We need to do the NULL check.
+
+>
+> >                       pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
+> >                               full_comm, name);
+>
+> BTW: Is this message printed during normal boot? I did not tried the
+> patchset myself.
+>
+
+Yes, it will be printed at boot time.
+
+> We should add this warning only if there is a good solution how to
+> avoid the truncated names. And we should me sure that the most common
+> kthreads/workqueues do not trigger it. It would be ugly to print many
+> warnings during boot if people could not get rid of them easily.
+>
+
+As we have extended task comm to 24, there's no such warning printed
+for the existing kthreads/workqueues.
+IOW, it will only print for the newly introduced one if it has a long name.
+That means this printing is under control.
+
+> >                       kfree(full_comm);
+> >               }
+> > >             set_task_comm(task, name);
+> > >             /*
+> > >              * root may have changed our (kthreadd's) priority or CPU mask.
+>
+> Best Regards,
+> Petr
+
+
+
 -- 
-2.31.1
-
+Thanks
+Yafang
