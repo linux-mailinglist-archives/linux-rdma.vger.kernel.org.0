@@ -2,221 +2,313 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A49E43F7F6
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 09:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4158143F952
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 11:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhJ2HsG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Oct 2021 03:48:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbhJ2HsF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Oct 2021 03:48:05 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40AEC061570;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id n67so11489652iod.9;
-        Fri, 29 Oct 2021 00:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=j0ZYEwfg/RFP3vZ0NF45LNbXn0FXnpRrSZKuYBz/v3Ti0BTmeyp9N7VQZHJ0MOpaHc
-         SyOFdeQmIvmzNxRqDvY36MWKL4TN4GyGqlch3Oic3ZzzQtFJzSqAx6Sncn84ySZo0K/U
-         CDVKvtPGDJyopdDodidwBiFnONnN0Y+zPuafOQ6zzwcj0xmqQruYxufDtrGqgVTm197X
-         YD7WbaChlI8ZDicXCuH4XD1MpdTyJ50sTFdy4MOyQqgKK1CXkRLKfxaPvxQqnar8Ew15
-         4rzhCfQnHV9Kq+c95oj4HnQu6n4EutKUy+lqQDB3VSiBsBk12fvwsyMW/u3N12jhBu3l
-         Yg8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YvS3OEojn6WlgoM5Pok9+XWG3Yikban/dCaVMqXh6O4=;
-        b=Dy+L2AIyx8TPFQn9HjDpaganSZ4/9hXjfefaJa5ZQ+Ao0OlHtHnsgU2/ANFCz027DB
-         OzcpXx7w5abhPDzg6FKagaZ0pci1jadnof3uroSqKjOP1qV0ReILwvxbYRmioikToxOR
-         CBwpMeVdB2gIg80oLTSZSHbVGvPX6NH5Ql2YL+sQTzEId9hGtr39ssnZPmNCs8nCQpfl
-         1uNJQ1bRaCyjWOvcE4ovJ5buqaIcRwO2ySeuD6ST7//Wnrw35DabK/wTIfQwCRtRT8Qe
-         run0JpMf41CZOxGtnqbQux9wy8skHBdexwjzlbDkTEJScEvBlt4xjjJ4UCzVax+weyJw
-         jITg==
-X-Gm-Message-State: AOAM530kgGMKBstBxKTuI/V7O59d1ylMJumuc/VM7XjstAdqzehCCevV
-        6DJp11l0OzhHkDqGwo+SFs0Pxb9375Pbo9YkjiI=
-X-Google-Smtp-Source: ABdhPJyETE/qLAF0grfwPy1l00eM4REeeLtmeoBWL6wOt59OXeZvcrCFeFwAw5oh/9q3xbShCHKFcImikiHaH3niayk=
-X-Received: by 2002:a05:6602:27d4:: with SMTP id l20mr6774818ios.94.1635493536891;
- Fri, 29 Oct 2021 00:45:36 -0700 (PDT)
+        id S229986AbhJ2JCp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Oct 2021 05:02:45 -0400
+Received: from mga04.intel.com ([192.55.52.120]:47930 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229844AbhJ2JCo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:02:44 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229352976"
+X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
+   d="scan'208";a="229352976"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 01:59:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
+   d="scan'208";a="665764642"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 29 Oct 2021 01:59:53 -0700
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mgNjs-00009z-Oh; Fri, 29 Oct 2021 08:59:52 +0000
+Date:   Fri, 29 Oct 2021 16:59:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 64733956ebba7cc629856f4a6ee35a52bc9c023f
+Message-ID: <617bb7f0.PPDZZQFSTL4EBSio%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20211025083315.4752-1-laoar.shao@gmail.com> <20211025083315.4752-13-laoar.shao@gmail.com>
- <202110251431.F594652F@keescook> <YXmySeDsxxbA7hcq@alley>
-In-Reply-To: <YXmySeDsxxbA7hcq@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 29 Oct 2021 15:44:47 +0800
-Message-ID: <CALOAHbDQkfdpW4hktPCcstEAYG6ecEan_b095NeanA7sC1K=-w@mail.gmail.com>
-Subject: Re: [PATCH v6 12/12] kernel/kthread: show a warning if kthread's comm
- is truncated
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 4:10 AM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Mon 2021-10-25 14:35:42, Kees Cook wrote:
-> > On Mon, Oct 25, 2021 at 08:33:15AM +0000, Yafang Shao wrote:
-> > > Show a warning if task comm is truncated. Below is the result
-> > > of my test case:
-> > >
-> > > truncated kthread comm:I-am-a-kthread-with-lon, pid:14 by 6 characters
-> > >
-> > > Suggested-by: Petr Mladek <pmladek@suse.com>
-> > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > > Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-> > > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> > > Cc: Peter Zijlstra <peterz@infradead.org>
-> > > Cc: Steven Rostedt <rostedt@goodmis.org>
-> > > Cc: Al Viro <viro@zeniv.linux.org.uk>
-> > > Cc: Kees Cook <keescook@chromium.org>
-> > > Cc: Petr Mladek <pmladek@suse.com>
-> > > ---
-> > >  kernel/kthread.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/kernel/kthread.c b/kernel/kthread.c
-> > > index 5b37a8567168..46b924c92078 100644
-> > > --- a/kernel/kthread.c
-> > > +++ b/kernel/kthread.c
-> > > @@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
-> > >     if (!IS_ERR(task)) {
-> > >             static const struct sched_param param = { .sched_priority = 0 };
-> > >             char name[TASK_COMM_LEN];
-> > > +           int len;
-> > >
-> > >             /*
-> > >              * task is already visible to other tasks, so updating
-> > >              * COMM must be protected.
-> > >              */
-> > > -           vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           len = vsnprintf(name, sizeof(name), namefmt, args);
-> > > +           if (len >= TASK_COMM_LEN) {
-> >
-> > And since this failure case is slow-path, we could improve the warning
-> > as other had kind of suggested earlier with something like this instead:
-> >
-> >                       char *full_comm;
-> >
-> >                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
->
-> You need to use va_copy()/va_end() if you want to use the same va_args
-> twice.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: 64733956ebba7cc629856f4a6ee35a52bc9c023f  RDMA/sa_query: Use strscpy_pad instead of memcpy to copy a string
 
-Now I understand it.
-So the patch will be:
+elapsed time: 2574m
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..c1ff67283725 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,29 @@ struct task_struct *__kthread_create_on_node(int
-(*threadfn)(void *data),
-        if (!IS_ERR(task)) {
-                static const struct sched_param param = { .sched_priority = 0 };
-                char name[TASK_COMM_LEN];
-+               char *full_comm;
-+               va_list aq;
-+               int len;
+configs tested: 249
+configs skipped: 4
 
-                /*
-                 * task is already visible to other tasks, so updating
-                 * COMM must be protected.
-                 */
--               vsnprintf(name, sizeof(name), namefmt, args);
-+               va_copy(aq, args);
-+               len = vsnprintf(name, sizeof(name), namefmt, aq);
-+               va_end(aq);
-+               if (len >= TASK_COMM_LEN) {
-+                       full_comm = kvasprintf(GFP_KERNEL, namefmt, args);
-+                       if (full_comm) {
-+                               pr_warn("truncated kthread comm '%s'
-to '%s' (pid:%d)\n",
-+                                       full_comm, name, task->pid);
-+                               kfree(full_comm);
-+                       } else {
-+                               pr_warn("truncated kthread comm '%s'
-(pid:%d) by %d characters\n",
-+                                       name, task->pid, len -
-TASK_COMM_LEN + 1);
-+
-+                       }
-+               }
-                set_task_comm(task, name);
-                /*
-                 * root may have changed our (kthreadd's) priority or CPU mask.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-That seems a little overkill to me.
-I prefer to keep the v6 as-is.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allmodconfig
+arm                              allyesconfig
+i386                 randconfig-c001-20211028
+mips                 randconfig-c004-20211027
+i386                 randconfig-c001-20211027
+powerpc              randconfig-c003-20211028
+mips                        workpad_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                         tb0226_defconfig
+mips                      maltasmvp_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                         db1xxx_defconfig
+mips                          rm200_defconfig
+parisc                generic-32bit_defconfig
+powerpc                   microwatt_defconfig
+mips                         rt305x_defconfig
+arm                   milbeaut_m10v_defconfig
+arm                          exynos_defconfig
+sh                           sh2007_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                            q40_defconfig
+powerpc                          g5_defconfig
+m68k                         amcore_defconfig
+sh                            hp6xx_defconfig
+mips                 decstation_r4k_defconfig
+sh                      rts7751r2d1_defconfig
+xtensa                    smp_lx200_defconfig
+mips                          malta_defconfig
+arm                             pxa_defconfig
+m68k                          amiga_defconfig
+sh                            titan_defconfig
+sparc64                          alldefconfig
+arm                          ixp4xx_defconfig
+nios2                         3c120_defconfig
+arc                         haps_hs_defconfig
+m68k                       m5249evb_defconfig
+arc                     nsimosci_hs_defconfig
+sh                     magicpanelr2_defconfig
+sh                          lboxre2_defconfig
+mips                     cu1830-neo_defconfig
+powerpc                       eiger_defconfig
+arm                           sama7_defconfig
+powerpc                      ppc64e_defconfig
+arm                            hisi_defconfig
+powerpc                      ppc40x_defconfig
+xtensa                  cadence_csp_defconfig
+sh                          r7785rp_defconfig
+arm                           stm32_defconfig
+arm                          pxa168_defconfig
+mips                         cobalt_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                 linkstation_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                 mpc836x_mds_defconfig
+s390                       zfcpdump_defconfig
+arm                       netwinder_defconfig
+h8300                               defconfig
+arm                           sunxi_defconfig
+sh                         apsh4a3a_defconfig
+mips                           rs90_defconfig
+powerpc                     mpc83xx_defconfig
+mips                            gpr_defconfig
+arm                          collie_defconfig
+arm                              alldefconfig
+mips                     loongson2k_defconfig
+arc                 nsimosci_hs_smp_defconfig
+sparc                       sparc64_defconfig
+arm                        cerfcube_defconfig
+powerpc                   currituck_defconfig
+arm                         nhk8815_defconfig
+sh                           se7750_defconfig
+mips                         bigsur_defconfig
+sh                          sdk7786_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                         socfpga_defconfig
+mips                      malta_kvm_defconfig
+arm                            pleb_defconfig
+openrisc                    or1ksim_defconfig
+powerpc                       ebony_defconfig
+arm                          pcm027_defconfig
+arm                         lpc32xx_defconfig
+arm                          badge4_defconfig
+sh                          rsk7203_defconfig
+powerpc                      mgcoge_defconfig
+powerpc                      ppc44x_defconfig
+powerpc                      cm5200_defconfig
+powerpc                     tqm8560_defconfig
+powerpc                    sam440ep_defconfig
+sh                           se7751_defconfig
+powerpc                     mpc512x_defconfig
+arc                          axs101_defconfig
+powerpc                      pcm030_defconfig
+arm                         s3c6400_defconfig
+sh                           se7705_defconfig
+mips                           xway_defconfig
+mips                      bmips_stb_defconfig
+arm                           u8500_defconfig
+powerpc                     redwood_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                     rainier_defconfig
+arm                             rpc_defconfig
+powerpc                      ppc6xx_defconfig
+powerpc                    amigaone_defconfig
+powerpc                 xes_mpc85xx_defconfig
+mips                     decstation_defconfig
+arc                           tb10x_defconfig
+sh                           se7343_defconfig
+powerpc64                        alldefconfig
+powerpc                     kilauea_defconfig
+arm                        clps711x_defconfig
+sh                           se7721_defconfig
+arm                             mxs_defconfig
+arm                           omap1_defconfig
+arm                           h5000_defconfig
+mips                      loongson3_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                     tqm5200_defconfig
+arm                           tegra_defconfig
+m68k                        stmark2_defconfig
+powerpc                     akebono_defconfig
+powerpc                      tqm8xx_defconfig
+openrisc                            defconfig
+arc                            hsdk_defconfig
+powerpc                     skiroot_defconfig
+mips                       lemote2f_defconfig
+powerpc                 mpc832x_mds_defconfig
+xtensa                          iss_defconfig
+arm                          imote2_defconfig
+mips                         tb0219_defconfig
+arm                          ep93xx_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                 mpc834x_itx_defconfig
+m68k                        mvme16x_defconfig
+microblaze                      mmu_defconfig
+arm                  randconfig-c002-20211028
+arm                  randconfig-c002-20211027
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+nios2                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                                defconfig
+parisc                           allyesconfig
+s390                             allmodconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a004-20211028
+i386                 randconfig-a003-20211028
+i386                 randconfig-a002-20211028
+i386                 randconfig-a006-20211028
+i386                 randconfig-a001-20211028
+i386                 randconfig-a005-20211028
+x86_64               randconfig-a013-20211027
+x86_64               randconfig-a015-20211027
+x86_64               randconfig-a011-20211027
+x86_64               randconfig-a014-20211027
+x86_64               randconfig-a016-20211027
+x86_64               randconfig-a012-20211027
+i386                 randconfig-a012-20211027
+i386                 randconfig-a013-20211027
+i386                 randconfig-a011-20211027
+i386                 randconfig-a016-20211027
+i386                 randconfig-a015-20211027
+i386                 randconfig-a014-20211027
+x86_64               randconfig-a002-20211028
+x86_64               randconfig-a004-20211028
+x86_64               randconfig-a005-20211028
+x86_64               randconfig-a001-20211028
+x86_64               randconfig-a006-20211028
+x86_64               randconfig-a003-20211028
+riscv                            allmodconfig
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-> For example, see how kvasprintf() is implemented. It calls
-> vsnprintf() twice and it uses va_copy()/va_end() around the the first call.
->
-> kvasprintf() could also return NULL if there is not enough memory.
->
-> >                       pr_warn("truncated kthread comm '%s' to '%s' (pid:%d)\n",
-> >                               full_comm, name);
->
-> BTW: Is this message printed during normal boot? I did not tried the
-> patchset myself.
->
-> We should add this warning only if there is a good solution how to
-> avoid the truncated names. And we should me sure that the most common
-> kthreads/workqueues do not trigger it. It would be ugly to print many
-> warnings during boot if people could not get rid of them easily.
->
-> >                       kfree(full_comm);
-> >               }
-> > >             set_task_comm(task, name);
-> > >             /*
-> > >              * root may have changed our (kthreadd's) priority or CPU mask.
->
-> Best Regards,
-> Petr
+clang tested configs:
+riscv                randconfig-c006-20211027
+powerpc              randconfig-c003-20211027
+arm                  randconfig-c002-20211027
+mips                 randconfig-c004-20211027
+x86_64               randconfig-c007-20211027
+i386                 randconfig-c001-20211027
+s390                 randconfig-c005-20211027
+arm                  randconfig-c002-20211028
+powerpc              randconfig-c003-20211028
+riscv                randconfig-c006-20211028
+x86_64               randconfig-c007-20211028
+mips                 randconfig-c004-20211028
+s390                 randconfig-c005-20211028
+i386                 randconfig-c001-20211028
+x86_64               randconfig-a002-20211027
+x86_64               randconfig-a004-20211027
+x86_64               randconfig-a005-20211027
+x86_64               randconfig-a006-20211027
+x86_64               randconfig-a001-20211027
+x86_64               randconfig-a003-20211027
+i386                 randconfig-a003-20211027
+i386                 randconfig-a004-20211027
+i386                 randconfig-a002-20211027
+i386                 randconfig-a005-20211027
+i386                 randconfig-a001-20211027
+i386                 randconfig-a006-20211027
+x86_64               randconfig-a015-20211028
+x86_64               randconfig-a013-20211028
+x86_64               randconfig-a011-20211028
+x86_64               randconfig-a014-20211028
+x86_64               randconfig-a012-20211028
+x86_64               randconfig-a016-20211028
+i386                 randconfig-a012-20211028
+i386                 randconfig-a013-20211028
+i386                 randconfig-a011-20211028
+i386                 randconfig-a015-20211028
+i386                 randconfig-a016-20211028
+i386                 randconfig-a014-20211028
+hexagon              randconfig-r045-20211028
+riscv                randconfig-r042-20211028
+s390                 randconfig-r044-20211028
+hexagon              randconfig-r041-20211028
+hexagon              randconfig-r045-20211027
+hexagon              randconfig-r041-20211027
 
-
-
--- 
-Thanks
-Yafang
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
