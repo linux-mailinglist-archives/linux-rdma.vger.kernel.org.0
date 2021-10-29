@@ -2,313 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4158143F952
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 11:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7140443FA11
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 11:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhJ2JCp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Oct 2021 05:02:45 -0400
-Received: from mga04.intel.com ([192.55.52.120]:47930 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229844AbhJ2JCo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:02:44 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229352976"
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="229352976"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 01:59:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="665764642"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 29 Oct 2021 01:59:53 -0700
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mgNjs-00009z-Oh; Fri, 29 Oct 2021 08:59:52 +0000
-Date:   Fri, 29 Oct 2021 16:59:28 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-rc] BUILD SUCCESS
- 64733956ebba7cc629856f4a6ee35a52bc9c023f
-Message-ID: <617bb7f0.PPDZZQFSTL4EBSio%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231273AbhJ2Jmw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Oct 2021 05:42:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46428 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229927AbhJ2Jmw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Oct 2021 05:42:52 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T8NWlL019754;
+        Fri, 29 Oct 2021 09:40:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=CT9m138E2l4ITQbND8Qn0r0n7mFV+LEpfA2oGT+3OAk=;
+ b=oBShqAsdOPDO0ZQ/+vzcmenLC0Cs31n2inTfMf5x6XtgU811LrUgSQXxbQZfqWwTauRE
+ sflSQs/c/plzo6q8Lb7HaDj+fmZ0j/MtyiGZRr/7VYG9ioxAirzE6DGLre+Paym8hh2H
+ rwTDVmeGXwuyGkn//iQhwgk6b0YnGLQEzPsgoy9UUZdZAJ5Q4Iiq4DjtxJKS+nOxO9KG
+ J41BlWEitDP+/q/Idi5RRc/wTlKTo5hL4hIvpEmeDyOaHM63F+xtWwiUZB8FhpSX6wzc
+ +7MdvF25CU6LAq7j1ExihOloUiQCRRyIZIPSi7fH63RdBuSCANDqiZK2DqwuZliX9VDU Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c0dde9g16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 09:40:19 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19T8SB7j000976;
+        Fri, 29 Oct 2021 09:40:19 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c0dde9g0h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 09:40:19 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19T9SkTB005383;
+        Fri, 29 Oct 2021 09:40:17 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma03ams.nl.ibm.com with ESMTP id 3bx4etspx7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Oct 2021 09:40:17 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19T9eEXl63373630
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Oct 2021 09:40:15 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DA49452052;
+        Fri, 29 Oct 2021 09:40:14 +0000 (GMT)
+Received: from [9.145.4.84] (unknown [9.145.4.84])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5A3AD52050;
+        Fri, 29 Oct 2021 09:40:14 +0000 (GMT)
+Message-ID: <acaf3d5a-219b-3eec-3a65-91d3fdfb21e9@linux.ibm.com>
+Date:   Fri, 29 Oct 2021 11:40:17 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH net 4/4] net/smc: Fix wq mismatch issue caused by smc
+ fallback
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
+        kuba@kernel.org, ubraun@linux.ibm.com
+Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
+        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
+        dust.li@linux.alibaba.com
+References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
+ <20211027085208.16048-5-tonylu@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20211027085208.16048-5-tonylu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: m0qdDClYVbWfw4jOn_P25n3XQPuOU1ur
+X-Proofpoint-ORIG-GUID: TT2rlq-r_YtCjSLHN3Oq4LWQruKF8xIy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-10-29_02,2021-10-26_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ adultscore=0 suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2110290053
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
-branch HEAD: 64733956ebba7cc629856f4a6ee35a52bc9c023f  RDMA/sa_query: Use strscpy_pad instead of memcpy to copy a string
+On 27/10/2021 10:52, Tony Lu wrote:
+> From: Wen Gu <guwen@linux.alibaba.com>
+> 
+> A socket_wq mismatch issue may occur because of fallback.
+> 
+> When use SMC to replace TCP, applications add an epoll entry into SMC
+> socket's wq, but kernel uses clcsock's wq instead of SMC socket's wq
+> once fallback occurs, which means the application's epoll fd dosen't
+> work anymore.
 
-elapsed time: 2574m
+I am not sure if I understand this fix completely, please explain your intentions
+for the changes in more detail.
 
-configs tested: 249
-configs skipped: 4
+What I see so far:
+- smc_create() swaps the sk->sk_wq of the clcsocket and the new SMC socket
+  - sets clcsocket sk->sk_wq to smcsocket->wq (why?)
+  - sets smcsocket sk->sk_wq to clcsocket->wq (why?)
+- smc_switch_to_fallback() resets the clcsock sk->sk_wq to clcsocket->wq
+- smc_accept() sets smcsocket sk->sk_wq to clcsocket->wq when it is NOT fallback
+  - but this was already done before in smc_create() ??
+- smc_poll() now always uses clcsocket->wq for the call to sock_poll_wait()
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20211028
-mips                 randconfig-c004-20211027
-i386                 randconfig-c001-20211027
-powerpc              randconfig-c003-20211028
-mips                        workpad_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                         tb0226_defconfig
-mips                      maltasmvp_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                         db1xxx_defconfig
-mips                          rm200_defconfig
-parisc                generic-32bit_defconfig
-powerpc                   microwatt_defconfig
-mips                         rt305x_defconfig
-arm                   milbeaut_m10v_defconfig
-arm                          exynos_defconfig
-sh                           sh2007_defconfig
-powerpc                  iss476-smp_defconfig
-m68k                            q40_defconfig
-powerpc                          g5_defconfig
-m68k                         amcore_defconfig
-sh                            hp6xx_defconfig
-mips                 decstation_r4k_defconfig
-sh                      rts7751r2d1_defconfig
-xtensa                    smp_lx200_defconfig
-mips                          malta_defconfig
-arm                             pxa_defconfig
-m68k                          amiga_defconfig
-sh                            titan_defconfig
-sparc64                          alldefconfig
-arm                          ixp4xx_defconfig
-nios2                         3c120_defconfig
-arc                         haps_hs_defconfig
-m68k                       m5249evb_defconfig
-arc                     nsimosci_hs_defconfig
-sh                     magicpanelr2_defconfig
-sh                          lboxre2_defconfig
-mips                     cu1830-neo_defconfig
-powerpc                       eiger_defconfig
-arm                           sama7_defconfig
-powerpc                      ppc64e_defconfig
-arm                            hisi_defconfig
-powerpc                      ppc40x_defconfig
-xtensa                  cadence_csp_defconfig
-sh                          r7785rp_defconfig
-arm                           stm32_defconfig
-arm                          pxa168_defconfig
-mips                         cobalt_defconfig
-mips                  maltasmvp_eva_defconfig
-powerpc                 linkstation_defconfig
-sh                     sh7710voipgw_defconfig
-powerpc                 mpc836x_mds_defconfig
-s390                       zfcpdump_defconfig
-arm                       netwinder_defconfig
-h8300                               defconfig
-arm                           sunxi_defconfig
-sh                         apsh4a3a_defconfig
-mips                           rs90_defconfig
-powerpc                     mpc83xx_defconfig
-mips                            gpr_defconfig
-arm                          collie_defconfig
-arm                              alldefconfig
-mips                     loongson2k_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sparc                       sparc64_defconfig
-arm                        cerfcube_defconfig
-powerpc                   currituck_defconfig
-arm                         nhk8815_defconfig
-sh                           se7750_defconfig
-mips                         bigsur_defconfig
-sh                          sdk7786_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                         socfpga_defconfig
-mips                      malta_kvm_defconfig
-arm                            pleb_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                       ebony_defconfig
-arm                          pcm027_defconfig
-arm                         lpc32xx_defconfig
-arm                          badge4_defconfig
-sh                          rsk7203_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                      cm5200_defconfig
-powerpc                     tqm8560_defconfig
-powerpc                    sam440ep_defconfig
-sh                           se7751_defconfig
-powerpc                     mpc512x_defconfig
-arc                          axs101_defconfig
-powerpc                      pcm030_defconfig
-arm                         s3c6400_defconfig
-sh                           se7705_defconfig
-mips                           xway_defconfig
-mips                      bmips_stb_defconfig
-arm                           u8500_defconfig
-powerpc                     redwood_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                     rainier_defconfig
-arm                             rpc_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                    amigaone_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                     decstation_defconfig
-arc                           tb10x_defconfig
-sh                           se7343_defconfig
-powerpc64                        alldefconfig
-powerpc                     kilauea_defconfig
-arm                        clps711x_defconfig
-sh                           se7721_defconfig
-arm                             mxs_defconfig
-arm                           omap1_defconfig
-arm                           h5000_defconfig
-mips                      loongson3_defconfig
-powerpc                  mpc866_ads_defconfig
-powerpc                     tqm5200_defconfig
-arm                           tegra_defconfig
-m68k                        stmark2_defconfig
-powerpc                     akebono_defconfig
-powerpc                      tqm8xx_defconfig
-openrisc                            defconfig
-arc                            hsdk_defconfig
-powerpc                     skiroot_defconfig
-mips                       lemote2f_defconfig
-powerpc                 mpc832x_mds_defconfig
-xtensa                          iss_defconfig
-arm                          imote2_defconfig
-mips                         tb0219_defconfig
-arm                          ep93xx_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                 mpc834x_itx_defconfig
-m68k                        mvme16x_defconfig
-microblaze                      mmu_defconfig
-arm                  randconfig-c002-20211028
-arm                  randconfig-c002-20211027
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                                defconfig
-parisc                           allyesconfig
-s390                             allmodconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a004-20211028
-i386                 randconfig-a003-20211028
-i386                 randconfig-a002-20211028
-i386                 randconfig-a006-20211028
-i386                 randconfig-a001-20211028
-i386                 randconfig-a005-20211028
-x86_64               randconfig-a013-20211027
-x86_64               randconfig-a015-20211027
-x86_64               randconfig-a011-20211027
-x86_64               randconfig-a014-20211027
-x86_64               randconfig-a016-20211027
-x86_64               randconfig-a012-20211027
-i386                 randconfig-a012-20211027
-i386                 randconfig-a013-20211027
-i386                 randconfig-a011-20211027
-i386                 randconfig-a016-20211027
-i386                 randconfig-a015-20211027
-i386                 randconfig-a014-20211027
-x86_64               randconfig-a002-20211028
-x86_64               randconfig-a004-20211028
-x86_64               randconfig-a005-20211028
-x86_64               randconfig-a001-20211028
-x86_64               randconfig-a006-20211028
-x86_64               randconfig-a003-20211028
-riscv                            allmodconfig
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-riscv                randconfig-c006-20211027
-powerpc              randconfig-c003-20211027
-arm                  randconfig-c002-20211027
-mips                 randconfig-c004-20211027
-x86_64               randconfig-c007-20211027
-i386                 randconfig-c001-20211027
-s390                 randconfig-c005-20211027
-arm                  randconfig-c002-20211028
-powerpc              randconfig-c003-20211028
-riscv                randconfig-c006-20211028
-x86_64               randconfig-c007-20211028
-mips                 randconfig-c004-20211028
-s390                 randconfig-c005-20211028
-i386                 randconfig-c001-20211028
-x86_64               randconfig-a002-20211027
-x86_64               randconfig-a004-20211027
-x86_64               randconfig-a005-20211027
-x86_64               randconfig-a006-20211027
-x86_64               randconfig-a001-20211027
-x86_64               randconfig-a003-20211027
-i386                 randconfig-a003-20211027
-i386                 randconfig-a004-20211027
-i386                 randconfig-a002-20211027
-i386                 randconfig-a005-20211027
-i386                 randconfig-a001-20211027
-i386                 randconfig-a006-20211027
-x86_64               randconfig-a015-20211028
-x86_64               randconfig-a013-20211028
-x86_64               randconfig-a011-20211028
-x86_64               randconfig-a014-20211028
-x86_64               randconfig-a012-20211028
-x86_64               randconfig-a016-20211028
-i386                 randconfig-a012-20211028
-i386                 randconfig-a013-20211028
-i386                 randconfig-a011-20211028
-i386                 randconfig-a015-20211028
-i386                 randconfig-a016-20211028
-i386                 randconfig-a014-20211028
-hexagon              randconfig-r045-20211028
-riscv                randconfig-r042-20211028
-s390                 randconfig-r044-20211028
-hexagon              randconfig-r041-20211028
-hexagon              randconfig-r045-20211027
-hexagon              randconfig-r041-20211027
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+In smc_poll() the comment says that now clcsocket->wq is used for poll, whats
+the relation between socket->wq and socket->sk->sk_wq here?
