@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F8043F429
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 02:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BBB43F57F
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 05:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhJ2A4g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 28 Oct 2021 20:56:36 -0400
-Received: from mga09.intel.com ([134.134.136.24]:25586 "EHLO mga09.intel.com"
+        id S231638AbhJ2Dhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 28 Oct 2021 23:37:31 -0400
+Received: from mga04.intel.com ([192.55.52.120]:30918 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230211AbhJ2A4f (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 28 Oct 2021 20:56:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="230416121"
+        id S231611AbhJ2Dha (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 28 Oct 2021 23:37:30 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="229308008"
 X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="gz'50?scan'50,208,50";a="230416121"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 17:54:07 -0700
+   d="gz'50?scan'50,208,50";a="229308008"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Oct 2021 20:35:02 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,191,1631602800"; 
-   d="gz'50?scan'50,208,50";a="447926648"
-Received: from lkp-server01.sh.intel.com (HELO 3b851179dbd8) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 28 Oct 2021 17:54:05 -0700
-Received: from kbuild by 3b851179dbd8 with local (Exim 4.92)
+   d="gz'50?scan'50,208,50";a="665675345"
+Received: from lkp-server01.sh.intel.com (HELO 65f646ee03cf) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 28 Oct 2021 20:34:59 -0700
+Received: from kbuild by 65f646ee03cf with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1mgG9k-0002lI-Oa; Fri, 29 Oct 2021 00:54:04 +0000
-Date:   Fri, 29 Oct 2021 08:53:54 +0800
+        id 1mgIfS-00005t-W2; Fri, 29 Oct 2021 03:34:58 +0000
+Date:   Fri, 29 Oct 2021 11:34:33 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Gal Pressman <galpress@amazon.com>
 Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg+lists@ziepe.ca>,
         linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>
-Subject: [rdma:wip/jgg-for-next 89/95] include/rdma/ib_umem.h:187:24:
- warning: no previous prototype for function 'ib_umem_dmabuf_get_pinned'
-Message-ID: <202110290846.ncNm71A6-lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next 89/95] ld.lld: error: duplicate symbol:
+ ib_umem_dmabuf_get_pinned
+Message-ID: <202110291126.dTygb8Qc-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="r5Pyd7+fXNt84Ff3"
+Content-Type: multipart/mixed; boundary="45Z9DzgjV8m4Oswq"
 Content-Disposition: inline
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
@@ -43,7 +43,7 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
---r5Pyd7+fXNt84Ff3
+--45Z9DzgjV8m4Oswq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -62,105 +62,30 @@ reproduce (this is a W=1 build):
         git fetch --no-tags rdma wip/jgg-for-next
         git checkout 4f9e1c0814f9ca8002820d4f7a38d0992add454e
         # save the attached .config to linux build tree
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=riscv 
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=riscv SHELL=/bin/bash
 
 If you fix the issue, kindly add following tag as appropriate
 Reported-by: kernel test robot <lkp@intel.com>
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-   In file included from drivers/infiniband/core/nldev.c:44:
-   In file included from drivers/infiniband/core/uverbs.h:47:
->> include/rdma/ib_umem.h:187:24: warning: no previous prototype for function 'ib_umem_dmabuf_get_pinned' [-Wmissing-prototypes]
-   struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
-                          ^
-   include/rdma/ib_umem.h:187:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
-   ^
-   static 
-   drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV' [-Wunused-function]
-   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-   ^
-   include/rdma/rdma_netlink.h:33:21: note: expanded from macro 'MODULE_ALIAS_RDMA_NETLINK'
-           static inline void __chk_##_index(void)                                \
-                              ^
-   <scratch space>:201:1: note: expanded from here
-   __chk_RDMA_NL_NLDEV
-   ^
-   2 warnings generated.
---
-   In file included from drivers/infiniband/core/ib_core_uverbs.c:8:
-   In file included from drivers/infiniband/core/uverbs.h:47:
->> include/rdma/ib_umem.h:187:24: warning: no previous prototype for function 'ib_umem_dmabuf_get_pinned' [-Wmissing-prototypes]
-   struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
-                          ^
-   include/rdma/ib_umem.h:187:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
-   ^
-   static 
-   1 warning generated.
-
-
-vim +/ib_umem_dmabuf_get_pinned +187 include/rdma/ib_umem.h
-
-   154	
-   155	static inline struct ib_umem *ib_umem_get(struct ib_device *device,
-   156						  unsigned long addr, size_t size,
-   157						  int access)
-   158	{
-   159		return ERR_PTR(-EOPNOTSUPP);
-   160	}
-   161	static inline void ib_umem_release(struct ib_umem *umem) { }
-   162	static inline int ib_umem_copy_from(void *dst, struct ib_umem *umem, size_t offset,
-   163			      		    size_t length) {
-   164		return -EOPNOTSUPP;
-   165	}
-   166	static inline unsigned long ib_umem_find_best_pgsz(struct ib_umem *umem,
-   167							   unsigned long pgsz_bitmap,
-   168							   unsigned long virt)
-   169	{
-   170		return 0;
-   171	}
-   172	static inline unsigned long ib_umem_find_best_pgoff(struct ib_umem *umem,
-   173							    unsigned long pgsz_bitmap,
-   174							    u64 pgoff_bitmask)
-   175	{
-   176		return 0;
-   177	}
-   178	static inline
-   179	struct ib_umem_dmabuf *ib_umem_dmabuf_get(struct ib_device *device,
-   180						  unsigned long offset,
-   181						  size_t size, int fd,
-   182						  int access,
-   183						  struct dma_buf_attach_ops *ops)
-   184	{
-   185		return ERR_PTR(-EOPNOTSUPP);
-   186	}
- > 187	struct ib_umem_dmabuf *ib_umem_dmabuf_get_pinned(struct ib_device *device,
-   188							 unsigned long offset,
-   189							 size_t size, int fd,
-   190							 int access)
-   191	{
-   192		return ERR_PTR(-EOPNOTSUPP);
-   193	}
-   194	static inline int ib_umem_dmabuf_map_pages(struct ib_umem_dmabuf *umem_dmabuf)
-   195	{
-   196		return -EOPNOTSUPP;
-   197	}
-   198	static inline void ib_umem_dmabuf_unmap_pages(struct ib_umem_dmabuf *umem_dmabuf) { }
-   199	static inline void ib_umem_dmabuf_release(struct ib_umem_dmabuf *umem_dmabuf) { }
-   200	
+>> ld.lld: error: duplicate symbol: ib_umem_dmabuf_get_pinned
+   >>> defined at nldev.c
+   >>>            infiniband/core/nldev.o:(ib_umem_dmabuf_get_pinned) in archive drivers/built-in.a
+   >>> defined at ib_core_uverbs.c
+   >>>            infiniband/core/ib_core_uverbs.o:(.text+0x0) in archive drivers/built-in.a
 
 ---
 0-DAY CI Kernel Test Service, Intel Corporation
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
---r5Pyd7+fXNt84Ff3
+--45Z9DzgjV8m4Oswq
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICKpBe2EAAy5jb25maWcAjDzLduM2svt8BU9nk1kk8bvd9x4vIBIUEZEEDYCS7A2PWlZ3
+H4sICBNWe2EAAy5jb25maWcAjDzLduM2svt8BU9nk1kk8bvd9x4vIBIUEZEEDYCS7A2PWlZ3
 dGNbPbLcSf7+VoEvgCwpmUWmVVV4FeqNon/84ceAvR92L6vDdr16fv47+Lp53exXh81T8GX7
 vPnfIJJBLk3AI2F+AeJ0+/r+16/77dv6e3D9y/n1L2c/79c3wWyzf908B+Hu9cv26zuM3+5e
 f/jxh1DmsZhWYVjNudJC5pXhS3P3Yf28ev0afN/s34AuOL/65eyXs+Cnr9vD//z6K/z3Zbvf
@@ -755,4 +680,4 @@ Yp6C7EuOIu5Cr1sVw6Rn5MssxfyURdq4oyg8jDwsng8vD/+2jgvTbl3vX4542qNIHT39e/98
 E2jBqBwCtNyKRoZgcQw/iATeyQRnSlc//TU7tbR10eSK2SmpW/qphb4GI6fBRNgrZAC4j0zI
 qXCEpCypKhkns4jkB9BbX8lT80RNDR23yrm3+H8Sx63nQA4CAA==
 
---r5Pyd7+fXNt84Ff3--
+--45Z9DzgjV8m4Oswq--
