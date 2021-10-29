@@ -2,352 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BAF43F8FB
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 10:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC4443FA6E
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 12:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232505AbhJ2Ifz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Oct 2021 04:35:55 -0400
-Received: from mga05.intel.com ([192.55.52.43]:1914 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhJ2Ify (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 Oct 2021 04:35:54 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="316819814"
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="316819814"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 01:33:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
-   d="scan'208";a="498827852"
-Received: from unknown (HELO intel-100.bj.intel.com) ([10.238.154.100])
-  by orsmga008.jf.intel.com with ESMTP; 29 Oct 2021 01:33:19 -0700
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev, leonro@nvidia.com
-Subject: [PATCH 1/1] RDMA/irdma: optimize rx path by removing unnecessary copy
-Date:   Fri, 29 Oct 2021 12:23:40 -0400
-Message-Id: <20211029162340.241768-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        id S231721AbhJ2KFl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Oct 2021 06:05:41 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:30878 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231594AbhJ2KFl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 29 Oct 2021 06:05:41 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HgdD66h8NzbnVP;
+        Fri, 29 Oct 2021 17:58:30 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 18:03:06 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.15; Fri, 29 Oct 2021 18:03:06 +0800
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+To:     <dledford@redhat.com>, <jgg@nvidia.com>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH for-rc] RDMA/hns: Fix initial arm_st of CQ
+Date:   Fri, 29 Oct 2021 17:58:46 +0800
+Message-ID: <20211029095846.26732-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+From: Haoyue Xu <xuhaoyue1@hisilicon.com>
 
-In the function irdma_post_recv, the function irdma_copy_sg_list is
-not needed since the struct irdma_sge and ib_sge have the similar
-member variables. The struct irdma_sge can be replaced with the
-struct ib_sge totally.
+We set the init CQ status to ARMED before. As a result, an unexpected CEQE
+would be reported. Therefore, the init CQ status should be set to no_armed
+rather than REG_NXT_CEQE.
 
-This can increase the rx performance of irdma.
-
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Fixes: a5073d6054f7 ("RDMA/hns: Add eq support of hip08")
+Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/irdma/uk.c    | 38 +++++++++++++-------------
- drivers/infiniband/hw/irdma/user.h  | 23 ++++++----------
- drivers/infiniband/hw/irdma/verbs.c | 41 +++++++++--------------------
- 3 files changed, 39 insertions(+), 63 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
-index 5fb92de1f015..0abbfa2538f1 100644
---- a/drivers/infiniband/hw/irdma/uk.c
-+++ b/drivers/infiniband/hw/irdma/uk.c
-@@ -13,16 +13,16 @@
-  * @sge: sge length and stag
-  * @valid: The wqe valid
-  */
--static void irdma_set_fragment(__le64 *wqe, u32 offset, struct irdma_sge *sge,
-+static void irdma_set_fragment(__le64 *wqe, u32 offset, struct ib_sge *sge,
- 			       u8 valid)
- {
- 	if (sge) {
- 		set_64bit_val(wqe, offset,
--			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->tag_off));
-+			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->addr));
- 		set_64bit_val(wqe, offset + 8,
- 			      FIELD_PREP(IRDMAQPSQ_VALID, valid) |
--			      FIELD_PREP(IRDMAQPSQ_FRAG_LEN, sge->len) |
--			      FIELD_PREP(IRDMAQPSQ_FRAG_STAG, sge->stag));
-+			      FIELD_PREP(IRDMAQPSQ_FRAG_LEN, sge->length) |
-+			      FIELD_PREP(IRDMAQPSQ_FRAG_STAG, sge->lkey));
- 	} else {
- 		set_64bit_val(wqe, offset, 0);
- 		set_64bit_val(wqe, offset + 8,
-@@ -38,14 +38,14 @@ static void irdma_set_fragment(__le64 *wqe, u32 offset, struct irdma_sge *sge,
-  * @valid: wqe valid flag
-  */
- static void irdma_set_fragment_gen_1(__le64 *wqe, u32 offset,
--				     struct irdma_sge *sge, u8 valid)
-+				     struct ib_sge *sge, u8 valid)
- {
- 	if (sge) {
- 		set_64bit_val(wqe, offset,
--			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->tag_off));
-+			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->addr));
- 		set_64bit_val(wqe, offset + 8,
--			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_LEN, sge->len) |
--			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_STAG, sge->stag));
-+			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_LEN, sge->length) |
-+			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_STAG, sge->lkey));
- 	} else {
- 		set_64bit_val(wqe, offset, 0);
- 		set_64bit_val(wqe, offset + 8, 0);
-@@ -289,7 +289,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
- 		return IRDMA_ERR_INVALID_FRAG_COUNT;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index d5f3faa1627a..8e5f0862896e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -3328,7 +3328,7 @@ static void hns_roce_v2_write_cqc(struct hns_roce_dev *hr_dev,
+ 	memset(cq_context, 0, sizeof(*cq_context));
  
- 	for (i = 0; i < op_info->num_lo_sges; i++)
--		total_size += op_info->lo_sg_list[i].len;
-+		total_size += op_info->lo_sg_list[i].length;
- 
- 	read_fence |= info->read_fence;
- 
-@@ -310,7 +310,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
- 	irdma_clr_wqes(qp, wqe_idx);
- 
- 	set_64bit_val(wqe, 16,
--		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
-+		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
- 
- 	if (info->imm_data_valid) {
- 		set_64bit_val(wqe, 0,
-@@ -339,7 +339,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
- 			++addl_frag_cnt;
- 	}
- 
--	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
-+	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
- 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
- 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid) |
- 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt) |
-@@ -391,7 +391,7 @@ enum irdma_status_code irdma_uk_rdma_read(struct irdma_qp_uk *qp,
- 		return IRDMA_ERR_INVALID_FRAG_COUNT;
- 
- 	for (i = 0; i < op_info->num_lo_sges; i++)
--		total_size += op_info->lo_sg_list[i].len;
-+		total_size += op_info->lo_sg_list[i].length;
- 
- 	ret_code = irdma_fragcnt_to_quanta_sq(op_info->num_lo_sges, &quanta);
- 	if (ret_code)
-@@ -426,8 +426,8 @@ enum irdma_status_code irdma_uk_rdma_read(struct irdma_qp_uk *qp,
- 			++addl_frag_cnt;
- 	}
- 	set_64bit_val(wqe, 16,
--		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
--	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
-+		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
-+	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
- 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
- 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
- 	      FIELD_PREP(IRDMAQPSQ_OPCODE,
-@@ -477,7 +477,7 @@ enum irdma_status_code irdma_uk_send(struct irdma_qp_uk *qp,
- 		return IRDMA_ERR_INVALID_FRAG_COUNT;
- 
- 	for (i = 0; i < op_info->num_sges; i++)
--		total_size += op_info->sg_list[i].len;
-+		total_size += op_info->sg_list[i].length;
- 
- 	if (info->imm_data_valid)
- 		frag_cnt = op_info->num_sges + 1;
-@@ -705,9 +705,9 @@ irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *in
- 
- 	read_fence |= info->read_fence;
- 	set_64bit_val(wqe, 16,
--		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
-+		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
- 
--	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
-+	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
- 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
- 	      FIELD_PREP(IRDMAQPSQ_INLINEDATALEN, op_info->len) |
- 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt ? 1 : 0) |
-@@ -826,7 +826,7 @@ irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
- 	u64 hdr;
- 	u32 wqe_idx;
- 	bool local_fence = false;
--	struct irdma_sge sge = {};
-+	struct ib_sge sge = {};
- 
- 	info->push_wqe = qp->push_db ? true : false;
- 	op_info = &info->op.inv_local_stag;
-@@ -839,7 +839,7 @@ irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
- 
- 	irdma_clr_wqes(qp, wqe_idx);
- 
--	sge.stag = op_info->target_stag;
-+	sge.lkey = op_info->target_stag;
- 	qp->wqe_ops.iw_set_fragment(wqe, 0, &sge, 0);
- 
- 	set_64bit_val(wqe, 16, 0);
-diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
-index e0e9512ad3d5..2af5986039e2 100644
---- a/drivers/infiniband/hw/irdma/user.h
-+++ b/drivers/infiniband/hw/irdma/user.h
-@@ -16,7 +16,6 @@
- #define irdma_access_privileges u32
- #define irdma_physical_fragment u64
- #define irdma_address_list u64 *
--#define irdma_sgl struct irdma_sge *
- 
- #define	IRDMA_MAX_MR_SIZE       0x200000000000ULL
- 
-@@ -151,12 +150,6 @@ struct irdma_cq_uk;
- struct irdma_qp_uk_init_info;
- struct irdma_cq_uk_init_info;
- 
--struct irdma_sge {
--	irdma_tagged_offset tag_off;
--	u32 len;
--	irdma_stag stag;
--};
--
- struct irdma_ring {
- 	u32 head;
- 	u32 tail;
-@@ -172,7 +165,7 @@ struct irdma_extended_cqe {
- };
- 
- struct irdma_post_send {
--	irdma_sgl sg_list;
-+	struct ib_sge *sg_list;
- 	u32 num_sges;
- 	u32 qkey;
- 	u32 dest_qp;
-@@ -189,26 +182,26 @@ struct irdma_post_inline_send {
- 
- struct irdma_post_rq_info {
- 	u64 wr_id;
--	irdma_sgl sg_list;
-+	struct ib_sge *sg_list;
- 	u32 num_sges;
- };
- 
- struct irdma_rdma_write {
--	irdma_sgl lo_sg_list;
-+	struct ib_sge *lo_sg_list;
- 	u32 num_lo_sges;
--	struct irdma_sge rem_addr;
-+	struct ib_sge rem_addr;
- };
- 
- struct irdma_inline_rdma_write {
- 	void *data;
- 	u32 len;
--	struct irdma_sge rem_addr;
-+	struct ib_sge rem_addr;
- };
- 
- struct irdma_rdma_read {
--	irdma_sgl lo_sg_list;
-+	struct ib_sge *lo_sg_list;
- 	u32 num_lo_sges;
--	struct irdma_sge rem_addr;
-+	struct ib_sge rem_addr;
- };
- 
- struct irdma_bind_window {
-@@ -306,7 +299,7 @@ enum irdma_status_code irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
- struct irdma_wqe_uk_ops {
- 	void (*iw_copy_inline_data)(u8 *dest, u8 *src, u32 len, u8 polarity);
- 	u16 (*iw_inline_data_size_to_quanta)(u32 data_size);
--	void (*iw_set_fragment)(__le64 *wqe, u32 offset, struct irdma_sge *sge,
-+	void (*iw_set_fragment)(__le64 *wqe, u32 offset, struct ib_sge *sge,
- 				u8 valid);
- 	void (*iw_set_mw_bind_wqe)(__le64 *wqe,
- 				   struct irdma_bind_window *op_info);
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 02ca1f80968e..7ab9645d6f18 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -3039,24 +3039,6 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
- 	return 0;
- }
- 
--/**
-- * irdma_copy_sg_list - copy sg list for qp
-- * @sg_list: copied into sg_list
-- * @sgl: copy from sgl
-- * @num_sges: count of sg entries
-- */
--static void irdma_copy_sg_list(struct irdma_sge *sg_list, struct ib_sge *sgl,
--			       int num_sges)
--{
--	unsigned int i;
--
--	for (i = 0; (i < num_sges) && (i < IRDMA_MAX_WQ_FRAGMENT_COUNT); i++) {
--		sg_list[i].tag_off = sgl[i].addr;
--		sg_list[i].len = sgl[i].length;
--		sg_list[i].stag = sgl[i].lkey;
--	}
--}
--
- /**
-  * irdma_post_send -  kernel application wr
-  * @ibqp: qp ptr for wr
-@@ -3133,7 +3115,7 @@ static int irdma_post_send(struct ib_qp *ibqp,
- 				ret = irdma_uk_inline_send(ukqp, &info, false);
- 			} else {
- 				info.op.send.num_sges = ib_wr->num_sge;
--				info.op.send.sg_list = (struct irdma_sge *)
-+				info.op.send.sg_list = (struct ib_sge *)
- 						       ib_wr->sg_list;
- 				if (iwqp->ibqp.qp_type == IB_QPT_UD ||
- 				    iwqp->ibqp.qp_type == IB_QPT_GSI) {
-@@ -3169,15 +3151,18 @@ static int irdma_post_send(struct ib_qp *ibqp,
- 
- 			if (ib_wr->send_flags & IB_SEND_INLINE) {
- 				info.op.inline_rdma_write.data = (void *)(uintptr_t)ib_wr->sg_list[0].addr;
--				info.op.inline_rdma_write.len = ib_wr->sg_list[0].length;
--				info.op.inline_rdma_write.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
--				info.op.inline_rdma_write.rem_addr.stag = rdma_wr(ib_wr)->rkey;
-+				info.op.inline_rdma_write.len =
-+						ib_wr->sg_list[0].length;
-+				info.op.inline_rdma_write.rem_addr.addr =
-+						rdma_wr(ib_wr)->remote_addr;
-+				info.op.inline_rdma_write.rem_addr.lkey =
-+						rdma_wr(ib_wr)->rkey;
- 				ret = irdma_uk_inline_rdma_write(ukqp, &info, false);
- 			} else {
- 				info.op.rdma_write.lo_sg_list = (void *)ib_wr->sg_list;
- 				info.op.rdma_write.num_lo_sges = ib_wr->num_sge;
--				info.op.rdma_write.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
--				info.op.rdma_write.rem_addr.stag = rdma_wr(ib_wr)->rkey;
-+				info.op.rdma_write.rem_addr.addr = rdma_wr(ib_wr)->remote_addr;
-+				info.op.rdma_write.rem_addr.lkey = rdma_wr(ib_wr)->rkey;
- 				ret = irdma_uk_rdma_write(ukqp, &info, false);
- 			}
- 
-@@ -3198,8 +3183,8 @@ static int irdma_post_send(struct ib_qp *ibqp,
- 				break;
- 			}
- 			info.op_type = IRDMA_OP_TYPE_RDMA_READ;
--			info.op.rdma_read.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
--			info.op.rdma_read.rem_addr.stag = rdma_wr(ib_wr)->rkey;
-+			info.op.rdma_read.rem_addr.addr = rdma_wr(ib_wr)->remote_addr;
-+			info.op.rdma_read.rem_addr.lkey = rdma_wr(ib_wr)->rkey;
- 			info.op.rdma_read.lo_sg_list = (void *)ib_wr->sg_list;
- 			info.op.rdma_read.num_lo_sges = ib_wr->num_sge;
- 
-@@ -3286,7 +3271,6 @@ static int irdma_post_recv(struct ib_qp *ibqp,
- 	struct irdma_qp *iwqp;
- 	struct irdma_qp_uk *ukqp;
- 	struct irdma_post_rq_info post_recv = {};
--	struct irdma_sge sg_list[IRDMA_MAX_WQ_FRAGMENT_COUNT];
- 	enum irdma_status_code ret = 0;
- 	unsigned long flags;
- 	int err = 0;
-@@ -3301,8 +3285,7 @@ static int irdma_post_recv(struct ib_qp *ibqp,
- 	while (ib_wr) {
- 		post_recv.num_sges = ib_wr->num_sge;
- 		post_recv.wr_id = ib_wr->wr_id;
--		irdma_copy_sg_list(sg_list, ib_wr->sg_list, ib_wr->num_sge);
--		post_recv.sg_list = sg_list;
-+		post_recv.sg_list = ib_wr->sg_list;
- 		ret = irdma_uk_post_receive(ukqp, &post_recv);
- 		if (ret) {
- 			ibdev_dbg(&iwqp->iwdev->ibdev,
+ 	hr_reg_write(cq_context, CQC_CQ_ST, V2_CQ_STATE_VALID);
+-	hr_reg_write(cq_context, CQC_ARM_ST, REG_NXT_CEQE);
++	hr_reg_write(cq_context, CQC_ARM_ST, NO_ARMED);
+ 	hr_reg_write(cq_context, CQC_SHIFT, ilog2(hr_cq->cq_depth));
+ 	hr_reg_write(cq_context, CQC_CEQN, hr_cq->vector);
+ 	hr_reg_write(cq_context, CQC_CQN, hr_cq->cqn);
 -- 
-2.27.0
+2.33.0
 
