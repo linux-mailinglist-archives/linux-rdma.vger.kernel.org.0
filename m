@@ -2,113 +2,352 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7140443FA11
-	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 11:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10BAF43F8FB
+	for <lists+linux-rdma@lfdr.de>; Fri, 29 Oct 2021 10:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231273AbhJ2Jmw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 29 Oct 2021 05:42:52 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46428 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229927AbhJ2Jmw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 29 Oct 2021 05:42:52 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 19T8NWlL019754;
-        Fri, 29 Oct 2021 09:40:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=CT9m138E2l4ITQbND8Qn0r0n7mFV+LEpfA2oGT+3OAk=;
- b=oBShqAsdOPDO0ZQ/+vzcmenLC0Cs31n2inTfMf5x6XtgU811LrUgSQXxbQZfqWwTauRE
- sflSQs/c/plzo6q8Lb7HaDj+fmZ0j/MtyiGZRr/7VYG9ioxAirzE6DGLre+Paym8hh2H
- rwTDVmeGXwuyGkn//iQhwgk6b0YnGLQEzPsgoy9UUZdZAJ5Q4Iiq4DjtxJKS+nOxO9KG
- J41BlWEitDP+/q/Idi5RRc/wTlKTo5hL4hIvpEmeDyOaHM63F+xtWwiUZB8FhpSX6wzc
- +7MdvF25CU6LAq7j1ExihOloUiQCRRyIZIPSi7fH63RdBuSCANDqiZK2DqwuZliX9VDU Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c0dde9g16-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 09:40:19 +0000
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 19T8SB7j000976;
-        Fri, 29 Oct 2021 09:40:19 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c0dde9g0h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 09:40:19 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 19T9SkTB005383;
-        Fri, 29 Oct 2021 09:40:17 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma03ams.nl.ibm.com with ESMTP id 3bx4etspx7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Oct 2021 09:40:17 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 19T9eEXl63373630
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Oct 2021 09:40:15 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DA49452052;
-        Fri, 29 Oct 2021 09:40:14 +0000 (GMT)
-Received: from [9.145.4.84] (unknown [9.145.4.84])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 5A3AD52050;
-        Fri, 29 Oct 2021 09:40:14 +0000 (GMT)
-Message-ID: <acaf3d5a-219b-3eec-3a65-91d3fdfb21e9@linux.ibm.com>
-Date:   Fri, 29 Oct 2021 11:40:17 +0200
+        id S232505AbhJ2Ifz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 29 Oct 2021 04:35:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:1914 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232500AbhJ2Ify (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 29 Oct 2021 04:35:54 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10151"; a="316819814"
+X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
+   d="scan'208";a="316819814"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Oct 2021 01:33:21 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,192,1631602800"; 
+   d="scan'208";a="498827852"
+Received: from unknown (HELO intel-100.bj.intel.com) ([10.238.154.100])
+  by orsmga008.jf.intel.com with ESMTP; 29 Oct 2021 01:33:19 -0700
+From:   yanjun.zhu@linux.dev
+To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
+        dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev, leonro@nvidia.com
+Subject: [PATCH 1/1] RDMA/irdma: optimize rx path by removing unnecessary copy
+Date:   Fri, 29 Oct 2021 12:23:40 -0400
+Message-Id: <20211029162340.241768-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH net 4/4] net/smc: Fix wq mismatch issue caused by smc
- fallback
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        kuba@kernel.org, ubraun@linux.ibm.com
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
-        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
-        dust.li@linux.alibaba.com
-References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
- <20211027085208.16048-5-tonylu@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20211027085208.16048-5-tonylu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: m0qdDClYVbWfw4jOn_P25n3XQPuOU1ur
-X-Proofpoint-ORIG-GUID: TT2rlq-r_YtCjSLHN3Oq4LWQruKF8xIy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-10-29_02,2021-10-26_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- adultscore=0 suspectscore=0 spamscore=0 priorityscore=1501 mlxlogscore=999
- lowpriorityscore=0 phishscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2110290053
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 27/10/2021 10:52, Tony Lu wrote:
-> From: Wen Gu <guwen@linux.alibaba.com>
-> 
-> A socket_wq mismatch issue may occur because of fallback.
-> 
-> When use SMC to replace TCP, applications add an epoll entry into SMC
-> socket's wq, but kernel uses clcsock's wq instead of SMC socket's wq
-> once fallback occurs, which means the application's epoll fd dosen't
-> work anymore.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-I am not sure if I understand this fix completely, please explain your intentions
-for the changes in more detail.
+In the function irdma_post_recv, the function irdma_copy_sg_list is
+not needed since the struct irdma_sge and ib_sge have the similar
+member variables. The struct irdma_sge can be replaced with the
+struct ib_sge totally.
 
-What I see so far:
-- smc_create() swaps the sk->sk_wq of the clcsocket and the new SMC socket
-  - sets clcsocket sk->sk_wq to smcsocket->wq (why?)
-  - sets smcsocket sk->sk_wq to clcsocket->wq (why?)
-- smc_switch_to_fallback() resets the clcsock sk->sk_wq to clcsocket->wq
-- smc_accept() sets smcsocket sk->sk_wq to clcsocket->wq when it is NOT fallback
-  - but this was already done before in smc_create() ??
-- smc_poll() now always uses clcsocket->wq for the call to sock_poll_wait()
+This can increase the rx performance of irdma.
 
-In smc_poll() the comment says that now clcsocket->wq is used for poll, whats
-the relation between socket->wq and socket->sk->sk_wq here?
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+ drivers/infiniband/hw/irdma/uk.c    | 38 +++++++++++++-------------
+ drivers/infiniband/hw/irdma/user.h  | 23 ++++++----------
+ drivers/infiniband/hw/irdma/verbs.c | 41 +++++++++--------------------
+ 3 files changed, 39 insertions(+), 63 deletions(-)
+
+diff --git a/drivers/infiniband/hw/irdma/uk.c b/drivers/infiniband/hw/irdma/uk.c
+index 5fb92de1f015..0abbfa2538f1 100644
+--- a/drivers/infiniband/hw/irdma/uk.c
++++ b/drivers/infiniband/hw/irdma/uk.c
+@@ -13,16 +13,16 @@
+  * @sge: sge length and stag
+  * @valid: The wqe valid
+  */
+-static void irdma_set_fragment(__le64 *wqe, u32 offset, struct irdma_sge *sge,
++static void irdma_set_fragment(__le64 *wqe, u32 offset, struct ib_sge *sge,
+ 			       u8 valid)
+ {
+ 	if (sge) {
+ 		set_64bit_val(wqe, offset,
+-			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->tag_off));
++			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->addr));
+ 		set_64bit_val(wqe, offset + 8,
+ 			      FIELD_PREP(IRDMAQPSQ_VALID, valid) |
+-			      FIELD_PREP(IRDMAQPSQ_FRAG_LEN, sge->len) |
+-			      FIELD_PREP(IRDMAQPSQ_FRAG_STAG, sge->stag));
++			      FIELD_PREP(IRDMAQPSQ_FRAG_LEN, sge->length) |
++			      FIELD_PREP(IRDMAQPSQ_FRAG_STAG, sge->lkey));
+ 	} else {
+ 		set_64bit_val(wqe, offset, 0);
+ 		set_64bit_val(wqe, offset + 8,
+@@ -38,14 +38,14 @@ static void irdma_set_fragment(__le64 *wqe, u32 offset, struct irdma_sge *sge,
+  * @valid: wqe valid flag
+  */
+ static void irdma_set_fragment_gen_1(__le64 *wqe, u32 offset,
+-				     struct irdma_sge *sge, u8 valid)
++				     struct ib_sge *sge, u8 valid)
+ {
+ 	if (sge) {
+ 		set_64bit_val(wqe, offset,
+-			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->tag_off));
++			      FIELD_PREP(IRDMAQPSQ_FRAG_TO, sge->addr));
+ 		set_64bit_val(wqe, offset + 8,
+-			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_LEN, sge->len) |
+-			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_STAG, sge->stag));
++			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_LEN, sge->length) |
++			      FIELD_PREP(IRDMAQPSQ_GEN1_FRAG_STAG, sge->lkey));
+ 	} else {
+ 		set_64bit_val(wqe, offset, 0);
+ 		set_64bit_val(wqe, offset + 8, 0);
+@@ -289,7 +289,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
+ 		return IRDMA_ERR_INVALID_FRAG_COUNT;
+ 
+ 	for (i = 0; i < op_info->num_lo_sges; i++)
+-		total_size += op_info->lo_sg_list[i].len;
++		total_size += op_info->lo_sg_list[i].length;
+ 
+ 	read_fence |= info->read_fence;
+ 
+@@ -310,7 +310,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
+ 	irdma_clr_wqes(qp, wqe_idx);
+ 
+ 	set_64bit_val(wqe, 16,
+-		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
++		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
+ 
+ 	if (info->imm_data_valid) {
+ 		set_64bit_val(wqe, 0,
+@@ -339,7 +339,7 @@ enum irdma_status_code irdma_uk_rdma_write(struct irdma_qp_uk *qp,
+ 			++addl_frag_cnt;
+ 	}
+ 
+-	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
++	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
+ 	      FIELD_PREP(IRDMAQPSQ_IMMDATAFLAG, info->imm_data_valid) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt) |
+@@ -391,7 +391,7 @@ enum irdma_status_code irdma_uk_rdma_read(struct irdma_qp_uk *qp,
+ 		return IRDMA_ERR_INVALID_FRAG_COUNT;
+ 
+ 	for (i = 0; i < op_info->num_lo_sges; i++)
+-		total_size += op_info->lo_sg_list[i].len;
++		total_size += op_info->lo_sg_list[i].length;
+ 
+ 	ret_code = irdma_fragcnt_to_quanta_sq(op_info->num_lo_sges, &quanta);
+ 	if (ret_code)
+@@ -426,8 +426,8 @@ enum irdma_status_code irdma_uk_rdma_read(struct irdma_qp_uk *qp,
+ 			++addl_frag_cnt;
+ 	}
+ 	set_64bit_val(wqe, 16,
+-		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
+-	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
++		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
++	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, (info->report_rtt ? 1 : 0)) |
+ 	      FIELD_PREP(IRDMAQPSQ_ADDFRAGCNT, addl_frag_cnt) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE,
+@@ -477,7 +477,7 @@ enum irdma_status_code irdma_uk_send(struct irdma_qp_uk *qp,
+ 		return IRDMA_ERR_INVALID_FRAG_COUNT;
+ 
+ 	for (i = 0; i < op_info->num_sges; i++)
+-		total_size += op_info->sg_list[i].len;
++		total_size += op_info->sg_list[i].length;
+ 
+ 	if (info->imm_data_valid)
+ 		frag_cnt = op_info->num_sges + 1;
+@@ -705,9 +705,9 @@ irdma_uk_inline_rdma_write(struct irdma_qp_uk *qp, struct irdma_post_sq_info *in
+ 
+ 	read_fence |= info->read_fence;
+ 	set_64bit_val(wqe, 16,
+-		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.tag_off));
++		      FIELD_PREP(IRDMAQPSQ_FRAG_TO, op_info->rem_addr.addr));
+ 
+-	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.stag) |
++	hdr = FIELD_PREP(IRDMAQPSQ_REMSTAG, op_info->rem_addr.lkey) |
+ 	      FIELD_PREP(IRDMAQPSQ_OPCODE, info->op_type) |
+ 	      FIELD_PREP(IRDMAQPSQ_INLINEDATALEN, op_info->len) |
+ 	      FIELD_PREP(IRDMAQPSQ_REPORTRTT, info->report_rtt ? 1 : 0) |
+@@ -826,7 +826,7 @@ irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 	u64 hdr;
+ 	u32 wqe_idx;
+ 	bool local_fence = false;
+-	struct irdma_sge sge = {};
++	struct ib_sge sge = {};
+ 
+ 	info->push_wqe = qp->push_db ? true : false;
+ 	op_info = &info->op.inv_local_stag;
+@@ -839,7 +839,7 @@ irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ 
+ 	irdma_clr_wqes(qp, wqe_idx);
+ 
+-	sge.stag = op_info->target_stag;
++	sge.lkey = op_info->target_stag;
+ 	qp->wqe_ops.iw_set_fragment(wqe, 0, &sge, 0);
+ 
+ 	set_64bit_val(wqe, 16, 0);
+diff --git a/drivers/infiniband/hw/irdma/user.h b/drivers/infiniband/hw/irdma/user.h
+index e0e9512ad3d5..2af5986039e2 100644
+--- a/drivers/infiniband/hw/irdma/user.h
++++ b/drivers/infiniband/hw/irdma/user.h
+@@ -16,7 +16,6 @@
+ #define irdma_access_privileges u32
+ #define irdma_physical_fragment u64
+ #define irdma_address_list u64 *
+-#define irdma_sgl struct irdma_sge *
+ 
+ #define	IRDMA_MAX_MR_SIZE       0x200000000000ULL
+ 
+@@ -151,12 +150,6 @@ struct irdma_cq_uk;
+ struct irdma_qp_uk_init_info;
+ struct irdma_cq_uk_init_info;
+ 
+-struct irdma_sge {
+-	irdma_tagged_offset tag_off;
+-	u32 len;
+-	irdma_stag stag;
+-};
+-
+ struct irdma_ring {
+ 	u32 head;
+ 	u32 tail;
+@@ -172,7 +165,7 @@ struct irdma_extended_cqe {
+ };
+ 
+ struct irdma_post_send {
+-	irdma_sgl sg_list;
++	struct ib_sge *sg_list;
+ 	u32 num_sges;
+ 	u32 qkey;
+ 	u32 dest_qp;
+@@ -189,26 +182,26 @@ struct irdma_post_inline_send {
+ 
+ struct irdma_post_rq_info {
+ 	u64 wr_id;
+-	irdma_sgl sg_list;
++	struct ib_sge *sg_list;
+ 	u32 num_sges;
+ };
+ 
+ struct irdma_rdma_write {
+-	irdma_sgl lo_sg_list;
++	struct ib_sge *lo_sg_list;
+ 	u32 num_lo_sges;
+-	struct irdma_sge rem_addr;
++	struct ib_sge rem_addr;
+ };
+ 
+ struct irdma_inline_rdma_write {
+ 	void *data;
+ 	u32 len;
+-	struct irdma_sge rem_addr;
++	struct ib_sge rem_addr;
+ };
+ 
+ struct irdma_rdma_read {
+-	irdma_sgl lo_sg_list;
++	struct ib_sge *lo_sg_list;
+ 	u32 num_lo_sges;
+-	struct irdma_sge rem_addr;
++	struct ib_sge rem_addr;
+ };
+ 
+ struct irdma_bind_window {
+@@ -306,7 +299,7 @@ enum irdma_status_code irdma_uk_stag_local_invalidate(struct irdma_qp_uk *qp,
+ struct irdma_wqe_uk_ops {
+ 	void (*iw_copy_inline_data)(u8 *dest, u8 *src, u32 len, u8 polarity);
+ 	u16 (*iw_inline_data_size_to_quanta)(u32 data_size);
+-	void (*iw_set_fragment)(__le64 *wqe, u32 offset, struct irdma_sge *sge,
++	void (*iw_set_fragment)(__le64 *wqe, u32 offset, struct ib_sge *sge,
+ 				u8 valid);
+ 	void (*iw_set_mw_bind_wqe)(__le64 *wqe,
+ 				   struct irdma_bind_window *op_info);
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 02ca1f80968e..7ab9645d6f18 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -3039,24 +3039,6 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
+ 	return 0;
+ }
+ 
+-/**
+- * irdma_copy_sg_list - copy sg list for qp
+- * @sg_list: copied into sg_list
+- * @sgl: copy from sgl
+- * @num_sges: count of sg entries
+- */
+-static void irdma_copy_sg_list(struct irdma_sge *sg_list, struct ib_sge *sgl,
+-			       int num_sges)
+-{
+-	unsigned int i;
+-
+-	for (i = 0; (i < num_sges) && (i < IRDMA_MAX_WQ_FRAGMENT_COUNT); i++) {
+-		sg_list[i].tag_off = sgl[i].addr;
+-		sg_list[i].len = sgl[i].length;
+-		sg_list[i].stag = sgl[i].lkey;
+-	}
+-}
+-
+ /**
+  * irdma_post_send -  kernel application wr
+  * @ibqp: qp ptr for wr
+@@ -3133,7 +3115,7 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 				ret = irdma_uk_inline_send(ukqp, &info, false);
+ 			} else {
+ 				info.op.send.num_sges = ib_wr->num_sge;
+-				info.op.send.sg_list = (struct irdma_sge *)
++				info.op.send.sg_list = (struct ib_sge *)
+ 						       ib_wr->sg_list;
+ 				if (iwqp->ibqp.qp_type == IB_QPT_UD ||
+ 				    iwqp->ibqp.qp_type == IB_QPT_GSI) {
+@@ -3169,15 +3151,18 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 
+ 			if (ib_wr->send_flags & IB_SEND_INLINE) {
+ 				info.op.inline_rdma_write.data = (void *)(uintptr_t)ib_wr->sg_list[0].addr;
+-				info.op.inline_rdma_write.len = ib_wr->sg_list[0].length;
+-				info.op.inline_rdma_write.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
+-				info.op.inline_rdma_write.rem_addr.stag = rdma_wr(ib_wr)->rkey;
++				info.op.inline_rdma_write.len =
++						ib_wr->sg_list[0].length;
++				info.op.inline_rdma_write.rem_addr.addr =
++						rdma_wr(ib_wr)->remote_addr;
++				info.op.inline_rdma_write.rem_addr.lkey =
++						rdma_wr(ib_wr)->rkey;
+ 				ret = irdma_uk_inline_rdma_write(ukqp, &info, false);
+ 			} else {
+ 				info.op.rdma_write.lo_sg_list = (void *)ib_wr->sg_list;
+ 				info.op.rdma_write.num_lo_sges = ib_wr->num_sge;
+-				info.op.rdma_write.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
+-				info.op.rdma_write.rem_addr.stag = rdma_wr(ib_wr)->rkey;
++				info.op.rdma_write.rem_addr.addr = rdma_wr(ib_wr)->remote_addr;
++				info.op.rdma_write.rem_addr.lkey = rdma_wr(ib_wr)->rkey;
+ 				ret = irdma_uk_rdma_write(ukqp, &info, false);
+ 			}
+ 
+@@ -3198,8 +3183,8 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 				break;
+ 			}
+ 			info.op_type = IRDMA_OP_TYPE_RDMA_READ;
+-			info.op.rdma_read.rem_addr.tag_off = rdma_wr(ib_wr)->remote_addr;
+-			info.op.rdma_read.rem_addr.stag = rdma_wr(ib_wr)->rkey;
++			info.op.rdma_read.rem_addr.addr = rdma_wr(ib_wr)->remote_addr;
++			info.op.rdma_read.rem_addr.lkey = rdma_wr(ib_wr)->rkey;
+ 			info.op.rdma_read.lo_sg_list = (void *)ib_wr->sg_list;
+ 			info.op.rdma_read.num_lo_sges = ib_wr->num_sge;
+ 
+@@ -3286,7 +3271,6 @@ static int irdma_post_recv(struct ib_qp *ibqp,
+ 	struct irdma_qp *iwqp;
+ 	struct irdma_qp_uk *ukqp;
+ 	struct irdma_post_rq_info post_recv = {};
+-	struct irdma_sge sg_list[IRDMA_MAX_WQ_FRAGMENT_COUNT];
+ 	enum irdma_status_code ret = 0;
+ 	unsigned long flags;
+ 	int err = 0;
+@@ -3301,8 +3285,7 @@ static int irdma_post_recv(struct ib_qp *ibqp,
+ 	while (ib_wr) {
+ 		post_recv.num_sges = ib_wr->num_sge;
+ 		post_recv.wr_id = ib_wr->wr_id;
+-		irdma_copy_sg_list(sg_list, ib_wr->sg_list, ib_wr->num_sge);
+-		post_recv.sg_list = sg_list;
++		post_recv.sg_list = ib_wr->sg_list;
+ 		ret = irdma_uk_post_receive(ukqp, &post_recv);
+ 		if (ret) {
+ 			ibdev_dbg(&iwqp->iwdev->ibdev,
+-- 
+2.27.0
+
