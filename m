@@ -2,42 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E709A440795
-	for <lists+linux-rdma@lfdr.de>; Sat, 30 Oct 2021 07:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0343440731
+	for <lists+linux-rdma@lfdr.de>; Sat, 30 Oct 2021 06:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhJ3FQg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Sat, 30 Oct 2021 01:16:36 -0400
-Received: from 219-87-183-172.static.tfn.net.tw ([219.87.183.172]:47535 "EHLO
-        ms4.kntech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230012AbhJ3FQg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Oct 2021 01:16:36 -0400
-Received: from [103.27.239.15] ([103.27.239.15])
-        (authenticated bits=0)
-        by ms4.kntech.com.tw (8.13.8/8.13.8) with ESMTP id 19RF3vfG020671
-        for <linux-rdma@vger.kernel.org>; Wed, 27 Oct 2021 23:04:21 +0800
-Message-Id: <202110271504.19RF3vfG020671@ms4.kntech.com.tw>
-Content-Type: text/plain; charset="iso-8859-1"
+        id S230394AbhJ3ELv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 30 Oct 2021 00:11:51 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:13993 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229753AbhJ3ELu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 30 Oct 2021 00:11:50 -0400
+Received: from dggeml757-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Hh5NP4NVgzWl5s;
+        Sat, 30 Oct 2021 12:07:17 +0800 (CST)
+Received: from [10.174.179.200] (10.174.179.200) by
+ dggeml757-chm.china.huawei.com (10.1.199.137) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2308.15; Sat, 30 Oct 2021 12:09:16 +0800
+Subject: Re: [PATCH net] net: vlan: fix a UAF in vlan_dev_real_dev()
+To:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+References: <20211027121606.3300860-1-william.xuanziyang@huawei.com>
+ <20211027184640.7955767e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211028114503.GM2744544@nvidia.com>
+ <20211028070050.6ca7893b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <b573b01c-2cc9-4722-6289-f7b9e0a43e19@huawei.com>
+ <20211029121324.GT2744544@nvidia.com>
+ <20211029064610.18daa788@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211029184752.GI2744544@nvidia.com>
+From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
+Message-ID: <74ea44c7-7bf5-f4cd-c0aa-74e83cdc4448@huawei.com>
+Date:   Sat, 30 Oct 2021 12:09:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Dear Friend,
-To:     linux-rdma@vger.kernel.org
-From:   "Wahid Majrooh" <wnf@sendayan.com.my>
-Date:   Wed, 27 Oct 2021 22:04:39 +0700
-Reply-To: wfnngaf@gmail.com
+In-Reply-To: <20211029184752.GI2744544@nvidia.com>
+Content-Type: text/plain; charset="gbk"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.200]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggeml757-chm.china.huawei.com (10.1.199.137)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dear Friend,
+> On Fri, Oct 29, 2021 at 06:46:10AM -0700, Jakub Kicinski wrote:
+>> On Fri, 29 Oct 2021 09:13:24 -0300 Jason Gunthorpe wrote:
+>>> Jakub's path would be to test vlan_dev->reg_state != NETREG_REGISTERED
+>>> in the work queue, but that feels pretty hacky to me as the main point
+>>> of the UNREGISTERING state is to keep the object alive enough that
+>>> those with outstanding gets can compelte their work and release the
+>>> get. Leaving a wrecked object in UNREGISTERING is a bad design.
+>>
+>> That or we should investigate if we could hold the ref for real_dev all
+>> the way until vlan_dev_free().
+> 
 
-I am writing to you to make a proposal regarding Investing in your
-country. I am proposing to you a business development Investment in
-housing and health sector or any other sector you can recommend. My name
-is Wahid Majrooh. Former  acting Minister of Public Health of
-Afghanistan.
+Synchronize test results with the following modification:
 
+@@ -123,9 +123,6 @@ void unregister_vlan_dev(struct net_device *dev, struct list_head *head)
+        }
 
-Sincerely
+        vlan_vid_del(real_dev, vlan->vlan_proto, vlan_id);
+-
+-       /* Get rid of the vlan's reference to real_dev */
+-       dev_put(real_dev);
+ }
 
-Wahid
+@@ -843,6 +843,9 @@ static void vlan_dev_free(struct net_device *dev)
+
+        free_percpu(vlan->vlan_pcpu_stats);
+        vlan->vlan_pcpu_stats = NULL;
++
++       /* Get rid of the vlan's reference to real_dev */
++       dev_put(vlan->real_dev);
+ }
+
+It works on the UAF problem. And I have taken kmemleak tests for vlan_dev and real_dev,
+no kmemleak problem and new UAF problem.
+
+So take this modification for this problem?
+
+> The latter is certainly better if it works out, no circular deps, etc.
+> 
+> Thanks,
+> Jason
+> .
+> 
