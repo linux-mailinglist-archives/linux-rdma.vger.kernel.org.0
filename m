@@ -2,132 +2,252 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9DA44138C
-	for <lists+linux-rdma@lfdr.de>; Mon,  1 Nov 2021 07:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1914413A5
+	for <lists+linux-rdma@lfdr.de>; Mon,  1 Nov 2021 07:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhKAGIP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 1 Nov 2021 02:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231663AbhKAGHn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Nov 2021 02:07:43 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3B8C06122C;
-        Sun, 31 Oct 2021 23:04:55 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id l13so5851568pls.3;
-        Sun, 31 Oct 2021 23:04:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QKwddORb13OigBCy9mDZcUnsG5h+t9yQLv8LVp5siCU=;
-        b=j5LFKzVUzTdpQtOquEYQiQ93/QxNXDe/080ZPzqen1nnJEcnWv0Arg1m3H5YGUWw8M
-         stUDWkjS1zFBojQqjlqwmgBfiFDvw/FY5w1DdoEUTOEo04//87rHjl76eKfDkRV6JYaD
-         wHniweh+Bt9WBNr9zbaJOafXiibJeSYbktM2cOjCLSm/QMXoinVi4CBxQO0XAGBypciT
-         vft62rQAmLIxRWsns2FxpBvhq592YznXCJfnsuQVHL7l548rjILVi1WcAe1E24RkOJBv
-         6xba3tgT8iJOTopxgjfSx7YFqWx5gxJbgzz6VMxiVUScwsGxaEWyzxex2OUaialtPu/r
-         8Emw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QKwddORb13OigBCy9mDZcUnsG5h+t9yQLv8LVp5siCU=;
-        b=ejNQ3ZWHYJ19MF44lpdAswwzMjH2DL96bejXoDBGJAc0yB6p4zPTy9VxORoYptl/eq
-         /9vgSu2bQPmJid/zehsBnikd2cp2bT23NCEQdWNwdRjjYOKp/Qinu5nlmoTIE8I+yv0e
-         SqeZ34xks1kPdOcxHMPmSKeh1c0ccqEmY7MzcexY4yjw28vkYUcChIepqZ48NPmavZbj
-         3H2PAQbaeqACGG+kANVuRKRu/KQESYdVYfbI5dj1mPck5c/toMUY3itLBn9HQNPCkL91
-         U0guMUc42RUlVvy5PzTDkCaMz9mS8uB4dEiGatyk5IEkgBMnfKrN8QDCMuts4vW9LZ5o
-         wLoQ==
-X-Gm-Message-State: AOAM532L6cDo/KB5/i9IBKqGbrfkTDURPrr5iLGtUPKy58Ek0xVOsbo6
-        0zbbSb4qccEH7vl3mgus5ck=
-X-Google-Smtp-Source: ABdhPJyrJq+mOKZ0lf2kZ6Y6bPXWfxcFbUFKsxFZDJ2CDMm20OFCcbYj+83X+q3vioiE0f2mNOqwFQ==
-X-Received: by 2002:a17:90a:930c:: with SMTP id p12mr36038293pjo.176.1635746695055;
-        Sun, 31 Oct 2021 23:04:55 -0700 (PDT)
-Received: from localhost.localdomain ([144.202.123.152])
-        by smtp.gmail.com with ESMTPSA id g8sm3277586pfc.65.2021.10.31.23.04.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Oct 2021 23:04:54 -0700 (PDT)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     akpm@linux-foundation.org, keescook@chromium.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        arnaldo.melo@gmail.com, pmladek@suse.com, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, valentin.schneider@arm.com,
-        qiang.zhang@windriver.com, robdclark@chromium.org,
-        christian@brauner.io, dietmar.eggemann@arm.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, oliver.sang@intel.com, lkp@intel.com,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH v7 11/11] kernel/kthread: show a warning if kthread's comm is truncated
-Date:   Mon,  1 Nov 2021 06:04:19 +0000
-Message-Id: <20211101060419.4682-12-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211101060419.4682-1-laoar.shao@gmail.com>
-References: <20211101060419.4682-1-laoar.shao@gmail.com>
+        id S229882AbhKAGSd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 1 Nov 2021 02:18:33 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:40482 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229528AbhKAGSd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 1 Nov 2021 02:18:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0UuSITEE_1635747357;
+Received: from guwendeMacBook-Pro.local(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0UuSITEE_1635747357)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Nov 2021 14:15:58 +0800
+Subject: Re: [PATCH net 4/4] net/smc: Fix wq mismatch issue caused by smc
+ fallback
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
+        kuba@kernel.org, ubraun@linux.ibm.com
+Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
+        xuanzhuo@linux.alibaba.com, dust.li@linux.alibaba.com
+References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
+ <20211027085208.16048-5-tonylu@linux.alibaba.com>
+ <acaf3d5a-219b-3eec-3a65-91d3fdfb21e9@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+Message-ID: <d4e23c6c-38a1-b38d-e394-aa32ebfc80b5@linux.alibaba.com>
+Date:   Mon, 1 Nov 2021 14:15:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.14.0
 MIME-Version: 1.0
+In-Reply-To: <acaf3d5a-219b-3eec-3a65-91d3fdfb21e9@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Show a warning if task comm is truncated. Below is the result
-of my test case:
 
-truncated kthread comm:I-am-a-kthread-with-a-l (pid:178) by 8 characters
 
-As we have extended task comm to 24, all the existing in-tree
-kthreads/workqueues are not truncated anymore. So this warning will only
-be printed for the newly introduced one if it has a long name.
+On 2021/10/29 5:40, Karsten Graul wrote:
+> On 27/10/2021 10:52, Tony Lu wrote:
+>> From: Wen Gu <guwen@linux.alibaba.com>
+>>
+>> A socket_wq mismatch issue may occur because of fallback.
+>>
+>> When use SMC to replace TCP, applications add an epoll entry into SMC
+>> socket's wq, but kernel uses clcsock's wq instead of SMC socket's wq
+>> once fallback occurs, which means the application's epoll fd dosen't
+>> work anymore.
+> 
+> I am not sure if I understand this fix completely, please explain your intentions
+> for the changes in more detail.
+> 
+> What I see so far:
+> - smc_create() swaps the sk->sk_wq of the clcsocket and the new SMC socket
+>    - sets clcsocket sk->sk_wq to smcsocket->wq (why?)
+>    - sets smcsocket sk->sk_wq to clcsocket->wq (why?)
+> - smc_switch_to_fallback() resets the clcsock sk->sk_wq to clcsocket->wq
+> - smc_accept() sets smcsocket sk->sk_wq to clcsocket->wq when it is NOT fallback
+>    - but this was already done before in smc_create() ??
+> - smc_poll() now always uses clcsocket->wq for the call to sock_poll_wait()
+> 
+> In smc_poll() the comment says that now clcsocket->wq is used for poll, whats
+> the relation between socket->wq and socket->sk->sk_wq here?
+> 
 
-Suggested-by: Petr Mladek <pmladek@suse.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Petr Mladek <pmladek@suse.com>
----
- kernel/kthread.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+Thanks for your reply.
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 5b37a8567168..63f38d3a4f62 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -399,12 +399,17 @@ struct task_struct *__kthread_create_on_node(int (*threadfn)(void *data),
- 	if (!IS_ERR(task)) {
- 		static const struct sched_param param = { .sched_priority = 0 };
- 		char name[TASK_COMM_LEN];
-+		int len;
- 
- 		/*
- 		 * task is already visible to other tasks, so updating
- 		 * COMM must be protected.
- 		 */
--		vsnprintf(name, sizeof(name), namefmt, args);
-+		len = vsnprintf(name, sizeof(name), namefmt, args);
-+		if (len >= TASK_COMM_LEN) {
-+			pr_warn("truncated kthread comm:%s (pid:%d) by %d characters\n",
-+				name, task->pid, len - TASK_COMM_LEN + 1);
-+		}
- 		set_task_comm(task, name);
- 		/*
- 		 * root may have changed our (kthreadd's) priority or CPU mask.
--- 
-2.17.1
+Before explaining my intentions, I thought it would be better to 
+describe the issue I encountered first：
 
+In nginx/wrk tests, when nginx uses TCP and wrk uses SMC to replace TCP, 
+wrk should fall back to TCP and get correct results theoretically, But 
+in fact it only got all zeros.
+
+For example:
+server: nginx -g 'daemon off;'
+
+client: smc_run wrk -c 1 -t 1 -d 5 http://11.200.15.93/index.html
+
+   Running 5s test @ http://11.200.15.93/index.html
+     1 threads and 1 connections
+     Thread Stats   Avg      Stdev     Max   ± Stdev
+         Latency     0.00us    0.00us   0.00us    -nan%
+         Req/Sec     0.00      0.00     0.00      -nan%
+        0 requests in 5.00s, 0.00B read
+     Requests/sec:      0.00
+     Transfer/sec:       0.00B
+
+The reason for this result is that:
+
+1) Before fallback: wrk uses epoll_insert() to associate an epoll fd 
+with a smc socket, adding eppoll_entry into smc socket->wq, allowing 
+itself to be notified when events such as EPOLL_OUT/EPOLL_IN occur on 
+the smc socket.
+
+2) After fallback: smc_switch_to_fallback() set fd->private_data as 
+clcsocket. wrk starts to use TCP stack and kernel calls tcp_data_ready() 
+when receving data, which uses clcsocket sk->sk_wq (equal to 
+clcsocket->wq). As a result, the epoll fd hold by wrk in 1) can't 
+receive epoll events and wrk stops transmitting data.
+
+So the root cause of the issue is that wrk's eppoll_entry always stay in 
+smcsocket->wq, but kernel turns to wake up 
+clcsocket->sk->sk_wq(clcsocket->wq) after fallback, which makes wrk's 
+epoll fd unusable.
+
+[before fallback]
+    application
+         ^
+         |
+       (poll)
+         |
+         v
+   smc socket->wq            clcsocket->wq
+(has eppoll_entry)                .
+         .                         .
+         .                         .
+         .                         .
+         .                         .
+smc socket->sk->sk_wq    clcsocket->sk->sk_wq
+         ^                         ^
+         |                         |
+         | (data)                  |(tcp handshake in rendezvous)
+         v                         v
+|-------------------------------------------|
+|                                           |
+| sk_data_ready / sk_write_space ..         |
+|                                           |
+|-------------------------------------------|
+
+[after fallback]
+    application--------------------|
+                         (cant poll anything)
+                                   |
+                                   |
+                                   v
+   smc socket->wq            clcsocket->wq
+(has eppoll_entry)                .
+         .                         .
+         .                         .
+         .                         .
+         .                         .
+smc socket->sk->sk_wq    clcsocket->sk->sk_wq
+                                   ^
+                                   |
+                                   |(data)
+                                   v
+|-------------------------------------------|
+|                                           |
+| sk_data_ready / sk_write_space ..         |
+|                                           |
+|-------------------------------------------|
+
+
+This patch's main idea is that since wait queue is switched from smc 
+socket->wq to clcsocket->wq after fallback, making eppoll_entry in smc 
+socket->wq unusable, maybe we can try to put eppoll_entry into 
+clcsocket->wq at the beginning, set smc socket sk->sk_wq to 
+clcsocket->wq before fallback, and reset clcsocket sk->sk_wq to 
+clcsocket->wq after fallback. So that no matter whether fallback occurs, 
+the kernel always wakes up clcsocket->wq to notify applications.
+
+
+Therefore, the main modifications of this patch are as follows:
+
+1) smc_poll() always uses clcsocket->wq for the call to sock_poll_wait()
+
+After this modification, the user application's eppoll_entry will be 
+added into clcsocket->wq at the beginning instead of smc socket->wq, 
+allowing application's epoll fd to receive events such as EPOLL_IN even 
+when a fallback occurs.
+
+2) Swap the sk->sk_wq of the clcsocket and the new SMC socket in 
+smc_create()
+
+Sets smcsocket sk->sk_wq to clcsocket->wq. If SMC is used and NOT 
+fallback, the sk_data_ready() will wake up clcsocket->wq, and user 
+application's epoll fd will receive epoll events.
+
+Sets clcsocket sk->sk_wq to smcsocket->wq. Since clcsocket->wq is 
+occupied by smcsocket sk->sk_wq, clcsocket sk->sk_wq have to use another 
+wait queue (smc socket->wq) during TCP handshake in rendezvous.
+
+3) smc_switch_to_fallback() resets the clcsocket sk->sk_wq to clcsocket->wq
+
+Once a fallback occurs, user application will start using clcsocket. At 
+this point, clcsocket sk->sk_wq should be reseted to clcsocket->wq 
+because eppoll_entry is in clcsocket->wq.
+
+4) smc_accept() sets smcsocket sk->sk_wq to clcsocket->wq when it is NOT 
+fallback
+
+The reason for doing this on the listening side is simmilar to 
+smc_create(): using clcsocket->wq in concert with smc_poll() when it is 
+NOT fallback. For your query 'this was already done before in 
+smc_create() ? ', the new smc socket here in smc_accept() seems be 
+different from the smc socket created in smc_create().
+
+So after the fix:
+
+[before fallback]
+    application--------------------|
+                                (poll)
+                                   |
+                                   |
+                                   v
+   smc socket->wq            clcsocket->wq
+          .                (has eppoll_entry)
+             `   .                  .
+                     `  .  .   `
+                 .    `    `   .
+            `                      `
+smc socket->sk->sk_wq    clcsocket->sk->sk_wq
+         ^                         ^
+         |                         |
+         |(data)                   |(tcp handshake)
+         v                         v
+|-------------------------------------------|
+|                                           |
+| sk_data_ready / sk_write_space ..         |
+|                                           |
+|-------------------------------------------|
+
+[after fallback]
+    application--------------------|
+                                (poll)
+                                   |
+                                   |
+                                   v
+   smc socket->wq            clcsocket->wq
+         .                 (has eppoll_entry)
+             `   .                  .
+                     `   .          .
+                            `   .   .
+                                    `
+smc socket->sk->sk_wq    clcsocket->sk->sk_wq
+                                    ^
+                                    |(data)
+                                    v
+|-------------------------------------------|
+|                                           |
+| sk_data_ready / sk_write_space ..         |
+|                                           |
+|-------------------------------------------|
+
+
+Cheers,
+Wen Gu
