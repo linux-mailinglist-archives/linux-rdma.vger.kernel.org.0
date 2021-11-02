@@ -2,105 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1550B442A6B
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Nov 2021 10:30:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46CE442F53
+	for <lists+linux-rdma@lfdr.de>; Tue,  2 Nov 2021 14:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229869AbhKBJcy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Nov 2021 05:32:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:1964 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229770AbhKBJcx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Nov 2021 05:32:53 -0400
-Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A28F9Nv005079;
-        Tue, 2 Nov 2021 09:30:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=IOQijjjE+9e7i9Ca6RdvxAoupGYFL+SD2p4SUDIWewo=;
- b=Qk3GKGdVZUon2AufuruH1ybXU57tlMUbbei/6Gci5Vw5K1YiHNBfgpJ/DH5OhiqAYGfa
- JCoIEDaOzQydMiKdFZCYYT70N+W0dSSZQiJB4T+XduSIn3eVN+ECArT/q6qOyzP1xSod
- vaFTxSwTwTCcULqMx+8SrzaE/wLReGU7tlWtGIwK0f/lBLrKlCX5NTZMz1pXpFZ8mLtP
- I3DtiQPguOzjuNaTUHmo9mlfWl/3peatqcCt2eGjqEosYeywPa4MPfMRpl+0XwIMB+yY
- KVYBWSnDfGcxgUxMI9+v96VX6sYb3MHEu5E2puiNmVgRjxxklWdFSvOGSPhJHtrKLPAe tQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c2p6sxdhy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 09:30:17 +0000
-Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A28udKX021804;
-        Tue, 2 Nov 2021 09:30:16 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3c2p6sxdgs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 09:30:16 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A29DnJ6016565;
-        Tue, 2 Nov 2021 09:30:14 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma02fra.de.ibm.com with ESMTP id 3c0wp9rc3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 02 Nov 2021 09:30:14 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A29UBik46924190
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 2 Nov 2021 09:30:12 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D47D04C052;
-        Tue,  2 Nov 2021 09:30:11 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AED94C059;
-        Tue,  2 Nov 2021 09:30:11 +0000 (GMT)
-Received: from [9.145.173.195] (unknown [9.145.173.195])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  2 Nov 2021 09:30:11 +0000 (GMT)
-Message-ID: <11f17a34-fd35-f2ec-3f20-dd0c34e55fde@linux.ibm.com>
-Date:   Tue, 2 Nov 2021 10:30:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.1
-Subject: Re: [PATCH net-next 3/3] net/smc: Introduce tracepoint for smcr link
- down
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
-        dust.li@linux.alibaba.com, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20211101073912.60410-1-tonylu@linux.alibaba.com>
- <20211101073912.60410-4-tonylu@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20211101073912.60410-4-tonylu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: O3mwP6vKG-gy8aVKpZa6lAjS58OpBU13
-X-Proofpoint-ORIG-GUID: Pijjz2RppCs8q1UHk5mK7z3ujNeulg16
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S229981AbhKBNvW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Nov 2021 09:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBNvV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Nov 2021 09:51:21 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D1DC061714;
+        Tue,  2 Nov 2021 06:48:46 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj20so8380332qkb.11;
+        Tue, 02 Nov 2021 06:48:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wu+GXwP0q8/l280sPfS5y2dnw2tDTjbgcZxPcts0nWA=;
+        b=YcR3IuaAtTNd5UTAQgUBmbub0s9rZKVwSQhTU6bWJJuuGdsbgVWzNuC9hWKqyxfIx3
+         99mns3eEXlEacdvGFsKoPPJhXuggFk/5dE5jXNf97+xm8eN7len5sSHHLvp3lWncIqzh
+         nqpTbP+Mq8ng1LNy3wXdOjEpj+jjzNB2OP/wuFZPk0/GaFXjhxctxfJRVTWOEq2Zc+SW
+         DNyX54rGB6MewKL70f5/ukEdoSGntFVl195Te6GLkxv8TwgbyAW3u4004JSdT9R69nCM
+         R+qKublTKycWSta+kv7uhK7PGTiFSv2r4mma2kG4TFzwKpMJAYoo/7RA//x4Akoe3VkM
+         BmPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Wu+GXwP0q8/l280sPfS5y2dnw2tDTjbgcZxPcts0nWA=;
+        b=DQfoPoBAdpWQMso9xSRciPzgV4/MGb3Q5u+TnYEsDVADmO5xkmlNKOELVnXPNfb4wx
+         XA50A8sjv5V8arZ2RVkdQX3ZU+jGcMyF9XnKjWaK6lNl7kvruTKphf55bi3SqcB+InF+
+         gPADjVLdfSfChfMDAe/rHor3evr9+cuSKV6pwwKaIICP6oiDcZIkH7xR5qg/xKQEJrqc
+         UaCQfq7yoydGj11Ihf1sUbCDgZD8J8wX7Nv9/Ntzm2O7GTage5F5yhz8qXMaoqvfCnYl
+         SLmtcb+oQStw/tGJTOjbv2w/Ov5InGrgZCsPLoOMu6tGKOnzrjQAloCZ1lwNfAVV82Mg
+         eniQ==
+X-Gm-Message-State: AOAM530KDw9E+aJKX8vnOWR0jOxVEie91h1xnFX7JKVYmGUkLkNS06Tq
+        TkFnco6aLwNhVa5Qn/MQ1HWkIBVCwdjG6cbsbOI=
+X-Google-Smtp-Source: ABdhPJzdAcu/rqsJAHYEDYHQWB2i5R24SjAWs9ovT6Ku6QrCQM5eY4Gm09bilSgO5SNhaLL7ebVPVXMe4LoGH0IsBkk=
+X-Received: by 2002:a05:620a:40d6:: with SMTP id g22mr29784297qko.104.1635860925969;
+ Tue, 02 Nov 2021 06:48:45 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-02_06,2021-11-01_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 impostorscore=0 phishscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111020054
+References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/0h7j/nDwoBA+J@alley>
+ <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
+ <YYAPhE9uX7OYTlpv@alley> <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
+ <20211101211845.20ff5b2e@gandalf.local.home> <CALOAHbCgaJ83qZVj6qt8tgJBd4ojuLfgSp2Ce7CgzQYshM-amQ@mail.gmail.com>
+ <YYDvHv76tJtJht8b@alley>
+In-Reply-To: <YYDvHv76tJtJht8b@alley>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Tue, 2 Nov 2021 21:48:10 +0800
+Message-ID: <CALOAHbBA4xjoebNcO2422wa34bgui_=PriPNfJdx2_CstoKQqg@mail.gmail.com>
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qiang Zhang <qiang.zhang@windriver.com>,
+        robdclark <robdclark@chromium.org>,
+        christian <christian@brauner.io>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        john fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com,
+        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
+        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel test robot <oliver.sang@intel.com>,
+        kbuild test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 01/11/2021 08:39, Tony Lu wrote:
-> +
-> +	    TP_printk("lnk=%p lgr=%p state=%d dev=%s location=%p",
-> +		      __entry->lnk, __entry->lgr,
-> +		      __entry->state, __get_str(name),
-> +		      __entry->location)
+On Tue, Nov 2, 2021 at 3:56 PM Petr Mladek <pmladek@suse.com> wrote:
+>
+> On Tue 2021-11-02 09:26:35, Yafang Shao wrote:
+> > On Tue, Nov 2, 2021 at 9:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > On Tue, 2 Nov 2021 09:09:50 +0800
+> > > Yafang Shao <laoar.shao@gmail.com> wrote:
+> > > >      Now we only care about kthread, so we can put the pointer into a
+> > > > kthread specific struct.
+> > > >      For example in the struct kthread, or in kthread->data (which may
+> > > > conflict with workqueue).
+> > >
+> > > No, add a new field to the structure. "full_name" or something like that.
+> > > I'm guessing it should be NULL if the name fits in TASK_COMM_LEN and
+> > > allocated if the name had to be truncated.
+> > >
+> > > Do not overload data with this. That will just make things confusing.
+> > > There's not that many kthreads, where an addition of an 8 byte pointer is
+> > > going to cause issues.
+> >
+> > Sure, I will add a new field named "full_name", which only be
+> > allocated if the kthread's comm is truncated.
+>
+> The plan looks good to me.
+>
+> One more thing. It should obsolete the workqueue-specific solution.
+> It would be great to clean up the workqueue code as the next step.
+>
 
-The location is printed as pointer (which might even be randomized?),
-is it possible to print the function name of the caller, as described
-here: https://stackoverflow.com/questions/4141324/function-caller-in-linux-kernel
+Agreed. The worker comm can be replaced by the new kthread full_name.
+I will do it in the next step.
 
-  printk("Caller is %pS\n", __builtin_return_address(0));
-
-Not sure if this is possible with the trace points, but it would be
-easier to use. You plan to use a dump to find out about the function caller?
+-- 
+Thanks
+Yafang
