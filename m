@@ -2,94 +2,125 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55715443BA9
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Nov 2021 04:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019F1443C4D
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Nov 2021 06:03:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbhKCDIp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Nov 2021 23:08:45 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:60561 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229506AbhKCDIo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Nov 2021 23:08:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UupXNxJ_1635908766;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UupXNxJ_1635908766)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 03 Nov 2021 11:06:07 +0800
-Date:   Wed, 3 Nov 2021 11:06:06 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
-        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
-        dust.li@linux.alibaba.com
-Subject: Re: [PATCH net 1/4] Revert "net/smc: don't wait for send buffer
- space when data was already sent"
-Message-ID: <YYH8npT0+ww57Gg1@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
- <20211027085208.16048-2-tonylu@linux.alibaba.com>
- <9bbd05ac-5fa5-7d7a-fe69-e7e072ccd1ab@linux.ibm.com>
- <20211027080813.238b82ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <06ae0731-0b9b-a70d-6479-de6fe691e25d@linux.ibm.com>
- <20211027084710.1f4a4ff1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <c6396899-cf99-e695-fc90-3e21e95245ed@linux.ibm.com>
- <20211028073827.421a68d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YX+RaKfBVzFokQON@TonyMac-Alibaba>
- <ca2a567b-915e-c4e1-96cf-2c03ff74aad5@linux.ibm.com>
+        id S229899AbhKCFGM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Nov 2021 01:06:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230151AbhKCFGM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Nov 2021 01:06:12 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B67BC061714
+        for <linux-rdma@vger.kernel.org>; Tue,  2 Nov 2021 22:03:36 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id u191so2052024oie.13
+        for <linux-rdma@vger.kernel.org>; Tue, 02 Nov 2021 22:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=43YulKGDuwOlKDs9ebXRIDh1ck1fJZ+juQVsZK7fUk0=;
+        b=kIKmYJJq4zuC+TEpA6rIlxPW81yvpum3M8vOlWJKzraqpYh2YAaQQN/6WJu6wbY7hQ
+         ZPHleblfroIQ2JbJC7tYvq5Bubp7id8G8Z2yBIAprASkqSm73AlPXnIcezXSnwVavif+
+         sr2FAqPatEGYEItieyNxTUqkSMYUuViVnQ9F++z53jAYwReyqAMYhNvdvMkR871o8XYA
+         DdUPhet73KCn8nErTkIY1CNjDBnu1Cyr5oY3yMpXPkCUFR854r7L3RiZsXab3gcK8A36
+         6Lctmgwut5DopJpMSWCNhCmKii2us7lDziTLkaDIxeVgTqexZB8fqj3o6YJJqGm32zrk
+         GbJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=43YulKGDuwOlKDs9ebXRIDh1ck1fJZ+juQVsZK7fUk0=;
+        b=ZEEM5Yq0xIs2bUKnmQ1GQLE+dh30yhpDcZJgG4bP8vDICLZIRFJRqnp0vXjgrtRBsZ
+         OEmiH+OMw8/zbrAtn+5sWqcDhlZVi5Elz/oHEhEb/7wCpW+ZqN4F8k8VvZSITypTlpf9
+         zXwf0s+I7PEc4sOZgN5L6s9mQLU3I1g4hlP/OzFcmkO1hFrnoVnLWlWge4GjpcjHX07e
+         S5kJhn8toDpOx1XWIZ3rpQgOeRp56BYeY2i7XiVwE2FM5H7Eh7oR3y3dIKVk8RohNnIC
+         zNl4xZhsbuKqnANleRCXGMZECVFk9McT/gxt99uU6L8qd/LfPY6XE5iFPkT1Q5Qcrxdk
+         8kwA==
+X-Gm-Message-State: AOAM530yKKuc7yvRomAxtjHd2GuLgmY+OpIuFmYckPeJl6XFDzBtNhZ7
+        afafAdVj4DB6NgQ1CoAZlc4=
+X-Google-Smtp-Source: ABdhPJyKh7/ZwxtwOXVNmwQGG2FIb+d3Q8dtVQW5X+mZhQqYFzc5wEryvXDApLw26nY+rlSzkvtkug==
+X-Received: by 2002:aca:58d6:: with SMTP id m205mr9201929oib.126.1635915815606;
+        Tue, 02 Nov 2021 22:03:35 -0700 (PDT)
+Received: from ubunto-21.tx.rr.com (2603-8081-140c-1a00-b73d-116b-98e4-53b5.res6.spectrum.com. [2603:8081:140c:1a00:b73d:116b:98e4:53b5])
+        by smtp.gmail.com with ESMTPSA id r23sm274990ooh.44.2021.11.02.22.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Nov 2021 22:03:35 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v4 00/13] Correct race conditions in rdma_rxe
+Date:   Wed,  3 Nov 2021 00:02:29 -0500
+Message-Id: <20211103050241.61293-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ca2a567b-915e-c4e1-96cf-2c03ff74aad5@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 02, 2021 at 10:17:15AM +0100, Karsten Graul wrote:
-> On 01/11/2021 08:04, Tony Lu wrote:
-> > On Thu, Oct 28, 2021 at 07:38:27AM -0700, Jakub Kicinski wrote:
-> >> On Thu, 28 Oct 2021 13:57:55 +0200 Karsten Graul wrote:
-> >>> So how to deal with all of this? Is it an accepted programming error
-> >>> when a user space program gets itself into this kind of situation?
-> >>> Since this problem depends on internal send/recv buffer sizes such a
-> >>> program might work on one system but not on other systems.
-> >>
-> >> It's a gray area so unless someone else has a strong opinion we can
-> >> leave it as is.
-> > 
-> > Things might be different. IMHO, the key point of this problem is to
-> > implement the "standard" POSIX socket API, or TCP-socket compatible API.
-> > 
-> >>> At the end the question might be if either such kind of a 'deadlock'
-> >>> is acceptable, or if it is okay to have send() return lesser bytes
-> >>> than requested.
-> >>
-> >> Yeah.. the thing is we have better APIs for applications to ask not to
-> >> block than we do for applications to block. If someone really wants to
-> >> wait for all data to come out for performance reasons they will
-> >> struggle to get that behavior. 
-> > 
-> > IMO, it is better to do something to unify this behavior. Some
-> > applications like netperf would be broken, and the people who want to use
-> > SMC to run basic benchmark, would be confused about this, and its
-> > compatibility with TCP. Maybe we could:
-> > 1) correct the behavior of netperf to check the rc as we discussed.
-> > 2) "copy" the behavior of TCP, and try to compatiable with TCP, though
-> > it is a gray area.
-> 
-> I have a strong opinion here, so when the question is if the user either
-> encounters a deadlock or if send() returns lesser bytes than requested,
-> I prefer the latter behavior.
-> The second case is much easier to debug for users, they can do something
-> to handle the problem (loop around send()), and this case can even be detected
-> using strace. But the deadlock case is nearly not debuggable by users and there
-> is nothing to prevent it when the workload pattern runs into this situation
-> (except to not use blocking sends).
+There are several race conditions discovered in the current rdma_rxe
+driver.  They mostly relate to races between normal operations and
+destroying objects.  This patch series makes several minor cleanups in
+rxe_pool.[ch] and replaces the red-black trees currently used by xarrays
+which have better atomic behavior.
 
-I agree with you. I am curious about this deadlock scene. If it was
-convenient, could you provide a reproducible test case? We are also
-setting up a SMC CI/CD system to find the compatible and performance
-fallback problems. Maybe we could do something to make it better.
+This patch series applies cleanly to current for-next.
+commit 6a463bc9d999 ("Merge branch 'for-rc' into rdma.git for-next")
 
-Cheers,
-Tony Lu
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v4
+  Restructured patch series to change to xarray earlier which
+  greatly simplified the changes.
+  Rebased to current for-next
+v3
+  Changed rxe_alloc to use GFP_KERNEL
+  Addressed other comments by Jason Gunthorp
+  Merged the previous 06/10 and 07/10 patches into one since they overlapped
+  Added some minor cleanups as 10/10
+v2
+  Rebased to current for-next.
+  Added 4 additional patches
+
+Bob Pearson (13):
+  RDMA/rxe: Replace irqsave locks with bh locks
+  RDMA/rxe: Cleanup rxe_pool_entry
+  RDMA/rxe: Copy setup parameters into rxe_pool
+  RDMA/rxe: Save object pointer in pool element
+  RDMA/rxe: Replace RB tree by xarray for indexes
+  RDMA/rxe: Remove #include "rxe_loc.h" from rxe_pool.c
+  RDMA/rxe: Remove some #defines from rxe_pool.h
+  RDMA/rxe: Reverse the sense of RXE_POOL_NO_ALLOC
+  RDMA/rxe: Replaced keyed rxe objects by indexed objects
+  RDMA/rxe: Prevent taking references to dead objects
+  RDMA/rxe: Fix ref error in rxe_av.c
+  RDMA/rxe: Replace mr by rkey in responder resources
+  RDMA/rxe: Protect against race between get_index and drop_ref
+
+ drivers/infiniband/sw/rxe/rxe.c       | 100 +-----
+ drivers/infiniband/sw/rxe/rxe_av.c    |  19 +-
+ drivers/infiniband/sw/rxe/rxe_comp.c  |   8 +-
+ drivers/infiniband/sw/rxe/rxe_cq.c    |  24 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  25 +-
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 167 ++++++---
+ drivers/infiniband/sw/rxe/rxe_mr.c    |   7 +-
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  25 +-
+ drivers/infiniband/sw/rxe/rxe_net.c   |  17 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 479 ++++++++------------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  | 129 ++-----
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  16 +-
+ drivers/infiniband/sw/rxe/rxe_queue.c |   9 +-
+ drivers/infiniband/sw/rxe/rxe_recv.c  |   3 +-
+ drivers/infiniband/sw/rxe/rxe_req.c   |  66 ++--
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 125 ++++---
+ drivers/infiniband/sw/rxe/rxe_srq.c   |   2 +-
+ drivers/infiniband/sw/rxe/rxe_task.c  |  18 +-
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  73 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  23 +-
+ 20 files changed, 542 insertions(+), 793 deletions(-)
+
+-- 
+2.30.2
+
