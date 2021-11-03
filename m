@@ -2,138 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF1F443D75
-	for <lists+linux-rdma@lfdr.de>; Wed,  3 Nov 2021 07:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BE4443DE2
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Nov 2021 08:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhKCHAD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 3 Nov 2021 03:00:03 -0400
-Received: from mail-dm6nam10on2061.outbound.protection.outlook.com ([40.107.93.61]:23777
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230152AbhKCHAC (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 3 Nov 2021 03:00:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NoQsr+vbrsQIWngXtGTnDYLMIjxEEQbXNxYqUGFy7zZtGE+LGYyt8Y8r3k43iQIQsO/Gr86MXKYq6/ersu8iwsV11zGMJsKvE66SQmktEhjr9VZchifCjlw5r/iBE8fvh6U8jXhq0yJ4m5P5qah1jmUcrved7ZAWkGCN0H2cVg21siZEloeCDPC5PbeJlNTSseSPP6oBeXsqnsTWLLa4EjPWfjuzD0xD7BHKt0GgNblz5ztwShxf1Qty3MA1V2FU6i82sAC3LZ24mMXLh72Es5viOOmmpsmnO0FbwQpyQsybJqTne5jRV6GVzz9Ok707trGK5RpioHr0UEKiyepkdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yBffSAS47GT8HR16F4JG+uNhQlmOrk2AH84uob0Z4rA=;
- b=Nj5U1HKwSdHGtzXGLq0J2SWNYFMo/4f+hghXbR3lndfojCcXHEK//fIRNIYAJWpJzffDDv7GGFV5mnhRFLrQLbbn8+GcCREyxGcFTIx1iXfN6OChDTaFtHi0Q12TNVnzSr0Il71AXmwJL64ELyQe/ujzDDAEcJSwxgo1lZnEQNHOUsD/Xkt2PxXmKPhM5o6Cb1TWqXo7n4zmwIr62azFO5xzgWmft8ewMCzGon1BlR+nXeKAXzjsY8FSeKI1pej059m7GmuxeD9QZMAxJALAz01pNXhg07RFplW0Xu2qWOtCqlr0x/TGG/ZbwCpg1LJ0mTHN/bVrmm6bvY8yPUGH3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yBffSAS47GT8HR16F4JG+uNhQlmOrk2AH84uob0Z4rA=;
- b=oclo3uP4VPoCbYLzCYbCG7CCb9Eh+mL6YRO0YFO7PnK+8PkhWFK9zCWHIeG0DYt7USyi5VHIME6VLUVVzACD3yUcbEHyFPbCD0d0SipfrAzp4Jv70knk6vvkDMbvfadSnRZjS+0eIjLv5afrAbTDrGzb/btjZ9AfLrGS7hymUFTVclevxg5qEDOcdIjkIHCdMFSFjTUXvrjvwxO7Ulm0tdxAeJoByV9Fgj6UegXfeijxFgROWx/CNaE9i24/PJeSEbUskBlJqwe20wxfcayeNXlhd2NkRCzVYtfH4ulyG5CLKChd/Vssw22PQQcBzC91NGJcvJ1VVovwdiuWtusqkw==
-Received: from MWHPR1401CA0021.namprd14.prod.outlook.com
- (2603:10b6:301:4b::31) by BL0PR12MB2339.namprd12.prod.outlook.com
- (2603:10b6:207:4e::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Wed, 3 Nov
- 2021 06:57:24 +0000
-Received: from CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:4b:cafe::34) by MWHPR1401CA0021.outlook.office365.com
- (2603:10b6:301:4b::31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.11 via Frontend
- Transport; Wed, 3 Nov 2021 06:57:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT019.mail.protection.outlook.com (10.13.175.57) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4669.10 via Frontend Transport; Wed, 3 Nov 2021 06:57:24 +0000
-Received: from [172.27.1.16] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 3 Nov
- 2021 06:57:18 +0000
-Message-ID: <bb52fc1b-4e95-bc5e-6aa9-82b9b35967cf@nvidia.com>
-Date:   Wed, 3 Nov 2021 08:57:15 +0200
+        id S231278AbhKCIAK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 3 Nov 2021 04:00:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46340 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231254AbhKCIAH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 3 Nov 2021 04:00:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1635926246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V04PRVMq0Z/UDJz0xLKl1Xoe9Fq20tPJIRoMB0DtmQM=;
+        b=DsogDXT9tQaxeZF113pmXPLlfAMk+zbtUe7N7o0ZRYYuY/1MDs8/i8TYj+Gjlan3x6mEON
+        8XtyLfDMN+F/iotT0UR9fR4lB1osGtYGfF8wV1YG8OhQD8R4dIJDhhS1VUcKNsBzoSXIGK
+        e5ZoAVlyysjOv1izbIIzyhA+UTwpImY=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-264-Wko_bNnEO0WEIPdVehL9pQ-1; Wed, 03 Nov 2021 03:57:25 -0400
+X-MC-Unique: Wko_bNnEO0WEIPdVehL9pQ-1
+Received: by mail-ed1-f70.google.com with SMTP id i9-20020a508709000000b003dd4b55a3caso1665156edb.19
+        for <linux-rdma@vger.kernel.org>; Wed, 03 Nov 2021 00:57:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V04PRVMq0Z/UDJz0xLKl1Xoe9Fq20tPJIRoMB0DtmQM=;
+        b=D6ZXy9TmEQcSzcyMvZ8BoPqN1btFs6/OdFHgiLz290lfYpx6AFJZfpaOpIJhXIO1MK
+         AlnhoDgqXu/I7Op7midtQL0g4TrnxhMpaf504Aho57xNL0dFXh7AK6f9bZTpEwENd+6H
+         OkwtTerElpFX6ID+kdPNHV0WojGOAPEQjRFbaa2N6HceZbWXKeSgqnqejUFNog38kiCW
+         aj0O7F/dKMOIEwXTZ87TT6koNWHAOcbvJA6ekV3+L0w51KzdwB6zg6lZJuxVyjQwC/wW
+         QlbE9nptMfjBBMN4eCKno2elIm4SpmuF4I7zTmJrV66UB/Wv8hBt3+uLzIzQcpv8HRaR
+         DbHg==
+X-Gm-Message-State: AOAM532iRyEnjxx7QBnEaps5YZUkzQ6SSmi30z1ZXWM+ok9MkT6aro2X
+        E1vloUVa/HouY0IuWWbXpCKCc5X/o29+cdfOJBoTDDxiNBkuG08LptclePwM3dx9/NzDFxYnBcg
+        QxkWQSlq8hrpWeoSaMEpxw+xZOKUjUUTXCnGSMA==
+X-Received: by 2002:a05:6402:1744:: with SMTP id v4mr48796863edx.366.1635926244379;
+        Wed, 03 Nov 2021 00:57:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwe0XIxTe6tVJf3zXfhb55WCXz0RozpQEQABaBFbqc/OyKjh1IO4qGW8RiN8j1pQ4kbb58QZOOQpmbYpzAvPes=
+X-Received: by 2002:a05:6402:1744:: with SMTP id v4mr48796842edx.366.1635926244113;
+ Wed, 03 Nov 2021 00:57:24 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:94.0) Gecko/20100101
- Thunderbird/94.0
-Subject: Re: [PATCH] net/mlx5:using swap() instead of tmp variable
-Content-Language: en-US
-To:     Yihao Han <hanyihao@vivo.com>, Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>, Paul Blakey <paulb@nvidia.com>,
-        Oz Shlomo <ozsh@nvidia.com>,
-        Ariel Levkovich <lariel@nvidia.com>,
-        Vlad Buslov <vladbu@nvidia.com>, Chris Mi <cmi@nvidia.com>,
-        <netdev@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <kernel@vivo.com>
-References: <20211103062111.3286-1-hanyihao@vivo.com>
-From:   Roi Dayan <roid@nvidia.com>
-In-Reply-To: <20211103062111.3286-1-hanyihao@vivo.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 86dbf45c-e21c-4d23-344f-08d99e9730ca
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2339:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB23390AC7D9797FFEEE3AA159B88C9@BL0PR12MB2339.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:281;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3fKLC4LaNlVR95/yM/eS1NqpmvrF4cRwKMIdUW5POIKW1U85N/lOTWp9ynw6k0ttB9ymMc2wX1PJ62ECeizKSlVGigaWzqyniAMcS4/bLrXnhZp4qWWvJY/RDrqKROZWyBU8nP1TwkZO9XQJ3JELW7jIIZFy2lVRQ+WCZBANudXQFqF6E9FYEdilqZe+m8D4ikerLNVKLWfCeYDQUPPsFnX66YX163X2QeM+YO5kDSG/2p+edFNsQwg7DostnUHhjCoCPJU5DgloIxRRQpmjXILeJhIgf9iQhBT/EYFMsup3T7+XPeDJo88Gcpa8Vr0fhjQz1izgew+v85GY4zQztxGXxzHtg3Jg1iWIroVT+mZy1V2ogqJIJn7WgYP+5z0IPc4LXQh1LLFO4WVNxSLzAyWeUCAfQS38jPjce+DIVPZRyFqlVw+Z58vuT7P5ISjJwN5zAmcrfREn2lfWeTZ5x3w0sVcOfBiiGaIdmYrwg37fc59uk5C6DfWc3KA+sdTzjMDRgXT7txsOYfAC7mUa6gOObxCbwggNAHAZrj49FAFkEwwxHbarDToqr5wPvCtTroJjvnSTrYKSeeU30OLpIR5Bc0Mhq+Rn06duQVGlZMArzP7NOWPnK3c6SRbwQ/LnvWXtBvqRxCWK3OwAwBi5u7GJ2x9R6/bWbOiJW6dU59byoUK056XzYrKXN8M1Inn6jldKuNzNzxKlTT6Dl5Dv+QWrSgXOqFbHWIoyYSLawIdf6lNsr+A7223Ct+/NrhAg
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(36840700001)(46966006)(8676002)(47076005)(426003)(5660300002)(316002)(508600001)(921005)(36756003)(36906005)(31696002)(31686004)(4326008)(2616005)(6666004)(16576012)(86362001)(83380400001)(7636003)(26005)(8936002)(53546011)(186003)(82310400003)(16526019)(110136005)(2906002)(356005)(70586007)(36860700001)(336012)(70206006)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Nov 2021 06:57:24.4244
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 86dbf45c-e21c-4d23-344f-08d99e9730ca
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT019.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2339
+References: <163413628188.6408.17033105928649076434.stgit@bazille.1015granger.net>
+ <20211013155926.GC6260@fieldses.org> <53AEBF77-7470-4B52-B69E-3CC515C3F393@oracle.com>
+ <CALF+zOmXc+bidhaOMtUE_SOh+brGPuoScPU3E6KYc6tV52EMXg@mail.gmail.com> <8B619507-4BB3-48A8-9124-8501302CAA59@oracle.com>
+In-Reply-To: <8B619507-4BB3-48A8-9124-8501302CAA59@oracle.com>
+From:   David Wysochanski <dwysocha@redhat.com>
+Date:   Wed, 3 Nov 2021 03:56:47 -0400
+Message-ID: <CALF+zOkoQwyr5UFXjQnb-DSRXQeQQs3S4hVfs4ZS9PoSzTyXUA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/6] Deprecate dprintk in svcrdma
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Bruce Fields <bfields@fieldses.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, Oct 13, 2021 at 5:03 PM Chuck Lever III <chuck.lever@oracle.com> wrote:
+>
+>
+>
+> > On Oct 13, 2021, at 2:35 PM, David Wysochanski <dwysocha@redhat.com> wrote:
+> >
+> > On Wed, Oct 13, 2021 at 12:50 PM Chuck Lever III <chuck.lever@oracle.com> wrote:
+> >>
+> >>
+> >>
+> >>> On Oct 13, 2021, at 11:59 AM, J. Bruce Fields <bfields@fieldses.org> wrote:
+> >>>
+> >>> On Wed, Oct 13, 2021 at 10:46:49AM -0400, Chuck Lever wrote:
+> >>>> This patch series moves forward with the removal of dprintk in
+> >>>> SUNRPC in favor of tracepoints. This is the last step for the
+> >>>> svcrdma component.
+> >>>
+> >>> Makes sense to me.
+> >>>
+> >>> I would like some (very short) documentation, somewhere.  Partly just
+> >>> for my sake!  I'm not sure exactly what to recommend to bug reporters.
+> >>>
+> >>> I guess
+> >>>
+> >>>      trace-cmd record -e 'sunrpc:*'
+> >>>      trace-cmd report
+> >>>
+> >>> would be a rough substitute for "rpcdebug -m rpc -s all"?
+> >>
+> >> It would, but tracepoints can be enabled one event
+> >> at a time. If you're looking for a direct replacement
+> >> for a specific rpcdebug invocation, it might be better
+> >> to examine the current sunrpc debug facilities and
+> >> provide specific command lines to mimic those.
+> >>
+> >> "rpcdebug -vh" gives us:
+> >>
+> >> rpc        xprt call debug nfs auth bind sched trans svcsock svcdsp misc cache all
+> >> nfs        vfs dircache lookupcache pagecache proc xdr file root callback client mount fscache pnfs pnfs_ld state all
+> >> nfsd       sock fh export svc proc fileop auth repcache xdr lockd all
+> >> nlm        svc client clntlock svclock monitor clntsubs svcsubs hostcache xdr all
+> >>
+> >>
+> >> If tracepoints are named carefully, we can provide
+> >> specific command lines to enable them as groups. So,
+> >> for instance, I was thinking rpcdebug might display:
+> >>
+> >>        trace-cmd list | grep svcrdma
+> >>
+> >> to list tracepoints related to server side RDMA, or:
+> >>
+> >>        trace-cmd list | grep svcsock
+> >>
+> >> to show tracepoints related to server side sockets.
+> >> Then:
+> >>
+> >>        trace-cmd record -e sunrpc:svcsock\*
+> >>
+> >> enables just the socket-related trace events, which
+> >> coincidentally happens to line up with:
+> >>
+> >>        rpcdebug -m rpc -s svcsock
+> >>
+> >>
+> >>> Do we have a couple examples of issues that could be diagnosed with
+> >>> tracepoints?
+> >>
+> >> Anything you can do with dprintk you can do with trace
+> >> points. Plus because tracepoints are lower overhead, they
+> >> can be enabled and used in production environments,
+> >> unlike dprintk.
+> >>
+> >> Also, tracepoints can trigger specific user space actions
+> >> when they fire. You could for example set up a tracepoint
+> >> in the RPC client that fires when a retransmit timeout
+> >> occurs, and it could trigger a script to start tcpdump.
+> >>
+> >>
+> >>> In the past I don't feel like I've ended up using dprintks
+> >>> all that much; somehow they're not usually where I need them.  But maybe
+> >>> that's just me.  And maybe as we put more thought into where tracepoints
+> >>> should be, they'll get more useful.
+> >>
+> >>> Documentation/filesystems/nfs/, or the linux-nfs wiki, could be easy
+> >>> places to put it.  Though *something* in the man pages would be nice.
+> >>> At a minimum, a warning in rpcdebug(8) that we're gradually phasing out
+> >>> dprintks.
+> >>
+> >> As I understood the conversation last week, SteveD and
+> >> DaveW volunteered to be responsible for changes to
+> >> rpcdebug?
+> >>
+> >
+> > Well I don't remember it exactly like that, but it's probably close.
+> >
+> > I made a suggestion for the last kernel patch that deprecates any
+> > rpcdebug facility, to leave one dfprintk in, stating there is no
+> > information in the kernel anymore for this facility, so not to expect
+> > this rpcdebug flag to produce any meaningful debug output, and
+> > possibly redirect to ftrace facilities.  I brought that idea up
+> > because of my fscache patches which totally removed the last dfprintk
+> > in NFS fscache, and I wasn't sure what the deprecation procedure
+> > was.  As I recall you didn't like that idea as it was never done before
+> > with other rpcdebug flag deprecations, and it was shot down.
+> >
+> > I suppose we could put the same type of userspace patch to rpcdebug
+> > that looks for kernel versions and prints a message if someone tries
+> > to use a deprecated flag?  Would that be better?
+>
+> I don't recall discussing leaving one dprintk in place for
+> each facility. My impression is that changing rpcdebug in
+> this manner is what was decided during that conversation.
+>
+
+Just to follow up on this since I think this was an action item more
+appropriate for me.
+FYI, I have spoken to a couple Red Hat support engineers and asked
+them to work on:
+1. man page update for rpcdebug
+2. rpcdebug warning if a flag is enabled on a kernel that does not
+produce any output
+
+They are making good progress and I hope they will post something to
+the list within week or two.
 
 
-On 2021-11-03 8:21 AM, Yihao Han wrote:
-> swap() was used instead of the tmp variable to swap values
-> 
-> Signed-off-by: Yihao Han <hanyihao@vivo.com>
-> ---
->   drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> index 740cd6f088b8..d4b4f32603f2 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
-> @@ -907,12 +907,9 @@ mlx5_tc_ct_shared_counter_get(struct mlx5_tc_ct_priv *ct_priv,
->   	struct mlx5_ct_tuple rev_tuple = entry->tuple;
->   	struct mlx5_ct_counter *shared_counter;
->   	struct mlx5_ct_entry *rev_entry;
-> -	__be16 tmp_port;
->   
->   	/* get the reversed tuple */
-> -	tmp_port = rev_tuple.port.src;
-> -	rev_tuple.port.src = rev_tuple.port.dst;
-> -	rev_tuple.port.dst = tmp_port;
-> +	swap(rev_tuple.port.src, rev_tuple.port.dst);
->   
->   	if (rev_tuple.addr_type == FLOW_DISSECTOR_KEY_IPV4_ADDRS) {
->   		__be32 tmp_addr = rev_tuple.ip.src_v4;
-> 
 
+>
+> >> So far we haven't had much documentation for dprintk. That
+> >> means we are starting more or less from scratch for
+> >> explaining observability in the NFS stacks. Free rein, and
+> >> all that.
+> >>
+> >> --
+> >> Chuck Lever
+>
+> --
+> Chuck Lever
+>
+>
+>
 
-just small comment on the title.
-missing a space in the commit title after the colon.
-I also think the prefix should be "net/mlx5e: CT, ..."
-
-Reviewed-by: Roi Dayan <roid@nvidia.com>
