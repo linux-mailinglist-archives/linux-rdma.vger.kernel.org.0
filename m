@@ -2,127 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46CE442F53
-	for <lists+linux-rdma@lfdr.de>; Tue,  2 Nov 2021 14:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55715443BA9
+	for <lists+linux-rdma@lfdr.de>; Wed,  3 Nov 2021 04:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhKBNvW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 2 Nov 2021 09:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhKBNvV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Nov 2021 09:51:21 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D1DC061714;
-        Tue,  2 Nov 2021 06:48:46 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bj20so8380332qkb.11;
-        Tue, 02 Nov 2021 06:48:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Wu+GXwP0q8/l280sPfS5y2dnw2tDTjbgcZxPcts0nWA=;
-        b=YcR3IuaAtTNd5UTAQgUBmbub0s9rZKVwSQhTU6bWJJuuGdsbgVWzNuC9hWKqyxfIx3
-         99mns3eEXlEacdvGFsKoPPJhXuggFk/5dE5jXNf97+xm8eN7len5sSHHLvp3lWncIqzh
-         nqpTbP+Mq8ng1LNy3wXdOjEpj+jjzNB2OP/wuFZPk0/GaFXjhxctxfJRVTWOEq2Zc+SW
-         DNyX54rGB6MewKL70f5/ukEdoSGntFVl195Te6GLkxv8TwgbyAW3u4004JSdT9R69nCM
-         R+qKublTKycWSta+kv7uhK7PGTiFSv2r4mma2kG4TFzwKpMJAYoo/7RA//x4Akoe3VkM
-         BmPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Wu+GXwP0q8/l280sPfS5y2dnw2tDTjbgcZxPcts0nWA=;
-        b=DQfoPoBAdpWQMso9xSRciPzgV4/MGb3Q5u+TnYEsDVADmO5xkmlNKOELVnXPNfb4wx
-         XA50A8sjv5V8arZ2RVkdQX3ZU+jGcMyF9XnKjWaK6lNl7kvruTKphf55bi3SqcB+InF+
-         gPADjVLdfSfChfMDAe/rHor3evr9+cuSKV6pwwKaIICP6oiDcZIkH7xR5qg/xKQEJrqc
-         UaCQfq7yoydGj11Ihf1sUbCDgZD8J8wX7Nv9/Ntzm2O7GTage5F5yhz8qXMaoqvfCnYl
-         SLmtcb+oQStw/tGJTOjbv2w/Ov5InGrgZCsPLoOMu6tGKOnzrjQAloCZ1lwNfAVV82Mg
-         eniQ==
-X-Gm-Message-State: AOAM530KDw9E+aJKX8vnOWR0jOxVEie91h1xnFX7JKVYmGUkLkNS06Tq
-        TkFnco6aLwNhVa5Qn/MQ1HWkIBVCwdjG6cbsbOI=
-X-Google-Smtp-Source: ABdhPJzdAcu/rqsJAHYEDYHQWB2i5R24SjAWs9ovT6Ku6QrCQM5eY4Gm09bilSgO5SNhaLL7ebVPVXMe4LoGH0IsBkk=
-X-Received: by 2002:a05:620a:40d6:: with SMTP id g22mr29784297qko.104.1635860925969;
- Tue, 02 Nov 2021 06:48:45 -0700 (PDT)
+        id S229844AbhKCDIp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 2 Nov 2021 23:08:45 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:60561 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229506AbhKCDIo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 2 Nov 2021 23:08:44 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UupXNxJ_1635908766;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UupXNxJ_1635908766)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 03 Nov 2021 11:06:07 +0800
+Date:   Wed, 3 Nov 2021 11:06:06 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
+        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
+        dust.li@linux.alibaba.com
+Subject: Re: [PATCH net 1/4] Revert "net/smc: don't wait for send buffer
+ space when data was already sent"
+Message-ID: <YYH8npT0+ww57Gg1@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
+ <20211027085208.16048-2-tonylu@linux.alibaba.com>
+ <9bbd05ac-5fa5-7d7a-fe69-e7e072ccd1ab@linux.ibm.com>
+ <20211027080813.238b82ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <06ae0731-0b9b-a70d-6479-de6fe691e25d@linux.ibm.com>
+ <20211027084710.1f4a4ff1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <c6396899-cf99-e695-fc90-3e21e95245ed@linux.ibm.com>
+ <20211028073827.421a68d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YX+RaKfBVzFokQON@TonyMac-Alibaba>
+ <ca2a567b-915e-c4e1-96cf-2c03ff74aad5@linux.ibm.com>
 MIME-Version: 1.0
-References: <20211101060419.4682-1-laoar.shao@gmail.com> <YX/0h7j/nDwoBA+J@alley>
- <CALOAHbA61RyGVzG8SVcNG=0rdqnUCt4AxCKmtuxRnbS_SH=+MQ@mail.gmail.com>
- <YYAPhE9uX7OYTlpv@alley> <CALOAHbAx55AUo3bm8ZepZSZnw7A08cvKPdPyNTf=E_tPqmw5hw@mail.gmail.com>
- <20211101211845.20ff5b2e@gandalf.local.home> <CALOAHbCgaJ83qZVj6qt8tgJBd4ojuLfgSp2Ce7CgzQYshM-amQ@mail.gmail.com>
- <YYDvHv76tJtJht8b@alley>
-In-Reply-To: <YYDvHv76tJtJht8b@alley>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 2 Nov 2021 21:48:10 +0800
-Message-ID: <CALOAHbBA4xjoebNcO2422wa34bgui_=PriPNfJdx2_CstoKQqg@mail.gmail.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ca2a567b-915e-c4e1-96cf-2c03ff74aad5@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Nov 2, 2021 at 3:56 PM Petr Mladek <pmladek@suse.com> wrote:
->
-> On Tue 2021-11-02 09:26:35, Yafang Shao wrote:
-> > On Tue, Nov 2, 2021 at 9:18 AM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > On Tue, 2 Nov 2021 09:09:50 +0800
-> > > Yafang Shao <laoar.shao@gmail.com> wrote:
-> > > >      Now we only care about kthread, so we can put the pointer into a
-> > > > kthread specific struct.
-> > > >      For example in the struct kthread, or in kthread->data (which may
-> > > > conflict with workqueue).
-> > >
-> > > No, add a new field to the structure. "full_name" or something like that.
-> > > I'm guessing it should be NULL if the name fits in TASK_COMM_LEN and
-> > > allocated if the name had to be truncated.
-> > >
-> > > Do not overload data with this. That will just make things confusing.
-> > > There's not that many kthreads, where an addition of an 8 byte pointer is
-> > > going to cause issues.
-> >
-> > Sure, I will add a new field named "full_name", which only be
-> > allocated if the kthread's comm is truncated.
->
-> The plan looks good to me.
->
-> One more thing. It should obsolete the workqueue-specific solution.
-> It would be great to clean up the workqueue code as the next step.
->
+On Tue, Nov 02, 2021 at 10:17:15AM +0100, Karsten Graul wrote:
+> On 01/11/2021 08:04, Tony Lu wrote:
+> > On Thu, Oct 28, 2021 at 07:38:27AM -0700, Jakub Kicinski wrote:
+> >> On Thu, 28 Oct 2021 13:57:55 +0200 Karsten Graul wrote:
+> >>> So how to deal with all of this? Is it an accepted programming error
+> >>> when a user space program gets itself into this kind of situation?
+> >>> Since this problem depends on internal send/recv buffer sizes such a
+> >>> program might work on one system but not on other systems.
+> >>
+> >> It's a gray area so unless someone else has a strong opinion we can
+> >> leave it as is.
+> > 
+> > Things might be different. IMHO, the key point of this problem is to
+> > implement the "standard" POSIX socket API, or TCP-socket compatible API.
+> > 
+> >>> At the end the question might be if either such kind of a 'deadlock'
+> >>> is acceptable, or if it is okay to have send() return lesser bytes
+> >>> than requested.
+> >>
+> >> Yeah.. the thing is we have better APIs for applications to ask not to
+> >> block than we do for applications to block. If someone really wants to
+> >> wait for all data to come out for performance reasons they will
+> >> struggle to get that behavior. 
+> > 
+> > IMO, it is better to do something to unify this behavior. Some
+> > applications like netperf would be broken, and the people who want to use
+> > SMC to run basic benchmark, would be confused about this, and its
+> > compatibility with TCP. Maybe we could:
+> > 1) correct the behavior of netperf to check the rc as we discussed.
+> > 2) "copy" the behavior of TCP, and try to compatiable with TCP, though
+> > it is a gray area.
+> 
+> I have a strong opinion here, so when the question is if the user either
+> encounters a deadlock or if send() returns lesser bytes than requested,
+> I prefer the latter behavior.
+> The second case is much easier to debug for users, they can do something
+> to handle the problem (loop around send()), and this case can even be detected
+> using strace. But the deadlock case is nearly not debuggable by users and there
+> is nothing to prevent it when the workload pattern runs into this situation
+> (except to not use blocking sends).
 
-Agreed. The worker comm can be replaced by the new kthread full_name.
-I will do it in the next step.
+I agree with you. I am curious about this deadlock scene. If it was
+convenient, could you provide a reproducible test case? We are also
+setting up a SMC CI/CD system to find the compatible and performance
+fallback problems. Maybe we could do something to make it better.
 
--- 
-Thanks
-Yafang
+Cheers,
+Tony Lu
