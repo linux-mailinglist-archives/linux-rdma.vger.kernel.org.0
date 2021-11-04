@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93FB4455E4
-	for <lists+linux-rdma@lfdr.de>; Thu,  4 Nov 2021 15:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62AB445641
+	for <lists+linux-rdma@lfdr.de>; Thu,  4 Nov 2021 16:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230344AbhKDPC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 4 Nov 2021 11:02:27 -0400
-Received: from mail-mw2nam10on2106.outbound.protection.outlook.com ([40.107.94.106]:52192
+        id S231359AbhKDP0X (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 4 Nov 2021 11:26:23 -0400
+Received: from mail-mw2nam10on2091.outbound.protection.outlook.com ([40.107.94.91]:51841
         "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229920AbhKDPC0 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 4 Nov 2021 11:02:26 -0400
+        id S231265AbhKDP0W (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 4 Nov 2021 11:26:22 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fG0NU7/HrdNIiQ0qXY3RUTNjtF8Pu1YYi4L/EnoCddE856pzeUUnSt2wrAxaQU45ASCLu/U2oHk7hIZ6Wt+gbdBiRiR2TwygdyFioFupgwjAmKaixyo9udJn9g7IVh2fOEq5eJwYRM1ZPw4VLjFlvDWV3I6ps/Ye+yqGeVI9MakJrb/h2n339O5n3S9Do2uZMU/GhqH8KMSHqXdGkXii3gtiXacMbODaEExKQ+iCD+Qb4AmkFgbXnQAgm5WSWlk4f4cDW/7Bf2qqhMtwjfxs6PhJiuwDxrNVQ+0fbZrxh4pHZWQg7LpQkZBQfol0EVkuNAdi5wF80XIJJ22mV39bKw==
+ b=LGbALl/zSwlSBSn6RhYV8GiU6aoDchdBbBoqkDQpPQxUzfRDa1Z5daP6rY5LI77N5Mp7wrBYdk1KvOQeT/GxIi0vUaHB7cGLIIxqYxiKiqeDDSOn/PSUWuWcnsA/6dJ/UoJvdCLNzDPbyQJ2mpSBV7aIErdiekxO39rMhkrYiA8vGnbaxXotdIcvFxynOpRsYSCiONnlkwDh31zGwW8AhLCRWshkEjAwav90UfGOIe1DAYUXdiglRHAyNslKPf7g/49/0s7VXHWnsIOdfbJlp9iWzg1J9eK9cJDeUXSyZ1asa7PIGhCGi8ecEN3WKjZNYp1OUZ26JIst6MyMuvd2UA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jVQMuH1owXbYATgPz8UzG5fz4iiKm9q3b0EhLY6R5pA=;
- b=BSKA8BldMQtd3kO4EaOaWKPbxn4FMB5A9sri3+G3MjfUAGeRDhn4nfT2TdURT+W55Rlwh+0zU+hl+rF/X/sxKanit3kV8OO9CRyVHtMiL+mSjbexEe3JsbVi5Cbi6HB/fqgR373n22QYwbX4458gexhGkF19OR8RqMlNlm8z9GM/UmfZ3cEV+5e2PJUrY4V4a73jtL45B1i3yUG9mgKuPyqVPKlpgvEKNq077JdtGKuU+n7rlaWkIK/hLWksnD3I/SPmgZUKSpeMxzQzZwqyWK2nd/dHe2uyAqNXY31zhod1mgqMyLjJUwsoipFB4a39eEslOYYDykCsNfkDQ/L8dQ==
+ bh=VTt1VGmZgD5VmX97rvwr/ilt4UtzRMDUVJp6mTFVA5k=;
+ b=Lf5OYAq1lySi1BinSFiryIx/5q5vD6Yv8vYNP20GqKVcbGRDGKWpWuew+QJdYFLlK11gt7ALV47jArV0tSOdxmARR4RdocUcy0zcADstRkisugDA87qCjhosDJFG9VdStKScySPPXpWZhAyuFjwxQGhzWkuzCyILK+2lVEPHbOBa19Jb+aNAbx89h58Pa8keeSdLeEuNadAdPtoNTFXf2w447tZpmyTf4kDGM3krdjPsutHxb5m4zTL1b+E6pz5v7yOjFN/U8wcMzRUIp79c+k2c1d1g8KdvfIgQjPuRtjzAcgNMeYk/7KrZX/o3oPvS9QPZ15iNYHWWefTZUVm+QA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
  header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
@@ -26,206 +26,104 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jVQMuH1owXbYATgPz8UzG5fz4iiKm9q3b0EhLY6R5pA=;
- b=QTggfsjWkLnEYsTwmKeVmWrQDj8gUpR08aVrtGp9G/gu72lkYR8RJeiluD6VYYcXY/wUNwBX8E7eI0Sqiog+m/SUqoJAkORhmoaF9ItuPOiL6zF/Do8kroYn9EAu8bmNAFUpHZ1s/w2aWknwHCxAqZ3svAHD7u8r5+uA1yLwEy3nR7ssaji3NQDkd0tXkuhSDjj9HS0TICR7l5CfeOJEOuryYFxQIhZhxtxEb9dP+pciyq1gmRfPYf7WGDGNRGh8BCInevyq5lzCB93cn9KqXZkNy4ThPkO5I6/rzGRIXpoQsfUNkRhztqlPFkWYpUc0Kd72RRuuo3t4oatTmSdTEA==
+ bh=VTt1VGmZgD5VmX97rvwr/ilt4UtzRMDUVJp6mTFVA5k=;
+ b=Nv9/U0qSiGaW3/rcUs5Dau5nMxWor90pOadtoilX+sJA8vNYvRNiMI/yLwcAK36L0V72iJqntkrmC+/u/hq6cNU12lFrXfrubW2Ji/CRPj2FwvPI48nKOMhsjF1Zm15OqBHwVa5mXJGjSz37DyCcu91INO7wC6dax2WxxrHzMzGCOsHyHrsZpZspELv+9AtvVzKK+Rj3Rb2aKlQQQH45QPraLAJwYXC1G0a2slCcqwKRN4gLFKbGUMKGU5x6fpSZneTS/ooXDgew83itoEVavoU4AhpfB/Cvo1XLLqEIKzT9QYq7Tus/cF7SQBP7J3VoWFSGwvg0XTXu5i3/ESCuRA==
 Authentication-Results: vger.kernel.org; dkim=none (message not signed)
  header.d=none;vger.kernel.org; dmarc=none action=none
  header.from=cornelisnetworks.com;
 Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
- CH2PR01MB6103.prod.exchangelabs.com (2603:10b6:610:26::17) with Microsoft
+ CH0PR01MB7139.prod.exchangelabs.com (2603:10b6:610:f6::14) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4649.17; Thu, 4 Nov 2021 14:59:47 +0000
+ 15.20.4669.11; Thu, 4 Nov 2021 15:23:40 +0000
 Received: from CH0PR01MB7153.prod.exchangelabs.com
  ([fe80::bdea:4e22:1b89:24e0]) by CH0PR01MB7153.prod.exchangelabs.com
  ([fe80::bdea:4e22:1b89:24e0%7]) with mapi id 15.20.4649.019; Thu, 4 Nov 2021
- 14:59:47 +0000
+ 15:23:40 +0000
 From:   mike.marciniszyn@cornelisnetworks.com
 To:     stable@vger.kernel.org
 Cc:     linux-rdma@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Subject: [PATCH 4.4-stable 2/2] IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields
-Date:   Thu,  4 Nov 2021 10:59:37 -0400
-Message-Id: <1636037977-103575-3-git-send-email-mike.marciniszyn@cornelisnetworks.com>
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: [PATCH 4.9-stable v2 0/2] Port upstream patch v2 to 4.9.x
+Date:   Thu,  4 Nov 2021 11:23:34 -0400
+Message-Id: <1636039416-138753-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1636037977-103575-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
-References: <1636037977-103575-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0022.namprd13.prod.outlook.com
- (2603:10b6:208:256::27) To CH0PR01MB7153.prod.exchangelabs.com
- (2603:10b6:610:ea::7)
+X-ClientProxiedBy: BL0PR01CA0011.prod.exchangelabs.com (2603:10b6:208:71::24)
+ To CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7)
 MIME-Version: 1.0
-Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by BL1PR13CA0022.namprd13.prod.outlook.com (2603:10b6:208:256::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.5 via Frontend Transport; Thu, 4 Nov 2021 14:59:46 +0000
+Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by BL0PR01CA0011.prod.exchangelabs.com (2603:10b6:208:71::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10 via Frontend Transport; Thu, 4 Nov 2021 15:23:39 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7e4ab520-adc8-4a5f-3857-08d99fa3be3a
-X-MS-TrafficTypeDiagnostic: CH2PR01MB6103:
-X-Microsoft-Antispam-PRVS: <CH2PR01MB61037247D0005DADBDABD1A0F28D9@CH2PR01MB6103.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:459;
+X-MS-Office365-Filtering-Correlation-Id: d35d7fab-8514-4fb6-a86d-08d99fa7145f
+X-MS-TrafficTypeDiagnostic: CH0PR01MB7139:
+X-Microsoft-Antispam-PRVS: <CH0PR01MB71394E4534D87E17BA72BDA5F28D9@CH0PR01MB7139.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:130;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: r7z8nASS394REEVe0R3Dzp0kunpg6k8tRGJ3gp5ZQECfRYR1qe7ziHF2hlTRWioXgMuDxLVzn0bhTBxXz3PXpqj3ot3fr0VqjYpI3xxYe63Z27gSmyV32tPuYpzV6B2obs7gAqMVSa5kO63LkUMlmNBOFXRDX7us/qdyiWfh+hdrWXz242lzkVYLOY1z8NAVuoh5uKma8JBzh4qZNwOaw6+lOBegq7pTtuezJhXdTBj0YnnzjxK8EuhN3I6tnn3CdQjvFX4UnKpzpu2nIFJkgW+0kifvpmM1cbVanBNx16pFSI60o0X7bUfk2XR0B/2RenL/ptxRkaj1akQTzOJohcYvIN8c7gPIlIiRSz/yoWcW+FIoIRXfj2BfVjw4bDpKWIHHTicBkHMXbBIxUTRMljmLB2SETrExow8lt4reeQAmcoYMCi5VIGaB4evOGeqdP8DcV5SvAIkocsS2FbfcYTD178Cz7A0X4miTvVAOQB+eQt9XAiB24+WXgNo0/7n1zEQRNaIWTw3Dlrc4Da5eaylX8+voecHhiqX+WZucu8iDC/RtI3GLsoyU0ofkO0s5ICSD741T9GuxFYr4gWSmww4BjcDND5iy+DEUuv4shuRZzS2nXLEvv2bvLY8UJunlyc8j/ntrWNbqwf2+7JPjgTb6VMvh+Bob3fAho27U/Vz4p9Ua3+JH/z9Dw+ZBGsYBqpqIzuaxWr6/YPcqOXZ//APBWzkVvPu1X+5NH16Y4e2EAKejXcYmp/2i9IsLFa32y34Zd9OY+Ep/aw9xI1OfNiZK46310/So9JamfSEHV3A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(376002)(39840400004)(136003)(346002)(966005)(52116002)(36756003)(2906002)(54906003)(186003)(2616005)(26005)(83380400001)(38100700002)(7696005)(8936002)(6666004)(38350700002)(316002)(508600001)(8676002)(66556008)(86362001)(66946007)(956004)(9686003)(5660300002)(4326008)(66476007)(6916009)(6486002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: fhoqlg5Z6bRb4evMvdVSBlKHRON7zLBMaaBTXiAvWKTYNXf3beRVqB+oNARkSHKo2hj5/DSEFwB3+L9AWvjQWnG371DeahTtU/78Wx25ZWyvy362fi5ZFFt29X7ik+zaIfSmc2s+isHSqi/1zlkoXHNW+5zzXFCR8YNIkjOZr1t/ShngSY58szH/428ZQHsHw1qpQ9xWRkIkDf/7TnmrsNQD/KZ8FzJiiS0iNqUceA0n+EkTB8us106O3JaqtFWV+bm3oSHIjeeIxgmK5Cd7oXbzGn9CDHidqJP+OLMptAkIUTQBABvvSBKzXBEReVGuOH4ciLlrC7XT1DNv5/gEELsJskQmUrSXtqvpI1NiB1Xw/b5/960qZclqZ9Zz8PlskEhqp8YQufwhJG6NKivYxy2vZsYsMYYDs2+S4uzyH5Hims+yELMtgUA8wqOCqPShT9qhjUrvFjWfOEP5ZzSAvTyaJHiDvlFRxCBL/Zk9EKMHc3oOUalivo4RoCD4LGrOvdlIYqdCSB7tBZ4yyeVcBb0HzcvrdaWm7d2Vh0dQrJOR650jZRpRkF4wgFA6xbmMEfh9PNTYVEPe9/nidHcjn7nOd8wYpMZM6IOoust6w+rbKSCsciZJ85opVZdF0GoUQg0oHe1kYqW08GZgmmdMKVPZSylwD3EAjOqWJqHOV4WCZcDpEhFlditDwC/LdvVVQNTj6YFP5bR4p1BW2YGGXQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(366004)(346002)(39840400004)(376002)(86362001)(450100002)(83380400001)(5660300002)(6916009)(38100700002)(9686003)(38350700002)(186003)(6666004)(508600001)(4326008)(8676002)(52116002)(7696005)(107886003)(26005)(6486002)(8936002)(36756003)(4744005)(316002)(66476007)(956004)(66946007)(2616005)(66556008)(2906002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?b6NsY9xEWx8KdepPJWLjD7JzNtoJHbmaHyJGmTOXLK0Xb7dZa5gUh4iOOUnI?=
- =?us-ascii?Q?12rdGvFUqiCuUFTvQU92FQNw35yZybi5xxUdFq8bJJzSYAErBzMXuRF2RCVN?=
- =?us-ascii?Q?CKGyuV6CuZ8safj5J84evcWtRT26AKDrJR7tBZfRzM7nyk+cwYPIyB5Jje2e?=
- =?us-ascii?Q?Cby4ZNP3TAtNspBfWStxInC/AtaK1dMtl6TJ3sxhx95HmwGx+mn3Wk9kJXbG?=
- =?us-ascii?Q?fwvWpX8VPQ9VxW6jeVo/A7KFMDzDOrmFQDyeFwrxk5M6NZar6sDMP1LhSFox?=
- =?us-ascii?Q?MHDyNDtxcdK3QxrebCphkrit4C+C6sSlZHyjvwo+BJn5LTncD1l0oeTVBVQM?=
- =?us-ascii?Q?peQ9Qwf1fhP76EGJS3GLmvFnHH+6tF6mblNBNwkV481sPa6aFJ5D9Wus2Aus?=
- =?us-ascii?Q?pMpoBFDmvbVjevAjeICwksLaaDNc1+wUOFRl1jSwC0bDx0MzPSCYF7ZvCVkm?=
- =?us-ascii?Q?VqnXGsTUXaSyXESi+XLfsVW5Rla879+GO+2U60LhC+dwRyoSNKGg9V5QTWxh?=
- =?us-ascii?Q?UxfYuyFioyHOvx1mYfx/YZg+A5e0nPQpovOTfRS1AkmzNquqdazg3yxVGqI1?=
- =?us-ascii?Q?nzC3YUYX/6GNSU5V+GLPD7yxWphXhweuhOrECEsiCfxNIB5IO9kRkGZduKp3?=
- =?us-ascii?Q?Xw2qUt474bpMyzfw6tRN2XU8WDgLSXNN5uGxHzRYT50DCCbdjN7lMObSugW7?=
- =?us-ascii?Q?WOwbpKgq8SultYi8+Gsy/udt2Jnu5NZz9bWA8dxhhPku8oSI7Rh9K7+836rq?=
- =?us-ascii?Q?Wr+pwF7x7t5LQD4zs0HFcgb/5RsJzeEXvcUHaHY4b13fWWno4rUjHtjC0PBV?=
- =?us-ascii?Q?VlWtJ/dyQIK8hO9kssMAp7dD+eiGCBNvwbjfgqh8c55LrllA9ZvXR48YWi1o?=
- =?us-ascii?Q?VjQWL51k/OF6RAImmEc1PBRkHcnLJIK4NBdDaMGTYtchc0Y1GgPZlGvHaVG4?=
- =?us-ascii?Q?mOhY7vcibqglAV567khP96SKthMYBdIxnizYV4Qa26nVGn+HF0cO6HhWVgrk?=
- =?us-ascii?Q?94x8WDs+OB0XC+jKXr42Fl3+2tWfrYdZUwSzC6HcIkB/ZKBaO8zm8msJZBDi?=
- =?us-ascii?Q?egu8kBA5G9mF+cwnWdz+YdOE88+QwhYGHncDe5zm8LphsxFZhRtjZmiIQBTs?=
- =?us-ascii?Q?EJPRzDbg1yBiqgKhkcylZ0GZQeS26pRrgVepGe50LL2kUCl/5lgBvMNegGLi?=
- =?us-ascii?Q?SmK6G6pRMojWhM0g3HjgwlcNGJxH0HGFmyGj3vZSHt/P/+0SU8cJWVe8B080?=
- =?us-ascii?Q?ygzRKDE1QKyPtZluAkFKo/cWzxWQPJ+yjNxyOlV7mjTeLkA2Buf4dbViF/iW?=
- =?us-ascii?Q?IbpBqIwusdJHMHc8lzh6N7zZQs8rPvmvG+kw9AIFeYAjz2D96OKP1wrKt73W?=
- =?us-ascii?Q?Z3G6ydXeMHah/MqyuuYC6t43C9bbjI+OgudS7SFhxIVC4o9SjxkCYUd05c2V?=
- =?us-ascii?Q?5JJ0nF+M4ohGC80k0TPY3a2IjIVZ4XOehKwJScMr+7RTBrBkRkJZhaC3T68p?=
- =?us-ascii?Q?UOiGtKoUT81qyxV+kgangeK9cH6YQN+5oisge5O7osWbYgfK3X/1vDhsb1vx?=
- =?us-ascii?Q?pRWGggEW3WfsiUDlmDMP3mxOtkvRP+XmEg5ZBFTH9r72IbH32l3L6mjzSHpZ?=
- =?us-ascii?Q?dzcsin6jKdypuK7AXWpfZ5hwbxZ8fpNfAgj35QPXTN+7mlA1XsR6JdHBEBSd?=
- =?us-ascii?Q?mN2n7YNoXqFzcZD1wzM1E9KLfewUfpoJEshq3+Cg8pEdIMJXMtGIlQ8LEijW?=
- =?us-ascii?Q?r7vHvMBdzQ=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Rvq6QqWln1VGKim/0dalv1In+w0akzwtO7jZW3DH94CLsrVSsBv7dLufag9S?=
+ =?us-ascii?Q?UFK/8ehJ2rRwK8wGEuwruk/asLAvklytenMTLaHnFfkTHeEdjXuplxnQYMrO?=
+ =?us-ascii?Q?P/oMXhp7DVo2liC12jwXQQ6A86d5OnUZMZv4OOKrnfamj/7AEThzCyDBfsEv?=
+ =?us-ascii?Q?7MMGW2bJq7KkkFtZbVtr7GiifH4XyrFlFPNto8t9C60Dr8tntIc/WRHyYAuP?=
+ =?us-ascii?Q?CNPhsuzgxDGPu+K3mosauiFjF2nSlTomup0cLFgNEALNuhRlO50BVDAm72C8?=
+ =?us-ascii?Q?/8nJzee9wNfpOBiGNT9g5WG421p6kgvDdS5owFoK78JsZ9Pzyg4zEZyY9w0B?=
+ =?us-ascii?Q?k8vLkY8u86KIwOTLWp/XKQ8iGLlQXCvalDL3e4h1trd//O8CIW4RjsbT8Kkn?=
+ =?us-ascii?Q?J1uBsFKRa08hb6EE5pWH94k1DVUrmpy7IChBuiiQk+2CPhNJENERAQlf1yjB?=
+ =?us-ascii?Q?DOqjaG1w4ZwPOToP3GIOCU35sdbUW8BTektdPf8fZ2874wVqbU59aez1ihGg?=
+ =?us-ascii?Q?HJLmm2YZrhWWoGAkuS85L3Q1IycfbkccpTOD+vjAPgDyxTqedA8HCX2pFiJR?=
+ =?us-ascii?Q?Ob4uHX6Ku7fagNoJQrN5rnl1oWslG5JkFnZ8mJbC7ZFEufPg4LUQsXs7V8xn?=
+ =?us-ascii?Q?O3oQTfrNOYe6bHNoO22SS2Dovtkr5FWQZqQCxMi24DAZkAzcghaeK8BjhLvg?=
+ =?us-ascii?Q?IBR178aB/i43bHScDbsnIT/BmDw3rSYAlGv5Xn8iqXl8f3c8E4j7hxcu/1vX?=
+ =?us-ascii?Q?Bv2fF2uEsC21m4iauc71AnXgSD9g4V9iKEy11lOwAJ6uKXy4e8Vaa46gb5gH?=
+ =?us-ascii?Q?OanUKFEVYDEwXcjJUYTUVM4sRS95KMUFIqH09ZgEjguDGgHW29bI2v5rtFE0?=
+ =?us-ascii?Q?q65bg0dJL4boA8fNsaD3bhew0fKUoXBceXVSANrQTTncOXCfRyufJjjAPc6k?=
+ =?us-ascii?Q?DN0AMlPPcpbEy7SE76hUamosnJc31aHwxrm0Gr1SQ1Mg7x0OmHI0c13GOFsf?=
+ =?us-ascii?Q?dNqE3Hrtc5a76JJ0MCwIMZDxlndTJjHPVdvZqo021WtR2Q8KCCEle56UmD4n?=
+ =?us-ascii?Q?Yq0Gaw36gEpeyz4vSMfCiyT2YUYRHremnyd72MLOV/3Av/gynUs5TvpLlZr4?=
+ =?us-ascii?Q?4MgVL2FLfv+0ObGSZA/ZDK4vG9iVkWBnX8DwTJPyO+Wb6w4IXUbLf6ug+xCw?=
+ =?us-ascii?Q?8KRZLisspR54bYbqzemnkLyn2OON09ebGEkyurf7ueCbUPaUocOeMEqKGUum?=
+ =?us-ascii?Q?nIiRxUNOcg1CtNtpGjPBIbTTi666pKTTjXk1y3wujEqxfTRCwVskdXdSo4mS?=
+ =?us-ascii?Q?6eQRP3d6Rxo0m9LuZlUstEYLzYT+vGdqrWsUCmS8Sar9BXYptEijCs25dcjQ?=
+ =?us-ascii?Q?2tcXlmq2qz6m0jJpkULqu0o/wU3CSFRmlX4bYlhu1LPOIrlJgFwng1h5dQV0?=
+ =?us-ascii?Q?e7P91uceIDHleVqdpgELYaH8FxA3WgFoUtSs5cHmWNZZUzdiVAogokgP5N+2?=
+ =?us-ascii?Q?BRLdcajnnsCoD+BTRivs0Dv7lRIUFIbdCvIx4y2yfyEjhz65HG02bCUYcmAt?=
+ =?us-ascii?Q?GAJIzzmEkpOHGlv7LeVAuANA4bHfmE9fM6QdPvrJTi77NZ0X95wy3uKW/Tq4?=
+ =?us-ascii?Q?XK3jqZ5W+UUpbYaGvrA+keo0zX6YGn/k9K3oyk6FwbeGpme80C2J1cTOqDvn?=
+ =?us-ascii?Q?yQj0oh4UScHqDvVbTtkmdoYKuAOaY/YyQCbGfiRgHS6Wl4NAmPvMRyljYI/i?=
+ =?us-ascii?Q?xsswc6lVmA=3D=3D?=
 X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e4ab520-adc8-4a5f-3857-08d99fa3be3a
+X-MS-Exchange-CrossTenant-Network-Message-Id: d35d7fab-8514-4fb6-a86d-08d99fa7145f
 X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 14:59:47.0643
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2021 15:23:40.2263
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ge0nLhfDdEfA8SukKXT3oZJDZUBVy8I3kuUlWSMpNtxp7QaTTsSDc92wB6ySIHViZcRLeycSUEmMLckhEF+fHFSSSRIOoeqrsfvr8R0GA2G30bUAym4ZvjeytqkJHt4d
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR01MB6103
+X-MS-Exchange-CrossTenant-UserPrincipalName: 3Pmp+pGpelEOZL4HumD8IGGwRQUAhrwMXZ+JoOiTlnlVzSUKuWSoR/DgF6n4BIfk17h/r+Q4JkcbGEpbH1XHoX43X5lud4BIufdUfKEzql0NkJGuC8yg4Dnxm1cKu7aD
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR01MB7139
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-upstream commit d39bf40e55e666b5905fdbd46a0dced030ce87be.
+This series ports upstream commit:
 
-[Apply to 4.4.x]
+d39bf40e55e6 ("IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields")
 
-Overflowing either addrlimit or bytes_togo can allow userspace to trigger
-a buffer overflow of kernel memory. Check for overflows in all the places
-doing math on user controlled buffers.
+Gustavo A. R. Silva (1):
+  IB/qib: Use struct_size() helper
 
-Fixes: f931551bafe1 ("IB/qib: Add new qib driver for QLogic PCIe InfiniBand adapters")
-Link: https://lore.kernel.org/r/20211012175519.7298.77738.stgit@awfm-01.cornelisnetworks.com
-Reported-by: Ilja Van Sprundel <ivansprundel@ioactive.com>
-Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
----
- drivers/infiniband/hw/qib/qib_user_sdma.c | 33 +++++++++++++++++++++----------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+Mike Marciniszyn (1):
+  IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt
+    fields
 
-diff --git a/drivers/infiniband/hw/qib/qib_user_sdma.c b/drivers/infiniband/hw/qib/qib_user_sdma.c
-index deef6ff..0dc15f9 100644
---- a/drivers/infiniband/hw/qib/qib_user_sdma.c
-+++ b/drivers/infiniband/hw/qib/qib_user_sdma.c
-@@ -607,7 +607,7 @@ done:
- /*
-  * How many pages in this iovec element?
-  */
--static int qib_user_sdma_num_pages(const struct iovec *iov)
-+static size_t qib_user_sdma_num_pages(const struct iovec *iov)
- {
- 	const unsigned long addr  = (unsigned long) iov->iov_base;
- 	const unsigned long  len  = iov->iov_len;
-@@ -663,7 +663,7 @@ static void qib_user_sdma_free_pkt_frag(struct device *dev,
- static int qib_user_sdma_pin_pages(const struct qib_devdata *dd,
- 				   struct qib_user_sdma_queue *pq,
- 				   struct qib_user_sdma_pkt *pkt,
--				   unsigned long addr, int tlen, int npages)
-+				   unsigned long addr, int tlen, size_t npages)
- {
- 	struct page *pages[8];
- 	int i, j;
-@@ -727,7 +727,7 @@ static int qib_user_sdma_pin_pkt(const struct qib_devdata *dd,
- 	unsigned long idx;
- 
- 	for (idx = 0; idx < niov; idx++) {
--		const int npages = qib_user_sdma_num_pages(iov + idx);
-+		const size_t npages = qib_user_sdma_num_pages(iov + idx);
- 		const unsigned long addr = (unsigned long) iov[idx].iov_base;
- 
- 		ret = qib_user_sdma_pin_pages(dd, pq, pkt, addr,
-@@ -829,8 +829,8 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
- 		unsigned pktnw;
- 		unsigned pktnwc;
- 		int nfrags = 0;
--		int npages = 0;
--		int bytes_togo = 0;
-+		size_t npages = 0;
-+		size_t bytes_togo = 0;
- 		int tiddma = 0;
- 		int cfur;
- 
-@@ -890,7 +890,11 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
- 
- 			npages += qib_user_sdma_num_pages(&iov[idx]);
- 
--			bytes_togo += slen;
-+			if (check_add_overflow(bytes_togo, slen, &bytes_togo) ||
-+			    bytes_togo > type_max(typeof(pkt->bytes_togo))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
- 			pktnwc += slen >> 2;
- 			idx++;
- 			nfrags++;
-@@ -909,8 +913,7 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
- 		}
- 
- 		if (frag_size) {
--			int tidsmsize, n;
--			size_t pktsize;
-+			size_t tidsmsize, n, pktsize, sz, addrlimit;
- 
- 			n = npages*((2*PAGE_SIZE/frag_size)+1);
- 			pktsize = struct_size(pkt, addr, n);
-@@ -928,14 +931,24 @@ static int qib_user_sdma_queue_pkts(const struct qib_devdata *dd,
- 			else
- 				tidsmsize = 0;
- 
--			pkt = kmalloc(pktsize+tidsmsize, GFP_KERNEL);
-+			if (check_add_overflow(pktsize, tidsmsize, &sz)) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt = kmalloc(sz, GFP_KERNEL);
- 			if (!pkt) {
- 				ret = -ENOMEM;
- 				goto free_pbc;
- 			}
- 			pkt->largepkt = 1;
- 			pkt->frag_size = frag_size;
--			pkt->addrlimit = n + ARRAY_SIZE(pkt->addr);
-+			if (check_add_overflow(n, ARRAY_SIZE(pkt->addr),
-+					       &addrlimit) ||
-+			    addrlimit > type_max(typeof(pkt->addrlimit))) {
-+				ret = -EINVAL;
-+				goto free_pbc;
-+			}
-+			pkt->addrlimit = addrlimit;
- 
- 			if (tiddma) {
- 				char *tidsm = (char *)pkt + pktsize;
+ drivers/infiniband/hw/qib/qib_user_sdma.c | 35 ++++++++++++++++++++++---------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
+
 -- 
-1.8.3.1
-
+Changes from v1:
+Correct signed off for Mike Marciniszyn
