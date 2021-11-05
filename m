@@ -2,55 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80915445FBC
-	for <lists+linux-rdma@lfdr.de>; Fri,  5 Nov 2021 07:35:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA626446B60
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Nov 2021 00:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhKEGiO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 5 Nov 2021 02:38:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhKEGiO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 5 Nov 2021 02:38:14 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A966C061714;
-        Thu,  4 Nov 2021 23:35:35 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id bq14so7975951qkb.1;
-        Thu, 04 Nov 2021 23:35:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=471eGmUxaF67diQu9fpSiCy6uokW6qtVpUcaxV0sWLg=;
-        b=jS5yXBDc4yq8hyj2cMX5ZzypfkbcLj9UWr5FarIDV8R/zKENQbna+Jo8HNO42CtEMt
-         RiopFHwHRn4GwPkE5mt3IdSzakYbUGSj2lbLs/YAsoK0ar9yVUh09Yhl8a4WWyQOjwZ+
-         ZMVvmuhWqz7vNgHbChGOHuDkC5/GG4HCHnSqsF5E+6MK0hng9T+RlaxODaBfqkN6w0KD
-         OKWDtzvX8pHGd6kiigIdwo/20u19Uex8DStSUaqEFXYlC/NevQSYREnt+slq5II6jC87
-         rVCtpwgcKIuv2TtDWCxHgQLpa/HJ7hMsWJ5Fd6j9a8IyeYP3DdbyGWKU3ZTxpURg3r5p
-         g1nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=471eGmUxaF67diQu9fpSiCy6uokW6qtVpUcaxV0sWLg=;
-        b=3uKCzCu8VTWNV0wcXvreoSKjyaPUYwX+7g8ZHMmE4Gh/6bLk4yF67y7VrzFzDf4wGN
-         CvuMUN6rJbCccamfauVszu6psGrsEpRrSZp4AxspfJV7HL5+ck6xGhI5IIXoWj7wV7oG
-         ouDjI5GzkGQoTZ0RzA4zs3cYeDU5CH1NclNomSVGbeC5EVHzsntXvhZyUlyN51k2k/GZ
-         ArraNeeCslddLWWjJhtNlBvs2VZQqc+ULoxPodOvRtE+r6ciYdl2qlfBIR858cFNVxVi
-         D46ubnVZfsWUQGxzR4oj+GbsuLbBEDjII3dTjd6xSYUzXlhMa11WstLnrWwOVLMy6ZAc
-         YiSA==
-X-Gm-Message-State: AOAM532MCZ0nymC6+h4cFbaYCBuLzuDAt5n/2FZqqSF7GNvWkQNaLeTw
-        g1uE9gdYeLGqOa6CEDc5p4uqeEanBkuFZz1xNuw=
-X-Google-Smtp-Source: ABdhPJyGlAK/4T0maCDIO1vKCkl3dt4UGJclujZc/WZfgwdBVMPOmko9selD7aq7tjVzpVvwBlKU0yeFneDO8orvn9Y=
-X-Received: by 2002:a05:620a:408:: with SMTP id 8mr16641290qkp.116.1636094134305;
- Thu, 04 Nov 2021 23:35:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20211101060419.4682-1-laoar.shao@gmail.com> <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
-In-Reply-To: <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Fri, 5 Nov 2021 14:34:58 +0800
-Message-ID: <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+        id S233372AbhKEX76 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 5 Nov 2021 19:59:58 -0400
+Received: from rere.qmqm.pl ([91.227.64.183]:20332 "EHLO rere.qmqm.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233311AbhKEX75 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 5 Nov 2021 19:59:57 -0400
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmHVb6HGFzBs;
+        Sat,  6 Nov 2021 00:57:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1636156635; bh=m5pndQqsZAfsS+FW1lbAnLViWscX+7vW/HS+H4mYBKg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hhhHpB7ZS4HG39gN9VN9s41HVGTMpArfwk+CIFrRRUhAAn2nVMgZajsgWsAEvJ5Uh
+         E5kVQtH50Hw+vS/SQw2R4N2aAeNeaQxjqX7ir5sEPslX0+QLwnK90B76F+LeCC0oAQ
+         PIxCMskP3Gv3nwVt/hQmWgI+O03uONbc4LfkN9p5SDeJJBZ6ZRwwme7leUxbDszrVm
+         dEbpNMH+ZwjXs15naK6R98AzrEPJWYY5dGiGyLyQtkGFN9d/rjaiicUDQ2N/I12qdE
+         3ePV/0GKFuuOK26dKbitWlt3+bMzUazhaKZ5rx7dILwSez6IuMQDIpnakNB9l+ZBGt
+         /qCnycePN9fPQ==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.3 at mail
+Date:   Sat, 6 Nov 2021 00:57:06 +0100
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Kees Cook <keescook@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -84,78 +61,93 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>,
         kernel test robot <oliver.sang@intel.com>,
         kbuild test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
+Message-ID: <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
+References: <20211101060419.4682-1-laoar.shao@gmail.com>
+ <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
+ <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 4, 2021 at 9:37 AM Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.q=
-mqm.pl> wrote:
->
-> On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
-> > There're many truncated kthreads in the kernel, which may make trouble
-> > for the user, for example, the user can't get detailed device
-> > information from the task comm.
+On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
+> On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
 > >
-> > This patchset tries to improve this problem fundamentally by extending
-> > the task comm size from 16 to 24, which is a very simple way.
-> [...]
->
-> Hi,
->
-> I've tried something like this a few years back. My attempt got mostly
-> lost in the mailing lists, but I'm still carrying the patches in my
-> tree [1]. My target was userspace thread names, and it turned out more
-> involved than I had time for.
->
-> [1] https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D2c3814268caf2b1fee=
-6d1a0b61fd1730ce135d4a
->     and its parents
->
+> > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
+> > > There're many truncated kthreads in the kernel, which may make trouble
+> > > for the user, for example, the user can't get detailed device
+> > > information from the task comm.
+> > >
+> > > This patchset tries to improve this problem fundamentally by extending
+> > > the task comm size from 16 to 24, which is a very simple way.
+> > [...]
+> >
+> > Hi,
+> >
+> > I've tried something like this a few years back. My attempt got mostly
+> > lost in the mailing lists, but I'm still carrying the patches in my
+> > tree [1]. My target was userspace thread names, and it turned out more
+> > involved than I had time for.
+> >
+> > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
+> >     and its parents
+> >
+> 
+> Hi Michal,
+> 
+> Thanks for the information.
+> 
+> I have looked through your patches.  It seems to contain six patches
+> now and can be divided into three parts per my understanding.
+> 
+> 1. extend task comm len
+> This parts contains below 4 patches:
+> [prctl: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
+> [bluetooth: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
+> [taskstats: prepare for bigger
+> TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
+> [mm: make TASK_COMM_LEN
+> configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
+> 
+> What kind of userspace issues makes you extend the task comm length ?
+> Why not just use /proc/[pid]/cmdline ?
 
-Hi Michal,
+This was to enable longer thread names (as set by pthread_setname_np()).
+Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
+threads. I believe that FreeBSD has 32-byte limit and so I expect that
+major portable code is already prepared for bigger thread names.
 
-Thanks for the information.
+> 2.  A fix
+> Below patch:
+> [procfs: signal /proc/PID/comm write
+> truncation](https://rere.qmqm.pl/git/?p=linux;a=commit;h=d72027388d4d95db5438a7a574e0a03ae4b5d6d7)
+> 
+> It seems this patch is incomplete ?   I don't know what it means to do.
 
-I have looked through your patches.  It seems to contain six patches
-now and can be divided into three parts per my understanding.
+Currently writes to /proc/PID/comm are silently truncated. This patch
+makes the write() call return the actual number of bytes actually written
+and on subsequent calls return -ENOSPC. glibc checks the length in
+pthread_setname_np() before write(), so the change is not currently
+relevant for it. I don't know/remember what other runtimes do, though.
 
-1. extend task comm len
-This parts contains below 4 patches:
-[prctl: prepare for bigger
-TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dcfd99db9c=
-f911bb4d106889aeba1dfe89b6527d0)
-[bluetooth: prepare for bigger
-TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dba2805f51=
-96865b81cc6fc938ea53af2c7c2c892)
-[taskstats: prepare for bigger
-TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D4d29bfedc=
-57b36607915a0171f4864ec504908ca)
-[mm: make TASK_COMM_LEN
-configurable](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D362acc3558=
-2445174589184c738c4d86ec7d174b)
+> 3. A feature provided for pthread_getname_np
+> Below patch:
+> [procfs: lseek(/proc/PID/comm, 0,
+> SEEK_END)](https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a)
+> 
+> It seems this patch is useful. With this patch the userspace can
+> directly get the TASK_COMM_LEN through the API.
 
-What kind of userspace issues makes you extend the task comm length ?
-Why not just use /proc/[pid]/cmdline ?
+This one I'm not really fond of because it abuses lseek() in that it
+doesn't move the write pointer. But in case of /proc files this normally
+would return EINVAL anyway.
 
-2.  A fix
-Below patch:
-[procfs: signal /proc/PID/comm write
-truncation](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3Dd72027388d4d=
-95db5438a7a574e0a03ae4b5d6d7)
-
-It seems this patch is incomplete ?   I don't know what it means to do.
-
-3. A feature provided for pthread_getname_np
-Below patch:
-[procfs: lseek(/proc/PID/comm, 0,
-SEEK_END)](https://rere.qmqm.pl/git/?p=3Dlinux;a=3Dcommit;h=3D2c3814268caf2=
-b1fee6d1a0b61fd1730ce135d4a)
-
-It seems this patch is useful. With this patch the userspace can
-directly get the TASK_COMM_LEN through the API.
-
---=20
-Thanks
-Yafang
+Best Regards
+Micha³ Miros³aw
