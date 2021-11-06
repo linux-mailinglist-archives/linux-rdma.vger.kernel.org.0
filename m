@@ -2,154 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E38446D9F
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Nov 2021 12:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8DB446DF0
+	for <lists+linux-rdma@lfdr.de>; Sat,  6 Nov 2021 13:45:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhKFLcl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Nov 2021 07:32:41 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:60803 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhKFLcl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 6 Nov 2021 07:32:41 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4HmZss2pjdz8K;
-        Sat,  6 Nov 2021 12:29:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1636198197; bh=WAutzEgYEkmalNSwQrpbordkhKZLQ/Y22509TsCal1M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MoSDr5iITx3E3YPjbwkyIUAMMz2VmRaGqyp931kZX9YG+QyaLES6TvE+QwQNSCXlJ
-         fpc5I73Jklg2OzmXxu2LMdsy9vNLA7EBPNnzQtR/b7pam2rbJ41auAZmoiKWDoGoTh
-         33ZJgvXhhdDgMv5Gftq0VWNj2quwtGMnCQ05Vicp9WOB1XHJmcwdB4C6fV5moIbunY
-         2pHxjtQgDkyQmIbCl5sYp6e9aq2kjDEzW8DTwxKTUYFbt5WG7t6QG/dNh1ogsZV3La
-         pN/Cdf+ZUSXgzppa++BQRGky7Z/Oiq8oAuUHz4R2kaNp0awXgwxWySm/P9++rhyRyL
-         YNV8/t5iEpSKQ==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.3 at mail
-Date:   Sat, 6 Nov 2021 12:29:51 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Arnaldo Carvalho de Melo <arnaldo.melo@gmail.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qiang Zhang <qiang.zhang@windriver.com>,
-        robdclark <robdclark@chromium.org>,
-        christian <christian@brauner.io>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        john fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        dennis.dalessandro@cornelisnetworks.com,
-        mike.marciniszyn@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        "linux-perf-use." <linux-perf-users@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel test robot <oliver.sang@intel.com>,
-        kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v7 00/11] extend task comm from 16 to 24
-Message-ID: <YYZnL58B+GsNypEn@qmqm.qmqm.pl>
-References: <20211101060419.4682-1-laoar.shao@gmail.com>
- <YYM5R95a7jgB2TPO@qmqm.qmqm.pl>
- <CALOAHbDtoBEr8TuuUEMAnw3aeOf=S10Lh_eBCS=5Ty+JHgdj0Q@mail.gmail.com>
- <YYXEzlHn28/d5C6A@qmqm.qmqm.pl>
- <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
+        id S233360AbhKFMs3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 6 Nov 2021 08:48:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35302 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232900AbhKFMs3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Nov 2021 08:48:29 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A69MMRo033455;
+        Sat, 6 Nov 2021 12:45:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=QP1ehqk8w2ElEGkdv2KPKItCkiDJa+NrePQ5P8xyX2U=;
+ b=ajYrTwFaMcLoCqTer6Lw1PRFUqXqs48F8DbUcmD757uNp4eSyLr3Wu9c1e2DehBAYjVF
+ wzpZmK9ysNkAudBgMLSq0jNZv6VYfUVsnLcC4w2NclGwKMCNORN+jJouZBQc/uhI5yRx
+ 9eof6m5wyJ2zJ3sN2i2opIFhUW0YCCA8cwYYTEqpB9dAesDFTsqKYXnkDj+6sW8h1r0E
+ zy1tff4POMPTdxLatoVcYCweStE07EA8NCPGJo0e3keyc6IhJt9nc7y0NDhCFL5Mqj0E
+ xonIRs8Kcbo2bxze/NpidbXNpKN2NTpp/huXwzNOOAwRocKeAlBDkRsl70suN8CkEF/v FA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c5q11acjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Nov 2021 12:45:44 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1A6CenHX029423;
+        Sat, 6 Nov 2021 12:45:44 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3c5q11acjf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Nov 2021 12:45:44 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1A6ChSoa026786;
+        Sat, 6 Nov 2021 12:45:42 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 3c5hb8svgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 06 Nov 2021 12:45:42 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1A6CjeS348234962
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 6 Nov 2021 12:45:40 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EAEBDA4051;
+        Sat,  6 Nov 2021 12:45:39 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6FB07A404D;
+        Sat,  6 Nov 2021 12:45:39 +0000 (GMT)
+Received: from [9.145.174.141] (unknown [9.145.174.141])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sat,  6 Nov 2021 12:45:39 +0000 (GMT)
+Message-ID: <8445f69e-54e6-0c54-a2de-0560cbf0e6ce@linux.ibm.com>
+Date:   Sat, 6 Nov 2021 13:46:00 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALOAHbAP5qhKjsgwhekcDcutWpHMsxxGfB+K1-=2RyOyJt9MeQ@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.1
+Subject: Re: [PATCH net 1/4] Revert "net/smc: don't wait for send buffer space
+ when data was already sent"
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org, jacob.qi@linux.alibaba.com,
+        xuanzhuo@linux.alibaba.com, guwen@linux.alibaba.com,
+        dust.li@linux.alibaba.com
+References: <20211027085208.16048-1-tonylu@linux.alibaba.com>
+ <20211027085208.16048-2-tonylu@linux.alibaba.com>
+ <9bbd05ac-5fa5-7d7a-fe69-e7e072ccd1ab@linux.ibm.com>
+ <20211027080813.238b82ce@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <06ae0731-0b9b-a70d-6479-de6fe691e25d@linux.ibm.com>
+ <20211027084710.1f4a4ff1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <c6396899-cf99-e695-fc90-3e21e95245ed@linux.ibm.com>
+ <20211028073827.421a68d7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YX+RaKfBVzFokQON@TonyMac-Alibaba>
+ <ca2a567b-915e-c4e1-96cf-2c03ff74aad5@linux.ibm.com>
+ <YYH8npT0+ww57Gg1@TonyMac-Alibaba>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <YYH8npT0+ww57Gg1@TonyMac-Alibaba>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ikKJlSI1m7-smd4oBKs2w62RZ0OsrB1h
+X-Proofpoint-GUID: LIgrbCnPsI5ThBkVrkktc0mqnAn0UyAQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-06_02,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
+ impostorscore=0 clxscore=1015 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111060077
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Nov 06, 2021 at 05:12:24PM +0800, Yafang Shao wrote:
-> On Sat, Nov 6, 2021 at 7:57 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
-> >
-> > On Fri, Nov 05, 2021 at 02:34:58PM +0800, Yafang Shao wrote:
-> > > On Thu, Nov 4, 2021 at 9:37 AM Micha³ Miros³aw <mirq-linux@rere.qmqm.pl> wrote:
-> > > >
-> > > > On Mon, Nov 01, 2021 at 06:04:08AM +0000, Yafang Shao wrote:
-> > > > > There're many truncated kthreads in the kernel, which may make trouble
-> > > > > for the user, for example, the user can't get detailed device
-> > > > > information from the task comm.
-> > > > >
-> > > > > This patchset tries to improve this problem fundamentally by extending
-> > > > > the task comm size from 16 to 24, which is a very simple way.
-> > > > [...]
-> > > >
-> > > > Hi,
-> > > >
-> > > > I've tried something like this a few years back. My attempt got mostly
-> > > > lost in the mailing lists, but I'm still carrying the patches in my
-> > > > tree [1]. My target was userspace thread names, and it turned out more
-> > > > involved than I had time for.
-> > > >
-> > > > [1] https://rere.qmqm.pl/git/?p=linux;a=commit;h=2c3814268caf2b1fee6d1a0b61fd1730ce135d4a
-> > > >     and its parents
-> > > >
-> > >
-> > > Hi Michal,
-> > >
-> > > Thanks for the information.
-> > >
-> > > I have looked through your patches.  It seems to contain six patches
-> > > now and can be divided into three parts per my understanding.
-> > >
-> > > 1. extend task comm len
-> > > This parts contains below 4 patches:
-> > > [prctl: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=cfd99db9cf911bb4d106889aeba1dfe89b6527d0)
-> > > [bluetooth: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=ba2805f5196865b81cc6fc938ea53af2c7c2c892)
-> > > [taskstats: prepare for bigger
-> > > TASK_COMM_LEN](https://rere.qmqm.pl/git/?p=linux;a=commit;h=4d29bfedc57b36607915a0171f4864ec504908ca)
-> > > [mm: make TASK_COMM_LEN
-> > > configurable](https://rere.qmqm.pl/git/?p=linux;a=commit;h=362acc35582445174589184c738c4d86ec7d174b)
-> > >
-> > > What kind of userspace issues makes you extend the task comm length ?
-> > > Why not just use /proc/[pid]/cmdline ?
-> >
-> > This was to enable longer thread names (as set by pthread_setname_np()).
-> > Currently its 16 bytes, and that's too short for e.g. Chrome's or Firefox'es
-> > threads. I believe that FreeBSD has 32-byte limit and so I expect that
-> > major portable code is already prepared for bigger thread names.
-> >
+On 03/11/2021 04:06, Tony Lu wrote:
 > 
-> The comm len in FreeBSD is (19 + 1) bytes[1], but that is still larger
-> than Linux :)
-> The task comm is short for many applications, that is why cmdline is
-> introduced per my understanding, but pthread_{set, get}name_np() is
-> reading/writing the comm or via prctl(2) rather than reading/writing
-> the cmdline...
-> 
-> Is the truncated Chrome or Firefox thread comm really harmful or is
-> extending the task comm just for portable?
-> Could you pls show me some examples if the short comm is really harmful?
-> 
-> Per my understanding, if the short comm is harmful to applications
-> then it is worth extending it.
-> But if it is only for portable code, it may not be worth extending it.
-> 
-> [1]. https://github.com/freebsd/freebsd-src/blob/main/sys/sys/param.h#L126
+> I agree with you. I am curious about this deadlock scene. If it was
+> convenient, could you provide a reproducible test case? We are also
+> setting up a SMC CI/CD system to find the compatible and performance
+> fallback problems. Maybe we could do something to make it better.
 
-I don't think it is harmful as in exposing a bug or something. It's just
-inconvenient when debugging a system where you can't differentiate
-between threads because their names have been cut too short.
-
-Best Regards
-Micha³ Miros³aw
+Run an echo server that uses blocking sockets. First call recv() with an 1MB buffer
+and when recv() returns then send all received bytes back to the client, no matter
+how many bytes where received. Run this in a loop (recv / send).
+On the client side also use only blocking sockets and a send / recv loop. Use
+an 1MB data buffer and call send() with the whole 1MB of data.
+Now run that with both scenarios (send() returns lesser bytes than requested vs. not).
