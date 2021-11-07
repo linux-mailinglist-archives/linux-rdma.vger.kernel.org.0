@@ -2,100 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D34446F31
-	for <lists+linux-rdma@lfdr.de>; Sat,  6 Nov 2021 18:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17AD4471EF
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Nov 2021 07:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234641AbhKFRK5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 6 Nov 2021 13:10:57 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:59560 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhKFRK4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 6 Nov 2021 13:10:56 -0400
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id jPAqmPRE42lVYjPArmWDoG; Sat, 06 Nov 2021 18:08:14 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sat, 06 Nov 2021 18:08:14 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, roid@nvidia.com, vladbu@nvidia.com,
-        paulb@nvidia.com, lariel@nvidia.com
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net/mlx5: Fix some error handling paths in 'mlx5e_tc_add_fdb_flow()'
-Date:   Sat,  6 Nov 2021 18:08:11 +0100
-Message-Id: <3055988affc39dff4d2a5c00a8d18474b0d63e26.1636218396.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S234800AbhKGGnf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Nov 2021 01:43:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229878AbhKGGnf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Nov 2021 01:43:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C13861186;
+        Sun,  7 Nov 2021 06:40:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1636267253;
+        bh=MvVLzHsUMEmKpRJPqQysiS74gj9z5ZqLJdElO+9uN7U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=U/D/oF7vuiaG8gY1aPiX/Uut2z4C4HmnB2obWjBnPZFvaw3bOpI5CfwpPfgaKumjb
+         biO94gGphFW0nX/Sc5D6scHnWtbYO9/zIBNbnF/qX2nLBYnYPlYh3U+naSU/l6+RA0
+         +HREsKVSz3hjCFIUQEKm6GTuw1S9mu9RT0PCMsRFgh3g7L3sNsMqxsq4+/L9aBnf3s
+         nuDZZEMHXlpAawBWTDlMWcjnnmKXUC8NOCTw7yEfjb4Z98gVJQ1DD6W94uzNC2Tu/5
+         Q9+4ES987/BBl26dFyWht1QLQWC754UyIKAMZpw+cRM2u/cg7F4W4vJTji3GcSbKcS
+         I07aztQjHQFeg==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is needed for compilation check
+Date:   Sun,  7 Nov 2021 08:40:47 +0200
+Message-Id: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-All the error handling paths of 'mlx5e_tc_add_fdb_flow()' end to 'err_out'
-where 'flow_flag_set(flow, FAILED);' is called.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-All but the new error handling paths added by the commits given in the
-Fixes tag below.
+>> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
+   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
+   ^
 
-Fix these error handling paths and branch to 'err_out'.
-
-Fixes: 166f431ec6be ("net/mlx5e: Add indirect tc offload of ovs internal port")
-Fixes: b16eb3c81fe2 ("net/mlx5: Support internal port as decap route device")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
-This patch is speculative, review with care.
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ include/rdma/rdma_netlink.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-index 835caa1c7b74..ff881307c744 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tc.c
-@@ -1445,7 +1445,7 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv *priv,
- 							MLX5_FLOW_NAMESPACE_FDB, VPORT_TO_REG,
- 							metadata);
- 			if (err)
--				return err;
-+				goto err_out;
- 		}
- 	}
- 
-@@ -1461,13 +1461,15 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv *priv,
- 		if (attr->chain) {
- 			NL_SET_ERR_MSG_MOD(extack,
- 					   "Internal port rule is only supported on chain 0");
--			return -EOPNOTSUPP;
-+			err = -EOPNOTSUPP;
-+			goto err_out;
- 		}
- 
- 		if (attr->dest_chain) {
- 			NL_SET_ERR_MSG_MOD(extack,
- 					   "Internal port rule offload doesn't support goto action");
--			return -EOPNOTSUPP;
-+			err = -EOPNOTSUPP;
-+			goto err_out;
- 		}
- 
- 		int_port = mlx5e_tc_int_port_get(mlx5e_get_int_port_priv(priv),
-@@ -1475,8 +1477,10 @@ mlx5e_tc_add_fdb_flow(struct mlx5e_priv *priv,
- 						 flow_flag_test(flow, EGRESS) ?
- 						 MLX5E_TC_INT_PORT_EGRESS :
- 						 MLX5E_TC_INT_PORT_INGRESS);
--		if (IS_ERR(int_port))
--			return PTR_ERR(int_port);
-+		if (IS_ERR(int_port)) {
-+			err = PTR_ERR(int_port);
-+			goto err_out;
-+		}
- 
- 		esw_attr->int_port = int_port;
- 	}
+diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
+index 2758d9df71ee..c2a79aeee113 100644
+--- a/include/rdma/rdma_netlink.h
++++ b/include/rdma/rdma_netlink.h
+@@ -30,7 +30,7 @@ enum rdma_nl_flags {
+  * constant as well and the compiler checks they are the same.
+  */
+ #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
+-	static inline void __chk_##_index(void)                                \
++	static inline void __maybe_unused __chk_##_index(void)                 \
+ 	{                                                                      \
+ 		BUILD_BUG_ON(_index != _val);                                  \
+ 	}                                                                      \
 -- 
-2.30.2
+2.33.1
 
