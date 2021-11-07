@@ -2,69 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F17AD4471EF
-	for <lists+linux-rdma@lfdr.de>; Sun,  7 Nov 2021 07:40:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24C0447204
+	for <lists+linux-rdma@lfdr.de>; Sun,  7 Nov 2021 08:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234800AbhKGGnf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 7 Nov 2021 01:43:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58000 "EHLO mail.kernel.org"
+        id S234856AbhKGHmr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 7 Nov 2021 02:42:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39082 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229878AbhKGGnf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 7 Nov 2021 01:43:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C13861186;
-        Sun,  7 Nov 2021 06:40:52 +0000 (UTC)
+        id S234272AbhKGHmq (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 7 Nov 2021 02:42:46 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3675613AC;
+        Sun,  7 Nov 2021 07:40:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636267253;
-        bh=MvVLzHsUMEmKpRJPqQysiS74gj9z5ZqLJdElO+9uN7U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=U/D/oF7vuiaG8gY1aPiX/Uut2z4C4HmnB2obWjBnPZFvaw3bOpI5CfwpPfgaKumjb
-         biO94gGphFW0nX/Sc5D6scHnWtbYO9/zIBNbnF/qX2nLBYnYPlYh3U+naSU/l6+RA0
-         +HREsKVSz3hjCFIUQEKm6GTuw1S9mu9RT0PCMsRFgh3g7L3sNsMqxsq4+/L9aBnf3s
-         nuDZZEMHXlpAawBWTDlMWcjnnmKXUC8NOCTw7yEfjb4Z98gVJQ1DD6W94uzNC2Tu/5
-         Q9+4ES987/BBl26dFyWht1QLQWC754UyIKAMZpw+cRM2u/cg7F4W4vJTji3GcSbKcS
-         I07aztQjHQFeg==
+        s=k20201202; t=1636270804;
+        bh=xK7EWfUT/HcNYKPKVTyFRCEn67drZQu6TfoeV5SB8wg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y83LSuQDcfps1yh5CmqlTsWUZCUVhFxv0r7t5ZkQbyfhpmy+jYmBzjae/ZAI6uDLj
+         1VLmVaWEZ/6PgBVSETy4GQTkLJ0Wqm+jbXPktorPvEZzKUTrvcE/v7L6irnlM+kXuf
+         rN4Q2hWCdIDGke6u/3n3mVmxk9OQhnj4NUMVPR3OwWUcT0S4smEa1O2eHOj7dEw4Wl
+         g/3Ot3A2Vjgw3Omh5Yy7oFk7VKybaZSzL4ZRSSjhWp+Gn+R0lIcLoX+buVTuOAQYoW
+         Il9MS2y0Nr8TRuGkjtzqsW22RCyKiylGj8CXy1lRWorTaNmXGQATlZ9LaDDZcPmzwR
+         hTJsgC7n8SMvg==
+Date:   Sun, 7 Nov 2021 09:40:00 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is needed for compilation check
-Date:   Sun,  7 Nov 2021 08:40:47 +0200
-Message-Id: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.33.1
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Cc:     yishaih@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] RDMA/mlx4: Fix potential memory leak
+Message-ID: <YYeC0O3wL8X0uSsY@unreal>
+References: <1636020852-3951757-1-git-send-email-jiasheng@iscas.ac.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636020852-3951757-1-git-send-email-jiasheng@iscas.ac.cn>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Nov 04, 2021 at 10:14:12AM +0000, Jiasheng Jiang wrote:
+> In the error path, the dev->dev isn't released.
+> Therefore, it might be better to fix it to avoid
+> potential memory leak.
+> 
+> Fixes: 9376932 ("IB/mlx4_ib: Add support for user MR re-registration")
+> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+> ---
+>  drivers/infiniband/hw/mlx4/mr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
->> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-   MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-   ^
+I don't understand about which release you are talking, but this patch
+can't be right. You are supposed to call to "release_mpt_entry" only in
+the error flows which after successful mlx4_mr_hw_get_mpt().
 
-Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/rdma/rdma_netlink.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
 
-diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-index 2758d9df71ee..c2a79aeee113 100644
---- a/include/rdma/rdma_netlink.h
-+++ b/include/rdma/rdma_netlink.h
-@@ -30,7 +30,7 @@ enum rdma_nl_flags {
-  * constant as well and the compiler checks they are the same.
-  */
- #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
--	static inline void __chk_##_index(void)                                \
-+	static inline void __maybe_unused __chk_##_index(void)                 \
- 	{                                                                      \
- 		BUILD_BUG_ON(_index != _val);                                  \
- 	}                                                                      \
--- 
-2.33.1
-
+> 
+> diff --git a/drivers/infiniband/hw/mlx4/mr.c b/drivers/infiniband/hw/mlx4/mr.c
+> index 50becc0..d8ae92e 100644
+> --- a/drivers/infiniband/hw/mlx4/mr.c
+> +++ b/drivers/infiniband/hw/mlx4/mr.c
+> @@ -473,7 +473,7 @@ struct ib_mr *mlx4_ib_rereg_user_mr(struct ib_mr *mr, int flags, u64 start,
+>  	 */
+>  	err =  mlx4_mr_hw_get_mpt(dev->dev, &mmr->mmr, &pmpt_entry);
+>  	if (err)
+> -		return ERR_PTR(err);
+> +		goto release_mpt_entry;
+>  
+>  	if (flags & IB_MR_REREG_PD) {
+>  		err = mlx4_mr_hw_change_pd(dev->dev, *pmpt_entry,
+> -- 
+> 2.7.4
+> 
