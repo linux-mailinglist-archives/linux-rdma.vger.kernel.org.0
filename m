@@ -2,61 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CE7447ACD
-	for <lists+linux-rdma@lfdr.de>; Mon,  8 Nov 2021 08:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6341F447B82
+	for <lists+linux-rdma@lfdr.de>; Mon,  8 Nov 2021 09:03:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235672AbhKHH3k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Nov 2021 02:29:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234300AbhKHH3k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Nov 2021 02:29:40 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2E34C061714
-        for <linux-rdma@vger.kernel.org>; Sun,  7 Nov 2021 23:26:55 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id b15so39283059edd.7
-        for <linux-rdma@vger.kernel.org>; Sun, 07 Nov 2021 23:26:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
-        b=PnTjqCg/4dLlfwZvkIw5TCFiXXqI7eQL3D+17+RauQ+gPkf2k9hY9S+Ii/M5IA0uoj
-         tcY9XkBE8UoWnMFVRIdA+q744Hmx7Z0JsFaVREssmf6KamM5Bd6A03cMP5bTAvPf1/y/
-         DwxXsJaTEuCfFdzSQFJTUHpZB56hO6UBVJPo7/S7fIQbraF2JB9fnNx0H/YOCyXyn5Fv
-         TpIbuoc9MhMDHEy5d5ztUWIHQVhdvbVN+KOKXsEiQg7QzXSruhiqF9yWAy+A70V6Qa0U
-         ve8aiam44Pcv5P2919T2rRvgnVW0nPh2s7GY8MWiotEmFwjxJpYnpgBFa5LZ/bTsndTX
-         N0eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=gS+G2bXPLTc8QV9oSOsVFPfildfSifO+gabOlUjPn+8=;
-        b=mdY+qAzpYb1ViCLyH/D8wQ+6tBBorwaY2V7LrdsRo4/6EFbbUKs0NT1ppuaENWjLNW
-         uo2FpzkOADcC2H2SuQJlcsjEf99EN7fCGkOq2dGMllPP+0Cw74z6DXqi4zxNl+fpZ8u0
-         2n716b6RIG22u1dlQiIb/kmf1lH6hwNMRTHRzlYiDBuS3nXBRspv0MNt7uQa8Gv05BKE
-         Ophn7y/YbbB1wV62LUSKEUJJhE0Zq9t++ToQPtVsavvpEPm2Vae+1ZVNJyBrYmXoAyKR
-         WX0ZIvVBjxoHfzvM72VOd6O+6XB3rWPcC8tyASESAJpK+jWg1kvNGqIX9YBz2BMf/j0D
-         bc9Q==
-X-Gm-Message-State: AOAM531zW6CjJKgFBJ1TdK6uZp8yywVfz5Zy7h1Ok25tAweClbSuHwYA
-        yYFt68H4sn0IGebPIA4o9VAyyP0HZPqc2GNWqiw=
-X-Google-Smtp-Source: ABdhPJz9Akl6xfGwwFGOOyIMXLWznjij6kDDSEQ53AjVdYeVh/nfgX+la012XOuUHhNctlqPhGJ9oR9znvMO/9Cv6/o=
-X-Received: by 2002:a50:930b:: with SMTP id m11mr83450378eda.133.1636356414537;
- Sun, 07 Nov 2021 23:26:54 -0800 (PST)
+        id S237423AbhKHIF4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 8 Nov 2021 03:05:56 -0500
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:33073 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230103AbhKHIF4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 8 Nov 2021 03:05:56 -0500
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id C67515C00F5;
+        Mon,  8 Nov 2021 03:03:11 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 08 Nov 2021 03:03:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=6onizj35llXqjVpM6j57otHXMeO
+        F0HU8T031ZzfdTDY=; b=p1SiTNhrjwQHIlLFRrAghwR170Uv0ApZOV+uU+pdurL
+        ENoPRUZRGxQTxLXXvT9ToXaV1EzooOFeTFXsLT+SkJnd2pomKCp6UJrCvj+lH8nQ
+        pptNTR6xR+4bT7ac3/pvXRwTUvKP5q7CsbFIYZ8wuDftjCtVwI1SKY0a+KmHe/o2
+        aYUN606+xSTqPQj/6xMK3yM2cjdFaBNG+AQ3CfqaiPTzYM239BkQjCpz6RaJRb6U
+        gP2DFN4vaUz4Mg4F0aaH+wDn9Lj4ev8RC1dl9nkEenMD8cMsrfqGTMeTRHAzaHnL
+        X/dGksg3Ot0I6zvIxiZ4wg8nHuZSyNH4bXVCYBamUgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=6onizj
+        35llXqjVpM6j57otHXMeOF0HU8T031ZzfdTDY=; b=gnpLzv89DhgLVmT3SIxD3P
+        0kH18QjgsIlwxL7KsxW3vynr+/4KiOURfNTB/Yyt7MmUpSDfl9gK+7LQFI56L9mi
+        sQHXHzhJi+3cXMKBeiRBhCewkG+aLXvu0deAL+acIF018EpYMn/qmemwu7/i9sev
+        Yzw2+AqqJ7/0G+EtniuggwbCzV02BO8cimIP1PYXjVdx3Z9yfpgSZHqu3i5lbcOL
+        MpCL6Kik9zYVpGvXi7HEEVHev7PK+EyHlftH5rj3Y1hVEGaM1CIJY+OkslrTCNvv
+        r8wWCbLMT/pa48+JxtLZYXXrQI1pPZ9k4PjzWV2YpNSNZxUCwkfi/ruEirO/S6tg
+        ==
+X-ME-Sender: <xms:v9mIYbVI6rX4db5KJi8VNQmK0vbwnGZuBibaNmdE5qVe8330Gii_Jg>
+    <xme:v9mIYTmv5TYdV1Y6_jzPJiBS_KfOnlX5ivUELYBzanQ_sOwQ8xVRCa9uLobZsvSjb
+    uFT8x2Y3v9ZRA>
+X-ME-Received: <xmr:v9mIYXYpJamQc8y1RrRXpoi0pi-SERovPL63dG1SDvN4Eg2RFUBPqXAhRD8Rgp6FKtQWM9NCDi3RGdz6-5oFJbIpHDiIK_WG>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvuddruddugddutdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepifhrvghgucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheq
+    necuggftrfgrthhtvghrnhepveeuheejgfffgfeivddukedvkedtleelleeghfeljeeiue
+    eggeevueduudekvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:v9mIYWUXvjlk5zQUHRxROE9rBVAobLiF4kfV58wPT9WjmhlClBmR5g>
+    <xmx:v9mIYVl4VMLvjLAtt3gvp67M-FcLJW2eoluHfY8ZnhN_K-SIQnmMTA>
+    <xmx:v9mIYTfQCUOZ7lDnMGJwVFxbcQszdus9_N3PsoafwsOToOThmNFoPQ>
+    <xmx:v9mIYeA-n0sxF7TzM07xFtcSN_DnlDYxWH6SavFYOSDRzR1J_3lNHg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 8 Nov 2021 03:03:10 -0500 (EST)
+Date:   Mon, 8 Nov 2021 09:03:09 +0100
+From:   Greg KH <greg@kroah.com>
+To:     mike.marciniszyn@cornelisnetworks.com
+Cc:     stable@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 4.9-stable v2 0/2] Port upstream patch v2 to 4.9.x
+Message-ID: <YYjZve1RZIIFPfFW@kroah.com>
+References: <1636039416-138753-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 MIME-Version: 1.0
-Received: by 2002:a50:2501:0:0:0:0:0 with HTTP; Sun, 7 Nov 2021 23:26:54 -0800 (PST)
-Reply-To: mariaschaefler@gmx.com
-From:   Maria Schaefler <ziskoraa@gmail.com>
-Date:   Mon, 8 Nov 2021 07:26:54 +0000
-Message-ID: <CAJh0FjiDs5_oQE4K3AME-kH_RMPNXEEapYKvrR9As+S+Dzwh5Q@mail.gmail.com>
-Subject: MY HEART CHOOSE YOU.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1636039416-138753-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Given my current state of health, I have decided to donate what I
-inherited from my late husband to you to help the poor and needy. I am
-Mrs Maria Schaefler,a 57years old dying woman. I was diagnosed for
-cancer about 2 years ago and I have few months to live according to
-medical experts. Email me for my directives
+On Thu, Nov 04, 2021 at 11:23:34AM -0400, mike.marciniszyn@cornelisnetworks.com wrote:
+> From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> 
+> This series ports upstream commit:
+> 
+> d39bf40e55e6 ("IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt fields")
+> 
+> Gustavo A. R. Silva (1):
+>   IB/qib: Use struct_size() helper
+> 
+> Mike Marciniszyn (1):
+>   IB/qib: Protect from buffer overflow in struct qib_user_sdma_pkt
+>     fields
+> 
+>  drivers/infiniband/hw/qib/qib_user_sdma.c | 35 ++++++++++++++++++++++---------
+>  1 file changed, 25 insertions(+), 10 deletions(-)
+> 
+> -- 
+> Changes from v1:
+> Correct signed off for Mike Marciniszyn
+
+All now applied, thanks.
+
+greg k-h
