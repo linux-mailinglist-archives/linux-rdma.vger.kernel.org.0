@@ -2,179 +2,299 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F0244A016
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 01:58:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BBC44A65F
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 06:34:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhKIBBj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 8 Nov 2021 20:01:39 -0500
-Received: from mail-bn8nam12on2070.outbound.protection.outlook.com ([40.107.237.70]:3329
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236525AbhKIBBi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 8 Nov 2021 20:01:38 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=c3hOF5cdid+ZoePQIQGbbgonWVljoLtrMU05BafKmeOsLTNKGAyqRZ79eWrGDLtHNlYq+2JZay5rdlT1oO9FDJR9ubL7geH1uIATT7SmmcuDp+HSw85vMe48BraXnsIXyYrcy/3oqr5hIXVWB6fB2//CU1AQbLoeWDw4Ky44K0fRxxfX028Wl/IsnsRHjYIi/aFFANZ2nPh8WTT7eL4rNUn8MgEm68km2Ernf6uJSoBpUm0qZaePZ4/I8zLLptGsjmVn2c42KH9VFachMRI4uSySrPUw59cQM8wR0pxabG0JzIYZzA9rdAgHjj+lORpEJlCeVhBFUVIc/RoBLJe8GA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=idwKaK48VWfqqWEmZ58R4Hopw9MowLgqInf3O86+57c=;
- b=GTd93PU9eMZYGr0TQWAJ1IW0t1nuGWdbByAigji58C4hO+TGJv1zoz49Ng61CJOrME+7YtWJiaYNw7lkwR2LF2kSQ74sFuOxHGLo7cQONqrdCst+X5I75u+g/BHwupNOah4Wa95V2Z6Km1cN9wvR3SkOPCGrJjnRg7+/QuzvFPYR8S8vZyEYmnFKwa/lDmOSEvFTV7JUcAex485z1M4aZu6Pa6swCDVMT+4oswZoHHYRjrmIw/EDtg0xRNNm1bwSjlXX04GjP7EvD9kOTnCxJWTo6l1xQnDQmAxd9G+/uFpjv33h7fI3sn9/F/XfHOCehKyK38GEncdVP+x6/jotAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=idwKaK48VWfqqWEmZ58R4Hopw9MowLgqInf3O86+57c=;
- b=HgxqK3j4DDKVhvsOZnbkl/1ORNhTos9et8dBHHRywR6KEqcqAvSVv1qwgd/esyIo6360bP9Pm+Z1KNo4SFpP2cdb+g09uvjnik6DA8ZJIh77Hi0D4Bwt3nehm0gU+gad/Md1/RxtXjjyFYMKcf6vH3SM5avHiSaXW7TGVq66dZM=
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com (2603:10b6:a03:3ce::6)
- by BYAPR05MB4135.namprd05.prod.outlook.com (2603:10b6:a02:84::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.8; Tue, 9 Nov
- 2021 00:58:48 +0000
-Received: from BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::fd9a:e92c:5d9e:9f6d]) by BY3PR05MB8531.namprd05.prod.outlook.com
- ([fe80::fd9a:e92c:5d9e:9f6d%9]) with mapi id 15.20.4690.010; Tue, 9 Nov 2021
- 00:58:48 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Joe Perches <joe@perches.com>
-CC:     "srivatsa@csail.mit.edu" <srivatsa@csail.mit.edu>,
-        Juergen Gross <jgross@suse.com>, X86 ML <x86@kernel.org>,
-        Pv-drivers <Pv-drivers@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
+        id S242956AbhKIFhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Nov 2021 00:37:31 -0500
+Received: from smtp-out1.suse.de ([195.135.220.28]:56324 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243073AbhKIFhT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 00:37:19 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B1F921B06;
+        Tue,  9 Nov 2021 05:34:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1636436073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=25xyWJJliRTmh2VW41Gr038sYdV14J8Jet0MH+0nmRc=;
+        b=YFtzPnXqG67rjcdQsp5lPWm1fNyQb9weZabWSAy9opVyfNCeSNE9TQrEJI67FA5fFtvYSk
+        UjUHjg4l1zda4NZshFvs2ysrDGpnMKdhHQ/BqcBOV8MMnX1dShLwur4h16FgvC1WyeeniV
+        ireRCYpnLH0OrmtKH2jjH0KtmgSwyJ0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D1F813A9D;
+        Tue,  9 Nov 2021 05:34:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id spzKHGgIimGncwAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 09 Nov 2021 05:34:32 +0000
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
+        pv-drivers@vmware.com
+Cc:     Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
         Vishal Bhakta <vbhakta@vmware.com>,
         Ronak Doshi <doshir@vmware.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Zack Rusin <zackr@vmware.com>, Deep Shah <sdeep@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
-        Srivatsa Bhat <srivatsab@vmware.com>,
-        Anish Swaminathan <anishs@vmware.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-Thread-Topic: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-Thread-Index: AQHX1N78hdP2HY1w7EKJ7QP4MiAOaqv6SY6AgAAMZACAAARXAIAABd+A
-Date:   Tue, 9 Nov 2021 00:58:48 +0000
-Message-ID: <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
+        linux-graphics-maintainer@vmware.com,
+        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
+        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
+        sdeep@vmware.com, amakhalov@vmware.com,
+        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+        srivatsab@vmware.com, anishs@vmware.com,
+        linux-kernel@vger.kernel.org
 References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
  <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
- <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
- <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
- <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
-In-Reply-To: <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3654.120.0.1.13)
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f681ab27-68ec-4ec0-cbed-08d9a31c169a
-x-ms-traffictypediagnostic: BYAPR05MB4135:
-x-ld-processed: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0,ExtAddr
-x-microsoft-antispam-prvs: <BYAPR05MB41352394B811717592C965FDD0929@BYAPR05MB4135.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jiNvar6PPnnrLoIuN62K+V7IEQi7r+dnS1+H82xhg2SIbGkfRMYZCTXkXC2vCwqfNRpCs+qy6GIkatzTQ0s9OifCcDD7tSNEXE0HWUUrg//A664RegswdcfAD97CQ5z8646dFp6Gxiu3U1rpx1ufjql8QZLfnGecHoXLYZ5RQyIb5C+gYZpF1WP3D+nRmK4Ea4h+kufUCoyqugXiOLhg8ErfePaU8MuhkxGKP+hHq8U466i5P6YMcYxYxOOgUX1TDXr17U+fQ4TIxX/nNS5UCV24qMKNqrt+74H5ND9kAU6LHVdnRgpDkePy4u+rU0htjYFxlKHJGDgUep++tGJ1dGN3LHuTZUrMwTsYAhUfiC/PIUFQpZtbgHMRkaJjIPjONeP7RNsyO0sSRituUFHBwg75c+FVxK6X4vi4SIaEMSiolBmod08zDNRYitMqZuUi3k4AI259KTFPiaEoI5DSUkL7md/q9F7jsGq77XzzgpLfOOOeS4pfCjotUvtC9wQnZfOtaCi4B5WzvXJt2MNzhqTD5DXd1O0c80nKeJHDProG6ttvIbwvxs4VRkWB0ehPmdm6u59CAwP35YeTv4HkbT7H8mZs0J7ziZU6Z9EZTMGJflG+8myWgb86VYEpwxbzV5OtjwhvkPqA74agYE163MoSirhvJcWNlJhI2XgDi+mwfp5QsgQqvv42hMyYUZVHLNsSBcTCRN8YhRouwxGv8e1BxfR2AfDkqF7EavW9bHX/lxaoBi9R0Fpyb5GQ3alqS+e5t3nffjulAg/dG76IPgliCWo31tMexIyXi5anM9KpG3WLhHjv++Qd3KzYuvUC
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR05MB8531.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(26005)(2616005)(186003)(38070700005)(83380400001)(8676002)(66476007)(66446008)(66556008)(6506007)(64756008)(76116006)(66946007)(38100700002)(5660300002)(4326008)(508600001)(6916009)(33656002)(8936002)(6512007)(86362001)(2906002)(36756003)(316002)(54906003)(6486002)(7416002)(71200400001)(53546011)(130980200001)(223123001)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?iA7HQWkoaUfxP7vnv3qEDfLK1XgtrXBXRiuj2W9SStUFF16pbGAqdFx2dDJT?=
- =?us-ascii?Q?TTscTpkDPRWmhiwCalGwJW4i6d7BV2mwU/nUAhqXJqtDOVtDJFBcGj57QdQU?=
- =?us-ascii?Q?57yi9xISFxpQh8C6vP4QLjUb0QSYWG7Y7We0schRHtToL5qUVQWnPxjK1wBY?=
- =?us-ascii?Q?cWwi7/VyEUM5MlZdJqNnn2nWFOq0EctSoqc/HyTdoIbOisY7CoYHNmrQNI/C?=
- =?us-ascii?Q?TIlFWxc8ohIj4hYWjMkI3AfBOCR55wD5EOhSwxhcMibsKf9l5Jbb90DPwzcH?=
- =?us-ascii?Q?SCjctkgrVCCi5h8dqqM3jO/QDLLjNzXyk/PIzkh5pKNxaByx6ct6J1lhGDiB?=
- =?us-ascii?Q?b40Ut8DK3eKAKmNIGafxrvNPM/AKIokMoOqH9jxZ+pMaunnQVAnOEiIUizSq?=
- =?us-ascii?Q?A/63USZpgdL6OTTIKX0VClp4AOLlhqBrDPdIRLGtcrnzeeSGnQScKyVrQbNE?=
- =?us-ascii?Q?Z4tuSL0BJVT8a7y3FrTi1c+8HyuvJwvOe7Qnk0et46pahzD6zQvW5I71YQAc?=
- =?us-ascii?Q?ouE5BaSKCikaNf5e/YHhPeBJabTIyPqdJSwJp2frlMziZF0Zz2983z37ta2R?=
- =?us-ascii?Q?cK6p6G/74lImprxtswlUEnys6VdlXTK3An4mAtIt8rHo8DueAU/hxPE4gCOP?=
- =?us-ascii?Q?e3nd74XIKucQW6nhGvr9cDh/olFybGdk8U5ieHpzdSkpUSgVyp/ZbBN02aVp?=
- =?us-ascii?Q?MX8MFVkk2GdS4Cq8bRNA0V0LFz/OJjdMB59fqwX/qdNj9B07beOjpiSo5iOr?=
- =?us-ascii?Q?gkJZb4WyhNxaOqF2jQDYs9Igj6O0ppd2vYhUeXuJjfKEchBEaln3z2cTqR/Q?=
- =?us-ascii?Q?Uh6X66RDGT+k/14E/Glu22iVihNSBeB+vR/BEhlHL1YRcUfPN32B6xofs3Mb?=
- =?us-ascii?Q?lK+5FHsIX6GM0hz/QuP8cCTfF0qyVuf2++s42zG/OigDZqf9td4vx8NlOuQY?=
- =?us-ascii?Q?TodAkJ4oqhSN5xPj48x6kNTlLTQxjRxDnGYszc/hNI/qiqOxgmwuicjOcQZG?=
- =?us-ascii?Q?dAjyLWudsTlJv3yWXEkIb90RA52/AH7gqwWbJwFTm8EpIK3GO2zA75rZ5grq?=
- =?us-ascii?Q?NVYxK00+r8RMb0/tIOuiPA/2KQwaxh1JTgNCN17PD/DGawN3GEGAW4pB82z2?=
- =?us-ascii?Q?T37ephnekw/Cbn5PBObKo5IelZzIHd1X1Msmlu8Jc9x0aiwmAvKycRgPJPIE?=
- =?us-ascii?Q?YJT/6v2W5OASEG8aGElu07igkRiP8jRdxx9sii+WSZ2NOyd7mwhxJlp7G9Ka?=
- =?us-ascii?Q?Eql4UtgcoQqMHIgqx7Ce4TZco0Yzlv0yUwrIpOzIbQ3YOBcp/O5JT9FumMbs?=
- =?us-ascii?Q?9YISLTXjbxFyrBjqKhZxsUa5I6YYyEp3/bdhpxcj1kDuNZsPUshmg+l8UsvE?=
- =?us-ascii?Q?ufYQBE1HYHnwAEvlVC00kGZOcN+AFyLO9rt3bDeRfF7m1IOETgiLpg53GTpm?=
- =?us-ascii?Q?x7R10pPN7SKzj9krNt11PVVXeOHLVwC5w6w79EDk3ySoFa2im3MwWLM6fJuj?=
- =?us-ascii?Q?7xWtfkrKcVqDK5qvChbtjcyGvw/eOKfAH51Lzdn9obly7xuISgURm/ZwQnNG?=
- =?us-ascii?Q?u5PwHdke9sVrZdEWQKk/SIWX99/Ny1ljhl4214Jkc2fnzOOltrTprwITH0P6?=
- =?us-ascii?Q?MzAfi5eHQmHW5YXu2dqfjI8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <16B8E008CE2765409961D5B2A5D9FE10@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+From:   Juergen Gross <jgross@suse.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+Message-ID: <05804bc2-60fb-b1f8-c0c4-ad7b1c45462a@suse.com>
+Date:   Tue, 9 Nov 2021 06:34:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY3PR05MB8531.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f681ab27-68ec-4ec0-cbed-08d9a31c169a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Nov 2021 00:58:48.1558
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: V55+QxNM+Ihx9kPI4L0w/7OTJt0rFh12Zenss4eegKltcZ9RYe1uZ5/fpAgR8xYK7TNzRzQlJqHkTigINUkp5Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR05MB4135
+In-Reply-To: <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq
+Content-Type: multipart/mixed; boundary="W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
+ pv-drivers@vmware.com
+Cc: Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
+ Vishal Bhakta <vbhakta@vmware.com>, Ronak Doshi <doshir@vmware.com>,
+ linux-graphics-maintainer@vmware.com, dri-devel@lists.freedesktop.org,
+ linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+ netdev@vger.kernel.org, linux-input@vger.kernel.org,
+ Zack Rusin <zackr@vmware.com>, sdeep@vmware.com, amakhalov@vmware.com,
+ virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
+ srivatsab@vmware.com, anishs@vmware.com, linux-kernel@vger.kernel.org
+Message-ID: <05804bc2-60fb-b1f8-c0c4-ad7b1c45462a@suse.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+ <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+In-Reply-To: <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+
+--W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp
+Content-Type: multipart/mixed;
+ boundary="------------641FCF0DF0F5BF271A32D69F"
+Content-Language: en-US
+
+This is a multi-part message in MIME format.
+--------------641FCF0DF0F5BF271A32D69F
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+
+On 08.11.21 21:30, Srivatsa S. Bhat wrote:
+> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+>=20
+> VMware mailing lists in the MAINTAINERS file are private lists meant
+> for VMware-internal review/notification for patches to the respective
+> subsystems. So, in an earlier discussion [1][2], it was recommended to
+> mark them as such. Update all the remaining VMware mailing list
+> references to use that format -- "L: list@address (private)".
+>=20
+> [1]. https://lore.kernel.org/r/YPfp0Ff6KuyPlyrc@kroah.com
+> [2]. https://lore.kernel.org/r/1626861766-11115-1-git-send-email-jhanse=
+n@vmware.com
+>=20
+> Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+> Cc: Nadav Amit <namit@vmware.com>
+> Cc: Vivek Thampi <vithampi@vmware.com>
+> Cc: Vishal Bhakta <vbhakta@vmware.com>
+> Cc: Ronak Doshi <doshir@vmware.com>
+> Cc: pv-drivers@vmware.com
+> Cc: linux-graphics-maintainer@vmware.com
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-rdma@vger.kernel.org
+> Cc: linux-scsi@vger.kernel.org
+> Cc: netdev@vger.kernel.org
+> Cc: linux-input@vger.kernel.org
+> Acked-by: Zack Rusin <zackr@vmware.com>
+> ---
+>=20
+>   MAINTAINERS |   16 ++++++++--------
+>   1 file changed, 8 insertions(+), 8 deletions(-)
+>=20
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 118cf8170d02..3e92176e68fb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc=
+
+>   F:	drivers/gpu/drm/vboxvideo/
+>  =20
+>   DRM DRIVER FOR VMWARE VIRTUAL GPU
+> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+>   M:	Zack Rusin <zackr@vmware.com>
+> +L:	linux-graphics-maintainer@vmware.com (private)
+>   L:	dri-devel@lists.freedesktop.org
+>   S:	Supported
+>   T:	git git://anongit.freedesktop.org/drm/drm-misc
+> @@ -20032,7 +20032,7 @@ F:	tools/testing/vsock/
+>  =20
+>   VMWARE BALLOON DRIVER
+>   M:	Nadav Amit <namit@vmware.com>
+> -M:	"VMware, Inc." <pv-drivers@vmware.com>
+> +L:	pv-drivers@vmware.com (private)
+>   L:	linux-kernel@vger.kernel.org
+>   S:	Maintained
+>   F:	drivers/misc/vmw_balloon.c
+> @@ -20050,14 +20050,14 @@ F:	arch/x86/kernel/cpu/vmware.c
+>  =20
+>   VMWARE PVRDMA DRIVER
+>   M:	Adit Ranadive <aditr@vmware.com>
+> -M:	VMware PV-Drivers <pv-drivers@vmware.com>
+> +L:	pv-drivers@vmware.com (private)
+>   L:	linux-rdma@vger.kernel.org
+>   S:	Maintained
+>   F:	drivers/infiniband/hw/vmw_pvrdma/
+>  =20
+>   VMware PVSCSI driver
+>   M:	Vishal Bhakta <vbhakta@vmware.com>
+> -M:	VMware PV-Drivers <pv-drivers@vmware.com>
+> +L:	pv-drivers@vmware.com (private)
+>   L:	linux-scsi@vger.kernel.org
+>   S:	Maintained
+>   F:	drivers/scsi/vmw_pvscsi.c
+> @@ -20065,7 +20065,7 @@ F:	drivers/scsi/vmw_pvscsi.h
+>  =20
+>   VMWARE VIRTUAL PTP CLOCK DRIVER
+>   M:	Vivek Thampi <vithampi@vmware.com>
+> -M:	"VMware, Inc." <pv-drivers@vmware.com>
+> +L:	pv-drivers@vmware.com (private)
+
+Maybe replace "(private)" with "(mail alias)"?
+
+This makes it rather clear that it is a valid address to send patches
+to, but there isn't public read access like to a ML.
 
 
-> On Nov 8, 2021, at 4:37 PM, Joe Perches <joe@perches.com> wrote:
->=20
-> On Mon, 2021-11-08 at 16:22 -0800, Srivatsa S. Bhat wrote:
->=20
-> So it's an exploder not an actual maintainer and it likely isn't
-> publically archived with any normal list mechanism.
->=20
-> So IMO "private" isn't appropriate.  Neither is "L:"
-> Perhaps just mark it as what it is as an "exploder".
->=20
-> Or maybe these blocks should be similar to:
->=20
-> M:	Name of Lead Developer <somebody@vmware.com>
-> M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com>
->=20
-> Maybe something like a comment mechanism should be added to the
-> MAINTAINERS file.
->=20
-> Maybe #
->=20
-> so this entry could be something like:
->=20
-> M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com> # VMwar=
-e's ever changing internal maintainers list
+Juergen
 
-Admittedly, I do not care much about how it turns to be.
+--------------641FCF0DF0F5BF271A32D69F
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: OpenPGP public key
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-But if it is modified, it should be very clear who the maintainer
-is, and not to entangle the mailing list and the maintainer.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-I am personally not subscribed to the internal pv-drivers mailing
-list, which is not just for memory ballooning, and is also listed
-as a maintainer for vmmouse, pvscsi, vmxnet3 and others.
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
-As I am the only maintainer of VMware balloon, if someone is
-mistaken and sends an email only to the mailing list and not me,
-he might be disappointed.
+--------------641FCF0DF0F5BF271A32D69F--
 
+--W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp--
+
+--al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGKCGcFAwAAAAAACgkQsN6d1ii/Ey8u
+mAf9Eohn0vhRkZfBHW2PFyfa0gZy/DBnsmYZqD0AlEU0pdjXa8N6Tb/wi3M5766KlH/8jeYwhAgt
+ufbWa0xahKxCM2me8vcPYnTOBnDAgQbYy2FX2wvwIeEI4+VGOFg5N6V01t0wil/Ir+PanX8qpVsk
+dFszyJmdghQS1CI0gmJuPpWclILZ/Z0PqS/L0IhNj+aS/6Z7VdghUOiszYdyxQg83zTNQaJQL0eH
+5CHayDfrVrHtyhkGOB2wOntPfn2mHdk/baAARc7D1cPq8jxnUBWbiIrXha1WLaQE07/yM7jjItaF
+ei6KlBukKfmo5aoDnH9X1wOzB43CsDDVCAysHkGPoQ==
+=Y9rQ
+-----END PGP SIGNATURE-----
+
+--al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq--
