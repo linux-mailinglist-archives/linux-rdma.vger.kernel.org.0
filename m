@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2986044B60F
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 23:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D11BB44B677
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 23:24:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343675AbhKIWZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Nov 2021 17:25:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40834 "EHLO mail.kernel.org"
+        id S1344582AbhKIW1L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Nov 2021 17:27:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344207AbhKIWXK (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:23:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 725DA619EE;
-        Tue,  9 Nov 2021 22:18:37 +0000 (UTC)
+        id S1344190AbhKIWZa (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:25:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9930761A40;
+        Tue,  9 Nov 2021 22:19:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496318;
-        bh=0FRINFgcE0ibNBsRgxN0z4DIDom9Wgkvbxes2h9kzaQ=;
+        s=k20201202; t=1636496379;
+        bh=EJJXVXmG0JlikiMwm28/+wIPXTZKWkSlmlQtES4NxxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XPXqIDGjopqJa1EVYDt0+DC4DrhJxH5OcK+065Y13xWGzOBwmBeJ0zLCWRix12pTp
-         1Fcd4dLRt7bCyRlspqpBUoLVLIouwJVS/fHHgDsjFm+et4v0OEIzvBFszvPuYjyXwS
-         tRki8QVvwkQ+KLgVwNl3zNE/cCMbuMQHUl4dnvcJUCt9ROaI8mmHVMI5iNRThK2HnA
-         tUmpoG9qFRDx1tdnaJaW4md9d32Pd8AUOsHkTWqlz+Tc1mrpYwOlwXSIm1jZ8RmlMG
-         UAXiE2xs+IPyafV2qoHDBqAwYQQq6DE+J9pUQWmy1BzIZcrhQ0E56KWyn0F4JA8xiL
-         DoU12L+H/PAcA==
+        b=GyKaVqKyoFiggUpASVQ3FQqbyIVGQrgFQlYtO6sCT5Av4vl4CQ296Nt4C/KNCfVUz
+         EzjUH7AIhbQKwl6xXGsfQ/rmr7orSJaZkMS9L+buP7tDvCoWmrpzBGHuPt58uvYYb1
+         koJLIEvpi+pC9HAC1aeInTxOMrJBD8u8aIk8HrMu57zaPA8xme/q0Ilg6rNHYIPKsK
+         tRmJDB9qbMnzCVl9d1elNlgloEcGGaY0ZHpxwy0Nw+M+L35A1A4sdcgTJqhud0mAu4
+         6w+JhJvqNwt+cqsNnUncveR5sNjDHQ3rhYMq3GbzXxjXtE+LfAhdiZH9wu9sNr9638
+         B9QswmCiJDnsQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     wangyugui <wangyugui@e16-tech.com>,
+Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, dledford@redhat.com,
         sean.hefty@intel.com, hal.rosenstock@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 67/82] RDMA/core: Use kvzalloc when allocating the struct ib_port
-Date:   Tue,  9 Nov 2021 17:16:25 -0500
-Message-Id: <20211109221641.1233217-67-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 17/75] RDMA/bnxt_re: Check if the vlan is valid before reporting
+Date:   Tue,  9 Nov 2021 17:18:07 -0500
+Message-Id: <20211109221905.1234094-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109221641.1233217-1-sashal@kernel.org>
-References: <20211109221641.1233217-1-sashal@kernel.org>
+In-Reply-To: <20211109221905.1234094-1-sashal@kernel.org>
+References: <20211109221905.1234094-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,54 +44,55 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: wangyugui <wangyugui@e16-tech.com>
+From: Selvin Xavier <selvin.xavier@broadcom.com>
 
-[ Upstream commit 911a81c9c7092bfd75432ce79b2ef879127ea065 ]
+[ Upstream commit 6bda39149d4b8920fdb8744090653aca3daa792d ]
 
-The 'struct attribute' flex array contains some struct lock_class_key's
-which become big when lockdep is turned on. Big enough that some drivers
-will not load when CONFIG_PROVE_LOCKING=y because they cannot allocate
-enough memory:
+When VF is configured with default vlan, HW strips the vlan from the
+packet and driver receives it in Rx completion. VLAN needs to be reported
+for UD work completion only if the vlan is configured on the host. Add a
+check for valid vlan in the UD receive path.
 
- WARNING: CPU: 36 PID: 8 at mm/page_alloc.c:5350 __alloc_pages+0x27e/0x3e0
-  Call Trace:
-   kmalloc_order+0x2a/0xb0
-   kmalloc_order_trace+0x19/0xf0
-   __kmalloc+0x231/0x270
-   ib_setup_port_attrs+0xd8/0x870 [ib_core]
-   ib_register_device+0x419/0x4e0 [ib_core]
-   bnxt_re_task+0x208/0x2d0 [bnxt_re]
-
-Link: https://lore.kernel.org/r/20211019002656.17745-1-wangyugui@e16-tech.com
-Signed-off-by: wangyugui <wangyugui@e16-tech.com>
+Link: https://lore.kernel.org/r/1631709163-2287-12-git-send-email-selvin.xavier@broadcom.com
+Signed-off-by: Selvin Xavier <selvin.xavier@broadcom.com>
 Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/sysfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/core/sysfs.c b/drivers/infiniband/core/sysfs.c
-index 6146c3c1cbe5c..8d709986b88c7 100644
---- a/drivers/infiniband/core/sysfs.c
-+++ b/drivers/infiniband/core/sysfs.c
-@@ -757,7 +757,7 @@ static void ib_port_release(struct kobject *kobj)
- 	if (port->hw_stats_data)
- 		kfree(port->hw_stats_data->stats);
- 	kfree(port->hw_stats_data);
--	kfree(port);
-+	kvfree(port);
- }
+diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+index ea0054c60fbc6..4e0c7115c16cf 100644
+--- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
++++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
+@@ -3364,8 +3364,11 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+ 				      struct ib_wc *wc,
+ 				      struct bnxt_qplib_cqe *cqe)
+ {
++	struct bnxt_re_dev *rdev;
++	u16 vlan_id = 0;
+ 	u8 nw_type;
  
- static void ib_port_gid_attr_release(struct kobject *kobj)
-@@ -1189,7 +1189,7 @@ static struct ib_port *setup_port(struct ib_core_device *coredev, int port_num,
- 	struct ib_port *p;
- 	int ret;
++	rdev = qp->rdev;
+ 	wc->opcode = IB_WC_RECV;
+ 	wc->status = __rc_to_ib_wc_status(cqe->status);
  
--	p = kzalloc(struct_size(p, attrs_list,
-+	p = kvzalloc(struct_size(p, attrs_list,
- 				attr->gid_tbl_len + attr->pkey_tbl_len),
- 		    GFP_KERNEL);
- 	if (!p)
+@@ -3377,9 +3380,12 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+ 		memcpy(wc->smac, cqe->smac, ETH_ALEN);
+ 		wc->wc_flags |= IB_WC_WITH_SMAC;
+ 		if (cqe->flags & CQ_RES_UD_FLAGS_META_FORMAT_VLAN) {
+-			wc->vlan_id = (cqe->cfa_meta & 0xFFF);
+-			if (wc->vlan_id < 0x1000)
+-				wc->wc_flags |= IB_WC_WITH_VLAN;
++			vlan_id = (cqe->cfa_meta & 0xFFF);
++		}
++		/* Mark only if vlan_id is non zero */
++		if (vlan_id && bnxt_re_check_if_vlan_valid(rdev, vlan_id)) {
++			wc->vlan_id = vlan_id;
++			wc->wc_flags |= IB_WC_WITH_VLAN;
+ 		}
+ 		nw_type = (cqe->flags & CQ_RES_UD_FLAGS_ROCE_IP_VER_MASK) >>
+ 			   CQ_RES_UD_FLAGS_ROCE_IP_VER_SFT;
 -- 
 2.33.0
 
