@@ -2,20 +2,20 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1FD44ADBB
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 13:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA04044ADB9
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 13:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244992AbhKIMsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S244546AbhKIMsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Tue, 9 Nov 2021 07:48:42 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15812 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343641AbhKIMsZ (ORCPT
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27192 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343608AbhKIMsZ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 07:48:25 -0500
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4HpSPS366Fz90xV;
-        Tue,  9 Nov 2021 20:45:16 +0800 (CST)
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HpSMv2tkQz8vK6;
+        Tue,  9 Nov 2021 20:43:55 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.15; Tue, 9 Nov 2021 20:45:30 +0800
 Received: from localhost.localdomain (10.67.165.24) by
@@ -25,9 +25,9 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 6/7] libhns: The content of the header file should be protected with #define
-Date:   Tue, 9 Nov 2021 20:41:02 +0800
-Message-ID: <20211109124103.54326-7-liangwenpeng@huawei.com>
+Subject: [PATCH rdma-core 7/7] libhns: The function declaration should be the same as the definition
+Date:   Tue, 9 Nov 2021 20:41:03 +0800
+Message-ID: <20211109124103.54326-8-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20211109124103.54326-1-liangwenpeng@huawei.com>
 References: <20211109124103.54326-1-liangwenpeng@huawei.com>
@@ -44,36 +44,31 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Xinhao Liu <liuxinhao5@hisilicon.com>
 
-Header files should be protected with #define to prevent repeated
-inclusion.
+The parameter names should be the same when the function is declared and
+defined.
 
 Signed-off-by: Xinhao Liu <liuxinhao5@hisilicon.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- providers/hns/hns_roce_u_db.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ providers/hns/hns_roce_u.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/providers/hns/hns_roce_u_db.h b/providers/hns/hns_roce_u_db.h
-index b44e64d4..c3dd583a 100644
---- a/providers/hns/hns_roce_u_db.h
-+++ b/providers/hns/hns_roce_u_db.h
-@@ -30,13 +30,13 @@
-  * SOFTWARE.
-  */
+diff --git a/providers/hns/hns_roce_u.h b/providers/hns/hns_roce_u.h
+index d5963941..1616db9f 100644
+--- a/providers/hns/hns_roce_u.h
++++ b/providers/hns/hns_roce_u.h
+@@ -368,9 +368,9 @@ int hns_roce_u_free_pd(struct ibv_pd *pd);
  
-+#ifndef _HNS_ROCE_U_DB_H
-+#define _HNS_ROCE_U_DB_H
-+
- #include <linux/types.h>
+ struct ibv_mr *hns_roce_u_reg_mr(struct ibv_pd *pd, void *addr, size_t length,
+ 				 uint64_t hca_va, int access);
+-int hns_roce_u_rereg_mr(struct verbs_mr *mr, int flags, struct ibv_pd *pd,
++int hns_roce_u_rereg_mr(struct verbs_mr *vmr, int flags, struct ibv_pd *pd,
+ 			void *addr, size_t length, int access);
+-int hns_roce_u_dereg_mr(struct verbs_mr *mr);
++int hns_roce_u_dereg_mr(struct verbs_mr *vmr);
  
- #include "hns_roce_u.h"
- 
--#ifndef _HNS_ROCE_U_DB_H
--#define _HNS_ROCE_U_DB_H
--
- #if __BYTE_ORDER == __LITTLE_ENDIAN
- #define HNS_ROCE_PAIR_TO_64(val) ((uint64_t) val[1] << 32 | val[0])
- #elif __BYTE_ORDER == __BIG_ENDIAN
+ struct ibv_mw *hns_roce_u_alloc_mw(struct ibv_pd *pd, enum ibv_mw_type type);
+ int hns_roce_u_dealloc_mw(struct ibv_mw *mw);
 -- 
 2.33.0
 
