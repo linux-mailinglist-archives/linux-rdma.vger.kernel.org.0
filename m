@@ -2,299 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7BBC44A65F
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 06:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F2344A77B
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 08:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242956AbhKIFhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Nov 2021 00:37:31 -0500
-Received: from smtp-out1.suse.de ([195.135.220.28]:56324 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243073AbhKIFhT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 00:37:19 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1B1F921B06;
-        Tue,  9 Nov 2021 05:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1636436073; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=25xyWJJliRTmh2VW41Gr038sYdV14J8Jet0MH+0nmRc=;
-        b=YFtzPnXqG67rjcdQsp5lPWm1fNyQb9weZabWSAy9opVyfNCeSNE9TQrEJI67FA5fFtvYSk
-        UjUHjg4l1zda4NZshFvs2ysrDGpnMKdhHQ/BqcBOV8MMnX1dShLwur4h16FgvC1WyeeniV
-        ireRCYpnLH0OrmtKH2jjH0KtmgSwyJ0=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 7D1F813A9D;
-        Tue,  9 Nov 2021 05:34:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id spzKHGgIimGncwAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 09 Nov 2021 05:34:32 +0000
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
-        pv-drivers@vmware.com
-Cc:     Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, Zack Rusin <zackr@vmware.com>,
-        sdeep@vmware.com, amakhalov@vmware.com,
-        virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
-        srivatsab@vmware.com, anishs@vmware.com,
-        linux-kernel@vger.kernel.org
-References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
- <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
-From:   Juergen Gross <jgross@suse.com>
-Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-Message-ID: <05804bc2-60fb-b1f8-c0c4-ad7b1c45462a@suse.com>
-Date:   Tue, 9 Nov 2021 06:34:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S238960AbhKIHZp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Nov 2021 02:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239031AbhKIHZp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 02:25:45 -0500
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B565DC061766
+        for <linux-rdma@vger.kernel.org>; Mon,  8 Nov 2021 23:22:59 -0800 (PST)
+Received: by mail-io1-xd41.google.com with SMTP id k22so8265050iol.13
+        for <linux-rdma@vger.kernel.org>; Mon, 08 Nov 2021 23:22:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=CwuPAht2/+nkfxpVpy5fvVXgDJQSab2t77DdJAHyDYTgabGNg/bOPemJul8QqgYupF
+         tG8KF0FvG04kfjODLdCxn1BhTuKxKp6JhUN2sWc695ghKe8yOUXYduAVqOpafQNKG1Gw
+         1DfxGU6PBj2fT+TT6o0ImpK+pPL05HPX9v4U0I8TLk1Q+8cDtY8EttPYOHBvRuK2rXSM
+         vh/FiSF8+hIdrlUTAVU28UflM8jRDgBZFRi9t//LET69BBXS+HD+2S0Vs99EnaSGt0wK
+         KEvc6QqXAuILrnIXU3/WYsN9yooMdohgpXRp5BSQn0DSMm8BMvqhYKqQQ51FLv3qCHgp
+         c8rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=k3+PIl84BDEKsR+afDftURi+daSqqQKQrezVjb4o2gs=;
+        b=HVj6YDlFPTLtpClkYMTUuE8C01y8+dpiFDUxd39y1P/kObXr6OLODRFEh+8s8KLFdb
+         jAEu6+XBBgwBTNJtjKN9GGFSy8w1sqU7qMN72g071SJYFzrz0KaTQRhVSpFcblz8CQzn
+         WK9ENGKsy3vHdAQcz3XrgxR0MuLBKriZbm6aJvuhQR9qRUAM/rldNpcOCeRIzBLTStqu
+         hxatSsyLa7gm2qJBC//b4CMUM4PhAzhtQPbwACKVmOeX2pbYjMaEA9zBgKxW1kydTJwh
+         mcrv6/WfG3gBovm3UqfKFzZzYsE5PpQ6bJ4VDqWeRCFINTd8MYpw3AGtjQtJfNyja4hs
+         Kstw==
+X-Gm-Message-State: AOAM533bhSURCF1hTxi+lrpB9srNmvwvUljP99+PeYV6LEsyv19jm+PO
+        NhZoFrCO1PEqBKYoAf5U/lCvRf/a1aCPf3Uw9vs=
+X-Google-Smtp-Source: ABdhPJw2TpYK+X/Sw19S2deTCaA14ygKbXNIQBhS6rbch92bDcAVGeACkXkaCJiEvQ3J/I/6wymMEw7Jjk7jTNwhKXw=
+X-Received: by 2002:a05:6638:2107:: with SMTP id n7mr3802695jaj.70.1636442579128;
+ Mon, 08 Nov 2021 23:22:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq"
+Sender: mrselisabethpeter1206@gmail.com
+Received: by 2002:a4f:643:0:0:0:0:0 with HTTP; Mon, 8 Nov 2021 23:22:58 -0800 (PST)
+From:   Mrs Lila Haber <mrslilahabe2016@gmail.com>
+Date:   Tue, 9 Nov 2021 07:22:58 +0000
+X-Google-Sender-Auth: 1nIe3p0VPte2wJ2KU-AH8e-Q4Ec
+Message-ID: <CAAw7UWGuk1sP8viM_tgRQ816hmgEG=WF2ma6WZ7LeY1WCkEMxg@mail.gmail.com>
+Subject: Dear Child of God
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq
-Content-Type: multipart/mixed; boundary="W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>, x86@kernel.org,
- pv-drivers@vmware.com
-Cc: Nadav Amit <namit@vmware.com>, Vivek Thampi <vithampi@vmware.com>,
- Vishal Bhakta <vbhakta@vmware.com>, Ronak Doshi <doshir@vmware.com>,
- linux-graphics-maintainer@vmware.com, dri-devel@lists.freedesktop.org,
- linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
- netdev@vger.kernel.org, linux-input@vger.kernel.org,
- Zack Rusin <zackr@vmware.com>, sdeep@vmware.com, amakhalov@vmware.com,
- virtualization@lists.linux-foundation.org, keerthanak@vmware.com,
- srivatsab@vmware.com, anishs@vmware.com, linux-kernel@vger.kernel.org
-Message-ID: <05804bc2-60fb-b1f8-c0c4-ad7b1c45462a@suse.com>
-Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
- private
-References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
- <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
-In-Reply-To: <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+Dear Child of God,
 
---W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp
-Content-Type: multipart/mixed;
- boundary="------------641FCF0DF0F5BF271A32D69F"
-Content-Language: en-US
+Calvary Greetings in the name of the LORD Almighty and Our LORD JESUS
+CHRIST the giver of every good thing. Good day and compliments of the
+seasons, i know this letter will definitely come to you as a huge
+surprise, but I implore you to take the time to go through it
+carefully as the decision you make will go off a long way to determine
+my future and continued existence. I am Mrs Lila Haber aging widow of
+57 years old suffering from long time illness.I have some funds I
+inherited from my late husband, the sum of (19.1Million Dollars) and I
+needed a very honest and God fearing who can withdraw this money then
+use the funds for Charity works. I WISH TO GIVE THIS FUNDS TO YOU FOR
+CHARITY WORKS. I found your email address from the internet after
+honest prayers to the LORD to bring me a helper and i decided to
+contact you if you may be willing and interested to handle these trust
+funds in good faith before anything happens to me.
 
-This is a multi-part message in MIME format.
---------------641FCF0DF0F5BF271A32D69F
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+I accept this decision because I do not have any child who will
+inherit this money after I die. I want your urgent reply to me so that
+I will give you the deposit receipt which the SECURITY COMPANY issued
+to me as next of kin for immediate transfer of the money to your
+account in your country, to start the good work of God, I want you to
+use the 25/percent of the total amount to help yourself in doing the
+project. I am desperately in keen need of assistance and I have
+summoned up courage to contact you for this task, you must not fail me
+and the millions of the poor people in our todays WORLD. This is no
+stolen money and there are no dangers involved,100% RISK FREE with
+full legal proof. Please if you would be able to use the funds for the
+Charity works kindly let me know immediately.I will appreciate your
+utmost confidentiality and trust in this matter to accomplish my heart
+desire, as I don't want anything that will jeopardize my last wish.
+Please
+kindly respond quickly for further details.
 
-On 08.11.21 21:30, Srivatsa S. Bhat wrote:
-> From: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
->=20
-> VMware mailing lists in the MAINTAINERS file are private lists meant
-> for VMware-internal review/notification for patches to the respective
-> subsystems. So, in an earlier discussion [1][2], it was recommended to
-> mark them as such. Update all the remaining VMware mailing list
-> references to use that format -- "L: list@address (private)".
->=20
-> [1]. https://lore.kernel.org/r/YPfp0Ff6KuyPlyrc@kroah.com
-> [2]. https://lore.kernel.org/r/1626861766-11115-1-git-send-email-jhanse=
-n@vmware.com
->=20
-> Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
-> Cc: Nadav Amit <namit@vmware.com>
-> Cc: Vivek Thampi <vithampi@vmware.com>
-> Cc: Vishal Bhakta <vbhakta@vmware.com>
-> Cc: Ronak Doshi <doshir@vmware.com>
-> Cc: pv-drivers@vmware.com
-> Cc: linux-graphics-maintainer@vmware.com
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-rdma@vger.kernel.org
-> Cc: linux-scsi@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-input@vger.kernel.org
-> Acked-by: Zack Rusin <zackr@vmware.com>
-> ---
->=20
->   MAINTAINERS |   16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
->=20
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 118cf8170d02..3e92176e68fb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc=
-
->   F:	drivers/gpu/drm/vboxvideo/
->  =20
->   DRM DRIVER FOR VMWARE VIRTUAL GPU
-> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
->   M:	Zack Rusin <zackr@vmware.com>
-> +L:	linux-graphics-maintainer@vmware.com (private)
->   L:	dri-devel@lists.freedesktop.org
->   S:	Supported
->   T:	git git://anongit.freedesktop.org/drm/drm-misc
-> @@ -20032,7 +20032,7 @@ F:	tools/testing/vsock/
->  =20
->   VMWARE BALLOON DRIVER
->   M:	Nadav Amit <namit@vmware.com>
-> -M:	"VMware, Inc." <pv-drivers@vmware.com>
-> +L:	pv-drivers@vmware.com (private)
->   L:	linux-kernel@vger.kernel.org
->   S:	Maintained
->   F:	drivers/misc/vmw_balloon.c
-> @@ -20050,14 +20050,14 @@ F:	arch/x86/kernel/cpu/vmware.c
->  =20
->   VMWARE PVRDMA DRIVER
->   M:	Adit Ranadive <aditr@vmware.com>
-> -M:	VMware PV-Drivers <pv-drivers@vmware.com>
-> +L:	pv-drivers@vmware.com (private)
->   L:	linux-rdma@vger.kernel.org
->   S:	Maintained
->   F:	drivers/infiniband/hw/vmw_pvrdma/
->  =20
->   VMware PVSCSI driver
->   M:	Vishal Bhakta <vbhakta@vmware.com>
-> -M:	VMware PV-Drivers <pv-drivers@vmware.com>
-> +L:	pv-drivers@vmware.com (private)
->   L:	linux-scsi@vger.kernel.org
->   S:	Maintained
->   F:	drivers/scsi/vmw_pvscsi.c
-> @@ -20065,7 +20065,7 @@ F:	drivers/scsi/vmw_pvscsi.h
->  =20
->   VMWARE VIRTUAL PTP CLOCK DRIVER
->   M:	Vivek Thampi <vithampi@vmware.com>
-> -M:	"VMware, Inc." <pv-drivers@vmware.com>
-> +L:	pv-drivers@vmware.com (private)
-
-Maybe replace "(private)" with "(mail alias)"?
-
-This makes it rather clear that it is a valid address to send patches
-to, but there isn't public read access like to a ML.
-
-
-Juergen
-
---------------641FCF0DF0F5BF271A32D69F
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Description: OpenPGP public key
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------641FCF0DF0F5BF271A32D69F--
-
---W6JL2G1FAlQS9hzWi03hu2aIhExlEcuAp--
-
---al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmGKCGcFAwAAAAAACgkQsN6d1ii/Ey8u
-mAf9Eohn0vhRkZfBHW2PFyfa0gZy/DBnsmYZqD0AlEU0pdjXa8N6Tb/wi3M5766KlH/8jeYwhAgt
-ufbWa0xahKxCM2me8vcPYnTOBnDAgQbYy2FX2wvwIeEI4+VGOFg5N6V01t0wil/Ir+PanX8qpVsk
-dFszyJmdghQS1CI0gmJuPpWclILZ/Z0PqS/L0IhNj+aS/6Z7VdghUOiszYdyxQg83zTNQaJQL0eH
-5CHayDfrVrHtyhkGOB2wOntPfn2mHdk/baAARc7D1cPq8jxnUBWbiIrXha1WLaQE07/yM7jjItaF
-ei6KlBukKfmo5aoDnH9X1wOzB43CsDDVCAysHkGPoQ==
-=Y9rQ
------END PGP SIGNATURE-----
-
---al1MqEmNzTaRWgbdIcvBJCOhrC2hGsWXq--
+Warmest Regards,
+Mrs Lila Haber
