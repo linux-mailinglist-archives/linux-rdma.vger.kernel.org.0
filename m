@@ -2,67 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A21444CF18
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 02:39:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACAE44D149
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 06:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232767AbhKKBm0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Nov 2021 20:42:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231312AbhKKBmZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Nov 2021 20:42:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B8460EE4;
-        Thu, 11 Nov 2021 01:39:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636594777;
-        bh=cf5yOhrezRaS3az4I+5LjwvWmGyLUDhsfildHNI2s2M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TERuJy+0mBTSaXjUPuv97W88N9bqw45z6KMJt40R91eXi2cwfbpZ7DLMiCURoVFrO
-         HY9VrAJuvI9zgAUhl5FuPKJD2/ge4X7H873CCkdRjsl02PFlJqerhjL2WDBSYM5kG4
-         cdb1WmUVdcOQ56pMUz1UT8zzIhHEsZGAtdIwx0V7uGt32eZaPpQ+ITPB0AnPbcIgj1
-         oNUyFGVR0OLShASmRN1xqk0EfJ5LzhEgKOIwdUKjsGqQVzRq2pafRu4O9bpjEAO5SU
-         q1PE6zavYqmU8KskvjXGGWbMBRSfoR6gHkykTHNPZwNiOxinnB1ZmXajrtCMf7zUmd
-         uP+X+V8iXixqw==
-Date:   Wed, 10 Nov 2021 17:39:35 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
-        Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, amakhalov@vmware.com,
-        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
-        keerthanak@vmware.com, srivatsab@vmware.com, anishs@vmware.com,
-        linux-kernel@vger.kernel.org, joe@perches.com, rostedt@goodmis.org
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-Message-ID: <20211110173935.45a9f495@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
-        <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
+        id S232020AbhKKFKb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Thu, 11 Nov 2021 00:10:31 -0500
+Received: from host-200-90-157-143.netpc.ec ([200.90.157.143]:53748 "EHLO
+        mail.gruponetpc.com" rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S233092AbhKKFKQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Nov 2021 00:10:16 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gruponetpc.com (Postfix) with ESMTP id 6C0ABE1051E;
+        Wed, 10 Nov 2021 08:37:54 -0500 (-05)
+Received: from mail.gruponetpc.com ([127.0.0.1])
+        by localhost (mail.gruponetpc.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id IDV6zEem5dZc; Wed, 10 Nov 2021 08:37:53 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.gruponetpc.com (Postfix) with ESMTP id CCACA7F9FC9;
+        Tue,  9 Nov 2021 22:22:16 -0500 (-05)
+X-Virus-Scanned: amavisd-new at gruponetpc.com
+Received: from mail.gruponetpc.com ([127.0.0.1])
+        by localhost (mail.gruponetpc.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id p6m3I31eTvd4; Tue,  9 Nov 2021 22:22:16 -0500 (-05)
+Received: from [192.168.0.108] (unknown [93.182.105.113])
+        by mail.gruponetpc.com (Postfix) with ESMTPSA id B8D38866C61;
+        Tue,  9 Nov 2021 15:25:21 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: donation
+To:     Recipients <ecouso@mail.gruponetpc.com>
+From:   ecouso@mail.gruponetpc.com
+Date:   Tue, 09 Nov 2021 20:24:51 +0000
+Reply-To: stefanopessina35@gmail.com
+Message-Id: <20211109202521.B8D38866C61@mail.gruponetpc.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 10 Nov 2021 12:09:06 -0800 Srivatsa S. Bhat wrote:
->  DRM DRIVER FOR VMWARE VIRTUAL GPU
-> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
->  M:	Zack Rusin <zackr@vmware.com>
-> +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
->  L:	dri-devel@lists.freedesktop.org
->  S:	Supported
->  T:	git git://anongit.freedesktop.org/drm/drm-misc
 
-It'd be preferable for these corporate entries to be marked or
-otherwise distinguishable so that we can ignore them when we try 
-to purge MAINTAINERS from developers who stopped participating.
 
-These addresses will never show up in a commit tag which is normally
-sign of inactivity.
+Hallo,
+
+Ich bin STEFANO PESSINA. Ich bin ein italienisch-monegassischer Milliardär und stellvertretender Vorsitzender, Chief Executive Officer (CEO) und größter Einzelaktionär der Walgreens Boots Alliance. Au   fgrund dieser aktuellen Situation (Corona-Virus), die sich auf der ganzen Welt ausbreitet, spenden ich selbst und andere 19 italienische Milliardäre mehr als 45 Millionen US-Dollar, um das Coronavirus in Italien zu bekämpfen. Ich habe auch zugesagt, 1.500.000,00 € an Einzelpersonen, Kirchen und Waisenhäuser usw. zu spenden. Ich habe mich entschieden, Ihnen 1.500.000,00 € zu spenden, da Ihre E-Mail-Adresse zu den glücklichen Gewinnern gehört. Wenn Sie an meiner Spende interessiert sind, kontaktieren Sie mich für weitere Informationen. Du kannst auch über den untenstehenden Link mehr über mich lesen
+
+https://en.wikipedia.org/wiki/Stefano_Pessina
+
+Herzlicher Gruss
+Stellvertretender Vorsitzender und Geschäftsführer,
+Walgreens Boots-Allianz.
+Stefano Pessina
+
+E-Mail: stefanopessina35@gmail.com
+
+
+
