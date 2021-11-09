@@ -2,18 +2,18 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D7044ADBC
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 13:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEC744ADB5
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 13:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245033AbhKIMsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Nov 2021 07:48:42 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:30930 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343650AbhKIMsZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 07:48:25 -0500
+        id S244498AbhKIMsi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Nov 2021 07:48:38 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:27189 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245080AbhKIMsX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 9 Nov 2021 07:48:23 -0500
 Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4HpSJ859dlzcZxQ;
-        Tue,  9 Nov 2021 20:40:40 +0800 (CST)
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4HpSMt3K2Bz8vJn;
+        Tue,  9 Nov 2021 20:43:54 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
  dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -25,10 +25,12 @@ Received: from localhost.localdomain (10.67.165.24) by
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH rdma-core 0/7] libhns: Cleanup about removing redundant code and cleaning up static alarms
-Date:   Tue, 9 Nov 2021 20:40:56 +0800
-Message-ID: <20211109124103.54326-1-liangwenpeng@huawei.com>
+Subject: [PATCH rdma-core 1/7] libhns: Remove unused macros
+Date:   Tue, 9 Nov 2021 20:40:57 +0800
+Message-ID: <20211109124103.54326-2-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20211109124103.54326-1-liangwenpeng@huawei.com>
+References: <20211109124103.54326-1-liangwenpeng@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -40,34 +42,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Patch #1~#3: Remove redundant code.
-Patch #4~#5: Fix wrong type of printf format, variables and fields.
-Patch #6~#7: Other miscellaneous cleanup.
+From: Lang Cheng <chenglang@huawei.com>
 
-Lang Cheng (1):
-  libhns: Remove unused macros
+These macros used to work, but are no longer used, they should be removed.
 
-Wenpeng Liang (1):
-  libhns: Remove unsupported QP type
+Fixes: 516b8d4e4ebe ("providers: Use the new match_device and allocate_device ops")
+Fixes: 887b78c80224 ("libhns: Add initial main frame")
+Signed-off-by: Lang Cheng <chenglang@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+---
+ providers/hns/hns_roce_u.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Xinhao Liu (4):
-  libhns: Fix wrong print format for unsigned type
-  libhns: Fix wrong type of variables and fields
-  libhns: The content of the header file should be protected with
-    #define
-  libhns: The function declaration should be the same as the definition
-
-Yixing Liu (1):
-  libhns: Remove redundant variable initialization
-
- providers/hns/hns_roce_u.c       |  3 ---
- providers/hns/hns_roce_u.h       | 10 +++++-----
- providers/hns/hns_roce_u_db.h    |  6 +++---
- providers/hns/hns_roce_u_hw_v1.c |  7 +++----
- providers/hns/hns_roce_u_hw_v2.c | 16 +++++++---------
- providers/hns/hns_roce_u_verbs.c |  2 +-
- 6 files changed, 19 insertions(+), 25 deletions(-)
-
---
+diff --git a/providers/hns/hns_roce_u.c b/providers/hns/hns_roce_u.c
+index 3b31ad37..9dc4905d 100644
+--- a/providers/hns/hns_roce_u.c
++++ b/providers/hns/hns_roce_u.c
+@@ -41,9 +41,6 @@
+ 
+ static void hns_roce_free_context(struct ibv_context *ibctx);
+ 
+-#define HID_LEN			15
+-#define DEV_MATCH_LEN		128
+-
+ #ifndef PCI_VENDOR_ID_HUAWEI
+ #define PCI_VENDOR_ID_HUAWEI			0x19E5
+ #endif
+-- 
 2.33.0
 
