@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C896B44B765
-	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 23:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABC844B7E1
+	for <lists+linux-rdma@lfdr.de>; Tue,  9 Nov 2021 23:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343960AbhKIWew (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 9 Nov 2021 17:34:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
+        id S1344223AbhKIWiM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 9 Nov 2021 17:38:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344515AbhKIWc3 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:32:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0934A61AA2;
-        Tue,  9 Nov 2021 22:21:25 +0000 (UTC)
+        id S1344690AbhKIWgL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:36:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 104CE6135E;
+        Tue,  9 Nov 2021 22:22:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496486;
-        bh=mb8KwGPagJg7TMbYccfPOKOsxq3fYz/MuaH+/kw2nSc=;
+        s=k20201202; t=1636496558;
+        bh=MbljPlGWIgZ6aE1b8hrYn73E3WqClBJ8p6vdASrke7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MY2D2btY4r7unOYem9ufwaWCuejn05Zy/qwr4XQXLeYilwMTRDG8aDbmThmdoSfHL
-         c925AqqLLIo7Yc+ngifN82qPBbOIc36nwkKd2fn1Mh/mB9CL+A32fHme6gKN0dGWMM
-         hxNBHqrYbrAi8GGg86/G/zXSJqYqXR/AVG+b8c6gfjo2Siz10Tsd5wWgg+e8F3DO/x
-         makATbFhb5MpciIcVxTlZjeqpCrbqprHz/mA7OS4ySNFAeRkBhkzjSSTibS/ykc33n
-         MORek7xMlilC8/J+Gdqwm8cEPaMIavzSVQGny5YCMObRu8LuB0xIgoI3gN9Kn5G6He
-         PsK1IH5Hu5pJw==
+        b=XeLlNtN/+fgyCZBLvrHaW48hMpbMYXpFg2JTvgAGIhzicK1P2N+clONk0Qgkzrrf2
+         WGRq3jq+Z0AH/aY4wowFlv9VLLKwOpp5pc22rFb6jX/8ysvMv2B3OBRH+5UYIihrPH
+         Kq7giJlv36hWwvLGmyuYFPTLIW4LDxmndCOAb7bp915zhCoNlFE570S3o5PU+pumK0
+         FTCxMG8tlMH/DTimg5tb+y0GED73xQgk4WAWnKxeG9tCiUmJkQRWurnaaJRgxj+Cj1
+         tEFwlhAbe5p9ahsFgcAVk76rEOsuYFePl1qor7u7xmTleDHAT9bpSN5ZegymJuuSuY
+         +oMlUomBK30sg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
@@ -30,12 +30,12 @@ Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
         Sasha Levin <sashal@kernel.org>, dledford@redhat.com,
         sean.hefty@intel.com, hal.rosenstock@gmail.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/50] RDMA/bnxt_re: Check if the vlan is valid before reporting
-Date:   Tue,  9 Nov 2021 17:20:25 -0500
-Message-Id: <20211109222103.1234885-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 07/30] RDMA/bnxt_re: Check if the vlan is valid before reporting
+Date:   Tue,  9 Nov 2021 17:22:01 -0500
+Message-Id: <20211109222224.1235388-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109222103.1234885-1-sashal@kernel.org>
-References: <20211109222103.1234885-1-sashal@kernel.org>
+In-Reply-To: <20211109222224.1235388-1-sashal@kernel.org>
+References: <20211109222224.1235388-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -62,10 +62,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/infiniband/hw/bnxt_re/ib_verbs.c b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-index 441952a5eca4a..10d77f50f818b 100644
+index a96f9142fe08e..dd006b177b544 100644
 --- a/drivers/infiniband/hw/bnxt_re/ib_verbs.c
 +++ b/drivers/infiniband/hw/bnxt_re/ib_verbs.c
-@@ -3368,8 +3368,11 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+@@ -3081,8 +3081,11 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
  				      struct ib_wc *wc,
  				      struct bnxt_qplib_cqe *cqe)
  {
@@ -77,7 +77,7 @@ index 441952a5eca4a..10d77f50f818b 100644
  	wc->opcode = IB_WC_RECV;
  	wc->status = __rc_to_ib_wc_status(cqe->status);
  
-@@ -3381,9 +3384,12 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
+@@ -3094,9 +3097,12 @@ static void bnxt_re_process_res_ud_wc(struct bnxt_re_qp *qp,
  		memcpy(wc->smac, cqe->smac, ETH_ALEN);
  		wc->wc_flags |= IB_WC_WITH_SMAC;
  		if (cqe->flags & CQ_RES_UD_FLAGS_META_FORMAT_VLAN) {
