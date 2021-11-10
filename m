@@ -2,118 +2,218 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DBB344C3F2
-	for <lists+linux-rdma@lfdr.de>; Wed, 10 Nov 2021 16:03:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1DDA44C5CC
+	for <lists+linux-rdma@lfdr.de>; Wed, 10 Nov 2021 18:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhKJPFx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 10 Nov 2021 10:05:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232617AbhKJPFd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 10 Nov 2021 10:05:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C4C3560F90;
-        Wed, 10 Nov 2021 15:02:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636556566;
-        bh=5m/zRffgKv16PZlxNb3w4yArR959Ngwu79vxZSMlMVs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fXT8ePPs1hd0pBDwqMuWtVmwRtsw3LO6XpqrMg4QKLDe0QwuizjV3vaZbM48nI/QA
-         VBZsAgTRtCrwtkyLeS6Jx9FLF7lXuZxEEZivN62hE8rn7af+7ifLQREQ5oq/bZc1UZ
-         DoQz3XVxkjJSgit2ylgZMtaF4DyAelsew03Oyj1236Oj7CwocZJy6nVkE4yv14RF40
-         dxUjxnlJo7SJK98dDjO/tOkgky/2ZD2vhRvwDMQaCWKYwBAYCed0+SMSSfvAulVX0N
-         9v58HtpmMb8RGbs7getQ0/o4U3kwk7o2XX6rJBRtaqSRvqkc0K2Zfto44wOMAA2t17
-         5RBSlu2TPRO9A==
-Date:   Wed, 10 Nov 2021 17:02:42 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        kernel test robot <lkp@intel.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH rdma-rc] RDMA/netlink: Annotate unused function that is
- needed for compilation check
-Message-ID: <YYvfEm0fSBxRjCk4@unreal>
-References: <4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com>
- <20211108123639.GT2744544@nvidia.com>
- <YYkcV9g8E3KhE92h@unreal>
- <20211108124839.GW2744544@nvidia.com>
- <YYvVL8myawsp49RB@unreal>
- <20211110144244.GU1740502@nvidia.com>
- <YYvcvUZpGfQerupd@unreal>
- <20211110145442.GV1740502@nvidia.com>
+        id S231444AbhKJRTo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 10 Nov 2021 12:19:44 -0500
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:48272 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230471AbhKJRTn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 10 Nov 2021 12:19:43 -0500
+Received: from [128.177.79.46] (helo=csail.mit.edu)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1mkrDM-000Nx5-Kq; Wed, 10 Nov 2021 12:16:48 -0500
+Date:   Wed, 10 Nov 2021 09:20:00 -0800
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+To:     Joe Perches <joe@perches.com>
+Cc:     Nadav Amit <namit@vmware.com>, Juergen Gross <jgross@suse.com>,
+        X86 ML <x86@kernel.org>, Pv-drivers <Pv-drivers@vmware.com>,
+        Vivek Thampi <vithampi@vmware.com>,
+        Vishal Bhakta <vbhakta@vmware.com>,
+        Ronak Doshi <doshir@vmware.com>,
+        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        Zack Rusin <zackr@vmware.com>, Deep Shah <sdeep@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        Keerthana Kalyanasundaram <keerthanak@vmware.com>,
+        Srivatsa Bhat <srivatsab@vmware.com>,
+        Anish Swaminathan <anishs@vmware.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 2/2] MAINTAINERS: Mark VMware mailing list entries as
+ private
+Message-ID: <20211110172000.GA121926@csail.mit.edu>
+References: <163640336232.62866.489924062999332446.stgit@srivatsa-dev>
+ <163640339370.62866.3435211389009241865.stgit@srivatsa-dev>
+ <5179a7c097e0bb88f95642a394f53c53e64b66b1.camel@perches.com>
+ <cb03ca42-b777-3d1a-5aba-b01cd19efa9a@csail.mit.edu>
+ <dcbd19fcd1625146f4db267f84abd7412513d20e.camel@perches.com>
+ <5C24FB2A-D2C0-4D95-A0C0-B48C4B8D5AF4@vmware.com>
+ <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211110145442.GV1740502@nvidia.com>
+In-Reply-To: <1875b0458294d23d8e3260d2824894b095d6a62d.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 10, 2021 at 10:54:42AM -0400, Jason Gunthorpe wrote:
-> On Wed, Nov 10, 2021 at 04:52:45PM +0200, Leon Romanovsky wrote:
-> > On Wed, Nov 10, 2021 at 10:42:44AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Nov 10, 2021 at 04:20:31PM +0200, Leon Romanovsky wrote:
-> > > > On Mon, Nov 08, 2021 at 08:48:39AM -0400, Jason Gunthorpe wrote:
-> > > > > On Mon, Nov 08, 2021 at 02:47:19PM +0200, Leon Romanovsky wrote:
-> > > > > > On Mon, Nov 08, 2021 at 08:36:39AM -0400, Jason Gunthorpe wrote:
-> > > > > > > On Sun, Nov 07, 2021 at 08:40:47AM +0200, Leon Romanovsky wrote:
-> > > > > > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > > > 
-> > > > > > > > >> drivers/infiniband/core/nldev.c:2543:1: warning: unused function '__chk_RDMA_NL_NLDEV'
-> > > > > > > >    MODULE_ALIAS_RDMA_NETLINK(RDMA_NL_NLDEV, 5);
-> > > > > > > >    ^
-> > > > > > > > 
-> > > > > > > > Fixes: e3bf14bdc17a ("rdma: Autoload netlink client modules")
-> > > > > > > > Reported-by: kernel test robot <lkp@intel.com>
-> > > > > > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > > > > > >  include/rdma/rdma_netlink.h | 2 +-
-> > > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > > > 
-> > > > > > > > diff --git a/include/rdma/rdma_netlink.h b/include/rdma/rdma_netlink.h
-> > > > > > > > index 2758d9df71ee..c2a79aeee113 100644
-> > > > > > > > +++ b/include/rdma/rdma_netlink.h
-> > > > > > > > @@ -30,7 +30,7 @@ enum rdma_nl_flags {
-> > > > > > > >   * constant as well and the compiler checks they are the same.
-> > > > > > > >   */
-> > > > > > > >  #define MODULE_ALIAS_RDMA_NETLINK(_index, _val)                                \
-> > > > > > > > -	static inline void __chk_##_index(void)                                \
-> > > > > > > > +	static inline void __maybe_unused __chk_##_index(void)                 \
-> > > > > > > >  	{                                                                      \
-> > > > > > > >  		BUILD_BUG_ON(_index != _val);                                  \
-> > > > > > > >  	}                                                                      \
-> > > > > > > 
-> > > > > > > This is a compiler bug, static inline should never need maybe_unsed
-> > > > > > 
-> > > > > > I saw many examples like this in arch code.
-> > > > > > For example, commit 4ac214574d2d ("KVM: MMU: mark role_regs and role accessors as maybe unused")
-> > > > > > 
-> > > > > > It is better to fix and forget instead of trying to fix clang.
-> > > > > 
-> > > > > "Because clang reports warnings for unused inlines declared in a .c file,
-> > > > > mark both sets of accessors as __maybe_unused."
-> > > > > 
-> > > > > Yikes, what a thing to do.
-> > > > 
-> > > > Jason,
-> > > > 
-> > > > I don't see this patch in the tree and patchworks status says that it is "new".
-> > > > https://patchwork.kernel.org/project/linux-rdma/patch/4a8101919b765e01d7fde6f27fd572c958deeb4a.1636267207.git.leonro@nvidia.com/
-> > > > 
-> > > > Should I do anything extra to progress with this patch?
+On Tue, Nov 09, 2021 at 01:57:31PM -0800, Joe Perches wrote:
+> On Tue, 2021-11-09 at 00:58 +0000, Nadav Amit wrote:
+> > > On Nov 8, 2021, at 4:37 PM, Joe Perches <joe@perches.com> wrote:
+> > > On Mon, 2021-11-08 at 16:22 -0800, Srivatsa S. Bhat wrote:
 > > > 
-> > > It is merge window, I'm not doing anything with patches until rc1
-> > > unless it is an emergency and a random clang failure on mips isn't
-> > > an emergency.
-> > 
-> > ok, I didn't know that build failure is not important.
+> > > So it's an exploder not an actual maintainer and it likely isn't
+> > > publically archived with any normal list mechanism.
+> > > 
+> > > So IMO "private" isn't appropriate.  Neither is "L:"
+> > > Perhaps just mark it as what it is as an "exploder".
+> > > 
+> > > Or maybe these blocks should be similar to:
+> > > 
+> > > M:	Name of Lead Developer <somebody@vmware.com>
+> > > M:	VMware <foo> maintainers <linux-<foo>-maintainers@vmlinux.com>
 > 
-> It is a warning then the clang mips compiler crashes, so <shrug>
+> Maybe adding entries like
 > 
-> None of this is new code, frankly I'm confused why we are only seeing
-> it now since I'm running clang 12 builds standard.. Is it W=1 or something?
+> M:	Named maintainer <whoever@vmware.com>
+> R:	VMware <foo> reviewers <linux-<foo>-maintainers@vmware.com>
+> 
+> would be best/simplest.
+> 
 
-Yes, it is W=1, the failure was reported 5 months ago, but to wrong person :)
-https://lore.kernel.org/lkml/202105122353.5x1Ez6Dh-lkp@intel.com/
+Sure, that sounds good to me. I also considered adding "(email alias)"
+like Juergen suggested, but I think the R: entry is clear enough.
+Please find the updated patch below.
 
-> 
-> Jason
+---
+
+From f66faa238facf504cfc66325912ce7af8cbf79ec Mon Sep 17 00:00:00 2001
+From: "Srivatsa S. Bhat (VMware)" <srivatsa@csail.mit.edu>
+Date: Mon, 8 Nov 2021 11:46:57 -0800
+Subject: [PATCH v2 2/2] MAINTAINERS: Mark VMware mailing list entries as email
+ aliases
+
+VMware mailing lists in the MAINTAINERS file are private lists meant
+for VMware-internal review/notification for patches to the respective
+subsystems. Anyone can post to these addresses, but there is no public
+read access like open mailing lists, which makes them more like email
+aliases instead (to reach out to reviewers).
+
+So update all the VMware mailing list references in the MAINTAINERS
+file to mark them as such, using "R: email-alias@vmware.com".
+
+Signed-off-by: Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+Cc: Zack Rusin <zackr@vmware.com>
+Cc: Nadav Amit <namit@vmware.com>
+Cc: Vivek Thampi <vithampi@vmware.com>
+Cc: Vishal Bhakta <vbhakta@vmware.com>
+Cc: Ronak Doshi <doshir@vmware.com>
+Cc: pv-drivers@vmware.com
+Cc: linux-graphics-maintainer@vmware.com
+Cc: dri-devel@lists.freedesktop.org
+Cc: linux-rdma@vger.kernel.org
+Cc: linux-scsi@vger.kernel.org
+Cc: netdev@vger.kernel.org
+Cc: linux-input@vger.kernel.org
+---
+ MAINTAINERS | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 118cf8170d02..4372d79027e9 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -6134,8 +6134,8 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
+ F:	drivers/gpu/drm/vboxvideo/
+ 
+ DRM DRIVER FOR VMWARE VIRTUAL GPU
+-M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+ M:	Zack Rusin <zackr@vmware.com>
++R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
+ L:	dri-devel@lists.freedesktop.org
+ S:	Supported
+ T:	git git://anongit.freedesktop.org/drm/drm-misc
+@@ -14189,7 +14189,7 @@ F:	include/uapi/linux/ppdev.h
+ PARAVIRT_OPS INTERFACE
+ M:	Juergen Gross <jgross@suse.com>
+ M:	Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+-L:	pv-drivers@vmware.com (private)
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	virtualization@lists.linux-foundation.org
+ L:	x86@kernel.org
+ S:	Supported
+@@ -20032,7 +20032,7 @@ F:	tools/testing/vsock/
+ 
+ VMWARE BALLOON DRIVER
+ M:	Nadav Amit <namit@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	drivers/misc/vmw_balloon.c
+@@ -20040,7 +20040,7 @@ F:	drivers/misc/vmw_balloon.c
+ VMWARE HYPERVISOR INTERFACE
+ M:	Srivatsa S. Bhat (VMware) <srivatsa@csail.mit.edu>
+ M:	Alexey Makhalov <amakhalov@vmware.com>
+-L:	pv-drivers@vmware.com (private)
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	virtualization@lists.linux-foundation.org
+ L:	x86@kernel.org
+ S:	Supported
+@@ -20050,14 +20050,14 @@ F:	arch/x86/kernel/cpu/vmware.c
+ 
+ VMWARE PVRDMA DRIVER
+ M:	Adit Ranadive <aditr@vmware.com>
+-M:	VMware PV-Drivers <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-rdma@vger.kernel.org
+ S:	Maintained
+ F:	drivers/infiniband/hw/vmw_pvrdma/
+ 
+ VMware PVSCSI driver
+ M:	Vishal Bhakta <vbhakta@vmware.com>
+-M:	VMware PV-Drivers <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-scsi@vger.kernel.org
+ S:	Maintained
+ F:	drivers/scsi/vmw_pvscsi.c
+@@ -20065,7 +20065,7 @@ F:	drivers/scsi/vmw_pvscsi.h
+ 
+ VMWARE VIRTUAL PTP CLOCK DRIVER
+ M:	Vivek Thampi <vithampi@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/ptp/ptp_vmw.c
+@@ -20073,14 +20073,14 @@ F:	drivers/ptp/ptp_vmw.c
+ VMWARE VMCI DRIVER
+ M:	Jorgen Hansen <jhansen@vmware.com>
+ M:	Vishnu Dasa <vdasa@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-kernel@vger.kernel.org
+-L:	pv-drivers@vmware.com (private)
+ S:	Maintained
+ F:	drivers/misc/vmw_vmci/
+ 
+ VMWARE VMMOUSE SUBDRIVER
+-M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
+-M:	"VMware, Inc." <pv-drivers@vmware.com>
++R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	linux-input@vger.kernel.org
+ S:	Maintained
+ F:	drivers/input/mouse/vmmouse.c
+@@ -20088,7 +20088,7 @@ F:	drivers/input/mouse/vmmouse.h
+ 
+ VMWARE VMXNET3 ETHERNET DRIVER
+ M:	Ronak Doshi <doshir@vmware.com>
+-M:	pv-drivers@vmware.com
++R:	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>
+ L:	netdev@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/vmxnet3/
+-- 
+2.25.1
+
