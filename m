@@ -2,83 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A410A44D16A
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 06:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1081944D2AA
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 08:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229779AbhKKFWw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Nov 2021 00:22:52 -0500
-Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:34552 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229814AbhKKFWw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 11 Nov 2021 00:22:52 -0500
-Received: from omf18.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 8B8FC101EABB1;
-        Thu, 11 Nov 2021 05:20:00 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf18.hostedemail.com (Postfix) with ESMTPA id 1C9ADC0002F4;
-        Thu, 11 Nov 2021 05:19:53 +0000 (UTC)
-Message-ID: <d7f3fec79287a149d6edc828583a771c84646b42.camel@perches.com>
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-From:   Joe Perches <joe@perches.com>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
-        Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, amakhalov@vmware.com,
-        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
-        keerthanak@vmware.com, srivatsab@vmware.com, anishs@vmware.com,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org
-Date:   Wed, 10 Nov 2021 21:19:53 -0800
-In-Reply-To: <20211110173935.45a9f495@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
-         <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
-         <20211110173935.45a9f495@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        id S229706AbhKKHvK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Nov 2021 02:51:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229564AbhKKHvJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Nov 2021 02:51:09 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A362EC061766
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Nov 2021 23:48:20 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id t18so1351852edd.8
+        for <linux-rdma@vger.kernel.org>; Wed, 10 Nov 2021 23:48:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=v/21umhyrxOr2VflNsFlIRcQduDyaxXokueRaWFoA54=;
+        b=cI7axKzDf2Os0rEMk0pNQ02TD0x1nnZ1joDXXbGRqf89n73pN3ABUjgggxTA89cCEN
+         93uSCHHcDDAs4jv8tYMKlDSxn58wDd5TIEphECENgIkLk60VrHxgyseSL1ddYDHIeKKg
+         xOJ4vLYyyatlITur2z/oxh6GXKa4UV/nLuKymID1eCbcKsoHPXxz8rTKXQ6Ooh1SdDhe
+         5yHPUi1M3BFV8Nrh42pztIiOOuedBXsiPqRIvQ841c/7E5nxf/GY2I9RWouZO6KdlbpJ
+         NLpjzhivJ4cIswXIMd+eXZ8OFQKNWxhJSjFfP9czQnpBvKjJk1CAZRE0tSJP82+rwuzN
+         LVOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=v/21umhyrxOr2VflNsFlIRcQduDyaxXokueRaWFoA54=;
+        b=UeVylkKzFPCTANTkTEAQ0NrUTfNFKX50OkdI4iOpjlcx2E6KSAef/ySo1UvEyctKoI
+         Qcz0a5loOWQHZGrNiWdUjofh1/WC/aBCL6oKBTLLagYA6Oz+k2MFw+nibPB6Xsbcl/IB
+         9C+6MsOmWoPMZiCaBKntQMEx/ky1oJyMu+Ez9MoJPWQuhkYdt0GDBRvQ9oKROvlyNNgD
+         iQ06Ynv2nvtRRGo6jCZV2PAUlad0U8pcskQJrV9eEZ6vPyLbEdU+/My/aeBNw+nKdvjF
+         DdfPX2qQNHLLJQMz1tgU2UjtEdcKXRLX+ihJ+sBUd1Xr4tZaON0gO8lnpn1/ad4KhBIy
+         /TfQ==
+X-Gm-Message-State: AOAM531B3Zj30aqqQ/4KvhcpT3HmRHAE0FzAv24KdpjZnQFg69GLsL+U
+        x7+CfyUlm/9C5bxyFdn1DKOUJfSSzR1/4oxMKdk1il8KX59U4NUh
+X-Google-Smtp-Source: ABdhPJwsEc17MfCycc9fFeV2wCtTE4UTyTGsW9ywRSz/lJZIL5mNRFV3fBDjFGrNl8NsJ7myCsGi6Cm7JvPFEAwOa/o=
+X-Received: by 2002:a17:907:1687:: with SMTP id hc7mr6897355ejc.232.1636616899182;
+ Wed, 10 Nov 2021 23:48:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: ztcifz3jtb55m8w5484sjq3xynbqoduh
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 1C9ADC0002F4
-X-Spam-Status: No, score=-1.31
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+SDIVTNx+3zME4BO7OMP/EAp4Y+zdx/2M=
-X-HE-Tag: 1636607993-497590
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Thu, 11 Nov 2021 08:48:08 +0100
+Message-ID: <CAMGffEmC07MwNsTHQ19OwUonG4zgYsx0vj+R__9as3E5EduY8A@mail.gmail.com>
+Subject: Missing infiniband network interfaces after update to 5.14/5.15
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Haris Iqbal <haris.iqbal@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2021-11-10 at 17:39 -0800, Jakub Kicinski wrote:
-> On Wed, 10 Nov 2021 12:09:06 -0800 Srivatsa S. Bhat wrote:
-> >  DRM DRIVER FOR VMWARE VIRTUAL GPU
-> > -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
-> >  M:	Zack Rusin <zackr@vmware.com>
-> > +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
-> >  L:	dri-devel@lists.freedesktop.org
-> >  S:	Supported
-> >  T:	git git://anongit.freedesktop.org/drm/drm-misc
-> 
-> It'd be preferable for these corporate entries to be marked or
-> otherwise distinguishable so that we can ignore them when we try 
-> to purge MAINTAINERS from developers who stopped participating.
-> 
-> These addresses will never show up in a commit tag which is normally
-> sign of inactivity.
+Hi Jason, hi Leon,
 
-Funny.
+We are seeing exactly the same error reported here:
+https://bugzilla.redhat.com/show_bug.cgi?id=2014094
 
-The link below is from over 5 years ago.
+I suspect it's related to
+https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
 
-https://lore.kernel.org/lkml/1472081625.3746.217.camel@perches.com/
+Do you have any idea, what goes wrong?
 
-Almost all of those entries are still in MAINTAINERS.
-
-I think the concept of purging is a non-issue.
-
+Thanks!
+Jinpu Wang
