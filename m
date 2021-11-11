@@ -2,78 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABE744D789
-	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 14:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9129444DA51
+	for <lists+linux-rdma@lfdr.de>; Thu, 11 Nov 2021 17:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhKKNwB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 11 Nov 2021 08:52:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46756 "EHLO
+        id S234129AbhKKQ2N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 11 Nov 2021 11:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230177AbhKKNwA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Nov 2021 08:52:00 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF3EC061766
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Nov 2021 05:49:11 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id b15so24219959edd.7
-        for <linux-rdma@vger.kernel.org>; Thu, 11 Nov 2021 05:49:11 -0800 (PST)
+        with ESMTP id S234057AbhKKQ2N (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 11 Nov 2021 11:28:13 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6F0C061766
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Nov 2021 08:25:23 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id t11so12988507ljh.6
+        for <linux-rdma@vger.kernel.org>; Thu, 11 Nov 2021 08:25:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nv+hx8I3IHjCI05ZjVWGV/sj0+jd0uqD6OrAJdus9YA=;
-        b=U5PY7YJQv5S8LMsOGm14OqM8+lRkGDN6PRR8XmtLDjDn23rqHngROBq3dAwQYLLsPs
-         fpqDW1xFhdhG1ka/y4BJ8cysf2dat/JddltWlknWI7YPhJa08gQQ+GDqBA0vKmQtI9G1
-         e4HwUfEJJmcVAWktzR6SpymFcPifDobCog9YmyDUY+4Efr2aTAVqxbegvk3VLxBAqUrt
-         Px8nQnQ7HauiDIMs4ZZa3ir2QA9Xn0mwr0Ras40vu5GDZ4571khtzDd7YpYytplaeyto
-         VvW9hBqg2dZoxNHP1Ac8lkjIW8hOHlzEAwiQZ59ISdH0O8xtshpjis1y/5P5EhU8mHef
-         DPEA==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=M7smNyJOF/yPulcGrZwHJLuNjGCtvYvBxX8m2Xpwb6s=;
+        b=L+r5Vy2tt1W/naU9m7aWd/5mYPWQWd39VHFIlyUZuF6EXFPeoeFnn1Ntksg6bJ69CM
+         qjbvtjtYxuOhiBhe9NDYl5cQKvbPEV26UubXWCxv4sqTfNxOF23RCKEvg+fUk/OCYMPh
+         eQjjhqBC0XSWMtzZezKEy0tk0uKPUSD1zUGQknzaa3sM3qHeG88SN3zlLKkKgvjZEfGB
+         rRMKTn3zvCOn9Ia3Ao0TIZXVNF0HD2CQ70Xg39e+jt96Dhb8Vn4oMrpH3ukrKOIisVMP
+         cVD9oWlRFaxGtdwzDS8YQricNHIIpDVRqtncgJrgxr2J6b/8xXrjk5yLIhcspS0T6KiQ
+         ZVzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nv+hx8I3IHjCI05ZjVWGV/sj0+jd0uqD6OrAJdus9YA=;
-        b=O/QE+pGyjRLTTYg/m1zvCaj+kYA7Ytt+cJ/opPQj1A8ZpaifnNC/ch61U4KEws9lju
-         geMzuRFTHixm/edUgJDgpWYC/gPlju0YMk6HKyVyVaof3Wo8yXxwAlapS4IOXJLY+I4y
-         zDV8g+Ngy4Yqc7i817HkGKF4AjuTWTOoG41Alt02ElGNRgD225fRHvSCdnE7IgDZdsL0
-         ysJDGWj3VoBRb4uQevdxZjqx85pllNaZ8SymxiV3ismGXRscn1SnhK2R5JgXLPPPRv6f
-         AyG52bk2Vj4aUV95nvCogFHMGiu6f1Qx+qrEWVTmqZ3v63EjjjYSvranYF8Pz/KAPf8y
-         pNig==
-X-Gm-Message-State: AOAM5305J9DBIw9E3L62qMXQEDgvrxh/4wYYqY5GnxiVOfISBJT30MjI
-        spe9UGh7kSQQWzAsE1Ag/nrXRHuwSpExTMWTX3ZDjXP8IYUYBA==
-X-Google-Smtp-Source: ABdhPJw/NXC1E8jR3e44QZXCku1ttPGzXRrpuSSv/eaMqQm0l+9Sdmk5KxPp0qc0hY0wiU8I/B/qnZ5JiWp/0UWxIk0=
-X-Received: by 2002:a05:6402:1ac1:: with SMTP id ba1mr10260902edb.206.1636638550038;
- Thu, 11 Nov 2021 05:49:10 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=M7smNyJOF/yPulcGrZwHJLuNjGCtvYvBxX8m2Xpwb6s=;
+        b=16iAj7CSIWAIsIi1fTWDnBhXCchiNSDRQAHmzzLE+yoBOQiPa4sw1ElWmjeZHsikdE
+         IbWTFY+5NMWwfyilYhLEH9jL/STbG263TcYXMWMnrPfrQIpGr8rPU5dI7Vv+sgT6RaQ7
+         RJbxwAHuS/ZKO2JNnujUN4xIVcmmrw70CiBNijgOVFLvUdnW/pCV7MrOPiMkzhSmwxPZ
+         0DxTJuYDacyA3yS/ulvkCo/1KvVbovqB3gUq818sWPw08CkG3oBOFQQ4jvYA9Z0z1wqW
+         +sciCv2BFjzA7aHACcu77VTjEoOXgWO+RPRn8bTa3Mj5UYFXhj2dFgbjran4EKUrsYO4
+         3uyg==
+X-Gm-Message-State: AOAM530VfVtOftx/MmeIJoefT0yW3z5dq4AbqKDCHcFBgkLEQqpUp6/e
+        sUicL16uvZNCyrmsSSk5avQebVXnXWdf0i2F1WFBciBColOeFw==
+X-Google-Smtp-Source: ABdhPJzk8q/dMGkq/KsAjvVaprXSGTtkFWH/8etX0NQ0TIV1AwBtHOyrqPuqVeCSgzqWIp4P7sW2CYcZ93AWssvYhkw=
+X-Received: by 2002:a05:651c:50c:: with SMTP id o12mr7506640ljp.88.1636647921868;
+ Thu, 11 Nov 2021 08:25:21 -0800 (PST)
 MIME-Version: 1.0
-References: <CAMGffEmC07MwNsTHQ19OwUonG4zgYsx0vj+R__9as3E5EduY8A@mail.gmail.com>
- <20211111125845.GB876299@ziepe.ca>
-In-Reply-To: <20211111125845.GB876299@ziepe.ca>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Thu, 11 Nov 2021 14:48:59 +0100
-Message-ID: <CAMGffEn2wvEnmzc0xe=xYiCLqpphiHDBxCxqAELrBofbUAMQxw@mail.gmail.com>
-Subject: Re: Missing infiniband network interfaces after update to 5.14/5.15
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Haris Iqbal <haris.iqbal@ionos.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Thu, 11 Nov 2021 17:25:11 +0100
+Message-ID: <CAJpMwyjTggq-q8YQd7iPyp_TA29z5mWcEFAKe_Zg0=Z3a843qA@mail.gmail.com>
+Subject: Task hung while using RTRS with rxe and using "ip" utility to down
+ the interface
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     Jinpu Wang <jinpu.wang@ionos.com>,
+        Danil Kipnis <danil.kipnis@ionos.com>,
+        Aleksei Marov <aleksei.marov@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 11, 2021 at 1:58 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Thu, Nov 11, 2021 at 08:48:08AM +0100, Jinpu Wang wrote:
-> > Hi Jason, hi Leon,
-> >
-> > We are seeing exactly the same error reported here:
-> > https://bugzilla.redhat.com/show_bug.cgi?id=2014094
-> >
-> > I suspect it's related to
-> > https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
-> >
-> > Do you have any idea, what goes wrong?
->
-> instrument ib_setup_port_attrs() until you find why it failed
->
-> Jason
-Thanks Jason and Leon, I will add some debug messages and find out the reason.
+Hi,
+
+We are experiencing a hang while using RTRS with softROCE and
+transitioning the network interface down using ifdown command.
+
+Steps.
+1) Map an RNBD/RTRS device through softROCE port.
+2) Once mapped, transition the eth interface to down (on which the
+softROCE interface was created) using command "ifconfig <ethx> down",
+or "ip link set <ethx> down".
+3) The device errors out, and one can see RTRS connection errors in
+dmesg. So far so good.
+4) After a while, we see task hung traces in dmesg.
+
+[  550.866462] INFO: task kworker/1:2:170 blocked for more than 184 seconds.
+[  550.868820]       Tainted: G           O      5.10.42-pserver+ #84
+[  550.869337] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
+disables this message.
+[  550.869963] task:kworker/1:2     state:D stack:    0 pid:  170
+ppid:     2 flags:0x00004000
+[  550.870619] Workqueue: rtrs_server_wq rtrs_srv_close_work [rtrs_server]
+[  550.871134] Call Trace:
+[  550.871375]  __schedule+0x421/0x810
+[  550.871683]  schedule+0x46/0xb0
+[  550.871964]  schedule_timeout+0x20e/0x2a0
+[  550.872300]  ? internal_add_timer+0x44/0x70
+[  550.872650]  wait_for_completion+0x86/0xe0
+[  550.872994]  cm_destroy_id+0x18c/0x5a0 [ib_cm]
+[  550.873357]  ? _cond_resched+0x15/0x30
+[  550.873680]  ? wait_for_completion+0x33/0xe0
+[  550.874036]  _destroy_id+0x57/0x210 [rdma_cm]
+[  550.874395]  rtrs_srv_close_work+0xcc/0x250 [rtrs_server]
+[  550.874819]  process_one_work+0x1d4/0x370
+[  550.875156]  worker_thread+0x4a/0x3b0
+[  550.875471]  ? process_one_work+0x370/0x370
+[  550.875817]  kthread+0xfe/0x140
+[  550.876098]  ? kthread_park+0x90/0x90
+[  550.876453]  ret_from_fork+0x1f/0x30
+
+
+Our observations till now.
+
+1) Does not occur if we use "ifdown <ethx>" instead. There is a
+difference between the commands, but we are not sure if the above one
+should lead to a task hang.
+https://access.redhat.com/solutions/27166
+2) We have verified v5.10 and v.15.1 kernels, and both have this issue.
+3) We tried the same test with NvmeOf target and host over softROCE.
+We get the same task hang after doing "ifconfig .. down".
+
+[Tue Nov  9 14:28:51 2021] INFO: task kworker/1:1:34 blocked for more
+than 184 seconds.
+[Tue Nov  9 14:28:51 2021]       Tainted: G           O
+5.10.42-pserver+ #84
+[Tue Nov  9 14:28:51 2021] "echo 0 >
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[Tue Nov  9 14:28:51 2021] task:kworker/1:1     state:D stack:    0
+pid:   34 ppid:     2 flags:0x00004000
+[Tue Nov  9 14:28:51 2021] Workqueue: events
+nvmet_rdma_release_queue_work [nvmet_rdma]
+[Tue Nov  9 14:28:51 2021] Call Trace:
+[Tue Nov  9 14:28:51 2021]  __schedule+0x421/0x810
+[Tue Nov  9 14:28:51 2021]  schedule+0x46/0xb0
+[Tue Nov  9 14:28:51 2021]  schedule_timeout+0x20e/0x2a0
+[Tue Nov  9 14:28:51 2021]  ? internal_add_timer+0x44/0x70
+[Tue Nov  9 14:28:51 2021]  wait_for_completion+0x86/0xe0
+[Tue Nov  9 14:28:51 2021]  cm_destroy_id+0x18c/0x5a0 [ib_cm]
+[Tue Nov  9 14:28:51 2021]  ? _cond_resched+0x15/0x30
+[Tue Nov  9 14:28:51 2021]  ? wait_for_completion+0x33/0xe0
+[Tue Nov  9 14:28:51 2021]  _destroy_id+0x57/0x210 [rdma_cm]
+[Tue Nov  9 14:28:51 2021]  nvmet_rdma_free_queue+0x2e/0xc0 [nvmet_rdma]
+[Tue Nov  9 14:28:51 2021]  nvmet_rdma_release_queue_work+0x19/0x50 [nvmet_rdma]
+[Tue Nov  9 14:28:51 2021]  process_one_work+0x1d4/0x370
+[Tue Nov  9 14:28:51 2021]  worker_thread+0x4a/0x3b0
+[Tue Nov  9 14:28:51 2021]  ? process_one_work+0x370/0x370
+[Tue Nov  9 14:28:51 2021]  kthread+0xfe/0x140
+[Tue Nov  9 14:28:51 2021]  ? kthread_park+0x90/0x90
+[Tue Nov  9 14:28:51 2021]  ret_from_fork+0x1f/0x30
+
+Is this an known issue with ifconfig or the rxe driver? Thoughts?
+
+Regards
+-Haris
