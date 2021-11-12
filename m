@@ -2,110 +2,271 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F7044EC31
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 18:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FE1C44ED51
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 20:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbhKLRxk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Nov 2021 12:53:40 -0500
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:43694 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231919AbhKLRxj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 12 Nov 2021 12:53:39 -0500
-Received: from c-24-16-8-193.hsd1.wa.comcast.net ([24.16.8.193] helo=srivatsab-a02.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1mlahI-0006py-1E; Fri, 12 Nov 2021 12:50:44 -0500
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: Mark VMware mailing list entries as
- email aliases
-To:     Jakub Kicinski <kuba@kernel.org>, Joe Perches <joe@perches.com>
-Cc:     jgross@suse.com, x86@kernel.org, pv-drivers@vmware.com,
-        Zack Rusin <zackr@vmware.com>, Nadav Amit <namit@vmware.com>,
-        Vivek Thampi <vithampi@vmware.com>,
-        Vishal Bhakta <vbhakta@vmware.com>,
-        Ronak Doshi <doshir@vmware.com>,
-        linux-graphics-maintainer@vmware.com,
-        dri-devel@lists.freedesktop.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        linux-input@vger.kernel.org, amakhalov@vmware.com,
-        sdeep@vmware.com, virtualization@lists.linux-foundation.org,
-        keerthanak@vmware.com, srivatsab@vmware.com, anishs@vmware.com,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        srivatsa@csail.mit.edu
-References: <163657479269.84207.13658789048079672839.stgit@srivatsa-dev>
- <163657493334.84207.11063282485812745766.stgit@srivatsa-dev>
- <20211110173935.45a9f495@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <d7f3fec79287a149d6edc828583a771c84646b42.camel@perches.com>
- <20211111055554.4f257fd2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <fd9df647-4c1a-b4fb-159b-4876bc5cd0b6@csail.mit.edu>
-Date:   Fri, 12 Nov 2021 09:50:33 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.12.0
+        id S231795AbhKLThQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Nov 2021 14:37:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhKLThP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Nov 2021 14:37:15 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB99C061766
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 11:34:24 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id s14so9993622ilv.10
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 11:34:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=OVemCG8833KfSPadSkFQLeuvwkYJ9buVCXwa8gQcHsY=;
+        b=owHTEkNLhkZkWHZTU0NiGbCa1vRymflKaZ72wALI9gpDJXrwjaieUdQ+GTqTJL193z
+         VH5pCaXpmxh8z8iQlh5UPZHbihAWMvHhNUgXjZD8/RgtfFCa9K8dZudRmS6zYvx6aNqB
+         EdCjvritxwgiDyAz7BBGpcsSnaeJl1VfDh5MPCdui1ct51ZK4y+m4cttYxKrTFXxH1Kx
+         MyXB57c/iHuR38kxtKZRDK4e/3pYErjAcS9HpG5sMYbXh89ykMW2yGOtOma/6hzIyIq+
+         05B5cNTv/n6H7DHGuRbAeVe1NIkg6P9C1OAHVMJaRGRwgJs3nn7C80Wj39x6kWLDD/pt
+         Oubw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=OVemCG8833KfSPadSkFQLeuvwkYJ9buVCXwa8gQcHsY=;
+        b=eeaN/MJbG4fnvkaSWgWF+atDgwCuD2vgku3Oyzy3TL6kFNzw7w5GzqXc1ekOUkDM95
+         OO08dpAjICXUy/isdh84XT1cNdGbpbNHjIr02zn7yFaB+cfAQsOiIaFIPZjGg48qxhem
+         H7PtNuiwMMrq6CWUFQ6xkN2rhaDQ5xmDJevHj6O3k0xEfuD+goVAM9ugzdodxbVPp95H
+         Y8pfOZ+UeWYcZWYG8lCMdL7G67xmWKm+J5Bb5KH9fhoFTQiyjzsv5RigUjawuu0+Ni3O
+         ak0cz1KbU78wRFFxcGWw8mnxogrNce4afp9qPZhej6HRiHDOmSWhTB4WZb4IqBq6Du2S
+         AyUA==
+X-Gm-Message-State: AOAM5325YXEaHAVfXR0lt+huu+eWcAN3E2iplK9BPgja1sIh857Ze/nr
+        5+IVYwi1bfWTT7oJgy2NR0tRBUStCh4WyAWWaB3kbDMnDH4=
+X-Google-Smtp-Source: ABdhPJwDqne6O9BIedQE9VrVjQF9B3v3LNfvSG8kaU81vtn8lhSq/1mPQWOH9shHHh3RSPkoY7L+6JlF+QUMMw/LjAA=
+X-Received: by 2002:a05:6e02:1b8a:: with SMTP id h10mr10188303ili.237.1636745663415;
+ Fri, 12 Nov 2021 11:34:23 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20211111055554.4f257fd2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAOTVd1UNAJxmdSWdkmrEaW_CzuZrd5T1cmZHZDOk7fbnOopHQg@mail.gmail.com>
+In-Reply-To: <CAOTVd1UNAJxmdSWdkmrEaW_CzuZrd5T1cmZHZDOk7fbnOopHQg@mail.gmail.com>
+From:   Drew Fitch <dacomusai@gmail.com>
+Date:   Fri, 12 Nov 2021 11:34:12 -0800
+Message-ID: <CAOTVd1VaW3Q2nyfu=9W9sUHD=y=hBvXA=J6-_AMH6XvuzuDHdA@mail.gmail.com>
+Subject: Fwd: Infiniband mthca driver crash on linux kernel 5.11 and higher
+To:     linux-rdma@vger.kernel.org
+Content-Type: multipart/mixed; boundary="000000000000db563e05d09c8b03"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+--000000000000db563e05d09c8b03
+Content-Type: text/plain; charset="UTF-8"
 
-[ Resending since my previous reply didn't reach the mailing lists. ]
+To whom it may concern,
 
-On 11/11/21 5:55 AM, Jakub Kicinski wrote:
-> On Wed, 10 Nov 2021 21:19:53 -0800 Joe Perches wrote:
->> On Wed, 2021-11-10 at 17:39 -0800, Jakub Kicinski wrote:
->>> On Wed, 10 Nov 2021 12:09:06 -0800 Srivatsa S. Bhat wrote:  
->>>>  DRM DRIVER FOR VMWARE VIRTUAL GPU
->>>> -M:	"VMware Graphics" <linux-graphics-maintainer@vmware.com>
->>>>  M:	Zack Rusin <zackr@vmware.com>
->>>> +R:	VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>
->>>>  L:	dri-devel@lists.freedesktop.org
->>>>  S:	Supported
->>>>  T:	git git://anongit.freedesktop.org/drm/drm-misc  
->>>
->>> It'd be preferable for these corporate entries to be marked or
->>> otherwise distinguishable so that we can ignore them when we try 
->>> to purge MAINTAINERS from developers who stopped participating.
->>>
->>> These addresses will never show up in a commit tag which is normally
->>> sign of inactivity.  
->>
->> Funny.
->>
->> The link below is from over 5 years ago.
->>
->> https://lore.kernel.org/lkml/1472081625.3746.217.camel@perches.com/
->>
->> Almost all of those entries are still in MAINTAINERS.
->>
->> I think the concept of purging is a non-issue.
-> 
-> I cleaned networking in January and intend to do it again in 2 months.
-> See:
-> 
-> 054c4610bd05 MAINTAINERS: dccp: move Gerrit Renker to CREDITS
-> 4f3786e01194 MAINTAINERS: ipvs: move Wensong Zhang to CREDITS
-> 0e4ed0b62b5a MAINTAINERS: tls: move Aviad to CREDITS
-> c41efbf2ad56 MAINTAINERS: ena: remove Zorik Machulsky from reviewers
-> 5e62d124f75a MAINTAINERS: vrf: move Shrijeet to CREDITS
-> 09cd3f4683a9 MAINTAINERS: net: move Alexey Kuznetsov to CREDITS
-> 93089de91e85 MAINTAINERS: altx: move Jay Cliburn to CREDITS
-> 8b0f64b113d6 MAINTAINERS: remove names from mailing list maintainers
-> 
-I'm assuming the purging is not totally automated, is it? As long as
-the entries are informative to a human reader, it should be possible
-to skip the relevant ones when purging inactive entries.
+I hope this is the right place to submit Infiniband driver bug reports.
+As I understand it, cards that rely on the mthca driver are relatively
+old and I would understand if they are no longer supported.
+I've attached files detailing my tests and conditions and relevant
+dmesg snippets. If there is any other information I can provide, or
+somewhere else I should send this, please let me know.
 
-I believe this patch makes the situation better than it is currently
-(at least for the human reader), by marking lists without public
-read-access in a format that is more appropriate. In the future, we
-could perhaps improve on it to ease automation too, but for now I
-think it is worthwhile to merge this change (unless there are strong
-objections or better alternatives that everyone agrees on).
+Thanks in advance!
+Andrew
 
-Regards,
-Srivatsa
+--000000000000db563e05d09c8b03
+Content-Type: text/plain; charset="US-ASCII"; name="Infiniband MTHCA module crash.txt"
+Content-Disposition: attachment; 
+	filename="Infiniband MTHCA module crash.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <17d1579797d72c3b93e1>
+X-Attachment-Id: 17d1579797d72c3b93e1
+
+SW5maW5pYmFuZCBNVEhDQSBtb2R1bGUgY3Jhc2gNCg0KV29ya2luZyBvbiBVYnVudHUgMjAuMDQg
+a2VybmVsIDUuNA0KQ3Jhc2hpbmcgb24gQWxwaW5lIGtlcm5lbCA1LjE1LjEsIFhhbm1vZCBrZXJu
+ZWwgNS4xNC4xNywgVWJ1bnR1IDIxLjA0IGtlcm5lbCA1LjExDQpSb290ZnMgaXMgQWxwaW5lIExp
+bnV4IEVkZ2UgKG5mcyBzaGFyZWQgcm9vdGZzKQ0KYWxsIG5vZGVzIHJ1biB0aGUgc2FtZSByb290
+ZnMgcmVnYXJkbGVzcyBvZiBrZXJuZWwNCmFsbCBjYXJkcyBoYXZlIHRoZSBsYXRlc3QgZmlybXdh
+cmUuIFN3aXRjaCBpcyBhbiBJUzUwMjIuDQoNCk9wZW5TTSB2ZXJzaW9ucyB0ZXN0ZWQ6DQpEaXN0
+cmlidXRpb24gdmVyc2lvbihBbHBpbmUgVGVzdGluZyk7IE9GRUQgMy4zLjIwICh3aXRoIGFscGlu
+ZSBtdXNsIGZpeGVzIHBhdGNoKTsgbGludXgtcmRtYSAoYWxzbyB3aXRoIGFscGluZSBtdXNsIGZp
+eGVzIHBhdGNoKTsgVWJ1bnR1IDIwLjA0IGRpc3RyaWJ1dGlvbiAocnVuIGZyb20gY2hyb290KS4g
+DQoNCkNyYXNoIGNvbmRpdGlvbnMgYXMgdGVzdGVkOg0KUnVuIG9wZW5zbShhbnkgdmVyc2lvbiBs
+aXN0ZWQgYWJvdmUpDQpPcGVuc20gc2l0cyBhdCAiRW50ZXJpbmcgRElTQ09WRVJZIHN0YXRlIg0K
+ZG1lc2cgZW50cmllcyBhcyBhdHRhY2hlZA0KbW9kdWxlIGliX210aGNhIGNhbiBubyBsb25nZXIg
+YmUgdW5sb2FkZWQNCg0KV29ya2luZyBjb25kaXRpb25zICh3aXRoIFVidW50dSAyMC4wNCBrZXJu
+ZWwgNS40KQ0KUnVuIHVwIG9wZW5zbSBzYW1lIGFzIGFib3ZlDQoNCmlwb2liIGludGVyZmFjZXMg
+Y2FuIGJlIGJyb3VnaHQgdXAgYW5kIHBpbmcgb3RoZXIgbm9kZXMgdGhhdCBzaGFyZSB0aGUgc2Ft
+ZSBrZXJuZWwgKDUuNCkNCg0KTm90ZToNCk5vZGVzIHRoYXQgYXJlIG5vdCBydW5uaW5nIGtlcm5l
+bCA1LjQgb24gdGhlIHNhbWUgc3dpdGNoIHdpbGwgaGF2ZSB0aGVpciBrZXJuZWwgbW9kdWxlcyBj
+cmFzaCB3aGVuIG9wZW5zbSBpcyBydW4gb24gYSBub2RlIHJ1bm5pbmcga2VybmVsIDUuNA==
+--000000000000db563e05d09c8b03
+Content-Type: text/plain; charset="US-ASCII"; 
+	name="Infiniband MTHCA module crash - 5.15.1.txt"
+Content-Disposition: attachment; 
+	filename="Infiniband MTHCA module crash - 5.15.1.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <17d157cd5f3865e30392>
+X-Attachment-Id: 17d157cd5f3865e30392
+
+SW5maW5pYmFuZCBNVEhDQSBtb2R1bGUgY3Jhc2ggLSA1LjE1LjENCg0KWyAgIDQyLjU0NTQ1Nl0g
+QlVHOiB1bmFibGUgdG8gaGFuZGxlIHBhZ2UgZmF1bHQgZm9yIGFkZHJlc3M6IDAwMDAwMDAwMDAw
+NDAwMjgNClsgICA0Mi41NDU0NjRdICNQRjogc3VwZXJ2aXNvciByZWFkIGFjY2VzcyBpbiBrZXJu
+ZWwgbW9kZQ0KWyAgIDQyLjU0NTQ2N10gI1BGOiBlcnJvcl9jb2RlKDB4MDAwMCkgLSBub3QtcHJl
+c2VudCBwYWdlDQpbICAgNDIuNTQ1NDY5XSBQR0QgMCBQNEQgMCANClsgICA0Mi41NDU0NzFdIE9v
+cHM6IDAwMDAgWyMxXSBTTVAgTk9QVEkNClsgICA0Mi41NDU0NzRdIENQVTogMTYgUElEOiA1MDkg
+Q29tbToga3dvcmtlci91NjU6MCBUYWludGVkOiBQICAgICAgICAgICBPICAgICAgNS4xNS4xLTMt
+bHRzICM0LUFscGluZQ0KWyAgIDQyLjU0NTQ3OF0gSGFyZHdhcmUgbmFtZTogTWljcm8tU3RhciBJ
+bnRlcm5hdGlvbmFsIENvLiwgTHRkLiBNUy03QTM0L0IzNTAgUEMgTUFURSAoTVMtN0EzNCksIEJJ
+T1MgQS5MUiAwNy8wMi8yMDIwDQpbICAgNDIuNTQ1NDgwXSBXb3JrcXVldWU6IGliLWNvbXAtdW5i
+LXdxIGliX2NxX3BvbGxfd29yayBbaWJfY29yZV0NClsgICA0Mi41NDU0OTldIFJJUDogMDAxMDpt
+dGhjYV9wb2xsX2NxKzB4MWUxLzB4ODYwIFtpYl9tdGhjYV0NClsgICA0Mi41NDU1MDVdIENvZGU6
+IDhkIDg0IDI0IDI4IDAyIDAwIDAwIDBmIGM5IDQxIDJiIDhjIDI0IDY0IDAyIDAwIDAwIDg5IGNl
+IDQxIDhiIDhjIDI0IDRjIDAyIDAwIDAwIGQzIGVlIDg5IGYxIDQxIDAzIGI0IDI0IGY0IDAxIDAw
+IDAwIDQ4IDYzIGY2IDw0OD4gOGIgMzQgZjcgNDkgODkgMzcgNDggODUgYzAgNzQgMWIgNDQgOGIg
+NDggMGMgOGIgNzggMTQgNDEgMzkgYzkNClsgICA0Mi41NDU1MDldIFJTUDogMDAxODpmZmZmYWVm
+ODgxNGE3Y2UwIEVGTEFHUzogMDAwMTAwMDYNClsgICA0Mi41NDU1MTFdIFJBWDogZmZmZjkzMzYw
+ODFkYTcyOCBSQlg6IGZmZmY5MzM2MzcxMzQwMDAgUkNYOiAwMDAwMDAwMDAwMDA4MDA1DQpbICAg
+NDIuNTQ1NTEzXSBSRFg6IDAwMDAwMDAwMDAwMDAwODAgUlNJOiAwMDAwMDAwMDAwMDA4MDA1IFJE
+STogMDAwMDAwMDAwMDAwMDAwMA0KWyAgIDQyLjU0NTUxNV0gUkJQOiBmZmZmOTMzNjA2MWM4NDAw
+IFIwODogMDAwMDAwMDAwMDAwMDAwYSBSMDk6IGZmZmY5MzM2MDVhZjI4YjQNClsgICA0Mi41NDU1
+MTddIFIxMDogMDAwMDAwMDAwMDAwMDI0NiBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiBmZmZm
+OTMzNjA4MWRhNTAwDQpbICAgNDIuNTQ1NTE5XSBSMTM6IGZmZmY5MzM2MDYxYzg0ZTAgUjE0OiAw
+MDAwMDAwMDAwMDAwMDAwIFIxNTogZmZmZjkzMzYxMDhkNDgwMA0KWyAgIDQyLjU0NTUyMV0gRlM6
+ICAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5MzQ0Y2VjMDAwMDAoMDAwMCkga25sR1M6
+MDAwMDAwMDAwMDAwMDAwMA0KWyAgIDQyLjU0NTUyM10gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAw
+MDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KWyAgIDQyLjU0NTUyNV0gQ1IyOiAwMDAwMDAwMDAw
+MDQwMDI4IENSMzogMDAwMDAwMDEwNWNhYzAwMCBDUjQ6IDAwMDAwMDAwMDAzNTBlZTANClsgICA0
+Mi41NDU1MjddIENhbGwgVHJhY2U6DQpbICAgNDIuNTQ1NTMwXSAgPyB1cGRhdGVfbG9hZF9hdmcr
+MHg3OC8weDVhMA0KWyAgIDQyLjU0NTUzNV0gID8gbmV3aWRsZV9iYWxhbmNlKzB4MTIzLzB4M2Yw
+DQpbICAgNDIuNTQ1NTM4XSAgPyBfX3N3aXRjaF90b19hc20rMHg0Mi8weDcwDQpbICAgNDIuNTQ1
+NTQxXSAgPyBmaW5pc2hfdGFza19zd2l0Y2guaXNyYS4wKzB4YTcvMHgyODANClsgICA0Mi41NDU1
+NDVdICBfX2liX3Byb2Nlc3NfY3ErMHg1Ny8weDE1MCBbaWJfY29yZV0NClsgICA0Mi41NDU1NThd
+ICBpYl9jcV9wb2xsX3dvcmsrMHgyNi8weDgwIFtpYl9jb3JlXQ0KWyAgIDQyLjU0NTU3MF0gIHBy
+b2Nlc3Nfb25lX3dvcmsrMHgxZWMvMHgzOTANClsgICA0Mi41NDU1NzNdICB3b3JrZXJfdGhyZWFk
+KzB4NTMvMHgzYzANClsgICA0Mi41NDU1NzVdICA/IHByb2Nlc3Nfb25lX3dvcmsrMHgzOTAvMHgz
+OTANClsgICA0Mi41NDU1NzddICBrdGhyZWFkKzB4MTI3LzB4MTUwDQpbICAgNDIuNTQ1NTgwXSAg
+PyBzZXRfa3RocmVhZF9zdHJ1Y3QrMHg0MC8weDQwDQpbICAgNDIuNTQ1NTgzXSAgcmV0X2Zyb21f
+Zm9yaysweDIyLzB4MzANClsgICA0Mi41NDU1ODZdIE1vZHVsZXMgbGlua2VkIGluOiBib25kaW5n
+IHh0X0NIRUNLU1VNIHh0X01BU1FVRVJBREUgeHRfY29ubnRyYWNrIGlwdF9SRUpFQ1QgbmZfcmVq
+ZWN0X2lwdjQgeHRfdGNwdWRwIGlwNnRhYmxlX21hbmdsZSBpcDZ0YWJsZV9uYXQgaXA2dGFibGVf
+ZmlsdGVyIGlwNl90YWJsZXMgaXB0YWJsZV9tYW5nbGUgaXB0YWJsZV9uYXQgbmZfbmF0IG5mX2Nv
+bm50cmFjayBuZl9kZWZyYWdfaXB2NiBuZl9kZWZyYWdfaXB2NCBsaWJjcmMzMmMgaXB0YWJsZV9m
+aWx0ZXIgaXBfdGFibGVzIHhfdGFibGVzIGJyaWRnZSBzdHAgbGxjIG5mc2QgYXV0aF9ycGNnc3Mg
+bG9ja2QgZ3JhY2Ugc3VucnBjIG5sc191dGY4IG5sc19jcDQzNyB2ZmF0IGZhdCBmdGRpX3NpbyB1
+c2JzZXJpYWwgaWJfaXBvaWIgaWJfdW1hZCBpYl9jbSBhZl9wYWNrZXQgcjgxNTNfZWNtIGNkY19l
+dGhlciB1c2JuZXQgcjgxNTIgbWlpIHBjc3BrciBlZmlfcHN0b3JlIGliX210aGNhIGliX3V2ZXJi
+cyBpYl9jb3JlIGlwdjYgc3A1MTAwX3RjbyBpMmNfcGlpeDQgazEwdGVtcCBpbnB1dF9sZWRzIG1v
+dXNlZGV2IGludGVsX3JhcGxfbXNyIGpveWRldiBpbnRlbF9yYXBsX2NvbW1vbiBrdm1fYW1kIGNj
+cCBybmdfY29yZSBrdm0gaXJxYnlwYXNzIGNyY3QxMGRpZl9wY2xtdWwgZ2hhc2hfY2xtdWxuaV9p
+bnRlbCBhZXNuaV9pbnRlbCBjcnlwdG9fc2ltZCBjcnlwdGQgd21pX2Jtb2YgcmFwbCB3bWkgcGFy
+cG9ydF9wYyBwYXJwb3J0IGV2ZGV2IGJ1dHRvbiBhY3BpX2NwdWZyZXEgZWZpdmFyZnMgaGlkX2dl
+bmVyaWMgdXNiaGlkIGhpZCBjcmMzMl9wY2xtdWwgcjgxNjkgcmVhbHRlayBtZGlvX2RldnJlcyBs
+aWJwaHkgbnZtZSBudm1lX2NvcmUgaHdtb24gYWhjaSBsaWJhaGNpIGxpYmF0YSB4aGNpX3BjaSB4
+aGNpX3BjaV9yZW5lc2FzIHhoY2lfaGNkIHNpbXBsZWRybSBkcm1fa21zX2hlbHBlciBjZmJmaWxs
+cmVjdCBzeXNjb3B5YXJlYSBjZmJpbWdibHQgc3lzZmlsbHJlY3Qgc3lzaW1nYmx0DQpbICAgNDIu
+NTQ1NjMyXSAgZmJfc3lzX2ZvcHMgY2ZiY29weWFyZWEgY2VjIGRybSBpMmNfY29yZSBkcm1fcGFu
+ZWxfb3JpZW50YXRpb25fcXVpcmtzIGFncGdhcnQgbG9vcCB6ZnMoUE8pIHp1bmljb2RlKFBPKSB6
+enN0ZChPKSB6bHVhKE8pIHphdmwoUE8pIGljcChQTykgemNvbW1vbihQTykgem52cGFpcihQTykg
+c3BsKE8pIGV4dDQgY3JjMzJjX2dlbmVyaWMgY3JjMzJjX2ludGVsIGNyYzE2IG1iY2FjaGUgamJk
+MiB1c2Jfc3RvcmFnZSB1c2Jjb3JlIHVzYl9jb21tb24gc2RfbW9kIHQxMF9waSBzY3NpX21vZA0K
+WyAgIDQyLjU0NTY2Ml0gQ1IyOiAwMDAwMDAwMDAwMDQwMDI4DQpbICAgNDIuNTQ1NjY0XSAtLS1b
+IGVuZCB0cmFjZSA0NjM0ZDY1YjAzNTFmY2I4IF0tLS0NClsgICA0Mi41NDU2NjVdIFJJUDogMDAx
+MDptdGhjYV9wb2xsX2NxKzB4MWUxLzB4ODYwIFtpYl9tdGhjYV0NClsgICA0Mi41NDU2NzBdIENv
+ZGU6IDhkIDg0IDI0IDI4IDAyIDAwIDAwIDBmIGM5IDQxIDJiIDhjIDI0IDY0IDAyIDAwIDAwIDg5
+IGNlIDQxIDhiIDhjIDI0IDRjIDAyIDAwIDAwIGQzIGVlIDg5IGYxIDQxIDAzIGI0IDI0IGY0IDAx
+IDAwIDAwIDQ4IDYzIGY2IDw0OD4gOGIgMzQgZjcgNDkgODkgMzcgNDggODUgYzAgNzQgMWIgNDQg
+OGIgNDggMGMgOGIgNzggMTQgNDEgMzkgYzkNClsgICA0Mi41NDU2NzRdIFJTUDogMDAxODpmZmZm
+YWVmODgxNGE3Y2UwIEVGTEFHUzogMDAwMTAwMDYNClsgICA0Mi41NDU2NzZdIFJBWDogZmZmZjkz
+MzYwODFkYTcyOCBSQlg6IGZmZmY5MzM2MzcxMzQwMDAgUkNYOiAwMDAwMDAwMDAwMDA4MDA1DQpb
+ICAgNDIuNTQ1Njc3XSBSRFg6IDAwMDAwMDAwMDAwMDAwODAgUlNJOiAwMDAwMDAwMDAwMDA4MDA1
+IFJESTogMDAwMDAwMDAwMDAwMDAwMA0KWyAgIDQyLjU0NTY3OV0gUkJQOiBmZmZmOTMzNjA2MWM4
+NDAwIFIwODogMDAwMDAwMDAwMDAwMDAwYSBSMDk6IGZmZmY5MzM2MDVhZjI4YjQNClsgICA0Mi41
+NDU2ODFdIFIxMDogMDAwMDAwMDAwMDAwMDI0NiBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiBm
+ZmZmOTMzNjA4MWRhNTAwDQpbICAgNDIuNTQ1NjgyXSBSMTM6IGZmZmY5MzM2MDYxYzg0ZTAgUjE0
+OiAwMDAwMDAwMDAwMDAwMDAwIFIxNTogZmZmZjkzMzYxMDhkNDgwMA0KWyAgIDQyLjU0NTY4NF0g
+RlM6ICAwMDAwMDAwMDAwMDAwMDAwKDAwMDApIEdTOmZmZmY5MzQ0Y2VjMDAwMDAoMDAwMCkga25s
+R1M6MDAwMDAwMDAwMDAwMDAwMA0KWyAgIDQyLjU0NTY4Nl0gQ1M6ICAwMDEwIERTOiAwMDAwIEVT
+OiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KWyAgIDQyLjU0NTY4OF0gQ1IyOiAwMDAwMDAw
+MDAwMDQwMDI4IENSMzogMDAwMDAwMDEwNWNhYzAwMCBDUjQ6IDAwMDAwMDAwMDAzNTBlZTA=
+--000000000000db563e05d09c8b03
+Content-Type: text/plain; charset="US-ASCII"; 
+	name="Infiniband MTHCA module crash - 5.14.17.txt"
+Content-Disposition: attachment; 
+	filename="Infiniband MTHCA module crash - 5.14.17.txt"
+Content-Transfer-Encoding: base64
+Content-ID: <17d157ce924dde59d833>
+X-Attachment-Id: 17d157ce924dde59d833
+
+SW5maW5pYmFuZCBNVEhDQSBtb2R1bGUgY3Jhc2ggLSA1LjE0LjE3DQoNClsgIDE2OS4yNjc5NzRd
+IEJVRzogdW5hYmxlIHRvIGhhbmRsZSBwYWdlIGZhdWx0IGZvciBhZGRyZXNzOiAwMDAwMDAwMDAw
+MDQwMDI4DQpbICAxNjkuMjY3OTgwXSAjUEY6IHN1cGVydmlzb3IgcmVhZCBhY2Nlc3MgaW4ga2Vy
+bmVsIG1vZGUNClsgIDE2OS4yNjc5ODJdICNQRjogZXJyb3JfY29kZSgweDAwMDApIC0gbm90LXBy
+ZXNlbnQgcGFnZQ0KWyAgMTY5LjI2Nzk4NF0gUEdEIDAgUDREIDAgDQpbICAxNjkuMjY3OTg2XSBP
+b3BzOiAwMDAwIFsjMV0gU01QIE5PUFRJDQpbICAxNjkuMjY3OTg5XSBDUFU6IDExIFBJRDogODkx
+IENvbW06IGt3b3JrZXIvdTY1OjIgTm90IHRhaW50ZWQgNS4xNC4xNy14YW5tb2QxICMwfmdpdDIw
+MjExMTA2LjJiZjMyYmINClsgIDE2OS4yNjc5OTJdIEhhcmR3YXJlIG5hbWU6IFRvIEJlIEZpbGxl
+ZCBCeSBPLkUuTS4gVG8gQmUgRmlsbGVkIEJ5IE8uRS5NLi9BNTIwTS1IRFYsIEJJT1MgUDEuNjAg
+MDMvMTgvMjAyMQ0KWyAgMTY5LjI2Nzk5NF0gV29ya3F1ZXVlOiBpYi1jb21wLXVuYi13cSBpYl9j
+cV9wb2xsX3dvcmsgW2liX2NvcmVdDQpbICAxNjkuMjY4MDA1XSBSSVA6IDAwMTA6bXRoY2FfcG9s
+bF9jcSsweDFkYi8weDgzMCBbaWJfbXRoY2FdDQpbICAxNjkuMjY4MDEwXSBDb2RlOiAwMiAwMCAw
+MCA0OSA4ZCA4NSAyOCAwMiAwMCAwMCAwZiBjOSA0MSAyYiA4ZCA2NCAwMiAwMCAwMCA4OSBjZSA0
+MSA4YiA4ZCA0YyAwMiAwMCAwMCBkMyBlZSA4OSBmMSA0MSAwMyBiNSBmNCAwMSAwMCAwMCA0OCA2
+MyBmNiA8NDg+IDhiIDM0IGY3IDQ5IDg5IDM3IDQ4IDg1IGMwIDc0IDFjIDQ0IDhiIDQ4IDBjIDhi
+IDc4IDE0IDQxIDM5IGM5DQpbICAxNjkuMjY4MDEzXSBSU1A6IDAwMTg6ZmZmZmI3MGI4MTBjZmNk
+MCBFRkxBR1M6IDAwMDEwMDA2DQpbICAxNjkuMjY4MDE0XSBSQVg6IGZmZmY5YTdlODc4NzhmMjgg
+UkJYOiBmZmZmOWE3ZTg3OGQ1MDAwIFJDWDogMDAwMDAwMDAwMDAwODAwNQ0KWyAgMTY5LjI2ODAx
+Nl0gUkRYOiAwMDAwMDAwMDAwMDAwMDgwIFJTSTogMDAwMDAwMDAwMDAwODAwNSBSREk6IDAwMDAw
+MDAwMDAwMDAwMDANClsgIDE2OS4yNjgwMTddIFJCUDogZmZmZmI3MGI4MTBjZmUxOCBSMDg6IDAw
+MDAwMDAwMDAwMDAwMGEgUjA5OiBmZmZmOWE3ZThhMTNhYTJjDQpbICAxNjkuMjY4MDE5XSBSMTA6
+IDAwMDAwMDAwMDAwMDAyODIgUjExOiAwMDAwMDAwMDAwMDAwMDAwIFIxMjogZmZmZjlhN2U4ZGIw
+OGMwMA0KWyAgMTY5LjI2ODAyMF0gUjEzOiBmZmZmOWE3ZTg3ODc4ZDAwIFIxNDogMDAwMDAwMDAw
+MDAwMDAwMCBSMTU6IGZmZmY5YTdlOGRlZDkwMDANClsgIDE2OS4yNjgwMjJdIEZTOiAgMDAwMDAw
+MDAwMDAwMDAwMCgwMDAwKSBHUzpmZmZmOWE4MWJlY2MwMDAwKDAwMDApIGtubEdTOjAwMDAwMDAw
+MDAwMDAwMDANClsgIDE2OS4yNjgwMjRdIENTOiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6
+IDAwMDAwMDAwODAwNTAwMzMNClsgIDE2OS4yNjgwMjVdIENSMjogMDAwMDAwMDAwMDA0MDAyOCBD
+UjM6IDAwMDAwMDAxMDZlZmMwMDAgQ1I0OiAwMDAwMDAwMDAwNzUwZWUwDQpbICAxNjkuMjY4MDI3
+XSBQS1JVOiA1NTU1NTU1NA0KWyAgMTY5LjI2ODAyOF0gQ2FsbCBUcmFjZToNClsgIDE2OS4yNjgw
+MzFdICA/IHJlbGVhc2Vfc29jaysweGEvMHg5MA0KWyAgMTY5LjI2ODAzNV0gID8gX19jb25kX3Jl
+c2NoZWQrMHgxMS8weDQwDQpbICAxNjkuMjY4MDM4XSAgPyB1cGRhdGVfbG9hZF9hdmcrMHg3YS8w
+eDUzMA0KWyAgMTY5LjI2ODA0MV0gID8gbmV3aWRsZV9iYWxhbmNlKzB4MTFiLzB4M2YwDQpbICAx
+NjkuMjY4MDQzXSAgPyBkZXF1ZXVlX2VudGl0eSsweGMxLzB4M2YwDQpbICAxNjkuMjY4MDQ1XSAg
+PyBfX3N3aXRjaF90b19hc20rMHg0Mi8weDcwDQpbICAxNjkuMjY4MDQ4XSAgPyBmaW5pc2hfdGFz
+a19zd2l0Y2guaXNyYS4wKzB4YTIvMHgyODANClsgIDE2OS4yNjgwNTBdICBfX2liX3Byb2Nlc3Nf
+Y3ErMHg0OS8weGQwIFtpYl9jb3JlXQ0KWyAgMTY5LjI2ODA1OF0gIGliX2NxX3BvbGxfd29yaysw
+eDIxLzB4ODAgW2liX2NvcmVdDQpbICAxNjkuMjY4MDY1XSAgcHJvY2Vzc19vbmVfd29yaysweDFm
+NS8weDM1MA0KWyAgMTY5LjI2ODA2OF0gIHdvcmtlcl90aHJlYWQrMHg0Yi8weDQwMA0KWyAgMTY5
+LjI2ODA2OV0gID8gcHJvY2Vzc19vbmVfd29yaysweDM1MC8weDM1MA0KWyAgMTY5LjI2ODA3MV0g
+IGt0aHJlYWQrMHgxMjIvMHgxNDANClsgIDE2OS4yNjgwNzNdICA/IHNldF9rdGhyZWFkX3N0cnVj
+dCsweDMwLzB4MzANClsgIDE2OS4yNjgwNzZdICByZXRfZnJvbV9mb3JrKzB4MjIvMHgzMA0KWyAg
+MTY5LjI2ODA3OV0gTW9kdWxlcyBsaW5rZWQgaW46IG92ZXJsYXkgeHRfQ0hFQ0tTVU0geHRfTUFT
+UVVFUkFERSB4dF9jb25udHJhY2sgaXB0X1JFSkVDVCBuZl9yZWplY3RfaXB2NCB4dF90Y3B1ZHAg
+aXA2dGFibGVfbWFuZ2xlIGlwNnRhYmxlX25hdCBpcDZ0YWJsZV9maWx0ZXIgaXA2X3RhYmxlcyBp
+cHRhYmxlX21hbmdsZSBpcHRhYmxlX25hdCBuZl9uYXQgbmZfY29ubnRyYWNrIG5mX2RlZnJhZ19p
+cHY2IG5mX2RlZnJhZ19pcHY0IGxpYmNyYzMyYyBpcHRhYmxlX2ZpbHRlciBpcF90YWJsZXMgeF90
+YWJsZXMgcnBjc2VjX2dzc19rcmI1IGJyaWRnZSBzdHAgbGxjIGF1dGhfcnBjZ3NzIG5mc3Y0IGli
+X3FpYiByZG1hdnQgZGNhIGliX2lwb2liIGliX3VtYWQgaWJfY20gd21pX2Jtb2YgcGNzcGtyIGVm
+aV9wc3RvcmUgbnZtZSBudm1lX2NvcmUgaWJfbXRoY2EgaWJfdXZlcmJzIGliX2NvcmUgc3A1MTAw
+X3RjbyBhaGNpIGxpYmFoY2kgazEwdGVtcCBpbnRlbF9yYXBsX21zciBtYWNfaGlkIGludGVsX3Jh
+cGxfY29tbW9uIGVkYWNfbWNlX2FtZCBrdm1fYW1kIGNjcCBrdm0gY3JjdDEwZGlmX3BjbG11bCBn
+aGFzaF9jbG11bG5pX2ludGVsIGFlc25pX2ludGVsIGNyeXB0b19zaW1kIGNyeXB0ZCByYXBsIG5m
+c3YzIG5mc19hY2wgbmZzIGxvY2tkIGdyYWNlIHN1bnJwYyBmc2NhY2hlIG5ldGZzIGZ0ZGlfc2lv
+IHVzYnNlcmlhbCByODE2OSBjcmMzMl9wY2xtdWwgcmVhbHRlayBtZGlvX2RldnJlcyBpMmNfcGlp
+eDQgbGlicGh5IHhoY2lfcGNpIHhoY2lfcGNpX3JlbmVzYXMgd21pIGdwaW9fYW1kcHQgZ3Bpb19n
+ZW5lcmljDQpbICAxNjkuMjY4MTE0XSBDUjI6IDAwMDAwMDAwMDAwNDAwMjgNClsgIDE2OS4yNjgx
+MTVdIC0tLVsgZW5kIHRyYWNlIDBiN2UzZDZlZTJhN2IwNGEgXS0tLQ0KWyAgMTY5LjMwNzAwM10g
+UklQOiAwMDEwOm10aGNhX3BvbGxfY3ErMHgxZGIvMHg4MzAgW2liX210aGNhXQ0KWyAgMTY5LjMw
+NzAwOV0gQ29kZTogMDIgMDAgMDAgNDkgOGQgODUgMjggMDIgMDAgMDAgMGYgYzkgNDEgMmIgOGQg
+NjQgMDIgMDAgMDAgODkgY2UgNDEgOGIgOGQgNGMgMDIgMDAgMDAgZDMgZWUgODkgZjEgNDEgMDMg
+YjUgZjQgMDEgMDAgMDAgNDggNjMgZjYgPDQ4PiA4YiAzNCBmNyA0OSA4OSAzNyA0OCA4NSBjMCA3
+NCAxYyA0NCA4YiA0OCAwYyA4YiA3OCAxNCA0MSAzOSBjOQ0KWyAgMTY5LjMwNzAxMV0gUlNQOiAw
+MDE4OmZmZmZiNzBiODEwY2ZjZDAgRUZMQUdTOiAwMDAxMDAwNg0KWyAgMTY5LjMwNzAxM10gUkFY
+OiBmZmZmOWE3ZTg3ODc4ZjI4IFJCWDogZmZmZjlhN2U4NzhkNTAwMCBSQ1g6IDAwMDAwMDAwMDAw
+MDgwMDUNClsgIDE2OS4zMDcwMTRdIFJEWDogMDAwMDAwMDAwMDAwMDA4MCBSU0k6IDAwMDAwMDAw
+MDAwMDgwMDUgUkRJOiAwMDAwMDAwMDAwMDAwMDAwDQpbICAxNjkuMzA3MDE1XSBSQlA6IGZmZmZi
+NzBiODEwY2ZlMTggUjA4OiAwMDAwMDAwMDAwMDAwMDBhIFIwOTogZmZmZjlhN2U4YTEzYWEyYw0K
+WyAgMTY5LjMwNzAxN10gUjEwOiAwMDAwMDAwMDAwMDAwMjgyIFIxMTogMDAwMDAwMDAwMDAwMDAw
+MCBSMTI6IGZmZmY5YTdlOGRiMDhjMDANClsgIDE2OS4zMDcwMThdIFIxMzogZmZmZjlhN2U4Nzg3
+OGQwMCBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgUjE1OiBmZmZmOWE3ZThkZWQ5MDAwDQpbICAxNjku
+MzA3MDE5XSBGUzogIDAwMDAwMDAwMDAwMDAwMDAoMDAwMCkgR1M6ZmZmZjlhODFiZWNjMDAwMCgw
+MDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICAxNjkuMzA3MDIwXSBDUzogIDAwMTAgRFM6
+IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzDQpbICAxNjkuMzA3MDIxXSBDUjI6
+IDAwMDAwMDAwMDAwNDAwMjggQ1IzOiAwMDAwMDAwMTA2ZWZjMDAwIENSNDogMDAwMDAwMDAwMDc1
+MGVlMA0KWyAgMTY5LjMwNzAyM10gUEtSVTogNTU1NTU1NTQ=
+--000000000000db563e05d09c8b03--
