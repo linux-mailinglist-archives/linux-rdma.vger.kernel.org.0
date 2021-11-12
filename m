@@ -2,32 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B6C44E625
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 13:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FE844E7EA
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 14:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234903AbhKLMPA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Nov 2021 07:15:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37766 "EHLO
+        id S233894AbhKLNxQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Nov 2021 08:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbhKLMO5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Nov 2021 07:14:57 -0500
-X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 12 Nov 2021 04:12:07 PST
+        with ESMTP id S233855AbhKLNxP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Nov 2021 08:53:15 -0500
 Received: from gentwo.de (unknown [IPv6:2a02:c206:2048:5042::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482DDC061767
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 04:12:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BFAC061766
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 05:50:24 -0800 (PST)
 Received: by gentwo.de (Postfix, from userid 1001)
-        id F1FA1B00192; Fri, 12 Nov 2021 13:04:13 +0100 (CET)
+        id 0EF6DB00357; Fri, 12 Nov 2021 14:50:22 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id E9B73B00176;
-        Fri, 12 Nov 2021 13:04:13 +0100 (CET)
-Date:   Fri, 12 Nov 2021 13:04:13 +0100 (CET)
+        by gentwo.de (Postfix) with ESMTP id 090D7B00303;
+        Fri, 12 Nov 2021 14:50:22 +0100 (CET)
+Date:   Fri, 12 Nov 2021 14:50:22 +0100 (CET)
 From:   Christoph Lameter <cl@vmi485042.contaboserver.net>
 To:     linux-rdma@vger.kernel.org
 cc:     Leon Romanovsky <leon@kernel.org>,
         Jason Gunthorpe <jgg@nvidia.com>, rpearson@gmail.com,
         Doug Ledford <dledford@redhat.com>
-Subject: [RFC] RDMA bridge for ROCE and Infiniband
-Message-ID: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
+Subject: Re: [RFC] RDMA bridge for ROCE and Infiniband
+In-Reply-To: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
+Message-ID: <alpine.DEB.2.22.394.2111121450080.3113@vmi485042.contaboserver.net>
+References: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
 User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -35,149 +36,154 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-We have a larger Infiniband deployment and want to gradually move servers
-to a new fabric that is using RDMA over Ethernet using ROCE. The IB
-Fabric is mission critical and complex due to the need to have various
-ways to prevent failover with one of them being a secondary IB fabric.
+Sorry for the screwed up email address.
 
-It is not possible resourcewise to simply rebuild the system using ROCE
-and then switch over.
+On Fri, 12 Nov 2021, Christoph Lameter wrote:
 
-Both Fabrics use RDMA and we need some way for nodes on each cluster to
-communicate with each other. We do not really need memory to memory
-transfers. What we use from the RDMA
-stack is basically messaging and multicast. So the really
-core services of the RDMA stack are not needed. Also UD/UDP is sufficient,
-the other protocols may not be necessary to support.
-
-Any ideas on how to do this would be appreciated. I have not found anything
-that could help us here, so we are interested in creating a new piece of
-Open Source RDMA software that allows the briding of native IB traffic to ROCE.
-
-
-Basic Design
-------------
-Lets say we have a single system that functions as a *bridge* and has one
-interface going to Infiniband and one going to Ethernet with ROCE.
-
-In our use case we do not need any "true" RDMA in the sense of memory to
-memory transfers. We only need UDP and UD messsaging and support for
-multicast.
-
-In order to simplify the multicast aspects, the bridge will simply
-subscribe to the multicast groups of interest when the bridge software
-starts up.
-
-PROXYARP for regular IP / IPoIB traffic
---------------------------------------
-It is possible to do proxyarp on both sides of a Linux system that is
-connected both to Infiniband and ROCE. And thus this can already be seen
-as a single IP subnet from the Kernel stack perspective and communication
-is not a problem for non RDMA traffic.
-
-PROXYARP means that the MAC address of the bridge is used for all IPoIB
-addresses on the IB side of the bridge. Similar the GID of the bridge is
-used in all IPoIB Packets on the IB side of the bridge that come from the
-ROCE side.
-
-The kernel already removes and adds IPoIB and IP headers as needed. So
-this works for regular IP traffic but not for native IB / RDMA packets.
-IP traffic is only used for non performance critical aspects of
-our application and so the performance on this level is not a concern.
-
-Each of the host in the bridge IP subnet has 3 addresses: An IPv4
-address, a MAC address and a GID.
-
-
-RDMA Packets (Native IB and ROCE)
-=================================
-ROCE v2 packets are basically IB packets with another header on top so
-the simplistic idealistic version of how this is going to
-work is by stripping and adding the UDP ROCE v2 headers to the IB packet.
-
-ROCE packets
-------------
-UDP roce packets send to the IP addresses on the ROCE side have the MAC
-address of the bridge. So these already contain the IP address for the
-other side that can be used to lookup the GID in order to convert the
-packet and forward it to the Infiniband node.
-
-UD packets
-----------
-Routing capabilities are limited on the Infiniband side but one could
-construct a way to map GIDs for the hosts on the ROCE side to the LID
-of the bridge by using the ACM daemon.
-
-There will be complications regards to RDMA_CM support and the details
-of mapping characteristics between packets but hopefully this will
-be fairly manageable.
-
-Multicast packets
------------------
-
-Multicast packets can be converted easily since there is a direct
-mapping possible between the MAC address used for a Multicast group and
-the MGID in the Infiniband fabric. Otherwise this process is similar
-to UD/UDP traffic.
-
-
-Implementation
-==============
-
-There are basically three ways to implement this:
-
-A) As add on to the RDMA stack in the Linux Kernel
-B) As a user space process that operates on RAW sockets and receives traffic
-   filtered by the NIC or by the kernel to process. It wouild use the same
-   raw sockets to send these packets to the other side.
-C) In firmware / logic of the NIC. This is out of reach of us here
-   I think.
-
-
-Inbound from ROCE
------------------
-This can be done like in the RXE driver. Simply listening to the UDP port
-for ROCE will get us the traffic we need to operate on.
-
-Outbound to ROCE
-----------------
-A Ethernet RAW socket will allow us to create arbitrary datagrams as needed.
-This has been widely done before in numerous settings and code is already
-open sources that does stuff like this. So this is fairly straightforward.
-
-Inbound from Infiniband
------------------------
-The challenge here is to isolate the traffic that is destined for the bridge
-itself from traffic that needs to be forwarded. One way would be to force
-the inclusion of a Global Header in each packet so that the GID can be
-matched. When the GID does not match the bridge then the traffic would be
-forwarded to the code which could then do the necessary packet conversion.
-
-I do not know of any way that something like this has been done before.
-Potentially this means working with flow steering and dealing with firmware
-issues in the NIC.
-
-Outbound to Infiniband
-----------------------
-I saw in a recent changelog for the Mellanox NICs that the ability has
-been added to send raw IB datagrams. If that can be used to construct
-a packet that is coming from one of the GIDs associated with the ROCE IP
-addresses then this will work.
-
-Otherwise we need to have some way to set the GID for outbound packets
-to make this work.
-
-The logic needed on Infiniband is similar to that required for an
-Infiniband router.
-
-
-
-
-The biggest risk here seems to be the Infiniband side of things. Is there
-a way to create a filter for the traffic we need?
-
-Any tips and suggestions on how to approach this problem would be appreciated.
-
-
-Christoph Lameter, 12. November 2021
-
+> We have a larger Infiniband deployment and want to gradually move servers
+> to a new fabric that is using RDMA over Ethernet using ROCE. The IB
+> Fabric is mission critical and complex due to the need to have various
+> ways to prevent failover with one of them being a secondary IB fabric.
+>
+> It is not possible resourcewise to simply rebuild the system using ROCE
+> and then switch over.
+>
+> Both Fabrics use RDMA and we need some way for nodes on each cluster to
+> communicate with each other. We do not really need memory to memory
+> transfers. What we use from the RDMA
+> stack is basically messaging and multicast. So the really
+> core services of the RDMA stack are not needed. Also UD/UDP is sufficient,
+> the other protocols may not be necessary to support.
+>
+> Any ideas on how to do this would be appreciated. I have not found anything
+> that could help us here, so we are interested in creating a new piece of
+> Open Source RDMA software that allows the briding of native IB traffic to ROCE.
+>
+>
+> Basic Design
+> ------------
+> Lets say we have a single system that functions as a *bridge* and has one
+> interface going to Infiniband and one going to Ethernet with ROCE.
+>
+> In our use case we do not need any "true" RDMA in the sense of memory to
+> memory transfers. We only need UDP and UD messsaging and support for
+> multicast.
+>
+> In order to simplify the multicast aspects, the bridge will simply
+> subscribe to the multicast groups of interest when the bridge software
+> starts up.
+>
+> PROXYARP for regular IP / IPoIB traffic
+> --------------------------------------
+> It is possible to do proxyarp on both sides of a Linux system that is
+> connected both to Infiniband and ROCE. And thus this can already be seen
+> as a single IP subnet from the Kernel stack perspective and communication
+> is not a problem for non RDMA traffic.
+>
+> PROXYARP means that the MAC address of the bridge is used for all IPoIB
+> addresses on the IB side of the bridge. Similar the GID of the bridge is
+> used in all IPoIB Packets on the IB side of the bridge that come from the
+> ROCE side.
+>
+> The kernel already removes and adds IPoIB and IP headers as needed. So
+> this works for regular IP traffic but not for native IB / RDMA packets.
+> IP traffic is only used for non performance critical aspects of
+> our application and so the performance on this level is not a concern.
+>
+> Each of the host in the bridge IP subnet has 3 addresses: An IPv4
+> address, a MAC address and a GID.
+>
+>
+> RDMA Packets (Native IB and ROCE)
+> =================================
+> ROCE v2 packets are basically IB packets with another header on top so
+> the simplistic idealistic version of how this is going to
+> work is by stripping and adding the UDP ROCE v2 headers to the IB packet.
+>
+> ROCE packets
+> ------------
+> UDP roce packets send to the IP addresses on the ROCE side have the MAC
+> address of the bridge. So these already contain the IP address for the
+> other side that can be used to lookup the GID in order to convert the
+> packet and forward it to the Infiniband node.
+>
+> UD packets
+> ----------
+> Routing capabilities are limited on the Infiniband side but one could
+> construct a way to map GIDs for the hosts on the ROCE side to the LID
+> of the bridge by using the ACM daemon.
+>
+> There will be complications regards to RDMA_CM support and the details
+> of mapping characteristics between packets but hopefully this will
+> be fairly manageable.
+>
+> Multicast packets
+> -----------------
+>
+> Multicast packets can be converted easily since there is a direct
+> mapping possible between the MAC address used for a Multicast group and
+> the MGID in the Infiniband fabric. Otherwise this process is similar
+> to UD/UDP traffic.
+>
+>
+> Implementation
+> ==============
+>
+> There are basically three ways to implement this:
+>
+> A) As add on to the RDMA stack in the Linux Kernel
+> B) As a user space process that operates on RAW sockets and receives traffic
+>    filtered by the NIC or by the kernel to process. It wouild use the same
+>    raw sockets to send these packets to the other side.
+> C) In firmware / logic of the NIC. This is out of reach of us here
+>    I think.
+>
+>
+> Inbound from ROCE
+> -----------------
+> This can be done like in the RXE driver. Simply listening to the UDP port
+> for ROCE will get us the traffic we need to operate on.
+>
+> Outbound to ROCE
+> ----------------
+> A Ethernet RAW socket will allow us to create arbitrary datagrams as needed.
+> This has been widely done before in numerous settings and code is already
+> open sources that does stuff like this. So this is fairly straightforward.
+>
+> Inbound from Infiniband
+> -----------------------
+> The challenge here is to isolate the traffic that is destined for the bridge
+> itself from traffic that needs to be forwarded. One way would be to force
+> the inclusion of a Global Header in each packet so that the GID can be
+> matched. When the GID does not match the bridge then the traffic would be
+> forwarded to the code which could then do the necessary packet conversion.
+>
+> I do not know of any way that something like this has been done before.
+> Potentially this means working with flow steering and dealing with firmware
+> issues in the NIC.
+>
+> Outbound to Infiniband
+> ----------------------
+> I saw in a recent changelog for the Mellanox NICs that the ability has
+> been added to send raw IB datagrams. If that can be used to construct
+> a packet that is coming from one of the GIDs associated with the ROCE IP
+> addresses then this will work.
+>
+> Otherwise we need to have some way to set the GID for outbound packets
+> to make this work.
+>
+> The logic needed on Infiniband is similar to that required for an
+> Infiniband router.
+>
+>
+>
+>
+> The biggest risk here seems to be the Infiniband side of things. Is there
+> a way to create a filter for the traffic we need?
+>
+> Any tips and suggestions on how to approach this problem would be appreciated.
+>
+>
+> Christoph Lameter, 12. November 2021
+>
+>
