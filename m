@@ -2,188 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FE844E7EA
-	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 14:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF6244E894
+	for <lists+linux-rdma@lfdr.de>; Fri, 12 Nov 2021 15:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233894AbhKLNxQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 12 Nov 2021 08:53:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60378 "EHLO
+        id S231131AbhKLO0u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 12 Nov 2021 09:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233855AbhKLNxP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Nov 2021 08:53:15 -0500
-Received: from gentwo.de (unknown [IPv6:2a02:c206:2048:5042::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BFAC061766
-        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 05:50:24 -0800 (PST)
-Received: by gentwo.de (Postfix, from userid 1001)
-        id 0EF6DB00357; Fri, 12 Nov 2021 14:50:22 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id 090D7B00303;
-        Fri, 12 Nov 2021 14:50:22 +0100 (CET)
-Date:   Fri, 12 Nov 2021 14:50:22 +0100 (CET)
-From:   Christoph Lameter <cl@vmi485042.contaboserver.net>
-To:     linux-rdma@vger.kernel.org
-cc:     Leon Romanovsky <leon@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>, rpearson@gmail.com,
-        Doug Ledford <dledford@redhat.com>
-Subject: Re: [RFC] RDMA bridge for ROCE and Infiniband
-In-Reply-To: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
-Message-ID: <alpine.DEB.2.22.394.2111121450080.3113@vmi485042.contaboserver.net>
-References: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        with ESMTP id S233894AbhKLO0u (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 12 Nov 2021 09:26:50 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98ED3C061766
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 06:23:59 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id jo22so6317892qvb.13
+        for <linux-rdma@vger.kernel.org>; Fri, 12 Nov 2021 06:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=sWENJVBED6vEpvhTV25Kprid8J2O9Z3XamygIR51gYw=;
+        b=QzooSEHs8s4vI/w7cg/CuRglhNoL1YUL+mqZ7i/IBi8aPOpcOd5C6hVK5EK2W0fSIZ
+         RrLqWdlLZ95a0l+/y70GWlmHZ3DTHpfqsmCCyqahjiMdpdSabz6BQpkoIgRczdu3aC3E
+         tsnh70pWlAcY85OswRetPPuKd3en6FXOUn6gR365xVo0q5YfrERd7MREaNTiT7gP6x9e
+         M8+N5VbDD0Ua0vsdtw6S1v7tTzeskgiMnmOIWJidGcOkQxN/kXuZt33i7uP8T8kk0Ndt
+         rwjV0j7pjuL3NUbbNBNQUDFczjHAdVPPHuXDNE3rUHI0/6helbEUiv1BfqDmj8Y9SUHS
+         baJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=sWENJVBED6vEpvhTV25Kprid8J2O9Z3XamygIR51gYw=;
+        b=2bEhSuD2vKDwPLYjzqbqeJoGUXXWkl+uWY15F4SJD4QWrmxCPNKQ2yOOihxUwvkD2f
+         gNXSb2O7DxZ9HrEs75GB/oytOxAp9WTOPvzC1F2ugEMb9IuyuPeZ/CU76QGxq37ehj1b
+         tmw9ewqlcm4uZzOuYQ7UOQJdqRNM+0C/VbSJ8APqly//5fj2NfvbqBj+WAwgbiGwpcdx
+         W63RxA6It4C+za7d65cpfkWtHEG1nURW0LcYvHkWGp9Jm872YprFznnffvpqxF5krB28
+         xMnini3hx1TOImrLsRs6mMPeanr9MViJzjgsr61isz/ZCEL6MDoxDw+/cY++3dBuiWoG
+         /gCA==
+X-Gm-Message-State: AOAM532tB/QFEpvSu5W/HzP8XWSkBusLlHEs+FNM1OoJmG9AC0kqNNFj
+        UuMMM1132OiAoNCt5cEp71WY5w==
+X-Google-Smtp-Source: ABdhPJzOJGXIoAmIqd4KEO0v2yL2iZEnao9sFNrS3qf20S24bLW471+KHCi2wdpUZ9Xw6bp46yZXKQ==
+X-Received: by 2002:a0c:ed52:: with SMTP id v18mr14646178qvq.61.1636727038739;
+        Fri, 12 Nov 2021 06:23:58 -0800 (PST)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id n13sm3350983qtx.68.2021.11.12.06.23.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Nov 2021 06:23:58 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1mlXTA-0095vi-Um; Fri, 12 Nov 2021 10:23:56 -0400
+Date:   Fri, 12 Nov 2021 10:23:56 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Haris Iqbal <haris.iqbal@ionos.com>
+Subject: Re: Missing infiniband network interfaces after update to 5.14/5.15
+Message-ID: <20211112142356.GC876299@ziepe.ca>
+References: <CAMGffEmC07MwNsTHQ19OwUonG4zgYsx0vj+R__9as3E5EduY8A@mail.gmail.com>
+ <YYz+lmJ9C4P/2hbv@unreal>
+ <CAMGffE=EVpgYrPnUy-jGM7i4yvwsBUz1-Mre--aP70b9hP8zug@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMGffE=EVpgYrPnUy-jGM7i4yvwsBUz1-Mre--aP70b9hP8zug@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sorry for the screwed up email address.
+On Fri, Nov 12, 2021 at 09:23:04AM +0100, Jinpu Wang wrote:
+> On Thu, Nov 11, 2021 at 12:29 PM Leon Romanovsky <leon@kernel.org> wrote:
+> >
+> > On Thu, Nov 11, 2021 at 08:48:08AM +0100, Jinpu Wang wrote:
+> > > Hi Jason, hi Leon,
+> > >
+> > > We are seeing exactly the same error reported here:
+> > > https://bugzilla.redhat.com/show_bug.cgi?id=2014094
+> > >
+> > > I suspect it's related to
+> > > https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+> > >
+> > > Do you have any idea, what goes wrong?
+> >
+> > I can't reproduce it with latest Fedora 34 RPM, which I downloaded from here
+> > https://koji.fedoraproject.org/koji/buildinfo?buildID=1851842
+> >
+> > and also with kernel-5.14.7-200.fc34.x86_64 version mentioned in the bug
+> > report.
+> >
+> > [leonro@c-235-8-1-005 ~]$ uname -a
+> > Linux c-235-8-1-005 5.14.7-200.fc34.x86_64 #1 SMP Wed Sep 22 14:54:28 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > [leonro@c-235-8-1-005 ~]$ rdma dev
+> > 0: ibp8s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7950 sys_image_guid 1c34:da03:0007:7953
+> > 1: ibp9s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7a60 sys_image_guid 1c34:da03:0007:7a63
+> >
+> > [leonro@c-235-8-1-005 ~]$ uname -a
+> > Linux c-235-8-1-005 5.14.16-201.fc34.x86_64 #1 SMP Wed Nov 3 13:57:29 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > [leonro@c-235-8-1-005 ~]$ rdma dev
+> > 0: ibp8s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7950 sys_image_guid 1c34:da03:0007:7953
+> > 1: ibp9s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7a60 sys_image_guid 1c34:da03:0007:7a63
+> > [leonro@c-235-8-1-005 ~]$ lspci |grep nox
+> > 08:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
+> > 09:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
+> >
+> > Thanks
+> >
+> Hi,
+> 
+> I tried different host with CX-3/CX-5, they all work fine. and I can
+> only reproduce on hosts with a bit old HCA:
+> 03:00.0 InfiniBand: Mellanox Technologies MT26428 [ConnectX VPI PCIe
+> 2.0 5GT/s - IB QDR / 10GigE] (rev b0)
+> 
+> The bug report link
+> https://bugzilla.redhat.com/show_bug.cgi?id=2014094, mentioned HCA
+> ConnectX too.
+> 
+> 01:00.0 InfiniBand [0c06]: Mellanox Technologies MT25408A0-FCC-GI
+> ConnectX, Dual Port 20Gb/s InfiniBand / 10GigE Adapter IC with PCIe
+> 2.0 x8 5.0GT/s In... (rev b0)
+> with the instrument, I only narrow it down to
+> 1438                 port = setup_port(coredev, port_num, &attr);
+> 1439                 if (IS_ERR(port)) {
+> 1440                         ret = PTR_ERR(port);
+> 1441                         pr_info("setup ports failed %d\n", ret);
+> 1442                         goto err_put;
+> 1443                 }
 
-On Fri, 12 Nov 2021, Christoph Lameter wrote:
+Keep going with the tracing, there are lots of allocations in there.
 
-> We have a larger Infiniband deployment and want to gradually move servers
-> to a new fabric that is using RDMA over Ethernet using ROCE. The IB
-> Fabric is mission critical and complex due to the need to have various
-> ways to prevent failover with one of them being a secondary IB fabric.
->
-> It is not possible resourcewise to simply rebuild the system using ROCE
-> and then switch over.
->
-> Both Fabrics use RDMA and we need some way for nodes on each cluster to
-> communicate with each other. We do not really need memory to memory
-> transfers. What we use from the RDMA
-> stack is basically messaging and multicast. So the really
-> core services of the RDMA stack are not needed. Also UD/UDP is sufficient,
-> the other protocols may not be necessary to support.
->
-> Any ideas on how to do this would be appreciated. I have not found anything
-> that could help us here, so we are interested in creating a new piece of
-> Open Source RDMA software that allows the briding of native IB traffic to ROCE.
->
->
-> Basic Design
-> ------------
-> Lets say we have a single system that functions as a *bridge* and has one
-> interface going to Infiniband and one going to Ethernet with ROCE.
->
-> In our use case we do not need any "true" RDMA in the sense of memory to
-> memory transfers. We only need UDP and UD messsaging and support for
-> multicast.
->
-> In order to simplify the multicast aspects, the bridge will simply
-> subscribe to the multicast groups of interest when the bridge software
-> starts up.
->
-> PROXYARP for regular IP / IPoIB traffic
-> --------------------------------------
-> It is possible to do proxyarp on both sides of a Linux system that is
-> connected both to Infiniband and ROCE. And thus this can already be seen
-> as a single IP subnet from the Kernel stack perspective and communication
-> is not a problem for non RDMA traffic.
->
-> PROXYARP means that the MAC address of the bridge is used for all IPoIB
-> addresses on the IB side of the bridge. Similar the GID of the bridge is
-> used in all IPoIB Packets on the IB side of the bridge that come from the
-> ROCE side.
->
-> The kernel already removes and adds IPoIB and IP headers as needed. So
-> this works for regular IP traffic but not for native IB / RDMA packets.
-> IP traffic is only used for non performance critical aspects of
-> our application and so the performance on this level is not a concern.
->
-> Each of the host in the bridge IP subnet has 3 addresses: An IPv4
-> address, a MAC address and a GID.
->
->
-> RDMA Packets (Native IB and ROCE)
-> =================================
-> ROCE v2 packets are basically IB packets with another header on top so
-> the simplistic idealistic version of how this is going to
-> work is by stripping and adding the UDP ROCE v2 headers to the IB packet.
->
-> ROCE packets
-> ------------
-> UDP roce packets send to the IP addresses on the ROCE side have the MAC
-> address of the bridge. So these already contain the IP address for the
-> other side that can be used to lookup the GID in order to convert the
-> packet and forward it to the Infiniband node.
->
-> UD packets
-> ----------
-> Routing capabilities are limited on the Infiniband side but one could
-> construct a way to map GIDs for the hosts on the ROCE side to the LID
-> of the bridge by using the ACM daemon.
->
-> There will be complications regards to RDMA_CM support and the details
-> of mapping characteristics between packets but hopefully this will
-> be fairly manageable.
->
-> Multicast packets
-> -----------------
->
-> Multicast packets can be converted easily since there is a direct
-> mapping possible between the MAC address used for a Multicast group and
-> the MGID in the Infiniband fabric. Otherwise this process is similar
-> to UD/UDP traffic.
->
->
-> Implementation
-> ==============
->
-> There are basically three ways to implement this:
->
-> A) As add on to the RDMA stack in the Linux Kernel
-> B) As a user space process that operates on RAW sockets and receives traffic
->    filtered by the NIC or by the kernel to process. It wouild use the same
->    raw sockets to send these packets to the other side.
-> C) In firmware / logic of the NIC. This is out of reach of us here
->    I think.
->
->
-> Inbound from ROCE
-> -----------------
-> This can be done like in the RXE driver. Simply listening to the UDP port
-> for ROCE will get us the traffic we need to operate on.
->
-> Outbound to ROCE
-> ----------------
-> A Ethernet RAW socket will allow us to create arbitrary datagrams as needed.
-> This has been widely done before in numerous settings and code is already
-> open sources that does stuff like this. So this is fairly straightforward.
->
-> Inbound from Infiniband
-> -----------------------
-> The challenge here is to isolate the traffic that is destined for the bridge
-> itself from traffic that needs to be forwarded. One way would be to force
-> the inclusion of a Global Header in each packet so that the GID can be
-> matched. When the GID does not match the bridge then the traffic would be
-> forwarded to the code which could then do the necessary packet conversion.
->
-> I do not know of any way that something like this has been done before.
-> Potentially this means working with flow steering and dealing with firmware
-> issues in the NIC.
->
-> Outbound to Infiniband
-> ----------------------
-> I saw in a recent changelog for the Mellanox NICs that the ability has
-> been added to send raw IB datagrams. If that can be used to construct
-> a packet that is coming from one of the GIDs associated with the ROCE IP
-> addresses then this will work.
->
-> Otherwise we need to have some way to set the GID for outbound packets
-> to make this work.
->
-> The logic needed on Infiniband is similar to that required for an
-> Infiniband router.
->
->
->
->
-> The biggest risk here seems to be the Infiniband side of things. Is there
-> a way to create a filter for the traffic we need?
->
-> Any tips and suggestions on how to approach this problem would be appreciated.
->
->
-> Christoph Lameter, 12. November 2021
->
->
+> My guess is the ConnectX HCA may be missing some features, which leads
+> to ENOMEM, I will continue the instrument if no other hint.
+
+Since there is no memory allocation failure splat I'm guessing some
+memory allocation hit an overflow and silently failed - ie mlx4 is
+possibily setting some value to something bogus
+
+Jason
