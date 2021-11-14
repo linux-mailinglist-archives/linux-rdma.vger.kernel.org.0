@@ -2,196 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5023D44F74E
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Nov 2021 10:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F06B44FBC1
+	for <lists+linux-rdma@lfdr.de>; Sun, 14 Nov 2021 22:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230193AbhKNJMH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Nov 2021 04:12:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229537AbhKNJME (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 14 Nov 2021 04:12:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D349D60E9B;
-        Sun, 14 Nov 2021 09:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636880948;
-        bh=wQEp2OUWa67xvGp7dtVFumAFHt/CVrkYIHs9eS/yl2M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nsoRgQCdKakUcZWLNEtELEOYtJuT5drwFGB0tHDJKshMPks0RDGFRSMhibdiQOwRY
-         SAvhEGFBDmPMO486ILesqPO57eLQ+/tAneV/gMAkHZvcPfIKtmVWzILo/8S3UVRDk2
-         TXBEntLQ2DNuJI4U7ykSoQeJdS2HaWBV1z4QOn6lqTWBJIqoT2+X2q1h/8jdcfK7US
-         E8F3ixiGxjiXzBW2z0LTKwhWt36TJI+MwMJcQFZmszpTCyM5JAMqYIuJgfMVxPJtT5
-         cimnFonAvtwHVfaXLltA9YeNnLLgtKqeyOExfuiITeXyODd5I4cMpQVU2STZDz+CRT
-         1Bh/vVJG8RS3w==
-Date:   Sun, 14 Nov 2021 11:09:04 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Christoph Lameter <cl@vmi485042.contaboserver.net>
-Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        rpearson@gmail.com, Doug Ledford <dledford@redhat.com>
-Subject: Re: [RFC] RDMA bridge for ROCE and Infiniband
-Message-ID: <YZDSMCSmixPdS8hf@unreal>
-References: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
+        id S236331AbhKNVVi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 14 Nov 2021 16:21:38 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:41765 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236344AbhKNVVW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Nov 2021 16:21:22 -0500
+Received: by mail-io1-f69.google.com with SMTP id k6-20020a0566022d8600b005e6ff1b6bbaso9760448iow.8
+        for <linux-rdma@vger.kernel.org>; Sun, 14 Nov 2021 13:18:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=wtlL2dfA4YC3bHXJU8Z2/QOleRGN2befQJrpDJMCO7g=;
+        b=cb08o3j5DeQ1089ryPWZK6qsNffFhUstV5HGv2zSaI3K8nXOv5BgVQ2/A/PlKWcP3D
+         S7FN254IFMTl4iiTRyLP3IV8NXDbAeXupUkJsPNGmJvY7DsATC/q+9B7xFWaajY33NsX
+         t0N3x1w7wAp5G0VnqJmu7kgdO3I52kTjm8PVMpTC1RK7TMdLJTf85uAom2FSyaNYvIoq
+         I5JhlxFGxN1qxFVUeSgyXvmPof49tsHoZYHuqHPSPI13/SIa07LIfICzqfxS/Ax5fmzN
+         RhPTHBNWg8/h7GJR4KCk03o9248pG0UFL78cMQkmBPut2sucw04pIJWQCsNbfOO4cOYi
+         3SdA==
+X-Gm-Message-State: AOAM533I81gxboRnBUpZZNleM9SJIKOVkilMXGi+AWGdRa5/YY/QuVpn
+        s5axa7o04HjlQ555AI/tEMU7kHbPYaqnkGehZWY5ZqLmWbDK
+X-Google-Smtp-Source: ABdhPJzfUTZftQgHft8c8YtQOoyKvfnU37s3KNU9k6dSdWkMLgGkGfxhcJDmu3+l4XdilhP6Zln08H/snf0VT6lCE5NeOveoF0Ea
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2111121300290.380553@vmi485042.contaboserver.net>
+X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr18195748ill.225.1636924708274;
+ Sun, 14 Nov 2021 13:18:28 -0800 (PST)
+Date:   Sun, 14 Nov 2021 13:18:28 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c2c99905d0c63bcf@google.com>
+Subject: [syzbot] general protection fault in nldev_stat_set_doit (2)
+From:   syzbot <syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com>
+To:     aharonl@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
+        leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, markzhang@nvidia.com, netao@nvidia.com,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 12, 2021 at 01:04:13PM +0100, Christoph Lameter wrote:
-> We have a larger Infiniband deployment and want to gradually move servers
-> to a new fabric that is using RDMA over Ethernet using ROCE. The IB
-> Fabric is mission critical and complex due to the need to have various
-> ways to prevent failover with one of them being a secondary IB fabric.
-> 
-> It is not possible resourcewise to simply rebuild the system using ROCE
-> and then switch over.
-> 
-> Both Fabrics use RDMA and we need some way for nodes on each cluster to
-> communicate with each other. We do not really need memory to memory
-> transfers. What we use from the RDMA
-> stack is basically messaging and multicast. So the really
-> core services of the RDMA stack are not needed. Also UD/UDP is sufficient,
-> the other protocols may not be necessary to support.
-> 
-> Any ideas on how to do this would be appreciated. I have not found anything
-> that could help us here, so we are interested in creating a new piece of
-> Open Source RDMA software that allows the briding of native IB traffic to ROCE.
-> 
-> 
-> Basic Design
-> ------------
-> Lets say we have a single system that functions as a *bridge* and has one
-> interface going to Infiniband and one going to Ethernet with ROCE.
-> 
-> In our use case we do not need any "true" RDMA in the sense of memory to
-> memory transfers. We only need UDP and UD messsaging and support for
-> multicast.
-> 
-> In order to simplify the multicast aspects, the bridge will simply
-> subscribe to the multicast groups of interest when the bridge software
-> starts up.
-> 
-> PROXYARP for regular IP / IPoIB traffic
-> --------------------------------------
-> It is possible to do proxyarp on both sides of a Linux system that is
-> connected both to Infiniband and ROCE. And thus this can already be seen
-> as a single IP subnet from the Kernel stack perspective and communication
-> is not a problem for non RDMA traffic.
-> 
-> PROXYARP means that the MAC address of the bridge is used for all IPoIB
-> addresses on the IB side of the bridge. Similar the GID of the bridge is
-> used in all IPoIB Packets on the IB side of the bridge that come from the
-> ROCE side.
-> 
-> The kernel already removes and adds IPoIB and IP headers as needed. So
-> this works for regular IP traffic but not for native IB / RDMA packets.
-> IP traffic is only used for non performance critical aspects of
-> our application and so the performance on this level is not a concern.
-> 
-> Each of the host in the bridge IP subnet has 3 addresses: An IPv4
-> address, a MAC address and a GID.
-> 
-> 
-> RDMA Packets (Native IB and ROCE)
-> =================================
-> ROCE v2 packets are basically IB packets with another header on top so
-> the simplistic idealistic version of how this is going to
-> work is by stripping and adding the UDP ROCE v2 headers to the IB packet.
-> 
-> ROCE packets
-> ------------
-> UDP roce packets send to the IP addresses on the ROCE side have the MAC
-> address of the bridge. So these already contain the IP address for the
-> other side that can be used to lookup the GID in order to convert the
-> packet and forward it to the Infiniband node.
-> 
-> UD packets
-> ----------
-> Routing capabilities are limited on the Infiniband side but one could
-> construct a way to map GIDs for the hosts on the ROCE side to the LID
-> of the bridge by using the ACM daemon.
-> 
-> There will be complications regards to RDMA_CM support and the details
-> of mapping characteristics between packets but hopefully this will
-> be fairly manageable.
-> 
-> Multicast packets
-> -----------------
-> 
-> Multicast packets can be converted easily since there is a direct
-> mapping possible between the MAC address used for a Multicast group and
-> the MGID in the Infiniband fabric. Otherwise this process is similar
-> to UD/UDP traffic.
-> 
-> 
-> Implementation
-> ==============
-> 
-> There are basically three ways to implement this:
-> 
-> A) As add on to the RDMA stack in the Linux Kernel
-> B) As a user space process that operates on RAW sockets and receives traffic
->    filtered by the NIC or by the kernel to process. It wouild use the same
->    raw sockets to send these packets to the other side.
-> C) In firmware / logic of the NIC. This is out of reach of us here
->    I think.
-> 
-> 
-> Inbound from ROCE
-> -----------------
-> This can be done like in the RXE driver. Simply listening to the UDP port
-> for ROCE will get us the traffic we need to operate on.
-> 
-> Outbound to ROCE
-> ----------------
-> A Ethernet RAW socket will allow us to create arbitrary datagrams as needed.
-> This has been widely done before in numerous settings and code is already
-> open sources that does stuff like this. So this is fairly straightforward.
-> 
-> Inbound from Infiniband
-> -----------------------
-> The challenge here is to isolate the traffic that is destined for the bridge
-> itself from traffic that needs to be forwarded. One way would be to force
-> the inclusion of a Global Header in each packet so that the GID can be
-> matched. When the GID does not match the bridge then the traffic would be
-> forwarded to the code which could then do the necessary packet conversion.
-> 
-> I do not know of any way that something like this has been done before.
-> Potentially this means working with flow steering and dealing with firmware
-> issues in the NIC.
-> 
-> Outbound to Infiniband
-> ----------------------
-> I saw in a recent changelog for the Mellanox NICs that the ability has
-> been added to send raw IB datagrams. If that can be used to construct
-> a packet that is coming from one of the GIDs associated with the ROCE IP
-> addresses then this will work.
-> 
-> Otherwise we need to have some way to set the GID for outbound packets
-> to make this work.
-> 
-> The logic needed on Infiniband is similar to that required for an
-> Infiniband router.
-> 
-> 
-> 
-> 
-> The biggest risk here seems to be the Infiniband side of things. Is there
-> a way to create a filter for the traffic we need?
-> 
-> Any tips and suggestions on how to approach this problem would be appreciated.
+Hello,
 
-Mellanox has Skyway product, which is IB to ETH gateway.
-https://www.nvidia.com/en-us/networking/infiniband/skyway/
+syzbot found the following issue on:
 
-I imagine that it can be extended to perform IB to RoCE too,
-because it uses steering to perform IB to ETH translation.
+HEAD commit:    70701b83e208 tcp: Fix uninitialized access in skb frags ar..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=1654c32ab00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
+dashboard link: https://syzkaller.appspot.com/bug?extid=9111d2255a9710e87562
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-Thanks
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> 
-> 
-> Christoph Lameter, 12. November 2021
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 6744 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
+RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
+RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
+Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
+RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
+RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
+RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
+R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
+FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
+ sock_sendmsg_nosec net/socket.c:704 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:724
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7effa0867ae9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007eff9dddd188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007effa097af60 RCX: 00007effa0867ae9
+RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
+RBP: 00007effa08c1f6d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffc008a753f R14: 00007eff9dddd300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+---[ end trace bacb470dc6c820de ]---
+RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
+RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
+RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
+Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
+RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
+RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
+RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
+R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
+FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	fa                   	cli
+   1:	4c 8b a4 24 f8 02 00 	mov    0x2f8(%rsp),%r12
+   8:	00
+   9:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  10:	fc ff df
+  13:	c7 84 24 80 00 00 00 	movl   $0x0,0x80(%rsp)
+  1a:	00 00 00 00
+  1e:	49 8d 7c 24 04       	lea    0x4(%r12),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
+  2e:	48 89 f8             	mov    %rdi,%rax
+  31:	83 e0 07             	and    $0x7,%eax
+  34:	83 c0 03             	add    $0x3,%eax
+  37:	38 d0                	cmp    %dl,%al
+  39:	7c 08                	jl     0x43
+  3b:	84 d2                	test   %dl,%dl
+  3d:	0f                   	.byte 0xf
+  3e:	85 02                	test   %eax,(%rdx)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
