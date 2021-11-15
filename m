@@ -2,152 +2,163 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F06B44FBC1
-	for <lists+linux-rdma@lfdr.de>; Sun, 14 Nov 2021 22:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C63EB44FFF3
+	for <lists+linux-rdma@lfdr.de>; Mon, 15 Nov 2021 09:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236331AbhKNVVi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 14 Nov 2021 16:21:38 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:41765 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236344AbhKNVVW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 14 Nov 2021 16:21:22 -0500
-Received: by mail-io1-f69.google.com with SMTP id k6-20020a0566022d8600b005e6ff1b6bbaso9760448iow.8
-        for <linux-rdma@vger.kernel.org>; Sun, 14 Nov 2021 13:18:28 -0800 (PST)
+        id S229877AbhKOIWJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Nov 2021 03:22:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229948AbhKOIWD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Nov 2021 03:22:03 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E001C061746
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Nov 2021 00:18:50 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id r11so4320178edd.9
+        for <linux-rdma@vger.kernel.org>; Mon, 15 Nov 2021 00:18:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pl6YELFst/RZMtzR733SHFx3GWcGQjKHd80q3FZTCPM=;
+        b=TUd+za4Tnryvyskl/BeTOmKtI4q/Nfcevpax/Oo36mOvPHKXw/ayR/hpnl42s85xsL
+         k6q2bdiL0yqQbjzo0+a0SFdz0YQJmmv/Y0NDXKrd42ZlHNKTFmplTmknALK4+dEcOc8d
+         i+HAek0km/44iQLncRdQRrw+oDUfEYTWfs0ZsMEyPfdpsVwMP9c8BVv+z1142eHWU5z5
+         2TKZPLNDm33pGhZ/M0kZWHEN4zFeeg2HCCxjQcM195xEjv4lEsYXpGY35e4K8b/LNcyZ
+         WrccG6ErYyCgZTRH+BSYVFjZ0sI92Vh7pRvNfSk7HQyoAyK/acmjM8VdQ47z1SovGd+Z
+         9jPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wtlL2dfA4YC3bHXJU8Z2/QOleRGN2befQJrpDJMCO7g=;
-        b=cb08o3j5DeQ1089ryPWZK6qsNffFhUstV5HGv2zSaI3K8nXOv5BgVQ2/A/PlKWcP3D
-         S7FN254IFMTl4iiTRyLP3IV8NXDbAeXupUkJsPNGmJvY7DsATC/q+9B7xFWaajY33NsX
-         t0N3x1w7wAp5G0VnqJmu7kgdO3I52kTjm8PVMpTC1RK7TMdLJTf85uAom2FSyaNYvIoq
-         I5JhlxFGxN1qxFVUeSgyXvmPof49tsHoZYHuqHPSPI13/SIa07LIfICzqfxS/Ax5fmzN
-         RhPTHBNWg8/h7GJR4KCk03o9248pG0UFL78cMQkmBPut2sucw04pIJWQCsNbfOO4cOYi
-         3SdA==
-X-Gm-Message-State: AOAM533I81gxboRnBUpZZNleM9SJIKOVkilMXGi+AWGdRa5/YY/QuVpn
-        s5axa7o04HjlQ555AI/tEMU7kHbPYaqnkGehZWY5ZqLmWbDK
-X-Google-Smtp-Source: ABdhPJzfUTZftQgHft8c8YtQOoyKvfnU37s3KNU9k6dSdWkMLgGkGfxhcJDmu3+l4XdilhP6Zln08H/snf0VT6lCE5NeOveoF0Ea
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pl6YELFst/RZMtzR733SHFx3GWcGQjKHd80q3FZTCPM=;
+        b=YQaBsQbPijqKSO7y83Secd8vgMfYITAAiYbwUGTgztCuOU1J7SZujJZK+sWJV9eNNm
+         EGBHFz4cdoHVG7gJu9qjkdgk7nCXRbDz14Ba+DN4TWjiu4Wcye+ez3YO/oaFFxaZHRTi
+         6SdisrukGmMmh7R+ywDGp45rldVF4rS6LzWBH9ffewoX4+z5WHEUpqstTJ7LLlYGhlzU
+         tr16sRxBvI8tznZk22eD5RP28eG+0WXwbWplRs/ZmrqIFZmFYUYOaUFbJCgfotv9Ilrw
+         gw3/JYlg3zp+JFSuB0kIwhAQGeLVEBdRmqMR7mUtRs0oE70Kpam2SsbJZaGVv6NNvQLE
+         ecXg==
+X-Gm-Message-State: AOAM533z/K8IsBSv7lqx3YetEC2ynI279KtMqKl3otvK18c/szt8I9rk
+        AJQq1rIFZIVA+pILbR0GpxI0w9GfWOVZYY1Z6m+aET+iGpKzVaJ5
+X-Google-Smtp-Source: ABdhPJx5LCej/9fCk7JL8yI3oBmlH2wCcDdCvSosvaBSHqRn31Xad8P+uYc0wyqAZ41/zYgOnr67j4nxNia3cnWId6g=
+X-Received: by 2002:a05:6402:3546:: with SMTP id f6mr52504324edd.310.1636964328904;
+ Mon, 15 Nov 2021 00:18:48 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1ca6:: with SMTP id x6mr18195748ill.225.1636924708274;
- Sun, 14 Nov 2021 13:18:28 -0800 (PST)
-Date:   Sun, 14 Nov 2021 13:18:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c2c99905d0c63bcf@google.com>
-Subject: [syzbot] general protection fault in nldev_stat_set_doit (2)
-From:   syzbot <syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com>
-To:     aharonl@nvidia.com, dledford@redhat.com, jgg@ziepe.ca,
-        leon@kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, markzhang@nvidia.com, netao@nvidia.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <CAMGffEmC07MwNsTHQ19OwUonG4zgYsx0vj+R__9as3E5EduY8A@mail.gmail.com>
+ <YYz+lmJ9C4P/2hbv@unreal> <CAMGffE=EVpgYrPnUy-jGM7i4yvwsBUz1-Mre--aP70b9hP8zug@mail.gmail.com>
+ <20211112142356.GC876299@ziepe.ca> <YZC1S+T+SosaHihh@unreal>
+In-Reply-To: <YZC1S+T+SosaHihh@unreal>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Mon, 15 Nov 2021 09:18:37 +0100
+Message-ID: <CAMGffEmfYBSUOw73n=o+iCJheAzdv93WZJJ2MK6M52JzaYWEWQ@mail.gmail.com>
+Subject: Re: Missing infiniband network interfaces after update to 5.14/5.15
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Haris Iqbal <haris.iqbal@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Sun, Nov 14, 2021 at 8:05 AM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> On Fri, Nov 12, 2021 at 10:23:56AM -0400, Jason Gunthorpe wrote:
+> > On Fri, Nov 12, 2021 at 09:23:04AM +0100, Jinpu Wang wrote:
+> > > On Thu, Nov 11, 2021 at 12:29 PM Leon Romanovsky <leon@kernel.org> wrote:
+> > > >
+> > > > On Thu, Nov 11, 2021 at 08:48:08AM +0100, Jinpu Wang wrote:
+> > > > > Hi Jason, hi Leon,
+> > > > >
+> > > > > We are seeing exactly the same error reported here:
+> > > > > https://bugzilla.redhat.com/show_bug.cgi?id=2014094
+> > > > >
+> > > > > I suspect it's related to
+> > > > > https://lore.kernel.org/all/cover.1623427137.git.leonro@nvidia.com/
+> > > > >
+> > > > > Do you have any idea, what goes wrong?
+> > > >
+> > > > I can't reproduce it with latest Fedora 34 RPM, which I downloaded from here
+> > > > https://koji.fedoraproject.org/koji/buildinfo?buildID=1851842
+> > > >
+> > > > and also with kernel-5.14.7-200.fc34.x86_64 version mentioned in the bug
+> > > > report.
+> > > >
+> > > > [leonro@c-235-8-1-005 ~]$ uname -a
+> > > > Linux c-235-8-1-005 5.14.7-200.fc34.x86_64 #1 SMP Wed Sep 22 14:54:28 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > > > [leonro@c-235-8-1-005 ~]$ rdma dev
+> > > > 0: ibp8s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7950 sys_image_guid 1c34:da03:0007:7953
+> > > > 1: ibp9s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7a60 sys_image_guid 1c34:da03:0007:7a63
+> > > >
+> > > > [leonro@c-235-8-1-005 ~]$ uname -a
+> > > > Linux c-235-8-1-005 5.14.16-201.fc34.x86_64 #1 SMP Wed Nov 3 13:57:29 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux
+> > > > [leonro@c-235-8-1-005 ~]$ rdma dev
+> > > > 0: ibp8s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7950 sys_image_guid 1c34:da03:0007:7953
+> > > > 1: ibp9s0f0: node_type ca fw 2.42.5000 node_guid 1c34:da03:0007:7a60 sys_image_guid 1c34:da03:0007:7a63
+> > > > [leonro@c-235-8-1-005 ~]$ lspci |grep nox
+> > > > 08:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
+> > > > 09:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
+> > > >
+> > > > Thanks
+> > > >
+> > > Hi,
+> > >
+> > > I tried different host with CX-3/CX-5, they all work fine. and I can
+> > > only reproduce on hosts with a bit old HCA:
+> > > 03:00.0 InfiniBand: Mellanox Technologies MT26428 [ConnectX VPI PCIe
+> > > 2.0 5GT/s - IB QDR / 10GigE] (rev b0)
+> > >
+> > > The bug report link
+> > > https://bugzilla.redhat.com/show_bug.cgi?id=2014094, mentioned HCA
+> > > ConnectX too.
+> > >
+> > > 01:00.0 InfiniBand [0c06]: Mellanox Technologies MT25408A0-FCC-GI
+> > > ConnectX, Dual Port 20Gb/s InfiniBand / 10GigE Adapter IC with PCIe
+> > > 2.0 x8 5.0GT/s In... (rev b0)
+> > > with the instrument, I only narrow it down to
+> > > 1438                 port = setup_port(coredev, port_num, &attr);
+> > > 1439                 if (IS_ERR(port)) {
+> > > 1440                         ret = PTR_ERR(port);
+> > > 1441                         pr_info("setup ports failed %d\n", ret);
+> > > 1442                         goto err_put;
+> > > 1443                 }
+> >
+> > Keep going with the tracing, there are lots of allocations in there.
+> >
+> > > My guess is the ConnectX HCA may be missing some features, which leads
+> > > to ENOMEM, I will continue the instrument if no other hint.
+> >
+> > Since there is no memory allocation failure splat I'm guessing some
+> > memory allocation hit an overflow and silently failed - ie mlx4 is
+> > possibily setting some value to something bogus
+>
+> Yes, look for the values returned from FW.
+Hi Leon, hi Jason
 
-syzbot found the following issue on:
+I've found the problem, the device doesn't support per port diag
+counters, and the driver then fails the register which is
+too harsh.
 
-HEAD commit:    70701b83e208 tcp: Fix uninitialized access in skb frags ar..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1654c32ab00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a262045c4c15a9e0
-dashboard link: https://syzkaller.appspot.com/bug?extid=9111d2255a9710e87562
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+I'm not sure how to fix it properly, your thought?
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9111d2255a9710e87562@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 6744 Comm: syz-executor.0 Not tainted 5.15.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
-RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
-RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
-Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
-RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
-RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
-RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
-R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
-FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x86d/0xda0 net/netlink/af_netlink.c:1916
- sock_sendmsg_nosec net/socket.c:704 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:724
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2409
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2463
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2492
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7effa0867ae9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007eff9dddd188 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007effa097af60 RCX: 00007effa0867ae9
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000003
-RBP: 00007effa08c1f6d R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc008a753f R14: 00007eff9dddd300 R15: 0000000000022000
- </TASK>
-Modules linked in:
----[ end trace bacb470dc6c820de ]---
-RIP: 0010:nla_get_u32 include/net/netlink.h:1554 [inline]
-RIP: 0010:nldev_stat_set_mode_doit drivers/infiniband/core/nldev.c:1909 [inline]
-RIP: 0010:nldev_stat_set_doit+0x578/0x10d0 drivers/infiniband/core/nldev.c:2040
-Code: fa 4c 8b a4 24 f8 02 00 00 48 b8 00 00 00 00 00 fc ff df c7 84 24 80 00 00 00 00 00 00 00 49 8d 7c 24 04 48 89 fa 48 c1 ea 03 <0f> b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 02
-RSP: 0018:ffffc90004acf2e8 EFLAGS: 00010247
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc90002b94000
-RDX: 0000000000000000 RSI: ffffffff8684c5ff RDI: 0000000000000004
-RBP: ffff88807cda4000 R08: 0000000000000000 R09: ffff888023fb8027
-R10: ffffffff8684c5d7 R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000001 R14: ffff888041024280 R15: ffff888031ade780
-FS:  00007eff9dddd700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b2ef24000 CR3: 0000000036902000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	fa                   	cli
-   1:	4c 8b a4 24 f8 02 00 	mov    0x2f8(%rsp),%r12
-   8:	00
-   9:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  10:	fc ff df
-  13:	c7 84 24 80 00 00 00 	movl   $0x0,0x80(%rsp)
-  1a:	00 00 00 00
-  1e:	49 8d 7c 24 04       	lea    0x4(%r12),%rdi
-  23:	48 89 fa             	mov    %rdi,%rdx
-  26:	48 c1 ea 03          	shr    $0x3,%rdx
-* 2a:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx <-- trapping instruction
-  2e:	48 89 f8             	mov    %rdi,%rax
-  31:	83 e0 07             	and    $0x7,%eax
-  34:	83 c0 03             	add    $0x3,%eax
-  37:	38 d0                	cmp    %dl,%al
-  39:	7c 08                	jl     0x43
-  3b:	84 d2                	test   %dl,%dl
-  3d:	0f                   	.byte 0xf
-  3e:	85 02                	test   %eax,(%rdx)
+Thanks
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+[ 3426.452062] <mlx4_ib> mlx4_ib_add: counter index 1 for port 2 allocated 0
+[ 3426.452067] <mlx4_ib> mlx4_ib_alloc_diag_counters: #### i =1,
+per_port 0  // device MLX4_DEV_CAP_FLAG2_DIAG_PER_PORT not set. which
+lead to the allocation failure.
+[ 3426.494000] <mlx4_ib> mlx4_ib_alloc_hw_port_stats:
+mlx4_ib_alloc_hw_port_stats name null
+[ 3426.494170] <mlx4_ib> mlx4_ib_alloc_hw_port_stats:
+mlx4_ib_alloc_hw_port_stats name null
+[ 3426.494174] ibdev ops alloc_hw_stats_port failed
+[ 3426.494175] alloc_hw_stats_port failed
+[ 3426.494177] setup_hw_port_stats failed, -12
+[ 3426.494181] setup ports failed -12
+[ 3426.494190] infiniband mlx4_0: Couldn't register device with driver model
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+>
+> >
+> > Jason
