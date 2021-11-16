@@ -2,212 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8176D45193A
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Nov 2021 00:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A02452894
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Nov 2021 04:31:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233499AbhKOXQd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 15 Nov 2021 18:16:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351814AbhKOXOa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 15 Nov 2021 18:14:30 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE831C04EFB5
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id c4so16267326pfj.2
-        for <linux-rdma@vger.kernel.org>; Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
-        b=GfFI7XvVt8YFksskvqmrQ3qPuEuVeXEYjSmuZkGA5xMMXxFy564PrMeBNc7Y8WH5PL
-         yt5GdFT0FW445phxmH69+fTSi0opmzSp0MKM1Su7LpWaODpHqJOvO/AjHDC3wXOmrXDe
-         2wLMSbl2QDTBiMGmIPaGGEJJB0n0X5+1Qk2gI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Q5Q7mjWxHvomA4joFyHp8gbW0OzP0GYKgcSZNkWKQbw=;
-        b=CShjT7R8Ki80Yzqntm545KiFYf0TwrpHMx+VM1SkltJEdJ6dRb5Gf65Cxfz3tzgr55
-         oWoJuG5QITeav+Q7ZlN05bdGMEx9Nmm+uYsOiP6W8rLretaTx8RabGAQlfoAVxlBq8fr
-         06p5GMJBx3J9xJwDCIHwCbN0wy15DimlrJhzdaxEgGRl6Ec3dtB7n1MDWW8tdvJYd8in
-         A8pAMdT30+YgpMG4yKocy4Gcp8w/HqVwse4QXkvKFU/GQXjNAolnd6Pwjj7po1Ovxk64
-         Twn0Itt1mQTWwK+B2bvRUewSkMDiPPmr1TG359bw3dtX3QlC2qcLjn9zWe9VWrzrFVQ9
-         cX5g==
-X-Gm-Message-State: AOAM530ETAeMMVG58fmY6lW/OZKJxr/yA0OO0+IkT8qbHevLSGRC9Ss3
-        d1as9ZZShdQhVIgfK8VPbXeOBA==
-X-Google-Smtp-Source: ABdhPJz3d1Fm6DVmJXDnQcSZ6XVqy1YGkg+bK+EhRM29LMp3+iWkEpRfouWPgP5TqiLJ0sYBVy/rdA==
-X-Received: by 2002:a63:1d13:: with SMTP id d19mr1556417pgd.383.1637014576434;
-        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id oc10sm293770pjb.26.2021.11.15.14.16.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Nov 2021 14:16:16 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Avoid field-overflowing memcpy()
-Date:   Mon, 15 Nov 2021 14:16:13 -0800
-Message-Id: <20211115221613.2791637-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S243651AbhKPDex (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 15 Nov 2021 22:34:53 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:48912 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1347205AbhKPDd7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 15 Nov 2021 22:33:59 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UwnkGTh_1637033457;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UwnkGTh_1637033457)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Nov 2021 11:30:58 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH RFC net] net/smc: Ensure the active closing peer first closes clcsock
+Date:   Tue, 16 Nov 2021 11:30:12 +0800
+Message-Id: <20211116033011.16658-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5948; h=from:subject; bh=0WIZ0LaG1CrIgiauMUryZqkW+d9Y9QkDjTEtreWu41w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhktwsH+KBpNKg9y8K0YobbeqSLF6d2fuY7VTbl+5Z Uh4uM5yJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZLcLAAKCRCJcvTf3G3AJmobD/ 4yvXZ4YCp0KjHJMvrX51CQUEcJK+sRXEh/r1W+abkDL4ueQ+6QV3vWeVSrhqJESh+XpSxMLwszT+IF xrIH7gRb+kRPp3AXQaL8Eh4rC3NpFmtrhyo5tKR1FTkRViKY1ziXYvytN3tnVhL+btoLMt69UWKA4M rH0wA3BuMNWUIK1yxE7SHdVTs9H0FZ1M9qPaWt9a+uq6DLPTP3iJUKRM12850xYCvVzdFbbf7mIg+m pXUDLunfMEj2Vc3jg5LwpL/ow9rH2Q+9RU9Nx0hiUlNfQA+4m75yhlsDP81nmQv9aLkoHTuSvowmGT dGJOEUZep0TZp09tQJTgrb+6rJNPIQM5KD2uj/+6ks2FeGu1ADL6WQIlRJpKGRhZZFwJW9lDx4BuIk kK9RfAVMz9bw0QJSeX8iq7Wmx5cro599decAtm8SwF0Pku/UhCALalcV5AlXHgINCFYldUYDNTJ+KY RdLLm3HGfN22x6hoP7AqbCJvIYEsmf2qlBuzHH6vSD8PjHelqMKzw3F2d470UfxUDtlzI5lMNMsAj3 GYLomDbvaxl11/Z2MJeb0SnUHTnFzbHFeYkCZQylS9lAiycVZ9AkxDIch7PQTVW/TSO8uAtuTeXnDS 4oiEm5xtKVE2kUINM+5T3E6lXmFCmBmSV7z5qTKv6zt2wbuQPEOHPukS7IIQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+We found an issue when replacing TCP with SMC. When the actively closed
+peer called close() in userspace, the clcsock of peer doesn't enter TCP
+active close progress, but the passive closed peer close it first, and
+enters TIME_WAIT state. It means the behavior doesn't match what we
+expected. After reading RFC7609, there is no clear description of the
+order in which we close clcsock during close progress.
 
-Use flexible arrays instead of zero-element arrays (which look like they
-are always overflowing) and split the cross-field memcpy() into two halves
-that can be appropriately bounds-checked by the compiler.
+Consider this, an application listen and accept connections, and a client
+connects the server. When client actively closes the socket, the peer's
+conneciton in server enters TIME_WAIT state, which means the address
+is occupied and won't be reused before TIME_WAIT dismissing. The server
+will be restarted failed for EADDRINUSE. Although SO_REUSEADDR can solve
+this issue, but not all the applications use it. It is very common to
+restart the server process for some reasons in product environment. If
+we wait for TIME_WAIT dismissing, the service will be unavailable for a
+long time.
 
-We were doing:
+Here is a simple example to reproduce this issue. Run these commands:
+  server: smc_run ./sockperf server --tcp -p 12345
+  client: smc_run ./sockperf pp --tcp -m 14 -i ${SERVER_IP} -t 10 -p 12345
 
-	#define ETH_HLEN  14
-	#define VLAN_HLEN  4
-	...
-	#define MLX5E_XDP_MIN_INLINE (ETH_HLEN + VLAN_HLEN)
-	...
-        struct mlx5e_tx_wqe      *wqe  = mlx5_wq_cyc_get_wqe(wq, pi);
-	...
-        struct mlx5_wqe_eth_seg  *eseg = &wqe->eth;
-        struct mlx5_wqe_data_seg *dseg = wqe->data;
-	...
-	memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
+After client benchmark finished, a TIME_WAIT connection will show up in
+the server, not the client, which will occupy the address:
+  tcp        0      0 100.200.30.40:12345      100.200.30.41:53010      TIME_WAIT   -
 
-target is wqe->eth.inline_hdr.start (which the compiler sees as being
-2 bytes in size), but copying 18, intending to write across start
-(really vlan_tci, 2 bytes). The remaining 16 bytes get written into
-wqe->data[0], covering byte_count (4 bytes), lkey (4 bytes), and addr
-(8 bytes).
+If we restart server's sockperf, it will fail for:
+  sockperf: ERROR: [fd=3] Can`t bind socket, IP to bind: 0.0.0.0:12345
+   (errno=98 Address already in use)
 
-struct mlx5e_tx_wqe {
-        struct mlx5_wqe_ctrl_seg   ctrl;                 /*     0    16 */
-        struct mlx5_wqe_eth_seg    eth;                  /*    16    16 */
-        struct mlx5_wqe_data_seg   data[];               /*    32     0 */
+Here is the process of closing for PeerConnAbort. We can observe this
+issue both in PeerConnAbort and PeerConnClosed.
 
-        /* size: 32, cachelines: 1, members: 3 */
-        /* last cacheline: 32 bytes */
-};
+Client                                                |  Server
+close() // client actively close                      |
+  smc_release()                                       |
+      smc_close_active() // SMC_PEERCLOSEWAIT1        |
+          smc_close_final() // abort or closed = 1    |
+              smc_cdc_get_slot_and_msg_send()         |
+          [ A ]                                       |
+                                                      |smc_cdc_msg_recv_action() // SMC_ACTIVE
+                                                      |  queue_work(smc_close_wq, &conn->close_work)
+                                                      |    smc_close_passive_work() // SMC_PROCESSABORT or SMC_APPCLOSEWAIT1
+                                                      |      smc_close_passive_abort_received() // only in abort
+                                                      |
+                                                      |close() // server recv zero, close
+                                                      |  smc_release() // SMC_PROCESSABORT or SMC_APPCLOSEWAIT1
+                                                      |    smc_close_active()
+                                                      |      smc_close_abort() or smc_close_final() // SMC_CLOSED
+                                                      |        smc_cdc_get_slot_and_msg_send() // abort or closed = 1
+smc_cdc_msg_recv_action()                             |    smc_clcsock_release()
+  queue_work(smc_close_wq, &conn->close_work)         |      sock_release(tcp) // actively close clc, enter TIME_WAIT
+    smc_close_passive_work() // SMC_PEERCLOSEWAIT1    |    smc_conn_free()
+      smc_close_passive_abort_received() // SMC_CLOSED|
+      smc_conn_free()                                 |
+      smc_clcsock_release()                           |
+        sock_release(tcp) // passive close clc        |
 
-struct mlx5_wqe_eth_seg {
-        u8                         swp_outer_l4_offset;  /*     0     1 */
-        u8                         swp_outer_l3_offset;  /*     1     1 */
-        u8                         swp_inner_l4_offset;  /*     2     1 */
-        u8                         swp_inner_l3_offset;  /*     3     1 */
-        u8                         cs_flags;             /*     4     1 */
-        u8                         swp_flags;            /*     5     1 */
-        __be16                     mss;                  /*     6     2 */
-        __be32                     flow_table_metadata;  /*     8     4 */
-        union {
-                struct {
-                        __be16     sz;                   /*    12     2 */
-                        u8         start[2];             /*    14     2 */
-                } inline_hdr;                            /*    12     4 */
-                struct {
-                        __be16     type;                 /*    12     2 */
-                        __be16     vlan_tci;             /*    14     2 */
-                } insert;                                /*    12     4 */
-                __be32             trailer;              /*    12     4 */
-        };                                               /*    12     4 */
+To solve this issue, clcsock can be shutdown before the passive closed
+peer closing it, to perform the TCP active close progress first. RFC7609
+said the main idea of termination flows, is to terminate the normal TCP
+connection in the end [1]. But there is no possible to release clcsock
+before server calling sock_release(tcp), so shutdown the clcsock in [A],
+which is the only place before server closing it.
 
-        /* size: 16, cachelines: 1, members: 9 */
-        /* last cacheline: 16 bytes */
-};
-
-struct mlx5_wqe_data_seg {
-        __be32                     byte_count;           /*     0     4 */
-        __be32                     lkey;                 /*     4     4 */
-        __be64                     addr;                 /*     8     8 */
-
-        /* size: 16, cachelines: 1, members: 3 */
-        /* last cacheline: 16 bytes */
-};
-
-So, split the memcpy() so the compiler can reason about the buffer
-sizes.
-
-"pahole" shows no size nor member offset changes to struct mlx5e_tx_wqe
-nor struct mlx5e_umr_wqe. "objdump -d" shows no meaningful object
-code changes (i.e. only source line number induced differences and
-optimizations).
-
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Cc: bpf@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Link: https://datatracker.ietf.org/doc/html/rfc7609#section-4.8.1 [1]
+Fixes: b38d732477e4 ("smc: socket closing and linkgroup cleanup")
+Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en.h     | 6 +++---
- drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c | 4 +++-
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ net/smc/smc_close.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-index f0ac6b0d9653..0925092211ce 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
-@@ -225,7 +225,7 @@ static inline int mlx5e_get_max_num_channels(struct mlx5_core_dev *mdev)
- struct mlx5e_tx_wqe {
- 	struct mlx5_wqe_ctrl_seg ctrl;
- 	struct mlx5_wqe_eth_seg  eth;
--	struct mlx5_wqe_data_seg data[0];
-+	struct mlx5_wqe_data_seg data[];
- };
- 
- struct mlx5e_rx_wqe_ll {
-@@ -242,8 +242,8 @@ struct mlx5e_umr_wqe {
- 	struct mlx5_wqe_umr_ctrl_seg   uctrl;
- 	struct mlx5_mkey_seg           mkc;
- 	union {
--		struct mlx5_mtt inline_mtts[0];
--		struct mlx5_klm inline_klms[0];
-+		DECLARE_FLEX_ARRAY(struct mlx5_mtt, inline_mtts);
-+		DECLARE_FLEX_ARRAY(struct mlx5_klm, inline_klms);
- 	};
- };
- 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-index 2f0df5cc1a2d..efae2444c26f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/xdp.c
-@@ -341,8 +341,10 @@ mlx5e_xmit_xdp_frame(struct mlx5e_xdpsq *sq, struct mlx5e_xmit_data *xdptxd,
- 
- 	/* copy the inline part if required */
- 	if (sq->min_inline_mode != MLX5_INLINE_MODE_NONE) {
--		memcpy(eseg->inline_hdr.start, xdptxd->data, MLX5E_XDP_MIN_INLINE);
-+		memcpy(eseg->inline_hdr.start, xdptxd->data, sizeof(eseg->inline_hdr.start));
- 		eseg->inline_hdr.sz = cpu_to_be16(MLX5E_XDP_MIN_INLINE);
-+		memcpy(dseg, xdptxd->data + sizeof(eseg->inline_hdr.start),
-+		       MLX5E_XDP_MIN_INLINE - sizeof(eseg->inline_hdr.start));
- 		dma_len  -= MLX5E_XDP_MIN_INLINE;
- 		dma_addr += MLX5E_XDP_MIN_INLINE;
- 		dseg++;
+diff --git a/net/smc/smc_close.c b/net/smc/smc_close.c
+index 0f9ffba07d26..04620b53b74a 100644
+--- a/net/smc/smc_close.c
++++ b/net/smc/smc_close.c
+@@ -228,6 +228,12 @@ int smc_close_active(struct smc_sock *smc)
+ 			/* send close request */
+ 			rc = smc_close_final(conn);
+ 			sk->sk_state = SMC_PEERCLOSEWAIT1;
++
++			/* actively shutdown clcsock before peer close it,
++			 * prevent peer from entering TIME_WAIT state.
++			 */
++			if (smc->clcsock && smc->clcsock->sk)
++				rc = kernel_sock_shutdown(smc->clcsock, SHUT_RDWR);
+ 		} else {
+ 			/* peer event has changed the state */
+ 			goto again;
 -- 
-2.30.2
+2.32.0.3.g01195cf9f
 
