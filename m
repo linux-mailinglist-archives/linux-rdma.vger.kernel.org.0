@@ -2,53 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78688452D7B
-	for <lists+linux-rdma@lfdr.de>; Tue, 16 Nov 2021 10:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633F5453094
+	for <lists+linux-rdma@lfdr.de>; Tue, 16 Nov 2021 12:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232671AbhKPJEg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 16 Nov 2021 04:04:36 -0500
-Received: from mail.bizjoindeal.pl ([80.211.97.164]:57940 "EHLO
-        mail.bizjoindeal.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232741AbhKPJEb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Nov 2021 04:04:31 -0500
-Received: by mail.bizjoindeal.pl (Postfix, from userid 1001)
-        id 2E973A1BE4; Tue, 16 Nov 2021 08:51:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizjoindeal.pl;
-        s=mail; t=1637052687;
-        bh=JZuQ1fK7zFtz2oeUB7Xfid9vb7kUywdmDd2OluR8ywA=;
-        h=Date:From:To:Subject:From;
-        b=xuIBt1YHWPl5OxVv5RxE3mCyDmGyPThiUzYzyutG1aBPO8Bf0novqeo4f7oFeS27W
-         0pkCZFBrMr58Hlr0jSUnOhcr3OmjGraNHScj6kRfLxx1aYRSclRsVUr/C+YOttRKVh
-         WGP3kmN+4lsj1O40/hO1jKU76vcRAh8Sl4uhd04skHdNc29raPmvVoid5GJID3V1rS
-         LIflD1h0RnKMknm3TtDKr/bgzm8JJmMoK5T837v6PyWetF7pRg/s26tJpH0SYaBSQm
-         La/u7AXHnw8UVvL6v7qGCJzjDKvQJBr+mUIr+6ZJE+frDmivNI7Kxua2QpCJdLIqLj
-         ssEcjqV4fcJ4A==
-Received: by mail.bizjoindeal.pl for <linux-rdma@vger.kernel.org>; Tue, 16 Nov 2021 08:51:12 GMT
-Message-ID: <20211116074500-0.1.60.f0qy.0.lephyfenvh@bizjoindeal.pl>
-Date:   Tue, 16 Nov 2021 08:51:12 GMT
-From:   "Dorian Kwiatkowski" <dorian.kwiatkowski@bizjoindeal.pl>
-To:     <linux-rdma@vger.kernel.org>
-Subject: Fotowoltaika dla firm
-X-Mailer: mail.bizjoindeal.pl
+        id S235091AbhKPLbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 16 Nov 2021 06:31:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234903AbhKPLbH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 16 Nov 2021 06:31:07 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21677C07978B
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Nov 2021 03:27:00 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id a9so10662610wrr.8
+        for <linux-rdma@vger.kernel.org>; Tue, 16 Nov 2021 03:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=49VN2EPgYHrEXK97OpQX0CxGM5w7EiGtxSfN5GFh/XE=;
+        b=VPSdTQPJ5hxea0d4B/OGzopTdVjRnbFmJz+O0tAMBIW+kVpQPKiYwfvCdPxAiu9RO7
+         oe9kEcogTcLI4iYVrS1eOtN05ZsYHexXSFFQpbbx9c1Ayow9QIMNNWeK3yqQOqbV6uta
+         lYm4w6zcQWO4dqR/GNjN0aurI02r6lW3XO4xQxM/13UYVUY6ET4f0O8Iq4IG8IZUtkwp
+         NHbrha8XPUVMG3Xu1I5WAylPedohg9BtJHXmX/E5I/oVcL5vEd+kv9L+n5IA0SK5OUNr
+         Wzfz9JBOv9okjRvaOWABxHrvDpiLS87CruKZfKxQJvud8svtNp7BgBXzyICxaDFUC026
+         9ZZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=49VN2EPgYHrEXK97OpQX0CxGM5w7EiGtxSfN5GFh/XE=;
+        b=jZCUdH194I0TR7pNkkBSn6sFAp/fIxMp0NBBCKoVEpr+C7Pn1UvLt8exjWXhtikmDn
+         gQmQDXWtdixNd2G94/zZbnggfHNxiyOVl3/WF/1TV6BPA5242AbfngxnwNZPl8/o/wiA
+         OkTleki/1TqdBygfU+VsNCL7TAMe8KeEqjeW2HIR70slVThWLnMAq2+MDImW3egcXqHJ
+         67DbI+b4A4WDd3MjeWxUmn4bjDJ2K9hBzUK8da4g0Px7icV5nPLO46UvXmssSEqOemQU
+         SuhMTztKMtwvoZjjhAAY6BtmCjp1sBT0NpVKUJu2OIRPplExa3Dul/w8YTzbHINjVkCd
+         tmEw==
+X-Gm-Message-State: AOAM531ruZAe959Fws2riGx1Hef/0kKmdaKiydnRiCMgTjoXzvs9oV1A
+        qJIf19pA6AwCLulLiXNMcz1A0hkB28i78hLqZeg=
+X-Google-Smtp-Source: ABdhPJx7V7Pzab1iLpC1tLfl5XTeFedl5ZB5PcVwW8xnRDThhRI1kD0wWb7jxJL13vcYZKWR942PRdG0Y0xdZFQs61A=
+X-Received: by 2002:a5d:4107:: with SMTP id l7mr8132229wrp.209.1637062018294;
+ Tue, 16 Nov 2021 03:26:58 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:a05:600c:3b97:0:0:0:0 with HTTP; Tue, 16 Nov 2021 03:26:57
+ -0800 (PST)
+Reply-To: ebodrdickson1020@gmail.com
+From:   "Dr.Dickson Ebo" <drdicksonelo1023@gmail.com>
+Date:   Tue, 16 Nov 2021 03:26:57 -0800
+Message-ID: <CABq-xD7ZFmUMjZ9aWbbAm9nEKVBK1nOq1MtQg6NNJHmUXBtxzg@mail.gmail.com>
+Subject: hi
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Finance and Audit Department, Zenith Bank Plc.
 
-kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, poniewa=C5=BC dostrzegam mo=C5=BC=
-liwo=C5=9B=C4=87 redukcji op=C5=82at za pr=C4=85d.
+The President of the Federal Republic of Nigeria through the Zenith
+International Bank Nigeria PLC has released your
+Contract/Inheritance/Compensation Fund.
 
-Odpowiednio dobrana instalacja fotowoltaiczna to rozwi=C4=85zanie, kt=C3=B3=
-re pozwala wygenerowa=C4=87 spore oszcz=C4=99dno=C5=9Bci w skali roku.
+Kindly get back to us as soon as possible.
 
-Chcia=C5=82bym porozmawia=C4=87 z Pa=C5=84stwem o tego typu rozwi=C4=85za=
-niu, a tak=C5=BCe przedstawi=C4=87 wst=C4=99pne kalkulacje.
-
-Czy s=C4=85 Pa=C5=84stwo zainteresowani?
-
-Pozdrawiam,
-Dorian Kwiatkowski
+Yours faithfully,
+Dr. Dickson Ebo.
