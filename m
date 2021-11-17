@@ -2,321 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104F2454588
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 12:22:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 858434545E3
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 12:46:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236738AbhKQLY0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Nov 2021 06:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232294AbhKQLYZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Nov 2021 06:24:25 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3A3C061570
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 03:21:26 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id l22so6622945lfg.7
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 03:21:26 -0800 (PST)
+        id S235653AbhKQLs7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Nov 2021 06:48:59 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:12152 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235513AbhKQLs7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Nov 2021 06:48:59 -0500
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHAQb8g002136;
+        Wed, 17 Nov 2021 11:45:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=TGNoMpIAOM1/ohQKGvWtxNuz5IidqZnKwf9XcToAN5A=;
+ b=Y0w3kBPZaMy2NK184Zk8c+uewkwicE7TBHbHEbs0XQYipmggBj4rMiR05dKPM39USmPj
+ 0fKahvyNCatKO+7YiujVRH+VIcuj8OuHUWad3aSMWq40Qy0zgqrQwQyuVIjBT+Uw6hfK
+ 0Lv5QgAgSgU6icqLcXAc/XnB2h+lU/FIVC6zmjIEzT/ZAhXgxYvQXhYPEpDfRL0NC6EV
+ jvOQI15iuavYLURrcCNapdZN9Bw8ZiMEqrI62zMVd5NU872eNoXwKFzQH8lNermDc01D
+ xASvYi6ajY+J30c8y1pszABfpb/EdUlUa70vaACA7HUlePa3ef7WqycZpCkVAW59cx1q 2w== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cbh3e7bqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 11:45:51 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AHBehm4099862;
+        Wed, 17 Nov 2021 11:45:50 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by aserp3020.oracle.com with ESMTP id 3ca566u9sy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 11:45:50 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jghtgl5kA4JAyRdwck1i6mlEOo2mjOum110Gn8+cgiEAPYYXXEr21ev70epjAa70S6gVTo2GPoQ/K47U3ntYyCbWye7qz6CtzZrm3+vNHu1gEcSo4Ef5SnU0XLkv3jvmtbSrPxAGktbf/wmYz9zzf6zduLbTfSbyWbb4vuQjhrCJ7Y5us6YPSp6jWZGvx7f5OpjEZc+cjc/hPXzya2vf2hXIG+Jh6b2/HCb9BUTi12H2KRGERoYKf9Ot+sNRAdWXjjD4vKTk1esmiiZHVD+TAWUo8+axp06jX7HoyqVdHaMAfzdR0UWJn9OmA6d11GnJUbOWaLqi5k14cQM//VPSWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TGNoMpIAOM1/ohQKGvWtxNuz5IidqZnKwf9XcToAN5A=;
+ b=P4uDrTX3S8MBsWhsHA9IUhLZGigWLrlU7oZdXxzm3G6Q8Shc7gZAR/TXZJdiql+fcNbf9BFbpXoI70saypRW6xtgpwlVkfhLP5z4sePptZOl9Erx9k8RvfNf+gyJmuGtN+JQ3u84PLcOsO22KUi/mtG+/HyHOQldJvG7AtOOEB4PFI81f1EzUbEN3ig9+uri4pk955jmfYiqwUN6zmW3aeIr62aGqT0/aYLrwKGfP/a/I1LpqpV+fWFzICNDtDQg2dqGQ3g2e6M0a+Sq+aLlgQrWAf9WfL6tA0+XeNJCKVaYyz7+luB3NgI6kqIAnlKTpBwhjSDqRn7Dc00JGF6u+A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FUymyk7ZQa9hAvOVscIY3mcQkNhHHJJg/pcxaiRKp60=;
-        b=E4NFm4kWOtM+9yLPreTF2OqCj58REP65Eu1UqS8WaooweHcH1/GM5E8RvHMeaUMdAK
-         HmNZgSPtVsxwFRCPMWNH9YSFrS76DNENyzjkOlxSRCNJvdQYy9hmsyBOyMvlXHBx3cDj
-         JQ6N+RV7WvmKAzfPI92D1Zo2+D5K5txlZxi2lU43UeoTG6imN6urxWGcaXEBnDWuVFIB
-         HnlV2Ehk98ERG+SKSjruOKdp7v6qkQQNSeRvUj/9HBDWzq3Hswvp2ytYG/P7AFu3GRfW
-         j0eeZB8jn+QPju1UJ3viXYlCB6pAVabKishVRjDbjlt8xO4HQVsB/xeTTzoNuhRwBXV1
-         5jMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FUymyk7ZQa9hAvOVscIY3mcQkNhHHJJg/pcxaiRKp60=;
-        b=qQm1Yh+tbxwkHV8YC3pTZK/cn5iSGTP/OMBTs7P7NlfvtghpH2S5zcMGRcE8DTTAmk
-         Ezb/DWnsvOWneJHZBC0vGzeVi0ioqxTa0ubZqDSFAhDN5QgDclyGtImMYyH7+dH2ojL8
-         iRUfHpHpup3fLrSYvAKUuxyi8FGDYErGw/ql55FN2PfCbvPXDcBvC+WCnHNvQoXHNTjo
-         6gkXWAFEXH24Q/QiyFHf1mIqj2QuPUhiFXghk4KIItAUvXhZ4TtYYjMs81ss7bdzSt51
-         P/nkH0uic/Oo9qEy0JctVUTuDSa7AdgzSphX6WeM8CwC9xaQm+OJJBpOTwuI0Mkbd01j
-         eJwQ==
-X-Gm-Message-State: AOAM530eSxOJ/XN3jWV1afwu8mRpTBWzbyY+CGOHmaWGkwyW97RVA2W7
-        3mWf6p4L38j+7OY63L630p6TG51krX6xZh+BmIGtVQ==
-X-Google-Smtp-Source: ABdhPJxt0H9qvxctwMgumP81gl1sToJpHbkLWCeEixFUZALV+tbhIKUwd30QtVLlAuMi9sJCGWaKwaDRxDz3qXSrs5E=
-X-Received: by 2002:a2e:9653:: with SMTP id z19mr7008470ljh.29.1637148085120;
- Wed, 17 Nov 2021 03:21:25 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TGNoMpIAOM1/ohQKGvWtxNuz5IidqZnKwf9XcToAN5A=;
+ b=QFeipQkARJk5iv3FyhoP3NYO4V3cKD02KZcOsevE93uiGITHZWmFZDaDbFYAlm2HNXxg1d/2mBGjUez0JiBZQ/cP3L1utMnrMGM/gHKuB7XuorGhG+5axz6diN98y4OGUuw4ll3K5bhtTlCa1dK/Am/6XNLl80VZ7ltu6F/1Pzw=
+Received: from PH0PR10MB5593.namprd10.prod.outlook.com (2603:10b6:510:f5::16)
+ by PH0PR10MB5796.namprd10.prod.outlook.com (2603:10b6:510:ff::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Wed, 17 Nov
+ 2021 11:45:49 +0000
+Received: from PH0PR10MB5593.namprd10.prod.outlook.com
+ ([fe80::70e5:d105:dd10:78e8]) by PH0PR10MB5593.namprd10.prod.outlook.com
+ ([fe80::70e5:d105:dd10:78e8%7]) with mapi id 15.20.4713.021; Wed, 17 Nov 2021
+ 11:45:49 +0000
+From:   Haakon Bugge <haakon.bugge@oracle.com>
+To:     Kamal Heib <kamalheib1@gmail.com>
+CC:     OFED mailing list <linux-rdma@vger.kernel.org>,
+        Wenpeng Liang <liangwenpeng@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Subject: Re: [PATCH for-rc] RDMA/hns: Validate the pkey index
+Thread-Topic: [PATCH for-rc] RDMA/hns: Validate the pkey index
+Thread-Index: AQHX26O9n1eHFDuUPEaIHv9/vodVs6wHmgwA
+Date:   Wed, 17 Nov 2021 11:45:49 +0000
+Message-ID: <26672F24-3F75-4F41-AD6C-08AE482DE55F@oracle.com>
+References: <20211117111009.119268-1-kamalheib1@gmail.com>
+In-Reply-To: <20211117111009.119268-1-kamalheib1@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.120.0.1.13)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fc06f771-77f6-4fc2-016b-08d9a9bfcce8
+x-ms-traffictypediagnostic: PH0PR10MB5796:
+x-microsoft-antispam-prvs: <PH0PR10MB5796E051156B91A93D6491DEFD9A9@PH0PR10MB5796.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: H/Jz8jlseFIECRZH/bSs7/MrOIFUgxhDpJHR+rt8EaCdY9yaJ2FhGTtHFdeXaCmljBXceRqAA8U93vVz69OpkGqfPrEjhCywIvoGe/3p8zExTSRf61rrn+5Jbb8FbvZBKQaEB5pxjOLohav1yvbKgf5fJMQfNR11cfBaDmg02oa2c96mELvz66/P4EBH8aRDPDWiysOEhtsz1i64+6Zyc5Oy0hQe0qX2LYbIo7yoPmUK4KpYBIaySM3TYOHWEEHN49/7u0genWvS40OthE1d7083Vgf5fpRW0BVYnTmfz6Xg5RyKo1V276G71veRmPOU2cIls9K7GRnlUD4Qo/KT+Zc3Qy6LVyy6nZ5rfAhh6T5L3bPkvRD/VbJ9skas19lQ8tHNqVHo4kLNgHbJ/bGX7Sa7XW+dqSIeSHhEPEND4rj7nbFFKfRdYxUvceXaQlaUg7lbv0SNTjmuQe/hj/a/2bjcU62dueAHPh3hv30WrTowPPkY+j8NNR3GRX8dFRGWX55G6Gxp30O904dN396MvWgM5/8tQZwWoZ7lL9bcIQ3LWMt87GcG/Y5ygB269iTuCOwxiq+ixuh5kW+WBPS1ZWVQNSoIppVQmjA9gBeFjnIfgsfaHmzpc4A1VgowCY0GixmclYI9AFVXLQg9yWhXKKPwJT3LN3F2cOv9sn1a2mIm5pLyo8lHkFvQX1gabCovlWRF6vnvvKOrrNRFcNbscRlFX1b3ZrpBZFLsXmsXWf0xvFt3v10Lvu6dzTwq6dKc
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5593.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(4744005)(26005)(2616005)(44832011)(66946007)(8676002)(33656002)(2906002)(38070700005)(6486002)(71200400001)(76116006)(8936002)(36756003)(6512007)(316002)(66476007)(91956017)(66556008)(64756008)(38100700002)(66446008)(122000001)(4326008)(6506007)(6916009)(53546011)(186003)(54906003)(508600001)(86362001)(5660300002)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?UXJxU1JLalNwMjhlY1ZPZEdFLzNJRUFYWW1rZnZ5b2pRZlo5NUVVNlNSYmFy?=
+ =?utf-8?B?U2JDcmJObk5UYnA0ZVFXck85MW9iQUl1a3pBNWdXS1hqQzdoUnFQU2Q4RmtE?=
+ =?utf-8?B?TnZIZnRhbHdFVXJWcGpRSFpkeEhxNkg2OExWT1ZyazFNbDZBRTJyNUV4aWFp?=
+ =?utf-8?B?UVVpU1Y3djZWMjNEb2dNcUxERis3RkR2MHRuQng1ek9uYzUyVm1KNVhRK3Aw?=
+ =?utf-8?B?LzE3UmJ1QndNaktodnl3UE9hSWFTYmpxS0JueXo0ZS9wMFZZTFFOZVQvV0gr?=
+ =?utf-8?B?ZWtNcnBOaEVpbzVYc2JUUUh6c3M0V0IzTzRyTU5WdG5nbnlLZ3doUEYvZTh2?=
+ =?utf-8?B?dlZXVFR1dU9KZ1B1WVhIaEE4ZVlZbjZRMit4T1IzQy9TNE16TUFCSGZzaHJr?=
+ =?utf-8?B?elhwam1VcjQ4ditVbXZDaFpzKzl2anZneVJuU3BSWjBVbHRndTRoSWt4Nmph?=
+ =?utf-8?B?a09RYmdhM2VwNERCZ2p0bVFkQzB2cDlMcW5RTE8rMk8rLzhvdTRJeWlST01K?=
+ =?utf-8?B?ZUlXZ0JjOC8rOTdSbkRCZXN4VjVVT2V5YnlzNlltMXp3elIvd0tuaG10UFpH?=
+ =?utf-8?B?QkJTUHQxcHlwVnB5NnlvMUdOWHVuRndxNXZQQnZDeGhUUnRneTlsaSt1R3ZV?=
+ =?utf-8?B?ZDZ3eHQ2MWhPYlFmazF1M0VYL2NLN25jeWtzU1lLbDFPby9XZktvY0xoZXA5?=
+ =?utf-8?B?bHdPclEyekJqeUpQdTIzU2pVemhVaSt6aUNXNEkrWWVvSVhnSFA1TXhSeDlW?=
+ =?utf-8?B?dEhWejQ0TzhJQnE5MXZWR1NWNC9kNEMyTDN2TzcrVURGYzBPajVyTFdwNVBE?=
+ =?utf-8?B?Qm1HWkpjWGV0ZUJURGdmdmdtdXcweS9Pc0k3NXBtMWU4TnJQTlFzb0pqKzBt?=
+ =?utf-8?B?SXJ4K2hlcjlTb2l1d3d5dTlDelMvTGRQS3RVbjZYM2lMVkMrb3pkMFpGeVVH?=
+ =?utf-8?B?Z05FYmJMaVo1djBWUkdLeEJGQnIwTlQ5T2lHTzBuTVI0NS9nUWcwd1ZpVkEx?=
+ =?utf-8?B?YTdUYmVLOGtoZHFKQ3d3eXB5cEF4eUVkV2F0ZjA0Vm94ZHBndldTNjhFSmhp?=
+ =?utf-8?B?QVE1bldFSmgyV3l2akxRbVhWaGNsVUd6ZU03Q2RzNjF0T0p5M1JHZFFVK3BO?=
+ =?utf-8?B?VkNlWlVWUmNJeUw5MDZFaVk4UVJyUkpYdEdpMWQrZkdwRUFudExpOStWNTRH?=
+ =?utf-8?B?dGY4RVExZXc2aW90K0o0eUtZRVZPOVBBOTdDekVHQ0sxUTUwY0hKaVE3SWdp?=
+ =?utf-8?B?UXRrZzdqY2FKMU5FbXVycThkUnpBWlM4bmJKR3JNV0hTb3cwN3lYaENQeThF?=
+ =?utf-8?B?d2ZCNmJGY0tNSVE5eExaQlduQkIrQ21qUUVVbFRTSjFHQ3BxYmFYUWpBQ2pK?=
+ =?utf-8?B?U3NLcGx5c01HTGpMSzA5UnpYdjZlTEhSNUZjV1oxU01TN0dhMHU2V3VJZzRo?=
+ =?utf-8?B?ckdIcGU3U2JMckg2amJzTWVnUUVUeld6V2c2d2RLQjBMdnRQMHFxTDRtNWxC?=
+ =?utf-8?B?dVNoZ0JPQW5HQXdQR0tieGpiVktYWCtKVjREMDhmTi9PT0xTY2trd0MwQ1FC?=
+ =?utf-8?B?S3dhZjAwK1A5cUhvTmJna09RSWoyM2tIMTczMW1nZE5SSXZza293Z051SXE1?=
+ =?utf-8?B?N09VNHR2dllaM0NobWF6OEdFUUtQTlRHQUVBV3BIL3F2ZmhkSXU2VVhRdE0r?=
+ =?utf-8?B?V2VvOWVnZWdNcHdWcGI5a0J6cmJVSmZ3U0JGTE1ic1dSakVVNE1iUG9MbTlV?=
+ =?utf-8?B?QmhYU2hHaGtxbmN3aUQxVy8rTXF4TlQwcU9STmZDcnFuWGQ3RnIvNW1OM1FV?=
+ =?utf-8?B?SkVISmxGOFRTUU5nMkwyQXpld0hkQlNDM2ROMWJ5MHhTQ2xtUXd4TThxeVhM?=
+ =?utf-8?B?ZjlKV3pudXg4aU1GODhydXlnc1duMzBWSDhmQ0dZQ1ZRWEZVQUUxZ0JlWnVm?=
+ =?utf-8?B?bEtHN1ZlaVhGV2thcWRpNjVRS2RqQXZTYXJ6L2h3dUliRnpMOUJwTis4U1FY?=
+ =?utf-8?B?SWJzbU1vT3R1TFRJWjNDUmo2NGVOVmFqZWc3ZlJ5MHljY0FSd2xRSmVuRkdK?=
+ =?utf-8?B?S21ZRmNwOEEzZWllQVVYK1hnaDZkZUkyZGRYRGpXb3N4RmJhVGVMVHQ3K0pT?=
+ =?utf-8?B?QWx1WTlpNTZQTXFta1k0U056WlhnN3VFQWpxK0ZYdm51VEowSTVIMHdjeU9n?=
+ =?utf-8?Q?GLLnzFVP5VhmNB+T+QxABo0=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1A480FD6F67C5A47843F2E26E176BEE9@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <CAJpMwyjTggq-q8YQd7iPyp_TA29z5mWcEFAKe_Zg0=Z3a843qA@mail.gmail.com>
- <YZCo5BwbTgKtbImi@unreal>
-In-Reply-To: <YZCo5BwbTgKtbImi@unreal>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Wed, 17 Nov 2021 12:21:14 +0100
-Message-ID: <CAJpMwyhcoWf-19KdBeYb_V7asXBKB4dx9pQo7C5rFcCjDAdS5Q@mail.gmail.com>
-Subject: Re: Task hung while using RTRS with rxe and using "ip" utility to
- down the interface
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jinpu Wang <jinpu.wang@ionos.com>,
-        Danil Kipnis <danil.kipnis@ionos.com>,
-        Aleksei Marov <aleksei.marov@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5593.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fc06f771-77f6-4fc2-016b-08d9a9bfcce8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Nov 2021 11:45:49.0384
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fQY1oyXKU9zOIeRPAKFqMPtmiECiX0Y29zdOU5SwLpOYRJgnZ7JrsUQZR+6s9HgGDoqSBum8c/HdAdm1uAkaCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5796
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10170 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=870 adultscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111170060
+X-Proofpoint-GUID: hS4baq9figB5UnT-gqmtCR4ZxTu8bNgm
+X-Proofpoint-ORIG-GUID: hS4baq9figB5UnT-gqmtCR4ZxTu8bNgm
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 14, 2021 at 7:12 AM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Thu, Nov 11, 2021 at 05:25:11PM +0100, Haris Iqbal wrote:
-> > Hi,
-> >
-> > We are experiencing a hang while using RTRS with softROCE and
-> > transitioning the network interface down using ifdown command.
-> >
-> > Steps.
-> > 1) Map an RNBD/RTRS device through softROCE port.
-> > 2) Once mapped, transition the eth interface to down (on which the
-> > softROCE interface was created) using command "ifconfig <ethx> down",
-> > or "ip link set <ethx> down".
-> > 3) The device errors out, and one can see RTRS connection errors in
-> > dmesg. So far so good.
-> > 4) After a while, we see task hung traces in dmesg.
-> >
-> > [  550.866462] INFO: task kworker/1:2:170 blocked for more than 184 seconds.
-> > [  550.868820]       Tainted: G           O      5.10.42-pserver+ #84
-> > [  550.869337] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> > disables this message.
-> > [  550.869963] task:kworker/1:2     state:D stack:    0 pid:  170
-> > ppid:     2 flags:0x00004000
-> > [  550.870619] Workqueue: rtrs_server_wq rtrs_srv_close_work [rtrs_server]
-> > [  550.871134] Call Trace:
-> > [  550.871375]  __schedule+0x421/0x810
-> > [  550.871683]  schedule+0x46/0xb0
-> > [  550.871964]  schedule_timeout+0x20e/0x2a0
-> > [  550.872300]  ? internal_add_timer+0x44/0x70
-> > [  550.872650]  wait_for_completion+0x86/0xe0
-> > [  550.872994]  cm_destroy_id+0x18c/0x5a0 [ib_cm]
-> > [  550.873357]  ? _cond_resched+0x15/0x30
-> > [  550.873680]  ? wait_for_completion+0x33/0xe0
-> > [  550.874036]  _destroy_id+0x57/0x210 [rdma_cm]
-> > [  550.874395]  rtrs_srv_close_work+0xcc/0x250 [rtrs_server]
-> > [  550.874819]  process_one_work+0x1d4/0x370
-> > [  550.875156]  worker_thread+0x4a/0x3b0
-> > [  550.875471]  ? process_one_work+0x370/0x370
-> > [  550.875817]  kthread+0xfe/0x140
-> > [  550.876098]  ? kthread_park+0x90/0x90
-> > [  550.876453]  ret_from_fork+0x1f/0x30
-> >
-> >
-> > Our observations till now.
-> >
-> > 1) Does not occur if we use "ifdown <ethx>" instead. There is a
-> > difference between the commands, but we are not sure if the above one
-> > should lead to a task hang.
-> > https://access.redhat.com/solutions/27166
-> > 2) We have verified v5.10 and v.15.1 kernels, and both have this issue.
-> > 3) We tried the same test with NvmeOf target and host over softROCE.
-> > We get the same task hang after doing "ifconfig .. down".
-> >
-> > [Tue Nov  9 14:28:51 2021] INFO: task kworker/1:1:34 blocked for more
-> > than 184 seconds.
-> > [Tue Nov  9 14:28:51 2021]       Tainted: G           O
-> > 5.10.42-pserver+ #84
-> > [Tue Nov  9 14:28:51 2021] "echo 0 >
-> > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > [Tue Nov  9 14:28:51 2021] task:kworker/1:1     state:D stack:    0
-> > pid:   34 ppid:     2 flags:0x00004000
-> > [Tue Nov  9 14:28:51 2021] Workqueue: events
-> > nvmet_rdma_release_queue_work [nvmet_rdma]
-> > [Tue Nov  9 14:28:51 2021] Call Trace:
-> > [Tue Nov  9 14:28:51 2021]  __schedule+0x421/0x810
-> > [Tue Nov  9 14:28:51 2021]  schedule+0x46/0xb0
-> > [Tue Nov  9 14:28:51 2021]  schedule_timeout+0x20e/0x2a0
-> > [Tue Nov  9 14:28:51 2021]  ? internal_add_timer+0x44/0x70
-> > [Tue Nov  9 14:28:51 2021]  wait_for_completion+0x86/0xe0
-> > [Tue Nov  9 14:28:51 2021]  cm_destroy_id+0x18c/0x5a0 [ib_cm]
-> > [Tue Nov  9 14:28:51 2021]  ? _cond_resched+0x15/0x30
-> > [Tue Nov  9 14:28:51 2021]  ? wait_for_completion+0x33/0xe0
-> > [Tue Nov  9 14:28:51 2021]  _destroy_id+0x57/0x210 [rdma_cm]
-> > [Tue Nov  9 14:28:51 2021]  nvmet_rdma_free_queue+0x2e/0xc0 [nvmet_rdma]
-> > [Tue Nov  9 14:28:51 2021]  nvmet_rdma_release_queue_work+0x19/0x50 [nvmet_rdma]
-> > [Tue Nov  9 14:28:51 2021]  process_one_work+0x1d4/0x370
-> > [Tue Nov  9 14:28:51 2021]  worker_thread+0x4a/0x3b0
-> > [Tue Nov  9 14:28:51 2021]  ? process_one_work+0x370/0x370
-> > [Tue Nov  9 14:28:51 2021]  kthread+0xfe/0x140
-> > [Tue Nov  9 14:28:51 2021]  ? kthread_park+0x90/0x90
-> > [Tue Nov  9 14:28:51 2021]  ret_from_fork+0x1f/0x30
-> >
-> > Is this an known issue with ifconfig or the rxe driver? Thoughts?
->
-> It doesn't look related to RXE and if to judge by the call trace the
-> issue is one of two: missing call to cm_deref_id() or extra call
-> to refcount_inc(&cm_id_priv->refcount). Both can be related to the
-> callers of rdma-cm interface. For example by not releasing cm_id
-> properly.
-
-
-Hi,
-
-@Aleksei did some more investigation and found out the cause of the hang.
-
-1. enabled traces for rdma_cma and ib_cma events.
-2. When we call ifdown (the one that does not hung) the following
-trace can be observed
-
-kworker/1:2-100     [001] ....    98.191532: cm_disconnect: cm.id=2
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-kworker/1:2-100     [001] dN..    98.208935: icm_send_drep_err:
-local_id=3791663578 remote_id=2340456478 state=TIMEWAIT
-lap_state=LAP_UNINIT
-kworker/1:2-100     [001] .N..    98.213924: cm_disconnect: cm.id=3
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-kworker/1:2-100     [001] dN..    98.218595: icm_send_drep_err:
-local_id=3808440794 remote_id=2323679262 state=TIMEWAIT
-lap_state=LAP_UNINIT
-kworker/1:2-100     [001] .N..    98.219583: cm_disconnect: cm.id=4
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-kworker/1:2-100     [001] dN..    98.228200: icm_send_drep_err:
-local_id=3758109146 remote_id=2306902046 state=TIMEWAIT
-lap_state=LAP_UNINIT
-kworker/1:2-100     [001] ....    98.322883: cm_qp_destroy: cm.id=2
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0 qp_num=17
-kworker/1:2-100     [001] ....    98.322913: cm_id_destroy: cm.id=2
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-kworker/1:2-100     [001] ....    98.332065: cm_qp_destroy: cm.id=3
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0 qp_num=18
-kworker/1:2-100     [001] ....    98.332115: cm_id_destroy: cm.id=3
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-kworker/1:2-100     [001] ....    98.340362: cm_qp_destroy: cm.id=4
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0 qp_num=19
-kworker/1:2-100     [001] ....    98.340400: cm_id_destroy: cm.id=4
-src=10.154.0.1:1234 dst=10.154.0.3:53749 tos=0
-
-
-Explanation:
-In this example we have 3 cm.id (2,3,4) for each of them we call
-rdma_disconnect() that calls ib_send_cm_dreq which calls
-cm_send_dreq_locked
-but there we call
-
-ret = cm_alloc_msg(cm_id_priv, &msg);
-if (ret) {
-    cm_enter_timewait(cm_id_priv);
-    return ret;
-}
-
-which returns with the error before doing
-refcount_inc(&cm_id_priv->refcount); inside cm_alloc_msg. Since the
-error returns from rdma_create_ah.
-so the refcount for each cm.id is 1 after calling rdma_disconnect.
-Hence in cm_destroy_id we call once more cm_deref_id and do NOT hung
-on
-
-wait_for_completion(&cm_id_priv->comp);
-
-because refcount is 0.
-
-3. In case of ifconfig down (the one that hung) the trace is following
-
-kworker/1:0-19      [001] ....   289.211230: cm_disconnect: cm.id=5
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] d...   289.222918: icm_send_dreq:
-local_id=3636223036 remote_id=2994969923 state=ESTABLISHED
-lap_state=LAP_UNINIT
-kworker/1:0-19      [001] .N..   289.224789: cm_sent_dreq: cm.id=5
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/u5:0-63      [001] d...   289.224820: icm_mad_send_err:
-state=DREQ_SENT completion status=LOC_PROT_ERR
-kworker/u5:0-63      [001] ....   289.224821: cm_event_handler:
-cm.id=5 src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0 DISCONNECTED
-(10/-110)
-kworker/u5:0-63      [001] ....   289.224822: cm_event_done: cm.id=5
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0 DISCONNECTED consumer
-returns 0
-kworker/1:0-19      [001] .N..   289.226797: cm_disconnect: cm.id=6
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] dN..   289.238556: icm_send_dreq:
-local_id=3619445820 remote_id=3045301571 state=ESTABLISHED
-lap_state=LAP_UNINIT
-kworker/1:0-19      [001] .N..   289.240126: cm_sent_dreq: cm.id=6
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] .N..   289.241162: cm_disconnect: cm.id=7
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] dN..   289.251148: icm_send_dreq:
-local_id=3602668604 remote_id=3028524355 state=ESTABLISHED
-lap_state=LAP_UNINIT
-kworker/1:0-19      [001] .N..   289.252624: cm_sent_dreq: cm.id=7
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] ....   289.340055: cm_qp_destroy: cm.id=5
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0 qp_num=19
-kworker/1:0-19      [001] ....   289.340159: cm_id_destroy: cm.id=5
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-kworker/1:0-19      [001] ....   289.367393: cm_qp_destroy: cm.id=6
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0 qp_num=20
-kworker/1:0-19      [001] ....   289.367445: cm_id_destroy: cm.id=6
-src=10.154.0.1:1234 dst=10.154.0.3:60177 tos=0
-
-Explanation:
-In this example we have 3 cm.id (5,6,7). for each of them we call
-rdma_disconnect() that calls ib_send_cm_dreq which calls
-cm_send_dreq_locked which calls cm_alloc_msg but in this case
-cm_alloc_msg does not return the error and increase the refcount for
-each cm.id to 2. And we do send dreq.
-But later only for cm.id=5 the send_handler is called with LOC_PROT_ERR
-
-icm_mad_send_err: state=DREQ_SENT completion status=LOC_PROT_ERR
-
-which triggers cm_process_send_error -> cm_free_msg -> cm_deref_id
-which decrease the refcount for cm.id=5 to 1.
-
-
-For other cm.id (6,7) the refcounts are 2 since the dreq were sent but
-nor completed nor timed out. Nothing happens with those dreq sent to
-cm.id=6,7
-So later, when cm_id_destroy is called for cm.id=5 (refcount=1) we
-call once more cm_deref_id and do not hung on
-
-wait_for_completion(&cm_id_priv->comp);
-
-because refcount is 0.
-but for cm.i=6,7 we do cm_deref_id but refcount goes from 2 to 1 and
-we wait_for_completion forever, because those sent dreqs are still
-somewhere.
-
-4. The reason why cm_alloc_msg in one case (ifdown "interface")
-returns with an error without refcount increase and in other case
-(ifconfig down "interface") increase refcount and return 0 is what
-happens in cm_alloc_msg. ( gid entry state in ib_gid_table. )
-
-Explanation:
-The cm_alloc_msg calls the following functions:
-cm_alloc_msg -> rdma_create_ah -> rdma_lag_get_ah_roce_slave ->
-rdma_read_gid_attr_ndev_rcu -> is_gid_entry_valid
-which
-
-return entry && entry->state == GID_TABLE_ENTRY_VALID;
-
-In case of ifdown entry is either NULL or in the state
-GID_TABLE_ENTRY_PENDING_DEL so the function returns false. and
-cm_alloc_msg fails without refcount increase.
-In case of ifconfig down entry is in the state GID_TABLE_ENTRY_VALID
-so the function returns true. and cm_alloc_msg increase the refcount
-for cm.id.
-
-
-We think one of the below questions is the problem,
-
-1. why cm_process_send_error was triggered only for 1 of 3 sent dreq?
-Why the cm_send_handler is not called for others?
-2. When RTRS receives an error and starts closing the network, during
-which rdma_disconnect is called, shouldnt cm_alloc_msg fail in such a
-case?
-
-the same behavior is observed for RTRS and for NVMEof targets.
-
-
-
->
-> Thanks
->
-> >
-> > Regards
-> > -Haris
+DQoNCj4gT24gMTcgTm92IDIwMjEsIGF0IDEyOjEwLCBLYW1hbCBIZWliIDxrYW1hbGhlaWIxQGdt
+YWlsLmNvbT4gd3JvdGU6DQo+IA0KPiBCZWZvcmUgcXVlcnkgcGtleSwgbWFrZSBzdXJlIHRoYXQg
+dGhlIHF1ZXJlZCBpbmRleCBpcyB2YWxpZC4NCg0KcXVlcmllZCBpbmRleCA/DQoNClRoeHMsIEjD
+pWtvbg0KDQo+IA0KPiBGaXhlczogOWE0NDM1Mzc1Y2QxICgiSUIvaG5zOiBBZGQgZHJpdmVyIGZp
+bGVzIGZvciBobnMgUm9DRSBkcml2ZXIiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBLYW1hbCBIZWliIDxr
+YW1hbGhlaWIxQGdtYWlsLmNvbT4NCj4gLS0tDQo+IGRyaXZlcnMvaW5maW5pYmFuZC9ody9obnMv
+aG5zX3JvY2VfbWFpbi5jIHwgMyArKysNCj4gMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygr
+KQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9obnMvaG5zX3JvY2Vf
+bWFpbi5jIGIvZHJpdmVycy9pbmZpbmliYW5kL2h3L2hucy9obnNfcm9jZV9tYWluLmMNCj4gaW5k
+ZXggNDE5NGI2MjZmM2M2Li44MjMzYmVjMDUzZWUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvaW5m
+aW5pYmFuZC9ody9obnMvaG5zX3JvY2VfbWFpbi5jDQo+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFu
+ZC9ody9obnMvaG5zX3JvY2VfbWFpbi5jDQo+IEBAIC0yNzAsNiArMjcwLDkgQEAgc3RhdGljIGVu
+dW0gcmRtYV9saW5rX2xheWVyIGhuc19yb2NlX2dldF9saW5rX2xheWVyKHN0cnVjdCBpYl9kZXZp
+Y2UgKmRldmljZSwNCj4gc3RhdGljIGludCBobnNfcm9jZV9xdWVyeV9wa2V5KHN0cnVjdCBpYl9k
+ZXZpY2UgKmliX2RldiwgdTMyIHBvcnQsIHUxNiBpbmRleCwNCj4gCQkJICAgICAgIHUxNiAqcGtl
+eSkNCj4gew0KPiArCWlmIChpbmRleCA+IDApDQo+ICsJCXJldHVybiAtRUlOVkFMOw0KPiArDQo+
+IAkqcGtleSA9IFBLRVlfSUQ7DQo+IA0KPiAJcmV0dXJuIDA7DQo+IC0tIA0KPiAyLjMxLjENCj4g
+DQoNCg==
