@@ -2,91 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 746C7454978
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 16:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1EA454AD1
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 17:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238287AbhKQPDD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Nov 2021 10:03:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238256AbhKQPDC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Nov 2021 10:03:02 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D572C061570
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 07:00:03 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id p3-20020a05600c1d8300b003334fab53afso5047832wms.3
-        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 07:00:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GjMpGXwdISEOF2DSyvJRS6pWwGK3b3XoehSw6jJ/1jY=;
-        b=EBO+7R9mUeevdYqw7iPulUUkiqsWjxBFgMGTfuR0tCBXyz46FIo2yHuaU9A8DtaeNP
-         I6xDOp1ufTibUk9adfZgPnGqdzk2i98+O1dP4gcKcL+DK3kd06vficx0r51YiiUnvjMk
-         FPGCfOHC0W8mcrZFL6TDu0uTK7zGmEyCUeFP/24QCR5p0Ti6/a+ct0/JGnrOWdJfvJmj
-         8eyfWGDswNEEXg6YIxGawB/tWsUh6+e58qzWYeXw7Ac7YT86i6NV6mksZoXzjbA4bS4+
-         Ut9CeP+itcld+Ra4vUbKMQ29bsDGayj5tIinc2bQgfi4lL4ySA33g4Rinxhh7lyaTYxg
-         PMjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GjMpGXwdISEOF2DSyvJRS6pWwGK3b3XoehSw6jJ/1jY=;
-        b=dcgl+kPY3WYvqc21MGORFloJyd4bKK4rtBQa3jjh7OESuwUnfMHD1S5ewiU/ePkUhv
-         onoLBJWrXt0p+J5s1i9J2rJClE+cNQHvZukCHOTWJT9giFQ6JgRBv+DjbMwBQ7LitONU
-         8Nf2vp7IZJfn2GaGLNzi9xRqo88pnVOkNQ/N1T8OO+M8PVxRXkM6CsR/NXHRQLNLH+ko
-         8tc58+FCC1D9++hUOmS59uHZqezIVZZ9nnJM5jtzqGQ97zrPCPJHBUA3oSkiWY09CciM
-         3Cx+ArF0ztmMFFL6ISqrB+h5DVuPJqgWyEZH7l39QvYeP+BBb+8yIYrkA5ukCqa+Tskk
-         CZ8Q==
-X-Gm-Message-State: AOAM530wa27wn+nX6CQ0s8bl4s+QvuOxImkfiZXpmEM9a+XviuXyVV7K
-        qaJ30dRE/5q2gPkXv/S9jyekxWsR5nVVsQ==
-X-Google-Smtp-Source: ABdhPJy3ha6e201Gg4EZTDjAGwy0pjTjw4jO7c3sjbe87qIw5qtDRDmLdm3Epm2uT6f/c0VWLXbBQQ==
-X-Received: by 2002:a05:600c:1c20:: with SMTP id j32mr321042wms.1.1637161201603;
-        Wed, 17 Nov 2021 07:00:01 -0800 (PST)
-Received: from fedora.. ([2a00:a040:19b:e02f::1005])
-        by smtp.gmail.com with ESMTPSA id g13sm173685wrd.57.2021.11.17.07.00.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Nov 2021 07:00:01 -0800 (PST)
-From:   Kamal Heib <kamalheib1@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     Wenpeng Liang <liangwenpeng@huawei.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kamal Heib <kamalheib1@gmail.com>
-Subject: [PATCH v2 for-rc] RDMA/hns: Validate the pkey index
-Date:   Wed, 17 Nov 2021 16:59:54 +0200
-Message-Id: <20211117145954.123893-1-kamalheib1@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S238319AbhKQQWZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Nov 2021 11:22:25 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50986 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231442AbhKQQWZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Nov 2021 11:22:25 -0500
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHFglAj009919;
+        Wed, 17 Nov 2021 16:19:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=JDSOciCKi9kYus1di58N9I2uipqpTf3VudY/d3s9OtQ=;
+ b=Xjcj1/s6vjpLVmc4oyfHsDQEgAPjrB90gZAHv7/4vFJiJMzGXo6J0NWKVUV9lh+q9vV0
+ 8WJya2vTap2mj4s9s+TqhiLBPM2AHD5S9FSVaHguz3MCT7wABPdmAoS2+abT+wMBIXA/
+ AhmjSgUAxirRMWe2J6vlT7N07aGdZx02WDiJpkEmomLbcpcQ6gnS1ZfTKZItzybCzoCB
+ msc02i4bIGOV9in+Se0cpE1MS560b2dsS7qwTPYFSknVz5wgCbCsT3PtERtkOAbxG23W
+ EgeD5Tpe1vPwcJ2WxRXwIv0j6wG3y2ZLbs8nV6NOFB8Yz5i+aTI9x524xqRQn+CWihW6 Uw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd4mc0var-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 16:19:24 +0000
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AHG0LTS015031;
+        Wed, 17 Nov 2021 16:19:23 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd4mc0va8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 16:19:23 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AHG3F52027811;
+        Wed, 17 Nov 2021 16:19:21 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03ams.nl.ibm.com with ESMTP id 3ca50ac48u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 17 Nov 2021 16:19:21 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AHGCNep60817730
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 17 Nov 2021 16:12:23 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23DE342045;
+        Wed, 17 Nov 2021 16:19:19 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AED1B42042;
+        Wed, 17 Nov 2021 16:19:18 +0000 (GMT)
+Received: from [9.145.71.52] (unknown [9.145.71.52])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 17 Nov 2021 16:19:18 +0000 (GMT)
+Message-ID: <9af1f859-0299-d1d7-d5ce-af46cf102025@linux.ibm.com>
+Date:   Wed, 17 Nov 2021 17:19:18 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH RFC net] net/smc: Ensure the active closing peer first
+ closes clcsock
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20211116033011.16658-1-tonylu@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20211116033011.16658-1-tonylu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: fMiKJa79We4Fuad8c0I_1sCNIS0LyMe1
+X-Proofpoint-GUID: n7pQ8aSp7_gXjoAwwbLfuQb114SFCF_j
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-17_05,2021-11-17_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1011
+ mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111170076
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Before query pkey, make sure that the queried index is valid.
+On 16/11/2021 04:30, Tony Lu wrote:
+> We found an issue when replacing TCP with SMC. When the actively closed
+> peer called close() in userspace, the clcsock of peer doesn't enter TCP
+> active close progress, but the passive closed peer close it first, and
+> enters TIME_WAIT state. It means the behavior doesn't match what we
+> expected. After reading RFC7609, there is no clear description of the
+> order in which we close clcsock during close progress.
 
-Fixes: 9a4435375cd1 ("IB/hns: Add driver files for hns RoCE driver")
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
----
-v2: Fix commit message.
----
- drivers/infiniband/hw/hns/hns_roce_main.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks for your detailed description, it helped me to understand the problem.
+Your point is that SMC sockets should show the same behavior as TCP sockets
+in this situation: the side that actively closed the socket should get into
+TIME_WAIT state, and not the passive side. I agree with this.
+Your idea to fix it looks like a good solution for me. But I need to do more
+testing to make sure that other SMC implementations (not Linux) work as
+expected with this change. For example, Linux does not actively monitor the 
+clcsocket state, but if another implementation would do this it could happen
+that the SMC socket is closed already when the clcsocket shutdown arrives, and
+pending data transfers are aborted.
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 4194b626f3c6..8233bec053ee 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -270,6 +270,9 @@ static enum rdma_link_layer hns_roce_get_link_layer(struct ib_device *device,
- static int hns_roce_query_pkey(struct ib_device *ib_dev, u32 port, u16 index,
- 			       u16 *pkey)
- {
-+	if (index > 0)
-+		return -EINVAL;
-+
- 	*pkey = PKEY_ID;
- 
- 	return 0;
--- 
-2.31.1
+I will respond to your RFC when I finished my testing.
 
+Thank you.
