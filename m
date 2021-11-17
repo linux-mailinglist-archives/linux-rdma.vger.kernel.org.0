@@ -2,111 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1EA454AD1
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 17:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30863454D12
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 19:26:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238319AbhKQQWZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Nov 2021 11:22:25 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50986 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231442AbhKQQWZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Nov 2021 11:22:25 -0500
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AHFglAj009919;
-        Wed, 17 Nov 2021 16:19:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=JDSOciCKi9kYus1di58N9I2uipqpTf3VudY/d3s9OtQ=;
- b=Xjcj1/s6vjpLVmc4oyfHsDQEgAPjrB90gZAHv7/4vFJiJMzGXo6J0NWKVUV9lh+q9vV0
- 8WJya2vTap2mj4s9s+TqhiLBPM2AHD5S9FSVaHguz3MCT7wABPdmAoS2+abT+wMBIXA/
- AhmjSgUAxirRMWe2J6vlT7N07aGdZx02WDiJpkEmomLbcpcQ6gnS1ZfTKZItzybCzoCB
- msc02i4bIGOV9in+Se0cpE1MS560b2dsS7qwTPYFSknVz5wgCbCsT3PtERtkOAbxG23W
- EgeD5Tpe1vPwcJ2WxRXwIv0j6wG3y2ZLbs8nV6NOFB8Yz5i+aTI9x524xqRQn+CWihW6 Uw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd4mc0var-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 16:19:24 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AHG0LTS015031;
-        Wed, 17 Nov 2021 16:19:23 GMT
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cd4mc0va8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 16:19:23 +0000
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AHG3F52027811;
-        Wed, 17 Nov 2021 16:19:21 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 3ca50ac48u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 17 Nov 2021 16:19:21 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AHGCNep60817730
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 17 Nov 2021 16:12:23 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 23DE342045;
-        Wed, 17 Nov 2021 16:19:19 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AED1B42042;
-        Wed, 17 Nov 2021 16:19:18 +0000 (GMT)
-Received: from [9.145.71.52] (unknown [9.145.71.52])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed, 17 Nov 2021 16:19:18 +0000 (GMT)
-Message-ID: <9af1f859-0299-d1d7-d5ce-af46cf102025@linux.ibm.com>
-Date:   Wed, 17 Nov 2021 17:19:18 +0100
+        id S239990AbhKQS3a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Nov 2021 13:29:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235342AbhKQS32 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 17 Nov 2021 13:29:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B58D61A62;
+        Wed, 17 Nov 2021 18:26:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637173589;
+        bh=aX7kR5mhhKUKPo/3xI2LEWmDxKJnOScXHCAboHytXl4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gMCay+Zg6c1ByKP22PhL3E+8cYanJkrIMvHTpPD5eRYdefeOg/XAVnIEXakYKH4KT
+         REX9w4+8T4FyzV/zPC1gL+pGtYT6s/D4Ys8gA2UfCoKAKB/e0v8htOX5sONPAGY5ny
+         cugK13ngC3k1R+mG5+BKHwxNCk72BJS0VJP6pJ4DxtJYXBxpbmZDlo8hhKANCzUzww
+         YQVUbdlYL110olnJVWvoOep7xklaN+wime9vBv6KhcOjsB8gSOTFOVy+89PZfy4WsE
+         K0IKEjPzmkPdQCPU8xpyWlEVKi2aaapuxHjfoQk7k/xDvXTEyOCN8RLbsQtu0ewpB7
+         gDMj35Thxe5/Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH net-next 0/6] Devlink cleanups
+Date:   Wed, 17 Nov 2021 20:26:16 +0200
+Message-Id: <cover.1637173517.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH RFC net] net/smc: Ensure the active closing peer first
- closes clcsock
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20211116033011.16658-1-tonylu@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20211116033011.16658-1-tonylu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: fMiKJa79We4Fuad8c0I_1sCNIS0LyMe1
-X-Proofpoint-GUID: n7pQ8aSp7_gXjoAwwbLfuQb114SFCF_j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-17_05,2021-11-17_01,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 clxscore=1011
- mlxlogscore=999 mlxscore=0 bulkscore=0 spamscore=0 malwarescore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111170076
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 16/11/2021 04:30, Tony Lu wrote:
-> We found an issue when replacing TCP with SMC. When the actively closed
-> peer called close() in userspace, the clcsock of peer doesn't enter TCP
-> active close progress, but the passive closed peer close it first, and
-> enters TIME_WAIT state. It means the behavior doesn't match what we
-> expected. After reading RFC7609, there is no clear description of the
-> order in which we close clcsock during close progress.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Thanks for your detailed description, it helped me to understand the problem.
-Your point is that SMC sockets should show the same behavior as TCP sockets
-in this situation: the side that actively closed the socket should get into
-TIME_WAIT state, and not the passive side. I agree with this.
-Your idea to fix it looks like a good solution for me. But I need to do more
-testing to make sure that other SMC implementations (not Linux) work as
-expected with this change. For example, Linux does not actively monitor the 
-clcsocket state, but if another implementation would do this it could happen
-that the SMC socket is closed already when the clcsocket shutdown arrives, and
-pending data transfers are aborted.
+Hi,
 
-I will respond to your RFC when I finished my testing.
+This series is non-controversial subset of my RFC [1], where I proposed
+a way to allow parallel devlink execution.
 
-Thank you.
+Thanks
+
+[1] https://lore.kernel.org/all/cover.1636390483.git.leonro@nvidia.com
+
+Leon Romanovsky (6):
+  devlink: Remove misleading internal_flags from health reporter dump
+  devlink: Delete useless checks of holding devlink lock
+  devlink: Simplify devlink resources unregister call
+  devlink: Clean registration of devlink port
+  devlink: Reshuffle resource registration logic
+  devlink: Inline sb related functions
+
+ .../net/ethernet/broadcom/bnxt/bnxt_devlink.c |   7 +-
+ .../freescale/dpaa2/dpaa2-eth-devlink.c       |   7 +-
+ drivers/net/ethernet/intel/ice/ice_devlink.c  |  23 +-
+ .../marvell/prestera/prestera_devlink.c       |   8 +-
+ drivers/net/ethernet/mellanox/mlx4/main.c     |   4 +-
+ .../ethernet/mellanox/mlx5/core/en/devlink.c  |   5 +-
+ .../ethernet/mellanox/mlx5/core/en/devlink.h  |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c |   7 +-
+ .../mellanox/mlx5/core/esw/devlink_port.c     |   9 +-
+ drivers/net/ethernet/mellanox/mlxsw/core.c    |  15 +-
+ .../net/ethernet/mellanox/mlxsw/spectrum.c    |   4 +-
+ drivers/net/ethernet/mscc/ocelot_net.c        |   4 +-
+ .../net/ethernet/netronome/nfp/nfp_devlink.c  |   4 +-
+ .../ethernet/pensando/ionic/ionic_devlink.c   |   8 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      |  14 +-
+ drivers/net/netdevsim/dev.c                   |  11 +-
+ include/net/devlink.h                         |   9 +-
+ net/core/devlink.c                            | 220 ++++++------------
+ net/dsa/dsa.c                                 |   2 +-
+ net/dsa/dsa2.c                                |   9 +-
+ 20 files changed, 115 insertions(+), 257 deletions(-)
+
+-- 
+2.33.1
+
