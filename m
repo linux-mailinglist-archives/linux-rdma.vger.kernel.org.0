@@ -2,218 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0E24540A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 07:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6762B454341
+	for <lists+linux-rdma@lfdr.de>; Wed, 17 Nov 2021 10:03:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhKQGIm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 17 Nov 2021 01:08:42 -0500
-Received: from mga02.intel.com ([134.134.136.20]:64874 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233524AbhKQGIl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 17 Nov 2021 01:08:41 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10170"; a="221102324"
-X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
-   d="scan'208";a="221102324"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2021 22:05:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,240,1631602800"; 
-   d="scan'208";a="494789178"
-Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 16 Nov 2021 22:05:41 -0800
-Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mnE4j-0001Ix-7c; Wed, 17 Nov 2021 06:05:41 +0000
-Date:   Wed, 17 Nov 2021 14:04:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- da86dc175b5af1f3e95642cdb536bfa4f7ddb1a9
-Message-ID: <61949b79.BOvX1Wl1B/nCMXo8%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231247AbhKQJGi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 17 Nov 2021 04:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230064AbhKQJGg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 17 Nov 2021 04:06:36 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F14C061570
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 01:03:38 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id w1so7797869edc.6
+        for <linux-rdma@vger.kernel.org>; Wed, 17 Nov 2021 01:03:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NGBMcVQ4K0bPAtAlX8anlmt8sHV641kBY3oArzJfD28=;
+        b=YEie81TPRDe+ahvbRt45YdrjphmHHXnvo7Oep3Y6Tylaa/xjLbEDKilzInycyrCPl6
+         k4G30hQ+iVgOHdtAqFpZJoRF9DvCae0DQYXG8vNkW6zuhLi3SH5A/p43AnB9MXCe4tRs
+         KdgHkM9Qsq9Qdn1dPTjhZlOBfXHddSSXgEmkhbWacEqiXxpiAJu7qweNw0XetxgXfHms
+         1WC8DW+h/2kYGsgLh11f8yEuin9a/grAUzDvKIM82//DL4rnNP5EMaBBHBYLwj0I2khi
+         Cb7CuywE3HWHwDUE1T/mMJDW8Bn6Is5Voceke6CLexBW6GyPer9qYtt2BNEC1uDijV4K
+         bCig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NGBMcVQ4K0bPAtAlX8anlmt8sHV641kBY3oArzJfD28=;
+        b=jrD9LeTtGnVkr52+XpgcGQo6qET1ZvrSj+FY9LRnPgSzQUy+Jsh9FrMZpB2iKiTYN4
+         xjY146bWsbIvsBGWtdE1wrbmxfKUgP50FMK8ukI0zgW2am3OfK1F6qDjTx2SbAJugr0P
+         fj/Gf61el6YTDLm20kutdhFNGDKgOCkL2UpE+qkNwxPXRYE0Fheqpj/VQOcmsJjfFYoD
+         WPYmGuF9kJA5uGDTn4yxt4aYoanY7cM9Zc8hn6ogopfuZ6JINWuhbAKNJ5USF9z6kpPX
+         9Qz+500C9MbaLlgqT+mMXwJhPJvrVjrwskWQgTTbhF9+Z9/XT/d2qaq7/0nDFnFaxCT4
+         bqKA==
+X-Gm-Message-State: AOAM533XYbxPFPAUy/4qMNMKVTTVJ16K5h1jWjikGgPVgpE/Egqj5arm
+        Gr21mAJo6CQh/fiO/lSvoC10KurxpH4BlA==
+X-Google-Smtp-Source: ABdhPJzbURZD8rx/6Tb/hUi+fmJj2i2pmzRQxM/E0lji8sOhBYzCWtvMdii5Ju2782kImXQKm+IXDA==
+X-Received: by 2002:a05:6402:35ce:: with SMTP id z14mr17310979edc.197.1637139816682;
+        Wed, 17 Nov 2021 01:03:36 -0800 (PST)
+Received: from fedora.redhat.com ([2a00:a040:19b:e02f::1005])
+        by smtp.gmail.com with ESMTPSA id d3sm5468326edx.79.2021.11.17.01.03.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Nov 2021 01:03:36 -0800 (PST)
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Selvin Xavier <selvin.xavier@broadcom.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Kamal Heib <kamalheib1@gmail.com>
+Subject: [PATCH for-next] RDMA/ocrdma: Use helper function to set GUIDs
+Date:   Wed, 17 Nov 2021 11:02:05 +0200
+Message-Id: <20211117090205.96523-1-kamalheib1@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: da86dc175b5af1f3e95642cdb536bfa4f7ddb1a9  IB/hfi1: Properly allocate rdma counter desc memory
+Use addrconf_addr_eui48() helper function to set the GUIDs and remove the
+driver specific version.
 
-elapsed time: 725m
-
-configs tested: 157
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20211116
-mips                 randconfig-c004-20211116
-powerpc                 mpc836x_rdk_defconfig
-arm                             pxa_defconfig
-powerpc                 mpc8313_rdb_defconfig
-sh                          r7785rp_defconfig
-s390                             allmodconfig
-microblaze                      mmu_defconfig
-mips                         tb0287_defconfig
-sh                   sh7724_generic_defconfig
-m68k                       m5249evb_defconfig
-arm                        cerfcube_defconfig
-powerpc                       eiger_defconfig
-powerpc                         ps3_defconfig
-sh                      rts7751r2d1_defconfig
-sh                            titan_defconfig
-um                             i386_defconfig
-ia64                             allyesconfig
-s390                       zfcpdump_defconfig
-arm                        mini2440_defconfig
-microblaze                          defconfig
-powerpc                     pq2fads_defconfig
-powerpc                      walnut_defconfig
-arm                             mxs_defconfig
-mips                          ath79_defconfig
-powerpc                      makalu_defconfig
-mips                   sb1250_swarm_defconfig
-arm                            hisi_defconfig
-ia64                            zx1_defconfig
-arc                          axs103_defconfig
-arm                         axm55xx_defconfig
-arm                           sama5_defconfig
-mips                          rm200_defconfig
-arm                           stm32_defconfig
-arm                       spear13xx_defconfig
-ia64                             alldefconfig
-arm                            xcep_defconfig
-arm                       netwinder_defconfig
-powerpc                     skiroot_defconfig
-mips                      maltasmvp_defconfig
-m68k                          hp300_defconfig
-arm                            qcom_defconfig
-arm                      tct_hammer_defconfig
-arm                        oxnas_v6_defconfig
-arm                            lart_defconfig
-powerpc                     pseries_defconfig
-sh                            hp6xx_defconfig
-mips                      maltaaprp_defconfig
-nios2                         3c120_defconfig
-arm                       mainstone_defconfig
-powerpc                         wii_defconfig
-powerpc                     mpc512x_defconfig
-powerpc                 mpc85xx_cds_defconfig
-sh                 kfr2r09-romimage_defconfig
-sh                          rsk7264_defconfig
-m68k                         apollo_defconfig
-sh                            shmin_defconfig
-h8300                            alldefconfig
-mips                         rt305x_defconfig
-powerpc                 mpc832x_mds_defconfig
-riscv                             allnoconfig
-arm                            mps2_defconfig
-xtensa                  cadence_csp_defconfig
-sh                         ap325rxa_defconfig
-m68k                         amcore_defconfig
-arm                        mvebu_v7_defconfig
-sh                        dreamcast_defconfig
-arm                    vt8500_v6_v7_defconfig
-arc                        nsim_700_defconfig
-arm                   milbeaut_m10v_defconfig
-sh                   sh7770_generic_defconfig
-xtensa                         virt_defconfig
-ia64                          tiger_defconfig
-arm                  randconfig-c002-20211116
-arm                  randconfig-c002-20211117
-ia64                             allmodconfig
-ia64                                defconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a015-20211116
-x86_64               randconfig-a013-20211116
-x86_64               randconfig-a012-20211116
-x86_64               randconfig-a011-20211116
-x86_64               randconfig-a016-20211116
-x86_64               randconfig-a014-20211116
-i386                 randconfig-a014-20211116
-i386                 randconfig-a016-20211116
-i386                 randconfig-a012-20211116
-i386                 randconfig-a013-20211116
-i386                 randconfig-a011-20211116
-i386                 randconfig-a015-20211116
-arc                  randconfig-r043-20211116
-s390                 randconfig-r044-20211116
-riscv                randconfig-r042-20211116
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c007-20211116
-i386                 randconfig-c001-20211116
-arm                  randconfig-c002-20211116
-riscv                randconfig-c006-20211116
-powerpc              randconfig-c003-20211116
-s390                 randconfig-c005-20211116
-mips                 randconfig-c004-20211116
-x86_64               randconfig-a005-20211116
-x86_64               randconfig-a003-20211116
-x86_64               randconfig-a001-20211116
-x86_64               randconfig-a002-20211116
-x86_64               randconfig-a006-20211116
-x86_64               randconfig-a004-20211116
-i386                 randconfig-a006-20211116
-i386                 randconfig-a003-20211116
-i386                 randconfig-a005-20211116
-i386                 randconfig-a001-20211116
-i386                 randconfig-a004-20211116
-i386                 randconfig-a002-20211116
-hexagon              randconfig-r045-20211116
-hexagon              randconfig-r041-20211116
-
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/infiniband/hw/ocrdma/ocrdma_main.c  | 17 ++---------------
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c |  4 +++-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.h |  1 -
+ 3 files changed, 5 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_main.c b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+index 7abf6cf1e937..5d4b3bc16493 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_main.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_main.c
+@@ -62,20 +62,6 @@ MODULE_DESCRIPTION(OCRDMA_ROCE_DRV_DESC " " OCRDMA_ROCE_DRV_VERSION);
+ MODULE_AUTHOR("Emulex Corporation");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
+-void ocrdma_get_guid(struct ocrdma_dev *dev, u8 *guid)
+-{
+-	u8 mac_addr[6];
+-
+-	memcpy(&mac_addr[0], &dev->nic_info.mac_addr[0], ETH_ALEN);
+-	guid[0] = mac_addr[0] ^ 2;
+-	guid[1] = mac_addr[1];
+-	guid[2] = mac_addr[2];
+-	guid[3] = 0xff;
+-	guid[4] = 0xfe;
+-	guid[5] = mac_addr[3];
+-	guid[6] = mac_addr[4];
+-	guid[7] = mac_addr[5];
+-}
+ static enum rdma_link_layer ocrdma_link_layer(struct ib_device *device,
+ 					      u32 port_num)
+ {
+@@ -203,7 +189,8 @@ static int ocrdma_register_device(struct ocrdma_dev *dev)
+ {
+ 	int ret;
+ 
+-	ocrdma_get_guid(dev, (u8 *)&dev->ibdev.node_guid);
++	addrconf_addr_eui48((u8 *)&dev->ibdev.node_guid,
++			    dev->nic_info.mac_addr);
+ 	BUILD_BUG_ON(sizeof(OCRDMA_NODE_DESC) > IB_DEVICE_NODE_DESC_MAX);
+ 	memcpy(dev->ibdev.node_desc, OCRDMA_NODE_DESC,
+ 	       sizeof(OCRDMA_NODE_DESC));
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+index 735123d0e9ec..72629e706191 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.c
+@@ -41,6 +41,7 @@
+  */
+ 
+ #include <linux/dma-mapping.h>
++#include <net/addrconf.h>
+ #include <rdma/ib_verbs.h>
+ #include <rdma/ib_user_verbs.h>
+ #include <rdma/iw_cm.h>
+@@ -74,7 +75,8 @@ int ocrdma_query_device(struct ib_device *ibdev, struct ib_device_attr *attr,
+ 	memset(attr, 0, sizeof *attr);
+ 	memcpy(&attr->fw_ver, &dev->attr.fw_ver[0],
+ 	       min(sizeof(dev->attr.fw_ver), sizeof(attr->fw_ver)));
+-	ocrdma_get_guid(dev, (u8 *)&attr->sys_image_guid);
++	addrconf_addr_eui48((u8 *)&attr->sys_image_guid,
++			    dev->nic_info.mac_addr);
+ 	attr->max_mr_size = dev->attr.max_mr_size;
+ 	attr->page_size_cap = 0xffff000;
+ 	attr->vendor_id = dev->nic_info.pdev->vendor;
+diff --git a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+index b73d742a520c..f860b7fcef33 100644
+--- a/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
++++ b/drivers/infiniband/hw/ocrdma/ocrdma_verbs.h
+@@ -59,7 +59,6 @@ int ocrdma_query_port(struct ib_device *ibdev, u32 port,
+ enum rdma_protocol_type
+ ocrdma_query_protocol(struct ib_device *device, u32 port_num);
+ 
+-void ocrdma_get_guid(struct ocrdma_dev *, u8 *guid);
+ int ocrdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index, u16 *pkey);
+ 
+ int ocrdma_alloc_ucontext(struct ib_ucontext *uctx, struct ib_udata *udata);
+-- 
+2.31.1
+
