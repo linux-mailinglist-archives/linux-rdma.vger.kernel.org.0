@@ -2,116 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E721B456283
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Nov 2021 19:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E258F456342
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Nov 2021 20:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhKRSkv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Nov 2021 13:40:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234395AbhKRSkv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 18 Nov 2021 13:40:51 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34ABC061756
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id p17so6211304pgj.2
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Nov 2021 10:37:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
-        b=H2VVy+98VZb3T/nxecceRPaS4zE5Oz+cewzsaZHfm9eEsv3XRjc+DZ9njtbvTiIV9v
-         J3uSabI9Zn1CjpwWGCCmAjBS+t2u97WQlEQMjNpnEkhOLklQ8XH185Q78ublW5dzZJwg
-         7NXk/C4Z7m2WT6IK7nQoYb89NQ/9+XXt5CJ1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hmolre7Okhy+2RfWXyND/uy2w4i4I9jFJ+ihj69aXDA=;
-        b=IcsjKwhxldONk8+TxkcxO5obVJRm6GiqVpi3VxfQgbSAgdyRtAfs2chlTlVgkQU2ta
-         V28rzxUbDnGaf+NcwVsKtW05tyn2Hs4dQNA9uKzyUvPz+APOTIk2+iJBzTin4mADCdQo
-         BDsh7VDd9Gj0ggfqXxcNm8yD5gZXiUf2iADQYxbCeyGgLziP33izAGmnmJqDINRaZ7u6
-         t68ouCX1K0Lx1y5mptdw4oV5SsEgLmPCGeLCSBmS4dA7292n36BkBbVAaTSPIMpIOPFM
-         PWuj9wYx8TDTnonZYQqpWLK/IniAR4TYn7Y8si+SqSe5SzOL5KOTsAHz8fTvWTvvXCV2
-         oA1Q==
-X-Gm-Message-State: AOAM533Mfg5CrerLzCYLQn68L5m2LCe6g3YNXu124hHaTZk4OUYX7FKy
-        ucVtk6Ni2DDZlgKM3aQH1sOnIjIaKJ4NBg==
-X-Google-Smtp-Source: ABdhPJyGMYhMNijolBn3fPZucIoXtbuuMs7SP0RN0sabR7T56FvS5htc77aeK768uABZmy/8W3JFMA==
-X-Received: by 2002:a63:e214:: with SMTP id q20mr12662707pgh.442.1637260670241;
-        Thu, 18 Nov 2021 10:37:50 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v10sm313376pfg.162.2021.11.18.10.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Nov 2021 10:37:49 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] net/mlx5e: Use struct_group() for memcpy() region
-Date:   Thu, 18 Nov 2021 10:37:48 -0800
-Message-Id: <20211118183748.1283069-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S230070AbhKRTR2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Nov 2021 14:17:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229678AbhKRTR2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Nov 2021 14:17:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00CF261266;
+        Thu, 18 Nov 2021 19:14:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637262867;
+        bh=X4p4hD4m/Fv4EsrKa1Gp0ujysEBeFtYCDK62Mdtr0UM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mBmHFGXcBBfXeEM8+sLmRRJlKQKCMLmHHY9fKYDXReLwE3V5i6Zt8nR9Ur4dMY+v5
+         Ud/MtGK2O9qjyDP9CvzkF3npxYvh17LHZiau2IIPqNj75GGttYQljajOXrDnJEUx6T
+         it+PL60M1Ooi53aL1BroB80oqo6v9U2EzG1nfd2muKy+g3jQEAtu2DA0RjZZsGWZU3
+         F0AczmnVXOs9ng83bKdM3NMVz1SInY/7cIMfAgyziuoopSizf1B5MZjz5JYgKuUHQQ
+         geYuePu2px/Yu44k9k3kjvmL98lRfpoZVrSwRud5hDSerJ/u1CYObI5qauR1NJRmtL
+         9QYh3Op2Zm/Eg==
+Date:   Thu, 18 Nov 2021 21:14:22 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bob =?iso-8859-1?Q?Dr=F6ge?= <b.e.droge@rug.nl>,
+        Nicolas Morey-Chaisemartin <NMoreyChaisemartin@suse.de>
+Cc:     linux-rdma@vger.kernel.org
+Subject: Re: Installation with prebuilt docs failing
+Message-ID: <YZamDj1EqThLccyj@unreal>
+References: <760b0992-776f-d35d-bbf3-6d7f351d0839@rug.nl>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2065; h=from:subject; bh=5h1/OCbcMC9fSZGebngnGdh+E0sfjUIlmjyL7n2bbX0=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBhlp171Vyvp59PAA8HQAbsKsvjRM9PHtYPsKBL4acu CDa8lw+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYZadewAKCRCJcvTf3G3AJjJyD/ 4nVg1irFelKvdZ02Th2MFSO4WzpimbnUZGifMbJ9L4pb52/n77LB3drjD6NSKlGtEaFlVyvNB/q0RH +t/6kzu/hCv25FLpy+J6YbtieBUc8Z7Kg7lW8weJX68+CWq+x3l0WyLhvkf9HlFZYWmrJBvC3AC6x5 dI0QXV4svrZEPVbYXsPfvAzX+4EDWdU9s7zA09cEH/a9lZdqyBvDoDQiTEEColX1wlqh13LZ3/n0Zq XOB4CCOqJCMlVnO9zINDvQYcH54PDqtqs4V9c9oZMVHbbyqELLtqCye3Ro0gFCi84RQ9pBtgBS+VDy mznZ3n6bPNcfnTfsA1Dihx8wWa6thbBI5S86q35YSkZxyiUnTU45jLBdYBhVE4I1oXDAVq/LpKYGv6 sgtYOkpjTGovnUhqboAgs8hfQQmAiZzzzKPq+86NsanzBWMWd3maqAMUNHYJPdJaqA6Uibnjke/1UI S5rQgcUS7i6Hbe3b2xk9hPo847RY/mh+MSUZHI4DPJAtgX0uxEfcLKoTZsGJFL+Qbe/MnmV8mTQ1RP 2oyRGggP9SLnZ1SNPIbbNbkpVYjgfgvMFseD5DfdK7/VdtmUkgFcwOc6uk6dy/cJF3dDOzAnHEhi1+ LbRyBwkAWgx7RJYydaCeTzzcKygH91nEK0WjuQja6ADP01c168owKfL4arnQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <760b0992-776f-d35d-bbf3-6d7f351d0839@rug.nl>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+On Thu, Nov 18, 2021 at 06:09:55PM +0100, Bob Dröge wrote:
+> Hi,
+> 
+> I'm trying to install rdma-core 37.1  from source on a Gentoo Prefix system
+> which does not have pandoc nor rst2man installed. I'm using the release
+> tarball from the GitHub release page (https://github.com/linux-rdma/rdma-core/releases/download/v37.1/rdma-core-37.1.tar.gz),
+> though, and was expecting that it would use the prebuilt man pages in this
+> case. However, this fails at some point with the following error:
+> 
+> -- Installing: /cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/var/tmp/portage/sys-cluster/rdma-core-37.1/image/cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/usr/share/perl5/IBswcountlimits.pm
+> -- Installing: /cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/var/tmp/portage/sys-cluster/rdma-core-37.1/image/cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/usr/share/man/man8/check_lft_balance.8
+> CMake Error at infiniband-diags/man/cmake_install.cmake:66 (file):
+>   file INSTALL cannot find
+> "/cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/var/tmp/portage/sys-cluster/rdma-core-37.1/work/rdma-core-37.1/buildlib/pandoc-prebuilt/8db9dce39d3eaf2d3992fd9198060d4bdfeb83d6":
+>   No such file or directory.
+> Call Stack (most recent call first):
+>   cmake_install.cmake:222 (include)
+> 
+> FAILED: CMakeFiles/install.util
+> cd /cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/var/tmp/portage/sys-cluster/rdma-core-37.1/work/rdma-core-37.1_build
+> && /cvmfs/pilot.eessi-hpc.org/2021.06/compat/linux/x86_64/usr/bin/cmake -P
+> cmake_install.cmake
+> ninja: build stopped: subcommand failed.
+> 
+> Though the directory does exist and contains a bunch of files, this one is
+> indeed missing. Is this expected (does it only work for certain cases?), or
+> is something missing in this tarball?
 
-Use struct_group() in struct vlan_ethhdr around members h_dest and
-h_source, so they can be referenced together. This will allow memcpy()
-and sizeof() to more easily reason about sizes, improve readability,
-and avoid future warnings about writing beyond the end of h_dest.
+It is definitely a bug. 
 
-"pahole" shows no size nor member offset changes to struct vlan_ethhdr.
-"objdump -d" shows no object code changes.
+Thanks
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- include/linux/if_vlan.h                         | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 7fd33b356cc8..ee7ecb88adc1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -208,7 +208,7 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
- 	int cpy1_sz = 2 * ETH_ALEN;
- 	int cpy2_sz = ihs - cpy1_sz;
- 
--	memcpy(vhdr, skb->data, cpy1_sz);
-+	memcpy(&vhdr->addrs, skb->data, cpy1_sz);
- 	vhdr->h_vlan_proto = skb->vlan_proto;
- 	vhdr->h_vlan_TCI = cpu_to_be16(skb_vlan_tag_get(skb));
- 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
-diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
-index 41a518336673..45aad461aa34 100644
---- a/include/linux/if_vlan.h
-+++ b/include/linux/if_vlan.h
-@@ -46,8 +46,10 @@ struct vlan_hdr {
-  *	@h_vlan_encapsulated_proto: packet type ID or len
-  */
- struct vlan_ethhdr {
--	unsigned char	h_dest[ETH_ALEN];
--	unsigned char	h_source[ETH_ALEN];
-+	struct_group(addrs,
-+		unsigned char	h_dest[ETH_ALEN];
-+		unsigned char	h_source[ETH_ALEN];
-+	);
- 	__be16		h_vlan_proto;
- 	__be16		h_vlan_TCI;
- 	__be16		h_vlan_encapsulated_proto;
--- 
-2.30.2
-
+> 
+> Best regards,
+> Bob Dröge
