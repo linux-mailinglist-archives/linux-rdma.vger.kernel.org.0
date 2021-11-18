@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B5C4555C5
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Nov 2021 08:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72168455612
+	for <lists+linux-rdma@lfdr.de>; Thu, 18 Nov 2021 08:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243956AbhKRHgp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Nov 2021 02:36:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52396 "EHLO mail.kernel.org"
+        id S243952AbhKRHyD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Nov 2021 02:54:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244051AbhKRHfZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Nov 2021 02:35:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D7261269;
-        Thu, 18 Nov 2021 07:32:24 +0000 (UTC)
+        id S244093AbhKRHxY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Nov 2021 02:53:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D6C61AF0;
+        Thu, 18 Nov 2021 07:50:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637220744;
-        bh=2VdstZWq6DPnEC6DxQBReel0V2k00OcC7KSNTUSs0UM=;
+        s=k20201202; t=1637221824;
+        bh=KAG7SN0Nsukz5N3+M2JeOStH3aani0FQz1yVYpMxlI4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L5+VP4Ka3rsFmALNqTLemtiG0EWqk+dRJRopAI2LWM6KvO3vHptMPQgscHsM3zQWO
-         5uvHosaFkH4jIr0zwZ+asDr75n2vrU+231CRqcF+Pw5Sk4EzkPvagD0ZGdC7jiCVuv
-         0jXJzMu6YS2U3syEpyvfhPMcnf9lJbLIFEtTGvTjk6ds8oBFjqKC4u1/mPLmspKR/W
-         lWyISppbmOhxIE9Ng6ScATnvTBGadUU3KUAiGDXivu/0aCpCbVL86uzYh/sj2nVFuH
-         IMPEsOt7MxJ/hTkBPnZcQAmjYxu3Y0epF+vD1ebs2tgLfoVt2x41iaJWw9HrENEdGs
-         bQAAsrgAD9Rpg==
-Date:   Thu, 18 Nov 2021 09:32:20 +0200
+        b=U/rCN1F5P7OJGKozjYIbfysxd1GNoJ7r2XbViuikvAKkPDKKnksCbzJa2IlbHnRax
+         GoWEfisdL0drlW2opov+3kvSMtdymX3KwC9CSx24ibrIoE2wHpH/c7irksbGH7gCXW
+         Q0h6qL7SSdphsv4RS+Mfpa5oRKD4q0K89KOfSTE4myt5TH3/fTYkWlEfO4FLCP3sP+
+         0zdH/5WvExcVwBbWzxoMWRPvlXY+fKCPsUn24Llx2zkf79eennDsgYutbug/fZ1agB
+         KhkNMnssPhXu7tzV+BBf3QYXcyhYEGTax+k0QCz2kH4UZ+pBEFmZQ+Et0intFBkLWn
+         4KRAyyeFsgTjA==
+Date:   Thu, 18 Nov 2021 09:50:20 +0200
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     "David S . Miller" <davem@davemloft.net>,
@@ -48,53 +48,50 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         UNGLinuxDriver@microchip.com,
         Vivien Didelot <vivien.didelot@gmail.com>,
         Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 4/6] devlink: Clean registration of devlink port
-Message-ID: <YZYBhArHOAbLfOUb@unreal>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <YZYFvIK9mkP107tD@unreal>
 References: <cover.1637173517.git.leonro@nvidia.com>
- <9c3eb77a90a2be10d5c637981a8047160845f60f.1637173517.git.leonro@nvidia.com>
- <20211117204929.4bd24597@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+ <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211117204929.4bd24597@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 17, 2021 at 08:49:29PM -0800, Jakub Kicinski wrote:
-> On Wed, 17 Nov 2021 20:26:20 +0200 Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > devlink_port_register() is in-kernel API and as such can't really fail
-> > as long as driver author didn't make a mistake by providing already existing
-> > port index. Instead of relying on various error prints from the driver,
-> > convert the existence check to be WARN_ON(), so such a mistake will be
-> > caught easier.
-> > 
-> > As an outcome of this conversion, it was made clear that this function
-> > should be void and devlink->lock was intended to protect addition to
-> > port_list.
+On Wed, Nov 17, 2021 at 08:49:56PM -0800, Jakub Kicinski wrote:
+> On Wed, 17 Nov 2021 20:26:21 +0200 Leon Romanovsky wrote:
+> > -	top_hierarchy = parent_resource_id == DEVLINK_RESOURCE_ID_PARENT_TOP;
+> > -
+> > -	mutex_lock(&devlink->lock);
+> > -	resource = devlink_resource_find(devlink, NULL, resource_id);
+> > -	if (resource) {
+> > -		err = -EINVAL;
+> > -		goto out;
+> > -	}
+> > +	WARN_ON(devlink_resource_find(devlink, NULL, resource_id));
 > 
-> Leave this error checking in please.
+> This is not atomic with the add now.
 
-Are you referring to error checks in the drivers or the below section
-from devlink_port_register()?
+And it shouldn't. devlink_resource_find() will return valid resource only
+if there driver is completely bogus with races or incorrect allocations of
+resource_id.
 
-       mutex_lock(&devlink->lock);
-       if (devlink_port_index_exists(devlink, port_index)) {
-               mutex_unlock(&devlink->lock);
-               return -EEXIST;
-       }
+devlink_*_register(..)
+ mutex_lock(&devlink->lock);
+ if (devlink_*_find(...)) {
+    mutex_unlock(&devlink->lock);
+    return ....;
+ }
+ .....
 
-Because if it is latter, any driver (I didn't find any) that will rely
-on this -EEXIST field should have some sort of locking in top level.
-Otherwise nothing will prevent from doing port unregister right
-before "return --EXEEXIST".
+It is almost always wrong from locking and layering perspective the pattern above,
+as it is racy by definition if not protected by top layer.
 
-So change to WARN_ON() will be much more effective in finding wrong
-drivers, because they manage port_index and not devlink.
-
-And because this function can't fail, the drivers have a plenty of dead
-code.
+There are exceptions from the rule above, but devlink is clearly not the
+one of such exceptions.
 
 Thanks
