@@ -2,88 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC13A456493
-	for <lists+linux-rdma@lfdr.de>; Thu, 18 Nov 2021 21:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D8CE456794
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Nov 2021 02:48:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231455AbhKRVAZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Nov 2021 16:00:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20838 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229905AbhKRVAZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Nov 2021 16:00:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637269044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=NQBbG9QmTVcqddRSnEaLzz0lzHtBjDf0FXQnKCmTPXc=;
-        b=cJcI/tzgZlzD+Ha4Ruz/BhscLwQaiNT0Elrg/bbVgOY1fw2tlMTZHKM3nHaiwWc98hghLE
-        y0HLtXVrvoxOI+VaoYy0sEDxJ9lQRNHHSWMDokMaKcrcMug6up0B4Wgu9vZxz1tvYvcffp
-        I6XVG8wEfswr7TWWqfn7O3tNXbXbdoQ=
-Received: from mail-lf1-f71.google.com (mail-lf1-f71.google.com
- [209.85.167.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-209-Ry6abPMfOL-xo9tg6SJYrg-1; Thu, 18 Nov 2021 15:57:23 -0500
-X-MC-Unique: Ry6abPMfOL-xo9tg6SJYrg-1
-Received: by mail-lf1-f71.google.com with SMTP id u20-20020a056512129400b0040373ffc60bso4983912lfs.15
-        for <linux-rdma@vger.kernel.org>; Thu, 18 Nov 2021 12:57:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=NQBbG9QmTVcqddRSnEaLzz0lzHtBjDf0FXQnKCmTPXc=;
-        b=J5bRaC1cerKYepmT+9+ZOYryvtxBIPrWKl8voDSfD0WgtzfQI2mc7znnXEvBT5XSfF
-         30gJCnrabrzbhg6m2pAgph+qGo6R/aS4Kt7JDBe3YpPdnYf0zIP+Nn4+SC1D1HMlJdFd
-         6KT9qIxPydc6rI7VAkfN+yInaFH5TuJZgYf/W/Hq8Nt9uYcdr4PZh0lT5IpMAwIcVwxH
-         lhTR/aVlozhmDaTRhCkqiJk548fhoC1I79LbqNr+gzrxmgUzx5ayslbr2u+6EW5KDjoC
-         MR8CDp4Olp5EqWI2BFUqEyl9jmfLb/7IkLuATOLzC2D9TjKcA25TPSB3FAp9hWS3E3+c
-         sfgg==
-X-Gm-Message-State: AOAM530YVI+72BmORoMkLp0OFr+RipP5W5OZm0ITa3vdYwKRPerZ6tzf
-        7uwJq5I6G8hUUeInHnCtT/OUcRhdOYtBWQAK0Ef774fy04Yaa/ZJBxjRCppYlCf1f70+5G+yrLG
-        dEhc3NulFhImsuj7EZjgRhANipw1UTfyYuTLz/Q==
-X-Received: by 2002:a05:6512:3b9c:: with SMTP id g28mr27118760lfv.651.1637269040058;
-        Thu, 18 Nov 2021 12:57:20 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxTaRMwXMpoLtKNnYltwOZGOutPJGqpykob6vTeKBULyneKUI270vMiapyZdI0s1H2xCGUkSVLpF1P4tchJ1Ks=
-X-Received: by 2002:a05:6512:3b9c:: with SMTP id g28mr27118741lfv.651.1637269039871;
- Thu, 18 Nov 2021 12:57:19 -0800 (PST)
+        id S231712AbhKSBvR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Nov 2021 20:51:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231176AbhKSBvQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Nov 2021 20:51:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E54A761401;
+        Fri, 19 Nov 2021 01:48:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637286495;
+        bh=4d92tHYFCLa5amrWHWA76Kj8uMX5dGltn+NbKmez1tU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d0ewhYM2pOC/SgWaoIHlstPfakFQuTIfgMjCvqYt8IA4Ry0RWvoRa2wQ21EebHMwg
+         2dzonFBqs8HDNANLbTRKjzTGNTLjs+25PJuReseLTgdIlGV/H/TEM1DRvcsmzKFoCy
+         uyJAOjRB6MVBnPH29MEXFkqA+IWlBHp2eou4zEzEkdlnyZAC7ETqVuJOJfoiKcAVrf
+         eAnT5wbHq3p/ovYz4OgsLfAbgr4WZ9J0MqDCekPrf/U8LNpUYdf4NlCxLRmbsQJghn
+         d8lJuVUfdbw5d5p+Hv8sLFgQsisbblajIACHMjfmlM38qxhi/78duZ6cnMOVt82mzv
+         DjpXRH9pxl6Og==
+Date:   Thu, 18 Nov 2021 17:48:13 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YZYFvIK9mkP107tD@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YZYFvIK9mkP107tD@unreal>
 MIME-Version: 1.0
-From:   Doug Ledford <dledford@redhat.com>
-Date:   Thu, 18 Nov 2021 14:57:09 -0600
-Message-ID: <CAGbH50sEwKeB3bH6XHm+C1R_giN85pi6Bqq4fk-rFq-iU3bavg@mail.gmail.com>
-Subject: Two announcements
-To:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-First, many of us have talked in the past about the benefit dedicated
-testing of the upstream kernel and rdma-core packages (as well as
-dependent packages, like libfabric or openmpi) would be to the
-community.  And although people thought it was a good idea, no one
-stepped forward to undertake the task.  So, the OpenFabrics Alliance,
-and by extension myself as one of the working group chairs for the
-FSDP Working Group, did.  Many of you probably saw the announcement
-this week that the FSDP has reached phase I complete.  That basically
-means that the beaker cluster is up and running and the test harness
-is functional.  The next step, phase II, is to add a CI infrastructure
-into the cluster while also building out the testing repository, and
-then enabling that CI infrastructure on the upstream kernel repo as
-well as any interested user space repos.
+On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:
+> And it shouldn't. devlink_resource_find() will return valid resource only
+> if there driver is completely bogus with races or incorrect allocations of
+> resource_id.
+> 
+> devlink_*_register(..)
+>  mutex_lock(&devlink->lock);
+>  if (devlink_*_find(...)) {
+>     mutex_unlock(&devlink->lock);
+>     return ....;
+>  }
+>  .....
+> 
+> It is almost always wrong from locking and layering perspective the pattern above,
+> as it is racy by definition if not protected by top layer.
+> 
+> There are exceptions from the rule above, but devlink is clearly not the
+> one of such exceptions.
 
-As I'm sure many of you have noticed, while I've been off doing these
-things, Jason has carried the burden of RDMA kernel maintenance on his
-own.  Since adding the CI infrastructure and getting the initial tests
-added to the cluster will not likely provide me any more free time
-than I have had recently, the second announcement is that I'm going to
-remove my name from the list of upstream kernel maintainers on the
-RDMA stack and the rdma-core user space package.  I suspect Jason will
-likely work to enlist some help to the upstream role, but I'll let him
-elaborate on that.  I'm currently at SC21 and will send a patch to the
-MAINTAINERS file when I get back and have access to my kernel repo.
+Just drop the unnecessary "cleanup" patches and limit the amount 
+of driver code we'll have to revert if your approach fails.
 
--- 
-Doug Ledford <dledford@redhat.com>
-GPG KeyID: B826A3330E572FDD
-Key fingerprint = AE6B 1BDA 122B 23B4 265B  1274 B826 A333 0E57 2FDD
+I spent enough time going back and forth with you.
 
+Please.
