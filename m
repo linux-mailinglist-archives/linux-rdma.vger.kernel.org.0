@@ -2,89 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8CE456794
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Nov 2021 02:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38769456884
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Nov 2021 04:16:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhKSBvR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 18 Nov 2021 20:51:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47172 "EHLO mail.kernel.org"
+        id S231146AbhKSDTi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 18 Nov 2021 22:19:38 -0500
+Received: from mga06.intel.com ([134.134.136.31]:52330 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231176AbhKSBvQ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 18 Nov 2021 20:51:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E54A761401;
-        Fri, 19 Nov 2021 01:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637286495;
-        bh=4d92tHYFCLa5amrWHWA76Kj8uMX5dGltn+NbKmez1tU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d0ewhYM2pOC/SgWaoIHlstPfakFQuTIfgMjCvqYt8IA4Ry0RWvoRa2wQ21EebHMwg
-         2dzonFBqs8HDNANLbTRKjzTGNTLjs+25PJuReseLTgdIlGV/H/TEM1DRvcsmzKFoCy
-         uyJAOjRB6MVBnPH29MEXFkqA+IWlBHp2eou4zEzEkdlnyZAC7ETqVuJOJfoiKcAVrf
-         eAnT5wbHq3p/ovYz4OgsLfAbgr4WZ9J0MqDCekPrf/U8LNpUYdf4NlCxLRmbsQJghn
-         d8lJuVUfdbw5d5p+Hv8sLFgQsisbblajIACHMjfmlM38qxhi/78duZ6cnMOVt82mzv
-         DjpXRH9pxl6Og==
-Date:   Thu, 18 Nov 2021 17:48:13 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ido Schimmel <idosch@nvidia.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org,
-        Michael Chan <michael.chan@broadcom.com>,
-        netdev@vger.kernel.org, oss-drivers@corigine.com,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Shannon Nelson <snelson@pensando.io>,
-        Simon Horman <simon.horman@corigine.com>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        UNGLinuxDriver@microchip.com,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
- logic
-Message-ID: <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <YZYFvIK9mkP107tD@unreal>
-References: <cover.1637173517.git.leonro@nvidia.com>
-        <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
-        <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YZYFvIK9mkP107tD@unreal>
+        id S232894AbhKSDTi (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 18 Nov 2021 22:19:38 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10172"; a="295162339"
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="295162339"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2021 19:16:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,246,1631602800"; 
+   d="scan'208";a="736880817"
+Received: from lkp-server02.sh.intel.com (HELO c20d8bc80006) ([10.239.97.151])
+  by fmsmga006.fm.intel.com with ESMTP; 18 Nov 2021 19:16:35 -0800
+Received: from kbuild by c20d8bc80006 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1mnuOA-0003xp-V5; Fri, 19 Nov 2021 03:16:34 +0000
+Date:   Fri, 19 Nov 2021 11:16:28 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 2a67fcfa0db6b4075515bd23497750849b88850f
+Message-ID: <6197170c.CXM1qcrTA9hi+FSW%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:
-> And it shouldn't. devlink_resource_find() will return valid resource only
-> if there driver is completely bogus with races or incorrect allocations of
-> resource_id.
-> 
-> devlink_*_register(..)
->  mutex_lock(&devlink->lock);
->  if (devlink_*_find(...)) {
->     mutex_unlock(&devlink->lock);
->     return ....;
->  }
->  .....
-> 
-> It is almost always wrong from locking and layering perspective the pattern above,
-> as it is racy by definition if not protected by top layer.
-> 
-> There are exceptions from the rule above, but devlink is clearly not the
-> one of such exceptions.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 2a67fcfa0db6b4075515bd23497750849b88850f  RDMA/hns: Validate the pkey index
 
-Just drop the unnecessary "cleanup" patches and limit the amount 
-of driver code we'll have to revert if your approach fails.
+elapsed time: 725m
 
-I spent enough time going back and forth with you.
+configs tested: 135
+configs skipped: 3
 
-Please.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211118
+mips                 randconfig-c004-20211118
+powerpc                 mpc836x_rdk_defconfig
+arm                  colibri_pxa300_defconfig
+arm                           h3600_defconfig
+arc                    vdk_hs38_smp_defconfig
+riscv                    nommu_virt_defconfig
+mips                   sb1250_swarm_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                           jazz_defconfig
+mips                       capcella_defconfig
+arm                         vf610m4_defconfig
+powerpc                 mpc836x_mds_defconfig
+arm                     davinci_all_defconfig
+powerpc                      pasemi_defconfig
+powerpc                       ppc64_defconfig
+mips                          ath25_defconfig
+xtensa                           alldefconfig
+arc                          axs103_defconfig
+mips                      bmips_stb_defconfig
+m68k                         apollo_defconfig
+mips                          rm200_defconfig
+arm                         assabet_defconfig
+arm                          simpad_defconfig
+arm                       cns3420vb_defconfig
+arm                       netwinder_defconfig
+powerpc                      katmai_defconfig
+arm                      integrator_defconfig
+s390                          debug_defconfig
+powerpc                    mvme5100_defconfig
+arm                            xcep_defconfig
+arm                        vexpress_defconfig
+sh                   sh7724_generic_defconfig
+mips                         db1xxx_defconfig
+arm                        cerfcube_defconfig
+arm                          pxa168_defconfig
+m68k                          multi_defconfig
+arm                              alldefconfig
+sh                           se7722_defconfig
+openrisc                            defconfig
+powerpc                      cm5200_defconfig
+ia64                             alldefconfig
+arm                  randconfig-c002-20211118
+arm                  randconfig-c002-20211119
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+powerpc                          allyesconfig
+i386                 randconfig-a006-20211119
+i386                 randconfig-a003-20211119
+i386                 randconfig-a001-20211119
+i386                 randconfig-a005-20211119
+i386                 randconfig-a004-20211119
+i386                 randconfig-a002-20211119
+x86_64               randconfig-a015-20211118
+x86_64               randconfig-a012-20211118
+x86_64               randconfig-a011-20211118
+x86_64               randconfig-a013-20211118
+x86_64               randconfig-a016-20211118
+x86_64               randconfig-a014-20211118
+i386                 randconfig-a016-20211118
+i386                 randconfig-a014-20211118
+i386                 randconfig-a012-20211118
+i386                 randconfig-a011-20211118
+i386                 randconfig-a013-20211118
+i386                 randconfig-a015-20211118
+arc                  randconfig-r043-20211118
+riscv                randconfig-r042-20211118
+s390                 randconfig-r044-20211118
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+i386                 randconfig-c001-20211118
+x86_64               randconfig-c007-20211118
+arm                  randconfig-c002-20211118
+s390                 randconfig-c005-20211118
+powerpc              randconfig-c003-20211118
+riscv                randconfig-c006-20211118
+mips                 randconfig-c004-20211118
+x86_64               randconfig-a005-20211118
+x86_64               randconfig-a003-20211118
+x86_64               randconfig-a001-20211118
+x86_64               randconfig-a002-20211118
+x86_64               randconfig-a006-20211118
+x86_64               randconfig-a004-20211118
+i386                 randconfig-a006-20211118
+i386                 randconfig-a003-20211118
+i386                 randconfig-a001-20211118
+i386                 randconfig-a005-20211118
+i386                 randconfig-a004-20211118
+i386                 randconfig-a002-20211118
+hexagon              randconfig-r045-20211118
+hexagon              randconfig-r041-20211118
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
