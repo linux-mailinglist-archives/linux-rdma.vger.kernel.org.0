@@ -2,79 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED6845703F
-	for <lists+linux-rdma@lfdr.de>; Fri, 19 Nov 2021 15:06:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7F74571C3
+	for <lists+linux-rdma@lfdr.de>; Fri, 19 Nov 2021 16:38:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbhKSOJp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 19 Nov 2021 09:09:45 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:26336 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235642AbhKSOJo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 19 Nov 2021 09:09:44 -0500
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Hwdd42Tzwzbht3;
-        Fri, 19 Nov 2021 22:01:44 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 22:06:41 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.15; Fri, 19 Nov 2021 22:06:41 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <dledford@redhat.com>, <jgg@nvidia.com>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 9/9] RDMA/hns: Remove magic number
-Date:   Fri, 19 Nov 2021 22:02:08 +0800
-Message-ID: <20211119140208.40416-10-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211119140208.40416-1-liangwenpeng@huawei.com>
-References: <20211119140208.40416-1-liangwenpeng@huawei.com>
+        id S235102AbhKSPl7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 19 Nov 2021 10:41:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235250AbhKSPl7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 19 Nov 2021 10:41:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34B9A6112E;
+        Fri, 19 Nov 2021 15:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637336337;
+        bh=SiDyJ/VKAeOoI+SIN4+qGK8ta2JLIbvMWVnitDoSmOg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SHoopEN12ABnOJrQbGs8O4BbaND7QMXx48wiMBfW/8wzoXRR2ZcjeK7A1l1VuChGU
+         Fuvl9doTKs+BETnCb+vWs32+C6Is7JnTr00XR3VcWVsnMd1DtxETI4xwPJgPbtzNo3
+         pW4hnUxqvm5DJDMd6QDv+KL0OJpRdwOkNW1HZ4NilDKCcLoT963XPkoicDMbI/pDR9
+         PYZML153hA+AxUyOvmTwJNfnBVfUfcebUttiMN6eaCN2WZ4kCbfTM9hMWoC8bUER3V
+         ZXeBu1SjuFEwMAWoe8ghOZ+MbxJZhwjCGWB2YnA8Wzwn0z0vOjPI/tgdVSzjCf2sHp
+         ruRiK3XHBQl2A==
+Date:   Fri, 19 Nov 2021 17:38:53 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <YZfFDSnnjOG+wSyK@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+ <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+ <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZYFvIK9mkP107tD@unreal>
+ <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Xinhao Liu <liuxinhao5@hisilicon.com>
+On Thu, Nov 18, 2021 at 05:48:13PM -0800, Jakub Kicinski wrote:
+> On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:
+> > And it shouldn't. devlink_resource_find() will return valid resource only
+> > if there driver is completely bogus with races or incorrect allocations of
+> > resource_id.
+> > 
+> > devlink_*_register(..)
+> >  mutex_lock(&devlink->lock);
+> >  if (devlink_*_find(...)) {
+> >     mutex_unlock(&devlink->lock);
+> >     return ....;
+> >  }
+> >  .....
+> > 
+> > It is almost always wrong from locking and layering perspective the pattern above,
+> > as it is racy by definition if not protected by top layer.
+> > 
+> > There are exceptions from the rule above, but devlink is clearly not the
+> > one of such exceptions.
+> 
+> Just drop the unnecessary "cleanup" patches and limit the amount 
+> of driver code we'll have to revert if your approach fails.
 
-Don't use unintelligible constants.
+My approach works, exactly like it works in other subsystems.
+https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/
 
-Signed-off-by: Xinhao Liu <liuxinhao5@hisilicon.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+We are waiting to see your proposal extended to support parallel devlink
+execution and to be applied to real drivers.
+https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 978913fc7587..66393b97a469 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -677,6 +677,7 @@ static void hns_roce_write512(struct hns_roce_dev *hr_dev, u64 *val,
- static void write_dwqe(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 		       void *wqe)
- {
-+#define HNS_ROCE_SL_SHIFT 2
- 	struct hns_roce_v2_rc_send_wqe *rc_sq_wqe = wqe;
- 
- 	/* All kinds of DirectWQE have the same header field layout */
-@@ -684,7 +685,8 @@ static void write_dwqe(struct hns_roce_dev *hr_dev, struct hns_roce_qp *qp,
- 	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_DB_SL_L_M,
- 		       V2_RC_SEND_WQE_BYTE_4_DB_SL_L_S, qp->sl);
- 	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_DB_SL_H_M,
--		       V2_RC_SEND_WQE_BYTE_4_DB_SL_H_S, qp->sl >> 2);
-+		       V2_RC_SEND_WQE_BYTE_4_DB_SL_H_S,
-+		       qp->sl >> HNS_ROCE_SL_SHIFT);
- 	roce_set_field(rc_sq_wqe->byte_4, V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_M,
- 		       V2_RC_SEND_WQE_BYTE_4_WQE_INDEX_S, qp->sq.head);
- 
--- 
-2.33.0
+Anyway, you are maintainer, you want half work, you will get half work.
 
+> 
+> I spent enough time going back and forth with you.
+> 
+> Please.
+
+Disagreements are hard for everyone, not only for you.
+
+Thanks
