@@ -2,125 +2,185 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC2F457ECB
-	for <lists+linux-rdma@lfdr.de>; Sat, 20 Nov 2021 16:02:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CE845828C
+	for <lists+linux-rdma@lfdr.de>; Sun, 21 Nov 2021 09:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237027AbhKTPFK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 20 Nov 2021 10:05:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236770AbhKTPFK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 20 Nov 2021 10:05:10 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C901C061574;
-        Sat, 20 Nov 2021 07:02:06 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id b1so57302882lfs.13;
-        Sat, 20 Nov 2021 07:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=iYwC9YQ4kJHdzsywvL9y8mfy/c47skD/0CgkzcadpUE=;
-        b=PWwdYAz1dZdhqKdzYlShs41QlpbzofaOd/PMagiiDMmTPx0B8hQFkiRHhPNhl4yV1q
-         dO/thHTSSIlcF4SogwHVtIX/bI2Dnl2sn43xjz68xZV4ZutPak5M1vRaXMcW5cFT68VP
-         AuLSRsD15z6timRB3b9rg1SiF+/raA4CL7MWuq2gSe8/9XkQEXE2xjt2EJ67tR+jTgQl
-         nkkt6eICNi7+TAHwFblTvadLMVcR779Sga7Ps0mJanWXphsjW1/AF66v1BVmebvHBuAg
-         FxfAGv0tA54vnpDzJwoCVrd77kh83hmGF/UpPRJ52lOVurSNpUdl+k7aKz1bJWxB7dH/
-         X3fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=iYwC9YQ4kJHdzsywvL9y8mfy/c47skD/0CgkzcadpUE=;
-        b=xgaGedIYu7ZyuuuYvT924vyx1Wb1xnY5BisRMYVA9ZXZ8ynbaoL7GxsVtOXk6LIq3x
-         BLtGf9/0NhgZUzEmgEqSaoGoUHNLRzOFTuCvLCALWFEWQYGbRSh+ZYGNECo/SYXYHjvO
-         laD25ebT1nCCXF2neiZP2QogU27XG5fU1pdoikNI0WA+L/gTqo+ss0QXzDFZTXh0YNWQ
-         zvV/wA1eyNJXjDe5Im1xamImHVAUkZT7iY9qH9K63nclmE5NP1TxVLZoRYnemvi06mLU
-         M8Sa1JJSheTWzEfQBO7y4mSoLktZeYXO+VWdF0RwDE7Geiwgxmpf99f9DuIkVwFG9SvB
-         VvAg==
-X-Gm-Message-State: AOAM5315c59fsenIi9Aw7HoRHdozNLirLiKkfLQaK+jDU9kJvN31yknx
-        VGtwQwIsdGPK/uoveBfcN5U=
-X-Google-Smtp-Source: ABdhPJxdPk1D6EHw/Gg8Q2AW6S1zf/knnHu5BteszreKeqbuXTzT0DIP9Tvzck243nKiXholm8dvcA==
-X-Received: by 2002:a19:f242:: with SMTP id d2mr42343402lfk.516.1637420524198;
-        Sat, 20 Nov 2021 07:02:04 -0800 (PST)
-Received: from [192.168.1.11] ([217.117.245.63])
-        by smtp.gmail.com with ESMTPSA id k14sm242347ljk.57.2021.11.20.07.02.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Nov 2021 07:02:03 -0800 (PST)
-Message-ID: <91426976-b784-e480-6e3a-52da5d1268cc@gmail.com>
-Date:   Sat, 20 Nov 2021 18:02:02 +0300
+        id S235798AbhKUIsV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 21 Nov 2021 03:48:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52752 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231700AbhKUIsU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 21 Nov 2021 03:48:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E01C60555;
+        Sun, 21 Nov 2021 08:45:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1637484316;
+        bh=oIzTeQ8dWAqf5/wiroWk46ZDKNRp9gwSpRMBo2v6U34=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LMvUbGy4dpaXt/9MkfEvTpXXzKfVEU7u1KfV0iD7HtBVSRJq1rdnPkgxj3e9DzDI+
+         1yjjzFlTUaQnALRouTEiWI2jCkp0rcEIpzL4Qu+0wpntZAqZ/8lTP+BAu+ZpiWesqb
+         6Qw/Q4VD1Vt8xFrkWehtozTxZAsYb/4OXr7gZZM+zY+FBYudZuYdtkit4xEG+RNxnL
+         sIQMQyFuzItDxRm4iNyXPBusEgniI6M+yH+AB2eES5GS0E2NiVEKjWadDwD34o7aZc
+         gycj1JeqS8h1/vPbc1+VpjNqcka6gZ0jNy+998KYW5lYW7AuJQkU3mKl0L+Z1tAiIQ
+         Y36AogvhKIMIA==
+Date:   Sun, 21 Nov 2021 10:45:12 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, Aya Levin <ayal@mellanox.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, drivers@pensando.io,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        intel-wired-lan@lists.osuosl.org,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Jiri Pirko <jiri@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        Michael Chan <michael.chan@broadcom.com>,
+        netdev@vger.kernel.org, oss-drivers@corigine.com,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Shannon Nelson <snelson@pensando.io>,
+        Simon Horman <simon.horman@corigine.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        UNGLinuxDriver@microchip.com,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: Re: [PATCH net-next 5/6] devlink: Reshuffle resource registration
+ logic
+Message-ID: <YZoHGKqLz6UBk2Sx@unreal>
+References: <cover.1637173517.git.leonro@nvidia.com>
+ <6176a137a4ded48501e8a06fda0e305f9cfc787c.1637173517.git.leonro@nvidia.com>
+ <20211117204956.6a36963b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZYFvIK9mkP107tD@unreal>
+ <20211118174813.54c3731f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YZfFDSnnjOG+wSyK@unreal>
+ <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [syzbot] KASAN: use-after-free Read in rxe_queue_cleanup
-Content-Language: en-US
-To:     syzbot <syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com>,
-        dledford@redhat.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, zyjzyj2000@gmail.com
-References: <000000000000c4e52d05d120e1b0@google.com>
-From:   Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <000000000000c4e52d05d120e1b0@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211119081017.6676843b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/19/21 12:27, syzbot wrote:
-> Hello,
+On Fri, Nov 19, 2021 at 08:10:17AM -0800, Jakub Kicinski wrote:
+> On Fri, 19 Nov 2021 17:38:53 +0200 Leon Romanovsky wrote:
+> > On Thu, Nov 18, 2021 at 05:48:13PM -0800, Jakub Kicinski wrote:
+> > > On Thu, 18 Nov 2021 09:50:20 +0200 Leon Romanovsky wrote:  
+> > > > And it shouldn't. devlink_resource_find() will return valid resource only
+> > > > if there driver is completely bogus with races or incorrect allocations of
+> > > > resource_id.
+> > > > 
+> > > > devlink_*_register(..)
+> > > >  mutex_lock(&devlink->lock);
+> > > >  if (devlink_*_find(...)) {
+> > > >     mutex_unlock(&devlink->lock);
+> > > >     return ....;
+> > > >  }
+> > > >  .....
+> > > > 
+> > > > It is almost always wrong from locking and layering perspective the pattern above,
+> > > > as it is racy by definition if not protected by top layer.
+> > > > 
+> > > > There are exceptions from the rule above, but devlink is clearly not the
+> > > > one of such exceptions.  
+> > > 
+> > > Just drop the unnecessary "cleanup" patches and limit the amount 
+> > > of driver code we'll have to revert if your approach fails.  
+> > 
+> > My approach works, exactly like it works in other subsystems.
+> > https://lore.kernel.org/netdev/cover.1636390483.git.leonro@nvidia.com/
 > 
-> syzbot found the following issue on:
+> What "other subsystems"? I'm aware of the RFC version of these patches.
+
+Approach to have fine-grained locking scheme, instead of having one big lock.
+This was done in MM for mmap_sem, we did it for RDMA too.
+
 > 
-> HEAD commit:    8d0112ac6fd0 Merge tag 'net-5.16-rc2' of git://git.kernel...
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=14e3eeaab00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6d3b8fd1977c1e73
-> dashboard link: https://syzkaller.appspot.com/bug?extid=aab53008a5adf26abe91
-> compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> Breaking up the locks to to protect sub-objects only is fine for
+> protecting internal lists but now you can't guarantee that the object
+> exists when driver is called.
+
+I can only guess about which objects you are talking.
+
+If you are talking about various devlink sub-objects (ports, traps,
+e.t.c), they created by the drivers and as such should be managed by them.
+Also they are connected to devlink which is guaranteed to exist. At the end,
+they called to devlink_XXX->devlink pointer without any existence check.
+
+If you are talking about devlink instance itself, we guarantee that it
+exists between devlink_alloc() and devlink_free(). It seems to me pretty
+reasonable request from drivers do not access devlink before devlink_alloc()
+or after devlink_free(),
+
 > 
-> Unfortunately, I don't have any reproducer for this issue yet.
+> I'm sure you'll utter your unprovable "in real drivers.." but the fact
+> is my approach does not suffer from any such issues. Or depends on
+> drivers registering devlink last.
+
+Registration of devlink doesn't do anything except opening it to the world.
+The lifetime is controlled with alloc and free. My beloved sentence "in
+real drivers ..." belongs to use of devlink_put and devlink_locks outside
+of devlink.c and nothing more.
+
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+aab53008a5adf26abe91@syzkaller.appspotmail.com
+> I can start passing a pointer to a devlink_port to split/unsplit
+> functions, which is a great improvement to the devlink driver API.
+
+You can do it with my approach too. We incremented reference counter
+of devlink instance when devlink_nl_cmd_port_split_doit() was called,
+and we can safely take devlink->port_list_lock lock before returning
+from pre_doit.
+
 > 
-> Free swap  = 0kB
-> Total swap = 0kB
-> 2097051 pages RAM
-> 0 pages HighMem/MovableOnly
-> 384517 pages reserved
-> 0 pages cma reserved
-> ==================================================================
-> BUG: KASAN: use-after-free in rxe_queue_cleanup+0xf4/0x100 drivers/infiniband/sw/rxe/rxe_queue.c:193
-> Read of size 8 at addr ffff88814a6b6e90 by task syz-executor.3/9534
+> > We are waiting to see your proposal extended to support parallel devlink
+> > execution and to be applied to real drivers.
+> > https://lore.kernel.org/netdev/20211030231254.2477599-1-kuba@kernel.org/
 > 
+> The conversion to xarray you have done is a great improvement, I don't
+> disagree with the way you convert to allow parallel calls either.
+> 
+> I already told you that real drivers can be converted rather easily,
+> even if it's not really necessary.
+> 
+> But I'm giving you time to make your proposal. If I spend time
+> polishing my patches I'll be even more eager to put this behind me.
 
-On error handling path in rxe_qp_from_init() qp->sq.queue is freed and 
-then rxe_create_qp() will drop last reference to this object. qp clean 
-up function will try to free this queue one time and it causes UAF bug.
+I see exposure of devlink internals to the driver as last resort, so I
+stopped to make proposals after your responses:
 
-Just for thoughts.
+"I prefer my version."
+https://lore.kernel.org/netdev/20211108101646.0a4e5ca4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
 
+"If by "fixed first" you mean it needs 5 locks to be added and to remove
+any guarantees on sub-object lifetime then no thanks."
+https://lore.kernel.org/netdev/20211108104608.378c106e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c 
-b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 975321812c87..54b8711321c1 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -359,6 +359,7 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct 
-rxe_qp *qp, struct rxe_pd *pd,
+> 
+> > Anyway, you are maintainer, you want half work, you will get half work.
+> 
+> What do you mean half work? You have a record of breaking things 
+> in the area and changing directions. How is my request to limit
+> unnecessary "cleanups" affecting drivers until the work is finished
+> not perfectly reasonable?!?!
 
-  err2:
-  	rxe_queue_cleanup(qp->sq.queue);
-+	qp->sq.queue = NULL;
-  err1:
-  	qp->pd = NULL;
-  	qp->rcq = NULL;
+I don't know what made you think so. My end goals (parallel execution
+and safe devlink reload) and solutions didn't changes:
+ * Devlink instance is safe to access by kernel between devlink_alloc() and devlink_free().
+ * Devlink instance is visible for users between devlink_register() and devlink_unregister().
+ * Locks should be fine-grained and limited.
 
+By saying, half work, I mean that attempt to limit locks leave many
+functions to be such that can't fail and as such should be void and not
+"return 0".
 
+And regarding "breaking things", I'm not doing it for fun, but with real
+desire to improve kernel for everyone, not only for our driver.
 
-
-
-With regards,
-Pavel Skripkin
+> 
+> > > I spent enough time going back and forth with you.
+> > 
+> > Disagreements are hard for everyone, not only for you.
