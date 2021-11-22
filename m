@@ -2,117 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 751E9459360
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Nov 2021 17:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECE7459367
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Nov 2021 17:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240389AbhKVQu7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Nov 2021 11:50:59 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:19434 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S238381AbhKVQu7 (ORCPT
+        id S239736AbhKVQwF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Nov 2021 11:52:05 -0500
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:58754 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238381AbhKVQwF (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:50:59 -0500
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMEvCCB007354;
-        Mon, 22 Nov 2021 16:47:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=WlRIheCBP1xnezxGy0qETHi39Xs1+SgAOWRbAxGU4X4=;
- b=DRTsfK3ieaf5SLTyin5/OP74k+qDp4XgYtaxo0AqG4opcbRfMJhmri5i/DDeWh8ZKehV
- dlwpLVyrTbM/RL/b9neEnli1qNn5K9jbOqfDeAhFZdEke/IZTBAoEj8GRHbQjfnskLHh
- ey1Vmjg2R0gOkOb+DTm4WpvbrSxZzPQ2TWkoS66UhaCYGXvMcDN82LEA0npGygzOUBCn
- JVNoZ2HTnZAOAi+0tdtlHZxZQzQ/28E9X85FUrVN092gXTIoa+LtiV9G2itmw+aFF2Nt
- DZ9wwJ+N1Rnb6HodtEgv9QC8+ZZc0dYdIBN87pAFt0bsH5osyG3d2oZnBHD9S5+tUx4e zA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cgcc84grj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 16:47:49 +0000
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AMGRaRu021094;
-        Mon, 22 Nov 2021 16:47:48 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cgcc84gr8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 16:47:48 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGgCQK020930;
-        Mon, 22 Nov 2021 16:47:47 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3cern9fqas-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Nov 2021 16:47:46 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AMGliGu32244176
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 16:47:44 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A824042049;
-        Mon, 22 Nov 2021 16:47:44 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E88A4203F;
-        Mon, 22 Nov 2021 16:47:44 +0000 (GMT)
-Received: from [9.145.56.120] (unknown [9.145.56.120])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 22 Nov 2021 16:47:44 +0000 (GMT)
-Message-ID: <12d0d06b-8337-401e-fb87-e9c4e423cc11@linux.ibm.com>
-Date:   Mon, 22 Nov 2021 17:47:43 +0100
+        Mon, 22 Nov 2021 11:52:05 -0500
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGUNIu007646;
+        Mon, 22 Nov 2021 16:48:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2021-07-09;
+ bh=kP+BdsCFC6A/kqdU5tYpFZ1Iw1wtbnEK3DTGxzFZeIg=;
+ b=HSwMC2uy3zifMCM85LrwugOSCRcvtCWErTlbgkNz4j+AJQpBIXYtjW0uSbE2UE7OloJI
+ NPPk+TrdaZ2xbePpwYTm6Den/fspHRR3ZTA7F1vxBKGek/VRJnVKCx8lbcSbIQCFl+HM
+ jak/pnTy1s9ClTO586veJkg39PK6EAwQlYvTffGOfl9z9N0txKTQ/gGUEtaQX09uUBBo
+ 7224heyQTQIOjOH6fpSjrPSL65/glfwtpeLYfE2l0S6AYg5uJDjxXXxEPR9u749+wL7M
+ dbY1YW8yIltHdl+ROxxVB/a05ZqjFm3zBJGsUNEqE7oOX1atvybr0XDhvfemWmfZKKfm Dw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461bba1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Nov 2021 16:48:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGkj61142675;
+        Mon, 22 Nov 2021 16:48:55 GMT
+Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
+        by aserp3030.oracle.com with ESMTP id 3ceq2cvjnr-1;
+        Mon, 22 Nov 2021 16:48:55 +0000
+From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
+To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH for-rc] RDMA/cma: Remove open coding for overflow in cma_connect_ib
+Date:   Mon, 22 Nov 2021 17:48:53 +0100
+Message-Id: <1637599733-11096-1-git-send-email-haakon.bugge@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH RFC net] net/smc: Ensure the active closing peer first
- closes clcsock
-Content-Language: en-US
-From:   Karsten Graul <kgraul@linux.ibm.com>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20211116033011.16658-1-tonylu@linux.alibaba.com>
- <9af1f859-0299-d1d7-d5ce-af46cf102025@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <9af1f859-0299-d1d7-d5ce-af46cf102025@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0TDTzXSvd3wR-VAU_8LaqnY3rx2sSrA2
-X-Proofpoint-GUID: oe566AgnXUD1EcdSLYlGZ70ng--0mPFH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-22_08,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=999
- impostorscore=0 mlxscore=0 malwarescore=0 phishscore=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 bulkscore=0 suspectscore=0 adultscore=0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111220084
+ definitions=main-2111220085
+X-Proofpoint-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
+X-Proofpoint-ORIG-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 17/11/2021 17:19, Karsten Graul wrote:
-> On 16/11/2021 04:30, Tony Lu wrote:
->> We found an issue when replacing TCP with SMC. When the actively closed
->> peer called close() in userspace, the clcsock of peer doesn't enter TCP
->> active close progress, but the passive closed peer close it first, and
->> enters TIME_WAIT state. It means the behavior doesn't match what we
->> expected. After reading RFC7609, there is no clear description of the
->> order in which we close clcsock during close progress.
-> 
-> Thanks for your detailed description, it helped me to understand the problem.
-> Your point is that SMC sockets should show the same behavior as TCP sockets
-> in this situation: the side that actively closed the socket should get into
-> TIME_WAIT state, and not the passive side. I agree with this.
-> Your idea to fix it looks like a good solution for me. But I need to do more
-> testing to make sure that other SMC implementations (not Linux) work as
-> expected with this change. For example, Linux does not actively monitor the 
-> clcsocket state, but if another implementation would do this it could happen
-> that the SMC socket is closed already when the clcsocket shutdown arrives, and
-> pending data transfers are aborted.
-> 
-> I will respond to your RFC when I finished my testing.
-> 
-> Thank you.
-> 
+The existing test is a little hard to comprehend. Use
+check_add_overflow() instead.
 
-Testing and discussions are finished, the patch looks good.
-Can you please send your change as a patch to the mailing list?
+Fixes: 04ded1672402 ("RDMA/cma: Verify private data length")
+Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+---
+ drivers/infiniband/core/cma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index 835ac54..0435768 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -4093,8 +4093,7 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
+ 
+ 	memset(&req, 0, sizeof req);
+ 	offset = cma_user_data_offset(id_priv);
+-	req.private_data_len = offset + conn_param->private_data_len;
+-	if (req.private_data_len < conn_param->private_data_len)
++	if (check_add_overflow(offset, conn_param->private_data_len, &req.private_data_len))
+ 		return -EINVAL;
+ 
+ 	if (req.private_data_len) {
+-- 
+1.8.3.1
+
