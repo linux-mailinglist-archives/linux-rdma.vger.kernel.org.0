@@ -2,83 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECE7459367
-	for <lists+linux-rdma@lfdr.de>; Mon, 22 Nov 2021 17:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7424459669
+	for <lists+linux-rdma@lfdr.de>; Mon, 22 Nov 2021 22:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239736AbhKVQwF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 22 Nov 2021 11:52:05 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:58754 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238381AbhKVQwF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 22 Nov 2021 11:52:05 -0500
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGUNIu007646;
-        Mon, 22 Nov 2021 16:48:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=kP+BdsCFC6A/kqdU5tYpFZ1Iw1wtbnEK3DTGxzFZeIg=;
- b=HSwMC2uy3zifMCM85LrwugOSCRcvtCWErTlbgkNz4j+AJQpBIXYtjW0uSbE2UE7OloJI
- NPPk+TrdaZ2xbePpwYTm6Den/fspHRR3ZTA7F1vxBKGek/VRJnVKCx8lbcSbIQCFl+HM
- jak/pnTy1s9ClTO586veJkg39PK6EAwQlYvTffGOfl9z9N0txKTQ/gGUEtaQX09uUBBo
- 7224heyQTQIOjOH6fpSjrPSL65/glfwtpeLYfE2l0S6AYg5uJDjxXXxEPR9u749+wL7M
- dbY1YW8yIltHdl+ROxxVB/a05ZqjFm3zBJGsUNEqE7oOX1atvybr0XDhvfemWmfZKKfm Dw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cg461bba1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Nov 2021 16:48:56 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1AMGkj61142675;
-        Mon, 22 Nov 2021 16:48:55 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by aserp3030.oracle.com with ESMTP id 3ceq2cvjnr-1;
-        Mon, 22 Nov 2021 16:48:55 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH for-rc] RDMA/cma: Remove open coding for overflow in cma_connect_ib
-Date:   Mon, 22 Nov 2021 17:48:53 +0100
-Message-Id: <1637599733-11096-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S239899AbhKVVPt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 22 Nov 2021 16:15:49 -0500
+Received: from mga17.intel.com ([192.55.52.151]:19479 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhKVVPs (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 22 Nov 2021 16:15:48 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10176"; a="215593730"
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="215593730"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2021 13:12:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,255,1631602800"; 
+   d="scan'208";a="570478171"
+Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
+  by fmsmga004.fm.intel.com with ESMTP; 22 Nov 2021 13:12:40 -0800
+From:   Tony Nguyen <anthony.l.nguyen@intel.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, shiraz.saleem@intel.com,
+        mustafa.ismail@intel.com, jacob.e.keller@intel.com,
+        parav@nvidia.com, jiri@nvidia.com
+Subject: [PATCH net-next 0/3][pull request] 100GbE Intel Wired LAN Driver Updates 2021-11-22
+Date:   Mon, 22 Nov 2021 13:11:16 -0800
+Message-Id: <20211122211119.279885-1-anthony.l.nguyen@intel.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10176 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 spamscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2111220085
-X-Proofpoint-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
-X-Proofpoint-ORIG-GUID: LtKnd9wgIt4Mocnu3dHW_HJhAXwMt8TW
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The existing test is a little hard to comprehend. Use
-check_add_overflow() instead.
+Shiraz Saleem says:
 
-Fixes: 04ded1672402 ("RDMA/cma: Verify private data length")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
----
- drivers/infiniband/core/cma.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Currently E800 devices come up as RoCEv2 devices by default.
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 835ac54..0435768 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4093,8 +4093,7 @@ static int cma_connect_ib(struct rdma_id_private *id_priv,
- 
- 	memset(&req, 0, sizeof req);
- 	offset = cma_user_data_offset(id_priv);
--	req.private_data_len = offset + conn_param->private_data_len;
--	if (req.private_data_len < conn_param->private_data_len)
-+	if (check_add_overflow(offset, conn_param->private_data_len, &req.private_data_len))
- 		return -EINVAL;
- 
- 	if (req.private_data_len) {
+This series add supports for users to configure iWARP or RoCEv2 functionality
+per PCI function. devlink parameters is used to realize this and is keyed
+off similar work in [1].
+
+[1] https://lore.kernel.org/linux-rdma/20210810132424.9129-1-parav@nvidia.com/
+
+The following are changes since commit 3b0e04140bc30f9f5c254a68013a901e5390b0a8:
+  Merge branch 'qca8k-next'
+and are available in the git repository at:
+  git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/next-queue 100GbE
+
+Shiraz Saleem (3):
+  devlink: Add 'enable_iwarp' generic device param
+  net/ice: Add support for enable_iwarp and enable_roce devlink param
+  RDMA/irdma: Set protocol based on PF rdma_mode flag
+
+ .../networking/devlink/devlink-params.rst     |   3 +
+ drivers/infiniband/hw/irdma/main.c            |   3 +-
+ drivers/net/ethernet/intel/ice/ice.h          |   1 +
+ drivers/net/ethernet/intel/ice/ice_devlink.c  | 144 ++++++++++++++++++
+ drivers/net/ethernet/intel/ice/ice_devlink.h  |   6 +
+ drivers/net/ethernet/intel/ice/ice_idc.c      |   4 +-
+ drivers/net/ethernet/intel/ice/ice_main.c     |   9 +-
+ include/linux/net/intel/iidc.h                |   7 +-
+ include/net/devlink.h                         |   4 +
+ net/core/devlink.c                            |   5 +
+ 10 files changed, 180 insertions(+), 6 deletions(-)
+
 -- 
-1.8.3.1
+2.31.1
 
