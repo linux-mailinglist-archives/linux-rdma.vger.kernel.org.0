@@ -2,266 +2,174 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F0045A957
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Nov 2021 17:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596BA45A9AB
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Nov 2021 18:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229814AbhKWQ65 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Nov 2021 11:58:57 -0500
-Received: from mail-bn8nam11on2050.outbound.protection.outlook.com ([40.107.236.50]:33228
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        id S233738AbhKWRMd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Nov 2021 12:12:33 -0500
+Received: from mail-eopbgr00057.outbound.protection.outlook.com ([40.107.0.57]:53984
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233536AbhKWQ64 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Nov 2021 11:58:56 -0500
+        id S232689AbhKWRMc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 23 Nov 2021 12:12:32 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mdN3qYowm8TUJ4HK8ec/mwel0e8ReZbfhH1qF7Kmk7oZsxvYKAIFf4PwhEVLYpvxDlbQva3zSQwfqkuaWs3lUjKPjD5nAiJ5nREgivABSgtKjIWdVdKad3oaah2/1rI9Cwyy+K4dYiDOwo2CMmoQuZXmZ/H0KIMdg3/xkcfaSNdIVbdMxFcXhU5AAOO+ltDC+xX4M2vEBRU53DGqrruOMechjmA29KtLKedHgo//MuQZHdQVbK1+Tm0PW9ztrAyhek2+BUsbzv8QSTqMbXP5tEkUoF0FvejiLYPak1hsj1j3MwQrfGX7S9NAb1j6KuYC6EpdV940gQ+kVg7lJ05F3Q==
+ b=aJwBiA8ziYMby5WKwr/gBxIyrjH93ijZ/m6ieIVNaUdm0P0RhFnWWwvfjfii1baf2jTN1RM8MttbxNDOemAPiAfRPihWU3QtsIc9EdIakS/fvUD3Da9EBmF8dgHJY6tfhwV75g/IXm9gG0r8o5SLAaLMxNQvGuOFdDFgQqDxVOOJaaIsHl0iDfxWWCFqZrGYGfEQ4jMAHs8ZKWI09/bnA6q/YRi1vbQJKFEcznTuhXiPIqehH4uS8azU0aDBsan5jpep6AZoH+HwPRe71vyoC3k621R0G5CEh1JTlci4Q1m6NihrHyskAV+17mlqN/fb4d4FHCG6xy1uhF+gaerZvQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VvOYa1bXFWH2NLCXzpSC10A+yUgM/qUObv03Z3565Zg=;
- b=ka5VhquBtwJNpVzKKRX/lv2IcUwfyzJ+XJv/qFk1MSooF+2QmnaA+45b2vAVha91wgwTLWesd6bpWAS6G4MOA/yu/9gKitk8l9ZJnibFan89Qa4YsLTzE6mvJ4pZklOAdOJJHib+31aqxTV+v8SX3SfKRov4ESTStowWHrAiPf328QnUc9n2b/ZdMmA+j2LqQxI0uR57RuY3HidfGPlur1A2wzaGtrKPfiITirs+jDcD3YHo6DQrZ9g7GjaGVRN3OVBjGnQFE33nFx6VTWgsnPzpM8ZbBOuQh/ifTX6oiiK2Q6izKCHFQWvZ3w5S7FTd60TXqryHLeIVJzOgcLKZ9w==
+ bh=sFz8A3wXe6ul8zGLV68nnO5cVIPwkGj77v3JaDaAJVE=;
+ b=lF9nLvakRCkNKcaKVDySEB71J+3JBDcpNpPRdenBwhFJCtyrM6W0Sz9zQnaD1wTWlIR4v/ThQ9byyQSqtVxZr5u0NP1f41ZCzLwJDXeWFtXc2CZjbNtF0PypHnYn2nFBNYDgenltsH7odcvDVF/I4YhfB7HjEO4vSsUNWwOKpbY7J2iHJEaZqGb4kC2qxw/uaNRzaedLwlzDLIy/hgMN337dELeNHr8dnFmqbCfNR/kgH2P23VCyNAyYv2iSI+N0yZ/AcZ5I4VA2/qpvaD8V4lC/RyealKkyF0cryxeXLpMqikUdpk/j5cN6kGRMQGkazxBD02zbWWeiP5I91BOIJw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VvOYa1bXFWH2NLCXzpSC10A+yUgM/qUObv03Z3565Zg=;
- b=pwtzrF/O4FVlyyV9JDjUJDS935dNyh2/1UIq5qQv687yS+Q0h7qQ8ZF6OUqj4CGOQTScQ2EY8TdQycpB3TYmtS09tlb4P5BfNaGZzdb+a1RiPQrYiG3xRTGYJHefS66IL5/TuSot6aMiiMRfLT+VKSLH0eORK+Jya6NWF11U0mQTqWFAi9ZRamD7oEH5g62rXPz7mhCU4gRvfHfaj+J8ZVAFWzzdYXqYzcq5haAFExJUwmjhjiZEvenzE+KNlF63ZyLUojlHRemWllHn5ZV65CmNdOh9e2RHhBDGjAUGz9pgCYhraldA6RUaqI3vEiUc/Fz07sM/ZFLf2Qh+5OMOAw==
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com (2603:10b6:510:d4::15)
- by PH0PR12MB5500.namprd12.prod.outlook.com (2603:10b6:510:ef::8) with
+ bh=sFz8A3wXe6ul8zGLV68nnO5cVIPwkGj77v3JaDaAJVE=;
+ b=GcHU34rBadAUTzje8qtWsYAZAK0gSnkshj/iWGAuycN/yNyLE6AK3K2o49F/2rVSztwK6MrSDS43PeUM6v1yKpnZyA0xPq/aG8TvM9b/MJBX4TGT7iDOm+m+M7V9ZLqWy2o6X4hKR+erZSx+NjpEsFXcdMm/PYGf/TJQstPX9/U=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB3071.eurprd04.prod.outlook.com (2603:10a6:802:3::14) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.22; Tue, 23 Nov
- 2021 16:55:45 +0000
-Received: from PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::5515:f45e:56f5:b35a]) by PH0PR12MB5481.namprd12.prod.outlook.com
- ([fe80::5515:f45e:56f5:b35a%3]) with mapi id 15.20.4713.022; Tue, 23 Nov 2021
- 16:55:45 +0000
-From:   Parav Pandit <parav@nvidia.com>
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.24; Tue, 23 Nov
+ 2021 17:09:21 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e4ed:b009:ae4:83c5]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::e4ed:b009:ae4:83c5%7]) with mapi id 15.20.4713.026; Tue, 23 Nov 2021
+ 17:09:21 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?iso-8859-1?Q?Toke_H=F8iland-J=F8rgensen?= <toke@redhat.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "Keller, Jacob E" <jacob.e.keller@intel.com>,
-        Jiri Pirko <jiri@nvidia.com>,
-        "Kaliszczuk, Leszek" <leszek.kaliszczuk@intel.com>
-Subject: RE: [PATCH net-next 2/3] net/ice: Add support for enable_iwarp and
- enable_roce devlink param
-Thread-Topic: [PATCH net-next 2/3] net/ice: Add support for enable_iwarp and
- enable_roce devlink param
-Thread-Index: AQHX3+WwpM2cBkHpH0m4XULVQ1XC+6wQj0xwgACjGQCAACFyEA==
-Date:   Tue, 23 Nov 2021 16:55:44 +0000
-Message-ID: <PH0PR12MB54817F492455B2E32E00A932DC609@PH0PR12MB5481.namprd12.prod.outlook.com>
-References: <20211122211119.279885-1-anthony.l.nguyen@intel.com>
- <20211122211119.279885-3-anthony.l.nguyen@intel.com>
- <PH0PR12MB5481DD2B7212720BB387C3DEDC609@PH0PR12MB5481.namprd12.prod.outlook.com>
- <b7cc7b5aeb7d4c7e98641195822e2019@intel.com>
-In-Reply-To: <b7cc7b5aeb7d4c7e98641195822e2019@intel.com>
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 net-next 05/26] enetc: implement generic XDP stats
+ callbacks
+Thread-Topic: [PATCH v2 net-next 05/26] enetc: implement generic XDP stats
+ callbacks
+Thread-Index: AQHX4Ij/XaaTEUdaCEG47cK497YtaqwRWKMA
+Date:   Tue, 23 Nov 2021 17:09:20 +0000
+Message-ID: <20211123170920.wgactazyupm32yqu@skbuf>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-6-alexandr.lobakin@intel.com>
+In-Reply-To: <20211123163955.154512-6-alexandr.lobakin@intel.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
 authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
+ header.d=none;dmarc=none action=none header.from=nxp.com;
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e3ce5bd5-85fc-4520-0075-08d9aea2176b
-x-ms-traffictypediagnostic: PH0PR12MB5500:
-x-microsoft-antispam-prvs: <PH0PR12MB5500FB3FFAA597C6C6F73DE3DC609@PH0PR12MB5500.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-office365-filtering-correlation-id: e74f17ea-6e6f-4040-5d43-08d9aea3fdf3
+x-ms-traffictypediagnostic: VI1PR04MB3071:
+x-microsoft-antispam-prvs: <VI1PR04MB30719CF0A26B35757B8CBD79E0609@VI1PR04MB3071.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: usuzSg0waRBGSfHbzi8VrQ/Oi5amkMi+WXRNjzeub4IC/fyPeAsdFhg9tKprAVVpYNvWa+YVuuMGh+OkweQtNMwkKlzVkUnmsjTbIklK10MK5/iJUJ7K1OGuO0d5bXMT9AarP/9Gxp+fdSdxDl9IZzoLuU8y1wNYkW6c3wUN0YvAk4GSYVKJ+SH3uSkz/IjABCSSZBP44ulVf1Ac4HCqHcgz6nbuKlwFuPloOXhxsjRQYUeeWT2S6P2Ao7m+cYhkguknvZ0n2LRyX/oKL/YxMw6EL3VIepcovoxtyAq67iqo/siiauN9eisSXN6pIZ0NZ4Psd1xfRuqefthYkK4ZD1X/QFBye5DGdwGzH3y/PGHTs6NDMLUAgCauC5odiKgHuiBRV4LtkbG0jk8pHa+t7VtVeh9TNgApTyF4QOFMZaE552atZ8UdpoPmpId1pjo9sPZKK0bOwzz8JW/idI36nDr6giIdPPQRNl0SydtLIlaKbey+1o4uMqovfcxIfWvkSFU3pejIVXgDDsNS260pmR7ikkam+qOQ7BgAj/KWHG5Abfgsb8aNbCl/Pd0zqVVKgcf+oj/DS43gvF6etTDwJ8clN1PLXHxhtinFfTJKw38eqVOl0VXNUte4bT5aCUP3ZfLG+btq2dFgdKuzT4EhLZLmf+5K5S7R28UPAuhhN4CUayK2bvqOSBY8M3B25FzDgwQMF4HhNhgUWfpLOUDpcA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB5481.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(76116006)(66946007)(4326008)(55236004)(66476007)(71200400001)(26005)(38070700005)(9686003)(66556008)(86362001)(186003)(83380400001)(52536014)(66446008)(64756008)(122000001)(2906002)(508600001)(38100700002)(54906003)(8676002)(5660300002)(7696005)(110136005)(8936002)(55016003)(316002)(33656002)(6506007)(53546011);DIR:OUT;SFP:1101;
+x-microsoft-antispam-message-info: RlWa2d6GjAouN0DWrAYJ2wE9bZKDQBOINPHM1T4CvfJHSGQWhJVpezsgOuMMiBW3TBGlGM1JtxMwT5d3+7zxq2HSeoepN71Kzll4xxRC67afDjofU5O49Iql5o65C39MrTyadJtQHey4o56ddamFIvlB35RT2D21MhUKTXwIvSp7Z/XKfxLZYE2dC9rw9sAszI5o/yik2BSBrBLzLyh8hSYzvLQJ1ZLkh/ZQeWmmuf4Z4bQCtFCF/uUQs8plQ9q7ZwvLtwjNnUT2Gn9wLFETa739dIg2KZMdlGJPAWiFbqi+4LX7vJdo2moCkkXVEQXEtw84uyXyJuIjpHNIAsUggN2iLqN1Khvh59fzZ4c49pTMk+gJdNyeo+L4N5AHg1IlZ+D4IdbC1hzx+bREutqm0fUuvnO+lOdAKuqGtHabZY9EDjSn5JFI9TdozjkPrKxnb+erWLEqOCVzxfH/A5PaRPX9pBLVEagGNybgQd6CGrDVb041TWX8qFUlZtUZH1kodL2ppgSGX78m1izcMIDrNJFhhJQbnMpePpORNuGXKjRG//PVtyzK5alvxYgz5SOfdYUVIYTYoFMjPVNG8OC8gbLeanVhM4v5nYdXFTwKW7euVo6pO32Y99nKxuqoajbkOp2lCaAmRlkewLpGY6IRXTC5ojV6jRc6FlUm36btBfCUtOoueygaukIN84We+3KMPCbrKd6uzp0tHN7xglouHQsEdoIx7ss03WRNS5hlc2E=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(366004)(5660300002)(316002)(6506007)(26005)(86362001)(54906003)(122000001)(38100700002)(38070700005)(76116006)(33716001)(4744005)(4326008)(7416002)(6916009)(44832011)(2906002)(186003)(91956017)(66946007)(66446008)(64756008)(66556008)(66476007)(71200400001)(7406005)(83380400001)(1076003)(508600001)(6486002)(8676002)(8936002)(6512007)(9686003)(41533002);DIR:OUT;SFP:1101;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0qw+r3zPEguTJolyL2o8PbFeC5lYjPURWQX2Nj+jzwtdPaQREDMM7vUD2Tci?=
- =?us-ascii?Q?NAg7Dh7OHc4WA0O7XVCmO/rwTi3QX7Qp0DDsjrenJkYS7bWfDkNLgYyRnIL1?=
- =?us-ascii?Q?97xK1hNqSi/EnmBZ6sX8olckwi0JAsU0AXExoBzVSy/CLfCzdq8mrHnt2gbd?=
- =?us-ascii?Q?DSSvRew2ChY8soDGgeCobIxXKxTI3VXh8cg5ghq8ACuTx2/TOK5Ttxd/r7D3?=
- =?us-ascii?Q?Mv7DAAHZwZPvd0hsRa/3POzVfpZtvgn6beE76kIOpkVRPrKNdkh9JtSCJ/Q+?=
- =?us-ascii?Q?0WdkzV/4tnnOepNZ9QnmGzyydE99DjyYCI/vrm2KzJrVALU8Gi2+7o3IrW+f?=
- =?us-ascii?Q?lCiVA4/rcPIljCL440v4eEWywUqLGvKrHzEV2kE0sSABWTMvjQRfb4H25XrU?=
- =?us-ascii?Q?YKmAv3NFejlibJDoXKfJxTc/GkwrcdTM426UtYoGcl+eCvQBLnEMieUBhnSV?=
- =?us-ascii?Q?NZG7p9uxVl2otcCmdXK6JZiNZTid2BL3gXK0PWGhGPqzCeYqYTd2Jm1TdvYZ?=
- =?us-ascii?Q?UGmSqLAqb3ItkQInwKxgWqM+qBPtSh/QrHBQPCCVKuR1fvaV6K3V+NL9VMfD?=
- =?us-ascii?Q?sRj16kOM5IwT4wqUX6eMNtjhUJBQhBzB43FzQUG7HtTYWXTx+He6g3riDFyh?=
- =?us-ascii?Q?af9/YgPBcP13Op1Ygp4G2og6ZDeb97e1IBK9cTjaJtgJ5bT/GcKRute00T8c?=
- =?us-ascii?Q?dNadTwFy1StVWkNyeAZ8SK81k2GxstHkLonMXn9uhqVpunFs0X8/8bHY25Ru?=
- =?us-ascii?Q?y4kOTXHD3JwCnQbO81blHYcOOao1QSXd67EVZWxrxMcZd15ZF+cfz2C8b7eH?=
- =?us-ascii?Q?Si55Plxyci6WY8yfUmdFYxYOdvEB6MjDFfW4godeqd6YkCNLyeVvwD2eXMNS?=
- =?us-ascii?Q?PfDAhT7Qc+x8eaTan0Lyru+G0m59BwezRYZ3lYlkiGkRp4gznZ3XMVcMf4xV?=
- =?us-ascii?Q?mi/9Ny3GPA61KSp36x8plM5B4wyhqBghtF3XYDNvF4VhkOh4YSxFH7+YPx1o?=
- =?us-ascii?Q?dK92MdnlP5s01Xo30PzazvrYFfERqKp2qdwjLwkX5hxr1NCUnCpmnP4EXW/A?=
- =?us-ascii?Q?o3Pb2GiyWLBdEwDlkOGiron0/SGvaaV7eoDMgYr7tmYSA6KvS/h8eKtcU6mg?=
- =?us-ascii?Q?r7cCGKBHa4aZAswiUxgGKc0cRY7W8er+4TWqAPkrmXiatBHakEghaJeZ2QD3?=
- =?us-ascii?Q?UtOWeOaSDCKsrzOCYUXq3yW6aVwvEFsSIiBn1i1OAXx3qpvPq8UKuEtt3LEh?=
- =?us-ascii?Q?G4ILXFqnjYGizm9GX7pMScoXzB7gdEXfq5MDN4LjSAUCEYvR+ZEa6PAXXFYj?=
- =?us-ascii?Q?maP3kY14EqoGk7+MbuOt0kqFz87LwAU526aQNJzd6HPBs18f/fe8yJKjMgNP?=
- =?us-ascii?Q?+t3TFw7XhL1z7LNJVohdPmUwG/gU2NROTfN+eMxOHR2i8Y65ghr0DPXVsmma?=
- =?us-ascii?Q?OBlpHbUGUE4ImO9KoikDqyD6OFIWFc7tJxshjYzlNcj83n5dSpcbHLwqKGlY?=
- =?us-ascii?Q?ePGxZUYg38sR15wIxSRJf0KAPQCGk0Uf9bGSmOvROnNRxSeOyRPg/qbyfDq5?=
- =?us-ascii?Q?0iThRrs9teE/iPKkF5Z/sGFhvRz13APmrHqFsfu+iybLpE/y3LH6rsKOLDFp?=
- =?us-ascii?Q?Hbyaxw2pQks21dchwpNrh84=3D?=
-Content-Type: text/plain; charset="us-ascii"
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?JW8yOrmhlIJ9W7FBJS5OwQSrzUXEchdRLunt3XzgWBHSRd+tJnGMS7+IiM?=
+ =?iso-8859-1?Q?5HGB+RE7KlZQGU/inOKrCMlBtw/JxpiIWF2KQgeVDpoxF8PfC4X/tJhgjU?=
+ =?iso-8859-1?Q?+DDMx9TXwm97u2nDFphW/BY03PwcSM+UA8of3Mw7ZLvUhLbA4TVyWcdSnH?=
+ =?iso-8859-1?Q?SZDYcbvvq2uXCY5ea1Nuc/Udh7ISolPYGQU+eKD2HDbFz9cYF2WV974d7j?=
+ =?iso-8859-1?Q?x97KNMsvowD2TX2NQpINjIEG11hzLi+lxaUQddpnZj0DyS1CtW5CY2iWRQ?=
+ =?iso-8859-1?Q?IEcUXtDS3f9GsXkNCcgJkRlmEYPlo3qj3f7uuDn+88sxfqJuRfYYzZfIZl?=
+ =?iso-8859-1?Q?eFoMlHzhek4wCOe6CR5bzTmp5RcEeCza/4CCEHMZqT/BZ3PySW2TaLGwxm?=
+ =?iso-8859-1?Q?0NiIQZyaz/Eg36TQYjzRtInhFVkqrNYwlMJZn11sJ3xqjWc5AnOAxueG4+?=
+ =?iso-8859-1?Q?AgE1ZXzYjCsZ1Ed3ZTOlJiqkP8qkTuS1dSBvUNgsCy5TXB+0GFEca0YZm/?=
+ =?iso-8859-1?Q?z0D8bnoN4eFEYpKWNdHpQbRBn2X+91QH9Ul8i5Ym3O82bJtP0YfbYraKEU?=
+ =?iso-8859-1?Q?40nBLfK8FYdzlOVyeB2hIJTUX7r3rgutBFy/Tm1KqB3m+hNf36vzXstBbe?=
+ =?iso-8859-1?Q?8eB/3bNG2mvhVAbTbXCD/fTTbWMxuFRloThL8ByXtzTkZiwA0hMrcAI41N?=
+ =?iso-8859-1?Q?EEN1Sc1EjaxTKab8Bdrc4VLsdqNkFWPp8TF1yFwKRNR3jIEp27RrN/0wCd?=
+ =?iso-8859-1?Q?J8FV/bP2b+K3+4fA0eH1NKQpxcT8uH/Y8/1R00eajGR0nYyPRxZCfGbZNC?=
+ =?iso-8859-1?Q?WmxVxfeaX3/koStWP4zvZnj2Qb7Hy6YwlC1agevDaNd67UO7l8nuvvHcvd?=
+ =?iso-8859-1?Q?xYrrVhYG46CjP8D7KGRXyc/7udCAPYFLsHv8vVWjyKg784f2QiFrFOUeiK?=
+ =?iso-8859-1?Q?pgBtduUAiUX3XkchgfoDAIDi8btuLzh5CJn40++iyWPZr04w77/4j+fUn2?=
+ =?iso-8859-1?Q?2K/OI15nlESHcSOKtSA+x+x4Rqk8iSRP+hsAo0yWJVs+6GqMr4b+jpE3UH?=
+ =?iso-8859-1?Q?H0l4/r7sixxKxWa5P9LVxiGU6varfrJlegWSz1m2a7Hy1890cIBoQ3pSMT?=
+ =?iso-8859-1?Q?IweZaLOoZsLNCSGFxA29sD5UQDo8Aof5O9m7feJXwUIzmUPnWaFJGeNnT8?=
+ =?iso-8859-1?Q?YizqAmUVQysaH0KN4zOYwWuK+kSzNEMQoilb21lMsAZQNuxQkwwqvoXYnA?=
+ =?iso-8859-1?Q?fcI/cXZ3smkT2ThfOouSlKq2voFfr03rZGwH+3k0EmmNsJ9AxMk7DTtXPO?=
+ =?iso-8859-1?Q?NxflatyjrzlxPqQ8yYTpbYVsnEFt+/950jEJ7lNNOnQm6P5mV3xZhyxiWD?=
+ =?iso-8859-1?Q?UnBtfKBMB78G3ip900BO7DaQGvEaaprrjrpe2iQ16HSSqrNFlteclrWANy?=
+ =?iso-8859-1?Q?Js9XvNNHCZ4SLBsAr3YW5b8VhKD2EMC6aQ0xV0kpBSZwqq1+07PF83BVWy?=
+ =?iso-8859-1?Q?vX14UrTRQNFybOodT887Ib+P4htGioShitSREhWu8PFFMlyTqH1GOi3PXM?=
+ =?iso-8859-1?Q?sGDZe++s01TTpPYFp/nr1f5MCOTRZSepUnowI3RXnnzxxDA85H2gLP//B4?=
+ =?iso-8859-1?Q?gcsxwfOrBvL5zUGUL72BooskgRqSUo6R3ekA5oEZ1U8WwS8VoIWyzsaYJP?=
+ =?iso-8859-1?Q?mxhFSNWr+3ZYSG39zLE=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <2AA94709EC439448AF69418ED7F16FA2@eurprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB5481.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e3ce5bd5-85fc-4520-0075-08d9aea2176b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 16:55:44.9075
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e74f17ea-6e6f-4040-5d43-08d9aea3fdf3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Nov 2021 17:09:21.0244
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q7CrmKXDT38tybn5UfmH7cAwwBLiqBM4n9SySxQ2D/WHIG+ADnvPHQ/CS1L4lEacticw5sWLs0BFoIqhkQU8VQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB5500
+X-MS-Exchange-CrossTenant-userprincipalname: 3QRrG693W66XYh+Xso8p+euLwEA0GaS06tX919y8ci0c/vCVmUmntDvACx4stx7kXc8M4O6Ba7tt7xIHMDa2xA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB3071
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Nov 23, 2021 at 05:39:34PM +0100, Alexander Lobakin wrote:
+> Similarly to dpaa2, enetc stores 5 per-channel counters for XDP.
+> Add necessary callbacks to be able to access them using new generic
+> XDP stats infra.
+>=20
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> ---
 
+Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-> From: Saleem, Shiraz <shiraz.saleem@intel.com>
-> Sent: Tuesday, November 23, 2021 8:18 PM
->=20
-> > Subject: RE: [PATCH net-next 2/3] net/ice: Add support for
-> > enable_iwarp and enable_roce devlink param
-> >
-> > Hi Tony,
-> >
-> > > From: Tony Nguyen <anthony.l.nguyen@intel.com>
-> > > Sent: Tuesday, November 23, 2021 2:41 AM
-> > >
-> > > From: Shiraz Saleem <shiraz.saleem@intel.com>
-> > >
-> > > Allow support for 'enable_iwarp' and 'enable_roce' devlink params to
-> > > turn on/off iWARP or RoCE protocol support for E800 devices.
-> > >
-> > > For example, a user can turn on iWARP functionality with,
-> > >
-> > > devlink dev param set pci/0000:07:00.0 name enable_iwarp value true
-> > > cmode runtime
-> > >
-> > > This add an iWARP auxiliary rdma device, ice.iwarp.<>, under this PF.
-> > >
-> > > A user request to enable both iWARP and RoCE under the same PF is
-> > > rejected since this device does not support both protocols
-> > > simultaneously on the same port.
-> > >
-> > > Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-> > > Tested-by: Leszek Kaliszczuk <leszek.kaliszczuk@intel.com>
-> > > Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-> > > ---
-> > >  drivers/net/ethernet/intel/ice/ice.h         |   1 +
-> > >  drivers/net/ethernet/intel/ice/ice_devlink.c | 144 +++++++++++++++++=
-++
-> > >  drivers/net/ethernet/intel/ice/ice_devlink.h |   6 +
-> > >  drivers/net/ethernet/intel/ice/ice_idc.c     |   4 +-
-> > >  drivers/net/ethernet/intel/ice/ice_main.c    |   9 +-
-> > >  include/linux/net/intel/iidc.h               |   7 +-
-> > >  6 files changed, 166 insertions(+), 5 deletions(-)
-> > >
-> > > diff --git a/drivers/net/ethernet/intel/ice/ice.h
-> > > b/drivers/net/ethernet/intel/ice/ice.h
-> > > index b2db39ee5f85..b67ad51cbcc9 100644
-> > > --- a/drivers/net/ethernet/intel/ice/ice.h
-> > > +++ b/drivers/net/ethernet/intel/ice/ice.h
-> > > @@ -576,6 +576,7 @@ struct ice_pf {
-> > >  	struct ice_hw_port_stats stats_prev;
-> > >  	struct ice_hw hw;
-> > >  	u8 stat_prev_loaded:1; /* has previous stats been loaded */
-> > > +	u8 rdma_mode;
-> > This can be u8 rdma_mode: 1;
-> > See below.
-> >
-> > >  	u16 dcbx_cap;
-> > >  	u32 tx_timeout_count;
-> > >  	unsigned long tx_timeout_last_recovery; diff --git
-> > > a/drivers/net/ethernet/intel/ice/ice_devlink.c
-> > > b/drivers/net/ethernet/intel/ice/ice_devlink.c
-> > > index b9bd9f9472f6..478412b28a76 100644
-> > > --- a/drivers/net/ethernet/intel/ice/ice_devlink.c
-> > > +++ b/drivers/net/ethernet/intel/ice/ice_devlink.c
-> > > @@ -430,6 +430,120 @@ static const struct devlink_ops ice_devlink_ops=
- =3D
-> {
-> > >  	.flash_update =3D ice_devlink_flash_update,  };
-> > >
-> > > +static int
-> > > +ice_devlink_enable_roce_get(struct devlink *devlink, u32 id,
-> > > +			    struct devlink_param_gset_ctx *ctx) {
-> > > +	struct ice_pf *pf =3D devlink_priv(devlink);
-> > > +
-> > > +	ctx->val.vbool =3D pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2;
-> > > +
-> > This is logical operation, and vbool will be still zero when rdma mode
-> > is rocev2, because it is not bit 0.
-> > Please see below. This error can be avoided by having rdma mode as
-> Boolean.
->=20
-> Hi Parav -
->=20
-> rdma_mode is used as a bit-mask.
-> 0 =3D disabled, i.e. enable_iwarp and enable_roce set to false by user.
-> 1 =3D IIDC_RDMA_PROTOCOL_IWARP
-> 2 =3D IIDC_RDMA_PROTOCOL_ROCEV2
->
-Yes, I got it. bit mask is ok.
-But this line,
-ctx->val.vbool =3D pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2;
-should be
-ctx->val.vbool =3D !!(pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2);
- or
-ctx->val.vbool =3D pf->rdma_mode & IIDC_RDMA_PROTOCOL_ROCEV2 ? true : false=
-;
+These counters can be dropped from ethtool, nobody depends on having
+them there.
 
-because & IIDC_RDMA_PROTOCOL_ROCEV2 is BIT(1) =3D 0x2.
-
-> Setting rocev2 involves,
-> pf->rdma_mode |=3D IIDC_RDMA_PROTOCOL_ROCEV2;
->=20
-> So this operation here should reflect correct value in vbool. I don't thi=
-nk this is
-> a bug.
->
-vbool assignment is incorrect, rest is fine.
-=20
-> > > +static int
-> > > +ice_devlink_enable_iw_get(struct devlink *devlink, u32 id,
-> > > +			  struct devlink_param_gset_ctx *ctx) {
-> > > +	struct ice_pf *pf =3D devlink_priv(devlink);
-> > > +
-> > > +	ctx->val.vbool =3D pf->rdma_mode & IIDC_RDMA_PROTOCOL_IWARP;
-> > > +
-> > This works fine as this is bit 0, but not for roce. So lets just do
-> > boolean rdma_mode.
->=20
-> Boolean doesn't cut it as it doesn't reflect the disabled state mentioned=
- above.
->=20
-Yes, you need bit fields with above fix.
-
-> > > --- a/drivers/net/ethernet/intel/ice/ice_devlink.h
-> > > +++ b/drivers/net/ethernet/intel/ice/ice_devlink.h
-> > > @@ -4,10 +4,16 @@
-> > >  #ifndef _ICE_DEVLINK_H_
-> > >  #define _ICE_DEVLINK_H_
-> > >
-> > > +enum ice_devlink_param_id {
-> > > +	ICE_DEVLINK_PARAM_ID_BASE =3D
-> > DEVLINK_PARAM_GENERIC_ID_MAX,
-> > > };
-> > > +
-> > This is unused in the patch. Please remove.
->=20
-> Sure.
->=20
-> Between, Thanks for the review!
->=20
-> Shiraz
->=20
->=20
-
+Side question: what does "nch" stand for?=
