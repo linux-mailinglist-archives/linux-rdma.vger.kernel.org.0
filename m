@@ -2,107 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685C4459E38
-	for <lists+linux-rdma@lfdr.de>; Tue, 23 Nov 2021 09:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64306459E9A
+	for <lists+linux-rdma@lfdr.de>; Tue, 23 Nov 2021 09:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhKWIji (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 23 Nov 2021 03:39:38 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47710 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230176AbhKWIjh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 23 Nov 2021 03:39:37 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AN5xL4i013984;
-        Tue, 23 Nov 2021 08:36:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=shRKH7UBv5R2UJfmy9nEN9ZlK7i4FnqT3gDYSUL/730=;
- b=CJAuv7xU2grgVlWqCVQ6kaFHpjfxIPisouLcOUMlGP0yHFdGAh7kcoOtwvE/rwejf5OD
- ZX8W0TeiPsGY7Zcr4vgeDFF4IeFoCVsTSIk7o5tAUMZ90WU4blwr2ysnPdkvXi/BibVV
- D0N/5bYUUS8p/o3lU2p+eYZeaClkUtEcof4gU1sjykMxrMLFYykMkT4GzTsjtLKQD4ff
- zTIW2O7a8CgZwHtDtn4UgrJEpFpTfAgZQmWhCYZjbNfsPFKsYEr/sOethsJAzlNJliph
- xj9m7voH533U4GpiSxWpEKwglAJPejGutBzyao67wQp4RZl5/bkbMpNSOUugPiyMbJNE Mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgqccwghk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:36:27 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AN8XPO5033856;
-        Tue, 23 Nov 2021 08:36:26 GMT
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cgqccwgh9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:36:26 +0000
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AN8SHpT028861;
-        Tue, 23 Nov 2021 08:36:25 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 3cern9mfrg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Nov 2021 08:36:24 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AN8TDCn52494764
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Nov 2021 08:29:13 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AF6D0A4064;
-        Tue, 23 Nov 2021 08:36:21 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5E6FEA4067;
-        Tue, 23 Nov 2021 08:36:21 +0000 (GMT)
-Received: from [9.145.60.43] (unknown [9.145.60.43])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Nov 2021 08:36:21 +0000 (GMT)
-Message-ID: <dfab4238-3d76-822c-feee-8463054232aa@linux.ibm.com>
-Date:   Tue, 23 Nov 2021 09:36:22 +0100
+        id S233631AbhKWI4I (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 23 Nov 2021 03:56:08 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:28091 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234465AbhKWIzy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 23 Nov 2021 03:55:54 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4HyyWm6W52z1DJSy;
+        Tue, 23 Nov 2021 16:50:12 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 16:52:43 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 23 Nov 2021 16:52:43 +0800
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH for-rc] RDMA/hns: Fix the problem of mailbox being blocked in the reset scene
+Date:   Tue, 23 Nov 2021 16:48:09 +0800
+Message-ID: <20211123084809.37318-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.0
-Subject: Re: [PATCH net 2/2] net/smc: Ensure the active closing peer first
- closes clcsock
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20211123082515.65956-1-tonylu@linux.alibaba.com>
- <20211123082515.65956-3-tonylu@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20211123082515.65956-3-tonylu@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: XZUAuHg0DfJ1OQEzSQJJ9rysnmvPhLka
-X-Proofpoint-ORIG-GUID: b3Whlt_VSDlqV95wo0t4uUFXPcvQxNyZ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
- definitions=2021-11-23_02,2021-11-22_02,2020-04-07_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 bulkscore=0 spamscore=0 impostorscore=0 clxscore=1015
- mlxscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0 suspectscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2111230044
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 23/11/2021 09:25, Tony Lu wrote:
-> The side that actively closed socket, it's clcsock doesn't enter
-> TIME_WAIT state, but the passive side does it. It should show the same
-> behavior as TCP sockets.
-> 
-> Consider this, when client actively closes the socket, the clcsock in
-> server enters TIME_WAIT state, which means the address is occupied and
-> won't be reused before TIME_WAIT dismissing. If we restarted server, the
-> service would be unavailable for a long time.
-> 
-> To solve this issue, shutdown the clcsock in [A], perform the TCP active
-> close progress first, before the passive closed side closing it. So that
-> the actively closed side enters TIME_WAIT, not the passive one.
-> 
+From: Yangyang Li <liyangyang20@huawei.com>
 
-Thank you, I will pick this up for our next submission to the net tree.
+is_reset is used to indicate whether the hardware starts to reset. When
+hns_roce_hw_v2_reset_notify_down() is called, the hardware has not yet
+started to reset. If is_reset is set at this time, all mailbox operations
+of resource destroy actions will be intercepted by driver. When the driver
+cleans up resources, but the hardware is still accessed, the following
+errors will appear:
+
+[382663.191495] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[382663.336320] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000350100000010
+[382663.349860] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x000002088000003f
+[382663.362217] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x00000000a50e0800
+[382663.370690] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000000000000000
+[382663.385557] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[382663.487465] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000350100000010
+[382663.534555] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x000002088000043e
+[382663.546569] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x00000000a50a0800
+[382663.554642] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000000000000000
+[382663.565023] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[382663.575860] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000350100000010
+[382663.585248] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000020880000436
+[382663.595860] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x00000000a50a0880
+[382663.804870] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000000000000000
+[382663.942132] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[382663.962770] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000350100000010
+[382664.100535] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x000002088000043a
+[382664.178632] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x00000000a50e0840
+[382664.218997] hns3 0000:35:00.0: INT status: CMDQ(0x0) HW errors(0x0) other(0x0)
+[382664.223572] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000000000000000
+[382664.257988] hns3 0000:35:00.0: received unknown or unhandled event of vector0
+[382664.271027] arm-smmu-v3 arm-smmu-v3.2.auto: event 0x10 received:
+[382664.546592] arm-smmu-v3 arm-smmu-v3.2.auto: 	0x0000350100000010
+[382664.555942] {34}[Hardware Error]: Hardware error from APEI Generic Hardware Error Source: 7
+
+is_reset will be set correctly in check_aedev_reset_status(), so the
+setting in hns_roce_hw_v2_reset_notify_down() should be deleted.
+
+Fixes: 726be12f5ca0 ("RDMA/hns: Set reset flag when hw resetting")
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 9bfbaddd1763..ae14329c619c 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -6387,10 +6387,8 @@ static int hns_roce_hw_v2_reset_notify_down(struct hnae3_handle *handle)
+ 	if (!hr_dev)
+ 		return 0;
+ 
+-	hr_dev->is_reset = true;
+ 	hr_dev->active = false;
+ 	hr_dev->dis_db = true;
+-
+ 	hr_dev->state = HNS_ROCE_DEVICE_STATE_RST_DOWN;
+ 
+ 	return 0;
+-- 
+2.33.0
 
