@@ -2,94 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB44145B719
-	for <lists+linux-rdma@lfdr.de>; Wed, 24 Nov 2021 10:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B17F45B80F
+	for <lists+linux-rdma@lfdr.de>; Wed, 24 Nov 2021 11:08:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229829AbhKXJI2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 24 Nov 2021 04:08:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhKXJI1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 24 Nov 2021 04:08:27 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D82C061574
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Nov 2021 01:05:18 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id o20so7083893eds.10
-        for <linux-rdma@vger.kernel.org>; Wed, 24 Nov 2021 01:05:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A5ttJ8NXLZmpnx6TiFPHFKdXP3k0ZbtY8KnJzW9aiNM=;
-        b=VtEuSq7eXb68v16dAezQTSFYHO1f35MsROOzPSY8IywQIVcUa84/z1S/C4BPog70Qk
-         bd0VC33p7CJwIGyXiKGjEfgIEqELPvBMlZYpRYSTenu+RW26AIh+8BerXIuhaiJURpul
-         QkuvbFWw5HMl3ktYo1ZXUIxD8DbL9uiXxv66s9GJyN+1hy5j4wtcz3DgAjnf+JRkOHqy
-         x7dOB3WLgnL3a1Jxfu8R0pAbfb6sSjhVIvGKM0uOLWt6/Lm6q19hhRQkBZ6jtaAMJH/d
-         UC0q+99zB62W5O1pUYbp6Ih4+KlLrCtKXhPlnhxfIL9sNQoZgt9HKDeg18UzJfgO+RTn
-         pVng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A5ttJ8NXLZmpnx6TiFPHFKdXP3k0ZbtY8KnJzW9aiNM=;
-        b=wUWL8EVDgZQD6nFpaCIqw4XszgkMkbBPeS8kXhmN/S/LwBl2G0gRdxECGHmHDikghw
-         fUsZUgdPrHmBE95uerV/0ChLKJ3QuysKiebBDtxyvoemvQnz0TFpkoH7BzAQGLTLY9Cd
-         meQaQvKZVWrQbOjR6DsephfJFofGlfNxxNbR82Fu8q3i+EeHm+1JcR745xozw0BuXeKJ
-         Xk0FvhN6GBCfEYGJjk8I6FI+80vss8E4bd67fOGgYPPddvNmwzlRwIjyxQUYeuSHzImH
-         74Lw+49f1II/vq93nL3ARrmQtre8jjp3iYrHFKBlrUd5R1P5qdQ2+eD15ncduhYkcpTA
-         U1MQ==
-X-Gm-Message-State: AOAM531cvNVOssgQ+qSsJt0KN9PoKtiwcLSy8UgtCKjWWn2bhHWrOJbM
-        /62ROU+aif9uHx/DJbViyveJoCIl2MQqvZPyhcBRkH8kU5g=
-X-Google-Smtp-Source: ABdhPJwP2bKp/6QvaeN8ff9DmTXXqMXi4wS533VaU+wimmz1huzvFvcEmZyTTFWJqbgKpYXUq5K3ly7BqEtNO1+KS/k=
-X-Received: by 2002:a17:906:a1da:: with SMTP id bx26mr18015834ejb.558.1637744717078;
- Wed, 24 Nov 2021 01:05:17 -0800 (PST)
+        id S235635AbhKXKLl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 24 Nov 2021 05:11:41 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20978 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230515AbhKXKLl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:11:41 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1AO9pWOQ015011;
+        Wed, 24 Nov 2021 10:08:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=KdIKZkao5MHmcU9nfG+lATujxB6sNuLODpSuIVTHwcw=;
+ b=tMma7d7fw9WRWmE4kKJYjEYgpUH7bYakwOwKdMMCpBcb6G15PnlSfIiO/VQ5e6Fw0cV3
+ cwJy464Ud/rfGWILcqKxSN0geMqugLUBiij74dQOuWqwpsh3E4gxldW9M52ZTjc0XQ7t
+ YbItFuIncqC/D4ufkUN0gRzT1kWq+NDVafY0K1HPI1U0sOsJzChNjTaJri5cYpnmlNIz
+ 2XUgTPLBEMbuiMqfyyxdAMo/QghVG7ABE4ErtbouW1qN7px1clxjvK4B11uwYZQDtBS/
+ 04J5AtCkoGysdj+0j/BYB87cPxAxi0IHA5uSdAgwgww1IQz1Uy6hccOLDN4e8eLVIPfQ 8Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chk4rgamr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 10:08:28 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1AOA0Kiw013809;
+        Wed, 24 Nov 2021 10:08:28 GMT
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3chk4rgame-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 10:08:27 +0000
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1AOA6wcl007373;
+        Wed, 24 Nov 2021 10:08:26 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 3cerna80vg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Nov 2021 10:08:26 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1AOA8NUh22217182
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Nov 2021 10:08:23 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52CFDA4065;
+        Wed, 24 Nov 2021 10:08:23 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EC787A4060;
+        Wed, 24 Nov 2021 10:08:22 +0000 (GMT)
+Received: from [9.145.38.7] (unknown [9.145.38.7])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Nov 2021 10:08:22 +0000 (GMT)
+Message-ID: <1f67548e-cbf6-0dce-82b5-10288a4583bd@linux.ibm.com>
+Date:   Wed, 24 Nov 2021 11:08:23 +0100
 MIME-Version: 1.0
-References: <20211124081040.19533-1-jinpu.wang@ionos.com> <d358046c-ce09-596a-6b6a-327e785b090d@linux.dev>
-In-Reply-To: <d358046c-ce09-596a-6b6a-327e785b090d@linux.dev>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 24 Nov 2021 10:05:06 +0100
-Message-ID: <CAMGffEkk2uZ2-0q9TMRabMgbBbqmZo=BuCsRU28eqhZ8ya8N0Q@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rtrs-clt: Fix the initial value of min_latency
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, haris.iqbal@ionos.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH RFC net] net/smc: Ensure the active closing peer first
+ closes clcsock
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, guwen@linux.alibaba.com,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20211116033011.16658-1-tonylu@linux.alibaba.com>
+ <d83109fe-ae25-def0-b28e-f8695d4535c7@linux.ibm.com>
+ <YZ3+ihxIU5l8mvWY@TonyMac-Alibaba>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <YZ3+ihxIU5l8mvWY@TonyMac-Alibaba>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: hajGgR40Vw03lTaolrItrFUOdFAo-1me
+X-Proofpoint-GUID: HkV2Q0ocY0zPYF47pg0nB-_LnQ0VcBpQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-24_03,2021-11-23_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ mlxscore=0 adultscore=0 spamscore=0 malwarescore=0 phishscore=0
+ clxscore=1015 impostorscore=0 priorityscore=1501 mlxlogscore=999
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111240057
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Nov 24, 2021 at 9:56 AM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
->
->
->
-> On 11/24/21 4:10 PM, Jack Wang wrote:
-> > The type of min_latency is ktime_t, so use KTIME_MAX to initialize
-> > the initial value.
-> >
-> > Fixes: dc3b66a0ce70 ("RDMA/rtrs-clt: Add a minimum latency multipath policy")
-> > Signed-off-by: Jack Wang<jinpu.wang@ionos.com>
-> > ---
-> >   drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > index 15c0077dd27e..e39709dee179 100644
-> > --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > @@ -867,7 +867,7 @@ static struct rtrs_clt_sess *get_next_path_min_latency(struct path_it *it)
-> >       struct rtrs_clt_sess *min_path = NULL;
-> >       struct rtrs_clt *clt = it->clt;
-> >       struct rtrs_clt_sess *sess;
-> > -     ktime_t min_latency = INT_MAX;
-> > +     ktime_t min_latency = KTIME_MAX;
-> >       ktime_t latency;
-> >
-> >       list_for_each_entry_rcu(sess, &clt->paths_list, s.entry) {
->
-> LGTM.
->
-> Reviewed-by: Guoqing Jiang <Guoqing.Jiang@linux.dev>
-Thank you for the quick review!
->
-> Thanks,
-> Guoqing
+On 24/11/2021 09:57, Tony Lu wrote:
+> IMHO, given that, it is better to not ignore smc_close_final(), and move 
+> kernel_sock_shutdown() to __smc_release(), because smc_shutdown() also
+> calls kernel_sock_shutdown() after smc_close_active() and
+> smc_close_shutdown_write(), then enters SMC_PEERCLOSEWAIT1. It's no need
+> to call it twice with SHUT_WR and SHUT_RDWR. 
+
+Since the idea is to shutdown the socket before the remote peer shutdowns it
+first, are you sure that this shutdown in smc_release() is not too late?
+Is it sure that smc_release() is called in time for this processing?
+
+Maybe its better to keep the shutdown in smc_close_active() and to use an rc1
+just like shown in your proposal, and return either the rc of smc_close_final() 
+or the rc of kernel_sock_shutdown().
+I see the possibility of calling shutdown twice for the clcsocket, but does it
+harm enough to give a reason to check it before in smc_shutdown()? I expect TCP
+to handle this already.
