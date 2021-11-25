@@ -2,70 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CEA45E13B
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 21:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CC045E14D
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 21:07:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244297AbhKYUDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Nov 2021 15:03:34 -0500
-Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:39842 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233721AbhKYUBe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Nov 2021 15:01:34 -0500
-Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7BCC8182CED28;
-        Thu, 25 Nov 2021 19:58:21 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 3C137B00018A;
-        Thu, 25 Nov 2021 19:58:18 +0000 (UTC)
-Message-ID: <ddef1847b4694071ae914eab93b0d2bd45fdf050.camel@perches.com>
-Subject: Re: [PATCH] RDMA/mlx4: Use bitmap_alloc() when applicable
-From:   Joe Perches <joe@perches.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        yishaih@nvidia.com, selvin.xavier@broadcom.com,
+        id S244041AbhKYUKz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Nov 2021 15:10:55 -0500
+Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:56566 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244660AbhKYUIz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Nov 2021 15:08:55 -0500
+Received: from pop-os.home ([86.243.171.122])
+        by smtp.orange.fr with ESMTPA
+        id qL01mbjpXqYovqL01mK99E; Thu, 25 Nov 2021 21:05:41 +0100
+X-ME-Helo: pop-os.home
+X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
+X-ME-Date: Thu, 25 Nov 2021 21:05:41 +0100
+X-ME-IP: 86.243.171.122
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     bryantan@vmware.com, vdasa@vmware.com, pv-drivers@vmware.com,
         dledford@redhat.com, jgg@ziepe.ca
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Date:   Thu, 25 Nov 2021 11:58:19 -0800
-In-Reply-To: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
-References: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.4-1 
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] RDMA/pvrdma: Use bitmap_zalloc() when applicable
+Date:   Thu, 25 Nov 2021 21:05:40 +0100
+Message-Id: <33e8b993bfa6b7164e9bee95e3c27fb2c53949ce.1637870667.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.15
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 3C137B00018A
-X-Stat-Signature: yn53aj5yzrhutyoeq7rdpr4cc3gnxx3u
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+75TsI88XshvqkCZYPF2FcNlF9F4sYqEY=
-X-HE-Tag: 1637870298-589355
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 2021-11-25 at 20:42 +0100, Christophe JAILLET wrote:
-> Use 'bitmap_alloc()' to simplify code, improve the semantic and avoid some
-> open-coded arithmetic in allocator arguments.
-> 
-> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-> consistency.
+Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid some
+open-coded arithmetic in allocator arguments.
 
-Thanks.
+Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+consistency.
 
-> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-[]
-> @@ -2784,10 +2784,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
->  		if (err)
->  			goto err_counter;
->  
-> -		ibdev->ib_uc_qpns_bitmap =
-> -			kmalloc_array(BITS_TO_LONGS(ibdev->steer_qpn_count),
-> -				      sizeof(long),
-> -				      GFP_KERNEL);
-> +		ibdev->ib_uc_qpns_bitmap = bitmap_alloc(ibdev->steer_qpn_count,
-> +							GFP_KERNEL);
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I wonder if it'd be simpler/smaller to change this to bitmap_zalloc and
-remove the bitmap_zero in the if below.
-
+diff --git a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
+index bf51357ea3aa..21ef3fb39915 100644
+--- a/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
++++ b/drivers/infiniband/hw/vmw_pvrdma/pvrdma_doorbell.c
+@@ -63,7 +63,7 @@ int pvrdma_uar_table_init(struct pvrdma_dev *dev)
+ 	tbl->max = num;
+ 	tbl->mask = mask;
+ 	spin_lock_init(&tbl->lock);
+-	tbl->table = kcalloc(BITS_TO_LONGS(num), sizeof(long), GFP_KERNEL);
++	tbl->table = bitmap_zalloc(num, GFP_KERNEL);
+ 	if (!tbl->table)
+ 		return -ENOMEM;
+ 
+@@ -77,7 +77,7 @@ void pvrdma_uar_table_cleanup(struct pvrdma_dev *dev)
+ {
+ 	struct pvrdma_id_table *tbl = &dev->uar_table.tbl;
+ 
+-	kfree(tbl->table);
++	bitmap_free(tbl->table);
+ }
+ 
+ int pvrdma_uar_alloc(struct pvrdma_dev *dev, struct pvrdma_uar_map *uar)
+-- 
+2.30.2
 
