@@ -2,146 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C395B45DB14
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 14:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 062AA45DCBE
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 15:53:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351537AbhKYNbM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Nov 2021 08:31:12 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:15868 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354147AbhKYN3M (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Nov 2021 08:29:12 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J0JXX2KXrz91Kv;
-        Thu, 25 Nov 2021 21:25:32 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 25 Nov 2021 21:26:00 +0800
-Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Thu, 25 Nov
- 2021 21:25:59 +0800
-Subject: Re: [PATCH for-rc] RDMA/hns: Fix the error of destroying resources in
- hw reseting phase
-To:     Leon Romanovsky <leon@kernel.org>
-References: <20211123142402.26936-1-liangwenpeng@huawei.com>
- <YZ+NACnl23E8W7rB@unreal>
-CC:     <jgg@nvidia.com>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <9bb94fba-5909-6844-964e-832ce21d70de@huawei.com>
-Date:   Thu, 25 Nov 2021 21:25:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1355311AbhKYO4W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Nov 2021 09:56:22 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:12410 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1355859AbhKYOyW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Nov 2021 09:54:22 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1APCHdZb010397;
+        Thu, 25 Nov 2021 14:51:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=RDU+6RaMcKi8LsoLVx0PAsUg3gVfUeSXG2cuejBX9uo=;
+ b=MwmKsO2si5EoNMChA7yIhCQJAECUO4UilVPpXHbCQnAN2zCIV3CDSSsfFK6oFF8HEfsV
+ lfkAhPckorJKRSjPc5ebD3p7x0jgT5nQ3ldVlJ65pAteop5PbHRg1llRhJTQwWG45rfv
+ oDyfZDqsxLyawotzm3oPpY5Ao4q1A1YL59z01cVpWflxEp+DGMg/+bjNW7M/E6SgSF1/
+ v0wcxg+PHOUfVT46TUQKWPZSMN57T1gncj4/DYZM98PwkexZDaE3z3evMULA8lNQQ4PL
+ owv9P8176CcOxkUxfFbSSdaICowhUaaatRAGVcXUANQk8mou+q2xpijR33qb+LgjKaRE tQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cjac5k040-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 14:51:09 +0000
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1APEBjRc004920;
+        Thu, 25 Nov 2021 14:51:09 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3cjac5k03m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 14:51:09 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1APEfO52023771;
+        Thu, 25 Nov 2021 14:51:07 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3cer9kc2mr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Nov 2021 14:51:07 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1APEp4Hi16122156
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Nov 2021 14:51:05 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E0C824C05C;
+        Thu, 25 Nov 2021 14:51:04 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 825C04C04A;
+        Thu, 25 Nov 2021 14:51:04 +0000 (GMT)
+Received: from [9.145.172.86] (unknown [9.145.172.86])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Nov 2021 14:51:04 +0000 (GMT)
+Message-ID: <1a7b27ec-22fc-f1b0-6b7c-4a61c072ff38@linux.ibm.com>
+Date:   Thu, 25 Nov 2021 15:51:06 +0100
 MIME-Version: 1.0
-In-Reply-To: <YZ+NACnl23E8W7rB@unreal>
-Content-Type: text/plain; charset="windows-1252"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH net v2] net/smc: Don't call clcsock shutdown twice when
+ smc shutdown
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20211125132431.23264-1-tonylu@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20211125132431.23264-1-tonylu@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: E_BNAYUOH-O9bz8qV9wY0gMzymq3QSCE
+X-Proofpoint-ORIG-GUID: THLGHw5GCmQAC3V3qg5rnwqwEg_EINix
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-25_05,2021-11-25_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 malwarescore=0
+ impostorscore=0 suspectscore=0 spamscore=0 adultscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2111250078
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 25/11/2021 14:24, Tony Lu wrote:
+> @@ -2398,7 +2400,12 @@ static int smc_shutdown(struct socket *sock, int how)
+>  	}
+>  	switch (how) {
+>  	case SHUT_RDWR:		/* shutdown in both directions */
+> +		old_state = sk->sk_state;
+>  		rc = smc_close_active(smc);
+> +		if (old_state == SMC_ACTIVE &&
+> +		    sk->sk_state == SMC_PEERCLOSEWAIT1)
+> +			do_shutdown = false;
+> +
+>  		break;
 
+Please send a v3 without the extra empty line before the break statement,
+and then the patch is fine with me.
 
-On 2021/11/25 21:17, Leon Romanovsky wrote:
-> On Tue, Nov 23, 2021 at 10:24:02PM +0800, Wenpeng Liang wrote:
->> From: Yangyang Li <liyangyang20@huawei.com>
->>
->> When hns_roce_v2_destroy_qp() is called, the brief calling process of the
->> driver is as follows:
->>
->> ......
->> hns_roce_v2_destroy_qp
->> hns_roce_v2_qp_modify
->> 	   hns_roce_cmd_mbox
->> hns_roce_qp_destroy
->>
->> If hns_roce_cmd_mbox() detects that the hardware is being reset during
->> the execution of the hns_roce_cmd_mbox(), the driver will not be able
->> to get the return value from the hardware (the firmware cannot respond
->> to the driver's mailbox during the hardware reset phase). The driver
->> needs to wait for the hardware reset to complete before continuing to
->> execute hns_roce_qp_destroy(), otherwise it may happen that the driver
->> releases the resources but the hardware is still accessing. In order to
->> fix this problem, HNS RoCE needs to add a piece of code to wait for the
->> hardware reset to complete.
->>
->> The original interface get_hw_reset_stat() is the instantaneous state
->> of the hardware reset, which cannot accurately reflect whether the
->> hardware reset is completed, so it needs to be replaced with the
->> ae_dev_reset_cnt interface.
->>
->> The sign that the hardware reset is complete is that the return value
->> of the ae_dev_reset_cnt interface is greater than the original value
->> reset_cnt recorded by the driver.
->>
->> Fixes: 6a04aed6afae ("RDMA/hns: Fix the chip hanging caused by sending mailbox&CMQ during reset")
->> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 +++++++++++-
->>  1 file changed, 11 insertions(+), 1 deletion(-)
-> 
-> And what about the other fix?
-> Should we take both of them or only one?
-> https://lore.kernel.org/all/20211123084809.37318-1-liangwenpeng@huawei.com
-> 
-> Thanks
-> 
-
-These two fixes are independent of each other.
-
-Thanks
-Wenpeng
-
->>
->> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> index ae14329c619c..bbfa1332dedc 100644
->> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
->> @@ -33,6 +33,7 @@
->>  #include <linux/acpi.h>
->>  #include <linux/etherdevice.h>
->>  #include <linux/interrupt.h>
->> +#include <linux/iopoll.h>
->>  #include <linux/kernel.h>
->>  #include <linux/types.h>
->>  #include <net/addrconf.h>
->> @@ -1050,9 +1051,14 @@ static u32 hns_roce_v2_cmd_hw_resetting(struct hns_roce_dev *hr_dev,
->>  					unsigned long instance_stage,
->>  					unsigned long reset_stage)
->>  {
->> +#define HW_RESET_TIMEOUT_US 1000000
->> +#define HW_RESET_SLEEP_US 1000
->> +
->>  	struct hns_roce_v2_priv *priv = hr_dev->priv;
->>  	struct hnae3_handle *handle = priv->handle;
->>  	const struct hnae3_ae_ops *ops = handle->ae_algo->ops;
->> +	unsigned long val;
->> +	int ret;
->>  
->>  	/* When hardware reset is detected, we should stop sending mailbox&cmq&
->>  	 * doorbell to hardware. If now in .init_instance() function, we should
->> @@ -1064,7 +1070,11 @@ static u32 hns_roce_v2_cmd_hw_resetting(struct hns_roce_dev *hr_dev,
->>  	 * again.
->>  	 */
->>  	hr_dev->dis_db = true;
->> -	if (!ops->get_hw_reset_stat(handle))
->> +
->> +	ret = read_poll_timeout(ops->ae_dev_reset_cnt, val,
->> +				val > hr_dev->reset_cnt, HW_RESET_SLEEP_US,
->> +				HW_RESET_TIMEOUT_US, false, handle);
->> +	if (!ret)
->>  		hr_dev->is_reset = true;
->>  
->>  	if (!hr_dev->is_reset || reset_stage == HNS_ROCE_STATE_RST_INIT ||
->> -- 
->> 2.33.0
->>
-> .
-> 
+Thank you!
