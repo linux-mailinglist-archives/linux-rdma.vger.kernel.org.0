@@ -2,83 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C868745E12F
-	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 20:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CEA45E13B
+	for <lists+linux-rdma@lfdr.de>; Thu, 25 Nov 2021 21:00:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239842AbhKYT6g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Nov 2021 14:58:36 -0500
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:57591 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241825AbhKYT4g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 25 Nov 2021 14:56:36 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id qKo6mbfFjqYovqKo7mK7mm; Thu, 25 Nov 2021 20:53:23 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Thu, 25 Nov 2021 20:53:23 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, dledford@redhat.com,
-        jgg@ziepe.ca
+        id S244297AbhKYUDe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Nov 2021 15:03:34 -0500
+Received: from smtprelay0039.hostedemail.com ([216.40.44.39]:39842 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233721AbhKYUBe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 25 Nov 2021 15:01:34 -0500
+Received: from omf02.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 7BCC8182CED28;
+        Thu, 25 Nov 2021 19:58:21 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf02.hostedemail.com (Postfix) with ESMTPA id 3C137B00018A;
+        Thu, 25 Nov 2021 19:58:18 +0000 (UTC)
+Message-ID: <ddef1847b4694071ae914eab93b0d2bd45fdf050.camel@perches.com>
+Subject: Re: [PATCH] RDMA/mlx4: Use bitmap_alloc() when applicable
+From:   Joe Perches <joe@perches.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        yishaih@nvidia.com, selvin.xavier@broadcom.com,
+        dledford@redhat.com, jgg@ziepe.ca
 Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] IB/hfi1: Use bitmap_zalloc() when applicable
-Date:   Thu, 25 Nov 2021 20:53:22 +0100
-Message-Id: <d46c6bc1869b8869244fa71943d2cad4104b3668.1637869925.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        kernel-janitors@vger.kernel.org
+Date:   Thu, 25 Nov 2021 11:58:19 -0800
+In-Reply-To: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
+References: <4c93b4e02f5d784ddfd3efd4af9e673b9117d641.1637869328.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.4-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.15
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 3C137B00018A
+X-Stat-Signature: yn53aj5yzrhutyoeq7rdpr4cc3gnxx3u
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+75TsI88XshvqkCZYPF2FcNlF9F4sYqEY=
+X-HE-Tag: 1637870298-589355
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use 'bitmap_zalloc()' to simplify code, improve the semantic and avoid some
-open-coded arithmetic in allocator arguments.
+On Thu, 2021-11-25 at 20:42 +0100, Christophe JAILLET wrote:
+> Use 'bitmap_alloc()' to simplify code, improve the semantic and avoid some
+> open-coded arithmetic in allocator arguments.
+> 
+> Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
+> consistency.
 
-Also change the corresponding 'kfree()' into 'bitmap_free()' to keep
-consistency.
+Thanks.
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/hw/hfi1/user_sdma.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+> diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+[]
+> @@ -2784,10 +2784,8 @@ static void *mlx4_ib_add(struct mlx4_dev *dev)
+>  		if (err)
+>  			goto err_counter;
+>  
+> -		ibdev->ib_uc_qpns_bitmap =
+> -			kmalloc_array(BITS_TO_LONGS(ibdev->steer_qpn_count),
+> -				      sizeof(long),
+> -				      GFP_KERNEL);
+> +		ibdev->ib_uc_qpns_bitmap = bitmap_alloc(ibdev->steer_qpn_count,
+> +							GFP_KERNEL);
 
-diff --git a/drivers/infiniband/hw/hfi1/user_sdma.c b/drivers/infiniband/hw/hfi1/user_sdma.c
-index 5b11c8282744..a71c5a36ceba 100644
---- a/drivers/infiniband/hw/hfi1/user_sdma.c
-+++ b/drivers/infiniband/hw/hfi1/user_sdma.c
-@@ -161,9 +161,7 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
- 	if (!pq->reqs)
- 		goto pq_reqs_nomem;
- 
--	pq->req_in_use = kcalloc(BITS_TO_LONGS(hfi1_sdma_comp_ring_size),
--				 sizeof(*pq->req_in_use),
--				 GFP_KERNEL);
-+	pq->req_in_use = bitmap_zalloc(hfi1_sdma_comp_ring_size, GFP_KERNEL);
- 	if (!pq->req_in_use)
- 		goto pq_reqs_no_in_use;
- 
-@@ -210,7 +208,7 @@ int hfi1_user_sdma_alloc_queues(struct hfi1_ctxtdata *uctxt,
- cq_nomem:
- 	kmem_cache_destroy(pq->txreq_cache);
- pq_txreq_nomem:
--	kfree(pq->req_in_use);
-+	bitmap_free(pq->req_in_use);
- pq_reqs_no_in_use:
- 	kfree(pq->reqs);
- pq_reqs_nomem:
-@@ -257,7 +255,7 @@ int hfi1_user_sdma_free_queues(struct hfi1_filedata *fd,
- 			pq->wait,
- 			!atomic_read(&pq->n_reqs));
- 		kfree(pq->reqs);
--		kfree(pq->req_in_use);
-+		bitmap_free(pq->req_in_use);
- 		kmem_cache_destroy(pq->txreq_cache);
- 		flush_pq_iowait(pq);
- 		kfree(pq);
--- 
-2.30.2
+I wonder if it'd be simpler/smaller to change this to bitmap_zalloc and
+remove the bitmap_zero in the if below.
+
 
