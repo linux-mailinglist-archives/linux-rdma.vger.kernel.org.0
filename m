@@ -2,40 +2,40 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911EE45EE18
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 13:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E661C45EE1E
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 13:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbhKZMj0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Nov 2021 07:39:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38284 "EHLO
+        id S1349220AbhKZMjd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Nov 2021 07:39:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235419AbhKZMhZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Nov 2021 07:37:25 -0500
+        with ESMTP id S1345276AbhKZMh0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Nov 2021 07:37:26 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49C90C08EA75;
-        Fri, 26 Nov 2021 03:58:33 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC2AC08EA76;
+        Fri, 26 Nov 2021 03:58:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=PDMej3uV0A69WfPJSYZoi9ft4XTEBwKSjC8fReC4QEY=; b=HYRwctFE5c7GTgKbjdufN09ivL
-        jki4BjRwgcrxQGeAIQ/XL6jSkI4XAkVJm2fitp4ZcTAL4QNlfUbT4ZJfmQoDq6lwUFYojHBxpcEt+
-        HOPQ4KfIW4aM8+JypqsTh9SiOGwLYJC2cgjcK34qq9QtFoEscXslIbVEGd6i7ghjStUe2zHo0KDjn
-        oO+DxSrizS8XIZFJcAs5bN5ynAWXzXJ2DPdO/vxpiecZg7JAATxwyfJofnW7mQXynnyi36o6F5MWg
-        I8tORaOKdsLUHvT1xFtPt1YkPrfj9axAGd8i48Gk/jDrSuWAOiSRv9pfHFUisxTAZu1wJJpUDEwed
-        T+JeSlWg==;
+        bh=75Yd+UjqZ8mEVC5ZdOQmcq+vXP3FIOnKl9cEqCAA/c0=; b=F+bAXzkZvw6q/0b2SNKRR/ph95
+        8MY6tXc+k6Mmcg3v7qm16ASN6/jEEybgpLtaf4tHVvB2y+5GQ9Hs4aGI362328nsjpSqgkuBgi5bz
+        lAj6vl0sdqmgk5IB//NNUhgt9jpFxF7SjnXsLOIphjJDF8Ez5LH6WEHlRbi9OviZa6kuxUhBjK2Z3
+        L+9VBCnjABpBghEoHCD4l83vqxKaQhbswoX3KjOx2X0ptajyZzgC/qrGZEy+bo6IS+tIFIg0hm2KE
+        OANxj+6D3DvH66QivU3I2IzTu4DjTTgZmrBaDDlWp/nlUDAaLDT5DcZtTGGwFzL2RvCZcEeGDJ1db
+        g690wvgw==;
 Received: from [2001:4bb8:191:f9ce:bae8:5658:102a:5491] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mqZs5-00ASKG-KU; Fri, 26 Nov 2021 11:58:30 +0000
+        id 1mqZs6-00ASKg-Tn; Fri, 26 Nov 2021 11:58:31 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>
 Cc:     Paolo Valente <paolo.valente@linaro.org>, Jan Kara <jack@suse.cz>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH 08/14] block: move the remaining elv.icq handling to the I/O scheduler
-Date:   Fri, 26 Nov 2021 12:58:11 +0100
-Message-Id: <20211126115817.2087431-9-hch@lst.de>
+Subject: [PATCH 09/14] block: remove get_io_context_active
+Date:   Fri, 26 Nov 2021 12:58:12 +0100
+Message-Id: <20211126115817.2087431-10-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211126115817.2087431-1-hch@lst.de>
 References: <20211126115817.2087431-1-hch@lst.de>
@@ -46,90 +46,69 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-After the prepare side has been moved to the only I/O scheduler that
-cares, do the same for the cleanup and the NULL initialization.
+Fold it into it's only caller, and remove a lof of the debug checks
+that are not needed.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/bfq-iosched.c | 12 +++++++++++-
- block/blk-ioc.c     |  1 +
- block/blk-mq.c      | 14 +++-----------
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ block/blk-ioc.c           |  8 +++-----
+ include/linux/iocontext.h | 16 ----------------
+ 2 files changed, 3 insertions(+), 21 deletions(-)
 
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 2d484d3f7f22a..8295b0f96cbfe 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -6569,6 +6569,16 @@ static void bfq_finish_requeue_request(struct request *rq)
- 	rq->elv.priv[1] = NULL;
- }
- 
-+static void bfq_finish_request(struct request *rq)
-+{
-+	bfq_finish_requeue_request(rq);
-+
-+	if (rq->elv.icq) {
-+		put_io_context(rq->elv.icq->ioc);
-+		rq->elv.icq = NULL;
-+	}
-+}
-+
- /*
-  * Removes the association between the current task and bfqq, assuming
-  * that bic points to the bfq iocontext of the task.
-@@ -7388,7 +7398,7 @@ static struct elevator_type iosched_bfq_mq = {
- 		.limit_depth		= bfq_limit_depth,
- 		.prepare_request	= bfq_prepare_request,
- 		.requeue_request        = bfq_finish_requeue_request,
--		.finish_request		= bfq_finish_requeue_request,
-+		.finish_request		= bfq_finish_request,
- 		.exit_icq		= bfq_exit_icq,
- 		.insert_requests	= bfq_insert_requests,
- 		.dispatch_request	= bfq_dispatch_request,
 diff --git a/block/blk-ioc.c b/block/blk-ioc.c
-index f4f84a2072be7..3ba15c867dfa6 100644
+index 3ba15c867dfa6..cc4eb2ba87f74 100644
 --- a/block/blk-ioc.c
 +++ b/block/blk-ioc.c
-@@ -167,6 +167,7 @@ void put_io_context(struct io_context *ioc)
- 	if (free_ioc)
- 		kmem_cache_free(iocontext_cachep, ioc);
- }
-+EXPORT_SYMBOL_GPL(put_io_context);
- 
- /**
+@@ -173,7 +173,7 @@ EXPORT_SYMBOL_GPL(put_io_context);
   * put_io_context_active - put active reference on ioc
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 82491ab676fb1..7bdef269a5d94 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -400,7 +400,6 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- 	if (rq->rq_flags & RQF_ELV) {
- 		struct elevator_queue *e = data->q->elevator;
- 
--		rq->elv.icq = NULL;
- 		INIT_HLIST_NODE(&rq->hash);
- 		RB_CLEAR_NODE(&rq->rb_node);
- 
-@@ -631,16 +630,9 @@ void blk_mq_free_request(struct request *rq)
- 	struct request_queue *q = rq->q;
- 	struct blk_mq_hw_ctx *hctx = rq->mq_hctx;
- 
--	if (rq->rq_flags & RQF_ELVPRIV) {
--		struct elevator_queue *e = q->elevator;
+  * @ioc: ioc of interest
+  *
+- * Undo get_io_context_active().  If active reference reaches zero after
++ * Put an active reference to an ioc.  If active reference reaches zero after
+  * put, @ioc can never issue further IOs and ioscheds are notified.
+  */
+ static void put_io_context_active(struct io_context *ioc)
+@@ -333,11 +333,9 @@ int __copy_io(unsigned long clone_flags, struct task_struct *tsk)
+ 	 * Share io context with parent, if CLONE_IO is set
+ 	 */
+ 	if (clone_flags & CLONE_IO) {
+-		get_io_context_active(ioc);
 -
--		if (e->type->ops.finish_request)
--			e->type->ops.finish_request(rq);
--		if (rq->elv.icq) {
--			put_io_context(rq->elv.icq->ioc);
--			rq->elv.icq = NULL;
--		}
--	}
-+	if ((rq->rq_flags & RQF_ELVPRIV) &&
-+	    q->elevator->type->ops.finish_request)
-+		q->elevator->type->ops.finish_request(rq);
+-		WARN_ON_ONCE(atomic_read(&ioc->nr_tasks) <= 0);
++		atomic_long_inc(&ioc->refcount);
++		atomic_inc(&ioc->active_ref);
+ 		atomic_inc(&ioc->nr_tasks);
+-
+ 		tsk->io_context = ioc;
+ 	} else if (ioprio_valid(ioc->ioprio)) {
+ 		new_ioc = get_task_io_context(tsk, GFP_KERNEL, NUMA_NO_NODE);
+diff --git a/include/linux/iocontext.h b/include/linux/iocontext.h
+index 3ba45953d5228..c1229fbd6691c 100644
+--- a/include/linux/iocontext.h
++++ b/include/linux/iocontext.h
+@@ -113,22 +113,6 @@ struct io_context {
+ 	struct work_struct release_work;
+ };
  
- 	if (rq->rq_flags & RQF_MQ_INFLIGHT)
- 		__blk_mq_dec_active_requests(hctx);
+-/**
+- * get_io_context_active - get active reference on ioc
+- * @ioc: ioc of interest
+- *
+- * Only iocs with active reference can issue new IOs.  This function
+- * acquires an active reference on @ioc.  The caller must already have an
+- * active reference on @ioc.
+- */
+-static inline void get_io_context_active(struct io_context *ioc)
+-{
+-	WARN_ON_ONCE(atomic_long_read(&ioc->refcount) <= 0);
+-	WARN_ON_ONCE(atomic_read(&ioc->active_ref) <= 0);
+-	atomic_long_inc(&ioc->refcount);
+-	atomic_inc(&ioc->active_ref);
+-}
+-
+ struct task_struct;
+ #ifdef CONFIG_BLOCK
+ void put_io_context(struct io_context *ioc);
 -- 
 2.30.2
 
