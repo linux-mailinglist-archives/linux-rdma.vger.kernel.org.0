@@ -2,59 +2,96 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31D4345E545
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 03:39:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154B345E64E
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 04:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358450AbhKZClR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 25 Nov 2021 21:41:17 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:54941 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1357966AbhKZCjQ (ORCPT
+        id S1347130AbhKZCug (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 25 Nov 2021 21:50:36 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:52845 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1359112AbhKZCp5 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 25 Nov 2021 21:39:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UyKa2w-_1637894161;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UyKa2w-_1637894161)
+        Thu, 25 Nov 2021 21:45:57 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UyJiZM._1637894563;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UyJiZM._1637894563)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 26 Nov 2021 10:36:02 +0800
-Date:   Fri, 26 Nov 2021 10:36:01 +0800
+          Fri, 26 Nov 2021 10:42:43 +0800
 From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>
+To:     kgraul@linux.ibm.com
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net v2] net/smc: Don't call clcsock shutdown twice when
- smc shutdown
-Message-ID: <YaBIEUO0eOUNqf0b@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20211125132431.23264-1-tonylu@linux.alibaba.com>
- <1a7b27ec-22fc-f1b0-6b7c-4a61c072ff38@linux.ibm.com>
+Subject: [PATCH net v3] net/smc: Don't call clcsock shutdown twice when smc shutdown
+Date:   Fri, 26 Nov 2021 10:41:35 +0800
+Message-Id: <20211126024134.45693-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1a7b27ec-22fc-f1b0-6b7c-4a61c072ff38@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 03:51:06PM +0100, Karsten Graul wrote:
-> On 25/11/2021 14:24, Tony Lu wrote:
-> > @@ -2398,7 +2400,12 @@ static int smc_shutdown(struct socket *sock, int how)
-> >  	}
-> >  	switch (how) {
-> >  	case SHUT_RDWR:		/* shutdown in both directions */
-> > +		old_state = sk->sk_state;
-> >  		rc = smc_close_active(smc);
-> > +		if (old_state == SMC_ACTIVE &&
-> > +		    sk->sk_state == SMC_PEERCLOSEWAIT1)
-> > +			do_shutdown = false;
-> > +
-> >  		break;
-> 
-> Please send a v3 without the extra empty line before the break statement,
-> and then the patch is fine with me.
-> 
-> Thank you!
+When applications call shutdown() with SHUT_RDWR in userspace,
+smc_close_active() calls kernel_sock_shutdown(), and it is called
+twice in smc_shutdown().
 
-I will fix it, and send it out soon.
+This fixes this by checking sk_state before do clcsock shutdown, and
+avoids missing the application's call of smc_shutdown().
 
-Thanks,
-Tony Lu
+Link: https://lore.kernel.org/linux-s390/1f67548e-cbf6-0dce-82b5-10288a4583bd@linux.ibm.com/
+Fixes: 606a63c9783a ("net/smc: Ensure the active closing peer first closes clcsock")
+Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
+Reviewed-by: Wen Gu <guwen@linux.alibaba.com>
+---
+
+changes:
+
+v2->v3:
+- code format
+
+v1->v2:
+- code format
+- use bool do_shutdown
+
+---
+ net/smc/af_smc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+index 4b62c925a13e..230072f9ec48 100644
+--- a/net/smc/af_smc.c
++++ b/net/smc/af_smc.c
+@@ -2370,8 +2370,10 @@ static __poll_t smc_poll(struct file *file, struct socket *sock,
+ static int smc_shutdown(struct socket *sock, int how)
+ {
+ 	struct sock *sk = sock->sk;
++	bool do_shutdown = true;
+ 	struct smc_sock *smc;
+ 	int rc = -EINVAL;
++	int old_state;
+ 	int rc1 = 0;
+ 
+ 	smc = smc_sk(sk);
+@@ -2398,7 +2400,11 @@ static int smc_shutdown(struct socket *sock, int how)
+ 	}
+ 	switch (how) {
+ 	case SHUT_RDWR:		/* shutdown in both directions */
++		old_state = sk->sk_state;
+ 		rc = smc_close_active(smc);
++		if (old_state == SMC_ACTIVE &&
++		    sk->sk_state == SMC_PEERCLOSEWAIT1)
++			do_shutdown = false;
+ 		break;
+ 	case SHUT_WR:
+ 		rc = smc_close_shutdown_write(smc);
+@@ -2408,7 +2414,7 @@ static int smc_shutdown(struct socket *sock, int how)
+ 		/* nothing more to do because peer is not involved */
+ 		break;
+ 	}
+-	if (smc->clcsock)
++	if (do_shutdown && smc->clcsock)
+ 		rc1 = kernel_sock_shutdown(smc->clcsock, how);
+ 	/* map sock_shutdown_cmd constants to sk_shutdown value range */
+ 	sk->sk_shutdown |= how + 1;
+-- 
+2.32.0.3.g01195cf9f
+
