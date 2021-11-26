@@ -2,36 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E79845F391
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 19:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A937F45F4EF
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 19:49:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238348AbhKZSQv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Nov 2021 13:16:51 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:38440 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238907AbhKZSOv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 26 Nov 2021 13:14:51 -0500
-X-Greylist: delayed 319 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Nov 2021 13:14:49 EST
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EFDB9B82861;
-        Fri, 26 Nov 2021 18:06:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB1D4C93056;
-        Fri, 26 Nov 2021 18:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637949974;
-        bh=+d8OmlaKhMRiU+4CBcffEdG0k6jZCzzMDxT/LnP/MGU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vJwIVdwCaQKtJRhphr3nXbScrfpfdclV/AYjnvi15Of+T36WHf2/Hiyc44KohWx5r
-         Ycr2De+15ptRvu37tHJVUA/o2YHZ8snq9oZSpS3wLxHSoQET3XkVkz61kVM/pXSc55
-         +f1lVtMcaWC6aGx0KnrJB9NCmqrxDfnOuU+Wf/ID/FVyKy503XNTGfByS/QtcHUqf7
-         m4cCwIxfVanVpRLBF5NGqln6ZB1dz9yQrlAzxdTRCc8qM4YORYix0tCT/+3dhqubxT
-         +LCraC7J8RSARSy614o6gutnzMVUMXy6or1wy9R9ZEyGN9ZQUJrNwA4g1cMp5rL2NW
-         HX6ZyQeYFGtqQ==
-Date:   Fri, 26 Nov 2021 10:06:11 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>
+        id S243306AbhKZSwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Nov 2021 13:52:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:43656 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243598AbhKZSug (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Nov 2021 13:50:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637952443;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=O6rbfWik1xYZrbAijVAfDmHvfjyDH76LNjEVf+e9aLQ=;
+        b=erjQEf9ju+vDaulJZd24jsoYjFCJP+xNuOCG/FTaF1uJO9G+onC+G4JtmRNNLjv0llVRmv
+        KueKDDyqJcF+lYpIHnmzyD/WMxL5ubWx8Cxzh37VeWFqo2jMFKe0eNBDMysNOvCBrKcH+v
+        R6BtIvYIdGcKJrH3GDGhmH30k3N1KXw=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-504--o9X2XpgMzmvdKktdUhdEw-1; Fri, 26 Nov 2021 13:47:22 -0500
+X-MC-Unique: -o9X2XpgMzmvdKktdUhdEw-1
+Received: by mail-ed1-f71.google.com with SMTP id w4-20020aa7cb44000000b003e7c0f7cfffso8663824edt.2
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Nov 2021 10:47:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=O6rbfWik1xYZrbAijVAfDmHvfjyDH76LNjEVf+e9aLQ=;
+        b=ie7R5PFyUgxd63EgQbiOYUWf0hrV7WS+cSyvEEz5TvnrCgmESM0Cy+2pt2Tw1wB9fz
+         gGz7UHxcUENBaqhgD7ytAgZUxRnFsiJBPIAZuC2KA48xywNett2ezREz7N2/ZVriaui2
+         siPn2TWr4frT6Dnq4A8uLULua41kdm7Z7dBW/Z4UxbfxhhpqbL1AZcLpJta+bB/ndNzA
+         NZ7Xuan+uljijR5rGWrr24bFVKSK4L0TRcm8prvV09W2GhJ6urRKt4Szyh9J/bvQwiAl
+         Jm3gcT+mrJDRk7+Pun8jnDpARYi2P9VrgswKbvaYb4CpwBVFVFL9sItrKTdBgW78GYuJ
+         hLYw==
+X-Gm-Message-State: AOAM53002YXBo5nwW4Bnwq3Uj76itL/VnVFf38/4LBUwYMZR2XJRwHzy
+        h/v13Bu6CZxZmw7N9ZrzPVeFO2dooc7b7BiSFS8exXraPThL86Ch5SPxj5BYkWDIKwZ1yo2xRls
+        o2MnbYpz6fnNH2FzGr73vpg==
+X-Received: by 2002:a50:f09b:: with SMTP id v27mr50640033edl.53.1637952439509;
+        Fri, 26 Nov 2021 10:47:19 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysqEUXaashQMp696tzO9iR2R9x+kWsok2AbHg4/IoknOktCZ+sa6SV7IRItNNVUIbLVIF90Q==
+X-Received: by 2002:a50:f09b:: with SMTP id v27mr50639967edl.53.1637952439132;
+        Fri, 26 Nov 2021 10:47:19 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z6sm4779036edc.76.2021.11.26.10.47.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 10:47:18 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id EB3281802A0; Fri, 26 Nov 2021 19:47:17 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Jakub Kicinski <kuba@kernel.org>
 Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
@@ -76,104 +100,131 @@ Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
         virtualization@lists.linux-foundation.org
 Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
  per-channel statistics
-Message-ID: <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87sfvj9k13.fsf@toke.dk>
+In-Reply-To: <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
-        <20211123163955.154512-22-alexandr.lobakin@intel.com>
-        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-        <87bl28bga6.fsf@toke.dk>
-        <20211125170708.127323-1-alexandr.lobakin@intel.com>
-        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211125204007.133064-1-alexandr.lobakin@intel.com>
-        <87sfvj9k13.fsf@toke.dk>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com>
+ <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+ <87bl28bga6.fsf@toke.dk>
+ <20211125170708.127323-1-alexandr.lobakin@intel.com>
+ <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211125204007.133064-1-alexandr.lobakin@intel.com>
+ <87sfvj9k13.fsf@toke.dk>
+ <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Nov 2021 19:47:17 +0100
+Message-ID: <87ee72ah56.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, 26 Nov 2021 13:30:16 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> >> TBH I wasn't following this thread too closely since I saw Daniel
-> >> nacked it already. I do prefer rtnl xstats, I'd just report them=20
-> >> in -s if they are non-zero. But doesn't sound like we have an agreement
-> >> whether they should exist or not. =20
-> >
-> > Right, just -s is fine, if we drop the per-channel approach. =20
->=20
-> I agree that adding them to -s is fine (and that resolves my "no one
-> will find them" complain as well). If it crowds the output we could also
-> default to only output'ing a subset, and have the more detailed
-> statistics hidden behind a verbose switch (or even just in the JSON
-> output)?
->=20
-> >> Can we think of an approach which would make cloudflare and cilium
-> >> happy? Feels like we're trying to make the slightly hypothetical=20
-> >> admin happy while ignoring objections of very real users. =20
-> >
-> > The initial idea was to only uniform the drivers. But in general
-> > you are right, 10 drivers having something doesn't mean it's
-> > something good. =20
->=20
-> I don't think it's accurate to call the admin use case "hypothetical".
-> We're expending a significant effort explaining to people that XDP can
-> "eat" your packets, and not having any standard statistics makes this
-> way harder. We should absolutely cater to our "early adopters", but if
-> we want XDP to see wider adoption, making it "less weird" is critical!
+Jakub Kicinski <kuba@kernel.org> writes:
 
-Fair. In all honesty I said that hoping to push for a more flexible
-approach hidden entirely in BPF, and not involving driver changes.
-Assuming the XDP program has more fine grained stats we should be able
-to extract those instead of double-counting. Hence my vague "let's work
-with apps" comment.
+> On Fri, 26 Nov 2021 13:30:16 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+>> >> TBH I wasn't following this thread too closely since I saw Daniel
+>> >> nacked it already. I do prefer rtnl xstats, I'd just report them=20
+>> >> in -s if they are non-zero. But doesn't sound like we have an agreeme=
+nt
+>> >> whether they should exist or not.=20=20
+>> >
+>> > Right, just -s is fine, if we drop the per-channel approach.=20=20
+>>=20
+>> I agree that adding them to -s is fine (and that resolves my "no one
+>> will find them" complain as well). If it crowds the output we could also
+>> default to only output'ing a subset, and have the more detailed
+>> statistics hidden behind a verbose switch (or even just in the JSON
+>> output)?
+>>=20
+>> >> Can we think of an approach which would make cloudflare and cilium
+>> >> happy? Feels like we're trying to make the slightly hypothetical=20
+>> >> admin happy while ignoring objections of very real users.=20=20
+>> >
+>> > The initial idea was to only uniform the drivers. But in general
+>> > you are right, 10 drivers having something doesn't mean it's
+>> > something good.=20=20
+>>=20
+>> I don't think it's accurate to call the admin use case "hypothetical".
+>> We're expending a significant effort explaining to people that XDP can
+>> "eat" your packets, and not having any standard statistics makes this
+>> way harder. We should absolutely cater to our "early adopters", but if
+>> we want XDP to see wider adoption, making it "less weird" is critical!
+>
+> Fair. In all honesty I said that hoping to push for a more flexible
+> approach hidden entirely in BPF, and not involving driver changes.
+> Assuming the XDP program has more fine grained stats we should be able
+> to extract those instead of double-counting. Hence my vague "let's work
+> with apps" comment.
+>
+> For example to a person familiar with the workload it'd be useful to
+> know if program returned XDP_DROP because of configured policy or
+> failure to parse a packet. I don't think that sort distinction is
+> achievable at the level of standard stats.
+>
+> The information required by the admin is higher level. As you say the
+> primary concern there is "how many packets did XDP eat".
 
-For example to a person familiar with the workload it'd be useful to
-know if program returned XDP_DROP because of configured policy or
-failure to parse a packet. I don't think that sort distinction is
-achievable at the level of standard stats.
+Right, sure, I am also totally fine with having only a somewhat
+restricted subset of stats available at the interface level and make
+everything else be BPF-based. I'm hoping we can converge of a common
+understanding of what this "minimal set" should be :)
 
-The information required by the admin is higher level. As you say the
-primary concern there is "how many packets did XDP eat".
+> Speaking of which, one thing that badly needs clarification is our
+> expectation around XDP packets getting counted towards the interface
+> stats.
 
-Speaking of which, one thing that badly needs clarification is our
-expectation around XDP packets getting counted towards the interface
-stats.
+Agreed. My immediate thought is that "XDP packets are interface packets"
+but that is certainly not what we do today, so not sure if changing it
+at this point would break things?
 
-> > Maciej, I think you were talking about Cilium asking for those stats
-> > in Intel drivers? Could you maybe provide their exact usecases/needs
-> > so I'll orient myself? I certainly remember about XSK Tx packets and
-> > bytes.
-> > And speaking of XSK Tx, we have per-socket stats, isn't that enough? =20
->=20
-> IMO, as long as the packets are accounted for in the regular XDP stats,
-> having a whole separate set of stats only for XSK is less important.
->=20
-> >> Please leave the per-channel stats out. They make a precedent for
-> >> channel stats which should be an attribute of a channel. Working for=20
-> >> a large XDP user for a couple of years now I can tell you from my own
-> >> experience I've not once found them useful. In fact per-queue stats are
-> >> a major PITA as they crowd the output. =20
-> >
-> > Oh okay. My very first iterations were without this, but then I
-> > found most of the drivers expose their XDP stats per-channel. Since
-> > I didn't plan to degrade the functionality, they went that way. =20
->=20
-> I personally find the per-channel stats quite useful. One of the primary
-> reasons for not achieving full performance with XDP is broken
-> configuration of packet steering to CPUs, and having per-channel stats
-> is a nice way of seeing this.
+>> > Maciej, I think you were talking about Cilium asking for those stats
+>> > in Intel drivers? Could you maybe provide their exact usecases/needs
+>> > so I'll orient myself? I certainly remember about XSK Tx packets and
+>> > bytes.
+>> > And speaking of XSK Tx, we have per-socket stats, isn't that enough?=
+=20=20
+>>=20
+>> IMO, as long as the packets are accounted for in the regular XDP stats,
+>> having a whole separate set of stats only for XSK is less important.
+>>=20
+>> >> Please leave the per-channel stats out. They make a precedent for
+>> >> channel stats which should be an attribute of a channel. Working for=
+=20
+>> >> a large XDP user for a couple of years now I can tell you from my own
+>> >> experience I've not once found them useful. In fact per-queue stats a=
+re
+>> >> a major PITA as they crowd the output.=20=20
+>> >
+>> > Oh okay. My very first iterations were without this, but then I
+>> > found most of the drivers expose their XDP stats per-channel. Since
+>> > I didn't plan to degrade the functionality, they went that way.=20=20
+>>=20
+>> I personally find the per-channel stats quite useful. One of the primary
+>> reasons for not achieving full performance with XDP is broken
+>> configuration of packet steering to CPUs, and having per-channel stats
+>> is a nice way of seeing this.
+>
+> Right, that's about the only thing I use it for as well. "Is the load
+> evenly distributed?"  But that's not XDP specific and not worth
+> standardizing for, yet, IMO, because..
+>
+>> I can see the point about them being way too verbose in the default
+>> output, though, and I do generally filter the output as well when
+>> viewing them. But see my point above about only printing a subset of
+>> the stats by default; per-channel stats could be JSON-only, for
+>> instance?
+>
+> we don't even know what constitutes a channel today. And that will
+> become increasingly problematic as importance of application specific
+> queues increases (zctap etc). IMO until the ontological gaps around
+> queues are filled we should leave per-queue stats in ethtool -S.
 
-Right, that's about the only thing I use it for as well. "Is the load
-evenly distributed?"  But that's not XDP specific and not worth
-standardizing for, yet, IMO, because..
+Hmm, right, I see. I suppose that as long as the XDP packets show up in
+one of the interface counters in ethtool -S, it's possible to answer the
+load distribution issue, and any further debugging (say, XDP drops on a
+certain queue due to CPU-based queue indexing on TX) can be delegated to
+BPF-based tools...
 
-> I can see the point about them being way too verbose in the default
-> output, though, and I do generally filter the output as well when
-> viewing them. But see my point above about only printing a subset of
-> the stats by default; per-channel stats could be JSON-only, for
-> instance?
+-Toke
 
-we don't even know what constitutes a channel today. And that will
-become increasingly problematic as importance of application specific
-queues increases (zctap etc). IMO until the ontological gaps around
-queues are filled we should leave per-queue stats in ethtool -S.
