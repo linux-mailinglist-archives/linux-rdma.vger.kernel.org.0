@@ -2,183 +2,194 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D74A45EDC1
-	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 13:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE47D45EDEE
+	for <lists+linux-rdma@lfdr.de>; Fri, 26 Nov 2021 13:32:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhKZMVj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 26 Nov 2021 07:21:39 -0500
-Received: from mail-bn8nam11on2041.outbound.protection.outlook.com ([40.107.236.41]:12896
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234003AbhKZMTj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 26 Nov 2021 07:19:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MT9/lYpcFp+lFqoEpf0hkGJJi6y/BDRA8ethBWMXw891Wka3inny3+dJ0rnOUXNFqN5KjxyTdlOW7mN4gwpWxxIhGIfzk5xwLtEKyvqTNTZXOnwlpvtuA6HnmUA69u6kIeXMg9ayuBxYJ6FGltT/4wZO1IjnORp0AbtlCQ/AcDyjynGjMOwyf8QFQSpKmEzXIA7jBqPSap9X49PhQFV47LQaj+DzlF0lKdrHHRarTN0PiFTyP7RCDh6YUgq3fmgqA86Fu7QqU/PKhbTuFnnhbaX+sEoJ/Ic2fw7gIruCNAFbZbuamNTtEqG+YPDDMgcA19KFuXE2AH/PmXpceQUD/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LDn8GKXIFYxeGvDTTftzy4sc7dbImUck6REPYym7kNM=;
- b=XCadpo6BLDdcKkQYa12Wkps8z0hvvg6IbZ7NPNThgMv12L9Ath1NaKUZHnheTtFbOLdZTLEd/JHfHmW6yUpq4H/Edf6P4bMzVppAGYSahvcgvciukEI5Ax3MckwCrpXiW9qzTKZNDhQPMUVzhFa2TbQijyybN8ueVa4oIawaExYA38caEu4PHxB6MLyT5MlbH9lFuX3JhY4Uh4CwcctdZMiy9pT8YNOKyUoqWP8sedkfpnf+urpmhBX0j0KyIxXbY4HGkjFKEApZvzIvo+n1mLRDPBk4AOQSLyYD8WK825JGcPgWlAP3IoV4yh+4+rVUkLcEXfdqEolHaUG7rRBmiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LDn8GKXIFYxeGvDTTftzy4sc7dbImUck6REPYym7kNM=;
- b=Mk83WKYpDPEODBNEowYijKGElhGRGx195mDxur8tmn3CMO1mYMm+h0vKrsOBCuu5LvdZge36tW5bI6/7lfUZWiQbS4CAZSe994QvXKo1OmfW/zpXL8irqcrgJxXgUYR+V2iKLDpgybvCxt7OajKecJyOrJuN9tGQLY9mWVPXdv4e2w/dI+d3AVIaNbHQXGYDJTm4WBJ7RMDL9iBQmlGNIIyJX2lAIJyFciA7OCBna2jLVE/eUMDxDKHK2keFyMjpKy/WLGgdNHdECjPR7HvxM+ZyR8PhAlimnGPrTI56DegINm/FL3dAbJ47vOQxZA+LZOkXa/+8+TeJzdFKfPJ1tQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5288.namprd12.prod.outlook.com (2603:10b6:208:314::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4713.19; Fri, 26 Nov
- 2021 12:16:24 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::5897:83b2:a704:7909%8]) with mapi id 15.20.4734.023; Fri, 26 Nov 2021
- 12:16:24 +0000
-Date:   Fri, 26 Nov 2021 08:16:23 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v4 for-next 1/1] RDMA/hns: Support direct wqe of userspace
-Message-ID: <20211126121623.GQ4670@nvidia.com>
-References: <20211122033801.30807-1-liangwenpeng@huawei.com>
- <20211122033801.30807-2-liangwenpeng@huawei.com>
- <YZtboTThVCL7xs5s@unreal>
- <20211125175044.GA504288@nvidia.com>
- <9b3e8596-a386-667b-b8b2-21358331d681@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b3e8596-a386-667b-b8b2-21358331d681@huawei.com>
-X-ClientProxiedBy: MN2PR20CA0054.namprd20.prod.outlook.com
- (2603:10b6:208:235::23) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S1377473AbhKZMfh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 26 Nov 2021 07:35:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1377435AbhKZMdg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 26 Nov 2021 07:33:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1637929823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wJpjstKjFgGO5wW+gqXS3RJS7pxbzNnoYG45SxgIaVs=;
+        b=DqtQb3REG6A8Wqip2hMPUaSUcAfVeM6IEdjUHM4WIYzL1YNWvSL8q28BdizRGtlHjo6+RT
+        Af1gCnqZlcclntPKpr03yHw+3n4XhetD0AbRMcpcZr9mEWU85wWRIROzZi3JrpRXq9ZFbF
+        6R2XTR36BdCajUBUMrw5hraEVZ0aa8o=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-598-2YF8fw0cMeCFHLGPxUrKDg-1; Fri, 26 Nov 2021 07:30:22 -0500
+X-MC-Unique: 2YF8fw0cMeCFHLGPxUrKDg-1
+Received: by mail-ed1-f72.google.com with SMTP id d13-20020a056402516d00b003e7e67a8f93so7974472ede.0
+        for <linux-rdma@vger.kernel.org>; Fri, 26 Nov 2021 04:30:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=wJpjstKjFgGO5wW+gqXS3RJS7pxbzNnoYG45SxgIaVs=;
+        b=cPJhVxngKVdwJcU5GAoWjwBHsZ2EVnXNtDF1mazthVrTfnXORVDX/2ZFGMRJDDi3f5
+         MJCUhOw5NK38mKMCRuXn7hhl9fnS6wzZy8pENKQCwJsU4mYPOpbnuLBxOyEEWfkJ5/ww
+         dbMqbvs68CYt26WmGNBuX3qeYD2C9qL7ji5ITtQficfYRzgYpDafH3EvA6xQ/JrVhIs6
+         JFL0DNqUrBLGKBqrN3WVyWiFO7rxWfBoa1FoETRa6M2Y5eUQil4A3PGSDbcCt5CIvfG/
+         kETeGjS2QqBqkOlDOhsy5m3uk0iJiziEljKJFqGHaCLGrdCMTlg0HuKB12QuBbgdSybF
+         czkg==
+X-Gm-Message-State: AOAM532TdjU/TL/Ipxrle4XYaxpOk+Ojgz6MFd/WVemxJ/V474QKDtZS
+        uBKDFZn3meVNXdUw6Q+KPyYYCrYiONiwHepAYU1Ja/43fI3DvXxMs/L44DIi+2ptmbmvA8XBBQN
+        6k3AOUQq4+92M4t687oRxdw==
+X-Received: by 2002:a17:906:9253:: with SMTP id c19mr38089897ejx.63.1637929818662;
+        Fri, 26 Nov 2021 04:30:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzFpOGQFmWiCNvf6rQhtfEjSpRvn9st0kQKBRiIz3dQouSyrrzQoU3PWI7Fk46YpVzPcL/lig==
+X-Received: by 2002:a17:906:9253:: with SMTP id c19mr38089763ejx.63.1637929817373;
+        Fri, 26 Nov 2021 04:30:17 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
+        by smtp.gmail.com with ESMTPSA id l18sm2825795ejo.114.2021.11.26.04.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Nov 2021 04:30:16 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0A5011802A0; Fri, 26 Nov 2021 13:30:16 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+In-Reply-To: <20211125204007.133064-1-alexandr.lobakin@intel.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com>
+ <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+ <87bl28bga6.fsf@toke.dk>
+ <20211125170708.127323-1-alexandr.lobakin@intel.com>
+ <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211125204007.133064-1-alexandr.lobakin@intel.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Fri, 26 Nov 2021 13:30:16 +0100
+Message-ID: <87sfvj9k13.fsf@toke.dk>
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (142.162.113.129) by MN2PR20CA0054.namprd20.prod.outlook.com (2603:10b6:208:235::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.21 via Frontend Transport; Fri, 26 Nov 2021 12:16:24 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mqa9P-0033Bu-5N; Fri, 26 Nov 2021 08:16:23 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 019e9111-a14f-4d3f-73f3-08d9b0d6907d
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5288:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB528867A7FFF21ECD2C7A76ADC2639@BL1PR12MB5288.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dGaF3yId9U52FxOidlMcu7eID/8B0YdGD0Dx8ajMUDQz/ceVmSk2Me6fkRl5Oj7A+o9L7st7xRm0TA7hA4mePN2/70Agg3X0nc5dm2t/6M1kgNPUn8h9y2qj+jxK/9E1lTJg/VTm85J3RRMFAKxjfK8d+GoHCdeQlHzYzA/fRap8hYgXYzuLni+NYHfbl9j0R9yMTsyx/EKcONfIeL5tQuvM9L+mj/+XrMFqAwJv/u5VatisHoDndpGX9z+oPBbvo3Tp+gxGd/tcAdUwIZEhVyDB/W2Kea2xWBDByEzgQRrEThEFLV+bqp4FRKCtKgN7piHuy9o3tCLARY4nilLS4aiPBF+BolnRPkvsFa1IdK5/MmRecB30ToEIyE0XjYGMSRc2ycKqfPNi3U8dYvjIiLGmXl6mkjAg4aMECgQ50yCMzU+1RWANIsxLEO1fBBoxyN/b0dUJP6n4U6mCzckRC9yFTqDKDsQ8sPnaZMd0AlyxSZ1ACkKeCcBJhBWdRM2KRoBTrjMV+1MQzrMLZYzazxU8iZRJH6zqnSGW4bmHfb2Z90R0jMOtpYOzQ/sBcd80upWoe/3jR7nP2mHC6MYTaq/9NItero753c6mKpa/Nnjaf04DUNqbKWgqqH4s7poXQRphV2q1ltpr4p7jbSY48w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(316002)(86362001)(426003)(83380400001)(2906002)(8936002)(6916009)(186003)(66946007)(66556008)(66476007)(8676002)(26005)(36756003)(33656002)(4326008)(2616005)(1076003)(9746002)(5660300002)(9786002)(38100700002)(53546011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zyieaDWtEWrym/R5mkej0N+bIXs1OZMsaJIww1kPVrOl1cizPJL/NqR4nWYg?=
- =?us-ascii?Q?Y0x+AU6XZqtWbrQropV7g7KrQNXTaft0WNfB1sKCH/jM6PW1ftyh1SXyOdI2?=
- =?us-ascii?Q?tPBHMKDEn9eUbxkZxyTXgPmsgUbNCZuC6uYRM68zOCDHvaSXWLPgFr8RjjJe?=
- =?us-ascii?Q?BMo+0mRGtK9eGxmYbwBB6TZ599m3JtTPxnYZr7JAwkF8ymuM7QCRFWVfToGU?=
- =?us-ascii?Q?v/jQSEX1V2VAzrDYfealTPxQSlW8wbeq4r59Ky0K7VkUyoHzQAZSYsOcTlOp?=
- =?us-ascii?Q?gavkP53dYqcqHk7Jqubr3wCw2shdQ7avxUM4RZ2PUCj+428mQ/XIH7NNb4P2?=
- =?us-ascii?Q?2KJOevwP2+0oeo/G1D35TSamCckbUSDN0P5TXYJ6l/eQgfh04ZQJJnMYtc+Y?=
- =?us-ascii?Q?f9XnygdBZNd3G/Jee1cTl+cBRpW5cICf7dd1sa9A5gH08Kx/gpbS6sHZ4vWN?=
- =?us-ascii?Q?76PnlEbGOGlNjFsd+ZMKh81hmhbZ//LscP3zXOlWmq0lEf7egcXyPx+fldfv?=
- =?us-ascii?Q?Y3p7smKju19mE5cvv+a80+IwEOaLe/kAbSs+/MeeB+Ecdaqsbje09s4dW0if?=
- =?us-ascii?Q?ahduvOgnV6d0GaOGyXoMEHmXcK2x9mA3Rp6cV41t4S1S1lF/6M6AWjUjAjc6?=
- =?us-ascii?Q?+/MfK8qpFnvZgdIlpXP9BxERlN5v0EZA/QcG5KQqAmlMwlV7dtvRKv/0NL1U?=
- =?us-ascii?Q?qo7QOhqdvf6vEUIE8hq6DVAkMpiMjWj+s0J0wJeRwLA9Sg7lk9AZovcFn+uB?=
- =?us-ascii?Q?T7epAp+k1ebbPFeCW0BmzoAH+wAq3dYyBRiAbIEMNvsZ+iwnI/UjfR6ANHyO?=
- =?us-ascii?Q?RsYfanhNBktsslDV/xtFEdYiiAT7XAtkEbrRca2N/UqXrzLBPzjDkbuUb9qM?=
- =?us-ascii?Q?IhM1dNt83oazvJWAeweseobHIs+2U7g+AP0rnVJf5BkH1ckK1YtTFWyv3SMh?=
- =?us-ascii?Q?J7TYM75BUQjUdgjG3z4InUpQAy3zRrrwb6O1ahr4DEtmJ3eaAUYrLyqy2eRw?=
- =?us-ascii?Q?vsMp5Y5mEQWr7CGaJn9zLa1x3y+r+6z81zVHXROR3ePYSw+HILk6jQTKbfJR?=
- =?us-ascii?Q?L1FGD4tGZjzRrwrpGS4fy/LPDUCI48Wnx1jkp+f48Msg2KuK/xFNPfzde2es?=
- =?us-ascii?Q?yCpecNtCbGgkLJyvURGuGYY3wpA4WUMKGLYYdXALKBQ1s2yJWFf4JuURI6py?=
- =?us-ascii?Q?ZGupNsyCXWl+LJA3l8Usw52urxWhozdfr35bWS3XmMwkXdE+aJAoVSLjgyPs?=
- =?us-ascii?Q?ZmWy2YaHBKfevub82ebg4x3PlQxVE18PiwUBBkW6mNiASXfvh46A34w7oZtQ?=
- =?us-ascii?Q?fuREp2C81BX27KzT/Dn48WT+J8CJRrDwvwsM6Wa4Dl5sbCMMEpM1aPRezyB3?=
- =?us-ascii?Q?A9J3lywseRM4zGpsiRT7oKd9qXmgq+qybgtpl3UpKtacFYjJehyaLIK3Tymo?=
- =?us-ascii?Q?WOadeRLnYQPg5CQaRe3xo2k6JzA90frtg2NTEunafyJd2wzvijSRejLwikyD?=
- =?us-ascii?Q?Bt8YrGaDptgG+M72jJQbHXj1iAaQr7Tc+SeLbk4Uz34vhqR67O5NLF7kbbLt?=
- =?us-ascii?Q?JZY6XJftjWFyu7hRadI=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 019e9111-a14f-4d3f-73f3-08d9b0d6907d
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Nov 2021 12:16:24.4341
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WJz/OH6yGtpxiTbg71Imsg5Gq9VX+JcXKmARI4H1yEW7a1imd0fA70uKk88g3RBQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5288
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Nov 26, 2021 at 04:25:27PM +0800, Wenpeng Liang wrote:
-> On 2021/11/26 1:50, Jason Gunthorpe wrote:
-> > On Mon, Nov 22, 2021 at 10:58:09AM +0200, Leon Romanovsky wrote:
-> >> On Mon, Nov 22, 2021 at 11:38:01AM +0800, Wenpeng Liang wrote:
-> >>> From: Yixing Liu <liuyixing1@huawei.com>
-> >>>
-> >>> Add direct wqe enable switch and address mapping.
-> >>>
-> >>> Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-> >>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-> >>>  drivers/infiniband/hw/hns/hns_roce_device.h |  8 +--
-> >>>  drivers/infiniband/hw/hns/hns_roce_main.c   | 38 ++++++++++++---
-> >>>  drivers/infiniband/hw/hns/hns_roce_pd.c     |  3 ++
-> >>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 54 ++++++++++++++++++++-
-> >>>  include/uapi/rdma/hns-abi.h                 |  2 +
-> >>>  5 files changed, 94 insertions(+), 11 deletions(-)
-> >>
-> >> <...>
-> >>
-> >>>  	entry = to_hns_mmap(rdma_entry);
-> >>>  	pfn = entry->address >> PAGE_SHIFT;
-> >>> -	prot = vma->vm_page_prot;
-> >>>  
-> >>> -	if (entry->mmap_type != HNS_ROCE_MMAP_TYPE_TPTR)
-> >>> -		prot = pgprot_noncached(prot);
-> >>> +	switch (entry->mmap_type) {
-> >>> +	case HNS_ROCE_MMAP_TYPE_DB:
-> >>> +		prot = pgprot_noncached(vma->vm_page_prot);
-> >>> +		break;
-> >>> +	case HNS_ROCE_MMAP_TYPE_TPTR:
-> >>> +		prot = vma->vm_page_prot;
-> >>> +		break;
-> >>> +	case HNS_ROCE_MMAP_TYPE_DWQE:
-> >>> +		prot = pgprot_device(vma->vm_page_prot);
-> >>
-> >> Everything fine, except this pgprot_device(). You probably need to check
-> >> WC internally in your driver and use or pgprot_writecombine() or
-> >> pgprot_noncached() explicitly.
-> > 
-> > pgprot_device is only used in two places in the kernel
-> > pci_mmap_resource_range() for setting up the sysfs resourceXX mmap
-> > 
-> > And in pci_remap_iospace() as part of emulationg PIO on mmio
-> > architectures
-> > 
-> > So, a PCI device should always be using pgprot_device() in its mmap
-> > function
-> > 
-> > The question is why is pgprot_noncached() being used at all? The only
-> > difference on ARM is that noncached is non-Early Write Acknowledgement
-> > and devices is not.
-> > 
-> > At the very least this should be explained in a comment why nE vs E is
-> > required in all these cases.
-> > 
-> > Jason
-> > .
-> > 
-> 
-> HIP09 is a SoC device, and our CPU only optimizes ST4 instructions for device
-> attributes. Therefore, we set device attributes to obtain optimization effects.
-> 
-> The device attribute allows early ack, so it is faster compared with noncached.
-> In order to ensure the early ack works correctly. Even if the data is incomplete,
-> our device still knocks on the doorbell according to the content of the first
-> 8 bytes to complete the data transmission.
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-That doesn't really explain why the doorbell needs to be mapped noncache
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Thu, 25 Nov 2021 09:44:40 -0800
+>
+>> On Thu, 25 Nov 2021 18:07:08 +0100 Alexander Lobakin wrote:
+>> > > This I agree with, and while I can see the layering argument for putting
+>> > > them into 'ip' and rtnetlink instead of ethtool, I also worry that these
+>> > > counters will simply be lost in obscurity, so I do wonder if it wouldn't
+>> > > be better to accept the "layering violation" and keeping them all in the
+>> > > 'ethtool -S' output?  
+>> > 
+>> > I don't think we should harm the code and the logics in favor of
+>> > 'some of the users can face something'. We don't control anything
+>> > related to XDP using Ethtool at all, but there is some XDP-related
+>> > stuff inside iproute2 code, so for me it's even more intuitive to
+>> > have them there.
+>> > Jakub, may be you'd like to add something at this point?
+>> 
+>> TBH I wasn't following this thread too closely since I saw Daniel
+>> nacked it already. I do prefer rtnl xstats, I'd just report them 
+>> in -s if they are non-zero. But doesn't sound like we have an agreement
+>> whether they should exist or not.
+>
+> Right, just -s is fine, if we drop the per-channel approach.
 
-Jason
+I agree that adding them to -s is fine (and that resolves my "no one
+will find them" complain as well). If it crowds the output we could also
+default to only output'ing a subset, and have the more detailed
+statistics hidden behind a verbose switch (or even just in the JSON
+output)?
+
+>> Can we think of an approach which would make cloudflare and cilium
+>> happy? Feels like we're trying to make the slightly hypothetical 
+>> admin happy while ignoring objections of very real users.
+>
+> The initial idea was to only uniform the drivers. But in general
+> you are right, 10 drivers having something doesn't mean it's
+> something good.
+
+I don't think it's accurate to call the admin use case "hypothetical".
+We're expending a significant effort explaining to people that XDP can
+"eat" your packets, and not having any standard statistics makes this
+way harder. We should absolutely cater to our "early adopters", but if
+we want XDP to see wider adoption, making it "less weird" is critical!
+
+> Maciej, I think you were talking about Cilium asking for those stats
+> in Intel drivers? Could you maybe provide their exact usecases/needs
+> so I'll orient myself? I certainly remember about XSK Tx packets and
+> bytes.
+> And speaking of XSK Tx, we have per-socket stats, isn't that enough?
+
+IMO, as long as the packets are accounted for in the regular XDP stats,
+having a whole separate set of stats only for XSK is less important.
+
+>> Please leave the per-channel stats out. They make a precedent for
+>> channel stats which should be an attribute of a channel. Working for 
+>> a large XDP user for a couple of years now I can tell you from my own
+>> experience I've not once found them useful. In fact per-queue stats are
+>> a major PITA as they crowd the output.
+>
+> Oh okay. My very first iterations were without this, but then I
+> found most of the drivers expose their XDP stats per-channel. Since
+> I didn't plan to degrade the functionality, they went that way.
+
+I personally find the per-channel stats quite useful. One of the primary
+reasons for not achieving full performance with XDP is broken
+configuration of packet steering to CPUs, and having per-channel stats
+is a nice way of seeing this. I can see the point about them being way
+too verbose in the default output, though, and I do generally filter the
+output as well when viewing them. But see my point above about only
+printing a subset of the stats by default; per-channel stats could be
+JSON-only, for instance?
+
+-Toke
+
