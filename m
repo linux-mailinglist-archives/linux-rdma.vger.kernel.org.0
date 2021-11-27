@@ -2,128 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572B445FD7C
-	for <lists+linux-rdma@lfdr.de>; Sat, 27 Nov 2021 10:06:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB15045FEDF
+	for <lists+linux-rdma@lfdr.de>; Sat, 27 Nov 2021 14:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352928AbhK0JJR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 27 Nov 2021 04:09:17 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:31914 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241695AbhK0JHR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 27 Nov 2021 04:07:17 -0500
-Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J1Qdm5lb7zcbRG;
-        Sat, 27 Nov 2021 17:03:56 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sat, 27 Nov 2021 17:04:00 +0800
-Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Sat, 27 Nov
- 2021 17:04:00 +0800
-Subject: Re: [PATCH v4 for-next 1/1] RDMA/hns: Support direct wqe of userspace
-To:     Jason Gunthorpe <jgg@nvidia.com>
-References: <20211122033801.30807-1-liangwenpeng@huawei.com>
- <20211122033801.30807-2-liangwenpeng@huawei.com> <YZtboTThVCL7xs5s@unreal>
- <20211125175044.GA504288@nvidia.com>
- <9b3e8596-a386-667b-b8b2-21358331d681@huawei.com>
- <20211126121623.GQ4670@nvidia.com>
-CC:     Leon Romanovsky <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <1916afc6-3956-38be-aabe-0c955c0ecb23@huawei.com>
-Date:   Sat, 27 Nov 2021 17:04:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1351300AbhK0Npi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 27 Nov 2021 08:45:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230105AbhK0Nni (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 27 Nov 2021 08:43:38 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34398C06173E
+        for <linux-rdma@vger.kernel.org>; Sat, 27 Nov 2021 05:40:24 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id 14so14894443ioe.2
+        for <linux-rdma@vger.kernel.org>; Sat, 27 Nov 2021 05:40:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version:content-transfer-encoding;
+        bh=pAk1TP9fOrGOonsoRH4nSjoD6pOV/b1FqN+da3AqBqk=;
+        b=ibLv/XaSsqfTW3f6aFIXN5xZVzYz7AzhRaoLoOGsHFBdOR+hl4qi0iccdhYG9v5Hbr
+         c1nQUTCGts8iw9I0f7agQWlwHKPL91qRigHRrfl6znNOCGxhDHzznio8RlRvwYJEYkey
+         jjsT/dTVpzIqA8wKnFAydvFBdugnwT85vJpO/9Yx4rF8VLAzo0Y+lh+dFozqxawnu+xd
+         1F2iSn8dzH8wKrZzERy405GS8Pui5XivUb2WhE5FJqU5bftUfW0L+qUTW6LJ1bslTr1S
+         i/as6FZmyUQzFu0AF5+xwiXW3k55Cl5vuPpweqg/CAMq9bjOAsi7NkzC6A4HoBjZQeRv
+         Taxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version:content-transfer-encoding;
+        bh=pAk1TP9fOrGOonsoRH4nSjoD6pOV/b1FqN+da3AqBqk=;
+        b=3cIfQkcU/k00+RMP2C6CFEKObVwTotyRlkeN6I5+2IiJSa8Rlmtk2p2FqnlmWDfrmg
+         LHy/mU4kET+TiOPgWtlnprrXRTyEShcXf/iDtZItId606SFUSslz5IzkJmwb9upoT25W
+         jvNXPoFxTg9EIA6QMuFPFYVFHc6GXZOW+58zI4ovcQRY7fHvlVaOn1xhmyV4xCxztUCl
+         meTs5nUW8LJWvYHsmFQHBbp5i2qOKvI8SvbAUx8YEMngkwo6did0kQDCsHafauBk/Oxl
+         4ZIHnySyBqO8bJ682O4YL4KXgniJjSKxubfDMX7+3mWy1TZbkGBAs2FdPwOfUzmveO8b
+         kdiw==
+X-Gm-Message-State: AOAM5324/mj1Fe7a4R5nzA2e8d2Po+7Iq1p5XHgFnbDlVy6n6SsT/GMH
+        SytfphP42WtUm4bknTL22lCPUw==
+X-Google-Smtp-Source: ABdhPJxj8LyRJoYC/2UaHln5kGew89xFSBNPBZbid2TJqWausDUKj9kqSjMQm4MWMo7uQeoIsO4o1w==
+X-Received: by 2002:a05:6602:2d04:: with SMTP id c4mr47351019iow.56.1638020423493;
+        Sat, 27 Nov 2021 05:40:23 -0800 (PST)
+Received: from [127.0.1.1] ([66.219.217.159])
+        by smtp.gmail.com with ESMTPSA id s9sm5090151iow.48.2021.11.27.05.40.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Nov 2021 05:40:23 -0800 (PST)
+From:   Jens Axboe <axboe@kernel.dk>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jan Kara <jack@suse.cz>, linux-rdma@vger.kernel.org,
+        linux-block@vger.kernel.org,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+In-Reply-To: <20211126115817.2087431-1-hch@lst.de>
+References: <20211126115817.2087431-1-hch@lst.de>
+Subject: Re: cleanup I/O context handling
+Message-Id: <163802042046.623756.9169975969414207413.b4-ty@kernel.dk>
+Date:   Sat, 27 Nov 2021 06:40:20 -0700
 MIME-Version: 1.0
-In-Reply-To: <20211126121623.GQ4670@nvidia.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2021/11/26 20:16, Jason Gunthorpe wrote:
-> On Fri, Nov 26, 2021 at 04:25:27PM +0800, Wenpeng Liang wrote:
->> On 2021/11/26 1:50, Jason Gunthorpe wrote:
->>> On Mon, Nov 22, 2021 at 10:58:09AM +0200, Leon Romanovsky wrote:
->>>> On Mon, Nov 22, 2021 at 11:38:01AM +0800, Wenpeng Liang wrote:
->>>>> From: Yixing Liu <liuyixing1@huawei.com>
->>>>>
->>>>> Add direct wqe enable switch and address mapping.
->>>>>
->>>>> Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
->>>>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->>>>>  drivers/infiniband/hw/hns/hns_roce_device.h |  8 +--
->>>>>  drivers/infiniband/hw/hns/hns_roce_main.c   | 38 ++++++++++++---
->>>>>  drivers/infiniband/hw/hns/hns_roce_pd.c     |  3 ++
->>>>>  drivers/infiniband/hw/hns/hns_roce_qp.c     | 54 ++++++++++++++++++++-
->>>>>  include/uapi/rdma/hns-abi.h                 |  2 +
->>>>>  5 files changed, 94 insertions(+), 11 deletions(-)
->>>>
->>>> <...>
->>>>
->>>>>  	entry = to_hns_mmap(rdma_entry);
->>>>>  	pfn = entry->address >> PAGE_SHIFT;
->>>>> -	prot = vma->vm_page_prot;
->>>>>  
->>>>> -	if (entry->mmap_type != HNS_ROCE_MMAP_TYPE_TPTR)
->>>>> -		prot = pgprot_noncached(prot);
->>>>> +	switch (entry->mmap_type) {
->>>>> +	case HNS_ROCE_MMAP_TYPE_DB:
->>>>> +		prot = pgprot_noncached(vma->vm_page_prot);
->>>>> +		break;
->>>>> +	case HNS_ROCE_MMAP_TYPE_TPTR:
->>>>> +		prot = vma->vm_page_prot;
->>>>> +		break;
->>>>> +	case HNS_ROCE_MMAP_TYPE_DWQE:
->>>>> +		prot = pgprot_device(vma->vm_page_prot);
->>>>
->>>> Everything fine, except this pgprot_device(). You probably need to check
->>>> WC internally in your driver and use or pgprot_writecombine() or
->>>> pgprot_noncached() explicitly.
->>>
->>> pgprot_device is only used in two places in the kernel
->>> pci_mmap_resource_range() for setting up the sysfs resourceXX mmap
->>>
->>> And in pci_remap_iospace() as part of emulationg PIO on mmio
->>> architectures
->>>
->>> So, a PCI device should always be using pgprot_device() in its mmap
->>> function
->>>
->>> The question is why is pgprot_noncached() being used at all? The only
->>> difference on ARM is that noncached is non-Early Write Acknowledgement
->>> and devices is not.
->>>
->>> At the very least this should be explained in a comment why nE vs E is
->>> required in all these cases.
->>>
->>> Jason
->>> .
->>>
->>
->> HIP09 is a SoC device, and our CPU only optimizes ST4 instructions for device
->> attributes. Therefore, we set device attributes to obtain optimization effects.
->>
->> The device attribute allows early ack, so it is faster compared with noncached.
->> In order to ensure the early ack works correctly. Even if the data is incomplete,
->> our device still knocks on the doorbell according to the content of the first
->> 8 bytes to complete the data transmission.
+On Fri, 26 Nov 2021 12:58:03 +0100, Christoph Hellwig wrote:
+> this series does a little spring cleaning of the I/O context handling/
 > 
-> That doesn't really explain why the doorbell needs to be mapped noncache
+> Subject:
+>  block/bfq-iosched.c                   |   41 ++++++------
+>  block/blk-ioc.c                       |  115 +++++++++++++++++++++++++---------
+>  block/blk-mq-sched.c                  |   35 ----------
+>  block/blk-mq-sched.h                  |    3
+>  block/blk-mq.c                        |   14 ----
+>  block/blk.h                           |    8 --
+>  drivers/infiniband/hw/qib/qib_verbs.c |    4 -
+>  include/linux/iocontext.h             |   40 +++--------
+>  kernel/fork.c                         |   26 -------
+>  9 files changed, 128 insertions(+), 158 deletions(-)
 > 
+> [...]
 
-I might have misunderstood what you meant before.
+Applied, thanks!
 
-For the HNS_ROCE_MMAP_TYPE_DB type, our device does not support Early Write
-Acknowledgement. Therefore, HNS_ROCE_MMAP_TYPE_DB uses the noncached attribute.
-I will add a comment in v5.
+[01/14] RDMA/qib: rename copy_io to qib_copy_io
+        commit: aa6c81e0dbe5ed782cc4cdb9274eaf1e14c07983
+[02/14] fork: move copy_io to block/blk-ioc.c
+        commit: 8a8d3786e0ea1793eca69d1e071141bff16d55d7
+[03/14] bfq: simplify bfq_bic_lookup
+        commit: 91d84d8eef716bfba98263493945897beff5e26a
+[04/14] bfq: use bfq_bic_lookup in bfq_limit_depth
+        commit: 4d6d46def2117d08edf72b080e768da8e3d36fe8
+[05/14] Revert "block: Provide blk_mq_sched_get_icq()"
+        commit: b2b522fb21b1a3dd10a1419884562114ab653bec
+[06/14] block: mark put_io_context_active static
+        commit: 6b939dcfa41384d18478ec34083ed64b3c485876
+[07/14] block: move blk_mq_sched_assign_ioc to blk-ioc.c
+        commit: 0afb8931998dad3d4ed125684e2dc74fca7b1714
+[08/14] block: move the remaining elv.icq handling to the I/O scheduler
+        commit: f390716138b4c5c32b883a047f9a1f38ef5b8c0f
+[09/14] block: remove get_io_context_active
+        commit: b9e117800715bad4920bc8ab8b286ffdedb22979
+[10/14] block: factor out a alloc_io_context helper
+        commit: a3335d4269a799c85395cb1a0712dd54b54f6497
+[11/14] block: use alloc_io_context in __copy_io
+        commit: 6767435a95a26560c2460e43aa26d00fb5b50e71
+[12/14] block: return the io_context from create_task_io_context
+        commit: af04d9b6c9037c4ff4312a8e1e58fd96a05c3ca5
+[13/14] block: simplify ioc_create_icq
+        commit: 22e0aa975c1fc52e05d9e9aa637e4833370eefb6
+[14/14] block: simplify ioc_lookup_icq
+        commit: c3ad7dd4999b6f4603dcdbbea0b7860c9c02bd86
 
-Thanks
-Wenpeng
+Best regards,
+-- 
+Jens Axboe
+
+
