@@ -2,99 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9965546087B
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 19:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF09460A5F
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 22:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347745AbhK1SVX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Nov 2021 13:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbhK1STX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Nov 2021 13:19:23 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50F6C061746
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 10:16:06 -0800 (PST)
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 7AA7F610A1
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 18:16:06 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C47060041;
-        Sun, 28 Nov 2021 18:16:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638123365;
-        bh=TNM7yu4eF4CklM3UuSYlo560O9ABw9r1m/qj+lObvoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pMQyai7gZ9ybdRMp/TgTwAdAVvVVqoTAJgQ8z7heBCNTkmk2CJKlflq6s+B2WubJ/
-         JEQ7o0HOQXK/IiytkCVSD7Y4HMsronpQE4zkEpRdOINxrPzu8wEqg/rocWNsys1Zih
-         Y21ZFBTwjUdXXCUH7TKgsVVQkY7o4L6ZuPhFK1bakQcs/81ezqqOP1zHx4lC90uCnF
-         mm5DEzJ78IotZnZPdfQDJh3ma4QIxZytmm8Rx6+EVuPb7Fbipu/R2ilQyCJ64J82W8
-         Vyw+04sqrc55ckvyIOyNZsN+CcUBJY1C2MiXQxvFRd6IjNv81ZlseMDqCooockgk8x
-         OZQIz7whJC/Wg==
-Date:   Sun, 28 Nov 2021 20:16:01 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>
-Cc:     jinpu.wang@ionos.com, haris.iqbal@ionos.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH V2] RDMA/rtrs: Call {get,put}_cpu_ptr to silence a debug
- kernel warning
-Message-ID: <YaPHYfib1GDjazG1@unreal>
-References: <20211128133501.38710-1-guoqing.jiang@linux.dev>
+        id S233140AbhK1VsK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Nov 2021 16:48:10 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236303AbhK1VqK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 28 Nov 2021 16:46:10 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1ASKud1L006735;
+        Sun, 28 Nov 2021 21:42:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=53T3DVQXoOmGk0Ru/bhYIr21fbVr8KqJ17GtJgDRD9I=;
+ b=l3n4T7on+31LPEFelJ6Pu/7akDMPbgrPmUOsJ5gi1kWmekxE1GKlbF7A3RI+PkswfSdx
+ mKZNTlf10solSPUSonUdJJt/ns8QxHSayq41bNSXXj/s43SmYlQNSPFGmb6F+lFjC0ij
+ SzNejjGEvlXdgSnJ0Z9Bgn0rzyje+SGqqTZCQOjqGoXSVtqMTViKUBIa24nNln+MO2jB
+ FZ0GOF4fcPbMJXPnL4B1q1EoqSDSQ129vb7ux37q811fQgvaaEVCxiA7PortAs+YPC21
+ LuSkZV9+X5Q1OKG+RWZWE3JrLb7spqU3aDoCg+MfSRucwpd0W1te8g7zRElkMFQbGBPG kA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cmh8d8f2n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:42:50 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1ASLeB8R032291;
+        Sun, 28 Nov 2021 21:42:49 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3cmh8d8f2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:42:49 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1ASLbHKJ028231;
+        Sun, 28 Nov 2021 21:42:48 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma01fra.de.ibm.com with ESMTP id 3ckca96fq8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 28 Nov 2021 21:42:48 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1ASLgj7U59113762
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 28 Nov 2021 21:42:45 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B56A6A405B;
+        Sun, 28 Nov 2021 21:42:45 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D53FA4054;
+        Sun, 28 Nov 2021 21:42:45 +0000 (GMT)
+Received: from [9.145.59.207] (unknown [9.145.59.207])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 28 Nov 2021 21:42:45 +0000 (GMT)
+Message-ID: <883f1ab1-21be-9019-d8c6-3942a0b8588c@linux.ibm.com>
+Date:   Sun, 28 Nov 2021 22:42:50 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211128133501.38710-1-guoqing.jiang@linux.dev>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH net] net/smc: Clear memory when release and reuse buffer
+Content-Language: en-US
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20211125122858.90726-1-tonylu@linux.alibaba.com>
+ <20211126112855.37274cb7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20211126112855.37274cb7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: gArUDayhvrN29MTxd2k2bNRQBnzh0YlT
+X-Proofpoint-GUID: RbmPb3ySMcWuxDcUW-fEtS-yD77t07at
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-28_07,2021-11-28_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxscore=0 clxscore=1015 priorityscore=1501 malwarescore=0
+ lowpriorityscore=0 spamscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2111280126
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Nov 28, 2021 at 09:35:01PM +0800, Guoqing Jiang wrote:
-> With preemption enabled (CONFIG_DEBUG_PREEMPT=y), the following appeared
-> when rnbd client tries to map remote block device.
+On 26/11/2021 20:28, Jakub Kicinski wrote:
+> The tag in the subject seems incorrect, we tag things as [PATCH net] 
+> if they are fixes, and as [PATCH net-next] if they are new features,
+> code refactoring or performance improvements.
 > 
-> [ 2123.221071] BUG: using smp_processor_id() in preemptible [00000000] code: bash/1733
-> [ 2123.221175] caller is debug_smp_processor_id+0x17/0x20
-> [ 2123.221214] CPU: 0 PID: 1733 Comm: bash Not tainted 5.16.0-rc1 #5
-> [ 2123.221218] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-> [ 2123.221229] Call Trace:
-> [ 2123.221231]  <TASK>
-> [ 2123.221235]  dump_stack_lvl+0x5d/0x78
-> [ 2123.221252]  dump_stack+0x10/0x12
-> [ 2123.221257]  check_preemption_disabled+0xe4/0xf0
-> [ 2123.221266]  debug_smp_processor_id+0x17/0x20
-> [ 2123.221271]  rtrs_clt_update_all_stats+0x3b/0x70 [rtrs_client]
-> [ 2123.221285]  rtrs_clt_read_req+0xc3/0x380 [rtrs_client]
-> [ 2123.221298]  ? rtrs_clt_init_req+0xe3/0x120 [rtrs_client]
-> [ 2123.221321]  rtrs_clt_request+0x1a7/0x320 [rtrs_client]
-> [ 2123.221340]  ? 0xffffffffc0ab1000
-> [ 2123.221357]  send_usr_msg+0xbf/0x160 [rnbd_client]
-> [ 2123.221370]  ? rnbd_clt_put_sess+0x60/0x60 [rnbd_client]
-> [ 2123.221377]  ? send_usr_msg+0x160/0x160 [rnbd_client]
-> [ 2123.221386]  ? sg_alloc_table+0x27/0xb0
-> [ 2123.221395]  ? sg_zero_buffer+0xd0/0xd0
-> [ 2123.221407]  send_msg_sess_info+0xe9/0x180 [rnbd_client]
-> [ 2123.221413]  ? rnbd_clt_put_sess+0x60/0x60 [rnbd_client]
-> [ 2123.221429]  ? blk_mq_alloc_tag_set+0x2ef/0x370
-> [ 2123.221447]  rnbd_clt_map_device+0xba8/0xcd0 [rnbd_client]
-> [ 2123.221462]  ? send_msg_open+0x200/0x200 [rnbd_client]
-> [ 2123.221479]  rnbd_clt_map_device_store+0x3e5/0x620 [rnbd_client
+> Is this a fix for a regression? In which case we need a Fixes tag to
+> indicate where it was introduced. Otherwise it needs to be tagged as
+> [PATCH net-next].
 > 
-> To supress the calltrace, let's call get_cpu_ptr/put_cpu_ptr pair in
-> rtrs_clt_update_rdma_stats to disable preemption when accessing per-cpu
-> variable.
-> 
-> While at it, let's make the similar change in rtrs_clt_update_wc_stats.
-> And for rtrs_clt_inc_failover_cnt, though it was only called inside rcu
-> section, but it still can be preempted in case CONFIG_PREEMPT_RCU is
-> enabled, so change it to {get,put}_cpu_ptr pair either.
-> 
-> Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-> ---
-> V2: also make the change in rtrs_clt_update_wc_stats and rtrs_clt_inc_failover_cnt
-> 
->  drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+> I'm assuming Karsten will take it via his tree, otherwise you'll need
+> to repost.
 > 
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+We are testing this change atm and will submit it via our tree.
+Very nice change, I like it!
