@@ -2,91 +2,168 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC3A54605D4
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 12:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 327C5460621
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 13:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345081AbhK1LRw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Nov 2021 06:17:52 -0500
-Received: from mga17.intel.com ([192.55.52.151]:6299 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235611AbhK1LPw (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 28 Nov 2021 06:15:52 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10181"; a="216528351"
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="216528351"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2021 03:12:36 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,271,1631602800"; 
-   d="scan'208";a="676009152"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by orsmga005.jf.intel.com with ESMTP; 28 Nov 2021 03:12:36 -0800
-Received: from lcsmsx603.ger.corp.intel.com (10.109.210.12) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sun, 28 Nov 2021 03:12:35 -0800
-Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
- LCSMSX603.ger.corp.intel.com (10.109.210.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Sun, 28 Nov 2021 13:12:33 +0200
-Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
- HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2308.020;
- Sun, 28 Nov 2021 13:12:33 +0200
-From:   "Winkler, Tomas" <tomas.winkler@intel.com>
-To:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-CC:     "arnd@arndb.de" <arnd@arndb.de>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [PATCH] mei: Remove some dead code
-Thread-Topic: [PATCH] mei: Remove some dead code
-Thread-Index: AQHX16z+MGID8V6pdUm1z2bNCeUOWqv/oKGAgBlBgNA=
-Date:   Sun, 28 Nov 2021 11:12:33 +0000
-Message-ID: <17d6896a6abf49138556e34cb426d575@intel.com>
-References: <3f904c291f3eed06223dd8d494028e0d49df6f10.1636711522.git.christophe.jaillet@wanadoo.fr>
- <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
-In-Reply-To: <80B25490-FE92-420E-A506-C92A996EF174@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.184.70.1]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S236978AbhK1Mmq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Nov 2021 07:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242823AbhK1Mkp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Nov 2021 07:40:45 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A86B7C061759
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 04:37:22 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 137so12312071wma.1
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 04:37:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kryo-se.20210112.gappssmtp.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LcBtqbRPkEcsZfTVxey43CZc666mGtsTaMbpCcH3s5g=;
+        b=EFGSv3vr1jlJ/3OMklxcssKtiEGwrXuZR4CYy49g2ILzX8LCZv42cKGCrlgF94UaAR
+         fJzYXAAHNBb0rJsfAuc0DYrr3AM7KMyuGTeCUEapqAzfvCQ6ub2bS4bq1NMHwZQRAo3c
+         UYOzndMo+SQ7jD+XM6MMtVyJo1UfH2XO+jcqAakyvfrbmErRkhvy2cuqXiZynZeIHnUd
+         K6M8trgx348nfu/shp7EacR2qsTamZx2vMKL0BwmAaUnlU0Zw5qwwBF6ZVSt1ARptJAI
+         30gCfj+PQkYRad5Jt+lKq9suUS5kV9dAnrEkmt3DsBUkIcf5DK8EHepZYdOhdSKn2+Wy
+         7idw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LcBtqbRPkEcsZfTVxey43CZc666mGtsTaMbpCcH3s5g=;
+        b=1WkSTUT4XAfjsMS5wpoqrI+PLSRDpYe4PDWlViszdR4Kkn3+a3fLiTXN4aQj0BMbTi
+         71LRBnXlq0JFFRT1knMspNLum+B3HP2qvqJ4yT4Hoa9VgDoPF4x6JeN/UkoJ4XoiJ07K
+         HrYJEw+nuK+M9ogaz9jMx8iJyqTqHPQz8VxvhZuWBhJ1+EY1YQSuYmIz68KI/jtauvJc
+         r8yadnRwel0S8mxZIOCz9fZWWN+9y1z9Y6N8WbFt6BBgoK/2CKvoQsfctHpfxC2Fp/2o
+         +72z6Rmbrdrp69hTtxVZTJqL728Inb8LNfCflYMC1i/lVUcZoYlB3mwXMbI/8a6paCs5
+         8X+g==
+X-Gm-Message-State: AOAM530M2z3SPzVcOVtEC1n6Zxidf+EUmKa87HObY2AOcEO3rFGub+/2
+        3B7Pfu8cwipuTTQE6Tr0bRUmMNJidWtC7flK
+X-Google-Smtp-Source: ABdhPJzoYvlmfuiKv+WzJ+bzTDTdJ/1Ukqz8IBwpUamRawGyGPn7UwPf0/m9fhSyxaXJfWgNsb3osA==
+X-Received: by 2002:a05:600c:3505:: with SMTP id h5mr28916296wmq.22.1638103041103;
+        Sun, 28 Nov 2021 04:37:21 -0800 (PST)
+Received: from kerfuffle.. ([2a02:168:9619:0:5497:3715:36d:f557])
+        by smtp.gmail.com with ESMTPSA id y6sm16242178wma.37.2021.11.28.04.37.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Nov 2021 04:37:20 -0800 (PST)
+From:   Erik Ekman <erik@kryo.se>
+To:     Tariq Toukan <tariqt@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Erik Ekman <erik@kryo.se>,
+        Michael Stapelberg <michael@stapelberg.ch>,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net/mlx4_en: Update reported link modes for 1/10G
+Date:   Sun, 28 Nov 2021 13:37:11 +0100
+Message-Id: <20211128123712.82096-1-erik@kryo.se>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQo+IA0KPiANCj4gPiBPbiAxMiBOb3YgMjAyMSwgYXQgMTE6MDYsIENocmlzdG9waGUgSkFJTExF
-VA0KPiA8Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI+IHdyb3RlOg0KPiA+DQo+ID4gJ2dl
-bmVyYXRlZCcgaXMga25vd24gdG8gYmUgdHJ1ZSBoZXJlLCBzbyAidHJ1ZSB8fCB3aGF0ZXZlciIg
-d2lsbCBzdGlsbA0KPiA+IGJlIHRydWUuDQo+ID4NCj4gPiBTbywgcmVtb3ZlIHNvbWUgZGVhZCBj
-b2RlLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3BoZSBKQUlMTEVUIDxjaHJpc3Rv
-cGhlLmphaWxsZXRAd2FuYWRvby5mcj4NCj4gPiAtLS0NCj4gPiBUaGlzIGlzIGFsc28gbGlrZWx5
-IHRoYXQgYSBidWcgaXMgbHVya2luZyBoZXJlLg0KPiA+DQo+ID4gTWF5YmUsIHRoZSBmb2xsb3dp
-bmcgd2FzIGV4cGVjdGVkOg0KPiA+IC0JZ2VuZXJhdGVkID0gZ2VuZXJhdGVkIHx8DQo+ID4gKwln
-ZW5lcmF0ZWQgPQ0KPiA+IAkJKGhpc3IgJiBISVNSX0lOVF9TVFNfTVNLKSB8fA0KPiA+IAkJKGlw
-Y19pc3IgJiBTRUNfSVBDX0hPU1RfSU5UX1NUQVRVU19QRU5ESU5HKTsNCj4gPg0KPiA+ID8NCj4g
-DQo+IEkgY29uY3VyIGFib3V0IHlvdXIgYW5hbHlzaXMsIGJ1dCBJIGRvIG5vdCBrbm93IHRoZSBp
-bnRlbnQgaGVyZS4NCllvdXIgZml4ICBpcyBva2F5LCBJIGNhbiBhY2sgdGhhdCBwYXRjaC4gDQpU
-aGFua3MNClRvbWFzDQoNCj4gDQo+IA0KPiBIw6Vrb24NCj4gDQo+ID4gLS0tDQo+ID4gZHJpdmVy
-cy9taXNjL21laS9ody10eGUuYyB8IDYgKy0tLS0tDQo+ID4gMSBmaWxlIGNoYW5nZWQsIDEgaW5z
-ZXJ0aW9uKCspLCA1IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bWlzYy9tZWkvaHctdHhlLmMgYi9kcml2ZXJzL21pc2MvbWVpL2h3LXR4ZS5jDQo+ID4gaW5kZXgg
-YTRlODU0YjliOWU2Li4wMDY1MmMxMzdjYzcgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9taXNj
-L21laS9ody10eGUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvbWlzYy9tZWkvaHctdHhlLmMNCj4gPiBA
-QCAtOTk0LDExICs5OTQsNyBAQCBzdGF0aWMgYm9vbCBtZWlfdHhlX2NoZWNrX2FuZF9hY2tfaW50
-cnMoc3RydWN0DQo+IG1laV9kZXZpY2UgKmRldiwgYm9vbCBkb19hY2spDQo+ID4gCQloaGlzciAm
-PSB+SVBDX0hISUVSX1NFQzsNCj4gPiAJfQ0KPiA+DQo+ID4gLQlnZW5lcmF0ZWQgPSBnZW5lcmF0
-ZWQgfHwNCj4gPiAtCQkoaGlzciAmIEhJU1JfSU5UX1NUU19NU0spIHx8DQo+ID4gLQkJKGlwY19p
-c3IgJiBTRUNfSVBDX0hPU1RfSU5UX1NUQVRVU19QRU5ESU5HKTsNCj4gPiAtDQo+ID4gLQlpZiAo
-Z2VuZXJhdGVkICYmIGRvX2Fjaykgew0KPiA+ICsJaWYgKGRvX2Fjaykgew0KPiA+IAkJLyogU2F2
-ZSB0aGUgaW50ZXJydXB0IGNhdXNlcyAqLw0KPiA+IAkJaHctPmludHJfY2F1c2UgfD0gaGlzciAm
-IEhJU1JfSU5UX1NUU19NU0s7DQo+ID4gCQlpZiAoaXBjX2lzciAmIFNFQ19JUENfSE9TVF9JTlRf
-U1RBVFVTX0lOX1JEWSkNCj4gPiAtLQ0KPiA+IDIuMzAuMg0KPiA+DQoNCg==
+When link modes were initially added in commit 2c762679435dc
+("net/mlx4_en: Use PTYS register to query ethtool settings") and
+later updated for the new ethtool API in commit 3d8f7cc78d0eb
+("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
+link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
+It looks like these got picked to represent other modes since nothing
+better was available.
+
+Switch to using more specific link modes added in commit 5711a98221443
+("net: ethtool: add support for 1000BaseX and missing 10G link modes").
+
+Tested with MCX311A-XCAT connected via DAC.
+Before:
+
+% sudo ethtool enp3s0
+Settings for enp3s0:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseKX/Full
+	                        10000baseKR/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: No
+	Supported FEC modes: Not reported
+	Advertised link modes:  1000baseKX/Full
+	                        10000baseKR/Full
+	Advertised pause frame use: Symmetric
+	Advertised auto-negotiation: No
+	Advertised FEC modes: Not reported
+	Speed: 10000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: Direct Attach Copper
+	PHYAD: 0
+	Transceiver: internal
+	Supports Wake-on: d
+	Wake-on: d
+        Current message level: 0x00000014 (20)
+                               link ifdown
+	Link detected: yes
+
+With this change:
+
+% sudo ethtool enp3s0
+	Settings for enp3s0:
+	Supported ports: [ FIBRE ]
+	Supported link modes:   1000baseX/Full
+	                        10000baseCR/Full
+ 	                        10000baseSR/Full
+	Supported pause frame use: Symmetric Receive-only
+	Supports auto-negotiation: No
+	Supported FEC modes: Not reported
+	Advertised link modes:  1000baseX/Full
+ 	                        10000baseCR/Full
+ 	                        10000baseSR/Full
+	Advertised pause frame use: Symmetric
+	Advertised auto-negotiation: No
+	Advertised FEC modes: Not reported
+	Speed: 10000Mb/s
+	Duplex: Full
+	Auto-negotiation: off
+	Port: Direct Attach Copper
+	PHYAD: 0
+	Transceiver: internal
+	Supports Wake-on: d
+	Wake-on: d
+        Current message level: 0x00000014 (20)
+                               link ifdown
+	Link detected: yes
+
+Tested-by: Michael Stapelberg <michael@stapelberg.ch>
+Signed-off-by: Erik Ekman <erik@kryo.se>
+---
+ drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+index 066d79e4ecfc..10238bedd694 100644
+--- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+@@ -670,7 +670,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_T, SPEED_1000,
+ 				       ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_CX_SGMII, SPEED_1000,
+-				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
++				       ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_KX, SPEED_1000,
+ 				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_T, SPEED_10000,
+@@ -682,9 +682,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_KR, SPEED_10000,
+ 				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_CR, SPEED_10000,
+-				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
++				       ETHTOOL_LINK_MODE_10000baseCR_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_SR, SPEED_10000,
+-				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
++				       ETHTOOL_LINK_MODE_10000baseSR_Full_BIT);
+ 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_20GBASE_KR2, SPEED_20000,
+ 				       ETHTOOL_LINK_MODE_20000baseMLD2_Full_BIT,
+ 				       ETHTOOL_LINK_MODE_20000baseKR2_Full_BIT);
+-- 
+2.33.1
+
