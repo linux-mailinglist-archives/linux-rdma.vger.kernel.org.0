@@ -2,160 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBF7460AB0
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 23:26:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E902D460B7F
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 01:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359456AbhK1W3w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Nov 2021 17:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359430AbhK1W1w (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Nov 2021 17:27:52 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F4DAC061763;
-        Sun, 28 Nov 2021 14:23:53 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id bj13so30910962oib.4;
-        Sun, 28 Nov 2021 14:23:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=M5rtFSgsWKzafi8Cs4A/snez2F9siOW7EyMGKMlf5GI=;
-        b=hq9071HUdLZ2TaOnDWMrUmkEjmGHPPdTYkA47Un8OgZrB6yRF/DDW8F2TRjD1Te19u
-         iwz7IofjNHmeoxPcYl7UCdDln5AfF+oBejaZnHIFQwTg+gm1U9+1Rb0P0GWb/NR69e4e
-         HeUhV/KFKLd9XUXKFJVmgeC4J0r5TQnv1NJ+2Bx+oe5ZCTpFo0EJ7t29VyUgLvsKBoqI
-         /u1OO+yD8J5oRDDhs/6UAFhdL1gR7NeF9utMME7xbGZnk7Dwf0OIocm2klvolQJMDSs2
-         1QegL3fy+FKj/LJwCCf6vQ7+wg9TQOQVwwqfaZxdwTR7sSWQu8DzfoZ1VoZlEQJGdoFg
-         yLaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=M5rtFSgsWKzafi8Cs4A/snez2F9siOW7EyMGKMlf5GI=;
-        b=BHMNg+OBT2fBeuD/ovlMpqWsxOQNR4hFGdeZh9pM7EFgXY69dipXA016diHw1dG2x5
-         lOyhSiJaDqPI6/DOrzN06rad97jRizdNRGK7ndG4wZ/3JDcLRHADL72LtdYVV8sJYSBf
-         Wa4865mBuqDV9KqEsCVOuLZI891ulPOzJRyzUwlGyWORtLFuQtfi8oMd93cDQn+ouIan
-         pcivrbf2Q/uJojQH1MLX6oWCBqMVrq0OC73RepFWX9+WRHfToKP6OCKINPqFsUGu66Vq
-         nizVSYldwQFNQMVQhqPfnxQJZIEuRs6caihngz+HKf+BUqGOpM3pREZqsEhJ4+Teu0BR
-         +XVQ==
-X-Gm-Message-State: AOAM531EBglsM8L1fEWMGLYYoVAFUPL9817Q3pfJePARhrsKMtQUIeQG
-        JYtmvWQp+7AaUN1MVbPs6PE=
-X-Google-Smtp-Source: ABdhPJzDpxaefKBU6oCHFFQgwoEO9P28FUz/LwlZRp8iIlHj4Qp+gFDBjfKDrMFg6OvgX+VjCyPvHw==
-X-Received: by 2002:a54:4614:: with SMTP id p20mr38321110oip.39.1638138232614;
-        Sun, 28 Nov 2021 14:23:52 -0800 (PST)
-Received: from [172.16.0.2] ([8.48.134.30])
-        by smtp.googlemail.com with ESMTPSA id l9sm2021123oom.4.2021.11.28.14.23.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Nov 2021 14:23:52 -0800 (PST)
-Message-ID: <2b9c3c1f-159f-f7c0-d4cb-1159e17e0dd4@gmail.com>
-Date:   Sun, 28 Nov 2021 15:23:41 -0700
+        id S1359813AbhK2ASf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Nov 2021 19:18:35 -0500
+Received: from mail.vallenar.cl ([200.54.241.89]:39018 "EHLO mail.vallenar.cl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233716AbhK2AQd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 28 Nov 2021 19:16:33 -0500
+X-Greylist: delayed 20294 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Nov 2021 19:16:30 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.vallenar.cl (Postfix) with ESMTP id B6B9E1CC54D2;
+        Sun, 28 Nov 2021 12:29:34 -0300 (-03)
+Received: from mail.vallenar.cl ([127.0.0.1])
+        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id KoyW2nH7GhDD; Sun, 28 Nov 2021 12:29:34 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.vallenar.cl (Postfix) with ESMTP id 3122B1D06842;
+        Sun, 28 Nov 2021 11:45:20 -0300 (-03)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.vallenar.cl 3122B1D06842
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vallenar.cl;
+        s=EC098874-C7DE-11E7-B3B1-1A9A6030413E; t=1638110720;
+        bh=IQxUcKgLaEia+DMrVj9OEHbWOH8TffrzQMeZgAxYubI=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=ZNBNFUZbmFa2MHgDVnqeLUNmN1jhvIoIkMHZTp8rDDfwo5mpNBsBVbO8RAJCiC7El
+         +VRB+SyXtRcilNrHQXQaPXnqwriKkMY96p2U9JdvT25Pvs30y1yC0idQP7feAgHN5C
+         510coTQH0yXzg/N7bnGVoeOODT5Bq+9YByGo+oB7uh3zNaT8MZoWKyls6hJSsulfKm
+         cY+YKvYAYXu9tmAGuln574ixcTAY/PY44NpBwFzV7BnN1KA3q0ALEHKkThQ+on5UML
+         Xti6+OBaIapzFEFuHoclzm2AFuLehO8hi0kLvqToLxvFHB2HkAyWBX6wCFV/7hgDMI
+         hu2+d/o+eTobg==
+X-Virus-Scanned: amavisd-new at vallenar.cl
+Received: from mail.vallenar.cl ([127.0.0.1])
+        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Wnon1U2B1Kbm; Sun, 28 Nov 2021 11:45:19 -0300 (-03)
+Received: from [192.168.8.101] (unknown [105.0.3.102])
+        by mail.vallenar.cl (Postfix) with ESMTPSA id 756591D08C9F;
+        Sun, 28 Nov 2021 11:21:39 -0300 (-03)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.3.1
-Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP
- stats
-Content-Language: en-US
-To:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
-From:   David Ahern <dsahern@gmail.com>
-In-Reply-To: <20211123163955.154512-1-alexandr.lobakin@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: 2.000.000,00. Euro
+To:     Recipients <yperez@vallenar.cl>
+From:   "manuel franco" <yperez@vallenar.cl>
+Date:   Sun, 28 Nov 2021 16:29:09 +0200
+Reply-To: manuelfrancospende00@gmail.com
+Message-Id: <20211128142139.756591D08C9F@mail.vallenar.cl>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 11/23/21 9:39 AM, Alexander Lobakin wrote:
-> This is an almost complete rework of [0].
-> 
-> This series introduces generic XDP statistics infra based on rtnl
-> xstats (Ethtool standard stats previously), and wires up the drivers
-> which collect appropriate statistics to this new interface. Finally,
-> it introduces XDP/XSK statistics to all XDP-capable Intel drivers.
-> 
-> Those counters are:
-> * packets: number of frames passed to bpf_prog_run_xdp().
-> * bytes: number of bytes went through bpf_prog_run_xdp().
-> * errors: number of general XDP errors, if driver has one unified
->   counter.
-> * aborted: number of XDP_ABORTED returns.
-> * drop: number of XDP_DROP returns.
-> * invalid: number of returns of unallowed values (i.e. not XDP_*).
-> * pass: number of XDP_PASS returns.
-> * redirect: number of successfully performed XDP_REDIRECT requests.
-> * redirect_errors: number of failed XDP_REDIRECT requests.
-> * tx: number of successfully performed XDP_TX requests.
-> * tx_errors: number of failed XDP_TX requests.
-> * xmit_packets: number of successfully transmitted XDP/XSK frames.
-> * xmit_bytes: number of successfully transmitted XDP/XSK frames.
-> * xmit_errors: of XDP/XSK frames failed to transmit.
-> * xmit_full: number of XDP/XSK queue being full at the moment of
->   transmission.
-> 
-> To provide them, developers need to implement .ndo_get_xdp_stats()
-> and, if they want to expose stats on a per-channel basis,
-> .ndo_get_xdp_stats_nch(). include/net/xdp.h contains some helper
+Sie haben eine Spende von 2.000.000,00. Euro
 
-Why the tie to a channel? There are Rx queues and Tx queues and no
-requirement to link them into a channel. It would be better (more
-flexible) to allow them to be independent. Rather than ask the driver
-"how many channels", ask 'how many Rx queues' and 'how many Tx queues'
-for which xdp stats are reported.
-
-From there, allow queue numbers or queue id's to be non-consecutive and
-add a queue id or number as an attribute. e.g.,
-
-[XDP stats]
-	[ Rx queue N]
-		counters
-
-
-	[ Tx queue N]
-		counters
-
-This would allow a follow on patch set to do something like "Give me XDP
-stats for Rx queue N" instead of doing a full dump.
+Mein Name ist Manuel Franco aus den Vereinigten Staaten.
+Ich habe die Amerika-Lotterie im Wert von 768 Millionen US-Dollar gewonnen =
+und spende einen Teil davon an nur 5 gl=FCckliche Menschen und ein paar Wai=
+senh=E4user als Wohlwollen f=FCr die Menschheit.
