@@ -2,129 +2,177 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8D4946068E
-	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 14:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6D04606A4
+	for <lists+linux-rdma@lfdr.de>; Sun, 28 Nov 2021 15:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhK1NlH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Nov 2021 08:41:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53622 "EHLO
+        id S1357735AbhK1OFs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 28 Nov 2021 09:05:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbhK1NjG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Nov 2021 08:39:06 -0500
-Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84039C061757
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 05:35:50 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1638106547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6L6G74dV7Aj9Zzs29cPaXwQHqjtomNihY5daHvQU0+Y=;
-        b=ARenOvxOHspig6TkEJRxAn+JFRQRGoKCdFKam40GDgTmVGkIoQG4aSPiMI19q5c4CwApBJ
-        kqaVfz6FoqgzXHeZ/Wze9FckdT/g+hWPc9Y4wxedaf7pLf0i/WxpOvj62wzpzsLl9S2el+
-        UrxvrUjmC6to0dvnLKny3R+yeQOp5CA=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-To:     jinpu.wang@ionos.com, haris.iqbal@ionos.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH V2] RDMA/rtrs: Call {get,put}_cpu_ptr to silence a debug kernel warning
-Date:   Sun, 28 Nov 2021 21:35:01 +0800
-Message-Id: <20211128133501.38710-1-guoqing.jiang@linux.dev>
+        with ESMTP id S1357817AbhK1ODs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 28 Nov 2021 09:03:48 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2232C0613F6;
+        Sun, 28 Nov 2021 05:57:16 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y13so60326248edd.13;
+        Sun, 28 Nov 2021 05:57:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WxyvII6OmnQeCAY+DJ4uBaCQep/MW3p/jfUqUkGPhKg=;
+        b=TwMUP/DXnY70GvOEWDlRhxHKej9qY3L1d+Ha9pMZ/Qm3pZvOwxtWDMdwio1aAAjo50
+         +Mo8f1K+SA5m8lSr7wkFVg3lAsGc2nncWTYvajZ/PxAfdUb2He0jda6neOl9zaBh9xri
+         e5TL5mgqrYcWEbsZ6TtmgoVz4nYfgYYvy2g9D2MGZRFn23quhyexpyRawgbi6J42dEw3
+         vTt4a4Ct9e86w0JRlctf9d3dH6D4u22+7g/jeK5VyhsbaDF0d87u1pTsS+AhBXpBCj2G
+         jjFGC4qkVe0wJ0oBP9iTKda3ORRTpY6cZm8oNTWbkLw22LkdHqw82lCv4GODjPSWFCzQ
+         kG3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WxyvII6OmnQeCAY+DJ4uBaCQep/MW3p/jfUqUkGPhKg=;
+        b=RZOiHhDLSVLGuamkW8zBLQ1KieiZahNcxcAKScoewaHE4yraZg5UVXwj4l7kbfrfg1
+         Md2+6eH1M6jWld29Y5jXx/r0ZjooWr+kNFtdScukHybRotAvug4t1aFkwEagdXqqw72n
+         Jo1zzQK7NhhHKGANEJAMJGkPuqXQZ9e2cPDw1OLF0EZ+mtT5WeBmr9YmNqLhvJkl778X
+         mGa80zkdQi1UcKShVLFs7TZmsdtv310IizrMEx5cdokJQ2G4vWYUlgP1fzhRU/aE9Fba
+         EcIi7f7vWpwNDDWkQ6CatMXQoI/eE8jd4HTvIMLbtyG6P/1ksfGFCijsZ9hhDYCt4jwu
+         Av1A==
+X-Gm-Message-State: AOAM533aU3f1J3aC7wgJY3RMtakXrH071p7x/yu9u5LzPr8E+u0tA6PC
+        nBS60vvNJ/Kg02IqsGHG6bg=
+X-Google-Smtp-Source: ABdhPJz6nXfc+mVeK1gz4vdbNriFAG/nL94eSnXm4Z5qazr0myWosKzt5iyFKC2FoRAMixMfuqCDBw==
+X-Received: by 2002:a05:6402:2026:: with SMTP id ay6mr65342803edb.202.1638107835368;
+        Sun, 28 Nov 2021 05:57:15 -0800 (PST)
+Received: from [192.168.0.108] ([77.124.1.33])
+        by smtp.gmail.com with ESMTPSA id og14sm5883651ejc.107.2021.11.28.05.57.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Nov 2021 05:57:14 -0800 (PST)
+Message-ID: <f76ad3e6-fccb-a481-8283-c8ff3100a82b@gmail.com>
+Date:   Sun, 28 Nov 2021 15:57:12 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH] net/mlx4_en: Update reported link modes for 1/10G
+Content-Language: en-US
+To:     Erik Ekman <erik@kryo.se>, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Michael Stapelberg <michael@stapelberg.ch>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20211128123712.82096-1-erik@kryo.se>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20211128123712.82096-1-erik@kryo.se>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-With preemption enabled (CONFIG_DEBUG_PREEMPT=y), the following appeared
-when rnbd client tries to map remote block device.
 
-[ 2123.221071] BUG: using smp_processor_id() in preemptible [00000000] code: bash/1733
-[ 2123.221175] caller is debug_smp_processor_id+0x17/0x20
-[ 2123.221214] CPU: 0 PID: 1733 Comm: bash Not tainted 5.16.0-rc1 #5
-[ 2123.221218] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-[ 2123.221229] Call Trace:
-[ 2123.221231]  <TASK>
-[ 2123.221235]  dump_stack_lvl+0x5d/0x78
-[ 2123.221252]  dump_stack+0x10/0x12
-[ 2123.221257]  check_preemption_disabled+0xe4/0xf0
-[ 2123.221266]  debug_smp_processor_id+0x17/0x20
-[ 2123.221271]  rtrs_clt_update_all_stats+0x3b/0x70 [rtrs_client]
-[ 2123.221285]  rtrs_clt_read_req+0xc3/0x380 [rtrs_client]
-[ 2123.221298]  ? rtrs_clt_init_req+0xe3/0x120 [rtrs_client]
-[ 2123.221321]  rtrs_clt_request+0x1a7/0x320 [rtrs_client]
-[ 2123.221340]  ? 0xffffffffc0ab1000
-[ 2123.221357]  send_usr_msg+0xbf/0x160 [rnbd_client]
-[ 2123.221370]  ? rnbd_clt_put_sess+0x60/0x60 [rnbd_client]
-[ 2123.221377]  ? send_usr_msg+0x160/0x160 [rnbd_client]
-[ 2123.221386]  ? sg_alloc_table+0x27/0xb0
-[ 2123.221395]  ? sg_zero_buffer+0xd0/0xd0
-[ 2123.221407]  send_msg_sess_info+0xe9/0x180 [rnbd_client]
-[ 2123.221413]  ? rnbd_clt_put_sess+0x60/0x60 [rnbd_client]
-[ 2123.221429]  ? blk_mq_alloc_tag_set+0x2ef/0x370
-[ 2123.221447]  rnbd_clt_map_device+0xba8/0xcd0 [rnbd_client]
-[ 2123.221462]  ? send_msg_open+0x200/0x200 [rnbd_client]
-[ 2123.221479]  rnbd_clt_map_device_store+0x3e5/0x620 [rnbd_client
 
-To supress the calltrace, let's call get_cpu_ptr/put_cpu_ptr pair in
-rtrs_clt_update_rdma_stats to disable preemption when accessing per-cpu
-variable.
+On 11/28/2021 2:37 PM, Erik Ekman wrote:
+> When link modes were initially added in commit 2c762679435dc
+> ("net/mlx4_en: Use PTYS register to query ethtool settings") and
+> later updated for the new ethtool API in commit 3d8f7cc78d0eb
+> ("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
+> link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
+> It looks like these got picked to represent other modes since nothing
+> better was available.
+> 
+> Switch to using more specific link modes added in commit 5711a98221443
+> ("net: ethtool: add support for 1000BaseX and missing 10G link modes").
+> 
+> Tested with MCX311A-XCAT connected via DAC.
+> Before:
+> 
+> % sudo ethtool enp3s0
+> Settings for enp3s0:
+> 	Supported ports: [ FIBRE ]
+> 	Supported link modes:   1000baseKX/Full
+> 	                        10000baseKR/Full
+> 	Supported pause frame use: Symmetric Receive-only
+> 	Supports auto-negotiation: No
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  1000baseKX/Full
+> 	                        10000baseKR/Full
+> 	Advertised pause frame use: Symmetric
+> 	Advertised auto-negotiation: No
+> 	Advertised FEC modes: Not reported
+> 	Speed: 10000Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: off
+> 	Port: Direct Attach Copper
+> 	PHYAD: 0
+> 	Transceiver: internal
+> 	Supports Wake-on: d
+> 	Wake-on: d
+>          Current message level: 0x00000014 (20)
+>                                 link ifdown
+> 	Link detected: yes
+> 
+> With this change:
+> 
+> % sudo ethtool enp3s0
+> 	Settings for enp3s0:
+> 	Supported ports: [ FIBRE ]
+> 	Supported link modes:   1000baseX/Full
+> 	                        10000baseCR/Full
+>   	                        10000baseSR/Full
+> 	Supported pause frame use: Symmetric Receive-only
+> 	Supports auto-negotiation: No
+> 	Supported FEC modes: Not reported
+> 	Advertised link modes:  1000baseX/Full
+>   	                        10000baseCR/Full
+>   	                        10000baseSR/Full
+> 	Advertised pause frame use: Symmetric
+> 	Advertised auto-negotiation: No
+> 	Advertised FEC modes: Not reported
+> 	Speed: 10000Mb/s
+> 	Duplex: Full
+> 	Auto-negotiation: off
+> 	Port: Direct Attach Copper
+> 	PHYAD: 0
+> 	Transceiver: internal
+> 	Supports Wake-on: d
+> 	Wake-on: d
+>          Current message level: 0x00000014 (20)
+>                                 link ifdown
+> 	Link detected: yes
+> 
+> Tested-by: Michael Stapelberg <michael@stapelberg.ch>
+> Signed-off-by: Erik Ekman <erik@kryo.se>
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> index 066d79e4ecfc..10238bedd694 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
+> @@ -670,7 +670,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_T, SPEED_1000,
+>   				       ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_CX_SGMII, SPEED_1000,
+> -				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
+> +				       ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_KX, SPEED_1000,
+>   				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_T, SPEED_10000,
+> @@ -682,9 +682,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_KR, SPEED_10000,
+>   				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_CR, SPEED_10000,
+> -				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
+> +				       ETHTOOL_LINK_MODE_10000baseCR_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_SR, SPEED_10000,
+> -				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
+> +				       ETHTOOL_LINK_MODE_10000baseSR_Full_BIT);
+>   	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_20GBASE_KR2, SPEED_20000,
+>   				       ETHTOOL_LINK_MODE_20000baseMLD2_Full_BIT,
+>   				       ETHTOOL_LINK_MODE_20000baseKR2_Full_BIT);
+> 
 
-While at it, let's make the similar change in rtrs_clt_update_wc_stats.
-And for rtrs_clt_inc_failover_cnt, though it was only called inside rcu
-section, but it still can be preempted in case CONFIG_PREEMPT_RCU is
-enabled, so change it to {get,put}_cpu_ptr pair either.
-
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
-V2: also make the change in rtrs_clt_update_wc_stats and rtrs_clt_inc_failover_cnt
-
- drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-index f7e459fe68be..76e4352fe3f6 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-stats.c
-@@ -19,7 +19,7 @@ void rtrs_clt_update_wc_stats(struct rtrs_clt_con *con)
- 	int cpu;
- 
- 	cpu = raw_smp_processor_id();
--	s = this_cpu_ptr(stats->pcpu_stats);
-+	s = get_cpu_ptr(stats->pcpu_stats);
- 	if (con->cpu != cpu) {
- 		s->cpu_migr.to++;
- 
-@@ -27,14 +27,16 @@ void rtrs_clt_update_wc_stats(struct rtrs_clt_con *con)
- 		s = per_cpu_ptr(stats->pcpu_stats, con->cpu);
- 		atomic_inc(&s->cpu_migr.from);
- 	}
-+	put_cpu_ptr(stats->pcpu_stats);
- }
- 
- void rtrs_clt_inc_failover_cnt(struct rtrs_clt_stats *stats)
- {
- 	struct rtrs_clt_stats_pcpu *s;
- 
--	s = this_cpu_ptr(stats->pcpu_stats);
-+	s = get_cpu_ptr(stats->pcpu_stats);
- 	s->rdma.failover_cnt++;
-+	put_cpu_ptr(stats->pcpu_stats);
- }
- 
- int rtrs_clt_stats_migration_from_cnt_to_str(struct rtrs_clt_stats *stats, char *buf)
-@@ -169,9 +171,10 @@ static inline void rtrs_clt_update_rdma_stats(struct rtrs_clt_stats *stats,
- {
- 	struct rtrs_clt_stats_pcpu *s;
- 
--	s = this_cpu_ptr(stats->pcpu_stats);
-+	s = get_cpu_ptr(stats->pcpu_stats);
- 	s->rdma.dir[d].cnt++;
- 	s->rdma.dir[d].size_total += size;
-+	put_cpu_ptr(stats->pcpu_stats);
- }
- 
- void rtrs_clt_update_all_stats(struct rtrs_clt_io_req *req, int dir)
--- 
-2.31.1
-
+LGTM. Thanks for your patch.
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
