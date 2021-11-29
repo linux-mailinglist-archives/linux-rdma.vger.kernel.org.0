@@ -2,222 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B386B461449
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 12:53:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE134615EB
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 14:12:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhK2L4t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Nov 2021 06:56:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40736 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239432AbhK2Lys (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Nov 2021 06:54:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638186690;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=o1hbT83UZyzEpMcYnWEfjfHejJ/ev9mdgbjpKbK1VxE=;
-        b=jPSCvnH3AmIEJgnraLey8Z5aFFc8AIeOcFcsX+DzhdtTb0SAGz8twzNMycBFyTfseM1MSS
-        8w+KBStygLCLMuokWtNVxaJiSfRKO+isstyAF4hpUsR6KCkexSxNid9nv4QxiUG0bDtO4c
-        Kw91vHSrw0dewmGQCdIUe1mphja4ZQA=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-513-JKQGJk6GPR6qW-3GXWT8qA-1; Mon, 29 Nov 2021 06:51:29 -0500
-X-MC-Unique: JKQGJk6GPR6qW-3GXWT8qA-1
-Received: by mail-ed1-f72.google.com with SMTP id s12-20020a50ab0c000000b003efdf5a226fso7338168edc.10
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Nov 2021 03:51:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=o1hbT83UZyzEpMcYnWEfjfHejJ/ev9mdgbjpKbK1VxE=;
-        b=lD0xH+UA4vs5ei0+tYzDWShr5U2+E/enqfVK1PFXTs9RLt9aLks4dj5AaGsnZ7I3KQ
-         KMEgWeSzadWfvb+EC6sAcQv2YM10fHYlO3dCXJJpM4lt/snmFEfAaWgzveGIWBQ29PkH
-         te1CIdopYZKHwQjMSl3W0PqqBuGrctWICuT95NQ1/tTIJ4cZidHglkv5p1jEWax8L8Mq
-         SwqSFTthnBtHtUcyAWBocMjpykcmYDIkpKdvqif7qAwX5wx+yLZOb/ULcNYQm6SIYM4E
-         iCW4Szv8B3zFb5cZE5ArgKbaSsxAI0PpgPO3A65t0viqXntjMPj4TDEAPakg+uQVfaHh
-         3u/A==
-X-Gm-Message-State: AOAM531jKTMueyTZTBwFpKu+ASkFEh5wNfYr93IgZUbjYnApr3N274VF
-        lD+o79lCfzlOHoiIBrsZlgDIBt9uIt1vP8QIft0CZotRuR0d/vd4AXMAzK+Ejm6K9QC/ly1yR3M
-        tenv8M7cgYc0M0gbsQWi/Rg==
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr72820074edz.36.1638186687993;
-        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy//h6DqzMZ3cIjns1ItOPHoyCEI8XwGnDfYQ/w255YG7ez18OJaBJc76mESug2RLwzmhwD5w==
-X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr72820014edz.36.1638186687643;
-        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id z1sm9056421edq.54.2021.11.29.03.51.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-        id 6858F1802A0; Mon, 29 Nov 2021 12:51:26 +0100 (CET)
-From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shay Agroskin <shayagr@amazon.com>,
-        Arthur Kiyanovski <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        Noam Dagan <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        Martin Habets <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-In-Reply-To: <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
- <87bl28bga6.fsf@toke.dk>
- <20211125170708.127323-1-alexandr.lobakin@intel.com>
- <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211125204007.133064-1-alexandr.lobakin@intel.com>
- <87sfvj9k13.fsf@toke.dk>
- <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date:   Mon, 29 Nov 2021 12:51:26 +0100
-Message-ID: <878rx79o3l.fsf@toke.dk>
+        id S1377635AbhK2NP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 08:15:26 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:56392 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1377835AbhK2NN0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 08:13:26 -0500
+Received: from mail.kernel.org (unknown [198.145.29.99])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D2984614D4;
+        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 4EDA560184;
+        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638191408;
+        bh=LbXp/8u1CeGkCAxRN5Nfg4W8o4qGxClR38ODgpiv/kQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ioCJIjjWs6s6kxDYH45CfgnKLYoSzAW72I3L6D+uWC66WG5gPxqrbsgA7q7omNtPG
+         hs3wfbSUIkir17tS9FSnXFk0JSBobJHDavhoS7vh2LyiqN73Z6eT9CYL7CMCDCbxyb
+         ynZmnfCxwUjDF8gfFO//lhhnDUd1c4HvKDfHUuRlHaz/HMHoq7Jh2yGlG40Y+R4G07
+         fH7gwscfStaD4Ci7r7jL76Fm1aqqYMSlRe9YlsHy93gHDgtsY/+Rwyk2W/Ki2psMpH
+         36nUQg7fZ3WnuGb1k3Fvu7TRee2i9UvJb1G17YXO2du8/CVDOD01f8pqY2Q48QRTd5
+         6VW3xZl0cc7+g==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4095160A4D;
+        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net/mlx4_en: Update reported link modes for 1/10G
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <163819140825.10588.15476422794960132673.git-patchwork-notify@kernel.org>
+Date:   Mon, 29 Nov 2021 13:10:08 +0000
+References: <20211128123712.82096-1-erik@kryo.se>
+In-Reply-To: <20211128123712.82096-1-erik@kryo.se>
+To:     Erik Ekman <erik@kryo.se>
+Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        michael@stapelberg.ch, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+Hello:
 
-> On 11/26/21 7:06 PM, Jakub Kicinski wrote:
->> On Fri, 26 Nov 2021 13:30:16 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrot=
-e:
->>>>> TBH I wasn't following this thread too closely since I saw Daniel
->>>>> nacked it already. I do prefer rtnl xstats, I'd just report them
->>>>> in -s if they are non-zero. But doesn't sound like we have an agreeme=
-nt
->>>>> whether they should exist or not.
->>>>
->>>> Right, just -s is fine, if we drop the per-channel approach.
->>>
->>> I agree that adding them to -s is fine (and that resolves my "no one
->>> will find them" complain as well). If it crowds the output we could also
->>> default to only output'ing a subset, and have the more detailed
->>> statistics hidden behind a verbose switch (or even just in the JSON
->>> output)?
->>>
->>>>> Can we think of an approach which would make cloudflare and cilium
->>>>> happy? Feels like we're trying to make the slightly hypothetical
->>>>> admin happy while ignoring objections of very real users.
->>>>
->>>> The initial idea was to only uniform the drivers. But in general
->>>> you are right, 10 drivers having something doesn't mean it's
->>>> something good.
->>>
->>> I don't think it's accurate to call the admin use case "hypothetical".
->>> We're expending a significant effort explaining to people that XDP can
->>> "eat" your packets, and not having any standard statistics makes this
->>> way harder. We should absolutely cater to our "early adopters", but if
->>> we want XDP to see wider adoption, making it "less weird" is critical!
->>=20
->> Fair. In all honesty I said that hoping to push for a more flexible
->> approach hidden entirely in BPF, and not involving driver changes.
->> Assuming the XDP program has more fine grained stats we should be able
->> to extract those instead of double-counting. Hence my vague "let's work
->> with apps" comment.
->>=20
->> For example to a person familiar with the workload it'd be useful to
->> know if program returned XDP_DROP because of configured policy or
->> failure to parse a packet. I don't think that sort distinction is
->> achievable at the level of standard stats.
->
-> Agree on the additional context. How often have you looked at tc clsact
-> /dropped/ stats specifically when you debug a more complex BPF program
-> there?
->
->    # tc -s qdisc show clsact dev foo
->    qdisc clsact ffff: parent ffff:fff1
->     Sent 6800 bytes 120 pkt (dropped 0, overlimits 0 requeues 0)
->     backlog 0b 0p requeues 0
->
-> Similarly, XDP_PASS counters may be of limited use as well for same reason
-> (and I think we might not even have a tc counter equivalent for it).
->
->> The information required by the admin is higher level. As you say the
->> primary concern there is "how many packets did XDP eat".
->
-> Agree. Above said, for XDP_DROP I would see one use case where you compare
-> different drivers or bond vs no bond as we did in the past in [0] when
-> testing against a packet generator (although I don't see bond driver cove=
-red
-> in this series here yet where it aggregates the XDP stats from all bond s=
-lave
-> devs).
->
-> On a higher-level wrt "how many packets did XDP eat", it would make sense
-> to have the stats for successful XDP_{TX,REDIRECT} given these are out
-> of reach from a BPF prog PoV - we can only count there how many times we
-> returned with XDP_TX but not whether the pkt /successfully made it/.
->
-> In terms of error cases, could we just standardize all drivers on the beh=
-avior
-> of e.g. mlx5e_xdp_handle(), meaning, a failure from XDP_{TX,REDIRECT} will
-> hit the trace_xdp_exception() and then fallthrough to bump a drop counter
-> (same as we bump in XDP_DROP then). So the drop counter will account for
-> program drops but also driver-related drops.
->
-> At some later point the trace_xdp_exception() could be extended with an e=
-rror
-> code that the driver would propagate (given some of them look quite simil=
-ar
-> across drivers, fwiw), and then whoever wants to do further processing wi=
-th
-> them can do so via bpftrace or other tooling.
->
-> So overall wrt this series: from the lrstats we'd be /dropping/ the pass,
-> tx_errors, redirect_errors, invalid, aborted counters. And we'd be /keepi=
-ng/
-> bytes & packets counters that XDP sees, (driver-)successful tx & redirect
-> counters as well as drop counter. Also, XDP bytes & packets counters shou=
-ld
-> not be counted twice wrt ethtool stats.
+This patch was applied to netdev/net.git (master)
+by David S. Miller <davem@davemloft.net>:
 
-This sounds reasonable to me, and I also like the error code to
-tracepoint idea :)
+On Sun, 28 Nov 2021 13:37:11 +0100 you wrote:
+> When link modes were initially added in commit 2c762679435dc
+> ("net/mlx4_en: Use PTYS register to query ethtool settings") and
+> later updated for the new ethtool API in commit 3d8f7cc78d0eb
+> ("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
+> link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
+> It looks like these got picked to represent other modes since nothing
+> better was available.
+> 
+> [...]
 
--Toke
+Here is the summary with links:
+  - net/mlx4_en: Update reported link modes for 1/10G
+    https://git.kernel.org/netdev/net/c/2191b1dfef7d
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
