@@ -2,60 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E902D460B7F
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 01:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04AD7460FA9
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 08:56:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359813AbhK2ASf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 28 Nov 2021 19:18:35 -0500
-Received: from mail.vallenar.cl ([200.54.241.89]:39018 "EHLO mail.vallenar.cl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233716AbhK2AQd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sun, 28 Nov 2021 19:16:33 -0500
-X-Greylist: delayed 20294 seconds by postgrey-1.27 at vger.kernel.org; Sun, 28 Nov 2021 19:16:30 EST
-Received: from localhost (localhost [127.0.0.1])
-        by mail.vallenar.cl (Postfix) with ESMTP id B6B9E1CC54D2;
-        Sun, 28 Nov 2021 12:29:34 -0300 (-03)
-Received: from mail.vallenar.cl ([127.0.0.1])
-        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id KoyW2nH7GhDD; Sun, 28 Nov 2021 12:29:34 -0300 (-03)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.vallenar.cl (Postfix) with ESMTP id 3122B1D06842;
-        Sun, 28 Nov 2021 11:45:20 -0300 (-03)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.vallenar.cl 3122B1D06842
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vallenar.cl;
-        s=EC098874-C7DE-11E7-B3B1-1A9A6030413E; t=1638110720;
-        bh=IQxUcKgLaEia+DMrVj9OEHbWOH8TffrzQMeZgAxYubI=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=ZNBNFUZbmFa2MHgDVnqeLUNmN1jhvIoIkMHZTp8rDDfwo5mpNBsBVbO8RAJCiC7El
-         +VRB+SyXtRcilNrHQXQaPXnqwriKkMY96p2U9JdvT25Pvs30y1yC0idQP7feAgHN5C
-         510coTQH0yXzg/N7bnGVoeOODT5Bq+9YByGo+oB7uh3zNaT8MZoWKyls6hJSsulfKm
-         cY+YKvYAYXu9tmAGuln574ixcTAY/PY44NpBwFzV7BnN1KA3q0ALEHKkThQ+on5UML
-         Xti6+OBaIapzFEFuHoclzm2AFuLehO8hi0kLvqToLxvFHB2HkAyWBX6wCFV/7hgDMI
-         hu2+d/o+eTobg==
-X-Virus-Scanned: amavisd-new at vallenar.cl
-Received: from mail.vallenar.cl ([127.0.0.1])
-        by localhost (mail.vallenar.cl [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id Wnon1U2B1Kbm; Sun, 28 Nov 2021 11:45:19 -0300 (-03)
-Received: from [192.168.8.101] (unknown [105.0.3.102])
-        by mail.vallenar.cl (Postfix) with ESMTPSA id 756591D08C9F;
-        Sun, 28 Nov 2021 11:21:39 -0300 (-03)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S240913AbhK2H7w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 02:59:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241038AbhK2H5w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 02:57:52 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F655C06175B
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 23:54:13 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id s13so34764792wrb.3
+        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 23:54:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=FF43797rWa/tW0tYpwzS9I9ZcuXL/DtjRV/ubKLJ9Io=;
+        b=FTNdWdN1N7nwOepyVYBlQMBJHnA9lB9f15tJiZBrrzsPAZ7d07miaK/zxkTpdDIkUt
+         fqY83zP3kLkdicNKYPEbTi1hXCx0sbrDzpRjZld9+Yovsajxr1Xlf+p2ReWZDuzNKkQl
+         oVTXMm1rj05oGDVljtpqQGquntvyZFXqsdCtziiFfZ9rwLPX/bsRnlHzUdmS5eVfuzfS
+         APJILt0mqOEubj4teeSM/g7BPFWCIPmBMZcfx8BARf1W/1XidWj6z4nj/wASQMGiURkY
+         uCHIy4KNk2gDY7RDYXYVGlGlAy9bWiW99qf0454VJwXsl4G95wL0NBrg9tBweAkJEo1v
+         qIMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to:content-transfer-encoding;
+        bh=FF43797rWa/tW0tYpwzS9I9ZcuXL/DtjRV/ubKLJ9Io=;
+        b=xBmd9R87Ed0AiEoX0aaXRY9MQoV024hLi7Nw81ZKrvyC3EA/wv/4gRNOsSxv6tGgbG
+         Fgs2+RFSfMwqQcdZobP9IF93V9cHGfm/HJ2XG31b0OzbdYJMua3Gehz2WmiNyAW+QDwJ
+         scCZ97kYHNJgvGDJ1k0WQKbEtDsaiaHbGsLbFAzm+jencJrIreLI37e6Sh3d5pgtxto8
+         bq2dvTFuEraAChlj4v1OuZL2z2XlmC1SpBGf2Kzax56JY4BT0Rw3YFUT0jueEqcMSv2r
+         S9h0W7lTO9YjkSgjDGPXMOe4batFQldnpa6licvQRtWc4nEVEG4oB9FhehRdvRwhqtPd
+         O7EQ==
+X-Gm-Message-State: AOAM533RtRnurXp+3joTT08v2Pr0JmpnxRWbm2/fl0jhlc6J/NLYWjV1
+        lijxnGVDu53n7GzKpenz2n0oaqLaVvm/qW42h60=
+X-Google-Smtp-Source: ABdhPJxxpCc54gSfy2W+SOA3eFnnakyw49qBOMcNe1tc5W2v+GhIKoTOfmtgNjXDPMu9mMzIyW+rPBgZz35LsrweJsY=
+X-Received: by 2002:a05:6000:181:: with SMTP id p1mr32397192wrx.292.1638172451953;
+ Sun, 28 Nov 2021 23:54:11 -0800 (PST)
 MIME-Version: 1.0
+Sender: dr.aisha80gaddafi@gmail.com
+Received: by 2002:a5d:4d86:0:0:0:0:0 with HTTP; Sun, 28 Nov 2021 23:54:11
+ -0800 (PST)
+From:   "MRS. Maya Olivia" <mrs.mayaolivia@gmail.com>
+Date:   Mon, 29 Nov 2021 07:54:11 +0000
+X-Google-Sender-Auth: WniPMns57bPmSHjFT6qAasd04Lg
+Message-ID: <CA+B9LK0DJ5zWZr=psa9MwUHdAxKSNaZsnDyS_x5nMaKE2biO7A@mail.gmail.com>
+Subject: THIS IS MY HUSBAND WISH a
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: 2.000.000,00. Euro
-To:     Recipients <yperez@vallenar.cl>
-From:   "manuel franco" <yperez@vallenar.cl>
-Date:   Sun, 28 Nov 2021 16:29:09 +0200
-Reply-To: manuelfrancospende00@gmail.com
-Message-Id: <20211128142139.756591D08C9F@mail.vallenar.cl>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sie haben eine Spende von 2.000.000,00. Euro
+THIS IS MY HUSBAND WISH
+MY NAME IS Mrs. Maya Oliver,
+My Name is Mrs. Maya Oliver, from Norway. I know that this message
+will be a surprise to you. Firstly, I am married to Mr. Patrick
+Oliver, A diamond and gold merchant who owns a small gold Mine in
+Burkina Faso and Egypt Cairo; He died of Cardiovascular Disease in
+mid-March 2011. During his lifetime he deposited the sum of =E2=82=AC 18.5
+Million Euro) Eighteen million, Five hundred thousand Euros in a bank
+in Ouagadougou the capital city of Burkina Faso. The deposited money
+was from the sale of the shares, death benefits payment and
+entitlements of my deceased husband by his company.
+Please reply to my privet mail after reading: mrs.mayaolivia90@gmail.com
 
-Mein Name ist Manuel Franco aus den Vereinigten Staaten.
-Ich habe die Amerika-Lotterie im Wert von 768 Millionen US-Dollar gewonnen =
-und spende einen Teil davon an nur 5 gl=FCckliche Menschen und ein paar Wai=
-senh=E4user als Wohlwollen f=FCr die Menschheit.
+I am sending this message to you praying that it will reach you in
+good health, since I am not in good health in which I sleep every
+night without knowing if I may be alive to see the next day. I am
+suffering from long term cancer and presently I am partially suffering
+from a stroke illness which has become almost impossible for me to
+move around. I was married to my late husband for over 4 years before
+he died and unfortunately that we don't have a child, my doctor
+confided in me that i have less chance to live. Having known my health
+condition, I decided to contact you to claim the fund since I don't
+have any relation. I grew up in an orphanage.
+
+I have decided to donate what I have to you for the support of helping
+Motherless babies/Less privileged/Widows' because I am dying and
+diagnosed with cancer about 2 years ago. I have been touched by God
+Almighty to donate from what I have inherited from my late husband to
+you for the good work of God Almighty. I have asked Almighty God to
+forgive me and believe he has, because He is a Merciful God I will be
+going in for an operation soon.
+
+This is the reason I need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name; I need your urgent answer to know if you
+will be able to execute this project, and I will give you more
+information on how the fund will be transferred to your bank account
+from the  Burkina Faso bank.
+Please reply to my privet mail after reading: mrs.mayaolivia90@gmail.com
+
+Thanks
+Mrs. Maya
