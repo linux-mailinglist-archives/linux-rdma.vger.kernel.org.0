@@ -2,87 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF10E461B9A
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 17:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 834E8461F95
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 19:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242525AbhK2QOq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Nov 2021 11:14:46 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:51980 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233837AbhK2QMo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 11:12:44 -0500
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 94C3F1FCA1;
-        Mon, 29 Nov 2021 16:09:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1638202165; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlR9rlDvG2U7ujaNwRk+7nvnEIkWhGGTTtizeJOJEAg=;
-        b=uAzB3SZnqEyc9NrTEvDsGi8r77PTjkxxWJ7BuFQhbfnSSe+IERGRMZE9lOfqJ6o9J2DzLC
-        AXuqsnc2todWHYS4tFIb63uFMr61GrirXxcLrHpzb35OTD1vKDi+OCgMRwuT4pk0TuhMGq
-        54ErrrSYI9SBtb1l3JNGYdG2RKkxx6g=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1638202165;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dlR9rlDvG2U7ujaNwRk+7nvnEIkWhGGTTtizeJOJEAg=;
-        b=y1NfIGreYeU1F2IEd9GZsuD3PbLo10m25VszRjMz3aFzpqul9iiMiD16BJybcSML9Fkm/x
-        +Dt8hXSoyI/zbJAg==
-Received: from quack2.suse.cz (unknown [10.100.200.198])
-        by relay2.suse.de (Postfix) with ESMTP id 858E3A3B85;
-        Mon, 29 Nov 2021 16:09:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 480761E13A9; Mon, 29 Nov 2021 17:09:25 +0100 (CET)
-Date:   Mon, 29 Nov 2021 17:09:25 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jan Kara <jack@suse.cz>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        linux-block@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 04/14] bfq: use bfq_bic_lookup in bfq_limit_depth
-Message-ID: <20211129160925.GB29512@quack2.suse.cz>
-References: <20211126115817.2087431-1-hch@lst.de>
- <20211126115817.2087431-5-hch@lst.de>
+        id S1379359AbhK2Svn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 13:51:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379432AbhK2Stk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 13:49:40 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F65CC0494BE;
+        Mon, 29 Nov 2021 07:03:56 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B0673B8119F;
+        Mon, 29 Nov 2021 15:03:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09833C004E1;
+        Mon, 29 Nov 2021 15:03:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638198233;
+        bh=4PfxGUCMuORTg1cVTMdzzVoIHFONrfZbw9PaLtMYGbM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FfZybPsz4FL49qCelBKPBatUjFar5ON8RPmGHDlXqzvV/VkC8JFqPyNkoVH2rVbil
+         DxWZlKjJVM9UyqvVqOFr2GcbIovNIyASQOsXiDCe2ePQXprG2OXYc7qsD01WrpU7gb
+         fzg/RhEw3CGwniIL+gMRQ6Lau/s6WR446y+vDmQJ6OYPMN4TkcF/7BHNin2z5tqWH3
+         fQyeV07FRKMGBBOF5GcIWff0KU46EkSB0MAiVYF6HMbMD8muSqwSKWKmsG5JFxWSwK
+         vfWV5oa0XmiI+MceioOohr14eK4SFjY2ebFaFSV5+avsq1aQg6BiGnC0avWLglu/Qr
+         7bi1+dg9Os7Ug==
+Date:   Mon, 29 Nov 2021 07:03:50 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Jesper Dangaard Brouer <jbrouer@redhat.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        Toke =?UTF-8?B?SMO4aWxhbmQt?= =?UTF-8?B?SsO4cmdlbnNlbg==?= 
+        <toke@redhat.com>, brouer@redhat.com,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+Message-ID: <20211129070350.751e2afe@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <37732c0b-a1f5-5e1d-d34e-16ef07fab597@redhat.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+        <20211123163955.154512-22-alexandr.lobakin@intel.com>
+        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+        <87bl28bga6.fsf@toke.dk>
+        <20211125170708.127323-1-alexandr.lobakin@intel.com>
+        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211125204007.133064-1-alexandr.lobakin@intel.com>
+        <87sfvj9k13.fsf@toke.dk>
+        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
+        <3c2fd51e-96c4-d500-bb4c-1972bb0fa3d6@iogearbox.net>
+        <37732c0b-a1f5-5e1d-d34e-16ef07fab597@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211126115817.2087431-5-hch@lst.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri 26-11-21 12:58:07, Christoph Hellwig wrote:
-> No need to create a new I/O context if there is none present yet in
-> ->limit_depth.
+On Mon, 29 Nov 2021 14:59:53 +0100 Jesper Dangaard Brouer wrote:
+> Hmm... I don't agree here.  IMHO the BPF-program's *choice* to drop (via 
+> XDP_DROP) should NOT share the counter with the driver-related drops.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/bfq-iosched.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-> index c990c6409c119..ecc2e57e68630 100644
-> --- a/block/bfq-iosched.c
-> +++ b/block/bfq-iosched.c
-> @@ -663,7 +663,7 @@ static bool bfqq_request_over_limit(struct bfq_queue *bfqq, int limit)
->  static void bfq_limit_depth(unsigned int op, struct blk_mq_alloc_data *data)
->  {
->  	struct bfq_data *bfqd = data->q->elevator->elevator_data;
-> -	struct bfq_io_cq *bic = icq_to_bic(blk_mq_sched_get_icq(data->q));
-> +	struct bfq_io_cq *bic = bfq_bic_lookup(data->q);
+> The driver-related drops must be accounted separate.
 
-Maybe I'm missing something but bfq_limit_depth() needs to know to which
-BFQ queue (and consequently blkcg) this IO is going to be added. And to be
-able to lookup this queue we are using IO context. So AFAICT we need the
-IO context allocated already in bfq_limit_depth()?
++1 FWIW. The Tx stat is a little misleading because it differs from the
+definition of our other tx stats which mean _successfully_ transmitted
+(and are accounted on the completion path in many drivers).
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+In the past I've used act_*, e.g. act_tx, to indicate the stat counts
+returned actions, not whether the packet made it.
+
+I still wonder whether it makes sense to count the stats per-action or
+just have one "XDP consumed it" stat and that's it. The semantics of the
+action are not of interest to the admin. A firewall can drop or tx
+depending if it wants to send an ICMP reject or TCP RST message in
+response. I need to know what the application does to understand the
+difference, and if I do I can as well look at app stats. But I'm aware
+I'm not going to find much support for this position, so just saying...
+;)
