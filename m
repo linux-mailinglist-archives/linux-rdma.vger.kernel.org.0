@@ -2,65 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D597546175D
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 15:02:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CD2461A4F
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 15:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242114AbhK2OFS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Nov 2021 09:05:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:30673 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242505AbhK2ODR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 29 Nov 2021 09:03:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638194399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IeyJNwcYSO8NniImbH4OBp4zuND8RtpEhu/U4fbs0jQ=;
-        b=Bu4UlWtymTVDE3igg01z1cBKZ9NKPCWz3vfNJgBiehEBM6LMY9KVIgVVTXEcEs0L+o4oZH
-        ZwXullIvFaFgjfV4zgCCkgeeMzSaG1vJVzdpBtnOMTBldQq8jiiBGntum/vIToT6sw2TnV
-        URoRAPSBjD0RCcQQUSRohyFI8gI9vLM=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-499-3LkzW2KxNyq3cR0hDCvuEA-1; Mon, 29 Nov 2021 08:59:58 -0500
-X-MC-Unique: 3LkzW2KxNyq3cR0hDCvuEA-1
-Received: by mail-ed1-f70.google.com with SMTP id s12-20020a50ab0c000000b003efdf5a226fso7649299edc.10
-        for <linux-rdma@vger.kernel.org>; Mon, 29 Nov 2021 05:59:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:message-id:date:mime-version:user-agent:cc
-         :subject:content-language:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=IeyJNwcYSO8NniImbH4OBp4zuND8RtpEhu/U4fbs0jQ=;
-        b=i0NNngpwsZNvPrdtsWQ7Q2PBOTUAFmhQ+Xy1vVFg9CQSKftz9iSAoTF2eYogvLsrAy
-         VQsl6dCqhhMZwIRksO0QQh/CQ2rTT8zIXe/coASFnXVTy9ophnz4P5JY7l4hz56MCsnh
-         cQlr/+/OZj3NKA9m7omqkuF5XSuIB4qEU4kFJsIZyNrGhGy0fbJFbqy0VXnfASH6I7Mv
-         /GpmzLWlikM11iu1VOMPHFXzIrJWIFL+PFZ4HTCA0ymH8jQsaLY2SUmqtkMVXCpdI42N
-         n3ny50tQbWqLB3tH9GwsjD5Fedap1DiTgTYfxHw4Nd0nORVkqHt243G2SDDhBycoxQdH
-         +zYw==
-X-Gm-Message-State: AOAM533vSUcYZnZU7T/0gtGbKk2f0nBxA4G+8wm+54gmglyB3zrolR7s
-        QE5r//8485Z7FmAQ1Q8PuBOznZOqouwsWYwqfL1mbl8BHDMtR/qXrdJBIdIBMgd1oFx8gHA0cEX
-        akOvbzipgjFzOPFLAZU4yUg==
-X-Received: by 2002:a17:907:6d28:: with SMTP id sa40mr59414029ejc.201.1638194396760;
-        Mon, 29 Nov 2021 05:59:56 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwQSUmsFHsP7WeobINWjGi62cHzP+EzVEFoSxpzCoJ1n2b7WNWfx5UgPNnyFcW6l+Ylh8aSEg==
-X-Received: by 2002:a17:907:6d28:: with SMTP id sa40mr59413979ejc.201.1638194396485;
-        Mon, 29 Nov 2021 05:59:56 -0800 (PST)
-Received: from [192.168.2.13] (3-14-107-185.static.kviknet.dk. [185.107.14.3])
-        by smtp.gmail.com with ESMTPSA id nb4sm7766389ejc.21.2021.11.29.05.59.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Nov 2021 05:59:55 -0800 (PST)
-From:   Jesper Dangaard Brouer <jbrouer@redhat.com>
-X-Google-Original-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Message-ID: <37732c0b-a1f5-5e1d-d34e-16ef07fab597@redhat.com>
-Date:   Mon, 29 Nov 2021 14:59:53 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Cc:     brouer@redhat.com, Alexander Lobakin <alexandr.lobakin@intel.com>,
+        id S235094AbhK2Oxc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 09:53:32 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:47462 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1345713AbhK2OvP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 09:51:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E929F6155F;
+        Mon, 29 Nov 2021 14:47:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0AD3C004E1;
+        Mon, 29 Nov 2021 14:47:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638197277;
+        bh=CoopZV0b/bKiDlV+HhvUfNkMdjiGJvIMlADMRIGNB4I=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rYabvzP1gx9omCtgDIauPYZdStR3jR6UpWkgTE6hmLhH4cRWrQHf6TxS28YeH+RKr
+         SRcur0lcx5xMeZ+8gBonuXpPN+wFYA1Lnq5+OdnzLkc8KNVKvQ8FTjiUENH4dADxoG
+         /CQRR1zslN7soB04e2Atkf4XOvb5euaKzwtxmB7CrfEi+/pw8J501IDFdgTQfoX+qh
+         aU4MOGaSBGWP/0MNcgDm38CsdUb3iakU5Lv602Tqilqvw1F59jAhtD4rzXmCOi1oyk
+         ChqJVkhxVGeMImLerX7GfVKOyFo1URKOnTAfJ/U54kUQVPz3vbu3h0tj4JGlrxsuaC
+         gexT8LLb6/BNw==
+Date:   Mon, 29 Nov 2021 06:47:55 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdlbnNlbg==?= <toke@redhat.com>,
+        Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         "David S. Miller" <davem@davemloft.net>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
@@ -100,238 +73,96 @@ Cc:     brouer@redhat.com, Alexander Lobakin <alexandr.lobakin@intel.com>,
         Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        Paolo Abeni <pabeni@redhat.com>
+        virtualization@lists.linux-foundation.org, petrm@nvidia.com,
+        nikolay@nvidia.com
 Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
  per-channel statistics
-Content-Language: en-US
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@redhat.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
- <20211123163955.154512-22-alexandr.lobakin@intel.com>
- <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net> <87bl28bga6.fsf@toke.dk>
- <20211125170708.127323-1-alexandr.lobakin@intel.com>
- <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20211125204007.133064-1-alexandr.lobakin@intel.com> <87sfvj9k13.fsf@toke.dk>
- <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
- <3c2fd51e-96c4-d500-bb4c-1972bb0fa3d6@iogearbox.net>
-In-Reply-To: <3c2fd51e-96c4-d500-bb4c-1972bb0fa3d6@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Message-ID: <20211129064755.539099c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YaPCbaMVaVlxXcHC@shredder>
+References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
+        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+        <87bl28bga6.fsf@toke.dk>
+        <20211125170708.127323-1-alexandr.lobakin@intel.com>
+        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211125204007.133064-1-alexandr.lobakin@intel.com>
+        <87sfvj9k13.fsf@toke.dk>
+        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87ee72ah56.fsf@toke.dk>
+        <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YaPCbaMVaVlxXcHC@shredder>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 27/11/2021 00.01, Daniel Borkmann wrote:
-> On 11/26/21 11:27 PM, Daniel Borkmann wrote:
->> On 11/26/21 7:06 PM, Jakub Kicinski wrote:
-> [...]
->>> The information required by the admin is higher level. As you say the
->>> primary concern there is "how many packets did XDP eat".
->>
->> Agree. Above said, for XDP_DROP I would see one use case where you 
->> compare
->> different drivers or bond vs no bond as we did in the past in [0] when
->> testing against a packet generator (although I don't see bond driver 
->> covered
->> in this series here yet where it aggregates the XDP stats from all 
->> bond slave devs).
->>
->> On a higher-level wrt "how many packets did XDP eat", it would make sense
->> to have the stats for successful XDP_{TX,REDIRECT} given these are out
->> of reach from a BPF prog PoV - we can only count there how many times we
->> returned with XDP_TX but not whether the pkt /successfully made it/.
->>
-
-Exactly.
-
->> In terms of error cases, could we just standardize all drivers on the 
->> behavior
->> of e.g. mlx5e_xdp_handle(), meaning, a failure from XDP_{TX,REDIRECT} will
->> hit the trace_xdp_exception() and then fallthrough to bump a drop counter
->> (same as we bump in XDP_DROP then). So the drop counter will account for
->> program drops but also driver-related drops.
->>
-
-Hmm... I don't agree here.  IMHO the BPF-program's *choice* to drop (via 
-XDP_DROP) should NOT share the counter with the driver-related drops.
-
-The driver-related drops must be accounted separate.
-
-For the record, I think mlx5e_xdp_handle() does the wrong thing, of 
-accounting everything as XDP_DROP in (rq->stats->xdp_drop++).
-
-Current mlx5 driver stats are highly problematic actually.
-Please don't model stats behavior after this driver.
-
-E.g. if BPF-prog takes the *choice* XDP_TX or XDP_REDIRECT or XDP_DROP, 
-then the packet is invisible to "ifconfig" stats.  It is like the driver 
-never received these packets (which is wrong IMHO). (The stats are only 
-avail via ethtool -S).
-
-
->> At some later point the trace_xdp_exception() could be extended with 
->> an error
->> code that the driver would propagate (given some of them look quite 
->> similar
->> across drivers, fwiw), and then whoever wants to do further processing 
->> with them can do so via bpftrace or other tooling.
-
-I do like trace_xdp_exception() is invoked in mlx5e_xdp_handle(), but do 
-notice that xdp_do_redirect() also have a tracepoint that can be used 
-for troubleshooting. (I usually use xdp_monitor for troubleshooting 
-which catch both).
-
-I like the stats XDP handling better in mvneta_run_xdp().
-
-> Just thinking out loud, one straight forward example we could start out 
-> with that is also related to Paolo's series [1] ...
+On Sun, 28 Nov 2021 19:54:53 +0200 Ido Schimmel wrote:
+> > > Right, sure, I am also totally fine with having only a somewhat
+> > > restricted subset of stats available at the interface level and make
+> > > everything else be BPF-based. I'm hoping we can converge of a common
+> > > understanding of what this "minimal set" should be :)
+> > > 
+> > > Agreed. My immediate thought is that "XDP packets are interface packets"
+> > > but that is certainly not what we do today, so not sure if changing it
+> > > at this point would break things?  
+> > 
+> > I'd vote for taking the risk and trying to align all the drivers.  
 > 
-> enum xdp_error {
->      XDP_UNKNOWN,
->      XDP_ACTION_INVALID,
->      XDP_ACTION_UNSUPPORTED,
-> };
+> I agree. I think IFLA_STATS64 in RTM_NEWLINK should contain statistics
+> of all the packets seen by the netdev. The breakdown into software /
+> hardware / XDP should be reported via RTM_NEWSTATS.
+
+Hm, in the offload case "seen by the netdev" may be unclear. For 
+the offload case I believe our recommendation was phrased more like 
+"all packets which would be seen by the netdev if there was no
+routing/tc offload", right?
+
+> Currently, for soft devices such as VLANs, bridges and GRE, user space
+> only sees statistics of packets forwarded by software, which is quite
+> useless when forwarding is offloaded from the kernel to hardware.
 > 
-> ... and then bpf_warn_invalid_xdp_action() returns one of the latter two
-> which we pass to trace_xdp_exception(). Later there could be XDP_DRIVER_*
-> cases e.g. propagated from XDP_TX error exceptions.
+> Petr is working on exposing hardware statistics for such devices via
+> rtnetlink. Unlike XDP (?), we need to be able to let user space enable /
+> disable hardware statistics as we have a limited number of hardware
+> counters and they can also reduce the bandwidth when enabled. We are
+> thinking of adding a new RTM_SETSTATS for that:
 > 
->          [...]
->          default:
->                  err = bpf_warn_invalid_xdp_action(act);
->                  fallthrough;
->          case XDP_ABORTED:
-> xdp_abort:
->                  trace_xdp_exception(rq->netdev, prog, act, err);
->                  fallthrough;
->          case XDP_DROP:
->                  lrstats->xdp_drop++;
->                  break;
->          }
->          [...]
+> # ip stats set dev swp1 hw_stats on
+
+Does it belong on the switch port? Not the netdev we want to track?
+
+> For query, something like (under discussion):
 > 
->    [1] 
-> https://lore.kernel.org/netdev/cover.1637924200.git.pabeni@redhat.com/
+> # ip stats show dev swp1 // all groups
+> # ip stats show dev swp1 group link
+> # ip stats show dev swp1 group offload // all sub-groups
+> # ip stats show dev swp1 group offload sub-group cpu
+> # ip stats show dev swp1 group offload sub-group hw
 > 
->> So overall wrt this series: from the lrstats we'd be /dropping/ the pass,
->> tx_errors, redirect_errors, invalid, aborted counters. And we'd be 
->> /keeping/
->> bytes & packets counters that XDP sees, (driver-)successful tx & redirect
->> counters as well as drop counter. Also, XDP bytes & packets counters 
->> should
->> not be counted twice wrt ethtool stats.
->>
->>    [0] 
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9e2ee5c7e7c35d195e2aa0692a7241d47a433d1e 
->>
+> Like other iproute2 commands, these follow the nesting of the
+> RTM_{NEW,GET}STATS uAPI.
 
-Concrete example with mlx5:
+But we do have IFLA_STATS_LINK_OFFLOAD_XSTATS, isn't it effectively 
+the same use case?
 
-For most other hardware (than mlx5) I experience that XDP_TX creates a 
-push-back on NIC RX-handing speed.  Thus, the XDP_TX stats recorded by 
-BPF-prog is usually correct.
+> Looking at patch #1 [1], I think that whatever you decide to expose for
+> XDP can be queried via:
+> 
+> # ip stats show dev swp1 group xdp
+> # ip stats show dev swp1 group xdp sub-group regular
+> # ip stats show dev swp1 group xdp sub-group xsk
+> 
+> Regardless, the following command should show statistics of all the
+> packets seen by the netdev:
+> 
+> # ip -s link show dev swp1
+> 
+> There is a PR [2] for node_exporter to use rtnetlink to fetch netdev
+> statistics instead of the old proc interface. It should be possible to
+> extend it to use RTM_*STATS for more fine-grained statistics.
+> 
+> [1] https://lore.kernel.org/netdev/20211123163955.154512-2-alexandr.lobakin@intel.com/
+> [2] https://github.com/prometheus/node_exporter/pull/2074
 
-With mlx5 hardware (tested on ConnectX-5 Ex MT28800) the RX 
-packets-per-sec (pps) stats can easily be faster than actually XDP_TX 
-transmitted frames.
-
-$ sudo ./xdp_rxq_info --dev mlx5p1 --action XDP_TX
-  [...]
-  Running XDP on dev:mlx5p1 (ifindex:10) action:XDP_TX options:swapmac
-  XDP stats       CPU     pps         issue-pps
-  XDP-RX CPU      1       13,922,430  0
-  XDP-RX CPU      total   13,922,430
-
-  RXQ stats       RXQ:CPU pps         issue-pps
-  rx_queue_index    1:1   13,922,430  0
-  rx_queue_index    1:sum 13,922,430
-
-The real xmit speed is (from below ethtool_stats.pl) is
-  9,391,314 pps <= rx1_xdp_tx_xmit /sec
-
-The dropped packets are double accounted as:
-  4,552,033 <= rx_xdp_drop /sec
-  4,552,033 <= rx_xdp_tx_full /sec
-
-
-Show adapter(s) (mlx5p1) statistics (ONLY that changed!)
-Ethtool(mlx5p1  ) stat:       217865 (        217,865) <= ch1_poll /sec
-Ethtool(mlx5p1  ) stat:       217864 (        217,864) <= ch_poll /sec
-Ethtool(mlx5p1  ) stat:     13943371 (     13,943,371) <= 
-rx1_cache_reuse /sec
-Ethtool(mlx5p1  ) stat:      4552033 (      4,552,033) <= rx1_xdp_drop /sec
-Ethtool(mlx5p1  ) stat:       146740 (        146,740) <= 
-rx1_xdp_tx_cqes /sec
-Ethtool(mlx5p1  ) stat:      4552033 (      4,552,033) <= 
-rx1_xdp_tx_full /sec
-Ethtool(mlx5p1  ) stat:      9391314 (      9,391,314) <= 
-rx1_xdp_tx_inlnw /sec
-Ethtool(mlx5p1  ) stat:       880436 (        880,436) <= 
-rx1_xdp_tx_mpwqe /sec
-Ethtool(mlx5p1  ) stat:       997833 (        997,833) <= 
-rx1_xdp_tx_nops /sec
-Ethtool(mlx5p1  ) stat:      9391314 (      9,391,314) <= 
-rx1_xdp_tx_xmit /sec
-Ethtool(mlx5p1  ) stat:     45095173 (     45,095,173) <= 
-rx_64_bytes_phy /sec
-Ethtool(mlx5p1  ) stat:   2886090490 (  2,886,090,490) <= rx_bytes_phy /sec
-Ethtool(mlx5p1  ) stat:     13943293 (     13,943,293) <= rx_cache_reuse 
-/sec
-Ethtool(mlx5p1  ) stat:     31151957 (     31,151,957) <= 
-rx_out_of_buffer /sec
-Ethtool(mlx5p1  ) stat:     45095158 (     45,095,158) <= rx_packets_phy 
-/sec
-Ethtool(mlx5p1  ) stat:   2886072350 (  2,886,072,350) <= rx_prio0_bytes 
-/sec
-Ethtool(mlx5p1  ) stat:     45094878 (     45,094,878) <= 
-rx_prio0_packets /sec
-Ethtool(mlx5p1  ) stat:   2705707938 (  2,705,707,938) <= 
-rx_vport_unicast_bytes /sec
-Ethtool(mlx5p1  ) stat:     45095129 (     45,095,129) <= 
-rx_vport_unicast_packets /sec
-Ethtool(mlx5p1  ) stat:      4552033 (      4,552,033) <= rx_xdp_drop /sec
-Ethtool(mlx5p1  ) stat:       146739 (        146,739) <= rx_xdp_tx_cqe /sec
-Ethtool(mlx5p1  ) stat:      4552033 (      4,552,033) <= rx_xdp_tx_full 
-/sec
-Ethtool(mlx5p1  ) stat:      9391319 (      9,391,319) <= 
-rx_xdp_tx_inlnw /sec
-Ethtool(mlx5p1  ) stat:       880436 (        880,436) <= 
-rx_xdp_tx_mpwqe /sec
-Ethtool(mlx5p1  ) stat:       997831 (        997,831) <= rx_xdp_tx_nops 
-/sec
-Ethtool(mlx5p1  ) stat:      9391319 (      9,391,319) <= rx_xdp_tx_xmit 
-/sec
-Ethtool(mlx5p1  ) stat:    601044221 (    601,044,221) <= tx_bytes_phy /sec
-Ethtool(mlx5p1  ) stat:      9391316 (      9,391,316) <= tx_packets_phy 
-/sec
-Ethtool(mlx5p1  ) stat:    601040871 (    601,040,871) <= tx_prio0_bytes 
-/sec
-Ethtool(mlx5p1  ) stat:      9391264 (      9,391,264) <= 
-tx_prio0_packets /sec
-Ethtool(mlx5p1  ) stat:    563478483 (    563,478,483) <= 
-tx_vport_unicast_bytes /sec
-Ethtool(mlx5p1  ) stat:      9391316 (      9,391,316) <= 
-tx_vport_unicast_packets /sec
-
-
-
-[1] 
-https://github.com/netoptimizer/network-testing/blob/master/bin/ethtool_stats.pl
-
-
-The net_devices stats says the NIC is processing zero packets:
-
-  $ sar -n DEV 2 1000
-  [...]
-  Average:        IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s 
-rxcmp/s   txcmp/s  rxmcst/s   %ifutil
-  [...]
-  Average:       mlx5p1      0,00      0,00      0,00      0,00 
-0,00      0,00      0,00      0,00
-  Average:       mlx5p2      0,00      0,00      0,00      0,00 
-0,00      0,00      0,00      0,00
-
+Nice!
