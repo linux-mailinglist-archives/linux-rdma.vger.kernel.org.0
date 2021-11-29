@@ -2,75 +2,286 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCE134615EB
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 14:12:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110D94616ED
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 14:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377635AbhK2NP0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Nov 2021 08:15:26 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:56392 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377835AbhK2NN0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 08:13:26 -0500
-Received: from mail.kernel.org (unknown [198.145.29.99])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D2984614D4;
-        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
-Received: by mail.kernel.org (Postfix) with ESMTPS id 4EDA560184;
-        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638191408;
-        bh=LbXp/8u1CeGkCAxRN5Nfg4W8o4qGxClR38ODgpiv/kQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=ioCJIjjWs6s6kxDYH45CfgnKLYoSzAW72I3L6D+uWC66WG5gPxqrbsgA7q7omNtPG
-         hs3wfbSUIkir17tS9FSnXFk0JSBobJHDavhoS7vh2LyiqN73Z6eT9CYL7CMCDCbxyb
-         ynZmnfCxwUjDF8gfFO//lhhnDUd1c4HvKDfHUuRlHaz/HMHoq7Jh2yGlG40Y+R4G07
-         fH7gwscfStaD4Ci7r7jL76Fm1aqqYMSlRe9YlsHy93gHDgtsY/+Rwyk2W/Ki2psMpH
-         36nUQg7fZ3WnuGb1k3Fvu7TRee2i9UvJb1G17YXO2du8/CVDOD01f8pqY2Q48QRTd5
-         6VW3xZl0cc7+g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4095160A4D;
-        Mon, 29 Nov 2021 13:10:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S243245AbhK2NsD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 08:48:03 -0500
+Received: from smtp-fw-9103.amazon.com ([207.171.188.200]:54059 "EHLO
+        smtp-fw-9103.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233864AbhK2NqD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 08:46:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1638193366; x=1669729366;
+  h=references:from:to:cc:subject:date:in-reply-to:
+   message-id:mime-version;
+  bh=l3Vd2FTMtFtZXp/Facb53CtPcmlcKwfaaP4IcJhGKLs=;
+  b=LpPFi2aHIVBZf56QvenWBakhe4ClAU/mA0hadBh+kn7jLcfksVR7fEFr
+   IncSJhgv79wPViNvOtwDmu1r3C643i7w+Aiz70GlZk/ExUvizGuddn7Yn
+   L2godYUOVM9Rs3oXpybPBL5i4mheZT/hUGhk0Lp0ppUspLD89vh8NDyvk
+   g=;
+X-IronPort-AV: E=Sophos;i="5.87,273,1631577600"; 
+   d="scan'208";a="974812256"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-6435a935.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9103.sea19.amazon.com with ESMTP; 29 Nov 2021 13:42:30 +0000
+Received: from EX13D28EUC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2a-6435a935.us-west-2.amazon.com (Postfix) with ESMTPS id CBDB04215C;
+        Mon, 29 Nov 2021 13:42:29 +0000 (UTC)
+Received: from u570694869fb251.ant.amazon.com.amazon.com (10.43.162.100) by
+ EX13D28EUC001.ant.amazon.com (10.43.164.4) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.26; Mon, 29 Nov 2021 13:42:11 +0000
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-4-alexandr.lobakin@intel.com>
+User-agent: mu4e 1.7.5; emacs 28.0.50
+From:   Shay Agroskin <shayagr@amazon.com>
+To:     Alexander Lobakin <alexandr.lobakin@intel.com>
+CC:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        "Michal Swiatkowski" <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Arthur Kiyanovski" <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        "Noam Dagan" <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        "Ioana Ciornei" <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        "Russell King" <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        "Leon Romanovsky" <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        "Daniel Borkmann" <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        "John Fastabend" <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "Martin Habets" <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "Lorenzo Bianconi" <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        "Sergey Ryazanov" <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 net-next 03/26] ena: implement generic XDP statistics
+ callbacks
+Date:   Mon, 29 Nov 2021 15:34:19 +0200
+In-Reply-To: <20211123163955.154512-4-alexandr.lobakin@intel.com>
+Message-ID: <pj41zlh7bvyt75.fsf@u570694869fb251.ant.amazon.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net/mlx4_en: Update reported link modes for 1/10G
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <163819140825.10588.15476422794960132673.git-patchwork-notify@kernel.org>
-Date:   Mon, 29 Nov 2021 13:10:08 +0000
-References: <20211128123712.82096-1-erik@kryo.se>
-In-Reply-To: <20211128123712.82096-1-erik@kryo.se>
-To:     Erik Ekman <erik@kryo.se>
-Cc:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        michael@stapelberg.ch, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; format=flowed
+X-Originating-IP: [10.43.162.100]
+X-ClientProxiedBy: EX13D01UWA002.ant.amazon.com (10.43.160.74) To
+ EX13D28EUC001.ant.amazon.com (10.43.164.4)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (master)
-by David S. Miller <davem@davemloft.net>:
+Alexander Lobakin <alexandr.lobakin@intel.com> writes:
 
-On Sun, 28 Nov 2021 13:37:11 +0100 you wrote:
-> When link modes were initially added in commit 2c762679435dc
-> ("net/mlx4_en: Use PTYS register to query ethtool settings") and
-> later updated for the new ethtool API in commit 3d8f7cc78d0eb
-> ("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
-> link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
-> It looks like these got picked to represent other modes since nothing
-> better was available.
-> 
-> [...]
+> ena driver has 6 XDP counters collected per-channel. Add 
+> callbacks
+> for getting the number of channels and those counters using 
+> generic
+> XDP stats infra.
+>
+> Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
+> Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+> ---
+>  drivers/net/ethernet/amazon/ena/ena_netdev.c | 53 
+>  ++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+>
+> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c 
+> b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> index 7d5d885d85d5..83e9b85cc998 100644
+> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+> @@ -3313,12 +3313,65 @@ static void ena_get_stats64(struct 
+> net_device *netdev,
+>  	stats->tx_errors = 0;
+>  }
+>
+> +static int ena_get_xdp_stats_nch(const struct net_device 
+> *netdev, u32 attr_id)
+> +{
+> +	const struct ena_adapter *adapter = netdev_priv(netdev);
+> +
+> +	switch (attr_id) {
+> +	case IFLA_XDP_XSTATS_TYPE_XDP:
+> +		return adapter->num_io_queues;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +}
+> +
+> +static int ena_get_xdp_stats(const struct net_device *netdev, 
+> u32 attr_id,
+> +			     void *attr_data)
+> +{
+> +	const struct ena_adapter *adapter = netdev_priv(netdev);
+> +	struct ifla_xdp_stats *xdp_stats = attr_data;
+> +	u32 i;
+> +
+> +	switch (attr_id) {
+> +	case IFLA_XDP_XSTATS_TYPE_XDP:
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	for (i = 0; i < adapter->num_io_queues; i++) {
+> +		const struct u64_stats_sync *syncp;
+> +		const struct ena_stats_rx *stats;
+> +		u32 start;
+> +
+> +		stats = &adapter->rx_ring[i].rx_stats;
+> +		syncp = &adapter->rx_ring[i].syncp;
+> +
+> +		do {
+> +			start = u64_stats_fetch_begin_irq(syncp);
+> +
+> +			xdp_stats->drop = stats->xdp_drop;
+> +			xdp_stats->pass = stats->xdp_pass;
+> +			xdp_stats->tx = stats->xdp_tx;
+> +			xdp_stats->redirect = stats->xdp_redirect;
+> +			xdp_stats->aborted = stats->xdp_aborted;
+> +			xdp_stats->invalid = stats->xdp_invalid;
+> +		} while (u64_stats_fetch_retry_irq(syncp, start));
+> +
+> +		xdp_stats++;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
 
-Here is the summary with links:
-  - net/mlx4_en: Update reported link modes for 1/10G
-    https://git.kernel.org/netdev/net/c/2191b1dfef7d
+Hi,
+thank you for the time you took in adding ENA support, this code 
+doesn't update the XDP TX queues (which only available when an XDP 
+program is loaded).
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+In theory the following patch should fix it, but I was unable to 
+compile your version of iproute2 and test the patch properly. Can 
+you please let me know if I need to do anything special to bring 
+up your version of iproute2 and test this patch?
+
+diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c 
+b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+index 7d5d885d8..4e89a7d60 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
++++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
+@@ -3313,12 +3313,85 @@ static void ena_get_stats64(struct 
+net_device *netdev,
+ 	stats->tx_errors = 0;
+ }
+ 
++static int ena_get_xdp_stats_nch(const struct net_device *netdev, 
+u32 attr_id)
++{
++	const struct ena_adapter *adapter = netdev_priv(netdev);
++
++	switch (attr_id) {
++	case IFLA_XDP_XSTATS_TYPE_XDP:
++		return adapter->num_io_queues;
++	default:
++		return -EOPNOTSUPP;
++	}
++}
++
++static int ena_get_xdp_stats(const struct net_device *netdev, u32 
+attr_id,
++			     void *attr_data)
++{
++	const struct ena_adapter *adapter = netdev_priv(netdev);
++	struct ifla_xdp_stats *xdp_stats = attr_data;
++	const struct u64_stats_sync *syncp;
++	u32 start;
++	u32 i;
++
++	switch (attr_id) {
++	case IFLA_XDP_XSTATS_TYPE_XDP:
++		break;
++	default:
++		return -EOPNOTSUPP;
++	}
++
++	for (i = 0; i < adapter->num_io_queues; i++) {
++		const struct ena_stats_rx *rx_stats;
++
++		rx_stats = &adapter->rx_ring[i].rx_stats;
++		syncp = &adapter->rx_ring[i].syncp;
++
++		do {
++			start = u64_stats_fetch_begin_irq(syncp);
++
++			xdp_stats->drop = rx_stats->xdp_drop;
++			xdp_stats->pass = rx_stats->xdp_pass;
++			xdp_stats->tx = rx_stats->xdp_tx;
++			xdp_stats->redirect = 
+rx_stats->xdp_redirect;
++			xdp_stats->aborted = 
+rx_stats->xdp_aborted;
++			xdp_stats->invalid = 
+rx_stats->xdp_invalid;
++		} while (u64_stats_fetch_retry_irq(syncp, start));
++
++		xdp_stats++;
++	}
++
++	xdp_stats = attr_data;
++	/* xdp_num_queues can be 0 if an XDP program isn't loaded 
+*/
++	for (i = 0; i < adapter->xdp_num_queues; i++) {
++		const struct ena_stats_tx *tx_stats;
++
++		tx_stats = 
+&adapter->rx_ring[i].xdp_ring->tx_stats;
++		syncp = &adapter->rx_ring[i].xdp_ring->syncp;
++
++		do {
++			start = u64_stats_fetch_begin_irq(syncp);
++
++			xdp_stats->xmit_packets = tx_stats->cnt;
++			xdp_stats->xmit_bytes = tx_stats->bytes;
++			xdp_stats->xmit_errors = 
+tx_stats->dma_mapping_err +
++ 
+tx_stats->prepare_ctx_err;
++		} while (u64_stats_fetch_retry_irq(syncp, start));
++
++		xdp_stats++;
++	}
++
++	return 0;
++}
++
+ static const struct net_device_ops ena_netdev_ops = {
+ 	.ndo_open		= ena_open,
+ 	.ndo_stop		= ena_close,
+ 	.ndo_start_xmit		= ena_start_xmit,
+ 	.ndo_select_queue	= ena_select_queue,
+ 	.ndo_get_stats64	= ena_get_stats64,
++	.ndo_get_xdp_stats_nch	= ena_get_xdp_stats_nch,
++	.ndo_get_xdp_stats	= ena_get_xdp_stats,
+ 	.ndo_tx_timeout		= ena_tx_timeout,
+ 	.ndo_change_mtu		= ena_change_mtu,
+ 	.ndo_set_mac_address	= NULL,
 
 
