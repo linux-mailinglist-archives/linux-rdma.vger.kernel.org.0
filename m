@@ -2,107 +2,222 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04AD7460FA9
-	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 08:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B386B461449
+	for <lists+linux-rdma@lfdr.de>; Mon, 29 Nov 2021 12:53:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240913AbhK2H7w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 29 Nov 2021 02:59:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241038AbhK2H5w (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 29 Nov 2021 02:57:52 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F655C06175B
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 23:54:13 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id s13so34764792wrb.3
-        for <linux-rdma@vger.kernel.org>; Sun, 28 Nov 2021 23:54:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FF43797rWa/tW0tYpwzS9I9ZcuXL/DtjRV/ubKLJ9Io=;
-        b=FTNdWdN1N7nwOepyVYBlQMBJHnA9lB9f15tJiZBrrzsPAZ7d07miaK/zxkTpdDIkUt
-         fqY83zP3kLkdicNKYPEbTi1hXCx0sbrDzpRjZld9+Yovsajxr1Xlf+p2ReWZDuzNKkQl
-         oVTXMm1rj05oGDVljtpqQGquntvyZFXqsdCtziiFfZ9rwLPX/bsRnlHzUdmS5eVfuzfS
-         APJILt0mqOEubj4teeSM/g7BPFWCIPmBMZcfx8BARf1W/1XidWj6z4nj/wASQMGiURkY
-         uCHIy4KNk2gDY7RDYXYVGlGlAy9bWiW99qf0454VJwXsl4G95wL0NBrg9tBweAkJEo1v
-         qIMQ==
+        id S231951AbhK2L4t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 29 Nov 2021 06:56:49 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:40736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239432AbhK2Lys (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 29 Nov 2021 06:54:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638186690;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o1hbT83UZyzEpMcYnWEfjfHejJ/ev9mdgbjpKbK1VxE=;
+        b=jPSCvnH3AmIEJgnraLey8Z5aFFc8AIeOcFcsX+DzhdtTb0SAGz8twzNMycBFyTfseM1MSS
+        8w+KBStygLCLMuokWtNVxaJiSfRKO+isstyAF4hpUsR6KCkexSxNid9nv4QxiUG0bDtO4c
+        Kw91vHSrw0dewmGQCdIUe1mphja4ZQA=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-513-JKQGJk6GPR6qW-3GXWT8qA-1; Mon, 29 Nov 2021 06:51:29 -0500
+X-MC-Unique: JKQGJk6GPR6qW-3GXWT8qA-1
+Received: by mail-ed1-f72.google.com with SMTP id s12-20020a50ab0c000000b003efdf5a226fso7338168edc.10
+        for <linux-rdma@vger.kernel.org>; Mon, 29 Nov 2021 03:51:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=FF43797rWa/tW0tYpwzS9I9ZcuXL/DtjRV/ubKLJ9Io=;
-        b=xBmd9R87Ed0AiEoX0aaXRY9MQoV024hLi7Nw81ZKrvyC3EA/wv/4gRNOsSxv6tGgbG
-         Fgs2+RFSfMwqQcdZobP9IF93V9cHGfm/HJ2XG31b0OzbdYJMua3Gehz2WmiNyAW+QDwJ
-         scCZ97kYHNJgvGDJ1k0WQKbEtDsaiaHbGsLbFAzm+jencJrIreLI37e6Sh3d5pgtxto8
-         bq2dvTFuEraAChlj4v1OuZL2z2XlmC1SpBGf2Kzax56JY4BT0Rw3YFUT0jueEqcMSv2r
-         S9h0W7lTO9YjkSgjDGPXMOe4batFQldnpa6licvQRtWc4nEVEG4oB9FhehRdvRwhqtPd
-         O7EQ==
-X-Gm-Message-State: AOAM533RtRnurXp+3joTT08v2Pr0JmpnxRWbm2/fl0jhlc6J/NLYWjV1
-        lijxnGVDu53n7GzKpenz2n0oaqLaVvm/qW42h60=
-X-Google-Smtp-Source: ABdhPJxxpCc54gSfy2W+SOA3eFnnakyw49qBOMcNe1tc5W2v+GhIKoTOfmtgNjXDPMu9mMzIyW+rPBgZz35LsrweJsY=
-X-Received: by 2002:a05:6000:181:: with SMTP id p1mr32397192wrx.292.1638172451953;
- Sun, 28 Nov 2021 23:54:11 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=o1hbT83UZyzEpMcYnWEfjfHejJ/ev9mdgbjpKbK1VxE=;
+        b=lD0xH+UA4vs5ei0+tYzDWShr5U2+E/enqfVK1PFXTs9RLt9aLks4dj5AaGsnZ7I3KQ
+         KMEgWeSzadWfvb+EC6sAcQv2YM10fHYlO3dCXJJpM4lt/snmFEfAaWgzveGIWBQ29PkH
+         te1CIdopYZKHwQjMSl3W0PqqBuGrctWICuT95NQ1/tTIJ4cZidHglkv5p1jEWax8L8Mq
+         SwqSFTthnBtHtUcyAWBocMjpykcmYDIkpKdvqif7qAwX5wx+yLZOb/ULcNYQm6SIYM4E
+         iCW4Szv8B3zFb5cZE5ArgKbaSsxAI0PpgPO3A65t0viqXntjMPj4TDEAPakg+uQVfaHh
+         3u/A==
+X-Gm-Message-State: AOAM531jKTMueyTZTBwFpKu+ASkFEh5wNfYr93IgZUbjYnApr3N274VF
+        lD+o79lCfzlOHoiIBrsZlgDIBt9uIt1vP8QIft0CZotRuR0d/vd4AXMAzK+Ejm6K9QC/ly1yR3M
+        tenv8M7cgYc0M0gbsQWi/Rg==
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr72820074edz.36.1638186687993;
+        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy//h6DqzMZ3cIjns1ItOPHoyCEI8XwGnDfYQ/w255YG7ez18OJaBJc76mESug2RLwzmhwD5w==
+X-Received: by 2002:a05:6402:90c:: with SMTP id g12mr72820014edz.36.1638186687643;
+        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
+Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
+        by smtp.gmail.com with ESMTPSA id z1sm9056421edq.54.2021.11.29.03.51.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Nov 2021 03:51:27 -0800 (PST)
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 6858F1802A0; Mon, 29 Nov 2021 12:51:26 +0100 (CET)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shay Agroskin <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+In-Reply-To: <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+ <20211123163955.154512-22-alexandr.lobakin@intel.com>
+ <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+ <87bl28bga6.fsf@toke.dk>
+ <20211125170708.127323-1-alexandr.lobakin@intel.com>
+ <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20211125204007.133064-1-alexandr.lobakin@intel.com>
+ <87sfvj9k13.fsf@toke.dk>
+ <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <871ae82a-3d5b-2693-2f77-7c86d725a056@iogearbox.net>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Mon, 29 Nov 2021 12:51:26 +0100
+Message-ID: <878rx79o3l.fsf@toke.dk>
 MIME-Version: 1.0
-Sender: dr.aisha80gaddafi@gmail.com
-Received: by 2002:a5d:4d86:0:0:0:0:0 with HTTP; Sun, 28 Nov 2021 23:54:11
- -0800 (PST)
-From:   "MRS. Maya Olivia" <mrs.mayaolivia@gmail.com>
-Date:   Mon, 29 Nov 2021 07:54:11 +0000
-X-Google-Sender-Auth: WniPMns57bPmSHjFT6qAasd04Lg
-Message-ID: <CA+B9LK0DJ5zWZr=psa9MwUHdAxKSNaZsnDyS_x5nMaKE2biO7A@mail.gmail.com>
-Subject: THIS IS MY HUSBAND WISH a
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-THIS IS MY HUSBAND WISH
-MY NAME IS Mrs. Maya Oliver,
-My Name is Mrs. Maya Oliver, from Norway. I know that this message
-will be a surprise to you. Firstly, I am married to Mr. Patrick
-Oliver, A diamond and gold merchant who owns a small gold Mine in
-Burkina Faso and Egypt Cairo; He died of Cardiovascular Disease in
-mid-March 2011. During his lifetime he deposited the sum of =E2=82=AC 18.5
-Million Euro) Eighteen million, Five hundred thousand Euros in a bank
-in Ouagadougou the capital city of Burkina Faso. The deposited money
-was from the sale of the shares, death benefits payment and
-entitlements of my deceased husband by his company.
-Please reply to my privet mail after reading: mrs.mayaolivia90@gmail.com
+Daniel Borkmann <daniel@iogearbox.net> writes:
 
-I am sending this message to you praying that it will reach you in
-good health, since I am not in good health in which I sleep every
-night without knowing if I may be alive to see the next day. I am
-suffering from long term cancer and presently I am partially suffering
-from a stroke illness which has become almost impossible for me to
-move around. I was married to my late husband for over 4 years before
-he died and unfortunately that we don't have a child, my doctor
-confided in me that i have less chance to live. Having known my health
-condition, I decided to contact you to claim the fund since I don't
-have any relation. I grew up in an orphanage.
+> On 11/26/21 7:06 PM, Jakub Kicinski wrote:
+>> On Fri, 26 Nov 2021 13:30:16 +0100 Toke H=C3=B8iland-J=C3=B8rgensen wrot=
+e:
+>>>>> TBH I wasn't following this thread too closely since I saw Daniel
+>>>>> nacked it already. I do prefer rtnl xstats, I'd just report them
+>>>>> in -s if they are non-zero. But doesn't sound like we have an agreeme=
+nt
+>>>>> whether they should exist or not.
+>>>>
+>>>> Right, just -s is fine, if we drop the per-channel approach.
+>>>
+>>> I agree that adding them to -s is fine (and that resolves my "no one
+>>> will find them" complain as well). If it crowds the output we could also
+>>> default to only output'ing a subset, and have the more detailed
+>>> statistics hidden behind a verbose switch (or even just in the JSON
+>>> output)?
+>>>
+>>>>> Can we think of an approach which would make cloudflare and cilium
+>>>>> happy? Feels like we're trying to make the slightly hypothetical
+>>>>> admin happy while ignoring objections of very real users.
+>>>>
+>>>> The initial idea was to only uniform the drivers. But in general
+>>>> you are right, 10 drivers having something doesn't mean it's
+>>>> something good.
+>>>
+>>> I don't think it's accurate to call the admin use case "hypothetical".
+>>> We're expending a significant effort explaining to people that XDP can
+>>> "eat" your packets, and not having any standard statistics makes this
+>>> way harder. We should absolutely cater to our "early adopters", but if
+>>> we want XDP to see wider adoption, making it "less weird" is critical!
+>>=20
+>> Fair. In all honesty I said that hoping to push for a more flexible
+>> approach hidden entirely in BPF, and not involving driver changes.
+>> Assuming the XDP program has more fine grained stats we should be able
+>> to extract those instead of double-counting. Hence my vague "let's work
+>> with apps" comment.
+>>=20
+>> For example to a person familiar with the workload it'd be useful to
+>> know if program returned XDP_DROP because of configured policy or
+>> failure to parse a packet. I don't think that sort distinction is
+>> achievable at the level of standard stats.
+>
+> Agree on the additional context. How often have you looked at tc clsact
+> /dropped/ stats specifically when you debug a more complex BPF program
+> there?
+>
+>    # tc -s qdisc show clsact dev foo
+>    qdisc clsact ffff: parent ffff:fff1
+>     Sent 6800 bytes 120 pkt (dropped 0, overlimits 0 requeues 0)
+>     backlog 0b 0p requeues 0
+>
+> Similarly, XDP_PASS counters may be of limited use as well for same reason
+> (and I think we might not even have a tc counter equivalent for it).
+>
+>> The information required by the admin is higher level. As you say the
+>> primary concern there is "how many packets did XDP eat".
+>
+> Agree. Above said, for XDP_DROP I would see one use case where you compare
+> different drivers or bond vs no bond as we did in the past in [0] when
+> testing against a packet generator (although I don't see bond driver cove=
+red
+> in this series here yet where it aggregates the XDP stats from all bond s=
+lave
+> devs).
+>
+> On a higher-level wrt "how many packets did XDP eat", it would make sense
+> to have the stats for successful XDP_{TX,REDIRECT} given these are out
+> of reach from a BPF prog PoV - we can only count there how many times we
+> returned with XDP_TX but not whether the pkt /successfully made it/.
+>
+> In terms of error cases, could we just standardize all drivers on the beh=
+avior
+> of e.g. mlx5e_xdp_handle(), meaning, a failure from XDP_{TX,REDIRECT} will
+> hit the trace_xdp_exception() and then fallthrough to bump a drop counter
+> (same as we bump in XDP_DROP then). So the drop counter will account for
+> program drops but also driver-related drops.
+>
+> At some later point the trace_xdp_exception() could be extended with an e=
+rror
+> code that the driver would propagate (given some of them look quite simil=
+ar
+> across drivers, fwiw), and then whoever wants to do further processing wi=
+th
+> them can do so via bpftrace or other tooling.
+>
+> So overall wrt this series: from the lrstats we'd be /dropping/ the pass,
+> tx_errors, redirect_errors, invalid, aborted counters. And we'd be /keepi=
+ng/
+> bytes & packets counters that XDP sees, (driver-)successful tx & redirect
+> counters as well as drop counter. Also, XDP bytes & packets counters shou=
+ld
+> not be counted twice wrt ethtool stats.
 
-I have decided to donate what I have to you for the support of helping
-Motherless babies/Less privileged/Widows' because I am dying and
-diagnosed with cancer about 2 years ago. I have been touched by God
-Almighty to donate from what I have inherited from my late husband to
-you for the good work of God Almighty. I have asked Almighty God to
-forgive me and believe he has, because He is a Merciful God I will be
-going in for an operation soon.
+This sounds reasonable to me, and I also like the error code to
+tracepoint idea :)
 
-This is the reason I need your services to stand as my next of kin or
-an executor to claim the funds for charity purposes. If this money
-remains unclaimed after my death, the bank executives or the
-government will take the money as unclaimed fund and maybe use it for
-selfish and worthless ventures, I need a very honest person who can
-claim this money and use it for Charity works, for orphanages, widows
-and also build schools for less privilege that will be named after my
-late husband and my name; I need your urgent answer to know if you
-will be able to execute this project, and I will give you more
-information on how the fund will be transferred to your bank account
-from the  Burkina Faso bank.
-Please reply to my privet mail after reading: mrs.mayaolivia90@gmail.com
+-Toke
 
-Thanks
-Mrs. Maya
