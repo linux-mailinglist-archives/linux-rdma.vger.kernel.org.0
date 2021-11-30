@@ -2,304 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276404635FB
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 15:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918DF46396F
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 16:09:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhK3OFk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Nov 2021 09:05:40 -0500
-Received: from szxga03-in.huawei.com ([45.249.212.189]:28196 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241875AbhK3OFj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Nov 2021 09:05:39 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J3P4N4WYKz8vhQ;
-        Tue, 30 Nov 2021 22:00:20 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 30 Nov 2021 22:02:18 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Tue, 30 Nov 2021 22:02:17 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>
-Subject: [PATCH v5 for-next 1/1] RDMA/hns: Support direct wqe of userspace
-Date:   Tue, 30 Nov 2021 21:57:40 +0800
-Message-ID: <20211130135740.4559-2-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211130135740.4559-1-liangwenpeng@huawei.com>
-References: <20211130135740.4559-1-liangwenpeng@huawei.com>
+        id S238985AbhK3PMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Nov 2021 10:12:14 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:32900 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244928AbhK3PKd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Nov 2021 10:10:33 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 426B1B81A1D;
+        Tue, 30 Nov 2021 15:07:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68A3AC53FC7;
+        Tue, 30 Nov 2021 15:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638284831;
+        bh=jFQ+6eYpfo8AQTphnbl6MyyOotoZuBDGCJKxTEg5dTg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=okOaZXwVQha6VENLbtkW/K3UpmSv4x49LI137OshO7/GQ3udI34yAew/t1F4aeWjp
+         9RRQJdhcJifvYVBtH1uv9s90R9dXC+jkftp+VyKrmGOwTZU1drMlxR78YGJ4tUsNTb
+         ZeHxC/J1Ylt1+gxhsRnzopmxV2PFCL0Mi6ejlLDDN9agiengKlehxRxCy8hak+mcD+
+         XhyTEYILzqgFd9PW/SlVvRy6r+/OiSN8cbVsLxju8oy1ZuZ5WtvL/qEwyU58CrvAEg
+         mq/1Ni4N4qOnq/1dV/zSGy7z/TRfGgF4iADeKw5XsZJKXHsXoz5d70RsGtE3tfVb+j
+         UOXFLXcmuzxxw==
+Date:   Tue, 30 Nov 2021 07:07:09 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Petr Machata <petrm@nvidia.com>
+Cc:     Ido Schimmel <idosch@idosch.org>,
+        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
+        <toke@redhat.com>,
+        "Alexander Lobakin" <alexandr.lobakin@intel.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Shay Agroskin" <shayagr@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
+        "David Arinzon" <darinzon@amazon.com>,
+        Noam Dagan <ndagan@amazon.com>,
+        "Saeed Bishara" <saeedb@amazon.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Edward Cree <ecree.xilinx@gmail.com>,
+        "Martin Habets" <habetsm.xilinx@gmail.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Martin KaFai Lau" <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Yajun Deng <yajun.deng@linux.dev>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        David Ahern <dsahern@kernel.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, <netdev@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>, <nikolay@nvidia.com>
+Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
+ per-channel statistics
+Message-ID: <20211130070709.0ddf19f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <87o861q2m4.fsf@nvidia.com>
+References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
+        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
+        <87bl28bga6.fsf@toke.dk>
+        <20211125170708.127323-1-alexandr.lobakin@intel.com>
+        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20211125204007.133064-1-alexandr.lobakin@intel.com>
+        <87sfvj9k13.fsf@toke.dk>
+        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87ee72ah56.fsf@toke.dk>
+        <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YaPCbaMVaVlxXcHC@shredder>
+        <20211129064755.539099c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <874k7vq7tl.fsf@nvidia.com>
+        <20211129080502.53f7d316@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87sfveq48z.fsf@nvidia.com>
+        <20211129091713.2dc8462f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <87o861q2m4.fsf@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Yixing Liu <liuyixing1@huawei.com>
+On Tue, 30 Nov 2021 12:55:47 +0100 Petr Machata wrote:
+> I still think it would be better to report HW_STATS explicitly as well
+> though. One reason is simply convenience. The other is that OK, now we
+> have SW stats, and XDP stats, and total stats, and I (as a client) don't
+> necessarily know how it all fits together. But the contract for HW_STATS
+> is very clear.
 
-Add direct wqe enable switch and address mapping.
+Would be good to check with Jiri, my recollection is that this argument
+was brought up when CPU_HIT stats were added. I don't recall the
+reasoning.
 
-Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_device.h |  8 +--
- drivers/infiniband/hw/hns/hns_roce_main.c   | 42 +++++++++++++---
- drivers/infiniband/hw/hns/hns_roce_pd.c     |  3 ++
- drivers/infiniband/hw/hns/hns_roce_qp.c     | 54 ++++++++++++++++++++-
- include/uapi/rdma/hns-abi.h                 |  2 +
- 5 files changed, 98 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index e35164ae7376..bc7112a205a7 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -182,6 +182,7 @@ enum {
- 	HNS_ROCE_CAP_FLAG_FRMR                  = BIT(8),
- 	HNS_ROCE_CAP_FLAG_QP_FLOW_CTRL		= BIT(9),
- 	HNS_ROCE_CAP_FLAG_ATOMIC		= BIT(10),
-+	HNS_ROCE_CAP_FLAG_DIRECT_WQE		= BIT(12),
- 	HNS_ROCE_CAP_FLAG_SDI_MODE		= BIT(14),
- 	HNS_ROCE_CAP_FLAG_STASH			= BIT(17),
- };
-@@ -228,6 +229,7 @@ struct hns_roce_uar {
- enum hns_roce_mmap_type {
- 	HNS_ROCE_MMAP_TYPE_DB = 1,
- 	HNS_ROCE_MMAP_TYPE_TPTR,
-+	HNS_ROCE_MMAP_TYPE_DWQE,
- };
- 
- struct hns_user_mmap_entry {
-@@ -627,10 +629,6 @@ struct hns_roce_work {
- 	u32 queue_num;
- };
- 
--enum {
--	HNS_ROCE_QP_CAP_DIRECT_WQE = BIT(5),
--};
--
- struct hns_roce_qp {
- 	struct ib_qp		ibqp;
- 	struct hns_roce_wq	rq;
-@@ -675,6 +673,7 @@ struct hns_roce_qp {
- 	struct list_head	node; /* all qps are on a list */
- 	struct list_head	rq_node; /* all recv qps are on a list */
- 	struct list_head	sq_node; /* all send qps are on a list */
-+	struct hns_user_mmap_entry *dwqe_mmap_entry;
- };
- 
- struct hns_roce_ib_iboe {
-@@ -1010,6 +1009,7 @@ struct hns_roce_dev {
- 	u32 func_num;
- 	u32 is_vf;
- 	u32 cong_algo_tmpl_id;
-+	u64 dwqe_page;
- };
- 
- static inline struct hns_roce_dev *to_hr_dev(struct ib_device *ib_dev)
-diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index 8233bec053ee..700e32c584d8 100644
---- a/drivers/infiniband/hw/hns/hns_roce_main.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_main.c
-@@ -310,9 +310,25 @@ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
- 	entry->address = address;
- 	entry->mmap_type = mmap_type;
- 
--	ret = rdma_user_mmap_entry_insert_exact(
--		ucontext, &entry->rdma_entry, length,
--		mmap_type == HNS_ROCE_MMAP_TYPE_DB ? 0 : 1);
-+	switch (mmap_type) {
-+	case HNS_ROCE_MMAP_TYPE_DB:
-+		ret = rdma_user_mmap_entry_insert_exact(
-+				ucontext, &entry->rdma_entry, length, 0);
-+		break;
-+	case HNS_ROCE_MMAP_TYPE_TPTR:
-+		ret = rdma_user_mmap_entry_insert_exact(
-+				ucontext, &entry->rdma_entry, length, 1);
-+		break;
-+	case HNS_ROCE_MMAP_TYPE_DWQE:
-+		ret = rdma_user_mmap_entry_insert_range(
-+				ucontext, &entry->rdma_entry, length, 2,
-+				U32_MAX);
-+		break;
-+	default:
-+		ret = -EINVAL;
-+		break;
-+	}
-+
- 	if (ret) {
- 		kfree(entry);
- 		return NULL;
-@@ -439,10 +455,24 @@ static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
- 
- 	entry = to_hns_mmap(rdma_entry);
- 	pfn = entry->address >> PAGE_SHIFT;
--	prot = vma->vm_page_prot;
- 
--	if (entry->mmap_type != HNS_ROCE_MMAP_TYPE_TPTR)
--		prot = pgprot_noncached(prot);
-+	switch (entry->mmap_type) {
-+	case HNS_ROCE_MMAP_TYPE_DB:
-+		prot = pgprot_noncached(vma->vm_page_prot);
-+		break;
-+	case HNS_ROCE_MMAP_TYPE_TPTR:
-+		prot = vma->vm_page_prot;
-+		break;
-+	/*
-+	 * The BAR region of direct WQE supports Early Write Ack,
-+	 * so pgprot_device is used to improve performance.
-+	 */
-+	case HNS_ROCE_MMAP_TYPE_DWQE:
-+		prot = pgprot_device(vma->vm_page_prot);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	ret = rdma_user_mmap_io(uctx, vma, pfn, rdma_entry->npages * PAGE_SIZE,
- 				prot, rdma_entry);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
-index 81ffad77ae42..03c349f7ebbe 100644
---- a/drivers/infiniband/hw/hns/hns_roce_pd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_pd.c
-@@ -115,6 +115,9 @@ int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
- 	} else {
- 		uar->pfn = ((pci_resource_start(hr_dev->pci_dev, 2))
- 			   >> PAGE_SHIFT);
-+		if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DIRECT_WQE)
-+			hr_dev->dwqe_page =
-+				pci_resource_start(hr_dev->pci_dev, 4);
- 	}
- 
- 	return 0;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
-index 4fcab1611548..c84e1c23722c 100644
---- a/drivers/infiniband/hw/hns/hns_roce_qp.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
-@@ -379,6 +379,11 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- 	return ret;
- }
- 
-+static void qp_user_mmap_entry_remove(struct hns_roce_qp *hr_qp)
-+{
-+	rdma_user_mmap_entry_remove(&hr_qp->dwqe_mmap_entry->rdma_entry);
-+}
-+
- void hns_roce_qp_remove(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
- {
- 	struct xarray *xa = &hr_dev->qp_table_xa;
-@@ -780,7 +785,11 @@ static int alloc_qp_buf(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		goto err_inline;
- 	}
- 
-+	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DIRECT_WQE)
-+		hr_qp->en_flags |= HNS_ROCE_QP_CAP_DIRECT_WQE;
-+
- 	return 0;
-+
- err_inline:
- 	free_rq_inline_buf(hr_qp);
- 
-@@ -822,6 +831,35 @@ static inline bool kernel_qp_has_rdb(struct hns_roce_dev *hr_dev,
- 		hns_roce_qp_has_rq(init_attr));
- }
- 
-+static int qp_mmap_entry(struct hns_roce_qp *hr_qp,
-+			 struct hns_roce_dev *hr_dev,
-+			 struct ib_udata *udata,
-+			 struct hns_roce_ib_create_qp_resp *resp)
-+{
-+	struct hns_roce_ucontext *uctx =
-+		rdma_udata_to_drv_context(udata,
-+			struct hns_roce_ucontext, ibucontext);
-+	struct rdma_user_mmap_entry *rdma_entry;
-+	u64 address;
-+
-+	address = hr_dev->dwqe_page + hr_qp->qpn * HNS_ROCE_DWQE_SIZE;
-+
-+	hr_qp->dwqe_mmap_entry =
-+		hns_roce_user_mmap_entry_insert(&uctx->ibucontext, address,
-+						HNS_ROCE_DWQE_SIZE,
-+						HNS_ROCE_MMAP_TYPE_DWQE);
-+
-+	if (!hr_qp->dwqe_mmap_entry) {
-+		ibdev_err(&hr_dev->ib_dev, "failed to get dwqe mmap entry.\n");
-+		return -ENOMEM;
-+	}
-+
-+	rdma_entry = &hr_qp->dwqe_mmap_entry->rdma_entry;
-+	resp->dwqe_mmap_key = rdma_user_mmap_get_offset(rdma_entry);
-+
-+	return 0;
-+}
-+
- static int alloc_user_qp_db(struct hns_roce_dev *hr_dev,
- 			    struct hns_roce_qp *hr_qp,
- 			    struct ib_qp_init_attr *init_attr,
-@@ -909,10 +947,16 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 		hr_qp->en_flags |= HNS_ROCE_QP_CAP_OWNER_DB;
- 
- 	if (udata) {
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE) {
-+			ret = qp_mmap_entry(hr_qp, hr_dev, udata, resp);
-+			if (ret)
-+				return ret;
-+		}
-+
- 		ret = alloc_user_qp_db(hr_dev, hr_qp, init_attr, udata, ucmd,
- 				       resp);
- 		if (ret)
--			return ret;
-+			goto err_remove_qp;
- 	} else {
- 		ret = alloc_kernel_qp_db(hr_dev, hr_qp, init_attr);
- 		if (ret)
-@@ -920,6 +964,12 @@ static int alloc_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 	}
- 
- 	return 0;
-+
-+err_remove_qp:
-+	if (hr_qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE)
-+		qp_user_mmap_entry_remove(hr_qp);
-+
-+	return ret;
- }
- 
- static void free_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
-@@ -933,6 +983,8 @@ static void free_qp_db(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
- 			hns_roce_db_unmap_user(uctx, &hr_qp->rdb);
- 		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_SQ_RECORD_DB)
- 			hns_roce_db_unmap_user(uctx, &hr_qp->sdb);
-+		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_DIRECT_WQE)
-+			qp_user_mmap_entry_remove(hr_qp);
- 	} else {
- 		if (hr_qp->en_flags & HNS_ROCE_QP_CAP_RQ_RECORD_DB)
- 			hns_roce_free_db(hr_dev, &hr_qp->rdb);
-diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
-index 42b177655560..f6fde06db4b4 100644
---- a/include/uapi/rdma/hns-abi.h
-+++ b/include/uapi/rdma/hns-abi.h
-@@ -77,10 +77,12 @@ enum hns_roce_qp_cap_flags {
- 	HNS_ROCE_QP_CAP_RQ_RECORD_DB = 1 << 0,
- 	HNS_ROCE_QP_CAP_SQ_RECORD_DB = 1 << 1,
- 	HNS_ROCE_QP_CAP_OWNER_DB = 1 << 2,
-+	HNS_ROCE_QP_CAP_DIRECT_WQE = 1 << 5,
- };
- 
- struct hns_roce_ib_create_qp_resp {
- 	__aligned_u64 cap_flags;
-+	__aligned_u64 dwqe_mmap_key;
- };
- 
- struct hns_roce_ib_alloc_ucontext_resp {
--- 
-2.33.0
-
+<insert xkcd standards>
