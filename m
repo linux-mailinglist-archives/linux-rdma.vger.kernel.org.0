@@ -2,282 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5E1463E7B
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 20:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77B8C463EAE
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 20:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245690AbhK3TSP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Nov 2021 14:18:15 -0500
-Received: from mga12.intel.com ([192.55.52.136]:13477 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230100AbhK3TSN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 30 Nov 2021 14:18:13 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10184"; a="216316676"
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="216316676"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 11:14:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
-   d="scan'208";a="511659480"
-Received: from irvmail001.ir.intel.com ([10.43.11.63])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Nov 2021 11:14:44 -0800
-Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
-        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AUJEfUt019797;
-        Tue, 30 Nov 2021 19:14:41 GMT
-From:   Alexander Lobakin <alexandr.lobakin@intel.com>
-To:     Shay Agroskin <shayagr@amazon.com>
-Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        "Michal Swiatkowski" <michal.swiatkowski@linux.intel.com>,
-        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Arthur Kiyanovski" <akiyano@amazon.com>,
-        David Arinzon <darinzon@amazon.com>,
-        "Noam Dagan" <ndagan@amazon.com>,
-        Saeed Bishara <saeedb@amazon.com>,
-        "Ioana Ciornei" <ioana.ciornei@nxp.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "Leon Romanovsky" <leon@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Daniel Borkmann" <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Edward Cree <ecree.xilinx@gmail.com>,
-        "Martin Habets" <habetsm.xilinx@gmail.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "Lorenzo Bianconi" <lorenzo@kernel.org>,
-        Yajun Deng <yajun.deng@linux.dev>,
-        "Sergey Ryazanov" <ryazanov.s.a@gmail.com>,
-        David Ahern <dsahern@kernel.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v2 net-next 03/26] ena: implement generic XDP statistics callbacks
-Date:   Tue, 30 Nov 2021 20:14:29 +0100
-Message-Id: <20211130191429.1171038-1-alexandr.lobakin@intel.com>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <pj41zlh7bvyt75.fsf@u570694869fb251.ant.amazon.com>
-References: <20211123163955.154512-1-alexandr.lobakin@intel.com> <20211123163955.154512-4-alexandr.lobakin@intel.com> <pj41zlh7bvyt75.fsf@u570694869fb251.ant.amazon.com>
+        id S233740AbhK3Tir (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Nov 2021 14:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233472AbhK3Tiq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Nov 2021 14:38:46 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53953C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Nov 2021 11:35:27 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id r26so43339587oiw.5
+        for <linux-rdma@vger.kernel.org>; Tue, 30 Nov 2021 11:35:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=RT80yFMKn8dWNqeWSqmO9J70gyGq/6jNwFSxId/tD7I=;
+        b=grIkuFlgqqd4t0uF7KcukqHQEaUK82siIT6sUJDl1qE2fVhNYQtz5U0+MvT67orxXX
+         3QeowlelNLaX7r94REJI7RkdZ8bG+8MSq8XzbjxbMxY7C5YzobuT0KFzu4rWHf21RwiR
+         3+G/oyHYMsv/K4feYscU5HsuE+mFUpqagxHKz0hTfBLZhKquLXHzzCeWDyOAsLhGGTs6
+         qorjsDr619uO9DCiihliP8kLPHZgbDeuC1a47SLGVMG2YNRA4r7oMOdObaus5/UeF5bt
+         ZoA57uAjY2gWRc/moKWonV5MezJqGmG4IKJKBz2wacmcKUM8H7OPsUwe7mhhMBR/D10e
+         3UWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=RT80yFMKn8dWNqeWSqmO9J70gyGq/6jNwFSxId/tD7I=;
+        b=2u/i5/nPltIS6hv5AGaHVV+booPgNkpTH8f0k4ltOQotPkRsTmgQpUf/TK9duunA1T
+         wPk21dnkQ1pUjESEeAGS4nujfLJgGUwbwcbbw1c7Z81uEavN7UUvDplX8A22R9tMzuDM
+         7hkiA2jOcjOKhAEn6EDfawY+WBIJ09lzqzaHTYaUHd8Q/9Eg6unY4QjByUU1CtSS/W5u
+         r/zvK9tPzQH6WB/099K2LY1ahR+JxY5DYdAkxkEoxax718PTXU6L9aEWKlw21J85BbqS
+         h5q0yHJfuyrYv+JrpsuwdDfbVLcUxKfAlPfg6AzRNIgszd+D/ah917IozCp4BUJ6pJX/
+         kEgw==
+X-Gm-Message-State: AOAM532pzMUwbJ08vshLO6BAocxFjI0QMxnnLSHM14UpV7rJ7JBYFjY6
+        R425v4Ob7UaEbEZPf4nmdCM=
+X-Google-Smtp-Source: ABdhPJyHQuxC1wsb+vph0KO1FtcvqNRM2LM9aVq+LmxyDnTH+mDX23N21+FUl1J71pGv9uM6zKSMfQ==
+X-Received: by 2002:a05:6808:13d5:: with SMTP id d21mr1008452oiw.175.1638300926572;
+        Tue, 30 Nov 2021 11:35:26 -0800 (PST)
+Received: from ?IPV6:2603:8081:140c:1a00:7ffe:5e29:2a05:810? (2603-8081-140c-1a00-7ffe-5e29-2a05-0810.res6.spectrum.com. [2603:8081:140c:1a00:7ffe:5e29:2a05:810])
+        by smtp.gmail.com with ESMTPSA id bn41sm3882307oib.18.2021.11.30.11.35.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Nov 2021 11:35:26 -0800 (PST)
+Message-ID: <f5204655-758a-d95f-24ec-869bc2371d37@gmail.com>
+Date:   Tue, 30 Nov 2021 13:35:25 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH for-next v4 09/13] RDMA/rxe: Replaced keyed rxe objects by
+ indexed objects
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20211103050241.61293-1-rpearsonhpe@gmail.com>
+ <20211103050241.61293-10-rpearsonhpe@gmail.com>
+ <20211119174115.GB2988708@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20211119174115.GB2988708@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Shay Agroskin <shayagr@amazon.com>
-Date: Mon, 29 Nov 2021 15:34:19 +0200
-
-> Alexander Lobakin <alexandr.lobakin@intel.com> writes:
+On 11/19/21 11:41, Jason Gunthorpe wrote:
+> On Wed, Nov 03, 2021 at 12:02:38AM -0500, Bob Pearson wrote:
+>> +	if (mgid->raw[10] == 0xff && mgid->raw[11] == 0xff) {
+>> +		if ((mgid->raw[12] & 0xf0) != 0xe0)
+>> +			pr_info("mgid is not an ipv4 mc address\n");
+>> +
+>> +		/* mgid is a mapped IPV4 multicast address
+>> +		 * use the 32 bits as an index which will be
+>> +		 * unique
+>> +		 */
+>> +		index = be32_to_cpu(val32[3]);
+>> +	} else {
+>> +		if (mgid->raw[0] != 0xff)
+>> +			pr_info("mgid is not an ipv6 mc address\n");
+>> +
+>> +		/* mgid is an IPV6 multicast address which won't
+>> +		 * fit into the index so construct the index
+>> +		 * from the four 32 bit words in mgid.
+>> +		 * If there is a collision treat it like
+>> +		 * no memory and return NULL
+>> +		 */
+>> +		index = be32_to_cpu(val32[0] ^ val32[1]);
+>> +		index = (index << 32) | be32_to_cpu(val32[2] ^ val32[3]);
 > 
-> > ena driver has 6 XDP counters collected per-channel. Add 
-> > callbacks
-> > for getting the number of channels and those counters using 
-> > generic
-> > XDP stats infra.
-> >
-> > Signed-off-by: Alexander Lobakin <alexandr.lobakin@intel.com>
-> > Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> > ---
-> >  drivers/net/ethernet/amazon/ena/ena_netdev.c | 53 
-> >  ++++++++++++++++++++
-> >  1 file changed, 53 insertions(+)
-> >
-> > diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c 
-> > b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > index 7d5d885d85d5..83e9b85cc998 100644
-> > --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> > @@ -3313,12 +3313,65 @@ static void ena_get_stats64(struct 
-> > net_device *netdev,
-> >  	stats->tx_errors = 0;
-> >  }
-> >
-> > +static int ena_get_xdp_stats_nch(const struct net_device 
-> > *netdev, u32 attr_id)
-> > +{
-> > +	const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +
-> > +	switch (attr_id) {
-> > +	case IFLA_XDP_XSTATS_TYPE_XDP:
-> > +		return adapter->num_io_queues;
-> > +	default:
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +}
-> > +
-> > +static int ena_get_xdp_stats(const struct net_device *netdev, 
-> > u32 attr_id,
-> > +			     void *attr_data)
-> > +{
-> > +	const struct ena_adapter *adapter = netdev_priv(netdev);
-> > +	struct ifla_xdp_stats *xdp_stats = attr_data;
-> > +	u32 i;
-> > +
-> > +	switch (attr_id) {
-> > +	case IFLA_XDP_XSTATS_TYPE_XDP:
-> > +		break;
-> > +	default:
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	for (i = 0; i < adapter->num_io_queues; i++) {
-> > +		const struct u64_stats_sync *syncp;
-> > +		const struct ena_stats_rx *stats;
-> > +		u32 start;
-> > +
-> > +		stats = &adapter->rx_ring[i].rx_stats;
-> > +		syncp = &adapter->rx_ring[i].syncp;
-> > +
-> > +		do {
-> > +			start = u64_stats_fetch_begin_irq(syncp);
-> > +
-> > +			xdp_stats->drop = stats->xdp_drop;
-> > +			xdp_stats->pass = stats->xdp_pass;
-> > +			xdp_stats->tx = stats->xdp_tx;
-> > +			xdp_stats->redirect = stats->xdp_redirect;
-> > +			xdp_stats->aborted = stats->xdp_aborted;
-> > +			xdp_stats->invalid = stats->xdp_invalid;
-> > +		} while (u64_stats_fetch_retry_irq(syncp, start));
-> > +
-> > +		xdp_stats++;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
+> I'm not sure failing is such a good thing, can it chain them on a
+> linked list or something?
 > 
-> Hi,
-> thank you for the time you took in adding ENA support, this code 
-> doesn't update the XDP TX queues (which only available when an XDP 
-> program is loaded).
+> Jason
 > 
-> In theory the following patch should fix it, but I was unable to 
-> compile your version of iproute2 and test the patch properly. Can 
-> you please let me know if I need to do anything special to bring 
-> up your version of iproute2 and test this patch?
 
-Did you clone 'xdp_stats' branch? I've just rechecked on a freshly
-cloned copy, works for me.
+I had developed a version of the proposed patch which did what you suggest and felt that
+it wasn't an improvement over the current code. Just too complicated. This patch is only
+marginally cleaner than what is already there. I am leaning towards just leaving the
+current red-black tree based code in place for mgids which don't fit nicely into xarrays
+which however are quite a bit better for 32 bit indices (qpns, qkeys, rkeys, etc.)
+Multicast is not an important use case for RoCE since plain IP is a better solution.
+Unless you think otherwise we should just drop this patch.
 
-> diff --git a/drivers/net/ethernet/amazon/ena/ena_netdev.c 
-> b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> index 7d5d885d8..4e89a7d60 100644
-> --- a/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> +++ b/drivers/net/ethernet/amazon/ena/ena_netdev.c
-> @@ -3313,12 +3313,85 @@ static void ena_get_stats64(struct 
-> net_device *netdev,
->  	stats->tx_errors = 0;
->  }
->  
-> +static int ena_get_xdp_stats_nch(const struct net_device *netdev, 
-> u32 attr_id)
-> +{
-> +	const struct ena_adapter *adapter = netdev_priv(netdev);
-> +
-> +	switch (attr_id) {
-> +	case IFLA_XDP_XSTATS_TYPE_XDP:
-> +		return adapter->num_io_queues;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +}
-> +
-> +static int ena_get_xdp_stats(const struct net_device *netdev, u32 
-> attr_id,
-> +			     void *attr_data)
-> +{
-> +	const struct ena_adapter *adapter = netdev_priv(netdev);
-> +	struct ifla_xdp_stats *xdp_stats = attr_data;
-> +	const struct u64_stats_sync *syncp;
-> +	u32 start;
-> +	u32 i;
-> +
-> +	switch (attr_id) {
-> +	case IFLA_XDP_XSTATS_TYPE_XDP:
-> +		break;
-> +	default:
-> +		return -EOPNOTSUPP;
-> +	}
-> +
-> +	for (i = 0; i < adapter->num_io_queues; i++) {
-> +		const struct ena_stats_rx *rx_stats;
-> +
-> +		rx_stats = &adapter->rx_ring[i].rx_stats;
-> +		syncp = &adapter->rx_ring[i].syncp;
-> +
-> +		do {
-> +			start = u64_stats_fetch_begin_irq(syncp);
-> +
-> +			xdp_stats->drop = rx_stats->xdp_drop;
-> +			xdp_stats->pass = rx_stats->xdp_pass;
-> +			xdp_stats->tx = rx_stats->xdp_tx;
-> +			xdp_stats->redirect = 
-> rx_stats->xdp_redirect;
-> +			xdp_stats->aborted = 
-> rx_stats->xdp_aborted;
-> +			xdp_stats->invalid = 
-> rx_stats->xdp_invalid;
-> +		} while (u64_stats_fetch_retry_irq(syncp, start));
-> +
-> +		xdp_stats++;
-> +	}
-> +
-> +	xdp_stats = attr_data;
-> +	/* xdp_num_queues can be 0 if an XDP program isn't loaded 
-> */
-> +	for (i = 0; i < adapter->xdp_num_queues; i++) {
-> +		const struct ena_stats_tx *tx_stats;
-> +
-> +		tx_stats = 
-> &adapter->rx_ring[i].xdp_ring->tx_stats;
-> +		syncp = &adapter->rx_ring[i].xdp_ring->syncp;
-> +
-> +		do {
-> +			start = u64_stats_fetch_begin_irq(syncp);
-> +
-> +			xdp_stats->xmit_packets = tx_stats->cnt;
-> +			xdp_stats->xmit_bytes = tx_stats->bytes;
-> +			xdp_stats->xmit_errors = 
-> tx_stats->dma_mapping_err +
-> + 
-> tx_stats->prepare_ctx_err;
-> +		} while (u64_stats_fetch_retry_irq(syncp, start));
-> +
-> +		xdp_stats++;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static const struct net_device_ops ena_netdev_ops = {
->  	.ndo_open		= ena_open,
->  	.ndo_stop		= ena_close,
->  	.ndo_start_xmit		= ena_start_xmit,
->  	.ndo_select_queue	= ena_select_queue,
->  	.ndo_get_stats64	= ena_get_stats64,
-> +	.ndo_get_xdp_stats_nch	= ena_get_xdp_stats_nch,
-> +	.ndo_get_xdp_stats	= ena_get_xdp_stats,
->  	.ndo_tx_timeout		= ena_tx_timeout,
->  	.ndo_change_mtu		= ena_change_mtu,
->  	.ndo_set_mac_address	= NULL,
-
-I'll update it in v3 and mention you, thanks!
-
-Al
+Bob
