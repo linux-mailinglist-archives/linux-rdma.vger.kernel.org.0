@@ -2,52 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918DF46396F
-	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 16:09:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B3C463AB9
+	for <lists+linux-rdma@lfdr.de>; Tue, 30 Nov 2021 16:56:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238985AbhK3PMO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 30 Nov 2021 10:12:14 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:32900 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244928AbhK3PKd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 30 Nov 2021 10:10:33 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 426B1B81A1D;
-        Tue, 30 Nov 2021 15:07:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68A3AC53FC7;
-        Tue, 30 Nov 2021 15:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638284831;
-        bh=jFQ+6eYpfo8AQTphnbl6MyyOotoZuBDGCJKxTEg5dTg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=okOaZXwVQha6VENLbtkW/K3UpmSv4x49LI137OshO7/GQ3udI34yAew/t1F4aeWjp
-         9RRQJdhcJifvYVBtH1uv9s90R9dXC+jkftp+VyKrmGOwTZU1drMlxR78YGJ4tUsNTb
-         ZeHxC/J1Ylt1+gxhsRnzopmxV2PFCL0Mi6ejlLDDN9agiengKlehxRxCy8hak+mcD+
-         XhyTEYILzqgFd9PW/SlVvRy6r+/OiSN8cbVsLxju8oy1ZuZ5WtvL/qEwyU58CrvAEg
-         mq/1Ni4N4qOnq/1dV/zSGy7z/TRfGgF4iADeKw5XsZJKXHsXoz5d70RsGtE3tfVb+j
-         UOXFLXcmuzxxw==
-Date:   Tue, 30 Nov 2021 07:07:09 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Petr Machata <petrm@nvidia.com>
-Cc:     Ido Schimmel <idosch@idosch.org>,
-        Toke =?UTF-8?B?SMO4aWxhbmQtSsO4cmdl?= =?UTF-8?B?bnNlbg==?= 
-        <toke@redhat.com>,
-        "Alexander Lobakin" <alexandr.lobakin@intel.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        id S242383AbhK3QAJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 30 Nov 2021 11:00:09 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35902 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243120AbhK3QAA (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 30 Nov 2021 11:00:00 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10183"; a="299636567"
+X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
+   d="scan'208";a="299636567"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Nov 2021 07:56:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,276,1631602800"; 
+   d="scan'208";a="540454492"
+Received: from irvmail001.ir.intel.com ([10.43.11.63])
+  by orsmga001.jf.intel.com with ESMTP; 30 Nov 2021 07:56:30 -0800
+Received: from newjersey.igk.intel.com (newjersey.igk.intel.com [10.102.20.203])
+        by irvmail001.ir.intel.com (8.14.3/8.13.6/MailSET/Hub) with ESMTP id 1AUFuRh0006481;
+        Tue, 30 Nov 2021 15:56:27 GMT
+From:   Alexander Lobakin <alexandr.lobakin@intel.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Alexander Lobakin <alexandr.lobakin@intel.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
         Michal Swiatkowski <michal.swiatkowski@linux.intel.com>,
         Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        "Shay Agroskin" <shayagr@amazon.com>,
+        Shay Agroskin <shayagr@amazon.com>,
         Arthur Kiyanovski <akiyano@amazon.com>,
-        "David Arinzon" <darinzon@amazon.com>,
+        David Arinzon <darinzon@amazon.com>,
         Noam Dagan <ndagan@amazon.com>,
-        "Saeed Bishara" <saeedb@amazon.com>,
+        Saeed Bishara <saeedb@amazon.com>,
         Ioana Ciornei <ioana.ciornei@nxp.com>,
-        "Claudiu Manoil" <claudiu.manoil@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Marcin Wojtas <mw@semihalf.com>,
@@ -55,14 +46,16 @@ Cc:     Ido Schimmel <idosch@idosch.org>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Jesper Dangaard Brouer <hawk@kernel.org>,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
         John Fastabend <john.fastabend@gmail.com>,
         Edward Cree <ecree.xilinx@gmail.com>,
-        "Martin Habets" <habetsm.xilinx@gmail.com>,
+        Martin Habets <habetsm.xilinx@gmail.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
+        Martin KaFai Lau <kafai@fb.com>,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         KP Singh <kpsingh@kernel.org>,
         Lorenzo Bianconi <lorenzo@kernel.org>,
@@ -71,48 +64,85 @@ Cc:     Ido Schimmel <idosch@idosch.org>,
         David Ahern <dsahern@kernel.org>,
         Andrei Vagin <avagin@gmail.com>,
         Johannes Berg <johannes.berg@intel.com>,
-        "Vladimir Oltean" <vladimir.oltean@nxp.com>,
-        Cong Wang <cong.wang@bytedance.com>, <netdev@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-rdma@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>, <nikolay@nvidia.com>
-Subject: Re: [PATCH v2 net-next 21/26] ice: add XDP and XSK generic
- per-channel statistics
-Message-ID: <20211130070709.0ddf19f3@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <87o861q2m4.fsf@nvidia.com>
-References: <20211123163955.154512-22-alexandr.lobakin@intel.com>
-        <77407c26-4e32-232c-58e0-2d601d781f84@iogearbox.net>
-        <87bl28bga6.fsf@toke.dk>
-        <20211125170708.127323-1-alexandr.lobakin@intel.com>
-        <20211125094440.6c402d63@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20211125204007.133064-1-alexandr.lobakin@intel.com>
-        <87sfvj9k13.fsf@toke.dk>
-        <20211126100611.514df099@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87ee72ah56.fsf@toke.dk>
-        <20211126111431.4a2ed007@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <YaPCbaMVaVlxXcHC@shredder>
-        <20211129064755.539099c0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <874k7vq7tl.fsf@nvidia.com>
-        <20211129080502.53f7d316@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87sfveq48z.fsf@nvidia.com>
-        <20211129091713.2dc8462f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <87o861q2m4.fsf@nvidia.com>
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Cong Wang <cong.wang@bytedance.com>, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, bpf@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v2 net-next 00/26] net: introduce and use generic XDP stats
+Date:   Tue, 30 Nov 2021 16:56:12 +0100
+Message-Id: <20211130155612.594688-1-alexandr.lobakin@intel.com>
+X-Mailer: git-send-email 2.33.1
+In-Reply-To: <20211123163955.154512-1-alexandr.lobakin@intel.com>
+References: <20211123163955.154512-1-alexandr.lobakin@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 30 Nov 2021 12:55:47 +0100 Petr Machata wrote:
-> I still think it would be better to report HW_STATS explicitly as well
-> though. One reason is simply convenience. The other is that OK, now we
-> have SW stats, and XDP stats, and total stats, and I (as a client) don't
-> necessarily know how it all fits together. But the contract for HW_STATS
-> is very clear.
+From: Alexander Lobakin <alexandr.lobakin@intel.com>
+Date: Tue, 23 Nov 2021 17:39:29 +0100
 
-Would be good to check with Jiri, my recollection is that this argument
-was brought up when CPU_HIT stats were added. I don't recall the
-reasoning.
+Ok, open questions:
 
-<insert xkcd standards>
+1. Channels vs queues vs global.
+
+Jakub: no per-channel.
+David (Ahern): it's worth it to separate as Rx/Tx.
+Toke is fine with globals at the end I think?
+
+My point was that for most of the systems we have 1:1 Rx:Tx
+(usually num_online_cpus()), so asking drivers separately for
+the number of RQs and then SQs would end up asking for the same
+number twice.
+But the main reason TBH was that most of the drivers store stats
+on a per-channel basis and I didn't want them to regress in
+functionality. I'm fine with reporting only netdev-wide if
+everyone are.
+
+In case if we keep per-channel: report per-channel only by request
+and cumulative globals by default to not flood the output?
+
+2. Count all errors as "drops" vs separately.
+
+Daniel: account everything as drops, plus errors should be
+reported as exceptions for tracing sub.
+Jesper: we shouldn't mix drops and errors.
+
+My point: we shouldn't, that's why there are patches for 2 drivers
+to give errors a separate counter.
+I provided an option either to report all errors together ('errors'
+in stats structure) or to provide individual counters for each of
+them (sonamed ctrs), but personally prefer detailed errors. However,
+they might "go detailed" under trace_xdp_exception() only, sound
+fine (OTOH in RTNL stats we have both "general" errors and detailed
+error counters).
+
+3. XDP and XSK ctrs separately or not.
+
+My PoV is that those are two quite different worlds.
+However, stats for actions on XSK really make a little sense since
+99% of time we have xskmap redirect. So I think it'd be fine to just
+expand stats structure with xsk_{rx,tx}_{packets,bytes} and count
+the rest (actions, errors) together with XDP.
+
+
+Rest:
+ - don't create a separate `ip` command and report under `-s`;
+ - save some RTNL skb space by skipping zeroed counters.
+
+Also, regarding that I count all on the stack and then add to the
+storage once in a polling cycle -- most drivers don't do that and
+just increment the values in the storage directly, but this can be
+less performant for frequently updated stats (or it's just my
+embedded past).
+Re u64 vs u64_stats_t -- the latter is more universal and
+architecture-friendly, the former is used directly in most of the
+drivers primarily because those drivers and the corresponding HW
+are being run on 64-bit systems in the vast majority of cases, and
+Ethtools stats themselves are not so critical to guard them with
+anti-tearing. Anyways, local64_t is cheap on ARM64/x86_64 I guess?
+
+Thanks,
+Al
