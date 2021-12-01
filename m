@@ -2,81 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD149464A95
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Dec 2021 10:27:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20C88464CBE
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Dec 2021 12:34:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238772AbhLAJbM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Dec 2021 04:31:12 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:33598 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhLAJbL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Dec 2021 04:31:11 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id B9924CE1D7B;
-        Wed,  1 Dec 2021 09:27:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DDEC53FCC;
-        Wed,  1 Dec 2021 09:27:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638350867;
-        bh=s9Akk1OT239Bo15JKdrJKndvg/rtEOE78yKO3lL6oxg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Th+EqJo9VbjQqbUY0Sfhn5wLVzSIYqA4BDPVPjpB8TTuH6pGArmD0oFAuH1gNP81h
-         DMMCNagjVg+mK0pDcQZyOpN1ZgG8OwPQ6EeStLzAwgRQT6eF6n9Mmk/r9onXH3h3pN
-         MSl+DKGsk5nVafITitBEQsY8MH3SBV7BxwGmIQmKfwgg1DM2q75sb91hHjHn/RTnOd
-         hPRlda42wHpAhyhvgv0FJ8+rbe8V1XNdZGoB83UIWVPiKigqNxOxPf297YVSZTzkgI
-         UDhAs81fJEjbgjoUK+LojAkl+dW9Gebun9XyMIQGT0C05+17aEMsBCcoOtE6ixWp/d
-         slvW5EhOz4utA==
-Date:   Wed, 1 Dec 2021 11:27:43 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhou Qingyang <zhou1615@umn.edu>
-Cc:     kjlu@umn.edu, Tariq Toukan <tariqt@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eugenia Emantayev <eugenia@mellanox.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx4_en: Fix an use-after-free bug in
- mlx4_en_try_alloc_resources()
-Message-ID: <YadAD+x2C9ZHh03e@unreal>
-References: <20211130164438.190591-1-zhou1615@umn.edu>
+        id S1348944AbhLALh0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Dec 2021 06:37:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1348927AbhLALhY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Dec 2021 06:37:24 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F4CC0613E1
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Dec 2021 03:34:00 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id a14so48265127uak.0
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Dec 2021 03:34:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
+        b=nKE9e+4jEQRb21OhoYPSbxPLfJ2IuSmNXU0U6wmcP4ykCacrWpdbtE0jjuz/hSLLGi
+         3CHjeG+lFmWzoULwCsmlhVFgDEk5dLFaYb51pw7bXGjZ9H8t0j91dP9aL17MRQYkMPZK
+         Snvty/Yp8/ZrWZr2EuFXHqBxUdbU8X39ik45viERJ1Dn7qW8BPCFp2vlafV2okU0kn5j
+         QPTIDY8QJSy8zAVbK10d6+AY0lky+mrQRAAg0uS1DacQStzD/dQtt/uBz/RlGIdZCai/
+         BHep24kmiLdl1nvBvHYMFonu8NoJvJlErv7lbZlg2+2c277BpkzmDA4WwPZoxzlIf0Mh
+         Af5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=l4J9Z+m4hmgZbWtQHlC70w1zjUmiI7wjClCwm6dHAnY=;
+        b=dsBlGurKX2lXmJH0ccaxqGO//qeK2wMy6jyjZip9+Wswhl2ZQVt3o19xV2vTXrj1C3
+         YBIPaIizFe1ffw/247+QJs0okXsVMMkDtnetuBbXJvvg3bJbk42VLOwfwMlwXKUgZktT
+         5nVwxvSfoIEadq2Fum+JDuAuzKNccBbet/HXkbxyJ/eFcNlWSK+HdupE+kT+gBIQlfP6
+         sjxwhKdsCadcAe03SF1wiTP6sMLDkNaGLQ8gyBlYSs0HlwrPhNcHlnMCm85iFjtce0Tn
+         s0ba2kEFsXQ/U2ybOiSyutH1ZgSPToGfwflAvqXerV4QXsKYT33LZYVUKoKARY0rB7RZ
+         mZcA==
+X-Gm-Message-State: AOAM532V+35B4uqUmsxzICq0punxOdAiExBMQtuHPtLBSvJu7jQL+E+T
+        RJtAhpvWtl7I3lBCLKBbyq2+g7w2B5KWcQVlmhU=
+X-Google-Smtp-Source: ABdhPJwK+H50pzFgfv5CJPfAwBzUdMqIKHh+Ckkuju2lG2knVlJrzqINPiiwPjc/Uz6xuSJez7Fkn5YZPcfa5CPpvro=
+X-Received: by 2002:a67:ef4d:: with SMTP id k13mr6266305vsr.4.1638358439020;
+ Wed, 01 Dec 2021 03:33:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130164438.190591-1-zhou1615@umn.edu>
+Sender: unitednationawardwinner@gmail.com
+Received: by 2002:ab0:6c55:0:0:0:0:0 with HTTP; Wed, 1 Dec 2021 03:33:58 -0800 (PST)
+From:   "Mrs. Orgil Baatar" <mrs.orgilbaatar21@gmail.com>
+Date:   Wed, 1 Dec 2021 03:33:58 -0800
+X-Google-Sender-Auth: uTQ_nfkzXaWGWaTWp1BSFqK3Ucs
+Message-ID: <CAJ4dHaSrD-X=xpfKNZV-hXSiMV6mNYrgy5vWCNkKm6iu5RQStg@mail.gmail.com>
+Subject: Your long awaited part payment of $2.5.000.00Usd
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Dec 01, 2021 at 12:44:38AM +0800, Zhou Qingyang wrote:
-> In mlx4_en_try_alloc_resources(), mlx4_en_copy_priv() is called and
-> tmp->tx_cq will be freed on the error path of mlx4_en_copy_priv().
-> After that mlx4_en_alloc_resources() is called and there is a dereference
-> of &tmp->tx_cq[t][i] in mlx4_en_alloc_resources(), which could lead to
-> a use after free problem on failure of mlx4_en_copy_priv().
-> 
-> Fix this bug by adding a check of mlx4_en_copy_priv()
-> 
-> This bug was found by a static analyzer. The analysis employs
-> differential checking to identify inconsistent security operations
-> (e.g., checks or kfrees) between two code paths and confirms that the
-> inconsistent operations are not recovered in the current function or
-> the callers, so they constitute bugs.
-> 
-> Note that, as a bug found by static analysis, it can be a false
-> positive or hard to trigger. Multiple researchers have cross-reviewed
-> the bug.
-> 
-> Builds with CONFIG_MLX4_EN=m show no new warnings,
-> and our static analyzer no longer warns about this code.
-> 
-> Fixes: ec25bc04ed8e ("net/mlx4_en: Add resilience in low memory systems")
-> Signed-off-by: Zhou Qingyang <zhou1615@umn.edu>
-> ---
->  drivers/net/ethernet/mellanox/mlx4/en_netdev.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
+Attention: Beneficiary, Your long awaited part payment of
+$2.5.000.00Usd (TWO MILLION FIVE Hundred Thousand United State
+Dollars) is ready for immediate release to you, and it was
+electronically credited into an ATM Visa Card for easy delivery.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Your new Payment Reference No.- 6363836,
+Pin Code No: 1787
+Your Certificate of Merit Payment No: 05872,
+
+Your Names: |
+Address: |
+
+Person to Contact:MR KELLY HALL the Director of the International
+Audit unit ATM Payment Center,
+
+Email: uba-bf@e-ubabf.com
+TELEPHONE: +226 64865611 You can whatsApp the bank
+
+Regards.
+Mrs ORGIL BAATAR
