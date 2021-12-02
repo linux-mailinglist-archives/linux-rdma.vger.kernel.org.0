@@ -2,120 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AFC4466A1C
-	for <lists+linux-rdma@lfdr.de>; Thu,  2 Dec 2021 20:01:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0C4466BFC
+	for <lists+linux-rdma@lfdr.de>; Thu,  2 Dec 2021 23:15:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhLBTE2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Dec 2021 14:04:28 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58216 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1355930AbhLBTEW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Dec 2021 14:04:22 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B2HmSME008350
-        for <linux-rdma@vger.kernel.org>; Thu, 2 Dec 2021 19:00:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : message-id : content-transfer-encoding :
- content-type : mime-version : references; s=pp1;
- bh=1GpQRdmZ5M9wpOANbjXKHLjKnD9SyuTcOl1kfHL5K9o=;
- b=RdLYnXJuhMCcj66SRFzKq3YPy9gb2oy67C5rgfy1JloHCyKh05gDiqBJoxdzTOvAq+WT
- L1jwbURlRJusyH/B7RQ6raB4p2+9FdlQ1FKQtNb0ZLTWJeNwlZigsG5kL8lafrTm6tXJ
- vl31CG9IcGgD2eCHX9YzfHhcrNIoZvv36SuStCzOO2BR8gZK+aDwETkxje6FV/F5wghP
- NlCvMmWKNnAkRHDmA/H7dEYi030IKEdQwjRFA09OGz7bWG4M+PE65/wueznX0ezn3oSu
- gCOwC0xj3bMjkLYfvcJiNhSEmwhy/5xorG03Fnl9W+UrergoKE7oFbhQCbf0cei6WDt0 DQ== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 3cq2va9jhr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Dec 2021 19:00:58 +0000
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1B2IlPLF010108
-        for <linux-rdma@vger.kernel.org>; Thu, 2 Dec 2021 19:00:57 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma04dal.us.ibm.com with ESMTP id 3cnne3cg69-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Dec 2021 19:00:57 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1B2J0uGb43909414
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-rdma@vger.kernel.org>; Thu, 2 Dec 2021 19:00:56 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B50B2112073
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Dec 2021 19:00:54 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9707A112083
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Dec 2021 19:00:54 +0000 (GMT)
-Received: from mww0301.wdc07m.mail.ibm.com (unknown [9.208.64.45])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Dec 2021 19:00:54 +0000 (GMT)
-In-Reply-To: <8d41da04-717e-8116-c091-83393990dd84@acm.org>
-Subject: Re: Re: [bug report] blktests srp/011 hang at "ib_srpt
- srpt_disconnect_ch_sync:still waiting ..."
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "Bart Van Assche" <bvanassche@acm.org>
-Cc:     "Yi Zhang" <yi.zhang@redhat.com>,
-        "RDMA mailing list" <linux-rdma@vger.kernel.org>
-Date:   Thu, 2 Dec 2021 19:00:51 +0000
-Message-ID: <OF4D7FCC28.F58B98B9-ON0025879F.00670323-0025879F.00687303@ibm.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+        id S233504AbhLBWTM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Dec 2021 17:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhLBWTL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Dec 2021 17:19:11 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 948D7C06174A;
+        Thu,  2 Dec 2021 14:15:48 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id d9so1701512wrw.4;
+        Thu, 02 Dec 2021 14:15:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yff+1FpOuMigZbAy73J63jy1kO8FukCv/6vnynIzzvw=;
+        b=m7vw3K0ooNVuluM9tx9YuP9gt3hvjazf/xJuqhZaUTEyFbMV27ooosY8kotGRMfbUJ
+         Ul/aC7auJnanWmh6B5rnVBGeZW0QMFEx2dlW6MIBRv538NC1B0T6peUzZcuI+oAo+9EZ
+         wPWOOqiL9oe8oPFNiS2gzfK4NOaA9HSOannG9uHvwC41sqDg8L9MnQzqIBLjsxFZilx7
+         mw/XLLN+QHq2kkt6I8xxjIkkS5USR4xSanBl+0L7uXh7hFt+ZKDWyWNjBAlCRMgNgKTD
+         cf3+814AUWKcCgxsw5gJmul1K3+3nFAQLVbb2Pm4vzwbFZXxZEoQd6GoJ+nRVzjLZqtn
+         Jx6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yff+1FpOuMigZbAy73J63jy1kO8FukCv/6vnynIzzvw=;
+        b=COeMJHcLnfUqIL1ko2Qn71ARKu+0BiQCZQr7cb2sqNkbHT4L0RYYQXlXUQ9VbpbzhL
+         eq9yfZo/WMvFgcnp4ILeYmZBgrmrs9jUyBfnEjoh83RJIcQSMhVYqD+AiCaRKF9DYyOi
+         ORO6A0Efmy8/3zpj28azxFb4IMJcIPVHfKHL1dEJCcBnIu8yTJflw7ukgQrhgFaSfXhI
+         2sdV7zaBgFJ7dyrUZH4thlBi9w3BC1KTnRDOvdVaiitbO2+AXf7OVJPmgVddpNekUEyQ
+         P27pByp2ewNEeUwtnapBq6g1mAY0ghbYPWlqMz7I8dHq4yM1wpOCSPRXt91iH9QH6TYB
+         xEOg==
+X-Gm-Message-State: AOAM530vYkj7j4G2/eloqEe/hFJEgmntg55h91Nl5qX1fmDDCxRlha5A
+        v+lQKikfCt26wOJrMCbkE/+SHGOJdNS5VAG0
+X-Google-Smtp-Source: ABdhPJyw0fnVHwqCbx2j/3f+LhuiQhCMSFhQy7mZzArLrLknGa+6azR8ta8grSX8QHKGzuZfQd0QYg==
+X-Received: by 2002:adf:dc44:: with SMTP id m4mr17644222wrj.550.1638483347151;
+        Thu, 02 Dec 2021 14:15:47 -0800 (PST)
+Received: from localhost.localdomain ([39.48.206.151])
+        by smtp.gmail.com with ESMTPSA id h15sm3600820wmq.32.2021.12.02.14.15.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 Dec 2021 14:15:46 -0800 (PST)
+From:   Ameer Hamza <amhamza.mgc@gmail.com>
+To:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, amhamza.mgc@gmail.com
+Subject: [PATCH] net/mlx5: Fix dangling pointer access
+Date:   Fri,  3 Dec 2021 03:15:39 +0500
+Message-Id: <20211202221539.113434-1-amhamza.mgc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <8d41da04-717e-8116-c091-83393990dd84@acm.org>,<CAHj4cs9_ZuMnrP9=E-jP7mBZ87Et1ne0VTfQiQGq284XrbbOnw@mail.gmail.com>
-X-Mailer: Lotus Domino Web Server Release 11.0.1FP2HF117   October 6, 2021
-X-MIMETrack: Serialize by http on MWW0301/01/M/IBM at 12/02/2021 19:00:52,Serialize
- complete at 12/02/2021 19:00:52
-X-Disclaimed: 32751
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zxqZzydQn9wSY17KETk_h1WogpL8V14G
-X-Proofpoint-ORIG-GUID: zxqZzydQn9wSY17KETk_h1WogpL8V14G
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-02_12,2021-12-02_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- spamscore=0 bulkscore=0 mlxlogscore=999 priorityscore=1501 malwarescore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1015
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112020121
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
------"Bart Van Assche" <bvanassche@acm.org> wrote: -----
+Fix for dangling pointer access reported by Coverity.
 
->To: "Yi Zhang" <yi.zhang@redhat.com>, "RDMA mailing list"
-><linux-rdma@vger.kernel.org>
->From: "Bart Van Assche" <bvanassche@acm.org>
->Date: 12/02/2021 07:43PM
->Subject: [EXTERNAL] Re: [bug report] blktests srp/011 hang at
->"ib=5Fsrpt srpt=5Fdisconnect=5Fch=5Fsync:still waiting ..."
->
->On 12/1/21 12:55 AM, Yi Zhang wrote:
->> [root@gigabyte-r120-11 blktests]# use=5Fsiw=3D1 ./check srp/011
->-------------> hang
->
->Hi Yi,
->
->Does this only occur with the siw driver or also with the rdma=5Frxe
->driver?
->
->If this hang occurs with both drivers, how about bisecting this
->issue? I
->have not yet run into this issue with the rdma=5Frxe driver and Linus'
->master
->branch.
->
+Addresses-Coverity: 1494138 ("Use after free")
 
-I can't get it broken for siw nor rxe. Though for rxe is see
-quite some
+Signed-off-by: Ameer Hamza <amhamza.mgc@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/health.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-'ib=5Fsrpt receiving failed for ioctx 00000000nnnnnnnn with status 5'
-
-Yi, what is the architecture you are running on?
-Maybe you can try switching on dynamic debugging for the siw module
-and send me the dmesg trace for the hang? Of course it
-will not hang with all the prints ;)
-
-Bernard.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/health.c b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+index 3ca998874c50..856023321972 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/health.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/health.c
+@@ -335,7 +335,7 @@ static int mlx5_health_try_recover(struct mlx5_core_dev *dev)
+ {
+ 	mlx5_core_warn(dev, "handling bad device here\n");
+ 	mlx5_handle_bad_state(dev);
+-	if (mlx5_health_wait_pci_up(dev)) {
++	if (dev->timeouts && mlx5_health_wait_pci_up(dev)) {
+ 		mlx5_core_err(dev, "health recovery flow aborted, PCI reads still not working\n");
+ 		return -EIO;
+ 	}
+-- 
+2.25.1
 
