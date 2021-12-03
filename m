@@ -2,90 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2692466FB9
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 03:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4354670BC
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 04:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbhLCC10 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Dec 2021 21:27:26 -0500
-Received: from mga06.intel.com ([134.134.136.31]:45451 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234029AbhLCC10 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 2 Dec 2021 21:27:26 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10186"; a="297691130"
-X-IronPort-AV: E=Sophos;i="5.87,283,1631602800"; 
-   d="scan'208";a="297691130"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2021 18:23:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.87,283,1631602800"; 
-   d="scan'208";a="610221992"
-Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 02 Dec 2021 18:23:52 -0800
-Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1msyEp-000H0c-Ld; Fri, 03 Dec 2021 02:23:51 +0000
-Date:   Fri, 3 Dec 2021 10:23:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Re: [PATCH v5 for-next 8/8] RDMA/rxe: Add wait for completion to obj
- destruct
-Message-ID: <202112031004.WKm0gsms-lkp@intel.com>
-References: <20211202232035.62299-9-rpearsonhpe@gmail.com>
+        id S1347309AbhLCDey (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Dec 2021 22:34:54 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:44820 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344703AbhLCDex (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Dec 2021 22:34:53 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UzER9Kn_1638502288;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0UzER9Kn_1638502288)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 03 Dec 2021 11:31:28 +0800
+Date:   Fri, 3 Dec 2021 11:31:23 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net] net/smc: Clear memory when release and reuse buffer
+Message-ID: <YamPi+seNs4yhlaV@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <20211125122858.90726-1-tonylu@linux.alibaba.com>
+ <20211126112855.37274cb7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YaWR6zXoYKrqtznt@TonyMac-Alibaba>
+ <a98a49d9-a7e9-4dbc-8e3d-8ff4d917546b@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211202232035.62299-9-rpearsonhpe@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a98a49d9-a7e9-4dbc-8e3d-8ff4d917546b@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Bob,
+On Thu, Dec 02, 2021 at 03:23:07PM +0100, Karsten Graul wrote:
+> On 30/11/2021 03:52, Tony Lu wrote:
+> > Sorry for the unclear tag. This patch introduces a performance
+> > improvement. It should be with net-next.
+> > 
+> > I will fix it and send v2. Thank you.
+> 
+> Will you now send a v2 to net-next, or should I pick your v1 and 
+> submit it via our tree?
 
-Thank you for the patch! Perhaps something to improve:
+Sorry about my unclear reply in the previous mail. It's nice to pick v1
+to your tree. If v2 is needed, I will send it out soon. Thank you.
 
-[auto build test WARNING on rdma/for-next]
-[also build test WARNING on next-20211202]
-[cannot apply to v5.16-rc3]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
-
-url:    https://github.com/0day-ci/linux/commits/Bob-Pearson/RDMA-rxe-Correct-race-conditions/20211203-072318
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-config: powerpc-allyesconfig (https://download.01.org/0day-ci/archive/20211203/202112031004.WKm0gsms-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 11.2.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/c12d68c6954d3274daefc01f9813fccec12a31bd
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Bob-Pearson/RDMA-rxe-Correct-race-conditions/20211203-072318
-        git checkout c12d68c6954d3274daefc01f9813fccec12a31bd
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=powerpc SHELL=/bin/bash drivers/infiniband/sw/rxe/
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-
-All warnings (new ones prefixed by >>):
-
->> drivers/infiniband/sw/rxe/rxe_pool.c:387: warning: expecting prototype for rxe_elem_free(). Prototype was for __rxe_fini() instead
-
-
-vim +387 drivers/infiniband/sw/rxe/rxe_pool.c
-
-   381	
-   382	/**
-   383	 * rxe_elem_free() - free memory holding pool element
-   384	 * @elem: the pool elem
-   385	 */
-   386	void __rxe_fini(struct rxe_pool_elem *elem)
- > 387	{
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks,
+Tony Lu
