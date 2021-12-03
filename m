@@ -2,110 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A527467288
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 08:23:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 819EB4674A4
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 11:19:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378849AbhLCH1R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 3 Dec 2021 02:27:17 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27468 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1378847AbhLCH1Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Dec 2021 02:27:16 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1B35mtNJ014385;
-        Fri, 3 Dec 2021 07:23:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=7jK/DqTPoidVaJEX18uzm+IrGyjBANRXRpCuB5Lwwro=;
- b=tgwzXiiajNwAVBdUFEhoV+i0eCynkCBO5pSgeT6UIH8EW3ZGXkl20HJdVhWXw33zwC0q
- +gcfrBJtMfrGPJ9bMuSzNBBIemU/pbaRmXiV3n8I1d7ob3Zs5qyG+/U+VvIDFpSHhpBd
- x01YHUHbMsFPxMgKnCsLKwUnBPtC3WFWSid3xfdHDbsdW0PR1/auo6fe/h96Ar7OgMHB
- 4c1/sgASugeC88I3u09UpA0CmXZJTdK/Z/d9QWxti+AWhY2947s89A2w6hCEvMWMbaVB
- Bt0cvD9HyDjIpAQRRqIuGM7gjVa1r1ViS+6/t2JaSdBGgLIjHwyx83JANqLTdjnVMGLw Zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cqd1khxu6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Dec 2021 07:23:50 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1B37NeGI002902;
-        Fri, 3 Dec 2021 07:23:50 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3cqd1khxtq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Dec 2021 07:23:50 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1B37LSP6012587;
-        Fri, 3 Dec 2021 07:23:48 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 3ckcaa8knd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 03 Dec 2021 07:23:47 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1B37NjZk32637258
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 3 Dec 2021 07:23:45 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7AF4511C093;
-        Fri,  3 Dec 2021 07:23:45 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2994D11C097;
-        Fri,  3 Dec 2021 07:23:45 +0000 (GMT)
-Received: from [9.145.87.55] (unknown [9.145.87.55])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  3 Dec 2021 07:23:45 +0000 (GMT)
-Message-ID: <d74219b7-79b4-7286-1dcd-8cbd9b93408b@linux.ibm.com>
-Date:   Fri, 3 Dec 2021 08:23:47 +0100
+        id S1379817AbhLCKWc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 3 Dec 2021 05:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1379807AbhLCKWc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 3 Dec 2021 05:22:32 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D5EDC06173E
+        for <linux-rdma@vger.kernel.org>; Fri,  3 Dec 2021 02:19:08 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id n15-20020a17090a160f00b001a75089daa3so4798348pja.1
+        for <linux-rdma@vger.kernel.org>; Fri, 03 Dec 2021 02:19:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=s2yls2b7iJS2EwDbhg02BaCZBKZhPk59/cyyu5iz39Q=;
+        b=hcHOFlmz5pV9jJev/RycXOZgb9ZGzMt1b1V7t8wuGmIO2IOP4V5OUOesXdW/tSF2cM
+         d54ofGlgUh+Gxq455j6JPnsq5MTozpB2ayj37kDpUY87GgHGal4Z88hSvLcJEyyX+/3a
+         /f/F31b7KJI1gls71RlBSPvgNFVL4ef8847IORwLV9K24OwS/IX5PfLGn/jNHhHcwqK/
+         NkTZc+FrWKNAwP/1idVadq5GcLJqd2tarplcWK4zOfKvyWYdYBLzgB5Wb/nts+hwHmiq
+         7OJ+0JMRoSToteTwLYhKP0bwB4AHCh8G4GPHcgcnQim+LVRCqm0Ewm29DinSveZbEP4P
+         dvBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=s2yls2b7iJS2EwDbhg02BaCZBKZhPk59/cyyu5iz39Q=;
+        b=E3is8UC2LTrbKtciVO5U8/rfDvuk4VVZCCwIoQMJ+Q4QIshJRVwdU2QZ0Ilmn5mE/o
+         mBHvGmrDCWhGq+a5Gia0IS2y0+f+th2WajikRmzttfIAMnA/RXYHNzJSqIAs/OaXDTsS
+         mDjLzqwny59hZ8tBfeF8mp/U56V+obVbVfIJx0Bnjuqqrb4QsMyHagp7QRjrCEARBbri
+         cQTZw3NoHj8ZgTPtrvYhk3zwVoAFGW95kAXDMi9zrb0XluN1BXWrtJx59d3YvF5mjKtm
+         z+Lmo/OFuPHZHtjg9PbOY9J+QEWnBrDEUYSJE1xh/t+FAyAbNHz6Ziyj1E6jtPjFgB5o
+         AXeg==
+X-Gm-Message-State: AOAM532zHlMPjriLLf8ohmvsjDeJxt+xM+SpidhntzncGO2hJoJldb9x
+        h9VAMl/OiXjfsmYATHMbt1afD9WV7fOwkw==
+X-Google-Smtp-Source: ABdhPJwl0s5np06XQxBcNTloezwGcWXdwDYqHZyxRPIarDeT1Qy64gSTRrkZ4Z6zjJ3D02OwWGfoug==
+X-Received: by 2002:a17:902:b20b:b0:141:a92c:a958 with SMTP id t11-20020a170902b20b00b00141a92ca958mr21902161plr.24.1638526747845;
+        Fri, 03 Dec 2021 02:19:07 -0800 (PST)
+Received: from baohua-VirtualBox.localdomain (47-72-151-34.dsl.dyn.ihug.co.nz. [47.72.151.34])
+        by smtp.gmail.com with ESMTPSA id c5sm1869487pjm.52.2021.12.03.02.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 Dec 2021 02:19:07 -0800 (PST)
+From:   Barry Song <21cnbao@gmail.com>
+To:     liangwenpeng@huawei.com
+Cc:     jgg@nvidia.com, leon@kernel.org, linux-rdma@vger.kernel.org,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v5 for-next 1/1] RDMA/hns: Support direct wqe of userspace'
+Date:   Fri,  3 Dec 2021 18:18:55 +0800
+Message-Id: <20211203101855.12598-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211130135740.4559-2-liangwenpeng@huawei.com>
+References: <20211130135740.4559-2-liangwenpeng@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.2
-Subject: Re: [PATCH net] net/smc: Clear memory when release and reuse buffer
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20211125122858.90726-1-tonylu@linux.alibaba.com>
- <20211126112855.37274cb7@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <YaWR6zXoYKrqtznt@TonyMac-Alibaba>
- <a98a49d9-a7e9-4dbc-8e3d-8ff4d917546b@linux.ibm.com>
- <YamPi+seNs4yhlaV@TonyMac-Alibaba>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <YamPi+seNs4yhlaV@TonyMac-Alibaba>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: sRLAGiD8T25GMtzDikTi07te54AOedkl
-X-Proofpoint-GUID: KE5RjdCQPbN3n6dDyPrkS9Anj9Sn24Yc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2021-12-03_04,2021-12-02_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
- malwarescore=0 phishscore=0 impostorscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 spamscore=0 bulkscore=0 mlxlogscore=901 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
- definitions=main-2112030044
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 03/12/2021 04:31, Tony Lu wrote:
-> On Thu, Dec 02, 2021 at 03:23:07PM +0100, Karsten Graul wrote:
->> On 30/11/2021 03:52, Tony Lu wrote:
->>> Sorry for the unclear tag. This patch introduces a performance
->>> improvement. It should be with net-next.
->>>
->>> I will fix it and send v2. Thank you.
->>
->> Will you now send a v2 to net-next, or should I pick your v1 and 
->> submit it via our tree?
-> 
-> Sorry about my unclear reply in the previous mail. It's nice to pick v1
-> to your tree. If v2 is needed, I will send it out soon. Thank you.
-> 
-> Thanks,
-> Tony Lu
-> 
+> +	switch (entry->mmap_type) {
+> +	case HNS_ROCE_MMAP_TYPE_DB:
+> +		prot = pgprot_noncached(vma->vm_page_prot);
+> +		break;
+> +	case HNS_ROCE_MMAP_TYPE_TPTR:
+> +		prot = vma->vm_page_prot;
+> +		break;
+> +	/*
+> +	 * The BAR region of direct WQE supports Early Write Ack,
+> +	 * so pgprot_device is used to improve performance.
+> +	 */
+> +	case HNS_ROCE_MMAP_TYPE_DWQE:
+> +		prot = pgprot_device(vma->vm_page_prot);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
 
-Okay, I pick it up now. Thank you.
+i am still not convinced why HNS_ROCE_MMAP_TYPE_DB needs nocache and HNS_ROCE_MMAP_TYPE_DWQE needs
+device. generally people use ioremap() to map pci bar spaces in pci device drivers, and ioremap()
+is pretty much nGnRE:
+#define ioremap(addr, size)             __ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRE))
+#define ioremap_np(addr, size)          __ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRnE))
+
+i am only seeing four places which are using nE in kernel:
+   #   line  filename / context / line
+   1    866  drivers/of/address.c <<of_iomap>>
+             return ioremap_np(res.start, resource_size(&res));
+   2    901  drivers/of/address.c <<of_io_request_and_map>>
+             mem = ioremap_np(res.start, resource_size(&res));
+   3     89  include/linux/io.h <<pci_remap_cfgspace>>
+             return ioremap_np(offset, size) ?: ioremap(offset, size);
+   4     47  lib/devres.c <<__devm_ioremap>>
+             addr = ioremap_np(offset, size);
+
+so i guess nGnRE is quite safe for pci device bar spaces. for config space, it is a different story
+though which is the 3rd one in the above list:
+
+#ifdef CONFIG_PCI
+/*
+ * The PCI specifications (Rev 3.0, 3.2.5 "Transaction Ordering and
+ * Posting") mandate non-posted configuration transactions. This default
+ * implementation attempts to use the ioremap_np() API to provide this
+ * on arches that support it, and falls back to ioremap() on those that
+ * don't. Overriding this function is deprecated; arches that properly
+ * support non-posted accesses should implement ioremap_np() instead, which
+ * this default implementation can then use to return mappings compliant with
+ * the PCI specification.
+ */
+#ifndef pci_remap_cfgspace
+#define pci_remap_cfgspace pci_remap_cfgspace
+static inline void __iomem *pci_remap_cfgspace(phys_addr_t offset,
+                                               size_t size)
+{
+        return ioremap_np(offset, size) ?: ioremap(offset, size);
+}
+#endif
+#endif
+
+Thanks
+Barry
+
