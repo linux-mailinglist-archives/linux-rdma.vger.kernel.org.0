@@ -2,579 +2,224 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217A8466D9B
-	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 00:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2C5466FAE
+	for <lists+linux-rdma@lfdr.de>; Fri,  3 Dec 2021 03:20:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349038AbhLBXZD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 2 Dec 2021 18:25:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357281AbhLBXY6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Dec 2021 18:24:58 -0500
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133D4C061757
-        for <linux-rdma@vger.kernel.org>; Thu,  2 Dec 2021 15:21:36 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id r18-20020a4a7252000000b002c5f52d1834so458062ooe.0
-        for <linux-rdma@vger.kernel.org>; Thu, 02 Dec 2021 15:21:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mg0PJK/6ic2BH6MRO8q6etj0st127gc87mFRN3GztSM=;
-        b=MgWNnrnj81wL6gPPnuYNo7DTEnYtNK0iPICE8oMK6Riltt3NoticomjyutZLfmg5Wj
-         5jGoZ59mv6s/Dgb4PpgwJJG9mRYpTciPv4S87wvK7f4d3SDr/kI88bxvCiRB9YMHnWab
-         /TiexbHuUAxsEizq5ovizqoxRdZ9iJ4w3Y2YWtrSFtwykCseRyCBqrYEhTy+lBuByeuP
-         rdUg0pNFQxla+KUO9JT78enhIqchLkjn/qG209X7+LNsHylY0AvNuGqL0lyqw16NaLc+
-         neVoubPk+cbTX0M1eVbntXE4ARoe58gSqOvULk76qdUMhvnyh0mS0Ff6a771UUDlvj9J
-         R8DQ==
+        id S1350004AbhLCCYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 2 Dec 2021 21:24:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244477AbhLCCYA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 2 Dec 2021 21:24:00 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1638498036;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type;
+        bh=bQFbPCpLlyX6KdtEU7wD4eCWPdeDM9ANkJXW47Njn4s=;
+        b=YACLxYa6WYtXh3PHe4uHQO5mUkPvUCqL7QwqOTAB/O4zCujBggL81Wo8m1zrpTgAV2lp4Q
+        R+rL4zs2nqMIijJTTToEaOAqt4umnESL8jTS9iUR5MrxolzHsdpXB+bCYGO7X9nY/eFyRq
+        bDTcEHH//0SIp+Jf/Umm2fto56rG2oQ=
+Received: from mail-yb1-f197.google.com (mail-yb1-f197.google.com
+ [209.85.219.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-66-8ru0pZNvOhahbmoyeoilGw-1; Thu, 02 Dec 2021 21:20:35 -0500
+X-MC-Unique: 8ru0pZNvOhahbmoyeoilGw-1
+Received: by mail-yb1-f197.google.com with SMTP id y17-20020a2586d1000000b005f6596e8760so3575480ybm.17
+        for <linux-rdma@vger.kernel.org>; Thu, 02 Dec 2021 18:20:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mg0PJK/6ic2BH6MRO8q6etj0st127gc87mFRN3GztSM=;
-        b=L1n3kET6QSu6CexUTMVKIXqzlMYQ0ItbVgI7m6+McHL9NE3cTW5kw6PImReSj3WYQ4
-         xUJoczSxgl+TDfSAlvi1hjKwVzklroITYYHm6ELJkDU8QAe1vkNkcSNqJ8nUUCN8FxEO
-         hE3g/PNGEisiAzAlz5/e6slIyHFShhuprPO7lcwS+ll6CrDgYkauEhjNDkdwAcdMjTvX
-         a+LmYSuH+vTyKXIBK7DEAv0BrLGvP1AjolivHwF8nePIKqh56HEm+cuLVGs28Y+oRH50
-         lKEVMqpSDQdTW1GuJHkAkkR/4NLQREHsMo3vWgJt09KDOUQ3BErWPwiphhxFb3RvQf4z
-         HzFg==
-X-Gm-Message-State: AOAM533EWlIk0nMHYXP1sw9QvTNb4C+fh0nlJZ529lvDAR2WUvTu/4jv
-        4Y3yQIhwiM+9pzYgCmN0Q2LGoR/Gxl0=
-X-Google-Smtp-Source: ABdhPJxKP4/CMx9exELkohA1z1Q4Nzi+jnhULrZCjtSIQQW9LkHfzbCxMUJbuWhRK5i5U/p8so7lmQ==
-X-Received: by 2002:a4a:dc88:: with SMTP id g8mr10243580oou.3.1638487295435;
-        Thu, 02 Dec 2021 15:21:35 -0800 (PST)
-Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-369f-9a20-b320-aa23.res6.spectrum.com. [2603:8081:140c:1a00:369f:9a20:b320:aa23])
-        by smtp.googlemail.com with ESMTPSA id g7sm296425oon.27.2021.12.02.15.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Dec 2021 15:21:35 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v5 for-next 8/8] RDMA/rxe: Add wait for completion to obj destruct
-Date:   Thu,  2 Dec 2021 17:20:35 -0600
-Message-Id: <20211202232035.62299-9-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20211202232035.62299-1-rpearsonhpe@gmail.com>
-References: <20211202232035.62299-1-rpearsonhpe@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=bQFbPCpLlyX6KdtEU7wD4eCWPdeDM9ANkJXW47Njn4s=;
+        b=Qzayal1ORv1VyjjAfOGqhivttN1HD6CmJPSDjNc3bjpbsS9wI15x/bVPd8DkS/otEW
+         Vw7sTT+TRP4vYoC8qnTUDCQFTn3KDhm0o1w9w8ZKzKqo2qh1t8klp3gXPp3F/8GaTjo2
+         C08IWr+Fpj3h57OYLg1CMmVkBZdj9YEg1KyYc1JEHkJLt5Pe+/XZeNli7GX5orSztJok
+         5hw0ctMDwKTBCpOpxp61fLqZTgHTMvV4YwBhv7NU/hgrTO34GbIbVkN3sS5bqhGcf40E
+         ITo9KfcEFCVECQyvzKvEdeD0k76+TX5+c3JTbLXozZqkzpd0RiTkOAJu6bv3DoXOI768
+         n5Sw==
+X-Gm-Message-State: AOAM5302kIKDsLZ8NWuBARXUGNOTyJDgxHFVMlSWPiaPmg80KOud9Fyk
+        lWqlN0/gARIn8QQpN3suzEMVMHcqkcTlZADwib0F4etD6EdYN0s4Q9yiI3Gt0TA4nIsBeMwlW/D
+        aG4Xmx8T21105SJ9tlVrD/l39DO4y4UvWG3PoAQ==
+X-Received: by 2002:a25:13c2:: with SMTP id 185mr21122738ybt.676.1638498035039;
+        Thu, 02 Dec 2021 18:20:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxnb/R2d4+h5tqQNWY7M9Y9p7DGdUDvbqk93vTkXk6hBVCudN8OZmdNBACMQ7biTWJqGdHTUGThd84G6cPv7Jw=
+X-Received: by 2002:a25:13c2:: with SMTP id 185mr21122701ybt.676.1638498034595;
+ Thu, 02 Dec 2021 18:20:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Fri, 3 Dec 2021 10:20:23 +0800
+Message-ID: <CAHj4cs8h3e_fY6cKb3XL9aEp8_MT3Po8-W6cL35kKEAvj6qs0Q@mail.gmail.com>
+Subject: [bug report]concurrent blktests nvme-rdma execution lead kernel null pointer
+To:     RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch adds code to wait until pending activity on RDMA objects has
-completed before freeing or returning to rdma-code where the object may
-be freed.
+Hello
+With the concurrent blktests nvme-rdma execution with both rdma_rxe
+and siw lead kernel BUG on 5.16.0-rc3, pls help check it, thanks.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_comp.c  |  4 +-
- drivers/infiniband/sw/rxe/rxe_mcast.c |  4 ++
- drivers/infiniband/sw/rxe/rxe_mr.c    |  2 +
- drivers/infiniband/sw/rxe/rxe_mw.c    | 14 +++--
- drivers/infiniband/sw/rxe/rxe_pool.c  | 24 +++++++-
- drivers/infiniband/sw/rxe/rxe_pool.h  |  4 ++
- drivers/infiniband/sw/rxe/rxe_recv.c  |  4 +-
- drivers/infiniband/sw/rxe/rxe_req.c   | 11 ++--
- drivers/infiniband/sw/rxe/rxe_resp.c  |  6 +-
- drivers/infiniband/sw/rxe/rxe_verbs.c | 84 ++++++++++++++++++++-------
- 10 files changed, 118 insertions(+), 39 deletions(-)
+Reproducer:
+Run blktests nvme-rdma on two terminal at the same time
+terminal 1:
+# use_siw=1 nvme_trtype=rdma ./check nvme/
+terminal 2:
+# nvme_trtype=rdma ./check nvme/
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index f363fe3fa414..a2bb66f320fa 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -562,7 +562,9 @@ int rxe_completer(void *arg)
- 	enum comp_state state;
- 	int ret = 0;
- 
--	rxe_add_ref(qp);
-+	/* check qp pointer still valid */
-+	if (!rxe_add_ref(qp))
-+		return -EAGAIN;
- 
- 	if (!qp->valid || qp->req.state == QP_STATE_ERROR ||
- 	    qp->req.state == QP_STATE_RESET) {
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index b935634f86cd..70d48f5847b0 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -122,6 +122,8 @@ int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
- 
- out_drop_ref:
- 	rxe_drop_ref(grp);			/* ref from get_key */
-+	if (grp->elem.complete.done)
-+		rxe_fini(grp);
- err1:
- 	return ret;
- }
-@@ -149,6 +151,8 @@ void rxe_drop_all_mcast_groups(struct rxe_qp *qp)
- 		spin_unlock_bh(&grp->mcg_lock);
- 		rxe_drop_ref(qp);
- 		rxe_drop_ref(grp);
-+		if (grp->elem.complete.done)
-+			rxe_fini(grp);
- 		kfree(elem);
- 	}
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 3c4390adfb80..5f8c08da352d 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -695,6 +695,8 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
- 	rxe_drop_ref(mr_pd(mr));
- 	rxe_drop_ref(mr);
- 
-+	rxe_fini(mr);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
-index 3ae981d77c25..9b3468911976 100644
---- a/drivers/infiniband/sw/rxe/rxe_mw.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mw.c
-@@ -12,7 +12,8 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
- 	struct rxe_dev *rxe = to_rdev(ibmw->device);
- 	int ret;
- 
--	rxe_add_ref(pd);
-+	if (!rxe_add_ref(pd))
-+		return -EINVAL;
- 
- 	ret = rxe_add_to_pool(&rxe->mw_pool, mw);
- 	if (ret) {
-@@ -60,8 +61,9 @@ int rxe_dealloc_mw(struct ib_mw *ibmw)
- 	rxe_do_dealloc_mw(mw);
- 	spin_unlock_bh(&mw->lock);
- 
--	rxe_drop_ref(mw);
- 	rxe_drop_ref(pd);
-+	rxe_drop_ref(mw);
-+	rxe_fini(mw);
- 
- 	return 0;
- }
-@@ -178,11 +180,11 @@ static void rxe_do_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 	if (mw->length) {
- 		mw->mr = mr;
- 		atomic_inc(&mr->num_mw);
--		rxe_add_ref(mr);
-+		rxe_add_ref(mr);	/* safe */
- 	}
- 
- 	if (mw->ibmw.type == IB_MW_TYPE_2) {
--		rxe_add_ref(qp);
-+		rxe_add_ref(qp);	/* safe */
- 		mw->qp = qp;
- 	}
- }
-@@ -199,7 +201,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 	mw = rxe_pool_get_index(&rxe->mw_pool, mw_rkey >> 8);
- 	if (unlikely(!mw)) {
- 		ret = -EINVAL;
--		goto err;
-+		goto err_out;
- 	}
- 
- 	if (unlikely(mw->rkey != mw_rkey)) {
-@@ -236,7 +238,7 @@ int rxe_bind_mw(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		rxe_drop_ref(mr);
- err_drop_mw:
- 	rxe_drop_ref(mw);
--err:
-+err_out:
- 	return ret;
- }
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 2c241ffc0c8b..155de10245f3 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -150,6 +150,7 @@ static void *__rxe_alloc(struct rxe_pool *pool, gfp_t flags)
- 	elem->pool = pool;
- 	elem->obj = obj;
- 	kref_init(&elem->ref_cnt);
-+	init_completion(&elem->complete);
- 
- 	if (pool->init) {
- 		err = pool->init(elem);
-@@ -189,6 +190,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
- 	elem->pool = pool;
- 	elem->obj = (u8 *)elem - pool->elem_offset;
- 	kref_init(&elem->ref_cnt);
-+	init_completion(&elem->complete);
- 
- 	if (pool->init) {
- 		err = pool->init(elem);
-@@ -372,8 +374,26 @@ void rxe_elem_release(struct kref *kref)
- 	if (pool->cleanup)
- 		pool->cleanup(elem);
- 
--	if (pool->flags & RXE_POOL_ALLOC)
--		kfree(elem->obj);
-+	complete_all(&elem->complete);
- 
- 	atomic_dec(&pool->num_elem);
- }
-+
-+/**
-+ * rxe_elem_free() - free memory holding pool element
-+ * @elem: the pool elem
-+ */
-+void __rxe_fini(struct rxe_pool_elem *elem)
-+{
-+	struct rxe_pool *pool = elem->pool;
-+	int ret;
-+
-+	ret = wait_for_completion_timeout(&elem->complete, 10);
-+
-+	if (!ret)
-+		pr_info("Timed out waiting for %s#%d\n", pool->name,
-+				elem->index);
-+
-+	if (elem->pool->flags & RXE_POOL_ALLOC)
-+		kfree(elem->obj);
-+}
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
-index db2caff6f408..a72640f9a440 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.h
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.h
-@@ -30,6 +30,7 @@ struct rxe_pool_elem {
- 	struct rxe_pool		*pool;
- 	void			*obj;
- 	struct kref		ref_cnt;
-+	struct completion	complete;
- 	struct list_head	list;
- 
- 	/* only used if keyed */
-@@ -105,4 +106,7 @@ static inline bool __rxe_drop_ref(struct rxe_pool_elem *elem)
- }
- #define rxe_drop_ref(obj) __rxe_drop_ref(&(obj)->elem)
- 
-+void __rxe_fini(struct rxe_pool_elem *elem);
-+#define rxe_fini(obj) __rxe_fini(&(obj)->elem)
-+
- #endif /* RXE_POOL_H */
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 6a6cc1fa90e4..4c7077aec9a7 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -288,11 +288,11 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 
- 			cpkt = SKB_TO_PKT(cskb);
- 			cpkt->qp = qp;
--			rxe_add_ref(qp);
-+			rxe_add_ref(qp);	/* safe */
- 			rxe_rcv_pkt(cpkt, cskb);
- 		} else {
- 			pkt->qp = qp;
--			rxe_add_ref(qp);
-+			rxe_add_ref(qp);	/* safe */
- 			rxe_rcv_pkt(pkt, skb);
- 			skb = NULL;	/* mark consumed */
- 		}
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 7bc1ec8a5aa6..9b75515cd0f4 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -614,9 +614,10 @@ int rxe_requester(void *arg)
- 	struct rxe_ah *ah;
- 	struct rxe_av *av;
- 
--	rxe_add_ref(qp);
-+	/* check qp pointer still valid */
-+	if (!rxe_add_ref(qp))
-+		return -EAGAIN;
- 
--next_wqe:
- 	if (unlikely(!qp->valid || qp->req.state == QP_STATE_ERROR))
- 		goto exit;
- 
-@@ -644,7 +645,7 @@ int rxe_requester(void *arg)
- 		if (unlikely(ret))
- 			goto err;
- 		else
--			goto next_wqe;
-+			goto done;
- 	}
- 
- 	if (unlikely(qp_type(qp) == IB_QPT_RC &&
-@@ -760,7 +761,9 @@ int rxe_requester(void *arg)
- 
- 	update_state(qp, wqe, &pkt, payload);
- 
--	goto next_wqe;
-+done:
-+	rxe_drop_ref(qp);
-+	return 0;
- 
- err_drop_ah:
- 	if (ah)
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index c776289842e5..5aaf4573c0ac 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -463,8 +463,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 		if (mw->access & IB_ZERO_BASED)
- 			qp->resp.offset = mw->addr;
- 
-+		rxe_add_ref(mr);	/* safe */
- 		rxe_drop_ref(mw);
--		rxe_add_ref(mr);
- 	} else {
- 		mr = lookup_mr(qp->pd, access, rkey, RXE_LOOKUP_REMOTE);
- 		if (!mr) {
-@@ -1247,7 +1247,9 @@ int rxe_responder(void *arg)
- 	struct rxe_pkt_info *pkt = NULL;
- 	int ret = 0;
- 
--	rxe_add_ref(qp);
-+	/* check qp pointer still valid */
-+	if (!rxe_add_ref(qp))
-+		return -EAGAIN;
- 
- 	qp->resp.aeth_syndrome = AETH_ACK_UNLIMITED;
- 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index e3f64eae088c..06b508ba4e2d 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -116,6 +116,7 @@ static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
- 	struct rxe_ucontext *uc = to_ruc(ibuc);
- 
- 	rxe_drop_ref(uc);
-+	rxe_fini(uc);
- }
- 
- static int rxe_port_immutable(struct ib_device *dev, u32 port_num,
-@@ -150,6 +151,7 @@ static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 
- 	rxe_drop_ref(pd);
-+	rxe_fini(pd);
- 	return 0;
- }
- 
-@@ -189,6 +191,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
- 					 sizeof(uresp->ah_num));
- 		if (err) {
- 			rxe_drop_ref(ah);
-+			rxe_fini(ah);
- 			return -EFAULT;
- 		}
- 	} else if (ah->is_user) {
-@@ -229,6 +232,7 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
- 	struct rxe_ah *ah = to_rah(ibah);
- 
- 	rxe_drop_ref(ah);
-+	rxe_fini(ah);
- 	return 0;
- }
- 
-@@ -297,25 +301,29 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
- 
- 	err = rxe_srq_chk_attr(rxe, NULL, &init->attr, IB_SRQ_INIT_MASK);
- 	if (err)
--		goto err1;
-+		goto err_out;
- 
- 	err = rxe_add_to_pool(&rxe->srq_pool, srq);
- 	if (err)
--		goto err1;
-+		goto err_out;
-+
-+	if (!rxe_add_ref(pd))
-+		goto err_drop_srq;
- 
--	rxe_add_ref(pd);
- 	srq->pd = pd;
- 
- 	err = rxe_srq_from_init(rxe, srq, init, udata, uresp);
- 	if (err)
--		goto err2;
-+		goto err_drop_pd;
- 
- 	return 0;
- 
--err2:
-+err_drop_pd:
- 	rxe_drop_ref(pd);
-+err_drop_srq:
- 	rxe_drop_ref(srq);
--err1:
-+	rxe_fini(srq);
-+err_out:
- 	return err;
- }
- 
-@@ -373,6 +381,7 @@ static int rxe_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
- 
- 	rxe_drop_ref(srq->pd);
- 	rxe_drop_ref(srq);
-+	rxe_fini(srq);
- 	return 0;
- }
- 
-@@ -442,6 +451,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
- 
- qp_init:
- 	rxe_drop_ref(qp);
-+	rxe_fini(qp);
- 	return err;
- }
- 
-@@ -486,6 +496,7 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
- 
- 	rxe_qp_destroy(qp);
- 	rxe_drop_ref(qp);
-+	rxe_fini(qp);
- 	return 0;
- }
- 
-@@ -797,6 +808,7 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- 	rxe_cq_disable(cq);
- 
- 	rxe_drop_ref(cq);
-+	rxe_fini(cq);
- 	return 0;
- }
- 
-@@ -882,15 +894,28 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
- 	struct rxe_dev *rxe = to_rdev(ibpd->device);
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 	struct rxe_mr *mr;
-+	int err;
- 
- 	mr = rxe_alloc(&rxe->mr_pool);
--	if (!mr)
--		return ERR_PTR(-ENOMEM);
-+	if (!mr) {
-+		err = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	if (!rxe_add_ref(pd)) {
-+		err = -EINVAL;
-+		goto err_drop_mr;
-+	}
- 
--	rxe_add_ref(pd);
- 	rxe_mr_init_dma(pd, access, mr);
- 
- 	return &mr->ibmr;
-+
-+err_drop_mr:
-+	rxe_drop_ref(mr);
-+	rxe_fini(mr);
-+err_out:
-+	return ERR_PTR(err);
- }
- 
- static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
-@@ -899,30 +924,35 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
- 				     u64 iova,
- 				     int access, struct ib_udata *udata)
- {
--	int err;
- 	struct rxe_dev *rxe = to_rdev(ibpd->device);
- 	struct rxe_pd *pd = to_rpd(ibpd);
- 	struct rxe_mr *mr;
-+	int err;
- 
- 	mr = rxe_alloc(&rxe->mr_pool);
- 	if (!mr) {
- 		err = -ENOMEM;
--		goto err2;
-+		goto err_out;
- 	}
- 
- 
--	rxe_add_ref(pd);
-+	if (!rxe_add_ref(pd)) {
-+		err = -EINVAL;
-+		goto err_drop_mr;
-+	}
- 
- 	err = rxe_mr_init_user(pd, start, length, iova, access, mr);
- 	if (err)
--		goto err3;
-+		goto err_drop_pd;
- 
- 	return &mr->ibmr;
- 
--err3:
-+err_drop_pd:
- 	rxe_drop_ref(pd);
-+err_drop_mr:
- 	rxe_drop_ref(mr);
--err2:
-+	rxe_fini(mr);
-+err_out:
- 	return ERR_PTR(err);
- }
- 
-@@ -934,27 +964,34 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
- 	struct rxe_mr *mr;
- 	int err;
- 
--	if (mr_type != IB_MR_TYPE_MEM_REG)
--		return ERR_PTR(-EINVAL);
-+	if (mr_type != IB_MR_TYPE_MEM_REG) {
-+		err = -EINVAL;
-+		goto err_out;
-+	}
- 
- 	mr = rxe_alloc(&rxe->mr_pool);
- 	if (!mr) {
- 		err = -ENOMEM;
--		goto err1;
-+		goto err_out;
- 	}
- 
--	rxe_add_ref(pd);
-+	if (!rxe_add_ref(pd)) {
-+		err = -EINVAL;
-+		goto err_drop_mr;
-+	}
- 
- 	err = rxe_mr_init_fast(pd, max_num_sg, mr);
- 	if (err)
--		goto err2;
-+		goto err_drop_pd;
- 
- 	return &mr->ibmr;
- 
--err2:
-+err_drop_pd:
- 	rxe_drop_ref(pd);
-+err_drop_mr:
- 	rxe_drop_ref(mr);
--err1:
-+	rxe_fini(mr);
-+err_out:
- 	return ERR_PTR(err);
- }
- 
-@@ -994,8 +1031,10 @@ static int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- 	if (err)
- 		return err;
- 
-+	/* adds a ref on grp if successful */
- 	err = rxe_mcast_add_grp_elem(rxe, qp, grp);
- 
-+	/* drops the ref from ..get_grp() */
- 	rxe_drop_ref(grp);
- 	return err;
- }
-@@ -1005,6 +1044,7 @@ static int rxe_detach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- 	struct rxe_dev *rxe = to_rdev(ibqp->device);
- 	struct rxe_qp *qp = to_rqp(ibqp);
- 
-+	/* drops a ref on grp if successful */
- 	return rxe_mcast_drop_grp_elem(rxe, qp, mgid);
- }
- 
+[ 1685.584327] run blktests nvme/013 at 2021-12-02 21:08:46
+[ 1685.669804] eno2 speed is unknown, defaulting to 1000
+[ 1685.674866] eno2 speed is unknown, defaulting to 1000
+[ 1685.679941] eno2 speed is unknown, defaulting to 1000
+[ 1685.686033] eno2 speed is unknown, defaulting to 1000
+[ 1685.691087] eno2 speed is unknown, defaulting to 1000
+[ 1685.697677] eno2 speed is unknown, defaulting to 1000
+[ 1685.703727] eno3 speed is unknown, defaulting to 1000
+[ 1685.708798] eno3 speed is unknown, defaulting to 1000
+[ 1685.713863] eno3 speed is unknown, defaulting to 1000
+[ 1685.719965] eno3 speed is unknown, defaulting to 1000
+[ 1685.725043] eno3 speed is unknown, defaulting to 1000
+[ 1685.731688] eno2 speed is unknown, defaulting to 1000
+[ 1685.736763] eno3 speed is unknown, defaulting to 1000
+[ 1685.742818] eno4 speed is unknown, defaulting to 1000
+[ 1685.747881] eno4 speed is unknown, defaulting to 1000
+[ 1685.752949] eno4 speed is unknown, defaulting to 1000
+[ 1685.759134] eno4 speed is unknown, defaulting to 1000
+[ 1685.764195] eno4 speed is unknown, defaulting to 1000
+[ 1685.770914] eno2 speed is unknown, defaulting to 1000
+[ 1685.775980] eno3 speed is unknown, defaulting to 1000
+[ 1685.781047] eno4 speed is unknown, defaulting to 1000
+[ 1686.002801] eno2 speed is unknown, defaulting to 1000
+[ 1686.007867] eno3 speed is unknown, defaulting to 1000
+[ 1686.012934] eno4 speed is unknown, defaulting to 1000
+[ 1686.022521] rdma_rxe: rxe-ah pool destroyed with unfree'd elem
+[ 1686.289384] run blktests nvme/013 at 2021-12-02 21:08:46
+[ 1686.356666] eno2 speed is unknown, defaulting to 1000
+[ 1686.361735] eno2 speed is unknown, defaulting to 1000
+[ 1686.366807] eno2 speed is unknown, defaulting to 1000
+[ 1686.371876] eno2 speed is unknown, defaulting to 1000
+[ 1686.378400] eno2 speed is unknown, defaulting to 1000
+[ 1686.384419] eno3 speed is unknown, defaulting to 1000
+[ 1686.389494] eno3 speed is unknown, defaulting to 1000
+[ 1686.394583] eno3 speed is unknown, defaulting to 1000
+[ 1686.399660] eno3 speed is unknown, defaulting to 1000
+[ 1686.406219] eno2 speed is unknown, defaulting to 1000
+[ 1686.411291] eno3 speed is unknown, defaulting to 1000
+[ 1686.417275] eno4 speed is unknown, defaulting to 1000
+[ 1686.422338] eno4 speed is unknown, defaulting to 1000
+[ 1686.427401] eno4 speed is unknown, defaulting to 1000
+[ 1686.432475] eno4 speed is unknown, defaulting to 1000
+[ 1686.439038] eno2 speed is unknown, defaulting to 1000
+[ 1686.444109] eno3 speed is unknown, defaulting to 1000
+[ 1686.449180] eno4 speed is unknown, defaulting to 1000
+[ 1686.873596] xfs filesystem being mounted at /mnt/blktests supports
+timestamps until 2038 (0x7fffffff)
+[ 1687.540606] xfs filesystem being mounted at /mnt/blktests supports
+timestamps until 2038 (0x7fffffff)
+[ 1693.658327] block nvme0n1: no available path - failing I/O
+[ 1693.663038] block nvme0n1: no available path - failing I/O
+[ 1693.663828] XFS (nvme0n1): log I/O error -5
+[ 1693.665024] block nvme0n1: no available path - failing I/O
+[ 1693.665041] XFS (nvme0n1): log I/O error -5
+[ 1693.665044] XFS (nvme0n1): Log I/O Error (0x2) detected at
+xlog_ioend_work+0x71/0x80 [xfs] (fs/xfs/xfs_log.c:1377).  Shutting
+down filesystem.
+[ 1693.665142] XFS (nvme0n1): Please unmount the filesystem and
+rectify the problem(s)
+[ 1693.720462] block nvme0n1: no available path - failing I/O
+[ 1693.728150] nvmet_rdma: post_recv cmd failed
+[ 1693.732432] nvmet_rdma: sending cmd response failed
+[ 1693.836083] eno2 speed is unknown, defaulting to 1000
+[ 1693.841152] eno3 speed is unknown, defaulting to 1000
+[ 1693.846217] eno4 speed is unknown, defaulting to 1000
+[ 1693.852280] BUG: unable to handle page fault for address: ffffffffc09d2680
+[ 1693.859156] #PF: supervisor instruction fetch in kernel mode
+[ 1693.864815] #PF: error_code(0x0010) - not-present page
+[ 1693.869953] PGD 2b5813067 P4D 2b5813067 PUD 2b5815067 PMD 13a157067 PTE 0
+[ 1693.876740] Oops: 0010 [#1] PREEMPT SMP NOPTI
+[ 1693.881098] CPU: 15 PID: 16091 Comm: rdma Tainted: G S        I
+  5.16.0-rc3 #1
+[ 1693.888751] Hardware name: Dell Inc. PowerEdge R640/06NR82, BIOS
+2.11.2 004/21/2021
+[ 1693.896403] RIP: 0010:0xffffffffc09d2680
+[ 1693.900329] Code: Unable to access opcode bytes at RIP 0xffffffffc09d2656.
+[ 1693.907202] RSP: 0018:ffffb3d5456237b0 EFLAGS: 00010286
+[ 1693.912428] RAX: ffffffffc09d2680 RBX: ffff9d4adade2000 RCX: 0000000000000001
+[ 1693.919559] RDX: 0000000080000001 RSI: ffffb3d5456237e8 RDI: ffff9d4adade2000
+[ 1693.926693] RBP: ffffb3d5456237e8 R08: ffffb3d545623850 R09: 0000000000000230
+[ 1693.933823] R10: 0000000000000002 R11: ffffb3d545623840 R12: ffff9d4adade2270
+[ 1693.940957] R13: ffff9d4adade21e0 R14: 0000000000000005 R15: ffff9d4adade2220
+[ 1693.948089] FS:  00007f2f0601c000(0000) GS:ffff9d59ffdc0000(0000)
+knlGS:0000000000000000
+[ 1693.956176] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1693.961921] CR2: ffffffffc09d2656 CR3: 0000000180578004 CR4: 00000000007706e0
+[ 1693.969052] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1693.976177] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 1693.983309] PKRU: 55555554
+[ 1693.986023] Call Trace:
+[ 1693.988474]  <TASK>
+[ 1693.990582]  ? cma_cm_event_handler+0x1d/0xd0 [rdma_cm]
+[ 1693.995817]  ? cma_process_remove+0x73/0x290 [rdma_cm]
+[ 1694.000954]  ? cma_remove_one+0x5a/0xd0 [rdma_cm]
+[ 1694.005661]  ? remove_client_context+0x88/0xd0 [ib_core]
+[ 1694.010990]  ? disable_device+0x8c/0x130 [ib_core]
+[ 1694.015790]  ? xa_load+0x73/0xa0
+[ 1694.019024]  ? __ib_unregister_device+0x40/0xa0 [ib_core]
+[ 1694.024431]  ? ib_unregister_device_and_put+0x33/0x50 [ib_core]
+[ 1694.030360]  ? nldev_dellink+0x86/0xe0 [ib_core]
+[ 1694.035000]  ? rdma_nl_rcv_msg+0x109/0x200 [ib_core]
+[ 1694.039978]  ? __alloc_skb+0x8c/0x1b0
+[ 1694.043645]  ? __kmalloc_node_track_caller+0x184/0x340
+[ 1694.048785]  ? rdma_nl_rcv+0xc8/0x110 [ib_core]
+[ 1694.053325]  ? netlink_unicast+0x1a2/0x280
+[ 1694.057424]  ? netlink_sendmsg+0x244/0x480
+[ 1694.061524]  ? sock_sendmsg+0x58/0x60
+[ 1694.065188]  ? __sys_sendto+0xee/0x160
+[ 1694.068944]  ? netlink_setsockopt+0x26e/0x3d0
+[ 1694.073300]  ? __sys_setsockopt+0xdc/0x1d0
+[ 1694.077400]  ? __x64_sys_sendto+0x24/0x30
+[ 1694.081414]  ? do_syscall_64+0x37/0x80
+[ 1694.085164]  ? entry_SYSCALL_64_after_hwframe+0x44/0xae
+[ 1694.090391]  </TASK>
+[ 1694.092584] Modules linked in: siw rpcrdma rdma_ucm ib_uverbs
+ib_srpt ib_isert iscsi_target_mod target_core_mod loop ib_iser
+libiscsi scsi_transport_iscsi rdma_cm iw_cm ib_cm ib_core
+rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver nfs lockd grace fscache
+netfs rfkill sunrpc vfat fat dm_multipath intel_rapl_msr
+intel_rapl_common isst_if_common skx_edac x86_pkg_temp_thermal
+intel_powerclamp coretemp kvm_intel ipmi_ssif kvm mgag200 i2c_algo_bit
+drm_kms_helper iTCO_wdt iTCO_vendor_support syscopyarea irqbypass
+sysfillrect crct10dif_pclmul sysimgblt crc32_pclmul fb_sys_fops
+ghash_clmulni_intel acpi_ipmi drm rapl ipmi_si intel_cstate mei_me
+intel_uncore i2c_i801 mei ipmi_devintf nd_pmem dax_pmem_compat
+wmi_bmof pcspkr device_dax intel_pch_thermal i2c_smbus lpc_ich
+ipmi_msghandler nd_btt dax_pmem_core acpi_power_meter xfs libcrc32c
+sd_mod t10_pi sg ahci libahci libata megaraid_sas nfit tg3
+crc32c_intel libnvdimm wmi dm_mirror dm_region_hash dm_log dm_mod
+[last unloaded: nvmet]
+[ 1694.178277] CR2: ffffffffc09d2680
+[ 1694.181596] ---[ end trace 9c234cd612cbb92a ]---
+[ 1694.217410] RIP: 0010:0xffffffffc09d2680
+[ 1694.221343] Code: Unable to access opcode bytes at RIP 0xffffffffc09d2656.
+[ 1694.228212] RSP: 0018:ffffb3d5456237b0 EFLAGS: 00010286
+[ 1694.233437] RAX: ffffffffc09d2680 RBX: ffff9d4adade2000 RCX: 0000000000000001
+[ 1694.240570] RDX: 0000000080000001 RSI: ffffb3d5456237e8 RDI: ffff9d4adade2000
+[ 1694.247702] RBP: ffffb3d5456237e8 R08: ffffb3d545623850 R09: 0000000000000230
+[ 1694.254828] R10: 0000000000000002 R11: ffffb3d545623840 R12: ffff9d4adade2270
+[ 1694.261958] R13: ffff9d4adade21e0 R14: 0000000000000005 R15: ffff9d4adade2220
+[ 1694.269091] FS:  00007f2f0601c000(0000) GS:ffff9d59ffdc0000(0000)
+knlGS:0000000000000000
+[ 1694.277178] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1694.282922] CR2: ffffffffc09d2656 CR3: 0000000180578004 CR4: 00000000007706e0
+[ 1694.290054] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1694.297180] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 1694.304312] PKRU: 55555554
+[ 1694.307025] Kernel panic - not syncing: Fatal exception
+[ 1694.772244] Kernel Offset: 0x35c00000 from 0xffffffff81000000
+(relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[ 1694.794394] ---[ end Kernel panic - not syncing: Fatal exception ]---
+
+
 -- 
-2.32.0
+Best Regards,
+  Yi Zhang
 
