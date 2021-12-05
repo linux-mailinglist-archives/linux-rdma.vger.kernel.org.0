@@ -2,125 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBDC4689E3
-	for <lists+linux-rdma@lfdr.de>; Sun,  5 Dec 2021 09:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58ACC468AA4
+	for <lists+linux-rdma@lfdr.de>; Sun,  5 Dec 2021 12:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232149AbhLEIUz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 5 Dec 2021 03:20:55 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:53123 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhLEIUy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Dec 2021 03:20:54 -0500
-Received: from pop-os.home ([86.243.171.122])
-        by smtp.orange.fr with ESMTPA
-        id tmi5mYC8yFGqttmi5mmE92; Sun, 05 Dec 2021 09:17:26 +0100
-X-ME-Helo: pop-os.home
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Sun, 05 Dec 2021 09:17:26 +0100
-X-ME-IP: 86.243.171.122
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] RDMA/irdma: Fix a potential memory allocation issue in 'irdma_prm_add_pble_mem()'
-Date:   Sun,  5 Dec 2021 09:17:24 +0100
-Message-Id: <5e670b640508e14b1869c3e8e4fb970d78cbe997.1638692171.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        id S233208AbhLELuk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 5 Dec 2021 06:50:40 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:44702 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233115AbhLELuk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 5 Dec 2021 06:50:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CFDB60FAD
+        for <linux-rdma@vger.kernel.org>; Sun,  5 Dec 2021 11:47:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDD39C341C1;
+        Sun,  5 Dec 2021 11:47:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638704832;
+        bh=f/VHGvst3rUWmisbheTm9u4o8yiSpWJ44nkJ0wiog+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=moC5yIs7lcl68a5IrbWr4+Q1eIeyrzoL+g4nPLOFPirPKBUlgeZfFO+isaNoEKNdl
+         hNwWK1a1NDlsBJPdSixFO2TzabGYtwLH1Fv6rTt+xBtm7XEbgG6rbrh+heQovTFdKT
+         cZCpcDQGp14de0yHeMoYMYgc1I83XS5wLOGW8jrCde6t1XVlfwbbGe6tlLc9i7KP8z
+         6XLgAlj4zFV6rPPMP3k2pO+Jxey+0EtmWAazqcyE9O1KYaBkoZV1TW+7Ep9ZsBFoHM
+         3r+bQHxlxJ+He71nIQD03lB2hXHd1MzCnJ/7Fbwf0dxq2n2O0yNLZSvQpld62Sfn7f
+         pc8B30iZvpXRA==
+Date:   Sun, 5 Dec 2021 13:47:06 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Yi Zhang <yi.zhang@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: [bug report]concurrent blktests nvme-rdma execution lead kernel
+ null pointer
+Message-ID: <YaymumNuphhWiCc2@unreal>
+References: <CAHj4cs8h3e_fY6cKb3XL9aEp8_MT3Po8-W6cL35kKEAvj6qs0Q@mail.gmail.com>
+ <OF74AE32F7.7A787A6C-ON002587A0.003CDEF3-002587A0.003EEE89@ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF74AE32F7.7A787A6C-ON002587A0.003CDEF3-002587A0.003EEE89@ibm.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-'pchunk->bitmapbuf' is a bitmap. Its size (in number of bits) is stored in
-'pchunk->sizeofbitmap'.
+On Fri, Dec 03, 2021 at 11:27:22AM +0000, Bernard Metzler wrote:
+> -----"Yi Zhang" <yi.zhang@redhat.com> wrote: -----
+> 
+> >To: "RDMA mailing list" <linux-rdma@vger.kernel.org>
+> >From: "Yi Zhang" <yi.zhang@redhat.com>
+> >Date: 12/03/2021 03:20AM
+> >Subject: [EXTERNAL] [bug report]concurrent blktests nvme-rdma
+> >execution lead kernel null pointer
+> >
+> >Hello
+> >With the concurrent blktests nvme-rdma execution with both rdma_rxe
+> >and siw lead kernel BUG on 5.16.0-rc3, pls help check it, thanks.
+> >
+> 
+> The RDMA core currently does not prevent us from
+> assigning  both siw and rxe to the same netdev. I think this
+> is what is happening here. This setting is of no sense, but
+> obviously not prohibited by the RDMA infrastructure. Behavior
+> is undefined and a kernel panic not unexpected. Shall we
+> prevent the privileged user from doing this type of
+> experiments?
+> 
+> A related question: should we also explicitly refuse to
+> add software RDMA drivers to netdevs with RDMA hardware active?
+> This is, while stupid and resulting behavior undefined, currently
+> possible as well.
 
-When it is allocated, the size (in bytes) is computed by:
-   size_in_bits >> 3
+In old soft-RoCE manuals, I saw a request to unload mlx4_ib/mlx5_ib
+modules before configuring RXE. This effectively "prevented" from
+running with "RDMA hardware active". 
 
-There are 2 issues (numbers bellow assume that longs are 64 bits):
-   - there is no guarantee here that 'pchunk->bitmapmem.size' is modulo
-     BITS_PER_LONG but bitmaps are stored as longs
-     (sizeofbitmap=8 bits will only allocate 1 byte, instead of 8 (1 long))
+So I'm not surprised that it doesn't work, but why do you think that
+this behavior is stupid? RXE/SIW can be seen as ULP and as such it
+is ok to run many ULPs on same netdev.
 
-   - the number of bytes is computed with a shift, not a round up, so we
-     may allocate less memory than needed
-     (sizeofbitmap=65 bits will only allocate 8 bytes (i.e. 1 long), when 2
-     longs are needed = 16 bytes)
-
-Fix both issues by using 'bitmap_zalloc()' and remove the useless
-'bitmapmem' from 'struct irdma_chunk'.
-
-While at it, remove some useless NULL test before calling
-kfree/bitmap_free.
-
-Fixes: 915cc7ac0f8e ("RDMA/irdma: Add miscellaneous utility definitions")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/infiniband/hw/irdma/pble.c  | 6 ++----
- drivers/infiniband/hw/irdma/pble.h  | 1 -
- drivers/infiniband/hw/irdma/utils.c | 9 ++-------
- 3 files changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/pble.c b/drivers/infiniband/hw/irdma/pble.c
-index aeeb1c310965..941dd6310161 100644
---- a/drivers/infiniband/hw/irdma/pble.c
-+++ b/drivers/infiniband/hw/irdma/pble.c
-@@ -25,8 +25,7 @@ void irdma_destroy_pble_prm(struct irdma_hmc_pble_rsrc *pble_rsrc)
- 		list_del(&chunk->list);
- 		if (chunk->type == PBLE_SD_PAGED)
- 			irdma_pble_free_paged_mem(chunk);
--		if (chunk->bitmapbuf)
--			kfree(chunk->bitmapmem.va);
-+		bitmap_free(chunk->bitmapbuf);
- 		kfree(chunk->chunkmem.va);
- 	}
- }
-@@ -299,8 +298,7 @@ add_pble_prm(struct irdma_hmc_pble_rsrc *pble_rsrc)
- 	return 0;
- 
- error:
--	if (chunk->bitmapbuf)
--		kfree(chunk->bitmapmem.va);
-+	bitmap_free(chunk->bitmapbuf);
- 	kfree(chunk->chunkmem.va);
- 
- 	return ret_code;
-diff --git a/drivers/infiniband/hw/irdma/pble.h b/drivers/infiniband/hw/irdma/pble.h
-index faf71c99e12e..d0d4f2b77d34 100644
---- a/drivers/infiniband/hw/irdma/pble.h
-+++ b/drivers/infiniband/hw/irdma/pble.h
-@@ -78,7 +78,6 @@ struct irdma_chunk {
- 	u32 pg_cnt;
- 	enum irdma_alloc_type type;
- 	struct irdma_sc_dev *dev;
--	struct irdma_virt_mem bitmapmem;
- 	struct irdma_virt_mem chunkmem;
- };
- 
-diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
-index 8b42c43fc14f..981107b40c90 100644
---- a/drivers/infiniband/hw/irdma/utils.c
-+++ b/drivers/infiniband/hw/irdma/utils.c
-@@ -2239,15 +2239,10 @@ enum irdma_status_code irdma_prm_add_pble_mem(struct irdma_pble_prm *pprm,
- 
- 	sizeofbitmap = (u64)pchunk->size >> pprm->pble_shift;
- 
--	pchunk->bitmapmem.size = sizeofbitmap >> 3;
--	pchunk->bitmapmem.va = kzalloc(pchunk->bitmapmem.size, GFP_KERNEL);
--
--	if (!pchunk->bitmapmem.va)
-+	pchunk->bitmapbuf = bitmap_zalloc(sizeofbitmap, GFP_KERNEL);
-+	if (!pchunk->bitmapbuf)
- 		return IRDMA_ERR_NO_MEMORY;
- 
--	pchunk->bitmapbuf = pchunk->bitmapmem.va;
--	bitmap_zero(pchunk->bitmapbuf, sizeofbitmap);
--
- 	pchunk->sizeofbitmap = sizeofbitmap;
- 	/* each pble is 8 bytes hence shift by 3 */
- 	pprm->total_pble_alloc += pchunk->size >> 3;
--- 
-2.30.2
-
+Thanks
