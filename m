@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21FDC46AA15
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 22:20:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC5946AA2C
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 22:20:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351204AbhLFVXZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Dec 2021 16:23:25 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59062 "EHLO
+        id S1351323AbhLFVXv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Dec 2021 16:23:51 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59394 "EHLO
         ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbhLFVXX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 16:23:23 -0500
+        with ESMTP id S1351365AbhLFVXn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 16:23:43 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 290D9B8159D;
-        Mon,  6 Dec 2021 21:19:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D69C341CB;
-        Mon,  6 Dec 2021 21:19:50 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1D7E9B8159E;
+        Mon,  6 Dec 2021 21:20:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78659C341D8;
+        Mon,  6 Dec 2021 21:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638825591;
-        bh=+ujxdqI/HpDnZEPVLzroYRyWIoElKf+V2bFWz8LvKcg=;
+        s=k20201202; t=1638825611;
+        bh=kynrDBJc2h5j4cN1pyjNJ7r3mvxItBeOwBVqnky9B7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O4rLAHEq4/vqdE4qL90KtHLw3hZx5kCgOvFJ5pikSFtYPXA6sDPacwQHVKT25FIHw
-         8fC78Swzj/isLAandDA11tZgkdb6FePpOJ9omwd6rvsmXzkSyBMSK8v7hJx0aseFVK
-         wYQVFUx/uEyzv7je1LOkf6T1cYrXqrGSXURuhlWWcw5EKi7iRl31Kb9Rmrz+87I70Y
-         QbNyEkoVkJOj7G/kwnIzBIFzM5/mrcuUUVw0+YrMU89UXGIUJQRRw/Hf3bVOJlOKZw
-         a18jOxfh8JLlAi+gyjxcpTeckgfBgfPKaKYjn+lFbEuIDN1gs/UVTKvpDQVLhGV8yh
-         hn6nMhpXbXtgQ==
+        b=PGkekcGikMnQOXuZCnV3dKqi72Asy/n2HOGSNL2Pqa2gOY7JETOPFacT/BrusO2Jf
+         2O8fUSdVMT3V1kLWFjcAKjBsjdjjIAbFWeszTzXlE7N2MRFsGZkCpkLXKWZkYIWC7g
+         EYQNnedS0O3aj3OYU+RWrhlKZBSxdRVBOSv4yzNn/wd6IQM9BhL1rFa5Hc9MJ5gxpe
+         8upEnwuAOuzhew1qUps6If6CI6x6w0UEfpm0/tECKF9Q7G6y6VjUFhoq2JQxnxsqbH
+         OoL1Im2GShVgc00jeiyejyatG9gPtBjxuS8mIPLWqBMwf1AFK/DM6d6YaYBgsKKx2u
+         kowTAu4nc7UHw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Erik Ekman <erik@kryo.se>,
@@ -36,12 +36,12 @@ Cc:     Erik Ekman <erik@kryo.se>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
         netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 3/7] net/mlx4_en: Update reported link modes for 1/10G
-Date:   Mon,  6 Dec 2021 16:19:23 -0500
-Message-Id: <20211206211934.1661294-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 2/6] net/mlx4_en: Update reported link modes for 1/10G
+Date:   Mon,  6 Dec 2021 16:19:58 -0500
+Message-Id: <20211206212004.1661417-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211206211934.1661294-1-sashal@kernel.org>
-References: <20211206211934.1661294-1-sashal@kernel.org>
+In-Reply-To: <20211206212004.1661417-1-sashal@kernel.org>
+References: <20211206212004.1661417-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -132,10 +132,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 6a005014d46af..f652cfd8127bf 100644
+index 64c4b88de8449..565e1ac241aab 100644
 --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -663,7 +663,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+@@ -649,7 +649,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_T, SPEED_1000,
  				       ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_CX_SGMII, SPEED_1000,
@@ -144,7 +144,7 @@ index 6a005014d46af..f652cfd8127bf 100644
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_KX, SPEED_1000,
  				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_T, SPEED_10000,
-@@ -675,9 +675,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
+@@ -661,9 +661,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_KR, SPEED_10000,
  				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
  	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_CR, SPEED_10000,
