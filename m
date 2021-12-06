@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29B2A46A9ED
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 22:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21FDC46AA15
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 22:20:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351117AbhLFVVe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Dec 2021 16:21:34 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:48908 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348113AbhLFVVc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 16:21:32 -0500
+        id S1351204AbhLFVXZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Dec 2021 16:23:25 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:59062 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231593AbhLFVXX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 16:23:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A5172CE1626;
-        Mon,  6 Dec 2021 21:18:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D7D7C341CD;
-        Mon,  6 Dec 2021 21:17:58 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 290D9B8159D;
+        Mon,  6 Dec 2021 21:19:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64D69C341CB;
+        Mon,  6 Dec 2021 21:19:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638825479;
-        bh=sX7UhzPJ4H9WBt7wxIbx9QexK09hqwkNtTwVlGFbYx8=;
+        s=k20201202; t=1638825591;
+        bh=+ujxdqI/HpDnZEPVLzroYRyWIoElKf+V2bFWz8LvKcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HpdeJUnbLjTXiEk8ARrHSFk/+24h4rJ3fbamiBLSjD/YibnPXguLgRmHc1uwmWx1Q
-         KQBOo0FTdx1EFTaPfGHcREhbx2zYW9AolyPJkcq3C35cQvrlipyzxyLUiePuu9qJ6t
-         LdY4lIi68va+aDrRIWseqFkfPMKXYRGh4jH3pmIYYZgZewOzYLPW8wXfFM+H7eqQj6
-         R2BrsM8a0rQ7BxjTHBzfWB6qR14LW88QmOHEm6sc33JizVh284lL1HHaIQ62EPy60s
-         uCpi0lUkn+t89/19PlyJzX/BQPNvnYEGNbx8HoNNIz/Ox0RKQY23SJ0AmXjflpFfn3
-         wsefdUyCNMwRw==
+        b=O4rLAHEq4/vqdE4qL90KtHLw3hZx5kCgOvFJ5pikSFtYPXA6sDPacwQHVKT25FIHw
+         8fC78Swzj/isLAandDA11tZgkdb6FePpOJ9omwd6rvsmXzkSyBMSK8v7hJx0aseFVK
+         wYQVFUx/uEyzv7je1LOkf6T1cYrXqrGSXURuhlWWcw5EKi7iRl31Kb9Rmrz+87I70Y
+         QbNyEkoVkJOj7G/kwnIzBIFzM5/mrcuUUVw0+YrMU89UXGIUJQRRw/Hf3bVOJlOKZw
+         a18jOxfh8JLlAi+gyjxcpTeckgfBgfPKaKYjn+lFbEuIDN1gs/UVTKvpDQVLhGV8yh
+         hn6nMhpXbXtgQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Erik Ekman <erik@kryo.se>,
@@ -36,12 +36,12 @@ Cc:     Erik Ekman <erik@kryo.se>,
         "David S . Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
         netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 03/10] net/mlx4_en: Update reported link modes for 1/10G
-Date:   Mon,  6 Dec 2021 16:17:22 -0500
-Message-Id: <20211206211738.1661003-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 3/7] net/mlx4_en: Update reported link modes for 1/10G
+Date:   Mon,  6 Dec 2021 16:19:23 -0500
+Message-Id: <20211206211934.1661294-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211206211738.1661003-1-sashal@kernel.org>
-References: <20211206211738.1661003-1-sashal@kernel.org>
+In-Reply-To: <20211206211934.1661294-1-sashal@kernel.org>
+References: <20211206211934.1661294-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -132,7 +132,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 426786a349c3c..dd029d91bbc2d 100644
+index 6a005014d46af..f652cfd8127bf 100644
 --- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 +++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
 @@ -663,7 +663,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
