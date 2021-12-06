@@ -2,161 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D5346AA3A
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 22:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55B8346AE55
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 00:22:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351431AbhLFVYJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Dec 2021 16:24:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239091AbhLFVX4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 16:23:56 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94671C0613F8;
-        Mon,  6 Dec 2021 13:20:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5CF66B8110F;
-        Mon,  6 Dec 2021 21:20:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA0D1C341C1;
-        Mon,  6 Dec 2021 21:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638825625;
-        bh=afdi6t7FJhegVpRtrrq6KJ/Upt388TkrvXxaQUgGnUM=;
-        h=From:To:Cc:Subject:Date:From;
-        b=HaZU9l8oTL+Pdn48O+Oxrdt/VwX3ezMcwxOKgOeFoh+3sxNmS/ZdquKkLVp1xGEW5
-         Q2vfmX+yQ12yPBNX1+Q7PfzGjUJ0PCQwAtVTc2PcQd974Vss+QFNrsVxfP2go3P+5B
-         0zigDuzO74oZ4lTF56PtwrrLe/4aZsb323KOFsYFlCxu8Z47pkkEqRDniMjPwQDGP7
-         iUpcQNXjTzE4GbUBA0D1ZUccBhtTfeqdMLbuTkObA9DzJulTEiR/k1P1IpDoPoI52F
-         0znLkAXlOQif/bEF0stiDUFxnSY+Iiq52mnHRCjrAzhNTbXyyaLGaM7n8GX9VlxTW7
-         n8HfLMY/k3ylw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Erik Ekman <erik@kryo.se>,
-        Michael Stapelberg <michael@stapelberg.ch>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 1/5] net/mlx4_en: Update reported link modes for 1/10G
-Date:   Mon,  6 Dec 2021 16:20:17 -0500
-Message-Id: <20211206212021.1661517-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.33.0
+        id S243047AbhLFXZm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Dec 2021 18:25:42 -0500
+Received: from out2.migadu.com ([188.165.223.204]:47613 "EHLO out2.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242479AbhLFXZl (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 6 Dec 2021 18:25:41 -0500
+Message-ID: <246bcb01-95f4-c6a7-15ae-2553047b7698@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1638832930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=z7IvlrCtoKjp5xd4xDDKc/Sxwxwqn6nlOxXKDx4LRjI=;
+        b=dJcXjdqUg8/yFxwViZVGv+r0E3hwunwPrpF6jzMouO3W7eM+DuTskZOeBOXoBFWjJrpS9n
+        HeGWM9Z71aoRNRgy8tBpjF6YPu00DmiNmJPRYgGe1Lye9jZx+TJ4dORnftVxbiVoiE/uhA
+        y9fXHpCv8fdwoCZcpQHZZ6Q0PFrxh5k=
+Date:   Tue, 7 Dec 2021 07:22:04 +0800
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Subject: Re: [PATCH 1/1] RDMA/uverbs: remove the unnecessary assignment
+To:     Haakon Bugge <haakon.bugge@oracle.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
+Cc:     Doug Ledford <dledford@redhat.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>
+References: <20211207064607.541695-1-yanjun.zhu@linux.dev>
+ <D8348428-539D-4C4D-8D21-C23C1B0E80EB@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <D8348428-539D-4C4D-8D21-C23C1B0E80EB@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Erik Ekman <erik@kryo.se>
+在 2021/12/6 22:27, Haakon Bugge 写道:
+> 
+> 
+>> On 7 Dec 2021, at 07:46, yanjun.zhu@linux.dev wrote:
+>>
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> The struct member variable create_flags are assigned twice.
+> 
+> may be "... is assigned twice." ?
+My bad. Thanks.
 
-[ Upstream commit 2191b1dfef7d45f44b5008d2148676d9f2c82874 ]
-
-When link modes were initially added in commit 2c762679435dc
-("net/mlx4_en: Use PTYS register to query ethtool settings") and
-later updated for the new ethtool API in commit 3d8f7cc78d0eb
-("net: mlx4: use new ETHTOOL_G/SSETTINGS API") the only 1/10G non-baseT
-link modes configured were 1000baseKX, 10000baseKX4 and 10000baseKR.
-It looks like these got picked to represent other modes since nothing
-better was available.
-
-Switch to using more specific link modes added in commit 5711a98221443
-("net: ethtool: add support for 1000BaseX and missing 10G link modes").
-
-Tested with MCX311A-XCAT connected via DAC.
-Before:
-
-% sudo ethtool enp3s0
-Settings for enp3s0:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseKX/Full
-	                        10000baseKR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  1000baseKX/Full
-	                        10000baseKR/Full
-	Advertised pause frame use: Symmetric
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Speed: 10000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: Direct Attach Copper
-	PHYAD: 0
-	Transceiver: internal
-	Supports Wake-on: d
-	Wake-on: d
-        Current message level: 0x00000014 (20)
-                               link ifdown
-	Link detected: yes
-
-With this change:
-
-% sudo ethtool enp3s0
-	Settings for enp3s0:
-	Supported ports: [ FIBRE ]
-	Supported link modes:   1000baseX/Full
-	                        10000baseCR/Full
- 	                        10000baseSR/Full
-	Supported pause frame use: Symmetric Receive-only
-	Supports auto-negotiation: No
-	Supported FEC modes: Not reported
-	Advertised link modes:  1000baseX/Full
- 	                        10000baseCR/Full
- 	                        10000baseSR/Full
-	Advertised pause frame use: Symmetric
-	Advertised auto-negotiation: No
-	Advertised FEC modes: Not reported
-	Speed: 10000Mb/s
-	Duplex: Full
-	Auto-negotiation: off
-	Port: Direct Attach Copper
-	PHYAD: 0
-	Transceiver: internal
-	Supports Wake-on: d
-	Wake-on: d
-        Current message level: 0x00000014 (20)
-                               link ifdown
-	Link detected: yes
-
-Tested-by: Michael Stapelberg <michael@stapelberg.ch>
-Signed-off-by: Erik Ekman <erik@kryo.se>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/ethernet/mellanox/mlx4/en_ethtool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-index 410a36c982419..1569300844f0c 100644
---- a/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-+++ b/drivers/net/ethernet/mellanox/mlx4/en_ethtool.c
-@@ -620,7 +620,7 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_T, SPEED_1000,
- 				       ETHTOOL_LINK_MODE_1000baseT_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_CX_SGMII, SPEED_1000,
--				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
-+				       ETHTOOL_LINK_MODE_1000baseX_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_1000BASE_KX, SPEED_1000,
- 				       ETHTOOL_LINK_MODE_1000baseKX_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_T, SPEED_10000,
-@@ -632,9 +632,9 @@ void __init mlx4_en_init_ptys2ethtool_map(void)
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_KR, SPEED_10000,
- 				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_CR, SPEED_10000,
--				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
-+				       ETHTOOL_LINK_MODE_10000baseCR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_10GBASE_SR, SPEED_10000,
--				       ETHTOOL_LINK_MODE_10000baseKR_Full_BIT);
-+				       ETHTOOL_LINK_MODE_10000baseSR_Full_BIT);
- 	MLX4_BUILD_PTYS2ETHTOOL_CONFIG(MLX4_20GBASE_KR2, SPEED_20000,
- 				       ETHTOOL_LINK_MODE_20000baseMLD2_Full_BIT,
- 				       ETHTOOL_LINK_MODE_20000baseKR2_Full_BIT);
--- 
-2.33.0
+Zhu Yanjun
+> 
+>> Remove the unnecessary assignment.
+>>
+>> Fixes: ece9ca97ccdc8 ("RDMA/uverbs: Do not check the input length on create_cq/qp paths")
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> LGTM, so
+> 
+> Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+> 
+> 
+> 
+> Thxs, Håkon
+> 
+>> ---
+>> drivers/infiniband/core/uverbs_cmd.c | 1 -
+>> 1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+>> index d1345d76d9b1..6b6393176b3c 100644
+>> --- a/drivers/infiniband/core/uverbs_cmd.c
+>> +++ b/drivers/infiniband/core/uverbs_cmd.c
+>> @@ -1399,7 +1399,6 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+>> 	attr.sq_sig_type   = cmd->sq_sig_all ? IB_SIGNAL_ALL_WR :
+>> 					      IB_SIGNAL_REQ_WR;
+>> 	attr.qp_type       = cmd->qp_type;
+>> -	attr.create_flags  = 0;
+>>
+>> 	attr.cap.max_send_wr     = cmd->max_send_wr;
+>> 	attr.cap.max_recv_wr     = cmd->max_recv_wr;
+>> -- 
+>> 2.27.0
+>>
+> 
 
