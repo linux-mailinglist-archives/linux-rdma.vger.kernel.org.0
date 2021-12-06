@@ -2,121 +2,118 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15B3469691
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 14:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E43E469735
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 14:34:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243812AbhLFNR2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Dec 2021 08:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244163AbhLFNR1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 08:17:27 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1886C0613F8
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Dec 2021 05:13:58 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 99DE0B810AA
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Dec 2021 13:13:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BC59C341C5;
-        Mon,  6 Dec 2021 13:13:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638796436;
-        bh=r2z61fOsYfdIoWf0CxcJJvam6WD/fV4AyXUh7sj2gBA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SEElqajhgpMuDt5SiA7U7QeST/0TQUWPQBiWi10xdJp3rIegRK/fJord7N8t2Jg95
-         nPfYIKqnQIdNvka7N2GcNgD6mf7BLib1p4O+IShrZpnVLX/aW3w2ElKHdgsnDtPWp3
-         JSZ9hFriiEUKbVU51hZm+8u7N2DG4ShrXByH92o+jN3jlzf/ngWDYN7ix87CGk345f
-         H8908mGHwAhJ1R27X0AMAqid8WIiVlXH229w04Bqgvh5qf/pbROVwZbpl7auF2fa2C
-         uXAExa9SJk2pLNEIW2rZWfAK5utXQwD3NSRm8ztVSdZeLdiZ44eVm9NPQWS+ifWcGe
-         n+UkE5jPbxtjg==
-Date:   Mon, 6 Dec 2021 15:13:51 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bernard Metzler <BMT@zurich.ibm.com>
-Cc:     Yi Zhang <yi.zhang@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [bug report]concurrent blktests nvme-rdma execution lead kernel
- null pointer
-Message-ID: <Ya4MjzhZJi//VRo6@unreal>
-References: <CAHj4cs8h3e_fY6cKb3XL9aEp8_MT3Po8-W6cL35kKEAvj6qs0Q@mail.gmail.com>
- <OF74AE32F7.7A787A6C-ON002587A0.003CDEF3-002587A0.003EEE89@ibm.com>
- <YaymumNuphhWiCc2@unreal>
- <BYAPR15MB26317A0F809FDAB6BC739937996D9@BYAPR15MB2631.namprd15.prod.outlook.com>
+        id S241791AbhLFNi0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Dec 2021 08:38:26 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:16342 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240974AbhLFNi0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 08:38:26 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4J74CZ5wTxz91Wm;
+        Mon,  6 Dec 2021 21:34:18 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Mon, 6 Dec 2021 21:34:55 +0800
+Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.20; Mon, 6 Dec
+ 2021 21:34:55 +0800
+Subject: Re: [PATCH v5 for-next 1/1] RDMA/hns: Support direct wqe of
+ userspace'
+To:     Barry Song <21cnbao@gmail.com>
+References: <20211130135740.4559-2-liangwenpeng@huawei.com>
+ <20211203101855.12598-1-21cnbao@gmail.com>
+CC:     <jgg@nvidia.com>, <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+Message-ID: <7817eb50-0d7a-67bf-245b-9bb9cf4a6845@huawei.com>
+Date:   Mon, 6 Dec 2021 21:34:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR15MB26317A0F809FDAB6BC739937996D9@BYAPR15MB2631.namprd15.prod.outlook.com>
+In-Reply-To: <20211203101855.12598-1-21cnbao@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.238.78]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 06, 2021 at 11:10:52AM +0000, Bernard Metzler wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Sunday, 5 December 2021 12:47
-> > To: Bernard Metzler <BMT@zurich.ibm.com>
-> > Cc: Yi Zhang <yi.zhang@redhat.com>; RDMA mailing list <linux-
-> > rdma@vger.kernel.org>
-> > Subject: [EXTERNAL] Re: [bug report]concurrent blktests nvme-rdma
-> > execution lead kernel null pointer
-> > 
-> > On Fri, Dec 03, 2021 at 11:27:22AM +0000, Bernard Metzler wrote:
-> > > -----"Yi Zhang" <yi.zhang@redhat.com> wrote: -----
-> > >
-> > > >To: "RDMA mailing list" <linux-rdma@vger.kernel.org>
-> > > >From: "Yi Zhang" <yi.zhang@redhat.com>
-> > > >Date: 12/03/2021 03:20AM
-> > > >Subject: [EXTERNAL] [bug report]concurrent blktests nvme-rdma
-> > > >execution lead kernel null pointer
-> > > >
-> > > >Hello
-> > > >With the concurrent blktests nvme-rdma execution with both rdma_rxe
-> > > >and siw lead kernel BUG on 5.16.0-rc3, pls help check it, thanks.
-> > > >
-> > >
-> > > The RDMA core currently does not prevent us from assigning  both siw
-> > > and rxe to the same netdev. I think this is what is happening here.
-> > > This setting is of no sense, but obviously not prohibited by the RDMA
-> > > infrastructure. Behavior is undefined and a kernel panic not
-> > > unexpected. Shall we prevent the privileged user from doing this type
-> > > of experiments?
-> > >
-> > > A related question: should we also explicitly refuse to add software
-> > > RDMA drivers to netdevs with RDMA hardware active?
-> > > This is, while stupid and resulting behavior undefined, currently
-> > > possible as well.
-> > 
-> > In old soft-RoCE manuals, I saw a request to unload mlx4_ib/mlx5_ib
-> > modules before configuring RXE. This effectively "prevented" from running
-> > with "RDMA hardware active".
-> > 
-> Right. Same for 'siw over Chelsio T5/6' etc: first unload the iw_cxgb4
-> driver, which implements the iWarp protocol, before attaching siw to
-> the network interface. But shouldn't the kernel just refuse that two
-> instances of the _same_ ULP (e.g., one hardware iWarp, one software
-> iWARP) can be attached to the same netdev, potentially sharing IP
-> address and port space?
-
-I think that users will get different rdma-cm ids for real HW and SW devices.
-The rdma_getaddrinfo() should help here.
-
+On 2021/12/3 18:18, Barry Song wrote:
+>> +	switch (entry->mmap_type) {
+>> +	case HNS_ROCE_MMAP_TYPE_DB:
+>> +		prot = pgprot_noncached(vma->vm_page_prot);
+>> +		break;
+>> +	case HNS_ROCE_MMAP_TYPE_TPTR:
+>> +		prot = vma->vm_page_prot;
+>> +		break;
+>> +	/*
+>> +	 * The BAR region of direct WQE supports Early Write Ack,
+>> +	 * so pgprot_device is used to improve performance.
+>> +	 */
+>> +	case HNS_ROCE_MMAP_TYPE_DWQE:
+>> +		prot = pgprot_device(vma->vm_page_prot);
+>> +		break;
+>> +	default:
+>> +		return -EINVAL;
+>> +	}
 > 
-> > So I'm not surprised that it doesn't work, but why do you think that this
-> > behavior is stupid? RXE/SIW can be seen as ULP and as such it is ok to run
-> > many ULPs on same netdev.
+> i am still not convinced why HNS_ROCE_MMAP_TYPE_DB needs nocache and HNS_ROCE_MMAP_TYPE_DWQE needs
+> device. generally people use ioremap() to map pci bar spaces in pci device drivers, and ioremap()
+> is pretty much nGnRE:
+> #define ioremap(addr, size)             __ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRE))
+> #define ioremap_np(addr, size)          __ioremap((addr), (size), __pgprot(PROT_DEVICE_nGnRnE))
 > 
-> Hmm, from an rdma_cm perspective, I am not sure it is supported
-> that two RDMA providers can share the same device and IP address.
-> Without recreating it or looking into the code, I expect Yi's
-> null pointer issue is caused by this unsupported setup. If it is
-> unsupported, it should be impossible to setup.
+> i am only seeing four places which are using nE in kernel:
+>    #   line  filename / context / line
+>    1    866  drivers/of/address.c <<of_iomap>>
+>              return ioremap_np(res.start, resource_size(&res));
+>    2    901  drivers/of/address.c <<of_io_request_and_map>>
+>              mem = ioremap_np(res.start, resource_size(&res));
+>    3     89  include/linux/io.h <<pci_remap_cfgspace>>
+>              return ioremap_np(offset, size) ?: ioremap(offset, size);
+>    4     47  lib/devres.c <<__devm_ioremap>>
+>              addr = ioremap_np(offset, size);
+> 
+> so i guess nGnRE is quite safe for pci device bar spaces. for config space, it is a different story
+> though which is the 3rd one in the above list:
+> 
+> #ifdef CONFIG_PCI
+> /*
+>  * The PCI specifications (Rev 3.0, 3.2.5 "Transaction Ordering and
+>  * Posting") mandate non-posted configuration transactions. This default
+>  * implementation attempts to use the ioremap_np() API to provide this
+>  * on arches that support it, and falls back to ioremap() on those that
+>  * don't. Overriding this function is deprecated; arches that properly
+>  * support non-posted accesses should implement ioremap_np() instead, which
+>  * this default implementation can then use to return mappings compliant with
+>  * the PCI specification.
+>  */
+> #ifndef pci_remap_cfgspace
+> #define pci_remap_cfgspace pci_remap_cfgspace
+> static inline void __iomem *pci_remap_cfgspace(phys_addr_t offset,
+>                                                size_t size)
+> {
+>         return ioremap_np(offset, size) ?: ioremap(offset, size);
+> }
+> #endif
+> #endif
+> 
+> Thanks
+> Barry
+> 
+> .
+> 
 
-I agree with you that it is the best solution here, just because it is
-good enough for RXE/SIW.
+Thank you for your comment. After my reconsideration, HNS_ROCE_MMAP_TYPE_DB should use
+the device attribute. I will submit another patch to fix this problem first.
 
 Thanks
-
-> 
-> Thanks,
-> Bernard.
+Wenpeng
