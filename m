@@ -2,86 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F5746A078
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 17:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE7346A0B9
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Dec 2021 17:09:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1388592AbhLFQEt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Dec 2021 11:04:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37022 "EHLO
+        id S1359076AbhLFQMg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Dec 2021 11:12:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1388042AbhLFP7C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 10:59:02 -0500
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF14C08EB3E
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Dec 2021 07:42:02 -0800 (PST)
-Received: by mail-qk1-x72d.google.com with SMTP id m186so11505651qkb.4
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Dec 2021 07:42:02 -0800 (PST)
+        with ESMTP id S1389413AbhLFQJi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Dec 2021 11:09:38 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1F6C0A891E
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Dec 2021 07:46:52 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id x3-20020a05683000c300b0057a5318c517so14076018oto.13
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Dec 2021 07:46:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tv30VS8SeKlLP5GRLFT6OKvsf2r+6PIvjSUcqekajik=;
-        b=ideCG96xgNqked4pgV6jazA+7DiryfKsZEADsB50dAmAVoQWQ4q2pulV7OagAlM8SQ
-         6phVT+EG+Hp4unV7lOISRD0QAojl3NXKQhZh56HGo3Qvce3nSBnzaQ5Evov2KGCMWzyW
-         PF9wp7D5SaIhcxVR5jXomZ4VTfCin+W8shzA85ab73pCx479nJaDzJP1WTngj3RU3FVO
-         KjUwmnkL6NwBn9rWVhTfvpIDgGXeyRyzwygHgoebHNNbA0Oc228naVW7eQ/7v1E0s32p
-         ZL42Eh/1KgCVtQ2e2Hv9nn/V68GyKo0abJRtDL+XtYZr524pDxNKLmo5BlYEmHrtgiMq
-         lBSA==
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZvLDCefckRxy1mFS+DGveqUXXlACJvPiqsGSf+7cPdU=;
+        b=pkhD10q96kZQ17G0L+FNtmM4PPtjxvEc865qK9rk+KMxbxicU+W7DVaRsE6H3r5YeX
+         GuIVqGmzU0lFG63Tra4eHceMTmkWe2kUH2qZ8DQwyKoXghWWAStv12Oi94xFYYo9hUAL
+         Pkvpo/Z0LfmF2AMZpho+WfC70JIMhOeAOmemi4xWMsQKPTfvghLrAPOelxgor7hNF3H2
+         LBy9uf41tEY6iTw7YXOajUL/BPkKJ+O86saHp/6wF6dz9/fgvGiN4v2aLsKMY1UTNdw2
+         CHiJdAAxWyHlyI8hzpUxF1fSw7EeM2aTSV6u4PM3zi/F77sjqV8YrjIPH40t/ZDNPkG3
+         I8zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tv30VS8SeKlLP5GRLFT6OKvsf2r+6PIvjSUcqekajik=;
-        b=oSJPViAI9tepUcMbm4ILawhBxXguf+DGXzgo6+gcJHGtEFARXrYPYrOuqMRRzYLxxQ
-         W9gCr0TkbduA9kV0OBPiS5DsV4GXpgLUVTHDRs8v7ijsfL8bvJ2YpuncxAFJMjqNQu38
-         nsr0/ZVM4KwPdhjB8nSSbPQ07FRwQOQ498Zjl7coQ8+aWOe23u2/+lbyIEV9x8t7IW48
-         w3b6xStwg54jfMYX9X2YSB1gpDpDRmjH9kS8x0IexUvOVQWoTgU9tOBEDYHP9ljHNPkR
-         ydt5gjd01VNfEkb5fb+ul/L9aTox4jFr0+cXV/7JQo2cHptrRX7QpxMJPapIJJZD38uN
-         Yrzw==
-X-Gm-Message-State: AOAM531w+b1SEZM3IhWU4pUS0HgWJZ+hTTdamn2JbZSBVAGrIeqMQzY/
-        Rdv4YxuewV2/b2b9rgfEHSI8XwiboAJLiQ==
-X-Google-Smtp-Source: ABdhPJw+NV2Qe6hp/inCJIC+GhFU4fEbYd9SO3EFcw0nOYD9MI9icSOOAhJ6rOWIykGB0U3g02NFxA==
-X-Received: by 2002:a37:3c4:: with SMTP id 187mr33417527qkd.755.1638805321335;
-        Mon, 06 Dec 2021 07:42:01 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id e20sm7744887qty.14.2021.12.06.07.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Dec 2021 07:42:00 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1muG7r-008xwn-TM; Mon, 06 Dec 2021 11:41:59 -0400
-Date:   Mon, 6 Dec 2021 11:41:59 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     syzbot <syzbot+c94a3675a626f6333d74@syzkaller.appspotmail.com>
-Cc:     avihaih@nvidia.com, dledford@redhat.com, haakon.bugge@oracle.com,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZvLDCefckRxy1mFS+DGveqUXXlACJvPiqsGSf+7cPdU=;
+        b=WWsI2k9riTsyj8V674px0y8SASV+apZ7u3IqQz/KKUhE9TQ7Qu9w9dde5Oh2zJ7ht3
+         5NDuUDbXNzSWZFkV8KPwQABrbf3VHbgdnBRKLQtwpYE8MDy1gEIvHXHZetT8Q0QVC68c
+         XkEv6qUzLXp5OxXhi2B6uqdJs4If9EutiF2MhAKssIF1YxCozRSS+ccV9usN+oJ31BqX
+         Rtfr/o6B6cl6tXmv//gCs6NKB3XU20WBOLzbHUb/cn299Q1Vm3DyaY1EmVY4sS9/FpEk
+         X5Wq19aqV4/D2v2C00LqZoAKwKIG+lEpahrFYf+uPbmWhhfohgASiS/Y7zou89xwPc4S
+         GUwg==
+X-Gm-Message-State: AOAM5319mM27l8SjqPqT6vxp33Eg62P498s+PG7xlTvI4/owl5HAudHg
+        MPIVxZL/8LCgSQNO+p+XsEsOyD+AkMD70dYxlq7awA==
+X-Google-Smtp-Source: ABdhPJyl8P4IkJCac6YLt/389WF6b9JLZz8073J1RhzQ9qagfuUxvx37gGzVPpu/IkYdpH4YeI+iUnaAux2ii3gLgLU=
+X-Received: by 2002:a05:6830:2425:: with SMTP id k5mr29986009ots.319.1638805611763;
+ Mon, 06 Dec 2021 07:46:51 -0800 (PST)
+MIME-Version: 1.0
+References: <000000000000c3eace05d24f0189@google.com> <20211206154159.GP5112@ziepe.ca>
+In-Reply-To: <20211206154159.GP5112@ziepe.ca>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 6 Dec 2021 16:46:40 +0100
+Message-ID: <CACT4Y+bnJ5M84RjUONFYMXSOpzC5UOq2DxVNoQkq6c6nYwG9Og@mail.gmail.com>
+Subject: Re: [syzbot] BUG: corrupted list in rdma_listen (2)
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     syzbot <syzbot+c94a3675a626f6333d74@syzkaller.appspotmail.com>,
+        avihaih@nvidia.com, dledford@redhat.com, haakon.bugge@oracle.com,
         leon@kernel.org, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] BUG: corrupted list in rdma_listen (2)
-Message-ID: <20211206154159.GP5112@ziepe.ca>
-References: <000000000000c3eace05d24f0189@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000c3eace05d24f0189@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Dec 04, 2021 at 01:54:17AM -0800, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    bf152b0b41dc Merge tag 'for_linus' of git://git.kernel.org..
+On Mon, 6 Dec 2021 at 16:42, Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Sat, Dec 04, 2021 at 01:54:17AM -0800, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    bf152b0b41dc Merge tag 'for_linus' of git://git.kernel.org..
+>
+> ??
+>
+> This commit is nearly a year old?
+>
+> $ git describe --contains bf152b0b41dc
+> v5.12-rc4~28
+>
+> I think this has probably been fixed since, why did a report for such
+> an old kernel get sent?
 
-??
+Hi Jason,
 
-This commit is nearly a year old?
-
-$ git describe --contains bf152b0b41dc
-v5.12-rc4~28
-
-I think this has probably been fixed since, why did a report for such
-an old kernel get sent?
-
-Jason
+Oh, that's because the arm32 kernel was broken for that period, so
+syzbot tested the latest working kernel. There is a more fresh x86_64
+crash available on the dashboard:
+https://syzkaller.appspot.com/bug?extid=c94a3675a626f6333d74
