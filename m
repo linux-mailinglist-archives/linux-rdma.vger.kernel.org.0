@@ -2,76 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F5D646B70F
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 10:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1AF46B71A
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 10:31:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233889AbhLGJct (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Dec 2021 04:32:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S233915AbhLGJef (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Dec 2021 04:34:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232874AbhLGJct (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 04:32:49 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 577B0C061746
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Dec 2021 01:29:19 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id 132so14042077qkj.11
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Dec 2021 01:29:19 -0800 (PST)
+        with ESMTP id S233017AbhLGJef (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 04:34:35 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B914C061574
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Dec 2021 01:31:05 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id r11so54126186edd.9
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Dec 2021 01:31:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7Z4bIWUJcNwasnOvZT//wASf4/xDxe1Cc4BxfIfuhGs=;
-        b=gmIGm1Ns0u65RCHL8oLxtMYP3z9kz/fBl+YLbT91X1KD8+t7DHKJobZgP+nEECbwBv
-         SdBKj5r/SCqnqvfWVL+fAySdTvgKth6uaTa/6bfOtxwWJt6U56cHzaJPgWcD7evp231N
-         8mUFIic2YQ0s8vAMqncRfsxF+3o9VEWmFnsstIva4RMnHu7vFpuATCevjIHm/J+UgcZz
-         XoNye80AW0y8MDPtBRoHzBGXUKgyz1JashTar7R8GlzpXQKdZxP2F5P5krKGRgEoTWX+
-         F6qDXaB8Jk5mqpUG+CjqWU+DKX8PmN/HytBwLK4PhFyCCd5JCJhFkRM5oITNOoeMELtT
-         Kuiw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=opj4WcdlI5ZNn+l9eJPmDZe9yfO0cVZ4QibiFV7tQzQ=;
+        b=fhj4tk3pqga2TINcGmzrrO3h+4L3iU1O/Q5JMWP56KnaH2GDxBq2SfnA8Byudsrj4b
+         X3wXoVEHZY9EgvxkDAz73gAWjZTlLDpFZLOANgxe/oyYGqqKrnibo+/ygU96GxxfyJcw
+         LlK2rapyqWhtx7W6DY9FPoGYjqDTITkgwikRF3krjKPN1JdsMmUIbTCLVOuPxKgI19Fr
+         aqODZt0dVcbquOHVp9j+v+KxJM/gHPbbM8GRSuq4+3uFz/t6rjKFSs0aDPwKoAxxF/uA
+         g4n6KF73+gCk0uuHmQMPwpBmWj6TG2Wb5Fn7uSP9w3bf4ZhkrkNi3Om4TB5/DinTdSMZ
+         HZOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=7Z4bIWUJcNwasnOvZT//wASf4/xDxe1Cc4BxfIfuhGs=;
-        b=2U6vHigtmV4LCRQaXIFqQAV44W3b2Nr67p2iH5sIwplANSSxNPsWPBrefX+5jp1wAH
-         NEy6RVzMYRbnkMzGtorj/diPY03zzEQjt0N8jHpB0uBSMXBw7MMtyFfIGJTYqXWj4M82
-         thvhtiNbDQVR7cx+aW+5LrvWvCDImlLdLZU7Snw+n7wu+TnZSwCNYmDIhtWPOGxuN4k0
-         3X+gHN5iWtlmaHW3Cm5fbVcbuRWdC4Cioa7z55+VO4IQ4wNYR1BNs1RRYlSEcAGxiMIL
-         Blt4Wx7acwfBNn8KCuoW6vKm4UEBcXBrYoVvpeMvuTTJe+COJOojOl1PSjFD/Ooon545
-         62YA==
-X-Gm-Message-State: AOAM533K6XJrqnIsisc3v/GEsGikK43L9in0PSzW4ZlkRorVUGs++/al
-        XZiJdxi/7TfTYYwvtswFQAliikntTxMl0yvJITM=
-X-Google-Smtp-Source: ABdhPJwrwvHWHW+sU2R6V54ResQ3nDuxDCEuM/jye6psLg+qFzbTAOLV7x+MAU8qh6G7VvzY63+/BlFmSMJLvA2/H1E=
-X-Received: by 2002:a05:620a:269b:: with SMTP id c27mr38031027qkp.364.1638869358405;
- Tue, 07 Dec 2021 01:29:18 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=opj4WcdlI5ZNn+l9eJPmDZe9yfO0cVZ4QibiFV7tQzQ=;
+        b=Ojcm7x/Uo8DbOiempNtY8gwRqqU46eJ2JunS8lHyBgowxpOwJi6TSqRE5ISV5s4Cxa
+         zM62deUN0OjSmKTeAwvmMDr8OIO7fKsFvM2rvLxJDm2Q7cKpQ1/BciIkjlWYxHgcgpX4
+         C2usGEpxHWNgVPtwQji3CClaL9/rYIFoMargF7kfjvoLqQJrjdNsW2htKI9n7S3N1HKG
+         2mR3cYFQVVBDYx1uLMGQkup8ZUD1qmtk+/BUpdW4uGgE20pzLxT7lQHt25aTr0diGHxD
+         PDYOQqfFhpESKE5ppewwAyH8u3CKlc4h7Z05woJY00LSz1h2a9zI4KX5bZtWxBvTB0TX
+         Kmnw==
+X-Gm-Message-State: AOAM533utgiyE5+1J9u1DR7h0EuO50HeAl5CsaP4GCUblT3kVfR56Kxu
+        9yf5ybemHEGBhZ9x6Aok29U=
+X-Google-Smtp-Source: ABdhPJz1+UZJeC84QtybhYp0O+C8+Mykhp/VLuww4r9KilNyO1y0t9prawQtINpSq+aQ4uUDzkvBiQ==
+X-Received: by 2002:a17:906:5d0b:: with SMTP id g11mr51286704ejt.110.1638869464104;
+        Tue, 07 Dec 2021 01:31:04 -0800 (PST)
+Received: from fedora ([2a00:a040:19b:e02f::1006])
+        by smtp.gmail.com with ESMTPSA id x22sm7993476ejc.97.2021.12.07.01.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 01:31:03 -0800 (PST)
+Date:   Tue, 7 Dec 2021 11:31:00 +0200
+From:   Kamal Heib <kamalheib1@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-rdma@vger.kernel.org,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>
+Subject: Re: [PATCH for-next] RDMA/qedr: Fix reporting max_{send/recv}_wr
+ attrs
+Message-ID: <Ya8p1Ade+lWn/APx@fedora>
+References: <20211206201314.124947-1-kamalheib1@gmail.com>
+ <20211206210655.GR5112@ziepe.ca>
 MIME-Version: 1.0
-Received: by 2002:ad4:5be6:0:0:0:0:0 with HTTP; Tue, 7 Dec 2021 01:29:17 -0800 (PST)
-Reply-To: mohammedshamekh24@gmail.com
-From:   Mrmohammed shamekh <msmschneider1771@gmail.com>
-Date:   Tue, 7 Dec 2021 01:29:17 -0800
-Message-ID: <CA+ODssNi=+g_2=Oyd=k_OC3gmzuVMpjSLJJLax0FR7KkJxMXZQ@mail.gmail.com>
-Subject: THE AMOUNT IS 27.5 MILLIOMS USD
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211206210655.GR5112@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RGVhcsKgRnJpZW5kLA0KDQpHcmVldGluZ3MuDQoNCkhvd8KgYXJlwqB5b3XCoGRvaW5nwqB0b2Rh
-ecKgacKgaG9wZcKgZmluZT8NCg0KScKgY2FtZcKgYWNyb3NzwqB5b3VywqBlLW1haWzCoGNvbnRh
-Y3TCoHByaW9ywqBhwqBwcml2YXRlwqBzZWFyY2jCoHdoaWxlwqBpbsKgbmVlZA0Kb2bCoHlvdXLC
-oGFzc2lzdGFuY2UuwqBNecKgbmFtZcKgIE1yICBtb2hhbW1lZCAgIHNoYW1la2ggIOKAmcKgScKg
-d29ya8Kgd2l0aMKgdGhlDQpkZXBhcnRtZW50wqBvZsKgQXVkaXTCoGFuZMKgYWNjb3VudGluZ8Kg
-bWFuYWdlcsKgaGVyZcKgaW7CoFVCQcKgQmFua8Kgb2bCoEFmcmljYSwNClRoZXJlwqBpc8KgdGhp
-c8KgZnVuZMKgdGhhdMKgd2FzwqBrZWVwwqBpbsKgbXnCoGN1c3RvZHnCoHllYXJzwqBhZ2/CoGFu
-ZMKgScKgbmVlZA0KeW91csKgYXNzaXN0YW5jZcKgZm9ywqB0aGXCoHRyYW5zZmVycmluZ8Kgb2bC
-oHRoaXPCoGZ1bmTCoHRvwqB5b3VywqBiYW5rwqBhY2NvdW50DQpmb3LCoGJvdGjCoG9mwqB1c8Kg
-YmVuZWZpdMKgZm9ywqBsaWZlwqB0aW1lwqBpbnZlc3RtZW50wqBhbmTCoHRoZcKgYW1vdW50wqBp
-c8KgKFVTDQokMjcsNTAwLsKgTWlsbGlvbsKgRG9sbGFycykuDQoNCknCoGhhdmXCoGV2ZXJ5wqBp
-bnF1aXJ5wqBkZXRhaWxzwqB0b8KgbWFrZcKgdGhlwqBiYW5rwqBiZWxpZXZlwqB5b3XCoGFuZMKg
-cmVsZWFzZQ0KdGhlwqBmdW5kwqB0b8KgeW91csKgYmFua8KgYWNjb3VudMKgaW7CoHdpdGhpbsKg
-N8KgYmFua2luZ8Kgd29ya2luZ8KgZGF5c8Kgd2l0aA0KeW91csKgZnVsbMKgY28tb3BlcmF0aW9u
-wqB3aXRowqBtZcKgYWZ0ZXLCoHN1Y2Nlc3PCoE5vdGXCoDUwJcKgZm9ywqB5b3XCoHdoaWxlDQo1
-MCXCoGZvcsKgbWXCoGFmdGVywqBzdWNjZXNzwqBvZsKgdGhlwqB0cmFuc2ZlcsKgb2bCoHRoZcKg
-ZnVuZHPCoHRvwqB5b3VywqBiYW5rDQphY2NvdW50wqBva2F5Lg0KDQpXQUlUSU5HwqBUT8KgSEVB
-UsKgRlJPTcKgWU9VLg0KVEhBTktTLg0KDQogTXIgIG1vaGFtbWVkICAgc2hhbWVraCAsDQo=
+On Mon, Dec 06, 2021 at 05:06:55PM -0400, Jason Gunthorpe wrote:
+> On Mon, Dec 06, 2021 at 10:13:14PM +0200, Kamal Heib wrote:
+> > Fix the wrongly reported max_send_wr and max_recv_wr attributes for user
+> > QP by making sure to save their valuse on QP creation, so when query QP
+> > is called the attributes will be reported correctly.
+> > 
+> > Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+> > ---
+> >  drivers/infiniband/hw/qedr/verbs.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> Fixes line?
+> 
+> Jason
+
+Fixes: cecbcddf6461 ("qedr: Add support for QP verbs")
+
+Thanks,
+Kamal
