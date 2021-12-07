@@ -2,175 +2,317 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E95246C3E5
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 20:45:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D3946C68E
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 22:17:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbhLGTs7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Dec 2021 14:48:59 -0500
-Received: from mail-bn8nam12on2079.outbound.protection.outlook.com ([40.107.237.79]:24586
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236490AbhLGTs7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 7 Dec 2021 14:48:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XFjigTBt3yqIAphN2JHZ3Lu9wBqQW6eU59ySttj7u6jqlABnS6C87KELou1O1MG9JC9+EVn9KAP+rqOTapAQU1lzb7JWy6vZwmEyTyeUkezTox+ycJMwKP+SlOdNYDp3wfx10Zllh9LX4i44/jbLMrLXVYjfc2PiAdz/71e4G3bYv+NOwOxX5p6/sxn04hIccScdtjsWMaYfei0HxxpYie+XeXYihxkrmq4gITNDu2VLiZbE5wAzePC+KlUmpn6RO2rs9z5/IoaxIYBrJTpco3kLv+2TqcHoJVi3OD6knYhDh9cbodpfH5n6At8P/8VS4qn7/fVuKl5HkIS6HZN6DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=01fZ64+vt89N+WgsuvJuIhSFWBBccZnWcNNdm5B9nSc=;
- b=TA/8rk3gfY6SOy8h6iLUu6Xl66WOq9juD771bGHDEYGHkhSarF2A658WGrC6TmVi1iALnya5w6/vlOhwYCpURowl/umKRixDOsuujvNPNevV7/W38F1xvdlEY4IyECDi1TuXCP5FWAZTt9FuLnFWXcnKu3urd2FpKhD4TC1kyGtwbxDRvpq3um+X+WlAJ9pQNDeNsM4LIgO0L94c7hPtPC2nRLmch3TlsFP4y80duJwxsPbKkBGmillPJMODaGd6NI8G6eb+98y2rFbudHIPNHh5+XhQRFOLlCuSz+pIjvs25ewcSjrosiDPhYbEAkPcLlHrHsBrmQRwXs7WqjkFdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=01fZ64+vt89N+WgsuvJuIhSFWBBccZnWcNNdm5B9nSc=;
- b=YkNvftROh12GoB5TVmU/WbgrDssnga591pe5D75VSxZZUCvOx3ZoWLDv/HtgIiz2Haz/GILBAjLevYY71cGoBqn0+07aBWyg1nshsu7zYtcN9BX+J7jPsiE14HBsSBxCwx6LpRMykCqXE/HyunMKb4MMfm5oW1xE6wdBukbLDyF8m+14LUx7D9vqObtrXuF8o8O0NFspoBm7H2gbFafI9OKF0p5YP99ZdMmDBEFOdJwVr1uuWt3hgPHEZkwGVi1pKiY+Z1sXl+qbjoM2/6RP4MXfnuFmQmUyl7moNnTlRnZcs7TA5L7l7alFbno/dfcaQPNRnkSOCdAcuIXMz0G+GQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5255.namprd12.prod.outlook.com (2603:10b6:208:315::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.16; Tue, 7 Dec
- 2021 19:45:26 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d8be:e4e4:ce53:6d11]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d8be:e4e4:ce53:6d11%5]) with mapi id 15.20.4755.022; Tue, 7 Dec 2021
- 19:45:26 +0000
-Date:   Tue, 7 Dec 2021 15:45:25 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] RDMA/mlx5: Use memset_after() to zero struct mlx5_ib_mr
-Message-ID: <20211207194525.GL6385@nvidia.com>
-References: <20211118203138.1287134-1-keescook@chromium.org>
- <YZpPr2P11LJNtrIm@unreal>
- <20211207184729.GA118570@nvidia.com>
- <202112071138.64C168D@keescook>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202112071138.64C168D@keescook>
-X-ClientProxiedBy: CH0PR03CA0064.namprd03.prod.outlook.com
- (2603:10b6:610:cc::9) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231502AbhLGVVQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Dec 2021 16:21:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhLGVVO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 16:21:14 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58ADC061574
+        for <linux-rdma@vger.kernel.org>; Tue,  7 Dec 2021 13:17:43 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id x19-20020a9d7053000000b0055c8b39420bso582216otj.1
+        for <linux-rdma@vger.kernel.org>; Tue, 07 Dec 2021 13:17:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1hdrZbVIkxBgshTkvm8cv6kxLV+NxS4x9aZ5UMFkuqQ=;
+        b=AN52PRuPNDCGVb8C41UlWyhK1Rq+9F/ehaF1xxSZfBzxrE6rWTfG29Cfgh5qysm6Kk
+         yrVkZhhq0XkzgmkP0x+h5aaLXHHxKKz5TEpzzpbKCuqcpsRNVokuplTtNshoC7++plb+
+         RAs4yD/kYMfwEL/6+OCoi86Ium7OQ6PiPvk1/dEqlGdT7ksUUYHEIUPwROlx/YFp1F0C
+         6dGhl8+s/yEzTyzOfNvmwa68+W/T/te8TEHwfnjPfvFmlyTyls9hWXA0EhMr4FOBGrNL
+         r0xveeKw6ddVPta4H09XNo9N5DIvPuwnerxZ/bXHUOz1GobKWyGqCqSFqj7gYq2qe3Vw
+         oxnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1hdrZbVIkxBgshTkvm8cv6kxLV+NxS4x9aZ5UMFkuqQ=;
+        b=W1N+WoC7Y3yx97ETqzfmEgj4hXRyvJRHWUqd6vmC2kDqUtrhAHKmUcLNPshwjTPp5q
+         SgiEYhhqlFSiMnBXKxc99T2S0x4QcXx4STuM+Dr+CGVITvrJAznOKxhp6DzN5Osj/16g
+         Gzzu/kGP5Y3Um6qAI50mwOU2qOtBYxqZIio9Ur4Ay5R7aNqdX+bVtWLs8Gzx9fSw7wss
+         vVNRzjoTijyxHy35LMm7XKnJUPO08KRBHXAHw64puD2Fbr0DlPaqD95/A+b2aT6QP2rQ
+         Af1eXF+5jujMlRTRehAs3rX6nAMs3yeXseH8Sqh9qxsjvDuIDvcnjrQr6rTmewGeUgf8
+         HPiQ==
+X-Gm-Message-State: AOAM533GkMnCiBpR/CdoEbOOJEZ13SlRO+CANrdobIZOLcxWwv2cMu6m
+        thONWLYCjIUj68QNnzOt95y+Up+HjrU=
+X-Google-Smtp-Source: ABdhPJy6B5WQIQwqKv+NmxmWz3CUZ0EK2TMUxFbrcOBOQS6FoTDMuYA70eBgUP9az1Nu+tHhJr/iVA==
+X-Received: by 2002:a9d:7b51:: with SMTP id f17mr37585403oto.88.1638911863222;
+        Tue, 07 Dec 2021 13:17:43 -0800 (PST)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-c177-2672-65e9-b340.res6.spectrum.com. [2603:8081:140c:1a00:c177:2672:65e9:b340])
+        by smtp.googlemail.com with ESMTPSA id w4sm188466oiv.37.2021.12.07.13.17.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Dec 2021 13:17:42 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH v2] Providers/rxe: Replace AV by AH for UD sends
+Date:   Tue,  7 Dec 2021 15:17:01 -0600
+Message-Id: <20211207211701.43027-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: from mlx.ziepe.ca (206.223.160.26) by CH0PR03CA0064.namprd03.prod.outlook.com (2603:10b6:610:cc::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4755.17 via Frontend Transport; Tue, 7 Dec 2021 19:45:26 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1mugOz-000XO5-8o; Tue, 07 Dec 2021 15:45:25 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94c564ae-cb10-4252-2bfd-08d9b9ba1dbf
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5255:EE_
-X-Microsoft-Antispam-PRVS: <BL1PR12MB52554041790EF4EB014EAD50C26E9@BL1PR12MB5255.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:159;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: plc+yeu9rNh4u1G5ZFXNOBYCaQ8zoH9vsNN88KTjom82w0WXPaSFFk3Shuc/7PhCjMV+iat9I98GyL/rqbm7fSuwzqwIf00ZU4UPu/QjCdGQeGbT8NmTx9D9ZrHtb1J3ZF0G0pdM8NDbLUB7FS3SACMx2uadNKE4MPFQcQyEc7aJXWWIWYm9354HGLLq/pRcDa6BZ5y1KXdslpk3jhHnM4JKM+QxnkFaTsN4964W0Kckc1cOMMLwL+eJVe42jd5h2kui2CkESyRl1UNvIoPwzJ1lfxHeDKpEIZ4BSSJhOmih8RWh1AWRzjMMwEqADOvIl0YdJ4h0tkMfwym0WNHTBDv+4I11AcNXij+rZMjVPf0JH7vG2gTnoQbPdfT4A/62euCigK3P3Qzp7BJi6PjbjYsQhsV+dJwT40j/yCI1U3qbYg3ume8KbTOnaIbe/KstYL+r5bVfjN0TGAHI9nwhQYQv2an5mV07TeX1k7gV0LMn5l8PV46pBHacBX+Qb+ohGYhyNb0Pm6cqBWufVr+DZw6Pf9faa2pfAM69LgE6IWp7RRPGGWwW5kEh1G2ncfmXpgh2PSMHMnVVoLgHlTARBrrHVJQ/3QfkWvKpkkjgNH0BEPPfAQC/98G+O1iSl1SRY3IScq8i6ah+iiyYlHVgSw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(8676002)(4326008)(8936002)(316002)(86362001)(186003)(6916009)(66556008)(66946007)(2906002)(26005)(36756003)(66476007)(38100700002)(5660300002)(508600001)(33656002)(1076003)(426003)(83380400001)(9746002)(9786002)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Ve+neO/atdxqxUT0SwA7BuEWuOwjV6r46QVuxeI60ee3qHSgmchXuH2NXPdP?=
- =?us-ascii?Q?UcbwLeG7sHS2s47a+OIAP0pS9xFEE9Y/uI7T7091CukhCnhaXcw84ryIUp1a?=
- =?us-ascii?Q?q6qBVMEsvPsiJ4mP3dhLHuzgGsWkk9y7veT2MJzhW+/z6o1vd0GlUBf6oPSN?=
- =?us-ascii?Q?PCEwUTejmNajlJxH1D7zMlp0wkgSD3JBA8OPJc/RXKND/HUVZg2oRqidApQh?=
- =?us-ascii?Q?FWzRO1usYffCkaMLY1W9AIxA1Ru5FKrAQQjjnUG9XoTuSJjz6Vv24IdMf8mM?=
- =?us-ascii?Q?GjuIHcHOAEAlETOSxRGSaQI/Lk/2+dz4E1Sb3eazNuAS0NDRu/uLGecWYsyW?=
- =?us-ascii?Q?bzCVpX5+VAFBbVKHl+3oRLUINltwDMAT3brYkDIGH+89UlTz2FY5I8uM2hP9?=
- =?us-ascii?Q?8gooL85vHfz0BBUC0MxA52h/xJexbIiBHgtjah0OHxldxeofQsOQhfXZ5NOq?=
- =?us-ascii?Q?iteyEyKF/A1yx1FAKpdMnGS3M8zB3qZmvJhOSOXck0UCTdl4onfCKWVH+nTD?=
- =?us-ascii?Q?kTndKv9zS+x0ea6tQdbozw/8BQ2vEdnJS5jHy90NnQnbrVBGKI15+YMVQJwL?=
- =?us-ascii?Q?Aicc5D3gQRZsrG/DiZd9HYFVNijUH8MW/2G4lsLcJSDfQuuerRBUADyoywTh?=
- =?us-ascii?Q?tuEgqQx8hO6rLwm6SnciDCiqcNfbU4dEWDIvgn+tM/HizEBU/Ykfc2GgSY1d?=
- =?us-ascii?Q?4ZS8YA1zVvvpLW9bfXCSXYV36n7BJmQAUeBWn7znFxQvzG3S9qyPw+puQdm+?=
- =?us-ascii?Q?JOmYCXyZ62QYv2uGBrkpqSghnMwZp7NTVbcUXM3rJx/kjr9V9I/6Ki2WMB89?=
- =?us-ascii?Q?xqv7cbOOQ7bCDl3V4c5FM3VC9E9s84da8RivRoxoyjNE1mLv3ULquNrACfTc?=
- =?us-ascii?Q?nVRolCaZBhzc4S19S0bZ3JcHlNPDX2c4aScKuQWlIQj3FWSPhZRHQ4xDhtJ5?=
- =?us-ascii?Q?sieylF/xW9tjFFZIs31otBtW05w7+dBLlrGexmqzvaN43wk39azNX3BwcrVC?=
- =?us-ascii?Q?Za1zjILegfbjIZFz/t7WiODvifnh4TNuT5MbHeTwcOY4HyLXxdRPwCSdvQvd?=
- =?us-ascii?Q?vnD9gLFTDzQsyr9ea6xmcsMBXT8Xiwpg8UQGDNu6RDte0CewlpoAYbJNEiGv?=
- =?us-ascii?Q?mG8e1XoPrd8zAKbXIqqH9rfRQgpFG1JIWXL4Nv8ZTPgwCU32/TrK2DEmQKsj?=
- =?us-ascii?Q?CJ1OmnN0vo6QYAHK+krxT3cvJIA4doAIb03S/S3pCE9Go77LHJULfwnPaFVa?=
- =?us-ascii?Q?FylkIIy6cRA5eVkGY8tYOXvX5S7xz4UHnKCK6PgJ7rhVp7OB2jiTK8AFCrJo?=
- =?us-ascii?Q?C+t6PJXcYP4vu7+sPWSEfawbQmXjeVC+eJuxFbT7+MvzWaqfX4NxSykqKbzX?=
- =?us-ascii?Q?65SrK9P9Ub6K96xwoq3putb6HPSR3YH/tUbZC7228pMdekKpbQpQAAchj5fG?=
- =?us-ascii?Q?wW4URDF2a04SdVx+4CX01YCKkuzahdNjxQb1K5VqIR74gjKJko+TIlj/2AQJ?=
- =?us-ascii?Q?XQkocJPqwGR/LG1eYuecJqfE/7wRMTDqyR0VxxGxS5ig2TfgKUrkjItBGrwh?=
- =?us-ascii?Q?2hUthvOEmpNqbZITY1w=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94c564ae-cb10-4252-2bfd-08d9b9ba1dbf
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Dec 2021 19:45:26.5009
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rFtO+afkgk6J/sOCMD0D8NcgS4fwc4OA83vI7TJ/D3XYFqQX9U6ZILpFpSC4Q93u
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5255
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 07, 2021 at 11:41:07AM -0800, Kees Cook wrote:
-> On Tue, Dec 07, 2021 at 02:47:29PM -0400, Jason Gunthorpe wrote:
-> > On Sun, Nov 21, 2021 at 03:54:55PM +0200, Leon Romanovsky wrote:
-> > > On Thu, Nov 18, 2021 at 12:31:38PM -0800, Kees Cook wrote:
-> > > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > > field bounds checking for memset(), avoid intentionally writing across
-> > > > neighboring fields.
-> > > > 
-> > > > Use memset_after() to zero the end of struct mlx5_ib_mr that should
-> > > > be initialized.
-> > > > 
-> > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > >  drivers/infiniband/hw/mlx5/mlx5_ib.h | 5 ++---
-> > > >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> > > > index e636e954f6bf..af94c9fe8753 100644
-> > > > +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> > > > @@ -665,8 +665,7 @@ struct mlx5_ib_mr {
-> > > >  	/* User MR data */
-> > > >  	struct mlx5_cache_ent *cache_ent;
-> > > >  	struct ib_umem *umem;
-> > > > -
-> > > > -	/* This is zero'd when the MR is allocated */
-> > > > +	/* Everything after umem is zero'd when the MR is allocated */
-> > > >  	union {
-> > > >  		/* Used only while the MR is in the cache */
-> > > >  		struct {
-> > > > @@ -718,7 +717,7 @@ struct mlx5_ib_mr {
-> > > >  /* Zero the fields in the mr that are variant depending on usage */
-> > > >  static inline void mlx5_clear_mr(struct mlx5_ib_mr *mr)
-> > > >  {
-> > > > -	memset(mr->out, 0, sizeof(*mr) - offsetof(struct mlx5_ib_mr, out));
-> > > > +	memset_after(mr, 0, umem);
-> > > 
-> > > I think that it is not equivalent change and you need "memset_after(mr, 0, cache_ent);"
-> > > to clear umem pointer too.
-> > 
-> > Kees?
-> 
-> Oops, sorry, I missed the ealrier reply!
-> 
-> I don't think that matches -- the original code wipes from the start of
-> "out" to the end of the struct. "out" is the first thing in the union
-> after "umem", so "umem" was not wiped before. I retained that behavior
-> ("wipe everything after umem").
-> 
-> Am I misunderstanding the desired behavior here?
+Currently the rxe provider computes an AV for each AH created. These
+are then passed to the kernel in each UD send WQE. This rxe provider
+patch matches a set of kernel patches that creates an index for the
+pool of AHs which are passed back to the rxe provider which in turn
+returns them in the UD send WQEs instead of AVs. This falls back to
+the older AV based WQE if either the rxe provider or the kernel does
+not have these patches applied.
 
-Ah, it is this patch:
+This patch applies cleanly to
 
-commit f0ae4afe3d35e67db042c58a52909e06262b740f
-Author: Alaa Hleihel <alaa@nvidia.com>
-Date:   Mon Nov 22 13:41:51 2021 +0200
+commit 3cc40881ef17 ("Merge pull request #1103 from nmorey/dev/master/suse")
 
-    RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v2
+  Rebased to current rdma-core
+---
+ providers/rxe/rxe-abi.h |   2 +
+ providers/rxe/rxe.c     | 117 ++++++++++++++++++++++++++--------------
+ providers/rxe/rxe.h     |   8 ++-
+ 3 files changed, 85 insertions(+), 42 deletions(-)
 
-Which moved umem into the union that is causing the confusion
+diff --git a/providers/rxe/rxe-abi.h b/providers/rxe/rxe-abi.h
+index 0689c3f4..020201a9 100644
+--- a/providers/rxe/rxe-abi.h
++++ b/providers/rxe/rxe-abi.h
+@@ -39,6 +39,8 @@
+ #include <rdma/rdma_user_rxe.h>
+ #include <kernel-abi/rdma_user_rxe.h>
+ 
++DECLARE_DRV_CMD(urxe_create_ah, IB_USER_VERBS_CMD_CREATE_AH,
++		empty, rxe_create_ah_resp);
+ DECLARE_DRV_CMD(urxe_create_cq, IB_USER_VERBS_CMD_CREATE_CQ,
+ 		empty, rxe_create_cq_resp);
+ DECLARE_DRV_CMD(urxe_create_cq_ex, IB_USER_VERBS_EX_CMD_CREATE_CQ,
+diff --git a/providers/rxe/rxe.c b/providers/rxe/rxe.c
+index 0119474a..9050bd31 100644
+--- a/providers/rxe/rxe.c
++++ b/providers/rxe/rxe.c
+@@ -975,16 +975,20 @@ static void wr_set_ud_addr(struct ibv_qp_ex *ibqp, struct ibv_ah *ibah,
+ 			   uint32_t remote_qpn, uint32_t remote_qkey)
+ {
+ 	struct rxe_qp *qp = container_of(ibqp, struct rxe_qp, vqp.qp_ex);
+-	struct rxe_ah *ah = container_of(ibah, struct rxe_ah, ibv_ah);
++	struct rxe_ah *ah = to_rah(ibah);
+ 	struct rxe_send_wqe *wqe = addr_from_index(qp->sq.queue,
+ 						   qp->cur_index - 1);
+ 
+ 	if (qp->err)
+ 		return;
+ 
+-	memcpy(&wqe->wr.wr.ud.av, &ah->av, sizeof(ah->av));
+ 	wqe->wr.wr.ud.remote_qpn = remote_qpn;
+ 	wqe->wr.wr.ud.remote_qkey = remote_qkey;
++	wqe->wr.wr.ud.ah_num = ah->ah_num;
++
++	if (!ah->ah_num)
++		/* old kernels only */
++		memcpy(&wqe->wr.wr.ud.av, &ah->av, sizeof(ah->av));
+ }
+ 
+ static void wr_set_inline_data(struct ibv_qp_ex *ibqp, void *addr,
+@@ -1405,7 +1409,8 @@ static int validate_send_wr(struct rxe_qp *qp, struct ibv_send_wr *ibwr,
+ 	return 0;
+ }
+ 
+-static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
++static void convert_send_wr(struct rxe_qp *qp, struct rxe_send_wr *kwr,
++					struct ibv_send_wr *uwr)
+ {
+ 	struct ibv_mw *ibmw;
+ 	struct ibv_mr *ibmr;
+@@ -1428,8 +1433,13 @@ static void convert_send_wr(struct rxe_send_wr *kwr, struct ibv_send_wr *uwr)
+ 
+ 	case IBV_WR_SEND:
+ 	case IBV_WR_SEND_WITH_IMM:
+-		kwr->wr.ud.remote_qpn		= uwr->wr.ud.remote_qpn;
+-		kwr->wr.ud.remote_qkey		= uwr->wr.ud.remote_qkey;
++		if (qp_type(qp) == IBV_QPT_UD) {
++			struct rxe_ah *ah = to_rah(uwr->wr.ud.ah);
++
++			kwr->wr.ud.remote_qpn	= uwr->wr.ud.remote_qpn;
++			kwr->wr.ud.remote_qkey	= uwr->wr.ud.remote_qkey;
++			kwr->wr.ud.ah_num	= ah->ah_num;
++		}
+ 		break;
+ 
+ 	case IBV_WR_ATOMIC_CMP_AND_SWP:
+@@ -1465,11 +1475,15 @@ static int init_send_wqe(struct rxe_qp *qp, struct rxe_wq *sq,
+ 	int i;
+ 	unsigned int opcode = ibwr->opcode;
+ 
+-	convert_send_wr(&wqe->wr, ibwr);
++	convert_send_wr(qp, &wqe->wr, ibwr);
+ 
+-	if (qp_type(qp) == IBV_QPT_UD)
+-		memcpy(&wqe->wr.wr.ud.av, &to_rah(ibwr->wr.ud.ah)->av,
+-		       sizeof(struct rxe_av));
++	if (qp_type(qp) == IBV_QPT_UD) {
++		struct rxe_ah *ah = to_rah(ibwr->wr.ud.ah);
++
++		if (!ah->ah_num)
++			/* old kernels only */
++			memcpy(&wqe->wr.wr.ud.av, &ah->av, sizeof(struct rxe_av));
++	}
+ 
+ 	if (ibwr->send_flags & IBV_SEND_INLINE) {
+ 		uint8_t *inline_data = wqe->dma.inline_data;
+@@ -1644,59 +1658,82 @@ static inline int rdma_gid2ip(sockaddr_union_t *out, union ibv_gid *gid)
+ 	return 0;
+ }
+ 
+-static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd, struct ibv_ah_attr *attr)
++static int rxe_create_av(struct rxe_ah *ah, struct ibv_pd *pd,
++			 struct ibv_ah_attr *attr)
+ {
+-	int err;
+-	struct rxe_ah *ah;
+-	struct rxe_av *av;
++	struct rxe_av *av = &ah->av;
+ 	union ibv_gid sgid;
+-	struct ib_uverbs_create_ah_resp resp;
+-
+-	err = ibv_query_gid(pd->context, attr->port_num, attr->grh.sgid_index,
+-			    &sgid);
+-	if (err) {
+-		fprintf(stderr, "rxe: Failed to query sgid.\n");
+-		return NULL;
+-	}
++	int ret;
+ 
+-	ah = calloc(1, sizeof(*ah));
+-	if (ah == NULL)
+-		return NULL;
++	ret = ibv_query_gid(pd->context, attr->port_num,
++			attr->grh.sgid_index, &sgid);
++	if (ret)
++		return ret;
+ 
+-	av = &ah->av;
+ 	av->port_num = attr->port_num;
+ 	memcpy(&av->grh, &attr->grh, sizeof(attr->grh));
+-	av->network_type =
+-		ipv6_addr_v4mapped((struct in6_addr *)attr->grh.dgid.raw) ?
+-		RXE_NETWORK_TYPE_IPV4 : RXE_NETWORK_TYPE_IPV6;
++
++	ret = ipv6_addr_v4mapped((struct in6_addr *)attr->grh.dgid.raw);
++	av->network_type = ret ? RXE_NETWORK_TYPE_IPV4 :
++				 RXE_NETWORK_TYPE_IPV6;
+ 
+ 	rdma_gid2ip(&av->sgid_addr, &sgid);
+ 	rdma_gid2ip(&av->dgid_addr, &attr->grh.dgid);
+-	if (ibv_resolve_eth_l2_from_gid(pd->context, attr, av->dmac, NULL)) {
+-		free(ah);
+-		return NULL;
+-	}
+ 
+-	memset(&resp, 0, sizeof(resp));
+-	if (ibv_cmd_create_ah(pd, &ah->ibv_ah, attr, &resp, sizeof(resp))) {
+-		free(ah);
++	ret = ibv_resolve_eth_l2_from_gid(pd->context, attr,
++					  av->dmac, NULL);
++
++	return ret;
++}
++
++/*
++ * Newer kernels will return a non-zero AH index in resp.ah_num
++ * which can be returned in UD send WQEs.
++ * Older kernels will leave ah_num == 0. For these create an AV and use
++ * in UD send WQEs.
++ */
++static struct ibv_ah *rxe_create_ah(struct ibv_pd *pd,
++					struct ibv_ah_attr *attr)
++{
++	struct rxe_ah *ah;
++	struct urxe_create_ah_resp resp = {};
++	int ret;
++
++	ah = calloc(1, sizeof(*ah));
++	if (!ah)
+ 		return NULL;
++
++	ret = ibv_cmd_create_ah(pd, &ah->ibv_ah, attr,
++				&resp.ibv_resp, sizeof(resp));
++	if (ret)
++		goto err_free;
++
++	ah->ah_num = resp.ah_num;
++
++	if (!ah->ah_num) {
++		/* old kernels only */
++		ret = rxe_create_av(ah, pd, attr);
++		if (ret)
++			goto err_free;
+ 	}
+ 
+ 	return &ah->ibv_ah;
++
++err_free:
++	free(ah);
++	return NULL;
+ }
+ 
+ static int rxe_destroy_ah(struct ibv_ah *ibah)
+ {
+-	int ret;
+ 	struct rxe_ah *ah = to_rah(ibah);
++	int ret;
+ 
+ 	ret = ibv_cmd_destroy_ah(&ah->ibv_ah);
+-	if (ret)
+-		return ret;
++	if (!ret)
++		free(ah);
+ 
+-	free(ah);
+-	return 0;
++	return ret;
+ }
+ 
+ static const struct verbs_context_ops rxe_ctx_ops = {
+diff --git a/providers/rxe/rxe.h b/providers/rxe/rxe.h
+index ddb8fe89..6882d9c7 100644
+--- a/providers/rxe/rxe.h
++++ b/providers/rxe/rxe.h
+@@ -67,6 +67,7 @@ struct rxe_cq {
+ struct rxe_ah {
+ 	struct ibv_ah		ibv_ah;
+ 	struct rxe_av		av;
++	int			ah_num;
+ };
+ 
+ struct rxe_wq {
+@@ -89,8 +90,6 @@ struct rxe_qp {
+ 	int			err;
+ };
+ 
+-#define qp_type(qp)		((qp)->vqp.qp.qp_type)
+-
+ struct rxe_srq {
+ 	struct ibv_srq		ibv_srq;
+ 	struct mminfo		mmap_info;
+@@ -130,4 +129,9 @@ static inline struct rxe_ah *to_rah(struct ibv_ah *ibah)
+ 	return to_rxxx(ah, ah);
+ }
+ 
++static inline enum ibv_qp_type qp_type(struct rxe_qp *qp)
++{
++	return qp->vqp.qp.qp_type;
++}
++
+ #endif /* RXE_H */
+-- 
+2.32.0
 
-It hasn't quite made it to a rc release yet, so I suppose the answer
-is to rebase this on that then it is as Leon  says about cache_ent
-
-Jason
