@@ -2,66 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEF946BB7E
-	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 13:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CC146BBD5
+	for <lists+linux-rdma@lfdr.de>; Tue,  7 Dec 2021 13:53:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236398AbhLGMn6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Dec 2021 07:43:58 -0500
-Received: from sin.source.kernel.org ([145.40.73.55]:42156 "EHLO
-        sin.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236332AbhLGMn6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 07:43:58 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 095B5CE1A08;
-        Tue,  7 Dec 2021 12:40:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2EB64C341C1;
-        Tue,  7 Dec 2021 12:40:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638880825;
-        bh=czzNDj3y7GJtsT+VpmI57RrDMh6jhmcsUILlmvcfTK4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Urg4GzWKwxNRBPqlJCdPXmh8Yz1I8rGDXTQJOXz5y4EXmhN/SODCLbLgGrqXB2Mrh
-         kkDXN5xEGbh4BTLuvmd7DuaSRJHmNEkFqOWD0NRT3o6hppDEStUAtQUZFegbs4BbrQ
-         wlfyeVhepacWVjAT43NmHWSSEDkdRBrpK6QPaBrCy50IZdvEINjunGXLjiVlRYTliv
-         nnjPLb8umLK32aeWMUc0CBrhGYCiQqil7+5Ce3bINm0LAfNZNd6mX/THKxoMpG4ewh
-         f9mjCylkro5R/LcWIjXY5W3tGOrYNtik5ncAlfEHcT3DxX+mIvmexrWQnsbmFPiSbX
-         vj0NaGgcHV4wg==
-Date:   Tue, 7 Dec 2021 14:40:19 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shaokun Zhang <zhangshaokun@hisilicon.com>
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH] net/mlx5: Remove the repeated declaration
-Message-ID: <Ya9WMysibKB7e5CF@unreal>
-References: <20211207123515.61295-1-zhangshaokun@hisilicon.com>
+        id S232388AbhLGM5P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 7 Dec 2021 07:57:15 -0500
+Received: from szxga03-in.huawei.com ([45.249.212.189]:29158 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232317AbhLGM5O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 07:57:14 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4J7gCt2tFJzXdbN;
+        Tue,  7 Dec 2021 20:51:38 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 7 Dec 2021 20:53:43 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Tue, 7 Dec 2021 20:53:42 +0800
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH v6 for-next 0/1] RDMA/hns: Support direct WQE of userspace
+Date:   Tue, 7 Dec 2021 20:49:00 +0800
+Message-ID: <20211207124901.42123-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211207123515.61295-1-zhangshaokun@hisilicon.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 07, 2021 at 08:35:15PM +0800, Shaokun Zhang wrote:
-> Function 'mlx5_esw_vport_match_metadata_supported' and
-> 'mlx5_esw_offloads_vport_metadata_set' are declared twice, so remove
-> the repeated declaration and blank line.
-> 
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/eswitch.h | 3 ---
->  1 file changed, 3 deletions(-)
-> 
+Direct wqe is a mechanism to fill wqe directly into the hardware. In the
+case of light load, the wqe will be filled into pcie bar space of the
+hardware, this will reduce one memory access operation and therefore reduce
+the latency.
 
-Fixes: 4f4edcc2b84f ("net/mlx5: E-Switch, Add ovs internal port mapping to metadata support")
+The user space parts is named "libhns: Add support for direct wqe".
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Changes since v5:
+* The direct wqe feature is enabled by default.
+* Resolve the conflict with the patch of HNS_ROCE_MMAP_TYPE_DB.
+  (https://patchwork.kernel.org/project/linux-rdma/patch/20211206133652.27476-1-liangwenpeng@huawei.com/)
+* https://patchwork.kernel.org/project/linux-rdma/cover/20211130135740.4559-1-liangwenpeng@huawei.com/
+
+Changes since v4:
+* Add a comment to explain why direct WQE uses pgprot_device.
+* https://patchwork.kernel.org/project/linux-rdma/cover/20211122033801.30807-1-liangwenpeng@huawei.com/
+
+Changes since v3:
+* Commit based on the latest code.
+* Remove unused variable "ibdev" from alloc_qp_db.
+* https://patchwork.kernel.org/project/linux-rdma/cover/20211116150400.23459-1-liangwenpeng@huawei.com/
+
+Changes since v2:
+* Direct wqe uses the new mmap scheme (https://patchwork.kernel.org/project/linux-rdma/patch/20211028105640.1056-1-liangwenpeng@huawei.com/).
+* https://patchwork.kernel.org/project/linux-rdma/cover/1622705834-19353-1-git-send-email-liweihang@huawei.com/
+
+Changes since v1:
+* Remove 'inline' of two functions in #1.
+* Enable direct wqe by default in #2.
+* https://patchwork.kernel.org/project/linux-rdma/cover/1622193545-3281-1-git-send-email-liweihang@huawei.com/
+
+Yixing Liu (1):
+  RDMA/hns: Support direct wqe of userspace
+
+ drivers/infiniband/hw/hns/hns_roce_device.h |  8 +--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  3 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c   | 36 +++++++++++---
+ drivers/infiniband/hw/hns/hns_roce_pd.c     |  3 ++
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 54 ++++++++++++++++++++-
+ include/uapi/rdma/hns-abi.h                 |  2 +
+ 6 files changed, 94 insertions(+), 12 deletions(-)
+
+--
+2.33.0
+
