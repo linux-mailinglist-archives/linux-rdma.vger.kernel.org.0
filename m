@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A61FA46CE72
+	by mail.lfdr.de (Postfix) with ESMTP id 37A3646CE71
 	for <lists+linux-rdma@lfdr.de>; Wed,  8 Dec 2021 08:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244549AbhLHHmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S244547AbhLHHmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 8 Dec 2021 02:42:09 -0500
-Received: from mga04.intel.com ([192.55.52.120]:56368 "EHLO mga04.intel.com"
+Received: from mga12.intel.com ([192.55.52.136]:41642 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244550AbhLHHmJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        id S244549AbhLHHmJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
         Wed, 8 Dec 2021 02:42:09 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="236515381"
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="217800957"
 X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; 
-   d="scan'208";a="236515381"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 23:38:37 -0800
+   d="scan'208";a="217800957"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 23:38:37 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; 
-   d="scan'208";a="461604297"
+   d="scan'208";a="543113049"
 Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 07 Dec 2021 23:38:35 -0800
+  by orsmga001.jf.intel.com with ESMTP; 07 Dec 2021 23:38:35 -0800
 Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1murX8-0000EX-Lx; Wed, 08 Dec 2021 07:38:34 +0000
-Date:   Wed, 08 Dec 2021 15:38:15 +0800
+        id 1murX8-0000EU-EA; Wed, 08 Dec 2021 07:38:34 +0000
+Date:   Wed, 08 Dec 2021 15:38:28 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 10467ce09fefa2e74359f5b2ab1efb8909402f19
-Message-ID: <61b060e7.T/Mpg/Dwuyfdrz2K%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ b1a4da64bfc189510e08df1ccb1c589e667dc7a3
+Message-ID: <61b060f4.jfIJbcFb/ylvJFrB%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -39,12 +39,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 10467ce09fefa2e74359f5b2ab1efb8909402f19  RDMA/irdma: Don't arm the CQ more than two times if no CE for this CQ
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: b1a4da64bfc189510e08df1ccb1c589e667dc7a3  RDMA/qedr: Fix reporting max_{send/recv}_wr attrs
 
 elapsed time: 727m
 
-configs tested: 176
+configs tested: 188
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -71,6 +71,10 @@ xtensa                           allyesconfig
 arm                           stm32_defconfig
 powerpc                  storcenter_defconfig
 arm                          imote2_defconfig
+m68k                          atari_defconfig
+arm                           sama7_defconfig
+arm                         s5pv210_defconfig
+arm                       spear13xx_defconfig
 h8300                     edosk2674_defconfig
 mips                           rs90_defconfig
 mips                      maltasmvp_defconfig
@@ -133,11 +137,21 @@ arc                      axs103_smp_defconfig
 mips                     cu1000-neo_defconfig
 arm                        cerfcube_defconfig
 arm                  colibri_pxa270_defconfig
+m68k                            q40_defconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+powerpc                     tqm8548_defconfig
+sh                        sh7757lcr_defconfig
 sh                 kfr2r09-romimage_defconfig
 arm                         at91_dt_defconfig
 sparc                               defconfig
 mips                       rbtx49xx_defconfig
 xtensa                  nommu_kc705_defconfig
+mips                  maltasmvp_eva_defconfig
+arc                         haps_hs_defconfig
+arm                            pleb_defconfig
+arm                     am200epdkit_defconfig
+sh                     magicpanelr2_defconfig
 powerpc               mpc834x_itxgp_defconfig
 powerpc                      walnut_defconfig
 arm                   milbeaut_m10v_defconfig
@@ -151,9 +165,7 @@ m68k                                defconfig
 m68k                             allyesconfig
 nios2                               defconfig
 arc                              allyesconfig
-nds32                             allnoconfig
 nds32                               defconfig
-nios2                            allyesconfig
 alpha                               defconfig
 alpha                            allyesconfig
 arc                                 defconfig
