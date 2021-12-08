@@ -2,92 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52BF46CC26
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Dec 2021 05:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C9246CDEA
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Dec 2021 07:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhLHERK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 7 Dec 2021 23:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234221AbhLHERI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 7 Dec 2021 23:17:08 -0500
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAE4C0698C4
-        for <linux-rdma@vger.kernel.org>; Tue,  7 Dec 2021 20:13:36 -0800 (PST)
-Received: by mail-il1-x144.google.com with SMTP id w4so1028812ilv.12
-        for <linux-rdma@vger.kernel.org>; Tue, 07 Dec 2021 20:13:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=w0n14T57zPuvlg1YaFYy3gRfrUPFN1bDHGIrct+fXgc=;
-        b=cGWxDwe8B66FlIrZtrergIqE5+JvdqJ48sEvPTrvhBJ9xEqZLGyWZmuSPdCEFce/7D
-         /sVR44uqtlb2dmBH+iwgt0kboAu4/HTy3OZt9J6nwOu1H5twbKwVBnMykOKrBLHcBBEb
-         cgMJ7/59oMUtMggaQ9x/N1xe+U0YzN1k+xfCXkO5L7YIW30RFDnvCB0PrD7sMExliX7S
-         joeNtgfdJmxv3l42BA4cQp1HveXj/LpauGoYMsZKrrlYurvW6FC9Nrn9v/z7yklCLUv+
-         2uZJGSHlx+O0Rg+LxyFVcXJ8erZC2O96QnEFLkA1QmSl94RBUxOevwSkF8rG8CDqN06m
-         KdcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=w0n14T57zPuvlg1YaFYy3gRfrUPFN1bDHGIrct+fXgc=;
-        b=PK/LAEbZdyxLzyq/Yb/cMS1nFMkBN6T2GSER66bUzBBTXljmo6gRRurMbRSMAyrSiZ
-         i5TeIj722FiytNCnZEtqg0L1h0ngc8Ktlkz9+21lp5FaCn50cH8awxWNo04TtsBZrorc
-         umsDTEz+fbr6fm64tGdHQHhvt6CqTX4UzshDiI1TlBSM6qGvpbT6aW/tfHLXJOJcigo4
-         jhoRfik1zKC4XLTW4lVkNhGeLuwbEr6e3V+c6bU1zt3ECxIBTh4q5HPnqXPTxSKi+xRX
-         9CdX5tLnNNK/pNbExnCnt4t66a3L8c9b3UCsGmPWah0/yEOhWK4bDsM/HlsqsoemBJNs
-         9aCQ==
-X-Gm-Message-State: AOAM532QQpIml1PJTv1sqdEskKaQek8ij71saSwqdFAMMFWj0GnrX7Cp
-        mOgq32zkANEoCwGW+V0TEmSqcszO6F9ds1BY+qU=
-X-Google-Smtp-Source: ABdhPJx498jQ3rDCAEAukf875uPMCUUvAAHHJyp/169nhahBv8dg1ZTt80/LmlBc7j967yPpWx87fZn4PQyrL4JX27A=
-X-Received: by 2002:a92:600f:: with SMTP id u15mr3954317ilb.292.1638936815828;
- Tue, 07 Dec 2021 20:13:35 -0800 (PST)
+        id S240394AbhLHGzi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Dec 2021 01:55:38 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:34668 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhLHGzh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Dec 2021 01:55:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1FFE8B8168C;
+        Wed,  8 Dec 2021 06:52:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFCC5C00446;
+        Wed,  8 Dec 2021 06:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1638946323;
+        bh=Z45lygP6RwJrON0S7PUva68y3Nc3U4Sa0WOT7zeD1aM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AoLVedqBkVlfznlJPG7A8rs7+4v8AeJwiVNR53B7+Z6ue3+Pvd80mnpF28BI9r4+b
+         gZIsRbOKJVihvRB8P8nMltD5zbKeFYOmuDDlCBTY/qKFl3WZDarazxqLb7P+sF1Qq0
+         YtAEJ66jHAd4dKbzW9PJfXRLTjLdmoUaiWBC4NXdE8iQgMjM5/3FAspNtnKW4MBStP
+         vKCkeDhb9aLdAQ05FeVvDx4t8OVB29d7EbgGy8J2iwsqHaTarfusFKsHYaOxppXRXj
+         nsY4kr4DmndjjE7AgNuxG+9a39t0ujvihnl67m5dkth30SGmWNsfziQeAxYU9HgzEj
+         BJk4PBCvy7QyA==
+Date:   Wed, 8 Dec 2021 08:51:59 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Mark Zhang <markzhang@nvidia.com>,
+        "Michael S. Tsirkin" <mst@dev.mellanox.co.il>
+Subject: Re: [PATCH rdma-next 2/3] RDMA/core: Let ib_find_gid() continue
+ search even after empty entry
+Message-ID: <YbBWD5rDm+wBxVjU@unreal>
+References: <cover.1637581778.git.leonro@nvidia.com>
+ <aab136be84ad03185a1084cb2e1ca9cad322ab23.1637581778.git.leonro@nvidia.com>
+ <20211207184304.GB114160@nvidia.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6e02:1a07:0:0:0:0 with HTTP; Tue, 7 Dec 2021 20:13:35
- -0800 (PST)
-Reply-To: dj0015639@gmail.com
-From:   David Jackson <enkenpaul@gmail.com>
-Date:   Wed, 8 Dec 2021 05:13:35 +0100
-Message-ID: <CAG7-cQ_JEx-8fDdxn0Ex314ViSE32kaUjoR=sUvV7wmCUiKRGw@mail.gmail.com>
-Subject: FEDERAL BUREAU OF INVESTIGATION
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211207184304.GB114160@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Our Ref: RTB /SNT/STB
-To: Beneficiary
+On Tue, Dec 07, 2021 at 02:43:04PM -0400, Jason Gunthorpe wrote:
+> On Mon, Nov 22, 2021 at 01:53:57PM +0200, Leon Romanovsky wrote:
+> > From: Avihai Horon <avihaih@nvidia.com>
+> > 
+> > Currently, ib_find_gid() will stop searching after encountering the
+> > first empty GID table entry. This behavior is wrong since neither IB
+> > nor RoCE spec enforce tightly packed GID tables.
+> > 
+> > For example, when a valid GID entry exists at index N, and if a GID
+> > entry is empty at index N-1, ib_find_gid() will fail to find the valid
+> > entry.
+> > 
+> > Fix it by making ib_find_gid() continue searching even after
+> > encountering missing entries.
+> > 
+> > Fixes: 5eb620c81ce3 ("IB/core: Add helpers for uncached GID and P_Key searches")
+> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
+> > Reviewed-by: Mark Zhang <markzhang@nvidia.com>
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> >  drivers/infiniband/core/device.c | 3 +++
+> >  1 file changed, 3 insertions(+)
+> > 
+> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+> > index 22a4adda7981..b5d8443030d4 100644
+> > +++ b/drivers/infiniband/core/device.c
+> > @@ -2460,8 +2460,11 @@ int ib_find_gid(struct ib_device *device, union ib_gid *gid,
+> >  		for (i = 0; i < device->port_data[port].immutable.gid_tbl_len;
+> >  		     ++i) {
+> >  			ret = rdma_query_gid(device, port, i, &tmp_gid);
+> > +			if (ret == -ENOENT)
+> > +				continue;
+> >  			if (ret)
+> >  				return ret;
+> 
+> There is no return code from rdma_query_gid that means stop searching,
 
-This is FBI special agents, David Jackson. I was delegated along side
-others by the United Nations to investigate scammers who has been in
-the business of swindling foreigners especially those that has one
-form of transaction/contracts and another. Please be informed that in
-the course of our investigation, we detected that your name and
-details in our Scammed Monitoring Network. We also found out that you
-were scammed of a huge sum of money by scammers via Western union and
-MoneyGram. Be informed here that in a bid to alleviate the suffering
-of scammed victims, the United Nations initiated this compensation
-program and therefore, you are entitled to the sum of Five Million Two
-Hundred Thousand United States Dollars ($5,200,000.00 USD) for being a
-victim.
+In rdma_query_gid() any error stopped searching, and here we continue
+same behaviour as before. You can argue that this function can't really
+get illegal parameters and it never returns -EINVAL, but someone needs
+to check all callers that this is true.
 
-Note that the said fund will be transfer to you via the Citibank being
-the paying bank mandated by the United Nations officials.
+> so just write
+> 
+> if (ret)
+>    continue
 
-However, we have to inform you that we have been able to arrest some
-of the swindlers who has been in this illicit business and will all be
-prosecuted accordingly. Be informed as well that we have limited time
-to stay back here, so we will advice that you urgently respond to this
-message ASAP. And do not inform any of the people that collected money
-from you before now about this new development to avoid jeopardizing
-our investigation. All you need to do is to follow our instruction and
-receive your compensation accordingly as directed by the United
-Nations.
+As long as we don't delete input validity checks, it is not correct.
 
-We urgently wait to receive your response.
+Thanks
 
-Regards,
-DAVID JACKSON
-FEDERAL BUREAU OF INVESTIGATION
-INVESTIGATION ON ALL ONLINE WIRE TRANSFER
+> 
+> Jason
