@@ -2,103 +2,236 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C9246CDEA
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Dec 2021 07:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A61FA46CE72
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Dec 2021 08:38:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240394AbhLHGzi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Dec 2021 01:55:38 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:34668 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhLHGzh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Dec 2021 01:55:37 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1FFE8B8168C;
-        Wed,  8 Dec 2021 06:52:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DFCC5C00446;
-        Wed,  8 Dec 2021 06:52:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638946323;
-        bh=Z45lygP6RwJrON0S7PUva68y3Nc3U4Sa0WOT7zeD1aM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AoLVedqBkVlfznlJPG7A8rs7+4v8AeJwiVNR53B7+Z6ue3+Pvd80mnpF28BI9r4+b
-         gZIsRbOKJVihvRB8P8nMltD5zbKeFYOmuDDlCBTY/qKFl3WZDarazxqLb7P+sF1Qq0
-         YtAEJ66jHAd4dKbzW9PJfXRLTjLdmoUaiWBC4NXdE8iQgMjM5/3FAspNtnKW4MBStP
-         vKCkeDhb9aLdAQ05FeVvDx4t8OVB29d7EbgGy8J2iwsqHaTarfusFKsHYaOxppXRXj
-         nsY4kr4DmndjjE7AgNuxG+9a39t0ujvihnl67m5dkth30SGmWNsfziQeAxYU9HgzEj
-         BJk4PBCvy7QyA==
-Date:   Wed, 8 Dec 2021 08:51:59 +0200
-From:   Leon Romanovsky <leon@kernel.org>
+        id S244549AbhLHHmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Dec 2021 02:42:09 -0500
+Received: from mga04.intel.com ([192.55.52.120]:56368 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244550AbhLHHmJ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 8 Dec 2021 02:42:09 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10191"; a="236515381"
+X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; 
+   d="scan'208";a="236515381"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Dec 2021 23:38:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.87,296,1631602800"; 
+   d="scan'208";a="461604297"
+Received: from lkp-server02.sh.intel.com (HELO 9e1e9f9b3bcb) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 07 Dec 2021 23:38:35 -0800
+Received: from kbuild by 9e1e9f9b3bcb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1murX8-0000EX-Lx; Wed, 08 Dec 2021 07:38:34 +0000
+Date:   Wed, 08 Dec 2021 15:38:15 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>,
-        "Michael S. Tsirkin" <mst@dev.mellanox.co.il>
-Subject: Re: [PATCH rdma-next 2/3] RDMA/core: Let ib_find_gid() continue
- search even after empty entry
-Message-ID: <YbBWD5rDm+wBxVjU@unreal>
-References: <cover.1637581778.git.leonro@nvidia.com>
- <aab136be84ad03185a1084cb2e1ca9cad322ab23.1637581778.git.leonro@nvidia.com>
- <20211207184304.GB114160@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ 10467ce09fefa2e74359f5b2ab1efb8909402f19
+Message-ID: <61b060e7.T/Mpg/Dwuyfdrz2K%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211207184304.GB114160@nvidia.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Dec 07, 2021 at 02:43:04PM -0400, Jason Gunthorpe wrote:
-> On Mon, Nov 22, 2021 at 01:53:57PM +0200, Leon Romanovsky wrote:
-> > From: Avihai Horon <avihaih@nvidia.com>
-> > 
-> > Currently, ib_find_gid() will stop searching after encountering the
-> > first empty GID table entry. This behavior is wrong since neither IB
-> > nor RoCE spec enforce tightly packed GID tables.
-> > 
-> > For example, when a valid GID entry exists at index N, and if a GID
-> > entry is empty at index N-1, ib_find_gid() will fail to find the valid
-> > entry.
-> > 
-> > Fix it by making ib_find_gid() continue searching even after
-> > encountering missing entries.
-> > 
-> > Fixes: 5eb620c81ce3 ("IB/core: Add helpers for uncached GID and P_Key searches")
-> > Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-> > Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> >  drivers/infiniband/core/device.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
-> > index 22a4adda7981..b5d8443030d4 100644
-> > +++ b/drivers/infiniband/core/device.c
-> > @@ -2460,8 +2460,11 @@ int ib_find_gid(struct ib_device *device, union ib_gid *gid,
-> >  		for (i = 0; i < device->port_data[port].immutable.gid_tbl_len;
-> >  		     ++i) {
-> >  			ret = rdma_query_gid(device, port, i, &tmp_gid);
-> > +			if (ret == -ENOENT)
-> > +				continue;
-> >  			if (ret)
-> >  				return ret;
-> 
-> There is no return code from rdma_query_gid that means stop searching,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: 10467ce09fefa2e74359f5b2ab1efb8909402f19  RDMA/irdma: Don't arm the CQ more than two times if no CE for this CQ
 
-In rdma_query_gid() any error stopped searching, and here we continue
-same behaviour as before. You can argue that this function can't really
-get illegal parameters and it never returns -EINVAL, but someone needs
-to check all callers that this is true.
+elapsed time: 727m
 
-> so just write
-> 
-> if (ret)
->    continue
+configs tested: 176
+configs skipped: 3
 
-As long as we don't delete input validity checks, it is not correct.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20211207
+arm                         axm55xx_defconfig
+sh                         microdev_defconfig
+mips                     loongson1c_defconfig
+sh                     sh7710voipgw_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                             alldefconfig
+arc                           tb10x_defconfig
+arm                           tegra_defconfig
+powerpc                 mpc837x_rdb_defconfig
+csky                                defconfig
+xtensa                           allyesconfig
+arm                           stm32_defconfig
+powerpc                  storcenter_defconfig
+arm                          imote2_defconfig
+h8300                     edosk2674_defconfig
+mips                           rs90_defconfig
+mips                      maltasmvp_defconfig
+h8300                            allyesconfig
+nds32                            alldefconfig
+powerpc                     redwood_defconfig
+sh                          sdk7786_defconfig
+arm                           h5000_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     ppa8548_defconfig
+mips                         tb0287_defconfig
+sh                                  defconfig
+powerpc                    mvme5100_defconfig
+sh                            shmin_defconfig
+mips                        bcm63xx_defconfig
+sh                           se7705_defconfig
+mips                           xway_defconfig
+powerpc                      cm5200_defconfig
+sparc64                             defconfig
+powerpc                         wii_defconfig
+sh                   sh7724_generic_defconfig
+mips                      pic32mzda_defconfig
+powerpc64                        alldefconfig
+powerpc                     kilauea_defconfig
+powerpc                   motionpro_defconfig
+parisc                           alldefconfig
+arm                           h3600_defconfig
+mips                      loongson3_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                           ip22_defconfig
+arm                           omap1_defconfig
+powerpc                       holly_defconfig
+arm                      pxa255-idp_defconfig
+sh                   rts7751r2dplus_defconfig
+mips                        workpad_defconfig
+sh                             espt_defconfig
+arm                      footbridge_defconfig
+powerpc                      acadia_defconfig
+sh                           se7721_defconfig
+arm                        mvebu_v7_defconfig
+riscv             nommu_k210_sdcard_defconfig
+sh                         ecovec24_defconfig
+arm                         orion5x_defconfig
+sh                           se7780_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                   microwatt_defconfig
+mips                         tb0226_defconfig
+arm                          pxa910_defconfig
+powerpc                      tqm8xx_defconfig
+mips                         db1xxx_defconfig
+parisc                generic-64bit_defconfig
+sparc64                          alldefconfig
+arm                         mv78xx0_defconfig
+mips                          ath79_defconfig
+arm                          pcm027_defconfig
+m68k                          sun3x_defconfig
+m68k                        m5272c3_defconfig
+powerpc                     powernv_defconfig
+arc                      axs103_smp_defconfig
+mips                     cu1000-neo_defconfig
+arm                        cerfcube_defconfig
+arm                  colibri_pxa270_defconfig
+sh                 kfr2r09-romimage_defconfig
+arm                         at91_dt_defconfig
+sparc                               defconfig
+mips                       rbtx49xx_defconfig
+xtensa                  nommu_kc705_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                      walnut_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                      katmai_defconfig
+arm                  randconfig-c002-20211207
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20211207
+x86_64               randconfig-a005-20211207
+x86_64               randconfig-a001-20211207
+x86_64               randconfig-a002-20211207
+x86_64               randconfig-a004-20211207
+x86_64               randconfig-a003-20211207
+i386                 randconfig-a001-20211207
+i386                 randconfig-a005-20211207
+i386                 randconfig-a002-20211207
+i386                 randconfig-a003-20211207
+i386                 randconfig-a006-20211207
+i386                 randconfig-a004-20211207
+i386                 randconfig-a013-20211208
+i386                 randconfig-a016-20211208
+i386                 randconfig-a011-20211208
+i386                 randconfig-a014-20211208
+i386                 randconfig-a012-20211208
+i386                 randconfig-a015-20211208
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-> 
-> Jason
+clang tested configs:
+x86_64               randconfig-c007-20211207
+arm                  randconfig-c002-20211207
+riscv                randconfig-c006-20211207
+mips                 randconfig-c004-20211207
+i386                 randconfig-c001-20211207
+powerpc              randconfig-c003-20211207
+s390                 randconfig-c005-20211207
+x86_64               randconfig-a016-20211207
+x86_64               randconfig-a011-20211207
+x86_64               randconfig-a013-20211207
+x86_64               randconfig-a014-20211207
+x86_64               randconfig-a015-20211207
+x86_64               randconfig-a012-20211207
+i386                 randconfig-a016-20211207
+i386                 randconfig-a013-20211207
+i386                 randconfig-a011-20211207
+i386                 randconfig-a014-20211207
+i386                 randconfig-a012-20211207
+i386                 randconfig-a015-20211207
+hexagon              randconfig-r045-20211207
+s390                 randconfig-r044-20211207
+riscv                randconfig-r042-20211207
+hexagon              randconfig-r041-20211207
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
