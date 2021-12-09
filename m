@@ -2,105 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD7E46F2D9
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Dec 2021 19:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A34946F3BB
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Dec 2021 20:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242083AbhLISUy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Dec 2021 13:20:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33654 "EHLO
+        id S229919AbhLITTL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Dec 2021 14:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237501AbhLISUw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Dec 2021 13:20:52 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C707C061746;
-        Thu,  9 Dec 2021 10:17:18 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5573FB825F3;
-        Thu,  9 Dec 2021 18:17:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9742AC004DD;
-        Thu,  9 Dec 2021 18:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1639073836;
-        bh=5WzgwuFREHai1LZ5Fq/7JGMVg+y6UKpM33QWtTaDVw8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cfk0MVT1xKw7fkymLlas0hLesF6lRPvFZEy2xSspQlEisOd3xLXx7JzD15NZJ9Whn
-         ENxP284SzeMKE8g5DFAG33LIDaT0IrCNK83MXmMvr2nJErj5JEJrb34F8Tdh4c3OAC
-         1iCVGLy+oIadLF17OSPQwfSLonFl/WbzTdqgJ19PWiH4nNb4MSfTWNtpIaOK2l81wO
-         QN0vokt8kVUKK4YkcFvrqte8hph/9W2SOzEgH7CTcJWXzSsLqQVgYbn4MAvqBNkRs0
-         Nm5gzRruoVj+Jm300AvxssG0mRgedF6gOy7NYBOiufylKK1UruBH2AGlWWxzcxajrE
-         Nb79xuLqVSjNQ==
-Date:   Thu, 9 Dec 2021 20:17:11 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Avihai Horon <avihaih@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Mark Zhang <markzhang@nvidia.com>
-Subject: Re: [PATCH rdma-next v1 1/3] RDMA/core: Modify rdma_query_gid() to
- return accurate error codes
-Message-ID: <YbJIJ7Lh95v8xAad@unreal>
-References: <cover.1639055490.git.leonro@nvidia.com>
- <1f2b65dfb4d995e74b621e3e21e7c7445d187956.1639055490.git.leonro@nvidia.com>
+        with ESMTP id S229501AbhLITTL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Dec 2021 14:19:11 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC94C061746
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Dec 2021 11:15:37 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id d1-20020a4a3c01000000b002c2612c8e1eso1895318ooa.6
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Dec 2021 11:15:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PtipYe+/xhkSJYCE8m5OLhHxAXsS7iVTOxgctNCYNfo=;
+        b=Ll9vBoTQridUSFSoegKyfs6+4CwCG10NqMpn1+UKX4asXHJlty4Wl5l9Iv3NB8Uf0u
+         xHb4VNTn3xbaY41gkfApZYclu82EGJ9MZztXYGXP8J1OPf4MjPtRbNtfB6NtdpinociM
+         +kyaCpRNmvRGaUIxIJQVXIqgcjsFmZGskbMljDzVGDIE61j9ySL5uvjtSAXbjpr3bBIZ
+         0SfgYqRYtgZsacL7+cVm39IJiRn8rNCdclNAw++r/hTDvzAEKW3Ug4AEl1sRaM7LJXxu
+         B4q6/WphOvwieFVnCPDT+0V3Z+6T+X81MnhdQu6A62oCqDWtEoGR3bilTxphfnAwYFWy
+         MdMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PtipYe+/xhkSJYCE8m5OLhHxAXsS7iVTOxgctNCYNfo=;
+        b=zl/Oi09YzmpFGafIJ87CPZFwyRko51KeJ1Ysno19h7InT9EyP+Nwu/asus3fdMQE1N
+         m/l+yDQqQ3nrRHj50PYLlr+FE3vaSt7+C/UHs3KCdhObC3IaXRSKfVsOUHDtTkeas/mN
+         ekPlOtrOh2wdA6Js4p2Dq13hMlrqQ2clRMxc/vWO/dDqiKUEgEo7UKFrMgkQpdp10HKI
+         gI4yB5CCKazm+6r+7Rb8VSsEYk7TOqV2I9b5gLdHOJkKKWfKIS2SmX0h/1ib1B8mbWdn
+         zPkCjKoZ2HKp8DiSWc8Oyii30Y/cfo89W8oRof7jA3vjcInbQdGFbLhtCTG+ERbjdwTd
+         q+cQ==
+X-Gm-Message-State: AOAM533p4Gos6ZofefqCZ+2mngOQtUji+ldc0+W1EILoW1Sus21bpYLV
+        Qwj8YrQjAbEwtfZWSHcAYyRLAj0KGz4=
+X-Google-Smtp-Source: ABdhPJyZcDWd+5GKMh50svB5EyuVZNVGVInI/YAnJKmZ0SI1gSl4AoPGnIuI8wrkGbq/NI4WbJFRaw==
+X-Received: by 2002:a4a:3042:: with SMTP id z2mr5250761ooz.47.1639077336728;
+        Thu, 09 Dec 2021 11:15:36 -0800 (PST)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-9c23-089d-4ab2-4477.res6.spectrum.com. [2603:8081:140c:1a00:9c23:89d:4ab2:4477])
+        by smtp.googlemail.com with ESMTPSA id h3sm117807oon.34.2021.12.09.11.15.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Dec 2021 11:15:36 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v7 0/8] RDMA/rxe: Correct conditions
+Date:   Thu,  9 Dec 2021 13:14:19 -0600
+Message-Id: <20211209191426.15596-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f2b65dfb4d995e74b621e3e21e7c7445d187956.1639055490.git.leonro@nvidia.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 09, 2021 at 03:16:05PM +0200, Leon Romanovsky wrote:
-> From: Avihai Horon <avihaih@nvidia.com>
-> 
-> Modify rdma_query_gid() to return -ENOENT for empty entries. This will
-> make error reporting more accurate and will be used in next patches.
-> 
-> Signed-off-by: Avihai Horon <avihaih@nvidia.com>
-> Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/cache.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
-> index 0c98dd3dee67..edddcca62ece 100644
-> --- a/drivers/infiniband/core/cache.c
-> +++ b/drivers/infiniband/core/cache.c
-> @@ -955,7 +955,7 @@ int rdma_query_gid(struct ib_device *device, u32 port_num,
->  {
->  	struct ib_gid_table *table;
->  	unsigned long flags;
-> -	int res = -EINVAL;
-> +	int res;
->  
->  	if (!rdma_is_port_valid(device, port_num))
->  		return -EINVAL;
-> @@ -963,9 +963,15 @@ int rdma_query_gid(struct ib_device *device, u32 port_num,
->  	table = rdma_gid_table(device, port_num);
->  	read_lock_irqsave(&table->rwlock, flags);
->  
-> -	if (index < 0 || index >= table->sz ||
-> -	    !is_gid_entry_valid(table->data_vec[index]))
-> +	if (index < 0 || index >= table->sz) {
-> +		res = -EINVAL
+There are several race conditions discovered in the current rdma_rxe
+driver.  They mostly relate to races between normal operations and
+destroying objects.  This patch series
+ - Makes several minor cleanups in rxe_pool.[ch]
+ - Replaces the red-black trees currently used by xarrays for indices
+ - Simplifies the API for keyed objects
+ - Corrects several reference counting errors
+ - Adds wait for completions to the paths in verbs APIs which destroy
+   objects.
 
-Jason,
+This patch series applies cleanly to current for-next.
+commit 0a0575a12e31 ("RDMA/bnxt_re: Fix endianness warning for req.pkey")
 
-I made stupid mistake here, and missed ";".
-Can you fix it locally?
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v7
+  Corrected issues reported by Jason Gunthorpe
+Link: https://lore.kernel.org/linux-rdma/20211207190947.GH6385@nvidia.com/
+Link: https://lore.kernel.org/linux-rdma/20211207191857.GI6385@nvidia.com/
+Link: https://lore.kernel.org/linux-rdma/20211207192824.GJ6385@nvidia.com/
+v6
+  Fixed a kzalloc flags bug.
+  Fixed comment bug reported by 'Kernel Test Robot'.
+  Changed type of rxe_pool.c in __rxe_fini().
+v5
+  Removed patches already accepted into for-next and addressed comments
+  from Jason Gunthorpe.
+v4
+  Restructured patch series to change to xarray earlier which
+  greatly simplified the changes.
+  Rebased to current for-next
+v3
+  Changed rxe_alloc to use GFP_KERNEL
+  Addressed other comments by Jason Gunthorp
+  Merged the previous 06/10 and 07/10 patches into one since they overlapped
+  Added some minor cleanups as 10/10
+v2
+  Rebased to current for-next.
+  Added 4 additional patches
 
-Thanks
+Bob Pearson (8):
+  RDMA/rxe: Replace RB tree by xarray for indexes
+  RDMA/rxe: Reverse the sense of RXE_POOL_NO_ALLOC
+  RDMA/rxe: Cleanup pool APIs for keyed objects
+  RDMA/rxe: Fix ref error in rxe_av.c
+  RDMA/rxe: Replace mr by rkey in responder resources
+  RDMA/rxe: Minor cleanups in rxe_pool.c/rxe_pool.h
+  RDMA/rxe: Replace rxe_alloc by kzalloc for rxe_mc_elem
+  RDMA/rxe: Add wait for completion to obj destruct
 
->  		goto done;
-> +	}
-> +
-> +	if (!is_gid_entry_valid(table->data_vec[index])) {
-> +		res = -ENOENT;
-> +		goto done;
-> +	}
->  
->  	memcpy(gid, &table->data_vec[index]->attr.gid, sizeof(*gid));
->  	res = 0;
-> -- 
-> 2.33.1
-> 
+ drivers/infiniband/sw/rxe/rxe.c       | 101 +----
+ drivers/infiniband/sw/rxe/rxe_av.c    |  19 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  10 +-
+ drivers/infiniband/sw/rxe/rxe_mcast.c |  71 ++--
+ drivers/infiniband/sw/rxe/rxe_mr.c    |   3 +-
+ drivers/infiniband/sw/rxe/rxe_mw.c    |   7 +-
+ drivers/infiniband/sw/rxe/rxe_net.c   |  17 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 507 +++++++++++---------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  | 110 ++----
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  10 +-
+ drivers/infiniband/sw/rxe/rxe_req.c   |  55 +--
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 125 +++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  72 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   3 -
+ 14 files changed, 489 insertions(+), 621 deletions(-)
+
+-- 
+2.32.0
+
