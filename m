@@ -2,64 +2,227 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1237046E48A
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Dec 2021 09:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D597F46E8AF
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Dec 2021 13:57:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhLIIvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Dec 2021 03:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbhLIIvW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Dec 2021 03:51:22 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 557C6C0617A2
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Dec 2021 00:47:49 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id z21so10593915lfu.8
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Dec 2021 00:47:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=OpdQDEcUyJr4fP4Vp1JrIgIOXkocq98sr62N51ao6F8=;
-        b=QMwc9JhWZEd/6ayVxLZxt24TF/wNRxEYuQQoOLSUTaodvRtVCRB6qKgU+ZGKp8uX2l
-         zyBTCTeESpg8ym8sLISi9b6fy+/vbjTP2TiGqrJjhUJJpcuTEb6ltmmvLlj5C9fcfIBw
-         ia0hIDsjRhw3Iqi7qybpaSkxM1OYDtohL/pBH+Pbdg6Y/A5YM3h2xPC/NGnQcjeXjRxK
-         5yrvqoBFW0xKEKbMzVJlOC6Cm5pKz1HlTt+X4KX4qUmGmo75GKwElW7Td2yK63JNZ+3y
-         dKnIecv8p5Fr8PfQhd5QN9sFO4URtVoTmnOUOQykhaB5JuEJ+TSGg2w2ayeyCmkYBtFP
-         Ro7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=OpdQDEcUyJr4fP4Vp1JrIgIOXkocq98sr62N51ao6F8=;
-        b=onp472CET9pxgffeSsJ7AD7SnPp84IiKEco2avOQMY1867qA6+ce1JTDBhMR4JbDn5
-         r4t5LcMtTTAgkfpUp/lBTscsGQQqRc7Fv2SyHgQZuf4wZIVIZUfprmKrtbWaxdVB3BQB
-         rPid7wipdVaCN5em6qTIHa0Y8J0AXgG9dvNPifNQTlVAaG5uaID5FS7Re+7A0Y0lZEUA
-         1eWnZ43FV4eKSJsAEpSXuny8UqDsd7al2XJrVuBJD2DdMu+s2ffGu2dOa4kyf3J0cSTH
-         8XSr2dAOtBfz7vtZsYqEGVl7PfCSPG5k//Q5yd/IzlXU68iEodXMM1tuLad9Odi449Vm
-         3Gjg==
-X-Gm-Message-State: AOAM532Yaasoy2q41NkGGnFOzsEdqPX1W7GXJdQwba1YYtoqre4X4jVe
-        8TT6bhUQZwd7KZh6I37jXbF+tzWBT/VzU+cWyTw=
-X-Google-Smtp-Source: ABdhPJxkvtnJupkmR0HJJ1JCaZpa1pY/rMeis1YOW/uF95E/pZY4ImahRuwp+Klo8xZsLTdmrfgXLmmCWpUQppKYORY=
-X-Received: by 2002:ac2:4f02:: with SMTP id k2mr4808102lfr.283.1639039667449;
- Thu, 09 Dec 2021 00:47:47 -0800 (PST)
+        id S231777AbhLINA7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Dec 2021 08:00:59 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:32895 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229379AbhLINA7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Dec 2021 08:00:59 -0500
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4J8vFM2HkMzcc2f;
+        Thu,  9 Dec 2021 20:57:11 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 9 Dec 2021 20:57:24 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.20; Thu, 9 Dec 2021 20:57:24 +0800
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH for-next] RDMA/hns: Fix RNR retransmission issue for HIP08
+Date:   Thu, 9 Dec 2021 20:52:41 +0800
+Message-ID: <20211209125241.4252-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Received: by 2002:a05:6512:2211:0:0:0:0 with HTTP; Thu, 9 Dec 2021 00:47:46
- -0800 (PST)
-Reply-To: douglasmomoh007@gmail.com
-From:   "Hon. Douglas Momoh" <legalrightschambersfb01@gmail.com>
-Date:   Thu, 9 Dec 2021 09:47:46 +0100
-Message-ID: <CAEMzxqX9D2tVYTYXBRrD3cFTDkKMtTU3YEUv84jFg=v5cVCjJQ@mail.gmail.com>
-Subject: Greeting
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-A mail was sent to you sometime last week with the expectation of
-having a retune mail from you but to my surprise you never bothered to replied.
-Kindly reply for further explanations.
+From: Yangyang Li <liyangyang20@huawei.com>
 
-Respectfully yours,
-Hon. Douglas Momoh
+Due to the discrete nature of the HIP08 timer unit, a requester might
+finish the timeout period sooner, in elapsed real time, than its responder
+does, even when both sides share the identical RNR timeout length included
+in the RNR Nak packet and the responder indeed starts the timing prior to
+the requester. Furthermore, if a 'providential' resend packet arrived
+before the responder's timeout period expired, the responder is certainly
+entitled to drop the packet silently in the light of IB protocol.
+
+To address this problem, our team made good use of certain hardware facts:
+1) The timing resolution regards the transmission arrangements is 1
+microsecond, e.g. if cq_period field is set to 3, it would be interpreted
+as 3 microsecond by hardware;
+2) A QPC field shall inform the hardware how many timing unit (ticks)
+constitutes a full microsecond, which, by default, is 1000;
+3) It takes 14ns for the processor to handle a packet in the buffer, so the
+RNR timeout length of 10ns would ensure our processing mechanism is
+disabled during the entire timeout period and the packet won't be dropped
+silently;
+
+To achieve (3), we permanently set the QPC field mentioned in (2) to zero
+which nominally indicates every time tick is equivalent to a microsecond
+in wall-clock time; now, a RNR timeout period at face value of 10 would
+only last 10 ticks, which is 10ns in wall-clock time.
+
+It's worth noting that we adapt the driver by magnifying certain
+configuration parameters(cq_period, eq_period and ack_timeout)by 1000 given
+the user assumes the configuring timing unit to be microseconds.
+
+Also, this particular improvisation is only deployed on HIP08 since other
+hardware has already solved this issue.
+
+Fixes: cfc85f3e4b7f ("RDMA/hns: Add profile support for hip08 driver")
+Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 64 +++++++++++++++++++---
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  8 +++
+ 2 files changed, 65 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 66393b97a469..2732b4f936b6 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -1586,11 +1586,17 @@ static int hns_roce_config_global_param(struct hns_roce_dev *hr_dev)
+ {
+ 	struct hns_roce_cmq_desc desc;
+ 	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
++	u32 clock_cycles_of_1us;
+ 
+ 	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GLOBAL_PARAM,
+ 				      false);
+ 
+-	hr_reg_write(req, CFG_GLOBAL_PARAM_1US_CYCLES, 0x3e8);
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
++		clock_cycles_of_1us = HNS_ROCE_1NS_CFG;
++	else
++		clock_cycles_of_1us = HNS_ROCE_1US_CFG;
++
++	hr_reg_write(req, CFG_GLOBAL_PARAM_1US_CYCLES, clock_cycles_of_1us);
+ 	hr_reg_write(req, CFG_GLOBAL_PARAM_UDP_PORT, ROCE_V2_UDP_DPORT);
+ 
+ 	return hns_roce_cmq_send(hr_dev, &desc, 1);
+@@ -4795,6 +4801,30 @@ static int hns_roce_v2_set_abs_fields(struct ib_qp *ibqp,
+ 	return ret;
+ }
+ 
++static bool check_qp_timeout_cfg_range(struct hns_roce_dev *hr_dev, u8 *timeout)
++{
++#define QP_ACK_TIMEOUT_MAX_HIP08 20
++#define QP_ACK_TIMEOUT_OFFSET 10
++#define QP_ACK_TIMEOUT_MAX 31
++
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
++		if (*timeout > QP_ACK_TIMEOUT_MAX_HIP08) {
++			ibdev_warn(&hr_dev->ib_dev,
++				   "Local ACK timeout shall be 0 to 20.\n");
++			return false;
++		}
++		*timeout += QP_ACK_TIMEOUT_OFFSET;
++	} else if (hr_dev->pci_dev->revision > PCI_REVISION_ID_HIP08) {
++		if (*timeout > QP_ACK_TIMEOUT_MAX) {
++			ibdev_warn(&hr_dev->ib_dev,
++				   "Local ACK timeout shall be 0 to 31.\n");
++			return false;
++		}
++	}
++
++	return true;
++}
++
+ static int hns_roce_v2_set_opt_fields(struct ib_qp *ibqp,
+ 				      const struct ib_qp_attr *attr,
+ 				      int attr_mask,
+@@ -4804,6 +4834,7 @@ static int hns_roce_v2_set_opt_fields(struct ib_qp *ibqp,
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 	int ret = 0;
++	u8 timeout;
+ 
+ 	if (attr_mask & IB_QP_AV) {
+ 		ret = hns_roce_v2_set_path(ibqp, attr, attr_mask, context,
+@@ -4813,12 +4844,10 @@ static int hns_roce_v2_set_opt_fields(struct ib_qp *ibqp,
+ 	}
+ 
+ 	if (attr_mask & IB_QP_TIMEOUT) {
+-		if (attr->timeout < 31) {
+-			hr_reg_write(context, QPC_AT, attr->timeout);
++		timeout = attr->timeout;
++		if (check_qp_timeout_cfg_range(hr_dev, &timeout)) {
++			hr_reg_write(context, QPC_AT, timeout);
+ 			hr_reg_clear(qpc_mask, QPC_AT);
+-		} else {
+-			ibdev_warn(&hr_dev->ib_dev,
+-				   "Local ACK timeout shall be 0 to 30.\n");
+ 		}
+ 	}
+ 
+@@ -4875,7 +4904,9 @@ static int hns_roce_v2_set_opt_fields(struct ib_qp *ibqp,
+ 		set_access_flags(hr_qp, context, qpc_mask, attr, attr_mask);
+ 
+ 	if (attr_mask & IB_QP_MIN_RNR_TIMER) {
+-		hr_reg_write(context, QPC_MIN_RNR_TIME, attr->min_rnr_timer);
++		hr_reg_write(context, QPC_MIN_RNR_TIME,
++			    hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08 ?
++			    HNS_ROCE_RNR_TIMER_10NS : attr->min_rnr_timer);
+ 		hr_reg_clear(qpc_mask, QPC_MIN_RNR_TIME);
+ 	}
+ 
+@@ -5492,6 +5523,16 @@ static int hns_roce_v2_modify_cq(struct ib_cq *cq, u16 cq_count, u16 cq_period)
+ 
+ 	hr_reg_write(cq_context, CQC_CQ_MAX_CNT, cq_count);
+ 	hr_reg_clear(cqc_mask, CQC_CQ_MAX_CNT);
++
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
++		if (cq_period * HNS_ROCE_CLOCK_ADJUST > USHRT_MAX) {
++			dev_info(hr_dev->dev,
++				 "cq_period(%u) reached the upper limit, adjusted to 65.\n",
++				 cq_period);
++			cq_period = HNS_ROCE_MAX_CQ_PERIOD;
++		}
++		cq_period *= HNS_ROCE_CLOCK_ADJUST;
++	}
+ 	hr_reg_write(cq_context, CQC_CQ_PERIOD, cq_period);
+ 	hr_reg_clear(cqc_mask, CQC_CQ_PERIOD);
+ 
+@@ -5887,6 +5928,15 @@ static int config_eqc(struct hns_roce_dev *hr_dev, struct hns_roce_eq *eq,
+ 	hr_reg_write(eqc, EQC_EQ_PROD_INDX, HNS_ROCE_EQ_INIT_PROD_IDX);
+ 	hr_reg_write(eqc, EQC_EQ_MAX_CNT, eq->eq_max_cnt);
+ 
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
++		if (eq->eq_period * HNS_ROCE_CLOCK_ADJUST > USHRT_MAX) {
++			dev_info(hr_dev->dev, "eq_period(%u) reached the upper limit, adjusted to 65.\n",
++				 eq->eq_period);
++			eq->eq_period = HNS_ROCE_MAX_EQ_PERIOD;
++		}
++		eq->eq_period *= HNS_ROCE_CLOCK_ADJUST;
++	}
++
+ 	hr_reg_write(eqc, EQC_EQ_PERIOD, eq->eq_period);
+ 	hr_reg_write(eqc, EQC_EQE_REPORT_TIMER, HNS_ROCE_EQ_INIT_REPORT_TIMER);
+ 	hr_reg_write(eqc, EQC_EQE_BA_L, bt_ba >> 3);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index fddb9bc3c14c..39734e9e85b9 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1428,6 +1428,14 @@ struct hns_roce_dip {
+ 	struct list_head node; /* all dips are on a list */
+ };
+ 
++/* only for RNR timeout issue of HIP08 */
++#define HNS_ROCE_CLOCK_ADJUST 1000
++#define HNS_ROCE_MAX_CQ_PERIOD 65
++#define HNS_ROCE_MAX_EQ_PERIOD 65
++#define HNS_ROCE_RNR_TIMER_10NS 1
++#define HNS_ROCE_1US_CFG 999
++#define HNS_ROCE_1NS_CFG 0
++
+ #define HNS_ROCE_AEQ_DEFAULT_BURST_NUM	0x0
+ #define HNS_ROCE_AEQ_DEFAULT_INTERVAL	0x0
+ #define HNS_ROCE_CEQ_DEFAULT_BURST_NUM	0x0
+-- 
+2.33.0
+
