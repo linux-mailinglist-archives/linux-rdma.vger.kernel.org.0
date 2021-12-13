@@ -2,66 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2C747378E
+	by mail.lfdr.de (Postfix) with ESMTP id BDACD473790
 	for <lists+linux-rdma@lfdr.de>; Mon, 13 Dec 2021 23:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243730AbhLMWd5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Dec 2021 17:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S243650AbhLMWd6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Dec 2021 17:33:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243675AbhLMWdt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Dec 2021 17:33:49 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB59C061D60
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:42 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id q17so12185593plr.11
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:42 -0800 (PST)
+        with ESMTP id S243633AbhLMWdm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Dec 2021 17:33:42 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26BFC061A32
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:41 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id r138so15752439pgr.13
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=I3eqcTIWiC+KHyQNr9D4gbvRaeijCgA+zD3SwshilTo=;
-        b=bSotBO1SifpAEcn65dx6taJwcyVfz70TuvaLmRPzGaoK9y1HTyzmxWlb/dtNfrgYEQ
-         8epiPZSD71JVyY8D/Nwlrsil5OLe5OWwJmyUOOCx+9P0CSr7rJHBN/vWbZq9dbLt/pXb
-         8iiXLz+CqQlt+qI4AGu7Dtxt9SHIHEV7m8T9I=
+        bh=H18NXfK/bjqmSrlgsrOjG9VSgAOPaQTZdlxtzpyzsKU=;
+        b=YK9Rp9QUr5GNXLR/LrK9JhjX0JHk8f2RdWEXjvqR7Kt7PYX4IBVWFsmJLncA1QLbpl
+         G9rcYMoGKaYeOteZeN/RAczvlvnTWzetUGxsOnh95Qo+JAgFlri+SZ42zcQ/uQH/Ecdz
+         dd/5eG6IrZNananuc+wLz+JCdTfjHrBOLGrPQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=I3eqcTIWiC+KHyQNr9D4gbvRaeijCgA+zD3SwshilTo=;
-        b=YnjWU0AhlyDCW9wruKI/+9NA4P6741mRlH3FoAm+Jy7BpnvqAIkyEy4oQvX6oNr/mn
-         Pf/Qbp3Dw4Jl06mngd1Z9MVjDyzzNrknP16q46daMMEYhxNaLp9zMvFb/MNhSNs4iA6j
-         G0UuKGiYqjPfh+o2xjxoZFsV2uErqV/8+HOXiH+bH58ksaz0grAh/NIbRb8myN/kBCc/
-         eX2aSiOYIsdnWKjCBNC1r2t6NdCOupeWudACd2wvYLni1PXuAoYurKQ6JFIf1FhzowJY
-         z+eDkgG3of9nEX/6d1oOHPfEFz0Uor7xnWbK/CwT0a8r10MJJvUyLLlLuOpPv/974P1N
-         TbYQ==
-X-Gm-Message-State: AOAM530BvSC6uoCFlQrXEvLpfTO5rR48Oaif4MOfd3DoMp+xBrrfxB3U
-        1ZUKBOVF4mjwsfZ6psm3VwqHAA==
-X-Google-Smtp-Source: ABdhPJydJaUt968ItHIsV+C+S8DmxMrxQt/Lk2QzQLpgJNl2hHaYMZ8aIZwavexDYTU8q4oLhCgpOw==
-X-Received: by 2002:a17:90b:e83:: with SMTP id fv3mr1153098pjb.115.1639434821738;
+        bh=H18NXfK/bjqmSrlgsrOjG9VSgAOPaQTZdlxtzpyzsKU=;
+        b=wR7kU3dCVvW6baTPol2sD9xNJubh0En3s1SOv9H/R5G3WDM5aWWsN9uff7enwHJVVE
+         KCVLNE8qYHTXit5n0ftWKKdsYKKTYzxbcd/46xSz7xr/unO1GQEdnteI48H14Mc0Iqb1
+         fVCXUG80JDIQvh9MPgtJsP1jXHfsARh7ID9z9k0y5nYKrU7LAwB1p2Jxp71TkQHNNiAh
+         pUP95WXgorVCmIlw20YDo82lCDYfm1fYfFDxsz+A5qaIWpOnW6BZ1Hi+agwYWW2fj2nj
+         Pa4vzkqz7Opv7h5BMhY9NMlJoMPUUAV0+6fR/QKPzIkUild22wjC7zg4PXNb8JZMySqI
+         pGtg==
+X-Gm-Message-State: AOAM532LE2Qcf4hdnvoijc+zaHjqaCM19FNZ37kqW/UQv4NpdXp+acQB
+        L+XNhq61wHgJvvwazNmCXz10PQ==
+X-Google-Smtp-Source: ABdhPJz14xIXX2kGfXl8gyTxbCTpoifJhXNd0GGbEO4+OpopT3ZSB0VqAQQANM5PEykiGhDNwF365Q==
+X-Received: by 2002:a63:2c8e:: with SMTP id s136mr1007041pgs.431.1639434821443;
         Mon, 13 Dec 2021 14:33:41 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q17sm14966913pfu.117.2021.12.13.14.33.38
+        by smtp.gmail.com with ESMTPSA id g19sm13874418pfc.145.2021.12.13.14.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 13 Dec 2021 14:33:40 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-hardening@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
         Doug Ledford <dledford@redhat.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
-        Raju Rangoju <rajur@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 12/17] iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl
-Date:   Mon, 13 Dec 2021 14:33:26 -0800
-Message-Id: <20211213223331.135412-13-keescook@chromium.org>
+        Max Gurtovoy <maxg@mellanox.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 14/17] IB/mthca: Use memset_startat() for clearing mpt_entry
+Date:   Mon, 13 Dec 2021 14:33:28 -0800
+Message-Id: <20211213223331.135412-15-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211213223331.135412-1-keescook@chromium.org>
 References: <20211213223331.135412-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2404; h=from:subject; bh=NRZzV2Wm+qN1hLpw7oPDOvO2yOStk7XcopUutjYf66w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBht8o5I5L7op6wxBNo8ZoE2HZhjRGQ3UxHlr8nNIus yAqJvR6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYbfKOQAKCRCJcvTf3G3AJp1zD/ 9jAFtNeIQm4EewUKA78ifdR6IkV6fNLr41dqbxD0xSgeQS7WokCTQXDEw8OfoPXzLUR0Jdi66DbXNg KG+CiCejrRqs6r08bnPj02LGJEyYzQ7ZwUShJC7B1rJ4Tn7NIVLWlKK29Wbi+eocXdHhSFKezYG3SQ 6Ltml+Nij5zu1T9ZZk09JiJg8zP3JekDyjIq7BGuZWAhddAU/l/C4eLIFQcFaF7huoImo3aXgVVVyI H19k9KJR9zQPTsr8wrHwCVVmlaQISb3Wy8DXFFBwFHz6K7L4mse4I3HxL64l/wJzZbpqVfJ4OXiyyU eIk2EekyUx8315bGoYkRryWNwIlFmiwOJsx9ZGX4HDKGqCGbrOFfAVUzn3rvJEjiBVCoqXxoU47qFq DW6AMqHa4Z2J5I+fsEdrarF+6Rs9MWFeOlPvt0KMsLCCDAgqiKiwK+RYNpR23zuSxXCUi5LjZbIySf OLs7o0i5LHW5129oVTW+uQELXJbUBN/EW9FJEd9GmR6USXdaFAK5+nbAJVZBuC33NIKnkwN09UcGMr LYIkrtghJWNmsCfcZXFJH/ZnAkh07XbcEjVILyAt2qfoTTD4zTJbBGjMdUumewIKLCurQoVF4LvpDL IJu5l+8Fr4zZRE80JbW+hvIlyij8sNL/K7c+cvFvR39dgMXtliIXLXRzui3g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1273; h=from:subject; bh=CV20v1MQywYF1pj6PK6kDL4NryK+fx8i1kaxeE/OwZY=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBht8o5w0TL2V5kLLzewuU+wu+r1+X368UfQYM+9S1i XMpTg/WJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYbfKOQAKCRCJcvTf3G3AJr7ID/ 9mkrNCeI2WFCLh079AeP1+U5QNSmbqnVVSdFsaQDiX1da0O0vzJBjpHdHvSKNabcKXR/qOCVGIjiYH hihMd1my8FQjQOejGolDH1/9D19C4Yjug7wYxWEPGmeez/bpDkD/lBQ0t43rdGVm6Q286+0oSi/s7K gOt5oheZoRveZDWibbq/Tl7WQA9ysGrSdKpZmRiV92W9+cZq98dDWmuG79vGin/OjNnArcy1UK+rSk G+LYNm28IBh8LGag/brGRStXhvEsEi41YvRvrIw3GX77BT1wj8aNKyaQiIL+36UtpelTOy+XpEi9ol TQrkNJaZzqz+N1nNQS74wWibegWSyNPkalXaHJ3+PcqWFLVbnvPzjFlTabIs985nUSGkhBxmvA2cCc 82PUBzdztKLjKatMywXaf8Ro2+obpnZKtotAC3so1oD+USjYfRhZ/sOVkjzj9mN1MTyXWF/MKPBHJN UqQOXE+Mj9jfnLVYBbj54QFkshXXY47TkukQFrlpd9UHjIiShHMTZLWS48MAEOa684AufNY9E7NKFH 1D3jzgKTxFf3lOUSLgHCe0Wa5xT/BtJJBKXllSJQDKFdUcUGXxh75Df1Eq+oin+igUmudrGrsMCzIz fd3d/QmBG+2db0DT7uNCjBiGh3/8tRV/0aCrCbXOckjyjYxkEHWMCwRy/waw==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -74,61 +71,31 @@ neighboring fields.
 
 Use memset_startat() so memset() doesn't get confused about writing
 beyond the destination member that is intended to be the starting point
-of zeroing through the end of the struct. Additionally, since everything
-appears to perform a roundup (including allocation), just change the
-size of the struct itself and add a build-time check to validate the
-expected size.
+of zeroing through the end of the struct.
 
-Cc: Potnuri Bharat Teja <bharat@chelsio.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Raju Rangoju <rajur@chelsio.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Max Gurtovoy <maxg@mellanox.com>
 Cc: linux-rdma@vger.kernel.org
-Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/infiniband/hw/cxgb4/cm.c            | 5 +++--
- drivers/net/ethernet/chelsio/cxgb4/t4_msg.h | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/hw/mthca/mthca_mr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index 913f39ee4416..c16017f6e8db 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -2471,7 +2471,8 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
- 	skb_get(skb);
- 	rpl = cplhdr(skb);
- 	if (!is_t4(adapter_type)) {
--		skb_trim(skb, roundup(sizeof(*rpl5), 16));
-+		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
-+		skb_trim(skb, sizeof(*rpl5));
- 		rpl5 = (void *)rpl;
- 		INIT_TP_WR(rpl5, ep->hwtid);
- 	} else {
-@@ -2487,7 +2488,7 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
- 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
- 		opt2 |= T5_ISS_F;
- 		rpl5 = (void *)rpl;
--		memset(&rpl5->iss, 0, roundup(sizeof(*rpl5)-sizeof(*rpl), 16));
-+		memset_after(rpl5, 0, iss);
- 		if (peer2peer)
- 			isn += 4;
- 		rpl5->iss = cpu_to_be32(isn);
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-index fed5f93bf620..26433a62d7f0 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
-@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
- 	__be32 opt2;
- 	__be64 opt0;
- 	__be32 iss;
--	__be32 rsvd;
-+	__be32 rsvd[3];
- };
+diff --git a/drivers/infiniband/hw/mthca/mthca_mr.c b/drivers/infiniband/hw/mthca/mthca_mr.c
+index a59100c496b4..192f83fd7c8a 100644
+--- a/drivers/infiniband/hw/mthca/mthca_mr.c
++++ b/drivers/infiniband/hw/mthca/mthca_mr.c
+@@ -467,8 +467,7 @@ int mthca_mr_alloc(struct mthca_dev *dev, u32 pd, int buffer_size_shift,
+ 	mpt_entry->start     = cpu_to_be64(iova);
+ 	mpt_entry->length    = cpu_to_be64(total_size);
  
- struct cpl_act_open_req {
+-	memset(&mpt_entry->lkey, 0,
+-	       sizeof *mpt_entry - offsetof(struct mthca_mpt_entry, lkey));
++	memset_startat(mpt_entry, 0, lkey);
+ 
+ 	if (mr->mtt)
+ 		mpt_entry->mtt_seg =
 -- 
 2.30.2
 
