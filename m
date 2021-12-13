@@ -2,63 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48C2473785
-	for <lists+linux-rdma@lfdr.de>; Mon, 13 Dec 2021 23:33:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2C747378E
+	for <lists+linux-rdma@lfdr.de>; Mon, 13 Dec 2021 23:34:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243656AbhLMWdr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Dec 2021 17:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41106 "EHLO
+        id S243730AbhLMWd5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Dec 2021 17:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243612AbhLMWdk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Dec 2021 17:33:40 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B00C061371
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:39 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id k6-20020a17090a7f0600b001ad9d73b20bso14525979pjl.3
-        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:39 -0800 (PST)
+        with ESMTP id S243675AbhLMWdt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Dec 2021 17:33:49 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB59C061D60
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:42 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id q17so12185593plr.11
+        for <linux-rdma@vger.kernel.org>; Mon, 13 Dec 2021 14:33:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2QF7GtMPgeovGkn/Um2s+IAYrZXWu92GGIBGeTuNd0g=;
-        b=D+azZllfG6Hnp0tbGVmfDafUxIigk3rYUYjjqPQ2VSzfBBPhVdIQmsR7RDW6bHnoeu
-         oGkp8ZAXw9HssYxoaBs8VV/+9XVjNOqWzr8j3tRu8Eja6Jp1MR7ynC5HlHGrQUJG795M
-         1wsIddaY0RcyVwTTH1e8V0WT9SwTdhkcaldoU=
+        bh=I3eqcTIWiC+KHyQNr9D4gbvRaeijCgA+zD3SwshilTo=;
+        b=bSotBO1SifpAEcn65dx6taJwcyVfz70TuvaLmRPzGaoK9y1HTyzmxWlb/dtNfrgYEQ
+         8epiPZSD71JVyY8D/Nwlrsil5OLe5OWwJmyUOOCx+9P0CSr7rJHBN/vWbZq9dbLt/pXb
+         8iiXLz+CqQlt+qI4AGu7Dtxt9SHIHEV7m8T9I=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2QF7GtMPgeovGkn/Um2s+IAYrZXWu92GGIBGeTuNd0g=;
-        b=06XmoQmmboNDgEFMZgNItKz52/4Im/+Xplg7BvOV5teAuH5TK/AKB3gSf0ZaRoy8ir
-         uxZjPbp1wumI/gtLa1gfpg895H/HISAEZxAILNvkqjpd4WaCV8EEuXaqYEJ7dEuWIDlS
-         sTUUruCCceOmf54du2nkKB3qYAUTn/YScgI9oRycTn9QMSvCnS9iCU9kZsrQgBE7HdGb
-         Klc01zV4zX2xW6RIJYhFYH1tN7CYcmWGpNcQw6psyGasCWKaspcEl1+qurn3n5BwOiH8
-         6QCruB+el2V9T8EApIlRYur8QTwrmEBXDb6IbkSL7ylMUjUjFyV9EnfQd5diZgu+eQ3l
-         Fpgg==
-X-Gm-Message-State: AOAM531hGqC7Zwg/iX0wm9YZ5jXjbJN4d52bKcv2ChOCdj7kSARttOUq
-        rHp/QsyNfDibMKKAcObIzwQzQw==
-X-Google-Smtp-Source: ABdhPJw/heRlxL9p9MafpKPpU+aOX/8aQldq2ikYRg4gpnEqC+p3RlEcTY7uzjlt0iiAzHzPVVVY4A==
-X-Received: by 2002:a17:90b:34b:: with SMTP id fh11mr1299850pjb.14.1639434819283;
-        Mon, 13 Dec 2021 14:33:39 -0800 (PST)
+        bh=I3eqcTIWiC+KHyQNr9D4gbvRaeijCgA+zD3SwshilTo=;
+        b=YnjWU0AhlyDCW9wruKI/+9NA4P6741mRlH3FoAm+Jy7BpnvqAIkyEy4oQvX6oNr/mn
+         Pf/Qbp3Dw4Jl06mngd1Z9MVjDyzzNrknP16q46daMMEYhxNaLp9zMvFb/MNhSNs4iA6j
+         G0UuKGiYqjPfh+o2xjxoZFsV2uErqV/8+HOXiH+bH58ksaz0grAh/NIbRb8myN/kBCc/
+         eX2aSiOYIsdnWKjCBNC1r2t6NdCOupeWudACd2wvYLni1PXuAoYurKQ6JFIf1FhzowJY
+         z+eDkgG3of9nEX/6d1oOHPfEFz0Uor7xnWbK/CwT0a8r10MJJvUyLLlLuOpPv/974P1N
+         TbYQ==
+X-Gm-Message-State: AOAM530BvSC6uoCFlQrXEvLpfTO5rR48Oaif4MOfd3DoMp+xBrrfxB3U
+        1ZUKBOVF4mjwsfZ6psm3VwqHAA==
+X-Google-Smtp-Source: ABdhPJydJaUt968ItHIsV+C+S8DmxMrxQt/Lk2QzQLpgJNl2hHaYMZ8aIZwavexDYTU8q4oLhCgpOw==
+X-Received: by 2002:a17:90b:e83:: with SMTP id fv3mr1153098pjb.115.1639434821738;
+        Mon, 13 Dec 2021 14:33:41 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id m3sm10922153pgj.25.2021.12.13.14.33.37
+        by smtp.gmail.com with ESMTPSA id q17sm14966913pfu.117.2021.12.13.14.33.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 14:33:37 -0800 (PST)
+        Mon, 13 Dec 2021 14:33:40 -0800 (PST)
 From:   Kees Cook <keescook@chromium.org>
 To:     linux-hardening@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
         Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 09/17] RDMA/mlx5: Use memset_after() to zero struct mlx5_ib_mr
-Date:   Mon, 13 Dec 2021 14:33:23 -0800
-Message-Id: <20211213223331.135412-10-keescook@chromium.org>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 12/17] iw_cxgb4: Use memset_startat() for cpl_t5_pass_accept_rpl
+Date:   Mon, 13 Dec 2021 14:33:26 -0800
+Message-Id: <20211213223331.135412-13-keescook@chromium.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211213223331.135412-1-keescook@chromium.org>
 References: <20211213223331.135412-1-keescook@chromium.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1489; h=from:subject; bh=ci7qDUSQ7qxfbgt9mwXtWi+IdiOxq4CPa5QMzuuRbIM=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBht8o4c9gG5dEjAyZVb2YGUUu1WKghUR8yjX2IwA14 lNycyx+JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYbfKOAAKCRCJcvTf3G3AJmCgD/ 94y/49uzwy2o4ceIgt9+LabsLgQ83nyWbVWzKF7S+FkPF2fdPgUnZo1u9AUKHX0NfCIEEUhu2QpFLt lD6tuJUJhfURZriu7JD241xMcFM+tk8XapHBoUEgDV5I6DuxCKANkWFsIcLgOkDbaUPkoG4D43qzBg CYWMgZmg/6c7JaDkP3M6vnTFxmh+X3HECy+9ucC46uKNwVm1jaz9L51AqtpYpXdM8s6ckqRLskpydz vh8Zvvu9c909q1aMS6twz0Y4QovPGZkcqBI9C4C289/ekn4BTrEOX84wXntPOMmVrdYSiuWY8D6DYP hrolXMIdtsk9pGuSWT5Hm6oKImFOUWVoxxtsciKQXkaCGe8H32gHQlH7FWBAQQ3f1cs4C7zgTi5lqb 74R6nJXU/yxFmXvHKIYhoid8VaogMVj+DKMOZtscumAjD3jY9XweYiCBvdu87kwtetw2Pk5qBBGQtf umEkP+SIFK3hQsPRUQUVjL5dH3JT3gFxmQMab9Iql8GfYGNAAQUPTnBbR7jIpOiFuewqgotfBhAQdq j0XwcevUQx/JF3i4DsLsVWTPD07eYKmRzsHZmRoFMkGrnMgVEHL04p3So0NNoHEXupSRfSfsgzca/8 npTJ0Rg2JkPh/NgMyrhGq+IYI7SL6gJr8j0vQxoX442T1P8h8uEzDWglsLUA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2404; h=from:subject; bh=NRZzV2Wm+qN1hLpw7oPDOvO2yOStk7XcopUutjYf66w=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBht8o5I5L7op6wxBNo8ZoE2HZhjRGQ3UxHlr8nNIus yAqJvR6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYbfKOQAKCRCJcvTf3G3AJp1zD/ 9jAFtNeIQm4EewUKA78ifdR6IkV6fNLr41dqbxD0xSgeQS7WokCTQXDEw8OfoPXzLUR0Jdi66DbXNg KG+CiCejrRqs6r08bnPj02LGJEyYzQ7ZwUShJC7B1rJ4Tn7NIVLWlKK29Wbi+eocXdHhSFKezYG3SQ 6Ltml+Nij5zu1T9ZZk09JiJg8zP3JekDyjIq7BGuZWAhddAU/l/C4eLIFQcFaF7huoImo3aXgVVVyI H19k9KJR9zQPTsr8wrHwCVVmlaQISb3Wy8DXFFBwFHz6K7L4mse4I3HxL64l/wJzZbpqVfJ4OXiyyU eIk2EekyUx8315bGoYkRryWNwIlFmiwOJsx9ZGX4HDKGqCGbrOFfAVUzn3rvJEjiBVCoqXxoU47qFq DW6AMqHa4Z2J5I+fsEdrarF+6Rs9MWFeOlPvt0KMsLCCDAgqiKiwK+RYNpR23zuSxXCUi5LjZbIySf OLs7o0i5LHW5129oVTW+uQELXJbUBN/EW9FJEd9GmR6USXdaFAK5+nbAJVZBuC33NIKnkwN09UcGMr LYIkrtghJWNmsCfcZXFJH/ZnAkh07XbcEjVILyAt2qfoTTD4zTJbBGjMdUumewIKLCurQoVF4LvpDL IJu5l+8Fr4zZRE80JbW+hvIlyij8sNL/K7c+cvFvR39dgMXtliIXLXRzui3g==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -69,42 +72,63 @@ In preparation for FORTIFY_SOURCE performing compile-time and run-time
 field bounds checking for memset(), avoid intentionally writing across
 neighboring fields.
 
-Use memset_after() to zero the end of struct mlx5_ib_mr that should
-be initialized.
+Use memset_startat() so memset() doesn't get confused about writing
+beyond the destination member that is intended to be the starting point
+of zeroing through the end of the struct. Additionally, since everything
+appears to perform a roundup (including allocation), just change the
+size of the struct itself and add a build-time check to validate the
+expected size.
 
+Cc: Potnuri Bharat Teja <bharat@chelsio.com>
 Cc: Doug Ledford <dledford@redhat.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Raju Rangoju <rajur@chelsio.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
 Cc: linux-rdma@vger.kernel.org
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
-Link: https://lore.kernel.org/lkml/YbByJSkBgLRp5S8V@unreal
+Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/cxgb4/cm.c            | 5 +++--
+ drivers/net/ethernet/chelsio/cxgb4/t4_msg.h | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 4a7a56ed740b..ded10719b643 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -664,8 +664,8 @@ struct mlx5_ib_mr {
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 913f39ee4416..c16017f6e8db 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -2471,7 +2471,8 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 	skb_get(skb);
+ 	rpl = cplhdr(skb);
+ 	if (!is_t4(adapter_type)) {
+-		skb_trim(skb, roundup(sizeof(*rpl5), 16));
++		BUILD_BUG_ON(sizeof(*rpl5) != roundup(sizeof(*rpl5), 16));
++		skb_trim(skb, sizeof(*rpl5));
+ 		rpl5 = (void *)rpl;
+ 		INIT_TP_WR(rpl5, ep->hwtid);
+ 	} else {
+@@ -2487,7 +2488,7 @@ static int accept_cr(struct c4iw_ep *ep, struct sk_buff *skb,
+ 		opt2 |= CONG_CNTRL_V(CONG_ALG_TAHOE);
+ 		opt2 |= T5_ISS_F;
+ 		rpl5 = (void *)rpl;
+-		memset(&rpl5->iss, 0, roundup(sizeof(*rpl5)-sizeof(*rpl), 16));
++		memset_after(rpl5, 0, iss);
+ 		if (peer2peer)
+ 			isn += 4;
+ 		rpl5->iss = cpu_to_be32(isn);
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+index fed5f93bf620..26433a62d7f0 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/t4_msg.h
+@@ -497,7 +497,7 @@ struct cpl_t5_pass_accept_rpl {
+ 	__be32 opt2;
+ 	__be64 opt0;
+ 	__be32 iss;
+-	__be32 rsvd;
++	__be32 rsvd[3];
+ };
  
- 	/* User MR data */
- 	struct mlx5_cache_ent *cache_ent;
-+	/* Everything after cache_ent is zero'd when MR allocated */
- 
--	/* This is zero'd when the MR is allocated */
- 	union {
- 		/* Used only while the MR is in the cache */
- 		struct {
-@@ -718,7 +718,7 @@ struct mlx5_ib_mr {
- /* Zero the fields in the mr that are variant depending on usage */
- static inline void mlx5_clear_mr(struct mlx5_ib_mr *mr)
- {
--	memset(mr->out, 0, sizeof(*mr) - offsetof(struct mlx5_ib_mr, out));
-+	memset_after(mr, 0, cache_ent);
- }
- 
- static inline bool is_odp_mr(struct mlx5_ib_mr *mr)
+ struct cpl_act_open_req {
 -- 
 2.30.2
 
