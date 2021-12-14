@@ -2,162 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04864749D1
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Dec 2021 18:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F60D474A7B
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Dec 2021 19:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236664AbhLNRjj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Dec 2021 12:39:39 -0500
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:5058 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236657AbhLNRji (ORCPT
+        id S229807AbhLNSJD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Dec 2021 13:09:03 -0500
+Received: from p3plsmtpa08-06.prod.phx3.secureserver.net ([173.201.193.107]:56060
+        "EHLO p3plsmtpa08-06.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230205AbhLNSJC (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Dec 2021 12:39:38 -0500
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BEGYB2I024960;
-        Tue, 14 Dec 2021 17:39:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=LPEV437/J59RSntZNHuUWLr7CITQnV5ZU5cENAcPTtI=;
- b=yQgOfrCqT8ZF81/fAisA+toMr7W+w7dCa2N6e2/QqCGHoXq+r/z9oprofZHGF7UeeIK3
- K0t7DYwaQB72C9WPpP9ffdzQgOdic3rBpnHlyDQXpY82nhuYPnhBkIDmfdiiWMqDUzmv
- CbaMIChwoysZEgblBBeBltiAbP8JBQT34s2lim1ZxFFO5RC4knbqCCOOx8XMY/jjfbu4
- GwpvTz04jpS7fi+r6De0Y0k4PzJDFHb81IjPo2A0L9kduCD6dX3RuySCln8JaUJtZ95z
- qiAyaU0l9mxz6MeF2X0ibO2B+qZcmIa0YHNZ10x+yPtCvf18m3Z2+M/ZCwmS1EKkhhXJ fA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3cx3ukch4v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Dec 2021 17:39:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 1BEHZMnr075496;
-        Tue, 14 Dec 2021 17:39:32 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2172.outbound.protection.outlook.com [104.47.55.172])
-        by userp3020.oracle.com with ESMTP id 3cvneqc1a0-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Dec 2021 17:39:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SSDm4fQA8IKuYrGfMAfBBvsoU6F+W0Pr46Sou0A/i/Yn6sYqgxf95OYIFOBa+TzRm4LVprqUpduXAtu95/PMNEtFFMx2LHJIi7aKr2YVww8Zb3x+VT9pl+dczfA9e8bIwIV14zKAtHH4R54YZ124euxr/9NNN8IPGOlrWY2UpvdQgogYnvn+pl5sv5fbW5Mz/c9wR1k+tj3M/0Su/bH9vjfglShGKhqHXKcorbq1rswVdT0oHRso2IWOAYxzRoDrrTQxNAUUJt6naopcijhGsU5RJVrwE3l59+Z3tmuhCjZZ0CM/AiwjZA3msb5Fq/GzCTdui0izAxXPc183uuXtvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LPEV437/J59RSntZNHuUWLr7CITQnV5ZU5cENAcPTtI=;
- b=GJ5PtAnidvx3k3SGl4Gkgh5+ll+gCjH9mA59gcYG9d6JwxH8mc6rWN6NhwQ/aPaaGR99Vli2tBt6ioEHl2rfdvKZqptCutQsNjfKZJl2yfTQBlbbToHmfIba+HlsV2/dV9tp4+lxGeTkM/ER/izjMWeMcVbdT2opOI9He0yXDXjyXcryRYqeUSosMpQJFVX66yNosQHXgmZZGLM7yNrce6Fl3pCAagW6RxVL217BHTT4ev0jFJ23LeXWQerumZMrWtxDfhX+qwDcGQW11niUvkyBxh8AfymHcy3IMjKGbPqsu28KuobB69BFR0XlTtO2yCljBU9794hq7qpCpgMr/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LPEV437/J59RSntZNHuUWLr7CITQnV5ZU5cENAcPTtI=;
- b=Jp6NLFIPIrZBcYcE54DmS9H0aZDR+4WvbE1FhOHNJuxLOyDCao00eNaVK8RkKrYZINV7fuo4Z9xLRrZ96NOLN7KPhZTDXAuX4b/vhP4kLQnv3VOgQTXqqtBtd6LvaW7NsktRgK7wBbbx6kF4NnXsFqIEpei/+V/vzQBx0PZCUDM=
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com (2603:10b6:a03:159::25)
- by BYAPR10MB2712.namprd10.prod.outlook.com (2603:10b6:a02:b3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.16; Tue, 14 Dec
- 2021 17:39:29 +0000
-Received: from BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::4d1a:c742:9add:800b]) by BYAPR10MB3270.namprd10.prod.outlook.com
- ([fe80::4d1a:c742:9add:800b%5]) with mapi id 15.20.4801.014; Tue, 14 Dec 2021
- 17:39:29 +0000
-From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
-To:     Hangyu Hua <hbh25y@gmail.com>
-CC:     "David S . Miller" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net] rds: memory leak in __rds_conn_create()
-Thread-Topic: [PATCH net] rds: memory leak in __rds_conn_create()
-Thread-Index: AQHX8RGLrqo/nlvnAU2xcbmPLjHpsw==
-Date:   Tue, 14 Dec 2021 17:39:29 +0000
-Message-ID: <017A6000-BEAA-4684-9A3B-BE7FC40E1DB1@oracle.com>
-References: <20211214104659.51765-1-hbh25y@gmail.com>
-In-Reply-To: <20211214104659.51765-1-hbh25y@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3608.120.23.2.4)
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0e870c76-87ec-4d7d-d5b9-08d9bf28ae80
-x-ms-traffictypediagnostic: BYAPR10MB2712:EE_
-x-microsoft-antispam-prvs: <BYAPR10MB2712CC3B88DCB17DECB063C593759@BYAPR10MB2712.namprd10.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:478;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Gys8qRBkJRi7+4x9Y3+ZEos7cM9A17uu32mH79X4HM8zEapBL8hfdiW4bRsNrbievh+81BnGdxsCTcVLOdA1G+VwxXvVn6hEVu3TdzHCksHgMsUMXyk3qPvB+8hB0ggsjyrXm91WcpgBj0NVzPmdb6TjgovFBHdMUg2PhdmDIAAKFNZZR8RsZu/U/YSs6b5P/+j4kMb2/yguNzl0RfL7EhAdwF6MlFECVkcFzB77eNCEoFgja5XKkzOTr07/r5aRbKsHdg4JyPzmlY7U80ASAKjRTVQOwFlxKwA6npg9XU1wsVDRi5IORgz6WgtwcwoRdDECNu8QcSHrIf4bp6MkNTjIUdmPeE3s6FNUOxsWEcZiCh99Qa+AklBDmRgcTerg6n3pelGA4mWz44IH8QKsklZaLWAuRvJHS806tkbSpHxuluaPhXgGzELZdWw2teCUV3SsQp+06TytPpbp9ajIoF+Qybt76xwgWj6w05+GRA2Ou/GfyiFGuMx6g1rM5XnEwoVOU5DZqtvCD681S8tw9tmPHB4CuHWO8DIT+lVjILEXD6jTr5JBwZl6bqmwhvwZgNc9Bjog7PEqRVXhivfB2AeZHZKkEjzI9ACubjJiFI9h1c5zDHLiZ2ii5TZcBUIRvhLDpUTDBbVAwIx941x5WcvhDAZcYtMezMPQwALBThptQevCpQ98LsnGHYPpBaICciCTavnZDdANq0YeP2CVM95AzYunSO5iQFLMjjYnQorNce7IBswO3Lx+d+eVo06f
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3270.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(66946007)(91956017)(76116006)(86362001)(6512007)(38100700002)(6916009)(44832011)(2906002)(53546011)(4326008)(36756003)(26005)(186003)(54906003)(6506007)(66446008)(38070700005)(316002)(64756008)(2616005)(122000001)(66556008)(66476007)(6486002)(33656002)(508600001)(8936002)(5660300002)(4744005)(71200400001)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8rDy3pfIBdnC4hh0Y54GT9NQXNBHRFf9snkLsWinqpyH+VLxePQv+12PyrWz?=
- =?us-ascii?Q?N7dhL/iErrlkr0YvSjznZ8y/4qXhvNVJC3pfdenpnnN0pzDMZuIiHvj89K2j?=
- =?us-ascii?Q?zfJA2n2nTUu4Sy45FaN6SdfdMWDFql/SfgAv4kj7b4pFhHweOlMg3LwPdCCC?=
- =?us-ascii?Q?tPH2XyNDVSbhk2tNfN6ff8uBDBcmsKJti/qp5P1fcEI9FccuPTtFp4l7QDdy?=
- =?us-ascii?Q?OtlVNwOkMUtyYNzBmb5lVJcL5aep5FdFRWsgG5RRuTGaA6lnDoIuljwZPh8l?=
- =?us-ascii?Q?n7iIZCTre44goR9N/5jE8nZMyADqQc5u5ZRkP1Wf/jhzRlViz8FlLbc19nsW?=
- =?us-ascii?Q?ON7LZmDZxo89rt7cr9m+/EZMf5r3y5FxBmEIbqsSbESkUrzwQcHLEj5sWt72?=
- =?us-ascii?Q?hEuWGFL/ffvtAs3SKR9YJOU+LYtDeDRNcMbg6f7ExjKy152Rv07Czs+A/vPF?=
- =?us-ascii?Q?I9I9sbcmn3HS1WcZmC1vHP3r/WBGLKE2rpdVN5h2fZ+f5cLsfmPsk0T6uiiW?=
- =?us-ascii?Q?eEb9T5og0wwelUbaU+Xw3BEbbAQfTuaseRROFrAIpwzcJHsNWn3DNm9cIQnc?=
- =?us-ascii?Q?TjTXTkaVULTmHm8WHEnc27KZ7vvenRYkApkJfZDa8WeokwWhQRMtzc8325LM?=
- =?us-ascii?Q?iGlXXWPMS3ZHDJ/DaVuehz3iq+qnIbpE5bGIvwTqs2sepHXDPhxdrqx3iQ3u?=
- =?us-ascii?Q?4uMbsdtQ0Y2NMNLcOzxPOcIPbmWgrjLiXsTnEa+hJQUYbLYD4BRWoAQlAKe7?=
- =?us-ascii?Q?f+4Sb81yfS/gC4897ehDl4u0zw62hbkYDj2n0Nms8wc99gGGPvFMq+ydrb2N?=
- =?us-ascii?Q?lIer0A8DjYnYJsNuz/cXVGDI905Kq1KUF62/AMVxQNw3s5L56CbaUMQo+z2B?=
- =?us-ascii?Q?kQxTrhqOx16AjriLEnER8BoWmXtrAJaJfubUiPyKhAMKF5EivGvrWnRXgPpr?=
- =?us-ascii?Q?IkwINBj7lN4zaQ1M5MTjVPPLM3/416hUyn5VLwH788zAmheGaqAm1Bkg+1HI?=
- =?us-ascii?Q?QSGa86VUK+/lQIiJht3cWglJGKxLapKKT6hlTCtMo71IAJk+X/1Zm+7dS6a3?=
- =?us-ascii?Q?MnPhda9bB+wXz0wENu8fkRadOJ88CrmjyvG3Lt2+AUK2aYkSs6W2RnqECr1A?=
- =?us-ascii?Q?uxiOGbPfMUxYFdxVcrcMyMSMEVbA0M4FDXwHEekAvaldqI5ht6j8V+Vx/ECA?=
- =?us-ascii?Q?SJ3jSTLXV1Rg9XMMTU3vLeqg+5ALiQp4OQVbu4s+VLEkP1d1Qu6YYRVni+1q?=
- =?us-ascii?Q?vtn6x1vmyWEn3JWMs+vs5zfHBtBNmNlml9yYd6QvqLqGSjKDihKcgBo7NOLh?=
- =?us-ascii?Q?027kLnJGoGGEJtON4MZqgmfwn12q2QybpYlDKaZ93dyNBnj0cmEDk550dKPu?=
- =?us-ascii?Q?ubjRaUqZCKULUJba9dCFhdPkW8VWXcai8Q5Rr8ujtValQDS4vqWKWUOXNlHp?=
- =?us-ascii?Q?P90S9reRWKX21ns9KqxqOAl3ahsD2NlOy7CtL4V15UWP0KabvvIOLQZCg4rw?=
- =?us-ascii?Q?rcKfwRJs5vIw6cFS0AdBIUooYN7+THOYqW62mfKv69q2O6e70k+ZXbHFQAIZ?=
- =?us-ascii?Q?+mjDmjV+SDdw/m8pJwDuKJFYNSF8wE2kb1NwEiLrhX38lViwjQuG0Y2Vxlhf?=
- =?us-ascii?Q?i0kBdk6IcJGFrskbnpwtCwaYTIutzLroBQVu0QAOWI9tzNV7QrQ7Izer/zAa?=
- =?us-ascii?Q?8/4BHNFgIAXyNxxzM9RzrWNm/Us=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <DF7AB20FE8934F42B404D7D6A3B99E08@namprd10.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 14 Dec 2021 13:09:02 -0500
+Received: from [192.168.0.100] ([98.118.115.249])
+        by :SMTPAUTH: with ESMTPSA
+        id xCEWmxHk13bRFxCEXmgLuZ; Tue, 14 Dec 2021 11:09:01 -0700
+X-CMAE-Analysis: v=2.4 cv=M7OIlw8s c=1 sm=1 tr=0 ts=61b8ddbd
+ a=T+zzzuy42cdAS+8Djmhmkg==:117 a=T+zzzuy42cdAS+8Djmhmkg==:17
+ a=IkcTkHD0fZMA:10 a=OLL_FvSJAAAA:8 a=4G91KBac-zdFnW2vvykA:9 a=QEXdDO2ut3YA:10
+ a=hElz_HbCIN8A:10 a=VbPY3t8NEt0A:10 a=oIrB72frpwYPwTMnlWqB:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Message-ID: <22f9f724-380c-978c-fc4d-729006c12a5b@talpey.com>
+Date:   Tue, 14 Dec 2021 13:09:01 -0500
 MIME-Version: 1.0
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3270.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0e870c76-87ec-4d7d-d5b9-08d9bf28ae80
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 Dec 2021 17:39:29.5505
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /XWuGuG0hNd4TKcRShUx/FfmUOvf4WCNnh9MmOnbNqa/n7kgL3eZOdN9eFuTBBCnnBD0eRW+xR4PCL9wnRz15QxS6anOCdqVcUmP/vZLTk4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2712
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10198 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2110150000 definitions=main-2112140096
-X-Proofpoint-GUID: J-PotTFzge70GfyWXKD2vLeVZIy5Z9YX
-X-Proofpoint-ORIG-GUID: J-PotTFzge70GfyWXKD2vLeVZIy5Z9YX
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH 1/1] RDMA/irdma: Make the source udp port vary
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     yanjun.zhu@linux.dev, mustafa.ismail@intel.com,
+        shiraz.saleem@intel.com, dledford@redhat.com,
+        linux-rdma@vger.kernel.org
+References: <20211214054227.1071338-1-yanjun.zhu@linux.dev>
+ <b80a409d-3404-75d2-449e-7b8f41296f26@talpey.com>
+ <20211214172951.GI6467@ziepe.ca>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <20211214172951.GI6467@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfKFLPdY49vMk2WaMm39K8nahIlDSKs+jUukRb6zLXhoa9l98azqrLRUiW4IlnPXVlO5QJQM6vcz0afmsQFLpFmUIgK74pMvxv1u79sRxWKYDiKeOSATC
+ 26zDeQ9YxY9CJz0iqXxdTVZnC4rN2ldJdah9eJLQMgqzVY4eiEWMTl/02j3twRZHnhrls0QO42wvS5ZayfVKl5RByxO0V028CDlNfMeYVz9385zlxawCy/xG
+ 754uxg6lZLz+z8qYyTPpcrYC6ZJIKhkcoJeOoaGXada7PNTs2/g2bPrBAI2mWXheEhumlzTO8Y3CtkqGH8PX+nFHcclm9bD+jbcCSlDibWPMySzNb72dWvuH
+ jQL8j3ef
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 12/14/2021 12:29 PM, Jason Gunthorpe wrote:
+> On Tue, Dec 14, 2021 at 12:27:24PM -0500, Tom Talpey wrote:
+>> On 12/14/2021 12:42 AM, yanjun.zhu@linux.dev wrote:
+>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>
+>>> Based on the link https://www.spinics.net/lists/linux-rdma/msg73735.html,
+>>> get the source udp port number for a QP based on the local QPN. This
+>>> provides a better spread of traffic across NIC RX queues.  The method in
+>>> the commit d3c04a3a6870 ("IB/rxe: vary the source udp port for receive
+>>> scaling") is stable. So it is also adopted in this commit.
+>>>
+>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>    drivers/infiniband/hw/irdma/verbs.c | 7 ++++++-
+>>>    1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+>>> index 102dc9342f2a..2697b40a539e 100644
+>>> +++ b/drivers/infiniband/hw/irdma/verbs.c
+>>> @@ -690,6 +690,11 @@ static int irdma_cqp_create_qp_cmd(struct irdma_qp *iwqp)
+>>>    	return status ? -ENOMEM : 0;
+>>>    }
+>>> +static inline u16 irdma_get_src_port(struct irdma_qp *iwqp)
+>>> +{
+>>> +	return 0xc000 + (hash_32_generic(iwqp->ibqp.qp_num, 14) & 0x3fff);
+>>> +}
+>>
+>> How do you ensure the resulting port number is not already in use?
+> 
+> It doesn't matter, it is never used by anything, the receiver captures
+> all data with the roce dport and ignores the sport
 
+It still violates core networking addressing principles, and will
+mightily confuse a network capture that's filtering on source ports.
+Firewalls, ICMP, and similar fabric behaviors may also interfere.
 
-> On Dec 14, 2021, at 2:46 AM, Hangyu Hua <hbh25y@gmail.com> wrote:
->=20
-> __rds_conn_create() did not release conn->c_path when loop_trans !=3D 0 a=
-nd
-> trans->t_prefer_loopback !=3D 0 and is_outgoing =3D=3D 0.
->=20
-> Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
-> ---
-> net/rds/connection.c | 1 +
-> 1 file changed, 1 insertion(+)
+SoftRoCE is forced to register/reserve the source port, isn't it?
 
-Looks good to me. Thanks !!
-
-Acked-by: Santosh Shilimkar <santosh.shilimkar@oracle.com>
+Tom.
