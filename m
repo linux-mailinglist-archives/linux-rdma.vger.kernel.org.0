@@ -2,43 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEA4473EC7
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Dec 2021 09:54:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8991473EE6
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Dec 2021 10:02:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231962AbhLNIyA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Dec 2021 03:54:00 -0500
-Received: from mail-mw2nam12on2049.outbound.protection.outlook.com ([40.107.244.49]:30336
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229577AbhLNIx7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 14 Dec 2021 03:53:59 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i5hk1X8VlkNS9dGMRxbpbh99SeMOTOmrEUe32+fgR83b+4PXiIrQq3b8n38TTkfQCa2jXxL8z1LoPynHp6gQRnGqK4lpLOM8tstBIobJZGVF+P3WWyus1xw8xn0gU4yaKHdLIEqJsgkUw73i/N5vrDnUA70DFmjVmnsF603aPe+6dt15p522vIl2fNSK8O4ZZIFhr/OixiWB4k0Xi9qeU8/+HP2JazW+8wQ1XyN9meHG0wv/Cc/5LfI09YaSaCq0q5G4u2sYcAz5OdE2MqcsQL5oiR9KgPfTwXryAYWxn6GKo03I5k+VIsnQSEAZU1w+cePB59cnTYRSIEZHnNLoLQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=B4QjqZJxxEXwnjWMthS/5VhLYxHk318ynpG8zZIbfhA=;
- b=aD+UYUC5L3rKRlh19BzbNSYQbyA+UdDUjEGMplp6brxBdTDsC/SD0E89xdRnwgBqla6NYdUDab59dya196jPZKL1LlQI/lVTZnAxIUegXjC81bnmxL1hrMsKgWBwAYy3dXO8jz/RFDSuBSItf6TSDEkAiHlTa9XkWDq0clD9JwsVhag0G8/m2pX5Gxi41g0s0YRhuJG3Mtr7XxpKa3+1B0IY27QKF83JCkvezqWiqMoQGwvT1fXHFbYYmX6NjyRteN35SloXgAwMSHBmpfyvd6sWerdwO4g4tq6niHyVQtrDPTvTwkpMFo6gVafD43pBoEYTjO3WH7BTnsdDzEtHTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B4QjqZJxxEXwnjWMthS/5VhLYxHk318ynpG8zZIbfhA=;
- b=TpXyxJiI8Dbl5KGHFn17hExQhyKyQBLil6LCK9mjMGKkVOZPV6L13GdpWZPk7j/1vwQInqS6DJdm/eZUNAA8N2R5QU3co0PUnh/g20UXMHpV4/l90EtF0qsvRX3lBT8RRfRa2ZQa/XL2VTLtHSnbAuM03asj3FJnumPNSPdwf24=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14) by MWHPR12MB1678.namprd12.prod.outlook.com
- (2603:10b6:301:b::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.17; Tue, 14 Dec
- 2021 08:53:57 +0000
-Received: from MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::d16c:a6d5:5d2e:f9d4]) by MWHPR1201MB0192.namprd12.prod.outlook.com
- ([fe80::d16c:a6d5:5d2e:f9d4%12]) with mapi id 15.20.4778.018; Tue, 14 Dec
- 2021 08:53:57 +0000
+        id S232050AbhLNJCr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Dec 2021 04:02:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhLNJCr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Dec 2021 04:02:47 -0500
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77637C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Dec 2021 01:02:46 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id p8so27338649ljo.5
+        for <linux-rdma@vger.kernel.org>; Tue, 14 Dec 2021 01:02:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=igel-co-jp.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=jFBX9yl8OuZno/C6fLygAYklHtY6iYJvavTvIpDFcxo=;
+        b=eOnBTKDAk48mXNMWjJMfNcm5m2oT2n7RkpgCV5azH66/22m89o5Dd+6UXFC4n2s9zY
+         zN7vD2aYRZ1v1dzLejVTTn1PRXVoXAcxDX1AUVWmNHqlmYkGerHx4Z1gl7cYcknj1poX
+         6hnuBLLCO6604rDn4NtH2c/+lLFBqlptbngyiddsBVckkBqKHyFoBErfukYk9s509U88
+         hxkz71PHunNncPzyi/iaWK6FSb6J7K/1HbxWjRPQXtBGGJiv8T5v5IPDEgtSkjQtbgd7
+         dqeXvFd6NCknuZL0CKtPizpDdSb+c0ezAKKqRuX+rg/+igOv0C3m5XYp6K+RD1hvuAGs
+         zGoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jFBX9yl8OuZno/C6fLygAYklHtY6iYJvavTvIpDFcxo=;
+        b=xC+q0FZgVAidX2dAFC8alERHCewBT8scnTj8S6sru/3hX09b6rzKWVZnPczkICh66t
+         ql0axuvwdyF8yWx5YB6L5ZdRUHxIK6BMsB22bdbvnU2lwFsd24gp19OYgfpElZUe96DK
+         WpkOniP/teJMgD5iB9VnAPF/Fn5QY8BqzeDLUw6DIhzk91IsQPKiV5kddsy8qNyBB6nS
+         aPLY/QwpJDZlFO+7NJLZQAqItKZzjwjo87hlLu7AmDZCmgxqvsER6DMgWdDj4UwAmwuq
+         0ndSLU5WDaxUi/q3P3VfRfCwlzrNccDuiiGtRnRdTd6Pcs4/0FseQ4UaXBFDrOSMugT4
+         9obg==
+X-Gm-Message-State: AOAM533eO3KkFz6wHdF78OBJWJq2mxIeHMVZPkS7xFDyqxaSXZCcqsQM
+        sKI8PLra1PAzvnyaG4lDMHgCi2VSgnjjwe5lj4azsg==
+X-Google-Smtp-Source: ABdhPJzch8DjAwgC+U70MPuToKQq3f+VPd1o4wk1gzly+UxZwlYNEPITNyH13qa9lAhfykr0jNmgObXlMM/g5DDYrt8=
+X-Received: by 2002:a05:651c:1791:: with SMTP id bn17mr3741577ljb.525.1639472564655;
+ Tue, 14 Dec 2021 01:02:44 -0800 (PST)
+MIME-Version: 1.0
+References: <20211122110817.33319-1-mie@igel.co.jp> <CANXvt5oB8_2sDGccSiTMqeLYGi3Vuo-6NnHJ9PGgZZMv=fnUVw@mail.gmail.com>
+ <20211207171447.GA6467@ziepe.ca> <CANXvt5rCayOcengPr7Z_aFmJaXwWj9VcWZbaHnuHj6=2CkPndA@mail.gmail.com>
+ <20211210124204.GG6467@ziepe.ca> <880e25ad-4fe9-eacd-a971-993eaea37fc4@amd.com>
+ <20211210132656.GH6467@ziepe.ca> <d25b2895-63b6-158d-ff73-f05e437e0f91@amd.com>
+ <CANXvt5rzmEnF3Gph4U6NT-XzJhV6zqyay1g7dHkTgH=Aqc6Geg@mail.gmail.com> <51bcad64-8df8-b9a3-0aef-d88eb70fdbba@amd.com>
+In-Reply-To: <51bcad64-8df8-b9a3-0aef-d88eb70fdbba@amd.com>
+From:   Shunsuke Mie <mie@igel.co.jp>
+Date:   Tue, 14 Dec 2021 18:02:31 +0900
+Message-ID: <CANXvt5qVrfeGthzckcZh8xgu1JPG1k84rh1Q-hn2a8K6o0yPJg@mail.gmail.com>
 Subject: Re: [RFC PATCH v4 0/2] RDMA/rxe: Add dma-buf support
-To:     Shunsuke Mie <mie@igel.co.jp>
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Daniel Vetter <daniel.vetter@ffwll.ch>,
@@ -55,158 +71,100 @@ Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Zhu Yanjun <zyjzyj2000@gmail.com>,
         Damian Hobson-Garcia <dhobsong@igel.co.jp>,
         Takanari Hayama <taki@igel.co.jp>,
         Tomohito Esaki <etom@igel.co.jp>
-References: <20211122110817.33319-1-mie@igel.co.jp>
- <CANXvt5oB8_2sDGccSiTMqeLYGi3Vuo-6NnHJ9PGgZZMv=fnUVw@mail.gmail.com>
- <20211207171447.GA6467@ziepe.ca>
- <CANXvt5rCayOcengPr7Z_aFmJaXwWj9VcWZbaHnuHj6=2CkPndA@mail.gmail.com>
- <20211210124204.GG6467@ziepe.ca>
- <880e25ad-4fe9-eacd-a971-993eaea37fc4@amd.com>
- <20211210132656.GH6467@ziepe.ca>
- <d25b2895-63b6-158d-ff73-f05e437e0f91@amd.com>
- <CANXvt5rzmEnF3Gph4U6NT-XzJhV6zqyay1g7dHkTgH=Aqc6Geg@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <51bcad64-8df8-b9a3-0aef-d88eb70fdbba@amd.com>
-Date:   Tue, 14 Dec 2021 09:53:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-In-Reply-To: <CANXvt5rzmEnF3Gph4U6NT-XzJhV6zqyay1g7dHkTgH=Aqc6Geg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: AS9PR06CA0165.eurprd06.prod.outlook.com
- (2603:10a6:20b:45c::12) To MWHPR1201MB0192.namprd12.prod.outlook.com
- (2603:10b6:301:5a::14)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 48504754-f042-4ebd-5184-08d9bedf43da
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1678:EE_
-X-Microsoft-Antispam-PRVS: <MWHPR12MB16780CA9FA2D355C5C05C29483759@MWHPR12MB1678.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2FtiD7LfdK0RmjFlTHgHLvp79R/gIK7FFErAArqNtoEPNDr2i7Tu2icg9iLLZ+NLm1XgOgWdkmyOGR22gnnM5avl7WPzHOcZ0D1kAGJ9km87KwQexk+wJER9hfbWeyREW+Se17UIbvSJqr1VQMpFTr8l4/FE3zCi8VIXsUCH3ZenLz51TeSWOFYSHSzZfBg2vlDW+t9uM2NANVx0ne6ea8lHrRk6+dkQ5+DR1zHKaWgpchv3SwsASAcXmQNkfTdKqET3eyknGFe/nXy03rldwcheVXnRCe4P2VLcnEkEPAgty1r27tKlt7f0uS8JTiX3s3EQKf/LWCNpyevqyg6m3jkzQIeG3QO/xwvz87Jl4mk3UEX05WSM73qaNUw3NaCe5o46fFSb78jshl9xfEMb1qTuKA93q7dTRiR1Ot1UXxgMYXD0MF7yPot16cwDHdGk4WAF2LX6WBnvdP/F+AZh7vQMVeWDs1WPa7CeEg/g7c/GRpfyITaIert1Qv7RS/H6Yx0W4ul7nFKZc5YlHUX2nPnwVocsFxbK39RKK4mxMVLyc4Zg6Bcdg26xVJgmaOTaEZKLY02T4LdJxYTlDIFips3kVfhjS6BWooFF+FEeBQIJOgDSKm6F5c5b1XJtarpa8lP34nSftOtcPUdXspxUzdxLJyu3ZPSiY0lJfGVQyFnshm8w4IupXDDDNx5kZjyTe2uas3xXGi9dIMQbv8oBp1BNlAF4SZiBVVCtR+Xuifkdl/VhPyvGAVgnyBvgDWLr
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1201MB0192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6916009)(316002)(6666004)(66556008)(36756003)(54906003)(66946007)(508600001)(66476007)(2906002)(83380400001)(38100700002)(6512007)(6506007)(4326008)(7416002)(31696002)(8676002)(86362001)(6486002)(26005)(186003)(2616005)(5660300002)(31686004)(66574015)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?M3pLeTExY3ZvWUNRaTY0NXdlMnRZajFKV1hkdmtDTUxLL2YxTGlGY3ZlN1dr?=
- =?utf-8?B?RjRyRytiZGtaUXIyVFNycGJVOE1lak5lUmdZS21WYzgyc2N3N3JyU0RIY1hN?=
- =?utf-8?B?MGxJRDBmU1BSNTRHZTFOZ0tDQkdnbmlRZ0xFcTJWdnA2UDhFTXJHQkEwMWZW?=
- =?utf-8?B?L2RlaXZLVjEzVldNb05ib3pRc081V0NPRncyUzFDMDgxZEZpNjlIdk1pbVFL?=
- =?utf-8?B?L3h4QzZTR1VSbHRucmN1aUsyY095a2NCckEyME8yWmVSTWZ5dFZNd3Z1YzVI?=
- =?utf-8?B?ZC9taS9tOUJNM3NyZnpqL2h6OHdWTTRtR3dQc21OZTgyd3FlRWd4M3Z0aDlL?=
- =?utf-8?B?T0s0RWhnaml2L2tEQm1BbFpsTWJicmx0VnRwT1FDTlRrNGxZVWNJMnVMRFM5?=
- =?utf-8?B?RVNrcmJFWGhPWWpnRU5jVDBuUEV5OXlrOWpFWVF4RllXK3UyVVR4RVJvcGhV?=
- =?utf-8?B?Z0ViR05mbEkzMkVZblkvRzAySjJzYkdDblJkWVlzSTVyUEVqd01teDBpM3B5?=
- =?utf-8?B?NkhUNStpSEYyUC9Va2REdC9oZDFSQzQ1TXM4UTgvdER5YWRxZUJWbERFVjRv?=
- =?utf-8?B?cXVDNFJic1V3aUdSZVA3NXRrQ1ovalJ6U2R6anhqSGpTcDRPTWZybG5UZFkz?=
- =?utf-8?B?azJ6Yi93bUk4VmREZjZQOXBnRUZnTkc2czhqMEdyWDZjNUZrYmxReVdOWXZm?=
- =?utf-8?B?RWU2N1VDZnZGSlhhNXJlVlJ1L240WkxMTGtma1BYT1BvaTlSZUtrWWZLY0VF?=
- =?utf-8?B?OFUwaFptOU5kQzR3ZkVWT0RqYm1QSkh2cnBRM3pzZnJnV0pKRkxkMzZEOXA2?=
- =?utf-8?B?cTZjeWxjTlFUQWlGeXpyNFpuaHhYYjN2aFJ1bEo1dEhMZ242TGlxZXV5ck9Z?=
- =?utf-8?B?dWlmVjl3OGpQMmdRRk96aTV2bGtjMjVKQTN6K3ZJVzkrQ1NtZkFQMkRCbUMx?=
- =?utf-8?B?ZERER3ZXaW9jYXVOVGlxUlVVdjFmdURvYTdZdlYxQnlLMjFxUnYvRExuZVdE?=
- =?utf-8?B?d05WdjJjdVZoVS8yTzJTKzZEZFRSVHMveFJYYThPS3JIMXl0eUxZRm8xaWNJ?=
- =?utf-8?B?RUZ5bzBYUDFxRmpCcGJaOGtjOWFhZkF1YnFhMDBLbUlLc2R4c3FRcXNJUWRP?=
- =?utf-8?B?MlBrVXo4K2t3UExkNjBIdWJteHo1WWVDQ0tkQWRTYmp6MmwraVNkdUVra1or?=
- =?utf-8?B?cHM4ZTdjb3FOZStRQURSaWwzWDNUU0FVVnRMUzlMQysrcnBBc1NjRVQxdjJB?=
- =?utf-8?B?bkZMMXZRbG8zd0RBZTNIN09RNEM4d2hoY3hrL1BKZjIzcHQyamNGNFJXa0tP?=
- =?utf-8?B?Um9uTHRxTUtrVUFHSVVSb216UnkzSkhxVkJrYWJuQTZjdlI3aThScWl2Tmd1?=
- =?utf-8?B?NDZKWHJmK3ZpOWwwd28rVUtuM040TG5wanlYNzJ4M3E0UkpMd0hvTElnWVFa?=
- =?utf-8?B?MllOUGdFbnQ0VGhBRTBjNVFHRU90NVJGQW9mVndkUGw1Y2dubVNmeTkxdkxL?=
- =?utf-8?B?ZnpHMnc1VlVsNlIvMzc2ZFVYRlJzc0V3d3JUem1ZNkhqZm5zVnMvTk0zMHdk?=
- =?utf-8?B?L0U0bTFpa1lNZzcxMVA5VWxJcERseDh5ZmI1SEptQnNJdlJ5OHg3eXN4SERV?=
- =?utf-8?B?SWZ5K3EvOFhsT1JSaWtpV20wMW5Ka1llTFhkSnBEb2FzR2diZiszSUQvSkxB?=
- =?utf-8?B?ejdTc2wxc2RwU0hGdzd4UkQ1Mk95NzRMNGUzRWZqbm1tTHljZklDK2VMektx?=
- =?utf-8?B?Vy90Zm5CdnlzbGNnK2lSUG9vTFIzd3JZbFUvNmdvcGlZYnRWZThmQTNjMXli?=
- =?utf-8?B?cm9MZldSeUIwV09EQ2FUVXNpNXFCZUE1QTJsSzdwVmRwcERzZ2cwMklRc1Iv?=
- =?utf-8?B?ODIxOEFlWWxBQ2NZb1ErU2JGbUMybWpzTDBZaUFPS1FDNUhGRjVyREJ2QVNp?=
- =?utf-8?B?WU5aU0J6OTlKTEdBOFFSS2JHbG9MTzh5NHhhS1htUlo5d1N5ZzgwWFdzazVt?=
- =?utf-8?B?dkxWYlRtbU5wSlRMMStNK2ZLRHo1Y1JBNmRiSE9POCtnTjZScTAyQ2ZZUUY5?=
- =?utf-8?B?NFdpOXkwSEhib2MzVmRQUEd3ZEtJSlZrZzFjYTBMdmwvSDZNYTFvMEl0elpP?=
- =?utf-8?Q?Dg+w=3D?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 48504754-f042-4ebd-5184-08d9bedf43da
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR1201MB0192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Dec 2021 08:53:57.6870
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 0ScayXQET05Ytt1iHx6H0HVoiilR0QRd2GhVDN0r4KEzHoEE5MqB9f1KRSjmEbnX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1678
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Am 13.12.21 um 12:18 schrieb Shunsuke Mie:
-> 2021年12月10日(金) 22:29 Christian König <christian.koenig@amd.com>:
->> Am 10.12.21 um 14:26 schrieb Jason Gunthorpe:
->>> On Fri, Dec 10, 2021 at 01:47:37PM +0100, Christian König wrote:
->>>> Am 10.12.21 um 13:42 schrieb Jason Gunthorpe:
->>>>> On Fri, Dec 10, 2021 at 08:29:24PM +0900, Shunsuke Mie wrote:
->>>>>> Hi Jason,
->>>>>> Thank you for replying.
->>>>>>
->>>>>> 2021年12月8日(水) 2:14 Jason Gunthorpe <jgg@ziepe.ca>:
->>>>>>> On Fri, Dec 03, 2021 at 12:51:44PM +0900, Shunsuke Mie wrote:
->>>>>>>> Hi maintainers,
->>>>>>>>
->>>>>>>> Could you please review this patch series?
->>>>>>> Why is it RFC?
->>>>>>>
->>>>>>> I'm confused why this is useful?
->>>>>>>
->>>>>>> This can't do copy from MMIO memory, so it shouldn't be compatible
->>>>>>> with things like Gaudi - does something prevent this?
->>>>>> I think if an export of the dma-buf supports vmap, CPU is able to access the
->>>>>> mmio memory.
->>>>>>
->>>>>> Is it wrong? If this is wrong, there is no advantages this changes..
->>>>> I don't know what the dmabuf folks did, but yes, it is wrong.
->>>>>
->>>>> IOMEM must be touched using only special accessors, some platforms
->>>>> crash if you don't do this. Even x86 will crash if you touch it with
->>>>> something like an XMM optimized memcpy.
->>>>>
->>>>> Christian? If the vmap succeeds what rules must the caller use to
->>>>> access the memory?
->>>> See dma-buf-map.h and especially struct dma_buf_map.
->>>>
->>>> MMIO memory is perfectly supported here and actually the most common case.
->>> Okay that looks sane, but this rxe RFC seems to ignore this
->>> completely. It stuffs the vaddr directly into a umem which goes to all
->>> manner of places in the driver.
->>>
->>> ??
->> Well, yes that can go boom pretty quickly.
-> Sorry, I was wrong. The dma_buf_map treats both iomem and vaddr region, but
-> this RFC only supports vaddr. Advantage of the partial support is we can use the
-> vaddr dma-buf in RXE without changing a rxe data copy implementation.
-
-Well that is most likely not a good idea.
-
-For example buffers for GPU drivers can be placed in both MMIO memory 
-and system memory.
-
-If you don't want to provoke random failures you *MUST* be able to 
-handle both if you want to use this.
-
-Regards,
-Christian.
-
+2021=E5=B9=B412=E6=9C=8814=E6=97=A5(=E7=81=AB) 17:54 Christian K=C3=B6nig <=
+christian.koenig@amd.com>:
 >
-> An example of a dma-buf pointing to a vaddr is some gpu drivers use RAM for
-> VRAM and we can get dma-buf for the region that indicates vaddr regions.
-> Specifically, the gpu driver using gpu/drm/drm_gem_cma_helper.c is one such
-> example.
+> Am 13.12.21 um 12:18 schrieb Shunsuke Mie:
+> > 2021=E5=B9=B412=E6=9C=8810=E6=97=A5(=E9=87=91) 22:29 Christian K=C3=B6n=
+ig <christian.koenig@amd.com>:
+> >> Am 10.12.21 um 14:26 schrieb Jason Gunthorpe:
+> >>> On Fri, Dec 10, 2021 at 01:47:37PM +0100, Christian K=C3=B6nig wrote:
+> >>>> Am 10.12.21 um 13:42 schrieb Jason Gunthorpe:
+> >>>>> On Fri, Dec 10, 2021 at 08:29:24PM +0900, Shunsuke Mie wrote:
+> >>>>>> Hi Jason,
+> >>>>>> Thank you for replying.
+> >>>>>>
+> >>>>>> 2021=E5=B9=B412=E6=9C=888=E6=97=A5(=E6=B0=B4) 2:14 Jason Gunthorpe=
+ <jgg@ziepe.ca>:
+> >>>>>>> On Fri, Dec 03, 2021 at 12:51:44PM +0900, Shunsuke Mie wrote:
+> >>>>>>>> Hi maintainers,
+> >>>>>>>>
+> >>>>>>>> Could you please review this patch series?
+> >>>>>>> Why is it RFC?
+> >>>>>>>
+> >>>>>>> I'm confused why this is useful?
+> >>>>>>>
+> >>>>>>> This can't do copy from MMIO memory, so it shouldn't be compatibl=
+e
+> >>>>>>> with things like Gaudi - does something prevent this?
+> >>>>>> I think if an export of the dma-buf supports vmap, CPU is able to =
+access the
+> >>>>>> mmio memory.
+> >>>>>>
+> >>>>>> Is it wrong? If this is wrong, there is no advantages this changes=
+..
+> >>>>> I don't know what the dmabuf folks did, but yes, it is wrong.
+> >>>>>
+> >>>>> IOMEM must be touched using only special accessors, some platforms
+> >>>>> crash if you don't do this. Even x86 will crash if you touch it wit=
+h
+> >>>>> something like an XMM optimized memcpy.
+> >>>>>
+> >>>>> Christian? If the vmap succeeds what rules must the caller use to
+> >>>>> access the memory?
+> >>>> See dma-buf-map.h and especially struct dma_buf_map.
+> >>>>
+> >>>> MMIO memory is perfectly supported here and actually the most common=
+ case.
+> >>> Okay that looks sane, but this rxe RFC seems to ignore this
+> >>> completely. It stuffs the vaddr directly into a umem which goes to al=
+l
+> >>> manner of places in the driver.
+> >>>
+> >>> ??
+> >> Well, yes that can go boom pretty quickly.
+> > Sorry, I was wrong. The dma_buf_map treats both iomem and vaddr region,=
+ but
+> > this RFC only supports vaddr. Advantage of the partial support is we ca=
+n use the
+> > vaddr dma-buf in RXE without changing a rxe data copy implementation.
 >
->> Not sure what they want to use this for.
-> I'd like to use RDMA with RXE for that memory region.
+> Well that is most likely not a good idea.
 >
-> Best,
-> Shunsuke
->> Christian.
->>
->>> Jason
+> For example buffers for GPU drivers can be placed in both MMIO memory
+> and system memory.
+>
+> If you don't want to provoke random failures you *MUST* be able to
+> handle both if you want to use this.
+I agree with you. I'll add the support and resubmit patch series.
 
+Thanks a lot,
+Shunsuke.
+>
+> Regards,
+> Christian.
+>
+> >
+> > An example of a dma-buf pointing to a vaddr is some gpu drivers use RAM=
+ for
+> > VRAM and we can get dma-buf for the region that indicates vaddr regions=
+.
+> > Specifically, the gpu driver using gpu/drm/drm_gem_cma_helper.c is one =
+such
+> > example.
+> >
+> >> Not sure what they want to use this for.
+> > I'd like to use RDMA with RXE for that memory region.
+> >
+> > Best,
+> > Shunsuke
+> >> Christian.
+> >>
+> >>> Jason
+>
