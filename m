@@ -2,42 +2,43 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD90A478DB7
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Dec 2021 15:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DDC54791BC
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Dec 2021 17:44:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237291AbhLQOXK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Dec 2021 09:23:10 -0500
-Received: from mail-dm6nam12lp2171.outbound.protection.outlook.com ([104.47.59.171]:28401
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S235753AbhLQQoA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Dec 2021 11:44:00 -0500
+Received: from mail-bn8nam11on2112.outbound.protection.outlook.com ([40.107.236.112]:27296
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237287AbhLQOXI (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 17 Dec 2021 09:23:08 -0500
+        id S235932AbhLQQn7 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 17 Dec 2021 11:43:59 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Z1md+j17gF5T8z5liSM76BxQ66aZ386HhX5qYFlShu9WVc4XcUnrz6pq2sDHSje+aK7AOUD3u2aTlaW+qR9ekCdRpjXR44xniwcJW/COQcQHaL5DQ5FCcWtpFKOTZmIGZVrAje4WdazCmm3FRFTnMKJRyHJwWQEhN9lJw2kuc/SjrEiQNgW1+Pp5X5JpPalf9RSi35Pkj0Py9caxMt9exnzrn4DlHYEMEvGhY8yDdZUKytfzPbiHCkqjsjq0KECp1VJSNYyg8RUgC1eK7mc1i0MmIQGpc94k1+Tpd6v1cCbS06LwSue3zB7Xsmb2CHoHump3wxz9yzbxeCvJe30kLg==
+ b=kfHa0PgYUYKwZsn28/6/l7y/LJHbmlDSlL7K8H9x5z53igqkOadtAjYeFc4z+UqqXTxqckN/NKvcZz2c8AV7LlYGO8mYfTLt63cZcCIk+CMI6ZVXGh/x2G5Nb+oJHnpVkly2r6Ix4vHE9KG0t4u/6Y3g3oeIU5xzWrlMRlrnAdG3+LU8Xukxa//Xu2LmIGf0VjMnC6Y4N011V88AD+Tzs3ACmcBLE4pWIU7zSywL7Jkr2Lc1BPjdOW5kiydy1b+Zt87r6cRMlKU/FIOI6advhuTerscbOd7RGzyDM9roKBn1QYF7O7k8u5vA0bH8BDl05bldgr9SwjLInZaZ7d65zQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oKllfkqrbcJlJzWlMdm1iJKX8DOQSDXWjvJzsShFQ3c=;
- b=cSIkko14Smln46vKw8ffl0K7yyAfTenvoCmnFtuZPqAxa2buUACwhxrplSDy/SOfbLfa0fgNUKEGiR8Y2JimxgUFGp1vuYDxx6z2YDffK3iahY/E0uCjd9sbFsAFfuYGnMwrqTbaGAH/zRbE638bNAU0JlckfQhW7AfAhZ3B4IY4s1Zk5BPSVFob5EoTVbz+q9EgRFLeWQ4ixM2FhxDYvMnKuvkb5kYuZnNluGzalI1fGEOLepbWPwgBPfpOl3rMvYCOYc+qz/EIuOCCyucmvxqkieZ57R68mYxTrVZyBtSIBJlss2zNFwujg0inUEZEWWwhjUaslOWW58j4LiBmjw==
+ bh=90ODRF2Hh/V81dE+VsMS0XSbLVfjlgVxoFvyBJGTsUw=;
+ b=bPm3swWxV3u0+ZywLdmpIcGJWo9Hqoz1J30i14zsk89AfE8CBS79gIhKJ+EMwFcP18uzKfkJT547X5eqC6oWY//Pq59iQfyraZIGEF/HlC6rBD1nQKnH6i+1lekn4PGouGQuhbLBS7Xdkno3MxyZ3nls62QchNXiAt36vXBldJbRciKTAvJKBd8de2kBqHF/7yyvp9PjC4uKX7zFvNy6XJh17o70pPyDKnbQ3l1CsjFengoVqYQ2tDLFxc07e/iuPdA8JM25SW+8G1l/EEkzN7Tm2QZOi0L/zqBdiiDDwKgIcAwcfa8B7wDMxBMuERTm4mNvF70ePQYgmJljuFttbQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=corigine.com; dmarc=pass action=none header.from=corigine.com;
  dkim=pass header.d=corigine.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=corigine.onmicrosoft.com; s=selector2-corigine-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oKllfkqrbcJlJzWlMdm1iJKX8DOQSDXWjvJzsShFQ3c=;
- b=vsZqEJoYnnadRZpKo87S5gWTbwmot/m6J+GNYYswrILRxFIRuHOgoxsnNeqAU0IUkQmREw31vFGvpMD8b/JZctV4VDptG+2/OOnq5FSG5UZjfhTMMmIf1WBbgafQ5kTu8zIy5kFCdKwYz629dORL0qIVO71HZV+0UR/DVUGMUFo=
+ bh=90ODRF2Hh/V81dE+VsMS0XSbLVfjlgVxoFvyBJGTsUw=;
+ b=vB8WvJrnp4O+TDQ85LMlQcWCttCknk27HsxDFnqWJ7WAQyXyRzoksvCLmA1MRcXijTbtrNFS1NMnyfq1DgU6OA/oInMfrCup1tVjkFNI+XcD3LxIvsM0lS68/YY24X7UDt5f/EqwfEcdNJ1nVfPazvw1xBLmKPKFkaTR1BpXGYU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=corigine.com;
 Received: from PH0PR13MB4842.namprd13.prod.outlook.com (2603:10b6:510:78::6)
- by PH7PR13MB5595.namprd13.prod.outlook.com (2603:10b6:510:139::13) with
+ by PH0PR13MB4969.namprd13.prod.outlook.com (2603:10b6:510:92::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.8; Fri, 17 Dec
- 2021 14:23:01 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4778.10; Fri, 17 Dec
+ 2021 16:43:56 +0000
 Received: from PH0PR13MB4842.namprd13.prod.outlook.com
  ([fe80::a01a:4940:c69a:e04c]) by PH0PR13MB4842.namprd13.prod.outlook.com
  ([fe80::a01a:4940:c69a:e04c%9]) with mapi id 15.20.4801.014; Fri, 17 Dec 2021
- 14:23:01 +0000
+ 16:43:55 +0000
+Date:   Fri, 17 Dec 2021 17:43:46 +0100
 From:   Simon Horman <simon.horman@corigine.com>
 To:     David Miller <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>
@@ -61,204 +62,84 @@ Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Louis Peens <louis.peens@corigine.com>,
         UNGLinuxDriver@microchip.com, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        oss-drivers@corigine.com, Simon Horman <simon.horman@corigine.com>
-Subject: [PATCH v7 net-next 12/12] selftests: tc-testing: add action offload selftest for action and filter
-Date:   Fri, 17 Dec 2021 15:21:50 +0100
-Message-Id: <20211217142150.17838-13-simon.horman@corigine.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211217142150.17838-1-simon.horman@corigine.com>
+        oss-drivers@corigine.com
+Subject: Re: [PATCH v7 net-next 00/12] allow user to offload tc action to net
+ device
+Message-ID: <20211217164345.GA3717@corigine.com>
 References: <20211217142150.17838-1-simon.horman@corigine.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM3PR07CA0079.eurprd07.prod.outlook.com
- (2603:10a6:207:6::13) To PH0PR13MB4842.namprd13.prod.outlook.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211217142150.17838-1-simon.horman@corigine.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-ClientProxiedBy: AM0PR03CA0105.eurprd03.prod.outlook.com
+ (2603:10a6:208:69::46) To PH0PR13MB4842.namprd13.prod.outlook.com
  (2603:10b6:510:78::6)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d9b6137a-0850-4241-e65a-08d9c168bb44
-X-MS-TrafficTypeDiagnostic: PH7PR13MB5595:EE_
-X-Microsoft-Antispam-PRVS: <PH7PR13MB55950E6AB2B417155C185F15E8789@PH7PR13MB5595.namprd13.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Office365-Filtering-Correlation-Id: 548b117f-3753-43d7-e015-08d9c17c6a78
+X-MS-TrafficTypeDiagnostic: PH0PR13MB4969:EE_
+X-Microsoft-Antispam-PRVS: <PH0PR13MB4969A3FA78CDFEDD026BDDB8E8789@PH0PR13MB4969.namprd13.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H+jBzW4j6IQj+LXP2JhdlEuXvZ9f3dQ3JclKOW2+xsgRLI4pOcEG+4Z0maM4NPyVq5LQ/dzjlZEItitgv5LGPGPSwqAHxdOecAYdcTpAZPw7eJMCSyUdUVKchJ1A3ftQDaRQXBU4OZL+nihO02XlpYrVT7+F5OHzFIu8ruhbUYsziXfdLras2eBv3azz5EM162RcUtuPbZmCyGWWjTJRPKHMp3OrAiLiDlgdDFoOxI2iZB+Sj6vxnkJQxjClPgRoQyCdD0x+2eFx3baE1Ang2oKmhlLfUDIOIth9zt9+jwkszOX49aufYF+/sV+OSljXvrC78M94kNoUEPJauukje3ASOa3NYEneNTMkkYKp71oE2eBtxYMCR+4pUTJCwqmll/9ZTDdOwjkf7EewIfdx8+SlHwaEIVwIl4/oMPe+9H7aew+U0mDE+P4lu8vaa8nGfjGvDaSF5YsSw8LWgbAe9osXh2xv492ela9uRj88JFjHGB2M2oaVPv/JGolS+OeZ7V+kxbRFUPVjK9tknS3E56+mtpJKzv5WlLnqP8rrxnbxvh15B8tmAQvhXfMlzKTzuGR7sv9+/KhukjgjxOCe01dNzIVniIY08YS4NIo4r0LLXxtunnM/oG+8M4V1iukLL7gBY9d9UgAt+Ut9pGpiBgcf6rOTn4YJutNhvdyzzgbBJcsQ38SkexjdGzh6JPap
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(396003)(366004)(39840400004)(346002)(376002)(136003)(110136005)(8936002)(54906003)(8676002)(316002)(66946007)(66476007)(7416002)(2906002)(66556008)(4326008)(86362001)(38100700002)(107886003)(83380400001)(508600001)(1076003)(6486002)(36756003)(6506007)(2616005)(6666004)(52116002)(5660300002)(44832011)(186003)(6512007)(20210929001);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: aRU8l4QAHXQ80vxtIJvvafQyjpEDA1ikGFQklhkNdRAE7t/heGrS6vbiFk+jFlQY8e0y6eqBPM6DQvf7+7cZNcOasQJFx6QFuaD34wnBMRO+X/SKxXHw7PYH+Ma3PBNMCQhoqc8uFbUEfuHPotWYecDatOxbDyCyaqRZXYBQJiQlJku6iQNyzmAraW6qnR3U9T9CenT2DznCdOCQKzk2wFe8+2Tt9s5e9+9F92jpSPVUfJSDuPr2iCRq9+Hr+4s2nyGc0Yj3okU8D+Cz6eqv42qT0SLCe0zHBaetuvIDIFNjdGrQ8IBMAlu5AZ1r9Vn98jKWKKOpcqqTzK3ma/wyNIsDjOCOWvA68Jabmk2kDiq7DOeNmyFKpdHe34vQ+llwPCr7baXYZid3TGGd2jiCSTga3DwR3aFcNU8o2syWIAoHMcCq85w5TFujiOE+MBlSqhbXm+c46eBfUVG64JfLlGPwWO5smhl4IUA0yEmSZgJM9OvGcyjejF1Di8vSFpNHXpcuLnIvhowQDSku3CNH5YHQUNy9ybdYK9444MXBv2ku3kyJ3QA0o3ju52kvKB6n+iXTeh19z2LBhGloKZ5lsqtPjvlPJ7xI7DaDWcsKAVqGqCmWLb5bA+Z+BcxCxmR6KoxNOAznZutja/AAOs1b9ELblGaSQ/PO9xjSfWyZmll1CanvmjN5MmJGHFuGlokV
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR13MB4842.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(346002)(396003)(39830400003)(52116002)(83380400001)(38100700002)(6486002)(66946007)(44832011)(7416002)(66556008)(36756003)(33656002)(4326008)(5660300002)(2906002)(66476007)(2616005)(186003)(8936002)(110136005)(6506007)(316002)(107886003)(86362001)(6666004)(1076003)(6512007)(54906003)(8676002)(4744005)(508600001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KBF10lni7pnu9U/u8bfv7XJ4BnP5YOeeU1Qy79F42h3HM/FVT3zS7ikFp2N7?=
- =?us-ascii?Q?I5gHFf3Z/lrZ8mC3agF6hPLm9US8q7ZbSNSjD2KGaLS/sp06qZiTlYKLel/l?=
- =?us-ascii?Q?Fc3eWOWcEWOXwCj/R2YEJy99nCnzhHuXZ38nhtJ6Zv/NeGCBNe5AJELke+Cf?=
- =?us-ascii?Q?q+kxCY4OTk1d9r/oLSj+Qy3umnbpVfv9EgF4+2UMXFqeCK2nwONFEGfwRTsJ?=
- =?us-ascii?Q?Q4GggbxA1GgSqFsp+7paqVHQ59gMDIE2+kDp0rs4wdCyjC4QoXuUrfnMPexl?=
- =?us-ascii?Q?fZzrwc2NBWww6kt4Y6IqVaqAu4eNLI1tg9K1ygSLpoD6vL+Vl3XEmCcEnDfk?=
- =?us-ascii?Q?ofMHQ6zauqPNmpx/xgz1dsPtfiT83zbOzA1Ev69tzG0trc0X6LHIvNWyr6A8?=
- =?us-ascii?Q?cpmtjqlqun9EuniXr2z9p1hBuo8wh8fBA1weGCMzlas0noG3LENyrzd68DCG?=
- =?us-ascii?Q?4XecMeijEEmwwhwykodlrSqhKR+R21eoyaQHgV4Cw4J4gknCmsOPf5WvPVC3?=
- =?us-ascii?Q?VpEyCiFmBOt/s0/SWu8yrhkN0chI7HGbeC47I2BY1qg+n+ecZlDPE/TGsYC1?=
- =?us-ascii?Q?qA/hED6qzeO2qyocQFEA4iyW30AjZtlR7yTXctS+h2/wvNkrnu8qFm9nAAWR?=
- =?us-ascii?Q?bFZGru4KZajVb2Qsfk3DZek6D8tSIACc3Hn8LyhEL52cXVS6xCK56rteokmJ?=
- =?us-ascii?Q?cmLDCJOP9v9OyuLdll2+SFVufCn2D6BzP8QP12W4QZuOiwUDelS+fyrLZMoE?=
- =?us-ascii?Q?0PqElttljF/l5VJW3zB7O4EroFAlv+8f+vnjxEBa7gYPEhZjgrIix/Nq+KuI?=
- =?us-ascii?Q?wMJ4iWLbC9l+s7G0kSO7YD+Fm5k/Wng4BaTgV7X8QaNZNkHDq5XOdbtPSpoo?=
- =?us-ascii?Q?7im6BtqjhAhAp6Zrji6v91o/vtFQu+WwQwOkNa6zUlaXnGPUCZ7t7fS6YxoT?=
- =?us-ascii?Q?mlayNluDCqyO6tELMPcxEBQY5crL2RcNNwQUHunMQFIogdFf9gq2W5cUWK+g?=
- =?us-ascii?Q?zNZLQJKmlWs8HAETgCXnWXPZkxj5opFbnCcKxHuHOWPIexD9vT0R4uQRyNJZ?=
- =?us-ascii?Q?XNAMPI1CAzH664SoBiw+ny5HUoh3wyja8ZQfSClaT2fgDLJXKZ8NECzZQgDK?=
- =?us-ascii?Q?zST/UZ9WUhOkfYWqIMaJoDMbhQEiymZKQ9OvSX3alvT2g9BJq1OHOcrERXfE?=
- =?us-ascii?Q?4BXnAeL0unAU2NK6ge6ZqGW4yZZ0OwocR3IxE9t2VxDaGilqeOT4YjQ0ti9z?=
- =?us-ascii?Q?XJn0SGPwW2DATk5/vKxm4ItLL96lqJ2Flg67/i+aBPmS3HXfy94SIy59L0gD?=
- =?us-ascii?Q?GmvvZaqrnBXEN/weJBSOrDKDFlKDoMpHocUSNPD3H4bFon+wqdyJyDZV9Vbm?=
- =?us-ascii?Q?40FyWNDjK7yZlkTp6k8Pvw1zGdtYwIJs3P62HYT8a+PoB41wDjytokMd+W8q?=
- =?us-ascii?Q?gROgILDzVe8D/KJokqwPcZY3uL5b8AmNitGabze4KLO/Od7Jf1qO5AAVXhFt?=
- =?us-ascii?Q?twlnjf6M6oFfK3/ZdTWO9tzddPwuVDvDBqXcmR6VYeMw4ctcr1pcN1x8Rtpd?=
- =?us-ascii?Q?zMawdk2bd+I/urS9pBG2RiXznnru7DhfFCFZLQokvEdYRM6ov6O2Tzr9pntf?=
- =?us-ascii?Q?GeQC6eu/mSD8MVd2rbBP5ZZ8NhA+mTp2wDvxdrNtLS0atd7fwOJZ+l48n6VP?=
- =?us-ascii?Q?czuummQtQxTG4vsBpglgQW5YOlY5RyTDpTmjgz4mgh3IklKOIclnjbkT/50q?=
- =?us-ascii?Q?muPgpUtebA=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DbSTkaUcRYVncuEZsX5U11F5yoEzC/hPN6Zj6MPJk468ZqKO+1mjCw+v3KAN?=
+ =?us-ascii?Q?6o79K9jsXMPcOG1/RCxPyOoaxXu+Ye/lHzoPVAuz3y2zSUW5BXYRD/GCD2Zu?=
+ =?us-ascii?Q?3T8AbUUeHG6eIUwxZRbDZXi8jrij+8GzdT7/YwaMiGfuTKvDo2SrqglcFVuW?=
+ =?us-ascii?Q?La3UvgmB1QpN0Flgs1BBYtWNyB/2ZF0QVvDWMYEwNF5EMw9CsAwdMnUT81zz?=
+ =?us-ascii?Q?gIHXDJbEOOBg/1q016tIO6M/KEbQy4N0J46vAU+LoLOMhRTbHN+/zKUMAWV3?=
+ =?us-ascii?Q?53SFSsO36qFH/9YVciKjWcioZcNotbq0nHqI1NYRCKTAxL2l+AP25hY0X8s/?=
+ =?us-ascii?Q?mev3gZ/WICpo346ZNlbXpgbFccFY3bIDiuMutPPWDY0MBFfBCI60T+uRl+Ed?=
+ =?us-ascii?Q?GAgDDgI/EOt/UFS0F4yAWHxSo1mVinX2ZVHGJdjVlU9GMDRO5ksAlB43XcV+?=
+ =?us-ascii?Q?OP7Bk6/h3BH8mNBIr2FusGGjXvz8/PRWQLpQthjoDIEggWUSCJMUOrfBh63L?=
+ =?us-ascii?Q?lpv/8Wexfk9rtS0xeHgYZGC/bkv7ZCTudQ4VPpzomy9fJ8oGni03tpwbfws8?=
+ =?us-ascii?Q?DBQfHW4aBjv3q49LR6iz8GIL5odySFD+Mp2PZnUcy5jB5LtZC5BW/Wcm8UD7?=
+ =?us-ascii?Q?LS/wcY61U1ekGe/JkfmaxgwkTh8KudJVdL0wuE4kp0D2bznd0nRG9/73mQkv?=
+ =?us-ascii?Q?gD3f5kHp1zmcnrkx5eYs3HL43J67YDya7Crz/MmiEN0ND2XHSjWSjSX3/Mhf?=
+ =?us-ascii?Q?u081bEGOoM3iiHuWaf0qwjnjN7jowQwBl+JmM3M01furow2dA0sxV4Z5pRHu?=
+ =?us-ascii?Q?emHb0k8Flf74MAPbbGyVH4UPCYfFgU2qxewylD1Vk7QVYiI1yI3KhKWauQnB?=
+ =?us-ascii?Q?W/YU6Yk6nlEZdXs1S4y7PMhxUpgceLK9bZ6Rx9lEWh3pOp6KYqwYK7K1MKKO?=
+ =?us-ascii?Q?Xv12p6ARi1LYKcOFlOVd4l+OXvAEcaZ3Yi7Fl3mQUopWgSD0XEiTym1Yth7j?=
+ =?us-ascii?Q?HMZxqshcI4TeF3KUA+lVsHs+dca66xIyoZnWirKZ9BWUV572vbZ8is+Y7nxE?=
+ =?us-ascii?Q?Wpl64kaAFBkd76mgutug898bcBknJdMZhk1/uV5mKNLahVNodemnPS1ZpU7V?=
+ =?us-ascii?Q?QjmRqKQliWyJvm5GdyXXwcPeCw3+rZNJQ5NtsoyvD6C3nCh/2wJ7NrozZn+Y?=
+ =?us-ascii?Q?KSSr7kNc9/4lVVcSsUMfLD14Cxy66ufJKer3sdGU++XRc7plfctmlkGJYeW7?=
+ =?us-ascii?Q?zalvp9jtPNUQBtGXruTgzl7hsfBs207yt1oeCSoM87hQho3YXWRMQ0itg2ca?=
+ =?us-ascii?Q?3gIGGYuSujd+S4roR5jX2v2bkKvhQAAiOirWpKW7Eduo69zXwrem3HtVOAaR?=
+ =?us-ascii?Q?84SJSnHdfviLy39q56vyPUxdgPoZBPpsje9pU4jW7R4NTlVk5veipx5wczd1?=
+ =?us-ascii?Q?GNOs6eU1aGO8kaBq0k2XcLtF0KS8SuFkkbCD1146ZrutFOF5QpJg7GfqqXZs?=
+ =?us-ascii?Q?oU+dNfmUCYslwcR6PErEegWC9tjoWVGlk0nQ77wFqb1/BjOB6UZuwzOJKpdq?=
+ =?us-ascii?Q?B+SQxhVS+FSxUvxeQAm8amq468G5ykOwFGh0HWuVaTdqdEU2oXgBFhxAAeSz?=
+ =?us-ascii?Q?sUkctVsVOF4JaFh8WnwQKofPDTgUvdXaX5aKT1f8kuxsQ5rCWCbnXGGo4Pw8?=
+ =?us-ascii?Q?8q8Ecar3B/kbN5xadAXZF53+KCHs8fR4moireQHUO37A7YcrqUWbCslT837S?=
+ =?us-ascii?Q?oJYNIb01MHOA70JXB+wS9XhkPxIp4jE=3D?=
 X-OriginatorOrg: corigine.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9b6137a-0850-4241-e65a-08d9c168bb44
+X-MS-Exchange-CrossTenant-Network-Message-Id: 548b117f-3753-43d7-e015-08d9c17c6a78
 X-MS-Exchange-CrossTenant-AuthSource: PH0PR13MB4842.namprd13.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2021 14:23:01.4042
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Dec 2021 16:43:55.7700
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: fe128f2c-073b-4c20-818e-7246a585940c
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8OnXHmY8sEsiUAa4mpNmPTnpMPWoTXSMqPqKMjP43sILwejQcsAbBD+/jSimNUWJ2ZsVnvkaUYiqvWAPJISKI4tNJrqBxUENi5vy1hRFEpE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR13MB5595
+X-MS-Exchange-CrossTenant-UserPrincipalName: SiOMxH8bfZB6fFroFiZagzVIM13gKnWHViCaK0hYMKIRX620qBmK0Us0A3qv4vdJ76cperowFOuPvtDCWBi6LgFcmzJzixuvg1+2SgFmFzY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR13MB4969
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Baowen Zheng <baowen.zheng@corigine.com>
+On Fri, Dec 17, 2021 at 03:21:38PM +0100, Simon Horman wrote:
+> Baowen Zheng says:
+> 
+> Allow use of flow_indr_dev_register/flow_indr_dev_setup_offload to offload
+> tc actions independent of flows.
 
-Add selftest cases in action police with skip_hw.
-Add selftest case to validate flags of filter and action.
-These tests depend on corresponding iproute2 command support.
+...
 
-Signed-off-by: Baowen Zheng <baowen.zheng@corigine.com>
-Signed-off-by: Simon Horman <simon.horman@corigine.com>
----
- .../tc-testing/tc-tests/actions/police.json   | 24 +++++++
- .../tc-testing/tc-tests/filters/matchall.json | 72 +++++++++++++++++++
- 2 files changed, 96 insertions(+)
+Sorry, I seem to have made an error and posted slightly out of date
+patches. I'll work on posting the correct patches.
 
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/actions/police.json b/tools/testing/selftests/tc-testing/tc-tests/actions/police.json
-index 8e45792703ed..b7205a069534 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/actions/police.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/actions/police.json
-@@ -812,5 +812,29 @@
-         "teardown": [
-             "$TC actions flush action police"
-         ]
-+    },
-+    {
-+        "id": "7d64",
-+        "name": "Add police action with skip_hw option",
-+        "category": [
-+            "actions",
-+            "police"
-+        ],
-+        "setup": [
-+            [
-+                "$TC actions flush action police",
-+                0,
-+                1,
-+                255
-+            ]
-+        ],
-+        "cmdUnderTest": "$TC actions add action police rate 1kbit burst 10k index 100 skip_hw",
-+        "expExitCode": "0",
-+        "verifyCmd": "$TC actions ls action police | grep skip_hw",
-+        "matchPattern": "skip_hw",
-+        "matchCount": "1",
-+        "teardown": [
-+            "$TC actions flush action police"
-+        ]
-     }
- ]
-diff --git a/tools/testing/selftests/tc-testing/tc-tests/filters/matchall.json b/tools/testing/selftests/tc-testing/tc-tests/filters/matchall.json
-index 51799874a972..2df68017dfb8 100644
---- a/tools/testing/selftests/tc-testing/tc-tests/filters/matchall.json
-+++ b/tools/testing/selftests/tc-testing/tc-tests/filters/matchall.json
-@@ -387,5 +387,77 @@
-             "$TC qdisc del dev $DUMMY ingress",
-             "$IP link del dev $DUMMY type dummy"
-         ]
-+    },
-+    {
-+        "id": "3329",
-+        "name": "Validate flags of the matchall filter with skip_sw and police action with skip_hw",
-+        "category": [
-+            "filter",
-+            "matchall"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC actions flush action police",
-+            "$TC actions add action police rate 1mbit burst 100k index 199 skip_hw"
-+        ],
-+        "cmdUnderTest": "$TC filter add dev $DUMMY parent ffff: handle 0x1 prio 1 protocol ipv4 matchall skip_sw action police index 199",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC filter get dev $DUMMY parent ffff: handle 1 prio 1 protocol ipv4 matchall",
-+        "matchPattern": "^filter parent ffff: protocol ip pref 1 matchall.*handle 0x1.*",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$TC qdisc del dev $DUMMY ingress",
-+            "$IP link del dev $DUMMY type dummy",
-+            "$TC actions del action police index 199"
-+        ]
-+    },
-+    {
-+        "id": "0eeb",
-+        "name": "Validate flags of the matchall filter with skip_hw and police action",
-+        "category": [
-+            "filter",
-+            "matchall"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC actions flush action police",
-+            "$TC actions add action police rate 1mbit burst 100k index 199"
-+        ],
-+        "cmdUnderTest": "$TC filter add dev $DUMMY parent ffff: handle 0x1 prio 1 protocol ipv4 matchall skip_hw action police index 199",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC filter get dev $DUMMY parent ffff: handle 1 prio 1 protocol ipv4 matchall",
-+        "matchPattern": "^filter parent ffff: protocol ip pref 1 matchall.*handle 0x1.*",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$TC qdisc del dev $DUMMY ingress",
-+            "$IP link del dev $DUMMY type dummy",
-+            "$TC actions del action police index 199"
-+        ]
-+    },
-+    {
-+        "id": "eee4",
-+        "name": "Validate flags of the matchall filter with skip_sw and police action",
-+        "category": [
-+            "filter",
-+            "matchall"
-+        ],
-+        "setup": [
-+            "$IP link add dev $DUMMY type dummy || /bin/true",
-+            "$TC qdisc add dev $DUMMY ingress",
-+            "$TC actions flush action police",
-+            "$TC actions add action police rate 1mbit burst 100k index 199"
-+        ],
-+        "cmdUnderTest": "$TC filter add dev $DUMMY parent ffff: handle 0x1 prio 1 protocol ipv4 matchall skip_sw action police index 199",
-+        "expExitCode": "2",
-+        "verifyCmd": "$TC filter get dev $DUMMY parent ffff: handle 1 prio 1 protocol ipv4 matchall",
-+        "matchPattern": "^filter parent ffff: protocol ip pref 1 matchall.*handle 0x1.*",
-+        "matchCount": "0",
-+        "teardown": [
-+            "$TC qdisc del dev $DUMMY ingress",
-+            "$IP link del dev $DUMMY type dummy",
-+            "$TC actions del action police index 199"
-+        ]
-     }
- ]
--- 
-2.20.1
-
+Please ignore this series.
