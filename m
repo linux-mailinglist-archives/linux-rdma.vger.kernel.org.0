@@ -2,33 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73B1247A96F
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Dec 2021 13:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6A47AA1A
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Dec 2021 14:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbhLTMW5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Dec 2021 07:22:57 -0500
-Received: from szxga01-in.huawei.com ([45.249.212.187]:15948 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhLTMW4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Dec 2021 07:22:56 -0500
-Received: from dggpeml500020.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4JHdv72KtLzZdbx;
-        Mon, 20 Dec 2021 20:19:47 +0800 (CST)
+        id S231790AbhLTNFV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Dec 2021 08:05:21 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:30078 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231785AbhLTNFU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Dec 2021 08:05:20 -0500
+Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4JHfr32dxzz1DK9w;
+        Mon, 20 Dec 2021 21:02:11 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500020.china.huawei.com (7.185.36.88) with Microsoft SMTP Server
+ dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 20 Dec 2021 20:22:53 +0800
+ 15.1.2308.20; Mon, 20 Dec 2021 21:05:17 +0800
 Received: from localhost.localdomain (10.69.192.56) by
  dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 20 Dec 2021 20:22:53 +0800
+ 15.1.2308.20; Mon, 20 Dec 2021 21:05:16 +0800
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH for-next] RDMA/hns: Remove support for HIP06
-Date:   Mon, 20 Dec 2021 20:23:34 +0800
-Message-ID: <20211220122334.31204-1-liangwenpeng@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Remove support for HIP06
+Date:   Mon, 20 Dec 2021 21:05:58 +0800
+Message-ID: <20211220130558.61585-1-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -57,16 +57,16 @@ Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
  drivers/infiniband/hw/hns/hns_roce_common.h |  202 -
  drivers/infiniband/hw/hns/hns_roce_cq.c     |   13 -
  drivers/infiniband/hw/hns/hns_roce_db.c     |    1 -
- drivers/infiniband/hw/hns/hns_roce_device.h |   60 -
+ drivers/infiniband/hw/hns/hns_roce_device.h |   64 +-
  drivers/infiniband/hw/hns/hns_roce_hem.c    |    1 -
  drivers/infiniband/hw/hns/hns_roce_hw_v1.c  | 4675 -------------------
  drivers/infiniband/hw/hns/hns_roce_hw_v1.h  | 1147 -----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |    6 +-
- drivers/infiniband/hw/hns/hns_roce_main.c   |   58 +-
- drivers/infiniband/hw/hns/hns_roce_mr.c     |   19 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |   13 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c   |   62 +-
+ drivers/infiniband/hw/hns/hns_roce_mr.c     |   22 +-
  drivers/infiniband/hw/hns/hns_roce_pd.c     |   20 +-
  drivers/infiniband/hw/hns/hns_roce_qp.c     |   37 +-
- 17 files changed, 25 insertions(+), 6245 deletions(-)
+ 17 files changed, 33 insertions(+), 6255 deletions(-)
  delete mode 100644 drivers/infiniband/hw/hns/hns_roce_hw_v1.c
  delete mode 100644 drivers/infiniband/hw/hns/hns_roce_hw_v1.h
 
@@ -82,7 +82,7 @@ index 18d10ebf900b..ab3fbba70789 100644
 -	  is used in Hisilicon Hip06 and more further ICT SoC based on
 -	  platform device.
 +	  This is a RoCE/RDMA driver for the Hisilicon RoCE engine.
- 
+
 -	  To compile HIP06 or HIP08 driver as module, choose M here.
 -
 -config INFINIBAND_HNS_HIP06
@@ -96,7 +96,7 @@ index 18d10ebf900b..ab3fbba70789 100644
 -	  To compile this driver, choose Y here: if INFINIBAND_HNS is m, this
 -	  module will be called hns-roce-hw-v1
 +	  To compile HIP08 driver as module, choose M here.
- 
+
  config INFINIBAND_HNS_HIP08
  	bool "Hisilicon Hip08 Family RoCE support"
 diff --git a/drivers/infiniband/hw/hns/Makefile b/drivers/infiniband/hw/hns/Makefile
@@ -106,7 +106,7 @@ index e105945b94a1..9f04f25d9631 100644
 @@ -9,11 +9,6 @@ hns-roce-objs := hns_roce_main.o hns_roce_cmd.o hns_roce_pd.o \
  	hns_roce_ah.o hns_roce_hem.o hns_roce_mr.o hns_roce_qp.o \
  	hns_roce_cq.o hns_roce_alloc.o hns_roce_db.o hns_roce_srq.o hns_roce_restrack.o
- 
+
 -ifdef CONFIG_INFINIBAND_HNS_HIP06
 -hns-roce-hw-v1-objs := hns_roce_hw_v1.o $(hns-roce-objs)
 -obj-$(CONFIG_INFINIBAND_HNS) += hns-roce-hw-v1.o
@@ -122,7 +122,7 @@ index cc258edec331..492b122d0521 100644
 @@ -30,7 +30,6 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <linux/pci.h>
  #include <rdma/ib_addr.h>
@@ -130,15 +130,15 @@ index cc258edec331..492b122d0521 100644
 @@ -61,7 +60,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
  	struct hns_roce_ah *ah = to_hr_ah(ibah);
  	int ret = 0;
- 
+
 -	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08 && udata)
 +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08 && udata)
  		return -EOPNOTSUPP;
- 
+
  	ah->av.port = rdma_ah_get_port_num(ah_attr);
 @@ -80,7 +79,7 @@ int hns_roce_create_ah(struct ib_ah *ibah, struct rdma_ah_init_attr *init_attr,
  	memcpy(ah->av.mac, ah_attr->roce.dmac, ETH_ALEN);
- 
+
  	/* HIP08 needs to record vlan info in Address Vector */
 -	if (hr_dev->pci_dev->revision <= PCI_REVISION_ID_HIP08) {
 +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
@@ -152,13 +152,13 @@ index d4fa0fd52294..11a78ceae568 100644
 @@ -31,10 +31,9 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <linux/vmalloc.h>
 -#include "hns_roce_device.h"
  #include <rdma/ib_umem.h>
 +#include "hns_roce_device.h"
- 
+
  void hns_roce_buf_free(struct hns_roce_dev *hr_dev, struct hns_roce_buf *buf)
  {
 diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
@@ -167,7 +167,7 @@ index 3f7fb7508585..4b693d542ace 100644
 +++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
 @@ -31,7 +31,6 @@
   */
- 
+
  #include <linux/dmapool.h>
 -#include <linux/platform_device.h>
  #include "hns_roce_common.h"
@@ -178,9 +178,9 @@ index b73e55de83ac..465d1f914b6c 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_common.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_common.h
 @@ -104,208 +104,6 @@
- 
+
  #define hr_reg_read(ptr, field) _hr_reg_read(ptr, field)
- 
+
 -#define ROCEE_GLB_CFG_ROCEE_DB_SQ_MODE_S 3
 -#define ROCEE_GLB_CFG_ROCEE_DB_OTH_MODE_S 4
 -
@@ -393,7 +393,7 @@ index d763f097599f..55057dcbb2dc 100644
 @@ -30,7 +30,6 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <rdma/ib_umem.h>
  #include <rdma/uverbs_ioctl.h>
@@ -401,7 +401,7 @@ index d763f097599f..55057dcbb2dc 100644
 @@ -406,15 +405,6 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
  		goto err_cqn;
  	}
- 
+
 -	/*
 -	 * For the QP created by kernel space, tptr value should be initialized
 -	 * to zero; For the QP created by user space, it will cause synchronous
@@ -417,7 +417,7 @@ index d763f097599f..55057dcbb2dc 100644
 @@ -441,9 +431,6 @@ int hns_roce_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
  	struct hns_roce_dev *hr_dev = to_hr_dev(ib_cq->device);
  	struct hns_roce_cq *hr_cq = to_hr_cq(ib_cq);
- 
+
 -	if (hr_dev->hw->destroy_cq)
 -		hr_dev->hw->destroy_cq(ib_cq, udata);
 -
@@ -431,37 +431,37 @@ index 751470c7a2ce..5c4c0480832b 100644
 @@ -4,7 +4,6 @@
   * Copyright (c) 2007, 2008 Mellanox Technologies. All rights reserved.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <rdma/ib_umem.h>
  #include "hns_roce_device.h"
- 
+
 diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index bc7112a205a7..bf3cf2c1b785 100644
+index bc7112a205a7..1e0bae136997 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_device.h
 +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
 @@ -36,36 +36,18 @@
  #include <rdma/ib_verbs.h>
  #include <rdma/hns-abi.h>
- 
+
 -#define DRV_NAME "hns_roce"
 -
  #define PCI_REVISION_ID_HIP08			0x21
  #define PCI_REVISION_ID_HIP09			0x30
- 
+
 -#define HNS_ROCE_HW_VER1	('h' << 24 | 'i' << 16 | '0' << 8 | '6')
 -
  #define HNS_ROCE_MAX_MSG_LEN			0x80000000
- 
+
  #define HNS_ROCE_IB_MIN_SQ_STRIDE		6
- 
+
  #define BA_BYTE_LEN				8
- 
+
 -/* Hardware specification only for v1 engine */
  #define HNS_ROCE_MIN_CQE_NUM			0x40
 -#define HNS_ROCE_MIN_WQE_NUM			0x20
  #define HNS_ROCE_MIN_SRQ_WQE_NUM		1
- 
+
 -/* Hardware specification only for v1 engine */
 -#define HNS_ROCE_MAX_INNER_MTPT_NUM		0x7
 -#define HNS_ROCE_MAX_MTPT_PBL_NUM		0x100000
@@ -475,19 +475,19 @@ index bc7112a205a7..bf3cf2c1b785 100644
 -#define HNS_ROCE_RESERVED_SGE			1
 -
  #define HNS_ROCE_MAX_IRQ_NUM			128
- 
+
  #define HNS_ROCE_SGE_IN_WQE			2
 @@ -102,18 +84,12 @@
  #define HNS_ROCE_FRMR_MAX_PA			512
- 
+
  #define PKEY_ID					0xffff
 -#define GUID_LEN				8
  #define NODE_DESC_SIZE				64
  #define DB_REG_OFFSET				0x1000
- 
+
  /* Configure to HW for PAGE_SIZE larger than 4KB */
  #define PG_SHIFT_OFFSET				(PAGE_SHIFT - 12)
- 
+
 -#define PAGES_SHIFT_8				8
 -#define PAGES_SHIFT_16				16
 -#define PAGES_SHIFT_24				24
@@ -495,11 +495,11 @@ index bc7112a205a7..bf3cf2c1b785 100644
 -
  #define HNS_ROCE_IDX_QUE_ENTRY_SZ		4
  #define SRQ_DB_REG				0x230
- 
+
 @@ -122,11 +98,6 @@
- 
+
  #define CQ_BANKID_SHIFT 2
- 
+
 -/* The chip implementation of the consumer index is calculated
 - * according to twice the actual EQ depth
 - */
@@ -509,25 +509,25 @@ index bc7112a205a7..bf3cf2c1b785 100644
  	SERV_TYPE_RC,
  	SERV_TYPE_UC,
 @@ -228,7 +199,6 @@ struct hns_roce_uar {
- 
+
  enum hns_roce_mmap_type {
  	HNS_ROCE_MMAP_TYPE_DB = 1,
 -	HNS_ROCE_MMAP_TYPE_TPTR,
  	HNS_ROCE_MMAP_TYPE_DWQE,
  };
- 
+
 @@ -244,7 +214,6 @@ struct hns_roce_ucontext {
  	struct list_head	page_list;
  	struct mutex		page_mutex;
  	struct hns_user_mmap_entry *db_mmap_entry;
 -	struct hns_user_mmap_entry *tptr_mmap_entry;
  };
- 
+
  struct hns_roce_pd {
 @@ -347,9 +316,6 @@ struct hns_roce_mw {
  	u32			pbl_buf_pg_sz;
  };
- 
+
 -/* Only support 4K page size for mr register */
 -#define MR_SIZE_4K 0
 -
@@ -545,7 +545,7 @@ index bc7112a205a7..bf3cf2c1b785 100644
 @@ -541,10 +506,6 @@ struct hns_roce_srq_table {
  	struct hns_roce_hem_table	table;
  };
- 
+
 -struct hns_roce_raq_table {
 -	struct hns_roce_buf_list	*e_raq_buf;
 -};
@@ -566,7 +566,7 @@ index bc7112a205a7..bf3cf2c1b785 100644
 @@ -683,11 +642,6 @@ struct hns_roce_ib_iboe {
  	u8			phy_port[HNS_ROCE_MAX_PORTS];
  };
- 
+
 -enum {
 -	HNS_ROCE_EQ_STAT_INVALID  = 0,
 -	HNS_ROCE_EQ_STAT_VALID    = 2,
@@ -589,30 +589,38 @@ index bc7112a205a7..bf3cf2c1b785 100644
  	int				coalesce;
  	int				arm_st;
 @@ -739,7 +690,6 @@ struct hns_roce_eq {
- 
+
  struct hns_roce_eq_table {
  	struct hns_roce_eq	*eq;
 -	void __iomem		**eqc_base; /* only for hw v1 */
  };
- 
+
  enum cong_type {
 @@ -896,7 +846,6 @@ enum hns_roce_device_state {
  };
- 
+
  struct hns_roce_hw {
 -	int (*reset)(struct hns_roce_dev *hr_dev, bool enable);
  	int (*cmq_init)(struct hns_roce_dev *hr_dev);
  	void (*cmq_exit)(struct hns_roce_dev *hr_dev);
  	int (*hw_profile)(struct hns_roce_dev *hr_dev);
-@@ -912,8 +861,6 @@ struct hns_roce_hw {
+@@ -908,14 +857,12 @@ struct hns_roce_hw {
+ 	int (*poll_mbox_done)(struct hns_roce_dev *hr_dev,
+ 			      unsigned int timeout);
+ 	bool (*chk_mbox_avail)(struct hns_roce_dev *hr_dev, bool *is_busy);
+-	int (*set_gid)(struct hns_roce_dev *hr_dev, u32 port, int gid_index,
++	int (*set_gid)(struct hns_roce_dev *hr_dev, int gid_index,
  		       const union ib_gid *gid, const struct ib_gid_attr *attr);
  	int (*set_mac)(struct hns_roce_dev *hr_dev, u8 phy_port,
  		       const u8 *addr);
 -	void (*set_mtu)(struct hns_roce_dev *hr_dev, u8 phy_port,
 -			enum ib_mtu mtu);
  	int (*write_mtpt)(struct hns_roce_dev *hr_dev, void *mb_buf,
- 			  struct hns_roce_mr *mr, unsigned long mtpt_idx);
+-			  struct hns_roce_mr *mr, unsigned long mtpt_idx);
++			  struct hns_roce_mr *mr);
  	int (*rereg_write_mtpt)(struct hns_roce_dev *hr_dev,
+ 				struct hns_roce_mr *mr, int flags,
+ 				void *mb_buf);
 @@ -935,9 +882,6 @@ struct hns_roce_hw {
  			 enum ib_qp_state new_state);
  	int (*qp_flow_control_init)(struct hns_roce_dev *hr_dev,
@@ -624,7 +632,7 @@ index bc7112a205a7..bf3cf2c1b785 100644
  	void (*cleanup_eq)(struct hns_roce_dev *hr_dev);
  	int (*write_srqc)(struct hns_roce_srq *srq, void *mb_buf);
 @@ -947,13 +891,11 @@ struct hns_roce_hw {
- 
+
  struct hns_roce_dev {
  	struct ib_device	ib_dev;
 -	struct platform_device  *pdev;
@@ -653,7 +661,7 @@ index fa15d79eabb3..8917365cc6b8 100644
 @@ -31,7 +31,6 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include "hns_roce_device.h"
  #include "hns_roce_hem.h"
@@ -6493,13 +6501,13 @@ index 60fdcbae6729..000000000000
 -
 -#endif
 diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index e681c2dc23e8..1fe3be4066bf 100644
+index e681c2dc23e8..9b2fff2a0276 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
 @@ -1573,7 +1573,7 @@ static int hns_roce_query_func_info(struct hns_roce_dev *hr_dev)
  	struct hns_roce_cmq_desc desc;
  	int ret;
- 
+
 -	if (hr_dev->pci_dev->revision < PCI_REVISION_ID_HIP09) {
 +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
  		hr_dev->func_num = 1;
@@ -6508,23 +6516,44 @@ index e681c2dc23e8..1fe3be4066bf 100644
 @@ -2390,7 +2390,7 @@ static int hns_roce_config_entry_size(struct hns_roce_dev *hr_dev)
  	struct hns_roce_caps *caps = &hr_dev->caps;
  	int ret;
- 
+
 -	if (hr_dev->pci_dev->revision < PCI_REVISION_ID_HIP09)
 +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
  		return 0;
- 
+
  	ret = config_hem_entry_size(hr_dev, HNS_ROCE_CFG_QPC_SIZE,
-@@ -6348,7 +6348,7 @@ static int hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
+@@ -2964,8 +2964,8 @@ static int config_gmv_table(struct hns_roce_dev *hr_dev,
+ 	return hns_roce_cmq_send(hr_dev, desc, 2);
+ }
+
+-static int hns_roce_v2_set_gid(struct hns_roce_dev *hr_dev, u32 port,
+-			       int gid_index, const union ib_gid *gid,
++static int hns_roce_v2_set_gid(struct hns_roce_dev *hr_dev, int gid_index,
++			       const union ib_gid *gid,
+ 			       const struct ib_gid_attr *attr)
+ {
+ 	enum hns_roce_sgid_type sgid_type = GID_TYPE_FLAG_ROCE_V1;
+@@ -3060,8 +3060,7 @@ static int set_mtpt_pbl(struct hns_roce_dev *hr_dev,
+ }
+
+ static int hns_roce_v2_write_mtpt(struct hns_roce_dev *hr_dev,
+-				  void *mb_buf, struct hns_roce_mr *mr,
+-				  unsigned long mtpt_idx)
++				  void *mb_buf, struct hns_roce_mr *mr)
+ {
+ 	struct hns_roce_v2_mpt_entry *mpt_entry;
+ 	int ret;
+@@ -6348,7 +6347,7 @@ static int hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
  	if (!id)
  		return 0;
- 
+
 -	if (id->driver_data && handle->pdev->revision < PCI_REVISION_ID_HIP09)
 +	if (id->driver_data && handle->pdev->revision == PCI_REVISION_ID_HIP08)
  		return 0;
- 
+
  	ret = __hns_roce_hw_v2_init_instance(handle);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
-index d0b976a86cd5..b00b56081936 100644
+index d0b976a86cd5..f73ba619f375 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_main.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_main.c
 @@ -31,7 +31,6 @@
@@ -6535,9 +6564,27 @@ index d0b976a86cd5..b00b56081936 100644
  #include <linux/module.h>
  #include <linux/pci.h>
  #include <rdma/ib_addr.h>
+@@ -70,7 +69,7 @@ static int hns_roce_add_gid(const struct ib_gid_attr *attr, void **context)
+ 	if (port >= hr_dev->caps.num_ports)
+ 		return -EINVAL;
+
+-	ret = hr_dev->hw->set_gid(hr_dev, port, attr->index, &attr->gid, attr);
++	ret = hr_dev->hw->set_gid(hr_dev, attr->index, &attr->gid, attr);
+
+ 	return ret;
+ }
+@@ -84,7 +83,7 @@ static int hns_roce_del_gid(const struct ib_gid_attr *attr, void **context)
+ 	if (port >= hr_dev->caps.num_ports)
+ 		return -EINVAL;
+
+-	ret = hr_dev->hw->set_gid(hr_dev, port, attr->index, NULL, NULL);
++	ret = hr_dev->hw->set_gid(hr_dev, attr->index, NULL, NULL);
+
+ 	return ret;
+ }
 @@ -152,9 +151,6 @@ static int hns_roce_setup_mtu_mac(struct hns_roce_dev *hr_dev)
  	u8 i;
- 
+
  	for (i = 0; i < hr_dev->caps.num_ports; i++) {
 -		if (hr_dev->hw->set_mtu)
 -			hr_dev->hw->set_mtu(hr_dev, hr_dev->iboe.phy_port[i],
@@ -6547,7 +6594,7 @@ index d0b976a86cd5..b00b56081936 100644
  		if (ret)
 @@ -311,17 +307,14 @@ hns_roce_user_mmap_entry_insert(struct ib_ucontext *ucontext, u64 address,
  	entry->mmap_type = mmap_type;
- 
+
  	switch (mmap_type) {
 +	/* pgoff 0 must be used by DB for compatibility */
  	case HNS_ROCE_MMAP_TYPE_DB:
@@ -6574,20 +6621,20 @@ index d0b976a86cd5..b00b56081936 100644
 -		rdma_user_mmap_entry_remove(
 -			&context->tptr_mmap_entry->rdma_entry);
  }
- 
+
  static int hns_roce_alloc_uar_entry(struct ib_ucontext *uctx)
  {
  	struct hns_roce_ucontext *context = to_hr_ucontext(uctx);
 -	struct hns_roce_dev *hr_dev = to_hr_dev(uctx->device);
  	u64 address;
 -	int ret;
- 
+
  	address = context->uar.pfn << PAGE_SHIFT;
  	context->db_mmap_entry = hns_roce_user_mmap_entry_insert(
 @@ -361,27 +348,7 @@ static int hns_roce_alloc_uar_entry(struct ib_ucontext *uctx)
  	if (!context->db_mmap_entry)
  		return -ENOMEM;
- 
+
 -	if (!hr_dev->tptr_dma_addr || !hr_dev->tptr_size)
 -		return 0;
 -
@@ -6610,7 +6657,7 @@ index d0b976a86cd5..b00b56081936 100644
 -	hns_roce_dealloc_uar_entry(context);
 -	return ret;
  }
- 
+
  static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
 @@ -461,9 +428,6 @@ static int hns_roce_mmap(struct ib_ucontext *uctx, struct vm_area_struct *vma)
  	case HNS_ROCE_MMAP_TYPE_DWQE:
@@ -6624,16 +6671,16 @@ index d0b976a86cd5..b00b56081936 100644
  	}
 @@ -843,7 +807,6 @@ static int hns_roce_setup_hca(struct hns_roce_dev *hr_dev)
  	int ret;
- 
+
  	spin_lock_init(&hr_dev->sm_lock);
 -	spin_lock_init(&hr_dev->bt_cmd_lock);
- 
+
  	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_CQ_RECORD_DB ||
  	    hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_QP_RECORD_DB) {
 @@ -934,20 +897,13 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
  	struct device *dev = hr_dev->dev;
  	int ret;
- 
+
 -	if (hr_dev->hw->reset) {
 -		ret = hr_dev->hw->reset(hr_dev, true);
 -		if (ret) {
@@ -6642,7 +6689,7 @@ index d0b976a86cd5..b00b56081936 100644
 -		}
 -	}
  	hr_dev->is_reset = false;
- 
+
  	if (hr_dev->hw->cmq_init) {
  		ret = hr_dev->hw->cmq_init(hr_dev);
  		if (ret) {
@@ -6651,11 +6698,11 @@ index d0b976a86cd5..b00b56081936 100644
 +			return ret;
  		}
  	}
- 
+
 @@ -1030,12 +986,6 @@ int hns_roce_init(struct hns_roce_dev *hr_dev)
  	if (hr_dev->hw->cmq_exit)
  		hr_dev->hw->cmq_exit(hr_dev);
- 
+
 -error_failed_cmq_init:
 -	if (hr_dev->hw->reset) {
 -		if (hr_dev->hw->reset(hr_dev, false))
@@ -6664,7 +6711,7 @@ index d0b976a86cd5..b00b56081936 100644
 -
  	return ret;
  }
- 
+
 @@ -1055,8 +1005,6 @@ void hns_roce_exit(struct hns_roce_dev *hr_dev)
  	hns_roce_cmd_cleanup(hr_dev);
  	if (hr_dev->hw->cmq_exit)
@@ -6672,24 +6719,34 @@ index d0b976a86cd5..b00b56081936 100644
 -	if (hr_dev->hw->reset)
 -		hr_dev->hw->reset(hr_dev, false);
  }
- 
+
  MODULE_LICENSE("Dual BSD/GPL");
 diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 8de899372567..6fb39fdbb185 100644
+index 8de899372567..2ee06b906b60 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
 @@ -31,7 +31,6 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <linux/vmalloc.h>
  #include <rdma/ib_umem.h>
  #include "hns_roce_device.h"
-@@ -363,12 +362,8 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+@@ -173,8 +172,7 @@ static int hns_roce_mr_enable(struct hns_roce_dev *hr_dev,
+ 	}
+
+ 	if (mr->type != MR_TYPE_FRMR)
+-		ret = hr_dev->hw->write_mtpt(hr_dev, mailbox->buf, mr,
+-					     mtpt_idx);
++		ret = hr_dev->hw->write_mtpt(hr_dev, mailbox->buf, mr);
+ 	else
+ 		ret = hr_dev->hw->frmr_write_mtpt(hr_dev, mailbox->buf, mr);
+ 	if (ret) {
+@@ -363,12 +361,8 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
  	struct hns_roce_mr *mr = to_hr_mr(ibmr);
  	int ret = 0;
- 
+
 -	if (hr_dev->hw->dereg_mr) {
 -		ret = hr_dev->hw->dereg_mr(hr_dev, mr, udata);
 -	} else {
@@ -6698,31 +6755,31 @@ index 8de899372567..6fb39fdbb185 100644
 -	}
 +	hns_roce_mr_free(hr_dev, mr);
 +	kfree(mr);
- 
+
  	return ret;
  }
-@@ -614,10 +609,7 @@ static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
+@@ -614,10 +608,7 @@ static int mtr_map_region(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
  			return -ENOBUFS;
- 
+
  		for (i = 0; i < count && npage < max_count; i++) {
 -			if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
 -				addr = to_hr_hw_page_addr(pages[npage]);
 -			else
 -				addr = pages[npage];
 +			addr = pages[npage];
- 
+
  			mtts[i] = cpu_to_le64(addr);
  			npage++;
-@@ -847,10 +839,7 @@ int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
+@@ -847,10 +838,7 @@ int hns_roce_mtr_find(struct hns_roce_dev *hr_dev, struct hns_roce_mtr *mtr,
  				continue;
- 
+
  			addr = cfg->root_ba + (npage << HNS_HW_PAGE_SHIFT);
 -			if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
 -				mtt_buf[total] = to_hr_hw_page_addr(addr);
 -			else
 -				mtt_buf[total] = addr;
 +			mtt_buf[total] = addr;
- 
+
  			total++;
  		}
 diff --git a/drivers/infiniband/hw/hns/hns_roce_pd.c b/drivers/infiniband/hw/hns/hns_roce_pd.c
@@ -6732,23 +6789,23 @@ index 03c349f7ebbe..783e71852c50 100644
 @@ -30,7 +30,6 @@
   * SOFTWARE.
   */
- 
+
 -#include <linux/platform_device.h>
  #include <linux/pci.h>
  #include "hns_roce_device.h"
- 
+
 @@ -86,7 +85,6 @@ int hns_roce_dealloc_pd(struct ib_pd *pd, struct ib_udata *udata)
  int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
  {
  	struct hns_roce_ida *uar_ida = &hr_dev->uar_ida;
 -	struct resource *res;
  	int id;
- 
+
  	/* Using bitmap to manager UAR index */
 @@ -104,21 +102,9 @@ int hns_roce_uar_alloc(struct hns_roce_dev *hr_dev, struct hns_roce_uar *uar)
  	else
  		uar->index = 0;
- 
+
 -	if (!dev_is_pci(hr_dev->dev)) {
 -		res = platform_get_resource(hr_dev->pdev, IORESOURCE_MEM, 0);
 -		if (!res) {
@@ -6767,7 +6824,7 @@ index 03c349f7ebbe..783e71852c50 100644
 +	uar->pfn = ((pci_resource_start(hr_dev->pci_dev, 2)) >> PAGE_SHIFT);
 +	if (hr_dev->caps.flags & HNS_ROCE_CAP_FLAG_DIRECT_WQE)
 +		hr_dev->dwqe_page = pci_resource_start(hr_dev->pci_dev, 4);
- 
+
  	return 0;
  }
 diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
@@ -6776,7 +6833,7 @@ index c84e1c23722c..d78373e10aab 100644
 +++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
 @@ -32,7 +32,6 @@
   */
- 
+
  #include <linux/pci.h>
 -#include <linux/platform_device.h>
  #include <rdma/ib_addr.h>
@@ -6785,7 +6842,7 @@ index c84e1c23722c..d78373e10aab 100644
 @@ -110,12 +109,11 @@ void hns_roce_qp_event(struct hns_roce_dev *hr_dev, u32 qpn, int event_type)
  		return;
  	}
- 
+
 -	if (hr_dev->hw_rev != HNS_ROCE_HW_VER1 &&
 -	    (event_type == HNS_ROCE_EVENT_TYPE_WQ_CATAS_ERROR ||
 -	     event_type == HNS_ROCE_EVENT_TYPE_INV_REQ_LOCAL_WQ_ERROR ||
@@ -6798,11 +6855,11 @@ index c84e1c23722c..d78373e10aab 100644
 +	    event_type == HNS_ROCE_EVENT_TYPE_XRCD_VIOLATION ||
 +	    event_type == HNS_ROCE_EVENT_TYPE_INVALID_XRCETH) {
  		qp->state = IB_QPS_ERR;
- 
+
  		flush_cqe(hr_dev, qp);
 @@ -219,13 +217,7 @@ static int alloc_qpn(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
  	int ret;
- 
+
  	if (hr_qp->ibqp.qp_type == IB_QPT_GSI) {
 -		/* when hw version is v1, the sqpn is allocated */
 -		if (hr_dev->hw_rev == HNS_ROCE_HW_VER1)
@@ -6818,7 +6875,7 @@ index c84e1c23722c..d78373e10aab 100644
 @@ -324,11 +316,6 @@ static int alloc_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
  	if (!hr_qp->qpn)
  		return -EINVAL;
- 
+
 -	/* In v1 engine, GSI QP context is saved in the RoCE hw's register */
 -	if (hr_qp->ibqp.qp_type == IB_QPT_GSI &&
 -	    hr_dev->hw_rev == HNS_ROCE_HW_VER1)
@@ -6830,7 +6887,7 @@ index c84e1c23722c..d78373e10aab 100644
 @@ -407,11 +394,6 @@ static void free_qpc(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp)
  {
  	struct hns_roce_qp_table *qp_table = &hr_dev->qp_table;
- 
+
 -	/* In v1 engine, GSI QP context is saved in the RoCE hw's register */
 -	if (hr_qp->ibqp.qp_type == IB_QPT_GSI &&
 -	    hr_dev->hw_rev == HNS_ROCE_HW_VER1)
@@ -6840,16 +6897,16 @@ index c84e1c23722c..d78373e10aab 100644
  		hns_roce_table_put(hr_dev, &qp_table->trrl_table, hr_qp->qpn);
  	hns_roce_table_put(hr_dev, &qp_table->irrl_table, hr_qp->qpn);
 @@ -540,11 +522,6 @@ static void set_ext_sge_param(struct hns_roce_dev *hr_dev, u32 sq_wqe_cnt,
- 
+
  	hr_qp->sge.sge_shift = HNS_ROCE_SGE_SHIFT;
- 
+
 -	if (hr_dev->hw_rev == HNS_ROCE_HW_VER1) {
 -		hr_qp->sq.max_gs = HNS_ROCE_SGE_IN_WQE;
 -		return;
 -	}
 -
  	hr_qp->sq.max_gs = max(1U, cap->max_send_sge);
- 
+
  	wqe_sge_cnt = get_wqe_ext_sge_cnt(hr_qp);
 @@ -1210,7 +1187,7 @@ static int check_qp_type(struct hns_roce_dev *hr_dev, enum ib_qp_type type,
  			goto out;
@@ -6860,6 +6917,6 @@ index c84e1c23722c..d78373e10aab 100644
  		    is_user)
  			goto out;
  		break;
--- 
+--
 2.33.0
 
