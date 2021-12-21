@@ -2,153 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E573547BF30
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Dec 2021 12:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DCB47C078
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Dec 2021 14:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232879AbhLUL56 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Dec 2021 06:57:58 -0500
-Received: from mga07.intel.com ([134.134.136.100]:32045 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230184AbhLUL56 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 21 Dec 2021 06:57:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1640087878; x=1671623878;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GCJ5MwsforBAFoewQTKw32dd/n1f7+H0JiRPmXrjV24=;
-  b=jO2xG6hjPyt5FZyZTsBRZvX4myvpwJKM5yP0p6U4bJEgZoryDQe5h7C/
-   eX0FnbpLAEDiAYCp1QBXSYCXdaaH+FQNiU6isxLcEZc4ycDC76bEH91fY
-   itZLgmeZu7MjVZoANcrU2honXZzw5BV1fzp2DuvY4T2wV+V6TrQFf3nMl
-   WTaSWLOxKgrUq5cWatVnrQ9ZPlDmy9hzVtajtHqteLxrKSW5EpoqJahjz
-   iYyXOHZIA2/lGtRK9h5h6weDtlTE4bJaZdHuqfbNzN76m0ScZ2M9YWdQu
-   tJR+hRS8UWLYs2wKzpEKUalN9Q4fqERqloPn8XSA+iocu16XRg8iua+aI
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="303749459"
-X-IronPort-AV: E=Sophos;i="5.88,223,1635231600"; 
-   d="scan'208";a="303749459"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Dec 2021 03:57:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,223,1635231600"; 
-   d="scan'208";a="484392979"
-Received: from lkp-server02.sh.intel.com (HELO 9f38c0981d9f) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 21 Dec 2021 03:57:55 -0800
-Received: from kbuild by 9f38c0981d9f with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1mzdmF-00093V-3l; Tue, 21 Dec 2021 11:57:55 +0000
-Date:   Tue, 21 Dec 2021 19:57:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
-        dledford@redhat.com
-Cc:     kbuild-all@lists.01.org, leon@kernel.org,
-        linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
-        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com
-Subject: Re: [PATCH rdma-next 10/11] RDMA/erdma: Add the ABI definitions
-Message-ID: <202112211925.cA7D5851-lkp@intel.com>
-References: <20211221024858.25938-11-chengyou@linux.alibaba.com>
+        id S233768AbhLUNJe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 21 Dec 2021 08:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233690AbhLUNJe (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Dec 2021 08:09:34 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC695C06173F
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Dec 2021 05:09:33 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B5BE7B816A7
+        for <linux-rdma@vger.kernel.org>; Tue, 21 Dec 2021 13:09:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8B0FC36AF9;
+        Tue, 21 Dec 2021 13:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640092171;
+        bh=hrdq71MZHKBHtEXybCJ1hz0C1vr9ySs4TSm4bWtKotM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sS+Q9N0jUoXCIPoR5oxfC65hUu4WRyi610h3UPq1zNpPPCFXTRK9MOEqer0Ts1aNv
+         OhNbN1HEwPHUwyGp7BWiosg2XhULSHoDm71lVgKxudpv8eia1cnLUfFhTmWdJpKtqT
+         3+k0Kx0NLmIIQiOtge7wRBL4Ri7C4WosB4G2mb+hBl+Ikar5T94SM7HJT86XWniI5r
+         UNDrEuuVNc7DR+g8zq7zJmMpyIgNWWD64TvU3iM2BGqeR8lVwQhIMGbxlzmF3Cihcu
+         LPV4yJQ1oFtAtZ5rKksTVUtcsTZWRm2Q2MZzK9Mpb7SPIgo2OfU5ss9YA+DJ5U7TIG
+         qx6vyTTXFirWg==
+Date:   Tue, 21 Dec 2021 15:09:26 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com
+Subject: Re: [PATCH rdma-next 00/11] Elastic RDMA Adapter (ERDMA) driver
+Message-ID: <YcHSBnKHmR9sb6KR@unreal>
+References: <20211221024858.25938-1-chengyou@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211221024858.25938-11-chengyou@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20211221024858.25938-1-chengyou@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Cheng,
+On Tue, Dec 21, 2021 at 10:48:47AM +0800, Cheng Xu wrote:
+> Hello all,
+> 
+> This patch set introduces the Elastic RDMA Adapter (ERDMA) driver, which
+> released in Apsara Conference 2021 by Alibaba.
+> 
+> ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+> environment, initially offered in g7re instance. It can improve the
+> efficiency of large-scale distributed computing and communication
+> significantly and expand dynamically with the cluster scale of Alibaba
+> Cloud.
+> 
+> ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+> works in the VPC network environment (overlay network), and uses iWarp
+> tranport protocol. ERDMA supports reliable connection (RC). ERDMA also
+> supports both kernel space and user space verbs. Now we have already
+> supported HPC/AI applications with libfabric, NoF and some other internal
+> verbs libraries, such as xrdma, epsl, etc,.
 
-Thank you for the patch! Yet something to improve:
+We will need to get erdma provider implementation in the rdma-core too,
+in order to consider to merge it.
 
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v5.16-rc6 next-20211220]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> 
+> For the ECS instance with RDMA enabled, there are two kinds of devices
+> allocated, one for ERDMA, and one for the original netdev (virtio-net).
+> They are different PCI deivces. ERDMA driver can get the information about
+> which netdev attached to in its PCIe barspace (by MAC address matching).
 
-url:    https://github.com/0day-ci/linux/commits/Cheng-Xu/Elastic-RDMA-Adapter-ERDMA-driver/20211221-105044
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-config: x86_64-randconfig-a004-20211220 (https://download.01.org/0day-ci/archive/20211221/202112211925.cA7D5851-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/0day-ci/linux/commit/8bafa2877f1dd44153ce36bb8a0a0c491f990b6b
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Cheng-Xu/Elastic-RDMA-Adapter-ERDMA-driver/20211221-105044
-        git checkout 8bafa2877f1dd44153ce36bb8a0a0c491f990b6b
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+This is very questionable. The netdev part should be kept in the
+drivers/ethernet/... part of the kernel.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Thanks
 
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:32:
->> ./usr/include/rdma/erdma-abi.h:14:2: error: unknown type name 'u64'
-      14 |  u64 db_record_va;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:15:2: error: unknown type name 'u64'
-      15 |  u64 qbuf_va;
-         |  ^~~
->> ./usr/include/rdma/erdma-abi.h:16:2: error: unknown type name 'u32'
-      16 |  u32 qbuf_len;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:17:2: error: unknown type name 'u32'
-      17 |  u32 rsvd0;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:21:2: error: unknown type name 'u32'
-      21 |  u32 cq_id;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:22:2: error: unknown type name 'u32'
-      22 |  u32 num_cqe;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:26:2: error: unknown type name 'u64'
-      26 |  u64 db_record_va;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:27:2: error: unknown type name 'u64'
-      27 |  u64 qbuf_va;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:28:2: error: unknown type name 'u32'
-      28 |  u32 qbuf_len;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:29:2: error: unknown type name 'u32'
-      29 |  u32 rsvd0;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:33:2: error: unknown type name 'u32'
-      33 |  u32 qp_id;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:34:2: error: unknown type name 'u32'
-      34 |  u32 num_sqe;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:35:2: error: unknown type name 'u32'
-      35 |  u32 num_rqe;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:36:2: error: unknown type name 'u32'
-      36 |  u32 rq_offset;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:40:2: error: unknown type name 'u32'
-      40 |  u32 dev_id;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:41:2: error: unknown type name 'u32'
-      41 |  u32 pad;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:42:2: error: unknown type name 'u32'
-      42 |  u32 sdb_type;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:43:2: error: unknown type name 'u32'
-      43 |  u32 sdb_offset;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:44:2: error: unknown type name 'u64'
-      44 |  u64 sdb;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:45:2: error: unknown type name 'u64'
-      45 |  u64 rdb;
-         |  ^~~
-   ./usr/include/rdma/erdma-abi.h:46:2: error: unknown type name 'u64'
-      46 |  u64 cdb;
-         |  ^~~
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> Thanks,
+> Cheng Xu
+> 
+> Cheng Xu (11):
+>   RDMA: Add ERDMA to rdma_driver_id definition
+>   RDMA/erdma: Add the hardware related definitions
+>   RDMA/erdma: Add main include file
+>   RDMA/erdma: Add cmdq implementation
+>   RDMA/erdma: Add event queue implementation
+>   RDMA/erdma: Add verbs header file
+>   RDMA/erdma: Add verbs implementation
+>   RDMA/erdma: Add connection management (CM) support
+>   RDMA/erdma: Add the erdma module
+>   RDMA/erdma: Add the ABI definitions
+>   RDMA/erdma: Add driver to kernel build environment
+> 
+>  MAINTAINERS                               |    8 +
+>  drivers/infiniband/Kconfig                |    1 +
+>  drivers/infiniband/hw/Makefile            |    1 +
+>  drivers/infiniband/hw/erdma/Kconfig       |   10 +
+>  drivers/infiniband/hw/erdma/Makefile      |    5 +
+>  drivers/infiniband/hw/erdma/erdma.h       |  381 +++++
+>  drivers/infiniband/hw/erdma/erdma_cm.c    | 1585 +++++++++++++++++++++
+>  drivers/infiniband/hw/erdma/erdma_cm.h    |  158 ++
+>  drivers/infiniband/hw/erdma/erdma_cmdq.c  |  489 +++++++
+>  drivers/infiniband/hw/erdma/erdma_cq.c    |  201 +++
+>  drivers/infiniband/hw/erdma/erdma_debug.c |  314 ++++
+>  drivers/infiniband/hw/erdma/erdma_debug.h |   18 +
+>  drivers/infiniband/hw/erdma/erdma_eq.c    |  346 +++++
+>  drivers/infiniband/hw/erdma/erdma_hw.h    |  474 ++++++
+>  drivers/infiniband/hw/erdma/erdma_main.c  |  711 +++++++++
+>  drivers/infiniband/hw/erdma/erdma_qp.c    |  624 ++++++++
+>  drivers/infiniband/hw/erdma/erdma_verbs.c | 1477 +++++++++++++++++++
+>  drivers/infiniband/hw/erdma/erdma_verbs.h |  366 +++++
+>  include/uapi/rdma/erdma-abi.h             |   49 +
+>  include/uapi/rdma/ib_user_ioctl_verbs.h   |    1 +
+>  20 files changed, 7219 insertions(+)
+>  create mode 100644 drivers/infiniband/hw/erdma/Kconfig
+>  create mode 100644 drivers/infiniband/hw/erdma/Makefile
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma.h
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.h
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_cmdq.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_cq.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_debug.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_debug.h
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_eq.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_hw.h
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_main.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_qp.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.c
+>  create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.h
+>  create mode 100644 include/uapi/rdma/erdma-abi.h
+> 
+> -- 
+> 2.27.0
+> 
