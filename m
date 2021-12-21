@@ -2,115 +2,87 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7749647B881
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Dec 2021 03:49:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F7547B6BE
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Dec 2021 02:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233727AbhLUCtR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Dec 2021 21:49:17 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:43928 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233671AbhLUCtR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 20 Dec 2021 21:49:17 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V.I-4yc_1640054955;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.I-4yc_1640054955)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 21 Dec 2021 10:49:15 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, dledford@redhat.com
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
-        KaiShen@linux.alibaba.com, chengyou@linux.alibaba.com,
-        tonylu@linux.alibaba.com
-Subject: [PATCH rdma-next 11/11] RDMA/erdma: Add driver to kernel build environment
-Date:   Tue, 21 Dec 2021 10:48:58 +0800
-Message-Id: <20211221024858.25938-12-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
-In-Reply-To: <20211221024858.25938-1-chengyou@linux.alibaba.com>
-References: <20211221024858.25938-1-chengyou@linux.alibaba.com>
+        id S229908AbhLUBPk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Dec 2021 20:15:40 -0500
+Received: from mga09.intel.com ([134.134.136.24]:36345 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229866AbhLUBPk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 20 Dec 2021 20:15:40 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10204"; a="240108248"
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; 
+   d="scan'208";a="240108248"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2021 17:15:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,221,1635231600"; 
+   d="scan'208";a="547776416"
+Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga001.jf.intel.com with ESMTP; 20 Dec 2021 17:15:38 -0800
+From:   yanjun.zhu@linux.dev
+To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+Subject: [PATCHv3 1/1] RDMA/irdma: Make the source udp port vary
+Date:   Tue, 21 Dec 2021 12:39:13 -0500
+Message-Id: <20211221173913.1386261-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- MAINTAINERS                          |  8 ++++++++
- drivers/infiniband/Kconfig           |  1 +
- drivers/infiniband/hw/Makefile       |  1 +
- drivers/infiniband/hw/erdma/Kconfig  | 10 ++++++++++
- drivers/infiniband/hw/erdma/Makefile |  5 +++++
- 5 files changed, 25 insertions(+)
- create mode 100644 drivers/infiniband/hw/erdma/Kconfig
- create mode 100644 drivers/infiniband/hw/erdma/Makefile
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index e9d484507c06..ac2b54c6439b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -722,6 +722,14 @@ S:	Maintained
- F:	Documentation/i2c/busses/i2c-ali1563.rst
- F:	drivers/i2c/busses/i2c-ali1563.c
+Based on the link https://www.spinics.net/lists/linux-rdma/msg73735.html,
+get the source udp port number for a QP based on the grh.flow_label or
+lqpn/rqrpn. This provides a better spread of traffic across NIC RX queues.
+The method in the commit 2b880b2e5e03 ("RDMA/mlx5: Define RoCEv2 udp
+source port when set path") is a standard way. So it is also adopted in
+this commit.
+
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+V2->V3: Move to the block of IB_QP_AV in the mask and IB_AH_GRH in ah_flags
+V1->V2: Adopt a standard method to get udp source port.
+---
+ drivers/infiniband/hw/irdma/verbs.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index 8cd5f9261692..31039b295206 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -1094,6 +1094,15 @@ static int irdma_query_pkey(struct ib_device *ibdev, u32 port, u16 index,
+ 	return 0;
+ }
  
-+ALIBABA ELASTIC RDMA DRIVER
-+M:	Cheng Xu <chengyou@linux.alibaba.com>
-+M:	Kai Shen <kaishen@linux.alibaba.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/hw/erdma
-+F:	include/uapi/rdma/erdma-abi.h
 +
- ALIENWARE WMI DRIVER
- L:	Dell.Client.Kernel@dell.com
- S:	Maintained
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 33d3ce9c888e..cc6a7ff88ff3 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -92,6 +92,7 @@ source "drivers/infiniband/hw/hns/Kconfig"
- source "drivers/infiniband/hw/bnxt_re/Kconfig"
- source "drivers/infiniband/hw/hfi1/Kconfig"
- source "drivers/infiniband/hw/qedr/Kconfig"
-+source "drivers/infiniband/hw/erdma/Kconfig"
- source "drivers/infiniband/sw/rdmavt/Kconfig"
- source "drivers/infiniband/sw/rxe/Kconfig"
- source "drivers/infiniband/sw/siw/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index fba0b3be903e..6b3a88046125 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_INFINIBAND_HFI1)		+= hfi1/
- obj-$(CONFIG_INFINIBAND_HNS)		+= hns/
- obj-$(CONFIG_INFINIBAND_QEDR)		+= qedr/
- obj-$(CONFIG_INFINIBAND_BNXT_RE)	+= bnxt_re/
-+obj-$(CONFIG_INFINIBAND_ERDMA)		+= erdma/
-diff --git a/drivers/infiniband/hw/erdma/Kconfig b/drivers/infiniband/hw/erdma/Kconfig
-new file mode 100644
-index 000000000000..8526689fede7
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Kconfig
-@@ -0,0 +1,10 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INFINIBAND_ERDMA
-+	tristate "Alibaba Elastic RDMA Adapter (ERDMA) support"
-+	depends on PCI_MSI && 64BIT && !CPU_BIG_ENDIAN
-+	depends on INFINIBAND_ADDR_TRANS
-+	depends on INFINIBAND_USER_ACCESS
-+	help
-+	  This is a RDMA/iWarp driver for Alibaba Elastic RDMA Adapter(ERDMA).
++static u16 irdma_get_udp_sport(u32 fl, u32 lqpn, u32 rqpn)
++{
++	if (!fl)
++		fl = rdma_calc_flow_label(lqpn, rqpn);
 +
-+	  To compile this driver as module, choose M here.
-diff --git a/drivers/infiniband/hw/erdma/Makefile b/drivers/infiniband/hw/erdma/Makefile
-new file mode 100644
-index 000000000000..149d22a80aa6
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_INFINIBAND_ERDMA) := erdma.o
++	return rdma_flow_label_to_udp_sport(fl);
++}
 +
-+erdma-y := erdma_cm.o erdma_main.o erdma_cmdq.o erdma_debug.o erdma_verbs.o erdma_qp.o erdma_eq.o\
-+	erdma_cq.o
+ /**
+  * irdma_modify_qp_roce - modify qp request
+  * @ibqp: qp's pointer for modify
+@@ -1167,6 +1176,11 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 
+ 		memset(&iwqp->roce_ah, 0, sizeof(iwqp->roce_ah));
+ 		if (attr->ah_attr.ah_flags & IB_AH_GRH) {
++			u32 fl = udp_info->flow_label;
++			u32 lqp = ibqp->qp_num;
++			u32 rqp = roce_info->dest_qp;
++
++			udp_info->src_port = irdma_get_udp_sport(fl, lqp, rqp);
+ 			udp_info->ttl = attr->ah_attr.grh.hop_limit;
+ 			udp_info->flow_label = attr->ah_attr.grh.flow_label;
+ 			udp_info->tos = attr->ah_attr.grh.traffic_class;
 -- 
 2.27.0
 
