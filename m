@@ -2,151 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F1147D4EF
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Dec 2021 17:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF5147D5A9
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Dec 2021 18:19:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbhLVQO6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Dec 2021 11:14:58 -0500
-Received: from mga14.intel.com ([192.55.52.115]:30193 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230463AbhLVQO6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 22 Dec 2021 11:14:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1640189698; x=1671725698;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=042g5HYpnl13PvSaI2VaFEyGeQULFxbMxcXpTzH36ZI=;
-  b=eIVpx+nY9So3kJIfL2Pa1A+wjkmpj7GAEslD3i/btAlYvLBbhr8o2JEK
-   ElySB/c6ztgioi+KMHMy+3tKOxgHSyq6xcCXkQ9ggpDG2hTIr5gJ961uy
-   n3SNJERveOrJ87B7muHfcRw3wqhDdssFiWIoaUFx6txkVHqH8fT0sSdRG
-   Rv0ykS8dUPYKrOnjeDEb7/x589g/9lRSw1VfCDJ8higospxHqNd9QxCn5
-   1hxNnSOT17dP6hzy0aPDT/8h2BQA+4VBWbm9zM6OBhD3MeYk6qfPtQnVT
-   ++55kfRhLBaEmwRJ8shYb97pMcFmRgTSbTvqGGh2WolOCWOPJRUaungkH
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10206"; a="240875706"
-X-IronPort-AV: E=Sophos;i="5.88,227,1635231600"; 
-   d="scan'208";a="240875706"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2021 08:14:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,227,1635231600"; 
-   d="scan'208";a="466711252"
-Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 22 Dec 2021 08:14:54 -0800
-Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n04GT-0000kA-Gx; Wed, 22 Dec 2021 16:14:53 +0000
-Date:   Thu, 23 Dec 2021 00:14:00 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
-        dledford@redhat.com
-Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org, leon@kernel.org,
-        linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
-        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com
-Subject: Re: [PATCH rdma-next 10/11] RDMA/erdma: Add the ABI definitions
-Message-ID: <202112230027.47XqoqUH-lkp@intel.com>
-References: <20211221024858.25938-11-chengyou@linux.alibaba.com>
+        id S1344243AbhLVRSy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Dec 2021 12:18:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44150 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344241AbhLVRSy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Dec 2021 12:18:54 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2DE1C06173F
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Dec 2021 09:18:53 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id r139so2078514qke.9
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Dec 2021 09:18:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/L5NSqmnmp0JrNCe4jEZo1LjnyYAG3Zj1ZGvlLyNRww=;
+        b=LXqfRFsU799kS6etQx2wny/MKAWaffuWQk76RfpfJW+3X5OCImXg1Dp90Y0mRBI1EG
+         WNjZzNDzZKIcmS8X1m46mdALXkuotSNdEczKGUd/PBewYiLrbLh2zbN/CaonWPBMBbDx
+         LHnygp0gSkx2zU/yGMCtl+rcj3S3J3Cw2iqmWXTzbF9xYnXxu99hrM6LBcYVQrggMDeJ
+         2E+MC79QzCOqtuTTypNlhmVcPYm8OP5ZRavMcgb9yx/5gpRRO0HB1BziVlKih5ozJC/8
+         M0ic/La1wfEsbcI58LTI+gJPcyj/M/6EKryf3RVyZBHv/tF5fEsE7drF8k3qsF+r9v3q
+         +Ryg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/L5NSqmnmp0JrNCe4jEZo1LjnyYAG3Zj1ZGvlLyNRww=;
+        b=mhCKVzLVakwDEYfFym2IHGuvrecQ2aQ30w73w/Fx40F7RKU+ZgOgjYSeaKOD2UIkdH
+         amvA42WNvq7D6TzmS4AHvCS6dTrwpcSN143dQe728Zm/q4E+OvR/Mjlu8B9IE6zQkQC2
+         5nBvdUQVtydJVFuVuwlBBkb6ughDtUgjaqvIQRN1SGotD36XRUI5Io4AVLn5Me/nPuX+
+         xn/hk8aW2ZnMYcT2zIxB/4+SYQHvuNAwmJ2kYCZkg79o3rkQCttisDgWfvNBnnRTRIGy
+         CANMMNABWSU5mIlo/k/M1UIoFDICeqoUkPX8nCAC6aooLbZOBud/E3sMTcwMvcNiQ2Nq
+         kiZw==
+X-Gm-Message-State: AOAM533vNxEtie8keSlwPGUN9b6K262ixdWhNnnI4IUkt6bSt2JriRLJ
+        9Jp3AOQH/lZfbZHChg30cmC2mQ==
+X-Google-Smtp-Source: ABdhPJwP5NJyymLKCRDlLyH4OX0k1lbimBfGNffLbMt6CEmyfRjzYEMg0Rxlwp8mOtStmN8qCKq7rQ==
+X-Received: by 2002:ae9:df87:: with SMTP id t129mr2774584qkf.67.1640193533176;
+        Wed, 22 Dec 2021 09:18:53 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id de33sm2244073qkb.5.2021.12.22.09.18.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Dec 2021 09:18:52 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1n05GN-007SI7-Km; Wed, 22 Dec 2021 13:18:51 -0400
+Date:   Wed, 22 Dec 2021 13:18:51 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     gregkh@linuxfoundation.org, mustafa.ismail@intel.com,
+        shiraz.saleem@intel.com, dledford@redhat.com, leon@kernel.org,
+        saeedm@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        vkoul@kernel.org, yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, mst@redhat.com,
+        jasowang@redhat.com, andriy.shevchenko@linux.intel.com,
+        hdegoede@redhat.com, virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH 0/4] driver_core: Auxiliary drvdata helper cleanup
+Message-ID: <20211222171851.GO6467@ziepe.ca>
+References: <20211221235852.323752-1-david.e.box@linux.intel.com>
+ <20211222000905.GN6467@ziepe.ca>
+ <35bca887e697597f7b3e1944b3dd7347c6defca1.camel@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211221024858.25938-11-chengyou@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <35bca887e697597f7b3e1944b3dd7347c6defca1.camel@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Cheng,
+On Tue, Dec 21, 2021 at 04:48:17PM -0800, David E. Box wrote:
+> On Tue, 2021-12-21 at 20:09 -0400, Jason Gunthorpe wrote:
+> > On Tue, Dec 21, 2021 at 03:58:48PM -0800, David E. Box wrote:
+> > > Depends on "driver core: auxiliary bus: Add driver data helpers" patch [1].
+> > > Applies the helpers to all auxiliary device drivers using
+> > > dev_(get/set)_drvdata. Drivers were found using the following search:
+> > > 
+> > >     grep -lr "struct auxiliary_device" $(grep -lr "drvdata" .)
+> > > 
+> > > Changes were build tested using the following configs:
+> > > 
+> > >     vdpa/mlx5:       CONFIG_MLX5_VDPA_NET
+> > >     net/mlx53:       CONFIG_MLX5_CORE_EN
+> > >     soundwire/intel: CONFIG_SOUNDWIRE_INTEL
+> > >     RDAM/irdma:      CONFIG_INFINIBAND_IRDMA
+> > >                      CONFIG_MLX5_INFINIBAND
+> > > 
+> > > [1] https://www.spinics.net/lists/platform-driver-x86/msg29940.html 
+> > 
+> > I have to say I don't really find this to be a big readability
+> > improvement.
+> 
+> I should have referenced the thread [1] discussing the benefit of this change
+> since the question was asked and answered already. The idea is that drivers
+> shouldn't have to touch the device API directly if they are already using a
+> higher level core API (auxiliary bus) that can do that on its behalf.
 
-Thank you for the patch! Yet something to improve:
+Driver writers should rarely use the auxilary device type directly, the
+should always immediately container_of it to their proper derived
+type.
 
-[auto build test ERROR on rdma/for-next]
-[also build test ERROR on linus/master v5.16-rc6 next-20211222]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+> > Also, what use is 'to_auxiliary_dev()' ? I didn't see any users added..
+>
+> This was not added by that patch.
 
-url:    https://github.com/0day-ci/linux/commits/Cheng-Xu/Elastic-RDMA-Adapter-ERDMA-driver/20211221-105044
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-config: i386-randconfig-a014-20211220 (https://download.01.org/0day-ci/archive/20211223/202112230027.47XqoqUH-lkp@intel.com/config)
-compiler: clang version 14.0.0 (https://github.com/llvm/llvm-project 555eacf75f21cd1dfc6363d73ad187b730349543)
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/0day-ci/linux/commit/8bafa2877f1dd44153ce36bb8a0a0c491f990b6b
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review Cheng-Xu/Elastic-RDMA-Adapter-ERDMA-driver/20211221-105044
-        git checkout 8bafa2877f1dd44153ce36bb8a0a0c491f990b6b
-        # save the config file to linux build tree
-        mkdir build_dir
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+It was added by the referenced patch, and seems totally pointless cut
+and paste, again because nothing should be using the auxiliary_device
+type for anything more than container_of'ing to their own type.
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+We've been ripping out bus specific APIs in favour of generic ones
+(see the work on the DMA API for instance) so this whole concept seems
+regressive, particularly when applied to auxiliary bus which does not
+have an API of its own.
 
-All errors (new ones prefixed by >>):
-
-   In file included from <built-in>:1:
->> ./usr/include/rdma/erdma-abi.h:14:2: error: unknown type name 'u64'
-           u64 db_record_va;
-           ^
-   ./usr/include/rdma/erdma-abi.h:15:2: error: unknown type name 'u64'
-           u64 qbuf_va;
-           ^
->> ./usr/include/rdma/erdma-abi.h:16:2: error: unknown type name 'u32'
-           u32 qbuf_len;
-           ^
-   ./usr/include/rdma/erdma-abi.h:17:2: error: unknown type name 'u32'
-           u32 rsvd0;
-           ^
-   ./usr/include/rdma/erdma-abi.h:21:2: error: unknown type name 'u32'
-           u32 cq_id;
-           ^
-   ./usr/include/rdma/erdma-abi.h:22:2: error: unknown type name 'u32'
-           u32 num_cqe;
-           ^
-   ./usr/include/rdma/erdma-abi.h:26:2: error: unknown type name 'u64'
-           u64 db_record_va;
-           ^
-   ./usr/include/rdma/erdma-abi.h:27:2: error: unknown type name 'u64'
-           u64 qbuf_va;
-           ^
-   ./usr/include/rdma/erdma-abi.h:28:2: error: unknown type name 'u32'
-           u32 qbuf_len;
-           ^
-   ./usr/include/rdma/erdma-abi.h:29:2: error: unknown type name 'u32'
-           u32 rsvd0;
-           ^
-   ./usr/include/rdma/erdma-abi.h:33:2: error: unknown type name 'u32'
-           u32 qp_id;
-           ^
-   ./usr/include/rdma/erdma-abi.h:34:2: error: unknown type name 'u32'
-           u32 num_sqe;
-           ^
-   ./usr/include/rdma/erdma-abi.h:35:2: error: unknown type name 'u32'
-           u32 num_rqe;
-           ^
-   ./usr/include/rdma/erdma-abi.h:36:2: error: unknown type name 'u32'
-           u32 rq_offset;
-           ^
-   ./usr/include/rdma/erdma-abi.h:40:2: error: unknown type name 'u32'
-           u32 dev_id;
-           ^
-   ./usr/include/rdma/erdma-abi.h:41:2: error: unknown type name 'u32'
-           u32 pad;
-           ^
-   ./usr/include/rdma/erdma-abi.h:42:2: error: unknown type name 'u32'
-           u32 sdb_type;
-           ^
-   ./usr/include/rdma/erdma-abi.h:43:2: error: unknown type name 'u32'
-           u32 sdb_offset;
-           ^
-   ./usr/include/rdma/erdma-abi.h:44:2: error: unknown type name 'u64'
-           u64 sdb;
-           ^
-   fatal error: too many errors emitted, stopping now [-ferror-limit=]
-   20 errors generated.
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
