@@ -2,223 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8BB47CD9B
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Dec 2021 08:38:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD9947CFC7
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Dec 2021 11:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239320AbhLVHiB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Dec 2021 02:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhLVHiA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Dec 2021 02:38:00 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADD7C061574
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Dec 2021 23:38:00 -0800 (PST)
-Received: from ip4d173d4a.dynamic.kabel-deutschland.de ([77.23.61.74] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1mzwCA-00033H-A7; Wed, 22 Dec 2021 08:37:54 +0100
-Message-ID: <dde1ef4a-8cc7-9258-8c3d-7188c5182720@leemhuis.info>
-Date:   Wed, 22 Dec 2021 08:37:53 +0100
+        id S234797AbhLVKOQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Dec 2021 05:14:16 -0500
+Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:44800
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234441AbhLVKOP (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 22 Dec 2021 05:14:15 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WGYA0ELo1E7Jta9xzhkY8GDOGQ6LyVpwBUXGx+nkXnZ6APeeJb/jiOj65r0PUQWI2EH12bwoPmn9swBIU84yFQVmlZf2Uzn+tVGHikLszBR+6E0oI4kQKNpWzSDZmIzseR+5E1lqKSw1X1qjIU8FSqcVDieDEpapMmkrJFDYHwHsQ4M/HeCFQYcaRjJVsmyL7eFI+8tqBRQ30HgIMWaO64seZpKGXiyzn2iX7Y0qMlxmi6jrGed+eRwHxjs+Et8fwqF1H+AxGuq2qowhnhSyQ6nFATno2F+gQgZeNHHPsdcNTNz1hBjSG3g7NMKZ5aUq4FqEfKDif4CYVbNVNJX1eQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UuM3mR5/5GOgUnAllgxZfIwi92abGZQToskkugOXdOc=;
+ b=iML3+BSjDJFUVG4zFYiqXaRNGgSA7BmpkQbVOEKTvTtB+FaTgK75cm8FgrHssJkO6YF+EKnFJIb3zq4NXjWyBxh1UCeFnydhkD0MOzn49VZrgT5QP4/ZFEYN1S3j18MUQ+w3dwAN3xyiFS7mLImLIidODL2n0vVTlOETbNPL/OQYzYSlLwz/j5QLfazoRI2b5JC9554O6HSYp4bWCxcW0o7J05ibSsvoU0TA7HWhroo0/KBaSw6HvoYvSOymtAN/QpvwLk4wathUZ5FEu4UTpJMen2duLA6HUc4GDBusou2xFvxmCyLfjxP41GzbyA4RmpqD6Tbd0ayaDtrpvUlksg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UuM3mR5/5GOgUnAllgxZfIwi92abGZQToskkugOXdOc=;
+ b=HohhYQvU4x2z0jr5ddBPnCEx6wsJSshH1yq1084fJX1cVhWTPY8DRW2hgukkrhgmwN4ce0J5TauQDAIRcYPWR+6sbusEkzBDmyso7EwaTiInS1taaHi0tXMjqD8E624OWwYWv0xLAdGjRMgmXL3xsvupdyMlngHVY6fhVqNNAipm2Hed+/LW6rPvc5sI9PQ0lrX78TuEsPlJTCli/24nTy+ocaqCzPLEk3OcKEGYJfr5PVczWSdz645mmIoyIwwcphpvqGtQ+bWbhyURD1Tes+xB6F1gR2wRPERKEN0LaBfnPFKqD56pO6oIFj4pHA03CGhEgOHglqb4ZagLsLJXFA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com (2603:10b6:5:39d::21)
+ by DM6PR12MB5518.namprd12.prod.outlook.com (2603:10b6:5:1b9::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4823.16; Wed, 22 Dec
+ 2021 10:14:14 +0000
+Received: from DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::8515:d530:cd95:53dc]) by DM4PR12MB5296.namprd12.prod.outlook.com
+ ([fe80::8515:d530:cd95:53dc%4]) with mapi id 15.20.4801.014; Wed, 22 Dec 2021
+ 10:14:14 +0000
+From:   Maor Gottlieb <maorg@nvidia.com>
+To:     jgg@nvidia.com
+Cc:     alaa@nvidia.com, chuck.lever@oracle.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        tonylu@linux.alibaba.com, leon@kernel.org
+Subject: [PATCH rdma-rc] Revert "RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow"
+Date:   Wed, 22 Dec 2021 12:13:12 +0200
+Message-Id: <20211222101312.1358616-1-maorg@nvidia.com>
+X-Mailer: git-send-email 2.25.4
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM6P194CA0094.EURP194.PROD.OUTLOOK.COM
+ (2603:10a6:209:8f::35) To DM4PR12MB5296.namprd12.prod.outlook.com
+ (2603:10b6:5:39d::21)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.0
-Subject: Re: RDMA/mlx5: Regression since v5.15-rc5: Kernel panic when called
- ib_dereg_mr
-Content-Language: en-BS
-To:     Tony Lu <tonylu@linux.alibaba.com>, Alaa Hleihel <alaa@nvidia.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        linux-rdma@vger.kernel.org,
-        "regressions@lists.linux.dev" <regressions@lists.linux.dev>
-References: <9974ea8c-f1cb-aeb4-cf1b-19d37536894a@linux.alibaba.com>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <9974ea8c-f1cb-aeb4-cf1b-19d37536894a@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1640158680;b2851376;
-X-HE-SMSGID: 1mzwCA-00033H-A7
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1aba2732-3f21-4983-5280-08d9c533cdfd
+X-MS-TrafficTypeDiagnostic: DM6PR12MB5518:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR12MB551841A3C06C34146E8C4E74DE7D9@DM6PR12MB5518.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:127;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: waIBZi0pPmbo4sniQdaG4Wt4MTAnKUQ4ICF5D/cBXyOpRa8DSNO9kETtKytLU0O9HUqlpxjuZS+wFOZz4nmnIhnLXEaBnofz/sQsPdkmGUa6SGTJg/Kx2LJi7GZac0RuHgcqibHiXhzL5n3Nl76fuSMWuX83Dt9bHr1k47HC/XAnf87nkOOhuxqIdgEV9SD1vPuz8ETUWHuiGyj5tx8scK+kCBp7ybulg0rxKOmmKjNent9IEJ9B4NgFgNvy1lsWbH5QpS08xHxkvPPDtzEapeLtMYnnAL63QFQ3Am3Q96Vf/PGyU2V+mJCjF/z1xEiFYWfcsNx2u3QhHyOF0WDrQPYx5FJ8wf9NH4zT5n28PAKGkBah094GRUd/hrWs00jyZIuVos1CNEV3Q1sMonUry2pHj8m/DSUNrUXsCmeTyQEriccDXs+bvrJVHYy6Mx+KA481VLfqBEOg8WSDDOdGl8ZN3m02g8ZXRIrWfzNMW93Wl/CS1rP0oeJnfWm5KsGZrIkQu/A34t2AaUVhc34eMBuBCqsbXoraYKEhC8j64RyVP0y13eZ++1wvLQG6NxClAMVwvDz6GAtBH/yvhzVCSBiVVuXDAJtHNVOrtvxGnE3n5mdTeemEoFIBLRo+z8gU3hvBJGaDRe1JJ0jfi+58Q9X9Gp/q9BjuA0YuGpVKn5naAtuS5pNbd/Z7aRKytdwWbHbui3sBNjjmwOGQYePgJg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5296.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(83380400001)(2906002)(316002)(2616005)(508600001)(34206002)(4326008)(6512007)(8936002)(66476007)(8676002)(5660300002)(6486002)(1076003)(6636002)(66556008)(6506007)(38350700002)(52116002)(38100700002)(37006003)(36756003)(186003)(26005)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?rQdUZ39jOGbE5EFUpoCSReCQZSJYwTsB9gAJnRv6MwptJpbtV6NjUribARvU?=
+ =?us-ascii?Q?kDJDyij8gHBk04ZRluC5nTabvQt8QcwOPtbHa3T6GF8zOCyXtpvQsxqTA/r4?=
+ =?us-ascii?Q?9P3RcS6WSSdRcmKhY5MlkcUiIa7gWpHB0v331gbIUe4c68p+O9gwEZowNNgs?=
+ =?us-ascii?Q?Uh6RsSRrNPCe/iSzykh2tMOyyMFG/rYHiUn21X10xd3kW+j4hcSqvTalhUpm?=
+ =?us-ascii?Q?lK3WcXpb+VOKRF+jGD/z35pe/0d6BA1eL+Tx/bU6tEYsqKiB9rJqdUuQptXz?=
+ =?us-ascii?Q?tapgBaYmVImhHFOn2JL0UzipmEP7EdTyNuKYg1qXG4fknRS7/HdYd4e4gg5H?=
+ =?us-ascii?Q?fsT3u89SJtaCUSrT1Ou3ObQwW27ZuH4h9AJXducugeo107/ikB/iDYEzDrJJ?=
+ =?us-ascii?Q?hLChkWr0vAjgPmAiLhFxJ4ZIW7j0BOJcpTQyupgItCdCHK+jHYTdByNQZR+4?=
+ =?us-ascii?Q?XNNuwIZx6iriETCulx6KjATFJmwNtkUqmCPrOLl66XMo0yVJ4Q00/sczxKEv?=
+ =?us-ascii?Q?iLzYSSZrwvqZumVETuPYaq6rdIDKoywljgbUa5v8+ztmsKEcNVkKDvq6GuYO?=
+ =?us-ascii?Q?WA76Kr7fCu71wYBAOWEYGHeInZ65bRFwVhHbwbEPQiyJuVByqmWpPeGZ63sQ?=
+ =?us-ascii?Q?+l6cK194uVWb7Mpvjocs4wgW6pCpK57UQM3BhB3j+rZ4coZp9sUsz1wL3mf5?=
+ =?us-ascii?Q?9yrHBA+ehIbZpKTF4wOOY/J+RnG//HHV2Y2KGvGw4Ks0kSCp7LBXW7KlLS44?=
+ =?us-ascii?Q?zKfujyn7e3MTO5bfvo5FLkDjtZ/vrVFUE4dFH3uUYrZDOqcF0TeKlg4N4ksW?=
+ =?us-ascii?Q?kmp6cIaEjq6/kZHhF+o/ElivuJkxVdHkgN/8WMYOlIKzD68WDgwshBqW3oLK?=
+ =?us-ascii?Q?3x8s7Ot6IKzs/7F75STOot+HymFs0OFAG17qzi+8ukh1ERuUmjn7sD0SJfJ8?=
+ =?us-ascii?Q?Le7hHbemprxwcKJrXloeWor2Y+XN3iQ/Ad/nSdKDAiOcE5NCzA2RExJWwKAU?=
+ =?us-ascii?Q?9k3ifvP//pS2VXy9Qaxxw3fMHzJxxqoyGvxtrYbA0mlk5NWgPdjchYiYIoji?=
+ =?us-ascii?Q?nueTPqahL9vHfcLWGLiok4BHZfHfHC73zXG7qD1shwld1rpQzoVUzvKoTTCg?=
+ =?us-ascii?Q?yff2NZKv0EnenPgl4qTlsyjUu8lMyEbldcBj2WlUxXL5IG/eFNX0wVDciYij?=
+ =?us-ascii?Q?H0HwNiz4KVbUC5Gb4yXCFSqkPYOVMWcvgXAOYKMebq/6AOTpTk0qXqMDQ0V4?=
+ =?us-ascii?Q?y1vsHBhSuMKA2tJ8QOZSynC8gJrqASBYuOY1Xtoos0CFBegNG7oZbqzC6FG1?=
+ =?us-ascii?Q?tLZ96nOctJKnrgBSRPkjAdHagHuA9WzFF735nnewDQvCPjbpw06C2r3wIt0Z?=
+ =?us-ascii?Q?mwaEAVnIRjQb5spzNoQdnsrRW3uIPyRmIZ+ly3bsLNzwsaHfPYavWCDyfwCU?=
+ =?us-ascii?Q?W+zUv7L4bHiw5uS4WMDvAODlUo5PbIWVP8bJJKg+2CDrpLCuxxmDMuSRGvUO?=
+ =?us-ascii?Q?zMHlqOMMCH4KzAagDbN2nWvCm471XCzN5VHTxsI7Fmzzfe1MQ5Lce+/c/cqw?=
+ =?us-ascii?Q?FdQ4Du5B7wueviaWs4s972SjEuuQQJtppQR70DmipkfOBYskVzyjhUJRNgZp?=
+ =?us-ascii?Q?l0DqEMbyKG+/JXGbQHOdBTA=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1aba2732-3f21-4983-5280-08d9c533cdfd
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5296.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Dec 2021 10:14:14.1133
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hkhq5ylhtp9203eg0zdPXv3qjROfwolu0uFgmMEkd4CgBPA0MTK3FFx/VTLgy8+8SJHKdzY7SlG7DUF4dBQvgA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB5518
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+This patch is not the full fix and still causes to call traces
+during mlx5_ib_dereg_mr().
 
-[TLDR: I'm adding this regression to regzbot, the Linux kernel
-regression tracking bot; most text you find below is compiled from a few
-templates paragraphs some of you might have seen already.]
+This reverts commit f0ae4afe3d35e67db042c58a52909e06262b740f.
 
-Hi, this is your Linux kernel regression tracker speaking.
-
-Top-posting for once, to make this easy accessible to everyone.
-
-Adding the regression mailing list to the list of recipients, as it
-should be in the loop for all regressions, as explained here:
-https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
-
-To be sure this issue doesn't fall through the cracks unnoticed, I'm
-adding it to regzbot, my Linux kernel regression tracking bot:
-
-#regzbot ^introduced f0ae4afe3d35
-#regzbot monitor
-https://lore.kernel.org/all/f298db4ec5fdf7a2d1d166ca2f66020fd9397e5c.1640079962.git.leonro@nvidia.com/
-#regzbot ignore-activity
-
-Reminder: when fixing the issue, please add a 'Link:' tag with the URL
-to the report (the parent of this mail) using the kernel.org redirector,
-as explained in 'Documentation/process/submitting-patches.rst'. Regzbot
-then will automatically mark the regression as resolved once the fix
-lands in the appropriate tree. For more details about regzbot see footer.
-
-Sending this to everyone that got the initial report, to make all aware
-of the tracking. I also hope that messages like this motivate people to
-directly get at least the regression mailing list and ideally even
-regzbot involved when dealing with regressions, as messages like this
-wouldn't be needed then.
-
-Don't worry, I'll send further messages wrt to this regression just to
-the lists (with a tag in the subject so people can filter them away), as
-long as they are intended just for regzbot. With a bit of luck no such
-messages will be needed anyway.
-
-Ciao, Thorsten (wearing his 'Linux kernel regression tracker' hat).
-
-P.S.: As a Linux kernel regression tracker I'm getting a lot of reports
-on my table. I can only look briefly into most of them. Unfortunately
-therefore I sometimes will get things wrong or miss something important.
-I hope that's not the case here; if you think it is, don't hesitate to
-tell me about it in a public reply. That's in everyone's interest, as
-what I wrote above might be misleading to everyone reading this; any
-suggestion I gave thus might sent someone reading this down the wrong
-rabbit hole, which none of us wants.
-
-BTW, I have no personal interest in this issue, which is tracked using
-regzbot, my Linux kernel regression tracking bot
-(https://linux-regtracking.leemhuis.info/regzbot/). I'm only posting
-this mail to get things rolling again and hence don't need to be CC on
-all further activities wrt to this regression.
-
-
-On 21.12.21 09:04, Tony Lu wrote:
-> Hello,
-> 
-> During developing and testing of SMC (net/smc), We found a problem,
-> when SMC released linkgroup or link, it called ib_dereg_mr to release
-> resources, then it panicked in mlx5_ib_dereg_mr. After investigation,
-> we found this panic was introduce by this commit:
-> 
->     f0ae4afe3d35 ("RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow")
-> 
-> After reverting this patch, SMC works fine. It looks like that
-> mlx5_ib_dereg_mr should check udata to determine to release umem,
-> because umem is union in struct, it is available when both kernel mr
-> and user mr. It is determined by the value of udata to distinguish
-> from ibv_reg_mr and ib_dereg_mr_user.
-> 
-> int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-> {
->         // udata is NULL when called from ib_dereg_mr
->         if (mr->umem) { // check udata too
->                 bool is_odp = is_odp_mr(mr);
-> 
->                 if (!is_odp)
->                         atomic_sub(ib_umem_num_pages(mr->umem),
->                                    &dev->mdev->priv.reg_pages);
->                 ib_umem_release(mr->umem);
->                 if (is_odp)
->                         mlx5_ib_free_odp_mr(mr);
->         }
-> 
-> To be caution, this issue would cause local kernel panic, also,
-> it would cause remote kernel panic. SMC would setup passive close
-> progress when server's gone, the clients connected to this server would
-> go to release link, call ib_dreg_mr, and then panic.
-> 
-> [   30.083527] smc: adding ib device mlx5_0 with port count 1
-> [   30.084281] smc:    ib device mlx5_0 port 1 has pnetid
-> [   30.085006] smc: adding ib device mlx5_1 with port count 1
-> [   30.085765] smc:    ib device mlx5_1 port 1 has pnetid
-> [   33.883596] smc: SMC-R lg 00010000 link added: id 00000101, peerid 00000101, ibdev mlx5_1, ibport 1
-> [   33.884894] smc: SMC-R lg 00010000 state changed: SINGLE, pnetid
-> [   33.894387] smc: SMC-R lg 00010000 link added: id 00000102, peerid 00000102, ibdev mlx5_0, ibport 1
-> [   33.895612] smc: SMC-R lg 00010000 state changed: SYMMETRIC, pnetid
-> [  696.351054] general protection fault, probably for non-canonical address 0x300610d01000000: 0000 [#1] PREEMPTI
-> [  696.352522] CPU: 0 PID: 976 Comm: kworker/0:0 Not tainted 5.16.0-rc5+ #41
-> [  696.353490] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.q4
-> [  696.355112] Workqueue: events smc_lgr_terminate_work [smc]
-> [  696.355914] RIP: 0010:__ib_umem_release+0x21/0xa0 [ib_uverbs]
-> [  696.356751] Code: ff ff 0f 1f 80 00 00 00 00 0f 1f 44 00 00 41 55 41 54 41 89 d4 55 53 48 89 f5 f6 46 28 01 76
-> [  696.359372] RSP: 0018:ffffc9000045bd30 EFLAGS: 00010246
-> [  696.360096] RAX: 0000000000000000 RBX: ffff8881108bd000 RCX: ffff888141a3a1a0
-> [  696.361110] RDX: 0000000000000001 RSI: ffff8881108bd000 RDI: 0300610d01000000
-> [  696.362113] RBP: ffff8881108bd000 R08: ffffc9000045bd60 R09: 0000000000000000
-> [  696.363136] R10: ffff888140052864 R11: 0000000000000008 R12: 0000000000000000
-> [  696.364145] R13: ffff888114310000 R14: 0000000000000000 R15: ffff8881426ac168
-> [  696.365153] FS:  0000000000000000(0000) GS:ffff88881fc00000(0000) knlGS:0000000000000000
-> [  696.366279] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  696.367101] CR2: 00007ffeb4ede000 CR3: 0000000147b06006 CR4: 0000000000770ef0
-> [  696.368121] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  696.369118] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  696.370112] PKRU: 55555554
-> [  696.370528] Call Trace:
-> [  696.370877]  <TASK>
-> [  696.371187]  ib_umem_release+0x2a/0x90 [ib_uverbs]
-> [  696.371889]  mlx5_ib_dereg_mr+0x19b/0x400 [mlx5_ib]
-> [  696.372612]  ib_dereg_mr_user+0x40/0xc0 [ib_core]
-> [  696.373293]  smcr_buf_unmap_link+0x3b/0xa0 [smc]
-> [  696.373962]  smcr_link_clear.part.33+0x6d/0x1e0 [smc]
-> [  696.374685]  smc_lgr_free+0x101/0x150 [smc]
-> [  696.375271]  process_one_work+0x1af/0x3c0
-> [  696.375865]  worker_thread+0x4c/0x390
-> [  696.376383]  ? preempt_count_add+0x56/0xa0
-> [  696.376961]  ? rescuer_thread+0x300/0x300
-> [  696.377543]  kthread+0x149/0x190
-> [  696.378003]  ? set_kthread_struct+0x40/0x40
-> [  696.378584]  ret_from_fork+0x1f/0x30
-> [  696.379763]  </TASK>
-> [  696.380723] Modules linked in: smc rpcrdma rdma_ucm ib_srpt ib_isert iscsi_target_mod target_core_mod ib_isers
-> [  696.406206] ---[ end trace 235afb848459d626 ]---
-> [  696.407707] RIP: 0010:__ib_umem_release+0x21/0xa0 [ib_uverbs]
-> [  696.409254] Code: ff ff 0f 1f 80 00 00 00 00 0f 1f 44 00 00 41 55 41 54 41 89 d4 55 53 48 89 f5 f6 46 28 01 76
-> [  696.413326] RSP: 0018:ffffc9000045bd30 EFLAGS: 00010246
-> [  696.414811] RAX: 0000000000000000 RBX: ffff8881108bd000 RCX: ffff888141a3a1a0
-> [  696.416544] RDX: 0000000000000001 RSI: ffff8881108bd000 RDI: 0300610d01000000
-> [  696.418257] RBP: ffff8881108bd000 R08: ffffc9000045bd60 R09: 0000000000000000
-> [  696.420076] R10: ffff888140052864 R11: 0000000000000008 R12: 0000000000000000
-> [  696.421776] R13: ffff888114310000 R14: 0000000000000000 R15: ffff8881426ac168
-> [  696.423456] FS:  0000000000000000(0000) GS:ffff88881fc00000(0000) knlGS:0000000000000000
-> [  696.425284] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  696.426733] CR2: 00007fc639600000 CR3: 0000000147b06006 CR4: 0000000000770ef0
-> [  696.428347] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [  696.429953] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [  696.431575] PKRU: 55555554
-> [  696.432641] Kernel panic - not syncing: Fatal exception
-> [  696.434024] Kernel Offset: disabled
-> [  696.435126] Rebooting in 1 seconds..
-> 
-> Thanks,
-> Tony Lu
-
+Fixes: f0ae4afe3d35 ("RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow")
+Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
 ---
-Additional information about regzbot:
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |  6 +++---
+ drivers/infiniband/hw/mlx5/mr.c      | 26 ++++++++++++++------------
+ 2 files changed, 17 insertions(+), 15 deletions(-)
 
-If you want to know more about regzbot, check out its web-interface, the
-getting start guide, and/or the references documentation:
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index 4a7a56ed740b..e636e954f6bf 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -664,6 +664,7 @@ struct mlx5_ib_mr {
+ 
+ 	/* User MR data */
+ 	struct mlx5_cache_ent *cache_ent;
++	struct ib_umem *umem;
+ 
+ 	/* This is zero'd when the MR is allocated */
+ 	union {
+@@ -675,7 +676,7 @@ struct mlx5_ib_mr {
+ 			struct list_head list;
+ 		};
+ 
+-		/* Used only by kernel MRs */
++		/* Used only by kernel MRs (umem == NULL) */
+ 		struct {
+ 			void *descs;
+ 			void *descs_alloc;
+@@ -696,9 +697,8 @@ struct mlx5_ib_mr {
+ 			int data_length;
+ 		};
+ 
+-		/* Used only by User MRs */
++		/* Used only by User MRs (umem != NULL) */
+ 		struct {
+-			struct ib_umem *umem;
+ 			unsigned int page_shift;
+ 			/* Current access_flags */
+ 			int access_flags;
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 63e2129f1142..157d862fb864 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1904,18 +1904,19 @@ mlx5_alloc_priv_descs(struct ib_device *device,
+ 	return ret;
+ }
+ 
+-static void mlx5_free_priv_descs(struct mlx5_ib_mr *mr)
++static void
++mlx5_free_priv_descs(struct mlx5_ib_mr *mr)
+ {
+-	struct mlx5_ib_dev *dev = to_mdev(mr->ibmr.device);
+-	int size = mr->max_descs * mr->desc_size;
+-
+-	if (!mr->descs)
+-		return;
++	if (!mr->umem && mr->descs) {
++		struct ib_device *device = mr->ibmr.device;
++		int size = mr->max_descs * mr->desc_size;
++		struct mlx5_ib_dev *dev = to_mdev(device);
+ 
+-	dma_unmap_single(&dev->mdev->pdev->dev, mr->desc_map, size,
+-			 DMA_TO_DEVICE);
+-	kfree(mr->descs_alloc);
+-	mr->descs = NULL;
++		dma_unmap_single(&dev->mdev->pdev->dev, mr->desc_map, size,
++				 DMA_TO_DEVICE);
++		kfree(mr->descs_alloc);
++		mr->descs = NULL;
++	}
+ }
+ 
+ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+@@ -1991,8 +1992,7 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 	if (mr->cache_ent) {
+ 		mlx5_mr_cache_free(dev, mr);
+ 	} else {
+-		if (!udata)
+-			mlx5_free_priv_descs(mr);
++		mlx5_free_priv_descs(mr);
+ 		kfree(mr);
+ 	}
+ 	return 0;
+@@ -2079,6 +2079,7 @@ static struct mlx5_ib_mr *mlx5_ib_alloc_pi_mr(struct ib_pd *pd,
+ 	if (err)
+ 		goto err_free_in;
+ 
++	mr->umem = NULL;
+ 	kfree(in);
+ 
+ 	return mr;
+@@ -2205,6 +2206,7 @@ static struct ib_mr *__mlx5_ib_alloc_mr(struct ib_pd *pd,
+ 	}
+ 
+ 	mr->ibmr.device = pd->device;
++	mr->umem = NULL;
+ 
+ 	switch (mr_type) {
+ 	case IB_MR_TYPE_MEM_REG:
+-- 
+2.25.4
 
-https://linux-regtracking.leemhuis.info/regzbot/
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/getting_started.md
-https://gitlab.com/knurd42/regzbot/-/blob/main/docs/reference.md
-
-The last two documents will explain how you can interact with regzbot
-yourself if your want to.
-
-Hint for reporters: when reporting a regression it's in your interest to
-tell #regzbot about it in the report, as that will ensure the regression
-gets on the radar of regzbot and the regression tracker. That's in your
-interest, as they will make sure the report won't fall through the
-cracks unnoticed.
-
-Hint for developers: you normally don't need to care about regzbot once
-it's involved. Fix the issue as you normally would, just remember to
-include a 'Link:' tag to the report in the commit message, as explained
-in Documentation/process/submitting-patches.rst
-That aspect was recently was made more explicit in commit 1f57bd42b77c:
-https://git.kernel.org/linus/1f57bd42b77c
