@@ -2,61 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F57D47E7FE
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Dec 2021 20:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FE547E864
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Dec 2021 20:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349950AbhLWTIp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Dec 2021 14:08:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52410 "EHLO
+        id S1350096AbhLWTe7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Dec 2021 14:34:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349919AbhLWTIm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Dec 2021 14:08:42 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65F31C061756
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Dec 2021 11:08:42 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id v13-20020a17090a088d00b001b0e3a74cf7so6772403pjc.1
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Dec 2021 11:08:42 -0800 (PST)
+        with ESMTP id S1350022AbhLWTe6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Dec 2021 14:34:58 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E8ABC061401;
+        Thu, 23 Dec 2021 11:34:58 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id w24so5075240ply.12;
+        Thu, 23 Dec 2021 11:34:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PA5Eb3SKatYFaqsO/40bx9AAytaL07oA6ydkj8EAbzQ=;
-        b=mSegVjxAkPyofMsEZfIKmYaHS9L5poSVj3kRVnPxSW+JzxyHXb9MSxFf1tH0sFwHO+
-         mBznKBe0g/3OZ1a7R5p17OyU2tasENwDMNo81rV1vfhQBeicRAQTHnxJasG6ALAkyWfK
-         IoKqTAuL1xa2tTJNq55EdgrUf2Z0xmGrdubGis+O0v+ajbj80S3Ex3iBD3E1ZTOlDPvE
-         uFibsGDRXXYtBQarfVueeowZt0ri3vC/iM8vMljKhIUKn/9qQUNiHxrzlcDnrxl713UD
-         9kuXnNQWwva0bs1tB0YmBVjOYfUNy8eV2RXmQcrsBg8dAgUl1cS+fxiPSgn3EUos8cSi
-         nAZw==
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=gfqJf7SzIqbcHPeGopiBGrOBFpo1yLWHJgtQyrjtfMY=;
+        b=TcE1IvMrcW0NGYIvwnazCqtyBlz4RlhZYGOGu5TtQ20BhpOzZD57qxc1wuZzOqHIgY
+         X4+Jwa40ZqUzo/zGlhh8VHdPIRgleOaLLXhbqi0gv6YtxM54DBNwlZ947nvGKa0C75gd
+         +t1wkPQXiaS0167CMDjS+rc2b/Lj1UYOzGURWJfA+L6wmmzAxQ86bn40RHUSgf64mK0V
+         1CkxGBVV0KOP5P7KYrrddGRvTiVo4UFVZ1EQtON5dX5aQe8CYIxXuRSapZchWMiHYdQp
+         FxJEOsa4KWIZw/TzXN3FkVushZTQPipN3PowhfKbAd6bRLdOLrGNYyJ0jK7cemr7GgWZ
+         pLLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PA5Eb3SKatYFaqsO/40bx9AAytaL07oA6ydkj8EAbzQ=;
-        b=ym3DMEOMd7iDsgaFqrB+MX8EbXqkFW5SmxgMwLeJicp7QBF0uIs0hEtALXzfvOSBBo
-         k+ajqc/G9Eyk6gh5ubjSVwrUQd3LAIG570I9skqlbdF+GFUwYV1YiKo0Roqs5ShIorbO
-         figkp9cuWDbqExBYMwPUJ1wPTkcIJbXLo5e6XNMb0lAK/W33eIBnQ2M8EaJzSTQ09eUD
-         rJ5FOJVx1En0ny/xLYG+7sQPUZdQ5WzbKgGuw4hVVq6ouzCAXip5KW1iNaM1ydtLb4Ra
-         g54m5f5rp+2j+W77F4QJ/sJJV4xhTWV43Yr8lU7M85Xtxs+HZXZ/GAASUajgRUj75Oyf
-         8uhA==
-X-Gm-Message-State: AOAM532tZZFoKJqqqiqEsmApReNcunenTtoI84n73u5Icy7qkiX9I81m
-        Uoylx74QtoYDUwDYlBwRkVvLtgxlWosg9RwlJz8=
-X-Google-Smtp-Source: ABdhPJyJlKB+jueRv2GMI3uJppSRcRzmgWoPpLYA3AcKrI3qlKIbGCBNf2EWquQ3oFcgwluq4WNvQvcdk2QJGl2tvX8=
-X-Received: by 2002:a17:902:eaca:b0:148:c78e:3064 with SMTP id
- p10-20020a170902eaca00b00148c78e3064mr3404888pld.53.1640286521800; Thu, 23
- Dec 2021 11:08:41 -0800 (PST)
-MIME-Version: 1.0
-Received: by 2002:a05:6a20:789d:b0:68:7657:a7bf with HTTP; Thu, 23 Dec 2021
- 11:08:41 -0800 (PST)
-Reply-To: revfrpaulwilliams2@gmail.com
-From:   "Rev. Fr. Paul Williams" <melindagatesfoundation53@gmail.com>
-Date:   Fri, 24 Dec 2021 00:38:41 +0530
-Message-ID: <CAMk=7SSPrk=a0HjznNN=vcuH-i6zFjFEGsp24h9u3e+jjJB4vw@mail.gmail.com>
-Subject: Donation From Williams Foundation.
-To:     undisclosed-recipients:;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=gfqJf7SzIqbcHPeGopiBGrOBFpo1yLWHJgtQyrjtfMY=;
+        b=mUUAAZRSo/qGNvJN2ouzTP+lvUiN0fs+iWMUL7gaRBKE4I5gkJf2KG8Qy0VE+Pn1MY
+         vnCVm4YSeyC3kzhto0CoZpsTBy/rA1QQPOi+6xCsFqWaB5VwNp69AZU4xNIKRrkh2ZJa
+         aTyOAWC64RmZIpzDYZuYnEH8qHeFBxGWF3+QasIg/7hvAbnshdu6xBabRbSkejhv3zxi
+         Unan3mC9ua2gSyyuCWhwfxz7x4gy4cFv6ignyuXFAdMfWFXHH39Cl5msU9CGVpoFyVFo
+         ewKXM2LaHhd0881p5I+z8tBVvoc0DxI/6Q3wXcGcpZKfVLp0EfsYn68kyPuhbk56VsHr
+         72zg==
+X-Gm-Message-State: AOAM532G9yvymL7T2UbrEgXfTowY8BYCR5dC2sbzs2EU/LIVqYx+4aZF
+        bYyNCcNu7EW8V1hGxCYh1tU=
+X-Google-Smtp-Source: ABdhPJx8VCGJ20VqDfKx0XJ2RzpGIAoKL9LsmWga+flt80us4x7/eBQQ2xQW6YrYBZOKIKUgAGDVlg==
+X-Received: by 2002:a17:90b:30c9:: with SMTP id hi9mr4166574pjb.216.1640288097932;
+        Thu, 23 Dec 2021 11:34:57 -0800 (PST)
+Received: from [10.2.59.154] (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id ot6sm7116933pjb.32.2021.12.23.11.34.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 Dec 2021 11:34:57 -0800 (PST)
+Message-ID: <d8cf5bd620e65351dbd82d18b0426a22ea77eae2.camel@gmail.com>
+Subject: Re: [PATCH] net: ethernet: mellanox: return errno instead of 1
+From:   Saeed Mahameed <saeed.kernel@gmail.com>
+To:     Qing Wang <wangqing@vivo.com>, Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 23 Dec 2021 11:34:55 -0800
+In-Reply-To: <1640226277-32786-1-git-send-email-wangqing@vivo.com>
+References: <1640226277-32786-1-git-send-email-wangqing@vivo.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.2 (3.42.2-1.fc35) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Contact Rev. Fr. Paul Williams Immediately For A Charity Donation Of
-$6,200,000.00 United States Dollars At E-Mail:
-revfrpaulwilliams2@gmail.com
+On Wed, 2021-12-22 at 18:24 -0800, Qing Wang wrote:
+> From: Wang Qing <wangqing@vivo.com>
+> 
+> mlx5e_hv_vhca_stats_create() better return specific error than 1
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git
+> a/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
+> b/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
+> index d290d72..04cda3d
+> --- a/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
+> +++ b/drivers/net/ethernet/mellanox/mlx5/core/en/hv_vhca_stats.c
+> @@ -142,7 +142,7 @@ int mlx5e_hv_vhca_stats_create(struct mlx5e_priv
+> *priv)
+>                                     PTR_ERR(agent));
+>  
+>                 kvfree(priv->stats_agent.buf);
+> -               return IS_ERR_OR_NULL(agent);
+> +               return agent ? PTR_ERR(agent) : -ENODEV;
+
+the single caller of this function ignores the return value,
+I just made a patch to void the return value and added you as Reported-
+by.
+
+Thanks !
+
+
