@@ -2,113 +2,83 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 533D147E5F5
-	for <lists+linux-rdma@lfdr.de>; Thu, 23 Dec 2021 16:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D6E147E7B8
+	for <lists+linux-rdma@lfdr.de>; Thu, 23 Dec 2021 19:46:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhLWPqQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Dec 2021 10:46:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbhLWPqP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Dec 2021 10:46:15 -0500
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8E5C061401
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Dec 2021 07:46:15 -0800 (PST)
-Message-ID: <c1893907-e8fb-1eec-9611-3f08d1b2a3c2@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1640274372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+aU3UVrFLYsaIuANTovm40FVEO0s61u7G9hKWlh74E=;
-        b=cOGEGfljGYF06JCyr4Lfvi9d51IOY1LkpEkTpkwoTB7pK5ToDTKZshpC5JAyNaDJJhw7nA
-        tHKoWvAO8IEywWVDFC9iV+0or5dkIlXTzMtyNe7mQ5AvPmQk69OZwD4BEoK4COU+qi0rtw
-        MZRGqesoxgti5E94M1F1ACN0EoY0Sj8=
-Date:   Thu, 23 Dec 2021 23:46:03 +0800
-MIME-Version: 1.0
-Subject: Re: [PATCH rdma-next 10/11] RDMA/erdma: Add the ABI definitions
-To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
-        dledford@redhat.com
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        id S1349882AbhLWSqF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 23 Dec 2021 13:46:05 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:55950 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1349869AbhLWSqF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 23 Dec 2021 13:46:05 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 16417B8219E
+        for <linux-rdma@vger.kernel.org>; Thu, 23 Dec 2021 18:46:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10FF4C36AE5;
+        Thu, 23 Dec 2021 18:46:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640285162;
+        bh=k/+cwcugIJk1qTpCSozi9ivgMZsG/EXgK8KvFWqH5XU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y76l749O0KnHvT05XU/KfEVLts3S45+cju3qXBDIorp4zrVR1nnY9HirESrNoJbF+
+         et6CEeoH/mZHw0r6SFo420OMbkoWZFvl0Wu+wuMW3G+YS18hoVFLS6+LKSPoD+oHl3
+         VS/DoUy3v7gQVUtvcsUDoF1jBnnddP6q4Bsn0AGmFYOmyMhyeeZsC8fU9GgdDICq7F
+         im3BRiXTzERWoN49X02nfNvt4l7CW2BIBOShsftuCc7qUx9h5HFDs6qalRRF9/HuRh
+         LF6N+YUWC9I4Cq8Ttb22XR7yW62wd5GyvtEqqR2JcDTgl18yGOKfCDkGZC1SLeb16+
+         G3wUYSkQ+TgBA==
+Date:   Thu, 23 Dec 2021 20:45:58 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>
+Cc:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
+        dledford@redhat.com, linux-rdma@vger.kernel.org,
         KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com
+Subject: Re: [PATCH rdma-next 10/11] RDMA/erdma: Add the ABI definitions
+Message-ID: <YcTD5jDwgDln4QBV@unreal>
 References: <20211221024858.25938-1-chengyou@linux.alibaba.com>
  <20211221024858.25938-11-chengyou@linux.alibaba.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <20211221024858.25938-11-chengyou@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <c1893907-e8fb-1eec-9611-3f08d1b2a3c2@linux.dev>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+In-Reply-To: <c1893907-e8fb-1eec-9611-3f08d1b2a3c2@linux.dev>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2021/12/21 10:48, Cheng Xu 写道:
-> Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
-> ---
->   include/uapi/rdma/erdma-abi.h | 49 +++++++++++++++++++++++++++++++++++
->   1 file changed, 49 insertions(+)
->   create mode 100644 include/uapi/rdma/erdma-abi.h
+On Thu, Dec 23, 2021 at 11:46:03PM +0800, Yanjun Zhu wrote:
+> 在 2021/12/21 10:48, Cheng Xu 写道:
+> > Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+> > ---
+> >   include/uapi/rdma/erdma-abi.h | 49 +++++++++++++++++++++++++++++++++++
+> >   1 file changed, 49 insertions(+)
+> >   create mode 100644 include/uapi/rdma/erdma-abi.h
+> > 
+> > diff --git a/include/uapi/rdma/erdma-abi.h b/include/uapi/rdma/erdma-abi.h
+> > new file mode 100644
+> > index 000000000000..6bcba10c1e41
+> > --- /dev/null
+> > +++ b/include/uapi/rdma/erdma-abi.h
+> > @@ -0,0 +1,49 @@
+> > +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
+> > +/*
+> > + * Copyright (c) 2020-2021, Alibaba Group.
+> > + */
+> > +
+> > +#ifndef __ERDMA_USER_H__
+> > +#define __ERDMA_USER_H__
+> > +
+> > +#include <linux/types.h>
+> > +
+> > +#define ERDMA_ABI_VERSION       1
 > 
-> diff --git a/include/uapi/rdma/erdma-abi.h b/include/uapi/rdma/erdma-abi.h
-> new file mode 100644
-> index 000000000000..6bcba10c1e41
-> --- /dev/null
-> +++ b/include/uapi/rdma/erdma-abi.h
-> @@ -0,0 +1,49 @@
-> +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
-> +/*
-> + * Copyright (c) 2020-2021, Alibaba Group.
-> + */
-> +
-> +#ifndef __ERDMA_USER_H__
-> +#define __ERDMA_USER_H__
-> +
-> +#include <linux/types.h>
-> +
-> +#define ERDMA_ABI_VERSION       1
+> ERDMA_ABI_VERSION should be 2？
 
-ERDMA_ABI_VERSION should be 2？
+Why?
 
-Zhu Yanjun
-> +
-> +struct erdma_ureq_create_cq {
-> +	u64 db_record_va;
-> +	u64 qbuf_va;
-> +	u32 qbuf_len;
-> +	u32 rsvd0;
-> +};
-> +
-> +struct erdma_uresp_create_cq {
-> +	u32 cq_id;
-> +	u32 num_cqe;
-> +};
-> +
-> +struct erdma_ureq_create_qp {
-> +	u64 db_record_va;
-> +	u64 qbuf_va;
-> +	u32 qbuf_len;
-> +	u32 rsvd0;
-> +};
-> +
-> +struct erdma_uresp_create_qp {
-> +	u32 qp_id;
-> +	u32 num_sqe;
-> +	u32 num_rqe;
-> +	u32 rq_offset;
-> +};
-> +
-> +struct erdma_uresp_alloc_ctx {
-> +	u32 dev_id;
-> +	u32 pad;
-> +	u32 sdb_type;
-> +	u32 sdb_offset;
-> +	u64 sdb;
-> +	u64 rdb;
-> +	u64 cdb;
-> +};
-> +
-> +#endif
+This field is for rdma-core and we don't have erdma provider in that
+library yet. It always starts from 1 for new drivers.
 
+Thanks
