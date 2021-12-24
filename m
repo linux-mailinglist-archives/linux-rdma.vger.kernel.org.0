@@ -2,111 +2,86 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8B0247EBEB
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 07:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B23C47EC4C
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 07:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351445AbhLXGEa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Dec 2021 01:04:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245640AbhLXGE3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Dec 2021 01:04:29 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB656C061401
-        for <linux-rdma@vger.kernel.org>; Thu, 23 Dec 2021 22:04:29 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5676961FD4
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Dec 2021 06:04:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCBF3C36AE5;
-        Fri, 24 Dec 2021 06:04:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640325868;
-        bh=Dr8OqGYU9v5jE94iYGbbIdKeNYYZgr4H/svxLwgxptM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gb19OimJiaisCeUtgIAe6EK5O6qGSvEguK1GjM/dWEL1HWtbYqwdsVJ0Z14P/lryd
-         hU4bmglj4YgBrvC4QFnz9/erk0dMdvTyyOQZ2W37MLTPRGUpBmfs7TQbesqP19Jggk
-         uzbrl7z1dzVFkrMxrq1rHx4OVew4n+7cAdAUJJJh2PEeU0I73I93ydBumC4GPPEe7R
-         nULwXdOx3AoUT7sQvgldI1epjK2hJ+wa4CsP2yU2bI93eji7sGtldtFaHJZhjX7MkH
-         +7v82TIC11aUMgfMzNtKiHz4sTAlDRMg7fvJmWc5J3dHbmdIrYvl7Q0ed97vM8oqla
-         l30hBwOg4qwYg==
-Date:   Fri, 24 Dec 2021 08:04:24 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>
-Cc:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
-        dledford@redhat.com, linux-rdma@vger.kernel.org,
-        KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com
-Subject: Re: [PATCH rdma-next 10/11] RDMA/erdma: Add the ABI definitions
-Message-ID: <YcVi6CfbhKSfGgxs@unreal>
-References: <20211221024858.25938-1-chengyou@linux.alibaba.com>
- <20211221024858.25938-11-chengyou@linux.alibaba.com>
- <c1893907-e8fb-1eec-9611-3f08d1b2a3c2@linux.dev>
- <YcTD5jDwgDln4QBV@unreal>
- <6cb90490-d21c-e76e-19b9-2a7fe0669e04@linux.dev>
+        id S245692AbhLXGzY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Dec 2021 01:55:24 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:35772 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241330AbhLXGzY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 24 Dec 2021 01:55:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.bLroP_1640328922;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.bLroP_1640328922)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 24 Dec 2021 14:55:22 +0800
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+To:     leon@kernel.org
+Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com, chengyou@linux.alibaba.com
+Subject: [PATCH rdma-core 0/5] Elastic RDMA Adapter (ERDMA) userspace provider driver
+Date:   Fri, 24 Dec 2021 14:55:17 +0800
+Message-Id: <20211224065522.29734-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <6cb90490-d21c-e76e-19b9-2a7fe0669e04@linux.dev>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Dec 24, 2021 at 06:55:41AM +0800, Yanjun Zhu wrote:
-> 在 2021/12/24 2:45, Leon Romanovsky 写道:
-> > On Thu, Dec 23, 2021 at 11:46:03PM +0800, Yanjun Zhu wrote:
-> > > 在 2021/12/21 10:48, Cheng Xu 写道:
-> > > > Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
-> > > > ---
-> > > >    include/uapi/rdma/erdma-abi.h | 49 +++++++++++++++++++++++++++++++++++
-> > > >    1 file changed, 49 insertions(+)
-> > > >    create mode 100644 include/uapi/rdma/erdma-abi.h
-> > > > 
-> > > > diff --git a/include/uapi/rdma/erdma-abi.h b/include/uapi/rdma/erdma-abi.h
-> > > > new file mode 100644
-> > > > index 000000000000..6bcba10c1e41
-> > > > --- /dev/null
-> > > > +++ b/include/uapi/rdma/erdma-abi.h
-> > > > @@ -0,0 +1,49 @@
-> > > > +/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
-> > > > +/*
-> > > > + * Copyright (c) 2020-2021, Alibaba Group.
-> > > > + */
-> > > > +
-> > > > +#ifndef __ERDMA_USER_H__
-> > > > +#define __ERDMA_USER_H__
-> > > > +
-> > > > +#include <linux/types.h>
-> > > > +
-> > > > +#define ERDMA_ABI_VERSION       1
-> > > 
-> > > ERDMA_ABI_VERSION should be 2？
-> > 
-> > Why?
-> > 
-> > This field is for rdma-core and we don't have erdma provider in that
-> > library yet. It always starts from 1 for new drivers.
-> Please check this link:
-> http://mail.spinics.net/lists/linux-rdma/msg63012.html
+Hello all,
 
-OK, I still don't understand why.
+This patch set introduces the Elastic RDMA Adapter (ERDMA) userspace
+provider driver of *rdma-core*, and this patch set is used for review
+purpose. The kernel driver of ERDMA can refer this link [1].
 
-RXE case is different, because rdma-core already had broken RXE
-implementation, so this is why the version was incremented.
+The main feature of ERDMA userspace provider includes: supports RC QP,
+supports RDMA Write/Send/RDMA Read/Immediate opcode in post_send, supports
+post_recv, and supports CQs with polling mode and event mode. Now we does
+not support SRQ yet.
 
-> 
-> Jason mentioned in this link:
-> 
-> "
-> /*
->  * For 64 bit machines ABI version 1 and 2 are the same. Otherwise 32
->  * bit machines require ABI version 2 which guarentees the user and
->  * kernel use the same ABI.
->  */
-> "
-> 
-> Zhu Yanjun
-> > 
-> > Thanks
-> 
+Thanks,
+Cheng Xu
+
+[1] https://lwn.net/Articles/879373/
+
+Cheng Xu (5):
+  RDMA-CORE/erdma: Add userspace verbs related header files.
+  RDMA-CORE/erdma: Add userspace verbs implementation
+  RDMA-CORE/erdma: Add the main module of the provider
+  RDMA-CORE/erdma: Add the application interface
+  RDMA-CORE/erdma: Add to the build environment
+
+ CMakeLists.txt                            |   1 +
+ MAINTAINERS                               |   5 +
+ README.md                                 |   1 +
+ kernel-headers/CMakeLists.txt             |   2 +
+ kernel-headers/rdma/erdma-abi.h           |  49 ++
+ kernel-headers/rdma/ib_user_ioctl_verbs.h |   1 +
+ libibverbs/verbs.h                        |   1 +
+ providers/erdma/CMakeLists.txt            |   5 +
+ providers/erdma/erdma.c                   | 133 +++
+ providers/erdma/erdma.h                   |  60 ++
+ providers/erdma/erdma_abi.h               |  21 +
+ providers/erdma/erdma_db.c                | 110 +++
+ providers/erdma/erdma_db.h                |  17 +
+ providers/erdma/erdma_hw.h                | 206 +++++
+ providers/erdma/erdma_verbs.c             | 934 ++++++++++++++++++++++
+ providers/erdma/erdma_verbs.h             | 134 ++++
+ redhat/rdma-core.spec                     |   2 +
+ 17 files changed, 1682 insertions(+)
+ create mode 100644 kernel-headers/rdma/erdma-abi.h
+ create mode 100644 providers/erdma/CMakeLists.txt
+ create mode 100644 providers/erdma/erdma.c
+ create mode 100644 providers/erdma/erdma.h
+ create mode 100644 providers/erdma/erdma_abi.h
+ create mode 100644 providers/erdma/erdma_db.c
+ create mode 100644 providers/erdma/erdma_db.h
+ create mode 100644 providers/erdma/erdma_hw.h
+ create mode 100644 providers/erdma/erdma_verbs.c
+ create mode 100644 providers/erdma/erdma_verbs.h
+
+-- 
+2.27.0
+
