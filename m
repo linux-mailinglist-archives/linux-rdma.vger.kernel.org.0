@@ -2,27 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F8647EC4E
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 07:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C3747EC4F
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 07:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351623AbhLXGz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1351624AbhLXGz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Fri, 24 Dec 2021 01:55:28 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:58966 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1351615AbhLXGz1 (ORCPT
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:6155 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1351621AbhLXGz2 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Dec 2021 01:55:27 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.bvQQY_1640328924;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.bvQQY_1640328924)
+        Fri, 24 Dec 2021 01:55:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R671e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.bvQQo_1640328925;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.bvQQo_1640328925)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 24 Dec 2021 14:55:25 +0800
+          Fri, 24 Dec 2021 14:55:26 +0800
 From:   Cheng Xu <chengyou@linux.alibaba.com>
 To:     leon@kernel.org
 Cc:     dledford@redhat.com, jgg@mellanox.com, linux-rdma@vger.kernel.org,
         KaiShen@linux.alibaba.com, chengyou@linux.alibaba.com
-Subject: [PATCH rdma-core 2/5] RDMA-CORE/erdma: Add userspace verbs implementation
-Date:   Fri, 24 Dec 2021 14:55:19 +0800
-Message-Id: <20211224065522.29734-3-chengyou@linux.alibaba.com>
+Subject: [PATCH rdma-core 3/5] RDMA-CORE/erdma: Add the main module of the provider
+Date:   Fri, 24 Dec 2021 14:55:20 +0800
+Message-Id: <20211224065522.29734-4-chengyou@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 In-Reply-To: <20211224065522.29734-1-chengyou@linux.alibaba.com>
 References: <20211224065522.29734-1-chengyou@linux.alibaba.com>
@@ -32,151 +32,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Imlementation of the erdma's 'struct verbs_context_ops' interface.
-Due to doorbells may be drop by hardware in some situations, such as
-hardware hot-upgrade, driver will keep the latest doorbell value of each
-QP and CQ. We introduce the doorbell records to store the latest doorbell
-values, and its allocation mechanism comes from dbre.c of mlx5.
+Add the definitions of erdma provier driver.
 
 Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
 ---
- providers/erdma/erdma_db.c    | 110 ++++
- providers/erdma/erdma_verbs.c | 934 ++++++++++++++++++++++++++++++++++
- 2 files changed, 1044 insertions(+)
- create mode 100644 providers/erdma/erdma_db.c
- create mode 100644 providers/erdma/erdma_verbs.c
+ providers/erdma/erdma.c | 133 ++++++++++++++++++++++++++++++++++++++++
+ providers/erdma/erdma.h |  60 ++++++++++++++++++
+ 2 files changed, 193 insertions(+)
+ create mode 100644 providers/erdma/erdma.c
+ create mode 100644 providers/erdma/erdma.h
 
-diff --git a/providers/erdma/erdma_db.c b/providers/erdma/erdma_db.c
+diff --git a/providers/erdma/erdma.c b/providers/erdma/erdma.c
 new file mode 100644
-index 00000000..83db76d1
+index 00000000..59f5ecb6
 --- /dev/null
-+++ b/providers/erdma/erdma_db.c
-@@ -0,0 +1,110 @@
++++ b/providers/erdma/erdma.c
+@@ -0,0 +1,133 @@
 +// SPDX-License-Identifier: GPL-2.0 or OpenIB.org BSD (MIT) See COPYING file
 +
 +// Authors: Cheng Xu <chengyou@linux.alibaba.com>
 +// Copyright (c) 2020-2021, Alibaba Group.
 +
-+// Copyright (c) 2012 Mellanox Technologies, Inc.  All rights reserved.
-+
-+#include <inttypes.h>
-+#include <stdlib.h>
-+#include <util/util.h>
-+
-+#include "erdma.h"
-+#include "erdma_db.h"
-+
-+#define ERDMA_DBRECORDS_SIZE 16
-+
-+struct erdma_dbrecord_page {
-+	struct erdma_dbrecord_page *prev, *next;
-+	void *page_buf;
-+	int cnt;
-+	int used;
-+	unsigned long free[0];
-+};
-+
-+uint64_t *erdma_alloc_dbrecords(struct erdma_context *ctx)
-+{
-+	struct erdma_dbrecord_page *page = NULL;
-+	uint64_t *db_records = NULL;
-+	int dbrecords_per_page, nlongs = 0, bits_perlong = (8 * sizeof(unsigned long));
-+	int i, j, rv;
-+
-+	pthread_mutex_lock(&ctx->dbrecord_pages_mutex);
-+
-+	for (page = ctx->dbrecord_pages; page; page = page->next)
-+		if (page->used < page->cnt)
-+			goto found;
-+
-+	dbrecords_per_page = ctx->page_size / ERDMA_DBRECORDS_SIZE;
-+	nlongs = align(dbrecords_per_page, bits_perlong) / bits_perlong;
-+	page = malloc(sizeof(*page) + nlongs * sizeof(unsigned long));
-+	if (!page)
-+		goto out;
-+
-+	rv = posix_memalign(&page->page_buf, ctx->page_size, ctx->page_size);
-+	if (rv) {
-+		free(page);
-+		goto out;
-+	}
-+
-+	page->cnt = dbrecords_per_page;
-+	page->used = 0;
-+	for (i = 0; i < nlongs; i++)
-+		page->free[i] = ~0UL;
-+
-+	page->prev = NULL;
-+	page->next = ctx->dbrecord_pages;
-+	ctx->dbrecord_pages = page;
-+	if (page->next)
-+		page->next->prev = page;
-+
-+found:
-+	++page->used;
-+
-+	for (i = 0; !page->free[i]; ++i)
-+		;/* nothing */
-+
-+	j = ffsl(page->free[i]) - 1;
-+	page->free[i] &= ~(1UL << j);
-+
-+	db_records = page->page_buf + (i * bits_perlong + j) * ERDMA_DBRECORDS_SIZE;
-+
-+out:
-+	pthread_mutex_unlock(&ctx->dbrecord_pages_mutex);
-+
-+	return db_records;
-+}
-+
-+void erdma_dealloc_dbrecords(struct erdma_context *ctx, uint64_t *dbrecords)
-+{
-+	struct erdma_dbrecord_page *page;
-+	int page_mask = ~(ctx->page_size - 1);
-+	int idx;
-+
-+	pthread_mutex_lock(&ctx->dbrecord_pages_mutex);
-+	for (page = ctx->dbrecord_pages; page; page = page->next)
-+		if (((uintptr_t)dbrecords & page_mask) == (uintptr_t)page->page_buf)
-+			break;
-+
-+	if (!page)
-+		goto out;
-+
-+	idx = ((void *)dbrecords - page->page_buf) / ERDMA_DBRECORDS_SIZE;
-+	page->free[idx / (8 * sizeof(unsigned long))] |=
-+		1UL << (idx % (8 * sizeof(unsigned long)));
-+
-+	if (!--page->used) {
-+		if (page->prev)
-+			page->prev->next = page->next;
-+		else
-+			ctx->dbrecord_pages = page->next;
-+		if (page->next)
-+			page->next->prev = page->prev;
-+
-+		free(page->page_buf);
-+		free(page);
-+	}
-+
-+out:
-+	pthread_mutex_unlock(&ctx->dbrecord_pages_mutex);
-+}
-diff --git a/providers/erdma/erdma_verbs.c b/providers/erdma/erdma_verbs.c
-new file mode 100644
-index 00000000..3c1c9769
---- /dev/null
-+++ b/providers/erdma/erdma_verbs.c
-@@ -0,0 +1,934 @@
-+// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
-+
-+// Authors: Cheng Xu <chengyou@linux.alibaba.com>
-+// Copyright (c) 2020-2021, Alibaba Group.
-+// Authors: Bernard Metzler <bmt@zurich.ibm.com>
-+// Copyright (c) 2008-2019, IBM Corporation
-+
-+#include <ccan/minmax.h>
-+#include <endian.h>
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <sys/mman.h>
@@ -188,920 +64,189 @@ index 00000000..3c1c9769
 +
 +#include "erdma.h"
 +#include "erdma_abi.h"
-+#include "erdma_db.h"
 +#include "erdma_hw.h"
 +#include "erdma_verbs.h"
 +
-+int erdma_query_device(struct ibv_context *ctx,
-+		       const struct ibv_query_device_ex_input *input,
-+		       struct ibv_device_attr_ex *attr, size_t attr_size)
-+{
-+	struct ib_uverbs_ex_query_device_resp resp;
-+	size_t resp_size = sizeof(resp);
-+	uint64_t raw_fw_ver;
-+	unsigned int major, minor, sub_minor;
-+	int rv;
-+
-+	rv = ibv_cmd_query_device_any(ctx, input, attr, attr_size, &resp, &resp_size);
-+	if (rv)
-+		return rv;
-+
-+	raw_fw_ver = resp.base.fw_ver;
-+	major = (raw_fw_ver >> 32) & 0xffff;
-+	minor = (raw_fw_ver >> 16) & 0xffff;
-+	sub_minor = raw_fw_ver & 0xffff;
-+
-+	snprintf(attr->orig_attr.fw_ver, sizeof(attr->orig_attr.fw_ver),
-+		"%d.%d.%d", major, minor, sub_minor);
-+
-+	return 0;
-+}
-+
-+int erdma_query_port(struct ibv_context *ctx, uint8_t port, struct ibv_port_attr *attr)
-+{
-+	struct ibv_query_port cmd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+
-+	return ibv_cmd_query_port(ctx, port, attr, &cmd, sizeof(cmd));
-+}
-+
-+int erdma_query_qp(struct ibv_qp *qp, struct ibv_qp_attr *attr,
-+		   int attr_mask, struct ibv_qp_init_attr *init_attr)
-+{
-+	struct ibv_query_qp cmd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+
-+	return ibv_cmd_query_qp(qp, attr, attr_mask, init_attr, &cmd, sizeof(cmd));
-+}
-+
-+struct ibv_pd *erdma_alloc_pd(struct ibv_context *ctx)
-+{
-+	struct ibv_alloc_pd cmd;
-+	struct ib_uverbs_alloc_pd_resp resp;
-+	struct ibv_pd *pd;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+
-+	pd = calloc(1, sizeof(*pd));
-+	if (!pd)
-+		return NULL;
-+
-+	if (ibv_cmd_alloc_pd(ctx, pd, &cmd, sizeof(cmd), &resp, sizeof(resp))) {
-+		free(pd);
-+		return NULL;
-+	}
-+
-+	return pd;
-+}
-+
-+int erdma_free_pd(struct ibv_pd *pd)
-+{
-+	int rv;
-+
-+	rv = ibv_cmd_dealloc_pd(pd);
-+	if (rv)
-+		return rv;
-+
-+	free(pd);
-+	return 0;
-+}
-+
-+struct ibv_mr *erdma_reg_mr(struct ibv_pd *pd, void *addr, size_t len,
-+			    uint64_t hca_va, int access)
-+{
-+	struct ibv_reg_mr cmd;
-+	struct ib_uverbs_reg_mr_resp resp;
-+	struct verbs_mr *vmr;
-+	int ret;
-+
-+	vmr = calloc(1, sizeof(*vmr));
-+	if (!vmr)
-+		return NULL;
-+
-+	ret = ibv_cmd_reg_mr(pd, addr, len, hca_va, access, vmr, &cmd, sizeof(cmd),
-+		&resp, sizeof(resp));
-+	if (ret) {
-+		free(vmr);
-+		return NULL;
-+	}
-+
-+	return &vmr->ibv_mr;
-+}
-+
-+int erdma_dereg_mr(struct verbs_mr *vmr)
-+{
-+	int ret;
-+
-+	ret = ibv_cmd_dereg_mr(vmr);
-+	if (ret)
-+		return ret;
-+
-+	free(vmr);
-+	return 0;
-+}
-+
-+int erdma_notify_cq(struct ibv_cq *ibcq, int solicited)
-+{
-+	struct erdma_cq *cq = to_ecq(ibcq);
-+	uint64_t db_data;
-+	int ret;
-+
-+	ret = pthread_spin_lock(&cq->lock);
-+	if (ret)
-+		return ret;
-+
-+	db_data = FIELD_PREP(ERDMA_CQDB_EQN_MASK, cq->comp_vector + 1) |
-+		FIELD_PREP(ERDMA_CQDB_CQN_MASK, cq->id) |
-+		FIELD_PREP(ERDMA_CQDB_ARM_MASK, 1) |
-+		FIELD_PREP(ERDMA_CQDB_SOL_MASK, solicited) |
-+		FIELD_PREP(ERDMA_CQDB_CMDSN_MASK, cq->cmdsn) |
-+		FIELD_PREP(ERDMA_CQDB_CI_MASK, cq->ci);
-+
-+	*(__le64 *)cq->db_record = htole64(db_data);
-+	udma_to_device_barrier();
-+	mmio_write64_le(cq->db, htole64(db_data));
-+
-+	pthread_spin_unlock(&cq->lock);
-+
-+	return ret;
-+}
-+
-+struct ibv_cq *erdma_create_cq(struct ibv_context *ctx, int num_cqe,
-+			       struct ibv_comp_channel *channel, int comp_vector)
-+{
-+	struct erdma_context *ectx;
-+	struct erdma_cmd_create_cq cmd = {};
-+	struct erdma_cmd_create_cq_resp resp = {};
-+	struct erdma_cq *cq;
-+	uint64_t *db_records = NULL;
-+	int cq_size;
-+	int rv;
-+
-+	ectx = to_ectx(ctx);
-+
-+	cq = calloc(1, sizeof(*cq));
-+	if (!cq)
-+		return NULL;
-+
-+	if (num_cqe < 64)
-+		num_cqe = 64;
-+
-+	num_cqe = roundup_pow_of_two(num_cqe);
-+	cq_size = num_cqe * sizeof(struct erdma_cqe);
-+	cq_size = ERDMA_SIZE_TO_NPAGE(cq_size) << ERDMA_PAGE_SHIFT;
-+
-+	rv = posix_memalign((void **)&cq->queue, ERDMA_PAGE_SIZE, cq_size);
-+	if (rv) {
-+		errno = rv;
-+		free(cq);
-+		return NULL;
-+	}
-+
-+	db_records = erdma_alloc_dbrecords(ectx);
-+	if (!db_records) {
-+		errno = ENOMEM;
-+		goto error_alloc;
-+	}
-+
-+	cmd.db_record_va = (__u64)db_records;
-+	cmd.qbuf_va = (uint64_t)cq->queue;
-+	cmd.qbuf_len = cq_size;
-+
-+	rv = ibv_cmd_create_cq(ctx, num_cqe, channel, comp_vector, &cq->base_cq,
-+		&cmd.ibv_cmd, sizeof(cmd), &resp.ibv_resp, sizeof(resp));
-+	if (rv) {
-+		free(cq);
-+		errno = EIO;
-+		goto error_alloc;
-+	}
-+
-+	pthread_spin_init(&cq->lock, PTHREAD_PROCESS_PRIVATE);
-+
-+	*db_records = 0;
-+	cq->db_record = db_records;
-+
-+	cq->id = resp.cq_id;
-+	cq->depth = resp.num_cqe;
-+	cq->owner = 1;
-+
-+	cq->db = ectx->cdb;
-+	cq->db_offset = (cq->id & (ERDMA_PAGE_SIZE / ERDMA_CQDB_SIZE - 1)) * ERDMA_CQDB_SIZE;
-+	cq->db += cq->db_offset;
-+
-+	cq->comp_vector = comp_vector;
-+
-+	return &cq->base_cq;
-+
-+error_alloc:
-+	if (db_records)
-+		erdma_dealloc_dbrecords(ectx, db_records);
-+
-+	if (cq->queue)
-+		free(cq->queue);
-+
-+	free(cq);
-+
-+	return NULL;
-+}
-+
-+int erdma_destroy_cq(struct ibv_cq *base_cq)
-+{
-+	struct erdma_cq *cq = to_ecq(base_cq);
-+	struct erdma_context *ctx = to_ectx(base_cq->context);
-+	int rv;
-+
-+	pthread_spin_lock(&cq->lock);
-+	rv = ibv_cmd_destroy_cq(base_cq);
-+	if (rv) {
-+		pthread_spin_unlock(&cq->lock);
-+		errno = EIO;
-+		return rv;
-+	}
-+	pthread_spin_destroy(&cq->lock);
-+
-+	if (cq->db_record)
-+		erdma_dealloc_dbrecords(ctx, cq->db_record);
-+
-+	if (cq->queue)
-+		free(cq->queue);
-+
-+	free(cq);
-+
-+	return 0;
-+}
-+
-+static void __erdma_alloc_dbs(struct erdma_qp *qp, struct erdma_context *ctx)
-+{
-+	uint32_t qpn = qp->id;
-+
-+	if (ctx->sdb_type == ERDMA_SDB_PAGE) {
-+		/* qpn[4:0] as the index in this db page. */
-+		qp->sq.db = ctx->sdb + (qpn & 31) * ERDMA_SQDB_SIZE;
-+	} else if (ctx->sdb_type == ERDMA_SDB_ENTRY) {
-+		/* for type 'ERDMA_SDB_ENTRY', each uctx has 2 dwqe, totally takes 256Bytes. */
-+		qp->sq.db = ctx->sdb + ctx->sdb_offset * 256;
-+	} else {
-+		/* qpn[4:0] as the index in this db page. */
-+		qp->sq.db = ctx->sdb + (qpn & 31) * ERDMA_SQDB_SIZE;
-+	}
-+
-+	/* qpn[6:0] as the index in this rq db page. */
-+	qp->rq.db = ctx->rdb + (qpn & 127) * ERDMA_RQDB_SPACE_SIZE;
-+}
-+
-+struct ibv_qp *erdma_create_qp(struct ibv_pd *pd, struct ibv_qp_init_attr *attr)
-+{
-+	struct erdma_cmd_create_qp cmd = {};
-+	struct erdma_cmd_create_qp_resp resp = {};
-+	struct erdma_qp *qp;
-+	struct ibv_context *base_ctx = pd->context;
-+	struct erdma_context *ctx = to_ectx(base_ctx);
-+	uint64_t *db_records  = NULL;
-+	int rv, tbl_idx, tbl_off;
-+	int sq_size = 0, rq_size = 0, total_bufsize = 0;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+	memset(&resp, 0, sizeof(resp));
-+
-+	qp = calloc(1, sizeof(*qp));
-+	if (!qp)
-+		return NULL;
-+
-+	sq_size = roundup_pow_of_two(attr->cap.max_send_wr * MAX_WQEBB_PER_SQE) << SQEBB_SHIFT;
-+	sq_size = align(sq_size, ctx->page_size);
-+	rq_size = align(roundup_pow_of_two(attr->cap.max_recv_wr) << RQE_SHIFT, ctx->page_size);
-+	total_bufsize = sq_size + rq_size;
-+	rv = posix_memalign(&qp->qbuf, ctx->page_size, total_bufsize);
-+	if (rv || !qp->qbuf) {
-+		errno = ENOMEM;
-+		goto error_alloc;
-+	}
-+
-+	db_records = erdma_alloc_dbrecords(ctx);
-+	if (!db_records) {
-+		errno = ENOMEM;
-+		goto error_alloc;
-+	}
-+
-+	cmd.db_record_va = (__u64)db_records;
-+	cmd.qbuf_va = (__u64)qp->qbuf;
-+	cmd.qbuf_len = (__u32)total_bufsize;
-+
-+	rv = ibv_cmd_create_qp(pd, &qp->base_qp, attr, &cmd.ibv_cmd,
-+		sizeof(cmd), &resp.ibv_resp, sizeof(resp));
-+	if (rv) {
-+		errno = EIO;
-+		goto error_alloc;
-+	}
-+
-+	qp->id = resp.qp_id;
-+
-+	pthread_mutex_lock(&ctx->qp_table_mutex);
-+	tbl_idx = qp->id >> ERDMA_QP_TABLE_SHIFT;
-+	tbl_off = qp->id & ERDMA_QP_TABLE_MASK;
-+
-+	if (ctx->qp_table[tbl_idx].refcnt == 0) {
-+		ctx->qp_table[tbl_idx].table = calloc(ERDMA_PAGE_SIZE, sizeof(struct erdma_qp *));
-+		if (!ctx->qp_table[tbl_idx].table) {
-+			errno = ENOMEM;
-+			goto fail;
-+		}
-+	}
-+
-+	/* exist qp */
-+	if (ctx->qp_table[tbl_idx].table[tbl_off]) {
-+		errno = EBUSY;
-+		goto fail;
-+	}
-+
-+	ctx->qp_table[tbl_idx].table[tbl_off] = qp;
-+	ctx->qp_table[tbl_idx].refcnt++;
-+	pthread_mutex_unlock(&ctx->qp_table_mutex);
-+
-+	qp->sq.qbuf = qp->qbuf;
-+	qp->rq.qbuf = qp->qbuf + resp.rq_offset;
-+	qp->sq.depth = resp.num_sqe;
-+	qp->rq.depth = resp.num_rqe;
-+	qp->sq_sig_all = attr->sq_sig_all;
-+	qp->sq.size = resp.num_sqe * SQEBB_SIZE;
-+	qp->rq.size = resp.num_rqe * sizeof(struct erdma_rqe);
-+
-+	/* doorbell allocation. */
-+	__erdma_alloc_dbs(qp, ctx);
-+
-+	pthread_spin_init(&qp->sq_lock, PTHREAD_PROCESS_PRIVATE);
-+	pthread_spin_init(&qp->rq_lock, PTHREAD_PROCESS_PRIVATE);
-+
-+	*db_records = 0;
-+	*(db_records + 1) = 0;
-+	qp->db_records = db_records;
-+	qp->sq.db_record = db_records;
-+	qp->rq.db_record = db_records + 1;
-+
-+	qp->rq.wr_tbl = calloc(qp->rq.depth, sizeof(uint64_t));
-+	if (!qp->rq.wr_tbl)
-+		goto fail;
-+
-+	qp->sq.wr_tbl = calloc(qp->sq.depth, sizeof(uint64_t));
-+	if (!qp->sq.wr_tbl)
-+		goto fail;
-+
-+
-+	return &qp->base_qp;
-+fail:
-+	if (qp->sq.wr_tbl)
-+		free(qp->sq.wr_tbl);
-+
-+	if (qp->rq.wr_tbl)
-+		free(qp->rq.wr_tbl);
-+
-+	ibv_cmd_destroy_qp(&qp->base_qp);
-+
-+error_alloc:
-+	if (db_records)
-+		erdma_dealloc_dbrecords(ctx, db_records);
-+
-+	if (qp->qbuf)
-+		free(qp->qbuf);
-+
-+	free(qp);
-+
-+	return NULL;
-+}
-+
-+int erdma_modify_qp(struct ibv_qp *base_qp, struct ibv_qp_attr *attr, int attr_mask)
-+{
-+	struct ibv_modify_qp cmd;
-+	struct erdma_qp *qp = to_eqp(base_qp);
-+	int rv;
-+
-+	memset(&cmd, 0, sizeof(cmd));
-+
-+	pthread_spin_lock(&qp->sq_lock);
-+	pthread_spin_lock(&qp->rq_lock);
-+
-+	rv = ibv_cmd_modify_qp(base_qp, attr, attr_mask, &cmd, sizeof(cmd));
-+
-+	pthread_spin_unlock(&qp->rq_lock);
-+	pthread_spin_unlock(&qp->sq_lock);
-+
-+	return rv;
-+}
-+
-+int erdma_destroy_qp(struct ibv_qp *base_qp)
-+{
-+	struct erdma_qp *qp = to_eqp(base_qp);
-+	struct ibv_context *base_ctx = base_qp->pd->context;
-+	struct erdma_context *ctx = to_ectx(base_ctx);
-+	int rv, tbl_idx, tbl_off;
-+
-+	pthread_spin_lock(&qp->sq_lock);
-+	pthread_spin_lock(&qp->rq_lock);
-+
-+	pthread_mutex_lock(&ctx->qp_table_mutex);
-+	tbl_idx = qp->id >> ERDMA_QP_TABLE_SHIFT;
-+	tbl_off = qp->id & ERDMA_QP_TABLE_MASK;
-+
-+	ctx->qp_table[tbl_idx].table[tbl_off] = NULL;
-+	ctx->qp_table[tbl_idx].refcnt--;
-+
-+	if (ctx->qp_table[tbl_idx].refcnt == 0) {
-+		free(ctx->qp_table[tbl_idx].table);
-+		ctx->qp_table[tbl_idx].table = NULL;
-+	}
-+
-+	pthread_mutex_unlock(&ctx->qp_table_mutex);
-+
-+	rv = ibv_cmd_destroy_qp(base_qp);
-+	if (rv) {
-+		pthread_spin_unlock(&qp->rq_lock);
-+		pthread_spin_unlock(&qp->sq_lock);
-+		return rv;
-+	}
-+	pthread_spin_destroy(&qp->rq_lock);
-+	pthread_spin_destroy(&qp->sq_lock);
-+
-+	if (qp->db_records)
-+		erdma_dealloc_dbrecords(ctx, qp->db_records);
-+
-+	if (qp->qbuf)
-+		free(qp->qbuf);
-+
-+	free(qp);
-+
-+	return 0;
-+}
-+
-+static int erdma_push_one_sqe(struct erdma_qp *qp, struct ibv_send_wr *wr, uint16_t *sq_pi)
-+{
-+	uint16_t tmp_pi = *sq_pi;
-+	void *sqe;
-+	uint64_t sqe_hdr;
-+	struct erdma_write_sqe *write_sqe;
-+	struct erdma_send_sqe *send_sqe;
-+	struct erdma_readreq_sqe *read_sqe;
-+	uint32_t wqe_size = 0;
-+	__le32 *length_field = NULL;
-+	struct erdma_sge *sgl_base = NULL;
-+	uint32_t i, bytes = 0;
-+	uint32_t sgl_off, sgl_idx, wqebb_cnt, opcode;
-+
-+	sqe = get_sq_wqebb(qp, tmp_pi);
-+	/* Clear the first 8Byte of the wqe hdr. */
-+	*(uint64_t *)sqe = 0;
-+
-+	qp->sq.wr_tbl[tmp_pi & (qp->sq.depth - 1)] = wr->wr_id;
-+
-+	sqe_hdr = FIELD_PREP(ERDMA_SQE_HDR_QPN_MASK, qp->id) |
-+		FIELD_PREP(ERDMA_SQE_HDR_CE_MASK, wr->send_flags & IBV_SEND_SIGNALED ? 1 : 0) |
-+		FIELD_PREP(ERDMA_SQE_HDR_CE_MASK, qp->sq_sig_all) |
-+		FIELD_PREP(ERDMA_SQE_HDR_SE_MASK, wr->send_flags & IBV_SEND_SOLICITED ? 1 : 0) |
-+		FIELD_PREP(ERDMA_SQE_HDR_FENCE_MASK, wr->send_flags & IBV_SEND_FENCE ? 1 : 0) |
-+		FIELD_PREP(ERDMA_SQE_HDR_INLINE_MASK, wr->send_flags & IBV_SEND_INLINE ? 1 : 0);
-+
-+	switch (wr->opcode) {
-+	case IBV_WR_RDMA_WRITE:
-+	case IBV_WR_RDMA_WRITE_WITH_IMM:
-+		opcode = wr->opcode == IBV_WR_RDMA_WRITE ?
-+			ERDMA_OP_WRITE : ERDMA_OP_WRITE_WITH_IMM;
-+		sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_OPCODE_MASK, opcode);
-+		write_sqe = (struct erdma_write_sqe *)sqe;
-+		write_sqe->imm_data = wr->imm_data;
-+		write_sqe->sink_stag = htole32(wr->wr.rdma.rkey);
-+		write_sqe->sink_to_low = htole32(wr->wr.rdma.remote_addr & 0xFFFFFFFF);
-+		write_sqe->sink_to_high = htole32((wr->wr.rdma.remote_addr >> 32) & 0xFFFFFFFF);
-+
-+		length_field = &write_sqe->length;
-+		sgl_base = get_sq_wqebb(qp, tmp_pi + 1);
-+		/* sgl is in next wqebb. */
-+		sgl_off = 0;
-+		sgl_idx = tmp_pi + 1;
-+		wqe_size = sizeof(struct erdma_write_sqe);
-+
-+		break;
-+	case IBV_WR_SEND:
-+	case IBV_WR_SEND_WITH_IMM:
-+		opcode = wr->opcode == IBV_WR_SEND ? ERDMA_OP_SEND : ERDMA_OP_SEND_WITH_IMM;
-+		sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_OPCODE_MASK, opcode);
-+		send_sqe = (struct erdma_send_sqe *)sqe;
-+		send_sqe->imm_data = wr->imm_data;
-+
-+		length_field = &send_sqe->length;
-+		sgl_base = (void *)send_sqe;
-+		/* sgl is in the half of current wqebb */
-+		sgl_off = 16;
-+		sgl_idx = tmp_pi;
-+		wqe_size = sizeof(struct erdma_send_sqe);
-+
-+		break;
-+	case IBV_WR_RDMA_READ:
-+		sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_OPCODE_MASK, ERDMA_OP_READ);
-+
-+		read_sqe = (struct erdma_readreq_sqe *)sqe;
-+
-+		read_sqe->sink_to_low = htole32(wr->sg_list->addr & 0xFFFFFFFF);
-+		read_sqe->sink_to_high = htole32((wr->sg_list->addr >> 32) & 0xFFFFFFFF);
-+		read_sqe->sink_stag = htole32(wr->sg_list->lkey);
-+		read_sqe->length = htole32(wr->sg_list->length);
-+
-+		struct erdma_sge *sgl = (struct erdma_sge *)get_sq_wqebb(qp, tmp_pi + 1);
-+
-+		sgl->laddr = htole64(wr->wr.rdma.remote_addr);
-+		sgl->length = htole32(wr->sg_list->length);
-+		sgl->lkey = htole32(wr->wr.rdma.rkey);
-+
-+		wqe_size = sizeof(struct erdma_readreq_sqe);
-+
-+		goto out;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (wr->send_flags & IBV_SEND_INLINE) {
-+		char *data = (char *)sgl_base;
-+		uint32_t remain_size;
-+		uint32_t copy_size;
-+		uint32_t data_off;
-+
-+		i = 0;
-+		bytes = 0;
-+
-+		/* Allow more than ERDMA_MAX_SGE, since content copied here */
-+		while (i < wr->num_sge) {
-+			bytes += wr->sg_list[i].length;
-+			if (bytes > (int)ERDMA_MAX_INLINE)
-+				return -EINVAL;
-+
-+			remain_size = wr->sg_list[i].length;
-+			data_off = 0;
-+
-+			while (1) {
-+				copy_size = min(remain_size, SQEBB_SIZE - sgl_off);
-+				memcpy(data + sgl_off,
-+					(void *)(uintptr_t)wr->sg_list[i].addr + data_off,
-+					copy_size);
-+				remain_size -= copy_size;
-+
-+				/* Update sgl_offset. */
-+				sgl_idx += ((sgl_off + copy_size) >> SQEBB_SHIFT);
-+				sgl_off = (sgl_off + copy_size) & (SQEBB_SIZE - 1);
-+				data_off += copy_size;
-+				data = get_sq_wqebb(qp, sgl_idx);
-+
-+				if (!remain_size)
-+					break;
-+			};
-+
-+			i++;
-+		}
-+
-+		*length_field = htole32(bytes);
-+		wqe_size += bytes;
-+		sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_SGL_LEN_MASK, bytes);
-+	} else {
-+		char *sgl = (char *)sgl_base;
-+
-+		if (wr->num_sge > ERDMA_MAX_SEND_SGE)
-+			return -EINVAL;
-+
-+		i = 0;
-+		bytes = 0;
-+
-+		while (i < wr->num_sge) {
-+			bytes += wr->sg_list[i].length;
-+			memcpy(sgl + sgl_off, &wr->sg_list[i], sizeof(struct ibv_sge));
-+
-+			if (sgl_off == 0)
-+				*(uint32_t *)(sgl + 28) = qp->id;
-+
-+			sgl_idx += (sgl_off == sizeof(struct ibv_sge) ? 1 : 0);
-+			sgl = get_sq_wqebb(qp, sgl_idx);
-+			sgl_off = sizeof(struct ibv_sge) - sgl_off;
-+
-+			i++;
-+		}
-+
-+		*length_field = htole32(bytes);
-+		sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_SGL_LEN_MASK, wr->num_sge);
-+		wqe_size += wr->num_sge * sizeof(struct ibv_sge);
-+	}
-+
-+out:
-+	wqebb_cnt = SQEBB_COUNT(wqe_size);
-+	assert(wqebb_cnt <= MAX_WQEBB_PER_SQE);
-+	sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_WQEBB_CNT_MASK, wqebb_cnt - 1);
-+	sqe_hdr |= FIELD_PREP(ERDMA_SQE_HDR_WQEBB_INDEX_MASK, tmp_pi + wqebb_cnt);
-+
-+	*(__le64 *)sqe = htole64(sqe_hdr);
-+	*sq_pi = tmp_pi + wqebb_cnt;
-+
-+	return 0;
-+}
-+
-+int erdma_post_send(struct ibv_qp *base_qp, struct ibv_send_wr *wr, struct ibv_send_wr **bad_wr)
-+{
-+	struct erdma_qp *qp = to_eqp(base_qp);
-+	uint16_t sq_pi;
-+	int new_sqe = 0, rv = 0;
-+
-+	*bad_wr = NULL;
-+
-+	if (base_qp->state == IBV_QPS_ERR) {
-+		*bad_wr = wr;
-+		return -EIO;
-+	}
-+
-+	pthread_spin_lock(&qp->sq_lock);
-+
-+	sq_pi = qp->sq.pi;
-+
-+	while (wr) {
-+		if ((uint16_t)(sq_pi - qp->sq.ci) >= qp->sq.depth) {
-+			rv = -ENOMEM;
-+			*bad_wr = wr;
-+			break;
-+		}
-+
-+		rv = erdma_push_one_sqe(qp, wr, &sq_pi);
-+		if (rv) {
-+			*bad_wr = wr;
-+			break;
-+		}
-+
-+		new_sqe++;
-+		wr = wr->next;
-+	}
-+
-+	if (new_sqe) {
-+		qp->sq.pi = sq_pi;
-+		__kick_sq_db(qp, sq_pi); /* normal doorbell. */
-+	}
-+
-+	pthread_spin_unlock(&qp->sq_lock);
-+
-+	return rv;
-+}
-+
-+static int push_recv_wqe(struct erdma_qp *qp, struct ibv_recv_wr *wr)
-+{
-+	uint16_t rq_pi = qp->rq.pi;
-+	uint16_t idx = rq_pi & (qp->rq.depth - 1);
-+	struct erdma_rqe *rqe = (struct erdma_rqe *)qp->rq.qbuf + idx;
-+
-+	if ((uint16_t)(rq_pi - qp->rq.ci) == qp->rq.depth)
-+		return -ENOMEM;
-+
-+	rqe->qe_idx = htole16(rq_pi + 1);
-+	rqe->qpn = htole32(qp->id);
-+	qp->rq.wr_tbl[idx] = wr->wr_id;
-+
-+	if (wr->num_sge == 0) {
-+		rqe->length = 0;
-+	} else if (wr->num_sge == 1) {
-+		rqe->stag = htole32(wr->sg_list[0].lkey);
-+		rqe->to = htole64(wr->sg_list[0].addr);
-+		rqe->length = htole32(wr->sg_list[0].length);
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	*(__le64 *)qp->rq.db_record = *(__le64 *)rqe;
-+	udma_to_device_barrier();
-+	mmio_write64_le(qp->rq.db, *(__le64 *)rqe);
-+
-+	qp->rq.pi = rq_pi + 1;
-+
-+	return 0;
-+}
-+
-+int erdma_post_recv(struct ibv_qp *base_qp, struct ibv_recv_wr *wr, struct ibv_recv_wr **bad_wr)
-+{
-+	struct erdma_qp *qp = to_eqp(base_qp);
-+	int ret = 0;
-+
-+	if (base_qp->state == IBV_QPS_ERR) {
-+		*bad_wr = wr;
-+		return -EIO;
-+	}
-+
-+	pthread_spin_lock(&qp->rq_lock);
-+
-+	while (wr) {
-+		ret = push_recv_wqe(qp, wr);
-+		if (ret) {
-+			*bad_wr = wr;
-+			break;
-+		}
-+
-+		wr = wr->next;
-+	}
-+
-+	pthread_spin_unlock(&qp->rq_lock);
-+
-+	return ret;
-+}
-+
-+
-+void erdma_cq_event(struct ibv_cq *ibcq)
-+{
-+	struct erdma_cq *cq = to_ecq(ibcq);
-+
-+	cq->cmdsn++;
-+}
-+
-+static const struct {
-+	enum erdma_opcode erdma;
-+	enum ibv_wc_opcode base;
-+} map_cqe_opcode[ERDMA_NUM_OPCODES] = {
-+	{ ERDMA_OP_WRITE, IBV_WC_RDMA_WRITE },
-+	{ ERDMA_OP_READ, IBV_WC_RDMA_READ },
-+	{ ERDMA_OP_SEND, IBV_WC_SEND },
-+	{ ERDMA_OP_SEND_WITH_IMM, IBV_WC_SEND },
-+	{ ERDMA_OP_RECEIVE, IBV_WC_RECV },
-+	{ ERDMA_OP_RECV_IMM, IBV_WC_RECV_RDMA_WITH_IMM },
-+	{ ERDMA_OP_RECV_INV, IBV_WC_LOCAL_INV},  /* can not appear */
-+	{ ERDMA_OP_REQ_ERR, IBV_WC_RECV },  /* can not appear */
-+	{ ERDNA_OP_READ_RESPONSE, IBV_WC_RECV }, /* can not appear */
-+	{ ERDMA_OP_WRITE_WITH_IMM, IBV_WC_RDMA_WRITE },
-+	{ ERDMA_OP_RECV_ERR, IBV_WC_RECV_RDMA_WITH_IMM }, /* can not appear */
-+	{ ERDMA_OP_INVALIDATE, IBV_WC_LOCAL_INV },
-+	{ ERDMA_OP_RSP_SEND_IMM, IBV_WC_RECV },
-+	{ ERDMA_OP_SEND_WITH_INV, IBV_WC_SEND },
-+	{ ERDMA_OP_REG_MR, IBV_WC_RECV }, /* can not appear */
-+	{ ERDMA_OP_LOCAL_INV, IBV_WC_LOCAL_INV },
-+	{ ERDMA_OP_READ_WITH_INV, IBV_WC_RDMA_READ },
++static const struct verbs_context_ops erdma_context_ops = {
++	.alloc_pd = erdma_alloc_pd,
++	.create_cq = erdma_create_cq,
++	.create_qp = erdma_create_qp,
++	.dealloc_pd = erdma_free_pd,
++	.dereg_mr = erdma_dereg_mr,
++	.destroy_cq = erdma_destroy_cq,
++	.destroy_qp = erdma_destroy_qp,
++	.free_context = erdma_free_context,
++	.modify_qp = erdma_modify_qp,
++	.cq_event = erdma_cq_event,
++	.poll_cq = erdma_poll_cq,
++	.post_recv = erdma_post_recv,
++	.post_send = erdma_post_send,
++	.query_device_ex = erdma_query_device,
++	.query_port = erdma_query_port,
++	.query_qp = erdma_query_qp,
++	.reg_mr = erdma_reg_mr,
++	.req_notify_cq = erdma_notify_cq,
 +};
 +
-+static const struct {
-+	enum erdma_wc_status erdma;
-+	enum ibv_wc_status base;
-+	enum erdma_vendor_err vendor;
-+} map_cqe_status[ERDMA_NUM_WC_STATUS] = {
-+	{ ERDMA_WC_SUCCESS, IBV_WC_SUCCESS, ERDMA_WC_VENDOR_NO_ERR },
-+	{ ERDMA_WC_GENERAL_ERR, IBV_WC_GENERAL_ERR, ERDMA_WC_VENDOR_NO_ERR },
-+	{ ERDMA_WC_RECV_WQE_FORMAT_ERR, IBV_WC_GENERAL_ERR, ERDMA_WC_VENDOR_INVALID_RQE },
-+	{ ERDMA_WC_RECV_STAG_INVALID_ERR,
-+		IBV_WC_REM_ACCESS_ERR, ERDMA_WC_VENDOR_RQE_INVALID_STAG },
-+	{ ERDMA_WC_RECV_ADDR_VIOLATION_ERR,
-+		IBV_WC_REM_ACCESS_ERR, ERDMA_WC_VENDOR_RQE_ADDR_VIOLATION },
-+	{ ERDMA_WC_RECV_RIGHT_VIOLATION_ERR,
-+		IBV_WC_REM_ACCESS_ERR, ERDMA_WC_VENDOR_RQE_ACCESS_RIGHT_ERR },
-+	{ ERDMA_WC_RECV_PDID_ERR, IBV_WC_REM_ACCESS_ERR, ERDMA_WC_VENDOR_RQE_INVALID_PD },
-+	{ ERDMA_WC_RECV_WARRPING_ERR, IBV_WC_REM_ACCESS_ERR, ERDMA_WC_VENDOR_RQE_WRAP_ERR },
-+	{ ERDMA_WC_SEND_WQE_FORMAT_ERR, IBV_WC_LOC_QP_OP_ERR, ERDMA_WC_VENDOR_INVALID_SQE },
-+	{ ERDMA_WC_SEND_WQE_ORD_EXCEED, IBV_WC_GENERAL_ERR, ERDMA_WC_VENDOR_ZERO_ORD },
-+	{ ERDMA_WC_SEND_STAG_INVALID_ERR,
-+		IBV_WC_LOC_ACCESS_ERR, ERDMA_WC_VENDOR_SQE_INVALID_STAG },
-+	{ ERDMA_WC_SEND_ADDR_VIOLATION_ERR,
-+		IBV_WC_LOC_ACCESS_ERR, ERDMA_WC_VENDOR_SQE_ADDR_VIOLATION },
-+	{ ERDMA_WC_SEND_RIGHT_VIOLATION_ERR,
-+		IBV_WC_LOC_ACCESS_ERR, ERDMA_WC_VENDOR_SQE_ACCESS_ERR },
-+	{ ERDMA_WC_SEND_PDID_ERR, IBV_WC_LOC_ACCESS_ERR, ERDMA_WC_VENDOR_SQE_INVALID_PD },
-+	{ ERDMA_WC_SEND_WARRPING_ERR, IBV_WC_LOC_ACCESS_ERR, ERDMA_WC_VENDOR_SQE_WARP_ERR },
-+	{ ERDMA_WC_FLUSH_ERR, IBV_WC_WR_FLUSH_ERR, ERDMA_WC_VENDOR_NO_ERR },
-+	{ ERDMA_WC_RETRY_EXC_ERR, IBV_WC_RETRY_EXC_ERR, ERDMA_WC_VENDOR_NO_ERR },
-+};
-+
-+#define ERDMA_POLLCQ_NO_QP      (-1)
-+#define ERDMA_POLLCQ_DUP_COMP   (-2)
-+#define ERDMA_POLLCQ_WRONG_IDX  (-3)
-+
-+static int __erdma_poll_one_cqe(struct erdma_context *ctx, struct erdma_cq *cq,
-+				struct erdma_cqe *cqe, uint32_t cqe_hdr, struct ibv_wc *wc)
++static struct verbs_context *erdma_alloc_context(struct ibv_device *device,
++						 int cmd_fd, void *private_data)
 +{
-+	struct erdma_qp *qp;
-+	uint64_t *qeidx2wrid = NULL;
-+	uint32_t qpn = be32toh(cqe->qpn);
-+	uint16_t depth = 0;
-+	uint64_t *sqe_hdr;
-+	uint16_t wqe_idx = be32toh(cqe->qe_idx);
-+	uint16_t old_ci, new_ci;
-+	uint32_t opcode = FIELD_GET(ERDMA_CQE_HDR_OPCODE_MASK, cqe_hdr);
-+	uint32_t syndrome = FIELD_GET(ERDMA_CQE_HDR_SYNDROME_MASK, cqe_hdr);
-+
-+	int tbl_idx = qpn >> ERDMA_QP_TABLE_SHIFT;
-+	int tbl_off = qpn & ERDMA_QP_TABLE_MASK;
-+
-+	if (!ctx->qp_table[tbl_idx].table || !ctx->qp_table[tbl_idx].table[tbl_off])
-+		return ERDMA_POLLCQ_NO_QP;
-+
-+	qp = ctx->qp_table[tbl_idx].table[tbl_off];
-+
-+	if (FIELD_GET(ERDMA_CQE_HDR_QTYPE_MASK, cqe_hdr) == ERDMA_CQE_QTYPE_SQ) {
-+		qeidx2wrid = qp->sq.wr_tbl;
-+		depth = qp->sq.depth;
-+		sqe_hdr = (uint64_t *)get_sq_wqebb(qp, wqe_idx);
-+		old_ci = qp->sq.ci;
-+		new_ci = wqe_idx + FIELD_GET(ERDMA_SQE_HDR_WQEBB_CNT_MASK, *sqe_hdr) + 1;
-+
-+		if ((uint16_t)(new_ci - old_ci) > depth)
-+			return ERDMA_POLLCQ_WRONG_IDX;
-+		else if (new_ci == old_ci)
-+			return ERDMA_POLLCQ_DUP_COMP;
-+
-+		qp->sq.ci = new_ci;
-+	} else {
-+		qeidx2wrid = qp->rq.wr_tbl;
-+		depth = qp->rq.depth;
-+		qp->rq.ci++;
-+	}
-+
-+	wc->wr_id = qeidx2wrid[wqe_idx & (depth - 1)];
-+	wc->byte_len = be32toh(cqe->size);
-+	wc->wc_flags = 0;
-+
-+	if (opcode == ERDMA_OP_RECV_IMM) {
-+		wc->opcode = IBV_WC_RECV_RDMA_WITH_IMM;
-+		wc->imm_data = htobe32(le32toh(cqe->imm_data));
-+		wc->wc_flags |= IBV_WC_WITH_IMM;
-+	} else if (opcode == ERDMA_OP_RSP_SEND_IMM) {
-+		wc->opcode = IBV_WC_RECV;
-+		wc->imm_data = htobe32(le32toh(cqe->imm_data));
-+		wc->wc_flags |= IBV_WC_WITH_IMM;
-+	} else {
-+		wc->opcode = map_cqe_opcode[opcode].base;
-+	}
-+
-+	if (syndrome >= ERDMA_NUM_WC_STATUS)
-+		syndrome = ERDMA_WC_GENERAL_ERR;
-+
-+	wc->status = map_cqe_status[syndrome].base;
-+	wc->vendor_err = map_cqe_status[syndrome].vendor;
-+	wc->qp_num = qpn;
-+
-+	return 0;
-+}
-+
-+int erdma_poll_cq(struct ibv_cq *ibcq, int num_entries, struct ibv_wc *wc)
-+{
-+	struct erdma_cq *cq = to_ecq(ibcq);
-+	struct erdma_context *ctx = to_ectx(ibcq->context);
-+	int new = 0;
-+	struct erdma_cqe *cqe;
-+	int owner;
-+	uint32_t ci;
-+	uint32_t depth_mask = cq->depth - 1;
-+	uint32_t hdr;
-+	int i, ret;
-+
-+	pthread_spin_lock(&cq->lock);
-+
-+	owner = cq->owner;
-+	ci = cq->ci;
-+
-+	for (i = 0; i < num_entries; i++) {
-+		cqe = &cq->queue[ci & depth_mask];
-+		hdr = be32toh(cqe->hdr);
-+
-+		if (FIELD_GET(ERDMA_CQE_HDR_OWNER_MASK, hdr) != owner)
-+			break;
-+
-+		udma_from_device_barrier();
-+
-+		ret = __erdma_poll_one_cqe(ctx, cq, cqe, hdr, wc);
-+
-+		ci++;
-+		if ((ci & depth_mask) == 0)
-+			owner = !owner;
-+
-+		if (ret)
-+			continue;
-+
-+		wc++;
-+		new++;
-+	}
-+
-+	cq->owner = owner;
-+	cq->ci = ci;
-+
-+	pthread_spin_unlock(&cq->lock);
-+
-+	return new;
-+}
-+
-+void erdma_free_context(struct ibv_context *ibv_ctx)
-+{
-+	struct erdma_context *ctx = to_ectx(ibv_ctx);
++	struct erdma_context *ctx;
++	struct ibv_get_context cmd = {};
++	struct erdma_cmd_alloc_context_resp resp = {};
 +	int i;
 +
-+	munmap(ctx->sdb, ERDMA_PAGE_SIZE);
-+	munmap(ctx->rdb, ERDMA_PAGE_SIZE);
-+	munmap(ctx->cdb, ERDMA_PAGE_SIZE);
++	ctx = verbs_init_and_alloc_context(device, cmd_fd, ctx, ibv_ctx, RDMA_DRIVER_ERDMA);
++	if (!ctx)
++		return NULL;
 +
-+	pthread_mutex_lock(&ctx->qp_table_mutex);
-+	for (i = 0; i < ERDMA_QP_TABLE_SIZE; ++i) {
-+		if (ctx->qp_table[i].refcnt)
-+			free(ctx->qp_table[i].table);
-+	}
++	pthread_mutex_init(&ctx->qp_table_mutex, NULL);
++	for (i = 0; i < ERDMA_QP_TABLE_SIZE; ++i)
++		ctx->qp_table[i].refcnt = 0;
 +
-+	pthread_mutex_unlock(&ctx->qp_table_mutex);
-+	pthread_mutex_destroy(&ctx->qp_table_mutex);
++	if (ibv_cmd_get_context(&ctx->ibv_ctx, &cmd, sizeof(cmd), &resp.ibv_resp, sizeof(resp)))
++		goto fail;
++
++	verbs_set_ops(&ctx->ibv_ctx, &erdma_context_ops);
++	ctx->dev_id = resp.dev_id;
++
++	ctx->sdb_type = resp.sdb_type;
++	ctx->sdb_offset = resp.sdb_offset;
++
++	ctx->sdb = mmap(NULL, ERDMA_PAGE_SIZE, PROT_WRITE, MAP_SHARED, cmd_fd, resp.sdb);
++	if (!ctx->sdb)
++		goto fail;
++
++	ctx->rdb = mmap(NULL, ERDMA_PAGE_SIZE, PROT_WRITE, MAP_SHARED, cmd_fd, resp.rdb);
++	if (!ctx->rdb)
++		goto fail;
++
++	ctx->cdb = mmap(NULL, ERDMA_PAGE_SIZE, PROT_WRITE, MAP_SHARED, cmd_fd, resp.cdb);
++	if (!ctx->cdb)
++		goto fail;
++
++	ctx->page_size = ERDMA_PAGE_SIZE;
++	ctx->dbrecord_pages = NULL;
++	pthread_mutex_init(&ctx->dbrecord_pages_mutex, NULL);
++
++	return &ctx->ibv_ctx;
++
++fail:
++	if (ctx->sdb)
++		munmap(ctx->sdb, ERDMA_PAGE_SIZE);
++	if (ctx->rdb)
++		munmap(ctx->rdb, ERDMA_PAGE_SIZE);
++	if (ctx->cdb)
++		munmap(ctx->cdb, ERDMA_PAGE_SIZE);
 +
 +	verbs_uninit_context(&ctx->ibv_ctx);
 +	free(ctx);
++	return NULL;
 +}
++
++static struct verbs_device *erdma_device_alloc(struct verbs_sysfs_dev *sysfs_dev)
++{
++	struct erdma_device *dev;
++
++	dev = calloc(1, sizeof(*dev));
++	if (!dev)
++		return NULL;
++
++	return &dev->ibv_dev;
++}
++
++static void erdma_device_free(struct verbs_device *vdev)
++{
++	struct erdma_device *dev =
++		container_of(vdev, struct erdma_device, ibv_dev);
++
++	free(dev);
++}
++
++static const struct verbs_match_ent match_table[] = {
++	VERBS_DRIVER_ID(RDMA_DRIVER_ERDMA),
++	VERBS_PCI_MATCH(PCI_VENDOR_ID_ALIBABA, 0x107f, NULL),
++	VERBS_PCI_MATCH(PCI_VENDOR_ID_ALIBABA, 0x5007, NULL),
++	{},
++};
++
++static const struct verbs_device_ops erdma_dev_ops = {
++	.name = "erdma",
++	.match_min_abi_version = 0,
++	.match_max_abi_version = ERDMA_ABI_VERSION,
++	.match_table = match_table,
++	.alloc_device = erdma_device_alloc,
++	.uninit_device = erdma_device_free,
++	.alloc_context = erdma_alloc_context,
++};
++
++PROVIDER_DRIVER(erdma, erdma_dev_ops);
+diff --git a/providers/erdma/erdma.h b/providers/erdma/erdma.h
+new file mode 100644
+index 00000000..a3d9f3b4
+--- /dev/null
++++ b/providers/erdma/erdma.h
+@@ -0,0 +1,60 @@
++/* SPDX-License-Identifier: GPL-2.0 or OpenIB.org BSD (MIT) See COPYING file */
++/*
++ * Authors: Cheng Xu <chengyou@linux.alibaba.com>
++ * Copyright (c) 2020-2021, Alibaba Group.
++ */
++
++#ifndef __ERDMA_H__
++#define __ERDMA_H__
++
++#include <pthread.h>
++#include <inttypes.h>
++#include <stddef.h>
++
++#include <infiniband/driver.h>
++#include <infiniband/kern-abi.h>
++
++#ifndef PCI_VENDOR_ID_ALIBABA
++#define PCI_VENDOR_ID_ALIBABA 0x1ded
++#endif
++
++#define ERDMA_PAGE_SIZE 4096
++#define ERDMA_PAGE_SHIFT 12
++#define ERDMA_SIZE_TO_NPAGE(size) (((size) + ERDMA_PAGE_SIZE - 1) >> ERDMA_PAGE_SHIFT)
++
++struct erdma_device {
++	struct verbs_device ibv_dev;
++};
++
++#define ERDMA_QP_TABLE_SIZE   4096
++#define ERDMA_QP_TABLE_SHIFT  12
++#define ERDMA_QP_TABLE_MASK   0xFFF
++
++struct erdma_context {
++	struct verbs_context ibv_ctx;
++	uint32_t dev_id;
++
++	struct {
++		struct erdma_qp **table;
++		int refcnt;
++	} qp_table[ERDMA_QP_TABLE_SIZE];
++	pthread_mutex_t qp_table_mutex;
++
++	uint8_t sdb_type;
++	uint32_t sdb_offset;
++
++	void *sdb;
++	void *rdb;
++	void *cdb;
++
++	int page_size;
++	pthread_mutex_t dbrecord_pages_mutex;
++	struct erdma_dbrecord_page *dbrecord_pages;
++};
++
++static inline struct erdma_context *to_ectx(struct ibv_context *base)
++{
++	return container_of(base, struct erdma_context, ibv_ctx.context);
++}
++
++#endif
 -- 
 2.27.0
 
