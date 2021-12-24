@@ -2,85 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC4947E9F7
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 02:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C59147EBCA
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Dec 2021 06:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350488AbhLXBEL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 23 Dec 2021 20:04:11 -0500
-Received: from mga12.intel.com ([192.55.52.136]:2299 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1350464AbhLXBEL (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 23 Dec 2021 20:04:11 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10207"; a="220918160"
-X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; 
-   d="scan'208";a="220918160"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2021 17:04:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,231,1635231600"; 
-   d="scan'208";a="617644999"
-Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga004.jf.intel.com with ESMTP; 23 Dec 2021 17:04:08 -0800
-From:   yanjun.zhu@linux.dev
-To:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev,
-        leon@kernel.org
-Subject: [PATCH 1/1] RDMA/rxe: Use the standard method to produce udp source port
-Date:   Fri, 24 Dec 2021 12:27:35 -0500
-Message-Id: <20211224172735.1450623-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        id S1351395AbhLXFkA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Dec 2021 00:40:00 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:7360 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1351385AbhLXFkA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Dec 2021 00:40:00 -0500
+IronPort-Data: =?us-ascii?q?A9a23=3Ayq4OHKvKOkLEZn76+mmpValrJufnVKFcMUV32f8?=
+ =?us-ascii?q?akzHdYEJGY0x3ymNKUGvXOv/YMGP1eI11bdy2oxwBvZWBz95mSQtspCBgHilAw?=
+ =?us-ascii?q?SbnLY7Hdx+vZUt+DSFioHpPtpxYMp+ZRCwNZie0SiyFb/6x/RGQ6YnSHuClUbS?=
+ =?us-ascii?q?eZngoLeNZYHxJZSxLyrdRbrFA0YDR7zOl4bsekuWHULOX82cc3lE8t8pvnChSU?=
+ =?us-ascii?q?MHa41v0iLCRicdj5zcyn1FNZH4WyDrYw3HQGuG4FcbiLwrPIS3Qw4/Xw/stIov?=
+ =?us-ascii?q?NfrfTeUtMTKPQPBSVlzxdXK3Kbhpq/3R0i/hkcqFHLxo/ZzahxridzP1JtI6wS?=
+ =?us-ascii?q?AUoN6vklvkfUgVDDmd1OqguFLrveCHu7ZLOnxGaG5fr67A0ZK0sBqUK6+RlEGM?=
+ =?us-ascii?q?UraRAAD8IZxGHwemxxdqTW+BqhNklatvrIasbu3d93XfVAOhOaZTCRbjaoNxVx?=
+ =?us-ascii?q?jE9guhQEvvEIckUczxiaFLHeRInElMWDo8u2f2kg3DXbTJVshSWqLAx7myVyxZ?=
+ =?us-ascii?q?+uJDvP9X9aN2HXcgTlU/wm45s1wwVGTlDbJrGl2XDqSnq24fycerAcNp6PNWFG?=
+ =?us-ascii?q?jRC2TV/HlAuNSA=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ari277a1rJ/fcVETdUkDe7gqjBI4kLtp133Aq?=
+ =?us-ascii?q?2lEZdPU1SL39qynKppkmPHDP5gr5J0tLpTntAsi9qBDnhPtICOsqTNSftWDd0Q?=
+ =?us-ascii?q?PGEGgI1/qB/9SPIU3D398Y/aJhXow7M9foEGV95PyQ3CCIV/om3/mLmZrFudvj?=
+X-IronPort-AV: E=Sophos;i="5.88,231,1635177600"; 
+   d="scan'208";a="119465844"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 24 Dec 2021 13:39:58 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 1BE094D146E8;
+        Fri, 24 Dec 2021 13:39:54 +0800 (CST)
+Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Fri, 24 Dec 2021 13:39:55 +0800
+Received: from localhost.localdomain (10.167.225.141) by
+ G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Fri, 24 Dec 2021 13:39:51 +0800
+From:   Li Zhijian <lizhijian@cn.fujitsu.com>
+To:     <zyjzyj2000@gmail.com>, <jgg@ziepe.ca>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yanjun.zhu@linux.dev>, Li Zhijian <lizhijian@cn.fujitsu.com>
+Subject: [PATCH] RDMA/rxe: Prevent from double freeing rxe_map_set
+Date:   Fri, 24 Dec 2021 13:44:46 +0800
+Message-ID: <20211224054446.958913-1-lizhijian@cn.fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 1BE094D146E8.AAB9D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+a same rxe_map_set could be freed twice:
+rxe_reg_user_mr()
+  -> rxe_mr_init_user()
+    -> rxe_mr_free_map_set() # 1st
+  -> rxe_drop_ref()
+   ...
+    -> rxe_mr_cleanup()
+      -> rxe_mr_free_map_set() # 2nd
 
-Use the standard method to produce udp source port based on the
-commit 2b880b2e5e03 ("RDMA/mlx5: Define RoCEv2 udp source port
-when set path").
-
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 ---
- drivers/infiniband/sw/rxe/rxe_verbs.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_mr.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 0aa0d7e52773..9a0748ad6417 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -451,6 +451,14 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
- 	return err;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index 53271df10e47..c02385a1be55 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -65,10 +65,12 @@ static void rxe_mr_init(int access, struct rxe_mr *mr)
+ 	mr->map_shift = ilog2(RXE_BUF_PER_MAP);
  }
  
-+static u16 rxe_get_udp_sport(u32 fl, u32 lqpn, u32 rqpn)
-+{
-+	if (!fl)
-+		fl = rdma_calc_flow_label(lqpn, rqpn);
-+
-+	return rdma_flow_label_to_udp_sport(fl);
-+}
-+
- static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 			 int mask, struct ib_udata *udata)
+-static void rxe_mr_free_map_set(int num_map, struct rxe_map_set *set)
++static void rxe_mr_free_map_set(int num_map, struct rxe_map_set **setp)
  {
-@@ -469,6 +477,16 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	if (err)
- 		goto err1;
+ 	int i;
++	struct rxe_map_set *set = *setp;
  
-+	if (mask & IB_QP_AV) {
-+		if (attr->ah_attr.ah_flags & IB_AH_GRH) {
-+			u32 fl = attr->ah_attr.grh.flow_label;
-+			u32 lqp = qp->ibqp.qp_num;
-+			u32 rqp = qp->attr.dest_qp_num;
-+
-+			qp->src_port = rxe_get_udp_sport(fl, lqp, rqp);
-+		}
-+	}
-+
++	*setp = NULL;
+ 	for (i = 0; i < num_map; i++)
+ 		kfree(set->map[i]);
+ 
+@@ -140,7 +142,7 @@ static int rxe_mr_alloc(struct rxe_mr *mr, int num_buf, int both)
+ 	if (both) {
+ 		ret = rxe_mr_alloc_map_set(num_map, &mr->next_map_set);
+ 		if (ret) {
+-			rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
++			rxe_mr_free_map_set(mr->num_map, &mr->cur_map_set);
+ 			goto err_out;
+ 		}
+ 	}
+@@ -238,7 +240,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
  	return 0;
  
- err1:
+ err_cleanup_map:
+-	rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
++	rxe_mr_free_map_set(mr->num_map, &mr->cur_map_set);
+ err_release_umem:
+ 	ib_umem_release(umem);
+ err_out:
+@@ -706,8 +708,8 @@ void rxe_mr_cleanup(struct rxe_pool_entry *arg)
+ 	ib_umem_release(mr->umem);
+ 
+ 	if (mr->cur_map_set)
+-		rxe_mr_free_map_set(mr->num_map, mr->cur_map_set);
++		rxe_mr_free_map_set(mr->num_map, &mr->cur_map_set);
+ 
+ 	if (mr->next_map_set)
+-		rxe_mr_free_map_set(mr->num_map, mr->next_map_set);
++		rxe_mr_free_map_set(mr->num_map, &mr->next_map_set);
+ }
 -- 
-2.27.0
+2.31.1
+
+
 
