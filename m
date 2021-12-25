@@ -2,26 +2,27 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F2E47F1BE
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Dec 2021 03:57:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3164947F1C0
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Dec 2021 04:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhLYC51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Dec 2021 21:57:27 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49512 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229559AbhLYC50 (ORCPT
+        id S229600AbhLYDEB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Dec 2021 22:04:01 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:57328 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhLYDEB (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Dec 2021 21:57:26 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.ftfxy_1640401043;
-Received: from 192.168.0.121(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.ftfxy_1640401043)
+        Fri, 24 Dec 2021 22:04:01 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R661e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.fth.B_1640401428;
+Received: from 192.168.0.121(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.fth.B_1640401428)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 25 Dec 2021 10:57:24 +0800
-Message-ID: <97ed2a89-32d6-9d0c-4084-40a6d7ebda28@linux.alibaba.com>
-Date:   Sat, 25 Dec 2021 10:57:21 +0800
+          Sat, 25 Dec 2021 11:03:49 +0800
+Message-ID: <c073d897-369d-6c15-98bc-22fb0534fc1d@linux.alibaba.com>
+Date:   Sat, 25 Dec 2021 11:03:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.4.1
-Subject: Re: [PATCH rdma-next 00/11] Elastic RDMA Adapter (ERDMA) driver
+Subject: [Please ignore the two former responses]Re: [PATCH rdma-next 00/11]
+ Elastic RDMA Adapter (ERDMA) driver
 Content-Language: en-US
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     jgg@ziepe.ca, dledford@redhat.com, linux-rdma@vger.kernel.org,
@@ -107,6 +108,16 @@ On 12/25/21 2:26 AM, Leon Romanovsky wrote:
 > I'm as an owner of VM can replace kernel code with any code I want and
 > remove your MAC matching (or replace to something different). How will
 > you protect from such flow?
+
+(I'm sorry for wrong editing format in the two former responses, please
+ignore them.)
+
+I think this topic belongs to anti-attack. One principle of anti-attack
+in our cloud is that the attacker MUST NOT have influence on users but
+themselves.
+
+Before I answer the question, I want to describe some more details of
+our architecture.
 
 In our MOC architecture, virtio-net device (e.g, virtio-net back-end) is
 fully offloaded to MOC, not in host hypervisor. One virtio-net device
