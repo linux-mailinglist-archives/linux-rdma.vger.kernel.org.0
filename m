@@ -2,22 +2,22 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5081247F1BD
-	for <lists+linux-rdma@lfdr.de>; Sat, 25 Dec 2021 03:54:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F2E47F1BE
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Dec 2021 03:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhLYCyV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Dec 2021 21:54:21 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:6996 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229559AbhLYCyV (ORCPT
+        id S229599AbhLYC51 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Dec 2021 21:57:27 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:49512 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhLYC50 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 24 Dec 2021 21:54:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R561e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.fh9rE_1640400848;
-Received: from 192.168.0.121(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.fh9rE_1640400848)
+        Fri, 24 Dec 2021 21:57:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V.ftfxy_1640401043;
+Received: from 192.168.0.121(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V.ftfxy_1640401043)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 25 Dec 2021 10:54:09 +0800
-Message-ID: <3a4f4c78-2fcc-af3e-d53c-d7f5b7a29157@linux.alibaba.com>
-Date:   Sat, 25 Dec 2021 10:54:06 +0800
+          Sat, 25 Dec 2021 10:57:24 +0800
+Message-ID: <97ed2a89-32d6-9d0c-4084-40a6d7ebda28@linux.alibaba.com>
+Date:   Sat, 25 Dec 2021 10:57:21 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.4.1
@@ -108,17 +108,10 @@ On 12/25/21 2:26 AM, Leon Romanovsky wrote:
 > remove your MAC matching (or replace to something different). How will
 > you protect from such flow?
 
-I think this topic belongs to anti-attack. One principle of anti-attack
-in our cloud is that the attacker MUST NOT have influence on users but
-themselves.
-
-Before I answer the question, I want to describe some more details of
-our architecture.
-
 In our MOC architecture, virtio-net device (e.g, virtio-net back-end) is
 fully offloaded to MOC, not in host hypervisor. One virtio-net device
 belongs to a vport, and if it has a peer erdma device, erdma device also
-belongs to the vport. The protocol headers of the network flows in the 
+belongs to the vport. The protocol headers of the network flows in the
 virtio-net and erdma devices must be consistent with the vport
 configurations (mac address, ip, etc. ) by checking the OVS rules.
 
@@ -129,13 +122,15 @@ wrongly, the erdma network will be unreachable, because the OVS module
 in MOC hardware can distinguish this situation and drop all the invalid
 network packets, and this has no influence to other users.
 
-
 > If you don't trust VM, you should perform binding in hypervisor and
 > this erdma driver will work out-of-the-box in the VM.
 
 As mentioned above, we also have the binding configuration in the
 back-end (e.g, MOC hardware), only when the configuration is correct of
 the front-end, the erdma can work properly.
+
+Thanks,
+Cheng Xu
 
 > Thanks
 > 
