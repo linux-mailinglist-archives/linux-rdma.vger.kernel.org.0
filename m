@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A16648206F
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Dec 2021 22:39:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAF5482072
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Dec 2021 22:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237441AbhL3VjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Dec 2021 16:39:06 -0500
-Received: from mail-dm6nam11on2079.outbound.protection.outlook.com ([40.107.223.79]:54523
+        id S242183AbhL3Vml (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Dec 2021 16:42:41 -0500
+Received: from mail-dm6nam11on2065.outbound.protection.outlook.com ([40.107.223.65]:43967
         "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236397AbhL3VjG (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 30 Dec 2021 16:39:06 -0500
+        id S242171AbhL3Vmk (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 30 Dec 2021 16:42:40 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hU3EAvDSQ6aXk6dyDJUT+qGKpMEItgiXIYPjsHw1I1Mxris1G+SfOf8o3CjSkfWNgn40yaJKJXs09G7jCUObdvwzno7fdXkuXBFhC2khdNqGLsBxQR8VpYwP17kwZt/IbHr1fqHu34b4mBM+teYZpQGUcVm/QR/miNcOcenOplRoux3AsiQYK1alvrvVcO/Ad+OxRWuz3xwRwBMmV5V4GuWfpewdoxaNR6uIhHH17THdwvxaLng6vUHdOPr8otkMCawCYpdFIpQtoK+sy1iSyEMtyBUxWt/HybJUaK7gRLYBoxuRXys4aeWh3RgKnXJr9mkdkuVsFhuL32IzRQ6aUA==
+ b=jYmXj6eiMTLsfZ4fngviIk3xXqyvnPWeTIOKV78G+eKEvEbge/a4fxUKRaa5KD/NOVPiOqShLXgol/w5OL23nHGT0FyG9a3Op5QeYewwJrjcWnO0SMNegRb8LRBrtTFcyMeaf5cVfbn+BL+s9iNPRNYnrR6AFNK0KSMR1NfiI/xkpsYuZ/dWff3jALTVnKQr2+S9SeVFvWqf3abmQXkHcPNO1ERgl8y4QNzi8znkxSE399ZdwDtOqoaxJoBP4rAxgFK2rkGvV4th5IYCQFkj3ffL1cgSgVXAbHLo2j6IHyePtsBzVhijpoGzeX9/3EUjehkUd3Vz47IQ/6KaSHOQqQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jtYnGy3ixW7mtOzaRuNHbpmofdl4XbRIFJ/8AWGfgw4=;
- b=Cr5+PPSRDMcnfr00GWLEZT22W5x3CCPV0PxldmUa0T37uVmWT45a4CSlc/fMNFbLJGgWfMoLWgISHwNSTqcF8RwwugUrNPTBLz2GrE+NhJ62U4EBscLwz4qhj7by7Igun/wi++BTl128Ti+Bflo4LjZr2pt/CbOo3+3/0kcGopCF3z3VdjIMklRndraNQU9/ZAglejtwhV1w5RoQTPK2PQWVqWIZigZzp3eDLvAN7gVpLkqDxRU4FQO+1zQ24RElztc/aV/prMQf2Y7UC17dKwwT0lqLZdCwyaT8tDG7PLegqqpwk4E8q1Dxdw9x4seDs88TtO+zIQ8qWkPicIz1Cg==
+ bh=9/Nhg3K43xAe3P5SXD2K3B7PBVXysbPIGt//7+viC90=;
+ b=PaLfyKCvCMaIQM1AgDPUvVxbWItcbiZdWpahH6NiVKO2mNvZn44N+pya8grd1DHWdgwI6U6w8LoUFng9H7TPifXkc7EQSPm8k95m49P78BAJjXeTzzT42HoOYcz3iV7ep0q3DeiX18kXbsG/0CZqfiKoORgZcsOqq8r9+2fmSorUUz6ZSJb5tq92Pw67xPWL2Srr994QcuDbjBhHyz01qCKtL6AUdqZ4rB+HW7vCha2v5oADIga4MpcMxEe2TSO0yOcUsHyrPvu2qtwAg2NmVLkPf6IyXk3ZVlv01OmygCR1edmw+7x2JaCxrY9i55WnxfxSGqi6xB9qG7zC8dfFtw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
  dkim=pass header.d=talpey.com; arc=none
@@ -27,148 +27,189 @@ Authentication-Results: dkim=none (message not signed)
 Received: from BL0PR0102MB3313.prod.exchangelabs.com (2603:10b6:207:19::10) by
  MN2PR01MB5887.prod.exchangelabs.com (2603:10b6:208:193::16) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4823.19; Thu, 30 Dec 2021 21:39:02 +0000
+ 15.20.4823.19; Thu, 30 Dec 2021 21:42:37 +0000
 Received: from BL0PR0102MB3313.prod.exchangelabs.com
  ([fe80::10e9:e695:9aaa:1eb6]) by BL0PR0102MB3313.prod.exchangelabs.com
  ([fe80::10e9:e695:9aaa:1eb6%6]) with mapi id 15.20.4823.024; Thu, 30 Dec 2021
- 21:39:02 +0000
-Message-ID: <b5860ad7-5d5a-76ba-a18e-da90e8652b08@talpey.com>
-Date:   Thu, 30 Dec 2021 16:39:01 -0500
+ 21:42:37 +0000
+Message-ID: <28b36be8-e618-9f4c-93f7-e35b915d17a6@talpey.com>
+Date:   Thu, 30 Dec 2021 16:42:36 -0500
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
-Subject: Re: [RFC PATCH 2/2] RDMA/rxe: Add RDMA Atomic Write operation
+Subject: Re: [RFC PATCH 0/2] RDMA/rxe: Add RDMA Atomic Write operation
 Content-Language: en-US
-To:     Xiao Yang <yangx.jy@fujitsu.com>, linux-rdma@vger.kernel.org
-Cc:     yanjun.zhu@linux.dev, rpearsonhpe@gmail.com, jgg@nvidia.com,
-        y-goto@fujitsu.com, lizhijian@fujitsu.com,
-        tomasz.gromadzki@intel.com
+To:     "Gromadzki, Tomasz" <tomasz.gromadzki@intel.com>,
+        Xiao Yang <yangx.jy@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
 References: <20211230121423.1919550-1-yangx.jy@fujitsu.com>
- <20211230121423.1919550-3-yangx.jy@fujitsu.com>
+ <BN6PR11MB0017C42F7DE2A193E547AC2695459@BN6PR11MB0017.namprd11.prod.outlook.com>
 From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <20211230121423.1919550-3-yangx.jy@fujitsu.com>
+In-Reply-To: <BN6PR11MB0017C42F7DE2A193E547AC2695459@BN6PR11MB0017.namprd11.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL0PR02CA0003.namprd02.prod.outlook.com
- (2603:10b6:207:3c::16) To BL0PR0102MB3313.prod.exchangelabs.com
+X-ClientProxiedBy: MN2PR19CA0037.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::14) To BL0PR0102MB3313.prod.exchangelabs.com
  (2603:10b6:207:19::10)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a2c4cc8d-324e-4ef9-08bb-08d9cbdccb92
+X-MS-Office365-Filtering-Correlation-Id: 0ddb55fe-5ff0-4ef9-97fb-08d9cbdd4c09
 X-MS-TrafficTypeDiagnostic: MN2PR01MB5887:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR01MB5887BAEF862BE564047C493BD6459@MN2PR01MB5887.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-Microsoft-Antispam-PRVS: <MN2PR01MB588760EB37F4F3B90ECF84EAD6459@MN2PR01MB5887.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0+s7t3+MseOQVoGJo2AGpXgu1Gt2SzVIQ2zx+WtEF5jqA9SlhHrQ0aZpP1GzE/vfEz7aEdPFClNeQPoGGWcpyZe306KwxSPfxVPbICZJ8UPpEg8yKZN1fVS5HxaOjqgCiygDY+I7bVRzr+Uw3bOzOgh96ejD5NUKadoMx5mbJXlOtPfxvGwj/XoDrBqIxE5FtFjXWmd3smyjxnX22mrDewrLhCxpXx2DVCdYRyiqHCIZwm6J6FS/wA4RB3yZWkZbeLBYJlYt3tD1Rw0nwZud9P7XBjdxjJMGg35A77Urqy2eB3gNiaidgyBno/YDg4+bewRXs9542pWx9J7zRSYXbDPgVLUNWXs5qjG9BwsF8LKit35WgyiuluqfA406IVKftonIRuRRdq5YMiiMYaygjK04BSR5ioJ1o4dUYcMq6LtqLHdvjwDQDrjrpVKBbi5ZLMoNcEbM/XVwMIP9OUGN/4beKiTzPmU99TENNMgwgFfNSKcZRYGOagjNSRmJD3EEhUtNAC6kC+DMwG/YjJ4MUYOzvI8QGfwX+1JRLARX6AS0jHoYS/3yzXEYF5sdzG4+Z2vzOPlq142YFLETIMGAW9wbiJfsvbkysQrdzor/nK1E0VWm8YiU9TbhLV0KHwIKDSK+RR3eZhStE8eGK+0nU93UKX36eXbFK1s8h4q2qpywo3GwutWNqX8+lbij30/mFvrZjRgzoPU7K6+MMogJOpKi3W9BmwxeCXOXeUT3Vcc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR0102MB3313.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(376002)(366004)(396003)(346002)(66476007)(2616005)(2906002)(6512007)(66556008)(5660300002)(508600001)(31696002)(31686004)(8936002)(86362001)(66946007)(4326008)(83380400001)(6486002)(53546011)(8676002)(6506007)(52116002)(26005)(316002)(186003)(36756003)(38100700002)(38350700002)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: pq4XrAhFoJ23rO9I5ZYbZ/RAzDbFuLAoXw/TuC1356nUOsVb5QH9+hNy2oPaTDrjpJcf6IcEyJ7zbqRfhwtQjfLwjTqmIuOy9pzmf1sJr+ufqsf9frrSbCm/e/nMvnwag8zMRsaKfmS3nrmcX9r8bPKRNVYq7/THNhEm78NphEZL9SwedfnrXmjtyuf7gOoyEt9XEuDtvU83mmenKFe/oMCi1a5e064jYbeV4bKbjwXmO5NH7++bIRRHMgC5vPJBZ9e+QuS0QptGod8YTNcZPaVf1zV1YMkqH5VR9WpJKED5OGeR/dI6Ox6iQZ1x3ZmEBDUSsSYBh5XElJpeQdXq8O3IQY5jyj0PsDz/lpEmIs6HoI7XZvoL00cyuYZL8itdzkJVHKIxhKAsmbxBbJr5p8ZqWTDRC18/vOHu1GA1dCcQOkKo6r6nvltla4FOoTkB9kQID9Q++2XjKBeM0PTxt/4vpbEYqe+RTHUZu46ypR9P7InSbvs4pTxkp/Fw6ZCiUK8BBwkyDd/B4YEdD6jIrGkiiAKk+qjLN0FxBjUPeFodMLCKeNMM2saqOD6LCiurzm3aAtmudN//dpf+ibFxVODsmyMR3sV35x87s9SM/x9fnpRn6+YeNg5vwztx4kktXjUFqZp5zGk/8wvWu7xKa7w3ZFf3yI5WOCeMgnMT+mZoxJI4jYLv5IkczAjbIuZ0uJDv853Z0E9QlzHclXwN3pdbxbZfWoZxZRE+e5cqKK9eSSKiFv/RScSYvKODinUvhGL8nv1+ZlGSxFE364yrvKWPgRvaBe1xSKggAAK82ddLZOOwsAh8GAeZoFb/aM7H36zRpvHXGTEYCiG/t7/bVDcF7/tLBKguMKQz3btxDkJbcSO9QTmfsV9rLEd6D4Hy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR0102MB3313.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(39830400003)(136003)(376002)(366004)(396003)(346002)(66476007)(2616005)(2906002)(6512007)(66556008)(5660300002)(508600001)(31696002)(31686004)(8936002)(86362001)(66946007)(4326008)(83380400001)(6486002)(966005)(53546011)(8676002)(6506007)(52116002)(26005)(316002)(186003)(110136005)(36756003)(54906003)(38100700002)(38350700002)(43740500002)(15398625002)(43620500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OGU4QXNlZXBFZWdMNVNMMllVdWt5WXhocUtjTHlCNnYzUmk2aUMybCtuai9r?=
- =?utf-8?B?MlhSb0JmUnM5U0RTSG1PeW5FekpCaFRFTmdDNXZ0UnN3UEovbnlpcGJ2UEt0?=
- =?utf-8?B?dGJTeXhtbUVkNkQ2Z0RLUi9rNHAyNXZvVk8rTkxldUZFSVl5bUlSdXBETmNa?=
- =?utf-8?B?YkFET3AwWkNFTDFBREN0azhsZnN3L2RURFdrYWNRS2tKTVVoLzVDNE5mejND?=
- =?utf-8?B?UGlHMnNBazdhUnQxMXViK0lla2w1bVBCRGFxRVNKY0g0VDJ6Zk9OSzlZQ3ZT?=
- =?utf-8?B?SmlQT1dWV2ZWaC9rTHB4dm9QendrT0RjdjNSNkJWbUdqdjVxNFl6VEFXNEVF?=
- =?utf-8?B?OWUrS0RVdXpUYmlSYVEwdTdEUlJYYjJFRU9BV0NJa1A3Y0FSSkIwdzNQYmQ4?=
- =?utf-8?B?REZVVENFTTA5cldkQ2VyTkNJU1Z4L29QWmN4Z3RKTm9tM1hxenFNTFJuVTlr?=
- =?utf-8?B?c0d1djh4YlFJc2JZeUJsVmdPRTU3d05yRHhZSzFCRkk0ZjFKVWVmU3J1V1Na?=
- =?utf-8?B?MzNhUzB6VkdCcGZBUjZIaStWOXd0Q0NoR3M2amZmTi9ERnJjYUFtWVJEWTkz?=
- =?utf-8?B?NHVBZit2YTU2aE1MT2RGU0NjT2FueDdtL0V4aVNLc2hybTBmdFNRRnBzcmJl?=
- =?utf-8?B?cjR5RG9kUndaWVpEVUxzcGZKTGJURjBHYVE3YlMyOHErNXhqTnZVRSttQ1JY?=
- =?utf-8?B?ZGJwNktBMSs5cUhVMDNMV2xCSEhRZ2YyWU1DZlI0dHp3bUpXYmJqMUszQ0Rz?=
- =?utf-8?B?b2owT0JQS3NRbmdjc1RRUm9YQU5ZNHBuWEpKNGZFRmxnWnpoaTh5TTFraTN5?=
- =?utf-8?B?c3N0dWRXcU92bjg4YTJ1Rk5rRjZyTVJnN0NPNW40QXE4OUtra0x6YmlscEE5?=
- =?utf-8?B?Z0w4YUpISlE4RGFCWGVkbGNZbUJSU0x6R25OSHpkclB0aVo2djFiYU9yUGtl?=
- =?utf-8?B?ckpITHZNNlBOcjJKM3JlQXN2U3J1OTVDWGpqeDB4UnZkcXIzYkc4S0VMNlRX?=
- =?utf-8?B?ZjFsSFNlMHBwK1FYU1gxaGpYSW1WNmROWG1EKzZ6bDVXTDZLd0VqTnhxNnFF?=
- =?utf-8?B?cDl1K0RibjlJTnZFVXVESmZlQzUwZDk3SXB2OXpLNHEveFZkaWp1MDBFYml6?=
- =?utf-8?B?MFZKV2VXc2NWeXFOQ043ay8xMUVaZ013MDJNdG5KM2dmaTBtc2pvMFg2Q3pz?=
- =?utf-8?B?NWtWUGV1MHBXWVMzL0pseGIxYlE5NVRUVmI3SjdRcjJBendIUm1JY3NmakVR?=
- =?utf-8?B?azFxVGEvMVF6L1dtVG5Ya1pTc25hS0RFMEttWVI0NHFYZXhFelpSNEZZV1Fj?=
- =?utf-8?B?bjhxSGdOMEtxYi84L3ZxcVI2NWZ2RGMyZ2V1MmhVamxxaDZLSFJmOXNNMlhF?=
- =?utf-8?B?QWhFTEgvbVA4RGhFbkVmQUhlYWIwV2J5cWxLS3BZb0kvNHFBNmpQSG00aUpV?=
- =?utf-8?B?UU5FaDhCUU85aE9XODBjajNNQ25VTDVkckhCakNzbFdncFVySnA2TDlnaUVH?=
- =?utf-8?B?R3MyQTZ5d0Vna3hHRUdjbkVQQ2dkU21XeEJra0Q2SkJIZVVLenlEUDFvTGFh?=
- =?utf-8?B?R0tjdkcxZlJQZUV2eklVS3RFdy9pMkRVQWlPWWNnamdrS215clRkemtaQUox?=
- =?utf-8?B?RGNZZVVxT2o2SUZlN3VhR2RwUUVzZXMxS0dYUGd5U29mTkdVaE5UTGFaNVYx?=
- =?utf-8?B?TkhUZ3o0NEFRZFRBdjNsTzgxWGRKQU1aWldnNFhqUG9ITzJPOXNPSXdYZTQy?=
- =?utf-8?B?OGpjZmxUUE5YTW5BOVJ0QXIvOEIrdTdiQkdacVNyencvUFJaZXh0cFF2aTV6?=
- =?utf-8?B?ZXBzVEhsbGxsK1F5SEVCT2JzZkt6QXNEOW54aTVPZVJrZytJMmNJVmtzUmlG?=
- =?utf-8?B?cFFkdWo3c2hNZnFKaFJEZGxpMDhMTVZRSnczUzRUcHE4QWp2ZmtvUjVEUDhv?=
- =?utf-8?B?SzRrb1RTVEhuMS9sd0JTUDF5MTJEOHR4a1FsNXBSdGljNTN0SVZkSTBuU0VL?=
- =?utf-8?B?UVpPcE1Obnp5cTZXTjArZ1VwOGljNFhnaitWMHo2Nml6dzF4aE8rVFFkMDBt?=
- =?utf-8?B?QVpsMU9PZTJzbVdIQjZaa3d6V2FqQ0twbmZHbWQ4NklnT3JBbHBreXY4Tnoy?=
- =?utf-8?Q?aRiw=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dFE5aVFQOGxxZ2dGUVJGR2Q5Z3J3LzlCYUd2NUhFMWJJRTBLT1RxdEkxeWpQ?=
+ =?utf-8?B?dUFIQmgxSXJFRXp3NFJDUlJJck9sZnV6UW5laWQ0MzlmNHJ6SHI1TjloaGVS?=
+ =?utf-8?B?M3dKSFRWRGE0d1ptYzBWUm1oZ2NYK0NWSTBvMHBobHlkVkg4L1owMnUyZ1Zp?=
+ =?utf-8?B?ZmQyc0RZZDBWdkxNWW9KU3NmUW45L3dhOUtPL0RkWm1yYVQrcWRWNXZqOExt?=
+ =?utf-8?B?RjNiN3ZZdkZwd1JIbUJwUDY4OGJOdHZRa1lNL1hUZXA4SHkrc1E4SktvWHNT?=
+ =?utf-8?B?Q0Z4N2tqK01VWDRBMHlCNzZxQm9Lb1VmQlBxVFhjNERkQysyTmFNVnF3TGdp?=
+ =?utf-8?B?cG9WT3Y5L29OdURqQ1NhY2hmbStaaTY1VmR6N0xlTUU4NFl0OGI2cHg0M1dM?=
+ =?utf-8?B?dzJPNGtIa0pUUGdWdUg1WU00d3dlb0IrZXFWT1NhNmRZWS9IRHlXbW9qeGtR?=
+ =?utf-8?B?VktaK2htWnFoRWpFbTRvMm5qNTNJNGwyMVI3M3UwSHorQjgvMCtyYWFBSmxn?=
+ =?utf-8?B?WTFicGxrTkg0NkFRL01iTnhGUDMvdE5wR1J1aWQ4WFlmUDg3dEdWN3NhSm1z?=
+ =?utf-8?B?NUUyaWtEV3lBcm1uWUI5Y0pRYkh2QXlNU3VkTzVLUmpBTEd0eDNxbVpYNXpL?=
+ =?utf-8?B?QUQwVkxzR2VpSjFoSk41VGlndHdiQ1htRWJieXNjY3o5VHlKQzcyOEpQV3NJ?=
+ =?utf-8?B?QXNSdnBXRzBzWnlnZ3ptOS9SV2R3YU9WOHRQTkRRSjNITzJsR2h1d3lIbGxP?=
+ =?utf-8?B?WTdtUkpNUEdLbzVEMWxlbmUwOVVhQlM5SWNNb01wYnVLYUpiRWRqamdvbDBU?=
+ =?utf-8?B?c1UvUnI1WXhuYTlwcVNnM2hzQ0JscWNqUnlCbktmYTdzY2wvWlJDVkRBTlNi?=
+ =?utf-8?B?OWZrbzVjeHdPTEhlcXBhdDRZZEZTbko4NVJqdFU5aTM0cUkxTjl4VFo0WmdB?=
+ =?utf-8?B?Sk83R0t5MXJvZVljcGpDclBwMDFzMVUxc3hubHNkbU1NMnVqaEp2azFvdHV2?=
+ =?utf-8?B?Z1puOFNBTG92dmJuYnpnYkZGN1lVYjhTbkY3S2p2MTdmUnVCN1h6eWRIVHds?=
+ =?utf-8?B?U0RhUDl5WEdpOU53dkZwUjJFR3JHWk0rSTZIVEJibkd4dXBOSEVwdmI0ZElO?=
+ =?utf-8?B?aDBUM1NzUkNFVXE3VnhIWExIQ0tmZFBJRmlLTVhIL0FwOHFOblEvOGhpN3BE?=
+ =?utf-8?B?QktlSEtwckNxa1VlcEdEczdIRnRkZkF2empNN3hoQlA2NHlQQVNkVnBaRnNz?=
+ =?utf-8?B?SmYrWGRlMjZvQU5jMUhmWHdpVXNxUit0MnI2QjBtQlhrcFUveUNkVXAxMWxi?=
+ =?utf-8?B?R0IzcU82QXRQZ213aldlMWM2OHM2bUtBaXREaUg1MFRibit3MzRGVURCUHls?=
+ =?utf-8?B?Sm1xVERHMWUzMWsvL0l6SW5FNkVyV2djWUp1eThxN1FNRmF2L09OQXlYNHNK?=
+ =?utf-8?B?bzMwa3prWFQvc0tjMkRwWGROaVJpTWlBN3g2ZUgwck50OFpUcnBDbWJtTHRr?=
+ =?utf-8?B?d1RDTG55K0pwaURMZHlSUXhYTnU5cFpFRDJNdFZrTi9sY1BjZFlTKy9sRnVk?=
+ =?utf-8?B?b1gydms3MlVpUVlVY2hvSWxqZFBRS1VvYUF1cnZNaHVuUnJZZlJSSm9TN2Nt?=
+ =?utf-8?B?UktCVGtYbUZlZnRaYUFET3o2MDRvenJJL3oyR0tGNTZRWnEwY3NqQ3hLdHBa?=
+ =?utf-8?B?Sko2RjliTVFMcnIwb3pSVHhSOVVJY0JWL2xESkhFa3lPYk56TUJoYUVlSmEr?=
+ =?utf-8?B?Zkw0YnJ5c0lOOXJmTHNFVG5EWjhoYkE2NzJpRnJ6UWVTZnF2bjkwV0xIZ1pl?=
+ =?utf-8?B?MUhwTDQ4SHVHdkdzdU9mQWJaN3BrS1F2NzlXQUp5MGthOGdkUnloNVByOEJH?=
+ =?utf-8?B?aWxWNjJhc2luVEc4b29jZEZRSk0vOENpYnovcVJZb2JrcWFTdHNvQ29ibkMx?=
+ =?utf-8?B?RGJ4TUd3R3l5dnZOU1Z1eUdmbDl6dVFNcXJwZzdQLzlPS0hIR3AzM3Y5ZUlr?=
+ =?utf-8?B?eE9zL2I2YmVZQ2F2OVV4d0NqZVczaTBESEFTRGppKzNscTlIV2JLT0txWHJk?=
+ =?utf-8?B?L25jSStzVjNIUVc5cFZiUS9UK1FuemVYZGg5ekVaYWlwb3JiU2R1VDVUekNO?=
+ =?utf-8?Q?6Ze8=3D?=
 X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2c4cc8d-324e-4ef9-08bb-08d9cbdccb92
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0ddb55fe-5ff0-4ef9-97fb-08d9cbdd4c09
 X-MS-Exchange-CrossTenant-AuthSource: BL0PR0102MB3313.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2021 21:39:02.0099
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Dec 2021 21:42:37.4637
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: XXR0ikMyVelxCsrGNOXOFcYfdvpHkSSykDz4bKQ1ueU2ElgROtBZKntj8ayfC0Z1
+X-MS-Exchange-CrossTenant-UserPrincipalName: xznxMqZPqHGp/w2PMPXjXJHqaURofqAtwbvo3yo1jdm4N8vY1fOE3A25l57HF737
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR01MB5887
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 12/30/2021 7:14 AM, Xiao Yang wrote:
-> This patch implements RDMA Atomic Write operation for RC service.
+On 12/30/2021 2:21 PM, Gromadzki, Tomasz wrote:
+> 1)
+>> rdma_post_atomic_writev(struct rdma_cm_id *id, void *context, struct ibv_sge *sgl,
+>> 			int nsge, int flags, uint64_t remote_addr, uint32_t rkey)
 > 
-> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_comp.c   |  4 +++
->   drivers/infiniband/sw/rxe/rxe_opcode.c | 18 ++++++++++
->   drivers/infiniband/sw/rxe/rxe_opcode.h |  3 ++
->   drivers/infiniband/sw/rxe/rxe_qp.c     |  3 +-
->   drivers/infiniband/sw/rxe/rxe_req.c    | 10 ++++--
->   drivers/infiniband/sw/rxe/rxe_resp.c   | 49 +++++++++++++++++++++-----
->   include/rdma/ib_pack.h                 |  2 ++
->   include/rdma/ib_verbs.h                |  2 ++
->   include/uapi/rdma/ib_user_verbs.h      |  2 ++
->   9 files changed, 81 insertions(+), 12 deletions(-)
+> Do we need this API at all?
+> Other atomic operations (compare_swap/add) do not use struct ibv_sge at all but have a dedicated place in
+> struct ib_send_wr {
+> ...
+> 		struct {
+> 			uint64_t	remote_addr;
+> 			uint64_t	compare_add;
+> 			uint64_t	swap;
+> 			uint32_t	rkey;
+> 		} atomic;
+> ...
+> }
 > 
+> Would it be better to reuse (extend) any existing field?
+> i.e.
+> 		struct {
+> 			uint64_t	remote_addr;
+> 			uint64_t	compare_add;
+> 			uint64_t	swap_write;
+> 			uint32_t	rkey;
+> 		} atomic;
 
-<snip>
-
-> +/* Guarantee atomicity of atomic write operations at the machine level. */
-> +static DEFINE_SPINLOCK(atomic_write_ops_lock);
-> +
-> +static enum resp_states process_atomic_write(struct rxe_qp *qp,
-> +					     struct rxe_pkt_info *pkt)
-> +{
-> +	u64 *src, *dst;
-> +	struct rxe_mr *mr = qp->resp.mr;
-> +
-> +	src = payload_addr(pkt);
-> +
-> +	dst = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset, sizeof(u64));
-> +	if (!dst || (uintptr_t)dst & 7)
-> +		return RESPST_ERR_MISALIGNED_ATOMIC;
-> +
-> +	spin_lock_bh(&atomic_write_ops_lock);
-> +	*dst = *src;
-> +	spin_unlock_bh(&atomic_write_ops_lock);
-
-Spinlock protection is insufficient! Using a spinlock protects only
-the atomicity of the store operation with respect to another remote
-atomic_write operation. But the semantics of RDMA_ATOMIC_WRITE go much
-further. The operation requires a fully atomic bus transaction, across
-the memory complex and with respect to CPU, PCI, and other sources.
-And this guarantee needs to apply to all architectures, including ones
-with noncoherent caches (software consistency).
-
-Because RXE is a software provider, I believe the most natural approach
-here is to use an atomic64_set(dst, *src). But I'm not certain this
-is supported on all the target architectures, therefore it may require
-some additional failure checks, such as stricter alignment than testing
-(dst & 7), or returning a failure if atomic64 operations are not
-available. I especially think the ARM and PPC platforms will need
-an expert review.
-
-IOW, nak!
+Agreed. Passing the data to be written as an SGE is unnatural
+since it is always exactly 64 bits. Tweaking the existing atomic
+parameter block as Tomasz suggests is the best approach.
 
 Tom.
+
+> Thanks
+> Tomasz
+> 
+>> -----Original Message-----
+>> From: Xiao Yang <yangx.jy@fujitsu.com>
+>> Sent: Thursday, December 30, 2021 1:14 PM
+>> To: linux-rdma@vger.kernel.org
+>> Cc: yanjun.zhu@linux.dev; rpearsonhpe@gmail.com; jgg@nvidia.com; y-
+>> goto@fujitsu.com; lizhijian@fujitsu.com; Gromadzki, Tomasz
+>> <tomasz.gromadzki@intel.com>; Xiao Yang <yangx.jy@fujitsu.com>
+>> Subject: [RFC PATCH 0/2] RDMA/rxe: Add RDMA Atomic Write operation
+>>
+>> The IB SPEC v1.5[1][2] added new RDMA operations (Atomic Write and
+>> Flush).
+>> This patchset makes SoftRoCE support new RDMA Atomic Write on RC
+>> service.
+>>
+>> I added RDMA Atomic Write API and a rdma_atomic_write example on my
+>> rdma-core repository[3].  You can verify the patchset by building and running
+>> the rdma_atomic_write example.
+>> server:
+>> $ ./rdma_atomic_write_server -s [server_address] -p [port_number]
+>> client:
+>> $ ./rdma_atomic_write_client -s [server_address] -p [port_number]
+>>
+>> [1]: https://www.infinibandta.org/ibta-specification/ # login required
+>> [2]: https://www.infinibandta.org/wp-content/uploads/2021/08/IBTA-
+>> Overview-of-IBTA-Volume-1-Release-1.5-and-MPE-2021-08-17-Secure.pptx
+>> [3]: https://github.com/yangx-jy/rdma-core
+>>
+>> BTW: This patchset also needs the following fix.
+>> https://www.spinics.net/lists/linux-rdma/msg107838.html
+>>
+>> Xiao Yang (2):
+>>    RDMA/rxe: Rename send_atomic_ack() and atomic member of struct
+>>      resp_res
+>>    RDMA/rxe: Add RDMA Atomic Write operation
+>>
+>>   drivers/infiniband/sw/rxe/rxe_comp.c   |  4 ++
+>>   drivers/infiniband/sw/rxe/rxe_opcode.c | 18 ++++++++
+>> drivers/infiniband/sw/rxe/rxe_opcode.h |  3 ++
+>>   drivers/infiniband/sw/rxe/rxe_qp.c     |  5 ++-
+>>   drivers/infiniband/sw/rxe/rxe_req.c    | 10 +++--
+>>   drivers/infiniband/sw/rxe/rxe_resp.c   | 59 ++++++++++++++++++++------
+>>   drivers/infiniband/sw/rxe/rxe_verbs.h  |  2 +-
+>>   include/rdma/ib_pack.h                 |  2 +
+>>   include/rdma/ib_verbs.h                |  2 +
+>>   include/uapi/rdma/ib_user_verbs.h      |  2 +
+>>   10 files changed, 88 insertions(+), 19 deletions(-)
+>>
+>> --
+>> 2.23.0
+>>
+>>
+> 
+> ---------------------------------------------------------------------
+> Intel Technology Poland sp. z o.o.
+> ul. Slowackiego 173 | 80-298 Gdansk | Sad Rejonowy Gdansk Polnoc | VII Wydzial Gospodarczy Krajowego Rejestru Sadowego - KRS 101882 | NIP 957-07-52-316 | Kapital zakladowy 200.000 PLN.
+> Ta wiadomosc wraz z zalacznikami jest przeznaczona dla okreslonego adresata i moze zawierac informacje poufne. W razie przypadkowego otrzymania tej wiadomosci, prosimy o powiadomienie nadawcy oraz trwale jej usuniecie; jakiekolwiek przegladanie lub rozpowszechnianie jest zabronione.
+> This e-mail and any attachments may contain confidential material for the sole use of the intended recipient(s). If you are not the intended recipient, please contact the sender and delete all copies; any review or distribution by others is strictly prohibited.
+> 
+> 
