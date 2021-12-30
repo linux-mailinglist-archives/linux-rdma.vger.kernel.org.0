@@ -2,103 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47B88481AF0
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Dec 2021 09:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A63FD481B96
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Dec 2021 12:08:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237798AbhL3I5R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Dec 2021 03:57:17 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:16059 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229567AbhL3I5O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Dec 2021 03:57:14 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3AGNB4laggxJz2r97AmfCpfkzIX161sxIKZh0ujC4?=
- =?us-ascii?q?5NGQNrF6WrkUDnGRMUD+FPKuJN2T9Kop0OoTn9R5VupaAnd9iTlM+pXw8FHgiR?=
- =?us-ascii?q?ejtX4rAdhiqV8+xwmwvdGo+toNGLICowPkcFhcwnT/wdOixxZVA/fvQHOOlUrW?=
- =?us-ascii?q?cYnkZqTJME0/NtzoywobVvaY42bBVMyvV0T/Di5W31G2NglaYAUpIg063ky6Di?=
- =?us-ascii?q?dyp0N8uUvPSUtgQ1LPWvyF94JvyvshdJVOgKmVfNrbSq+ouUNiEEm3lExcFUrt?=
- =?us-ascii?q?Jk57wdAsEX7zTIROTzHFRXsBOgDAb/mprjPl9b6FaNC+7iB3Q9zx14MREs5OgD?=
- =?us-ascii?q?wU4FqPRmuUBSAQeGCZ7VUFD0OaecCfj7ZHDniUqdFOpmZ2CFnoeJ5UV8/xsBmd?=
- =?us-ascii?q?O7fEwJzUEbxTFjOWzqJqqQ+9um8JlPsn2FIcevGxwiz3UE54OQ5/Ma6PU5NNZ1?=
- =?us-ascii?q?XE7gcUmNfLfYdcJLCBjaR3ofRJCIBEUBYg4kePugWPwGwC0Anr9SbEfujCVlVI?=
- =?us-ascii?q?uluO2doe9RzBDfu0N9m7wm44M1z2R7skmCeGi?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AATQ5UKoEiqzK06VZA8+X1twaV5oXeYIsimQD?=
- =?us-ascii?q?101hICG9E/bo8/xG+c536faaslgssQ4b8+xoVJPgfZq+z+8R3WByB8bAYOCOgg?=
- =?us-ascii?q?LBQ72KhrGSoQEIdRefysdtkY9kc4VbTOb7FEVGi6/BizWQIpINx8am/cmT6dvj?=
- =?us-ascii?q?8w=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.88,247,1635177600"; 
-   d="scan'208";a="119744589"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 30 Dec 2021 16:57:12 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 78F784D146FB;
-        Thu, 30 Dec 2021 16:57:06 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 30 Dec 2021 16:57:07 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 30 Dec 2021 16:57:04 +0800
-From:   Xiao Yang <yangx.jy@fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>
-CC:     <yanjun.zhu@linux.dev>, <rpearsonhpe@gmail.com>, <jgg@nvidia.com>,
-        "Xiao Yang" <yangx.jy@fujitsu.com>
-Subject: [PATCH] RDMA/rxe: Remove duplicate WR_ATOMIC_OR_READ_MASK
-Date:   Thu, 30 Dec 2021 16:56:10 +0800
-Message-ID: <20211230085610.1915014-1-yangx.jy@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
+        id S238795AbhL3LIt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Dec 2021 06:08:49 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:38108 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235057AbhL3LIq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Dec 2021 06:08:46 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EBEAD6167A
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Dec 2021 11:08:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8423EC36AEA;
+        Thu, 30 Dec 2021 11:08:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1640862525;
+        bh=X01JtXhJx+XXpuMjrQraeLSLobVtkh5CRETkOlekm7c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CRGhjE4ZFCWtfrbMc99QebFPHcoPtjq+ed94As2p0a8NxGueRvR8jBC/IcEOLNDvb
+         6O+tqFNAc+bzutDfO448tY/oqAnKb1AWF5Q5q3oXoqRDAH1Cb8YmE2xpcZeUHnqvJR
+         ZanbTT8AaqlQIbYCC7UOiPl2dyxe8je/NKIOSGIf8VtEgtRqYzsPnSwDYFyqaZ17V0
+         NgY+HA0nKtu3ZEQSNjWD44UKKdYtmTUM5Mdzjsxy30+5zSXcOH4oB2zz74iPVZhfdB
+         DdXYAxtX+cbBFxTQH10RAbocgbhCeQqF2IQlETMnBkQhOxA828ZE5Tkz00cEOm75zC
+         dzgR3ON0D6cpw==
+Date:   Thu, 30 Dec 2021 13:08:40 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Timo Rothenpieler <timo@rothenpieler.org>
+Cc:     linux-rdma <linux-rdma@vger.kernel.org>
+Subject: Re: [PATCH rdma-rc] Revert "RDMA/mlx5: Fix releasing unallocated
+ memory in dereg MR flow"
+Message-ID: <Yc2TOLGizSnopOSe@unreal>
+References: <20211222101312.1358616-1-maorg@nvidia.com>
+ <1b133ec9-b47f-10e1-7e9f-f3393c1d7c44@rothenpieler.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 78F784D146FB.A9591
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1b133ec9-b47f-10e1-7e9f-f3393c1d7c44@rothenpieler.org>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
----
- drivers/infiniband/sw/rxe/rxe_comp.c   | 4 ++--
- drivers/infiniband/sw/rxe/rxe_opcode.h | 1 -
- 2 files changed, 2 insertions(+), 3 deletions(-)
+On Wed, Dec 29, 2021 at 02:10:31PM +0100, Timo Rothenpieler wrote:
+> On 22.12.2021 11:13, Maor Gottlieb wrote:
+> > This patch is not the full fix and still causes to call traces
+> > during mlx5_ib_dereg_mr().
+> > 
+> > This reverts commit f0ae4afe3d35e67db042c58a52909e06262b740f.
+> 
+> What is the status of this in the latest stable Kernel?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index d771ba8449a1..4afd572b84bd 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -180,7 +180,7 @@ static inline enum comp_state check_psn(struct rxe_qp *qp,
- 	diff = psn_compare(pkt->psn, wqe->last_psn);
- 	if (diff > 0) {
- 		if (wqe->state == wqe_state_pending) {
--			if (wqe->mask & WR_ATOMIC_OR_READ_MASK)
-+			if (wqe->mask & WR_READ_OR_WRITE_MASK)
- 				return COMPST_ERROR_RETRY;
- 
- 			reset_retry_counters(qp);
-@@ -200,7 +200,7 @@ static inline enum comp_state check_psn(struct rxe_qp *qp,
- 			return COMPST_COMP_ACK;
- 		else
- 			return COMPST_DONE;
--	} else if ((diff > 0) && (wqe->mask & WR_ATOMIC_OR_READ_MASK)) {
-+	} else if ((diff > 0) && (wqe->mask & WR_READ_OR_WRITE_MASK)) {
- 		return COMPST_DONE;
- 	} else {
- 		return COMPST_CHECK_ACK;
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 8f9aaaf260f2..06f3cbb0c49f 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -23,7 +23,6 @@ enum rxe_wr_mask {
- 
- 	WR_READ_OR_WRITE_MASK		= WR_READ_MASK | WR_WRITE_MASK,
- 	WR_WRITE_OR_SEND_MASK		= WR_WRITE_MASK | WR_SEND_MASK,
--	WR_ATOMIC_OR_READ_MASK		= WR_ATOMIC_MASK | WR_READ_MASK,
- };
- 
- #define WR_MAX_QPT		(8)
--- 
-2.25.1
+The revert is not accepted yet.
 
+> I see that f0ae4afe3d35e67db042c58a52909e06262b740f was backported into
+> 5.15, but since then, no fix or revert made it into 5.15.
+> 
+> I wanted to upgrade our cluster to 5.15 soon, but I'm a bit concerned about
+> reports of issues surrounding this patch.
 
 
