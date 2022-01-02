@@ -2,132 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCAB482607
-	for <lists+linux-rdma@lfdr.de>; Fri, 31 Dec 2021 23:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15DB3482A68
+	for <lists+linux-rdma@lfdr.de>; Sun,  2 Jan 2022 08:06:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhLaWqS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 31 Dec 2021 17:46:18 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:56552 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231847AbhLaWqS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 31 Dec 2021 17:46:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9E4C261826;
-        Fri, 31 Dec 2021 22:46:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7488FC36AE9;
-        Fri, 31 Dec 2021 22:46:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1640990776;
-        bh=WH9X1Ez5mzTdfGWS1Cc+jTto7XALQCuzQE0nmz4pGvY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=INeUZ04sSy4VFgM2zqD2UAtAPMbCQLZ8/5cIP1UNP8DMsIf6tBZzEgGGekmgGRbPY
-         6vESN3V8WuvuFqvbwkcRUlc3hZ9C+rj0EK8TQqGQ1d98eHhN397VwOo+r9+5r6U0cr
-         Ow5nZEikvDg4r2/fYY5xQM7bL7icWI0OUJkzkpIdX0MLb5E5u1eWPohQ5lEos2W64s
-         Xe2XvGXA9GGvi8xUtgnNEUaG8M78Ia3PCQOU5yvrP3n7y6SJf1bg+9f3Q8b0JPQSG8
-         KM4M3X1lZ2WREvp2yMkWRs9lcrbFkmlEYrUXqzVOfRz+psNSctYDcakpG6RAA3UUKV
-         bAK8IEikQzOOA==
-Date:   Fri, 31 Dec 2021 14:46:15 -0800
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Zizhuang Deng <sunsetdzz@gmail.com>, mbloch@nvidia.com
-Cc:     saeedm@nvidia.com, leon@kernel.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net/mlx5: Add vport return value checks
-Message-ID: <20211231224615.oneibk4ks5wofgf7@sx1>
-References: <20211230052558.959617-1-sunsetdzz@gmail.com>
+        id S229697AbiABHGO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 2 Jan 2022 02:06:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229520AbiABHGO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 2 Jan 2022 02:06:14 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AC7C061574;
+        Sat,  1 Jan 2022 23:06:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=Fn0Dlw6FCxWGsDk39oPG6vOggtEUK9wbuTNWpXi1hUU=; b=xqq2+LYn0oJc/Ka/MWISEp9pGL
+        tnWi6anzIxsedlLsZ6OiqL4r0T32tGEv3IL/4ja8wbs5XQjNCiQ+3hUAPxkl5pH+66oERIzdgOIWa
+        yTUP64kpb33pFIvVF0NF6UyKCRlmWVm54JqmpNDsdhoTHwDPGMWRiHZ/uqczhGXIyEXjnzp2cOxd6
+        Div/itI8k8HbbkfmghNDtWafMxHrq7Okz/y/DkVitw2sbxkMl2KBcu6nHAiFsiv6tew/DxahHetsD
+        vi0xRdOUHXloy8w9G2sTyAlHws62nzycyxbshQVU+kPWi5Llb3T1lOgTNlJ8es5NJsr1NDx2W17Nf
+        d46jbKag==;
+Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n3uwU-007cTF-ET; Sun, 02 Jan 2022 07:06:10 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     linux-rdma@vger.kernel.org, linux-um@lists.infradead.org,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH 1/2] IB/qib: don't use qib_wc_x86_64 for UML
+Date:   Sat,  1 Jan 2022 23:06:09 -0800
+Message-Id: <20220102070609.22783-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20211230052558.959617-1-sunsetdzz@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 01:25:58PM +0800, Zizhuang Deng wrote:
->add missing vport return value checks for recent code, as in [1].
->
->Ref:
->[1] https://lkml.org/lkml/2020/11/1/315
->
+When building qib_wc_x86_64.c on ARCH=um, references to some cpuinfo
+fields cause build errors since cpuinfo does not contain x86-specific
+fields.
 
-Where did this patch come from ? real bug ? or just aligning the code to
-be according the link below ? 
-because all the use-cases below are supposed to be guaranteed to have a
-valid vport object for uplink/pf/and ecpf vportrs, i am not against the
-patch, I am just trying to understand if there is a hidden bug somewhere .. 
+This source file is x86_64-specific, so don't include it in the
+target object file when CONFIG_UML is set/enabled.
 
+Prevents these build errors:
 
+../drivers/infiniband/hw/qib/qib_wc_x86_64.c: In function ‘qib_unordered_wc’:
+../drivers/infiniband/hw/qib/qib_wc_x86_64.c:149:22: error: ‘struct cpuinfo_um’ has no member named ‘x86_vendor’
+  return boot_cpu_data.x86_vendor != X86_VENDOR_AMD;
+                      ^
+../drivers/infiniband/hw/qib/qib_wc_x86_64.c:149:37: error: ‘X86_VENDOR_AMD’ undeclared (first use in this function); did you mean ‘X86_VENDOR_ANY’?
+  return boot_cpu_data.x86_vendor != X86_VENDOR_AMD;
+                                     ^~~~~~~~~~~~~~
+../drivers/infiniband/hw/qib/qib_wc_x86_64.c:150:1: error: control reaches end of non-void function [-Werror=return-type]
 
->Signed-off-by: Zizhuang Deng <sunsetdzz@gmail.com>
->---
-> .../mellanox/mlx5/core/eswitch_offloads.c     | 20 +++++++++++++++++++
-> 1 file changed, 20 insertions(+)
->
->diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
->index f4eaa5893886..fda214021738 100644
->--- a/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
->+++ b/drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c
+Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+---
+ drivers/infiniband/hw/qib/Makefile |    2 ++
+ 1 file changed, 2 insertions(+)
 
-[...]
-
->@@ -1309,11 +1317,15 @@ static void esw_del_fdb_peer_miss_rules(struct mlx5_eswitch *esw)
->
-> 	if (mlx5_ecpf_vport_exists(esw->dev)) {
-> 		vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_ECPF);
->+		if (IS_ERR(vport))
->+			return;
-
-memleak, we need to hit kvfree(flows) below, 
-instead of returning you should make the del_flow conditional and continue
-to next steps in the esw_del_fdb_peer_miss_rules routine, 
-e.g:
-if (vport)
-	mlx5_del_flow_rules(flows[vport->index]);
-
-> 		mlx5_del_flow_rules(flows[vport->index]);
-> 	}
->
-> 	if (mlx5_core_is_ecpf_esw_manager(esw->dev)) {
-> 		vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_PF);
->+		if (IS_ERR(vport))
->+			return;
-
-ditto 
-
-> 		mlx5_del_flow_rules(flows[vport->index]);
-> 	}
-> 	kvfree(flows);
->@@ -2385,6 +2397,9 @@ static int esw_set_uplink_slave_ingress_root(struct mlx5_core_dev *master,
-> 	if (master) {
-> 		esw = master->priv.eswitch;
-> 		vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_UPLINK);
->+		if (IS_ERR(vport))
->+			return PTR_ERR(vport);
->+
-> 		MLX5_SET(set_flow_table_root_in, in, table_of_other_vport, 1);
-> 		MLX5_SET(set_flow_table_root_in, in, table_vport_number,
-> 			 MLX5_VPORT_UPLINK);
->@@ -2405,6 +2420,9 @@ static int esw_set_uplink_slave_ingress_root(struct mlx5_core_dev *master,
-> 	} else {
-> 		esw = slave->priv.eswitch;
-> 		vport = mlx5_eswitch_get_vport(esw, MLX5_VPORT_UPLINK);
->+		if (IS_ERR(vport))
->+			return PTR_ERR(vport);
->+
-> 		ns = mlx5_get_flow_vport_acl_namespace(slave,
-> 						       MLX5_FLOW_NAMESPACE_ESW_INGRESS,
-> 						       vport->index);
->@@ -2590,6 +2608,8 @@ static void esw_unset_master_egress_rule(struct mlx5_core_dev *dev)
->
-> 	vport = mlx5_eswitch_get_vport(dev->priv.eswitch,
-> 				       dev->priv.eswitch->manager_vport);
->+	if (IS_ERR(vport))
->+		return;
->
-> 	esw_acl_egress_ofld_cleanup(vport);
-> }
->-- 
->2.25.1
->
+--- linux-next-20211224.orig/drivers/infiniband/hw/qib/Makefile
++++ linux-next-20211224/drivers/infiniband/hw/qib/Makefile
+@@ -12,6 +12,8 @@ ib_qib-y := qib_diag.o qib_driver.o qib_
+ # 6120 has no fallback if no MSI interrupts, others can do INTx
+ ib_qib-$(CONFIG_PCI_MSI) += qib_iba6120.o
+ 
++ifeq ($(CONFIG_UML),)
+ ib_qib-$(CONFIG_X86_64) += qib_wc_x86_64.o
++endif
+ ib_qib-$(CONFIG_PPC64) += qib_wc_ppc64.o
+ ib_qib-$(CONFIG_DEBUG_FS) += qib_debugfs.o
