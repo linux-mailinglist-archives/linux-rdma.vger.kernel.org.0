@@ -2,71 +2,61 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C07483079
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jan 2022 12:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6772C4830B3
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jan 2022 12:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbiACL1p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jan 2022 06:27:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S231708AbiACLpq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jan 2022 06:45:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231570AbiACL1p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 06:27:45 -0500
+        with ESMTP id S231622AbiACLpp (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 06:45:45 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2230C061761;
-        Mon,  3 Jan 2022 03:27:44 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF006C061761
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Jan 2022 03:45:45 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AD0BCB80E3D;
-        Mon,  3 Jan 2022 11:27:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A90ECC36AEF;
-        Mon,  3 Jan 2022 11:27:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 76052B80E90
+        for <linux-rdma@vger.kernel.org>; Mon,  3 Jan 2022 11:45:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AE20C36AED;
+        Mon,  3 Jan 2022 11:45:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641209262;
-        bh=+EVpLkyYj9fkNOwn0xZwXYmQneH7qq8wmfAIwuWZXAc=;
+        s=k20201202; t=1641210343;
+        bh=0lVvLK6SZhfY0858z3iBJ3QdUhz+tDf1LO6B6YV6Mv0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Peq7Yi3vrboFFMEc5c5bGHUGpTXva8v2qMVBOnAvNh1/aI2/dKvUXpBXFIdSRDVJ9
-         jHuBvf6lH1faBVkUFyVmoGyj+2BsjhlGA9nfXE44s64S3hMS6QVtn5ixtF9T1Rf0Ej
-         IshGlWbEyrN/u7ZJmWNM2b7qF20ubjHWUcw85ClvBB7KFh/+PmsjdkKXsxar0whECT
-         LQ2YR6brMwX3dPbhRvNJxQJ16oYH4o17za5hvjuTcPcYGphVjqOZEXQovxMVP/7H9l
-         P3pgpIgeu81Jb037X5lLLyzim5M0sd9mOL/52gM0UPgCyH10UZYgAl5aKsPC0MZgZP
-         v9WEtiJh/WDlg==
-Date:   Mon, 3 Jan 2022 13:27:38 +0200
+        b=FHPukLJE1XPIY68qpboQqGUa1mDYNQJuoEOP6b3dtFXs9/7YCIxSklH3CxwrR68jr
+         ZSTza55qpz1Kw8hvTtro2j7KeTYDG2mMYSq26/ocwOjPwPOT/IZ1Bg0JHfpp/ue6tZ
+         qqoh/PI3nt0n6r4NTe+S2NOIJ9PT1zytZ+00W2YTZ18Pox2qzDkkkgDvAmWKoDh2s+
+         HikgoU/+l2pNyuoHlPH1XT4Z/jxb82+vKJk/DPuZZG9XUffCz/HhafICy+xrKzHmCF
+         gE1m0MNURndXT8CtTfGKShp3x3bYB1n3QKqTFa7BJnMBd4OzmxLyyG5pz4ZD6ZDq/N
+         FIODL+5OoPXvg==
+Date:   Mon, 3 Jan 2022 13:45:38 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Dust Li <dust.li@linux.alibaba.com>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Subject: Re: [PATCH rdma-next] RDMA/mlx5: print wc status on CQE error and
- dump needed
-Message-ID: <YdLdqgBs+KkUtCVT@unreal>
-References: <20211227123806.47530-1-dust.li@linux.alibaba.com>
+To:     Xiao Yang <yangx.jy@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev,
+        rpearsonhpe@gmail.com, jgg@nvidia.com
+Subject: Re: [PATCH] RDMA/rxe: Remove duplicate WR_ATOMIC_OR_READ_MASK
+Message-ID: <YdLh4octT3FNnI28@unreal>
+References: <20211230085610.1915014-1-yangx.jy@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211227123806.47530-1-dust.li@linux.alibaba.com>
+In-Reply-To: <20211230085610.1915014-1-yangx.jy@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Dec 27, 2021 at 08:38:06PM +0800, Dust Li wrote:
-> mlx5_handle_error_cqe() only dump the content of the CQE
-> which is raw hex data, and not straighforward for debug.
-> Print WC status message when we got CQE error and dump is
-> need.
-> 
-> Here is an example of how the dmesg log looks like with this:
-> [166755.330649] infiniband mlx5_0: mlx5_handle_error_cqe:333:(pid 0): WC error: 10, message: remote access error
-> [166755.332323] infiniband mlx5_0: dump_cqe:272:(pid 0): dump error cqe
-> [166755.332944] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [166755.333574] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [166755.334202] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> [166755.334837] 00000030: 00 00 00 00 00 00 88 13 08 03 61 b3 1e a1 42 d3
-> 
-> Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
+On Thu, Dec 30, 2021 at 04:56:10PM +0800, Xiao Yang wrote:
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
 > ---
->  drivers/infiniband/hw/mlx5/cq.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
+>  drivers/infiniband/sw/rxe/rxe_comp.c   | 4 ++--
+>  drivers/infiniband/sw/rxe/rxe_opcode.h | 1 -
+>  2 files changed, 2 insertions(+), 3 deletions(-)
 
-Thanks,
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
+I see that you replaced WR_ATOMIC_MASK to be WR_WRITE_MASK.
+What problem are you trying to fix?
+
+Please describe it in use commit message.
+
+Thanks
