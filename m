@@ -2,55 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1506482F43
-	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jan 2022 10:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC0B482F38
+	for <lists+linux-rdma@lfdr.de>; Mon,  3 Jan 2022 10:09:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbiACJNR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jan 2022 04:13:17 -0500
-Received: from mail.tomediacase.pl ([151.236.18.187]:57368 "EHLO
-        mail.tomediacase.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232312AbiACJNR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 04:13:17 -0500
-X-Greylist: delayed 475 seconds by postgrey-1.27 at vger.kernel.org; Mon, 03 Jan 2022 04:13:16 EST
-Received: by mail.tomediacase.pl (Postfix, from userid 1001)
-        id B07CB40D72; Mon,  3 Jan 2022 10:05:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tomediacase.pl;
-        s=mail; t=1641200720;
-        bh=1KDTsB3nJcWAjbNGIw57IBVNLXBfvIhwZJ5safZoOHQ=;
-        h=Date:From:To:Subject:From;
-        b=jUMugI6CbCmOdnhYHvbuiJGaShXlS5fehlOxigtXh/rsmKpyD1Jv/BkasE53jiV/r
-         HF3oOZJQB0DdfCV1GqktYIwCCW5G+l6w8+jzBRgJ2Q6/IxWPHSk5SdSwBZUQcPzJCO
-         SSCZQlEAM8CGT9eFftliG3w6Rr0psbh9wuzAFQDkWahBB5/rctROwkrrJy8e0TIlH6
-         dgovzW9xZVibW8UUiXecTsJdKPcvbuXfbVkO7RG2oEMaLUxYo1/GjRaMUTUAfEl55l
-         GU2S4cwSpvL5C75T375RPFsgx3+eliVxzfCqAeFESjYB0XN4YIrbv8sqYVmLQx64h2
-         dPmkjW2ht0dhQ==
-Received: by mail.tomediacase.pl for <linux-rdma@vger.kernel.org>; Mon,  3 Jan 2022 09:05:08 GMT
-Message-ID: <20220103084500-0.1.z.2q83.0.52qri9gqwm@tomediacase.pl>
-Date:   Mon,  3 Jan 2022 09:05:08 GMT
-From:   "Adam Charachuta" <adam.charachuta@tomediacase.pl>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.tomediacase.pl
+        id S232301AbiACJJI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jan 2022 04:09:08 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41388 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230515AbiACJJI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 04:09:08 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2037Rxan028830;
+        Mon, 3 Jan 2022 09:09:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=glghL1iPQhHGW1OByj7w1LqP5lccxcuTD5PDTNX9yyU=;
+ b=pnX9cG6/0swQNPjJG+FldCpuE4GR2sCs0M5Xb39WvH29O6jDRlJ2/OWYNQ7VlccYalYk
+ c6FFDqATCGL8GerCyBYya4AzvcPiCfSEMzg0hKjFTMScgWbROhArgwygcHqe3sjtNsrG
+ kz+/BktZ5aKrtcQaVGwGIfKra3endhdhHBxjgWXgRy7MhWJzt8lmmTdk8MeP+l05VZXI
+ ZtnC3fRkhIWBK7iM2O1YtKOQMt4PLV3ZrToV/M3UdbFxfbdB59BO5cZPuauvIDgUI3Gv
+ /yx1yeTWva/h5maRoAIlWvC7VK/v94du2coxvHBRJZ1mDMDmLJl4YXySKnk9ju9/AC/V qw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3dbrpxnk8t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Jan 2022 09:09:03 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20398Fsa001783;
+        Mon, 3 Jan 2022 09:09:03 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3dbrpxnk89-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Jan 2022 09:09:03 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20398Snu022513;
+        Mon, 3 Jan 2022 09:09:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3daek98ka2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 03 Jan 2022 09:09:01 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20390GpU46727588
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 3 Jan 2022 09:00:16 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 03A2D11C05B;
+        Mon,  3 Jan 2022 09:08:59 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ABFDD11C04C;
+        Mon,  3 Jan 2022 09:08:58 +0000 (GMT)
+Received: from [9.145.23.206] (unknown [9.145.23.206])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  3 Jan 2022 09:08:58 +0000 (GMT)
+Message-ID: <d08fabaa-88e8-0980-7ca2-896c7f535b88@linux.ibm.com>
+Date:   Mon, 3 Jan 2022 10:09:08 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH net-next] net/smc: Introduce TCP ULP support
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20211228134435.41774-1-tonylu@linux.alibaba.com>
+ <97ea52de-5419-22ee-7f55-b92887dcaada@linux.ibm.com>
+ <Yc7JpBuI718bVzW3@TonyMac-Alibaba>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <Yc7JpBuI718bVzW3@TonyMac-Alibaba>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tAvGpqNbU2ILu_ld-jFezBByO7L-g4jp
+X-Proofpoint-ORIG-GUID: 9oYEa_zbgrcpWgdoiv8Rxg_OszzBbS8u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-03_03,2022-01-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 mlxscore=0 malwarescore=0 mlxlogscore=883
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2110150000 definitions=main-2201030061
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On 31/12/2021 10:13, Tony Lu wrote:
+> On Thu, Dec 30, 2021 at 04:03:19PM +0100, Karsten Graul wrote:
+>> On 28/12/2021 14:44, Tony Lu wrote:
+>>> This implements TCP ULP for SMC, helps applications to replace TCP with
+>>> SMC protocol in place. And we use it to implement transparent
+>>> replacement.
+>>>
+>>> This replaces original TCP sockets with SMC, reuse TCP as clcsock when
+>>> calling setsockopt with TCP_ULP option, and without any overhead.
+>>
+>> This looks very interesting. Can you provide a simple userspace example about 
+>> how to use ULP with smc?
+> 
+> Here is a userspace C/S application:
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
-
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
-
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
-
-
-Pozdrawiam,
-Adam Charachuta
+Thanks for the example, it was very helpful!
