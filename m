@@ -2,104 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5669E483B2C
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 04:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24870483C10
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 07:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbiADDse (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jan 2022 22:48:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231165AbiADDse (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 22:48:34 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF11C061761;
-        Mon,  3 Jan 2022 19:48:34 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DFF58B81097;
-        Tue,  4 Jan 2022 03:48:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C52C36AED;
-        Tue,  4 Jan 2022 03:48:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641268111;
-        bh=5LCZIuAEU9VEEYcUacketTtZ45/TX/jS7+iR46o4+b4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hBLX91dPaJ5m7coXPc0vYUzoTQvDz5OEqG/JGstFAz8r5oQtT4ldw6W0A4ub81Ls3
-         /HxkH731k2CDr55eQBRAI1sFwd2Frx4L/2nFKPlxDM2Le7fWDWymrymYG5Fg1PYnNx
-         is0owU/UfAz7GZcmFWj6M6bzEDB/lRTwzTxIwXQ7l/iEi/I4++uhjKfAPzItwDLelB
-         K/rU03Y6gQeoCXzvn5oIGhyaJjmr0Rt3CrM47cOoB6z5T/DOEKQvZzCL5e4+AAvkj9
-         6ld3TIIAh/adL3LyeIm3nKoilUgZJ2b4sXQSZ0yybzNcOEVRwmpxTiaDlwDHVYwRfB
-         P8CyNdYhFuJaA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     davem@davemloft.net
-Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        saeedm@nvidia.com, leon@kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH net-next] net: fixup build after bpf header changes
-Date:   Mon,  3 Jan 2022 19:48:27 -0800
-Message-Id: <20220104034827.1564167-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S233059AbiADGu6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jan 2022 01:50:58 -0500
+Received: from out2.migadu.com ([188.165.223.204]:32598 "EHLO out2.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233043AbiADGu6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 Jan 2022 01:50:58 -0500
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1641279056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RzVgYGKIVPBoj0bOJ5At56kYRQ8EZM8yC9PKOOtjECU=;
+        b=dW7ITugLYZ4rvpZFsIEayxgehiMUMsxRMglfLl81wDItM32J1Y29uxx1bsxNIOtmAykYjR
+        zIfkEMAuCHTTf+dkiAAHh02N+kipwC9VCWCpENn27CgqnRQrQHzNxWJ+EQtrCdntyN/ULJ
+        cXLCDXQtzaJssimFJegCuH2YbpCriO8=
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Subject: Re: [PATCHv2 for-next 2/5] RDMA/rtrs-srv: Rename rtrs_srv_sess to
+ rtrs_srv_path
+To:     Jack Wang <jinpu.wang@ionos.com>, linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, jgg@ziepe.ca,
+        haris.iqbal@ionos.com,
+        Vaishali Thakkar <vaishali.thakkar@ionos.com>
+References: <20220103133339.9483-1-jinpu.wang@ionos.com>
+ <20220103133339.9483-3-jinpu.wang@ionos.com>
+Message-ID: <a80f9ee4-051b-e3dd-8f1f-e087987407d8@linux.dev>
+Date:   Tue, 4 Jan 2022 14:50:49 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220103133339.9483-3-jinpu.wang@ionos.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Recent bpf-next merge brought in header changes which uncovered
-includes missing in net-next which were not present in bpf-next.
-Build problems happen only on less-popular arches like hppa,
-sparc, alpha etc.
 
-I could repro the build problem with ice but not the mlx5 problem
-Abdul was reporting. mlx5 does look like it should include filter.h,
-anyway.
 
-Reported-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-Fixes: e63a02348958 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next")
-Link: https://lore.kernel.org/all/7c03768d-d948-c935-a7ab-b1f963ac7eed@linux.vnet.ibm.com/
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
----
-CC: jesse.brandeburg@intel.com
-CC: anthony.l.nguyen@intel.com
-CC: saeedm@nvidia.com
-CC: leon@kernel.org
-CC: intel-wired-lan@lists.osuosl.org
-CC: linux-rdma@vger.kernel.org
-CC: bpf@vger.kernel.org
----
- drivers/net/ethernet/intel/ice/ice_nvm.c          | 2 ++
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 1 +
- 2 files changed, 3 insertions(+)
+On 1/3/22 9:33 PM, Jack Wang wrote:
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_nvm.c b/drivers/net/ethernet/intel/ice/ice_nvm.c
-index cd739a2c64e8..4eb0599714f4 100644
---- a/drivers/net/ethernet/intel/ice/ice_nvm.c
-+++ b/drivers/net/ethernet/intel/ice/ice_nvm.c
-@@ -1,6 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (c) 2018, Intel Corporation. */
- 
-+#include <linux/vmalloc.h>
-+
- #include "ice_common.h"
- 
- /**
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index efcf9d30b131..31c911182498 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -37,6 +37,7 @@
- #include <net/geneve.h>
- #include <linux/bpf.h>
- #include <linux/if_bridge.h>
-+#include <linux/filter.h>
- #include <net/page_pool.h>
- #include <net/xdp_sock_drv.h>
- #include "eswitch.h"
--- 
-2.31.1
+> --- a/drivers/block/rnbd/rnbd-srv.c
+> +++ b/drivers/block/rnbd/rnbd-srv.c
+> @@ -269,9 +269,9 @@ static int create_sess(struct rtrs_srv *rtrs)
+>   	char sessname[NAME_MAX];
+
+It is pathname with the change.
+
+>   	int err;
+>   
+> -	err = rtrs_srv_get_sess_name(rtrs, sessname, sizeof(sessname));
+> +	err = rtrs_srv_get_path_name(rtrs, sessname, sizeof(sessname));
+>   	if (err) {
+> -		pr_err("rtrs_srv_get_sess_name(%s): %d\n", sessname, err);
+> +		pr_err("rtrs_srv_get_path_name(%s): %d\n", sessname, err);
+>   
+>   		return err;
+>   	}
+
+[ ... ]
+
+> -void close_sess(struct rtrs_srv_sess *sess)
+> +void close_path(struct rtrs_srv_path *srv_path)
+
+I guess close_srv_path is better if it has counterpart in rtrs-clt.c.
+
+[ ... ]
+
+>   		rtrs_err_rl(s,
+>   			    "Sending I/O response failed,  session %s is disconnected, sess state %s\n",
+
+With the change, the above should print path instead of session.
+
+> -			    kobject_name(&sess->kobj),
+> -			    rtrs_srv_state_str(sess->state));
+> +			    kobject_name(&srv_path->kobj),
+> +			    rtrs_srv_state_str(srv_path->state));
+>   		goto out;
+>   	}
+>   	if (always_invalidate) {
+> -		struct rtrs_srv_mr *mr = &sess->mrs[id->msg_id];
+> +		struct rtrs_srv_mr *mr = &srv_path->mrs[id->msg_id];
+>   
+>   		ib_update_fast_reg_key(mr->mr, ib_inc_rkey(mr->mr->rkey));
+>   	}
+>   	if (atomic_sub_return(1, &con->c.sq_wr_avail) < 0) {
+>   		rtrs_err(s, "IB send queue full:*sess*=%s cid=%d\n",
+> -			 kobject_name(&sess->kobj),
+> +			 kobject_name(&srv_path->kobj),
+
+Ditto.
+
+>   			 con->c.cid);
+>   		atomic_add(1, &con->c.sq_wr_avail);
+>   		spin_lock(&con->rsp_wr_wait_lock);
+> @@ -524,11 +527,11 @@ bool rtrs_srv_resp_rdma(struct rtrs_srv_op *id, int status)
+>   
+>   	if (err) {
+>   		rtrs_err_rl(s, "IO response failed: %d:*sess*=%s\n", err,
+> -			    kobject_name(&sess->kobj));
+> -		close_sess(sess);
+> +			    kobject_name(&srv_path->kobj));
+> +		close_path(srv_path);
+
+Ditto.
+
+[ ... ]
+
+> @@ -754,7 +757,7 @@ static bool exist_sessname(struct rtrs_srv_ctx *ctx,
+>   			   const char *sessname, const uuid_t *path_uuid)
+>   {
+>   	struct rtrs_srv *srv;
+> -	struct rtrs_srv_sess *sess;
+> +	struct rtrs_srv_path *srv_path;
+>   	bool found = false;
+>   
+>   	mutex_lock(&ctx->srv_mutex);
+> @@ -767,9 +770,9 @@ static bool exist_sessname(struct rtrs_srv_ctx *ctx,
+>   			continue;
+>   		}
+>   
+> -		list_for_each_entry(sess, &srv->paths_list, s.entry) {
+> -			if (strlen(sess->s.sessname) == strlen(sessname) &&
+> -			    !strcmp(sess->s.sessname, sessname)) {
+> +		list_for_each_entry(srv_path, &srv->paths_list, s.entry) {
+> +			if (strlen(srv_path->s.sessname) == strlen(sessname) &&
+> +			    !strcmp(srv_path->s.sessname, sessname)) {
+
+I am wondering if the sessname should be replaced with pathname, pls 
+double check.
+Does it make sense to add the definitions about "path" and "session" 
+somewhere such
+as in README?
+
+[ ... ]
+
+>   
+> -static int post_recv_sess(struct rtrs_srv_sess *sess)
+> +static int post_recv_sess(struct rtrs_srv_path *srv_path)
+
+post_recv_path?
+
+>   {
+> -	struct rtrs_srv *srv = sess->srv;
+> -	struct rtrs_path *s = &sess->s;
+> +	struct rtrs_srv *srv = srv_path->srv;
+> +	struct rtrs_path *s = &srv_path->s;
+>   	size_t q_size;
+>   	int err, cid;
+>   
+> -	for (cid = 0; cid < sess->s.con_num; cid++) {
+> +	for (cid = 0; cid < srv_path->s.con_num; cid++) {
+>   		if (cid == 0)
+>   			q_size = SERVICE_CON_QUEUE_DEPTH;
+>   		else
+>   			q_size = srv->queue_depth;
+>   
+> -		err = post_recv_io(to_srv_con(sess->s.con[cid]), q_size);
+> +		err = post_recv_io(to_srv_con(srv_path->s.con[cid]), q_size);
+>   		if (err) {
+>   			rtrs_err(s, "post_recv_io(), err: %d\n", err);
+>   			return err;
+
+[ .. ]
+
+>   /**
+> - * rtrs_srv_get_sess_name() - Get rtrs_srv peer hostname.
+> + * rtrs_srv_get_path_name() - Get rtrs_srv peer hostname.
+>    * @srv:	Session
+>    * @sessname:	Sessname buffer
+>    * @len:	Length of sessname buffer
+>    */
+> -int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
+> +int rtrs_srv_get_path_name(struct rtrs_srv *srv, char *sessname, size_t len)
+
+The "sessname" argument is actually for path, right?
+
+>   {
+> -	struct rtrs_srv_sess *sess;
+> +	struct rtrs_srv_path *srv_path;
+>   	int err = -ENOTCONN;
+>   
+>   	mutex_lock(&srv->paths_mutex);
+> -	list_for_each_entry(sess, &srv->paths_list, s.entry) {
+> -		if (sess->state != RTRS_SRV_CONNECTED)
+> +	list_for_each_entry(srv_path, &srv->paths_list, s.entry) {
+> +		if (srv_path->state != RTRS_SRV_CONNECTED)
+>   			continue;
+> -		strscpy(sessname, sess->s.sessname,
+> -		       min_t(size_t, sizeof(sess->s.sessname), len));
+> +		strscpy(sessname, srv_path->s.sessname,
+> +			min_t(size_t, sizeof(srv_path->s.sessname), len));
+>   		err = 0;
+>   		break;
+>   	}
+> @@ -1307,7 +1313,7 @@ int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
+>   
+>   	return err;
+>   }
+> -EXPORT_SYMBOL(rtrs_srv_get_sess_name);
+> +EXPORT_SYMBOL(rtrs_srv_get_path_name);
+
+[ ... ]
+
+Thanks,
+Guoqing
 
