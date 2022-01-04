@@ -2,110 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5BCD483AAC
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 03:46:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5669E483B2C
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 04:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230296AbiADCql (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jan 2022 21:46:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
+        id S231389AbiADDse (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jan 2022 22:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbiADCql (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 21:46:41 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757BBC061761;
-        Mon,  3 Jan 2022 18:46:40 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id r4so35405333lfe.7;
-        Mon, 03 Jan 2022 18:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XwS+dVl5eiGqQaeH1qcWnqbx39W64a5YJhPs5tWYw7g=;
-        b=YXapyd2qG3y6Gyfh/8n/8oPRJItmRTXGr97OlealEHQMyM1zxhQqfY/s++lkwXIb4h
-         uqPK4wK28d+ZGbYX0HuUf0/4dYib8TgVwNelG8RYpSJnLHYyUtCnUngWUFN8hoP4M0Pq
-         83Mp0bYcIBxVzVQhGc811+L5v6q33/OfymddcRJCmxPspOl5ZdV+734O9gGYVe5LkRuu
-         SZCRr7i7UMgwopJlwo6Volz0cwnHxuq098HQO3915X0WVFMbYdMhuf/PQ322tTXCV30e
-         UQta80zF5BDFOEsSePVTDfp1pIJcO/LbjlpdNHPR8D8LR1ZGQ93sfsGg4o7LSGzFBfGw
-         89kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XwS+dVl5eiGqQaeH1qcWnqbx39W64a5YJhPs5tWYw7g=;
-        b=MhkpbP+EADvSQrgazFcw/2ZVp9wX07/I91iGkYkaHlcXdECirF0B38KywKqTihaeSF
-         xW5zHbXHWZv23ljy2N6boczRdfy5YFHfzfWqXusHkVa9USrZg985xOS60h9ErxIhUsTw
-         QNJM7XtW1IklnwwAFwld1s59zjpH7Ja3vI8EAtl/yevbmXOK9y2sDZIGv3oaF3M6YLXg
-         j+htkC8JYQOgcMliRfMUaodPKM2UlzfcDJbcCCK2ZhqDk2RN2xl62BrVD31KLL83zRyD
-         kwCvE9wI+yKheKiizSQFFb1l/Gy+yKzcbd3+MIIYo7ryJ6pjVvbf6w/6ceO3hN3bA5HD
-         Ogtw==
-X-Gm-Message-State: AOAM533IUVGATlz8q4UCZqWepvmSKMc9e+ssrYGOdUQinYEtIejsH8GO
-        tXawchkL8I49CmVQnUa2tNV0xOSPmEqqWD9McI4=
-X-Google-Smtp-Source: ABdhPJyf3/HeqXcc8LXsBeEU2licr8rlepkC/OaEN4ONlssLyRjB+M6ckTtp2DyRj/bMN5yED/Cwrj/hSJUE/u/+9bQ=
-X-Received: by 2002:a05:6512:3b26:: with SMTP id f38mr43643428lfv.374.1641264398765;
- Mon, 03 Jan 2022 18:46:38 -0800 (PST)
+        with ESMTP id S231165AbiADDse (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 22:48:34 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF11C061761;
+        Mon,  3 Jan 2022 19:48:34 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DFF58B81097;
+        Tue,  4 Jan 2022 03:48:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39C52C36AED;
+        Tue,  4 Jan 2022 03:48:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641268111;
+        bh=5LCZIuAEU9VEEYcUacketTtZ45/TX/jS7+iR46o4+b4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=hBLX91dPaJ5m7coXPc0vYUzoTQvDz5OEqG/JGstFAz8r5oQtT4ldw6W0A4ub81Ls3
+         /HxkH731k2CDr55eQBRAI1sFwd2Frx4L/2nFKPlxDM2Le7fWDWymrymYG5Fg1PYnNx
+         is0owU/UfAz7GZcmFWj6M6bzEDB/lRTwzTxIwXQ7l/iEi/I4++uhjKfAPzItwDLelB
+         K/rU03Y6gQeoCXzvn5oIGhyaJjmr0Rt3CrM47cOoB6z5T/DOEKQvZzCL5e4+AAvkj9
+         6ld3TIIAh/adL3LyeIm3nKoilUgZJ2b4sXQSZ0yybzNcOEVRwmpxTiaDlwDHVYwRfB
+         P8CyNdYhFuJaA==
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     davem@davemloft.net
+Cc:     netdev@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Abdul Haleem <abdhalee@linux.vnet.ibm.com>,
+        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
+        saeedm@nvidia.com, leon@kernel.org,
+        intel-wired-lan@lists.osuosl.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH net-next] net: fixup build after bpf header changes
+Date:   Mon,  3 Jan 2022 19:48:27 -0800
+Message-Id: <20220104034827.1564167-1-kuba@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20220104012406.27580-1-lizhijian@fujitsu.com>
-In-Reply-To: <20220104012406.27580-1-lizhijian@fujitsu.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 4 Jan 2022 10:46:27 +0800
-Message-ID: <CAD=hENd7dQPVAOrLvZwQG=SHRdnzN-Y4Ag3V_b5vUTzh6Y0YjQ@mail.gmail.com>
-Subject: Re: [PATCH v2] RDMA/rxe: Get rid of redundant plus
-To:     Li Zhijian <lizhijian@fujitsu.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Li Zhijian <lizhijian@cn.fujitsu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jan 4, 2022 at 9:25 AM Li Zhijian <lizhijian@fujitsu.com> wrote:
->
-> From: Li Zhijian <lizhijian@cn.fujitsu.com>
->
-> Get rid of the duplicate plus in a line to be consistent with others.
->
-> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
+Recent bpf-next merge brought in header changes which uncovered
+includes missing in net-next which were not present in bpf-next.
+Build problems happen only on less-popular arches like hppa,
+sparc, alpha etc.
 
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+I could repro the build problem with ice but not the mlx5 problem
+Abdul was reporting. mlx5 does look like it should include filter.h,
+anyway.
 
-Zhu Yanjun
+Reported-by: Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Fixes: e63a02348958 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next")
+Link: https://lore.kernel.org/all/7c03768d-d948-c935-a7ab-b1f963ac7eed@linux.vnet.ibm.com/
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+---
+CC: jesse.brandeburg@intel.com
+CC: anthony.l.nguyen@intel.com
+CC: saeedm@nvidia.com
+CC: leon@kernel.org
+CC: intel-wired-lan@lists.osuosl.org
+CC: linux-rdma@vger.kernel.org
+CC: bpf@vger.kernel.org
+---
+ drivers/net/ethernet/intel/ice/ice_nvm.c          | 2 ++
+ drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 1 +
+ 2 files changed, 3 insertions(+)
 
-> ---
->  drivers/infiniband/sw/rxe/rxe_opcode.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-> index 3ef5a10a6efd..79122eeb4d82 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-> @@ -879,9 +879,9 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
->                         [RXE_ATMETH]    = RXE_BTH_BYTES
->                                                 + RXE_RDETH_BYTES
->                                                 + RXE_DETH_BYTES,
-> -                       [RXE_PAYLOAD]   = RXE_BTH_BYTES +
-> +                       [RXE_PAYLOAD]   = RXE_BTH_BYTES
->                                                 + RXE_ATMETH_BYTES
-> -                                               + RXE_DETH_BYTES +
-> +                                               + RXE_DETH_BYTES
->                                                 + RXE_RDETH_BYTES,
->                 }
->         },
-> @@ -900,9 +900,9 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
->                         [RXE_ATMETH]    = RXE_BTH_BYTES
->                                                 + RXE_RDETH_BYTES
->                                                 + RXE_DETH_BYTES,
-> -                       [RXE_PAYLOAD]   = RXE_BTH_BYTES +
-> +                       [RXE_PAYLOAD]   = RXE_BTH_BYTES
->                                                 + RXE_ATMETH_BYTES
-> -                                               + RXE_DETH_BYTES +
-> +                                               + RXE_DETH_BYTES
->                                                 + RXE_RDETH_BYTES,
->                 }
->         },
-> --
-> 2.33.0
->
->
->
+diff --git a/drivers/net/ethernet/intel/ice/ice_nvm.c b/drivers/net/ethernet/intel/ice/ice_nvm.c
+index cd739a2c64e8..4eb0599714f4 100644
+--- a/drivers/net/ethernet/intel/ice/ice_nvm.c
++++ b/drivers/net/ethernet/intel/ice/ice_nvm.c
+@@ -1,6 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /* Copyright (c) 2018, Intel Corporation. */
+ 
++#include <linux/vmalloc.h>
++
+ #include "ice_common.h"
+ 
+ /**
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index efcf9d30b131..31c911182498 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -37,6 +37,7 @@
+ #include <net/geneve.h>
+ #include <linux/bpf.h>
+ #include <linux/if_bridge.h>
++#include <linux/filter.h>
+ #include <net/page_pool.h>
+ #include <net/xdp_sock_drv.h>
+ #include "eswitch.h"
+-- 
+2.31.1
+
