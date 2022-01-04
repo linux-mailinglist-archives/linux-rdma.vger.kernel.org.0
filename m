@@ -2,102 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD5A483F8E
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 11:03:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB31C483FEC
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 11:29:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbiADKDS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jan 2022 05:03:18 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:43902 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbiADKDR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 05:03:17 -0500
-Received: by mail-io1-f72.google.com with SMTP id j13-20020a0566022ccd00b005e9684c80c6so19560918iow.10
-        for <linux-rdma@vger.kernel.org>; Tue, 04 Jan 2022 02:03:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Q1E+t0oMoHaTGPrmwIqtIWewM2eKhWNWfmQTzKP2yFc=;
-        b=2u2eyMKZZiFsoAfq/uBTy+DDE7qQQmoXVoQ/k+UqFEeGm3lM6hmYACFWNRVqBlplY6
-         3AMYXRbFQ3vmIOSaXVHwvBloPuQpxj+Hrb+y6Ve5DQUjGwWO/Yd5RVhrCZhCVPC/gaQT
-         dPZ/lHW5xKhtOKCc1TBJRazfup8Xsk59bzgOkZ2B9bSBCYWVdt5N2cezwPSocsovda2A
-         xhI56rNo9viUJpKijI+PjaFfz7nfXotb6giXtX14Jg3J8P31fDtfXJXxhZpsIjkGU6Uq
-         pBQ+cTHwtcw3Q7uFJckuGdmE4Oy6A0JJj464H0uOHCijJ2BS4lahSNSxvTt/pMT/YW/9
-         AGfw==
-X-Gm-Message-State: AOAM530uRNVtQokDrIIqlSoTC0TNLy8nTu8mYIv2GfW8DjgGxLcW13WN
-        CaPkOQlQekmleUQ8FsaVXYvQqZ9qbWx8achJWLPi/GmuL/K6
-X-Google-Smtp-Source: ABdhPJwb5D4MVQ/aRrEp1R7orXxh5xPAkBXZqP74ra9SMUH8iJP2+ItSyiT7sW8AADzyGmwSG8BX4nLUOpvXItwAbpIWNtHnafKM
+        id S230316AbiADK3W (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jan 2022 05:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229604AbiADK3W (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 05:29:22 -0500
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609C2C061761;
+        Tue,  4 Jan 2022 02:29:22 -0800 (PST)
+Received: from ip4d173d02.dynamic.kabel-deutschland.de ([77.23.61.2] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1n4h48-00046v-43; Tue, 04 Jan 2022 11:29:16 +0100
+Message-ID: <f1ab176e-b899-8317-7811-86d26c6410de@leemhuis.info>
+Date:   Tue, 4 Jan 2022 11:29:15 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9f4c:: with SMTP id u12mr22203049iot.22.1641290597348;
- Tue, 04 Jan 2022 02:03:17 -0800 (PST)
-Date:   Tue, 04 Jan 2022 02:03:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000073ffa05d4bebff8@google.com>
-Subject: [syzbot] KMSAN: kernel-infoleak in ucma_init_qp_attr
-From:   syzbot <syzbot+6d532fa8f9463da290bc@syzkaller.appspotmail.com>
-To:     glider@google.com, jgg@ziepe.ca, leon@kernel.org,
-        liangwenpeng@huawei.com, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, liweihang@huawei.com,
-        syzkaller-bugs@googlegroups.com, tanxiaofei@huawei.com,
-        yuehaibing@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.0
+Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix dereg mr flow for kernel MRs
+Content-Language: en-BS
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Tony Lu <tonylu@linux.alibaba.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Maor Gottlieb <maorg@nvidia.com>,
+        Alaa Hleihel <alaa@nvidia.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "regressions@lists.linux.dev" <regressions@lists.linux.dev>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>
+References: <f298db4ec5fdf7a2d1d166ca2f66020fd9397e5c.1640079962.git.leonro@nvidia.com>
+ <YcKSzszT/zw2ECjh@TonyMac-Alibaba> <YdLHDzmNXlqSMj/A@unreal>
+ <0d897f0a-6671-bb78-21d5-e475d1db29b9@leemhuis.info>
+ <YdM/0EUd3S4obWWa@unreal>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <YdM/0EUd3S4obWWa@unreal>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1641292162;42a5e166;
+X-HE-SMSGID: 1n4h48-00046v-43
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 03.01.22 19:26, Leon Romanovsky wrote:
+> On Mon, Jan 03, 2022 at 02:15:59PM +0100, Thorsten Leemhuis wrote:
+>> Hi, this is your Linux kernel regression tracker speaking.
+>>
+>> On 03.01.22 10:51, Leon Romanovsky wrote:
+>>> On Wed, Dec 22, 2021 at 10:51:58AM +0800, Tony Lu wrote:
+>>>> On Tue, Dec 21, 2021 at 11:46:41AM +0200, Leon Romanovsky wrote:
+>>>>> From: Maor Gottlieb <maorg@nvidia.com>
+>>>>>
+>>>>> The cited commit moved umem into the union, hence
+>>>>> umem could be accessed only for user MRs. Add udata check
+>>>>> before access umem in the dereg flow.
+>>>>>
+>>>>> Fixes: f0ae4afe3d35 ("RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow")
+>>>>> Tested-by: Chuck Lever <chuck.lever@oracle.com>
+>>>>> Signed-off-by: Maor Gottlieb <maorg@nvidia.com>
+>>>>> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+>>>>> ---
+>>>>>  drivers/infiniband/hw/mlx5/mlx5_ib.h | 2 +-
+>>>>>  drivers/infiniband/hw/mlx5/mr.c      | 4 ++--
+>>>>>  drivers/infiniband/hw/mlx5/odp.c     | 4 ++--
+>>>>>  3 files changed, 5 insertions(+), 5 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+>>>>
+>>>> This patch was tested and works for me in our environment for SMC. It
+>>>> wouldn't panic when release link and call ib_dereg_mr.
+>>>>
+>>>> Tested-by: Tony Lu <tonylu@linux.alibaba.com>
+>>>
+>>> Thanks, unfortunately, this patch is incomplete.
+>>
+>> Could you be a bit more verbose and give a status update? It's hard to
+>> follow from the outside. But according to the "Fixes: f0ae4afe3d35"
+>> above this was supposed to fix a regression introduced in v5.16-rc5 that
+>> was also reported here:
+>> https://lore.kernel.org/linux-rdma/9974ea8c-f1cb-aeb4-cf1b-19d37536894a@linux.alibaba.com/
+> 
+> The problematic commit f0ae4afe3d35 ("RDMA/mlx5: Fix releasing unallocated memory in dereg MR flow")
+> should be reverted https://lore.kernel.org/all/20211222101312.1358616-1-maorg@nvidia.com
+> and rewritten from the beginning.
 
-HEAD commit:    81c325bbf94e kmsan: hooks: do not check memory in kmsan_in..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c4260db00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2d8b9a11641dc9aa
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d532fa8f9463da290bc
-compiler:       clang version 14.0.0 (/usr/local/google/src/llvm-git-monorepo 2b554920f11c8b763cd9ed9003f4e19b919b8e1f), GNU ld (GNU Binutils for Debian) 2.35.2
-userspace arch: i386
+Thx for the clarification. Is anyone tasked for sending the revert
+upstream, to make sure the revert makes it into 5.16, which is due on
+Sunday night?
 
-Unfortunately, I don't have any reproducer for this issue yet.
+And someone likely should ensure the change backported to 5.15.y as
+e3bc4d4b50cae7db08e50dbe43f771c906e97701 is reverted as well. CCing a
+few lists and Greg to make sure everyone is in the loop.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6d532fa8f9463da290bc@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: kernel-infoleak in instrument_copy_to_user include/linux/instrumented.h:121 [inline]
-BUG: KMSAN: kernel-infoleak in _copy_to_user+0x1c9/0x270 lib/usercopy.c:33
- instrument_copy_to_user include/linux/instrumented.h:121 [inline]
- _copy_to_user+0x1c9/0x270 lib/usercopy.c:33
- copy_to_user include/linux/uaccess.h:209 [inline]
- ucma_init_qp_attr+0x8c7/0xb10 drivers/infiniband/core/ucma.c:1242
- ucma_write+0x637/0x6c0 drivers/infiniband/core/ucma.c:1732
- vfs_write+0x8ce/0x2030 fs/read_write.c:588
- ksys_write+0x28b/0x510 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __ia32_sys_write+0xdb/0x120 fs/read_write.c:652
- do_syscall_32_irqs_on arch/x86/entry/common.c:114 [inline]
- __do_fast_syscall_32+0x96/0xf0 arch/x86/entry/common.c:180
- do_fast_syscall_32+0x34/0x70 arch/x86/entry/common.c:205
- do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:248
- entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-
-Local variable resp created at:
- ucma_init_qp_attr+0xa4/0xb10 drivers/infiniband/core/ucma.c:1214
- ucma_write+0x637/0x6c0 drivers/infiniband/core/ucma.c:1732
-
-Bytes 40-59 of 144 are uninitialized
-Memory access of size 144 starts at ffff888167523b00
-Data copied to user address 0000000020000100
-
-CPU: 1 PID: 25910 Comm: syz-executor.1 Not tainted 5.16.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Ciao, Thorsten
