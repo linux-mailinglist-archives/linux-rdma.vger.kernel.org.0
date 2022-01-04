@@ -2,143 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAED0483960
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 01:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29526483990
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 02:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231322AbiADAIO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 3 Jan 2022 19:08:14 -0500
-Received: from mail-bn8nam12on2062.outbound.protection.outlook.com ([40.107.237.62]:5985
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229487AbiADAIN (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 3 Jan 2022 19:08:13 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TYXZ6xEZLj3IPCIcLv9BWJ1Vx0SvYEHMdtbFYPKqRUjpnbgqtj2uJs2AON4jECheeXv2sBdCRW4gNu8IeGW44NuFTiK3qtEp3vYYQer9c09aTdSsPVbto5VgdDN0EiihC6WMJVHetvN/rzRgZqyPyNgn6YzTj+DsnW2jjNgf5DDGQtUA6Fz9UOzGZ1pr0RuGbbs4Sd+D8nBwO/tyZignqOkV3agoQNnMb32yAhJJYo9aITrihkXKu02P4vdo3JCchfSDdzkk8iIvkWMiwUMud9oHdqacetQuFqzU9DY/ldPVpl67AxbCHYGKN7mvs3A4bPgWumAyvGm0oFIeYBAgCQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yz/2Sc/yGiQa8a5M23t4zcH5+HGzZMi+pjTckMGJZGQ=;
- b=dljQRqLXSmOK5sYh2oBDU6j/i6MWb3hXpVaSRD2neIQOQSzWIRAktUdsQyVPr/v3haNMTl7CbKHTUG8akOZAqWFc7XGX+D3gFH3lrTk4lJYv2y18JQIvBT52Ed6ZYSMbfIATiC4yIFhVDmoQX1JhUiDfbCXbdH2g6usvFR+zI5N/yzhXCXCMIiTRhqfBd3/zsfMCjQJ/xpqI56nEYTcQ7nI6SNOAwxfShfS7vLz5TcQJyOiAtx08zXAH0V1VDVdIWyN8AdqbYSvnRkPJPKFBjivigPA3/J8A6s+RbN2WzahzQJCF5mgSuHtdrcw0Zun4Q4lMsbEB0TAa/4G7D4F3rQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yz/2Sc/yGiQa8a5M23t4zcH5+HGzZMi+pjTckMGJZGQ=;
- b=Vw4o2BhvXOyJ8aQT1O64bR6ZN/HEDe+ctBM6xKspHsGRBYXxEOyXx5FKeh+lA7jn5cXmhYlGSH71CpCtsrZ1HG0o47GeKjC6TAnVdx+Ku1ZDcD3w0G+cG/XQ/vEMTGRKCamKEC4MBN/21OvCwba1sLHt/bRsTQjcVxnqszRATfgQUbiam1V1InIW1ADHwS0TxpCWoLaL9LYnIq0Il4H1qPRC1bOJe9x87m/hiOv9BAGPpMCyyOY3j1n8gw7IPe90GUwQFrZ32iYaJ/2yjYGQ3fumqqP5EESOsVkjsiLplkWF832aFZ3MF6WKhO+U9SzHs/rLglpsgPrfGCMyisRKWQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5272.namprd12.prod.outlook.com (2603:10b6:208:319::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4844.14; Tue, 4 Jan
- 2022 00:08:12 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d8be:e4e4:ce53:6d11]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::d8be:e4e4:ce53:6d11%7]) with mapi id 15.20.4844.016; Tue, 4 Jan 2022
- 00:08:12 +0000
-Date:   Mon, 3 Jan 2022 20:08:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Thorsten Leemhuis <regressions@leemhuis.info>,
-        Tony Lu <tonylu@linux.alibaba.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Alaa Hleihel <alaa@nvidia.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH rdma-rc] RDMA/mlx5: Fix dereg mr flow for kernel MRs
-Message-ID: <20220104000811.GA2596382@nvidia.com>
-References: <f298db4ec5fdf7a2d1d166ca2f66020fd9397e5c.1640079962.git.leonro@nvidia.com>
- <YcKSzszT/zw2ECjh@TonyMac-Alibaba>
- <YdLHDzmNXlqSMj/A@unreal>
- <0d897f0a-6671-bb78-21d5-e475d1db29b9@leemhuis.info>
- <YdM/0EUd3S4obWWa@unreal>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YdM/0EUd3S4obWWa@unreal>
-X-ClientProxiedBy: BL1PR13CA0264.namprd13.prod.outlook.com
- (2603:10b6:208:2ba::29) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231518AbiADBBE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 3 Jan 2022 20:01:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230044AbiADBBE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 3 Jan 2022 20:01:04 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71E8C061761;
+        Mon,  3 Jan 2022 17:01:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=Rpq0CasVOhIvJE1oC2pxrzGmHvQGWTE5PPcm0QZMADc=; b=GBLyUbsC/eU3mQmLF9zxPK9mZ6
+        /A6jOPQ/lbM8cJU5p7YBGY9gFpYMkuCf+qYY4WnUvtZYhZSbhsSjiJFGE2TxR0YJJjNgqKalXFRrO
+        1FCgVK6pHghM5RQA1JjHrDIVl+aSn+lhmA1+kgns029M+isGZN+FUZ6V1wHRB3h9T6zkMg9TVP+wt
+        mh7kB8fm/42KhECMApSAewtHquwOtXp8oLqxDZLagIY2vWIKUZHC9v/H96GhdCPfJYro52J6z6kcV
+        uipLwIpmp32CgQNkUfe3U1SrR2pVOSBgxtLm+tAT1AM2UXD9UVB7XpE7Fjket73xpXlIm5YiJZERG
+        YjK0C1jQ==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n4YC8-005Ba4-Ig; Tue, 04 Jan 2022 01:00:56 +0000
+Message-ID: <50fa4eca-ce74-431f-8497-273d2c5956f2@infradead.org>
+Date:   Mon, 3 Jan 2022 17:00:53 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e63d70b3-6501-45fd-fa8c-08d9cf164bfb
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5272:EE_
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5272C813CA05652BF9DA75EBC24A9@BL1PR12MB5272.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mYhdK+WOOHD7ozNo4MteFgx00AXvFfZvwP9o0w6desb+iQi9XpHADzKDGccbb4K6oZJRO7lfzezdlfQ0Q795SJaUbkqq0whq1lFLNJ1arn85r0GebY26QjGjx2WeLP3KP4F2EZ33y+sQDY1Bml4r5/1THP3eoVqVrOD4SfDu6EGttZ5RdeCHMaaOpt3ANVuqG7KyavZFAI5GFPaRhN7v6OYwuzXGcD6966/dDCVEeSdYMsJ2XGcfikZWKcSYSyNuAdlU4G8fo9PV2T2TwjxSjtSuB+iWQw6t22H29xBJSbbae7ZWR9V+Mgo0BLVBpB3f6YZfir53qvoOETdkwTUdKVvbSyfZcEpXG1NZc9MPBXUBbD79fIlOGkbzJIe3HB7y5NFK7k1lrWguch+SUa0DsVxSCRr3cxPczq8Vsoplno+/d0icCsGFJmfMiTWSA07nLtY5TOj1ohRGW6WGVuKpVC+CtX6be4gu5mqXH+rrcr+TKFxcTySOKoXWqNIBmYk1Tdhnxt7QCFKEoq9STETME+k1z9M7yS69T0hPAZ10TC7aX+tl7xRD2RBpaOzWBLGPP2uEZ1MouhJoy8ViHiK/9QUdbm/i2VwOeEvAZJfUi+dZHrwg4qwU9i0sWrgxYDEQv4SRXwVVwrOp76OC9JKJLw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(6506007)(83380400001)(8676002)(6486002)(316002)(26005)(2616005)(5660300002)(38100700002)(66946007)(4326008)(33656002)(186003)(6916009)(54906003)(6512007)(36756003)(8936002)(1076003)(66556008)(86362001)(66476007)(2906002)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3k68E1v1oIrENaZB3iYer3j23zbYUYdPjmO/rXrbe3VUdXWvXw/2UIx04GvE?=
- =?us-ascii?Q?eHOqUOHUlpcmSTL4jPA/meui3Q5bdseSFVRNITtYUwLlbbuWQDV2aKwBt8Yn?=
- =?us-ascii?Q?01s0rB1TPnGhZu2tEyN91F7nvu/Txhe7toa+vbP2IRWGflqLvzY9nFgE5ZAk?=
- =?us-ascii?Q?aHEBcifGZJEvfPqTSPDS1M7UzOF8MQ5f/5HVT99c5nFAaPSwG6ttXBGA+YiG?=
- =?us-ascii?Q?03ETGbd3CSMIoEKL2UFbiTpP30172rw960YUxU2Ver6fvoEFXXgZagk2ThZO?=
- =?us-ascii?Q?1PkjYL5tEYRzJO5LwSVL0N7HrMt+b+WbW0gQdwwiC02ypx9WECXgtB/DNAqn?=
- =?us-ascii?Q?ymU2f3UaF3VKCQQmtBzu6v7UL0ETEActX8GQH+HDBXhPQshoW/Ooo0oYmh5+?=
- =?us-ascii?Q?5h/bx05CZJ7qhnzuR081VGJ3cgvqYH8PQv3Rkd6UYo0g0/HPb0gM6nVyC8kQ?=
- =?us-ascii?Q?eYvqJ2WJdn5J9XQEfFglZ3fwUd1sNyA/VY85LbY+GNzgLMgDl39GRJ467cah?=
- =?us-ascii?Q?g+igww0MzRZu1iE7y91vZhkhO9svXmkCXoT5XReE2dh34no8h6iEfSGJwI+u?=
- =?us-ascii?Q?4MQ4Cb0P+R2ZzxBqp1hkV5p5uZKShdyTjq1HlPWVn+FiPN3f5veSlB9IC7Sp?=
- =?us-ascii?Q?GKAvLM2z6FHGvG4O+hPSlsi/TzN1ra4JBBH8CEKN+3WtKffQ5kqSaD00C4LQ?=
- =?us-ascii?Q?GlzbxPZ5BY71f3E6mXYXGOTCTLFI2smNzwtOKO9/ogpXq5bQz+zoGt0SHyEi?=
- =?us-ascii?Q?uXTaxu8fTEocoPQLwTFvA+F5zbGYBcWukLKeozS+Kw673tSmEAUN+IPxq6ci?=
- =?us-ascii?Q?Knz9rzT9UbKWbXGHLyxNx4ixFOJjMR7B5d7szfWV18nX6WNp6PPtqZqJYBu8?=
- =?us-ascii?Q?NsbB6xsw+gSGnezZYn7UiXKqPO3CCrqeQ7r1vGs2mp+A2WauQJG+ekrpKTT2?=
- =?us-ascii?Q?vmsiWqpg3S58tJjKiuzSJ7FRItBr/H3eX9kPnuGAA2yCLaNedeh5EpQdjRzw?=
- =?us-ascii?Q?yQ4BNQwj+CGUYkkUyEfFO+9PNS66PLovVQNVwsTQwX2VWq7QtdVLQdG7ZL+m?=
- =?us-ascii?Q?5ldOT31KZNI9Nv23NSfwoZlKsnvmJD9eNLdwK1qByewbUyGGaD0tLllTPZ7y?=
- =?us-ascii?Q?TLddWutNuqNFFx4f8Vt3j6uuOikYti47fFGsQNoxNQRGjO0dAYTlC5qUKbHA?=
- =?us-ascii?Q?R0PmqVxnxj7028fcXfeVvCO2iBhgTDpU36miCoU/9duWvdprTrF3TgH7B41J?=
- =?us-ascii?Q?7Ly/6BzyR465EM9+ZXRd/B3pSq7niJrJMGhrpc1CHKTPVfp3fiBLO59nbVC/?=
- =?us-ascii?Q?ILz7803urFpqovkUbV9rOrEyBASvutslDFJTwqQMlWxpE1h15GlxfaOHq9ix?=
- =?us-ascii?Q?3moXLu/G9xSkgmEAyT9fBunHkWwBDIeZikymo5CUuWqiR8rPG1xadezczusM?=
- =?us-ascii?Q?gob4AR89UCDI3EDcvhbinP3P5Nyd105VJ1cWUFxh7AHT5+lRBShAflEuH9w6?=
- =?us-ascii?Q?hJ3x43MlDrI+dTwuljrCDh09ttw6mmbLxy4H7hCW7o898bfF6NoV7lRFE5h6?=
- =?us-ascii?Q?J/41H/Ajq2vzUkMYJdQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e63d70b3-6501-45fd-fa8c-08d9cf164bfb
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Jan 2022 00:08:12.3170
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3AxvudbtHAGQmxNXVxPVNIpUXfU6TsugjBS0bhoctg0YnTbx6pfQvJM3RWMmnC1j
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5272
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH 2/2] IB/rdmavt: modify rdmavt/qp.c for UML
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-rdma@vger.kernel.org, linux-um@lists.infradead.org
+References: <20220102070623.24009-1-rdunlap@infradead.org>
+ <20220103230445.GA2592848@nvidia.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20220103230445.GA2592848@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 03, 2022 at 08:26:24PM +0200, Leon Romanovsky wrote:
 
-> The proposals are:
-> 1. Return back to v1, which had dummy umem, so so DM memory regions will
-> behave as regular user created verbs object.
-> 2. Add extra flag to is_user/is_kernel for mlx5 mr struct and update all
-> paths to rely on that flag.
-> 3. Create separate dereg MR function that will treat DM differently.
 
-It is not DM that is the problem, ti is that user and kernel has been
-mixed together in this mess despite being completely different.
+On 1/3/22 15:04, Jason Gunthorpe wrote:
+> On Sat, Jan 01, 2022 at 11:06:23PM -0800, Randy Dunlap wrote:
+>> When building rdmavt for ARCH=um, qp.c has a build error on a reference
+>> to the x86-specific cpuinfo field 'x86_cache_size'. This value is then
+>> used to determine whether to use cacheless_memcpy() or not.
+>> Provide a fake value to LLC for CONFIG_UML. Then provide a separate
+>> verison of cacheless_memcpy() for CONFIG_UML that is just a plain
+>> memcpy(), like the calling code uses.
+>>
+>> Prevents these build errors:
+>>
+>> ../drivers/infiniband/sw/rdmavt/qp.c: In function ‘rvt_wss_llc_size’:
+>> ../drivers/infiniband/sw/rdmavt/qp.c:88:23: error: ‘struct cpuinfo_um’ has no member named ‘x86_cache_size’; did you mean ‘x86_capability’?
+>>   return boot_cpu_data.x86_cache_size;
+>>
+>> ../drivers/infiniband/sw/rdmavt/qp.c: In function ‘cacheless_memcpy’:
+>> ../drivers/infiniband/sw/rdmavt/qp.c:100:2: error: implicit declaration of function ‘__copy_user_nocache’; did you mean ‘copy_user_page’? [-Werror=implicit-function-declaration]
+>>   __copy_user_nocache(dst, (void __user *)src, n, 0);
+>>
+>> Fixes: 68f5d3f3b654 ("um: add PCI over virtio emulation driver")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>  drivers/infiniband/sw/rdmavt/qp.c |   12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> +++ linux-next-20211224/drivers/infiniband/sw/rdmavt/qp.c
+>> @@ -84,10 +84,15 @@ EXPORT_SYMBOL(ib_rvt_state_ops);
+>>  /* platform specific: return the last level cache (llc) size, in KiB */
+>>  static int rvt_wss_llc_size(void)
+>>  {
+>> +#if !defined(CONFIG_UML)
+>>  	/* assume that the boot CPU value is universal for all CPUs */
+>>  	return boot_cpu_data.x86_cache_size;
+>> +#else /* CONFIG_UML */
+>> +	return 1024;	/* fake 1 MB LLC size */
+>> +#endif
+>>  }
+>>  
+>> +#if !defined(CONFIG_UML)
+>>  /* platform specific: cacheless copy */
+>>  static void cacheless_memcpy(void *dst, void *src, size_t n)
+>>  {
+>> @@ -99,6 +104,13 @@ static void cacheless_memcpy(void *dst,
+>>  	 */
+>>  	__copy_user_nocache(dst, (void __user *)src, n, 0);
+>>  }
+>> +#else
+>> +/* for CONFIG_UML, this is just a plain memcpy() */
+>> +static void cacheless_memcpy(void *dst, void *src, size_t n)
+>> +{
+>> +	memcpy(dst, src, n);
+>> +}
+>> +#endif
+> 
+> memcpy is not the same thing as __copy_user - the hint is in the
+> __user cast..
+> 
+> It should by copy_from_user(), I think, and this is all just somehow
+> broken to not check the return code.
 
-I've been slowly disentangling them and the series you just sent 'MR
-cache enhancment' removes the last blocker from completely giving
-kernel MRs their own struct.
+Thanks.
 
-So, the solution here is to move in the direction of making the kernel
-MRs different. There is only one place that destroys a kernel MR, just
-have it call a special 'destroy kernel MR' function that doesn't touch
-any umem stuff at all. Remove the kernel-only parts entirely from the
-current function.
+> Why are you trying to make a HW driver compile on UML? Is there any
+> way to even use a driver like this in a UML environment?
 
-After Aharon's series we can give them different types. Notice the
-union is already completely disjoint except for the little bit
-tracking the cache which evaporates once the cache only stores the
-mkey # and not the struct memory.
+I'm just trying to clean up lots of UML build errors.
+I'm quite happy just making the driver depend on !UML.
 
-Jason
+UML maintainers, what do you think?
+
+Thanks again.
+
+-- 
+~Randy
