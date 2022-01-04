@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24870483C10
-	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 07:51:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5795483C12
+	for <lists+linux-rdma@lfdr.de>; Tue,  4 Jan 2022 07:52:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbiADGu6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jan 2022 01:50:58 -0500
-Received: from out2.migadu.com ([188.165.223.204]:32598 "EHLO out2.migadu.com"
+        id S233068AbiADGwu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jan 2022 01:52:50 -0500
+Received: from out0.migadu.com ([94.23.1.103]:19656 "EHLO out0.migadu.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233043AbiADGu6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Jan 2022 01:50:58 -0500
+        id S233043AbiADGwt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 4 Jan 2022 01:52:49 -0500
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1641279056;
+        t=1641279168;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=RzVgYGKIVPBoj0bOJ5At56kYRQ8EZM8yC9PKOOtjECU=;
-        b=dW7ITugLYZ4rvpZFsIEayxgehiMUMsxRMglfLl81wDItM32J1Y29uxx1bsxNIOtmAykYjR
-        zIfkEMAuCHTTf+dkiAAHh02N+kipwC9VCWCpENn27CgqnRQrQHzNxWJ+EQtrCdntyN/ULJ
-        cXLCDXQtzaJssimFJegCuH2YbpCriO8=
+        bh=C/vs2/kpUCSa19VMN4BSkGDf+cLA7qeHaue2fPAiblQ=;
+        b=DtVm7W6jlm9rH5Hb26lk6sLoeTuki0lAIgxNU8BYHpy3A/0UAburgqzq8/azXhKUOZZQlr
+        4dKjpph3J2ah1nnPk6eCIl0bleGhyU0HFnjvh8f0H0RnuZfQuZFE9lCZ9YdGeTkJphUGXh
+        c4PzPcP1uis3CPIWbPvsDjpg+oj41n0=
 From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Subject: Re: [PATCHv2 for-next 2/5] RDMA/rtrs-srv: Rename rtrs_srv_sess to
- rtrs_srv_path
+Subject: Re: [PATCHv2 for-next 3/5] RDMA/rtrs-clt: Rename rtrs_clt_sess to
+ rtrs_clt_path
 To:     Jack Wang <jinpu.wang@ionos.com>, linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, jgg@ziepe.ca,
         haris.iqbal@ionos.com,
         Vaishali Thakkar <vaishali.thakkar@ionos.com>
 References: <20220103133339.9483-1-jinpu.wang@ionos.com>
- <20220103133339.9483-3-jinpu.wang@ionos.com>
-Message-ID: <a80f9ee4-051b-e3dd-8f1f-e087987407d8@linux.dev>
-Date:   Tue, 4 Jan 2022 14:50:49 +0800
+ <20220103133339.9483-4-jinpu.wang@ionos.com>
+Message-ID: <0bf78ddd-b8b6-3a00-4a5a-1f499703a72a@linux.dev>
+Date:   Tue, 4 Jan 2022 14:52:35 +0800
 MIME-Version: 1.0
-In-Reply-To: <20220103133339.9483-3-jinpu.wang@ionos.com>
+In-Reply-To: <20220103133339.9483-4-jinpu.wang@ionos.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -48,169 +48,175 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 1/3/22 9:33 PM, Jack Wang wrote:
 
-> --- a/drivers/block/rnbd/rnbd-srv.c
-> +++ b/drivers/block/rnbd/rnbd-srv.c
-> @@ -269,9 +269,9 @@ static int create_sess(struct rtrs_srv *rtrs)
->   	char sessname[NAME_MAX];
-
-It is pathname with the change.
-
->   	int err;
->   
-> -	err = rtrs_srv_get_sess_name(rtrs, sessname, sizeof(sessname));
-> +	err = rtrs_srv_get_path_name(rtrs, sessname, sizeof(sessname));
->   	if (err) {
-> -		pr_err("rtrs_srv_get_sess_name(%s): %d\n", sessname, err);
-> +		pr_err("rtrs_srv_get_path_name(%s): %d\n", sessname, err);
->   
->   		return err;
->   	}
-
-[ ... ]
-
-> -void close_sess(struct rtrs_srv_sess *sess)
-> +void close_path(struct rtrs_srv_path *srv_path)
-
-I guess close_srv_path is better if it has counterpart in rtrs-clt.c.
-
-[ ... ]
-
->   		rtrs_err_rl(s,
->   			    "Sending I/O response failed,  session %s is disconnected, sess state %s\n",
-
-With the change, the above should print path instead of session.
-
-> -			    kobject_name(&sess->kobj),
-> -			    rtrs_srv_state_str(sess->state));
-> +			    kobject_name(&srv_path->kobj),
-> +			    rtrs_srv_state_str(srv_path->state));
->   		goto out;
->   	}
->   	if (always_invalidate) {
-> -		struct rtrs_srv_mr *mr = &sess->mrs[id->msg_id];
-> +		struct rtrs_srv_mr *mr = &srv_path->mrs[id->msg_id];
->   
->   		ib_update_fast_reg_key(mr->mr, ib_inc_rkey(mr->mr->rkey));
->   	}
->   	if (atomic_sub_return(1, &con->c.sq_wr_avail) < 0) {
->   		rtrs_err(s, "IB send queue full:*sess*=%s cid=%d\n",
-> -			 kobject_name(&sess->kobj),
-> +			 kobject_name(&srv_path->kobj),
-
-Ditto.
-
->   			 con->c.cid);
->   		atomic_add(1, &con->c.sq_wr_avail);
->   		spin_lock(&con->rsp_wr_wait_lock);
-> @@ -524,11 +527,11 @@ bool rtrs_srv_resp_rdma(struct rtrs_srv_op *id, int status)
->   
->   	if (err) {
->   		rtrs_err_rl(s, "IO response failed: %d:*sess*=%s\n", err,
-> -			    kobject_name(&sess->kobj));
-> -		close_sess(sess);
-> +			    kobject_name(&srv_path->kobj));
-> +		close_path(srv_path);
-
-Ditto.
-
-[ ... ]
-
-> @@ -754,7 +757,7 @@ static bool exist_sessname(struct rtrs_srv_ctx *ctx,
->   			   const char *sessname, const uuid_t *path_uuid)
->   {
->   	struct rtrs_srv *srv;
-> -	struct rtrs_srv_sess *sess;
-> +	struct rtrs_srv_path *srv_path;
->   	bool found = false;
->   
->   	mutex_lock(&ctx->srv_mutex);
-> @@ -767,9 +770,9 @@ static bool exist_sessname(struct rtrs_srv_ctx *ctx,
->   			continue;
->   		}
->   
-> -		list_for_each_entry(sess, &srv->paths_list, s.entry) {
-> -			if (strlen(sess->s.sessname) == strlen(sessname) &&
-> -			    !strcmp(sess->s.sessname, sessname)) {
-> +		list_for_each_entry(srv_path, &srv->paths_list, s.entry) {
-> +			if (strlen(srv_path->s.sessname) == strlen(sessname) &&
-> +			    !strcmp(srv_path->s.sessname, sessname)) {
-
-I am wondering if the sessname should be replaced with pathname, pls 
-double check.
-Does it make sense to add the definitions about "path" and "session" 
-somewhere such
-as in README?
-
-[ ... ]
-
->   
-> -static int post_recv_sess(struct rtrs_srv_sess *sess)
-> +static int post_recv_sess(struct rtrs_srv_path *srv_path)
-
-post_recv_path?
-
->   {
-> -	struct rtrs_srv *srv = sess->srv;
-> -	struct rtrs_path *s = &sess->s;
-> +	struct rtrs_srv *srv = srv_path->srv;
-> +	struct rtrs_path *s = &srv_path->s;
->   	size_t q_size;
->   	int err, cid;
->   
-> -	for (cid = 0; cid < sess->s.con_num; cid++) {
-> +	for (cid = 0; cid < srv_path->s.con_num; cid++) {
->   		if (cid == 0)
->   			q_size = SERVICE_CON_QUEUE_DEPTH;
->   		else
->   			q_size = srv->queue_depth;
->   
-> -		err = post_recv_io(to_srv_con(sess->s.con[cid]), q_size);
-> +		err = post_recv_io(to_srv_con(srv_path->s.con[cid]), q_size);
->   		if (err) {
->   			rtrs_err(s, "post_recv_io(), err: %d\n", err);
->   			return err;
-
 [ .. ]
 
->   /**
-> - * rtrs_srv_get_sess_name() - Get rtrs_srv peer hostname.
-> + * rtrs_srv_get_path_name() - Get rtrs_srv peer hostname.
->    * @srv:	Session
->    * @sessname:	Sessname buffer
->    * @len:	Length of sessname buffer
->    */
-> -int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
-> +int rtrs_srv_get_path_name(struct rtrs_srv *srv, char *sessname, size_t len)
+> -static int post_recv_sess(struct rtrs_clt_sess *sess)
+> +static int post_recv_path(struct rtrs_clt_path *clt_path)
 
-The "sessname" argument is actually for path, right?
+How about rename it to post_recv_clt_path to make it obviously if you
+has the same change to post_recv_sess in rtrs-srv.c?
+
+[ ... ]
+
+> @@ -1378,13 +1383,14 @@ static int alloc_sess_reqs(struct rtrs_clt_sess *sess)
+>   		if (!req->sge)
+>   			goto out;
+>   
+> -		req->mr = ib_alloc_mr(sess->s.dev->ib_pd, IB_MR_TYPE_MEM_REG,
+> -				      sess->max_pages_per_mr);
+> +		req->mr = ib_alloc_mr(clt_path->s.dev->ib_pd,
+> +				      IB_MR_TYPE_MEM_REG,
+> +				      clt_path->max_pages_per_mr);
+>   		if (IS_ERR(req->mr)) {
+>   			err = PTR_ERR(req->mr);
+>   			req->mr = NULL;
+>   			pr_err("Failed to alloc sess->max_pages_per_mr %d\n",
+
+s/sess/clt_path/
+
+> -			       sess->max_pages_per_mr);
+> +			       clt_path->max_pages_per_mr);
+>   			goto out;
+>   		}
+>   
+
+[ ... ]
+
+> -static int create_con(struct rtrs_clt_sess *sess, unsigned int cid)
+> +static int create_con(struct rtrs_clt_path *clt_path, unsigned int cid)
+
+Could you rename it to create_clt_con? Because the function name appears
+in both client and server.
 
 >   {
-> -	struct rtrs_srv_sess *sess;
-> +	struct rtrs_srv_path *srv_path;
->   	int err = -ENOTCONN;
+>   	struct rtrs_clt_con *con;
 >   
->   	mutex_lock(&srv->paths_mutex);
-> -	list_for_each_entry(sess, &srv->paths_list, s.entry) {
-> -		if (sess->state != RTRS_SRV_CONNECTED)
-> +	list_for_each_entry(srv_path, &srv->paths_list, s.entry) {
-> +		if (srv_path->state != RTRS_SRV_CONNECTED)
->   			continue;
-> -		strscpy(sessname, sess->s.sessname,
-> -		       min_t(size_t, sizeof(sess->s.sessname), len));
-> +		strscpy(sessname, srv_path->s.sessname,
-> +			min_t(size_t, sizeof(srv_path->s.sessname), len));
->   		err = 0;
->   		break;
->   	}
-> @@ -1307,7 +1313,7 @@ int rtrs_srv_get_sess_name(struct rtrs_srv *srv, char *sessname, size_t len)
+> @@ -1601,28 +1609,28 @@ static int create_con(struct rtrs_clt_sess *sess, unsigned int cid)
+>   	/* Map first two connections to the first CPU */
+>   	con->cpu  = (cid ? cid - 1 : 0) % nr_cpu_ids;
+>   	con->c.cid = cid;
+> -	con->c.path = &sess->s;
+> +	con->c.path = &clt_path->s;
+>   	/* Align with srv, init as 1 */
+>   	atomic_set(&con->c.wr_cnt, 1);
+>   	mutex_init(&con->con_mutex);
 >   
->   	return err;
+> -	sess->s.con[cid] = &con->c;
+> +	clt_path->s.con[cid] = &con->c;
+>   
+>   	return 0;
 >   }
-> -EXPORT_SYMBOL(rtrs_srv_get_sess_name);
-> +EXPORT_SYMBOL(rtrs_srv_get_path_name);
+>   
+
+[ ... ]
+
+> -static inline bool xchg_sessions(struct rtrs_clt_sess __rcu **rcu_ppcpu_path,
+> -				 struct rtrs_clt_sess *sess,
+> -				 struct rtrs_clt_sess *next)
+> +static inline bool xchg_sessions(struct rtrs_clt_path __rcu **rcu_ppcpu_path,
+> +				 struct rtrs_clt_path *clt_path,
+> +				 struct rtrs_clt_path *next)
+
+Now, it is used to exchange paths instead of sessions, right?
+
+>   {
+> -	struct rtrs_clt_sess **ppcpu_path;
+> +	struct rtrs_clt_path **ppcpu_path;
+>   
+>   	/* Call cmpxchg() without sparse warnings */
+>   	ppcpu_path = (typeof(ppcpu_path))rcu_ppcpu_path;
+> -	return sess == cmpxchg(ppcpu_path, sess, next);
+> +	return clt_path == cmpxchg(ppcpu_path, clt_path, next);
+>   }
+
+[ ... ]
+
+> @@ -2375,31 +2387,32 @@ static int init_conns(struct rtrs_clt_sess *sess)
+>   static void rtrs_clt_info_req_done(struct ib_cq *cq, struct ib_wc *wc)
+>   {
+>   	struct rtrs_clt_con *con = to_clt_con(wc->qp->qp_context);
+> -	struct rtrs_clt_sess *sess = to_clt_sess(con->c.path);
+> +	struct rtrs_clt_path *clt_path = to_clt_path(con->c.path);
+>   	struct rtrs_iu *iu;
+>   
+>   	iu = container_of(wc->wr_cqe, struct rtrs_iu, cqe);
+> -	rtrs_iu_free(iu, sess->s.dev->ib_dev, 1);
+> +	rtrs_iu_free(iu, clt_path->s.dev->ib_dev, 1);
+>   
+>   	if (wc->status != IB_WC_SUCCESS) {
+> -		rtrs_err(sess->clt, "Sess info request send failed: %s\n",
+> +		rtrs_err(clt_path->clt, "*Sess*  info request send failed: %s\n",
+
+Path info, same as below.
+
+[ ... ]
+
+>   	if (wc->status != IB_WC_SUCCESS) {
+> -		rtrs_err(sess->clt, "Sess info response recv failed: %s\n",
+> +		rtrs_err(clt_path->clt, "Path info response recv failed: %s\n",
+>   			  ib_wc_status_msg(wc->status));
+>   		goto out;
+>   	}
+>   	WARN_ON(wc->opcode != IB_WC_RECV);
+>   
+>   	if (wc->byte_len < sizeof(*msg)) {
+> -		rtrs_err(sess->clt, "Sess info response is malformed: size %d\n",
+> +		rtrs_err(clt_path->clt, "Path info response is malformed: size %d\n",
+>   			  wc->byte_len);
+>   		goto out;
+>   	}
+
+[ ... ]
+
+> @@ -2533,33 +2548,34 @@ static int rtrs_send_sess_info(struct rtrs_clt_sess *sess)
+>   	/* Prepare for getting info response */
+>   	err = rtrs_iu_post_recv(&usr_con->c, rx_iu);
+>   	if (err) {
+> -		rtrs_err(sess->clt, "rtrs_iu_post_recv(), err: %d\n", err);
+> +		rtrs_err(clt_path->clt, "rtrs_iu_post_recv(), err: %d\n", err);
+>   		goto out;
+>   	}
+>   	rx_iu = NULL;
+>   
+>   	msg = tx_iu->buf;
+>   	msg->type = cpu_to_le16(RTRS_MSG_INFO_REQ);
+> -	memcpy(msg->sessname, sess->s.sessname, sizeof(msg->sessname));
+> +	memcpy(msg->sessname, clt_path->s.sessname, sizeof(msg->sessname));
+
+Pls check if it is pathname.
+
+[ ... ]
+
+
+>   /**
+> - * init_sess() - establishes all session connections and does handshake
+> - * @sess: client session.
+> + * init_pathi() - establishes all path connections and does handshake
+
+s/init_pathi/init_path, maybe it would be better to call it 
+init_clt_path here.
+
+> + * @clt_path: client path.
+>    * In case of error full close or reconnect procedure should be taken,
+>    * because reconnect or close async works can be started.
+>    */
+> -static int init_sess(struct rtrs_clt_sess *sess)
+> +static int init_path(struct rtrs_clt_path *clt_path)
+
+[ ... ]
+
+> -	if (sess->reconnect_attempts >= clt->max_reconnect_attempts) {
+> +	if (clt_path->reconnect_attempts >= clt->max_reconnect_attempts) {
+>   		/* Close a*session*  completely if max attempts is reached */
+
+I guess it is close a path now.
+
+> -		rtrs_clt_close_conns(sess, false);
+> +		rtrs_clt_close_conns(clt_path, false);
+>   		return;
+>   	}
 
 [ ... ]
 
 Thanks,
 Guoqing
-
