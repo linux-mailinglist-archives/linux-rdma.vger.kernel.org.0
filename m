@@ -2,109 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B07484F50
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:27:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9237484F55
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbiAEI1w (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jan 2022 03:27:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231514AbiAEI1v (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 03:27:51 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71027C061761
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jan 2022 00:27:51 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id g11so87584729lfu.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Jan 2022 00:27:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0HnMqrJ8+G7op9/PV0Z3ZbYZiNYSBbvnC+myTdu9aCo=;
-        b=ALkJpW1sgp/R/ZNynfEGpxd09ow3742pJW55AqCMWwdpdI0T0UIcxeG/IMxn2UgKzX
-         Qhhl2PfTRCD2YnOiWTYpRa1nBbcGJknVQq5sdtfSEHQgmqAAxB0gzPS1CbgocLwVKiiR
-         hTVWCl3VqijVUJe1nHdLz9YPND9CllcYYrz4fUfJ9L2ucSJhl1zqJk5RZ7gr0EkoVQ/C
-         LFRwfMtQb5A9ObMvjyeLP71FzVl+hsxd3REHc1gkXBt7x80C4cA65lDSlgVrZgNL5RNX
-         ozEG+hV6GZnPpsAQ/j+4GhEqAtmqWDeJnyNVegoHwpgPVB+FAUc0ADuOOUkGzI79SjHY
-         uR5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0HnMqrJ8+G7op9/PV0Z3ZbYZiNYSBbvnC+myTdu9aCo=;
-        b=qineUoh/Ehl84tl+IwyVh4oIzp0P4b9/ZZHh/UvYWvTWMu1KUpRwilcMFw5x4OgmRd
-         W29Gwox49ffavSUzVM3OWXl2Bu2radKYSGSXlYJWRceiBlPSZEX6d/9g8EUnRPkDjCOZ
-         MhvXPH7/6Fgq14NvxyG/WLxIjIZHtoZb5svAGzpttJagqPV23CgBKXZoR/aoume0svtV
-         Om/k+lQSZI+bPUq6mJcA4EbPOzugle/t6K6O54xrx6C16+ooZv1nXJeSp/nMPDwPFPMI
-         PmZi01uSN5TFTVLzD957/Dl2vP5jyhhcZ9TyPVrJ/4JhBwzB4O46nZaTIldTgqCU3pyJ
-         F+pQ==
-X-Gm-Message-State: AOAM531XlOhFBBoXdlqOr3Kr18bxCihLm5TWNkJ48b7KC+HqBK8C4BvQ
-        /Q2GBNSphg9uAC0n+RA1vtopM5/namAMQyZSkks=
-X-Google-Smtp-Source: ABdhPJx4x9coVigiDEH8ub9gtrMWljgioSsR3Qapk8JSWOT2qTRTgFPOxOWfO6GlFSI1Ih2iAXzlu+NtsGVm9XJW8KU=
-X-Received: by 2002:a05:6512:374f:: with SMTP id a15mr44367705lfs.571.1641371269768;
- Wed, 05 Jan 2022 00:27:49 -0800 (PST)
+        id S238510AbiAEI2q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 03:28:46 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:43913 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229962AbiAEI2o (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 03:28:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V1020Uj_1641371321;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V1020Uj_1641371321)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 05 Jan 2022 16:28:42 +0800
+Date:   Wed, 5 Jan 2022 16:28:41 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     Karsten Graul <kgraul@linux.ibm.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
+ listen queue
+Message-ID: <YdVWuWx+ygpD5gjX@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
+ <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+ <20220105044049.GA107642@e02h04389.eu6sqa>
 MIME-Version: 1.0
-References: <20220105221237.2659462-1-yanjun.zhu@linux.dev>
- <20220105221237.2659462-5-yanjun.zhu@linux.dev> <YdVONs32Ue7R0kk1@unreal>
-In-Reply-To: <YdVONs32Ue7R0kk1@unreal>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Wed, 5 Jan 2022 16:27:38 +0800
-Message-ID: <CAD=hENeUv_7GjgDrZWr5wUmECtGY8=a=sPmbRanmh4zxLWzecA@mail.gmail.com>
-Subject: Re: [PATCH 4/5] RDMA/rxe: Use the standard method to produce udp
- source port
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     yanjun.zhu@linux.dev, liangwenpeng@huawei.com,
-        Jason Gunthorpe <jgg@ziepe.ca>, mustafa.ismail@intel.com,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220105044049.GA107642@e02h04389.eu6sqa>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 5, 2022 at 3:52 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Wed, Jan 05, 2022 at 05:12:36PM -0500, yanjun.zhu@linux.dev wrote:
-> > From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> >
-> > Use the standard method to produce udp source port.
-> >
-> > Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> > ---
-> >  drivers/infiniband/sw/rxe/rxe_verbs.c | 6 ++++++
-> >  1 file changed, 6 insertions(+)
-> >
-> > diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > index 0aa0d7e52773..42fa81b455de 100644
-> > --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> > @@ -469,6 +469,12 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-> >       if (err)
-> >               goto err1;
-> >
-> > +     if ((mask & IB_QP_AV) && (attr->ah_attr.ah_flags & IB_AH_GRH))
->
-> You are leaving src_port default and wired to same port as other QPs
-> without any randomization.
+On Wed, Jan 05, 2022 at 12:40:49PM +0800, D. Wythe wrote:
+> Hi, 
+> 
+> Since we are trying to use the backlog parameter to limit smc dangling
+> connections, it's seems there's no difference from increasing the
+> backlog parameter for the TCP listen socket, user space Application can
+> simply avoid the 10K connections problem through that.
+> 
+> If so, this patch looks redundant to me. Look forward to your advise.
+> 
+> Thanks.
 
-Hi,
+Hi D. Wythe,
 
-I do not get you. Why do you think I am leaving src_pport default?
-Thanks.
+IMHO, this patch is still useful for flood-connections scenes.
+Karsten concerns the safety in flood case, we should limit the number
+of tcp sockets for safety.
 
-Zhu Yanjun
+Imaging these two scenes:
+- general socket setup process, if with this patch, setting up tcp
+  socket is faster, but we also need to wait for the rest part of
+  handshake (rdma...). Meanwhile, there are lots of dangling sockets,
+  which may cause kernel OOM. If it isn't first-connected peer, the
+  rest part is faster, and this patch should be useful.
+- always fallback to tcp, the rest part of handshake failed, so we need
+  to fallback, this patch should make it faster to fallback.
 
->
-> Thanks
->
-> > +             qp->src_port = rdma_get_udp_sport(attr->ah_attr.grh.flow_label,
-> > +                                               qp->ibqp.qp_num,
-> > +                                               qp->attr.dest_qp_num);
-> > +
-> > +
-> >       return 0;
-> >
-> >  err1:
-> > --
-> > 2.27.0
-> >
+Whatever scenes we met, it could be better to limit the number of
+"half-connected", like backlog in tcp. There is a possible approach,
+using sysctl to limit the global or net-namespace max backlog.
+Currently, smc doesn't support sysctl yet. I sent an incomplete sysctl
+patch before, maybe it could help you. If so, I will fix that patch, and
+resent it out.
+
+Thanks,
+Tony Lu
+ 
+> On Tue, Jan 04, 2022 at 02:45:35PM +0100, Karsten Graul wrote:
+> > On 04/01/2022 14:12, D. Wythe wrote:
+> > > From: "D. Wythe" <alibuda@linux.alibaba.com>
+> > > 
+> > > In nginx/wrk multithread and 10K connections benchmark, the
+> > > backend TCP connection established very slowly, and lots of TCP
+> > > connections stay in SYN_SENT state.
+> > 
+> > I see what you are trying to solve here.
+> > So what happens with your patch now is that we are accepting way more connections
+> > in advance and queue them up for the SMC connection handshake worker.
+> > The connection handshake worker itself will not run faster with this change, so overall
+> > it should be the same time that is needed to establish all connections.
+> > What you solve is that when 10k connections are started at the same time, some of them
+> > will be dropped due to tcp 3-way handshake timeouts. Your patch avoids that but one can now flood
+> > the stack with an ~infinite amount of dangling sockets waiting for the SMC handshake, maybe even 
+> > causing oom conditions.
+> > 
+> > What should be respected with such a change would be the backlog parameter for the listen socket,
+> > i.e. how many backlog connections are requested by the user space application?
+> > There is no such handling of backlog right now, and due to the 'braking' workers we avoided
+> > to flood the kernel with too many dangling connections. With your change there should be a way to limit
+> > this ind of connections in some way.
