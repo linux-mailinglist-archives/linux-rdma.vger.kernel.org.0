@@ -2,73 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C024484DCE
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 06:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B51B484E92
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 08:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbiAEFt6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jan 2022 00:49:58 -0500
-Received: from mga07.intel.com ([134.134.136.100]:27100 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237567AbiAEFt6 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Jan 2022 00:49:58 -0500
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="305725932"
-X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
-   d="scan'208";a="305725932"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 21:49:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
-   d="scan'208";a="760688637"
-Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by fmsmga006.fm.intel.com with ESMTP; 04 Jan 2022 21:49:56 -0800
-From:   yanjun.zhu@linux.dev
-To:     liangwenpeng@huawei.com, jgg@ziepe.ca, mustafa.ismail@intel.com,
-        shiraz.saleem@intel.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
-Subject: [PATCH 5/5] RDMA/rxe: Remove the redundant randomization for UDP source port
-Date:   Wed,  5 Jan 2022 17:12:37 -0500
-Message-Id: <20220105221237.2659462-6-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220105221237.2659462-1-yanjun.zhu@linux.dev>
-References: <20220105221237.2659462-1-yanjun.zhu@linux.dev>
+        id S232985AbiAEHCl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 02:02:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbiAEHCl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 02:02:41 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF383C061761;
+        Tue,  4 Jan 2022 23:02:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PSx7P029DHEH6YRU70k09ibE+97CxrGvx2xhLycV65A=; b=UVBjtd1nIrCCYVmoi4azHpGot5
+        ezt+JCcCfTN05Z4eA2BDFQj/plz303G2MzaYxHIZP0tjyKh4THybGvFRuEKI5g0EwPde9BobWaoC7
+        xSScmH66qSlKu6GbR4Zy2V8Qgs4q7ODMGrPIPwIhha7QG+DESFL+3PmAQFbV1JAnpwZEV5sHx6oMk
+        4BkYv6wpdtfze1k7X0X2dZ5MAM3qM2akkD4ng8jVZNMRn+WfPtE92+bLZo/0pTqaDP372K+xqDW/m
+        /oLjO2xyqqe1zjAqFp3RyY53rF15C/lxCGvF9GpnuZqg/rydwdzb+LzhWjFa3jOJat/tI15JysCeJ
+        9qvS1+GA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n50Ji-00DyzG-8X; Wed, 05 Jan 2022 07:02:38 +0000
+Date:   Tue, 4 Jan 2022 23:02:38 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Li Zhijian <lizhijian@fujitsu.com>
+Cc:     zyjzyj2000@gmail.com, jgg@ziepe.ca, hch@infradead.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        leon@kernel.org
+Subject: Re: [PATCH v3] RDMA/rxe: Fix indentations and operators sytle
+Message-ID: <YdVCjt/QiLUQftRu@infradead.org>
+References: <20220105042605.14343-1-lizhijian@fujitsu.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220105042605.14343-1-lizhijian@fujitsu.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Wed, Jan 05, 2022 at 12:26:04PM +0800, Li Zhijian wrote:
+> * Fix these up to always have the '+', and '|' on the continuing line which
+>   is the normal kernel style.
+> * Fix indentations correspondingly
+> 
+> NOTE: this patch also remove the 2 redundant plus in IB_OPCODE_RD_FETCH_ADD
+> and IB_OPCODE_RD_COMPARE_SWAP
+> 
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 
-Since the UDP source port is modified in rxe_modify_qp, the randomization
-for UDP source port is redundant in this function. So remove it.
+Looks good,
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_qp.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 54b8711321c1..84d6ffe7350a 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -210,15 +210,9 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		return err;
- 	qp->sk->sk->sk_user_data = qp;
- 
--	/* pick a source UDP port number for this QP based on
--	 * the source QPN. this spreads traffic for different QPs
--	 * across different NIC RX queues (while using a single
--	 * flow for a given QP to maintain packet order).
--	 * the port number must be in the Dynamic Ports range
--	 * (0xc000 - 0xffff).
-+	/* Source UDP port number for this QP is modified in rxe_qp_modify.
- 	 */
--	qp->src_port = RXE_ROCE_V2_SPORT +
--		(hash_32_generic(qp_num(qp), 14) & 0x3fff);
-+	qp->src_port		= RXE_ROCE_V2_SPORT;
- 	qp->sq.max_wr		= init->cap.max_send_wr;
- 
- 	/* These caps are limited by rxe_qp_chk_cap() done by the caller */
--- 
-2.27.0
-
+Reviewed-by: Christoph Hellwig <hch@lst.de>
