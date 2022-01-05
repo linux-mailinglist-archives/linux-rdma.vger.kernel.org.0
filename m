@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1AC9484BBE
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 01:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4C2A484BD0
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 01:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235154AbiAEAeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jan 2022 19:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S236785AbiAEAlL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jan 2022 19:41:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233341AbiAEAeB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 19:34:01 -0500
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5187DC061761
-        for <linux-rdma@vger.kernel.org>; Tue,  4 Jan 2022 16:34:01 -0800 (PST)
-Message-ID: <898d7419-7e29-6258-a41e-2c62f251a1b6@linux.dev>
+        with ESMTP id S235357AbiAEAlL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 19:41:11 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE700C061761
+        for <linux-rdma@vger.kernel.org>; Tue,  4 Jan 2022 16:41:10 -0800 (PST)
+Message-ID: <427d2669-8e6e-9aae-6cc5-a6a8ee5d2c8c@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1641342839;
+        t=1641343269;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qJsin6o1cbd+K103Z6xLqZl/0ioyt+Jb9jDcChUyjfc=;
-        b=I5/7yuCDJURe1fnlEWl3rM/qmDRCDxJVic/a0wdfuWotG2W9VBcVZKYMJYUn2ssytIptlc
-        vTKIu4qg1uSePkMgHVyJIL1T+B3URSWmoPUQKiMAfoI/Fg7TOMnC7h0I/awvTZ5n+MKvn3
-        lDvdNzHQNwGARU1ZFmNwgkg0cEAHGh8=
-Date:   Wed, 5 Jan 2022 08:33:51 +0800
+        bh=3ULAoXKjnqBSjeXheZDNhrhPMe50/IYdG9yw3UQzMwI=;
+        b=jFHpqyuwEP24YDN1kT6w8cXvUIfjGXKjQh6sX0d2m9zX7RAR97yREuw4plZhqJZWYIvUBn
+        WF9KECnYpetWeOuTTJ/H9hbh+ZnRIMmMNP96LQrdJrYpyDnuQTw2/aYIKx6pjr6/nwtyPJ
+        9F56T/WaNYeu6ymk9h03chqBlsG8Yhc=
+Date:   Wed, 5 Jan 2022 08:41:01 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] RDMA/rxe: Use the standard method to produce udp
- source port
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+Subject: Re: [PATCH 3/4] RDMA/irdma: Make the source udp port vary
+To:     Leon Romanovsky <leon@kernel.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
         "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
         "liweihang@huawei.com" <liweihang@huawei.com>,
         "jgg@ziepe.ca" <jgg@ziepe.ca>,
@@ -38,11 +38,11 @@ To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
         "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
 References: <20220105080727.2143737-1-yanjun.zhu@linux.dev>
- <20220105080727.2143737-5-yanjun.zhu@linux.dev>
- <1ba91339fb5e46ccb294f2c529fc2adb@intel.com>
+ <20220105080727.2143737-4-yanjun.zhu@linux.dev>
+ <1f6f5d2c6c3c422caa69d65e89f30d99@intel.com> <YdSfbB0O26l/47os@unreal>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <1ba91339fb5e46ccb294f2c529fc2adb@intel.com>
+In-Reply-To: <YdSfbB0O26l/47os@unreal>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
@@ -51,58 +51,50 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/1/5 1:17, Saleem, Shiraz 写道:
->> Subject: [PATCH 4/4] RDMA/rxe: Use the standard method to produce udp source
->> port
->>
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> Use the standard method to produce udp source port.
->>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->>   drivers/infiniband/sw/rxe/rxe_verbs.c | 10 ++++++++++
->>   1 file changed, 10 insertions(+)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c
->> b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> index 0aa0d7e52773..f30d98ad13cd 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
->> @@ -469,6 +469,16 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct
->> ib_qp_attr *attr,
->>   	if (err)
->>   		goto err1;
->>
->> +	if (mask & IB_QP_AV) {
->> +		if (attr->ah_attr.ah_flags & IB_AH_GRH) {
->> +			u32 fl = attr->ah_attr.grh.flow_label;
->> +			u32 lqp = qp->ibqp.qp_num;
->> +			u32 rqp = qp->attr.dest_qp_num;
->> +
-> Isn't the randomization for src_port done in rxe_qp_init_req redundant then?
+在 2022/1/5 3:26, Leon Romanovsky 写道:
+> On Tue, Jan 04, 2022 at 05:18:01PM +0000, Saleem, Shiraz wrote:
+>>> Subject: [PATCH 3/4] RDMA/irdma: Make the source udp port vary
+>>>
+>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>
+>>> Get the source udp port number for a QP based on the grh.flow_label or
+>>> lqpn/rqrpn. This provides a better spread of traffic across NIC RX queues.
+>>>
+>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>> ---
+>>>   drivers/infiniband/hw/irdma/verbs.c | 5 +++++
+>>>   1 file changed, 5 insertions(+)
+>>>
+>>> diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+>>> index 8cd5f9261692..09dba7ed5ab9 100644
+>>> --- a/drivers/infiniband/hw/irdma/verbs.c
+>>> +++ b/drivers/infiniband/hw/irdma/verbs.c
+>>> @@ -1167,6 +1167,11 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct
+>>> ib_qp_attr *attr,
+>>>
+>>>   		memset(&iwqp->roce_ah, 0, sizeof(iwqp->roce_ah));
+>>>   		if (attr->ah_attr.ah_flags & IB_AH_GRH) {
+>>> +			u32 fl = attr->ah_attr.grh.flow_label;
+>>> +			u32 lqp = ibqp->qp_num;
+>>> +			u32 rqp = roce_info->dest_qp;
+>>> +
+>>> +	
+>> Do you really need these locals?
 > 
-> https://elixir.bootlin.com/linux/v5.16-rc8/source/drivers/infiniband/sw/rxe/rxe_qp.c#L220
+> I asked same question in previous revision.
 > 
-> Can we remove it?
+> Zhu, please remove them.
 
-Yes. We can remove it.
-Because this "randomization for src_port done in  rxe_qp_init_req" is 
-replaced by rdma_get_udp_sport in rxe_modify_qp, I do not remove it.
+Hi, Leon Romanovsky && Saleem, Shiraz
 
-I will remove it in the latest commits soon.
+Without these local variables, the line "udp_info->src_port = 
+rdma_get_udp_sport(fl, lqp, rqp);" will exceed 80. This will cause 
+warning when this commit is checked by script/checkpatch.pl.
+
+Let me have a try to find a better way to avoid these local variables.
 
 Zhu Yanjun
 
 > 
->> +			qp->src_port = rdma_get_udp_sport(fl, lqp, rqp);
->> +		}
->> +	}
->> +
->>   	return 0;
->>
->>   err1:
->> --
->> 2.27.0
-> 
+> Thanks
 
