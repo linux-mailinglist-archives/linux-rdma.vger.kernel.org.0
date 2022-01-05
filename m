@@ -2,70 +2,65 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F261484D27
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 05:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58049484DC9
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 06:49:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237382AbiAEEkw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jan 2022 23:40:52 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:48833 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237365AbiAEEkw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 23:40:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V1.2IYO_1641357649;
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V1.2IYO_1641357649)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 05 Jan 2022 12:40:50 +0800
-Date:   Wed, 5 Jan 2022 12:40:49 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
- listen queue
-Message-ID: <20220105044049.GA107642@e02h04389.eu6sqa>
-Reply-To: "D. Wythe" <alibuda@linux.alibaba.com>
-References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
- <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+        id S236315AbiAEFtt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 00:49:49 -0500
+Received: from mga07.intel.com ([134.134.136.100]:27100 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236188AbiAEFtt (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 Jan 2022 00:49:49 -0500
+X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="305725896"
+X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
+   d="scan'208";a="305725896"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 21:49:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
+   d="scan'208";a="760688600"
+Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga006.fm.intel.com with ESMTP; 04 Jan 2022 21:49:46 -0800
+From:   yanjun.zhu@linux.dev
+To:     liangwenpeng@huawei.com, jgg@ziepe.ca, mustafa.ismail@intel.com,
+        shiraz.saleem@intel.com, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
+Subject: [PATCHv2 0/5] Generate UDP src port with flow label or lqpn/rqpn
+Date:   Wed,  5 Jan 2022 17:12:32 -0500
+Message-Id: <20220105221237.2659462-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi, 
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Since we are trying to use the backlog parameter to limit smc dangling
-connections, it's seems there's no difference from increasing the
-backlog parameter for the TCP listen socket, user space Application can
-simply avoid the 10K connections problem through that.
+Follow the advice from Leon Romanovsky, rdma_get_udp_sport is moved to
+ib_verbs.h. several drivers generate udp source port with this function.
 
-If so, this patch looks redundant to me. Look forward to your advise.
+---
+v1->v2:Remove the local variables in commits "RDMA/irdma: Make the source
+       udp port vary" and "RDMA/rxe: Use the standard method to produce
+       udp source port". A new commit is added to remove the redundant
+       randomization for UDP source port in RXE.
+---
 
-Thanks.
+Zhu Yanjun (5):
+  RDMA/core: Calculate UDP source port based on flow label or lqpn/rqpn
+  RDMA/hns: Replace get_udp_sport with rdma_get_udp_sport
+  RDMA/irdma: Make the source udp port vary
+  RDMA/rxe: Use the standard method to produce udp source port
+  RDMA/rxe: Remove the redundant randomization for UDP source port
 
-On Tue, Jan 04, 2022 at 02:45:35PM +0100, Karsten Graul wrote:
-> On 04/01/2022 14:12, D. Wythe wrote:
-> > From: "D. Wythe" <alibuda@linux.alibaba.com>
-> > 
-> > In nginx/wrk multithread and 10K connections benchmark, the
-> > backend TCP connection established very slowly, and lots of TCP
-> > connections stay in SYN_SENT state.
-> 
-> I see what you are trying to solve here.
-> So what happens with your patch now is that we are accepting way more connections
-> in advance and queue them up for the SMC connection handshake worker.
-> The connection handshake worker itself will not run faster with this change, so overall
-> it should be the same time that is needed to establish all connections.
-> What you solve is that when 10k connections are started at the same time, some of them
-> will be dropped due to tcp 3-way handshake timeouts. Your patch avoids that but one can now flood
-> the stack with an ~infinite amount of dangling sockets waiting for the SMC handshake, maybe even 
-> causing oom conditions.
-> 
-> What should be respected with such a change would be the backlog parameter for the listen socket,
-> i.e. how many backlog connections are requested by the user space application?
-> There is no such handling of backlog right now, and due to the 'braking' workers we avoided
-> to flood the kernel with too many dangling connections. With your change there should be a way to limit
-> this ind of connections in some way.
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 12 ++----------
+ drivers/infiniband/hw/irdma/verbs.c        |  4 ++++
+ drivers/infiniband/sw/rxe/rxe_qp.c         | 10 ++--------
+ drivers/infiniband/sw/rxe/rxe_verbs.c      |  6 ++++++
+ include/rdma/ib_verbs.h                    | 17 +++++++++++++++++
+ 5 files changed, 31 insertions(+), 18 deletions(-)
+
+-- 
+2.27.0
+
