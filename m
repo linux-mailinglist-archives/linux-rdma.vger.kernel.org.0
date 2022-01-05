@@ -2,116 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30816484FA6
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83E28484FA8
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233643AbiAEI4V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jan 2022 03:56:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238711AbiAEI4O (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 03:56:14 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312F2C061761
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jan 2022 00:56:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C348C6162F
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jan 2022 08:56:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62BB3C36AEB;
-        Wed,  5 Jan 2022 08:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641372973;
-        bh=hAkecnQfjieFJ+aK988gHox1jayP9xwyqntzIlHEGzE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nRKQePemqUEld8Ks45ml+0UUVgVkCeRCoUiSTPxNsJnMTw66+I0nKqYKbaXV584QN
-         JdfVFXzt+YsBYhg7Zhq2j3Sr++UsSs80xLPEwo8T/DZ6uiG8p9tsk5NYARaDCEtKTo
-         71kt+0+OnA/9xYjzv6AStSiMMkPDkW8TDwwgFl6esxxf2vNI77XGqKF8OxtwTBBzrR
-         TE4n2ymkt1/AgFXqX7RtJmuNuw+QrsTr6KIadUXKbzpeIOgAGxVBFdKswFTXr1EKQs
-         Oe/TnEs5KD8aULe6HNm95hTUtZu2JJ5or0nCkDs2oVMZ4IiOWEZ0o15u8XHCwWQzwz
-         mhLPlARO9totQ==
-Date:   Wed, 5 Jan 2022 10:56:09 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     yanjun.zhu@linux.dev
-Cc:     liangwenpeng@huawei.com, jgg@ziepe.ca, mustafa.ismail@intel.com,
-        shiraz.saleem@intel.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 5/5] RDMA/rxe: Remove the redundant randomization for UDP
- source port
-Message-ID: <YdVdKU+jr5lHVaI3@unreal>
-References: <YdVNi3EK2tZsywk/@unreal>
- <20220105221237.2659462-1-yanjun.zhu@linux.dev>
- <20220105221237.2659462-6-yanjun.zhu@linux.dev>
- <aa57e98b2ba3b86da11367ab13d4a96c@linux.dev>
+        id S232714AbiAEI5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 03:57:51 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:46486 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230087AbiAEI5v (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 03:57:51 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R991e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V10Yb0z_1641373068;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V10Yb0z_1641373068)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 05 Jan 2022 16:57:49 +0800
+Date:   Wed, 5 Jan 2022 16:57:48 +0800
+From:   "dust.li" <dust.li@linux.alibaba.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>,
+        Karsten Graul <kgraul@linux.ibm.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
+ listen queue
+Message-ID: <20220105085748.GD31579@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
+ <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+ <20220105044049.GA107642@e02h04389.eu6sqa>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa57e98b2ba3b86da11367ab13d4a96c@linux.dev>
+In-Reply-To: <20220105044049.GA107642@e02h04389.eu6sqa>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 08:42:03AM +0000, yanjun.zhu@linux.dev wrote:
-> January 5, 2022 3:49 PM, "Leon Romanovsky" <leon@kernel.org> wrote:
-> 
-> > On Wed, Jan 05, 2022 at 05:12:37PM -0500, yanjun.zhu@linux.dev wrote:
-> > 
-> >> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> >> 
-> >> Since the UDP source port is modified in rxe_modify_qp, the randomization
-> >> for UDP source port is redundant in this function. So remove it.
-> >> 
-> >> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> >> ---
-> >> drivers/infiniband/sw/rxe/rxe_qp.c | 10 ++--------
-> >> 1 file changed, 2 insertions(+), 8 deletions(-)
-> >> 
-> >> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> >> index 54b8711321c1..84d6ffe7350a 100644
-> >> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> >> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> >> @@ -210,15 +210,9 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
-> >> return err;
-> >> qp->sk->sk->sk_user_data = qp;
-> >> 
-> >> - /* pick a source UDP port number for this QP based on
-> >> - * the source QPN. this spreads traffic for different QPs
-> >> - * across different NIC RX queues (while using a single
-> >> - * flow for a given QP to maintain packet order).
-> >> - * the port number must be in the Dynamic Ports range
-> >> - * (0xc000 - 0xffff).
-> >> + /* Source UDP port number for this QP is modified in rxe_qp_modify.
-> >> */
-> > 
-> > This makes me wonder why do we set this src_port here?
-> > Are we using this field before modify QP?
-> 
-> The commit d3c04a3a6870 ("IB/rxe: vary the source udp port for receive scaling") sets this src_port here.
-> 
-> The advantage of setting src_port here is: before rxe_modify_qp, the src port is randomized, not 0xc000.
-> So after/before rxe_modify_qp, the src port is the same value.
-> 
-> If the src port is changed in rxe_modify_qp, before rxe_modify_qp, the src port is 0xc000, after rxe_modify_qp,
-> the src port is randomized, for example, src port is 0xF043.
+On Wed, Jan 05, 2022 at 12:40:49PM +0800, D. Wythe wrote:
+>Hi, 
+>
+>Since we are trying to use the backlog parameter to limit smc dangling
+>connections, it's seems there's no difference from increasing the
+>backlog parameter for the TCP listen socket, user space Application can
+>simply avoid the 10K connections problem through that.
+>
+>If so, this patch looks redundant to me. Look forward to your advise.
 
-I'm asking if you use qp->src_port between this line and rxe_modify_qp?
+I think increase backlog in the userspace application is not a good idea.
 
-Thanks
+AFAIU, SMC tries to behave the same like TCP in the socket layer, asking
+the APP to increase the backlog breaks this principle.
 
-> 
-> So when the new method is adopted, I removed this.
-> 
-> Zhu Yanjun
-> 
-> > 
-> > Thanks
-> > 
-> >> - qp->src_port = RXE_ROCE_V2_SPORT +
-> >> - (hash_32_generic(qp_num(qp), 14) & 0x3fff);
-> >> + qp->src_port = RXE_ROCE_V2_SPORT;
-> >> qp->sq.max_wr = init->cap.max_send_wr;
-> >> 
-> >> /* These caps are limited by rxe_qp_chk_cap() done by the caller */
-> >> --
-> >> 2.27.0
+In the TCP case, the backlog usually don't get overflow if the APP calls
+accept() fast enough.
+For SMC, it should also accept() fast enough to make sure the backlog of
+the CLC socket won't overflow. But it didn't because smc_hs_wq is busy
+hence TCP dropped the SYN. From the APP's perspective of view, he is fast
+enough, but the kernel didn't give him the chance. I think this behaves
+different from TCP.
+
+I'm thinking maybe we can actively fall back to TCP in this case ? Not
+sure if this is a good idea.
