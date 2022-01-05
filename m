@@ -2,223 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B55484B6F
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 01:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1AC9484BBE
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 01:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236626AbiAEAFp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 4 Jan 2022 19:05:45 -0500
-Received: from mga12.intel.com ([192.55.52.136]:35819 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236623AbiAEAFo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 4 Jan 2022 19:05:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641341144; x=1672877144;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=bbi0QvWwneW+bRXSdcHVXuxVugIJClBwG+2Tla/5rA4=;
-  b=TGf89SVyVINwijl6axguh4gs9kdKBkF8MGv/C8qj7aMrcACCrA869LZN
-   XQj0KmmZjoQKbU1gb7/zbmHQXnK5Bau1A/VHx7gQg7kwY5SkRvL6oYKCC
-   HLgdyMixeAAtqdqkkcqqTh2HTN2zf2nKJG5+8OeoxUKX6uSnCn+1MB3Y6
-   iQPCm1RDtZuebzDi+nEWWc9BMAFI9ekfJ1uVD3ROlVUtYM7bKD3Lfj77i
-   ygFLRbqQScQHC0cpVjCkgcdMJr8vBUBViY03R3Mdh8SljPyxsGB7B2ndM
-   wVoCO1eCmxbWPyH0YVnTayQ4TiIso7v6mGxXGCYpJzyZsXDP/8m0MNT0f
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="222326412"
-X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
-   d="scan'208";a="222326412"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 16:05:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,262,1635231600"; 
-   d="scan'208";a="470336977"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by orsmga003.jf.intel.com with ESMTP; 04 Jan 2022 16:05:43 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        anthony.l.nguyen@intel.com, linux-rdma@vger.kernel.org,
-        shiraz.saleem@intel.com, mustafa.ismail@intel.com,
-        Leszek Kaliszczuk <leszek.kaliszczuk@intel.com>
-Subject: [PATCH net-next 1/1] ice: Simplify tracking status of RDMA support
-Date:   Tue,  4 Jan 2022 16:04:56 -0800
-Message-Id: <20220105000456.2510590-1-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
+        id S235154AbiAEAeB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 4 Jan 2022 19:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233341AbiAEAeB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 4 Jan 2022 19:34:01 -0500
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5187DC061761
+        for <linux-rdma@vger.kernel.org>; Tue,  4 Jan 2022 16:34:01 -0800 (PST)
+Message-ID: <898d7419-7e29-6258-a41e-2c62f251a1b6@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1641342839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qJsin6o1cbd+K103Z6xLqZl/0ioyt+Jb9jDcChUyjfc=;
+        b=I5/7yuCDJURe1fnlEWl3rM/qmDRCDxJVic/a0wdfuWotG2W9VBcVZKYMJYUn2ssytIptlc
+        vTKIu4qg1uSePkMgHVyJIL1T+B3URSWmoPUQKiMAfoI/Fg7TOMnC7h0I/awvTZ5n+MKvn3
+        lDvdNzHQNwGARU1ZFmNwgkg0cEAHGh8=
+Date:   Wed, 5 Jan 2022 08:33:51 +0800
 MIME-Version: 1.0
+Subject: Re: [PATCH 4/4] RDMA/rxe: Use the standard method to produce udp
+ source port
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
+        "liweihang@huawei.com" <liweihang@huawei.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <20220105080727.2143737-1-yanjun.zhu@linux.dev>
+ <20220105080727.2143737-5-yanjun.zhu@linux.dev>
+ <1ba91339fb5e46ccb294f2c529fc2adb@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <1ba91339fb5e46ccb294f2c529fc2adb@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dave Ertman <david.m.ertman@intel.com>
+在 2022/1/5 1:17, Saleem, Shiraz 写道:
+>> Subject: [PATCH 4/4] RDMA/rxe: Use the standard method to produce udp source
+>> port
+>>
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> Use the standard method to produce udp source port.
+>>
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_verbs.c | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> index 0aa0d7e52773..f30d98ad13cd 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+>> @@ -469,6 +469,16 @@ static int rxe_modify_qp(struct ib_qp *ibqp, struct
+>> ib_qp_attr *attr,
+>>   	if (err)
+>>   		goto err1;
+>>
+>> +	if (mask & IB_QP_AV) {
+>> +		if (attr->ah_attr.ah_flags & IB_AH_GRH) {
+>> +			u32 fl = attr->ah_attr.grh.flow_label;
+>> +			u32 lqp = qp->ibqp.qp_num;
+>> +			u32 rqp = qp->attr.dest_qp_num;
+>> +
+> Isn't the randomization for src_port done in rxe_qp_init_req redundant then?
+> 
+> https://elixir.bootlin.com/linux/v5.16-rc8/source/drivers/infiniband/sw/rxe/rxe_qp.c#L220
+> 
+> Can we remove it?
 
-The status of support for RDMA is currently being tracked with two
-separate status flags.  This is unnecessary with the current state of
-the driver.
+Yes. We can remove it.
+Because this "randomization for src_port done in  rxe_qp_init_req" is 
+replaced by rdma_get_udp_sport in rxe_modify_qp, I do not remove it.
 
-Simplify status tracking down to a single flag.
+I will remove it in the latest commits soon.
 
-Rename the helper function to denote the RDMA specific status and
-universally use the helper function to test the status bit.
+Zhu Yanjun
 
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-Tested-by: Leszek Kaliszczuk <leszek.kaliszczuk@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice.h      |  3 ---
- drivers/net/ethernet/intel/ice/ice_idc.c  |  6 +++---
- drivers/net/ethernet/intel/ice/ice_lib.c  |  8 ++++----
- drivers/net/ethernet/intel/ice/ice_lib.h  |  2 +-
- drivers/net/ethernet/intel/ice/ice_main.c | 13 +++++--------
- 5 files changed, 13 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 4e16d185077d..6f445cc3390f 100644
---- a/drivers/net/ethernet/intel/ice/ice.h
-+++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -468,7 +468,6 @@ enum ice_pf_flags {
- 	ICE_FLAG_FD_ENA,
- 	ICE_FLAG_PTP_SUPPORTED,		/* PTP is supported by NVM */
- 	ICE_FLAG_PTP,			/* PTP is enabled by software */
--	ICE_FLAG_AUX_ENA,
- 	ICE_FLAG_ADV_FEATURES,
- 	ICE_FLAG_TC_MQPRIO,		/* support for Multi queue TC */
- 	ICE_FLAG_CLS_FLOWER,
-@@ -886,7 +885,6 @@ static inline void ice_set_rdma_cap(struct ice_pf *pf)
- {
- 	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
- 		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
--		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
- 		ice_plug_aux_dev(pf);
- 	}
- }
-@@ -899,6 +897,5 @@ static inline void ice_clear_rdma_cap(struct ice_pf *pf)
- {
- 	ice_unplug_aux_dev(pf);
- 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
--	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
- }
- #endif /* _ICE_H_ */
-diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
-index fc3580167e7b..9493a38182f5 100644
---- a/drivers/net/ethernet/intel/ice/ice_idc.c
-+++ b/drivers/net/ethernet/intel/ice/ice_idc.c
-@@ -79,7 +79,7 @@ int ice_add_rdma_qset(struct ice_pf *pf, struct iidc_rdma_qset_params *qset)
- 
- 	dev = ice_pf_to_dev(pf);
- 
--	if (!test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
-+	if (!ice_is_rdma_ena(pf))
- 		return -EINVAL;
- 
- 	vsi = ice_get_main_vsi(pf);
-@@ -236,7 +236,7 @@ EXPORT_SYMBOL_GPL(ice_get_qos_params);
-  */
- static int ice_reserve_rdma_qvector(struct ice_pf *pf)
- {
--	if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
-+	if (ice_is_rdma_ena(pf)) {
- 		int index;
- 
- 		index = ice_get_res(pf, pf->irq_tracker, pf->num_rdma_msix,
-@@ -274,7 +274,7 @@ int ice_plug_aux_dev(struct ice_pf *pf)
- 	/* if this PF doesn't support a technology that requires auxiliary
- 	 * devices, then gracefully exit
- 	 */
--	if (!ice_is_aux_ena(pf))
-+	if (!ice_is_rdma_ena(pf))
- 		return 0;
- 
- 	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index 0c187cf04fcf..b1c164b8066c 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -732,14 +732,14 @@ bool ice_is_safe_mode(struct ice_pf *pf)
- }
- 
- /**
-- * ice_is_aux_ena
-+ * ice_is_rdma_ena
-  * @pf: pointer to the PF struct
-  *
-- * returns true if AUX devices/drivers are supported, false otherwise
-+ * returns true if RDMA is currently supported, false otherwise
-  */
--bool ice_is_aux_ena(struct ice_pf *pf)
-+bool ice_is_rdma_ena(struct ice_pf *pf)
- {
--	return test_bit(ICE_FLAG_AUX_ENA, pf->flags);
-+	return test_bit(ICE_FLAG_RDMA_ENA, pf->flags);
- }
- 
- /**
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.h b/drivers/net/ethernet/intel/ice/ice_lib.h
-index b2ed189527d6..a2f54fbdc170 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.h
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.h
-@@ -110,7 +110,7 @@ void ice_set_q_vector_intrl(struct ice_q_vector *q_vector);
- int ice_vsi_cfg_mac_fltr(struct ice_vsi *vsi, const u8 *macaddr, bool set);
- 
- bool ice_is_safe_mode(struct ice_pf *pf);
--bool ice_is_aux_ena(struct ice_pf *pf);
-+bool ice_is_rdma_ena(struct ice_pf *pf);
- bool ice_is_dflt_vsi_in_use(struct ice_sw *sw);
- 
- bool ice_is_vsi_dflt_vsi(struct ice_sw *sw, struct ice_vsi *vsi);
-diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index e29176889c23..078eb588f41e 100644
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3653,11 +3653,8 @@ static void ice_set_pf_caps(struct ice_pf *pf)
- 	struct ice_hw_func_caps *func_caps = &pf->hw.func_caps;
- 
- 	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
--	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
--	if (func_caps->common_cap.rdma) {
-+	if (func_caps->common_cap.rdma)
- 		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
--		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
--	}
- 	clear_bit(ICE_FLAG_DCB_CAPABLE, pf->flags);
- 	if (func_caps->common_cap.dcb)
- 		set_bit(ICE_FLAG_DCB_CAPABLE, pf->flags);
-@@ -3785,7 +3782,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
- 	v_left -= needed;
- 
- 	/* reserve vectors for RDMA auxiliary driver */
--	if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
-+	if (ice_is_rdma_ena(pf)) {
- 		needed = num_cpus + ICE_RDMA_NUM_AEQ_MSIX;
- 		if (v_left < needed)
- 			goto no_hw_vecs_left_err;
-@@ -3826,7 +3823,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
- 			int v_remain = v_actual - v_other;
- 			int v_rdma = 0, v_min_rdma = 0;
- 
--			if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
-+			if (ice_is_rdma_ena(pf)) {
- 				/* Need at least 1 interrupt in addition to
- 				 * AEQ MSIX
- 				 */
-@@ -3860,7 +3857,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
- 			dev_notice(dev, "Enabled %d MSI-X vectors for LAN traffic.\n",
- 				   pf->num_lan_msix);
- 
--			if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
-+			if (ice_is_rdma_ena(pf))
- 				dev_notice(dev, "Enabled %d MSI-X vectors for RDMA.\n",
- 					   pf->num_rdma_msix);
- 		}
-@@ -4688,7 +4685,7 @@ ice_probe(struct pci_dev *pdev, const struct pci_device_id __always_unused *ent)
- 
- 	/* ready to go, so clear down state bit */
- 	clear_bit(ICE_DOWN, pf->state);
--	if (ice_is_aux_ena(pf)) {
-+	if (ice_is_rdma_ena(pf)) {
- 		pf->aux_idx = ida_alloc(&ice_aux_ida, GFP_KERNEL);
- 		if (pf->aux_idx < 0) {
- 			dev_err(dev, "Failed to allocate device ID for AUX driver\n");
--- 
-2.31.1
+> 
+>> +			qp->src_port = rdma_get_udp_sport(fl, lqp, rqp);
+>> +		}
+>> +	}
+>> +
+>>   	return 0;
+>>
+>>   err1:
+>> --
+>> 2.27.0
+> 
 
