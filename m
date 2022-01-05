@@ -2,77 +2,241 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C088C484F73
-	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34743484F91
+	for <lists+linux-rdma@lfdr.de>; Wed,  5 Jan 2022 09:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbiAEImG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jan 2022 03:42:06 -0500
-Received: from out0.migadu.com ([94.23.1.103]:65490 "EHLO out0.migadu.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232259AbiAEImF (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 5 Jan 2022 03:42:05 -0500
+        id S238651AbiAEIup (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 03:50:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238631AbiAEIup (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 03:50:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99E9C061761;
+        Wed,  5 Jan 2022 00:50:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0B3F6B81897;
+        Wed,  5 Jan 2022 08:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9AA7C36AEB;
+        Wed,  5 Jan 2022 08:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641372641;
+        bh=NWItqzRosP/nfGacRSd56C+VNit3vn5P+K8pXexOoHM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=X2SIQg4Ak/VA0+68DfEc2+k1WAkF50yUnJF9TaYshb/CjkHzIe/NF3bZU5/2miHv4
+         ers6wzY3F5ZIzrJRvnV7PEuYpenXe4oqxSvRk0EB9u08Ynus63glO+WC9v1qqXPZNM
+         jVASwXIdA8ytucCzD8JlHsta5oq1g5BIiNdzEXgVV9nRWiVj22pyVE3mA+T/Qj8B7m
+         fKbF5KNMMZTixJnPYePeMC1Kb8LfEk+d3FFB6/hylX8TgxG3NeYl/bLYWFezXRot81
+         Vnl/UPfEFiCiEcnBcq/rM+fPJJyV++z6HhhBXT2Ave9m1rjpyTQbTTraYuhJLgm9DM
+         UnvHJCiXtGg3Q==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next] RDMA/rxe: Delete deprecated module parameters interface
+Date:   Wed,  5 Jan 2022 10:50:35 +0200
+Message-Id: <c8376d7517aebe7cc851f0baaeef7b13707cf767.1641372460.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.33.1
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1641372124;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FoV7zWOu97CMcrf/g6B1VlK9RjTf/jYtIBkaW8QmUik=;
-        b=JCrqRknB6nwhifKYu54tvlVml8ez81+jqO92tIycmnh61zOt0B9Z0Fi78P//ADxbFODIGl
-        5Pe3rw9ybzXCgltv5Nj42AhAZxn8pKjd9y/5D25AbtcA0o0nRVmlUwzOtIQcQ7Da7t1W8/
-        opoi958qDF9fP0WfxJ8fCfp1OVMRcNQ=
-Date:   Wed, 05 Jan 2022 08:42:03 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   yanjun.zhu@linux.dev
-Message-ID: <aa57e98b2ba3b86da11367ab13d4a96c@linux.dev>
-Subject: Re: [PATCH 5/5] RDMA/rxe: Remove the redundant randomization for
- UDP source port
-To:     "Leon Romanovsky" <leon@kernel.org>
-Cc:     liangwenpeng@huawei.com, jgg@ziepe.ca, mustafa.ismail@intel.com,
-        shiraz.saleem@intel.com, zyjzyj2000@gmail.com,
-        linux-rdma@vger.kernel.org
-In-Reply-To: <YdVNi3EK2tZsywk/@unreal>
-References: <YdVNi3EK2tZsywk/@unreal>
- <20220105221237.2659462-1-yanjun.zhu@linux.dev>
- <20220105221237.2659462-6-yanjun.zhu@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-January 5, 2022 3:49 PM, "Leon Romanovsky" <leon@kernel.org> wrote:=0A=0A=
-> On Wed, Jan 05, 2022 at 05:12:37PM -0500, yanjun.zhu@linux.dev wrote:=
-=0A> =0A>> From: Zhu Yanjun <yanjun.zhu@linux.dev>=0A>> =0A>> Since the U=
-DP source port is modified in rxe_modify_qp, the randomization=0A>> for U=
-DP source port is redundant in this function. So remove it.=0A>> =0A>> Si=
-gned-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>=0A>> ---=0A>> drivers/infi=
-niband/sw/rxe/rxe_qp.c | 10 ++--------=0A>> 1 file changed, 2 insertions(=
-+), 8 deletions(-)=0A>> =0A>> diff --git a/drivers/infiniband/sw/rxe/rxe_=
-qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c=0A>> index 54b8711321c1..84d6ff=
-e7350a 100644=0A>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c=0A>> +++ b/dr=
-ivers/infiniband/sw/rxe/rxe_qp.c=0A>> @@ -210,15 +210,9 @@ static int rxe=
-_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,=0A>> return err;=0A>=
-> qp->sk->sk->sk_user_data =3D qp;=0A>> =0A>> - /* pick a source UDP port=
- number for this QP based on=0A>> - * the source QPN. this spreads traffi=
-c for different QPs=0A>> - * across different NIC RX queues (while using =
-a single=0A>> - * flow for a given QP to maintain packet order).=0A>> - *=
- the port number must be in the Dynamic Ports range=0A>> - * (0xc000 - 0x=
-ffff).=0A>> + /* Source UDP port number for this QP is modified in rxe_qp=
-_modify.=0A>> */=0A> =0A> This makes me wonder why do we set this src_por=
-t here?=0A> Are we using this field before modify QP?=0A=0AThe commit d3c=
-04a3a6870 ("IB/rxe: vary the source udp port for receive scaling") sets t=
-his src_port here.=0A=0AThe advantage of setting src_port here is: before=
- rxe_modify_qp, the src port is randomized, not 0xc000.=0ASo after/before=
- rxe_modify_qp, the src port is the same value.=0A=0AIf the src port is c=
-hanged in rxe_modify_qp, before rxe_modify_qp, the src port is 0xc000, af=
-ter rxe_modify_qp,=0Athe src port is randomized, for example, src port is=
- 0xF043.=0A=0ASo when the new method is adopted, I removed this.=0A=0AZhu=
- Yanjun=0A=0A> =0A> Thanks=0A> =0A>> - qp->src_port =3D RXE_ROCE_V2_SPORT=
- +=0A>> - (hash_32_generic(qp_num(qp), 14) & 0x3fff);=0A>> + qp->src_port=
- =3D RXE_ROCE_V2_SPORT;=0A>> qp->sq.max_wr =3D init->cap.max_send_wr;=0A>=
-> =0A>> /* These caps are limited by rxe_qp_chk_cap() done by the caller =
-*/=0A>> --=0A>> 2.27.0
+From: Leon Romanovsky <leonro@nvidia.com>
+
+Starting from the commit 66920e1b2586 ("rdma_rxe: Use netlink messages
+to add/delete links") from the 2019, the RXE modules parameters are marked
+as deprecated in favour of rdmatool. So remove the kernel code too.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/sw/rxe/Makefile    |   1 -
+ drivers/infiniband/sw/rxe/rxe.c       |   4 -
+ drivers/infiniband/sw/rxe/rxe.h       |   2 -
+ drivers/infiniband/sw/rxe/rxe_sysfs.c | 119 --------------------------
+ 4 files changed, 126 deletions(-)
+ delete mode 100644 drivers/infiniband/sw/rxe/rxe_sysfs.c
+
+diff --git a/drivers/infiniband/sw/rxe/Makefile b/drivers/infiniband/sw/rxe/Makefile
+index 1e24673e9318..5395a581f4bb 100644
+--- a/drivers/infiniband/sw/rxe/Makefile
++++ b/drivers/infiniband/sw/rxe/Makefile
+@@ -22,5 +22,4 @@ rdma_rxe-y := \
+ 	rxe_mcast.o \
+ 	rxe_task.o \
+ 	rxe_net.o \
+-	rxe_sysfs.o \
+ 	rxe_hw_counters.o
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index 8e0f9c489cab..fab291245366 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -13,8 +13,6 @@ MODULE_AUTHOR("Bob Pearson, Frank Zago, John Groves, Kamal Heib");
+ MODULE_DESCRIPTION("Soft RDMA transport");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
+-bool rxe_initialized;
+-
+ /* free resources for a rxe device all objects created for this device must
+  * have been destroyed
+  */
+@@ -290,7 +288,6 @@ static int __init rxe_module_init(void)
+ 		return err;
+ 
+ 	rdma_link_register(&rxe_link_ops);
+-	rxe_initialized = true;
+ 	pr_info("loaded\n");
+ 	return 0;
+ }
+@@ -301,7 +298,6 @@ static void __exit rxe_module_exit(void)
+ 	ib_unregister_driver(RDMA_DRIVER_RXE);
+ 	rxe_net_exit();
+ 
+-	rxe_initialized = false;
+ 	pr_info("unloaded\n");
+ }
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
+index 1bb3fb618bf5..fb9066e6f5f0 100644
+--- a/drivers/infiniband/sw/rxe/rxe.h
++++ b/drivers/infiniband/sw/rxe/rxe.h
+@@ -39,8 +39,6 @@
+ 
+ #define RXE_ROCE_V2_SPORT		(0xc000)
+ 
+-extern bool rxe_initialized;
+-
+ void rxe_set_mtu(struct rxe_dev *rxe, unsigned int dev_mtu);
+ 
+ int rxe_add(struct rxe_dev *rxe, unsigned int mtu, const char *ibdev_name);
+diff --git a/drivers/infiniband/sw/rxe/rxe_sysfs.c b/drivers/infiniband/sw/rxe/rxe_sysfs.c
+deleted file mode 100644
+index 666202ddff48..000000000000
+--- a/drivers/infiniband/sw/rxe/rxe_sysfs.c
++++ /dev/null
+@@ -1,119 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+-/*
+- * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
+- * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+- */
+-
+-#include "rxe.h"
+-#include "rxe_net.h"
+-
+-/* Copy argument and remove trailing CR. Return the new length. */
+-static int sanitize_arg(const char *val, char *intf, int intf_len)
+-{
+-	int len;
+-
+-	if (!val)
+-		return 0;
+-
+-	/* Remove newline. */
+-	for (len = 0; len < intf_len - 1 && val[len] && val[len] != '\n'; len++)
+-		intf[len] = val[len];
+-	intf[len] = 0;
+-
+-	if (len == 0 || (val[len] != 0 && val[len] != '\n'))
+-		return 0;
+-
+-	return len;
+-}
+-
+-static int rxe_param_set_add(const char *val, const struct kernel_param *kp)
+-{
+-	int len;
+-	int err = 0;
+-	char intf[32];
+-	struct net_device *ndev;
+-	struct rxe_dev *exists;
+-
+-	if (!rxe_initialized) {
+-		pr_err("Module parameters are not supported, use rdma link add or rxe_cfg\n");
+-		return -EAGAIN;
+-	}
+-
+-	len = sanitize_arg(val, intf, sizeof(intf));
+-	if (!len) {
+-		pr_err("add: invalid interface name\n");
+-		return -EINVAL;
+-	}
+-
+-	ndev = dev_get_by_name(&init_net, intf);
+-	if (!ndev) {
+-		pr_err("interface %s not found\n", intf);
+-		return -EINVAL;
+-	}
+-
+-	if (is_vlan_dev(ndev)) {
+-		pr_err("rxe creation allowed on top of a real device only\n");
+-		err = -EPERM;
+-		goto err;
+-	}
+-
+-	exists = rxe_get_dev_from_net(ndev);
+-	if (exists) {
+-		ib_device_put(&exists->ib_dev);
+-		pr_err("already configured on %s\n", intf);
+-		err = -EINVAL;
+-		goto err;
+-	}
+-
+-	err = rxe_net_add("rxe%d", ndev);
+-	if (err) {
+-		pr_err("failed to add %s\n", intf);
+-		goto err;
+-	}
+-
+-err:
+-	dev_put(ndev);
+-	return err;
+-}
+-
+-static int rxe_param_set_remove(const char *val, const struct kernel_param *kp)
+-{
+-	int len;
+-	char intf[32];
+-	struct ib_device *ib_dev;
+-
+-	len = sanitize_arg(val, intf, sizeof(intf));
+-	if (!len) {
+-		pr_err("add: invalid interface name\n");
+-		return -EINVAL;
+-	}
+-
+-	if (strncmp("all", intf, len) == 0) {
+-		pr_info("rxe_sys: remove all");
+-		ib_unregister_driver(RDMA_DRIVER_RXE);
+-		return 0;
+-	}
+-
+-	ib_dev = ib_device_get_by_name(intf, RDMA_DRIVER_RXE);
+-	if (!ib_dev) {
+-		pr_err("not configured on %s\n", intf);
+-		return -EINVAL;
+-	}
+-
+-	ib_unregister_device_and_put(ib_dev);
+-
+-	return 0;
+-}
+-
+-static const struct kernel_param_ops rxe_add_ops = {
+-	.set = rxe_param_set_add,
+-};
+-
+-static const struct kernel_param_ops rxe_remove_ops = {
+-	.set = rxe_param_set_remove,
+-};
+-
+-module_param_cb(add, &rxe_add_ops, NULL, 0200);
+-MODULE_PARM_DESC(add, "DEPRECATED.  Create RXE device over network interface");
+-module_param_cb(remove, &rxe_remove_ops, NULL, 0200);
+-MODULE_PARM_DESC(remove, "DEPRECATED.  Remove RXE device over network interface");
+-- 
+2.33.1
+
