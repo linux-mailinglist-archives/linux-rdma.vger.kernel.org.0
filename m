@@ -2,166 +2,290 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8274860AD
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 07:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AE94860C3
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 07:56:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbiAFGnE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jan 2022 01:43:04 -0500
-Received: from esa10.fujitsucc.c3s2.iphmx.com ([68.232.159.247]:29619 "EHLO
-        esa10.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229956AbiAFGnE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 01:43:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1641451384; x=1672987384;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=l7XYr++14IiVoG+j3G6uYnnjhOa2H2j9OyZyuv5MZc4=;
-  b=TBsuRPw6ejYw4fm98d8RL1bi90Yaaz/zuI7t4zPi6LJIpdEoL5DPxAUB
-   nt9vA3McuIg+gpFl3jiLiigZYpQWMy8mlAHypWce1ApLa4v+IPJEnbY1D
-   kY6MLdEFIdkXhQyj6n8tdQHg8n3BpqRKiVt9WOabCm8H6r5pBl/DSLAF5
-   tZIpKFbTIKVrS6wmuOy1OFIncDkn6rc+cHs5xes7s+qkTdDZngtlxJhAY
-   h9uvF6pPl73zUA59+jJYdHhjE4GC9lhMsM9OUfO0KE77i2Q05Ovx5FNQs
-   1dJAytHkVOI4CjzBZD4VukCibfVqee8/fNMVlXMCDEaUyvEoSt+EcVtLp
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="47206194"
-X-IronPort-AV: E=Sophos;i="5.88,266,1635174000"; 
-   d="scan'208";a="47206194"
-Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2022 15:43:00 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VuEAlxkUHAChGFj4Rpdx5eyxX0L1usv2JZiWyotNxTZusJMEG5wnDNQ9Ap1ITuUpBdK/UBFQjCt6K1XrGhy0NOxaqyMU7axRw0gaJEIP2fNMa8nPxjWdFHwQQSVWGaBLYLjjgsjEfncW8KqaMFaFdnJJ07XDAhUJbtaziiNTts0jXyWse1BBjHF5Slv2gG8wQTEEZFMGPxHLcQYOZZlUBSzCjl1ayL8rkvhdvXcVNoQREw2jHnzGxfe5XhfRzT3IMVAMW+YMTGHLTkJaeOm/h4L8unMUgOtHmOGu2oryLHvt3XbPgVSMJBOGI7EYe9mZD48qzBpbzXn0KQx9673dRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l7XYr++14IiVoG+j3G6uYnnjhOa2H2j9OyZyuv5MZc4=;
- b=biWGIHVvjS8ay6/q3ygFtVhD8up8iT7rozxmvhwzymxdnna/NZWR0aWlNB+qIVMb5AOHv2qgcr4RP+MVcEc55cpB2uc7R4pDdPywUQNBgDvgN3WOxwm2yzqyAF6seuQYI3/97yhwTAX47PUjFFTFM3lEjthVNKf7SorA+ZFNaGiOb8I3t07nme/xKTiq5l3LrdRcW+vc7Wwm8JZq4TG5VsNpLsLBtWLHPnzJ+mXvdCfyYHLHPaKPEK6hN03uwI84r4KXZsHLeTkyzvU5WPtNmFUkM4TNDPaBCHZF6XqEn6v1/hwTdUk7HnsswKe//flWk5kf6C7ipMASzzygmPDCJA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l7XYr++14IiVoG+j3G6uYnnjhOa2H2j9OyZyuv5MZc4=;
- b=m5uZIzSkG1vLljTMqyCBKE/aCq+R3lu7DCRCQydp+iNUpBdbhW/WLB9EA53MZqU6U2MRmr/I4r/TE5qTfngh+ToHhY01VGVX7vFzPH8r8+TwKq9pKuXtqehYcjUBrkYNF2jRcDZy2uNHfUgg5KffB4OaCIrigeqhtnQI3LUBPE4=
-Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com (2603:1096:400:196::10)
- by TYCPR01MB7579.jpnprd01.prod.outlook.com (2603:1096:400:f7::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Thu, 6 Jan
- 2022 06:42:57 +0000
-Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com
- ([fe80::8c58:9fce:97f2:ce35]) by TYCPR01MB9305.jpnprd01.prod.outlook.com
- ([fe80::8c58:9fce:97f2:ce35%9]) with mapi id 15.20.4844.014; Thu, 6 Jan 2022
- 06:42:57 +0000
-From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "aharonl@nvidia.com" <aharonl@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mbloch@nvidia.com" <mbloch@nvidia.com>,
-        "liweihang@huawei.com" <liweihang@huawei.com>,
-        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Subject: Re: [RFC PATCH rdma-next 08/10] RDMA/rxe: Implement flush execution
- in responder side
-Thread-Topic: [RFC PATCH rdma-next 08/10] RDMA/rxe: Implement flush execution
- in responder side
-Thread-Index: AQHX+8ExNgnDPI7BNEiFy0xj9MaxG6xVMQcAgABoxYA=
-Date:   Thu, 6 Jan 2022 06:42:57 +0000
-Message-ID: <347eb51d-6b0c-75fb-e27f-6bf4969125fe@fujitsu.com>
-References: <20211228080717.10666-1-lizhijian@cn.fujitsu.com>
- <20211228080717.10666-9-lizhijian@cn.fujitsu.com>
- <20220106002804.GS6467@ziepe.ca>
-In-Reply-To: <20220106002804.GS6467@ziepe.ca>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f126295f-c00b-4f20-43a9-08d9d0dfc650
-x-ms-traffictypediagnostic: TYCPR01MB7579:EE_
-x-microsoft-antispam-prvs: <TYCPR01MB75796BE0FD59A3137DE39BCEA54C9@TYCPR01MB7579.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:826;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hsIl9R4dO1aWRZCS+Wy3V8H63cF8qwFBUStICiZZ88hqkxGK37GAPIdfJ+AwwFOCp1e1Pw+lcRYl3CIt/RHnkLnAWBIHERHmn48cxf7eXi4rQjg76S1WGoDpDmKExWDJPK5uCKfZN8hsd2U7RIXQ4sd1RDwSB8cUwTqzKntoueVUas6gJWN9d4euch+Y+HcnMMeoAO2gbPHfzaHsImFVSWJHXJHp1/E/HdT0Wy9w6kB/9+w2DYXQeoQ+2qMgUEfjs74PpBTl0VrLYXOWSGnuTlsUbKDCuxwQyagHDprdtX4wTtxplsrk9TeKDOqzRKK6E1PE6uG8jhr5rCL6t5vuAOl+l6AJYfQ9+NXOvEC6B0FPCLoQA5B+b+8+3TO1b8HleQy/ai6UNYs4RPTPyrSgi1BngKpn1Mski0NSaDCurhn/6THs6ay/X4vUsK7I0SyapIMcoKA/IyBC6vcjJIjpN990YOHtFwBdTZWDDRg9QjbVA/QCRfS55pCJvCydjoO+4bTVra5UTALhMOmtPvtoRG7qiDI7NG3SzTTBkeLuluKM4b23aK6IgcfhaGFczDX1j1nAb66QAy8hhCJjKsywV4ME5ibxkNSDbHQZAETJkRNpXOQkRq3T/9rD4w62Icby2YpO2DYcmgwb4I2wgtW3iedXw2rGb3ee6Dfau1u15/C6K8rpCW+hZbsXMolzcMInfhfczZM2FmaUoOJX8fU45mAOFNJTWfpQsKFY003hbD6Tv7PcSlIH+lPCNsRvllc/uoDg4n4bCp8mECiqMPEmiw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB9305.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(86362001)(6486002)(36756003)(38070700005)(2906002)(85182001)(508600001)(66946007)(7416002)(71200400001)(8936002)(66446008)(31686004)(6506007)(83380400001)(82960400001)(53546011)(64756008)(31696002)(8676002)(2616005)(107886003)(122000001)(38100700002)(66556008)(316002)(54906003)(186003)(6512007)(110136005)(66476007)(91956017)(26005)(4326008)(4744005)(76116006)(5660300002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?QlBqNHNpczRCcjl4SFU4VndVS25yajJrQXRQbFgvYmFwdnJYZWRWc1dpOGdO?=
- =?utf-8?B?cC9OWGNrMGNzRkdpSmJHNDViWHl3T2E4RFNzUFI5N0Vza29BOGRIaG1TSGlT?=
- =?utf-8?B?bGFFaWlvbU9ET3I3YUJrcTFsa2tuaElOcTd2ZFVqcG8valJWWGJ3aUtpS0NI?=
- =?utf-8?B?dHZrRllHeVlTMVl5cUVTMnhMY1ppdldJdjRUYnd6K20rVWdJeGtnQncrN0hz?=
- =?utf-8?B?aS90L0tDWFZ1aGpZNDV6Q0ZncUVyKytDam5PbG5zUEx5QXhwS2JHTkRqR3FW?=
- =?utf-8?B?aU9hN3Fra1p0dXBNWkRwbWFQK3FHRVN2NU5UTmlzeGVmTGNvLy9LNzlYcEFS?=
- =?utf-8?B?N3RIaFg0OFhSS2FmSVpEVEwyd0V3S3NlVUpNUHpVbDgyd0dROFlQalpFeFpz?=
- =?utf-8?B?dkx5aDhoMmo1OVRRQkVVL2lyOVlhWC9tSDlhWFo2YmVhUjFIeENlZDJ2Q05I?=
- =?utf-8?B?amRWenl0aTZBdnJJdDBFN0F5U0lxSFVteHZPdEhHTVl2TFZwWEJpMFZaLzlN?=
- =?utf-8?B?S0RXbkpyazNraVFydW9KWjlXMGhVY0NKd2RCTXBzZlJRcEt1N0xVU0pIQ1lC?=
- =?utf-8?B?cGowdFBhNVlzV25XRjlrZHA4dUUyYUJMSmZDa2FseU5BbjEyQTdOMERoT1JP?=
- =?utf-8?B?NGJqOUZUeGRWcVZpalFFakphLytKcG9QYlBvK1JhZHd4OVFXU09MUW5kVW5w?=
- =?utf-8?B?QzdmRTE5VmREVjBlTXFsOXduOWZRY2hjb0NISWtpTDRWNjhJQnhmeGRLQmEv?=
- =?utf-8?B?OTVBVlVQVEFaMjhtRmNzYkhjNC9ZZzFVQlZybDNzZlJoRGIrTGlldWQvSFZI?=
- =?utf-8?B?T2Y1R0VoNUQxN29NSmlMWGNBTkhQMjQxbmQ4UGhBcTZpdFZ4Y0Z6bUI2V0JT?=
- =?utf-8?B?RWVVMFZtbFhvYjBSVFVRWTV3QTFnUWNkemNGTU5XMUdrRXJCays0VGIxUGs2?=
- =?utf-8?B?N3RYMnc4aXdFNExlTXo5NUk4emhxY3VIWS9pQnRCQVNxajMyelBMcThvQmwv?=
- =?utf-8?B?ZnhJWmJ3cVlPMTViWDV5UTZEZFVPR0p1RUtRcnRkMGJZVnpGK0lRT0lQU1E1?=
- =?utf-8?B?M0tWT2gwTjJmRllOZ1RhWHpLbk0vWG9BcUUzNHFhM1FYNTFVOEFwamgzcVdK?=
- =?utf-8?B?WmJWLzVtdXF0eGVWbFRRN21iYXZTbHRWV1F6cmZja25JKzQ0Z0JDTndPSkRW?=
- =?utf-8?B?MHVjclVEZ3pwYko4c2F4QW9kZ05BNFBKbzR3OUMyb0ZsZ1JpVHdDdFlqRGQ4?=
- =?utf-8?B?bnI4L3c1M3B3bmtFYXR5ZmhtVzJVRzVXQVFhL0VNZ0pHalF1bENuelByWVMv?=
- =?utf-8?B?NFR2bVd5WWp6YzNmRDk3V2laMlZpR1VET3RiRlVTd3ZrZ2JUZ2xVanc3VHNV?=
- =?utf-8?B?NVNPWVVjbGQ3THM4V2VlaVpLQ2tjVVI2V05ZR3Z3aEpVUzJ6MFBoWk5ZajJQ?=
- =?utf-8?B?c3V3akJMMWZUUlhtYWh4V2gwSG5INCs1RmcxWTBocFRIOXJ0VmtwY1QvRnVG?=
- =?utf-8?B?c0hqczg4RHVBNkwwbGgxY1MrbDNQY1V6d2RWOXVDdjVWenVzTldrNmFaNmRh?=
- =?utf-8?B?Mm5vV1o2QTVkaVpjY1lGTUZkOEIwUTN2YTVnOEJqYU5rQytrVHJvVTUvelJ1?=
- =?utf-8?B?TERSWnN5V0pUZlJNQ3pNQ1UwQzk2LzlQajEvbm1iTXgybDRyRW5ocHloQ3p4?=
- =?utf-8?B?SlZib25DcXhhZ2FXMkJYb2NZNVBxZVhleFFvWmRzckxZNVRmbWpwTitVT0pw?=
- =?utf-8?B?UnNESFZZWEh3dDlUa0loM2xqeDVoNDV1ZVFTREpFMjh3aS9BVUdhdlU2MFZD?=
- =?utf-8?B?WnNRREZjNENzMTNUeXlMSGJJbTluMGswR1ZxMVcvVHFCeGt4Ni9uK0o5S1Rl?=
- =?utf-8?B?a0hsblNuUlFWQXErODNXaWV2bGNTZ0NKOHRBcHdGUW5BdzIyN2dBelU0RGM3?=
- =?utf-8?B?Z2NoQU1HcTdoVjRBZ2UySTg5Z2tGNHNYYU1sV1UwQlhXSTV3eXRMUmNXcHhU?=
- =?utf-8?B?WjlLbllQSXZ5d3ZNTnY2amZSaFY3UTJ2R2RxbklJbDBUZDFSazd6cC9rQ0lJ?=
- =?utf-8?B?YkwvK2hwQkhTc3pWalQ0VEEraTBxY3JraFplclcwNmlUU0Z2R2dhd05RdEoy?=
- =?utf-8?B?THNPQzBVeU1FU1NONmhSaER2eW8rTk5lZU1CeXRCeE5ic3NVY2NsbVJTNWsv?=
- =?utf-8?Q?NWPmAxBWfArRoHCvnTPhIWY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7EC26F511F6D124CA2418EADFFC59058@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S234589AbiAFG4d (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jan 2022 01:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234429AbiAFG4c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 01:56:32 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB30C061245;
+        Wed,  5 Jan 2022 22:56:31 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D5108B81E58;
+        Thu,  6 Jan 2022 06:56:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42AC7C36AE0;
+        Thu,  6 Jan 2022 06:56:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1641452188;
+        bh=OT4lI4T6FzaaOZDI9lJEOy2kOsmIKxZLyxEul5kLoVQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=k7SurF3Riwel3JQLN72+JhhUi4mFawATfXNNNcfN0T2xRmFZ63fI83f58cqVTyh2a
+         KwM772GLDMyrjio3ygDfMpDTuEZbMKoHQpnkrpTp5lhZDmWd94y4Wnhli0oVp8+wut
+         acfgGjTMVCgYYQ3f6CC4rdXwTcOOyHuQ6cMiqACT3t6/jYj+4q5rphgtPIvSk8hcg0
+         1YJZpNM28e2rE6V6Rtqg5L70OZKY47rktfbfY8acTsvFzJ7VLZ0JJOP57hdWfRTcb7
+         SgsqYtqDj+sz8Ms1gkqEwXymHPiRE4tiiDz5xWu9ZGuUFrrjdw6TnGCMQ6+CL7KCMT
+         /VxKcU63es8kw==
+Date:   Thu, 6 Jan 2022 08:56:17 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Ertman, David M" <david.m.ertman@intel.com>
+Cc:     "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "Kaliszczuk, Leszek" <leszek.kaliszczuk@intel.com>
+Subject: Re: [PATCH net-next 1/1] ice: Simplify tracking status of RDMA
+ support
+Message-ID: <YdaSkbEVhscGXQe3@unreal>
+References: <20220105000456.2510590-1-anthony.l.nguyen@intel.com>
+ <YdVGaK1uMUv7frZ1@unreal>
+ <MW5PR11MB5811D45DEC5BEC61CD2411B6DD4B9@MW5PR11MB5811.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB9305.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f126295f-c00b-4f20-43a9-08d9d0dfc650
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2022 06:42:57.2444
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bNK4mwveSz+7f0XdpeCjwPmISX3bplyiN3b/qsOabXUjHNL8EQnfGl7DXezhDfLOY104QcIZe/Ix0m/vKduiuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB7579
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR11MB5811D45DEC5BEC61CD2411B6DD4B9@MW5PR11MB5811.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCk9uIDA2LzAxLzIwMjIgMDg6MjgsIEphc29uIEd1bnRob3JwZSB3cm90ZToNCj4gT24gVHVl
-LCBEZWMgMjgsIDIwMjEgYXQgMDQ6MDc6MTVQTSArMDgwMCwgTGkgWmhpamlhbiB3cm90ZToNCj4+
-ICsJd2hpbGUgKGxlbmd0aCA+IDApIHsNCj4+ICsJCXZhCT0gKHU4ICopKHVpbnRwdHJfdClidWYt
-PmFkZHIgKyBvZmZzZXQ7DQo+PiArCQlieXRlcwk9IGJ1Zi0+c2l6ZSAtIG9mZnNldDsNCj4+ICsN
-Cj4+ICsJCWlmIChieXRlcyA+IGxlbmd0aCkNCj4+ICsJCQlieXRlcyA9IGxlbmd0aDsNCj4+ICsN
-Cj4+ICsJCWFyY2hfd2JfY2FjaGVfcG1lbSh2YSwgYnl0ZXMpOw0KPiBTbyB3aHkgZGlkIHdlIG5l
-ZWQgdG8gY2hlY2sgdGhhdCB0aGUgdmEgd2FzIHBtZW0gdG8gY2FsbCB0aGlzPw0KU29ycnksIGkg
-ZGlkbid0IGdldCB5b3UuDQoNCkkgZGlkbid0IGNoZWNrIHdoZXRoZXIgdmEgaXMgcG1lbSwgc2lu
-Y2Ugb25seSBNUiByZWdpc3RlcmVkIHdpdGggUEVSU0lTVEVOQ0Uob25seSBwbWVtIGNhbg0KcmVn
-aXN0ZXIgdGhpcyBhY2Nlc3MgZmxhZykgY2FuIHJlYWNoIGhlcmUuDQoNClRoYW5rcw0KWmhpamlh
-bg0KDQoNCj4NCj4gSmFzb24NCg==
+On Wed, Jan 05, 2022 at 07:10:24PM +0000, Ertman, David M wrote:
+> > -----Original Message-----
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Tuesday, January 4, 2022 11:19 PM
+> > To: Nguyen, Anthony L <anthony.l.nguyen@intel.com>
+> > Cc: davem@davemloft.net; kuba@kernel.org; Ertman, David M
+> > <david.m.ertman@intel.com>; netdev@vger.kernel.org; linux-
+> > rdma@vger.kernel.org; Saleem, Shiraz <shiraz.saleem@intel.com>; Ismail,
+> > Mustafa <mustafa.ismail@intel.com>; Kaliszczuk, Leszek
+> > <leszek.kaliszczuk@intel.com>
+> > Subject: Re: [PATCH net-next 1/1] ice: Simplify tracking status of RDMA
+> > support
+> > 
+> > On Tue, Jan 04, 2022 at 04:04:56PM -0800, Tony Nguyen wrote:
+> > > From: Dave Ertman <david.m.ertman@intel.com>
+> > >
+> > > The status of support for RDMA is currently being tracked with two
+> > > separate status flags.  This is unnecessary with the current state of
+> > > the driver.
+> > >
+> > > Simplify status tracking down to a single flag.
+> > >
+> > > Rename the helper function to denote the RDMA specific status and
+> > > universally use the helper function to test the status bit.
+> > >
+> > > Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+> > > Tested-by: Leszek Kaliszczuk <leszek.kaliszczuk@intel.com>
+> > > Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+> > > ---
+> > >  drivers/net/ethernet/intel/ice/ice.h      |  3 ---
+> > >  drivers/net/ethernet/intel/ice/ice_idc.c  |  6 +++---
+> > >  drivers/net/ethernet/intel/ice/ice_lib.c  |  8 ++++----
+> > >  drivers/net/ethernet/intel/ice/ice_lib.h  |  2 +-
+> > >  drivers/net/ethernet/intel/ice/ice_main.c | 13 +++++--------
+> > >  5 files changed, 13 insertions(+), 19 deletions(-)
+> > >
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice.h
+> > b/drivers/net/ethernet/intel/ice/ice.h
+> > > index 4e16d185077d..6f445cc3390f 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice.h
+> > > +++ b/drivers/net/ethernet/intel/ice/ice.h
+> > > @@ -468,7 +468,6 @@ enum ice_pf_flags {
+> > >  	ICE_FLAG_FD_ENA,
+> > >  	ICE_FLAG_PTP_SUPPORTED,		/* PTP is supported by NVM
+> > */
+> > >  	ICE_FLAG_PTP,			/* PTP is enabled by software */
+> > > -	ICE_FLAG_AUX_ENA,
+> > >  	ICE_FLAG_ADV_FEATURES,
+> > >  	ICE_FLAG_TC_MQPRIO,		/* support for Multi queue TC
+> > */
+> > >  	ICE_FLAG_CLS_FLOWER,
+> > > @@ -886,7 +885,6 @@ static inline void ice_set_rdma_cap(struct ice_pf
+> > *pf)
+> > >  {
+> > >  	if (pf->hw.func_caps.common_cap.rdma && pf->num_rdma_msix) {
+> > >  		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > > -		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+> > >  		ice_plug_aux_dev(pf);
+> > >  	}
+> > >  }
+> > > @@ -899,6 +897,5 @@ static inline void ice_clear_rdma_cap(struct ice_pf
+> > *pf)
+> > >  {
+> > >  	ice_unplug_aux_dev(pf);
+> > >  	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > > -	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
+> > >  }
+> > >  #endif /* _ICE_H_ */
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c
+> > b/drivers/net/ethernet/intel/ice/ice_idc.c
+> > > index fc3580167e7b..9493a38182f5 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_idc.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_idc.c
+> > > @@ -79,7 +79,7 @@ int ice_add_rdma_qset(struct ice_pf *pf, struct
+> > iidc_rdma_qset_params *qset)
+> > >
+> > >  	dev = ice_pf_to_dev(pf);
+> > >
+> > > -	if (!test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
+> > > +	if (!ice_is_rdma_ena(pf))
+> > >  		return -EINVAL;
+> > >
+> > >  	vsi = ice_get_main_vsi(pf);
+> > > @@ -236,7 +236,7 @@ EXPORT_SYMBOL_GPL(ice_get_qos_params);
+> > >   */
+> > >  static int ice_reserve_rdma_qvector(struct ice_pf *pf)
+> > >  {
+> > > -	if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
+> > > +	if (ice_is_rdma_ena(pf)) {
+> > >  		int index;
+> > >
+> > >  		index = ice_get_res(pf, pf->irq_tracker, pf-
+> > >num_rdma_msix,
+> > > @@ -274,7 +274,7 @@ int ice_plug_aux_dev(struct ice_pf *pf)
+> > >  	/* if this PF doesn't support a technology that requires auxiliary
+> > >  	 * devices, then gracefully exit
+> > >  	 */
+> > > -	if (!ice_is_aux_ena(pf))
+> > > +	if (!ice_is_rdma_ena(pf))
+> > >  		return 0;
+> > 
+> > This check is redundant, you already checked it in ice_probe.
+> > 
+> 
+> This function is called from other places besides ice_probe (after a reset for instance).
+
+Right, and arguably the ice_rebuild() should have same check as in
+ice_probe(). Other places shouldn't call to this ice_plug_aux_dev() if
+RDMA is not supported. For example, you shouldn't present to the user
+roce_en/iwarp_en devlink knobs if your device missing RDMA capability
+bit. Maybe you did it, maybe not, I didn't check.
+
+It is much easier to review if the function foo() is called only when it
+is supported. It is also common kernel practice is that caller should check
+and meet function requirements before such call.
+
+> 
+> This central check stops the creation of the auxiliary device if it has been determined if
+> RDMA functionality should not be allowed whenever ice_plug_aux_dev is called.  The first
+> check in ice_probe stops even allocating the memory for the device if RDMA is not supported
+> at all.
+
+I know.
+
+> 
+> > >
+> > >  	iadev = kzalloc(sizeof(*iadev), GFP_KERNEL);
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c
+> > b/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > index 0c187cf04fcf..b1c164b8066c 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+> > > @@ -732,14 +732,14 @@ bool ice_is_safe_mode(struct ice_pf *pf)
+> > >  }
+> > >
+> > >  /**
+> > > - * ice_is_aux_ena
+> > > + * ice_is_rdma_ena
+> > >   * @pf: pointer to the PF struct
+> > >   *
+> > > - * returns true if AUX devices/drivers are supported, false otherwise
+> > > + * returns true if RDMA is currently supported, false otherwise
+> > >   */
+> > > -bool ice_is_aux_ena(struct ice_pf *pf)
+> > > +bool ice_is_rdma_ena(struct ice_pf *pf)
+> > >  {
+> > > -	return test_bit(ICE_FLAG_AUX_ENA, pf->flags);
+> > > +	return test_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > >  }
+> > >
+> > >  /**
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_lib.h
+> > b/drivers/net/ethernet/intel/ice/ice_lib.h
+> > > index b2ed189527d6..a2f54fbdc170 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_lib.h
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_lib.h
+> > > @@ -110,7 +110,7 @@ void ice_set_q_vector_intrl(struct ice_q_vector
+> > *q_vector);
+> > >  int ice_vsi_cfg_mac_fltr(struct ice_vsi *vsi, const u8 *macaddr, bool set);
+> > >
+> > >  bool ice_is_safe_mode(struct ice_pf *pf);
+> > > -bool ice_is_aux_ena(struct ice_pf *pf);
+> > > +bool ice_is_rdma_ena(struct ice_pf *pf);
+> > >  bool ice_is_dflt_vsi_in_use(struct ice_sw *sw);
+> > >
+> > >  bool ice_is_vsi_dflt_vsi(struct ice_sw *sw, struct ice_vsi *vsi);
+> > > diff --git a/drivers/net/ethernet/intel/ice/ice_main.c
+> > b/drivers/net/ethernet/intel/ice/ice_main.c
+> > > index e29176889c23..078eb588f41e 100644
+> > > --- a/drivers/net/ethernet/intel/ice/ice_main.c
+> > > +++ b/drivers/net/ethernet/intel/ice/ice_main.c
+> > > @@ -3653,11 +3653,8 @@ static void ice_set_pf_caps(struct ice_pf *pf)
+> > >  	struct ice_hw_func_caps *func_caps = &pf->hw.func_caps;
+> > >
+> > >  	clear_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > > -	clear_bit(ICE_FLAG_AUX_ENA, pf->flags);
+> > > -	if (func_caps->common_cap.rdma) {
+> > > +	if (func_caps->common_cap.rdma)
+> > >  		set_bit(ICE_FLAG_RDMA_ENA, pf->flags);
+> > > -		set_bit(ICE_FLAG_AUX_ENA, pf->flags);
+> > > -	}
+> > >  	clear_bit(ICE_FLAG_DCB_CAPABLE, pf->flags);
+> > >  	if (func_caps->common_cap.dcb)
+> > >  		set_bit(ICE_FLAG_DCB_CAPABLE, pf->flags);
+> > > @@ -3785,7 +3782,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
+> > >  	v_left -= needed;
+> > >
+> > >  	/* reserve vectors for RDMA auxiliary driver */
+> > > -	if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
+> > > +	if (ice_is_rdma_ena(pf)) {
+> > >  		needed = num_cpus + ICE_RDMA_NUM_AEQ_MSIX;
+> > >  		if (v_left < needed)
+> > >  			goto no_hw_vecs_left_err;
+> > > @@ -3826,7 +3823,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
+> > >  			int v_remain = v_actual - v_other;
+> > >  			int v_rdma = 0, v_min_rdma = 0;
+> > >
+> > > -			if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags)) {
+> > > +			if (ice_is_rdma_ena(pf)) {
+> > >  				/* Need at least 1 interrupt in addition to
+> > >  				 * AEQ MSIX
+> > >  				 */
+> > > @@ -3860,7 +3857,7 @@ static int ice_ena_msix_range(struct ice_pf *pf)
+> > >  			dev_notice(dev, "Enabled %d MSI-X vectors for LAN
+> > traffic.\n",
+> > >  				   pf->num_lan_msix);
+> > >
+> > > -			if (test_bit(ICE_FLAG_RDMA_ENA, pf->flags))
+> > > +			if (ice_is_rdma_ena(pf))
+> > >  				dev_notice(dev, "Enabled %d MSI-X vectors
+> > for RDMA.\n",
+> > >  					   pf->num_rdma_msix);
+> > >  		}
+> > > @@ -4688,7 +4685,7 @@ ice_probe(struct pci_dev *pdev, const struct
+> > pci_device_id __always_unused *ent)
+> > >
+> > >  	/* ready to go, so clear down state bit */
+> > >  	clear_bit(ICE_DOWN, pf->state);
+> > 
+> > Why don't you clear this bit after RDMA initialization?
+> 
+> We want the interface to be completely ready before we initialize RDMA
+> communication.  Also, this bit is not relevant to the RDMA queues, so before
+> or after RDMA initialization doesn't matter since RDMA traffic doesn't go through
+> the LAN netdev anyway.
+
+There is a difference between fully configured and enabled as this bbit
+represents. 
+
+Anyway,
+
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
