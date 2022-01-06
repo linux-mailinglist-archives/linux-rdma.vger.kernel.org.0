@@ -2,190 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F044866E1
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 16:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F994868B1
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 18:33:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240570AbiAFPo0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jan 2022 10:44:26 -0500
-Received: from mga03.intel.com ([134.134.136.65]:5764 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbiAFPoZ (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 6 Jan 2022 10:44:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641483865; x=1673019865;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=9fR4FIpDCSdWgxzJHLL+VMKsS2rKs0/AVyzEx44W4EQ=;
-  b=alas8w4kjc20+0dLxfKUNY9TWZirk+FkI3XQye6gApitdxr36IRa4/Cp
-   FNJ65C6OnIoYm1TYjIHx1cftLxgjufihYo+GobUCHx5zGI7Tp/CPtLLZH
-   ZyW0LRXqeTNkp+O/aDN0KuapeMuUfwH8guIzTs8Mp3sAOaspakuMGg1IH
-   +gS/A6EHDzH4QnIjvtldaO1GzLwSKXEsG+t9u7zvB3aXGABQzRAKAUFRQ
-   mukO3Z290Jq1qGnqU6NIibgnAjqOWg9dEbXu+YJtTIKv2TCWTKTJuj0Ze
-   z8mi1IBwMIkyAj9YvboglPtsuarxZiIDZajQMZi7P/goXos5TbCjhqSZx
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10217"; a="242632603"
-X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; 
-   d="scan'208";a="242632603"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2022 07:44:25 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,267,1635231600"; 
-   d="scan'208";a="513448642"
-Received: from lkp-server01.sh.intel.com (HELO e357b3ef1427) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 06 Jan 2022 07:44:23 -0800
-Received: from kbuild by e357b3ef1427 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1n5UwB-000Hkq-3U; Thu, 06 Jan 2022 15:44:23 +0000
-Date:   Thu, 06 Jan 2022 23:43:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 954e136d5d1af8294f4805630b155e2a29f4119d
-Message-ID: <61d70e37.E/cl5GqpLx2s8PBj%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S241865AbiAFRdu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jan 2022 12:33:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42308 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241845AbiAFRdu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 12:33:50 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1411C061245
+        for <linux-rdma@vger.kernel.org>; Thu,  6 Jan 2022 09:33:49 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id lr15-20020a17090b4b8f00b001b19671cbebso3916106pjb.1
+        for <linux-rdma@vger.kernel.org>; Thu, 06 Jan 2022 09:33:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SVU9ojxKh3KV/GkNCH2U8jLzNnNx2BrytGLDVlfM2n4=;
+        b=B7uhyCQuWye9aBf8yPcxb8+lyR96aaQke/GnM1Lg02NwGIbHRbmz4KClAxslwbq7U4
+         Yebv3rE7W75n0qCr4B1yNF0W+BOhQUuc64tplojX1gSd1ODhjw11QN/e6aeUwDBlNx0h
+         bh1dxebH0y7DIlnsUH9/9L7tptxPiYlQ+MGC44/aH55Grc/D0PciIW6R7bG7OT9T8+1j
+         uQIEyqiFgMEl0bAHBBRzwMzQCbLDyUed4PqBcENUbl7LhcZXdtdaw5dkA33E7Nr4+czL
+         4P4mEVEsj97UwkqlV2Xx1QadRt2QpvFJlmlsUkDyY+InxvI2q13Ja5cJoKNCGbZDOWgD
+         3OIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SVU9ojxKh3KV/GkNCH2U8jLzNnNx2BrytGLDVlfM2n4=;
+        b=6nH0B8QZSvUry3OK8XgaIiP1p9MahFmLwL1tcSsTRWA3AA2VvAddmtnVHsxiAAPNWv
+         vRLdlo/rag/iiypsGaJQOXfR/iDcP0n8+voa7wrL99bla+0Rky7IW+9AYH7+AAtufsoB
+         vczkvZX4qjJI8lNBAYTij7me69yCa7YXOrNL8rCzRq8sCTvw7WM2Y1awb3/R7o6JSM2Z
+         zS3DWjzLkjy5wKU56CM5yR50T7RMTv60scrma78WJVeJJublBFQLxasssL/lch60/sWm
+         Qasqwlb6Z6QM2WyT/k/VY0kioo+AEQDjG9OwgaUpvZXFTccmTDS8h+YRv6JBXqU7TXCw
+         tumw==
+X-Gm-Message-State: AOAM531jR2Wdt57d2mOZpkg2HGg1iqbeQIuWvAqS0W5aNd9KPVgOrX2h
+        lZkxY7FDvtis8w4+r1+eWGlmcA==
+X-Google-Smtp-Source: ABdhPJyZaTVYpO1ItL4ZGLZUkEwmwFKFW3I/igBkCy9iAG62enlQpIFkRSuiwUlPtU89+7Kwcm6jMg==
+X-Received: by 2002:a17:902:8505:b0:149:ac79:d8d6 with SMTP id bj5-20020a170902850500b00149ac79d8d6mr28217912plb.170.1641490429554;
+        Thu, 06 Jan 2022 09:33:49 -0800 (PST)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id ng7sm3343172pjb.41.2022.01.06.09.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jan 2022 09:33:48 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1n5We2-00CQtq-FZ; Thu, 06 Jan 2022 13:33:46 -0400
+Date:   Thu, 6 Jan 2022 13:33:46 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "aharonl@nvidia.com" <aharonl@nvidia.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mbloch@nvidia.com" <mbloch@nvidia.com>,
+        "liweihang@huawei.com" <liweihang@huawei.com>,
+        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
+Subject: Re: [RFC PATCH rdma-next 08/10] RDMA/rxe: Implement flush execution
+ in responder side
+Message-ID: <20220106173346.GU6467@ziepe.ca>
+References: <20211228080717.10666-1-lizhijian@cn.fujitsu.com>
+ <20211228080717.10666-9-lizhijian@cn.fujitsu.com>
+ <20220106002804.GS6467@ziepe.ca>
+ <347eb51d-6b0c-75fb-e27f-6bf4969125fe@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <347eb51d-6b0c-75fb-e27f-6bf4969125fe@fujitsu.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 954e136d5d1af8294f4805630b155e2a29f4119d  IB/iser: Align coding style across driver
+On Thu, Jan 06, 2022 at 06:42:57AM +0000, lizhijian@fujitsu.com wrote:
+> 
+> 
+> On 06/01/2022 08:28, Jason Gunthorpe wrote:
+> > On Tue, Dec 28, 2021 at 04:07:15PM +0800, Li Zhijian wrote:
+> >> +	while (length > 0) {
+> >> +		va	= (u8 *)(uintptr_t)buf->addr + offset;
+> >> +		bytes	= buf->size - offset;
+> >> +
+> >> +		if (bytes > length)
+> >> +			bytes = length;
+> >> +
+> >> +		arch_wb_cache_pmem(va, bytes);
+> > So why did we need to check that the va was pmem to call this?
+> Sorry, i didn't get you.
+> 
+> I didn't check whether va is pmem, since only MR registered with PERSISTENCE(only pmem can
+> register this access flag) can reach here.
 
-elapsed time: 724m
+Yes, that is what I mean, why did we need to check anything to call
+this API - it should work on any CPU mapped address.
 
-configs tested: 117
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                 randconfig-c001-20220106
-s390                       zfcpdump_defconfig
-um                           x86_64_defconfig
-arm                            lart_defconfig
-sparc                            alldefconfig
-sh                        apsh4ad0a_defconfig
-arc                          axs103_defconfig
-ia64                        generic_defconfig
-sh                              ul2_defconfig
-powerpc                     stx_gp3_defconfig
-powerpc                     tqm8541_defconfig
-nios2                            alldefconfig
-arm                            qcom_defconfig
-sh                             espt_defconfig
-xtensa                          iss_defconfig
-powerpc                      ppc40x_defconfig
-sh                               alldefconfig
-sparc                               defconfig
-mips                       capcella_defconfig
-m68k                       bvme6000_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                     redwood_defconfig
-arc                     haps_hs_smp_defconfig
-sh                          r7785rp_defconfig
-parisc                generic-64bit_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                          pxa3xx_defconfig
-powerpc                     mpc83xx_defconfig
-sh                     sh7710voipgw_defconfig
-sh                   secureedge5410_defconfig
-arm                        realview_defconfig
-arm                  randconfig-c002-20220106
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a012-20220106
-x86_64               randconfig-a015-20220106
-x86_64               randconfig-a014-20220106
-x86_64               randconfig-a013-20220106
-x86_64               randconfig-a011-20220106
-x86_64               randconfig-a016-20220106
-i386                 randconfig-a012-20220106
-i386                 randconfig-a016-20220106
-i386                 randconfig-a014-20220106
-i386                 randconfig-a015-20220106
-i386                 randconfig-a011-20220106
-i386                 randconfig-a013-20220106
-s390                 randconfig-r044-20220106
-arc                  randconfig-r043-20220106
-riscv                randconfig-r042-20220106
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-
-clang tested configs:
-mips                 randconfig-c004-20220106
-arm                  randconfig-c002-20220106
-i386                 randconfig-c001-20220106
-riscv                randconfig-c006-20220106
-powerpc              randconfig-c003-20220106
-x86_64               randconfig-c007-20220106
-arm                          collie_defconfig
-powerpc                      ppc44x_defconfig
-i386                 randconfig-a003-20220106
-i386                 randconfig-a005-20220106
-i386                 randconfig-a004-20220106
-i386                 randconfig-a006-20220106
-i386                 randconfig-a002-20220106
-i386                 randconfig-a001-20220106
-x86_64               randconfig-a005-20220106
-x86_64               randconfig-a001-20220106
-x86_64               randconfig-a004-20220106
-x86_64               randconfig-a006-20220106
-x86_64               randconfig-a002-20220106
-x86_64               randconfig-a003-20220106
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Jason
