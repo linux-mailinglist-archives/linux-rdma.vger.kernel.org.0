@@ -2,104 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DEA94860D9
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 08:05:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8AE248616E
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 09:28:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235399AbiAFHFc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jan 2022 02:05:32 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:43881 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234429AbiAFHFb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 02:05:31 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V15.y8s_1641452728;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V15.y8s_1641452728)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 06 Jan 2022 15:05:29 +0800
-Date:   Thu, 6 Jan 2022 15:05:28 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>
-Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, dust.li@linux.alibaba.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
- listen queue
-Message-ID: <YdaUuOq+SkhYTWU8@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
- <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
- <20220105044049.GA107642@e02h04389.eu6sqa>
- <20220105085748.GD31579@linux.alibaba.com>
- <b98aefce-e425-9501-aacc-8e5a4a12953e@linux.ibm.com>
- <20220105150612.GA75522@e02h04389.eu6sqa>
- <d35569df-e0e0-5ea7-9aeb-7ffaeef04b14@linux.ibm.com>
+        id S236467AbiAFI2C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jan 2022 03:28:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236447AbiAFI2C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 03:28:02 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38113C061245;
+        Thu,  6 Jan 2022 00:28:02 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id h6so2012195plf.6;
+        Thu, 06 Jan 2022 00:28:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ovdWEOIwOQl7tDC0VgvgzUNl9Susr9y8QnlWeCAszQ=;
+        b=H6QvabZCAGMlTJT2sjTh2fqTtOEWhoOLYea+6fezZt+TYF/KaPnaQJzu3KAZPsG0eC
+         8hlQI4t1lNen+B34oo52/uUtjLbVBMOQF35fS/U195Wu4V8u5XHCt23pQat7Vbh/Xb92
+         Pf+iNL0Lv2G9oYWTRvRMsqYNrDgXy6MvuJDD2gccpyvQ0Nld2pHC7aMO9s7UyNu7CjmS
+         3RRlA/bBOZsBJl+dQLJjLQMYPGJ1SH8qrPMo8fBU1LZK3ROS3NyPbKhViusUJg6I0zhj
+         hdPNlID0BJNjVj6UM4sptDGoTHl5nawFpQN7URa5Y5AYWPwlQS13l2+/TgIUbCgZ6hQy
+         Fs1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ovdWEOIwOQl7tDC0VgvgzUNl9Susr9y8QnlWeCAszQ=;
+        b=juA2SOUmxBBICjDCfZQMHPfc9QMmBg4tk9xztrSZGj3KvUmlr3aZ/tW32878DnBjJ9
+         7p9ycR3DjdOudP69dOs09d6NMhtHpZwL3N2FX9YOeBrjTRss6gQ27Bhbk2JMOvH8OpjR
+         qyVrNo+I/ALibDUOeIu1WOo+xiTOhWCxJJAcQk2LLIJCZyymk7b8zxz3vxZwUrGJM+qg
+         dndsXHDYY/HpQS8Xr2g+U/b6HFD4zwCRhSJpACi783cQ9w1W8SYgneUrmOAS/vWU6MP+
+         BDfncUO6Kj9yNq72i3m+VBJ3DybpA0wrxb4ZGYft69WJDvd6NZRSj2jq+AeWzKpeg7GD
+         wezA==
+X-Gm-Message-State: AOAM5310X619gdnZbQZU1C4WrW0QX4n52Q/f1r59DsfiOidpa4hlm3dD
+        ag9b1eNnOT3hugtLXlLstXpmasDKSPbVMA==
+X-Google-Smtp-Source: ABdhPJzKufMkr7XgSVUGeY4g/Yn+9Eo4frLHqaG95/TL+4XALyN9YEqG8PmXxMedzxLO8xoIRu3BNg==
+X-Received: by 2002:a17:902:b082:b0:149:f81f:a29c with SMTP id p2-20020a170902b08200b00149f81fa29cmr539964plr.39.1641457681751;
+        Thu, 06 Jan 2022 00:28:01 -0800 (PST)
+Received: from localhost.localdomain ([94.177.118.151])
+        by smtp.googlemail.com with ESMTPSA id k3sm1230817pgq.54.2022.01.06.00.27.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jan 2022 00:28:01 -0800 (PST)
+From:   Qinghua Jin <qhjin.dev@gmail.com>
+Cc:     qhjin.dev@gmail.com,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] IB/qib: Fix typos
+Date:   Thu,  6 Jan 2022 16:27:22 +0800
+Message-Id: <20220106082722.354680-1-qhjin.dev@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d35569df-e0e0-5ea7-9aeb-7ffaeef04b14@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 05, 2022 at 08:13:23PM +0100, Karsten Graul wrote:
-> On 05/01/2022 16:06, D. Wythe wrote:
-> > LGTM. Fallback makes the restrictions on SMC dangling
-> > connections more meaningful to me, compared to dropping them.
-> > 
-> > Overall, i see there are two scenario.
-> > 
-> > 1. Drop the overflow connections limited by userspace application
-> > accept.
-> > 
-> > 2. Fallback the overflow connections limited by the heavy process of
-> > current SMC handshake. ( We can also control its behavior through
-> > sysctl.)
-> > 
-> 
-> I vote for (2) which makes the behavior from user space applications point of view more like TCP.
+change 'postion' to 'position'
 
-Fallback when smc reaches itself limit is a good idea. I'm curious
-whether the fallback reason is suitable, it more like a non-negative
-issue. Currently, smc fallback for negative issues, such as resource not
-available or internal error. This issue doesn't like a non-negative
-reason.
+Signed-off-by: Qinghua Jin <qhjin.dev@gmail.com>
+---
+ drivers/infiniband/hw/qib/qib_iba6120.c | 2 +-
+ drivers/infiniband/hw/qib/qib_iba7220.c | 2 +-
+ drivers/infiniband/hw/qib/qib_iba7322.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-And I have no idea about to mix the normal and fallback connections at
-same time, meanwhile there is no error happened or hard limit reaches,
-is a easy to maintain for users? Maybe let users misunderstanding, a
-parameter from userspace control this limit, and the behaviour (drop or
-fallback).
+diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
+index a9b83bc13f4a..aea571943768 100644
+--- a/drivers/infiniband/hw/qib/qib_iba6120.c
++++ b/drivers/infiniband/hw/qib/qib_iba6120.c
+@@ -3030,7 +3030,7 @@ static int qib_6120_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
  
-> One comment to sysctl: our current approach is to add new switches to the existing 
-> netlink interface which can be used with the smc-tools package (or own implementations of course). 
-> Is this prereq problematic in your environment? 
-> We tried to avoid more sysctls and the netlink interface keeps use more flexible.
+ /* Does read/modify/write to appropriate registers to
+  * set output and direction bits selected by mask.
+- * these are in their canonical postions (e.g. lsb of
++ * these are in their canonical positions (e.g. lsb of
+  * dir will end up in D48 of extctrl on existing chips).
+  * returns contents of GP Inputs.
+  */
+diff --git a/drivers/infiniband/hw/qib/qib_iba7220.c b/drivers/infiniband/hw/qib/qib_iba7220.c
+index d1c0bc31869f..80a8dd6c7814 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7220.c
++++ b/drivers/infiniband/hw/qib/qib_iba7220.c
+@@ -3742,7 +3742,7 @@ static int qib_7220_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
+ /*
+  * Does read/modify/write to appropriate registers to
+  * set output and direction bits selected by mask.
+- * these are in their canonical postions (e.g. lsb of
++ * these are in their canonical positions (e.g. lsb of
+  * dir will end up in D48 of extctrl on existing chips).
+  * returns contents of GP Inputs.
+  */
+diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
+index ab98b6a3ae1e..ceed302cf6a0 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7322.c
++++ b/drivers/infiniband/hw/qib/qib_iba7322.c
+@@ -5665,7 +5665,7 @@ static int qib_7322_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
+ /*
+  * Does read/modify/write to appropriate registers to
+  * set output and direction bits selected by mask.
+- * these are in their canonical postions (e.g. lsb of
++ * these are in their canonical positions (e.g. lsb of
+  * dir will end up in D48 of extctrl on existing chips).
+  * returns contents of GP Inputs.
+  */
+-- 
+2.30.2
 
-I agree with you about using netlink is more flexible. There are
-something different in our environment to use netlink to control the
-behaves of smc.
-
-Compared with netlink, sysctl is:
-- easy to use on clusters. Applications who want to use smc, don't need
-  to deploy additional tools or developing another netlink logic,
-  especially for thousands of machines or containers. With smc forward,
-  we should make sure the package or logic is compatible with current
-  kernel, but sysctl's API compatible is easy to discover.
-
-- config template and default maintain. We are using /etc/sysctl.conf to
-  make sure the systeml configures update to date, such as pre-tuned smc
-  config parameters. So that we can change this default values on boot,
-  and generate lots of machines base on this machine template. Userspace
-  netlink tools doesn't suit for it, for example ip related config, we
-  need additional NetworkManager or netctl to do this.
-
-- TCP-like sysctl entries. TCP provides lots of sysctl to configure
-  itself, somethings it is hard to use and understand. However, it is
-  accepted by most of users and system. Maybe we could use sysctl for
-  the item that frequently and easy to change, netlink for the complex
-  item.
-
-We are gold to contribute to smc-tools. Use netlink and sysctl both
-time, I think, is a more suitable choice.
-
-Thanks,
-Tony Lu
