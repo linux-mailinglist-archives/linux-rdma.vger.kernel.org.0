@@ -2,113 +2,141 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E21F485D3B
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 01:35:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D1F485D4B
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 01:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343848AbiAFAfa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 5 Jan 2022 19:35:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343830AbiAFAf2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 5 Jan 2022 19:35:28 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F48C061245
-        for <linux-rdma@vger.kernel.org>; Wed,  5 Jan 2022 16:35:28 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id a11-20020a17090a854b00b001b11aae38d6so1172544pjw.2
-        for <linux-rdma@vger.kernel.org>; Wed, 05 Jan 2022 16:35:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/dgM38nH9o8fmC3S1YCg/YggFGRsvCmKnoOuH6xTuns=;
-        b=jMNnnvuhcFeDCUsNA7IB1tnGTpFJSji9ve2cvca3TgSTVw56PL212pUZZ0f1ZJWsi2
-         P4r3DTaEIWY/w3httxSjFDuE676yxI+u+qx7i84IDeHAPeHBAFYtT07Gb95cscCreEIS
-         hjB/Q6/jgvmEG+dAXiQC55RCJWVwfwSVRVIOarQHwBscvDazT6+RHr3cSzaicgPsa6AZ
-         ollu+uoV1dMv/XwEeaO0asU1xn7cApC0nrxZgTjzp4IqgDH8NKOBOJxujLKsl6+JpvKU
-         x9P8e/63s4SE3p+Pb06/n7wB4RV851ELzlaLb/AYRr5rWX5dwA/k0g4PjVeR3Lvbpvaf
-         sNAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/dgM38nH9o8fmC3S1YCg/YggFGRsvCmKnoOuH6xTuns=;
-        b=oqlR7nBSGtoKtRpehHdPoowMCocoBUBilM4wiT4Bl4daInzqIiIsgOy+44mt8t4qzz
-         0nsg+bbRr1+DmGi8GRk73mWdP+JK2k/E6Ao8PAfqy8Kfd4Dcr/tQk38vpM2+LmTm64hd
-         fMw88aIAUL2ZUxX2CoMPybMmCqihHB6nEn0nQoi9skKYRQvxRZV/25ECiRZ+Ra9/sA9K
-         9jS6hg4wK5bYAGGPAKe7ZHdCxzeJ1pBcGwQwiBemJBRXOZ2gfncrUktzYVQ3ccDoccZy
-         DH0tTc1hkvVWPUJhQW1MTXVuKm09Ox9xC18/SLtHlJS4YmyMfEE/fsYnyZTGqIs3w7W7
-         np7g==
-X-Gm-Message-State: AOAM531/SZ8ZNiwSmvimPhjTpp5ABi7qg3OsYtUuHFOZ3OFZ7q5Qundg
-        yyPKsZsq8+NzfLXdxHMkZEBhwQ==
-X-Google-Smtp-Source: ABdhPJwI1M2o+qP77Lv7sMzLsdslDVY8qUMAFpBAjlHNE6ysmF/7QU6sZglf/IKSQbkkV15BO6eKCg==
-X-Received: by 2002:a17:90b:3809:: with SMTP id mq9mr7062172pjb.245.1641429327593;
-        Wed, 05 Jan 2022 16:35:27 -0800 (PST)
-Received: from ziepe.ca ([206.223.160.26])
-        by smtp.gmail.com with ESMTPSA id s8sm243085pfu.58.2022.01.05.16.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jan 2022 16:35:27 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1n5GkX-00CDig-JJ; Wed, 05 Jan 2022 20:35:25 -0400
-Date:   Wed, 5 Jan 2022 20:35:25 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Tom Talpey <tom@talpey.com>
-Cc:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "aharonl@nvidia.com" <aharonl@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mbloch@nvidia.com" <mbloch@nvidia.com>,
-        "liweihang@huawei.com" <liweihang@huawei.com>,
-        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Subject: Re: [RFC PATCH rdma-next 08/10] RDMA/rxe: Implement flush execution
- in responder side
-Message-ID: <20220106003525.GT6467@ziepe.ca>
-References: <20211228080717.10666-1-lizhijian@cn.fujitsu.com>
- <20211228080717.10666-9-lizhijian@cn.fujitsu.com>
- <9f97d902-aad5-db0f-f2dc-badf913777c4@talpey.com>
- <fd561077-358e-e38d-a7d0-5c61593eff6a@fujitsu.com>
- <17122432-1d05-7a88-5d06-840cd69e57e9@talpey.com>
-MIME-Version: 1.0
+        id S1343858AbiAFAjZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 5 Jan 2022 19:39:25 -0500
+Received: from mail-mw2nam12on2068.outbound.protection.outlook.com ([40.107.244.68]:36065
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1343879AbiAFAjY (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 5 Jan 2022 19:39:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=agiSXfIqxkqD8irOgMI9RQgaNv52gcXWR6j+3WzSavLOZ8In/WD/8kVIvkY1ZAiT0sIEvugg92yL4Plc9GZxY5F9YfF20rSnx8Z+mfHxnJD0z19/YE9bWwM4UEScCJUh/0PesIXdF7o/dJjX/32ziDqyJPxRcyjqH/1MHBrNZi1o99ybnbeF0QBehi002rieYkNCe9NeNHqBacLU0qDWFrV15sMTl1iHZOIQyLIGUQcH/zjlDhGE+WlDr6nF6a5kBxzeLr1bnJknzFgCp/X/h/YkAlvRP/xHK8PGpbsFXV4IvBspwfGPUeg5remdgzmGiBGNmho9NjnOCgLG0QIq2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0ZsNVQLIyLhWEWD8B5a8J2+Q23YBuLW9JMV7VmXwSIo=;
+ b=Zp21DZMKQ5Q+BK+mA/QNdH0iptNpr/qwouQ4XAfnXIpAoX2MoYOT9mC9C4qI1NYibXEEbB0Zdkyi1r2hsSAab8c3xzhkbPRtD4299iQp6ht6grbg4XtM4jFziEP5j7t/L5/BznMIHXe/6JFzoKlycU/bUf/DqORdTvER/XdOfynPmd3wFlJY7j8LNryOV19Nd1sncqeQnOD/LGJ2QyIwpJF3JSk6MKhD7r9GuYbr3OrnFS+0JbF5LGAC8kVEWzJbeDx16OlvdDz7SS5PoDy60kFmRvDvNAXCDiNhq/B3ssurCyC/aOiyab23Gv8aoNpb6JoayvL/9rkenKvSKOjXEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0ZsNVQLIyLhWEWD8B5a8J2+Q23YBuLW9JMV7VmXwSIo=;
+ b=bUdMWeyns4FPF5Ip9xoygM63xfLFolugvhyAvj00krmT9FEVRCPZjsR2UYrQXhP159sV65mTFX6xIQGyTmNSWkwPIg+Sa5UC1kSeuHELuyR5BiyGbiOvR3nisUka1lPMkkcAPYaIfSxsJ516gxcCTuXbF4LIwAtfODBJONetIxqlfoeaWRMzAbtp2+8gjrRZuz3qCITnYKECL6bdNLDIK5lsDJ4qxevEBNeyFI6BdfBcz39PBows74DArKc2mRs1OMHjLrNWbMtTsGTzERUogBlZhUI6+0BJdCxBdfaewEAc0YuPSqcJzcidYqAlvAnOL5VqW4a/1aC+Fw9ghoCwXg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5539.namprd12.prod.outlook.com (2603:10b6:208:1c3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Thu, 6 Jan
+ 2022 00:39:23 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::464:eb3d:1fde:e6af]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::464:eb3d:1fde:e6af%5]) with mapi id 15.20.4867.009; Thu, 6 Jan 2022
+ 00:39:23 +0000
+Date:   Wed, 5 Jan 2022 20:39:20 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, sagi@grimberg.me, oren@nvidia.com,
+        israelr@nvidia.com, sergeygo@nvidia.com
+Subject: Re: [PATCH 0/6] iSER fixes and cleanups for kernel-5.17
+Message-ID: <20220106003920.GA2913115@nvidia.com>
+References: <20211215135721.3662-1-mgurtovoy@nvidia.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <17122432-1d05-7a88-5d06-840cd69e57e9@talpey.com>
+In-Reply-To: <20211215135721.3662-1-mgurtovoy@nvidia.com>
+X-ClientProxiedBy: SJ0PR13CA0230.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::25) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 91d23d3d-89ce-44be-898b-08d9d0acfc01
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5539:EE_
+X-Microsoft-Antispam-PRVS: <BL0PR12MB55399A24932B50FE7BBFCD3EC24C9@BL0PR12MB5539.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L7MShLK87LiJwfv3abFiav8BDIKjHWt8oIfMHprHVn2VLWk7qKJbn4DR1FXFtk87blbkGXAT7VH5U6/N9DZvIChVqyMiJpIp2b4UeMSSUB6ELbPxbCKHjMP4ObBuxNyAc9mTBkksIy+H5VGZrSbUR2j8u9zxiHmaDsvFnUsauBopnwgQYwU9jMx++jL6BNweuqKen2AgKySqwLdvGErii97KWmJXX47k+eAiA9j2huU0/eJGRDzeZ79RtEYM24qHE70yQVi9tDCxqHpC4eSAja5+LC0aJgT1jdQfVpxK7euUZAPyo9EJHMVMa8d7MUefnYUe0QltBSiTQhlU4S+Xt6Nh3kh9PbkIfuxd+c8YsPRsOQ3HZnA+gplzQwRPvldwgHK1FEUi2Ps3kMocM6t1wDCAXRTz7bRXZ7d2eCwab12wXK+A5BNMEsXX1JdaLZ0jJ1H/2cFwgME/LfUHhs7iPhMFPMKFxNMwgvVo39yxJx4ir8pfTaLOAtk8rmhiM/yWE3PGl601Gb1DFihK59/Lut9iW9fvGZsuOt3LKR9AjYBuDZzbujSuIph5Etxuw9o1l2gb6CY7HAZ0kEGoD3ZQ03j5bi1dolDtnR8WOmBVpA++zV3hYnyyRuBLyEPUu7AIXr967IsMVrp929zrN+HGjg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(316002)(2616005)(6486002)(2906002)(1076003)(86362001)(66946007)(6512007)(66476007)(66556008)(36756003)(6636002)(5660300002)(107886003)(508600001)(186003)(38100700002)(33656002)(4326008)(8676002)(6506007)(37006003)(83380400001)(8936002)(6862004)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XsRhWaIbQVsLCoonlRlRN3HGlZ9IED9tUbR4Za+/La2ygc81bJlebdQi4/Vy?=
+ =?us-ascii?Q?woeff/B/+Gc52v1zL4sN/NdOHLUwHYiIIQ1/aHYS5jhYjXjrZVSb1+qMlCPq?=
+ =?us-ascii?Q?N2bSG9BYwHYYJ7sd2giPxB7iJSmKLfDYzG6Ddj3OqXlEM+FFS9GAqxGKxx6B?=
+ =?us-ascii?Q?W3l/9NjFLtJuo9IET6JqcAIt/edf/B6/9c++c9TlAENmtwpWIngbtnwKUBjD?=
+ =?us-ascii?Q?rHZ2mpjER2gdAur4+EaqNmOCgMUMA728QzI1w6Tr5TnUKz2nf1FuPyQzLwzF?=
+ =?us-ascii?Q?WJmC3DgY88vVr1uAvafH2l8yLSDiOvKrkUr3os34o44NP2pokkJbRt+rhCSj?=
+ =?us-ascii?Q?kzVrcg6F5EPkohHW4+23LoDi5oz1Tz8Zwl5HE5hDPKJQIUYh+4ab6I3JnmDm?=
+ =?us-ascii?Q?Kaxx/riYTcZvjpJLogC9ugzHDh9YHuUj6TV444ZKRMZYm5m99vzOY4RMhuiO?=
+ =?us-ascii?Q?2VIPEVJiHnptZTBXbg+HpvLPuVSXzMU6pmFGvOVANhrDWuJU2inmcHi8Tcxv?=
+ =?us-ascii?Q?WvhTWiD1BotNGnmLuPoRMuqWA2QlmVc5UseSfMDjr7cMFPiilvs/QFcWJErg?=
+ =?us-ascii?Q?iqG4J3Cl0o5s6w3aLtflSldLJ0/NRKgGxug4eL47WzQd2gOQqThMnmoY4qlr?=
+ =?us-ascii?Q?hHx2zMz5ffsRnTLLYOJXjpomNe0afdAvj8YlpIAAZWqK5/9wB48t3xiPFzt8?=
+ =?us-ascii?Q?Uxhbh0tB7w5dvqzJbd4BMSgAfNDr7IXaZr5aYYJimq4Q1sFRLvQLVWi5sR/L?=
+ =?us-ascii?Q?yD3+Jy/WJJAHwLdFEj8DpcXYrZya/VCUZMwbtfQX+ixUl5+dbmTsWi8ggBnU?=
+ =?us-ascii?Q?Gy0klDvk4FnXYT+huUfCGENbs3+dNZCn/Cd7o0xRnpkTJ/fKR0lT40WzCXbi?=
+ =?us-ascii?Q?JkCyahIdnRqhBLNuNfGtFn7k16TOaMvJXit4RjFx4yp62jpEM6BRZ7Dxqo5b?=
+ =?us-ascii?Q?rjH+YGD+Tg1HSplrBjKukVBjae9IzJ6Hfa5s9sdIj2KkTNp/pGWK1tCPLom2?=
+ =?us-ascii?Q?gsee+lvzdvU5PNQ89dhmzYDARXZxLUNybf5u5KHjmMCxqgUj7TyPinDMi5aE?=
+ =?us-ascii?Q?yVfZngdOZdJSeNxKc2+gzc9lDmVeh/ZxJOjddaT2ctqlwS4lTaCjxjuG9EYr?=
+ =?us-ascii?Q?Tij6HMzdWu1z6NTg2qkS/WCdhch4Iu7RmJHgE04m2GRGrImJSVFxmWM7JCm8?=
+ =?us-ascii?Q?VL6Ndxct+/In3q3M00OtDngBpHuRmG+3ubbW2sDofRcc628V8qASXkafhIGN?=
+ =?us-ascii?Q?If3jdicb7iPfstIzUmAXxQUEpiWIPSmQLu2ayGZ8MhP1dkK7B4iXvrLgG6m3?=
+ =?us-ascii?Q?r9fsnQ5iEDz/FttE+EyEjPmEdhLhxmtutyNuBGWjg9ITJ8Vf8jcMRSzlLGSm?=
+ =?us-ascii?Q?hiUWZELj5Rwt+P3joPNrq7BZfRm3apYHRcT5jgii2XcYP8hGn43u9g6QoZSm?=
+ =?us-ascii?Q?lz4QKQh+VyPB+k9G3Y2UK1Im6kFlFjuaU70oFwhwEa7BIoKRQUvUFETA/7dx?=
+ =?us-ascii?Q?EkQ9OOzKuZiK0idyQazWjhJo75YjilebGV7xPEUy4lC6x/jM4RgI68xGZuyz?=
+ =?us-ascii?Q?Uf+MTsBQ65wrIk9tsiQ=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91d23d3d-89ce-44be-898b-08d9d0acfc01
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2022 00:39:23.3215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W4vILkQwPNDr0uPKeV7NMF0ttfXSlv8Dbg/wLhm7i0tcws6bDikrG+nnokma3IoV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5539
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Dec 30, 2021 at 09:32:06PM -0500, Tom Talpey wrote:
+On Wed, Dec 15, 2021 at 03:57:15PM +0200, Max Gurtovoy wrote:
+> Hi Jason and Sagi,
+> This series is the first fixes and cleanups for iSER intiator that we
+> aim for kernel-5.17 edition.
+> 
+> It starts with removing deprecated module parameter from ib_iser driver
+> (patch 1/6).
+> 
+> The series continues with a patch (SergeyG) that fixes RNR messages sent
+> to the target HCA since there are not enough credits/space in the receive
+> queue (patch 2/6).
+> 
+> Patch 3/6 is a simple renaming patch.
+> 
+> Patch 4/6 is a preparation patch to eventually guarantee that the HCA
+> will never perform an access violation when retrying a send operation
+> (same as done in NVMe-oF).
+> 
+> Patches 5/6 and 6/6 are some cleanups and coding style fixes to help
+> maintaining the driver.
+> 
+> Max Gurtovoy (5):
+>   IB/iser: remove deprecated pi_guard module param
+>   IB/iser: rename ib_ret local variable
+>   IB/iser: don't suppress send completions
+>   IB/iser: remove un-needed casting to/from void pointer
+>   IB/iser: align coding style accross driver
+> 
+> Sergey Gorenko (1):
+>   IB/iser: fix RNR errors
 
-> The global visibility is oriented toward supporting distributed
-> shared memory workloads, or publish/subscribe on high scale systems.
-> It's mainly about ensuring that all devices and CPUs see the data,
-> something ordinary RDMA Write does not guarantee. This often means
-> flushing write pipelines, possibly followed by invalidating caches.
-
-Isn't that what that new ATOMIC_WRITE does? Why do I need to flush if
-ATOMIC WRITE was specified as a release? All I need to do is acquire
-on the ATOMIC_WRITE site and I'm good?
-
-So what does FLUSH do here, and how does a CPU 'acquire' against this
-kind of flush? The flush doesn't imply any ordering right, so how is
-it useful on its own?
-
-The write to persistance aspect I understand, but this notion of
-global viability seems peculiar.
-
-> Well, higher level wrappers may signal errors, for example if they're
-> not available or unreliable, and you will need to handle them. Also,
-> they may block. Is that ok in this context?
-
-I'm not sure we have any other tools here beyond a release barrier
-like wmb() or the special pmem cache flush. Neither are blocking or
-can fail.
-
-In pmem systems storage failure is handled via the memory failure
-stuff asynchronously.
+Applied to for-next, thanks
 
 Jason
