@@ -2,116 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8AE248616E
-	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 09:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6EBB486272
+	for <lists+linux-rdma@lfdr.de>; Thu,  6 Jan 2022 10:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236467AbiAFI2C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 6 Jan 2022 03:28:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236447AbiAFI2C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 03:28:02 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38113C061245;
-        Thu,  6 Jan 2022 00:28:02 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id h6so2012195plf.6;
-        Thu, 06 Jan 2022 00:28:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1ovdWEOIwOQl7tDC0VgvgzUNl9Susr9y8QnlWeCAszQ=;
-        b=H6QvabZCAGMlTJT2sjTh2fqTtOEWhoOLYea+6fezZt+TYF/KaPnaQJzu3KAZPsG0eC
-         8hlQI4t1lNen+B34oo52/uUtjLbVBMOQF35fS/U195Wu4V8u5XHCt23pQat7Vbh/Xb92
-         Pf+iNL0Lv2G9oYWTRvRMsqYNrDgXy6MvuJDD2gccpyvQ0Nld2pHC7aMO9s7UyNu7CjmS
-         3RRlA/bBOZsBJl+dQLJjLQMYPGJ1SH8qrPMo8fBU1LZK3ROS3NyPbKhViusUJg6I0zhj
-         hdPNlID0BJNjVj6UM4sptDGoTHl5nawFpQN7URa5Y5AYWPwlQS13l2+/TgIUbCgZ6hQy
-         Fs1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1ovdWEOIwOQl7tDC0VgvgzUNl9Susr9y8QnlWeCAszQ=;
-        b=juA2SOUmxBBICjDCfZQMHPfc9QMmBg4tk9xztrSZGj3KvUmlr3aZ/tW32878DnBjJ9
-         7p9ycR3DjdOudP69dOs09d6NMhtHpZwL3N2FX9YOeBrjTRss6gQ27Bhbk2JMOvH8OpjR
-         qyVrNo+I/ALibDUOeIu1WOo+xiTOhWCxJJAcQk2LLIJCZyymk7b8zxz3vxZwUrGJM+qg
-         dndsXHDYY/HpQS8Xr2g+U/b6HFD4zwCRhSJpACi783cQ9w1W8SYgneUrmOAS/vWU6MP+
-         BDfncUO6Kj9yNq72i3m+VBJ3DybpA0wrxb4ZGYft69WJDvd6NZRSj2jq+AeWzKpeg7GD
-         wezA==
-X-Gm-Message-State: AOAM5310X619gdnZbQZU1C4WrW0QX4n52Q/f1r59DsfiOidpa4hlm3dD
-        ag9b1eNnOT3hugtLXlLstXpmasDKSPbVMA==
-X-Google-Smtp-Source: ABdhPJzKufMkr7XgSVUGeY4g/Yn+9Eo4frLHqaG95/TL+4XALyN9YEqG8PmXxMedzxLO8xoIRu3BNg==
-X-Received: by 2002:a17:902:b082:b0:149:f81f:a29c with SMTP id p2-20020a170902b08200b00149f81fa29cmr539964plr.39.1641457681751;
-        Thu, 06 Jan 2022 00:28:01 -0800 (PST)
-Received: from localhost.localdomain ([94.177.118.151])
-        by smtp.googlemail.com with ESMTPSA id k3sm1230817pgq.54.2022.01.06.00.27.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jan 2022 00:28:01 -0800 (PST)
-From:   Qinghua Jin <qhjin.dev@gmail.com>
-Cc:     qhjin.dev@gmail.com,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] IB/qib: Fix typos
-Date:   Thu,  6 Jan 2022 16:27:22 +0800
-Message-Id: <20220106082722.354680-1-qhjin.dev@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S237611AbiAFJyI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 6 Jan 2022 04:54:08 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31618 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237576AbiAFJyH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 6 Jan 2022 04:54:07 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2067jilj025836;
+        Thu, 6 Jan 2022 09:54:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=WcgnZrAAp82Km07atNhctup7prsckhZ3oaYDk8Jbx/w=;
+ b=N6A3ghHz5IVv3jziGrVp9jCnWk3sN/QyzbRgc7tbfJ+w2MgiBzDEqgIfSMAV8nkdyUC3
+ Jn8dRy7NTpb4aP+APmXqpweChySOCaC1GFJyHPRJadsV0PwVFGPWxAH9yIW02PS0TpQC
+ vXTZeFjyrhYxUbKYEfuRKSiKK5GnS932XbXR7YnNBXauptffkEJtvx/asVXAK34Y6E/y
+ mwDb7KMXR4FQfaZ0AcFoOoDHmrhwAC9CME/yOzb3r8FrMopsj30cKAyFZOYAWfNDYIjC
+ UDJ9Acewk1QdLP4NMK4AZRncRzK/6HiPwIWx//wiKraJwFRsXGztebtq4Ve7G4bRlH75 BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ddnsk8dnv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Jan 2022 09:54:03 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2069ae6k014448;
+        Thu, 6 Jan 2022 09:54:03 GMT
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3ddnsk8dnf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Jan 2022 09:54:03 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2069qi6r020222;
+        Thu, 6 Jan 2022 09:54:01 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma01fra.de.ibm.com with ESMTP id 3ddn5mufw0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 Jan 2022 09:54:01 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2069j9nN21627152
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Jan 2022 09:45:09 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D598542049;
+        Thu,  6 Jan 2022 09:53:58 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 71E264203F;
+        Thu,  6 Jan 2022 09:53:58 +0000 (GMT)
+Received: from [9.145.54.64] (unknown [9.145.54.64])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  6 Jan 2022 09:53:58 +0000 (GMT)
+Message-ID: <ffe855d4-982b-25e6-a901-747095364bd0@linux.ibm.com>
+Date:   Thu, 6 Jan 2022 10:54:02 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
+ listen queue
+Content-Language: en-US
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     dust.li@linux.alibaba.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
+ <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+ <20220105044049.GA107642@e02h04389.eu6sqa>
+ <20220105085748.GD31579@linux.alibaba.com>
+ <b98aefce-e425-9501-aacc-8e5a4a12953e@linux.ibm.com>
+ <20220105150612.GA75522@e02h04389.eu6sqa>
+ <cdbb6235-34dd-bc65-304d-0f09accad6a3@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <cdbb6235-34dd-bc65-304d-0f09accad6a3@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DTqCa0fGGLUsKHguGxgVVXmXZ411SKxs
+X-Proofpoint-ORIG-GUID: fEf-pwJ4NEYKLEH6ryf3K3JQb6ByuaCc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-06_03,2022-01-04_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ impostorscore=0 clxscore=1015 spamscore=0 bulkscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2112160000 definitions=main-2201060067
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-change 'postion' to 'position'
+On 06/01/2022 04:51, D. Wythe wrote:
+> 
+> One problem for the fallback scenario is that server must actively send decline message to client and wait for the clc proposal message that client may already sent, otherwise the message of SMC handshake may be read by user space application, which will also lead to OOM conditions caused by infinite amount of dangling sockets.
+> 
+> In that case, we have to make restrictions on 'SMC fallback ing', which makes things more complicated.
 
-Signed-off-by: Qinghua Jin <qhjin.dev@gmail.com>
----
- drivers/infiniband/hw/qib/qib_iba6120.c | 2 +-
- drivers/infiniband/hw/qib/qib_iba7220.c | 2 +-
- drivers/infiniband/hw/qib/qib_iba7322.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/infiniband/hw/qib/qib_iba6120.c b/drivers/infiniband/hw/qib/qib_iba6120.c
-index a9b83bc13f4a..aea571943768 100644
---- a/drivers/infiniband/hw/qib/qib_iba6120.c
-+++ b/drivers/infiniband/hw/qib/qib_iba6120.c
-@@ -3030,7 +3030,7 @@ static int qib_6120_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
- 
- /* Does read/modify/write to appropriate registers to
-  * set output and direction bits selected by mask.
-- * these are in their canonical postions (e.g. lsb of
-+ * these are in their canonical positions (e.g. lsb of
-  * dir will end up in D48 of extctrl on existing chips).
-  * returns contents of GP Inputs.
-  */
-diff --git a/drivers/infiniband/hw/qib/qib_iba7220.c b/drivers/infiniband/hw/qib/qib_iba7220.c
-index d1c0bc31869f..80a8dd6c7814 100644
---- a/drivers/infiniband/hw/qib/qib_iba7220.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7220.c
-@@ -3742,7 +3742,7 @@ static int qib_7220_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
- /*
-  * Does read/modify/write to appropriate registers to
-  * set output and direction bits selected by mask.
-- * these are in their canonical postions (e.g. lsb of
-+ * these are in their canonical positions (e.g. lsb of
-  * dir will end up in D48 of extctrl on existing chips).
-  * returns contents of GP Inputs.
-  */
-diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
-index ab98b6a3ae1e..ceed302cf6a0 100644
---- a/drivers/infiniband/hw/qib/qib_iba7322.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7322.c
-@@ -5665,7 +5665,7 @@ static int qib_7322_ib_updown(struct qib_pportdata *ppd, int ibup, u64 ibcs)
- /*
-  * Does read/modify/write to appropriate registers to
-  * set output and direction bits selected by mask.
-- * these are in their canonical postions (e.g. lsb of
-+ * these are in their canonical positions (e.g. lsb of
-  * dir will end up in D48 of extctrl on existing chips).
-  * returns contents of GP Inputs.
-  */
--- 
-2.30.2
-
+Thats a good point, I need to think about this ....
