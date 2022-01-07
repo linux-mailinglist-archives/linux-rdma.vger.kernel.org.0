@@ -2,218 +2,255 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99EA3487D87
-	for <lists+linux-rdma@lfdr.de>; Fri,  7 Jan 2022 21:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A0C5487F52
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jan 2022 00:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbiAGUL4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jan 2022 15:11:56 -0500
-Received: from mail-co1nam11on2081.outbound.protection.outlook.com ([40.107.220.81]:48161
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        id S231438AbiAGXWV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jan 2022 18:22:21 -0500
+Received: from mail-dm6nam11on2041.outbound.protection.outlook.com ([40.107.223.41]:60672
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229889AbiAGULz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jan 2022 15:11:55 -0500
+        id S229720AbiAGXWU (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 7 Jan 2022 18:22:20 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A7TJgMMS2axQ9AKkzjTncRj9AUsxzdunz34ezDS1cN7r4Usg7Gif1y233d/3dk33c+NMpNM1lJtMuXT4aKESvxnu9BUAoAsJ7zGHNOpNMTnyAhDEUbitwtY5XPlppqXo+Ng1XMibcrC9oDt8d5aicsxyUm+KSzfs4Hcz4lQ9QbmGhKmqm8h1A4gwN1LQdYu5yUOOq/gvLYDSTo+y1ITap+JTxKGa8cVG8UUr6gdnIUBjnRxBT3ccOSOmYVzohsFSlBcT7914HdcRbvE+qfIomdkIIDXHI39na2K24d/ZLq8491XGWmXq1Oo9tezED+L3Yr/HKaegqTotMh8zZfbdVg==
+ b=NqFzlujtdoU3+OZz460REBsHU/0QDRbdZCUpY7qNl+6pAId+z2RmZle0ohMaU99fPRALBo4eHPVCvo2FCnBhPtW+4/oH+nn+XOr0BcF1z6rNqNVGMxS8s6gMFQ1lWvwFznyqssb3BMypPME5ebY4JLjkK4LVpVZo/jRQl2QT2YlxNZlxSw5cCil7re4PmGqvWlexaJmWmbtbMCiwjU6UThNe3FybdygMcwKHhtPXpQ6dFmHuieZ0ITMpGuSeDIKlMkPLDgy/4e1AExDSpLOKOWirtfP8eASeOUuV62B7ed9O8te1VMnbApY+hgcJ5jnCeBC5g59hWAhf0zyqY84H+A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+EpCxHI4xR472G5ynhzVtR6r4S5k6nN4d6C6llVrVq0=;
- b=aE6QPqe9sMCGp5fDyoxK6A3K3G+opCtrs7OwQxlnaQ6a+jlww4kX0I1AGTvX/gEGhGWlOUcFfN3HHxGz0xcEUsl6yHaLIDS5igxdcvSOs0rr6J5htnJnbaOmpue1x/E+ZU65uQW4iUBco8YBa0exMsu0o7Uv1++otyBCUI/PIghS6L6OYWI3ZjnmFsRVaIWXQCbvoCq5nuBzW870hX1P3u8ASHlg7WdgUrLKS0upjSxBqLGuTLmEGkPtjzepysx0o5S5gZDillrO9g2Qk4yi56xYtPkndegN8kjRPXlXnhj1XyJUGi6on3PmxLJwcK7mrMbXAs4EpYw7zZdHi1EE4w==
+ bh=XWoErDvFbmO6MtGOF5HE+AzDGQYuCUlv1CWcVBNoRAU=;
+ b=P3eMLEswGWgYQ6cFtIPToYIaU/i8Roi94kXsyldY7SCif9vqlNqwGUdCpwdJTqJUMj/9dsxL06yTdun3IUh7pq631dC6kFniVrEUjlfO4IVqDhVkJ+o8gL22oyOTwiebAfCz0T14JpO26azbtNzv0cQI61/58vd8MkBcf0UdXGSv/Pl50jhk1i+Avg1U4JsMk8uJO2wwQLYS3x3GcvTEh0hDO2e2yuBzG7SWW5+Dg54wfmFJ4cdtSOGbh4R4iscA9zkVQgysox1HMp9vz8jQ9xKiIzLoqRGzcqsAWyvg5oFr7pouvJH77csRqXbyQmTX0bLTfZ1fs9kz4A2F3Q9oug==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
- dkim=pass header.d=talpey.com; arc=none
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XWoErDvFbmO6MtGOF5HE+AzDGQYuCUlv1CWcVBNoRAU=;
+ b=rxtu5qrCNBOpDkdr1+n5eB4UhIBVIl1WYTjxfguQSCPhX6NvpX2K91+V1cFPXL0f5C/PnckWpeMpjgnzfC0TS7oqmG8TYGl2IlpVM4TjTCrouZAmc7XzXC7tZjbsf71PAK3QhzjdShzSDlnaJDrzUf57Cm/ygSGVfPRSxh/gs/f+PvIueqle+wq5DCgbzb4uhKcvEL1MpxzC/5VZkrIgw9X2vLzrO/fHLP2SgVaY0hyJJAPG1ppZ3cpTKlKYaBb+DGbhfywoOHXAS7LiZ25iA3mFjUCJqUm1VqJ3oeuUXF0n5lxHFf8Q/pe1K/4PmzAyj3jFAg2LYuSyoHz/kbPhDA==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=talpey.com;
-Received: from BL0PR0102MB3313.prod.exchangelabs.com (2603:10b6:207:19::10) by
- MN2PR01MB5838.prod.exchangelabs.com (2603:10b6:208:17a::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4867.11; Fri, 7 Jan 2022 20:11:51 +0000
-Received: from BL0PR0102MB3313.prod.exchangelabs.com
- ([fe80::10e9:e695:9aaa:1eb6]) by BL0PR0102MB3313.prod.exchangelabs.com
- ([fe80::10e9:e695:9aaa:1eb6%6]) with mapi id 15.20.4844.019; Fri, 7 Jan 2022
- 20:11:51 +0000
-Message-ID: <31adf601-f951-0178-9e34-f00b6ed78289@talpey.com>
-Date:   Fri, 7 Jan 2022 15:11:50 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: [RFC PATCH 2/2] RDMA/rxe: Add RDMA Atomic Write operation
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>
-References: <20211230121423.1919550-1-yangx.jy@fujitsu.com>
- <20211230121423.1919550-3-yangx.jy@fujitsu.com>
- <b5860ad7-5d5a-76ba-a18e-da90e8652b08@talpey.com>
- <20220105235354.GV2328285@nvidia.com> <61D6C9F9.10808@fujitsu.com>
- <20220106130038.GB2328285@nvidia.com> <61D7A23B.40905@fujitsu.com>
- <20220107122244.GR2328285@nvidia.com>
- <472f1a2d-65de-91f7-35be-8338ec3c0635@talpey.com>
- <20220107192822.GC6467@ziepe.ca>
-From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <20220107192822.GC6467@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR03CA0114.namprd03.prod.outlook.com
- (2603:10b6:208:32a::29) To BL0PR0102MB3313.prod.exchangelabs.com
- (2603:10b6:207:19::10)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5077.namprd12.prod.outlook.com (2603:10b6:208:310::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Fri, 7 Jan
+ 2022 23:22:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::464:eb3d:1fde:e6af]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::464:eb3d:1fde:e6af%5]) with mapi id 15.20.4867.011; Fri, 7 Jan 2022
+ 23:22:18 +0000
+Date:   Fri, 7 Jan 2022 19:22:17 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Aharon Landau <aharonl@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH rdma-next v1 2/7] RDMA/mlx5: Replace cache list with
+ Xarray
+Message-ID: <20220107232217.GA3108306@nvidia.com>
+References: <cover.1640862842.git.leonro@nvidia.com>
+ <58c847ceb443d1836fcf6c8602f2ccb5e84728d7.1640862842.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58c847ceb443d1836fcf6c8602f2ccb5e84728d7.1640862842.git.leonro@nvidia.com>
+X-ClientProxiedBy: MN2PR06CA0023.namprd06.prod.outlook.com
+ (2603:10b6:208:23d::28) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6d95d5c0-59f8-4673-d10b-08d9d219f142
-X-MS-TrafficTypeDiagnostic: MN2PR01MB5838:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR01MB5838DC9C77215A202BE5D8A5D64D9@MN2PR01MB5838.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Office365-Filtering-Correlation-Id: 8d8b59a2-03d0-4432-7141-08d9d2348c5e
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5077:EE_
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5077F20E8238CFAE5E3E694EC24D9@BL1PR12MB5077.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9u2PoxLs335y/DCUqIb4jsW2X4Sy2RpH60nY6p/q2M9cCJqcrDI+zWm2f/AqmxM30GA+ASmGK+pkXPZ9jBM+z2nuutwwlhqr4lq5FO23L/L5PEFc4HX/arXYQpChSAlyzCx05o5GYudyBWX7Gjb9RaAl5gtSGB4mcgUFGPrViPIf5DhA5gZcZaw2LPXbE0Xb2SzkUhcmikNsKl9/4IkSiYZYA282v/k+is4dFDcg3oOuHhhoEv2VCjGqtPayWrghHom0wVdztW3XA6M0Eo39Zq6zAGjnlwR/GrRP0PqSGsQqC58z6pgDfwA9D+UH5H6b4+RVDL/TvY19DzPlLcZ9BXTC9WMwQeXqZXD9bEMYnr8kIw5e1gPFD7y5WDnd/G8gCDG65W0EaNkU6URITHHt8schnrl2J8hGpAjrpdD4DAUu4jwJfCgj5E4fPmFPsHdVpcqqfMHLY0IWOHey8wfzpkAej1ATDfrqZMgiq/v3dLy4iVSKUiVCpqB6sQuR7mLNy4+t4uYMDXLWYJ8OXlJeQAVaGPoy8bLNUOd9/PQQ/ws6Ow46VgxCVwtlrX+oH/kFKRDBXBka7fiNP01kEJtIMCuAkwFxnWtkksaH9Abqb9ypRKNfEJFmoUN3nOHOoHzGFl+x4GMAwc8rKjf/7pY4iX4gwMtA9EOKXbv1Gz+8I/ZsZV3Nzw7A+sQAOALDaPR5bBpXj3Z8of99ONWklFc93pWBovcv39nOqI30Z8CN2uE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR0102MB3313.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(376002)(366004)(39830400003)(396003)(136003)(346002)(186003)(54906003)(2906002)(316002)(31696002)(4326008)(8936002)(508600001)(5660300002)(26005)(6486002)(66556008)(66476007)(52116002)(6916009)(66946007)(6512007)(53546011)(6506007)(8676002)(2616005)(31686004)(38350700002)(38100700002)(86362001)(36756003)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: U5KQo1PkpZPfI+v0AVYbDSwMBQ+OkF9D9sJd0gtnz5FsfAyznompufUoTLcvcWo4nz1sln+dxavjk8ZHwiPwU0PTiesI3L9TJ9gIAWlbl8h4mq3b0KCVOlyUd+CS+Ly3SC+w+K0ohzuoYYmgOySDDEtZ7kWTvTW6/BQDG3CQBh64deoZw1ZGJop9Vl/m9oiLvgyUIZKcTOcYwDuSqPdDj5lUEBBlSw0TsWPs+xOgh6nH4H82hqWUX9x8UsbhI1EWqMVIRoUpM7qQS4S+N6Kqf+56Wbg74Ut7Nli6eAdH+5Qtincunz2kQlV0Q/3DBuhtIyksHQjAsI+tpmrDv2ak0+VzZtcYW3eMU06dTOQ2TEsQYS3zrD6r0VOtSmzKCRqdEVPeooMSJmo0Ew3iOX0OGsaBzU+XNKudxxC5zcoHhZNsqYkanHQC7+8Mx3HzxIR00ijX0sRZpSqub2Y6RCDy7oc7j2pqxCREp81VPg+cRSpodBrmDoghYhlAKBEdARFXzvEub9H/o4TdJRVqFWcCBLxsEGcV57QeEuuefCygcol0cRv50q6kFz1TuUSX7WVaJzFpz0yfJ2oW5d9m+/XyheBMT2xejB3xNOfhvkLkGZoAodhhiKNr46OFMsPoQyX0iKV6eKHiH9M+RR6eMuLVLQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(508600001)(6486002)(83380400001)(1076003)(316002)(33656002)(66556008)(186003)(66476007)(6916009)(66946007)(36756003)(2616005)(2906002)(26005)(5660300002)(4326008)(8676002)(6512007)(6506007)(8936002)(86362001)(38100700002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?a0s0QW9lL2E0T1g5dXhnTlR5clJoNFQ1R0R2cjhPeWc0d21lWGphcm85K1dh?=
- =?utf-8?B?T1hKN3lFcUN3QmlkdThsSVQwbzFrd3FvSHBJTFBmcDZHM3pLZVFXN3pBWDA3?=
- =?utf-8?B?N2RsblA5eWQ5MkVIVWlVQzEzWFYyNnJKckZTbndRWG9VTFNoNjJzaEhiWDVM?=
- =?utf-8?B?Ni9oQ3l0SG9Bak4ySjN5OUFDZURuWVkySjRVRFFBa1JzWHpidXpXR1FBamF5?=
- =?utf-8?B?SmJ4dVRjWjdNRytacDJUeUxUNHNZME51RFRJamQwRk1Ldy9vOW1uNmNOSHFi?=
- =?utf-8?B?Mis0MlRKVHR2LzJlWlZCK3dOSnZZMWl5Yk1ub1dIb3owOXl6UThBUEw1S0pD?=
- =?utf-8?B?c002QmQ1eDl6TjFXQ3hJUWZwcDZieHdWSTRDS0xEVU81cFFaUFBQTUZGcEdi?=
- =?utf-8?B?RlpDWkNDRkZqQm03OFZxNFM1YnZTOEJEaEN4eEtQV2NjZTMwaG40QUViQ2Zw?=
- =?utf-8?B?bU5iNDRNY0dUOHFQbG9kRU83bWFDemFmUHYwRkozNEgwWVE2blEzU1FUckxl?=
- =?utf-8?B?K2FQdk5DQWNiTDZDUU03Q2Z1OUtyVGhSUU9UZXV5eHBsM042bURPL3ZrRkMy?=
- =?utf-8?B?RDFLclpMUFp0cDF6YzVCM0pKZTBCelFoWXlhY3dPY2hQNFFqcldvSTB2b1ZJ?=
- =?utf-8?B?dk1zYVpTbGZ2OXhqYlJ0S3FOVXFDQTNlZ2VHK3hVOENEYTVmWU1zMmJHNFlF?=
- =?utf-8?B?bGlRWUl0bXpOZnYyT1dIRHlrc0RkYXh3Zmt0ZUpnNlRKNytCSi9Ba3RyYUNM?=
- =?utf-8?B?d1kxQ200U3dUWmNzb2NucGFqWi9hY2tVc0Z6KzBoVEN6K0txa3pHTGhYdFNk?=
- =?utf-8?B?L2djL1FVM09lTzROU201VjM5ZDNOeUxQTElhSWxOdWVMTHNNSVU2RjU5QW82?=
- =?utf-8?B?L0FQUkpxU05Lc1dDckpPeXdMQ3Z3dVNpWUNjZWZhRGk0dzF4SnF4cmJkcTFv?=
- =?utf-8?B?ZVZ0WkZPQ1RYQnVzcXJwUk9NMkNvQ0VMZ09ZMTF6aU9QOHQ5NWM3TlYrMGlQ?=
- =?utf-8?B?U043bEF4WWFOSnphaHJ1WmlYS09rNmkxUGR0ZG5TZWEzU1ZDOFZpTmN5RjdY?=
- =?utf-8?B?RFIzc2szajAwek5PbnRIb0FmQnc2SkYxTEN2L3ZzQXA5MWhwc1pCRnNxZC83?=
- =?utf-8?B?TjNBK2tXMm5WbHlJalEvbFA2L2NMWStRT1J2Z0Z5N0pMVmlhelRkajNPd21x?=
- =?utf-8?B?eXl5S25RTzBzckdTNS9sK0czcCtIRzBXcmtCRmVLMmF6MllPUi83MjlzSkZ2?=
- =?utf-8?B?VkxYRUR0RG9LWVlGSDBCL0xoQlRDdmNoRXdBai91MVBqQzU4bmEydm1ZbkU4?=
- =?utf-8?B?TlpBNms4QURFVEl6RzBVdjIyTGJSWjU4djV0cTkvQUR3dWFmaTlzc2VRckxN?=
- =?utf-8?B?OXpTVDJmaERYc2RKSzlLdXJVZEtDU0dXUHZBMk4xS2VVeVdHeUp4UERtSTV1?=
- =?utf-8?B?ZkR5QmdKZnhHNmY5RmFKbHUxSlUvVW1JYVZTSkhaMGI1RXVJcEVpUjJDSlhS?=
- =?utf-8?B?eml3S0tXamtMS2tGL2trSVNocWd6TTRDTmJlM1R6eXUrNFRneGxSanhwQ0xS?=
- =?utf-8?B?THpXY3pBbEpvWWo2bzhDRkN2OTlocTR0Zi83RmQ5cXNSb2FyVGdWMisvd0M0?=
- =?utf-8?B?b1hZVDdtcWV0T243OWN4dEZXOFIxYjgwY2k1RThBOWh2c2RublNuc2dJZ2Q5?=
- =?utf-8?B?QS9WTUNoNjd2TUl0eS9YeDJiaVVDVGgxUnk3SFdWWk9xNGo2YlRDbGRYTG83?=
- =?utf-8?B?dDJNVXZrYk42Q3I3cUMwRURYVEh6Y2o3L0hrWnIxSHZaRS93NDNSZmJjQmNo?=
- =?utf-8?B?a2Qwb2VDQ3d3UkJuNktnWUtFazVmbjJFeUdabm5yRk5ET3hyUUxlRjR0a2s0?=
- =?utf-8?B?Nm01QTE0d01ucGxpODJyNlk0VVZpMTYzY0ZpRkMzVXhub1BWWXkxZFF6bC9K?=
- =?utf-8?B?dnQyN0lQUTZyeVhDZVJaQTIyR2xGaXhxOHVOcytwQ0svZGtXdnpzdzVBeko2?=
- =?utf-8?B?ckN3WUxoM1NxUWlOQjRJM1NOMDRqOVNsaFBncGdCOW5qcXlvZU4yYkYyUEs4?=
- =?utf-8?B?WmlZRWZNZGhJNmt2UXVtKzVjb21CMmQ2ZitJcnByUHpyU0dqbE45aERsaDVS?=
- =?utf-8?Q?mxC4=3D?=
-X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d95d5c0-59f8-4673-d10b-08d9d219f142
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR0102MB3313.prod.exchangelabs.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gHRcqLISfKOjpATliEUjTW6Sqi97jvXTixch8YGdg+asPzWqjEN5aIqj0rz8?=
+ =?us-ascii?Q?N45lBluYS52OB4X4VSi4GckHx1t4OY8xC1tkDYDm+FPaH02Xqklx3M4qUECw?=
+ =?us-ascii?Q?rYc+wyg+sB/ZrndmLY7BO75doWjvvOTIMA3JSgZ9w7/oEW7haw2UB7xxm7v2?=
+ =?us-ascii?Q?vbRQptY/Ws12ryNOIEwc9hnG41AjO/kjS3ZS00F8VTjPPtVmVpApGTLsS7fV?=
+ =?us-ascii?Q?HolEUIIqQuTe6pLx8jvwjKfzawO6tNArISqsNp8ouBChO9uXSVeu/BB3Ai0o?=
+ =?us-ascii?Q?KYtLmJs16u8ZFj6k25k8DZJBe6tbJBrQyY3rUzeSAUO5CwSfPXSerMCGETlN?=
+ =?us-ascii?Q?IbExniCTEQIrrARAA6MwV3HUMbEZxxJaND/QuVFRqgjGpYMzJmiT+y7aysbq?=
+ =?us-ascii?Q?fbiL5ofTKcyxM8dTxyQJJKjkAY98YhoDpbiqFqtRbHDOACMwckLrM5CzZRqY?=
+ =?us-ascii?Q?0GC2D1hQYRb3/fYXkctB2lstqTcDLh9cjr8YPLOgqOXOY/Mm37nrb3a/SNEw?=
+ =?us-ascii?Q?srXOuDiwUKk8c+Kva+9WMgtm9FSxvq3HovJCp61cpoZJb7P2CdpVorzaqjFD?=
+ =?us-ascii?Q?gc67T0ouN3BBr9g++T3uYKn8AuVz55VCz0yKNZDw9wEUNqPmUbx4XrXSZTwO?=
+ =?us-ascii?Q?nM9q/vmtxV1yKO/NVnIFERBjvUxEMV9arpFYrWYhUfAa4gcEBQfS1L2ZFPQJ?=
+ =?us-ascii?Q?L5AAlK3ia9fZcLNE6eyoICmNz3jODHR7km/OR4gvagspb7WtMNIExgVUCH9l?=
+ =?us-ascii?Q?1w9FRFmdlBU6P+1fPrrrKmn+bfpklv5PhewmxgVSdCqGSawP1dLS2QZ6REog?=
+ =?us-ascii?Q?jI88hLONctipzZ3Amr104X0s1PXHWEsHIjssbjRxzfy5sLrKtldCacMFuK3K?=
+ =?us-ascii?Q?l7D1MTlD/kgbaNoqemsvdbZEyNLYdGLEhX0OLQqQwbpEuzycC+LiszFtupku?=
+ =?us-ascii?Q?IWqRTMpP/c+2fQ9uBlo1VFqm/Fo75BfLpzEt1qk+wgOHNbZDCK/lK7Twz+dd?=
+ =?us-ascii?Q?wyaqy0cKeSxWvEb/Z6FzFWygQAIspacvULoxrNnHJF+sVZYr7ipjnsNwp+6J?=
+ =?us-ascii?Q?Mtla3QjEtsQiNw0cuPRqVvonMmSxPIyhRhn/b41nKGjVDWurZKoVaXT53lH4?=
+ =?us-ascii?Q?yFtgb6tbBcH+vEn7urBU34zrbltDSUP8tyAfQPzXr1D+g0jPTbvAwITKZuUr?=
+ =?us-ascii?Q?Z4y8ei4O2mEB9ERc7DxtxgCgZ368L3CcSI/84Vh5KVQM1I47UeYwqNTSPMA9?=
+ =?us-ascii?Q?Clb1rdxvDmGTHsdnVtCxkDH4K6xDZJyH1XDF2vXjTrzTw8wBA5+bKn1wtS7C?=
+ =?us-ascii?Q?ExNRR/daaih0Kt0LZ48iRt/LsZGFyD4e+zntjK1EklNXuI9fweI1hdWWcJPR?=
+ =?us-ascii?Q?LP8gYFbOrrZEs9YMUUtw7X1BkSRDU7XjlkjVXSOg8aU94ZZtydiNAAEuktkW?=
+ =?us-ascii?Q?iOFbdfOID0zC/2jE82BvD3hLk0en5dzFsgH0bbqXdZXu+Gl8afTYBJRTDCiC?=
+ =?us-ascii?Q?WYOLzmo9XeyDdCxUVsniTVJrxWgPSjGvVM8MU4z1/jMHVEPm/AwDAjV+1157?=
+ =?us-ascii?Q?SnCGM0Tlc4gsFfS3ikw=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d8b59a2-03d0-4432-7141-08d9d2348c5e
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 20:11:51.4432
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 23:22:18.7591
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1o/3h3kZHPAu7bM7bLc215b+w9iU6WHZHvaNxP2pNhswVrwp3RWV6z9Qei5mi5ni
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR01MB5838
+X-MS-Exchange-CrossTenant-UserPrincipalName: gIAw7WDCHnPolMlMGEEt/AIgmUDOK8rLsri/gH8HML9A6+UB90jDY1fMSHtIKSDH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5077
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 1/7/2022 2:28 PM, Jason Gunthorpe wrote:
-> On Fri, Jan 07, 2022 at 10:38:30AM -0500, Tom Talpey wrote:
->>
->> On 1/7/2022 7:22 AM, Jason Gunthorpe wrote:
->>> On Fri, Jan 07, 2022 at 02:15:25AM +0000, yangx.jy@fujitsu.com wrote:
->>>> On 2022/1/6 21:00, Jason Gunthorpe wrote:
->>>>> On Thu, Jan 06, 2022 at 10:52:47AM +0000, yangx.jy@fujitsu.com wrote:
->>>>>> On 2022/1/6 7:53, Jason Gunthorpe wrote:
->>>>>>> On Thu, Dec 30, 2021 at 04:39:01PM -0500, Tom Talpey wrote:
->>>>>>>
->>>>>>>> Because RXE is a software provider, I believe the most natural approach
->>>>>>>> here is to use an atomic64_set(dst, *src).
->>>>>>> A smp_store_release() is most likely sufficient.
->>>>>> Hi Jason, Tom
->>>>>>
->>>>>> Is smp_store_mb() better here? It calls WRITE_ONCE + smb_mb/barrier().
->>>>>> I think the semantics of 'atomic write' is to do atomic write and make
->>>>>> the 8-byte data reach the memory.
->>>>> No, it is not 'data reach memory' it is a 'release' in that if the CPU
->>>>> later does an 'acquire' on the written data it is guarenteed to see
->>>>> all the preceeding writes.
->>>> Hi Jason, Tom
->>>>
->>>> Sorry for the wrong statement. I mean that the semantics of 'atomic
->>>> write' is to write an 8-byte value atomically and make the 8-byte value
->>>> visible for all CPUs.
->>>> 'smp_store_release' makes all the preceding writes visible for all CPUs
->>>> before doing an atomic write. I think this guarantee should be done by
->>>> the preceding 'flush'.
->>
->> An ATOMIC_WRITE is not required to provide visibility for prior writes,
->> but it *must* be ordered after those writes.
-> 
-> It doesn't make much sense to really talk about "visibility", it is
-> very rare something would need something to fully stop until other
-> things can see it.
+On Thu, Dec 30, 2021 at 01:23:19PM +0200, Leon Romanovsky wrote:
 
-Jason, sorry I wasn't precise enough in my terminology. Yes, the spec
-is not concerned with "visibility" full stop. The new concept of
-"global visibility" is added, and is what I was pointing out is *not*
-required here.
+> diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+> index 2cba55bb7825..8936b504ff99 100644
+> +++ b/drivers/infiniband/hw/mlx5/mr.c
+> @@ -147,14 +147,17 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+>  	struct mlx5_cache_ent *ent = mr->cache_ent;
+>  	struct mlx5_ib_dev *dev = ent->dev;
+>  	unsigned long flags;
+> +	void *old;
+>  
+>  	if (status) {
+>  		mlx5_ib_warn(dev, "async reg mr failed. status %d\n", status);
+>  		kfree(mr);
+> -		spin_lock_irqsave(&ent->lock, flags);
+> -		ent->pending--;
+> +		xa_lock_irqsave(&ent->mkeys, flags);
+> +		ent->reserved--;
+> +		old = __xa_erase(&ent->mkeys, ent->reserved);
+> +		WARN_ON(old != NULL);
+>  		WRITE_ONCE(dev->fill_delay, 1);
+> -		spin_unlock_irqrestore(&ent->lock, flags);
+> +		xa_unlock_irqrestore(&ent->mkeys, flags);
+>  		mod_timer(&dev->delay_timer, jiffies + HZ);
+>  		return;
+>  	}
 
-> What we generally talk about these days is only order.
-> 
-> This is what release/acquire is about. smp_store_release() says that
-> someone doing smp_load_acquire() on the same data is guaranteed to
-> observe the previous writes if it observes the data that was written.
+Since push_reserve_mkey was put in a function these stack
+manipulation should be too, especially since  it is open coded again
+in the err_undo_reserve label below
 
-I like it! This definitely looks like the proper semantic here.
+> @@ -166,14 +169,14 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
+>  
+>  	WRITE_ONCE(dev->cache.last_add, jiffies);
+>  
+> -	spin_lock_irqsave(&ent->lock, flags);
+> -	list_add_tail(&mr->list, &ent->head);
+> -	ent->available_mrs++;
+> +	xa_lock_irqsave(&ent->mkeys, flags);
+> +	old = __xa_store(&ent->mkeys, ent->stored, mr, GFP_ATOMIC);
+> +	WARN_ON(old != NULL);
+> +	ent->stored++;
+>  	ent->total_mrs++;
+>  	/* If we are doing fill_to_high_water then keep going. */
+>  	queue_adjust_cache_locked(ent);
+> -	ent->pending--;
+> -	spin_unlock_irqrestore(&ent->lock, flags);
+> +	xa_unlock_irqrestore(&ent->mkeys, flags);
+>  }
+>  
+>  static struct mlx5_ib_mr *alloc_cache_mr(struct mlx5_cache_ent *ent, void *mkc)
+> @@ -196,12 +199,48 @@ static struct mlx5_ib_mr *alloc_cache_mr(struct mlx5_cache_ent *ent, void *mkc)
+>  	return mr;
+>  }
+>  
+> +static int _push_reserve_mkey(struct mlx5_cache_ent *ent)
+> +{
+> +	unsigned long to_reserve;
+> +	void *old;
+> +
+> +	while (true) {
+> +		to_reserve = ent->reserved;
+> +		old = __xa_cmpxchg(&ent->mkeys, to_reserve, NULL, XA_ZERO_ENTRY,
+> +				  GFP_KERNEL);
+> +
+> +		if (xa_is_err(old))
+> +			return xa_err(old);
 
-Tom.
+Comment that this below is needed because xa_cmpxchg could drop the
+lock and thus ent->reserved can change.
 
-> Eg if you release a head pointer in a queue then acquiring the new
-> head pointer value also guarentees that all data in the queue is
-> visible to you.
-> 
-> However, release doesn't say anything about *when* other observers may
-> have this visibility, and it certainly doesn't stop and wait until all
-> observers are guarenteed to see the new data.
-> 
->> ATOMIC_WRITE, then there's nothing to do. But in other workloads, it is
->> still mandatory to provide the ordering. It's probably easiest, and no
->> less expensive, to just wmb() before processing the ATOMIC_WRITE.
-> 
-> Which is what smp_store_release() does:
-> 
-> #define __smp_store_release(p, v)                                       \
-> do {                                                                    \
->          __smp_mb();                                                     \
->          WRITE_ONCE(*p, v);                                              \
-> } while (0)
-> 
-> Notice this is the opposite of what smpt_store_mb() does:
-> 
-> #define __smp_store_mb(var, value)  \
-> do { \
->          WRITE_ONCE(var, value); \
->          __smp_mb(); \
-> } while (0)
-> 
-> Which is *not* a release and does *not* guarentee order properties. It
-> is very similar to what FLUSH would provide in IBA, and very few
-> things benefit from this. (Indeed, I suspect many of the users in the
-> kernel are wrong, looking at you SIW..)
-> 
->> Xiao Yang - where do you see the spec requiring that the ATOMIC_WRITE
->> 64-bit payload be made globally visible as part of its execution?
-> 
-> I don't see this either. I don't think IBA contemplates something
-> analogous to 'sequentially consistent ordering'.
-> 
-> Jason
-> 
+> +		if (to_reserve != ent->reserved || old != NULL) {
+
+WARN_ON(old != NULL) ?  This can't happen right?
+
+> +static int push_reserve_mkey(struct mlx5_cache_ent *ent)
+> +{
+> +	int ret;
+> +
+> +	xa_lock_irq(&ent->mkeys);
+> +	ret = _push_reserve_mkey(ent);
+> +	xa_unlock_irq(&ent->mkeys);
+> +
+> +	return ret;
+> +}
+
+Why not just use one function and a simple goto unwind?
+
+> +
+> +		xa_lock_irq(&ent->mkeys);
+> +		err = _push_reserve_mkey(ent);
+> +		if (err)
+> +			goto err_unlock;
+> +		if ((ent->reserved - ent->stored) > MAX_PENDING_REG_MR) {
+>  			err = -EAGAIN;
+
+Maybe this check should be inside push_reserve_mkey before it does any
+xarray operation?
+
+> @@ -286,40 +335,42 @@ static struct mlx5_ib_mr *create_cache_mr(struct mlx5_cache_ent *ent)
+>  static void remove_cache_mr_locked(struct mlx5_cache_ent *ent)
+>  {
+>  	struct mlx5_ib_mr *mr;
+> +	void *old;
+>  
+> +	if (!ent->stored)
+>  		return;
+> +	ent->stored--;
+> +	mr = __xa_store(&ent->mkeys, ent->stored, XA_ZERO_ENTRY, GFP_KERNEL);
+> +	WARN_ON(mr == NULL || xa_is_err(mr));
+> +	ent->reserved--;
+> +	old = __xa_erase(&ent->mkeys, ent->reserved);
+> +	WARN_ON(old != NULL);
+>  	ent->total_mrs--;
+> +	xa_unlock_irq(&ent->mkeys);
+
+This should avoid the double XA operations if reserved == stored.
+
+
+> +		mr = __xa_store(&ent->mkeys, ent->stored, XA_ZERO_ENTRY,
+> +				GFP_KERNEL);
+> +		WARN_ON(mr == NULL || xa_is_err(mr));
+> +		ent->reserved--;
+> +		old = __xa_erase(&ent->mkeys, ent->reserved);
+> +		WARN_ON(old != NULL);
+
+'pop' should really be its own function too
+
+> @@ -601,41 +655,35 @@ struct mlx5_ib_mr *mlx5_mr_cache_alloc(struct mlx5_ib_dev *dev,
+>  static void mlx5_mr_cache_free(struct mlx5_ib_dev *dev, struct mlx5_ib_mr *mr)
+>  {
+>  	struct mlx5_cache_ent *ent = mr->cache_ent;
+> +	void *old;
+>  
+> -	spin_lock_irq(&ent->lock);
+> -	list_add_tail(&mr->list, &ent->head);
+> -	ent->available_mrs++;
+> +	xa_lock_irq(&ent->mkeys);
+> +	old = __xa_store(&ent->mkeys, ent->stored, mr, 0);
+> +	WARN_ON(old != NULL);
+
+This allocates memory, errors now have to be handled by falling back to dereg_mr.
+
+Shouldn't this adjust reserved too?
+
+Jason
