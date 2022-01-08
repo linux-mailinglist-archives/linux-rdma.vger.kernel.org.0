@@ -2,134 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 808CB487F7D
-	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jan 2022 00:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8880F487FDB
+	for <lists+linux-rdma@lfdr.de>; Sat,  8 Jan 2022 01:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbiAGXjV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 7 Jan 2022 18:39:21 -0500
-Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:14976
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231519AbiAGXjV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 7 Jan 2022 18:39:21 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NTe99sm99pNBvqS7dym0sxBdTU8RGkwqeuTmtmAPzqG2pwtVuOR4Q5aEkTMgolQO9lQqKEUoeinOXvkSLpP8aS0dhf8o19/oCXU0m7elrpNu6g0OSBEnyk8ewu5BNwjAcLQpTaBm/se4nHsPuXmQPRRE4nsI4ogGr8Tpt7lDjCe0de1+6q29eOjXR6SHMGOpZxbW1kaZ9k1Y4C8puf5ixMNkHdpxdRmiPmbPmE3H+UcjFL3t6F7q0Cw1lGIwJyqnqdYozB+RqOKyu+TFi+0bwCUBpHf15sOcPKOuCUUqxu52dL1pJtmlqPya3U1vVJ5ed1rGdH/xFrPTYHpkP8egrA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hihKkz4rKNcpEh4hdMg+FrQmw8ejAEmsZCWlL8hIgcI=;
- b=WKfcRMJxvFK2zPq0mGOTnsvPwVjAg5gfZ40tR5+Z7o5UzW8qdZrHaFn0G78bNJ651GWyuVsMpOUrutegrhFZr4ICgEW3ZYWCtXcI/shDBK474cDobtN43soODBNF27XwfOHFU12MV9uVj6WUOiRFRUah5VH+b7E/zS0cdjxJcVatqO6xFDJVsUzQZvxfjNZLJqGsOCVQgLrJ3XLYUsDJMyOkL/QfrWKCtSZewnWW7tpfS7hZw/y3Ps21LYihCjwLTtetWOgQpal9Gtj0ISU+OJGYFV7HBChzU5b7Du0REjjueAa0SnsM2RCpDGV8OaM1HR/fD/r5UXQQVxdmo95GQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hihKkz4rKNcpEh4hdMg+FrQmw8ejAEmsZCWlL8hIgcI=;
- b=Q4CUu/gL51UsoT1321Q45ZgTfLC1AF2d/lY0W9yoJ6M3HRqTPCVLkiGYBPwOrV7LPalk2u/ksPz3rPjmwGyvn9VXpzowIpgBuQDsyEzADbyElfgUowj1LXFc2TF+oX5fXpIKXzdtaIOVRxQRqS8+f5zuFFhOLCvqm5qLYL9meif1uet0PXItuEN/FXfzpf0RYm+/qso/+hpCTNlm+wrAXygyHMwZh540TEYGmKRo6y9qodiqM8Nz2XI13nYmCEbdpFL7m/TvnzfKbwsL4GnES0YWmhHpWakl1KVRLPRhpsTeYDrxexJ8nho92rievaVK6wAjU19bGpagzzlZ2yTYZQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5507.namprd12.prod.outlook.com (2603:10b6:208:1c4::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.11; Fri, 7 Jan
- 2022 23:39:19 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::464:eb3d:1fde:e6af]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::464:eb3d:1fde:e6af%5]) with mapi id 15.20.4867.011; Fri, 7 Jan 2022
- 23:39:19 +0000
-Date:   Fri, 7 Jan 2022 19:39:18 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     yanjun.zhu@linux.dev
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org, leonro@nvidia.com
-Subject: Re: [PATCH v3 0/4] Generate UDP src port with flow label or lqpn/rqpn
-Message-ID: <20220107233918.GA3130820@nvidia.com>
-References: <20220106180359.2915060-1-yanjun.zhu@linux.dev>
+        id S230138AbiAHAKg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 7 Jan 2022 19:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229783AbiAHAKf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 7 Jan 2022 19:10:35 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71CEFC06173E
+        for <linux-rdma@vger.kernel.org>; Fri,  7 Jan 2022 16:10:35 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id kc16so7051473qvb.3
+        for <linux-rdma@vger.kernel.org>; Fri, 07 Jan 2022 16:10:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Xz3IbyY/PapIw3TdCgLTH2d0tf58OPn41PP0UNp1OZY=;
+        b=OC/jr7/trHXjOf2SEvvOTnav50HFX5pLymOsdR4vKgIvcmgD0FQu6FD7xmV17tDn7u
+         jSFYJ0BwNRaeYak0erPt7fKVYH4vrMk7OCJCVg8jr8Ll/HDX85HNGwB8G0hr+W7M2aeF
+         Mv2F7WxBZfSzWNbYZxiN0UZ2v2Bvnr4ipZofBmNu7Aihb0UdHohrhqkM3GymMSnHw6Bu
+         Xu5tif1gCDKeTtilOXY0uTV3ZkwV3IHuZeVWIW2kEPdg69eY5ZJyS4ynXliqRiI1SsEd
+         4BzV6twYB/YkFraUXluP5LX/eFGmPHmYPzXbuZ/UARt+/CeMfCEuKK2SwF9nU7X+IH6P
+         0Erg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Xz3IbyY/PapIw3TdCgLTH2d0tf58OPn41PP0UNp1OZY=;
+        b=ctXtcpEizGgoS/QV7J9b/caRIAnjun+dj741F3z5/bL9+9ABLvZvMN7cBMvALqVHB+
+         n7AtrHl76gnKA+THJi+yCAwCIKWGLAjLyeD2uaucBXeN4rB35qbnIbS7LTDILJgiHpjP
+         MrxbvZSQM7NCoavv8OUp+2jVXFQse7Yzk1zZTwpr/zZZNl86kpXrXCtOAIsugheH913s
+         slCR6bwg+7nhkHj8/lI8NUk0yOQJweeElMN4iV1EaEvflt+QkfSIrjawDFvekiwgoBzO
+         Hd+ilmoDVX4IZ/BqtOoYI0Oa8kMnMo8YQ9qO7qbxHyIPW69VQcPVuY9L0502ybDwDsFo
+         Hu5Q==
+X-Gm-Message-State: AOAM533jQWTuECUtypFjoMdMGkdKa9FLYQgsyensBTjfziL7+CcUAPkl
+        1X+agEKiQx4oJg8W0yAimaXCIg==
+X-Google-Smtp-Source: ABdhPJyN10mQsXfe6r1/Kgo5WnEtq2gtdd1si7kX82clgeVIxT4MtVU9xrtlSkTU9EgZccnK9G9Gkg==
+X-Received: by 2002:a05:6214:21a8:: with SMTP id t8mr59895348qvc.30.1641600634611;
+        Fri, 07 Jan 2022 16:10:34 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id a15sm48619qtb.5.2022.01.07.16.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jan 2022 16:10:34 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1n5zJZ-00D95n-Eq; Fri, 07 Jan 2022 20:10:33 -0400
+Date:   Fri, 7 Jan 2022 20:10:33 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        syzbot <syzbot+e3f96c43d19782dd14a7@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in ucma_destroy_private_ctx
+Message-ID: <20220108001033.GD6467@ziepe.ca>
+References: <00000000000056c61c05d4b086d4@google.com>
+ <20220105114521.1449-1-hdanton@sina.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220106180359.2915060-1-yanjun.zhu@linux.dev>
-X-ClientProxiedBy: BL0PR02CA0112.namprd02.prod.outlook.com
- (2603:10b6:208:35::17) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 141964ec-20aa-41d0-135e-08d9d236ecce
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5507:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR12MB55073122BB9275D03B604FC5C24D9@BL0PR12MB5507.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2043;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xZRPmTIETIwTV3nR9nre2GEWGyBHHeluLxyZzEFAqQSMLHWoGgbCM/PKnn5zVugNfaJ1lJ5Po2qzKdJ8J+07aLcpPdmcaP9eyoRVe63D140YY4k+YGBaShAiDTYdvuof38FU2nrPUQjwNtv8KL/cev0Y5UdTiy5gztfBFR5Uok0YckT/rbPtdJgNQQUXMWlb+ZmuwFQ4uqZ/iN+Xxo79/icmuMFNGBRq4aG1s7mVn3vOrdu7mscJED9ZpLFMhPipPm5pF1TBCjMA9AZjamt+68HgGg7x16AlDLVeDAfwnw7umFymvBXnAeR1VQduCSAubmz30sT1T2dXeYImKdJBk2Hs+CkEco/BLAhuUU3IpIDwgXzxd7/fVwYzrr2pyMezi00QcQRF+IAbeJQ8rrR+zUptEkw+kGa/NS4JdHZ7FktAJexl/+A01ZCbnk9skELxMk+4vvuolW+qXe8uTSydb/VRFTSEbfP8RQ1xfVYxbghHIvy10o8TXMTthVxn0gGim2RU6aD6QDwq2btsEzdpIGL4GCwMwgOEBFL2ztyqDugOFVovIwf8Bba1ygc8iFB1Cvw2mFVbnNG+cgpEaqmdU0CTSpiu+ga9LB81o2KAYv1jDHcjad0Pd+L4aj5kFjisLcfK/bHWoMw2whhqTsYXt9ctz1vQYRxdrqqQXOMHyGInUO5BO1Shny4xIxcKq58LkQbrFsvBNBcS0/JphdCDjQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(1076003)(186003)(6486002)(33656002)(66946007)(66476007)(2906002)(6916009)(508600001)(26005)(66556008)(6506007)(8676002)(5660300002)(4744005)(107886003)(8936002)(4326008)(6512007)(2616005)(316002)(38100700002)(86362001)(36756003)(20673002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vZqnzEJphhJeCqzeYbFwmIvjjISzAJJPmbvodUxdPt5IRRWDutIWfojrf8t0?=
- =?us-ascii?Q?u8LXFFjQhQRu8huDzBRbMdYGvDg/EpLwR5nzXE+dSa13vnuOyiFcoDRP+Ij2?=
- =?us-ascii?Q?ha1zFEUF/ZqFGSiM4CjGLA+NAnMFraW+rLf4mIkUoBcIcUQ0IJDzhqVr86JR?=
- =?us-ascii?Q?VpSRYPXBj9RqCrbO4TIM36oP/MgTXX6/w24aY4QKgo3CuV8MK03GCoGy5NNp?=
- =?us-ascii?Q?nTvHaZIzZFj6HK1BvaCeMEvgz5t+6inqNWQnktq2SWPomixi1ncuCBc3E7bm?=
- =?us-ascii?Q?ki0D3C0BtPX5FV6afUy3XQMSYrdDb8n7RU/X1dGHaFwEvkmeN4ZX/sYAeB7a?=
- =?us-ascii?Q?X23liwBovmfnqstHKZa3iTvuR3hsMWs3YZjltnU+xiVjJ7bbAZOiJVnKiv7W?=
- =?us-ascii?Q?F3T95OKECasLhMpyGEO3lDgq+dQOkUpy0/IiaGmyOqfBzt50NlxU97wAGf9p?=
- =?us-ascii?Q?6TmeEpBPAEL0dMQCkP8knq+G5iAQ8P0LTHt5sFXj3NxtiTERbfkzoBPjy7um?=
- =?us-ascii?Q?GrDezKNP24f67lMM3IA0v0qBMZqklCnrtcGpdyncy9U2SJZPQ1jeugd2l7b6?=
- =?us-ascii?Q?ihSvgZ3p2v2qkJiwQauJ2Wjws/p9dWNzw6r48MaRXQ02w0aE+QnoFxS3Gj48?=
- =?us-ascii?Q?8ufPRDwxfmA92indwGvHiY2FzkOs/uQ5BWmJaiXRmtkV+mERT13t7u8izaft?=
- =?us-ascii?Q?6q4jQyYdhFBZEUFyHVKnbsXzN7Cps3zR1EowvvEieYiqNC8H3DatzKe0RocG?=
- =?us-ascii?Q?M+wBi7TnnXEzFyEQGVCHyaU0G5JoNTcsDZSJQ/Dmv88zq/S8TkYh8WEAmiBU?=
- =?us-ascii?Q?DOZqjrrJZtuskeQ0wq0Oy/E45KP293exsNkkLn0hNltmH+LQgmJGkx1lxCsx?=
- =?us-ascii?Q?cN/89BXVKvqKOK+m7qGi4DRps4vSX90J0xzYsC4Lx1QtoYf+1+7vKF1HduNS?=
- =?us-ascii?Q?PXPw+tAB4Iy33XA7rgsdo71G72J8DF88GJJCKIRxGS7BUOEpRr8+me3Bpd8r?=
- =?us-ascii?Q?BZAZqcLgN9DZcqFurzTrWme80Wa0VlPMN6c/tVvGzTmpiF9j7/valS9xOudy?=
- =?us-ascii?Q?3a4pfXkYeAM4lotGu7IVpKVi0/k75GxpdoXJWeLRke35Z7QQfLD7y47Wh33d?=
- =?us-ascii?Q?Njrov91zkjngmm1qngK1o8NIsGpELxpL7vDzgdruB5/qm0HTpUHpOehk1DHl?=
- =?us-ascii?Q?BhdNFJ4QTIwosO8Wd+BK4ZkjNNNs3gNqDYMNpu9uDucKPeMGDhL03VfA53jK?=
- =?us-ascii?Q?fTHpZ/KfamQUQXAH7gtk2OnkH3jqRxC/qobu6CTHAMFpdFA5dP9klxOfY/N1?=
- =?us-ascii?Q?Tj+Ns0XU3A4fSbQEA8q1bR6HW6fu/pmqet1JmE+hVkgVvD0APfgVCrFZf+tw?=
- =?us-ascii?Q?LRBepgHQv6B2CMVk2DsPdtoWrZ3BkfDepR0GT8AGtP85BUR4BsVlYNlXEhjv?=
- =?us-ascii?Q?6E6stm+TSfnICf01QcehyTXGnHruiesPac/UgmdS/1jaSB670/+KL0AkWzdn?=
- =?us-ascii?Q?5tlzhQ/fr6n9my+YqCA5NkDfeAx9AtVtAbS1TGA01bHlqTxHpDa/EPfOF8eB?=
- =?us-ascii?Q?EI7KDgwrVsIeohnvRIU=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 141964ec-20aa-41d0-135e-08d9d236ecce
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2022 23:39:19.5109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: owal5zyZpwP1VGs6ilnUMjmhZrqobepHzSTwDRemN6NOzsztEcgw0ad+tICSgNX4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5507
+In-Reply-To: <20220105114521.1449-1-hdanton@sina.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 06, 2022 at 01:03:55PM -0500, yanjun.zhu@linux.dev wrote:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Wed, Jan 05, 2022 at 07:45:21PM +0800, Hillf Danton wrote:
+> On Mon, 3 Jan 2022 20:47:02 +0200 Leon Romanovsky wrote:
+> > On Mon, Jan 03, 2022 at 09:05:16AM -0800, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    a8ad9a2434dc Merge tag 'efi-urgent-for-v5.16-2' of git://g..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=10cf5253b00000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=1a86c22260afac2f
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e3f96c43d19782dd14a7
+> > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+> > > 
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > 
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+e3f96c43d19782dd14a7@syzkaller.appspotmail.com
+> > > 
+> > > ==================================================================
+> > > BUG: KASAN: use-after-free in ucma_cleanup_multicast drivers/infiniband/core/ucma.c:491 [inline]
+> > > BUG: KASAN: use-after-free in ucma_destroy_private_ctx+0x914/0xb70 drivers/infiniband/core/ucma.c:579
+> > > Read of size 8 at addr ffff88801bb74b00 by task syz-executor.1/25529
+> > 
+> > Jason,
+> > 
+> > Can it be race between ucma_process_join() and "if (refcount_read(&ctx->ref))"
+> > check in ucma_destroy_private_ctx()?
 > 
-> Follow the advice from Leon Romanovsky, rdma_get_udp_sport is moved to
-> ib_verbs.h. several drivers generate udp source port with this function.
-> 
-> ---
-> v2->v3:Because in-subnet communications, GRH is optional. Without thei
->        randomization for src_port done in rxe_qp_init_req, udp source
->        port will be 0xC000 in that case.
-> v1->v2:Remove the local variables in commits "RDMA/irdma: Make the source
->        udp port vary" and "RDMA/rxe: Use the standard method to produce
->        udp source port". A new commit is added to remove the redundant
->        randomization for UDP source port in RXE.
-> ---
-> 
-> 
-> 
-> Zhu Yanjun (4):
->   RDMA/core: Calculate UDP source port based on flow label or lqpn/rqpn
->   RDMA/hns: Replace get_udp_sport with rdma_get_udp_sport
->   RDMA/irdma: Make the source udp port vary
->   RDMA/rxe: Use the standard method to produce udp source port
+> Given cmpxchg in both ucma_close() and ucma_destroy_id(),
+> ucma_destroy_private_ctx() can not run more than once, in addition to what
+> is more weird is that the ucma_fops.release either is running in parallel
+> to a writer or completes with a writer left behind. Light on if that weirdness
+> is down to anything other than syzbot is highly appreciated.
 
-Applied to for-next, thanks
+It is a stupid mistake, it is because
+
+	xa_for_each(&multicast_table, index, mc) {
+		if (mc->ctx != ctx)
+                   ^^^^^^^
+
+Nothing is locking mc here, this needed to hold the xa_lock to be
+correct.
+
+It is caused by this:
+
+commit 95fe51096b7adf1d1e7315c49c75e2f75f162584
+Author: Jason Gunthorpe <jgg@ziepe.ca>
+Date:   Tue Aug 18 15:05:17 2020 +0300
+
+    RDMA/ucma: Remove mc_list and rely on xarray
+    
+    It is not really necessary to keep a linked list of mcs associated with
+    each context when we can just scan the xarray to find the right things.
+    
+    The removes another overloading of file->mut by relying on the xarray
+    locking for mc instead.
+    
+    Link: https://lore.kernel.org/r/20200818120526.702120-6-leon@kernel.org
+    Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+
+So it is solved either by putting the linked list back, but locking it
+using the xa_lock, or by holding the xa_lock when doing the
+xa_for_each()
+
+A list is probably the better choice.
 
 Jason
