@@ -2,86 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BAA4899E7
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 14:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D079489B1F
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 15:15:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232068AbiAJNZo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jan 2022 08:25:44 -0500
-Received: from mga07.intel.com ([134.134.136.100]:54314 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231574AbiAJNZo (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 10 Jan 2022 08:25:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641821144; x=1673357144;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-transfer-encoding:mime-version;
-  bh=HQ/3n4S06vvTQHOszr0j6s3WlVgDNpMQOLs0bMdPhlQ=;
-  b=O+Hcoqw85JlXfmhxSPc28NRkavNfx6/lAAer0DI1XgId26abMlOCP71i
-   ehdD+qoRHSo4YCRRGq8vPwcDV97vD6+7AHcl9cqk/D7AE+Cxaaq0HYHau
-   XbZAATWeV9xu/LQFrtm6dTb1WABerZBsvzd81ZZ19qCAw/T9mADmYsjCY
-   RCa2TzUKxdp//c6/modMjGXVzXo/T9Zt774d91PZZUQNZN9QS+b4vXcU9
-   hxTEmvkv1gaiJHDG1bVeR2yizOaxj+H53qYc/Umga+A3kWq5vm2EpZHE9
-   kRFhD3dYyhi6kCwOag6NDp57Ds8SKYrIhSzV67r8QKbllNynFR5evBbol
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10222"; a="306578249"
-X-IronPort-AV: E=Sophos;i="5.88,277,1635231600"; 
-   d="scan'208";a="306578249"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2022 05:25:43 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,277,1635231600"; 
-   d="scan'208";a="619435009"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga002.fm.intel.com with ESMTP; 10 Jan 2022 05:25:43 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 10 Jan 2022 05:25:42 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Mon, 10 Jan 2022 05:25:42 -0800
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2308.020;
- Mon, 10 Jan 2022 05:25:42 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH 1/1] RDMA/irdma: Remove the redundant return
-Thread-Topic: [PATCH 1/1] RDMA/irdma: Remove the redundant return
-Thread-Index: AQHYBWuoATSDrJNP00SLzql17u0t3KxcQDqQ
-Date:   Mon, 10 Jan 2022 13:25:42 +0000
-Message-ID: <e6e87cb0b6614218b41016c746fb40fe@intel.com>
-References: <20220110073733.3221379-1-yanjun.zhu@linux.dev>
-In-Reply-To: <20220110073733.3221379-1-yanjun.zhu@linux.dev>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S235340AbiAJOPE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jan 2022 09:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233643AbiAJOPE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jan 2022 09:15:04 -0500
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B713BC06173F
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jan 2022 06:15:03 -0800 (PST)
+Received: by mail-wr1-x443.google.com with SMTP id x4so1868957wru.7
+        for <linux-rdma@vger.kernel.org>; Mon, 10 Jan 2022 06:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=KalP7pqUldn0owlfQ20Q8VvgpD4qNB4+Il7bEQ6jfBE=;
+        b=AdiwWxj6Pk0FAI0g+nPwmFjpJAokMgkPCDHKflYspRnPUQvrGUwocdxYV8e333Lbft
+         l6iiAE30d8Delu+XgVcNXqVCno4zNo6DSwoGMhX4D1+iU/AB4tT6LmhZ2kHLLO4wxIc/
+         CYnYCPgplWi+b1l+AT0xjEQF6FLpgOS6+Dn4R2yCQj+9lpJqrYu5eUtT4seivZk/AD8X
+         XRntGvclov/XahjDvPGZNcJmGOicf0axPXLiYZBN9JBBu5cyQ5kzCLomuw5SDRnJ9JBk
+         v7UkueVj8/S2DLFl2ne4yIy930LUuJ8OOtYE+wkwgnElyjIDiUtJUyaMC9ZnS14TLLx2
+         aOcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=KalP7pqUldn0owlfQ20Q8VvgpD4qNB4+Il7bEQ6jfBE=;
+        b=S2kzt6paEU49It4W/PYDL1fHJuYxSJ1krsxil3hRe0WDxJFhJM7Ddwe5g5dIzwSbaw
+         UNE1QyUPb6r0uv4KRdiybv6eUcsfGRzoFSLgfCdsVrID+cZFaX+5c9+Ryy3zPKNZ3T+Z
+         i8amiD7/gxghPjkL73V4toSbxK6xJ+ODRdSrbMUXiC/V6UVe8nElIYasYuOIpXUVJ7fz
+         JUu6qv/Unf1npFb0Zc2aazSvK3qqXOS06XF5dN2Ye4ETeufqy1hUiZ/lXKYpZQ55gAPF
+         EiSBzagSwWZcpAzFtLfdJshYeWs80Xdc9rFEZ5S9UYIP0JuigiHFNgjvRXtrg0gAcGuf
+         sQRQ==
+X-Gm-Message-State: AOAM531nEWeqZNse7r9GPZaUKx19tivc+EhAkXCcUr680eeYSNfLLFKj
+        M7jPBpqBkE9cWFuaUOYBs/aNfKHxnahGUnr8+Vs=
+X-Google-Smtp-Source: ABdhPJzmbryBJe59XUTMfIju0qdChNUPMdC5nirhBirn/z2E/tD/JyOQm4JOrVw2F+aSNfYTc4KWV+1HSxNklv4PWsY=
+X-Received: by 2002:a05:6000:1845:: with SMTP id c5mr64579121wri.420.1641824102175;
+ Mon, 10 Jan 2022 06:15:02 -0800 (PST)
 MIME-Version: 1.0
+Received: by 2002:a05:6000:1e06:0:0:0:0 with HTTP; Mon, 10 Jan 2022 06:15:01
+ -0800 (PST)
+Reply-To: mrsaishag45@gmail.com
+From:   Mrs Aisha Al-Qaddafi <mrsaishag88@gmail.com>
+Date:   Mon, 10 Jan 2022 06:15:01 -0800
+Message-ID: <CAFGDMRtfFpH9Sf9Wb1tJfRerWtUU4to47zsKaXvzoEF8WWsYNQ@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH 1/1] RDMA/irdma: Remove the redundant return
->=20
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->=20
-> The type of the function i40iw_remove is void. So remove the unnecessary =
-return.
->=20
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
->  drivers/infiniband/hw/irdma/i40iw_if.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
+Dear Friend,
+
+I came across your e-mail contact prior a private search while in need
+of your assistance. My name is Aisha Gaddafi a single
+
+Mother and a Widow with three Children. I am the only biological
+Daughter of late Libyan President (Late Colonel Muammar
+
+Gaddafi).
+
+I have investment funds worth Twenty Seven Million Five Hundred
+Thousand United State Dollar ($27.500.000.00 ) and i need a
+
+trusted investment Manager/Partner because of my current refugee
+status, however, I am interested in you for investment
+
+project assistance in your country, may be from there, we can build
+business relationship in the nearest future.
+
+I am willing to negotiate investment/business profit sharing ratio
+with you base on the future investment earning profits.
+If you are willing to handle this project on my behalf kindly reply
+urgent to enable me provide you more information about
+Mrs Aisha Gaddafi
