@@ -2,128 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679D6489364
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 09:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 728484895F9
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 11:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240853AbiAJIbX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jan 2022 03:31:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240865AbiAJIaW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jan 2022 03:30:22 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0E5C06175D;
-        Mon, 10 Jan 2022 00:30:21 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5116F611BB;
-        Mon, 10 Jan 2022 08:30:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7B64C36AE9;
-        Mon, 10 Jan 2022 08:30:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641803419;
-        bh=iUjRQpsqyEUrseIEwTvddCf+4ZhjPNNGNSm3vuVwUq8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a8HFeWrnPQwgtfpdg6xwCdEjrpYRdVfablMvHOSfcY1o1r70iIUGCKdV3nNAxoU3t
-         NrIWjTNk9aMwO4idh27IJ+w2glMZIJYbhknh0DbYxKrt+GebVDn1Fqgv3FTSdqu9NE
-         O5pk6vDmTUw06qFzI4h4v/N3W50CJw8OsYsk5yLejhQ5iBkJLwUC4SDGH7zXDQTLvt
-         ecyZxoOW0Febw09wtiMBlwl64jAA+pXfZnPuE61870iMhgBtxyaG1PANyC59OF4CIP
-         94ba5vTjG7VlVO7mqch80rfW3UV/sPSPdmN14ExJ9V0UotkB0WeJk4YBoxoOpRYeh8
-         WlhjOu80kdw8w==
-Date:   Mon, 10 Jan 2022 10:30:15 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+e3f96c43d19782dd14a7@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in ucma_destroy_private_ctx
-Message-ID: <Ydvul2ghmIndtSPz@unreal>
-References: <00000000000056c61c05d4b086d4@google.com>
- <20220105114521.1449-1-hdanton@sina.com>
- <20220108001033.GD6467@ziepe.ca>
+        id S243617AbiAJKH5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jan 2022 05:07:57 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:54099 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234093AbiAJKHy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 10 Jan 2022 05:07:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V1PizWf_1641809271;
+Received: from 30.43.105.228(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V1PizWf_1641809271)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 10 Jan 2022 18:07:52 +0800
+Message-ID: <c0e687ce-65fe-6535-6231-7570f077c3a6@linux.alibaba.com>
+Date:   Mon, 10 Jan 2022 18:07:51 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220108001033.GD6467@ziepe.ca>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.4.1
+Subject: Re: [PATCH rdma-next 00/11] Elastic RDMA Adapter (ERDMA) driver
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>, dledford@redhat.com,
+        linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
+        tonylu@linux.alibaba.com
+References: <20211221024858.25938-1-chengyou@linux.alibaba.com>
+ <YcHSBnKHmR9sb6KR@unreal>
+ <b45d0472-06d2-0541-13a2-c64ef6f189f0@linux.alibaba.com>
+ <YcROKB5N7Kr1XhaN@unreal>
+ <9496ca18-760c-f90e-8735-f7fb2982e7a4@linux.alibaba.com>
+ <20220107142417.GW6467@ziepe.ca>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20220107142417.GW6467@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 07, 2022 at 08:10:33PM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 05, 2022 at 07:45:21PM +0800, Hillf Danton wrote:
-> > On Mon, 3 Jan 2022 20:47:02 +0200 Leon Romanovsky wrote:
-> > > On Mon, Jan 03, 2022 at 09:05:16AM -0800, syzbot wrote:
-> > > > Hello,
-> > > > 
-> > > > syzbot found the following issue on:
-> > > > 
-> > > > HEAD commit:    a8ad9a2434dc Merge tag 'efi-urgent-for-v5.16-2' of git://g..
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=10cf5253b00000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=1a86c22260afac2f
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=e3f96c43d19782dd14a7
-> > > > compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-> > > > 
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > 
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+e3f96c43d19782dd14a7@syzkaller.appspotmail.com
-> > > > 
-> > > > ==================================================================
-> > > > BUG: KASAN: use-after-free in ucma_cleanup_multicast drivers/infiniband/core/ucma.c:491 [inline]
-> > > > BUG: KASAN: use-after-free in ucma_destroy_private_ctx+0x914/0xb70 drivers/infiniband/core/ucma.c:579
-> > > > Read of size 8 at addr ffff88801bb74b00 by task syz-executor.1/25529
-> > > 
-> > > Jason,
-> > > 
-> > > Can it be race between ucma_process_join() and "if (refcount_read(&ctx->ref))"
-> > > check in ucma_destroy_private_ctx()?
-> > 
-> > Given cmpxchg in both ucma_close() and ucma_destroy_id(),
-> > ucma_destroy_private_ctx() can not run more than once, in addition to what
-> > is more weird is that the ucma_fops.release either is running in parallel
-> > to a writer or completes with a writer left behind. Light on if that weirdness
-> > is down to anything other than syzbot is highly appreciated.
-> 
-> It is a stupid mistake, it is because
-> 
-> 	xa_for_each(&multicast_table, index, mc) {
-> 		if (mc->ctx != ctx)
->                    ^^^^^^^
-> 
-> Nothing is locking mc here, this needed to hold the xa_lock to be
-> correct.
-> 
-> It is caused by this:
-> 
-> commit 95fe51096b7adf1d1e7315c49c75e2f75f162584
-> Author: Jason Gunthorpe <jgg@ziepe.ca>
-> Date:   Tue Aug 18 15:05:17 2020 +0300
-> 
->     RDMA/ucma: Remove mc_list and rely on xarray
->     
->     It is not really necessary to keep a linked list of mcs associated with
->     each context when we can just scan the xarray to find the right things.
->     
->     The removes another overloading of file->mut by relying on the xarray
->     locking for mc instead.
->     
->     Link: https://lore.kernel.org/r/20200818120526.702120-6-leon@kernel.org
->     Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
->     Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> 
-> 
-> So it is solved either by putting the linked list back, but locking it
-> using the xa_lock, or by holding the xa_lock when doing the
-> xa_for_each()
-> 
-> A list is probably the better choice.
 
-I'll submit the fix after internal review complete.
 
-Thanks
-
+On 1/7/22 10:24 PM, Jason Gunthorpe wrote:
+> On Thu, Dec 23, 2021 at 08:59:14PM +0800, Cheng Xu wrote:
+>>
+>>
+>> On 12/23/21 6:23 PM, Leon Romanovsky wrote:
+>>> On Wed, Dec 22, 2021 at 11:35:44AM +0800, Cheng Xu wrote:
+>>>>
+>>>
+>>> <...>
+>>>
+>>>>>>
+>>>>>> For the ECS instance with RDMA enabled, there are two kinds of devices
+>>>>>> allocated, one for ERDMA, and one for the original netdev (virtio-net).
+>>>>>> They are different PCI deivces. ERDMA driver can get the information about
+>>>>>> which netdev attached to in its PCIe barspace (by MAC address matching).
+>>>>>
+>>>>> This is very questionable. The netdev part should be kept in the
+>>>>> drivers/ethernet/... part of the kernel.
+>>>>>
+>>>>> Thanks
+>>>>
+>>>> The net device used in Alibaba ECS instance is virtio-net device, driven
+>>>> by virtio-pci/virtio-net drivers. ERDMA device does not need its own net
+>>>> device, and will be attached to an existed virtio-net device. The
+>>>> relationship between ibdev and netdev in erdma is similar to siw/rxe.
+>>>
+>>> siw/rxe binds through RDMA_NLDEV_CMD_NEWLINK netlink command and not
+>>> through MAC's matching.
+>>>
+>>> Thanks
+>>
+>> Both siw/rxe/erdma don't need to implement netdev part, this is what I
+>> wanted to express when I said 'similar'.
+>> What you mentioned (the bind mechanism) is one major difference between
+>> erdma and siw/rxe. For siw/rxe, user can attach ibdev to every netdev if
+>> he/she wants, but it is not true for erdma. When user buys the erdma
+>> service, he/she must specify which ENI (elastic network interface) to be
+>> binded, it means that the attached erdma device can only be binded to
+>> the specific netdev. Due to the uniqueness of MAC address in our ECS
+>> instance, we use the MAC address as the identification, then the driver
+>> knows which netdev should be binded to.
 > 
+> It really doesn't match our driver binding model to rely on MAC
+> addreses.
+> 
+> Our standard model would expect that the virtio-net driver would
+> detect it has RDMA capability and spawn an aux device to link the two
+> things together.
+> 
+> Using net notifiers to try to link the lifecycles together has been a
+> mess so far.
+Thanks for your explanation.
+
+I guess this model requires the netdev and its associated ibdev share
+the same physical hardware (pci device or platform device)? ERDMA is a
+separated pci device. Only because that ENIs in our cloud are
+virtio-net devices, and we let ERDMA binded to virtio-net. Actually it
+also can work with other type of netdev.
+
+As you and Leon said, using net notifiers is not a good way. And I'm
+modifying our bind mechanism, using RDMA_NLDEV_CMD_NEWLINK to fix it.
+
+Thanks,
+Cheng Xu
+
 > Jason
