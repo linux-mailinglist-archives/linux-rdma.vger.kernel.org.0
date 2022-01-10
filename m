@@ -2,170 +2,117 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08A24489EC8
-	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 19:05:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA9F48A039
+	for <lists+linux-rdma@lfdr.de>; Mon, 10 Jan 2022 20:35:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238706AbiAJSFr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 10 Jan 2022 13:05:47 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:59868 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238685AbiAJSFr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jan 2022 13:05:47 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3E8C5B81052;
-        Mon, 10 Jan 2022 18:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32DAFC36AE3;
-        Mon, 10 Jan 2022 18:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1641837945;
-        bh=dnWKtHk0IMmaexsJnKOVegVsP9sJVV2kMtH9JIx/ZVM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ckda3dbWiZftWSME3bgZNy/HtPb/AaXjsJ8L8htjUeWiT4HlZXDfLxLdIbT45Hsp+
-         36dfTomFEhpnTwkyXEozdcCJVf+4dteT7eyQVhQiK2t3c8dAIJi1Pldww2n92V95b/
-         PAEkdqLIzQFz3/hTCdytg4P66MJGjryvZwFLf74bNksNnNudQBEpzd56AUcAx/QL3D
-         m2KzEsVFAMLhyXBEKOVlSW4mDwQ5R1RT1P+mt7JTMUCIYWWtpLYrEv8A1IEqRIdiRc
-         DbjeCHtyd/BCQkOrjxTR4+7f859e4CvovnEXwxgMG32zs6f8eBXWjhEN0O+soQEwI1
-         deOkqawUskVgQ==
-Date:   Mon, 10 Jan 2022 20:05:40 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        syzbot+8fcbb77276d43cc8b693@syzkaller.appspotmail.com
-Subject: Re: [PATCH rdma-rc] RDMA/cma: Clear all multicast request fields
-Message-ID: <Ydx1dDSa1JDJGFdJ@unreal>
-References: <1876bacbbcb6f82af3948e5c37a09da6ea3fcae5.1641474841.git.leonro@nvidia.com>
- <20220106173941.GA2963550@nvidia.com>
- <YdrTbNDTg7VdR2iu@unreal>
- <20220110153619.GC2328285@nvidia.com>
+        id S239964AbiAJTfA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 10 Jan 2022 14:35:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231986AbiAJTe7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 10 Jan 2022 14:34:59 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FC9CC06173F;
+        Mon, 10 Jan 2022 11:34:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=ZFZ4QOFgcoyMCECZ3PkgL8BM+HFxPBx0EV0hU5cheCk=; b=kwTBNQ14Ajm4bb+p+yD8k57QkP
+        ag8IoWMx+ZceNrBHQIAX1qjPtJFmAq9bB3a4JnH2JpRIvuJYBtpHdys8Jq/5cenklNvLq/gPB+1Sg
+        2qgeP1b1J6H2Tv69ZZ1Dchmb2ZJjZjBKqVxc/SH3eNnBFhJ4iqYqyoAG6HKgY9R7CIH30swf1tj0Z
+        Gu8uqqBGWzCL6jiU7/viwFyhvJ/itxVSedkUZDGnUhNOWzn5QaeMXBfrtSKRCMeY14yLf8X1p6aFJ
+        T2ZJbBdfedchNNamYhhW0wNJ5GgzCiU5esGaF1uPdBB8x01ZyuwW4BYXYZcWtRvjnGo36PQEJY1Up
+        7sxipnQg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1n70RN-002fyD-DM; Mon, 10 Jan 2022 19:34:49 +0000
+Date:   Mon, 10 Jan 2022 19:34:49 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nvdimm@lists.linux.dev
+Subject: Phyr Starter
+Message-ID: <YdyKWeU0HTv8m7wD@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220110153619.GC2328285@nvidia.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 10, 2022 at 11:36:19AM -0400, Jason Gunthorpe wrote:
-> On Sun, Jan 09, 2022 at 02:22:04PM +0200, Leon Romanovsky wrote:
-> > On Thu, Jan 06, 2022 at 01:39:41PM -0400, Jason Gunthorpe wrote:
-> > > On Thu, Jan 06, 2022 at 03:15:07PM +0200, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > > 
-> > > > The ib->rec.qkey field is accessed without being initialized.
-> > > > Clear the ib_sa_multicast struct to fix the following syzkaller error/.
-> > > > 
-> > > > =====================================================
-> > > > BUG: KMSAN: uninit-value in cma_set_qkey drivers/infiniband/core/cma.c:510 [inline]
-> > > > BUG: KMSAN: uninit-value in cma_make_mc_event+0xb73/0xe00 drivers/infiniband/core/cma.c:4570
-> > > >  cma_set_qkey drivers/infiniband/core/cma.c:510 [inline]
-> > > >  cma_make_mc_event+0xb73/0xe00 drivers/infiniband/core/cma.c:4570
-> > > >  cma_iboe_join_multicast drivers/infiniband/core/cma.c:4782 [inline]
-> > > >  rdma_join_multicast+0x2b83/0x30a0 drivers/infiniband/core/cma.c:4814
-> > > >  ucma_process_join+0xa76/0xf60 drivers/infiniband/core/ucma.c:1479
-> > > >  ucma_join_multicast+0x1e3/0x250 drivers/infiniband/core/ucma.c:1546
-> > > >  ucma_write+0x639/0x6d0 drivers/infiniband/core/ucma.c:1732
-> > > >  vfs_write+0x8ce/0x2030 fs/read_write.c:588
-> > > >  ksys_write+0x28c/0x520 fs/read_write.c:643
-> > > >  __do_sys_write fs/read_write.c:655 [inline]
-> > > >  __se_sys_write fs/read_write.c:652 [inline]
-> > > >  __ia32_sys_write+0xdb/0x120 fs/read_write.c:652
-> > > >  do_syscall_32_irqs_on arch/x86/entry/common.c:114 [inline]
-> > > >  __do_fast_syscall_32+0x96/0xf0 arch/x86/entry/common.c:180
-> > > >  do_fast_syscall_32+0x34/0x70 arch/x86/entry/common.c:205
-> > > >  do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:248
-> > > >  entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
-> > > > 
-> > > > Local variable ib.i created at:
-> > > >  cma_iboe_join_multicast drivers/infiniband/core/cma.c:4737 [inline]
-> > > >  rdma_join_multicast+0x586/0x30a0 drivers/infiniband/core/cma.c:4814
-> > > >  ucma_process_join+0xa76/0xf60 drivers/infiniband/core/ucma.c:1479
-> > > > 
-> > > > CPU: 0 PID: 29874 Comm: syz-executor.3 Not tainted 5.16.0-rc3-syzkaller #0
-> > > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > > > =====================================================
-> > > > 
-> > > > Fixes: b5de0c60cc30 ("RDMA/cma: Fix use after free race in roce multicast join")
-> > > > Reported-by: syzbot+8fcbb77276d43cc8b693@syzkaller.appspotmail.com
-> > > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > > >  drivers/infiniband/core/cma.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > 
-> > > > diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-> > > > index 69c9a12dd14e..9c53e1e7de50 100644
-> > > > +++ b/drivers/infiniband/core/cma.c
-> > > > @@ -4737,7 +4737,7 @@ static int cma_iboe_join_multicast(struct rdma_id_private *id_priv,
-> > > >  	int err = 0;
-> > > >  	struct sockaddr *addr = (struct sockaddr *)&mc->addr;
-> > > >  	struct net_device *ndev = NULL;
-> > > > -	struct ib_sa_multicast ib;
-> > > > +	struct ib_sa_multicast ib = {};
-> > > >  	enum ib_gid_type gid_type;
-> > > >  	bool send_only;
-> > > 
-> > > We shouldn't be able to join anything except a RDMA_PS_UDP to a
-> > > multicast in the first place:
-> > > 
-> > > 	if (id_priv->id.ps == RDMA_PS_UDP)
-> > > 		ib.rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
-> > > 
-> > > Multicast RC/etc is meaningless. So I guess it should be like this:
-> > 
-> > I don't know, I used 0 exactly like we have for cma_join_ib_multicast().
-> > 
-> > Where can I read about this PS limitation? I didn't find anything
-> > relevant in the IBTA spec.
-> 
-> It is a Linux thing
-> 
-> We should probably check the PS even earlier to prevent the IB side
-> from having the same issue.
+TLDR: I want to introduce a new data type:
 
-What do you think about this?
+struct phyr {
+        phys_addr_t addr;
+        size_t len;
+};
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 835ac54d4a24..0a1f008ca929 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -4669,12 +4669,8 @@ static int cma_join_ib_multicast(struct rdma_id_private *id_priv,
-        if (ret)
-                return ret;
+and use it to replace bio_vec as well as using it to replace the array
+of struct pages used by get_user_pages() and friends.
 
--       ret = cma_set_qkey(id_priv, 0);
--       if (ret)
--               return ret;
--
-        cma_set_mgid(id_priv, (struct sockaddr *) &mc->addr, &rec.mgid);
--       rec.qkey = cpu_to_be32(id_priv->qkey);
-+       rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
-        rdma_addr_get_sgid(dev_addr, &rec.port_gid);
-        rec.pkey = cpu_to_be16(ib_addr_get_pkey(dev_addr));
-        rec.join_state = mc->join_state;
-@@ -4748,8 +4744,7 @@ static int cma_iboe_join_multicast(struct rdma_id_private *id_priv,
-        cma_iboe_set_mgid(addr, &ib.rec.mgid, gid_type);
+---
 
-        ib.rec.pkey = cpu_to_be16(0xffff);
--       if (id_priv->id.ps == RDMA_PS_UDP)
--               ib.rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
-+       ib.rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
+There are two distinct problems I want to address: doing I/O to memory
+which does not have a struct page and efficiently doing I/O to large
+blobs of physically contiguous memory, regardless of whether it has a
+struct page.  There are some other improvements which I regard as minor.
 
-        if (dev_addr->bound_dev_if)
-                ndev = dev_get_by_index(dev_addr->net, dev_addr->bound_dev_if);
-@@ -4796,6 +4791,9 @@ int rdma_join_multicast(struct rdma_cm_id *id, struct sockaddr *addr,
-        if (WARN_ON(id->qp))
-                return -EINVAL;
+There are many types of memory that one might want to do I/O to that do
+not have a struct page, some examples:
+ - Memory on a graphics card (or other PCI card, but gfx seems to be
+   the primary provider of DRAM on the PCI bus today)
+ - DAX, or other pmem (there are some fake pages today, but this is
+   mostly a workaround for the IO problem today)
+ - Guest memory being accessed from the hypervisor (KVM needs to
+   create structpages to make this happen.  Xen doesn't ...)
+All of these kinds of memories can be addressed by the CPU and so also
+by a bus master.  That is, there is a physical address that the CPU
+can use which will address this memory, and there is a way to convert
+that to a DMA address which can be programmed into another device.
+There's no intent here to support memory which can be accessed by a
+complex scheme like writing an address to a control register and then
+accessing the memory through a FIFO; this is for memory which can be
+accessed by DMA and CPU loads and stores.
 
-+       if (id->ps != RDMA_PS_UDP)
-+               return -EINVAL;
-+
-        /* ULP is calling this wrong. */
-        if (!id->device || (READ_ONCE(id_priv->state) != RDMA_CM_ADDR_BOUND &&
-                            READ_ONCE(id_priv->state) != RDMA_CM_ADDR_RESOLVED))
+For get_user_pages() and friends, we currently fill an array of struct
+pages, each one representing PAGE_SIZE bytes.  For an application that
+is using 1GB hugepages, writing 2^18 entries is a significant overhead.
+It also makes drivers hard to write as they have to recoalesce the
+struct pages, even though the VM can tell it whether those 2^18 pages
+are contiguous.
 
+On the minor side, struct phyr can represent any mappable chunk of memory.
+A bio_vec is limited to 2^32 bytes, while on 64-bit machines a phyr
+can represent larger than 4GB.  A phyr is the same size as a bio_vec
+on 64 bit (16 bytes), and the same size for 32-bit with PAE (12 bytes).
+It is smaller for 32-bit machines without PAE (8 bytes instead of 12).
 
-> 
-> multicast should never be used in any place that can omit a qkey,
-> IIRC..
-> 
-> Jason
+Finally, it may be possible to stop using scatterlist to describe the
+input to the DMA-mapping operation.  We may be able to get struct
+scatterlist down to just dma_address and dma_length, with chaining
+handled through an enclosing struct.
+
+I would like to see phyr replace bio_vec everywhere it's currently used.
+I don't have time to do that work now because I'm busy with folios.
+If someone else wants to take that on, I shall cheer from the sidelines.
+What I do intend to do is:
+
+ - Add an interface to gup.c to pin/unpin N phyrs
+ - Add a sg_map_phyrs()
+   This will take an array of phyrs and allocate an sg for them
+ - Whatever else I need to do to make one RDMA driver happy with
+   this scheme
+
+At that point, I intend to stop and let others more familiar with this
+area of the kernel continue the conversion of drivers.
+
+P.S. If you've had the Prodigy song running through your head the whole
+time you've been reading this email ... I'm sorry / You're welcome.
+If people insist, we can rename this to phys_range or something boring,
+but I quite like the spelling of phyr with the pronunciation of "fire".
