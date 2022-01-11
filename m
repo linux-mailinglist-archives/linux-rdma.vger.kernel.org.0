@@ -2,204 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5930D48ACCA
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 12:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D2148AD9D
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 13:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238903AbiAKLkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jan 2022 06:40:12 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:33904 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238840AbiAKLkM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jan 2022 06:40:12 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 007211F3BA;
-        Tue, 11 Jan 2022 11:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1641901211; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hu9yh0NTZIrOTv2yobLAEgOChSVCw5ux5AM6GsPbBCM=;
-        b=eFLSf/b0jLI14BDLXTV7umL8kh2VbVXgqWz9Zteh+o/1g4MW1s7FAmnA4q2r41zBiYruNR
-        SQCRGEo5FjtA6kctsS+ap7+TI9SW5EwEKqmRoZOHXscRoV2wlhsS7AoZHzKvzxfyV3wGl0
-        /EQw01HZmPSsoG4t4SSq46mQHYxY+qA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1641901211;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hu9yh0NTZIrOTv2yobLAEgOChSVCw5ux5AM6GsPbBCM=;
-        b=+SwoFrKjyHsSsz11+UflDNr3OyN4U/3YvFLIDgxo93qHySymgtrdvVCCFGrm9J8Et0F7qg
-        ZHgp+Nxlfky5ObDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AB81E13DD6;
-        Tue, 11 Jan 2022 11:40:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id AqTGKJps3WFBCQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 11 Jan 2022 11:40:10 +0000
-Message-ID: <f7bd672f-dfa8-93fa-e101-e57b90faeb1e@suse.de>
-Date:   Tue, 11 Jan 2022 12:40:10 +0100
-MIME-Version: 1.0
+        id S239846AbiAKM3A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jan 2022 07:29:00 -0500
+Received: from mail-os0jpn01on2091.outbound.protection.outlook.com ([40.107.113.91]:10039
+        "EHLO JPN01-OS0-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S239959AbiAKM27 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jan 2022 07:28:59 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ub1pcPFZtCWZyCvR7njJ0v4XOM7GMVV6io9Oxm6kk6lXYgz4unJiKezYT+Q5fwhj2KED5/yKbftANqaex4B9QMce7JdtbKvUbwUsWZgLALamapfXLMNqb5tbMPXiQ6dxJ8v6DbBXqs4srWGYhNNdwYce0tD8L4KRnCV/gtV/OVPdL+sN/L7p/ciUopVzYHEFJMiXBvn9tT8vb/wAPK1lrG8dzVfKSu8exlp2Swu9dqFqgn8lTqeAa1lUKXq7OK1KYOS5PUtogTL0K8LJ5G6jMJJT1ykOkAuCrWko763qbcJd69XnU1RVElw8yxLstaolePNe3pzRzYGLNOKmRggkgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j7QVZ6qqFWeo9jkfw/oTW+0iaUe+euYJcyPwbCkVH7Y=;
+ b=he1k9/P8aTW1DaJPtzbCfkqbtKqfnK5flVyTbD4oXIE7HoU46akQEm20sxtBM/7mQY8zLy4xNPI9CqxI6z+tOsV+yRcK6/w299OuzDxdOxMx2QP9pwZXZvocq0GSniqdaDNUEqk74ZDIEHRUXCeaqY2tRvTifuimzQ3kGdiYlTyoxKbXjilY9PduYoYap1JZdJj0XOKp1Oof3L6fSUOjPqdtRe3TP4/xzQ+wB06T/hHz78P18EYt9RULIl4LO3myoNy3jcVkwBFz4Z2XwlDuizpoXTGQl+wfIrrUPviYWtiaoyjcbrV6KUzGsxMABDMREr+0Fr88lEPdSu8SrYln0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=riken.jp; dmarc=pass action=none header.from=riken.jp;
+ dkim=pass header.d=riken.jp; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=riken.jp; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j7QVZ6qqFWeo9jkfw/oTW+0iaUe+euYJcyPwbCkVH7Y=;
+ b=RbiGejKPYVXeWdbCCa++9AJEXG/2gwNxBdEXO+osUZKyMQSrzq6/7tFVHOckBZRp6ji3j04okJHcOjDkTmIZfV4/3R41kJuO/FY4xHlvUuE6mORpWDlYw6Ix+G+y+Eiz4IYGFPwv45wohFUnjmF5nChj0GI+JgQwu7Q98k2V8K29YCrR5i/DhWbcAX3tEtnO539JLdV95YTh/0Q5Yh0tXAVNeKVKFxaYbPMvthoGMhjaAVebX81/L7B/XDTuhCJcwVkNoDyaosXvAqKy4j2e4/Ol/txPX6KORrK33XUe902EE9wh+k5gC3rzHonFO2vh05uYCKdVMjf86qsZoKznsA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=riken.jp;
+Received: from TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:cb::9) by
+ TYCP286MB0896.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:7d::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4867.7; Tue, 11 Jan 2022 12:28:58 +0000
+Received: from TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::180b:1f90:ddf5:f5b1]) by TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::180b:1f90:ddf5:f5b1%5]) with mapi id 15.20.4867.012; Tue, 11 Jan 2022
+ 12:28:58 +0000
+Message-ID: <26829838-99b2-c2d7-68a6-ecb53085fde6@riken.jp>
+Date:   Tue, 11 Jan 2022 21:28:57 +0900
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: Phyr Starter
+ Thunderbird/91.3.0
+Subject: Re: iblinkinfo for Python
 Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     nvdimm@lists.linux.dev, linux-rdma@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>,
-        dri-devel@lists.freedesktop.org, Ming Lei <ming.lei@redhat.com>,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <YdyKWeU0HTv8m7wD@casper.infradead.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <YdyKWeU0HTv8m7wD@casper.infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------TUMr3QAK8x0Ry03YInQSssDP"
+To:     Benjamin Drung <benjamin.drung@ionos.com>
+References: <44396b05adcf8a414a9f4d6a843fce16670a83c1.camel@ionos.com>
+Cc:     linux-rdma@vger.kernel.org
+From:   Jens Domke <jens.domke@riken.jp>
+In-Reply-To: <44396b05adcf8a414a9f4d6a843fce16670a83c1.camel@ionos.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TY1PR01CA0190.jpnprd01.prod.outlook.com (2603:1096:403::20)
+ To TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:cb::9)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70d65dac-8a42-45ae-03bf-08d9d4fdf0b2
+X-MS-TrafficTypeDiagnostic: TYCP286MB0896:EE_
+X-Microsoft-Antispam-PRVS: <TYCP286MB0896EE7ACA85705ED36CF5B0E1519@TYCP286MB0896.JPNP286.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8cmI3tmHx1Ibnut9PYqlql9QIcx761P8B3Db/x5ThIr/B8lQV1FkDMUWNIoDbBH7kv+/E2x+FMHK5TkFIBXR6vsVaSh90evipyyg5d+AS+yBqWRNvw2jTZPWkvqFZxojG82ObwgDB5AEFGc+T5zw2CxWve1VWZYeb7r63wNeWn4Ed7pQEzlhEaFmlLctpQ3hYY76g8FUnTXmQDtpxiHGMKUjGuxx8CoxjzpJGgngKAQW+3mSmiUeCHml3XVna5a/C3+43p4VSqd3rmCIS7XBKCfb/WpZSlNehB9C8uuLsZ7qtiMw85KA5mWRB1D8aMXoRqj/h1qg4+McluHETb/3cpDdwyVujgI6fHX1ZicvOESXqlwjc5JCF7wIArBt2ry9KCyCDR8vwSRATphJNlizI58G7W6KQceDGm/nYTHK2asoQjBGZrKYeIMIVfuw3VqBQI7Fl327Dq9MX99JiRAZtAcbiweQO6rT/tpSv9bNBTsZweA5M9m8M7I9fxk+2SjnqTNpUe6Hiw3gWknFyX/K5R6c9mT11e3mx3+5bJXuQiSnJOSQSoRr73L62BGF1OkL2nneV6scZjIkBx3F1rw3bT5Juw7MnArO+aoPYZGETfyiSM5h9tqqBx7syz5HLN1ivtE7fYNyq/t4p5csn7TN4Wo2IiNi0CRgIIxq/FmOp6+Vmj7l7p3OoxNBHISWNt6bTPX/zEKbZ9giq+c2XpTCGRg3f4l/iyhC0ow8TEg2dt1UPb53gQvD9PfA9hCZhdgQAxx+R96f6gg2Y6fuuc/5s8x+TIoG1pL8UqLRyDs7D3JDWlkcKpCy1zAt3QGriLG0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(186003)(8676002)(3480700007)(38100700002)(6486002)(31696002)(8936002)(5660300002)(316002)(7116003)(31686004)(6916009)(86362001)(6512007)(66946007)(66556008)(2906002)(2616005)(6506007)(26005)(53546011)(36756003)(66476007)(44832011)(4326008)(966005)(508600001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K25Oc2d4VWJRb0RBUFFBVlhRWkV2d0xtU3NYS3VrcldxaHAxUTNxOWVUd2t0?=
+ =?utf-8?B?ZnBmUXp3MllLa2o5YllSdkdoNXVkWEluSEo1bnRpYkphbGNncy9tRnloRXdx?=
+ =?utf-8?B?MUsxdW5zeVV0a2ZSeVJUSGhkd0VQUFBxSVcxK2NHcUdCb21NY0RLcEZuK0Z5?=
+ =?utf-8?B?Ty9uQ2RXUDlpTTVEQm03UWJSdDhENEU4MTBVazJIZTgvd2NmRFNsTER4QTA3?=
+ =?utf-8?B?T2hMQi9IMVJGVElBMHRYYlBsQWV3VmNXRzV4ZW9FQUlFdDBDNkZqd3liYk14?=
+ =?utf-8?B?UVdxUUdVNlZhdjRWamhuNnZKc2lBNzNDZktMR0NYSkdDRkVxNDhER0VKZ0p6?=
+ =?utf-8?B?RVFTNFA3Y0lmZWVpY3BnbjlvdFlOYlcyL3A3MGd3a1RMeVdhT3QvMmIxc1Ax?=
+ =?utf-8?B?cmMrVUtEZUxRdysrMDFFQmU1S2UwUkhoTWtQSFJON0ZBNldSdXloU0hsSm5H?=
+ =?utf-8?B?MHorUzJ1WlZOT0ZpeTltdW9nSnpoVlBWU1FvV1U1ck9vTHlCYk10Q2Q5ektU?=
+ =?utf-8?B?RmlUOW1Lc2pkOEFJb2dkdnNSMmdjSXR4akcwek9HblU5UEhwUkVoYW04cWVx?=
+ =?utf-8?B?cCtSTWllOGUxRkpTYzZRWms4OXo2SFFxNXY3akNTYjdna0wvRWt3cjlzalpL?=
+ =?utf-8?B?RTBjeVdXMUk0WUpEMXNOelNwdFFjREJKYjhTV1F1WnhLZDBRbXNNYklLR3NX?=
+ =?utf-8?B?bGR3NVdPekhHbXBwS0padmJLTXB1TENtK2cxMVlUODEyZ0NGSVlpN3Q4NWhZ?=
+ =?utf-8?B?TkRQTWhBVkZqdDcycWM5ZGsyaE9zMzFpZEJzTWdEcE5wK25aY3lKbHp2MktZ?=
+ =?utf-8?B?WVcrUzZpdHpZOUNlZnFnZDY0dGxjZHhLR0FKMElFQnRVczA5RUxXZURWY21T?=
+ =?utf-8?B?Y3VHYkp1ZWRBRDBtWUYzaDFJaGFRYkMzWXJLVDRjekZiSGlYTWQ1M2JQa2c0?=
+ =?utf-8?B?SHFlVEZuYUlCQUlCL3ZNbjNMekJmQkVMZ0dPR2dPUVpWMHpzWVVzTzRWbVBT?=
+ =?utf-8?B?d3lvNCt5LzRUWTJYN0dqY0Z6OWh2dFNhZ056ZUVaOENPckNpU3dRL2JqQnU1?=
+ =?utf-8?B?dFNCcWJRSXRtZE9iNnZVVVJwY3JVTXFrS29lUVJSM1BRbi9jUC9FdTdyWkF4?=
+ =?utf-8?B?Y2ZYWFZra2VqRUk1bHFveVp5eWtSUzNpdzlVUnAvZzRNMkhGWU82VzNJSG1u?=
+ =?utf-8?B?OThzM01qMzNUTHBvU0FIM0NKRHlEOWdQTFN6aDFZUDFGNk9RVlVhVHJHemVp?=
+ =?utf-8?B?cmxDWHczZHN4ZGZPaEN5ZG9UNDJoTlgzS0R5NTlDMkU5VTJFVkUzZXRIMTl3?=
+ =?utf-8?B?N3d0MUZtaC8xQm9kK0EwRE0wZmEzeVJ0SmFJemcxZjE1ejl2SkJyZXUvZlJt?=
+ =?utf-8?B?cjhNYnBCMEtpTW9BdlNtZDN4V2p0MU4wVWtKWUI2aUMvODZlMGJoblVCVklt?=
+ =?utf-8?B?UUc0WHJpbUMvcVRsOFVZdC94UXNYMG4wMGZZU0xReERKekxqSTQvSXlQcGNw?=
+ =?utf-8?B?R3MycVVzU3dCQk85bjRLdWtJK0treUFqbWpQaDhJYXE2UVJNYndEMVJRUENW?=
+ =?utf-8?B?dlU4WFQxU3puelhGU0t2NlNNZVV6Mkx6VnRncGNibFBjbWNBOEJPSmc2UHJz?=
+ =?utf-8?B?eFlseHdYK09RU09aUkczVXBNSUhyc2hsQXR4KzVyclZ5YVRLWmh4MWRFN2RF?=
+ =?utf-8?B?NG1Mc2RROVBsMFRyYi9wOEpnYVlRYnNwTVRlRWdZNFhBak1WMWY0L01ieCtK?=
+ =?utf-8?B?djh4OVdBempvcUM2S3p6aG1WM0RZeXkwZGlLL2Z3eGZxRWI5M3hRZkpERnZS?=
+ =?utf-8?B?YjhOOXZ1VE90dmRURWEwQml6UVNUd05zUVZlZmFNOTIyei9SVjJpTmhland6?=
+ =?utf-8?B?M3hheUZGNmlnMWRTQXRWS2hhL0NqOUkzajhkMkpHdXB4amN3T3VhRTVWWFBw?=
+ =?utf-8?B?UjVXd1N4VjQ0cDlEenpoR3NqSThPb3JhRU5zYkREYzNpcHd2UmFJbE84akxD?=
+ =?utf-8?B?WkRDdWhWUHpRaTQ1bVVnM2NtcmZTNUQ1Tk1hYmhoL2F1K2E4T056NVN5NEsw?=
+ =?utf-8?B?L3E2czVaQnIvU2IwTmFTd3F5L2tVRkp1OGtTYk1uN0kvckx6RHByU09oQ21t?=
+ =?utf-8?B?VEZZN1NwdzN0Rk1GWkdyTE9BMWdsVEhoNktNcStUSXNDeDRBcXFtWEFXUFNm?=
+ =?utf-8?Q?5woKI12aIWJY5/WAOGZzASs=3D?=
+X-OriginatorOrg: riken.jp
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70d65dac-8a42-45ae-03bf-08d9d4fdf0b2
+X-MS-Exchange-CrossTenant-AuthSource: TYYP286MB1066.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2022 12:28:58.1042
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fce8b959-27d5-4b4e-a4e9-1014a2f95c90
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eoTs8oI/6bis4emYG9CwlzphBWzPcM8f7EQoMCD9t7gdR47xHTyMfXu8R+2937Wr5ERT7E8cUD3O04p69PZeng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCP286MB0896
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------TUMr3QAK8x0Ry03YInQSssDP
-Content-Type: multipart/mixed; boundary="------------FSfCP6lzbOH6mRnDQRWz0fCp";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
-Cc: nvdimm@lists.linux.dev, linux-rdma@vger.kernel.org,
- John Hubbard <jhubbard@nvidia.com>, dri-devel@lists.freedesktop.org,
- Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
- linux-mm@kvack.org, Jason Gunthorpe <jgg@nvidia.com>,
- netdev@vger.kernel.org, Joao Martins <joao.m.martins@oracle.com>,
- Logan Gunthorpe <logang@deltatee.com>, Christoph Hellwig <hch@lst.de>
-Message-ID: <f7bd672f-dfa8-93fa-e101-e57b90faeb1e@suse.de>
-Subject: Re: Phyr Starter
-References: <YdyKWeU0HTv8m7wD@casper.infradead.org>
-In-Reply-To: <YdyKWeU0HTv8m7wD@casper.infradead.org>
+Hi Benjamin,
 
---------------FSfCP6lzbOH6mRnDQRWz0fCp
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+I have written some simple parser for output of certain IB commands:
+https://gitlab.com/domke/ParseInfiniband
 
-SGkNCg0KQW0gMTAuMDEuMjIgdW0gMjA6MzQgc2NocmllYiBNYXR0aGV3IFdpbGNveDoNCj4g
-VExEUjogSSB3YW50IHRvIGludHJvZHVjZSBhIG5ldyBkYXRhIHR5cGU6DQo+IA0KPiBzdHJ1
-Y3QgcGh5ciB7DQo+ICAgICAgICAgIHBoeXNfYWRkcl90IGFkZHI7DQo+ICAgICAgICAgIHNp
-emVfdCBsZW47DQo+IH07DQoNCkRpZCB5b3UgbG9vayBhdCBzdHJ1Y3QgZG1hX2J1Zl9tYXA/
-IFsxXQ0KDQpGb3IgZ3JhcGhpY3MgZnJhbWVidWZmZXJzLCB3ZSBoYXZlIHRoZSBwcm9ibGVt
-IHRoYXQgdGhlc2UgYnVmZmVycyBjYW4gYmUgDQppbiBJL08gb3Igc3lzdGVtIG1lbW9yeSAo
-YW5kIHBvc3NpYmx5IG1vdmUgYmV0d2VlbiB0aGVtKS4gTGludXgnIA0KdHJhZGl0aW9uYWwg
-aW50ZXJmYWNlcyAobWVtY3B5X3RvaW8oKSwgZXRjKSBkb24ndCBkZWFsIHdpdGggdGhlIA0K
-ZGlmZmVyZW5jZXMgd2VsbC4NCg0KU28gd2UgYWRkZWQgc3RydWN0IGRtYV9idWZfbWFwIGFz
-IGFuIGFic3RyYWN0aW9uIHRvIHRoZSBidWZmZXIgYWRkcmVzcy4gDQpUaGVyZSBhcmUgaW50
-ZXJmYWNlcyBmb3IgYWNjZXNzaW5nIGFuZCBjb3B5aW5nIHRoZSBkYXRhLiBJIGFsc28gaGF2
-ZSBhIA0KcGF0Y2hzZXQgc29tZXdoZXJlIHRoYXQgYWRkcyBjYWNoaW5nIGluZm9ybWF0aW9u
-IHRvIHRoZSBzdHJ1Y3R1cmUuIA0Kc3RydWN0IGRtYV9idWZfbWFwIGlzIGZvciBncmFwaGlj
-cywgYnV0IHJlYWxseSBqdXN0IGFub3RoZXIgbWVtb3J5IEFQSS4NCg0KV2hlbiB3ZSBpbnRy
-b2R1Y2VkIHN0cnVjdCBkbWFfYnVmX21hcCB3ZSB0aG91Z2h0IG9mIGFkZGl0aW9uYWwgdXNl
-IA0KY2FzZXMsIGJ1dCBjb3VsZG4ndCByZWFsbHkgZmluZCBhbnkgYXQgdGhlIHRpbWUuIE1h
-eWJlIHdoYXQgeW91J3JlIA0KZGVzY3JpYmluZyBpcyB0aGF0IHVzZSBjYXNlIGFuZCBzdHJ1
-Y3QgZG1hX2J1Zl9tYXAgY291bGQgYmUgZXh0ZW5kZWQgZm9yIA0KdGhpcyBwdXJwb3NlLg0K
-DQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQpbMV0gDQpodHRwczovL2VsaXhpci5ib290bGlu
-LmNvbS9saW51eC92NS4xNi9zb3VyY2UvaW5jbHVkZS9saW51eC9kbWEtYnVmLW1hcC5oI0wx
-MTUNCg0KPiANCj4gYW5kIHVzZSBpdCB0byByZXBsYWNlIGJpb192ZWMgYXMgd2VsbCBhcyB1
-c2luZyBpdCB0byByZXBsYWNlIHRoZSBhcnJheQ0KPiBvZiBzdHJ1Y3QgcGFnZXMgdXNlZCBi
-eSBnZXRfdXNlcl9wYWdlcygpIGFuZCBmcmllbmRzLg0KPiANCj4gLS0tDQo+IA0KPiBUaGVy
-ZSBhcmUgdHdvIGRpc3RpbmN0IHByb2JsZW1zIEkgd2FudCB0byBhZGRyZXNzOiBkb2luZyBJ
-L08gdG8gbWVtb3J5DQo+IHdoaWNoIGRvZXMgbm90IGhhdmUgYSBzdHJ1Y3QgcGFnZSBhbmQg
-ZWZmaWNpZW50bHkgZG9pbmcgSS9PIHRvIGxhcmdlDQo+IGJsb2JzIG9mIHBoeXNpY2FsbHkg
-Y29udGlndW91cyBtZW1vcnksIHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciBpdCBoYXMgYQ0KPiBz
-dHJ1Y3QgcGFnZS4gIFRoZXJlIGFyZSBzb21lIG90aGVyIGltcHJvdmVtZW50cyB3aGljaCBJ
-IHJlZ2FyZCBhcyBtaW5vci4NCj4gDQo+IFRoZXJlIGFyZSBtYW55IHR5cGVzIG9mIG1lbW9y
-eSB0aGF0IG9uZSBtaWdodCB3YW50IHRvIGRvIEkvTyB0byB0aGF0IGRvDQo+IG5vdCBoYXZl
-IGEgc3RydWN0IHBhZ2UsIHNvbWUgZXhhbXBsZXM6DQo+ICAgLSBNZW1vcnkgb24gYSBncmFw
-aGljcyBjYXJkIChvciBvdGhlciBQQ0kgY2FyZCwgYnV0IGdmeCBzZWVtcyB0byBiZQ0KPiAg
-ICAgdGhlIHByaW1hcnkgcHJvdmlkZXIgb2YgRFJBTSBvbiB0aGUgUENJIGJ1cyB0b2RheSkN
-Cj4gICAtIERBWCwgb3Igb3RoZXIgcG1lbSAodGhlcmUgYXJlIHNvbWUgZmFrZSBwYWdlcyB0
-b2RheSwgYnV0IHRoaXMgaXMNCj4gICAgIG1vc3RseSBhIHdvcmthcm91bmQgZm9yIHRoZSBJ
-TyBwcm9ibGVtIHRvZGF5KQ0KPiAgIC0gR3Vlc3QgbWVtb3J5IGJlaW5nIGFjY2Vzc2VkIGZy
-b20gdGhlIGh5cGVydmlzb3IgKEtWTSBuZWVkcyB0bw0KPiAgICAgY3JlYXRlIHN0cnVjdHBh
-Z2VzIHRvIG1ha2UgdGhpcyBoYXBwZW4uICBYZW4gZG9lc24ndCAuLi4pDQo+IEFsbCBvZiB0
-aGVzZSBraW5kcyBvZiBtZW1vcmllcyBjYW4gYmUgYWRkcmVzc2VkIGJ5IHRoZSBDUFUgYW5k
-IHNvIGFsc28NCj4gYnkgYSBidXMgbWFzdGVyLiAgVGhhdCBpcywgdGhlcmUgaXMgYSBwaHlz
-aWNhbCBhZGRyZXNzIHRoYXQgdGhlIENQVQ0KPiBjYW4gdXNlIHdoaWNoIHdpbGwgYWRkcmVz
-cyB0aGlzIG1lbW9yeSwgYW5kIHRoZXJlIGlzIGEgd2F5IHRvIGNvbnZlcnQNCj4gdGhhdCB0
-byBhIERNQSBhZGRyZXNzIHdoaWNoIGNhbiBiZSBwcm9ncmFtbWVkIGludG8gYW5vdGhlciBk
-ZXZpY2UuDQo+IFRoZXJlJ3Mgbm8gaW50ZW50IGhlcmUgdG8gc3VwcG9ydCBtZW1vcnkgd2hp
-Y2ggY2FuIGJlIGFjY2Vzc2VkIGJ5IGENCj4gY29tcGxleCBzY2hlbWUgbGlrZSB3cml0aW5n
-IGFuIGFkZHJlc3MgdG8gYSBjb250cm9sIHJlZ2lzdGVyIGFuZCB0aGVuDQo+IGFjY2Vzc2lu
-ZyB0aGUgbWVtb3J5IHRocm91Z2ggYSBGSUZPOyB0aGlzIGlzIGZvciBtZW1vcnkgd2hpY2gg
-Y2FuIGJlDQo+IGFjY2Vzc2VkIGJ5IERNQSBhbmQgQ1BVIGxvYWRzIGFuZCBzdG9yZXMuDQo+
-IA0KPiBGb3IgZ2V0X3VzZXJfcGFnZXMoKSBhbmQgZnJpZW5kcywgd2UgY3VycmVudGx5IGZp
-bGwgYW4gYXJyYXkgb2Ygc3RydWN0DQo+IHBhZ2VzLCBlYWNoIG9uZSByZXByZXNlbnRpbmcg
-UEFHRV9TSVpFIGJ5dGVzLiAgRm9yIGFuIGFwcGxpY2F0aW9uIHRoYXQNCj4gaXMgdXNpbmcg
-MUdCIGh1Z2VwYWdlcywgd3JpdGluZyAyXjE4IGVudHJpZXMgaXMgYSBzaWduaWZpY2FudCBv
-dmVyaGVhZC4NCj4gSXQgYWxzbyBtYWtlcyBkcml2ZXJzIGhhcmQgdG8gd3JpdGUgYXMgdGhl
-eSBoYXZlIHRvIHJlY29hbGVzY2UgdGhlDQo+IHN0cnVjdCBwYWdlcywgZXZlbiB0aG91Z2gg
-dGhlIFZNIGNhbiB0ZWxsIGl0IHdoZXRoZXIgdGhvc2UgMl4xOCBwYWdlcw0KPiBhcmUgY29u
-dGlndW91cy4NCj4gDQo+IE9uIHRoZSBtaW5vciBzaWRlLCBzdHJ1Y3QgcGh5ciBjYW4gcmVw
-cmVzZW50IGFueSBtYXBwYWJsZSBjaHVuayBvZiBtZW1vcnkuDQo+IEEgYmlvX3ZlYyBpcyBs
-aW1pdGVkIHRvIDJeMzIgYnl0ZXMsIHdoaWxlIG9uIDY0LWJpdCBtYWNoaW5lcyBhIHBoeXIN
-Cj4gY2FuIHJlcHJlc2VudCBsYXJnZXIgdGhhbiA0R0IuICBBIHBoeXIgaXMgdGhlIHNhbWUg
-c2l6ZSBhcyBhIGJpb192ZWMNCj4gb24gNjQgYml0ICgxNiBieXRlcyksIGFuZCB0aGUgc2Ft
-ZSBzaXplIGZvciAzMi1iaXQgd2l0aCBQQUUgKDEyIGJ5dGVzKS4NCj4gSXQgaXMgc21hbGxl
-ciBmb3IgMzItYml0IG1hY2hpbmVzIHdpdGhvdXQgUEFFICg4IGJ5dGVzIGluc3RlYWQgb2Yg
-MTIpLg0KPiANCj4gRmluYWxseSwgaXQgbWF5IGJlIHBvc3NpYmxlIHRvIHN0b3AgdXNpbmcg
-c2NhdHRlcmxpc3QgdG8gZGVzY3JpYmUgdGhlDQo+IGlucHV0IHRvIHRoZSBETUEtbWFwcGlu
-ZyBvcGVyYXRpb24uICBXZSBtYXkgYmUgYWJsZSB0byBnZXQgc3RydWN0DQo+IHNjYXR0ZXJs
-aXN0IGRvd24gdG8ganVzdCBkbWFfYWRkcmVzcyBhbmQgZG1hX2xlbmd0aCwgd2l0aCBjaGFp
-bmluZw0KPiBoYW5kbGVkIHRocm91Z2ggYW4gZW5jbG9zaW5nIHN0cnVjdC4NCj4gDQo+IEkg
-d291bGQgbGlrZSB0byBzZWUgcGh5ciByZXBsYWNlIGJpb192ZWMgZXZlcnl3aGVyZSBpdCdz
-IGN1cnJlbnRseSB1c2VkLg0KPiBJIGRvbid0IGhhdmUgdGltZSB0byBkbyB0aGF0IHdvcmsg
-bm93IGJlY2F1c2UgSSdtIGJ1c3kgd2l0aCBmb2xpb3MuDQo+IElmIHNvbWVvbmUgZWxzZSB3
-YW50cyB0byB0YWtlIHRoYXQgb24sIEkgc2hhbGwgY2hlZXIgZnJvbSB0aGUgc2lkZWxpbmVz
-Lg0KPiBXaGF0IEkgZG8gaW50ZW5kIHRvIGRvIGlzOg0KPiANCj4gICAtIEFkZCBhbiBpbnRl
-cmZhY2UgdG8gZ3VwLmMgdG8gcGluL3VucGluIE4gcGh5cnMNCj4gICAtIEFkZCBhIHNnX21h
-cF9waHlycygpDQo+ICAgICBUaGlzIHdpbGwgdGFrZSBhbiBhcnJheSBvZiBwaHlycyBhbmQg
-YWxsb2NhdGUgYW4gc2cgZm9yIHRoZW0NCj4gICAtIFdoYXRldmVyIGVsc2UgSSBuZWVkIHRv
-IGRvIHRvIG1ha2Ugb25lIFJETUEgZHJpdmVyIGhhcHB5IHdpdGgNCj4gICAgIHRoaXMgc2No
-ZW1lDQo+IA0KPiBBdCB0aGF0IHBvaW50LCBJIGludGVuZCB0byBzdG9wIGFuZCBsZXQgb3Ro
-ZXJzIG1vcmUgZmFtaWxpYXIgd2l0aCB0aGlzDQo+IGFyZWEgb2YgdGhlIGtlcm5lbCBjb250
-aW51ZSB0aGUgY29udmVyc2lvbiBvZiBkcml2ZXJzLg0KPiANCj4gUC5TLiBJZiB5b3UndmUg
-aGFkIHRoZSBQcm9kaWd5IHNvbmcgcnVubmluZyB0aHJvdWdoIHlvdXIgaGVhZCB0aGUgd2hv
-bGUNCj4gdGltZSB5b3UndmUgYmVlbiByZWFkaW5nIHRoaXMgZW1haWwgLi4uIEknbSBzb3Jy
-eSAvIFlvdSdyZSB3ZWxjb21lLg0KPiBJZiBwZW9wbGUgaW5zaXN0LCB3ZSBjYW4gcmVuYW1l
-IHRoaXMgdG8gcGh5c19yYW5nZSBvciBzb21ldGhpbmcgYm9yaW5nLA0KPiBidXQgSSBxdWl0
-ZSBsaWtlIHRoZSBzcGVsbGluZyBvZiBwaHlyIHdpdGggdGhlIHByb251bmNpYXRpb24gb2Yg
-ImZpcmUiLg0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2
-ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCk1heGZlbGRz
-dHIuIDUsIDkwNDA5IE7DvHJuYmVyZywgR2VybWFueQ0KKEhSQiAzNjgwOSwgQUcgTsO8cm5i
-ZXJnKQ0KR2VzY2jDpGZ0c2bDvGhyZXI6IEl2byBUb3Rldg0K
+Maybe it will help you, since it includes iblinkinfo and is in py3.
 
---------------FSfCP6lzbOH6mRnDQRWz0fCp--
+Best,
+  Jens
 
---------------TUMr3QAK8x0Ry03YInQSssDP
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmHdbJoFAwAAAAAACgkQlh/E3EQov+Ab
-pA//eKdztUrkpafjDVZN2ROygr3b8QCA5GvPP8rrhIDvxNRVIT0RoC1H1JN16SyfXJVuPq+wIQ4s
-iMN5Gr/FxyWZOKcn5QXxyUceQTIVIIFI8wooOzIueOqUmtf/P/LdPoyZDrDxVfhTbT3u3ZlpDSiV
-bNuV6HZhz224KNfBduGcj5kY2MNwFYoDJFrBCv5AYFsfVayRR0K0AAG1+41+e/B5tWNO1tr8pZyD
-wJfAntFrq/3vz/vmRt3vzMM8bisUaZfFfgEdWRlBgjduvhwvTUuiid85JF7YmLC4MCvewBiOkwN3
-2Ov+XSv01Y3SXoeKUDd6/S8UVJdXg2dyCRJftbaf+WJ5XPSXJ9r4pPb3tPTvIUWFFX7iY3Q3ap50
-qS/7bUoQ9Vyl1Krv1QMo5wmg7Jf4ie2yn9TN/Z4HSCpIxuDSs33cGH5vQfrVa33b1K+VHFSOnuh5
-wxqguP/iNDWs/9ryASOrg6jFLe/D3nX+RH4OOibqR10sNrU/UrFo5roqRHoKF6EevW/KVXitHZZT
-NR+pBzDiX8scl/Akzm1wrxre4RvTBOFpppI+ayaEbjMSEQ8OSOQEm7njmYp6ue699rNcqi2UWT8s
-M56FvFE4IbvlfmOGVvyJWA0G61Y2tDkAtJW3MDvyPZcvBSb1gHo7G8sJc9rRp/4fDisa5AHDF7/q
-ekc=
-=yG12
------END PGP SIGNATURE-----
-
---------------TUMr3QAK8x0Ry03YInQSssDP--
+On 1/5/22 19:32, Benjamin Drung wrote:
+> Hi,
+> 
+> we have an in-house Shell script that uses iblinkinfo to check if the
+> InfiniBand cabling is correct. This information can be derived from the
+> node names that can be seen for the HCA port. I want to improve that
+> check and rewrite it in Python, but I failed to find an easy and robust
+> way to retrieve the node names for a HCA port:
+> 
+> 1) Call "iblinkinfo --line" and parse the output. Parsing the output
+> could probably be done with a complex regular expression. This solution
+> is too ugly IMO.
+> 
+> 2) Extend iblinkinfo to provide a JSON output. Then let the Python
+> script call "iblinkinfo --json" and simply use json.load for parsing.
+> This solution requires some C coding and probably a good json library
+> should be used to avoid generating bogus JSON.
+> 
+> 3) Use https://github.com/jgunthorpe/python-rdma but this library has
+> not been touched for five years and needs porting to Python 3. So that
+> is probably a lot of work as well.
+> 
+> 4) Use pyverbs provided by rdma-core, but I found neither a single API
+> call to query similar data to iblinkinfo, nor an example for that use
+> case.
+> 
+> What should I do?
+> 
