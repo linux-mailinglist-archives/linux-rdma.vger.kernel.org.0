@@ -2,136 +2,239 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBAB48A8EB
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 08:52:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E70A648A933
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 09:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235924AbiAKHws (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jan 2022 02:52:48 -0500
-Received: from mail-dm3nam07on2059.outbound.protection.outlook.com ([40.107.95.59]:59719
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        id S1348841AbiAKIRW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jan 2022 03:17:22 -0500
+Received: from mail-dm6nam11on2085.outbound.protection.outlook.com ([40.107.223.85]:10081
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348727AbiAKHwr (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 11 Jan 2022 02:52:47 -0500
+        id S235106AbiAKIRV (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jan 2022 03:17:21 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MreSaTq0xo9UHv87v5f5L9nVl6kSV+9Ch7OyVEACaHPNm0jdThWwxm5cxM0wDgczGktijOgWDzpfG2NCW7JzMqCW4xSoV/B38hCUoDNSU83zMQWG3Z0bkzGqBSYpp3IRYaLLn9zRRF7NrqYs/VvR+O3vZQal125EyuPcMkBXU4CbhDoGBKnzU70eYZgWTfAqvF5/P8Xb1N4xpu5qxM0nZb1gyEqusnHstvQfwyoMCzaP+tn1yNdykndoCD0jVUJK4Lfp3VLrz27mpgU/AjK8Osq429B6Cw+6SIOSZyi1PsPm34kq9wfCU4xbETOLIwdeozlbsh7sAoGYDdTZK57dhw==
+ b=RWlnJ/4Gn0EDXlYuw5mnbnOEeKf0KiHC6XmWAA7y2/OWimPHWJQd+BtL2rdtXJJ37Xh6gbW11Q3adFm8Lxl6aLjlOYBppxnyL0VvXKYGJdUXwStCvHjDwo0DEq8c3qcFro+7X67wFnkoZESwQ4/7VKZP89agSdAXB/GxcY29pAvOEd4ZwilyoKlLqiDyuJJ1xvB9lB9XW5CsQcquGXIrQ5GBSU5M4tKaM2HPy3LCzjIUZvb7jZEF9W0MvK5VM30KQphAGI/4ntU/yMhQis4qs7iVcRnyDSfk2ZSBDbc66uoQiQsfjQ9Ugar47HNuFHO2JfsjaD9O3J+DBm9N1+L+iQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EK/SoxBY0vikqNdQUzdxBBNkLHH1vFiAC8Em8ZMC4Us=;
- b=iLuk3oz8AYW5ML4Mnt27KL6NjHd8FzU/37XJxEHVveUeY0PsWdItsIQDyzI7mJA11cWupZl+zdSQ0jFGPSEOH4Qpu033BgWmJ+oEYuJzqexr+vYc86TzTsW97FXHTLN9WcDr8qE7bq1JOv/BpCXM+1N4xQfA9xDKx+s+iuSq0sIbyYry4AWFFXNwFBnjtBcjlXx0XqWif22Nl5qsr6oKNLK8+Nzsjra+LXo6CpYRXIaNXzqZsG7P07SobR1hFqrw29e+jb+qa2xmqpgh9+IK3GEdWWxzOlHAgYWmo6zMj0br3ZKt+2g9TIBg3Yz3ggttHDwp7Bq9W+s142Vg6WNekw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.234) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
+ bh=/9fU9A0Nf66xZwOS+XOjwQYV5e2Qb1M31TEJ/WEqZ8M=;
+ b=Qv7j4ec8RQZ1cVy0kLXXyn2pryAF/DRZLtKOykLa3DEIRb9Vh6TlD5Xufn22AyMrjtSiiyTqMzvaw2UQG5PlDQRArA1rRzE8eUYik9tJuhg9z6hXJiINZmPYi5HUnfaCl3Y1SIaNtsSSerLwQ8RNDGEAB4iUy4F4aBy7wFhvULcXOu6hbYrxjcLOwFol0Adp1YyTJrGm3pPn99gws3rlU3bWCNqiMmwExcZ/KMDWMZ6YfUwBjzvrHcZIYZM/jnmt+XO3sYBAaDbKC+BaiIEb9Now2wvzErpQ3dLqp9TXj8BWqMEfrA4XT5OhLHE4Ek2itkzYw1v1W3HtCla4VoiGNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EK/SoxBY0vikqNdQUzdxBBNkLHH1vFiAC8Em8ZMC4Us=;
- b=XxbKfMraQdvTQB3hQYdj8XHoNBSGklrFDb/V+Cx8bX1XNJKTVlyZ/fsv3xPqxlzgOgLd8j12HugpeWzDmzoLXm983SOxnD/HsrQ0vUfOko2NT+XDQpN564n+VLnkLhEUxFl9BbuohXYWeNlH7htj1kkBaHUh+W2SyGb/LFwHWEAiV07YQRdjRjP1SYpB1713KuP+gOPuWkzLjBQGVHqur/UhWx6CC0GAEh5Ahkcqi7C4qLCUcCrs71I/QH14zfglg/g1nEqI0tTky28o38CUfqDQD4nrf4WvBYH7HPTDsfzGHlK5lES7Tcu3HZdNz0Jz0MT3Tke1tRqYJ54ylBqJOw==
-Received: from DM5PR1101CA0013.namprd11.prod.outlook.com (2603:10b6:4:4c::23)
- by BN8PR12MB3394.namprd12.prod.outlook.com (2603:10b6:408:49::24) with
+ bh=/9fU9A0Nf66xZwOS+XOjwQYV5e2Qb1M31TEJ/WEqZ8M=;
+ b=NKqbm0tm8d7L/4apjEVkTa+jrKDQ4B3QcqJzYi7lc1BGfHiIR5g8aXkRko/v0w9GNvi9Z5rmaYDjJNfskFDcXHoEXiZ+8HZPseismLFPZEo/JVTuf78rLsBKqVwfZzR1z11cQ9T4VdznwA6he9utnSnt8XoKiGJRDwYmlXGNFbnVWGI/zSk5bB6vLs6/FAsKJrFCyc7P03HmFre59ML4r5OL6OncyPY9QWdO1Y2KrrYmkxoEBb7x++1QLEfdNLZWmCrYCf9O2esHVXYuLs6xFFPsV3KYMMjtVZFENTe/Qh5ZVig7r9kAmN7zEv2S3wGyhb6ZnvsWf9wIGl+cv5OY8A==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com (2603:10b6:a03:20b::16)
+ by BY5PR12MB4305.namprd12.prod.outlook.com (2603:10b6:a03:213::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9; Tue, 11 Jan
- 2022 07:52:46 +0000
-Received: from DM6NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:4c:cafe::c5) by DM5PR1101CA0013.outlook.office365.com
- (2603:10b6:4:4c::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.9 via Frontend
- Transport; Tue, 11 Jan 2022 07:52:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.234; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (12.22.5.234) by
- DM6NAM11FT068.mail.protection.outlook.com (10.13.173.67) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4867.9 via Frontend Transport; Tue, 11 Jan 2022 07:52:45 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL101.nvidia.com
- (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 11 Jan
- 2022 07:52:45 +0000
-Received: from [172.27.14.142] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.9; Mon, 10 Jan 2022
- 23:52:42 -0800
-Message-ID: <5f273a18-ab25-08d8-fc40-3934b5b3da16@nvidia.com>
-Date:   Tue, 11 Jan 2022 09:52:39 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4867.7; Tue, 11 Jan
+ 2022 08:17:19 +0000
+Received: from BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::8496:16fd:65c5:4af7]) by BY5PR12MB4130.namprd12.prod.outlook.com
+ ([fe80::8496:16fd:65c5:4af7%4]) with mapi id 15.20.4867.012; Tue, 11 Jan 2022
+ 08:17:19 +0000
+Message-ID: <82989486-3780-f0aa-c13d-994e97d4ac89@nvidia.com>
+Date:   Tue, 11 Jan 2022 00:17:18 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.4.1
-Subject: Re: [PATCH rdma-core 0/3] Add NDR support
+Subject: Re: Phyr Starter
 Content-Language: en-US
-To:     <linux-rdma@vger.kernel.org>
-CC:     <jgg@nvidia.com>, <maorg@nvidia.com>, <msanalla@nvidia.com>,
-        <edwards@nvidia.com>
-References: <20211229085502.167651-1-yishaih@nvidia.com>
-From:   Yishai Hadas <yishaih@nvidia.com>
-In-Reply-To: <20211229085502.167651-1-yishaih@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>, Jason Gunthorpe <jgg@nvidia.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        linux-rdma@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        nvdimm@lists.linux.dev
+References: <YdyKWeU0HTv8m7wD@casper.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <YdyKWeU0HTv8m7wD@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: SJ0PR03CA0363.namprd03.prod.outlook.com
+ (2603:10b6:a03:3a1::8) To BY5PR12MB4130.namprd12.prod.outlook.com
+ (2603:10b6:a03:20b::16)
+MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 12f8383a-f962-4548-422b-08d9d4d75b0d
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3394:EE_
-X-Microsoft-Antispam-PRVS: <BN8PR12MB33944F908E7C3656E77E6470C3519@BN8PR12MB3394.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Office365-Filtering-Correlation-Id: 55c7d45c-8bfa-4041-58e5-08d9d4dac969
+X-MS-TrafficTypeDiagnostic: BY5PR12MB4305:EE_
+X-Microsoft-Antispam-PRVS: <BY5PR12MB43053DE6E2B38BA4D290956DA8519@BY5PR12MB4305.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cZnGEp/ULUtcheZG/cHCH+Nbdjec2Qb94Ugfr0oJRZ3MP8sFX5B/uGx2xkRaz45VQ+IM/uq6GEPaYfFdEzqqvVdUHPjwss0uomGz0MDAd/1KpBdqvxsvP0nh6YdG5i62ZrX6uBrO8Lf1UGkecLjemqlFKvw4UhdeQhm59932k8tcao2YuJhVM5dYpAkNJKwfV1KUdkcyAQZcdRWtMRrCCNnSoKXG/JYjfruEudBK2WE3mnu1EnfFg1wWwLvWPfzy5I1b23bXEVmkde84cQoqY9w5lhyCwu2Ihf587xpGHhFXHj55wU2FWZv+M0xVib0bpo8j7sohYDYNX1nhLp77dPOtRg2fcuhT1KKnFpuI+VTv8Q6lxwaTa3kSU9CjpF2Cy/MT3tN7vG4JavdKaHg/JCNKlZc+YDRv6JdBYGZ9YuwPYquFaxz4AA+ZRzqa9/9tq461Ft9+jhmV0s61nejHkc9XtfWF8OBErI/RSQgs8o++Udco4fjd2YTFU2qV51drDM6YA18lceQ4iytGi1Crk3jibipc8B7lIhY4vNCUHIzMhatgRm/2l6PXlw8uen6RtScJck4z+Wem1QeiQdS5fsYYwA2La71yNFkMY8s8y+/7Yc5Br4VvGsCSPsNkq7P5ItOA3MyAwttzUk+SieEJpbvz8ldWFqShII/oiUfseI4oc2HTintKN716Z3M+qHxnxGl02Tv/0osWTTUIDstFnhMC/TfIyRbeQtIMKe2IWsN+rgXRLlPy4+OQs4RCTkUk3xNrafWRPuvrAhQDEwtRd5FAT+sQCeqaY0JVPTEYwJgmQ7dr5tRErLL8LKsC1kskt2WvC0Q4X3d1vNvDuM8jGrD10vC6u8viyUg8G1eApsp8Rq+i8aqZ7yHIpng44YwPxYk49XBrlmgD+3RIClLkMi/Qb5qUOJT7FNc9rd32kko=
-X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(4636009)(36840700001)(40470700002)(46966006)(53546011)(36756003)(8676002)(83380400001)(26005)(47076005)(8936002)(54906003)(107886003)(4326008)(31696002)(508600001)(2906002)(82310400004)(6666004)(5660300002)(31686004)(966005)(16526019)(2616005)(336012)(86362001)(70586007)(16576012)(70206006)(6916009)(426003)(36860700001)(316002)(356005)(19627235002)(40460700001)(186003)(81166007)(43740500002)(36900700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 60CH+Hyoaml9QFV4YmihFyCKZxxTa4mYnOtQcVBDSO5XQ95vjQrWPkhBHb/iLQMd+CtPxScY3B+jO15MDety8r8VkECyROLve66OkhLfNYQkV6Jl82YVM6XOCCPDjbqzgtye7/UIftMhmDZ/eh/6Mz2+hZMWAj6TcgoZ7/s8MG9lL5dhiuHJph488Kqh87Q5dB39MybOuf82nUWgkZAcH3OSG6XpCquLDdsRZyHlRT3r92o/enkZ9m5D3M2APUoQ9RjN3YO+jUexPDmmPPQZa5NEn7fLmkcDI/tMLpSwJq2hEIQX8VNwvr9VPMZgogldMyexdVIBRs/P9x5qAvTFmuEMtbCXamXHF3yCnzyGOmctUnwro4LXxvyg0BrYVGTDFkTMXJz/AG8EXJOvFsddFU7bYemD5AlvbifbDBj+uaFSBJqOEt9Xrbz7WsQce34Byj5Q5V8C9rRhMKPnFzyorNH50Dk0VolSh1ptS+R8nO+P1deG9RrmrMkmn6n5BA5RkC4ZYnikmLac+T6EeUANOUL1iY+F3S2Kba1XnPXUhJlc2fIDSKsz5QmOMvrDk3TazVfO04aivvRowmqY4jeJqOxWWjyJi8hcHyEaJwCVeh0U1LOwzBe69Wl2V5Q6kQ39IMoj8cY8ncoClVYjaiN94W2mvXM5YyXo4XiH38EOvYizT+hyk3q5bB+MzxDD3CbEjwoNJ+4EmpbkC68p4kF5gTIzvpg0InLAibJwkoluKW3J2FYeCPS6AnRvyepGGXOq
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4130.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(2616005)(83380400001)(66556008)(66476007)(66946007)(5660300002)(8936002)(26005)(316002)(508600001)(86362001)(8676002)(36756003)(7416002)(38100700002)(31686004)(7116003)(186003)(6512007)(54906003)(4326008)(6486002)(3480700007)(31696002)(2906002)(6506007)(53546011)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R1pCdjd0QnIyNUlLekNtbkJGU0F4MXp0VFB0dFhLMk5tTjA0K050Mm1Fb214?=
+ =?utf-8?B?MEVvZFZ2Mk0vQUt0QW9jUFlQV2I3ZW5VSlFmeldxUW9ObklGd2c0NUJiblNQ?=
+ =?utf-8?B?ZHJ0VU4xLzJFNlVSS0llTlNtSWdycW03VEVwVDF1MmVkcUNBUzkrOTg1NldF?=
+ =?utf-8?B?S3NNanRFNGRlOWVYcHZJaXF4TlFoY0ZWK1pwa0JxakZlam5xckVKVXhQK1R1?=
+ =?utf-8?B?NlR5MllLaHdjSTQ5YmFvVm80MkpxQ1J2VlJRNEJKNEVwbWFWc1hNNDQxVlFp?=
+ =?utf-8?B?MUpnVVROTU12bXIwU3ZmclZHbnNOWlJHTTNOWStOdE5MWnpNYTRUb2Zmd0ho?=
+ =?utf-8?B?WEhhMWZRTmJleU9OMXMxTVFSUUtVREg4cDBWbzhqWk9TaVVDTmREWFMvZDFz?=
+ =?utf-8?B?SDRyRWFlVGRFMXBscDBMVW11N0RyTk51VnRXajVRUUQrZGw4RC9GUGUyTDVD?=
+ =?utf-8?B?V1pyckVrQncxR1BlbFN0WGEyN3FUM01YZERJaitYamZ0cmNKTlNWWTJLcHFu?=
+ =?utf-8?B?eWUvZmN4NU53d0Y4Q25ZQXZwb0loVEVRb1ZZNGdOKy9QWHVReW92RUhYUTdZ?=
+ =?utf-8?B?bFc2OHV4Q0M5a29SM0JzQkNzL3k3b0N4QlNkR1VLa0ZsY0dzR01BcjN3STJq?=
+ =?utf-8?B?djRsNU82RUg4cGJuVEw0VDgrUkc5cktLYXNvTmNzOXpRelpZSE5hYVZTUlNV?=
+ =?utf-8?B?SzhHZC9rK0dldVlab2NXdnFNNUM4Yi9uVlNLQVNLU0ozRWo0Ri91T09od1VF?=
+ =?utf-8?B?bWszemVmZjlIdlVSU0NDblRYYVdoK0hCekcydXRKS2E3WnFZd2drTkh5S2sr?=
+ =?utf-8?B?YVB0ajA1VnB5aE82YXM5QmV1V3owODExTWVoWUFILzVxUzErdnQzRjJSNUtY?=
+ =?utf-8?B?OGJjQTcxTkluai9NSCtOWVU4Y1JFT2hwZitOY0M3YnhoTTNVRndVSmpJVUE3?=
+ =?utf-8?B?RVkyNWRGK0VONG9vOUJ5eFNPR1ZlREUzUUFvYTBxQzdXQlNEVTMzQ2ZNaFp2?=
+ =?utf-8?B?LzVzVTlESnZlVk50N0o0Qm9PQWZ2UldpUm5BcEVLeHNRRkcycFA5dHZJRUZX?=
+ =?utf-8?B?UGNScU91SFVLVkliQmE4UysxeXV2cHovMGFPcnoyelFncTk0bGt2U2Z5WmhS?=
+ =?utf-8?B?YnN3dWdUQm1sdzhraEJZT0UxdTViRFBRMXBhR2ZyZEJyMUI2UWNnWVRHRDIr?=
+ =?utf-8?B?TW02MUVvT2g4Q0U5cEJWcmxlYThvTzdLSjVBdjhSZmJJZlpvNG90QWdNMkpq?=
+ =?utf-8?B?RE01NnhLais5ZVp6RXNYYXlGTVQyZEZqVVBoUEpicTg2WnlLbW9ySFN6a1Z4?=
+ =?utf-8?B?UWJoQ3VVYjUxSmlnZmpjV0JUL3AvbVBLRmppU0VrZmZQQ2k1K3hHV2tOR3Bt?=
+ =?utf-8?B?NUlXYi8wWGVxZlEyMS9abHZJdzY1T3RyeWcvdituQnRhVGxkazV3Q1dsVFFr?=
+ =?utf-8?B?MVRNU0UyaFpqbmFuZWRJWXh1NnBlRWJsL05lZjh6M1VmV3d3TXN5eVhXNFRH?=
+ =?utf-8?B?ZWdMa0k0UDBZQ1JXSGVlSDlwQ3BWR05kbHM1YjVPVWRUT1VNR2R2WDRzQnkr?=
+ =?utf-8?B?TDBJWjQ1UHlxRHdMdmN5TUZtZUtkeEVGZlZhZFpWTVJreis2S2ZLYWxQM1ZW?=
+ =?utf-8?B?c0sxNGdDWHpVdVdEazRZN3ZMbDE1Zm1TSTBqNXk4ME5veWkyNnBkYjJyNWpt?=
+ =?utf-8?B?VnA0dm5NR0ZsQnJ4SVZDUFJ1UHNTV3R5MG9sMXBpRWorVUlLU2ZHUEJyaWY0?=
+ =?utf-8?B?eEI5ekZSS0Q5YjZVcUFGblRLekVUQmd3Um1tVnVkR1RrSkVyZDlobzkzT2pC?=
+ =?utf-8?B?QVJieFBCc0t0TDVkeFNXNDJ6YkF3VWlGSVBwUUtTdTlOS0R0YllVTVA5YmFZ?=
+ =?utf-8?B?TWNGckF4aG56Vk5BdmxXelRlTGpGdmx1d3VXdzJtYTBONVR1MFlma0IwandK?=
+ =?utf-8?B?Z21EaXpmYTRmaW52dkFIVnU5Y212OHBZdVNkREJpWTNTTERLK2N3WkhtUVor?=
+ =?utf-8?B?bHpWaGI2WVpFRFdPWGdlRE9HUm1ZU3JDZVp1dzdiazlqWWRPVkF3Smg4dVlV?=
+ =?utf-8?B?NTlLUktxNmhTQXhPZFBRMGFOcitxZmo1bGpWalBCSEJvMEtTSjV5RHpSVDFY?=
+ =?utf-8?B?VENJZzBVejVodU5Fblk4ZGdHcmpodWVhNmVhOXpCMEdKUU9id0V4a20xT0lR?=
+ =?utf-8?Q?ruvCMzeGk6Qn28hHuV327Rc=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2022 07:52:45.9038
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55c7d45c-8bfa-4041-58e5-08d9d4dac969
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4130.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jan 2022 08:17:19.7969
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 12f8383a-f962-4548-422b-08d9d4d75b0d
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3394
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XDZFBaelhXR0sHmbFzkatZoIRfhVh+QzK35+mDTszAvZM+GIOV5SUIN3IVN3Q+yzEIfEAk1mktniUBKcBEN6OQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4305
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 12/29/2021 10:54 AM, Yishai Hadas wrote:
-> This series extends verbs and diags to include the NDR support.
->
-> It includes the NDR support bit from PortInfo.CapabilityMask2 and the new rates
-> as were defined in IB Spec Release 1.5.
->
-> The matching utilities inside verbs to print and convert to/from the new rates
-> were updated as well.
->
-> In addition, the series includes some pyverbs extension to support the new NDR
-> definitions.
->
-> PR was sent:
-> https://github.com/linux-rdma/rdma-core/pull/1114
->
-> Yishai
->
-> Edward Srouji (1):
->    pyverbs: Extend support of NDR rates
->
-> Maher Sanalla (2):
->    verbs: Extend support of NDR rates
->    ibdiags: Extend support of NDR rates
->
->   infiniband-diags/ibportstate.c | 8 +++++++-
->   libibmad/iba_types.h           | 3 +++
->   libibverbs/examples/devinfo.c  | 1 +
->   libibverbs/verbs.c             | 8 ++++++++
->   libibverbs/verbs.h             | 3 +++
->   pyverbs/device.pyx             | 3 ++-
->   pyverbs/libibverbs_enums.pxd   | 1 +
->   7 files changed, 25 insertions(+), 2 deletions(-)
->
-The series was merged.
+On 1/10/22 11:34, Matthew Wilcox wrote:
+> TLDR: I want to introduce a new data type:
+> 
+> struct phyr {
+>          phys_addr_t addr;
+>          size_t len;
+> };
+> 
+> and use it to replace bio_vec as well as using it to replace the array
+> of struct pages used by get_user_pages() and friends.
+> 
+> ---
 
-Yishai
+This would certainly solve quite a few problems at once. Very compelling.
 
+Zooming in on the pinning aspect for a moment: last time I attempted to
+convert O_DIRECT callers from gup to pup, I recall wanting very much to
+record, in each bio_vec, whether these pages were acquired via FOLL_PIN,
+or some non-FOLL_PIN method. Because at the end of the IO, it is not
+easy to disentangle which pages require put_page() and which require
+unpin_user_page*().
+
+And changing the bio_vec for *that* purpose was not really acceptable.
+
+But now that you're looking to change it in a big way (and with some
+spare bits avaiable...oohh!), maybe I can go that direction after all.
+
+Or, are you looking at a design in which any phyr is implicitly FOLL_PIN'd
+if it exists at all?
+
+Or any other thoughts in this area are very welcome.
+
+> 
+> There are two distinct problems I want to address: doing I/O to memory
+> which does not have a struct page and efficiently doing I/O to large
+> blobs of physically contiguous memory, regardless of whether it has a
+> struct page.  There are some other improvements which I regard as minor.
+> 
+> There are many types of memory that one might want to do I/O to that do
+> not have a struct page, some examples:
+>   - Memory on a graphics card (or other PCI card, but gfx seems to be
+>     the primary provider of DRAM on the PCI bus today)
+>   - DAX, or other pmem (there are some fake pages today, but this is
+>     mostly a workaround for the IO problem today)
+>   - Guest memory being accessed from the hypervisor (KVM needs to
+>     create structpages to make this happen.  Xen doesn't ...)
+> All of these kinds of memories can be addressed by the CPU and so also
+> by a bus master.  That is, there is a physical address that the CPU
+> can use which will address this memory, and there is a way to convert
+> that to a DMA address which can be programmed into another device.
+> There's no intent here to support memory which can be accessed by a
+> complex scheme like writing an address to a control register and then
+> accessing the memory through a FIFO; this is for memory which can be
+> accessed by DMA and CPU loads and stores.
+> 
+> For get_user_pages() and friends, we currently fill an array of struct
+> pages, each one representing PAGE_SIZE bytes.  For an application that
+> is using 1GB hugepages, writing 2^18 entries is a significant overhead.
+> It also makes drivers hard to write as they have to recoalesce the
+> struct pages, even though the VM can tell it whether those 2^18 pages
+> are contiguous.
+> 
+> On the minor side, struct phyr can represent any mappable chunk of memory.
+> A bio_vec is limited to 2^32 bytes, while on 64-bit machines a phyr
+> can represent larger than 4GB.  A phyr is the same size as a bio_vec
+> on 64 bit (16 bytes), and the same size for 32-bit with PAE (12 bytes).
+> It is smaller for 32-bit machines without PAE (8 bytes instead of 12).
+> 
+> Finally, it may be possible to stop using scatterlist to describe the
+> input to the DMA-mapping operation.  We may be able to get struct
+> scatterlist down to just dma_address and dma_length, with chaining
+> handled through an enclosing struct.
+> 
+> I would like to see phyr replace bio_vec everywhere it's currently used.
+> I don't have time to do that work now because I'm busy with folios.
+> If someone else wants to take that on, I shall cheer from the sidelines.
+
+I'm starting to wonder if I should jump in here, in order to get this
+as a way to make the O_DIRECT conversion much cleaner. But let's see.
+
+> What I do intend to do is:
+> 
+>   - Add an interface to gup.c to pin/unpin N phyrs
+>   - Add a sg_map_phyrs()
+>     This will take an array of phyrs and allocate an sg for them
+>   - Whatever else I need to do to make one RDMA driver happy with
+>     this scheme
+> 
+> At that point, I intend to stop and let others more familiar with this
+> area of the kernel continue the conversion of drivers.
+> 
+> P.S. If you've had the Prodigy song running through your head the whole
+> time you've been reading this email ... I'm sorry / You're welcome.
+> If people insist, we can rename this to phys_range or something boring,
+> but I quite like the spelling of phyr with the pronunciation of "fire".
+
+A more conservative or traditional name might look like:
+
+     phys_vec (maintains some resemblance to what it's replacing)
+     phys_range
+     phys_addr_range
+
+phyr is rather cool, but it also is awfully too close to "phys" for
+reading comfort. And there is a lot to be said for self-descriptive names,
+which phyr is not.
+
+And of course, you're signing for another huge naming debate with Linus
+if you go with the "cool" name here. :)
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
