@@ -2,141 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92BA648AF2B
-	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 15:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC87848AFCA
+	for <lists+linux-rdma@lfdr.de>; Tue, 11 Jan 2022 15:42:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241036AbiAKOKD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 11 Jan 2022 09:10:03 -0500
-Received: from smtp-out2.suse.de ([195.135.220.29]:45176 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241015AbiAKOKC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 11 Jan 2022 09:10:02 -0500
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 31FC51F37C;
-        Tue, 11 Jan 2022 14:10:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1641910201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S242459AbiAKOmd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 11 Jan 2022 09:42:33 -0500
+Received: from out0.migadu.com ([94.23.1.103]:11073 "EHLO out0.migadu.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242427AbiAKOmc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 11 Jan 2022 09:42:32 -0500
+Message-ID: <9e75da26-1339-36d4-1e30-83046b53e138@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1641912143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pEheax8cHUq+PpKPjpFMPLC2jVHfLP6R8ECbdm/214w=;
-        b=UusrhdrMkYLh5FAMpnWON1J/QUQoekCssXJOgQ1pmfsgXGaERozSRaR79VcuR3ZzgRcSRt
-        L9W4G4K4xRaJ07MmCPUhdtXFYQzt9drKAqXbeAK4XxLI/3VjiqDbGsf5mknLg3/38HtZpe
-        Xx0/8fk8uGRmu1Hn726DyKbvybNWoLY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1641910201;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pEheax8cHUq+PpKPjpFMPLC2jVHfLP6R8ECbdm/214w=;
-        b=/p5XzLUxq7TMaydSPAajIcMkJU1LSeopPXWpqtFQEb0vPananL6OSrSLYQAavBlPrcCbkA
-        f+w5BNrVySfbanCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD8D713AB2;
-        Tue, 11 Jan 2022 14:10:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id I3reNLiP3WH9XgAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Tue, 11 Jan 2022 14:10:00 +0000
-Message-ID: <9486843d-bbef-f7e0-354c-2522ea3f896f@suse.de>
-Date:   Tue, 11 Jan 2022 15:10:00 +0100
+        bh=L9nq/yyQ+7hnMK8LGvU02G0WvU78Pv+znnsJIno5jM8=;
+        b=EGm4c+4f9dpHStKH3Uf5Y+wtctYh08FotNWKckDNtNu0teBebhQdPimCWUY32tFBj0JaDX
+        /BBCYObSn8tHEAXt3vvAyfzvjO/DbZ6y+WJAaVrc9vVVRSCmD+othzgzutkr8Da5T1h/tK
+        PI3g7u6soXf3bo5Dy68tORPmLqW1bJE=
+Date:   Tue, 11 Jan 2022 22:42:12 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.4.1
-Subject: Re: Phyr Starter
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     nvdimm@lists.linux.dev, linux-rdma@vger.kernel.org,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Ming Lei <ming.lei@redhat.com>, linux-block@vger.kernel.org,
-        linux-mm@kvack.org, Jason Gunthorpe <jgg@nvidia.com>,
-        netdev@vger.kernel.org, Joao Martins <joao.m.martins@oracle.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Christoph Hellwig <hch@lst.de>
-References: <YdyKWeU0HTv8m7wD@casper.infradead.org>
- <f7bd672f-dfa8-93fa-e101-e57b90faeb1e@suse.de>
- <Yd2MeMT6LXWxJIDd@casper.infradead.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <Yd2MeMT6LXWxJIDd@casper.infradead.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------q4YJa809K6MbWZkHsDkLnQxU"
+Subject: Re: [PATCH] RDMA/rxe: Check the last packet by RXE_END_MASK
+To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "david.marchand@6wind.com" <david.marchand@6wind.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
+References: <20211229034438.1854908-1-yangx.jy@fujitsu.com>
+ <20220106004005.GA2913243@nvidia.com>
+ <2e708b1d-10d3-51ba-5da9-b05121e2cd89@linux.dev>
+ <61DBC15E.5000402@fujitsu.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <61DBC15E.5000402@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------q4YJa809K6MbWZkHsDkLnQxU
-Content-Type: multipart/mixed; boundary="------------JQ28srt10RofHn0a758GsGXI";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: nvdimm@lists.linux.dev, linux-rdma@vger.kernel.org,
- John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Ming Lei <ming.lei@redhat.com>,
- linux-block@vger.kernel.org, linux-mm@kvack.org,
- Jason Gunthorpe <jgg@nvidia.com>, netdev@vger.kernel.org,
- Joao Martins <joao.m.martins@oracle.com>,
- Logan Gunthorpe <logang@deltatee.com>, Christoph Hellwig <hch@lst.de>
-Message-ID: <9486843d-bbef-f7e0-354c-2522ea3f896f@suse.de>
-Subject: Re: Phyr Starter
-References: <YdyKWeU0HTv8m7wD@casper.infradead.org>
- <f7bd672f-dfa8-93fa-e101-e57b90faeb1e@suse.de>
- <Yd2MeMT6LXWxJIDd@casper.infradead.org>
-In-Reply-To: <Yd2MeMT6LXWxJIDd@casper.infradead.org>
 
---------------JQ28srt10RofHn0a758GsGXI
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+在 2022/1/10 13:17, yangx.jy@fujitsu.com 写道:
+> On 2022/1/7 19:49, Yanjun Zhu wrote:
+>> It seems that it does not mean to check the last packet. It means that
+>> it receives a MSN response.
+> Hi Yanjun,
+>
+> Checking the last packet is a way to indicate that responder has
+> completed an entire request(including multiple packets) and then
+> increases a msn.
 
-SGkNCg0KQW0gMTEuMDEuMjIgdW0gMTQ6NTYgc2NocmllYiBNYXR0aGV3IFdpbGNveDoNCj4g
-T24gVHVlLCBKYW4gMTEsIDIwMjIgYXQgMTI6NDA6MTBQTSArMDEwMCwgVGhvbWFzIFppbW1l
-cm1hbm4gd3JvdGU6DQo+PiBIaQ0KPj4NCj4+IEFtIDEwLjAxLjIyIHVtIDIwOjM0IHNjaHJp
-ZWIgTWF0dGhldyBXaWxjb3g6DQo+Pj4gVExEUjogSSB3YW50IHRvIGludHJvZHVjZSBhIG5l
-dyBkYXRhIHR5cGU6DQo+Pj4NCj4+PiBzdHJ1Y3QgcGh5ciB7DQo+Pj4gICAgICAgICAgIHBo
-eXNfYWRkcl90IGFkZHI7DQo+Pj4gICAgICAgICAgIHNpemVfdCBsZW47DQo+Pj4gfTsNCj4+
-DQo+PiBEaWQgeW91IGxvb2sgYXQgc3RydWN0IGRtYV9idWZfbWFwPyBbMV0NCj4gDQo+IFRo
-YW5rcy4gIEkgd2Fzbid0IGF3YXJlIG9mIHRoYXQuICBJdCBkb2Vzbid0IHNlZW0gdG8gYWN0
-dWFsbHkgc29sdmUgdGhlDQo+IHByb2JsZW0sIGluIHRoYXQgaXQgZG9lc24ndCBjYXJyeSBh
-bnkgbGVuZ3RoIGluZm9ybWF0aW9uLiAgRGlkIHlvdSBtZWFuDQo+IHRvIHBvaW50IG1lIGF0
-IGEgZGlmZmVyZW50IHN0cnVjdHVyZT8NCj4gDQoNCkl0J3MgdGhlIHN0cnVjdHVyZSBJIG1l
-YW50LiBJdCByZWZlcnMgdG8gYSBidWZmZXIsIHNvIHRoZSBsZW5ndGggY291bGQgDQpiZSBh
-ZGRlZC4gRm9yIHNvbWV0aGluZyBtb3JlIHNvcGhpc3RpY2F0ZWQsIGRtYV9idWZfbWFwIGNv
-dWxkIGJlIGNoYW5nZWQgDQp0byBkaXN0aW5ndWlzaCBiZXR3ZWVuIHRoZSBidWZmZXIgYW5k
-IGFuIGl0ZXJhdG9yIHBvaW50aW5nIGludG8gdGhlIGJ1ZmZlci4NCg0KQnV0IGlmIGl0J3Mg
-cmVhbGx5IGRpZmZlcmVudCwgdGhlbiBzbyBiZSBpdC4NCg0KQmVzdCByZWdhcmRzDQpUaG9t
-YXMNCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Bl
-cg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpNYXhmZWxkc3RyLiA1
-LCA5MDQwOSBOw7xybmJlcmcsIEdlcm1hbnkNCihIUkIgMzY4MDksIEFHIE7DvHJuYmVyZykN
-Ckdlc2Now6RmdHNmw7xocmVyOiBJdm8gVG90ZXYNCg==
+Hi, Xiao
 
---------------JQ28srt10RofHn0a758GsGXI--
+What does the msn mean?
 
---------------q4YJa809K6MbWZkHsDkLnQxU
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Thanks a lot.
 
------BEGIN PGP SIGNATURE-----
+Zhu Yanjun
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmHdj7gFAwAAAAAACgkQlh/E3EQov+BS
-lRAAz+DTGAOsJc2UgiW04AClMKGGbLV3LKjkDNZAa+Hc0xHE/ZEHF83nn9E+5pRFGz+Cfo+CI9Q3
-tQc0EWE5IAMeyE+L/LsllOmSyhtSIyaAfYdrW2zTAuDRoSBZ8pCpO4lQwzmkXZ74LEUya5qbBPs/
-Py7h077aQI470Yz4IMEpoq+dISWarWoo9XdD7VniouUdWs60YdfGG4Bd9w0AiV1kUC+DMkIZzj1o
-qUjZ2R2KvvtSt0a/e52re1sTDbNTYTXYdcIiE3i2komeCBz6uH/pBxbOXdKlThAz2MOcC9PvyN9n
-hqNAcSk0m0RPmNI1cm/EiDsb+YJeGBZ/zschwco30nJZ2pE66Ri/b//qf1zCg4l1e8Tx+Py7j3fR
-a0opO6MHLSdxa1kodAEwrEhIrzEAyJPqN0tfBFA2h58Kq+vA0l0NwUGTy+tLPt1Po72XINe8Ohxj
-OOfFwE1vJbyshQ+YeUtxiJLHvOkyAb3hqjSC8o8rV/CgzheVg9tGHrGfodzOcItHoJ3iyc2zot4E
-Qi+zISV4nx2wPLPSjKlpMcbUx0BUeH0rLiOVdruQgLH/Ap63tmx/Ce3XXf+2qpH//vPvCZb22asY
-u2S5nzcMTO3X82nqaGF4PMhh5JYvpA9eQ1zoMHZv0l9PPxxC11431rRgJOwuKb0fgoKPuooRmj4r
-eoQ=
-=vOo8
------END PGP SIGNATURE-----
-
---------------q4YJa809K6MbWZkHsDkLnQxU--
+>
+> Best Regards,
+> Xiao Yang
