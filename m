@@ -2,403 +2,358 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5588748D0A0
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jan 2022 04:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A9F48D108
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jan 2022 04:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbiAMDEy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 12 Jan 2022 22:04:54 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:20052 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231857AbiAMDEv (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 12 Jan 2022 22:04:51 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3A7lszbK/8gct3wwB77Z/oDrUDB3yTJUtcMsCJ2f8?=
- =?us-ascii?q?bfWQNrUoqhD0PxmseWzvXaamIZGr0e9onYY+19hhQvcDcmodrTVdlrnsFo1Bi8?=
- =?us-ascii?q?5ScXYvDRqvT04J+FuWaFQQ/qZx2huDodKjYdVeB4Ef9WlTdhSMkj/vQH+OmULW?=
- =?us-ascii?q?s1h1ZHmeIdg9w0HqPpMZp2uaEsfDha++8kYuaT//3YTdJ6BYoWo4g0J9vnTs01?=
- =?us-ascii?q?BjEVJz0iXRlDRxDlAe2e3D4l/vzL4npR5fzatE88uJX24/+IL+FEmPxp3/BC/u?=
- =?us-ascii?q?ulPD1b08LXqXPewOJjxK6WYD72l4b+HN0if19aZLwam8O49mNt8F4ztpd856hY?=
- =?us-ascii?q?Qk0PKzQg/lbWB5de817FfQcoOSfeSXu6qR/yGWDKRMA2c5GFlk7NJcD/eB3GWx?=
- =?us-ascii?q?m+vkRKTRLZReG78qqx7eyUfsqid4kKcDnLoAeknBm0TzdS/0hRPjrUqzM58Jem?=
- =?us-ascii?q?iUwm+hKHPDDd4wVZCQHRBbPbDVJJFYbCZt4l+Ct7lHjdDhwtFuRvacmpWPUyWR?=
- =?us-ascii?q?Z1LnrLcqQYNCPTO1LkUuC4GHL5WL0BlcdLtP39NYv2hpAnceWxWWiBt1UT+b+q?=
- =?us-ascii?q?5ZXbJSo7jR7IHUruZGT/JFVUnKDZu8=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0kyF7avIcG9Jzl3lc1ytOYiE7skDStV00zEX?=
- =?us-ascii?q?/kB9WHVpm62j5qSTdZEguCMc5wx+ZJheo7q90cW7IE80lqQFhLX5X43SPzUO0V?=
- =?us-ascii?q?HARO5fBODZsl/d8kPFltJ15ONJdqhSLJnKB0FmsMCS2mKFOudl7N6Z0K3Av4vj?=
- =?us-ascii?q?80s=3D?=
-X-IronPort-AV: E=Sophos;i="5.88,284,1635177600"; 
-   d="scan'208";a="120300593"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 13 Jan 2022 11:04:48 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id ADABD4D15A5E;
-        Thu, 13 Jan 2022 11:04:44 +0800 (CST)
-Received: from G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 13 Jan 2022 11:04:43 +0800
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXJMPEKD02.g08.fujitsu.local (10.167.33.202) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Thu, 13 Jan 2022 11:04:44 +0800
-Received: from Fedora-31.g08.fujitsu.local (10.167.220.99) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Thu, 13 Jan 2022 11:04:41 +0800
-From:   Xiao Yang <yangx.jy@fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>, <jgg@nvidia.com>, <tom@talpey.com>
-CC:     <yanjun.zhu@linux.dev>, <rpearsonhpe@gmail.com>,
-        <y-goto@fujitsu.com>, <lizhijian@fujitsu.com>,
-        <tomasz.gromadzki@intel.com>, Xiao Yang <yangx.jy@fujitsu.com>
-Subject: [RFC PATCH v2 2/2] RDMA/rxe: Support RDMA Atomic Write operation
-Date:   Thu, 13 Jan 2022 11:03:50 +0800
-Message-ID: <20220113030350.2492841-3-yangx.jy@fujitsu.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220113030350.2492841-1-yangx.jy@fujitsu.com>
-References: <20220113030350.2492841-1-yangx.jy@fujitsu.com>
+        id S232265AbiAMDno (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 12 Jan 2022 22:43:44 -0500
+Received: from mga02.intel.com ([134.134.136.20]:41506 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232274AbiAMDnd (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 12 Jan 2022 22:43:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642045413; x=1673581413;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZE2MCODYH2KTPyC0BjmO1A6kXFK08CnDRl2j1tFiwAA=;
+  b=nC5es5cENv6jGNyM2iKdukIf8S8173bwRzJo7FLOMNHc4bfeQ7edXG90
+   ca4NICUoIKQufJc9ZeLY8wcy8ZSzRjDGgmXkxAxn9vX+9EgNwk7z4DjI4
+   w1cAkRts9ZYmwsveEKs1Fpfgly1leLczX4msx4LW6kjIhlKgluUjduOgm
+   XmkTGllcDriCMMWJq9eW9GiV6frfw4kjLzJ3URdLM3MVZzjNA5xTH53F4
+   Chdt8cqIQQ7Bgix47SNVhetG8O0c2mWheHWsvZC/9i255DmeqCmoMCIIC
+   Lg/Pc092u7mBZ6yxS9z4MW2fFyyHmI/w7Cr2/++1URk5Mya2+d469eRq1
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="231267094"
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="231267094"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Jan 2022 19:43:32 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,284,1635231600"; 
+   d="scan'208";a="691649530"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 12 Jan 2022 19:43:31 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n7r1O-0006nJ-CS; Thu, 13 Jan 2022 03:43:30 +0000
+Date:   Thu, 13 Jan 2022 11:43:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ c40238e3b8c98993e3c70057f6099e24cc2380f7
+Message-ID: <61df9fd5.Pb4pwZuUL3cgzUjA%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: ADABD4D15A5E.AC4D1
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: yangx.jy@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch implements RDMA Atomic Write operation for RC service.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: c40238e3b8c98993e3c70057f6099e24cc2380f7  RDMA/irdma: Remove the redundant return
 
-Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+elapsed time: 3503m
+
+configs tested: 278
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+mips                 randconfig-c004-20220111
+mips                 randconfig-c004-20220112
+powerpc                     tqm8541_defconfig
+nios2                            allyesconfig
+powerpc                      ppc40x_defconfig
+m68k                        stmark2_defconfig
+sh                           se7721_defconfig
+sh                           se7750_defconfig
+arm                          badge4_defconfig
+m68k                           sun3_defconfig
+arm                         cm_x300_defconfig
+csky                             alldefconfig
+powerpc                      ppc6xx_defconfig
+powerpc                         wii_defconfig
+arm                           u8500_defconfig
+nds32                               defconfig
+m68k                       m5249evb_defconfig
+h8300                               defconfig
+mips                      loongson3_defconfig
+microblaze                          defconfig
+mips                        vocore2_defconfig
+xtensa                  nommu_kc705_defconfig
+nios2                               defconfig
+sh                          sdk7780_defconfig
+m68k                        mvme16x_defconfig
+arm                        cerfcube_defconfig
+m68k                          hp300_defconfig
+arm                         axm55xx_defconfig
+um                             i386_defconfig
+sparc                            alldefconfig
+arm                           stm32_defconfig
+m68k                             alldefconfig
+ia64                        generic_defconfig
+ia64                         bigsur_defconfig
+sh                     magicpanelr2_defconfig
+arm                            pleb_defconfig
+sh                          r7785rp_defconfig
+arc                    vdk_hs38_smp_defconfig
+mips                      fuloong2e_defconfig
+powerpc                       ppc64_defconfig
+powerpc                     taishan_defconfig
+sh                           se7780_defconfig
+sparc                            allyesconfig
+xtensa                    smp_lx200_defconfig
+arm                      footbridge_defconfig
+sh                         ecovec24_defconfig
+mips                  maltasmvp_eva_defconfig
+sh                                  defconfig
+powerpc                      ep88xc_defconfig
+arm                        mini2440_defconfig
+sh                            migor_defconfig
+m68k                                defconfig
+powerpc                      mgcoge_defconfig
+s390                          debug_defconfig
+arc                              allyesconfig
+arm                       multi_v4t_defconfig
+arm                           viper_defconfig
+nios2                         3c120_defconfig
+powerpc                      bamboo_defconfig
+arm                        multi_v7_defconfig
+powerpc                    klondike_defconfig
+powerpc                 mpc834x_itx_defconfig
+m68k                       bvme6000_defconfig
+sh                        apsh4ad0a_defconfig
+sh                              ul2_defconfig
+arm                        realview_defconfig
+powerpc                       holly_defconfig
+powerpc                  storcenter_defconfig
+arm                         assabet_defconfig
+sh                          polaris_defconfig
+arm                       aspeed_g5_defconfig
+mips                      maltasmvp_defconfig
+mips                           ci20_defconfig
+powerpc                     pq2fads_defconfig
+sh                          rsk7269_defconfig
+um                           x86_64_defconfig
+sh                               j2_defconfig
+powerpc64                        alldefconfig
+arm                            zeus_defconfig
+nios2                         10m50_defconfig
+ia64                                defconfig
+riscv                            allmodconfig
+mips                     decstation_defconfig
+csky                                defconfig
+powerpc                        warp_defconfig
+h8300                       h8s-sim_defconfig
+sh                           se7751_defconfig
+parisc                generic-64bit_defconfig
+h8300                     edosk2674_defconfig
+arm                     eseries_pxa_defconfig
+nds32                             allnoconfig
+sh                        edosk7705_defconfig
+arm                       omap2plus_defconfig
+sparc64                             defconfig
+mips                          rb532_defconfig
+arc                          axs101_defconfig
+sh                           sh2007_defconfig
+powerpc                 mpc837x_rdb_defconfig
+sh                         microdev_defconfig
+arm                          iop32x_defconfig
+nds32                            alldefconfig
+mips                         db1xxx_defconfig
+arm                         vf610m4_defconfig
+sh                        dreamcast_defconfig
+arc                      axs103_smp_defconfig
+sh                          r7780mp_defconfig
+sh                             shx3_defconfig
+s390                       zfcpdump_defconfig
+sh                          urquell_defconfig
+m68k                          amiga_defconfig
+powerpc                    adder875_defconfig
+parisc                           alldefconfig
+mips                 decstation_r4k_defconfig
+sh                           se7722_defconfig
+sh                 kfr2r09-romimage_defconfig
+sh                          landisk_defconfig
+sh                           se7712_defconfig
+powerpc                     rainier_defconfig
+arm                        clps711x_defconfig
+powerpc                      arches_defconfig
+mips                       bmips_be_defconfig
+m68k                         apollo_defconfig
+mips                         bigsur_defconfig
+arc                            hsdk_defconfig
+arc                        nsim_700_defconfig
+mips                        bcm47xx_defconfig
+openrisc                            defconfig
+sh                            shmin_defconfig
+parisc                              defconfig
+mips                           xway_defconfig
+m68k                         amcore_defconfig
+arm                            mps2_defconfig
+mips                           jazz_defconfig
+arm64                            alldefconfig
+m68k                        m5272c3_defconfig
+powerpc                 mpc834x_mds_defconfig
+microblaze                      mmu_defconfig
+sh                            titan_defconfig
+mips                         mpc30x_defconfig
+arc                          axs103_defconfig
+arm                            hisi_defconfig
+powerpc                      pcm030_defconfig
+xtensa                       common_defconfig
+powerpc                      pasemi_defconfig
+mips                            ar7_defconfig
+sh                           se7705_defconfig
+m68k                            q40_defconfig
+sh                        edosk7760_defconfig
+mips                        jmr3927_defconfig
+xtensa                           alldefconfig
+sh                   rts7751r2dplus_defconfig
+riscv                            allyesconfig
+um                               alldefconfig
+h8300                            alldefconfig
+arm                             rpc_defconfig
+x86_64                              defconfig
+s390                             allyesconfig
+arm                  randconfig-c002-20220111
+arm                  randconfig-c002-20220112
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+i386                          randconfig-a003
+i386                          randconfig-a001
+i386                          randconfig-a005
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220111
+arc                  randconfig-r043-20220111
+s390                 randconfig-r044-20220111
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+
+clang tested configs:
+arm                  randconfig-c002-20220111
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220111
+powerpc              randconfig-c003-20220111
+i386                          randconfig-c001
+s390                 randconfig-c005-20220111
+mips                 randconfig-c004-20220111
+arm                  randconfig-c002-20220112
+riscv                randconfig-c006-20220112
+powerpc              randconfig-c003-20220112
+mips                 randconfig-c004-20220112
+arm                      tct_hammer_defconfig
+arm                     am200epdkit_defconfig
+arm                          imote2_defconfig
+riscv                          rv32_defconfig
+powerpc                     akebono_defconfig
+mips                   sb1250_swarm_defconfig
+arm                  colibri_pxa300_defconfig
+mips                          malta_defconfig
+arm                          ep93xx_defconfig
+powerpc                 mpc836x_mds_defconfig
+mips                        workpad_defconfig
+mips                          ath79_defconfig
+arm                         shannon_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                          collie_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                     kilauea_defconfig
+arm                         bcm2835_defconfig
+powerpc                        fsp2_defconfig
+powerpc                  mpc885_ads_defconfig
+powerpc                        icon_defconfig
+powerpc                          g5_defconfig
+arm                                 defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     ppa8548_defconfig
+mips                           ip27_defconfig
+powerpc                          allmodconfig
+powerpc                     kmeter1_defconfig
+mips                           mtx1_defconfig
+powerpc                    ge_imp3a_defconfig
+arm                            mmp2_defconfig
+powerpc                  mpc866_ads_defconfig
+mips                      pic32mzda_defconfig
+powerpc                     tqm5200_defconfig
+arm                         hackkit_defconfig
+riscv                             allnoconfig
+arm                          ixp4xx_defconfig
+mips                          rm200_defconfig
+powerpc                      acadia_defconfig
+hexagon                          alldefconfig
+powerpc                      pmac32_defconfig
+mips                           ip22_defconfig
+powerpc                 mpc8272_ads_defconfig
+mips                        bcm63xx_defconfig
+arm                        spear3xx_defconfig
+powerpc                 mpc832x_mds_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220112
+riscv                randconfig-r042-20220112
+hexagon              randconfig-r041-20220112
+hexagon              randconfig-r045-20220111
+hexagon              randconfig-r041-20220111
+
 ---
- drivers/infiniband/sw/rxe/rxe_comp.c   |  4 +++
- drivers/infiniband/sw/rxe/rxe_opcode.c | 18 +++++++++++
- drivers/infiniband/sw/rxe/rxe_opcode.h |  3 ++
- drivers/infiniband/sw/rxe/rxe_qp.c     |  3 +-
- drivers/infiniband/sw/rxe/rxe_req.c    | 11 +++++--
- drivers/infiniband/sw/rxe/rxe_resp.c   | 43 +++++++++++++++++++++-----
- include/rdma/ib_pack.h                 |  2 ++
- include/rdma/ib_verbs.h                |  2 ++
- include/uapi/rdma/ib_user_verbs.h      |  2 ++
- include/uapi/rdma/rdma_user_rxe.h      |  1 +
- 10 files changed, 78 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-index d771ba8449a1..5a5c0c3501de 100644
---- a/drivers/infiniband/sw/rxe/rxe_comp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-@@ -104,6 +104,7 @@ static enum ib_wc_opcode wr_to_wc_opcode(enum ib_wr_opcode opcode)
- 	case IB_WR_LOCAL_INV:			return IB_WC_LOCAL_INV;
- 	case IB_WR_REG_MR:			return IB_WC_REG_MR;
- 	case IB_WR_BIND_MW:			return IB_WC_BIND_MW;
-+	case IB_WR_RDMA_ATOMIC_WRITE:		return IB_WC_RDMA_ATOMIC_WRITE;
- 
- 	default:
- 		return 0xff;
-@@ -256,6 +257,9 @@ static inline enum comp_state check_ack(struct rxe_qp *qp,
- 		if ((syn & AETH_TYPE_MASK) != AETH_ACK)
- 			return COMPST_ERROR;
- 
-+		if (wqe->wr.opcode == IB_WR_RDMA_ATOMIC_WRITE)
-+			return COMPST_WRITE_SEND;
-+
- 		fallthrough;
- 		/* (IB_OPCODE_RC_RDMA_READ_RESPONSE_MIDDLE doesn't have an AETH)
- 		 */
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-index 3ef5a10a6efd..ec0f795adb5c 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-@@ -103,6 +103,12 @@ struct rxe_wr_opcode_info rxe_wr_opcode_info[] = {
- 			[IB_QPT_UC]	= WR_LOCAL_OP_MASK,
- 		},
- 	},
-+	[IB_WR_RDMA_ATOMIC_WRITE]                       = {
-+		.name   = "IB_WR_RDMA_ATOMIC_WRITE",
-+		.mask   = {
-+			[IB_QPT_RC]     = WR_ATOMIC_WRITE_MASK,
-+		},
-+	},
- };
- 
- struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
-@@ -379,6 +385,18 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
- 						+ RXE_IETH_BYTES,
- 		}
- 	},
-+	[IB_OPCODE_RC_RDMA_ATOMIC_WRITE]                        = {
-+		.name   = "IB_OPCODE_RC_RDMA_ATOMIC_WRITE",
-+		.mask   = RXE_RETH_MASK | RXE_PAYLOAD_MASK | RXE_REQ_MASK
-+				| RXE_ATOMIC_WRITE_MASK | RXE_START_MASK
-+				| RXE_END_MASK,
-+		.length = RXE_BTH_BYTES + RXE_RETH_BYTES,
-+		.offset = {
-+			[RXE_BTH]       = 0,
-+			[RXE_RETH]      = RXE_BTH_BYTES,
-+			[RXE_PAYLOAD]   = RXE_BTH_BYTES + RXE_RETH_BYTES,
-+		}
-+	},
- 
- 	/* UC */
- 	[IB_OPCODE_UC_SEND_FIRST]			= {
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 8f9aaaf260f2..a470e9b0b884 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -20,6 +20,7 @@ enum rxe_wr_mask {
- 	WR_READ_MASK			= BIT(3),
- 	WR_WRITE_MASK			= BIT(4),
- 	WR_LOCAL_OP_MASK		= BIT(5),
-+	WR_ATOMIC_WRITE_MASK		= BIT(7),
- 
- 	WR_READ_OR_WRITE_MASK		= WR_READ_MASK | WR_WRITE_MASK,
- 	WR_WRITE_OR_SEND_MASK		= WR_WRITE_MASK | WR_SEND_MASK,
-@@ -81,6 +82,8 @@ enum rxe_hdr_mask {
- 
- 	RXE_LOOPBACK_MASK	= BIT(NUM_HDR_TYPES + 12),
- 
-+	RXE_ATOMIC_WRITE_MASK   = BIT(NUM_HDR_TYPES + 14),
-+
- 	RXE_READ_OR_ATOMIC_MASK	= (RXE_READ_MASK | RXE_ATOMIC_MASK),
- 	RXE_WRITE_OR_SEND_MASK	= (RXE_WRITE_MASK | RXE_SEND_MASK),
- 	RXE_READ_OR_WRITE_MASK	= (RXE_READ_MASK | RXE_WRITE_MASK),
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index f3eec350f95c..22a1c4bcfa60 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -135,7 +135,8 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
- 
- void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
- {
--	if (res->type == RXE_ATOMIC_MASK) {
-+	if (res->type == RXE_ATOMIC_MASK ||
-+			res->type == RXE_ATOMIC_WRITE_MASK) {
- 		kfree_skb(res->resp.skb);
- 	} else if (res->type == RXE_READ_MASK) {
- 		if (res->read.mr)
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 0c9d2af15f3d..203d8d19f84a 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -240,6 +240,10 @@ static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
- 		else
- 			return fits ? IB_OPCODE_RC_SEND_ONLY_WITH_INVALIDATE :
- 				IB_OPCODE_RC_SEND_FIRST;
-+
-+	case IB_WR_RDMA_ATOMIC_WRITE:
-+		return IB_OPCODE_RC_RDMA_ATOMIC_WRITE;
-+
- 	case IB_WR_REG_MR:
- 	case IB_WR_LOCAL_INV:
- 		return opcode;
-@@ -485,6 +489,9 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 		}
- 	}
- 
-+	if (pkt->mask & RXE_ATOMIC_WRITE_MASK)
-+		memcpy(payload_addr(pkt), &wqe->wr.wr.rdma.atomic_wr, paylen);
-+
- 	return 0;
- }
- 
-@@ -680,13 +687,13 @@ int rxe_requester(void *arg)
- 	}
- 
- 	mask = rxe_opcode[opcode].mask;
--	if (unlikely(mask & RXE_READ_OR_ATOMIC_MASK)) {
-+	if (unlikely(mask & (RXE_READ_OR_ATOMIC_MASK | RXE_ATOMIC_WRITE_MASK))) {
- 		if (check_init_depth(qp, wqe))
- 			goto exit;
- 	}
- 
- 	mtu = get_mtu(qp);
--	payload = (mask & RXE_WRITE_OR_SEND_MASK) ? wqe->dma.resid : 0;
-+	payload = (mask & (RXE_WRITE_OR_SEND_MASK | RXE_ATOMIC_WRITE_MASK)) ? wqe->dma.resid : 0;
- 	if (payload > mtu) {
- 		if (qp_type(qp) == IB_QPT_UD) {
- 			/* C10-93.1.1: If the total sum of all the buffer lengths specified for a
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index e015860e8c34..cf678a3aaaa9 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -258,7 +258,7 @@ static enum resp_states check_op_valid(struct rxe_qp *qp,
- 	case IB_QPT_RC:
- 		if (((pkt->mask & RXE_READ_MASK) &&
- 		     !(qp->attr.qp_access_flags & IB_ACCESS_REMOTE_READ)) ||
--		    ((pkt->mask & RXE_WRITE_MASK) &&
-+		    ((pkt->mask & (RXE_WRITE_MASK | RXE_ATOMIC_WRITE_MASK)) &&
- 		     !(qp->attr.qp_access_flags & IB_ACCESS_REMOTE_WRITE)) ||
- 		    ((pkt->mask & RXE_ATOMIC_MASK) &&
- 		     !(qp->attr.qp_access_flags & IB_ACCESS_REMOTE_ATOMIC))) {
-@@ -362,7 +362,7 @@ static enum resp_states check_resource(struct rxe_qp *qp,
- 		}
- 	}
- 
--	if (pkt->mask & RXE_READ_OR_ATOMIC_MASK) {
-+	if (pkt->mask & (RXE_READ_OR_ATOMIC_MASK | RXE_ATOMIC_WRITE_MASK)) {
- 		/* it is the requesters job to not send
- 		 * too many read/atomic ops, we just
- 		 * recycle the responder resource queue
-@@ -413,7 +413,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 	enum resp_states state;
- 	int access;
- 
--	if (pkt->mask & RXE_READ_OR_WRITE_MASK) {
-+	if (pkt->mask & (RXE_READ_OR_WRITE_MASK | RXE_ATOMIC_WRITE_MASK)) {
- 		if (pkt->mask & RXE_RETH_MASK) {
- 			qp->resp.va = reth_va(pkt);
- 			qp->resp.offset = 0;
-@@ -479,7 +479,7 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 		goto err;
- 	}
- 
--	if (pkt->mask & RXE_WRITE_MASK)	 {
-+	if (pkt->mask & (RXE_WRITE_MASK | RXE_ATOMIC_WRITE_MASK)) {
- 		if (resid > mtu) {
- 			if (pktlen != mtu || bth_pad(pkt)) {
- 				state = RESPST_ERR_LENGTH;
-@@ -591,6 +591,26 @@ static enum resp_states process_atomic(struct rxe_qp *qp,
- 	return ret;
- }
- 
-+static enum resp_states process_atomic_write(struct rxe_qp *qp,
-+					     struct rxe_pkt_info *pkt)
-+{
-+	struct rxe_mr *mr = qp->resp.mr;
-+
-+	u64 *src = payload_addr(pkt);
-+
-+	u64 *dst = iova_to_vaddr(mr, qp->resp.va + qp->resp.offset, sizeof(u64));
-+	if (!dst || (uintptr_t)dst & 7)
-+		return RESPST_ERR_MISALIGNED_ATOMIC;
-+
-+	/* Do atomic write after all prior operations have completed */
-+	smp_store_release(dst, *src);
-+
-+	/* decrease resp.resid to zero */
-+	qp->resp.resid -= sizeof(u64);
-+
-+	return RESPST_NONE;
-+}
-+
- static struct sk_buff *prepare_ack_packet(struct rxe_qp *qp,
- 					  struct rxe_pkt_info *pkt,
- 					  struct rxe_pkt_info *ack,
-@@ -801,6 +821,10 @@ static enum resp_states execute(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
- 		err = process_atomic(qp, pkt);
- 		if (err)
- 			return err;
-+	} else if (pkt->mask & RXE_ATOMIC_WRITE_MASK) {
-+		err = process_atomic_write(qp, pkt);
-+		if (err)
-+			return err;
- 	} else {
- 		/* Unreachable */
- 		WARN_ON_ONCE(1);
-@@ -965,9 +989,12 @@ static int send_resp(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	struct sk_buff *skb;
- 	struct resp_res *res;
- 
-+	int opcode = pkt->mask & RXE_ATOMIC_MASK ?
-+				IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE :
-+				IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY;
-+
- 	skb = prepare_ack_packet(qp, pkt, &ack_pkt,
--				 IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE, 0, pkt->psn,
--				 syndrome);
-+				 opcode, 0, pkt->psn, syndrome);
- 	if (!skb) {
- 		rc = -ENOMEM;
- 		goto out;
-@@ -978,7 +1005,7 @@ static int send_resp(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	rxe_advance_resp_resource(qp);
- 
- 	skb_get(skb);
--	res->type = RXE_ATOMIC_MASK;
-+	res->type = pkt->mask & (RXE_ATOMIC_MASK | RXE_ATOMIC_WRITE_MASK);
- 	res->resp.skb = skb;
- 	res->first_psn = ack_pkt.psn;
- 	res->last_psn  = ack_pkt.psn;
-@@ -1001,7 +1028,7 @@ static enum resp_states acknowledge(struct rxe_qp *qp,
- 
- 	if (qp->resp.aeth_syndrome != AETH_ACK_UNLIMITED)
- 		send_ack(qp, pkt, qp->resp.aeth_syndrome, pkt->psn);
--	else if (pkt->mask & RXE_ATOMIC_MASK)
-+	else if (pkt->mask & (RXE_ATOMIC_MASK | RXE_ATOMIC_WRITE_MASK))
- 		send_resp(qp, pkt, AETH_ACK_UNLIMITED);
- 	else if (bth_ack(pkt))
- 		send_ack(qp, pkt, AETH_ACK_UNLIMITED, pkt->psn);
-diff --git a/include/rdma/ib_pack.h b/include/rdma/ib_pack.h
-index a9162f25beaf..519ec6b841e7 100644
---- a/include/rdma/ib_pack.h
-+++ b/include/rdma/ib_pack.h
-@@ -84,6 +84,7 @@ enum {
- 	/* opcode 0x15 is reserved */
- 	IB_OPCODE_SEND_LAST_WITH_INVALIDATE         = 0x16,
- 	IB_OPCODE_SEND_ONLY_WITH_INVALIDATE         = 0x17,
-+	IB_OPCODE_RDMA_ATOMIC_WRITE                 = 0x1D,
- 
- 	/* real constants follow -- see comment about above IB_OPCODE()
- 	   macro for more details */
-@@ -112,6 +113,7 @@ enum {
- 	IB_OPCODE(RC, FETCH_ADD),
- 	IB_OPCODE(RC, SEND_LAST_WITH_INVALIDATE),
- 	IB_OPCODE(RC, SEND_ONLY_WITH_INVALIDATE),
-+	IB_OPCODE(RC, RDMA_ATOMIC_WRITE),
- 
- 	/* UC */
- 	IB_OPCODE(UC, SEND_FIRST),
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index 6e9ad656ecb7..949b3586d35b 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -971,6 +971,7 @@ enum ib_wc_opcode {
- 	IB_WC_REG_MR,
- 	IB_WC_MASKED_COMP_SWAP,
- 	IB_WC_MASKED_FETCH_ADD,
-+	IB_WC_RDMA_ATOMIC_WRITE = IB_UVERBS_WC_RDMA_ATOMIC_WRITE,
- /*
-  * Set value of IB_WC_RECV so consumers can test if a completion is a
-  * receive by testing (opcode & IB_WC_RECV).
-@@ -1311,6 +1312,7 @@ enum ib_wr_opcode {
- 		IB_UVERBS_WR_MASKED_ATOMIC_CMP_AND_SWP,
- 	IB_WR_MASKED_ATOMIC_FETCH_AND_ADD =
- 		IB_UVERBS_WR_MASKED_ATOMIC_FETCH_AND_ADD,
-+	IB_WR_RDMA_ATOMIC_WRITE = IB_UVERBS_WR_RDMA_ATOMIC_WRITE,
- 
- 	/* These are kernel only and can not be issued by userspace */
- 	IB_WR_REG_MR = 0x20,
-diff --git a/include/uapi/rdma/ib_user_verbs.h b/include/uapi/rdma/ib_user_verbs.h
-index 7ee73a0652f1..3b0b509fb96f 100644
---- a/include/uapi/rdma/ib_user_verbs.h
-+++ b/include/uapi/rdma/ib_user_verbs.h
-@@ -466,6 +466,7 @@ enum ib_uverbs_wc_opcode {
- 	IB_UVERBS_WC_BIND_MW = 5,
- 	IB_UVERBS_WC_LOCAL_INV = 6,
- 	IB_UVERBS_WC_TSO = 7,
-+	IB_UVERBS_WC_RDMA_ATOMIC_WRITE = 9,
- };
- 
- struct ib_uverbs_wc {
-@@ -784,6 +785,7 @@ enum ib_uverbs_wr_opcode {
- 	IB_UVERBS_WR_RDMA_READ_WITH_INV = 11,
- 	IB_UVERBS_WR_MASKED_ATOMIC_CMP_AND_SWP = 12,
- 	IB_UVERBS_WR_MASKED_ATOMIC_FETCH_AND_ADD = 13,
-+	IB_UVERBS_WR_RDMA_ATOMIC_WRITE = 15,
- 	/* Review enum ib_wr_opcode before modifying this */
- };
- 
-diff --git a/include/uapi/rdma/rdma_user_rxe.h b/include/uapi/rdma/rdma_user_rxe.h
-index f09c5c9e3dd5..7e02c614d826 100644
---- a/include/uapi/rdma/rdma_user_rxe.h
-+++ b/include/uapi/rdma/rdma_user_rxe.h
-@@ -86,6 +86,7 @@ struct rxe_send_wr {
- 			__aligned_u64 remote_addr;
- 			__u32	rkey;
- 			__u32	reserved;
-+			__aligned_u64 atomic_wr;
- 		} rdma;
- 		struct {
- 			__aligned_u64 remote_addr;
--- 
-2.23.0
-
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
