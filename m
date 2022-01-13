@@ -2,185 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B169348D266
-	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jan 2022 07:46:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B3948D364
+	for <lists+linux-rdma@lfdr.de>; Thu, 13 Jan 2022 09:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbiAMGnm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 13 Jan 2022 01:43:42 -0500
-Received: from esa18.fujitsucc.c3s2.iphmx.com ([216.71.158.38]:1452 "EHLO
-        esa18.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230003AbiAMGnm (ORCPT
+        id S232634AbiAMIIA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 13 Jan 2022 03:08:00 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48802 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229685AbiAMIH7 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 13 Jan 2022 01:43:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1642056223; x=1673592223;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=DZ/fiqe01JhbAAxWJhA8SCQXcsCtV5Nd7AH01bDqwoQ=;
-  b=PxY21CRcUC+lXDnjbKXqoL91P43E5VTj1lnhT7et7OfJoT7pNGPccZXR
-   +aeEfnrcJvc8Pv4w3rNBWU+fyuTVbrPwGlSaVVx1dYK85D2vH8wmmYz7u
-   Z/RyJva4q0uVqtqHRjC2AFyggWkhmaQABkbHQZzuTFDsvEWtokvpaZtrH
-   lWv1E2UJIhRvsW0vB/zsBcYGhpukJsrassCUIZhVuXYM6LVTyu9oI9AQ8
-   DkfC2sQr6EjKzGYzzGJZXjhlldEDH7d3Ih3hD6A78l9kMzWW047c3qqnk
-   ErATq9SYvqB9zUqPWXcnvX+P4n/bqKRjNvMVE1papX5pD3k+af7Er0YO3
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10225"; a="48499226"
-X-IronPort-AV: E=Sophos;i="5.88,284,1635174000"; 
-   d="scan'208";a="48499226"
-Received: from mail-os0jpn01lp2113.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.113])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2022 15:43:38 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=He7JinS+MrDKrdDDz8SZcvFRi+re8sEBk3PdMQ+DZJMF6k9Mk9NH+CX7F+G5rXL9OnZZ/ZINAAAWFfi0lkVIpDzuG4S+shv9eUNPoEZ47QlUDVO0wz8wEK0DsfHwp3xLcdekejeZD4cyOLtvM69sMdKeR6EDZQ8NUOzrO0LSDSWjxidNbs4lTZqp3gJ4nJP3jkUwAMgCBhfV6raMtfDAnoKN+fGgwMmCQpl1fHnqQ0OvFqB+fRed902n066N+V7dBBt/P/CwLrhIo35+usA57u3+k5Z3F5kaZkz6/pMHZrZWaXe+UsIs5I5gbEwnzu/bbYWGUgOFUdks4L6g4VsGlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DZ/fiqe01JhbAAxWJhA8SCQXcsCtV5Nd7AH01bDqwoQ=;
- b=I1Qyg7XkfJWwONav3K/R1W0HLkztNZGQ1ZLjmAmbwUx1ZI1jfv0xvjmd3iAQvoCs7BGykPMdnPN4bl6KbiOykuvI/R/4hon0Oi6H3f8Coh3Dqy5qe+joeZTDwUwboDlQ5hiIcjWsaONBgLT0HjIje/Uuvl2rNX0cXRa7UBotPEYhEm7sxVIJedgyLJvZARx+ht8dSFs4ZSbau+eL4K5hIXh0+XZWezjkljVz9YyvHPObnjOCwtJ5cQTk50H3OP6YgE4neopvrCo/BTOoDS6UAtq7FMGW1O+060orwGjcel1qV/7FC/Lr4zD1i0gN0lHIrCnmulZ3cYM+0TDIWxU0AQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DZ/fiqe01JhbAAxWJhA8SCQXcsCtV5Nd7AH01bDqwoQ=;
- b=cSklNBl63HxDgsKKd3VLLd+fYIMocFwg8pPJItqr72B26vw4Oo1W2sZ4JnIc5N0pZjzLmApUlKg/svJc1f6dD76By3AnMEcWIm6RLTtyfTY/ZyMTQPd+ml26Sc8XvgUfU+/SA8hu+aWuSn82dVreLjUWftT3CiTwjvclahvRUkI=
-Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com (2603:1096:400:196::10)
- by OSZPR01MB8548.jpnprd01.prod.outlook.com (2603:1096:604:18d::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4888.9; Thu, 13 Jan
- 2022 06:43:34 +0000
-Received: from TYCPR01MB9305.jpnprd01.prod.outlook.com
- ([fe80::8110:65ae:1467:2141]) by TYCPR01MB9305.jpnprd01.prod.outlook.com
- ([fe80::8110:65ae:1467:2141%4]) with mapi id 15.20.4888.011; Thu, 13 Jan 2022
- 06:43:34 +0000
-From:   "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
-To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "aharonl@nvidia.com" <aharonl@nvidia.com>,
-        "leon@kernel.org" <leon@kernel.org>, Tom Talpey <tom@talpey.com>,
-        "Gromadzki, Tomasz" <tomasz.gromadzki@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mbloch@nvidia.com" <mbloch@nvidia.com>,
-        "liangwenpeng@huawei.com" <liangwenpeng@huawei.com>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>
-Subject: Re: [RFC PATCH rdma-next 03/10] RDMA/rxe: Allow registering FLUSH
- flags for supported device only
-Thread-Topic: [RFC PATCH rdma-next 03/10] RDMA/rxe: Allow registering FLUSH
- flags for supported device only
-Thread-Index: AQHX+8Er95KpI1UKtUu28PtoB5n6zaxgmkSA
-Date:   Thu, 13 Jan 2022 06:43:34 +0000
-Message-ID: <45600750-5c50-2ee4-4f7c-e03510a799a7@fujitsu.com>
-References: <20211228080717.10666-1-lizhijian@cn.fujitsu.com>
- <20211228080717.10666-4-lizhijian@cn.fujitsu.com>
-In-Reply-To: <20211228080717.10666-4-lizhijian@cn.fujitsu.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: eeb5b216-e562-4fde-f163-08d9d6600588
-x-ms-traffictypediagnostic: OSZPR01MB8548:EE_
-x-microsoft-antispam-prvs: <OSZPR01MB8548C4860716AAF6C156A49BA5539@OSZPR01MB8548.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1824;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: i2S7IJDe+afF0sI2sajxIbNn+Vt9FrY7p2sspg5UhIseVtd+1lfjoHPF4P2Ziy27kuUzmS2nhYcDbqowJgc3FiMEWFSbbX41SQq6Y/JzjrdfdAfXCU9gQ/DpHVnRqDp1QQdPNSIDeyiesqkOdEmmDiTAZ72Xxnuf8VAUVuEubkFmNnfDuC6FF9L+glOrXVUYObAi3aAhOxXcKVWJis9Eoa+cXxvwDTuxXDjsXwBWgHktyfHU5j2/EHQGxtoJThBgeqt2pBUV3NJTBRfUuEbTINplyIA/3xNx5LKJj04zIigE+Gr4nXMuIu48n3TJxRBgUCdWUrhDL3VgrGxHSVVvh/E3lKWcbSKqJg+kXhrdQH03j6LGJIDjFfZN1iLQ2dYAFy+HP25BRoX06AL2KP7sY0ONIMEEqbT77W7mAXqYtCuhyF+0m8aQhNfd/hPCx0A1Wfx7p3SlWetawE6UsFtblTRmtdL7n0LXWtcKcYWAD3hj2SNCC3LqcJcT/MllsHlMxi1U7RN8Jc+UsLGvz5/udbrNT/GC7qaTCelDYeH5hsmKgrIxBT3TdL7BKoIopZfoxEnTljpohevBb0HdWydEp5mFXqFOgdwhDAwY8YL24HN0csqE6ewqL/seRW4VvxkLaDAMB0knH4KH49xJ+hBj58lRT1YlBJn5Y+0AVcNbRLRrFBrzZarbUC/cJmpv2TZeF339His7wzYZlmCBj1rUeQck7RREflik9GYMZithMgdEnwwwLLs3JS4QhwU/HcrfqOKk9rb4HSEXMIQO16C9lws0Cd5inYfWcM28qJo5U7U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB9305.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(122000001)(83380400001)(53546011)(6506007)(26005)(85182001)(5660300002)(2616005)(66476007)(66946007)(82960400001)(66446008)(6486002)(76116006)(36756003)(66556008)(186003)(91956017)(64756008)(7416002)(86362001)(110136005)(54906003)(316002)(8936002)(4326008)(6512007)(71200400001)(921005)(8676002)(107886003)(38100700002)(508600001)(38070700005)(31696002)(2906002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eG84WVdIb1FZeVQwenlKeldXZkNtVzVkaVc3UXB2T3F0SjMwZXVIaUs2SldM?=
- =?utf-8?B?SGtaeTJzc3BXQ0NrekZ0V2oyNWI1OTFLOW9LbFFFMWhiWjE1ckY1REcyeTBJ?=
- =?utf-8?B?Q21mWFdzUS9lMEVOU041dnFSUkRIMFBLWnR1VDBVbGw3R2w0QVUwRzBwcGNr?=
- =?utf-8?B?NDVjUzVDbE5DT0I3NVJVY3hMY3gwdXpDb2YvamRySmp6SnYzcnZ2NlNFSDVJ?=
- =?utf-8?B?M3IyV1hHb0h2MTB5S0pjQlRPcnBNR1MyQy9BaitpdWFsQUcrU2h4dHMrUG9N?=
- =?utf-8?B?U0txMm4xS1UvL3RyWDVleDlBM2N3UjlSaE1iZjVmb080anRmWEVRYXFCL2l1?=
- =?utf-8?B?S0I0TzdLR3o4aHpaVUxYdXRkUFJYWUNFS2FQVmIyTFVSTmtsRHlYczIzNGpF?=
- =?utf-8?B?OTNDSDlEa2F1Z0phdDMvZnNHaVhyVjNpZWJubVB4QURsN3FqKzB6amNMVDhF?=
- =?utf-8?B?ZlZxTDhDNDhCZ09WK1VKdVhySGQwRUtDQWE0WDY5aXdJdEg1cTVQUXVkOXJD?=
- =?utf-8?B?MSt6dWtscXRLbGFjdTdtRlZsUWlDUkovQWZsWFNBeUVWRGVTNjlxV2dLSVVr?=
- =?utf-8?B?Z3gwOXM5Yng4TFVxRENGQlY3Rk5mR29qS0t5QTNXYWIrY21rKzJWRG9JYUg2?=
- =?utf-8?B?RCtDY01aVzViemtZeG96ZzNNc2NJT05FbVFyWk5nK1pRRE93a2Vtenh4N20v?=
- =?utf-8?B?NGY1MVpOYjRrK0ZQVUg5UWlSSmRqc1JRWVZHc2ZGeDQ2NUluK0ZqVzhUSmN1?=
- =?utf-8?B?K2lMakxhbEJoejB0dVRpa21jSFpWN250VUVWbVV0N2R2WklRQVhmclI1RkxO?=
- =?utf-8?B?ZHFjQkVOODAvY2tiTTBJazZxOE1YOUNnQmxldkFvUmpxU1hDOEFZNVZjZnJI?=
- =?utf-8?B?SXZ0dGRLZEMycDg4MEpSY1RMZmpGcUt6by90SWk3NGp2OXJldzdtNmlmOWJv?=
- =?utf-8?B?eDFDdFBhTUZzT1FBT1FZNlNUS2V6Nmp0RHZwYWNQVU9RSHQ4djJkYTl0Mm9G?=
- =?utf-8?B?eTFqNWFUYWkySllmdUpSVmhMbncybVNBSVZ1VWxhYjZ0bHdwQ29hK3pLNXR6?=
- =?utf-8?B?MTNjQXN1Z2tNNVlIaW9kRC8yVlprMStoR2dDYXdJb1U4MStRR0FjQk9SYmdP?=
- =?utf-8?B?TTBKRHdML2pUZkxmQngvQWpqOFA2MDJQSlBCYW5EaTdtajArN3A0cDB3Y1lB?=
- =?utf-8?B?NnVKNTkxaXVkSnBJYy91MVZiODNoQlVScU16dUhUaHBNZE1CeDhOQjdDYmZN?=
- =?utf-8?B?Z1dPNVlmQ1BmSFo5Y3NzRDN0cjFsWGZnSWpwZjJWSUloM2RWcXRTODJPYWlt?=
- =?utf-8?B?TTVpSzJseVl3SUVVMW1BaGsxQi82bTR0dksxdmJJWVl6ZGxpV0k3VThiaml6?=
- =?utf-8?B?VThGRktpaDFSakEzZmd5TllnaloxdTEySkVydUN0NXVSdzYxU21IY05WNnNv?=
- =?utf-8?B?dkY1YTdUVS9td1R2dDJPMkZMVTF4OVNSNS9VN0t2NU5tRHdlWUtOZmFidXRU?=
- =?utf-8?B?ZFo1NDRxRWhnaG5rRHRLc3BlWU9WSC9VNTJwcU9SZitwUDVaZGs0VDVOSWZl?=
- =?utf-8?B?WUF0MmlwSGV1Q1BqWXZlZStyOFp1ZzMwY1kwdmZ1VW80NUJPMlZ3d2V2MC9Q?=
- =?utf-8?B?U1NwOVMvVDQxYlQ2emI1UVZIaGZnaEkzbUE1TWc0bE5qRzJSQlB1UXVjMVVq?=
- =?utf-8?B?YVJYcHh5Yyt6YjZVejk0aG9BS2ZXV3c5YTZEb1VPNEdBaEFXcmRWeHBrUGFJ?=
- =?utf-8?B?NEsybisyeTRYRW5VRlZoeDU0enhIMFpNTDhjSnFJN29zUjlheGFueVNUNW44?=
- =?utf-8?B?TmxPRy9ZM0Vwbm5QTlcvSmxQMHU3TVdEdy85YkUrc2R3RmZoTlFVNFlkazZr?=
- =?utf-8?B?USsrcjFOb2s2Z1krR1l0UFFsSjJpN21xbE9wakE1aU9mSHdIWXlCS0pySCtw?=
- =?utf-8?B?NU53ZDhYS2JMM3lkem1vbjh2dnlpSDYvSUFJYmlyQ0VsMFlDcHZRbzdvU1B6?=
- =?utf-8?B?WVZaVjFtR1FPWGF0NGlJay84azZWZ1ZsUzNJdzFrR2JXMmRydE1SWXhXeVlp?=
- =?utf-8?B?MURmekE1Lyt6UkRmTmxOeUZ6YXY2dVI3QWFTOXB1bkVVeS9lVXg3RVlhTll2?=
- =?utf-8?B?UmljVnluczlYZ0ZYbW5ZcDFvUmVabmYrczI4U2xnM1FpNWgrU250WGgzdWp4?=
- =?utf-8?Q?+bUhQ0fttzsAzSNO5AdmerU=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <DF0A1F3DBFCB1A4F88CBEE5394F98581@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 13 Jan 2022 03:07:59 -0500
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20D7pSrA027405;
+        Thu, 13 Jan 2022 08:07:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xjPJgtbxCzwnEeTfwpTIz1VU2ynEJWJfr8miUH+Sq4E=;
+ b=fKni5zZUP695DIWnwzhAYFCgAoPbTVRPwsNsLh9dt39DThifRm4hom44caAe4DS54l6E
+ FJ16H4P/azonldAHTlvpay8qe6FpXcxAKpKg3oWbCzRNWe2JqWa2iuIIWbT7k0c/ozjX
+ CFC7EwCVZsRYh8Bg2CLS3+Msb+nsMtn8xv0yAMf/HheRS+y2uETUBCGJzxka7iuoF5PC
+ xxFwNFRS+7yiHDnEZNZOkEv9aAY3XAx4nBYtzChDamfc6F6UQz9lSe1XXz20is/Ra+Hq
+ C7MSbV608wK+95YvOJJtqOrVUTFdWd2u8IrlCqxRXO0NFFZawXGSz8W4ce/8CTcVtZDW jQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3djg2eg9xe-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 08:07:54 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20D80MMA005766;
+        Thu, 13 Jan 2022 08:07:54 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3djg2eg9x1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 08:07:54 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20D7vLGP032514;
+        Thu, 13 Jan 2022 08:07:52 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma03fra.de.ibm.com with ESMTP id 3df289r4d0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 13 Jan 2022 08:07:52 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20D7wjrj34275640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 13 Jan 2022 07:58:45 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 298FA52067;
+        Thu, 13 Jan 2022 08:07:50 +0000 (GMT)
+Received: from [9.145.9.227] (unknown [9.145.9.227])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B79D85205A;
+        Thu, 13 Jan 2022 08:07:49 +0000 (GMT)
+Message-ID: <5a5ba1b6-93d7-5c1e-aab2-23a52727fbd1@linux.ibm.com>
+Date:   Thu, 13 Jan 2022 09:07:51 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB9305.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eeb5b216-e562-4fde-f163-08d9d6600588
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jan 2022 06:43:34.6763
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CFFUi3qXNk50S4Ls9/2iOe36+Y4ZWTrmw2otWCLFUbK+054H6Dvpj2xcLaKGbOm0p65xad2HhkLVz5TRQITdpA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZPR01MB8548
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.4.1
+Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
+ listen queue
+Content-Language: en-US
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, dust.li@linux.alibaba.com,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
+ <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+ <20220105044049.GA107642@e02h04389.eu6sqa>
+ <20220105085748.GD31579@linux.alibaba.com>
+ <b98aefce-e425-9501-aacc-8e5a4a12953e@linux.ibm.com>
+ <20220105150612.GA75522@e02h04389.eu6sqa>
+ <d35569df-e0e0-5ea7-9aeb-7ffaeef04b14@linux.ibm.com>
+ <YdaUuOq+SkhYTWU8@TonyMac-Alibaba>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <YdaUuOq+SkhYTWU8@TonyMac-Alibaba>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 8HnaXHeVeHiC926I7exh9DMSSvNS1bZa
+X-Proofpoint-ORIG-GUID: dC5KELK1flj9ewxiJUUVobOiHL3kECki
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-13_02,2022-01-11_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
+ adultscore=0 spamscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2201130046
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGV5IFRvbSwgVG9tYXMsIGFsbA0KDQpJIHJlY2FsbCB0aGF0IHRoZSBTUEVDIHNheXM6DQo+IEEx
-OS40LjMuMSBIQ0EgUkVTT1VSQ0VTDQo+IFRoaXMgQW5uZXggaW50cm9kdWNlcyB0aGUgZm9sbG93
-aW5nIG5ldyBIQ0EgYXR0cmlidXRlczoNCj4g4oCiIEFiaWxpdHkgdG8gc3VwcG9ydCBNZW1vcnkg
-UGxhY2VtZW50IEV4dGVuc2lvbnMNCj4gYSkgQWJpbGl0eSB0byBzdXBwb3J0IEZMVVNIDQo+IGkp
-IEFiaWxpdHkgdG8gc3VwcG9ydCBGTFVTSCB3aXRoIFBMVCBHbG9iYWwgVmlzaWJpbGl0eQ0KPiBp
-aSkgQWJpbGl0eSB0byBzdXBwb3J0IEZMVVNIIHdpdGggUExUIFBlcnNpc3RlbmNlDQoNCkRvIHlv
-dSBoYXZlIGFueSBpZGVhIHRoYXQgY2FuIHRoZSBIQ0Egc3VwcG9ydCBqdXN0IHBhcnQgb2YgdGhl
-IEZMVVNIIGNhcGFiaWxpdGllcy4NCkZvciBleGFtcGxlLMKgIEhDQV9mb28gb25seSBzdXBwb3J0
-cyBQTFQgR2xvYmFsIFZpc2liaWxpdHksIG5vIFBMVCBQZXJzaXN0ZW5jZSBzdXBwb3J0Lg0KDQpU
-aGFua3MNClpoaWppYW4NCg0KDQoNCk9uIDI4LzEyLzIwMjEgMTY6MDcsIExpIFpoaWppYW4gd3Jv
-dGU6DQo+IERldmljZSBzaG91bGQgZW5hYmxlIElCX0RFVklDRV9SRE1BX0ZMVVNIIGNhcGFiaWxp
-dHkgaWYgaXQgd2FudCB0bw0KPiBzdXBwb3J0IFJETUEgRkxVU0guDQo+DQo+IFNpZ25lZC1vZmYt
-Ynk6IExpIFpoaWppYW4gPGxpemhpamlhbkBjbi5mdWppdHN1LmNvbT4NCj4gLS0tDQo+ICAgaW5j
-bHVkZS9yZG1hL2liX3ZlcmJzLmggfCA1ICsrKysrDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDUgaW5z
-ZXJ0aW9ucygrKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9yZG1hL2liX3ZlcmJzLmggYi9p
-bmNsdWRlL3JkbWEvaWJfdmVyYnMuaA0KPiBpbmRleCBmMDRkNjY1Mzk4NzkuLjUxZDU4YjY0MTIw
-MSAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9yZG1hL2liX3ZlcmJzLmgNCj4gKysrIGIvaW5jbHVk
-ZS9yZG1hL2liX3ZlcmJzLmgNCj4gQEAgLTI5MSw2ICsyOTEsNyBAQCBlbnVtIGliX2RldmljZV9j
-YXBfZmxhZ3Mgew0KPiAgIAkvKiBUaGUgZGV2aWNlIHN1cHBvcnRzIHBhZGRpbmcgaW5jb21pbmcg
-d3JpdGVzIHRvIGNhY2hlbGluZS4gKi8NCj4gICAJSUJfREVWSUNFX1BDSV9XUklURV9FTkRfUEFE
-RElORwkJPSAoMVVMTCA8PCAzNiksDQo+ICAgCUlCX0RFVklDRV9BTExPV19VU0VSX1VOUkVHCQk9
-ICgxVUxMIDw8IDM3KSwNCj4gKwlJQl9ERVZJQ0VfUkRNQV9GTFVTSAkJCT0gKDFVTEwgPDwgMzgp
-LA0KPiAgIH07DQo+ICAgDQo+ICAgZW51bSBpYl9hdG9taWNfY2FwIHsNCj4gQEAgLTQzMTksNiAr
-NDMyMCwxMCBAQCBzdGF0aWMgaW5saW5lIGludCBpYl9jaGVja19tcl9hY2Nlc3Moc3RydWN0IGli
-X2RldmljZSAqaWJfZGV2LA0KPiAgIAlpZiAoZmxhZ3MgJiBJQl9BQ0NFU1NfT05fREVNQU5EICYm
-DQo+ICAgCSAgICAhKGliX2Rldi0+YXR0cnMuZGV2aWNlX2NhcF9mbGFncyAmIElCX0RFVklDRV9P
-Tl9ERU1BTkRfUEFHSU5HKSkNCj4gICAJCXJldHVybiAtRUlOVkFMOw0KPiArDQo+ICsJaWYgKGZs
-YWdzICYgSUJfQUNDRVNTX0ZMVVNIICYmDQo+ICsJICAgICEoaWJfZGV2LT5hdHRycy5kZXZpY2Vf
-Y2FwX2ZsYWdzICYgSUJfREVWSUNFX1JETUFfRkxVU0gpKQ0KPiArCQlyZXR1cm4gLUVJTlZBTDsN
-Cj4gICAJcmV0dXJuIDA7DQo+ICAgfQ0KPiAgIA0K
+On 06/01/2022 08:05, Tony Lu wrote:
+> On Wed, Jan 05, 2022 at 08:13:23PM +0100, Karsten Graul wrote:
+>> On 05/01/2022 16:06, D. Wythe wrote:
+>>> LGTM. Fallback makes the restrictions on SMC dangling
+>>> connections more meaningful to me, compared to dropping them.
+>>>
+>>> Overall, i see there are two scenario.
+>>>
+>>> 1. Drop the overflow connections limited by userspace application
+>>> accept.
+>>>
+>>> 2. Fallback the overflow connections limited by the heavy process of
+>>> current SMC handshake. ( We can also control its behavior through
+>>> sysctl.)
+>>>
+>>
+>> I vote for (2) which makes the behavior from user space applications point of view more like TCP.
+> Fallback when smc reaches itself limit is a good idea. I'm curious
+> whether the fallback reason is suitable, it more like a non-negative
+> issue. Currently, smc fallback for negative issues, such as resource not
+> available or internal error. This issue doesn't like a non-negative
+> reason.
+
+SMC falls back when the SMC processing cannot be completed, e.g. due to 
+resource constraints like memory. For me the time/duration constraint is
+also a good reason to fall back to TCP.
+
+> 
+> And I have no idea about to mix the normal and fallback connections at
+> same time, meanwhile there is no error happened or hard limit reaches,
+> is a easy to maintain for users? Maybe let users misunderstanding, a
+> parameter from userspace control this limit, and the behaviour (drop or
+> fallback).
+
+I think of the following approach: the default maximum of active workers in a
+work queue is defined by WQ_MAX_ACTIVE (512). when this limit is hit then we
+have slightly lesser than 512 parallel SMC handshakes running at the moment,
+and new workers would be enqueued without to become active.
+In that case (max active workers reached) I would tend to fallback new connections
+to TCP. We would end up with lesser connections using SMC, but for the user space
+applications there would be nearly no change compared to TCP (no dropped TCP connection
+attempts, no need to reconnect).
+Imho, most users will never run into this problem, so I think its fine to behave like this.
+
+As far as I understand you, you still see a good reason in having another behavior 
+implemented in parallel (controllable by user) which enqueues all incoming connections
+like in your patch proposal? But how to deal with the out-of-memory problems that might 
+happen with that?
+
+>  
+>> One comment to sysctl: our current approach is to add new switches to the existing 
+>> netlink interface which can be used with the smc-tools package (or own implementations of course). 
+>> Is this prereq problematic in your environment? 
+>> We tried to avoid more sysctls and the netlink interface keeps use more flexible.
+> 
+> I agree with you about using netlink is more flexible. There are
+> something different in our environment to use netlink to control the
+> behaves of smc.
+> 
+> Compared with netlink, sysctl is:
+> - easy to use on clusters. Applications who want to use smc, don't need
+>   to deploy additional tools or developing another netlink logic,
+>   especially for thousands of machines or containers. With smc forward,
+>   we should make sure the package or logic is compatible with current
+>   kernel, but sysctl's API compatible is easy to discover.
+> 
+> - config template and default maintain. We are using /etc/sysctl.conf to
+>   make sure the systeml configures update to date, such as pre-tuned smc
+>   config parameters. So that we can change this default values on boot,
+>   and generate lots of machines base on this machine template. Userspace
+>   netlink tools doesn't suit for it, for example ip related config, we
+>   need additional NetworkManager or netctl to do this.
+> 
+> - TCP-like sysctl entries. TCP provides lots of sysctl to configure
+>   itself, somethings it is hard to use and understand. However, it is
+>   accepted by most of users and system. Maybe we could use sysctl for
+>   the item that frequently and easy to change, netlink for the complex
+>   item.
+> 
+> We are gold to contribute to smc-tools. Use netlink and sysctl both
+> time, I think, is a more suitable choice.
+
+Lets decide that when you have a specific control that you want to implement. 
+I want to have a very good to introduce another interface into the SMC module,
+making the code more complex and all of that. The decision for the netlink interface 
+was also done because we have the impression that this is the NEW way to go, and
+since we had no interface before we started with the most modern way to implement it.
+
+TCP et al have a history with sysfs, so thats why it is still there. 
+But I might be wrong on that...
