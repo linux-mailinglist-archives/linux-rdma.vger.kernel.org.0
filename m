@@ -2,59 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D580E48ED63
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 16:48:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAB348ED64
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 16:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242899AbiANPsK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jan 2022 10:48:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41186 "EHLO
+        id S242992AbiANPsM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jan 2022 10:48:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242930AbiANPsJ (ORCPT
+        with ESMTP id S242938AbiANPsJ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jan 2022 10:48:09 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2341C06173E
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:08 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id q9-20020a7bce89000000b00349e697f2fbso7607982wmj.0
-        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:08 -0800 (PST)
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 380C9C06161C
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:09 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id v123so6950409wme.2
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=D/6OO29zOOdEfBttl6kPJAD668BKq3O8MGDv6y0XtGQ=;
-        b=Xgvx7fcMqlgYsUhaX6BduchF43yhEDg56mnndR9/krOTzPVKY3Knc8i9sMuwcZ54+7
-         DWemFXR0+PFdJ3TnWyOci/tEeTOVwwFw0J3OID3ZKGppMZb/JKp/Xv1I4aLuJ/sjGKCl
-         GXiYPIHNf8Rp+kQWb/8oP7CwkFuy8wZ+KVjnfglZZ8VCwipJz+0SMEavu8+bz22K8+Fk
-         CKhgwQcgutaaxLzYlxycHtgNhtHbDupPfdFZ0kHTVlB2YjjRIH5nCGQ8cXPbJCz6IpRf
-         HdSC8Nh7kMnm8JwfVfrg/zmHCIo9oPcPsCCsdkyj5WjoiyWWAFF+yQDuJwFPnzxBqmSC
-         IMlg==
+        bh=vil0NtkJScmskuQyDq3wUbG1nj2Cyjzt1U19Hf8vW90=;
+        b=jKwckO+KSa0ZmeHA0tUcroe4Gp0nKlVaAqZQC1/MRNMY2mq1wydlFnqF8crZ8CqXFv
+         E4hlsEl/GA7El4jb7GZVSlGatHKo9fTHedY1DADLGrM2CGtngQngLVlPdBtQpesNdyOz
+         yAAk2fOfLUKjbG5cBlzyuij4QMwq0tvJl/2wwJK5g1rvDdlBUDmDA9I3pi64/tHLAX2R
+         Nf+XM5gogkK3/sAUsCMCglmo3m31qJx1Q+2g8Ek+e//ntpfgEhWvnZBUI6NW1K3EkkCr
+         /jGIwAtKIeIeZ0HiWr9LjIlIgNjdT2mAQbGnNh1yw4h2kWd23ROQGn2FmN4eCVSdwpuT
+         V9/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=D/6OO29zOOdEfBttl6kPJAD668BKq3O8MGDv6y0XtGQ=;
-        b=00yDkeOlTSKgilVJx2EkmORLloPyz8E0AX7StLrDI/P5K8EtlfNjMBNWVs2kjcE3OJ
-         /0GLA9oX6PtOhYCv7nm2nxNtVveh8P2ygZwYCY/CrczfoZotdyTX422bn/lOo6cXY5J/
-         w7fbMP1jbHQvvi2mp9DN2g3O4YjP0mbbV7d6SP7WrQYip76/1GaHvYQTOc1TOnAKI1Qq
-         mLyAsxFz5Pf2OR/eDvFH9ZheE9UKHrEBkrmk3EqyYweKJ6FlA75J4dJq8blDpVczWB58
-         wjvlrDLQVNVmWshIog+Mk3FuHsPOoGmr7cYK+cfzhsCUnRKAKSX/WPY06n4t928i+TcY
-         EY6Q==
-X-Gm-Message-State: AOAM530/gg/NGcpnWmTpMQND/UuJJ8XlvCEldYhfoxYOcjBOde70ZauC
-        B9jVd7WGFXgIivjVPfBuqAUB6nU7PXpHSA==
-X-Google-Smtp-Source: ABdhPJy4M/lELeiV2X2bYeY94109gDXlLWIXsHHCefQWD7SKFcfZ5FDRTzr4tx6kGbNGRt0eGESVJg==
-X-Received: by 2002:a05:6402:424e:: with SMTP id g14mr9455290edb.399.1642175287025;
+        bh=vil0NtkJScmskuQyDq3wUbG1nj2Cyjzt1U19Hf8vW90=;
+        b=TjyNEOTE6N+hg3qX5e989gA5UXDDxheHHK+6Gx81xXGDdFQ/a2ZEqOwiWuIjwPIdgG
+         vonHg5330X0o8y5W9eOBqm9Hw3XJb9Jfnvdv/WpG03n6VrLBV2ab4sIh1MHazIbXMP3Q
+         u35LkyQmDQbA3PWz/cGb3roMeIMcVS0koAi7uo/vkJ4DaN4bWTqRSnzJScnNCBfmkfjS
+         DZlOCjtYPXdPsNIPHMIlTKqsQmhIWRg2lYUQgPb7G2lPw7INOj15C5E0Po8e/265N7dR
+         DTBTUyNSVpMgEoUufQB5/7RYjZS990+Z9vVMWVm+AIg9aZoKo2o2sicz/R9YOgNCbgmu
+         63Hg==
+X-Gm-Message-State: AOAM532nqYABBULzm2ZN0ok9/90tDKmJlQe5ur2846FzUBJ7tov7qD9K
+        tCMzR859AoFNmeOrEXiYfh8YonkUEd0wJw==
+X-Google-Smtp-Source: ABdhPJwIt/v4ZvmuOS2hXPD3w7xtYnZl+Qc2G4lqk2NJM1YEUGaV5ArSI355syxNGdDs7eM/cF0Z1g==
+X-Received: by 2002:a17:906:4fcc:: with SMTP id i12mr7905054ejw.529.1642175287748;
         Fri, 14 Jan 2022 07:48:07 -0800 (PST)
 Received: from lb01533.fkb.profitbricks.net ([85.214.13.132])
-        by smtp.gmail.com with ESMTPSA id x20sm2522028edd.28.2022.01.14.07.48.06
+        by smtp.gmail.com with ESMTPSA id x20sm2522028edd.28.2022.01.14.07.48.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Jan 2022 07:48:06 -0800 (PST)
+        Fri, 14 Jan 2022 07:48:07 -0800 (PST)
 From:   Md Haris Iqbal <haris.iqbal@ionos.com>
 To:     linux-rdma@vger.kernel.org
 Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
-        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Subject: [PATCH for-next 3/5] RDMA/rtrs-clt: fix CHECK type warnings
-Date:   Fri, 14 Jan 2022 16:47:51 +0100
-Message-Id: <20220114154753.983568-4-haris.iqbal@ionos.com>
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: [PATCH for-next 4/5] RDMA/rtrs-clt: Update one outdated comment in path_it_deinit
+Date:   Fri, 14 Jan 2022 16:47:52 +0100
+Message-Id: <20220114154753.983568-5-haris.iqbal@ionos.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220114154753.983568-1-haris.iqbal@ionos.com>
 References: <20220114154753.983568-1-haris.iqbal@ionos.com>
@@ -64,31 +63,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gioh Kim <gi-oh.kim@ionos.com>
+From: Jack Wang <jinpu.wang@ionos.com>
 
-fix below warning
-CHECK:OPEN_ENDED_LINE: Lines should not end with a '('
+The skip_list is used for both MIN_INFLIGHT and MIN_LATENCY.
 
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
 Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-index b4fa473b7888..d3c436ead694 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c
-@@ -156,8 +156,7 @@ static DEVICE_ATTR_RW(mpath_policy);
- static ssize_t add_path_show(struct device *dev,
- 			     struct device_attribute *attr, char *page)
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 62ba0f17ac9d..05de9ec7c99a 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -907,7 +907,7 @@ static inline void path_it_deinit(struct path_it *it)
  {
--	return sysfs_emit(
--		page,
-+	return sysfs_emit(page,
- 		"Usage: echo [<source addr>@]<destination addr> > %s\n\n*addr ::= [ ip:<ipv4|ipv6> | gid:<gid> ]\n",
- 		attr->attr.name);
- }
+ 	struct list_head *skip, *tmp;
+ 	/*
+-	 * The skip_list is used only for the MIN_INFLIGHT policy.
++	 * The skip_list is used only for the MIN_INFLIGHT and MIN_LATENCY policies.
+ 	 * We need to remove paths from it, so that next IO can insert
+ 	 * paths (->mp_skip_entry) into a skip_list again.
+ 	 */
 -- 
 2.25.1
 
