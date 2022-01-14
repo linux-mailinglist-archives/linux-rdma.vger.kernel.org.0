@@ -2,60 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B676748E727
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 10:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F1C48ED60
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 16:48:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbiANJKk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jan 2022 04:10:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
+        id S238763AbiANPsH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jan 2022 10:48:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbiANJKk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jan 2022 04:10:40 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64616C061574;
-        Fri, 14 Jan 2022 01:10:40 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0623661B76;
-        Fri, 14 Jan 2022 09:10:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13CA4C36AE9;
-        Fri, 14 Jan 2022 09:10:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642151439;
-        bh=BgnqRXbrYCJ6e+fKoAFI5d8seqgDU4hUCDIJZkCHAyU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rGhk3dkQsvSwSp8qDpByiT/eUlS0irN3IKnqbz1mCPN3NoDNZYhhpYj6fIZRJc/A+
-         GZMSuDlhtzKEDTd/7bHBFod+VATdQ4/Dbt4NcFpR2EhfPramX2faDPdleLo0gfJ9P/
-         vT6rq7RbYAK9PQjSrgyRim9IVRE3RCwtFBXCLkLVp/m1PG5/wgNXkxy6K9bIdyPKhf
-         pKF2+dcrm/0Tp5NIz8Eb8Gw+AnDNHvZYcw9jxD8It0hiRACtkZg67ARBXG2DMo/0MC
-         4KBC60YYOZX2STT5lFkDgX9zVeITiAjXIsl6/pRB43iFeM+OPJvvgeIpmCbdhUiIUZ
-         6ssr5BJ57jRUw==
-Date:   Fri, 14 Jan 2022 11:10:31 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ryan Cai <ryancaicse@gmail.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: mlx5: memory leaks
-Message-ID: <YeE+Bw3IoAIZZZ/h@unreal>
-References: <76193B8E-6A8B-4FF9-B6BB-A3A17FB74A61@gmail.com>
+        with ESMTP id S242899AbiANPsG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jan 2022 10:48:06 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02887C061574
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:06 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id ay4-20020a05600c1e0400b0034a81a94607so5609523wmb.1
+        for <linux-rdma@vger.kernel.org>; Fri, 14 Jan 2022 07:48:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=veg5W3bweatOvJg7Kra9dyvXIH+yJd4fFUwUnAFuRHk=;
+        b=CQREACLntKPXWPCe+F0OsUalDBvlohAoPX4PsC/neemXy7zuf3l8Y6o1c3w7MNV6Su
+         mkbu89IgOjiS2kOHNyBLxlRs3fX6/C+i7xIhujRwMl3/va3fn1vlHTjAEGPBUAVYA3Gf
+         87G4n1sLWoLGOUwoRBVfMcAJcSxyjZZ+D2ixtUCxUjpeGdOWSl39k26zojrn1BvjLEqQ
+         IaS0I9rIOXf8m/l8DfwiypOU2rCk1Rm73iUYQ6JQtL0thwKNjbb7D5OCzTHAnKcTsKjP
+         UfWX1vZM9OLSUKJCvHOSt4iHD9Mvdufucf3UIHjLXen1/CebKqL11JI9Hgkls2VRkvEZ
+         kcvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=veg5W3bweatOvJg7Kra9dyvXIH+yJd4fFUwUnAFuRHk=;
+        b=CW8X3cblxJmngevSsNyQYavDwzuMUwqCJR6n5IV17+ztvvWWF+kvAo/ThuxwCXoFzP
+         BYh7sBIcd43dL6Z2NrhaAfiTiVV5qxzQ+qkGA05BANKQ9m/yM45j9iCATE7D/J0wwRSL
+         d87ufLqCnhJfzNCdRyKr9hfUEkGuXFoJ67VYB+o9M8nbQJjgfs54oDwkwYsXNfz4HmRH
+         3kNCsInAALtmEvoywjwG7YI+mjahseQqZ/RGLokfVZY3GfF4E6sJ8emBD3HilAFZ6nRA
+         8VH1wgy3yu4lzPm5O/j1bKZtAanwFpLje/P4Ugwe73nFYlAKnbB9mwG76V2bTcvYwiwb
+         Sy3g==
+X-Gm-Message-State: AOAM532vXy9yWH2EYYUPD+lX2auye3VwkrIkgOyhdAD75k0xsP0/LEZH
+        Cfqbt6HAWrDP8t4ElNUVY+MHjnkoUA4WrQ==
+X-Google-Smtp-Source: ABdhPJwr7I50A1NI0AzNpz9LHunhIatZOv5oNOw1sigaDP9pxNr45k8XWqU9z44xrNSGJkMPExK6FQ==
+X-Received: by 2002:a05:6402:1d4e:: with SMTP id dz14mr9528797edb.286.1642175284542;
+        Fri, 14 Jan 2022 07:48:04 -0800 (PST)
+Received: from lb01533.fkb.profitbricks.net ([85.214.13.132])
+        by smtp.gmail.com with ESMTPSA id x20sm2522028edd.28.2022.01.14.07.48.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Jan 2022 07:48:04 -0800 (PST)
+From:   Md Haris Iqbal <haris.iqbal@ionos.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     bvanassche@acm.org, leon@kernel.org, dledford@redhat.com,
+        jgg@ziepe.ca, haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: [PATCH for-next 0/5] Misc update for RTRS
+Date:   Fri, 14 Jan 2022 16:47:48 +0100
+Message-Id: <20220114154753.983568-1-haris.iqbal@ionos.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <76193B8E-6A8B-4FF9-B6BB-A3A17FB74A61@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 13, 2022 at 12:37:10PM +0800, Ryan Cai wrote:
-> Hi, Kernel Maintainers,
-> 
->     In method mlx5_ib_destroy_gsi of gsi.c, there are memory leaks when ret = ib_destroy_qp(gsi->rx_qp); returns true? I think, ib_free_cq(gsi->cq); kfree(gsi->outstanding_wrs); kfree(gsi->tx_qps); should also be put before return ret before Line 180. If this is a real bug, I can send a patch. Thanks!
+Hi Jason, hi Doug,
 
-The ib_destroy_qp() is function that destroys kernel QP that in our
-memory model shouldn't fail. The patch that converts ib_destroy_qp()
-to be void is very welcomed.
+Please consider to include following changes to the next merge window.
 
-See ib_destroy_srq() as an example of expected function format.
+The patchset is organized as:
+- patch1, patch2, patch3 fixes warnings generated from checkpatch
+- patch4 updates a comment.
+- patch5 In case of error, performs failover earlier & avoids deadlock
 
-Thanks
+Gioh Kim (3):
+  RDMA/rtrs: fix CHECK:BRACES type warning
+  RDMA/rtrs-clt: fix CHECK type warnings
+  RDMA/rtrs-clt: fix CHECK type warnings
+
+Jack Wang (2):
+  RDMA/rtrs-clt: Update one outdated comment in path_it_deinit
+  RDMA/rtrs-clt: Do stop and failover outside reconnect work.
+
+ drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c |  3 +-
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c       | 91 ++++++++++----------
+ drivers/infiniband/ulp/rtrs/rtrs-clt.h       |  1 +
+ drivers/infiniband/ulp/rtrs/rtrs.c           |  1 -
+ 4 files changed, 47 insertions(+), 49 deletions(-)
+
+-- 
+2.25.1
+
