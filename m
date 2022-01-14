@@ -2,204 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DB748E537
-	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 09:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24AF48E69E
+	for <lists+linux-rdma@lfdr.de>; Fri, 14 Jan 2022 09:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbiANIKm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 14 Jan 2022 03:10:42 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:47611 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231576AbiANIKm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 14 Jan 2022 03:10:42 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3AMFIIQa5hdN3TcH2ISgYsNwxRtEvGchMFZxGqfqr?=
- =?us-ascii?q?LsXjdYENShjUHzzYYUGqDbK6JZ2WnfYtya4S28hkBu5HVytAxHVE5pCpnJ55og?=
- =?us-ascii?q?ZCbXIzGdC8cHM8zwvXrFRsht4NHAjX5BJhcokT0+1H9YtANkVEmjfvSHuOlVLa?=
- =?us-ascii?q?dUsxMbVQMpBkJ2EsLd9ER0tYAbeiRW2thiPuqyyHtEAbNNw1cbgr435m+RCZH5?=
- =?us-ascii?q?5wejt+3UmsWPpintHeG/5Uc4Ql2yauZdxMUSaEMdgK2qnqq8V23wo/Z109F5tK?=
- =?us-ascii?q?NmbC9fFAIQ6LJIE6FjX8+t6qK20AE/3JtlP1gcqd0hUR/0l1lm/h1ycdNtJ6xQ?=
- =?us-ascii?q?AEBMLDOmfgGTl9TFCQW0ahuoeWfeiXi653Kp6HBWz62qxl0N2ksJYAR4P1wB2F?=
- =?us-ascii?q?W+NQXLTkMalaIgOfe6KCqSPt9hJ57dJHDM4YWu3UmxjbcZd4iQJnFTLrH48dV2?=
- =?us-ascii?q?jgYht1HAvvfIcEebFJHYB3GJR8JJVYTDJM3mfyAh3/jfjkeo1WQzYIz7m/V5A9?=
- =?us-ascii?q?8yr7gNJzSYNPibcNLkkedo0rC/n/lGVceNdqC2XyJ/2zErubPlDn8XoY6EqO5+?=
- =?us-ascii?q?v9jxlaUwwQ7DRcSUlC7if+ni0K/UpRULEl80i4vq7UisU+mVN/wWzWmr3Oe+B0?=
- =?us-ascii?q?RQdxdF6s98g7l4q7V5RuJQ3IISzdpdtMrrok1SCYs21vPmMnmbRRtv7K9W3OQ7?=
- =?us-ascii?q?rrSpjraBMS/BQfufgddFU1cvYal+9p103ryoh9YOPbdprXI9fvYmVhmdBQDuog?=
- =?us-ascii?q?=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ACTcVJKHuJA/lezhVpLqEjceALOsnbusQ8zAX?=
- =?us-ascii?q?PiFKKSC9Hfb0qynDpp4mPHzP6Qr5OktOpTnoAsDpKk80naQFgrX5Vo3PYOCJgg?=
- =?us-ascii?q?WVEL0=3D?=
-X-IronPort-AV: E=Sophos;i="5.88,287,1635177600"; 
-   d="scan'208";a="120355291"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 14 Jan 2022 16:10:38 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id A26304D15A4C;
-        Fri, 14 Jan 2022 16:10:34 +0800 (CST)
-Received: from G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.80) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Fri, 14 Jan 2022 16:10:32 +0800
-Received: from [192.168.122.212] (10.167.226.45) by
- G08CNEXCHPEKD07.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Fri, 14 Jan 2022 16:10:34 +0800
-Subject: Re: [RFC PATCH rdma-next 01/10] RDMA: mr: Introduce is_pmem
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     <linux-rdma@vger.kernel.org>, <zyjzyj2000@gmail.com>,
-        <aharonl@nvidia.com>, <leon@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <mbloch@nvidia.com>,
-        <liangwenpeng@huawei.com>, <yangx.jy@cn.fujitsu.com>,
-        <rpearsonhpe@gmail.com>, <y-goto@fujitsu.com>,
-        <dan.j.williams@intel.com>,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>
-References: <20211228080717.10666-1-lizhijian@cn.fujitsu.com>
- <20211228080717.10666-2-lizhijian@cn.fujitsu.com>
- <20220106002130.GP6467@ziepe.ca>
- <bf038e6c-66db-50ca-0126-3ad4ac1371e7@fujitsu.com>
-From:   "Li, Zhijian" <lizhijian@cn.fujitsu.com>
-Message-ID: <4e679df5-633d-cd0c-9de3-16348b2cef35@cn.fujitsu.com>
-Date:   Fri, 14 Jan 2022 16:10:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+        id S234395AbiANIgh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 14 Jan 2022 03:36:37 -0500
+Received: from mga14.intel.com ([192.55.52.115]:34019 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234295AbiANIgg (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 14 Jan 2022 03:36:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642149396; x=1673685396;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1x1FCLzhqwaK0NdthjnHjX2QBQEyfMbB30DB7I1A67o=;
+  b=Q0vfnJVQ+soO4pzjqySxU/LBFEsJwhGEi5y99Tyy+jGi/kvaUPnyv4q4
+   BcfJlT0lVZtiy4IeB6BgFJ5CspS/fg3z+E4aRpJrnIhuyEXujkk71tFZI
+   yOgLlhpStK6dK9lFkZ3brRlL8R2RXOV/tlI7rCpXD57s/IYNfWYv9Wneq
+   yNutEOKNGe2XD2snEQNEVtoj4vhzv1yGyoBo2RBT57Xv0Uowrseo6d548
+   qweP/eMBa/GKHIFv0Uw/jrqSjG6NDyDk/tr/UxaygWee4Gxx+BfVj3iec
+   EVmI1emT0torWfood6ud8BnhhShy0SA3nav7iNUbxv5VQefUYAluNk8WY
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10226"; a="244409837"
+X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; 
+   d="scan'208";a="244409837"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Jan 2022 00:36:36 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,288,1635231600"; 
+   d="scan'208";a="620910747"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Jan 2022 00:36:35 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1n8I4Y-0008JJ-NU; Fri, 14 Jan 2022 08:36:34 +0000
+Date:   Fri, 14 Jan 2022 16:35:32 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ c0fe82baaeb2719f910359684c0817057f79a84a
+Message-ID: <61e135d4.FVxEvsywXR2gnXxg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <bf038e6c-66db-50ca-0126-3ad4ac1371e7@fujitsu.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-yoursite-MailScanner-ID: A26304D15A4C.AEA32
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Copied to nvdimm list
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: c0fe82baaeb2719f910359684c0817057f79a84a  Merge tag 'v5.16' into rdma.git for-next
 
-Thanks
+elapsed time: 724m
 
-Zhijian
+configs tested: 146
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-on 2022/1/6 14:12, Li Zhijian wrote:
->
-> Add Dan to the party :)
->
-> May i know whether there is any existing APIs to check whether
-> a va/page backs to a nvdimm/pmem ?
->
->
->
-> On 06/01/2022 08:21, Jason Gunthorpe wrote:
->> On Tue, Dec 28, 2021 at 04:07:08PM +0800, Li Zhijian wrote:
->>> We can use it to indicate whether the registering mr is associated with
->>> a pmem/nvdimm or not.
->>>
->>> Currently, we only assign it in rxe driver, for other device/drivers,
->>> they should implement it if needed.
->>>
->>> RDMA FLUSH will support the persistence feature for a pmem/nvdimm.
->>>
->>> Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
->>>   drivers/infiniband/sw/rxe/rxe_mr.c | 47 
->>> ++++++++++++++++++++++++++++++
->>>   include/rdma/ib_verbs.h            |  1 +
->>>   2 files changed, 48 insertions(+)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c 
->>> b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> index 7c4cd19a9db2..bcd5e7afa475 100644
->>> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
->>> @@ -162,6 +162,50 @@ void rxe_mr_init_dma(struct rxe_pd *pd, int 
->>> access, struct rxe_mr *mr)
->>>       mr->type = IB_MR_TYPE_DMA;
->>>   }
->>>   +// XXX: the logic is similar with mm/memory-failure.c
->>> +static bool page_in_dev_pagemap(struct page *page)
->>> +{
->>> +    unsigned long pfn;
->>> +    struct page *p;
->>> +    struct dev_pagemap *pgmap = NULL;
->>> +
->>> +    pfn = page_to_pfn(page);
->>> +    if (!pfn) {
->>> +        pr_err("no such pfn for page %p\n", page);
->>> +        return false;
->>> +    }
->>> +
->>> +    p = pfn_to_online_page(pfn);
->>> +    if (!p) {
->>> +        if (pfn_valid(pfn)) {
->>> +            pgmap = get_dev_pagemap(pfn, NULL);
->>> +            if (pgmap)
->>> +                put_dev_pagemap(pgmap);
->>> +        }
->>> +    }
->>> +
->>> +    return !!pgmap;
->> You need to get Dan to check this out, but I'm pretty sure this should
->> be more like this:
->>
->> if (is_zone_device_page(page) && page->pgmap->type == 
->> MEMORY_DEVICE_FS_DAX)
->
-> Great, i have added him.
->
->
->
->>
->>
->>> +static bool iova_in_pmem(struct rxe_mr *mr, u64 iova, int length)
->>> +{
->>> +    struct page *page = NULL;
->>> +    char *vaddr = iova_to_vaddr(mr, iova, length);
->>> +
->>> +    if (!vaddr) {
->>> +        pr_err("not a valid iova %llu\n", iova);
->>> +        return false;
->>> +    }
->>> +
->>> +    page = virt_to_page(vaddr);
->> And obviously this isn't uniform for the entire umem, so I don't even
->> know what this is supposed to mean.
->
-> My intention is to check if a memory region belongs to a nvdimm/pmem.
-> The approach is like that:
-> iova(user space)-+                     +-> page -> page_in_dev_pagemap()
->                  |                     |
->                  +-> va(kernel space) -+
-> Since current MR's va is associated with map_set where it record the 
-> relations
-> between iova and va and page. Do do you mean we should travel map_set to
-> get its page ? or by any other ways.
->
->
->
->
->
->
->
->>> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
->>> index 6e9ad656ecb7..822ebb3425dc 100644
->>> +++ b/include/rdma/ib_verbs.h
->>> @@ -1807,6 +1807,7 @@ struct ib_mr {
->>>       unsigned int       page_size;
->>>       enum ib_mr_type       type;
->>>       bool           need_inval;
->>> +    bool           is_pmem;
->> Or why it is being stored in the global struct?
->
-> Indeed, it's not strong necessary. but i think is_pmem should belongs 
-> to a ib_mr
-> so that it can be checked by other general code when they needed even 
-> though no
-> one does such checking so far.
->
->
-> Thanks
-> Zhijian
->
->
->
->>
->> Jason
->
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+arm                          gemini_defconfig
+arm                         at91_dt_defconfig
+nios2                         10m50_defconfig
+sparc64                             defconfig
+mips                        bcm47xx_defconfig
+powerpc                 mpc837x_mds_defconfig
+m68k                        mvme16x_defconfig
+powerpc                     tqm8555_defconfig
+arm                            hisi_defconfig
+powerpc                      tqm8xx_defconfig
+arm                         lpc18xx_defconfig
+powerpc                      pcm030_defconfig
+arm                         s3c6400_defconfig
+arm                         axm55xx_defconfig
+arm                           h5000_defconfig
+powerpc                    amigaone_defconfig
+arc                        nsim_700_defconfig
+sh                        sh7757lcr_defconfig
+sh                          landisk_defconfig
+csky                             alldefconfig
+xtensa                          iss_defconfig
+arm                           sunxi_defconfig
+powerpc                      pasemi_defconfig
+sh                               j2_defconfig
+arc                              alldefconfig
+mips                           ci20_defconfig
+arm                          iop32x_defconfig
+mips                         tb0226_defconfig
+arm                            mps2_defconfig
+arm                          lpd270_defconfig
+riscv                            allmodconfig
+arm                            qcom_defconfig
+arm                            pleb_defconfig
+ia64                        generic_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                   sh7724_generic_defconfig
+mips                         db1xxx_defconfig
+powerpc                     mpc83xx_defconfig
+mips                        vocore2_defconfig
+openrisc                    or1ksim_defconfig
+s390                          debug_defconfig
+sh                          rsk7264_defconfig
+sh                          r7785rp_defconfig
+arm                            xcep_defconfig
+sh                           se7343_defconfig
+sh                                  defconfig
+i386                             alldefconfig
+sh                          sdk7786_defconfig
+arm                           tegra_defconfig
+sh                         microdev_defconfig
+powerpc                       ppc64_defconfig
+m68k                             allmodconfig
+sh                              ul2_defconfig
+arm                  randconfig-c002-20220113
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220113
+arc                  randconfig-r043-20220113
+s390                 randconfig-r044-20220113
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
+clang tested configs:
+arm                  randconfig-c002-20220113
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220113
+powerpc              randconfig-c003-20220113
+i386                          randconfig-c001
+mips                 randconfig-c004-20220113
+mips                           ip28_defconfig
+arm                          pxa168_defconfig
+powerpc                     powernv_defconfig
+powerpc                        icon_defconfig
+mips                        bcm63xx_defconfig
+arm                          ixp4xx_defconfig
+powerpc                     mpc5200_defconfig
+mips                            e55_defconfig
+powerpc                 mpc836x_mds_defconfig
+riscv                             allnoconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220113
+hexagon              randconfig-r041-20220113
 
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
