@@ -2,28 +2,28 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A09490442
-	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jan 2022 09:48:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DECC490443
+	for <lists+linux-rdma@lfdr.de>; Mon, 17 Jan 2022 09:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230216AbiAQIse (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 17 Jan 2022 03:48:34 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:58466 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229982AbiAQIse (ORCPT
+        id S230503AbiAQIsg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 17 Jan 2022 03:48:36 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46541 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230283AbiAQIsf (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 17 Jan 2022 03:48:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V21zh5n_1642409312;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V21zh5n_1642409312)
+        Mon, 17 Jan 2022 03:48:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V21eMTy_1642409313;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V21eMTy_1642409313)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 17 Jan 2022 16:48:32 +0800
+          Mon, 17 Jan 2022 16:48:33 +0800
 From:   Cheng Xu <chengyou@linux.alibaba.com>
 To:     jgg@ziepe.ca, dledford@redhat.com
 Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
         KaiShen@linux.alibaba.com, chengyou@linux.alibaba.com,
         tonylu@linux.alibaba.com
-Subject: [PATCH rdma-next v2 03/11] RDMA/erdma: Add main include file
-Date:   Mon, 17 Jan 2022 16:48:20 +0800
-Message-Id: <20220117084828.80638-4-chengyou@linux.alibaba.com>
+Subject: [PATCH rdma-next v2 04/11] RDMA/erdma: Add cmdq implementation
+Date:   Mon, 17 Jan 2022 16:48:21 +0800
+Message-Id: <20220117084828.80638-5-chengyou@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 In-Reply-To: <20220117084828.80638-1-chengyou@linux.alibaba.com>
 References: <20220117084828.80638-1-chengyou@linux.alibaba.com>
@@ -33,414 +33,516 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add ERDMA driver main header file, defining internal used data structures
-and operations. The defined data structures includes *cmdq*, which is used
-as the communication channel between ERDMA driver and hardware.
+Cmdq is the main control plane channel between erdma driver and hardware.
+After erdma device is initialized, the cmdq channel will be active in the
+whole lifecycle of this driver.
 
 Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
 ---
- drivers/infiniband/hw/erdma/erdma.h | 392 ++++++++++++++++++++++++++++
- 1 file changed, 392 insertions(+)
- create mode 100644 drivers/infiniband/hw/erdma/erdma.h
+ drivers/infiniband/hw/erdma/erdma_cmdq.c | 494 +++++++++++++++++++++++
+ 1 file changed, 494 insertions(+)
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cmdq.c
 
-diff --git a/drivers/infiniband/hw/erdma/erdma.h b/drivers/infiniband/hw/erdma/erdma.h
+diff --git a/drivers/infiniband/hw/erdma/erdma_cmdq.c b/drivers/infiniband/hw/erdma/erdma_cmdq.c
 new file mode 100644
-index 000000000000..ae9ec98e99d0
+index 000000000000..58c60954860c
 --- /dev/null
-+++ b/drivers/infiniband/hw/erdma/erdma.h
-@@ -0,0 +1,392 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++++ b/drivers/infiniband/hw/erdma/erdma_cmdq.c
+@@ -0,0 +1,494 @@
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
 +
 +/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
 +/*          Kai Shen <kaishen@linux.alibaba.com> */
 +/* Copyright (c) 2020-2022, Alibaba Group. */
 +
-+#ifndef __ERDMA_H__
-+#define __ERDMA_H__
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/pci.h>
 +
-+#include <linux/bitfield.h>
-+#include <linux/netdevice.h>
-+#include <linux/xarray.h>
-+#include <rdma/ib_verbs.h>
-+
++#include "erdma.h"
 +#include "erdma_hw.h"
++#include "erdma_verbs.h"
 +
-+#define DRV_MODULE_NAME "erdma"
-+
-+struct erdma_eq {
-+	void *qbuf;
-+	dma_addr_t qbuf_dma_addr;
-+
-+	u32 depth;
-+	u64 __iomem *db_addr;
-+
-+	spinlock_t lock;
-+
-+	u16 ci;
-+	u16 owner;
-+
-+	atomic64_t event_num;
-+	atomic64_t notify_num;
-+
-+	void *db_info;
-+};
-+
-+struct erdma_cmdq_sq {
-+	void *qbuf;
-+	dma_addr_t qbuf_dma_addr;
-+
-+	spinlock_t lock;
-+	u64 __iomem *db_addr;
-+
-+	u16 ci;
-+	u16 pi;
-+
-+	u16 depth;
-+	u16 wqebb_cnt;
-+
-+	void *db_info;
-+
-+	u64 total_cmds;
-+	u64 total_comp_cmds;
-+};
-+
-+struct erdma_cmdq_cq {
-+	void *qbuf;
-+
-+	dma_addr_t qbuf_dma_addr;
-+
-+	u64 __iomem *db_addr;
-+	spinlock_t lock;
-+
-+	u32 ci;
-+	u16 owner;
-+	u16 depth;
-+
-+	void *db_info;
-+
-+	atomic64_t cq_armed_num;
-+};
-+
-+enum {
-+	ERDMA_CMD_STATUS_INIT,
-+	ERDMA_CMD_STATUS_ISSUED,
-+	ERDMA_CMD_STATUS_FINISHED,
-+	ERDMA_CMD_STATUS_TIMEOUT
-+};
-+
-+struct erdma_comp_wait {
-+	struct completion wait_event;
-+	u32 cmd_status;
-+	u32 ctx_id;
-+	u16 sq_pi;
-+	u8 comp_status;
-+	u8 rsvd;
-+	u32 comp_data[4];
-+};
-+
-+enum {
-+	ERDMA_CMDQ_STATE_OK_BIT = 0,
-+	ERDMA_CMDQ_STATE_TIMEOUT_BIT = 1,
-+	ERDMA_CMDQ_STATE_CTX_ERR_BIT = 2,
-+};
-+
-+#define ERDMA_CMDQ_TIMEOUT_MS       15000
-+#define ERDMA_REG_ACCESS_WAIT_MS    20
-+#define ERDMA_WAIT_DEV_DONE_CNT     500
-+
-+struct erdma_cmdq {
-+	void *dev;
-+
-+	unsigned long *comp_wait_bitmap;
-+	struct erdma_comp_wait *wait_pool;
-+	spinlock_t lock;
-+
-+	u8 use_event;
-+
-+	struct erdma_cmdq_sq sq;
-+	struct erdma_cmdq_cq cq;
-+	struct erdma_eq eq;
-+
-+	unsigned long state;
-+
-+	struct semaphore credits;
-+	u16 max_outstandings;
-+};
-+
-+struct erdma_devattr {
-+	unsigned int device;
-+	unsigned int version;
-+
-+	u32 vendor_id;
-+	u32 vendor_part_id;
-+	u32 sw_version;
-+	u32 max_qp;
-+	u32 max_send_wr;
-+	u32 max_recv_wr;
-+	u32 max_ord;
-+	u32 max_ird;
-+
-+	enum ib_device_cap_flags cap_flags;
-+	u32 max_send_sge;
-+	u32 max_recv_sge;
-+	u32 max_sge_rd;
-+	u32 max_cq;
-+	u32 max_cqe;
-+	u64 max_mr_size;
-+	u32 max_mr;
-+	u32 max_pd;
-+	u32 max_mw;
-+	u32 max_srq;
-+	u32 max_srq_wr;
-+	u32 max_srq_sge;
-+	u32 local_dma_key;
-+};
-+
-+#define ERDMA_IRQNAME_SIZE 50
-+struct erdma_irq_info {
-+	char name[ERDMA_IRQNAME_SIZE];
-+	irq_handler_t handler;
-+	u32 msix_vector;
-+	void *data;
-+	int cpu;
-+	cpumask_t affinity_hint_mask;
-+};
-+
-+struct erdma_eq_cb {
-+	u8 ready;
-+	u8 rsvd[3];
-+	void *dev;
-+	struct erdma_irq_info irq_info;
-+	struct erdma_eq eq;
-+	struct tasklet_struct tasklet;
-+};
-+
-+#define COMPROMISE_CC ERDMA_CC_CUBIC
-+enum erdma_cc_method {
-+	ERDMA_CC_NEWRENO = 0,
-+	ERDMA_CC_CUBIC,
-+	ERDMA_CC_HPCC_RTT,
-+	ERDMA_CC_HPCC_ECN,
-+	ERDMA_CC_HPCC_INT,
-+	ERDMA_CC_METHODS_NUM
-+};
-+
-+struct erdma_resource_cb {
-+	unsigned long *bitmap;
-+	spinlock_t lock;
-+	u32 next_alloc_idx;
-+	u32 max_cap;
-+};
-+
-+enum {
-+	ERDMA_RES_TYPE_PD = 0,
-+	ERDMA_RES_TYPE_STAG_IDX = 1,
-+	ERDMA_RES_CNT = 2,
-+};
-+
-+static inline int erdma_alloc_idx(struct erdma_resource_cb *res_cb)
++static void arm_cmdq_cq(struct erdma_cmdq *cmdq)
 +{
-+	int idx;
-+	unsigned long flags;
-+	u32 start_idx = res_cb->next_alloc_idx;
++	u64 db_data =
++		FIELD_PREP(ERDMA_CQDB_CI_MASK, cmdq->cq.ci) | FIELD_PREP(ERDMA_CQDB_ARM_MASK, 1);
 +
-+	spin_lock_irqsave(&res_cb->lock, flags);
-+	idx = find_next_zero_bit(res_cb->bitmap, res_cb->max_cap, start_idx);
-+	if (idx == res_cb->max_cap) {
-+		idx = find_first_zero_bit(res_cb->bitmap, res_cb->max_cap);
-+		if (idx == res_cb->max_cap) {
-+			res_cb->next_alloc_idx = 1;
-+			spin_unlock_irqrestore(&res_cb->lock, flags);
-+			return -ENOSPC;
-+		}
-+	}
++	*(u64 *)cmdq->cq.db_info = db_data;
++	writeq(db_data, cmdq->cq.db_addr);
 +
-+	set_bit(idx, res_cb->bitmap);
-+	spin_unlock_irqrestore(&res_cb->lock, flags);
-+	res_cb->next_alloc_idx = idx + 1;
-+	return idx;
++	atomic64_inc(&cmdq->cq.cq_armed_num);
 +}
 +
-+static inline void erdma_free_idx(struct erdma_resource_cb *res_cb, u32 idx)
++static void kick_cmdq_db(struct erdma_cmdq *cmdq)
 +{
-+	unsigned long flags;
-+	u32 used;
++	u64 db_data = FIELD_PREP(ERDMA_CMD_HDR_WQEBB_INDEX_MASK, cmdq->sq.pi);
 +
-+	spin_lock_irqsave(&res_cb->lock, flags);
-+	used = test_and_clear_bit(idx, res_cb->bitmap);
-+	spin_unlock_irqrestore(&res_cb->lock, flags);
++	*(u64 *)cmdq->sq.db_info = db_data;
++	writeq(db_data, cmdq->sq.db_addr);
++}
++
++static struct erdma_comp_wait *get_comp_wait(struct erdma_cmdq *cmdq)
++{
++	int comp_idx;
++
++	spin_lock(&cmdq->lock);
++	comp_idx = find_first_zero_bit(cmdq->comp_wait_bitmap, cmdq->max_outstandings);
++	if (comp_idx == cmdq->max_outstandings) {
++		spin_unlock(&cmdq->lock);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	set_bit(comp_idx, cmdq->comp_wait_bitmap);
++	spin_unlock(&cmdq->lock);
++
++	return &cmdq->wait_pool[comp_idx];
++}
++
++static void put_comp_wait(struct erdma_cmdq *cmdq, struct erdma_comp_wait *comp_wait)
++{
++	int used;
++
++	cmdq->wait_pool[comp_wait->ctx_id].cmd_status = ERDMA_CMD_STATUS_INIT;
++	spin_lock(&cmdq->lock);
++	used = test_and_clear_bit(comp_wait->ctx_id, cmdq->comp_wait_bitmap);
++	spin_unlock(&cmdq->lock);
++
 +	WARN_ON(!used);
 +}
 +
-+#define ERDMA_EXTRA_BUFFER_SIZE 8
-+
-+struct erdma_dev {
-+	struct ib_device ibdev;
-+	struct net_device *netdev;
-+	void *dmadev;
-+	void *drvdata;
-+	/* reference to drvdata->cmdq */
-+	struct erdma_cmdq *cmdq;
-+
-+	void (*release_handler)(void *drvdata);
-+
-+	/* physical port state (only one port per device) */
-+	enum ib_port_state state;
-+
-+	struct erdma_devattr attrs;
-+
-+	spinlock_t lock;
-+
-+	struct erdma_resource_cb res_cb[ERDMA_RES_CNT];
-+	struct xarray qp_xa;
-+	struct xarray cq_xa;
-+
-+	u32 next_alloc_qpn;
-+	u32 next_alloc_cqn;
-+
-+	spinlock_t db_bitmap_lock;
-+
-+	/* We provide 64 uContexts that each has one SQ doorbell Page. */
-+	DECLARE_BITMAP(sdb_page, ERDMA_DWQE_TYPE0_CNT);
-+	/* We provide 496 uContexts that each has one SQ normal Db, and one directWQE db */
-+	DECLARE_BITMAP(sdb_entry, ERDMA_DWQE_TYPE1_CNT);
-+
-+	u8 __iomem *db_space;
-+	resource_size_t db_space_addr;
-+
-+	atomic_t num_pd;
-+	atomic_t num_qp;
-+	atomic_t num_cq;
-+	atomic_t num_mr;
-+	atomic_t num_ctx;
-+
-+	struct list_head cep_list;
-+
-+	int cc_method;
-+	int disable_dwqe;
-+	int dwqe_pages;
-+	int dwqe_entries;
-+};
-+
-+struct erdma_pci_drvdata {
-+	struct pci_dev *pdev;
-+	struct erdma_dev *dev;
-+	struct list_head list;
-+
-+	u32 is_registered;
-+	unsigned char peer_addr[MAX_ADDR_LEN];
-+
-+	u8 __iomem *func_bar;
-+
-+	resource_size_t func_bar_addr;
-+	resource_size_t func_bar_len;
-+
-+	u32 dma_width;
-+
-+	u16 irq_num;
-+	u16 rsvd;
-+
-+	struct erdma_irq_info comm_irq;
-+	struct erdma_cmdq cmdq;
-+
-+	struct erdma_eq_cb aeq;
-+	struct erdma_eq_cb ceqs[31];
-+
-+	int numa_node;
-+	int grp_num;
-+};
-+
-+static inline struct erdma_dev *to_edev(struct ib_device *ibdev)
++static int erdma_cmdq_wait_res_init(struct erdma_pci_drvdata *drvdata, struct erdma_cmdq *cmdq)
 +{
-+	return container_of(ibdev, struct erdma_dev, ibdev);
-+}
++	int i;
 +
-+static inline u32 erdma_reg_read32(struct erdma_pci_drvdata *drvdata, u32 reg)
-+{
-+	return readl(drvdata->func_bar + reg);
-+}
++	cmdq->wait_pool = devm_kcalloc(&drvdata->pdev->dev, cmdq->max_outstandings,
++				       sizeof(struct erdma_comp_wait), GFP_KERNEL);
++	if (!cmdq->wait_pool)
++		return -ENOMEM;
 +
-+static inline u64 erdma_reg_read64(struct erdma_pci_drvdata *drvdata, u32 reg)
-+{
-+	return readq(drvdata->func_bar + reg);
-+}
-+
-+static inline void erdma_reg_write32(struct erdma_pci_drvdata *drvdata, u32 reg, u32 value)
-+{
-+	writel(value, drvdata->func_bar + reg);
-+}
-+
-+static inline void erdma_reg_write64(struct erdma_pci_drvdata *drvdata, u32 reg, u64 value)
-+{
-+	writeq(value, drvdata->func_bar + reg);
-+}
-+
-+static inline u32 erdma_reg_read32_filed(struct erdma_pci_drvdata *drvdata, u32 reg,
-+					 u32 filed_mask)
-+{
-+	u32 val = erdma_reg_read32(drvdata, reg);
-+
-+	return FIELD_GET(filed_mask, val);
-+}
-+
-+static inline int erdma_poll_ceq_event(struct erdma_eq *ceq)
-+{
-+	__le64 *ceqe;
-+	u16 queue_size_mask = ceq->depth - 1;
-+	u64 val;
-+
-+	ceqe = ceq->qbuf + ((ceq->ci & queue_size_mask) << EQE_SHIFT);
-+
-+	val = READ_ONCE(*ceqe);
-+	if (FIELD_GET(ERDMA_CEQE_HDR_O_MASK, val) == ceq->owner) {
-+		dma_rmb();
-+		ceq->ci++;
-+
-+		if ((ceq->ci & queue_size_mask) == 0)
-+			ceq->owner = !ceq->owner;
-+
-+		atomic64_inc(&ceq->event_num);
-+
-+		return FIELD_GET(ERDMA_CEQE_HDR_CQN_MASK, val);
++	spin_lock_init(&cmdq->lock);
++	cmdq->comp_wait_bitmap =
++		devm_kcalloc(&drvdata->pdev->dev, BITS_TO_LONGS(cmdq->max_outstandings),
++			     sizeof(unsigned long), GFP_KERNEL);
++	if (!cmdq->comp_wait_bitmap) {
++		devm_kfree(&drvdata->pdev->dev, cmdq->wait_pool);
++		return -ENOMEM;
 +	}
 +
-+	return -1;
++	for (i = 0; i < cmdq->max_outstandings; i++) {
++		init_completion(&cmdq->wait_pool[i].wait_event);
++		cmdq->wait_pool[i].ctx_id = i;
++	}
++
++	return 0;
 +}
 +
-+static inline void notify_eq(struct erdma_eq *eq)
++static int erdma_cmdq_sq_init(struct erdma_pci_drvdata *drvdata)
 +{
-+	u64 db_data = FIELD_PREP(ERDMA_EQDB_CI_MASK, eq->ci) |
-+		      FIELD_PREP(ERDMA_EQDB_ARM_MASK, 1);
++	struct erdma_cmdq *cmdq = &drvdata->cmdq;
++	struct erdma_cmdq_sq *sq = &cmdq->sq;
++	u32 buf_size;
 +
-+	*(u64 *)eq->db_info = db_data;
-+	writeq(db_data, eq->db_addr);
++	sq->wqebb_cnt = SQEBB_COUNT(ERDMA_CMDQ_SQE_SIZE);
++	sq->depth = cmdq->max_outstandings * sq->wqebb_cnt;
 +
-+	atomic64_inc(&eq->notify_num);
++	buf_size = sq->depth << SQEBB_SHIFT;
++
++	sq->qbuf = dma_alloc_coherent(&drvdata->pdev->dev, buf_size + ERDMA_EXTRA_BUFFER_SIZE,
++				      &sq->qbuf_dma_addr, GFP_KERNEL);
++	if (!sq->qbuf)
++		return -ENOMEM;
++
++	sq->db_info = sq->qbuf + buf_size;
++
++	spin_lock_init(&sq->lock);
++
++	sq->ci = 0;
++	sq->pi = 0;
++	sq->total_cmds = 0;
++	sq->total_comp_cmds = 0;
++
++	sq->db_addr = (u64 __iomem *)(drvdata->func_bar + ERDMA_CMDQ_SQDB_REG);
++
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_SQ_ADDR_H_REG,
++			  upper_32_bits(sq->qbuf_dma_addr));
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_SQ_ADDR_L_REG,
++			  lower_32_bits(sq->qbuf_dma_addr));
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_DEPTH_REG, sq->depth);
++	erdma_reg_write64(drvdata, ERDMA_CMDQ_SQ_DB_HOST_ADDR_REG, sq->qbuf_dma_addr + buf_size);
++
++	return 0;
 +}
 +
-+int erdma_cmdq_init(struct erdma_pci_drvdata *drvdata);
-+void erdma_finish_cmdq_init(struct erdma_pci_drvdata *drvdata);
-+void erdma_cmdq_destroy(struct erdma_pci_drvdata *drvdata);
++static int erdma_cmdq_cq_init(struct erdma_pci_drvdata *drvdata)
++{
++	struct erdma_cmdq *cmdq = &drvdata->cmdq;
++	struct erdma_cmdq_cq *cq = &cmdq->cq;
++	u32 buf_size;
 +
-+#define ERDMA_CMDQ_BUILD_REQ_HDR(hdr, mod, op)\
-+do { \
-+	*(u64 *)(hdr) = FIELD_PREP(ERDMA_CMD_HDR_SUB_MOD_MASK, mod);\
-+	*(u64 *)(hdr) |= FIELD_PREP(ERDMA_CMD_HDR_OPCODE_MASK, op);\
-+} while (0)
++	cq->depth = cmdq->max_outstandings * 2;
++	buf_size = cq->depth << CQE_SHIFT;
 +
-+int erdma_post_cmd_wait(struct erdma_cmdq *cmdq, u64 *req, u32 req_size, u64 *resp0, u64 *resp1);
-+void erdma_cmdq_completion_handler(struct erdma_cmdq *cmdq);
++	cq->qbuf = dma_alloc_coherent(&drvdata->pdev->dev, buf_size + ERDMA_EXTRA_BUFFER_SIZE,
++				      &cq->qbuf_dma_addr, GFP_KERNEL);
++	if (!cq->qbuf)
++		return -ENOMEM;
 +
-+int erdma_ceqs_init(struct erdma_pci_drvdata *drvdata);
-+void erdma_ceqs_uninit(struct erdma_pci_drvdata *drvdata);
++	cq->db_info = cq->qbuf + buf_size;
 +
-+int erdma_aeq_init(struct erdma_pci_drvdata *drvdata);
-+void erdma_aeq_destroy(struct erdma_pci_drvdata *drvdata);
++	memset(cq->qbuf, 0, buf_size + ERDMA_EXTRA_BUFFER_SIZE);
 +
-+void erdma_aeq_event_handler(struct erdma_pci_drvdata *drvdata);
-+void erdma_ceq_completion_handler(struct erdma_eq_cb *ceq_cb);
++	spin_lock_init(&cq->lock);
 +
-+#endif
++	cq->db_addr = (u64 __iomem *)(drvdata->func_bar + ERDMA_CMDQ_CQDB_REG);
++	cq->ci = 0;
++	cq->owner = 1;
++
++	atomic64_set(&cq->cq_armed_num, 0);
++
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_CQ_ADDR_H_REG,
++			  upper_32_bits(cq->qbuf_dma_addr));
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_CQ_ADDR_L_REG,
++			  lower_32_bits(cq->qbuf_dma_addr));
++	erdma_reg_write64(drvdata, ERDMA_CMDQ_CQ_DB_HOST_ADDR_REG, cq->qbuf_dma_addr + buf_size);
++
++	return 0;
++}
++
++static int erdma_cmdq_eq_init(struct erdma_pci_drvdata *drvdata)
++{
++	struct erdma_cmdq *cmdq = &drvdata->cmdq;
++	struct erdma_eq *eq = &cmdq->eq;
++	u32 buf_size;
++
++	eq->depth = cmdq->max_outstandings;
++	buf_size = eq->depth << EQE_SHIFT;
++
++	eq->qbuf = dma_alloc_coherent(&drvdata->pdev->dev, buf_size + ERDMA_EXTRA_BUFFER_SIZE,
++				      &eq->qbuf_dma_addr, GFP_KERNEL);
++	if (!eq->qbuf)
++		return -ENOMEM;
++
++	eq->db_info = eq->qbuf + buf_size;
++
++	memset(eq->qbuf, 0, buf_size);
++	memset(eq->db_info, 0, 8);
++
++	spin_lock_init(&eq->lock);
++	atomic64_set(&eq->event_num, 0);
++
++	eq->db_addr = (u64 __iomem *)(drvdata->func_bar + ERDMA_REGS_CEQ_DB_BASE_REG);
++	eq->ci = 0;
++	eq->owner = 1;
++
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_EQ_ADDR_H_REG,
++			  upper_32_bits(eq->qbuf_dma_addr));
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_EQ_ADDR_L_REG,
++			  lower_32_bits(eq->qbuf_dma_addr));
++	erdma_reg_write32(drvdata, ERDMA_REGS_CMDQ_EQ_DEPTH_REG, eq->depth);
++	erdma_reg_write64(drvdata, ERDMA_CMDQ_EQ_DB_HOST_ADDR_REG, eq->qbuf_dma_addr + buf_size);
++
++	return 0;
++}
++
++int erdma_cmdq_init(struct erdma_pci_drvdata *drvdata)
++{
++	int err, i;
++	struct erdma_cmdq *cmdq = &drvdata->cmdq;
++	u32 status, ctrl;
++
++	cmdq->max_outstandings = ERDMA_CMDQ_MAX_OUTSTANDING;
++	cmdq->dev = drvdata;
++	cmdq->use_event = 0;
++
++	sema_init(&cmdq->credits, cmdq->max_outstandings);
++
++	err = erdma_cmdq_wait_res_init(drvdata, cmdq);
++	if (err)
++		return err;
++
++	err = erdma_cmdq_sq_init(drvdata);
++	if (err)
++		return err;
++
++	err = erdma_cmdq_cq_init(drvdata);
++	if (err)
++		goto err_destroy_sq;
++
++	err = erdma_cmdq_eq_init(drvdata);
++	if (err)
++		goto err_destroy_cq;
++
++	ctrl = FIELD_PREP(ERDMA_REG_DEV_CTRL_INIT_MASK, 1);
++	erdma_reg_write32(drvdata, ERDMA_REGS_DEV_CTRL_REG, ctrl);
++
++	for (i = 0; i < ERDMA_WAIT_DEV_DONE_CNT; i++) {
++		status = erdma_reg_read32_filed(drvdata, ERDMA_REGS_DEV_ST_REG,
++						ERDMA_REG_DEV_ST_INIT_DONE_MASK);
++		if (status)
++			break;
++
++		msleep(ERDMA_REG_ACCESS_WAIT_MS);
++	}
++
++	if (i == ERDMA_WAIT_DEV_DONE_CNT) {
++		dev_err(&drvdata->pdev->dev, "wait init done failed.\n");
++		err = -ETIMEDOUT;
++		goto err_destroy_eq;
++	}
++
++	set_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state);
++
++	return 0;
++
++err_destroy_eq:
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->eq.depth << EQE_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->eq.qbuf,
++			  cmdq->eq.qbuf_dma_addr);
++
++err_destroy_cq:
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->cq.depth << CQE_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->cq.qbuf,
++			  cmdq->cq.qbuf_dma_addr);
++
++err_destroy_sq:
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->sq.depth << SQEBB_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->sq.qbuf,
++			  cmdq->sq.qbuf_dma_addr);
++
++	return err;
++}
++
++void erdma_finish_cmdq_init(struct erdma_pci_drvdata *drvdata)
++{
++	/* after device init successfully, change cmdq to event mode. */
++	drvdata->cmdq.use_event = true;
++	arm_cmdq_cq(&drvdata->cmdq);
++}
++
++void erdma_cmdq_destroy(struct erdma_pci_drvdata *drvdata)
++{
++	struct erdma_cmdq *cmdq = &drvdata->cmdq;
++
++	clear_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state);
++
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->eq.depth << EQE_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->eq.qbuf,
++			  cmdq->eq.qbuf_dma_addr);
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->sq.depth << SQEBB_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->sq.qbuf,
++			  cmdq->sq.qbuf_dma_addr);
++	dma_free_coherent(&drvdata->pdev->dev,
++			  (cmdq->cq.depth << CQE_SHIFT) + ERDMA_EXTRA_BUFFER_SIZE, cmdq->cq.qbuf,
++			  cmdq->cq.qbuf_dma_addr);
++}
++
++static void *get_cmdq_sqe(struct erdma_cmdq *cmdq, u16 idx)
++{
++	idx &= (cmdq->sq.depth - 1);
++	return cmdq->sq.qbuf + (idx << SQEBB_SHIFT);
++}
++
++static void *get_cmdq_cqe(struct erdma_cmdq *cmdq, u16 idx)
++{
++	idx &= (cmdq->cq.depth - 1);
++	return cmdq->cq.qbuf + (idx << CQE_SHIFT);
++}
++
++static void push_cmdq_sqe(struct erdma_cmdq *cmdq, u64 *req, size_t req_len,
++			  struct erdma_comp_wait *comp_wait)
++{
++	__le64 *wqe;
++	u64 hdr = *req;
++
++	comp_wait->cmd_status = ERDMA_CMD_STATUS_ISSUED;
++	reinit_completion(&comp_wait->wait_event);
++	comp_wait->sq_pi = cmdq->sq.pi;
++
++	wqe = get_cmdq_sqe(cmdq, cmdq->sq.pi);
++	memcpy(wqe, req, req_len);
++
++	cmdq->sq.pi += cmdq->sq.wqebb_cnt;
++	hdr |= FIELD_PREP(ERDMA_CMD_HDR_WQEBB_INDEX_MASK, cmdq->sq.pi);
++	hdr |= FIELD_PREP(ERDMA_CMD_HDR_CONTEXT_COOKIE, comp_wait->ctx_id);
++	hdr |= FIELD_PREP(ERDMA_CMD_HDR_WQEBB_CNT_MASK, cmdq->sq.wqebb_cnt - 1);
++	*wqe = hdr;
++
++	cmdq->sq.total_cmds++;
++
++	kick_cmdq_db(cmdq);
++}
++
++static void erdma_poll_single_cmd_completion(struct erdma_cmdq *cmdq, __be32 *cqe)
++{
++	struct erdma_comp_wait *comp_wait;
++	u16 sqe_idx, ctx_id;
++	u64 *sqe;
++	int i;
++	u32 hdr0 = __be32_to_cpu(*cqe);
++
++	sqe_idx = __be32_to_cpu(*(cqe + 1));
++	sqe = (u64 *)get_cmdq_sqe(cmdq, sqe_idx);
++
++	ctx_id = FIELD_GET(ERDMA_CMD_HDR_CONTEXT_COOKIE, *sqe);
++	comp_wait = &cmdq->wait_pool[ctx_id];
++	if (comp_wait->cmd_status != ERDMA_CMD_STATUS_ISSUED)
++		return;
++
++	comp_wait->cmd_status = ERDMA_CMD_STATUS_FINISHED;
++	comp_wait->comp_status = FIELD_GET(ERDMA_CQE_HDR_SYNDROME_MASK, hdr0);
++	cmdq->sq.ci += cmdq->sq.wqebb_cnt;
++
++	for (i = 0; i < 4; i++)
++		comp_wait->comp_data[i] = __be32_to_cpu(*(cqe + 2 + i));
++
++	if (cmdq->use_event)
++		complete(&comp_wait->wait_event);
++}
++
++static void erdma_polling_cmd_completions(struct erdma_cmdq *cmdq)
++{
++	u32 hdr;
++	__be32 *cqe;
++	unsigned long flags;
++	u16 comp_num = 0;
++	u8 owner, expect_owner;
++	u16 cqe_idx;
++
++	spin_lock_irqsave(&cmdq->cq.lock, flags);
++
++	expect_owner = cmdq->cq.owner;
++	cqe_idx = cmdq->cq.ci & (cmdq->cq.depth - 1);
++
++	while (1) {
++		cqe = (__be32 *)get_cmdq_cqe(cmdq, cqe_idx);
++		hdr = __be32_to_cpu(READ_ONCE(*cqe));
++
++		owner = FIELD_GET(ERDMA_CQE_HDR_OWNER_MASK, hdr);
++		if (owner != expect_owner)
++			break;
++
++		dma_rmb();
++		erdma_poll_single_cmd_completion(cmdq, cqe);
++		comp_num++;
++		if (cqe_idx == cmdq->cq.depth - 1) {
++			cqe_idx = 0;
++			expect_owner = !expect_owner;
++		} else {
++			cqe_idx++;
++		}
++	}
++
++	if (comp_num) {
++		cmdq->cq.ci += comp_num;
++		cmdq->cq.owner = expect_owner;
++		cmdq->sq.total_comp_cmds += comp_num;
++
++		if (cmdq->use_event)
++			arm_cmdq_cq(cmdq);
++	}
++
++	spin_unlock_irqrestore(&cmdq->cq.lock, flags);
++}
++
++void erdma_cmdq_completion_handler(struct erdma_cmdq *cmdq)
++{
++	int cqn, got_event = 0;
++
++	if (!test_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state) || !cmdq->use_event)
++		return;
++
++	while ((cqn = erdma_poll_ceq_event(&cmdq->eq)) != -1)
++		got_event++;
++
++	if (got_event)
++		erdma_polling_cmd_completions(cmdq);
++
++	notify_eq(&cmdq->eq);
++}
++
++static int erdma_poll_cmd_completion(struct erdma_comp_wait *comp_ctx, struct erdma_cmdq *cmdq,
++				     u32 timeout)
++{
++	unsigned long comp_timeout = jiffies + msecs_to_jiffies(timeout);
++
++	while (1) {
++		erdma_polling_cmd_completions(cmdq);
++		if (comp_ctx->cmd_status != ERDMA_CMD_STATUS_ISSUED)
++			break;
++
++		if (time_is_before_jiffies(comp_timeout))
++			return -ETIME;
++
++		msleep(20);
++	}
++
++	return 0;
++}
++
++static int erdma_wait_cmd_completion(struct erdma_comp_wait *comp_ctx, struct erdma_cmdq *cmdq,
++				     u32 timeout)
++{
++	unsigned long flags = 0;
++
++	wait_for_completion_timeout(&comp_ctx->wait_event, msecs_to_jiffies(timeout));
++
++	if (unlikely(comp_ctx->cmd_status != ERDMA_CMD_STATUS_FINISHED)) {
++		spin_lock_irqsave(&cmdq->cq.lock, flags);
++		comp_ctx->cmd_status = ERDMA_CMD_STATUS_TIMEOUT;
++		spin_unlock_irqrestore(&cmdq->cq.lock, flags);
++		return -ETIME;
++	}
++
++	return 0;
++}
++
++int erdma_post_cmd_wait(struct erdma_cmdq *cmdq, u64 *req, u32 req_size, u64 *resp0, u64 *resp1)
++{
++	struct erdma_comp_wait *comp_wait;
++	int ret;
++
++	if (!test_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state))
++		return -ENODEV;
++
++	down(&cmdq->credits);
++
++	comp_wait = get_comp_wait(cmdq);
++	if (IS_ERR(comp_wait)) {
++		clear_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state);
++		set_bit(ERDMA_CMDQ_STATE_CTX_ERR_BIT, &cmdq->state);
++		up(&cmdq->credits);
++		return PTR_ERR(comp_wait);
++	}
++
++	spin_lock(&cmdq->sq.lock);
++	push_cmdq_sqe(cmdq, req, req_size, comp_wait);
++	spin_unlock(&cmdq->sq.lock);
++
++	if (cmdq->use_event)
++		ret = erdma_wait_cmd_completion(comp_wait, cmdq, ERDMA_CMDQ_TIMEOUT_MS);
++	else
++		ret = erdma_poll_cmd_completion(comp_wait, cmdq, ERDMA_CMDQ_TIMEOUT_MS);
++
++	if (ret) {
++		set_bit(ERDMA_CMDQ_STATE_TIMEOUT_BIT, &cmdq->state);
++		clear_bit(ERDMA_CMDQ_STATE_OK_BIT, &cmdq->state);
++		goto out;
++	}
++
++	ret = comp_wait->comp_status;
++
++	if (resp0 && resp1) {
++		*resp0 = *((u64 *)&comp_wait->comp_data[0]);
++		*resp1 = *((u64 *)&comp_wait->comp_data[2]);
++	}
++	put_comp_wait(cmdq, comp_wait);
++
++out:
++	up(&cmdq->credits);
++
++	return ret;
++}
 -- 
 2.27.0
 
