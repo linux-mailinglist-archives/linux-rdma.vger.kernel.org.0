@@ -2,37 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F30A492CE1
-	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jan 2022 19:00:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C82EC492E4B
+	for <lists+linux-rdma@lfdr.de>; Tue, 18 Jan 2022 20:18:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347454AbiARSAl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 18 Jan 2022 13:00:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
+        id S1348665AbiARTSA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 18 Jan 2022 14:18:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237348AbiARSAl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jan 2022 13:00:41 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 638E6C061574;
-        Tue, 18 Jan 2022 10:00:41 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F407B61503;
-        Tue, 18 Jan 2022 18:00:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 37375C36AEB;
-        Tue, 18 Jan 2022 18:00:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642528840;
-        bh=bnbiQONaw+/DWQQqZQX0qSogtuWoABXMgxvUR3WAgWE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s4MSzM0pl7ItX696ygISmzo75GI8ymkMnEf6Se6PpuoJLpSuiRL+MPWlbjqE9IDgN
-         uRtj0lMm/PROhfBUt7PBS7L8Vf4NzU/BPnrSjMqdxPYU4UX+8p8PieGxygA0KIahKi
-         l5eiUkqHak26yMZUt1vKmj2/Jee1ywHscZvOybQQeKPeMOEiE9IM5mPaL7RRYih+kF
-         WNu9pWFyFkz199ApNWnV5LUsWxfZYQMwrINLaxOQml352lI8KjVYilebn6svc2J1BT
-         p7QJb5TYPI1kUe+cWQMghSyAZIvMJiXMVtuKuqRlM7kFu8df/FQln5vEtWSrkzMSK7
-         GOygX12gNUJsA==
-Date:   Tue, 18 Jan 2022 20:00:35 +0200
-From:   Leon Romanovsky <leon@kernel.org>
+        with ESMTP id S237859AbiARTR4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 18 Jan 2022 14:17:56 -0500
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FA8C061574
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jan 2022 11:17:56 -0800 (PST)
+Received: by mail-qv1-xf2f.google.com with SMTP id bt14so248252qvb.13
+        for <linux-rdma@vger.kernel.org>; Tue, 18 Jan 2022 11:17:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=XLdOdrMhGx+uWKyGybpz2Ct3QQEBAUUynbEFITHgPLY=;
+        b=eqv3DAHBk+Hy73moYerjN9BAfZaKoSsxduKm5/A3uOEeVXd4K+fBAqeukoaBam4xMe
+         jpvd9jYkFSO8zxC5sGg1BTH6C8kch//t5eYUcvjYP6cnh3O61jqBS9IzQgGTbEri6aRv
+         2HiAnUw4WVgh70N/97NoOPdhmIub7SiY116iHt+tdQdFRLshMx7+B/qYOlEo2viw+kzM
+         FQFlk1E4Y5De/equbwCndPWUs8m45zdSWr6r7Wjd0EodoExdxRRC+zs/QG7asATRRpxD
+         BdWTEhi3UTRJycTiLMY/+iO943kr8qPscgMKYHTPuD0sy9jEQogCET9iyqSScPFg+bG4
+         SKPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=XLdOdrMhGx+uWKyGybpz2Ct3QQEBAUUynbEFITHgPLY=;
+        b=kvx0L//Dv2akxioqL71bXVS5vCqevHcpbo2iKNZfTmhfzAkpSXGw/wSDMH7AYjadQ3
+         5Amu/fvCjGWXywD/vO7oI/R4IXVv0E2MVcRb93gheMvjWxzbHsp2yurr0JI+ou3uqN1J
+         EGOLNdLXyMiZDas0UqNjF9EfPPeA0Lq4X+0sYvlR1xi0mFF4MfwgtywLV1WxRtzQZRg8
+         hpUBLjRlBQRK0AApW7gGh3DsZV6sy9PbVljw/LPLdKaDz6Hdt+/cnuZoFs8l5sHb8vZm
+         jFnlAw11H6Ao0sH4xoPB5NVR06F/sODKYttrFUIdxfog0DXxKsQi1b7wcMJInsrBJdKE
+         IiEA==
+X-Gm-Message-State: AOAM532or5TSeJPV9ey4X0wa1LZJsmhvamD80aZ11zcAze6iF8wdFiZU
+        6nzn0lNXo+XfqNNfxnoz9QOL+g==
+X-Google-Smtp-Source: ABdhPJx0iU9ep14OW8wdAZo0YFqi2HrSMQgSkFQiKRB2JmWQ0LMsSBdMRLAtUti744cRpbkirBetUg==
+X-Received: by 2002:ad4:4ea2:: with SMTP id ed2mr24831618qvb.128.1642533475885;
+        Tue, 18 Jan 2022 11:17:55 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s10sm11405313qko.104.2022.01.18.11.17.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Jan 2022 11:17:55 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1n9tzO-0012Oy-6w; Tue, 18 Jan 2022 15:17:54 -0400
+Date:   Tue, 18 Jan 2022 15:17:54 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
 To:     Santosh Shilimkar <santosh.shilimkar@oracle.com>
 Cc:     Praveen Kannoju <praveen.kannoju@oracle.com>,
         "David S . Miller" <davem@davemloft.net>,
@@ -46,7 +66,7 @@ Cc:     Praveen Kannoju <praveen.kannoju@oracle.com>,
         <rajesh.sivaramasubramaniom@oracle.com>
 Subject: Re: [PATCH RFC] rds: ib: Reduce the contention caused by the
  asynchronous workers to flush the mr pool
-Message-ID: <YecAQ6GsHimESUHq@unreal>
+Message-ID: <20220118191754.GG8034@ziepe.ca>
 References: <1642517238-9912-1-git-send-email-praveen.kannoju@oracle.com>
  <53D98F26-FC52-4F3E-9700-ED0312756785@oracle.com>
 MIME-Version: 1.0
@@ -78,7 +98,6 @@ On Tue, Jan 18, 2022 at 04:48:43PM +0000, Santosh Shilimkar wrote:
 > 
 > > diff --git a/net/rds/ib_rdma.c b/net/rds/ib_rdma.c
 > > index 8f070ee..6b640b5 100644
-> > --- a/net/rds/ib_rdma.c
 > > +++ b/net/rds/ib_rdma.c
 > > @@ -393,6 +393,8 @@ int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
 > > 	 */
@@ -108,18 +127,9 @@ On Tue, Jan 18, 2022 at 04:48:43PM +0000, Santosh Shilimkar wrote:
 > > +		smp_rmb();
 > You won’t need these explicit barriers since above atomic and write once already
 > issue them.
-> 
-> Other than that, it seems a good idea to me. With that fixed, feel free to add my
-> ack and repost.
 
-I disagree with the sentence that it is "good idea". This flush_ongoing
-bool is racy, nothing prevents from changing it immediately after it was
-read. The queue_delayed_work will anyway ensure that only one work is
-running, so much more clean solution will be to check inside rds_ib_flush_mr_pool()
-if you need to flush or not.
+No, they don't. Use smp_store_release() and smp_load_acquire if you
+want to do something like this, but I still can't quite figure out if
+this usage of unlocked memory accesses makes any sense at all.
 
-Thanks
-
-> 
-> Regards,
-> Santosh
+Jason
