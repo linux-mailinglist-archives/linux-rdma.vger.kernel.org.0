@@ -2,219 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B9F494C8A
-	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jan 2022 12:11:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C415D494D0C
+	for <lists+linux-rdma@lfdr.de>; Thu, 20 Jan 2022 12:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229674AbiATLLR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 20 Jan 2022 06:11:17 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:44458 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbiATLLR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jan 2022 06:11:17 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D9D9861505;
-        Thu, 20 Jan 2022 11:11:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7689BC340E0;
-        Thu, 20 Jan 2022 11:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642677076;
-        bh=GGzWXBrUg14FIR2o+wGqcRJ0noPIWzuk1kdN0teOW4U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aO/Vpw4V5Cw1IYA5djIJTyXLMBi5I0mKh2bZr6skXcKtunhtVA1b+lLISMbqxfyFg
-         IGD5AyvtqnFwomB0lPxkwGOujAmiBUtM2ak61KDV7wYhebG3cM2AAIiQr47n9dLOql
-         dlYxQOPGELJiXGpk95dzl/Bo3LXf82XNNwTirhsDvMFJ1rnjupHsZFeoh1bfa9eLeh
-         q7JWAle/lIl67DCHLzahFSx+WwYXibr9gnDxv2i4qMiUedZclAivL+UGbzuOLeSVHv
-         EOS3n157BQdPyMlYSp36lWck9yQN7912o5/SYrG517pxviizDfl3HFbsfP8c4luhDl
-         hR+kNU5Y2KLuQ==
-Date:   Thu, 20 Jan 2022 13:11:11 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Praveen Kannoju <praveen.kannoju@oracle.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
-        Rajesh Sivaramasubramaniom 
-        <rajesh.sivaramasubramaniom@oracle.com>
-Subject: Re: [PATCH RFC] rds: ib: Reduce the contention caused by the
- asynchronous workers to flush the mr pool
-Message-ID: <YelDT7AbnXO17PVf@unreal>
-References: <1642517238-9912-1-git-send-email-praveen.kannoju@oracle.com>
- <53D98F26-FC52-4F3E-9700-ED0312756785@oracle.com>
- <20220118191754.GG8034@ziepe.ca>
- <CEFD48B4-3360-4040-B41A-49B8046D28E8@oracle.com>
- <Yee2tMJBd4kC8axv@unreal>
- <PH0PR10MB5515E99CA5DF423BDEBB038E8C599@PH0PR10MB5515.namprd10.prod.outlook.com>
- <Yegmm4ksXfWiOMME@unreal>
- <PH0PR10MB55156B918F0D519B8A935C378C5A9@PH0PR10MB5515.namprd10.prod.outlook.com>
+        id S231584AbiATLcZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 20 Jan 2022 06:32:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230337AbiATLcZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 20 Jan 2022 06:32:25 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5591C06173F
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jan 2022 03:32:24 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id r65so13255844ybc.11
+        for <linux-rdma@vger.kernel.org>; Thu, 20 Jan 2022 03:32:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vFkDs/NcBYlgoHrWrGrB0pmsoewd7rlqVyvmrbskyT8=;
+        b=Ji15+VuuPBtoemRSdWpBy0AC0Qk7dasazlkesiFTFcZvhGUNMNr3mWO46HeAbGYcvK
+         F/c7xtFujYYsPEfJ5LOVExOF3aXuYgtqInYZwQRDbQkmEozR116oxAh6Cd9wEg0JETZY
+         56KICk2MO+PqWHFgoX3mKUDz/r23fIVtzaw6cZnCDi+OxVSJbeLw77Lq3elkt+5TQWYf
+         f7fq2+nphXFgdwShblN67+YSGgQa3zKj83tRxrzyIylccR9zE4PiDke/WfaqRYITwbh+
+         WVrbIn3UbsP7YZaZDAt1GuywtLH8t5Xav/DT53uh3MF1mn3QwMRRHp3A9BYTfEG4UjwU
+         4acQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vFkDs/NcBYlgoHrWrGrB0pmsoewd7rlqVyvmrbskyT8=;
+        b=m5rsReSTAKia6ZRVCQ4XgEDwNj2UxB2abk1+DpfnvVOxN0xPfO3eWDqu52a9tno6Ci
+         7yzUJUpPL0FQRLNctdFBkWuovJM+RWaTU7B08IEoPU39zYuDQ59b7Y1xwSMVSHgH5qWq
+         VDk6e4/Z/e27ypGy5s9ac5bSGNu4E3+VrcXjvIP8pZjQkanuJDmmZ/0dQWVNqQ/+injA
+         zczInKaCf/HyH1n8580ei2sRdq57cXLHLCfWIw4dDFy5ZzVd3hRE1d+T9uxBc74WPje7
+         LqRWUdw6xmldM6UarxxdElaJs1zCYZGw0iFCJ7jdnj7j94lavioJKS+DmSYiT6UBoBb1
+         sdeQ==
+X-Gm-Message-State: AOAM533qkccqeKsAcvYowKdMgG7+mgiWOATkseMcYj7ttOa/WLvC9m7t
+        ou7DlPqQEMmzsy0nYvHK8t8Jh9CVOM0DVQmXsvU=
+X-Google-Smtp-Source: ABdhPJyUBO+DsmdpDsJ4Pn5i7Cv49GEzLcYxsQq3Pf2omsAHdn3o6GtAPIxPaNCeZd4qPWOLSWV9DQVv6zmA2cjHFBw=
+X-Received: by 2002:a25:1388:: with SMTP id 130mr46889270ybt.321.1642678344119;
+ Thu, 20 Jan 2022 03:32:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <PH0PR10MB55156B918F0D519B8A935C378C5A9@PH0PR10MB5515.namprd10.prod.outlook.com>
+References: <CABrV9Yt0HYenR_qk_QWFkvH4-0Ooeb61y+CyT3WVOnDiAmxjhA@mail.gmail.com>
+ <d6551275-6d84-d117-dfa3-91956860ab05@linux.dev> <CABrV9YuiYkCKMBMsrnd38ZxwqxJeWMw+xXFRpXc1gMtdAN9bFA@mail.gmail.com>
+ <PH7PR84MB14880DAC2578D1CBFAC7CC87BC599@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+In-Reply-To: <PH7PR84MB14880DAC2578D1CBFAC7CC87BC599@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+From:   Alexander Kalentyev <comrad.karlovich@gmail.com>
+Date:   Thu, 20 Jan 2022 12:32:12 +0100
+Message-ID: <CABrV9Ys2QnOWJo=-m3fgz77=uLxtbKN4HcDgtxzFskXEObmL-Q@mail.gmail.com>
+Subject: Re: rdma_rxe usage problem
+To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
+Cc:     Yanjun Zhu <yanjun.zhu@linux.dev>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 08:00:54AM +0000, Praveen Kannoju wrote:
+Dear Robert,
+
+Thank you for your help!
+What I did was :
+ipv6calc --in prefix+mac fe80:: XX:XX:XX:XX:XX:XX
+(with XX:XX:XX:XX:XX:XX one have to insert the MAC address of the NIC)
+And then
+udo ip addr add dev <dev> fe80::ZZZZ:ZZZZ:ZZZZ:ZZZZ/64
+(with ZZZ:ZZZZ:ZZZZ the address genereted by ipv6calc)
+sudo rdma link add rxe0 type rxe netdev <dev>
+After that everything is working as expected:
+>ibv_rc_pingpong -d rxe0 -g 0 192.168.0.176
+  local address:  LID 0x0000, QPN 0x000012, PSN 0xf85048, GID
+ZZZZ::ZZZZ:ZZZZ:ZZZZ:ZZZZ
+  remote address: LID 0x0000, QPN 0x000011, PSN 0xf7c7b7, GID
+ZZZZ::ZZZZ:ZZZZ:ZZZZ:ZZZZ
+8192000 bytes in 0.01 seconds =3D 4743.49 Mbit/sec
+1000 iters in 0.01 seconds =3D 13.82 usec/iter
+
+So, I think it make sense to include this information in a README on
+github. Otherwise somebody like me can spend a week trying to figure
+out what is going on!
+
+Thanks once again!
+Regards,
+Alexander Kalentev
+
+=D1=81=D1=80, 19 =D1=8F=D0=BD=D0=B2. 2022 =D0=B3. =D0=B2 20:54, Pearson, Ro=
+bert B <robert.pearson2@hpe.com>:
+>
+>
+>
 > -----Original Message-----
-> From: Leon Romanovsky [mailto:leon@kernel.org] 
-> Sent: 19 January 2022 08:26 PM
-> To: Praveen Kannoju <praveen.kannoju@oracle.com>
-> Cc: Santosh Shilimkar <santosh.shilimkar@oracle.com>; Jason Gunthorpe <jgg@ziepe.ca>; David S . Miller <davem@davemloft.net>; kuba@kernel.org; netdev@vger.kernel.org; linux-rdma@vger.kernel.org; rds-devel@oss.oracle.com; linux-kernel@vger.kernel.org; Rama Nichanamatlu <rama.nichanamatlu@oracle.com>; Rajesh Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>
-> Subject: Re: [PATCH RFC] rds: ib: Reduce the contention caused by the asynchronous workers to flush the mr pool
-> 
-> On Wed, Jan 19, 2022 at 11:46:16AM +0000, Praveen Kannoju wrote:
-> > -----Original Message-----
-> > From: Leon Romanovsky [mailto:leon@kernel.org]
-> > Sent: 19 January 2022 12:29 PM
-> > To: Santosh Shilimkar <santosh.shilimkar@oracle.com>
-> > Cc: Jason Gunthorpe <jgg@ziepe.ca>; Praveen Kannoju 
-> > <praveen.kannoju@oracle.com>; David S . Miller <davem@davemloft.net>; 
-> > kuba@kernel.org; netdev@vger.kernel.org; linux-rdma@vger.kernel.org; 
-> > rds-devel@oss.oracle.com; linux-kernel@vger.kernel.org; Rama 
-> > Nichanamatlu <rama.nichanamatlu@oracle.com>; Rajesh 
-> > Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>
-> > Subject: Re: [PATCH RFC] rds: ib: Reduce the contention caused by the 
-> > asynchronous workers to flush the mr pool
-> > 
-> > On Tue, Jan 18, 2022 at 07:42:54PM +0000, Santosh Shilimkar wrote:
-> > > On Jan 18, 2022, at 11:17 AM, Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > > 
-> > > > On Tue, Jan 18, 2022 at 04:48:43PM +0000, Santosh Shilimkar wrote:
-> > > >> 
-> > > >>> On Jan 18, 2022, at 6:47 AM, Praveen Kannoju <praveen.kannoju@oracle.com> wrote:
-> > > >>> 
-> > > >>> This patch aims to reduce the number of asynchronous workers 
-> > > >>> being spawned to execute the function "rds_ib_flush_mr_pool" 
-> > > >>> during the high I/O situations. Synchronous call path's to this function "rds_ib_flush_mr_pool"
-> > > >>> will be executed without being disturbed. By reducing the number 
-> > > >>> of processes contending to flush the mr pool, the total number 
-> > > >>> of D state processes waiting to acquire the mutex lock will be 
-> > > >>> greatly reduced, which otherwise were causing DB instance crash 
-> > > >>> as the corresponding processes were not progressing while waiting to acquire the mutex lock.
-> > > >>> 
-> > > >>> Signed-off-by: Praveen Kumar Kannoju 
-> > > >>> <praveen.kannoju@oracle.com> —
-> > > >>> 
-> > > >> […]
-> > > >> 
-> > > >>> diff --git a/net/rds/ib_rdma.c b/net/rds/ib_rdma.c index
-> > > >>> 8f070ee..6b640b5 100644
-> > > >>> +++ b/net/rds/ib_rdma.c
-> > > >>> @@ -393,6 +393,8 @@ int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
-> > > >>> 	 */
-> > > >>> 	dirty_to_clean = llist_append_to_list(&pool->drop_list, &unmap_list);
-> > > >>> 	dirty_to_clean += llist_append_to_list(&pool->free_list,
-> > > >>> &unmap_list);
-> > > >>> +	WRITE_ONCE(pool->flush_ongoing, true);
-> > > >>> +	smp_wmb();
-> > > >>> 	if (free_all) {
-> > > >>> 		unsigned long flags;
-> > > >>> 
-> > > >>> @@ -430,6 +432,8 @@ int rds_ib_flush_mr_pool(struct rds_ib_mr_pool *pool,
-> > > >>> 	atomic_sub(nfreed, &pool->item_count);
-> > > >>> 
-> > > >>> out:
-> > > >>> +	WRITE_ONCE(pool->flush_ongoing, false);
-> > > >>> +	smp_wmb();
-> > > >>> 	mutex_unlock(&pool->flush_lock);
-> > > >>> 	if (waitqueue_active(&pool->flush_wait))
-> > > >>> 		wake_up(&pool->flush_wait);
-> > > >>> @@ -507,8 +511,17 @@ void rds_ib_free_mr(void *trans_private, 
-> > > >>> int
-> > > >>> invalidate)
-> > > >>> 
-> > > >>> 	/* If we've pinned too many pages, request a flush */
-> > > >>> 	if (atomic_read(&pool->free_pinned) >= pool->max_free_pinned ||
-> > > >>> -	    atomic_read(&pool->dirty_count) >= pool->max_items / 5)
-> > > >>> -		queue_delayed_work(rds_ib_mr_wq, &pool->flush_worker, 10);
-> > > >>> +	    atomic_read(&pool->dirty_count) >= pool->max_items / 5) {
-> > > >>> +		smp_rmb();
-> > > >> You won’t need these explicit barriers since above atomic and 
-> > > >> write once already issue them.
-> > > > 
-> > > > No, they don't. Use smp_store_release() and smp_load_acquire if 
-> > > > you want to do something like this, but I still can't quite figure 
-> > > > out if this usage of unlocked memory accesses makes any sense at all.
-> > > > 
-> > > Indeed, I see that now, thanks. Yeah, these multi variable checks 
-> > > can indeed be racy but they are under lock at least for this code path.
-> > > But there are few hot path places where single variable states are 
-> > > evaluated atomically instead of heavy lock.
-> > 
-> > At least pool->dirty_count is not locked in rds_ib_free_mr() at all.
-> > 
-> > Thanks
-> > 
-> > > 
-> > > Regards,
-> > > Santosh
-> > > 
-> > 
-> > Thank you Santosh, Leon and Jason for reviewing the Patch.
-> > 
-> > 1. Leon, the bool variable "flush_ongoing " introduced through the patch has to be accessed only after acquiring the mutex lock. Hence it is well protected.
-> 
-> I don't see any lock in rds_ib_free_mr() function where your perform "if (!READ_ONCE(pool->flush_ongoing)) { ...".
-> 
-> > 
-> > 2. As the commit message already conveys the reason, the check being made in the function "rds_ib_free_mr" is only to avoid the redundant asynchronous workers from being spawned.
-> > 
-> > 3. The synchronous flush path's through the function "rds_free_mr" with either cookie=0 or "invalidate" flag being set, have to be honoured as per the semantics and hence these paths have to execute the function "rds_ib_flush_mr_pool" unconditionally.
-> > 
-> > 4. It complicates the patch to identify, where from the function "rds_ib_flush_mr_pool", has been called. And hence, this patch uses the state of the bool variable to stop the asynchronous workers.
-> > 
-> > 5. We knew that "queue_delayed_work" will ensures only one work is running, but avoiding these async workers during high load situations, made way for the allocation and synchronous callers which would otherwise be waiting long for the flush to happen. Great reduction in the number of calls to the function "rds_ib_flush_mr_pool" has been observed with this patch. 
-> 
-> So if you understand that there is only one work in progress, why do you say workerS?
-> 
-> Thanks
-> 
-> > 
-> > 6. Jason, the only function "rds_ib_free_mr" which accesses the introduced bool variable "flush_ongoing" to spawn a flush worker does not crucially impact the availability of MR's, because the flush happens from allocation path as well when necessary.   Hence the Load-store ordering is not essentially needed here, because of which we chose smp_rmb() and smp_wmb() over smp_load_acquire() and smp_store_release().
-> > 
-> > Regards,
-> > Praveen.
-> 
-> 
-> Jason,
-> 
-> 	The relaxed ordering primitives smp_rmb() and smp_wmb() ensure to provide
-> 	guaranteed atomic memory operations READ_ONCE and WRITE_ONCE, used in the
-> 	functions "rds_ib_free_mr" and "rds_ib_flush_mr_pool" correspondingly.
-> 
-> 	Yes, the memory barrier primitives smp_load_acquire()and smp_store_release() 
-> 	are even better. But, because of the simplicity of the use of memory barrier
-> 	in the patch, smp_rmb() and smp_wmb() are chosen. 
-> 
-> 	Please let me know if you want me to switch to smp_load_acquire() and
-> 	smp_store_release().
-> 
-> Leon,
-> 
-> 	Avoiding the asynchronous worker from being spawned during the high load situations,
-> 	make way for both synchronous and allocation path to flush the mr pool and grab the
-> 	mr without waiting.
-> 
-> 	Please let me know if you still have any queries with this respect or any modifications
-> 	are needed.
-
-I didn't get any answer on my questions.
-So let's me repeat them.
-1. Where can I see locks in rds_ib_free_mr() that protects concurrent
-change of your new flush_ongoing field?
-2. There is only one same work can be executed/scheduled, where do you
-see multiple/parallel workers (plural) and how is it possible?
-
-BTW, please fix your email client to reply inline.
-
-> 
-> Regards,
-> Praveen.
+> From: Alexander Kalentyev <comrad.karlovich@gmail.com>
+> Sent: Wednesday, January 19, 2022 11:53 AM
+>
+>
+> Anyway the ibv_rc_pingpong shows an error:
+>
+> >ibv_rc_pingpong -d rxe0 -g 0
+>   local address:  LID 0x0000, QPN 0x000015, PSN 0x015dd8, GID
+> fe80::4a51:c5ff:fef6:e159
+> Failed to modify QP to RTR
+> Couldn't connect to remote QP
+>
+> >
+> Alexander,
+>
+> I use a script to restart rxe after changing anything it looks like
+>
+>         #!/bin/bash
+>
+>         export LD_LIBRARY_PATH=3D<path to rdma-core>/rdma-core/build/lib:=
+/usr/lib
+>
+>         sudo rmmod rdma_rxe
+>         sudo modprobe rdma_rxe
+>
+>         sudo ip link set dev enp0s3 mtu 4500
+>         sudo ip addr add dev enp0s3 fe80::0a00:27ff:fe35:5ea7/64
+>         sudo rdma link add rxe0 type rxe netdev enp0s3
+>
+> The important line is adding the ipv6 address which corresponds with the =
+MAC address of
+> The ethernet nic which is
+>
+>         08:00:27:35:5e:a7
+>
+> Some OSes (like mine) do not create this address automatically but mangle=
+ the address.
+> But the rdma core driver seems to expect all roce providers to have it.
+>
+> Hope this helps.
+>
+> Bob Pearson
+> rpearson@hpe.com
