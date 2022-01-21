@@ -2,102 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1E0B495FAB
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jan 2022 14:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CE4496299
+	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jan 2022 17:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350733AbiAUNTH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jan 2022 08:19:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350722AbiAUNTH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 21 Jan 2022 08:19:07 -0500
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36321C061574
-        for <linux-rdma@vger.kernel.org>; Fri, 21 Jan 2022 05:19:07 -0800 (PST)
-Message-ID: <9b531d94-b1f4-2720-fc41-80fa94f444f6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1642771144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wjWcE0SGglrEjJYl0Sj+Q6nZ+DUgCEKwJevGoFsBj3E=;
-        b=q/6fV61p6gJQnlt36gVY5Ew2qF+fClILuh9pemXJAAwCliLewwJW/ZoXTAKqKM9d4kFC/0
-        jEK7zujtyTfJ4hDtGzvAyw0TKj09UtB8HLiABNiNA5CXXZWqaaxf3xX+TLyIxEqOxnX1gv
-        Pw+OQ5id1orfMuAgjvGALZms+lME/+o=
-Date:   Fri, 21 Jan 2022 21:18:55 +0800
+        id S1346501AbiAUQG4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 21 Jan 2022 11:06:56 -0500
+Received: from mga04.intel.com ([192.55.52.120]:13461 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239055AbiAUQG4 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Fri, 21 Jan 2022 11:06:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1642781216; x=1674317216;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=2fgjES/L5XUKKJiDmpaMJZ8k+WBnWRuYT9YZ6Uab/as=;
+  b=GjTSmCd9dGz4ExkdzRXbuCLuq3uMHaEoRJWEnLnZjPDHmoEofMgKg8s6
+   K7+qSvn458PKH5Xn40Obx7zkIIqVIPitp3XRPlr3v88ZxIWowOtohLmdO
+   ru8DuuGm/SYTgYwnKpr/bW7iAhnY9wnvjpKOO98xfhih/3Bq1ZGfSxXzN
+   +wu8F8RcxbpVru+6AE3Yru00hGiB2VX7kDFmGgLD0vgA7OrV2Ge/LCILp
+   nav07pe6U9MhuRQ6IWs/GMIPhxo6hfbR5JZir3Cfqh6H+sqGI+/oTjqRQ
+   2Aj1yyxjBDtx99O3gw/5YQmqoRHxUztXx6atPB0JTwed2uh5FEr83MLv7
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="244506941"
+X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
+   d="scan'208";a="244506941"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 08:06:55 -0800
+X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
+   d="scan'208";a="533324339"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 08:06:54 -0800
+Date:   Fri, 21 Jan 2022 08:06:54 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Support RDMA Atomic Write operation
+Message-ID: <20220121160654.GC773547@iweiny-DESK2.sc.intel.com>
+References: <20220113030350.2492841-1-yangx.jy@fujitsu.com>
+ <20220113030350.2492841-3-yangx.jy@fujitsu.com>
+ <20220117131624.GB7906@nvidia.com>
+ <61E673EA.60900@fujitsu.com>
+ <20220118123505.GF84788@nvidia.com>
+ <7dfed756-42a7-b6f7-3473-1348479d30db@fujitsu.com>
+ <20220119123635.GH84788@nvidia.com>
+ <022be340-a49a-1e94-5fb8-1c77f06fecc2@cn.fujitsu.com>
+ <20220121125837.GV84788@nvidia.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] RDMA/rxe: Check the last packet by RXE_END_MASK
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "david.marchand@6wind.com" <david.marchand@6wind.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>
-References: <20211229034438.1854908-1-yangx.jy@fujitsu.com>
- <20220106004005.GA2913243@nvidia.com>
- <2e708b1d-10d3-51ba-5da9-b05121e2cd89@linux.dev>
- <61DBC15E.5000402@fujitsu.com>
- <9e75da26-1339-36d4-1e30-83046b53e138@linux.dev>
- <F1A71763-157E-4AC6-9414-8B5DA97E22FC@oracle.com>
- <744a7e96-6084-2977-69c3-fd0e35a0e99f@linux.dev>
- <61DE51D7.5050400@fujitsu.com>
- <468c411e-8f68-00da-5c44-a3de72bf0d9b@linux.dev>
- <61E623DF.5000007@fujitsu.com>
- <4e1e7cf6-d41b-6926-68cf-e58ca79a4559@linux.dev> <61E92C59.20200@fujitsu.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <61E92C59.20200@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+In-Reply-To: <20220121125837.GV84788@nvidia.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Fri, Jan 21, 2022 at 08:58:37AM -0400, Jason Gunthorpe wrote:
+> On Thu, Jan 20, 2022 at 08:07:36PM +0800, Li, Zhijian wrote:
+> 
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c
+> > b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > index 0621d387ccba..978fdd23665c 100644
+> > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> > @@ -260,7 +260,8 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64
+> > length, u64 iova,
+> >                                 num_buf = 0;
+> >                         }
+> > 
+> > -                       vaddr = page_address(sg_page_iter_page(&sg_iter));
+> > +                       // FIXME: don't forget to kunmap_local(vaddr)
+> > +                       vaddr = kmap_local_page(sg_page_iter_page(&sg_iter));
+> 
+> No, you can't leave the kmap open for a long time. The kmap has to
+> just be around the usage.
 
-åœ¨ 2022/1/20 17:33, yangx.jy@fujitsu.com å†™é“:
-> On 2022/1/19 22:08, Yanjun Zhu wrote:
->> "
->>
->> ...
->>
->> Since the responder may choose to coalesce acknowledges, a single
->> response packet may in fact acknowledge
->> several request messages. Thus, when it receives a new MSN, the
->> requester begins evaluating WQEs on its send queue beginning with the
->> oldest outstanding WQE and progressing forward.
->>
->> ...
->>
->> "
->>
->> In the above, several request messages come. From the SPEC, msn should
->> increase based on the number of request messages.
-> Hi Yanjunï¼Œ
->
-> Current logic shows that posting a WQE on SQ increases SSN (SSN++) and
-> processing a WQE on responder successfully increases MSN (MSN++).
-> I think current SoftRoce doesn't implement the rule you metioned.
->
-> To be honest, the rule is not clear for me. when and how many
-> acknowledges of several request messages can we coalesce?
+Indeed Jason is correct here.  A couple of details here.  First
+kmap_local_page() is only valid within the current thread of execution.  So
+what you propose above will not work at all.  Second, kmap() is to be avoided.
 
-Hi, Jason Gunthorpe && Leon Romanovsky
+Finally, that page_address() should be avoided IMO and will be broken, at least
+for persistent memory pages, once some of my work lands.[*]  Jason would know
+better, but I think page_address should be avoided in all driver code.  But
+there is no clear documentation on that.
 
-In Mellanox RDMA NIC, how this rule is implemented?
+Taking a quick look at rxe_mr.c buf->addr is only used in rxe_mr_init_user().
+You need to kmap_local_page() around that access.  What else is struct
+rxe_phys_buf->addr used for?  Can you just map the page when you need it in
+rxe_mr_init_user()?
 
-Thanks a lot.
+If you must create a mapping that is permanent you could look at vmap().
 
-Zhu Yanjun
+Ira
 
->> Can your commit handle the above case?
-> No.
->
-> Best Regards,
-> Xiao Yang
->>
->> Zhu Yanjun
+> 
+> Jason
