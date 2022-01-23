@@ -2,116 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77B149629A
-	for <lists+linux-rdma@lfdr.de>; Fri, 21 Jan 2022 17:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4014970F2
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jan 2022 11:34:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351460AbiAUQIm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 21 Jan 2022 11:08:42 -0500
-Received: from mga06.intel.com ([134.134.136.31]:30954 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239055AbiAUQIm (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 21 Jan 2022 11:08:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1642781322; x=1674317322;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=CLI4ZPbcFkmdFIvg7kjbyulrlDX2BZJUPr9V92jeriM=;
-  b=i4hLwpj2sGJdsoAqZqXJRfklCRX638lVJmrovGpCLMq8oVhCr2rP1WJa
-   g7mG8CXOrpOklVGn++7XtJUjgk2vv9Y9RxwhoF5wh0mpyzsl8Rls7gieC
-   S/qQEzccQtH04k2hoSuyEa3rE9fYiP5bs5J9THcxmLzjKDboNd2VuibGn
-   Vts4IE1R7k+dbdyVztLDHVBYOEa/5CAlzQeKYDjF8Kni6kgI05OVvQs4v
-   8fJEkLDMajZLfbszrGmZ6G2h3U1b2LoSVg0Auzu+IDK01cesp67s+UsX2
-   2WquMrN96jjHWiRM85y+F+tEKas8V2WvHdMiIwydKETGdsYvI1HS/d47l
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10233"; a="306405411"
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="306405411"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 08:08:42 -0800
-X-IronPort-AV: E=Sophos;i="5.88,304,1635231600"; 
-   d="scan'208";a="672982490"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 08:08:41 -0800
-Date:   Fri, 21 Jan 2022 08:08:41 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Li, Zhijian" <lizhijian@cn.fujitsu.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "tom@talpey.com" <tom@talpey.com>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>
-Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Support RDMA Atomic Write operation
-Message-ID: <20220121160841.GD773547@iweiny-DESK2.sc.intel.com>
-References: <20220113030350.2492841-1-yangx.jy@fujitsu.com>
- <20220113030350.2492841-3-yangx.jy@fujitsu.com>
- <20220117131624.GB7906@nvidia.com>
- <61E673EA.60900@fujitsu.com>
- <20220118123505.GF84788@nvidia.com>
- <7dfed756-42a7-b6f7-3473-1348479d30db@fujitsu.com>
- <20220119123635.GH84788@nvidia.com>
- <022be340-a49a-1e94-5fb8-1c77f06fecc2@cn.fujitsu.com>
- <20220121125837.GV84788@nvidia.com>
- <20220121160654.GC773547@iweiny-DESK2.sc.intel.com>
+        id S236130AbiAWKep (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jan 2022 05:34:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230254AbiAWKeo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jan 2022 05:34:44 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C080C06173B
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Jan 2022 02:34:44 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EFE8FB80C73
+        for <linux-rdma@vger.kernel.org>; Sun, 23 Jan 2022 10:34:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE82CC340E2;
+        Sun, 23 Jan 2022 10:34:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642934081;
+        bh=LsfPKp9+qGcxDplOICFKEjdp1AWla9VpG7SJ7NT/5Gw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nUY1b2Ryn/Ka9+vQQKq86v66KNBXoVgzYvHx2ufmGU4cQDe4sR5NG5ZbOO0h5ops2
+         10ZuB5p0kGpjP9IPPfs6XBvFRZoZw6I8hbgpf7cItchrxBScbTogUcNB8SDoZsEN3K
+         HB66Ct3/RrX/qlCouyBH13VywlSQc8GsXmKOuOvYOJLXY3I8OjTIOL4izToo/i125A
+         00naPURl90UMMR4nciTPYG009kI1buQarMrxcc9iOj9JP8o7cqifHFyM1lZmtDs2Z2
+         +Pp2goevuxzFjzxEO5bh+sbIP38zuty5Ei39QIEJXmGIjzha0JMxBnBj64JgqAHwqI
+         TBRF4tGOddoGw==
+Date:   Sun, 23 Jan 2022 12:34:36 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     mike.marciniszyn@cornelisnetworks.com
+Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-rc] IB/rdmavt: Validate remote_addr during loopback
+ atomic tests
+Message-ID: <Ye0vPMAF6NdF0pMu@unreal>
+References: <1642584489-141005-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220121160654.GC773547@iweiny-DESK2.sc.intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <1642584489-141005-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 21, 2022 at 08:06:54AM -0800, 'Ira Weiny' wrote:
-> On Fri, Jan 21, 2022 at 08:58:37AM -0400, Jason Gunthorpe wrote:
-> > On Thu, Jan 20, 2022 at 08:07:36PM +0800, Li, Zhijian wrote:
-> > 
-> > > diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > index 0621d387ccba..978fdd23665c 100644
-> > > +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-> > > @@ -260,7 +260,8 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64
-> > > length, u64 iova,
-> > >                                 num_buf = 0;
-> > >                         }
-> > > 
-> > > -                       vaddr = page_address(sg_page_iter_page(&sg_iter));
-> > > +                       // FIXME: don't forget to kunmap_local(vaddr)
-> > > +                       vaddr = kmap_local_page(sg_page_iter_page(&sg_iter));
-> > 
-> > No, you can't leave the kmap open for a long time. The kmap has to
-> > just be around the usage.
+On Wed, Jan 19, 2022 at 04:28:09AM -0500, mike.marciniszyn@cornelisnetworks.com wrote:
+> From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 > 
-> Indeed Jason is correct here.  A couple of details here.  First
-> kmap_local_page() is only valid within the current thread of execution.  So
-> what you propose above will not work at all.  Second, kmap() is to be avoided.
+> The rdma-core test suite sends an unaligned remote address
+> and expects a failure.
 > 
-> Finally, that page_address() should be avoided IMO and will be broken, at least
-> for persistent memory pages, once some of my work lands.[*]  Jason would know
-> better, but I think page_address should be avoided in all driver code.  But
-> there is no clear documentation on that.
+> ERROR: test_atomic_non_aligned_addr (tests.test_atomic.AtomicTest)
 > 
-> Taking a quick look at rxe_mr.c buf->addr is only used in rxe_mr_init_user().
-                                                            ^^^^^^^^^^^^^^
-Sorry...                                            I meant rxe_mr_copy()...
+> The qib/hfi1 rc handling validates properly, but the test has the
+> client and server on the same system.
+> 
+> The loopback of these operations is a distinct code path.
+> 
+> Fix by syntaxing the proposed remote address in the loopback
+> code path.
+> 
+> Fixes: 15703461533a ("IB/{hfi1, qib, rdmavt}: Move ruc_loopback to rdmavt")
+> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+> Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+> ---
+>  drivers/infiniband/sw/rdmavt/qp.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+> index 3305f27..ae50b56 100644
+> --- a/drivers/infiniband/sw/rdmavt/qp.c
+> +++ b/drivers/infiniband/sw/rdmavt/qp.c
+> @@ -3073,6 +3073,8 @@ void rvt_ruc_loopback(struct rvt_qp *sqp)
+>  	case IB_WR_ATOMIC_FETCH_AND_ADD:
+>  		if (unlikely(!(qp->qp_access_flags & IB_ACCESS_REMOTE_ATOMIC)))
+>  			goto inv_err;
+> +		if (unlikely(wqe->atomic_wr.remote_addr & (sizeof(u64) - 1)))
 
-> You need to kmap_local_page() around that access.  What else is struct
-> rxe_phys_buf->addr used for?  Can you just map the page when you need it in
-> rxe_mr_init_user()?
+Isn't this "!PAGE_ALIGNED(wqe->atomic_wr.remote_addr)" check?
 
-rxe_mr_copy()...
+Thanks
 
-Ira
-
+> +			goto inv_err;
+>  		if (unlikely(!rvt_rkey_ok(qp, &qp->r_sge.sge, sizeof(u64),
+>  					  wqe->atomic_wr.remote_addr,
+>  					  wqe->atomic_wr.rkey,
+> -- 
+> 1.8.3.1
 > 
-> If you must create a mapping that is permanent you could look at vmap().
-> 
-> Ira
-> 
-> > 
-> > Jason
