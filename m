@@ -2,42 +2,50 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89D05497407
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jan 2022 19:00:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF9949740C
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jan 2022 19:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbiAWSA5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jan 2022 13:00:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44756 "EHLO
+        id S230037AbiAWSDK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jan 2022 13:03:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbiAWSA4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jan 2022 13:00:56 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E5AC06173B;
-        Sun, 23 Jan 2022 10:00:56 -0800 (PST)
+        with ESMTP id S229782AbiAWSDK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jan 2022 13:03:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19A1C06173B;
+        Sun, 23 Jan 2022 10:03:09 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 681B860FE3;
-        Sun, 23 Jan 2022 18:00:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E8FCC340E2;
-        Sun, 23 Jan 2022 18:00:53 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3985FB80DDA;
+        Sun, 23 Jan 2022 18:03:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93E67C340E2;
+        Sun, 23 Jan 2022 18:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642960854;
-        bh=nO2zeXruYEjMNZf71m/0JLH6eqS4OxaXWEs62L1cIvA=;
+        s=k20201202; t=1642960986;
+        bh=Xxp9NkpLTn9XkfjxrWrNTJOxpJ3+NyoF5pVciaxHLPg=;
         h=From:To:Cc:Subject:Date:From;
-        b=dU7pB+Y9JhNW3C8sx6sdaNYcd0H8OvaWGKoA1NAHfypoyVLhcevTL4SnPy6uTR2RP
-         oNKlobQfqI6i4lPKqlwNLnxB8CvsYnfdHxYcPmTExnAZhLGy5Rmyrw5TuhTPYtWaNY
-         o3eEsRiu8eqNc8i58P3BBD4GK+eEs57deu/+OK5mYc0hu9ITYk9bwcjCPzR4KLe3WX
-         1R3a7pyM2h1B7N1qjBx04PsROTCmFSpQhNuWWDRHMSup19d6EWdQvFATACDRuekOYl
-         5/nVjBXhB2MC5SKuyT5DBUyvp8lPGD1cgSP+TlRMHy4z34kT5EHuFQRCSQc1nlUb2b
-         Ic/N11CoEVh7w==
+        b=VThQ0X/xnvNq/bQYqCSvz27urkifBIuMHXF+PyB0D6W/QhFW1hNsiyai766wgSWCW
+         VU8kl9MUyareR1nB1gKilClOB816vl8JS7bBa1F3lqMkEUflblJ5trBCkP7VJQEu3W
+         Z/Q2YPHOhO/BnvU8CzGkuV25pgwkGcGWwUwiRMBbqsneKnKcC99MXA//KmKoq8Bgdc
+         LrjTXgZnYFiUg77eNb4q2m1tp1OhFcLjFDPjxIncvI5FhPANlFMyxQTCFVqDG/vD/x
+         asZ3BGb6VTOBXQFTJQ40xNEPxq1T3gA9rO3A/+NU2ksW7p1GGzsH2YIT6rtF9UIGhK
+         e1XUtanvZJSkw==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next] RDMA/mlx5: Delete get_num_static_uars function
-Date:   Sun, 23 Jan 2022 20:00:48 +0200
-Message-Id: <11d78568c3c6ba588ee8465e0d10d96145fc825c.1642960830.git.leonro@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: [PATCH rdma-next 00/11] Delete useless module.h|moduleparam.h includes
+Date:   Sun, 23 Jan 2022 20:02:49 +0200
+Message-Id: <cover.1642960861.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -47,46 +55,57 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Leon Romanovsky <leonro@nvidia.com>
 
-There is no need to keep get_num_static_uars in the headers file
-as it is not shared and used only once.
+Nothing fancy, just delete module.h|moduleparam.h from files that don't
+need these includes at all.
 
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/hw/mlx5/mlx5_ib.h | 6 ------
- drivers/infiniband/hw/mlx5/qp.c      | 3 ++-
- 2 files changed, 2 insertions(+), 7 deletions(-)
+Thanks
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 357bcf4e305d..104acd986c66 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -1526,12 +1526,6 @@ static inline int get_uars_per_sys_page(struct mlx5_ib_dev *dev, bool lib_suppor
- 				MLX5_UARS_IN_PAGE : 1;
- }
- 
--static inline int get_num_static_uars(struct mlx5_ib_dev *dev,
--				      struct mlx5_bfreg_info *bfregi)
--{
--	return get_uars_per_sys_page(dev, bfregi->lib_uar_4k) * bfregi->num_static_sys_pages;
--}
--
- extern void *xlt_emergency_page;
- 
- int bfregn_to_uar_index(struct mlx5_ib_dev *dev,
-diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-index bf0a0ef380d4..4f325a844c93 100644
---- a/drivers/infiniband/hw/mlx5/qp.c
-+++ b/drivers/infiniband/hw/mlx5/qp.c
-@@ -615,7 +615,8 @@ enum {
- 
- static int max_bfregs(struct mlx5_ib_dev *dev, struct mlx5_bfreg_info *bfregi)
- {
--	return get_num_static_uars(dev, bfregi) * MLX5_NON_FP_BFREGS_PER_UAR;
-+	return get_uars_per_sys_page(dev, bfregi->lib_uar_4k) *
-+	       bfregi->num_static_sys_pages * MLX5_NON_FP_BFREGS_PER_UAR;
- }
- 
- static int num_med_bfreg(struct mlx5_ib_dev *dev,
+Leon Romanovsky (11):
+  RDMA/mlx5: Delete useless module.h include
+  RDMA/core: Delete useless module.h include
+  RDMA/hfi1: Delete useless module.h include
+  RDMA/mlx4: Delete useless module.h include
+  RDMA/mthca: Delete useless module.h include
+  RDMA/qib: Delete useless module.h include
+  RDMA/usnic: Delete useless module.h include
+  RDMA/rxe: Delete useless module.h include
+  RDMA/ipoib: Delete useless module.h include
+  RDMA/iser: Delete useless module.h include
+  RDMA/opa: Delete useless module.h include
+
+ drivers/infiniband/core/addr.c                    | 1 -
+ drivers/infiniband/core/cache.c                   | 1 -
+ drivers/infiniband/core/cma_configfs.c            | 1 -
+ drivers/infiniband/core/cq.c                      | 1 -
+ drivers/infiniband/core/iwpm_util.h               | 1 -
+ drivers/infiniband/core/sa_query.c                | 1 -
+ drivers/infiniband/hw/hfi1/affinity.c             | 1 -
+ drivers/infiniband/hw/hfi1/debugfs.c              | 1 -
+ drivers/infiniband/hw/hfi1/device.c               | 1 -
+ drivers/infiniband/hw/hfi1/fault.c                | 1 -
+ drivers/infiniband/hw/hfi1/firmware.c             | 1 -
+ drivers/infiniband/hw/mlx4/alias_GUID.c           | 1 -
+ drivers/infiniband/hw/mlx5/ib_virt.c              | 1 -
+ drivers/infiniband/hw/mlx5/mem.c                  | 1 -
+ drivers/infiniband/hw/mlx5/qp.c                   | 1 -
+ drivers/infiniband/hw/mlx5/srq.c                  | 1 -
+ drivers/infiniband/hw/mthca/mthca_profile.c       | 2 --
+ drivers/infiniband/hw/qib/qib_fs.c                | 1 -
+ drivers/infiniband/hw/usnic/usnic_debugfs.c       | 1 -
+ drivers/infiniband/hw/usnic/usnic_ib_qp_grp.c     | 1 -
+ drivers/infiniband/hw/usnic/usnic_ib_sysfs.c      | 1 -
+ drivers/infiniband/hw/usnic/usnic_ib_verbs.c      | 1 -
+ drivers/infiniband/hw/usnic/usnic_transport.c     | 1 -
+ drivers/infiniband/hw/usnic/usnic_vnic.c          | 1 -
+ drivers/infiniband/sw/rxe/rxe.h                   | 1 -
+ drivers/infiniband/sw/rxe/rxe_mmap.c              | 1 -
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c      | 1 -
+ drivers/infiniband/ulp/ipoib/ipoib_vlan.c         | 1 -
+ drivers/infiniband/ulp/iser/iser_memory.c         | 1 -
+ drivers/infiniband/ulp/iser/iser_verbs.c          | 1 -
+ drivers/infiniband/ulp/opa_vnic/opa_vnic_netdev.c | 1 -
+ 31 files changed, 32 deletions(-)
+
 -- 
 2.34.1
 
