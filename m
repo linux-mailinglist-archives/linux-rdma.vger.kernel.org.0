@@ -2,32 +2,32 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CED49741A
-	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jan 2022 19:03:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BD3649741C
+	for <lists+linux-rdma@lfdr.de>; Sun, 23 Jan 2022 19:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239481AbiAWSDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 23 Jan 2022 13:03:39 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:56092 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239504AbiAWSDi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jan 2022 13:03:38 -0500
+        id S231180AbiAWSDw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 23 Jan 2022 13:03:52 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:52234 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239519AbiAWSDo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 23 Jan 2022 13:03:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4C6746102C;
-        Sun, 23 Jan 2022 18:03:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2EC0C340E2;
-        Sun, 23 Jan 2022 18:03:36 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1FF38B80DE2;
+        Sun, 23 Jan 2022 18:03:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1743DC340E2;
+        Sun, 23 Jan 2022 18:03:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642961017;
-        bh=eYnrREAK325afTu/6g5jFsGD8pwyIysWpEQlvDyyTaE=;
+        s=k20201202; t=1642961021;
+        bh=FjT8fPV0AryG+akmLSuf5eEiyxAc6uhvVjAWBgYkfY0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SKg0aA1vqFQscdpFAaoHd49A3pAu3UrfLZ+oVwI1/OGnDt/p2XkMqBJgDCpbdJ2R4
-         AzPyVA9Pv8ML3qkHF/3Lpn5eTlTD3YJ2Lm5U/L10H0iDJx49apR7QDHzj096LBVR/j
-         ZegDfkhBmWrVVCgg4nO+rTguIkAuiNHzGHmBzlcRBMkeG94SIa+ydQRNwg7SqDHLrV
-         2tFpZVynxfs4vIASCUfGmOYpvoViNCJljM0s30rhJp6tTrTQv1If3YVMtK98gMwRVv
-         CnbxYemhmTk2La4vewEyzAZni490QOLTwQH9dsAaVFqlsOq2zKAKaMYdiDYcKooHxK
-         2WdcySmkKyXCw==
+        b=TORKCQSYVPlSq+QMdW5XIvNx9c3cO/OTNRlkBk09dBBcKKJhqnIztS/hV4n/v22w4
+         2FAHCvIX5wlwlpG1TKndQ4Ltse6/72HQd4A7ElCxJ4ckRSKRmtQIshhFz8YnJ59MC3
+         MMT7oMYFHPcaw3EmbpBvKKViicwM22xwVvgpiWSyK5hPaKCQejT3j6b2LC5Yaic/fH
+         dBESvqWO8ZFZ+VhvrLQO0uDbtg+dPt66CyrSpTkCe7ML++0uJNtIahmAFAdG7PcFsH
+         n5sAnwapUzMR0oIh2LKer86Q2J7pVuZFQHTrqKDBPgnonOdNkYCzzoN+nLTLy9WFOu
+         wvdNcDC8O9cWA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Leon Romanovsky <leonro@nvidia.com>,
@@ -40,9 +40,9 @@ Cc:     Leon Romanovsky <leonro@nvidia.com>,
         Sagi Grimberg <sagi@grimberg.me>,
         Yishai Hadas <yishaih@nvidia.com>,
         Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: [PATCH rdma-next 08/11] RDMA/rxe: Delete useless module.h include
-Date:   Sun, 23 Jan 2022 20:02:57 +0200
-Message-Id: <8bdb652b01f2316bc57b456fb8c60bfbffe6cc64.1642960861.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 09/11] RDMA/ipoib: Delete useless module.h include
+Date:   Sun, 23 Jan 2022 20:02:58 +0200
+Message-Id: <a5acab89181b55fd640369b3829cc49e0320302f.1642960861.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1642960861.git.leonro@nvidia.com>
 References: <cover.1642960861.git.leonro@nvidia.com>
@@ -58,34 +58,34 @@ There is no need in include of module.h in the following files.
 
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/sw/rxe/rxe.h      | 1 -
- drivers/infiniband/sw/rxe/rxe_mmap.c | 1 -
+ drivers/infiniband/ulp/ipoib/ipoib_netlink.c | 1 -
+ drivers/infiniband/ulp/ipoib/ipoib_vlan.c    | 1 -
  2 files changed, 2 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe.h b/drivers/infiniband/sw/rxe/rxe.h
-index fb9066e6f5f0..30fbdf3bc76a 100644
---- a/drivers/infiniband/sw/rxe/rxe.h
-+++ b/drivers/infiniband/sw/rxe/rxe.h
-@@ -12,7 +12,6 @@
- #endif
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+index 5b05cf3837da..ea16ba5d8da6 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_netlink.c
+@@ -32,7 +32,6 @@
  
+ #include <linux/netdevice.h>
+ #include <linux/if_arp.h>      /* For ARPHRD_xxx */
 -#include <linux/module.h>
- #include <linux/skbuff.h>
+ #include <net/rtnetlink.h>
+ #include "ipoib.h"
  
- #include <rdma/ib_verbs.h>
-diff --git a/drivers/infiniband/sw/rxe/rxe_mmap.c b/drivers/infiniband/sw/rxe/rxe_mmap.c
-index 035f226af133..9149b6095429 100644
---- a/drivers/infiniband/sw/rxe/rxe_mmap.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mmap.c
-@@ -4,7 +4,6 @@
-  * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
+diff --git a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+index 0322dc75396f..4bd161e86f8d 100644
+--- a/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
++++ b/drivers/infiniband/ulp/ipoib/ipoib_vlan.c
+@@ -30,7 +30,6 @@
+  * SOFTWARE.
   */
  
 -#include <linux/module.h>
- #include <linux/vmalloc.h>
- #include <linux/mm.h>
- #include <linux/errno.h>
+ #include <linux/sched/signal.h>
+ 
+ #include <linux/init.h>
 -- 
 2.34.1
 
