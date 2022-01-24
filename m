@@ -2,126 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F016498682
-	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jan 2022 18:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B0C498FAD
+	for <lists+linux-rdma@lfdr.de>; Mon, 24 Jan 2022 20:55:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240999AbiAXRWo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 24 Jan 2022 12:22:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240257AbiAXRWo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 24 Jan 2022 12:22:44 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488E7C06173B
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jan 2022 09:22:44 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id c3so16201350pls.5
-        for <linux-rdma@vger.kernel.org>; Mon, 24 Jan 2022 09:22:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MrF7wrhR/r11uhM1Zd7BV21fovtaCNxXQvw8C85WbLY=;
-        b=GLBFXmuYlThw8gVudTodEivYKQS9SKar/0ZJSgx9vZ2jV0i1C2mAs9UMhy+CDEzy5d
-         IFZTJOCLmtmr4tACBXyGpVkTCutTOkPjFKFsiXQuW10B7yMTisNiToMK0lgAYfmQGU2o
-         x5zzA/bx0jdyqosLimsGRim5t9m/10nNbO/oc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MrF7wrhR/r11uhM1Zd7BV21fovtaCNxXQvw8C85WbLY=;
-        b=d9YwrFF501sx5PnA5QIj9k98/t7Pj+5WmXVda3bHXAT9NPvusc9POB4MZEoPzd/epc
-         6U5eMLqESnJT2m6pNN4L8Q0OyTzKTuonLtoLLZ2Gnf7/4ofHq6oyP4e/UJQsu/bkOgvs
-         dO5W1kH27cBQf+l9V1G7PBPb5Mu4hFSlBVxcG0iyxuCCXPo3aixRmIqXe/FG6IdnkKme
-         WYrKjgAUIzkGQYwjwPfK5ZShf/QTDqRJ9yDD8pBWReL2tMQ9kLSDyDMovqzskdhvwWSz
-         FfRLsQ7uZwN+wsp2ZYIcBh2B6F5EmLyZKd/yZkzij1H+04VptwJTzLdFmooXdUij6dQz
-         5rjw==
-X-Gm-Message-State: AOAM531UvOo83p7qV16HuiuLlcuiPfynunCLZzjlxJ+ACrOGr/EeE+rK
-        DtmaCt/InuGfEN9RPdFcmBPJ3w==
-X-Google-Smtp-Source: ABdhPJzrcJk7jTA+I8Ws2u0wMgyvDme0Vzcmms3hN2SNCAdRMMOG6NzZq8hGBo8rxEKZTG9pux+DpQ==
-X-Received: by 2002:a17:90b:380a:: with SMTP id mq10mr2879344pjb.147.1643044963893;
-        Mon, 24 Jan 2022 09:22:43 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id om12sm8581896pjb.48.2022.01.24.09.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jan 2022 09:22:43 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH RESEND] net/mlx5e: Use struct_group() for memcpy() region
-Date:   Mon, 24 Jan 2022 09:22:41 -0800
-Message-Id: <20220124172242.2410996-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        id S1357514AbiAXTyN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Mon, 24 Jan 2022 14:54:13 -0500
+Received: from [103.153.79.64] ([103.153.79.64]:61187 "EHLO [103.153.79.64]"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232342AbiAXTsO (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 24 Jan 2022 14:48:14 -0500
+Reply-To: Nasser Rashid <nasserrashid.uae@gmail.com>
+From:   Nasser Rashid <anice.fronteracapitalgroup@gmail.com>
+To:     linux-rdma@vger.kernel.org
+Subject: EXPO 2020 BUSINESS PROPOSAL
+Date:   24 Jan 2022 11:48:16 -0800
+Message-ID: <20220124114816.C6A5D4D9D9D93C31@gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2499; h=from:subject; bh=1Hy/h6xR6CfzT4qu6mjl1eEfD5rBqmasVCiGJ8yfoaE=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBh7uBhn8A0lQDkjRJO9V5Sl0KNR5PpwAX0g9yKG64U XkTagiOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYe7gYQAKCRCJcvTf3G3AJrh+D/ 9XD/78mqJDQUOAqNi51dHFcJMTBtQW/5SOOscaza/hl+yTU06iM1xjcDFcsLZb7jaJ4KYcV/EZAnXv l73wUOrNTN38IgVBXoE6OMtjQHaJwjcbzEhxfcnx3ncVKWRelfg1Wcz3UCHgAp621U13ng7iIXtQFg JKnUuwTjUH8vLpNlDdzLwHJqxN7wWA/+r3YU5GGTsWbTGlUZSs4+TPUzhcF48K1Wx5gsWUUBD9lFg5 5oWex5SYi2l7himxmjllot0E3lyw9ot26ak3oWLfRQqqOUet5u4UhWbA1ZBkD6gys1OziqKY2YDzdA L/GNU45qVkr8K5864876AiJ2cFYIFEMng2G2M8xkgH2Pcj0aECmYo+BXt/WC4R5aNKGUbre0I77CKl uCiIH3lTD5mLBNIxe58Lr9ekNwdedX+uNPiZo96/OH0SKqmfp30VohtJJFlB3gauX/slbX9ONDffMR jtuYoEIwR5ODB0gsr3Rku7j/b0nYxJs80sAziKrtJTrlb9tk7RSlanVomFiTGvHxQoI8E8uiRogOG7 7u6sCJqdnF9kLjGpEkjPyi47V741Xkyly/jqjpTJjHzxQHSFinFisqz41YE2HEoINtxxy8kF6n2Rpy +uF1HuWJz6ebx3q5MGvBrhW3cnyzxgaMa1O85G0cJqOg8sujaw7WJe0sV8wQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+Greetings!
 
-Use struct_group() in struct vlan_ethhdr around members h_dest and
-h_source, so they can be referenced together. This will allow memcpy()
-and sizeof() to more easily reason about sizes, improve readability,
-and avoid future warnings about writing beyond the end of h_dest.
+I'm Nasser Rashid, a business financial specialist and investment 
+expert. consultant experienced in financial funding services. I 
+have a
 
-"pahole" shows no size nor member offset changes to struct vlan_ethhdr.
-"objdump -d" shows no object code changes.
+I have a serious business investment opportunity to discuss with 
+you. Century Financial Dubai is the home of discerning investors.
+We
 
-Cc: Saeed Mahameed <saeedm@nvidia.com>
-Cc: Leon Romanovsky <leon@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linux-rdma@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-Since this results in no binary differences, I will carry this in my tree
-unless someone else wants to pick it up. It's one of the last remaining
-clean-ups needed for the next step in memcpy() hardening.
----
- drivers/net/ethernet/mellanox/mlx5/core/en_tx.c | 2 +-
- include/linux/if_vlan.h                         | 6 ++++--
- 2 files changed, 5 insertions(+), 3 deletions(-)
+We offer independent financial advice and assist our clients in 
+making sound investment decisions from a variety of investment 
+options.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-index 7fd33b356cc8..ee7ecb88adc1 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_tx.c
-@@ -208,7 +208,7 @@ static inline void mlx5e_insert_vlan(void *start, struct sk_buff *skb, u16 ihs)
- 	int cpy1_sz = 2 * ETH_ALEN;
- 	int cpy2_sz = ihs - cpy1_sz;
- 
--	memcpy(vhdr, skb->data, cpy1_sz);
-+	memcpy(&vhdr->addrs, skb->data, cpy1_sz);
- 	vhdr->h_vlan_proto = skb->vlan_proto;
- 	vhdr->h_vlan_TCI = cpu_to_be16(skb_vlan_tag_get(skb));
- 	memcpy(&vhdr->h_vlan_encapsulated_proto, skb->data + cpy1_sz, cpy2_sz);
-diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
-index 8420fe504927..2be4dd7e90a9 100644
---- a/include/linux/if_vlan.h
-+++ b/include/linux/if_vlan.h
-@@ -46,8 +46,10 @@ struct vlan_hdr {
-  *	@h_vlan_encapsulated_proto: packet type ID or len
-  */
- struct vlan_ethhdr {
--	unsigned char	h_dest[ETH_ALEN];
--	unsigned char	h_source[ETH_ALEN];
-+	struct_group(addrs,
-+		unsigned char	h_dest[ETH_ALEN];
-+		unsigned char	h_source[ETH_ALEN];
-+	);
- 	__be16		h_vlan_proto;
- 	__be16		h_vlan_TCI;
- 	__be16		h_vlan_encapsulated_proto;
--- 
-2.30.2
+Opportunities are available.
 
+Our company is structured to provide personalized services to As 
+a result, capital security and adequate funding are ensured.
+
+returns on investment. Our investors are ready to provide funding 
+for your business expansion, such as debt and equity.
+
+financing. If you require funding, we would be able to partner 
+with you. We look forward to your response.
+
+Thank you and stay safe,
+
+Nasser Rashid, CFA,
+
+Century Financial
