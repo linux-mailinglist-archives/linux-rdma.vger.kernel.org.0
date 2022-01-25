@@ -2,46 +2,46 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AD249AE6A
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 09:49:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FE3449AE9C
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 09:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452475AbiAYItL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jan 2022 03:49:11 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:7819 "EHLO
+        id S1452668AbiAYIwS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jan 2022 03:52:18 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:36081 "EHLO
         heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1379401AbiAYIq5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 03:46:57 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3AEAVSWKxtiYQKq8RaqpJ6t+c4xyrEfRIJ4+MujC/?=
- =?us-ascii?q?XYbTApD4l1TwOnWcaX22HOqyLMGL3eNB2bIyw9B5XsZeBm4BjHQtv/xmBbVoQ9?=
- =?us-ascii?q?5OdWo7xwmQcns+qBpSaChohtq3yU/GYRCwPZiKa9kfF3oTJ9yEmj/nRHOekUYY?=
- =?us-ascii?q?oBwgqLeNaYHZ44f5cs75h6mJYqYDR7zKl4bsekeWGULOW82Ic3lYv1k62gEgHU?=
- =?us-ascii?q?MIeF98vlgdWifhj5DcynpSOZX4VDfnZw3DQGuG4EgMmLtsvwo1V/kuBl/ssIti?=
- =?us-ascii?q?j1LjmcEwWWaOUNg+L4pZUc/H6xEEc+WppieBmXBYfQR4/ZzGhm9FjyNRPtJW2Y?=
- =?us-ascii?q?Qk0PKzQg/lbWB5de817FfQcoO+ccCPh4aR/yGWDKRMA2c5GFlk7NJcD/eB3GWx?=
- =?us-ascii?q?m+vkRKTRLZReG78qk0bCpW+s23px7BMbuNYIb/HpnyFnxCfcvR5/cTqPS6NlX9?=
- =?us-ascii?q?Dctj99DHLDVYM9xQTZmalLCJQJOPlMWAZcltOaumnT7NTZfrTq9ua0y6nPBigN?=
- =?us-ascii?q?r173kPMjWe/SLQ9lYmgCToWeu12D0BRcyN9GFzzeBtHW2iYfnlCPyQoUUEJW+6?=
- =?us-ascii?q?P9mgVTVzWsWYDUTX1+8qvmRjFC/V9NWbUcT/0IGsa833FCiSsHwTluzp3vslho?=
- =?us-ascii?q?dXcdAVu438geAzoLK7AuDQGsJVDhMbJohrsBebTgr0EKZ2snlADVHrrKYUzSe+?=
- =?us-ascii?q?62SoDf0PjIaRUcAaiAsXwoI+9Slq4hbs/5lZr6PC4bs1pusR262mGvM8UADa3w?=
- =?us-ascii?q?opZZj/82GEZrv2FpAfqT0czM=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AGsMTuqwNnWWonhJYnjO2KrPwEL1zdoMgy1kn?=
- =?us-ascii?q?xilNoH1uA6ilfqWV8cjzuiWbtN9vYhsdcLy7WZVoIkmskKKdg7NhXotKNTOO0A?=
- =?us-ascii?q?SVxepZnOnfKlPbexHWx6p00KdMV+xEAsTsMF4St63HyTj9P9E+4NTvysyVuds?=
- =?us-ascii?q?=3D?=
+        with ESMTP id S1379440AbiAYItA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 03:49:00 -0500
+IronPort-Data: =?us-ascii?q?A9a23=3APsRfMqjD06gg8s80yNMz3INNX161bxEKZh0ujC4?=
+ =?us-ascii?q?5NGQNrF6WrkUPxmYbXD3SPP6PNDSnLdhyOYjloUpQvZDWytVqTANuqnw8FHgiR?=
+ =?us-ascii?q?ejtX4rAdhiqV8+xwmwvdGo+toNGLICowPkcFhcwnT/wdOixxZVA/fvQHOCkUbS?=
+ =?us-ascii?q?ZYnkZqTJME0/NtzoywobVvaY42bBVMyvV0T/Di5W31G2NglaYAUpIg063ky6Di?=
+ =?us-ascii?q?dyp0N8uUvPSUtgQ1LPWvyF94JvyvshdJVOgKmVfNrbSq+ouUNiEEm3lExcFUrt?=
+ =?us-ascii?q?Jk57wdAsEX7zTIROTzHFRXsBOgDAb/mprjPl9b6FaNC+7iB3Q9zx14NFMp5yxS?=
+ =?us-ascii?q?wYgOIXCheYcTwJFVSp5OMWq/ZeeeyDv6p3IkBaun3zEhq8G4FsNFZcA9+9tGmZ?=
+ =?us-ascii?q?I9eQVAD8IZxGHwemxxdqTWPhulNUhdpGzZKsQv3hhyXfSCvNOaZTCSqPF+tJex?=
+ =?us-ascii?q?Do2iehOAP/BastfYj1qBDzMahsJOBEICZY6ne6tnVH+dSFVrBSeoq9fy3TUyQV?=
+ =?us-ascii?q?qwv7iKt3Qc9CYRsR9n0CEq2aA9GP8ajkeOduZ4TmI6HShgqnIhyyTcIsSHae/8?=
+ =?us-ascii?q?PpChkOSym0aThYRUDOTpPO9jUW+c9RBKkAV82wlqq1a3FCsS/HhVhmgrW/CtRk?=
+ =?us-ascii?q?ZM/JUEusn+ESOx7DS7gKxGGcJVHhCZcYguctwQiYlvneNntX0FXl1vLicYWyS+?=
+ =?us-ascii?q?63Srj6oPyURa2gYakcsTwQKy8virZk+yBnGJuuPuobdYsbdQGm2mm7V6nNlweh?=
+ =?us-ascii?q?7sCLC7I3jlXivvt5mjsShotYJ2zjq?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AECNPFa9lIFVl9OBpiVpuk+DkI+orL9Y04lQ7?=
+ =?us-ascii?q?vn2ZKCYlFvBw8vrCoB1173HJYUkqMk3I9ergBEDiewK4yXcW2/hzAV7KZmCP11?=
+ =?us-ascii?q?dAR7sSj7cKrQeBJwTOssZZ1YpFN5N1EcDMCzFB5vrS0U2VFMkBzbC8nJyVuQ?=
+ =?us-ascii?q?=3D=3D?=
 X-IronPort-AV: E=Sophos;i="5.88,314,1635177600"; 
-   d="scan'208";a="120839368"
+   d="scan'208";a="120839373"
 Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 25 Jan 2022 16:44:29 +0800
-Received: from G08CNEXMBPEKD05.g08.fujitsu.local (unknown [10.167.33.204])
-        by cn.fujitsu.com (Postfix) with ESMTP id D10854D169C7;
-        Tue, 25 Jan 2022 16:44:28 +0800 (CST)
+  by heian.cn.fujitsu.com with ESMTP; 25 Jan 2022 16:44:32 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 8F9FE4D15A5C;
+        Tue, 25 Jan 2022 16:44:30 +0800 (CST)
 Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD05.g08.fujitsu.local (10.167.33.204) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Tue, 25 Jan 2022 16:44:29 +0800
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Tue, 25 Jan 2022 16:44:30 +0800
 Received: from localhost.localdomain (10.167.225.141) by
  G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Tue, 25 Jan 2022 16:44:26 +0800
+ id 15.0.1497.23 via Frontend Transport; Tue, 25 Jan 2022 16:44:27 +0800
 From:   Li Zhijian <lizhijian@cn.fujitsu.com>
 To:     <linux-rdma@vger.kernel.org>, <zyjzyj2000@gmail.com>,
         <jgg@ziepe.ca>, <aharonl@nvidia.com>, <leon@kernel.org>,
@@ -50,16 +50,16 @@ CC:     <linux-kernel@vger.kernel.org>, <mbloch@nvidia.com>,
         <liangwenpeng@huawei.com>, <yangx.jy@fujitsu.com>,
         <y-goto@fujitsu.com>, <rpearsonhpe@gmail.com>,
         <dan.j.williams@intel.com>, Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [RFC PATCH v2 3/9] RDMA/rxe: Allow registering persistent flag for pmem MR only
-Date:   Tue, 25 Jan 2022 16:50:35 +0800
-Message-ID: <20220125085041.49175-4-lizhijian@cn.fujitsu.com>
+Subject: [RFC PATCH v2 5/9] RDMA/rxe: Set BTH's SE to zero for FLUSH packet
+Date:   Tue, 25 Jan 2022 16:50:37 +0800
+Message-ID: <20220125085041.49175-6-lizhijian@cn.fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20220125085041.49175-1-lizhijian@cn.fujitsu.com>
 References: <20220125085041.49175-1-lizhijian@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: D10854D169C7.ADA3F
+X-yoursite-MailScanner-ID: 8F9FE4D15A5C.AF2B6
 X-yoursite-MailScanner: Found to be clean
 X-yoursite-MailScanner-From: lizhijian@fujitsu.com
 X-Spam-Status: No
@@ -67,59 +67,32 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Memory region should support 2 placement types: IB_ACCESS_FLUSH_PERSISTENT
-and IB_ACCESS_FLUSH_GLOBAL_VISIBILITY, and only pmem/nvdimm has ability to
-persist data(IB_ACCESS_FLUSH_PERSISTENT).
-
-It prevents local user from registering a persistent access flag to
-a non-pmem MR.
-
-+------------------------+------------------+--------------+
-| HCA attributes         |    register access flags        |
-|        and             +-----------------+---------------+
-| MR attribute(is_pmem)  |global visibility |  persistence |
-|------------------------+------------------+--------------+
-| global visibility(DRAM)|        O         |      X       |
-|------------------------+------------------+--------------+
-| global visibility(PMEM)|        O         |      X       |
-|------------------------+------------------+--------------+
-| persistence(DRAM)      |        X         |      X       |
-|------------------------+------------------+--------------+
-| persistence(PMEM)      |        X         |      O       |
-+------------------------+------------------+--------------+
-PMEM: is_pmem is true
-DRAM: is_pmem is false
-O: allow to register such access flag
-X: otherwise
+The SPEC says:
+oA19-6: FLUSH BTH header field solicited event (SE) indication shall be
+set to zero.
 
 Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
 ---
-V2: update commit message, get rid of confusing ib_check_flush_access_flags() # Tom
+V2: said -> says
 ---
- drivers/infiniband/sw/rxe/rxe_mr.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/infiniband/sw/rxe/rxe_req.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index 0427baea8c06..89a3bb4e8b71 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -258,7 +258,15 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
- 	set->offset = ib_umem_offset(umem);
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index 708138117136..363a33b905bf 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -401,7 +401,9 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 			(pkt->mask & RXE_END_MASK) &&
+ 			((pkt->mask & (RXE_SEND_MASK)) ||
+ 			(pkt->mask & (RXE_WRITE_MASK | RXE_IMMDT_MASK)) ==
+-			(RXE_WRITE_MASK | RXE_IMMDT_MASK));
++			(RXE_WRITE_MASK | RXE_IMMDT_MASK)) &&
++			/* oA19-6: always set SE to zero */
++			!(pkt->mask & RXE_FETH_MASK);
  
- 	// iova_in_pmem() must be called after set is updated
--	mr->ibmr.is_pmem = iova_in_pmem(mr, iova, length);
-+	if (iova_in_pmem(mr, iova, length))
-+		mr->ibmr.is_pmem = true;
-+	else if (access & IB_ACCESS_FLUSH_PERSISTENT) {
-+		pr_warn("Cannot register IB_ACCESS_FLUSH_PERSISTENT for non-pmem memory\n");
-+		mr->state = RXE_MR_STATE_INVALID;
-+		mr->umem = NULL;
-+		err = -EINVAL;
-+		goto err_release_umem;
-+	}
- 
- 	return 0;
- 
+ 	qp_num = (pkt->mask & RXE_DETH_MASK) ? ibwr->wr.ud.remote_qpn :
+ 					 qp->attr.dest_qp_num;
 -- 
 2.31.1
 
