@@ -2,129 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E5CD49AEE6
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 10:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21CD549B027
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 10:41:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1452984AbiAYI4R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jan 2022 03:56:17 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:7819 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1452913AbiAYIvJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 03:51:09 -0500
-IronPort-Data: =?us-ascii?q?A9a23=3Af+t1z6NoIFg2P8rvrR2qlsFynXyQoLVcMsFnjC/?=
- =?us-ascii?q?WdQG/hTJzhjEAx2tJC2uAbKuDNGX1ft1xbNnk8k8HvZ7dm99gGjLY11k3ESsS9?=
- =?us-ascii?q?pCt6fd1j6vIF3rLaJWFFSqL1u1GAjX7BJ1yHi+0SiuFaOC79yElj/zQH9IQNca?=
- =?us-ascii?q?fUsxPbV49IMseoUI78wIJqtYAbemRW2thi/uryyHsEAPNNwpPD44hw/nrRCWDE?=
- =?us-ascii?q?xjFkGhwUlQWPZintbJF/pUfJMp3yaqZdxMUTmTId9NWSdovzJnhlo/Y1xwrTN2?=
- =?us-ascii?q?4kLfnaVBMSbnXVeSMoiMOHfH83V4Z/Wpvuko4HKN0hUN/jzSbn9FzydxLnZKtS?=
- =?us-ascii?q?wY1JbCKk+MYO/VdO3gkZf0dqeSYfxBTtuTWlSUqaUDE2e1jBVstOosY4utfDmR?=
- =?us-ascii?q?H9PheIzcIBjiRluCk0bDhErE0rssmJcjveogYvxlIyTDQC/k5TJbbTqPFzd9F1?=
- =?us-ascii?q?Sg9h4ZFGvO2T8YQb3xtKgvBZxlOM1IMIJM4gOqswHL4dlVwtFWQrLElpWfJywl?=
- =?us-ascii?q?43KruMfLUfMCHQYNemUPwjmbL+GLRARwAMtGbjz2f/RqEj+/GhyT9XKoUCry09?=
- =?us-ascii?q?/csi1qWrkQWAhkRXluTp+e4hk+3HdlYLiQ85i0rhbQ78FSmX5/2WBjQiHqFuAM?=
- =?us-ascii?q?MHtldCes37CmTxafOpQWUHG4JSnhGctNOnMs3QyE6k0WFmtrBGzNiqvuWRGib+?=
- =?us-ascii?q?7PSqim9UQAXImAqdy4JVQZD6NCLnW2ZpnojVf46SOjs0IKzQmq2nli3QOEFr+1?=
- =?us-ascii?q?7paY2O2+TpzgrWw6Rm6U=3D?=
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AcDoT2azdJwcasm1ok+CQKrPwEL1zdoMgy1kn?=
- =?us-ascii?q?xilNoH1uA6ilfqWV8cjzuiWbtN9vYhsdcLy7WZVoIkmskKKdg7NhXotKNTOO0A?=
- =?us-ascii?q?SVxepZnOnfKlPbexHWx6p00KdMV+xEAsTsMF4St63HyTj9P9E+4NTvysyVuds?=
- =?us-ascii?q?=3D?=
-X-IronPort-AV: E=Sophos;i="5.88,314,1635177600"; 
-   d="scan'208";a="120839376"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 25 Jan 2022 16:44:35 +0800
-Received: from G08CNEXMBPEKD06.g08.fujitsu.local (unknown [10.167.33.206])
-        by cn.fujitsu.com (Postfix) with ESMTP id DE3824D15A5C;
-        Tue, 25 Jan 2022 16:44:33 +0800 (CST)
-Received: from G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.85) by
- G08CNEXMBPEKD06.g08.fujitsu.local (10.167.33.206) with Microsoft SMTP Server
- (TLS) id 15.0.1497.23; Tue, 25 Jan 2022 16:44:31 +0800
-Received: from localhost.localdomain (10.167.225.141) by
- G08CNEXCHPEKD09.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.23 via Frontend Transport; Tue, 25 Jan 2022 16:44:31 +0800
-From:   Li Zhijian <lizhijian@cn.fujitsu.com>
-To:     <linux-rdma@vger.kernel.org>, <zyjzyj2000@gmail.com>,
-        <jgg@ziepe.ca>, <aharonl@nvidia.com>, <leon@kernel.org>,
-        <tom@talpey.com>, <tomasz.gromadzki@intel.com>
-CC:     <linux-kernel@vger.kernel.org>, <mbloch@nvidia.com>,
-        <liangwenpeng@huawei.com>, <yangx.jy@fujitsu.com>,
-        <y-goto@fujitsu.com>, <rpearsonhpe@gmail.com>,
-        <dan.j.williams@intel.com>, Li Zhijian <lizhijian@cn.fujitsu.com>
-Subject: [RFC PATCH v2 9/9] RDMA/rxe: Add RD FLUSH service support
-Date:   Tue, 25 Jan 2022 16:50:41 +0800
-Message-ID: <20220125085041.49175-10-lizhijian@cn.fujitsu.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220125085041.49175-1-lizhijian@cn.fujitsu.com>
-References: <20220125085041.49175-1-lizhijian@cn.fujitsu.com>
+        id S1356038AbiAYJ0j (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jan 2022 04:26:39 -0500
+Received: from mail.trueanalyze24.com ([149.154.157.156]:57150 "EHLO
+        mail.trueanalyze24.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1456094AbiAYJJj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 04:09:39 -0500
+Received: by mail.trueanalyze24.com (Postfix, from userid 1001)
+        id 2EFD041C8B; Tue, 25 Jan 2022 09:57:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trueanalyze24.com;
+        s=mail; t=1643101712;
+        bh=EGenFkmmv/iHCwB4AbTzX8IXCMu1xRW+9eep7HJGZMM=;
+        h=Date:From:To:Subject:From;
+        b=cxgaVFNDBVxf+mUJkA2T8fwWdJvvAw+yFZSkCnxlFeaC0xEz7Qisi3DYz9vzSGiBj
+         CYea9pOvY2wXkAcLwX9iqv7gaiMWgJ+45magGvLUuNygR/13kGPrzpyf1cH82AwdR+
+         3tjLz/c/OXXfRrqA3qjw0hDTQLo7ymx1mPlomf13BGYsE0oNxz/neJF3Wa35nX5wCm
+         gK9YOeZt2GgpuAq1DHPe6zU6O6sUgr1uGS/DsmJxMwBUEOroTma25D2IWWxCpSZth0
+         OXIWSmwzyFhe4xUG/o9caFtZcPWOS6RQI+zCOXNp1cfGcVvPDgX8N2y2PxVLC/Wft5
+         YQG3I8Klof4Jg==
+Received: by mail.trueanalyze24.com for <linux-rdma@vger.kernel.org>; Tue, 25 Jan 2022 08:57:25 GMT
+Message-ID: <20220125084505-0.1.1b.e7jp.0.3b5p6oqope@trueanalyze24.com>
+Date:   Tue, 25 Jan 2022 08:57:25 GMT
+From:   "Mateusz Talaga" <mateusz.talaga@trueanalyze24.com>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.trueanalyze24.com
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: DE3824D15A5C.AEA72
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lizhijian@fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Although the SPEC said FLUSH is supported by RC/RD/XRC services, XRC has
-not been supported by the rxe.
+Dzie=C5=84 dobry!
 
-So XRC FLUSH will not be supported until rxe implements XRC service.
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-Signed-off-by: Li Zhijian <lizhijian@cn.fujitsu.com>
----
-I have not setup a RD environment to test this protocol
----
- drivers/infiniband/sw/rxe/rxe_opcode.c | 20 ++++++++++++++++++++
- include/rdma/ib_pack.h                 |  1 +
- 2 files changed, 21 insertions(+)
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.c b/drivers/infiniband/sw/rxe/rxe_opcode.c
-index adea6c16dfb5..3d86129558f7 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.c
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.c
-@@ -922,6 +922,26 @@ struct rxe_opcode_info rxe_opcode[RXE_NUM_OPCODE] = {
- 					  RXE_RDETH_BYTES,
- 		}
- 	},
-+	[IB_OPCODE_RD_RDMA_FLUSH]			= {
-+		.name	= "IB_OPCODE_RD_RDMA_FLUSH",
-+		.mask	= RXE_RDETH_MASK | RXE_FETH_MASK | RXE_RETH_MASK |
-+			  RXE_FLUSH_MASK | RXE_START_MASK |
-+			  RXE_END_MASK | RXE_REQ_MASK,
-+		.length = RXE_BTH_BYTES + RXE_FETH_BYTES + RXE_RETH_BYTES,
-+		.offset = {
-+			[RXE_BTH]	= 0,
-+			[RXE_RDETH]	= RXE_BTH_BYTES,
-+			[RXE_FETH]	= RXE_BTH_BYTES +
-+					  RXE_RDETH_BYTES,
-+			[RXE_RETH]	= RXE_BTH_BYTES +
-+					  RXE_RDETH_BYTES +
-+					  RXE_FETH_BYTES,
-+			[RXE_PAYLOAD]	= RXE_BTH_BYTES +
-+					  RXE_RDETH_BYTES +
-+					  RXE_FETH_BYTES +
-+					  RXE_RETH_BYTES,
-+		}
-+	},
- 
- 	/* UD */
- 	[IB_OPCODE_UD_SEND_ONLY]			= {
-diff --git a/include/rdma/ib_pack.h b/include/rdma/ib_pack.h
-index d19edb502de6..40568a33ead8 100644
---- a/include/rdma/ib_pack.h
-+++ b/include/rdma/ib_pack.h
-@@ -151,6 +151,7 @@ enum {
- 	IB_OPCODE(RD, ATOMIC_ACKNOWLEDGE),
- 	IB_OPCODE(RD, COMPARE_SWAP),
- 	IB_OPCODE(RD, FETCH_ADD),
-+	IB_OPCODE(RD, RDMA_FLUSH),
- 
- 	/* UD */
- 	IB_OPCODE(UD, SEND_ONLY),
--- 
-2.31.1
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
+
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
 
 
-
+Z powa=C5=BCaniem,
+Mateusz Talaga
