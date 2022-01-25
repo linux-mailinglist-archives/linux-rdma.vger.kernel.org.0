@@ -2,95 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0011049ADB6
-	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 08:39:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B9E49AE07
+	for <lists+linux-rdma@lfdr.de>; Tue, 25 Jan 2022 09:32:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377074AbiAYHhe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 25 Jan 2022 02:37:34 -0500
-Received: from dfw.source.kernel.org ([139.178.84.217]:46582 "EHLO
+        id S245139AbiAYIau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 25 Jan 2022 03:30:50 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:48848 "EHLO
         dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351469AbiAYHev (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 02:34:51 -0500
+        with ESMTP id S1359160AbiAYI2t (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 25 Jan 2022 03:28:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8F1956130E
-        for <linux-rdma@vger.kernel.org>; Tue, 25 Jan 2022 07:34:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AAA3C340E0;
-        Tue, 25 Jan 2022 07:34:48 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DD1561315
+        for <linux-rdma@vger.kernel.org>; Tue, 25 Jan 2022 08:28:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E80CDC340E0;
+        Tue, 25 Jan 2022 08:28:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643096089;
-        bh=Bcyk4r2K3BJd/kzY1EhnDrguesa5CbZAQJadl/G9hFY=;
+        s=k20201202; t=1643099327;
+        bh=qt8E5DnDi97faJcwtVNJtwgpQD49T6dKNA5QEzr01ZY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=te2L72Jn4Kjotyb6v6Kj+GkEWHOGXQV2kk9MZ2dmKiz/R+pLBN3URDn9Hze6ltxJw
-         cQhZSRnWZyaerUeQkhMRJtxfQeoFKxewgA3HM5CXItFqdeWAWFabkB8/WpapyPqZlN
-         SXhsZXryXSNv0+lTY684DQ+goFhhyM/Iy3FMoEoKRuNJpi0w2PwUbdazNBa6PUJeLQ
-         TwM9ZBxuDjzYiuH6CgNjARsq0LdismyCFKht102ScyAGXoOzCJg6XVxNZ/qi0VmH1B
-         vE7HFY7Py10VZzKVBzRQqQPzD7dr4EnEBOvaruPc9rLQafvYXK/c4SxrTQm+MoqTwU
-         N70E5UVl78JDQ==
-Date:   Tue, 25 Jan 2022 09:34:44 +0200
+        b=WT+z/XuNbDqm1tMhv/y8UxoPhcacrPO20fPxWRlzftK/TtFVJ/AKeEp7KZOxpmB80
+         tS3zQQSEVmRGbkG81LNGeKKCDaeDUjHA9UQfrfhQYe0rLVVzJc6eAsT9bGGSjUlZis
+         5/tAk5GC/iguYHV9TFVJMLZf2EfFdAq2Hr+EoFch+ujXFW9o+kWNvMcAfmKzWy1CyD
+         nqz3KMvgnx5mCe9EDm6o2rFpFZyB7xCgYwZ8m9gz81KEWvMtbxZGSLwZfBX90iIR9x
+         EvxJ2WpQIGYeoEEndcVlbGusHGVdFPjKii7WLJGmpBf4EPT/3JuVWJz07DjHRVXmJ5
+         0zwVfiH2i0M4g==
+Date:   Tue, 25 Jan 2022 10:28:43 +0200
 From:   Leon Romanovsky <leon@kernel.org>
-To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH for-rc] IB/rdmavt: Validate remote_addr during loopback
- atomic tests
-Message-ID: <Ye+oFAX/GzOD3MzU@unreal>
-References: <1642584489-141005-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
- <Ye0vPMAF6NdF0pMu@unreal>
- <E3A123CC-3C34-4EE9-BF6E-3F9FEF04A939@oracle.com>
- <Ye6cry944qSVHi6z@unreal>
- <4579CC13-F537-4F54-887B-B9CFB570DE43@oracle.com>
- <CH0PR01MB7153A251BF2D1F2C4A8ACFDAF25E9@CH0PR01MB7153.prod.exchangelabs.com>
+To:     Wenpeng Liang <liangwenpeng@huawei.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH for-next 3/4] RDMA/hns: Add support for QP's restrack
+ attributes
+Message-ID: <Ye+0u54z7EBNJWJl@unreal>
+References: <20220124124624.55352-1-liangwenpeng@huawei.com>
+ <20220124124624.55352-4-liangwenpeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CH0PR01MB7153A251BF2D1F2C4A8ACFDAF25E9@CH0PR01MB7153.prod.exchangelabs.com>
+In-Reply-To: <20220124124624.55352-4-liangwenpeng@huawei.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 24, 2022 at 01:20:56PM +0000, Marciniszyn, Mike wrote:
-> > From: Haakon Bugge <haakon.bugge@oracle.com>
-> > Sent: Monday, January 24, 2022 7:44 AM
-> > To: Leon Romanovsky <leon@kernel.org>
-> > Cc: Marciniszyn, Mike <mike.marciniszyn@cornelisnetworks.com>;
-> > jgg@ziepe.ca; OFED mailing list <linux-rdma@vger.kernel.org>
-> > Subject: Re: [PATCH for-rc] IB/rdmavt: Validate remote_addr during
-> > loopback atomic tests
-> > > And is IBTA restriction applicable to hfi1?
-> > 
-> > For hfi1, I do not know. But this fix was in drivers/infiniband/sw/rdmavt, for
-> > which the first commit message states:
-> > 
-> >  This patch introduces the basics for a new module called rdma_vt. This new
-> >     driver is a software implementation of the InfiniBand verbs...
-> > 
-> > 
-> > More importantly, the check we discuss is not about being page-aligned, but
-> > about being naturally aligned, right?
-> > 
+On Mon, Jan 24, 2022 at 08:46:23PM +0800, Wenpeng Liang wrote:
+> The restrack attributes of QP come from the QPC and the queue information
+> maintained by the software code.
 > 
-> Hardware supported by rdamvt strives to be 100% compatible with the verbs API.
-> 
-> And yes, the natural alignment is the objective for the test.
-> 
-> According to the IB Spec (V1-Rel1.2.1 section 9.4.5 ATOMIC OPERATIONS):
->         "The virtual address in the ATOMIC Command Request packet shall
->         be naturally aligned to an 8 byte boundary. The responding CA
->         checks this and returns an Invalid Request NAK if it is not naturally
->         aligned."
-> 
-> The recent additions to the rdma-core test suite caught this issue.
-> 
-> The test is consistent with input packet parsing:
-> 
->         case OP(COMPARE_SWAP):
->         case OP(FETCH_ADD): {
-> <snip>
->                 if (unlikely(vaddr & (sizeof(u64) - 1)))
->                         goto nack_inv_unlck;
+> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+> ---
+>  drivers/infiniband/hw/hns/hns_roce_device.h   |   2 +
+>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c    |  16 +--
+>  drivers/infiniband/hw/hns/hns_roce_main.c     |   1 +
+>  drivers/infiniband/hw/hns/hns_roce_restrack.c | 116 ++++++++++++++++++
+>  4 files changed, 128 insertions(+), 7 deletions(-)
 
-I see, thanks Mike and Haakon.
+<...>
 
+> +	if (ret) {
+> +		dev_err(hr_dev->dev, "QUERY qpc cmd process error.\n");
+
+ibdev_err(...) in all places.
+
+>  		goto out;
+> +	}
+
+<...>
+
+> +static int hns_roce_fill_qp(struct hns_roce_qp *hr_qp,
+> +			    struct sk_buff *msg,
+> +			    struct hns_roce_v2_qp_context *context)
+> +{
+> +	static struct {
+> +		char *name;
+> +		u32 mask;
+> +		u32 l;
+> +	} reg[] = {
+> +		{ "tst", HR_REG_CFG(QPC_TST) },
+> +		{ "qp_st", HR_REG_CFG(QPC_QP_ST) },
+> +		{ "chk_flg", HR_REG_CFG(QPC_CHECK_FLG) },
+> +		{ "err_type", HR_REG_CFG(QPC_ERR_TYPE) },
+> +		{ "srq_en", HR_REG_CFG(QPC_SRQ_EN) },
+> +		{ "srqn", HR_REG_CFG(QPC_SRQN) },
+> +		{ "qkey_xrcd", HR_REG_CFG(QPC_QKEY_XRCD) },
+> +		{ "tx_cqn", HR_REG_CFG(QPC_TX_CQN) },
+> +		{ "rx_cqn", HR_REG_CFG(QPC_RX_CQN) },
+> +		{ "sq_pi", HR_REG_CFG(QPC_SQ_PRODUCER_IDX) },
+> +		{ "sq_ci", HR_REG_CFG(QPC_SQ_CONSUMER_IDX) },
+> +		{ "rq_pi", HR_REG_CFG(QPC_RQ_PRODUCER_IDX) },
+> +		{ "rq_ci", HR_REG_CFG(QPC_RQ_CONSUMER_IDX) },
+> +		{ "sq_shift", HR_REG_CFG(QPC_SQ_SHIFT) },
+> +		{ "rqws", HR_REG_CFG(QPC_RQWS) },
+> +		{ "rq_shift", HR_REG_CFG(QPC_RQ_SHIFT) },
+> +		{ "sge_shift", HR_REG_CFG(QPC_SGE_SHIFT) },
+> +		{ "max_ird", HR_REG_CFG(QPC_SR_MAX) },
+> +		{ "max_ord", HR_REG_CFG(QPC_RR_MAX) },
+> +		{ "gmv_idx", HR_REG_CFG(QPC_GMV_IDX) },
+> +		{ "sq_vlan_en", HR_REG_CFG(QPC_SQ_VLAN_EN) },
+> +		{ "rq_vlan_en", HR_REG_CFG(QPC_RQ_VLAN_EN) },
+> +		{ "vlan_id", HR_REG_CFG(QPC_VLAN_ID) },
+> +		{ "mtu", HR_REG_CFG(QPC_MTU) },
+> +		{ "hop_limit", HR_REG_CFG(QPC_HOPLIMIT) },
+> +		{ "tc", HR_REG_CFG(QPC_TC) },
+> +		{ "fl", HR_REG_CFG(QPC_FL) },
+> +		{ "sl", HR_REG_CFG(QPC_SL) },
+> +		{ "rre", HR_REG_CFG(QPC_RRE) },
+> +		{ "rwe", HR_REG_CFG(QPC_RWE) },
+> +		{ "ate", HR_REG_CFG(QPC_ATE) },
+> +		{ "ext_ate", HR_REG_CFG(QPC_EXT_ATE) },
+> +		{ "fre", HR_REG_CFG(QPC_FRE) },
+> +		{ "rmt_e2e", HR_REG_CFG(QPC_RMT_E2E) },
+> +		{ "retry_num_init", HR_REG_CFG(QPC_RETRY_NUM_INIT) },
+> +		{ "retry_cnt", HR_REG_CFG(QPC_RETRY_CNT) },
+> +		{ "flush_idx", HR_REG_CFG(QPC_SQ_FLUSH_IDX) },
+> +		{ "sq_max_idx", HR_REG_CFG(QPC_SQ_MAX_IDX) },
+> +		{ "sq_tx_err", HR_REG_CFG(QPC_SQ_TX_ERR) },
+> +		{ "sq_rx_err", HR_REG_CFG(QPC_SQ_RX_ERR) },
+> +		{ "rq_rx_err", HR_REG_CFG(QPC_RQ_RX_ERR) },
+> +		{ "rq_tx_err", HR_REG_CFG(QPC_RQ_TX_ERR) },
+> +		{ "rq_cqeidx", HR_REG_CFG(QPC_RQ_CQE_IDX) },
+> +		{ "rq_rty_tx_err", HR_REG_CFG(QPC_RQ_RTY_TX_ERR) },
+> +	};
+
+I have a feeling that this is abuse of our vendor specific attributes.
+Why don't you use RDMA_NLDEV_ATTR_RES_RAW for such huge dumps?
+
+Thanks
