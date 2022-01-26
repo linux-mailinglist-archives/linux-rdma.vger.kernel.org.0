@@ -2,116 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52FF749C6C7
-	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jan 2022 10:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BCFF49CA3F
+	for <lists+linux-rdma@lfdr.de>; Wed, 26 Jan 2022 14:02:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbiAZJrX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jan 2022 04:47:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbiAZJrW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 26 Jan 2022 04:47:22 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A863C06161C;
-        Wed, 26 Jan 2022 01:47:22 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 06E68B81C10;
-        Wed, 26 Jan 2022 09:47:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3FBFC340E3;
-        Wed, 26 Jan 2022 09:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643190439;
-        bh=qO3B4gK7GA2y/Bvlgz0H7y6fmCCHCCV6zEgHDWBX64o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AQo8TtyMVTeigBO1kDBOr8Gxu46gN0OjpckZSef7vAdbpNAZjXmWWrCF0w8o3kRC2
-         OcVb87aw5oA+Bw9jAagO8yqj/Fi9Uh7pQBcsewyMBO9FmxtzxQb2e2qNdomDNpdvCs
-         ETcJfbPNToqtw9lOXrStl4KFLvjd/KEpNKA5PfyQbbYHJmp2ew+eYgNKTmGbc+K3bS
-         BWVmZiUpNeniNGVShxOU/c1ThcW5KlHz0+YyhBj9dOXolK3Wz4Bn6asOCcBIQh/mhe
-         kLQnK+3iIxwq8ELZ+Ur+OvY3bLiL3fdAmcWDq9VI4MDqV5WiRl7rS4eXTBDLJvhjPo
-         n0Bs1tOcOx3Hw==
-Date:   Wed, 26 Jan 2022 11:47:15 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Miaoqian Lin <linmq006@gmail.com>
-Cc:     Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Upinder Malhi <umalhi@cisco.com>,
-        Roland Dreier <roland@purestorage.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] IB/usnic: Fix memory leak in usnic_ib_sysfs_qpn_add
-Message-ID: <YfEYo2jDo2Y8P1dL@unreal>
-References: <20220126060425.11124-1-linmq006@gmail.com>
+        id S229699AbiAZNC0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 26 Jan 2022 08:02:26 -0500
+Received: from out199-4.us.a.mail.aliyun.com ([47.90.199.4]:59131 "EHLO
+        out199-4.us.a.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229928AbiAZNC0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 26 Jan 2022 08:02:26 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V2vapeq_1643202141;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V2vapeq_1643202141)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 26 Jan 2022 21:02:22 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH net-next 0/2] net/smc: Spread workload over multiple cores
+Date:   Wed, 26 Jan 2022 21:01:39 +0800
+Message-Id: <20220126130140.66316-1-tonylu@linux.alibaba.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220126060425.11124-1-linmq006@gmail.com>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 06:04:25AM +0000, Miaoqian Lin wrote:
-> kobject_init_and_add() takes reference even when it fails.
-> According to the doc of kobject_init_and_add()：
-> 
->    If this function returns an error, kobject_put() must be called to
->    properly clean up the memory associated with the object.
-> 
-> Fix memory leak by calling kobject_put().
+Currently, SMC creates one CQ per IB device, and shares this cq among
+all the QPs of links. Meanwhile, this CQ is always binded to the first
+completion vector, the IRQ affinity of this vector binds to some CPU
+core. 
 
-There is no real memory leak here, this kobject will be released in
-usnic_ib_sysfs_qpn_remove(). Another possible solution is to delete
-"if (err)" completely.
+┌────────┐    ┌──────────────┐   ┌──────────────┐
+│ SMC IB │    ├────┐         │   │              │
+│ DEVICE │ ┌─▶│ QP │ SMC LINK├──▶│SMC Link Group│
+│   ┌────┤ │  ├────┘         │   │              │
+│   │ CQ ├─┘  └──────────────┘   └──────────────┘
+│   │    ├─┐  ┌──────────────┐   ┌──────────────┐
+│   └────┤ │  ├────┐         │   │              │
+│        │ └─▶│ QP │ SMC LINK├──▶│SMC Link Group│
+│        │    ├────┘         │   │              │
+└────────┘    └──────────────┘   └──────────────┘
 
-diff --git a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-index fdb63a8fb997..11723f54e200 100644
---- a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-+++ b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-@@ -271,17 +271,15 @@ void usnic_ib_sysfs_unregister_usdev(struct usnic_ib_dev *us_ibdev)
- void usnic_ib_sysfs_qpn_add(struct usnic_ib_qp_grp *qp_grp)
- {
-        struct usnic_ib_dev *us_ibdev;
--       int err;
- 
-        us_ibdev = qp_grp->vf->pf;
- 
--       err = kobject_init_and_add(&qp_grp->kobj, &usnic_ib_qpn_type,
-+       kobject_init_and_add(&qp_grp->kobj, &usnic_ib_qpn_type,
-                        kobject_get(us_ibdev->qpn_kobj),
-                        "%d", qp_grp->grp_id);
--       if (err) {
--               kobject_put(us_ibdev->qpn_kobj);
--               return;
--       }
-+       /* We don't care about failure here, the release will be performed in
-+        * usnic_ib_sysfs_qpn_remove() anyway.
-+        */
- }
- 
- void usnic_ib_sysfs_qpn_remove(struct usnic_ib_qp_grp *qp_grp)
+In this model, when connections execeeds SMC_RMBS_PER_LGR_MAX, it will
+create multiple link groups and corresponding QPs. All the connections
+share limited QPs and one CQ (both recv and send sides). Generally, one
+completion vector binds to a fixed CPU core, it will limit the
+performance by single core, and large-scale scenes, such as multiple
+threads and lots of connections.
 
+Running nginx and wrk test with 8 threads and 800 connections on 8 cores
+host, the softirq of CPU 0 is limited the scalability:
 
-> 
-> Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
-> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
-> ---
->  drivers/infiniband/hw/usnic/usnic_ib_sysfs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-> index 7d868f033bbf..69c5854deebc 100644
-> --- a/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-> +++ b/drivers/infiniband/hw/usnic/usnic_ib_sysfs.c
-> @@ -280,6 +280,7 @@ void usnic_ib_sysfs_qpn_add(struct usnic_ib_qp_grp *qp_grp)
->  			kobject_get(us_ibdev->qpn_kobj),
->  			"%d", qp_grp->grp_id);
->  	if (err) {
-> +		kobject_put(&qp_grp->kobj);
->  		kobject_put(us_ibdev->qpn_kobj);
->  		return;
->  	}
-> -- 
-> 2.17.1
-> 
+04:18:54 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+04:18:55 PM  all    5.81    0.00   19.42    0.00    2.94   10.21    0.00    0.00    0.00   61.63
+04:18:55 PM    0    0.00    0.00    0.00    0.00   16.80   82.78    0.00    0.00    0.00    0.41
+<snip>
+
+Nowadays, RDMA devices have more than one completion vectors, such as
+mlx5 has 8, eRDMA has 4 completion vector by default. This unlocks the
+limitation of single vector and single CPU core.
+
+To enhance scalability and take advantage of multi-core resources, we
+can spread CQs to different CPU cores, and introduce more flexible
+mapping. Here comes up a new model, the main different is that creating
+multiple CQs per IB device, which the max number of CQs is limited by
+ibdev's ability (num_comp_vectors). In the scene of multiple linkgroups,
+the link group's QP can bind to the least used CQ, and CQs are binded
+to different completion vector and CPU cores. So that we can spread
+the softirq (tasklet of wr tx/rx) handler to different cores.
+
+                        ┌──────────────┐   ┌──────────────┐
+┌────────┐  ┌───────┐   ├────┐         │   │              │
+│        ├─▶│ CQ 0  ├──▶│ QP │ SMC LINK├──▶│SMC Link Group│
+│        │  └───────┘   ├────┘         │   │              │
+│ SMC IB │  ┌───────┐   └──────────────┘   └──────────────┘
+│ DEVICE ├─▶│ CQ 1  │─┐                                    
+│        │  └───────┘ │ ┌──────────────┐   ┌──────────────┐
+│        │  ┌───────┐ │ ├────┐         │   │              │
+│        ├─▶│ CQ n  │ └▶│ QP │ SMC LINK├──▶│SMC Link Group│
+└────────┘  └───────┘   ├────┘         │   │              │
+                        └──────────────┘   └──────────────┘
+
+After sperad one CQ (4 linkgroups) to four CPU cores, the softirq load
+spreads to different cores:
+
+04:26:25 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest  %gnice   %idle
+04:26:26 PM  all   10.70    0.00   35.80    0.00    7.64   26.62    0.00    0.00    0.00   19.24
+04:26:26 PM    0    0.00    0.00    0.00    0.00   16.33   50.00    0.00    0.00    0.00   33.67
+04:26:26 PM    1    0.00    0.00    0.00    0.00   15.46   69.07    0.00    0.00    0.00   15.46
+04:26:26 PM    2    0.00    0.00    0.00    0.00   13.13   39.39    0.00    0.00    0.00   47.47
+04:26:26 PM    3    0.00    0.00    0.00    0.00   13.27   55.10    0.00    0.00    0.00   31.63
+<snip>
+
+Here is the benchmark with this patch set:
+
+Test environment:
+- CPU Intel Xeon Platinum 8 core, mem 32 GiB, nic Mellanox CX4.
+- nginx + wrk HTTP benchmark.
+- nginx: disable access_log, increase keepalive_timeout and
+  keepalive_requests, long-live connection, return 200 directly.
+- wrk: 8 threads and 100, 200, 400 connections.
+
+Benchmark result:
+
+Conns/QPS         100        200        400
+w/o patch   338502.49  359216.66  398167.16
+w/  patch   677247.40  694193.70  812502.69
+Ratio        +100.07%    +93.25%   +104.06%
+
+This patch set shows nearly 1x increasement of QPS.
+
+The benchmarks of 100, 200, 400 connections use 1, 1, 2 link groups.
+When link group is one, it spreads send/recv to two cores. Once more
+than one link groups, it would spread to more cores.
+
+RFC Link: https://lore.kernel.org/netdev/YeRaSdg8TcNJsGBB@TonyMac-Alibaba/T/
+
+These two patches split from previous RFC, and move netlink related patch
+to the next patch set.
+
+Tony Lu (2):
+  net/smc: Introduce smc_ib_cq to bind link and cq
+  net/smc: Multiple CQs per IB devices
+
+ net/smc/smc_core.h |   2 +
+ net/smc/smc_ib.c   | 132 ++++++++++++++++++++++++++++++++++++---------
+ net/smc/smc_ib.h   |  15 ++++--
+ net/smc/smc_wr.c   |  44 +++++++++------
+ 4 files changed, 148 insertions(+), 45 deletions(-)
+
+-- 
+2.32.0.3.g01195cf9f
+
