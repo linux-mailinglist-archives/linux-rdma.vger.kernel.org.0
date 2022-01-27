@@ -2,81 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777FF49DC16
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 08:59:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 070E449DC2F
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 09:05:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237495AbiA0H7l (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jan 2022 02:59:41 -0500
-Received: from out199-4.us.a.mail.aliyun.com ([47.90.199.4]:43371 "EHLO
-        out199-4.us.a.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229724AbiA0H7k (ORCPT
+        id S237633AbiA0IFY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 03:05:24 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:36929 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237624AbiA0IFY (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jan 2022 02:59:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V2zDTm1_1643270376;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V2zDTm1_1643270376)
+        Thu, 27 Jan 2022 03:05:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V2zNhQM_1643270721;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V2zNhQM_1643270721)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 27 Jan 2022 15:59:37 +0800
-Date:   Thu, 27 Jan 2022 15:59:36 +0800
+          Thu, 27 Jan 2022 16:05:21 +0800
+Date:   Thu, 27 Jan 2022 16:05:20 +0800
 From:   Tony Lu <tonylu@linux.alibaba.com>
 To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, kgraul@linux.ibm.com,
         kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 0/6] net/smc: Spread workload over multiple
- cores
-Message-ID: <YfJQ6AwYMA/i4HvH@TonyMac-Alibaba>
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next 0/2] net/smc: Spread workload over multiple cores
+Message-ID: <YfJSQKnREYkia1R0@TonyMac-Alibaba>
 Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20220114054852.38058-1-tonylu@linux.alibaba.com>
- <YePesYRnrKCh1vFy@unreal>
- <YfD26mhGkM9DFBV+@TonyMac-Alibaba>
- <20220126152806.GN8034@ziepe.ca>
- <YfIOHZ7hSfogeTyS@TonyMac-Alibaba>
- <YfI50xqsv20KDpz9@unreal>
+References: <20220126130140.66316-1-tonylu@linux.alibaba.com>
+ <20220126152916.GO8034@ziepe.ca>
+ <YfIPLn2AX774b6Wl@TonyMac-Alibaba>
+ <YfI5SE4P+NPZVkaE@unreal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YfI50xqsv20KDpz9@unreal>
+In-Reply-To: <YfI5SE4P+NPZVkaE@unreal>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 08:21:07AM +0200, Leon Romanovsky wrote:
-> On Thu, Jan 27, 2022 at 11:14:37AM +0800, Tony Lu wrote:
-> > On Wed, Jan 26, 2022 at 11:28:06AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Jan 26, 2022 at 03:23:22PM +0800, Tony Lu wrote:
-> > > > On Sun, Jan 16, 2022 at 11:00:33AM +0200, Leon Romanovsky wrote:
-> > > > > 
-> > > > > Please CC RDMA mailing list next time.
-> > > > > 
-> > > > > Why didn't you use already existed APIs in drivers/infiniband/core/cq.c?
-> > > > > ib_cq_pool_get() will do most if not all of your open-coded CQ spreading
-> > > > > logic.
-> > > > 
-> > > > I am working on replacing with ib_cq_pool_get(), this need ib_poll_context
-> > > > to indicate the poller which provides by ib_poll_handler(). It's okay
-> > > > for now, but for the callback function. When it polled a ib_wc, it
-> > > > would call wc->wr_cqe->done(cq, wc), which is the union with wr_id. The
-> > > > wr_id is heavily used in SMC.
+On Thu, Jan 27, 2022 at 08:18:48AM +0200, Leon Romanovsky wrote:
+> On Thu, Jan 27, 2022 at 11:19:10AM +0800, Tony Lu wrote:
+> > On Wed, Jan 26, 2022 at 11:29:16AM -0400, Jason Gunthorpe wrote:
+> > > On Wed, Jan 26, 2022 at 09:01:39PM +0800, Tony Lu wrote:
+> > > > Currently, SMC creates one CQ per IB device, and shares this cq among
+> > > > all the QPs of links. Meanwhile, this CQ is always binded to the first
+> > > > completion vector, the IRQ affinity of this vector binds to some CPU
+> > > > core.
 > > > 
-> > > Part of using the new interface is converting to use wr_cqe, you
-> > > should just do that work instead of trying to duplicate a core API in
-> > > a driver.
+> > > As we said in the RFC discussion this should be updated to use the
+> > > proper core APIS, not re-implement them in a driver like this.
 > > 
-> > Thanks for your advice. This patch set aims to improve performance with
-> > current API in SMC protocol, which is more urgent. 
+> > Thanks for your advice. As I replied in the RFC, I will start to do that
+> > after a clear plan is determined.
+> > 
+> > Glad to hear your advice. 
 > 
-> This code existed from 2017, it is hard to agree with "urgent" claim.
+> Please do right thing from the beginning.
+> 
+> You are improving code from 2017 to be aligned with core code that
+> exists from 2020.
 
-Yes, I agree with you that the code is old. I think there are two
-problems, one for performance issue, the other one for API refactor.
+Thanks for your reply. The implement of this patch set isn't a brand-new
+feature, just existed codes and logics adjustment and recombination,
+aims to solve an existed issue in real world. So I fixes it now.
 
-We are running into the performance issues mentioned in patches in our
-cloud environment. So I think it is more urgent for a real world issue.
-
-The current modification is less intrusive to the code. This makes
-changes simpler. And current implement works for now, this is why I put
-refactor behind.
+The other thing is to align code to now with new API. I will do it
+before a full discussion with Karsten.
 
 Thank you,
 Tony Lu
