@@ -2,52 +2,77 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DF549D916
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 04:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CAF49DA85
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 07:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235639AbiA0DTS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 26 Jan 2022 22:19:18 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:52547 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235576AbiA0DTQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Wed, 26 Jan 2022 22:19:16 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V2yOM1Q_1643253553;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V2yOM1Q_1643253553)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 27 Jan 2022 11:19:14 +0800
-Date:   Thu, 27 Jan 2022 11:19:10 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
+        id S236521AbiA0GS4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 01:18:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236482AbiA0GSy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jan 2022 01:18:54 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE5DC061714;
+        Wed, 26 Jan 2022 22:18:54 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B00A6618BF;
+        Thu, 27 Jan 2022 06:18:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D72EC340E4;
+        Thu, 27 Jan 2022 06:18:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643264333;
+        bh=JWnQY8Vldoj9hxONqmQ+vJa9OiQSxZzxdDUkq1+N79E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FAUl2LzrWlpwEP112G3UU/39C9EvdSXdFCcHOazdmJP/tuo4Zyb0jHXYwnI+UDR7z
+         Pipxzbt4zwcnyx0MXGLn7K3JbNCXObtFzXskYntgIX4Go/o/e4wExnoTSbUoxRrcyN
+         u9Z4WJaRytHg3Yd/Ozz0Zs624LNPcFApptbeUJKprSjda/pXX8gvTWcV7TIko1/ON/
+         e8mwTpisrMovyaU8ZE29xqenWofn3JHmsKCzpViEWbtScxQHQS0k5dUfNjWSDmQ21Q
+         pFJLpc6inFqrcWFsnEHGAORrtRURBa6JY+WyT47t8BEqnilplvqJJgIeL/YtksZnd8
+         s1q2HSiFL8vKg==
+Date:   Thu, 27 Jan 2022 08:18:48 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Tony Lu <tonylu@linux.alibaba.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, kgraul@linux.ibm.com,
+        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
 Subject: Re: [PATCH net-next 0/2] net/smc: Spread workload over multiple cores
-Message-ID: <YfIPLn2AX774b6Wl@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+Message-ID: <YfI5SE4P+NPZVkaE@unreal>
 References: <20220126130140.66316-1-tonylu@linux.alibaba.com>
  <20220126152916.GO8034@ziepe.ca>
+ <YfIPLn2AX774b6Wl@TonyMac-Alibaba>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220126152916.GO8034@ziepe.ca>
+In-Reply-To: <YfIPLn2AX774b6Wl@TonyMac-Alibaba>
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jan 26, 2022 at 11:29:16AM -0400, Jason Gunthorpe wrote:
-> On Wed, Jan 26, 2022 at 09:01:39PM +0800, Tony Lu wrote:
-> > Currently, SMC creates one CQ per IB device, and shares this cq among
-> > all the QPs of links. Meanwhile, this CQ is always binded to the first
-> > completion vector, the IRQ affinity of this vector binds to some CPU
-> > core.
+On Thu, Jan 27, 2022 at 11:19:10AM +0800, Tony Lu wrote:
+> On Wed, Jan 26, 2022 at 11:29:16AM -0400, Jason Gunthorpe wrote:
+> > On Wed, Jan 26, 2022 at 09:01:39PM +0800, Tony Lu wrote:
+> > > Currently, SMC creates one CQ per IB device, and shares this cq among
+> > > all the QPs of links. Meanwhile, this CQ is always binded to the first
+> > > completion vector, the IRQ affinity of this vector binds to some CPU
+> > > core.
+> > 
+> > As we said in the RFC discussion this should be updated to use the
+> > proper core APIS, not re-implement them in a driver like this.
 > 
-> As we said in the RFC discussion this should be updated to use the
-> proper core APIS, not re-implement them in a driver like this.
+> Thanks for your advice. As I replied in the RFC, I will start to do that
+> after a clear plan is determined.
+> 
+> Glad to hear your advice. 
 
-Thanks for your advice. As I replied in the RFC, I will start to do that
-after a clear plan is determined.
+Please do right thing from the beginning.
 
-Glad to hear your advice. 
+You are improving code from 2017 to be aligned with core code that
+exists from 2020.
 
-Tony Lu
+Thanks
+
+> 
+> Tony Lu
+> 
