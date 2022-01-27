@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25C049ED85
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 22:38:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A7449ED86
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 22:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344406AbiA0ViM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jan 2022 16:38:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S1344443AbiA0ViQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 16:38:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344421AbiA0ViM (ORCPT
+        with ESMTP id S1344412AbiA0ViM (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jan 2022 16:38:12 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C65C061747
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEF3C061714
         for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:12 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id m9so8483639oia.12
+Received: by mail-oi1-x236.google.com with SMTP id m9so8483689oia.12
         for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=z2qlmGdU5fOOh7j0lEey+Dd6zBF++m9TinfKtP81AS0=;
-        b=nKyZvDrlcC76WCPnbmfz24/DszgHSLKVa4zFE9kVvPt6c3QsjlXu7U4pZNYvjObIbL
-         Oku6+G/j1nK/3aBnHX1is8zlReJVDMlDBmEj+2011tCMPn+AzzmKqJMQE+42D/UM+QtU
-         NdOn4L6MfrkX29Edjq6agiHX81SPuAb4NNagx39pkqffUJ1P0IsAgwszNTAFWndmEBF7
-         3Ijzl/zVLbirZSKdW5vdomWfdj2vLsBbQa6KpC1CDYnURjq6vDc5fYf3cxxrDR2u1ekO
-         W2EhYbfzggymm6Suexn8bmoYkI6FCFALo7mAdPWtHvplEBOkve2VIX/HgdXHIff89i2/
-         D4WQ==
+        bh=1Qfvp20206DcmKvuNv+j3mvuVrDOObPq3yGtKsY16FI=;
+        b=Y793FBN20EKl+qL3E8LCL49N/YLw2uFEY7d3pcW9yZqqtFaCGcffMdD2WH7iUG01yv
+         shR008dH8j0144EanXXCTOG9uCOhA/ehmmAbiEASA4hGe4TChmFDkk+2iLk3HXAOypaP
+         IB5Yb0upVFheyutKJo9C9Bcrs7/WTfFlVSHwsW0Yj35eiLS7IWwATSwabtIKpasBaHCD
+         th5sYaSbyW9a1hp6h0W02MtPn5QTTvEreI6WEDdBScRt+bAj2hwT6jNzdqF7oJlnGs27
+         KYa4U4No22vV603Is41XAlx7+VNXx/spglev8i7NnVS6fcsHFSaIL0F0sxJj+3P+aykf
+         CM4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=z2qlmGdU5fOOh7j0lEey+Dd6zBF++m9TinfKtP81AS0=;
-        b=nv/cTuf34Ipr4oa2dgEd+el4n1XAU0QqJIYy/pS7Na9F+ijzKvmSCi04W6dPlK/DV2
-         JiwS2aHin3uf18/ujzXjzP84NU4w0/UVZjbaj/cwYwk4F+HpNmmg52jDM+UUed2bGrhP
-         oenPS1JI8tiAx2+n2gojOBopR1xGkVz3OtzAFYlnW/N0R6Fnxx6rWDZ0Svu7Yf9wZo3E
-         s/gj9ozd/rS5gGnv+aRUWwmUYS+QF40uK+cHUbzIvn1AMuvvR+F22fAIW+KXrRG1J+QF
-         7+SCR2egvVHXUxbTNKePfrr4lHtfmsHJCYCJmL1OWZkoVHP0Yh7PIYDoFeLOwp5/YbYN
-         OUqQ==
-X-Gm-Message-State: AOAM530Zi/5xZN3GoNlZc5G2HCsaZhmS365FhUO8XpttSCYSLqjuyCzD
-        8i30aml+qwQRK5KVZMDRgls=
-X-Google-Smtp-Source: ABdhPJxc6U50KUFLj8rvwdjIcbsYemIZl2EqcX2QICIkPG4wMJBjaogkW6/+IoUwmyqRDqW7NID0vg==
-X-Received: by 2002:a05:6808:1452:: with SMTP id x18mr3777795oiv.30.1643319491475;
-        Thu, 27 Jan 2022 13:38:11 -0800 (PST)
+        bh=1Qfvp20206DcmKvuNv+j3mvuVrDOObPq3yGtKsY16FI=;
+        b=3EdmfyqoNlC4Ml/IJT7dUaOgVrIJiGTwh+FCB1P4IWgphexQXmPTYXzzeoyZDf1DFY
+         gv+LC5N9g+Zpw/pv9/q82EAo5HsHEv5a3eoyxDwWVQtKb5+BWGlxBH7guG83FzCo4m8H
+         SO11vm4xSF9B33bF5cFPKF6Cl2vw7LIzoTB5RQGQw2gCXKTrmUjD7vXR94VcKXFg+Bmp
+         bM/B8K48J471j91YpmLj4N/UB0RVNV5J2zBXIKqaZukKZMXuBp2sir65PqPaAcSDGXHz
+         pQyWA2aeWB9IgPK9HwtSYji7xeGXfUb4tHMMwBzvq0cj37XtA5xrw3KIqcKuEva+gQAe
+         onBw==
+X-Gm-Message-State: AOAM533yF3q9mMjPxdd4r12LBrKqdOF2t/14p2SJc/+RoRYTeZLbWhR4
+        enJfv0ipWTuFGAEJCk4jnP3z/zdncVI=
+X-Google-Smtp-Source: ABdhPJxW0bs28lQHIt8gJEBg3sLVbbpYt+jXmcYhcQk+hi9sCaGQ9Wj0y5FLE/Igj2FaAoaQHHuG/Q==
+X-Received: by 2002:a05:6808:14d0:: with SMTP id f16mr3537047oiw.32.1643319492114;
+        Thu, 27 Jan 2022 13:38:12 -0800 (PST)
 Received: from ubuntu-21.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id v32sm3994677ooj.45.2022.01.27.13.38.10
+        by smtp.googlemail.com with ESMTPSA id v32sm3994677ooj.45.2022.01.27.13.38.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 27 Jan 2022 13:38:11 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [RFC PATCH v9 08/26] RDMA/rxe: Rename grp to mcg and mce to mca
-Date:   Thu, 27 Jan 2022 15:37:37 -0600
-Message-Id: <20220127213755.31697-9-rpearsonhpe@gmail.com>
+Subject: [RFC PATCH v9 09/26] RDMA/rxe: Introduce RXECB(skb)
+Date:   Thu, 27 Jan 2022 15:37:38 -0600
+Message-Id: <20220127213755.31697-10-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220127213755.31697-1-rpearsonhpe@gmail.com>
 References: <20220127213755.31697-1-rpearsonhpe@gmail.com>
@@ -62,264 +62,173 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In rxe_mcast.c and rxe_recv.c replace 'grp' by 'mcg' and 'mce' by 'mca'.
+Add a #define RXECB(skb) to rxe_hdr.h as a short cut to
+refer to single members of rxe_pkt_info which is stored in skb->cb
+in the receive path. Use this to make some cleanups in rxe_recv.c
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mcast.c | 102 +++++++++++++-------------
- drivers/infiniband/sw/rxe/rxe_recv.c  |   8 +-
- 2 files changed, 55 insertions(+), 55 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_hdr.h  |  3 ++
+ drivers/infiniband/sw/rxe/rxe_recv.c | 55 +++++++++++++---------------
+ 2 files changed, 29 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 39f38ee665f2..ed1b9ca65da3 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -31,33 +31,33 @@ static struct rxe_mcg *create_grp(struct rxe_dev *rxe,
- 				     union ib_gid *mgid)
- {
- 	int err;
--	struct rxe_mcg *grp;
-+	struct rxe_mcg *mcg;
- 
--	grp = rxe_alloc_locked(&rxe->mc_grp_pool);
--	if (!grp)
-+	mcg = rxe_alloc_locked(&rxe->mc_grp_pool);
-+	if (!mcg)
- 		return ERR_PTR(-ENOMEM);
--	rxe_add_ref(grp);
-+	rxe_add_ref(mcg);
- 
--	INIT_LIST_HEAD(&grp->qp_list);
--	spin_lock_init(&grp->mcg_lock);
--	grp->rxe = rxe;
--	rxe_add_key_locked(grp, mgid);
-+	INIT_LIST_HEAD(&mcg->qp_list);
-+	spin_lock_init(&mcg->mcg_lock);
-+	mcg->rxe = rxe;
-+	rxe_add_key_locked(mcg, mgid);
- 
- 	err = rxe_mcast_add(rxe, mgid);
- 	if (unlikely(err)) {
--		rxe_drop_key_locked(grp);
--		rxe_drop_ref(grp);
-+		rxe_drop_key_locked(mcg);
-+		rxe_drop_ref(mcg);
- 		return ERR_PTR(err);
- 	}
- 
--	return grp;
-+	return mcg;
+diff --git a/drivers/infiniband/sw/rxe/rxe_hdr.h b/drivers/infiniband/sw/rxe/rxe_hdr.h
+index e432f9e37795..2a85d1e40e6a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_hdr.h
++++ b/drivers/infiniband/sw/rxe/rxe_hdr.h
+@@ -36,6 +36,9 @@ static inline struct sk_buff *PKT_TO_SKB(struct rxe_pkt_info *pkt)
+ 	return container_of((void *)pkt, struct sk_buff, cb);
  }
  
- static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
--			     struct rxe_mcg **grp_p)
-+			     struct rxe_mcg **mcgp)
- {
- 	int err;
--	struct rxe_mcg *grp;
-+	struct rxe_mcg *mcg;
- 	struct rxe_pool *pool = &rxe->mc_grp_pool;
- 
- 	if (rxe->attr.max_mcast_qp_attach == 0)
-@@ -65,47 +65,47 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
- 
- 	write_lock_bh(&pool->pool_lock);
- 
--	grp = rxe_pool_get_key_locked(pool, mgid);
--	if (grp)
-+	mcg = rxe_pool_get_key_locked(pool, mgid);
-+	if (mcg)
- 		goto done;
- 
--	grp = create_grp(rxe, pool, mgid);
--	if (IS_ERR(grp)) {
-+	mcg = create_grp(rxe, pool, mgid);
-+	if (IS_ERR(mcg)) {
- 		write_unlock_bh(&pool->pool_lock);
--		err = PTR_ERR(grp);
-+		err = PTR_ERR(mcg);
- 		return err;
- 	}
- 
- done:
- 	write_unlock_bh(&pool->pool_lock);
--	*grp_p = grp;
-+	*mcgp = mcg;
- 	return 0;
- }
- 
- static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
--			   struct rxe_mcg *grp)
-+			   struct rxe_mcg *mcg)
- {
- 	int err;
- 	struct rxe_mca *mca, *new_mca;
- 
- 	/* check to see if the qp is already a member of the group */
--	spin_lock_bh(&grp->mcg_lock);
--	list_for_each_entry(mca, &grp->qp_list, qp_list) {
-+	spin_lock_bh(&mcg->mcg_lock);
-+	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
- 		if (mca->qp == qp) {
--			spin_unlock_bh(&grp->mcg_lock);
-+			spin_unlock_bh(&mcg->mcg_lock);
- 			return 0;
- 		}
- 	}
--	spin_unlock_bh(&grp->mcg_lock);
-+	spin_unlock_bh(&mcg->mcg_lock);
- 
- 	/* speculative alloc new mca without using GFP_ATOMIC */
- 	new_mca = kzalloc(sizeof(*mca), GFP_KERNEL);
- 	if (!new_mca)
- 		return -ENOMEM;
- 
--	spin_lock_bh(&grp->mcg_lock);
-+	spin_lock_bh(&mcg->mcg_lock);
- 	/* re-check to see if someone else just attached qp */
--	list_for_each_entry(mca, &grp->qp_list, qp_list) {
-+	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
- 		if (mca->qp == qp) {
- 			kfree(new_mca);
- 			err = 0;
-@@ -113,63 +113,63 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		}
- 	}
- 
--	if (grp->num_qp >= rxe->attr.max_mcast_qp_attach) {
-+	if (mcg->num_qp >= rxe->attr.max_mcast_qp_attach) {
- 		err = -ENOMEM;
- 		goto out;
- 	}
- 
--	grp->num_qp++;
-+	mcg->num_qp++;
- 	new_mca->qp = qp;
- 	atomic_inc(&qp->mcg_num);
- 
--	list_add(&new_mca->qp_list, &grp->qp_list);
-+	list_add(&new_mca->qp_list, &mcg->qp_list);
- 
- 	err = 0;
- out:
--	spin_unlock_bh(&grp->mcg_lock);
-+	spin_unlock_bh(&mcg->mcg_lock);
- 	return err;
- }
- 
- static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
- 				   union ib_gid *mgid)
- {
--	struct rxe_mcg *grp;
-+	struct rxe_mcg *mcg;
- 	struct rxe_mca *mca, *tmp;
- 
--	grp = rxe_pool_get_key(&rxe->mc_grp_pool, mgid);
--	if (!grp)
-+	mcg = rxe_pool_get_key(&rxe->mc_grp_pool, mgid);
-+	if (!mcg)
- 		goto err1;
- 
--	spin_lock_bh(&grp->mcg_lock);
-+	spin_lock_bh(&mcg->mcg_lock);
- 
--	list_for_each_entry_safe(mca, tmp, &grp->qp_list, qp_list) {
-+	list_for_each_entry_safe(mca, tmp, &mcg->qp_list, qp_list) {
- 		if (mca->qp == qp) {
- 			list_del(&mca->qp_list);
--			grp->num_qp--;
--			if (grp->num_qp <= 0)
--				rxe_drop_ref(grp);
-+			mcg->num_qp--;
-+			if (mcg->num_qp <= 0)
-+				rxe_drop_ref(mcg);
- 			atomic_dec(&qp->mcg_num);
- 
--			spin_unlock_bh(&grp->mcg_lock);
--			rxe_drop_ref(grp);	/* ref from get_key */
-+			spin_unlock_bh(&mcg->mcg_lock);
-+			rxe_drop_ref(mcg);	/* ref from get_key */
- 			kfree(mca);
- 			return 0;
- 		}
- 	}
- 
--	spin_unlock_bh(&grp->mcg_lock);
--	rxe_drop_ref(grp);			/* ref from get_key */
-+	spin_unlock_bh(&mcg->mcg_lock);
-+	rxe_drop_ref(mcg);			/* ref from get_key */
- err1:
++/* alternative to access a single element of rxe_pkt_info from skb */
++#define RXECB(skb) ((struct rxe_pkt_info *)((skb)->cb))
++
+ /*
+  * IBA header types and methods
+  *
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 814a002b8911..10020103ea4a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -107,17 +107,15 @@ static int check_keys(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
  	return -EINVAL;
  }
  
- void rxe_mc_cleanup(struct rxe_pool_elem *elem)
+-static int check_addr(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
++static int check_addr(struct rxe_dev *rxe, struct sk_buff *skb,
+ 		      struct rxe_qp *qp)
  {
--	struct rxe_mcg *grp = container_of(elem, typeof(*grp), elem);
--	struct rxe_dev *rxe = grp->rxe;
-+	struct rxe_mcg *mcg = container_of(elem, typeof(*mcg), elem);
-+	struct rxe_dev *rxe = mcg->rxe;
+-	struct sk_buff *skb = PKT_TO_SKB(pkt);
+-
+ 	if (qp_type(qp) != IB_QPT_RC && qp_type(qp) != IB_QPT_UC)
+ 		goto done;
  
--	rxe_drop_key(grp);
--	rxe_mcast_delete(rxe, &grp->mgid);
-+	rxe_drop_key(mcg);
-+	rxe_mcast_delete(rxe, &mcg->mgid);
+-	if (unlikely(pkt->port_num != qp->attr.port_num)) {
++	if (unlikely(RXECB(skb)->port_num != qp->attr.port_num)) {
+ 		pr_warn_ratelimited("port %d != qp port %d\n",
+-				    pkt->port_num, qp->attr.port_num);
++				    RXECB(skb)->port_num, qp->attr.port_num);
+ 		goto err1;
+ 	}
+ 
+@@ -167,8 +165,9 @@ static int check_addr(struct rxe_dev *rxe, struct rxe_pkt_info *pkt,
+ 	return -EINVAL;
  }
  
- int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
-@@ -177,16 +177,16 @@ int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- 	int err;
- 	struct rxe_dev *rxe = to_rdev(ibqp->device);
- 	struct rxe_qp *qp = to_rqp(ibqp);
--	struct rxe_mcg *grp;
-+	struct rxe_mcg *mcg;
+-static int hdr_check(struct rxe_pkt_info *pkt)
++static int hdr_check(struct sk_buff *skb)
+ {
++	struct rxe_pkt_info *pkt = RXECB(skb);
+ 	struct rxe_dev *rxe = pkt->rxe;
+ 	struct rxe_port *port = &rxe->port;
+ 	struct rxe_qp *qp = NULL;
+@@ -199,7 +198,7 @@ static int hdr_check(struct rxe_pkt_info *pkt)
+ 		if (unlikely(err))
+ 			goto err2;
  
--	/* takes a ref on grp if successful */
--	err = rxe_mcast_get_grp(rxe, mgid, &grp);
-+	/* takes a ref on mcg if successful */
-+	err = rxe_mcast_get_grp(rxe, mgid, &mcg);
- 	if (err)
- 		return err;
+-		err = check_addr(rxe, pkt, qp);
++		err = check_addr(rxe, skb, qp);
+ 		if (unlikely(err))
+ 			goto err2;
  
--	err = rxe_mcast_add_grp_elem(rxe, qp, grp);
-+	err = rxe_mcast_add_grp_elem(rxe, qp, mcg);
- 
--	rxe_drop_ref(grp);
-+	rxe_drop_ref(mcg);
- 	return err;
+@@ -222,17 +221,19 @@ static int hdr_check(struct rxe_pkt_info *pkt)
+ 	return -EINVAL;
  }
  
-diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-index 7ff6b53555f4..814a002b8911 100644
---- a/drivers/infiniband/sw/rxe/rxe_recv.c
-+++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-@@ -234,7 +234,7 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+-static inline void rxe_rcv_pkt(struct rxe_pkt_info *pkt, struct sk_buff *skb)
++static inline void rxe_rcv_pkt(struct sk_buff *skb)
  {
- 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
+-	if (pkt->mask & RXE_REQ_MASK)
+-		rxe_resp_queue_pkt(pkt->qp, skb);
++	if (RXECB(skb)->mask & RXE_REQ_MASK)
++		rxe_resp_queue_pkt(RXECB(skb)->qp, skb);
+ 	else
+-		rxe_comp_queue_pkt(pkt->qp, skb);
++		rxe_comp_queue_pkt(RXECB(skb)->qp, skb);
+ }
+ 
+-static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
++static void rxe_rcv_mcast_pkt(struct sk_buff *skb)
+ {
+-	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
++	struct sk_buff *s;
++	struct rxe_pkt_info *pkt = RXECB(skb);
++	struct rxe_dev *rxe = pkt->rxe;
  	struct rxe_mcg *mcg;
--	struct rxe_mca *mce;
-+	struct rxe_mca *mca;
+ 	struct rxe_mca *mca;
  	struct rxe_qp *qp;
- 	union ib_gid dgid;
- 	int err;
-@@ -257,8 +257,8 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 	 * single QP happen and just move on and try
- 	 * the rest of them on the list
- 	 */
--	list_for_each_entry(mce, &mcg->qp_list, qp_list) {
--		qp = mce->qp;
-+	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
-+		qp = mca->qp;
- 
- 		/* validate qp for incoming packet */
- 		err = check_type_state(rxe, pkt, qp);
-@@ -273,7 +273,7 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
- 		 * skb and pass to the QP. Pass the original skb to
+@@ -274,26 +275,22 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
  		 * the last QP in the list.
  		 */
--		if (mce->qp_list.next != &mcg->qp_list) {
-+		if (mca->qp_list.next != &mcg->qp_list) {
- 			struct sk_buff *cskb;
- 			struct rxe_pkt_info *cpkt;
+ 		if (mca->qp_list.next != &mcg->qp_list) {
+-			struct sk_buff *cskb;
+-			struct rxe_pkt_info *cpkt;
+-
+-			cskb = skb_clone(skb, GFP_ATOMIC);
+-			if (unlikely(!cskb))
++			s = skb_clone(skb, GFP_ATOMIC);
++			if (unlikely(!s))
+ 				continue;
+ 
+ 			if (WARN_ON(!ib_device_try_get(&rxe->ib_dev))) {
+-				kfree_skb(cskb);
++				kfree_skb(s);
+ 				break;
+ 			}
+ 
+-			cpkt = SKB_TO_PKT(cskb);
+-			cpkt->qp = qp;
++			RXECB(s)->qp = qp;
+ 			rxe_add_ref(qp);
+-			rxe_rcv_pkt(cpkt, cskb);
++			rxe_rcv_pkt(s);
+ 		} else {
+-			pkt->qp = qp;
++			RXECB(skb)->qp = qp;
+ 			rxe_add_ref(qp);
+-			rxe_rcv_pkt(pkt, skb);
++			rxe_rcv_pkt(skb);
+ 			skb = NULL;	/* mark consumed */
+ 		}
+ 	}
+@@ -326,7 +323,7 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+  */
+ static int rxe_chk_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
+ {
+-	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
++	struct rxe_pkt_info *pkt = RXECB(skb);
+ 	const struct ib_gid_attr *gid_attr;
+ 	union ib_gid dgid;
+ 	union ib_gid *pdgid;
+@@ -359,7 +356,7 @@ static int rxe_chk_dgid(struct rxe_dev *rxe, struct sk_buff *skb)
+ void rxe_rcv(struct sk_buff *skb)
+ {
+ 	int err;
+-	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
++	struct rxe_pkt_info *pkt = RXECB(skb);
+ 	struct rxe_dev *rxe = pkt->rxe;
+ 
+ 	if (unlikely(skb->len < RXE_BTH_BYTES))
+@@ -378,7 +375,7 @@ void rxe_rcv(struct sk_buff *skb)
+ 	if (unlikely(skb->len < header_size(pkt)))
+ 		goto drop;
+ 
+-	err = hdr_check(pkt);
++	err = hdr_check(skb);
+ 	if (unlikely(err))
+ 		goto drop;
+ 
+@@ -389,9 +386,9 @@ void rxe_rcv(struct sk_buff *skb)
+ 	rxe_counter_inc(rxe, RXE_CNT_RCVD_PKTS);
+ 
+ 	if (unlikely(bth_qpn(pkt) == IB_MULTICAST_QPN))
+-		rxe_rcv_mcast_pkt(rxe, skb);
++		rxe_rcv_mcast_pkt(skb);
+ 	else
+-		rxe_rcv_pkt(pkt, skb);
++		rxe_rcv_pkt(skb);
+ 
+ 	return;
  
 -- 
 2.32.0
