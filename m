@@ -2,118 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5AB949E869
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 18:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0D549E9AA
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 19:08:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244319AbiA0RJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jan 2022 12:09:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244295AbiA0RJX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jan 2022 12:09:23 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E8E7C06173B
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 09:09:23 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id h7so7376814ejf.1
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 09:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tessares-net.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=ZPHRE+C/v2gNlL2a7HeYHesyem4JYDq+ldUsKhvfG1s=;
-        b=IHyD5WRqTbUmmWI8+vLcD4Kp6ngG/OB8pKAAOgJJT1cqDAgmMAfMCxRRMAjkCmbCmK
-         BGW8YA0lugwhkzVlFTO+ZBSANh7Rtbu1d9XfrtjZmy4gfSme3QuwU4TEleL/YwPSrcp5
-         ZA/xcOCNd+GC4oEr2beUZ/SzDzx2NHWjjJ+L5hDd557MIIvVO3hsY77c1JOrxkVPCgzg
-         fWznPX0556UbEpR11kbtVVLOavD+Dxs9DAkSv5y+PJdPT2u4by8g1fMtwxIu0jeB+px+
-         XphWUOdxCfFgWr697LXR41+ykxk6Mk03fkb5J4J6wRut4+5OalmuFrReeeune1W/bJXT
-         dCUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZPHRE+C/v2gNlL2a7HeYHesyem4JYDq+ldUsKhvfG1s=;
-        b=LheNHShOoxiBcwb4IDQkWwftGLq7zS4T3rIjWosKNhE5JoiKluWzHQKl1bkSxHis6e
-         Iq1cTfxGScAB4JHltGhufpps2U9j1TRwXu/5UWK0LcHcR5InxDC/cZPUiTtskVMYPDJD
-         1c6ij9MjxWrtpKMj1RL3nR0+S1IYbtQCUiAf7Xh/Bm65nfPP8lJXIovSSiSCtm4aPfpJ
-         IE03Dr/vbtUhoR+dnVN3cvB0og46TZQDbNv0dWyIR0l9JHsm3EJZ1mb3ormSiMp+R15+
-         0c6gpotDkjGlAczkb7Qn4MrtcCKGjz5xISHUIS64h2ObqYfV7N9bM4dM+HQxMPKfS03K
-         t0pA==
-X-Gm-Message-State: AOAM530CYQvJdVEk1B9feKbURyUBoB9mVqI4ggOeJJHLSQNVEYZp+s/j
-        CGq8KBngGDh+JjyqCB6FXc9Zlw==
-X-Google-Smtp-Source: ABdhPJw3UvX1SmRdPOm2ASisWcPsdzNnny+A9/yUDLRkyoFTSQ5UbF9BZr6ucKYXwfZqvt8dVzT5mw==
-X-Received: by 2002:a17:906:b116:: with SMTP id u22mr3667402ejy.427.1643303361918;
-        Thu, 27 Jan 2022 09:09:21 -0800 (PST)
-Received: from ?IPV6:2a02:578:8593:1200:fe1f:d9d6:8db5:a255? ([2a02:578:8593:1200:fe1f:d9d6:8db5:a255])
-        by smtp.gmail.com with ESMTPSA id c1sm8927832ejs.29.2022.01.27.09.09.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Jan 2022 09:09:21 -0800 (PST)
-Message-ID: <1825f5e8-6d13-a317-4a96-f4a4fcf07409@tessares.net>
-Date:   Thu, 27 Jan 2022 18:09:20 +0100
+        id S239174AbiA0SIg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 13:08:36 -0500
+Received: from mga01.intel.com ([192.55.52.88]:49877 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239361AbiA0SIf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jan 2022 13:08:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643306915; x=1674842915;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=39T5LfFvDbJHmvOFk9KwZ0FYW8S84k6NCsY7m7gOun4=;
+  b=JM3pnRqjeeUrJrp4nTVjWTKdCh/OvTnMKtwnHdqqGkgXBXDSnRrRjmnx
+   9ZSz3Ll+2b2Nw/pNrjnEsOM34wNKSPYe26ithf2QodUx362fC5eaWmItm
+   dVWxEuCWZzu14WmTcDuQp78SV5Ovx055kMuNqg0lPHJZFDo2vsntjh4Uo
+   ozqkCRAOAoB5RGb/c6NuI2j+msZoLLMDQFrStk9C+VB4S3xUdtz+tUPrS
+   pTV94uaDB8Tw9ASCKMqd6CNR32MwhgcRMsRduHxHGPV9IPJuVMeWT/A1E
+   1FN2dJvCNjh6XMfuwtN3S70Js3VpzPB57JWdLXkW4eoJZ9Zwht7dM3mTk
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10239"; a="271387047"
+X-IronPort-AV: E=Sophos;i="5.88,321,1635231600"; 
+   d="scan'208";a="271387047"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2022 10:08:33 -0800
+X-IronPort-AV: E=Sophos;i="5.88,321,1635231600"; 
+   d="scan'208";a="674801151"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Jan 2022 10:08:33 -0800
+Date:   Thu, 27 Jan 2022 10:08:33 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "hch@lst.de" <hch@lst.de>
+Cc:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Support RDMA Atomic Write operation
+Message-ID: <20220127180833.GF785175@iweiny-DESK2.sc.intel.com>
+References: <20220117131624.GB7906@nvidia.com>
+ <61E673EA.60900@fujitsu.com>
+ <20220118123505.GF84788@nvidia.com>
+ <7dfed756-42a7-b6f7-3473-1348479d30db@fujitsu.com>
+ <20220119123635.GH84788@nvidia.com>
+ <022be340-a49a-1e94-5fb8-1c77f06fecc2@cn.fujitsu.com>
+ <20220121125837.GV84788@nvidia.com>
+ <20220121160654.GC773547@iweiny-DESK2.sc.intel.com>
+ <b3b322be-a718-5fb8-11e2-05ee783f1086@fujitsu.com>
+ <20220127095730.GA14946@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH net-next 3/3] net/smc: Fallback when handshake workqueue
- congested
-Content-Language: en-GB
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        MPTCP Upstream <mptcp@lists.linux.dev>
-References: <cover.1643284658.git.alibuda@linux.alibaba.com>
- <ed4781cde8e3b9812d4a46ce676294a812c80e8f.1643284658.git.alibuda@linux.alibaba.com>
-From:   Matthieu Baerts <matthieu.baerts@tessares.net>
-In-Reply-To: <ed4781cde8e3b9812d4a46ce676294a812c80e8f.1643284658.git.alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220127095730.GA14946@lst.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
-
-(+cc MPTCP ML)
-
-On 27/01/2022 13:08, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Thu, Jan 27, 2022 at 10:57:30AM +0100, Christoph Hellwig wrote:
+> On Thu, Jan 27, 2022 at 09:37:59AM +0000, yangx.jy@fujitsu.com wrote:
+> > Do you mean we have to consider that some allocated pages come from high 
+> > memory?
+> >
+> > I think INFINIBAND_VIRT_DMA kconfig[1] has ensured that all allocated 
+> > pages have a kernel virtual address.
 > 
-> This patch intends to provide a mechanism to allow automatic fallback to
-> TCP according to the pressure of SMC handshake process. At present,
-> frequent visits will cause the incoming connections to be backlogged in
-> SMC handshake queue, raise the connections established time. Which is
-> quite unacceptable for those applications who base on short lived
-> connections.
+> rxe and siw depend on INFINIBAND_VIRT_DMA which depends on !HIGHMEM,
+> so you don't need kmap here at all.
 
-(...)
+Until/if I get PKS protecting pmem.[1]  Then if the page is pmem, page_address()
+will give you an address which you will fault on when you access it.
 
-> diff --git a/net/smc/Kconfig b/net/smc/Kconfig
-> index 1ab3c5a..1903927 100644
-> --- a/net/smc/Kconfig
-> +++ b/net/smc/Kconfig
-> @@ -19,3 +19,15 @@ config SMC_DIAG
->  	  smcss.
->  
->  	  if unsure, say Y.
-> +
-> +if MPTCP
+> 
+> > In this case, is it OK to call page_address() directly?
+> 
+> Yes.
 
-After having read the code and the commit message, it is not clear to me
- why this new feature requires to have MPTCP enabled. May you share some
-explanations about that please?
+For now yes...  But please use kmap_local_page() and it will do the right thing
+(by default call page_address() on !HIGHMEM systems).
 
-> +
-> +config SMC_AUTO_FALLBACK
-> +	bool "SMC: automatic fallback to TCP"
-> +	default y
-> +	help
-> +	  Allow automatic fallback to TCP accroding to the pressure of SMC-R
-> +	  handshake process.
-> +
-> +	  If that's not what you except or unsure, say N.
-> +endif
+IMO page_address() is a hold over from a time when memory management was much
+simpler and, again IMO, today its use assumes too much for drivers like this.
+As more protections on memory are implemented it presents a series of land
+mines to be found.
 
-Cheers,
-Matt
--- 
-Tessares | Belgium | Hybrid Access Solutions
-www.tessares.net
+While kmap is also a hold over I'm trying to redefine it to be 'get the kernel
+mapping' rather than 'map this into highmem'...  But perhaps I'm losing that
+battle...
+
+Ira
+
+[1] https://lore.kernel.org/lkml/20220127175505.851391-1-ira.weiny@intel.com/T/#mcd60ea9a9c7b90e63b8d333c9270186fc7e47707
