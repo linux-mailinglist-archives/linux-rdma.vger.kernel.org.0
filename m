@@ -2,168 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7729449ED7D
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 22:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8072049ED7E
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 22:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240849AbiA0ViH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jan 2022 16:38:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S1344403AbiA0ViI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 16:38:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232131AbiA0ViG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jan 2022 16:38:06 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10E3C061714
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:06 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id o9-20020a9d7189000000b0059ee49b4f0fso3896233otj.2
-        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:06 -0800 (PST)
+        with ESMTP id S232131AbiA0ViH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 27 Jan 2022 16:38:07 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C8C0C061714
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:07 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id s6-20020a0568301e0600b0059ea5472c98so3847610otr.11
+        for <linux-rdma@vger.kernel.org>; Thu, 27 Jan 2022 13:38:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HYLH3LmXJ18wCeap6OAXdNn6ABHS5m0QW5rmDdhF6xo=;
-        b=A5ljkkjCbTKJH/RYdhO/80nwmLj5BYhV9NItpXWXW4DLnUI3OVOCpZ39Ce580zk3bf
-         uu8Pg/07dlksTzOM1QL+1LR2OeJ908+Y/yvv0WMfGWT8WD700o19FyTE0JcNJlRopWcd
-         kTREwv56XojCh5QM8vmMn8OihUNNqZZCbiumsFoZJjQBQJ2Jn2IA/RFfJtk6xrBDF9CB
-         lahGA+MxJ387H8aPy8zXzSAPIevsgmby20f1gHIaDpLBGLNIPbSTnNEY5spHYh9SEdU8
-         cFr//dqOErogkpAi9oUWjFfImvk59LxjFFQ6fgMKufyvmjOxyyf5kgJCvCf4cm7uEgGn
-         rSPQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VL/GI+7qpsdeG8zENV6IvqpyCn40bfNnpv7eZSvf4D4=;
+        b=LiBvtxj8D/ls5P6rYvV+W6cR7frkdq3sCyopE+eAsVD3pi/sf/og81+0otZ7zktDh9
+         VTM86d9DXDj79eTQq4yHeSZX9o2/pSlMzXnJylVpjU50ZGjlFfkNCc/uqNq3GgRYp5j2
+         fDf9pFpryMF8IfrDHo1sl8fFF5dw6DVV0+h3eyB2E0OlXIi02wXl7kixuvLP40VpJL8i
+         szT/g34cB+DKJlRnP4bxcbbNzdT3cL35vSuF3nK2HX2GL+/SBzOoALdD5OV5RysybhxU
+         dshun007zMGNKi8XVF+Y44hXNDkQtxCwd/2iODqgBsMCbj9VoPH+l9UliYbBr5duKcrb
+         RhQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HYLH3LmXJ18wCeap6OAXdNn6ABHS5m0QW5rmDdhF6xo=;
-        b=PMiBxw8CrI8HWgxqRygBeUXd8Wy6kBB5rJS5d0ss5MB950FHuPhZnXOnLCaVjXL5SQ
-         4WiBuY4en4290gKT9KYtQerr0FFMeDKYttMqbrno3fFovZHSwdDDGA9783dzPLFbK9g8
-         WZAEcUc0rw1pPeqMueJKev6NcvyAjumotfAeb0Qf6fsRFOXGTX3Rs24Yu1q0B0Pvqrlm
-         FivV5t048EZacJAs0/UBGFuy7BLSdtx5+hTOnFEmxGXCijDjKj87M0oisNlHHHh9IAXU
-         KyVQBN6CMxcSVigSjJsISfoShp7JeQ8dRCCRtFumZoOTBU5gn8dGQbxECMMy4FncgD80
-         2a4Q==
-X-Gm-Message-State: AOAM532XQ7d0mnXrS+KHctHQB0A49Y5h3Aym6o2F0c0dynrdop4sdk7j
-        JHPbDPayDRyJ4Fwr0einB1k=
-X-Google-Smtp-Source: ABdhPJxfor/vuG3CctKhn81OYWX8sXmmHZio1HgFeZ1n45G8K5woluV4rAwF2RawyWr39tztx/AdHQ==
-X-Received: by 2002:a05:6830:555:: with SMTP id l21mr3246330otb.54.1643319486007;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VL/GI+7qpsdeG8zENV6IvqpyCn40bfNnpv7eZSvf4D4=;
+        b=hK3ySqfQCIGB4okt5gS7uRQpnL9ltJbMzCck5I73/QpBbbrxCVHdTGdiDciKjZyNLt
+         tzrZROEjhmWVXJbaBc7B91c0HnbdPkjnVnCdQEu3HlI4Xz38DNpNvJ0XvUTfT5v4ptXX
+         189U2v5zHPxMELCP0yEVsj/bje+WJjfqQmCnWhY09kXaiGGC/r6Q3GWTNt8oQzuqK5bC
+         cwEX58fotD3dJavvUTeYGKmHeKt1Oj4WT3b4PLA9vVVBUVacuHNCkDZxWE64hOQ1JE+8
+         Ye9n/yZzje4xDEIBlk0saQC6wiLMrZqLakwpL0AlxOkjXP6l60gRzz6PlclnhYjAKRqU
+         oIxw==
+X-Gm-Message-State: AOAM530tef2efGxtjwKxqGbBhwk0XI3G4zIYafGRmpR6BQjFiZfS/FHy
+        eKL5JZM4G7aVM7V5Xat8SG9tZkl1Md0=
+X-Google-Smtp-Source: ABdhPJxg9bGoZDD7kgYFHvsM3FLTtGYSRmmHWcKecYh6wfY4vobrxpTvtkuuO6uofDNub85EqXnZig==
+X-Received: by 2002:a05:6830:2708:: with SMTP id j8mr2131903otu.274.1643319486723;
         Thu, 27 Jan 2022 13:38:06 -0800 (PST)
 Received: from ubuntu-21.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id v32sm3994677ooj.45.2022.01.27.13.38.05
+        by smtp.googlemail.com with ESMTPSA id v32sm3994677ooj.45.2022.01.27.13.38.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jan 2022 13:38:05 -0800 (PST)
+        Thu, 27 Jan 2022 13:38:06 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [RFC PATCH v9 00/26] 
-Date:   Thu, 27 Jan 2022 15:37:29 -0600
-Message-Id: <20220127213755.31697-1-rpearsonhpe@gmail.com>
+Subject: [RFC PATCH v9 01/26] RDMA/rxe: Move rxe_mcast_add/delete to rxe_mcast.c
+Date:   Thu, 27 Jan 2022 15:37:30 -0600
+Message-Id: <20220127213755.31697-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220127213755.31697-1-rpearsonhpe@gmail.com>
+References: <20220127213755.31697-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are several race conditions discovered in the current rdma_rxe
-driver.  They mostly relate to races between normal operations and
-destroying objects.  This patch series
- - Makes several minor cleanups in rxe_pool.[ch]
- - Replaces the red-black trees currently used by xarrays for indices
- - Simplifies the API for keyed objects
- - Corrects several reference counting errors
- - Adds wait for completions to the paths in verbs APIs which destroy
-   objects.
-
-The patch series has been changed to RFC PATCH instead of PATCH for-next
-because I have little experience with rcu locking and would like
-someone else to review this code (in 18/26 and 24/26). RCU locking
-should improve performance at large scale but this has not been tested
-yet.
-
-This patch series applies cleanly to current for-next.
-commit e783362eb54cd99b2cac8b3a9aeac942e6f6ac07 (tag: v5.17-rc1,
-		origin/wip/jgg-for-rc, origin/wip/jgg-for-next,
-		origin/wip/for-testing, origin/for-rc,
-		origin/for-next, origin/HEAD, for-next)
+Move rxe_mcast_add and rxe_mcast_delete from rxe_net.c to rxe_mcast.c,
+make static and remove declarations from rxe_loc.h.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-v9
-  Corrected issues reported by Jason Gunthorpe,
-  Converted locking in rxe_mcast.c and rxe_pool.c to use RCU
-  Split up the patches into smaller changes
-v8
-  Fixed an additional race in 3/8 which was not handled correctly.
-v7
-  Corrected issues reported by Jason Gunthorpe
-Link: https://lore.kernel.org/linux-rdma/20211207190947.GH6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207191857.GI6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207192824.GJ6385@nvidia.com/
-v6
-  Fixed a kzalloc flags bug.
-  Fixed comment bug reported by 'Kernel Test Robot'.
-  Changed type of rxe_pool.c in __rxe_fini().
-v5
-  Removed patches already accepted into for-next and addressed comments
-  from Jason Gunthorpe.
-v4
-  Restructured patch series to change to xarray earlier which
-  greatly simplified the changes.
-  Rebased to current for-next
-v3
-  Changed rxe_alloc to use GFP_KERNEL
-  Addressed other comments by Jason Gunthorp
-  Merged the previous 06/10 and 07/10 patches into one since they overlapped
-  Added some minor cleanups as 10/10
-v2
-  Rebased to current for-next.
-  Added 4 additional patches
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  2 --
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 18 ++++++++++++++++++
+ drivers/infiniband/sw/rxe/rxe_net.c   | 18 ------------------
+ 3 files changed, 18 insertions(+), 20 deletions(-)
 
-Bob Pearson (26):
-  RDMA/rxe: Move rxe_mcast_add/delete to rxe_mcast.c
-  RDMA/rxe: Move rxe_mcast_attach/detach to rxe_mcast.c
-  RDMA/rxe: Rename rxe_mc_grp and rxe_mc_elem
-  RDMA/rxe: Enforce IBA o10-2.2.3
-  RDMA/rxe: Remove rxe_drop_all_macst_groups
-  RDMA/rxe: Remove qp->grp_lock and qp->grp_list
-  RDMA/rxe: Use kzmalloc/kfree for mca
-  RDMA/rxe: Rename grp to mcg and mce to mca
-  RDMA/rxe: Introduce RXECB(skb)
-  RDMA/rxe: Split rxe_rcv_mcast_pkt into two phases
-  RDMA/rxe: Replace locks by rxe->mcg_lock
-  RDMA/rxe: Replace pool key by rxe->mcg_tree
-  RDMA/rxe: Remove key'ed object support
-  RDMA/rxe: Remove mcg from rxe pools
-  RDMA/rxe: Add code to cleanup mcast memory
-  RDMA/rxe: Add comments to rxe_mcast.c
-  RDMA/rxe: Separate code into subroutines
-  RDMA/rxe: Convert mca read locking to RCU
-  RDMA/rxe: Reverse the sense of RXE_POOL_NO_ALLOC
-  RDMA/rxe: Delete _locked() APIs for pool objects
-  RDMA/rxe: Replace obj by elem in declaration
-  RDMA/rxe: Replace red-black trees by xarrays
-  RDMA/rxe: Change pool locking to RCU
-  RDMA/rxe: Add wait_for_completion to pool objects
-  RDMA/rxe: Fix ref error in rxe_av.c
-  RDMA/rxe: Replace mr by rkey in responder resources
-
- drivers/infiniband/sw/rxe/rxe.c       | 107 +---
- drivers/infiniband/sw/rxe/rxe_av.c    |  19 +-
- drivers/infiniband/sw/rxe/rxe_hdr.h   |   3 +
- drivers/infiniband/sw/rxe/rxe_loc.h   |  33 +-
- drivers/infiniband/sw/rxe/rxe_mcast.c | 678 ++++++++++++++++------
- drivers/infiniband/sw/rxe/rxe_mr.c    |   2 +-
- drivers/infiniband/sw/rxe/rxe_mw.c    |  11 +-
- drivers/infiniband/sw/rxe/rxe_net.c   |  35 +-
- drivers/infiniband/sw/rxe/rxe_pool.c  | 798 ++++++++++----------------
- drivers/infiniband/sw/rxe/rxe_pool.h  | 233 +++-----
- drivers/infiniband/sw/rxe/rxe_qp.c    |  29 +-
- drivers/infiniband/sw/rxe/rxe_recv.c  |  98 ++--
- drivers/infiniband/sw/rxe/rxe_req.c   |  55 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  | 125 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.c |  54 +-
- drivers/infiniband/sw/rxe/rxe_verbs.h |  26 +-
- 16 files changed, 1159 insertions(+), 1147 deletions(-)
- rewrite drivers/infiniband/sw/rxe/rxe_mcast.c (86%)
- rewrite drivers/infiniband/sw/rxe/rxe_pool.c (67%)
- rewrite drivers/infiniband/sw/rxe/rxe_pool.h (73%)
-
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index b1e174afb1d4..bcec33c3c3b7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -106,8 +106,6 @@ int rxe_prepare(struct rxe_pkt_info *pkt, struct sk_buff *skb);
+ int rxe_xmit_packet(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 		    struct sk_buff *skb);
+ const char *rxe_parent_name(struct rxe_dev *rxe, unsigned int port_num);
+-int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid);
+-int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid);
+ 
+ /* rxe_qp.c */
+ int rxe_qp_chk_init(struct rxe_dev *rxe, struct ib_qp_init_attr *init);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+index bd1ac88b8700..e5689c161984 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mcast.c
++++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+@@ -7,6 +7,24 @@
+ #include "rxe.h"
+ #include "rxe_loc.h"
+ 
++static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
++{
++	unsigned char ll_addr[ETH_ALEN];
++
++	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
++
++	return dev_mc_add(rxe->ndev, ll_addr);
++}
++
++static int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid)
++{
++	unsigned char ll_addr[ETH_ALEN];
++
++	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
++
++	return dev_mc_del(rxe->ndev, ll_addr);
++}
++
+ /* caller should hold mc_grp_pool->pool_lock */
+ static struct rxe_mc_grp *create_grp(struct rxe_dev *rxe,
+ 				     struct rxe_pool *pool,
+diff --git a/drivers/infiniband/sw/rxe/rxe_net.c b/drivers/infiniband/sw/rxe/rxe_net.c
+index be72bdbfb4ba..a8cfa7160478 100644
+--- a/drivers/infiniband/sw/rxe/rxe_net.c
++++ b/drivers/infiniband/sw/rxe/rxe_net.c
+@@ -20,24 +20,6 @@
+ 
+ static struct rxe_recv_sockets recv_sockets;
+ 
+-int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+-{
+-	unsigned char ll_addr[ETH_ALEN];
+-
+-	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+-
+-	return dev_mc_add(rxe->ndev, ll_addr);
+-}
+-
+-int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid)
+-{
+-	unsigned char ll_addr[ETH_ALEN];
+-
+-	ipv6_eth_mc_map((struct in6_addr *)mgid->raw, ll_addr);
+-
+-	return dev_mc_del(rxe->ndev, ll_addr);
+-}
+-
+ static struct dst_entry *rxe_find_route4(struct net_device *ndev,
+ 				  struct in_addr *saddr,
+ 				  struct in_addr *daddr)
 -- 
 2.32.0
 
