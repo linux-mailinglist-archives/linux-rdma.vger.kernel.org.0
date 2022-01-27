@@ -2,85 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188EB49DE6D
-	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 10:50:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8227E49DE96
+	for <lists+linux-rdma@lfdr.de>; Thu, 27 Jan 2022 10:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbiA0Jue (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 27 Jan 2022 04:50:34 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:38763 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229483AbiA0Jue (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>);
-        Thu, 27 Jan 2022 04:50:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V2zUp2u_1643277031;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V2zUp2u_1643277031)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 27 Jan 2022 17:50:31 +0800
-Date:   Thu, 27 Jan 2022 17:50:30 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, kgraul@linux.ibm.com,
-        kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 0/6] net/smc: Spread workload over multiple
- cores
-Message-ID: <YfJq5pygXS13XRhp@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20220114054852.38058-1-tonylu@linux.alibaba.com>
- <YePesYRnrKCh1vFy@unreal>
- <YfD26mhGkM9DFBV+@TonyMac-Alibaba>
- <20220126152806.GN8034@ziepe.ca>
- <YfIOHZ7hSfogeTyS@TonyMac-Alibaba>
- <YfI50xqsv20KDpz9@unreal>
- <YfJQ6AwYMA/i4HvH@TonyMac-Alibaba>
- <YfJcDfkBZfeYA1Z/@unreal>
- <YfJieyROaAKE+ZO0@TonyMac-Alibaba>
- <YfJlFe3p2ABbzoYI@unreal>
+        id S234686AbiA0J5e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 27 Jan 2022 04:57:34 -0500
+Received: from verein.lst.de ([213.95.11.211]:43477 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232243AbiA0J5e (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Thu, 27 Jan 2022 04:57:34 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E739268AA6; Thu, 27 Jan 2022 10:57:30 +0100 (CET)
+Date:   Thu, 27 Jan 2022 10:57:30 +0100
+From:   "hch@lst.de" <hch@lst.de>
+To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Jason Gunthorpe <jgg@nvidia.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>,
+        "hch@lst.de" <hch@lst.de>
+Subject: Re: [RFC PATCH v2 2/2] RDMA/rxe: Support RDMA Atomic Write
+ operation
+Message-ID: <20220127095730.GA14946@lst.de>
+References: <20220113030350.2492841-3-yangx.jy@fujitsu.com> <20220117131624.GB7906@nvidia.com> <61E673EA.60900@fujitsu.com> <20220118123505.GF84788@nvidia.com> <7dfed756-42a7-b6f7-3473-1348479d30db@fujitsu.com> <20220119123635.GH84788@nvidia.com> <022be340-a49a-1e94-5fb8-1c77f06fecc2@cn.fujitsu.com> <20220121125837.GV84788@nvidia.com> <20220121160654.GC773547@iweiny-DESK2.sc.intel.com> <b3b322be-a718-5fb8-11e2-05ee783f1086@fujitsu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YfJlFe3p2ABbzoYI@unreal>
+In-Reply-To: <b3b322be-a718-5fb8-11e2-05ee783f1086@fujitsu.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Jan 27, 2022 at 11:25:41AM +0200, Leon Romanovsky wrote:
-> On Thu, Jan 27, 2022 at 05:14:35PM +0800, Tony Lu wrote:
-> > On Thu, Jan 27, 2022 at 10:47:09AM +0200, Leon Romanovsky wrote:
-> > > On Thu, Jan 27, 2022 at 03:59:36PM +0800, Tony Lu wrote:
-> > 
-> > Sorry for that if I missed something about properly using existing
-> > in-kernel API. I am not sure the proper API is to use ib_cq_pool_get()
-> > and ib_cq_pool_put()?
-> > 
-> > If so, these APIs doesn't suit for current smc's usage, I have to
-> > refactor logic (tasklet and wr_id) in smc. I think it is a huge work
-> > and should do it with full discussion.
-> 
-> This discussion is not going anywhere. Just to summarize, we (Jason and I)
-> are asking to use existing API, from the beginning.
+On Thu, Jan 27, 2022 at 09:37:59AM +0000, yangx.jy@fujitsu.com wrote:
+> Do you mean we have to consider that some allocated pages come from high 
+> memory?
+>
+> I think INFINIBAND_VIRT_DMA kconfig[1] has ensured that all allocated 
+> pages have a kernel virtual address.
 
-Yes, I can't agree more with you about using existing API and I have
-tried them earlier. The existing APIs are easy to use if I wrote a new
-logic. I also don't want to repeat the codes.
+rxe and siw depend on INFINIBAND_VIRT_DMA which depends on !HIGHMEM,
+so you don't need kmap here at all.
 
-The main obstacle is that the packet and wr processing of smc is
-tightly bound to the old API and not easy to replace with existing API.
+> In this case, is it OK to call page_address() directly?
 
-To solve a real issue, I have to fix it based on the old API. If using
-existing API in this patch, I have to refactor smc logics which needs
-more time. Our production tree is synced with smc next. So I choose to
-fix this issue first, then refactor these logic to fit existing API once
-and for all.
- 
-> You can try and convince netdev maintainers to merge the code despite
-> our request.
-
-That's not my purpose to recklessly merge this patch. I appreciate that
-you can tell me existing APIs are available. So I listened to everyone
-and decided to go with a compromise, fix it first, then refactor. 
-
-Thanks for your advice.
-
-Tony Lu
+Yes.
