@@ -2,22 +2,22 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DD849FB1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jan 2022 14:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15ACE49FB42
+	for <lists+linux-rdma@lfdr.de>; Fri, 28 Jan 2022 15:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236491AbiA1NzB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 28 Jan 2022 08:55:01 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:52916 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234965AbiA1NzA (ORCPT
+        id S244797AbiA1OFr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 28 Jan 2022 09:05:47 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:49305 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1344330AbiA1OFr (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>);
-        Fri, 28 Jan 2022 08:55:00 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V32luS0_1643378086;
-Received: from 192.168.1.13(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V32luS0_1643378086)
+        Fri, 28 Jan 2022 09:05:47 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V32e-ng_1643378739;
+Received: from 192.168.1.13(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V32e-ng_1643378739)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 Jan 2022 21:54:52 +0800
-Message-ID: <e0d9d02f-6863-5ee0-4353-cd4194fec1de@linux.alibaba.com>
-Date:   Fri, 28 Jan 2022 21:54:45 +0800
+          Fri, 28 Jan 2022 22:05:40 +0800
+Message-ID: <0b88ed12-4f04-6c71-7210-98a71041f5cc@linux.alibaba.com>
+Date:   Fri, 28 Jan 2022 22:05:39 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.5.0
@@ -39,9 +39,9 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Sorry for this mistake。 Thanks for your pointing out.
 
-This is a spelling error, which has nothing to do with MPTCP. I'll fix 
-it soon.
+Thanks again.
 
 
 在 2022/1/28 上午1:09, Matthieu Baerts 写道:
