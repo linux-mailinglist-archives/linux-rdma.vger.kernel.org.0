@@ -2,66 +2,165 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4441A4A33F2
-	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jan 2022 05:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA2F4A37D1
+	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jan 2022 18:08:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354229AbiA3E2y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 29 Jan 2022 23:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354187AbiA3E2c (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 29 Jan 2022 23:28:32 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AEA4C0613EB
-        for <linux-rdma@vger.kernel.org>; Sat, 29 Jan 2022 20:28:25 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id 23so30408739ybf.7
-        for <linux-rdma@vger.kernel.org>; Sat, 29 Jan 2022 20:28:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=QI2firgHOSt+2ZiRAEUqBnRqfCndbuygIyUz1kdYlPzS6AXkdk+mfMubksdM+6U8hJ
-         A4UbXdfo0bhasYFmsw5ceBBj4ub2bgaEqkI+Cp5foQd/M11l9HiEax3hX9+hB29fNDF1
-         4XtAbOKK0Jrn48roHo8mUNvKaz7FG0Csy4DWdnw8Q+/oXs7GbWFZBjN+ifwhy6Rfe8k0
-         Pzhs5uXUX+5v6iQyGpPCJWV84GisQUz+5cfOraMc3PalgV6vYI9t2Z4JMkhIMshepKV2
-         BM+Zj3o1QTUTRt1Kxwo+5vz+cvvR7n44irHUjPq0LbDCW52O0lwQK7qPtMHxw7vn0Id9
-         5U2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=B5teSI3NqSzeGu7ngV/22RiyR60khzQ8THYZDZ9DX3Q=;
-        b=mYUTulPmjCyJdC7ILfsCGlJhvKuuzTsFykaLPS0GtC3GZ6NMXgXE35pYl54nPkc9j1
-         x5cIZ/yZdbOeEVJASu+z/ycKiwHFd8ppTbfr1g5Zysc/jZ1sn3Wg6HN2B5/4/u+dGo1G
-         6elL6dUh4tDjBPXgIsSHeJkI/Hqxa23Zo4Qj9gPSk1LhqdXpJBu/j49bZ5zdPEZSg0q3
-         nWWsgK2uj9Dx7CdjcTNK9PUMLrnYqzPbBO8q39PNBlstGqLP0FgszSDE36gBjDhHzSZv
-         dM6bCI0IOEax3J1n7NF870gaRNGcQy7uKR6wxg4zY9gbJBTGpAPjbk9ZOR7AWHQ/o7hr
-         FZ2w==
-X-Gm-Message-State: AOAM5326oNpjHXRKjW+f5wqLnmkDStvEBqSVS0kmVmIKevdeh5wLc9zz
-        R0yrZdcs7whQ9CL0KDpP9J6YIJDQlXKzGcd+sHqci21w3RY=
-X-Google-Smtp-Source: ABdhPJz3bgso8viJFkNwiW8XigzdjL6JZBPDE3NfxKOCgEqvWjdU/qagorQKM5joSRLXylFmq9/zlHP85rUYuZ5fTGQ=
-X-Received: by 2002:a25:6d45:: with SMTP id i66mr23246397ybc.352.1643516893721;
- Sat, 29 Jan 2022 20:28:13 -0800 (PST)
+        id S232042AbiA3RIu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Jan 2022 12:08:50 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58970 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1355705AbiA3RIt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Sun, 30 Jan 2022 12:08:49 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20UGbUGL013796;
+        Sun, 30 Jan 2022 17:08:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=k8Fz9tEGyRIzij1vL1kL2YHzvUBQh2gQhX+fJ/P3hso=;
+ b=lOU9thId0gkcb+lZ7aBJB6k+Bv93+SLvbMUpUhC+fECGmB4WQCqM/qqYwAqQtpvi4C2I
+ TFIfitZBohDWkH2xd8iV6cUYUYmD+wDEHlY0cfiV7h1hSIM3ixyDpna16SX6XwfTATdM
+ Ea+CMO0ZdL0bDWtviBVh3taNR0RpXWPJEwhyL0b7keLJmubAW55imMm5Mvt2sRia0vAF
+ LuCxfzBkArdXaUk1Su873SA1szgUuPpeg4OolHPXQkrys+WwKZbO23IdDVjz7C1+8iiT
+ uDDtbehPd0GAniZDZjSF1c9c+NjFGDYtvCv2cV2E0d/Nv1leqegQ+HTq2Gj0W7jlGcKW +g== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dwv2w9s6e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 30 Jan 2022 17:08:45 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20UH8hpR018093;
+        Sun, 30 Jan 2022 17:08:43 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma05fra.de.ibm.com with ESMTP id 3dvw78ngv0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 30 Jan 2022 17:08:42 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20UGwu9u45482366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 30 Jan 2022 16:58:56 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADD9EA405C;
+        Sun, 30 Jan 2022 17:08:40 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D643A4054;
+        Sun, 30 Jan 2022 17:08:40 +0000 (GMT)
+Received: from Pescara.zurich.ibm.com (unknown [9.171.42.39])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 30 Jan 2022 17:08:40 +0000 (GMT)
+From:   Bernard Metzler <bmt@zurich.ibm.com>
+To:     linux-rdma@vger.kernel.org
+Cc:     Bernard Metzler <bmt@zurich.ibm.com>, jgg@ziepe.ca,
+        leon@kernel.org, jared.holzman@excelero.com
+Subject: [PATCH] RDMA/siw: Fix broken RDMA Read Fence/Resume logic.
+Date:   Sun, 30 Jan 2022 18:08:15 +0100
+Message-Id: <20220130170815.1940-1-bmt@zurich.ibm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Received: by 2002:a05:7010:2312:b0:201:cd76:102e with HTTP; Sat, 29 Jan 2022
- 20:28:13 -0800 (PST)
-Reply-To: mrs.bill.chantalone01@gmail.com
-From:   "Mrs.Bill.Chantal" <grassroot309@gmail.com>
-Date:   Sun, 30 Jan 2022 05:28:13 +0100
-Message-ID: <CAO3iUMDzg_ZovNWXtuQhU6sDXk7LsNwvNc2pOb7zvX7pPCdMAw@mail.gmail.com>
-Subject: Hello....
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: QsnW9zeSTcWFN2mlbOBzkweb1C8hEDUD
+X-Proofpoint-GUID: QsnW9zeSTcWFN2mlbOBzkweb1C8hEDUD
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-30_05,2022-01-28_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=708 suspectscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 impostorscore=0 phishscore=0 mlxscore=0
+ adultscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2201300123
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-You have been compensated with the sum of 9.5 million dollars in this
-united nation the payment will be issue into atm visa  card and send
-to you from the santander bank we need your address and your
-Whatsapp number  + 1 6465853907  this my email.ID
-( mrs.bill.chantal.roland@gmail.com )  contact  me
+Code unconditionally resumed fenced SQ processing after next RDMA
+Read completion, even if other RDMA Read responses are still
+outstanding, or ORQ is full. Also adds comments for better readability
+of fence processing, and removes orq_get_tail() helper, which is not
+needed anymore.
 
-Thanks my
+Fixes: 8b6a361b8c48 ("rdma/siw: receive path")
+Fixes: a531975279f3 ("rdma/siw: main include file")
+Reported-by: Jared Holzman <jared.holzman@excelero.com>
+Signed-off-by: Bernard Metzler <bmt@zurich.ibm.com>
+---
+ drivers/infiniband/sw/siw/siw.h       |  7 +------
+ drivers/infiniband/sw/siw/siw_qp_rx.c | 20 +++++++++++---------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
 
-mrs bill chantal
+diff --git a/drivers/infiniband/sw/siw/siw.h b/drivers/infiniband/sw/siw/siw.h
+index 368959ae9a8c..df03d84c6868 100644
+--- a/drivers/infiniband/sw/siw/siw.h
++++ b/drivers/infiniband/sw/siw/siw.h
+@@ -644,14 +644,9 @@ static inline struct siw_sqe *orq_get_current(struct siw_qp *qp)
+ 	return &qp->orq[qp->orq_get % qp->attrs.orq_size];
+ }
+ 
+-static inline struct siw_sqe *orq_get_tail(struct siw_qp *qp)
+-{
+-	return &qp->orq[qp->orq_put % qp->attrs.orq_size];
+-}
+-
+ static inline struct siw_sqe *orq_get_free(struct siw_qp *qp)
+ {
+-	struct siw_sqe *orq_e = orq_get_tail(qp);
++	struct siw_sqe *orq_e = &qp->orq[qp->orq_put % qp->attrs.orq_size];
+ 
+ 	if (READ_ONCE(orq_e->flags) == 0)
+ 		return orq_e;
+diff --git a/drivers/infiniband/sw/siw/siw_qp_rx.c b/drivers/infiniband/sw/siw/siw_qp_rx.c
+index 60116f20653c..875ea6f1b04a 100644
+--- a/drivers/infiniband/sw/siw/siw_qp_rx.c
++++ b/drivers/infiniband/sw/siw/siw_qp_rx.c
+@@ -1153,11 +1153,12 @@ static int siw_check_tx_fence(struct siw_qp *qp)
+ 
+ 	spin_lock_irqsave(&qp->orq_lock, flags);
+ 
+-	rreq = orq_get_current(qp);
+-
+ 	/* free current orq entry */
++	rreq = orq_get_current(qp);
+ 	WRITE_ONCE(rreq->flags, 0);
+ 
++	qp->orq_get++;
++
+ 	if (qp->tx_ctx.orq_fence) {
+ 		if (unlikely(tx_waiting->wr_status != SIW_WR_QUEUED)) {
+ 			pr_warn("siw: [QP %u]: fence resume: bad status %d\n",
+@@ -1165,10 +1166,12 @@ static int siw_check_tx_fence(struct siw_qp *qp)
+ 			rv = -EPROTO;
+ 			goto out;
+ 		}
+-		/* resume SQ processing */
++		/* resume SQ processing, if possible */
+ 		if (tx_waiting->sqe.opcode == SIW_OP_READ ||
+ 		    tx_waiting->sqe.opcode == SIW_OP_READ_LOCAL_INV) {
+-			rreq = orq_get_tail(qp);
++
++			/* SQ processing was stopped because of a full ORQ */
++			rreq = orq_get_free(qp);
+ 			if (unlikely(!rreq)) {
+ 				pr_warn("siw: [QP %u]: no ORQE\n", qp_id(qp));
+ 				rv = -EPROTO;
+@@ -1181,15 +1184,14 @@ static int siw_check_tx_fence(struct siw_qp *qp)
+ 			resume_tx = 1;
+ 
+ 		} else if (siw_orq_empty(qp)) {
++			/*
++			 * SQ processing was stopped by fenced work request.
++			 * Resume since all previous Read's are now completed.
++			 */
+ 			qp->tx_ctx.orq_fence = 0;
+ 			resume_tx = 1;
+-		} else {
+-			pr_warn("siw: [QP %u]: fence resume: orq idx: %d:%d\n",
+-				qp_id(qp), qp->orq_get, qp->orq_put);
+-			rv = -EPROTO;
+ 		}
+ 	}
+-	qp->orq_get++;
+ out:
+ 	spin_unlock_irqrestore(&qp->orq_lock, flags);
+ 
+-- 
+2.34.1
+
