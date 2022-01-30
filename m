@@ -2,86 +2,93 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AC74A3ACF
-	for <lists+linux-rdma@lfdr.de>; Sun, 30 Jan 2022 23:57:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77F694A3AFD
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 00:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234086AbiA3W5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 30 Jan 2022 17:57:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53826 "EHLO
+        id S1356818AbiA3XXo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 30 Jan 2022 18:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233819AbiA3W5u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Jan 2022 17:57:50 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B115C061714;
-        Sun, 30 Jan 2022 14:57:50 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id m14so21681399wrg.12;
-        Sun, 30 Jan 2022 14:57:50 -0800 (PST)
+        with ESMTP id S1356872AbiA3XXn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 30 Jan 2022 18:23:43 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3153C061714
+        for <linux-rdma@vger.kernel.org>; Sun, 30 Jan 2022 15:23:43 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id b17-20020a9d4791000000b005a17fc2dfc1so11418063otf.1
+        for <linux-rdma@vger.kernel.org>; Sun, 30 Jan 2022 15:23:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QRnVDlUc0cHdmJ1CgTjVStFKbLl2jN4+t3yT8yZoSSM=;
-        b=cEnANCyz3HKi3Fu0/p4/NLI5kIj8zREkE/saQmSCA01QFchsbPst890RIGwBgUMrAM
-         3VQMHLTmb4oCcYBXUHTr6zeSWNcDOOVtiGdfasYYQqvrDem26J9PesJWWx+wPT71ujM2
-         IOL0b5oUML+1FNLLnNVbRSUCLrdrmt7O/D+hGSj0f3ZU8xZlSpWOrYErQYghRTCIAECp
-         rsSDVp4K8cQCrI1MVIf0GnFkGqMv4gmRmDOFyBrI6GEgYGGn06z1JIWxzdfzQQRjXJV3
-         ivbFdgz6yTmxUEYETt/Vdw+ZliHd8YbW5XrvGUBPUUBOWI+CNR4TyLLk8B6X8WXEi+cn
-         3UuA==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=hsCpQCcWvxp4bAshHsHX6mISnGlfvPfGceGDAB4lWnA=;
+        b=W5vX7uRmL4Uh+QuurAgVvnkysl5xSMpW0RupNPy3Rqm1utxKsQxWpwbsYdQgZ+eiG3
+         RfWWzGleTUYipN1VqS6N8nT22mvsvaHAib/IwnqLIUb85QRpCf8aaoJklANjoegLPD9F
+         ONTtDljvKk9kpR/bD08yBuEMXYLWsUjKMmLYQMSuMAvD+hUo/5suQ+kUQq/XSbshs8rm
+         LXe28Dmz1i6DlzS8Bks71kD+ziQsuCl7Z1r/hultmyL8rpzho+W7wXtR54gfuv/Ubcxw
+         W18DGVFTSL4oz6AWxuwyoEpeiEnc39hVgbt853g5sguXYqDMVwNoGIhtbJUpLIbOPG83
+         P1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=QRnVDlUc0cHdmJ1CgTjVStFKbLl2jN4+t3yT8yZoSSM=;
-        b=yWuy7WJynaOSA/umoBNDDu3ZNhHCD0LpdGjxBrAfhirtpntgnGcKjD9DtO3Ka2u65y
-         TZae33RTpaGh8MF9IUdintCX/+WJgf1LdvRNBve47AromE2xs0dA1FsaeOLPYa8ipw0p
-         LB4oNACKc/zWKNj2T2JL/cgl94fFBDZjzsw1XTRipFhEDKjGe8Fxc15LEyfAETwl1Ic5
-         HyTuldZoMKEqIzkLn3cXx3+yV8UuM8iypVW+BmSkBPiEhrXX/io3QoGSjXbYe5uG0fTY
-         9+aNUjZgdYE0mp9yF8ezVZBzG9V14blHaJ3uw96h0FNk0UXBknUI5NN4PJuuAatIN4sU
-         lizg==
-X-Gm-Message-State: AOAM5314hPld0HU7mD/l/HrlDXgMAtrtRY146BWIVV+QmciTL70bbhFq
-        ImeJxOJyb4zf6Do0IWhkLVg=
-X-Google-Smtp-Source: ABdhPJxT5Snxjy7iAudOO6dXhluR0gkiB5JqxZjtG9osbKD+F9INRgWz1RNQc8Gkcj6XeZx0D65HwQ==
-X-Received: by 2002:a5d:64e3:: with SMTP id g3mr6767428wri.90.1643583468811;
-        Sun, 30 Jan 2022 14:57:48 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id r2sm7254070wmq.0.2022.01.30.14.57.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 14:57:48 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/mlx4: remove redundant assignment to variable nreq
-Date:   Sun, 30 Jan 2022 22:57:47 +0000
-Message-Id: <20220130225747.8114-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        bh=hsCpQCcWvxp4bAshHsHX6mISnGlfvPfGceGDAB4lWnA=;
+        b=L/1/3di8K/rjnQP+oVedPJfYWVvgyKv6DOYAso49Q6vPKpNmYxzHiBY30lJoeuaBDZ
+         9HJk4ezoBPN4v699B0iqCF+dVWfH/8rLFL1mDq9pY3LhIFjIZT5JnpUNxCIgkqteAxrI
+         ARDOcqECyWHEpsgGZvkYHgQK6XA9uBrZ/jXm2XYIYFbBEnBOnXgJGEcuVqbseyiRIssi
+         rgWwcUIkaPEC1MHBq4MsEv594wbKkTYo28rNoAqINlq/pBUeg2gbQNYJKGpKLvZXFFLc
+         P/ZWB5auAkbut47GUeW8wNSG8G1Xn4hwcFXIMLI6f5aM3FKo1VoHjApAzoD8wPxf1gwI
+         khgw==
+X-Gm-Message-State: AOAM533nRHc3TPhEbDPA05sm7c6THcPWlh3SAnh3xDj9QgHx4SGYclL0
+        WTSGXmKoeHlv80RuAYffwuKDgtEOzfI=
+X-Google-Smtp-Source: ABdhPJyD9zShTUppW23aOtreplEHym3K3txqCsfoAQgW8cQKocFLrpp2cBjllZnhBBAivh2180ZnYQ==
+X-Received: by 2002:a05:6830:310b:: with SMTP id b11mr930879ots.322.1643585023000;
+        Sun, 30 Jan 2022 15:23:43 -0800 (PST)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id w22sm13621422oov.24.2022.01.30.15.23.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 30 Jan 2022 15:23:42 -0800 (PST)
+Message-ID: <993808cf-7552-15c2-2a5f-6f0b39e00eb1@gmail.com>
+Date:   Sun, 30 Jan 2022 17:23:41 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [RFC PATCH v9 12/26] RDMA/rxe: Replace pool key by rxe->mcg_tree
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20220127213755.31697-1-rpearsonhpe@gmail.com>
+ <20220127213755.31697-13-rpearsonhpe@gmail.com>
+ <20220128183205.GF1786498@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220128183205.GF1786498@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Variable nreq is being assigned a value that is never read. The
-assignment is redundant and can be removed.
+On 1/28/22 12:32, Jason Gunthorpe wrote:
+> On Thu, Jan 27, 2022 at 03:37:41PM -0600, Bob Pearson wrote:
+>>  
+>>  struct rxe_mcg {
+>>  	struct rxe_pool_elem	elem;
+>> +	struct rb_node		node;
+>>  	struct rxe_dev		*rxe;
+>>  	struct list_head	qp_list;
+>>  	atomic_t		qp_num;
+>> @@ -397,6 +398,8 @@ struct rxe_dev {
+>>  	struct rxe_pool		mc_grp_pool;
+>>  
+>>  	spinlock_t		mcg_lock; /* guard multicast groups */
+> 
+> I think you should probably just use a mutex here and simplify
+> things..
+> 
+> Jason
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- drivers/infiniband/hw/mlx4/srq.c | 1 -
- 1 file changed, 1 deletion(-)
+That won't work. All lthe code in rxe_mcast.c would be OK but I have to take the
+lock in rxe_recv.c when we receive a multicast packet and mutexes are not allowed in
+bottom halves.
 
-diff --git a/drivers/infiniband/hw/mlx4/srq.c b/drivers/infiniband/hw/mlx4/srq.c
-index 6a381751c0d8..c4cf91235eee 100644
---- a/drivers/infiniband/hw/mlx4/srq.c
-+++ b/drivers/infiniband/hw/mlx4/srq.c
-@@ -320,7 +320,6 @@ int mlx4_ib_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
- 	if (mdev->dev->persist->state & MLX4_DEVICE_STATE_INTERNAL_ERROR) {
- 		err = -EIO;
- 		*bad_wr = wr;
--		nreq = 0;
- 		goto out;
- 	}
- 
--- 
-2.34.1
-
+Bob
