@@ -2,125 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9391F4A3E25
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 08:21:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D310E4A3EC4
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 09:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348032AbiAaHVA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jan 2022 02:21:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49682 "EHLO
+        id S1344920AbiAaInX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jan 2022 03:43:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244130AbiAaHU7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 02:20:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF25C061714;
-        Sun, 30 Jan 2022 23:20:59 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6F2A06128E;
-        Mon, 31 Jan 2022 07:20:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1FA4C340E8;
-        Mon, 31 Jan 2022 07:20:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643613657;
-        bh=dOH4qTrfCAlGRwNf4g1KYdZmXGQX8HlE2W5ZivxPsgQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GhMis8+ppudLodJ5Oc5DG8qUQyfcLn0gijgAHMcVHU+umIKXKj3Etf9S8Uqotqv4E
-         Tl+G7Xwum4WxNkkEJhLTgX3HblKiZR+uYcFdpvTjAGQ8iFpTmXvDC5oAkchG3OqJLY
-         qRyOcuZNHnsOjNwlTyqTjrZABLL9oGkq6vx5EtPNtwp23ysSnhaYyDW0IXRZJvXLRW
-         EhmeQOAFbSTjZQ3kaBujs8VzIP88UXn/WIBCFvYiOp6r7LCwfIc/J7tpkiB0xOhfSs
-         ppl/D2LNkp7aQFQa9a7Ju0Sgdk5E5gX2Qja0aH/t0J72M+Fu6ji6xPKlR83pQQlc9n
-         d3ycME0hRJtKw==
-Date:   Mon, 31 Jan 2022 09:20:52 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH net-next] net/smc: Allocate pages of SMC-R on ibdev NUMA
- node
-Message-ID: <YfeN1BfPqhVz8mvy@unreal>
-References: <20220130190259.94593-1-tonylu@linux.alibaba.com>
+        with ESMTP id S1344458AbiAaInU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 03:43:20 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34269C061714;
+        Mon, 31 Jan 2022 00:43:20 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id c190-20020a1c9ac7000000b0035081bc722dso8793510wme.5;
+        Mon, 31 Jan 2022 00:43:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qi/zABG7gb+Ye7V/MnSI6gU9BC7CUhBAHbHLsfakjjg=;
+        b=ilm+gX1nWIdPMtjzH4LqVjrzofZ696k8Ch3KNgYXZKsWOwDCQliegGhpCKO2KtUlI1
+         w8mEhQFXfpPBy1U8LHO+wUpJ8Kg5aQ0Uz25gOjpOYezx9RU4rRNp6E6LHFZPQHE4ex8E
+         ECSs5dRtIR6oo06ArkejwMwzqFvza6d8gmenHBOQCHYU/+3+Q2frrRXKH820dspOD5yz
+         BQmSm0E/rVkfBXh+5U+UVRqpQdhdIC+VMkPdc9od71bmjUDKEA17RXrshciYIKOAKVYR
+         W9yWnWKJ4GGqzkqVOiW/ShdECI85UdS/7q166dF8//izRTORCSOWNAITEaR0fUHNcx+C
+         BpnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qi/zABG7gb+Ye7V/MnSI6gU9BC7CUhBAHbHLsfakjjg=;
+        b=qS20DZuZC4a1KV8aqgR6yP19IXv9r/oiOIH0xB5Zf4H6cpVHa9SGdkE372FuwXkoFy
+         tkkWun5d3wSIzS36ijtvVzOrkZYJi7qRHSq3fIepBLpSTHlSPa4Jy0Q/amZCqQNAKrgQ
+         NDtfI69yGNga1HVXz87SvPErq6mtLp7xP9xUkpcFezw7eKnzxC2/6ThB7eu2nf5Ooh2n
+         lxf/LJDm4lDWHB3Xzdeg5IZjoOZvzl5IcvUMdPvtyS0QfSglg8zzgdD/DvxC3rm5TTF/
+         efNwH0cjLHytuQQbCPWecB7uWKEEsCA50wu1q7GGO/zlTnHBxlejqc7VsWm/QINUzdNi
+         x78Q==
+X-Gm-Message-State: AOAM533e6myjUqYaWyJJSs7RKhsRROwlzyDGG191w9PBs50+nfJ6ZXxo
+        BhktLP62dxYdmTOFtwbE9ZQ=
+X-Google-Smtp-Source: ABdhPJzHvE1IQ6rmKoRZ07ClcR/2PZ+8R8gDBkyt60+ezc0zvMeoI+wS/4xKMMpqZzZ70aREXPwukg==
+X-Received: by 2002:a1c:1dd2:: with SMTP id d201mr17530355wmd.141.1643618598742;
+        Mon, 31 Jan 2022 00:43:18 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id n15sm13421102wrf.37.2022.01.31.00.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 31 Jan 2022 00:43:18 -0800 (PST)
+From:   Colin Ian King <colin.i.king@gmail.com>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Roi Dayan <roid@nvidia.com>,
+        Oz Shlomo <ozsh@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net/mlx5e: Fix spelling mistake "supoported" -> "supported"
+Date:   Mon, 31 Jan 2022 08:43:17 +0000
+Message-Id: <20220131084317.8058-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220130190259.94593-1-tonylu@linux.alibaba.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jan 31, 2022 at 03:03:00AM +0800, Tony Lu wrote:
-> Currently, pages are allocated in the process context, for its NUMA node
-> isn't equal to ibdev's, which is not the best policy for performance.
-> 
-> Applications will generally perform best when the processes are
-> accessing memory on the same NUMA node. When numa_balancing enabled
-> (which is enabled by most of OS distributions), it moves tasks closer to
-> the memory of sndbuf or rmb and ibdev, meanwhile, the IRQs of ibdev bind
-> to the same node usually. This reduces the latency when accessing remote
-> memory.
+There is a spelling mistake in a NL_SET_ERR_MSG_MOD error
+message.  Fix it.
 
-It is very subjective per-specific test. I would expect that
-application will control NUMA memory policies (set_mempolicy(), ...)
-by itself without kernel setting NUMA node.
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Various *_alloc_node() APIs are applicable for in-kernel allocations
-where user can't control memory policy.
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
+index 85f0cb88127f..9fb1a9a8bc02 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
+@@ -21,7 +21,7 @@ tc_act_can_offload_ct(struct mlx5e_tc_act_parse_state *parse_state,
+ 	}
+ 
+ 	if (parse_state->ct && !clear_action) {
+-		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supoported");
++		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supported");
+ 		return false;
+ 	}
+ 
+-- 
+2.34.1
 
-I don't know SMC-R enough, but if I judge from your description, this
-allocation is controlled by the application.
-
-Thanks
-
-> 
-> According to our tests in different scenarios, there has up to 15.30%
-> performance drop (Redis benchmark) when accessing remote memory.
-> 
-> Signed-off-by: Tony Lu <tonylu@linux.alibaba.com>
-> ---
->  net/smc/smc_core.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
-> index 8935ef4811b0..2a28b045edfa 100644
-> --- a/net/smc/smc_core.c
-> +++ b/net/smc/smc_core.c
-> @@ -2065,9 +2065,10 @@ int smcr_buf_reg_lgr(struct smc_link *lnk)
->  	return rc;
->  }
->  
-> -static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
-> +static struct smc_buf_desc *smcr_new_buf_create(struct smc_connection *conn,
->  						bool is_rmb, int bufsize)
->  {
-> +	int node = ibdev_to_node(conn->lnk->smcibdev->ibdev);
->  	struct smc_buf_desc *buf_desc;
->  
->  	/* try to alloc a new buffer */
-> @@ -2076,10 +2077,10 @@ static struct smc_buf_desc *smcr_new_buf_create(struct smc_link_group *lgr,
->  		return ERR_PTR(-ENOMEM);
->  
->  	buf_desc->order = get_order(bufsize);
-> -	buf_desc->pages = alloc_pages(GFP_KERNEL | __GFP_NOWARN |
-> -				      __GFP_NOMEMALLOC | __GFP_COMP |
-> -				      __GFP_NORETRY | __GFP_ZERO,
-> -				      buf_desc->order);
-> +	buf_desc->pages = alloc_pages_node(node, GFP_KERNEL | __GFP_NOWARN |
-> +					   __GFP_NOMEMALLOC | __GFP_COMP |
-> +					   __GFP_NORETRY | __GFP_ZERO,
-> +					   buf_desc->order);
->  	if (!buf_desc->pages) {
->  		kfree(buf_desc);
->  		return ERR_PTR(-EAGAIN);
-> @@ -2190,7 +2191,7 @@ static int __smc_buf_create(struct smc_sock *smc, bool is_smcd, bool is_rmb)
->  		if (is_smcd)
->  			buf_desc = smcd_new_buf_create(lgr, is_rmb, bufsize);
->  		else
-> -			buf_desc = smcr_new_buf_create(lgr, is_rmb, bufsize);
-> +			buf_desc = smcr_new_buf_create(conn, is_rmb, bufsize);
->  
->  		if (PTR_ERR(buf_desc) == -ENOMEM)
->  			break;
-> -- 
-> 2.32.0.3.g01195cf9f
-> 
