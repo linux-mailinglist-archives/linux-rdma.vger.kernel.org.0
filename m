@@ -2,200 +2,193 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A17D4A475C
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 13:38:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DDF4A4773
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 13:45:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348776AbiAaMh6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jan 2022 07:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377971AbiAaMhw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 07:37:52 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC19C061714
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 04:37:51 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id t7so19180095ljc.10
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 04:37:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GSaXwCyoeZjyzhm88nDoFFkVdfYS1ajplIb9rucyrFg=;
-        b=M1LnOcRZOOo0w74Hy+AGssfbBS+7lk69dzqj61gAbVW6pe62CyLJ7BlrUBJ4SfuqGX
-         w+8vRc6wvWZXlV50gns+7I5qTnfYJbIeWqXO8iBaydD8qsgi5GxU1liFm8oOgabbtiRN
-         a3xjhrZbVbQq7p8uyr0EjH6SaDJKxVCxpPUo5KPM4qk+VwIQpdSRuDLkHLZmooci06pP
-         WB4PtuwzZ+k5mZ1NkzTV1inmkv81jF+ZoU//tK8z74rbl6g06siDL4RV9jNWvwL7uwqB
-         2MT3VAXurYH1IV2yik48uuGiAeNrfjYwNY42pivnJ9weLVckifTx7PVFIsisRnDtBdVM
-         TCog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GSaXwCyoeZjyzhm88nDoFFkVdfYS1ajplIb9rucyrFg=;
-        b=domH2Mk1gOgqg/MZf+bhJMTbaHJP8sSXsP/O/P+f9eCoQewm/5oy9A9nLHL61ispZc
-         JWqiZeIRiVC2cFPmEv9fub1fvLhVq8fBTQAfjsXO1rI/sMRZKJlcZYUmTD630dPY+MWo
-         NrMZ5rh1sw1zfocgbo9PYuZIOVNaxpedK2IhXzNvnR96+mIq1AonHQrbOD7XSCz+TJha
-         U2QbJ2eijj3DKBpdcXmp+J7DvtiuI2CnuKoSblnZgwl66oyO9vLPggs+hWQ/ewhH37Bz
-         le1iy+54wIbIEX0kPsyjkPLwfH8l70rotdiGy55156Wlgv6zJj1FXDdSQ3rySz2yIz1D
-         5MCA==
-X-Gm-Message-State: AOAM533HqtkJaYXdeceUN0czv3cS7E4XNvvXP7Gk0Tsjb28khzJTgO+A
-        +/cfGBTkEywWsmmWO6pv/aoJeIY8y4ByS9gCLpeIKg==
-X-Google-Smtp-Source: ABdhPJyUggPrsk7uyc3yYX9NIjpDffpxYzZdoMbxElsdVO+lhbCW1q+PYWBGmVBZfBOyn4ryM0zn69fOQodX9f/PTos=
-X-Received: by 2002:a2e:9003:: with SMTP id h3mr13387843ljg.111.1643632669768;
- Mon, 31 Jan 2022 04:37:49 -0800 (PST)
+        id S1351716AbiAaMp4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jan 2022 07:45:56 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58732 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237795AbiAaMp4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>);
+        Mon, 31 Jan 2022 07:45:56 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 20VAW3Wd002646;
+        Mon, 31 Jan 2022 12:45:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=/OsTF9SJkYAu207G1ekmBdpbvs3JYQQljIoeEwnOH0I=;
+ b=ih7UbMKTfMdaxx6qnN9sUkiX3IQvswa0xovzyAmdXTSCqQQzuCm1AzROuurZdzOUC5jd
+ ++sjQ4oUFzR9sNRUaZl8Le9Q2Wh1FMYevj++DLIC24ufns1jYFbWUqn7ITxo6npo1o+v
+ BgzhaCYDsSch7gQ3noe4c8CjZKWf+Yyd/rTuvWEI0BdknNsr2lYNCBrQAhxN+ebD24vA
+ q9911/PqGxjdAEYeB4412Gfk1QvyDsrANwrUoNf6lyL3fpuCa2fRSHpcJFNSpR4IwSZU
+ dAQOtYmIZNTmu8sUgWY4Y0MLW6EwJ5TDNMUVXI5fEFvVtsKAkGORgK+wce/j9jccabgt 2Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dxe3ptm6r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jan 2022 12:45:45 +0000
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 20VCUIKl024511;
+        Mon, 31 Jan 2022 12:45:45 GMT
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dxe3ptm68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jan 2022 12:45:45 +0000
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 20VCgM1K011710;
+        Mon, 31 Jan 2022 12:45:43 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3dvw79aqjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 31 Jan 2022 12:45:42 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 20VCjeHJ36635086
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 31 Jan 2022 12:45:40 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 805E411C05E;
+        Mon, 31 Jan 2022 12:45:40 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 27E2511C054;
+        Mon, 31 Jan 2022 12:45:40 +0000 (GMT)
+Received: from [9.145.79.147] (unknown [9.145.79.147])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 31 Jan 2022 12:45:40 +0000 (GMT)
+Message-ID: <0b99dc4d-319e-e4fa-b4bf-ddce5005be47@linux.ibm.com>
+Date:   Mon, 31 Jan 2022 13:45:55 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v2 net-next 1/3] net/smc: Make smc_tcp_listen_work()
+ independent
+Content-Language: en-US
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        matthieu.baerts@tessares.net
+References: <cover.1643380219.git.alibuda@linux.alibaba.com>
+ <53383b68f056b4c6d697935d2ea1c170618eebbe.1643380219.git.alibuda@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <53383b68f056b4c6d697935d2ea1c170618eebbe.1643380219.git.alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9IhOtLglKAFp9Wg4JeacZKxDFX1s9vHT
+X-Proofpoint-ORIG-GUID: GIbkTT_ul5vJdf_bFZ6FkDf4fIh_j-iP
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20220120143237.63374-1-jinpu.wang@ionos.com> <20220128165951.GA1874313@nvidia.com>
-In-Reply-To: <20220128165951.GA1874313@nvidia.com>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Mon, 31 Jan 2022 13:37:38 +0100
-Message-ID: <CAJpMwyjR4JKhjEMdUja39uVRQmnncc9E-iXVH21UmUAah4rr2w@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rtrs-clt: Fix possible double free in error case
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jack Wang <jinpu.wang@ionos.com>, linux-rdma@vger.kernel.org,
-        bvanassche@acm.org, leon@kernel.org,
-        Miaoqian Lin <linmq006@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-01-31_05,2022-01-28_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 mlxscore=0 spamscore=0
+ adultscore=0 bulkscore=0 lowpriorityscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2201310083
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 5:59 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Thu, Jan 20, 2022 at 03:32:37PM +0100, Jack Wang wrote:
-> > Callback function rtrs_clt_dev_release() for put_device()
-> > calls kfree(clt) to free memory. We shouldn't call kfree(clt) again,
-> > and we can't use the clt after kfree too.
-> >
-> > Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-> > Reported-by: Miaoqian Lin <linmq006@gmail.com>
-> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > index b159471a8959..fbce9cb87d08 100644
-> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> > @@ -2680,6 +2680,7 @@ static void rtrs_clt_dev_release(struct device *dev)
-> >       struct rtrs_clt_sess *clt = container_of(dev, struct rtrs_clt_sess,
-> >                                                dev);
-> >
-> > +     free_percpu(clt->pcpu_path);
-> >       kfree(clt);
-> >  }
->
-> This need to delete the call in free_clt() too.
->
-> Also, calling dev_set_name before device_initialize is a bad idea.
->
-> Do it like this and fix all the bugs please:
->
-> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> index b696aa4abae46d..4d1895ab99c4da 100644
-> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-> @@ -2685,6 +2685,9 @@ static void rtrs_clt_dev_release(struct device *dev)
->         struct rtrs_clt_sess *clt = container_of(dev, struct rtrs_clt_sess,
->                                                  dev);
->
-> +       free_percpu(clt->pcpu_path);
-> +       mutex_destroy(&clt->paths_ev_mutex);
-> +       mutex_destroy(&clt->paths_mutex);
->         kfree(clt);
+On 28/01/2022 15:44, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> In multithread and 10K connections benchmark, the backend TCP connection
+> established very slowly, and lots of TCP connections stay in SYN_SENT
+> state.
+> 
+> Client: smc_run wrk -c 10000 -t 4 http://server
+> 
+> the netstate of server host shows like:
+>     145042 times the listen queue of a socket overflowed
+>     145042 SYNs to LISTEN sockets dropped
+> 
+> One reason of this issue is that, since the smc_tcp_listen_work() shared
+> the same workqueue (smc_hs_wq) with smc_listen_work(), while the
+> smc_listen_work() do blocking wait for smc connection established. Once
+> the workqueue became congested, it's will block the accpet() from TCP
+                                                      ^^^
+                                                      accept()
+> listen.
+> 
+> This patch creates a independent workqueue(smc_tcp_ls_wq) for
+> smc_tcp_listen_work(), separate it from smc_listen_work(), which is
+> quite acceptable considering that smc_tcp_listen_work() runs very fast.
+> 
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>  net/smc/af_smc.c | 13 +++++++++++--
+>  net/smc/smc.h    |  1 +
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
+> index d5ea62b..1b40304 100644
+> --- a/net/smc/af_smc.c
+> +++ b/net/smc/af_smc.c
+> @@ -59,6 +59,7 @@
+>  						 * creation on client
+>  						 */
+>  
+> +struct workqueue_struct	*smc_tcp_ls_wq;	/* wq for tcp listen work */
+>  struct workqueue_struct	*smc_hs_wq;	/* wq for handshake work */
+>  struct workqueue_struct	*smc_close_wq;	/* wq for close work */
+>  
+> @@ -2124,7 +2125,7 @@ static void smc_clcsock_data_ready(struct sock *listen_clcsock)
+>  	lsmc->clcsk_data_ready(listen_clcsock);
+>  	if (lsmc->sk.sk_state == SMC_LISTEN) {
+>  		sock_hold(&lsmc->sk); /* sock_put in smc_tcp_listen_work() */
+> -		if (!queue_work(smc_hs_wq, &lsmc->tcp_listen_work))
+> +		if (!queue_work(smc_tcp_ls_wq, &lsmc->tcp_listen_work))
+>  			sock_put(&lsmc->sk);
+>  	}
 >  }
->
-> @@ -2707,13 +2710,8 @@ static struct rtrs_clt_sess *alloc_clt(const char *sessname, size_t paths_num,
->         clt = kzalloc(sizeof(*clt), GFP_KERNEL);
->         if (!clt)
->                 return ERR_PTR(-ENOMEM);
-> -
-> -       clt->pcpu_path = alloc_percpu(typeof(*clt->pcpu_path));
-> -       if (!clt->pcpu_path) {
-> -               kfree(clt);
-> -               return ERR_PTR(-ENOMEM);
-> -       }
-> -
-> +       clt->dev.class = rtrs_clt_dev_class;
-> +       clt->dev.release = rtrs_clt_dev_release;
->         uuid_gen(&clt->paths_uuid);
->         INIT_LIST_HEAD_RCU(&clt->paths_list);
->         clt->paths_num = paths_num;
-> @@ -2730,52 +2728,52 @@ static struct rtrs_clt_sess *alloc_clt(const char *sessname, size_t paths_num,
->         init_waitqueue_head(&clt->permits_wait);
->         mutex_init(&clt->paths_ev_mutex);
->         mutex_init(&clt->paths_mutex);
-> +       device_initialize(&clt->dev);
+> @@ -2919,9 +2920,14 @@ static int __init smc_init(void)
+>  		goto out_nl;
+>  
+>  	rc = -ENOMEM;
 > +
-> +       clt->pcpu_path = alloc_percpu(typeof(*clt->pcpu_path));
-> +       if (!clt->pcpu_path) {
-> +               err = -ENOMEM;
-> +               goto err_put;
-
-This path would lead to a call to "free_percpu(clt->pcpu_path);", even
-after alloc_percpu failed.
-
-Everything else looks good to me. I will send a revised patch after
-some internal testing in sometime.
-
-Thanks for the review and comments.
-
-> +       }
->
-> -       clt->dev.class = rtrs_clt_dev_class;
-> -       clt->dev.release = rtrs_clt_dev_release;
->         err = dev_set_name(&clt->dev, "%s", sessname);
->         if (err)
-> -               goto err;
-> +               goto err_put;
+> +	smc_tcp_ls_wq = alloc_workqueue("smc_tcp_ls_wq", 0, 0);
+> +	if (!smc_tcp_ls_wq)
+> +		goto out_pnet;
 > +
->         /*
->          * Suppress user space notification until
->          * sysfs files are created
->          */
->         dev_set_uevent_suppress(&clt->dev, true);
-> -       err = device_register(&clt->dev);
-> -       if (err) {
-> -               put_device(&clt->dev);
-> -               goto err;
-> -       }
-> +       err = device_add(&clt->dev);
-> +       if (err)
-> +               goto err_put;
->
->         clt->kobj_paths = kobject_create_and_add("paths", &clt->dev.kobj);
->         if (!clt->kobj_paths) {
->                 err = -ENOMEM;
-> -               goto err_dev;
-> +               goto err_del;
->         }
->         err = rtrs_clt_create_sysfs_root_files(clt);
->         if (err) {
->                 kobject_del(clt->kobj_paths);
->                 kobject_put(clt->kobj_paths);
-> -               goto err_dev;
-> +               goto err_del;
->         }
->         dev_set_uevent_suppress(&clt->dev, false);
->         kobject_uevent(&clt->dev.kobj, KOBJ_ADD);
->
->         return clt;
-> -err_dev:
-> -       device_unregister(&clt->dev);
-> -err:
-> -       free_percpu(clt->pcpu_path);
-> -       kfree(clt);
-> +err_del:
-> +       device_del(&clt->dev);
-> +err_put:
-> +       put_device(&clt->dev);
->         return ERR_PTR(err);
+>  	smc_hs_wq = alloc_workqueue("smc_hs_wq", 0, 0);
+>  	if (!smc_hs_wq)
+> -		goto out_pnet;
+> +		goto out_alloc_tcp_ls_wq;
+>  
+>  	smc_close_wq = alloc_workqueue("smc_close_wq", 0, 0);
+>  	if (!smc_close_wq)
+> @@ -2992,6 +2998,8 @@ static int __init smc_init(void)
+>  	destroy_workqueue(smc_close_wq);
+>  out_alloc_hs_wq:
+>  	destroy_workqueue(smc_hs_wq);
+> +out_alloc_tcp_ls_wq:
+> +	destroy_workqueue(smc_tcp_ls_wq);
+>  out_pnet:
+>  	smc_pnet_exit();
+>  out_nl:
+> @@ -3010,6 +3018,7 @@ static void __exit smc_exit(void)
+>  	smc_core_exit();
+>  	smc_ib_unregister_client();
+>  	destroy_workqueue(smc_close_wq);
+> +	destroy_workqueue(smc_tcp_ls_wq);
+>  	destroy_workqueue(smc_hs_wq);
+>  	proto_unregister(&smc_proto6);
+>  	proto_unregister(&smc_proto);
+> diff --git a/net/smc/smc.h b/net/smc/smc.h
+> index 3d0b8e3..bd2f3dc 100644
+> --- a/net/smc/smc.h
+> +++ b/net/smc/smc.h
+> @@ -264,6 +264,7 @@ static inline struct smc_sock *smc_sk(const struct sock *sk)
+>  	return (struct smc_sock *)sk;
 >  }
->
->  static void free_clt(struct rtrs_clt_sess *clt)
->  {
->         free_permits(clt);
-> -       free_percpu(clt->pcpu_path);
-> -       mutex_destroy(&clt->paths_ev_mutex);
-> -       mutex_destroy(&clt->paths_mutex);
->         /* release callback will free clt in last put */
->         device_unregister(&clt->dev);
->  }
+>  
+> +extern struct workqueue_struct	*smc_tcp_ls_wq;	/* wq for tcp listen work */
+
+I don't think this extern is needed, the work queue is only used within af_smc.c, right?
+Even the smc_hs_wq would not need to be extern, but this would be a future cleanup.
+
+>  extern struct workqueue_struct	*smc_hs_wq;	/* wq for handshake work */
+>  extern struct workqueue_struct	*smc_close_wq;	/* wq for close work */
+>  
+
