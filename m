@@ -2,222 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 994D74A4FA2
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 20:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B97EE4A51C1
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 22:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377430AbiAaTnh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jan 2022 14:43:37 -0500
-Received: from mga03.intel.com ([134.134.136.65]:38309 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1377303AbiAaTnf (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Mon, 31 Jan 2022 14:43:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1643658215; x=1675194215;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=xu2gapw8EGonEKPfGsLDqB5BWECojNkQnvRqX7oXxr8=;
-  b=lKLZL4mq5RcxEFSWj8uDq6kGSpIlwlokfm5odV70bBSVOHZNLH6NvoSP
-   bqP+s4dmJ7Q6l5pCCIpPwL5GfJTfo1IsJbI+puxY8ZMEwqX3lcnP6iYub
-   UjrE3O7SEaDfxiagIaKBJXdZBZTSVtYPHopbdiX6MlDTUzPkV4dc9/GhI
-   qScTuEpQ8x0lbmE74KfoBNTP9kEcye2A7IYi7sATb02KOHmHDZleGushH
-   9dIR1hkupTagW9xjnnok8xxVrnurYDkM8jm7dJrgQ8DkfugCuy9ryzwXV
-   gpe7f1qJGT35QumhYhQUo3CSRRmMXDvaFnoRgDan/EP5n4oE8yqROmdpC
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10244"; a="247489715"
-X-IronPort-AV: E=Sophos;i="5.88,331,1635231600"; 
-   d="scan'208";a="247489715"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 11:43:34 -0800
-X-IronPort-AV: E=Sophos;i="5.88,331,1635231600"; 
-   d="scan'208";a="537448434"
-Received: from ssaleem-mobl.amr.corp.intel.com ([10.255.33.15])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2022 11:43:34 -0800
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH for-next 3/3] RDMA/irdma: Add support for DSCP
-Date:   Mon, 31 Jan 2022 13:43:16 -0600
-Message-Id: <20220131194316.1528-4-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220131194316.1528-1-shiraz.saleem@intel.com>
-References: <20220131194316.1528-1-shiraz.saleem@intel.com>
+        id S1351556AbiAaVlO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jan 2022 16:41:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1381267AbiAaVjH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 16:39:07 -0500
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38557C061779
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 13:38:21 -0800 (PST)
+Received: by mail-oi1-x244.google.com with SMTP id e81so29407572oia.6
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 13:38:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=dEuqzCa7Zlz6s4mRGbRbRWXXanD59qsT+xmKk7tBbCVL8shmNgt9pnuL3r3GZQALql
+         Y63DqHUGCnZO0yzAtzp7ZNS2CuC8pMKUMaMtNqE3s9gB45FDt9/C7CdeYDqwmv7HZJbj
+         h6fZit5aG7dGp8FvXKTscfcGshyIKAGZl/Y4NFvWe+GDkg5MDDBzPsbgzyvzZ7B1mfX4
+         ltlQ0tRJrdsWlCdvxMPpvS+PhwNDM1Zp7MYHnfnHzWMTP4bbhrhxbQSB0Xw9LPR0gSp/
+         L2Vas/DZH4ZiZyplfhihUfOHaOD2GjtH1tg3ZI6lVgxDcwRnl8d4U3qCI5tj+07J/ZXk
+         SzvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=RcCyF58LaRxi/j1nHAT0ApLeXmQ9s66f3iMVqhPacvY=;
+        b=t37a7C9LKjVy5SFqZb3uu8Ut+68gHkZxYB9ucapnhW9DHyRmU5W0l2g7Xe75+lL2oR
+         u6xWc3mZUHvzP8YlCZH9gXjg7FytieSKVZUeNZ4U4WmaANxGXs8ri5Hw8zv+6WtQBxj6
+         /Exor25KHxChwABtd8K3qDs53mjd01ofb2q6DOLVh04Bc68djoDV+xfsxvAZH2ZtLnCC
+         YP0xVp86PJzhXKJuYI/ui9g9dmFDJEgfWtJIZ4th6YO+SG1Mee1dQmkvHI1b1Da+RPm3
+         JqOWLtA0d1Nl4U6ce4kZDONVV9Ih+ebEwuMgToMwyEBf2UKKiZbXCrGQGoFJAq/gXcY3
+         WOzg==
+X-Gm-Message-State: AOAM532QZCcrOXg0zuQmj2eyBGCqhvsIbA6rNA4hBR1U5p5RH/zXfEEx
+        vrQSG3UqEc96bFZqkmfsIbXI7sabpIYXLxm3YOh5oLszr7FYhg==
+X-Google-Smtp-Source: ABdhPJzjG4nHBnpm1YeRsvfpKVsM6nmNJIeFJaztEJrNHMe+iyJctx1iGavTAT23A2IhS4j6LtYbunRiUquAn1xj08o=
+X-Received: by 2002:a54:4490:: with SMTP id v16mr14818764oiv.157.1643665089421;
+ Mon, 31 Jan 2022 13:38:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a4a:c30d:0:0:0:0:0 with HTTP; Mon, 31 Jan 2022 13:38:09
+ -0800 (PST)
+Reply-To: westerunion909@gmail.com
+From:   "Antonia Lloyd." <anthonylloydatmxxx04@gmail.com>
+Date:   Mon, 31 Jan 2022 13:38:09 -0800
+Message-ID: <CAExPwBBpihjV-rv_-+hYqb1WD3wpSWx81B_Q3ES15U3TXSPsyw@mail.gmail.com>
+Subject: Dear Email ID Owner.(USD$4000 IMF COMPENSATION FUND TO PICK UP TODAY).
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
+Dear Email ID Owner.
 
-Add DSCP support for the Intel Ethernet 800 Series devices.
-Setup VSI DSCP info when PCI driver indicates DSCP mode during
-driver probe or as notification event.
+The IMF is compensating all the email address that was funds as one of
+the ward win Victims and your email address and your name is among the
+listed one of approved to pay the sum of $3.6 million U.S Dollars. We
+have concluded to effect your own payment through Western Union Money
+Transfer for easy pick-up of those funds in good condition,$4000 twice
+daily,till the $3.6 million is completely transferred to you.We now
+need your information where we will be sending the funds,such
+as;Receiver name(Your full Name)address and phone number.Contact
+Western Union agent with this Email: ( westerunion995@gmail.com  ) for
+your payment fund.
 
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/irdma/cm.c    | 20 ++++++++++++++++----
- drivers/infiniband/hw/irdma/cm.h    |  7 +++++++
- drivers/infiniband/hw/irdma/ctrl.c  |  6 ++++++
- drivers/infiniband/hw/irdma/main.c  |  8 ++++++--
- drivers/infiniband/hw/irdma/osdep.h |  1 +
- drivers/infiniband/hw/irdma/type.h  |  4 ++++
- 6 files changed, 40 insertions(+), 6 deletions(-)
+Ms.Maria Zatto
+E-mail:westerunion995@gmail.com
+Telephone: +229 682 97 169
 
-diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
-index 6ff1800..abc101b 100644
---- a/drivers/infiniband/hw/irdma/cm.c
-+++ b/drivers/infiniband/hw/irdma/cm.c
-@@ -2209,8 +2209,12 @@ static void irdma_cm_free_ah(struct irdma_cm_node *cm_node)
- 			ibdev_warn(&iwdev->ibdev,
- 				   "application TOS[%d] and remote client TOS[%d] mismatch\n",
- 				   listener->tos, cm_info->tos);
--		cm_node->tos = max(listener->tos, cm_info->tos);
--		cm_node->user_pri = rt_tos2priority(cm_node->tos);
-+		if (iwdev->vsi.dscp_mode) {
-+			cm_node->user_pri = listener->user_pri;
-+		} else {
-+			cm_node->tos = max(listener->tos, cm_info->tos);
-+			cm_node->user_pri = rt_tos2priority(cm_node->tos);
-+		}
- 		ibdev_dbg(&iwdev->ibdev,
- 			  "DCB: listener: TOS:[%d] UP:[%d]\n", cm_node->tos,
- 			  cm_node->user_pri);
-@@ -3835,7 +3839,11 @@ int irdma_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
- 	cm_info.cm_id = cm_id;
- 	cm_info.qh_qpid = iwdev->vsi.ilq->qp_id;
- 	cm_info.tos = cm_id->tos;
--	cm_info.user_pri = rt_tos2priority(cm_id->tos);
-+	if (iwdev->vsi.dscp_mode)
-+		cm_info.user_pri =
-+			iwqp->sc_qp.vsi->dscp_map[irdma_tos2dscp(cm_info.tos)];
-+	else
-+		cm_info.user_pri = rt_tos2priority(cm_id->tos);
- 
- 	if (iwqp->sc_qp.dev->ws_add(iwqp->sc_qp.vsi, cm_info.user_pri))
- 		return -ENOMEM;
-@@ -3977,7 +3985,11 @@ int irdma_create_listen(struct iw_cm_id *cm_id, int backlog)
- 	cm_id->provider_data = cm_listen_node;
- 
- 	cm_listen_node->tos = cm_id->tos;
--	cm_listen_node->user_pri = rt_tos2priority(cm_id->tos);
-+	if (iwdev->vsi.dscp_mode)
-+		cm_listen_node->user_pri =
-+			iwdev->vsi.dscp_map[irdma_tos2dscp(cm_id->tos)];
-+	else
-+		cm_listen_node->user_pri = rt_tos2priority(cm_id->tos);
- 	cm_info.user_pri = cm_listen_node->user_pri;
- 	if (!cm_listen_node->reused_node) {
- 		if (wildcard) {
-diff --git a/drivers/infiniband/hw/irdma/cm.h b/drivers/infiniband/hw/irdma/cm.h
-index 3bf4272..19c2849 100644
---- a/drivers/infiniband/hw/irdma/cm.h
-+++ b/drivers/infiniband/hw/irdma/cm.h
-@@ -384,6 +384,13 @@ int irdma_schedule_cm_timer(struct irdma_cm_node *cm_node,
- 			    struct irdma_puda_buf *sqbuf,
- 			    enum irdma_timer_type type, int send_retrans,
- 			    int close_when_complete);
-+
-+static inline u8 irdma_tos2dscp(u8 tos)
-+{
-+#define IRDMA_DSCP_VAL GENMASK(7, 2)
-+	return (u8)FIELD_GET(IRDMA_DSCP_VAL, tos);
-+}
-+
- int irdma_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param);
- int irdma_reject(struct iw_cm_id *cm_id, const void *pdata, u8 pdata_len);
- int irdma_connect(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param);
-diff --git a/drivers/infiniband/hw/irdma/ctrl.c b/drivers/infiniband/hw/irdma/ctrl.c
-index ef1d6ad..94a9c26 100644
---- a/drivers/infiniband/hw/irdma/ctrl.c
-+++ b/drivers/infiniband/hw/irdma/ctrl.c
-@@ -77,6 +77,12 @@ static void irdma_set_qos_info(struct irdma_sc_vsi  *vsi,
- 
- 	vsi->qos_rel_bw = l2p->vsi_rel_bw;
- 	vsi->qos_prio_type = l2p->vsi_prio_type;
-+	vsi->dscp_mode = l2p->dscp_mode;
-+	if (l2p->dscp_mode) {
-+		memcpy(vsi->dscp_map, l2p->dscp_map, sizeof(vsi->dscp_map));
-+		for (i = 0; i < IRDMA_MAX_USER_PRIORITY; i++)
-+			l2p->up2tc[i] = i;
-+	}
- 	for (i = 0; i < IRDMA_MAX_USER_PRIORITY; i++) {
- 		if (vsi->dev->hw_attrs.uk_attrs.hw_rev == IRDMA_GEN_1)
- 			vsi->qos[i].qs_handle = l2p->qs_handle_list[i];
-diff --git a/drivers/infiniband/hw/irdma/main.c b/drivers/infiniband/hw/irdma/main.c
-index 179667b..9762526 100644
---- a/drivers/infiniband/hw/irdma/main.c
-+++ b/drivers/infiniband/hw/irdma/main.c
-@@ -79,6 +79,10 @@ static void irdma_fill_qos_info(struct irdma_l2params *l2params,
- 	}
- 	for (i = 0; i < IIDC_MAX_USER_PRIORITY; i++)
- 		l2params->up2tc[i] = qos_info->up2tc[i];
-+	if (qos_info->pfc_mode == IIDC_DSCP_PFC_MODE) {
-+		l2params->dscp_mode = true;
-+		memcpy(l2params->dscp_map, qos_info->dscp_map, sizeof(l2params->dscp_map));
-+	}
- }
- 
- static void irdma_iidc_event_handler(struct ice_pf *pf, struct iidc_event *event)
-@@ -110,7 +114,7 @@ static void irdma_iidc_event_handler(struct ice_pf *pf, struct iidc_event *event
- 		ice_get_qos_params(pf, &qos_info);
- 		irdma_fill_qos_info(&l2params, &qos_info);
- 		if (iwdev->rf->protocol_used != IRDMA_IWARP_PROTOCOL_ONLY)
--			iwdev->dcb_vlan_mode = qos_info.num_tc > 1;
-+			iwdev->dcb_vlan_mode = qos_info.num_tc > 1 && !l2params.dscp_mode;
- 		irdma_change_l2params(&iwdev->vsi, &l2params);
- 	} else if (*event->type & BIT(IIDC_EVENT_CRIT_ERR)) {
- 		ibdev_warn(&iwdev->ibdev, "ICE OICR event notification: oicr = 0x%08x\n",
-@@ -285,7 +289,7 @@ static int irdma_probe(struct auxiliary_device *aux_dev, const struct auxiliary_
- 	ice_get_qos_params(pf, &qos_info);
- 	irdma_fill_qos_info(&l2params, &qos_info);
- 	if (iwdev->rf->protocol_used != IRDMA_IWARP_PROTOCOL_ONLY)
--		iwdev->dcb_vlan_mode = l2params.num_tc > 1;
-+		iwdev->dcb_vlan_mode = l2params.num_tc > 1 && !l2params.dscp_mode;
- 
- 	if (irdma_rt_init_hw(iwdev, &l2params)) {
- 		err = -EIO;
-diff --git a/drivers/infiniband/hw/irdma/osdep.h b/drivers/infiniband/hw/irdma/osdep.h
-index 63d8bb3..6e28e43 100644
---- a/drivers/infiniband/hw/irdma/osdep.h
-+++ b/drivers/infiniband/hw/irdma/osdep.h
-@@ -5,6 +5,7 @@
- 
- #include <linux/pci.h>
- #include <linux/bitfield.h>
-+#include <linux/net/intel/iidc.h>
- #include <crypto/hash.h>
- #include <rdma/ib_verbs.h>
- 
-diff --git a/drivers/infiniband/hw/irdma/type.h b/drivers/infiniband/hw/irdma/type.h
-index 9483bb3..4290a2c 100644
---- a/drivers/infiniband/hw/irdma/type.h
-+++ b/drivers/infiniband/hw/irdma/type.h
-@@ -611,6 +611,8 @@ struct irdma_sc_vsi {
- 				struct irdma_ws_node *tc_node);
- 	u8 qos_rel_bw;
- 	u8 qos_prio_type;
-+	u8 dscp_map[IIDC_MAX_DSCP_MAPPING];
-+	bool dscp_mode:1;
- };
- 
- struct irdma_sc_dev {
-@@ -735,11 +737,13 @@ struct irdma_l2params {
- 	u16 qs_handle_list[IRDMA_MAX_USER_PRIORITY];
- 	u16 mtu;
- 	u8 up2tc[IRDMA_MAX_USER_PRIORITY];
-+	u8 dscp_map[IIDC_MAX_DSCP_MAPPING];
- 	u8 num_tc;
- 	u8 vsi_rel_bw;
- 	u8 vsi_prio_type;
- 	bool mtu_changed:1;
- 	bool tc_changed:1;
-+	bool dscp_mode:1;
- };
- 
- struct irdma_vsi_init_info {
--- 
-1.8.3.1
+Contact Ms.Maria,immediately you get this mail through western union
+email address above to enable her speed-up.your payment and release
+the $4000 dollars MTCN today for you to pick up the payment OK.
 
+You are expected to provide us with the details as prescribed below to
+enable safe and easy release of your funds today.
+
+(1)Your Full name:
+(2)Your Phone number:
+(3)Your Country:
+(4)Your Age:
+
+Thank you,
+Dr.Antonia Lloyd.
+Contact Dir.Western Union Money Transfer,
+Cotonou-Benin Republic.
