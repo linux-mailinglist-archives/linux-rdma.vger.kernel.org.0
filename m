@@ -2,91 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D310E4A3EC4
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 09:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A2E74A3F7C
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 10:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344920AbiAaInX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jan 2022 03:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344458AbiAaInU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 03:43:20 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34269C061714;
-        Mon, 31 Jan 2022 00:43:20 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id c190-20020a1c9ac7000000b0035081bc722dso8793510wme.5;
-        Mon, 31 Jan 2022 00:43:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qi/zABG7gb+Ye7V/MnSI6gU9BC7CUhBAHbHLsfakjjg=;
-        b=ilm+gX1nWIdPMtjzH4LqVjrzofZ696k8Ch3KNgYXZKsWOwDCQliegGhpCKO2KtUlI1
-         w8mEhQFXfpPBy1U8LHO+wUpJ8Kg5aQ0Uz25gOjpOYezx9RU4rRNp6E6LHFZPQHE4ex8E
-         ECSs5dRtIR6oo06ArkejwMwzqFvza6d8gmenHBOQCHYU/+3+Q2frrRXKH820dspOD5yz
-         BQmSm0E/rVkfBXh+5U+UVRqpQdhdIC+VMkPdc9od71bmjUDKEA17RXrshciYIKOAKVYR
-         W9yWnWKJ4GGqzkqVOiW/ShdECI85UdS/7q166dF8//izRTORCSOWNAITEaR0fUHNcx+C
-         BpnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Qi/zABG7gb+Ye7V/MnSI6gU9BC7CUhBAHbHLsfakjjg=;
-        b=qS20DZuZC4a1KV8aqgR6yP19IXv9r/oiOIH0xB5Zf4H6cpVHa9SGdkE372FuwXkoFy
-         tkkWun5d3wSIzS36ijtvVzOrkZYJi7qRHSq3fIepBLpSTHlSPa4Jy0Q/amZCqQNAKrgQ
-         NDtfI69yGNga1HVXz87SvPErq6mtLp7xP9xUkpcFezw7eKnzxC2/6ThB7eu2nf5Ooh2n
-         lxf/LJDm4lDWHB3Xzdeg5IZjoOZvzl5IcvUMdPvtyS0QfSglg8zzgdD/DvxC3rm5TTF/
-         efNwH0cjLHytuQQbCPWecB7uWKEEsCA50wu1q7GGO/zlTnHBxlejqc7VsWm/QINUzdNi
-         x78Q==
-X-Gm-Message-State: AOAM533e6myjUqYaWyJJSs7RKhsRROwlzyDGG191w9PBs50+nfJ6ZXxo
-        BhktLP62dxYdmTOFtwbE9ZQ=
-X-Google-Smtp-Source: ABdhPJzHvE1IQ6rmKoRZ07ClcR/2PZ+8R8gDBkyt60+ezc0zvMeoI+wS/4xKMMpqZzZ70aREXPwukg==
-X-Received: by 2002:a1c:1dd2:: with SMTP id d201mr17530355wmd.141.1643618598742;
-        Mon, 31 Jan 2022 00:43:18 -0800 (PST)
-Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
-        by smtp.gmail.com with ESMTPSA id n15sm13421102wrf.37.2022.01.31.00.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 31 Jan 2022 00:43:18 -0800 (PST)
-From:   Colin Ian King <colin.i.king@gmail.com>
-To:     Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Roi Dayan <roid@nvidia.com>,
-        Oz Shlomo <ozsh@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] net/mlx5e: Fix spelling mistake "supoported" -> "supported"
-Date:   Mon, 31 Jan 2022 08:43:17 +0000
-Message-Id: <20220131084317.8058-1-colin.i.king@gmail.com>
+        id S237067AbiAaJpf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jan 2022 04:45:35 -0500
+Received: from dfw.source.kernel.org ([139.178.84.217]:43806 "EHLO
+        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241929AbiAaJpc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 04:45:32 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3ED9F61344
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 09:45:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E092C340ED;
+        Mon, 31 Jan 2022 09:45:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643622331;
+        bh=5utfV9FQI9V3Q4bU+GQVcZsWKjr0AAUGN+MzL5OCLjU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=gp9pFDqYX4ORsmDthkwDDVbay3w4oxSP5JMLO0WpEPk6KGsqoZ8emuUPsrAofimcM
+         IhzL/+dBCFoRYXWRZbo92WY2fYREVzijnrShkLFFknIWE6zkXmzkDZUYbabV2SzC2/
+         8dXpMWQgOfKtxCSKrnFaXD+/C4gdwmkA28EqDfhAxq+7fPZ/hz/Jd68In2NvOwlm0x
+         fE7iS12E0D3AEhhMNZB+YcAU5w4Wm4nlgESVyq6Ty8cy0+GoJRa2268VR9qQqk+ILh
+         erWxckHTPOzWqwjTLoItvZHfxMeCftZJZlYLtx+r6lN4RnjX3FDPgdOV3ensESXSL3
+         MwoIQxTmxcbRA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jack Morgenstein <jackm@dev.mellanox.co.il>,
+        linux-rdma@vger.kernel.org, Yishai Hadas <yishaih@nvidia.com>
+Subject: [PATCH rdma-rc] RDMA/mlx4: Don't continue event handler after memory allocation failure
+Date:   Mon, 31 Jan 2022 11:45:26 +0200
+Message-Id: <12a0e83f18cfad4b5f62654f141e240d04915e10.1643622264.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is a spelling mistake in a NL_SET_ERR_MSG_MOD error
-message.  Fix it.
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+The failure to allocate memory during MLX4_DEV_EVENT_PORT_MGMT_CHANGE
+event handler will cause skip the assignment logic, but ib_dispatch_event()
+will be called anyway.
+
+Fix it by calling to return instead of break after memory allocation
+failure.
+
+Fixes: 00f5ce99dc6e ("mlx4: Use port management change event instead of smp_snoop")
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c | 2 +-
+ drivers/infiniband/hw/mlx4/main.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
-index 85f0cb88127f..9fb1a9a8bc02 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
-@@ -21,7 +21,7 @@ tc_act_can_offload_ct(struct mlx5e_tc_act_parse_state *parse_state,
- 	}
+diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
+index 1c3d97229988..93b1650eacfa 100644
+--- a/drivers/infiniband/hw/mlx4/main.c
++++ b/drivers/infiniband/hw/mlx4/main.c
+@@ -3237,7 +3237,7 @@ static void mlx4_ib_event(struct mlx4_dev *dev, void *ibdev_ptr,
+ 	case MLX4_DEV_EVENT_PORT_MGMT_CHANGE:
+ 		ew = kmalloc(sizeof *ew, GFP_ATOMIC);
+ 		if (!ew)
+-			break;
++			return;
  
- 	if (parse_state->ct && !clear_action) {
--		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supoported");
-+		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supported");
- 		return false;
- 	}
- 
+ 		INIT_WORK(&ew->work, handle_port_mgmt_change_event);
+ 		memcpy(&ew->ib_eqe, eqe, sizeof *eqe);
 -- 
 2.34.1
 
