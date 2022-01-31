@@ -2,79 +2,200 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6619D4A40EF
-	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 12:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A17D4A475C
+	for <lists+linux-rdma@lfdr.de>; Mon, 31 Jan 2022 13:38:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbiAaLBL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 31 Jan 2022 06:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
+        id S1348776AbiAaMh6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 31 Jan 2022 07:37:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358325AbiAaLAU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 06:00:20 -0500
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B4BC06177E
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 02:59:32 -0800 (PST)
-Received: by mail-io1-xd42.google.com with SMTP id p63so15481235iod.11
-        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 02:59:32 -0800 (PST)
+        with ESMTP id S1377971AbiAaMhw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 31 Jan 2022 07:37:52 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC19C061714
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 04:37:51 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id t7so19180095ljc.10
+        for <linux-rdma@vger.kernel.org>; Mon, 31 Jan 2022 04:37:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
-        b=Hy4QzdJnSxdg5GIgw0nCwmi0gjML3n5cny2gld+5/rI5196yLd12xvP6N7LBmx65/n
-         qILZMxYOlb+VBzjZrCg896+CVlR2SLc6f+WpN6lyRLTkfyWxlYA63cI2QUMsEgTIYq1c
-         VRL4HNNC2kIyU16xAe6VyoHlNhIHv9mczE1zssIxdDBygn6D2BPwo/XAWJNqRMASZ2Dq
-         yZxWrv8DUbv+uMJverpu1MhsgcV4b3vRNoXa2uyn5bo25Pb/5p2hQlMsoWmYebCBDCJD
-         GjDhDoBcmmXgZL74zftZAkr0Rw6FLwL0/jzp5kj/UR37sO8Js0t8mGwGyrpI2mLOPNpu
-         0GuQ==
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSaXwCyoeZjyzhm88nDoFFkVdfYS1ajplIb9rucyrFg=;
+        b=M1LnOcRZOOo0w74Hy+AGssfbBS+7lk69dzqj61gAbVW6pe62CyLJ7BlrUBJ4SfuqGX
+         w+8vRc6wvWZXlV50gns+7I5qTnfYJbIeWqXO8iBaydD8qsgi5GxU1liFm8oOgabbtiRN
+         a3xjhrZbVbQq7p8uyr0EjH6SaDJKxVCxpPUo5KPM4qk+VwIQpdSRuDLkHLZmooci06pP
+         WB4PtuwzZ+k5mZ1NkzTV1inmkv81jF+ZoU//tK8z74rbl6g06siDL4RV9jNWvwL7uwqB
+         2MT3VAXurYH1IV2yik48uuGiAeNrfjYwNY42pivnJ9weLVckifTx7PVFIsisRnDtBdVM
+         TCog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=FANIUiWvB3mdY3zLX2DODg2pUIL5eGT5wlydl6jYk40=;
-        b=EioX+TbUGKcJ9m48rJPUng8tvNbmr7T8kHqgCANuHQUUkZ1kWinrhOMW1yWjm7sueu
-         tHsrpur1F4+fkY2vqfztiu1IKMm3WynbylqeAq2fE2YvZdRdH6jrtfkwcNhbcGHhSm9N
-         7wTGQpsGPtq5oB2R6jEf1Z8uLT5xyFYq+ldku8ZGcl5saf96siKnzvQHiBhKDTVRD0Yd
-         4GwUckER/ok7lEIsV+A0RjF2LYtpTr6vFNzR/RWN6ps9TQZ4m9GTTWwf09jICodsWB/h
-         fxq5hwpZ0btE/STlpzc3qHfVnBc3Qf7GIX4Fi7USmqWJ6IjriQLOiup/CixXaW5EntTy
-         rFZQ==
-X-Gm-Message-State: AOAM5329RCVF7ivZ4FGdU8KhgGl5YmJINfKL32yOcmt++pjDvfvOtT0T
-        wl5wDgXs5l41cNlfFUysO3YnG0bDx4DXvbGGyR8=
-X-Google-Smtp-Source: ABdhPJyia9VIjicXafubC2VjGdU01tny+88l0Ycxe3DKaKeOyUTFlA4LLKTxDKWWNigVvRhiFi9kYx5K7cHHm0s8/hs=
-X-Received: by 2002:a02:aa09:: with SMTP id r9mr10286804jam.199.1643626771044;
- Mon, 31 Jan 2022 02:59:31 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSaXwCyoeZjyzhm88nDoFFkVdfYS1ajplIb9rucyrFg=;
+        b=domH2Mk1gOgqg/MZf+bhJMTbaHJP8sSXsP/O/P+f9eCoQewm/5oy9A9nLHL61ispZc
+         JWqiZeIRiVC2cFPmEv9fub1fvLhVq8fBTQAfjsXO1rI/sMRZKJlcZYUmTD630dPY+MWo
+         NrMZ5rh1sw1zfocgbo9PYuZIOVNaxpedK2IhXzNvnR96+mIq1AonHQrbOD7XSCz+TJha
+         U2QbJ2eijj3DKBpdcXmp+J7DvtiuI2CnuKoSblnZgwl66oyO9vLPggs+hWQ/ewhH37Bz
+         le1iy+54wIbIEX0kPsyjkPLwfH8l70rotdiGy55156Wlgv6zJj1FXDdSQ3rySz2yIz1D
+         5MCA==
+X-Gm-Message-State: AOAM533HqtkJaYXdeceUN0czv3cS7E4XNvvXP7Gk0Tsjb28khzJTgO+A
+        +/cfGBTkEywWsmmWO6pv/aoJeIY8y4ByS9gCLpeIKg==
+X-Google-Smtp-Source: ABdhPJyUggPrsk7uyc3yYX9NIjpDffpxYzZdoMbxElsdVO+lhbCW1q+PYWBGmVBZfBOyn4ryM0zn69fOQodX9f/PTos=
+X-Received: by 2002:a2e:9003:: with SMTP id h3mr13387843ljg.111.1643632669768;
+ Mon, 31 Jan 2022 04:37:49 -0800 (PST)
 MIME-Version: 1.0
-Reply-To: daniellakyle60@gmail.com
-Sender: drdanielmorris11111@gmail.com
-Received: by 2002:a05:6638:1248:0:0:0:0 with HTTP; Mon, 31 Jan 2022 02:59:30
- -0800 (PST)
-From:   Mrs daniell akyle <daniellakyle60@gmail.com>
-Date:   Mon, 31 Jan 2022 11:59:30 +0100
-X-Google-Sender-Auth: 5pmMZCS9vXWmOwBoU1Dt2uIUmsw
-Message-ID: <CAKFcj-MtTareGvTX3Yo749sS2d4H56Fxx0cF0uKGPGQc=0xqUA@mail.gmail.com>
-Subject: Ahoj
-To:     undisclosed-recipients:;
+References: <20220120143237.63374-1-jinpu.wang@ionos.com> <20220128165951.GA1874313@nvidia.com>
+In-Reply-To: <20220128165951.GA1874313@nvidia.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Mon, 31 Jan 2022 13:37:38 +0100
+Message-ID: <CAJpMwyjR4JKhjEMdUja39uVRQmnncc9E-iXVH21UmUAah4rr2w@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rtrs-clt: Fix possible double free in error case
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jack Wang <jinpu.wang@ionos.com>, linux-rdma@vger.kernel.org,
+        bvanassche@acm.org, leon@kernel.org,
+        Miaoqian Lin <linmq006@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Pozdravy
-Jmenuji se pan=C3=AD Daniella Kyleov=C3=A1, je mi 58 let
-Filip=C3=ADny. V sou=C4=8Dasn=C3=A9 dob=C4=9B jsem hospitalizov=C3=A1n na F=
-ilip=C3=ADn=C3=A1ch, kde jsem
-podstupuje l=C3=A9=C4=8Dbu akutn=C3=ADho karcinomu j=C3=ADcnu. jsem um=C3=
-=ADraj=C3=ADc=C3=AD,
-vdova, kter=C3=A1 se rozhodla darovat =C4=8D=C3=A1st sv=C3=A9ho majetku spo=
-lehliv=C3=A9 osob=C4=9B
-kter=C3=A1 tyto pen=C3=ADze pou=C5=BEije na pomoc chud=C3=BDm a m=C3=A9n=C4=
-=9B privilegovan=C3=BDm. Chci
-poskytnout dar ve v=C3=BD=C5=A1i 3 700 000 =C2=A3 na sirotky nebo charitati=
-vn=C3=AD organizace
-ve va=C5=A1=C3=AD oblasti. Zvl=C3=A1dne=C5=A1 to? Pokud jste ochotni tuto n=
-ab=C3=ADdku p=C5=99ijmout
-a ud=C4=9Blejte p=C5=99esn=C4=9B tak, jak v=C3=A1m =C5=99=C3=ADk=C3=A1m, pa=
-k se mi vra=C5=A5te pro dal=C5=A1=C3=AD vysv=C4=9Btlen=C3=AD.
-pozdravy
-Pan=C3=AD Daniella Kyleov=C3=A1
+On Fri, Jan 28, 2022 at 5:59 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Thu, Jan 20, 2022 at 03:32:37PM +0100, Jack Wang wrote:
+> > Callback function rtrs_clt_dev_release() for put_device()
+> > calls kfree(clt) to free memory. We shouldn't call kfree(clt) again,
+> > and we can't use the clt after kfree too.
+> >
+> > Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+> > Reported-by: Miaoqian Lin <linmq006@gmail.com>
+> > Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 3 +--
+> >  1 file changed, 1 insertion(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > index b159471a8959..fbce9cb87d08 100644
+> > +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> > @@ -2680,6 +2680,7 @@ static void rtrs_clt_dev_release(struct device *dev)
+> >       struct rtrs_clt_sess *clt = container_of(dev, struct rtrs_clt_sess,
+> >                                                dev);
+> >
+> > +     free_percpu(clt->pcpu_path);
+> >       kfree(clt);
+> >  }
+>
+> This need to delete the call in free_clt() too.
+>
+> Also, calling dev_set_name before device_initialize is a bad idea.
+>
+> Do it like this and fix all the bugs please:
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> index b696aa4abae46d..4d1895ab99c4da 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+> @@ -2685,6 +2685,9 @@ static void rtrs_clt_dev_release(struct device *dev)
+>         struct rtrs_clt_sess *clt = container_of(dev, struct rtrs_clt_sess,
+>                                                  dev);
+>
+> +       free_percpu(clt->pcpu_path);
+> +       mutex_destroy(&clt->paths_ev_mutex);
+> +       mutex_destroy(&clt->paths_mutex);
+>         kfree(clt);
+>  }
+>
+> @@ -2707,13 +2710,8 @@ static struct rtrs_clt_sess *alloc_clt(const char *sessname, size_t paths_num,
+>         clt = kzalloc(sizeof(*clt), GFP_KERNEL);
+>         if (!clt)
+>                 return ERR_PTR(-ENOMEM);
+> -
+> -       clt->pcpu_path = alloc_percpu(typeof(*clt->pcpu_path));
+> -       if (!clt->pcpu_path) {
+> -               kfree(clt);
+> -               return ERR_PTR(-ENOMEM);
+> -       }
+> -
+> +       clt->dev.class = rtrs_clt_dev_class;
+> +       clt->dev.release = rtrs_clt_dev_release;
+>         uuid_gen(&clt->paths_uuid);
+>         INIT_LIST_HEAD_RCU(&clt->paths_list);
+>         clt->paths_num = paths_num;
+> @@ -2730,52 +2728,52 @@ static struct rtrs_clt_sess *alloc_clt(const char *sessname, size_t paths_num,
+>         init_waitqueue_head(&clt->permits_wait);
+>         mutex_init(&clt->paths_ev_mutex);
+>         mutex_init(&clt->paths_mutex);
+> +       device_initialize(&clt->dev);
+> +
+> +       clt->pcpu_path = alloc_percpu(typeof(*clt->pcpu_path));
+> +       if (!clt->pcpu_path) {
+> +               err = -ENOMEM;
+> +               goto err_put;
+
+This path would lead to a call to "free_percpu(clt->pcpu_path);", even
+after alloc_percpu failed.
+
+Everything else looks good to me. I will send a revised patch after
+some internal testing in sometime.
+
+Thanks for the review and comments.
+
+> +       }
+>
+> -       clt->dev.class = rtrs_clt_dev_class;
+> -       clt->dev.release = rtrs_clt_dev_release;
+>         err = dev_set_name(&clt->dev, "%s", sessname);
+>         if (err)
+> -               goto err;
+> +               goto err_put;
+> +
+>         /*
+>          * Suppress user space notification until
+>          * sysfs files are created
+>          */
+>         dev_set_uevent_suppress(&clt->dev, true);
+> -       err = device_register(&clt->dev);
+> -       if (err) {
+> -               put_device(&clt->dev);
+> -               goto err;
+> -       }
+> +       err = device_add(&clt->dev);
+> +       if (err)
+> +               goto err_put;
+>
+>         clt->kobj_paths = kobject_create_and_add("paths", &clt->dev.kobj);
+>         if (!clt->kobj_paths) {
+>                 err = -ENOMEM;
+> -               goto err_dev;
+> +               goto err_del;
+>         }
+>         err = rtrs_clt_create_sysfs_root_files(clt);
+>         if (err) {
+>                 kobject_del(clt->kobj_paths);
+>                 kobject_put(clt->kobj_paths);
+> -               goto err_dev;
+> +               goto err_del;
+>         }
+>         dev_set_uevent_suppress(&clt->dev, false);
+>         kobject_uevent(&clt->dev.kobj, KOBJ_ADD);
+>
+>         return clt;
+> -err_dev:
+> -       device_unregister(&clt->dev);
+> -err:
+> -       free_percpu(clt->pcpu_path);
+> -       kfree(clt);
+> +err_del:
+> +       device_del(&clt->dev);
+> +err_put:
+> +       put_device(&clt->dev);
+>         return ERR_PTR(err);
+>  }
+>
+>  static void free_clt(struct rtrs_clt_sess *clt)
+>  {
+>         free_permits(clt);
+> -       free_percpu(clt->pcpu_path);
+> -       mutex_destroy(&clt->paths_ev_mutex);
+> -       mutex_destroy(&clt->paths_mutex);
+>         /* release callback will free clt in last put */
+>         device_unregister(&clt->dev);
+>  }
