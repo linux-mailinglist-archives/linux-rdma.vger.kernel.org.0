@@ -2,280 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B324A6544
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Feb 2022 21:00:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DC34A6581
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Feb 2022 21:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbiBAUAM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Feb 2022 15:00:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234295AbiBAUAL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Feb 2022 15:00:11 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC29EC061714
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Feb 2022 12:00:11 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id u13so19298749oie.5
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Feb 2022 12:00:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=YUYVcclHavKUveL3WPAMDjt/X03kfmWxUC+m6u4aTYs=;
-        b=hmPGDr8Xqf3MXnfwqS6tQmhb3c/NGbEhhk8nTsjqm+xY7gwciklAgTouJctgxK9pPZ
-         fY+6ZpZlk+SVHrLqKw9F+BNeL6oBDTHm2KXrI7LqOQ9Zxf7y4iR6gkpQ9qlByn+UKMhK
-         sKOv2wu6as3q36++VTkx0u5UPbO7Zvv7bZsFTREK8uVcP8736UBP4742lT6h0vd6DdWF
-         Vxue02QWVBgzG5XAaP8nqcT/CSNZxwvH0bTCjOsMQS6iO/Pjm2gPYM0fLztAOAjYhooU
-         4GcAlnYCf4VaFJf2DBHcaZtXaiAF+C91uotCBivlYjvCADkqBpE4bCcrLZq4oIHV4qaR
-         osJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=YUYVcclHavKUveL3WPAMDjt/X03kfmWxUC+m6u4aTYs=;
-        b=eLePeMCPeUBXMJ2u1RqRXHOwjxe/jrx9K5PD917h5Acjj7lwYE0AykkSqvLrUvM3nH
-         goQ9SgShcwsbt+yQpLOusxsne22vZYp2g6gvbc0SdvFcVixg6tBEVjyyzPpcsihSpvDi
-         RUysSwdQ6FnRfGbz7ncAFxsuht32fuEUlg5BUuup4aeeZeY8bhAqH/S2OrO9WpXW4Q4a
-         I3OU+fA68lGzi2F8OxhtjDbqTUgv/1HKtlajclYGWCScwJHKSSgi95dvmaQGsNwqVBpD
-         +uuiiHnqqQ11m2oflBAS2y+40olA6NuTkoF6EQLrHI4fmTC2FQM2nO0QrHkQdhITcQA6
-         njBg==
-X-Gm-Message-State: AOAM530QxJdJ2F0Sv2QpFld+2hbfcIR+p1EHU+GGplZO58GEOK66RY8N
-        XYaZ77SfUq+YRhCRN9kOyua+VzyW7BQ=
-X-Google-Smtp-Source: ABdhPJxqH3pEuvuXsivCoZPy0XNYY3UmGhp/djFy5Fa2iXDZFvQ6RWUeCKgbdmuBRNbOeK7lvV49tw==
-X-Received: by 2002:a05:6808:1385:: with SMTP id c5mr2185325oiw.234.1643745610981;
-        Tue, 01 Feb 2022 12:00:10 -0800 (PST)
-Received: from ?IPV6:2603:8081:140c:1a00:71b2:d0bc:75eb:e63d? (2603-8081-140c-1a00-71b2-d0bc-75eb-e63d.res6.spectrum.com. [2603:8081:140c:1a00:71b2:d0bc:75eb:e63d])
-        by smtp.gmail.com with ESMTPSA id t25sm6129671otk.31.2022.02.01.12.00.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Feb 2022 12:00:10 -0800 (PST)
-Message-ID: <e1b6b398-ebe2-f5aa-e34f-58b786608b1b@gmail.com>
-Date:   Tue, 1 Feb 2022 14:00:09 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH for-next v10 07/17] RDMA/rxe: Use kzmalloc/kfree for mca
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
+        id S239003AbiBAUOz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Feb 2022 15:14:55 -0500
+Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:2145
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233574AbiBAUOz (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Feb 2022 15:14:55 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YNU1Gmwu4EunY/nhcwyzQzAYQrbl2hAHoyO29uStSlTP38XlgOWWAhLY+J2Ys9gk5ld7QILuETuAMmoXLWrVWTnQnQROp1ejHjLcUOn2UUd2iuVCwjNdymdFHEhZNG9d8ha7khV7E+t5d85IwV9gd8nIdghVHZzgS1Ac4K7iTv2inNF9B241fR8bMtRBLZQ0Cat/jp1YZ/HMNaM07gM7o/cqjjhmUtLlrWBJadp5e37JeUFYIQtbxSnGOXBuHcTTahkhDafdYKiyr8dOE1WG4Tew73BvZ/TdihI5lH7NOoegl3PChRrgmzGiWPLGwDGqSYLMhfb0OTrR6rbIUGrRFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dYrBxBLDLaEw9qW2EojsCeF89OEHUr/FuNwuyoOm4Ow=;
+ b=ZLcvtPXxTHGfWsz9k64OsjRMV7kXrtKZhehcr4IWTFiBb/w1+0n9n7NgWsRcTDCqZ8o7vaLE9NYSQ8WnrGwWtCmCWy99fkRId5S+OI2qN+AGIOuaoMbuLLZjhkWIQv4qCibGEnrPT2dAL0XsNMiTWnGqmWd0IJpLZAz5SH7N074bIjiiwIdhbIx2XV3kARwglWuQPNOlgiW+iXYzokd0TUGojYxuaxDfqGmIi8yKx/8z6QMMkEWlBlSzzDNQrOguh1F2UW1T0pINHkVPZUPz5XqWLR4aBlswoCjUJ2Cszqthf8tJWpp6S5Kp7BxE4pjB5qgTiWUSkZxsvUtVv4KrFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dYrBxBLDLaEw9qW2EojsCeF89OEHUr/FuNwuyoOm4Ow=;
+ b=Es9GbHk3Q2y5cltnL5eksHdn/hKjD2+AkL17rnmbr2fbv99Ks6KEN0RIugPIsJzuE5VYJoG3KhqTLFRPMdLZ5hmDIud5YsWyD0oz7bJJoVxi+8ciVL8rgqEwBF/VHyqo5DQU4K0q0M1LPO7XIWlU8R5wUjFYznJl7KNgf1NFVwlH3OPX98qCKf313GbUYAulkXDyM9TUFXIF310vC/XcBLZ3YTOzEvTe9GX35V7dUGnzrqKuGMkgby1sCwlwveVuw5d42y179SIdeFp1ZxJwdMOHwKjfvJns8xM75czNGMbBLFdY6fizbbEH/Ft0lImBDHqPZZyrETNK1T5lfSw3Qg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by BN8PR12MB3572.namprd12.prod.outlook.com (2603:10b6:408:47::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.15; Tue, 1 Feb
+ 2022 20:14:53 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.4930.022; Tue, 1 Feb 2022
+ 20:14:53 +0000
+Date:   Tue, 1 Feb 2022 16:14:52 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
 Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v10 07/17] RDMA/rxe: Use kzmalloc/kfree for mca
+Message-ID: <20220201201452.GO1786498@nvidia.com>
 References: <20220131220849.10170-1-rpearsonhpe@gmail.com>
  <20220131220849.10170-8-rpearsonhpe@gmail.com>
  <20220201145342.GI1786498@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220201145342.GI1786498@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+ <e1b6b398-ebe2-f5aa-e34f-58b786608b1b@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e1b6b398-ebe2-f5aa-e34f-58b786608b1b@gmail.com>
+X-ClientProxiedBy: BL1PR13CA0018.namprd13.prod.outlook.com
+ (2603:10b6:208:256::23) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 89e3c1b9-1c42-4c31-0545-08d9e5bf8231
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3572:EE_
+X-Microsoft-Antispam-PRVS: <BN8PR12MB357217FDA374823EB11E1816C2269@BN8PR12MB3572.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: BnE4lYYVxHjexh/m97JyMd/wd1eBoCOuFN2PtfJDHN3CSOFiBxe0McKxm2CQTSz+I4bdRbSNTG92BgpmU0Hwf4aeAgFUgklqtiqElZUHL6jMNQUQVd9cICQ6saP2M7XrHFSQDWWwOGu+Le6TS/OnwqzVFYZNp7jiHKgq4JVtEdOyXyv817sOykdhrIGCVXVMpnYDg+orKTQvJ4/hnJCawVlDSEbKWG/aiN5NUOR8l/ghFttWrv/WATqLy3qFxyyymkQQFw017Y5OotC8Yj96BYDmIVgapxGXhqXgU0tsFaM2XkzfrEuvwBFubv53q0m+embKXYLKQl4XXT0Q+Z0DClhaNU0Kkp7IbnaG3+vKd8tRYyVngFPkrhZR0L5h/p2Rm+Krn8a6uecQtv9YX0Nsy+aa5/zWqcwIbc5LfnguMZX9WB+m1QYlyL13Zwig2OtlSLuMIzRgBsY6xO1PUEgizvDKdJI6NW4+6Br7bZNH0rdcr+EuIi7dlLx9oS47qAC2qF9AwsXOV5rpXJIOUvfQPcWAJv2CSs131xbHHU9hUvoEIxAMdItY2VepJMcP5m4CFdWpAvTA5YgiQbHSvdr9rQjsjtGueoEJdBW3rAw30BIO3QpwKEKdVMattaJsTBjiw6gUJ8XnBC3lNSVxARvSsQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8676002)(8936002)(4326008)(86362001)(2906002)(66556008)(66946007)(38100700002)(66476007)(36756003)(6916009)(1076003)(6512007)(6506007)(26005)(6486002)(33656002)(5660300002)(508600001)(316002)(2616005)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w+QjORv89oVsJS9FvtP7ef0elUPjtLXWBdxb29QCGJ/iG5T2dnneJf22PW3d?=
+ =?us-ascii?Q?fptZ0IHsjjX4bY8Gp5UAMk9pzgdwcfnDO1ZtU0CK9UgFRGDXiYUgriJASNZq?=
+ =?us-ascii?Q?X6kvGDIoJ6UsOT3Ph2bvl4Nci+FlhvU3eVp08lHkXymGsQJU9ivm4+CTAN/q?=
+ =?us-ascii?Q?/dz22ew/DvPTksP8Zuo7J42fktaB69UwPrd0trS8YRSRWLmeJhhi1KwCwdCs?=
+ =?us-ascii?Q?KTyc1NulEpFz70l4/5HdSi6PaveviQBMVVZ00Uah0Stm8ak2Werovy0tifw/?=
+ =?us-ascii?Q?fuMI2I2MVzB0GyhZWQZkt6VH+BirtW3kTsYT5RLpHle/ue5qMrimGDJ+dw35?=
+ =?us-ascii?Q?Du25QrG+qfFzHZMuIXBCLlKzZjieLUhnI7y231dnePj2TWvSjiesauRyAdfZ?=
+ =?us-ascii?Q?Nf9hYGA1jiOE5dDSLcA0P/Hr7aND2ylPo6laXxbiWEnkI84fXMWZnt2VvOTB?=
+ =?us-ascii?Q?XDAHA2zgM+FDwUxxdEyjmi6xdWW537CCkdIHFik/brpApzc9ia4PMrREW5im?=
+ =?us-ascii?Q?MU4j7aMp4i+VYNUa5eoZcakxUZEmmmdnlI1q36BM2NEeEtIAlrBmjjUARaRK?=
+ =?us-ascii?Q?fk0oS2wByVDTTv3Ju4okp7h0i5oCjT4MKuKokkMVCN5jLlN4+tR5QVpa4FJF?=
+ =?us-ascii?Q?uEXXZtdwaSClc8+h8+m7JeTXpMJkn0Z8F7+8MtafT9B8KuGBS+t9Py2zvPj7?=
+ =?us-ascii?Q?8q45k60uzRVWfKnYUAfZCK2gSVckPdaED2GKOOqf2sgWnyEai3OFQVwZuQmo?=
+ =?us-ascii?Q?jylLUFLsxPkbCTqsy4g+n1wJ1w4rra5CGx1s6wqfg3oUKPhauxOjhqrDaxyj?=
+ =?us-ascii?Q?J2171VJtjRswp44wLzv5uCbQd9HCGPnZXyDfiGgoRHWiSPeIALc5icuo3Ssg?=
+ =?us-ascii?Q?75g4HtZeMLqLArREqzsjN3BQRl+TfBpcam9gzuCxwVSOU9J3TXJwSyuVpmpS?=
+ =?us-ascii?Q?uyUreUvtMrIvg+peMFZxdLTYeDc5Jg3FxcObKtmiXcxNZ55fDf8wZSDGp2iE?=
+ =?us-ascii?Q?iO/6cfqwQjeCygnPKs6I/E88V/l1gK0bHh5UY+uAm+ypJ++XyBBHsZ5frnIH?=
+ =?us-ascii?Q?cKqYGavMyU7KZjE+dBCRrKr/7FkbcEAWbuVm3dRszr+gUWxYKDc4h3iDfww2?=
+ =?us-ascii?Q?uEiWw8HeR2IGn6jkSbkvG+lufYAytlp8vGWcslzJ6Qii2Ux+LCNsjnwJJjDQ?=
+ =?us-ascii?Q?jDYbUSPPIKvSd3iu5vFpDoG1CGLEuFt1k15c3XNWGt060nZwxlvg+1EPG9KY?=
+ =?us-ascii?Q?BUq6Hu41wkzp2NlQ+Co30lmb5k+ZEvGeVcjiglTrlMV1Sc8FwjFo2HCkTbjO?=
+ =?us-ascii?Q?nXBdmq9o4yJBNlsE5pdIPZrNyq60SL01KeqMj923g2K3DpiXhLeeUv4IUKAH?=
+ =?us-ascii?Q?G5kcqwX4Bt2kkgFTVTw7c5FSYJvUbu3V20kswE8GUI4ZRIumkG4PijZSIwDW?=
+ =?us-ascii?Q?l7i5vdU3+U+jxNu4dYtxgfoFWRqAbr5VIkVMKsW/KhldhbS2aD2OcOkb4Yrb?=
+ =?us-ascii?Q?ZJTQ1ICHNR5PTnexTUyEFNgBErFS2qugucr6Kd0EeqBsI0nPiqYzbGx/B05G?=
+ =?us-ascii?Q?8z+Xy2Mln09vDGYvgeA=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 89e3c1b9-1c42-4c31-0545-08d9e5bf8231
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2022 20:14:53.6494
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OQmIeegL7CLQqXttj8ae6KFbBB8NRh4u2xeoT9Tc7B4RG6j8UabvY5A+cKiroEjL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR12MB3572
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/1/22 08:53, Jason Gunthorpe wrote:
-> On Mon, Jan 31, 2022 at 04:08:40PM -0600, Bob Pearson wrote:
->> Remove rxe_mca (was rxe_mc_elem) from rxe pools and use kzmalloc
->> and kfree to allocate and free. Use the sequence
->>
->>     <lookup qp>
->>     new_mca = kzalloc(sizeof(*new_mca), GFP_KERNEL);
->>     <spin lock>
->>     <lookup qp again> /* in case of a race */
->>     <init new_mca>
->>     <spin unlock>
->>
->> instead of GFP_ATOMIC inside of the spinlock. Add an extra reference
->> to multicast group to protect the pointer in the index that maps
->> mgid to group.
->>
->> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->>  drivers/infiniband/sw/rxe/rxe.c       |   8 --
->>  drivers/infiniband/sw/rxe/rxe_mcast.c | 102 +++++++++++++++-----------
->>  drivers/infiniband/sw/rxe/rxe_pool.c  |   5 --
->>  drivers/infiniband/sw/rxe/rxe_pool.h  |   1 -
->>  drivers/infiniband/sw/rxe/rxe_verbs.h |   2 -
->>  5 files changed, 59 insertions(+), 59 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
->> index fab291245366..c55736e441e7 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe.c
->> @@ -29,7 +29,6 @@ void rxe_dealloc(struct ib_device *ib_dev)
->>  	rxe_pool_cleanup(&rxe->mr_pool);
->>  	rxe_pool_cleanup(&rxe->mw_pool);
->>  	rxe_pool_cleanup(&rxe->mc_grp_pool);
->> -	rxe_pool_cleanup(&rxe->mc_elem_pool);
->>  
->>  	if (rxe->tfm)
->>  		crypto_free_shash(rxe->tfm);
->> @@ -163,15 +162,8 @@ static int rxe_init_pools(struct rxe_dev *rxe)
->>  	if (err)
->>  		goto err9;
->>  
->> -	err = rxe_pool_init(rxe, &rxe->mc_elem_pool, RXE_TYPE_MC_ELEM,
->> -			    rxe->attr.max_total_mcast_qp_attach);
->> -	if (err)
->> -		goto err10;
->> -
->>  	return 0;
->>  
->> -err10:
->> -	rxe_pool_cleanup(&rxe->mc_grp_pool);
->>  err9:
->>  	rxe_pool_cleanup(&rxe->mw_pool);
->>  err8:
->> diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
->> index 9336295c4ee2..4a5896a225a6 100644
->> +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
->> @@ -26,30 +26,40 @@ static int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid)
->>  }
->>  
->>  /* caller should hold mc_grp_pool->pool_lock */
->> -static struct rxe_mcg *create_grp(struct rxe_dev *rxe,
->> -				     struct rxe_pool *pool,
->> -				     union ib_gid *mgid)
->> +static int __rxe_create_grp(struct rxe_dev *rxe, struct rxe_pool *pool,
->> +			    union ib_gid *mgid, struct rxe_mcg **grp_p)
->>  {
->>  	int err;
->>  	struct rxe_mcg *grp;
->>  
->>  	grp = rxe_alloc_locked(&rxe->mc_grp_pool);
->>  	if (!grp)
->> -		return ERR_PTR(-ENOMEM);
->> +		return -ENOMEM;
->> +
->> +	err = rxe_mcast_add(rxe, mgid);
->> +	if (unlikely(err)) {
->> +		rxe_drop_ref(grp);
->> +		return err;
->> +	}
->>  
->>  	INIT_LIST_HEAD(&grp->qp_list);
->>  	spin_lock_init(&grp->mcg_lock);
->>  	grp->rxe = rxe;
->> +
->> +	rxe_add_ref(grp);
->>  	rxe_add_key_locked(grp, mgid);
->>  
->> -	err = rxe_mcast_add(rxe, mgid);
->> -	if (unlikely(err)) {
->> -		rxe_drop_key_locked(grp);
->> -		rxe_drop_ref(grp);
->> -		return ERR_PTR(err);
->> -	}
->> +	*grp_p = grp;
-> 
-> This should return the struct rxe_mcg or an ERR_PTR not use output
-> function arguments, like it was before
-> 
->> +	return 0;
->> +}
->> +
->> +/* caller is holding a ref from lookup and mcg->mcg_lock*/
->> +void __rxe_destroy_mcg(struct rxe_mcg *grp)
->> +{
->> +	rxe_drop_key(grp);
->> +	rxe_drop_ref(grp);
->>  
->> -	return grp;
->> +	rxe_mcast_delete(grp->rxe, &grp->mgid);
->>  }
->>  
->>  static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
->> @@ -68,10 +78,9 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
->>  	if (grp)
->>  		goto done;
->>  
->> -	grp = create_grp(rxe, pool, mgid);
->> -	if (IS_ERR(grp)) {
->> +	err = __rxe_create_grp(rxe, pool, mgid, &grp);
->> +	if (err) {
->>  		write_unlock_bh(&pool->pool_lock);
->> -		err = PTR_ERR(grp);
->>  		return err;
-> 
-> This should return the struct rxe_mcg or ERR_PTR too
-> 
->> @@ -126,7 +143,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->>  				   union ib_gid *mgid)
->>  {
->>  	struct rxe_mcg *grp;
->> -	struct rxe_mca *elem, *tmp;
->> +	struct rxe_mca *mca, *tmp;
->>  
->>  	grp = rxe_pool_get_key(&rxe->mc_grp_pool, mgid);
->>  	if (!grp)
->> @@ -134,33 +151,30 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->>  
->>  	spin_lock_bh(&grp->mcg_lock);
->>  
->> +	list_for_each_entry_safe(mca, tmp, &grp->qp_list, qp_list) {
->> +		if (mca->qp == qp) {
->> +			list_del(&mca->qp_list);
->>  			grp->num_qp--;
->> +			if (grp->num_qp <= 0)
->> +				__rxe_destroy_mcg(grp);
->>  			atomic_dec(&qp->mcg_num);
->>  
->>  			spin_unlock_bh(&grp->mcg_lock);
->> +			rxe_drop_ref(grp);
-> 
-> Wwhere did this extra ref come from?
-> 
-> The grp was threaded on a linked list by rxe_attach_mcast, but that
-> also dropped the extra reference.
-> 
-> The reference should have followed the pointer into the linked list,
-> then it could be unput here when unthreading it from the linked list.
-> 
-> To me this still looks like there should be exactly one ref, the
-> rbtree should be removed inside the release function when the ref goes
-> to zero (under the pool_lock) and doesn't otherwise hold a ref
-> 
-> The linked list on the mca should hold the only ref and when
-> all the linked list is put back the grp can be released, no need for
-> qp_num as well.
-> 
-> Jason
+On Tue, Feb 01, 2022 at 02:00:09PM -0600, Bob Pearson wrote:
 
-Here is a rough picture of what is going on. When not active there are pointers to
-each mcg in the red-black tree (from a parent of the rb_node contained in mcg) and
-if there are attached qp's there are a pair of pointers from the head and tail of the
-linked list else none. When active in either verbs or packet processing code there
-is a pointer to mcg held in a local variable by the routine obtained from looking
-up the mcg in the tree.
 
-                                  +-----+
-                                  | rxe |
-                                  +-----+
-                                     |
-                                   +-v-+
-                           +-------|rb |-------+
-                           |       +---+       |
-                           |                 +-v-+
-                           |                 |rb |
-                        +--v--+              +---+
-                        |(rb) |
-       +--------------->| mcg |<---------------+
-       |                +-----+                |
-       |                                       |
-       |    +-----+     +-----+     +-----+    |
-       +--->| mca |<--->| mca |<--->| mca |<---+
-            +-----+     +-----+     +-----+
-               |           |           |
-               |           |           |
-            +--v--+     +--v--+     +--v--+
-            | qp  |     | qp  |     | qp  |
-            +-----+     +-----+     +-----+
+> as currently written the local variable has a kref obtained from the kref_get in
+> rxe_lookup_mcg or the kref_init in rxe_init_mcg if it is newly created. This ref is
+> dropped when the local variable goes out of scope. To protect the mcg when it is
+> inactive at least one more ref is required. I take an additional ref in rxe_get_mcg
+> if the mcg is created to protect the pointer in the red-black tree. This persists
+> for the lifetime of the object until it is destroyed when it is removed from the tree
+> and has the longest scope. This is enough to keep the object alive (it works fine BTW.)
+> It is also possible to take ref's representing the pointers in the list but they
+> wouldn't add anything.
 
-as currently written the local variable has a kref obtained from the kref_get in
-rxe_lookup_mcg or the kref_init in rxe_init_mcg if it is newly created. This ref is
-dropped when the local variable goes out of scope. To protect the mcg when it is
-inactive at least one more ref is required. I take an additional ref in rxe_get_mcg
-if the mcg is created to protect the pointer in the red-black tree. This persists
-for the lifetime of the object until it is destroyed when it is removed from the tree
-and has the longest scope. This is enough to keep the object alive (it works fine BTW.)
-It is also possible to take ref's representing the pointers in the list but they
-wouldn't add anything.
+I think I got it upside down, but OK this works for me. What was
+kbuild complaining about?
 
-On the other point. Is it standard practice to user ERRPTRs in the kernel rather than
-return arguments? I seem to have seen both styles used but it may have been my imagination. I don't have any preference here but sometimes choose one or the other
-in parallel flows to make comparable routines in the flows have similar interfaces.
+> On the other point. Is it standard practice to user ERRPTRs in the
+> kernel rather than return arguments? I seem to have seen both styles
+> used but it may have been my imagination. I don't have any
+> preference here but sometimes choose one or the other in parallel
+> flows to make comparable routines in the flows have similar
+> interfaces.
 
-Bob
+Always prefer errptrs.
+
+Jason
