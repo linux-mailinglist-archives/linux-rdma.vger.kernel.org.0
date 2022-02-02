@@ -2,113 +2,235 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 383DE4A6C4D
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Feb 2022 08:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB6514A6CD1
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Feb 2022 09:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbiBBH1G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Feb 2022 02:27:06 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12492 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236259AbiBBH1F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Feb 2022 02:27:05 -0500
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2126AUm7007360;
-        Wed, 2 Feb 2022 07:26:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yT3X4c6tQ/1ef0u43R/g9DgpTmo2R3pXG5hCixEiG24=;
- b=VOER8oCNyE1kR1sp6tr+jWJSlbu8DKdYKgtMI+o2HsfzjBzppsyfDKzQnFGjIBV4KZxC
- bmyf2Z2B5lertHdu63YHe0FBuBHRHmsQX+B9O9X4HvZrwEtsUHOxB4aSVKPt021s4HcX
- gLaoDL9CFSR8fjQ5NrPrYuKBTks1hhxvK1MysG4Y7XU1fPwc2ZJhohQqmtAd1TP8MDq3
- uyPbaRvAKxBazM0Whp2ovwq+tRMaxZ8rqbxgV8iyu6Qh7J4y126IJ+mky8Ef5gtRNXOU
- yFPf7LKmjnq34KQ5etCDaYJ+/bhqi6o1wDrhvLR5zDco1lx8pmPewB/VyKU3vnp28G/u EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dyjs6ag7v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 07:26:59 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2126KLAt035461;
-        Wed, 2 Feb 2022 07:26:58 GMT
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3dyjs6ag7c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 07:26:58 +0000
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2127EPu1007318;
-        Wed, 2 Feb 2022 07:26:56 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 3dyaetb39y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 02 Feb 2022 07:26:56 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2127Qs4141484622
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 2 Feb 2022 07:26:54 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 290C1A4040;
-        Wed,  2 Feb 2022 07:26:54 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8EEFA404D;
-        Wed,  2 Feb 2022 07:26:53 +0000 (GMT)
-Received: from [9.145.78.145] (unknown [9.145.78.145])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  2 Feb 2022 07:26:53 +0000 (GMT)
-Message-ID: <4ace582e-8438-6e56-40d5-763309e93368@linux.ibm.com>
-Date:   Wed, 2 Feb 2022 08:26:54 +0100
+        id S240383AbiBBIVu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Feb 2022 03:21:50 -0500
+Received: from mga12.intel.com ([192.55.52.136]:54887 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239508AbiBBIVu (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Wed, 2 Feb 2022 03:21:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643790110; x=1675326110;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Wa0ccGUpniUQ9r21e+WMmxkdlsp6d5EkwUsQ/bOfaVI=;
+  b=bBGVDRJNa1YPRFKChgRgFFN+G6x48+FGZ7WqN5mHD6mlb6yQNRhRx+Nn
+   DkTMbZBvVWJtUw/EzFiJoWooOVbjBhe/dvROiILucCeqq+/jx2JBrrT5+
+   ZwI7PJa1WOeXgBoBXftWO86+MJksALCfQLq2ba5pFfv9ScpKZm4t6rwel
+   z2Tj+ZtSXGq6ghFccLQRGfT6AiNVigwwMrStf9OimsNNj51AnCQH9FMPA
+   UgLrQFcFjMPMENrn2+ZyX3FG8tNrY2HVfO1BmaClaEFA93bnwCnbgY9z+
+   LHLWBSV+fPrSirJ49yzKGXvrqUXzJXw21GyR4S/gThZvPtJUHAFwPBx00
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10245"; a="227838481"
+X-IronPort-AV: E=Sophos;i="5.88,336,1635231600"; 
+   d="scan'208";a="227838481"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2022 00:21:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,336,1635231600"; 
+   d="scan'208";a="482737379"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 02 Feb 2022 00:21:48 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nFAtf-000ULt-RY; Wed, 02 Feb 2022 08:21:47 +0000
+Date:   Wed, 02 Feb 2022 16:20:47 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ 0d9c00117b8a57a361b27f7bd94284c94155f039
+Message-ID: <61fa3edf.6F7kIFnR925pwVfN%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH] Partially revert "net/smc: Add netlink net namespace
- support"
-Content-Language: en-US
-To:     "Dmitry V. Levin" <ldv@altlinux.org>
-Cc:     Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-api@vger.kernel.org
-References: <20211228130611.19124-1-tonylu@linux.alibaba.com>
- <20211228130611.19124-3-tonylu@linux.alibaba.com>
- <20220131002453.GA7599@altlinux.org>
- <521e3f2a-8b00-43d4-b296-1253c351a3d2@linux.ibm.com>
- <20220202030904.GA9742@altlinux.org>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20220202030904.GA9742@altlinux.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7pihlwHkGGSJg5ItcXYpdQIcPhYadcLq
-X-Proofpoint-ORIG-GUID: 2lBB1xK6qcEnycd-8iecEtDRiGiOqJkh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-02_02,2022-02-01_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- malwarescore=0 adultscore=0 impostorscore=0 bulkscore=0 suspectscore=0
- mlxscore=0 priorityscore=1501 spamscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202020035
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 02/02/2022 04:09, Dmitry V. Levin wrote:
-> The change of sizeof(struct smc_diag_linkinfo) by commit 79d39fc503b4
-> ("net/smc: Add netlink net namespace support") introduced an ABI
-> regression: since struct smc_diag_lgrinfo contains an object of
-> type "struct smc_diag_linkinfo", offset of all subsequent members
-> of struct smc_diag_lgrinfo was changed by that change.
-> 
-> As result, applications compiled with the old version
-> of struct smc_diag_linkinfo will receive garbage in
-> struct smc_diag_lgrinfo.role if the kernel implements
-> this new version of struct smc_diag_linkinfo.
-> 
-> Fix this regression by reverting the part of commit 79d39fc503b4 that
-> changes struct smc_diag_linkinfo.  After all, there is SMC_GEN_NETLINK
-> interface which is good enough, so there is probably no need to touch
-> the smc_diag ABI in the first place.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: 0d9c00117b8a57a361b27f7bd94284c94155f039  RDMA/mlx4: remove redundant assignment to variable nreq
 
-Reviewed-by: Karsten Graul <kgraul@linux.ibm.com>
+elapsed time: 733m
 
-Thank you Dmitry.
+configs tested: 163
+configs skipped: 4
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20220131
+powerpc              randconfig-c003-20220131
+arm                            zeus_defconfig
+sh                          rsk7269_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arc                              alldefconfig
+powerpc                         ps3_defconfig
+arm                          gemini_defconfig
+sh                   sh7724_generic_defconfig
+arc                         haps_hs_defconfig
+mips                           ci20_defconfig
+sh                             sh03_defconfig
+powerpc                     rainier_defconfig
+arm                             rpc_defconfig
+arm                          lpd270_defconfig
+sh                             espt_defconfig
+powerpc                    amigaone_defconfig
+powerpc                      ppc6xx_defconfig
+arm                        mvebu_v7_defconfig
+arc                     nsimosci_hs_defconfig
+arm                        trizeps4_defconfig
+mips                         rt305x_defconfig
+powerpc                    adder875_defconfig
+arm                      integrator_defconfig
+m68k                        mvme147_defconfig
+sh                           se7343_defconfig
+mips                           ip32_defconfig
+sh                            migor_defconfig
+arm                        multi_v7_defconfig
+powerpc                      tqm8xx_defconfig
+arm                     eseries_pxa_defconfig
+um                             i386_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                      gensparse_defconfig
+riscv                    nommu_k210_defconfig
+arm                           corgi_defconfig
+arm                         s3c6400_defconfig
+sparc64                             defconfig
+mips                         db1xxx_defconfig
+mips                         mpc30x_defconfig
+m68k                           sun3_defconfig
+powerpc                  iss476-smp_defconfig
+m68k                             allmodconfig
+sh                          rsk7203_defconfig
+sh                        edosk7760_defconfig
+sh                           se7721_defconfig
+powerpc                     stx_gp3_defconfig
+sh                         ecovec24_defconfig
+powerpc                      pasemi_defconfig
+powerpc                     taishan_defconfig
+xtensa                              defconfig
+s390                       zfcpdump_defconfig
+m68k                       m5475evb_defconfig
+sh                          sdk7786_defconfig
+arm                        oxnas_v6_defconfig
+arm                  randconfig-c002-20220130
+arm                  randconfig-c002-20220131
+arm                  randconfig-c002-20220201
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20220131
+x86_64               randconfig-a003-20220131
+x86_64               randconfig-a001-20220131
+x86_64               randconfig-a006-20220131
+x86_64               randconfig-a005-20220131
+x86_64               randconfig-a002-20220131
+i386                 randconfig-a006-20220131
+i386                 randconfig-a005-20220131
+i386                 randconfig-a003-20220131
+i386                 randconfig-a002-20220131
+i386                 randconfig-a001-20220131
+i386                 randconfig-a004-20220131
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+riscv                randconfig-r042-20220130
+arc                  randconfig-r043-20220130
+arc                  randconfig-r043-20220131
+s390                 randconfig-r044-20220130
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+riscv                          rv32_defconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                                  kexec
+x86_64                          rhel-8.3-func
+
+clang tested configs:
+riscv                randconfig-c006-20220201
+x86_64                        randconfig-c007
+powerpc              randconfig-c003-20220201
+mips                 randconfig-c004-20220201
+i386                          randconfig-c001
+arm                  randconfig-c002-20220201
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc8313_rdb_defconfig
+mips                      maltaaprp_defconfig
+powerpc                     mpc512x_defconfig
+mips                        bcm63xx_defconfig
+powerpc                     mpc5200_defconfig
+arm                       cns3420vb_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64               randconfig-a013-20220131
+x86_64               randconfig-a015-20220131
+x86_64               randconfig-a014-20220131
+x86_64               randconfig-a016-20220131
+x86_64               randconfig-a011-20220131
+x86_64               randconfig-a012-20220131
+i386                 randconfig-a011-20220131
+i386                 randconfig-a013-20220131
+i386                 randconfig-a014-20220131
+i386                 randconfig-a012-20220131
+i386                 randconfig-a015-20220131
+i386                 randconfig-a016-20220131
+riscv                randconfig-r042-20220131
+hexagon              randconfig-r045-20220130
+hexagon              randconfig-r045-20220131
+hexagon              randconfig-r041-20220130
+hexagon              randconfig-r041-20220131
+s390                 randconfig-r044-20220131
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
