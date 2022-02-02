@@ -2,123 +2,240 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB4B4A65AB
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Feb 2022 21:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B2D4A6A5A
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Feb 2022 03:54:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236511AbiBAUaq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Feb 2022 15:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbiBAUap (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Feb 2022 15:30:45 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BB58C061714
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Feb 2022 12:30:45 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id b186so29492534oif.1
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Feb 2022 12:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=VRynQPfp/B03DfRW6Z2YHbchTqnbgSF6URviljNQgqk=;
-        b=GviAjBYbjaSDHKs9zLRuz02GgmaLDlAYeEDsy5EHGtxYs7f8yJ0oyvbg8N5lTnnntO
-         +Km/QIDyJCai5sVUAslD3KGP39KJV22bVsVkOzNUeP1XtQSGd/Hbydbk2brFpEIAWQMz
-         96Xtp6HKEEaDtjQie84tlP2ZuZdGOnzVNGhvN5dtAzt3gxjG/4xQrnNYhxRfC6s0fdC/
-         /zsOkxQpCYGsHEnqUuwGpPd3HNvl7GFlaOco0MdGTon/2XHAI0RVl8laH0zqe9PmZ7Kf
-         mMKKIDJBwYqfSS69omVEdaqzr/1XD4+DQt81gLPRZN/SOFb7nXxiSn6B3MupRyEzn5Mt
-         TDvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=VRynQPfp/B03DfRW6Z2YHbchTqnbgSF6URviljNQgqk=;
-        b=mqx36trmvTiEySzdO4W2qY9swIO3+n79OsQeW6af6n4GRs3fSn5hckn82Nfvh4vt1W
-         wqZKq6/CJK0aXwQXOh2/maUPZCI6z0PqwGGXYhmceCgK4exZo/PgcwjLxmqfB/ulc9r9
-         j501IvjFo/W5DEuPZA9JKS8ArsYT+noD8FKorcStMubU8jfESWOS4Z5vkKw06xKwqXeF
-         rpXm50yq4ouRU9gvIODvQAnmv92hBz9E3EUoI6otG6dv+A1Zuoq8eEENl5gkwsKBZM5h
-         KDx709UrEHIBpuENmInkILRuYyKOsEX4rUqVHsCU7nRI1J/l6uBQgohdrxx2Fbj6dY6O
-         A6Vw==
-X-Gm-Message-State: AOAM5325m9QHrL0qp5S9TvamcC256JjUOVig5j5h3bUByjp3koNPrAsN
-        ywoWEhtQlQ3JQx4QkE6Itjk=
-X-Google-Smtp-Source: ABdhPJyhQPZUsg9mXFlRHQ2h1VqXtPSvt1izAvKVNkqk5+gwAWKUGCW6cmVT9A7FxCN35j5ki+OT3A==
-X-Received: by 2002:aca:1006:: with SMTP id 6mr2562136oiq.139.1643747444929;
-        Tue, 01 Feb 2022 12:30:44 -0800 (PST)
-Received: from ?IPV6:2603:8081:140c:1a00:71b2:d0bc:75eb:e63d? (2603-8081-140c-1a00-71b2-d0bc-75eb-e63d.res6.spectrum.com. [2603:8081:140c:1a00:71b2:d0bc:75eb:e63d])
-        by smtp.gmail.com with ESMTPSA id u3sm10762874oie.30.2022.02.01.12.30.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Feb 2022 12:30:44 -0800 (PST)
-Message-ID: <f01397f3-4e75-933f-2d7c-2ec0b7a757e5@gmail.com>
-Date:   Tue, 1 Feb 2022 14:30:43 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH for-next v10 07/17] RDMA/rxe: Use kzmalloc/kfree for mca
-Content-Language: en-US
+        id S232531AbiBBCy3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Feb 2022 21:54:29 -0500
+Received: from mga04.intel.com ([192.55.52.120]:30336 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231829AbiBBCy2 (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
+        Tue, 1 Feb 2022 21:54:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1643770468; x=1675306468;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=VFdw314Yk5JmWEYTh2X4rCYx8xCvpTOzDZr0toMYIgE=;
+  b=mB4AyaV3FNd9YUCOSEyNZfiSUtxGlXUanH6QpFBvo7SET2OnOKHYhCbV
+   7aTHab/qvnvCUFL84TaOcVemDD9v5xst75nbiwS27zRlefAsR4VIlDCQK
+   rEBviLl0fRq0kbRXdr10xUG50kMTBgVtYNi+2an2Qi3Iz/HJAE65zMkVp
+   RvoEqFdqyCjkW2ePSpuV5lOF+ihP1REevexXdOvPoxYcfuz8Nj5Ba/ZB8
+   ICEmQB+2H2xnvpkA8ZVQuTuqkoM6k/cnfTSBxprqIlYdLFqeGgVuCN+/1
+   n+MojS3IKoLvThUcyWj1GrVPW+N6GeEyW5XsfcQ1ZCnEa50lsnVzcDz39
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10245"; a="246671377"
+X-IronPort-AV: E=Sophos;i="5.88,335,1635231600"; 
+   d="scan'208";a="246671377"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2022 18:54:27 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,335,1635231600"; 
+   d="scan'208";a="769152204"
+Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
+  by fmsmga006.fm.intel.com with ESMTP; 01 Feb 2022 18:54:26 -0800
+Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nF5mr-000U2J-Ht; Wed, 02 Feb 2022 02:54:25 +0000
+Date:   Wed, 02 Feb 2022 10:54:06 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-References: <20220131220849.10170-1-rpearsonhpe@gmail.com>
- <20220131220849.10170-8-rpearsonhpe@gmail.com>
- <20220201145342.GI1786498@nvidia.com>
- <e1b6b398-ebe2-f5aa-e34f-58b786608b1b@gmail.com>
- <20220201201452.GO1786498@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220201201452.GO1786498@nvidia.com>
-Content-Type: text/plain; charset=UTF-8
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ f3136c4ce7acf64bee43135971ca52a880572e32
+Message-ID: <61f9f24e.0jHjzSF8u/mcBgVa%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/1/22 14:14, Jason Gunthorpe wrote:
-> On Tue, Feb 01, 2022 at 02:00:09PM -0600, Bob Pearson wrote:
-> 
-> 
->> as currently written the local variable has a kref obtained from the kref_get in
->> rxe_lookup_mcg or the kref_init in rxe_init_mcg if it is newly created. This ref is
->> dropped when the local variable goes out of scope. To protect the mcg when it is
->> inactive at least one more ref is required. I take an additional ref in rxe_get_mcg
->> if the mcg is created to protect the pointer in the red-black tree. This persists
->> for the lifetime of the object until it is destroyed when it is removed from the tree
->> and has the longest scope. This is enough to keep the object alive (it works fine BTW.)
->> It is also possible to take ref's representing the pointers in the list but they
->> wouldn't add anything.
-> 
-> I think I got it upside down, but OK this works for me. What was
-> kbuild complaining about?
-> 
->> On the other point. Is it standard practice to user ERRPTRs in the
->> kernel rather than return arguments? I seem to have seen both styles
->> used but it may have been my imagination. I don't have any
->> preference here but sometimes choose one or the other in parallel
->> flows to make comparable routines in the flows have similar
->> interfaces.
-> 
-> Always prefer errptrs.
-> 
-> Jason
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: f3136c4ce7acf64bee43135971ca52a880572e32  RDMA/mlx4: Don't continue event handler after memory allocation failure
 
-this API is a little different than most of the verbs APIs where typically we have
+elapsed time: 732m
 
-obj = xx_create_obj()
-	takes a reference at kref_init() and doesn't drop it on the non error path.
-	returns obj.
+configs tested: 167
+configs skipped: 4
 
-xx_other_code_using_obj(obj)
-	uses obj holding ref
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-xx_destroy_obj(obj)
-	drops the ref to obj
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                 randconfig-c001-20220131
+i386                          randconfig-c001
+arm                            zeus_defconfig
+sh                          rsk7269_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 mpc85xx_cds_defconfig
+powerpc                 mpc837x_rdb_defconfig
+arc                              alldefconfig
+powerpc                         ps3_defconfig
+arm                          gemini_defconfig
+sh                   sh7724_generic_defconfig
+arc                         haps_hs_defconfig
+mips                           ci20_defconfig
+powerpc                    amigaone_defconfig
+powerpc                      ppc6xx_defconfig
+arc                     nsimosci_hs_defconfig
+arm                        trizeps4_defconfig
+arm                        mvebu_v7_defconfig
+sh                        apsh4ad0a_defconfig
+sh                        dreamcast_defconfig
+arm                      jornada720_defconfig
+arm                           h3600_defconfig
+openrisc                 simple_smp_defconfig
+sh                           se7705_defconfig
+sh                                  defconfig
+mips                        vocore2_defconfig
+m68k                        mvme147_defconfig
+sh                           se7343_defconfig
+mips                           ip32_defconfig
+sh                            migor_defconfig
+arm                        multi_v7_defconfig
+powerpc                      tqm8xx_defconfig
+arm                     eseries_pxa_defconfig
+um                             i386_defconfig
+powerpc                mpc7448_hpc2_defconfig
+ia64                      gensparse_defconfig
+riscv                    nommu_k210_defconfig
+arm                           corgi_defconfig
+arm                         s3c6400_defconfig
+sparc64                             defconfig
+mips                         db1xxx_defconfig
+mips                         mpc30x_defconfig
+m68k                           sun3_defconfig
+powerpc                  iss476-smp_defconfig
+sh                          rsk7203_defconfig
+sh                        edosk7760_defconfig
+sh                           se7721_defconfig
+powerpc                     stx_gp3_defconfig
+sh                         ecovec24_defconfig
+h8300                     edosk2674_defconfig
+arm                         axm55xx_defconfig
+sh                             espt_defconfig
+nios2                               defconfig
+s390                       zfcpdump_defconfig
+m68k                       m5475evb_defconfig
+sh                          sdk7786_defconfig
+arm                        oxnas_v6_defconfig
+arm                  randconfig-c002-20220202
+arm                  randconfig-c002-20220130
+arm                  randconfig-c002-20220131
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20220131
+x86_64               randconfig-a003-20220131
+x86_64               randconfig-a001-20220131
+x86_64               randconfig-a006-20220131
+x86_64               randconfig-a005-20220131
+x86_64               randconfig-a002-20220131
+i386                 randconfig-a006-20220131
+i386                 randconfig-a005-20220131
+i386                 randconfig-a003-20220131
+i386                 randconfig-a002-20220131
+i386                 randconfig-a001-20220131
+i386                 randconfig-a004-20220131
+i386                          randconfig-a003
+i386                          randconfig-a001
+i386                          randconfig-a005
+riscv                randconfig-r042-20220130
+arc                  randconfig-r043-20220130
+arc                  randconfig-r043-20220131
+s390                 randconfig-r044-20220130
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-here the object is a local variable in xx_mcast_attach() and nothing is returned.
+clang tested configs:
+riscv                randconfig-c006-20220130
+x86_64                        randconfig-c007
+arm                  randconfig-c002-20220130
+powerpc              randconfig-c003-20220130
+mips                 randconfig-c004-20220130
+i386                          randconfig-c001
+powerpc                 mpc836x_rdk_defconfig
+powerpc                    socrates_defconfig
+arm                       versatile_defconfig
+mips                           ip22_defconfig
+arm                          collie_defconfig
+arm                     davinci_all_defconfig
+arm                       mainstone_defconfig
+powerpc               mpc834x_itxgp_defconfig
+powerpc                   microwatt_defconfig
+powerpc                 xes_mpc85xx_defconfig
+powerpc                 mpc8313_rdb_defconfig
+mips                      maltaaprp_defconfig
+i386                          randconfig-a002
+i386                          randconfig-a004
+i386                          randconfig-a006
+x86_64               randconfig-a013-20220131
+x86_64               randconfig-a015-20220131
+x86_64               randconfig-a014-20220131
+x86_64               randconfig-a016-20220131
+x86_64               randconfig-a011-20220131
+x86_64               randconfig-a012-20220131
+i386                 randconfig-a011-20220131
+i386                 randconfig-a013-20220131
+i386                 randconfig-a014-20220131
+i386                 randconfig-a012-20220131
+i386                 randconfig-a015-20220131
+i386                 randconfig-a016-20220131
+riscv                randconfig-r042-20220131
+hexagon              randconfig-r045-20220130
+hexagon              randconfig-r045-20220131
+hexagon              randconfig-r041-20220130
+hexagon              randconfig-r041-20220131
+s390                 randconfig-r044-20220131
 
-For InfiniBand the create and destroy mcast group function is triggered by MADs
-from some central mcast server. For RoCEv2 that doesn't happen and these APIs
-don't exist.
-
-	
-a missing static declaration at line 262. If you want me to I can fix it and resend.
-Do I really have to mint new version?
-
-Bob
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
