@@ -1,155 +1,114 @@
 Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E694A6AE9
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Feb 2022 05:31:42 +0100 (CET)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 383DE4A6C4D
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Feb 2022 08:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244371AbiBBEbk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Feb 2022 23:31:40 -0500
-Received: from mail-mw2nam10on2055.outbound.protection.outlook.com ([40.107.94.55]:54112
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S244210AbiBBEbj (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Tue, 1 Feb 2022 23:31:39 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VxRLdfffAICtRCn3RQqm83fpLshhcpmDbJy+mE0RBjVMhm1BHcug9teDooj6HwMg+KdJv6Ahcq1dRracX19JFdk51c9ib8rzZEj2yaFGonmUEWnl65gPcJQ+zJV97fu1ur8nuOkovZlus68Dn2Eh57NL+0sGafUgTGZh37ISIQNSHbiJfk/pbOemgM3dd/YP9c659h/mF+Q4pTi79titWpyccVxWNoBrrQGghY70z+saor+7mZoWdG7JGAERivzuB+JyeHB4G7oQhVgCOSnJz7cvSKLVb1uXDlVwrCfbJAzeTiDTt00B7rHJYfhkJMvoMx4SkeHMx9YLgt2GsGJO5w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ctywqRygsg/QFE5JRHyWy+lAxl/8mgy0QwnVazXDeic=;
- b=d416RaDJAvKY1mHAwumTgmINayQ6uJs5KJ+v3SgYZUEz1kszRSepLXvf/sSSZRRj9se0fEri4hv1iTOAUg5temCeevm6BdG7AyaGrIHH7HaDr+b8TW09JbnrajpJsvnTOCtadcRCIj4+9qtSIib+8Mbvea+UJrR0DXi7Ztq6JHrrq6LZZTfVCe2L+bE/Kii7kebnGHat0T2/UbHZ7tfQAqisobNNm8mAMl2Hj0HrwCKkl18YfsLSjyynzsajRmfntSyiipcwAIPXuu2zfcRZ1oe4aq6yuom9tkH7Su0j5be4MSUylhSXF9yt65/cWgrc/qIRPRS6T04yMcAAi1lQeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ctywqRygsg/QFE5JRHyWy+lAxl/8mgy0QwnVazXDeic=;
- b=E6RnZ4KcGCfI+SQJQ4DQUzCINSELSN3hDVFFxGrTwpoj7iRnVaSmiReFFoY2H1UPQSR/5ZLXSbHU8SvcWE3EnoF4IqKee7aYvjPljf6r/xQPCc9WtFSRzW81ssQLBeligv4bwtzhxgCumSAyFattf8kqGh8U0haXTLbn/9YvCHVuRrE90nSvrFgP8sMlvEgFx/OT3v1DwwKRTjBpTzr+u3xmDeH+VpivtHATJiYTmFWfym57BJ1nQbnac3ntyeMqFOj6ZTt5sF+fCWjx8b1XYt50En7nkFwVT9D70VlDjI4cbbRQsLp+QWUbkHFkHujTD7f+RmUmOgk3DBO+ikOBdA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
- by DM5PR12MB1370.namprd12.prod.outlook.com (2603:10b6:3:76::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4930.19; Wed, 2 Feb
- 2022 04:31:37 +0000
-Received: from BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::35a1:8b68:d0f7:7496]) by BY5PR12MB4209.namprd12.prod.outlook.com
- ([fe80::35a1:8b68:d0f7:7496%4]) with mapi id 15.20.4951.012; Wed, 2 Feb 2022
- 04:31:37 +0000
-Date:   Tue, 1 Feb 2022 20:31:34 -0800
-From:   Saeed Mahameed <saeedm@nvidia.com>
-To:     Roi Dayan <roid@nvidia.com>
-Cc:     Colin Ian King <colin.i.king@gmail.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Oz Shlomo <ozsh@nvidia.com>,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] net/mlx5e: Fix spelling mistake "supoported" ->
- "supported"
-Message-ID: <20220202043134.535ks3poq4lnfmyd@sx1>
-References: <20220131084317.8058-1-colin.i.king@gmail.com>
- <2df0d488-36c9-1f2b-8d27-7ada36ad3f4f@nvidia.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <2df0d488-36c9-1f2b-8d27-7ada36ad3f4f@nvidia.com>
-X-ClientProxiedBy: BY3PR05CA0038.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::13) To BY5PR12MB4209.namprd12.prod.outlook.com
- (2603:10b6:a03:20d::22)
+        id S236433AbiBBH1G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Feb 2022 02:27:06 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12492 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236259AbiBBH1F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Feb 2022 02:27:05 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2126AUm7007360;
+        Wed, 2 Feb 2022 07:26:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=yT3X4c6tQ/1ef0u43R/g9DgpTmo2R3pXG5hCixEiG24=;
+ b=VOER8oCNyE1kR1sp6tr+jWJSlbu8DKdYKgtMI+o2HsfzjBzppsyfDKzQnFGjIBV4KZxC
+ bmyf2Z2B5lertHdu63YHe0FBuBHRHmsQX+B9O9X4HvZrwEtsUHOxB4aSVKPt021s4HcX
+ gLaoDL9CFSR8fjQ5NrPrYuKBTks1hhxvK1MysG4Y7XU1fPwc2ZJhohQqmtAd1TP8MDq3
+ uyPbaRvAKxBazM0Whp2ovwq+tRMaxZ8rqbxgV8iyu6Qh7J4y126IJ+mky8Ef5gtRNXOU
+ yFPf7LKmjnq34KQ5etCDaYJ+/bhqi6o1wDrhvLR5zDco1lx8pmPewB/VyKU3vnp28G/u EQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dyjs6ag7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 07:26:59 +0000
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2126KLAt035461;
+        Wed, 2 Feb 2022 07:26:58 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3dyjs6ag7c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 07:26:58 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2127EPu1007318;
+        Wed, 2 Feb 2022 07:26:56 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma05fra.de.ibm.com with ESMTP id 3dyaetb39y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 02 Feb 2022 07:26:56 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2127Qs4141484622
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 2 Feb 2022 07:26:54 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 290C1A4040;
+        Wed,  2 Feb 2022 07:26:54 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8EEFA404D;
+        Wed,  2 Feb 2022 07:26:53 +0000 (GMT)
+Received: from [9.145.78.145] (unknown [9.145.78.145])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  2 Feb 2022 07:26:53 +0000 (GMT)
+Message-ID: <4ace582e-8438-6e56-40d5-763309e93368@linux.ibm.com>
+Date:   Wed, 2 Feb 2022 08:26:54 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d3465b6-9f88-4b85-0db8-08d9e604e69a
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1370:EE_
-X-Microsoft-Antispam-PRVS: <DM5PR12MB13708C66E52C396FD1255296B3279@DM5PR12MB1370.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:820;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QrJdQa/YWJtVgaw4+JVY6NYpLJkcU/quLhTdHF7G+OI27KmLzRMd4PyGXeNYUyg2UHHy5ufR7d346DnV1+3dsZrvo0LaSxGwEcJIFgQTjYfOuVRgHohsfLRaxyBk57zNwDXV0noqXY3W1DEloAr+fLU74HI1yPuwmRMNOTNufVWEBJvJSm5V5IwbRMN6Bb8Ec30Nurdfgu6asIwgsb2fYlAYOHK08KLqIuOdLgns23C8iEO/lDKCdTFBXmOxMrqdGR45nyybk5fn7uOnkb9Kr4OAUlO1uHS3q/5ZSwW0TRSWu4cbsv7Cqmk4Zhm6ADTblICoaw4XoZnx83ggNSuiS+UVoj8yGzRMmf/9k4SyCkYhEaaOeEqtfd7jMEveTg9rRECKOGQMWX2X3SO24li/eVlFjrU4pddtxCwSymHFF9nsMxGmH7USXDIJwzzUV6/N/N9iWobGzR5O9RwNQWx9j7EJ0YMXUMRAEknAMXrR1+8RV7LRicO0YFnNS1Q1Si287UnNhMENcymgqlxmUCAXwD27b1wZcJBJEX7ZCKdnXq2aW6YpAnB5EAHe7fX3p6JNZvL9foEVNnSFkiyyUrsh+1NVvAtOMvimTwLC75ZEGX8HAAf14H6pmFxTG6ofzk414kvuKbNVwdEfX6mzViaw58N4bOlgJWKCTuhy1q9MdN6MlQyu2eBIrxaY2FKTtnAMYvfBfWftDIs6qdELW5f/Dw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(316002)(5660300002)(6486002)(6636002)(54906003)(9686003)(33716001)(2906002)(38100700002)(8676002)(6512007)(8936002)(186003)(38350700002)(66946007)(6666004)(26005)(1076003)(66476007)(6506007)(52116002)(508600001)(83380400001)(66556008)(4326008)(86362001)(6862004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?a9kjRYyJFWUAFgvLdT4TUHstbJ/ZPPKwSuk9oJzIMzo9YwJ0RzhloaHwW94I?=
- =?us-ascii?Q?iWDVywirSxXbKWhZh3LXnN97JSvsqPs8H6AdZ60hyko4paGn7oDLP8BIjADv?=
- =?us-ascii?Q?nVdf31oMe0NCk+VLwGfAu4yePcVGKFlfHmTeE/NT4uW8d8SXdeeasM8sAa/G?=
- =?us-ascii?Q?Pg6O+bOGr0paeZBwUMGxLMtlLIfLLiWQ/bz59GWEtU/C9eiHtMIPgSjFuIeg?=
- =?us-ascii?Q?XygqQ7UnDM9Qpy900Jjk0TXWhe5St3acYJi+iDOEt+eNN1fC61wGWtqgdvH+?=
- =?us-ascii?Q?ipqQmHsytNxWnQAoJPUNunRQHl/0xAvNbXfVA+DIGB6p4IBcyZ6lEkEo8mXZ?=
- =?us-ascii?Q?+IGmYOmNyLBwdXwIJ4t7/WArEwhYFT9Gt129d/d47+3oBZzNPCnl49QtiTE7?=
- =?us-ascii?Q?SfrqyTSMhScjZD1J1mTBuas/i3+kotwsRlwQF/1Ubbamk6aCAy6uo224BdLP?=
- =?us-ascii?Q?bEtBf2uMvsTPAHuNL7JZ4M08J5CPSv0rAnfeKzZn2bjMIFZpvFX6t8mpeDJq?=
- =?us-ascii?Q?96PpdYuV5bH+Nu4p3dT7B9zOLNZQcvEko+R5S67QraOckvAEU0g3bLnoElJD?=
- =?us-ascii?Q?tWvREhjXnQ4lWMGDcbdLPMYMwQbyNtjIFN4uSIK5jvIqGOeewZYR07aYhmaw?=
- =?us-ascii?Q?+jdZ6JI4ZblW4/9KX7e+DOvV24GMFtUwuh4nBYQMODvRxmVZTFfLRay/lo15?=
- =?us-ascii?Q?b0SOxYMxRMF9Cp7my/3J62lwcLNEDZYbz35oge+zMtlWwTNYngK8RwkRnZST?=
- =?us-ascii?Q?6sgCNi5CnQ1oD0ZSguQBvIjDNInS66y40xmJKMTwhNdD9KokS8tlGYLpXTI5?=
- =?us-ascii?Q?5rb5PSyZoabPa44jCIu+UPGRd5QPQiUlNUa5vkw4Pfux3CsNw0/phhztuzYC?=
- =?us-ascii?Q?ijWqV0UOWO9qU+t96FHs7qWxyMqHyK+WYS8nJoCV3lZfQIM1JQJk98IHJbyk?=
- =?us-ascii?Q?Z21eflnVAF/8vixHQUyTD8/Kv/4qRodut/C2gcREmZIWdQC3oPS4cy4j1Xqf?=
- =?us-ascii?Q?M2zWY398XK7fqjqviR5hcoa3v6f+7cM03U1TjhRx4p4y8VrbSrbVYcxWN+8t?=
- =?us-ascii?Q?oSoopjZ3Nb9heKEa6TZUOtQ9qYn2qCN0NBUW/KItrwa+odAqr3UDXA5Hr8gg?=
- =?us-ascii?Q?MqCiEU+XZCbKHyeLEv9GD6D1DWjiAE3R116h7XxorlXrItodb28uQwII+bCd?=
- =?us-ascii?Q?Q1Bi3kUgB4qTXethV+qFIPW7J5NpKzdakv2yRezsEJWSv97I4s4ir4t5hHZ9?=
- =?us-ascii?Q?3W4W7OFjy/z1fN53ei3LbjBja/y+doouvesIprCT6CRDZVximQeDhANVbOgG?=
- =?us-ascii?Q?3BOvcmCrYVrHyZdOqsjLe7v2gJYAxdMTfLqcHmwe3ZsdZk1lIY7ycLMn8hm3?=
- =?us-ascii?Q?D1OsbqWTD8iHZp1B7gn8GNBatrWe4yKzAKiDVzDaQKZRmFoVATazZQQd8IV/?=
- =?us-ascii?Q?ui6XrBnAW4mtud3na28ZV7x1kOYbeXO87+6ctKUO8I86nzINZZHe0ukfdHit?=
- =?us-ascii?Q?G6ncbc39MbWxS1ztCu3XKfsA/ksI9aFrZjoSiKD6mbpXcbeNc9iVp5nz6SbQ?=
- =?us-ascii?Q?rNFDZN1+D8DcKHYQA5DsoCEPKmEAg6b7Oh9v0UdBRClBrs7+g0Jiko8b9Fsy?=
- =?us-ascii?Q?IITYJC5YlVt9LJ/2JGzDeek=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d3465b6-9f88-4b85-0db8-08d9e604e69a
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2022 04:31:37.3686
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5zfl4+I0p8qfS0ZjY9PamTgDylSeAduL7EzXL52D0AYX1iLIJPK2tAexLwgkJIJUu9lGIlOcPe+LOyWsPqqekw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1370
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] Partially revert "net/smc: Add netlink net namespace
+ support"
+Content-Language: en-US
+To:     "Dmitry V. Levin" <ldv@altlinux.org>
+Cc:     Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-api@vger.kernel.org
+References: <20211228130611.19124-1-tonylu@linux.alibaba.com>
+ <20211228130611.19124-3-tonylu@linux.alibaba.com>
+ <20220131002453.GA7599@altlinux.org>
+ <521e3f2a-8b00-43d4-b296-1253c351a3d2@linux.ibm.com>
+ <20220202030904.GA9742@altlinux.org>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <20220202030904.GA9742@altlinux.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7pihlwHkGGSJg5ItcXYpdQIcPhYadcLq
+X-Proofpoint-ORIG-GUID: 2lBB1xK6qcEnycd-8iecEtDRiGiOqJkh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-02_02,2022-02-01_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 adultscore=0 impostorscore=0 bulkscore=0 suspectscore=0
+ mlxscore=0 priorityscore=1501 spamscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
+ definitions=main-2202020035
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 01 Feb 09:43, Roi Dayan wrote:
->
->
->On 2022-01-31 10:43 AM, Colin Ian King wrote:
->>There is a spelling mistake in a NL_SET_ERR_MSG_MOD error
->>message.  Fix it.
->>
->>Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
->>---
->>  drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->>diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
->>index 85f0cb88127f..9fb1a9a8bc02 100644
->>--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
->>+++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc/act/ct.c
->>@@ -21,7 +21,7 @@ tc_act_can_offload_ct(struct mlx5e_tc_act_parse_state *parse_state,
->>  	}
->>  	if (parse_state->ct && !clear_action) {
->>-		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supoported");
->>+		NL_SET_ERR_MSG_MOD(extack, "Multiple CT actions are not supported");
->>  		return false;
->>  	}
->
->thanks
->you can add a fixes line if needed
->
->Fixes: fd7ab32d19b6 ("net/mlx5e: TC, Reject rules with multiple CT actions")
->
+On 02/02/2022 04:09, Dmitry V. Levin wrote:
+> The change of sizeof(struct smc_diag_linkinfo) by commit 79d39fc503b4
+> ("net/smc: Add netlink net namespace support") introduced an ABI
+> regression: since struct smc_diag_lgrinfo contains an object of
+> type "struct smc_diag_linkinfo", offset of all subsequent members
+> of struct smc_diag_lgrinfo was changed by that change.
+> 
+> As result, applications compiled with the old version
+> of struct smc_diag_linkinfo will receive garbage in
+> struct smc_diag_lgrinfo.role if the kernel implements
+> this new version of struct smc_diag_linkinfo.
+> 
+> Fix this regression by reverting the part of commit 79d39fc503b4 that
+> changes struct smc_diag_linkinfo.  After all, there is SMC_GEN_NETLINK
+> interface which is good enough, so there is probably no need to touch
+> the smc_diag ABI in the first place.
 
-wrong hash,
+Reviewed-by: Karsten Graul <kgraul@linux.ibm.com>
 
-this is the correct one:
-Fixes: 3b49a7edec1d ("net/mlx5e: TC, Reject rules with multiple CT actions")
-
-
->
->Reviewed-by: Roi Dayan <roid@nvidia.com>
-
-Applied to net-next-mlx5
-
+Thank you Dmitry.
