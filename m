@@ -2,73 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7555E4AA513
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Feb 2022 01:31:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25204AA725
+	for <lists+linux-rdma@lfdr.de>; Sat,  5 Feb 2022 07:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378786AbiBEAb3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 4 Feb 2022 19:31:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378782AbiBEAb2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 4 Feb 2022 19:31:28 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A22DF8E3CC;
-        Fri,  4 Feb 2022 16:31:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A747C61D38;
-        Sat,  5 Feb 2022 00:31:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1ABE8C004E1;
-        Sat,  5 Feb 2022 00:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644021087;
-        bh=q3Yih5XixSjxwdzRqf1AAkWP1dP8EZSIU2HR3ZpqdWM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=LVapDQUtZdo4ImBuwmNk7lUOG6kC4ANuVOKvewpNS2eOcZj9vP1GnSqz4g0WoJf0J
-         DJ+9c2sxxaRbLOYhFozto3LWRD6S0TN135/opMaoeyGZAXSF7Bu1FGbfSjiLejyNNa
-         Oz+PAuGb19DZBNodzELuOCulzIUucdKwLhLp1/1w0v4+PzHihpgCRXEAWuY7qC/jT0
-         JG1oMfVCfJdVm9DeC3AB2ZYo5LgXBm85j0UAMsw4McErFCOgahpwZWjgaHIk4G/nyo
-         CfhyEhK+ZY34v2v1IoWl4L98GIP+smQNHfa9GuRvCGebDw3uIbLwx1mC8yVdStfz2y
-         MOBmQRRWN1GaQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0900BC6D4EA;
-        Sat,  5 Feb 2022 00:31:27 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20220204235922.GA2979630@nvidia.com>
-References: <20220204235922.GA2979630@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20220204235922.GA2979630@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: f3136c4ce7acf64bee43135971ca52a880572e32
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0457e5153e0e8420134f60921349099e907264ca
-Message-Id: <164402108702.12045.16716679454452985582.pr-tracker-bot@kernel.org>
-Date:   Sat, 05 Feb 2022 00:31:27 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+        id S1376830AbiBEGey (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 5 Feb 2022 01:34:54 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:56996 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230008AbiBEGey (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 5 Feb 2022 01:34:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V3cFwYN_1644042891;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V3cFwYN_1644042891)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 05 Feb 2022 14:34:52 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "D. Wythe" <alibuda@linux.alibaba.com>
+Subject: [PATCH net-next v3 0/3] Optimizing performance in short-lived scenarios     
+Date:   Sat,  5 Feb 2022 14:34:42 +0800
+Message-Id: <cover.1644041637.git.alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Fri, 4 Feb 2022 19:59:22 -0400:
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+This patch set aims to optimizing performance of SMC in short-lived
+links scenarios, which is quite unsatisfactory right now.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0457e5153e0e8420134f60921349099e907264ca
+In our benchmark, we test it with follow scripts:
 
-Thank you!
+./wrk -c 10000 -t 4 -H 'Connection: Close' -d 20 http://smc-server
+
+Current performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  4956 requests in 20.06s, 3.24MB read
+  Socket errors: connect 0, read 0, write 672, timeout 0
+Requests/sec:    247.07
+Transfer/sec:    165.28KB
+
+There are many reasons for this phenomenon, this patch set doesn't
+solve it all though, but it can be well alleviated with it in.
+
+Patch 1/3  (Make smc_tcp_listen_work() independent) :
+
+Separate smc_tcp_listen_work() from smc_listen_work(), make them
+independent of each other, the busy SMC handshake can not affect new TCP
+connections visit any more. Avoid discarding a large number of TCP
+connections after being overstock, which is undoubtedly raise the
+connection establishment time.
+
+Patch 2/3 (Limits SMC backlog connections):
+
+Since patch 1 has separated smc_tcp_listen_work() from
+smc_listen_work(), an unrestricted TCP accept have come into being. This
+patch try to put a limit on SMC backlog connections refers to
+implementation of TCP.
+
+Patch 3/3 (Fallback when SMC handshake workqueue congested):
+
+Considering the complexity of SMC handshake right now, in short-lived
+links scenarios, this may not be the main scenario of SMC though, it's
+performance is still quite poor. This Patch try to provide auto fallback
+case when SMC handshake workqueue congested, which is the sign of SMC
+handshake stacking in our opinion.
+
+Of course, it's optional.
+
+After this patch set, performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  693253 requests in 20.10s, 452.88MB read
+Requests/sec:  34488.13
+Transfer/sec:     22.53MB
+
+That's a quite well performance improvement, about to 6 to 7 times in my
+environment.
+---
+changelog:
+v2 -> v1:
+- fix compile warning
+- fix invalid dependencies in kconfig
+v3 -> v2:
+- correct spelling mistakes 
+- fix useless variable declare
+---
+D. Wythe (3):
+  net/smc: Make smc_tcp_listen_work() independent
+  net/smc: Limits backlog connections
+  net/smc: Fallback when handshake workqueue congested
+
+ include/linux/tcp.h  |  1 +
+ net/ipv4/tcp_input.c |  3 +-
+ net/smc/Kconfig      | 12 ++++++++
+ net/smc/af_smc.c     | 78 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ net/smc/smc.h        |  4 +++
+ 5 files changed, 95 insertions(+), 3 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+1.8.3.1
+
