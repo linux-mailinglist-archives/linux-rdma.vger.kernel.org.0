@@ -2,90 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6074AA8AF
-	for <lists+linux-rdma@lfdr.de>; Sat,  5 Feb 2022 13:17:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75514AB537
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Feb 2022 07:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379847AbiBEMRe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 5 Feb 2022 07:17:34 -0500
-Received: from mga14.intel.com ([192.55.52.115]:1313 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243979AbiBEMRc (ORCPT <rfc822;linux-rdma@vger.kernel.org>);
-        Sat, 5 Feb 2022 07:17:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644063452; x=1675599452;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dA7aLRkk8F+iqwY27GaGa0TrFVEJcF8V/aqgM1P7jJ0=;
-  b=mTHOkqj87gNJKmU419+XzvNArZrSYv6tzKKeA0B+S5s44blkFtl3Lc4W
-   /jMEKRbi3tKSk0mqF/Od+pztwwdAL2cHo2UOb7sPgF0OD/j7KzRwhwp7Y
-   J6IP33HqTiKYd06How7WePtAqiHyKOP9w5scKD2GrnVJyUiDLHEuhH5up
-   f36oLFNLgGfagyUKyoWy1Fws9sx962Bzjduc+4gf/oE62rCYe2dulb8wQ
-   aLxeJ1qyCs6M6iyvobxrPfnWvGMtd7QLQeliiHwB2EQBtdaLoHGx8RR8o
-   qRdTNCm6I2+i+V3u3ULO5bQEkWKXd2OJJ4vfQVefvD3+2PqQPY3ChQCPy
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10248"; a="248722190"
-X-IronPort-AV: E=Sophos;i="5.88,345,1635231600"; 
-   d="scan'208";a="248722190"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Feb 2022 04:17:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,345,1635231600"; 
-   d="scan'208";a="535775763"
-Received: from lkp-server01.sh.intel.com (HELO 276f1b88eecb) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Feb 2022 04:17:30 -0800
-Received: from kbuild by 276f1b88eecb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nGK0P-000Z0x-MK; Sat, 05 Feb 2022 12:17:29 +0000
-Date:   Sat, 5 Feb 2022 20:16:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>, kgraul@linux.ibm.com
-Cc:     kbuild-all@lists.01.org, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org, "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: Re: [PATCH net-next v3 1/3] net/smc: Make smc_tcp_listen_work()
- independent
-Message-ID: <202202052019.I6XO0mge-lkp@intel.com>
-References: <1d7365b47719546fe1f145affb01398d8287b381.1644041638.git.alibuda@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1d7365b47719546fe1f145affb01398d8287b381.1644041638.git.alibuda@linux.alibaba.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S231720AbiBGGx4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Feb 2022 01:53:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244576AbiBGGYZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 01:24:25 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29A87C043181;
+        Sun,  6 Feb 2022 22:24:22 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V3nGPGq_1644215059;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V3nGPGq_1644215059)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 07 Feb 2022 14:24:20 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "D. Wythe" <alibuda@linux.alibaba.com>
+Subject: [PATCH net-next v4 0/3] net/smc: Optimizing performance in short-lived scenarios
+Date:   Mon,  7 Feb 2022 14:24:12 +0800
+Message-Id: <cover.1644214112.git.alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Wythe",
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Thank you for the patch! Perhaps something to improve:
+This patch set aims to optimizing performance of SMC in short-lived
+links scenarios, which is quite unsatisfactory right now.
 
-[auto build test WARNING on net-next/master]
+In our benchmark, we test it with follow scripts:
 
-url:    https://github.com/0day-ci/linux/commits/D-Wythe/Optimizing-performance-in-short-lived-scenarios/20220205-143638
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git c78b8b20e34920231eda02fb40c7aca7d88be837
-config: x86_64-randconfig-s021 (https://download.01.org/0day-ci/archive/20220205/202202052019.I6XO0mge-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce:
-        # apt-get install sparse
-        # sparse version: v0.6.4-dirty
-        # https://github.com/0day-ci/linux/commit/c750e361a42f2d32b4e041edfd0b51d9020a936c
-        git remote add linux-review https://github.com/0day-ci/linux
-        git fetch --no-tags linux-review D-Wythe/Optimizing-performance-in-short-lived-scenarios/20220205-143638
-        git checkout c750e361a42f2d32b4e041edfd0b51d9020a936c
-        # save the config file to linux build tree
-        mkdir build_dir
-        make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' O=build_dir ARCH=x86_64 SHELL=/bin/bash net/smc/
+./wrk -c 10000 -t 4 -H 'Connection: Close' -d 20 http://smc-server
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+Current performance figures like that:
 
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  4956 requests in 20.06s, 3.24MB read
+  Socket errors: connect 0, read 0, write 672, timeout 0
+Requests/sec:    247.07
+Transfer/sec:    165.28KB
 
-sparse warnings: (new ones prefixed by >>)
->> net/smc/af_smc.c:62:25: sparse: sparse: symbol 'smc_tcp_ls_wq' was not declared. Should it be static?
+There are many reasons for this phenomenon, this patch set doesn't
+solve it all though, but it can be well alleviated with it in.
 
-Please review and possibly fold the followup patch.
+Patch 1/3  (Make smc_tcp_listen_work() independent) :
 
+Separate smc_tcp_listen_work() from smc_listen_work(), make them
+independent of each other, the busy SMC handshake can not affect new TCP
+connections visit any more. Avoid discarding a large number of TCP
+connections after being overstock, which is undoubtedly raise the
+connection establishment time.
+
+Patch 2/3 (Limits SMC backlog connections):
+
+Since patch 1 has separated smc_tcp_listen_work() from
+smc_listen_work(), an unrestricted TCP accept have come into being. This
+patch try to put a limit on SMC backlog connections refers to
+implementation of TCP.
+
+Patch 3/3 (Fallback when SMC handshake workqueue congested):
+
+Considering the complexity of SMC handshake right now, in short-lived
+links scenarios, this may not be the main scenario of SMC though, it's
+performance is still quite poor. This Patch try to provide auto fallback
+case when SMC handshake workqueue congested, which is the sign of SMC
+handshake stacking in our opinion.
+
+Of course, it's optional.
+
+After this patch set, performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  693253 requests in 20.10s, 452.88MB read
+Requests/sec:  34488.13
+Transfer/sec:     22.53MB
+
+That's a quite well performance improvement, about to 6 to 7 times in my
+environment.
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+changelog:
+v2 -> v1:
+- fix compile warning
+- fix invalid dependencies in kconfig
+v3 -> v2:
+- correct spelling mistakes
+- fix useless variable declare
+v4 -> v3
+- make smc_tcp_ls_wq be static 
+---
+D. Wythe (3):
+  net/smc: Make smc_tcp_listen_work() independent
+  net/smc: Limits backlog connections
+  net/smc: Fallback when handshake workqueue congested
+
+ include/linux/tcp.h  |  1 +
+ net/ipv4/tcp_input.c |  3 +-
+ net/smc/Kconfig      | 12 ++++++++
+ net/smc/af_smc.c     | 78 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ net/smc/smc.h        |  4 +++
+ 5 files changed, 95 insertions(+), 3 deletions(-)
+
+-- 
+1.8.3.1
+
