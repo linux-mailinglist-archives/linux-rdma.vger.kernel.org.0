@@ -2,63 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D464AC556
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Feb 2022 17:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4C74AC927
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Feb 2022 20:04:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237555AbiBGQTV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Feb 2022 11:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
+        id S234339AbiBGTEg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Feb 2022 14:04:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236139AbiBGQHZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 11:07:25 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC87C0401CC
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Feb 2022 08:07:24 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id e17so20331086ljk.5
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Feb 2022 08:07:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n9AFhJt5f2apdvymNol44VOAj1BO0+NPKUfSLYE/kwQ=;
-        b=A3sZygi+AdwDJ74kFdH8tBgsFEvQipuJSotB1BHCmscE4ChEZgV0T48T1o/5dXixYy
-         X51GZsoNMLAwm7qLImZjw44A0ne2JbGpMoqk2WuNGFwVCrrDo1/b1TKe5ummZ9u3LvmP
-         Oj1I7YoFBw92oKtpMqeA5CaSNTEVDsgC7H/OIOonSiRE7YZodV4rC5fqVYQqTIgG30lF
-         OagwtV/zT7tZy4SJFvfcrueLv18Jw1goNvc8wgW5RrorupMmiitVkLFD4SfPX9eIacLW
-         erjzV39e3yRsAw+SiNKtM8VjBEjKqP8krUXi/8fvUFePCtz4gkHN9f5hmYM0WWr9vlpz
-         h32Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n9AFhJt5f2apdvymNol44VOAj1BO0+NPKUfSLYE/kwQ=;
-        b=AwJXm7ICV1gVVH93mxWsB9ojUr8upQ8go+USRhjR57C89P3A6g4DrgN8YxHlzlDLOr
-         I4UK0ClYJ0oMr4g5Fb4PhzUn1gH0jyi87bIbnsXLlO8fTDrZEvxwfdzpMg6ghntQCyI3
-         AYvBNTRKjIXYSq31+TFvTMsXw9d3k+Fp2eg5OdAYf6HPqpTOlOUzQ/nueQP/wu8rNx2t
-         QVSlnwQ4POwTZumJW/fDTJk9IfDQ26CXgNY7KIiLzJpypcY+o6lVJszypLAdPYW6XNnz
-         09zfmAvIXr3JHZBVMF1lflQg+1ZGdMOWpAL/6xBHuf3sdTUDL9AQmIPHN9us+Gu6zlFq
-         YnLw==
-X-Gm-Message-State: AOAM532P3laHxAcsS+vaiFo+NVYja3ae7l0PHeeMsvBaHDJqmjtKbkMC
-        T4gIwA/7GaGdDPb6N+v6RzJxo0MVamonbbAIQL/u7g==
-X-Google-Smtp-Source: ABdhPJztvn1OXVqyWcu0TF7c9kfOzEoingPzabtywTs1jMynncJDjlBjOLr4SVOIGQrGCKwjZFAT+dx/Ex8Cfpz0TdA=
-X-Received: by 2002:a2e:9003:: with SMTP id h3mr95902ljg.111.1644250042983;
- Mon, 07 Feb 2022 08:07:22 -0800 (PST)
+        with ESMTP id S235259AbiBGS7d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 13:59:33 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320EFC0401DC
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Feb 2022 10:59:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CB1506140B
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Feb 2022 18:59:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8369C004E1;
+        Mon,  7 Feb 2022 18:59:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644260371;
+        bh=RmTxjp99+NjphdsudgH8TZlEqiqYEHgixPDhNS6WpRE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GXbebgB9B2SAniQE3YTfacxpVp0opobUFXwnlcrFLBmENl877tuNPvKcd3GosX6f3
+         cBzYtpvKDqCUny4gtRBY3uE1VdtVvusbJ1qv3CJXAMtZXlL7gTiLyGWYG3QnhJjr9K
+         VP4m8hBpe2f7qizN3sWbnaa7ykTyW62JiZpJkn3s6mmj5d9YH8ND/ObeSibebyyoJ8
+         05VBS9zKoTj9f79P8dH4IyXqQXq4kTdPMTvZCmwOxbO0otRTclMqmTUopsw57gryrc
+         a8Y8hQyBwMLA1+ezxRn/YMonWjbRonOAVEgWlLZ+4Xrwek2tVpby7p4E91CiwRsRtR
+         WvnR6OL5oFV/g==
+Date:   Mon, 7 Feb 2022 20:59:25 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Subject: Re: Seeking clarification on the XRC Annex wrt. a TGT QP having a SQ
+Message-ID: <YgFsDXH5XdEBOT/O@unreal>
+References: <6FD25F7D-6F5A-4990-A179-5ED213001BB7@oracle.com>
 MIME-Version: 1.0
-References: <20220114154753.983568-1-haris.iqbal@ionos.com>
- <20220114154753.983568-3-haris.iqbal@ionos.com> <20220128145510.GA1792599@nvidia.com>
-In-Reply-To: <20220128145510.GA1792599@nvidia.com>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Mon, 7 Feb 2022 17:07:12 +0100
-Message-ID: <CAJpMwyhBZj0ugLd7gud7O422OE6cHgkkOGheXcjDxGbNXA_1kg@mail.gmail.com>
-Subject: Re: [PATCH for-next 2/5] RDMA/rtrs-clt: fix CHECK type warnings
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        dledford@redhat.com, jinpu.wang@ionos.com,
-        Gioh Kim <gi-oh.kim@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6FD25F7D-6F5A-4990-A179-5ED213001BB7@oracle.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,36 +54,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Jan 28, 2022 at 3:55 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Fri, Jan 14, 2022 at 04:47:50PM +0100, Md Haris Iqbal wrote:
->
-> > -/**
-> > - * list_next_or_null_rr_rcu - get next list element in round-robin fashion.
-> > - * @head:    the head for the list.
-> > - * @ptr:        the list head to take the next element from.
-> > - * @type:       the type of the struct this is embedded in.
-> > - * @memb:       the name of the list_head within the struct.
-> > - *
-> > - * Next element returned in round-robin fashion, i.e. head will be skipped,
-> > - * but if list is observed as empty, NULL will be returned.
-> > - *
-> > - * This primitive may safely run concurrently with the _rcu list-mutation
-> > - * primitives such as list_add_rcu() as long as it's guarded by rcu_read_lock().
-> > - */
-> > -#define list_next_or_null_rr_rcu(head, ptr, type, memb) \
-> > -({ \
-> > -     list_next_or_null_rcu(head, ptr, type, memb) ?: \
-> > -             list_next_or_null_rcu(head, READ_ONCE((ptr)->next), \
-> > -                                   type, memb); \
-> > -})
->
-> Why not put this in a static inline instead of open coding it? Type is
-> always the same for both usages, right?
+On Mon, Feb 07, 2022 at 02:55:35PM +0000, Haakon Bugge wrote:
+> Hey,
+> 
+> 
+> I have a question to XRC TGT QPs and whether they do have a set of requestor resources or not.
+> 
+> 
+> The XRC Annex (March 2, 2009 Revision 1.0) (*1) boldly states:
+> 
+> 	XRC TGT QPs are similar to RD EECs but do not have a requester side.
+> 
+> 
+> Nevertheless, in Table 9, page 36, it is stated that "Local ACK Timeout" and "SQ PSN" are required attributes during an RTR -> RTS transition for an XRC Target QP. This seems to be an incorrect requirement, subject to the XRC Target QP not having a send queue?
+> 
+> Further, looking at a vendor's creation of an XRC TGT QP, we see:
+> 
+> 	MLX5_SET(qpc, qpc, no_sq, 1);
+> 
+> in the function create_xrc_tgt().
+> 
+> If the interpretation that an XRC TGT does _not_ have a send queue is correct, we cannot simply remove "Local ACK Timeout" and "SQ PSN" as mandatory attributes during the state transition, because that will break all current software. Is it an idea to move those to optional attributes in the qp_state_table[]? Then remove the IB_QPT_XRC_TGT label in cm_init_qp_rts_attr()?
 
-Yes. Makes sense. I will send this change along with the next patchset.
+I think that your interpretation of spec is correct, but why do you want
+to remove these attributes? The device ignores them anyway.
 
-Thanks for the review and comment.
+Thanks
 
->
-> Jason
+> 
+> 
+> Thxs, Håkon
+> 
+> *1: IBTA Spec Release 1.6 is equal to the XRC Annex in this respect
+> 
+> 
