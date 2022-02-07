@@ -2,105 +2,100 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7D94AC2D1
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Feb 2022 16:21:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37D464AC556
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Feb 2022 17:19:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbiBGPVB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Feb 2022 10:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41302 "EHLO
+        id S237555AbiBGQTV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Feb 2022 11:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1443995AbiBGPQ1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 10:16:27 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7AC3C0401C3;
-        Mon,  7 Feb 2022 07:16:26 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id g15-20020a17090a67cf00b001b7d5b6bedaso13806548pjm.4;
-        Mon, 07 Feb 2022 07:16:26 -0800 (PST)
+        with ESMTP id S236139AbiBGQHZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 11:07:25 -0500
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC87C0401CC
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Feb 2022 08:07:24 -0800 (PST)
+Received: by mail-lj1-x233.google.com with SMTP id e17so20331086ljk.5
+        for <linux-rdma@vger.kernel.org>; Mon, 07 Feb 2022 08:07:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:cc:from
-         :subject:content-transfer-encoding;
-        bh=IwbC5GgraFRaOZ81Tu6X93hQoXdowAbRSopeguTSmFc=;
-        b=hcfUDDOsZCztYEGe/mxWefKZqn+JNcaDtKUP7OKrlvEJnXG/7fU9pe5O91Xaq0io7i
-         SHMfSdapc6V5YglntuSaKkB65K6U887NXJpaEEVsMS8I5SVsFtLlvtqEHUUBLlTqumUW
-         ateUkSUpe+3vKeooly3rikst3qVyhPmmO9xuS2zgJITEgj8UQe4HnMosRS/yuTXUxDfW
-         k0V++MLGfNLq5iwSZoCGhiZT3hzK6zIhK0Zt9TvEoESL5MHLPd7HNk0Uw7G5rdyJhfu3
-         D6HKNSLHW6E2PVfSfTfDDI3iBPtOA6od7g3YV/Rx0Y4UvU6il0JsMJEMMUol0xnF8N8K
-         kxAA==
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n9AFhJt5f2apdvymNol44VOAj1BO0+NPKUfSLYE/kwQ=;
+        b=A3sZygi+AdwDJ74kFdH8tBgsFEvQipuJSotB1BHCmscE4ChEZgV0T48T1o/5dXixYy
+         X51GZsoNMLAwm7qLImZjw44A0ne2JbGpMoqk2WuNGFwVCrrDo1/b1TKe5ummZ9u3LvmP
+         Oj1I7YoFBw92oKtpMqeA5CaSNTEVDsgC7H/OIOonSiRE7YZodV4rC5fqVYQqTIgG30lF
+         OagwtV/zT7tZy4SJFvfcrueLv18Jw1goNvc8wgW5RrorupMmiitVkLFD4SfPX9eIacLW
+         erjzV39e3yRsAw+SiNKtM8VjBEjKqP8krUXi/8fvUFePCtz4gkHN9f5hmYM0WWr9vlpz
+         h32Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:cc:from:subject:content-transfer-encoding;
-        bh=IwbC5GgraFRaOZ81Tu6X93hQoXdowAbRSopeguTSmFc=;
-        b=mpXm0VQ6ArrL1epiVLTAinMZOUrxzl3LUhKTEbsmSMahgyBNUoEe8id13NlIVNdD00
-         VQKCCGZwsavqVJJ+DSJjr2/NJSkwrv/Jt5wioDqG0xvxIcFBN9angGIuG6YJCuIqkQ9f
-         wDKbU73DsPlSvszdsUL9BnTgFmungjF0fSCo0ETKVN9bFJ5Y0bXDPRWpqZf3KkkDTCEi
-         fH6N7hlroy4ucQMUWw/7euNzbvabu6+l1NXNfKobfdfLEkG4Ql653ibPzSyQubFmJa6b
-         qVeF6966VdsXA8R2GGWHms+OfyxovZIRakbNrHwEy4BVnZFAEtrOfs0dxpESmaQ7PJ5a
-         esEQ==
-X-Gm-Message-State: AOAM530qHHwq68vrAqrUMB13iZC8FOFSny+WDZ5cVOYmxfFczkTLDjo1
-        vYBZpjKl0cRTFevoWZElPgo=
-X-Google-Smtp-Source: ABdhPJwffx0JxoNKiyAoQ9V5iWqcodJHDZCEkvSKQ0Y9jRGhuG44O8WmHV0bIcteHCGoN789PL6lEw==
-X-Received: by 2002:a17:902:a5c1:: with SMTP id t1mr16582992plq.106.1644246986367;
-        Mon, 07 Feb 2022 07:16:26 -0800 (PST)
-Received: from [10.59.0.6] ([85.203.23.80])
-        by smtp.gmail.com with ESMTPSA id m21sm12823728pfk.26.2022.02.07.07.16.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Feb 2022 07:16:25 -0800 (PST)
-Message-ID: <4a850d04-ed6a-5802-7038-a94ad0d466c5@gmail.com>
-Date:   Mon, 7 Feb 2022 23:16:14 +0800
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n9AFhJt5f2apdvymNol44VOAj1BO0+NPKUfSLYE/kwQ=;
+        b=AwJXm7ICV1gVVH93mxWsB9ojUr8upQ8go+USRhjR57C89P3A6g4DrgN8YxHlzlDLOr
+         I4UK0ClYJ0oMr4g5Fb4PhzUn1gH0jyi87bIbnsXLlO8fTDrZEvxwfdzpMg6ghntQCyI3
+         AYvBNTRKjIXYSq31+TFvTMsXw9d3k+Fp2eg5OdAYf6HPqpTOlOUzQ/nueQP/wu8rNx2t
+         QVSlnwQ4POwTZumJW/fDTJk9IfDQ26CXgNY7KIiLzJpypcY+o6lVJszypLAdPYW6XNnz
+         09zfmAvIXr3JHZBVMF1lflQg+1ZGdMOWpAL/6xBHuf3sdTUDL9AQmIPHN9us+Gu6zlFq
+         YnLw==
+X-Gm-Message-State: AOAM532P3laHxAcsS+vaiFo+NVYja3ae7l0PHeeMsvBaHDJqmjtKbkMC
+        T4gIwA/7GaGdDPb6N+v6RzJxo0MVamonbbAIQL/u7g==
+X-Google-Smtp-Source: ABdhPJztvn1OXVqyWcu0TF7c9kfOzEoingPzabtywTs1jMynncJDjlBjOLr4SVOIGQrGCKwjZFAT+dx/Ex8Cfpz0TdA=
+X-Received: by 2002:a2e:9003:: with SMTP id h3mr95902ljg.111.1644250042983;
+ Mon, 07 Feb 2022 08:07:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Content-Language: en-US
-To:     tariqt@nvidia.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] net: mellanox: mlx4: possible deadlock in mlx4_xdp_set() and
- mlx4_en_reset_config()
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20220114154753.983568-1-haris.iqbal@ionos.com>
+ <20220114154753.983568-3-haris.iqbal@ionos.com> <20220128145510.GA1792599@nvidia.com>
+In-Reply-To: <20220128145510.GA1792599@nvidia.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Mon, 7 Feb 2022 17:07:12 +0100
+Message-ID: <CAJpMwyhBZj0ugLd7gud7O422OE6cHgkkOGheXcjDxGbNXA_1kg@mail.gmail.com>
+Subject: Re: [PATCH for-next 2/5] RDMA/rtrs-clt: fix CHECK type warnings
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
+        dledford@redhat.com, jinpu.wang@ionos.com,
+        Gioh Kim <gi-oh.kim@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+On Fri, Jan 28, 2022 at 3:55 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Fri, Jan 14, 2022 at 04:47:50PM +0100, Md Haris Iqbal wrote:
+>
+> > -/**
+> > - * list_next_or_null_rr_rcu - get next list element in round-robin fashion.
+> > - * @head:    the head for the list.
+> > - * @ptr:        the list head to take the next element from.
+> > - * @type:       the type of the struct this is embedded in.
+> > - * @memb:       the name of the list_head within the struct.
+> > - *
+> > - * Next element returned in round-robin fashion, i.e. head will be skipped,
+> > - * but if list is observed as empty, NULL will be returned.
+> > - *
+> > - * This primitive may safely run concurrently with the _rcu list-mutation
+> > - * primitives such as list_add_rcu() as long as it's guarded by rcu_read_lock().
+> > - */
+> > -#define list_next_or_null_rr_rcu(head, ptr, type, memb) \
+> > -({ \
+> > -     list_next_or_null_rcu(head, ptr, type, memb) ?: \
+> > -             list_next_or_null_rcu(head, READ_ONCE((ptr)->next), \
+> > -                                   type, memb); \
+> > -})
+>
+> Why not put this in a static inline instead of open coding it? Type is
+> always the same for both usages, right?
 
-My static analysis tool reports a possible deadlock in the mlx4 driver 
-in Linux 5.16:
+Yes. Makes sense. I will send this change along with the next patchset.
 
-mlx4_xdp_set()
-   mutex_lock(&mdev->state_lock); --> Line 2778 (Lock A)
-   mlx4_en_try_alloc_resources()
-     mlx4_en_alloc_resources()
-       mlx4_en_destroy_tx_ring()
-         mlx4_qp_free()
-           wait_for_completion(&qp->free); --> Line 528 (Wait X)
+Thanks for the review and comment.
 
-mlx4_en_reset_config()
-   mutex_lock(&mdev->state_lock); --> Line 3522 (Lock A)
-   mlx4_en_try_alloc_resources()
-     mlx4_en_alloc_resources()
-       mlx4_en_destroy_tx_ring()
-         mlx4_qp_free()
-           complete(&qp->free); --> Line 527 (Wake X)
-
-When mlx4_xdp_set() is executed, "Wait X" is performed by holding "Lock 
-A". If mlx4_en_reset_config() is executed at this time, "Wake X" cannot 
-be performed to wake up "Wait X" in mlx4_xdp_set(), because "Lock A" has 
-been already hold by mlx4_xdp_set(), causing a possible deadlock.
-
-I am not quite sure whether this possible problem is real and how to fix 
-it if it is real.
-Any feedback would be appreciated, thanks :)
-
-
-Best wishes,
-Jia-Ju Bai
+>
+> Jason
