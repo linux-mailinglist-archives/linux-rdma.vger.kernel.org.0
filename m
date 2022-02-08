@@ -2,58 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 414174AE3EF
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 23:24:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4652B4AE3EC
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 23:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1386596AbiBHWYw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Feb 2022 17:24:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
+        id S1387539AbiBHWYm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Feb 2022 17:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1386859AbiBHVRQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 16:17:16 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF82EC0612B8
+        with ESMTP id S1386860AbiBHVRR (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 16:17:17 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E53C0612BA
         for <linux-rdma@vger.kernel.org>; Tue,  8 Feb 2022 13:17:15 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id ay7so425604oib.8
+Received: by mail-oi1-x230.google.com with SMTP id y23so398393oia.13
         for <linux-rdma@vger.kernel.org>; Tue, 08 Feb 2022 13:17:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O1WN6g3Wf1ED2+nYdneYmoe6mCk1BELm1ruAGFVJLi8=;
-        b=i//IEf+B8D8+zaaTZme0PpT0s3jh9GBiM/nRL2jdIB6D+tVDl/fzjqmKvZK4dehYAm
-         DrFDJlFb5HvtOC+JtQZ1ndmawi9Mq1bAe6lLohCk90miBuV1JzKWFLlYG/O7Phe6hPaO
-         9c+TGWfm6ccC6fOO3UHtfAUp8NrWP0qwmXK3Q1CH/+ydR5FkJH5rhPOf74DLzbJe/eiZ
-         HqdFaMiXowqsnx20FUNR6DWDKWVgASrONxau0xBiqbByXmGyOgO6j2dYnyZXopjGBsJU
-         nGywOInLzF01voXzck0fbfVyoQHhjWtdBRcr/rPyMPEyTmLjdRs9hQwhANkleh6BTgWp
-         qW9Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VebRPvsPxA5BA5urDmgWLzjvmvNxF11B7f0mE7t7dCk=;
+        b=mTSEB8/d0Rk5GJshCH3CBxUyfUoRunLto9Awx5Yv2gSA996BJ8Ljo4ct1eNoJ2jSY8
+         HA2CqsN2VWGygLIfU+G2+kS/zwYeHCYZJCoCH3roX6ct7zXWPKnkaJoRY6ZrqmK6BMT2
+         042gHa/3rAETsUN4o8eUKmt0mZMVGWfvvvEITnMMpM1PIMnGWNW1BMSdFvA0EmR01oPA
+         ZvgVn3wZWiPwh5RNioO15U/kXm0x3FZLFv59UFcP2hRYoN1KWXz0nv+WN+OY9JqGzP8Q
+         k80dC8/8axDfEhKc73+9tuFLP0+lJcaslj3tUCOOPT1SQMlSmHKR1Fb0FeVLfvek0u5E
+         HkpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=O1WN6g3Wf1ED2+nYdneYmoe6mCk1BELm1ruAGFVJLi8=;
-        b=kZx30MAISiX7KoR509eiffL9L0FSQMAA/THvIJYISZsFROAkLka4xyMMlgbl1eQ1IQ
-         S87OMvW+Aa6Lxo7yPXXED7+jLiv3u8FUzNkfi9ZqN5me1qe0YdQUKXpgtJQ0GhCZi6GA
-         UG9G83rioe+JT2eItnRaUaNIeVMTglJ1M7fvWrwBnIjmGKuQzSbFBTgGwfhJRbFF1qE7
-         sTU886DfZ4XjUG1y7lbmz/b80DO0ZFADNxfe9INyHzSfcu0WEod3o0lw4LEO8CDFLFy4
-         EURc5+nM66vzZp/86EWrkjrO3krwynTTuWmf3e7KFmNtdPCUbl11hhSO6YlilfbeCIqc
-         jqzA==
-X-Gm-Message-State: AOAM53020T7C/o6iWR7fAmI0Le5VvsaAo3C/+krgCAe9qdOgNwyjHPOR
-        fVKIb3aX8ia44fermU6Ej+syyQ9jlQg=
-X-Google-Smtp-Source: ABdhPJyaSKRhCFYeoAmqTYwfnUhyzI36P5VeoAF2F+gxcqDiuMRTg8oFiHW6rQ7d+vdeI18WGLilDg==
-X-Received: by 2002:a05:6808:654:: with SMTP id z20mr1388954oih.143.1644355034105;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=VebRPvsPxA5BA5urDmgWLzjvmvNxF11B7f0mE7t7dCk=;
+        b=6WvNUFRKfdut0CzUCk4fhKdwtElRmo/7GOe2kTBi6gFygV96yusugHLNSfkv6/w7tP
+         QiKVm00Witk4Gn5Jysc3k4QcRqcgpejRZXoJfIEAxfqPsFBnJ1oGj88J51BOMaSpyckC
+         pstcJqBO8wGoSKLzZV0N1VxZz0K1pSjwVOktmPoLdvcHU2G+eMrmZISpsH9aAR/FxFh/
+         kdGaLc6hpYEA6d4TTVXNKTd4zaQpHUW6WNzV1A0TSPkF03fhdf6ECoRdcGw2EtFRdgf4
+         eIeNUNoVSAGmK0AeiDADGmADDJ7wK352ZMHKgKBCXRC080D2Qgwsb48TmER6wNRbFVYf
+         G38g==
+X-Gm-Message-State: AOAM5339SQmpvxLJ5mb93K6HIyGDK9r0glUxJibqyN+lxIQlyoU8br1k
+        PPZkfqEo6qP4ISWeRGHSoWk=
+X-Google-Smtp-Source: ABdhPJxAKCDQWuZpABpSG0Uu0IZxzMg29gQ8NzF7/4Bt8T6D4/H3ndCeU4KkVdudU9HC/HX8isXeIA==
+X-Received: by 2002:a05:6808:9b3:: with SMTP id e19mr1536102oig.90.1644355034959;
         Tue, 08 Feb 2022 13:17:14 -0800 (PST)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-2501-ba3f-d39d-75da.res6.spectrum.com. [2603:8081:140c:1a00:2501:ba3f:d39d:75da])
-        by smtp.googlemail.com with ESMTPSA id bh7sm2145462oib.6.2022.02.08.13.17.13
+        by smtp.googlemail.com with ESMTPSA id bh7sm2145462oib.6.2022.02.08.13.17.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Feb 2022 13:17:13 -0800 (PST)
+        Tue, 08 Feb 2022 13:17:14 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v11 00/11] Move two object pools to rxe_mcast.c
-Date:   Tue,  8 Feb 2022 15:16:34 -0600
-Message-Id: <20220208211644.123457-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v11 01/11] RDMA/rxe: Move mcg_lock to rxe
+Date:   Tue,  8 Feb 2022 15:16:35 -0600
+Message-Id: <20220208211644.123457-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220208211644.123457-1-rpearsonhpe@gmail.com>
+References: <20220208211644.123457-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,81 +68,165 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch series completes the separation of the mc_grp and mc_elem
-object pools from rxe_pools.c and moving of their code to rxe_mcast.c.
-This makes sense because these two pools are different from the other
-pools as the only ones that do not share objects with rdma-core and
-that use key's instead of indices to enable looking up objects. This
-change will enable a significant simplification of the normal object
-pools.
-
-This patch series applies cleanly to current for-next.
-commit 0d9c00117b8a57a361b27f7bd94284c94155f039 (for-next)
+Replace mcg->mcg_lock and mc_grp_pool->pool_lock by rxe->mcg_lock.
+This is the first step of several intended to decouple the mc_grp
+and mc_elem objects from the rxe pool code.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-v11
-  Restructured the patch series to simplify it and make each patch
-  simpler. Addressed some additional issues raised by Jason Gunthorpe
-  in the review of that last version.
-v10
-  Corrected issues reported by Jason Gunthorpe
-  Isolated patches 01-17 separate from the remaining patches.
-  They will be submitted later
-v9
-  Corrected issues reported by Jason Gunthorpe,
-  Converted locking in rxe_mcast.c and rxe_pool.c to use RCU
-  Split up the patches into smaller changes
-v8
-  Fixed an additional race in 3/8 which was not handled correctly.
-v7
-  Corrected issues reported by Jason Gunthorpe
-Link: https://lore.kernel.org/linux-rdma/20211207190947.GH6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207191857.GI6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207192824.GJ6385@nvidia.com/
-v6
-  Fixed a kzalloc flags bug.
-  Fixed comment bug reported by 'Kernel Test Robot'.
-  Changed type of rxe_pool.c in __rxe_fini().
-v5
-  Removed patches already accepted into for-next and addressed comments
-  from Jason Gunthorpe.
-v4
-  Restructured patch series to change to xarray earlier which
-  greatly simplified the changes.
-  Rebased to current for-next
-v3
-  Changed rxe_alloc to use GFP_KERNEL
-  Addressed other comments by Jason Gunthorp
-  Merged the previous 06/10 and 07/10 patches into one since they overlapped
-  Added some minor cleanups as 10/10
-v2
-  Rebased to current for-next.
-  Added 4 additional patches
+ drivers/infiniband/sw/rxe/rxe.c       |  2 ++
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 19 +++++++++----------
+ drivers/infiniband/sw/rxe/rxe_recv.c  |  4 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  3 ++-
+ 4 files changed, 15 insertions(+), 13 deletions(-)
 
-Bob Pearson (11):
-  RDMA/rxe: Move mcg_lock to rxe
-  RDMA/rxe: Use kzmalloc/kfree for mca
-  RDMA/rxe: Replace grp by mcg, mce by mca
-  RDMA/rxe: Replace int num_qp by atomic_t qp_num
-  RDMA/rxe: Replace pool key by rxe->mcg_tree
-  RDMA/rxe: Remove key'ed object support
-  RDMA/rxe: Remove mcg from rxe pools
-  RDMA/rxe: Add code to cleanup mcast memory
-  RDMA/rxe: Finish cleanup of rxe_mcast.c
-  RDMA/rxe: For mcast copy qp list to temp array
-  RDMA/rxe: Convert mca read locking to RCU
-
- drivers/infiniband/sw/rxe/rxe.c       |  22 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   |   4 +-
- drivers/infiniband/sw/rxe/rxe_mcast.c | 713 +++++++++++++++++++-------
- drivers/infiniband/sw/rxe/rxe_pool.c  | 137 -----
- drivers/infiniband/sw/rxe/rxe_pool.h  |  42 +-
- drivers/infiniband/sw/rxe/rxe_recv.c  | 113 ++--
- drivers/infiniband/sw/rxe/rxe_verbs.h |  16 +-
- 7 files changed, 612 insertions(+), 435 deletions(-)
- rewrite drivers/infiniband/sw/rxe/rxe_mcast.c (67%)
-
+diff --git a/drivers/infiniband/sw/rxe/rxe.c b/drivers/infiniband/sw/rxe/rxe.c
+index fab291245366..e74c4216b314 100644
+--- a/drivers/infiniband/sw/rxe/rxe.c
++++ b/drivers/infiniband/sw/rxe/rxe.c
+@@ -211,6 +211,8 @@ static int rxe_init(struct rxe_dev *rxe)
+ 	spin_lock_init(&rxe->pending_lock);
+ 	INIT_LIST_HEAD(&rxe->pending_mmaps);
+ 
++	spin_lock_init(&rxe->mcg_lock);
++
+ 	mutex_init(&rxe->usdev_lock);
+ 
+ 	return 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+index 9336295c4ee2..4828274efbd4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mcast.c
++++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+@@ -25,7 +25,7 @@ static int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid)
+ 	return dev_mc_del(rxe->ndev, ll_addr);
+ }
+ 
+-/* caller should hold mc_grp_pool->pool_lock */
++/* caller should hold rxe->mcg_lock */
+ static struct rxe_mcg *create_grp(struct rxe_dev *rxe,
+ 				     struct rxe_pool *pool,
+ 				     union ib_gid *mgid)
+@@ -38,7 +38,6 @@ static struct rxe_mcg *create_grp(struct rxe_dev *rxe,
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	INIT_LIST_HEAD(&grp->qp_list);
+-	spin_lock_init(&grp->mcg_lock);
+ 	grp->rxe = rxe;
+ 	rxe_add_key_locked(grp, mgid);
+ 
+@@ -62,7 +61,7 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
+ 	if (rxe->attr.max_mcast_qp_attach == 0)
+ 		return -EINVAL;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	spin_lock_bh(&rxe->mcg_lock);
+ 
+ 	grp = rxe_pool_get_key_locked(pool, mgid);
+ 	if (grp)
+@@ -70,13 +69,13 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
+ 
+ 	grp = create_grp(rxe, pool, mgid);
+ 	if (IS_ERR(grp)) {
+-		write_unlock_bh(&pool->pool_lock);
++		spin_unlock_bh(&rxe->mcg_lock);
+ 		err = PTR_ERR(grp);
+ 		return err;
+ 	}
+ 
+ done:
+-	write_unlock_bh(&pool->pool_lock);
++	spin_unlock_bh(&rxe->mcg_lock);
+ 	*grp_p = grp;
+ 	return 0;
+ }
+@@ -88,7 +87,7 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	struct rxe_mca *elem;
+ 
+ 	/* check to see of the qp is already a member of the group */
+-	spin_lock_bh(&grp->mcg_lock);
++	spin_lock_bh(&rxe->mcg_lock);
+ 	list_for_each_entry(elem, &grp->qp_list, qp_list) {
+ 		if (elem->qp == qp) {
+ 			err = 0;
+@@ -118,7 +117,7 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	err = 0;
+ out:
+-	spin_unlock_bh(&grp->mcg_lock);
++	spin_unlock_bh(&rxe->mcg_lock);
+ 	return err;
+ }
+ 
+@@ -132,7 +131,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	if (!grp)
+ 		goto err1;
+ 
+-	spin_lock_bh(&grp->mcg_lock);
++	spin_lock_bh(&rxe->mcg_lock);
+ 
+ 	list_for_each_entry_safe(elem, tmp, &grp->qp_list, qp_list) {
+ 		if (elem->qp == qp) {
+@@ -140,7 +139,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 			grp->num_qp--;
+ 			atomic_dec(&qp->mcg_num);
+ 
+-			spin_unlock_bh(&grp->mcg_lock);
++			spin_unlock_bh(&rxe->mcg_lock);
+ 			rxe_drop_ref(elem);
+ 			rxe_drop_ref(grp);	/* ref held by QP */
+ 			rxe_drop_ref(grp);	/* ref from get_key */
+@@ -148,7 +147,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		}
+ 	}
+ 
+-	spin_unlock_bh(&grp->mcg_lock);
++	spin_unlock_bh(&rxe->mcg_lock);
+ 	rxe_drop_ref(grp);			/* ref from get_key */
+ err1:
+ 	return -EINVAL;
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 7ff6b53555f4..a084b5d69937 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -250,7 +250,7 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 	if (!mcg)
+ 		goto drop;	/* mcast group not registered */
+ 
+-	spin_lock_bh(&mcg->mcg_lock);
++	spin_lock_bh(&rxe->mcg_lock);
+ 
+ 	/* this is unreliable datagram service so we let
+ 	 * failures to deliver a multicast packet to a
+@@ -298,7 +298,7 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 		}
+ 	}
+ 
+-	spin_unlock_bh(&mcg->mcg_lock);
++	spin_unlock_bh(&rxe->mcg_lock);
+ 
+ 	rxe_drop_ref(mcg);	/* drop ref from rxe_pool_get_key. */
+ 
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 55f8ed2bc621..9940c69cbb63 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -353,7 +353,6 @@ struct rxe_mw {
+ 
+ struct rxe_mcg {
+ 	struct rxe_pool_elem	elem;
+-	spinlock_t		mcg_lock; /* guard group */
+ 	struct rxe_dev		*rxe;
+ 	struct list_head	qp_list;
+ 	union ib_gid		mgid;
+@@ -399,6 +398,8 @@ struct rxe_dev {
+ 	struct rxe_pool		mc_grp_pool;
+ 	struct rxe_pool		mc_elem_pool;
+ 
++	spinlock_t		mcg_lock;
++
+ 	spinlock_t		pending_lock; /* guard pending_mmaps */
+ 	struct list_head	pending_mmaps;
+ 
 -- 
 2.32.0
 
