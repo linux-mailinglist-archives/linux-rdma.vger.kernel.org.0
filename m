@@ -2,92 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FD04ADF0D
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 18:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DDF44AE232
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 20:25:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352576AbiBHRNx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Feb 2022 12:13:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46958 "EHLO
+        id S1385664AbiBHTZW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Feb 2022 14:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234690AbiBHRNw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 12:13:52 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1233EC06157A;
-        Tue,  8 Feb 2022 09:13:52 -0800 (PST)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 218GMR78015620;
-        Tue, 8 Feb 2022 17:13:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TOLI4z2hux2zYaTEPqS24Y2d2xJyKH7dqt62eIBHOh8=;
- b=IH+h8SWELUOBtrv/Qv0aZBSdr4KFgoTNfYbJnPmAP4I3oskGSrWR1HQl4Ihg7ojxxWmM
- 8TfVmnZD96V9HyaczYsTDF/lcAb21zCHS/UEg3ObKugLuT6wsAKf4SRlIKym+RueZvGW
- O2RaViiR3aLQOBtoWn9Oo9H4lQ19ac6G1ni/QB3yGJxwdZ9EOzKXYs/Bnjd0JR3Zgz89
- xHJLl7MnvhBUYwL7NRLXUPKEibfQZ6yrfwa2X3ryHmRTgxGTG5T89Qzad40Nt5hfERlO
- bpygmgE2FuSPq0b6xioDoAoyp1SVlp42jUu9bZwisHvk4BEj4PjVjeKJ+0Vb01DiCfmB zg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e236fqh82-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Feb 2022 17:13:48 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 218FTiYp028379;
-        Tue, 8 Feb 2022 17:13:47 GMT
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e236fqh7q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Feb 2022 17:13:47 +0000
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 218HCfg6013975;
-        Tue, 8 Feb 2022 17:13:46 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3e1ggk054r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 08 Feb 2022 17:13:46 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 218HDhjH47644942
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 8 Feb 2022 17:13:43 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A0A38A4055;
-        Tue,  8 Feb 2022 17:13:43 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 42BDCA405B;
-        Tue,  8 Feb 2022 17:13:43 +0000 (GMT)
-Received: from [9.145.157.102] (unknown [9.145.157.102])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  8 Feb 2022 17:13:43 +0000 (GMT)
-Message-ID: <c28365d5-72e3-335b-372e-2a9069898df1@linux.ibm.com>
-Date:   Tue, 8 Feb 2022 18:13:42 +0100
+        with ESMTP id S1349608AbiBHTZW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 14:25:22 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1anam02on2128.outbound.protection.outlook.com [40.107.96.128])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396EEC0613CB
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Feb 2022 11:25:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YUMUH11XyIcTz7DZpQcmnmGY2mO0c9a0ZAEHT4FTLgB3vW0tcXK2TvWsMN/PnC2OsxYqL6kPqjleeY3TEhmgikEf3p9RWubU5QkNkAhz97jcdfhuKEcAGA+vuYYycxOPfpagrMinfAkbuouuyghA/SqmLT1lJt4KbIGv+30U5RPPHZWW6f4i9HhSjXKczIFqc8xQikNcAtttJOL5f3ccpnBhfn/jVtp5PbbL3cN4vFYUuGE05exm5VG4GnKlG2qWbn8DjGUoK0BrAPOA69DGWARoGGyn7nWOkVxzTx7tvGZNKpihKM+7ObNFruHbcEBnxMM/hwUrEY7MLjws2R7M4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jTFPrBM5okCaUmoKDChFZsF1OqAfddZCimzoT4eRJPg=;
+ b=A5vyMwzaoyvT6N5t3r0fAPsFUOiHeaSUBS515qNAajfXlxp5+mSg9kL6QufJgdP1Pe0WzsCfowrJSqdIXkNR7UbX5yiGqSZuVf4l5dmSa4Ee/I5qorSJJaX7kIsDasK1PXfI17rph4rlMGWJuGHTE76KAAtiz52sE+1EgtZQNmfzR+zOHtCNByY1v3lMkHPELQLW8L7hlVsEvdIWcMOZUOrXWb+xLTrSk7aVxHzWmVvt4ynIGo0htjo4iE7Jrmpp59GJO7G11IqczBjDsIMM0mD/R0muknRr5a0ZoWvWrSJzWO92At2/pWR0ifaNdfWo92pgC8FoPfQzQLnejKIqbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jTFPrBM5okCaUmoKDChFZsF1OqAfddZCimzoT4eRJPg=;
+ b=evUp/++AQw6qPDEHwIhoKp2bhGfugaWjSvjubGvSlpVU4e/nEF4ytOSPgmpjZCQo3OOc2ZVf8zUAKdFiCQ3w7YJTMdZ6z0hUTewNK59RWjyoh88RhuqxI8AhN3dVx8ppnJuflxAw/9+xQs3YeIUDtZxd4vHby2twbffgtlNdAdzn3aRyrXAW5xEH4MbS0QuuxuewBNgqEnsXRceRVUodBVn+ZgWNkFsOgD84fzrXUmhQABXJAftpZXr+HCbP4NunyMntPGut9/eKbD/vw1TSQWC+XI5nxvl4R8GHuOGfwHAaVeNdVqJdgqR4AcsMtj9UZEU/3jc6DYac8FgScxmuAQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
+Received: from CH0PR01MB7153.prod.exchangelabs.com (2603:10b6:610:ea::7) by
+ DM6PR01MB5931.prod.exchangelabs.com (2603:10b6:5:200::29) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4951.16; Tue, 8 Feb 2022 19:25:19 +0000
+Received: from CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::110:392e:efd1:88d0]) by CH0PR01MB7153.prod.exchangelabs.com
+ ([fe80::110:392e:efd1:88d0%7]) with mapi id 15.20.4951.019; Tue, 8 Feb 2022
+ 19:25:19 +0000
+From:   mike.marciniszyn@cornelisnetworks.com
+To:     jgg@ziepe.ca
+Cc:     linux-rdma@vger.kernel.org,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: [PATCH for-rc] IB/hfi1: Allow larger MTU without AIP
+Date:   Tue,  8 Feb 2022 14:25:09 -0500
+Message-Id: <1644348309-174874-1-git-send-email-mike.marciniszyn@cornelisnetworks.com>
+X-Mailer: git-send-email 1.8.3.1
+Content-Type: text/plain
+X-ClientProxiedBy: BL1PR13CA0440.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::25) To CH0PR01MB7153.prod.exchangelabs.com
+ (2603:10b6:610:ea::7)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: [PATCH net-next v5 2/5] net/smc: Limit backlog connections
-Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <cover.1644323503.git.alibuda@linux.alibaba.com>
- <c597e6c6d004e5b2a26a9535c8099d389214f273.1644323503.git.alibuda@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <c597e6c6d004e5b2a26a9535c8099d389214f273.1644323503.git.alibuda@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: YNDUrGuSa5JxSFCuWNuE-QInp5Xc0CWi
-X-Proofpoint-GUID: yOP3GfkbHlqwJ7nAkezh27x-yKMJyts6
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-08_06,2022-02-07_02,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 clxscore=1015 adultscore=0 priorityscore=1501
- mlxscore=0 phishscore=0 spamscore=0 malwarescore=0 impostorscore=0
- bulkscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2201110000 definitions=main-2202080103
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 59d4610e-1efb-4c40-1185-08d9eb38be57
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5931:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR01MB59319E3A00A68678C2A2787FF22D9@DM6PR01MB5931.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lAsnMe05o7DR5iWWo7iMAa1uoSJsr+5661H5R/tKHRPkvhMzmlej4XJ0I5TKUhdDKZv59NWT9yIeaes1vM3VeL6QLByFkOtybIjBQWz1agZAzU715luCCztyM6nQt22GNK8n4OqvoPV/EBvoc8QtHKxiGkpX96Fs2RHdU/d7YUCbS1hcqOaCMz9Xyoi1x6aZy5bqjI4zk579xW3+c1jDAhYG/whCQ0KChqk+m3x/nRcgw16DEccpk/KM9DYEleikDw70dDRzZAEVEMb/rNCU6QU9O8Dqz4dDuFl/ZE8064qjoqEj0rq5idbO4rIhU8NlNiSvO8z/p/4IHCPiy8bFMy9XgEyJyZN84kCtVb5H9uwKlxDEQInhOdw1O/nN+MqMXwWQnY/KvWPuRrk8yCs+NQ2OqernVaZ5sKO6rMbCG5A45CPEmEi09Mx15a+CgEm+KOYECN8/HfsXOff4DZhVEJkC2LIgh58hjCN//3kmC4ix4o+U0RZVGJVThK+RBR9LU+ETr28e/ojtj73sAiONkHAVnw/zPdPPwgMeIXvyawONx8/0a/kBqkoFCdc6hC/0FsWtpxTsr81XfXKHI4x7Bc1DqmYojTu31bo+u2TQggwjSyDPdOMPgWQV1yNrgAqSgqPc90SURDsb/WpKjIIuF/iNq9ttMRWOP7OC90yVHdnpsbAbpJLhyKdJXdN/hDJAyYXuwB8ZV7k0dCavRiARUQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR01MB7153.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(136003)(396003)(366004)(39840400004)(346002)(376002)(38100700002)(6916009)(83380400001)(186003)(26005)(2616005)(2906002)(107886003)(38350700002)(316002)(66556008)(66946007)(66476007)(6506007)(5660300002)(8676002)(6512007)(6666004)(9686003)(508600001)(4326008)(36756003)(86362001)(52116002)(6486002)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eKXNHZVvdj/0Tj2cgH0RlOAeOaZ6U4iAQ9M3v6qRLocfSs58CBEHr2B2tmWJ?=
+ =?us-ascii?Q?4AfFPuS//mFGcnQkPjVRMA6zYVzEltDc0B0aXt1NQw47g99lcIN+BcYkCmPr?=
+ =?us-ascii?Q?HVIPEnaTxZeSuhc6YtuZNqntiVXtsz7ddiimei7t96ZXzgK+/7Ghhy1/SAiF?=
+ =?us-ascii?Q?bE3QiHOqvkOm995+Sah/1I6Z2wdTWik14FVUhhIHS4B4gNvyLogT+8LeWCCf?=
+ =?us-ascii?Q?4EiaeZUl8F6tPT2yUDymwTPkmDGa+nX6aZCXx0XEX3CTE4/4C/1yAgxQsiy+?=
+ =?us-ascii?Q?7fSCtKgtgewoG7790+vaTSquIPYoq3hMSWHsOmlatYoNItP8txwhQqkfpYvq?=
+ =?us-ascii?Q?khe83WJ4XOPw9kgmPN4FKBoPPxruCzx45vrpNHKtSuEPh7jZF3fXwdW8xEkG?=
+ =?us-ascii?Q?T9DuL5BThYNKqkwUC8NQgDOaevIu8VnONb845TSR+XjZXtWq9iRLa12gO504?=
+ =?us-ascii?Q?E4Hpeo7CzwwEE7n9EYdTx/SEkrOXh1uTQypDGDi6kdeXm+DReOKSzbzej6Gi?=
+ =?us-ascii?Q?21MgimzSHfiJ+eZgENlfYn18p+B6BeohuoaHbPMN8nj4FHZhY5JMwAh83GGV?=
+ =?us-ascii?Q?9fDeUpJAPFTx1nXpg7o+fOYOSM2pygAuiuaoo0frMGedbx0U8Qagw+TD0INW?=
+ =?us-ascii?Q?3HDVGwlOrBrK9YzCH6cBvKqMrsNgm3d40V65UqU6FHNM/y3mbKTTEJ8NT9Me?=
+ =?us-ascii?Q?qlLCgxHETliEsSaDmwYJ+u27BiD33mu/mTGA3xNzce6kwbPxcnDgo32bNy7p?=
+ =?us-ascii?Q?I3q1j3kqhqDjpqgfXueCNApLjK5PvNAApQdm43HOOxjvDl/4aLQqWEJskwhG?=
+ =?us-ascii?Q?oNP70I3/mTBwPzSxh0bx47jgHEod/nxu//yLPbiU2FiEqFfV8s7grPom5t+a?=
+ =?us-ascii?Q?y1QFip+xNL2Lg2sR3HszXn2l7ljvvkuaGIHTeYriDqOpndd24Lhtd5NXk6EZ?=
+ =?us-ascii?Q?SsuC4tLCq5HedVD2fh1wsH9JncrUft3OdTH1D7FJObtHWHK2b+6QMv9BeQmo?=
+ =?us-ascii?Q?shihr1D5I87/Xi85B1dGYC49io5YqJUf4xnxlz5ZCc4GNXYOSKdtrGNoSqbq?=
+ =?us-ascii?Q?PbERBPPctbYbZjPhMzQleXuxPUEPkC2Hd9ba+6qlviJ4w0eU3r61G3pb3ROc?=
+ =?us-ascii?Q?QOuLPJn02yo+P2bBIr0q1tPB5r5W6JG6f1GVZb19NDrjCtZd9R1fN53OvOck?=
+ =?us-ascii?Q?6N2F3tzfLNxYnn13oAjNdnNuKngpwpNnqcPUxrno4mTQFUGAgprS2oWsuOLi?=
+ =?us-ascii?Q?sr3S1FSj7I3JLkceYe7mWoqOjwq+S19Vnvma5E1XubI1aGfng9DD/mqGRmdX?=
+ =?us-ascii?Q?DabvYdc2yxRCrTffU3zCDj3JBuhTX8Mcfa46rNyGL5UGfclt07Lseb8vmORu?=
+ =?us-ascii?Q?1lCW1Wsmc2U22y3xVsaGHAsiGbKWfePGL2tyAczSUwh4WwcWTkRW+dibQN97?=
+ =?us-ascii?Q?wAS7UZzTUsw9sKkC1f+nmeX6DAVm1E1SAjBQnuG882s8HZnm442n1lC2zKiv?=
+ =?us-ascii?Q?yTgqOVLCgtnOHuZVnHMBzYD1iRBRKXHIgoisl3bt2nizxklAYedmIIQQIENR?=
+ =?us-ascii?Q?UlFPDEuXQ9SkFg2xMtqCZltZVSfGtBqd41hhJPcN1N3UpMYtO4avKMm+WGA5?=
+ =?us-ascii?Q?Vrp15jVHhMkHLZ8g1UjN052DxfMXX7rMU+8DqVS064kdfqD6Hg2Km8FRlMiW?=
+ =?us-ascii?Q?2DVG1d6SG+UaI5dHD6B3ASZo6W1jXITz3InxdPE67IsuIs32sgeIDxrmSRBd?=
+ =?us-ascii?Q?bPgik/ynwQ=3D=3D?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59d4610e-1efb-4c40-1185-08d9eb38be57
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR01MB7153.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Feb 2022 19:25:19.6989
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G8lBGjHPbx+GWZaZ7l0ME0+w6hyMhgez7r/UWgEmIdhtoYvP1YwaGkAlPpuwM8rBH4WO4XIdEa3MYvNo2QJBteg+fZzvTGtG09kv7lhg1oak2kSo2JXI8AfcYbg0CoDn
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB5931
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,19 +113,38 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 08/02/2022 13:53, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> Current implementation does not handling backlog semantics, one
-> potential risk is that server will be flooded by infinite amount
-> connections, even if client was SMC-incapable.
+From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
 
-In this patch you count the number of inflight SMC handshakes as pending and
-check them against the defined max_backlog. I really like this improvement.
+The AIP code signals the phys_mtu in the following query_port()
+fragment:
 
-There is another queue in af_smc.c, the smc accept queue and any new client 
-socket that completed the handshake process is enqueued there (in smc_accept_enqueue() )
-and is waiting to get accepted by the user space application. To apply the correct
-semantics here, I think the number of sockets waiting in the smc accept queue 
-should also be counted as backlog connections, right? I see no limit for this queue
-now. What do you think?
+	props->phys_mtu = HFI1_CAP_IS_KSET(AIP) ? hfi1_max_mtu :
+				ib_mtu_enum_to_int(props->max_mtu);
+
+Using the largest MTU possible should not depend on AIP.
+
+Fix by unconditionally using the hfi1_max_mtu value.
+
+Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+---
+ drivers/infiniband/hw/hfi1/verbs.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/verbs.c b/drivers/infiniband/hw/hfi1/verbs.c
+index dc9211f..99d0743 100644
+--- a/drivers/infiniband/hw/hfi1/verbs.c
++++ b/drivers/infiniband/hw/hfi1/verbs.c
+@@ -1397,8 +1397,7 @@ static int query_port(struct rvt_dev_info *rdi, u32 port_num,
+ 				      4096 : hfi1_max_mtu), IB_MTU_4096);
+ 	props->active_mtu = !valid_ib_mtu(ppd->ibmtu) ? props->max_mtu :
+ 		mtu_to_enum(ppd->ibmtu, IB_MTU_4096);
+-	props->phys_mtu = HFI1_CAP_IS_KSET(AIP) ? hfi1_max_mtu :
+-				ib_mtu_enum_to_int(props->max_mtu);
++	props->phys_mtu = hfi1_max_mtu;
+ 
+ 	return 0;
+ }
+-- 
+1.8.3.1
+
