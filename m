@@ -2,119 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03AF04ACD67
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 02:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CAB4AD468
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 10:11:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239175AbiBHBGV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Feb 2022 20:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48598 "EHLO
+        id S238015AbiBHJLJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Feb 2022 04:11:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343831AbiBGX7h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Feb 2022 18:59:37 -0500
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B597EC0612A4;
-        Mon,  7 Feb 2022 15:59:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644278376; x=1675814376;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=etl+A5AoqaVpogl33TwujZ6kc3H2Nvo93/bcogwNizQ=;
-  b=PFysukoKvhrl5uNiVxkRhqe4h8GqkufIZkJt+0IKIebhL208JZDy/uyK
-   +4Mq3OiWn+p0Bw83pLU3080lFrj1WAIX2/K9TiRhnqtM9nw4h/354HGOq
-   bgrAwx5J4lpM2hJgyuwawJ9X3VxpghQKC08/T4unyTuPfnbVCup6kB/f5
-   DS+jvAQrUkuwgMWwvIDh52Ig/+fMc3Rmdz+K3rZm0Py8QhGIW7flzMoQc
-   Y6bvuMOuDHmefjEPIKxa+cViCX+5OzV/eJga3GBOUp97YAQp9Yn8DO3xI
-   yKwW9fKxVTuljIbd8xujH/MsRxTQPfljX0cZ3bd9ri7IoLr4uTT8BLyEK
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10251"; a="248782183"
-X-IronPort-AV: E=Sophos;i="5.88,351,1635231600"; 
-   d="scan'208";a="248782183"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Feb 2022 15:59:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,351,1635231600"; 
-   d="scan'208";a="621728150"
-Received: from anguy11-desk2.jf.intel.com ([10.166.244.147])
-  by FMSMGA003.fm.intel.com with ESMTP; 07 Feb 2022 15:59:34 -0800
-From:   Tony Nguyen <anthony.l.nguyen@intel.com>
-To:     davem@davemloft.net, kuba@kernel.org, jgg@nvidia.com
-Cc:     Dave Ertman <david.m.ertman@intel.com>, netdev@vger.kernel.org,
-        anthony.l.nguyen@intel.com, shiraz.saleem@intel.com,
-        mustafa.ismail@intel.com, linux-rdma@vger.kernel.org
-Subject: [PATCH net-next 1/1] ice: add support for DSCP QoS for IDC
-Date:   Mon,  7 Feb 2022 15:59:21 -0800
-Message-Id: <20220207235921.1303522-2-anthony.l.nguyen@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20220207235921.1303522-1-anthony.l.nguyen@intel.com>
-References: <20220207235921.1303522-1-anthony.l.nguyen@intel.com>
+        with ESMTP id S1353103AbiBHJLI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 04:11:08 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4DBC03FEE6;
+        Tue,  8 Feb 2022 01:11:06 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2186NgoC023009;
+        Tue, 8 Feb 2022 09:11:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xCHUlRjEw83eqiNlE4+9PV8BubYZQd/8xSz+xmQ5TFU=;
+ b=B2luCWi+F0zz8f9vcdIwNhRF+WYXHpapcgDrpl7cAGr9y/jnYCM/WqRzOgnEzQVbXqwl
+ J42owCRyxsP9s7XtB3TApuqJyp6e/yXGRCmB+HYwN20xbBnYPfVlzF5DDDo+ri48f/uq
+ S+uhrh6DfVcvE6e8fxnS/kBUY8O0pMOyiBo7uWUSf+PydV6CFsV+Pm9VYI+GMo1+f+vI
+ bqU3CIV3fTWwLedbm+HUfHb5NGJKTMeOjyTWiptU0Di1zmCCbbjMcSh1b4HEkrDl6rTn
+ itkzYdgOxBBsJj82dYcUxGx4bE1lMWpomX69bCHHL1wyERKbpK3y3CjYgi+OVyUwHZyq hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e22kqm1dp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 09:11:01 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2188V2nW027560;
+        Tue, 8 Feb 2022 09:11:00 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e22kqm1d5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 09:11:00 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2189902F016132;
+        Tue, 8 Feb 2022 09:10:59 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 3e1gva2vfw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 08 Feb 2022 09:10:58 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2189Au7w33817082
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 8 Feb 2022 09:10:56 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 70422AE051;
+        Tue,  8 Feb 2022 09:10:56 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 172B3AE045;
+        Tue,  8 Feb 2022 09:10:56 +0000 (GMT)
+Received: from [9.171.11.11] (unknown [9.171.11.11])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  8 Feb 2022 09:10:56 +0000 (GMT)
+Message-ID: <6d88abaa-62b8-c2ae-2b96-ceca6eea28e7@linux.ibm.com>
+Date:   Tue, 8 Feb 2022 10:10:55 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.0
+Subject: Re: [PATCH net-next] net/smc: Allocate pages of SMC-R on ibdev NUMA
+ node
+Content-Language: en-US
+To:     Leon Romanovsky <leon@kernel.org>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20220130190259.94593-1-tonylu@linux.alibaba.com>
+ <YfeN1BfPqhVz8mvy@unreal> <YgDtnk8g7y5oRKXB@TonyMac-Alibaba>
+ <YgEjZonizb1Ugg2b@unreal>
+From:   Stefan Raspl <raspl@linux.ibm.com>
+In-Reply-To: <YgEjZonizb1Ugg2b@unreal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: K0cj7u5Of_OXnWPmPZFaonClO747VLOQ
+X-Proofpoint-ORIG-GUID: b16vmd38Pse_jCRABD_31E5p6mwcJVkY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-08_02,2022-02-07_02,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202080051
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Dave Ertman <david.m.ertman@intel.com>
+On 2/7/22 14:49, Leon Romanovsky wrote:
+> On Mon, Feb 07, 2022 at 05:59:58PM +0800, Tony Lu wrote:
+>> On Mon, Jan 31, 2022 at 09:20:52AM +0200, Leon Romanovsky wrote:
+>>> On Mon, Jan 31, 2022 at 03:03:00AM +0800, Tony Lu wrote:
+>>>> Currently, pages are allocated in the process context, for its NUMA node
+>>>> isn't equal to ibdev's, which is not the best policy for performance.
+>>>>
+>>>> Applications will generally perform best when the processes are
+>>>> accessing memory on the same NUMA node. When numa_balancing enabled
+>>>> (which is enabled by most of OS distributions), it moves tasks closer to
+>>>> the memory of sndbuf or rmb and ibdev, meanwhile, the IRQs of ibdev bind
+>>>> to the same node usually. This reduces the latency when accessing remote
+>>>> memory.
+>>>
+>>> It is very subjective per-specific test. I would expect that
+>>> application will control NUMA memory policies (set_mempolicy(), ...)
+>>> by itself without kernel setting NUMA node.
+>>>
+>>> Various *_alloc_node() APIs are applicable for in-kernel allocations
+>>> where user can't control memory policy.
+>>>
+>>> I don't know SMC-R enough, but if I judge from your description, this
+>>> allocation is controlled by the application.
+>>
+>> The original design of SMC doesn't handle the memory allocation of
+>> different NUMA node, and the application can't control the NUMA policy
+>> in SMC.
+>>
+>> It allocates memory according to the NUMA node based on the process
+>> context, which is determined by the scheduler. If application process
+>> runs on NUMA node 0, SMC allocates on node 0 and so on, it all depends
+>> on the scheduler. If RDMA device is attached to node 1, the process runs
+>> on node 0, it allocates memory on node 0.
+>>
+>> This patch tries to allocate memory on the same NUMA node of RDMA
+>> device. Applications can't know the current node of RDMA device. The
+>> scheduler knows the node of memory, and can let applications run on the
+>> same node of memory and RDMA device.
+> 
+> I don't know, everything explained above is controlled through memory
+> policy, where application needs to run on same node as ibdev.
 
-The ice driver provides QoS information to auxiliary drivers
-through the exported function ice_get_qos_params.  This function
-doesn't currently support L3 DSCP QoS.
+The purpose of SMC-R is to provide a drop-in replacement for existing TCP/IP 
+applications. The idea is to avoid almost any modification to the application, 
+just switch the address family. So while what you say makes a lot of sense for 
+applications that intend to use RDMA, in the case of SMC-R we can safely assume 
+that most if not all applications running it assume they get connectivity 
+through a non-RDMA NIC. Hence we cannot expect the applications to think about 
+aspects such as NUMA, and we should do the right thing within SMC-R.
 
-Add the necessary defines, structure elements and code to support
-DSCP QoS through the IIDC functions.
-
-Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
----
- drivers/net/ethernet/intel/ice/ice_idc.c | 5 +++++
- include/linux/net/intel/iidc.h           | 4 ++++
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/net/ethernet/intel/ice/ice_idc.c b/drivers/net/ethernet/intel/ice/ice_idc.c
-index fc3580167e7b..263a2e7577a2 100644
---- a/drivers/net/ethernet/intel/ice/ice_idc.c
-+++ b/drivers/net/ethernet/intel/ice/ice_idc.c
-@@ -227,6 +227,11 @@ void ice_get_qos_params(struct ice_pf *pf, struct iidc_qos_params *qos)
- 
- 	for (i = 0; i < IEEE_8021QAZ_MAX_TCS; i++)
- 		qos->tc_info[i].rel_bw = dcbx_cfg->etscfg.tcbwtable[i];
-+
-+	qos->pfc_mode = dcbx_cfg->pfc_mode;
-+	if (qos->pfc_mode == IIDC_DSCP_PFC_MODE)
-+		for (i = 0; i < IIDC_MAX_DSCP_MAPPING; i++)
-+			qos->dscp_map[i] = dcbx_cfg->dscp_map[i];
- }
- EXPORT_SYMBOL_GPL(ice_get_qos_params);
- 
-diff --git a/include/linux/net/intel/iidc.h b/include/linux/net/intel/iidc.h
-index 1289593411d3..1c1332e4df26 100644
---- a/include/linux/net/intel/iidc.h
-+++ b/include/linux/net/intel/iidc.h
-@@ -32,6 +32,8 @@ enum iidc_rdma_protocol {
- };
- 
- #define IIDC_MAX_USER_PRIORITY		8
-+#define IIDC_MAX_DSCP_MAPPING		64
-+#define IIDC_DSCP_PFC_MODE		0x1
- 
- /* Struct to hold per RDMA Qset info */
- struct iidc_rdma_qset_params {
-@@ -60,6 +62,8 @@ struct iidc_qos_params {
- 	u8 vport_relative_bw;
- 	u8 vport_priority_type;
- 	u8 num_tc;
-+	u8 pfc_mode;
-+	u8 dscp_map[IIDC_MAX_DSCP_MAPPING];
- };
- 
- struct iidc_event {
--- 
-2.31.1
-
+Ciao,
+Stefan
