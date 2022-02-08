@@ -2,114 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFB1B4AD88E
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 14:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAD14AD91A
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Feb 2022 14:17:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348548AbiBHMHU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Feb 2022 07:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50046 "EHLO
+        id S1350642AbiBHNQZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Feb 2022 08:16:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbiBHMHS (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 07:07:18 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD49FC03FECE
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Feb 2022 04:07:17 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 45489B81AA0
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Feb 2022 12:07:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6A4BC004E1;
-        Tue,  8 Feb 2022 12:07:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644322035;
-        bh=qmJz+Q8Bq6ckiNElce0iYeeczOdkQCDyzdjp57JRs3g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XIJe2d8Bm1cGCMrS3m13UrU/3qe7HlBMyjH8BzEedPrq6S3v3OHd8tOTENWPNpRRr
-         g1E3fwPtdQ9yblbvgFaXoxDAHy0uO2rUp7LWhUE7Qy+uWxw1jZsjJf2LSvh0HkNmud
-         +B7ZWl56CzDq0SVTJ8306uINnK2pVFRL7zKyHl7Q5UPiip8cc3o3OWzTETXI4iQiQQ
-         HTUTWle8fG/hLXSghBjfm6Oz7s0GA1sbQCAodP9utMuwC7E8it+0VdUfAwCAblxGpK
-         szJkhOQ2tH9lO1Ewn29JBv5XSvlZNGy1p1uI20WSP4FxZ9rny00Qgw1H3089A6ItXa
-         z1aICtJhkWdxQ==
-Date:   Tue, 8 Feb 2022 14:07:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: Seeking clarification on the XRC Annex wrt. a TGT QP having a SQ
-Message-ID: <YgJc7DQ8T14do6WK@unreal>
-References: <6FD25F7D-6F5A-4990-A179-5ED213001BB7@oracle.com>
- <YgFsDXH5XdEBOT/O@unreal>
- <099658DB-B526-481A-B3BA-6F95BA74350C@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <099658DB-B526-481A-B3BA-6F95BA74350C@oracle.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S232537AbiBHMxX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Feb 2022 07:53:23 -0500
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFA70C03FEC0;
+        Tue,  8 Feb 2022 04:53:20 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V3we9Sx_1644324796;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V3we9Sx_1644324796)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 08 Feb 2022 20:53:16 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "D. Wythe" <alibuda@linux.alibaba.com>
+Subject: [PATCH net-next v5 0/5] net/smc: Optimizing performance in short-lived scenarios 
+Date:   Tue,  8 Feb 2022 20:53:08 +0800
+Message-Id: <cover.1644323503.git.alibuda@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 10:53:15AM +0000, Haakon Bugge wrote:
-> 
-> 
-> > On 7 Feb 2022, at 19:59, Leon Romanovsky <leon@kernel.org> wrote:
-> > 
-> > On Mon, Feb 07, 2022 at 02:55:35PM +0000, Haakon Bugge wrote:
-> >> Hey,
-> >> 
-> >> 
-> >> I have a question to XRC TGT QPs and whether they do have a set of requestor resources or not.
-> >> 
-> >> 
-> >> The XRC Annex (March 2, 2009 Revision 1.0) (*1) boldly states:
-> >> 
-> >> 	XRC TGT QPs are similar to RD EECs but do not have a requester side.
-> >> 
-> >> 
-> >> Nevertheless, in Table 9, page 36, it is stated that "Local ACK Timeout" and "SQ PSN" are required attributes during an RTR -> RTS transition for an XRC Target QP. This seems to be an incorrect requirement, subject to the XRC Target QP not having a send queue?
-> >> 
-> >> Further, looking at a vendor's creation of an XRC TGT QP, we see:
-> >> 
-> >> 	MLX5_SET(qpc, qpc, no_sq, 1);
-> >> 
-> >> in the function create_xrc_tgt().
-> >> 
-> >> If the interpretation that an XRC TGT does _not_ have a send queue is correct, we cannot simply remove "Local ACK Timeout" and "SQ PSN" as mandatory attributes during the state transition, because that will break all current software. Is it an idea to move those to optional attributes in the qp_state_table[]? Then remove the IB_QPT_XRC_TGT label in cm_init_qp_rts_attr()?
-> > 
-> > I think that your interpretation of spec is correct, but why do you want
-> > to remove these attributes? The device ignores them anyway.
-> 
-> :-)
-> 
-> Or, rephrasing your question, why have these attributes as mandatory? The device ignores them anyway ;-)
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-I can only guess. The spec is written by HW people, together with
-statement than XRC TGT QP same as RC, most likely, the decision was
-to take RC block and copy/paste for XRC TGT.
+This patch set aims to optimizing performance of SMC in short-lived
+links scenarios, which is quite unsatisfactory right now.
 
-Thanks
+In our benchmark, we test it with follow scripts:
 
-> 
-> To me, it is confusing. For example, in rdma_set_min_rnr_timer(), the test for XRC TGT is correct, since an XRG INI QP does not have any responder part. But this is then inconsistent with other parts of CM/CMA.
+./wrk -c 10000 -t 4 -H 'Connection: Close' -d 20 http://smc-server
 
+Current performance figures like that:
 
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  4956 requests in 20.06s, 3.24MB read
+  Socket errors: connect 0, read 0, write 672, timeout 0
+Requests/sec:    247.07
+Transfer/sec:    165.28KB
 
-> 
-> 
-> Thxs, Håkon
-> 
-> > Thanks
-> > 
-> >> 
-> >> 
-> >> Thxs, Håkon
-> >> 
-> >> *1: IBTA Spec Release 1.6 is equal to the XRC Annex in this respect
-> 
+There are many reasons for this phenomenon, this patch set doesn't
+solve it all though, but it can be well alleviated with it in.
+
+Patch 1/5  (Make smc_tcp_listen_work() independent) :
+
+Separate smc_tcp_listen_work() from smc_listen_work(), make them
+independent of each other, the busy SMC handshake can not affect new TCP
+connections visit any more. Avoid discarding a large number of TCP
+connections after being overstock, which is undoubtedly raise the
+connection establishment time.
+
+Patch 2/5 (Limits SMC backlog connections):
+
+Since patch 1 has separated smc_tcp_listen_work() from
+smc_listen_work(), an unrestricted TCP accept have come into being. This
+patch try to put a limit on SMC backlog connections refers to
+implementation of TCP.
+
+Patch 3/5 (Fallback when SMC handshake workqueue congested):
+
+Considering the complexity of SMC handshake right now, in short-lived
+links scenarios, this may not be the main scenario of SMC though, it's
+performance is still quite poor. This Patch try to provide auto fallback
+case when SMC handshake workqueue congested, which is the sign of SMC
+handshake stacking in our opinion.
+
+Patch 4/5 (Dynamic control SMC auto fallback by socket options)
+
+This patch allow applications dynamically control the ability of SMC
+auto fallback. Since SMC don't support set SMC socket option before,
+this patch also have to support SMC's owns socket options.
+
+Patch 5/5 (Add global configure for auto fallback by netlink)
+
+This patch provides a way to get benefit of auto fallback without
+modifying any code for applications, which is quite useful for most
+existing applications.
+
+After this patch set, performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  693253 requests in 20.10s, 452.88MB read
+Requests/sec:  34488.13
+Transfer/sec:     22.53MB
+
+That's a quite well performance improvement, about to 6 to 7 times in my
+environment.
+---
+changelog:
+v2 -> v1:
+- fix compile warning
+- fix invalid dependencies in kconfig
+v3 -> v2:
+- correct spelling mistakes
+- fix useless variable declare
+v4 -> v3
+- make smc_tcp_ls_wq be static
+v5 -> v4
+- add dynamic control for SMC auto fallback by socket options
+- add global configure for SMC auto fallback through netlink
+---
+D. Wythe (5):
+  net/smc: Make smc_tcp_listen_work() independent
+  net/smc: Limits backlog connections
+  net/smc: Fallback when handshake workqueue congested
+  net/smc: Dynamic control auto fallback by socket options
+  net/smc: Add global configure for auto fallback by netlink
+
+ include/linux/socket.h   |   1 +
+ include/linux/tcp.h      |   1 +
+ include/uapi/linux/smc.h |   7 +++
+ net/ipv4/tcp_input.c     |   3 +-
+ net/smc/af_smc.c         | 158 ++++++++++++++++++++++++++++++++++++++++++++++-
+ net/smc/smc.h            |  12 ++++
+ net/smc/smc_core.c       |   2 +
+ net/smc/smc_netlink.c    |  10 +++
+ 8 files changed, 191 insertions(+), 3 deletions(-)
+
+-- 
+1.8.3.1
+
