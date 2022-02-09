@@ -2,172 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1F84B0757
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 08:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C87FB4B0A0A
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 10:56:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbiBJHhS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Feb 2022 02:37:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48744 "EHLO
+        id S235383AbiBJJzt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Feb 2022 04:55:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236211AbiBJHhN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 02:37:13 -0500
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2519BF4
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 23:37:14 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1644478633;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=evxpqzsNzQqSQfp0HWLeS9ofh9hXhS2Uc635wtLFMsU=;
-        b=kQhZE9E4LUYUdBY2L4ETEDKzT2o28Q42X1UmDYhe3Ia1acahLMPFR7sAro4+Pg2/rXl/wg
-        oobLrcoRoF9C0SV+a158/k2HOH6uRwnexclOC2yqk8glwNmJNmUP6ic5XakC7pIXcG8jik
-        hlvwYD2SGD6AMgMs4und9OPCzPwHRAI=
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, rpearsonhpe@gmail.com
-Cc:     linux-rdma@vger.kernel.org
-Subject: [PATCH 3/3] RDMA/rxe: Replace spin_lock_bh with spin_lock_irqsave in post_one_send
-Date:   Thu, 10 Feb 2022 15:36:55 +0800
-Message-Id: <20220210073655.42281-4-guoqing.jiang@linux.dev>
-In-Reply-To: <20220210073655.42281-1-guoqing.jiang@linux.dev>
-References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
+        with ESMTP id S232675AbiBJJzs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 04:55:48 -0500
+X-Greylist: delayed 10584 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 10 Feb 2022 01:55:48 PST
+Received: from antispam.sysnetpro.com.br (unknown [201.87.230.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E93E3B08
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 01:55:48 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by antispam.sysnetpro.com.br (Postfix) with ESMTP id 4JvRz848J9zBwDN
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 04:43:32 -0200 (-02)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        encontresuafranquia.com.br; h=message-id:sensitivity:reply-to
+        :date:date:from:from:subject:subject:content-description
+        :content-transfer-encoding:mime-version:content-type
+        :content-type:received:received:received:received:received
+        :received:received; s=dkim; t=1644475405; x=1646289806; bh=qzHHY
+        jL7hU1b4eqqx4Urz2P3r3LTP1eI+hMNkRI+mqE=; b=wyINeG1TmUvxu+r0rYo/e
+        w9AD8Saolg2gIIfzfvUPH+YNGE/JxiiFxjbrnbdD1gFRU/YzjbDF9852FyKutonh
+        fEPtURfaFC5iS+1/emm7/kz97hmUNz6I257UPJt7s82uI0civg3rO3MzvxIUWNx4
+        TGQpQvQAcaVgTLr2bKvaBWbAQQCe0tYryMVyqA9cnoiM/doX/gYZ25kOG1EphYYD
+        ntauGIbVnfoVXAQ5yPM+s8h6MAWO/WTJmkhH0Pxtn1s0KWjLOSUDarEU9Ughx+wb
+        KSIyOi2DbZkcXeTMVRTC//+ctoaXV6YAnD5hvWeEDCRxydMm+dA7MWQOv49qOK0r
+        A==
+X-Amavis-Modified: Mail body modified (using disclaimer) -
+        antispam.sysnetpro.com.br
+X-Virus-Scanned: Scrollout F1 at sysnetpro.com.br
+Received: from antispam.sysnetpro.com.br ([127.0.0.1])
+        by localhost (antispam.sysnetpro.com.br [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id nzDs8btz2kzJ for <linux-rdma@vger.kernel.org>;
+        Thu, 10 Feb 2022 04:43:25 -0200 (-02)
+Received: from mx1.sysnetpro.email (unknown [10.0.3.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by antispam.sysnetpro.com.br (Postfix) with ESMTPS id 4JvH5k27DxzC8Hp
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 22:03:38 -0200 (-02)
+Received: from localhost (localhost [127.0.0.1])
+        by mx1.sysnetpro.email (Postfix) with ESMTP id 7245123FC70
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 21:03:19 -0300 (-03)
+Received: from mx1.sysnetpro.email ([127.0.0.1])
+        by localhost (mta3.sysnetpro.email [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id n1warY1Cr-em for <linux-rdma@vger.kernel.org>;
+        Wed,  9 Feb 2022 21:03:19 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by mx1.sysnetpro.email (Postfix) with ESMTP id 5E3FC23FCFD
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 20:57:49 -0300 (-03)
+X-Virus-Scanned: amavisd-new at mta3.sysnetpro.email
+Received: from mx1.sysnetpro.email ([127.0.0.1])
+        by localhost (mta3.sysnetpro.email [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id N2JaJvTD_0_d for <linux-rdma@vger.kernel.org>;
+        Wed,  9 Feb 2022 20:57:49 -0300 (-03)
+Received: from [172.20.10.7] (unknown [105.112.59.18])
+        by mx1.sysnetpro.email (Postfix) with ESMTPSA id 18F052A2BD0
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 20:53:40 -0300 (-03)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Business Proposal
+To:     linux-rdma@vger.kernel.org
+From:   david <tatiane.rocha@encontresuafranquia.com.br>
+Date:   Wed, 09 Feb 2022 23:53:39 +0000
+Reply-To: davidhilton711@gmail.com
+X-Priority: 1 (High)
+Sensitivity: Private
+Message-Id: <20220209235341.18F052A2BD0@mx1.sysnetpro.email>
+X-Spam-Status: No, score=2.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Same as __rxe_add_index, the lock need to be fully IRQ safe, otherwise
-below calltrace appears.
+pozdravujem,
 
-[  763.942623] ------------[ cut here ]------------
-[  763.943171] WARNING: CPU: 5 PID: 97 at kernel/softirq.c:363 __local_bh_enable_ip+0xb1/0x110
-[ ... ]
-[  763.947276] CPU: 5 PID: 97 Comm: kworker/5:2 Kdump: loaded Tainted: G           OEL    5.17.0-rc3-57-default #17
-[  763.947575] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a-rebuilt.opensuse.org 04/01/2014
-[  763.947893] Workqueue: ib_cm cm_work_handler [ib_cm]
-[  763.948075] RIP: 0010:__local_bh_enable_ip+0xb1/0x110
-[  763.948232] Code: e8 54 ae 04 00 e8 7f 4e 20 00 fb 66 0f 1f 44 00 00 65 8b 05 b1 03 f3 56 85 c0 74 51 5b 5d c3 65 8b 05 3f 0f f3 56
-85 c0 75 8e <0f> 0b eb 8a e8 76 4c 20 00 eb 99 48 89 ef e8 9c 8d 0b 00 eb a2 48
-[  763.948736] RSP: 0018:ffff888004a970e8 EFLAGS: 00010046
-[  763.948897] RAX: 0000000000000000 RBX: 0000000000000201 RCX: dffffc0000000000
-[  763.949095] RDX: 0000000000000007 RSI: 0000000000000201 RDI: ffffffffab95dbac
-[  763.949292] RBP: ffffffffc127c269 R08: ffffffffa91059da R09: ffff88800afde323
-[  763.949556] R10: ffffed10015fbc64 R11: 0000000000000001 R12: ffffc900005a2000
-[  763.949781] R13: 0000000000000000 R14: 0000000000000000 R15: ffff88800afde000
-[  763.949982] FS:  0000000000000000(0000) GS:ffff888104c80000(0000) knlGS:0000000000000000
-[  763.950205] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  763.950367] CR2: 00007f85ec3f5b18 CR3: 0000000116216005 CR4: 0000000000770ee0
-[  763.956480] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[  763.962608] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[  763.968785] PKRU: 55555554
-[  763.974707] Call Trace:
-[  763.980557]  <TASK>
-[  763.986377]  rxe_post_send+0x569/0x8e0 [rdma_rxe]
-[  763.992340]  ib_send_mad+0x4c1/0x850 [ib_core]
-[  763.998442]  ? ib_register_mad_agent+0x1710/0x1710 [ib_core]
-[  764.004486]  ? __kmalloc+0x21d/0x3a0
-[  764.010465]  ib_post_send_mad+0x28c/0x10b0 [ib_core]
-[  764.016480]  ? lock_is_held_type+0xe4/0x140
-[  764.022359]  ? find_held_lock+0x85/0xa0
-[  764.028230]  ? lock_release+0x24e/0x450
-[  764.034061]  ? timeout_sends+0x420/0x420 [ib_core]
-[  764.039879]  ? ib_create_send_mad+0x541/0x670 [ib_core]
-[  764.045604]  ? do_raw_spin_unlock+0x86/0xf0
-[  764.051178]  ? preempt_count_sub+0x14/0xc0
-[  764.056851]  ? lock_is_held_type+0xe4/0x140
-[  764.062412]  ib_send_cm_rep+0x47a/0x860 [ib_cm]
-[  764.067965]  rdma_accept+0x44c/0x5e0 [rdma_cm]
-[  764.073381]  ? cma_rep_recv+0x330/0x330 [rdma_cm]
-[  764.078762]  ? rcu_read_lock_sched_held+0x3f/0x60
-[  764.084072]  ? trace_kmalloc+0x29/0xd0
-[  764.089185]  ? __kmalloc+0x1c5/0x3a0
-[  764.094185]  ? rtrs_iu_alloc+0x12b/0x260 [rtrs_core]
-[  764.099075]  rtrs_srv_rdma_cm_handler+0x7ba/0xcf0 [rtrs_server]
-[  764.103917]  ? rtrs_srv_inv_rkey_done+0x100/0x100 [rtrs_server]
-[  764.108563]  ? find_held_lock+0x85/0xa0
-[  764.113033]  ? lock_release+0x24e/0x450
-[  764.117452]  ? rdma_restrack_add+0x9c/0x220 [ib_core]
-[  764.121797]  ? rcu_read_lock_sched_held+0x3f/0x60
-[  764.125961]  cma_cm_event_handler+0x77/0x2c0 [rdma_cm]
-[  764.130061]  cma_ib_req_handler+0xbd5/0x23f0 [rdma_cm]
-[  764.134027]  ? cma_cancel_operation+0x1f0/0x1f0 [rdma_cm]
-[  764.137950]  ? lockdep_lock+0xb4/0x170
-[  764.141667]  ? _find_first_zero_bit+0x28/0x50
-[  764.145486]  ? mark_held_locks+0x65/0x90
-[  764.149002]  cm_process_work+0x2f/0x210 [ib_cm]
-[  764.152413]  ? _raw_spin_unlock_irq+0x35/0x50
-[  764.155763]  ? cm_queue_work_unlock+0x40/0x110 [ib_cm]
-[  764.159080]  cm_req_handler+0xf7f/0x2030 [ib_cm]
-[  764.162522]  ? cm_lap_handler+0xba0/0xba0 [ib_cm]
-[  764.165847]  ? lockdep_hardirqs_on_prepare+0x220/0x220
-[  764.169155]  cm_work_handler+0x6ce/0x37c0 [ib_cm]
-[  764.172497]  ? lock_acquire+0x182/0x410
-[  764.175771]  ? lock_release+0x450/0x450
-[  764.178925]  ? lock_downgrade+0x3c0/0x3c0
-[  764.182148]  ? ib_cm_init_qp_attr+0xa90/0xa90 [ib_cm]
-[  764.185511]  ? mark_held_locks+0x24/0x90
-[  764.188692]  ? lock_is_held_type+0xe4/0x140
-[  764.191876]  process_one_work+0x5a8/0xa80
-[  764.195034]  ? lock_release+0x450/0x450
-[  764.198208]  ? pwq_dec_nr_in_flight+0x100/0x100
-[  764.201433]  ? rwlock_bug.part.0+0x60/0x60
-[  764.204660]  ? _raw_spin_lock_irq+0x54/0x60
-[  764.207835]  worker_thread+0x2b5/0x760
-[  764.210920]  ? process_one_work+0xa80/0xa80
-[  764.214014]  kthread+0x169/0x1a0
-[  764.217033]  ? kthread_complete_and_exit+0x20/0x20
-[  764.220205]  ret_from_fork+0x1f/0x30
-[  764.223467]  </TASK>
-[  764.226482] irq event stamp: 55805
-[  764.229527] hardirqs last  enabled at (55803): [<ffffffffaa179c6d>] _raw_spin_unlock_irqrestore+0x2d/0x60
-[  764.232779] hardirqs last disabled at (55804): [<ffffffffaa179a10>] _raw_spin_lock_irqsave+0x60/0x70
-[  764.236052] softirqs last  enabled at (55794): [<ffffffffc127cb68>] rxe_post_recv+0xb8/0x120 [rdma_rxe]
-[  764.239428] softirqs last disabled at (55805): [<ffffffffc127beeb>] rxe_post_send+0x1eb/0x8e0 [rdma_rxe]
-[  764.242740] ---[ end trace 0000000000000000 ]---
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_verbs.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+D=C3=BAfam, =C5=BEe tento e-mail dostanete vo velmi dobrom stave. Som p=C3=
+=A1n David Hilton, ved=C3=BAci =C3=BActovn=C3=ADctva / auditu v Credit Suis=
+se Bank, Cabot Square London, Spojen=C3=A9 kr=C3=A1lovstvo. Oslovil som V=
+=C3=A1s v s=C3=BAvislosti s obchodn=C3=BDm n=C3=A1vrhom, ktor=C3=BD bude pr=
+e n=C3=A1s a menej privilegovan=C3=BDch velk=C3=BDm pr=C3=ADnosom. Ako ved=
+=C3=BAci =C3=BActovn=C3=ADctva / auditu region=C3=A1lnej kancel=C3=A1rie Gr=
+eater London som objavil 15 800 000 libier (15 mili=C3=B3nov 8 000 libier) =
+na =C3=BActe jedn=C3=A9ho z na=C5=A1ich zahranicn=C3=BDch z=C3=A1kazn=C3=AD=
+kov, zosnul=C3=A9ho p=C3=A1na Manzoora Hassana. Bol obchodn=C3=BDm magn=C3=
+=A1tom, ktor=C3=BD zahynul pri hav=C3=A1rii vrtuln=C3=ADka v roku 2014. P=
+=C3=A1n Hassan mal 54 rokov, ked jeho man=C5=BEelka, jeho jedin=C3=BD syn A=
+vraham (Albert) a jeho nevesta zahynuli pri hav=C3=A1rii vrtuln=C3=ADka.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9f0aef4b649d..0056418425a1 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -644,12 +644,13 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 	struct rxe_sq *sq = &qp->sq;
- 	struct rxe_send_wqe *send_wqe;
- 	int full;
-+	unsigned long flags;
- 
- 	err = validate_send_wr(qp, ibwr, mask, length);
- 	if (err)
- 		return err;
- 
--	spin_lock_bh(&qp->sq.sq_lock);
-+	spin_lock_irqsave(&qp->sq.sq_lock, flags);
- 
- 	full = queue_full(sq->queue, QUEUE_TYPE_TO_DRIVER);
- 
-@@ -663,7 +664,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
- 
- 	queue_advance_producer(sq->queue, QUEUE_TYPE_TO_DRIVER);
- 
--	spin_unlock_bh(&qp->sq.sq_lock);
-+	spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
- 
- 	return 0;
- }
--- 
-2.26.2
+Volba kontaktovat v=C3=A1s vyplynula z geografick=C3=A9ho charakteru miesta=
+, kde =C5=BEijete, najm=C3=A4 z d=C3=B4vodu citlivosti transakcie a d=C3=B4=
+vernosti tu poskytnut=C3=BDch inform=C3=A1ci=C3=AD. Na=C5=A1a banka teraz c=
+ak=C3=A1, k=C3=BDm niekto z jej pr=C3=ADbuzn=C3=BDch po=C5=BEiada o dedicsk=
+=C3=BD fond, no =C5=BEial, v=C5=A1etka n=C3=A1maha je zbytocn=C3=A1. Osobne=
+ sa mi nepodarilo n=C3=A1jst pr=C3=ADbuzn=C3=BDch ani in=C3=BDch pr=C3=ADbu=
+zn=C3=BDch p=C3=A1na Hassana. V tejto s=C3=BAvislosti v=C3=A1s =C5=BEiadam =
+o s=C3=BAhlas, aby som v=C3=A1s predstavil ako bl=C3=ADzkeho pr=C3=ADbuzn=
+=C3=A9ho/z=C3=A1vet zosnul=C3=A9ho, aby v=C3=A1m mohol byt vyplaten=C3=BD v=
+=C3=BDta=C5=BEok z tohto =C3=BActu vo v=C3=BD=C5=A1ke 15,8 mili=C3=B3na =C2=
+=A3.
 
+Toto bude vyplaten=C3=A9 alebo rozdelen=C3=A9 v t=C3=BDchto percent=C3=A1ch=
+ 60 % mne a 40 % v=C3=A1m. V=C5=A1etky potrebn=C3=A9 pr=C3=A1vne dokumenty,=
+ ktor=C3=BDmi je mo=C5=BEn=C3=A9 t=C3=BAto dedicsk=C3=BA pohlad=C3=A1vku z=
+=C3=A1lohovat, nie je v=C3=B4bec probl=C3=A9m. Jedin=C3=A9, co mus=C3=ADm u=
+robit, je nahrat va=C5=A1e men=C3=A1 do dokumentov a legalizovat ich na Naj=
+vy=C5=A1=C5=A1om s=C3=BAde Spojen=C3=A9ho kr=C3=A1lovstva, aby som dok=C3=
+=A1zal, =C5=BEe ste opr=C3=A1vnen=C3=BDm pr=C3=ADjemcom tohto fondu. V=C5=
+=A1etko, o co teraz =C5=BEiadam, je va=C5=A1a =C3=BAprimn=C3=A1 spolupr=C3=
+=A1ca, d=C3=B4vernost a d=C3=B4vera, aby sme mohli uskutocnit t=C3=BAto tra=
+nsakciu. Garantujem V=C3=A1m 100% =C3=BAspe=C5=A1nost a to, =C5=BEe t=C3=A1=
+to obchodn=C3=A1 transakcia prebehne v s=C3=BAlade so z=C3=A1konom.
+
+Uvedte nasleduj=C3=BAce podrobnosti, preto=C5=BEe na ich dokoncenie m=C3=A1=
+me 5 pracovn=C3=BDch dn=C3=AD:
+
+1. Va=C5=A1e cel=C3=A9 meno
+2. Telef=C3=B3nne c=C3=ADslo
+3. Kontaktn=C3=A1 adresa
+
+Po metodickom hladan=C3=AD som sa rozhodol oslovit V=C3=A1s v n=C3=A1deji, =
+=C5=BEe V=C3=A1s tento n=C3=A1vrh zaujme. Po potvrden=C3=AD tejto spr=C3=A1=
+vy a prejaven=C3=AD z=C3=A1ujmu V=C3=A1m poskytnem podrobn=C3=A9 inform=C3=
+=A1cie.
+
+V=C3=A1=C5=BEime si va=C5=A1e schv=C3=A1lenie tohto e-mailu a obchodn=C3=A9=
+ho n=C3=A1vrhu.
+
+Te=C5=A1=C3=ADm sa na skor=C3=BA odpoved.
+
+S pozdravom
+David Hilton.
