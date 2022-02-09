@@ -2,183 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EA04AE9FF
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 07:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E844AEA49
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 07:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232242AbiBIGF1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 01:05:27 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:51148 "EHLO
+        id S230366AbiBIG2G (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 01:28:06 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:47292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233311AbiBIGAo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 01:00:44 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2DCC03325A
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Feb 2022 22:00:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644386448; x=1675922448;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=df8k4k3Kk8AzAhi19SgSXbOpsAo6368HZa5ROhRTJ2Y=;
-  b=iSb7taGmKfCOqAELOugsayvqYztXBMScmDU6vjg05abU/zmSU1whMHC2
-   ZHqfRquqCKbp90z7GDfHVEJ2yP6QOPN53eGHHS5P6pdebPrgSAxCa0W8e
-   WDIcXhBQWuwAUK/xfGanQNj7rM/AYXlqqA1TSUB1WLuWPdbVpxuora1bS
-   NOVoaVslEbfbIPxyeqh3wqYsTMngU2vXcqd1P32OIxm0+83XH1rgsLDs/
-   HXtfsAgDQjGNawjgNFKzISxB3/tD4T9HHBdhT/qanKcNv/uWlpoiYS8MG
-   8StFvUzWp4g9IP3R6KvjlwsnElzmiPBZmbDVuCPAkxqsZ2Ilvn6d4FCZ1
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10252"; a="229099259"
-X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
-   d="scan'208";a="229099259"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Feb 2022 22:00:30 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,354,1635231600"; 
-   d="scan'208";a="482217003"
-Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 08 Feb 2022 22:00:28 -0800
-Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nHg1j-0001Iu-VT; Wed, 09 Feb 2022 06:00:27 +0000
-Date:   Wed, 09 Feb 2022 13:59:41 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 2f1b2820b546c1eef07d15ed73db4177c0cf6d46
-Message-ID: <6203584d.nWPxvMXr/OYXdvkF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S234932AbiBIGYW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 01:24:22 -0500
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F672C00875D;
+        Tue,  8 Feb 2022 22:24:25 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V3zg98L_1644387858;
+Received: from 30.225.28.54(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V3zg98L_1644387858)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Feb 2022 14:24:23 +0800
+Message-ID: <e8764a6e-7542-3048-fb30-cdb7fd4dcde2@linux.alibaba.com>
+Date:   Wed, 9 Feb 2022 14:24:15 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH net-next v5 1/5] net/smc: Make smc_tcp_listen_work()
+ independent
+To:     Karsten Graul <kgraul@linux.ibm.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <cover.1644323503.git.alibuda@linux.alibaba.com>
+ <58c544cb206d94b759ff0546bcffe693c3cbfb98.1644323503.git.alibuda@linux.alibaba.com>
+ <0d1363b7-6080-5fb3-1dcb-cdedf82303fa@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <0d1363b7-6080-5fb3-1dcb-cdedf82303fa@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 2f1b2820b546c1eef07d15ed73db4177c0cf6d46  Merge branch 'irdma_dscp' into rdma.git for-next
+It is indeed okay to use system_wq at present. Dues to the load 
+balancing issues we found, queue_work() always submits tasks to the 
+worker on the current CPU. tcp_listen_work() execution once may submit a 
+large number of tasks to the worker of the current CPU, causing 
+unnecessary pending, even though worker on other CPU are totaly free. I 
+was plan to make tcp_listen_work() blocked wait on worker of every CPU, 
+so I create a new workqueue, and that's the only reason for it. But this 
+problem is not very urgent, and I don't have strong opinion too...
 
-elapsed time: 761m
 
-configs tested: 103
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                              allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm64                               defconfig
-arm64                            allyesconfig
-powerpc                    sam440ep_defconfig
-arm                         cm_x300_defconfig
-h8300                            alldefconfig
-mips                         rt305x_defconfig
-powerpc                     pq2fads_defconfig
-mips                     loongson1b_defconfig
-arm                            xcep_defconfig
-sparc                       sparc64_defconfig
-arm                        oxnas_v6_defconfig
-sh                          urquell_defconfig
-mips                     decstation_defconfig
-sh                         microdev_defconfig
-xtensa                  nommu_kc705_defconfig
-arm                         at91_dt_defconfig
-sh                             espt_defconfig
-powerpc                       ppc64_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                          sdk7780_defconfig
-powerpc                     sequoia_defconfig
-sh                   rts7751r2dplus_defconfig
-mips                         db1xxx_defconfig
-sh                             sh03_defconfig
-openrisc                            defconfig
-sh                        sh7763rdp_defconfig
-arm                        mvebu_v7_defconfig
-mips                            gpr_defconfig
-arm                  randconfig-c002-20220209
-ia64                                defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                                defconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-alpha                               defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a002
-x86_64                        randconfig-a004
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-
-clang tested configs:
-powerpc                     tqm8540_defconfig
-x86_64                        randconfig-a003
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-x86_64                        randconfig-a001
-x86_64                        randconfig-a005
-i386                          randconfig-a013
-i386                          randconfig-a015
-i386                          randconfig-a011
-hexagon              randconfig-r045-20220208
-hexagon              randconfig-r041-20220208
-riscv                randconfig-r042-20220208
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+在 2022/2/9 上午1:06, Karsten Graul 写道:
+> On 08/02/2022 13:53, D. Wythe wrote:
+>> +static struct workqueue_struct	*smc_tcp_ls_wq;	/* wq for tcp listen work */
+>>   struct workqueue_struct	*smc_hs_wq;	/* wq for handshake work */
+>>   struct workqueue_struct	*smc_close_wq;	/* wq for close work */
+>>   
+>> @@ -2227,7 +2228,7 @@ static void smc_clcsock_data_ready(struct sock *listen_clcsock)
+>>   	lsmc->clcsk_data_ready(listen_clcsock);
+>>   	if (lsmc->sk.sk_state == SMC_LISTEN) {
+>>   		sock_hold(&lsmc->sk); /* sock_put in smc_tcp_listen_work() */
+>> -		if (!queue_work(smc_hs_wq, &lsmc->tcp_listen_work))
+>> +		if (!queue_work(smc_tcp_ls_wq, &lsmc->tcp_listen_work))
+>>   			sock_put(&lsmc->sk);
+> 
+> It works well this way, but given the fact that there is one tcp_listen worker per
+> listen socket and these workers finish relatively quickly, wouldn't it be okay to
+> use the system_wq instead of using an own queue? But I have no strong opinion about that...
