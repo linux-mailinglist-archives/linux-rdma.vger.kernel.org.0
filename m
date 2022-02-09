@@ -2,37 +2,36 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F204AEA73
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 07:41:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54514AEAC7
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 08:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbiBIGl0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 01:41:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
+        id S236167AbiBIHLS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 02:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231682AbiBIGlY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 01:41:24 -0500
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1A9C043181;
-        Tue,  8 Feb 2022 22:41:27 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V4-CaI3_1644388883;
-Received: from 30.225.28.54(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V4-CaI3_1644388883)
+        with ESMTP id S236165AbiBIHLN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 02:11:13 -0500
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A0CC05CB81;
+        Tue,  8 Feb 2022 23:11:15 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R931e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V4-87Jr_1644390672;
+Received: from 30.225.28.54(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V4-87Jr_1644390672)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Feb 2022 14:41:24 +0800
-Message-ID: <9ba496e1-daf1-57d2-318e-bfcd4f57755c@linux.alibaba.com>
-Date:   Wed, 9 Feb 2022 14:41:21 +0800
+          Wed, 09 Feb 2022 15:11:13 +0800
+Message-ID: <7f35f47b-af31-a07e-752a-11bb15aa0db9@linux.alibaba.com>
+Date:   Wed, 9 Feb 2022 15:11:12 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
  Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH net-next v5 4/5] net/smc: Dynamic control auto fallback by
- socket options
+Subject: Re: [PATCH net-next v5 2/5] net/smc: Limit backlog connections
 To:     Karsten Graul <kgraul@linux.ibm.com>
 Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
 References: <cover.1644323503.git.alibuda@linux.alibaba.com>
- <20f504f961e1a803f85d64229ad84260434203bd.1644323503.git.alibuda@linux.alibaba.com>
- <74e9c7fb-073c-cd62-c42a-e57c18de3404@linux.ibm.com>
+ <c597e6c6d004e5b2a26a9535c8099d389214f273.1644323503.git.alibuda@linux.alibaba.com>
+ <c28365d5-72e3-335b-372e-2a9069898df1@linux.ibm.com>
 From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <74e9c7fb-073c-cd62-c42a-e57c18de3404@linux.ibm.com>
+In-Reply-To: <c28365d5-72e3-335b-372e-2a9069898df1@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
@@ -46,30 +45,34 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-Some of our servers have different service types on different ports.
-A global switch cannot control different service ports individually in 
-this case。In fact, it has nothing to do with using netlink or not. 
-Socket options is the first solution comes to my mind in that case，I 
-don't know if there is any other better way。
+There are indirectly limits on smc accept queue with following code.
 
-Looks for you suggestions.
++	if (sk_acceptq_is_full(&smc->sk)) {
++		NET_INC_STATS(sock_net(sk), LINUX_MIB_LISTENOVERFLOWS);
++		goto drop;
++	}
+
+
+In fact, we treat the connections in smc accept queue as Full 
+establisted connection. As I wrote in patch commits, there are 
+trade-offs to this implemets.
+
 Thanks.
 
-
-在 2022/2/9 上午1:08, Karsten Graul 写道:
+在 2022/2/9 上午1:13, Karsten Graul 写道:
 > On 08/02/2022 13:53, D. Wythe wrote:
 >> From: "D. Wythe" <alibuda@linux.alibaba.com>
 >>
->> This patch aims to add dynamic control for SMC auto fallback, since we
->> don't have socket option level for SMC yet, which requires we need to
->> implement it at the same time.
+>> Current implementation does not handling backlog semantics, one
+>> potential risk is that server will be flooded by infinite amount
+>> connections, even if client was SMC-incapable.
 > 
-> In your response to the v2 version of this series you wrote:
+> In this patch you count the number of inflight SMC handshakes as pending and
+> check them against the defined max_backlog. I really like this improvement.
 > 
->> After some trial and thought, I found that the scope of netlink control
->> is too large, we should limit the scope to socket. Adding a socket option
->> may be a better choice, what do you think?
-> 
-> I want to understand why this socket option is required, who needs it and why.
-> What were your trials and thoughts, did you see any problems with the global
-> switch via the netlink interface?
+> There is another queue in af_smc.c, the smc accept queue and any new client
+> socket that completed the handshake process is enqueued there (in smc_accept_enqueue() )
+> and is waiting to get accepted by the user space application. To apply the correct
+> semantics here, I think the number of sockets waiting in the smc accept queue
+> should also be counted as backlog connections, right? I see no limit for this queue
+> now. What do you think?
