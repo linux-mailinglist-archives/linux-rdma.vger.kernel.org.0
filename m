@@ -2,148 +2,199 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F74B4AF173
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:25:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB884AF213
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbiBIMZL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 07:25:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48500 "EHLO
+        id S233618AbiBIMsu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 07:48:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbiBIMZK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:25:10 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2065.outbound.protection.outlook.com [40.107.236.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9780C05CB86
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 04:25:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U/5QpN706ooSpyV5lTRGVgT196ZmYVKmo1RlbdQCaOKuPtscljoI23Rg3hJUBrNhN9dV3fB+x7fcAbnccNWV/pDZW5oAjkLKcb66eay/fgg9MOL0t+PONAUNaS0s8FBTGJ1y50xAam+hNTUT/F+QA4CAegg4GwopO8+m3knzuf9qfCv51UHWndzuMbvwBEsK16IJUIL4RUcJuAbOnORGz1fXo0M7mcjVX+5vZsbFf0kuoO3PoUEZg27guBtn2V9HXy4Joh/CoeP3Mybiw3JriJdkVoicUomcmoKScmyZTcov/EQS5trS2ytdDcBmfRMVlcwLtvodwIqCse+BL/g3DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FZZLIIA70LS5JqfMPKQInUF1AlGYGcz+sDbEf8EN/d0=;
- b=VXSRWE8Vxh/khe5UrSQqWKFu0eSvJ0IYT//AvPFbawIVvbFGwt9Jx4krigE5D+tUrXDY94cMF6H9n5249FtXD4bgyIfzqJ4ZzsKiguyi53o1URNSk1hzNBcZEn9TvLaWICnuJEQcAEoliJg6pM/PC9JSCnCr6/lanefc5FdMQq0bBnhNmdBbQNWSBCBEhEc3pn/6Hs33/SoqtfieVQKWKyz8wf5VnJ9vNkFqCfkrgMcNB5ERjKRYoQ7HH/2kUC5tqB9k8Ar6gRvQpnnjJeIF2elqax4CgwudJdKSayvT4kxwjakF8KXbfhWIxOwXqg7PjGy/YZM2feZ8PamFxjLL4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FZZLIIA70LS5JqfMPKQInUF1AlGYGcz+sDbEf8EN/d0=;
- b=lvB0ifh3ZtTPIgJfgAa9qasuJ57Ve7ONrODa9ERRaN3GYWJ9Q9LCn3e4/D6jqIGeCi5JqLANfC1H2KaZIuo2AMPOa0hznVP48WZPiGy1D7Hj12a6Aac9WISkxGXVGAydup+ynnmVCjZPJR9dTwg6JRG1Kn1Q3BAxbcsBenS6isdtzRurs+J20IIsJ033JJ4E+aJLVyhj3yEpr6P0WAjwsCZvo3Fe5rmzm/YMjnntlrCxJcNFxKhfYTmnYM4nOEGHEjPLipWNHPDrEAnWHU2iMjHr4B0v6u22ud8bmuw7dCQDocYG/iYrvZtitU5Q8tpfgLTIxmtaOT5PD7GmD54INg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BL1PR12MB5945.namprd12.prod.outlook.com (2603:10b6:208:398::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.11; Wed, 9 Feb
- 2022 12:25:11 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.4975.011; Wed, 9 Feb 2022
- 12:25:11 +0000
-Date:   Wed, 9 Feb 2022 08:25:10 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Haris Iqbal <haris.iqbal@ionos.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        jinpu.wang@ionos.com
-Subject: Re: [PATCH v3 1/2] RDMA/rtrs-clt: Fix possible double free in error
- case
-Message-ID: <20220209122510.GQ4160@nvidia.com>
-References: <20220202150855.445973-1-haris.iqbal@ionos.com>
- <20220208164835.GA180654@nvidia.com>
- <CAJpMwyiU_yxgQXugRMF+ifGz3mH=GNherqKDCMVXax6jUp6hdA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJpMwyiU_yxgQXugRMF+ifGz3mH=GNherqKDCMVXax6jUp6hdA@mail.gmail.com>
-X-ClientProxiedBy: BL1P221CA0027.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::8) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S232050AbiBIMst (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:48:49 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E7D8C0613CA
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 04:48:52 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9B88ED1;
+        Wed,  9 Feb 2022 04:48:51 -0800 (PST)
+Received: from [10.57.70.89] (unknown [10.57.70.89])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A1F5F3F73B;
+        Wed,  9 Feb 2022 04:48:50 -0800 (PST)
+Message-ID: <4501e9b1-47b4-970d-dfce-325687f64b91@arm.com>
+Date:   Wed, 9 Feb 2022 12:48:45 +0000
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9ab541b2-df4e-45ba-f2a7-08d9ebc7375b
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5945:EE_
-X-Microsoft-Antispam-PRVS: <BL1PR12MB59451C3710613FAA0C3F979EC22E9@BL1PR12MB5945.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4zCXRkNgIq1I0q9zabKa1jSF5sv1CePRYWMKtOcbfcYOWEouTn1H5VSsIRHwB93hyBOcUwytjVg/j+f5fNYxxMFKVJQU82jjVhva2SGxPTcGjwf5Z64jrZ3cCeJDrRvwdk8WhqXQhjJbQMUicNQURI/N7y3zq2YRuzpVJdqQwT2EW2lD+obuVtaivt4slZSF3fFute27dUsqTo9PqbVEWIcZYJJ3ThNVIAgqvM5mhEjCMUULm9ZTZ7xsmUVWqMmRax4QWppxkrxzmabCFOpu4jNOlfC+2SzFxwd+8OurInHXC00JDf6IStUzj2I4qAmete4nwNI1bhsSnz2lPZeqAqPmu6B5pbL2fGIoe+P8NoKzYCT2RE19QeFZgeWJ/lAP4+rhNDfNIoTmxFadujGukcuUZZfNkvJOQ6pYfUKpma820j8HasBXq4mzNPDAgAnqC/Idfixks5zdN2fDiBXco+uF0gFvY651bbvkC1YxVaHztZnXvbe1v8THRr5P4sklTzbBtQQSLfiwbT4qjUhwJNPqB4ppjHCpkP+T4/ziTNHFz8TvyJmDIMagvxxASO1Brwu80Owl9Osq7TcF01zOi6sS6oIfR9wPYr6xnfcC45RtmxedyxAeoKpAZ/P4u+fhUL75qoJz1jRWaGpiiQwaXg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(508600001)(53546011)(6506007)(6512007)(5660300002)(2906002)(316002)(38100700002)(66476007)(33656002)(66556008)(6486002)(86362001)(66946007)(36756003)(83380400001)(6916009)(186003)(8936002)(8676002)(1076003)(2616005)(26005)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MY/Cpk9H6DYuu3CdI/0VZ9yNQzCEsRD+oyVgvK/trDh+WBbmStpp1s+BKu5l?=
- =?us-ascii?Q?TDKsdeFXDENVUPGBPItccNvl1s9P02wZtChpvlBFk7uAZihO2XGzhHUiTkU8?=
- =?us-ascii?Q?GlRu/f3j7jeXxRfB3HKtktFY/uQZDUxWrovkopdw+xACxxXRM0XXj6wxt2Zd?=
- =?us-ascii?Q?1wVYtLaDsr97i4ynOoq6P1ubQUrXhx7+ZlqY+1SOMPJuOM2WrOCnjqM3spQi?=
- =?us-ascii?Q?24W3MemPIHOAlMGWrKXGrQuBn6KK7K8Cu8yVsKez/vfrPdXClV2axA9xW0iu?=
- =?us-ascii?Q?phgjGpch5orelBJi2je8oV7sfyRK7PceEgQ0pBzDoHDQejIVw26xf6Lr/L3C?=
- =?us-ascii?Q?MS04gF88z2WMxGo7ZpMFajhSCXGWDgrEM0FvvHPh1qAYt25pUb6RrMc/Qr8u?=
- =?us-ascii?Q?orz5Le2lMXraIIqeCzAjo22F7vMaDyfPWplNaeowZ0oeu+PtWMFsaqs51Vu9?=
- =?us-ascii?Q?MtxEYt55Zn7PYme7SjZmAzDuVbJviXy3vrMmLTLmvj4ybLqBU6gGmWNfdM48?=
- =?us-ascii?Q?4RAL/Qi+8SMfrsaPmRwxOc98QirwKluA9CBMYIgF+hfGNqhP4jTtv8IskVDW?=
- =?us-ascii?Q?ZrcUjfm9miCF9YU8QTHo9MNvx5O9LQH1ewAVsOBmpTfTXrKN9aZ8SyuFFgIv?=
- =?us-ascii?Q?nxiJXfA4T/z5vukbcmGp3qgBwlHaoYOWz5jyrfVexdBOXefmfiOxCfkICy5w?=
- =?us-ascii?Q?2X4yUslrK3+7+kGBR5yKi9gHGn7TnEiZyn53/sZ5dXxQ0Us+oRSoFnwVUqwo?=
- =?us-ascii?Q?h5fMevTTXKRH2fsW8uqzOyrOy+6m/rjL21qDpvuBWDgmk+Q/lXEteU3N5wlu?=
- =?us-ascii?Q?8zaV+/MY8APP3RCBVa4t9I/8Ia8qRKH4q/jnMGNwInrCoG1kkxIfvMBvZoVG?=
- =?us-ascii?Q?vg72lz0uYBA/dE6K7BTqLFexDDXxORCHzX42ZQHVwLD2slykbBC7EzVj+1z3?=
- =?us-ascii?Q?v6v4LUX9f5a2Z8BCyktaGwxqAL8tDh+6GX/QtV3Gr/ynb3/BewSrbW80ssfv?=
- =?us-ascii?Q?kQek7NruKkT7Cw2hncN5AtFVpd44aDSXq8uQDkz59zOfsjyivvMjjbcjtbof?=
- =?us-ascii?Q?mAVv5VsIXiPQhWoydaeQY6LEQYTGyC+5lMe5/mDY2Szg3RixmmqAddSq5dmr?=
- =?us-ascii?Q?xjmTOD1FNSKZqAvW5VMapiBUmHFR+p4/SB/k1S+lcJTy8zgzirq1I8ETh2Is?=
- =?us-ascii?Q?CuKk9NMxyX5sXjEfhNmyAlYU1N/JYxCQ5rMDD+Fp+XyEZGNlEJAtZ79Ex8cK?=
- =?us-ascii?Q?riQ9HaPskycQDHlmqHa0v3n6NwGDrL7zAWgpIz0pG0cZiPVVli5I8MdKqRsR?=
- =?us-ascii?Q?+w79SAc4Vp8nSdDSoNPZyT1Lk1wAa35LR86O48IixTZSdkFK56oIqYadcqV5?=
- =?us-ascii?Q?tMjYRKSKujGqoMNr494fGducpl+7x32dmFarzzKKjilJKUDvyIlL0Y81YjsE?=
- =?us-ascii?Q?hMNE8+vJCezIP6eJApMC6p9RN6qwvuNf1q16WTZYBSV3x8RT7FaBLSsv1aYf?=
- =?us-ascii?Q?An9b+qfha14YB1J4m8fjiqZSvmXFUg4LBHdE2X8y8C4VLgkIsaJL1o6PTx3t?=
- =?us-ascii?Q?mOfW19CZfyG9aEMZKFE=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9ab541b2-df4e-45ba-f2a7-08d9ebc7375b
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2022 12:25:11.0521
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hjqIBTUdJYSeHuYqUBexDL239zbulidEiIXTjbbd7Ct6JwLq8NYZU61vg29zNv5w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5945
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: Error when running fio against nvme-of rdma target (mlx5 driver)
+Content-Language: en-GB
+To:     Martin Oliveira <Martin.Oliveira@eideticom.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Cc:     Kelly Ursenbach <Kelly.Ursenbach@eideticom.com>,
+        "Lee, Jason" <jasonlee@lanl.gov>,
+        Logan Gunthorpe <Logan.Gunthorpe@eideticom.com>
+References: <MW3PR19MB42505C41C2BA3F425A5CB606E42D9@MW3PR19MB4250.namprd19.prod.outlook.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <MW3PR19MB42505C41C2BA3F425A5CB606E42D9@MW3PR19MB4250.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-6.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 01:00:32PM +0100, Haris Iqbal wrote:
-> On Tue, Feb 8, 2022 at 5:48 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
-> >
-> > On Wed, Feb 02, 2022 at 04:08:54PM +0100, Md Haris Iqbal wrote:
-> > > Callback function rtrs_clt_dev_release() for put_device() calls kfree(clt)
-> > > to free memory. We shouldn't call kfree(clt) again, and we can't use the
-> > > clt after kfree too.
-> > >
-> > > Replace device_register with device_initialize and device_add so that
-> > > dev_set_name can be used appropriately.
-> > >
-> > > Move mutex_destroy to release function so it can be called in alloc_clt err
-> > > path.
-> > >
-> > > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > > Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
-> > >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 37 ++++++++++++++------------
-> > >  1 file changed, 20 insertions(+), 17 deletions(-)
-> >
-> > These patches don't apply, please resend them
+On 2022-02-09 02:50, Martin Oliveira wrote:
+> Hello,
 > 
-> Hi Jason,
+> We have been hitting an error when running IO over our nvme-of setup, using the mlx5 driver and we are wondering if anyone has seen anything similar/has any suggestions.
 > 
-> I tried these 2 patches over wip/jgg-for-next (commit
-> 2f1b2820b546c1eef07d15ed73db4177c0cf6d46) and it applies. Can you
-> check once more if there is some other issue? Thanks.
+> Both initiator and target are AMD EPYC 7502 machines connected over RDMA using a Mellanox MT28908. Target has 12 NVMe SSDs which are exposed as a single NVMe fabrics device, one physical SSD per namespace.
+> 
+> When running an fio job targeting directly the fabrics devices (no filesystem, see script at the end), within a minute or so we start seeing errors like this:
+> 
+> [  408.368677] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x002f address=0x24d08000 flags=0x0000]
+> [  408.372201] infiniband mlx5_0: mlx5_handle_error_cqe:332:(pid 0): WC error: 4, Message: local protection error
+> [  408.380181] infiniband mlx5_0: dump_cqe:272:(pid 0): dump error cqe
+> [  408.380187] 00000000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> [  408.380189] 00000010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> [  408.380191] 00000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> [  408.380192] 00000030: 00 00 00 00 a9 00 56 04 00 00 01 e9 00 54 e8 e2
+> [  408.380230] nvme nvme15: RECV for CQE 0x00000000ce392ed9 failed with status local protection error (4)
+> [  408.380235] nvme nvme15: starting error recovery
+> [  408.380238] nvme_ns_head_submit_bio: 726 callbacks suppressed
+> [  408.380246] block nvme15n2: no usable path - requeuing I/O
+> [  408.380284] block nvme15n5: no usable path - requeuing I/O
+> [  408.380298] block nvme15n1: no usable path - requeuing I/O
+> [  408.380304] block nvme15n11: no usable path - requeuing I/O
+> [  408.380304] block nvme15n11: no usable path - requeuing I/O
+> [  408.380330] block nvme15n1: no usable path - requeuing I/O
+> [  408.380350] block nvme15n2: no usable path - requeuing I/O
+> [  408.380371] block nvme15n6: no usable path - requeuing I/O
+> [  408.380377] block nvme15n6: no usable path - requeuing I/O
+> [  408.380382] block nvme15n4: no usable path - requeuing I/O
+> [  408.380472] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x002f address=0x24d09000 flags=0x0000]
+> [  408.391265] mlx5_core 0000:c1:00.0: AMD-Vi: Event logged [IO_PAGE_FAULT domain=0x002f address=0x24d0a000 flags=0x0000]
+> [  415.125967] nvmet: ctrl 1 keep-alive timer (5 seconds) expired!
+> [  415.131898] nvmet: ctrl 1 fatal error occurred!
+> 
+> Occasionally, we've seen the following stack trace:
 
-It applied for you because you have the right 3 way information, I
-don't. You need to generate and send patches against clean trees
+FWIW this is indicative the scatterlist passed to dma_unmap_sg_attrs() 
+was wrong - specifically it looks like an attempt to unmap a region 
+that's already unmapped (or was never mapped in the first place). 
+Whatever race or data corruption issue is causing that is almost 
+certainly happening much earlier, since the IO_PAGE_FAULT logs further 
+imply that either some pages have been spuriously unmapped while the 
+device was still accessing them, or some DMA address in the scatterlist 
+was already bogus by the time it was handed off to the device.
 
-Jason
+Robin.
+
+> [ 1158.152464] kernel BUG at drivers/iommu/amd/io_pgtable.c:485!
+> [ 1158.427696] invalid opcode: 0000 [#1] SMP NOPTI
+> [ 1158.432228] CPU: 51 PID: 796 Comm: kworker/51:1H Tainted: P           OE     5.13.0-eid-athena-g6fb4e704d11c-dirty #14
+> [ 1158.443867] Hardware name: GIGABYTE R272-Z32-00/MZ32-AR0-00, BIOS R21 10/08/2020
+> [ 1158.451252] Workqueue: ib-comp-wq ib_cq_poll_work [ib_core]
+> [ 1158.456884] RIP: 0010:iommu_v1_unmap_page+0xed/0x100
+> [ 1158.461849] Code: 48 8b 45 d0 65 48 33 04 25 28 00 00 00 75 1d 48 83 c4 10 4c 89 f0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 49 8d 46 ff 4c 85 f0 74 d6 <0f> 0b e8 1c 38 46 00 66 66 2e 0f 1f 84 00 00 00 00 00 90 0f 1f 44
+> [ 1158.480589] RSP: 0018:ffffabb520587bd0 EFLAGS: 00010206
+> [ 1158.485812] RAX: 0001000000061fff RBX: 0000000000100000 RCX: 0000000000000027
+> [ 1158.492938] RDX: 0000000030562000 RSI: ffff000000000000 RDI: 0000000000000000
+> [ 1158.500071] RBP: ffffabb520587c08 R08: ffffabb520587bd0 R09: 0000000000000000
+> [ 1158.507202] R10: 0000000000000001 R11: 000ffffffffff000 R12: ffff9984abd9e318
+> [ 1158.514326] R13: ffff9984abd9e310 R14: 0001000000062000 R15: 0001000000000000
+> [ 1158.521452] FS:  0000000000000000(0000) GS:ffff99a36c8c0000(0000) knlGS:0000000000000000
+> [ 1158.529540] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 1158.535286] CR2: 00007f75b04f1000 CR3: 00000001eddd8000 CR4: 0000000000350ee0
+> [ 1158.542419] Call Trace:
+> [ 1158.544877]  amd_iommu_unmap+0x2c/0x40
+> [ 1158.548653]  __iommu_unmap+0xc4/0x170
+> [ 1158.552344]  iommu_unmap_fast+0xe/0x10
+> [ 1158.556100]  __iommu_dma_unmap+0x85/0x120
+> [ 1158.560115]  iommu_dma_unmap_sg+0x95/0x110
+> [ 1158.564213]  dma_unmap_sg_attrs+0x42/0x50
+> [ 1158.568225]  rdma_rw_ctx_destroy+0x6e/0xc0 [ib_core]
+> [ 1158.573201]  nvmet_rdma_rw_ctx_destroy+0xa7/0xc0 [nvmet_rdma]
+> [ 1158.578944]  nvmet_rdma_read_data_done+0x5c/0xf0 [nvmet_rdma]
+> [ 1158.584683]  __ib_process_cq+0x8e/0x150 [ib_core]
+> [ 1158.589398]  ib_cq_poll_work+0x2b/0x80 [ib_core]
+> [ 1158.594027]  process_one_work+0x220/0x3c0
+> [ 1158.598038]  worker_thread+0x4d/0x3f0
+> [ 1158.601696]  kthread+0x114/0x150
+> [ 1158.604928]  ? process_one_work+0x3c0/0x3c0
+> [ 1158.609114]  ? kthread_park+0x90/0x90
+> [ 1158.612783]  ret_from_fork+0x22/0x30
+> 
+> We first saw this on a 5.13 kernel but could reproduce with 5.17-rc2.
+> 
+> We found a possibly related bug report [1] that suggested disabling the IOMMU could help, but even after I disabled it (amd_iommu=off iommu=off) I still get errors (nvme IO timeouts). Another thread from 2016[2] suggested that disabling some kernel debug options could workaround the "local protection error" but that didn't help either.
+> 
+> As far as I can tell, the disks are fine, as running the same fio job targeting the real physical devices works fine.
+> 
+> Any suggestions are appreciated.
+> 
+> Thanks,
+> Martin
+> 
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=210177
+> [2]: https://lore.kernel.org/all/6BBFD126-877C-4638-BB91-ABF715E29326@oracle.com/
+> 
+> fio script:
+> [global]
+> name=fio-seq-write
+> rw=write
+> bs=1M
+> direct=1
+> numjobs=32
+> time_based
+> group_reporting=1
+> runtime=18000
+> end_fsync=1
+> size=10G
+> ioengine=libaio
+> iodepth=16
+> 
+> [file1]
+> filename=/dev/nvme0n1
+> 
+> [file2]
+> filename=/dev/nvme0n2
+> 
+> [file3]
+> filename=/dev/nvme0n3
+> 
+> [file4]
+> filename=/dev/nvme0n4
+> 
+> [file5]
+> filename=/dev/nvme0n5
+> 
+> [file6]
+> filename=/dev/nvme0n6
+> 
+> [file7]
+> filename=/dev/nvme0n7
+> 
+> [file8]
+> filename=/dev/nvme0n8
+> 
+> [file9]
+> filename=/dev/nvme0n9
+> 
+> [file10]
+> filename=/dev/nvme0n10
+> 
+> [file11]
+> filename=/dev/nvme0n11
+> 
+> [file12]
+> filename=/dev/nvme0n12
+> _______________________________________________
+> iommu mailing list
+> iommu@lists.linux-foundation.org
+> https://lists.linuxfoundation.org/mailman/listinfo/iommu
