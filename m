@@ -2,224 +2,97 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDFFB4AF3BB
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 15:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D5B4AF4AF
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 16:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbiBIOLd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 09:11:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        id S235479AbiBIPEK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 10:04:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234828AbiBIOLb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 09:11:31 -0500
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C61C05CBA3;
-        Wed,  9 Feb 2022 06:11:28 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V4.kjv9_1644415885;
-Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V4.kjv9_1644415885)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Feb 2022 22:11:26 +0800
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-To:     kgraul@linux.ibm.com
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
-        "D. Wythe" <alibuda@linux.alibaba.com>
-Subject: [PATCH net-next v6 5/5] net/smc: Add global configure for auto fallback by netlink
-Date:   Wed,  9 Feb 2022 22:11:15 +0800
-Message-Id: <64348e3dcd0b74ed638e895fa217d03df9bec854.1644413637.git.alibuda@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1644413637.git.alibuda@linux.alibaba.com>
-References: <cover.1644413637.git.alibuda@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S235480AbiBIPEH (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 10:04:07 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACA4C0613C9;
+        Wed,  9 Feb 2022 07:04:10 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 449AC60C2C;
+        Wed,  9 Feb 2022 15:04:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 972F2C340E7;
+        Wed,  9 Feb 2022 15:04:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644419049;
+        bh=rnl42XryuAYpZ/26n1PZFSAKonH9klc6797clpNBQJE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lZCvu2+/FnkDSxI3812SQGZcelt2I2ObLTUtnTFCWXR6Qvg2iZ0Q+bKoEnBxNgdxm
+         wwTUIaGECJsR+ZyU0zfDRPY4HBnSz5kO8DP3rF7lASA+VFegwKlKq6NlC7IsWXYuL5
+         HRbHP/uylGjXJJT76PYY2nPWz4xa7FjcHjaP5/1Wuttnfzn3seoWAbQDZ9dPvVnOcL
+         NIgygEYtjBEsu9eZq4O535/my6WDm7yxn7nqWoKh1SBukIj2siz0GECp+Dyes8JJK8
+         TnbMc5fhyoUd4e2a+VGmk4PhxrBeBImsqy9gtC6mMFpMZWw7wibvTi7Ix1PAZrW04+
+         SBKkNYvCAkODA==
+Date:   Wed, 9 Feb 2022 17:04:02 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     =?iso-8859-1?Q?H=E5kon?= Bugge <haakon.bugge@oracle.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for-rc] IB/cma: Allow XRG INI QPs to set their local ACK
+ timeout
+Message-ID: <YgPX4lxiNcT7Gx9t@unreal>
+References: <1644412980-28424-1-git-send-email-haakon.bugge@oracle.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1644412980-28424-1-git-send-email-haakon.bugge@oracle.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: "D. Wythe" <alibuda@linux.alibaba.com>
+On Wed, Feb 09, 2022 at 02:23:00PM +0100, Håkon Bugge wrote:
+> XRC INI QPs should be able to adjust their local ACK timeout.
+> 
+> Fixes: 2c1619edef61 ("IB/cma: Define option to set ack timeout and pack tos_set")
+> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> Suggested-by: Avneesh Pant <avneesh.pant@oracle.com>
+> 
+> ---
+> 
+> To avoid excessive discussions around the *if (WARN_ON( ...*
+> construct, just saying that it has been sanctioned by Jason here:
+> 
+> https://lore.kernel.org/linux-rdma/20210413135120.GT7405@nvidia.com/
 
-Although we can control SMC auto fallback through socket options, which
-means that applications who need it must modify their code. It's quite
-troublesome for many existing applications. This patch modifies the
-global default value of auto fallback through netlink, providing a way
-to auto fallback without modifying any code for applications.
+And I think that this is wrong, because it cane be triggered by user.
+1. Create cm_id with any QP type you want - ucma_create_id()
+2. Call to set option - ucma_set_option()
+3. See WARN_ON.
 
-Suggested-by: Tony Lu <tonylu@linux.alibaba.com>
-Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
----
- include/net/netns/smc.h  |  2 ++
- include/uapi/linux/smc.h | 11 +++++++++++
- net/smc/af_smc.c         | 41 +++++++++++++++++++++++++++++++++++++++++
- net/smc/smc.h            |  6 ++++++
- net/smc/smc_netlink.c    | 15 +++++++++++++++
- net/smc/smc_pnet.c       |  3 +++
- 6 files changed, 78 insertions(+)
+Thanks
 
-diff --git a/include/net/netns/smc.h b/include/net/netns/smc.h
-index ea8a9cf..61646ff 100644
---- a/include/net/netns/smc.h
-+++ b/include/net/netns/smc.h
-@@ -12,5 +12,7 @@ struct netns_smc {
- 	/* protect fback_rsn */
- 	struct mutex			mutex_fback_rsn;
- 	struct smc_stats_rsn		*fback_rsn;
-+
-+	bool				auto_fallback;	/* whether allow auto_fallback */
- };
- #endif
-diff --git a/include/uapi/linux/smc.h b/include/uapi/linux/smc.h
-index 9f2cbf8..28a590d 100644
---- a/include/uapi/linux/smc.h
-+++ b/include/uapi/linux/smc.h
-@@ -59,6 +59,9 @@ enum {
- 	SMC_NETLINK_DUMP_SEID,
- 	SMC_NETLINK_ENABLE_SEID,
- 	SMC_NETLINK_DISABLE_SEID,
-+	SMC_NETLINK_DUMP_AUTO_FALLBACK,
-+	SMC_NETLINK_ENABLE_AUTO_FALLBACK,
-+	SMC_NETLINK_DISABLE_AUTO_FALLBACK,
- };
- 
- /* SMC_GENL_FAMILY top level attributes */
-@@ -285,6 +288,14 @@ enum {
- 	SMC_NLA_SEID_TABLE_MAX = __SMC_NLA_SEID_TABLE_MAX - 1
- };
- 
-+/* SMC_NETLINK_AUTO_FALLBACK attributes */
-+enum {
-+	SMC_NLA_AUTO_FALLBACK_UNSPEC,
-+	SMC_NLA_AUTO_FALLBACK_ENABLED,	/* u8 */
-+	__SMC_NLA_AUTO_FALLBACK_MAX,
-+	SMC_NLA_AUTO_FALLBACK_MAX = __SMC_NLA_AUTO_FALLBACK_MAX - 1
-+};
-+
- /* SMC socket options */
- #define SMC_AUTO_FALLBACK 1	/* allow auto fallback to TCP */
- 
-diff --git a/net/smc/af_smc.c b/net/smc/af_smc.c
-index c313561..5e56281 100644
---- a/net/smc/af_smc.c
-+++ b/net/smc/af_smc.c
-@@ -66,6 +66,44 @@
- static void smc_tcp_listen_work(struct work_struct *);
- static void smc_connect_work(struct work_struct *);
- 
-+int smc_nl_dump_auto_fallback(struct sk_buff *skb, struct netlink_callback *cb)
-+{
-+	struct smc_nl_dmp_ctx *cb_ctx = smc_nl_dmp_ctx(cb);
-+	void *hdr;
-+
-+	if (cb_ctx->pos[0])
-+		goto out;
-+
-+	hdr = genlmsg_put(skb, NETLINK_CB(cb->skb).portid, cb->nlh->nlmsg_seq,
-+			  &smc_gen_nl_family, NLM_F_MULTI,
-+			  SMC_NETLINK_DUMP_AUTO_FALLBACK);
-+	if (!hdr)
-+		return -ENOMEM;
-+
-+	if (nla_put_u8(skb, SMC_NLA_AUTO_FALLBACK_ENABLED, sock_net(skb->sk)->smc.auto_fallback))
-+		goto err;
-+
-+	genlmsg_end(skb, hdr);
-+	cb_ctx->pos[0] = 1;
-+out:
-+	return skb->len;
-+err:
-+	genlmsg_cancel(skb, hdr);
-+	return -EMSGSIZE;
-+}
-+
-+int smc_nl_enable_auto_fallback(struct sk_buff *skb, struct genl_info *info)
-+{
-+	sock_net(skb->sk)->smc.auto_fallback = true;
-+	return 0;
-+}
-+
-+int smc_nl_disable_auto_fallback(struct sk_buff *skb, struct genl_info *info)
-+{
-+	sock_net(skb->sk)->smc.auto_fallback = false;
-+	return 0;
-+}
-+
- static void smc_set_keepalive(struct sock *sk, int val)
- {
- 	struct smc_sock *smc = smc_sk(sk);
-@@ -3006,6 +3044,9 @@ static int __smc_create(struct net *net, struct socket *sock, int protocol,
- 	smc->use_fallback = false; /* assume rdma capability first */
- 	smc->fallback_rsn = 0;
- 
-+	/* default behavior from auto_fallback */
-+	smc->auto_fallback = net->smc.auto_fallback;
-+
- 	rc = 0;
- 	if (!clcsock) {
- 		rc = sock_create_kern(net, family, SOCK_STREAM, IPPROTO_TCP,
-diff --git a/net/smc/smc.h b/net/smc/smc.h
-index a0bdf75..4cfbd61 100644
---- a/net/smc/smc.h
-+++ b/net/smc/smc.h
-@@ -14,6 +14,7 @@
- #include <linux/socket.h>
- #include <linux/types.h>
- #include <linux/compiler.h> /* __aligned */
-+#include <net/genetlink.h>
- #include <net/sock.h>
- 
- #include "smc_ib.h"
-@@ -336,4 +337,9 @@ void smc_fill_gid_list(struct smc_link_group *lgr,
- 		       struct smc_gidlist *gidlist,
- 		       struct smc_ib_device *known_dev, u8 *known_gid);
- 
-+/* smc auto_fallback interface for netlink */
-+int smc_nl_dump_auto_fallback(struct sk_buff *skb, struct netlink_callback *cb);
-+int smc_nl_enable_auto_fallback(struct sk_buff *skb, struct genl_info *info);
-+int smc_nl_disable_auto_fallback(struct sk_buff *skb, struct genl_info *info);
-+
- #endif	/* __SMC_H */
-diff --git a/net/smc/smc_netlink.c b/net/smc/smc_netlink.c
-index f13ab06..9f3abf7 100644
---- a/net/smc/smc_netlink.c
-+++ b/net/smc/smc_netlink.c
-@@ -111,6 +111,21 @@
- 		.flags = GENL_ADMIN_PERM,
- 		.doit = smc_nl_disable_seid,
- 	},
-+	{
-+		.cmd = SMC_NETLINK_DUMP_AUTO_FALLBACK,
-+		/* can be retrieved by unprivileged users */
-+		.dumpit = smc_nl_dump_auto_fallback,
-+	},
-+	{
-+		.cmd = SMC_NETLINK_ENABLE_AUTO_FALLBACK,
-+		.flags = GENL_ADMIN_PERM,
-+		.doit = smc_nl_enable_auto_fallback,
-+	},
-+	{
-+		.cmd = SMC_NETLINK_DISABLE_AUTO_FALLBACK,
-+		.flags = GENL_ADMIN_PERM,
-+		.doit = smc_nl_disable_auto_fallback,
-+	},
- };
- 
- static const struct nla_policy smc_gen_nl_policy[2] = {
-diff --git a/net/smc/smc_pnet.c b/net/smc/smc_pnet.c
-index 291f148..07d7ee8 100644
---- a/net/smc/smc_pnet.c
-+++ b/net/smc/smc_pnet.c
-@@ -868,6 +868,9 @@ int smc_pnet_net_init(struct net *net)
- 
- 	smc_pnet_create_pnetids_list(net);
- 
-+	/* disable auto fallback by default */
-+	net->smc.auto_fallback = 0;
-+
- 	return 0;
- }
- 
--- 
-1.8.3.1
-
+> ---
+>  drivers/infiniband/core/cma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+> index 0f5f0d7..006ea9c 100644
+> --- a/drivers/infiniband/core/cma.c
+> +++ b/drivers/infiniband/core/cma.c
+> @@ -2811,7 +2811,7 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
+>  {
+>  	struct rdma_id_private *id_priv;
+>  
+> -	if (id->qp_type != IB_QPT_RC)
+> +	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_INI))
+>  		return -EINVAL;
+>  
+>  	id_priv = container_of(id, struct rdma_id_private, id);
+> -- 
+> 1.8.3.1
+> 
