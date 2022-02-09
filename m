@@ -2,114 +2,94 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7611B4AF09B
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:04:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DEB4AF12A
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbiBIMDa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 07:03:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
+        id S229593AbiBIMPM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 07:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231806AbiBIMDM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:03:12 -0500
-Received: from out199-10.us.a.mail.aliyun.com (out199-10.us.a.mail.aliyun.com [47.90.199.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF00AC050CD8;
-        Wed,  9 Feb 2022 03:37:41 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V4.4WIx_1644406657;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V4.4WIx_1644406657)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Feb 2022 19:37:38 +0800
-Date:   Wed, 9 Feb 2022 19:37:37 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next v5 5/5] net/smc: Add global configure for auto
- fallback by netlink
-Message-ID: <YgOngV93e8IYr8bv@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <cover.1644323503.git.alibuda@linux.alibaba.com>
- <f54ee9f30898b998edf8f07dabccc84efaa2ab8b.1644323503.git.alibuda@linux.alibaba.com>
- <YgOGg9Ud5N7LOOV6@TonyMac-Alibaba>
- <df2fa023-833d-e4a7-23b4-4f6427223ff5@linux.alibaba.com>
+        with ESMTP id S232789AbiBIMPD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:15:03 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE7CE02E501
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 04:00:45 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id m18so3710358lfq.4
+        for <linux-rdma@vger.kernel.org>; Wed, 09 Feb 2022 04:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ngSWrl/bllQeQ+OMI30aGiKId41OJoWMFfrtOUdR15w=;
+        b=Tshpw5pSHJOX8g60p9rB1nUbWaQFumfsHD1jCU9DLhpDOm8EFfvtc0mxqoXVgmZZ5w
+         8G/XKVdq/almjQR2Ig1VZm8K4b4VdpKwBGnqIf7OWYyBSVDJcNAb3iJSPhpASmpyZCYS
+         AntxMpncSa5vu7QP9/7q29vFtXfe1fxcfvhfzF9lYikU9JiPAL76XHjcNqjGH2EqZdHt
+         9qTIgWu0Fr5jwEAS323Eg8avtp/3CJ00lGjlcDrpw3UDzyZi6eiMD+nDhQ5QJ1HOuXQp
+         Cfq6uEdNf2E1rvsEKfHWgp+eEhWXQRY2fCez/zJK7+0acAGittUpevoBbhzrqL53tX9e
+         IvDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ngSWrl/bllQeQ+OMI30aGiKId41OJoWMFfrtOUdR15w=;
+        b=okEJYMU1IhVumXxAsrTic8HiMuuoq3sg/kppuuRvyeGYf6YyDzVPvg6ylvAYgOFfL4
+         5sNLcbJAVAKtUSmSw5nkBut627i5/nBwZqRVryJ07ciJMOEWhvfa5CbrjBzrLTs5l9WI
+         jTjL9hR+kP3quIdAs8TE7FGVZ0ln8oZWrSC/DtviKkjq+stXBzVtYUq3t24b+6nG6i9h
+         0mbE+ULi47/Z/J8JyuaH4Hqvj2hpsnp2q1B0WptnaJ77S0sVxUSEL4zZFpJBFeFzF9GZ
+         ePGQIOIosn1tFCJhW27sxSAVN46jkNPdMkzzHiW68z8O6KMHb7zorUlIzIB6Ft9+ufoy
+         zPlA==
+X-Gm-Message-State: AOAM531QClJHs7ZpKe5ZPjPKe4VyXP2bT1h0S5jjR7VTYQ4ux8hevqyx
+        LfMTuPnb49lCRiRCZTXzOh7kAt2bXuTWmpQ6OZSCT/4X9jl3pA==
+X-Google-Smtp-Source: ABdhPJwNZobM2f/m6TFPoVziGlvoJBhSdmEkrk4r9w8qpRRHJWWJjpg94TiIdCfZMnM3TAtC7Vj2UQ54GCH2A9IJhok=
+X-Received: by 2002:a19:6f0b:: with SMTP id k11mr1383699lfc.303.1644408043429;
+ Wed, 09 Feb 2022 04:00:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <df2fa023-833d-e4a7-23b4-4f6427223ff5@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20220202150855.445973-1-haris.iqbal@ionos.com> <20220208164835.GA180654@nvidia.com>
+In-Reply-To: <20220208164835.GA180654@nvidia.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Wed, 9 Feb 2022 13:00:32 +0100
+Message-ID: <CAJpMwyiU_yxgQXugRMF+ifGz3mH=GNherqKDCMVXax6jUp6hdA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] RDMA/rtrs-clt: Fix possible double free in error case
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
+        jinpu.wang@ionos.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 05:53:18PM +0800, D. Wythe wrote:
-> 
-> 
-> ÔÚ 2022/2/9 ÏÂÎç5:16, Tony Lu Ð´µÀ:
-> > On Tue, Feb 08, 2022 at 08:53:13PM +0800, D. Wythe wrote:
-> > > From: "D. Wythe" <alibuda@linux.alibaba.com>
-> > > 
-> > > @@ -248,6 +248,8 @@ int smc_nl_get_sys_info(struct sk_buff *skb, struct netlink_callback *cb)
-> > >   		goto errattr;
-> > >   	if (nla_put_u8(skb, SMC_NLA_SYS_IS_SMCR_V2, true))
-> > >   		goto errattr;
-> > > +	if (nla_put_u8(skb, SMC_NLA_SYS_AUTO_FALLBACK, smc_auto_fallback))
-> > 
-> > READ_ONCE(smc_auto_fallback) ?
-> 
-> 
-> No READ_ONCE() will cause ?
+On Tue, Feb 8, 2022 at 5:48 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
+>
+> On Wed, Feb 02, 2022 at 04:08:54PM +0100, Md Haris Iqbal wrote:
+> > Callback function rtrs_clt_dev_release() for put_device() calls kfree(clt)
+> > to free memory. We shouldn't call kfree(clt) again, and we can't use the
+> > clt after kfree too.
+> >
+> > Replace device_register with device_initialize and device_add so that
+> > dev_set_name can be used appropriately.
+> >
+> > Move mutex_destroy to release function so it can be called in alloc_clt err
+> > path.
+> >
+> > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+> > Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
+> > ---
+> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 37 ++++++++++++++------------
+> >  1 file changed, 20 insertions(+), 17 deletions(-)
+>
+> These patches don't apply, please resend them
 
-Make sure that we read the current value.
- 
-> 
-> > > +		goto errattr;
-> > >   	smc_clc_get_hostname(&host);
-> > >   	if (host) {
-> > >   		memcpy(hostname, host, SMC_MAX_HOSTNAME_LEN);
-> > > diff --git a/net/smc/smc_netlink.c b/net/smc/smc_netlink.c
-> > > index f13ab06..a7de517 100644
-> > > --- a/net/smc/smc_netlink.c
-> > > +++ b/net/smc/smc_netlink.c
-> > > @@ -111,6 +111,16 @@
-> > >   		.flags = GENL_ADMIN_PERM,
-> > >   		.doit = smc_nl_disable_seid,
-> > >   	},
-> > > +	{
-> > > +		.cmd = SMC_NETLINK_ENABLE_AUTO_FALLBACK,
-> > > +		.flags = GENL_ADMIN_PERM,
-> > > +		.doit = smc_enable_auto_fallback,
-> > > +	},
-> > > +	{
-> > > +		.cmd = SMC_NETLINK_DISABLE_AUTO_FALLBACK,
-> > > +		.flags = GENL_ADMIN_PERM,
-> > > +		.doit = smc_disable_auto_fallback,
-> > > +	},
-> > >   };
-> > 
-> > Consider adding the separated cmd to query the status of this config,
-> > just as SEID does?
-> > 
-> > It is common to check this value after user-space setted. Combined with
-> > sys_info maybe a little heavy in this scene.
-> 
-> 
-> Add a independent dumpit is quite okay, but is there have really scenarios
-> that access this value frequently? With more and more such switches in the
-> future, is is necessary for us to repeat on each switch ? I do have a plan
-> to put them unified within a NLA attributes, but I don't have much time yet.
+Hi Jason,
 
-Yes, I think spreading them make code clean, and we can keep ABI
-compatibility if we have more than one interface. If we want to change
-one knob, we can change itself functions and data structures. Also, it
-makes userspace tools easy to maintainer. TCP's procfs, like /proc/net/netstat,
-is a summary knob, but not easy to parse and extend. Given that we
-choose modern netlink, we can avoid it from the beginning.
+I tried these 2 patches over wip/jgg-for-next (commit
+2f1b2820b546c1eef07d15ed73db4177c0cf6d46) and it applies. Can you
+check once more if there is some other issue? Thanks.
 
-Thanks,
-Tony Lu
+>
+> Jason
