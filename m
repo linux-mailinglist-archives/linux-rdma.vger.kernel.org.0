@@ -2,90 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841444AF10A
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:10:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E0304AF0D3
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 13:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbiBIMKH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 07:10:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
+        id S231551AbiBIMHG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 07:07:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbiBIMJE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:09:04 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D9AC0018ED
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Feb 2022 03:09:30 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id f23so3449829lfe.5
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Feb 2022 03:09:30 -0800 (PST)
+        with ESMTP id S231544AbiBIMEv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 07:04:51 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42B45DF28A74;
+        Wed,  9 Feb 2022 03:32:36 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id z35so3785565pfw.2;
+        Wed, 09 Feb 2022 03:32:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9kYNFKDicdcZwa4Tk+5j9IN1MSqrvv79+lCJNoXAgGk=;
-        b=G8AxKHb/BhnE2FJtjxWZvjnPVnkz9b/7aIPfSwiSjnHTgWBq6qwud/9Ok4V/ARl5A/
-         rETGiI5w+IDYhOLJ9nZNTv4Varuz/Q1ygDXlNhn+sLU9xrQyY302+tNL2r5FKeersah9
-         b/BuXg6wN25tMt7JOTMvIpASgQYYZgw8cUgfAm2YgiYpdfFOPxV7O6Ew2Iw9rNWcREpl
-         upr7O5O4RjKGCxI6XmU9zmZrbXeFV6haBSgC4IydaxgGC9SAQQBa2V6VXaHhXd6ZXwpM
-         27HyW/o7hX5QV2G0Mv7fqPY/mhjmje0ZRochslASmDPvL/ru2eyEfqCxIrLLiJBF+vUK
-         O1IA==
+        d=gmail.com; s=20210112;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=xn2w0xfCDJKMhAVqaUxCw+DE0Sr56TdC/5hT2Q2ktAs=;
+        b=A8XnlVtay/HPwPvCdYqCHbhrNjAZgJnAz0Xz+ujZCb1gAicdOF7VI2ESb4ZNYoXGY4
+         mbx42w8+JYs1lJEgEhd4O11wXPcYLWocSpK165gtGz/ZKBGswmkaiKewGs6yWYvIwgwr
+         r9V3K0mEM7Q34JnZkRm6UThjPbsR58FeN7pbOPMVFzjv/u+nlvhpc9HNwCo5/FhQu3JO
+         /I8GUUsY2AuvPYjL9ycREBwkHVKoy6GV72mbhqmddW5bR3QjhW3f9GHodCZ8LBGhqxBh
+         7St5JZzECmuAR4F/yBUA93iEy3kpuwfxodvIavc1VOLDIPkAWMlOIGC/t1sYk3E7gBVg
+         LHlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9kYNFKDicdcZwa4Tk+5j9IN1MSqrvv79+lCJNoXAgGk=;
-        b=6pE1cZk9odh6BSxuRcDylps6bB9sg3qDFa/I7JjSgNaXoYh8+CdMjKfRrnoe1LT0L4
-         Hc99CprMhst/RWWeS4S4wK5c2Qrl1mj3eZT5t+72ZX8RpUuvO42W+wMxFFKVP6ARHazo
-         rE4lqv38WZ9l9kZXvRZMStpiMc0TkvNqSA1PR6BnezzKW+lpjVrL7YJGX+/Ypjxr1ba2
-         mZuL/ofU5Cs78kgqtJGaeDkR0VTbkRjMKhH0/kwsCFCKesbBGsADOBZ4l2iYDpRYKDVI
-         jtIKgb1mKdxjHZpibVFql/FldejSRblnArujYqW18RAcdhZ8c3y6PfJF9BcmonoEpK9x
-         0nGw==
-X-Gm-Message-State: AOAM533Qx/DPy/Si1WlJL6JLAbbf1Cv/kt1roCzqgkWz5cFPzNG0VGrB
-        Bs6SeATzskWfbqn30x7RwRkBa+IGvEFBvlAxV5tSTw==
-X-Google-Smtp-Source: ABdhPJwrglVd8FQb4mcVbB3j8YOf2KEC+eoAM+dJezuESqC5DoUs1u3mP4P3JXRUD3sNA/XGoSf7duyky7bYgdanESU=
-X-Received: by 2002:a05:6512:e86:: with SMTP id bi6mr1250278lfb.321.1644404969277;
- Wed, 09 Feb 2022 03:09:29 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xn2w0xfCDJKMhAVqaUxCw+DE0Sr56TdC/5hT2Q2ktAs=;
+        b=Lz1GZznlOV/iI8Nf1C/uYoDlfnb+RBBIhDMkTflCTMCkuunb/PMkTrzw5g5BBBinUY
+         u8kzcfxbWFkJ7j8XIPtaaIBjnUtmGzlWXXciv5G7WOz+hukZh34c/hIgoxAXaYQZSnx+
+         wkVUYngvs9rWVSoE81jZ/tUeujaYdxrOZV0jssVQe1YmRfHUKo7PCrGEBRC9H8o5I23P
+         cMu9vDvL4/2ehqhZ2NxzcVs5bdfFKt1vCzFGNdvodRuy7H1SxeNkX9bTKqNc0f/0Cxuq
+         I1qsSXAp1qtRdjrOUVPKge+/xH8KvS6y3jYQ3hnKLxshlqRhfNx5n+KnYhRpxg4lmu4t
+         nS2g==
+X-Gm-Message-State: AOAM530Pi+PukAKx89W6oral+lMwOclFgYCB3zA7rROsRk+JiULgOO9c
+        QWcuA+I+YUWr7VmiaZ9NAT+lShCoEEI=
+X-Google-Smtp-Source: ABdhPJxcG2NeFwP2rVZjOP8Uo+Mg/HUX5kmfxwL7u059Fj1k1jCekMP+xiw87WMqt8ide1F3HKlh8g==
+X-Received: by 2002:a63:5641:: with SMTP id g1mr1501269pgm.579.1644406355113;
+        Wed, 09 Feb 2022 03:32:35 -0800 (PST)
+Received: from [192.168.1.100] ([166.111.139.99])
+        by smtp.gmail.com with ESMTPSA id f5sm19090505pfc.0.2022.02.09.03.32.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 09 Feb 2022 03:32:34 -0800 (PST)
+Subject: Re: [BUG] net: mellanox: mlx4: possible deadlock in mlx4_xdp_set()
+ and mlx4_en_reset_config()
+To:     Tariq Toukan <ttoukan.linux@gmail.com>, tariqt@nvidia.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <4a850d04-ed6a-5802-7038-a94ad0d466c5@gmail.com>
+ <bde548df-cb80-966a-599c-3e1cb8639716@gmail.com>
+From:   Jia-Ju Bai <baijiaju1990@gmail.com>
+Message-ID: <10008665-3a91-f95e-7ecb-994b8e8bcf55@gmail.com>
+Date:   Wed, 9 Feb 2022 19:32:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20220202150855.445973-1-haris.iqbal@ionos.com> <20220208164835.GA180654@nvidia.com>
-In-Reply-To: <20220208164835.GA180654@nvidia.com>
-From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Wed, 9 Feb 2022 12:09:18 +0100
-Message-ID: <CAJpMwyhEvKDXbD5KTOw7Ev+xmrGgTnwchQgzOOO5PG1zcpxkrw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] RDMA/rtrs-clt: Fix possible double free in error case
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, bvanassche@acm.org, leon@kernel.org,
-        jinpu.wang@ionos.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <bde548df-cb80-966a-599c-3e1cb8639716@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 8, 2022 at 5:48 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Wed, Feb 02, 2022 at 04:08:54PM +0100, Md Haris Iqbal wrote:
-> > Callback function rtrs_clt_dev_release() for put_device() calls kfree(clt)
-> > to free memory. We shouldn't call kfree(clt) again, and we can't use the
-> > clt after kfree too.
-> >
-> > Replace device_register with device_initialize and device_add so that
-> > dev_set_name can be used appropriately.
-> >
-> > Move mutex_destroy to release function so it can be called in alloc_clt err
-> > path.
-> >
-> > Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-> > Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
-> > ---
-> >  drivers/infiniband/ulp/rtrs/rtrs-clt.c | 37 ++++++++++++++------------
-> >  1 file changed, 20 insertions(+), 17 deletions(-)
->
-> These patches don't apply, please resend them
 
-Sure. Will resend.
+
+On 2022/2/9 18:21, Tariq Toukan wrote:
+>
+>
+> On 2/7/2022 5:16 PM, Jia-Ju Bai wrote:
+>> Hello,
+>>
+>> My static analysis tool reports a possible deadlock in the mlx4 
+>> driver in Linux 5.16:
+>>
+>
+> Hi Jia-Ju,
+> Thanks for your email.
+>
+> Which static analysis tool do you use? Is it standard one?
+
+Hi Tariq,
+
+Thanks for the reply and explanation :)
+I developed this tool by myself, based on LLVM.
 
 >
-> Jason
+>> mlx4_xdp_set()
+>>    mutex_lock(&mdev->state_lock); --> Line 2778 (Lock A)
+>>    mlx4_en_try_alloc_resources()
+>>      mlx4_en_alloc_resources()
+>>        mlx4_en_destroy_tx_ring()
+>>          mlx4_qp_free()
+>>            wait_for_completion(&qp->free); --> Line 528 (Wait X)
+>
+> The refcount_dec_and_test(&qp->refcount)) in mlx4_qp_free() pairs with 
+> refcount_set(&qp->refcount, 1); in mlx4_qp_alloc.
+> mlx4_qp_event increases and decreasing the refcount while running 
+> qp->event(qp, event_type); to protect it from being freed.
+>
+>>
+>> mlx4_en_reset_config()
+>>    mutex_lock(&mdev->state_lock); --> Line 3522 (Lock A)
+>>    mlx4_en_try_alloc_resources()
+>>      mlx4_en_alloc_resources()
+>>        mlx4_en_destroy_tx_ring()
+>>          mlx4_qp_free()
+>>            complete(&qp->free); --> Line 527 (Wake X)
+>>
+>> When mlx4_xdp_set() is executed, "Wait X" is performed by holding 
+>> "Lock A". If mlx4_en_reset_config() is executed at this time, "Wake 
+>> X" cannot be performed to wake up "Wait X" in mlx4_xdp_set(), because 
+>> "Lock A" has been already hold by mlx4_xdp_set(), causing a possible 
+>> deadlock.
+>>
+>> I am not quite sure whether this possible problem is real and how to 
+>> fix it if it is real.
+>> Any feedback would be appreciated, thanks :)
+>>
+>
+> Not possible.
+> These are two different qps, maintaining two different instances of 
+> refcount and complete, following the behavior I described above.
+
+Okay, "there are two different qps" should be the reason of this false 
+positive, and my tool cannot identify this reason in static analysis...
+
+
+Best wishes,
+Jia-Ju Bai
