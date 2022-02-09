@@ -2,96 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17814AF292
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 14:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB3B4AF3B8
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Feb 2022 15:11:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229558AbiBINXI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Feb 2022 08:23:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
+        id S234805AbiBIOLZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Feb 2022 09:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbiBINXH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 08:23:07 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4848CC0613C9;
-        Wed,  9 Feb 2022 05:23:07 -0800 (PST)
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 219Cu4du012771;
-        Wed, 9 Feb 2022 13:23:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=S4YYOkQ4fl0IMwCXm+ixjvF26D+n6s3iBtWeasMFIC8=;
- b=EDFPXeMJua5blaJgbeMbkRYd59PVcBWlMWJTvLMPiBLJRt0IYrRwhTx+3+hm5MJYqDYP
- t7LFwsNDfqF82Ve7uMYI5yOlpLWdvm44NISb7pQGUv79FNAiyiXywKG9HKgmuJoQmNzl
- 6x0p0lju/+w6rjYQHc335u6lKjXgp3/ZUs1T5pR8RjtqX2gdxRow6lOJdJAkHqB/fz3L
- tefP+4sdzPXlMmQeKR890mm1MCKWcw4Karuy0Lo9LuPKWLeMV9lD41tfJB8qV9SsDs/R
- 2utYp7IUAoaZAVxWBt87Lqyi+9YSVgtZWTA5TwFAwUopYdHLBk7L5uFpZIVguKT+kkeB kQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3e3fpgmq9u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Feb 2022 13:23:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 219DLrqH040268;
-        Wed, 9 Feb 2022 13:23:03 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by userp3030.oracle.com with ESMTP id 3e1ec2gjex-1;
-        Wed, 09 Feb 2022 13:23:02 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH for-rc] IB/cma: Allow XRG INI QPs to set their local ACK timeout
-Date:   Wed,  9 Feb 2022 14:23:00 +0100
-Message-Id: <1644412980-28424-1-git-send-email-haakon.bugge@oracle.com>
+        with ESMTP id S234728AbiBIOLT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Feb 2022 09:11:19 -0500
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522BC061355;
+        Wed,  9 Feb 2022 06:11:22 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V4.YhDf_1644415878;
+Received: from localhost(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V4.YhDf_1644415878)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 09 Feb 2022 22:11:19 +0800
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        "D. Wythe" <alibuda@linux.alibaba.com>
+Subject: [PATCH net-next v6 0/5] net/smc: Optimizing performance in short-lived scenarios  
+Date:   Wed,  9 Feb 2022 22:11:10 +0800
+Message-Id: <cover.1644413637.git.alibuda@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10252 signatures=673431
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 suspectscore=0
- mlxlogscore=999 mlxscore=0 adultscore=0 malwarescore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202090078
-X-Proofpoint-GUID: 5943nysLV3fRhnn84zxkIHNi3HbfHIVC
-X-Proofpoint-ORIG-GUID: 5943nysLV3fRhnn84zxkIHNi3HbfHIVC
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NORMAL_HTTP_TO_IP,NUMERIC_HTTP_ADDR,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-XRC INI QPs should be able to adjust their local ACK timeout.
+From: "D. Wythe" <alibuda@linux.alibaba.com>
 
-Fixes: 2c1619edef61 ("IB/cma: Define option to set ack timeout and pack tos_set")
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-Suggested-by: Avneesh Pant <avneesh.pant@oracle.com>
+This patch set aims to optimizing performance of SMC in short-lived
+links scenarios, which is quite unsatisfactory right now.
 
+In our benchmark, we test it with follow scripts:
+
+./wrk -c 10000 -t 4 -H 'Connection: Close' -d 20 http://smc-server
+
+Current performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  4956 requests in 20.06s, 3.24MB read
+  Socket errors: connect 0, read 0, write 672, timeout 0
+Requests/sec:    247.07
+Transfer/sec:    165.28KB
+
+There are many reasons for this phenomenon, this patch set doesn't
+solve it all though, but it can be well alleviated with it in.
+
+Patch 1/5  (Make smc_tcp_listen_work() independent) :
+
+Separate smc_tcp_listen_work() from smc_listen_work(), make them
+independent of each other, the busy SMC handshake can not affect new TCP
+connections visit any more. Avoid discarding a large number of TCP
+connections after being overstock, which is undoubtedly raise the
+connection establishment time.
+
+Patch 2/5 (Limits SMC backlog connections):
+
+Since patch 1 has separated smc_tcp_listen_work() from
+smc_listen_work(), an unrestricted TCP accept have come into being. This
+patch try to put a limit on SMC backlog connections refers to
+implementation of TCP.
+
+Patch 3/5 (Fallback when SMC handshake workqueue congested):
+
+Considering the complexity of SMC handshake right now, in short-lived
+links scenarios, this may not be the main scenario of SMC though, it's
+performance is still quite poor. This Patch try to provide auto fallback
+case when SMC handshake workqueue congested, which is the sign of SMC
+handshake stacking in our opinion.
+
+Patch 4/5 (Dynamic control SMC auto fallback by socket options)
+
+This patch allow applications dynamically control the ability of SMC
+auto fallback. Since SMC don't support set SMC socket option before,
+this patch also have to support SMC's owns socket options.
+
+Patch 5/5 (Add global configure for auto fallback by netlink)
+
+This patch provides a way to get benefit of auto fallback without
+modifying any code for applications, which is quite useful for most
+existing applications.
+
+After this patch set, performance figures like that:
+
+Running 20s test @ http://11.213.45.6
+  4 threads and 10000 connections
+  693253 requests in 20.10s, 452.88MB read
+Requests/sec:  34488.13
+Transfer/sec:     22.53MB
+
+That's a quite well performance improvement, about to 6 to 7 times in my
+environment.
 ---
-
-To avoid excessive discussions around the *if (WARN_ON( ...*
-construct, just saying that it has been sanctioned by Jason here:
-
-https://lore.kernel.org/linux-rdma/20210413135120.GT7405@nvidia.com/
+changelog:
+v2 -> v1:
+- fix compile warning
+- fix invalid dependencies in kconfig
+v3 -> v2:
+- correct spelling mistakes
+- fix useless variable declare
+v4 -> v3
+- make smc_tcp_ls_wq be static
+v5 -> v4
+- add dynamic control for SMC auto fallback by socket options
+- add global configure for SMC auto fallback through netlink
+v6 -> v5
+- move auto fallback to net namespace scope
+- remove auto fallback attribute in SMC_GEN_SYS_INFO 
+- add independent attributes for auto fallback
 ---
- drivers/infiniband/core/cma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+D. Wythe (5):
+  net/smc: Make smc_tcp_listen_work() independent
+  net/smc: Limit backlog connections
+  net/smc: Fallback when handshake workqueue congested
+  net/smc: Dynamic control auto fallback by socket options
+  net/smc: Add global configure for auto fallback by netlink
 
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index 0f5f0d7..006ea9c 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -2811,7 +2811,7 @@ int rdma_set_ack_timeout(struct rdma_cm_id *id, u8 timeout)
- {
- 	struct rdma_id_private *id_priv;
- 
--	if (id->qp_type != IB_QPT_RC)
-+	if (WARN_ON(id->qp_type != IB_QPT_RC && id->qp_type != IB_QPT_XRC_INI))
- 		return -EINVAL;
- 
- 	id_priv = container_of(id, struct rdma_id_private, id);
+ include/linux/socket.h   |   1 +
+ include/linux/tcp.h      |   1 +
+ include/net/netns/smc.h  |   2 +
+ include/uapi/linux/smc.h |  15 ++++
+ net/ipv4/tcp_input.c     |   3 +-
+ net/smc/af_smc.c         | 182 ++++++++++++++++++++++++++++++++++++++++++++++-
+ net/smc/smc.h            |  11 +++
+ net/smc/smc_netlink.c    |  15 ++++
+ net/smc/smc_pnet.c       |   3 +
+ 9 files changed, 230 insertions(+), 3 deletions(-)
+
 -- 
 1.8.3.1
 
