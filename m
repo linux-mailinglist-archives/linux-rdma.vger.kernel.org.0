@@ -2,51 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5776F4B1989
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 00:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6B04B1A58
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 01:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242420AbiBJXdv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Feb 2022 18:33:51 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43996 "EHLO
+        id S242501AbiBKAW1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Feb 2022 19:22:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbiBJXdu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 18:33:50 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF07E83;
-        Thu, 10 Feb 2022 15:33:50 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id h7so9454812iof.3;
-        Thu, 10 Feb 2022 15:33:50 -0800 (PST)
+        with ESMTP id S235311AbiBKAW0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 19:22:26 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879E4E5C;
+        Thu, 10 Feb 2022 16:22:26 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id p63so9488313iod.11;
+        Thu, 10 Feb 2022 16:22:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=scQQOeGEKS1UtnSb4hDa2pMn49T7lX7tre18iE1yAHU=;
-        b=RIBQ3M1+e7Un6Pm8klMv7JFRyzLD6R+Ak9wA8JMgVvjGGuFJshj+1pYyY0wdO/sViu
-         r/Sy2qLBoQJw0gRyu/afxAsCIuXSI2sSFdu1izZtWcqnwuDs2ZTvAzbFVFezEXxG+raL
-         rq/FBsjW8A6NSkaXInMpTgc7OsquM6YmI2Q63qt5QOeHsXoQ5u90pe3WWu3iprephA1b
-         d0YrHC/kIfZUHXhzpfBTs1G6T6tsaKxLKbBCCmFVfbNLDUavDbYlK9LcgOLDw3KGs7S3
-         wm2wh5bErKqLnwUFNL6fS5uN9xQAWwZpWzgQoRe4pwJHGyYuKaQt+yygbiUWOaPEYZjL
-         3Pgw==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=r+2Lxrqd+/2P51TipH+bP8eiwgKfuynFq8H8rT90BTo=;
+        b=O0EsFj+PK5aIQhKNiYkuOp8pqc92sDAN2/x3yJmEPRLbP1QWwij1piX3OhbpRMP7Dn
+         zvBAKgRCW7S4vtdIdFtO6h0HlIJ0xyT3Dx3wBGWanFtfISRLHpuR/+aeOrzyOwhAjtW3
+         sC7Id1ezVuG2bIafzzAhUTZM1O/p4cAj+g7Dzoxeza1lFPPiy2nN+SAUZEWBhYylw/c6
+         mp7diWtiWVmMLMo5OtmfD8saDNbBcUDtYLvynvdRaGzh5O+QbN8do6aWL5I4OSjlD1So
+         I+a9hiJlmLU9BKl53nAQmdQhaPM7mkLekABzMmfZ9OrNNuprEKK6XzNz/7FNRqEKADQe
+         Bn+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=scQQOeGEKS1UtnSb4hDa2pMn49T7lX7tre18iE1yAHU=;
-        b=C8SmWh+6uKqhsdY9wcTHH1Q+8J6e+I/9iDDCevvC01JVMNcg65rGOADum2u3y5rAzE
-         Qi0G8IKSiCJjVGgNeqSynxoUWX+IN//foBKNge5CAOLiOZ8BA3jV+TuQT4jbwlQth5rV
-         Es83+JviYMHc6wmecRicKeJQfHYJ2JmPR+e4yga1zL7CBf+rSaksFFfZEi/tNLFtFWte
-         dYdvAf7h4lxul/ScALTwVh65518WpeY5jDm57TBNkha5gumJpGLbJKiZ7m/C3rb6WjqM
-         YAzwTUTkYGufW6ZEW4Pq3imslVDpk5VVMn8s8nKFH+kMiRzdkzw4piYnmoYYCjaPWzvY
-         8cog==
-X-Gm-Message-State: AOAM532wtBBhOsREiskDMFqhbov5p+WEcY0kEbuQ/4Pt010ds4zfat1B
-        PNC9Tc1WvAtEG5zEssS9Ltg=
-X-Google-Smtp-Source: ABdhPJwXeQ/bXUwb8aHBaOdNFbuQO4MW/NT2Fa7afUSNlrVEzUO80EGBGp2QuHnt22Zclxq0J+BZVg==
-X-Received: by 2002:a05:6638:1607:: with SMTP id x7mr1605707jas.226.1644536029481;
-        Thu, 10 Feb 2022 15:33:49 -0800 (PST)
+        bh=r+2Lxrqd+/2P51TipH+bP8eiwgKfuynFq8H8rT90BTo=;
+        b=P4Wzp9U7Ya0ItxFaKx+DL+ruimLeGJn/9pw1+QL7OycllASwlg9lmUXm25WPo+iH66
+         FploEZ1D8IGNmHoNsVN8GJihHZaA9ImqM+2PLmbR8YeDRPcnEhWtddLs8Rv9SzOWkGxA
+         R/Snis6bRHCj5+LBwA7MNApd0MnBTLHtytX7fmJ5EsgF9zNg9kmG7GbaH2NKCUnlUsu8
+         wcaNv2NQJlhgBgPYjtPAqHKgQMI3Gck74rYmEY51CzR7OiTAMpe6HxFiviPXvIJcyvNm
+         RRAcKsadeRc1PJXtXKf+J50CJFjneWM8ZQuOcXNZv6clBcKcQz3Mp+fJK+/ONII/Mkgv
+         v/tQ==
+X-Gm-Message-State: AOAM532w4uwV/EBE9pda9xIo/9hSPamo/Tlesp0IwE+fmuMK9wWZilti
+        laW1ICRtflGWF44mzDUQ83I=
+X-Google-Smtp-Source: ABdhPJwhX5j3SHuGJVMlF9z+AvEbLjcuC5tdzf4YVYtzgTeP+dHG6E9oAedcHzacHNV+YT4aqz1byA==
+X-Received: by 2002:a05:6638:389c:: with SMTP id b28mr5326203jav.176.1644538945854;
+        Thu, 10 Feb 2022 16:22:25 -0800 (PST)
 Received: from localhost ([12.28.44.171])
-        by smtp.gmail.com with ESMTPSA id d80sm8376224iof.15.2022.02.10.15.33.48
+        by smtp.gmail.com with ESMTPSA id i9sm2610693ilm.74.2022.02.10.16.22.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Feb 2022 15:33:49 -0800 (PST)
+        Thu, 10 Feb 2022 16:22:25 -0800 (PST)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Yury Norov <yury.norov@gmail.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -65,10 +65,9 @@ To:     Yury Norov <yury.norov@gmail.com>,
         Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     Leon Romanovsky <leonro@nvidia.com>
-Subject: [PATCH 19/49] RDMA/hfi: replace cpumask_weight with cpumask_empty where appropriate
-Date:   Thu, 10 Feb 2022 14:49:03 -0800
-Message-Id: <20220210224933.379149-20-yury.norov@gmail.com>
+Subject: [PATCH 41/49] RDMA/hfi1: replace cpumask_weight with cpumask_weight_{eq, ...} where appropriate
+Date:   Thu, 10 Feb 2022 14:49:25 -0800
+Message-Id: <20220210224933.379149-42-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220210224933.379149-1-yury.norov@gmail.com>
 References: <20220210224933.379149-1-yury.norov@gmail.com>
@@ -84,39 +83,86 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-drivers/infiniband/hw/hfi1/affinity.c code calls cpumask_weight() to check
-if any bit of a given cpumask is set. We can do it more efficiently with
-cpumask_empty() because cpumask_empty() stops traversing the cpumask as
-soon as it finds first set bit, while cpumask_weight() counts all bits
-unconditionally.
+Infiniband code uses cpumask_weight() to compare the weight of cpumask
+with a given number. We can do it more efficiently with
+cpumask_weight_{eq, ...} because conditional cpumask_weight may stop
+traversing the cpumask earlier, as soon as condition is (or can't be) met.
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/hfi1/affinity.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/hfi1/affinity.c    | 9 ++++-----
+ drivers/infiniband/hw/qib/qib_file_ops.c | 2 +-
+ drivers/infiniband/hw/qib/qib_iba7322.c  | 2 +-
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/infiniband/hw/hfi1/affinity.c b/drivers/infiniband/hw/hfi1/affinity.c
-index 706b3b659713..877f8e84a672 100644
+index 877f8e84a672..a9ad07808dea 100644
 --- a/drivers/infiniband/hw/hfi1/affinity.c
 +++ b/drivers/infiniband/hw/hfi1/affinity.c
-@@ -666,7 +666,7 @@ int hfi1_dev_affinity_init(struct hfi1_devdata *dd)
- 			 * engines, use the same CPU cores as general/control
- 			 * context.
- 			 */
--			if (cpumask_weight(&entry->def_intr.mask) == 0)
-+			if (cpumask_empty(&entry->def_intr.mask))
- 				cpumask_copy(&entry->def_intr.mask,
- 					     &entry->general_intr_mask);
- 		}
-@@ -686,7 +686,7 @@ int hfi1_dev_affinity_init(struct hfi1_devdata *dd)
- 		 * vectors, use the same CPU core as the general/control
- 		 * context.
- 		 */
--		if (cpumask_weight(&entry->comp_vect_mask) == 0)
-+		if (cpumask_empty(&entry->comp_vect_mask))
- 			cpumask_copy(&entry->comp_vect_mask,
- 				     &entry->general_intr_mask);
+@@ -506,7 +506,7 @@ static int _dev_comp_vect_cpu_mask_init(struct hfi1_devdata *dd,
+ 	 * available CPUs divide it by the number of devices in the
+ 	 * local NUMA node.
+ 	 */
+-	if (cpumask_weight(&entry->comp_vect_mask) == 1) {
++	if (cpumask_weight_eq(&entry->comp_vect_mask, 1)) {
+ 		possible_cpus_comp_vect = 1;
+ 		dd_dev_warn(dd,
+ 			    "Number of kernel receive queues is too large for completion vector affinity to be effective\n");
+@@ -592,7 +592,7 @@ int hfi1_dev_affinity_init(struct hfi1_devdata *dd)
+ {
+ 	struct hfi1_affinity_node *entry;
+ 	const struct cpumask *local_mask;
+-	int curr_cpu, possible, i, ret;
++	int curr_cpu, i, ret;
+ 	bool new_entry = false;
+ 
+ 	local_mask = cpumask_of_node(dd->node);
+@@ -625,10 +625,9 @@ int hfi1_dev_affinity_init(struct hfi1_devdata *dd)
+ 			    local_mask);
+ 
+ 		/* fill in the receive list */
+-		possible = cpumask_weight(&entry->def_intr.mask);
+ 		curr_cpu = cpumask_first(&entry->def_intr.mask);
+ 
+-		if (possible == 1) {
++		if (cpumask_weight_eq(&entry->def_intr.mask, 1)) {
+ 			/* only one CPU, everyone will use it */
+ 			cpumask_set_cpu(curr_cpu, &entry->rcv_intr.mask);
+ 			cpumask_set_cpu(curr_cpu, &entry->general_intr_mask);
+@@ -1016,7 +1015,7 @@ int hfi1_get_proc_affinity(int node)
+ 		cpu = cpumask_first(proc_mask);
+ 		cpumask_set_cpu(cpu, &set->used);
+ 		goto done;
+-	} else if (current->nr_cpus_allowed < cpumask_weight(&set->mask)) {
++	} else if (cpumask_weight_gt(&set->mask, current->nr_cpus_allowed)) {
+ 		hfi1_cdbg(PROC, "PID %u %s affinity set to CPU set(s) %*pbl",
+ 			  current->pid, current->comm,
+ 			  cpumask_pr_args(proc_mask));
+diff --git a/drivers/infiniband/hw/qib/qib_file_ops.c b/drivers/infiniband/hw/qib/qib_file_ops.c
+index aa290928cf96..add89bc21b0a 100644
+--- a/drivers/infiniband/hw/qib/qib_file_ops.c
++++ b/drivers/infiniband/hw/qib/qib_file_ops.c
+@@ -1151,7 +1151,7 @@ static void assign_ctxt_affinity(struct file *fp, struct qib_devdata *dd)
+ 	 * reserve a processor for it on the local NUMA node.
+ 	 */
+ 	if ((weight >= qib_cpulist_count) &&
+-		(cpumask_weight(local_mask) <= qib_cpulist_count)) {
++		(cpumask_weight_le(local_mask, qib_cpulist_count))) {
+ 		for_each_cpu(local_cpu, local_mask)
+ 			if (!test_and_set_bit(local_cpu, qib_cpulist)) {
+ 				fd->rec_cpu_num = local_cpu;
+diff --git a/drivers/infiniband/hw/qib/qib_iba7322.c b/drivers/infiniband/hw/qib/qib_iba7322.c
+index ceed302cf6a0..b17f96509d2c 100644
+--- a/drivers/infiniband/hw/qib/qib_iba7322.c
++++ b/drivers/infiniband/hw/qib/qib_iba7322.c
+@@ -3405,7 +3405,7 @@ static void qib_setup_7322_interrupt(struct qib_devdata *dd, int clearpend)
+ 	local_mask = cpumask_of_pcibus(dd->pcidev->bus);
+ 	firstcpu = cpumask_first(local_mask);
+ 	if (firstcpu >= nr_cpu_ids ||
+-			cpumask_weight(local_mask) == num_online_cpus()) {
++			cpumask_weight_eq(local_mask, num_online_cpus())) {
+ 		local_mask = topology_core_cpumask(0);
+ 		firstcpu = cpumask_first(local_mask);
  	}
 -- 
 2.32.0
