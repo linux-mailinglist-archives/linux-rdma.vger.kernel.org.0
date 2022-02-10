@@ -2,92 +2,74 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E794B1118
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 15:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E464B120B
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 16:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243290AbiBJO7R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Feb 2022 09:59:17 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43426 "EHLO
+        id S233962AbiBJPtx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Feb 2022 10:49:53 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243267AbiBJO7Q (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 09:59:16 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFA710A;
-        Thu, 10 Feb 2022 06:59:17 -0800 (PST)
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21ADhcUq031319;
-        Thu, 10 Feb 2022 14:59:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=dmd5xIlqJw6TAt9WqFotvFy1MdzMTMuCuQUYz3fLu7g=;
- b=qBtJK6dvNY6VRUvXKxTFgUR27VZW7Wuj22ebc73Sp7IfyeOfeD8X2YrIqSyYfk/zC61W
- DpHytx1T32FXe1dSWLTdJPrc/TkTS6Dagq2gC/Hi0vFak6U+fuVT1blrF+oiAAMjlXWy
- fu6+qJxUtr9S2EraY+rol4JjH/pXtsbqGUjAqKVZLVl02yalybWvmLVRtGS4roNbd99q
- KEIXcrY2iT+KgGyrfRAskHvP9ELDTi6AGaxzTNnsng9KSV2ESyU5BVDPU6kpoH7id7FX
- gicxs/+aiOtVApKfM2g6wfZb6Bqgf4L1fKR9QuNeRrecPhKYWbTdOFteIok4YuSAq2hd lw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e5103ecub-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Feb 2022 14:59:15 +0000
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21AE53sF025716;
-        Thu, 10 Feb 2022 14:59:14 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3e5103ect8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Feb 2022 14:59:14 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21AEXPIX001456;
-        Thu, 10 Feb 2022 14:59:12 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma01fra.de.ibm.com with ESMTP id 3e1gv9y3d3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Feb 2022 14:59:12 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21AEx9C743385234
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Feb 2022 14:59:09 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E6B3FA406B;
-        Thu, 10 Feb 2022 14:59:08 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 83EF3A4059;
-        Thu, 10 Feb 2022 14:59:08 +0000 (GMT)
-Received: from [9.145.81.75] (unknown [9.145.81.75])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Feb 2022 14:59:08 +0000 (GMT)
-Message-ID: <7fe9fd06-21cb-1701-d8e7-318b7f29d650@linux.ibm.com>
-Date:   Thu, 10 Feb 2022 15:59:09 +0100
+        with ESMTP id S243757AbiBJPtx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 10:49:53 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E24BBAF
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 07:49:53 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id d18-20020a9d51d2000000b005a09728a8c2so4087550oth.3
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 07:49:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WVkwfPNwg7xGaw1L9J03iZpsTdqxGmaiOrI0W3JdsPM=;
+        b=XX9l2w5JUlgKIaugClVjh2gxxlkyqThr6eQoAfncCmmj5YGDfGXLoAFWuBk+qCk/fo
+         7QrdPd9gi8bQIx0gAulq3JNAn1heX1vyJz2fHLfjI96FPU7MRxzConvTOphI9UrpKF//
+         DVbPpBrpyvL6OQBrhNbIci9zv056j0XwzNsum4OJYw6AcA1twRMQnxaxY0SMlkBXJvA0
+         cASdBPvup49hWKXlzRQkxgj8aTVFX6/vkFIXtcuW5RNOBBKfyW2QBqp1khXhghR/s66V
+         U/ddZIe6Xj5Q5DITofE7tcGm8TSux0NzIIrfp4Jtv/EKvT3koaJU9ae+5KOjmTaMyMsF
+         cAWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=WVkwfPNwg7xGaw1L9J03iZpsTdqxGmaiOrI0W3JdsPM=;
+        b=pcdTUwu/PeLiwUZjbxIlAbdbZw3bZwexxp6wTz35UR+10qWuSQsHBpcYITeVeZmxIM
+         dTBBTtCTigyJTVejBghD+vJtt+Oe0YIMdD/3lBvAiz38lkIVoKBWFkhsZKprjJromsiw
+         GAqoNPo4ANYDxkoM/7pi7zttZwvzkRyi5frhpv6lRVxf4x2gFJlSELIGfgR/6MkyAmCj
+         ZzYmaEMHITDnB7B8VWyNL8NWG05yzsbxzy9gM+wMhKdS2nXkVwg/NgHaNrw4G5ouQK4R
+         5+q78+rdNYgX+3teY2QznanJihPxGC6xNMJ/T7nMSyuD6H+i24MX/C6F1wesmhb/EYZH
+         hUDQ==
+X-Gm-Message-State: AOAM5304iEGLdrxon/j+zs8VkaZIi82lBo5SA4WNcMNceb8ZMIMgpMZw
+        N3hMSt5iZ/7A+sADxoEidXoCQSEj03Q=
+X-Google-Smtp-Source: ABdhPJyRspV9pIXPRKS0XnNJ5a23YSx9OVo3/HMiEnDfL46dUNakmPsPCxrWt3letPidW/G3eY/iiw==
+X-Received: by 2002:a05:6830:4420:: with SMTP id q32mr3107878otv.24.1644508191019;
+        Thu, 10 Feb 2022 07:49:51 -0800 (PST)
+Received: from ?IPV6:2603:8081:140c:1a00:a322:3674:4a4a:9441? (2603-8081-140c-1a00-a322-3674-4a4a-9441.res6.spectrum.com. [2603:8081:140c:1a00:a322:3674:4a4a:9441])
+        by smtp.gmail.com with ESMTPSA id eh38sm3760747oab.36.2022.02.10.07.49.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 10 Feb 2022 07:49:50 -0800 (PST)
+Message-ID: <cd90c0e1-0327-4f0b-1b38-489fd18cf9d5@gmail.com>
+Date:   Thu, 10 Feb 2022 09:49:49 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH net-next v7 0/5] net/smc: Optimizing performance in
- short-lived scenarios
+Subject: Re: [PATCH 2/3] RDMA/rxe: Replace write_lock_bh with
+ write_lock_irqsave in __rxe_drop_index
 Content-Language: en-US
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <cover.1644481811.git.alibuda@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <cover.1644481811.git.alibuda@linux.alibaba.com>
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
+ <20220210073655.42281-3-guoqing.jiang@linux.dev>
+ <CAD=hENd6GiLggA5L9p_jQk9MA4ckh3vNB=EKXZ6BZxKrgNCoAg@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAD=hENd6GiLggA5L9p_jQk9MA4ckh3vNB=EKXZ6BZxKrgNCoAg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: DDtheL3xlcM_6mnL9KmdA4567oWElNaW
-X-Proofpoint-GUID: d0worQY_RYGaOUPGVyCrtHAYyJLSflDV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-10_06,2022-02-09_01,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 mlxlogscore=999 clxscore=1015
- phishscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202100080
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,15 +77,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 10/02/2022 10:11, D. Wythe wrote:
-> From: "D. Wythe" <alibuda@linux.alibaba.com>
-> 
-> This patch set aims to optimizing performance of SMC in short-lived
-> links scenarios, which is quite unsatisfactory right now.
+On 2/10/22 08:16, Zhu Yanjun wrote:
+> On Thu, Feb 10, 2022 at 3:37 PM Guoqing Jiang <guoqing.jiang@linux.dev> wrote:
+>>
+>> Same as __rxe_add_index, the lock need to be fully IRQ safe, otherwise
+>> below calltrace appears.
+>>
+I had the impression that NAPI ran on a soft IRQ and the rxe tasklets are also on soft IRQs. So at least in theory spin_lock_bh() should be sufficient. Can someone explain where the hard interrupt is coming from that we need to protect. There are other race conditions in current rxe that may also be the cause of this. I am trying to get a patch series accepted to deal with those.
 
-This series looks good to me. 
-
-Thank you for the valuable contribution to the SMC module and the good discussion!
-
-For the series:
-Reviewed-by: Karsten Graul <kgraul@linux.ibm.com>
+Bob
