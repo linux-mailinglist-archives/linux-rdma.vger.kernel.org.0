@@ -2,137 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DADE4B17F2
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 23:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06414B1810
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Feb 2022 23:23:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344822AbiBJWJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 10 Feb 2022 17:09:44 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44506 "EHLO
+        id S1344901AbiBJWXV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 10 Feb 2022 17:23:21 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241875AbiBJWJn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 17:09:43 -0500
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E0FE7B;
-        Thu, 10 Feb 2022 14:09:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1644530982; x=1676066982;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=XyOoywc4THLPzW+PmVQhClugtwQHmT6Xsd0BZq1fpE4=;
-  b=CIEZ5lokxaYl7LA+gppQ+CyMiZ7XODF2t6MBTQSIhWvl7xULsI9sqmHs
-   IGL/ql10MJJ9sSsXydVmSYOAo/rWlyrrtuk8uAVh8TwTc9KIYcDTazzii
-   VBd19i/BkxkmQN5uNnzp4F0Xm1P5PPOY8OlyuIiLKH2Bn5YdVXTb+FD91
-   soS1Heyh/tC6g1HlL9x9M5/OStDpNkhpHYKkjKWKGMPKcfkfC2ud3du8k
-   ic06BjNrTJ+9PZxuuVMOGm0llpRv+4mmD4WowohTkhH2b1zjIG/v+h0TZ
-   RT4AbTkYKCihpVjnbsc01MS6PGw1ulc1bb65ro7FtfFyHst+JI82ueoNz
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10254"; a="248435960"
-X-IronPort-AV: E=Sophos;i="5.88,359,1635231600"; 
-   d="scan'208";a="248435960"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Feb 2022 14:09:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,359,1635231600"; 
-   d="scan'208";a="701862618"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga005.jf.intel.com with ESMTP; 10 Feb 2022 14:09:19 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 10 Feb 2022 14:09:19 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.20; Thu, 10 Feb 2022 14:09:18 -0800
-Received: from fmsmsx612.amr.corp.intel.com ([10.18.126.92]) by
- fmsmsx612.amr.corp.intel.com ([10.18.126.92]) with mapi id 15.01.2308.020;
- Thu, 10 Feb 2022 14:09:18 -0800
-From:   "Saleem, Shiraz" <shiraz.saleem@intel.com>
-To:     Victor Erminpour <victor.erminpour@oracle.com>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>
-CC:     "jgg@ziepe.ca" <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trivial@kernel.org" <trivial@kernel.org>
-Subject: RE: [PATCH] RDMA/irdma: Fix GCC 12 warning
-Thread-Topic: [PATCH] RDMA/irdma: Fix GCC 12 warning
-Thread-Index: AQHYHhXpIKGNtR9Qu0Cesy+E4ixcfayNV7Tw
-Date:   Thu, 10 Feb 2022 22:09:18 +0000
-Message-ID: <35240f17968242409a39427c303370df@intel.com>
-References: <1644453235-1437-1-git-send-email-victor.erminpour@oracle.com>
-In-Reply-To: <1644453235-1437-1-git-send-email-victor.erminpour@oracle.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.6.200.16
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S1344868AbiBJWXV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 10 Feb 2022 17:23:21 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3482188
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 14:23:17 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id e140so434170ybh.9
+        for <linux-rdma@vger.kernel.org>; Thu, 10 Feb 2022 14:23:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OcU1WRz0rHV14DjvNIKcFjBgJhw/4l/GjcD5YxfoD+M=;
+        b=IbYvEV1cBVJQ4158GE4mzG0Offp6kDoKSLlEjlxVPk2zjlsH+iPTljiCurxbYlJUJE
+         ksEJdFUD9wdcz4zFifZYenTG0474lMKX5N20w8zZ6FRHBzIbQi6LeXddJrm1QogUXgjB
+         x4/N4v7ZO7wpb35g3NAER5NKLgraP3bXvAAiA6+3Jff1L39HYVzT/mrKLDhNjCVUi7Ms
+         r5YJcblM+xQG4BVXHcgh+M+DMSIJ34EUOSPbcrxljVr64h7CxkgLiZ+d7wTM/JhfVRof
+         amc9baiPaAPQgYO58ShCGIIHAxKmXB+ahyVzuiQmPAovo1BBVB2sC7AR+6gZ0FGmr20S
+         9Zhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OcU1WRz0rHV14DjvNIKcFjBgJhw/4l/GjcD5YxfoD+M=;
+        b=D1TOl0MwxmbAKpQ/WJvCw4HIys+uZicfgL4r+//JMFJjUalX+OaQL7qA382AdSTXFB
+         crwVSktStFITrfimAGusHuwF45TTtfd+3Cr7dWAVkCIIK3PCe6BvuJPdV/VUd7wsImPy
+         nElv1p7DFIjfaA8S6y7HrKpSAk3/i3hszapQMYOkb13LEa2Vu4faBWW76e+woKzoEvve
+         SR2EyTL92uqX3vPge2EW0q73FwUrVMkWu6NKqJwLqYDuo3UAuKgt5WBuE7ULEdejGrWL
+         NCwVzAK3bce/gGXSJS1N/8PpL8DhoAWHWO+EUMirfIrxtHq4pTO7r1yCH/ki3Cum4c1h
+         t9BA==
+X-Gm-Message-State: AOAM532+CXUo1qf0zWRwo8wqo4sjL2GkIj9LHscQtMoZQNkt/9FSrOU2
+        1XfJ/Wb99Q/1LcpkS7Cx2UF7AHR7IMzHGMpLhVP0NDWJ
+X-Google-Smtp-Source: ABdhPJw+aCj/tlbv75sBCz1mnzIQLo5IHDflvYfzyS43FBfKmEP6CA6TXXAaWdEL5kENa7MYRt3w/uri9OnQilkE0so=
+X-Received: by 2002:a25:ae68:: with SMTP id g40mr9574572ybe.350.1644531796652;
+ Thu, 10 Feb 2022 14:23:16 -0800 (PST)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CAGP7Hd6PAYcX_gMMh8jbpezeSSWQxqDrYwxEq1N-zjgT7563+g@mail.gmail.com>
+ <PH7PR84MB148872A4BB08EAFECCFF6B01BC2F9@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+ <11e71fc4-6194-9290-df0e-f062af91cc8c@linux.dev>
+In-Reply-To: <11e71fc4-6194-9290-df0e-f062af91cc8c@linux.dev>
+From:   Christian Blume <chr.blume@gmail.com>
+Date:   Fri, 11 Feb 2022 11:23:05 +1300
+Message-ID: <CAGP7Hd7h7Z0mfrhUeHcO3ZAVnMd52Go0ihOvO792RCM_tyDh-g@mail.gmail.com>
+Subject: Re: Soft-RoCE performance
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>
+Cc:     "Pearson, Robert B" <robert.pearson2@hpe.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: [PATCH] RDMA/irdma: Fix GCC 12 warning
->=20
-> When building with automatic stack variable initialization, GCC 12 compla=
-ins about
-> variables defined outside of switch case statements.
-> Move the variable into the case that uses it, which silences the warning:
->=20
-> ./drivers/infiniband/hw/irdma/hw.c:270:47: error: statement will never be=
- executed [-
-> Werror=3Dswitch-unreachable]
->   270 |                         struct irdma_cm_node *cm_node;
->       |
->=20
-> ./drivers/infiniband/hw/irdma/utils.c:1215:50: error: statement will neve=
-r be executed
-> [-Werror=3Dswitch-unreachable]
->   1215 |                         struct irdma_gen_ae_info ae_info;
->        |
->=20
-> Signed-off-by: Victor Erminpour <victor.erminpour@oracle.com>
-> ---
->  drivers/infiniband/hw/irdma/hw.c    | 2 +-
->  drivers/infiniband/hw/irdma/utils.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/ird=
-ma/hw.c
-> index 89234d04cc65..a41a3b128d0d 100644
-> --- a/drivers/infiniband/hw/irdma/hw.c
-> +++ b/drivers/infiniband/hw/irdma/hw.c
-> @@ -267,8 +267,8 @@ static void irdma_process_aeq(struct irdma_pci_f *rf)
->  		}
->=20
->  		switch (info->ae_id) {
-> -			struct irdma_cm_node *cm_node;
->  		case IRDMA_AE_LLP_CONNECTION_ESTABLISHED:
-> +			struct irdma_cm_node *cm_node;
->  			cm_node =3D iwqp->cm_node;
->  			if (cm_node->accept_pend) {
->  				atomic_dec(&cm_node->listener-
+Hi Bob,
 
-This doesn't compile.
+Thanks for clarifying! I am looking forward to testing larger MTUs
+with the new functionality!
 
-drivers/infiniband/hw/irdma/hw.c: In function \u2018irdma_process_aeq\u2019=
-:
-drivers/infiniband/hw/irdma/hw.c:271:4: error: a label can only be part of =
-a statement and a declaration is not a statement
-  271 |    struct irdma_cm_node *cm_node;
+Cheers,
+Christian
 
-Seems like we are accommodating for gcc12 bug since this C code is legit?=20
-
-Shiraz
-
+On Fri, Feb 11, 2022 at 3:04 AM Yanjun Zhu <yanjun.zhu@linux.dev> wrote:
+>
+> =E5=9C=A8 2022/2/10 13:13, Pearson, Robert B =E5=86=99=E9=81=93:
+> > Christian,
+> >
+> > There are two key differences between TCP and soft RoCE. Most important=
+ly TCP can use a 64KiB MTU which is fragmented by TSO or GSO if your NIC do=
+esn't support TSO while soft RoCE is limited by the protocol to a 4KiB payl=
+oad. With overhead for headers you need a link MTU of about 4096+256. If yo=
+ur application is going between soft RoCE and hard RoCE you have to live wi=
+th this limit and compute ICRC on each packet. Checking is optional since R=
+oCE packets have a crc32 checksum from ethernet. If you are using soft RoCE=
+ to soft RoCE you can ignore both ICRC calculations and with a patch increa=
+se the MTU above 4KiB. I have measured write performance up to around 35 GB=
+/s
+>
+> Thanks, I have also reached the big bandwidth with the same methods.
+> How about latency of soft roce?
+>
+> Zhu Yanjun
+>
+>
+> in local loopback on a single 12 core box (AMD 3900x) using 12 IO
+> threads, 16KB MTU, and ICRC disabled for 1MB messages. This is on head
+> of tree with some patches not yet upstream.
+> >
+> > Bob Pearson
+> > rpearsonhpe@gmail.com
+> > rpearson@hpe.com
+> >
+> >
+> > -----Original Message-----
+> > From: Christian Blume <chr.blume@gmail.com>
+> > Sent: Wednesday, February 9, 2022 9:34 PM
+> > To: RDMA mailing list <linux-rdma@vger.kernel.org>
+> > Subject: Soft-RoCE performance
+> >
+> > Hello!
+> >
+> > I am seeing that Soft-RoCE has much lower throughput than TCP. Is that =
+expected? If not, are there typical config parameters I can fiddle with?
+> >
+> > When running iperf I am getting around 300MB/s whereas it's only around=
+ 100MB/s using ib_write_bw from perftests.
+> >
+> > This is between two machines running Ubuntu20.04 with the 5.11 kernel.
+> >
+> > Cheers,
+> > Christian
+>
