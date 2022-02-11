@@ -2,73 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E2B4B2D1D
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 19:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDE24B2D3E
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 20:02:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352840AbiBKSsm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Feb 2022 13:48:42 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53542 "EHLO
+        id S238473AbiBKS77 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Feb 2022 13:59:59 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233885AbiBKSsk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 13:48:40 -0500
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CA0B9A
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 10:48:39 -0800 (PST)
-Received: by mail-lf1-x143.google.com with SMTP id bu29so13060695lfb.0
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 10:48:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=2lKmw3BAfK3Hmt1Qrh1Q51qY1plygnjgQcF1MZQIDMc=;
-        b=CJGbkNiwqZzOUVigrKqtAzSUuNpT6KY1t/Q3l5akTlj99Nah87oO0tbSySFu/NtCiY
-         mQuV7kN58dcGI3AS1XokA9P3pLcyV8lIpi+Fkri+5+bUX59Ep0u3VnrfxAjD3GOxMLDv
-         2ISV9vbbB9JGtMBtZuAtrlAz8GpjkGajODVth0A+6furzqTgx4NgVIeTagFLb+k1e6PV
-         FO1jymCfG1byu4f0SWySoVRTPr5OjG+z6C4xbi23SVUt2aKZUiZN/BixJ1/xGH3v1N41
-         l6diXXCveT91mEpc0sQ0XZ3pllTBRH/reD2BxeLmdQ+7290lFnnbTsurZ4DjmT2sJuoT
-         TYXA==
+        with ESMTP id S231374AbiBKS76 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 13:59:58 -0500
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2D2CE7;
+        Fri, 11 Feb 2022 10:59:57 -0800 (PST)
+Received: by mail-pl1-f180.google.com with SMTP id p6so5213844plf.10;
+        Fri, 11 Feb 2022 10:59:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=2lKmw3BAfK3Hmt1Qrh1Q51qY1plygnjgQcF1MZQIDMc=;
-        b=lTKHhU4V1tnmS1TjgwYDk6JsopZoKFcqdh2L35s6XurwXjDlh8VONSzUnaXl/oAFYG
-         HqImgvzoHgf8IXNPnvW4EzDei3gRP7QaLVODLH30mKNxbVi4oO7zI4Ujwt8hm7WB8BNO
-         LeTaLyzp+0kfYuMr5N2MINTjOlJCC+ZNmejRNX9blySwJaFdpoQTcnrG3MEu5Qse8wi9
-         iltSrUQVXFZUMlIGGFdUAcQmqwnfxrxGkXprM78hlFjflJBuHAEF9F3oflEG4Qgp5wds
-         zW+traKt6PyFNVvb9Pgis+hsjFioVWNxCdJ7aiQQv3s4RoN3wISki96DojOBKzTlJlVs
-         8wCA==
-X-Gm-Message-State: AOAM532R2hRsiBvRexmLuhpL8eEd7AtnAZK9tlcHRv+BsFaFkw7QpXK4
-        F52GheQ+q6duGzM77em7rT/S88uOTYQeVVQPSy4=
-X-Google-Smtp-Source: ABdhPJxNXCzGBqlTQD6AWNP27wLEWGFI+f9T2KvJYpNUFK+iZuAMiUIj3fIfSx7e+/+QvaEK3hYZxgBWRh02xbuc8Po=
-X-Received: by 2002:a05:6512:1596:: with SMTP id bp22mr2142587lfb.144.1644605317764;
- Fri, 11 Feb 2022 10:48:37 -0800 (PST)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=YVf2MMefe7JarpYrftbPjGY+T6Frea6p9y08VS6g0s4=;
+        b=pL2UdlhEh/5x5FBC82s1/CfS7zQyfjHH3kcRZr4ppYA4uu1dAla5pcxOOuDrFYvXxb
+         /U9xEVTwipyIFowfz8N0q51hXAwCBJlpbjzFRLblMnz9bIWH2R5r8xZe6f+4gR4DVOKk
+         td1iTLwZpMxwGxrTHfxA8djyYEpdvvbGPhZWYLC566pt5EzYHcpzkkO3hJodJvl/1+CB
+         Zri+nq9J+9qkfy8O/wTi6PJ1E4ERlFpXxaxmn4eOeHFM0AbAPftuI9QMDoXVeCeAlUfw
+         2BNUhfmE4xzVlWTgVRGynlWe1wKDFLnavLfTBCLCiVYd8F5ClzMrENrBipIx7uwJZC1n
+         v0mA==
+X-Gm-Message-State: AOAM532h08+i/oTedm3Ar0+3GiFp8I+fZ7/fzVY3JIvxSj/XH1nOR5UC
+        hJWv4UaoO+rdDr/t0qFzbsLdC8WzxxDqSA==
+X-Google-Smtp-Source: ABdhPJwkyLc1MFtmoGkbxDrARkdlH+igPcIeSSJO06I0oobmySyyqX0rEHvpJfh5h5MLxvjX/vVM7w==
+X-Received: by 2002:a17:903:32c3:: with SMTP id i3mr2808782plr.46.1644605996745;
+        Fri, 11 Feb 2022 10:59:56 -0800 (PST)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id oo7sm6691567pjb.33.2022.02.11.10.59.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Feb 2022 10:59:55 -0800 (PST)
+Message-ID: <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
+Date:   Fri, 11 Feb 2022 10:59:54 -0800
 MIME-Version: 1.0
-Received: by 2002:a05:6520:43:b0:19a:a3f0:a0af with HTTP; Fri, 11 Feb 2022
- 10:48:37 -0800 (PST)
-Reply-To: douglaselix23@gmail.com
-From:   "Mr. Douglas Felix" <legalrightschamber07@gmail.com>
-Date:   Fri, 11 Feb 2022 18:48:37 +0000
-Message-ID: <CALi75OqoF4qYNSmPSiY0jYpjaYFv8nY8cAkTGMKJEb3NcwGofg@mail.gmail.com>
-Subject: Greetings
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.2 required=5.0 tests=BAYES_05,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_HK_NAME_FM_MR_MRS,
-        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: ****
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [syzbot] possible deadlock in worker_thread
+Content-Language: en-US
+To:     syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
+        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <0000000000005975a605d7aef05e@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <0000000000005975a605d7aef05e@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
--- 
-A mail was sent to you sometime last week with the expectation of
-having a retune mail from you but to my surprise you never bothered to replied.
-Kindly reply for further explanations.
+On 2/10/22 11:27, syzbot wrote:
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 5.17.0-rc2-syzkaller-00398-gd8ad2ce873ab #0 Not tainted
+> ------------------------------------------------------
 
-Respectfully yours,
-Barrister. Douglas Felix.
+Since the SRP initiator driver is involved, I will take a look. However, 
+I'm not sure yet when I will have the time to post a fix.
+
+Thanks,
+
+Bart.
