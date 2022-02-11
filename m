@@ -2,43 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B9B4B224E
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 10:43:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E904B22D0
+	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 11:10:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235730AbiBKJls (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Feb 2022 04:41:48 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58842 "EHLO
+        id S244398AbiBKKKD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Feb 2022 05:10:03 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236288AbiBKJlp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 04:41:45 -0500
-Received: from out199-2.us.a.mail.aliyun.com (out199-2.us.a.mail.aliyun.com [47.90.199.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6021010A2;
-        Fri, 11 Feb 2022 01:41:43 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V48bC1f_1644572495;
-Received: from 30.225.28.189(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V48bC1f_1644572495)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 11 Feb 2022 17:41:36 +0800
-Message-ID: <3903a665-d3ac-3030-0a41-b774af317776@linux.alibaba.com>
-Date:   Fri, 11 Feb 2022 17:41:35 +0800
+        with ESMTP id S242917AbiBKKKC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 05:10:02 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07066E93
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 02:10:01 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1644574196;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=05XIsBCwP2JDmPpLHTOQzSMax8AwqFvQHEX1W1QlfmU=;
+        b=cAazMaGFSYACTrdIbuoqsvsUDKC0hT4X+Tq1i3dzE8O7AhiUwOCxqfKDibPz9zQF1MVUlt
+        qsuolgi25pdmm/8va4XRBPacHQRdqD/KaJp9gqGapZ4k9uNm4MnVwF0mAfs75LLTRmtTz+
+        Bio7Mea/p7SKmc0jBlXHPm1kRSyTwLI=
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Subject: Re: [PATCH 2/3] RDMA/rxe: Replace write_lock_bh with
+ write_lock_irqsave in __rxe_drop_index
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
+ <20220210073655.42281-3-guoqing.jiang@linux.dev>
+ <CAD=hENd6GiLggA5L9p_jQk9MA4ckh3vNB=EKXZ6BZxKrgNCoAg@mail.gmail.com>
+ <cd90c0e1-0327-4f0b-1b38-489fd18cf9d5@gmail.com>
+Message-ID: <b9d5b243-2397-42bd-d833-1a1e5e4ce32c@linux.dev>
+Date:   Fri, 11 Feb 2022 18:09:49 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.1
-Subject: Re: [PATCH net-next v7 0/5] net/smc: Optimizing performance in
- short-lived scenarios
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <cover.1644481811.git.alibuda@linux.alibaba.com>
- <7fe9fd06-21cb-1701-d8e7-318b7f29d650@linux.ibm.com>
-From:   "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <7fe9fd06-21cb-1701-d8e7-318b7f29d650@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <cd90c0e1-0327-4f0b-1b38-489fd18cf9d5@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -46,21 +56,22 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-在 2022/2/10 下午10:59, Karsten Graul 写道:
-> On 10/02/2022 10:11, D. Wythe wrote:
->> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>
->> This patch set aims to optimizing performance of SMC in short-lived
->> links scenarios, which is quite unsatisfactory right now.
-> 
-> This series looks good to me.
-> 
-> Thank you for the valuable contribution to the SMC module and the good discussion!
-> 
-> For the series:
-> Reviewed-by: Karsten Graul <kgraul@linux.ibm.com>
 
+On 2/10/22 11:49 PM, Bob Pearson wrote:
+> On 2/10/22 08:16, Zhu Yanjun wrote:
+>> On Thu, Feb 10, 2022 at 3:37 PM Guoqing Jiang<guoqing.jiang@linux.dev>  wrote:
+>>> Same as __rxe_add_index, the lock need to be fully IRQ safe, otherwise
+>>> below calltrace appears.
+>>>
+> I had the impression that NAPI ran on a soft IRQ and the rxe tasklets are also on soft IRQs. So at least in theory spin_lock_bh() should be sufficient. Can someone explain where the hard interrupt is coming from that we need to protect.
 
-My pleasure. Thank for all suggestions and reviews in all the series.
+Since rxe is actually run on top of NIC,  could it comes from NIC if NIC 
+driver doesn't switch to NAPI
+or from other hardware? But my knowledge about the domain is limited.
 
-Best Wishes.
+>   There are other race conditions in current rxe that may also be the cause of this. I am trying to get a patch series accepted to deal with those.
+
+If possible, could you investigate why rxe after 5.15 kernel doesn't 
+work as reported in cover letter? Thank you!
+
+Guoqing
