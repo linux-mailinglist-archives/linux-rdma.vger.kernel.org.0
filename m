@@ -2,88 +2,226 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA994B336A
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Feb 2022 07:14:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B164B34FD
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Feb 2022 13:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbiBLGOa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 12 Feb 2022 01:14:30 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35864 "EHLO
+        id S234784AbiBLMev (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Feb 2022 07:34:51 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232070AbiBLGOa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Feb 2022 01:14:30 -0500
-X-Greylist: delayed 2528 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 22:14:27 PST
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB41E289BA
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 22:14:27 -0800 (PST)
-Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 21C5W0XN054639;
-        Sat, 12 Feb 2022 14:32:00 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
- Sat, 12 Feb 2022 14:32:00 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 21C5VxJ8054636
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 12 Feb 2022 14:31:59 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <ccd04d8a-154b-543e-e1c3-84bc655508d1@I-love.SAKURA.ne.jp>
-Date:   Sat, 12 Feb 2022 14:31:53 +0900
+        with ESMTP id S230128AbiBLMev (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Feb 2022 07:34:51 -0500
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40F226543
+        for <linux-rdma@vger.kernel.org>; Sat, 12 Feb 2022 04:34:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1644669287; x=1676205287;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=MNTuIAycC7HqLCg5jPBjwSkXOHWuNXq5zQSPGRv8Uoc=;
+  b=i4dCyMTH1nMHGa3c28lmjcYdsBXOMWzx+L0zkATvOcV1IWIO+IEj1Caq
+   NrY6DJWbMrZYinObd2H02p+lm2SX3Yk2nSozmuEW1fdkB4cxa4/NxG9uj
+   /6dJhz7xyG+99e3RRAHQl2+PJJv7sYLuC5h7+1EKusFVn2rgPG6hZg2RD
+   Hom+GCJGiE+J+cEiT6Vt6+tcFVeM6cC7WVlVR2Alm2ueuEezlmSvu0sfC
+   0cF8yZ50++y9kqDHtQ4l3YDVZB1Y7KCPBdTrEd3EPG0ci2ljOsaGMHQ1q
+   YioXo1qByFXghQfi8aa5ldCv75zB79WgmaGqLckFPHK65IUeICcp5R/PJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10255"; a="229840450"
+X-IronPort-AV: E=Sophos;i="5.88,363,1635231600"; 
+   d="scan'208";a="229840450"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Feb 2022 04:34:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,363,1635231600"; 
+   d="scan'208";a="634364624"
+Received: from lkp-server01.sh.intel.com (HELO d95dc2dabeb1) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 12 Feb 2022 04:34:46 -0800
+Received: from kbuild by d95dc2dabeb1 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nIrbx-00067O-AO; Sat, 12 Feb 2022 12:34:45 +0000
+Date:   Sat, 12 Feb 2022 20:34:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ f868a5a071617cefad1dd31b2318cd3ef0944781
+Message-ID: <6207a955.IpKnQjqOePQjlPbo%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [syzbot] possible deadlock in worker_thread
-Content-Language: en-US
-To:     Bart Van Assche <bvanassche@acm.org>,
-        syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
-        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Tejun Heo <tj@kernel.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-References: <0000000000005975a605d7aef05e@google.com>
- <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/02/12 3:59, Bart Van Assche wrote:
-> On 2/10/22 11:27, syzbot wrote:
->> ======================================================
->> WARNING: possible circular locking dependency detected
->> 5.17.0-rc2-syzkaller-00398-gd8ad2ce873ab #0 Not tainted
->> ------------------------------------------------------
-> 
-> Since the SRP initiator driver is involved, I will take a look.
-> However, I'm not sure yet when I will have the time to post a fix.
-> 
-> Thanks,
-> 
-> Bart.
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: f868a5a071617cefad1dd31b2318cd3ef0944781  RDMA/rxe: Remove mcg from rxe pools
 
-This problem was already handled by commit bf23747ee0532090 ("loop:
-revert "make autoclear operation asynchronous"").
+elapsed time: 720m
 
-But this report might be suggesting us that we should consider
-deprecating (and eventually getting rid of) system-wide workqueues
-(declared in include/linux/workqueue.h), for since flush_workqueue()
-synchronously waits for completion, sharing system-wide workqueues
-among multiple modules can generate unexpected locking dependency
-chain (like this report).
+configs tested: 143
+configs skipped: 4
 
-If some module needs flush_workqueue() or flush_*_work(), shouldn't
-such module create and use their own workqueues?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Tejun, what do you think?
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+i386                          randconfig-c001
+powerpc                      chrp32_defconfig
+xtensa                    xip_kc705_defconfig
+sh                               allmodconfig
+openrisc                            defconfig
+mips                          rb532_defconfig
+mips                         rt305x_defconfig
+arc                      axs103_smp_defconfig
+m68k                          hp300_defconfig
+mips                        bcm47xx_defconfig
+xtensa                  cadence_csp_defconfig
+sh                          kfr2r09_defconfig
+arm                           h3600_defconfig
+sh                        edosk7760_defconfig
+powerpc                     stx_gp3_defconfig
+mips                        vocore2_defconfig
+ia64                        generic_defconfig
+xtensa                       common_defconfig
+ia64                             alldefconfig
+powerpc                    sam440ep_defconfig
+ia64                             allmodconfig
+powerpc                   currituck_defconfig
+powerpc                    adder875_defconfig
+arm                        shmobile_defconfig
+sh                          sdk7780_defconfig
+powerpc                mpc7448_hpc2_defconfig
+xtensa                         virt_defconfig
+arm                         axm55xx_defconfig
+m68k                       m5475evb_defconfig
+arm                     eseries_pxa_defconfig
+m68k                        m5307c3_defconfig
+powerpc64                           defconfig
+powerpc                      cm5200_defconfig
+mips                            gpr_defconfig
+nds32                             allnoconfig
+alpha                            allyesconfig
+mips                           ip32_defconfig
+sh                        dreamcast_defconfig
+m68k                        stmark2_defconfig
+arm                           u8500_defconfig
+ia64                      gensparse_defconfig
+arm                          simpad_defconfig
+sh                          landisk_defconfig
+sh                              ul2_defconfig
+m68k                        mvme16x_defconfig
+mips                       bmips_be_defconfig
+xtensa                    smp_lx200_defconfig
+x86_64                              defconfig
+arm                        realview_defconfig
+m68k                        mvme147_defconfig
+riscv                               defconfig
+nds32                               defconfig
+sh                      rts7751r2d1_defconfig
+sh                          rsk7203_defconfig
+um                           x86_64_defconfig
+mips                           ci20_defconfig
+arm                  randconfig-c002-20220211
+arm                  randconfig-c002-20220212
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                randconfig-r042-20220212
+arc                  randconfig-r043-20220211
+arc                  randconfig-r043-20220212
+s390                 randconfig-r044-20220212
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
+clang tested configs:
+riscv                randconfig-c006-20220211
+x86_64                        randconfig-c007
+powerpc              randconfig-c003-20220211
+arm                  randconfig-c002-20220211
+i386                          randconfig-c001
+mips                 randconfig-c004-20220211
+mips                     cu1830-neo_defconfig
+mips                      malta_kvm_defconfig
+powerpc                      katmai_defconfig
+powerpc                      ppc44x_defconfig
+mips                        maltaup_defconfig
+arm                          collie_defconfig
+arm                         palmz72_defconfig
+riscv                             allnoconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220211
+hexagon              randconfig-r041-20220211
+riscv                randconfig-r042-20220211
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
