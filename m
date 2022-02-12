@@ -2,164 +2,119 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A3D4B2E41
-	for <lists+linux-rdma@lfdr.de>; Fri, 11 Feb 2022 21:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7F34B3214
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Feb 2022 01:38:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242711AbiBKUJo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Feb 2022 15:09:44 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53076 "EHLO
+        id S1354446AbiBLAiD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 11 Feb 2022 19:38:03 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:39300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234727AbiBKUJo (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 15:09:44 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2063.outbound.protection.outlook.com [40.107.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1830C55
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 12:09:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P4gNiPpoFLreAl0/pNI/l5xsNO5HWBG5PXQQvbnlOrZQQaWf5RfYJlpL9PW2kd26tvXp7t8X/b1zFWvbaJDQZiaDS6mqN11BdTHxZk+59pgogjgvtiNcfn+a/X7yWaIZbGxigFQb25zRubtq85pVyZDLFL/trD4NwLHyVyLwU9T8BU+X8/5hQUJWbVaI9zOimdGq0qszTPdLKZf4BMABL+A7AvCHMh+MMRESsORWngF5vi01YL1IrqySa5eeu9iz3sHEH5GUHO56bXedV77ib7ibRT0T+7Qs8X9sEzFn7q0XsM0Hv4DB2JHQysmQtgfdDQ+My44btVSgcwxlV8lTfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TDzNHodouYe35ZUeRBwCPESJx6FT+SjxU5wfeiFfDg0=;
- b=QWMMs75EBA7iQTJ65VBT6a2Rt2EhDa22yt1sZPaWlqu+eJlmtRKRh9f+zcRpLxBwj//fYumOHweBkQFXsK6bWtKA8I4QvfkUyEsCagFQ3SpJMaR+zQNhq2xRT5JdtOhvPBUj7Z66EbATdkb20WW7RvluL2+sdoMxlMzWSkt4WklkbKZBDhq6K0Ro8mArIFUgmC+yIUaQV3cU2Mff5SxK56WevZ98GaAZhJLWuQ0wSjY4W+pcrMsx1I1o9J4EszXmJmv3KTxupTSWMFkOW6cxG+YnNhCJ1ZTCIXt9T16QnorW2KEh1InhUhKt5XmILVgVDgdgf005ds9eiM7Am2MR7w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TDzNHodouYe35ZUeRBwCPESJx6FT+SjxU5wfeiFfDg0=;
- b=KaYRoSZpkrbCbedqdNY2ejOp9dBhhx43lFDbIid7vPinZEV3V75t6VVOu295KTZOBiYImpgb5qYQeMFz8fUhnY9mRnfjIDiROUthD+f5s5EQp8RurOZI3x3jxtvmH0RGUqq4z64XDOt/J2G87jQaqbugQyq7R6/KHTwIBuT/bjooiJ0CqLlaj4Sezz1NlvRh13cP2EMXhZP2KMC1nDMUqYZAF0qI5kHzSzYXFmCc/5x3UE71GMui6FPAxWO0gjPTLd10Lg8vptlABoYOjaiSfusdYx2m/4VuJ8kbbwuNfAZUfVtd6hSFaQVeLG+GBL6Cv54BoLEBEIkLyMHDMHseJQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by CY4PR12MB1127.namprd12.prod.outlook.com (2603:10b6:903:44::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4951.17; Fri, 11 Feb
- 2022 20:09:40 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.4975.011; Fri, 11 Feb 2022
- 20:09:40 +0000
-Date:   Fri, 11 Feb 2022 16:09:38 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v11 11/11] RDMA/rxe: Convert mca read locking to
- RCU
-Message-ID: <20220211200938.GA669898@nvidia.com>
-References: <20220208211644.123457-1-rpearsonhpe@gmail.com>
- <20220208211644.123457-12-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220208211644.123457-12-rpearsonhpe@gmail.com>
-X-ClientProxiedBy: MN2PR01CA0020.prod.exchangelabs.com (2603:10b6:208:10c::33)
- To MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+        with ESMTP id S1354444AbiBLAhy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 19:37:54 -0500
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F6FD6
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 16:37:52 -0800 (PST)
+Received: by mail-oo1-xc33.google.com with SMTP id v17-20020a4ac911000000b002eac41bb3f4so12222186ooq.10
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 16:37:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kukJwsLtjJ3Uky7DWUIA8ZXSyJ0Cky2ROkNkXYg1gY0=;
+        b=hzQjjRQOYUVvd5dxWGkpvxq3bMkvjaK2welO00ZWlR+RB4WjRx63h4emsAHNgywVWt
+         4Xy67WO0BvAlh0FFlZiw1/zRvHLWrmGwrB2K6drL1vqNA2YHmgwJOMMcO98kQnQj1MCM
+         kaxjl4y2W3gZ/nR7OyAB4PeBwgeINs5jeKiwdVbkpV2/4HfHnGPtrpXpz/W1lBJ2+YWu
+         4/SFVKAs1+8HVRTS2saT+uZpHiid1YCB/O1dJXYd62eQH+4gH7FgKmoI8iA30ZVoYJXT
+         UakICvhVYw0jDqEilTq8jQpiZViAAv6ZYLfFrgAdOQiKLsHBtTrry3uPbsNGkZZduBni
+         1Whg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kukJwsLtjJ3Uky7DWUIA8ZXSyJ0Cky2ROkNkXYg1gY0=;
+        b=gNxrTmF4+c811TGTH/BKqZStMKJw9CUpNXpm1aZlbtdoWacALB1wV9N89d326l9C+m
+         BMkHbaT02gJXdFkp2MitIvQUhQyTEsQlc2XYELXnTpSu2LsWneJQaQYAPgCnxRPx26Cv
+         CAajInWujC0WPvPUOKa/9Q6WR9Y+kET9fb31oy04O7YPkQIkpGXxtUfc1xfPpzF1ZHfY
+         17eJt51NreOVjjQvzrgLQy+QTUfB23UCeNE00JUW8I6/Y2wbtFe7TiHlitcC+HrKJeC9
+         0Du6K56zNRbkabHj9fld28e/+DnWu1ee7qsZ7JNuFBovM+h9pEf2gdcKHsarjMkdssSe
+         MWEQ==
+X-Gm-Message-State: AOAM533ITv5PNWh8J+PAY5LMwZPEXAWPPe678SWhjRLk+GVnc6iLBq6y
+        u1Vzt3qLvlnCqW2TP4m6TFcSkoBNo1Y=
+X-Google-Smtp-Source: ABdhPJyWuUl2hChu6geYodY11hAXQJOF4xQYibEo0/cJ8ZYAoqqLrh3TQXkYEHUEptjdMEdLUost+A==
+X-Received: by 2002:a05:6870:32c5:: with SMTP id r5mr955702oac.342.1644626271719;
+        Fri, 11 Feb 2022 16:37:51 -0800 (PST)
+Received: from ?IPV6:2603:8081:140c:1a00:4354:ebed:9b2:4ca2? (2603-8081-140c-1a00-4354-ebed-09b2-4ca2.res6.spectrum.com. [2603:8081:140c:1a00:4354:ebed:9b2:4ca2])
+        by smtp.gmail.com with ESMTPSA id x31sm4624171otb.55.2022.02.11.16.37.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 11 Feb 2022 16:37:51 -0800 (PST)
+Message-ID: <0d7916f4-5e53-409d-73d2-d4eadf9c3e0d@gmail.com>
+Date:   Fri, 11 Feb 2022 18:37:50 -0600
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a3f1af66-506e-4535-0b22-08d9ed9a6f5d
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1127:EE_
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1127F3C65497161D55BE1FA6C2309@CY4PR12MB1127.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2276;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QqtYJE5KVf6+xs3GfPGzaePNSElRjKDq4kPzUuCR6BQelww/Tf/n/YtKDHvhEogWygUXaEz+K/GCwq6xo61O/k9zKxPJGIVHlNXM1Ugp70TjCEFL3QrABgDADywN/Mz/QmvYs01/fvGayefdWGFMngQei/w0qysCXigwLgeVRmLr4i/1tEgcsrPoeqZILdEOXLHFLJCSZAYMkZzLjhCc2wg9gUkv7SaWcZPQmStUEU4grkL+liyOL94dcHScbmO/XBe18/4e3wzQQ00eJxZ+OAgwA3RNBZdYgfz5cryQ+JxEkqGitQXMqTwJGbGfJVJUPjiGtsfAoZms1+ww9CykNXdV/yDL9wHmnnVZj48p/dpTsxvgQOlqVXRp5iULK8SkdWYX3yYoy3VZcpYAs99m3xASZVietWfiXm56DdtSEoekm0b6V/EOgRJhxz5dz+T9TYGx9QUmLgGqjl88LoOx/Mu/V2jkrKhcm3v1zoGSV/nnNqxLz2QUBjD6DZVNf6Z2R6mD4eO2acQMKB/LPItBZ3MqYoIH3YEzV/ThZizopwZI4bVGf3hLrWU5zxrDAdMhMR0iu7U8hyO3XD4T3fgRueLDLGUk0aSsEMRHLGU19xMyjKPJAa3c58GpSQyGy3I/YSOQ9/R34GhIsUsn2IG9XmkT3NU8gEW6Uau89BKqmjqlYZnZF9xtJDEBuPeiUhtE
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6506007)(4326008)(66946007)(8676002)(186003)(26005)(5660300002)(6512007)(66476007)(8936002)(33656002)(2616005)(1076003)(2906002)(6486002)(508600001)(86362001)(316002)(36756003)(6916009)(66556008)(83380400001)(38100700002)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JqYfDPfG7mR9nJ2UCVmjNNC05iyO8Zo5r15ccd+/uk6eq3H/YeanMVnOUYV3?=
- =?us-ascii?Q?08QnxgsEhC+UZe7b0dUgx9QDwcNQYhoR8Yb41gvLBRF0OLy3n526YsgaDVTO?=
- =?us-ascii?Q?CloOWUdfgPPGD0+j6D+Uxigv/vLnAXa9sHN75g9bANOIxuqUsgzTm8FYtMKX?=
- =?us-ascii?Q?S9j+gSYwj5HGNIQ/3fXsCPnQ/nz6dqOYcNQwR35egtMFJL0mix6gkxDUi0Zv?=
- =?us-ascii?Q?v2DV83T5Dy3w3cHIulJ+eGwdtwLxINaP/sOC1uT39uDiiHJenJmazX9lei2K?=
- =?us-ascii?Q?RRDxnilRA6x9OEn23Q4lkLtlqGAeOhWfN0Toc1CL1IvN77CKyNj893UJcLJW?=
- =?us-ascii?Q?Aw/R9Gc/pF5PdMdJTryVNHa0f4XFd9CdzaHxPKZoTKGh/hIRZjUMCzIA9Yss?=
- =?us-ascii?Q?JHnD/XBIdP0Nv+QZ+Tp3EkqQ110jm36ritj0TrfsfGprlQFLSQwVqGzwG5M7?=
- =?us-ascii?Q?BjRdZIuslRhcqWkbBRnLmV//RPy3lnplFQcHJ2HiwVMTf6T/ftRa0YpZ8R8+?=
- =?us-ascii?Q?DXJ5KvSNcgP2KA9yydu5n1ZxHdrsvaxDed08mM1r95W4tRT4lVQCaFX0zNnk?=
- =?us-ascii?Q?ozZlAkiOQAhnROcayzHk3j7EumIF+E2xtkz1QFE3/HwGvhtdGGrnbRKnWwKB?=
- =?us-ascii?Q?2S7TSvY8nPEHpBaEEy6/p94HMGlugqlAR9Eva/CFacouYtREumjYIHuXDjod?=
- =?us-ascii?Q?9zOMo8JV3zD7HL0x+OuORxFuyBIq3Ls3LMTrgYrCcWhG8CxoYU4sb03GsPE2?=
- =?us-ascii?Q?QvrOwC7WRxKLWHCem0cWVaTFH2JDf5UCoezzzRl261uGYwRs7DF9wgUo1QzC?=
- =?us-ascii?Q?A4Nipj+hkMbh5dH5eNGuBC+ZRCCxxf+96sQaLvB6DRfaHmeskWFfH/xBjC6L?=
- =?us-ascii?Q?RYG3uKF7bETX3AQ5bDGB4pzd+cuctvNLsQUtZezQj2VEawfFyPJiuNc1IboM?=
- =?us-ascii?Q?R6B6U+lbl9yn5Md4HdAJLFK4qn2YJJaTS8Z0ST5vzwGS7laNd8YS2Wf2/iZY?=
- =?us-ascii?Q?+efM3XXY4L45hMDnjuPQ9b7o90WNsfo3yCsUWEHJLaFsNbnwvoIg3YkybmzJ?=
- =?us-ascii?Q?j9hNI1VL4wM38Ln3xIY7fLUCDYku8CUFiEKo6bCfRZIEe8pAjwUusXz4Ghg/?=
- =?us-ascii?Q?hBVO6CluShNfsZfM0z0Q8mU3uYlQxAsvf3YrOFRfjljqOKYdCc/sjqOIR8TT?=
- =?us-ascii?Q?x+1vUL+lkfqYoWw2eRKVKqNvXnF+pq4pvGvduImNVc9TH4rOhEZ4TqFNHq5P?=
- =?us-ascii?Q?JQtnctd2vXzHVCy6cGlvEJhwXXnJPg92qIURnoSkqS5p0O3VMwmknGTPJDOg?=
- =?us-ascii?Q?LHNrWkPhxRjfCXrb91U2HR4c8EsC+TYHtm0Kb+fC49PLgsuhpFhd7dDd25i/?=
- =?us-ascii?Q?KCR2pmJHE1pc1NXCIo3KPAVUld/wTHM7Y8ORGsecXBcT2HKQ+Rr6SdxDnsIE?=
- =?us-ascii?Q?Xc1zGcov1nnocvioG3D8cQRzLKfqeJLXzcquP8HZWFnSalIdnUluOhjR6ISa?=
- =?us-ascii?Q?dc1DOkCSynfn8H/Le48eSqEgqaROsgSVg9lWLvDpxefRMpKZE7knJhgMYGq2?=
- =?us-ascii?Q?0gLjFyOzUjkLUlowQqs=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a3f1af66-506e-4535-0b22-08d9ed9a6f5d
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2022 20:09:39.9989
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ATTwyhX4Yl7JvSz1yg0c/1X0ga3XiU5cVUqk2vkwYKqDDAcwY5ETW/8mbGBCzX3d
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1127
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH for-next v11 08/11] RDMA/rxe: Add code to cleanup mcast
+ memory
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20220208211644.123457-1-rpearsonhpe@gmail.com>
+ <20220208211644.123457-9-rpearsonhpe@gmail.com>
+ <20220211184301.GA576950@nvidia.com>
+ <a34545c4-dd47-2613-e08a-cfbc3ce0d32c@gmail.com>
+ <20220211195627.GR4160@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220211195627.GR4160@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 08, 2022 at 03:16:45PM -0600, Bob Pearson wrote:
->  	/* check to see if the qp is already a member of the group */
-> -	spin_lock_bh(&rxe->mcg_lock);
-> -	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(mca, &mcg->qp_list, qp_list) {
->  		if (mca->qp == qp) {
+On 2/11/22 13:56, Jason Gunthorpe wrote:
+> On Fri, Feb 11, 2022 at 01:36:06PM -0600, Bob Pearson wrote:
+>> On 2/11/22 12:43, Jason Gunthorpe wrote:
+>>> On Tue, Feb 08, 2022 at 03:16:42PM -0600, Bob Pearson wrote:
+>>>> Well behaved applications will free all memory allocated by multicast
+>>>> but programs which do not clean up properly can leave behind allocated
+>>>> memory when the rxe driver is unloaded. This patch walks the red-black
+>>>> tree holding multicast group elements and then walks the list of attached
+>>>> qp's freeing the mca's and finally the mcg's.
+>>>
+>>> How does this happen? the ib core ensures that all uobjects are
+>>> destroyed, so if something is still in the rb tree here it means that
+>>> an earlier uobject destruction leaked it
+>>>
+>>> Jason
+>>
+>> The mc_grp and mc_elem objects are not rdma-core uobjects. So their memory
+>> is allocated by the rxe driver. They get created by ib_attach_mcast and destroyed
+>> by ib_detach_mcast. If an application crashes without calling a matching
+>> ib_detach_mcast for each attachment the driver would have leaked the memory.
+>> This patch fixes that.
+> 
+> The mcast attachment is affiliated with a QP, when all the QPs are
+> destroyed, which are rdma-core objects, then all attachments should be
+> free'd as well. That should have happened by the time things get here
+> 
+> I would expect a simple WARN_ON that the rb tree is empty in destroy
+> to catch any bugs.
+> 
+> Jason
+I wrote a simple user test case that calls ibv_attach_mcast() and then sleeps.
+If I type ^C the qp is detached as you predicted so someone is counting
+them somewhere. It isn't obvious in rdma-core. Not sure what you are suggesting
+above. The detach code already checks to see if the attachment is *not* present.
+The only time it is clear that there shouldn't be any more attachments present
+is when the device is closed which is what the cleanup code is doing. I can add
+a warning if there was anything there but it will likely never get called since
+someone above me is actively cleaning them up from failed apps. Or we can just drop
+this patch and assume it isn't needed.
 
-The use of mca->qp protected by RCU isn't Ok..
-
-Look at the free path:
-
-> +static void __rxe_cleanup_mca_rcu(struct rxe_mca *mca, struct rxe_mcg *mcg)
->  {
-> +	list_del_rcu(&mca->qp_list);
->  
->  	atomic_dec(&mcg->qp_num);
->  	atomic_dec(&mcg->rxe->mcg_attach);
->  	atomic_dec(&mca->qp->mcg_num);
->  	rxe_drop_ref(mca->qp);
->  
-> +	kfree_rcu(mca);
-
-So the mca deref won't segfault but mca->qp is garbage now since it
-might have been freed and reallocated due to the rxe_drop_ref()
-
-It looks easy enough to fix, just use a call_rcu to free the thing
-instead of kfree_rcu and do the rxe_drop_ref, and maybe others, inside
-the call_rcu function.
-
-> diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
-> index 9b21cbb22602..c2cab85c6576 100644
-> +++ b/drivers/infiniband/sw/rxe/rxe_recv.c
-> @@ -265,15 +265,15 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
->  	qp_array = kmalloc_array(nmax, sizeof(qp), GFP_KERNEL);
->  	n = 0;
->  
-> -	spin_lock_bh(&rxe->mcg_lock);
-> -	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
-> +	rcu_read_lock();
-> +	list_for_each_entry_rcu(mca, &mcg->qp_list, qp_list) {
->  		/* protect the qp pointers in the list */
->  		rxe_add_ref(mca->qp);
-
-And this one could use after free qp
-
-If the mca->qp is guarenteed to have a valid refcount as above then it
-is OK.
-
-Jason
+Bob
