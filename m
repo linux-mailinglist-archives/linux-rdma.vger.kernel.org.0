@@ -2,72 +2,88 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0034B3239
-	for <lists+linux-rdma@lfdr.de>; Sat, 12 Feb 2022 01:59:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA994B336A
+	for <lists+linux-rdma@lfdr.de>; Sat, 12 Feb 2022 07:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354164AbiBLA7f (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 11 Feb 2022 19:59:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53484 "EHLO
+        id S232207AbiBLGOa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 12 Feb 2022 01:14:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240377AbiBLA7e (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 11 Feb 2022 19:59:34 -0500
-X-Greylist: delayed 53374 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 16:59:32 PST
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE0FD7E
-        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 16:59:32 -0800 (PST)
-Subject: Re: [PATCH 2/3] RDMA/rxe: Replace write_lock_bh with
- write_lock_irqsave in __rxe_drop_index
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1644627570;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XQMhAGfgLr6yfb94o2tVCQozP0LbioBDoAO5nMbre6I=;
-        b=n1mwuLnE+FrXK+7jEPwrJJK+tDh3pyg1k4KBBOGwQsBWmAcTsn0w4Xh9jG7fNNXqFzCwnA
-        X1j/gkFDFqGxUR8pQNBgrDf/n6CZX0rp3NhntyRWDXndoYsESUQKWU81RZBdVY77ZziXTH
-        q3EAzbBLY/UZHXQGNW64EDoQ4KgMk00=
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
- <20220210073655.42281-3-guoqing.jiang@linux.dev>
- <CAD=hENd6GiLggA5L9p_jQk9MA4ckh3vNB=EKXZ6BZxKrgNCoAg@mail.gmail.com>
- <cd90c0e1-0327-4f0b-1b38-489fd18cf9d5@gmail.com>
- <b9d5b243-2397-42bd-d833-1a1e5e4ce32c@linux.dev>
- <0bfd4e4f-0311-ed02-d23e-7bd5a2a9750b@gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Guoqing Jiang <guoqing.jiang@linux.dev>
-Message-ID: <1452f4e8-454e-665e-4967-dc081efc1cb5@linux.dev>
-Date:   Sat, 12 Feb 2022 08:59:26 +0800
+        with ESMTP id S232070AbiBLGOa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 12 Feb 2022 01:14:30 -0500
+X-Greylist: delayed 2528 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 11 Feb 2022 22:14:27 PST
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB41E289BA
+        for <linux-rdma@vger.kernel.org>; Fri, 11 Feb 2022 22:14:27 -0800 (PST)
+Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 21C5W0XN054639;
+        Sat, 12 Feb 2022 14:32:00 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
+ Sat, 12 Feb 2022 14:32:00 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 21C5VxJ8054636
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 12 Feb 2022 14:31:59 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <ccd04d8a-154b-543e-e1c3-84bc655508d1@I-love.SAKURA.ne.jp>
+Date:   Sat, 12 Feb 2022 14:31:53 +0900
 MIME-Version: 1.0
-In-Reply-To: <0bfd4e4f-0311-ed02-d23e-7bd5a2a9750b@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [syzbot] possible deadlock in worker_thread
 Content-Language: en-US
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+To:     Bart Van Assche <bvanassche@acm.org>,
+        syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
+        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Tejun Heo <tj@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+References: <0000000000005975a605d7aef05e@google.com>
+ <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 2022/02/12 3:59, Bart Van Assche wrote:
+> On 2/10/22 11:27, syzbot wrote:
+>> ======================================================
+>> WARNING: possible circular locking dependency detected
+>> 5.17.0-rc2-syzkaller-00398-gd8ad2ce873ab #0 Not tainted
+>> ------------------------------------------------------
+> 
+> Since the SRP initiator driver is involved, I will take a look.
+> However, I'm not sure yet when I will have the time to post a fix.
+> 
+> Thanks,
+> 
+> Bart.
+> 
 
+This problem was already handled by commit bf23747ee0532090 ("loop:
+revert "make autoclear operation asynchronous"").
 
-On 2/12/22 1:37 AM, Bob Pearson wrote:
-> Guoqing,
->
-> It would help to know more about the test setup you are using. I.e. which NIC/driver.
-> I mostly test on head of tree and things seem to be working.
+But this report might be suggesting us that we should consider
+deprecating (and eventually getting rid of) system-wide workqueues
+(declared in include/linux/workqueue.h), for since flush_workqueue()
+synchronously waits for completion, sharing system-wide workqueues
+among multiple modules can generate unexpected locking dependency
+chain (like this report).
 
-I runs a  5.17-rc3 inside VM which was configured with e1000e NIC, and 
-the three calltraces
-can be reproduced 100%, as said, CONFIG_PROVE_LOCKING is enabled.
+If some module needs flush_workqueue() or flush_*_work(), shouldn't
+such module create and use their own workqueues?
 
-Thanks,
-Guoqing
+Tejun, what do you think?
+
