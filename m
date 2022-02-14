@@ -2,98 +2,143 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BA194B4076
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 04:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FF14B49ED
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 11:37:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236741AbiBNDof (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 13 Feb 2022 22:44:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34836 "EHLO
+        id S1344357AbiBNKCP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Feb 2022 05:02:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229928AbiBNDoe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 13 Feb 2022 22:44:34 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F3955BF7;
-        Sun, 13 Feb 2022 19:44:27 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id qe15so13276318pjb.3;
-        Sun, 13 Feb 2022 19:44:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=L1T88FidLuaZlcuhS+PMTDghYDEh2W0752ZJLiUhucA=;
-        b=oRxyDdDKJNDKc0H2K5Ch1WeXCfehy5G5ViIxcN4wos03w40Ja/IorqoHoAyXBeNe2z
-         /rB2IezmwC2dUoUvaAXGatt/3SIYh/dn3AK70vcB/wbisaGlBOPEYEvnHIRPE03MpNpo
-         9+wjVdTEH8b4SjisCIV/yI/TCFydTs731ZwyK4Rt3qhcZGIUcUdh1ADkoN6Hb1AS3I6t
-         BOYQjM8NAmird84LvaTV6DShFzMbhUrN6fEyPj+V7zGoptFPMqzYlxbfCkUxTAwtwQNC
-         25wauWx9mCDgORt2Dkq/CnB7UIzqqo4wutass3l9TfNAE4K5PxFs0RVMDMjHjA880T7q
-         V2cA==
+        with ESMTP id S1345614AbiBNKBq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Feb 2022 05:01:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 921551C13D
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 01:47:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1644832076;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I2qt3+FoK96nE1glGYDfvHEmytroL36t21/ibFTNEps=;
+        b=I3tCx2NzDNA1q6vIs7LOkp2j0mXmFAeGrU/xHQ5uRLC68yPNEZ7NsSULKabC5ywni1SsF4
+        dkwcLxbrSo9W43cYZUTK3hMfF86ckJRiISjxKNhkwZF71SOD5RCjNMj6upl2uc0vK0htis
+        JR7aKpD+0U+s5lYgjWcPDT7kn63t+RQ=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-83-c75S6v5FMK6C5IeyQWz09w-1; Mon, 14 Feb 2022 04:47:55 -0500
+X-MC-Unique: c75S6v5FMK6C5IeyQWz09w-1
+Received: by mail-pf1-f199.google.com with SMTP id e18-20020aa78252000000b004df7a13daeaso11394123pfn.2
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 01:47:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=L1T88FidLuaZlcuhS+PMTDghYDEh2W0752ZJLiUhucA=;
-        b=NiV+YMxVB5NL5jVdVvs3n7Q0LI9FxBA6RMloxM9wNsFieASubdWhk2t5kVLKh0PSBo
-         tMULTHj9gzAwHeatjkRfF3NhIpLWAlh8cf22JeqBW5WNIx5ZEzCA8+iOlMhNd6IOZxM8
-         smhWdRo688Q81I1/c8A8S6wdnVffeWwKND95J3AYDvn+gaKzmU28v4xTMAxQFET4GKE+
-         neDQsKtim0P88VEmZKqZ9yjCXccm5t5kTX+5igMmMt5G6onDSfRP00jrkMs+diTQBL9t
-         i7zZYIL+jRdkFTrETi/4k3FlIIqBme+THUKF2VcCoR6JXLS4ovSazv2mA5pdx3Bjp9uo
-         XrTA==
-X-Gm-Message-State: AOAM530bpo00tY6h9xUqqT0c5D3i2QunDOCkZCxCOXMFsFefqGQmkCcP
-        yUXhycCcYUG7qCNQtAFtGB4=
-X-Google-Smtp-Source: ABdhPJwq8SXlhmABICvW3k9U/ONzzfjpJ2DUO6Q3MF+Ohgc5gPzZIIqdL/Jda1nZYZ3MJFKNgeIk8Q==
-X-Received: by 2002:a17:902:ce04:: with SMTP id k4mr12146212plg.62.1644810267263;
-        Sun, 13 Feb 2022 19:44:27 -0800 (PST)
-Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id ot10sm8971515pjb.3.2022.02.13.19.44.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 13 Feb 2022 19:44:26 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 13 Feb 2022 17:44:25 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
-        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [syzbot] possible deadlock in worker_thread
-Message-ID: <YgnQGZWT/n3VAITX@slm.duckdns.org>
-References: <0000000000005975a605d7aef05e@google.com>
- <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
- <ccd04d8a-154b-543e-e1c3-84bc655508d1@I-love.SAKURA.ne.jp>
- <71d6f14e-46af-cc5a-bc70-af1cdc6de8d5@acm.org>
- <309c86b7-2a4c-1332-585f-7bcd59cfd762@I-love.SAKURA.ne.jp>
- <aa2bf24e-981a-a811-c5d8-a75f0b8f693a@acm.org>
- <2959649d-cfbc-bdf2-02ac-053b8e7af030@I-love.SAKURA.ne.jp>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I2qt3+FoK96nE1glGYDfvHEmytroL36t21/ibFTNEps=;
+        b=eQ9zclF/BTwULF/IJ1TuhtDX+KWZNyYj2tpj5qKPr2PMrUAFwdfzkHWgM/8iP4L/pN
+         /KAhqKjJ3863AGGWXCmooaHVS2zRtBcC3k60yqEuMaekpfrUtMfNd65kUp2Ahl0wdtXQ
+         XDqfL6rorev0FanU0LHUS/mq1PIiGtqphZ2DBKp5pDbSuImPSaA/3aYIOjOENmBp8GiL
+         KWc8CoAnBxRRAfaDhfFaUTtV96xXeEhFCRwPRCw//dRHjgSUKVzc193PHKoTUzow/cmM
+         p9+tiBT/W2QrfjFb+DHDbP/Tcoj7yusHRMOGCgmXEG4LRpC47Pc27uxEjA0fSA+6Jf3V
+         AvIQ==
+X-Gm-Message-State: AOAM530KwBsmIhSuLQkdV5UfrxZ2mj4haz2SGBKefyRoPjGq6EJpLhpD
+        P5/TkpfPYIsM45xjwqZiloXgl6JECE8buJpXXjjzRwp3XkvV1bcK/FIzFxzYiYKHbVLgwJeq89V
+        UOPpzFaBREqSJE1P5ADxuFO+YFqIyPHlq3n+2Ng==
+X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr303751pjb.71.1644832073353;
+        Mon, 14 Feb 2022 01:47:53 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwQupS/3/0kv1fHvOOXQWpZzGEaHDzvb3gSL3UfrXE+v/ScWqXHLMS34+5bhifcaRICK6lLTkW+L/Vg/M6cE5Q=
+X-Received: by 2002:a17:90b:4c8e:: with SMTP id my14mr303737pjb.71.1644832073109;
+ Mon, 14 Feb 2022 01:47:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2959649d-cfbc-bdf2-02ac-053b8e7af030@I-love.SAKURA.ne.jp>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+References: <CAHj4cs8cT23z+h2i+g6o3OQqEhWnHS88JO4jNoQo0Nww-sdkYg@mail.gmail.com>
+ <3c86dc88-97d9-5a71-20e1-a90279f47db5@grimberg.me> <CAHj4cs_3eLZd=vxRRrnBU2W4H38mqttcy0ZdSw6uw4KvbJWgeQ@mail.gmail.com>
+ <CAHj4cs_VZ7C7ciKy-q51a+Gc=uce0GDKRHNmUdoGOd7KSvURpA@mail.gmail.com>
+ <84208be5-a7a9-5261-398c-fa9bda3efbe3@grimberg.me> <CAHj4cs8dgNNE5qcX3Y4ykuTYU8z_kea6=q64Pn_2vsdodgOJZQ@mail.gmail.com>
+ <CAHj4cs-aDo7DufnKazyKuZVR-1AWr5FK1LDsN=Do=CVUJ2pH3g@mail.gmail.com>
+ <9f115198-bafc-be4e-1c90-06444b8a37f6@grimberg.me> <CAHj4cs8wBwDGhhtEPodyBdR-sCqJLYhwLhNHuPDm+KCan0hwWg@mail.gmail.com>
+ <42ccd095-b552-32f7-96b0-d34d46f7c83e@grimberg.me> <CAHj4cs9EazUmtbjPKp5TXO4kRPcSShiYbhmsHwfh7SOTQAeoyw@mail.gmail.com>
+ <c6d43a10-44bc-e73a-8836-d75367df049b@grimberg.me> <162ec7c5-9483-3f53-bd1c-502ff5ac9f87@nvidia.com>
+ <CAHj4cs_kCorBjHcvamhZLBNXP2zWE0n_e-3wLwb-ERfpJWJxUA@mail.gmail.com>
+ <3292547e-2453-0320-c2e7-e17dbc20bbdd@nvidia.com> <CAHj4cs9QuANriWeLrhDvkahnNzHp-4WNFoxtWi2qGH9V0L3+Rw@mail.gmail.com>
+ <fcad6dac-6d40-98d7-93e2-bfa307e8e101@nvidia.com> <CAHj4cs_WGP9q10d9GSzKQZi3uZCF+S8qW1sirWZWkkHuepgYgQ@mail.gmail.com>
+ <2D31D2FB-BC4B-476A-9717-C02E84542DFA@oracle.com> <CAHj4cs-yt1+Lufqgwira-YbB6PHtJ=2JA_Vora_CfarzSzoFrA@mail.gmail.com>
+ <4BB6D957-6C18-4E58-A622-0880007ECD9F@oracle.com>
+In-Reply-To: <4BB6D957-6C18-4E58-A622-0880007ECD9F@oracle.com>
+From:   Yi Zhang <yi.zhang@redhat.com>
+Date:   Mon, 14 Feb 2022 17:47:40 +0800
+Message-ID: <CAHj4cs_ta5WR7j0qvHyr1tSCR-U7=svY5j8Hctd7YUMNcGXsaA@mail.gmail.com>
+Subject: Re: [bug report] NVMe/IB: reset_controller need more than 1min
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Sagi Grimberg <sagi@grimberg.me>
+Cc:     Haakon Bugge <haakon.bugge@oracle.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+Hi Sagi/Max
+Here are more findings with the bisect:
 
-On Mon, Feb 14, 2022 at 10:08:00AM +0900, Tetsuo Handa wrote:
-> +	destroy_workqueue(srp_tl_err_wq);
-> 
-> Then, we can call WARN_ON() if e.g. flush_workqueue() is called on system-wide workqueues.
+The time for reset operation changed from 3s[1] to 12s[2] after
+commit[3], and after commit[4], the reset operation timeout at the
+second reset[5], let me know if you need any testing for it, thanks.
 
-Yeah, this is the right thing to do. It makes no sense at all to call
-flush_workqueue() on the shared workqueues as the caller has no idea what
-it's gonna end up waiting for. It was on my todo list a long while ago but
-slipped through the crack. If anyone wanna take a stab at it (including
-scrubbing the existing users, of course), please be my guest.
+[1]
+# time nvme reset /dev/nvme0
 
-Thanks.
+real 0m3.049s
+user 0m0.000s
+sys 0m0.006s
+[2]
+# time nvme reset /dev/nvme0
 
--- 
-tejun
+real 0m12.498s
+user 0m0.000s
+sys 0m0.006s
+[3]
+commit 5ec5d3bddc6b912b7de9e3eb6c1f2397faeca2bc (HEAD)
+Author: Max Gurtovoy <maxg@mellanox.com>
+Date:   Tue May 19 17:05:56 2020 +0300
+
+    nvme-rdma: add metadata/T10-PI support
+
+[4]
+commit a70b81bd4d9d2d6c05cfe6ef2a10bccc2e04357a (HEAD)
+Author: Hannes Reinecke <hare@suse.de>
+Date:   Fri Apr 16 13:46:20 2021 +0200
+
+    nvme: sanitize KATO setting-
+
+[5]
+# time nvme reset /dev/nvme0
+
+real 0m12.628s
+user 0m0.000s
+sys 0m0.006s
+# time nvme reset /dev/nvme0
+
+real 1m15.617s
+user 0m0.000s
+sys 0m0.006s
+#dmesg
+[ 1866.068377] nvme nvme0: creating 40 I/O queues.
+[ 1870.367851] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+[ 1870.370949] nvme nvme0: new ctrl: NQN "testnqn", addr 172.31.0.202:4420
+[ 1930.981494] nvme nvme0: resetting controller
+[ 1939.316131] nvme nvme0: creating 40 I/O queues.
+[ 1943.605427] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+[ 1953.708327] nvme nvme0: resetting controller
+[ 2024.985591] nvme nvme0: I/O 7 QID 0 timeout
+[ 2024.990979] nvme nvme0: Property Set error: 881, offset 0x14
+[ 2025.031069] nvme nvme0: creating 40 I/O queues.
+[ 2029.321798] nvme nvme0: mapped 40/0/0 default/read/poll queues.
+
