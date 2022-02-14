@@ -2,68 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F714B595E
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 19:08:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BDB4B5B43
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 21:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357338AbiBNSIq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Feb 2022 13:08:46 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56092 "EHLO
+        id S229593AbiBNUvG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Feb 2022 15:51:06 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:42864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357335AbiBNSIp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Feb 2022 13:08:45 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE54652C4
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 10:08:36 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id n6so15422476qvk.13
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 10:08:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :in-reply-to;
-        bh=Vb3WxFTok3CxC86h8OILY6/7h3vuSZb2vv7Z9Idn4d8=;
-        b=WZKm/nuvhR/p+C0aWg2rCijjRau5Crub1yz5ZLvCvG0kSM21K/mVTaoSpIiS2OK2yu
-         HA/WSUdiK6JZCgvNNiZXVsHzpHGT3mYUOomnRcPhMz7rG5uh5gVXKzIOj3Ea/LiWrnJu
-         X4+yj94If1iFprEfxbPjXOuei1dIIUzsWHfyrMErvk7XEJ+VHrVKvpZmR45e+5p8wOAc
-         fvL5cprVe2DhQRRbcQ8/ZDBHZnXgk+ISi2aFg2/XxFJObQWXSxjlB2HCR9XK8xStAV8I
-         RanXKlQ3A1mbNLFIaOSeDKs4DanSe5pquE+gU4h/IT8CEMgu68eUArN6Uf7z9Q0yCUvX
-         8Z0A==
+        with ESMTP id S229756AbiBNUvF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Feb 2022 15:51:05 -0500
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04BF9E542
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 12:50:42 -0800 (PST)
+Received: by mail-pj1-f41.google.com with SMTP id om7so15642309pjb.5
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 12:50:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:in-reply-to;
-        bh=Vb3WxFTok3CxC86h8OILY6/7h3vuSZb2vv7Z9Idn4d8=;
-        b=n+8DzDZBHxm2N6r2GQhxfFt2wovZp5+y08VQDGLq1YbbMAeY02AHCYuL8MGTZ9JCsd
-         S9s77jW4saJFF7egTn5Ov/rQ65cKNV6rpmb40Hut1UhP2iuDGZcKvYGeH5Q70Nlt1bcG
-         Ua/Z9Garn6UszERroW3b+Cxz8nYjxoVo2AaZq+WrMmJH+llY0JaFziJZgs1datRsl/mv
-         zi7tfSzQadDsEAFNclIaPuZaa01LFf5LnP9ui97ifndP+KQ8DVoT2DmARMmpgGfYXTIy
-         OMy6eQlMphfwexdJvdNXcyxv6O+p+dV+3iTVqKUiMgWCkOvsM3uCWuVM0yDSGRTP6X+1
-         16Eg==
-X-Gm-Message-State: AOAM5319Sg4U2tedW4wXP5H1XoY5vJLI6yVgY5zM9JTWRlaAR1Kx1hv8
-        rZ682bC3HNkLLlvtdvgD9qWZ/tGYiA0Ajw==
-X-Google-Smtp-Source: ABdhPJzLlaSDmVczFvsp7JTTALo+HNTGCYuqjEGXXeC6NEvcg/7Nze8db7Frj/avHcNNlzex9Y9wiQ==
-X-Received: by 2002:a05:6214:202e:: with SMTP id 14mr183273qvf.33.1644862115434;
-        Mon, 14 Feb 2022 10:08:35 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id v22sm18800929qtc.96.2022.02.14.10.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Feb 2022 10:08:34 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nJfm5-003z8V-VO; Mon, 14 Feb 2022 14:08:33 -0400
-Date:   Mon, 14 Feb 2022 14:08:33 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Robin Peiremans <rpeiremans@gmail.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: sysfs: cannot create duplicate filename
-Message-ID: <20220214180833.GA525064@ziepe.ca>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=sXz7CSUg7MoXLb+OX27tc6YtbrnTsSs+qqZymzHoHhU=;
+        b=AuPWGD579/uRFnekgadFOsJNuQacoOEJEduSamCbWYspG61fTkD2o1RGvwcyoJCjHz
+         eLJEt7+Ydp2aci/vNLgOHEvQitGzh7+39XC8sCgetn2sH73elXBecEJ2UF9rFzxD9F7s
+         cs/343biLLNhFv0D8qZX0dSXmTktlQU/ACX+UZAn9hJskYodvS2iEJWIFOVg5eUJwFJh
+         gWKGvJ20slKgM2J/8jqH/16mjEGQAmglhtsEQSePI+JEq6/WQskYTP51GEMLRGrjAcDJ
+         GmlsSanmhely2ncN6xbVU7Owf+j4rimsyjRK5mLj7GqKCenVdVerFdIaZKkgxdwJ5vlJ
+         sJqQ==
+X-Gm-Message-State: AOAM533cy5DiBWMRuhnj/WqpPQi+zw3Bz78MHO2uvVxWBralQH3JSRQ3
+        XYlqlK7cEVx0nPph3yrh1N0TLalX4iE=
+X-Google-Smtp-Source: ABdhPJwDIy53zBu3OA29cfQBsL35QH/4XCIYf19y616VWIk3JIvGIOWf2UiTTEo11xJc6/RCBk5kTA==
+X-Received: by 2002:a17:903:2308:: with SMTP id d8mr732001plh.52.1644871737124;
+        Mon, 14 Feb 2022 12:48:57 -0800 (PST)
+Received: from ?IPV6:2600:1010:b05a:bf8:cd06:5464:d61e:f6b4? ([2600:1010:b05a:bf8:cd06:5464:d61e:f6b4])
+        by smtp.gmail.com with ESMTPSA id f8sm37978203pfv.24.2022.02.14.12.48.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Feb 2022 12:48:56 -0800 (PST)
+Message-ID: <95f08f0e-da4e-13fb-a594-a6d046230d76@acm.org>
+Date:   Mon, 14 Feb 2022 12:48:54 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJt3DjCM1uKkutB0srAiofuLUunX8hJZ+h+xkkTKmN3p_r+OLg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: Inconsistent lock state warning for rxe_poll_cq()
+Content-Language: en-US
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <8f9fe1da-c302-0c45-8df8-2905c630daad@acm.org>
+ <a300f716-718d-9cfe-a95f-870660b92434@gmail.com>
+ <89e17cc9-6c90-2132-95e4-4e9ce65a9b08@acm.org>
+ <04a372ee-cb82-2cbe-b303-d958af5e47f5@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <04a372ee-cb82-2cbe-b303-d958af5e47f5@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,22 +66,18 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Feb 13, 2022 at 10:21:49AM +0100, Robin Peiremans wrote:
-> Hi
-> 
-> I ran into this error when upgrading to kernel 5.14 (it works
-> pre-5.14). The driver gets loaded (verified via lsmod), but the ib
-> utils don't show any ports.
-> 
-> There's a bugreport on elrepo
-> (https://elrepo.org/bugs/view.php?id=1176) that looks pretty much
-> identical, but it looks stalled.
-> I've bisected the kernel and commit
-> 4a7aaf88c89f12f8048137e274ce0d40fe1056b2 seems to be the culprit.
-> Since I'm absolutely no dev, I'm hoping someone here can figure out
-> what exactly is going wrong. Latest mainline kernel still has the same
-> behavior.
+On 2/14/22 12:25, Bob Pearson wrote:
+> It helps. I am trying to run blktests -q srp but I need to install
+> xfs first it seems. Do I need two nodes or can I run it with just
+> one?
 
-Don't know, Mike tested this patch on qib, maybe he knows
+XFS? All SRP tests use the null_blk driver if I remember correctly and 
+hence don't need any physical block device. Some tests outside the SRP 
+directory require xfstools but the SRP tests do not. If blktests are run 
+as follows, XFS should not be required:
 
-Jason
+./check -q srp
+
+Thanks,
+
+Bart.
