@@ -2,145 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008F84B58BE
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 18:42:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2EC44B5948
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Feb 2022 19:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357166AbiBNRmJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Feb 2022 12:42:09 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33172 "EHLO
+        id S1345048AbiBNSBt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Feb 2022 13:01:49 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357175AbiBNRmH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Feb 2022 12:42:07 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2077.outbound.protection.outlook.com [40.107.243.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E205652F2
-        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 09:41:59 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UreDZh9YxL2u3cHAfwf1Fdz8tGx96xvZHYTqkEJA11lt1wdt/JW/JlYQT+r1dzDcddmGQ5+TpRq69qTBQX0ayVZmYGB82IAxpCbZrHC00m8Bo8FsPeMKiSFBQOJIMiFGtr0JJrKlpcV618YD7bnngrMsi77tm7dmpWqlIIZ4THuoF3O8ZCW9GqAhDH1HqA5dlbBwFXA9yr4XtJOu7AKJWW5b5aIZ0YTsnHm9+eIaRwbrpkqFVZQ/TJQrKCctz5aayFe4jJNRTpeRRFGQOskgruw6vjibTnG+bsij8dS21ZwMCzNERgQaYROjRt2YV7XiZJLol6jzC0QQtXoZW/pzYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8p2fPU1cbt2UwD3xEII6mVBs0lVWQqnccBU8KbWcg54=;
- b=HXaOqspORusJstvnLq8rCd4f/d7IPJUIEpGDXnVKJvInIXDF5DtYV7jNwsi2VzMHZAdahBsCgf5deb8Z5GOvFOOouuWeo3uAPAkw7uCEIylJKO9iDUsQR0C6kW6x7oVbo0dQDQmI+OmmaC+sldMaqAr3cvMe7YvacUBUzgUNOoNMzNfqh+jdlCLC7bDSwZmV/RQ3G74Kyc+4nBGM9rgakSo0irajCBRFYbZX+JiQXiU6uz06A4UNvTuN8qnJBzLGvCUaQTs3DUs2YiCMqVCgwKXgAyS0OgqekhOSj/h1VoxSTOLfs+fWX844LdTUj1IlxdP7Ryj7WDSGCvXqVHyRMQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8p2fPU1cbt2UwD3xEII6mVBs0lVWQqnccBU8KbWcg54=;
- b=Gc5Hfa/ZQfjSGauGNtYpu0zwLzsgXLCBu4rFS5noMxiN7Bw6vv9H+MXAXoBiyxl3GnxYXljK27oILciVaGFTKhpSPFyyf1yeUFvYkhajgBJoSbcc0FcHVVl7mf8uRLAMttJfT0xflW4j/QqalY1rUG+Co5z4ODKjGPG8l8aU/mbbBbTBmhgU1jT38RN+vi+ytncCazDzO9nvqw7C/0EHq6Hbecjk4xN2T6yWEH0pwLIn1ukavsDQUqaVYFC+Sf0rlYpERYkvSlU3yBsPBVoBsD5NUeW+vwWLg/cFkd1TR57/OEmeeNgH4MqB/J4a2nlAUD52w+4gsQ23yj09abRwmw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BL0PR12MB4690.namprd12.prod.outlook.com (2603:10b6:208:8e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Mon, 14 Feb
- 2022 17:41:58 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.4975.019; Mon, 14 Feb 2022
- 17:41:58 +0000
-Date:   Mon, 14 Feb 2022 13:41:57 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v11 08/11] RDMA/rxe: Add code to cleanup mcast
- memory
-Message-ID: <20220214174157.GH4160@nvidia.com>
-References: <20220208211644.123457-1-rpearsonhpe@gmail.com>
- <20220208211644.123457-9-rpearsonhpe@gmail.com>
- <20220211184301.GA576950@nvidia.com>
- <a34545c4-dd47-2613-e08a-cfbc3ce0d32c@gmail.com>
- <20220211195627.GR4160@nvidia.com>
- <0d7916f4-5e53-409d-73d2-d4eadf9c3e0d@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d7916f4-5e53-409d-73d2-d4eadf9c3e0d@gmail.com>
-X-ClientProxiedBy: BL0PR01CA0010.prod.exchangelabs.com (2603:10b6:208:71::23)
- To MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+        with ESMTP id S238598AbiBNSBt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Feb 2022 13:01:49 -0500
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B06319C25
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 10:01:40 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id p10so9917525pfo.12
+        for <linux-rdma@vger.kernel.org>; Mon, 14 Feb 2022 10:01:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:content-language:content-transfer-encoding;
+        bh=ZkRIbmzw4H0UBc1StEto2fVv7CD6TuWBJYrpqiXYbbA=;
+        b=NVk57aQB1lyiljshIIUqcK6dU14K0+XpDK84IsipHKhfT7MJEhssIQwuDB3PSg6zqP
+         Y2VHzgaLNKD4G/c1tBfilfBh0jg8isGE1yfQND9IMZwFzKqdOlr5L3wdWKTrDdh4WyYl
+         ZL3Ul1O+WgRRNncfBjIzB8AB2fDqYRTQq4j1HcM0maYHOSthA1nLgxciiN/jClqE6VWd
+         MlCd7M9i5agq2PrIz3jcvtTtplHZIW/50+Jola8Uq6IL0cz9J81ph7hQt5d2fy5M2U5p
+         C1U2jcY+PkDw41fNH4CSmBSpF6i9Jsviz09olz0uRVrJ3cjoKnenPBgJ+05ZQrx2UGuP
+         XuIA==
+X-Gm-Message-State: AOAM533LhCq3D6AGGzGi1SpzN3GQlC5Bge4GRl1/zZdxTx1gkvLeOwgp
+        +A27ZyPVOczhrRXl1nemvfA=
+X-Google-Smtp-Source: ABdhPJx7UZJmkTs8Txqd5fwPOKu8vmWsyrQrrC5AYijTlzd52zuhGAQmH5Ik9XTlouxpJoEu7dvsVg==
+X-Received: by 2002:a63:c106:: with SMTP id w6mr147456pgf.313.1644861699574;
+        Mon, 14 Feb 2022 10:01:39 -0800 (PST)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id pc18sm3881266pjb.9.2022.02.14.10.01.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Feb 2022 10:01:38 -0800 (PST)
+Message-ID: <8f9fe1da-c302-0c45-8df8-2905c630daad@acm.org>
+Date:   Mon, 14 Feb 2022 10:01:37 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9f92227c-4781-42a0-76a7-08d9efe14c93
-X-MS-TrafficTypeDiagnostic: BL0PR12MB4690:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR12MB46908D1782E079F3AB281FA4C2339@BL0PR12MB4690.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YDrw3f99joKW2WESMjcLbPw3v6PnmznqAIPzCvMCMkacVWTVgn/XQraLtsRJ0uEj/ijNNf/k4mBLI+fUgSYB2gABeKljd//xYK7k37bk6Reg8TNGK0ZI2WnVcBD/nfUq/MUVikO9f4aQGG1ThlsdriqncT/6SsKsIiEU7GQJg91RXvGb4/llwCkjxV/6L6z8eJALOO2ph6+UooTRs64Iw+2fJ4c7AtJeu7g/mF3pVuwBkEVkMmZq9MRxkU3u2rahzUsjmgsmLgTwoZa7fDAPe1SAB6ie+ON02PsmEu9/asEOnHlj0oh38Sax7BlPYc6cHrroM4jcpR2bvXbTel/yE0k2mQ3GmRE6SIyN/a3JVKDkzPR0DJq8O+45iMnU/tLOKys9M9otlpKSLFvF5DuoY2BRdkIlqhA2pf5KDuBRf+VQk3KfL0XHur67+ZCNBhXYpsBeUQXjs0Oy56MQimWVG2QzUeL0yP2PeMmqLTtZrY7AYDG8DAZEcR43aMq2gTrkJZ0vn4v8oz4H5EAyOqR6gdKHRpbIuzOR9yr6a1Vbxj22gON3iqbTFZ2Bf8fojaDpz3JLG7SpZGFTzzAiNq+vZhKtrtrdQVxs/ugXEGHwOuoihL1zF/KoHPf1Wgg47ZIQn/NeKP4EJIbWk/JqHbBEEg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(26005)(86362001)(2616005)(186003)(1076003)(6486002)(508600001)(36756003)(6506007)(6512007)(6916009)(8936002)(316002)(4326008)(66476007)(33656002)(5660300002)(2906002)(66946007)(66556008)(8676002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9l8NZPzUqDhuT4sepvNZjo887FWXVFGeP2xunxvPXazRFVQZePqoL3R46vXh?=
- =?us-ascii?Q?8scvCwoVxrqWt7uphccG8S0ulRMUPuYZ4aAeRC1E1/xYMi3gQqrrP2r0WcQv?=
- =?us-ascii?Q?mZgZ/d68NbgYxXRtCHIlDZ5KE2lhl8tv+hbXEJQXte5EvzepYj3D8f7IzZp2?=
- =?us-ascii?Q?l9SQZsLxb7EkXO5z020i3MJf/5icpWnC70qlq6xGlpDEZNFRl836qzcHSm3U?=
- =?us-ascii?Q?zlgI+sbfTvQRkWIanNzK+N+HMkViMGkbHeufKUkDswd1KOLPI4n7Sdr8EJen?=
- =?us-ascii?Q?HQI5PpDX6sinvXtKbNMvNqAkWepMu2FEqqjBBBG2/ln1BTH8f2mqxZ51TrAd?=
- =?us-ascii?Q?sHmn36TndX2uresnQ7daxS5jqZHR7Q4l2ExUl1saZazANUOjAumLTLpY32OC?=
- =?us-ascii?Q?c27EtoFrzmPYNXEreesC6ntb0sUCBq1hSnEET1nGJFyieDMxfs0/Gd3mD48m?=
- =?us-ascii?Q?CHFZYFURYl2m/f5mNBW2BXHYaPm1G8Hj8d9xpU8Pi1X4+/jiGrAeR6kCKotH?=
- =?us-ascii?Q?jGR0DHuuBhZqm9atfBXNiyRFez7wi+BLXww5HK2rwYma/A3Fv8DDMre6ZxW/?=
- =?us-ascii?Q?angFl92DaPkk7zvldtf93z5zbazpkfylLx/zy4NSmj7oB4s9K5WdBTShhzp2?=
- =?us-ascii?Q?dBGt2JRejA3oN1tBRM3C3fuzvhfKERRjXlVJFanm8rFM4ESVdpKB+bXoeuC+?=
- =?us-ascii?Q?gbueQ9dLF57Oc+DK348rNm5DYiX3+ETmX1Jocw8EWktBgvORniWjeV7kjM2d?=
- =?us-ascii?Q?WDe0t7kKwA9LiBxC/RTuyzC+cEiTS6+T17OGxDC5e3eAIn1aliwmb1kOoo4W?=
- =?us-ascii?Q?NU4K3zWzqGAxgGw55FhuLDdWkUlLQdQx7jKEZQqd/AKvI1fb5BAcUi22dHf1?=
- =?us-ascii?Q?Co3bKDy7G6gahno6/MSD9l8MnrJj0lDiwGS58EDG0QNeRjIN7V/exUdE0sqY?=
- =?us-ascii?Q?pJiMbPQ5LhRNr9djH+1Elx43thEXOy9OjZpqwPcnk9H8srpqCF+MVfiIiOmw?=
- =?us-ascii?Q?0XyERb2taQEapkUlcA0tkpdH5RjkNuVVb+nDaXENMnC+YoXxZtlE0l+suqWx?=
- =?us-ascii?Q?4lmkTzXx5PWGss2ffBTLkiFqkRs9LNWyEPLxjvVleBcnwdWmo4Xl6eizdNd2?=
- =?us-ascii?Q?+9rAhw+uEPteyCvb0niimZio10w4tbLBkTQOsaT7oZcaMpAscKCM3yAJNl7F?=
- =?us-ascii?Q?7PtNYOx14Nop7e5i8PYRiOSCsVDuItVgZV4banTX/aND6aQdnb02aNuPE+Jw?=
- =?us-ascii?Q?FaIBGuTobB7UBtN0a9x+tvIeVtWs0duiK5nWIbualwsJKJMTUOUQwDKEMe8e?=
- =?us-ascii?Q?O8g9DiXM7vG5dIKKBdPc0xo0VtU2WqNybp/tdRmEy+yRZe3PuigTy0Kxgfns?=
- =?us-ascii?Q?6+eHnzoaTdNf2WVwKEnfNJUtAv6w41Xd+LF1D38ga9ExdnYWR7hlX1SUHxuN?=
- =?us-ascii?Q?WOnA9dDeF0YSjbwOyIq8TfRaQE5tTBWDJrXpbYZ0BDCqbnxg/5mLXvUyeaxF?=
- =?us-ascii?Q?wy3XoJBvdCxyI1rUET6zAbYJxMX/wVHxEvz9qsWb91tUfh0vx56nU12aSa19?=
- =?us-ascii?Q?yG5kCGUDfmRvtfApd0Q=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9f92227c-4781-42a0-76a7-08d9efe14c93
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2022 17:41:58.3548
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ldljkClsJNgsX1Qv2HpZRJLki+mbX7LM8fSRUq1xic+J/kySfqSquVHOuvVTn12j
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4690
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+From:   Bart Van Assche <bvanassche@acm.org>
+Subject: Inconsistent lock state warning for rxe_poll_cq()
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 11, 2022 at 06:37:50PM -0600, Bob Pearson wrote:
-> > The mcast attachment is affiliated with a QP, when all the QPs are
-> > destroyed, which are rdma-core objects, then all attachments should be
-> > free'd as well. That should have happened by the time things get here
-> > 
-> > I would expect a simple WARN_ON that the rb tree is empty in destroy
-> > to catch any bugs.
-> > 
-> > Jason
->
-> I wrote a simple user test case that calls ibv_attach_mcast() and
-> then sleeps.  If I type ^C the qp is detached as you predicted so
-> someone is counting them somewhere. It isn't obvious in rdma-core.
+Hi Bob,
 
-QP destroy is done inside the kernel in all the uverbs stuff, detatch
-from multicast during QP destroy should have been inside RXE's qp
-destroy function.
+If I run the SRP tests against Jason's rdma/for-next branch then these
+tests pass if I use the siw driver but not if I use the rdma_rxe driver.
+Can you please take a look at the output triggered by running blktests?
+If I run blktests as follows: ./check -q srp, the following output
+appears:
 
-> never get called since someone above me is actively cleaning them up
-> from failed apps. Or we can just drop this patch and assume it isn't
-> needed.
+WARNING: CPU: 1 PID: 1052 at kernel/softirq.c:363 __local_bh_enable_ip+0xa4/0xf0
+  _raw_write_unlock_bh+0x31/0x40
+  __rxe_add_index+0x38/0x50 [rdma_rxe]
+  rxe_create_ah+0xce/0x1b0 [rdma_rxe]
+  _rdma_create_ah+0x2c8/0x2f0 [ib_core]
+  rdma_create_ah+0xfd/0x1c0 [ib_core]
+  cm_alloc_msg+0xbc/0x280 [ib_cm]
+  cm_alloc_priv_msg+0x2d/0x70 [ib_cm]
+  ib_send_cm_req+0x4fe/0x830 [ib_cm]
+  cma_connect_ib+0x3c4/0x600 [rdma_cm]
+  rdma_connect_locked+0x145/0x490 [rdma_cm]
+  rdma_connect+0x31/0x50 [rdma_cm]
+  srp_send_req+0x58a/0x830 [ib_srp]
+  srp_connect_ch+0x9f/0x1d0 [ib_srp]
+  add_target_store+0xa6b/0xf20 [ib_srp]
+  dev_attr_store+0x3e/0x60
+  sysfs_kf_write+0x87/0xa0
+  kernfs_fop_write_iter+0x1c7/0x270
+  new_sync_write+0x296/0x3c0
+  vfs_write+0x43c/0x580
+  ksys_write+0xd9/0x180
+  __x64_sys_write+0x42/0x50
+  do_syscall_64+0x35/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-I mean drop this patch and just put a WARN_ON to assert the rb tree is
-empty before destroying the memory that holds it, just in case someone
-adds a bug someday.
+[ ... ]
 
-Jason
+raw_local_irq_restore() called with IRQs enabled
+WARNING: CPU: 1 PID: 1052 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x2f/0x50
+Call Trace:
+  <TASK>
+  _raw_spin_unlock_irqrestore+0x6c/0x70
+  ib_send_mad+0x4ca/0xa40 [ib_core]
+  ib_post_send_mad+0x244/0x4b0 [ib_core]
+  ib_send_cm_req+0x61b/0x830 [ib_cm]
+  cma_connect_ib+0x3c4/0x600 [rdma_cm]
+  rdma_connect_locked+0x145/0x490 [rdma_cm]
+  rdma_connect+0x31/0x50 [rdma_cm]
+  srp_send_req+0x58a/0x830 [ib_srp]
+  srp_connect_ch+0x9f/0x1d0 [ib_srp]
+  add_target_store+0xa6b/0xf20 [ib_srp]
+  dev_attr_store+0x3e/0x60
+  sysfs_kf_write+0x87/0xa0
+  kernfs_fop_write_iter+0x1c7/0x270
+  new_sync_write+0x296/0x3c0
+  vfs_write+0x43c/0x580
+  ksys_write+0xd9/0x180
+  __x64_sys_write+0x42/0x50
+  do_syscall_64+0x35/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+[ ... ]
+
+================================
+WARNING: inconsistent lock state
+5.17.0-rc1-dbg+ #3 Tainted: G        W
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+ksoftirqd/1/19 [HC0[0]:SC1[1]:HE0:SE0] takes:
+ffff88811a85a228 (&ch->lock){+.?.}-{2:2}, at: srp_process_rsp+0x175/0x400 [ib_srp]
+{SOFTIRQ-ON-W} state was registered at:
+   lockdep_hardirqs_on_prepare.part.0+0x11b/0x1f0
+   lockdep_hardirqs_on_prepare+0x43/0x50
+   trace_hardirqs_on+0x22/0x120
+   __local_bh_enable_ip+0x88/0xf0
+   _raw_spin_unlock_bh+0x31/0x40
+   rxe_poll_cq+0x164/0x180 [rdma_rxe]
+   __ib_process_cq+0xab/0x3c0 [ib_core]
+   ib_process_cq_direct+0x8c/0xc0 [ib_core]
+   __srp_get_tx_iu+0x5d/0x160 [ib_srp]
+   srp_queuecommand+0xf5/0x40c [ib_srp]
+   scsi_dispatch_cmd+0x16a/0x530
+   scsi_queue_rq+0x383/0x780
+   blk_mq_dispatch_rq_list+0x344/0xc00
+   __blk_mq_sched_dispatch_requests+0x19b/0x280
+   blk_mq_sched_dispatch_requests+0x8a/0xc0
+   __blk_mq_run_hw_queue+0x99/0x220
+   __blk_mq_delay_run_hw_queue+0x372/0x3a0
+   blk_mq_run_hw_queue+0x1d6/0x2b0
+   blk_mq_sched_insert_request+0x208/0x290
+   blk_execute_rq_nowait+0x9c/0xb0
+   blk_execute_rq+0xcf/0x200
+   __scsi_execute+0x220/0x340
+   scsi_probe_lun.constprop.0+0x17c/0x670
+   scsi_probe_and_add_lun+0x178/0x710
+   __scsi_scan_target+0x17c/0x300
+   scsi_scan_target+0xf1/0x110
+   srp_add_target+0x2a5/0x490 [ib_srp]
+   add_target_store+0xe30/0xf20 [ib_srp]
+   dev_attr_store+0x3e/0x60
+   sysfs_kf_write+0x87/0xa0
+   kernfs_fop_write_iter+0x1c7/0x270
+   new_sync_write+0x296/0x3c0
+   vfs_write+0x43c/0x580
+   ksys_write+0xd9/0x180
+   __x64_sys_write+0x42/0x50
+   do_syscall_64+0x35/0x80
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+irq event stamp: 76629
+hardirqs last  enabled at (76628): [<ffffffff810ce588>] __local_bh_enable_ip+0x88/0xf0
+hardirqs last disabled at (76629): [<ffffffff81e669bd>] _raw_spin_lock_irqsave+0x5d/0x60
+softirqs last  enabled at (76618): [<ffffffff82200467>] __do_softirq+0x467/0x6e1
+softirqs last disabled at (76623): [<ffffffff810ce3a7>] run_ksoftirqd+0x37/0x60
+
+other info that might help us debug this:
+  Possible unsafe locking scenario:
+
+        CPU0
+        ----
+   lock(&ch->lock);
+   <Interrupt>
+     lock(&ch->lock);
+
+  *** DEADLOCK ***
+
+no locks held by ksoftirqd/1/19.
+
+stack backtrace:
+CPU: 1 PID: 19 Comm: ksoftirqd/1 Tainted: G        W         5.17.0-rc1-dbg+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014
+Call Trace:
+  <TASK>
+  show_stack+0x52/0x58
+  dump_stack_lvl+0x5b/0x82
+  dump_stack+0x10/0x12
+  print_usage_bug.part.0+0x29c/0x2ab
+  mark_lock_irq.cold+0x54/0xbf
+  ? lock_chain_count+0x20/0x20
+  ? stack_trace_save+0x94/0xc0
+  ? filter_irq_stacks+0x70/0x70
+  ? __asan_loadN+0xf/0x20
+  ? jhash.constprop.0+0x1bc/0x220
+  ? save_trace+0x174/0x2d0
+  mark_lock+0x414/0xac0
+  ? mark_lock_irq+0xf70/0xf70
+  mark_usage+0x74/0x1a0
+  __lock_acquire+0x45b/0xce0
+  lock_acquire.part.0+0x126/0x2f0
+  ? srp_process_rsp+0x175/0x400 [ib_srp]
+  ? rcu_read_unlock+0x50/0x50
+  ? __this_cpu_preempt_check+0x13/0x20
+  lock_acquire+0x9b/0x1a0
+  ? srp_process_rsp+0x175/0x400 [ib_srp]
+  _raw_spin_lock_irqsave+0x43/0x60
+  ? srp_process_rsp+0x175/0x400 [ib_srp]
+  srp_process_rsp+0x175/0x400 [ib_srp]
+  srp_recv_done+0x184/0x360 [ib_srp]
+  ? rxe_poll_cq+0x164/0x180 [rdma_rxe]
+  ? srp_process_rsp+0x400/0x400 [ib_srp]
+  ? __this_cpu_preempt_check+0x13/0x20
+  __ib_process_cq+0x11b/0x3c0 [ib_core]
+  ib_poll_handler+0x47/0x1f0 [ib_core]
+  irq_poll_softirq+0x12f/0x2e0
+  __do_softirq+0x1d8/0x6e1
+  run_ksoftirqd+0x37/0x60
+  smpboot_thread_fn+0x302/0x410
+  ? __irq_exit_rcu+0x140/0x140
+  ? __smpboot_create_thread.part.0+0x1c0/0x1c0
+  kthread+0x15f/0x190
+  ? kthread_complete_and_exit+0x30/0x30
+  ret_from_fork+0x1f/0x30
+  </TASK>
