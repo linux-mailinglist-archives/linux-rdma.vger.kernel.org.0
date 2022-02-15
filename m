@@ -2,74 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC654B799F
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 22:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DB74B79E4
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 22:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbiBOVC1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 16:02:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35046 "EHLO
+        id S235966AbiBOVFe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 16:05:34 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235440AbiBOVC0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 16:02:26 -0500
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FEF27FFE
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 13:02:16 -0800 (PST)
-Received: by mail-pg1-f178.google.com with SMTP id f8so40924pgc.8
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 13:02:16 -0800 (PST)
+        with ESMTP id S233073AbiBOVFd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 16:05:33 -0500
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8240E2A720
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 13:05:23 -0800 (PST)
+Received: by mail-pj1-f48.google.com with SMTP id d9-20020a17090a498900b001b8bb1d00e7so326091pjh.3
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 13:05:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=TPqT1dNtuYLUYTH0eq4rnMJ+JALOnqXCTyfY1Z3KqFU=;
-        b=DL4CTNXavmrMOHgDDPiQxCx+8gjCipjR9KD/ErB4Feg3xNaziXlNxL4JWIdEWFAaQt
-         2P8gF3vPrNPCVPYv6AVWAVkBUesBclOQeE0lqDC774ODuuG9ZkOp2ANBZdtLPHu70g+0
-         stJNwQabpJJBWAEV/2//klT9gBEuMQk5tqqQRVurEszjjWmyqE/ISAqdDoWbAn2nR+Zb
-         SFANVJ3bVoooVb3xWCR0OQnmqjyMOmHAzQa1x3EveQNOCKYstzRLJB6ptmn9da6MCTDs
-         taOU8fWcsSnSff7Qlu6EgmSrrEFHU68+S/boYEqMLhWlytyt9JE3iOt1VnmiORR63t55
-         NYhA==
-X-Gm-Message-State: AOAM533sMviwlY82Aa35n5KhuVWlkh3x9RXl4JIDAdxwKpICjcitRYuo
-        hjJN6Un4DKtYhcN523hb7cYUxm3SGkj7aQ==
-X-Google-Smtp-Source: ABdhPJwl8+rAlgo6KqKDkDsAAwdPWG63GFMtXgj60p5Nm4v8KKoNn+vHg3uIVDFQw+0ny1BB4y+ZkQ==
-X-Received: by 2002:a05:6a00:134b:: with SMTP id k11mr739087pfu.33.1644958935619;
-        Tue, 15 Feb 2022 13:02:15 -0800 (PST)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id d8sm43732319pfv.64.2022.02.15.13.02.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Feb 2022 13:02:14 -0800 (PST)
-Message-ID: <54f5439d-07b2-b78a-91d0-25592c0dd861@acm.org>
-Date:   Tue, 15 Feb 2022 13:02:13 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: [PATCH for-next] RDMA/rxe: Revert changes from irqsave to bh
- locks
-Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>, linux-rdma@vger.kernel.org,
-        jgg@nvidia.com, zyjzyj2000@gmail.com, guoqing.jiang@linux.dev
-References: <20220215194448.44369-1-rpearsonhpe@gmail.com>
+        bh=NG1NtLjDLOqFDQn3g8SS4xROmde+3nnIR3F2M3XJICQ=;
+        b=j/gQoeeap9QxgnZ7md6zciklQBZ77Bip/Kw/udXUyFwYxqgSfRove/q2famvkM+Zce
+         kI6VZOW2jOEunplfzIvwFD0vuzWr7EN7JOWtVS79Y40xNX6VIco/76hEviJp6ERyU/jt
+         45UWoXLfmh5QF1xHKiFCm/lWR3tKUwEbH1mR6BB8pXfXGsNyIwwNELTFp2ioypd5BKm6
+         oALij6nEGe4jbpC57sbnXzEI2XSolWfLiUrc2VmCJH3BnFuFksfUpIQzntf6Gs4e9iCk
+         fL05kw7Cmr8vlZ1Gp8FjCjgrToouEvPEooc9CKUPUL+TAmdLNPGBugTbMbIjnfaumN5B
+         FIGg==
+X-Gm-Message-State: AOAM530cneAfa+ZUta14B43HFOzegpwpHeHYxHihmHBrDTev72nb8AHB
+        YgpNqc0oInvCbtshVicVtKazMCrk/z/8FA==
+X-Google-Smtp-Source: ABdhPJw8/rncUSZYkiuyrXAprxB3tcKYC8FT8/1VnV3vbz2qtO2t2ApEFyU7mcfybqG8Z8iIDBi29w==
+X-Received: by 2002:a17:902:8a90:: with SMTP id p16mr740947plo.60.1644959122890;
+        Tue, 15 Feb 2022 13:05:22 -0800 (PST)
+Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id i10sm19223888pjd.2.2022.02.15.13.05.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Feb 2022 13:05:22 -0800 (PST)
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20220215194448.44369-1-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH v2 0/2] Fix a deadlock in the ib_srp driver
+Date:   Tue, 15 Feb 2022 13:05:09 -0800
+Message-Id: <20220215210511.28303-1-bvanassche@acm.org>
+X-Mailer: git-send-email 2.35.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/15/22 11:44, Bob Pearson wrote:
-> A previous patch replaced all irqsave locks in rxe with bh locks.
-> This ran into problems because rdmacm has a bad habit of
-> calling rdma verbs APIs while disabling irqs. This is not allowed
-> during spin_unlock_bh() causing programs that use rdmacm to fail.
-> This patch reverts the changes to locks that had this problem or
-> got dragged into the same mess. After this patch blktests/check -q srp
-> now runs correctly.
+Hi Jason,
 
-Tested-by: Bart Van Assche <bvanassche@acm.org>
+This patch series fixes a deadlock in the ib_srp driver that was discovered
+by syzbot. Please consider these patches for kernel v5.18.
+
+Thanks,
+
+Bart.
+
+Changes compared to v1:
+- Dropped patch 2/3, the patch that converts a spinlock into a mutex.
+- Simplified patch 3/3 by removing a flush_work() loop.
+
+Bart Van Assche (2):
+  ib_srp: Add more documentation
+  ib_srp: Fix a deadlock
+
+ drivers/infiniband/ulp/srp/ib_srp.c |  6 ++++--
+ drivers/infiniband/ulp/srp/ib_srp.h | 11 ++++++++++-
+ 2 files changed, 14 insertions(+), 3 deletions(-)
+
