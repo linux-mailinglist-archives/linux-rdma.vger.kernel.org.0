@@ -2,74 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C47B4B7619
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:48:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAE04B75B6
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbiBOQp1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 11:45:27 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37154 "EHLO
+        id S237170AbiBOQsa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 11:48:30 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237170AbiBOQpW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 11:45:22 -0500
-Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 533571019FA
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 08:45:11 -0800 (PST)
-Received: from pps.filterd (m0134425.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 21FGM4Td030009;
-        Tue, 15 Feb 2022 16:45:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pps0720;
- bh=p4b3EzDGRYXhidUrGEQtmjP+kLDQRzITwfY8WBL0X1k=;
- b=CsApYud1YDFiRrBcniDi2Jy3ci0Pp/qZXKCcZhfUlURapCFe7EhlWQST1N+jJhNQvwxW
- LTDrrs7nzAlTe/J8hR7/SRwDx9WK//ii21C9Me7I3GaGuJ1nEx1z3NACZnrVjjcc0Zmi
- LqOO5Ae7Nsa/+a2s0bU9TkadedaosrAsDHtoQcD3YTy3iw53uPtoYsjXVQDXrZ7fC2nI
- /I/E8ViT/vFt/QdAhb9w1+nlNMs1edwirZ+e+fHmYQctB3lVqMiOAv838MXSrG6qOpZM
- M+1LwFTDp7/8RSew6lxo+BfZJE/aMioD45D3jrtsm1Z1/E+KR8kuGTQQyqlJdCbuSWOh og== 
-Received: from g2t2352.austin.hpe.com (g2t2352.austin.hpe.com [15.233.44.25])
-        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3e8fmnr7fe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 15 Feb 2022 16:45:04 +0000
-Received: from G4W9121.americas.hpqcorp.net (g4w9121.houston.hp.com [16.210.21.16])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by g2t2352.austin.hpe.com (Postfix) with ESMTPS id 842F8A7;
-        Tue, 15 Feb 2022 16:45:03 +0000 (UTC)
-Received: from G4W9121.americas.hpqcorp.net (2002:10d2:1510::10d2:1510) by
- G4W9121.americas.hpqcorp.net (2002:10d2:1510::10d2:1510) with Microsoft SMTP
- Server (TLS) id 15.0.1497.23; Tue, 15 Feb 2022 16:45:03 +0000
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (15.241.52.10) by
- G4W9121.americas.hpqcorp.net (16.210.21.16) with Microsoft SMTP Server (TLS)
- id 15.0.1497.23 via Frontend Transport; Tue, 15 Feb 2022 16:45:03 +0000
+        with ESMTP id S230320AbiBOQs3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 11:48:29 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2074.outbound.protection.outlook.com [40.107.236.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BEFC12F9
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 08:48:19 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JZyj3a7lbKIAW1JRFxXhslotHjnvJOafcSC754RUAEVt7HwhdFRFYLHeQbDid3nA1CvX2ZneLXsPaixGB3hChJWJMKpRZ9/DdB9W2hqQd2GJz3Hqc/ygOGzL3BcEmSmiQtSFp74Grj2ZtfpBmjqVNFokZn8qXZYq79KNgHhbiqkg+MUcqADUBUV2i4kj4Qax41ud1fz0Azp7ZL0kz7jT8oJUqY13DQocOYLdiyufkVomh9XWa/N8o9yTjlNc7x/qWVXnsReriGlPeWGQtv7gVqY/ZfZRqIMArndqkDLYytG5T+9r2NZrBZIVYW1Qz46iRN0YVOQuEFPcAcG7mc+aYA==
+ b=NFM6o+xPn+aRhF3nFHUUAibptaXOhJN0UAokJjJX95bjCgHNTsAT7NHCVPJRri/C1TgKebJj3kEuTUqzA2fDYMZkqzXHfoh1+c8aovfqCUz2yYv6n48Qh6zAb2sIV5rf1BMybIXyV1NqsPEJp72ddYVEXnT+oHebCLXSOrY+Mo/IsBAoUXjzscEKtxzZtkK36A4YaVRrjrnJDhvLDNmwX3ta8xehHq0DvGOMwZYhJE38BMral/w9RBeBvCMdhbBdZdO2WU2lsEYZegGLrTETvR9SvDQ48JJwE92VwAyzOTLzernySjhX6afY9xqtQKz9j4aGFvw/Cf8++mEEXPSpUQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p4b3EzDGRYXhidUrGEQtmjP+kLDQRzITwfY8WBL0X1k=;
- b=ACPuLruerJYri+p3yw80jUtNQqSjdKwnV9yUlA1z4BwiAifhDdFcHM8po5bGkHdZ4ffOGYi+Y1BocxXiL/rPbH+Dhtt/dirwvytGZtJK0nZcE5ySpkzNKn6ETdKc0DIy1P1FwIMxbTfBEHFOk+JuvTwz2AfXsxyfxtchgMJg1Up0b06Z66HK9B4g8vnsf4BQDomVMuQmeEUn6cDmmJ2Vj8K/M67UnBHZov3TRalBwlTpYfsc7Fbe75rV7SXKDt+9B8Ax+ch5MPTBZEaO7xxiWxJ6ilLEUU/K67U4MlyUD/YBxLwn0NfVh+lacYH/sAri5XYNRfuO330lv0xB8+g0dw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:153::7)
- by MW5PR84MB1913.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:303:1c3::22) with
+ bh=ylwspq51DPfndhf3uhf8DeNN8cVrvIjfNQvXlA3ScIw=;
+ b=QRik729weXVVFvtrcGVaXFecOXJyK+X3Q5XlSRWEmbQbnG/x1eLz7rlSCFd0m4+8iwI9cDsF0rQHoBjy675NT1BL5gKrDLoWMrl0++h5uqHpAtx3X4xWneQNsdto6pwDI3o3T7R9FZHy+XadxIzrID4hTRLjqiRg1MAZNvwattde9n5irhHzKDKR/q2sPeZRvEq/BgMQSCkT5+omeqbXZoeEnNy3v4yMxVHDd3VPe/jGiwCl8tmfdVH0B+HeG/GjQ0bScezVb/eGW6SxFzAjgaBI668JglZNujsAcYHhFoslSFcapo+nHUbVisGkjE7/db8BF5/2IMy4U9jCYzPFrg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ylwspq51DPfndhf3uhf8DeNN8cVrvIjfNQvXlA3ScIw=;
+ b=C7Dj2u4goYiflXwB0zHweHtfNEdD5M8JRNwtkoLQ8HU5EBuFe5ywWd1fzbvH/bs18s0sIoLo+BUXGgVLZ/32u+9pPs7tf5lEWBaQ5wcGFSKK54HVnF1tWHJ4zImLbG+aftJKZmNQCOPyRtMBA735FgPRReYXvcXyB3FTOO1Z9XqQra/Tk2fIDXhMv8mIqJ8C/ZydOQQUmGvDRpzPe4N0yyHQ5OwQcqI8PgQboKTpObcHl+qsDtEoUUDFcgoj2fkA1NFT0VpPIq+SrhCi5BkOpexckdTcghioAyNWT+T3lebYx+xHpL6ufQzvgw5O2Ol9EIDFLvjiD/iZsiSss5eVUw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from CH2PR12MB4181.namprd12.prod.outlook.com (2603:10b6:610:a8::16)
+ by CY4PR12MB1704.namprd12.prod.outlook.com (2603:10b6:903:11d::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.19; Tue, 15 Feb
- 2022 16:45:01 +0000
-Received: from PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::8882:19f:abf:c173]) by PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
- ([fe80::8882:19f:abf:c173%5]) with mapi id 15.20.4975.015; Tue, 15 Feb 2022
- 16:45:01 +0000
-From:   "Pearson, Robert B" <robert.pearson2@hpe.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-CC:     Bart Van Assche <bvanassche@acm.org>,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.15; Tue, 15 Feb
+ 2022 16:48:11 +0000
+Received: from CH2PR12MB4181.namprd12.prod.outlook.com
+ ([fe80::287d:b5f6:ed76:64ba]) by CH2PR12MB4181.namprd12.prod.outlook.com
+ ([fe80::287d:b5f6:ed76:64ba%4]) with mapi id 15.20.4975.019; Tue, 15 Feb 2022
+ 16:48:11 +0000
+Date:   Tue, 15 Feb 2022 12:48:10 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Pearson, Robert B" <robert.pearson2@hpe.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
         Guoqing Jiang <guoqing.jiang@linux.dev>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: Inconsistent lock state warning for rxe_poll_cq()
-Thread-Topic: Inconsistent lock state warning for rxe_poll_cq()
-Thread-Index: AQHYIczu9oQKWqycI0OU3v8E5biivKyThZ4BgACUwACAAJZngIAAHmvw
-Date:   Tue, 15 Feb 2022 16:45:01 +0000
-Message-ID: <PH7PR84MB1488ADD314438A8EDEB5F219BC349@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+Subject: Re: Inconsistent lock state warning for rxe_poll_cq()
+Message-ID: <20220215164810.GW4160@nvidia.com>
 References: <8f9fe1da-c302-0c45-8df8-2905c630daad@acm.org>
  <a300f716-718d-9cfe-a95f-870660b92434@gmail.com>
  <89e17cc9-6c90-2132-95e4-4e9ce65a9b08@acm.org>
@@ -77,127 +56,127 @@ References: <8f9fe1da-c302-0c45-8df8-2905c630daad@acm.org>
  <95f08f0e-da4e-13fb-a594-a6d046230d76@acm.org>
  <1f781fd6-a5e6-aa73-c43d-d16771fdef3c@gmail.com>
  <20220215144159.GQ4160@nvidia.com>
-In-Reply-To: <20220215144159.GQ4160@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 33c30edc-b8a6-4f93-4803-08d9f0a28292
-x-ms-traffictypediagnostic: MW5PR84MB1913:EE_
-x-microsoft-antispam-prvs: <MW5PR84MB19133B07EAD7E66A952B3352BC349@MW5PR84MB1913.NAMPRD84.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +orlgVq9gzLXJ3sk0gOmUx4rm9+5oc+gRqm04GB8P9oFiHVT80wwJOTGFj+G1azCEV8dzv5+TU8juIwwP6pZJkv93w59EQAOnmfpOvHHph3Hu9XY9JJYok1CGIImG+geGjFioX8rho07eP4aNvl4kUgLJ7rXlcfb90xuB0G9243FaeFIFrRlHfC5DloqzIfrTZ9R+GycLTu0YdMfZIoyUYSDl8BKYhlBYMKGopkpur0ZkWXwDeCeXPu0XZkjrOCHkUmU5cEgMfMYObsB4kCaE2D92atEwH55YpiJ+DU6SwsKyx09GD74Q8djf/OFqWaUqGVDuAlEPhml3DsB1ZnpcriRdPF0eR7pLvq7Hc/fN5l9ZEitni07zWZ85TlutTQ3Y7ogBpb6QbrElJirARn9XcAC3dArS8kD3PeuiGep9+qmpRuj3o5a0Rd77arGIhkfsLChdsKvnJ4qWoWxmFaRPsV7WbC5PWvjuVn5INB9NDJ1kaJA7QSHi1kehmfduqJx1zQ0KbILmXBl7tp/Tj69gvuSUI7FVIrC2XJR6LkfVrjr6Su3sagISjK2eC8gveUGKg+Kaz9bHucTQpxVwcfbV6BbawuYmYZO8gTXJPpceQJTzPhGt+2qg6hxYmpUrHvBl9qTNIT5vhl59IvoidYcrw6JQ24T4nhHZEV1ZXzngzTeqgXsd/RL4yWjYhzyrxeaNGHq9ZL3Ow6y0qDNZI8Efw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230001)(366004)(38070700005)(8676002)(4326008)(55016003)(52536014)(71200400001)(8936002)(186003)(9686003)(53546011)(7696005)(122000001)(6506007)(86362001)(33656002)(110136005)(83380400001)(38100700002)(316002)(82960400001)(2906002)(5660300002)(76116006)(66946007)(64756008)(66476007)(66446008)(66556008)(508600001)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?aA6GxNhf3NIegIGgGjYHw1rl4S+R4Qy3tyz8u8/HXh61LD0x41HjknX/NIzK?=
- =?us-ascii?Q?wq+y34B7Aw6XhntRHK26iRK2DaWOcmZh3ry+RvX/DKV64ftAnU6wINzSLpj/?=
- =?us-ascii?Q?FZjXbKjTJXI7HlV0tfecx4IQNcUhjjeo5O1ZqWDf692PM0l2PZtVAfHsTtq3?=
- =?us-ascii?Q?TecjUqN3LXb6vILdSUsgYD8zd2RQAOdh1+gJQvUfPiFVgcH/Ww1CuRn5v/Sm?=
- =?us-ascii?Q?MnPdDF36WaXDkT3ekdcK850LHqaHrpU72rz1srC0VI+weiWa11vzNlSxCfN0?=
- =?us-ascii?Q?H9kJVYhDPoLk131/eWLMc1kJrLD1qATdKAJChVbe3EGpdHGlHUS3MXwHI1kt?=
- =?us-ascii?Q?zlHSJBNLQb5oAJNUeI74bF5G+MiyvOczJz7Ty39lL9waXLZHttVfalLooXBG?=
- =?us-ascii?Q?3V5a0w06yjZXbpyVT9J7Hkiq0tvQsr/g/7ciG3BSsRNIvtirSzsC+s2L5a7M?=
- =?us-ascii?Q?KWx99bClbd/hc5tyla2ly38NMoSOEgYMjV6VRf1ESs+ukK2GLilVYgOO3Uve?=
- =?us-ascii?Q?KwI46CpdEuALoMnDJBXhPsnEIziQqprCb03IY9NGQGuJldk6iTJJgdRsgM82?=
- =?us-ascii?Q?QcoPmSIiveSrbIip47g3FdNZ3/QVxnpGGKag5ReUmQlLwq9b+faQogGIJu4g?=
- =?us-ascii?Q?ilZd32hmoPImml34kcrnTOhte/edh/PiLdZGmOs8GNRwffwCvgK+Pz/xq4xU?=
- =?us-ascii?Q?ScqwWb5Ix8DcnffZq3ccj1RW8UaQ+nmzJ/iIxoPVMB22dWjTPA0Jt7hI2DcZ?=
- =?us-ascii?Q?/5Fw3zJs7raCr444SiN06F0Ow8V5odf5gmXugPl+Ng8HeQ6rVDeI8gVIX1rs?=
- =?us-ascii?Q?J/2v5bt8NjD0xUHVnCig4ckL9hUFg4DXcGWs/vwoWs3DP1Nxo3y0yxQ58TPc?=
- =?us-ascii?Q?jjuNfMNr2d5+Kiyufw1xh1kN58ib2HPnLUHTvhQ4CJL06tV/sqJ5WgRf1RFn?=
- =?us-ascii?Q?GmrTlyGnlIMrscCHaYQYXoC5G6Rc4IYJKYLscMRSpV0UPRHxEImMEmMA4Jf6?=
- =?us-ascii?Q?mlC8UuUf76WSW3zk+iu7rgG10vRwpydLytGoRkY9nKA4i7nEIXCJ9O6hRoYl?=
- =?us-ascii?Q?sxiK8o+qhTMCyW94+3nWHcmKVynPNI9OR39f/k/qlgZCoFog1nTWqXqOE8QH?=
- =?us-ascii?Q?LPHznjqPsvweOz9yXpRqXsAT1FyP0QvX5YfhLtMUDAgN+Z+SN95FQ8VMfKnb?=
- =?us-ascii?Q?adICV9qgYHiy56yDY5Hn11DsHL6uXe9FmdCbTSBz9JaE68u6BGb46aCucuBg?=
- =?us-ascii?Q?xL8qUGhHs6Ue9bOFGDBcExXWdSrFVsM/b+KgqHOuGGwZuIUFe2EbgRF9u2V+?=
- =?us-ascii?Q?BorfbMYGKKlXyn4GpCxEa+HfwF24wMBdMPM2q5ypyVYGQHwPHwd265jMj49b?=
- =?us-ascii?Q?8dD4rbAwvHpaT3oZkLiNtMIEQD+yK8sn/B8r6U1WK7uPbywoeib877QMoPYC?=
- =?us-ascii?Q?zUKLEjoGtZWup5+gPos7XKz4s7G8ZBXnFF0hO19TKTl7p6jortK9gzhlobKo?=
- =?us-ascii?Q?CYMXJV5sxax9afydfN+j1XYTcZP2MnP9WDi+F252Mhi9UVcq6WiBJj66bxa+?=
- =?us-ascii?Q?c8if09LTyaJbFeEXzkP/uzx8R6IntqIWVxhMFuZUaK9iiMCXOgJa06prW0XY?=
- =?us-ascii?Q?UHFwrNc2scRS13TNF/cIUNB8F0HRxUDDqXRXMtGE8k2QhV2lOPBxm7mhiDis?=
- =?us-ascii?Q?ZEtIN6Opw5eYEZrDSdA/go7LqCQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ <PH7PR84MB1488ADD314438A8EDEB5F219BC349@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <PH7PR84MB1488ADD314438A8EDEB5F219BC349@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+X-ClientProxiedBy: MN2PR16CA0013.namprd16.prod.outlook.com
+ (2603:10b6:208:134::26) To CH2PR12MB4181.namprd12.prod.outlook.com
+ (2603:10b6:610:a8::16)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1f7d24a0-6b17-4916-c5be-08d9f0a2f3ad
+X-MS-TrafficTypeDiagnostic: CY4PR12MB1704:EE_
+X-Microsoft-Antispam-PRVS: <CY4PR12MB170469D19CBFB5483EE19AFCC2349@CY4PR12MB1704.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: wIKUyLXbJ0O0krJDSTZCb08jna9zlc2AQkeE4BTUZEiE3mT15w/mKawjA5O4NGiJ92DWgICC6wj+48iCXCVaKySsUwINA8xR1zfducY+XQmMRc+9HR492FyOI917IXKB5o25uMX2XmHcaZO/rC2YjXJG+nTGUh5df/o4gf1ZH+1owliH6h6MvA7rEkQpJ/ZfPeTcMdZENmwSZYXNW2Ow2ZunyUXwzh94iWEudypPn0Bwi5oVlXec4iueDGmUDqj0WHSEFMGJgcuFXQz7fjlQca+itbSu/TIyzjykVWTyYA0jIPIOV6GX1hU9Hl+OrMx2lFd8MZ8NhRgb4PwQ8uB9DKURuVXp6hsB+xzJCWX9/Nh+193yaXJKDFp0I9ZPAA8Jv4T0CvsxPD89LhowLK7vFnTWXSSroLUP1xtZjuj2oarbuKMOswrCLFkMQNAC5u1V0COJKWuY9W13cNLrQDMIfRDukCp+W0JNMtzQfJl8kBTwhSwc83Y1u5d4BxKKWQxO0biRvSwh1VbFWq5WfJKJ6d4enpXYuZ7Ut3hYBP/GzJDpLeyRaWvmwIJjm0Fv1BPhlh2w/40pPWo6v0Bk67tvVG4fMaIQSAG/yJsUDG5zyCJSGV0KG9iY+I86k9wPlnRZ1ANwMDccQ60bEuINBl0keQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4181.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(296002)(54906003)(508600001)(36756003)(316002)(6916009)(38100700002)(6486002)(8936002)(6512007)(8676002)(86362001)(66556008)(6506007)(4326008)(66476007)(66946007)(2616005)(83380400001)(26005)(186003)(5660300002)(53546011)(2906002)(33656002)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?iTLB7H2DZ52VXGTSFRhXRCC3waywo7mexHcIhw0wLGu8o1Q9+tNZ59vM0Ye0?=
+ =?us-ascii?Q?XudzEoAw/gF4BdfaeVYTxSQLs4q7q2iFL5pV0v+9W8z3EnuxaWAdKk8Pl73a?=
+ =?us-ascii?Q?bxEoPi6shKUrhl07fCoYY1IjhsfCWw18795HX/OsiNz5ILT9VKUr3segO5XC?=
+ =?us-ascii?Q?ULyJsPhtcdRKNuaegr3Aez0hTj71yADhmzrfqjiulbV5POrzpC8OHM3HtUIt?=
+ =?us-ascii?Q?PotTzLICeStRIrZ79KX/+qQ2QPJVXxDUQeH54BHxkaZlpMZOvdDMaBJpKnoO?=
+ =?us-ascii?Q?MHwkkSpiu8d1PdhHDnW7HgQYr7RvuHUdIsoTNYAyKSa0ISiJfSUPj9N+IDmf?=
+ =?us-ascii?Q?hgE0IsE8aVXtD2chyIEgH3WQwrvw6/fXJbvu4nF3LWwxSdeVwR/MisNsi/hh?=
+ =?us-ascii?Q?ePdyJr4L59jtniPg8JwAeK2QNA4r4I+xuO5ty+dJXlamOSkWDhUp9mmnJaW6?=
+ =?us-ascii?Q?BLjhp55c//UmOsuSHoHbWrLe+er9TG47Rz2My6N7+ErIF7ZPJFfC9SkCTKAS?=
+ =?us-ascii?Q?RkABv/fGy5R372lWCxOcZ4I0VDasNqKZ7HqMxqD+RJ0JpwAhl8TFIhewOtoA?=
+ =?us-ascii?Q?3UlPWTZiX/b380jhpqwFPWHys0YMLodfeBP2fn6G0jlif3GaMY9f85sHpfOT?=
+ =?us-ascii?Q?8+OBG/WfN3eKRO9YPoLe3W/y3Plsn4e3IbG+Wr6UzJuk0/lFKRHSZi2XJnSb?=
+ =?us-ascii?Q?DlQamXOumgSYZsAoslGbledDVaZgj3lTOuk67RIhJREHUf5Xu9Mcgr91Y784?=
+ =?us-ascii?Q?743Nk8SpziHQvQyUv2Jn1EiQxGGwFHPHD+b9KP5UQ4qbB3Zt7Sn/DiAJuddW?=
+ =?us-ascii?Q?C4iLyzeqs7NeddU4JONcODnZD/0NqmV7QWddFSU1KIXNXjzf3OWXLnR34fgm?=
+ =?us-ascii?Q?t6H3KqGw4x+NfoSzt+XTMnWU9gOaPf6QmJP5USZWgLhsiMbY1w93ELGkoCfT?=
+ =?us-ascii?Q?MKqIfaNKg0+IGmg/fasYf4KjfZlOkppu3Dj2KKafQDOY3GISnPiZRL2wZB/p?=
+ =?us-ascii?Q?/V+fb15x/7CEi3/+LuAPfdLqBb6u1YVDAy95j+0x2wkZyBIIl2sJBemeYi3Z?=
+ =?us-ascii?Q?jTlwElWGuk3ZEuR5VHbuMNfxbcmYE2n06aWHX0I0ZMgTuI0g+q1Tn0zaL2Vj?=
+ =?us-ascii?Q?tkmyRbcs1H2B1DTQQhjIvCtzvwm0cLZZIfKe4pYTRp5B3/Xxfmwv2fiyiNTE?=
+ =?us-ascii?Q?14aBbFM3hMBMxM/JogAPLQ1yEtOWzXBzQ2E1YXvhf7v771mztMjBHjMCxity?=
+ =?us-ascii?Q?aab2cCsA82DcUGweuWZcCvPJfDBQ+L93ewUOAsJ0100kCipo/wbsnLX9sueX?=
+ =?us-ascii?Q?jrHckY+tWgfn2aVqiQpTFg/J6m6iZPlL6NZb+10DwQ5K/JNiO8yiG9IzRN9a?=
+ =?us-ascii?Q?kSi0Txafp9Mg+pHMgWOWIpd6COCC0m9GP7lY/oNedyJl2SSJ4NAgYzj0G2Wk?=
+ =?us-ascii?Q?8myTFaP7foz1yhsiygo+uMHwhL9Er5xMUkuzn7iF2w+p1Lwb4+m64lvQMBMP?=
+ =?us-ascii?Q?AIYF21ZIBbFCDr7h1gFYsl7znd326Ll64mXBwddQ1lX7aCPZL8OEL6kNoN0p?=
+ =?us-ascii?Q?rujgkVjnRBiuCiftWKY=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f7d24a0-6b17-4916-c5be-08d9f0a2f3ad
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4181.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33c30edc-b8a6-4f93-4803-08d9f0a28292
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Feb 2022 16:45:01.3765
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Feb 2022 16:48:11.4518
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cnlB6t7s0/IacZhp1IASoSNVZN7pzqm3YxpI2ClAVaeR5VuH7lHUpin6x+W2ag/kQzjGA46fujtwsr3bwSV3ug==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR84MB1913
-X-OriginatorOrg: hpe.com
-X-Proofpoint-ORIG-GUID: 68vf-AqQnsVwDtzCs79VIUkq_U-HWJpd
-X-Proofpoint-GUID: 68vf-AqQnsVwDtzCs79VIUkq_U-HWJpd
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
- definitions=2022-02-15_04,2022-02-14_04,2021-12-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- phishscore=0 mlxlogscore=865 malwarescore=0 bulkscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 clxscore=1011 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2202150098
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: l/Fj78IbLkziM0l6T6SkSQhqC+eO96x0IC75Nk96LffpcFv3X58s4j5715HH7zte
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1704
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Feb 15, 2022 at 04:45:01PM +0000, Pearson, Robert B wrote:
+> 
+> 
+> From: Jason Gunthorpe <jgg@nvidia.com> 
+> Sent: Tuesday, February 15, 2022 8:42 AM
+> To: Bob Pearson <rpearsonhpe@gmail.com>
+> Cc: Bart Van Assche <bvanassche@acm.org>; Guoqing Jiang <guoqing.jiang@linux.dev>; linux-rdma@vger.kernel.org
+> Subject: Re: Inconsistent lock state warning for rxe_poll_cq()
+> 
+> On Mon, Feb 14, 2022 at 11:43:40PM -0600, Bob Pearson wrote:
+> 
+> >> in the write_unlock_bh() call. This appears to complain if hardirqs 
+> >> are not enabled on the current cpu. This only happens if 
+> >> CONFIG_PROVE_LOCKING=y.
+> 
+> > The trace shows this context is called within a irq disabled spinlock region. Ie this is trying to do
+> 
+> >   spinlock_irqsave()
+> >   write_lock_bh()
+> >   write_unlock_bh()
+> >   spinunlock_irqrestore()
+> 
+> > Which is illegal locking.
+> 
+> > Jason
+> 
+> Yes. I figured that. But I don't know why, or why
+> 
+> spin_lock_irqsave(lock_a)
+> spin_lock_irqsave(lock_b)
+> spin_unlock_irqrestore(lock_b)
+> spin_unlock_irqrestore(lock_a)
+> 
+> Is clearly better which has been suggested as a fix.
 
+Right
 
------Original Message-----
-From: Jason Gunthorpe <jgg@nvidia.com>=20
-Sent: Tuesday, February 15, 2022 8:42 AM
-To: Bob Pearson <rpearsonhpe@gmail.com>
-Cc: Bart Van Assche <bvanassche@acm.org>; Guoqing Jiang <guoqing.jiang@linu=
-x.dev>; linux-rdma@vger.kernel.org
-Subject: Re: Inconsistent lock state warning for rxe_poll_cq()
+> Apparently someone above me is taking an irqsave lock and then
+> calling
 
-On Mon, Feb 14, 2022 at 11:43:40PM -0600, Bob Pearson wrote:
+Yes, the CM code
 
->> in the write_unlock_bh() call. This appears to complain if hardirqs=20
->> are not enabled on the current cpu. This only happens if=20
->> CONFIG_PROVE_LOCKING=3Dy.
+> Down to rxe_create_ah().
 
-> The trace shows this context is called within a irq disabled spinlock reg=
-ion. Ie this is trying to do
+Yep
 
->   spinlock_irqsave()
->   write_lock_bh()
->   write_unlock_bh()
->   spinunlock_irqrestore()
+> Calling the verbs APIs while holding a spinlock seems likely to
+> cause problems.
 
-> Which is illegal locking.
+Indeed, I hate it, but it is hard to fix
 
-> Jason
+> This looks to be in response to receiving a MAD so possibly is a
+> call to ibv_create_ah_from_wc().
 
-Yes. I figured that. But I don't know why, or why
+Yes something like that
 
-spin_lock_irqsave(lock_a)
-spin_lock_irqsave(lock_b)
-spin_unlock_irqrestore(lock_b)
-spin_unlock_irqrestore(lock_a)
-
-Is clearly better which has been suggested as a fix.
-
-Apparently someone above me is taking an irqsave lock and then calling
-Down to rxe_create_ah(). Calling the verbs APIs while holding a spinlock se=
-ems likely to cause problems.
-This looks to be in response to receiving a MAD so possibly is a call to ib=
-v_create_ah_from_wc().
-
-Bob
+Jason
