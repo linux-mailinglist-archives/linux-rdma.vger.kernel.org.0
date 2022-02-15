@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A354B782C
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:51:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C07C4B761D
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238417AbiBOUfg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 15:35:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53348 "EHLO
+        id S244121AbiBOUh5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 15:37:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244098AbiBOUfc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 15:35:32 -0500
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8779ED76D5
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 12:35:21 -0800 (PST)
-Received: by mail-pj1-f48.google.com with SMTP id r64-20020a17090a43c600b001b8854e682eso309953pjg.0
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 12:35:21 -0800 (PST)
+        with ESMTP id S239085AbiBOUh4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 15:37:56 -0500
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB342D76C2
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 12:37:45 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id j4so103353plj.8
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 12:37:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=mDobkrF7w1Oj74l/W29IjjKhnIv03oAC0enVntAkIRc=;
-        b=jkQl5CrUrDQq7EUnbh651gpHOgWkaIJrYi2yg2sPTpf9DqKh0JSwKM1AsKSoYWOuJL
-         6RB3yfHpu7E6qBLBHDa49/7Rm6/6LZNVuCT4P7JcGvv32L1czqHxzyjXIamccT/1/w49
-         c5YkSaQZDMNY28baa++8DbwdnQIIGFq8FrasOzpfZw9QdYmLwl1bL3dIMYymNLzHCO5z
-         w7xkyzOsWNUdu7609ATcDOV2R9TwXZ3b1XzPQZYRGbsavv7IHnsXXWbfhdCUvYtU9vZt
-         pHANHZEjmw0pAJydf9l6GV4JYWAJnumVEfrEUfv/c2TI9Z7/FWuIZ7rFsqQDUtb/5g0x
-         ctlg==
-X-Gm-Message-State: AOAM533OPcYK5q4NRG5dBQ3IAjfTM4XZDPE1iEbudYyQY+C+BM4BOpRX
-        HU+dh46gtXt0nGo3DpjQA58=
-X-Google-Smtp-Source: ABdhPJyq0gTELV+9+wVr1xcj3URCuO8jqjeFJYlGIBMSSllDvjYrfBpSwa45oIyqMMDl+wS+8EVktA==
-X-Received: by 2002:a17:902:a9c2:: with SMTP id b2mr773643plr.168.1644957320831;
-        Tue, 15 Feb 2022 12:35:20 -0800 (PST)
+        bh=O+YHh2iQ80kBfiIM6bf0T+d9+CuEWK6vrYgMiNjoPms=;
+        b=UWD06eEnOdFKoGSTE3feYXYw9wuOXYi7o/SmQSCOYHTfVOHQWLDFVBYUUoO0DiODDA
+         0X/uzYdSIIuSW+IrJV2Bn/lf4QJpNXzyo81UUydTgc8AO6wlc7IOZyT9CIhrMXNKmVdl
+         yzpQEvCntU6+0aoaCPQha2HZK8+3fiGq2w1BEroUoARpSULckEJu7WBHxoC2V5+LTMH9
+         IXqU5myRPWWIzqZVQ8uW0ghH7fSubOD8tESL+ZrEzcq3ldX6Y43kwBOeb9VdxCjCq9Ub
+         VXqk0q8JC6duLD75POeTDI273fHY8F6ZsD7C1vNnr/TbJ2rQGgco5ExJop0pyTUZ2R4X
+         e4Ew==
+X-Gm-Message-State: AOAM531zCbdtRjaelr5agMEMg1WlXgrPG9HLGFOX9nvNJlusLyFlSgtL
+        1lN8oHn4eLaW9wl4gEwuab8=
+X-Google-Smtp-Source: ABdhPJybqC8iHXAjQF3Ao9rXY7Ar31+OrL433GaSOuM/Yg9Ah35+4FTPoU8tyHZWKcBXZl6MEjs4MQ==
+X-Received: by 2002:a17:903:32d1:: with SMTP id i17mr759730plr.55.1644957465211;
+        Tue, 15 Feb 2022 12:37:45 -0800 (PST)
 Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id t200sm7452961pfc.35.2022.02.15.12.35.19
+        by smtp.gmail.com with ESMTPSA id nl8sm9971267pjb.18.2022.02.15.12.37.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Feb 2022 12:35:20 -0800 (PST)
-Message-ID: <57896982-d0da-9ad8-a1c9-362cfc236643@acm.org>
-Date:   Tue, 15 Feb 2022 12:35:19 -0800
+        Tue, 15 Feb 2022 12:37:44 -0800 (PST)
+Message-ID: <a281d1be-857e-be6a-0440-648bed837d4e@acm.org>
+Date:   Tue, 15 Feb 2022 12:37:43 -0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.1
-Subject: Re: [PATCH 2/3] ib_srp: Protect the target list with a mutex instead
- of a spinlock
+Subject: Re: [PATCH 3/3] ib_srp: Fix a deadlock
 Content-Language: en-US
 To:     Leon Romanovsky <leonro@mellanox.com>
 Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot+831661966588c802aae9@syzkaller.appspotmail.com
 References: <20220215182650.19839-1-bvanassche@acm.org>
- <20220215182650.19839-3-bvanassche@acm.org> <Ygv0od2d8wXdBLj/@unreal>
+ <20220215182650.19839-4-bvanassche@acm.org> <Ygv2OkMeJYrTwdbi@unreal>
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <Ygv0od2d8wXdBLj/@unreal>
+In-Reply-To: <Ygv2OkMeJYrTwdbi@unreal>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
@@ -65,16 +65,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/15/22 10:44, Leon Romanovsky wrote:
-> On Tue, Feb 15, 2022 at 10:26:49AM -0800, Bart Van Assche wrote:
->> This patch makes the next patch in this series easier to read.
+On 2/15/22 10:51, Leon Romanovsky wrote:
+> On Tue, Feb 15, 2022 at 10:26:50AM -0800, Bart Van Assche wrote:
+>> diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
+>> index 2db7429b42e1..8e1561a6d325 100644
+>> --- a/drivers/infiniband/ulp/srp/ib_srp.c
+>> +++ b/drivers/infiniband/ulp/srp/ib_srp.c
+>> @@ -4044,12 +4044,10 @@ static void srp_remove_one(struct ib_device *device, void *client_data)
+>>   		mutex_lock(&host->target_mutex);
+>>   		list_for_each_entry(target, &host->target_list, list)
+>>   			srp_queue_remove_work(target);
+>> +		list_for_each_entry(target, &host->target_list, list)
+>> +			flush_work(&target->tl_err_work);
 > 
-> It is not readability change, but move to lock that can sleep (mutex),
-> which is always good thing.
-> 
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> Sorry for my silly question, but why do you do flush and not cancel
+> here? You anyway remove SRP device, so the result of flush is not
+> really important, am I right?
 
-Thanks for the review, but please note that I wrote that this patch 
-improves readability of the next patch in this series.
+That's a great question. It probably doesn't matter much whether 
+flush_work() or cancel_work_sync() is called in this context since 
+srp_queue_remove_work() indirectly cancels tl_err_work. See also the 
+following code in srp_remove_target():
+  	cancel_work_sync(&target->tl_err_work);
+
+Thanks,
 
 Bart.
