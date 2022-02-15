@@ -2,98 +2,537 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20E094B788F
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E8C4B7539
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:47:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243649AbiBOTZA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 14:25:00 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58104 "EHLO
+        id S240369AbiBOTuL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 14:50:11 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbiBOTY6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 14:24:58 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79308566E;
-        Tue, 15 Feb 2022 11:24:47 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 513F3617CB;
-        Tue, 15 Feb 2022 19:24:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8127AC340EB;
-        Tue, 15 Feb 2022 19:24:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644953086;
-        bh=kUCZYr9eynBGfoyFNpGztKhdR0TjeWfPR20goAdEojo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pgheRwOAKjRlXMfJul10RwEjs5CBKHR/i0QEhyIM79774uc0ovg3u5myvyhB8s/qu
-         xkZdoun6Ve/NuXn1+qZDB9F/trYlid+yq9euKiwm3PP7bJ4zoGvDfPTjgfeWCzsH6f
-         Z5GtGABFqXnkSAxbAOokUuetZQuukvg8GogLN1PAUilOeXNWgORbaiYjI/aeCr++5W
-         YWvZj7f6KVH+xfahOEVmZaopl52rdr1jj6eaQg39ut/UgM8cVQWsEKIq8K1eRZzAAa
-         TaPAe7uN1AmbZCmz+9XMV8T/S9ihvGxGOcJfBqdWD8uwk44Sq4S7ITZBKug7wSeC6N
-         S7tHpNRHJfaSA==
-Date:   Tue, 15 Feb 2022 13:32:21 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux-crypto@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-        linux-staging@lists.linux.dev,
-        linux-rpi-kernel@lists.infradead.org, sparmaintainer@unisys.com,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-ext4@vger.kernel.org, linux-acpi@vger.kernel.org,
-        devel@acpica.org, linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        greybus-dev@lists.linaro.org, linux-i3c@lists.infradead.org,
-        linux-rdma@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] treewide: Replace zero-length arrays with
- flexible-array members
-Message-ID: <20220215193221.GA884407@embeddedor>
-References: <20220215174743.GA878920@embeddedor>
- <202202151016.C0471D6E@keescook>
- <20220215192110.GA883653@embeddedor>
- <Ygv8wY75hNqS7zO6@unreal>
+        with ESMTP id S236289AbiBOTuJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 14:50:09 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DEA6660C
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 11:49:58 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id g4-20020a9d1284000000b005acec6d2d26so23524otg.3
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 11:49:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HsnlwkcY/wz4CXSibYYNTRbkvfV0PLIsz5eJblshcQA=;
+        b=NFeLbUjKvEfQ6sW4jPWiaS3l/6Pu3GyfyQUoTaAaE8Dd7rRUGYVzuTB+wx5zf7+GZt
+         YS9jl2/AhJ1Ao7qP14oSthfhkk1X/jA84GqJynmgWvyKa99Q/YmDGa1NscMu35L4IeuG
+         /UObeYFUXvs4QBgWxDVvEgfxLP23dK7tcM4a+O36Y/vkZkV3oItKimn/kt+BTffi/6l4
+         P0UJ45Z8wb7lzVW3GD5hIXoRCvv1lv8zfz3bTXFmf1mb4UHA2unRI93ZhycQakzkfSlm
+         sSHxZTAGCwvMQKrYvagWBK/4uvQ/zgdlrGnwjMrnqUJSZW8FqvSUxpUfRfxN+JdbIgfv
+         ekUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HsnlwkcY/wz4CXSibYYNTRbkvfV0PLIsz5eJblshcQA=;
+        b=HD2/j2LcLXwRTi1LkjPgheB2IlHCyIqktWwMGKq/SMIMBzLuz0RUjrjrHRkCyD9K9M
+         rZ6EvLK9otCNi0HWisGFYJ9ErnkJr+7cAVNCJVN2CQYGCGOhQ3b8cOe3ph907GWIlWW+
+         6UbV39Mv8kTHiHFAt+FVyMkD9pL82r2X24/3WYneCYou4cxlmGLuzmQTRk3YCfHnbJMR
+         muG9Vq2mHzdofKRljA2HgDOp4WLv6RT2dPccHE7uvhHM/AijML92WmIjP0/0uFrpo67c
+         +1K/SchYTU/PEnn+5BWmbgRomJoy+S3EJnCxSe1H+5sPXTxM/9mxWm3Ds98zZUWtiQt7
+         ufNw==
+X-Gm-Message-State: AOAM533U3RzLDmYgsSXShz0pbfrTptyOrLUPNgHFW4IiJAlBrSwtBQjZ
+        Bw0jq4oyVcNddV/tPMpYfjojnESFpCY=
+X-Google-Smtp-Source: ABdhPJyiHi/ZcMKbZUBXi4UbcygKlH1/WmIPivHbihseH3/pASXD1iYpTomdV4g1i6kaxv3oQ0PMSA==
+X-Received: by 2002:a9d:2a82:: with SMTP id e2mr270779otb.158.1644954597231;
+        Tue, 15 Feb 2022 11:49:57 -0800 (PST)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-6680-7bea-5da8-9595.res6.spectrum.com. [2603:8081:140c:1a00:6680:7bea:5da8:9595])
+        by smtp.googlemail.com with ESMTPSA id c14sm4691844ots.71.2022.02.15.11.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Feb 2022 11:49:56 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     linux-rdma@vger.kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
+        guoqing.jiang@linux.dev, bvanassche@acm.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Revert changes from irqsave to bh locks
+Date:   Tue, 15 Feb 2022 13:44:49 -0600
+Message-Id: <20220215194448.44369-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Ygv8wY75hNqS7zO6@unreal>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 09:19:29PM +0200, Leon Romanovsky wrote:
-> On Tue, Feb 15, 2022 at 01:21:10PM -0600, Gustavo A. R. Silva wrote:
-> > On Tue, Feb 15, 2022 at 10:17:40AM -0800, Kees Cook wrote:
-> > > On Tue, Feb 15, 2022 at 11:47:43AM -0600, Gustavo A. R. Silva wrote:
-> > > 
-> > > These all look trivially correct to me. Only two didn't have the end of
-> > > the struct visible in the patch, and checking those showed them to be
-> > > trailing members as well, so:
-> > > 
-> > > Reviewed-by: Kees Cook <keescook@chromium.org>
-> > 
-> > I'll add this to my -next tree.
-> 
-> I would like to ask you to send mlx5 patch separately to netdev. We are working
-> to delete that file completely and prefer to avoid from unnecessary merge conflicts.
+A previous patch replaced all irqsave locks in rxe with bh locks.
+This ran into problems because rdmacm has a bad habit of
+calling rdma verbs APIs while disabling irqs. This is not allowed
+during spin_unlock_bh() causing programs that use rdmacm to fail.
+This patch reverts the changes to locks that had this problem or
+got dragged into the same mess. After this patch blktests/check -q srp
+now runs correctly.
 
-Oh OK. Sure thing; I will do so.
+This patch applies cleanly to current for-next
 
-Thanks
---
-Gustavo
+commit: 2f1b2820b546 ("Merge branch 'irdma_dscp' into rdma.git for-next")
+
+Reported-by: Guoqing Jiang <guoqing.jiang@linux.dev>
+Reported-by: Bart Van Assche <bvanassche@acm.org>
+Fixes: 21adfa7a3c4e ("RDMA/rxe: Replace irqsave locks with bh locks")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_cq.c    | 20 +++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 19 ++++++++++-------
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 30 ++++++++++++++++-----------
+ drivers/infiniband/sw/rxe/rxe_queue.c | 10 +++++----
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 11 +++++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 27 ++++++++++++++----------
+ 6 files changed, 69 insertions(+), 48 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
+index 6baaaa34458e..642b52539ac3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_cq.c
++++ b/drivers/infiniband/sw/rxe/rxe_cq.c
+@@ -42,13 +42,14 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
+ static void rxe_send_complete(struct tasklet_struct *t)
+ {
+ 	struct rxe_cq *cq = from_tasklet(cq, t, comp_task);
++	unsigned long flags;
+ 
+-	spin_lock_bh(&cq->cq_lock);
++	spin_lock_irqsave(&cq->cq_lock, flags);
+ 	if (cq->is_dying) {
+-		spin_unlock_bh(&cq->cq_lock);
++		spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 		return;
+ 	}
+-	spin_unlock_bh(&cq->cq_lock);
++	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 
+ 	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+ }
+@@ -107,12 +108,13 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 	struct ib_event ev;
+ 	int full;
+ 	void *addr;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&cq->cq_lock);
++	spin_lock_irqsave(&cq->cq_lock, flags);
+ 
+ 	full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
+ 	if (unlikely(full)) {
+-		spin_unlock_bh(&cq->cq_lock);
++		spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 		if (cq->ibcq.event_handler) {
+ 			ev.device = cq->ibcq.device;
+ 			ev.element.cq = &cq->ibcq;
+@@ -128,7 +130,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 
+ 	queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
+ 
+-	spin_unlock_bh(&cq->cq_lock);
++	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 
+ 	if ((cq->notify == IB_CQ_NEXT_COMP) ||
+ 	    (cq->notify == IB_CQ_SOLICITED && solicited)) {
+@@ -141,9 +143,11 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
+ 
+ void rxe_cq_disable(struct rxe_cq *cq)
+ {
+-	spin_lock_bh(&cq->cq_lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&cq->cq_lock, flags);
+ 	cq->is_dying = true;
+-	spin_unlock_bh(&cq->cq_lock);
++	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ }
+ 
+ void rxe_cq_cleanup(struct rxe_pool_elem *elem)
+diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
+index 9336295c4ee2..2878a56d9994 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mcast.c
++++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
+@@ -58,11 +58,12 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
+ 	int err;
+ 	struct rxe_mcg *grp;
+ 	struct rxe_pool *pool = &rxe->mc_grp_pool;
++	unsigned long flags;
+ 
+ 	if (rxe->attr.max_mcast_qp_attach == 0)
+ 		return -EINVAL;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	write_lock_irqsave(&pool->pool_lock, flags);
+ 
+ 	grp = rxe_pool_get_key_locked(pool, mgid);
+ 	if (grp)
+@@ -70,13 +71,13 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
+ 
+ 	grp = create_grp(rxe, pool, mgid);
+ 	if (IS_ERR(grp)) {
+-		write_unlock_bh(&pool->pool_lock);
++		write_unlock_irqrestore(&pool->pool_lock, flags);
+ 		err = PTR_ERR(grp);
+ 		return err;
+ 	}
+ 
+ done:
+-	write_unlock_bh(&pool->pool_lock);
++	write_unlock_irqrestore(&pool->pool_lock, flags);
+ 	*grp_p = grp;
+ 	return 0;
+ }
+@@ -86,9 +87,10 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ {
+ 	int err;
+ 	struct rxe_mca *elem;
++	unsigned long flags;
+ 
+ 	/* check to see of the qp is already a member of the group */
+-	spin_lock_bh(&grp->mcg_lock);
++	spin_lock_irqsave(&grp->mcg_lock, flags);
+ 	list_for_each_entry(elem, &grp->qp_list, qp_list) {
+ 		if (elem->qp == qp) {
+ 			err = 0;
+@@ -118,7 +120,7 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 
+ 	err = 0;
+ out:
+-	spin_unlock_bh(&grp->mcg_lock);
++	spin_unlock_irqrestore(&grp->mcg_lock, flags);
+ 	return err;
+ }
+ 
+@@ -127,12 +129,13 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ {
+ 	struct rxe_mcg *grp;
+ 	struct rxe_mca *elem, *tmp;
++	unsigned long flags;
+ 
+ 	grp = rxe_pool_get_key(&rxe->mc_grp_pool, mgid);
+ 	if (!grp)
+ 		goto err1;
+ 
+-	spin_lock_bh(&grp->mcg_lock);
++	spin_lock_irqsave(&grp->mcg_lock, flags);
+ 
+ 	list_for_each_entry_safe(elem, tmp, &grp->qp_list, qp_list) {
+ 		if (elem->qp == qp) {
+@@ -140,7 +143,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 			grp->num_qp--;
+ 			atomic_dec(&qp->mcg_num);
+ 
+-			spin_unlock_bh(&grp->mcg_lock);
++			spin_unlock_irqrestore(&grp->mcg_lock, flags);
+ 			rxe_drop_ref(elem);
+ 			rxe_drop_ref(grp);	/* ref held by QP */
+ 			rxe_drop_ref(grp);	/* ref from get_key */
+@@ -148,7 +151,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 		}
+ 	}
+ 
+-	spin_unlock_bh(&grp->mcg_lock);
++	spin_unlock_irqrestore(&grp->mcg_lock, flags);
+ 	rxe_drop_ref(grp);			/* ref from get_key */
+ err1:
+ 	return -EINVAL;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index 63c594173565..a11dab13c192 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -260,11 +260,12 @@ int __rxe_add_key_locked(struct rxe_pool_elem *elem, void *key)
+ int __rxe_add_key(struct rxe_pool_elem *elem, void *key)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	unsigned long flags;
+ 	int err;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	write_lock_irqsave(&pool->pool_lock, flags);
+ 	err = __rxe_add_key_locked(elem, key);
+-	write_unlock_bh(&pool->pool_lock);
++	write_unlock_irqrestore(&pool->pool_lock, flags);
+ 
+ 	return err;
+ }
+@@ -279,10 +280,11 @@ void __rxe_drop_key_locked(struct rxe_pool_elem *elem)
+ void __rxe_drop_key(struct rxe_pool_elem *elem)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	unsigned long flags;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	write_lock_irqsave(&pool->pool_lock, flags);
+ 	__rxe_drop_key_locked(elem);
+-	write_unlock_bh(&pool->pool_lock);
++	write_unlock_irqrestore(&pool->pool_lock, flags);
+ }
+ 
+ int __rxe_add_index_locked(struct rxe_pool_elem *elem)
+@@ -299,11 +301,12 @@ int __rxe_add_index_locked(struct rxe_pool_elem *elem)
+ int __rxe_add_index(struct rxe_pool_elem *elem)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	unsigned long flags;
+ 	int err;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	write_lock_irqsave(&pool->pool_lock, flags);
+ 	err = __rxe_add_index_locked(elem);
+-	write_unlock_bh(&pool->pool_lock);
++	write_unlock_irqrestore(&pool->pool_lock, flags);
+ 
+ 	return err;
+ }
+@@ -319,10 +322,11 @@ void __rxe_drop_index_locked(struct rxe_pool_elem *elem)
+ void __rxe_drop_index(struct rxe_pool_elem *elem)
+ {
+ 	struct rxe_pool *pool = elem->pool;
++	unsigned long flags;
+ 
+-	write_lock_bh(&pool->pool_lock);
++	write_lock_irqsave(&pool->pool_lock, flags);
+ 	__rxe_drop_index_locked(elem);
+-	write_unlock_bh(&pool->pool_lock);
++	write_unlock_irqrestore(&pool->pool_lock, flags);
+ }
+ 
+ void *rxe_alloc_locked(struct rxe_pool *pool)
+@@ -440,11 +444,12 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
+ 
+ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
+ {
++	unsigned long flags;
+ 	void *obj;
+ 
+-	read_lock_bh(&pool->pool_lock);
++	read_lock_irqsave(&pool->pool_lock, flags);
+ 	obj = rxe_pool_get_index_locked(pool, index);
+-	read_unlock_bh(&pool->pool_lock);
++	read_unlock_irqrestore(&pool->pool_lock, flags);
+ 
+ 	return obj;
+ }
+@@ -484,11 +489,12 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
+ 
+ void *rxe_pool_get_key(struct rxe_pool *pool, void *key)
+ {
++	unsigned long flags;
+ 	void *obj;
+ 
+-	read_lock_bh(&pool->pool_lock);
++	read_lock_irqsave(&pool->pool_lock, flags);
+ 	obj = rxe_pool_get_key_locked(pool, key);
+-	read_unlock_bh(&pool->pool_lock);
++	read_unlock_irqrestore(&pool->pool_lock, flags);
+ 
+ 	return obj;
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
+index a1b283dd2d4c..dbd4971039c0 100644
+--- a/drivers/infiniband/sw/rxe/rxe_queue.c
++++ b/drivers/infiniband/sw/rxe/rxe_queue.c
+@@ -151,6 +151,8 @@ int rxe_queue_resize(struct rxe_queue *q, unsigned int *num_elem_p,
+ 	struct rxe_queue *new_q;
+ 	unsigned int num_elem = *num_elem_p;
+ 	int err;
++	unsigned long producer_flags;
++	unsigned long consumer_flags;
+ 
+ 	new_q = rxe_queue_init(q->rxe, &num_elem, elem_size, q->type);
+ 	if (!new_q)
+@@ -164,17 +166,17 @@ int rxe_queue_resize(struct rxe_queue *q, unsigned int *num_elem_p,
+ 		goto err1;
+ 	}
+ 
+-	spin_lock_bh(consumer_lock);
++	spin_lock_irqsave(consumer_lock, consumer_flags);
+ 
+ 	if (producer_lock) {
+-		spin_lock_bh(producer_lock);
++		spin_lock_irqsave(producer_lock, producer_flags);
+ 		err = resize_finish(q, new_q, num_elem);
+-		spin_unlock_bh(producer_lock);
++		spin_unlock_irqrestore(producer_lock, producer_flags);
+ 	} else {
+ 		err = resize_finish(q, new_q, num_elem);
+ 	}
+ 
+-	spin_unlock_bh(consumer_lock);
++	spin_unlock_irqrestore(consumer_lock, consumer_flags);
+ 
+ 	rxe_queue_cleanup(new_q);	/* new/old dep on err */
+ 	if (err)
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index 380934e38923..c369d78fc8e8 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -297,21 +297,22 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+ 	struct ib_event ev;
+ 	unsigned int count;
+ 	size_t size;
++	unsigned long flags;
+ 
+ 	if (srq->error)
+ 		return RESPST_ERR_RNR;
+ 
+-	spin_lock_bh(&srq->rq.consumer_lock);
++	spin_lock_irqsave(&srq->rq.consumer_lock, flags);
+ 
+ 	wqe = queue_head(q, QUEUE_TYPE_FROM_CLIENT);
+ 	if (!wqe) {
+-		spin_unlock_bh(&srq->rq.consumer_lock);
++		spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
+ 		return RESPST_ERR_RNR;
+ 	}
+ 
+ 	/* don't trust user space data */
+ 	if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
+-		spin_unlock_bh(&srq->rq.consumer_lock);
++		spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
+ 		pr_warn("%s: invalid num_sge in SRQ entry\n", __func__);
+ 		return RESPST_ERR_MALFORMED_WQE;
+ 	}
+@@ -327,11 +328,11 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
+ 		goto event;
+ 	}
+ 
+-	spin_unlock_bh(&srq->rq.consumer_lock);
++	spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
+ 	return RESPST_CHK_LENGTH;
+ 
+ event:
+-	spin_unlock_bh(&srq->rq.consumer_lock);
++	spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
+ 	ev.device = qp->ibqp.device;
+ 	ev.element.srq = qp->ibqp.srq;
+ 	ev.event = IB_EVENT_SRQ_LIMIT_REACHED;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 9f0aef4b649d..80df9a8f71a1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -384,8 +384,9 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ {
+ 	int err = 0;
+ 	struct rxe_srq *srq = to_rsrq(ibsrq);
++	unsigned long flags;
+ 
+-	spin_lock_bh(&srq->rq.producer_lock);
++	spin_lock_irqsave(&srq->rq.producer_lock, flags);
+ 
+ 	while (wr) {
+ 		err = post_one_recv(&srq->rq, wr);
+@@ -394,7 +395,7 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
+ 		wr = wr->next;
+ 	}
+ 
+-	spin_unlock_bh(&srq->rq.producer_lock);
++	spin_unlock_irqrestore(&srq->rq.producer_lock, flags);
+ 
+ 	if (err)
+ 		*bad_wr = wr;
+@@ -643,18 +644,19 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 	int err;
+ 	struct rxe_sq *sq = &qp->sq;
+ 	struct rxe_send_wqe *send_wqe;
++	unsigned long flags;
+ 	int full;
+ 
+ 	err = validate_send_wr(qp, ibwr, mask, length);
+ 	if (err)
+ 		return err;
+ 
+-	spin_lock_bh(&qp->sq.sq_lock);
++	spin_lock_irqsave(&qp->sq.sq_lock, flags);
+ 
+ 	full = queue_full(sq->queue, QUEUE_TYPE_TO_DRIVER);
+ 
+ 	if (unlikely(full)) {
+-		spin_unlock_bh(&qp->sq.sq_lock);
++		spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
+ 		return -ENOMEM;
+ 	}
+ 
+@@ -663,7 +665,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
+ 
+ 	queue_advance_producer(sq->queue, QUEUE_TYPE_TO_DRIVER);
+ 
+-	spin_unlock_bh(&qp->sq.sq_lock);
++	spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
+ 
+ 	return 0;
+ }
+@@ -743,6 +745,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 	int err = 0;
+ 	struct rxe_qp *qp = to_rqp(ibqp);
+ 	struct rxe_rq *rq = &qp->rq;
++	unsigned long flags;
+ 
+ 	if (unlikely((qp_state(qp) < IB_QPS_INIT) || !qp->valid)) {
+ 		*bad_wr = wr;
+@@ -756,7 +759,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 		goto err1;
+ 	}
+ 
+-	spin_lock_bh(&rq->producer_lock);
++	spin_lock_irqsave(&rq->producer_lock, flags);
+ 
+ 	while (wr) {
+ 		err = post_one_recv(rq, wr);
+@@ -767,7 +770,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
+ 		wr = wr->next;
+ 	}
+ 
+-	spin_unlock_bh(&rq->producer_lock);
++	spin_unlock_irqrestore(&rq->producer_lock, flags);
+ 
+ 	if (qp->resp.state == QP_STATE_ERROR)
+ 		rxe_run_task(&qp->resp.task, 1);
+@@ -848,8 +851,9 @@ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+ 	int i;
+ 	struct rxe_cq *cq = to_rcq(ibcq);
+ 	struct rxe_cqe *cqe;
++	unsigned long flags;
+ 
+-	spin_lock_bh(&cq->cq_lock);
++	spin_lock_irqsave(&cq->cq_lock, flags);
+ 	for (i = 0; i < num_entries; i++) {
+ 		cqe = queue_head(cq->queue, QUEUE_TYPE_FROM_DRIVER);
+ 		if (!cqe)
+@@ -858,7 +862,7 @@ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+ 		memcpy(wc++, &cqe->ibwc, sizeof(*wc));
+ 		queue_advance_consumer(cq->queue, QUEUE_TYPE_FROM_DRIVER);
+ 	}
+-	spin_unlock_bh(&cq->cq_lock);
++	spin_unlock_irqrestore(&cq->cq_lock, flags);
+ 
+ 	return i;
+ }
+@@ -878,8 +882,9 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
+ 	struct rxe_cq *cq = to_rcq(ibcq);
+ 	int ret = 0;
+ 	int empty;
++	unsigned long irq_flags;
+ 
+-	spin_lock_bh(&cq->cq_lock);
++	spin_lock_irqsave(&cq->cq_lock, irq_flags);
+ 	if (cq->notify != IB_CQ_NEXT_COMP)
+ 		cq->notify = flags & IB_CQ_SOLICITED_MASK;
+ 
+@@ -888,7 +893,7 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
+ 	if ((flags & IB_CQ_REPORT_MISSED_EVENTS) && !empty)
+ 		ret = 1;
+ 
+-	spin_unlock_bh(&cq->cq_lock);
++	spin_unlock_irqrestore(&cq->cq_lock, irq_flags);
+ 
+ 	return ret;
+ }
+-- 
+2.32.0
+
