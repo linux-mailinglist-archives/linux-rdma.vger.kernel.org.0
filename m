@@ -2,106 +2,110 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF7B4B6C9E
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 13:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6144B6CED
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 14:02:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229938AbiBOMt3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 07:49:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51612 "EHLO
+        id S236416AbiBONCz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 08:02:55 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:60742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbiBOMt2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 07:49:28 -0500
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B228D28E27;
-        Tue, 15 Feb 2022 04:49:18 -0800 (PST)
-Received: from fsav117.sakura.ne.jp (fsav117.sakura.ne.jp [27.133.134.244])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 21FCn2cr076466;
-        Tue, 15 Feb 2022 21:49:02 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav117.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp);
- Tue, 15 Feb 2022 21:49:02 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav117.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 21FCn233076461
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 15 Feb 2022 21:49:02 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <fb854eea-a7e7-b526-a989-95784c1c593c@I-love.SAKURA.ne.jp>
-Date:   Tue, 15 Feb 2022 21:48:58 +0900
+        with ESMTP id S235227AbiBONCy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 08:02:54 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72E38E191;
+        Tue, 15 Feb 2022 05:02:44 -0800 (PST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21FBq8da023249;
+        Tue, 15 Feb 2022 13:02:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=5jNLfeML1Pf7f6SKsGY+wtoiphEm3qzr/iqbH036YpM=;
+ b=UwzVCRN7xg9MbEnY8QCIYPXEoHIOnPu0UT6RUXC2GLG8PH4P++Vd2Od+i9gKpHxSw9/+
+ pYyIUQYRuPIg30RhhGtDAF8eFbwDg7iNulm9LJOXadAd6Cy+YjmstZK+Zfu9g2eN8zFd
+ O0wHxysUip1JSn0ylCSsj8oftZ4SpniMdUvFfp8hGq9BAjJ6CN1tUXgYECV++KxHYO+u
+ wGrZREoVNKDFTMA/YpRb3xrWIz8RHuddR84LYnOeMhjqYw+q/f/1iAfEzCVGN48AtysL
+ 7K6DKC2A2mjg2R89XMWl5J3mENkHj2wlHY5RZoGz3nwfzO4mdM6rG8yEhDUoLfRhxq2N rQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e8bp8hksk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 13:02:40 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21FCW0W8017170;
+        Tue, 15 Feb 2022 13:02:40 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e8bp8hkrt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 13:02:40 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21FCwMBl002028;
+        Tue, 15 Feb 2022 13:02:38 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 3e64h9y8wf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 15 Feb 2022 13:02:38 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21FCqFAL46596366
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 15 Feb 2022 12:52:15 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45C4042049;
+        Tue, 15 Feb 2022 13:02:36 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DB3BF42041;
+        Tue, 15 Feb 2022 13:02:35 +0000 (GMT)
+Received: from [9.145.16.31] (unknown [9.145.16.31])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue, 15 Feb 2022 13:02:35 +0000 (GMT)
+Message-ID: <c85310ed-fd9c-fa8c-88d2-862b5d99dbbe@linux.ibm.com>
+Date:   Tue, 15 Feb 2022 14:02:37 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.6.0
-Subject: Re: [syzbot] possible deadlock in worker_thread
+Subject: Re: [PATCH net-next] net/smc: return ETIMEDOUT when smc_connect_clc()
+ timeout
 Content-Language: en-US
-To:     Haakon Bugge <haakon.bugge@oracle.com>
-Cc:     Tejun Heo <tj@kernel.org>, Bart Van Assche <bvanassche@acm.org>,
-        syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-References: <0000000000005975a605d7aef05e@google.com>
- <8ea57ddf-a09c-43f2-4285-4dfb908ad967@acm.org>
- <ccd04d8a-154b-543e-e1c3-84bc655508d1@I-love.SAKURA.ne.jp>
- <71d6f14e-46af-cc5a-bc70-af1cdc6de8d5@acm.org>
- <309c86b7-2a4c-1332-585f-7bcd59cfd762@I-love.SAKURA.ne.jp>
- <aa2bf24e-981a-a811-c5d8-a75f0b8f693a@acm.org>
- <2959649d-cfbc-bdf2-02ac-053b8e7af030@I-love.SAKURA.ne.jp>
- <YgnQGZWT/n3VAITX@slm.duckdns.org>
- <8ebd003c-f748-69b4-3a4f-fb80a3f39d36@I-love.SAKURA.ne.jp>
- <YgqSsuSN5C7StvKx@slm.duckdns.org>
- <a07e464c-69c6-6165-e88c-5a2eded79138@I-love.SAKURA.ne.jp>
- <76616D2F-14F2-4D83-9DB4-576FB2ACB72C@oracle.com>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <76616D2F-14F2-4D83-9DB4-576FB2ACB72C@oracle.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1644913490-21594-1-git-send-email-alibuda@linux.alibaba.com>
+From:   Karsten Graul <kgraul@linux.ibm.com>
+Organization: IBM Deutschland Research & Development GmbH
+In-Reply-To: <1644913490-21594-1-git-send-email-alibuda@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 4Qutm9-5QDCrq8MqlzuCbcaYrrTPgqST
+X-Proofpoint-GUID: 3n-cAycSnlxacnzO4oQuJnQdEN-gF_eo
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-15_04,2022-02-14_04,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ mlxlogscore=999 impostorscore=0 mlxscore=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202150075
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/02/15 19:43, Haakon Bugge wrote:
->> @@ -6070,6 +6087,13 @@ void __init workqueue_init_early(void)
->> 	       !system_unbound_wq || !system_freezable_wq ||
->> 	       !system_power_efficient_wq ||
->> 	       !system_freezable_power_efficient_wq);
->> +	system_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_highpri_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_long_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_unbound_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_freezable_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_power_efficient_wq->flags |= __WQ_SYSTEM_WIDE;
->> +	system_freezable_power_efficient_wq->flags |= __WQ_SYSTEM_WIDE;
+On 15/02/2022 09:24, D. Wythe wrote:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
 > 
-> Better to OR this in, in the alloc_workqueue() call? Perceive the notion of an opaque object?
+> When smc_connect_clc() times out, it will return -EAGAIN(tcp_recvmsg
+> retuns -EAGAIN while timeout), then this value will passed to the
+> application, which is quite confusing to the applications, makes
+> inconsistency with TCP.
 > 
+> From the manual of connect, ETIMEDOUT is more suitable, and this patch
+> try convert EAGAIN to ETIMEDOUT in that case.
 
-I do not want to do like
-
--	system_wq = alloc_workqueue("events", 0, 0);
-+	system_wq = alloc_workqueue("events", __WQ_SYSTEM_WIDE, 0);
-
-because the intent of this change is to ask developers to create their own WQs.
-If I pass __WQ_SYSTEM_WIDE to alloc_workqueue(), developers might by error create like
-
-	srp_tl_err_wq = alloc_workqueue("srp_tl_err_wq", __WQ_SYSTEM_WIDE, 0);
-
-because of
-
-	system_wq = alloc_workqueue("events", __WQ_SYSTEM_WIDE, 0);
-
-line. The __WQ_SYSTEM_WIDE is absolutely meant to be applied to only 'system_wq',
-'system_highpri_wq', 'system_long_wq', 'system_unbound_wq', 'system_freezable_wq',
-'system_power_efficient_wq' and 'system_freezable_power_efficient_wq' WQs, in order
-to avoid calling flush_workqueue() on these system-wide WQs.
-
-I wish I could define __WQ_SYSTEM_WIDE inside kernel/workqueue_internal.h, but
-it seems that kernel/workqueue_internal.h does not define internal flags.
+You say that the sock_recvmsg() in smc_clc_wait_msg() returns -EAGAIN?
+Is there a reason why you translate it in __smc_connect() and not already in
+smc_clc_wait_msg() after the call to sock_recvmsg()?
