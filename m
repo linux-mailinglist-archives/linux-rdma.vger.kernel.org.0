@@ -2,91 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC474B78E8
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015CF4B77EB
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241174AbiBOS23 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 13:28:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45328 "EHLO
+        id S243163AbiBOSm7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 13:42:59 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240686AbiBOS23 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 13:28:29 -0500
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F946E01A
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:19 -0800 (PST)
-Received: by mail-pl1-f176.google.com with SMTP id l8so7747465pls.7
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fMH8dcwDv/ki8RH7g8nrSOp4PHbKmDL9GmjKUJZMDQQ=;
-        b=O0KbEhhpU+O0jxQCo3jknHx0j46sJqs2UgnqTwXiKqoaYhxCu6/MmE0WRTjZwmVbtH
-         Dn6XZ7njjwrL8vUM0sKh1CHiuNxotN79tO/8aakS1WWxW4vXtl1Nt0OPGTzHvQFiLDdW
-         OYt4pwBi77vTOlMqmue4gZAmM5nEsqjcP8WMcMJ4J7vvd3OZWXYQ7Bc3F+w3GaoXb2PV
-         p+U4Ye2mrWqxv3I+n5pFtoLaI7XGXghCIC6VE3pvBygXzrOx3XK3VWfo8GTR1qKQf7Nr
-         VG2MW9f7nfXd5GQJAjxh3oMShGeeb+jH0bXETMBB81hUG+gMhz9zKAc+LC8O1NgpYSFY
-         g4ig==
-X-Gm-Message-State: AOAM532NzaQZ+EOTC44gpwz/t7jPFpIagtknXQcIsP+mM02Yq3twbCeV
-        iWbQ2Sn4/ZTXahqHXpS8iGo=
-X-Google-Smtp-Source: ABdhPJynHy1kgtmvjmwncN4TDbDG3zVauc5LVc5FBPwHZO8RzW3a0uKxM2T90yU+Oe/7fpLlZLLBBw==
-X-Received: by 2002:a17:902:db08:: with SMTP id m8mr283423plx.25.1644949698653;
-        Tue, 15 Feb 2022 10:28:18 -0800 (PST)
-Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id k13sm43896746pfc.176.2022.02.15.10.28.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 10:28:18 -0800 (PST)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Bart Van Assche <bvanassche@acm.org>,
-        syzbot+831661966588c802aae9@syzkaller.appspotmail.com
-Subject: [PATCH 3/3] ib_srp: Fix a deadlock
-Date:   Tue, 15 Feb 2022 10:26:50 -0800
-Message-Id: <20220215182650.19839-4-bvanassche@acm.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220215182650.19839-1-bvanassche@acm.org>
+        with ESMTP id S243174AbiBOSm7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 13:42:59 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A2427FFC
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:42:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5B43061633
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 18:42:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00414C340EC;
+        Tue, 15 Feb 2022 18:42:45 +0000 (UTC)
+Date:   Tue, 15 Feb 2022 20:42:42 +0200
+From:   Leon Romanovsky <leonro@mellanox.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: [PATCH 1/3] ib_srp: Add more documentation
+Message-ID: <Ygv0IhNMJxFHSi8Q@unreal>
 References: <20220215182650.19839-1-bvanassche@acm.org>
+ <20220215182650.19839-2-bvanassche@acm.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220215182650.19839-2-bvanassche@acm.org>
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Wait on tl_err_work instead of flushing system_long_wq since flushing
-system_long_wq is deadlock-prone.
+On Tue, Feb 15, 2022 at 10:26:48AM -0800, Bart Van Assche wrote:
+> Make it more clear what the different ib_srp data structures represent.
+> 
+> Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+> Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+> ---
+>  drivers/infiniband/ulp/srp/ib_srp.h | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/infiniband/ulp/srp/ib_srp.h b/drivers/infiniband/ulp/srp/ib_srp.h
+> index abccddeea1e3..55a575e2cace 100644
+> --- a/drivers/infiniband/ulp/srp/ib_srp.h
+> +++ b/drivers/infiniband/ulp/srp/ib_srp.h
+> @@ -92,6 +92,9 @@ enum srp_iu_type {
+>  };
+>  
+>  /*
+> + * RDMA adapter in the initiator system.
+> + *
+> + * @dev_list: List of RDMA ports associated with this RDMA adapter (srp_host).
 
-Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Fixes: ef6c49d87c34 ("IB/srp: Eliminate state SRP_TARGET_DEAD")
-Reported-by: syzbot+831661966588c802aae9@syzkaller.appspotmail.com
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- drivers/infiniband/ulp/srp/ib_srp.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Isn't this list of RDMA devices and not ports?
 
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index 2db7429b42e1..8e1561a6d325 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.c
-+++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -4044,12 +4044,10 @@ static void srp_remove_one(struct ib_device *device, void *client_data)
- 		mutex_lock(&host->target_mutex);
- 		list_for_each_entry(target, &host->target_list, list)
- 			srp_queue_remove_work(target);
-+		list_for_each_entry(target, &host->target_list, list)
-+			flush_work(&target->tl_err_work);
- 		mutex_unlock(&host->target_mutex);
- 
--		/*
--		 * Wait for tl_err and target port removal tasks.
--		 */
--		flush_workqueue(system_long_wq);
- 		flush_workqueue(srp_remove_wq);
- 
- 		kfree(host);
+>   * @mr_page_mask: HCA memory registration page mask.
+>   * @mr_page_size: HCA memory registration page size.
+>   * @mr_max_size: Maximum size in bytes of a single FR registration request.
+> @@ -109,6 +112,12 @@ struct srp_device {
+>  	bool			use_fast_reg;
+>  };
+>  
+> +/*
+> + * One port of an RDMA adapter in the initiator system.
+> + *
+> + * @target_list: List of connected target ports (struct srp_target_port).
+> + * @target_lock: Protects @target_list.
+> + */
+>  struct srp_host {
+>  	struct srp_device      *srp_dev;
+>  	u8			port;
+> @@ -183,7 +192,7 @@ struct srp_rdma_ch {
+>  };
+>  
+>  /**
+> - * struct srp_target_port
+> + * struct srp_target_port - RDMA port in the SRP target system
+>   * @comp_vector: Completion vector used by the first RDMA channel created for
+>   *   this target port.
+>   */
