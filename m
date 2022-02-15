@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 013C94B77C7
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE114B75AD
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242790AbiBOR4S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 12:56:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42260 "EHLO
+        id S242772AbiBOR4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 12:56:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242786AbiBOR4N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 12:56:13 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15331017C8;
-        Tue, 15 Feb 2022 09:56:03 -0800 (PST)
+        with ESMTP id S242815AbiBOR4K (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 12:56:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7068B1019CD;
+        Tue, 15 Feb 2022 09:55:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C67556162D;
-        Tue, 15 Feb 2022 17:56:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A0FAC340EC;
-        Tue, 15 Feb 2022 17:56:00 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 30A95B81BD8;
+        Tue, 15 Feb 2022 17:55:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14539C340EB;
+        Tue, 15 Feb 2022 17:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644947761;
-        bh=RW6YVaDJUsS8JVaYPBST0uEeqYkZIjQuU58SCjwO1rE=;
+        s=k20201202; t=1644947756;
+        bh=DpghstMLiYzSupNnVlCnqIFT1M0QQYu4EYFnyOaiqFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FkZ40rmL/bfiR2tDJxFdqEQG1gJMEL2JxCy404T8NX9D7ABZCxBkzehromlbioZ6c
-         RI2TDyvJcQ4PKIHmT6yBKKUkZP71O97i6YQe66ihRQDpNXQtQDTqoeMTz1NIS7PVg9
-         SX1qH8/gOYP20ZxBZUA9Ht121pUWOOEG7OEoYBKPGEiMys8n6mJTsQ7+oRTZ/i+Eky
-         RrD8OPAnVYripqAgpGbY9UVTTsKLgikBxvM+ZoCZ5dxhArqtOucPBG3ILgxhOVlXN1
-         AL9glzgO8JBZHUelsISQob5Q1bOXdIAbbIRZ32s/ISsO1EPxmD0weCENWb1YFvmsQy
-         B/Qh1rSP5acjg==
+        b=mSPGUQN2CJZfhuRDjs4goK1NyxaFWDdEV/KiPLcQ0EoUToT7fgJ3ObqnbSFubXVv7
+         rY9XdlUgvy6h3F8BdW2L9IH4eC6nxdEXEIvxztbANm8JQ5vQZyZMhKlSdltMNfRiPR
+         s7DjbgqWmo0nGynny0oevRwJ4fwQiqRe3MxZiRXrn5RU5sV+GKLqoxXo2B89Wu/JGE
+         9KDd4sHF2niS9z6ocJCZbdl2uvk/qV7nvALpYjGLI6RYV87AByqq4P2OToPfJOd6nV
+         XXVbfb7z8HIIMU9XaS/G8SK/Fs5QbckN5UXRGxzWFwsK+IEGFtBzQN6MwxziWvrANn
+         sYqzMn5ThjfLA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Aharon Landau <aharonl@nvidia.com>, linux-kernel@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH rdma-next v2 4/5] RDMA/mlx5: Store ndescs instead of the translation table size
-Date:   Tue, 15 Feb 2022 19:55:32 +0200
-Message-Id: <e9dbfaa1f279793a6bd28ee5a31cb4f0f0d70f05.1644947594.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next v2 5/5] RDMA/mlx5: Reorder calls to pcie_relaxed_ordering_enabled()
+Date:   Tue, 15 Feb 2022 19:55:33 +0200
+Message-Id: <684be1366cb1d4f05aa3e78986205e4bc410443a.1644947594.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1644947594.git.leonro@nvidia.com>
 References: <cover.1644947594.git.leonro@nvidia.com>
@@ -45,7 +45,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,110 +55,52 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Aharon Landau <aharonl@nvidia.com>
 
-Currently, ent->xlt stores the translation table size. This data should
-not be stored in the cache entry but be written directly to the mailbox.
-Store ndescs instead, and deduce the translation table size from it
-according to the access mode.
-Later in the series, ent->ndescs will help to search for entries.
+The mkc is the key for the mkey cache, hence, created in each attempt to
+get a cache mkey, while pcie_relaxed_ordering_enabled() is called during
+the setting of the mkc, but used only for cases where
+IB_ACCESS_RELAXED_ORDERING is set.
+
+pcie_relaxed_ordering_enabled() is an expensive call (26 us). Reorder the
+code so the driver will call it only when it is needed.
 
 Signed-off-by: Aharon Landau <aharonl@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mlx5_ib.h |  2 +-
- drivers/infiniband/hw/mlx5/mr.c      | 25 ++++++++++++++++++++++---
- drivers/infiniband/hw/mlx5/odp.c     |  8 ++------
- 3 files changed, 25 insertions(+), 10 deletions(-)
+ drivers/infiniband/hw/mlx5/mr.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-index 751d02bc755b..4f04bb55c4c6 100644
---- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
-+++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-@@ -763,9 +763,9 @@ struct mlx5_cache_ent {
- 
- 	char                    name[4];
- 	u32                     order;
--	u32			xlt;
- 	u32			access_mode;
- 	u32			page;
-+	unsigned int		ndescs;
- 
- 	u8 disabled:1;
- 	u8 fill_to_high_water:1;
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 0c1dc13b4c45..eb14ea4bcbba 100644
+index eb14ea4bcbba..eab7921eb91f 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -176,6 +176,25 @@ static void create_mkey_callback(int status, struct mlx5_async_work *context)
- 	spin_unlock_irqrestore(&ent->lock, flags);
- }
- 
-+static int get_mkc_octo_size(unsigned int access_mode, unsigned int ndescs)
-+{
-+	int ret = 0;
-+
-+	switch (access_mode) {
-+	case MLX5_MKC_ACCESS_MODE_MTT:
-+		ret = DIV_ROUND_UP(ndescs, MLX5_IB_UMR_OCTOWORD /
-+						   sizeof(struct mlx5_mtt));
-+		break;
-+	case MLX5_MKC_ACCESS_MODE_KSM:
-+		ret = DIV_ROUND_UP(ndescs, MLX5_IB_UMR_OCTOWORD /
-+						   sizeof(struct mlx5_klm));
-+		break;
-+	default:
-+		WARN_ON(1);
-+	}
-+	return ret;
-+}
-+
- static struct mlx5_ib_mr *alloc_cache_mr(struct mlx5_cache_ent *ent, void *mkc)
+@@ -68,7 +68,6 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+ 					  struct ib_pd *pd)
  {
- 	struct mlx5_ib_mr *mr;
-@@ -191,7 +210,8 @@ static struct mlx5_ib_mr *alloc_cache_mr(struct mlx5_cache_ent *ent, void *mkc)
- 	MLX5_SET(mkc, mkc, access_mode_1_0, ent->access_mode & 0x3);
- 	MLX5_SET(mkc, mkc, access_mode_4_2, (ent->access_mode >> 2) & 0x7);
+ 	struct mlx5_ib_dev *dev = to_mdev(pd->device);
+-	bool ro_pci_enabled = pcie_relaxed_ordering_enabled(dev->mdev->pdev);
  
--	MLX5_SET(mkc, mkc, translations_octword_size, ent->xlt);
-+	MLX5_SET(mkc, mkc, translations_octword_size,
-+		 get_mkc_octo_size(ent->access_mode, ent->ndescs));
- 	MLX5_SET(mkc, mkc, log_page_size, ent->page);
- 	return mr;
- }
-@@ -701,8 +721,7 @@ int mlx5_mr_cache_init(struct mlx5_ib_dev *dev)
- 			continue;
+ 	MLX5_SET(mkc, mkc, a, !!(acc & IB_ACCESS_REMOTE_ATOMIC));
+ 	MLX5_SET(mkc, mkc, rw, !!(acc & IB_ACCESS_REMOTE_WRITE));
+@@ -76,12 +75,13 @@ static void set_mkc_access_pd_addr_fields(void *mkc, int acc, u64 start_addr,
+ 	MLX5_SET(mkc, mkc, lw, !!(acc & IB_ACCESS_LOCAL_WRITE));
+ 	MLX5_SET(mkc, mkc, lr, 1);
  
- 		ent->page = PAGE_SHIFT;
--		ent->xlt = (1 << ent->order) * sizeof(struct mlx5_mtt) /
--			   MLX5_IB_UMR_OCTOWORD;
-+		ent->ndescs = 1 << ent->order;
- 		ent->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
- 		if ((dev->mdev->profile.mask & MLX5_PROF_MASK_MR_CACHE) &&
- 		    !dev->is_rep && mlx5_core_is_pf(dev->mdev) &&
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index f834c9590c51..41c964a45f89 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -1598,18 +1598,14 @@ void mlx5_odp_init_mr_cache_entry(struct mlx5_cache_ent *ent)
- 	switch (ent->order - 2) {
- 	case MLX5_IMR_MTT_CACHE_ENTRY:
- 		ent->page = PAGE_SHIFT;
--		ent->xlt = MLX5_IMR_MTT_ENTRIES *
--			   sizeof(struct mlx5_mtt) /
--			   MLX5_IB_UMR_OCTOWORD;
-+		ent->ndescs = MLX5_IMR_MTT_ENTRIES;
- 		ent->access_mode = MLX5_MKC_ACCESS_MODE_MTT;
- 		ent->limit = 0;
- 		break;
+-	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
+-		MLX5_SET(mkc, mkc, relaxed_ordering_write,
+-			 (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
+-	if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
+-		MLX5_SET(mkc, mkc, relaxed_ordering_read,
+-			 (acc & IB_ACCESS_RELAXED_ORDERING) && ro_pci_enabled);
++	if ((acc & IB_ACCESS_RELAXED_ORDERING) &&
++	    pcie_relaxed_ordering_enabled(dev->mdev->pdev)) {
++		if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_write))
++			MLX5_SET(mkc, mkc, relaxed_ordering_write, 1);
++		if (MLX5_CAP_GEN(dev->mdev, relaxed_ordering_read))
++			MLX5_SET(mkc, mkc, relaxed_ordering_read, 1);
++	}
  
- 	case MLX5_IMR_KSM_CACHE_ENTRY:
- 		ent->page = MLX5_KSM_PAGE_SHIFT;
--		ent->xlt = mlx5_imr_ksm_entries *
--			   sizeof(struct mlx5_klm) /
--			   MLX5_IB_UMR_OCTOWORD;
-+		ent->ndescs = mlx5_imr_ksm_entries;
- 		ent->access_mode = MLX5_MKC_ACCESS_MODE_KSM;
- 		ent->limit = 0;
- 		break;
+ 	MLX5_SET(mkc, mkc, pd, to_mpd(pd)->pdn);
+ 	MLX5_SET(mkc, mkc, qpn, 0xffffff);
 -- 
 2.35.1
 
