@@ -2,48 +2,49 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B88B4B77F5
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EC474B78E8
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:53:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbiBOS22 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 13:28:28 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45316 "EHLO
+        id S241174AbiBOS23 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 13:28:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240686AbiBOS21 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 13:28:27 -0500
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E41E03B
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:17 -0800 (PST)
-Received: by mail-pf1-f176.google.com with SMTP id c4so14967060pfl.7
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:17 -0800 (PST)
+        with ESMTP id S240686AbiBOS23 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 13:28:29 -0500
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F946E01A
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:19 -0800 (PST)
+Received: by mail-pl1-f176.google.com with SMTP id l8so7747465pls.7
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 10:28:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4bOkxLoqa7aSs1BzIzOKghMX8VL6JgG8l+i8IWyte58=;
-        b=qoslIFPhXoQdywaxfJXcrj3ojKie2Gm8BS45+BgoP4stb0hbYo4X4LWSidLnTenifc
-         SgU+2VxXL1DUlifGnClaRu5uzEOgNnn5GZ6NQXGklT6K+2H90ksl13PMkiUadWLk5Gtm
-         jnS0sn5pxN31K8q9uzejopEUQYLNjs6Cr0s8EHvukLzBoEUdBEGlRsnsWidA0Pbls4pi
-         v/Qxu5NbjuNrvoSFXavsXQeKqhWgiH7qNWUjcguosgdKorAK3Zc6fas/EaLwuGAmt/vG
-         qOBNa9B83h4quZAT/s0xpKVRVsMwXYkH0cWcuR/OLJ7Ve8R88XwVTR8CddjGmvMY04KR
-         sWZg==
-X-Gm-Message-State: AOAM533k6mP3dd66FHr6ZDvEi/2jw70vc0qb8gNoTxk2i7iIdu4wrX88
-        0rhurN7ORsExop0TX6pCJ/c=
-X-Google-Smtp-Source: ABdhPJyxpGyNNVDX7fV6yKF3oVgjssRgRIA6UvsdKJHeY1WSw1oqOMO/WCotZv7duaoGgbDmwmOlkg==
-X-Received: by 2002:a63:2c87:: with SMTP id s129mr140265pgs.327.1644949697168;
-        Tue, 15 Feb 2022 10:28:17 -0800 (PST)
+        bh=fMH8dcwDv/ki8RH7g8nrSOp4PHbKmDL9GmjKUJZMDQQ=;
+        b=O0KbEhhpU+O0jxQCo3jknHx0j46sJqs2UgnqTwXiKqoaYhxCu6/MmE0WRTjZwmVbtH
+         Dn6XZ7njjwrL8vUM0sKh1CHiuNxotN79tO/8aakS1WWxW4vXtl1Nt0OPGTzHvQFiLDdW
+         OYt4pwBi77vTOlMqmue4gZAmM5nEsqjcP8WMcMJ4J7vvd3OZWXYQ7Bc3F+w3GaoXb2PV
+         p+U4Ye2mrWqxv3I+n5pFtoLaI7XGXghCIC6VE3pvBygXzrOx3XK3VWfo8GTR1qKQf7Nr
+         VG2MW9f7nfXd5GQJAjxh3oMShGeeb+jH0bXETMBB81hUG+gMhz9zKAc+LC8O1NgpYSFY
+         g4ig==
+X-Gm-Message-State: AOAM532NzaQZ+EOTC44gpwz/t7jPFpIagtknXQcIsP+mM02Yq3twbCeV
+        iWbQ2Sn4/ZTXahqHXpS8iGo=
+X-Google-Smtp-Source: ABdhPJynHy1kgtmvjmwncN4TDbDG3zVauc5LVc5FBPwHZO8RzW3a0uKxM2T90yU+Oe/7fpLlZLLBBw==
+X-Received: by 2002:a17:902:db08:: with SMTP id m8mr283423plx.25.1644949698653;
+        Tue, 15 Feb 2022 10:28:18 -0800 (PST)
 Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id k13sm43896746pfc.176.2022.02.15.10.28.15
+        by smtp.gmail.com with ESMTPSA id k13sm43896746pfc.176.2022.02.15.10.28.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Feb 2022 10:28:16 -0800 (PST)
+        Tue, 15 Feb 2022 10:28:18 -0800 (PST)
 From:   Bart Van Assche <bvanassche@acm.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Leon Romanovsky <leonro@mellanox.com>, linux-rdma@vger.kernel.org,
         Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH 2/3] ib_srp: Protect the target list with a mutex instead of a spinlock
-Date:   Tue, 15 Feb 2022 10:26:49 -0800
-Message-Id: <20220215182650.19839-3-bvanassche@acm.org>
+        Bart Van Assche <bvanassche@acm.org>,
+        syzbot+831661966588c802aae9@syzkaller.appspotmail.com
+Subject: [PATCH 3/3] ib_srp: Fix a deadlock
+Date:   Tue, 15 Feb 2022 10:26:50 -0800
+Message-Id: <20220215182650.19839-4-bvanassche@acm.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220215182650.19839-1-bvanassche@acm.org>
 References: <20220215182650.19839-1-bvanassche@acm.org>
@@ -59,101 +60,33 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This patch makes the next patch in this series easier to read.
+Wait on tl_err_work instead of flushing system_long_wq since flushing
+system_long_wq is deadlock-prone.
 
 Cc: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Fixes: ef6c49d87c34 ("IB/srp: Eliminate state SRP_TARGET_DEAD")
+Reported-by: syzbot+831661966588c802aae9@syzkaller.appspotmail.com
 Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/infiniband/ulp/srp/ib_srp.c | 18 +++++++++---------
- drivers/infiniband/ulp/srp/ib_srp.h |  4 ++--
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ drivers/infiniband/ulp/srp/ib_srp.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/infiniband/ulp/srp/ib_srp.c b/drivers/infiniband/ulp/srp/ib_srp.c
-index e174e853f8a4..2db7429b42e1 100644
+index 2db7429b42e1..8e1561a6d325 100644
 --- a/drivers/infiniband/ulp/srp/ib_srp.c
 +++ b/drivers/infiniband/ulp/srp/ib_srp.c
-@@ -1062,9 +1062,9 @@ static void srp_remove_target(struct srp_target_port *target)
- 	kfree(target->ch);
- 	target->ch = NULL;
- 
--	spin_lock(&target->srp_host->target_lock);
-+	mutex_lock(&target->srp_host->target_mutex);
- 	list_del(&target->list);
--	spin_unlock(&target->srp_host->target_lock);
-+	mutex_unlock(&target->srp_host->target_mutex);
- 
- 	scsi_host_put(target->scsi_host);
- }
-@@ -3146,9 +3146,9 @@ static int srp_add_target(struct srp_host *host, struct srp_target_port *target)
- 	rport->lld_data = target;
- 	target->rport = rport;
- 
--	spin_lock(&host->target_lock);
-+	mutex_lock(&host->target_mutex);
- 	list_add_tail(&target->list, &host->target_list);
--	spin_unlock(&host->target_lock);
-+	mutex_unlock(&host->target_mutex);
- 
- 	scsi_scan_target(&target->scsi_host->shost_gendev,
- 			 0, target->scsi_id, SCAN_WILD_CARD, SCSI_SCAN_INITIAL);
-@@ -3203,7 +3203,7 @@ static bool srp_conn_unique(struct srp_host *host,
- 
- 	ret = true;
- 
--	spin_lock(&host->target_lock);
-+	mutex_lock(&host->target_mutex);
- 	list_for_each_entry(t, &host->target_list, list) {
- 		if (t != target &&
- 		    target->id_ext == t->id_ext &&
-@@ -3213,7 +3213,7 @@ static bool srp_conn_unique(struct srp_host *host,
- 			break;
- 		}
- 	}
--	spin_unlock(&host->target_lock);
-+	mutex_unlock(&host->target_mutex);
- 
- out:
- 	return ret;
-@@ -3898,7 +3898,7 @@ static struct srp_host *srp_add_port(struct srp_device *device, u8 port)
- 		return NULL;
- 
- 	INIT_LIST_HEAD(&host->target_list);
--	spin_lock_init(&host->target_lock);
-+	mutex_init(&host->target_mutex);
- 	init_completion(&host->released);
- 	mutex_init(&host->add_target_mutex);
- 	host->srp_dev = device;
-@@ -4041,10 +4041,10 @@ static void srp_remove_one(struct ib_device *device, void *client_data)
- 		/*
- 		 * Remove all target ports.
- 		 */
--		spin_lock(&host->target_lock);
-+		mutex_lock(&host->target_mutex);
+@@ -4044,12 +4044,10 @@ static void srp_remove_one(struct ib_device *device, void *client_data)
+ 		mutex_lock(&host->target_mutex);
  		list_for_each_entry(target, &host->target_list, list)
  			srp_queue_remove_work(target);
--		spin_unlock(&host->target_lock);
-+		mutex_unlock(&host->target_mutex);
++		list_for_each_entry(target, &host->target_list, list)
++			flush_work(&target->tl_err_work);
+ 		mutex_unlock(&host->target_mutex);
  
- 		/*
- 		 * Wait for tl_err and target port removal tasks.
-diff --git a/drivers/infiniband/ulp/srp/ib_srp.h b/drivers/infiniband/ulp/srp/ib_srp.h
-index 55a575e2cace..2af968277994 100644
---- a/drivers/infiniband/ulp/srp/ib_srp.h
-+++ b/drivers/infiniband/ulp/srp/ib_srp.h
-@@ -116,14 +116,14 @@ struct srp_device {
-  * One port of an RDMA adapter in the initiator system.
-  *
-  * @target_list: List of connected target ports (struct srp_target_port).
-- * @target_lock: Protects @target_list.
-+ * @target_mutex: Protects @target_list.
-  */
- struct srp_host {
- 	struct srp_device      *srp_dev;
- 	u8			port;
- 	struct device		dev;
- 	struct list_head	target_list;
--	spinlock_t		target_lock;
-+	struct mutex		target_mutex;
- 	struct completion	released;
- 	struct list_head	list;
- 	struct mutex		add_target_mutex;
+-		/*
+-		 * Wait for tl_err and target port removal tasks.
+-		 */
+-		flush_workqueue(system_long_wq);
+ 		flush_workqueue(srp_remove_wq);
+ 
+ 		kfree(host);
