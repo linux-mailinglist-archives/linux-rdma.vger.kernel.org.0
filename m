@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE114B75AD
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CCB4B78C0
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Feb 2022 21:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242772AbiBOR4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Feb 2022 12:56:15 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42278 "EHLO
+        id S242796AbiBOR4L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Feb 2022 12:56:11 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242815AbiBOR4K (ORCPT
+        with ESMTP id S242806AbiBOR4K (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Feb 2022 12:56:10 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7068B1019CD;
-        Tue, 15 Feb 2022 09:55:59 -0800 (PST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB8841017F8;
+        Tue, 15 Feb 2022 09:55:58 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30A95B81BD8;
-        Tue, 15 Feb 2022 17:55:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14539C340EB;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C706E61662;
+        Tue, 15 Feb 2022 17:55:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 344A4C340F6;
         Tue, 15 Feb 2022 17:55:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644947756;
+        s=k20201202; t=1644947757;
         bh=DpghstMLiYzSupNnVlCnqIFT1M0QQYu4EYFnyOaiqFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mSPGUQN2CJZfhuRDjs4goK1NyxaFWDdEV/KiPLcQ0EoUToT7fgJ3ObqnbSFubXVv7
-         rY9XdlUgvy6h3F8BdW2L9IH4eC6nxdEXEIvxztbANm8JQ5vQZyZMhKlSdltMNfRiPR
-         s7DjbgqWmo0nGynny0oevRwJ4fwQiqRe3MxZiRXrn5RU5sV+GKLqoxXo2B89Wu/JGE
-         9KDd4sHF2niS9z6ocJCZbdl2uvk/qV7nvALpYjGLI6RYV87AByqq4P2OToPfJOd6nV
-         XXVbfb7z8HIIMU9XaS/G8SK/Fs5QbckN5UXRGxzWFwsK+IEGFtBzQN6MwxziWvrANn
-         sYqzMn5ThjfLA==
+        b=YMmP/7lOBcdj9y9ZI3b0y/if9iL66syjYvw6dNeCqQfgeScrktPjmRtJhOxIgBDqM
+         hl4yUlifp40Ul/jlO6adpwfm9iXOWEivu6bSVupQKMlMHPRg7h9IS32lrejPnCyCpH
+         s+L7vbkJ4Ey7URogKH7J3p4VQvIqm8H1PtNBhiQXDzAAeRlBDL9HAR6+wE4ls/rF77
+         sGgdeeaYnrcZQUy+0wJWo++kGUYjttxu5jDBgMcphA94mXiOEQArklru7kZ2AyfFR+
+         IIBfnYm1IH9OBqHHJrn+Xf8qaiitVEzDz20jiPm6b9ga+olCXrlMa8yLFapta1mGDB
+         sU7/bNYhlGwlA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Aharon Landau <aharonl@nvidia.com>, linux-kernel@vger.kernel.org,
@@ -45,7 +45,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
