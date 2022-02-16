@@ -2,80 +2,103 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A972F4B814B
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 08:22:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E2744B80F5
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 08:08:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbiBPHU3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Feb 2022 02:20:29 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53196 "EHLO
+        id S229674AbiBPHHz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Feb 2022 02:07:55 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:34264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229926AbiBPHU2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 02:20:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D00F0E4499
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 23:20:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1644996012;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KqtwqLtGbxhQIx5ehb7kGvtrY5iEbChN1LUJ9eN4Alk=;
-        b=YSac8xVkEealowdcvLqWByLO1M/99dW+54mZBffbfh6UX6k5ZGvjo+PpPogUltUqqw8RHZ
-        LOkbr6vWcrMFLxNNotCLwMP0/Xa7OsHSv79hE3FXZQC4FI4XmnD4q2uA+auYdFpghyrTnb
-        tvA8BIuSabCfjOz0zmE2ADZHeD5bwkw=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-198-Ir6XK09gMAmQqPIJj7ZiZg-1; Wed, 16 Feb 2022 01:58:33 -0500
-X-MC-Unique: Ir6XK09gMAmQqPIJj7ZiZg-1
-Received: by mail-lf1-f70.google.com with SMTP id z37-20020a0565120c2500b004433b7d95d3so379322lfu.4
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 22:58:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KqtwqLtGbxhQIx5ehb7kGvtrY5iEbChN1LUJ9eN4Alk=;
-        b=bLXrhfgyRX1q/rByodx7ECEK4oSlcOgey3vwopirIOQuMDGoXh94JlU+GgS4mHIH7X
-         bCP4L9CXC6NoLUqJCe/OwoKElyaGF87WD9PrLISHE9Qie+zsI8TyHse2rV2+KkdJgS/8
-         O5MtIHJHNyKsH67xnj/rLGwS/eaW/v36DSaTLFSYdi1vumzxMd6EWRnmRkyCwez2PPpR
-         Ru8SU2z3wVSTepYx+7Mwf3VEFqOzg6sh0y6jwBS0VWhFNwDxXUEVCoN7qMJu6rAWI3JR
-         lp25RKLVPQ5kHIctFzlgDciuMMp1QP7As0yZdGZ2/iLWkYzbWwLGI0Ozb1lALimsYB+O
-         zOaA==
-X-Gm-Message-State: AOAM533VMz2UXh3oqhGqnaH0+UWn8pg3ZFTFBIEKv7A2wty3JInd2jFa
-        CKzAI2rb4BJoR2aCGDEHDxoYfobsiHQ/S82wNft4qfLQ7j9Re2ObeDaGmZxSx03YOgs06Z4aqBe
-        FQ6il8NvY3jjHxLTSWBtpJK/vskpp0f8ONrb/uw==
-X-Received: by 2002:a05:6512:3a81:b0:443:3ae7:33af with SMTP id q1-20020a0565123a8100b004433ae733afmr1037847lfu.481.1644994711482;
-        Tue, 15 Feb 2022 22:58:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxRf4Xtg21/celZg9RVv8kD+6iVViDEy2gbjzUdhMAdILr6XLqwq6h2P4tj9MJD6euLlUIZE5aIuXv4jD0ee00=
-X-Received: by 2002:a05:6512:3a81:b0:443:3ae7:33af with SMTP id
- q1-20020a0565123a8100b004433ae733afmr1037824lfu.481.1644994711242; Tue, 15
- Feb 2022 22:58:31 -0800 (PST)
+        with ESMTP id S229620AbiBPHHf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 02:07:35 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on20610.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eab::610])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 253E52C833C
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 23:06:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=STGh44YLoFjXYCutedcnB9eC28XVWBAy7Gk5L/P+gLfHfpiqJknjHN06o/2LxDb833XA58gAW+Dk9ZF1sr/vJZ/APd9bN2sgC9wO+VeH3JiyFeJArSgQno6nRdZ8rGNsclDeHCEezSzt/hl2GxciC7P1gTTrkuoeniyFcPhGCTqbIBIzLGN5AW6dE7HuibrCA9SKG2lwwEApgiD2j0TyXTlFjvUhoRklOr28HeL5s1Mngz1RN42xKMvO3GrnSjP9siLcEWNxGuSrk5mVAKFnVNSPv+mUAKLwDW8z4ThpY1RpOmQtgSDX9JTrWZ3KPwJphabXmQRNsdwM3gu56qKrQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GvWt9e1n7HZX/1kGOjWtMosd3NWo7NUmwShqW5Q8tOk=;
+ b=kHlDPJGJGjuPcspUoAjw4NCdaHJH4QEUGy9nSHB8NJUITgdaY5ZaqJ9kxcHqGvN3i4bEJ8qV1fE7niINZsQHCkaq5guxS3TEyoS9JNny1aNDxTFk8ZVD+VPckUIhR2HEJYcp+PwZ/qqzXYgxgujVZCvrxmqG03hJy/O5qJziCgxiQqe5U5Lt7Q3nYoPj9GJJym/QxCTwxT3Ut0/uDo21ChbEOlQA4oB/xrdb0+vHdPOdltAgNsUu/14zJ3P35lBozcY2zEEgFcRUJGRifI2n5kJ5bd41RrFNq2J9i7Ph1j4M9acIC13Co6DDd4XSZXZKd+ixgg7MVDW9DOvXPtdMBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.235) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GvWt9e1n7HZX/1kGOjWtMosd3NWo7NUmwShqW5Q8tOk=;
+ b=GG45ouXp+y9tZ/oF4aIbKBFc9uHWFbR9j+/0kGL+11+EOc/ycJ1i9538FHH0YgLDeVDDNzczenQrsnNT/BtWBc4H/3uEWut6I+LeMB1frA/GEYb7+65uZFrq6FyyGnt3kTDpTuGiWY/CL8SU9/hLQWWNrn7PyNqJhIRk5nOP4/HpZW85gSfXjr5NBWryC0wTJNexYDD2T+c7IW+vaffHUyNmYCQtwiVuMh3BPVax0GL82LW/Tw/bH5qOaOyUG75EyD9g352A+DxxeR3ARp7ELvkKm8RMOQcsGsfEc68rgfa1kh3XggIH8JhIJYnlOe4eUdUEU6dEz17Y3MiEsfzm0g==
+Received: from MWHPR17CA0072.namprd17.prod.outlook.com (2603:10b6:300:93::34)
+ by DM6PR12MB4862.namprd12.prod.outlook.com (2603:10b6:5:1b7::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Wed, 16 Feb
+ 2022 07:02:32 +0000
+Received: from CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:300:93:cafe::68) by MWHPR17CA0072.outlook.office365.com
+ (2603:10b6:300:93::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4995.14 via Frontend
+ Transport; Wed, 16 Feb 2022 07:02:32 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.235; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.235) by
+ CO1NAM11FT049.mail.protection.outlook.com (10.13.175.50) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4975.11 via Frontend Transport; Wed, 16 Feb 2022 07:02:32 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Wed, 16 Feb
+ 2022 07:02:30 +0000
+Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.9; Tue, 15 Feb 2022
+ 23:02:29 -0800
+Date:   Wed, 16 Feb 2022 09:02:23 +0200
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+CC:     Jason Gunthorpe <jgg@ziepe.ca>, <linux-rdma@vger.kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: [PATCH 1/3] ib_srp: Add more documentation
+Message-ID: <Ygyhf1YU6mJoVubK@unreal>
+References: <20220215182650.19839-1-bvanassche@acm.org>
+ <20220215182650.19839-2-bvanassche@acm.org>
+ <Ygv0IhNMJxFHSi8Q@unreal>
+ <d76031cc-29bb-5dad-6f30-b69fee5966cb@acm.org>
 MIME-Version: 1.0
-References: <20220215081353.10351-1-weijunji@bytedance.com>
- <CACGkMEv44vBkUD4YZHg-irzNfxsKjZ4kMZH91LkEYfmmWWhsBA@mail.gmail.com>
- <B07F1166-36A4-4B17-A063-F5447296B99D@bytedance.com> <CACGkMEsoKact5us2tHK226ui9fe7DTcMy0BPbE1Ohd0bTpxwWg@mail.gmail.com>
- <19CC8304-C2B3-45A7-BFDB-28E9D0D4A02A@bytedance.com>
-In-Reply-To: <19CC8304-C2B3-45A7-BFDB-28E9D0D4A02A@bytedance.com>
-From:   Jason Wang <jasowang@redhat.com>
-Date:   Wed, 16 Feb 2022 14:58:20 +0800
-Message-ID: <CACGkMEsafzRWYxEw1YUYHka3sm3tH7qXYhcad++NYcfS6LXFLg@mail.gmail.com>
-Subject: Re: [virtio-dev] Re: [RFC] Virtio RDMA
-To:     Junji Wei <weijunji@bytedance.com>
-Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        mst <mst@redhat.com>, yuval.shaia.ml@gmail.com,
-        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Virtio-Dev <virtio-dev@lists.oasis-open.org>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        zhoujielong@bytedance.com, zhangqianyu.sys@bytedance.com,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <d76031cc-29bb-5dad-6f30-b69fee5966cb@acm.org>
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ce020946-19a7-4b5b-d84a-08d9f11a4d88
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4862:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR12MB48621E06D2A898760EE9937FBD359@DM6PR12MB4862.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NqQv5mVbTh5vyFq76tiWM0ClJyZWGsam7CQyjZiLuVKAtkxc/035cJr2cgkD4somb6aTO4G4dpwkkhj0EsC2rE2Q6gI/e/5H+1rAm4tBFZ5jgUMEnprIc20xK22o/3wzMKTXqKoKStZHtTOHBynK5Ox85yIzgAsaJ5TZ2J1Gsyf9siP9WqbsxpP0NHUGRL5IxyweZHVC8RPgOXWyFi0FcwRhEvHxeiVk4rmw9SjNvY7/vR8VCSqMQ1QxaGUuGka7TVNcKwHH5C9iT70hMoPFVBVC5rZbHAJ8gaF9OhSfsW/Rk12PX9GG6r5nntMEvJ7KEV1oyJ/05c6ai98ENHYWL2GAXWzRLQzbOvoDNsy6qUu5SSZhIPS4FvSn0fnAsRo5aHJKKW4/Xo9dkQ4+C7dyIQKS3FqY8GWdvZtFFLL4H9Ejr7v2rFna/8Ywmno1zPBZ3R8hh4pJ/5cgK1EuDon2p87UStrhRbzeMU331ILy0gOgNmHA8+em1Aezv7lOsyFmwCHbSLCJNuk2g8zym/ikC5hfwNHXYzl3QAXncncKOKiGdDQUBOM/vlFFqb5hFUz9C2YnyP47oc50QndHWenekX6CpAyBadqtrnXt85SJtFjQDvmsy6nG50xGnA6nv+FkPByAzT26T8ixuQE22H3pJrisMy5VuIrYr4yrGCE67hYcsTADUln6a1LAC7Pd/Lg3//UBn+wHbQPkXb9nHMCbNg==
+X-Forefront-Antispam-Report: CIP:12.22.5.235;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(7916004)(4636009)(36840700001)(46966006)(40470700004)(47076005)(26005)(186003)(16526019)(316002)(36860700001)(336012)(6666004)(6916009)(426003)(54906003)(9686003)(53546011)(82310400004)(8936002)(70206006)(40460700003)(33716001)(81166007)(356005)(86362001)(4326008)(508600001)(2906002)(5660300002)(8676002)(70586007)(4744005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2022 07:02:32.0956
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce020946-19a7-4b5b-d84a-08d9f11a4d88
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.235];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT049.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4862
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,116 +106,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 2:50 PM Junji Wei <weijunji@bytedance.com> wrote:
->
->
->
-> > On Feb 16, 2022, at 1:54 PM, Jason Wang <jasowang@redhat.com> wrote:
-> >
-> > On Tue, Feb 15, 2022 at 6:02 PM Junji Wei <weijunji@bytedance.com> wrote:
-> >>
-> >>
-> >>> On Feb 15, 2022, at 4:44 PM, Jason Wang <jasowang@redhat.com> wrote:
-> >>>
-> >>> On Tue, Feb 15, 2022 at 4:15 PM Junji Wei <weijunji@bytedance.com> wrote:
-> >>>>
-> >>>> Hi all,
-> >>>>
-> >>>> This RFC aims to introduce our recent work on VirtIO-RDMA.
-> >>>>
-> >>>> We have finished a draft of VirtIO-RDMA specification and a vhost-user
-> >>>> RDMA demo based on the spec.This demo can work with CM/Socket
-> >>>> and UD/RC QP now.
-> >>>>
-> >>>> NOTE that this spec now only focuses on emulating a soft
-> >>>> RoCE (RDMA over Converged Ethernet) device with normal Network Interface
-> >>>> Card (without RDMA capability). So most Infiniband (IB) specific features
-> >>>> such as Subnet Manager (SM), Local Identifier (LID) and Automatic Path
-> >>>> Migration (APM) are not covered in this specification.
-> >>>>
-> >>>> There are four parts of our work:
-> >>>>
-> >>>> 1. VirtIO-RDMA driver in linux kernel:
-> >>>> https://github.com/weijunji/linux/tree/virtio-rdma-patch
-> >>>>
-> >>>> 2. VirtIO-RDMA userspace provider in rdma-core:
-> >>>> https://github.com/weijunji/rdma-core/tree/virtio-rdma
-> >>>>
-> >>>> 3. VHost-User RDMA backend in QEMU:
-> >>>> https://github.com/weijunji/qemu/tree/vhost-user-rdma
-> >>>>
-> >>>> 4. VHost-User RDMA demo implements with DPDK:
-> >>>> https://github.com/weijunji/dpdk-rdma
-> >>>>
-> >>>>
-> >>>> To test with our demo:
-> >>>>
-> >>>> 1. Build Linux kernel with config INFINIBAND_VIRTIO_RDMA
-> >>>>
-> >>>> 2. Build QEMU with config VHOST_USER_RDMA
-> >>>>
-> >>>> 3. Build rdma-core and install it to VM image
-> >>>>
-> >>>> 4. Build and install DPDK(NOTE that we only tested on DPDK 20.11.3)
-> >>>>
-> >>>> 5. Build dpdk-rdma:
-> >>>>   $ cd dpdk-rdma
-> >>>>   $ meson build
-> >>>>   $ cd build
-> >>>>   $ ninja
-> >>>>
-> >>>> 6. Run dpdk-rdma:
-> >>>>   $ sudo ./dpdk-rdma --vdev 'net_vhost0,iface=/tmp/sock0,queues=1' \
-> >>>>     --vdev 'net_tap0' --lcore '1-3'
-> >>>>   $ sudo brctl addif virbr0 dtap0
-> >>>>
-> >>>> 7. Boot kernel with qemu with following args using libvirt:
-> >>>> <qemu:commandline>
-> >>>>   <qemu:arg value='-chardev'/>
-> >>>>   <qemu:arg value='socket,path=/tmp/sock0,id=vunet'/>
-> >>>>   <qemu:arg value='-netdev'/>
-> >>>>   <qemu:arg value='vhost-user,id=net1,chardev=vunet,vhostforce,queues=1'/>
-> >>>>   <qemu:arg value='-device'/>
-> >>>>   <qemu:arg value='virtio-net-pci,netdev=net1,bus=pci.0,multifunction=on,addr=0x2'/>
-> >>>>   <qemu:arg value='-chardev'/>
-> >>>>   <qemu:arg value='socket,path=/tmp/vhost-rdma0,id=vurdma'/>
-> >>>>   <qemu:arg value='-device'/>
-> >>>>   <qemu:arg value='vhost-user-rdma-pci,page-per-vq,disable-legacy=on,addr=2.1,chardev=vurdma'/>
-> >>>> </qemu:commandline>
-> >>>>
-> >>>> NOTE that virtio-net-pci and vhost-user-rdma-pci MUST in same PCI addresss.
-> >>>>
-> >>>
-> >>> A silly question, if RoCE is the focus, why not extending virtio-net instead?
-> >>
-> >> I think it's OK to extend virtio-net to implement virtio-rdma. But if we want to
-> >> support IB in the future, would it be better to implement the virtio-rdma in an
-> >> independent way?
-> >
-> > I'm not sure but a question is whether IB is useful to be visible by
-> > the guest. E.g can you implement the soft RoCE backend via IB
-> > hardware?
->
-> We can't. So do you mean we can implement virtio-rdma only for IB in the future?
+On Tue, Feb 15, 2022 at 12:34:27PM -0800, Bart Van Assche wrote:
+> On 2/15/22 10:42, Leon Romanovsky wrote:
+> > On Tue, Feb 15, 2022 at 10:26:48AM -0800, Bart Van Assche wrote:
+> > >   /*
+> > > + * RDMA adapter in the initiator system.
+> > > + *
+> > > + * @dev_list: List of RDMA ports associated with this RDMA adapter (srp_host).
+> > 
+> > Isn't this list of RDMA devices and not ports?
+> 
+> Please take a look at srp_add_port(). I think that function establishes a
+> 1:1 relationship between an RDMA port and struct srp_host.
 
-It's probably virtio-IB but we need to listen to others.
+Right, but this list contains devices and not ports.
 
->
-> >> And currently virtio-rdma doesn't have a strong dependency on
-> >> virtio-net (except for gid and ah stuffs). Is it OK to mix them up?
-> >
-> > There are a bunch of hardware vendors that ship a converged Ethernet
-> > adapter. It simplifies the management and deployment.
->
-> Virtio-rdma is not depend on virtio-net, we can bind it to another ethernet device
-> via mac address in the future. And is it too mass to mix up two different device
-> in one spec?
-
-So either should be fine, we just need to figure out which one is
-better. What I meant is to extend the virtio-net to be capable of
-converged ethernet.
+Anyway, it is not important.
 
 Thanks
 
->
-
+> 
+> Thanks,
+> 
+> Bart.
+> 
