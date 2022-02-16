@@ -2,37 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECFA4B863B
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 11:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31F4E4B8700
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 12:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbiBPKzy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Feb 2022 05:55:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59658 "EHLO
+        id S231491AbiBPLqg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Feb 2022 06:46:36 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiBPKzy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 05:55:54 -0500
-Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F7F2A39DF;
-        Wed, 16 Feb 2022 02:55:41 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V4d6LsK_1645008938;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V4d6LsK_1645008938)
+        with ESMTP id S232250AbiBPLqf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 06:46:35 -0500
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C81A27FC1;
+        Wed, 16 Feb 2022 03:46:22 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R621e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V4cycIW_1645011978;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V4cycIW_1645011978)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 16 Feb 2022 18:55:39 +0800
-Date:   Wed, 16 Feb 2022 18:55:38 +0800
+          Wed, 16 Feb 2022 19:46:19 +0800
+Date:   Wed, 16 Feb 2022 19:46:18 +0800
 From:   "dust.li" <dust.li@linux.alibaba.com>
 To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Stefan Raspl <raspl@linux.ibm.com>
+Cc:     "D. Wythe" <alibuda@linux.alibaba.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
         linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/smc: Add autocork support
-Message-ID: <20220216105538.GA54562@linux.alibaba.com>
+Subject: Re: [PATCH net-next v2] net/smc: Reduce overflow of smc clcsock
+ listen queue
+Message-ID: <20220216114618.GA39286@linux.alibaba.com>
 Reply-To: dust.li@linux.alibaba.com
-References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
- <6e9c637c-50b0-394c-f405-8b98deafa2ef@linux.ibm.com>
+References: <1641301961-59331-1-git-send-email-alibuda@linux.alibaba.com>
+ <8a60dabb-1799-316c-80b5-14c920fe98ab@linux.ibm.com>
+ <20220105044049.GA107642@e02h04389.eu6sqa>
+ <20220105085748.GD31579@linux.alibaba.com>
+ <b98aefce-e425-9501-aacc-8e5a4a12953e@linux.ibm.com>
+ <20220105150612.GA75522@e02h04389.eu6sqa>
+ <d35569df-e0e0-5ea7-9aeb-7ffaeef04b14@linux.ibm.com>
+ <YdaUuOq+SkhYTWU8@TonyMac-Alibaba>
+ <5a5ba1b6-93d7-5c1e-aab2-23a52727fbd1@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6e9c637c-50b0-394c-f405-8b98deafa2ef@linux.ibm.com>
+In-Reply-To: <5a5ba1b6-93d7-5c1e-aab2-23a52727fbd1@linux.ibm.com>
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
@@ -43,179 +53,75 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 11:32:52AM +0100, Karsten Graul wrote:
->On 16/02/2022 04:49, Dust Li wrote:
->> This patch adds autocork support for SMC which could improve
->> throughput for small message by x2 ~ x4.
+On Thu, Jan 13, 2022 at 09:07:51AM +0100, Karsten Graul wrote:
+
+>>> One comment to sysctl: our current approach is to add new switches to the existing 
+>>> netlink interface which can be used with the smc-tools package (or own implementations of course). 
+>>> Is this prereq problematic in your environment? 
+>>> We tried to avoid more sysctls and the netlink interface keeps use more flexible.
 >> 
->> The main idea is borrowed from TCP autocork with some RDMA
->> specific modification:
->
->Sounds like a valuable improvement, thank you!
->
->> ---
->>  net/smc/smc.h     |   2 +
->>  net/smc/smc_cdc.c |  11 +++--
->>  net/smc/smc_tx.c  | 118 ++++++++++++++++++++++++++++++++++++++++------
->>  3 files changed, 114 insertions(+), 17 deletions(-)
+>> I agree with you about using netlink is more flexible. There are
+>> something different in our environment to use netlink to control the
+>> behaves of smc.
 >> 
->> diff --git a/net/smc/smc.h b/net/smc/smc.h
->> index a096d8af21a0..bc7df235281c 100644
->> --- a/net/smc/smc.h
->> +++ b/net/smc/smc.h
->> @@ -192,6 +192,8 @@ struct smc_connection {
->>  						 * - dec on polled tx cqe
->>  						 */
->>  	wait_queue_head_t	cdc_pend_tx_wq; /* wakeup on no cdc_pend_tx_wr*/
->> +	atomic_t		tx_pushing;     /* nr_threads trying tx push */
->> +
+>> Compared with netlink, sysctl is:
+>> - easy to use on clusters. Applications who want to use smc, don't need
+>>   to deploy additional tools or developing another netlink logic,
+>>   especially for thousands of machines or containers. With smc forward,
+>>   we should make sure the package or logic is compatible with current
+>>   kernel, but sysctl's API compatible is easy to discover.
+>> 
+>> - config template and default maintain. We are using /etc/sysctl.conf to
+>>   make sure the systeml configures update to date, such as pre-tuned smc
+>>   config parameters. So that we can change this default values on boot,
+>>   and generate lots of machines base on this machine template. Userspace
+>>   netlink tools doesn't suit for it, for example ip related config, we
+>>   need additional NetworkManager or netctl to do this.
+>> 
+>> - TCP-like sysctl entries. TCP provides lots of sysctl to configure
+>>   itself, somethings it is hard to use and understand. However, it is
+>>   accepted by most of users and system. Maybe we could use sysctl for
+>>   the item that frequently and easy to change, netlink for the complex
+>>   item.
+>> 
+>> We are gold to contribute to smc-tools. Use netlink and sysctl both
+>> time, I think, is a more suitable choice.
 >
->Is this extra empty line needed?
-
-Will remove this empty line in the next version.
-
+>Lets decide that when you have a specific control that you want to implement. 
+>I want to have a very good to introduce another interface into the SMC module,
+>making the code more complex and all of that. The decision for the netlink interface 
+>was also done because we have the impression that this is the NEW way to go, and
+>since we had no interface before we started with the most modern way to implement it.
 >
->>  	struct delayed_work	tx_work;	/* retry of smc_cdc_msg_send */
->>  	u32			tx_off;		/* base offset in peer rmb */
->>  
->> diff --git a/net/smc/smc_cdc.c b/net/smc/smc_cdc.c
->> index 9d5a97168969..2b37bec90824 100644
->> --- a/net/smc/smc_cdc.c
->> +++ b/net/smc/smc_cdc.c
->> @@ -48,9 +48,14 @@ static void smc_cdc_tx_handler(struct smc_wr_tx_pend_priv *pnd_snd,
->>  		conn->tx_cdc_seq_fin = cdcpend->ctrl_seq;
->>  	}
->>  
->> -	if (atomic_dec_and_test(&conn->cdc_pend_tx_wr) &&
->> -	    unlikely(wq_has_sleeper(&conn->cdc_pend_tx_wq)))
->> -		wake_up(&conn->cdc_pend_tx_wq);
->> +	if (atomic_dec_and_test(&conn->cdc_pend_tx_wr)) {
->> +		/* If this is the last pending WR complete, we must push to
->> +		 * prevent hang when autocork enabled.
->> +		 */
->> +		smc_tx_sndbuf_nonempty(conn);
->> +		if (unlikely(wq_has_sleeper(&conn->cdc_pend_tx_wq)))
->> +			wake_up(&conn->cdc_pend_tx_wq);
->> +	}
->>  	WARN_ON(atomic_read(&conn->cdc_pend_tx_wr) < 0);
->>  
->>  	smc_tx_sndbuf_nonfull(smc);
->> diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
->> index 5df3940d4543..bc737ac79805 100644
->> --- a/net/smc/smc_tx.c
->> +++ b/net/smc/smc_tx.c
->> @@ -31,6 +31,7 @@
->>  #include "smc_tracepoint.h"
->>  
->>  #define SMC_TX_WORK_DELAY	0
->> +#define SMC_DEFAULT_AUTOCORK_SIZE	(64 * 1024)
->>  
->>  /***************************** sndbuf producer *******************************/
->>  
->> @@ -127,10 +128,52 @@ static int smc_tx_wait(struct smc_sock *smc, int flags)
->>  static bool smc_tx_is_corked(struct smc_sock *smc)
->>  {
->>  	struct tcp_sock *tp = tcp_sk(smc->clcsock->sk);
->> -
->>  	return (tp->nonagle & TCP_NAGLE_CORK) ? true : false;
->>  }
->>  
->> +/* If we have pending CDC messages, do not send:
->> + * Because CQE of this CDC message will happen shortly, it gives
->> + * a chance to coalesce future sendmsg() payload in to one RDMA Write,
->> + * without need for a timer, and with no latency trade off.
->> + * Algorithm here:
->> + *  1. First message should never cork
->> + *  2. If we have pending CDC messages, wait for the first
->> + *     message's completion
->> + *  3. Don't cork to much data in a single RDMA Write to prevent burst,
->> + *     total corked message should not exceed min(64k, sendbuf/2)
->> + */
->> +static bool smc_should_autocork(struct smc_sock *smc, struct msghdr *msg,
->> +				int size_goal)
->> +{
->> +	struct smc_connection *conn = &smc->conn;
->> +
->> +	if (atomic_read(&conn->cdc_pend_tx_wr) == 0 ||
->> +	    smc_tx_prepared_sends(conn) > min(size_goal,
->> +					      conn->sndbuf_desc->len >> 1))
->> +		return false;
->> +	return true;
->> +}
->> +
->> +static bool smc_tx_should_cork(struct smc_sock *smc, struct msghdr *msg)
->> +{
->> +	struct smc_connection *conn = &smc->conn;
->> +
->> +	if (smc_should_autocork(smc, msg, SMC_DEFAULT_AUTOCORK_SIZE))
->> +		return true;
->> +
->> +	if ((msg->msg_flags & MSG_MORE ||
->> +	     smc_tx_is_corked(smc) ||
->> +	     msg->msg_flags & MSG_SENDPAGE_NOTLAST) &&
->> +	    (atomic_read(&conn->sndbuf_space)))
->> +		/* for a corked socket defer the RDMA writes if
->> +		 * sndbuf_space is still available. The applications
->> +		 * should known how/when to uncork it.
->> +		 */
->> +		return true;
->> +
->> +	return false;
->> +}
->> +
->>  /* sndbuf producer: main API called by socket layer.
->>   * called under sock lock.
->>   */
->> @@ -177,6 +220,13 @@ int smc_tx_sendmsg(struct smc_sock *smc, struct msghdr *msg, size_t len)
->>  		if (msg->msg_flags & MSG_OOB)
->>  			conn->local_tx_ctrl.prod_flags.urg_data_pending = 1;
->>  
->> +		/* If our send queue is full but peer have RMBE space,
->> +		 * we should send them out before wait
->> +		 */
->> +		if (!atomic_read(&conn->sndbuf_space) &&
->> +		    atomic_read(&conn->peer_rmbe_space) > 0)
->> +			smc_tx_sndbuf_nonempty(conn);
->> +
->>  		if (!atomic_read(&conn->sndbuf_space) || conn->urg_tx_pend) {
->>  			if (send_done)
->>  				return send_done;
->> @@ -235,15 +285,12 @@ int smc_tx_sendmsg(struct smc_sock *smc, struct msghdr *msg, size_t len)
->>  		 */
->>  		if ((msg->msg_flags & MSG_OOB) && !send_remaining)
->>  			conn->urg_tx_pend = true;
->> -		if ((msg->msg_flags & MSG_MORE || smc_tx_is_corked(smc) ||
->> -		     msg->msg_flags & MSG_SENDPAGE_NOTLAST) &&
->> -		    (atomic_read(&conn->sndbuf_space)))
->> -			/* for a corked socket defer the RDMA writes if
->> -			 * sndbuf_space is still available. The applications
->> -			 * should known how/when to uncork it.
->> -			 */
->> -			continue;
->> -		smc_tx_sndbuf_nonempty(conn);
->> +
->> +		/* If we need to cork, do nothing and wait for the next
->> +		 * sendmsg() call or push on tx completion
->> +		 */
->> +		if (!smc_tx_should_cork(smc, msg))
->> +			smc_tx_sndbuf_nonempty(conn);
->>  
->>  		trace_smc_tx_sendmsg(smc, copylen);
->>  	} /* while (msg_data_left(msg)) */
->> @@ -590,13 +637,26 @@ static int smcd_tx_sndbuf_nonempty(struct smc_connection *conn)
->>  	return rc;
->>  }
->>  
->> -int smc_tx_sndbuf_nonempty(struct smc_connection *conn)
->> +static int __smc_tx_sndbuf_nonempty(struct smc_connection *conn)
->>  {
->> -	int rc;
->> +	int rc = 0;
->> +	struct smc_sock *smc = container_of(conn, struct smc_sock, conn);
->
->Reverse Christmas tree style please.
+>TCP et al have a history with sysfs, so thats why it is still there. 
+>But I might be wrong on that...
 
-Sure, will do.
+Sorry to bother on this topic again...
 
-Thank you !
+When implementing SMC autocork, I'd like to add a switch to enable or
+disable SMC autocork just like what TCP does. But I encounter some
+problem which I think might be relevant to this topic.
 
+My requirements for the switch is like this:
+1. Can be set dynamically by an userspace tool
+2. Need to be namespacified so different containers can have their own
+value
+3. Should be able to be configured to some default values using a
+configuration file so every time a container started, those values can
+be set properly.
+
+
+I notice we have a patch recently("net/smc: Add global configure for
+handshake limitation by netlink") which did something similar. And I
+tried the same way but found it might not be very elegant:
+1. I need to copy most of the code(enable/disable/dump) for autocork
+   which is quite redundant. Maybe we should add some common wrappers ?
+2. I need to add a new enumeration, and what if years later, we found
+   this function is no longer need ? Deleting this may cause ABI
+   compatibility issues
+3. Finally, How can we implement requirement #3 ? It is really needed
+   in the K8S container environment.
+
+Any suggestions or comments are really welcomed.
+
+Thanks!
