@@ -2,530 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68EC4B810A
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 08:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7197F4B8126
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Feb 2022 08:15:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbiBPHI4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Feb 2022 02:08:56 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:43454 "EHLO
+        id S229782AbiBPHOA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Feb 2022 02:14:00 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:44370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiBPHI4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 02:08:56 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4420A6622E
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 23:08:32 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 09E5860C75
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Feb 2022 07:07:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E75FC004E1;
-        Wed, 16 Feb 2022 07:07:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1644995257;
-        bh=3a3k8oTBZ8Wqe2Bf1kyx5gKOOTo//XjaHnFpWuOp8E0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JdT9B9i9U6dtxYrdGbhswnuYn2jFNqqdD97gFqtYHEYJmw/qbJTSwAegNGqBeIiGI
-         B24Wg1WtlDsLHG74JSw4Xs+2uYgA4w/uv3ijnn7jxa5yeh7qrCrjqmxLAPahRlg0YP
-         EQbOQjH+960S3WGCmzKUJoIXeSMgv7DvevUzn4474Gsq4xsIRW3aZgrosayQuXYMYz
-         kINa0DvBsmU2kJmFdRHgIyWSSl3KcX/oJDUwj6NawW2VS544taXkheHCoys5kRK3W5
-         +qoO1D9V6DWzDqmPg770dFtXQBUWvQvgcprAwDsAqjxg3ZUwwc4aFh8E8QaEdc4BBV
-         t5EIuGyC9CYOA==
-Date:   Wed, 16 Feb 2022 09:07:29 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     linux-rdma@vger.kernel.org, jgg@nvidia.com, zyjzyj2000@gmail.com,
-        guoqing.jiang@linux.dev, bvanassche@acm.org
-Subject: Re: [PATCH for-next] RDMA/rxe: Revert changes from irqsave to bh
- locks
-Message-ID: <YgyisRNf4UVv48eY@unreal>
-References: <20220215194448.44369-1-rpearsonhpe@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220215194448.44369-1-rpearsonhpe@gmail.com>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S229785AbiBPHOA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Feb 2022 02:14:00 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD2EB0EBC
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 23:13:36 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id w20so1303402plq.12
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Feb 2022 23:13:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Q7Gb8bpYWWgH+Z9dRj5OlHuHf9Ais8lKD9O2BXctWBQ=;
+        b=S0TGUF3/O0s2cB1r7Jxb9EcWByPRjUWOuFqBwVFoFCxGTxw1Dzx5pJTrqkm8nR0/bi
+         6LEf4alOcOymQ7uAaP5rkCUDHwIpaDogQN6N4cnVQDWpnxh4uWNXKRzbbiTWJjJrtwYM
+         3/Afs8neVpxpqPTmre4jjvYH3y31OGuCt1Xg9etDXhtLXCEqDjxxDRwj0pr4uX4A3Kps
+         B9dnqAk1eDp0Rf/a4E0NHk9BlIqwr/TFiLd4e7zr67lepZvCKFdpGYRXuN6bXtWTX0d+
+         udsY+TRFq7EY5jpUpAJHjpYNVqR08d+Zk8TqFo7kX+0rE3Vc35LcaMWy1xkPF3WEHpKM
+         0MAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Q7Gb8bpYWWgH+Z9dRj5OlHuHf9Ais8lKD9O2BXctWBQ=;
+        b=fZs09Dvck8Q94AA5OIxzO5k9VFu+YoDH3cmmCx5d2xZr8bg9rEz1ogYtn6qYf67B2u
+         XtqXnw2giBObqe0FbnLCbvBtIKPtbHY1WUZUa1bMda56zz27cWrtXOeWA/GU2G7YpJ21
+         Myljnt38g6ZYImt51DR6hnZaks7GkchtvUaTgD1pxOMGokN2DfTBTBL5NQdpol6Gb8JJ
+         OcAj37ZjMK14cnTZZJoWqtQib0RlMomKyF3wSLaQOVwKvLfRUB3JuthkSDVt1com1d7Z
+         6tonoD4RdXidV6ybW1S2gDcY8L15NPZjRQnt/vSvh57umdaDvZ1k8DPy4v8pCdxCjKyJ
+         ibAw==
+X-Gm-Message-State: AOAM533WDe17oyRJixF7O30+jal34RaqkuhlFCQ5o84lUyYJsh7wE+kO
+        b62izU6UBxphpRw48PHIqiI6CA==
+X-Google-Smtp-Source: ABdhPJyxVe17/0eKblgPSzmd8LYnlK5OU0fZstxcP0wYhMTmwGJ+EoY2+qgvFkw3NrZJaG570JCCsA==
+X-Received: by 2002:a17:90a:fa8c:b0:1bb:83eb:576b with SMTP id cu12-20020a17090afa8c00b001bb83eb576bmr257473pjb.122.1644995599810;
+        Tue, 15 Feb 2022 23:13:19 -0800 (PST)
+Received: from smtpclient.apple ([139.177.225.225])
+        by smtp.gmail.com with ESMTPSA id n15sm4422271pgd.17.2022.02.15.23.13.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Feb 2022 23:13:19 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.20.0.1.32\))
+Subject: Re: [virtio-dev] Re: [RFC] Virtio RDMA
+From:   Junji Wei <weijunji@bytedance.com>
+In-Reply-To: <CACGkMEsafzRWYxEw1YUYHka3sm3tH7qXYhcad++NYcfS6LXFLg@mail.gmail.com>
+Date:   Wed, 16 Feb 2022 15:13:11 +0800
+Cc:     Doug Ledford <dledford@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        mst <mst@redhat.com>, yuval.shaia.ml@gmail.com,
+        Marcel Apfelbaum <marcel.apfelbaum@gmail.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Virtio-Dev <virtio-dev@lists.oasis-open.org>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        zhoujielong@bytedance.com, zhangqianyu.sys@bytedance.com,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F801A40A-FB1B-41C6-B409-0106A66E6EDB@bytedance.com>
+References: <20220215081353.10351-1-weijunji@bytedance.com>
+ <CACGkMEv44vBkUD4YZHg-irzNfxsKjZ4kMZH91LkEYfmmWWhsBA@mail.gmail.com>
+ <B07F1166-36A4-4B17-A063-F5447296B99D@bytedance.com>
+ <CACGkMEsoKact5us2tHK226ui9fe7DTcMy0BPbE1Ohd0bTpxwWg@mail.gmail.com>
+ <19CC8304-C2B3-45A7-BFDB-28E9D0D4A02A@bytedance.com>
+ <CACGkMEsafzRWYxEw1YUYHka3sm3tH7qXYhcad++NYcfS6LXFLg@mail.gmail.com>
+To:     Jason Wang <jasowang@redhat.com>
+X-Mailer: Apple Mail (2.3693.20.0.1.32)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 01:44:49PM -0600, Bob Pearson wrote:
-> A previous patch replaced all irqsave locks in rxe with bh locks.
-> This ran into problems because rdmacm has a bad habit of
-> calling rdma verbs APIs while disabling irqs. This is not allowed
-> during spin_unlock_bh() causing programs that use rdmacm to fail.
-> This patch reverts the changes to locks that had this problem or
-> got dragged into the same mess. After this patch blktests/check -q srp
-> now runs correctly.
-> 
-> This patch applies cleanly to current for-next
-> 
-> commit: 2f1b2820b546 ("Merge branch 'irdma_dscp' into rdma.git for-next")
 
-The three lines above shouldn't be part of commit message.
 
-Thanks
+> On Feb 16, 2022, at 2:58 PM, Jason Wang <jasowang@redhat.com> wrote:
+>=20
+> On Wed, Feb 16, 2022 at 2:50 PM Junji Wei <weijunji@bytedance.com> =
+wrote:
+>>=20
+>>=20
+>>=20
+>>> On Feb 16, 2022, at 1:54 PM, Jason Wang <jasowang@redhat.com> wrote:
+>>>=20
+>>> On Tue, Feb 15, 2022 at 6:02 PM Junji Wei <weijunji@bytedance.com> =
+wrote:
+>>>>=20
+>>>>=20
+>>>>> On Feb 15, 2022, at 4:44 PM, Jason Wang <jasowang@redhat.com> =
+wrote:
+>>>>>=20
+>>>>> On Tue, Feb 15, 2022 at 4:15 PM Junji Wei <weijunji@bytedance.com> =
+wrote:
+>>>>>>=20
+>>>>>> Hi all,
+>>>>>>=20
+>>>>>> This RFC aims to introduce our recent work on VirtIO-RDMA.
+>>>>>>=20
+>>>>>> We have finished a draft of VirtIO-RDMA specification and a =
+vhost-user
+>>>>>> RDMA demo based on the spec.This demo can work with CM/Socket
+>>>>>> and UD/RC QP now.
+>>>>>>=20
+>>>>>> NOTE that this spec now only focuses on emulating a soft
+>>>>>> RoCE (RDMA over Converged Ethernet) device with normal Network =
+Interface
+>>>>>> Card (without RDMA capability). So most Infiniband (IB) specific =
+features
+>>>>>> such as Subnet Manager (SM), Local Identifier (LID) and Automatic =
+Path
+>>>>>> Migration (APM) are not covered in this specification.
+>>>>>>=20
+>>>>>> There are four parts of our work:
+>>>>>>=20
+>>>>>> 1. VirtIO-RDMA driver in linux kernel:
+>>>>>> https://github.com/weijunji/linux/tree/virtio-rdma-patch
+>>>>>>=20
+>>>>>> 2. VirtIO-RDMA userspace provider in rdma-core:
+>>>>>> https://github.com/weijunji/rdma-core/tree/virtio-rdma
+>>>>>>=20
+>>>>>> 3. VHost-User RDMA backend in QEMU:
+>>>>>> https://github.com/weijunji/qemu/tree/vhost-user-rdma
+>>>>>>=20
+>>>>>> 4. VHost-User RDMA demo implements with DPDK:
+>>>>>> https://github.com/weijunji/dpdk-rdma
+>>>>>>=20
+>>>>>>=20
+>>>>>> To test with our demo:
+>>>>>>=20
+>>>>>> 1. Build Linux kernel with config INFINIBAND_VIRTIO_RDMA
+>>>>>>=20
+>>>>>> 2. Build QEMU with config VHOST_USER_RDMA
+>>>>>>=20
+>>>>>> 3. Build rdma-core and install it to VM image
+>>>>>>=20
+>>>>>> 4. Build and install DPDK(NOTE that we only tested on DPDK =
+20.11.3)
+>>>>>>=20
+>>>>>> 5. Build dpdk-rdma:
+>>>>>>  $ cd dpdk-rdma
+>>>>>>  $ meson build
+>>>>>>  $ cd build
+>>>>>>  $ ninja
+>>>>>>=20
+>>>>>> 6. Run dpdk-rdma:
+>>>>>>  $ sudo ./dpdk-rdma --vdev 'net_vhost0,iface=3D/tmp/sock0,queues=3D=
+1' \
+>>>>>>    --vdev 'net_tap0' --lcore '1-3'
+>>>>>>  $ sudo brctl addif virbr0 dtap0
+>>>>>>=20
+>>>>>> 7. Boot kernel with qemu with following args using libvirt:
+>>>>>> <qemu:commandline>
+>>>>>>  <qemu:arg value=3D'-chardev'/>
+>>>>>>  <qemu:arg value=3D'socket,path=3D/tmp/sock0,id=3Dvunet'/>
+>>>>>>  <qemu:arg value=3D'-netdev'/>
+>>>>>>  <qemu:arg =
+value=3D'vhost-user,id=3Dnet1,chardev=3Dvunet,vhostforce,queues=3D1'/>
+>>>>>>  <qemu:arg value=3D'-device'/>
+>>>>>>  <qemu:arg =
+value=3D'virtio-net-pci,netdev=3Dnet1,bus=3Dpci.0,multifunction=3Don,addr=3D=
+0x2'/>
+>>>>>>  <qemu:arg value=3D'-chardev'/>
+>>>>>>  <qemu:arg value=3D'socket,path=3D/tmp/vhost-rdma0,id=3Dvurdma'/>
+>>>>>>  <qemu:arg value=3D'-device'/>
+>>>>>>  <qemu:arg =
+value=3D'vhost-user-rdma-pci,page-per-vq,disable-legacy=3Don,addr=3D2.1,ch=
+ardev=3Dvurdma'/>
+>>>>>> </qemu:commandline>
+>>>>>>=20
+>>>>>> NOTE that virtio-net-pci and vhost-user-rdma-pci MUST in same PCI =
+addresss.
+>>>>>>=20
+>>>>>=20
+>>>>> A silly question, if RoCE is the focus, why not extending =
+virtio-net instead?
+>>>>=20
+>>>> I think it's OK to extend virtio-net to implement virtio-rdma. But =
+if we want to
+>>>> support IB in the future, would it be better to implement the =
+virtio-rdma in an
+>>>> independent way?
+>>>=20
+>>> I'm not sure but a question is whether IB is useful to be visible by
+>>> the guest. E.g can you implement the soft RoCE backend via IB
+>>> hardware?
+>>=20
+>> We can't. So do you mean we can implement virtio-rdma only for IB in =
+the future?
+>=20
+> It's probably virtio-IB but we need to listen to others.
 
-> 
-> Reported-by: Guoqing Jiang <guoqing.jiang@linux.dev>
-> Reported-by: Bart Van Assche <bvanassche@acm.org>
-> Fixes: 21adfa7a3c4e ("RDMA/rxe: Replace irqsave locks with bh locks")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->  drivers/infiniband/sw/rxe/rxe_cq.c    | 20 +++++++++++-------
->  drivers/infiniband/sw/rxe/rxe_mcast.c | 19 ++++++++++-------
->  drivers/infiniband/sw/rxe/rxe_pool.c  | 30 ++++++++++++++++-----------
->  drivers/infiniband/sw/rxe/rxe_queue.c | 10 +++++----
->  drivers/infiniband/sw/rxe/rxe_resp.c  | 11 +++++-----
->  drivers/infiniband/sw/rxe/rxe_verbs.c | 27 ++++++++++++++----------
->  6 files changed, 69 insertions(+), 48 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-> index 6baaaa34458e..642b52539ac3 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_cq.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-> @@ -42,13 +42,14 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
->  static void rxe_send_complete(struct tasklet_struct *t)
->  {
->  	struct rxe_cq *cq = from_tasklet(cq, t, comp_task);
-> +	unsigned long flags;
->  
-> -	spin_lock_bh(&cq->cq_lock);
-> +	spin_lock_irqsave(&cq->cq_lock, flags);
->  	if (cq->is_dying) {
-> -		spin_unlock_bh(&cq->cq_lock);
-> +		spin_unlock_irqrestore(&cq->cq_lock, flags);
->  		return;
->  	}
-> -	spin_unlock_bh(&cq->cq_lock);
-> +	spin_unlock_irqrestore(&cq->cq_lock, flags);
->  
->  	cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
->  }
-> @@ -107,12 +108,13 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->  	struct ib_event ev;
->  	int full;
->  	void *addr;
-> +	unsigned long flags;
->  
-> -	spin_lock_bh(&cq->cq_lock);
-> +	spin_lock_irqsave(&cq->cq_lock, flags);
->  
->  	full = queue_full(cq->queue, QUEUE_TYPE_TO_CLIENT);
->  	if (unlikely(full)) {
-> -		spin_unlock_bh(&cq->cq_lock);
-> +		spin_unlock_irqrestore(&cq->cq_lock, flags);
->  		if (cq->ibcq.event_handler) {
->  			ev.device = cq->ibcq.device;
->  			ev.element.cq = &cq->ibcq;
-> @@ -128,7 +130,7 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->  
->  	queue_advance_producer(cq->queue, QUEUE_TYPE_TO_CLIENT);
->  
-> -	spin_unlock_bh(&cq->cq_lock);
-> +	spin_unlock_irqrestore(&cq->cq_lock, flags);
->  
->  	if ((cq->notify == IB_CQ_NEXT_COMP) ||
->  	    (cq->notify == IB_CQ_SOLICITED && solicited)) {
-> @@ -141,9 +143,11 @@ int rxe_cq_post(struct rxe_cq *cq, struct rxe_cqe *cqe, int solicited)
->  
->  void rxe_cq_disable(struct rxe_cq *cq)
->  {
-> -	spin_lock_bh(&cq->cq_lock);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&cq->cq_lock, flags);
->  	cq->is_dying = true;
-> -	spin_unlock_bh(&cq->cq_lock);
-> +	spin_unlock_irqrestore(&cq->cq_lock, flags);
->  }
->  
->  void rxe_cq_cleanup(struct rxe_pool_elem *elem)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-> index 9336295c4ee2..2878a56d9994 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-> @@ -58,11 +58,12 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
->  	int err;
->  	struct rxe_mcg *grp;
->  	struct rxe_pool *pool = &rxe->mc_grp_pool;
-> +	unsigned long flags;
->  
->  	if (rxe->attr.max_mcast_qp_attach == 0)
->  		return -EINVAL;
->  
-> -	write_lock_bh(&pool->pool_lock);
-> +	write_lock_irqsave(&pool->pool_lock, flags);
->  
->  	grp = rxe_pool_get_key_locked(pool, mgid);
->  	if (grp)
-> @@ -70,13 +71,13 @@ static int rxe_mcast_get_grp(struct rxe_dev *rxe, union ib_gid *mgid,
->  
->  	grp = create_grp(rxe, pool, mgid);
->  	if (IS_ERR(grp)) {
-> -		write_unlock_bh(&pool->pool_lock);
-> +		write_unlock_irqrestore(&pool->pool_lock, flags);
->  		err = PTR_ERR(grp);
->  		return err;
->  	}
->  
->  done:
-> -	write_unlock_bh(&pool->pool_lock);
-> +	write_unlock_irqrestore(&pool->pool_lock, flags);
->  	*grp_p = grp;
->  	return 0;
->  }
-> @@ -86,9 +87,10 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->  {
->  	int err;
->  	struct rxe_mca *elem;
-> +	unsigned long flags;
->  
->  	/* check to see of the qp is already a member of the group */
-> -	spin_lock_bh(&grp->mcg_lock);
-> +	spin_lock_irqsave(&grp->mcg_lock, flags);
->  	list_for_each_entry(elem, &grp->qp_list, qp_list) {
->  		if (elem->qp == qp) {
->  			err = 0;
-> @@ -118,7 +120,7 @@ static int rxe_mcast_add_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->  
->  	err = 0;
->  out:
-> -	spin_unlock_bh(&grp->mcg_lock);
-> +	spin_unlock_irqrestore(&grp->mcg_lock, flags);
->  	return err;
->  }
->  
-> @@ -127,12 +129,13 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->  {
->  	struct rxe_mcg *grp;
->  	struct rxe_mca *elem, *tmp;
-> +	unsigned long flags;
->  
->  	grp = rxe_pool_get_key(&rxe->mc_grp_pool, mgid);
->  	if (!grp)
->  		goto err1;
->  
-> -	spin_lock_bh(&grp->mcg_lock);
-> +	spin_lock_irqsave(&grp->mcg_lock, flags);
->  
->  	list_for_each_entry_safe(elem, tmp, &grp->qp_list, qp_list) {
->  		if (elem->qp == qp) {
-> @@ -140,7 +143,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->  			grp->num_qp--;
->  			atomic_dec(&qp->mcg_num);
->  
-> -			spin_unlock_bh(&grp->mcg_lock);
-> +			spin_unlock_irqrestore(&grp->mcg_lock, flags);
->  			rxe_drop_ref(elem);
->  			rxe_drop_ref(grp);	/* ref held by QP */
->  			rxe_drop_ref(grp);	/* ref from get_key */
-> @@ -148,7 +151,7 @@ static int rxe_mcast_drop_grp_elem(struct rxe_dev *rxe, struct rxe_qp *qp,
->  		}
->  	}
->  
-> -	spin_unlock_bh(&grp->mcg_lock);
-> +	spin_unlock_irqrestore(&grp->mcg_lock, flags);
->  	rxe_drop_ref(grp);			/* ref from get_key */
->  err1:
->  	return -EINVAL;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-> index 63c594173565..a11dab13c192 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-> @@ -260,11 +260,12 @@ int __rxe_add_key_locked(struct rxe_pool_elem *elem, void *key)
->  int __rxe_add_key(struct rxe_pool_elem *elem, void *key)
->  {
->  	struct rxe_pool *pool = elem->pool;
-> +	unsigned long flags;
->  	int err;
->  
-> -	write_lock_bh(&pool->pool_lock);
-> +	write_lock_irqsave(&pool->pool_lock, flags);
->  	err = __rxe_add_key_locked(elem, key);
-> -	write_unlock_bh(&pool->pool_lock);
-> +	write_unlock_irqrestore(&pool->pool_lock, flags);
->  
->  	return err;
->  }
-> @@ -279,10 +280,11 @@ void __rxe_drop_key_locked(struct rxe_pool_elem *elem)
->  void __rxe_drop_key(struct rxe_pool_elem *elem)
->  {
->  	struct rxe_pool *pool = elem->pool;
-> +	unsigned long flags;
->  
-> -	write_lock_bh(&pool->pool_lock);
-> +	write_lock_irqsave(&pool->pool_lock, flags);
->  	__rxe_drop_key_locked(elem);
-> -	write_unlock_bh(&pool->pool_lock);
-> +	write_unlock_irqrestore(&pool->pool_lock, flags);
->  }
->  
->  int __rxe_add_index_locked(struct rxe_pool_elem *elem)
-> @@ -299,11 +301,12 @@ int __rxe_add_index_locked(struct rxe_pool_elem *elem)
->  int __rxe_add_index(struct rxe_pool_elem *elem)
->  {
->  	struct rxe_pool *pool = elem->pool;
-> +	unsigned long flags;
->  	int err;
->  
-> -	write_lock_bh(&pool->pool_lock);
-> +	write_lock_irqsave(&pool->pool_lock, flags);
->  	err = __rxe_add_index_locked(elem);
-> -	write_unlock_bh(&pool->pool_lock);
-> +	write_unlock_irqrestore(&pool->pool_lock, flags);
->  
->  	return err;
->  }
-> @@ -319,10 +322,11 @@ void __rxe_drop_index_locked(struct rxe_pool_elem *elem)
->  void __rxe_drop_index(struct rxe_pool_elem *elem)
->  {
->  	struct rxe_pool *pool = elem->pool;
-> +	unsigned long flags;
->  
-> -	write_lock_bh(&pool->pool_lock);
-> +	write_lock_irqsave(&pool->pool_lock, flags);
->  	__rxe_drop_index_locked(elem);
-> -	write_unlock_bh(&pool->pool_lock);
-> +	write_unlock_irqrestore(&pool->pool_lock, flags);
->  }
->  
->  void *rxe_alloc_locked(struct rxe_pool *pool)
-> @@ -440,11 +444,12 @@ void *rxe_pool_get_index_locked(struct rxe_pool *pool, u32 index)
->  
->  void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
->  {
-> +	unsigned long flags;
->  	void *obj;
->  
-> -	read_lock_bh(&pool->pool_lock);
-> +	read_lock_irqsave(&pool->pool_lock, flags);
->  	obj = rxe_pool_get_index_locked(pool, index);
-> -	read_unlock_bh(&pool->pool_lock);
-> +	read_unlock_irqrestore(&pool->pool_lock, flags);
->  
->  	return obj;
->  }
-> @@ -484,11 +489,12 @@ void *rxe_pool_get_key_locked(struct rxe_pool *pool, void *key)
->  
->  void *rxe_pool_get_key(struct rxe_pool *pool, void *key)
->  {
-> +	unsigned long flags;
->  	void *obj;
->  
-> -	read_lock_bh(&pool->pool_lock);
-> +	read_lock_irqsave(&pool->pool_lock, flags);
->  	obj = rxe_pool_get_key_locked(pool, key);
-> -	read_unlock_bh(&pool->pool_lock);
-> +	read_unlock_irqrestore(&pool->pool_lock, flags);
->  
->  	return obj;
->  }
-> diff --git a/drivers/infiniband/sw/rxe/rxe_queue.c b/drivers/infiniband/sw/rxe/rxe_queue.c
-> index a1b283dd2d4c..dbd4971039c0 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_queue.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_queue.c
-> @@ -151,6 +151,8 @@ int rxe_queue_resize(struct rxe_queue *q, unsigned int *num_elem_p,
->  	struct rxe_queue *new_q;
->  	unsigned int num_elem = *num_elem_p;
->  	int err;
-> +	unsigned long producer_flags;
-> +	unsigned long consumer_flags;
->  
->  	new_q = rxe_queue_init(q->rxe, &num_elem, elem_size, q->type);
->  	if (!new_q)
-> @@ -164,17 +166,17 @@ int rxe_queue_resize(struct rxe_queue *q, unsigned int *num_elem_p,
->  		goto err1;
->  	}
->  
-> -	spin_lock_bh(consumer_lock);
-> +	spin_lock_irqsave(consumer_lock, consumer_flags);
->  
->  	if (producer_lock) {
-> -		spin_lock_bh(producer_lock);
-> +		spin_lock_irqsave(producer_lock, producer_flags);
->  		err = resize_finish(q, new_q, num_elem);
-> -		spin_unlock_bh(producer_lock);
-> +		spin_unlock_irqrestore(producer_lock, producer_flags);
->  	} else {
->  		err = resize_finish(q, new_q, num_elem);
->  	}
->  
-> -	spin_unlock_bh(consumer_lock);
-> +	spin_unlock_irqrestore(consumer_lock, consumer_flags);
->  
->  	rxe_queue_cleanup(new_q);	/* new/old dep on err */
->  	if (err)
-> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-> index 380934e38923..c369d78fc8e8 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-> @@ -297,21 +297,22 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
->  	struct ib_event ev;
->  	unsigned int count;
->  	size_t size;
-> +	unsigned long flags;
->  
->  	if (srq->error)
->  		return RESPST_ERR_RNR;
->  
-> -	spin_lock_bh(&srq->rq.consumer_lock);
-> +	spin_lock_irqsave(&srq->rq.consumer_lock, flags);
->  
->  	wqe = queue_head(q, QUEUE_TYPE_FROM_CLIENT);
->  	if (!wqe) {
-> -		spin_unlock_bh(&srq->rq.consumer_lock);
-> +		spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
->  		return RESPST_ERR_RNR;
->  	}
->  
->  	/* don't trust user space data */
->  	if (unlikely(wqe->dma.num_sge > srq->rq.max_sge)) {
-> -		spin_unlock_bh(&srq->rq.consumer_lock);
-> +		spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
->  		pr_warn("%s: invalid num_sge in SRQ entry\n", __func__);
->  		return RESPST_ERR_MALFORMED_WQE;
->  	}
-> @@ -327,11 +328,11 @@ static enum resp_states get_srq_wqe(struct rxe_qp *qp)
->  		goto event;
->  	}
->  
-> -	spin_unlock_bh(&srq->rq.consumer_lock);
-> +	spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
->  	return RESPST_CHK_LENGTH;
->  
->  event:
-> -	spin_unlock_bh(&srq->rq.consumer_lock);
-> +	spin_unlock_irqrestore(&srq->rq.consumer_lock, flags);
->  	ev.device = qp->ibqp.device;
->  	ev.element.srq = qp->ibqp.srq;
->  	ev.event = IB_EVENT_SRQ_LIMIT_REACHED;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> index 9f0aef4b649d..80df9a8f71a1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-> @@ -384,8 +384,9 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
->  {
->  	int err = 0;
->  	struct rxe_srq *srq = to_rsrq(ibsrq);
-> +	unsigned long flags;
->  
-> -	spin_lock_bh(&srq->rq.producer_lock);
-> +	spin_lock_irqsave(&srq->rq.producer_lock, flags);
->  
->  	while (wr) {
->  		err = post_one_recv(&srq->rq, wr);
-> @@ -394,7 +395,7 @@ static int rxe_post_srq_recv(struct ib_srq *ibsrq, const struct ib_recv_wr *wr,
->  		wr = wr->next;
->  	}
->  
-> -	spin_unlock_bh(&srq->rq.producer_lock);
-> +	spin_unlock_irqrestore(&srq->rq.producer_lock, flags);
->  
->  	if (err)
->  		*bad_wr = wr;
-> @@ -643,18 +644,19 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->  	int err;
->  	struct rxe_sq *sq = &qp->sq;
->  	struct rxe_send_wqe *send_wqe;
-> +	unsigned long flags;
->  	int full;
->  
->  	err = validate_send_wr(qp, ibwr, mask, length);
->  	if (err)
->  		return err;
->  
-> -	spin_lock_bh(&qp->sq.sq_lock);
-> +	spin_lock_irqsave(&qp->sq.sq_lock, flags);
->  
->  	full = queue_full(sq->queue, QUEUE_TYPE_TO_DRIVER);
->  
->  	if (unlikely(full)) {
-> -		spin_unlock_bh(&qp->sq.sq_lock);
-> +		spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
->  		return -ENOMEM;
->  	}
->  
-> @@ -663,7 +665,7 @@ static int post_one_send(struct rxe_qp *qp, const struct ib_send_wr *ibwr,
->  
->  	queue_advance_producer(sq->queue, QUEUE_TYPE_TO_DRIVER);
->  
-> -	spin_unlock_bh(&qp->sq.sq_lock);
-> +	spin_unlock_irqrestore(&qp->sq.sq_lock, flags);
->  
->  	return 0;
->  }
-> @@ -743,6 +745,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->  	int err = 0;
->  	struct rxe_qp *qp = to_rqp(ibqp);
->  	struct rxe_rq *rq = &qp->rq;
-> +	unsigned long flags;
->  
->  	if (unlikely((qp_state(qp) < IB_QPS_INIT) || !qp->valid)) {
->  		*bad_wr = wr;
-> @@ -756,7 +759,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->  		goto err1;
->  	}
->  
-> -	spin_lock_bh(&rq->producer_lock);
-> +	spin_lock_irqsave(&rq->producer_lock, flags);
->  
->  	while (wr) {
->  		err = post_one_recv(rq, wr);
-> @@ -767,7 +770,7 @@ static int rxe_post_recv(struct ib_qp *ibqp, const struct ib_recv_wr *wr,
->  		wr = wr->next;
->  	}
->  
-> -	spin_unlock_bh(&rq->producer_lock);
-> +	spin_unlock_irqrestore(&rq->producer_lock, flags);
->  
->  	if (qp->resp.state == QP_STATE_ERROR)
->  		rxe_run_task(&qp->resp.task, 1);
-> @@ -848,8 +851,9 @@ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
->  	int i;
->  	struct rxe_cq *cq = to_rcq(ibcq);
->  	struct rxe_cqe *cqe;
-> +	unsigned long flags;
->  
-> -	spin_lock_bh(&cq->cq_lock);
-> +	spin_lock_irqsave(&cq->cq_lock, flags);
->  	for (i = 0; i < num_entries; i++) {
->  		cqe = queue_head(cq->queue, QUEUE_TYPE_FROM_DRIVER);
->  		if (!cqe)
-> @@ -858,7 +862,7 @@ static int rxe_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
->  		memcpy(wc++, &cqe->ibwc, sizeof(*wc));
->  		queue_advance_consumer(cq->queue, QUEUE_TYPE_FROM_DRIVER);
->  	}
-> -	spin_unlock_bh(&cq->cq_lock);
-> +	spin_unlock_irqrestore(&cq->cq_lock, flags);
->  
->  	return i;
->  }
-> @@ -878,8 +882,9 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
->  	struct rxe_cq *cq = to_rcq(ibcq);
->  	int ret = 0;
->  	int empty;
-> +	unsigned long irq_flags;
->  
-> -	spin_lock_bh(&cq->cq_lock);
-> +	spin_lock_irqsave(&cq->cq_lock, irq_flags);
->  	if (cq->notify != IB_CQ_NEXT_COMP)
->  		cq->notify = flags & IB_CQ_SOLICITED_MASK;
->  
-> @@ -888,7 +893,7 @@ static int rxe_req_notify_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
->  	if ((flags & IB_CQ_REPORT_MISSED_EVENTS) && !empty)
->  		ret = 1;
->  
-> -	spin_unlock_bh(&cq->cq_lock);
-> +	spin_unlock_irqrestore(&cq->cq_lock, irq_flags);
->  
->  	return ret;
->  }
-> -- 
-> 2.32.0
-> 
+Agreed, one problem is that there might be some duplicated works.
+
+>=20
+>>=20
+>>>> And currently virtio-rdma doesn't have a strong dependency on
+>>>> virtio-net (except for gid and ah stuffs). Is it OK to mix them up?
+>>>=20
+>>> There are a bunch of hardware vendors that ship a converged Ethernet
+>>> adapter. It simplifies the management and deployment.
+>>=20
+>> Virtio-rdma is not depend on virtio-net, we can bind it to another =
+ethernet device
+>> via mac address in the future. And is it too mass to mix up two =
+different device
+>> in one spec?
+>=20
+> So either should be fine, we just need to figure out which one is
+> better. What I meant is to extend the virtio-net to be capable of
+> converged ethernet.
+
+Got it. One question is whether there will be some cases that user want
+to use virtio-rdma binding to other types of ethernet device such as
+passthroughed net device. In this case, we don=E2=80=99t need a =
+virtio-net
+device actually.
+
+Thanks.
+
