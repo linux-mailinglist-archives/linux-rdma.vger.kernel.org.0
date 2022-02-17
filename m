@@ -2,143 +2,215 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC344BA51E
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 16:54:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C95C4BA634
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 17:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbiBQPx3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 10:53:29 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48714 "EHLO
+        id S242555AbiBQQlm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 11:41:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229478AbiBQPx3 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 10:53:29 -0500
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2066.outbound.protection.outlook.com [40.107.212.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C2FEDAB;
-        Thu, 17 Feb 2022 07:53:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=B2+yCxLQLU7+KIKKguDVR0IEcq7PVmAkjuNc0IxVC3As/aiq+39JULm+7DH+6YMMpQZw8/SujtnaxM5ZHdrrvR4Go8WnEShCYD5wucgZhw9HBKSyp7lfwpxOeaZAYWsV8FkniZz3pGWqUnK4cOxccS3bef39ceppYBSgluQamWTJ/3zQvPxcstQc91Szx25QFXxlUGPBTr25EeC4bVEDuF2mSoTwvmzWAp+M2W5wnZSZhpZpI46iSSqky1H/nzrkfMECBOjfeajKLnHhI5xlIorTssiRIpeWSA3Iw5p6ncENI2U2fU2nXu2JztbNYcTBqfPppuz4Ud3x/hHf0GAeTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ep8qLWG0YSgzfW+FS3Vmkcr/szXSac5NJ8eGYA0ht9w=;
- b=joKO0xeWRnetPlK9HQFij9wgiEaP56FbAlKuEDQBRW3cTYbzZBXO9n43eoLbjnN32JbUfAfM0H+WchbcvBkxu4E5WggIFQIQMqKiUJImDopzJkRO8WGTPsSnq8DsRkzLSVOCBQpQ6X82Zf4VTg7+QvZ7YbSr1HolSFKZQw7ZkwHJzC1OOB5uHYF7i432ONvqcWVDTMkXFBHhEIAsHGvaWUoyt4hvN5u7QYXTjYSm7flP2SOy3ejZamDYxT+HrWN2lrv4VzaEogjizBvIUWUxmJeeSx0nIe1JKe1b5yDySQFbI08pszZrC/eTk350w+afaeEf99v56/V+Ud09dNR3rQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ep8qLWG0YSgzfW+FS3Vmkcr/szXSac5NJ8eGYA0ht9w=;
- b=OpTYZL3N0orQ3EoeII2LbBAhAbxTX8WJMrT8sQHt00grP7USbRiJVcPijoB2kegFvYr/mHRSVBd5o+5L4rQjHsBvvBWpmoRz5ERY06UBZuE/5G0SHLBF7L6h03H8uQSpcVIrEBV1NgBYg5tuB6Wt7sSiIeH1jICm8GMs1eqRhqUJyARGCkuBl0sKfrcV+fW2/1YphUzUqd2evMgTL+mWs3wm5Bqonfmd1Nm5Ud8zpr9hGaDdnbUPx6MxeLtFn/V2/wretfdxe/Y2/ZFHTqObpOOXAE+D4uxltOV1Cr8/wYvTGM6jAp4Mwfjl0QM27yvQ6L/+0u2A2DatidlYJoJJCQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CH2PR12MB4181.namprd12.prod.outlook.com (2603:10b6:610:a8::16)
- by MN2PR12MB3503.namprd12.prod.outlook.com (2603:10b6:208:cf::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4975.15; Thu, 17 Feb
- 2022 15:53:12 +0000
-Received: from CH2PR12MB4181.namprd12.prod.outlook.com
- ([fe80::287d:b5f6:ed76:64ba]) by CH2PR12MB4181.namprd12.prod.outlook.com
- ([fe80::287d:b5f6:ed76:64ba%4]) with mapi id 15.20.4995.017; Thu, 17 Feb 2022
- 15:53:12 +0000
-Date:   Thu, 17 Feb 2022 11:53:11 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     =?utf-8?B?SMOla29u?= Bugge <haakon.bugge@oracle.com>
-Cc:     Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH for-rc v2] IB/cma: Allow XRG INI QPs to set their local
- ACK timeout
-Message-ID: <20220217155311.GA1432970@nvidia.com>
-References: <1644421175-31943-1-git-send-email-haakon.bugge@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1644421175-31943-1-git-send-email-haakon.bugge@oracle.com>
-X-ClientProxiedBy: MN2PR14CA0029.namprd14.prod.outlook.com
- (2603:10b6:208:23e::34) To CH2PR12MB4181.namprd12.prod.outlook.com
- (2603:10b6:610:a8::16)
+        with ESMTP id S241245AbiBQQll (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 11:41:41 -0500
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32BE5E0B
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 08:41:23 -0800 (PST)
+Received: by mail-io1-f69.google.com with SMTP id q5-20020a0566022f0500b00638278a161fso2531211iow.11
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 08:41:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=nqAPwEEhwPR0Pv3AXtCJI0o79dEiYFLyRlAR6waSNts=;
+        b=uCPa7mkPZ8B4hBTUvRMXo77febzqFxKm8KpM54LIazQL0YeX1Hc/IWfPFAa0+eRwfa
+         P0x1aV5kPz9SXOaiY9cMz4ycuqeGi3f59g1ZVKUEiSKmjzRi/8fu8HwSD6tJsZIhJiN/
+         DzifwYHddj5qG4BwnmG4GEned7YZscq72dTj0KBEJoV4AlWI03xThDIOcBQ3ix/TMWhP
+         6ibi+uhxbVX780wDzR0PRGU5FXMc77RPkGt5nh943D0kisuO1cU9//9fj0jresjLeRaH
+         JtLU7tSi5n3I3maXF8MkN83OrhWM4wB/9FW8+uli+q5Cw0kFKK40AqllKQgCi6BXedcz
+         OTmQ==
+X-Gm-Message-State: AOAM530BqKa2g2LWge0I8dQot3jIb3xT2p0Dy1FjE26qGK7xC3rrTTTu
+        eTfQKMM9fcZld0udx93CFlLiKeOVwSeHMN1Vz4MMrsqqoUXH
+X-Google-Smtp-Source: ABdhPJzi2uSOJET/qIt8gik3yCeeRZab/iPkcQghp1KpFihPA8CNzTSywhz9uvEfe3jJVjNXMHcYmjLOy0cNzv1xnB6cRloCtYG+
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c2a373a6-09ba-4992-635f-08d9f22d9a2b
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3503:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR12MB350342246F03BBA7162F0CBBC2369@MN2PR12MB3503.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YXtdn4k+7lrR6vEIlS3lS8t2akGijn+Unb8cNxwkcCPek2/vFTtAuV3xGmDHREzSCvB5baiWK5mkkW94iZLY9E3I9XiT/3IJzOMzAgV4ATJ5Qh6y4p8xN6eIaEUF6DtSZjUed0uh0+QGjoq1ujSKCrUZxGz8fw7eof1dZIpSyfmAoqSC3e+TS2wKJ//GORzRdE3OIIdC5h2Hp9t8rljmUGewaex+VKL1n2Tk396O9CCkE2LD68nixUdXTRpLNIEmx6vEUJe/54UREQ8xbBvzjTLHUzkxws6m705bnecS4aga5PER4OqTpt6ifKyIVtDPA51psTnZyJdZW56i4Clbs8b6g2IflBvA4wYA5NdiYdlCrIQYs9aLM0dyIMx8BgtSW4cgNi6+7fdb5b5F0jt0vZpp5WZGnkDwFz7PpPm/DSZwp+LgaN3OZ+8esnoDieGz8t7fw+EN2uWaN1kckQlP6WQlk6BT8kjla0GxNVGG3g+yH4G+NorqC9jGwdcw9LaBWbuvQeFJO9+zSOUHgxkCCyD7sXp13gWRHlFfq50gVo6hKV4O3PEc3ClS0Ps6gOYYeGP/7l12kaWPcX2AIyU0G1oMcSbf61v9WTqqxEzBGdeSrMKo1npHSWXyvScMEMR0I/Z0nWukltPUaXDDud3lWg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR12MB4181.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6486002)(66574015)(66476007)(38100700002)(316002)(8676002)(2906002)(83380400001)(4326008)(33656002)(6916009)(66946007)(66556008)(8936002)(86362001)(26005)(508600001)(6506007)(1076003)(186003)(4744005)(5660300002)(36756003)(6512007)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ekp5TWdFcGRRaytqQUFpdHJ4T2lVWFhzWGtPQWNxaDZJQ3dCZUNiRVFjRWFm?=
- =?utf-8?B?azBBd0E1NlNEbGUyWmtnOFY0T2hxN0J3SUNMMjM5VkJTNjlwcm5SLytER1FQ?=
- =?utf-8?B?VHlIWmt4bnVHRmZ1MVlraThHYnd0c2kxNTB1NkxqMHE4V2hTelhxbmtySHM5?=
- =?utf-8?B?aGNLLzlZZENRNUJUcHUwdytYQkhxa3N4TzV6M2FqdmI3Q0pwODR0QU5YYjho?=
- =?utf-8?B?amtaaE9IazljY2Fldk9BcHBsbE5MMDVOOWRuVGd3KzJHYW1yVzl0Qk90cTBN?=
- =?utf-8?B?Sm4vckZIS05YS2ZyUGo4cWhxQzNOSUJVQk9zUmplU0ZjRXRwMC91T0dWZzE1?=
- =?utf-8?B?c0J6LzMrRkhTejRaWHY0cnl2R25QUnl0aUtRTWlUS2pTVVNUY2dNSnk1SWx3?=
- =?utf-8?B?TnY1NndodWpiOHJUVGlIUnRxSE9OWHlweWFrUE1GMjZnVlRET082ZVEwNHVK?=
- =?utf-8?B?NktIZ0NxdjIwd2F2V0krVDNZRzFGMzk5Uk1xeTk4S2FkSlMycnM4bzdmZWgx?=
- =?utf-8?B?a1Y2d1ZyTU9NMks0OGRsTGROS1d6MGlBTU1nZ1dnTzg2Y0lDMTZWQnVTQlM4?=
- =?utf-8?B?R1BzZHZGMjlmcmhKRnZsUEgwQy9tVitEOXhUdUxyRlhHS1loSEQ5WVJSUHlu?=
- =?utf-8?B?WTJLamwyNkV0UlpmM1REOUNPTWYyM3Q4czlTWWpYWjQvUXlNWVF6cUJ6ekFV?=
- =?utf-8?B?QTJOOVRsMVhKK0trWXBoT0czbXJYTnlqcmh4ZVlrTHB2cWJwdWM5dVZUY0pL?=
- =?utf-8?B?dlpGdUlIQlRHMHdhdHltNTJHQXpXR0U4Y2pSQTYvRjlsdW1DN3U3Z1BpQ1ZN?=
- =?utf-8?B?UzBGOG9DWUthWE5vSnNJc3ZlOTNkUHZhRHUrU2E4NFZyOG5RcWFxeTZIbkdK?=
- =?utf-8?B?b3ZTNENRVEVMQmtSZEcyaHRkdlVDZEFlV3FXR0RqQUozSVFSNGNWKzRkZHdo?=
- =?utf-8?B?ZmlVTmFMZXp2SVQrd0U1bmNXczg2VEZTOUxkbUx0QnNjU3htaThBcjY5U1l6?=
- =?utf-8?B?enZocXZZNGNJNGV3TlJmdFpGelRUcXROcVg1R0pZSEU5VzVjS2IyVitSL0tl?=
- =?utf-8?B?UHc1dzRaR1g2WXlWK1NBdS9nMjdkZlpFdXRHTmZZSkdzbTdYakhROGRsdllI?=
- =?utf-8?B?cUNNU1IzaVMvQTZDTlhGWmlwSk9NQkFKQnhmSnQ3T0p1Nnp4SjFvcFNlMWhl?=
- =?utf-8?B?L2tvS3lNWWhzK0lvZW5ScG5EYlViaDVuNkg1MVJrSmlwdEJyQ0RSRHNDTGI0?=
- =?utf-8?B?ZndnQTNRYzBjYnJYeFNRUWxwQWM0cTYzZXkzWDFZcExGSFBtTksxZlJrQkda?=
- =?utf-8?B?aEhxK3ZKNTNwbUFqdGh1ZmpmMnJqc1RFMmkvWWdPTHlPOWx2Z29hc2x0U2Ex?=
- =?utf-8?B?TzhzeXpsUi95Zkc2K2t5M0JMLzA2SXpTZTdvcFRna1NPMGdLWkIrZGRrTDhL?=
- =?utf-8?B?UlBKRGo1NVJLUmxlZDFOcjFyTDlKN0JzWTRXblI3cDVYdzU1VDIyVGp3dlk2?=
- =?utf-8?B?VzRsbTFjV1RwVGRvVW93RGRKQ1FxT2lUOVg4d2RrZXFlOExaOTFTdlYwcEJ2?=
- =?utf-8?B?L2Z0UFZYU1oxeG1uSkZYcDU2ekFEZGZuMWcvRE1BSGhRUnFseWtld2RFcXhi?=
- =?utf-8?B?REpxcXJHdU9Ga3dGUmQ2WlN1WGlpeUMvZ28zazk4VjN3UjNwOGd6a2Q5MU9r?=
- =?utf-8?B?UTE4M0R5VW5GNlNkcUVCRTdzU2R3WDJJUHc4bDBkVUFmUkFOQzdkd0pSTk5M?=
- =?utf-8?B?c0RDbHVabElnUW5kNXlyRXpnSzRZck53VCtaay9uSko1b1lNRFd4M1JEVTc3?=
- =?utf-8?B?SDhMbDZWaFlTYTlWbWowWUlyN1ZCdlJ1K2tjVXVyVUllT1RwdVhmM3ZFK1Yz?=
- =?utf-8?B?KzlidzJBRXhJd3pUMDhaQ2VBWW1FYVJDaWJNMnVnV3RadGorQ3JLUDFSY3U3?=
- =?utf-8?B?SnJwdUJYZEJxTXF4Q1lQM2g5djJJa3pHalh0czRnc0tsR29RLzhqb0FnS1Jz?=
- =?utf-8?B?WHJHUUU4cUJOVU5KdEFnWUVzT1dydXZNV1JtUzdmY0JwU2d3WTV6by9EdlUr?=
- =?utf-8?B?Q3VFU3Y0Y0dCZ0pTYjVqcjgyaGo4R2xoZ1BWYXZISEVSRWx5TWl2K3FhaU1D?=
- =?utf-8?Q?C1/A=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c2a373a6-09ba-4992-635f-08d9f22d9a2b
-X-MS-Exchange-CrossTenant-AuthSource: CH2PR12MB4181.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2022 15:53:12.5954
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vp/wQYg/gb47p9kesKZn7dBj2IxMYlSscWQ3fJRpp4yXWD9Lp1rLKPtAvOM6LkPh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3503
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a02:3c01:0:b0:314:37ed:233 with SMTP id
+ m1-20020a023c01000000b0031437ed0233mr2380641jaa.118.1645116082579; Thu, 17
+ Feb 2022 08:41:22 -0800 (PST)
+Date:   Thu, 17 Feb 2022 08:41:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b772b805d8396f14@google.com>
+Subject: [syzbot] BUG: sleeping function called from invalid context in smc_pnet_apply_ib
+From:   syzbot <syzbot+4f322a6d84e991c38775@syzkaller.appspotmail.com>
+To:     jgg@ziepe.ca, liangwenpeng@huawei.com,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        liweihang@huawei.com, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 04:39:35PM +0100, Håkon Bugge wrote:
-> XRC INI QPs should be able to adjust their local ACK timeout.
-> 
-> Fixes: 2c1619edef61 ("IB/cma: Define option to set ack timeout and pack tos_set")
-> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-> Suggested-by: Avneesh Pant <avneesh.pant@oracle.com>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
-> 
-> v1 -> v2:
->    * Removed WARN_ON as suggested by Leon
-> ---
->  drivers/infiniband/core/cma.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-Applied to for-next, thanks
+syzbot found the following issue on:
 
-Jason
+HEAD commit:    c832962ac972 net: bridge: multicast: notify switchdev driv..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16b157bc700000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=266de9da75c71a45
+dashboard link: https://syzkaller.appspot.com/bug?extid=4f322a6d84e991c38775
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4f322a6d84e991c38775@syzkaller.appspotmail.com
+
+infiniband syz1: set down
+infiniband syz1: added lo
+RDS/IB: syz1: added
+smc: adding ib device syz1 with port count 1
+BUG: sleeping function called from invalid context at kernel/locking/mutex.c:577
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 17974, name: syz-executor.3
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+6 locks held by syz-executor.3/17974:
+ #0: ffffffff90865838 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
+ #1: ffffffff8d04edf0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x25d/0x560 drivers/infiniband/core/nldev.c:1707
+ #2: ffffffff8d03e650 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1321
+ #3: ffffffff8d03e510 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1329
+ #4: ffff8880482c85c0 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:718
+ #5: ffff8880230a4118 (&pnettable->lock){++++}-{2:2}, at: smc_pnetid_by_table_ib+0x18c/0x470 net/smc/smc_pnet.c:1159
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 17974 Comm: syz-executor.3 Not tainted 5.17.0-rc3-syzkaller-00170-gc832962ac972 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ __might_resched.cold+0x222/0x26b kernel/sched/core.c:9576
+ __mutex_lock_common kernel/locking/mutex.c:577 [inline]
+ __mutex_lock+0x9f/0x12f0 kernel/locking/mutex.c:733
+ smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
+ smc_pnetid_by_table_ib+0x2ae/0x470 net/smc/smc_pnet.c:1164
+ smc_ib_add_dev+0x4d7/0x900 net/smc/smc_ib.c:940
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:720
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+ ib_register_device drivers/infiniband/core/device.c:1419 [inline]
+ ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1365
+ rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1146
+ rxe_add+0x1331/0x1710 drivers/infiniband/sw/rxe/rxe.c:246
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:538
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:268 [inline]
+ rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:249
+ nldev_newlink+0x30a/0x560 drivers/infiniband/core/nldev.c:1717
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1317 [inline]
+ netlink_unicast+0x539/0x7e0 net/netlink/af_netlink.c:1343
+ netlink_sendmsg+0x904/0xe00 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:705 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:725
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2413
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2467
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2496
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f909305f059
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f90919d4168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f9093171f60 RCX: 00007f909305f059
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
+RBP: 00007f90930b908d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff171c256f R14: 00007f90919d4300 R15: 0000000000022000
+ </TASK>
+
+=============================
+[ BUG: Invalid wait context ]
+5.17.0-rc3-syzkaller-00170-gc832962ac972 #0 Tainted: G        W        
+-----------------------------
+syz-executor.3/17974 is trying to lock:
+ffffffff8d710098 (smc_ib_devices.mutex){+.+.}-{3:3}, at: smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
+other info that might help us debug this:
+context-{4:4}
+6 locks held by syz-executor.3/17974:
+ #0: ffffffff90865838 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
+ #1: ffffffff8d04edf0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x25d/0x560 drivers/infiniband/core/nldev.c:1707
+ #2: ffffffff8d03e650 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1321
+ #3: ffffffff8d03e510 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1329
+ #4: ffff8880482c85c0 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:718
+ #5: ffff8880230a4118 (&pnettable->lock){++++}-{2:2}, at: smc_pnetid_by_table_ib+0x18c/0x470 net/smc/smc_pnet.c:1159
+stack backtrace:
+CPU: 1 PID: 17974 Comm: syz-executor.3 Tainted: G        W         5.17.0-rc3-syzkaller-00170-gc832962ac972 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ print_lock_invalid_wait_context kernel/locking/lockdep.c:4678 [inline]
+ check_wait_context kernel/locking/lockdep.c:4739 [inline]
+ __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4977
+ lock_acquire kernel/locking/lockdep.c:5639 [inline]
+ lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5604
+ __mutex_lock_common kernel/locking/mutex.c:600 [inline]
+ __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:733
+ smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
+ smc_pnetid_by_table_ib+0x2ae/0x470 net/smc/smc_pnet.c:1164
+ smc_ib_add_dev+0x4d7/0x900 net/smc/smc_ib.c:940
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:720
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
+ ib_register_device drivers/infiniband/core/device.c:1419 [inline]
+ ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1365
+ rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1146
+ rxe_add+0x1331/0x1710 drivers/infiniband/sw/rxe/rxe.c:246
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:538
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:268 [inline]
+ rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:249
+ nldev_newlink+0x30a/0x560 drivers/infiniband/core/nldev.c:1717
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1317 [inline]
+ netlink_unicast+0x539/0x7e0 net/netlink/af_netlink.c:1343
+ netlink_sendmsg+0x904/0xe00 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:705 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:725
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2413
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2467
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2496
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f909305f059
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f90919d4168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f9093171f60 RCX: 00007f909305f059
+RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000004
+RBP: 00007f90930b908d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007fff171c256f R14: 00007f90919d4300 R15: 0000000000022000
+ </TASK>
+smc:    ib device syz1 port 1 has pnetid SYZ2 (user defined)
+lo speed is unknown, defaulting to 1000
+lo speed is unknown, defaulting to 1000
+lo speed is unknown, defaulting to 1000
+lo speed is unknown, defaulting to 1000
+lo speed is unknown, defaulting to 1000
+lo speed is unknown, defaulting to 1000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
