@@ -2,198 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 078424BA058
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 13:49:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F654BA0F4
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 14:22:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240528AbiBQMty (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 07:49:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55246 "EHLO
+        id S236130AbiBQNWW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 08:22:22 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239479AbiBQMty (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 07:49:54 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DCB2A82D7;
-        Thu, 17 Feb 2022 04:49:40 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id z22so9445112edd.1;
-        Thu, 17 Feb 2022 04:49:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CjBXv9sEQT0KDRtB/KToxdmbCyPvDgWSftjqY9UdKEo=;
-        b=e8cnyeD/uyiORbcZS33cFZjOMW7lj+oRGCaltVliLa8rJ/Ql3q3Fqi9fUyF8IYmJu0
-         n8+FCKmNs1m9mOxaSkdZeJHaS3LXQyG691PvxAXF2ocY/OBjBX8EZ1cur/Lk2L3VXgZo
-         ikVSjwVj0p7TLBUvp0L3GFT3FXaSje/Hh4pl16R5ESqppjrXYsGlQWtvYWprSqKHmNoY
-         nDfVBpOpyuv3lOrhraToDQRd6Hrmc5JN0kAeOF09yuLKlEEuuon341wvrGVXF3VfADc/
-         YdfZtqcI5OFp6GLSpcbXlLHrkLZ3gd1uYf4bdaZwTG3/hHgXrPVXluuXUyv+Sb+eIMJ9
-         p2tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CjBXv9sEQT0KDRtB/KToxdmbCyPvDgWSftjqY9UdKEo=;
-        b=bdh5kD0vciPm6J7EXGULva+kAV+G56G0pDoAW6RZEDVeJNAF1n0/HYzL8pwWo3bZyC
-         +Xniop2i7MPytKO28FenniX/5De5PbNZZOOkBSE/ZpWC9OMpJV7C1ADi9SptDcGiTgEa
-         qbZBtKRP9Zq6ZSvzq3mGR4H/HP7XJikp350J3x/Mw1cwCh34Ntt7VpW0OjwC6Fz7/q5v
-         xS65HUu3fcFr6tLAZ7SEPRsv0FpBehhzjat0GBxEKLEDZdtlGdrbMRM/MIuo59L6ibDH
-         92PC/Y73rr+93TcFF5OpdG4izdhZ1S+4A9xumHnH6ImC2cuqQS94070/Ipr+ouS3tYNM
-         7cKA==
-X-Gm-Message-State: AOAM530cQJ8Etv6GmZ4z8L+1dFQDx4gSYr8SRNFjZJClShAxV3460Qoi
-        EL2JY6k7XBk48b7Mqb0xHuI=
-X-Google-Smtp-Source: ABdhPJz3zWsPmLz9CrxLGaDMYxawvXJubKNWhUWgfl8P4g8tOERhoxGWNI3aZnYBEFRxVVyHluXYVw==
-X-Received: by 2002:a05:6402:35c8:b0:410:dd43:3c09 with SMTP id z8-20020a05640235c800b00410dd433c09mr2399902edc.256.1645102178256;
-        Thu, 17 Feb 2022 04:49:38 -0800 (PST)
-Received: from skbuf ([188.27.184.105])
-        by smtp.gmail.com with ESMTPSA id w17sm3261813edd.18.2022.02.17.04.49.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Feb 2022 04:49:37 -0800 (PST)
-Date:   Thu, 17 Feb 2022 14:49:35 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jianbo Liu <jianbol@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, rajur@chelsio.com,
-        claudiu.manoil@nxp.com, sgoutham@marvell.com, gakula@marvell.com,
-        sbhatta@marvell.com, hkelam@marvell.com, saeedm@nvidia.com,
-        leon@kernel.org, idosch@nvidia.com, petrm@nvidia.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        simon.horman@corigine.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        baowen.zheng@corigine.com, louis.peens@netronome.com,
-        peng.zhang@corigine.com, oss-drivers@corigine.com, roid@nvidia.com
-Subject: Re: [PATCH net-next v2 2/2] flow_offload: reject offload for all
- drivers with invalid police parameters
-Message-ID: <20220217124935.p7pbgv2cfmhpshxv@skbuf>
-References: <20220217082803.3881-1-jianbol@nvidia.com>
- <20220217082803.3881-3-jianbol@nvidia.com>
+        with ESMTP id S230153AbiBQNWV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 08:22:21 -0500
+Received: from out199-12.us.a.mail.aliyun.com (out199-12.us.a.mail.aliyun.com [47.90.199.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE5B11C24;
+        Thu, 17 Feb 2022 05:22:05 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V4kW.U-_1645104120;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V4kW.U-_1645104120)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Feb 2022 21:22:01 +0800
+Date:   Thu, 17 Feb 2022 21:22:00 +0800
+From:   "dust.li" <dust.li@linux.alibaba.com>
+To:     Stefan Raspl <raspl@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net/smc: Add autocork support
+Message-ID: <20220217132200.GA5443@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
+ <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
+ <20220216152721.GB39286@linux.alibaba.com>
+ <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220217082803.3881-3-jianbol@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 08:28:03AM +0000, Jianbo Liu wrote:
-> As more police parameters are passed to flow_offload, driver can check
-> them to make sure hardware handles packets in the way indicated by tc.
-> The conform-exceed control should be drop/pipe or drop/ok. Besides,
-> for drop/ok, the police should be the last action. As hardware can't
-> configure peakrate/avrate/overhead, offload should not be supported if
-> any of them is configured.
-> 
-> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-> Reviewed-by: Roi Dayan <roid@nvidia.com>
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> ---
+On Thu, Feb 17, 2022 at 10:37:28AM +0100, Stefan Raspl wrote:
+>On 2/16/22 16:27, dust.li wrote:
+>> On Wed, Feb 16, 2022 at 02:58:32PM +0100, Stefan Raspl wrote:
+>> > On 2/16/22 04:49, Dust Li wrote:
+>> > > diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
+>> > > index 5df3940d4543..bc737ac79805 100644
+>> > > --- a/net/smc/smc_tx.c
+>> > > +++ b/net/smc/smc_tx.c
+>> > > @@ -31,6 +31,7 @@
+>> > >    #include "smc_tracepoint.h"
+>> > >    #define SMC_TX_WORK_DELAY	0
+>> > > +#define SMC_DEFAULT_AUTOCORK_SIZE	(64 * 1024)
+>> > 
+>> > Probably a matter of taste, but why not use hex here?
+>> 
+>> Yeah, I have no option on this, I will change it in the next version.
+>> But I think it should have no real difference since the compiler
+>> should do the calculation.
+>
+>Agreed - this is just to make it a tiny bit easier to digest.
+>
+>
+>> > Are there any fixed plans to make SMC_DEFAULT_AUTOCORK dynamic...? 'cause
+>> > otherwise we could simply eliminate this parameter, and use the define within
+>> > smc_should_autocork() instead.
+>> 
+>> Yes! Actually I'd like it to be dynamic variable too...
+>> 
+>> I didn't do it because I also want to add a control switch for the autocork
+>> feature just like TCP. In that case I need to add 2 variables here.
+>> But I found adding dynamic variables using netlink would introduce a lot of
+>> redundant code and may even bring ABI compatibility issues in the future, as
+>> I mentioned here:
+>> https://lore.kernel.org/netdev/20220216114618.GA39286@linux.alibaba.com/T/#mecfcd3f8c816d07dbe35e4748d17008331c89523
+>> 
+>> I'm not sure that's the right way to do it. In this case, I prefer using
+>> sysctl which I think would be easier, but I would like to listen to your advice.
+>
+>Extending the Netlink interface should be possible without breaking the API -
+>we'd be adding further variables, not modifying or removing existing ones.
+>Conceptually, Netlink is the way to go for any userspace interaction with
+>SMC, which includes anything config-related.
 
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-But could we cut down on line length a little? Example for sja1105
-(messages were also shortened):
+>Now we understand that cloud workloads are a bit different, and the desire to
+>be able to modify the environment of a container while leaving the container
+>image unmodified is understandable. But then again, enabling the base image
+>would be the cloud way to address this. The question to us is: How do other
+>parts of the kernel address this?
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_flower.c b/drivers/net/dsa/sja1105/sja1105_flower.c
-index 8a14df8cf91e..54a16369a39e 100644
---- a/drivers/net/dsa/sja1105/sja1105_flower.c
-+++ b/drivers/net/dsa/sja1105/sja1105_flower.c
-@@ -300,6 +300,46 @@ static int sja1105_flower_parse_key(struct sja1105_private *priv,
- 	return -EOPNOTSUPP;
- }
- 
-+static int sja1105_policer_validate(const struct flow_action *action,
-+				    const struct flow_action_entry *act,
-+				    struct netlink_ext_ack *extack)
-+{
-+	if (act->police.exceed.act_id != FLOW_ACTION_DROP) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Offload not supported when exceed action is not drop");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (act->police.notexceed.act_id != FLOW_ACTION_PIPE &&
-+	    act->police.notexceed.act_id != FLOW_ACTION_ACCEPT) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Offload not supported when conform action is not pipe or ok");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (act->police.notexceed.act_id == FLOW_ACTION_ACCEPT &&
-+	    !flow_action_is_last_entry(action, act)) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Offload not supported when conform action is ok, but action is not last");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (act->police.peakrate_bytes_ps ||
-+	    act->police.avrate || act->police.overhead) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "Offload not supported when peakrate/avrate/overhead is configured");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	if (act->police.rate_pkt_ps) {
-+		NL_SET_ERR_MSG_MOD(extack,
-+				   "QoS offload not support packets per second");
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
- int sja1105_cls_flower_add(struct dsa_switch *ds, int port,
- 			   struct flow_cls_offload *cls, bool ingress)
- {
-@@ -321,39 +361,10 @@ int sja1105_cls_flower_add(struct dsa_switch *ds, int port,
- 	flow_action_for_each(i, act, &rule->action) {
- 		switch (act->id) {
- 		case FLOW_ACTION_POLICE:
--			if (act->police.exceed.act_id != FLOW_ACTION_DROP) {
--				NL_SET_ERR_MSG_MOD(extack,
--						   "Police offload is not supported when the exceed action is not drop");
--				return -EOPNOTSUPP;
--			}
--
--			if (act->police.notexceed.act_id != FLOW_ACTION_PIPE &&
--			    act->police.notexceed.act_id != FLOW_ACTION_ACCEPT) {
--				NL_SET_ERR_MSG_MOD(extack,
--						   "Police offload is not supported when the conform action is not pipe or ok");
--				return -EOPNOTSUPP;
--			}
--
--			if (act->police.notexceed.act_id == FLOW_ACTION_ACCEPT &&
--			    !flow_action_is_last_entry(&rule->action, act)) {
--				NL_SET_ERR_MSG_MOD(extack,
--						   "Police offload is not supported when the conform action is ok, but police action is not last");
--				return -EOPNOTSUPP;
--			}
--
--			if (act->police.peakrate_bytes_ps ||
--			    act->police.avrate || act->police.overhead) {
--				NL_SET_ERR_MSG_MOD(extack,
--						   "Police offload is not supported when peakrate/avrate/overhead is configured");
--				return -EOPNOTSUPP;
--			}
--
--			if (act->police.rate_pkt_ps) {
--				NL_SET_ERR_MSG_MOD(extack,
--						   "QoS offload not support packets per second");
--				rc = -EOPNOTSUPP;
-+			rc = sja1105_policer_validate(&rule->action, act,
-+						      extack);
-+			if (rc)
- 				goto out;
--			}
- 
- 			rc = sja1105_flower_policer(priv, port, extack, cookie,
- 						    &key,
+I'm not familiar with K8S, but from one of my colleague who has worked
+in that area tells me for resources like CPU/MEM and configurations
+like sysctl, can be set using K8S configuration:
+https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/
 
-Also, if you create a "validate" function for every driver, you'll
-remove code duplication for those drivers that support both matchall and
-flower policers.
+I don't know. Maybe because most of the current kernel configurations
+are configured through sysfs that for those container orchestration
+systems have supported it ?
+
+Thanks
