@@ -2,87 +2,101 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 881484BA479
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 16:36:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 943C24BA47B
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 16:36:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242447AbiBQPgM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 10:36:12 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50372 "EHLO
+        id S242556AbiBQPgr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 10:36:47 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbiBQPgL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 10:36:11 -0500
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888B02B2E09
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 07:35:57 -0800 (PST)
-Received: by mail-yb1-xb36.google.com with SMTP id j12so13812883ybh.8
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 07:35:57 -0800 (PST)
+        with ESMTP id S238886AbiBQPgq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 10:36:46 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E45EB237F8
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 07:36:31 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id f19so8933008qvb.6
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 07:36:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6x6WLHULWBbfUO+BIRf7o1DPYLj3VUuhlPV1lV6G8YQ=;
-        b=D7i9Aernma5p+p/FOnAsvoivIA3egoQvK4jMD3IqGXjsOrjqVQMnS2ihCxOxSS1/gg
-         SUYPK/n3yIb8uUW91y4OKtwgku1BsnA5Leb0dRj/QBYYGZPKXu6BgZOMWZNI+8091xBu
-         NoESanm6YmKJcu5Wkqng7IqRVV6TJhLb5q8XVd5gLIAruS1b9IKBTZmpjyyL+OS15SSx
-         RnK/Sh0FFAZx1Z3Rdm8pQXwJV9C3Hpd6cPIdc0Hn5pCs0vg2jsa5kxRuKPqbI8G9FxAz
-         SNnPJe/HamePUcU4fFyfyNrxB5jejY6RGHW0Qr4cFuejAwZSX5E5MuJKPxgFnfi6tnvw
-         aXdQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=S0kEZ1PcPXY0dY9lx7emg7tGaAcpP8itSY0O7IB3Goo=;
+        b=eD8p3BY/kVw0x8m5jcMhSDZSIDPsTdFXLZJLeBpCNBRJ9N4DM/eB1xQPO1wsMp9mRZ
+         q3eO4q3KbpQbUCo1UHwLCRWyqdyhl+hFMJ5s/A/TLa9vpqPcuXNkTivqrTjjGSpjT5+j
+         DEbI+cOkhui5a0k18pS2FITnuwBQ5SCnU8DiZTOR9FH43tLngnGpiHf+4PwzYQQZnr10
+         vqgAc8Ki5j8ZBLDr+DO/8RP8DbYGIoa0tHWYA6OiGtrct2n6l0G8oatvjoxa2B0QdgRH
+         qMIfTUbk8y36KXaaz5R3plMZyXymliHsPnE/dBAOc61qTGz3Cf5uAZ68tld1GUI2DurK
+         bfgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6x6WLHULWBbfUO+BIRf7o1DPYLj3VUuhlPV1lV6G8YQ=;
-        b=B1Cvp8htddBl8L50XZsLhjRNYYsfc+stQYDPHP6UMnR7oN4t5fShg4F24j3873gbK8
-         rMVihhbCyNQ7wIm6qQ4+mSEWU8kxKgSCR3UytFk+nHzvpkcNQ8ei7W6bWyuT5uCd7ndZ
-         we9dx3h0qr+Se+7HtXFXX45X8kP2Q9vbgAPEADJmFQs86t02MtdBrbNO83MccBKGcw9X
-         8IY43gdPEY/PtDHeVlQ8ni0q1l34h4SZnRg6ciZfcM+JzaNJ1fidVzFwUHmVFHinlUQS
-         ElVsJ77AB8ngeDYxn37hkNxsm5Q5yhNZCnRqnAY5okbcU0j7V+Q+ItE31W9jo8DTjsp3
-         l/Zw==
-X-Gm-Message-State: AOAM530j7VFAr30INFt7sMpgbaB5AY9iN+KX0gmCdCT1pG00nojzBvg2
-        eQtPyGoRbjlST4xJ462r5W5C2cmZK3H6mgUNFt0=
-X-Google-Smtp-Source: ABdhPJzEwxokQNH0MUCJ0oa3yAHADeJub7fZFOdfmINiVbXotA5ijwvTS1jEUWcux+viyq/w4S1ED0Fj3xKhkCWgICw=
-X-Received: by 2002:a25:850b:0:b0:623:ae50:9d7d with SMTP id
- w11-20020a25850b000000b00623ae509d7dmr2931256ybk.326.1645112156669; Thu, 17
- Feb 2022 07:35:56 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=S0kEZ1PcPXY0dY9lx7emg7tGaAcpP8itSY0O7IB3Goo=;
+        b=DnJl0we+KbCKv4R/JSINIuse0doW2JQxp3nSCWQIdm1BtdMrN/VOir45ruIlm3wJFM
+         fcRml+RmPgJaa1chtXx/wVIxn/SB1YSdD+7Yx8qka+rYAAJLQfzl5Mih8fHTZGGoAwgd
+         MkfFGeYjS6ZXc/8N7xMtU83rf58WSVLeGwYKl815ES510CDAKYgXFGyVa7odbt1341jP
+         H4dIS+ZmWLVVDrBK1c9yce2vxQRQsb8U4aPPYtj37Xo/32U5XIJ6gH3Nk8DHqOHeLHjP
+         cByaCHmwvatNXEr+v9JY1v5ZbSNVYrRtJuJNBwOuPX75B7IcT1d11McA1JmnZwyjwtWx
+         B6lw==
+X-Gm-Message-State: AOAM532m2JRtgvPb5j6n79E85dq1SyTogW2Rdpyk4NQf5Y1bQA4BffEm
+        YS7VkVdpZyEb1jbcY9ITnqey8w==
+X-Google-Smtp-Source: ABdhPJzq04cDgGoCv5ORPqCmqMAJ+BXnYVdxg7c6zZvyT7eK2CdePx10wwqkEj1R7g2rHZMESwJJNw==
+X-Received: by 2002:a0c:aa9a:0:b0:412:91e0:3d8 with SMTP id f26-20020a0caa9a000000b0041291e003d8mr2542527qvb.87.1645112190993;
+        Thu, 17 Feb 2022 07:36:30 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id e16sm24236524qty.47.2022.02.17.07.36.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Feb 2022 07:36:29 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nKipY-0060Lv-Dc; Thu, 17 Feb 2022 11:36:28 -0400
+Date:   Thu, 17 Feb 2022 11:36:28 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH for-rc v2] IB/cma: Allow XRG INI QPs to set their local
+ ACK timeout
+Message-ID: <20220217153628.GB1037534@ziepe.ca>
+References: <1644421175-31943-1-git-send-email-haakon.bugge@oracle.com>
+ <Ygjx/XokZw/ZMDuT@unreal>
+ <E906DFE6-D7A9-463D-91A5-2753D1E0F8CE@oracle.com>
 MIME-Version: 1.0
-References: <20220214180833.GA525064@ziepe.ca> <b6c38f40-cbed-9ba7-7184-801ee7c5ab3a@cornelisnetworks.com>
- <PH7PR01MB780099726A47C7335036661BF2369@PH7PR01MB7800.prod.exchangelabs.com>
-In-Reply-To: <PH7PR01MB780099726A47C7335036661BF2369@PH7PR01MB7800.prod.exchangelabs.com>
-From:   Robin Peiremans <rpeiremans@gmail.com>
-Date:   Thu, 17 Feb 2022 16:35:46 +0100
-Message-ID: <CAJt3DjAEjZbM9uQSAq1LTdNz=XGGsNT225a5YPzHEqZdHDcHJw@mail.gmail.com>
-Subject: Re: sysfs: cannot create duplicate filename
-To:     "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>
-Cc:     "Dalessandro, Dennis" <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E906DFE6-D7A9-463D-91A5-2753D1E0F8CE@oracle.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Tested on 5.17 and my ports are back. I can confirm the patch works.
+On Thu, Feb 17, 2022 at 11:29:41AM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 13 Feb 2022, at 12:56, Leon Romanovsky <leon@kernel.org> wrote:
+> > 
+> > On Wed, Feb 09, 2022 at 04:39:35PM +0100, Håkon Bugge wrote:
+> >> XRC INI QPs should be able to adjust their local ACK timeout.
+> >> 
+> >> Fixes: 2c1619edef61 ("IB/cma: Define option to set ack timeout and pack tos_set")
+> >> Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
+> >> Suggested-by: Avneesh Pant <avneesh.pant@oracle.com>
+> >> 
+> >> 
+> > 
+> > Thanks,
+> > Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> 
+> Thanks Leon. I just saw that we need a s/XRG/XRC/ in $Subject. Shall I send a v3?
 
-Thanks a lot for the quick fix!
+I will fix it
 
-Robin
-
-On Thu, Feb 17, 2022 at 3:29 PM Marciniszyn, Mike
-<mike.marciniszyn@cornelisnetworks.com> wrote:
->
-> > >
-> > > Don't know, Mike tested this patch on qib, maybe he knows
-> >
-> > A patch to fix the issue should be posted soon.
-> >
-> > -Denny
->
-> See https://lore.kernel.org/linux-rdma/1645106372-23004-1-git-send-email-mike.marciniszyn@cornelisnetworks.com/T/#u.
->
-> Mike
+Jason
