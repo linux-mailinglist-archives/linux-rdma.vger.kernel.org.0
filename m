@@ -2,53 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD404BA7E6
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 19:14:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C324BA7F2
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 19:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240412AbiBQSNf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 13:13:35 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:51718 "EHLO
+        id S244140AbiBQSQX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 13:16:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:58376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235384AbiBQSNf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 13:13:35 -0500
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F565EBAD7
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 10:13:20 -0800 (PST)
-Received: by mail-io1-f70.google.com with SMTP id v123-20020a6bc581000000b0063d8771a58aso2762902iof.0
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 10:13:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Cx4MR5VyxaiDEMU1/9O/zHtFiqyQWEfm2JdWtbVvSCw=;
-        b=4NZjQ4PZaBOGlI0Gz/3DjHD4B76L+Syoo2h8oOJdRVf6P4VI4tWY8DXDNjlis6kwam
-         Tuk792nlyXTZeCB15GCtKbZm7aP8nX0RbxN35MnqLh0VOICH7Hy3SSRn3qHRK8wTo/cS
-         INrNrjZAd/U1ATP5yvSeI7SSQAwedCtOaSCJp2VRsxay/lNaRlnhg8IT9LDJTo5eOA9w
-         SXLIQwk2IHyYV977p5kM21io/pAQ6Sp53TknVDVU8D0xLjZa1lTGK2YmOCM++WOWv85W
-         EdUafECt2LLgBCIFgRe2wGURJCssBCtx7s95VLEa6RGcXHJsnHQJOQdtI/w4/oL6SUHZ
-         GtSw==
-X-Gm-Message-State: AOAM532j4hRQj9i5DfuKma0MejdBOOF/gN8sSEaQp21qUnc1NSDatAZO
-        YPUAKLNB2IsCJAjD9PGuYB5gPzccouMryEpmV07O1rk04KLP
-X-Google-Smtp-Source: ABdhPJxUp3q5WGkqjiKQy3ufRuQ3Ddm00MFvhI9yNQBC8jrbSCVMRLJQd+3w7MA21GGDnP1Yp1hJQ1ethxQJRoBwpVfuPUEJHnIG
+        with ESMTP id S244134AbiBQSQX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 13:16:23 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE118213428;
+        Thu, 17 Feb 2022 10:16:07 -0800 (PST)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21HIBOcL000385;
+        Thu, 17 Feb 2022 18:16:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=QbNiDzaXtugwEq/apbFl+z2s7Z8n99Z5EqF8nRXa5pY=;
+ b=WMJzYKbQ2hp/BteDRj3AOYLEsg1Bny4jQ8k+u4dfJ+FWztcVmoHhRmzQZFDh/lHG5dTv
+ 9+vxzM6MOtpXNECQHN+Lg27qdYkCH93fD6bXcWyfbdFbG/DMd16B0UOA8ZKJybRPt/nx
+ f56/GOG9YI+09HozeNYG7kABW6L/nICUbKKo81bu6Dlh2tpXzzrtw9QDsqYph1gREeGV
+ kf76IT7cvJBZ9MVGVOH7OnulrkWr6x10RWxf4+x184Qz6mczSDtFRqurIR54weq4nRQx
+ QV4uEAYbdkSVM9reZ6B/CHhWq0k2ZAHg21bkPSoWmfF7+2C3E/bz0nl8vEJ8u2aOnEff /w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9pp9qk4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 18:16:03 +0000
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21HIDZrD009100;
+        Thu, 17 Feb 2022 18:16:02 GMT
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3e9pp9qk3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 18:16:02 +0000
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21HIC4VB009474;
+        Thu, 17 Feb 2022 18:16:00 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma04fra.de.ibm.com with ESMTP id 3e64hajr5w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 18:16:00 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21HIFveF28246432
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Feb 2022 18:15:57 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 090474204C;
+        Thu, 17 Feb 2022 18:15:57 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E786E42045;
+        Thu, 17 Feb 2022 18:15:56 +0000 (GMT)
+Received: from vela (unknown [9.145.66.38])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 17 Feb 2022 18:15:56 +0000 (GMT)
+Received: from brueckner by vela with local (Exim 4.94.2)
+        (envelope-from <brueckner@linux.ibm.com>)
+        id 1nKlJr-000BTQ-47; Thu, 17 Feb 2022 19:15:55 +0100
+Date:   Thu, 17 Feb 2022 19:15:54 +0100
+From:   Hendrik Brueckner <brueckner@linux.ibm.com>
+To:     "dust.li" <dust.li@linux.alibaba.com>
+Cc:     Stefan Raspl <raspl@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Hendrik Brueckner <brueckner@linux.ibm.com>
+Subject: Re: [PATCH] net/smc: Add autocork support
+Message-ID: <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
+References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
+ <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
+ <20220216152721.GB39286@linux.alibaba.com>
+ <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
+ <20220217132200.GA5443@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220217132200.GA5443@linux.alibaba.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: r1Qw7Syfysn6uzD6Ngi2E5jnB7tqPgKb
+X-Proofpoint-ORIG-GUID: TZwbOgHYVcUo3bK-1MjZAyVEOw1N7kwi
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b4c:b0:2be:aaec:271c with SMTP id
- f12-20020a056e020b4c00b002beaaec271cmr2854972ilu.219.1645121599425; Thu, 17
- Feb 2022 10:13:19 -0800 (PST)
-Date:   Thu, 17 Feb 2022 10:13:19 -0800
-In-Reply-To: <000000000000b772b805d8396f14@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008bcf6e05d83ab885@google.com>
-Subject: Re: [syzbot] BUG: sleeping function called from invalid context in smc_pnet_apply_ib
-From:   syzbot <syzbot+4f322a6d84e991c38775@syzkaller.appspotmail.com>
-To:     fmdefrancesco@gmail.com, jgg@ziepe.ca, liangwenpeng@huawei.com,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        liweihang@huawei.com, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-17_06,2022-02-17_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
+ mlxlogscore=999 suspectscore=0 malwarescore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 clxscore=1011 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2201110000 definitions=main-2202170083
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,147 +101,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Thu, Feb 17, 2022 at 09:22:00PM +0800, dust.li wrote:
+> On Thu, Feb 17, 2022 at 10:37:28AM +0100, Stefan Raspl wrote:
+> >On 2/16/22 16:27, dust.li wrote:
+> >> On Wed, Feb 16, 2022 at 02:58:32PM +0100, Stefan Raspl wrote:
+> >> > On 2/16/22 04:49, Dust Li wrote:
+> >> >
+> 
+> >Now we understand that cloud workloads are a bit different, and the desire to
+> >be able to modify the environment of a container while leaving the container
+> >image unmodified is understandable. But then again, enabling the base image
+> >would be the cloud way to address this. The question to us is: How do other
+> >parts of the kernel address this?
+> 
+> I'm not familiar with K8S, but from one of my colleague who has worked
+> in that area tells me for resources like CPU/MEM and configurations
+> like sysctl, can be set using K8S configuration:
+> https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/
 
-HEAD commit:    5740d0689096 net: sched: limit TC_ACT_REPEAT loops
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=1474360e700000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=88e226f0197aeba5
-dashboard link: https://syzkaller.appspot.com/bug?extid=4f322a6d84e991c38775
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13dd93f2700000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a497e2700000
+For K8s, this involves container engines like cri-o, containerd, podman,
+and others towards the runtimes like runc.  To ensure they operate together,
+specifications by the Open Container Initiative (OCI) at
+https://opencontainers.org/release-notices/overview/
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4f322a6d84e991c38775@syzkaller.appspotmail.com
+For container/pod deployments, there is especially the Container Runtime
+Interface (CRI) that defines the interface, e.g., of K8s to cri-o etc.
 
-infiniband syz1: set active
-infiniband syz1: added lo
-RDS/IB: syz1: added
-smc: adding ib device syz1 with port count 1
-BUG: sleeping function called from invalid context at kernel/locking/mutex.c:577
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 3589, name: syz-executor180
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-6 locks held by syz-executor180/3589:
- #0: ffffffff90865838 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
- #1: ffffffff8d04edf0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x25d/0x560 drivers/infiniband/core/nldev.c:1707
- #2: ffffffff8d03e650 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1321
- #3: ffffffff8d03e510 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1329
- #4: ffff8880790445c0 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:718
- #5: ffff88814a29c818 (&pnettable->lock){++++}-{2:2}, at: smc_pnetid_by_table_ib+0x18c/0x470 net/smc/smc_pnet.c:1159
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 3589 Comm: syz-executor180 Not tainted 5.17.0-rc3-syzkaller-00174-g5740d0689096 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- __might_resched.cold+0x222/0x26b kernel/sched/core.c:9576
- __mutex_lock_common kernel/locking/mutex.c:577 [inline]
- __mutex_lock+0x9f/0x12f0 kernel/locking/mutex.c:733
- smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
- smc_pnetid_by_table_ib+0x2ae/0x470 net/smc/smc_pnet.c:1164
- smc_ib_add_dev+0x4d7/0x900 net/smc/smc_ib.c:940
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:720
- enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
- ib_register_device drivers/infiniband/core/device.c:1419 [inline]
- ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1365
- rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1146
- rxe_add+0x1331/0x1710 drivers/infiniband/sw/rxe/rxe.c:246
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:538
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:268 [inline]
- rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:249
- nldev_newlink+0x30a/0x560 drivers/infiniband/core/nldev.c:1717
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1317 [inline]
- netlink_unicast+0x539/0x7e0 net/netlink/af_netlink.c:1343
- netlink_sendmsg+0x904/0xe00 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:705 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:725
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2413
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2467
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2496
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f7ef25bed59
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd0ce91d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7ef25bed59
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 00007f7ef25827c0 R08: 0000000000000014 R09: 0000000000000000
-R10: 0000000000000041 R11: 0000000000000246 R12: 00007f7ef2582850
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+CRI includes support for (namespaced) sysctl's:
+https://github.com/opencontainers/runtime-spec/releases/tag/v1.0.2
 
-=============================
-[ BUG: Invalid wait context ]
-5.17.0-rc3-syzkaller-00174-g5740d0689096 #0 Tainted: G        W        
------------------------------
-syz-executor180/3589 is trying to lock:
-ffffffff8d7100d8 (smc_ib_devices.mutex){+.+.}-{3:3}, at: smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
-other info that might help us debug this:
-context-{4:4}
-6 locks held by syz-executor180/3589:
- #0: ffffffff90865838 (&rdma_nl_types[idx].sem){.+.+}-{3:3}, at: rdma_nl_rcv_msg+0x161/0x690 drivers/infiniband/core/netlink.c:164
- #1: ffffffff8d04edf0 (link_ops_rwsem){++++}-{3:3}, at: nldev_newlink+0x25d/0x560 drivers/infiniband/core/nldev.c:1707
- #2: ffffffff8d03e650 (devices_rwsem){++++}-{3:3}, at: enable_device_and_get+0xfc/0x3b0 drivers/infiniband/core/device.c:1321
- #3: ffffffff8d03e510 (clients_rwsem){++++}-{3:3}, at: enable_device_and_get+0x15b/0x3b0 drivers/infiniband/core/device.c:1329
- #4: ffff8880790445c0 (&device->client_data_rwsem){++++}-{3:3}, at: add_client_context+0x3d0/0x5e0 drivers/infiniband/core/device.c:718
- #5: ffff88814a29c818 (&pnettable->lock){++++}-{2:2}, at: smc_pnetid_by_table_ib+0x18c/0x470 net/smc/smc_pnet.c:1159
-stack backtrace:
-CPU: 0 PID: 3589 Comm: syz-executor180 Tainted: G        W         5.17.0-rc3-syzkaller-00174-g5740d0689096 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
- print_lock_invalid_wait_context kernel/locking/lockdep.c:4678 [inline]
- check_wait_context kernel/locking/lockdep.c:4739 [inline]
- __lock_acquire.cold+0x213/0x3ab kernel/locking/lockdep.c:4977
- lock_acquire kernel/locking/lockdep.c:5639 [inline]
- lock_acquire+0x1ab/0x510 kernel/locking/lockdep.c:5604
- __mutex_lock_common kernel/locking/mutex.c:600 [inline]
- __mutex_lock+0x12f/0x12f0 kernel/locking/mutex.c:733
- smc_pnet_apply_ib+0x28/0x160 net/smc/smc_pnet.c:251
- smc_pnetid_by_table_ib+0x2ae/0x470 net/smc/smc_pnet.c:1164
- smc_ib_add_dev+0x4d7/0x900 net/smc/smc_ib.c:940
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:720
- enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
- ib_register_device drivers/infiniband/core/device.c:1419 [inline]
- ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1365
- rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1146
- rxe_add+0x1331/0x1710 drivers/infiniband/sw/rxe/rxe.c:246
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:538
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:268 [inline]
- rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:249
- nldev_newlink+0x30a/0x560 drivers/infiniband/core/nldev.c:1717
- rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1317 [inline]
- netlink_unicast+0x539/0x7e0 net/netlink/af_netlink.c:1343
- netlink_sendmsg+0x904/0xe00 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:705 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:725
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2413
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2467
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2496
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f7ef25bed59
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcd0ce91d8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f7ef25bed59
-RDX: 0000000000000000 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 00007f7ef25827c0 R08: 0000000000000014 R09: 0000000000000000
-R10: 0000000000000041 R11: 0000000000000246 R12: 00007f7ef2582850
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-smc:    ib device syz1 port 1 has pnetid SYZ2 (user defined)
+In essence, the CRI spec would allow users to specify/control a specific
+runtime for the container in a declarative way w/o modifying the (base)
+container images.
+
+
+Thanks and kind regards,
+  Hendrik
 
