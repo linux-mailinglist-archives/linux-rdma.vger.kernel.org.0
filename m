@@ -2,225 +2,149 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117384B9C1E
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 10:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED3C4B9C25
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Feb 2022 10:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbiBQJhC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 04:37:02 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37340 "EHLO
+        id S238737AbiBQJhz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 04:37:55 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:38944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238736AbiBQJhB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 04:37:01 -0500
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5CFC4B46
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 01:36:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645090606; x=1676626606;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=QiY8oDqTpHSPbg9oHN0iW7Y579Wz4pOutDYknyQtQVg=;
-  b=b277Lwf+pkBebTTgXEKPS3LtUBKsSz8Yy1mDcqzseja7RwJg0papa5RS
-   mvT7WrrRK13zkEN49I5BZt5yySDFNRRAxxJHWimgDEpFkw0Ta8Yux0bjW
-   p3s9H4/xSObmxr+DsxSwoJfjOnIShwHp5j55VIuH6FMt/MHEVAGxWTag1
-   V7ziCVx8//04YBnc7/O6SytxtvKWakfMz6SD4VmIk3wYEvUIuQ6YkYZL7
-   U/lN2WafERrmvf8P302odCKcCy9tbY/VQBK3xo+44xUqY5cHV6AO3wojP
-   OyjPzGHEG3f2ypMC8G1UFY3QfnnIKWAd6O+yZVtPZ5994lQeN+QU2cm7i
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10260"; a="231459815"
-X-IronPort-AV: E=Sophos;i="5.88,375,1635231600"; 
-   d="scan'208";a="231459815"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2022 01:36:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,375,1635231600"; 
-   d="scan'208";a="545486613"
-Received: from lkp-server01.sh.intel.com (HELO 6f05bf9e3301) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 17 Feb 2022 01:36:43 -0800
-Received: from kbuild by 6f05bf9e3301 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nKdDP-00001E-7j; Thu, 17 Feb 2022 09:36:43 +0000
-Date:   Thu, 17 Feb 2022 17:36:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 3810c1a1cbe8f3157f644b4e42f6c0157dfd22cb
-Message-ID: <620e170c.nWkPq1TXVuEx237N%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S238736AbiBQJhy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 04:37:54 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 709961A0C0B;
+        Thu, 17 Feb 2022 01:37:39 -0800 (PST)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21H97L89003737;
+        Thu, 17 Feb 2022 09:37:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=zBrzxf8AhGHTrwIr3gzDwVxDc8WTumfDo5TxLvlETn8=;
+ b=J1Yyl5uXFl8LKKELFTNKw94fN2JMccVX5uQVNE598R0F/nN1GLAxnYeZsMqEEw3njyEa
+ V3FQCd9U+mOIcxNi33YCWaEXkh0XkqRhBvHDnNY4CzbiT4MHMxNm47z3+KJ1CYlSTQHw
+ eg4qJbAFK1O1whVM0MfyPxHw4eFfa9srk3R7tC8exf3tEs3/QcoA6hiE8V8ieaEPcICF
+ aEeUa7NCMrRr2VMiW5K7SFpMZLka0bmmf572a87pbB4wcvScZ9cFVmQdUPHHFuU7UgnG
+ +nDvwBgptlnEaHVSJfMRo7bm2TFrY2I64Si5gvhg7EIAMOO12BiGgSY4LJHTWiacVL2K zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e9gh7urr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 09:37:34 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21H9YtqW006228;
+        Thu, 17 Feb 2022 09:37:33 GMT
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3e9gh7urqf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 09:37:33 +0000
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21H9YpOV001790;
+        Thu, 17 Feb 2022 09:37:32 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 3e645k8crj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 17 Feb 2022 09:37:31 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21H9bTUt25559460
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Feb 2022 09:37:29 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 85EC44C058;
+        Thu, 17 Feb 2022 09:37:29 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1DB534C064;
+        Thu, 17 Feb 2022 09:37:29 +0000 (GMT)
+Received: from [9.171.73.63] (unknown [9.171.73.63])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 17 Feb 2022 09:37:29 +0000 (GMT)
+Message-ID: <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
+Date:   Thu, 17 Feb 2022 10:37:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] net/smc: Add autocork support
+Content-Language: en-US
+To:     dust.li@linux.alibaba.com, Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
+ <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
+ <20220216152721.GB39286@linux.alibaba.com>
+From:   Stefan Raspl <raspl@linux.ibm.com>
+In-Reply-To: <20220216152721.GB39286@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 5BrP4_B9PSRNLXoaypCf-thWgmPgedmn
+X-Proofpoint-ORIG-GUID: DIOp5fnKFz-lKh64r_6_ylAp37ca-QGO
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2022-02-17_03,2022-02-16_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 clxscore=1015 lowpriorityscore=0 adultscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2201110000 definitions=main-2202170042
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 3810c1a1cbe8f3157f644b4e42f6c0157dfd22cb  RDMA/rxe: Remove mcg from rxe pools
+On 2/16/22 16:27, dust.li wrote:
+> On Wed, Feb 16, 2022 at 02:58:32PM +0100, Stefan Raspl wrote:
+>> On 2/16/22 04:49, Dust Li wrote:
+>>> diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
+>>> index 5df3940d4543..bc737ac79805 100644
+>>> --- a/net/smc/smc_tx.c
+>>> +++ b/net/smc/smc_tx.c
+>>> @@ -31,6 +31,7 @@
+>>>    #include "smc_tracepoint.h"
+>>>    #define SMC_TX_WORK_DELAY	0
+>>> +#define SMC_DEFAULT_AUTOCORK_SIZE	(64 * 1024)
+>>
+>> Probably a matter of taste, but why not use hex here?
+> 
+> Yeah, I have no option on this, I will change it in the next version.
+> But I think it should have no real difference since the compiler
+> should do the calculation.
 
-elapsed time: 868m
+Agreed - this is just to make it a tiny bit easier to digest.
 
-configs tested: 145
-configs skipped: 3
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>> Are there any fixed plans to make SMC_DEFAULT_AUTOCORK dynamic...? 'cause
+>> otherwise we could simply eliminate this parameter, and use the define within
+>> smc_should_autocork() instead.
+> 
+> Yes! Actually I'd like it to be dynamic variable too...
+> 
+> I didn't do it because I also want to add a control switch for the autocork
+> feature just like TCP. In that case I need to add 2 variables here.
+> But I found adding dynamic variables using netlink would introduce a lot of
+> redundant code and may even bring ABI compatibility issues in the future, as
+> I mentioned here:
+> https://lore.kernel.org/netdev/20220216114618.GA39286@linux.alibaba.com/T/#mecfcd3f8c816d07dbe35e4748d17008331c89523
+> 
+> I'm not sure that's the right way to do it. In this case, I prefer using
+> sysctl which I think would be easier, but I would like to listen to your advice.
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                               defconfig
-arm64                            allyesconfig
-arm                        cerfcube_defconfig
-arm                          exynos_defconfig
-sh                            migor_defconfig
-arc                          axs103_defconfig
-arm                           u8500_defconfig
-powerpc                     tqm8541_defconfig
-xtensa                generic_kc705_defconfig
-arc                      axs103_smp_defconfig
-m68k                        m5307c3_defconfig
-h8300                    h8300h-sim_defconfig
-m68k                        stmark2_defconfig
-powerpc                    amigaone_defconfig
-sh                               alldefconfig
-sh                          r7780mp_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                  iss476-smp_defconfig
-m68k                          hp300_defconfig
-openrisc                    or1ksim_defconfig
-powerpc                   motionpro_defconfig
-sparc                            allyesconfig
-sh                             espt_defconfig
-mips                         tb0226_defconfig
-arm                            lart_defconfig
-arm                        keystone_defconfig
-powerpc                       ppc64_defconfig
-nios2                            alldefconfig
-nds32                             allnoconfig
-xtensa                  audio_kc705_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                 canyonlands_defconfig
-xtensa                  cadence_csp_defconfig
-arc                          axs101_defconfig
-sh                            shmin_defconfig
-powerpc                    adder875_defconfig
-s390                             allyesconfig
-arm                       multi_v4t_defconfig
-powerpc                 mpc837x_rdb_defconfig
-ia64                         bigsur_defconfig
-powerpc64                        alldefconfig
-sh                          kfr2r09_defconfig
-xtensa                           alldefconfig
-openrisc                 simple_smp_defconfig
-arm                  randconfig-c002-20220217
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a003
-i386                          randconfig-a001
-i386                          randconfig-a005
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220216
-s390                 randconfig-r044-20220216
-riscv                randconfig-r042-20220216
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
+Extending the Netlink interface should be possible without breaking the API - 
+we'd be adding further variables, not modifying or removing existing ones.
+Conceptually, Netlink is the way to go for any userspace interaction with SMC, 
+which includes anything config-related.
+Now we understand that cloud workloads are a bit different, and the desire to be 
+able to modify the environment of a container while leaving the container image 
+unmodified is understandable. But then again, enabling the base image would be 
+the cloud way to address this. The question to us is: How do other parts of the 
+kernel address this?
 
-clang tested configs:
-powerpc                   lite5200b_defconfig
-arm                  colibri_pxa270_defconfig
-arm                              alldefconfig
-powerpc                  mpc866_ads_defconfig
-mips                           ip27_defconfig
-mips                     loongson1c_defconfig
-arm                          ixp4xx_defconfig
-arm                        neponset_defconfig
-arm                     davinci_all_defconfig
-mips                        workpad_defconfig
-mips                     loongson2k_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                     mpc5200_defconfig
-mips                           ip22_defconfig
-powerpc                      obs600_defconfig
-powerpc                     ppa8548_defconfig
-arm                          imote2_defconfig
-mips                          rm200_defconfig
-riscv                            alldefconfig
-arm                         shannon_defconfig
-arm                        spear3xx_defconfig
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-hexagon              randconfig-r045-20220216
-hexagon              randconfig-r041-20220216
-hexagon              randconfig-r045-20220217
-hexagon              randconfig-r041-20220217
-riscv                randconfig-r042-20220217
+Ciao,
+Stefan
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
