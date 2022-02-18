@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF394BB799
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 12:05:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703594BB79E
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 12:05:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbiBRLFz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 06:05:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45614 "EHLO
+        id S233850AbiBRLF5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Feb 2022 06:05:57 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbiBRLFk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 06:05:40 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6289B2944FA
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 03:05:23 -0800 (PST)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4K0TJT2zdzz1FDHT;
-        Fri, 18 Feb 2022 19:00:57 +0800 (CST)
+        with ESMTP id S234354AbiBRLFr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 06:05:47 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23C2D28881F
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 03:05:28 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.54])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4K0TNH39SQzdZNH;
+        Fri, 18 Feb 2022 19:04:15 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
  15.1.2308.21; Fri, 18 Feb 2022 19:05:21 +0800
 Received: from localhost.localdomain (10.69.192.56) by
@@ -29,9 +29,9 @@ From:   Wenpeng Liang <liangwenpeng@huawei.com>
 To:     <jgg@nvidia.com>, <leon@kernel.org>
 CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
         <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 6/8] RDMA/hns: Remove similar code that configures the hardware contexts
-Date:   Fri, 18 Feb 2022 19:05:17 +0800
-Message-ID: <20220218110519.37375-7-liangwenpeng@huawei.com>
+Subject: [PATCH for-next 7/8] RDMA/hns: Refactor the alloc_srqc()
+Date:   Fri, 18 Feb 2022 19:05:18 +0800
+Message-ID: <20220218110519.37375-8-liangwenpeng@huawei.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20220218110519.37375-1-liangwenpeng@huawei.com>
 References: <20220218110519.37375-1-liangwenpeng@huawei.com>
@@ -43,8 +43,8 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,244 +53,169 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Chengchang Tang <tangchengchang@huawei.com>
 
-Remove duplicate code for creating and destroying hardware contexts via
-mailbox.
+Abstract the alloc_srqc() into several parts and separate the alloc_srqn()
+from the alloc_srqc().
 
 Signed-off-by: Chengchang Tang <tangchengchang@huawei.com>
 Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
 ---
- drivers/infiniband/hw/hns/hns_roce_cmd.c    | 12 +++++++++
- drivers/infiniband/hw/hns/hns_roce_cmd.h    |  5 ++++
- drivers/infiniband/hw/hns/hns_roce_cq.c     |  8 +++---
- drivers/infiniband/hw/hns/hns_roce_device.h |  2 --
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c  |  4 +--
- drivers/infiniband/hw/hns/hns_roce_mr.c     | 29 ++++++---------------
- drivers/infiniband/hw/hns/hns_roce_srq.c    | 20 +++-----------
- 7 files changed, 35 insertions(+), 45 deletions(-)
+ drivers/infiniband/hw/hns/hns_roce_srq.c | 80 +++++++++++++++---------
+ 1 file changed, 52 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.c b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-index 0d4766cf6e24..78f66eb379ab 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.c
-@@ -277,3 +277,15 @@ void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
- 	dma_pool_free(hr_dev->cmd.pool, mailbox->buf, mailbox->dma);
- 	kfree(mailbox);
- }
-+
-+int hns_roce_create_hw_ctx(struct hns_roce_dev *dev,
-+			   struct hns_roce_cmd_mailbox *mailbox,
-+			   u8 cmd, unsigned long idx)
-+{
-+	return hns_roce_cmd_mbox(dev, mailbox->dma, 0, cmd, idx);
-+}
-+
-+int hns_roce_destroy_hw_ctx(struct hns_roce_dev *dev, u8 cmd, unsigned long idx)
-+{
-+	return hns_roce_cmd_mbox(dev, 0, 0, cmd, idx);
-+}
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cmd.h b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-index 759da8981c71..052a3d60905a 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cmd.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_cmd.h
-@@ -146,5 +146,10 @@ struct hns_roce_cmd_mailbox *
- hns_roce_alloc_cmd_mailbox(struct hns_roce_dev *hr_dev);
- void hns_roce_free_cmd_mailbox(struct hns_roce_dev *hr_dev,
- 			       struct hns_roce_cmd_mailbox *mailbox);
-+int hns_roce_create_hw_ctx(struct hns_roce_dev *dev,
-+			   struct hns_roce_cmd_mailbox *mailbox,
-+			   u8 cmd, unsigned long idx);
-+int hns_roce_destroy_hw_ctx(struct hns_roce_dev *dev, u8 cmd,
-+			    unsigned long idx);
- 
- #endif /* _HNS_ROCE_CMD_H */
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index a335fa8481a5..3d10300cab85 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -139,8 +139,8 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 
- 	hr_dev->hw->write_cqc(hr_dev, hr_cq, mailbox->buf, mtts, dma_handle);
- 
--	ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0,
--				HNS_ROCE_CMD_CREATE_CQC, hr_cq->cqn);
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_CQC,
-+				     hr_cq->cqn);
- 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
- 	if (ret) {
- 		ibdev_err(ibdev,
-@@ -173,8 +173,8 @@ static void free_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	struct device *dev = hr_dev->dev;
- 	int ret;
- 
--	ret = hns_roce_cmd_mbox(hr_dev, 0, 0, HNS_ROCE_CMD_DESTROY_CQC,
--				hr_cq->cqn);
-+	ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_CQC,
-+				      hr_cq->cqn);
- 	if (ret)
- 		dev_err(dev, "DESTROY_CQ failed (%d) for CQN %06lx\n", ret,
- 			hr_cq->cqn);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-index 5e4a3536c41b..21182ec56f18 100644
---- a/drivers/infiniband/hw/hns/hns_roce_device.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-@@ -1152,8 +1152,6 @@ struct ib_mr *hns_roce_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
- int hns_roce_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg, int sg_nents,
- 		       unsigned int *sg_offset);
- int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
--int hns_roce_hw_destroy_mpt(struct hns_roce_dev *hr_dev,
--			    unsigned long mpt_index);
- unsigned long key_to_hw_index(u32 key);
- 
- int hns_roce_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 55c49d358f76..631f6e233492 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -5868,7 +5868,7 @@ static void hns_roce_v2_destroy_eqc(struct hns_roce_dev *hr_dev, u32 eqn)
- 	else
- 		cmd = HNS_ROCE_CMD_DESTROY_AEQC;
- 
--	ret = hns_roce_cmd_mbox(hr_dev, 0, 0, cmd, eqn & HNS_ROCE_V2_EQN_M);
-+	ret = hns_roce_destroy_hw_ctx(hr_dev, cmd, eqn & HNS_ROCE_V2_EQN_M);
- 	if (ret)
- 		dev_err(dev, "[mailbox cmd] destroy eqc(%u) failed.\n", eqn);
- }
-@@ -5992,7 +5992,7 @@ static int hns_roce_v2_create_eq(struct hns_roce_dev *hr_dev,
- 	if (ret)
- 		goto err_cmd_mbox;
- 
--	ret = hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0, eq_cmd, eq->eqn);
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, eq_cmd, eq->eqn);
- 	if (ret) {
- 		dev_err(hr_dev->dev, "[mailbox cmd] create eqc failed.\n");
- 		goto err_cmd_mbox;
-diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-index 22ff78a5a1a7..39de862666d7 100644
---- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-@@ -47,21 +47,6 @@ unsigned long key_to_hw_index(u32 key)
- 	return (key << 24) | (key >> 8);
- }
- 
--static int hns_roce_hw_create_mpt(struct hns_roce_dev *hr_dev,
--				  struct hns_roce_cmd_mailbox *mailbox,
--				  unsigned long mpt_index)
--{
--	return hns_roce_cmd_mbox(hr_dev, mailbox->dma, 0,
--				 HNS_ROCE_CMD_CREATE_MPT, mpt_index);
--}
--
--int hns_roce_hw_destroy_mpt(struct hns_roce_dev *hr_dev,
--			    unsigned long mpt_index)
--{
--	return hns_roce_cmd_mbox(hr_dev, 0, 0, HNS_ROCE_CMD_DESTROY_MPT,
--				 mpt_index);
--}
--
- static int alloc_mr_key(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr)
- {
- 	struct hns_roce_ida *mtpt_ida = &hr_dev->mr_table.mtpt_ida;
-@@ -141,7 +126,7 @@ static void hns_roce_mr_free(struct hns_roce_dev *hr_dev,
- 	int ret;
- 
- 	if (mr->enabled) {
--		ret = hns_roce_hw_destroy_mpt(hr_dev,
-+		ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_MPT,
- 					      key_to_hw_index(mr->key) &
- 					      (hr_dev->caps.num_mtpts - 1));
- 		if (ret)
-@@ -177,7 +162,7 @@ static int hns_roce_mr_enable(struct hns_roce_dev *hr_dev,
- 		goto err_page;
- 	}
- 
--	ret = hns_roce_hw_create_mpt(hr_dev, mailbox,
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_MPT,
- 				     mtpt_idx & (hr_dev->caps.num_mtpts - 1));
- 	if (ret) {
- 		dev_err(dev, "failed to create mpt, ret = %d.\n", ret);
-@@ -306,7 +291,8 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
- 	if (ret)
- 		goto free_cmd_mbox;
- 
--	ret = hns_roce_hw_destroy_mpt(hr_dev, mtpt_idx);
-+	ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_MPT,
-+				      mtpt_idx);
- 	if (ret)
- 		ibdev_warn(ib_dev, "failed to destroy MPT, ret = %d.\n", ret);
- 
-@@ -336,7 +322,8 @@ struct ib_mr *hns_roce_rereg_user_mr(struct ib_mr *ibmr, int flags, u64 start,
- 		goto free_cmd_mbox;
- 	}
- 
--	ret = hns_roce_hw_create_mpt(hr_dev, mailbox, mtpt_idx);
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_MPT,
-+				     mtpt_idx);
- 	if (ret) {
- 		ibdev_err(ib_dev, "failed to create MPT, ret = %d.\n", ret);
- 		goto free_cmd_mbox;
-@@ -477,7 +464,7 @@ static void hns_roce_mw_free(struct hns_roce_dev *hr_dev,
- 	int ret;
- 
- 	if (mw->enabled) {
--		ret = hns_roce_hw_destroy_mpt(hr_dev,
-+		ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_MPT,
- 					      key_to_hw_index(mw->rkey) &
- 					      (hr_dev->caps.num_mtpts - 1));
- 		if (ret)
-@@ -517,7 +504,7 @@ static int hns_roce_mw_enable(struct hns_roce_dev *hr_dev,
- 		goto err_page;
- 	}
- 
--	ret = hns_roce_hw_create_mpt(hr_dev, mailbox,
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_MPT,
- 				     mtpt_idx & (hr_dev->caps.num_mtpts - 1));
- 	if (ret) {
- 		dev_err(dev, "MW CREATE_MPT failed (%d)\n", ret);
 diff --git a/drivers/infiniband/hw/hns/hns_roce_srq.c b/drivers/infiniband/hw/hns/hns_roce_srq.c
-index f270563aca97..e316276e18c2 100644
+index e316276e18c2..2613889a02ef 100644
 --- a/drivers/infiniband/hw/hns/hns_roce_srq.c
 +++ b/drivers/infiniband/hw/hns/hns_roce_srq.c
-@@ -59,20 +59,6 @@ static void hns_roce_ib_srq_event(struct hns_roce_srq *srq,
+@@ -59,40 +59,39 @@ static void hns_roce_ib_srq_event(struct hns_roce_srq *srq,
  	}
  }
  
--static int hns_roce_hw_create_srq(struct hns_roce_dev *dev,
--				  struct hns_roce_cmd_mailbox *mailbox,
--				  unsigned long srq_num)
--{
--	return hns_roce_cmd_mbox(dev, mailbox->dma, 0, HNS_ROCE_CMD_CREATE_SRQ,
--				 srq_num);
--}
--
--static int hns_roce_hw_destroy_srq(struct hns_roce_dev *dev,
--				   unsigned long srq_num)
--{
--	return hns_roce_cmd_mbox(dev, 0, 0, HNS_ROCE_CMD_DESTROY_SRQ, srq_num);
--}
--
- static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
+-static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
++static int alloc_srqn(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
  {
- 	struct hns_roce_srq_table *srq_table = &hr_dev->srq_table;
-@@ -115,7 +101,8 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 		goto err_mbox;
+-	struct hns_roce_srq_table *srq_table = &hr_dev->srq_table;
+ 	struct hns_roce_ida *srq_ida = &hr_dev->srq_table.srq_ida;
+-	struct ib_device *ibdev = &hr_dev->ib_dev;
+-	struct hns_roce_cmd_mailbox *mailbox;
+-	int ret;
+ 	int id;
+ 
+ 	id = ida_alloc_range(&srq_ida->ida, srq_ida->min, srq_ida->max,
+ 			     GFP_KERNEL);
+ 	if (id < 0) {
+-		ibdev_err(ibdev, "failed to alloc srq(%d).\n", id);
++		ibdev_err(&hr_dev->ib_dev, "failed to alloc srq(%d).\n", id);
+ 		return -ENOMEM;
+ 	}
+-	srq->srqn = (unsigned long)id;
+ 
+-	ret = hns_roce_table_get(hr_dev, &srq_table->table, srq->srqn);
+-	if (ret) {
+-		ibdev_err(ibdev, "failed to get SRQC table, ret = %d.\n", ret);
+-		goto err_out;
+-	}
++	srq->srqn = id;
+ 
+-	ret = xa_err(xa_store(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
+-	if (ret) {
+-		ibdev_err(ibdev, "failed to store SRQC, ret = %d.\n", ret);
+-		goto err_put;
+-	}
++	return 0;
++}
++
++static void free_srqn(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
++{
++	ida_free(&hr_dev->srq_table.srq_ida.ida, (int)srq->srqn);
++}
++
++static int hns_roce_create_srqc(struct hns_roce_dev *hr_dev,
++				struct hns_roce_srq *srq)
++{
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	struct hns_roce_cmd_mailbox *mailbox;
++	int ret;
+ 
+ 	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
+ 	if (IS_ERR_OR_NULL(mailbox)) {
+ 		ibdev_err(ibdev, "failed to alloc mailbox for SRQC.\n");
+-		ret = -ENOMEM;
+-		goto err_xa;
++		return PTR_ERR(mailbox);
  	}
  
--	ret = hns_roce_hw_create_srq(hr_dev, mailbox, srq->srqn);
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_SRQ,
-+				     srq->srqn);
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to config SRQC, ret = %d.\n", ret);
- 		goto err_mbox;
-@@ -142,7 +129,8 @@ static void free_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
- 	struct hns_roce_srq_table *srq_table = &hr_dev->srq_table;
- 	int ret;
+ 	ret = hr_dev->hw->write_srqc(srq, mailbox->buf);
+@@ -103,23 +102,42 @@ static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
  
--	ret = hns_roce_hw_destroy_srq(hr_dev, srq->srqn);
-+	ret = hns_roce_destroy_hw_ctx(hr_dev, HNS_ROCE_CMD_DESTROY_SRQ,
-+				      srq->srqn);
+ 	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_SRQ,
+ 				     srq->srqn);
+-	if (ret) {
++	if (ret)
+ 		ibdev_err(ibdev, "failed to config SRQC, ret = %d.\n", ret);
+-		goto err_mbox;
+-	}
+ 
++err_mbox:
+ 	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
++	return ret;
++}
++
++static int alloc_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
++{
++	struct hns_roce_srq_table *srq_table = &hr_dev->srq_table;
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	int ret;
++
++	ret = hns_roce_table_get(hr_dev, &srq_table->table, srq->srqn);
++	if (ret) {
++		ibdev_err(ibdev, "failed to get SRQC table, ret = %d.\n", ret);
++		return ret;
++	}
++
++	ret = xa_err(xa_store(&srq_table->xa, srq->srqn, srq, GFP_KERNEL));
++	if (ret) {
++		ibdev_err(ibdev, "failed to store SRQC, ret = %d.\n", ret);
++		goto err_put;
++	}
++
++	ret = hns_roce_create_srqc(hr_dev, srq);
++	if (ret)
++		goto err_xa;
+ 
+ 	return 0;
+ 
+-err_mbox:
+-	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
+ err_xa:
+ 	xa_erase(&srq_table->xa, srq->srqn);
+ err_put:
+ 	hns_roce_table_put(hr_dev, &srq_table->table, srq->srqn);
+-err_out:
+-	ida_free(&srq_ida->ida, id);
+ 
+ 	return ret;
+ }
+@@ -142,7 +160,6 @@ static void free_srqc(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq)
+ 	wait_for_completion(&srq->free);
+ 
+ 	hns_roce_table_put(hr_dev, &srq_table->table, srq->srqn);
+-	ida_free(&srq_table->srq_ida.ida, (int)srq->srqn);
+ }
+ 
+ static int alloc_srq_idx(struct hns_roce_dev *hr_dev, struct hns_roce_srq *srq,
+@@ -390,10 +407,14 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
  	if (ret)
- 		dev_err(hr_dev->dev, "DESTROY_SRQ failed (%d) for SRQN %06lx\n",
- 			ret, srq->srqn);
+ 		return ret;
+ 
+-	ret = alloc_srqc(hr_dev, srq);
++	ret = alloc_srqn(hr_dev, srq);
+ 	if (ret)
+ 		goto err_srq_buf;
+ 
++	ret = alloc_srqc(hr_dev, srq);
++	if (ret)
++		goto err_srqn;
++
+ 	if (udata) {
+ 		resp.srqn = srq->srqn;
+ 		if (ib_copy_to_udata(udata, &resp,
+@@ -412,6 +433,8 @@ int hns_roce_create_srq(struct ib_srq *ib_srq,
+ 
+ err_srqc:
+ 	free_srqc(hr_dev, srq);
++err_srqn:
++	free_srqn(hr_dev, srq);
+ err_srq_buf:
+ 	free_srq_buf(hr_dev, srq);
+ 
+@@ -424,6 +447,7 @@ int hns_roce_destroy_srq(struct ib_srq *ibsrq, struct ib_udata *udata)
+ 	struct hns_roce_srq *srq = to_hr_srq(ibsrq);
+ 
+ 	free_srqc(hr_dev, srq);
++	free_srqn(hr_dev, srq);
+ 	free_srq_buf(hr_dev, srq);
+ 	return 0;
+ }
 -- 
 2.33.0
 
