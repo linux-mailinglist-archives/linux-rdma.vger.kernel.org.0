@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F9D4BAE9C
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 01:37:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082314BAE9D
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 01:37:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbiBRAg6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Feb 2022 19:36:58 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33910 "EHLO
+        id S230023AbiBRAg7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Feb 2022 19:36:59 -0500
+Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:33978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbiBRAg5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 19:36:57 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A882C11F
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 16:36:42 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 4so1390789oil.11
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 16:36:42 -0800 (PST)
+        with ESMTP id S229931AbiBRAg6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Feb 2022 19:36:58 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 462BD31200
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 16:36:43 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id x193so1473019oix.0
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 16:36:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CtZA+JkSi3WFhaVptCJyn0Ywy6jNakeNMbN8MYs1F0U=;
-        b=GWC0UAgaF+6Epl/7G9JBJBb6DRUDYe9yBT0F3sFTg1H+QfRvqo9aTDoLjdTm7ZMCsA
-         ZbGHxd9EusDYwj09cOtW8FJAxalaOrG5JUztwFxTV4ufcmZqoOxEN/WItCn02UhqdKW8
-         vm9KQaqeLUoyykjmATUksfjjb2WfikoO81BIY2hbrLWNgmR5ec3vpi7gqEiJwViMi7Hb
-         LiJd+hjX+2JK9q5ZlsY/qiEzXr1qeonj5pC0E2fcrvH6ue2lWv83VE4giTr9hoadbman
-         GNWIboQVyma9vSauTr/hYlKjL1WSqySs1FKPfiq86z8s8rOHlKka52Op+kMDtXTisZoM
-         MixA==
+        bh=bBKd18xtZScg/tYiH1GX5Afq48PxutZy5Io/riDzpx8=;
+        b=X50DzE2BdT0yBCZ59/liU/zAcKsB0XF7jNeydwqkRkQRJL9+tKaIrww7oRDZbX+MPl
+         VR3nigzZTXZXOKTigOitW2bRbu4zu+dznMRg9KN/e7f2Rxbmaxu36PxzTk8eLsT9Dn6X
+         5BGrG3qyMlReAH9A3T0vgK6/mJdTEkfc+Jue+Ku1UmGrfJcBlX/MtOWMTCZoveT3/bKr
+         aGPu5i4KlGgEue8BjXMCzfVd5iVrW8JlwNeEAFPRMZfKZQcpCcfevmk6x+6WyckBHdTV
+         VuW3iXdjXPrz4BfEhrWlTpmR4hRvgOxCbf8hcbUXYrG0homt8uh4jcBqmbwUxi5AQhcw
+         QAXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CtZA+JkSi3WFhaVptCJyn0Ywy6jNakeNMbN8MYs1F0U=;
-        b=eIL/F4yi6zF711J4r6bA8FTuYxK52+1+UP+gBfKeiVmCS/dhxZQfjg9tai/NUOYrTC
-         ZSj0cC7a3S9YWhu5c+APbrk3ANroo8YMc2IwwBonWQckijQkJyGqMW5NCNQB8ZPQsvGP
-         nvcOTU6NQZRiuEo5kovsEpZdCpVazGLqgoaEUSG6wJCXJo11y/h4HnhiYwdzkg+niDFy
-         ZB4H0qa1v+eU1U8aNeB4pCNPxmLR3YarTu8QeCX8Ml8Qiok5SmcUD2vMaCjMbZO/bGHb
-         utyk5TJafwiLUnF3YdXVf3XHcZg4tkMPtpRK62dMemqSDB0XvF7cq6HZ2ZceNzG7mupT
-         WKJA==
-X-Gm-Message-State: AOAM530BONVcus9fC+6GHnmTfgKotJoBSi3xHk6juofqzxJ5Tjfh/15D
-        wV6Oo2wRn1QrT6LLdPzGitQ=
-X-Google-Smtp-Source: ABdhPJzLwoXsXoJFYquz2K1PwqsIDOz9sQl7409tdfcTvNIKXZ2DhqrhYWZbEa3Uvef9+NS1J86Pdw==
-X-Received: by 2002:a05:6808:1301:b0:2ce:6ee7:2cfb with SMTP id y1-20020a056808130100b002ce6ee72cfbmr3735541oiv.297.1645144602078;
+        bh=bBKd18xtZScg/tYiH1GX5Afq48PxutZy5Io/riDzpx8=;
+        b=NIa2/sGgOFqdh9V1Wc83YM4j8KXiM+loYYxilQiwGF5QVhnWe8+iS7tGADwU25ELpZ
+         bkxq8/qnEMnIW2hPheYnrDNomNnWFZ+wGJ5480lqXKWjTfeNtui/6e1CcMYXhTCHOwtV
+         0E4YDWUf9BSNjPgjVMXaouJzaL+YnR+Z/Cd4lipk9QfHli6MFkGAMdwVfvCMA5rMCaKV
+         I+WdVku2T3V2o6G58iRHSmxdx7k+2LAnPVglIPGsjj0xBdYKKEDUuFEgmchmLrQEYSbP
+         AFcPPj3r4CxIJ4ml+D3FciBs0Af6zGhgYPq5m0Nqw41oPqfPMiprfFEMP2NJVwcP1kIp
+         kbYA==
+X-Gm-Message-State: AOAM531k+1AtgSmKb55lPClmSLjZNqIbY6IDiFkmXNFblC8uKAgU8iyp
+        syp/c93wHTaJgtvh2Ma6T/Q=
+X-Google-Smtp-Source: ABdhPJySXQdi0b4mcRbL0ng1BnT5Dgg0m9E1MTAvhr4iGUjRSrZSkrERbkjd0bBbur/3Dno3T5cnYQ==
+X-Received: by 2002:a05:6808:2108:b0:2d4:3ad1:6625 with SMTP id r8-20020a056808210800b002d43ad16625mr4027860oiw.74.1645144602664;
         Thu, 17 Feb 2022 16:36:42 -0800 (PST)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-1772-15fa-cf3f-3cd5.res6.spectrum.com. [2603:8081:140c:1a00:1772:15fa:cf3f:3cd5])
-        by smtp.googlemail.com with ESMTPSA id t31sm19698299oaa.9.2022.02.17.16.36.41
+        by smtp.googlemail.com with ESMTPSA id t31sm19698299oaa.9.2022.02.17.16.36.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Feb 2022 16:36:41 -0800 (PST)
+        Thu, 17 Feb 2022 16:36:42 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v12 2/6] RDMA/rxe: Collect mca init code in a subroutine
-Date:   Thu, 17 Feb 2022 18:35:40 -0600
-Message-Id: <20220218003543.205799-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v12 3/6] RDMA/rxe: Collect cleanup mca code in a subroutine
+Date:   Thu, 17 Feb 2022 18:35:41 -0600
+Message-Id: <20220218003543.205799-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220218003543.205799-1-rpearsonhpe@gmail.com>
 References: <20220218003543.205799-1-rpearsonhpe@gmail.com>
@@ -68,112 +68,96 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Collect initialization code for struct rxe_mca into a subroutine,
-__rxe_init_mca(), to cleanup rxe_attach_mcg() in rxe_mcast.c. Check
-limit on total number of attached qp's.
+Collect cleanup code for struct rxe_mca into a subroutine,
+__rxe_cleanup_mca() called in rxe_detach_mcg() in rxe_mcast.c.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mcast.c | 58 ++++++++++++++++++++-------
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
- 2 files changed, 44 insertions(+), 15 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 41 +++++++++++++++++----------
+ 1 file changed, 26 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 447d78bea28b..53db0984a9a1 100644
+index 53db0984a9a1..0f0655e81d40 100644
 --- a/drivers/infiniband/sw/rxe/rxe_mcast.c
 +++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -259,6 +259,46 @@ static void rxe_destroy_mcg(struct rxe_mcg *mcg)
- 	spin_unlock_irqrestore(&mcg->rxe->mcg_lock, flags);
+@@ -339,13 +339,31 @@ static int rxe_attach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	return err;
  }
  
 +/**
-+ * __rxe_init_mca - initialize a new mca holding lock
-+ * @qp: qp object
++ * __rxe_cleanup_mca - cleanup mca object holding lock
++ * @mca: mca object
 + * @mcg: mcg object
-+ * @mca: empty space for new mca
 + *
-+ * Context: caller must hold references on qp and mcg, rxe->mcg_lock
-+ * and pass memory for new mca
-+ *
-+ * Returns: 0 on success else an error
++ * Context: caller must hold a reference to mcg and rxe->mcg_lock
 + */
-+static int __rxe_init_mca(struct rxe_qp *qp, struct rxe_mcg *mcg,
-+			  struct rxe_mca *mca)
++static void __rxe_cleanup_mca(struct rxe_mca *mca, struct rxe_mcg *mcg)
 +{
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	int n;
++	list_del(&mca->qp_list);
 +
-+	n = atomic_inc_return(&rxe->mcg_attach);
-+	if (n > rxe->attr.max_total_mcast_qp_attach) {
-+		atomic_dec(&rxe->mcg_attach);
-+		return -ENOMEM;
-+	}
++	atomic_dec(&mcg->qp_num);
++	atomic_dec(&mcg->rxe->mcg_attach);
++	atomic_dec(&mca->qp->mcg_num);
++	rxe_drop_ref(mca->qp);
 +
-+	n = atomic_inc_return(&mcg->qp_num);
-+	if (n > rxe->attr.max_mcast_qp_attach) {
-+		atomic_dec(&mcg->qp_num);
-+		atomic_dec(&rxe->mcg_attach);
-+		return -ENOMEM;
-+	}
-+
-+	atomic_inc(&qp->mcg_num);
-+
-+	rxe_add_ref(qp);
-+	mca->qp = qp;
-+
-+	list_add_tail(&mca->qp_list, &mcg->qp_list);
-+
-+	return 0;
++	kfree(mca);
 +}
 +
- static int rxe_attach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
- 				  struct rxe_mcg *mcg)
+ static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 				   union ib_gid *mgid)
  {
-@@ -291,22 +331,9 @@ static int rxe_attach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	struct rxe_mcg *mcg;
+ 	struct rxe_mca *mca, *tmp;
+ 	unsigned long flags;
+-	int err;
+ 
+ 	mcg = rxe_lookup_mcg(rxe, mgid);
+ 	if (!mcg)
+@@ -354,37 +372,30 @@ static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
+ 	spin_lock_irqsave(&rxe->mcg_lock, flags);
+ 	list_for_each_entry_safe(mca, tmp, &mcg->qp_list, qp_list) {
+ 		if (mca->qp == qp) {
+-			list_del(&mca->qp_list);
+-			atomic_dec(&qp->mcg_num);
+-			atomic_dec(&rxe->mcg_attach);
+-			rxe_drop_ref(qp);
++			__rxe_cleanup_mca(mca, mcg);
+ 
+ 			/* if the number of qp's attached to the
+ 			 * mcast group falls to zero go ahead and
+ 			 * tear it down. This will not free the
+ 			 * object since we are still holding a ref
+-			 * from the get key above.
++			 * from the get key above
+ 			 */
+-			if (atomic_dec_return(&mcg->qp_num) <= 0)
++			if (atomic_read(&mcg->qp_num) <= 0)
+ 				__rxe_destroy_mcg(mcg);
+ 
+ 			/* drop the ref from get key. This will free the
+ 			 * object if qp_num is zero.
+ 			 */
+ 			kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
+-			kfree(mca);
+-			err = 0;
+-			goto out_unlock;
++
++			spin_unlock_irqrestore(&rxe->mcg_lock, flags);
++			return 0;
  		}
  	}
  
--	/* check limits after checking if already attached */
--	if (atomic_inc_return(&mcg->qp_num) > rxe->attr.max_mcast_qp_attach) {
--		atomic_dec(&mcg->qp_num);
-+	err = __rxe_init_mca(qp, mcg, mca);
-+	if (err)
- 		kfree(mca);
--		err = -ENOMEM;
--		goto out;
--	}
+ 	/* we didn't find the qp on the list */
+-	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
+-	err = -EINVAL;
 -
--	/* protect pointer to qp in mca */
--	rxe_add_ref(qp);
--	mca->qp = qp;
--
--	atomic_inc(&qp->mcg_num);
--	list_add(&mca->qp_list, &mcg->qp_list);
--
--	err = 0;
- out:
+-out_unlock:
  	spin_unlock_irqrestore(&rxe->mcg_lock, flags);
- 	return err;
-@@ -329,6 +356,7 @@ static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		if (mca->qp == qp) {
- 			list_del(&mca->qp_list);
- 			atomic_dec(&qp->mcg_num);
-+			atomic_dec(&rxe->mcg_attach);
- 			rxe_drop_ref(qp);
+-	return err;
++	return -EINVAL;
+ }
  
- 			/* if the number of qp's attached to the
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 20fe3ee6589d..6b15251ff67a 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -401,6 +401,7 @@ struct rxe_dev {
- 	spinlock_t		mcg_lock;
- 	struct rb_root		mcg_tree;
- 	atomic_t		mcg_num;
-+	atomic_t		mcg_attach;
- 
- 	spinlock_t		pending_lock; /* guard pending_mmaps */
- 	struct list_head	pending_mmaps;
+ int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
 -- 
 2.32.0
 
