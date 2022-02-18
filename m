@@ -2,173 +2,131 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B8E4BB79D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 12:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3C04BB91D
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 13:27:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233237AbiBRLF5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 06:05:57 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45652 "EHLO
+        id S235173AbiBRM1S (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Feb 2022 07:27:18 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:37040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233911AbiBRLFk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 06:05:40 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC89294FC0
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 03:05:23 -0800 (PST)
-Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4K0TKh42ngz8wpX;
-        Fri, 18 Feb 2022 19:02:00 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 18 Feb 2022 19:05:22 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 18 Feb 2022 19:05:21 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 8/8] RDMA/hns: Refactor the alloc_cqc()
-Date:   Fri, 18 Feb 2022 19:05:19 +0800
-Message-ID: <20220218110519.37375-9-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20220218110519.37375-1-liangwenpeng@huawei.com>
-References: <20220218110519.37375-1-liangwenpeng@huawei.com>
+        with ESMTP id S235169AbiBRM1R (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 07:27:17 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9773B1B7BF;
+        Fri, 18 Feb 2022 04:26:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=MVaFoxpSrw0lXOFRf60il59+xXDuimORkK161w41iNc=;
+        t=1645187219; x=1646396819; b=EXibw6MQDxwd+G9ZAGVB7tlsFUP8j9mDkVRMKG/rZAkrK1b
+        DvpIMQb2rEZIJlLjbXgYU641EJcGdpL2saikvB4+JDr/QblHL4nO8a78ww2/oCeSnyz1/UxPlEoQY
+        QCSV+OTJvz+5IVTZ7kwUMvpKywlU7+mchSrEq11AL0anykxxgT48GuBBGgn4QN5ZbFT8Yxyn2wfah
+        CBtdsJbFk92XfeOuVkRRGl0r9V/Z9Kgfo2+o919/aZKPrPWo+vhey5YBi/ddP7r5lkNDq41h41Ao7
+        7CndmP3jomv4luE25VGXdLKA5X+P5TmnZs4p9RJCU6tZ7uU3FVa+8XwQksIkgr0Q==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1nL2LH-002du1-NQ;
+        Fri, 18 Feb 2022 13:26:31 +0100
+Message-ID: <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, felix.kuehling@amd.com,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 18 Feb 2022 13:26:30 +0100
+In-Reply-To: <20220218075727.2737623-5-davidgow@google.com>
+References: <20220218075727.2737623-1-davidgow@google.com>
+         <20220218075727.2737623-5-davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.3 (3.42.3-1.fc35) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Abstract the alloc_cqc() into several parts and separate the process
-unrelated to allocating CQC.
+On Fri, 2022-02-18 at 15:57 +0800, David Gow wrote:
+> 
+> Note that, while this does build again, it still segfaults on startup,
+> so more work remains to be done.
 
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_cq.c | 65 ++++++++++++++-----------
- 1 file changed, 37 insertions(+), 28 deletions(-)
+That's probably just a lot more stuff getting included somehow?
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_cq.c b/drivers/infiniband/hw/hns/hns_roce_cq.c
-index 3d10300cab85..8acd599ffac1 100644
---- a/drivers/infiniband/hw/hns/hns_roce_cq.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_cq.c
-@@ -100,12 +100,39 @@ static void free_cqn(struct hns_roce_dev *hr_dev, unsigned long cqn)
- 	mutex_unlock(&cq_table->bank_mutex);
- }
- 
-+static int hns_roce_create_cqc(struct hns_roce_dev *hr_dev,
-+			       struct hns_roce_cq *hr_cq,
-+			       u64 *mtts, dma_addr_t dma_handle)
-+{
-+	struct ib_device *ibdev = &hr_dev->ib_dev;
-+	struct hns_roce_cmd_mailbox *mailbox;
-+	int ret;
-+
-+	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-+	if (IS_ERR(mailbox)) {
-+		ibdev_err(ibdev, "failed to alloc mailbox for CQC.\n");
-+		return PTR_ERR(mailbox);
-+	}
-+
-+	hr_dev->hw->write_cqc(hr_dev, hr_cq, mailbox->buf, mtts, dma_handle);
-+
-+	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_CQC,
-+				     hr_cq->cqn);
-+	if (ret)
-+		ibdev_err(ibdev,
-+			  "failed to send create cmd for CQ(0x%lx), ret = %d.\n",
-+			  hr_cq->cqn, ret);
-+
-+	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
-+
-+	return ret;
-+}
-+
- static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- {
- 	struct hns_roce_cq_table *cq_table = &hr_dev->cq_table;
- 	struct ib_device *ibdev = &hr_dev->ib_dev;
--	struct hns_roce_cmd_mailbox *mailbox;
--	u64 mtts[MTT_MIN_COUNT] = { 0 };
-+	u64 mtts[MTT_MIN_COUNT] = {};
- 	dma_addr_t dma_handle;
- 	int ret;
- 
-@@ -121,7 +148,7 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 	if (ret) {
- 		ibdev_err(ibdev, "failed to get CQ(0x%lx) context, ret = %d.\n",
- 			  hr_cq->cqn, ret);
--		goto err_out;
-+		return ret;
- 	}
- 
- 	ret = xa_err(xa_store(&cq_table->array, hr_cq->cqn, hr_cq, GFP_KERNEL));
-@@ -130,40 +157,17 @@ static int alloc_cqc(struct hns_roce_dev *hr_dev, struct hns_roce_cq *hr_cq)
- 		goto err_put;
- 	}
- 
--	/* Allocate mailbox memory */
--	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
--	if (IS_ERR(mailbox)) {
--		ret = PTR_ERR(mailbox);
--		goto err_xa;
--	}
--
--	hr_dev->hw->write_cqc(hr_dev, hr_cq, mailbox->buf, mtts, dma_handle);
--
--	ret = hns_roce_create_hw_ctx(hr_dev, mailbox, HNS_ROCE_CMD_CREATE_CQC,
--				     hr_cq->cqn);
--	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
--	if (ret) {
--		ibdev_err(ibdev,
--			  "failed to send create cmd for CQ(0x%lx), ret = %d.\n",
--			  hr_cq->cqn, ret);
-+	ret = hns_roce_create_cqc(hr_dev, hr_cq, mtts, dma_handle);
-+	if (ret)
- 		goto err_xa;
--	}
--
--	hr_cq->cons_index = 0;
--	hr_cq->arm_sn = 1;
--
--	refcount_set(&hr_cq->refcount, 1);
--	init_completion(&hr_cq->free);
- 
- 	return 0;
- 
- err_xa:
- 	xa_erase(&cq_table->array, hr_cq->cqn);
--
- err_put:
- 	hns_roce_table_put(hr_dev, &cq_table->table, hr_cq->cqn);
- 
--err_out:
- 	return ret;
- }
- 
-@@ -411,6 +415,11 @@ int hns_roce_create_cq(struct ib_cq *ib_cq, const struct ib_cq_init_attr *attr,
- 			goto err_cqc;
- 	}
- 
-+	hr_cq->cons_index = 0;
-+	hr_cq->arm_sn = 1;
-+	refcount_set(&hr_cq->refcount, 1);
-+	init_completion(&hr_cq->free);
-+
- 	return 0;
- 
- err_cqc:
--- 
-2.33.0
+> They are:
+> - CONFIG_VFIO_PCI: Needs ioport_map/ioport_unmap.
+> - CONFIG_INFINIBAND_RDMAVT: Needs cpuinfo_x86 and __copy_user_nocache
+> - CONFIG_BNXT: Failing under UML with -Werror
+> ERROR:root:../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c: In function ‘bnxt_ptp_enable’:
+> ../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c:400:43: error: array subscript 255 is above array bounds of ‘struct pps_pin[4]’ [-Werror=array-bounds]
+>   400 |                         ptp->pps_info.pins[pin_id].event = BNXT_PPS_EVENT_EXTERNAL;
+>       |                         ~~~~~~~~~~~~~~~~~~^~~~~~~~
+> - CONFIG_PATA_CS5535: Needs MSR access (__tracepoint_{read,write}_msr)
+> - CONFIG_VDPA: Enables CONFIG_DMA_OPS, which is unimplemented. ('dma_ops' is not defined)
+> 
+> These are all issues which should be investigated properly and the
+> corresponding options either fixed or disabled under UML. Having this
+> list of broken options should act as a good to-do list here, and will
+> allow these issues to be worked on independently, and other tests to
+> work in the meantime.
+> 
 
+I'm not really sure it makes sense to even do anything other than
+disabling these.
+
+It looks like all of them are just exposed by now being able to build
+PCI drivers on UML. Surely the people writing the driver didn't expect
+their drivers to run over simulated PCI (which is what the UML PCI
+support is all about).
+
+Now from a PCI driver point of view you can't really tell the difference
+(and anyway the driver won't be probed), but the issues (at least the
+build time ones) come from having
+
+    UML && PCI && X86_64
+
+or
+
+    UML && PCI && X86_32
+
+because drivers typically depend on X86_64 or X86_32, rather than on
+"X86 && X86_64" or "X86 && X86_32". In a sense thus, the issue is those
+drivers don't know that "!X86 && (X86_32 || X86_64)" can happen (with
+UML).
+
+
+Now you could say that's the driver bug, or you could say that they
+should just add "depends on !UML" (though that's basically equivalent to
+adding "depends on X86" and the latter may be preferable in some cases).
+
+Or actually in the three patches you have (1-3) it's in the code, but
+same thing, you can either add && !UML (like you did) or add && X86.
+
+
+Arguably, however, building PCI drivers by default is somewhat
+questionable in the first place?
+
+So maybe you should just add
+
+    # CONFIG_UML_PCI_OVER_VIRTIO is not set
+
+to the broken_on_uml.config since it exposes all these issues, and
+really is not very useful since you're not going to actually run with
+any simulated PCI devices anyway, so drivers will not be probed.
+
+johannes
