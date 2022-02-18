@@ -2,96 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 760494BB36D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 08:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1427D4BB3AC
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 08:58:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbiBRHdw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 02:33:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44612 "EHLO
+        id S232226AbiBRH6N (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Feb 2022 02:58:13 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231867AbiBRHds (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 02:33:48 -0500
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E8D329410F;
-        Thu, 17 Feb 2022 23:33:31 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V4oR9e._1645169608;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V4oR9e._1645169608)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Feb 2022 15:33:28 +0800
-Date:   Fri, 18 Feb 2022 15:33:27 +0800
-From:   "dust.li" <dust.li@linux.alibaba.com>
-To:     Hendrik Brueckner <brueckner@linux.ibm.com>
-Cc:     Stefan Raspl <raspl@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/smc: Add autocork support
-Message-ID: <20220218073327.GB5443@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
- <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
- <20220216152721.GB39286@linux.alibaba.com>
- <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
- <20220217132200.GA5443@linux.alibaba.com>
- <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S232223AbiBRH6L (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 02:58:11 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B9615DDF2
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:57:55 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id b9-20020a17090aa58900b001b8b14b4aabso4963308pjq.9
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:57:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=pzssXhX8riGRjAd4+3metqANF5chmN7DhU3KIG19plk=;
+        b=BXYHGO/apr1trZ7ANJF1Lt6pYKglG4Ybyk1oIZRHZKKVSqoKSXgrBXlJ+1OM+32L9t
+         MU8n7K+r76s0oXflCxISCV1ICc0UvMWkHQwSTytgu8Evx0a2e982roAPsTJGWM6fb62G
+         4xiTSYukPeiMTehnCZ8Ef6urhW9UdAhyCH8qBQH/Z3umLv0xdGv2JPdSLHgNuZnc3YDQ
+         m26WTBm81XDNmFpY/glb5MBqUkdfdOBU4PUPqt6iZ2jAhWr3J7itrrkNCi44IwFV8KeU
+         S94sCD0t8mfXDphKvuDMvw2otQeqJUpd7l5aT+oeKWADzDv5u6Czmms69AvfX5QGDeUK
+         NAmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=pzssXhX8riGRjAd4+3metqANF5chmN7DhU3KIG19plk=;
+        b=NEd4aMYtwC14no62WdN72g3cwx6xJRXnP2GgWf63HNN0YhGUQjrM1p5fCJTjTVVbX6
+         kjo+OrOrGSWNXSPun7nN/rX57WV8gfbmiappz8ply2xWoMD887q1eWzYwXvIvKay6keJ
+         veZ/GFn437ScdAYutGsaXqPAy0posH9mow5JbnMHeNtJjKdgIWC+7FgaprcRcTmUbep0
+         H8dYXGZelKFn24zkOXZLkzNrD0VacK7EJINsK3VFAnpO4j4X0dXye/7zUb2PO3QE/375
+         qW78Wjkq02qqlqMPdwUZBLy0Exv5j7fYjzu5fVj4UfG6Zd+wfJQaF6XIME9R3sIG6p6U
+         2R7w==
+X-Gm-Message-State: AOAM531XCe+7zjbhMyYRdsjIIGPyS226Cg/e3BCEWdnJxPVDLuqNPaJq
+        s/T9Dn7tLTmEF5RkY94oeSSrwmtOonQdDA==
+X-Google-Smtp-Source: ABdhPJw0UMsgszZC5yB3naBv5jFWjYWF4uP6hg8QghCa4W6xT10Nwxg2nhu4SD1k1Vghgej18o9lOhbEem5LzA==
+X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
+ (user=davidgow job=sendgmr) by 2002:a17:90a:a50f:b0:1b8:e6ad:f63c with SMTP
+ id a15-20020a17090aa50f00b001b8e6adf63cmr333880pjq.1.1645171074073; Thu, 17
+ Feb 2022 23:57:54 -0800 (PST)
+Date:   Fri, 18 Feb 2022 15:57:23 +0800
+Message-Id: <20220218075727.2737623-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
+Subject: [PATCH 0/4] kunit,um: Fix kunit.py build --alltests
+From:   David Gow <davidgow@google.com>
+To:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     David Gow <davidgow@google.com>, linux-um@lists.infradead.org,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, x86@kernel.org, felix.kuehling@amd.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 07:15:54PM +0100, Hendrik Brueckner wrote:
->On Thu, Feb 17, 2022 at 09:22:00PM +0800, dust.li wrote:
->> On Thu, Feb 17, 2022 at 10:37:28AM +0100, Stefan Raspl wrote:
->> >On 2/16/22 16:27, dust.li wrote:
->> >> On Wed, Feb 16, 2022 at 02:58:32PM +0100, Stefan Raspl wrote:
->> >> > On 2/16/22 04:49, Dust Li wrote:
->> >> >
->> 
->> >Now we understand that cloud workloads are a bit different, and the desire to
->> >be able to modify the environment of a container while leaving the container
->> >image unmodified is understandable. But then again, enabling the base image
->> >would be the cloud way to address this. The question to us is: How do other
->> >parts of the kernel address this?
->> 
->> I'm not familiar with K8S, but from one of my colleague who has worked
->> in that area tells me for resources like CPU/MEM and configurations
->> like sysctl, can be set using K8S configuration:
->> https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/
->
->For K8s, this involves container engines like cri-o, containerd, podman,
->and others towards the runtimes like runc.  To ensure they operate together,
->specifications by the Open Container Initiative (OCI) at
->https://opencontainers.org/release-notices/overview/
->
->For container/pod deployments, there is especially the Container Runtime
->Interface (CRI) that defines the interface, e.g., of K8s to cri-o etc.
->
->CRI includes support for (namespaced) sysctl's:
->https://github.com/opencontainers/runtime-spec/releases/tag/v1.0.2
->
->In essence, the CRI spec would allow users to specify/control a specific
->runtime for the container in a declarative way w/o modifying the (base)
->container images.
+kunit_tool's --alltests option uses UML and make allyesconfig to produce
+a configuration which enables as many tests as possible. However, make
+ARCH=um allyesconfig is broken for a number of reasons.
 
-Thanks a lot for your kind explanation !
+Fix a few different UML build breakages, and disable a few config
+options in kunit_tool in order to get this kernel compiling again.
 
-After a quick look at the OCI spec, I saw the support for file based
-configuration (Including sysfs/procfs etc.). And unfortunately, no
-netlink support.
+Note that the resulting kernel still doesn't run, but having it compile
+is the first step to fixing that.
 
+David Gow (3):
+  drm/amdgpu: Make smu7_hwmgr build on UML
+  IB/qib: Compile under User-Mode Linux
+  kunit: tool: Disable broken options for --alltests
 
-Hi Karsten & Stefan:
-Back to the patch itself, do you think I need to add the control switch
-now ? Or just leave the switch and fix other issues first ?
+Randy Dunlap (1):
+  drm/amdgpu: Fix compilation under UML
 
-Thanks
+ drivers/gpu/drm/amd/amdkfd/kfd_crat.c               | 6 +++---
+ drivers/gpu/drm/amd/amdkfd/kfd_topology.c           | 2 +-
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 2 +-
+ drivers/infiniband/hw/qib/qib_wc_x86_64.c           | 4 ++++
+ tools/testing/kunit/configs/broken_on_uml.config    | 5 +++++
+ 5 files changed, 14 insertions(+), 5 deletions(-)
+
+-- 
+2.35.1.265.g69c8d7142f-goog
+
