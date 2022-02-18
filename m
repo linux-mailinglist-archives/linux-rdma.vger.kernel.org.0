@@ -2,127 +2,99 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B424BBA1F
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 14:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FF94BBBA1
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 16:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235639AbiBRN3H (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 08:29:07 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:50394 "EHLO
+        id S236682AbiBRPCR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Feb 2022 10:02:17 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:44480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbiBRN3F (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 08:29:05 -0500
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A03296932
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 05:28:49 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6200,9189,10261"; a="238529359"
-X-IronPort-AV: E=Sophos;i="5.88,378,1635231600"; 
-   d="scan'208";a="238529359"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2022 05:28:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,378,1635231600"; 
-   d="scan'208";a="489452733"
-Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga003.jf.intel.com with ESMTP; 18 Feb 2022 05:28:47 -0800
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev, leon@kernel.org
-Subject: [PATCH 3/3] RDMA/irdma: Move union irdma_sockaddr to header file
-Date:   Sat, 19 Feb 2022 00:49:18 -0500
-Message-Id: <20220219054918.3819830-3-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20220219054918.3819830-1-yanjun.zhu@linux.dev>
-References: <20220219054918.3819830-1-yanjun.zhu@linux.dev>
+        with ESMTP id S236709AbiBRPCO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 10:02:14 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16432181A5C
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 07:01:56 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id p7so15190081qvk.11
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Feb 2022 07:01:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qQOuPloDj1FDvrT18I7yp3YumR1JEJ9ojjlV/rcHoPw=;
+        b=RoS0gyblqR/tsGfQ7lArc8WXX3kNZMvPTfZET3nsnl+Rr8n361EoMRIfa1S+T8g8oc
+         NmAlJEUUOZ5XHaM5YrjNSr5VsFbJTayGS5be9bu+8ZuTGnnxnkPavDlHAMpATFRtc11K
+         fiKwKgEOqF+51vJxLCJG62RY8EQ2KpYmP7mAntkiGoPgLp6RQG9Lz93DB55QoyA5iy4K
+         jD0aW9yE0JKDtqB8vCY2rRZ02xMADfrBesx1EB/DYj+qq78BrufP6AkXF4xsqmELAlVq
+         1FXz/tX3UyRzucAxKzmHRYKSZZAyzlWABCgkRcxEK/GH/tUhjJjJ7pXdKtahQ8czEgJj
+         SqpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qQOuPloDj1FDvrT18I7yp3YumR1JEJ9ojjlV/rcHoPw=;
+        b=VsdkQE60UxrYidgxwStHXUYm6NtQJ8mEbHtv2eIrPaOyNPGLIkzoYYo6TaWOqQnQTb
+         jRscPdV1rXTEmRw9ScWcbdlsrqphOPSDRP0lf6HO2RgzoGdrQhGguq6wRNrW0UkwpSii
+         nIDDZRiwn5Mv6zX47bEmpEEywe+Cv4tAfdY8ynFMTLs+iGR08iYGGsGcDfk2lRspPOkX
+         EySwlPK/51ogri9XyjTgHOWDlJK0cbPb1X1sIiRe1H/eokHAxAhhrUMy/Qecb7uLaFiX
+         IhsNudi4GLBqc7cUqT710ze7g6rfielMpZ2ERX208OZckUCuZZTVryFb6S5M+FxDGjCN
+         DpTQ==
+X-Gm-Message-State: AOAM530Y48qeWwnhTaXjVihnNu1GJSBf9UcigBhWUbGwlQpxb1fIvbt9
+        Jmg7znIJhTD2NYi+Myzew1JCqg==
+X-Google-Smtp-Source: ABdhPJxj9yyCZvW5c4Ugzq0ieNoelSzlHZ5AUX07DsgnGoll6g+QZTPyJ2Fq/jgnUxsgsAq5KC011A==
+X-Received: by 2002:ac8:7fd5:0:b0:2cf:93ff:5638 with SMTP id b21-20020ac87fd5000000b002cf93ff5638mr7063274qtk.435.1645196514006;
+        Fri, 18 Feb 2022 07:01:54 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id s4sm23008395qko.113.2022.02.18.07.01.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Feb 2022 07:01:52 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nL4lb-006cts-Vr; Fri, 18 Feb 2022 11:01:51 -0400
+Date:   Fri, 18 Feb 2022 11:01:51 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     David Gow <davidgow@google.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-um@lists.infradead.org, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-rdma@vger.kernel.org,
+        x86@kernel.org, felix.kuehling@amd.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
+Message-ID: <20220218150151.GD1037534@ziepe.ca>
+References: <20220218075727.2737623-1-davidgow@google.com>
+ <20220218075727.2737623-5-davidgow@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220218075727.2737623-5-davidgow@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Fri, Feb 18, 2022 at 03:57:27PM +0800, David Gow wrote:
+> There are a number of Kconfig options which break compilation under UML with
+> allyesconfig.  As kunit_tool's --alltests option is based on allyesconfig and
+> UML, we need to update the list of broken options to make --alltests build
+> again.
+> 
+> Note that, while this does build again, it still segfaults on startup,
+> so more work remains to be done.
+> 
+> They are:
+> - CONFIG_VFIO_PCI: Needs ioport_map/ioport_unmap.
+> - CONFIG_INFINIBAND_RDMAVT: Needs cpuinfo_x86 and __copy_user_nocache
 
-The union irdma_sockaddr is used frequently. So move it to the
-header file.
+It doesn't make sense to patch qib and then turn this option off, it
+is required to build qib.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/hw/irdma/verbs.c | 17 +++--------------
- drivers/infiniband/hw/irdma/verbs.h | 11 +++++++----
- 2 files changed, 10 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 7e4d0cc9222f..93cf4ad0d2a6 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -3932,11 +3932,7 @@ static int irdma_attach_mcast(struct ib_qp *ibqp, union ib_gid *ibgid, u16 lid)
- 	int ret = 0;
- 	bool ipv4;
- 	u16 vlan_id;
--	union {
--		struct sockaddr saddr;
--		struct sockaddr_in saddr_in;
--		struct sockaddr_in6 saddr_in6;
--	} sgid_addr;
-+	union irdma_sockaddr sgid_addr;
- 	unsigned char dmac[ETH_ALEN];
- 
- 	rdma_gid2ip((struct sockaddr *)&sgid_addr, ibgid);
-@@ -4072,11 +4068,7 @@ static int irdma_detach_mcast(struct ib_qp *ibqp, union ib_gid *ibgid, u16 lid)
- 	struct irdma_mcast_grp_ctx_entry_info mcg_info = {};
- 	int ret;
- 	unsigned long flags;
--	union {
--		struct sockaddr saddr;
--		struct sockaddr_in saddr_in;
--		struct sockaddr_in6 saddr_in6;
--	} sgid_addr;
-+	union irdma_sockaddr sgid_addr;
- 
- 	rdma_gid2ip((struct sockaddr *)&sgid_addr, ibgid);
- 	if (!ipv6_addr_v4mapped((struct in6_addr *)ibgid))
-@@ -4154,10 +4146,7 @@ static int irdma_create_ah(struct ib_ah *ibah,
- 	u32 ah_id = 0;
- 	struct irdma_ah_info *ah_info;
- 	struct irdma_create_ah_resp uresp;
--	union {
--		struct sockaddr_in saddr_in;
--		struct sockaddr_in6 saddr_in6;
--	} sgid_addr, dgid_addr;
-+	union irdma_sockaddr sgid_addr, dgid_addr;
- 	int err;
- 	u8 dmac[ETH_ALEN];
- 
-diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
-index d2d4a7e5f954..541105b728e3 100644
---- a/drivers/infiniband/hw/irdma/verbs.h
-+++ b/drivers/infiniband/hw/irdma/verbs.h
-@@ -25,13 +25,16 @@ struct irdma_pd {
- 	struct irdma_sc_pd sc_pd;
- };
- 
-+union irdma_sockaddr {
-+	struct sockaddr_in saddr_in;
-+	struct sockaddr_in6 saddr_in6;
-+};
-+
- struct irdma_av {
- 	u8 macaddr[16];
- 	struct rdma_ah_attr attrs;
--	union {
--		struct sockaddr_in saddr_in;
--		struct sockaddr_in6 saddr_in6;
--	} sgid_addr, dgid_addr;
-+	union irdma_sockaddr sgid_addr;
-+	union irdma_sockaddr dgid_addr;
- 	u8 net_type;
- };
- 
--- 
-2.27.0
-
+Jason
