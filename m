@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 943F74BB3B2
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 08:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADAA4BB3B9
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Feb 2022 08:58:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbiBRH6U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 02:58:20 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:46014 "EHLO
+        id S232288AbiBRH6b (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Feb 2022 02:58:31 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbiBRH6T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 02:58:19 -0500
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D68F1617FB
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:58:03 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-2d07ae11464so36393627b3.14
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:58:03 -0800 (PST)
+        with ESMTP id S232292AbiBRH63 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 02:58:29 -0500
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F4817BCFD
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:58:07 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id ay10-20020a17090b030a00b001b8a4029ba0so7975195pjb.5
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Feb 2022 23:58:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=7R2K/W8nkggK1CJfPpQftpPmnn35SzGH4U6ga+9D7QQ=;
-        b=V+xlF6qh6PP/HMyXbXzf7qS3SXtT2e2Zoo2s9HHCNL5egQM9rIMawyFSb8Ck3LfwA5
-         X2PDtPb4B41RUBMfC53NXkmR01khgouCtY7ufZ8nImmPIdsQeCYpJScdMsdiL67euac7
-         qeL1eOg1Ft+dXUhi7ilG7/B94k93I+51LINTfDl0LEdOed7L+X/iTVGsv4gBykmKduLH
-         zfc9gPYFlLKcTC+N1/G8sBoai9qpugRP5wp2kS2Z0qjBAHrwCGGvICeoI1wCj0/sYzx4
-         I/Xk9CutaMf0v7CcxiLDDdxBmur+yOzVl42FB7lj1RA7MFHPAP5lxjz0Q4EeFFyYLtPk
-         7C6Q==
+        bh=j0CZufvSyGMkqIs03zWz3SOrzF5QkxrcKJyKN+3F6DU=;
+        b=DnvEEpeLGT7C5chE/iFqLg1oxG7vGRUWbZEgwmeFp5/uBfxwHZ4WKh+ARdG0TZevOn
+         S8V+kTXByBAPADfiBUy8qdYWtbxpPbyjuahrqoW5Y+jx4Ka3f2ix+XYBDPLErajyCmGc
+         WhsTS3GeBvKSmJU24IW3jl4Eitt4U8L46TqvxavzKDg0M7fao2jGz5UhpxjTsQKN5dwB
+         3pcbMsevsoyi2PABytqDtcFfB+sDZF7+PctoUcSKimkNVz6fqrYV63g+hOOmzfycxYWD
+         GeQLc8fwAtfGcxSsJO76HpBCHUOMxWvmRj95XUCGtf7GYhrl8yZF035C7XUfj6JbBWPA
+         VPkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=7R2K/W8nkggK1CJfPpQftpPmnn35SzGH4U6ga+9D7QQ=;
-        b=AvBx13JP3/rHdknRmC1AjNxc0sRcnrisKtNNKIVQtG63S8xuxFXj3hRUUjkL0c8fM0
-         SH6qdnrVDguTr7OkNdTE+k5Ml8cJmfqa4pnt+4ES/1zRXF96P3hZzl5v/NpESKliFnxa
-         Hsyw+Sp1wsnK7J/Yn6hs6WJt6FuZJBCWWVD/u/Ne3DGnBQEVDcR6t1Oghrigc9z1wgDd
-         wCIMLCwUH36vV5vNt8DcW/NorzfMCC+BFNUOsoV3MohgqT+LLLLJ4zZKoax3tQZUfdoi
-         eObweq1aj/rjZ24KMnr4pGKDwxSR9oWsVgMpuE8W3MeSG85c2uDwIxhs3VS8uv3DW2bX
-         yURA==
-X-Gm-Message-State: AOAM533RkGJPhPnWJ3t/Toh3ZXja/dE5kNX+gkR20DOtNmTSazpb5uB+
-        ds41rbhTn4W6WaoE/Ckv4eoUXiwRljorsQ==
-X-Google-Smtp-Source: ABdhPJwRyBr1QVgpmKaKId2Xs4Ti+wE4zEnLnzEuBxqhMYKF29LS22m3wSG1jSe6jV4DAclduKLzF34NZOIuaQ==
+        bh=j0CZufvSyGMkqIs03zWz3SOrzF5QkxrcKJyKN+3F6DU=;
+        b=wrgNtAU0bMxhpTJ5iJ0aErdJzhojkdNDTl3MtE80uPNxMQPVfOd/6DXUXcgbuqJv+5
+         fyGDOcCZ9CKzhGnzBuYufEDJv8aEDEEkH9SwMP6fQft3JSW1u1CD8Qqco4UE3u2oqc1j
+         nayNuIvhFE13ddYOK1zuVEkT4w68sdDEbvCyWAXgdFt72R+WUcnQOxf9u7BZEVV8vOZW
+         0yOjIAYMyfI/e/ujtph/nWGgTgpsTfU8gFCiERdwS047FllNjFLPdQmxnhJqn4qHDuFk
+         lxFAQZaSckcZ5Bi5RGshHK3qcvR2+TkdgXtdvWLM25QDSh8Smecdxq5ah2lrB3CCnySV
+         k9pg==
+X-Gm-Message-State: AOAM530dLB15vlbcbi1Df3H253mPjkA2fZ5ozGbhp4W9X52fTdqAR7Ip
+        4dIpn09W3xhXrSWKnMy9o8ykyVhoEqaIoQ==
+X-Google-Smtp-Source: ABdhPJweI7iurcA3Hbq+nFlKuGo4v8cSMtTOOIZv9Y5cBs/yQBBEnAM5KLK3GgPSvT5VxuN+hAiv//qPBNXQEg==
 X-Received: from slicestar.c.googlers.com ([fda3:e722:ac3:cc00:4f:4b78:c0a8:20a1])
- (user=davidgow job=sendgmr) by 2002:a05:690c:9e:b0:2d6:c96d:bf01 with SMTP id
- be30-20020a05690c009e00b002d6c96dbf01mr767575ywb.421.1645171082793; Thu, 17
- Feb 2022 23:58:02 -0800 (PST)
-Date:   Fri, 18 Feb 2022 15:57:25 +0800
+ (user=davidgow job=sendgmr) by 2002:a17:90a:581:b0:1b9:b85e:94df with SMTP id
+ i1-20020a17090a058100b001b9b85e94dfmr7115153pji.195.1645171087194; Thu, 17
+ Feb 2022 23:58:07 -0800 (PST)
+Date:   Fri, 18 Feb 2022 15:57:26 +0800
 In-Reply-To: <20220218075727.2737623-1-davidgow@google.com>
-Message-Id: <20220218075727.2737623-3-davidgow@google.com>
+Message-Id: <20220218075727.2737623-4-davidgow@google.com>
 Mime-Version: 1.0
 References: <20220218075727.2737623-1-davidgow@google.com>
 X-Mailer: git-send-email 2.35.1.265.g69c8d7142f-goog
-Subject: [PATCH 2/4] drm/amdgpu: Make smu7_hwmgr build on UML
+Subject: [PATCH 3/4] IB/qib: Compile under User-Mode Linux
 From:   David Gow <davidgow@google.com>
 To:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
         Anton Ivanov <anton.ivanov@cambridgegreys.com>,
@@ -65,8 +65,8 @@ Cc:     David Gow <davidgow@google.com>, linux-um@lists.infradead.org,
         linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,25 +81,25 @@ there's a cpuinfo_um struct).
 In order to allow UML to build with allyesconfig, only check cpuinfo_x86
 on non-UML architectures.
 
-Fixes: b3dc549986 ("mdgpu: Disable PCIE_DPM on Intel RKL Platform")
 Signed-off-by: David Gow <davidgow@google.com>
 ---
- drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/qib/qib_wc_x86_64.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-index a1e11037831a..a162552f7845 100644
---- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-+++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
-@@ -1738,7 +1738,7 @@ static int smu7_disable_dpm_tasks(struct pp_hwmgr *hwmgr)
- 
- static bool intel_core_rkl_chk(void)
+diff --git a/drivers/infiniband/hw/qib/qib_wc_x86_64.c b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
+index edd0ddbd4481..76fef1321c26 100644
+--- a/drivers/infiniband/hw/qib/qib_wc_x86_64.c
++++ b/drivers/infiniband/hw/qib/qib_wc_x86_64.c
+@@ -146,5 +146,9 @@ void qib_disable_wc(struct qib_devdata *dd)
+  */
+ int qib_unordered_wc(void)
  {
--#if IS_ENABLED(CONFIG_X86_64)
-+#if IS_ENABLED(CONFIG_X86_64) && !defined(CONFIG_UML)
- 	struct cpuinfo_x86 *c = &cpu_data(0);
- 
- 	return (c->x86 == 6 && c->x86_model == INTEL_FAM6_ROCKETLAKE);
++#ifndef CONFIG_UML
+ 	return boot_cpu_data.x86_vendor != X86_VENDOR_AMD;
++#else
++	return 0;
++#endif
+ }
 -- 
 2.35.1.265.g69c8d7142f-goog
 
