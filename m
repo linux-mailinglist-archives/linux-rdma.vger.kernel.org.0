@@ -2,48 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 297B94BC2F2
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Feb 2022 00:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE8F4BC6DB
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Feb 2022 09:00:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240190AbiBRXmz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Feb 2022 18:42:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56038 "EHLO
+        id S241712AbiBSIAm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Feb 2022 03:00:42 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:43848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234987AbiBRXmy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Feb 2022 18:42:54 -0500
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D5F54BD7;
-        Fri, 18 Feb 2022 15:42:35 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V4r6yr8_1645227752;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V4r6yr8_1645227752)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 19 Feb 2022 07:42:33 +0800
-Date:   Sat, 19 Feb 2022 07:42:32 +0800
-From:   "dust.li" <dust.li@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>
-Cc:     Stefan Raspl <raspl@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/smc: Add autocork support
-Message-ID: <20220218234232.GC5443@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
- <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
- <20220216152721.GB39286@linux.alibaba.com>
- <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
- <20220217132200.GA5443@linux.alibaba.com>
- <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
- <20220218073327.GB5443@linux.alibaba.com>
- <d4ce4674-3ced-da34-a8a4-30d74cbe24bb@linux.ibm.com>
+        with ESMTP id S235198AbiBSIAl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Feb 2022 03:00:41 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AB482042A1
+        for <linux-rdma@vger.kernel.org>; Sat, 19 Feb 2022 00:00:17 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id n8so6530268wms.3
+        for <linux-rdma@vger.kernel.org>; Sat, 19 Feb 2022 00:00:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=e/CBRDQn63UM2Dxde4yBKUaUIBU42JJuvnqQtxIzRmk=;
+        b=jNFTNiQy0JMEx+bRMgu0S3DE0sHesRrx+9w+bV5QvXVODlWFw4y3Wd76pOV+NkNGYj
+         YygA5h31yaHjA/j/3SwAZj6ZBkIoQ8tOTUw7i5Zq2KJEht2pleFNy7f+IrNDLiFOAncP
+         WM5K1OlfBpwR6xPo2r4fJk44frMfGBoZ20Pj2jLP/DqNrmXxgpmcG4/S8vUMQyNRJLAj
+         h5UOalhp3CtyNjNY4n1drNzEz2QKySq5vYbGQ8Rxotosu2pDesp75wcVIUVduVJOlt11
+         73LxIM5pRq09N2HEbwHun/AssigUlLHSmHuFD+8m2tTcIwzGcCfoaRE0jVTLhD/nIT8y
+         OHTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=e/CBRDQn63UM2Dxde4yBKUaUIBU42JJuvnqQtxIzRmk=;
+        b=hHFEzH3lJIyOOa3a+qvgycE6tZJ43ZpS0Y8UASU8w0h9NszyKYKvmOrvETr6dU93+I
+         mCg1Zt+dnduoHhcb4ZFrvEqYJVccTbJ4Doz7Q2fwC6MD4nhSSfRBqLB/8UOVnVN7G5I/
+         3y+UxZbsWFGP/KynphPUQTPBi1fszUmZbWYh0wBZuM3z7demOxErUHD3mGwIK5BbfNgc
+         SvXB06ge0kJ8ToXIFm38eqWfSf3ORFeirje27bk23fLRiAydAOK8mwCT4jjnt66nSb8Z
+         EiF67smaGxRrYHxZtK+iIHDYzGL9swolh7SFmn7suTkWjqhmZNvj9Bvdvg8qxO+yMgHH
+         esQw==
+X-Gm-Message-State: AOAM530emVzL4IrGeXh0L9eqwA2U2SOfiheQaLjMJkI7Hy5H/RNxeWRO
+        xUod85umBFT1coyN2uBEieqkY/z7wcTyk4P5XYefwg==
+X-Google-Smtp-Source: ABdhPJzbJOrM/2OLBtDRNHfACqh08uaaCdcmb5NeBmC69hAFuvYRavqZoqsRXsCrlc74PcOn8wHgcFrPuLcM4oK0IOY=
+X-Received: by 2002:a05:600c:215:b0:37c:729:f84d with SMTP id
+ 21-20020a05600c021500b0037c0729f84dmr9399022wmi.131.1645257615313; Sat, 19
+ Feb 2022 00:00:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4ce4674-3ced-da34-a8a4-30d74cbe24bb@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+References: <20220218075727.2737623-1-davidgow@google.com> <20220218075727.2737623-5-davidgow@google.com>
+ <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
+In-Reply-To: <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 19 Feb 2022 16:00:04 +0800
+Message-ID: <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        x86@kernel.org, felix.kuehling@amd.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000c06bb705d85a6340"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,61 +78,205 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Feb 18, 2022 at 05:03:56PM +0100, Karsten Graul wrote:
->On 18/02/2022 08:33, dust.li wrote:
->> On Thu, Feb 17, 2022 at 07:15:54PM +0100, Hendrik Brueckner wrote:
->>> On Thu, Feb 17, 2022 at 09:22:00PM +0800, dust.li wrote:
->>>> On Thu, Feb 17, 2022 at 10:37:28AM +0100, Stefan Raspl wrote:
->>>>> On 2/16/22 16:27, dust.li wrote:
->>>>>> On Wed, Feb 16, 2022 at 02:58:32PM +0100, Stefan Raspl wrote:
->>>>>>> On 2/16/22 04:49, Dust Li wrote:
->>>>>>>
->>>>
->>>>> Now we understand that cloud workloads are a bit different, and the desire to
->>>>> be able to modify the environment of a container while leaving the container
->>>>> image unmodified is understandable. But then again, enabling the base image
->>>>> would be the cloud way to address this. The question to us is: How do other
->>>>> parts of the kernel address this?
->>>>
->>>> I'm not familiar with K8S, but from one of my colleague who has worked
->>>> in that area tells me for resources like CPU/MEM and configurations
->>>> like sysctl, can be set using K8S configuration:
->>>> https://kubernetes.io/docs/tasks/administer-cluster/sysctl-cluster/
->>>
->>> For K8s, this involves container engines like cri-o, containerd, podman,
->>> and others towards the runtimes like runc.  To ensure they operate together,
->>> specifications by the Open Container Initiative (OCI) at
->>> https://opencontainers.org/release-notices/overview/
->>>
->>> For container/pod deployments, there is especially the Container Runtime
->>> Interface (CRI) that defines the interface, e.g., of K8s to cri-o etc.
->>>
->>> CRI includes support for (namespaced) sysctl's:
->>> https://github.com/opencontainers/runtime-spec/releases/tag/v1.0.2
->>>
->>> In essence, the CRI spec would allow users to specify/control a specific
->>> runtime for the container in a declarative way w/o modifying the (base)
->>> container images.
->> 
->> Thanks a lot for your kind explanation !
->> 
->> After a quick look at the OCI spec, I saw the support for file based
->> configuration (Including sysfs/procfs etc.). And unfortunately, no
->> netlink support.
->> 
->> 
->> Hi Karsten & Stefan:
->> Back to the patch itself, do you think I need to add the control switch
->> now ? Or just leave the switch and fix other issues first ?
+--000000000000c06bb705d85a6340
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Feb 18, 2022 at 8:26 PM Johannes Berg <johannes@sipsolutions.net> w=
+rote:
 >
->Hi, looks like we need more time to evaluate possibilities, so if you have 
->additional topics on your desk move on and delay this one.
+> On Fri, 2022-02-18 at 15:57 +0800, David Gow wrote:
+> >
+> > Note that, while this does build again, it still segfaults on startup,
+> > so more work remains to be done.
+>
+> That's probably just a lot more stuff getting included somehow?
+>
 
-OK, got it.
+Yeah: it used to work (a couple of years ago), but something has
+broken it in the meantime. It's just a shame that bisecting things
+with allyesconfig takes so long...
 
->Right now for me it looks like there is no way to use netlink for container runtime
->configuration, which is a pity.
->We continue our discussions about this in the team, and also here on the list.
+> > They are:
+> > - CONFIG_VFIO_PCI: Needs ioport_map/ioport_unmap.
+> > - CONFIG_INFINIBAND_RDMAVT: Needs cpuinfo_x86 and __copy_user_nocache
+> > - CONFIG_BNXT: Failing under UML with -Werror
+> > ERROR:root:../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c: In functio=
+n =E2=80=98bnxt_ptp_enable=E2=80=99:
+> > ../drivers/net/ethernet/broadcom/bnxt/bnxt_ptp.c:400:43: error: array s=
+ubscript 255 is above array bounds of =E2=80=98struct pps_pin[4]=E2=80=99 [=
+-Werror=3Darray-bounds]
+> >   400 |                         ptp->pps_info.pins[pin_id].event =3D BN=
+XT_PPS_EVENT_EXTERNAL;
+> >       |                         ~~~~~~~~~~~~~~~~~~^~~~~~~~
+> > - CONFIG_PATA_CS5535: Needs MSR access (__tracepoint_{read,write}_msr)
+> > - CONFIG_VDPA: Enables CONFIG_DMA_OPS, which is unimplemented. ('dma_op=
+s' is not defined)
+> >
+> > These are all issues which should be investigated properly and the
+> > corresponding options either fixed or disabled under UML. Having this
+> > list of broken options should act as a good to-do list here, and will
+> > allow these issues to be worked on independently, and other tests to
+> > work in the meantime.
+> >
+>
+> I'm not really sure it makes sense to even do anything other than
+> disabling these.
+>
+> It looks like all of them are just exposed by now being able to build
+> PCI drivers on UML. Surely the people writing the driver didn't expect
+> their drivers to run over simulated PCI (which is what the UML PCI
+> support is all about).
+>
+> Now from a PCI driver point of view you can't really tell the difference
+> (and anyway the driver won't be probed), but the issues (at least the
+> build time ones) come from having
+>
+>     UML && PCI && X86_64
+>
+> or
+>
+>     UML && PCI && X86_32
+>
+> because drivers typically depend on X86_64 or X86_32, rather than on
+> "X86 && X86_64" or "X86 && X86_32". In a sense thus, the issue is those
+> drivers don't know that "!X86 && (X86_32 || X86_64)" can happen (with
+> UML).
+>
+>
+> Now you could say that's the driver bug, or you could say that they
+> should just add "depends on !UML" (though that's basically equivalent to
+> adding "depends on X86" and the latter may be preferable in some cases).
+>
+> Or actually in the three patches you have (1-3) it's in the code, but
+> same thing, you can either add && !UML (like you did) or add && X86.
+>
 
-Many thanks for your time on this topic !
+I didn't realise X86 wasn't defined in UML: that's definitely a bit
+cleaner than !UML in a number of these cases.
 
+Not all of those issues are fundamentally solved by "depends on X86",
+though: there are a few which might be other missing things in UML
+(maybe the 'dma_ops' issues?), and/or might be the result of -Werror
+being enabled.
+
+>
+> Arguably, however, building PCI drivers by default is somewhat
+> questionable in the first place?
+
+We do want the ability to build PCI drivers under UML, as it makes
+running KUnit tests for PCI drivers much simpler and more pleasant.
+And indeed, it does work for KUnit in general, it's just that some
+drivers do have the issues mentioned above, so allyesconfig picks up
+every broken driver.
+
+We don't actually build the PCI drivers by default, only if the
+"--alltests" option is passed, which does include them, as we do have
+tests which depend on PCI we'd like to run (like the thunderbolt
+test).
+
+>
+> So maybe you should just add
+>
+>     # CONFIG_UML_PCI_OVER_VIRTIO is not set
+>
+> to the broken_on_uml.config since it exposes all these issues, and
+> really is not very useful since you're not going to actually run with
+> any simulated PCI devices anyway, so drivers will not be probed.
+
+I did try this as well, and it just got us a different set of issues
+(there are a bunch of drivers which depend on IOMEM but don't state it
+-- I'll try to send fixes for those out next week). And we'd lose
+things like the thunderbolt test if PCI
+
+Ultimately, the 'broken_on_uml.config' file is just there to pare back
+allyesconfig a bit for KUnit's purposes, but we still definitely want
+as many options (and hence tests) enabled as possible long-term. So I
+think actual fixes to either the code or Kconfig do make sense.
+
+Is 'make ARCH=3Dum allyesconfig' something we actually want to be able
+to build? If so, no amount of adding things to KUnit's
+broken_on_uml.config will solve the underlying issues, and we'll need
+to at least update the Kconfig entries.
+
+Cheers,
+-- David
+
+--000000000000c06bb705d85a6340
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIIPnwYJKoZIhvcNAQcCoIIPkDCCD4wCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+ggz5MIIEtjCCA56gAwIBAgIQeAMYYHb81ngUVR0WyMTzqzANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA3MjgwMDAwMDBaFw0yOTAzMTgwMDAwMDBaMFQxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMSowKAYDVQQDEyFHbG9iYWxTaWduIEF0bGFz
+IFIzIFNNSU1FIENBIDIwMjAwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCvLe9xPU9W
+dpiHLAvX7kFnaFZPuJLey7LYaMO8P/xSngB9IN73mVc7YiLov12Fekdtn5kL8PjmDBEvTYmWsuQS
+6VBo3vdlqqXZ0M9eMkjcKqijrmDRleudEoPDzTumwQ18VB/3I+vbN039HIaRQ5x+NHGiPHVfk6Rx
+c6KAbYceyeqqfuJEcq23vhTdium/Bf5hHqYUhuJwnBQ+dAUcFndUKMJrth6lHeoifkbw2bv81zxJ
+I9cvIy516+oUekqiSFGfzAqByv41OrgLV4fLGCDH3yRh1tj7EtV3l2TngqtrDLUs5R+sWIItPa/4
+AJXB1Q3nGNl2tNjVpcSn0uJ7aFPbAgMBAAGjggGKMIIBhjAOBgNVHQ8BAf8EBAMCAYYwHQYDVR0l
+BBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBIGA1UdEwEB/wQIMAYBAf8CAQAwHQYDVR0OBBYEFHzM
+CmjXouseLHIb0c1dlW+N+/JjMB8GA1UdIwQYMBaAFI/wS3+oLkUkrk1Q+mOai97i3Ru8MHsGCCsG
+AQUFBwEBBG8wbTAuBggrBgEFBQcwAYYiaHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL3Jvb3Ry
+MzA7BggrBgEFBQcwAoYvaHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvcm9vdC1y
+My5jcnQwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9yb290LXIz
+LmNybDBMBgNVHSAERTBDMEEGCSsGAQQBoDIBKDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5n
+bG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEANyYcO+9JZYyqQt41
+TMwvFWAw3vLoLOQIfIn48/yea/ekOcParTb0mbhsvVSZ6sGn+txYAZb33wIb1f4wK4xQ7+RUYBfI
+TuTPL7olF9hDpojC2F6Eu8nuEf1XD9qNI8zFd4kfjg4rb+AME0L81WaCL/WhP2kDCnRU4jm6TryB
+CHhZqtxkIvXGPGHjwJJazJBnX5NayIce4fGuUEJ7HkuCthVZ3Rws0UyHSAXesT/0tXATND4mNr1X
+El6adiSQy619ybVERnRi5aDe1PTwE+qNiotEEaeujz1a/+yYaaTY+k+qJcVxi7tbyQ0hi0UB3myM
+A/z2HmGEwO8hx7hDjKmKbDCCA18wggJHoAMCAQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUA
+MEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWdu
+MRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEg
+MB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENBIC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzAR
+BgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4
+Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0EXyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuu
+l9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+JJ5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJ
+pij2aTv2y8gokeWdimFXN6x0FNx04Druci8unPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh
+6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTvriBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti
++w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8E
+BTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5NUPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEA
+S0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigHM8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9u
+bG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmUY/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaM
+ld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88
+q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcya5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/f
+hO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/XzCCBNgwggPAoAMCAQICEAFB5XJs46lHhs45dlgv
+lPcwDQYJKoZIhvcNAQELBQAwVDELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYt
+c2ExKjAoBgNVBAMTIUdsb2JhbFNpZ24gQXRsYXMgUjMgU01JTUUgQ0EgMjAyMDAeFw0yMjAyMDcy
+MDA0MDZaFw0yMjA4MDYyMDA0MDZaMCQxIjAgBgkqhkiG9w0BCQEWE2RhdmlkZ293QGdvb2dsZS5j
+b20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC0RBy/38QAswohnM4+BbSvCjgfqx6l
+RZ05OpnPrwqbR8foYkoeQ8fvsoU+MkOAQlzaA5IaeOc6NZYDYl7PyNLLSdnRwaXUkHOJIn09IeqE
+9aKAoxWV8wiieIh3izFAHR+qm0hdG+Uet3mU85dzScP5UtFgctSEIH6Ay6pa5E2gdPEtO5frCOq2
+PpOgBNfXVa5nZZzgWOqtL44txbQw/IsOJ9VEC8Y+4+HtMIsnAtHem5wcQJ+MqKWZ0okg/wYl/PUj
+uaq2nM/5+Waq7BlBh+Wh4NoHIJbHHeGzAxeBcOU/2zPbSHpAcZ4WtpAKGvp67PlRYKSFXZvbORQz
+LdciYl8fAgMBAAGjggHUMIIB0DAeBgNVHREEFzAVgRNkYXZpZGdvd0Bnb29nbGUuY29tMA4GA1Ud
+DwEB/wQEAwIFoDAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwHQYDVR0OBBYEFKbSiBVQ
+G7p3AiuB2sgfq6cOpbO5MEwGA1UdIARFMEMwQQYJKwYBBAGgMgEoMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAwGA1UdEwEB/wQCMAAwgZoGCCsG
+AQUFBwEBBIGNMIGKMD4GCCsGAQUFBzABhjJodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9jYS9n
+c2F0bGFzcjNzbWltZWNhMjAyMDBIBggrBgEFBQcwAoY8aHR0cDovL3NlY3VyZS5nbG9iYWxzaWdu
+LmNvbS9jYWNlcnQvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3J0MB8GA1UdIwQYMBaAFHzMCmjXouse
+LHIb0c1dlW+N+/JjMEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20v
+Y2EvZ3NhdGxhc3Izc21pbWVjYTIwMjAuY3JsMA0GCSqGSIb3DQEBCwUAA4IBAQBsL34EJkCtu9Nu
+2+R6l1Qzno5Gl+N2Cm6/YLujukDGYa1JW27txXiilR9dGP7yl60HYyG2Exd5i6fiLDlaNEw0SqzE
+dw9ZSIak3Qvm2UybR8zcnB0deCUiwahqh7ZncEPlhnPpB08ETEUtwBEqCEnndNEkIN67yz4kniCZ
+jZstNF/BUnI3864fATiXSbnNqBwlJS3YkoaCTpbI9qNTrf5VIvnbryT69xJ6f25yfmxrXNJJe5OG
+ncB34Cwnb7xQyk+uRLZ465yUBkbjk9pC/yamL0O7SOGYUclrQl2c5zzGuVBD84YcQGDOK6gSPj6w
+QuBfOooZPOyZZZ8AMih7J980MYICajCCAmYCAQEwaDBUMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQ
+R2xvYmFsU2lnbiBudi1zYTEqMCgGA1UEAxMhR2xvYmFsU2lnbiBBdGxhcyBSMyBTTUlNRSBDQSAy
+MDIwAhABQeVybOOpR4bOOXZYL5T3MA0GCWCGSAFlAwQCAQUAoIHUMC8GCSqGSIb3DQEJBDEiBCC1
+hK5mkWbXD3kQGhQArPS3EpKnqjuOZpFfFWnAx7DK6DAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcB
+MBwGCSqGSIb3DQEJBTEPFw0yMjAyMTkwODAwMTVaMGkGCSqGSIb3DQEJDzFcMFowCwYJYIZIAWUD
+BAEqMAsGCWCGSAFlAwQBFjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwCwYJKoZIhvcNAQEKMAsG
+CSqGSIb3DQEBBzALBglghkgBZQMEAgEwDQYJKoZIhvcNAQEBBQAEggEAjnpewcuZUJVS6VIu0yi4
+03UYYnjQhPEECv0bhdeu4hsYPRtRxIiCLf3pHo16X6hgQixHb8uSkg5VJDcLfSKM6CCkOQLj8Zt8
+tZ1qXXWuD2yF+nWgcW0zHG9zpfGy2g5v0H3e4z3XswHVBQdgFcsY/N2v/m+7FlSlIKp4eKHVUyWQ
+QDocj2QwLwrPTzvToOVgfvnPDNf3CuMwA80C7v9WEX/syUDQMaQSWCyfuxTiaUHfBdvRCGgZt+M7
+XGmNI+IWcxeYhj5xZo4LWkK8APgeCTs5d+MhF0JpZK1QqJnb9rWSjyf7hOJdwPpedIOyrjQDfmbx
+pB+HTOm+2IxT/N2jYA==
+--000000000000c06bb705d85a6340--
