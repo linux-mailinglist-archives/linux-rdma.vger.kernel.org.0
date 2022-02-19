@@ -2,119 +2,155 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9770D4BC7B8
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Feb 2022 11:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5CAB4BC931
+	for <lists+linux-rdma@lfdr.de>; Sat, 19 Feb 2022 16:44:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241101AbiBSKhz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Feb 2022 05:37:55 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33682 "EHLO
+        id S240743AbiBSPoX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 19 Feb 2022 10:44:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240893AbiBSKhy (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Feb 2022 05:37:54 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8286E55F
-        for <linux-rdma@vger.kernel.org>; Sat, 19 Feb 2022 02:37:35 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5144760FD7
-        for <linux-rdma@vger.kernel.org>; Sat, 19 Feb 2022 10:37:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DF2BC004E1;
-        Sat, 19 Feb 2022 10:37:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645267054;
-        bh=IDlF/g/GvKeEXGEfMkKgU/g/z70dxIC+ExVuxRNS61U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OehjLRyEU9TnCS+6rZMkUJw8nu/Z0VR/C1NB8L4rXzPjcEWqvYvtu+9IfknpTPM81
-         ufUDGoUveLI+RZla1o+b4WT+TMjorj4QTcuSWVmG7IqC7EJyc+fqHMmxPngviGbNvR
-         TKfZGDvigMDQ5YpMTFDEAhrX+jcpyu32SinNz8U1e+dR4Au6LL1rbipa2SbteXqel8
-         Cy6ClFMwrQVpanyR75jLCGrwxgh559nlsqxkXSpPJ2nGWYAHwYBAvHCIxwLAi4fnG6
-         +KXicxJHgH3kWgYg/ORAbZjNl11bj+28C2CcpizMq8d6L767zEPx/Ym08cB/iuX6be
-         QJVXInmX8Y60A==
-Date:   Sat, 19 Feb 2022 12:37:26 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
-        "jgg@nvidia.com" <jgg@nvidia.com>,
-        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
-        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>
-Subject: Re: [RFC PATCH 0/2] RDMA/rxe: Add RDMA Atomic Write operation
-Message-ID: <YhDIZhzO5ksxOKRA@unreal>
-References: <20211230121423.1919550-1-yangx.jy@fujitsu.com>
- <e372156a-2859-f43d-6862-96cb4470a614@fujitsu.com>
+        with ESMTP id S235451AbiBSPoW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Feb 2022 10:44:22 -0500
+Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DB6606DA;
+        Sat, 19 Feb 2022 07:44:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
+        Resent-Cc:Resent-Message-ID; bh=51IuRnSgtWxZG2Jmu2renXJr42JUA6j1ZiqJaCkpimM=;
+        t=1645285443; x=1646495043; b=qyks8bf/gJgo+UE96AF+v7tTvMKni7RZUpphuTWTqN8Rk2R
+        Am7kqD49/sN5h4KDNJPrSZGV8f0GcT75I8xJNB7dcGxCbOdkerMrLVcOLIVrkE0K6bv3YpBEdoOFL
+        1T81+KgUQBYxxc8wcQ1X1VE+Li9W+osj7t0tXNzeK1JoBCdyEaAgR0y5IEE4UUtiZHm8kPNYbacIc
+        A7g4sVndtVppm8t6AXmAx3tRoGo/iJOTJ7lkr+kSWTa8E0INoalHKlQDPTbykbSf8rx5SDnxlLtl/
+        8xSYGedMKPgdMqq9W6I/HuRtVdvmcEjn+9lNqGKpUR7wIQuW5bhAPk9ifVlFgosw==;
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.95)
+        (envelope-from <johannes@sipsolutions.net>)
+        id 1nLRtJ-0035Fb-Ex;
+        Sat, 19 Feb 2022 16:43:21 +0100
+Message-ID: <d14b6a0c72788e78bab2bd1f0bc2c49891ded5d7.camel@sipsolutions.net>
+Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
+From:   Johannes Berg <johannes@sipsolutions.net>
+To:     David Gow <davidgow@google.com>
+Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        x86@kernel.org, felix.kuehling@amd.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Sat, 19 Feb 2022 16:43:19 +0100
+In-Reply-To: <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
+References: <20220218075727.2737623-1-davidgow@google.com>
+         <20220218075727.2737623-5-davidgow@google.com>
+         <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
+         <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.3 (3.42.3-1.fc35) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e372156a-2859-f43d-6862-96cb4470a614@fujitsu.com>
-X-Spam-Status: No, score=-7.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-malware-bazaar: not-scanned
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Feb 17, 2022 at 03:50:02AM +0000, yangx.jy@fujitsu.com wrote:
-> On 2021/12/30 20:14, Xiao Yang wrote:
-> > The IB SPEC v1.5[1][2] added new RDMA operations (Atomic Write and Flush).
-> > This patchset makes SoftRoCE support new RDMA Atomic Write on RC service.
-> >
-> > I added RDMA Atomic Write API and a rdma_atomic_write example on my
-> > rdma-core repository[3].  You can verify the patchset by building and
-> > running the rdma_atomic_write example.
-> > server:
-> > $ ./rdma_atomic_write_server -s [server_address] -p [port_number]
-> > client:
-> > $ ./rdma_atomic_write_client -s [server_address] -p [port_number]
+On Sat, 2022-02-19 at 16:00 +0800, David Gow wrote:
+> On Fri, Feb 18, 2022 at 8:26 PM Johannes Berg <johannes@sipsolutions.net> wrote:
+> > 
+> > On Fri, 2022-02-18 at 15:57 +0800, David Gow wrote:
+> > > 
+> > > Note that, while this does build again, it still segfaults on startup,
+> > > so more work remains to be done.
+> > 
+> > That's probably just a lot more stuff getting included somehow?
+> > 
 > 
-> Hi Leon,
-> 
-> Do you think when I should post the userspace patchset to rdma-core?
-> 
-> I'm not sure if I should post it to rdma-core as a PR until the kernel 
-> patchset is merged?
+> Yeah: it used to work (a couple of years ago), but something has
+> broken it in the meantime. It's just a shame that bisecting things
+> with allyesconfig takes so long...
 
-For any UAPI changes, we require to present actual user space part. So
-the PR to rdma-core is needed in order to merge the kernel series.
+Heh, right.
 
-In this PR, the first patch is created with "kernel-headers/update --not-final"
-script against local version of kernel headers. Once the kernel part is merged,
-you will update that first patch and force push the rdma-core PR.
+But I guess you could "Kconfig bisect" first, i.e. see what option
+breaks it? It might not even help to bisect, if it's just some option
+getting enabled over time. Or perhaps the kernel is just too big for the
+address space layout if you have allyesconfig? Though that shouldn't be
+an issue, I think.
 
-Thanks
+> I didn't realise X86 wasn't defined in UML: 
 
+X86 is the architecture, X86_{32,64} is kind of a selection for how you
+want things to be built, and it's thus required for UML on x86, because
+UML imports stuff from X86.
+
+> that's definitely a bit
+> cleaner than !UML in a number of these cases.
+
+It looks like some (most?) of them don't really work that way though
+since they're not really platform specific, they just know only about a
+handful of platforms that they're compatible with.
+
+> Not all of those issues are fundamentally solved by "depends on X86",
+> though: there are a few which might be other missing things in UML
+> (maybe the 'dma_ops' issues?), and/or might be the result of -Werror
+> being enabled.
+
+Right.
+
+> We do want the ability to build PCI drivers under UML, as it makes
+> running KUnit tests for PCI drivers much simpler and more pleasant.
+
+OK, fair point. I'm thinking about this area in general also right now
+for iwlwifi, and obviously we're probably the only user of the virtual
+PCI code that lets us connect the driver to a simulated device on UML
+(but the driver doesn't really know) :-)
+
+> And indeed, it does work for KUnit in general, it's just that some
+> drivers do have the issues mentioned above, so allyesconfig picks up
+> every broken driver.
+
+Right.
+
+> We don't actually build the PCI drivers by default, only if the
+> "--alltests" option is passed, which does include them, as we do have
+> tests which depend on PCI we'd like to run (like the thunderbolt
+> test).
+
+Makes sense.
 > 
-> Best Regards,
+> I did try this as well, and it just got us a different set of issues
+> (there are a bunch of drivers which depend on IOMEM but don't state it
+> -- I'll try to send fixes for those out next week). 
 > 
-> Xiao Yang
+
+Fun.
+
+> Ultimately, the 'broken_on_uml.config' file is just there to pare back
+> allyesconfig a bit for KUnit's purposes, but we still definitely want
+> as many options (and hence tests) enabled as possible long-term. So I
+> think actual fixes to either the code or Kconfig do make sense.
+
+Makes sense.
+
+> Is 'make ARCH=um allyesconfig' something we actually want to be able
+> to build? If so, no amount of adding things to KUnit's
+> broken_on_uml.config will solve the underlying issues, and we'll need
+> to at least update the Kconfig entries.
 > 
-> >
-> > [1]: https://www.infinibandta.org/ibta-specification/ # login required
-> > [2]: https://www.infinibandta.org/wp-content/uploads/2021/08/IBTA-Overview-of-IBTA-Volume-1-Release-1.5-and-MPE-2021-08-17-Secure.pptx
-> > [3]: https://github.com/yangx-jy/rdma-core
-> >
-> > BTW: This patchset also needs the following fix.
-> > https://www.spinics.net/lists/linux-rdma/msg107838.html
-> >
-> > Xiao Yang (2):
-> >    RDMA/rxe: Rename send_atomic_ack() and atomic member of struct
-> >      resp_res
-> >    RDMA/rxe: Add RDMA Atomic Write operation
-> >
-> >   drivers/infiniband/sw/rxe/rxe_comp.c   |  4 ++
-> >   drivers/infiniband/sw/rxe/rxe_opcode.c | 18 ++++++++
-> >   drivers/infiniband/sw/rxe/rxe_opcode.h |  3 ++
-> >   drivers/infiniband/sw/rxe/rxe_qp.c     |  5 ++-
-> >   drivers/infiniband/sw/rxe/rxe_req.c    | 10 +++--
-> >   drivers/infiniband/sw/rxe/rxe_resp.c   | 59 ++++++++++++++++++++------
-> >   drivers/infiniband/sw/rxe/rxe_verbs.h  |  2 +-
-> >   include/rdma/ib_pack.h                 |  2 +
-> >   include/rdma/ib_verbs.h                |  2 +
-> >   include/uapi/rdma/ib_user_verbs.h      |  2 +
-> >   10 files changed, 88 insertions(+), 19 deletions(-)
-> >
+
+That's a good point, as long as people are doing allyes/randconfig
+builds on UML, we probably need to have these fixes anyway rather than
+disabling something for KUnit specifically.
+
+johannes
