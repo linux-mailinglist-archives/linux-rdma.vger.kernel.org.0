@@ -2,155 +2,209 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5CAB4BC931
-	for <lists+linux-rdma@lfdr.de>; Sat, 19 Feb 2022 16:44:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 332BD4BD1E8
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Feb 2022 22:27:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240743AbiBSPoX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 19 Feb 2022 10:44:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35990 "EHLO
+        id S245100AbiBTVW1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 20 Feb 2022 16:22:27 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:57986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235451AbiBSPoW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 19 Feb 2022 10:44:22 -0500
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30DB6606DA;
-        Sat, 19 Feb 2022 07:44:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=51IuRnSgtWxZG2Jmu2renXJr42JUA6j1ZiqJaCkpimM=;
-        t=1645285443; x=1646495043; b=qyks8bf/gJgo+UE96AF+v7tTvMKni7RZUpphuTWTqN8Rk2R
-        Am7kqD49/sN5h4KDNJPrSZGV8f0GcT75I8xJNB7dcGxCbOdkerMrLVcOLIVrkE0K6bv3YpBEdoOFL
-        1T81+KgUQBYxxc8wcQ1X1VE+Li9W+osj7t0tXNzeK1JoBCdyEaAgR0y5IEE4UUtiZHm8kPNYbacIc
-        A7g4sVndtVppm8t6AXmAx3tRoGo/iJOTJ7lkr+kSWTa8E0INoalHKlQDPTbykbSf8rx5SDnxlLtl/
-        8xSYGedMKPgdMqq9W6I/HuRtVdvmcEjn+9lNqGKpUR7wIQuW5bhAPk9ifVlFgosw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1nLRtJ-0035Fb-Ex;
-        Sat, 19 Feb 2022 16:43:21 +0100
-Message-ID: <d14b6a0c72788e78bab2bd1f0bc2c49891ded5d7.camel@sipsolutions.net>
-Subject: Re: [PATCH 4/4] kunit: tool: Disable broken options for --alltests
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     David Gow <davidgow@google.com>
-Cc:     Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        x86@kernel.org, felix.kuehling@amd.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Sat, 19 Feb 2022 16:43:19 +0100
-In-Reply-To: <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
-References: <20220218075727.2737623-1-davidgow@google.com>
-         <20220218075727.2737623-5-davidgow@google.com>
-         <ac4c5f8c890e5bdd7ad7ecc04a51e72fa3ac1703.camel@sipsolutions.net>
-         <CABVgOSnBq0QE+Cq+SDeV-LxOQYbGZ6Bqbjix6h-UpNj0GMicPA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.3 (3.42.3-1.fc35) 
+        with ESMTP id S245092AbiBTVWS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 20 Feb 2022 16:22:18 -0500
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D161EC6A
+        for <linux-rdma@vger.kernel.org>; Sun, 20 Feb 2022 13:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1645392116; x=1676928116;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jPmSlwAYZcnYCRj8NTDxa5kcGlh6jNfj9Vqw9u6JWCI=;
+  b=Ev/QyGLb3ZRkEeBYpWzh/Kc7sOVo0eePp1C1pcznt68MemYRSX8oD27U
+   Q2k5L9GK5FHDFb/+EObNbfa9HUjGBoV3ydNqWevvBKb2xENrwzWnlaI2+
+   QRYBSsKbJVYtV1HdHui2ZgKjHS0ARMbDHpMvpPXnKlf+P8ihEp0KXEToy
+   YtYxp+g5kNJSbyI6lv96eAOntH2PGQxb2q1yBemgi4TooIMnBF3HwDdgF
+   bDchqXYOmi5jTe3dHkMjBT7Nta9Dpl8VGl1cyV1e2DuzDmQIx9dfjOLNs
+   Iefo7096Y2URYhHp9nQ/Rdx9/x2UJTWyi0M3NUhH6BKsqhumsfgAAQ5+S
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10264"; a="234944032"
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="234944032"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2022 13:21:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.88,384,1635231600"; 
+   d="scan'208";a="778517426"
+Received: from lkp-server01.sh.intel.com (HELO da3212ac2f54) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 20 Feb 2022 13:21:53 -0800
+Received: from kbuild by da3212ac2f54 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nLteS-0000oE-I4; Sun, 20 Feb 2022 21:21:52 +0000
+Date:   Mon, 21 Feb 2022 05:21:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
+ c46fa8911b17e3f808679061a8af8bee219f4602
+Message-ID: <6212b0e4.LvP3+wGffdlZSQ71%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, 2022-02-19 at 16:00 +0800, David Gow wrote:
-> On Fri, Feb 18, 2022 at 8:26 PM Johannes Berg <johannes@sipsolutions.net> wrote:
-> > 
-> > On Fri, 2022-02-18 at 15:57 +0800, David Gow wrote:
-> > > 
-> > > Note that, while this does build again, it still segfaults on startup,
-> > > so more work remains to be done.
-> > 
-> > That's probably just a lot more stuff getting included somehow?
-> > 
-> 
-> Yeah: it used to work (a couple of years ago), but something has
-> broken it in the meantime. It's just a shame that bisecting things
-> with allyesconfig takes so long...
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
+branch HEAD: c46fa8911b17e3f808679061a8af8bee219f4602  RDMA/rtrs-clt: Move free_permit from free_clt to rtrs_clt_close
 
-Heh, right.
+elapsed time: 731m
 
-But I guess you could "Kconfig bisect" first, i.e. see what option
-breaks it? It might not even help to bisect, if it's just some option
-getting enabled over time. Or perhaps the kernel is just too big for the
-address space layout if you have allyesconfig? Though that shouldn't be
-an issue, I think.
+configs tested: 126
+configs skipped: 3
 
-> I didn't realise X86 wasn't defined in UML: 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-X86 is the architecture, X86_{32,64} is kind of a selection for how you
-want things to be built, and it's thus required for UML on x86, because
-UML imports stuff from X86.
+gcc tested configs:
+arm                                 defconfig
+arm                              allmodconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+mips                 randconfig-c004-20220220
+i386                          randconfig-c001
+sh                          landisk_defconfig
+powerpc                     redwood_defconfig
+arm                          badge4_defconfig
+arm                         lpc18xx_defconfig
+powerpc                     pq2fads_defconfig
+mips                             allyesconfig
+ia64                         bigsur_defconfig
+mips                      maltasmvp_defconfig
+xtensa                    smp_lx200_defconfig
+xtensa                          iss_defconfig
+powerpc                      ppc40x_defconfig
+sh                        edosk7760_defconfig
+powerpc                       ppc64_defconfig
+arm                       multi_v4t_defconfig
+powerpc                    klondike_defconfig
+m68k                        m5272c3_defconfig
+xtensa                              defconfig
+alpha                               defconfig
+powerpc                      pcm030_defconfig
+mips                       bmips_be_defconfig
+h8300                            alldefconfig
+powerpc                    sam440ep_defconfig
+powerpc                   motionpro_defconfig
+sh                             espt_defconfig
+powerpc                     tqm8555_defconfig
+sh                           se7343_defconfig
+sh                   rts7751r2dplus_defconfig
+nios2                         10m50_defconfig
+arm                         lubbock_defconfig
+sh                         ecovec24_defconfig
+mips                           xway_defconfig
+mips                      loongson3_defconfig
+arm64                            alldefconfig
+powerpc                     rainier_defconfig
+sh                        dreamcast_defconfig
+sh                  sh7785lcr_32bit_defconfig
+mips                        vocore2_defconfig
+um                           x86_64_defconfig
+sh                           se7751_defconfig
+arm                            zeus_defconfig
+sh                        sh7763rdp_defconfig
+powerpc                      bamboo_defconfig
+nds32                               defconfig
+powerpc                      ppc6xx_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220220
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+arc                  randconfig-r043-20220220
+s390                 randconfig-r044-20220220
+riscv                randconfig-r042-20220220
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
 
-> that's definitely a bit
-> cleaner than !UML in a number of these cases.
+clang tested configs:
+powerpc              randconfig-c003-20220220
+x86_64                        randconfig-c007
+arm                  randconfig-c002-20220220
+mips                 randconfig-c004-20220220
+i386                          randconfig-c001
+riscv                randconfig-c006-20220220
+powerpc                    mvme5100_defconfig
+powerpc                        fsp2_defconfig
+powerpc                 mpc836x_mds_defconfig
+powerpc                     mpc5200_defconfig
+powerpc                     kilauea_defconfig
+mips                        workpad_defconfig
+powerpc                   bluestone_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a011
+i386                          randconfig-a013
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220220
+hexagon              randconfig-r041-20220220
 
-It looks like some (most?) of them don't really work that way though
-since they're not really platform specific, they just know only about a
-handful of platforms that they're compatible with.
-
-> Not all of those issues are fundamentally solved by "depends on X86",
-> though: there are a few which might be other missing things in UML
-> (maybe the 'dma_ops' issues?), and/or might be the result of -Werror
-> being enabled.
-
-Right.
-
-> We do want the ability to build PCI drivers under UML, as it makes
-> running KUnit tests for PCI drivers much simpler and more pleasant.
-
-OK, fair point. I'm thinking about this area in general also right now
-for iwlwifi, and obviously we're probably the only user of the virtual
-PCI code that lets us connect the driver to a simulated device on UML
-(but the driver doesn't really know) :-)
-
-> And indeed, it does work for KUnit in general, it's just that some
-> drivers do have the issues mentioned above, so allyesconfig picks up
-> every broken driver.
-
-Right.
-
-> We don't actually build the PCI drivers by default, only if the
-> "--alltests" option is passed, which does include them, as we do have
-> tests which depend on PCI we'd like to run (like the thunderbolt
-> test).
-
-Makes sense.
-> 
-> I did try this as well, and it just got us a different set of issues
-> (there are a bunch of drivers which depend on IOMEM but don't state it
-> -- I'll try to send fixes for those out next week). 
-> 
-
-Fun.
-
-> Ultimately, the 'broken_on_uml.config' file is just there to pare back
-> allyesconfig a bit for KUnit's purposes, but we still definitely want
-> as many options (and hence tests) enabled as possible long-term. So I
-> think actual fixes to either the code or Kconfig do make sense.
-
-Makes sense.
-
-> Is 'make ARCH=um allyesconfig' something we actually want to be able
-> to build? If so, no amount of adding things to KUnit's
-> broken_on_uml.config will solve the underlying issues, and we'll need
-> to at least update the Kconfig entries.
-> 
-
-That's a good point, as long as people are doing allyes/randconfig
-builds on UML, we probably need to have these fixes anyway rather than
-disabling something for KUnit specifically.
-
-johannes
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
