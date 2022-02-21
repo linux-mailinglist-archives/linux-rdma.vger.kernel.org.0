@@ -2,23 +2,23 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 134374BD84E
-	for <lists+linux-rdma@lfdr.de>; Mon, 21 Feb 2022 09:41:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9589F4BE537
+	for <lists+linux-rdma@lfdr.de>; Mon, 21 Feb 2022 19:00:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343860AbiBUIkw (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 21 Feb 2022 03:40:52 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:55930 "EHLO
+        id S244896AbiBUJvb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 21 Feb 2022 04:51:31 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:42352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343972AbiBUIkq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Feb 2022 03:40:46 -0500
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D202CC3F;
-        Mon, 21 Feb 2022 00:40:22 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R791e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V51uqPX_1645432819;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V51uqPX_1645432819)
+        with ESMTP id S1352143AbiBUJrL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 21 Feb 2022 04:47:11 -0500
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E026A40A3F;
+        Mon, 21 Feb 2022 01:19:03 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V52UcIF_1645435139;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0V52UcIF_1645435139)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Feb 2022 16:40:20 +0800
-Date:   Mon, 21 Feb 2022 16:40:18 +0800
+          Mon, 21 Feb 2022 17:19:00 +0800
+Date:   Mon, 21 Feb 2022 17:18:59 +0800
 From:   Tony Lu <tonylu@linux.alibaba.com>
 To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 Cc:     jgg@ziepe.ca, liangwenpeng@huawei.com,
@@ -28,7 +28,7 @@ Cc:     jgg@ziepe.ca, liangwenpeng@huawei.com,
         syzbot <syzbot+4f322a6d84e991c38775@syzkaller.appspotmail.com>
 Subject: Re: [syzbot] BUG: sleeping function called from invalid context in
  smc_pnet_apply_ib
-Message-ID: <YhNP8vU0FueNeDPr@TonyMac-Alibaba>
+Message-ID: <YhNZAyoqSzIAfF9Y@TonyMac-Alibaba>
 Reply-To: Tony Lu <tonylu@linux.alibaba.com>
 References: <000000000000b772b805d8396f14@google.com>
  <2691692.BEx9A2HvPv@leap>
@@ -104,6 +104,8 @@ On Thu, Feb 17, 2022 at 07:05:31PM +0100, Fabio M. De Francesco wrote:
 > in smc_pnetid_by_table_ib() can be converted to a sleeping lock like a mutex or 
 > a semaphore.
  
-I think it is okay to use mutex, because this path is not so hot and no
-limit to require spinlocks. pnettable is accessed by netlink, syscall
-and netdevice notifier.
+Take the email above. I think it is safe to convert read_lock() to
+mutex, which is already used by smc_ib_devices.mutex.
+
+Thank you,
+Tony Lu
