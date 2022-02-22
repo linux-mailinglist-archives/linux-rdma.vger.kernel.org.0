@@ -2,79 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F9F4C013F
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Feb 2022 19:27:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935474C014D
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Feb 2022 19:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbiBVS10 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Feb 2022 13:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48290 "EHLO
+        id S234445AbiBVSau (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Feb 2022 13:30:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbiBVS1Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Feb 2022 13:27:25 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7642B99EE2;
-        Tue, 22 Feb 2022 10:26:57 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id w37so11343252pga.7;
-        Tue, 22 Feb 2022 10:26:57 -0800 (PST)
+        with ESMTP id S233201AbiBVSau (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Feb 2022 13:30:50 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707E4EDF15;
+        Tue, 22 Feb 2022 10:30:24 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id v8-20020a17090a634800b001bb78857ccdso388250pjs.1;
+        Tue, 22 Feb 2022 10:30:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=smWGMcLS0EGMpUTlbWLEiA/RqnX/pSuZiXWNoobMsws=;
-        b=H3iGbmFDJxI0j3FIE3tq+tZHezV5s3YCwLyr6Lb8AlIU4+5MFgcQNYLJ6yc8Qgh+oC
-         Bs5C7zJ1yDoQqvIXQ2tozvwg+Rc67IywAh3LZfVN7nP0Z5xiauPEJLaXWx3xPGE/G55I
-         qjNhXMlPgAkMl6PE/bwGzJMGjVSRxXzp5LaTAIH9/3+LBe41q+60SQzzJOHClaIWdWPi
-         5dy3kxaybfeEAx54E1v7FVSzkh4Q45PWFe7EYebFzTNjjBwR42SUo7vFfcE+pQBCiIVL
-         zTj8gF9etN6mR6JNU5yGFbbyNrk9yV0fQ5X9YvuF6gVRNHlFxXV9uw+HQbjGKiFahdAZ
-         aR2g==
+        bh=qclEmu0/kZyWj9B9ipQfb3U9hghb5b6YJZMCgpxSD2c=;
+        b=VSpwqCe6mavUR44cINWjLg3fWnwTzhYp2zfykWb1LV0THR7uDIDC9r/1GKRUXUJ5Am
+         nMDLFtHjh/2wU3Y2dfAZwilx1/dLUQ7UMVoq4tQVqkdwcem7VvtVrAkelAEIHjaxeSlY
+         KinquAYuzb8A8qBEfMQnsqX2a48QkICt35IPBFF4OV6X/J5zQ1mDl6xKGMumAtpiQ0+H
+         na3A8O9Ty69WavB0fHym8toOB+lxb+5SvBCZB7cHC9czdE5xmmwX5l9KkHQk9wXw1QbK
+         dY7Z9fxJeH0AUCAYmYB8y8xlAePD2VO9uLMErkh0KaB3sNuRwj1K9inily++F5Ggjb0V
+         acbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=smWGMcLS0EGMpUTlbWLEiA/RqnX/pSuZiXWNoobMsws=;
-        b=WSksKDy+F9kDhTOB7YWlVfM9D4Z/ENN/whkzhHye667ghPVEBGOn82/OPqNC6jMZmj
-         fkqRjMBehWk/9zxnz9MOJFnqcPDJmVnrRE1jQjhOTv5cptVQIN/iJsuxXWjwq5A2NzI5
-         FiM0SxMzBluUFKxqOSwDQIB3dVyqQyLvT0BTf1tqTxO+TUZvMVqBXCf/7Xqz4N8g7C8f
-         Lqtz8jquUESfY7xyhKohFhRQ4t2Qou2V4vpx7+zxSoKh28U5f8Lyn2au9RU0AKYKo3c/
-         rLNXytfqWqbMXMJnPyqjqCOgeSNY9ukERBrL0uwf69FgibnB66qbyUanLZDxpbHU0yAg
-         5WWQ==
-X-Gm-Message-State: AOAM531/p09XFTA8PfUneqguOZF1S90/OgQV5w5vOnsxdTV/THms+Ok1
-        Zcd8P1xV0n/0P21c5zxV3jc=
-X-Google-Smtp-Source: ABdhPJw5vNJB4o+6asgzi6aVO4FwMfymHvmkDPUkDV6lJ3SqIfeipfJvMjWOo15xx0IouvWJ5TjO4g==
-X-Received: by 2002:a05:6a00:88e:b0:4d2:4829:156c with SMTP id q14-20020a056a00088e00b004d24829156cmr26408344pfj.47.1645554416892;
-        Tue, 22 Feb 2022 10:26:56 -0800 (PST)
+        bh=qclEmu0/kZyWj9B9ipQfb3U9hghb5b6YJZMCgpxSD2c=;
+        b=L53eXPn332MtwnVgVAosawhjcWkHB/Z4TW18ykRwXFLYrxkfm+ltnNjuXZ5BuWjTzO
+         0RvjocMY+8yDtq6MQiPrXN8T4mJrALTx2zOUdnq1J9RlJIq+7ELz55cL4jM2WEi09QgD
+         OZL44TBgLfjo4ljP5Rvx062e/WdyIs3TlDvuMJezn/N9XZxb9SZfbD2pfQ/hoXWAIa3X
+         1H+gWVByLUJ4xtF0a0jZTUZgtWePtLekkiweiKRacauyBWzCp/9G9+sVHmNthqR2qeLV
+         IQXr0xcCwRZWw7wbXghFtdz1amQUOOaa0QjvFpGOElEZ3/Ne5EzQbFQGasivkEjiPEN6
+         UtXQ==
+X-Gm-Message-State: AOAM532GhFx57FPhIPzwIoVQJ6T7cTZkU0ZF9pUQzLcKh7kFTQYCyHF/
+        2GGd1HyteiGqu4MS3lmPXAE=
+X-Google-Smtp-Source: ABdhPJzi4b6YPzrR9UQihIFYuKrOwHgi3BMDmT0yBQV+eEmF4vUqDqD6UP0rpcUUF0QKijJzzGO+Cg==
+X-Received: by 2002:a17:902:bd4a:b0:14f:92ac:fa43 with SMTP id b10-20020a170902bd4a00b0014f92acfa43mr14992504plx.27.1645554623761;
+        Tue, 22 Feb 2022 10:30:23 -0800 (PST)
 Received: from localhost (2603-800c-1a02-1bae-e24f-43ff-fee6-449f.res6.spectrum.com. [2603:800c:1a02:1bae:e24f:43ff:fee6:449f])
-        by smtp.gmail.com with ESMTPSA id a17sm18430747pfv.23.2022.02.22.10.26.56
+        by smtp.gmail.com with ESMTPSA id s15sm22022937pgn.30.2022.02.22.10.30.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Feb 2022 10:26:56 -0800 (PST)
+        Tue, 22 Feb 2022 10:30:23 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Feb 2022 08:26:55 -1000
+Date:   Tue, 22 Feb 2022 08:30:22 -1000
 From:   Tejun Heo <tj@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Haakon Bugge <haakon.bugge@oracle.com>,
+        syzkaller-bugs@googlegroups.com,
+        Bart Van Assche <bvanassche@acm.org>,
         syzbot <syzbot+831661966588c802aae9@syzkaller.appspotmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        LKML <linux-kernel@vger.kernel.org>,
-        OFED mailing list <linux-rdma@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
+        jgg@ziepe.ca, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Lai Jiangshan <jiangshanlai@gmail.com>
 Subject: Re: [syzbot] possible deadlock in worker_thread
-Message-ID: <YhUq70Y/tKGGNbR0@slm.duckdns.org>
-References: <309c86b7-2a4c-1332-585f-7bcd59cfd762@I-love.SAKURA.ne.jp>
- <aa2bf24e-981a-a811-c5d8-a75f0b8f693a@acm.org>
+Message-ID: <YhUrvpwkH07Yr2sW@slm.duckdns.org>
+References: <0000000000005975a605d7aef05e@google.com>
  <2959649d-cfbc-bdf2-02ac-053b8e7af030@I-love.SAKURA.ne.jp>
  <YgnQGZWT/n3VAITX@slm.duckdns.org>
- <8ebd003c-f748-69b4-3a4f-fb80a3f39d36@I-love.SAKURA.ne.jp>
- <YgqSsuSN5C7StvKx@slm.duckdns.org>
- <a07e464c-69c6-6165-e88c-5a2eded79138@I-love.SAKURA.ne.jp>
- <76616D2F-14F2-4D83-9DB4-576FB2ACB72C@oracle.com>
- <fb854eea-a7e7-b526-a989-95784c1c593c@I-love.SAKURA.ne.jp>
- <1b70929f-1f73-c549-64c1-94cea2c1a36c@acm.org>
+ <4168398.ejJDZkT8p0@leap>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b70929f-1f73-c549-64c1-94cea2c1a36c@acm.org>
+In-Reply-To: <4168398.ejJDZkT8p0@leap>
 X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
@@ -86,23 +78,25 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Feb 15, 2022 at 09:05:38AM -0800, Bart Van Assche wrote:
-> On 2/15/22 04:48, Tetsuo Handa wrote:
-> > I do not want to do like
-> > 
-> > -	system_wq = alloc_workqueue("events", 0, 0);
-> > +	system_wq = alloc_workqueue("events", __WQ_SYSTEM_WIDE, 0);
-> > 
-> > because the intent of this change is to ask developers to create their own WQs.
-> 
-> I want more developers to use the system-wide workqueues since that reduces
-> memory usage. That matters for embedded devices running Linux.
+Hello,
 
-Each wq is just a frontend interface to backend shard pool and doesn't
-consume a lot of memory. The only consumption which would matter is when
-WQ_MEM_RECLAIM is specified which creates its dedicated rescuer thread to
-guarantee forward progress under memory contention, but we aren't talking
-about those here.
+On Thu, Feb 17, 2022 at 01:27:08PM +0100, Fabio M. De Francesco wrote:
+> Just to think and understand... what if the system-wide WQ were allocated as unbound 
+> ordered (i.e., as in alloc_ordered_workqueue()) with "max_active" of one?
+> 
+> 1) Would it solve the locks dependency problem?
+
+It'll actually make deadlocks a lot more prevalent. Some work items take
+more than one work to complete (e.g. flushing another work directly or
+waiting for something which must be completed by something else which may
+involve a system work item) and system wq's max active must be high enough
+that all those chains taking place at the same time should require fewer
+number of work items than max_active.
+
+> 2) Would it introduce performance penalties (bottlenecks)?
+
+I'd be surprised it wouldn't cause at least notcieable latency increases for
+some workloads.
 
 Thanks.
 
