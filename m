@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D987D4C1F5D
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 00:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB5B4C1F5F
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 00:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244716AbiBWXIP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 18:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
+        id S244722AbiBWXIR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 18:08:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244717AbiBWXIO (ORCPT
+        with ESMTP id S244718AbiBWXIO (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 18:08:14 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E46E12765
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E26593584B
         for <linux-rdma@vger.kernel.org>; Wed, 23 Feb 2022 15:07:45 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id q5so665577oij.6
+Received: by mail-oi1-x236.google.com with SMTP id j2so658960oie.7
         for <linux-rdma@vger.kernel.org>; Wed, 23 Feb 2022 15:07:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=romtMJKtpyWJ2vGgfrYWZGHob+oyOiudg6/6oHjcTbM=;
-        b=iNkv7zquTECiSmd6k1rYEHNG0GEQH7wlFZtKHWr/DRELDDAOyILw/JRRGHTtB+fPGR
-         EzHu5+P8OC6XaZoyoeocOLW9iFfXOHxGnMLPxHMjq5mS4tAPA5Guu+T11hWJH2dZOrbr
-         88ziBlldBnPCAwAcn6Z2g9vAxzadl/H62HYw181hQvrnMNIG5dQVYXe+T5HRHBhiLIEt
-         FVy93k4OaM/ipicN9420F86zf/qxwVctwtjSxGXhRKjkyOvM4z4X0JhDeffIp3wANTHp
-         tmC/PaSa4Ada3u1JpDdep4Jn6IqM+nzT/em9HCv0xspyT3pv9IMbi+ckgYi2+upJk3vZ
-         St9g==
+        bh=nHH2kN1qaHun2fFYMfE2C2Cg4rCPKgUgoK974Y7RcTA=;
+        b=qXnwgm/RpwyzOWfRd3zY57PfA31hZkmSUdWO4AWtMJia4D71YceeNjh0veA2VPhwu9
+         e6LX1jlCDKzx/S4L/MoIoiUV7ttbiID3CF+dauHAGEa1abbX/5EXLAVkMq5VTybpWE3z
+         TkhN7jlRhsoU6k80ycSEuLFpjMcB3NLqTTwbu1RZL2vWenHbexQDIbs3xAn1I2M6Wxtq
+         4BLMrm6Hw+aPMfCxqQldCwWD1QcUYZ9qF3Ov3TSZObcjPvt1DZwPyse0guMThsabs4cE
+         FMw38fCatumLcDN5+oUykoY4Y59o6KMrMV4RehBY9qq3nUizo8l/klCPFGedMnnUZ/4t
+         iyHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=romtMJKtpyWJ2vGgfrYWZGHob+oyOiudg6/6oHjcTbM=;
-        b=ifOzR1UOdlvwrStjCAjVDCgBxIBhqqf+FHAHmV2PYbwckRP7++UQCMvMDQpG/0GwnI
-         AunBJkMioxM+ak37c0NbTVaFV5PClQa0/XRaJplvxWsJ8fIyEpdwUS+YvkQBSWz3dagT
-         PDiz0OpubMOJ4KodX/H6ZYdS6Bm8m1vIgrlleEvkhpROCHvXOT6OTUH/MDPW81i/DLYi
-         my3s7YUSVFLG6d0kL69Qm8uvH5LQFNMbl86aaAcwaLntjMYKbgm396nnJ2T5IRgMsplr
-         9Ijp7jwP/m3iUkwsC9Ril1ltgFcaqqXKPIJsPhLYv2R+t09Vsj0NNzK1v6+m8ICzZhN8
-         /gvA==
-X-Gm-Message-State: AOAM533glgpXsuNqfXJ5Yn00s8HIZT1C0FDl5v+IfdLzUhUuzmq6aZlA
-        KDRIvfXGO40Y+STWkTHIbcq4kGv8sgI=
-X-Google-Smtp-Source: ABdhPJyG7z29wVF8U7F0cllkCI6nF4EuzYziYsFmXUevY+uQcge7VsF4j0OvaxJTNLDPnoceuAnEjw==
-X-Received: by 2002:a05:6808:13cb:b0:2d3:7f26:1c52 with SMTP id d11-20020a05680813cb00b002d37f261c52mr1051330oiw.309.1645657664546;
-        Wed, 23 Feb 2022 15:07:44 -0800 (PST)
+        bh=nHH2kN1qaHun2fFYMfE2C2Cg4rCPKgUgoK974Y7RcTA=;
+        b=ft7/fhb1sF4B2+u4xdpcIBVhIZk84dpL+2ahp1v6tt0ETziALVUUOMqPhBaP7fQHwF
+         Hel32tT0x9/kRj4HZ6yrLTuX6S0y2EkLsMR/95z+6De0agetpTGoRO/pZVfdzs5FRLTh
+         jxcrWuFss2T595c1u4Z8Ukqq+Tnweui3j7Cj9JG4ZVHPDhTMYzbmIpNOrGkQt2KfVDGM
+         liG8Kl/9SopsYvYZzlYEdYZuGHR9o1BEVUPmcGrqInWjpbhjsHSCsUY7C4IbV+D/mSeq
+         AVnjEHzPQaCTpGWUm4oQY2E35uONAD54b5huMrnkuCPgNfynzyNd2JbOhD4/keA5olMC
+         5LAg==
+X-Gm-Message-State: AOAM530RoQycW9pXkzCLfBHhLjfDEhv2ov653DstI4DcNNoNitXAGHat
+        xWQPrqCws/LT/E9JhOPnoJ8=
+X-Google-Smtp-Source: ABdhPJwHFruClfEptYvG8sU/Qgd1nxvBTNnTUwNuogeYbViIoLpZlXEgt8qcmg5Nne8zZG6EQizxVg==
+X-Received: by 2002:a05:6808:118e:b0:2d4:6fe7:6bd7 with SMTP id j14-20020a056808118e00b002d46fe76bd7mr1087468oil.146.1645657665256;
+        Wed, 23 Feb 2022 15:07:45 -0800 (PST)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-809e-284a-c7bf-c6d9.res6.spectrum.com. [2603:8081:140c:1a00:809e:284a:c7bf:c6d9])
         by smtp.googlemail.com with ESMTPSA id y3sm505030oiv.21.2022.02.23.15.07.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Feb 2022 15:07:44 -0800 (PST)
+        Wed, 23 Feb 2022 15:07:45 -0800 (PST)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH v13 for-next 4/6] RDMA/rxe: Cleanup rxe_mcast.c
-Date:   Wed, 23 Feb 2022 17:07:06 -0600
-Message-Id: <20220223230706.50332-5-rpearsonhpe@gmail.com>
+Subject: [PATCH v13 for-next 5/6] RDMA/rxe: For mcast copy qp list to temp array
+Date:   Wed, 23 Feb 2022 17:07:07 -0600
+Message-Id: <20220223230706.50332-6-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220223230706.50332-1-rpearsonhpe@gmail.com>
 References: <20220223230706.50332-1-rpearsonhpe@gmail.com>
@@ -68,196 +68,167 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Finish adding subroutine comment headers to subroutines in
-rxe_mcast.c. Make minor api change cleanups.
+Currently rxe_rcv_mcast_pkt performs most of its work under the
+rxe->mcg_lock and calls into rxe_rcv which queues the packets
+to the responder and completer tasklets holding the lock which is
+a very bad idea. This patch walks the qp_list in mcg and copies the
+qp addresses to a temporary array under the lock but does the rest
+of the work without holding the lock. The critical section is now
+very small.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_mcast.c | 97 +++++++++++++++++++++------
- 1 file changed, 78 insertions(+), 19 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_recv.c | 103 +++++++++++++++++----------
+ 1 file changed, 64 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_mcast.c b/drivers/infiniband/sw/rxe/rxe_mcast.c
-index 66c1ae703976..c399a29b648b 100644
---- a/drivers/infiniband/sw/rxe/rxe_mcast.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mcast.c
-@@ -1,12 +1,33 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- /*
-+ * Copyright (c) 2022 Hewlett Packard Enterprise, Inc. All rights reserved.
-  * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
-  * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
-  */
+diff --git a/drivers/infiniband/sw/rxe/rxe_recv.c b/drivers/infiniband/sw/rxe/rxe_recv.c
+index 53924453abef..9b21cbb22602 100644
+--- a/drivers/infiniband/sw/rxe/rxe_recv.c
++++ b/drivers/infiniband/sw/rxe/rxe_recv.c
+@@ -232,11 +232,15 @@ static inline void rxe_rcv_pkt(struct rxe_pkt_info *pkt, struct sk_buff *skb)
  
-+/*
-+ * rxe_mcast.c implements driver support for multicast transport.
-+ * It is based on two data structures struct rxe_mcg ('mcg') and
-+ * struct rxe_mca ('mca'). An mcg is allocated each time a qp is
-+ * attached to a new mgid for the first time. These are indexed by
-+ * a red-black tree using the mgid. This data structure is searched
-+ * for the mcg when a multicast packet is received and when another
-+ * qp is attached to the same mgid. It is cleaned up when the last qp
-+ * is detached from the mcg. Each time a qp is attached to an mcg an
-+ * mca is created. It holds a pointer to the qp and is added to a list
-+ * of qp's that are attached to the mcg. The qp_list is used to replicate
-+ * mcast packets in the rxe receive path.
-+ */
-+
- #include "rxe.h"
--#include "rxe_loc.h"
- 
-+/**
-+ * rxe_mcast_add - add multicast address to rxe device
-+ * @rxe: rxe device object
-+ * @mgid: multicast address as a gid
-+ *
-+ * Returns 0 on success else an error
-+ */
- static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
+ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
  {
- 	unsigned char ll_addr[ETH_ALEN];
-@@ -16,6 +37,13 @@ static int rxe_mcast_add(struct rxe_dev *rxe, union ib_gid *mgid)
- 	return dev_mc_add(rxe->ndev, ll_addr);
- }
- 
-+/**
-+ * rxe_mcast_delete - delete multicast address from rxe device
-+ * @rxe: rxe device object
-+ * @mgid: multicast address as a gid
-+ *
-+ * Returns 0 on success else an error
-+ */
- static int rxe_mcast_delete(struct rxe_dev *rxe, union ib_gid *mgid)
- {
- 	unsigned char ll_addr[ETH_ALEN];
-@@ -216,7 +244,7 @@ static struct rxe_mcg *rxe_get_mcg(struct rxe_dev *rxe, union ib_gid *mgid)
- 
- /**
-  * rxe_cleanup_mcg - cleanup mcg for kref_put
-- * @kref:
-+ * @kref: struct kref embnedded in mcg
-  */
- void rxe_cleanup_mcg(struct kref *kref)
- {
-@@ -299,9 +327,17 @@ static int __rxe_init_mca(struct rxe_qp *qp, struct rxe_mcg *mcg,
- 	return 0;
- }
- 
--static int rxe_attach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
--				  struct rxe_mcg *mcg)
-+/**
-+ * rxe_attach_mcg - attach qp to mcg if not already attached
-+ * @qp: qp object
-+ * @mcg: mcg object
-+ *
-+ * Context: caller must hold reference on qp and mcg.
-+ * Returns: 0 on success else an error
-+ */
-+static int rxe_attach_mcg(struct rxe_mcg *mcg, struct rxe_qp *qp)
- {
-+	struct rxe_dev *rxe = mcg->rxe;
- 	struct rxe_mca *mca, *tmp;
- 	unsigned long flags;
++	struct sk_buff *skb_copy;
+ 	struct rxe_pkt_info *pkt = SKB_TO_PKT(skb);
++	struct rxe_pkt_info *pkt_copy;
+ 	struct rxe_mcg *mcg;
+ 	struct rxe_mca *mca;
+ 	struct rxe_qp *qp;
++	struct rxe_qp **qp_array;
+ 	union ib_gid dgid;
++	int n, nmax;
  	int err;
-@@ -358,17 +394,19 @@ static void __rxe_cleanup_mca(struct rxe_mca *mca, struct rxe_mcg *mcg)
- 	kfree(mca);
- }
  
--static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
--				   union ib_gid *mgid)
-+/**
-+ * rxe_detach_mcg - detach qp from mcg
-+ * @mcg: mcg object
-+ * @qp: qp object
-+ *
-+ * Returns: 0 on success else an error if qp is not attached.
-+ */
-+static int rxe_detach_mcg(struct rxe_mcg *mcg, struct rxe_qp *qp)
- {
--	struct rxe_mcg *mcg;
-+	struct rxe_dev *rxe = mcg->rxe;
- 	struct rxe_mca *mca, *tmp;
- 	unsigned long flags;
- 
--	mcg = rxe_lookup_mcg(rxe, mgid);
--	if (!mcg)
--		return -EINVAL;
--
- 	spin_lock_irqsave(&rxe->mcg_lock, flags);
- 	list_for_each_entry_safe(mca, tmp, &mcg->qp_list, qp_list) {
- 		if (mca->qp == qp) {
-@@ -378,16 +416,11 @@ static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
- 			 * mcast group falls to zero go ahead and
- 			 * tear it down. This will not free the
- 			 * object since we are still holding a ref
--			 * from the get key above
-+			 * from the caller
- 			 */
- 			if (atomic_read(&mcg->qp_num) <= 0)
- 				__rxe_destroy_mcg(mcg);
- 
--			/* drop the ref from get key. This will free the
--			 * object if qp_num is zero.
--			 */
--			kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
--
- 			spin_unlock_irqrestore(&rxe->mcg_lock, flags);
- 			return 0;
- 		}
-@@ -398,6 +431,14 @@ static int rxe_detach_mcg(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	return -EINVAL;
- }
- 
-+/**
-+ * rxe_attach_mcast - attach qp to multicast group (see IBA-11.3.1)
-+ * @ibqp: (IB) qp object
-+ * @mgid: multicast IP address
-+ * @mlid: multicast LID, ignored for RoCEv2 (see IBA-A17.5.6)
-+ *
-+ * Returns: 0 on success else an errno
-+ */
- int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- {
- 	int err;
-@@ -410,20 +451,38 @@ int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- 	if (IS_ERR(mcg))
- 		return PTR_ERR(mcg);
- 
--	err = rxe_attach_mcg(rxe, qp, mcg);
-+	err = rxe_attach_mcg(mcg, qp);
- 
- 	/* if we failed to attach the first qp to mcg tear it down */
- 	if (atomic_read(&mcg->qp_num) == 0)
- 		rxe_destroy_mcg(mcg);
- 
- 	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
+ 	if (skb->protocol == htons(ETH_P_IP))
+@@ -248,68 +252,89 @@ static void rxe_rcv_mcast_pkt(struct rxe_dev *rxe, struct sk_buff *skb)
+ 	/* lookup mcast group corresponding to mgid, takes a ref */
+ 	mcg = rxe_lookup_mcg(rxe, &dgid);
+ 	if (!mcg)
+-		goto drop;	/* mcast group not registered */
++		goto err_drop;	/* mcast group not registered */
 +
- 	return err;
- }
++	/* this is the current number of qp's attached to mcg plus a
++	 * little room in case new qp's are attached between here
++	 * and when we finish walking the qp list. If someone can
++	 * attach more than 4 new qp's we will miss forwarding
++	 * packets to those qp's. This is actually OK since UD is
++	 * a unreliable service.
++	 */
++	nmax = atomic_read(&mcg->qp_num) + 4;
++	qp_array = kmalloc_array(nmax, sizeof(qp), GFP_KERNEL);
++	n = 0;
  
-+/**
-+ * rxe_detach_mcast - detach qp from multicast group (see IBA-11.3.2)
-+ * @ibqp: address of (IB) qp object
-+ * @mgid: multicast IP address
-+ * @mlid: multicast LID, ignored for RoCEv2 (see IBA-A17.5.6)
-+ *
-+ * Returns: 0 on success else an errno
-+ */
- int rxe_detach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
- {
- 	struct rxe_dev *rxe = to_rdev(ibqp->device);
- 	struct rxe_qp *qp = to_rqp(ibqp);
-+	struct rxe_mcg *mcg;
-+	int err;
-+
-+	mcg = rxe_lookup_mcg(rxe, mgid);
-+	if (!mcg)
-+		return -EINVAL;
- 
--	return rxe_detach_mcg(rxe, qp, mgid);
-+	err = rxe_detach_mcg(mcg, qp);
+ 	spin_lock_bh(&rxe->mcg_lock);
+-
+-	/* this is unreliable datagram service so we let
+-	 * failures to deliver a multicast packet to a
+-	 * single QP happen and just move on and try
+-	 * the rest of them on the list
+-	 */
+ 	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
+-		qp = mca->qp;
++		/* protect the qp pointers in the list */
++		rxe_add_ref(mca->qp);
++		qp_array[n++] = mca->qp;
++		if (n == nmax)
++			break;
++	}
++	spin_unlock_bh(&rxe->mcg_lock);
++	nmax = n;
 +	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
+ 
+-		/* validate qp for incoming packet */
++	for (n = 0; n < nmax; n++) {
++		qp = qp_array[n];
 +
-+	return err;
++		/* since this is an unreliable transport if
++		 * one of the qp's fails to pass these checks
++		 * just don't forward a packet and continue
++		 * on to the other qp's. If there aren't any
++		 * drop the skb
++		 */
+ 		err = check_type_state(rxe, pkt, qp);
+-		if (err)
++		if (err) {
++			rxe_drop_ref(qp);
++			if (n == nmax - 1)
++				goto err_free;
+ 			continue;
++		}
+ 
+ 		err = check_keys(rxe, pkt, bth_qpn(pkt), qp);
+-		if (err)
++		if (err) {
++			rxe_drop_ref(qp);
++			if (n == nmax - 1)
++				goto err_free;
+ 			continue;
++		}
+ 
+-		/* for all but the last QP create a new clone of the
+-		 * skb and pass to the QP. Pass the original skb to
+-		 * the last QP in the list.
++		/* for all but the last qp create a new copy(clone)
++		 * of the skb and pass to the qp. Pass the original
++		 * skb to the last qp in the list unless it failed
++		 * checks above
+ 		 */
+-		if (mca->qp_list.next != &mcg->qp_list) {
+-			struct sk_buff *cskb;
+-			struct rxe_pkt_info *cpkt;
+-
+-			cskb = skb_clone(skb, GFP_ATOMIC);
+-			if (unlikely(!cskb))
++		if (n < nmax - 1) {
++			skb_copy = skb_clone(skb, GFP_KERNEL);
++			if (unlikely(!skb_copy)) {
++				rxe_drop_ref(qp);
+ 				continue;
++			}
+ 
+ 			if (WARN_ON(!ib_device_try_get(&rxe->ib_dev))) {
+-				kfree_skb(cskb);
+-				break;
++				kfree_skb(skb_copy);
++				rxe_drop_ref(qp);
++				continue;
+ 			}
+ 
+-			cpkt = SKB_TO_PKT(cskb);
+-			cpkt->qp = qp;
+-			rxe_add_ref(qp);
+-			rxe_rcv_pkt(cpkt, cskb);
++			pkt_copy = SKB_TO_PKT(skb_copy);
++			pkt_copy->qp = qp;
++			rxe_rcv_pkt(pkt_copy, skb_copy);
+ 		} else {
+ 			pkt->qp = qp;
+-			rxe_add_ref(qp);
+ 			rxe_rcv_pkt(pkt, skb);
+-			skb = NULL;	/* mark consumed */
+ 		}
+ 	}
+ 
+-	spin_unlock_bh(&rxe->mcg_lock);
+-
+-	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
+-
+-	if (likely(!skb))
+-		return;
+-
+-	/* This only occurs if one of the checks fails on the last
+-	 * QP in the list above
+-	 */
++	kfree(qp_array);
++	return;
+ 
+-drop:
++err_free:
++	kfree(qp_array);
++err_drop:
+ 	kfree_skb(skb);
+ 	ib_device_put(&rxe->ib_dev);
  }
 -- 
 2.32.0
