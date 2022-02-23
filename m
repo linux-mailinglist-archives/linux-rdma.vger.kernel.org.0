@@ -2,260 +2,116 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D174C0B85
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Feb 2022 06:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E255E4C0C43
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Feb 2022 06:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238096AbiBWFLJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 00:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S237621AbiBWFv1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 00:51:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237927AbiBWFKz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 00:10:55 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C26F652DE;
-        Tue, 22 Feb 2022 21:10:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 38816B80E5B;
-        Wed, 23 Feb 2022 05:10:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7197BC340EB;
-        Wed, 23 Feb 2022 05:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645593020;
-        bh=ujBXg24anTsk/Axomrs9N7clARdmQuZhd4PVBUI6iIs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qLtMNd+5JoaCCmyWr18OeUsQJEiJHKXpyKh10yBilEaTV6I962eAbv8wBiOH8Wop/
-         Oh6ESv+NtisHTJU3WVh3eb/d3fGDiY8iCYh3+8Vryov2ojHQew61PEH547SY4Ee5eu
-         3uIed+Fx8cWMv/OCLKmIV0AYCOlLQITva6N9+XLobo/tDyeSgI0xmDcFuclXzEaW+7
-         7Hf6iEZlVhnWUGSi+te2ugu/VZiW7S5Np52c7nwhQvymmZHoVDdS1i6UrpxDBe3/p0
-         rtWx4aLStgVnZxsWaHosdyd5qrKdyOYQHIgAoALHhwjj6lmr/yKDH6lEk2PVezilYo
-         uvI1DBVIjMwDg==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Moshe Shemesh <moshe@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: [mlx5-next 17/17] net/mlx5: Add clarification on sync reset failure
-Date:   Tue, 22 Feb 2022 21:09:32 -0800
-Message-Id: <20220223050932.244668-18-saeed@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220223050932.244668-1-saeed@kernel.org>
-References: <20220223050932.244668-1-saeed@kernel.org>
+        with ESMTP id S236743AbiBWFv0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 00:51:26 -0500
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F7D443D4
+        for <linux-rdma@vger.kernel.org>; Tue, 22 Feb 2022 21:50:58 -0800 (PST)
+Subject: Re: bug report for rxe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1645595457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NPcPPnMudUDryLuzR5hRjC+/jlWixmOsXd1LDXJQqtM=;
+        b=lbP1y4ux4+1hTJShd1nz292Xit67/TNiToZS7kD5Y+6WV/+z8wwPs4GZsZRA6aZz1c3c+n
+        sCPnQurkT3pmQhb1A9mnbvLFvBGOIl9w2VdDMGa/cx2tA/3CjISr132fc+JTZUPCtnvdpR
+        OSRgK4S41zkqZ9Elsc0FQEESfsSLhtQ=
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        "Pearson, Robert B" <robert.pearson2@hpe.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
+ <473a53b6-9ab2-0d48-a9cf-c84b8dc4c3f3@linux.dev>
+ <CAD=hENeU=cf4_AZPYBDke-kv3Lv3+AUkkEjZm4Drkc6YLJOeLQ@mail.gmail.com>
+ <PH7PR84MB1488DB95EFB4F86FCDC7B8E6BC3B9@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
+ <3b6ddb23-6dfa-29e2-27fd-741c1e3e576d@linux.dev>
+ <3ecd3493-662c-7c08-f2f2-59c1c97f8d59@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Guoqing Jiang <guoqing.jiang@linux.dev>
+Message-ID: <bc952176-05e7-bb87-aee5-f4ec1fa25f41@linux.dev>
+Date:   Wed, 23 Feb 2022 13:50:50 +0800
 MIME-Version: 1.0
+In-Reply-To: <3ecd3493-662c-7c08-f2f2-59c1c97f8d59@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Language: en-US
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Moshe Shemesh <moshe@nvidia.com>
 
-In case devlink reload action fw_activate failed in sync reset stage,
-use the new MFRL field reset_state to find why it failed and share this
-clarification with the user.
 
-Signed-off-by: Moshe Shemesh <moshe@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- .../net/ethernet/mellanox/mlx5/core/devlink.c | 10 +---
- .../ethernet/mellanox/mlx5/core/fw_reset.c    | 57 ++++++++++++++++---
- .../ethernet/mellanox/mlx5/core/fw_reset.h    |  3 +-
- .../net/ethernet/mellanox/mlx5/core/port.c    | 20 +++++--
- include/linux/mlx5/driver.h                   |  3 +
- 5 files changed, 74 insertions(+), 19 deletions(-)
+On 2/23/22 1:01 PM, Bob Pearson wrote:
+> On 2/22/22 22:43, Guoqing Jiang wrote:
+>>
+>> On 2/23/22 12:58 AM, Pearson, Robert B wrote:
+>>>> After investigation, seems the culprit is commit 647bf13ce944 ("RDMA/rxe:
+>>>> Create duplicate mapping tables for FMRs"). The problem is
+>>>> mr_check_range returns -EFAULT after find iova and length are not
+>>>> valid, so connection between two VMs can't be established.
+>>>>
+>>>> Revert the commit manually or apply below temporary change,  rxe works
+>>>> again with rnbd/rtrs though I don't think it is the right thing to do.
+>>>> Could experts provide a proper solution? Thanks.
+>>>>
+>>> This patch fixed failures in blktests and srp which were discussed at length. See e.g.
+>>>
+>>> https://lore.kernel.org/linux-rdma/20210907163939.GW1200268@ziepe.ca/
+>> Thanks for the link, which reminds me the always_invalidate parameter in rtrs_server.
+>>
+>>> and related messages. The conclusion was that two mappings were required. One owned by the
+>>> driver and one by the 'hardware', i.e. bottom half in the rxe case, allowing updating a new mapping
+>>> while the old one is still active and then switching them.
+>>>
+>>> If this case has iova and length not valid as indicated is there a problem with the test case?
+>> And after disable always_invalidate (which is enabled by default), rnbd/rtrs over roce
+>> works either. So I suppose there might be potential issue for always_invalidate=Y in
+>> rtrs server side since invalidate works for srp IIUC, @Jinpu.
+>>
+>> Thanks,
+>> Guoqing
+> It would help to understand what you are running. My main concern is that mr_check_range
+> shouldn't fail unless there is something very wrong.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-index d1093bb2d436..057dde6f4417 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
-@@ -100,15 +100,11 @@ static int mlx5_devlink_reload_fw_activate(struct devlink *devlink, struct netli
- 	}
- 
- 	net_port_alive = !!(reset_type & MLX5_MFRL_REG_RESET_TYPE_NET_PORT_ALIVE);
--	err = mlx5_fw_reset_set_reset_sync(dev, net_port_alive);
-+	err = mlx5_fw_reset_set_reset_sync(dev, net_port_alive, extack);
- 	if (err)
--		goto out;
-+		return err;
- 
--	err = mlx5_fw_reset_wait_reset_done(dev);
--out:
--	if (err)
--		NL_SET_ERR_MSG_MOD(extack, "FW activate command failed");
--	return err;
-+	return mlx5_fw_reset_wait_reset_done(dev);
- }
- 
- static int mlx5_devlink_trigger_fw_live_patch(struct devlink *devlink,
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-index 0b0234f9d694..d438d7a61500 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
-@@ -57,7 +57,8 @@ static int mlx5_reg_mfrl_set(struct mlx5_core_dev *dev, u8 reset_level,
- 	return mlx5_core_access_reg(dev, in, sizeof(in), out, sizeof(out), MLX5_REG_MFRL, 0, 1);
- }
- 
--static int mlx5_reg_mfrl_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_type)
-+static int mlx5_reg_mfrl_query(struct mlx5_core_dev *dev, u8 *reset_level,
-+			       u8 *reset_type, u8 *reset_state)
- {
- 	u32 out[MLX5_ST_SZ_DW(mfrl_reg)] = {};
- 	u32 in[MLX5_ST_SZ_DW(mfrl_reg)] = {};
-@@ -71,25 +72,67 @@ static int mlx5_reg_mfrl_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *r
- 		*reset_level = MLX5_GET(mfrl_reg, out, reset_level);
- 	if (reset_type)
- 		*reset_type = MLX5_GET(mfrl_reg, out, reset_type);
-+	if (reset_state)
-+		*reset_state = MLX5_GET(mfrl_reg, out, reset_state);
- 
- 	return 0;
- }
- 
- int mlx5_fw_reset_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_type)
- {
--	return mlx5_reg_mfrl_query(dev, reset_level, reset_type);
-+	return mlx5_reg_mfrl_query(dev, reset_level, reset_type, NULL);
- }
- 
--int mlx5_fw_reset_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel)
-+static int mlx5_fw_reset_get_reset_state_err(struct mlx5_core_dev *dev,
-+					     struct netlink_ext_ack *extack)
-+{
-+	u8 reset_state;
-+
-+	if (mlx5_reg_mfrl_query(dev, NULL, NULL, &reset_state))
-+		goto out;
-+
-+	switch (reset_state) {
-+	case MLX5_MFRL_REG_RESET_STATE_IN_NEGOTIATION:
-+	case MLX5_MFRL_REG_RESET_STATE_RESET_IN_PROGRESS:
-+		NL_SET_ERR_MSG_MOD(extack, "Sync reset was already triggered");
-+		return -EBUSY;
-+	case MLX5_MFRL_REG_RESET_STATE_TIMEOUT:
-+		NL_SET_ERR_MSG_MOD(extack, "Sync reset got timeout");
-+		return -ETIMEDOUT;
-+	case MLX5_MFRL_REG_RESET_STATE_NACK:
-+		NL_SET_ERR_MSG_MOD(extack, "One of the hosts disabled reset");
-+		return -EPERM;
-+	}
-+
-+out:
-+	NL_SET_ERR_MSG_MOD(extack, "Sync reset failed");
-+	return -EIO;
-+}
-+
-+int mlx5_fw_reset_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel,
-+				 struct netlink_ext_ack *extack)
- {
- 	struct mlx5_fw_reset *fw_reset = dev->priv.fw_reset;
-+	u32 out[MLX5_ST_SZ_DW(mfrl_reg)] = {};
-+	u32 in[MLX5_ST_SZ_DW(mfrl_reg)] = {};
- 	int err;
- 
- 	set_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
--	err = mlx5_reg_mfrl_set(dev, MLX5_MFRL_REG_RESET_LEVEL3, reset_type_sel, 0, true);
--	if (err)
--		clear_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
--	return err;
-+
-+	MLX5_SET(mfrl_reg, in, reset_level, MLX5_MFRL_REG_RESET_LEVEL3);
-+	MLX5_SET(mfrl_reg, in, rst_type_sel, reset_type_sel);
-+	MLX5_SET(mfrl_reg, in, pci_sync_for_fw_update_start, 1);
-+	err = mlx5_access_reg(dev, in, sizeof(in), out, sizeof(out),
-+			      MLX5_REG_MFRL, 0, 1, false);
-+	if (!err)
-+		return 0;
-+
-+	clear_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags);
-+	if (err == -EREMOTEIO && MLX5_CAP_MCAM_FEATURE(dev, reset_state))
-+		return mlx5_fw_reset_get_reset_state_err(dev, extack);
-+
-+	NL_SET_ERR_MSG_MOD(extack, "Sync reset command failed");
-+	return mlx5_cmd_check(dev, err, in, out);
- }
- 
- int mlx5_fw_reset_set_live_patch(struct mlx5_core_dev *dev)
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-index 7761ee5fc7d0..694fc7cb2684 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h
-@@ -9,7 +9,8 @@
- void mlx5_fw_reset_enable_remote_dev_reset_set(struct mlx5_core_dev *dev, bool enable);
- bool mlx5_fw_reset_enable_remote_dev_reset_get(struct mlx5_core_dev *dev);
- int mlx5_fw_reset_query(struct mlx5_core_dev *dev, u8 *reset_level, u8 *reset_type);
--int mlx5_fw_reset_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel);
-+int mlx5_fw_reset_set_reset_sync(struct mlx5_core_dev *dev, u8 reset_type_sel,
-+				 struct netlink_ext_ack *extack);
- int mlx5_fw_reset_set_live_patch(struct mlx5_core_dev *dev);
- 
- int mlx5_fw_reset_wait_reset_done(struct mlx5_core_dev *dev);
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/port.c b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-index 1ef2b6a848c1..d15b417d3e07 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-@@ -33,9 +33,10 @@
- #include <linux/mlx5/port.h>
- #include "mlx5_core.h"
- 
--int mlx5_core_access_reg(struct mlx5_core_dev *dev, void *data_in,
--			 int size_in, void *data_out, int size_out,
--			 u16 reg_id, int arg, int write)
-+/* calling with verbose false will not print error to log */
-+int mlx5_access_reg(struct mlx5_core_dev *dev, void *data_in, int size_in,
-+		    void *data_out, int size_out, u16 reg_id, int arg,
-+		    int write, bool verbose)
- {
- 	int outlen = MLX5_ST_SZ_BYTES(access_register_out) + size_out;
- 	int inlen = MLX5_ST_SZ_BYTES(access_register_in) + size_in;
-@@ -57,7 +58,9 @@ int mlx5_core_access_reg(struct mlx5_core_dev *dev, void *data_in,
- 	MLX5_SET(access_register_in, in, argument, arg);
- 	MLX5_SET(access_register_in, in, register_id, reg_id);
- 
--	err = mlx5_cmd_exec(dev, in, inlen, out, outlen);
-+	err = mlx5_cmd_do(dev, in, inlen, out, outlen);
-+	if (verbose)
-+		err = mlx5_cmd_check(dev, err, in, out);
- 	if (err)
- 		goto out;
- 
-@@ -69,6 +72,15 @@ int mlx5_core_access_reg(struct mlx5_core_dev *dev, void *data_in,
- 	kvfree(in);
- 	return err;
- }
-+EXPORT_SYMBOL_GPL(mlx5_access_reg);
-+
-+int mlx5_core_access_reg(struct mlx5_core_dev *dev, void *data_in,
-+			 int size_in, void *data_out, int size_out,
-+			 u16 reg_id, int arg, int write)
-+{
-+	return mlx5_access_reg(dev, data_in, size_in, data_out, size_out,
-+			       reg_id, arg, write, true);
-+}
- EXPORT_SYMBOL_GPL(mlx5_core_access_reg);
- 
- int mlx5_query_pcam_reg(struct mlx5_core_dev *dev, u32 *pcam, u8 feature_group,
-diff --git a/include/linux/mlx5/driver.h b/include/linux/mlx5/driver.h
-index 432151d7d0bf..d3b1a6a1f8d2 100644
---- a/include/linux/mlx5/driver.h
-+++ b/include/linux/mlx5/driver.h
-@@ -1031,6 +1031,9 @@ int mlx5_core_detach_mcg(struct mlx5_core_dev *dev, union ib_gid *mgid, u32 qpn)
- 
- void mlx5_qp_debugfs_init(struct mlx5_core_dev *dev);
- void mlx5_qp_debugfs_cleanup(struct mlx5_core_dev *dev);
-+int mlx5_access_reg(struct mlx5_core_dev *dev, void *data_in, int size_in,
-+		    void *data_out, int size_out, u16 reg_id, int arg,
-+		    int write, bool verbose);
- int mlx5_core_access_reg(struct mlx5_core_dev *dev, void *data_in,
- 			 int size_in, void *data_out, int size_out,
- 			 u16 reg_num, int arg, int write);
--- 
-2.35.1
+Let me paste it again, I just try to map server block device to client 
+side, specifically the bold
+line.
+
+1.  VM (server)
+
+modprobe rdma_rxe
+rdma link add rxe0 type rxe netdev ens3
+modprobe rnbd-server
+
+2.  VM (client)
+
+modprobe rdma_rxe
+rdma link add rxe0 type rxe netdev ens3
+modprobe rnbd-client
+*echo "sessname=bla path=ip:$serverip 
+device_path=$block_device_in_server" > 
+/sys/devices/virtual/rnbd-client/ctl/map_device*
+
+
+
+Thanks,
+Guoqing
 
