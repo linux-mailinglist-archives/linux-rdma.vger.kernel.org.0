@@ -2,115 +2,164 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD7E4C0B58
-	for <lists+linux-rdma@lfdr.de>; Wed, 23 Feb 2022 06:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AFA4C0B6E
+	for <lists+linux-rdma@lfdr.de>; Wed, 23 Feb 2022 06:10:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232067AbiBWFBh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 00:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
+        id S237738AbiBWFKl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 00:10:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237156AbiBWFBc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 00:01:32 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E1260CD8
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Feb 2022 21:01:05 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id r41-20020a4a966c000000b0031bf85a4124so20771977ooi.0
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Feb 2022 21:01:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=joZixsFToec05mNpuz6Kfiel4syoCGXqE9sxKdGuzy0=;
-        b=TpAaZPZbb7v25CzBlzDs2hgJF1yoSSSmkvptNcA8g7hEQ6VFyKZ+enzg0lpSpiJYqr
-         TPxdHNXzRUjBdVSfX745N1gisWsVwWGp1BsNf84twC05PTYHDDULMoMJs6bJHT09d5Fk
-         inu8U1UTuh+twI7KS4uiC6XaiyqKf1MhtJUZ9lx93/FRi9X6b4yIIjY3Xook9DfT+LrS
-         16uYnHbVpmgNo3QSl8NIO9ZC+J55e4rP9d/O1Ru4VSgIoriPT4cnnw7y+fQHd6uV3iHU
-         eGVXgF+YHpXlGKmvvg2q73an0nh+ZL09Pf6TsqlXYLxlOyW7iHbmAEvl90VXV4TwHG5A
-         dw2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=joZixsFToec05mNpuz6Kfiel4syoCGXqE9sxKdGuzy0=;
-        b=t7WQ3dSTxoOPwBKf4ENCMzJ+s8yiIfSQVMHt0uPMKuFHLNbKB4CpVrcXyNqx0xCSqn
-         xTdjdjWoazBvVv18VxPrBMYZq5owGsyP2maHtFXYvcntZ4NeMsTck6/jan51hL/HkBEA
-         RiDcdZ1DWJkOyDk88zvQtkByQOMJTtLPdlq/p6Q2XxRjZ1FuThv10J9Saryyypg569Ec
-         TOMGYEKzgP2edPt8wdkajjKDmV3vxG+YB1EWGXgkOi7IVOMZNcnSKl0u+kSgEHibOom8
-         AMO4SYYTqlRMgD6EmMiqSVbZzy9kC4QSrfa/iqBvkHhEqY7OzU6ZRpzL8uMCsQbNVTze
-         xWDQ==
-X-Gm-Message-State: AOAM533mk42NJjEyIJCojo5REs0gyWtg6utgchrWF9RD6912cuBI1CN/
-        XGAkL78hAgKttiAA88LP6HM=
-X-Google-Smtp-Source: ABdhPJxYbYXx+cAM0O71mfkkL9nU0k54BHE3Y6V+RktIlqWq54v3HcFG24AbXkRA6/8WsbajxHnpsw==
-X-Received: by 2002:a4a:decd:0:b0:31c:a9fe:f78e with SMTP id w13-20020a4adecd000000b0031ca9fef78emr2030125oou.55.1645592464608;
-        Tue, 22 Feb 2022 21:01:04 -0800 (PST)
-Received: from ?IPV6:2603:8081:140c:1a00:3cc9:79df:2807:e0a7? (2603-8081-140c-1a00-3cc9-79df-2807-e0a7.res6.spectrum.com. [2603:8081:140c:1a00:3cc9:79df:2807:e0a7])
-        by smtp.gmail.com with ESMTPSA id k12sm9633438oil.35.2022.02.22.21.01.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Feb 2022 21:01:04 -0800 (PST)
-Message-ID: <3ecd3493-662c-7c08-f2f2-59c1c97f8d59@gmail.com>
-Date:   Tue, 22 Feb 2022 23:01:03 -0600
+        with ESMTP id S237703AbiBWFKj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 00:10:39 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4C460CF5;
+        Tue, 22 Feb 2022 21:10:12 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4664CB81E7F;
+        Wed, 23 Feb 2022 05:10:11 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E57EC340E7;
+        Wed, 23 Feb 2022 05:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645593009;
+        bh=hyahgmDEs7JfyMAHhJsx103v2EM+b6FqfYfVbGNLDS8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j1UDfcKBKYwX8RgYJO2BwLU84oAQK8q2MRFv3e56qBa+adtg9HdHh+RfcPTm+NAmF
+         iyP9ahNVR4FAKPUzPdAQRUNrv6J3CIH/TtsJMK5eKAuCdZEIUNmbQwjxMf55a3mui1
+         B9BsSLMm3C6QPRyDTiWXnv77iXWVKEjVcVVdrWUPqS1EqqyqeSRb+RtN/mtLW/0tpM
+         pL2Nw1SGJvFe4oWF09LJCPsu/8eSHUGEPnz6oLRhXMCWAXwqIDjMR/36HhbPJ2+vxR
+         Nifpeq/t0vL29F24et84yqGXxW5ZSnUcDMdBswktpvd5LVpPpVuzfzvndwuIirtWIx
+         gk0CO/+OOSctg==
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Saeed Mahameed <saeedm@nvidia.com>
+Subject: [pull request][net-next/rdma-next 00/17] mlx5-next updates 2022-02-22
+Date:   Tue, 22 Feb 2022 21:09:15 -0800
+Message-Id: <20220223050932.244668-1-saeed@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: bug report for rxe
-Content-Language: en-US
-To:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        "Pearson, Robert B" <robert.pearson2@hpe.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-References: <20220210073655.42281-1-guoqing.jiang@linux.dev>
- <473a53b6-9ab2-0d48-a9cf-c84b8dc4c3f3@linux.dev>
- <CAD=hENeU=cf4_AZPYBDke-kv3Lv3+AUkkEjZm4Drkc6YLJOeLQ@mail.gmail.com>
- <PH7PR84MB1488DB95EFB4F86FCDC7B8E6BC3B9@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
- <3b6ddb23-6dfa-29e2-27fd-741c1e3e576d@linux.dev>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <3b6ddb23-6dfa-29e2-27fd-741c1e3e576d@linux.dev>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/22/22 22:43, Guoqing Jiang wrote:
-> 
-> 
-> On 2/23/22 12:58 AM, Pearson, Robert B wrote:
->>> After investigation, seems the culprit is commit 647bf13ce944 ("RDMA/rxe:
->>> Create duplicate mapping tables for FMRs"). The problem is
->>> mr_check_range returns -EFAULT after find iova and length are not
->>> valid, so connection between two VMs can't be established.
->>>
->>> Revert the commit manually or apply below temporary change,  rxe works
->>> again with rnbd/rtrs though I don't think it is the right thing to do.
->>> Could experts provide a proper solution? Thanks.
->>>
->> This patch fixed failures in blktests and srp which were discussed at length. See e.g.
->>
->> https://lore.kernel.org/linux-rdma/20210907163939.GW1200268@ziepe.ca/
-> 
-> Thanks for the link, which reminds me the always_invalidate parameter in rtrs_server.
-> 
->> and related messages. The conclusion was that two mappings were required. One owned by the
->> driver and one by the 'hardware', i.e. bottom half in the rxe case, allowing updating a new mapping
->> while the old one is still active and then switching them.
->>
->> If this case has iova and length not valid as indicated is there a problem with the test case?
-> 
-> And after disable always_invalidate (which is enabled by default), rnbd/rtrs over roce
-> works either. So I suppose there might be potential issue for always_invalidate=Y in
-> rtrs server side since invalidate works for srp IIUC, @Jinpu.
-> 
-> Thanks,
-> Guoqing
+From: Saeed Mahameed <saeedm@nvidia.com>
 
-It would help to understand what you are running. My main concern is that mr_check_range
-shouldn't fail unless there is something very wrong.
+Hi Dave, Jakub and Jason,
+
+The following PR includes updates to mlx5-next branch:
+
+Headlines: 
+==========
+
+1) Jakub cleans up unused static inline function
+
+2) I did some low level firmware command interface return status changes to
+provide the caller with full visibility on the error/status returned by
+the Firmware.
+
+3) Use the new command interface in RDMA DEVX usecases to avoid flooding
+dmesg with some "expected" user error prone use cases.
+
+4) Moshe also uses the new command interface to grab the specific error
+code from MFRL register command to provide the exact error reason for
+why SW reset couldn't perform internally in FW.
+
+5) From Mark Bloch: Lag, drop packets in hardware when possible
+
+In active-backup mode the inactive interface's packets are dropped by the
+bond device. In switchdev where TC rules are offloaded to the FDB
+this can lead to packets being hit in the FDB where without offload
+they would have been dropped before reaching TC rules in the kernel.
+
+Create a drop rule to make sure packets on inactive ports are dropped
+before reaching the FDB.
+
+Listen on NETDEV_CHANGEUPPER / NETDEV_CHANGEINFODATA events and record
+the inactive state and offload accordingly.
+
+==========
+
+Please pull and let me know if there's any problem.
+
+The following changes since commit e783362eb54cd99b2cac8b3a9aeac942e6f6ac07:
+
+  Linux 5.17-rc1 (2022-01-23 10:12:53 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mellanox/linux.git mlx5-next
+
+for you to fetch changes up to 03dd4b816a528472acbf56dad06e0e284eed876b:
+
+  net/mlx5: Add clarification on sync reset failure (2022-02-22 20:56:28 -0800)
+
+----------------------------------------------------------------
+Jakub Kicinski (1):
+      mlx5: remove usused static inlines
+
+Mark Bloch (7):
+      net/mlx5: Add ability to insert to specific flow group
+      net/mlx5: E-switch, remove special uplink ingress ACL handling
+      net/mlx5: E-switch, add drop rule support to ingress ACL
+      net/mlx5: Lag, use local variable already defined to access E-Switch
+      net/mlx5: Lag, don't use magic numbers for ports
+      net/mlx5: Lag, record inactive state of bond device
+      net/mlx5: Lag, offload active-backup drops to hardware
+
+Moshe Shemesh (2):
+      net/mlx5: Add reset_state field to MFRL register
+      net/mlx5: Add clarification on sync reset failure
+
+Saeed Mahameed (6):
+      net/mlx5: cmdif, Return value improvements
+      net/mlx5: cmdif, cmd_check refactoring
+      net/mlx5: cmdif, Add new api for command execution
+      net/mlx5: Use mlx5_cmd_do() in core create_{cq,dct}
+      net/mlx5: cmdif, Refactor error handling and reporting of async commands
+      RDMA/mlx5: Use new command interface API
+
+Sunil Rani (1):
+      net/mlx5: E-Switch, reserve and use same uplink metadata across ports
+
+ drivers/infiniband/hw/mlx5/devx.c                              |  61 +++++++++++++++++++++++-----------------
+ drivers/infiniband/hw/mlx5/mr.c                                |  15 +++++++++-
+ drivers/infiniband/hw/mlx5/qp.c                                |   1 +
+ drivers/infiniband/hw/mlx5/qpc.c                               |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/cmd.c                  | 328 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------------------------------------------------------------------------------
+ drivers/net/ethernet/mellanox/mlx5/core/cq.c                   |  17 +++++++++--
+ drivers/net/ethernet/mellanox/mlx5/core/devlink.c              |  10 ++-----
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/en_accel.h    |   9 ------
+ drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ingress_ofld.c |  87 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/esw/acl/ofld.h         |  15 ++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch.h              |   3 ++
+ drivers/net/ethernet/mellanox/mlx5/core/eswitch_offloads.c     |  93 +++++++++++++++++-------------------------------------------
+ drivers/net/ethernet/mellanox/mlx5/core/fs_core.c              |   9 +++++-
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c             |  57 ++++++++++++++++++++++++++++++++-----
+ drivers/net/ethernet/mellanox/mlx5/core/fw_reset.h             |   3 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c              | 142 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------
+ drivers/net/ethernet/mellanox/mlx5/core/lag/lag.h              |   2 ++
+ drivers/net/ethernet/mellanox/mlx5/core/lag/mp.c               |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lib/hv_vhca.h          |   7 -----
+ drivers/net/ethernet/mellanox/mlx5/core/main.c                 |   5 ++--
+ drivers/net/ethernet/mellanox/mlx5/core/port.c                 |  20 ++++++++++---
+ include/linux/mlx5/cq.h                                        |   2 ++
+ include/linux/mlx5/driver.h                                    |  19 +++++--------
+ include/linux/mlx5/fs.h                                        |   1 +
+ include/linux/mlx5/mlx5_ifc.h                                  |  14 +++++++--
+ 25 files changed, 640 insertions(+), 284 deletions(-)
+
+
+-- 
+2.35.1
+
