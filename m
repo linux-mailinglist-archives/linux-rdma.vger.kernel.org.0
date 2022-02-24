@@ -2,76 +2,115 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 000D74C2181
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 03:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08DCE4C219A
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 03:13:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229910AbiBXCD0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 21:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S229998AbiBXCNT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 21:13:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbiBXCD0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 21:03:26 -0500
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D25652E6E;
-        Wed, 23 Feb 2022 18:02:56 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V5Li2Lc_1645668173;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V5Li2Lc_1645668173)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Feb 2022 10:02:54 +0800
-Date:   Thu, 24 Feb 2022 10:02:53 +0800
-From:   "dust.li" <dust.li@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Hendrik Brueckner <brueckner@linux.ibm.com>
-Cc:     Stefan Raspl <raspl@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH] net/smc: Add autocork support
-Message-ID: <20220224020253.GF5443@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
- <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
- <20220216152721.GB39286@linux.alibaba.com>
- <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
- <20220217132200.GA5443@linux.alibaba.com>
- <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
- <20220218073327.GB5443@linux.alibaba.com>
- <d4ce4674-3ced-da34-a8a4-30d74cbe24bb@linux.ibm.com>
- <20220218234232.GC5443@linux.alibaba.com>
- <bc3252a3-5a84-63d4-dfc5-009f602a5bec@linux.ibm.com>
+        with ESMTP id S229985AbiBXCNS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 21:13:18 -0500
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72AE13FAFB
+        for <linux-rdma@vger.kernel.org>; Wed, 23 Feb 2022 18:12:49 -0800 (PST)
+Message-ID: <e48c607e-d86a-fa06-746b-3176222288ab@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1645668767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ohc3bMD/8j4gFrqMsjYoQvUqhtRyLjQBuIeALhh1mVY=;
+        b=oyPkPtz0IGXMIHaCT0bj8RBtcFBxUjSOlmWR72RhcHVuFB0n1m/JcqO5iYiAcKl56CyIV3
+        1gSFYCAsYoCBd0hZ/HhdYV7b26IBW64Lq8MWfroDGYnXdnDdvnMBwUS/GS1QL554eqmW76
+        OcqZ9HhOR8+3cz3+n4aNqfa4DaNAveE=
+Date:   Thu, 24 Feb 2022 10:12:39 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc3252a3-5a84-63d4-dfc5-009f602a5bec@linux.ibm.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/1] RDMA/irdma: Make irdma_create_mg_ctx return a void
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>
+References: <20220217181938.3798530-1-yanjun.zhu@linux.dev>
+ <bbabbd38-e68f-f167-bf0e-c0f760e05c61@linux.dev>
+ <0e3d1406d83b472eba6f805a34234cde@intel.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <0e3d1406d83b472eba6f805a34234cde@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 07:57:31PM +0100, Karsten Graul wrote:
->On 19/02/2022 00:42, dust.li wrote:
->> On Fri, Feb 18, 2022 at 05:03:56PM +0100, Karsten Graul wrote:
->>> Right now for me it looks like there is no way to use netlink for container runtime
->>> configuration, which is a pity.
->>> We continue our discussions about this in the team, and also here on the list.
->> 
->> Many thanks for your time on this topic !
->
->We checked more specs (like Container Network Interface (CNI) Specification) 
->but all we found uses sysctl at the end. There is lot of infrastructure 
->to use sysctls in a container environment.
->
->Establishing netlink-like controls for containers is by far out of our scope, and
->would take a long time until it would be available in the popular projects.
->
->So at the moment I see no alternative to an additional sysctl interface in the 
->SMC module that provides controls which are useful in container environments.
 
-Got it, I will add sysctl interface and a switch with this function.
+在 2022/2/24 2:00, Saleem, Shiraz 写道:
+>> Subject: Re: [PATCH 1/1] RDMA/irdma: Make irdma_create_mg_ctx return a void
+>>
+>> 在 2022/2/18 2:19, yanjun.zhu@linux.dev 写道:
+>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>
+>>> The function irdma_create_mg_ctx always returns 0, so make it void and
+>>> delete the return value check.
+>>>
+>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> gentle ping
+>>
+>> Zhu Yanjun
+>>
+>>> ---
+>>>    drivers/infiniband/hw/irdma/uda.c | 9 ++-------
+>>>    1 file changed, 2 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/infiniband/hw/irdma/uda.c
+>>> b/drivers/infiniband/hw/irdma/uda.c
+>>> index 7a9988ddbd01..5eeb76bc29fd 100644
+>>> --- a/drivers/infiniband/hw/irdma/uda.c
+>>> +++ b/drivers/infiniband/hw/irdma/uda.c
+>>> @@ -86,8 +86,7 @@ enum irdma_status_code irdma_sc_access_ah(struct
+>> irdma_sc_cqp *cqp,
+>>>     * irdma_create_mg_ctx() - create a mcg context
+>>>     * @info: multicast group context info
+>>>     */
+>>> -static enum irdma_status_code
+>>> -irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
+>>> +static void irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
+>>>    {
+>>>    	struct irdma_mcast_grp_ctx_entry_info *entry_info = NULL;
+>>>    	u8 idx = 0; /* index in the array */ @@ -106,8 +105,6 @@
+>>> irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
+>>>    			ctx_idx++;
+>>>    		}
+>>>    	}
+>>> -
+>>> -	return 0;
+>>>    }
+>>>
+>>>    /**
+>>> @@ -135,9 +132,7 @@ enum irdma_status_code
+>> irdma_access_mcast_grp(struct irdma_sc_cqp *cqp,
+>>>    		return IRDMA_ERR_RING_FULL;
+>>>    	}
+>>>
+>>> -	ret_code = irdma_create_mg_ctx(info);
+>>> -	if (ret_code)
+>>> -		return ret_code;
+>>> +	irdma_create_mg_ctx(info);
+> ret_code is unused now? Get rid of it?
 
-Thank again !
+Thanks, it is removed in the latest commit.
+
+Zhu Yanjun
+
+>
+> Shiraz
