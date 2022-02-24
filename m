@@ -2,92 +2,78 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBE7F4C216B
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 02:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7154C2172
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 03:02:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbiBXB5n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 20:57:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
+        id S229882AbiBXCBD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 21:01:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229889AbiBXB5l (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 20:57:41 -0500
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DE0FEB24;
-        Wed, 23 Feb 2022 17:57:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645667829; x=1677203829;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d3w1+5OFGFVTtbNZejTZ3o12Tnm69aZayQDmW4rtE6M=;
-  b=Sdt9mEy6nq8f4K5L3U4juL7LTVPfMAGlQlOXQbWc4jqw/oZ88G+aV/EV
-   xFM8HZZhjuluRR5d2in/4xhXh4iLwvg/NuZW2JXMyiKnoZEmlELtnG6II
-   jRC5Qdn/u0b5J7EHDP69ZFgcbqTnO+uf7SW0/ACkFj4ypYqpTzG8iB266
-   KVEkLR9v58hvT4sHeezBDcPEthz9qgjlRxmG5k+UdpomMi7lPPseGS/lm
-   ZfN+BYHkWgvrxDXut4ZG7q1UpIE3aIy4ESwPzxJxs3duPaL9OgfPu+l1a
-   bzAvMjXEM/NERaf4xk+ixd7NPg0dMinNTIL+CIoKLRpmjRffvNNiVWIq0
-   w==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="249700067"
-X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="249700067"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 17:01:56 -0800
-X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="707259145"
-Received: from smile.fi.intel.com ([10.237.72.59])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 17:01:54 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1nN2VE-007dta-JA;
-        Thu, 24 Feb 2022 03:01:04 +0200
-Date:   Thu, 24 Feb 2022 03:00:59 +0200
-From:   'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Subject: Re: [PATCH v1 1/1] IB/hfi1: Don't cast parameter in bit operations
-Message-ID: <YhbYy7BRAw59V1It@smile.fi.intel.com>
-References: <20220223185353.51370-1-andriy.shevchenko@linux.intel.com>
- <e39730af26cc4a4d944fa3205fa17b3c@AcuMS.aculab.com>
- <Yha1bIYZpCWZIowl@smile.fi.intel.com>
- <efb8c82c626a4c7d8a9f781d63289343@AcuMS.aculab.com>
+        with ESMTP id S229877AbiBXCBB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 21:01:01 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889FF6006E;
+        Wed, 23 Feb 2022 18:00:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3FD88B82195;
+        Thu, 24 Feb 2022 02:00:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72EA2C340EF;
+        Thu, 24 Feb 2022 02:00:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1645668029;
+        bh=bHfD1tT0ZlUND9FKfmd0S/BTbFuRax0UksZLHpXWCj8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Gxxfq/7kL4TuQqN34oOaaLfw2TSmwRF1/ak3CFbPLhqb0LTIFF4V/WMXk7GKXWSy9
+         HAsJ2q+qMS31MpLy+h2LJOwRxXAHnD92NhfnkJR4Bv6o06oZ5Wh2ni774fc6PribBL
+         CQZj67r5npCLMg7SHyR3xyeLJth60iiJ+Q/kpP+ueUBRz3DPs3hqJwI9eXpomN6OKD
+         Okx4ex6KK0o0mb72D4sVXXzUCBJ0FGJSbyW+m19tPvO5BxTuljUFCi3yyofXhbhQ7w
+         /D1zT/XpaXL/xetfnKKrMYrfWsNKOTe8JKWr6+40MgJeZTvEtTXvfUzJkdADO46oTD
+         UW60koaJUrW7g==
+Date:   Wed, 23 Feb 2022 18:00:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>
+Cc:     Saeed Mahameed <saeed@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@mellanox.com>
+Subject: Re: [mlx5-next 13/17] net/mlx5: Use mlx5_cmd_do() in core
+ create_{cq,dct}
+Message-ID: <20220223180028.47f14132@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20220223235702.ytu6fqi4shbk3rnk@sx1>
+References: <20220223050932.244668-1-saeed@kernel.org>
+        <20220223050932.244668-14-saeed@kernel.org>
+        <20220223152031.283993fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20220223235702.ytu6fqi4shbk3rnk@sx1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <efb8c82c626a4c7d8a9f781d63289343@AcuMS.aculab.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 10:50:19PM +0000, David Laight wrote:
-> From: 'Andy Shevchenko'
-> > Sent: 23 February 2022 22:30
-> > On Wed, Feb 23, 2022 at 09:44:32PM +0000, David Laight wrote:
-> > > From: Andy Shevchenko
-> > > > Sent: 23 February 2022 18:54
-
-...
-
-> > Either way it wastes cycles, the outcome depends on the actual distribution of
-> > the interrupts across the bitmap. If it gathered closer to the beginning of the
-> > bitmap, my code wins, otherwise the original ones.
+On Wed, 23 Feb 2022 15:57:02 -0800 Saeed Mahameed wrote:
+> On 23 Feb 15:20, Jakub Kicinski wrote:
+> >On Tue, 22 Feb 2022 21:09:28 -0800 Saeed Mahameed wrote:  
+> >> Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+> >> Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>  
+> >
+> >nit: double-signed  
 > 
-> The loop in bitmap_empty() will kill you - even if the first word in non-zero.
+> different emails, the patch was authored back then when i had the mellanox
+> email, If I want to keep the original author email, then i must sign with both
+> emails, once as author and once as submitter.
+> 
+> The other option is to override the author email with the new email, but
+> I don't like to mess around with history ;).. 
 
-What loop? Did you really look into implementation of bitmap_empty()?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Ack, just an FYI, don't think the bots will actually catch this case.
