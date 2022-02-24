@@ -2,101 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A6354C2192
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 03:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44DA54C27F9
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 10:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbiBXCIf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 21:08:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59806 "EHLO
+        id S230147AbiBXJUd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Feb 2022 04:20:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbiBXCIe (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 21:08:34 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1F131B370F
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Feb 2022 18:08:05 -0800 (PST)
-X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="315356356"
-X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="315356356"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 18:08:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="607268950"
-Received: from intel-obmc.bj.intel.com (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by fmsmga004.fm.intel.com with ESMTP; 23 Feb 2022 18:08:03 -0800
-From:   yanjun.zhu@linux.dev
-To:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev, leon@kernel.org
-Subject: [PATCHv2 1/1] RDMA/irdma: Make irdma_create_mg_ctx return a void
-Date:   Thu, 24 Feb 2022 13:28:32 -0500
-Message-Id: <20220224182832.3896686-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S229740AbiBXJUd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Feb 2022 04:20:33 -0500
+X-Greylist: delayed 517 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Feb 2022 01:20:04 PST
+Received: from mail.onlinesuccesses.pl (mail.onlinesuccesses.pl [198.244.150.235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DE1D20A97A
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Feb 2022 01:20:04 -0800 (PST)
+Received: by mail.onlinesuccesses.pl (Postfix, from userid 1002)
+        id E3385A42F8; Thu, 24 Feb 2022 09:11:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=onlinesuccesses.pl;
+        s=mail; t=1645693885;
+        bh=nE8HqilgMh4dy7+Z8ksfg7Bc9rmPeQtYFq3/3YR2ODU=;
+        h=Date:From:To:Subject:From;
+        b=NO3QwaXy5jLAbi9T9HZfg1RHzeG7tagkd8upNlma+NrOlVWMqOa1xyEmt0eHbUX6b
+         n81We83cK8ryG+61smGDPQaFhCXKlolEeL6F+lW03iZYv7sKHivYCNtqnuWqBtTRaM
+         dQG6PuyQa1ACdjXbJq197L3xIAWfpHFvPrSS/0m+SetZZAK3KrCDesYHxb7LMRj0s/
+         sGwSsNP1oMHsQLN+t/LsQFpDmgIQ+Si1Ij/2O45GzbSqT0OkgBj8JGJLr9u/Ao2d+t
+         Fp++rVJ5LZ0mPVbTjBtacQPVVoNYuwiopPBD7WAr1trkNRKtKZhFnGY5pg/UGUZe0y
+         4PJA/cKaWei3Q==
+Received: by mail.onlinesuccesses.pl for <linux-rdma@vger.kernel.org>; Thu, 24 Feb 2022 09:11:18 GMT
+Message-ID: <20220224074501-0.1.2r.hozt.0.dxgi3pvco0@onlinesuccesses.pl>
+Date:   Thu, 24 Feb 2022 09:11:18 GMT
+From:   "Wiktor Zielonko" <wiktor.zielonko@onlinesuccesses.pl>
+To:     <linux-rdma@vger.kernel.org>
+Subject: Ruch z pierwszej pozycji w Google
+X-Mailer: mail.onlinesuccesses.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_05,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+Dzie=C5=84 dobry,=20
 
-The function irdma_create_mg_ctx always returns 0,
-so make it void and delete the return value check.
+jaki=C5=9B czas temu zg=C5=82osi=C5=82a si=C4=99 do nas firma, kt=C3=B3re=
+j strona internetowa nie pozycjonowa=C5=82a si=C4=99 wysoko w wyszukiwarc=
+e Google.=20
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V1->V2: Remove the unused ret_code and rebase to the commit 2322d17abf0a
-        ("RDMA/irdma: Remove excess error variables")
----
- drivers/infiniband/hw/irdma/uda.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Na podstawie wykonanego przez nas audytu SEO zoptymalizowali=C5=9Bmy tre=C5=
+=9Bci na stronie pod k=C4=85tem wcze=C5=9Bniej opracowanych s=C5=82=C3=B3=
+w kluczowych. Nasz wewn=C4=99trzny system codziennie analizuje prawid=C5=82=
+owe dzia=C5=82anie witryny.  Dzi=C4=99ki indywidualnej strategii, firma z=
+dobywa coraz wi=C4=99cej Klient=C3=B3w. =20
 
-diff --git a/drivers/infiniband/hw/irdma/uda.c b/drivers/infiniband/hw/irdma/uda.c
-index 7a9988ddbd01..a247ae3142d9 100644
---- a/drivers/infiniband/hw/irdma/uda.c
-+++ b/drivers/infiniband/hw/irdma/uda.c
-@@ -86,8 +86,7 @@ enum irdma_status_code irdma_sc_access_ah(struct irdma_sc_cqp *cqp,
-  * irdma_create_mg_ctx() - create a mcg context
-  * @info: multicast group context info
-  */
--static enum irdma_status_code
--irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
-+static void irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
- {
- 	struct irdma_mcast_grp_ctx_entry_info *entry_info = NULL;
- 	u8 idx = 0; /* index in the array */
-@@ -106,8 +105,6 @@ irdma_create_mg_ctx(struct irdma_mcast_grp_info *info)
- 			ctx_idx++;
- 		}
- 	}
--
--	return 0;
- }
- 
- /**
-@@ -122,7 +119,6 @@ enum irdma_status_code irdma_access_mcast_grp(struct irdma_sc_cqp *cqp,
- 					      u32 op, u64 scratch)
- {
- 	__le64 *wqe;
--	enum irdma_status_code ret_code = 0;
- 
- 	if (info->mg_id >= IRDMA_UDA_MAX_FSI_MGS) {
- 		ibdev_dbg(to_ibdev(cqp->dev), "WQE: mg_id out of range\n");
-@@ -135,9 +131,7 @@ enum irdma_status_code irdma_access_mcast_grp(struct irdma_sc_cqp *cqp,
- 		return IRDMA_ERR_RING_FULL;
- 	}
- 
--	ret_code = irdma_create_mg_ctx(info);
--	if (ret_code)
--		return ret_code;
-+	irdma_create_mg_ctx(info);
- 
- 	set_64bit_val(wqe, 32, info->dma_mem_mc.pa);
- 	set_64bit_val(wqe, 16,
--- 
-2.27.0
+Czy chcieliby Pa=C5=84stwo zwi=C4=99kszy=C4=87 liczb=C4=99 os=C3=B3b odwi=
+edzaj=C4=85cych stron=C4=99 internetow=C4=85 firmy? M=C3=B3g=C5=82bym prz=
+edstawi=C4=87 ofert=C4=99?=20
 
+
+Pozdrawiam serdecznie,
+Wiktor Zielonko
