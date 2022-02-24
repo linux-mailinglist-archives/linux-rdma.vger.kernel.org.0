@@ -2,97 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA2B4C21BB
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 03:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBE7F4C216B
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 02:57:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbiBXCZR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 23 Feb 2022 21:25:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
+        id S229936AbiBXB5n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 23 Feb 2022 20:57:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230097AbiBXCZQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 21:25:16 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4785C22EDCB
-        for <linux-rdma@vger.kernel.org>; Wed, 23 Feb 2022 18:24:48 -0800 (PST)
+        with ESMTP id S229889AbiBXB5l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 23 Feb 2022 20:57:41 -0500
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91DE0FEB24;
+        Wed, 23 Feb 2022 17:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645669488; x=1677205488;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nqkk1InaaHwaH5hNQJzomPX5ODXVbcLVGUNbLKU1Xgw=;
-  b=WPp0PN8mM6Maj1kvTuHHCXC4DvbpDTKOh67C0/wdesOpd6wvP1+1TFeG
-   EAu77FtGJgE4vDAzohwnIqUXrMD/LweYpLWUBRNnMT/xOCvO5PivCjCJm
-   oQbw8Z4CoG4evoPyjNOe8+lBC/DVABh1I5iiZ4/nfpqqkvHR/LyPmXsnE
-   QbwvkeYzyafAjAvLKTI+GF6fSqg7tPB44kxTo/joVizRCQiHqqZlE2yWh
-   5acq2dAdKPu9sieREc79Wc5aNVpazVaYNOo6cRn4veXBwCrKHYe2wfdlB
-   MjbpJQuOEjaG+maYj6QMasfS2EHDkEETVAkVLzSDt+dmJxC75leyBaDJm
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="235627972"
+  t=1645667829; x=1677203829;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=d3w1+5OFGFVTtbNZejTZ3o12Tnm69aZayQDmW4rtE6M=;
+  b=Sdt9mEy6nq8f4K5L3U4juL7LTVPfMAGlQlOXQbWc4jqw/oZ88G+aV/EV
+   xFM8HZZhjuluRR5d2in/4xhXh4iLwvg/NuZW2JXMyiKnoZEmlELtnG6II
+   jRC5Qdn/u0b5J7EHDP69ZFgcbqTnO+uf7SW0/ACkFj4ypYqpTzG8iB266
+   KVEkLR9v58hvT4sHeezBDcPEthz9qgjlRxmG5k+UdpomMi7lPPseGS/lm
+   ZfN+BYHkWgvrxDXut4ZG7q1UpIE3aIy4ESwPzxJxs3duPaL9OgfPu+l1a
+   bzAvMjXEM/NERaf4xk+ixd7NPg0dMinNTIL+CIoKLRpmjRffvNNiVWIq0
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10267"; a="249700067"
 X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="235627972"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 16:58:52 -0800
+   d="scan'208";a="249700067"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 17:01:56 -0800
 X-IronPort-AV: E=Sophos;i="5.88,392,1635231600"; 
-   d="scan'208";a="548513130"
-Received: from ssaleem-mobl.amr.corp.intel.com ([10.255.38.207])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 16:58:51 -0800
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     jgg@nvidia.com, linux-rdma@vger.kernel.org
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH rdma-rc 3/3] RDMA/irdma: Remove incorrect masking of PD
-Date:   Wed, 23 Feb 2022 18:58:42 -0600
-Message-Id: <20220224005842.1707-4-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220224005842.1707-1-shiraz.saleem@intel.com>
-References: <20220224005842.1707-1-shiraz.saleem@intel.com>
+   d="scan'208";a="707259145"
+Received: from smile.fi.intel.com ([10.237.72.59])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Feb 2022 17:01:54 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.95)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1nN2VE-007dta-JA;
+        Thu, 24 Feb 2022 03:01:04 +0200
+Date:   Thu, 24 Feb 2022 03:00:59 +0200
+From:   'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Subject: Re: [PATCH v1 1/1] IB/hfi1: Don't cast parameter in bit operations
+Message-ID: <YhbYy7BRAw59V1It@smile.fi.intel.com>
+References: <20220223185353.51370-1-andriy.shevchenko@linux.intel.com>
+ <e39730af26cc4a4d944fa3205fa17b3c@AcuMS.aculab.com>
+ <Yha1bIYZpCWZIowl@smile.fi.intel.com>
+ <efb8c82c626a4c7d8a9f781d63289343@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <efb8c82c626a4c7d8a9f781d63289343@AcuMS.aculab.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
+On Wed, Feb 23, 2022 at 10:50:19PM +0000, David Laight wrote:
+> From: 'Andy Shevchenko'
+> > Sent: 23 February 2022 22:30
+> > On Wed, Feb 23, 2022 at 09:44:32PM +0000, David Laight wrote:
+> > > From: Andy Shevchenko
+> > > > Sent: 23 February 2022 18:54
 
-The PD id is masked with 0x7fff, while PD can be 18 bits for GEN2 HW.
-Remove the masking as it should not be needed and can cause incorrect
-PD id to be used.
+...
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> > Either way it wastes cycles, the outcome depends on the actual distribution of
+> > the interrupts across the bitmap. If it gathered closer to the beginning of the
+> > bitmap, my code wins, otherwise the original ones.
+> 
+> The loop in bitmap_empty() will kill you - even if the first word in non-zero.
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 460e757..1bf6404 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2509,7 +2509,7 @@ static int irdma_dealloc_mw(struct ib_mw *ibmw)
- 	cqp_info = &cqp_request->info;
- 	info = &cqp_info->in.u.dealloc_stag.info;
- 	memset(info, 0, sizeof(*info));
--	info->pd_id = iwpd->sc_pd.pd_id & 0x00007fff;
-+	info->pd_id = iwpd->sc_pd.pd_id;
- 	info->stag_idx = ibmw->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
- 	info->mr = false;
- 	cqp_info->cqp_cmd = IRDMA_OP_DEALLOC_STAG;
-@@ -3021,7 +3021,7 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
- 	cqp_info = &cqp_request->info;
- 	info = &cqp_info->in.u.dealloc_stag.info;
- 	memset(info, 0, sizeof(*info));
--	info->pd_id = iwpd->sc_pd.pd_id & 0x00007fff;
-+	info->pd_id = iwpd->sc_pd.pd_id;
- 	info->stag_idx = ib_mr->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
- 	info->mr = true;
- 	if (iwpbl->pbl_allocated)
+What loop? Did you really look into implementation of bitmap_empty()?
+
 -- 
-1.8.3.1
+With Best Regards,
+Andy Shevchenko
+
 
