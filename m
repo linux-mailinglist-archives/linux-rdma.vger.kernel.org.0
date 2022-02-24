@@ -2,169 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C424C2D7F
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 14:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDFF4C2EAB
+	for <lists+linux-rdma@lfdr.de>; Thu, 24 Feb 2022 15:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbiBXNpH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Feb 2022 08:45:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50182 "EHLO
+        id S231895AbiBXOvx (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Feb 2022 09:51:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233481AbiBXNpG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Feb 2022 08:45:06 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2112.outbound.protection.outlook.com [40.107.244.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0CF627791B;
-        Thu, 24 Feb 2022 05:44:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YzeHMR5qD1LQCr0kEgVF9OXzwg98FPLRvkuTqCP94sWSn/OVn+FgA5RgMHI1rWae/J9KUiaMGr9LPcstBBqLsDMqVVitP7gIhBZf5xCGMexUMTGM3XLIOQCSrrL7Yo8yKjeGVT6a6zjxS15uBBg+/niSy9v5UCUABhYigvj1DBmuUbuzE9S2PRkt/yKMG2KhH7pbqBkh9bXPa3V1EO6Otvdz/sEXPrJcLrwZsxC1Hi7DkNQHIjWk6W+aYQz/6zfxSwzLhsb6NPduaFflV1CPN6xgitRxnugj5fhnx8Q6eNht56GgGt3folpjMPXPcw8AXyhmmDTICzfj6RioNRnmcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GcKbL00p0CLUwnx3rdLklU4hn9UCwyt/50iBd1JbMCU=;
- b=XF45pVUKRrj9+vkoztcP2K1Pt0dQ7nbgWpNBIon5O39fk8XM/RPkgBxSv5HoQB5oKZZZ/uDbTy++xE6XkF6mJY1iYIdI4CO4glAAAVg4fxNOk3cbLXcAnmARm9VB9QhEl+l3q8jVmPDe/bAQ9nlftXRwu3Im7DXaHYk0PbSUp9m8BCe4NHLusYUgW3mSMeFhxMoC+Ek5N30d/qerkYJ/7Kjxq+MzuRwdLMen/Cwpf2ONXFbk1xUM2l4vtPAW9DzMHYCxjwyO14JRYcKqCxVuuyT2TdWSVFXuS+emDSonNIDsP2jJxQ2LHgB5GcvCnTFOBr5zJ87/DPjoAw1YT3UCqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GcKbL00p0CLUwnx3rdLklU4hn9UCwyt/50iBd1JbMCU=;
- b=Q+Dsu5XxtvYvx93xOlw6TzlCnQaJ/XuIh390AmFfk4xHe/IgCKrWvetXCnZHwvaQY29qiVntmxQ8ZyADVZBH/urXv+TtyxgO9YIZh2DhUH9JmLwipepxVnC8s/yEErSv57twQZMDwiPtHMfKnTFRphJ0CQ2ePAmlKo5iN8iQ6GdT8AYgoWGsQxmR9KrgbcwaNClpLVzUbnWeRO7taL36zXNmxxWXUOx9BVr1MK32EEJXVILL53cJ7xZJJ+sdjiECVb2hSfFhLND3lmqD0IoyGub23RC0YViA8IEEKEVENX1th58+AnV3lJVGkiM10oGtGIYnIjLOCQNkY3E0YSy+zQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- BN7PR01MB3843.prod.exchangelabs.com (2603:10b6:406:84::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5017.24; Thu, 24 Feb 2022 13:44:32 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::4ce8:dd24:bf67:47fa]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::4ce8:dd24:bf67:47fa%7]) with mapi id 15.20.5017.024; Thu, 24 Feb 2022
- 13:44:32 +0000
-Message-ID: <01f0c30b-08dd-e70c-ddfa-b47843e76366@cornelisnetworks.com>
-Date:   Thu, 24 Feb 2022 08:44:29 -0500
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.6.0
-Subject: Re: [PATCH v1 1/1] IB/hfi1: Don't cast parameter in bit operations
-Content-Language: en-US
-To:     'Andy Shevchenko' <andriy.shevchenko@linux.intel.com>,
-        David Laight <David.Laight@aculab.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-References: <20220223185353.51370-1-andriy.shevchenko@linux.intel.com>
- <e39730af26cc4a4d944fa3205fa17b3c@AcuMS.aculab.com>
- <Yha1bIYZpCWZIowl@smile.fi.intel.com>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <Yha1bIYZpCWZIowl@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0342.namprd13.prod.outlook.com
- (2603:10b6:208:2c6::17) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+        with ESMTP id S229670AbiBXOvw (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Feb 2022 09:51:52 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72012325CB
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Feb 2022 06:51:21 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id 185so1972877qkh.1
+        for <linux-rdma@vger.kernel.org>; Thu, 24 Feb 2022 06:51:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dvXH9Z3GBBmqBSzqAK6dG6yrd3mmZje7UbRZJL5KiIQ=;
+        b=fW/BnN70kerbTBUw4zVM37fJ6aUVO357LTUaDI/ReUAPuM9W6AhuGdSAbrOa9iVksQ
+         IoVnL5tadF++ofTTAS+nlIBB50dB2FrLxZlwjJaqofuCCSjyBfcqpkCugttPIAW/9taB
+         9QjgsUS+nb5yV7KFbiLieeqsZvjJ26mGXwYAwgi86LOB8MIJ2Vg4WR6dKCOMNGd/Bbuz
+         6YK9Xk/9U6+Pzsw/kFVKJqKsHy/M43SxufzkMmqBpwqdMBRchTElVFB4AK2nY8FWHZ9+
+         dYil6KFxhM2oqpgX9Gd+54IF1iUN7Y6dDDW3A4ym804LWlu19mNeDTMagirtOm7kdaYp
+         gA7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dvXH9Z3GBBmqBSzqAK6dG6yrd3mmZje7UbRZJL5KiIQ=;
+        b=Ywm46k31z68NJQKXy+V2Nw+KcTUJOEe4lGRhKbVoazJQI68PRgefd2Jg0Eltx9nvVt
+         ZSats2WXZ9mADWq/aRty/jgnoPZTTG5TiQLeKiy4/wEpyQ6OHPzoQi6PgcdXbN+MvHYo
+         mrGY10ivH1K4B6gBLZO3iVRk/imO/Bd7pNJfcsTrXamyaOZmgIb/sBKzCVCLTqYbKf99
+         Xmu+guvcU7SrFoZEWZS2hCdLrTMWDiA4OlMsiMLqH62WQCuJYy5yv/wen5j+Y90edORT
+         Y1NJLK3tVjGZpNltweWm3DUyv/LQI1eASsYh33lD1f10XU3jwXh8QKmAhkRPv/6uOZPF
+         EvWg==
+X-Gm-Message-State: AOAM5305jQBYN+HEckv15yS5CzO3NNzlGavb4cDDdgvZBU6Sm6VC9UMj
+        lNTjqUnK5zaAE8X+tVJlLDrrjA==
+X-Google-Smtp-Source: ABdhPJzXutZFMGXC6o4DsmTXO3ik/o/uZOM+ckf0+ngNgVwKWzRXY3VDjIxMXH+5gB+KTOny+cXpLQ==
+X-Received: by 2002:a37:45d3:0:b0:47a:645e:137f with SMTP id s202-20020a3745d3000000b0047a645e137fmr1787333qka.535.1645714281049;
+        Thu, 24 Feb 2022 06:51:21 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id 79sm1397808qkf.108.2022.02.24.06.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 24 Feb 2022 06:51:20 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nNFSg-0004KM-HY; Thu, 24 Feb 2022 10:51:18 -0400
+Date:   Thu, 24 Feb 2022 10:51:18 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     jhubbard@nvidia.com, Leon Romanovsky <leonro@mellanox.com>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [bug report] RDMA: Convert put_page() to put_user_page*()
+Message-ID: <20220224145118.GA6468@ziepe.ca>
+References: <20220224093758.GA30603@kili>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4eac0c54-01c1-41a9-5925-08d9f79bc97b
-X-MS-TrafficTypeDiagnostic: BN7PR01MB3843:EE_
-X-Microsoft-Antispam-PRVS: <BN7PR01MB3843B9508185DE05B96190A8F43D9@BN7PR01MB3843.prod.exchangelabs.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fpsk+2TwoXfcs4FugbO+iR35j9x1IJcekWN2mRO4eDH3RG6wi4GG7wooKT1e7mJ0GrJu1SNZ0n1AqcOOmX9oboah6N9k8fPC8IvktSFs1fYbKB/4pphKjHKUJAPCpfEFExNtx89/eXizWEnhKr2gXR1Am4WQbk2Z8UF9fZRa+dNNZVR+w7k99yshuqJ241kNXmCyQVgYuORxiBhvnGBexI2/jw5CdCXHe7CyuPCYGoD8PEqxDstTzzVveWeVBnzA+6vJUAV3UTjuaipSu6AYVCf7kmMa2EHobGbnuhivKDJO9UPbRhTrHt+k+SPRhKt+JhHkTew58lxbiRyzwFS/nzYbOpPc6Jhwpi5+5ykiGdvkcRv+vdN5VIN92+lqUpCzDLepRf3DauNqf8gqIVA0sEgZFz9ZvK5d/bqoZsQXsFJZNqyMF7CtV0VZEOz3T9lSQsBKs0jYn5FJnzVgoGbYMc4Gf8eY9zL8lhXwibt6Sfj3lXMwnt8y6fI8Q3f8o5RlNJ7qQrOD3Nq6iqfZ0S1rsQJlwzv3XdxpUhI/3gMXP2WGdUWf47QGKYeWVyrQeHY/e7mr6iiDSdSh3DbsKGfCCCEa/Xq5Q+aVCALobtv16KFIVfK4Qc1dFxJ7Nx+vtO3EtvvVY0Iendy7CF9chCkMc6yneF0HYa7Wz+WPuFUz/80DXk5E00wwXS00ThYRYUASqVB+R4KgzJRVV4O7RoiuzrQCOtZxtsIYjxUGaQjUPLY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(346002)(366004)(39840400004)(136003)(376002)(396003)(8936002)(6512007)(2906002)(52116002)(53546011)(66946007)(6506007)(66556008)(66476007)(4326008)(44832011)(8676002)(186003)(26005)(2616005)(6666004)(83380400001)(107886003)(5660300002)(38100700002)(38350700002)(54906003)(110136005)(86362001)(31696002)(6486002)(316002)(31686004)(36756003)(508600001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QWFRNXJIL2daaGJJekNRQkhUdHFONU1iOGhkMFFobjVIUVAxREJ0SDNNYTBQ?=
- =?utf-8?B?N2NvWEJuaThqZXAzY1ZOdThNVm8rYmphOUNMSnJCN3pMZ2tSZlVGbjNTeXNK?=
- =?utf-8?B?T0l2N1JWeXp4Z1BIK0ZZOXN0cFFsVW1TU2RQTk1HM1NjUS9EMUJLVDBGQklq?=
- =?utf-8?B?RmJsaEx0SkI5dWJiNU43cXZSZEt4REkxRTdoTnhUT1ljM2ZmVnRMcEQvNCti?=
- =?utf-8?B?a0c1M28vb2lYaFhCOHJLeU1VaWt4SVhqZmFzVUlkN3piVUJWdDZmbDF5b3dW?=
- =?utf-8?B?UFZMZ0wzWG5keGZCUU5YVzJoaEtNRWNhWjlrbDhXUnRTTmU1Tm9kODVtRlR4?=
- =?utf-8?B?Q1VBTTFNL3FVcU5aS3ZSUlV2TGIrenNYQ2l6VkRKS1cwbDRFbEx5aWlubzZs?=
- =?utf-8?B?eTNjSW91MlBvb3lkSkxibTN5Q1RtaEd3U1k4U3pIdUUxaWRIL1ZDdGQ2VGpt?=
- =?utf-8?B?c0lrZ2JaeDUzWnVqU1pDQU5Pc29KWnZiTjBWU2x0bEpxcllWQzk3b3Znb1Iv?=
- =?utf-8?B?c2FvQ3pXMElJSURaQ05rK09iUXNNTWtpMFdaK0MrOUgzcXhmZzZwYkdOYUlQ?=
- =?utf-8?B?UkZYZXJkd3U5ckJQajNRdUpLWE9CU2F3Tmhoa3JURjMvT0lYRDluL2FGbG1k?=
- =?utf-8?B?cjBFSGw2R2c2MzV4YXYrWkpwa1hlSmx0dlpkWEV2eGpXRnpXRThiQUJFclVa?=
- =?utf-8?B?dW1BTllYTGV6MW5mSE9CQ2F5L1BScTZjUTQwRmt2YWhHa1VJUjBnLy92emFX?=
- =?utf-8?B?MkV1aS9BeU9yK2xjRGRhMG9HU2NMYTFNUjU5cW94SE9KSUx0V0ZkU1plMmhy?=
- =?utf-8?B?Q1ZlWlhON0xOaVBPSWpZM09VK05NTzM3WW9rZE1WaE9kc2Z2S1lWcEJ4RzZL?=
- =?utf-8?B?MklmbTI1N3ZBbitsY1JwOFNFc2M5UVF0a05ZZ3ZuQlR6R1M2TUNGNUlvVnRX?=
- =?utf-8?B?cld2aWZtc0h6bk9nZHFwS3Y4NVJleFg3YkxVd3Q3UzA4K0NjN0JuUGRCL1R3?=
- =?utf-8?B?YlhoVHVOZmxveTArZlhwWGdUMWRDUFFqZXFjcFFaMHZZVzFrTXVyQkpDcFFn?=
- =?utf-8?B?NnVsb0luWC80WXF0UzFyN1VGN3BjdCtKV0hEUHluTERUeHlpZmFhVWFLRkNp?=
- =?utf-8?B?bTNFWERtUkdHVEtEUkcwbTdHZWRXWkdieGJIQ01uRkRzUm5QdGFDQXhEYzFZ?=
- =?utf-8?B?MkJaRHByUUtNRldoZVpsYVM2V21PZU9NR0Jlc3kvUFdkcTczUXNrMnlnSEtm?=
- =?utf-8?B?REw4ZXZlV25oTVVxRXdLdjkyODI4YkxNRkRYNFNyekdlN3gvREtQUzNXN0wx?=
- =?utf-8?B?MEdyb1Z5TlJ0QnRnY2o1WnBoR0o3VjdOMjJ0UmhlR1lxWFYxU2ZOcmRiVVhy?=
- =?utf-8?B?Vm5TbEtzMFpoN0cwdDd2RDZxZm9remdkWnlrMnBvSVJpTEFSSE1VVGNabUtG?=
- =?utf-8?B?VW83S2pqNWxtclVSME0rN2tSeSthTHZjNWhaRlJ5cVJBRlkzdXA4V21pbDhm?=
- =?utf-8?B?bld3a1VUMWpKNjk2bmlTZDh3OTRReUp2Z0ZQZ3pBMnlIZ3lwVVZ1ZHl2S01Y?=
- =?utf-8?B?am1qeHJ3a0dHRXFIaGtrWlRxd1BzQU5rTlJhdUo0aHcwY0tQdnJrY0Y4bGo2?=
- =?utf-8?B?QU10VU1nV25VVHV2a0FPaUo4a0NnVmQzcW4yNitUZ2F3ZHFmMm9NUEh3Nk82?=
- =?utf-8?B?TllJVjh2MUlsaDIyTjI3U2UrVkRXWi9OMk5jSXo2eVNreTNYTHBwYmNSTUtT?=
- =?utf-8?B?aWY4SUN1eElaQjgxRS9ySjF0SytnTkEvakswUWtHbER5ZHNnVHc5L0NNUXdL?=
- =?utf-8?B?cmpub0IzZ1h2bElVOVkxZ0U0bmEvRmw1RkRBaHJHbGFhNG4wQS9MaGFxTCtV?=
- =?utf-8?B?eUdYQ0EwbzNuZEh5dDFQeEZSOEZxQU9QK0NSNllIL2lmdFpFNG9zUXh2V1l5?=
- =?utf-8?B?czB6dHg3TEhsaEJDSmRMSWkyQnZ1d1d3QXFGOHBXWlowbmZEN243aTl2dzVY?=
- =?utf-8?B?SjNkakNRWWY1WlRaZ0pmRkpjYXgvZWdzTENkWFlaN3c5cVhsbHFrcFhNZU9Y?=
- =?utf-8?B?eW9vUEVPUXhVTVJ6c2pPL09wUzV6eDdZVU9ITk1qeWdXZFVkd1ZqUHpEWUNj?=
- =?utf-8?B?WFZENTEyQk5NQVVCOUxQZVY5b0ViUEpzTzN2am0rUUE0WE5BUVlGa2dPaGFE?=
- =?utf-8?B?SFM5R2xyYWNEL0Q2TTFiYnN0NmhXWlBtcWkwb1FFZE1vaS9Kb1R6cTY4Rkto?=
- =?utf-8?B?L3dlSDcweFRrV2lXTmN3UzduMXhqSC9Pb09RejBvdGo0TFdLNU8yOW1TUzRR?=
- =?utf-8?B?aUNQYUU0bmZVOXMyRG0rWTFNcHVFUmJiZlphUEQ5Y1ludzFoOGZIQT09?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4eac0c54-01c1-41a9-5925-08d9f79bc97b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Feb 2022 13:44:32.3962
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z5c2hpd3kafHgC21O+pXDlkihudRs2GX2JymQCIVtan4pG/Zbzd19GFJAoTavEMic0+2+7/zPLxSoGciqahs7EgMZgfud6bQMxc0cvuVfOuaBwQ5g4+eISsr0QOVqaVF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR01MB3843
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220224093758.GA30603@kili>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2/23/22 5:30 PM, 'Andy Shevchenko' wrote:
-> On Wed, Feb 23, 2022 at 09:44:32PM +0000, David Laight wrote:
->> From: Andy Shevchenko
->>> Sent: 23 February 2022 18:54
->>>
->>> While in this particular case it would not be a (critical) issue,
->>> the pattern itself is bad and error prone in case somebody blindly
->>> copies to their code.
->>
->> It is horribly wrong on BE systems.
+On Thu, Feb 24, 2022 at 12:37:58PM +0300, Dan Carpenter wrote:
+> Hi John,
 > 
-> You mean the pattern? Yes, it has three issues regarding to endianess and
-> potential out of boundary access.
+> I'm not really sure who to send this bug report to so you got picked
+> a bit at random...
 > 
-> ...
+> The patch ea996974589e: "RDMA: Convert put_page() to
+> put_user_page*()" from May 24, 2019, leads to the following Smatch
+> static checker warning:
 > 
->>> -	return handled;
->>> +	return IRQ_RETVAL(!bitmap_empty(pending, CCE_NUM_INT_CSRS * 64));
+> 	./include/linux/pagemap.h:897 folio_lock()
+> 	warn: sleeping in atomic context
 > 
->> You really don't want to scan the bitmap again.
+> ./include/linux/pagemap.h
+>     895 static inline void folio_lock(struct folio *folio)
+>     896 {
+>     898         if (!folio_trylock(folio))
+>     899                 __folio_lock(folio);
+>     900 }
 > 
-> Either way it wastes cycles, the outcome depends on the actual distribution of
-> the interrupts across the bitmap. If it gathered closer to the beginning of the
-> bitmap, my code wins, otherwise the original ones.
+> The problem is that unpin_user_pages_dirty_lock() calls folio_lock()
+> which can sleep.
 > 
->> Actually, of the face of it, you could merge the two loops.
->> Provided you clear the status bit before calling the relevant
->> handler I expect it will all work.
+> Here is the raw Smatch preempt output.  As you can see there are
+> several places which seem to call unpin_user_pages_dirty_lock() with
+> preempt disabled.
 > 
-> True. I will consider that for v2.
+> __usnic_uiom_reg_release() <- disables preempt
+> usnic_uiom_reg_get() <- disables preempt
+> -> usnic_uiom_put_pages()
+> rds_tcp_write_space() <- disables preempt
+> -> rds_send_path_drop_acked()
+>    -> rds_send_remove_from_sock()
+>       -> rds_message_put()
+>          -> rds_message_purge()
+>             -> rds_rdma_free_op()
+> rds_message_purge() <duplicate>
+> -> rds_atomic_free_op()
+>                -> unpin_user_pages_dirty_lock()
+>                   -> folio_lock()
+> 
+> Let's pull out the first example:
+> 
+> drivers/infiniband/hw/usnic/usnic_uiom.c
+>    228                spin_lock(&pd->lock);
+>    229                usnic_uiom_remove_interval(&pd->root, vpn_start,
+>    230                                                vpn_last, &rm_intervals);
+>    231                usnic_uiom_unmap_sorted_intervals(&rm_intervals, pd);
+>    232
+>    233                list_for_each_entry_safe(interval, tmp, &rm_intervals, link) {
+>    234                        if (interval->flags & IOMMU_WRITE)
+>    235                                writable = 1;
+>    236                        list_del(&interval->link);
+>    237                        kfree(interval);
+>    238                }
+>    239
+>    240                usnic_uiom_put_pages(&uiomr->chunk_list, dirty & writable);
+>                       ^^^^^^^^^^^^^^^^^^^^
+> We're holding a spin lock, but _put_pages() calls unpin_user_pages_dirty_lock().
+> 
+>    241                spin_unlock(&pd->lock);
+>    242        }
 
-Will wait for a v2 patch and I'll test it. We are very sensitive to performance
-changes.
 
--Denny
+Huh. So yes, these drivers are broken and always have been. They will
+crash if userspace feeds them file backed memory or something.
+
+Probably best to send this report to each of the top level driver
+maintainers
+
+Jason
