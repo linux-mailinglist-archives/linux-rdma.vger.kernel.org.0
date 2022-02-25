@@ -2,97 +2,84 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF894C4AD6
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 17:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DA84C4B1C
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 17:45:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243027AbiBYQdk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Feb 2022 11:33:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35906 "EHLO
+        id S237952AbiBYQpn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Feb 2022 11:45:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243029AbiBYQdj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 11:33:39 -0500
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40647188861
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 08:33:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1645806786; x=1677342786;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nqkk1InaaHwaH5hNQJzomPX5ODXVbcLVGUNbLKU1Xgw=;
-  b=Cq0wo/IGEdrYw95wzJ6IHxPZUj2/2REl/27eaqLbXkckRqThEuZ14A1T
-   duIWgL2Qm+YAGHbU4EAOrQOrdNoyFFYQEtgdiuyDWac65PsXGA2Mez47n
-   vSv8XSPTYQrM+VYsbMQMFjHcLY3YO+RGdVC8AzKtEJ4k5R173b8IcbSrx
-   M8my6yH8nDuiVEUokNShg/xEU92MyRAiLvCcbJ2G9BN6IKz+B4KXGweCY
-   XZOVdmSjljHd9+yYbcOtea5nFXiPJubIqWxukL6x5LIrfdoeYfLxZNOJh
-   7gdseQCr+ngrvcQA42K6RyubQFkT0uNFu3F1NxH5cxivz1XPHxFNkLWRD
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10268"; a="315744255"
-X-IronPort-AV: E=Sophos;i="5.90,136,1643702400"; 
-   d="scan'208";a="315744255"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2022 08:33:03 -0800
-X-IronPort-AV: E=Sophos;i="5.90,136,1643702400"; 
-   d="scan'208";a="549321889"
-Received: from ssaleem-mobl.amr.corp.intel.com ([10.255.32.70])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2022 08:33:02 -0800
-From:   Shiraz Saleem <shiraz.saleem@intel.com>
-To:     jgg@nvidia.com, linux-rdma@vger.kernel.org
-Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>
-Subject: [PATCH rdma-rc v1 3/3] RDMA/irdma: Remove incorrect masking of PD
-Date:   Fri, 25 Feb 2022 10:32:11 -0600
-Message-Id: <20220225163211.127-4-shiraz.saleem@intel.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220225163211.127-1-shiraz.saleem@intel.com>
-References: <20220225163211.127-1-shiraz.saleem@intel.com>
+        with ESMTP id S229922AbiBYQpn (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 11:45:43 -0500
+Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F1A91F9829;
+        Fri, 25 Feb 2022 08:45:09 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0V5Tsmgd_1645807506;
+Received: from 30.15.226.221(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0V5Tsmgd_1645807506)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 26 Feb 2022 00:45:07 +0800
+Message-ID: <45837d14-7895-4aff-43a3-a5ad6ef80c2d@linux.alibaba.com>
+Date:   Sat, 26 Feb 2022 00:45:06 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.5.1
+Subject: Re: [PATCH net] net/smc: fix unexpected SMC_CLC_DECL_ERR_REGRMB error
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+To:     kgraul@linux.ibm.com
+Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+References: <1645776708-66113-1-git-send-email-alibuda@linux.alibaba.com>
+In-Reply-To: <1645776708-66113-1-git-send-email-alibuda@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mustafa Ismail <mustafa.ismail@intel.com>
 
-The PD id is masked with 0x7fff, while PD can be 18 bits for GEN2 HW.
-Remove the masking as it should not be needed and can cause incorrect
-PD id to be used.
 
-Fixes: b48c24c2d710 ("RDMA/irdma: Implement device supported verb APIs")
-Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
-Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
----
- drivers/infiniband/hw/irdma/verbs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+在 2022/2/25 下午4:11, D. Wythe 写道:
+> From: "D. Wythe" <alibuda@linux.alibaba.com>
+> 
+> Remove connections from link group is not synchronous with handling
+> SMC_LLC_DELETE_RKEY, which means that even the number of connections is
+> less that SMC_RMBS_PER_LGR_MAX, it does not mean that the connection can
+> register rtoken successfully later, in other words, the rtoken entry may
+> have not been released. This will cause an unexpected
+> SMC_CLC_DECL_ERR_REGRMB to be reported, and then ths smc connection have
+> to fallback to TCP.
+> 
+> Therefore, we need to judge according to the number of idle rtoken
+> entry.
+> 
+> Fixes: cd6851f30386 ("smc: remote memory buffers (RMBs)")
+> Signed-off-by: D. Wythe <alibuda@linux.alibaba.com>
+> ---
+>   net/smc/smc_core.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/smc/smc_core.c b/net/smc/smc_core.c
+> index 29525d0..24ef0af 100644
+> --- a/net/smc/smc_core.c
+> +++ b/net/smc/smc_core.c
+> @@ -1864,7 +1864,8 @@ int smc_conn_create(struct smc_sock *smc, struct smc_init_info *ini)
+>   		    (ini->smcd_version == SMC_V2 ||
+>   		     lgr->vlan_id == ini->vlan_id) &&
+>   		    (role == SMC_CLNT || ini->is_smcd ||
+> -		     lgr->conns_num < SMC_RMBS_PER_LGR_MAX)) {
+> +		     lgr->conns_num < SMC_RMBS_PER_LGR_MAX -
+> +		     bitmap_weight(lgr->rtokens_used_mask, SMC_RMBS_PER_LGR_MAX))) {
+>   			/* link group found */
+>   			ini->first_contact_local = 0;
+>   			conn->lgr = lgr;
 
-diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
-index 460e757..1bf6404 100644
---- a/drivers/infiniband/hw/irdma/verbs.c
-+++ b/drivers/infiniband/hw/irdma/verbs.c
-@@ -2509,7 +2509,7 @@ static int irdma_dealloc_mw(struct ib_mw *ibmw)
- 	cqp_info = &cqp_request->info;
- 	info = &cqp_info->in.u.dealloc_stag.info;
- 	memset(info, 0, sizeof(*info));
--	info->pd_id = iwpd->sc_pd.pd_id & 0x00007fff;
-+	info->pd_id = iwpd->sc_pd.pd_id;
- 	info->stag_idx = ibmw->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
- 	info->mr = false;
- 	cqp_info->cqp_cmd = IRDMA_OP_DEALLOC_STAG;
-@@ -3021,7 +3021,7 @@ static int irdma_dereg_mr(struct ib_mr *ib_mr, struct ib_udata *udata)
- 	cqp_info = &cqp_request->info;
- 	info = &cqp_info->in.u.dealloc_stag.info;
- 	memset(info, 0, sizeof(*info));
--	info->pd_id = iwpd->sc_pd.pd_id & 0x00007fff;
-+	info->pd_id = iwpd->sc_pd.pd_id;
- 	info->stag_idx = ib_mr->rkey >> IRDMA_CQPSQ_STAG_IDX_S;
- 	info->mr = true;
- 	if (iwpbl->pbl_allocated)
--- 
-1.8.3.1
 
+I did a horrible math here, i'll send another fix later.
+
+Best wishes.
