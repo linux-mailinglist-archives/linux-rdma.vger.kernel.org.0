@@ -2,73 +2,108 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE944C515D
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 23:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780CF4C521F
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Feb 2022 00:42:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236530AbiBYWQA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Feb 2022 17:16:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56506 "EHLO
+        id S232659AbiBYXmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Feb 2022 18:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236694AbiBYWP7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 17:15:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 418B018F226;
-        Fri, 25 Feb 2022 14:15:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B36ED61C44;
-        Fri, 25 Feb 2022 22:15:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2591BC36AE2;
-        Fri, 25 Feb 2022 22:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645827326;
-        bh=r/GgL5/YMee3eJN6gSMFNQgfSHE5lETu9MZRkSseqkU=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=GredjddhcOS1Hd183qpkW3L2iuPiCyop5sPBmR7myP9RSLeY4pXMBHgUhqVLs54pe
-         In6BY2koIbav0TO9zmUZUvjH3PEdsp1dxxN9wQXLc1G48ybJpXxaffyr6CFFQUVTEK
-         /gr48uI0cGUeCZvT7Nmct4I5oxfGJl90N6ox7sPP3398mgXKZTkVab9qXNUAjojkwD
-         3QFk4HNToPx5C2f7+Xj7z/NHAx7BUO2ZMtl6wz4FNbR4C84CMV3QYXm056jQcuIBct
-         9JAD4AA63/8uGBPjxPDZ3/7skUn/CqgbTpJKiyfgoqN2YOhilCqTQnfNSeADkj2n1f
-         Yp2UrOPbXbbQA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 10E2EE6D4BB;
-        Fri, 25 Feb 2022 22:15:26 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20220225211629.GA352636@nvidia.com>
-References: <20220225211629.GA352636@nvidia.com>
-X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20220225211629.GA352636@nvidia.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
-X-PR-Tracked-Commit-Id: 22e9f71072fa605cbf033158db58e0790101928d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ca7457236d47d8748bdb6b423d148726220ec3d8
-Message-Id: <164582732605.9849.1793697406867197811.pr-tracker-bot@kernel.org>
-Date:   Fri, 25 Feb 2022 22:15:26 +0000
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S230190AbiBYXmt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 18:42:49 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DABC81F038B;
+        Fri, 25 Feb 2022 15:42:15 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V5Uzc0U_1645832532;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V5Uzc0U_1645832532)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 26 Feb 2022 07:42:12 +0800
+Date:   Sat, 26 Feb 2022 07:42:11 +0800
+From:   "dust.li" <dust.li@linux.alibaba.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        Hendrik Brueckner <brueckner@linux.ibm.com>
+Cc:     Stefan Raspl <raspl@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] net/smc: Add autocork support
+Message-ID: <20220225234211.GA5282@linux.alibaba.com>
+Reply-To: dust.li@linux.alibaba.com
+References: <20220216152721.GB39286@linux.alibaba.com>
+ <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
+ <20220217132200.GA5443@linux.alibaba.com>
+ <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
+ <20220218073327.GB5443@linux.alibaba.com>
+ <d4ce4674-3ced-da34-a8a4-30d74cbe24bb@linux.ibm.com>
+ <20220218234232.GC5443@linux.alibaba.com>
+ <bc3252a3-5a84-63d4-dfc5-009f602a5bec@linux.ibm.com>
+ <20220224020253.GF5443@linux.alibaba.com>
+ <f2afb775-a156-2c32-a49a-225545dc2bf7@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2afb775-a156-2c32-a49a-225545dc2bf7@linux.ibm.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pull request you sent on Fri, 25 Feb 2022 17:16:29 -0400:
+On Fri, Feb 25, 2022 at 07:10:40PM +0100, Karsten Graul wrote:
+>On 24/02/2022 03:02, dust.li wrote:
+>> On Wed, Feb 23, 2022 at 07:57:31PM +0100, Karsten Graul wrote:
+>>> On 19/02/2022 00:42, dust.li wrote:
+>>>> On Fri, Feb 18, 2022 at 05:03:56PM +0100, Karsten Graul wrote:
+>>>>> Right now for me it looks like there is no way to use netlink for container runtime
+>>>>> configuration, which is a pity.
+>>>>> We continue our discussions about this in the team, and also here on the list.
+>>>>
+>>>> Many thanks for your time on this topic !
+>>>
+>>> We checked more specs (like Container Network Interface (CNI) Specification) 
+>>> but all we found uses sysctl at the end. There is lot of infrastructure 
+>>> to use sysctls in a container environment.
+>>>
+>>> Establishing netlink-like controls for containers is by far out of our scope, and
+>>> would take a long time until it would be available in the popular projects.
+>>>
+>>> So at the moment I see no alternative to an additional sysctl interface in the 
+>>> SMC module that provides controls which are useful in container environments.
+>> 
+>> Got it, I will add sysctl interface and a switch with this function.
+>> 
+>> Thank again !
+>
+>Can you explain again why this auto_cork needs a switch to disable it?
+>My understanding is that this auto_cork makes always sense and is triggered
+>when there are not enough resources.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+My initial intention to provide a switch is to be like TCP to let user
+to disable it. For user cases like debug and workaround bugs if it is
+associated with auto cork, or compare performance like I did (But this
+should not be a real world case in production environment).
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ca7457236d47d8748bdb6b423d148726220ec3d8
+But after Stefan suggested that we make the auto corked size turnable,
+I realized that we can only need one sysctl switch: which tunes the auto
+corked bytes size. Disable auto cork can be archived by setting this to 0.
 
-Thank you!
+Something like this bellow:
+static bool smc_should_autocork(struct smc_sock *smc)
+{
+        struct smc_connection *conn = &smc->conn;
+        int corking_size;
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+        corking_size = min(sock_net(&smc->sk)->smc.sysctl_autocorking_size,
+                           conn->sndbuf_desc->len >> 1);
+
+        if (atomic_read(&conn->cdc_pend_tx_wr) == 0 ||
+            smc_tx_prepared_sends(conn) > corking_size)
+                return false;
+        return true;
+}
+
+Thanks.
