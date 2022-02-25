@@ -2,349 +2,135 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580F04C4F32
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 20:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 606AC4C4FF7
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 21:47:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbiBYT7L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Feb 2022 14:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60982 "EHLO
+        id S235976AbiBYUql (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Feb 2022 15:46:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbiBYT7K (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 14:59:10 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE67120EBE
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 11:58:37 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id k9-20020a056830242900b005ad25f8ebfdso4362919ots.7
-        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 11:58:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HEb1Gfg4HQPtTujvveAoUv4RBEDqFBnORE1eNKlElxI=;
-        b=kAEPf7I89S7OZqYIPK0XkZqAqj1xSnxVPIUMYhmK4aA9DSRzVb2RtgN+Wt1KM+KH7+
-         D4RKSeBC4REwEZaI2tFAwQ7bXh4NWw4a0LSliH+hrfqbzYrPoAE48xmTE7kTrK62buZF
-         AKkPvoHw7HffFZgonNJ8VyTKOTr9+KtX4CAgTxJ506yzyd0IIUsJHJRaenNICqdwnKH6
-         sm4mywognzYEFYceT9zYX0vBB4yRIaJXT+h2MIaXCLwZqg4+1EZnPWNkbXnajgigsC0v
-         WMRbUbBNDB0Sg17+4oiTZEg/Rh4SyWxMIAAGNYW/q8qXZRsR0LKsE3qutfr5+TG+650t
-         mogQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HEb1Gfg4HQPtTujvveAoUv4RBEDqFBnORE1eNKlElxI=;
-        b=r0U7jCPRG3aiNvSameevFlzXMuzrJWQ5x/9b3tsgiq2WgQ1aXSWAm0XM3nOh1h+/Uj
-         tC4KJ7vYV8Fa/Lg1r07DGQ+VlyIsbMoHDszz9oNtIhrR4vnsBaijQPiew63/VXMJiSiT
-         gP/W135Ewy/OoEOGgFCRF2lpAmBUKv1ouCt5Xmr0HVnVkoeFFRD8b7gyLqDxNOgOh5dL
-         dKWduUqw8AYCRSazXS0+5vdaUS6CLTSKDeoOmjg6aWCFPA0OGOboEB4YPRib2UpCHh2C
-         o5FQ2buKKh2D+aMxEqmQXZ/NYRAy4YquSMbpOrPgAXKsDUJbuCQfx9UDZ52ORroYPN2u
-         MX1A==
-X-Gm-Message-State: AOAM530ksz7QPgx4H3G3U1Yky4mXfov9XpS2VOq3S/S2B0Go0kgt5e4k
-        60MbtkHItqoH3cpoxTTxJsg=
-X-Google-Smtp-Source: ABdhPJwlaqEncSFXKnigiksOWPGJgbAemJ4EAF+vvWd2gklAFSEfOLRocyb6GiHZ28cqylyoIxzYQA==
-X-Received: by 2002:a9d:6489:0:b0:5ad:1cd:94b1 with SMTP id g9-20020a9d6489000000b005ad01cd94b1mr3497687otl.321.1645819117026;
-        Fri, 25 Feb 2022 11:58:37 -0800 (PST)
-Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-bf76-707d-f6ed-c81c.res6.spectrum.com. [2603:8081:140c:1a00:bf76:707d:f6ed:c81c])
-        by smtp.googlemail.com with ESMTPSA id e28-20020a0568301e5c00b005af640ec226sm1578424otj.56.2022.02.25.11.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Feb 2022 11:58:36 -0800 (PST)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v10 11/11] RDMA/rxe: Cleanup rxe_pool.c
-Date:   Fri, 25 Feb 2022 13:57:51 -0600
-Message-Id: <20220225195750.37802-12-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220225195750.37802-1-rpearsonhpe@gmail.com>
+        with ESMTP id S236190AbiBYUqk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 15:46:40 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1anam02on2088.outbound.protection.outlook.com [40.107.96.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C762A21BC65
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 12:46:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lcvcn1XKZNizxwKT7k9oP9hStc7g6DV/Rw6Hbfs0U+QFOAqKpTf8V8KjjmQEF5qvCWmHu9+JBeZ5eDARcckpTAZ/e9bfMqk9A4nvEXYA2YCJNHmGioVGEXtg/XQU1pH7EGNKP+qU50OK2aLKpUisFLeVEDn86TLtvVhn4p2rYAAlcBZbyn0pahcWAypKfuHmm6BOzullGca5w6f8HZTxPijL26H518kiHxByxi5nuPE+W74NaTYnjEFXk/V8tCA0ID7vk+ur6bw46zbhGsOXnD3blCmZd7+RkUecPtaIZqLw+2EGcFVpSzidmrmAOdwcJ4A04lRlZ0BYjjztD1iUoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0pBSeLYZZCpUy9cII61rA2UUG/KGNTNSrCV8M2XDrTQ=;
+ b=Am6AJL6GmIN4QvIu7vgppYNrwrTyeIoD6ir295Yky2mexiBGKX4r72zK2gccUBgSGZ7+qqpYnLesH7TkX0m1SRdhtdOi+V+b6eIY7nRu+H2kwQJ7GwucyLsbgmS6+GIjyTUfYiRuNRAK21/4MmScVcE2Oa5zBHXBXXyyvun4m40z3dpnQer9tXIsMbOMFQ8qStcU3lu0KoD8d/Kpj8u57Ge9wY5GRL2XofmMdc8LDL1RCce93gxXEvgrppzhc6LJi97EifLdttNuybCw/qk5C8kOGwMXCXGYKo6Ho3z1qi3lgDGQrwu4OEOgP8bXQcXNhLaAWhKM9UR2EoiV6nLTow==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0pBSeLYZZCpUy9cII61rA2UUG/KGNTNSrCV8M2XDrTQ=;
+ b=XjLrqoh06TslERW0XUM2pAs1xEW8hUZOmTsQ+5PcfN1LTDfXzYWb4FfBNsHzKjvAs31KBErhxh+Dt/Ww/0RXMSoUe7bOynRL36I79BrI4qknq6lcoXQ4wZ6V7qEcDII/HuQHIhh9Y9Q08YyF3N+54Eub5OyHDYhkWRM/CS6IZ3ROmZwTun2HBb8vbAbU7JJAXr4Mk+fn8vZlS9JQq+TTPgg8uW6RIj5WgrVvCNZ9/X7DxpIGVZDU2FdFckcJjSzvRoUWsTVe7MhDbfiVgt8p57hFr5dobUbmeiHFYmDKroGBG8WYV3CdQFT1crXCOOim9ATP1+1bHelPQpwTsP2jNA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MWHPR12MB1343.namprd12.prod.outlook.com (2603:10b6:300:7::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5017.24; Fri, 25 Feb
+ 2022 20:46:04 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::e8f4:9793:da37:1bd3%4]) with mapi id 15.20.5017.026; Fri, 25 Feb 2022
+ 20:46:04 +0000
+Date:   Fri, 25 Feb 2022 16:46:03 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v10 00/11] Fix race conditions in rxe_pool
+Message-ID: <20220225204603.GC219866@nvidia.com>
 References: <20220225195750.37802-1-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220225195750.37802-1-rpearsonhpe@gmail.com>
+X-ClientProxiedBy: BL0PR0102CA0011.prod.exchangelabs.com
+ (2603:10b6:207:18::24) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 51097659-a6c5-45ec-2e0a-08d9f89fd733
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1343:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1343AB3AB8CA7ADCB7F45649C23E9@MWHPR12MB1343.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3cam8aNwjit3imzHl6xMH8gGAfjIEwJ6uBp7UQOK9r2vV4WUDLBBoKxohypKiOnZRjUu+nXlrgRezJHSMAgLFS5v7YoeiTl91wykMpZygG6GivSyfuiZVpGkuxSWiEyfV2YFacDxOFLG13MtEMHeeL0ddbFUheBuNxKm1O32QA/wnx6F18LasH3TD/qffjmdoFDXu11yz4ErRB7RsDswWnOgt/OhaitLPEJ7Af40N7/C43RYPXnaSFq/aKrawml64HHFkmKUCWY2Zv4iD/eXSoVlk5aSnJj2aSDkE4lAoWbOFZ1Mx5Z2xYBgrkknVJgMfe/q6iVPxFYXkbh8R7Hch4tLH/BrpXTGpzWsEgnUVUKGX+pO1oTwvY/tPw8+YJlLMcKmhyM/A44Ys/gwFkIka49LZhmf2djBIi4OJqwqEaESci3HoZioPcJiAZ794jIPezHoXFAgUvguoSVJ7AHSz0ArpGHZhcWp6T2bkqJWn+SnDXjWTQcLAlweJHiu84RkysdFLp6AmhdN298eBl7yW49LG4nq8YgfVnjxG8NFfdHiKLPNEUcCJRA8kKIE4DohapceLRYG/Cs6bxxAf2OPo5GHYBTyRxMCAhigC5HrMPNikpdqeQ1PmBDVOoyOhSLD1Dl6YLCUeVyG9H8dMHMDzbdi3najyrwTWkyG5GCT/WEt0ZNsnqUllojQFcf4Xzm1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(316002)(83380400001)(4744005)(8936002)(86362001)(6916009)(66556008)(4326008)(8676002)(5660300002)(26005)(1076003)(66946007)(186003)(66476007)(2616005)(6486002)(508600001)(6512007)(6506007)(36756003)(33656002)(2906002)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vltAze3VMkF+QLe4nprzfzG7J5gkALZcO6M/44O9KcgVlKPkGI+K6WgxsCCp?=
+ =?us-ascii?Q?OLeXSJg79JHffvTDeN12GH0T0x/yvroR3RAi1U9s+SSWkgkCcrgDN3JorhA1?=
+ =?us-ascii?Q?qD/lOAsoW6+N0N1NKjjLnJDwvjbXrq34MU/9xn01urC5m7wNAziuQfgRSjtX?=
+ =?us-ascii?Q?9vxNDldDb/Ve41EyGrLYo0YsIkMSb/v4SQBB5EQxE9bvGB7rr096rzMDeEkr?=
+ =?us-ascii?Q?hg/Yr4YRhtFPe1DG1KAQLSF3u9eooy19oaTR9GXRxVIY0jnjldVFpXyY4JXg?=
+ =?us-ascii?Q?vztDDFXKC/RE7QjVJm59//fGu7y6GP6gQGQY3IqiKonqvtHsLChbdCZh05fp?=
+ =?us-ascii?Q?V8ia1Iw6Gcm3+++l7H38auJCJ935iQjAFVRd79W0fnL4gKCzYpxAtYNAqYzM?=
+ =?us-ascii?Q?WodjkAQUIL7rSytMN1csVEa21hjYEkEKugqGBd7mLkkoeyojfWqZPlkMv9SD?=
+ =?us-ascii?Q?RwtGyw4p3kW/ktzuE8AtFHWF5MgHTFBGgfUlwr08e41DnxpOnyq+MSao8tq0?=
+ =?us-ascii?Q?juUeIUwE6Lj2tfrM1ceVuCGC/W2ArELGqfWTAwzrll1rXNw8IeacH0/6wOET?=
+ =?us-ascii?Q?ckaBQIyNAK3kKRaKzDTtgXTcLC+tK58ZVkW/IK7hUf7ucJ59891mu/mVfWNM?=
+ =?us-ascii?Q?ClfDbCeP9j2xcWD1pRmP/nOMenhnlOTkhdVzwoqDQQxyIlOuyoCNbuoYbg2G?=
+ =?us-ascii?Q?jhEh2OnlfoTfdB1jbqBy05appx3uBBCrQmp9wODkWgy9F7/OATAWbcnqv/58?=
+ =?us-ascii?Q?w+hZ1o/w2B8sAOMi9qyVupFhQAS7eGo+zlTEU7rDzudSDSQIJL8x2Tqm7gON?=
+ =?us-ascii?Q?p7h+Aq8jn+1NPevoIBFdfLQxlwxHY/ybd+mY+27dMBOWM4coJgfZcFWYHSKq?=
+ =?us-ascii?Q?33sBmcZ5wZzx+Yepnl8IWjqCDnSWwdWRwwLOegDx/Vrj1wcVSD4OHedfqycp?=
+ =?us-ascii?Q?GwgBwoVgyh0MW6GQIAiX1GjOkyzgZteuz3JfrAFSq2VKlSveQPofJFLbkQcX?=
+ =?us-ascii?Q?64Y+OkRiMS/H2sBsTd/nHwPiKgWHaqVDyyfeYZ4KYsAaHvT2Obq8J0iiGNv4?=
+ =?us-ascii?Q?P8hdsy+wrz3zbbaRTr/UZBxKZzzoiHhF60vti4UfTwPi1rakcb1pwl2eOKV1?=
+ =?us-ascii?Q?Bq0GlfoOAK9kErDF6skSpfyYdxROLKWL5zVZdyfUvmLtEn3ZMJ7SlsL8cF8Y?=
+ =?us-ascii?Q?SqFFiFqhLXwCoY0WHBGWW1aO/GecMtkND4Pt8h9j3nWiZifYIOKhEYjoe2sP?=
+ =?us-ascii?Q?v3HcatgqFiHaRAuQ+yJ+vP5rlanaUaoMPyXxQ4cmiehjMoifxZiQ/Ivx3C2Q?=
+ =?us-ascii?Q?GCv/sm2jo9kWR0Jhl1mbHyArJG7S8iCYiyQFCZs9+q+P7FT93hgqNQof8o7j?=
+ =?us-ascii?Q?bvGMrR7tkxGoBLiRK1OEUz69M/hzNmKjchqlWL6wW2ihBNLxCmRhfT3NGsaV?=
+ =?us-ascii?Q?EZWN/1VEwyTYevaJ1rYtajWnEpRUN2olEsMpSgSJq2LjQPP9GcOnns+hBvqp?=
+ =?us-ascii?Q?/4DnXgq/pRkvEOuXvS2Xg/vvDCQP8BMHprdnXdJAuCEXbAy6xSg7YCwArrJP?=
+ =?us-ascii?Q?c2SmBKnp1tJ8589zz18=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51097659-a6c5-45ec-2e0a-08d9f89fd733
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2022 20:46:04.4517
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: spgEBmD5mNyyhlspmA4S5wrp3Bqx50Tn7gLS2YquiOqaLJVZnTZpLs08ZjkCx3C3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1343
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Minor cleanup of rxe_pool.c. Add document comment headers for
-the subroutines. Increase alignment for pool elements.
+On Fri, Feb 25, 2022 at 01:57:40PM -0600, Bob Pearson wrote:
+> There are several race conditions discovered in the current rdma_rxe
+> driver.  They mostly relate to races between normal operations and
+> destroying objects.  This patch series
+>  - Makes several minor cleanups in rxe_pool.[ch]
+>  - Replaces the red-black trees currently used by xarrays for indices
+>  - Corrects several reference counting errors
+>  - Adds wait for completions to the paths in verbs APIs which destroy
+>    objects.
+>  - Changes read side locking to rcu.
+> 
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+> v10
+>   Rebased to current wip/jgg-for-next.
+>   Split some patches into smaller ones.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_pool.c | 110 ++++++++++++++++++++++-----
- 1 file changed, 93 insertions(+), 17 deletions(-)
+Before I look at this, can I apply it without the last two mcast
+patches?
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 20b97a90b4c8..8c207c90304a 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -1,14 +1,20 @@
- // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
- /*
-+ * Copyright (c) 2022 Hewlett Packard Enterprise, Inc. All rights reserved.
-  * Copyright (c) 2016 Mellanox Technologies Ltd. All rights reserved.
-  * Copyright (c) 2015 System Fabric Works, Inc. All rights reserved.
-  */
- 
- #include "rxe.h"
- 
--#define RXE_POOL_TIMEOUT	(200)
--#define RXE_MAX_POOL_TIMEOUTS	(3)
--#define RXE_POOL_ALIGN		(16)
-+#define RXE_POOL_TIMEOUT	200		/* jiffies */
-+#define RXE_MAX_POOL_TIMEOUTS	3
-+
-+#ifdef L1_CACHE_BYTES
-+#define RXE_POOL_ALIGN		L1_CACHE_BYTES
-+#else
-+#define RXE_POOL_ALIGN		64
-+#endif
- 
- static const struct rxe_type_info {
- 	const char *name;
-@@ -21,7 +27,7 @@ static const struct rxe_type_info {
- 	u32 max_elem;
- } rxe_type_info[RXE_NUM_TYPES] = {
- 	[RXE_TYPE_UC] = {
--		.name		= "rxe-uc",
-+		.name		= "uc",
- 		.size		= sizeof(struct rxe_ucontext),
- 		.elem_offset	= offsetof(struct rxe_ucontext, elem),
- 		.min_index	= 1,
-@@ -29,7 +35,7 @@ static const struct rxe_type_info {
- 		.max_elem	= UINT_MAX,
- 	},
- 	[RXE_TYPE_PD] = {
--		.name		= "rxe-pd",
-+		.name		= "pd",
- 		.size		= sizeof(struct rxe_pd),
- 		.elem_offset	= offsetof(struct rxe_pd, elem),
- 		.min_index	= 1,
-@@ -37,7 +43,7 @@ static const struct rxe_type_info {
- 		.max_elem	= UINT_MAX,
- 	},
- 	[RXE_TYPE_AH] = {
--		.name		= "rxe-ah",
-+		.name		= "ah",
- 		.size		= sizeof(struct rxe_ah),
- 		.elem_offset	= offsetof(struct rxe_ah, elem),
- 		.min_index	= RXE_MIN_AH_INDEX,
-@@ -45,7 +51,7 @@ static const struct rxe_type_info {
- 		.max_elem	= RXE_MAX_AH_INDEX - RXE_MIN_AH_INDEX + 1,
- 	},
- 	[RXE_TYPE_SRQ] = {
--		.name		= "rxe-srq",
-+		.name		= "srq",
- 		.size		= sizeof(struct rxe_srq),
- 		.elem_offset	= offsetof(struct rxe_srq, elem),
- 		.min_index	= RXE_MIN_SRQ_INDEX,
-@@ -53,7 +59,7 @@ static const struct rxe_type_info {
- 		.max_elem	= RXE_MAX_SRQ_INDEX - RXE_MIN_SRQ_INDEX + 1,
- 	},
- 	[RXE_TYPE_QP] = {
--		.name		= "rxe-qp",
-+		.name		= "qp",
- 		.size		= sizeof(struct rxe_qp),
- 		.elem_offset	= offsetof(struct rxe_qp, elem),
- 		.cleanup	= rxe_qp_cleanup,
-@@ -62,7 +68,7 @@ static const struct rxe_type_info {
- 		.max_elem	= RXE_MAX_QP_INDEX - RXE_MIN_QP_INDEX + 1,
- 	},
- 	[RXE_TYPE_CQ] = {
--		.name		= "rxe-cq",
-+		.name		= "cq",
- 		.size		= sizeof(struct rxe_cq),
- 		.elem_offset	= offsetof(struct rxe_cq, elem),
- 		.cleanup	= rxe_cq_cleanup,
-@@ -71,7 +77,7 @@ static const struct rxe_type_info {
- 		.max_elem	= UINT_MAX,
- 	},
- 	[RXE_TYPE_MR] = {
--		.name		= "rxe-mr",
-+		.name		= "mr",
- 		.size		= sizeof(struct rxe_mr),
- 		.elem_offset	= offsetof(struct rxe_mr, elem),
- 		.cleanup	= rxe_mr_cleanup,
-@@ -81,7 +87,7 @@ static const struct rxe_type_info {
- 		.max_elem	= RXE_MAX_MR_INDEX - RXE_MIN_MR_INDEX + 1,
- 	},
- 	[RXE_TYPE_MW] = {
--		.name		= "rxe-mw",
-+		.name		= "mw",
- 		.size		= sizeof(struct rxe_mw),
- 		.elem_offset	= offsetof(struct rxe_mw, elem),
- 		.min_index	= RXE_MIN_MW_INDEX,
-@@ -90,6 +96,12 @@ static const struct rxe_type_info {
- 	},
- };
- 
-+/**
-+ * rxe_pool_init - initialize a rxe object pool
-+ * @rxe: rxe device pool belongs to
-+ * @pool: object pool
-+ * @type: pool type
-+ */
- void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
- 		   enum rxe_elem_type type)
- {
-@@ -113,6 +125,10 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
- 	pool->limit.min = info->min_index;
- }
- 
-+/**
-+ * rxe_pool_cleanup - free any remaining pool resources
-+ * @pool: object pool
-+ */
- void rxe_pool_cleanup(struct rxe_pool *pool)
- {
- 	struct rxe_pool_elem *elem;
-@@ -135,9 +151,15 @@ void rxe_pool_cleanup(struct rxe_pool *pool)
- 
- 	if (elem_count || obj_count)
- 		pr_warn("Freed %d indices and %d objects from pool %s\n",
--			elem_count, obj_count, pool->name + 4);
-+			elem_count, obj_count, pool->name);
- }
- 
-+/**
-+ * rxe_alloc - allocate a new pool object
-+ * @pool: object pool
-+ *
-+ * Returns: object on success else NULL
-+ */
- void *rxe_alloc(struct rxe_pool *pool)
- {
- 	struct rxe_pool_elem *elem;
-@@ -178,6 +200,13 @@ void *rxe_alloc(struct rxe_pool *pool)
- 	return NULL;
- }
- 
-+/**
-+ * __rxe_add_to_pool - add rdma-core allocated object to rxe object pool
-+ * @pool: object pool
-+ * @elem: rxe_pool_elem embedded in object
-+ *
-+ * Returns: 0 on success else an error
-+ */
- int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
- {
- 	int err;
-@@ -208,6 +237,13 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
- 	return -EINVAL;
- }
- 
-+/**
-+ * rxe_pool_get - find object in pool with given index
-+ * @pool: object pool
-+ * @index: index
-+ *
-+ * Returns: object on success else NULL
-+ */
- void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- {
- 	struct rxe_pool_elem *elem;
-@@ -224,6 +260,16 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- 	return obj;
- }
- 
-+/**
-+ * rxe_elem_release - remove object index and complete
-+ * @kref: kref embedded in pool element
-+ * @flags: flags for lock release
-+ *
-+ * Context: called holding pool->xa.xa_lock which must be
-+ *	    dropped. Called from __rxe_drop_ref() when the ref count
-+ *	    reaches zero. Completes the object scheduling
-+ *	    a waiter on the object.
-+ */
- static void rxe_elem_release(struct kref *kref, unsigned long flags)
- 	__releases(&pool->xa.xa_lock)
- {
-@@ -238,13 +284,28 @@ static void rxe_elem_release(struct kref *kref, unsigned long flags)
- 	complete(&elem->complete);
- }
- 
-+/**
-+ * __rxe_add_ref - gets a kref on the object unless ref count is zero
-+ * @elem: rxe_pool_elem embedded in object
-+ *
-+ * Returns: 1 if reference is added else 0 because
-+ *	    ref count has reached zero
-+ */
- int __rxe_add_ref(struct rxe_pool_elem *elem)
- {
- 	return kref_get_unless_zero(&elem->ref_cnt);
- }
- 
--/* local copy of kref_put_lock_irqsave same as kref_put_lock
-- * except for _irqsave locks
-+/**
-+ * kref_put_lock_irqsave - local copy of kref_put_lock
-+ * @kref: kref embedded in elem
-+ * @release: cleanup function called when ref count reaches zero
-+ * @lock: irqsave spinlock to take if ref count reaches zero
-+ *
-+ * Same as kref_put_lock except for _irqsave locks
-+ *
-+ * Returns: 1 if ref count reaches zero and release is called
-+ *	    while holding the lock else 0.
-  */
- static int kref_put_lock_irqsave(struct kref *kref,
- 		 void (*release)(struct kref *kref, unsigned long flags),
-@@ -259,6 +320,15 @@ static int kref_put_lock_irqsave(struct kref *kref,
- 	return 0;
- }
- 
-+/**
-+ * __rxe_drop_ref - puts a kref on the object
-+ * @elem: rxe_pool_elem embedded in object
-+ *
-+ * Puts a kref on the object and if ref count reaches zero
-+ * takes the lock and calls release() which must free the lock.
-+ *
-+ * Returns: 1 if ref count reaches zero and release called else 0
-+ */
- int __rxe_drop_ref(struct rxe_pool_elem *elem)
- {
- 	struct rxe_pool *pool = elem->pool;
-@@ -267,6 +337,12 @@ int __rxe_drop_ref(struct rxe_pool_elem *elem)
- 			&pool->xa.xa_lock);
- }
- 
-+/**
-+ * __rxe_drop_wait - put a kref on object and wait for completion
-+ * @elem: rxe_pool_elem embedded in object
-+ *
-+ * Returns: non-zero value if completion is reached else 0 if timeout
-+ */
- int __rxe_drop_wait(struct rxe_pool_elem *elem)
- {
- 	struct rxe_pool *pool = elem->pool;
-@@ -275,7 +351,7 @@ int __rxe_drop_wait(struct rxe_pool_elem *elem)
- 
- 	if (elem->enabled) {
- 		pr_warn_once("%s#%d: should be disabled by now\n",
--			     elem->pool->name + 4, elem->index);
-+			     elem->pool->name, elem->index);
- 		elem->enabled = false;
- 	}
- 
-@@ -285,11 +361,11 @@ int __rxe_drop_wait(struct rxe_pool_elem *elem)
- 		ret = wait_for_completion_timeout(&elem->complete, timeout);
- 		if (!ret) {
- 			pr_warn("Timed out waiting for %s#%d\n",
--				pool->name + 4, elem->index);
-+				pool->name, elem->index);
- 			if (++pool->timeouts == RXE_MAX_POOL_TIMEOUTS) {
- 				timeout = 0;
- 				pr_warn("Reached max %s timeouts.\n",
--					pool->name + 4);
-+					pool->name);
- 			}
- 		}
- 	}
--- 
-2.32.0
-
+Thanks,
+Jason
