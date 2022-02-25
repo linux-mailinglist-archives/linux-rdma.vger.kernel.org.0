@@ -2,103 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A90964C4D5B
-	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 19:10:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B22F4C4F27
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Feb 2022 20:58:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbiBYSLZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 25 Feb 2022 13:11:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46008 "EHLO
+        id S235567AbiBYT7C (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 25 Feb 2022 14:59:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbiBYSLZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 13:11:25 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA621D6CA6;
-        Fri, 25 Feb 2022 10:10:50 -0800 (PST)
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 21PGtWDa023888;
-        Fri, 25 Feb 2022 18:10:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=61BM7ilbHdY41DX4NxPizFOYioL+vFqBRklTl7njE+U=;
- b=CUU9ktTd6a88KWwqTlVE+K9Jlmdp5mKN0OtbfpziEY06lx6230AC91raCY5wMC6RKlHK
- srNxaomuq2P0V/uSNci1K/odMr76kBQdOoYwMajyBeHfPe77G3bUHe4NZVfnTarW6n2h
- oaxmjgV4/UI2/dFuSCGbwvkFqTxasbkE6v4LN9bgFDVvB4GEUj3yW01qX/dGRRx2/Xks
- gsGwOLA4QOSbw/Vs5wuMw3paUMxGcSDHVIB12MJZnulOmNsM+frrKM1TOzCt2ClKxQh/
- 2+h/xLKPmKDSXtGpX1n+3dWqvYqsxa/f1YacE/x1uPpUWkus5AeOoA5t2X5Fphs5ThXp mw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ef0p65yjm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Feb 2022 18:10:47 +0000
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 21PHh3Ai031914;
-        Fri, 25 Feb 2022 18:10:47 GMT
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 3ef0p65yj1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Feb 2022 18:10:46 +0000
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 21PI8J50027951;
-        Fri, 25 Feb 2022 18:10:44 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma01fra.de.ibm.com with ESMTP id 3eeg2s60n4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 25 Feb 2022 18:10:44 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 21PIAfPR57999804
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 25 Feb 2022 18:10:41 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 404AAA4059;
-        Fri, 25 Feb 2022 18:10:41 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BAA94A4051;
-        Fri, 25 Feb 2022 18:10:40 +0000 (GMT)
-Received: from [9.171.32.81] (unknown [9.171.32.81])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 25 Feb 2022 18:10:40 +0000 (GMT)
-Message-ID: <f2afb775-a156-2c32-a49a-225545dc2bf7@linux.ibm.com>
-Date:   Fri, 25 Feb 2022 19:10:40 +0100
+        with ESMTP id S235195AbiBYT7C (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 25 Feb 2022 14:59:02 -0500
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732C610BBE3
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 11:58:29 -0800 (PST)
+Received: by mail-oi1-x236.google.com with SMTP id ay7so8415683oib.8
+        for <linux-rdma@vger.kernel.org>; Fri, 25 Feb 2022 11:58:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9wHD7cW6WlVvjHg9LDwl1TSSmGAhbIaQCacfEQcIx8=;
+        b=B/aJdi0gbOo9pQ09V5xCS8WnG96r1snoQDZyjqMkZaIQJrUWqqqbU5QONv2qNYmPg7
+         k8UsJsn6TKnLQVu121XVd7MYk+I+wCIPrX1BuyVgC/eJa4qKXEx7/BibdsboP72FLnPD
+         ufUStqvpNdD+srq6TYOlqpuX4psKzc6iD23IqpnuQfmUm0NP6QuzI4vH84AmHWdCi2nQ
+         gPRXipAvW7lfRPPxyUuaIdUeaS9ApDrk3KqdTOi4+OivaTjZW14DXSz4VxZ4rwoXihyu
+         4CKoMN6vl8BuhDeK/0Tv9hRQj9txYJmt5iu3uK3bqoXgEcoFT4zEB4lz6Lvegt8Z7/EC
+         4kpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=R9wHD7cW6WlVvjHg9LDwl1TSSmGAhbIaQCacfEQcIx8=;
+        b=TSPpWlOaoAvbmGfGXrUlIOfgskQCeZy4UqKBQEGbqMEjdKaZ8o6jaug5vU1mgj6R7s
+         Vsk9/pXepMXeqVXuKpQafCacjRlme0jHKZ3be+Az1XsDc5kYsMs+27QzVA2xuPshjTaN
+         W7UZ0KZ3GbG5mNb5olnfrTjGwTHsTVBTnz75PRndBehp0u3WV9k0j2IhWWB3/yxiK92m
+         AgiRTjOfRdDboo8MXU9HgMkjK+M9tMDb0NWkkTLSlXZcpwvf8zuw67Q3UFkAJx3VzYPb
+         QttqFtxMvyi0h9Y5sZtFlm4ydrtZbxq7mzk50NAKWq4NveQWRBAvaQj5XXypCNMvCRtx
+         zIvQ==
+X-Gm-Message-State: AOAM5333naZaYrhfri+dUHIcULok1DPC9qT8doYFFN5UMYU22B3+P2k6
+        ZtjV3aAskI3EMvcrN/zcHz4=
+X-Google-Smtp-Source: ABdhPJyuNlDhzLtU2ZxMMDWPCdAZlfFINRII1SQx2q55etbTGqJSuMjhG6SWziDXqq2n2HwrNg/FUQ==
+X-Received: by 2002:aca:ac8b:0:b0:2d5:2e1c:2b07 with SMTP id v133-20020acaac8b000000b002d52e1c2b07mr667971oie.77.1645819108776;
+        Fri, 25 Feb 2022 11:58:28 -0800 (PST)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-bf76-707d-f6ed-c81c.res6.spectrum.com. [2603:8081:140c:1a00:bf76:707d:f6ed:c81c])
+        by smtp.googlemail.com with ESMTPSA id e28-20020a0568301e5c00b005af640ec226sm1578424otj.56.2022.02.25.11.58.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 25 Feb 2022 11:58:28 -0800 (PST)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v10 00/11] Fix race conditions in rxe_pool
+Date:   Fri, 25 Feb 2022 13:57:40 -0600
+Message-Id: <20220225195750.37802-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH] net/smc: Add autocork support
-Content-Language: en-US
-To:     dust.li@linux.alibaba.com,
-        Hendrik Brueckner <brueckner@linux.ibm.com>
-Cc:     Stefan Raspl <raspl@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <20220216034903.20173-1-dust.li@linux.alibaba.com>
- <68e9534b-7ff5-5a65-9017-124dbae0c74b@linux.ibm.com>
- <20220216152721.GB39286@linux.alibaba.com>
- <454b5efd-e611-2dfb-e462-e7ceaee0da4d@linux.ibm.com>
- <20220217132200.GA5443@linux.alibaba.com> <Yg6Q2kIDJrhvNVz7@linux.ibm.com>
- <20220218073327.GB5443@linux.alibaba.com>
- <d4ce4674-3ced-da34-a8a4-30d74cbe24bb@linux.ibm.com>
- <20220218234232.GC5443@linux.alibaba.com>
- <bc3252a3-5a84-63d4-dfc5-009f602a5bec@linux.ibm.com>
- <20220224020253.GF5443@linux.alibaba.com>
-From:   Karsten Graul <kgraul@linux.ibm.com>
-Organization: IBM Deutschland Research & Development GmbH
-In-Reply-To: <20220224020253.GF5443@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: skg6BhqZDUbQHmjM1dW9jLR7TLWE9_S8
-X-Proofpoint-ORIG-GUID: Dk2ZOabE8R8NupNi9xscmP9BkLaw1d_B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
- definitions=2022-02-25_09,2022-02-25_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 lowpriorityscore=0
- malwarescore=0 impostorscore=0 clxscore=1015 phishscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2201110000 definitions=main-2202250102
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,30 +66,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 24/02/2022 03:02, dust.li wrote:
-> On Wed, Feb 23, 2022 at 07:57:31PM +0100, Karsten Graul wrote:
->> On 19/02/2022 00:42, dust.li wrote:
->>> On Fri, Feb 18, 2022 at 05:03:56PM +0100, Karsten Graul wrote:
->>>> Right now for me it looks like there is no way to use netlink for container runtime
->>>> configuration, which is a pity.
->>>> We continue our discussions about this in the team, and also here on the list.
->>>
->>> Many thanks for your time on this topic !
->>
->> We checked more specs (like Container Network Interface (CNI) Specification) 
->> but all we found uses sysctl at the end. There is lot of infrastructure 
->> to use sysctls in a container environment.
->>
->> Establishing netlink-like controls for containers is by far out of our scope, and
->> would take a long time until it would be available in the popular projects.
->>
->> So at the moment I see no alternative to an additional sysctl interface in the 
->> SMC module that provides controls which are useful in container environments.
-> 
-> Got it, I will add sysctl interface and a switch with this function.
-> 
-> Thank again !
+There are several race conditions discovered in the current rdma_rxe
+driver.  They mostly relate to races between normal operations and
+destroying objects.  This patch series
+ - Makes several minor cleanups in rxe_pool.[ch]
+ - Replaces the red-black trees currently used by xarrays for indices
+ - Corrects several reference counting errors
+ - Adds wait for completions to the paths in verbs APIs which destroy
+   objects.
+ - Changes read side locking to rcu.
 
-Can you explain again why this auto_cork needs a switch to disable it?
-My understanding is that this auto_cork makes always sense and is triggered
-when there are not enough resources.
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v10
+  Rebased to current wip/jgg-for-next.
+  Split some patches into smaller ones.
+v9
+  Corrected issues reported by Jason Gunthorpe,
+  Converted locking in rxe_mcast.c and rxe_pool.c to use RCU
+  Split up the patches into smaller changes
+v8
+  Fixed an additional race in 3/8 which was not handled correctly.
+v7
+  Corrected issues reported by Jason Gunthorpe
+Link: https://lore.kernel.org/linux-rdma/20211207190947.GH6385@nvidia.com/
+Link: https://lore.kernel.org/linux-rdma/20211207191857.GI6385@nvidia.com/
+Link: https://lore.kernel.org/linux-rdma/20211207192824.GJ6385@nvidia.com/
+v6
+  Fixed a kzalloc flags bug.
+  Fixed comment bug reported by 'Kernel Test Robot'.
+  Changed type of rxe_pool.c in __rxe_fini().
+v5
+  Removed patches already accepted into for-next and addressed comments
+  from Jason Gunthorpe.
+v4
+  Restructured patch series to change to xarray earlier which
+  greatly simplified the changes.
+  Rebased to current for-next
+v3
+  Changed rxe_alloc to use GFP_KERNEL
+  Addressed other comments by Jason Gunthorp
+  Merged the previous 06/10 and 07/10 patches into one since they overlapped
+  Added some minor cleanups as 10/10
+v2
+  Rebased to current for-next.
+  Added 4 additional patches
+
+Bob Pearson (11):
+  RDMA/rxe: Reverse the sense of RXE_POOL_NO_ALLOC
+  RDMA/rxe: Delete _locked() APIs for pool objects
+  RDMA/rxe: Replace obj by elem in declaration
+  RDMA/rxe: Replace red-black trees by xarrays
+  RDMA/rxe: Stop lookup of partially built objects
+  RDMA/rxe: Add wait_for_completion to pool objects
+  RDMA/rxe: Fix ref error in rxe_av.c
+  RDMA/rxe: Replace mr by rkey in responder resources
+  RDMA/rxe: Convert read side locking to rcu
+  RDMA/rxe: Move max_elem into rxe_type_info
+  RDMA/rxe: Cleanup rxe_pool.c
+
+ drivers/infiniband/sw/rxe/rxe.c       |  87 +----
+ drivers/infiniband/sw/rxe/rxe_av.c    |  19 +-
+ drivers/infiniband/sw/rxe/rxe_loc.h   |   5 +-
+ drivers/infiniband/sw/rxe/rxe_mr.c    |   4 +-
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  13 +-
+ drivers/infiniband/sw/rxe/rxe_net.c   |  17 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 453 ++++++++++++++------------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  74 ++---
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  10 +-
+ drivers/infiniband/sw/rxe/rxe_req.c   |  55 ++--
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 125 ++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  55 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |   1 -
+ 13 files changed, 462 insertions(+), 456 deletions(-)
+
+
+base-commit: 3ac3107872b8dd4b5c4c1b598fcbc24983cd009b
+
+Patch applies to current wip/jgg-for-next with or without the last
+two (5-6/6) patches in the multicast series.
+-- 
+2.32.0
+
