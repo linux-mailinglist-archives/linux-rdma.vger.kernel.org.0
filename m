@@ -2,67 +2,68 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 327114C55F3
-	for <lists+linux-rdma@lfdr.de>; Sat, 26 Feb 2022 13:55:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2F24C55F2
+	for <lists+linux-rdma@lfdr.de>; Sat, 26 Feb 2022 13:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbiBZMz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231603AbiBZMz2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Sat, 26 Feb 2022 07:55:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46408 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbiBZMz1 (ORCPT
+        with ESMTP id S231659AbiBZMz1 (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Sat, 26 Feb 2022 07:55:27 -0500
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3F1249136
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5AD2249137
         for <linux-rdma@vger.kernel.org>; Sat, 26 Feb 2022 04:54:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1645880093; x=1677416093;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=V9qlu5oyBkYDKlz1LOYc0qoxXQJJ+3ejw7rghl+Et8o=;
-  b=LL+ipTOA3t2ytdQJg3m7R6pBre6Xwt9kRHHhXrZW69uKcJPJRCHzicq3
-   U4djJLCDpy12TQPaFl0qmrpndF9U8/PGmvgPX3CLf7GuWi+k8BXeXZdT7
-   rXS9lykNKWsxA8AVqmBQU3d3sGvgAFO3tanXeqtvhpmITaBxrXe0dKn4D
-   yZw5PcB6+xkW8+gRmB5kGVkPIGbAMk0E1Ju8klWIlfuvzUV33DZFBpNld
-   sGsCVJLG0Lc+vbPABKFXODK4R55Wr7FOF0FhatIKRoAvcy/RqPgFXOKH6
-   /Z1OZCcshN0ocMmGdC8YwfcFKqkK4zhGpejL4Amc+9TdOPhmEJ8j1pRAv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="236162134"
+  bh=l7VjwVGZ0a5+HO6uwkaj3K6rk+LJEIJQyaKuJcA1gns=;
+  b=bOX3mKqOxl3pJEyflj1eJOPrGUDK/oCMANGLXyKpUlXIUzUpCeB0c7wH
+   VBxqOTtsFYAEmL8iPvIUWV/NZhDXybJ+c40Puupfset1Z7NaTaU0TA718
+   opy6tweFvjKM2zmrD0S670H/9NukJZm+RlzWaKENtk+1hJaDhSMeJyhV+
+   fdFiZqBFS87PQPiSjzF5IFAwWm2HV8fQxpg8qwT0bvTgCHfetUyBHt0LG
+   +exHKG805DFt3AcK1s152VJRjqeLr3tMVDmCuBNxYTVoohXD/1jKqITul
+   CjGDgAHF9d9LAGNrYbWwcTHgoHARDiP1X7+UmciI39qANEG8mJPLatPxP
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10269"; a="240061291"
 X-IronPort-AV: E=Sophos;i="5.90,139,1643702400"; 
-   d="scan'208";a="236162134"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2022 04:54:53 -0800
+   d="scan'208";a="240061291"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2022 04:54:53 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,139,1643702400"; 
-   d="scan'208";a="592762739"
+   d="scan'208";a="629118640"
 Received: from lkp-server01.sh.intel.com (HELO 788b1cd46f0d) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 26 Feb 2022 04:54:51 -0800
+  by FMSMGA003.fm.intel.com with ESMTP; 26 Feb 2022 04:54:51 -0800
 Received: from kbuild by 788b1cd46f0d with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1nNwb4-0005Tz-Vc; Sat, 26 Feb 2022 12:54:50 +0000
-Date:   Sat, 26 Feb 2022 20:54:33 +0800
+        id 1nNwb5-0005U6-1I; Sat, 26 Feb 2022 12:54:51 +0000
+Date:   Sat, 26 Feb 2022 20:54:41 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:for-next] BUILD SUCCESS
- 884194ef264e140a6d22f7a5de2b76765d17734a
-Message-ID: <621a2309.NSr3ss6QFOTdFWwa%lkp@intel.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 22e9f71072fa605cbf033158db58e0790101928d
+Message-ID: <621a2311.x+1gIoKaVX/avl8b%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
-branch HEAD: 884194ef264e140a6d22f7a5de2b76765d17734a  RDMA/irdma: Move union irdma_sockaddr to header file
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: 22e9f71072fa605cbf033158db58e0790101928d  RDMA/cma: Do not change route.addr.src_addr outside state checks
 
 elapsed time: 720m
 
