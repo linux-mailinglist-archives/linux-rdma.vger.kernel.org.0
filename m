@@ -2,62 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7874C7980
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Feb 2022 21:09:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A674C79BA
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Feb 2022 21:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbiB1UDi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Feb 2022 15:03:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50112 "EHLO
+        id S229987AbiB1UEd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Feb 2022 15:04:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbiB1UDh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 15:03:37 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4DD3EB99
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:02:56 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id q17so19160129edd.4
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:02:56 -0800 (PST)
+        with ESMTP id S229967AbiB1UEc (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 15:04:32 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F08493BFA5
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:03:52 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id i11so23315322lfu.3
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gT/mxIYbzDn15+z84Rt0/ZmLFqIl34ZjMPCseIzUB9o=;
-        b=Tm2RrZZp9rg85Q2lAdsba4a3IH+hQMy5xZCbUizCCXmPzyfZ+2VRqEslWXZB4tPt3B
-         Xz8lYe63CHEdQCuWSaPC9nNMhFWrnR54Ihwd0u2qPZVZ4zvhHacXKCw+SJS4BR1PfT62
-         xCFGBc0xrmrOEo0QPHvZeTHUhXNuWYmty+udI=
+        bh=uod9R4vPcpqIjzHofeC96qXcIXUlGW+U5alvKq7K0ZA=;
+        b=Y+K+LAchMzIcesbCiqrzhisJgvbUIKYh3oFG/AlZJTKul1K9rRfHylHsN/EgM8hdwz
+         P3hABFpC0Wcw+/0V4cKR5X0P787Wy9QwMeL5ORY50P9+oNZqmMp6NkFq4yV6NAIkP79C
+         0bvk8ZnwfFSPqzKfD7Qqea+fs2YLRTaNcLanw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gT/mxIYbzDn15+z84Rt0/ZmLFqIl34ZjMPCseIzUB9o=;
-        b=LTPbwKT6Ls+ZOiks5blDx4KBCUPcGyzu9qqXzl9JqjLvSxEEuc4C8oaEyx0kfZO86l
-         Wej4IF0iEwdccNgn8WKdvOcFohQMIvmcQ+9micX5IRGMLnwN+yudB6NVbsfZ1s5Na16Q
-         4YGlOaItZR7XDrQlBQxvObmfcGVb2FfLRgrZtu3gdmEL/oHXwzVj11ux8TK5sUj6SyLb
-         CJdGeaw1YW39KN/VGD2fNan4d+lK3mpqRPjUte4DTaHrA5URx7HlTr3Kboqs0b5u4vvA
-         DD/jQXPiZPU63nA4+B+e2W4G6tfd+D7KIeT6Kwcvw+kXFowdnz33XpQlw5VNNwGv5aTt
-         5hHQ==
-X-Gm-Message-State: AOAM532RaKiMZyA0+PhF6/BVzgpbkia4BfapQIPkaPdm0TDWH8LQ4NbC
-        Bi6keAYw8B9YxqLfjDryXKCs7GL4wdm2d4Ost84=
-X-Google-Smtp-Source: ABdhPJyYWcsvg3E20xqfP/l+hGo0AkLgToF2ipSL3P0rbdVnfpf9KBY/pe+LgNwP+nSX+H8S8o7WoA==
-X-Received: by 2002:a05:6402:228d:b0:410:d437:293a with SMTP id cw13-20020a056402228d00b00410d437293amr20693718edb.245.1646078575047;
-        Mon, 28 Feb 2022 12:02:55 -0800 (PST)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
-        by smtp.gmail.com with ESMTPSA id 20-20020a17090601d400b006caff964e30sm4773911ejj.19.2022.02.28.12.02.54
+        bh=uod9R4vPcpqIjzHofeC96qXcIXUlGW+U5alvKq7K0ZA=;
+        b=WlbZhWqvVoOb5N3uyp/hKtNcvLm18e4iDj/+UIpfCOxabkUpV4bFukjCFxO6BcOdCe
+         Ne+Ojx29zhY8MiFMlbM+FOZ1OIUT6rVbSOizyEliSja6LZ1crEW/+vPKMIIfHkXvs8hx
+         2ZefPJOXzj2pSzsbd5CopslmhAfWxqGWfYC3j1g4H3GcM/gX6csszvG4QMReQUUx0evk
+         J/reDXDDjFZymmXruQpCry0huTdRZKMceMGzrohaHCpRmrgTxY0NsBSVS/1zLGfSW7KT
+         JY1trF4nq7Ei6tmakXcmCd49vOeeQTPn95q9Gsk9F8s++eN/EmGxVYOEbSyGBFWNL+aG
+         MPOA==
+X-Gm-Message-State: AOAM5302gZ3ZCd2sPhCjS7ECiS6nOhx68ulVO8quVhhx8LyPiVG/OWOU
+        wVP2IIcnzwQXpPBnHETVp1zXyeEr72NRTI7OOXo=
+X-Google-Smtp-Source: ABdhPJwRWwMRJYbVom9e+9TELcY29Z8onnNmD4jdY1UrAfB4jmiMW+4cIPm6wfS/dchgfakiAVyuyw==
+X-Received: by 2002:a05:6512:3a95:b0:443:1624:3be1 with SMTP id q21-20020a0565123a9500b0044316243be1mr13560866lfu.355.1646078631379;
+        Mon, 28 Feb 2022 12:03:51 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id p41-20020a05651213a900b00443e2c39fc4sm1119455lfa.111.2022.02.28.12.03.51
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Feb 2022 12:02:54 -0800 (PST)
-Received: by mail-ej1-f53.google.com with SMTP id d10so27069097eje.10
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:02:54 -0800 (PST)
-X-Received: by 2002:ac2:5313:0:b0:443:99c1:7e89 with SMTP id
- c19-20020ac25313000000b0044399c17e89mr13183568lfh.531.1646078183366; Mon, 28
- Feb 2022 11:56:23 -0800 (PST)
+        Mon, 28 Feb 2022 12:03:51 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id f37so23233680lfv.8
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 12:03:51 -0800 (PST)
+X-Received: by 2002:ac2:44a4:0:b0:445:8fc5:a12a with SMTP id
+ c4-20020ac244a4000000b004458fc5a12amr7653619lfm.27.1646078630855; Mon, 28 Feb
+ 2022 12:03:50 -0800 (PST)
 MIME-Version: 1.0
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com> <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
-In-Reply-To: <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
+ <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
+In-Reply-To: <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Feb 2022 11:56:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
-Message-ID: <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
+Date:   Mon, 28 Feb 2022 12:03:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
+Message-ID: <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
 To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
@@ -110,7 +111,7 @@ Cc:     Jakob Koschel <jakobkoschel@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Mike Rapoport <rppt@kernel.org>
-Content-Type: multipart/mixed; boundary="00000000000064a3e305d91971a9"
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -121,74 +122,34 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
---00000000000064a3e305d91971a9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 28, 2022 at 4:19 AM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
+On Mon, Feb 28, 2022 at 11:56 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> I don't think that using the extra variable makes the code in any way
-> more reliable or easier to read.
+> I do wish we could actually poison the 'pos' value after the loop
+> somehow - but clearly the "might be uninitialized" I was hoping for
+> isn't the way to do it.
 
-So I think the next step is to do the attached patch (which requires
-that "-std=3Dgnu11" that was discussed in the original thread).
+Side note: we do need *some* way to do it.
 
-That will guarantee that the 'pos' parameter of list_for_each_entry()
-is only updated INSIDE the for_each_list_entry() loop, and can never
-point to the (wrongly typed) head entry.
+Because if we make that change, and only set it to another pointer
+when not the head, then we very much change the semantics of
+"list_for_each_head()". The "list was empty" case would now exit with
+'pos' not set at all (or set to NULL if we add that). Or it would be
+set to the last entry.
 
-And I would actually hope that it should actually cause compiler
-warnings about possibly uninitialized variables if people then use the
-'pos' pointer outside the loop. Except
+And regardless, that means that all the
 
- (a) that code in sgx/encl.c currently initializes 'tmp' to NULL for
-inexplicable reasons - possibly because it already expected this
-behavior
+        if (pos == head)
 
- (b) when I remove that NULL initializer, I still don't get a warning,
-because we've disabled -Wno-maybe-uninitialized since it results in so
-many false positives.
+kinds of checks after the loop would be fundamentally broken.
 
-Oh well.
+Darn. I really hoped for (and naively expected) that we could actually
+have the compiler warn about the use-after-loop case. That whole
+"compiler will now complain about bad use" was integral to my clever
+plan to use the C99 feature of declaring the iterator inside the loop.
 
-Anyway, give this patch a look, and at least if it's expanded to do
-"(pos) =3D NULL" in the entry statement for the for-loop, it will avoid
-the HEAD type confusion that Jakob is working on. And I think in a
-cleaner way than the horrid games he plays.
+But my "clever plan" was apparently some ACME-level Wile E. Coyote sh*t.
 
-(But it won't avoid possible CPU speculation of such type confusion.
-That, in my opinion, is a completely different issue)
+Darn.
 
-I do wish we could actually poison the 'pos' value after the loop
-somehow - but clearly the "might be uninitialized" I was hoping for
-isn't the way to do it.
-
-Anybody have any ideas?
-
-                Linus
-
---00000000000064a3e305d91971a9
-Content-Type: application/octet-stream; name=p
-Content-Disposition: attachment; filename=p
-Content-Transfer-Encoding: base64
-Content-ID: <f_l073sb6w0>
-X-Attachment-Id: f_l073sb6w0
-
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbGlzdC5oIGIvaW5jbHVkZS9saW51eC9saXN0LmgK
-aW5kZXggZGQ2YzIwNDFkMDljLi5iYWI5OTU1OTZhYWEgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvbGlu
-dXgvbGlzdC5oCisrKyBiL2luY2x1ZGUvbGludXgvbGlzdC5oCkBAIC02MzQsMTAgKzYzNCwxMCBA
-QCBzdGF0aWMgaW5saW5lIHZvaWQgbGlzdF9zcGxpY2VfdGFpbF9pbml0KHN0cnVjdCBsaXN0X2hl
-YWQgKmxpc3QsCiAgKiBAaGVhZDoJdGhlIGhlYWQgZm9yIHlvdXIgbGlzdC4KICAqIEBtZW1iZXI6
-CXRoZSBuYW1lIG9mIHRoZSBsaXN0X2hlYWQgd2l0aGluIHRoZSBzdHJ1Y3QuCiAgKi8KLSNkZWZp
-bmUgbGlzdF9mb3JfZWFjaF9lbnRyeShwb3MsIGhlYWQsIG1lbWJlcikJCQkJXAotCWZvciAocG9z
-ID0gbGlzdF9maXJzdF9lbnRyeShoZWFkLCB0eXBlb2YoKnBvcyksIG1lbWJlcik7CVwKLQkgICAg
-ICFsaXN0X2VudHJ5X2lzX2hlYWQocG9zLCBoZWFkLCBtZW1iZXIpOwkJCVwKLQkgICAgIHBvcyA9
-IGxpc3RfbmV4dF9lbnRyeShwb3MsIG1lbWJlcikpCisjZGVmaW5lIGxpc3RfZm9yX2VhY2hfZW50
-cnkocG9zLCBoZWFkLCBtZW1iZXIpCQkJCQlcCisJZm9yICh0eXBlb2YocG9zKSBfX2l0ZXIgPSBs
-aXN0X2ZpcnN0X2VudHJ5KGhlYWQsIHR5cGVvZigqcG9zKSwgbWVtYmVyKTsJXAorCSAgICAgIWxp
-c3RfZW50cnlfaXNfaGVhZChfX2l0ZXIsIGhlYWQsIG1lbWJlcikgJiYgKCgocG9zKT1fX2l0ZXIp
-LDEpOwlcCisJICAgICBfX2l0ZXIgPSBsaXN0X25leHRfZW50cnkoX19pdGVyLCBtZW1iZXIpKQog
-CiAvKioKICAqIGxpc3RfZm9yX2VhY2hfZW50cnlfcmV2ZXJzZSAtIGl0ZXJhdGUgYmFja3dhcmRz
-IG92ZXIgbGlzdCBvZiBnaXZlbiB0eXBlLgo=
---00000000000064a3e305d91971a9--
+                   Linus
