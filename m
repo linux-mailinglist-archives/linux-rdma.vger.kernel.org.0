@@ -2,64 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48B44C7BB7
-	for <lists+linux-rdma@lfdr.de>; Mon, 28 Feb 2022 22:19:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D6D4C7C6B
+	for <lists+linux-rdma@lfdr.de>; Mon, 28 Feb 2022 22:47:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbiB1VTv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Feb 2022 16:19:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33516 "EHLO
+        id S231197AbiB1Vrt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Feb 2022 16:47:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229603AbiB1VTr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 16:19:47 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0D54EF0A4;
-        Mon, 28 Feb 2022 13:19:07 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id v5-20020a17090ac90500b001bc40b548f9so336908pjt.0;
-        Mon, 28 Feb 2022 13:19:07 -0800 (PST)
+        with ESMTP id S229808AbiB1Vrr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 16:47:47 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DED714ACB4;
+        Mon, 28 Feb 2022 13:47:05 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id s1so19458109edd.13;
+        Mon, 28 Feb 2022 13:47:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=pX3FOaQ5tpG+krWAy5EzbawK39YqA5YwRZTg6hddt4E=;
-        b=JpEWCU5sl0Tb/FD34RSH61Ey9dRKreZqOQa3CJ02luf0uqIT78+8GWNevF0TXmNO1k
-         V82hjNGseb3oWLNgnnFwXHAFmfIF+pTCtPsXm95pt2iCzBmJFwg04njU2K1WfIC8K4PQ
-         JYTCrkA4ACMCh2biL4u47uoOFfhnbmO/1jCCSOx3OESfK5+oDGNitg9s7NqsmIU5fVsE
-         xsR4ABTTJUTksMDshckaPyVLHegSArBm3erCaRT01IEJkH2S1g98XNdRHKV6JZW5AanM
-         gI9+nSzlxhKCRaqGLAQjGqwME5o9/K6faQyfblLD265MKP0MWlgdnuFxCRxjUTwlasET
-         Zo4g==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U6qUODqKVLrC7qZqs553HfNOTdovwKFxE93drAu/Dlk=;
+        b=DcAOXNn/ViLnmA/Pl4xJfWkhBybquVghVb27ULjvzphMd1cBlP8EnT2avc3nlq8Ncp
+         XU0OlwqVPcxmpQGfXIX8cDSYeDqzQFDIjUJw6vYkNcJJHsbpQaotozEaUyIGD250VuoD
+         60I5wOFshLHgsaHS54p/JatmHLrrllGTo/egDJjxoeGmck3vK6ZaE0ldZN4szqLK845U
+         BQNwjpOC8zhohOQR/VOEr6j/DtNOqZN6I6F48XJrq+10cNhH40s7WdjZ8f4gJpCeR9JY
+         suF4D0bui+heOiMd0XjHUkKuJX/fj0a+j8l22tTUgDxT9LwW7gkDbHU26uOV2JCB+l1v
+         aZYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=pX3FOaQ5tpG+krWAy5EzbawK39YqA5YwRZTg6hddt4E=;
-        b=Ko2q8+/6PEwR0VrAV6h+RSAB96UwzbTdlCl4tV/4WPgEJoF2e5qKA4v8mBfiOzqyZ6
-         nTyB68vN8OhgwW3oPd1ADgqLL/4iPtyyuvzVgQyZfDb8O9/CLlFVuCrU52bK+wieyzAU
-         +p+dnIQ8XTlg6Z758varQBJGtq6QIys7hCKSTGYJJCxqgPmRvHs2mPTu94UyIBXEgoFl
-         uWYi+5nRvD6zyppikWJ0xUOHkjdnjXioM4apZ3DapID1z60zqZ/O0tTxoc7GYgzUDKd0
-         NjTM7mr1kqdSE/jz9SvhqmL8EXw//7pealHn4jxi5FIAKMxKByPt+hAu6e+ZOEAsQXLn
-         AZ2A==
-X-Gm-Message-State: AOAM532vQfsiXoNABePKooePP9squUxMt6sTKNrEfYFcjxUw4wjk1cyZ
-        +dyeYv2/tscfCc4sK4FJKmQ74Pd97eZGL+nXF2Q=
-X-Google-Smtp-Source: ABdhPJxYQDaw0FFWrTXZCk3OvnKpy6mSdQ8Z9qbCWYQ2FvSetamSp4Rz90y2uoGU7tjomvOtre1MYsL9s+rZuYttBVs=
-X-Received: by 2002:a17:902:ce8a:b0:14f:fd0e:e4a4 with SMTP id
- f10-20020a170902ce8a00b0014ffd0ee4a4mr22765912plg.47.1646083147399; Mon, 28
- Feb 2022 13:19:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20220228110822.491923-1-jakobkoschel@gmail.com>
- <20220228110822.491923-3-jakobkoschel@gmail.com> <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
- <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
- <282f0f8d-f491-26fc-6ae0-604b367a5a1a@amd.com> <b2d20961dbb7533f380827a7fcc313ff849875c1.camel@HansenPartnership.com>
-In-Reply-To: <b2d20961dbb7533f380827a7fcc313ff849875c1.camel@HansenPartnership.com>
-Reply-To: noloader@gmail.com
-From:   Jeffrey Walton <noloader@gmail.com>
-Date:   Mon, 28 Feb 2022 16:18:56 -0500
-Message-ID: <CAH8yC8nwp8f3rANhCiiP_Oiw2cjfqCwAgZdTXY9OxtN9Tmm7HA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=U6qUODqKVLrC7qZqs553HfNOTdovwKFxE93drAu/Dlk=;
+        b=iCiPdpgZCzz3yvJVrexxRCxhLpbHJio56HauB3jk0HOQJrmGA979tsWxPybrFVLGzC
+         rviOdWUGVAfG+SxRFv/OuGvdSCUQk7uF7WuGesOA/C81a/oR1K1Jm3CJszK4ejJYgZAo
+         x2mEVzUwr+4RgfbqKWz6AmZyWjaTRFjzUTjU7bRuHv8ZcadMZrk/teLe0Mtuub6nLp0L
+         a7ZyIBr8F4GE8Uu0Jc+2tXxHlIC2Imv0rNwyvD6j1LRvY9jgGT3tWdWldyGGrRH24vzG
+         nTzMwelCz91AtXEN39znf/7FQEvWlm13iKgxl7UOZY+IIOZsvmK0VqOyef47GdhW5Tmt
+         iBIg==
+X-Gm-Message-State: AOAM530/V9VOK6m4lb/4m2jbnFlZmK2daPDjc3i4TV7YGStA93vU4/Xt
+        eBbhRjdLtbgu479sDO5yQ04=
+X-Google-Smtp-Source: ABdhPJxKG2ff16tCWsK6Ck3Y2a57p3q44AgnQUgUMRZ3ajKrFkwS/Wlp6PHXO9g9MP9OhOujc97TPw==
+X-Received: by 2002:a05:6402:40d0:b0:412:f86a:efd1 with SMTP id z16-20020a05640240d000b00412f86aefd1mr21791110edb.194.1646084823834;
+        Mon, 28 Feb 2022 13:47:03 -0800 (PST)
+Received: from smtpclient.apple ([2a02:8109:9d80:3f6c:957a:1d13:c949:d1f3])
+        by smtp.gmail.com with ESMTPSA id ce7-20020a170906b24700b006cf095c2f5bsm4701847ejb.83.2022.02.28.13.47.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 28 Feb 2022 13:47:03 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 15.0 \(3693.60.0.1.1\))
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakob Koschel <jakobkoschel@gmail.com>,
+From:   Jakob Koschel <jakobkoschel@gmail.com>
+In-Reply-To: <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+Date:   Mon, 28 Feb 2022 22:47:00 +0100
+Cc:     =?utf-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
         linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
@@ -108,7 +104,16 @@ Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <FC710A1A-524E-481B-A668-FC258F529A2E@gmail.com>
+References: <20220228110822.491923-1-jakobkoschel@gmail.com>
+ <20220228110822.491923-3-jakobkoschel@gmail.com>
+ <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
+ <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
+ <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
+ <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: Apple Mail (2.3693.60.0.1.1)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -119,33 +124,64 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 3:45 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> ...
-> > Just from skimming over the patches to change this and experience
-> > with the drivers/subsystems I help to maintain I think the primary
-> > pattern looks something like this:
-> >
-> > list_for_each_entry(entry, head, member) {
-> >      if (some_condition_checking(entry))
-> >          break;
-> > }
-> > do_something_with(entry);
->
->
-> Actually, we usually have a check to see if the loop found anything,
-> but in that case it should something like
->
-> if (list_entry_is_head(entry, head, member)) {
->     return with error;
-> }
-> do_somethin_with(entry);
 
-Borrowing from c++, perhaps an explicit end should be used:
 
-  if (list_entry_not_end(entry))
-    do_somethin_with(entry)
+> On 28. Feb 2022, at 21:10, Linus Torvalds =
+<torvalds@linux-foundation.org> wrote:
+>=20
+> On Mon, Feb 28, 2022 at 12:03 PM Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>=20
+>> Side note: we do need *some* way to do it.
+>=20
+> Ooh.
+>=20
+> This patch is a work of art.
+>=20
+> And I mean that in the worst possible way.
+>=20
+> We can do
+>=20
+>        typeof(pos) pos
+>=20
+> in the 'for ()' loop, and never use __iter at all.
+>=20
+> That means that inside the for-loop, we use a _different_ 'pos' than =
+outside.
+>=20
+> And then the compiler will not see some "might be uninitialized", but
+> the outer 'pos' *will* be uninitialized.
+>=20
+> Unless, of course, the outer 'pos' had that pointless explicit =
+initializer.
 
-It is modelled after c++ and the 'while(begin != end) {}' pattern.
+The goal of this is to get compiler warnings right? This would indeed be =
+great.
 
-Jeff
+Changing the list_for_each_entry() macro first will break all of those =
+cases
+(e.g. the ones using 'list_entry_is_head()).
+I assumed it is better to fix those cases first and then have a simple
+coccinelle script changing the macro + moving the iterator into the =
+scope
+of the macro.
+
+>=20
+> Here - can somebody poke holes in this "work of art" patch?
+
+With this you are no longer able to set the 'outer' pos within the list
+iterator loop body or am I missing something? Like this it stays
+uninitialized but you'll probably want to set it from within the loop.
+
+You would then yet again need a variable with another name to use
+after the loop.
+
+I fail to see how this will make most of the changes in this
+patch obsolete (if that was the intention).
+
+>=20
+>                     Linus
+> <patch.diff>
+
+- Jakob
+
