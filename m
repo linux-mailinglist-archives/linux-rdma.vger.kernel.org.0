@@ -2,54 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE014C92A4
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 19:14:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECC5C4C92DB
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 19:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236860AbiCASOv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Mar 2022 13:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42282 "EHLO
+        id S231707AbiCASWL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Mar 2022 13:22:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235929AbiCASOu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 13:14:50 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA8C396B1
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 10:14:09 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id p8so15005550pfh.8
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 10:14:09 -0800 (PST)
+        with ESMTP id S236336AbiCASWI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 13:22:08 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF35A652EC
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 10:21:25 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id iq13-20020a17090afb4d00b001bc4437df2cso2953373pjb.2
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 10:21:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=N36sF4HUer+rUuc5VxWx2NxZT2Mje9G1bKhkVtQFmow=;
-        b=O9Pc4FRhQaHO8JwtvKmEa7P/p93QhIWPziYnJxBP3SmXkKfXwbS/+UXcAcizlZe2qE
-         5++D1AzgFSiNA6GVcHz58RghXwcZj0T+stAg2S8I6BdGwjnEpqEP1SHJlTJIwhdk7I/A
-         Km+JuAoSqO/aabb7J1BxN3aslickTdbOZI2Hw=
+        bh=fds8Vu27HO3VizdZYZX37G2L0kdPjlGJwjydpAC62lk=;
+        b=kbDptrdu0f26KgjbD0o2z38w3lkKGDPgX1iTHeFHCTnyp8GdCq5qMftyKUSBh6duUj
+         WfNj/A6u5i3SYTvNHtilrjGbJ7XPB9BN5cThiWBPQtUhCrDH1721OqL04qTC03fUauzy
+         3YHA9gzqSMuaks5H7GdDPribo7C8kJL0W2A2s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=N36sF4HUer+rUuc5VxWx2NxZT2Mje9G1bKhkVtQFmow=;
-        b=bYiSBY5PnlJP2YgvJNvJb6tLryoFGrxszKm2geD8IG/5f449Nhlu3Qepfg+DIsBrMX
-         1xXSuRPBfiJ/7DZdeX92z/UscufnsWoT1N80R+/0aJxmLOVuL9epIv8dVh+C1/SQ62Pr
-         pTM5F6YGdbpzL/q2rm7m0guWvUfV06yK2kx1IXs0J4lUwszYGhGtZm+ZaQJSS5OQbyvU
-         DSCsOx48Qmjv8BXqXs0s6KYsyIxwmiQOTLmJ5KqOSx032cNevPquSUNcBhpL78tvMXnC
-         piCrF8p6bhtjmPwX1hL4JD/nqeBEvcLGbWkhsDEH/D9wNUMP+7dT0hvTpUggBlxt35WA
-         p/mw==
-X-Gm-Message-State: AOAM532uMVeFA9mvLCxX4Ku5rDvorNcMehaSGwKimdEcNiSgHyLBlJiv
-        KJUjjuoenh7fU7eLzB1yMUSL/A==
-X-Google-Smtp-Source: ABdhPJwl/oZl7jTR8Xbiy0diMdVywUoBtjuUV8iCsVjT5dJdX8x+nPRIiFjmEv3Xm0s1V2wXWPjOfA==
-X-Received: by 2002:a62:d156:0:b0:4cd:fd21:e406 with SMTP id t22-20020a62d156000000b004cdfd21e406mr28741951pfl.44.1646158448831;
-        Tue, 01 Mar 2022 10:14:08 -0800 (PST)
+        bh=fds8Vu27HO3VizdZYZX37G2L0kdPjlGJwjydpAC62lk=;
+        b=udwvlplnTm1FyInWS6AwByR9s6WvzN/pnOUWdVH0XZJ7WGlqQe2g8NHwPEsJTmBjUv
+         w4oKFieBAZU045lOKdxffIkUUiJ8lcJKsbXZQV2XwRhzJUZW+14pQ+PxL3jSOWlJRcE2
+         e/T50R+NkSawFaLxzLSfivkT8mJ8N6btnkt40s84QHy9us8k9/77W1OIBqmPsmq4KL/8
+         sVLMKgxlmymibLEjYZiFP71205p0LcpWIeDqeixsyfm5/fq4Xvsrph8LIJvDmqQc8Ymr
+         Odlxwxh0oOow4CRy7szOvJ1VS6o0LA20R2gUvHdhLn6/4GwLO9s32a4NithVKK9dB8xo
+         Zd8w==
+X-Gm-Message-State: AOAM530RZkb67POJCxitfaNzpVGRyUz9K1uME/AQity4QkB4hAkPVr2A
+        bS3ml0uYMCnb9HVppFf3Hitjsg==
+X-Google-Smtp-Source: ABdhPJxFvMPIFzTXAIIVPlg/eGuYakalp78L+LNg6VrEL06CzJLvdAz6UlqMRKRHGibjFN8E9JB6yg==
+X-Received: by 2002:a17:90b:4d86:b0:1bd:223f:6cb5 with SMTP id oj6-20020a17090b4d8600b001bd223f6cb5mr16669777pjb.151.1646158885116;
+        Tue, 01 Mar 2022 10:21:25 -0800 (PST)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id nn10-20020a17090b38ca00b001bc3a60b324sm2540095pjb.46.2022.03.01.10.14.08
+        by smtp.gmail.com with ESMTPSA id oa2-20020a17090b1bc200b001bcff056f09sm2678996pjb.13.2022.03.01.10.21.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Mar 2022 10:14:08 -0800 (PST)
-Date:   Tue, 1 Mar 2022 10:14:07 -0800
+        Tue, 01 Mar 2022 10:21:24 -0800 (PST)
+Date:   Tue, 1 Mar 2022 10:21:24 -0800
 From:   Kees Cook <keescook@chromium.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
+To:     Jakob Koschel <jakobkoschel@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Jakob Koschel <jakobkoschel@gmail.com>,
         alsa-devel@alsa-project.org, linux-aspeed@lists.ozlabs.org,
         "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
         linux-iio@vger.kernel.org, nouveau@lists.freedesktop.org,
@@ -99,24 +98,23 @@ Cc:     Matthew Wilcox <willy@infradead.org>,
         Mike Rapoport <rppt@kernel.org>
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
-Message-ID: <202203011008.AA0B5A2D@keescook>
+Message-ID: <202203011016.48A181EE50@keescook>
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com>
  <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
  <CAHk-=wgQps58DPEOe4y5cTh5oE9EdNTWRLXzgMiETc+mFX7jzw@mail.gmail.com>
  <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
  <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
- <Yh0tl3Lni4weIMkl@casper.infradead.org>
- <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
- <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
- <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
+ <FC710A1A-524E-481B-A668-FC258F529A2E@gmail.com>
+ <CAHk-=whLK11HyvpUtEftOjc3Gup2V77KpAQ2fycj3uai=qceHw@mail.gmail.com>
+ <CEDAD0D9-56EE-4105-9107-72C2EAD940B0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
+In-Reply-To: <CEDAD0D9-56EE-4105-9107-72C2EAD940B0@gmail.com>
 X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -124,23 +122,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 04:45:11PM -0800, Linus Torvalds wrote:
-> Really. The "-Wshadow doesn't work on the kernel" is not some new
-> issue, because you have to do completely insane things to the source
-> code to enable it.
+On Tue, Mar 01, 2022 at 12:28:15PM +0100, Jakob Koschel wrote:
+> Based on the coccinelle script there are ~480 cases that need fixing
+> in total. I'll now finish all of them and then split them by
+> submodules as Greg suggested and repost a patch set per submodule.
+> Sounds good?
 
-The first big glitch with -Wshadow was with shadowed global variables.
-GCC 4.8 fixed that, but it still yells about shadowed functions. What
-_almost_ works is -Wshadow=local. At first glace, all the warnings
-look solvable, but then one will eventually discover __wait_event()
-and associated macros that mix when and how deeply it intentionally
-shadows variables. :)
+To help with this splitting, see:
+https://github.com/kees/kernel-tools/blob/trunk/split-on-maintainer
 
-Another way to try to catch misused shadow variables is
--Wunused-but-set-varible, but it, too, has tons of false positives.
+It's not perfect, but it'll get you really close. For example, if you
+had a single big tree-wide patch applied to your tree:
 
-I tried to capture some of the rationale and research here:
-https://github.com/KSPP/linux/issues/152
+$ rm 0*.patch
+$ git format-patch -1 HEAD
+$ mv 0*.patch treewide.patch
+$ split-on-maintainer treewide.patch
+$ ls 0*.patch
+
+If you have a build log before the patch that spits out warnings, the
+--build-log argument can extract those warnings on a per-file basis, too
+(though this can be fragile).
 
 -- 
 Kees Cook
