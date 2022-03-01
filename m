@@ -2,58 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE584C8813
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 10:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949234C8847
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 10:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231801AbiCAJfy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Mar 2022 04:35:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58646 "EHLO
+        id S232098AbiCAJou (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Mar 2022 04:44:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229720AbiCAJfx (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 04:35:53 -0500
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4790BC1B
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 01:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1646127312; x=1677663312;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=CY222U6cJcdryxzuzpNnTiKuURohUmX4MuYegXSm0LE=;
-  b=F8YffJqlXN4sukZAh4JTMYfUyb6VnxaS4FSKkztpreuEVLbz997eb0t9
-   Nsk8k6/rwfU64GTOVpm9K4CfDph4VFwEyJWGyJBSB5PWN9SqURKq+oHSB
-   e3XjQzd8cCfKIAkDwNt1RVE1rJ2O7tu4NGRYDKg7f50i8NMeIhkdye+af
-   MD+Fg0od6FSzwBSuLL5uErlSlDZsupdY8/oiOeBC4K2HJMvC3p6tbdKtD
-   v2l5yJipxRVNWq2I00MYQfuCtZrV8V425miiczIEKWJH6hNIEUwQ9dYZu
-   GBoVmtxG+NRxDkt15rH+bMXNUNtrY+Mv91V4Ni0ht8fwMflxAWXMnN2RU
-   A==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10272"; a="233068332"
-X-IronPort-AV: E=Sophos;i="5.90,145,1643702400"; 
-   d="scan'208";a="233068332"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Mar 2022 01:35:12 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,145,1643702400"; 
-   d="scan'208";a="593536533"
-Received: from lkp-server01.sh.intel.com (HELO 2146afe809fb) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Mar 2022 01:35:09 -0800
-Received: from kbuild by 2146afe809fb with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nOyuS-0000FA-Hf; Tue, 01 Mar 2022 09:35:08 +0000
-Date:   Tue, 01 Mar 2022 17:34:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- a80501b89152adb29adc7ab943d75c7345f9a3fb
-Message-ID: <621de896.krVZ7SknaButOFyA%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S232969AbiCAJot (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 04:44:49 -0500
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506543A188;
+        Tue,  1 Mar 2022 01:44:06 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V5wm1JI_1646127843;
+Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V5wm1JI_1646127843)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Mar 2022 17:44:03 +0800
+From:   Dust Li <dust.li@linux.alibaba.com>
+To:     Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>,
+        Guangguan Wang <guangguan.wang@linux.alibaba.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH net-next 0/7] net/smc: some datapath performance optimizations
+Date:   Tue,  1 Mar 2022 17:43:55 +0800
+Message-Id: <20220301094402.14992-1-dust.li@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,240 +40,116 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: a80501b89152adb29adc7ab943d75c7345f9a3fb  RDMA/core: Remove unnecessary statements
+Hi:
 
-elapsed time: 729m
+This series tries to improve the performance of SMC in datapath.
 
-configs tested: 216
-configs skipped: 4
+- patch #1, add sysctl interface to support tuning the behaviour of
+  SMC in container environment.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+- patch #2/#3, add autocorking support which is very efficient for small
+  messages without trade-off for latency.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-i386                          randconfig-c001
-i386                 randconfig-c001-20220228
-arc                        vdk_hs38_defconfig
-powerpc                      pasemi_defconfig
-m68k                       m5249evb_defconfig
-arm                            lart_defconfig
-arm                         assabet_defconfig
-arm                          simpad_defconfig
-sh                           se7780_defconfig
-arc                 nsimosci_hs_smp_defconfig
-parisc                              defconfig
-mips                             allyesconfig
-powerpc                        cell_defconfig
-s390                                defconfig
-h8300                       h8s-sim_defconfig
-nios2                         10m50_defconfig
-mips                           jazz_defconfig
-mips                         db1xxx_defconfig
-sh                ecovec24-romimage_defconfig
-m68k                            mac_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                        m5407c3_defconfig
-sh                              ul2_defconfig
-sh                            migor_defconfig
-powerpc                      tqm8xx_defconfig
-xtensa                    xip_kc705_defconfig
-nds32                               defconfig
-mips                     loongson1b_defconfig
-powerpc                     tqm8548_defconfig
-sh                        sh7757lcr_defconfig
-powerpc                      bamboo_defconfig
-arm                        keystone_defconfig
-arc                        nsim_700_defconfig
-mips                            gpr_defconfig
-arm                       omap2plus_defconfig
-powerpc                     tqm8555_defconfig
-mips                         mpc30x_defconfig
-arm                        cerfcube_defconfig
-mips                       bmips_be_defconfig
-mips                         rt305x_defconfig
-sh                          rsk7269_defconfig
-sh                        sh7785lcr_defconfig
-sh                         ecovec24_defconfig
-arm                        multi_v7_defconfig
-sh                          landisk_defconfig
-sh                          r7785rp_defconfig
-arc                            hsdk_defconfig
-sh                          r7780mp_defconfig
-sh                           se7724_defconfig
-sh                          sdk7780_defconfig
-arm                            pleb_defconfig
-microblaze                      mmu_defconfig
-arm                          pxa3xx_defconfig
-m68k                        m5307c3_defconfig
-m68k                          multi_defconfig
-powerpc                     redwood_defconfig
-parisc                generic-64bit_defconfig
-mips                          rb532_defconfig
-um                               alldefconfig
-sh                        edosk7705_defconfig
-sh                                  defconfig
-powerpc                   motionpro_defconfig
-sh                               alldefconfig
-um                           x86_64_defconfig
-s390                       zfcpdump_defconfig
-powerpc                     taishan_defconfig
-openrisc                    or1ksim_defconfig
-arm                         axm55xx_defconfig
-powerpc                     sequoia_defconfig
-m68k                       m5275evb_defconfig
-arm                        mini2440_defconfig
-sparc64                          alldefconfig
-sh                           se7619_defconfig
-powerpc                      ppc6xx_defconfig
-arc                          axs103_defconfig
-openrisc                         alldefconfig
-sh                           se7751_defconfig
-powerpc                 linkstation_defconfig
-arm                          badge4_defconfig
-arm                            qcom_defconfig
-arm                       aspeed_g5_defconfig
-arc                        nsimosci_defconfig
-m68k                         apollo_defconfig
-arm                        spear6xx_defconfig
-m68k                          amiga_defconfig
-arm                           viper_defconfig
-arm                  randconfig-c002-20220228
-arm                  randconfig-c002-20220227
-arm                  randconfig-c002-20220301
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64               randconfig-a011-20220228
-x86_64               randconfig-a015-20220228
-x86_64               randconfig-a014-20220228
-x86_64               randconfig-a013-20220228
-x86_64               randconfig-a016-20220228
-x86_64               randconfig-a012-20220228
-i386                 randconfig-a016-20220228
-i386                 randconfig-a012-20220228
-i386                 randconfig-a015-20220228
-i386                 randconfig-a011-20220228
-i386                 randconfig-a013-20220228
-i386                 randconfig-a014-20220228
-s390                 randconfig-r044-20220228
-arc                  randconfig-r043-20220228
-riscv                randconfig-r042-20220228
-arc                  randconfig-r043-20220227
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                             i386_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                         rhel-8.3-kunit
+- patch #4, send directly on setting TCP_NODELAY, without wake up the
+  TX worker, this make it consistent with clearing TCP_CORK.
 
-clang tested configs:
-powerpc              randconfig-c003-20220227
-x86_64                        randconfig-c007
-arm                  randconfig-c002-20220227
-mips                 randconfig-c004-20220227
-s390                 randconfig-c005-20220227
-i386                          randconfig-c001
-riscv                randconfig-c006-20220227
-powerpc              randconfig-c003-20220301
-riscv                randconfig-c006-20220301
-arm                  randconfig-c002-20220301
-mips                 randconfig-c004-20220301
-powerpc                     powernv_defconfig
-mips                           rs90_defconfig
-arm                         hackkit_defconfig
-arm                      pxa255-idp_defconfig
-powerpc                     tqm8540_defconfig
-mips                           mtx1_defconfig
-powerpc                     pseries_defconfig
-powerpc                     tqm8560_defconfig
-arm                       cns3420vb_defconfig
-arm                        neponset_defconfig
-arm                        vexpress_defconfig
-powerpc                      pmac32_defconfig
-arm                       imx_v4_v5_defconfig
-mips                      bmips_stb_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                     mpc5200_defconfig
-arm                           sama7_defconfig
-mips                           ip28_defconfig
-arm                        mvebu_v5_defconfig
-arm                          imote2_defconfig
-powerpc                        fsp2_defconfig
-arm                           spitz_defconfig
-arm                     davinci_all_defconfig
-mips                     cu1830-neo_defconfig
-x86_64               randconfig-a003-20220228
-x86_64               randconfig-a005-20220228
-x86_64               randconfig-a002-20220228
-x86_64               randconfig-a006-20220228
-x86_64               randconfig-a001-20220228
-x86_64               randconfig-a004-20220228
-i386                 randconfig-a002-20220228
-i386                 randconfig-a001-20220228
-i386                 randconfig-a005-20220228
-i386                 randconfig-a003-20220228
-i386                 randconfig-a006-20220228
-i386                 randconfig-a004-20220228
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-x86_64                        randconfig-a012
-i386                          randconfig-a011
-i386                          randconfig-a013
-i386                          randconfig-a015
-hexagon              randconfig-r045-20220301
-hexagon              randconfig-r045-20220227
-hexagon              randconfig-r041-20220227
-riscv                randconfig-r042-20220227
+- patch #5, this correct the setting of RMB window update limit, so
+  we don't send CDC messages to update peer's RMB window too frequently
+  in some cases.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+- patch #6, implemented something like NAPI in SMC, decrease the number
+  of hardirq when busy.
+
+- patch #7, this moves TX work doing in the BH to the user context when
+  sock_lock is hold by user.
+
+
+With this patchset applied, we can get a good performance gain:
+- qperf tcp_bw test has shown a great improvement. Other benchmarks like
+  'netperf TCP_STREAM' or 'sockperf throughput' has similar result.
+- In my testing environment, running qperf tcp_bw and tcp_lat, SMC behaves
+  better then TCP in most all message size.
+
+Here are some test results with the following testing command:
+client: smc_run taskset -c 1 qperf smc-server -oo msg_size:1:64K:*2 \
+		-t 30 -vu tcp_{bw|lat}
+server: smc_run taskset -c 1 qperf
+
+==== Bandwidth ====
+ MsgSize        Origin SMC              TCP                SMC with patches
+       1         0.578 MB/s      2.392 MB/s(313.57%)      2.561 MB/s(342.83%)
+       2         1.159 MB/s      4.780 MB/s(312.53%)      5.162 MB/s(345.46%)
+       4         2.283 MB/s     10.266 MB/s(349.77%)     10.122 MB/s(343.46%)
+       8         4.668 MB/s     19.040 MB/s(307.86%)     20.521 MB/s(339.59%)
+      16         9.147 MB/s     38.904 MB/s(325.31%)     40.823 MB/s(346.29%)
+      32        18.369 MB/s     79.587 MB/s(333.25%)     80.535 MB/s(338.42%)
+      64        36.562 MB/s    148.668 MB/s(306.61%)    158.170 MB/s(332.60%)
+     128        72.961 MB/s    274.913 MB/s(276.80%)    316.217 MB/s(333.41%)
+     256       144.705 MB/s    512.059 MB/s(253.86%)    626.019 MB/s(332.62%)
+     512       288.873 MB/s    884.977 MB/s(206.35%)   1221.596 MB/s(322.88%)
+    1024       574.180 MB/s   1337.736 MB/s(132.98%)   2203.156 MB/s(283.70%)
+    2048      1095.192 MB/s   1865.952 MB/s( 70.38%)   3036.448 MB/s(177.25%)
+    4096      2066.157 MB/s   2380.337 MB/s( 15.21%)   3834.271 MB/s( 85.58%)
+    8192      3717.198 MB/s   2733.073 MB/s(-26.47%)   4904.910 MB/s( 31.95%)
+   16384      4742.221 MB/s   2958.693 MB/s(-37.61%)   5220.272 MB/s( 10.08%)
+   32768      5349.550 MB/s   3061.285 MB/s(-42.77%)   5321.865 MB/s( -0.52%)
+   65536      5162.919 MB/s   3731.408 MB/s(-27.73%)   5245.021 MB/s(  1.59%)
+==== Latency ====
+ MsgSize        Origin SMC              TCP                SMC with patches
+       1        10.540 us     11.938 us( 13.26%)         10.356 us( -1.75%)
+       2        10.996 us     11.992 us(  9.06%)         10.073 us( -8.39%)
+       4        10.229 us     11.687 us( 14.25%)          9.996 us( -2.28%)
+       8        10.203 us     11.653 us( 14.21%)         10.063 us( -1.37%)
+      16        10.530 us     11.313 us(  7.44%)         10.013 us( -4.91%)
+      32        10.241 us     11.586 us( 13.13%)         10.081 us( -1.56%)
+      64        10.693 us     11.652 us(  8.97%)          9.986 us( -6.61%)
+     128        10.597 us     11.579 us(  9.27%)         10.262 us( -3.16%)
+     256        10.409 us     11.957 us( 14.87%)         10.148 us( -2.51%)
+     512        11.088 us     12.505 us( 12.78%)         10.206 us( -7.95%)
+    1024        11.240 us     12.255 us(  9.03%)         10.631 us( -5.42%)
+    2048        11.485 us     16.970 us( 47.76%)         10.981 us( -4.39%)
+    4096        12.077 us     13.948 us( 15.49%)         11.847 us( -1.90%)
+    8192        13.683 us     16.693 us( 22.00%)         13.336 us( -2.54%)
+   16384        16.470 us     23.615 us( 43.38%)         16.519 us(  0.30%)
+   32768        22.540 us     40.966 us( 81.75%)         22.452 us( -0.39%)
+   65536        34.192 us     73.003 us(113.51%)         33.916 us( -0.81%)
+
+------------
+Test environment notes:
+1. Testing is run on 2 VMs within the same physical host
+2. The NIC is ConnectX-4Lx, using SRIOV, and passing through 2 VFs to the
+   2 VMs respectively.
+3. To decrease jitter, VM's vCPU are binded to each physical CPU, and those
+   physical CPUs are all isolated using boot parameter `isolcpus=xxx`
+4. The queue number are set to 1, and interrupt from the queue is binded to
+   CPU0 in the guest
+
+
+Dust Li (7):
+  net/smc: add sysctl interface for SMC
+  net/smc: add autocorking support
+  net/smc: add sysctl for autocorking
+  net/smc: send directly on setting TCP_NODELAY
+  net/smc: correct settings of RMB window update limit
+  net/smc: don't req_notify until all CQEs drained
+  net/smc: don't send in the BH context if sock_owned_by_user
+
+ Documentation/networking/smc-sysctl.rst |  23 +++++
+ include/net/netns/smc.h                 |   4 +
+ net/smc/Makefile                        |   2 +-
+ net/smc/af_smc.c                        |  30 ++++++-
+ net/smc/smc.h                           |   6 ++
+ net/smc/smc_cdc.c                       |  24 ++++--
+ net/smc/smc_core.c                      |   2 +-
+ net/smc/smc_sysctl.c                    |  80 ++++++++++++++++++
+ net/smc/smc_sysctl.h                    |  32 +++++++
+ net/smc/smc_tx.c                        | 107 +++++++++++++++++++++---
+ net/smc/smc_wr.c                        |  49 ++++++-----
+ 11 files changed, 317 insertions(+), 42 deletions(-)
+ create mode 100644 Documentation/networking/smc-sysctl.rst
+ create mode 100644 net/smc/smc_sysctl.c
+ create mode 100644 net/smc/smc_sysctl.h
+
+-- 
+2.19.1.3.ge56e4f7
+
