@@ -2,191 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5194C9729
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 21:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6EE14C9841
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 23:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238150AbiCAUnv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Mar 2022 15:43:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        id S237854AbiCAWV4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Mar 2022 17:21:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237647AbiCAUnu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 15:43:50 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D34A91A
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 12:43:08 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id kt27so4821312ejb.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 12:43:08 -0800 (PST)
+        with ESMTP id S235819AbiCAWV4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 17:21:56 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25CA7087E
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 14:21:13 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id gl14-20020a17090b120e00b001bc2182c3d5so2459352pjb.1
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 14:21:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rAZcpGOFnijhfBt719P+IqprCBqe8sD9TF0Sez9IwiQ=;
-        b=F+7BPGYsO9QeRc6BTbvPUJxguXCTYika7fzNVLbSEfMjTVK29FjvhOtCtbBO2oalkB
-         9cweHARFFeQAeiDWhTrtcdfTzbCEOfTOrVCN9rTTV3Ek5jpvIVUt3aua8OA61CgDhA1w
-         zQABsshAfnGl6gFdFI9HcnnKU8AOre3uWnEew=
+        d=fastly.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=ElbLMF6oy6wckfqKSQzAjI3zz9O5jqK83/cr/KExsn4=;
+        b=k9Kj8DDJ6cZAynYDRq3IL52Nl6M2s2t2U7i/xWCC8K/mCj3CtZlySv8GmKXqpl08EU
+         coN6+ehHKtmS7yEjIKah/2nWaQqXHd7eR77sFp3rrSOVx6kbMmw3hookr/LuZBDdf5AC
+         NSx6ZNeqg50nR3i0iumuPwsYnqAuW/aJ4pbjA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rAZcpGOFnijhfBt719P+IqprCBqe8sD9TF0Sez9IwiQ=;
-        b=qtJ4xYkPVTbDTecMyg/me4D2cviGnniO4UrLeJ8pnkWES5Byznn47xn6J38U/HpjBz
-         BBPkCtivRqynnEAxSDcQ9yJqGLe2n169BY22puGS68b1VhYZoc9brCJs4IKdibDl9n+I
-         fUqdl7JaToSwMW9aRuUlTKb4sLogd+1dSFiQDkyP5IftgoaW3FCYd4QhWlsuaCDAm8qy
-         Yf/pi32Mjk06EshTN6VTvmxJprnHnkdShj+GYRlP7fmuzYNDMfQL0XWcveuSVIq4aBU6
-         BIYkn1sHV6EsJI0iseWAnPA/BulsyD3rNrYA5Fvzg7GFay7puGPRMJSJghxm8mY0YSFv
-         69qA==
-X-Gm-Message-State: AOAM532rJzaG31cIDsYhy/2K0eOoA1LoEjOYXFkDGkCEdvlvZEVGW8gr
-        Jo/3e6f0ve1rbuyADBs0+6VG3kbhdXP6C8PbjI0=
-X-Google-Smtp-Source: ABdhPJwQGz6jHyqcgmffu+sAg3xMQaVu3OnV+WSoYO8BMbTnvKHwudANY5BYzNuzckmJ0QYmkzKY/g==
-X-Received: by 2002:a17:906:eb03:b0:6cd:7cc2:a677 with SMTP id mb3-20020a170906eb0300b006cd7cc2a677mr20410520ejb.208.1646167386857;
-        Tue, 01 Mar 2022 12:43:06 -0800 (PST)
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com. [209.85.221.45])
-        by smtp.gmail.com with ESMTPSA id n6-20020a170906724600b006d4e2f6857dsm5621443ejk.139.2022.03.01.12.43.06
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 01 Mar 2022 12:43:06 -0800 (PST)
-Received: by mail-wr1-f45.google.com with SMTP id j17so22436017wrc.0
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 12:43:06 -0800 (PST)
-X-Received: by 2002:ac2:44a4:0:b0:445:8fc5:a12a with SMTP id
- c4-20020ac244a4000000b004458fc5a12amr10608648lfm.27.1646166980002; Tue, 01
- Mar 2022 12:36:20 -0800 (PST)
-MIME-Version: 1.0
-References: <20220228110822.491923-1-jakobkoschel@gmail.com> <20220228110822.491923-7-jakobkoschel@gmail.com>
-In-Reply-To: <20220228110822.491923-7-jakobkoschel@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 1 Mar 2022 12:36:03 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgLtKofBbn9kSXRU3MpdX7S2OxN1V5Mc679oJpFnp_VnQ@mail.gmail.com>
-Message-ID: <CAHk-=wgLtKofBbn9kSXRU3MpdX7S2OxN1V5Mc679oJpFnp_VnQ@mail.gmail.com>
-Subject: Re: [PATCH 6/6] treewide: remove check of list iterator against head
- past the loop body
-To:     Jakob Koschel <jakobkoschel@gmail.com>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergman <arnd@arndb.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
-        Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        "Bos, H.J." <h.j.bos@vu.nl>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-sgx@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-iio@vger.kernel.org,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        dma <dmaengine@vger.kernel.org>,
-        linux1394-devel@lists.sourceforge.net,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>,
-        nouveau@lists.freedesktop.org,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        intel-wired-lan@lists.osuosl.org, Netdev <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-staging@lists.linux.dev, linux-usb@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org, KVM list <kvm@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical@lists.samba.org,
-        Linux F2FS Dev Mailing List 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net,
-        v9fs-developer@lists.sourceforge.net,
-        tipc-discussion@lists.sourceforge.net, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ElbLMF6oy6wckfqKSQzAjI3zz9O5jqK83/cr/KExsn4=;
+        b=n3jyHeo4zeh1er6WJeIdFZuSiYQ0mFqbrfb11Pby5jrO3VxLJpi9FRK60hGZbZ77NM
+         Zj9HJOmoef+eg6IJqIjdN+cTIIwGIjCCpQhRrswMtRuXyTBeW4mYs+uA6zy/3w/2aaPw
+         dhZsyVtPYivvZ1GyQKR/+NfXENPG8Yl6I9i/jDTNJAGWSIua/lkqIyyOS9lvARiMQlcc
+         d1Vo0Kn8VO0X79EZH59O7XvSoIJciKPK5MuRiuG6hyJYmm/vo6+LkVIR37ECBTamyuEw
+         Xxp2ouvSmEllPj2sG7AoZy5oaIwve6MQopuyG4T+od2QUqHURZ7RCzN8q6IylsXtkjXe
+         TMZQ==
+X-Gm-Message-State: AOAM533J5WKMsRvYoCuaFkr/lNWIz1M01Th20KhfLLI1d8M54KHoG+AE
+        8cn0/vRcyAe8Da4lWzMGXpdlFizPWFjn0Q==
+X-Google-Smtp-Source: ABdhPJzgA2nt2Amyw2xS2lOJBAAaO4bahdtEfUURCWGO8bJxhWldJtIVyPWwXsuPccmfHpIg+WsArg==
+X-Received: by 2002:a17:90b:ecf:b0:1bc:232d:a87d with SMTP id gz15-20020a17090b0ecf00b001bc232da87dmr23794218pjb.27.1646173273415;
+        Tue, 01 Mar 2022 14:21:13 -0800 (PST)
+Received: from localhost.localdomain (c-73-223-190-181.hsd1.ca.comcast.net. [73.223.190.181])
+        by smtp.gmail.com with ESMTPSA id h22-20020a056a00231600b004e1784925e5sm18819108pfh.97.2022.03.01.14.21.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 01 Mar 2022 14:21:12 -0800 (PST)
+From:   Joe Damato <jdamato@fastly.com>
+To:     netdev@vger.kernel.org, kuba@kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net, hawk@kernel.org,
+        saeed@kernel.org, ttoukan.linux@gmail.com, brouer@redhat.com,
+        leon@kernel.org, linux-rdma@vger.kernel.org, saeedm@nvidia.com
+Cc:     Joe Damato <jdamato@fastly.com>
+Subject: [net-next v8 0/4] page_pool: Add stats counters
+Date:   Tue,  1 Mar 2022 14:10:06 -0800
+Message-Id: <1646172610-129397-1-git-send-email-jdamato@fastly.com>
+X-Mailer: git-send-email 2.7.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-So looking at this patch, I really reacted to the fact that quite
-often the "use outside the loop" case is all kinds of just plain
-unnecessary, but _used_ to be a convenience feature.
+Greetings:
 
-I'll just quote the first chunk in it's entirely as an example - not
-because I think this chunk is particularly important, but because it's
-a good example:
+Welcome to v8.
 
-On Mon, Feb 28, 2022 at 3:09 AM Jakob Koschel <jakobkoschel@gmail.com> wrote:
->
-> diff --git a/arch/arm/mach-mmp/sram.c b/arch/arm/mach-mmp/sram.c
-> index 6794e2db1ad5..fc47c107059b 100644
-> --- a/arch/arm/mach-mmp/sram.c
-> +++ b/arch/arm/mach-mmp/sram.c
-> @@ -39,19 +39,22 @@ static LIST_HEAD(sram_bank_list);
->  struct gen_pool *sram_get_gpool(char *pool_name)
->  {
->         struct sram_bank_info *info = NULL;
-> +       struct sram_bank_info *tmp;
->
->         if (!pool_name)
->                 return NULL;
->
->         mutex_lock(&sram_lock);
->
-> -       list_for_each_entry(info, &sram_bank_list, node)
-> -               if (!strcmp(pool_name, info->pool_name))
-> +       list_for_each_entry(tmp, &sram_bank_list, node)
-> +               if (!strcmp(pool_name, tmp->pool_name)) {
-> +                       info = tmp;
->                         break;
-> +               }
->
->         mutex_unlock(&sram_lock);
->
-> -       if (&info->node == &sram_bank_list)
-> +       if (!info)
->                 return NULL;
->
->         return info->gpool;
+This revision updates the ethtool name strings of page pool stats in the 
+mlx5 driver to be more user friendly.
 
-I realize this was probably at least auto-generated with coccinelle,
-but maybe that script could be taught to do avoid the "use after loop"
-by simply moving the code _into_ the loop.
+I've included Jesper's ACK tag and Ilias' Reviewed-by tags to the first 3
+commits, but otherwise no other changes have been made.
 
-IOW, this all would be cleaner and clear written as
+Benchmark output from the v7 cover [1] is pasted below, as it is still
+relevant since no functional changes have been made in this revision:
 
-        if (!pool_name)
-                return NULL;
+Benchmarks have been re-run. As always, results between runs are highly
+variable; you'll find results showing that stats disabled are both faster
+and slower than stats enabled in back to back benchmark runs.
 
-        mutex_lock(&sram_lock);
-        list_for_each_entry(info, &sram_bank_list, node) {
-                if (!strcmp(pool_name, info->pool_name)) {
-                        mutex_unlock(&sram_lock);
-                        return info;
-                }
-        }
-        mutex_unlock(&sram_lock);
-        return NULL;
+Raw benchmark output with stats off [2] and stats on [3] are available for
+examination.
 
-Ta-daa - no use outside the loop, no need for new variables, just a
-simple "just do it inside the loop". Yes, we end up having that lock
-thing twice, but it looks worth it from a "make the code obvious"
-standpoint.
+Test system:
+	- 2x Intel(R) Xeon(R) Gold 6140 CPU @ 2.30GHz
+	- 2 NUMA zones, with 18 cores per zone and 2 threads per core
 
-Would it be even cleaner if the locking was done in the caller, and
-the loop was some simple helper function? It probably would. But that
-would require a bit more smarts than probably a simple coccinelle
-script would do.
+bench_page_pool_simple results, loops=200000000
+test name			stats enabled		stats disabled
+				cycles	nanosec		cycles	nanosec
 
-                Linus
+for_loop			0	0.335		0	0.336
+atomic_inc 			14	6.106		13	6.022
+lock				30	13.365		32	13.968
+
+no-softirq-page_pool01		75	32.884		74	32.308
+no-softirq-page_pool02		79	34.696		74	32.302
+no-softirq-page_pool03		110	48.005		105	46.073
+
+tasklet_page_pool01_fast_path	14	6.156		14	6.211
+tasklet_page_pool02_ptr_ring	41	18.028		39	17.391
+tasklet_page_pool03_slow	107	46.646		105	46.123
+
+bench_page_pool_cross_cpu results, loops=20000000 returning_cpus=4:
+test name			stats enabled		stats disabled
+				cycles	nanosec		cycles	nanosec
+
+page_pool_cross_cpu CPU(0)	3973	1731.596	4015	1750.015
+page_pool_cross_cpu CPU(1)	3976	1733.217	4022	1752.864
+page_pool_cross_cpu CPU(2)	3973	1731.615	4016	1750.433
+page_pool_cross_cpu CPU(3)	3976	1733.218	4021	1752.806
+page_pool_cross_cpu CPU(4)	994	433.305		1005	438.217
+
+page_pool_cross_cpu average	3378	-		3415	-
+
+bench_page_pool_cross_cpu results, loops=20000000 returning_cpus=8:
+test name			stats enabled		stats disabled
+				cycles	nanosec		cycles	nanosec
+
+page_pool_cross_cpu CPU(0)	6969	3037.488	6909	3011.463
+page_pool_cross_cpu CPU(1)	6974	3039.469	6913	3012.961
+page_pool_cross_cpu CPU(2)	6969	3037.575	6910	3011.585
+page_pool_cross_cpu CPU(3)	6974	3039.415	6913	3012.961
+page_pool_cross_cpu CPU(4)	6969	3037.288	6909	3011.368
+page_pool_cross_cpu CPU(5)	6972	3038.732	6913	3012.920
+page_pool_cross_cpu CPU(6)	6969	3037.350	6909	3011.386
+page_pool_cross_cpu CPU(7)	6973	3039.356	6913	3012.921
+page_pool_cross_cpu CPU(8)	871	379.934		864	376.620
+
+page_pool_cross_cpu average	6293	-		6239	-
+
+Thanks.
+
+[1]: https://lore.kernel.org/all/1645810914-35485-1-git-send-email-jdamato@fastly.com/
+[2]: https://gist.githubusercontent.com/jdamato-fsly/d7c34b9fa7be1ce132a266b0f2b92aea/raw/327dcd71d11ece10238fbf19e0472afbcbf22fd4/v7_stats_disabled
+[3]: https://gist.githubusercontent.com/jdamato-fsly/d7c34b9fa7be1ce132a266b0f2b92aea/raw/327dcd71d11ece10238fbf19e0472afbcbf22fd4/v7_stats_enabled
+
+v7 -> v8:
+	- Rename mlx5 ethtool stats so that users have a better idea of
+	  their meaning.
+
+v6 -> v7:
+	- stats split out into two structs one single per-page pool struct
+	  for allocation path stats and one per-cpu pointer for recycle
+	  path stats.
+	- page_pool_get_stats updated to use a wrapper struct to gather
+	  stats for allocation and recycle stats with a single argument.
+	- placement of structs adjusted
+	- mlx5 driver modified to use page_pool_get_stats API
+
+v5 -> v6:
+	- Per cpu page_pool_stats struct pointer is now marked as
+	  ____cacheline_aligned_in_smp. Placement of the field in the
+	  struct is unchanged; it is the last field.
+
+v4 -> v5:
+	- Fixed the description of the kernel option in Kconfig.
+	- Squashed commits 1-10 from v4 into a single commit for easier
+	  review.
+	- Changed the comment style of the comment for
+	  the this_cpu_inc_alloc_stat macro.
+	- Changed the return type of page_pool_get_stats from struct
+	  page_pool_stat * to bool.
+
+v3 -> v4:
+	- Restructured stats to be per-cpu per-pool.
+	- Global stats and proc file were removed.
+	- Exposed an API (page_pool_get_stats) for batching the pool stats.
+
+v2 -> v3:
+	- patch 8/10 ("Add stat tracking cache refill") fixed placement of
+	  counter increment.
+	- patch 10/10 ("net-procfs: Show page pool stats in proc") updated:
+		- fix unused label warning from kernel test robot,
+		- fixed page_pool_seq_show to only display the refill stat
+		  once,
+		- added a remove_proc_entry for page_pool_stat to
+		  dev_proc_net_exit.
+
+v1 -> v2:
+	- A new kernel config option has been added, which defaults to N,
+	   preventing this code from being compiled in by default
+	- The stats structure has been converted to a per-cpu structure
+	- The stats are now exported via proc (/proc/net/page_pool_stat)
+
+Joe Damato (4):
+  page_pool: Add allocation stats
+  page_pool: Add recycle stats
+  page_pool: Add function to batch and return stats
+  mlx5: add support for page_pool_get_stats
+
+ drivers/net/ethernet/mellanox/mlx5/core/en_stats.c | 75 +++++++++++++++++++++
+ drivers/net/ethernet/mellanox/mlx5/core/en_stats.h | 27 +++++++-
+ include/net/page_pool.h                            | 51 ++++++++++++++
+ net/Kconfig                                        | 13 ++++
+ net/core/page_pool.c                               | 77 ++++++++++++++++++++--
+ 5 files changed, 237 insertions(+), 6 deletions(-)
+
+-- 
+2.7.4
+
