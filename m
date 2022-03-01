@@ -2,54 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 607754C7F82
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 01:45:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1B374C7FDB
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 01:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbiCAAqL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Feb 2022 19:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        id S229759AbiCAA6t (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Feb 2022 19:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbiCAAqK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 19:46:10 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C197C119
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:45:29 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id u7so19714105ljk.13
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:45:29 -0800 (PST)
+        with ESMTP id S229516AbiCAA6s (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Feb 2022 19:58:48 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847E54D61B
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:58:08 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id v28so19746370ljv.9
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:58:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BlmDHl6uq7o6y8aC/cJk7fo5oLGvHdeOO4XUoHPiZHY=;
-        b=CuWkmdhnuqYUPLlFfSW5kqvLG+/BaUYxswQvwT5TlbeMKdgX0f6Tdop/2MomIxMIWT
-         P4yfskuo3sOir2HSEC5b7N//0EkwPlLVbS+ffho6xWO2QaHJfy0oi9bnLtClO4bSDX+r
-         dQzBghLtont2uRRAhfDOfzUglX2wpO3DzhpXQ=
+        bh=+UrwimTIhzKiU9pJv3o5X6bf+6FXMWBGxz+Z+GIIGDc=;
+        b=avIYh8aQ2dDobwKAVUmxzj/7dS14/rGtEVGY0pMiaJUsHbP3qIU6kno3XMfBz/RlQM
+         DBr9tOtZ8iqO/uKNwSujAwo9mle8zBl2HT1HDuvvvRH+Bqr8BYPzCJojUUOk2VYbR5wW
+         hMzIeM3di7snjNNfrAaBZvtX47IfluwYB/RPY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BlmDHl6uq7o6y8aC/cJk7fo5oLGvHdeOO4XUoHPiZHY=;
-        b=tOUr0/n4+d6ugf/Z82yOImwE85LIbEYV9+rTvd43BIv6NF9mAjq2IuswOmDVLDCq55
-         60CBaY5J2yuFbV+eXCViOL/+I5182RIP3p0uTvQ4epxLt0FSeGokPLnq/YI6nojYkCkN
-         q+DDn/zhDwhm9d9bOxSpwxcX53L8Y6qfxs7EVDu0rQoKGTILy1gNormruwCsoZlI+I3T
-         1Ndsb31ALdx/b+LTmrYkYCimGbI75mTo4A419B6ivKLzYVV5svhPIKzSxmvvJO6ub1C5
-         LFDiekJMAFSltW8T08RhKYwYEUz/HDSv9Oycu7Y9S2EM5Rl7fJbbosovG4yAz1tP2aUz
-         GzEQ==
-X-Gm-Message-State: AOAM533XAMBAHuBgFoDAIY4inQPz/TE/TzSZC627hDmv0Izs4CGEA6bF
-        sZO9p7a5BKiksQdyemE93bY4m2LH07cRw9aCUpY=
-X-Google-Smtp-Source: ABdhPJzMjQDh2yNTlqIgp5jDWpSJlWziTXOdI7OIrs9Ej+12VZTxqDuAJ32fl0jhBJE2NAx1oCu/ig==
-X-Received: by 2002:a2e:b444:0:b0:244:c6ff:4894 with SMTP id o4-20020a2eb444000000b00244c6ff4894mr15520659ljm.457.1646095528200;
-        Mon, 28 Feb 2022 16:45:28 -0800 (PST)
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
-        by smtp.gmail.com with ESMTPSA id u19-20020a2e91d3000000b002461bced9e2sm1631866ljg.79.2022.02.28.16.45.27
+        bh=+UrwimTIhzKiU9pJv3o5X6bf+6FXMWBGxz+Z+GIIGDc=;
+        b=YAegCq0m1cFqHIhOh/V1o9pSzSl93Z5GFi6dHGzuYKc0SF2S4KnBB48iQyR1tYgnrc
+         PDuF4y71+7gZUHAxk90BnofE2gvF+vp6fHQPvi25Xe6LB+5UCZQG673RMqPzv7vo1s42
+         ZLovBf3Z0EtkUnq6wVZKF0yezv1pTbxUN2wkPPrcspxZrBckXZcXmaxH8jKNFwIWfh88
+         9BekuYz6xZUiko87Qc/A4k8zQd9fS68F48B/spmzcSoiw5mLWNZc9kOO3D1Ie1sukzV3
+         IMiUd9J4GQXRtvmPkAOxRxPoCxR4Q90OvdFv+9Xh5uaZhEKTrDsMV13HytFBZon+ojFw
+         1ODg==
+X-Gm-Message-State: AOAM533wOw54iRi6s/oJXxdx3rov5ZGcrE3kOr/M/DrrWHWRFoGsUNdr
+        1plV8UY5zreOXNlvSUDZdzuHMicw1INIa2/3j4I=
+X-Google-Smtp-Source: ABdhPJzVjUE4up0zMZPOFqd0I0M8XIebgCffdoZ9OzSVByLoOyOhDjaDsnr7GQ+JF/kA1Dec/byx7g==
+X-Received: by 2002:a2e:8449:0:b0:246:440d:b2aa with SMTP id u9-20020a2e8449000000b00246440db2aamr15457632ljh.107.1646096286688;
+        Mon, 28 Feb 2022 16:58:06 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id h14-20020a056512220e00b004437dcf8310sm1218210lfu.7.2022.02.28.16.58.03
         for <linux-rdma@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Feb 2022 16:45:28 -0800 (PST)
-Received: by mail-lf1-f46.google.com with SMTP id j7so24266493lfu.6
-        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:45:27 -0800 (PST)
+        Mon, 28 Feb 2022 16:58:04 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id t13so12297627lfd.9
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Feb 2022 16:58:03 -0800 (PST)
 X-Received: by 2002:a05:6512:3042:b0:437:96f5:e68a with SMTP id
- b2-20020a056512304200b0043796f5e68amr14778245lfb.449.1646095527444; Mon, 28
- Feb 2022 16:45:27 -0800 (PST)
+ b2-20020a056512304200b0043796f5e68amr14803965lfb.449.1646096282839; Mon, 28
+ Feb 2022 16:58:02 -0800 (PST)
 MIME-Version: 1.0
 References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <20220228110822.491923-3-jakobkoschel@gmail.com> <2e4e95d6-f6c9-a188-e1cd-b1eae465562a@amd.com>
@@ -57,12 +57,12 @@ References: <20220228110822.491923-1-jakobkoschel@gmail.com>
  <CAHk-=wj8fkosQ7=bps5K+DDazBXk=ypfn49A0sEq+7-nZnyfXA@mail.gmail.com>
  <CAHk-=wiTCvLQkHcJ3y0hpqH7FEk9D28LDvZZogC6OVLk7naBww@mail.gmail.com>
  <Yh0tl3Lni4weIMkl@casper.infradead.org> <CAHk-=wgBfJ1-cPA2LTvFyyy8owpfmtCuyiZi4+um8DhFNe+CyA@mail.gmail.com>
- <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
-In-Reply-To: <Yh1aMm3hFe/j9ZbI@casper.infradead.org>
+ <Yh1aMm3hFe/j9ZbI@casper.infradead.org> <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
+In-Reply-To: <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 28 Feb 2022 16:45:11 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
-Message-ID: <CAHk-=wi0gSUMBr2SVF01Gy1xC1w1iGtJT5ztju9BPWYKjdh+NA@mail.gmail.com>
+Date:   Mon, 28 Feb 2022 16:57:46 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whqJmCZ+VHTJPwsHYc1YNNEvWS7=ukqGKfBxcBYAToAkw@mail.gmail.com>
+Message-ID: <CAHk-=whqJmCZ+VHTJPwsHYc1YNNEvWS7=ukqGKfBxcBYAToAkw@mail.gmail.com>
 Subject: Re: [PATCH 2/6] treewide: remove using list iterator after loop body
  as a ptr
 To:     Matthew Wilcox <willy@infradead.org>
@@ -127,22 +127,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Feb 28, 2022 at 3:26 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Feb 28, 2022 at 4:45 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> #define ___PASTE(a, b)  a##b
-> #define __PASTE(a, b) ___PASTE(a, b)
-> #define _min(a, b, u) ({         \
+> Yeah, except that's ugly beyond belief, plus it's literally not what
+> we do in the kernel.
 
-Yeah, except that's ugly beyond belief, plus it's literally not what
-we do in the kernel.
+(Of course, I probably shouldn't have used 'min()' as an example,
+because that is actually one of the few places where we do exactly
+that, using our __UNIQUE_ID() macros. Exactly because people _have_
+tried to do -Wshadow when doing W=2).
 
-Really. The "-Wshadow doesn't work on the kernel" is not some new
-issue, because you have to do completely insane things to the source
-code to enable it.
-
-Just compare your uglier-than-sin version to my straightforward one.
-One does the usual and obvious "use a private variable to avoid the
-classic multi-use of a macro argument". And the other one is an
-abomination.
-
-              Linus
+                 Linus
