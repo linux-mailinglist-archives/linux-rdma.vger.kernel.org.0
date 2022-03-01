@@ -2,56 +2,56 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 575644C9843
-	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 23:21:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FDF74C9845
+	for <lists+linux-rdma@lfdr.de>; Tue,  1 Mar 2022 23:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238338AbiCAWV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Mar 2022 17:21:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S238453AbiCAWWC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Mar 2022 17:22:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235819AbiCAWV5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 17:21:57 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72B17087E
-        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 14:21:15 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id s11so79934pfu.13
-        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 14:21:15 -0800 (PST)
+        with ESMTP id S229663AbiCAWV7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 17:21:59 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA1E7087E
+        for <linux-rdma@vger.kernel.org>; Tue,  1 Mar 2022 14:21:17 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id o26so14774314pgb.8
+        for <linux-rdma@vger.kernel.org>; Tue, 01 Mar 2022 14:21:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=fastly.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nwQXhyarowCQ+/fX/LL3KslL9YJnrRgt0wJqqdzlIWA=;
-        b=ij7pttawbT4BFlpg4QqbCKx2D7g9Hj3X5BgCTFtzzZGtsqIuVMHAZw2WMtvi44Q5fy
-         YKLae194hUCyUqlZ3SJMZMWjK29j2Ych68q5mAzgEevnGzUZAicrOCr3vAxMV5ReBZ7R
-         jAc+LfLwuRKRLcMXVGc0ukLRp4WGZMz0UHq3U=
+        bh=vAuK+4Po2H0An9vRr1xKMmeJWRsSBYUuH506t4t8d/o=;
+        b=VOooHAkG54Ax+I735CLpQiYn5oaUm3WUwIT32rUCuI1sM7qaGMpGIloCr1umBaheQf
+         OJYIqVJLDesXbIhoMjYuLUYgOQEl4N+BODr9b9fDtyijqBu0etWLKN2yO3KM/mM1iBDI
+         4M3WtTRujma9s8PawozO2Hviy/a0JaceARS8s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=nwQXhyarowCQ+/fX/LL3KslL9YJnrRgt0wJqqdzlIWA=;
-        b=QAF3jVWNDRn/o2h0TcdPfE4o1poRGy6TXCFetdRMO4l91WeRfbFkt6idPKt0+2S8KF
-         K1K5kHHMFjkQKPsEWKOjYqdDcpT0CIdyyAFOx3x8p83NDIp+WUypVx1PVy8TesMfeRUq
-         rtVu2brxQF73yWLEmUnfnfrwOqPKgHhzC0yKVeXqA7GQBKli0KLxBGXjvaKyjCevYj0Q
-         2XydiBDIzK+PKxS8cGGAJ6DPb2FLp4CNE1ALTWHN0scbcGyMb+6uV2vdnLGjTlMpj8s1
-         0kWkOlpRytNaphFWpmkJz17juTGgTWVkgNkcCjTLSc5/glFESPCHwDjJ9thxV/VOkoLg
-         Lfyw==
-X-Gm-Message-State: AOAM530c49uDzzHQFm93I66RO/xrrJx/6r1imu7j05JGOi7bf0tqVZg8
-        uOu+J1VCFGdsSuWM0ySw/LqCLw==
-X-Google-Smtp-Source: ABdhPJzVwrxwJOBLr2NR6pbzF8rVQBVSFbxOF8g6KAKCSq7EBvWkza9NnrP5ghuEGT1P50yTAk5bQg==
-X-Received: by 2002:a65:4687:0:b0:373:a276:767 with SMTP id h7-20020a654687000000b00373a2760767mr23439183pgr.409.1646173275193;
-        Tue, 01 Mar 2022 14:21:15 -0800 (PST)
+        bh=vAuK+4Po2H0An9vRr1xKMmeJWRsSBYUuH506t4t8d/o=;
+        b=aB/WsGLCSMssf4hkPfi5vTzl7UjjfpPo+sk5/pY97JYnKBJjcEdcWNgCWUDoRHFq1w
+         O9+TSpi4FpMh8SVfeJkYa3GRSe4Bjkds8EkXbv/TiDvKPgiwbJ4g+FQHo9ZbQOHI/pqs
+         9ziFTPs1w2gxDyr6zadxxdy6PHCerbPXY9xOyXQ8gtWyuGHuGZNloe/+W9+isR66vY6Q
+         R2iwq5Z8WOEoiDoRMOLYcy0+A7FOkbWoLoJ5SAb9TVBTQoaVkz8fDlT4UXcfhfe8bKoC
+         BGU5znQeJ5jAocKt/HpOD1WCoEoKq9eseNEOP1sBGBgPud2NgbKG5HtaF5pwyYNzV+X9
+         IMJA==
+X-Gm-Message-State: AOAM5337x0oxWVn9LewBKcCUctuCQqpuDB3D5dP2KIh9pQw7aoMeY8Dj
+        sBlhoFVqMIh1JH370ryUWP7cYw==
+X-Google-Smtp-Source: ABdhPJy1QuRkiTutMafot9Deo2oHly0zmxLtVogQhurYGwwFgHqYcBs5DAstHR/sQDWk4sIhQIqUZQ==
+X-Received: by 2002:a63:ea42:0:b0:378:f275:fb0 with SMTP id l2-20020a63ea42000000b00378f2750fb0mr3177529pgk.116.1646173276934;
+        Tue, 01 Mar 2022 14:21:16 -0800 (PST)
 Received: from localhost.localdomain (c-73-223-190-181.hsd1.ca.comcast.net. [73.223.190.181])
-        by smtp.gmail.com with ESMTPSA id h22-20020a056a00231600b004e1784925e5sm18819108pfh.97.2022.03.01.14.21.13
+        by smtp.gmail.com with ESMTPSA id h22-20020a056a00231600b004e1784925e5sm18819108pfh.97.2022.03.01.14.21.15
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Mar 2022 14:21:14 -0800 (PST)
+        Tue, 01 Mar 2022 14:21:16 -0800 (PST)
 From:   Joe Damato <jdamato@fastly.com>
 To:     netdev@vger.kernel.org, kuba@kernel.org,
         ilias.apalodimas@linaro.org, davem@davemloft.net, hawk@kernel.org,
         saeed@kernel.org, ttoukan.linux@gmail.com, brouer@redhat.com,
         leon@kernel.org, linux-rdma@vger.kernel.org, saeedm@nvidia.com
 Cc:     Joe Damato <jdamato@fastly.com>
-Subject: [net-next v8 1/4] page_pool: Add allocation stats
-Date:   Tue,  1 Mar 2022 14:10:07 -0800
-Message-Id: <1646172610-129397-2-git-send-email-jdamato@fastly.com>
+Subject: [net-next v8 2/4] page_pool: Add recycle stats
+Date:   Tue,  1 Mar 2022 14:10:08 -0800
+Message-Id: <1646172610-129397-3-git-send-email-jdamato@fastly.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1646172610-129397-1-git-send-email-jdamato@fastly.com>
 References: <1646172610-129397-1-git-send-email-jdamato@fastly.com>
@@ -65,171 +65,142 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add per-pool statistics counters for the allocation path of a page pool.
-These stats are incremented in softirq context, so no locking or per-cpu
-variables are needed.
-
-This code is disabled by default and a kernel config option is provided for
-users who wish to enable them.
-
-The statistics added are:
-	- fast: successful fast path allocations
-	- slow: slow path order-0 allocations
-	- slow_high_order: slow path high order allocations
-	- empty: ptr ring is empty, so a slow path allocation was forced.
-	- refill: an allocation which triggered a refill of the cache
-	- waive: pages obtained from the ptr ring that cannot be added to
-	  the cache due to a NUMA mismatch.
+Add per-cpu stats tracking page pool recycling events:
+	- cached: recycling placed page in the page pool cache
+	- cache_full: page pool cache was full
+	- ring: page placed into the ptr ring
+	- ring_full: page released from page pool because the ptr ring was full
+	- released_refcnt: page released (and not recycled) because refcnt > 1
 
 Signed-off-by: Joe Damato <jdamato@fastly.com>
 Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
 ---
- include/net/page_pool.h | 18 ++++++++++++++++++
- net/Kconfig             | 13 +++++++++++++
- net/core/page_pool.c    | 24 ++++++++++++++++++++----
- 3 files changed, 51 insertions(+), 4 deletions(-)
+ include/net/page_pool.h | 16 ++++++++++++++++
+ net/core/page_pool.c    | 28 +++++++++++++++++++++++++++-
+ 2 files changed, 43 insertions(+), 1 deletion(-)
 
 diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-index 97c3c19..1f27e8a4 100644
+index 1f27e8a4..298af95 100644
 --- a/include/net/page_pool.h
 +++ b/include/net/page_pool.h
-@@ -84,6 +84,19 @@ struct page_pool_params {
- 	void *init_arg;
+@@ -95,6 +95,18 @@ struct page_pool_alloc_stats {
+ 	u64 refill; /* allocations via successful refill */
+ 	u64 waive;  /* failed refills due to numa zone mismatch */
  };
- 
-+#ifdef CONFIG_PAGE_POOL_STATS
-+struct page_pool_alloc_stats {
-+	u64 fast; /* fast path allocations */
-+	u64 slow; /* slow-path order 0 allocations */
-+	u64 slow_high_order; /* slow-path high order allocations */
-+	u64 empty; /* failed refills due to empty ptr ring, forcing
-+		    * slow path allocation
-+		    */
-+	u64 refill; /* allocations via successful refill */
-+	u64 waive;  /* failed refills due to numa zone mismatch */
++
++struct page_pool_recycle_stats {
++	u64 cached;	/* recycling placed page in the cache. */
++	u64 cache_full; /* cache was full */
++	u64 ring;	/* recycling placed page back into ptr ring */
++	u64 ring_full;	/* page was released from page-pool because
++			 * PTR ring was full.
++			 */
++	u64 released_refcnt; /* page released because of elevated
++			      * refcnt
++			      */
 +};
-+#endif
-+
+ #endif
+ 
  struct page_pool {
- 	struct page_pool_params p;
+@@ -144,6 +156,10 @@ struct page_pool {
+ 	 */
+ 	struct ptr_ring ring;
  
-@@ -96,6 +109,11 @@ struct page_pool {
- 	unsigned int frag_offset;
- 	struct page *frag_page;
- 	long frag_users;
-+
 +#ifdef CONFIG_PAGE_POOL_STATS
-+	/* these stats are incremented while in softirq context */
-+	struct page_pool_alloc_stats alloc_stats;
++	/* recycle stats are per-cpu to avoid locking */
++	struct page_pool_recycle_stats __percpu *recycle_stats;
 +#endif
- 	u32 xdp_mem_id;
+ 	atomic_t pages_state_release_cnt;
  
- 	/*
-diff --git a/net/Kconfig b/net/Kconfig
-index 8a1f9d0..6b78f69 100644
---- a/net/Kconfig
-+++ b/net/Kconfig
-@@ -434,6 +434,19 @@ config NET_DEVLINK
- config PAGE_POOL
- 	bool
- 
-+config PAGE_POOL_STATS
-+	default n
-+	bool "Page pool stats"
-+	depends on PAGE_POOL
-+	help
-+	  Enable page pool statistics to track page allocation and recycling
-+	  in page pools. This option incurs additional CPU cost in allocation
-+	  and recycle paths and additional memory cost to store the statistics.
-+	  These statistics are only available if this option is enabled and if
-+	  the driver using the page pool supports exporting this data.
-+
-+	  If unsure, say N.
-+
- config FAILOVER
- 	tristate "Generic failover module"
- 	help
+ 	/* A page_pool is strictly tied to a single RX-queue being
 diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index e25d359..0fa4b76 100644
+index 0fa4b76..27233bf 100644
 --- a/net/core/page_pool.c
 +++ b/net/core/page_pool.c
-@@ -26,6 +26,13 @@
+@@ -29,8 +29,15 @@
+ #ifdef CONFIG_PAGE_POOL_STATS
+ /* alloc_stat_inc is intended to be used in softirq context */
+ #define alloc_stat_inc(pool, __stat)	(pool->alloc_stats.__stat++)
++/* recycle_stat_inc is safe to use when preemption is possible. */
++#define recycle_stat_inc(pool, __stat)							\
++	do {										\
++		struct page_pool_recycle_stats __percpu *s = pool->recycle_stats;	\
++		this_cpu_inc(s->__stat);						\
++	} while (0)
+ #else
+ #define alloc_stat_inc(pool, __stat)
++#define recycle_stat_inc(pool, __stat)
+ #endif
  
- #define BIAS_MAX	LONG_MAX
+ static int page_pool_init(struct page_pool *pool,
+@@ -80,6 +87,12 @@ static int page_pool_init(struct page_pool *pool,
+ 	    pool->p.flags & PP_FLAG_PAGE_FRAG)
+ 		return -EINVAL;
  
 +#ifdef CONFIG_PAGE_POOL_STATS
-+/* alloc_stat_inc is intended to be used in softirq context */
-+#define alloc_stat_inc(pool, __stat)	(pool->alloc_stats.__stat++)
-+#else
-+#define alloc_stat_inc(pool, __stat)
++	pool->recycle_stats = alloc_percpu(struct page_pool_recycle_stats);
++	if (!pool->recycle_stats)
++		return -ENOMEM;
 +#endif
 +
- static int page_pool_init(struct page_pool *pool,
- 			  const struct page_pool_params *params)
- {
-@@ -117,8 +124,10 @@ static struct page *page_pool_refill_alloc_cache(struct page_pool *pool)
- 	int pref_nid; /* preferred NUMA node */
+ 	if (ptr_ring_init(&pool->ring, ring_qsize, GFP_KERNEL) < 0)
+ 		return -ENOMEM;
  
- 	/* Quicker fallback, avoid locks when ring is empty */
--	if (__ptr_ring_empty(r))
-+	if (__ptr_ring_empty(r)) {
-+		alloc_stat_inc(pool, empty);
- 		return NULL;
-+	}
+@@ -410,6 +423,11 @@ static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
+ 	else
+ 		ret = ptr_ring_produce_bh(&pool->ring, page);
  
- 	/* Softirq guarantee CPU and thus NUMA node is stable. This,
- 	 * assumes CPU refilling driver RX-ring will also run RX-NAPI.
-@@ -145,14 +154,17 @@ static struct page *page_pool_refill_alloc_cache(struct page_pool *pool)
- 			 * This limit stress on page buddy alloactor.
- 			 */
- 			page_pool_return_page(pool, page);
-+			alloc_stat_inc(pool, waive);
- 			page = NULL;
- 			break;
- 		}
- 	} while (pool->alloc.count < PP_ALLOC_CACHE_REFILL);
- 
- 	/* Return last page */
--	if (likely(pool->alloc.count > 0))
-+	if (likely(pool->alloc.count > 0)) {
- 		page = pool->alloc.cache[--pool->alloc.count];
-+		alloc_stat_inc(pool, refill);
-+	}
- 
- 	return page;
++#ifdef CONFIG_PAGE_POOL_STATS
++	if (ret == 0)
++		recycle_stat_inc(pool, ring);
++#endif
++
+ 	return (ret == 0) ? true : false;
  }
-@@ -166,6 +178,7 @@ static struct page *__page_pool_get_cached(struct page_pool *pool)
- 	if (likely(pool->alloc.count)) {
- 		/* Fast-path */
- 		page = pool->alloc.cache[--pool->alloc.count];
-+		alloc_stat_inc(pool, fast);
- 	} else {
- 		page = page_pool_refill_alloc_cache(pool);
- 	}
-@@ -239,6 +252,7 @@ static struct page *__page_pool_alloc_page_order(struct page_pool *pool,
- 		return NULL;
- 	}
  
-+	alloc_stat_inc(pool, slow_high_order);
- 	page_pool_set_pp_info(pool, page);
- 
- 	/* Track how many pages are held 'in-flight' */
-@@ -293,10 +307,12 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
- 	}
- 
- 	/* Return last page */
--	if (likely(pool->alloc.count > 0))
-+	if (likely(pool->alloc.count > 0)) {
- 		page = pool->alloc.cache[--pool->alloc.count];
--	else
-+		alloc_stat_inc(pool, slow);
-+	} else {
- 		page = NULL;
+@@ -421,11 +439,14 @@ static bool page_pool_recycle_in_ring(struct page_pool *pool, struct page *page)
+ static bool page_pool_recycle_in_cache(struct page *page,
+ 				       struct page_pool *pool)
+ {
+-	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE))
++	if (unlikely(pool->alloc.count == PP_ALLOC_CACHE_SIZE)) {
++		recycle_stat_inc(pool, cache_full);
+ 		return false;
 +	}
  
- 	/* When page just alloc'ed is should/must have refcnt 1. */
- 	return page;
+ 	/* Caller MUST have verified/know (page_ref_count(page) == 1) */
+ 	pool->alloc.cache[pool->alloc.count++] = page;
++	recycle_stat_inc(pool, cached);
+ 	return true;
+ }
+ 
+@@ -475,6 +496,7 @@ __page_pool_put_page(struct page_pool *pool, struct page *page,
+ 	 * doing refcnt based recycle tricks, meaning another process
+ 	 * will be invoking put_page.
+ 	 */
++	recycle_stat_inc(pool, released_refcnt);
+ 	/* Do not replace this with page_pool_return_page() */
+ 	page_pool_release_page(pool, page);
+ 	put_page(page);
+@@ -488,6 +510,7 @@ void page_pool_put_defragged_page(struct page_pool *pool, struct page *page,
+ 	page = __page_pool_put_page(pool, page, dma_sync_size, allow_direct);
+ 	if (page && !page_pool_recycle_in_ring(pool, page)) {
+ 		/* Cache full, fallback to free pages */
++		recycle_stat_inc(pool, ring_full);
+ 		page_pool_return_page(pool, page);
+ 	}
+ }
+@@ -636,6 +659,9 @@ static void page_pool_free(struct page_pool *pool)
+ 	if (pool->p.flags & PP_FLAG_DMA_MAP)
+ 		put_device(pool->p.dev);
+ 
++#ifdef CONFIG_PAGE_POOL_STATS
++	free_percpu(pool->recycle_stats);
++#endif
+ 	kfree(pool);
+ }
+ 
 -- 
 2.7.4
 
