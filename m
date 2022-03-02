@@ -2,83 +2,137 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6470F4CA7FB
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Mar 2022 15:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B84CA8BE
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Mar 2022 16:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241180AbiCBO10 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Mar 2022 09:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S243251AbiCBPEC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Mar 2022 10:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233628AbiCBO1Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Mar 2022 09:27:25 -0500
-X-Greylist: delayed 906 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 02 Mar 2022 06:26:41 PST
-Received: from sender2-op-o12.zoho.com.cn (sender2-op-o12.zoho.com.cn [163.53.93.243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0B5C5DB2
-        for <linux-rdma@vger.kernel.org>; Wed,  2 Mar 2022 06:26:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1646230276; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=KtEgfK2zTfmJdxvKKYyTgc7wv3miOToDyg9ZYjgdX61/XpMs+XdGhcLZIagsAaLWui037TJGdkohhZ2JYEQGRVaVHo/IJ0GX0ug1Lh7VhmbxjikX/W1AQHfd54vR+lxxemSwRFJagUuotOVoPhf3k59TvAt6OwCD/y3br7NSqMA=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1646230276; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=8oZTf5fSTDp2JzGy44/yp5LZt47Z5IXbWJ0r+qSC+Gg=; 
-        b=fRlFJZE0Kg5JJTMWhfTQswdy2xF4z2EFuiVURkUh/MR8BMbFWIlPDJs3F0bEPfRFWdBFmfDgSo9yqhhlWaMQjzwSs3X5KPR4KLnInIC40y3H2E+WaQQpaKKJOlCPhbYQuukL5ft0vZ0aObkp/CH1AAu8ly7tdXA11W60pP3j2wY=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1646230276;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        bh=8oZTf5fSTDp2JzGy44/yp5LZt47Z5IXbWJ0r+qSC+Gg=;
-        b=LCoG//ue3g8hGmeueJsI7YMwW+069wVV+qK1u10Y3OcO/KDMG1peJSS0Pe7olAsr
-        I5z6muy50aRsArCAsO1wYoPrtVbzZJcQPvOXoxebVvWCFAZeDYxXoqVvkC83nt9hvGl
-        RQxCLFcCNoK1V7HIPEGpy/keR7o/jUctMYgR+bck=
-Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
-        with SMTPS id 1646230275473199.50784784469477; Wed, 2 Mar 2022 22:11:15 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca
-Cc:     linux-rdma@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20220302141054.2078616-1-cgxu519@mykernel.net>
-Subject: [PATCH] RDMA/rxe: change payload type to u32 from int
-Date:   Wed,  2 Mar 2022 22:10:54 +0800
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S229818AbiCBPEA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Mar 2022 10:04:00 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A34CA307;
+        Wed,  2 Mar 2022 07:03:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646233397; x=1677769397;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hzoUhmNLUaUocUeWD6uJAxizGDzSnCXxwKehYrN0fvo=;
+  b=HBldpZnMqvFJVTEseLpxDnTAEA4tLnBxsJpvrHavvua1fhBDWViw8vjP
+   MYj/5EolmfHjxKpLr/OfVJK0pl+d7xCPMiVE+yCdwvd2H+pSrKeieaCFJ
+   5HmnxgMGfqBTVj4KX05F5I9rNypLmxbBZT5lYmZ3d9Y1WAp3oLiKD9aSD
+   GVNhhVePpc234YMS3oRPLyAMuPZ5bJFpq3th1NPMGCkRvfYkgmyQjQ/ot
+   gnvXG1noYRkFRlH1u0ev0cMMPPr/RvpireXTFECqmdp4bv6+X5DSjADPA
+   k0Fss4RFPEVcVttOrZQ+xjWuVD6ETnwkgeHiiKiaiSeYM9obBb+WG4uDE
+   A==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10274"; a="234034669"
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; 
+   d="scan'208";a="234034669"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Mar 2022 07:03:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,149,1643702400"; 
+   d="scan'208";a="709536596"
+Received: from lkp-server02.sh.intel.com (HELO e9605edfa585) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 02 Mar 2022 07:03:10 -0800
+Received: from kbuild by e9605edfa585 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nPQVR-0001Um-Gf; Wed, 02 Mar 2022 15:03:09 +0000
+Date:   Wed, 2 Mar 2022 23:02:23 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Dust Li <dust.li@linux.alibaba.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     kbuild-all@lists.01.org, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next] net/smc: fix compile warning for smc_sysctl
+Message-ID: <202203022234.AMB3WcyJ-lkp@intel.com>
+References: <20220302034312.31168-1-dust.li@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220302034312.31168-1-dust.li@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The type of wqe length is u32 so change variable payload
-to type u32 to avoid overflow on large wqe length.
+Hi Dust,
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on net-next/master]
+
+url:    https://github.com/0day-ci/linux/commits/Dust-Li/net-smc-fix-compile-warning-for-smc_sysctl/20220302-114411
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git 7282c126f7688f697d33f3b965c29bba67fb4eba
+config: sparc-buildonly-randconfig-r005-20220302 (https://download.01.org/0day-ci/archive/20220302/202203022234.AMB3WcyJ-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/0day-ci/linux/commit/4b16b08f4709ad49412ee1df69b6922a370dad46
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review Dust-Li/net-smc-fix-compile-warning-for-smc_sysctl/20220302-114411
+        git checkout 4b16b08f4709ad49412ee1df69b6922a370dad46
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sparc SHELL=/bin/bash net/smc/
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All warnings (new ones prefixed by >>):
+
+   net/smc/smc_sysctl.c: In function 'smc_sysctl_init_net':
+   net/smc/smc_sysctl.c:47:17: error: 'struct netns_smc' has no member named 'smc_hdr'
+      47 |         net->smc.smc_hdr = register_net_sysctl(net, "net/smc", table);
+         |                 ^
+   net/smc/smc_sysctl.c:48:22: error: 'struct netns_smc' has no member named 'smc_hdr'
+      48 |         if (!net->smc.smc_hdr)
+         |                      ^
+   net/smc/smc_sysctl.c: In function 'smc_sysctl_exit_net':
+   net/smc/smc_sysctl.c:64:45: error: 'struct netns_smc' has no member named 'smc_hdr'
+      64 |         unregister_net_sysctl_table(net->smc.smc_hdr);
+         |                                             ^
+   net/smc/smc_sysctl.c: At top level:
+   net/smc/smc_sysctl.c:72:16: error: redefinition of 'smc_sysctl_init'
+      72 | int __net_init smc_sysctl_init(void)
+         |                ^~~~~~~~~~~~~~~
+   In file included from net/smc/smc_sysctl.c:18:
+   net/smc/smc_sysctl.h:23:19: note: previous definition of 'smc_sysctl_init' with type 'int(void)'
+      23 | static inline int smc_sysctl_init(void)
+         |                   ^~~~~~~~~~~~~~~
+>> net/smc/smc_sysctl.c:78:1: warning: ignoring attribute 'noinline' because it conflicts with attribute 'gnu_inline' [-Wattributes]
+      78 | {
+         | ^
+   In file included from net/smc/smc_sysctl.c:18:
+   net/smc/smc_sysctl.h:28:20: note: previous declaration here
+      28 | static inline void smc_sysctl_exit(void) { }
+         |                    ^~~~~~~~~~~~~~~
+   net/smc/smc_sysctl.c:77:17: error: redefinition of 'smc_sysctl_exit'
+      77 | void __net_exit smc_sysctl_exit(void)
+         |                 ^~~~~~~~~~~~~~~
+   In file included from net/smc/smc_sysctl.c:18:
+   net/smc/smc_sysctl.h:28:20: note: previous definition of 'smc_sysctl_exit' with type 'void(void)'
+      28 | static inline void smc_sysctl_exit(void) { }
+         |                    ^~~~~~~~~~~~~~~
+
+
+vim +78 net/smc/smc_sysctl.c
+
+462791bbfa35018 Dust Li 2022-03-01  76  
+4b16b08f4709ad4 Dust Li 2022-03-02  77  void __net_exit smc_sysctl_exit(void)
+462791bbfa35018 Dust Li 2022-03-01 @78  {
+
 ---
- drivers/infiniband/sw/rxe/rxe_req.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rx=
-e/rxe_req.c
-index 5eb89052dd66..e989ee3a2033 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -612,7 +612,7 @@ int rxe_requester(void *arg)
- =09struct sk_buff *skb;
- =09struct rxe_send_wqe *wqe;
- =09enum rxe_hdr_mask mask;
--=09int payload;
-+=09u32 payload;
- =09int mtu;
- =09int opcode;
- =09int ret;
---=20
-2.27.0
-
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
