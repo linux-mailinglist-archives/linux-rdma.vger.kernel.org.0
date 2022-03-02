@@ -2,109 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFA84C9C49
-	for <lists+linux-rdma@lfdr.de>; Wed,  2 Mar 2022 04:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8BD4C9C75
+	for <lists+linux-rdma@lfdr.de>; Wed,  2 Mar 2022 05:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbiCBDoA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 1 Mar 2022 22:44:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        id S236351AbiCBEdD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 1 Mar 2022 23:33:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239407AbiCBDn7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 22:43:59 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17BB44BB92;
-        Tue,  1 Mar 2022 19:43:15 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0V60kBLn_1646192592;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V60kBLn_1646192592)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 02 Mar 2022 11:43:13 +0800
-From:   Dust Li <dust.li@linux.alibaba.com>
-To:     Karsten Graul <kgraul@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH net-next] net/smc: fix compile warning for smc_sysctl
-Date:   Wed,  2 Mar 2022 11:43:12 +0800
-Message-Id: <20220302034312.31168-1-dust.li@linux.alibaba.com>
-X-Mailer: git-send-email 2.19.1.3.ge56e4f7
+        with ESMTP id S235062AbiCBEdB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 1 Mar 2022 23:33:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7370CA4189;
+        Tue,  1 Mar 2022 20:32:19 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BC03E617A9;
+        Wed,  2 Mar 2022 04:32:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD46FC004E1;
+        Wed,  2 Mar 2022 04:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646195538;
+        bh=NUxW0exMIw0qLhh0NucgNb8hdhUBvqARe8Wdo5Scw7E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eUQNF44dB7lkaGOowszLnn0dK9z9Go/z647P34GCP83hnMQNDL7xp8qjOTQp3xFA3
+         VmfrxS/acnhRIN1ClkrjP+UwKphoyXOD6kDeYlo6ogrgqvN4jWWNbwkdaacEHzE3lw
+         nAJ1c2izEtR8UPddVGP2AACUSctUgdchPLR0phBGTWpO1rXid0WW0QZJuf84LLXWM7
+         Z/pHwZtph8jhUfbF6327nquURGFOiThzV2Yl5tLjQGzcHo7xCpfwytQjekD5mlCAa8
+         JDI9ri6WEiZhTe20RS3dJN3v7TIJhwN2TvOrCG88Mzu1HDGMWufRkmkV4NrsRDaG9+
+         FlnRkRIWGoJnQ==
+Date:   Tue, 1 Mar 2022 20:32:16 -0800
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Joe Damato <jdamato@fastly.com>
+Cc:     netdev@vger.kernel.org, kuba@kernel.org,
+        ilias.apalodimas@linaro.org, davem@davemloft.net, hawk@kernel.org,
+        ttoukan.linux@gmail.com, brouer@redhat.com, leon@kernel.org,
+        linux-rdma@vger.kernel.org, saeedm@nvidia.com
+Subject: Re: [net-next v8 1/4] page_pool: Add allocation stats
+Message-ID: <20220302043216.o7vhjtj2dzal4x76@sx1>
+References: <1646172610-129397-1-git-send-email-jdamato@fastly.com>
+ <1646172610-129397-2-git-send-email-jdamato@fastly.com>
+ <20220301235031.ryy4trywlc3bmnpx@sx1>
+ <CALALjgzWZLjLj1Qss9JQd3DEh-_SZcwCAEkgAE19Nsxf07EOOQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CALALjgzWZLjLj1Qss9JQd3DEh-_SZcwCAEkgAE19Nsxf07EOOQ@mail.gmail.com>
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix build:
+On 01 Mar 17:51, Joe Damato wrote:
+>On Tue, Mar 1, 2022 at 3:50 PM Saeed Mahameed <saeed@kernel.org> wrote:
+>>
+>> On 01 Mar 14:10, Joe Damato wrote:
+>> >Add per-pool statistics counters for the allocation path of a page pool.
+>> >These stats are incremented in softirq context, so no locking or per-cpu
+>> >variables are needed.
+>> >
+>> >This code is disabled by default and a kernel config option is provided for
+>> >users who wish to enable them.
+>> >
+>>
+>> Sorry for the late review Joe,
+>
+>No worries, thanks for taking a look.
+>
+>> Why disabled by default ? if your benchmarks showed no diff.
+>>
+>> IMHO If we believe in this, we should have it enabled by default.
+>
+>I think keeping it disabled by default makes sense for three reasons:
+>  - The benchmarks on my hardware don't show a difference, but less
+>powerful hardware may be more greatly impacted.
+>  - The new code uses more memory when enabled for storing the stats.
+>  - These stats are useful for debugging and performance
+>investigations, but generally speaking I think the vast majority of
+>everyday kernel users won't be looking at this data.
+>
+>Advanced users who need this information (and are willing to pay the
+>cost in memory and potentially CPU) can enable the code relatively
+>easily, so I think keeping it defaulted to off makes sense.
 
-   In file included from net/smc/smc_sysctl.c:17:
->> net/smc/smc_sysctl.h:23:5: warning: no previous prototype \
-	for function 'smc_sysctl_init' [-Wmissing-prototypes]
-   int smc_sysctl_init(void)
-       ^
+I partially agree, since we have other means to detect if page_pool is
+effective or not without these stats.
 
-and
+But here is my .02$: the difference in performance when page_pool is
+effective and when isn't is huge, these counters are useful on production
+systems when the page pool is under stress.
 
->> WARNING: modpost: vmlinux.o(.text+0x12ced2d): Section mismatch \
-in reference from the function smc_sysctl_exit() to the variable
-.init.data:smc_sysctl_ops
-The function smc_sysctl_exit() references
-the variable __initdata smc_sysctl_ops.
-This is often because smc_sysctl_exit lacks a __initdata
-annotation or the annotation of smc_sysctl_ops is wrong.
+Simply put, the benefits of the page_pool outweigh the overhead of counting
+(if even measurable), these counters should've been added long time ago.
 
-Fixes: 462791bbfa35 ("net/smc: add sysctl interface for SMC")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dust Li <dust.li@linux.alibaba.com>
----
- net/smc/smc_sysctl.c | 4 ++--
- net/smc/smc_sysctl.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+if you are aiming for debug only counters then you should've introduced this
+feature as a static key (tracepoints) to be enabled on the fly and the
+overhead is paid only when enabled for the debug period.
 
-diff --git a/net/smc/smc_sysctl.c b/net/smc/smc_sysctl.c
-index 3b59876aaac9..e6f926757ecb 100644
---- a/net/smc/smc_sysctl.c
-+++ b/net/smc/smc_sysctl.c
-@@ -69,12 +69,12 @@ static struct pernet_operations smc_sysctl_ops __net_initdata = {
- 	.exit = smc_sysctl_exit_net,
- };
- 
--int __init smc_sysctl_init(void)
-+int __net_init smc_sysctl_init(void)
- {
- 	return register_pernet_subsys(&smc_sysctl_ops);
- }
- 
--void smc_sysctl_exit(void)
-+void __net_exit smc_sysctl_exit(void)
- {
- 	unregister_pernet_subsys(&smc_sysctl_ops);
- }
-diff --git a/net/smc/smc_sysctl.h b/net/smc/smc_sysctl.h
-index 49553ac236b6..8914278ac870 100644
---- a/net/smc/smc_sysctl.h
-+++ b/net/smc/smc_sysctl.h
-@@ -20,12 +20,12 @@ void smc_sysctl_exit(void);
- 
- #else
- 
--int smc_sysctl_init(void)
-+static inline int smc_sysctl_init(void)
- {
- 	return 0;
- }
- 
--void smc_sysctl_exit(void) { }
-+static inline void smc_sysctl_exit(void) { }
- 
- #endif /* CONFIG_SYSCTL */
- 
--- 
-2.19.1.3.ge56e4f7
+Anyway, not a huge deal :).
 
