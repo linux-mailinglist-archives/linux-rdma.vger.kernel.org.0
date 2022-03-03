@@ -2,74 +2,107 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C2B4CB511
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Mar 2022 03:40:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1944CB518
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Mar 2022 03:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbiCCCgO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 2 Mar 2022 21:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
+        id S231860AbiCCCnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 2 Mar 2022 21:43:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbiCCCgJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Mar 2022 21:36:09 -0500
-Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD49124C1F;
-        Wed,  2 Mar 2022 18:35:23 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=dust.li@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0V65YL3i_1646274920;
-Received: from localhost(mailfrom:dust.li@linux.alibaba.com fp:SMTPD_---0V65YL3i_1646274920)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 03 Mar 2022 10:35:20 +0800
-Date:   Thu, 3 Mar 2022 10:35:19 +0800
-From:   "dust.li" <dust.li@linux.alibaba.com>
-To:     Jakub Kicinski <kuba@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>,
-        Tony Lu <tonylu@linux.alibaba.com>, davem@davemloft.net,
-        kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH net-next] net/smc: fix compile warning for smc_sysctl
-Message-ID: <20220303023519.GA35207@linux.alibaba.com>
-Reply-To: dust.li@linux.alibaba.com
-References: <20220302034312.31168-1-dust.li@linux.alibaba.com>
- <202203022234.AMB3WcyJ-lkp@intel.com>
- <20220302114503.47d64a55@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+        with ESMTP id S231841AbiCCCni (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 2 Mar 2022 21:43:38 -0500
+Received: from out0.migadu.com (out0.migadu.com [94.23.1.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358B311C23;
+        Wed,  2 Mar 2022 18:42:53 -0800 (PST)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1646275371;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=T2DBq1T9P8xVlTmIkAaGvH0gMt3oU3lKJwnNun+3nHw=;
+        b=AQuA4J371fF5tOg9mTeetwNCbnOxzKEgn1T+EzqGD5SHZosw71F/7YUEkCP7pqRtIaGo1x
+        lH99nc/DxIjstCdU5KyVgsIscLMWNjgdFYT68F5UUIqfV4iyDFLsi279wD9qQ3K5m69Nw6
+        biCvnAN0wUqTmYZn7eZDrRHJisdNdTE=
+From:   Yajun Deng <yajun.deng@linux.dev>
+To:     jgg@nvidia.com, leonro@nvidia.com
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yajun Deng <yajun.deng@linux.dev>
+Subject: [PATCH for-next] RDMA/core: Fix ib_qp_usecnt_dec() called when error
+Date:   Thu,  3 Mar 2022 10:42:32 +0800
+Message-Id: <20220303024232.2847388-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220302114503.47d64a55@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 02, 2022 at 11:45:03AM -0800, Jakub Kicinski wrote:
->On Wed, 2 Mar 2022 23:02:23 +0800 kernel test robot wrote:
->>    In file included from net/smc/smc_sysctl.c:18:
->>    net/smc/smc_sysctl.h:23:19: note: previous definition of 'smc_sysctl_init' with type 'int(void)'
->>       23 | static inline int smc_sysctl_init(void)
->>          |                   ^~~~~~~~~~~~~~~
->> >> net/smc/smc_sysctl.c:78:1: warning: ignoring attribute 'noinline' because it conflicts with attribute 'gnu_inline' [-Wattributes]  
->>       78 | {
->>          | ^
->
->The __net_init / __net_exit attr has to go on the prototype as well.
+ib_destroy_qp() would called by ib_create_qp_user() if error, the former
+contains ib_qp_usecnt_dec(), but ib_qp_usecnt_inc() was not called before.
 
-Thanks a lot for pointing out !
+So move ib_qp_usecnt_inc() into create_qp().
 
->
->This doesn't look right, tho, why __net_* attrs?  You call those
->functions from the module init/exit. __net_ is for namespace code.
+Fixes: d2b10794fc13 ("RDMA/core: Create clean QP creations interface for uverbs")
+Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+---
+ drivers/infiniband/core/uverbs_cmd.c          | 1 -
+ drivers/infiniband/core/uverbs_std_types_qp.c | 1 -
+ drivers/infiniband/core/verbs.c               | 3 +--
+ 3 files changed, 1 insertion(+), 4 deletions(-)
 
-Yes, I made the mistake and mixes up smc_sysctl_{init|exit}() with
-smc_sysctl_{init|exit}_net when doing the quick fix...
+diff --git a/drivers/infiniband/core/uverbs_cmd.c b/drivers/infiniband/core/uverbs_cmd.c
+index 6b6393176b3c..4437f834c0a7 100644
+--- a/drivers/infiniband/core/uverbs_cmd.c
++++ b/drivers/infiniband/core/uverbs_cmd.c
+@@ -1437,7 +1437,6 @@ static int create_qp(struct uverbs_attr_bundle *attrs,
+ 		ret = PTR_ERR(qp);
+ 		goto err_put;
+ 	}
+-	ib_qp_usecnt_inc(qp);
+ 
+ 	obj->uevent.uobject.object = qp;
+ 	obj->uevent.event_file = READ_ONCE(attrs->ufile->default_async_file);
+diff --git a/drivers/infiniband/core/uverbs_std_types_qp.c b/drivers/infiniband/core/uverbs_std_types_qp.c
+index dd1075466f61..75353e09c6fe 100644
+--- a/drivers/infiniband/core/uverbs_std_types_qp.c
++++ b/drivers/infiniband/core/uverbs_std_types_qp.c
+@@ -254,7 +254,6 @@ static int UVERBS_HANDLER(UVERBS_METHOD_QP_CREATE)(
+ 		ret = PTR_ERR(qp);
+ 		goto err_put;
+ 	}
+-	ib_qp_usecnt_inc(qp);
+ 
+ 	if (attr.qp_type == IB_QPT_XRC_TGT) {
+ 		obj->uxrcd = container_of(xrcd_uobj, struct ib_uxrcd_object,
+diff --git a/drivers/infiniband/core/verbs.c b/drivers/infiniband/core/verbs.c
+index a9819c40a140..bc9a83f1ca2d 100644
+--- a/drivers/infiniband/core/verbs.c
++++ b/drivers/infiniband/core/verbs.c
+@@ -1245,6 +1245,7 @@ static struct ib_qp *create_qp(struct ib_device *dev, struct ib_pd *pd,
+ 	if (ret)
+ 		goto err_security;
+ 
++	ib_qp_usecnt_inc(qp);
+ 	rdma_restrack_add(&qp->res);
+ 	return qp;
+ 
+@@ -1345,8 +1346,6 @@ struct ib_qp *ib_create_qp_kernel(struct ib_pd *pd,
+ 	if (IS_ERR(qp))
+ 		return qp;
+ 
+-	ib_qp_usecnt_inc(qp);
+-
+ 	if (qp_init_attr->cap.max_rdma_ctxs) {
+ 		ret = rdma_rw_init_mrs(qp, qp_init_attr);
+ 		if (ret)
+-- 
+2.25.1
 
-And my check script with neither allyesconfig/allnoconfig nor defconfig
-reproduced this.
-This happens when CONFIG_SMC=y|m and CONFIG_SYSCTL is not set.
-
-I will send a v2.
-
-Thanks.
