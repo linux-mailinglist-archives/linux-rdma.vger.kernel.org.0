@@ -2,172 +2,121 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E5CA4CBF25
-	for <lists+linux-rdma@lfdr.de>; Thu,  3 Mar 2022 14:50:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAEB4CC477
+	for <lists+linux-rdma@lfdr.de>; Thu,  3 Mar 2022 18:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231145AbiCCNvX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 3 Mar 2022 08:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        id S229662AbiCCR6k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 3 Mar 2022 12:58:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230384AbiCCNvW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Mar 2022 08:51:22 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70E61795DC;
-        Thu,  3 Mar 2022 05:50:36 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 223C3x86003862;
-        Thu, 3 Mar 2022 13:50:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2021-07-09;
- bh=y3MYf+TlKweiceJX2qa+tIefBWioJbkZcjleCduyki0=;
- b=cmCM3igxBxvjQ1Fv52MwdPy1xyv114vh/3/HL+uTryxk4fGPQFD3z9nIHcjXuLsieBwd
- NUp3j8QWEOru7NVZwcNg9lVfe3qGSDKfjgphUkg/aJ3ewFbJGOaLL7iNrQgaTrAturTl
- 6oM0gasS17AsobzI9DVpJhywKzBEx5eNSaTeh+0TFTbx7zYEc4bIoy2lldvuUe100phU
- c4bjZQ5e5FVWK7ZmhyWpidkG+j9USEg+wAA0/XxTGCHTqecgYS/w0qZZ6cLsKxlZV9Yq
- haujepxx45Hlo3j3R0rq/3+VdFi+7OYjDNRKGAmI2u7IQlDN8VKk/wghRs3JctsFJmo8 tw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3ehh2eps5g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Mar 2022 13:50:27 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 223DjNr0175981;
-        Thu, 3 Mar 2022 13:50:26 GMT
-Received: from lab02.no.oracle.com (lab02.no.oracle.com [10.172.144.56])
-        by aserp3030.oracle.com with ESMTP id 3efa8j5bas-1;
-        Thu, 03 Mar 2022 13:50:25 +0000
-From:   =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH for-next] Revert "IB/mlx5: Don't return errors from poll_cq"
-Date:   Thu,  3 Mar 2022 14:50:17 +0100
-Message-Id: <1646315417-25549-1-git-send-email-haakon.bugge@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        with ESMTP id S235307AbiCCR6d (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 3 Mar 2022 12:58:33 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D3D13FACD
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Mar 2022 09:57:47 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id EFC54B81DB8
+        for <linux-rdma@vger.kernel.org>; Thu,  3 Mar 2022 17:57:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A389C004E1;
+        Thu,  3 Mar 2022 17:57:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646330264;
+        bh=GZcaW3E6qkKs6TvPfRY9r5Tyebq4uHnluHy+tR1Fkhg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XOw7sHoe/B5n+wymCvASYEoewVWL8I9f1ngLDkLcwHce0xfpNopDi60JSMqoYy97w
+         bSIUJbFC1ItnM7L9liuP2K9r1T1PN1J8U8+vK/8cF0TszLSt3CJGRWHWV52JjU+OPa
+         pY1kTPBUKczcVzuNG8GixOIn3SnXCLksKsnkVqRJul1OZPWrdFOQX0+vG/GFKPXWAA
+         MMoSVnycYkUunt3EPokdyAfcIIDPHtS/vz/6cl27R9qebZypqId1K1ek3vwQ1OLT/U
+         tGtOqrLR/0QlwJDZGNCOidyA80USWSuNgOJtoKeBEhWzEixjDAkzTCqr2wne4lgZ5S
+         cgVhcRZZmhGeg==
+Date:   Thu, 3 Mar 2022 19:57:40 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Wenpeng Liang <liangwenpeng@huawei.com>
+Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com
+Subject: Re: [PATCH for-next] RDMA/hns: Use the reserved loopback QPs to free
+ MR before destroying MPT
+Message-ID: <YiEBlG5ndcbww8u2@unreal>
+References: <20220225095654.24684-1-liangwenpeng@huawei.com>
+ <Yhy5fZrsp79HZKR+@unreal>
+ <0c14fac1-9448-7920-52fd-f353a8e7590f@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10274 signatures=686787
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
- malwarescore=0 mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2201110000
- definitions=main-2203030065
-X-Proofpoint-ORIG-GUID: EIQo8G5Un8scw1KmUnh94TbFJZgqIG9y
-X-Proofpoint-GUID: EIQo8G5Un8scw1KmUnh94TbFJZgqIG9y
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0c14fac1-9448-7920-52fd-f353a8e7590f@huawei.com>
+X-Spam-Status: No, score=-7.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-This reverts commit dbdf7d4e7f911f79ceb08365a756bbf6eecac81c.
+On Wed, Mar 02, 2022 at 08:44:48PM +0800, Wenpeng Liang wrote:
+> On 2022/2/28 20:01, Leon Romanovsky wrote:
+> > On Fri, Feb 25, 2022 at 05:56:54PM +0800, Wenpeng Liang wrote:
+> >> From: Yixing Liu <liuyixing1@huawei.com>
+> >>
+> >> Before destroying MPT, the reserved loopback QPs send loopback IOs (one
+> >> write operation per SL). Completing these loopback IOs represents that
+> >> there isn't any outstanding request in MPT, then it's safe to destroy MPT.
+> >>
+> >> Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+> >> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+> >> ---
+> >>  drivers/infiniband/hw/hns/hns_roce_device.h |   2 +
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 334 +++++++++++++++++++-
+> >>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  20 ++
+> >>  drivers/infiniband/hw/hns/hns_roce_mr.c     |   6 +-
+> >>  4 files changed, 358 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+> >> index 1e0bae136997..da0b4b310aab 100644
+> >> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
+> >> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+> >> @@ -624,6 +624,7 @@ struct hns_roce_qp {
+> >>  	u32			next_sge;
+> >>  	enum ib_mtu		path_mtu;
+> >>  	u32			max_inline_data;
+> >> +	u8			free_mr_en;
+> >>  
+> >>  	/* 0: flush needed, 1: unneeded */
+> >>  	unsigned long		flush_flag;
+> >> @@ -882,6 +883,7 @@ struct hns_roce_hw {
+> >>  			 enum ib_qp_state new_state);
+> >>  	int (*qp_flow_control_init)(struct hns_roce_dev *hr_dev,
+> >>  			 struct hns_roce_qp *hr_qp);
+> >> +	void (*dereg_mr)(struct hns_roce_dev *hr_dev);
+> >>  	int (*init_eq)(struct hns_roce_dev *hr_dev);
+> >>  	void (*cleanup_eq)(struct hns_roce_dev *hr_dev);
+> >>  	int (*write_srqc)(struct hns_roce_srq *srq, void *mb_buf);
+> >> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> >> index b33e948fd060..62ee9c0bba74 100644
+> >> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> >> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+> >> @@ -2664,6 +2664,217 @@ static void free_dip_list(struct hns_roce_dev *hr_dev)
+> >>  	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
+> >>  }
+> >>  
+> >> +static int free_mr_alloc_pd(struct hns_roce_dev *hr_dev,
+> >> +			    struct hns_roce_v2_free_mr *free_mr)
+> >> +{
+> > 
+> > You chose very non-intuitive name "free_mr...", but I don't have anything
+> > concrete to suggest.
+> > 
+> 
+> Thank you for your advice. There are two alternative names for this event,
+> which are DRAIN_RESIDUAL_WR or DRAIN_WR. It is hard to decide which one is
+> better. Could you give me some suggestions for the naming?
 
-Commit dbdf7d4e7f91 ("IB/mlx5: Don't return errors from poll_cq") is
-needed, when driver/fw communication gets wedged.
+mlx5 called to such objects device resource - devr, see mlx5_ib_dev_res_init().
+I personally would create something similar to that, one function
+without separation to multiple free_mr_alloc_* functions.
 
-With a large fleet of systems equipped with CX-5, we have observed the
-following mlx5 error message:
+Up-to you.
 
-wait_func:945:(pid xxx): ACCESS_REG(0x805) timeout. Will cause a
-leak of a command resource
-
-Followed by:
-
-destroy_qp_common:2109:(pid xxx): mlx5_ib: modify QP
-0x007264 to RESET failed
-
-However, the QP is removed from the device drivers perspective, in
-particular, the QP number is removed from the radix tree. We may
-further assume that the HCA has not been informed about the intent of
-destroying the QP and setting its state to RESET.
-
-We may then poll CQEs from the HCA for this QP. Then we may end up in
-mlx5_poll_one() doing:
-
-    mqp = radix_tree_lookup(&dev->qp_table.tree, qpn);
-    *cur_qp = to_mibqp(mqp);
-
-which, in the event no QP is found, leads to the following NULL
-pointer deref:
-
-BUG: unable to handle kernel paging request at fffffffffffffff8
-IP: mlx5_poll_one+0xd0/0xbb0 [mlx5_ib]
-
-Note that the above is based on a 4.14.35 kernel, but my take is that
-this analysis is also applicable to latest upstream.
-
-Signed-off-by: Håkon Bugge <haakon.bugge@oracle.com>
-
-Conflicts:
-	drivers/infiniband/hw/mlx5/cq.c
----
- drivers/infiniband/hw/mlx5/cq.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/cq.c b/drivers/infiniband/hw/mlx5/cq.c
-index 08371a8..2bb9aa0 100644
---- a/drivers/infiniband/hw/mlx5/cq.c
-+++ b/drivers/infiniband/hw/mlx5/cq.c
-@@ -490,6 +490,12 @@ static int mlx5_poll_one(struct mlx5_ib_cq *cq,
- 		 * from the table.
- 		 */
- 		mqp = radix_tree_lookup(&dev->qp_table.tree, qpn);
-+		if (unlikely(!mqp)) {
-+			mlx5_ib_warn(dev, "CQE@CQ %06x for unknown QPN %6x\n",
-+				     cq->mcq.cqn, qpn);
-+			return -EINVAL;
-+		}
-+
- 		*cur_qp = to_mibqp(mqp);
- 	}
- 
-@@ -552,6 +558,13 @@ static int mlx5_poll_one(struct mlx5_ib_cq *cq,
- 		xa_lock(&dev->sig_mrs);
- 		sig = xa_load(&dev->sig_mrs,
- 				mlx5_base_mkey(be32_to_cpu(sig_err_cqe->mkey)));
-+		if (unlikely(!sig)) {
-+			xa_unlock(&dev->sig_mrs);
-+			mlx5_ib_warn(dev, "Unable to retrieve sig_mr for mkey %6x\n",
-+				     be32_to_cpu(sig_err_cqe->mkey));
-+			return -EINVAL;
-+		}
-+
- 		get_sig_err_item(sig_err_cqe, &sig->err_item);
- 		sig->sig_err_exists = true;
- 		sig->sigerr_count++;
-@@ -606,6 +619,7 @@ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- 	unsigned long flags;
- 	int soft_polled = 0;
- 	int npolled;
-+	int err = 0;
- 
- 	spin_lock_irqsave(&cq->lock, flags);
- 	if (mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR) {
-@@ -622,7 +636,8 @@ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- 		soft_polled = poll_soft_wc(cq, num_entries, wc, false);
- 
- 	for (npolled = 0; npolled < num_entries - soft_polled; npolled++) {
--		if (mlx5_poll_one(cq, &cur_qp, wc + soft_polled + npolled))
-+		err = mlx5_poll_one(cq, &cur_qp, wc + soft_polled + npolled);
-+		if (err)
- 			break;
- 	}
- 
-@@ -631,7 +646,10 @@ int mlx5_ib_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
- out:
- 	spin_unlock_irqrestore(&cq->lock, flags);
- 
--	return soft_polled + npolled;
-+	if (err == 0 || err == -EAGAIN)
-+		return soft_polled + npolled;
-+	else
-+		return err;
- }
- 
- int mlx5_ib_arm_cq(struct ib_cq *ibcq, enum ib_cq_notify_flags flags)
--- 
-1.8.3.1
-
+Thanks
