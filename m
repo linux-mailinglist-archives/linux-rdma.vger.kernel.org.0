@@ -2,56 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6D74D008C
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Mar 2022 14:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 160D34D0202
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Mar 2022 15:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235770AbiCGN6V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Mar 2022 08:58:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
+        id S236818AbiCGOxi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Mar 2022 09:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234575AbiCGN6V (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Mar 2022 08:58:21 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68E1DF6
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Mar 2022 05:57:26 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id 185so11941309qkh.1
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Mar 2022 05:57:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0zAtFwOQpGaEzTET9u88yK3XdMS9i9E0Q0iVw0Y/kng=;
-        b=hkypvm1gY6fHIayXK33Q76KQSqOi7vYvHwtOBygjjnLhxQL7jl0nYpd2aaC1TsMVd4
-         D7G/IxHOUBgfb9wy7fXz6RNBbUACb/UU342btXYHWwYWJbkpbiv9QKBX1scpnOol3Dxv
-         gxncGjNJkLq/+GBVWHAIIOLQ1Vmf8JE5iEvFOFMJmKsdQe+m52Pn47/ElcUg15rG777y
-         TNnyPLPpU0bZmDZ4ycTC0c0ws40w0cwKsZ73icocOtrQ8ut57hDz6vUPlXix/D4dd5eO
-         onCZMSmwkpnUMEyf8FyNilpEeumbVfZzeAwhxy/U7QKgcoVGtDDoAhVSd0BluGpM5WYm
-         6YzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=0zAtFwOQpGaEzTET9u88yK3XdMS9i9E0Q0iVw0Y/kng=;
-        b=6PkLbXFBMxlKaLXG5HvUwNeG6dIgJijRHCaixp7uRa11RX6BSTP3iLped+KbMVCwUE
-         FgcI+Gib9vc8dfyBgDFnlUG7dL4T6SNh5qchNU1q/MuY85AckxQaz+uxfXh8yaqa5cD0
-         YfWv4qotGeoALh1c3/K1ctGB6Xc8GGCbiID5tW1gqR7ESyl58fhKWCHiIHII03vQPl59
-         5/KcMmT42sQaSu0nzlHX6snvkmDs55qdIPf5M50Ta1s6MX0RgJ31wzCItb+dENYMs5Rl
-         SIvoeF7v3Xza9DmPTsMRewJzjgq5IBJoKnjBWGpizkJN2iIG3FngHOrJ8zmagSZRkuAw
-         nuAg==
-X-Gm-Message-State: AOAM531OdNcpLN8azM7/6f9rahWomiIAB69w4aY4xWl99jQTRFt2MZ9Z
-        XYLM+wns6TJk0HmUduGA0t6nf/f5lPG049oIBxTmbhIHuPY=
-X-Google-Smtp-Source: ABdhPJwxJoSSQEKwDi4EEOzj0OH9zn1HDlGykfYxg7WnK7AnBc9AwWOBb3UZ9w4X/FpbJsJjb84WOPzqrtpSZXR/xn0=
-X-Received: by 2002:a37:f518:0:b0:663:a53:8a5b with SMTP id
- l24-20020a37f518000000b006630a538a5bmr6837435qkk.546.1646661445655; Mon, 07
- Mar 2022 05:57:25 -0800 (PST)
+        with ESMTP id S243502AbiCGOwm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Mar 2022 09:52:42 -0500
+Received: from sender2-op-o12.zoho.com.cn (sender2-op-o12.zoho.com.cn [163.53.93.243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BA3590FCE
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Mar 2022 06:51:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1646664660; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=OxdC1s7Yt0yrVFK3sjqubu9Yfy1iEQR7xgrUT5/P8vWmh4hqQ3TinkR3RNk3zc4Iy1zb3wqiBG0Y6IcORU/ZSayDXJgwVIKmlVbdqMP4kW0Ad95L9XR1B0F5U31AxJQsEHLXm45RqhmvKkQodUVD2TULpQR9yszJAX4rpM3v1ik=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1646664660; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=DlcxgSze8oPwcVCYDwxgHwWDpfYCGW4lgRBZTATU2Pc=; 
+        b=L0Y9x2Vnp670MrxitkwhlmTanDJlCCY+4N2dz1NCyVUrJ2i0cMsZ7BsN47LhnWQMtmdGpBJz6A4gw19NsMbD3+hezTj6M8963IjhUmCY05czRFGFfRF/RnQkaecNa3pMcve3jvYQHVncRjbQQ4VDkRh/eSnp8oEKWh214ztfRPY=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1646664660;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Message-ID:Subject:Date:MIME-Version:Content-Transfer-Encoding:Content-Type;
+        bh=DlcxgSze8oPwcVCYDwxgHwWDpfYCGW4lgRBZTATU2Pc=;
+        b=GP9RWqV+khBJ2ZjZHtRtP118i7IO4aR60yHMtI1CmI69noRXMAhZG7FLJnSxck0R
+        Sr5hw3dSMnoCELBLV0+la8lhiStj7GMW1mZSeLaQSHy2xx+XcXa0WZt74WUdfMGE0ue
+        yW7uSss2HH6ck6tZRm+k2pMxqBB3xGjEc8VZxbNo=
+Received: from localhost.localdomain (81.71.33.115 [81.71.33.115]) by mx.zoho.com.cn
+        with SMTPS id 1646664659479921.1968419886987; Mon, 7 Mar 2022 22:50:59 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     zyjzyj2000@gmail.com, jgg@ziepe.ca
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <20220307145047.3235675-1-cgxu519@mykernel.net>
+Subject: [PATCH v2 1/2] RDMA/rxe: change variable and function argument to proper type
+Date:   Mon,  7 Mar 2022 22:50:46 +0800
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-From:   Sylvain Didelot <didelot.sylvain@gmail.com>
-Date:   Mon, 7 Mar 2022 14:57:14 +0100
-Message-ID: <CAOrWFD8Kb3R0OZ8A04QF4fPdMM6Xa_-sze0tLHboAJnz3SLivw@mail.gmail.com>
-Subject: [Question] Is address format "gid" supported by RDMACM with RoCE?
-To:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+Content-Type: text/plain; charset=utf8
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,76 +56,67 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi,
+The type of wqe length is u32 so in order to avoid overflow
+and shadow casting change variable and relevant function argument to
+proper type.
 
-I have configured one of my Mellanox network adapters for RoCE:
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
 ---
-CA 'roceP1p1s0f1'
-    CA type: MT4123
-    Number of ports: 1
-    Firmware version: 20.32.1010
-    Hardware version: 0
-    Node GUID: 0xb8cef603002d1707
-    System image GUID: 0xb8cef603002d1706
-    Port 1:
-        State: Active
-        Physical state: LinkUp
-        Rate: 100
-        Base lid: 0
-        LMC: 0
-        SM lid: 0
-        Capability mask: 0x00010000
-        Port GUID: 0xbacef6fffe2d1707
-        Link layer: Ethernet
----
+ drivers/infiniband/sw/rxe/rxe_req.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The Infiniband stack was installed from the official Ubuntu repository
-(20.04.4 LTS):
----
-$ apt search ibverbs
-Sorting... Done
-Full Text Search... Done
-ibverbs-providers/focal,now 28.0-1ubuntu1 arm64 [installed]
-  User space provider drivers for libibverbs
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rx=
+e/rxe_req.c
+index 5eb89052dd66..b28036a7a3b8 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -359,7 +359,7 @@ static inline int get_mtu(struct rxe_qp *qp)
+=20
+ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ =09=09=09=09       struct rxe_send_wqe *wqe,
+-=09=09=09=09       int opcode, int payload,
++=09=09=09=09       int opcode, u32 payload,
+ =09=09=09=09       struct rxe_pkt_info *pkt)
+ {
+ =09struct rxe_dev=09=09*rxe =3D to_rdev(qp->ibqp.device);
+@@ -449,7 +449,7 @@ static struct sk_buff *init_req_packet(struct rxe_qp *q=
+p,
+=20
+ static int finish_packet(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+ =09=09       struct rxe_pkt_info *pkt, struct sk_buff *skb,
+-=09=09       int paylen)
++=09=09       u32 paylen)
+ {
+ =09int err;
+=20
+@@ -497,7 +497,7 @@ static void update_wqe_state(struct rxe_qp *qp,
+ static void update_wqe_psn(struct rxe_qp *qp,
+ =09=09=09   struct rxe_send_wqe *wqe,
+ =09=09=09   struct rxe_pkt_info *pkt,
+-=09=09=09   int payload)
++=09=09=09   u32 payload)
+ {
+ =09/* number of packets left to send including current one */
+ =09int num_pkt =3D (wqe->dma.resid + payload + qp->mtu - 1) / qp->mtu;
+@@ -540,7 +540,7 @@ static void rollback_state(struct rxe_send_wqe *wqe,
+ }
+=20
+ static void update_state(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+-=09=09=09 struct rxe_pkt_info *pkt, int payload)
++=09=09=09 struct rxe_pkt_info *pkt, u32 payload)
+ {
+ =09qp->req.opcode =3D pkt->opcode;
+=20
+@@ -612,7 +612,7 @@ int rxe_requester(void *arg)
+ =09struct sk_buff *skb;
+ =09struct rxe_send_wqe *wqe;
+ =09enum rxe_hdr_mask mask;
+-=09int payload;
++=09u32 payload;
+ =09int mtu;
+ =09int opcode;
+ =09int ret;
+--=20
+2.27.0
 
-ibverbs-utils/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Examples for the libibverbs library
 
-libibverbs-dev/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Development files for the libibverbs library
-
-libibverbs1/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Library for direct userspace use of RDMA (InfiniBand/iWARP)
-
-librdmacm-dev/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Development files for the librdmacm library
-
-librdmacm1/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Library for managing RDMA connections
-
-rdmacm-utils/focal,now 28.0-1ubuntu1 arm64 [installed]
-  Examples for the librdmacm library
----
-
-When I start the ucmatose server with the address format "gid", the
-tool fails binding with the error "No such device"
-
-Here is an example of the output:
----
-$ cat /sys/class/infiniband/roceP1p1s0f1/ports/1/gids/0
-fe80:0000:0000:0000:bace:f6ff:fe2d:1707
-
-$ ucmatose -b fe80:0000:0000:0000:bace:f6ff:fe2d:1707 -P ib -f gid
-cmatose: starting server
-cmatose: bind address failed: No such device
-test complete
-return status -1
----
-
-Does rdmacm support connection establishment using GID with RoCE? Or
-Is it a known limitation for RoCE?
-FYI, the same experiment without RoCE (Link layer: Infiniband) works perfectly.
-
-Thanks for your help and your feedback.
-
-Sylvain Didelot
