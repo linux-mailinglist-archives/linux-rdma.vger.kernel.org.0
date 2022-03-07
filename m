@@ -2,118 +2,188 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA8F54D0767
-	for <lists+linux-rdma@lfdr.de>; Mon,  7 Mar 2022 20:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1323F4D0840
+	for <lists+linux-rdma@lfdr.de>; Mon,  7 Mar 2022 21:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245028AbiCGTQb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 7 Mar 2022 14:16:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44200 "EHLO
+        id S235730AbiCGUV7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 7 Mar 2022 15:21:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238787AbiCGTQ2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Mar 2022 14:16:28 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25657D00C
-        for <linux-rdma@vger.kernel.org>; Mon,  7 Mar 2022 11:15:32 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id bu29so28142068lfb.0
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Mar 2022 11:15:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TwTcsRMn5VZVrmgXZDV1J6sFeJgAdw8S2EoV6iZ5xnc=;
-        b=dlpUNu5q4CyzmXtBLA/gOu0GC/00SF7ttDAollAbHZtk5bw2xAtIqb7CwTopnt8lf3
-         AbfnSVPq9xulj/tw8AvoPmKfCZDzXeZNEVEEDbHlLhh/I5bp+zk8upvRu1BNSASuquhE
-         pUQrRqiHujQApoBOt9qnNksqqhPlFfAR59MXs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TwTcsRMn5VZVrmgXZDV1J6sFeJgAdw8S2EoV6iZ5xnc=;
-        b=NUFllw58+WiBWcPi4v55aiT3tuXzD9p9ZzHx7AQ0O2FcP0uBFAW44NYGlbECCiLK5r
-         Hp44/4jCEUuLxLb61QNZkKQmdxwuC1qJW+dRpEBs8lVT2VDnZlTDwZpGSG+apf7L0aeB
-         I+B9HQXJ5QWZqTh2P0kv2EW9d+sb7oAyqRff/zpBb0KPSJpqvkiscu4iDcyg2iSJGX5f
-         ffUEiHimZUxCDxj1RH70Tcfc8NhiJ2FFUbrAtrXKRkbwvVwyZEWDE+qKqSEsJyQxmMGy
-         cugNBWQzLMo2gF7vsAMTHwRtHdQqeeK7iVPVwJkm1w1Scf3/5+Qnq7o5BUQ7nkv7myNa
-         kjrA==
-X-Gm-Message-State: AOAM532m2jH6Vote3AcG0KdITdYbw+MI9pD2quf8GmAxC2Up6p3e3XuT
-        RWrfMQTZrkEqg7andc/Fd8R6KPtTAuYPggy6FnM=
-X-Google-Smtp-Source: ABdhPJwC5aIlVPBDLYH58ZCMGJ/ORStYUVGAGeKU1yJk7ZeLngeDsOGs2HUzLuUUV4dc9hSLzuMBeg==
-X-Received: by 2002:a05:6512:228a:b0:443:6406:96b8 with SMTP id f10-20020a056512228a00b00443640696b8mr8639380lfu.113.1646680529744;
-        Mon, 07 Mar 2022 11:15:29 -0800 (PST)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id bj35-20020a2eaaa3000000b00247e0c1e9f8sm1495694ljb.118.2022.03.07.11.15.25
-        for <linux-rdma@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Mar 2022 11:15:27 -0800 (PST)
-Received: by mail-lj1-f172.google.com with SMTP id u3so5447805ljd.0
-        for <linux-rdma@vger.kernel.org>; Mon, 07 Mar 2022 11:15:25 -0800 (PST)
-X-Received: by 2002:a05:651c:1213:b0:247:e2d9:cdda with SMTP id
- i19-20020a05651c121300b00247e2d9cddamr5310350lja.443.1646680524503; Mon, 07
- Mar 2022 11:15:24 -0800 (PST)
+        with ESMTP id S240085AbiCGUV7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 7 Mar 2022 15:21:59 -0500
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A04E0532DD
+        for <linux-rdma@vger.kernel.org>; Mon,  7 Mar 2022 12:21:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1646684464; x=1678220464;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IkUqUkmWOeVs3FzXiJrXa72Dz8afkmN82b3LpOLoOzM=;
+  b=Jxw2DYDRHPofzEPNc4S2nhxD7yLHzoigHoOgnwngP79njuh09Q/kNlYU
+   FdboQOxjBi4fzMPETLGV8IopQZphs4qn+IJ5LArneXUwvkM3wk7JEEaxo
+   ElC4HuzEdcvduBFLIqsVhTUFaQLxIGc9TBJs6DfQ0BMtqi/sIE+Uq+Ibb
+   YJS5Sroz1MVE6SNZFHTpqZBbqMEgmSpX0QcJu83gqtavGB29lo7f8f9yQ
+   U39aZedcR7VhssBG4YY8deg+Gs3G4dDEtR2trRKCUUSF1T/JadfePwep/
+   rzK5UMszxINJKJD8PYTu6FdTnpE1FtM6kkDJQONmF2Tk8EJpuXEo6K0ZG
+   g==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10279"; a="254225127"
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
+   d="scan'208";a="254225127"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2022 12:21:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,163,1643702400"; 
+   d="scan'208";a="711243317"
+Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 07 Mar 2022 12:21:02 -0800
+Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1nRJqn-0000gK-Ub; Mon, 07 Mar 2022 20:21:01 +0000
+Date:   Tue, 08 Mar 2022 04:20:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 73f7e05609ece4030f2745c4c0c01e0be6889590
+Message-ID: <622668f9.+cADPNUWDERR0iNV%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20220228110822.491923-1-jakobkoschel@gmail.com>
- <20220307150037.GD3293@kadam> <f7ffd78aa68340e1ade6af15fa2f06d8@AcuMS.aculab.com>
-In-Reply-To: <f7ffd78aa68340e1ade6af15fa2f06d8@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 7 Mar 2022 11:15:07 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjnsmmGdh-SZzaPD=e1rKhoBkQAF3JeVhGvpa=Gax--7g@mail.gmail.com>
-Message-ID: <CAHk-=wjnsmmGdh-SZzaPD=e1rKhoBkQAF3JeVhGvpa=Gax--7g@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Remove usage of list iterator past the loop body
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jakob Koschel <jakobkoschel@gmail.com>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Cristiano Giuffrida <c.giuffrida@vu.nl>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Bos, H.J." <h.j.bos@vu.nl>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arnd Bergman <arnd@arndb.de>,
-        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 7, 2022 at 7:26 AM David Laight <David.Laight@aculab.com> wrote:
->
-> I'd write the following new defines (but I might be using
-> the old names here):
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 73f7e05609ece4030f2745c4c0c01e0be6889590  RDMA/hns: Refactor the alloc_cqc()
 
-See my email at
+elapsed time: 788m
 
-  https://lore.kernel.org/all/CAHk-=wiacQM76xec=Hr7cLchVZ8Mo9VDHmXRJzJ_EX4sOsApEA@mail.gmail.com/
+configs tested: 103
+configs skipped: 3
 
-for what I think is the way forward if we want to do new defines and
-clean up the situation.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-It's really just an example (and converts two list cases and one
-single file that uses them), so it's not in any way complete.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                              allyesconfig
+arm64                               defconfig
+i386                 randconfig-c001-20220307
+powerpc                     pq2fads_defconfig
+um                             i386_defconfig
+ia64                          tiger_defconfig
+m68k                        m5272c3_defconfig
+arm                        multi_v7_defconfig
+sh                          rsk7269_defconfig
+arc                      axs103_smp_defconfig
+arm                         lubbock_defconfig
+arm                            hisi_defconfig
+powerpc                 mpc837x_mds_defconfig
+arm                        mvebu_v7_defconfig
+mips                       capcella_defconfig
+powerpc                mpc7448_hpc2_defconfig
+sh                        sh7757lcr_defconfig
+arm                           tegra_defconfig
+sh                         apsh4a3a_defconfig
+m68k                       m5475evb_defconfig
+powerpc                    klondike_defconfig
+arm                         vf610m4_defconfig
+arm                          exynos_defconfig
+arm                  randconfig-c002-20220307
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a006-20220307
+x86_64               randconfig-a004-20220307
+x86_64               randconfig-a005-20220307
+x86_64               randconfig-a001-20220307
+x86_64               randconfig-a003-20220307
+x86_64               randconfig-a002-20220307
+i386                 randconfig-a005-20220307
+i386                 randconfig-a004-20220307
+i386                 randconfig-a003-20220307
+i386                 randconfig-a006-20220307
+i386                 randconfig-a002-20220307
+i386                 randconfig-a001-20220307
+arc                  randconfig-r043-20220307
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                         rhel-8.3-kunit
+x86_64                                  kexec
 
-I also has that "-std=gnu11" in the patch so that you can use the
-loop-declared variables - but without the other small fixups for some
-of the things that exposed.
+clang tested configs:
+x86_64               randconfig-c007-20220307
+i386                 randconfig-c001-20220307
+powerpc              randconfig-c003-20220307
+riscv                randconfig-c006-20220307
+mips                 randconfig-c004-20220307
+arm                  randconfig-c002-20220307
+s390                 randconfig-c005-20220307
+mips                     cu1000-neo_defconfig
+powerpc                 mpc832x_mds_defconfig
+powerpc                   microwatt_defconfig
+powerpc                          allmodconfig
+powerpc                      ppc64e_defconfig
+x86_64                           allyesconfig
+hexagon              randconfig-r041-20220307
+riscv                randconfig-r042-20220307
+hexagon              randconfig-r045-20220307
+s390                 randconfig-r044-20220307
 
-I'll merge the proper version of the "update C standard version" from
-Arnd early in the 5.18 merge window, but for testing that one file
-example change I sent out the patch like that.
-
-          Linus
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
