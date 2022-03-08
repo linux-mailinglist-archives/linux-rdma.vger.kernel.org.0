@@ -2,221 +2,522 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 120844D1823
-	for <lists+linux-rdma@lfdr.de>; Tue,  8 Mar 2022 13:43:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 759534D1893
+	for <lists+linux-rdma@lfdr.de>; Tue,  8 Mar 2022 14:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236637AbiCHMod (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 8 Mar 2022 07:44:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48970 "EHLO
+        id S235812AbiCHNCm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 8 Mar 2022 08:02:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241986AbiCHMoc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Mar 2022 07:44:32 -0500
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08on2072.outbound.protection.outlook.com [40.107.102.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ADCD3C487
-        for <linux-rdma@vger.kernel.org>; Tue,  8 Mar 2022 04:43:35 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ByZvw8qwXHntFQafa+sg10YpuePgBH58kiiXiiWiixTXevOS2kNEm2J9kpsQyQCBrW0IYSnlea0VFMYy+Fn9y8m9xB1rviQUd17h1fXDfX/ylnlehz04ZUl4MREoAbbs36SKiHZiV+datbdTkLiHQ5GTetJgJpc2SsFUsF99gYPYCYyNcbFH00qy5hFtGTMt3NROG7k2wAMp5AZo/IusuVoySTZdcH8IYGvYYR8KN53MX2jvh8dQ8Y5zDHbmx6WWe7QfXiepVOJOY7bDpX6Kww71t1uh49p49txbymTRnqcqSJe/JqTlE3UuCVbORwwUaxEA7kevTTfvrWF2hnaniA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WS+SlrDkVPLhf6AitTLD3VcMqvowmYdd88G5nOBx0xw=;
- b=ATBgjjGgQ2PZ9wdn5VDPFsO0WhVPLcfHcX9uwCk9qO3J+HPVdatTRWj9qprjZR33GW8iJFwLpnSnjeeYFcMK9RfIot666OYkq1GG2own4w2q7VlcjhXNtCPd7FjDXdM6PbuQ8YBgn1HmmvNEo77NEzuO31LEWIDKFbR/gqx8DnEOrM1RaS2BDXaW2C+EoM95l6oWrwZIECj7m6tqpGPkJ+/3PF0GduHVDi4mdgvjl/S6hc/z8mvoov0S5hNGLbCqru3x+3RA5xwrwMGSrivXQWknEU9kEvm+n3UbRICtk4DCX4kQGm8yyuBEZq2aGPuZ4DWzVw1SSqnBf5F7TWX6hw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WS+SlrDkVPLhf6AitTLD3VcMqvowmYdd88G5nOBx0xw=;
- b=p723XUENMyhf/gTCMUoTaAKWdrBXdM2adwLXWg59LKBLsafEi6ZGQniSBUlzk2s8depsiX+R27ChkCY/bwJXdN6Hehix1nl7WZfYMQ0SOUxcTtA7pcZznsn6r1Bo9nZ3m/6+8+QLDy0zSfIPpwLSHoDsQMfghiFPjboXpdWS4UQ1H+SZwMW5B4ulkypqnwCfCC5MUmyy8icV6nI70JhytsDHdOLyGJiyfRLw2b/6bov1r8ZlD+ACCJd/72Z32yduZ0NGH9psI/bb6Fxo/Ems0eghX8oIjT2B/W0gqg1DUcSfw88WgGRs0oEgY5VKlRQKFZnhuBAXnjNllVPUhx3vOw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY4PR12MB1366.namprd12.prod.outlook.com (2603:10b6:903:40::13)
- by SA0PR12MB4367.namprd12.prod.outlook.com (2603:10b6:806:94::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.16; Tue, 8 Mar
- 2022 12:43:33 +0000
-Received: from CY4PR12MB1366.namprd12.prod.outlook.com
- ([fe80::7044:8280:56e3:46da]) by CY4PR12MB1366.namprd12.prod.outlook.com
- ([fe80::7044:8280:56e3:46da%4]) with mapi id 15.20.5038.027; Tue, 8 Mar 2022
- 12:43:33 +0000
-Message-ID: <4e6e1640-92be-20a3-758a-9f069146de0d@nvidia.com>
-Date:   Tue, 8 Mar 2022 20:43:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.1
-Subject: Re: [Question] Is address format "gid" supported by RDMACM with RoCE?
-Content-Language: en-US
-To:     Sylvain Didelot <didelot.sylvain@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-References: <CAOrWFD8Kb3R0OZ8A04QF4fPdMM6Xa_-sze0tLHboAJnz3SLivw@mail.gmail.com>
- <b612cd5a-b3ad-c8fb-cb01-32aeafbb9e7a@nvidia.com>
- <CAOrWFD_6dwzfjRJg7fh20B8K7_vbw7xQ+Lg7cGsAPwcOcevyoQ@mail.gmail.com>
-From:   Mark Zhang <markzhang@nvidia.com>
-In-Reply-To: <CAOrWFD_6dwzfjRJg7fh20B8K7_vbw7xQ+Lg7cGsAPwcOcevyoQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR06CA0190.apcprd06.prod.outlook.com (2603:1096:4:1::22)
- To CY4PR12MB1366.namprd12.prod.outlook.com (2603:10b6:903:40::13)
+        with ESMTP id S234377AbiCHNCl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 8 Mar 2022 08:02:41 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089184757B
+        for <linux-rdma@vger.kernel.org>; Tue,  8 Mar 2022 05:01:44 -0800 (PST)
+Received: from dggpeml500024.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KCb1y3gvszbcBh;
+        Tue,  8 Mar 2022 20:56:54 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500024.china.huawei.com (7.185.36.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 8 Mar 2022 21:01:42 +0800
+Received: from localhost.localdomain (10.69.192.56) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2308.21; Tue, 8 Mar 2022 21:01:42 +0800
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+To:     <jgg@nvidia.com>, <leon@kernel.org>
+CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+        <liangwenpeng@huawei.com>
+Subject: [PATCH v2 for-next] RDMA/hns: Use the reserved loopback QPs to free MR before destroying MPT
+Date:   Tue, 8 Mar 2022 21:01:27 +0800
+Message-ID: <20220308130127.31398-1-liangwenpeng@huawei.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f262530-3384-4517-badd-08da0101417f
-X-MS-TrafficTypeDiagnostic: SA0PR12MB4367:EE_
-X-Microsoft-Antispam-PRVS: <SA0PR12MB4367F47AB2FCC4E517D57586C7099@SA0PR12MB4367.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2hSj3z9Y8RksYWPGnNR2jJ7g2K9ODQQ1viCipgM3nxEuOyIG8kBX0OcKFyvwVF4+NPo26nDttWGNNg33FSG7VPTQry+qIw3tzjtz8Lnqlx/QDZ0f76fZK2O7LTQJUoaje1ONpwboab7eW8dC3n1zzuOZd2/BGItMp+i+2MxyRu1rkUcw7VJ4DdgNstYlf1ZU8O6ht/WhLj0ECquNiyzoZ5diM0fVrX8gbSwo0Gk9UZ5iq5vA3YF8TVu/b15GSU4ipb89viD+rP+uDp4NEtOPm0nfv4bqpv/66yLq4/iWXQfuZQV8rf/DTZF7y3f9M9ruWlMj8WUj54oTcImLJchuQO0YS4ZgMtKpSYugyIBL1Ke+Wp5H4eAUXFLcKIWEnGn5D4EKl9UBLrkXUiS1ViZRtwG8t3+iXWAeAd9ovCuzwVx/l8NXGfoveVDiqaWGgXwj+Ye1ZHE+DFWfO8B+aA1EnSj9D5G7kWJik/NxocGuP4c1QRhqOh3t9NoYj+VDgkLHWK21wh80NrvvAkIEygvrNAUgqZDfPE7gTtbEU9A9k6CReFMcy9c3jKmydhwsAARhOaEwBUhaRgbFxmzM0PVcpDqk7q4PPLJFdvpYk6dbZ9LLIQeMHxCUe57wpU7M/4UFmtJmnLGt40dNXEz/qgMxea9I123yv65AmvXHgeE5zSDPofZ1VJfgWXlVncxsUgU8X0+XUuoFpRyLbOzXRnZsgnBd108FxhAPB5dWQe07uASc4umE3zdX6mQL9Ge237Vb
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR12MB1366.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(5660300002)(31686004)(8676002)(4326008)(66556008)(66476007)(86362001)(66946007)(8936002)(6916009)(6506007)(316002)(36756003)(2906002)(38100700002)(186003)(2616005)(31696002)(26005)(53546011)(6512007)(6486002)(6666004)(508600001)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SDlYL2NzWlg3NkJVZnJPb2lPd0JiVkhoZThrZDBoOXVpWE92S3JrWWlIVG8y?=
- =?utf-8?B?N2NpVlUwMU54TzY0VGdkY282UHJYTTg3bllza096aFZDZTVFSmZlODlSNkNR?=
- =?utf-8?B?UzI1OXFvcktrUlc4QThOMmNjWG9tczc5OEVxK2pwa0JVSHBuellGWnpNcVM0?=
- =?utf-8?B?a3NKWEpOYi9yWHE4VE9iVnM4bnNQVDNSOWpqb0hIUHBTQlM3Tk9XMnZ4dXlE?=
- =?utf-8?B?QU51R2U5TnpnR1cvSk5pRWJ4Y2pLZGlWM1NLNC80MVFRdzgvdEhSb0VUbHBH?=
- =?utf-8?B?NjNYMGwrbDh2Vkwyd3cwd24rZ0p2Y3hMcFFBWi9RaXNJd0JzU1JOSkJpb3dH?=
- =?utf-8?B?TzJDOXY1b1ZrbU9KTWh0bmx3QjZUN3NMbDhLeGhQSXRycGwwSjI5Q05wWTM5?=
- =?utf-8?B?aHZobFQ4aDd5UmRGaWpyekY5YjRIRkRDV2dRa01zTWNYOEtCaW84ZFVMTDky?=
- =?utf-8?B?QUhvYzBZUmNRYmtnaWpScWUyaVprci9KVUQ2dTB0cmx6YWRyck5TQ2dkRXhR?=
- =?utf-8?B?U3k3R0s3TTQyVDJrUG5LRkUwN3p1UEdCd2VUWjNyUXVtMms4ME12ZVpaK0pF?=
- =?utf-8?B?YmZNNXhmM1RsTjJIQ2hPYmlpK3JodjRUWUo5OE5LVmlkNklSZ09jdzA2THhZ?=
- =?utf-8?B?TlVjOWlEZzNDSUxMVkhBWTVHVjBtdmZFS2JlOWo2S1VXQ1FrTFpVRnpSTlZi?=
- =?utf-8?B?OUlOajZGd3B4clo5OVhjQVd3K2NmNG9tOUh0Wm1XUlRoUCt3ZmdoaHNMc0p3?=
- =?utf-8?B?UzY0TUFsaklqL01KakFhYTNHdjVEMHZ6dHZRazNnY1M4OXpsaGhmWUswcldi?=
- =?utf-8?B?N0ZjNStXeEQyM3dVMFlNL0cwYWdxc0N2MHRZbHBpT0V4dFVXTE5ubGRhTzNm?=
- =?utf-8?B?T0ovcG5CSVlKTi96S1JaS1NjbmpZVnh5M1dnYjI0b3hRMlQ1VG5WSGVaUjcr?=
- =?utf-8?B?WTNEdnVKMS95V0NxanF2WW9ZUmdpUDkyQkJJR3FRak9uL3dQWTN0Z3J1cnQz?=
- =?utf-8?B?RjA0TFNSODdwWmlFcDI5ZmpTODI4aUZyTk9kaDJ5L2pFajg4aXRxK3RzVlRo?=
- =?utf-8?B?eU9WOTVRNEN1eUlGN1E3M0xSMmFiakxkTVBJU0d5UFlJOERXc3IvK0N6eStz?=
- =?utf-8?B?aE9FOXR4ai9Rb0htWWd3NzJmQXdWVlZYUTZlRjd5RFNLK1VkMU1MdlpZY2xs?=
- =?utf-8?B?SGFYOVY3dHE4dUc2OUtlN1IxMS9qcXdTU0hCdU1WZlV4enNiYkhEWmdSeEQ4?=
- =?utf-8?B?VHpHQ1dNNHE2b2hUNFY4SmNYTTJYRlJxWGxLbi9FS2RHcnFHcGtrSFpWdm9t?=
- =?utf-8?B?TFB5NWVoZGNpQVJ5UzlabXBMTGRsVldYNW93Yld5V3FLY0laVUk5QVVmS2Y4?=
- =?utf-8?B?SktFS1V2Q0tCdkJCc3FCMkpMK1RmdG9kNTREMWxyN29sKzF2VlZxZjZUQm5x?=
- =?utf-8?B?SWNSV1UvV0RyaWRXKzlLS0k2N1dzcytkU0Y0a0cwbStkUEVRU2x1KzFUT2g0?=
- =?utf-8?B?bmI1SDFZZ1Z3R3g5Z0NGYWlJdjAvcVlUakZmWC9IVm1pbHk1Smh1RCtCWnc4?=
- =?utf-8?B?Yzdib2xWR085ZnQ2T2FLNnRFUVc5amVLZElhVC9OcEZST1E2Q053LytVUTBF?=
- =?utf-8?B?SkRyVU9qNFBkSmJFYXFEQ1EvNlFlTUdHdHl1eHk1QzZDVkhQUnVzQVFQZWZk?=
- =?utf-8?B?RVZVOFBoSkFpZjBNNFRQRi8wR2kxRlRrckNWVWZZYytrSzJJTkxoTFV5NEQ3?=
- =?utf-8?B?amdsT3JJa1l0NVBOcFdKdGkxZE16WnNHeS9tcDFJWlFndHdVSmZlY1Nnd2RM?=
- =?utf-8?B?RjVQTVZQa3RFSGs0QXRiVkQ3MVk5R01Kbk9jdWV2WE51c3JIdEpsMm9XeDZk?=
- =?utf-8?B?V2hxMUZOMHNwQ1k1YWRFM0JJYmc4amxyaTJuUktFVkdSVndHMnRUQ0VrbEpl?=
- =?utf-8?B?QTVjNDlNOGQ4eXFtVzJlcTFCT24yYnlWSUJsTmJmL0dWU2NhUEN6d0VBaGMz?=
- =?utf-8?B?U2h3OTZmUnpXWGVYMGZCYjFpYy94OVNzWUVLWmQ2Z1JkRHRKTFdlNndENktE?=
- =?utf-8?B?OUE1U2YvOGQrb1UwTDZkRzNHUlFueFRGZzlWbVM5R203dEExR3p0ajRPQ2Vo?=
- =?utf-8?B?MjFVbjAyV05UYkdWdndRMmp6MFgrclpjOEVPRlQ0ZkhMVnVjTi9YYmJIcy9j?=
- =?utf-8?Q?TbkP95dYGziHLcHG+H0h8gQ=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f262530-3384-4517-badd-08da0101417f
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR12MB1366.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Mar 2022 12:43:33.5737
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fFBbjS3G7TeaQq8a1mR+eyBsJNDwDRlVHiAgF0YP7vbceNqSdENTumEbdnL0BZPfkL8UQzuKyKv37CDYli19hA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4367
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.69.192.56]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/8/2022 6:54 PM, Sylvain Didelot wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> Does it mean that RoCE always requires the network interface to have
-> an IP address as it cannot use the GID to establish connections?
-> 
+From: Yixing Liu <liuyixing1@huawei.com>
 
-I think it's just a ucmatose limitation..
+Before destroying MPT, the reserved loopback QPs send loopback IOs (one
+write operation per SL). Completing these loopback IOs represents that
+there isn't any outstanding request in MPT, then it's safe to destroy MPT.
 
-> On Tue, Mar 8, 2022 at 11:49 AM Mark Zhang <markzhang@nvidia.com> wrote:
->>
->> On 3/7/2022 9:57 PM, Sylvain Didelot wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> Hi,
->>>
->>> I have configured one of my Mellanox network adapters for RoCE:
->>> ---
->>> CA 'roceP1p1s0f1'
->>>       CA type: MT4123
->>>       Number of ports: 1
->>>       Firmware version: 20.32.1010
->>>       Hardware version: 0
->>>       Node GUID: 0xb8cef603002d1707
->>>       System image GUID: 0xb8cef603002d1706
->>>       Port 1:
->>>           State: Active
->>>           Physical state: LinkUp
->>>           Rate: 100
->>>           Base lid: 0
->>>           LMC: 0
->>>           SM lid: 0
->>>           Capability mask: 0x00010000
->>>           Port GUID: 0xbacef6fffe2d1707
->>>           Link layer: Ethernet
->>> ---
->>>
->>> The Infiniband stack was installed from the official Ubuntu repository
->>> (20.04.4 LTS):
->>> ---
->>> $ apt search ibverbs
->>> Sorting... Done
->>> Full Text Search... Done
->>> ibverbs-providers/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     User space provider drivers for libibverbs
->>>
->>> ibverbs-utils/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Examples for the libibverbs library
->>>
->>> libibverbs-dev/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Development files for the libibverbs library
->>>
->>> libibverbs1/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Library for direct userspace use of RDMA (InfiniBand/iWARP)
->>>
->>> librdmacm-dev/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Development files for the librdmacm library
->>>
->>> librdmacm1/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Library for managing RDMA connections
->>>
->>> rdmacm-utils/focal,now 28.0-1ubuntu1 arm64 [installed]
->>>     Examples for the librdmacm library
->>> ---
->>>
->>> When I start the ucmatose server with the address format "gid", the
->>> tool fails binding with the error "No such device"
->>>
->>> Here is an example of the output:
->>> ---
->>> $ cat /sys/class/infiniband/roceP1p1s0f1/ports/1/gids/0
->>> fe80:0000:0000:0000:bace:f6ff:fe2d:1707
->>>
->>> $ ucmatose -b fe80:0000:0000:0000:bace:f6ff:fe2d:1707 -P ib -f gid
->>> cmatose: starting server
->>> cmatose: bind address failed: No such device
->>> test complete
->>> return status -1
->>> ---
->>>
->>> Does rdmacm support connection establishment using GID with RoCE? Or
->>> Is it a known limitation for RoCE?
->>> FYI, the same experiment without RoCE (Link layer: Infiniband) works perfectly.
->>>
->>> Thanks for your help and your feedback.
->>>
->>> Sylvain Didelot
->>
->> I think ucmatose doesn't support RoCE when using "-f gid", as in this
->> case ai_family is set to AF_IB.
+Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
+Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+
+Changes since v1:
+* Allocate all reserved resources in one function.
+* Clean up encoding issues.
+* v1 Link: https://patchwork.kernel.org/project/linux-rdma/patch/20220225095654.24684-1-liangwenpeng@huawei.com/
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h |   2 +
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 311 +++++++++++++++++++-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  20 ++
+ drivers/infiniband/hw/hns/hns_roce_mr.c     |   6 +-
+ 4 files changed, 335 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 21182ec56f18..3083d6db1d68 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -633,6 +633,7 @@ struct hns_roce_qp {
+ 	u32			next_sge;
+ 	enum ib_mtu		path_mtu;
+ 	u32			max_inline_data;
++	u8			free_mr_en;
+ 
+ 	/* 0: flush needed, 1: unneeded */
+ 	unsigned long		flush_flag;
+@@ -889,6 +890,7 @@ struct hns_roce_hw {
+ 			 enum ib_qp_state new_state);
+ 	int (*qp_flow_control_init)(struct hns_roce_dev *hr_dev,
+ 			 struct hns_roce_qp *hr_qp);
++	void (*dereg_mr)(struct hns_roce_dev *hr_dev);
+ 	int (*init_eq)(struct hns_roce_dev *hr_dev);
+ 	void (*cleanup_eq)(struct hns_roce_dev *hr_dev);
+ 	int (*write_srqc)(struct hns_roce_srq *srq, void *mb_buf);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 06eb4f00428c..2b0cef17ad45 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -2664,6 +2664,194 @@ static void free_dip_list(struct hns_roce_dev *hr_dev)
+ 	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
+ }
+ 
++static void free_mr_exit(struct hns_roce_dev *hr_dev)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
++	int ret;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
++		if (free_mr->rsv_qp[i]) {
++			ret = ib_destroy_qp(free_mr->rsv_qp[i]);
++			if (ret)
++				ibdev_err(&hr_dev->ib_dev,
++					  "failed to destroy qp in free mr.\n");
++
++			free_mr->rsv_qp[i] = NULL;
++		}
++	}
++
++	if (free_mr->rsv_cq) {
++		ib_destroy_cq(free_mr->rsv_cq);
++		free_mr->rsv_cq = NULL;
++	}
++
++	if (free_mr->rsv_pd) {
++		ib_dealloc_pd(free_mr->rsv_pd);
++		free_mr->rsv_pd = NULL;
++	}
++}
++
++static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	struct ib_cq_init_attr cq_init_attr = {};
++	struct ib_qp_init_attr qp_init_attr = {};
++	struct ib_pd *pd;
++	struct ib_cq *cq;
++	struct ib_qp *qp;
++	int ret;
++	int i;
++
++	pd = ib_alloc_pd(ibdev, 0);
++	if (IS_ERR(pd)) {
++		ibdev_err(ibdev, "failed to create pd for free mr.\n");
++		return PTR_ERR(pd);
++	}
++	free_mr->rsv_pd = pd;
++
++	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
++	cq = ib_create_cq(ibdev, NULL, NULL, NULL, &cq_init_attr);
++	if (IS_ERR(cq)) {
++		ibdev_err(ibdev, "failed to create cq for free mr.\n");
++		ret = PTR_ERR(cq);
++		goto create_failed;
++	}
++	free_mr->rsv_cq = cq;
++
++	qp_init_attr.qp_type = IB_QPT_RC;
++	qp_init_attr.sq_sig_type = IB_SIGNAL_ALL_WR;
++	qp_init_attr.send_cq = free_mr->rsv_cq;
++	qp_init_attr.recv_cq = free_mr->rsv_cq;
++	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
++		qp_init_attr.cap.max_send_wr = HNS_ROCE_FREE_MR_USED_SQWQE_NUM;
++		qp_init_attr.cap.max_send_sge = HNS_ROCE_FREE_MR_USED_SQSGE_NUM;
++		qp_init_attr.cap.max_recv_wr = HNS_ROCE_FREE_MR_USED_RQWQE_NUM;
++		qp_init_attr.cap.max_recv_sge = HNS_ROCE_FREE_MR_USED_RQSGE_NUM;
++
++		qp = ib_create_qp(free_mr->rsv_pd, &qp_init_attr);
++		if (IS_ERR(qp)) {
++			ibdev_err(ibdev, "failed to create qp for free mr.\n");
++			ret = PTR_ERR(qp);
++			goto create_failed;
++		}
++
++		free_mr->rsv_qp[i] = qp;
++	}
++
++	return 0;
++
++create_failed:
++	free_mr_exit(hr_dev);
++
++	return ret;
++}
++
++static int free_mr_modify_rsv_qp(struct hns_roce_dev *hr_dev,
++				 struct ib_qp_attr *attr, int sl_num)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	struct hns_roce_qp *hr_qp;
++	int loopback;
++	int mask;
++	int ret;
++
++	hr_qp = to_hr_qp(free_mr->rsv_qp[sl_num]);
++	hr_qp->free_mr_en = 1;
++
++	mask = IB_QP_STATE | IB_QP_PKEY_INDEX | IB_QP_PORT | IB_QP_ACCESS_FLAGS;
++	attr->qp_state = IB_QPS_INIT;
++	attr->port_num = 1;
++	attr->qp_access_flags = IB_ACCESS_REMOTE_WRITE;
++	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
++	if (ret) {
++		ibdev_err(ibdev, "failed to modify qp to init, ret = %d.\n",
++			  ret);
++		return ret;
++	}
++
++	loopback = hr_dev->loop_idc;
++	/* Set qpc lbi = 1 incidate loopback IO */
++	hr_dev->loop_idc = 1;
++
++	mask = IB_QP_STATE | IB_QP_AV | IB_QP_PATH_MTU | IB_QP_DEST_QPN |
++	       IB_QP_RQ_PSN | IB_QP_MAX_DEST_RD_ATOMIC | IB_QP_MIN_RNR_TIMER;
++	attr->qp_state = IB_QPS_RTR;
++	attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
++	attr->path_mtu = IB_MTU_256;
++	attr->dest_qp_num = hr_qp->qpn;
++	attr->rq_psn = HNS_ROCE_FREE_MR_USED_PSN;
++
++	rdma_ah_set_sl(&attr->ah_attr, (u8)sl_num);
++
++	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
++	hr_dev->loop_idc = loopback;
++	if (ret) {
++		ibdev_err(ibdev, "failed to modify qp to rtr, ret = %d.\n",
++			  ret);
++		return ret;
++	}
++
++	mask = IB_QP_STATE | IB_QP_SQ_PSN | IB_QP_RETRY_CNT | IB_QP_TIMEOUT |
++	       IB_QP_RNR_RETRY | IB_QP_MAX_QP_RD_ATOMIC;
++	attr->qp_state = IB_QPS_RTS;
++	attr->sq_psn = HNS_ROCE_FREE_MR_USED_PSN;
++	attr->retry_cnt = HNS_ROCE_FREE_MR_USED_QP_RETRY_CNT;
++	attr->timeout = HNS_ROCE_FREE_MR_USED_QP_TIMEOUT;
++	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
++	if (ret)
++		ibdev_err(ibdev, "failed to modify qp to rts, ret = %d.\n",
++			  ret);
++
++	return ret;
++}
++
++static int free_mr_modify_qp(struct hns_roce_dev *hr_dev)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
++	struct ib_qp_attr attr = {};
++	int ret;
++	int i;
++
++	rdma_ah_set_grh(&attr.ah_attr, NULL, 0, 0, 1, 0);
++	rdma_ah_set_static_rate(&attr.ah_attr, 3);
++	rdma_ah_set_port_num(&attr.ah_attr, 1);
++
++	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
++		ret = free_mr_modify_rsv_qp(hr_dev, &attr, i);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int free_mr_init(struct hns_roce_dev *hr_dev)
++{
++	int ret;
++
++	ret = free_mr_alloc_res(hr_dev);
++	if (ret)
++		return ret;
++
++	ret = free_mr_modify_qp(hr_dev);
++	if (ret)
++		goto err_modify_qp;
++
++	return 0;
++
++err_modify_qp:
++	free_mr_exit(hr_dev);
++
++	return ret;
++}
++
+ static int get_hem_table(struct hns_roce_dev *hr_dev)
+ {
+ 	unsigned int qpc_count;
+@@ -3244,6 +3432,98 @@ static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
+ 	return 0;
+ }
+ 
++static int free_mr_post_send_lp_wqe(struct hns_roce_qp *hr_qp)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	const struct ib_send_wr *bad_wr;
++	struct ib_rdma_wr rdma_wr = {};
++	struct ib_send_wr *send_wr;
++	int ret;
++
++	send_wr = &rdma_wr.wr;
++	send_wr->opcode = IB_WR_RDMA_WRITE;
++
++	ret = hns_roce_v2_post_send(&hr_qp->ibqp, send_wr, &bad_wr);
++	if (ret) {
++		ibdev_err(ibdev, "failed to post wqe for free mr, ret = %d.\n",
++			  ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int hns_roce_v2_poll_cq(struct ib_cq *ibcq, int num_entries,
++			       struct ib_wc *wc);
++
++static void free_mr_send_cmd_to_hw(struct hns_roce_dev *hr_dev)
++{
++	struct hns_roce_v2_priv *priv = hr_dev->priv;
++	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
++	struct ib_wc wc[ARRAY_SIZE(free_mr->rsv_qp)];
++	struct ib_device *ibdev = &hr_dev->ib_dev;
++	struct hns_roce_qp *hr_qp;
++	unsigned long end;
++	int cqe_cnt = 0;
++	int npolled;
++	int ret;
++	int i;
++
++	/*
++	 * If the device initialization is not complete or in the uninstall
++	 * process, then there is no need to execute free mr.
++	 */
++	if (priv->handle->rinfo.reset_state == HNS_ROCE_STATE_RST_INIT ||
++	    priv->handle->rinfo.instance_state == HNS_ROCE_STATE_INIT ||
++	    hr_dev->state == HNS_ROCE_DEVICE_STATE_UNINIT)
++		return;
++
++	mutex_lock(&free_mr->mutex);
++
++	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
++		hr_qp = to_hr_qp(free_mr->rsv_qp[i]);
++
++		ret = free_mr_post_send_lp_wqe(hr_qp);
++		if (ret) {
++			ibdev_err(ibdev,
++				  "failed to send wqe (qp:0x%lx) for free mr, ret = %d.\n",
++				  hr_qp->qpn, ret);
++			break;
++		}
++
++		cqe_cnt++;
++	}
++
++	end = msecs_to_jiffies(HNS_ROCE_V2_FREE_MR_TIMEOUT) + jiffies;
++	while (cqe_cnt) {
++		npolled = hns_roce_v2_poll_cq(free_mr->rsv_cq, cqe_cnt, wc);
++		if (npolled < 0) {
++			ibdev_err(ibdev,
++				  "failed to poll cqe for free mr, remain %d cqe.\n",
++				  cqe_cnt);
++			goto out;
++		}
++
++		if (time_after(jiffies, end)) {
++			ibdev_err(ibdev,
++				  "failed to poll cqe for free mr and timeout, remain %d cqe.\n",
++				  cqe_cnt);
++			goto out;
++		}
++		cqe_cnt -= npolled;
++	}
++
++out:
++	mutex_unlock(&free_mr->mutex);
++}
++
++static void hns_roce_v2_dereg_mr(struct hns_roce_dev *hr_dev)
++{
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
++		free_mr_send_cmd_to_hw(hr_dev);
++}
++
+ static void *get_cqe_v2(struct hns_roce_cq *hr_cq, int n)
+ {
+ 	return hns_roce_buf_offset(hr_cq->mtr.kmem, n * hr_cq->cqe_size);
+@@ -4663,6 +4943,18 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
+ 	u8 hr_port;
+ 	int ret;
+ 
++	/*
++	 * If free_mr_en of qp is set, it means that this qp comes from
++	 * free mr. This qp will perform the loopback operation.
++	 * In the loopback scenario, only sl needs to be set.
++	 */
++	if (hr_qp->free_mr_en) {
++		hr_reg_write(context, QPC_SL, rdma_ah_get_sl(&attr->ah_attr));
++		hr_reg_clear(qpc_mask, QPC_SL);
++		hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
++		return 0;
++	}
++
+ 	ib_port = (attr_mask & IB_QP_PORT) ? attr->port_num : hr_qp->port + 1;
+ 	hr_port = ib_port - 1;
+ 	is_roce_protocol = rdma_cap_eth_ah(&hr_dev->ib_dev, ib_port) &&
+@@ -6247,6 +6539,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
+ 	.set_hem = hns_roce_v2_set_hem,
+ 	.clear_hem = hns_roce_v2_clear_hem,
+ 	.modify_qp = hns_roce_v2_modify_qp,
++	.dereg_mr = hns_roce_v2_dereg_mr,
+ 	.qp_flow_control_init = hns_roce_v2_qp_flow_control_init,
+ 	.init_eq = hns_roce_v2_init_eq_table,
+ 	.cleanup_eq = hns_roce_v2_cleanup_eq_table,
+@@ -6328,14 +6621,25 @@ static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
+ 	ret = hns_roce_init(hr_dev);
+ 	if (ret) {
+ 		dev_err(hr_dev->dev, "RoCE Engine init failed!\n");
+-		goto error_failed_get_cfg;
++		goto error_failed_cfg;
++	}
++
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
++		ret = free_mr_init(hr_dev);
++		if (ret) {
++			dev_err(hr_dev->dev, "failed to init free mr!\n");
++			goto error_failed_roce_init;
++		}
+ 	}
+ 
+ 	handle->priv = hr_dev;
+ 
+ 	return 0;
+ 
+-error_failed_get_cfg:
++error_failed_roce_init:
++	hns_roce_exit(hr_dev);
++
++error_failed_cfg:
+ 	kfree(hr_dev->priv);
+ 
+ error_failed_kzalloc:
+@@ -6357,6 +6661,9 @@ static void __hns_roce_hw_v2_uninit_instance(struct hnae3_handle *handle,
+ 	hr_dev->state = HNS_ROCE_DEVICE_STATE_UNINIT;
+ 	hns_roce_handle_device_err(hr_dev);
+ 
++	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
++		free_mr_exit(hr_dev);
++
+ 	hns_roce_exit(hr_dev);
+ 	kfree(hr_dev->priv);
+ 	ib_dealloc_device(&hr_dev->ib_dev);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index 12be85f0986e..0d87b627601e 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -139,6 +139,18 @@ enum {
+ #define CMD_CSQ_DESC_NUM		1024
+ #define CMD_CRQ_DESC_NUM		1024
+ 
++/* Free mr used parameters */
++#define HNS_ROCE_FREE_MR_USED_CQE_NUM		128
++#define HNS_ROCE_FREE_MR_USED_QP_NUM		0x8
++#define HNS_ROCE_FREE_MR_USED_PSN		0x0808
++#define HNS_ROCE_FREE_MR_USED_QP_RETRY_CNT	0x7
++#define HNS_ROCE_FREE_MR_USED_QP_TIMEOUT	0x12
++#define HNS_ROCE_FREE_MR_USED_SQWQE_NUM		128
++#define HNS_ROCE_FREE_MR_USED_SQSGE_NUM		0x2
++#define HNS_ROCE_FREE_MR_USED_RQWQE_NUM		128
++#define HNS_ROCE_FREE_MR_USED_RQSGE_NUM		0x2
++#define HNS_ROCE_V2_FREE_MR_TIMEOUT		4500
++
+ enum {
+ 	NO_ARMED = 0x0,
+ 	REG_NXT_CEQE = 0x2,
+@@ -1418,10 +1430,18 @@ struct hns_roce_link_table {
+ #define HNS_ROCE_EXT_LLM_ENTRY(addr, id) (((id) << (64 - 12)) | ((addr) >> 12))
+ #define HNS_ROCE_EXT_LLM_MIN_PAGES(que_num) ((que_num) * 4 + 2)
+ 
++struct hns_roce_v2_free_mr {
++	struct ib_qp *rsv_qp[HNS_ROCE_FREE_MR_USED_QP_NUM];
++	struct ib_cq *rsv_cq;
++	struct ib_pd *rsv_pd;
++	struct mutex mutex;
++};
++
+ struct hns_roce_v2_priv {
+ 	struct hnae3_handle *handle;
+ 	struct hns_roce_v2_cmq cmq;
+ 	struct hns_roce_link_table ext_llm;
++	struct hns_roce_v2_free_mr free_mr;
+ };
+ 
+ struct hns_roce_dip {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index b58b869339cc..b389738d157f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -119,8 +119,7 @@ static void free_mr_pbl(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr)
+ 	hns_roce_mtr_destroy(hr_dev, &mr->pbl_mtr);
+ }
+ 
+-static void hns_roce_mr_free(struct hns_roce_dev *hr_dev,
+-			     struct hns_roce_mr *mr)
++static void hns_roce_mr_free(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr)
+ {
+ 	struct ib_device *ibdev = &hr_dev->ib_dev;
+ 	int ret;
+@@ -343,6 +342,9 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 	struct hns_roce_mr *mr = to_hr_mr(ibmr);
+ 	int ret = 0;
+ 
++	if (hr_dev->hw->dereg_mr)
++		hr_dev->hw->dereg_mr(hr_dev);
++
+ 	hns_roce_mr_free(hr_dev, mr);
+ 	kfree(mr);
+ 
+-- 
+2.33.0
 
