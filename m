@@ -2,49 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4934D4D3085
-	for <lists+linux-rdma@lfdr.de>; Wed,  9 Mar 2022 14:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 467A34D35BD
+	for <lists+linux-rdma@lfdr.de>; Wed,  9 Mar 2022 18:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233160AbiCINua (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Mar 2022 08:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
+        id S231620AbiCIQoi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Mar 2022 11:44:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231642AbiCINuX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Mar 2022 08:50:23 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D289815040E
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Mar 2022 05:49:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4C326B81FE6
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Mar 2022 13:49:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73C9AC340E8;
-        Wed,  9 Mar 2022 13:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646833761;
-        bh=8lrXuqepB8KNLUL4pE4Mq9gxIJ0TInEQ2ofWnYmRleA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mqjmusEz9lLWoHkhG39aA8hRUXKtzv/CYCOONXbj2HObgdXy+P+1rPpeDvMvxukzU
-         rOCMmCIZF5tWV5cSRn+XzwgJGVvEpmYe3Wvj1G+rjnjL8KK8WcLpCwTP2rwAOJOUAS
-         SUOu897Vk04BOQE52mpO0nOyTdE1vScpZVcOG3YMkGHiLMBs9sQCw3PgZw9ozahnmC
-         zEh8TcUKP54m/rUxcGmDUht7N6hL+jf62nwNKgCgZzwkhU6RHbhyChMAwMNAiB7om/
-         l5Wc9SUdSRWhviXeXV4bMzPElc+JeC73TUmOrXncvytpaGy1XED83iYLsIja7V8/VS
-         UAVT7uWcR6vPw==
-Date:   Wed, 9 Mar 2022 15:49:08 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Wenpeng Liang <liangwenpeng@huawei.com>
-Cc:     jgg@nvidia.com, linux-rdma@vger.kernel.org, linuxarm@huawei.com
-Subject: Re: [PATCH v2 for-next] RDMA/hns: Use the reserved loopback QPs to
- free MR before destroying MPT
-Message-ID: <YiiwVALEM1urucId@unreal>
-References: <20220308130127.31398-1-liangwenpeng@huawei.com>
+        with ESMTP id S237902AbiCIQlA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Mar 2022 11:41:00 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A4975E5A
+        for <linux-rdma@vger.kernel.org>; Wed,  9 Mar 2022 08:33:56 -0800 (PST)
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 229FYt1o012481;
+        Wed, 9 Mar 2022 16:33:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=6vVSj5B1Tf7E60FdkQ3zarLQWQupdxusE9CVLjyGy1A=;
+ b=YfUWbSxY2lV36njfDfcKnCijv7Np/f/VaIj/1mBd1swIjEFd7Ur7pJELoWiFoRt+GJFA
+ doBw5BzZmdr64VHs2rDWMoKURXrB0xU8BAokib5rcnYMVgFHgwJYFafwoBnOw1iTSMz2
+ l9piiJZetyaygfCFVx1nxqFR9wlSynFgfwWE9JO/9YO+O5fMRdpEWrrdZ1y4Gjf43wyn
+ G+jjizM6BAilT0iJdlgWv7PIuGe8jm+MmlHDBlhgtpJUSyB92uV0x/S0DpE32zAq6R5v
+ dmGnlOMJDSNowWccJZBpsw4hZAjXUgn0QBD2AKZlraqNy8a+FTSWk2QHh+6ZVy0bBZ1j Tg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3eny9m0s1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Mar 2022 16:33:07 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 229FvFxd008041;
+        Wed, 9 Mar 2022 16:33:06 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2170.outbound.protection.outlook.com [104.47.59.170])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3eny9m0s19-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 09 Mar 2022 16:33:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bpVfCqsZXl6KoZGxiAj1gxb+mSscOmsXYKB55ppd6qJJd5YwZ6dBVJkpH5IOQFk0aY+hge8qeUN33G8kjPSIscBODehnPkp1MOnJJ/FhaK1JC9F5E4DqVJxY4FbIIaQED93Y+Fu85RootKexYtVCzcRgEPbXQSubSs+ITUpSRv8O7YKj//1U7dOAWZHJermzoA9tJbH1hnHcUIIXBLUFHdualLQBoT9jEARE2uQYgSI6bFr+JBOamA6TL8DAzCOTcPaAiOzBM0fNvDz6yE/TeEe0XmEmOAgAujCpHOo8l+5sdhiVvP6HxatxNwIPt20iHMooYXbRL2U18CfVck32dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6vVSj5B1Tf7E60FdkQ3zarLQWQupdxusE9CVLjyGy1A=;
+ b=TE1R0ECNgs9ugvicY49mhaIZsX2RP7ySZFThNxumh+eIGEN8hPe8DyOGQ+V2xiocBN4GpWuC00epO0Gajs4kvudDC1cLTT/vbuzdUIIZ35I+beqGANQSJtgyz1f7x7kwBaSjeoO/mtLyQgce40L2/ROPUf7SPK3qsl72Bl1+xa+99jn1SNMPs6cBuFssdWqiR7EjfQ9ZgIXz/xep4bgcJ01CU/LczX3eMfdlaJuzsiuukfafDb/1XAP1aoHZwXjM7V5WLq1D+tq7ApbhgaEm4cjp2rM8Nvm7ibWNFoidGiScIGkrkdZux49Np1tiQG1v5yFaZP/KLzKzhyMZEB7Nlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
+ header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (2603:10b6:a03:150::19)
+ by BN7PR15MB2401.namprd15.prod.outlook.com (2603:10b6:406:89::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5038.15; Wed, 9 Mar
+ 2022 16:33:04 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::5597:ed30:6ae4:dbcf]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::5597:ed30:6ae4:dbcf%3]) with mapi id 15.20.5038.027; Wed, 9 Mar 2022
+ 16:33:03 +0000
+From:   Bernard Metzler <BMT@zurich.ibm.com>
+To:     "dust.li@linux.alibaba.com" <dust.li@linux.alibaba.com>,
+        Cheng Xu <chengyou.xc@alibaba-inc.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>,
+        "dledford@redhat.com" <dledford@redhat.com>
+CC:     "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "KaiShen@linux.alibaba.com" <KaiShen@linux.alibaba.com>,
+        "chengyou@linux.alibaba.com" <chengyou@linux.alibaba.com>,
+        "tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>
+Subject: RE: Re: [PATCH for-next v3 07/12] RDMA/erdma: Add verbs header file
+Thread-Topic: Re: [PATCH for-next v3 07/12] RDMA/erdma: Add verbs header file
+Thread-Index: Adgz01gS8GD0haJFRdW8KQWTx3Lp2g==
+Date:   Wed, 9 Mar 2022 16:33:03 +0000
+Message-ID: <BYAPR15MB26319EE484A7565AE8DAC3DC990A9@BYAPR15MB2631.namprd15.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d151d691-d4dc-4a01-58f0-08da01ea7bca
+x-ms-traffictypediagnostic: BN7PR15MB2401:EE_
+x-microsoft-antispam-prvs: <BN7PR15MB24016D26E0C795D59375B0D9990A9@BN7PR15MB2401.namprd15.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 4CHz7XUrSldcLD1mBZtM1P1ZSCHfmsobjrcXi+djPnUrNxHCo/VazxfibvfUXnNbnwpLAxngkG99uosm0RNwBZF2fC3pc3Ba72nalVsVcGObiznO4t9ejnC61CDGfo4tJPgKQuMwDN2SrmH8cZkKnzEK8K18z5vG4c8UYReUEISPYnhSS2zYuJAkFt/x+D/sSmeITMZj7mwkxC5rhJMEbdnKB9Qzg6ayyOxQThq8tKounT6e5I1T9Mz4u5SK0tvqTET2wbOeuyOH7utdsaelkx4bbOJny0wSryG49SDxhuiBVP+mOOOfD+a71EI7X4X4oV0zdveDMwLyBuqIAey4vUXgivDs7IKqVZf5lM0LhIP+DxTm282D7Z1nfAKtu7B2dFPf6I2nhff44jlevJH0hJZXAMS+m5323iMDP+2h8UW+u4cAgbe766D7MJ3gTSNrPsTL3Qw/LrypAgEeDO7RW1vf6HGUsfS3LkmGoSQVMIrho/ILaF/+gb7hIQ3fAJMvwVKEFYIXwSusuGTdoxvhJgBcw9/Xy06YbrIlroP8tHGaGvz6GiTNPNsMKkU59j55ah5hsw6Efbffrr4z9nQk8/XP3EDXTj8o+T7r2awmlkbK0l6Vl4swhh0h1wFrX1rBpkItTswmvgvD9a7+zjf4e4Sz6dWn++bVgugftateyF38qee/+cZjIh0+5LRS4xM61RigDyLhEQk8tCtnLI4b6A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2631.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(5660300002)(86362001)(83380400001)(2906002)(33656002)(186003)(9686003)(30864003)(54906003)(6506007)(7696005)(38070700005)(508600001)(52536014)(110136005)(8936002)(53546011)(4326008)(316002)(66556008)(66476007)(66446008)(64756008)(38100700002)(8676002)(71200400001)(76116006)(122000001)(66946007)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?M25aYk5FUkZ2Y1dkeXViV3hucUF4blROSUc3SlNOeW5mV1FMWjhPSzQyKzMx?=
+ =?utf-8?B?KzBRWERmbi9jcUE2REt4OVF4aTdvekVkR1UwcGpPUEROTFNMUzhyOG9JcmJ4?=
+ =?utf-8?B?dFdyUWxnT3doRzd1SkJxYUdFbGpidDQrM29mdDMzTk5UR2lSR0VzYnlKNkFI?=
+ =?utf-8?B?a1l3US9mc3Y3SmhENDdOck16STg1YllaKzRjemJyM1ZuRUpwZEltd2tMb1lo?=
+ =?utf-8?B?QmlzREoyUXR0Uk85ZnMxcFJ0blZWWk1HdVpmTEZCNGN4eTlwQXIvQWVCRC9G?=
+ =?utf-8?B?TnpVM2lSV1hXRy8zYlN6SzE3cXpnUEdsS1ZJMFJhZEE0SFlrbW9BbnYrMnRN?=
+ =?utf-8?B?TVJVeitCamlTYk1IdG8vYldTL0Z4S3NYT1Y0UFA3Z2Q1bjFYR295MGdERUx1?=
+ =?utf-8?B?Z2VDOUIrSnFaQ3FuR3k4Y0locHhQNmdxa0tRdTEyZ01rUTNJL3gxd0NpN05S?=
+ =?utf-8?B?UkpnZE5qVlRHQm9wY3M3L0ZVL3o3RWVDaWhKMHpOMlpBSVFMbEg0UVRGUDFz?=
+ =?utf-8?B?ZWRKWGl6YUU2WGd6QnlLK2xBeWRuWkYzVW9BYXZEcUVzWk1wck53SDM2d2Rk?=
+ =?utf-8?B?NnJyMHNHOENkWkd4UUordVppSTFFUmxoZFduc2dTUFBaV3Z4VmphWCtzZUNB?=
+ =?utf-8?B?dTdHY1krTjV1RmJQSHN4aFFyQnphVnhMdi9MeEh3MWtWRm91Z0pKU00ya2dC?=
+ =?utf-8?B?MHp6OGNjaW5nb0t4OHVNTUtDMFlCeUhTLzA3UUVwVVZoaEwzdVpWMmpRRnNF?=
+ =?utf-8?B?ZmhhV2l5Qnp2NG9UWVJpTDVtNzhIeG5wSVcyN3hFb2J6NmtOUWhUSy9wTXZB?=
+ =?utf-8?B?ZDBsT0VxN042N2pzUUM5ck8yVnVrbjJnTjFYa1RkZEFsTXVZVDlNRXc1SXkv?=
+ =?utf-8?B?RjNyN3FjeS9LZFRRQ2F2eDFnTjlPdDdyejQ4MzlQOUlqaWFyZElBZjU2Z29Q?=
+ =?utf-8?B?U3cyYXF4bEVkQWZIWWdoRGMrb2pwU0NqLzNiNXRrc2tsdGh1azhUOS9BNWRq?=
+ =?utf-8?B?TGJtR0ZHS0dOb3dTM1VjNjZmRjU5Q3RUSnhNWkdVeUphcU1uZGJkejVvODZz?=
+ =?utf-8?B?b1dWSm5hdUtsUTM3Vk5PMnRxeVN4Q0pZTmpqd3c5OFRUVlBGSVJta0hrTmE0?=
+ =?utf-8?B?ZU1CWi8xUS9IcGdCY0o2cU93Y2xIbDRiYzRaTXVCa1EzR01jemZKU09ONm90?=
+ =?utf-8?B?dEU0aENrVUUwQWQ1QWZMNytyM3Qya3k4YjdCK0ttaUIxaXEvNnEvSkdGc2hR?=
+ =?utf-8?B?YWxVeUVodzYzQkx4NHNQZEdIUllnMTE3WkhMemZLZzdISkFndngxVGhmK1h3?=
+ =?utf-8?B?WXB3eVRvbGw5RmZEc2NOU2Y1N0tNTnRFMm9kY0p6UXpkZW8xV2tyekJOWjJx?=
+ =?utf-8?B?U2dlNExUMFIybXhPUnhua3NmZFVuck1ROS9jUjNvYzRjazg2bDhYbUVsZERC?=
+ =?utf-8?B?cC9acTlWb3doVmdwS0RYUVVPL2duREJvYmJqTWlKd3Q4VXdwcjEyYktHZ09E?=
+ =?utf-8?B?a0pMS0Z5WU9CQTZCanEycW5ybzUybWo5TU5vMTZKU3RNeldXSERqQ2loZVJX?=
+ =?utf-8?B?Y0ZGVG1ub1NNVjBWZEpjVDFIcWx0RlR2ZXEzN1N3Q1JiVk1IM1hsMldHaUlj?=
+ =?utf-8?B?d2t1RHhJTEpSbFJ1QUJ1SXc5V0h3MmVTTEFMMS8rTXU0Ujhuakhpc1hmQXZa?=
+ =?utf-8?B?K2tvaDEzbWtGbTBSM1RENmd3OGZwaTgzTVdaaDRTbXZyejdPY0ZadGhzeFZC?=
+ =?utf-8?B?blF4SUEwU1QxTHJUbnl3SnR4R0s5RnB0dnpqVjR6RnVUVk1XTEFSRVNGanNT?=
+ =?utf-8?B?L3N5bktWVUpIaHBsTTNhdG9UVXAySGp3Y3RETi95blNybnk1NzNEUVhEUGlt?=
+ =?utf-8?B?NXR4anNkUzlJSWNMVjZOekFmRUR5UFlFQ2dWUGI3bm05Ym1OdUROd1FhYVlN?=
+ =?utf-8?B?UnhpbXZVaERKaFRpODFLRzBBeENtYkpiYUJOdzUvcnNwUlplaUlackI4TGli?=
+ =?utf-8?B?ZWowOGFSYkZyVDgyczFTVFdJUUdDd0lZY2xTSjN4a2RDWVQxb2NrOXI1K1gy?=
+ =?utf-8?B?bFlKcTcxS2orWVJWVUUrb0Q1Tnh0VkpvbkJkMFA1ZjdVZld4alMwTVJ4bzdV?=
+ =?utf-8?B?ZmlpQ0ptYlhMZlgrTTU3bVJsZUxoZlExajRkR1ZwTThCNURaVWhrSjBSWGFr?=
+ =?utf-8?B?S0hFS3gzZS85ZjdyaEE2Z1BzUnJrTytlbVZRczZKd09rUFlZOGZOWnZJcVZP?=
+ =?utf-8?B?azVnTXB0V1o4T0RnSWo0M1BXU2Z3PT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220308130127.31398-1-liangwenpeng@huawei.com>
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+X-OriginatorOrg: Zurich.ibm.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2631.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d151d691-d4dc-4a01-58f0-08da01ea7bca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2022 16:33:03.6242
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ccnt4nqGKlY0L9QclAty/6bZsjv7vkhcY9j9s37m9tdQXlo7UwSojhSoFtxLzhFKHFa+ZofzHzemvAH0LyR1Nw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR15MB2401
+X-Proofpoint-ORIG-GUID: 0e4plzR13SifFuV51lzrG1lbdt0h_-pq
+X-Proofpoint-GUID: ZzyTSJ7tK9VjNE0IQh13ZXMmh1xK1pZB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.816,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-09_06,2022-03-09_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 clxscore=1015
+ mlxscore=0 bulkscore=0 malwarescore=0 priorityscore=1501 mlxlogscore=999
+ phishscore=0 suspectscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2202240000
+ definitions=main-2203090090
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,481 +156,214 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 08, 2022 at 09:01:27PM +0800, Wenpeng Liang wrote:
-> From: Yixing Liu <liuyixing1@huawei.com>
-> 
-> Before destroying MPT, the reserved loopback QPs send loopback IOs (one
-> write operation per SL). Completing these loopback IOs represents that
-> there isn't any outstanding request in MPT, then it's safe to destroy MPT.
-> 
-> Signed-off-by: Yixing Liu <liuyixing1@huawei.com>
-> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
-> 
-> Changes since v1:
-
-The changes should be placed under "---" markup.
-
-Thanks
-
-> * Allocate all reserved resources in one function.
-> * Clean up encoding issues.
-> * v1 Link: https://patchwork.kernel.org/project/linux-rdma/patch/20220225095654.24684-1-liangwenpeng@huawei.com/
-> ---
->  drivers/infiniband/hw/hns/hns_roce_device.h |   2 +
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 311 +++++++++++++++++++-
->  drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  20 ++
->  drivers/infiniband/hw/hns/hns_roce_mr.c     |   6 +-
->  4 files changed, 335 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
-> index 21182ec56f18..3083d6db1d68 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_device.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_device.h
-> @@ -633,6 +633,7 @@ struct hns_roce_qp {
->  	u32			next_sge;
->  	enum ib_mtu		path_mtu;
->  	u32			max_inline_data;
-> +	u8			free_mr_en;
->  
->  	/* 0: flush needed, 1: unneeded */
->  	unsigned long		flush_flag;
-> @@ -889,6 +890,7 @@ struct hns_roce_hw {
->  			 enum ib_qp_state new_state);
->  	int (*qp_flow_control_init)(struct hns_roce_dev *hr_dev,
->  			 struct hns_roce_qp *hr_qp);
-> +	void (*dereg_mr)(struct hns_roce_dev *hr_dev);
->  	int (*init_eq)(struct hns_roce_dev *hr_dev);
->  	void (*cleanup_eq)(struct hns_roce_dev *hr_dev);
->  	int (*write_srqc)(struct hns_roce_srq *srq, void *mb_buf);
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> index 06eb4f00428c..2b0cef17ad45 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-> @@ -2664,6 +2664,194 @@ static void free_dip_list(struct hns_roce_dev *hr_dev)
->  	spin_unlock_irqrestore(&hr_dev->dip_list_lock, flags);
->  }
->  
-> +static void free_mr_exit(struct hns_roce_dev *hr_dev)
-> +{
-> +	struct hns_roce_v2_priv *priv = hr_dev->priv;
-> +	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-> +	int ret;
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
-> +		if (free_mr->rsv_qp[i]) {
-> +			ret = ib_destroy_qp(free_mr->rsv_qp[i]);
-> +			if (ret)
-> +				ibdev_err(&hr_dev->ib_dev,
-> +					  "failed to destroy qp in free mr.\n");
-> +
-> +			free_mr->rsv_qp[i] = NULL;
-> +		}
-> +	}
-> +
-> +	if (free_mr->rsv_cq) {
-> +		ib_destroy_cq(free_mr->rsv_cq);
-> +		free_mr->rsv_cq = NULL;
-> +	}
-> +
-> +	if (free_mr->rsv_pd) {
-> +		ib_dealloc_pd(free_mr->rsv_pd);
-> +		free_mr->rsv_pd = NULL;
-> +	}
-> +}
-> +
-> +static int free_mr_alloc_res(struct hns_roce_dev *hr_dev)
-> +{
-> +	struct hns_roce_v2_priv *priv = hr_dev->priv;
-> +	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-> +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> +	struct ib_cq_init_attr cq_init_attr = {};
-> +	struct ib_qp_init_attr qp_init_attr = {};
-> +	struct ib_pd *pd;
-> +	struct ib_cq *cq;
-> +	struct ib_qp *qp;
-> +	int ret;
-> +	int i;
-> +
-> +	pd = ib_alloc_pd(ibdev, 0);
-> +	if (IS_ERR(pd)) {
-> +		ibdev_err(ibdev, "failed to create pd for free mr.\n");
-> +		return PTR_ERR(pd);
-> +	}
-> +	free_mr->rsv_pd = pd;
-> +
-> +	cq_init_attr.cqe = HNS_ROCE_FREE_MR_USED_CQE_NUM;
-> +	cq = ib_create_cq(ibdev, NULL, NULL, NULL, &cq_init_attr);
-> +	if (IS_ERR(cq)) {
-> +		ibdev_err(ibdev, "failed to create cq for free mr.\n");
-> +		ret = PTR_ERR(cq);
-> +		goto create_failed;
-> +	}
-> +	free_mr->rsv_cq = cq;
-> +
-> +	qp_init_attr.qp_type = IB_QPT_RC;
-> +	qp_init_attr.sq_sig_type = IB_SIGNAL_ALL_WR;
-> +	qp_init_attr.send_cq = free_mr->rsv_cq;
-> +	qp_init_attr.recv_cq = free_mr->rsv_cq;
-> +	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
-> +		qp_init_attr.cap.max_send_wr = HNS_ROCE_FREE_MR_USED_SQWQE_NUM;
-> +		qp_init_attr.cap.max_send_sge = HNS_ROCE_FREE_MR_USED_SQSGE_NUM;
-> +		qp_init_attr.cap.max_recv_wr = HNS_ROCE_FREE_MR_USED_RQWQE_NUM;
-> +		qp_init_attr.cap.max_recv_sge = HNS_ROCE_FREE_MR_USED_RQSGE_NUM;
-> +
-> +		qp = ib_create_qp(free_mr->rsv_pd, &qp_init_attr);
-> +		if (IS_ERR(qp)) {
-> +			ibdev_err(ibdev, "failed to create qp for free mr.\n");
-> +			ret = PTR_ERR(qp);
-> +			goto create_failed;
-> +		}
-> +
-> +		free_mr->rsv_qp[i] = qp;
-> +	}
-> +
-> +	return 0;
-> +
-> +create_failed:
-> +	free_mr_exit(hr_dev);
-> +
-> +	return ret;
-> +}
-> +
-> +static int free_mr_modify_rsv_qp(struct hns_roce_dev *hr_dev,
-> +				 struct ib_qp_attr *attr, int sl_num)
-> +{
-> +	struct hns_roce_v2_priv *priv = hr_dev->priv;
-> +	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-> +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> +	struct hns_roce_qp *hr_qp;
-> +	int loopback;
-> +	int mask;
-> +	int ret;
-> +
-> +	hr_qp = to_hr_qp(free_mr->rsv_qp[sl_num]);
-> +	hr_qp->free_mr_en = 1;
-> +
-> +	mask = IB_QP_STATE | IB_QP_PKEY_INDEX | IB_QP_PORT | IB_QP_ACCESS_FLAGS;
-> +	attr->qp_state = IB_QPS_INIT;
-> +	attr->port_num = 1;
-> +	attr->qp_access_flags = IB_ACCESS_REMOTE_WRITE;
-> +	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to modify qp to init, ret = %d.\n",
-> +			  ret);
-> +		return ret;
-> +	}
-> +
-> +	loopback = hr_dev->loop_idc;
-> +	/* Set qpc lbi = 1 incidate loopback IO */
-> +	hr_dev->loop_idc = 1;
-> +
-> +	mask = IB_QP_STATE | IB_QP_AV | IB_QP_PATH_MTU | IB_QP_DEST_QPN |
-> +	       IB_QP_RQ_PSN | IB_QP_MAX_DEST_RD_ATOMIC | IB_QP_MIN_RNR_TIMER;
-> +	attr->qp_state = IB_QPS_RTR;
-> +	attr->ah_attr.type = RDMA_AH_ATTR_TYPE_ROCE;
-> +	attr->path_mtu = IB_MTU_256;
-> +	attr->dest_qp_num = hr_qp->qpn;
-> +	attr->rq_psn = HNS_ROCE_FREE_MR_USED_PSN;
-> +
-> +	rdma_ah_set_sl(&attr->ah_attr, (u8)sl_num);
-> +
-> +	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
-> +	hr_dev->loop_idc = loopback;
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to modify qp to rtr, ret = %d.\n",
-> +			  ret);
-> +		return ret;
-> +	}
-> +
-> +	mask = IB_QP_STATE | IB_QP_SQ_PSN | IB_QP_RETRY_CNT | IB_QP_TIMEOUT |
-> +	       IB_QP_RNR_RETRY | IB_QP_MAX_QP_RD_ATOMIC;
-> +	attr->qp_state = IB_QPS_RTS;
-> +	attr->sq_psn = HNS_ROCE_FREE_MR_USED_PSN;
-> +	attr->retry_cnt = HNS_ROCE_FREE_MR_USED_QP_RETRY_CNT;
-> +	attr->timeout = HNS_ROCE_FREE_MR_USED_QP_TIMEOUT;
-> +	ret = ib_modify_qp(&hr_qp->ibqp, attr, mask);
-> +	if (ret)
-> +		ibdev_err(ibdev, "failed to modify qp to rts, ret = %d.\n",
-> +			  ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int free_mr_modify_qp(struct hns_roce_dev *hr_dev)
-> +{
-> +	struct hns_roce_v2_priv *priv = hr_dev->priv;
-> +	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-> +	struct ib_qp_attr attr = {};
-> +	int ret;
-> +	int i;
-> +
-> +	rdma_ah_set_grh(&attr.ah_attr, NULL, 0, 0, 1, 0);
-> +	rdma_ah_set_static_rate(&attr.ah_attr, 3);
-> +	rdma_ah_set_port_num(&attr.ah_attr, 1);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
-> +		ret = free_mr_modify_rsv_qp(hr_dev, &attr, i);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int free_mr_init(struct hns_roce_dev *hr_dev)
-> +{
-> +	int ret;
-> +
-> +	ret = free_mr_alloc_res(hr_dev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = free_mr_modify_qp(hr_dev);
-> +	if (ret)
-> +		goto err_modify_qp;
-> +
-> +	return 0;
-> +
-> +err_modify_qp:
-> +	free_mr_exit(hr_dev);
-> +
-> +	return ret;
-> +}
-> +
->  static int get_hem_table(struct hns_roce_dev *hr_dev)
->  {
->  	unsigned int qpc_count;
-> @@ -3244,6 +3432,98 @@ static int hns_roce_v2_mw_write_mtpt(void *mb_buf, struct hns_roce_mw *mw)
->  	return 0;
->  }
->  
-> +static int free_mr_post_send_lp_wqe(struct hns_roce_qp *hr_qp)
-> +{
-> +	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
-> +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> +	const struct ib_send_wr *bad_wr;
-> +	struct ib_rdma_wr rdma_wr = {};
-> +	struct ib_send_wr *send_wr;
-> +	int ret;
-> +
-> +	send_wr = &rdma_wr.wr;
-> +	send_wr->opcode = IB_WR_RDMA_WRITE;
-> +
-> +	ret = hns_roce_v2_post_send(&hr_qp->ibqp, send_wr, &bad_wr);
-> +	if (ret) {
-> +		ibdev_err(ibdev, "failed to post wqe for free mr, ret = %d.\n",
-> +			  ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int hns_roce_v2_poll_cq(struct ib_cq *ibcq, int num_entries,
-> +			       struct ib_wc *wc);
-> +
-> +static void free_mr_send_cmd_to_hw(struct hns_roce_dev *hr_dev)
-> +{
-> +	struct hns_roce_v2_priv *priv = hr_dev->priv;
-> +	struct hns_roce_v2_free_mr *free_mr = &priv->free_mr;
-> +	struct ib_wc wc[ARRAY_SIZE(free_mr->rsv_qp)];
-> +	struct ib_device *ibdev = &hr_dev->ib_dev;
-> +	struct hns_roce_qp *hr_qp;
-> +	unsigned long end;
-> +	int cqe_cnt = 0;
-> +	int npolled;
-> +	int ret;
-> +	int i;
-> +
-> +	/*
-> +	 * If the device initialization is not complete or in the uninstall
-> +	 * process, then there is no need to execute free mr.
-> +	 */
-> +	if (priv->handle->rinfo.reset_state == HNS_ROCE_STATE_RST_INIT ||
-> +	    priv->handle->rinfo.instance_state == HNS_ROCE_STATE_INIT ||
-> +	    hr_dev->state == HNS_ROCE_DEVICE_STATE_UNINIT)
-> +		return;
-> +
-> +	mutex_lock(&free_mr->mutex);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(free_mr->rsv_qp); i++) {
-> +		hr_qp = to_hr_qp(free_mr->rsv_qp[i]);
-> +
-> +		ret = free_mr_post_send_lp_wqe(hr_qp);
-> +		if (ret) {
-> +			ibdev_err(ibdev,
-> +				  "failed to send wqe (qp:0x%lx) for free mr, ret = %d.\n",
-> +				  hr_qp->qpn, ret);
-> +			break;
-> +		}
-> +
-> +		cqe_cnt++;
-> +	}
-> +
-> +	end = msecs_to_jiffies(HNS_ROCE_V2_FREE_MR_TIMEOUT) + jiffies;
-> +	while (cqe_cnt) {
-> +		npolled = hns_roce_v2_poll_cq(free_mr->rsv_cq, cqe_cnt, wc);
-> +		if (npolled < 0) {
-> +			ibdev_err(ibdev,
-> +				  "failed to poll cqe for free mr, remain %d cqe.\n",
-> +				  cqe_cnt);
-> +			goto out;
-> +		}
-> +
-> +		if (time_after(jiffies, end)) {
-> +			ibdev_err(ibdev,
-> +				  "failed to poll cqe for free mr and timeout, remain %d cqe.\n",
-> +				  cqe_cnt);
-> +			goto out;
-> +		}
-> +		cqe_cnt -= npolled;
-> +	}
-> +
-> +out:
-> +	mutex_unlock(&free_mr->mutex);
-> +}
-> +
-> +static void hns_roce_v2_dereg_mr(struct hns_roce_dev *hr_dev)
-> +{
-> +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
-> +		free_mr_send_cmd_to_hw(hr_dev);
-> +}
-> +
->  static void *get_cqe_v2(struct hns_roce_cq *hr_cq, int n)
->  {
->  	return hns_roce_buf_offset(hr_cq->mtr.kmem, n * hr_cq->cqe_size);
-> @@ -4663,6 +4943,18 @@ static int hns_roce_v2_set_path(struct ib_qp *ibqp,
->  	u8 hr_port;
->  	int ret;
->  
-> +	/*
-> +	 * If free_mr_en of qp is set, it means that this qp comes from
-> +	 * free mr. This qp will perform the loopback operation.
-> +	 * In the loopback scenario, only sl needs to be set.
-> +	 */
-> +	if (hr_qp->free_mr_en) {
-> +		hr_reg_write(context, QPC_SL, rdma_ah_get_sl(&attr->ah_attr));
-> +		hr_reg_clear(qpc_mask, QPC_SL);
-> +		hr_qp->sl = rdma_ah_get_sl(&attr->ah_attr);
-> +		return 0;
-> +	}
-> +
->  	ib_port = (attr_mask & IB_QP_PORT) ? attr->port_num : hr_qp->port + 1;
->  	hr_port = ib_port - 1;
->  	is_roce_protocol = rdma_cap_eth_ah(&hr_dev->ib_dev, ib_port) &&
-> @@ -6247,6 +6539,7 @@ static const struct hns_roce_hw hns_roce_hw_v2 = {
->  	.set_hem = hns_roce_v2_set_hem,
->  	.clear_hem = hns_roce_v2_clear_hem,
->  	.modify_qp = hns_roce_v2_modify_qp,
-> +	.dereg_mr = hns_roce_v2_dereg_mr,
->  	.qp_flow_control_init = hns_roce_v2_qp_flow_control_init,
->  	.init_eq = hns_roce_v2_init_eq_table,
->  	.cleanup_eq = hns_roce_v2_cleanup_eq_table,
-> @@ -6328,14 +6621,25 @@ static int __hns_roce_hw_v2_init_instance(struct hnae3_handle *handle)
->  	ret = hns_roce_init(hr_dev);
->  	if (ret) {
->  		dev_err(hr_dev->dev, "RoCE Engine init failed!\n");
-> -		goto error_failed_get_cfg;
-> +		goto error_failed_cfg;
-> +	}
-> +
-> +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08) {
-> +		ret = free_mr_init(hr_dev);
-> +		if (ret) {
-> +			dev_err(hr_dev->dev, "failed to init free mr!\n");
-> +			goto error_failed_roce_init;
-> +		}
->  	}
->  
->  	handle->priv = hr_dev;
->  
->  	return 0;
->  
-> -error_failed_get_cfg:
-> +error_failed_roce_init:
-> +	hns_roce_exit(hr_dev);
-> +
-> +error_failed_cfg:
->  	kfree(hr_dev->priv);
->  
->  error_failed_kzalloc:
-> @@ -6357,6 +6661,9 @@ static void __hns_roce_hw_v2_uninit_instance(struct hnae3_handle *handle,
->  	hr_dev->state = HNS_ROCE_DEVICE_STATE_UNINIT;
->  	hns_roce_handle_device_err(hr_dev);
->  
-> +	if (hr_dev->pci_dev->revision == PCI_REVISION_ID_HIP08)
-> +		free_mr_exit(hr_dev);
-> +
->  	hns_roce_exit(hr_dev);
->  	kfree(hr_dev->priv);
->  	ib_dealloc_device(&hr_dev->ib_dev);
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> index 12be85f0986e..0d87b627601e 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> +++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-> @@ -139,6 +139,18 @@ enum {
->  #define CMD_CSQ_DESC_NUM		1024
->  #define CMD_CRQ_DESC_NUM		1024
->  
-> +/* Free mr used parameters */
-> +#define HNS_ROCE_FREE_MR_USED_CQE_NUM		128
-> +#define HNS_ROCE_FREE_MR_USED_QP_NUM		0x8
-> +#define HNS_ROCE_FREE_MR_USED_PSN		0x0808
-> +#define HNS_ROCE_FREE_MR_USED_QP_RETRY_CNT	0x7
-> +#define HNS_ROCE_FREE_MR_USED_QP_TIMEOUT	0x12
-> +#define HNS_ROCE_FREE_MR_USED_SQWQE_NUM		128
-> +#define HNS_ROCE_FREE_MR_USED_SQSGE_NUM		0x2
-> +#define HNS_ROCE_FREE_MR_USED_RQWQE_NUM		128
-> +#define HNS_ROCE_FREE_MR_USED_RQSGE_NUM		0x2
-> +#define HNS_ROCE_V2_FREE_MR_TIMEOUT		4500
-> +
->  enum {
->  	NO_ARMED = 0x0,
->  	REG_NXT_CEQE = 0x2,
-> @@ -1418,10 +1430,18 @@ struct hns_roce_link_table {
->  #define HNS_ROCE_EXT_LLM_ENTRY(addr, id) (((id) << (64 - 12)) | ((addr) >> 12))
->  #define HNS_ROCE_EXT_LLM_MIN_PAGES(que_num) ((que_num) * 4 + 2)
->  
-> +struct hns_roce_v2_free_mr {
-> +	struct ib_qp *rsv_qp[HNS_ROCE_FREE_MR_USED_QP_NUM];
-> +	struct ib_cq *rsv_cq;
-> +	struct ib_pd *rsv_pd;
-> +	struct mutex mutex;
-> +};
-> +
->  struct hns_roce_v2_priv {
->  	struct hnae3_handle *handle;
->  	struct hns_roce_v2_cmq cmq;
->  	struct hns_roce_link_table ext_llm;
-> +	struct hns_roce_v2_free_mr free_mr;
->  };
->  
->  struct hns_roce_dip {
-> diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> index b58b869339cc..b389738d157f 100644
-> --- a/drivers/infiniband/hw/hns/hns_roce_mr.c
-> +++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
-> @@ -119,8 +119,7 @@ static void free_mr_pbl(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr)
->  	hns_roce_mtr_destroy(hr_dev, &mr->pbl_mtr);
->  }
->  
-> -static void hns_roce_mr_free(struct hns_roce_dev *hr_dev,
-> -			     struct hns_roce_mr *mr)
-> +static void hns_roce_mr_free(struct hns_roce_dev *hr_dev, struct hns_roce_mr *mr)
->  {
->  	struct ib_device *ibdev = &hr_dev->ib_dev;
->  	int ret;
-> @@ -343,6 +342,9 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
->  	struct hns_roce_mr *mr = to_hr_mr(ibmr);
->  	int ret = 0;
->  
-> +	if (hr_dev->hw->dereg_mr)
-> +		hr_dev->hw->dereg_mr(hr_dev);
-> +
->  	hns_roce_mr_free(hr_dev, mr);
->  	kfree(mr);
->  
-> -- 
-> 2.33.0
-> 
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogZHVzdC5saSA8ZHVzdC5s
+aUBsaW51eC5hbGliYWJhLmNvbT4NCj4gU2VudDogVHVlc2RheSwgMjIgRmVicnVhcnkgMjAyMiAx
+MTo0MQ0KPiBUbzogQ2hlbmcgWHUgPGNoZW5neW91LnhjQGFsaWJhYmEtaW5jLmNvbT47IGpnZ0B6
+aWVwZS5jYTsNCj4gZGxlZGZvcmRAcmVkaGF0LmNvbQ0KPiBDYzogbGVvbkBrZXJuZWwub3JnOyBs
+aW51eC1yZG1hQHZnZXIua2VybmVsLm9yZzsNCj4gS2FpU2hlbkBsaW51eC5hbGliYWJhLmNvbTsg
+Y2hlbmd5b3VAbGludXguYWxpYmFiYS5jb207DQo+IHRvbnlsdUBsaW51eC5hbGliYWJhLmNvbQ0K
+PiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0ggZm9yLW5leHQgdjMgMDcvMTJdIFJETUEv
+ZXJkbWE6IEFkZCB2ZXJicw0KPiBoZWFkZXIgZmlsZQ0KPiANCj4gT24gVGh1LCBGZWIgMTcsIDIw
+MjIgYXQgMTE6MDE6MTFBTSArMDgwMCwgQ2hlbmcgWHUgd3JvdGU6DQo+ID5Gcm9tOiBDaGVuZyBY
+dSA8Y2hlbmd5b3VAbGludXguYWxpYmFiYS5jb20+DQo+ID4NCj4gPlRoaXMgaGVhZGVyIGZpbGUg
+ZGVmaW5lcyB0aGUgbWFpbiBzdHJ1Y3RydWVzIGFuZCBmdW5jdGlvbnMgdXNlZCBmb3IgUkRNQQ0K
+PiA+VmVyYnMsIGluY2x1ZGluZyBxcCwgY3EsIG1yIHVjb250ZXh0LCBldGMsLg0KPiA+DQo+ID5T
+aWduZWQtb2ZmLWJ5OiBDaGVuZyBYdSA8Y2hlbmd5b3VAbGludXguYWxpYmFiYS5jb20+DQo+ID4t
+LS0NCj4gPiBkcml2ZXJzL2luZmluaWJhbmQvaHcvZXJkbWEvZXJkbWFfdmVyYnMuaCB8IDM0NSAr
+KysrKysrKysrKysrKysrKysrKysrDQo+ID4gMSBmaWxlIGNoYW5nZWQsIDM0NSBpbnNlcnRpb25z
+KCspDQo+ID4gY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvaW5maW5pYmFuZC9ody9lcmRtYS9l
+cmRtYV92ZXJicy5oDQo+ID4NCj4gPmRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvaHcv
+ZXJkbWEvZXJkbWFfdmVyYnMuaA0KPiBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9lcmRtYS9lcmRt
+YV92ZXJicy5oDQo+ID5uZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiA+aW5kZXggMDAwMDAwMDAwMDAw
+Li4yNjFmOGMwYmRmZjMNCj4gPi0tLSAvZGV2L251bGwNCj4gPisrKyBiL2RyaXZlcnMvaW5maW5p
+YmFuZC9ody9lcmRtYS9lcmRtYV92ZXJicy5oDQo+ID5AQCAtMCwwICsxLDM0NSBAQA0KPiA+Ky8q
+IFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiBHUEwtMi4wIG9yIEJTRC0zLUNsYXVzZSAqLw0KPiA+
+Kw0KPiA+Ky8qIEF1dGhvcnM6IENoZW5nIFh1IDxjaGVuZ3lvdUBsaW51eC5hbGliYWJhLmNvbT4g
+Ki8NCj4gPisvKiAgICAgICAgICBLYWkgU2hlbiA8a2Fpc2hlbkBsaW51eC5hbGliYWJhLmNvbT4g
+Ki8NCj4gPisvKiBDb3B5cmlnaHQgKGMpIDIwMjAtMjAyMiwgQWxpYmFiYSBHcm91cC4gKi8NCj4g
+DQo+IE1heWJlIGl0J3MgYmV0dGVyIHRvIHVzZSBhIHNpbmdsZSAnLyoqLycgZm9yIG11bHRpbGlu
+ZXMgaW4gdGhlIGNvbW1lbnQuDQo+IA0KPiA+Kw0KPiA+KyNpZm5kZWYgX19FUkRNQV9WRVJCU19I
+X18NCj4gPisjZGVmaW5lIF9fRVJETUFfVkVSQlNfSF9fDQo+ID4rDQo+ID4rI2luY2x1ZGUgPGxp
+bnV4L2Vycm5vLmg+DQo+ID4rDQo+ID4rI2luY2x1ZGUgPHJkbWEvaXdfY20uaD4NCj4gPisjaW5j
+bHVkZSA8cmRtYS9pYl92ZXJicy5oPg0KPiA+KyNpbmNsdWRlIDxyZG1hL2liX3VzZXJfdmVyYnMu
+aD4NCj4gPisNCj4gPisjaW5jbHVkZSAiZXJkbWEuaCINCj4gPisjaW5jbHVkZSAiZXJkbWFfY20u
+aCINCj4gPisjaW5jbHVkZSAiZXJkbWFfaHcuaCINCj4gPisNCj4gPisvKiBSRE1BIENhcGJpbGl0
+eS4gKi8NCg0KQ2FwYWJpbGl0eQ0KDQo+ID4rI2RlZmluZSBFUkRNQV9NQVhfUEQgKDEyOCAqIDEw
+MjQpDQo+ID4rI2RlZmluZSBFUkRNQV9NQVhfU0VORF9XUiA0MDk2DQo+ID4rI2RlZmluZSBFUkRN
+QV9NQVhfT1JEIDEyOA0KPiA+KyNkZWZpbmUgRVJETUFfTUFYX0lSRCAxMjgNCj4gPisjZGVmaW5l
+IEVSRE1BX01BWF9TR0VfUkQgMQ0KPiA+KyNkZWZpbmUgRVJETUFfTUFYX0ZNUiAwDQo+ID4rI2Rl
+ZmluZSBFUkRNQV9NQVhfU1JRIDAgLyogbm90IHN1cHBvcnQgc3JxIG5vdy4gKi8NCj4gPisjZGVm
+aW5lIEVSRE1BX01BWF9TUlFfV1IgMCAvKiBub3Qgc3VwcG9ydCBzcnEgbm93LiAqLw0KPiA+KyNk
+ZWZpbmUgRVJETUFfTUFYX1NSUV9TR0UgMCAvKiBub3Qgc3VwcG9ydCBzcnEgbm93LiAqLw0KPiA+
+KyNkZWZpbmUgRVJETUFfTUFYX0NPTlRFWFQgKDEyOCAqIDEwMjQpDQo+ID4rI2RlZmluZSBFUkRN
+QV9NQVhfU0VORF9TR0UgNg0KPiA+KyNkZWZpbmUgRVJETUFfTUFYX1JFQ1ZfU0dFIDENCj4gPisj
+ZGVmaW5lIEVSRE1BX01BWF9JTkxJTkUgKHNpemVvZihzdHJ1Y3QgZXJkbWFfc2dlKSAqDQo+IChF
+UkRNQV9NQVhfU0VORF9TR0UpKQ0KDQpXb3VsZG4ndCBpdCBtYWtlIHNlbnNlIHRvIGRlZmluZSBN
+QVhfSU5MSU5FIGluDQp0aGUgYWJpIGhlYWRlciBmaWxlPyBUaGUgdXNlciBsZXZlbCBhcHBsaWNh
+dGlvbg0KYWxzbyB3YW50cyB0byBrbm93IGFib3V0IGl0Lg0KDQpBbmQsIGlzIHRoZSB2YWx1ZSBj
+b3JyZWN0PyBJIGRpZCBub3QgY2hlY2sgaG93IHRoZQ0KdXNlciBkYXRhIGFyZSBjYXJyaWVkIG92
+ZXIsIGJ1dCAoZnJvbSBzaXcpIEkgYXNzdW1lDQpkYXRhIGFyZSBrZXB0IGluIHNnZVsxXSAuLiBz
+Z2Vbbi0xXSwgYW5kIHNnZVswXQ0Kd291bGQgY2FycnkgbGVuIGluZm9ybWF0aW9uIGFuZCBwb2lu
+dCB0byBzZ2VbMV0gZm9yDQpkYXRhPyBXaXRoIHRoYXQgaXQgd291bGQgYmUgKEVSRE1BX01BWF9T
+RU5EX1NHRSAtIDEpDQpoZXJlLg0KDQoNCj4gPisjZGVmaW5lIEVSRE1BX01BWF9GUk1SX1BBIDUx
+Mg0KPiA+Kw0KPiA+K2VudW0gew0KPiA+KwlFUkRNQV9NTUFQX0lPX05DID0gMCwgLyogbm8gY2Fj
+aGUgKi8NCj4gPit9Ow0KPiA+Kw0KPiA+K3N0cnVjdCBlcmRtYV91c2VyX21tYXBfZW50cnkgew0K
+PiA+KwlzdHJ1Y3QgcmRtYV91c2VyX21tYXBfZW50cnkgcmRtYV9lbnRyeTsNCj4gPisJdTY0IGFk
+ZHJlc3M7DQo+ID4rCXU4IG1tYXBfZmxhZzsNCj4gPit9Ow0KPiA+Kw0KPiA+K3N0cnVjdCBlcmRt
+YV91Y29udGV4dCB7DQo+ID4rCXN0cnVjdCBpYl91Y29udGV4dCBpYnVjb250ZXh0Ow0KPiA+Kwlz
+dHJ1Y3QgZXJkbWFfZGV2ICpkZXY7DQo+ID4rDQo+ID4rCXUzMiBzZGJfdHlwZTsNCj4gPisJdTMy
+IHNkYl9pZHg7DQo+ID4rCXUzMiBzZGJfcGFnZV9pZHg7DQo+ID4rCXUzMiBzZGJfcGFnZV9vZmY7
+DQo+ID4rCXU2NCBzZGI7DQo+ID4rCXU2NCByZGI7DQo+ID4rCXU2NCBjZGI7DQo+ID4rDQo+ID4r
+CXN0cnVjdCByZG1hX3VzZXJfbW1hcF9lbnRyeSAqc3FfZGJfbW1hcF9lbnRyeTsNCj4gPisJc3Ry
+dWN0IHJkbWFfdXNlcl9tbWFwX2VudHJ5ICpycV9kYl9tbWFwX2VudHJ5Ow0KPiA+KwlzdHJ1Y3Qg
+cmRtYV91c2VyX21tYXBfZW50cnkgKmNxX2RiX21tYXBfZW50cnk7DQo+ID4rDQo+ID4rCS8qIGRv
+b3JiZWxsIHJlY29yZHMgKi8NCj4gPisJc3RydWN0IGxpc3RfaGVhZCBkYnJlY29yZHNfcGFnZV9s
+aXN0Ow0KPiA+KwlzdHJ1Y3QgbXV0ZXggZGJyZWNvcmRzX3BhZ2VfbXV0ZXg7DQo+ID4rfTsNCj4g
+PisNCj4gPitzdHJ1Y3QgZXJkbWFfcGQgew0KPiA+KwlzdHJ1Y3QgaWJfcGQgaWJwZDsNCj4gPisJ
+dTMyIHBkbjsNCj4gPit9Ow0KPiA+Kw0KPiA+Ky8qDQo+ID4rICogTWVtb3J5UmVnaW9uIGRlZmlu
+aXRpb24uDQo+ID4rICovDQo+ID4rI2RlZmluZSBFUkRNQV9NQVhfSU5MSU5FX01UVF9FTlRSSUVT
+IDQNCj4gPisjZGVmaW5lIE1UVF9TSVpFKHgpICh4IDw8IDMpIC8qIHBlciBtdHQgdGFrZXMgOCBC
+eXRlcy4gKi8NCj4gPisjZGVmaW5lIEVSRE1BX01SX01BWF9NVFRfQ05UIDUyNDI4OA0KPiA+KyNk
+ZWZpbmUgRVJETUFfTVRUX0VOVFJZX1NJWkUgOA0KPiA+Kw0KPiA+KyNkZWZpbmUgRVJETUFfTVJf
+VFlQRV9OT1JNQUwgMA0KPiA+KyNkZWZpbmUgRVJETUFfTVJfVFlQRV9GUk1SIDENCj4gPisjZGVm
+aW5lIEVSRE1BX01SX1RZUEVfRE1BIDINCj4gPisNCj4gPisjZGVmaW5lIEVSRE1BX01SX0lOTElO
+RV9NVFQgMA0KPiA+KyNkZWZpbmUgRVJETUFfTVJfSU5ESVJFQ1RfTVRUIDENCj4gPisNCj4gPisj
+ZGVmaW5lIEVSRE1BX01SX0FDQ19MUiBCSVQoMCkNCj4gPisjZGVmaW5lIEVSRE1BX01SX0FDQ19M
+VyBCSVQoMSkNCj4gPisjZGVmaW5lIEVSRE1BX01SX0FDQ19SUiBCSVQoMikNCj4gPisjZGVmaW5l
+IEVSRE1BX01SX0FDQ19SVyBCSVQoMykNCj4gPisNCj4gPitzdHJ1Y3QgZXJkbWFfbWVtIHsNCj4g
+PisJc3RydWN0IGliX3VtZW0gKnVtZW07DQo+ID4rCXZvaWQgKm10dF9idWY7DQo+ID4rCXUzMiBt
+dHRfdHlwZTsNCj4gPisJdTMyIHBhZ2Vfc2l6ZTsNCj4gPisJdTMyIHBhZ2Vfb2Zmc2V0Ow0KPiA+
+Kwl1MzIgcGFnZV9jbnQ7DQo+ID4rCXUzMiBtdHRfbmVudHM7DQo+ID4rDQo+ID4rCXU2NCB2YTsN
+Cj4gPisJdTY0IGxlbjsNCj4gPisNCj4gPisJdTY0IG10dF9lbnRyeVtFUkRNQV9NQVhfSU5MSU5F
+X01UVF9FTlRSSUVTXTsNCj4gPit9Ow0KPiA+Kw0KPiA+K3N0cnVjdCBlcmRtYV9tciB7DQo+ID4r
+CXN0cnVjdCBpYl9tciBpYm1yOw0KPiA+KwlzdHJ1Y3QgZXJkbWFfbWVtIG1lbTsNCj4gPisJdTgg
+dHlwZTsNCj4gPisJdTggYWNjZXNzOw0KPiA+Kwl1OCB2YWxpZDsNCj4gPit9Ow0KPiA+Kw0KPiA+
+K3N0cnVjdCBlcmRtYV91c2VyX2RicmVjb3Jkc19wYWdlIHsNCj4gPisJc3RydWN0IGxpc3RfaGVh
+ZCBsaXN0Ow0KPiA+KwlzdHJ1Y3QgaWJfdW1lbSAqdW1lbTsNCj4gPisJdTY0IHZhOw0KPiA+Kwlp
+bnQgcmVmY250Ow0KPiA+K307DQo+ID4rDQo+ID4rc3RydWN0IGVyZG1hX3VxcCB7DQo+ID4rCXN0
+cnVjdCBlcmRtYV9tZW0gc3FfbXR0Ow0KPiA+KwlzdHJ1Y3QgZXJkbWFfbWVtIHJxX210dDsNCj4g
+PisNCj4gPisJZG1hX2FkZHJfdCBzcV9kYl9pbmZvX2RtYV9hZGRyOw0KPiA+KwlkbWFfYWRkcl90
+IHJxX2RiX2luZm9fZG1hX2FkZHI7DQo+ID4rDQo+ID4rCXN0cnVjdCBlcmRtYV91c2VyX2RicmVj
+b3Jkc19wYWdlICp1c2VyX2Ricl9wYWdlOw0KPiA+Kw0KPiA+Kwl1MzIgcnFfb2Zmc2V0Ow0KPiA+
+K307DQo+ID4rc3RydWN0IGVyZG1hX2txcCB7DQo+ID4rCXUxNiBzcV9waTsNCj4gPisJdTE2IHNx
+X2NpOw0KPiA+Kw0KPiA+Kwl1MTYgcnFfcGk7DQo+ID4rCXUxNiBycV9jaTsNCj4gPisNCj4gPisJ
+dTY0ICpzd3JfdGJsOw0KPiA+Kwl1NjQgKnJ3cl90Ymw7DQo+ID4rDQo+ID4rCXZvaWQgKmh3X3Nx
+X2RiOw0KPiA+Kwl2b2lkICpod19ycV9kYjsNCj4gPisNCj4gPisJdm9pZCAqc3FfYnVmOw0KPiA+
+KwlkbWFfYWRkcl90IHNxX2J1Zl9kbWFfYWRkcjsNCj4gPisNCj4gPisJdm9pZCAqcnFfYnVmOw0K
+PiA+KwlkbWFfYWRkcl90IHJxX2J1Zl9kbWFfYWRkcjsNCj4gPisNCj4gPisJdm9pZCAqc3FfZGJf
+aW5mbzsNCj4gPisJdm9pZCAqcnFfZGJfaW5mbzsNCj4gPisNCj4gPisJdTggc2lnX2FsbDsNCj4g
+Pit9Ow0KPiA+Kw0KPiA+K2VudW0gZXJkbWFfcXBfc3RhdGUgew0KPiA+KwlFUkRNQV9RUF9TVEFU
+RV9JRExFID0gMCwNCj4gPisJRVJETUFfUVBfU1RBVEVfUlRSID0gMSwNCj4gPisJRVJETUFfUVBf
+U1RBVEVfUlRTID0gMiwNCj4gPisJRVJETUFfUVBfU1RBVEVfQ0xPU0lORyA9IDMsDQo+ID4rCUVS
+RE1BX1FQX1NUQVRFX1RFUk1JTkFURSA9IDQsDQo+ID4rCUVSRE1BX1FQX1NUQVRFX0VSUk9SID0g
+NSwNCj4gDQo+IERvIHdlIHJlc2VydmUgNiBoZXJlIG9uIHB1cnBvc2UgPw0KPiANCj4gPisJRVJE
+TUFfUVBfU1RBVEVfVU5ERUYgPSA3LA0KPiA+KwlFUkRNQV9RUF9TVEFURV9DT1VOVCA9IDgNCj4g
+Pit9Ow0KPiA+Kw0KPiA+K2VudW0gZXJkbWFfcXBfYXR0cl9tYXNrIHsNCj4gPisJRVJETUFfUVBf
+QVRUUl9TVEFURSA9ICgxIDw8IDApLA0KPiA+KwlFUkRNQV9RUF9BVFRSX0xMUF9IQU5ETEUgPSAo
+MSA8PCAyKSwNCj4gPisJRVJETUFfUVBfQVRUUl9PUkQgPSAoMSA8PCAzKSwNCj4gPisJRVJETUFf
+UVBfQVRUUl9JUkQgPSAoMSA8PCA0KSwNCj4gPisJRVJETUFfUVBfQVRUUl9TUV9TSVpFID0gKDEg
+PDwgNSksDQo+ID4rCUVSRE1BX1FQX0FUVFJfUlFfU0laRSA9ICgxIDw8IDYpLA0KPiA+KwlFUkRN
+QV9RUF9BVFRSX01QQSA9ICgxIDw8IDcpDQo+ID4rfTsNCj4gPisNCj4gPitzdHJ1Y3QgZXJkbWFf
+cXBfYXR0cnMgew0KPiA+KwllbnVtIGVyZG1hX3FwX3N0YXRlIHN0YXRlOw0KPiA+Kwl1MzIgc3Ff
+c2l6ZTsNCj4gPisJdTMyIHJxX3NpemU7DQo+ID4rCXUzMiBvcnFfc2l6ZTsNCj4gPisJdTMyIGly
+cV9zaXplOw0KPiA+Kwl1MzIgbWF4X3NlbmRfc2dlOw0KPiA+Kwl1MzIgbWF4X3JlY3Zfc2dlOw0K
+PiA+K307DQo+ID4rDQo+ID4rc3RydWN0IGVyZG1hX3FwIHsNCj4gPisJc3RydWN0IGliX3FwIGli
+cXA7DQo+ID4rCXN0cnVjdCBrcmVmIHJlZjsNCj4gPisJc3RydWN0IGNvbXBsZXRpb24gc2FmZV9m
+cmVlOw0KPiA+KwlzdHJ1Y3QgZXJkbWFfZGV2ICpkZXY7DQo+ID4rCXN0cnVjdCBlcmRtYV9jZXAg
+KmNlcDsNCj4gPisJc3RydWN0IHJ3X3NlbWFwaG9yZSBzdGF0ZV9sb2NrOw0KPiA+Kw0KPiA+Kwl1
+bmlvbiB7DQo+ID4rCQlzdHJ1Y3QgZXJkbWFfa3FwIGtlcm5fcXA7DQo+ID4rCQlzdHJ1Y3QgZXJk
+bWFfdXFwIHVzZXJfcXA7DQo+ID4rCX07DQo+ID4rDQo+ID4rCXN0cnVjdCBlcmRtYV9jcSAqc2Nx
+Ow0KPiA+KwlzdHJ1Y3QgZXJkbWFfY3EgKnJjcTsNCj4gPisNCj4gPisJc3RydWN0IGVyZG1hX3Fw
+X2F0dHJzIGF0dHJzOw0KPiA+KwlzcGlubG9ja190IGxvY2s7DQo+ID4rDQo+ID4rCWVudW0gZXJk
+bWFfY2NfbWV0aG9kIGNjX21ldGhvZDsNCj4gPisjZGVmaW5lIEVSRE1BX1FQX0FDVElWRSAwDQo+
+ID4rI2RlZmluZSBFUkRNQV9RUF9QQVNTSVZFIDENCj4gPisJdTggcXBfdHlwZTsNCj4gPisJdTgg
+cHJpdmF0ZV9kYXRhX2xlbjsNCj4gPit9Ow0KPiA+Kw0KPiA+K3N0cnVjdCBlcmRtYV9rY3FfaW5m
+byB7DQo+ID4rCXN0cnVjdCBlcmRtYV9jcWUgKnFidWY7DQo+ID4rCWRtYV9hZGRyX3QgcWJ1Zl9k
+bWFfYWRkcjsNCj4gPisJdTMyIGNpOw0KPiA+Kwl1MzIgb3duZXI7DQo+ID4rCXUzMiBjbWRzbjsN
+Cj4gPisNCj4gPisJc3BpbmxvY2tfdCBsb2NrOw0KPiA+Kwl1OCBfX2lvbWVtICpkYjsNCj4gPisJ
+dTY0ICpkYl9yZWNvcmQ7DQo+ID4rfTsNCj4gPisNCj4gPitzdHJ1Y3QgZXJkbWFfdWNxX2luZm8g
+ew0KPiA+KwlzdHJ1Y3QgZXJkbWFfbWVtIHFidWZfbXR0Ow0KPiA+KwlzdHJ1Y3QgZXJkbWFfdXNl
+cl9kYnJlY29yZHNfcGFnZSAqdXNlcl9kYnJfcGFnZTsNCj4gPisJZG1hX2FkZHJfdCBkYl9pbmZv
+X2RtYV9hZGRyOw0KPiA+K307DQo+ID4rDQo+ID4rc3RydWN0IGVyZG1hX2NxIHsNCj4gPisJc3Ry
+dWN0IGliX2NxIGliY3E7DQo+ID4rCXUzMiBjcW47DQo+ID4rDQo+ID4rCXUzMiBkZXB0aDsNCj4g
+PisJdTMyIGFzc29jX2VxbjsNCj4gPisNCj4gPisJdW5pb24gew0KPiA+KwkJc3RydWN0IGVyZG1h
+X2tjcV9pbmZvIGtlcm5fY3E7DQo+ID4rCQlzdHJ1Y3QgZXJkbWFfdWNxX2luZm8gdXNlcl9jcTsN
+Cj4gPisJfTsNCj4gPit9Ow0KPiA+Kw0KPiA+KyNkZWZpbmUgUVBfSUQocXApICgocXApLT5pYnFw
+LnFwX251bSkNCj4gPisNCj4gPitzdGF0aWMgaW5saW5lIHN0cnVjdCBlcmRtYV9xcCAqZmluZF9x
+cF9ieV9xcG4oc3RydWN0IGVyZG1hX2RldiAqZGV2LCBpbnQNCj4gaWQpDQo+ID4rew0KPiA+Kwly
+ZXR1cm4gKHN0cnVjdCBlcmRtYV9xcCAqKXhhX2xvYWQoJmRldi0+cXBfeGEsIGlkKTsNCj4gPit9
+DQo+ID4rDQo+ID4rc3RhdGljIGlubGluZSBzdHJ1Y3QgZXJkbWFfY3EgKmZpbmRfY3FfYnlfY3Fu
+KHN0cnVjdCBlcmRtYV9kZXYgKmRldiwgaW50DQo+IGlkKQ0KPiA+K3sNCj4gPisJcmV0dXJuIChz
+dHJ1Y3QgZXJkbWFfY3EgKil4YV9sb2FkKCZkZXYtPmNxX3hhLCBpZCk7DQo+ID4rfQ0KPiA+Kw0K
+PiA+K3ZvaWQgZXJkbWFfcXBfZ2V0KHN0cnVjdCBlcmRtYV9xcCAqcXApOw0KPiA+K3ZvaWQgZXJk
+bWFfcXBfcHV0KHN0cnVjdCBlcmRtYV9xcCAqcXApOw0KPiA+K2ludCBlcmRtYV9tb2RpZnlfcXBf
+aW50ZXJuYWwoc3RydWN0IGVyZG1hX3FwICpxcCwgc3RydWN0IGVyZG1hX3FwX2F0dHJzDQo+ICph
+dHRycywNCj4gPisJCQkgICAgIGVudW0gZXJkbWFfcXBfYXR0cl9tYXNrIG1hc2spOw0KPiA+K3Zv
+aWQgZXJkbWFfcXBfbGxwX2Nsb3NlKHN0cnVjdCBlcmRtYV9xcCAqcXApOw0KPiA+K3ZvaWQgZXJk
+bWFfcXBfY21fZHJvcChzdHJ1Y3QgZXJkbWFfcXAgKnFwKTsNCj4gPisNCj4gPitzdGF0aWMgaW5s
+aW5lIHN0cnVjdCBlcmRtYV91Y29udGV4dCAqdG9fZWN0eChzdHJ1Y3QgaWJfdWNvbnRleHQgKmli
+Y3R4KQ0KPiA+K3sNCj4gPisJcmV0dXJuIGNvbnRhaW5lcl9vZihpYmN0eCwgc3RydWN0IGVyZG1h
+X3Vjb250ZXh0LCBpYnVjb250ZXh0KTsNCj4gPit9DQo+ID4rDQo+ID4rc3RhdGljIGlubGluZSBz
+dHJ1Y3QgZXJkbWFfcGQgKnRvX2VwZChzdHJ1Y3QgaWJfcGQgKnBkKQ0KPiA+K3sNCj4gPisJcmV0
+dXJuIGNvbnRhaW5lcl9vZihwZCwgc3RydWN0IGVyZG1hX3BkLCBpYnBkKTsNCj4gPit9DQo+ID4r
+DQo+ID4rc3RhdGljIGlubGluZSBzdHJ1Y3QgZXJkbWFfbXIgKnRvX2VtcihzdHJ1Y3QgaWJfbXIg
+KmlibXIpDQo+ID4rew0KPiA+KwlyZXR1cm4gY29udGFpbmVyX29mKGlibXIsIHN0cnVjdCBlcmRt
+YV9tciwgaWJtcik7DQo+ID4rfQ0KPiA+Kw0KPiA+K3N0YXRpYyBpbmxpbmUgc3RydWN0IGVyZG1h
+X3FwICp0b19lcXAoc3RydWN0IGliX3FwICpxcCkNCj4gPit7DQo+ID4rCXJldHVybiBjb250YWlu
+ZXJfb2YocXAsIHN0cnVjdCBlcmRtYV9xcCwgaWJxcCk7DQo+ID4rfQ0KPiA+Kw0KPiA+K3N0YXRp
+YyBpbmxpbmUgc3RydWN0IGVyZG1hX2NxICp0b19lY3Eoc3RydWN0IGliX2NxICppYmNxKQ0KPiA+
+K3sNCj4gPisJcmV0dXJuIGNvbnRhaW5lcl9vZihpYmNxLCBzdHJ1Y3QgZXJkbWFfY3EsIGliY3Ep
+Ow0KPiA+K30NCj4gPisNCj4gPitzdGF0aWMgaW5saW5lIHN0cnVjdCBlcmRtYV91c2VyX21tYXBf
+ZW50cnkgKg0KPiA+K3RvX2VtbWFwKHN0cnVjdCByZG1hX3VzZXJfbW1hcF9lbnRyeSAqaWJtbWFw
+KQ0KPiA+K3sNCj4gPisJcmV0dXJuIGNvbnRhaW5lcl9vZihpYm1tYXAsIHN0cnVjdCBlcmRtYV91
+c2VyX21tYXBfZW50cnksDQo+IHJkbWFfZW50cnkpOw0KPiA+K30NCj4gPisNCj4gPitzdGF0aWMg
+aW5saW5lIHZvaWQgKmdldF9zcV9lbnRyeShzdHJ1Y3QgZXJkbWFfcXAgKnFwLCB1MTYgaWR4KQ0K
+PiA+K3sNCj4gPisJaWR4ICY9IChxcC0+YXR0cnMuc3Ffc2l6ZSAtIDEpOw0KPiA+KwlyZXR1cm4g
+cXAtPmtlcm5fcXAuc3FfYnVmICsgKGlkeCA8PCBTUUVCQl9TSElGVCk7DQo+ID4rfQ0KPiA+Kw0K
+PiA+K2ludCBlcmRtYV9hbGxvY191Y29udGV4dChzdHJ1Y3QgaWJfdWNvbnRleHQgKmN0eCwgc3Ry
+dWN0IGliX3VkYXRhDQo+ICpkYXRhKTsNCj4gPit2b2lkIGVyZG1hX2RlYWxsb2NfdWNvbnRleHQo
+c3RydWN0IGliX3Vjb250ZXh0ICpjdHgpOw0KPiA+K2ludCBlcmRtYV9xdWVyeV9kZXZpY2Uoc3Ry
+dWN0IGliX2RldmljZSAqZGV2LCBzdHJ1Y3QgaWJfZGV2aWNlX2F0dHINCj4gKmF0dHIsDQo+ID4r
+CQkgICAgICAgc3RydWN0IGliX3VkYXRhICpkYXRhKTsNCj4gPitpbnQgZXJkbWFfZ2V0X3BvcnRf
+aW1tdXRhYmxlKHN0cnVjdCBpYl9kZXZpY2UgKmRldiwgdTMyIHBvcnQsDQo+ID4rCQkJICAgICBz
+dHJ1Y3QgaWJfcG9ydF9pbW11dGFibGUgKmliX3BvcnRfaW1tdXRhYmxlKTsNCj4gPitpbnQgZXJk
+bWFfY3JlYXRlX2NxKHN0cnVjdCBpYl9jcSAqY3EsIGNvbnN0IHN0cnVjdCBpYl9jcV9pbml0X2F0
+dHINCj4gKmF0dHIsDQo+ID4rCQkgICAgc3RydWN0IGliX3VkYXRhICpkYXRhKTsNCj4gPitpbnQg
+ZXJkbWFfcXVlcnlfcG9ydChzdHJ1Y3QgaWJfZGV2aWNlICpkZXYsIHUzMiBwb3J0LA0KPiA+KwkJ
+ICAgICBzdHJ1Y3QgaWJfcG9ydF9hdHRyICphdHRyKTsNCj4gPitpbnQgZXJkbWFfcXVlcnlfZ2lk
+KHN0cnVjdCBpYl9kZXZpY2UgKmRldiwgdTMyIHBvcnQsIGludCBpZHgsDQo+ID4rCQkgICAgdW5p
+b24gaWJfZ2lkICpnaWQpOw0KPiA+K2ludCBlcmRtYV9hbGxvY19wZChzdHJ1Y3QgaWJfcGQgKnBk
+LCBzdHJ1Y3QgaWJfdWRhdGEgKmRhdGEpOw0KPiA+K2ludCBlcmRtYV9kZWFsbG9jX3BkKHN0cnVj
+dCBpYl9wZCAqaWJwZCwgc3RydWN0IGliX3VkYXRhICp1ZGF0YSk7DQo+ID4raW50IGVyZG1hX2Ny
+ZWF0ZV9xcChzdHJ1Y3QgaWJfcXAgKmlicXAsIHN0cnVjdCBpYl9xcF9pbml0X2F0dHIgKmF0dHIs
+DQo+ID4rCQkgICAgc3RydWN0IGliX3VkYXRhICpkYXRhKTsNCj4gPitpbnQgZXJkbWFfcXVlcnlf
+cXAoc3RydWN0IGliX3FwICpxcCwgc3RydWN0IGliX3FwX2F0dHIgKmF0dHIsIGludCBtYXNrLA0K
+PiA+KwkJICAgc3RydWN0IGliX3FwX2luaXRfYXR0ciAqaW5pdF9hdHRyKTsNCj4gPitpbnQgZXJk
+bWFfbW9kaWZ5X3FwKHN0cnVjdCBpYl9xcCAqcXAsIHN0cnVjdCBpYl9xcF9hdHRyICphdHRyLCBp
+bnQgbWFzaywNCj4gPisJCSAgICBzdHJ1Y3QgaWJfdWRhdGEgKmRhdGEpOw0KPiA+K2ludCBlcmRt
+YV9kZXN0cm95X3FwKHN0cnVjdCBpYl9xcCAqaWJxcCwgc3RydWN0IGliX3VkYXRhICp1ZGF0YSk7
+DQo+ID4raW50IGVyZG1hX2Rlc3Ryb3lfY3Eoc3RydWN0IGliX2NxICppYmNxLCBzdHJ1Y3QgaWJf
+dWRhdGEgKnVkYXRhKTsNCj4gPitpbnQgZXJkbWFfcmVxX25vdGlmeV9jcShzdHJ1Y3QgaWJfY3Eg
+KmNxLCBlbnVtIGliX2NxX25vdGlmeV9mbGFncw0KPiBmbGFncyk7DQo+ID4rc3RydWN0IGliX21y
+ICplcmRtYV9yZWdfdXNlcl9tcihzdHJ1Y3QgaWJfcGQgKmlicGQsIHU2NCBzdGFydCwgdTY0IGxl
+biwNCj4gPisJCQkJdTY0IHZpcnQsIGludCBhY2Nlc3MsIHN0cnVjdCBpYl91ZGF0YSAqdWRhdGEp
+Ow0KPiA+K3N0cnVjdCBpYl9tciAqZXJkbWFfZ2V0X2RtYV9tcihzdHJ1Y3QgaWJfcGQgKmlicGQs
+IGludCByaWdodHMpOw0KPiA+K2ludCBlcmRtYV9kZXJlZ19tcihzdHJ1Y3QgaWJfbXIgKm1yLCBz
+dHJ1Y3QgaWJfdWRhdGEgKmRhdGEpOw0KPiA+K2ludCBlcmRtYV9tbWFwKHN0cnVjdCBpYl91Y29u
+dGV4dCAqY3R4LCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSk7DQo+ID4rdm9pZCBlcmRtYV9x
+cF9nZXRfcmVmKHN0cnVjdCBpYl9xcCAqcXApOw0KPiA+K3ZvaWQgZXJkbWFfcXBfcHV0X3JlZihz
+dHJ1Y3QgaWJfcXAgKnFwKTsNCj4gPitzdHJ1Y3QgaWJfcXAgKmVyZG1hX2dldF9pYnFwKHN0cnVj
+dCBpYl9kZXZpY2UgKmRldiwgaW50IGlkKTsNCj4gPitpbnQgZXJkbWFfcG9zdF9zZW5kKHN0cnVj
+dCBpYl9xcCAqcXAsIGNvbnN0IHN0cnVjdCBpYl9zZW5kX3dyICpzZW5kX3dyLA0KPiA+KwkJICAg
+IGNvbnN0IHN0cnVjdCBpYl9zZW5kX3dyICoqYmFkX3NlbmRfd3IpOw0KPiA+K2ludCBlcmRtYV9w
+b3N0X3JlY3Yoc3RydWN0IGliX3FwICpxcCwgY29uc3Qgc3RydWN0IGliX3JlY3Zfd3IgKnJlY3Zf
+d3IsDQo+ID4rCQkgICAgY29uc3Qgc3RydWN0IGliX3JlY3Zfd3IgKipiYWRfcmVjdl93cik7DQo+
+ID4raW50IGVyZG1hX3BvbGxfY3Eoc3RydWN0IGliX2NxICpjcSwgaW50IG51bV9lbnRyaWVzLCBz
+dHJ1Y3QgaWJfd2MgKndjKTsNCj4gPitzdHJ1Y3QgaWJfbXIgKmVyZG1hX2liX2FsbG9jX21yKHN0
+cnVjdCBpYl9wZCAqaWJwZCwgZW51bSBpYl9tcl90eXBlDQo+IG1yX3R5cGUsDQo+ID4rCQkJCXUz
+MiBtYXhfbnVtX3NnKTsNCj4gPitpbnQgZXJkbWFfbWFwX21yX3NnKHN0cnVjdCBpYl9tciAqaWJt
+ciwgc3RydWN0IHNjYXR0ZXJsaXN0ICpzZywgaW50DQo+IHNnX25lbnRzLA0KPiA+KwkJICAgIHVu
+c2lnbmVkIGludCAqc2dfb2Zmc2V0KTsNCj4gPitzdHJ1Y3QgbmV0X2RldmljZSAqZXJkbWFfZ2V0
+X25ldGRldihzdHJ1Y3QgaWJfZGV2aWNlICpkZXZpY2UsIHUzMg0KPiBwb3J0X251bSk7DQo+ID4r
+dm9pZCBlcmRtYV9wb3J0X2V2ZW50KHN0cnVjdCBlcmRtYV9kZXYgKmRldiwgZW51bSBpYl9ldmVu
+dF90eXBlIHJlYXNvbik7DQo+ID4rDQo+ID4rI2VuZGlmDQo+ID4tLQ0KPiA+Mi4yNy4wDQo=
