@@ -2,107 +2,85 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 937EF4D3F43
-	for <lists+linux-rdma@lfdr.de>; Thu, 10 Mar 2022 03:33:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D964D403A
+	for <lists+linux-rdma@lfdr.de>; Thu, 10 Mar 2022 05:20:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233956AbiCJCeC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 9 Mar 2022 21:34:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        id S239456AbiCJEVO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 9 Mar 2022 23:21:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232828AbiCJCeB (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Mar 2022 21:34:01 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4598CD4474
-        for <linux-rdma@vger.kernel.org>; Wed,  9 Mar 2022 18:33:01 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id w12so7014041lfr.9
-        for <linux-rdma@vger.kernel.org>; Wed, 09 Mar 2022 18:33:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q/Fi8rD4tewA9Fw4AQeKZTijqin/VTxawjgZ++UbpX8=;
-        b=FI1wtNFy49tb/kfco/puJPvCVMznKGY0i9Q1DWGFtBQx/KddcIC48lDJyE+YvwbFbx
-         ttL5KPiTlFleb8R12fqH25IFeOAbyPmpkiYeKPu8p7xlAcDjb7CKQGrseccKkG9dgslv
-         vmR3tAyDYpKo1wWpS9W8V5RN4iSlfUIAvZUSD1Oxg0oLG2w4RcWYGF8fMBgTwXNNrOCp
-         CsxC4LeX/7MZXhZiu5QpBEh4o8Urn96EZFMij0OVIxFQ1Jz5tGIxxD+bLZC18LCxUowc
-         6zF/6KE/SaTQT5pQAAUqreuWpf7Pf9AFl64G/zDKGuMLMXxzmm9sNrqoL4nImqq84s12
-         UVDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q/Fi8rD4tewA9Fw4AQeKZTijqin/VTxawjgZ++UbpX8=;
-        b=NbeqkxBprujrH+Kjq80qt79n+N0GUc8DYY5goUitny5QPj4cSCauKKn57i5S2aGlQC
-         JIR6ekagOm3H+4crqPY10aBgaF3kYU/7zL2LbAryxvAwccnR8RKgIj0wC/lLL2vcwEgv
-         HsoILQxUf5KoOpKvAgJwNmMdleuj6bZiKTGe8GEBp2JZx2EADpgvU3kuyxqy6gO6LEQ8
-         +JWY9V4lojZb98aOmPMMvfqCwQ//RIhfpswMZBbOn7JC/vGMWyeLTWbV/THHax2TdNSV
-         XX6EYs5pDjKYNWFtolWxjfZ5yFtYbneDG7RAL/NwsVPT3p0kj0U2BG6Omdlb6juOIA3w
-         Q8/A==
-X-Gm-Message-State: AOAM531biw2/Dym9HYVqKd+bG1GP/xf2OvY2g2gezIUSJ2+flWKC2oNs
-        HRtLnjETynezpeoEv3i7M8EiuujNuCuSmQuiAecewZ1p
-X-Google-Smtp-Source: ABdhPJy1mkKG1Bj7Jwg/CN1YcmtuMWZtnKHzhDjpKQzZzeF/NRwMTpr0FeZWi7IPUUocXnhtIqN3ZUdpyTr7NvzXKps=
-X-Received: by 2002:a05:6512:228b:b0:448:246d:97d with SMTP id
- f11-20020a056512228b00b00448246d097dmr1578185lfu.94.1646879579512; Wed, 09
- Mar 2022 18:32:59 -0800 (PST)
+        with ESMTP id S239450AbiCJEVO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 9 Mar 2022 23:21:14 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B39D9966;
+        Wed,  9 Mar 2022 20:20:13 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id A60CCB824AB;
+        Thu, 10 Mar 2022 04:20:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 58DCEC340EB;
+        Thu, 10 Mar 2022 04:20:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646886011;
+        bh=THbhfUoqsWdZGBNwJW0eh2TMwVtzZWvLtOJaCmFmRKw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=df89b5rRoI2Ft15WtioChlduaYfGPMBNlwdN1bcAEXnE6qNy7AnChOkfjAWiIc563
+         68z+c6iIpJTCSuNg/m+yDGvd++hUUW720aoiUr/mtGbE/VaLEYDsSooPQ9uhgZGM+B
+         OH14OtLofCSMVfMhsltE6vqNl8l4ceCa0lbW9KEp8eUo7TLzN+tZGMTF2h2uz1s5HQ
+         Zz4ACSneQGtjypyf8kQ5j7Rj30+PGfy54owv1Y6ltEGFSKlTjr4G+EuQYLOJCptEJC
+         hXJ8NWPuoXAhbKBG8lMVWui6Et7oglOUQ1LVplEXoeT1cExiK8l7fJ+8vD4gzLB+rN
+         ZdkQ9HvSG75Cg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41294E8DD5B;
+        Thu, 10 Mar 2022 04:20:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20220307145047.3235675-1-cgxu519@mykernel.net> <20220307145047.3235675-2-cgxu519@mykernel.net>
-In-Reply-To: <20220307145047.3235675-2-cgxu519@mykernel.net>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Thu, 10 Mar 2022 10:32:47 +0800
-Message-ID: <CAD=hENfrkApGJnb+QO6bFhtVOFRdPRsUA+6v2xOHbQCvO2eEfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] RDMA/rxe: remove useless argument for update_state()
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net/smc: fix -Wmissing-prototypes warning when
+ CONFIG_SYSCTL not set
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <164688601126.11305.7343800301996391648.git-patchwork-notify@kernel.org>
+Date:   Thu, 10 Mar 2022 04:20:11 +0000
+References: <20220309033051.41893-1-dust.li@linux.alibaba.com>
+In-Reply-To: <20220309033051.41893-1-dust.li@linux.alibaba.com>
+To:     Dust Li <dust.li@linux.alibaba.com>
+Cc:     kuba@kernel.org, kgraul@linux.ibm.com, tonylu@linux.alibaba.com,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Mar 7, 2022 at 10:51 PM Chengguang Xu <cgxu519@mykernel.net> wrote:
->
-> The argument 'payload' is not used in update_state(),
-> so just remove it.
->
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+Hello:
 
-Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+This patch was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Zhu Yanjun
+On Wed,  9 Mar 2022 11:30:51 +0800 you wrote:
+> when CONFIG_SYSCTL not set, smc_sysctl_net_init/exit
+> need to be static inline to avoid missing-prototypes
+> if compile with W=1.
+> 
+> Since __net_exit has noinline annotation when CONFIG_NET_NS
+> not set, it should not be used with static inline.
+> So remove the __net_init/exit when CONFIG_SYSCTL not set.
+> 
+> [...]
 
-> ---
->  drivers/infiniband/sw/rxe/rxe_req.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index b28036a7a3b8..a3c78b4ac9f1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -540,7 +540,7 @@ static void rollback_state(struct rxe_send_wqe *wqe,
->  }
->
->  static void update_state(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
-> -                        struct rxe_pkt_info *pkt, u32 payload)
-> +                        struct rxe_pkt_info *pkt)
->  {
->         qp->req.opcode = pkt->opcode;
->
-> @@ -747,7 +747,7 @@ int rxe_requester(void *arg)
->                 goto err;
->         }
->
-> -       update_state(qp, wqe, &pkt, payload);
-> +       update_state(qp, wqe, &pkt);
->
->         goto next_wqe;
->
-> --
-> 2.27.0
->
->
+Here is the summary with links:
+  - [net-next] net/smc: fix -Wmissing-prototypes warning when CONFIG_SYSCTL not set
+    https://git.kernel.org/netdev/net-next/c/d9f509915925
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
