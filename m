@@ -2,85 +2,129 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A30C44D8410
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Mar 2022 13:22:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70B474D852C
+	for <lists+linux-rdma@lfdr.de>; Mon, 14 Mar 2022 13:45:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241414AbiCNMWj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Mar 2022 08:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50860 "EHLO
+        id S236991AbiCNMq5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Mar 2022 08:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243859AbiCNMVU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Mar 2022 08:21:20 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748FBCE2;
-        Mon, 14 Mar 2022 05:17:26 -0700 (PDT)
+        with ESMTP id S234672AbiCNMq1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Mar 2022 08:46:27 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C18D1F636;
+        Mon, 14 Mar 2022 05:38:03 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id qt6so33533710ejb.11;
+        Mon, 14 Mar 2022 05:38:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=RuD1BVzbEda8F+Un6qYX3KLD/xKWdDV4fX2GPJgJb/0=;
-  b=CrHqblnl9/dRx0dJriP/xP5xsyJVMAQsVA11bAQolVqIcp/kUhJ1TGdj
-   RLWsMt/Pa1FGb1c5OpPIkr5SLuGgYw/Ch+9K4goYpIAwtvyAurkPD7P9X
-   qE7by25tjiJprAHm08PzjFj7a5naR7akiBjqlg2SfKlTbYIjDDYXeqx3j
-   4=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="5.90,180,1643670000"; 
-   d="scan'208";a="25997356"
-Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2022 12:54:00 +0100
-From:   Julia Lawall <Julia.Lawall@inria.fr>
-To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Cc:     kernel-janitors@vger.kernel.org,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 22/30] RDMA/hw/qib/qib_iba7220: fix typos in comments
-Date:   Mon, 14 Mar 2022 12:53:46 +0100
-Message-Id: <20220314115354.144023-23-Julia.Lawall@inria.fr>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20220314115354.144023-1-Julia.Lawall@inria.fr>
-References: <20220314115354.144023-1-Julia.Lawall@inria.fr>
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=DHDXfguQf/+0V20Zk/mruH8iTYp9EnY9SZujr9Uh8qY=;
+        b=TKtBFa9ixDzFuEWiW6FvgilF1e6EJ1hdGIdyPqxyN9AbC1VUQ7PQFZmTXSJ063AbOe
+         Dkk9eSZAeu27C2tw3g164G7EfPumW080ea1Ly0r5Ew6T96agB942zrX5oJ1T57zTvV4O
+         fxnkhkzo6Pe3kPzU5Ak2Xuupjvv0ddjwLmJbA6BDLGtEj2XSQG97d26kQ/NcLoCnzcfH
+         xAuTFqS7RbJHAqtqErj7Wrxm+t+ba6E8vhko0zL6fILBsjULIg2tM6A/7JD75cwhWb0A
+         j5+8XEIRebN08xSz5toCWQhpK9Gra8IsDrVV4CoLTM1ls8O6LJiiLFf6nMsRhcgMb5MX
+         Fphg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=DHDXfguQf/+0V20Zk/mruH8iTYp9EnY9SZujr9Uh8qY=;
+        b=nlR/4zlyjIwGJcIRBdluUGmpbFSXURDyBhlI9GFHZsXCL3LLSLt/ywhGA61SzWf0Q3
+         UPbhejpdTUIUT6iBSl7SI0nJv4kN/li8F8sveBLNvDFGSmwA7ihxJaUJeHwxlBzitQ0m
+         7kRP8cm2sY8UK/KdCWkG0LAldSb/eKVa12YAAli66VfUZ6Wm/nYeTis5GH4ptenXP8oF
+         i8PP7/Ioc5ouXv4mvI2YLWXjmnZDQN4hnyAHJmr1frsomzKm3BcZOwGRpI/Gx0P+15NU
+         m50c7ObbKa2B/hhisdf7FLM2FT+Go2QRTgJVkFleuiwepY4wqC6cxdKTo8q4e4VsFa8X
+         9S4g==
+X-Gm-Message-State: AOAM533hMyu3vF1GZ65Oc8irZFPuNOG76/FYJxmDopYYJT4XKGMmr5GC
+        1K9nGEi9T9GnO5Py1/umAVg=
+X-Google-Smtp-Source: ABdhPJxwELyfsQSJTNq8Sa1l7yiWAs9D0dHvQGP4T1HLkCTbCN50lBERRClcm7Ub9FPMyHuRg9NoSw==
+X-Received: by 2002:a17:907:6d82:b0:6d6:da31:e542 with SMTP id sb2-20020a1709076d8200b006d6da31e542mr18590966ejc.135.1647261452616;
+        Mon, 14 Mar 2022 05:37:32 -0700 (PDT)
+Received: from [192.168.1.116] ([77.124.29.183])
+        by smtp.gmail.com with ESMTPSA id k7-20020aa7c047000000b004132d3b60aasm7821888edo.78.2022.03.14.05.37.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Mar 2022 05:37:32 -0700 (PDT)
+Message-ID: <66fa1399-cc4b-8bdc-d4bc-ed9befe1803e@gmail.com>
+Date:   Mon, 14 Mar 2022 14:37:29 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.2
+Subject: Re: [PATCH 2/6] net/mlx4_en: use kzalloc
+Content-Language: en-US
+To:     Julia Lawall <Julia.Lawall@inria.fr>,
+        Tariq Toukan <tariqt@nvidia.com>
+Cc:     kernel-janitors@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20220312102705.71413-1-Julia.Lawall@inria.fr>
+ <20220312102705.71413-3-Julia.Lawall@inria.fr>
+From:   Tariq Toukan <ttoukan.linux@gmail.com>
+In-Reply-To: <20220312102705.71413-3-Julia.Lawall@inria.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Various spelling mistakes in comments.
-Detected with the help of Coccinelle.
 
-Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
----
- drivers/infiniband/hw/qib/qib_iba7220.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 3/12/2022 12:27 PM, Julia Lawall wrote:
+> Use kzalloc instead of kmalloc + memset.
+> 
+> The semantic patch that makes this change is:
+> (https://coccinelle.gitlabpages.inria.fr/website/)
+> 
+> //<smpl>
+> @@
+> expression res, size, flag;
+> @@
+> - res = kmalloc(size, flag);
+> + res = kzalloc(size, flag);
+>    ...
+> - memset(res, 0, size);
+> //</smpl>
+> 
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> 
+> ---
+>   drivers/net/ethernet/mellanox/mlx4/en_rx.c |    3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/mellanox/mlx4/en_rx.c b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> index 8cfc649f226b..8f762fc170b3 100644
+> --- a/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> +++ b/drivers/net/ethernet/mellanox/mlx4/en_rx.c
+> @@ -1067,7 +1067,7 @@ static int mlx4_en_config_rss_qp(struct mlx4_en_priv *priv, int qpn,
+>   	struct mlx4_qp_context *context;
+>   	int err = 0;
+>   
+> -	context = kmalloc(sizeof(*context), GFP_KERNEL);
+> +	context = kzalloc(sizeof(*context), GFP_KERNEL);
+>   	if (!context)
+>   		return -ENOMEM;
+>   
+> @@ -1078,7 +1078,6 @@ static int mlx4_en_config_rss_qp(struct mlx4_en_priv *priv, int qpn,
+>   	}
+>   	qp->event = mlx4_en_sqp_event;
+>   
+> -	memset(context, 0, sizeof(*context));
+>   	mlx4_en_fill_qp_context(priv, ring->actual_size, ring->stride, 0, 0,
+>   				qpn, ring->cqn, -1, context);
+>   	context->db_rec_addr = cpu_to_be64(ring->wqres.db.dma);
+> 
 
-diff --git a/drivers/infiniband/hw/qib/qib_iba7220.c b/drivers/infiniband/hw/qib/qib_iba7220.c
-index 80a8dd6c7814..37b628a162e0 100644
---- a/drivers/infiniband/hw/qib/qib_iba7220.c
-+++ b/drivers/infiniband/hw/qib/qib_iba7220.c
-@@ -634,7 +634,7 @@ static const struct qib_hwerror_msgs qib_7220_hwerror_msgs[] = {
- 	QLOGIC_IB_HWE_MSG(QLOGIC_IB_HWE_PCIECPLTIMEOUT,
- 			  "PCIe completion timeout"),
- 	/*
--	 * In practice, it's unlikely wthat we'll see PCIe PLL, or bus
-+	 * In practice, it's unlikely that we'll see PCIe PLL, or bus
- 	 * parity or memory parity error failures, because most likely we
- 	 * won't be able to talk to the core of the chip.  Nonetheless, we
- 	 * might see them, if they are in parts of the PCIe core that aren't
-@@ -2988,7 +2988,7 @@ static u64 qib_portcntr_7220(struct qib_pportdata *ppd, u32 reg)
-  * the utility.  Names need to be 12 chars or less (w/o newline), for proper
-  * display by utility.
-  * Non-error counters are first.
-- * Start of "error" conters is indicated by a leading "E " on the first
-+ * Start of "error" counters is indicated by a leading "E " on the first
-  * "error" counter, and doesn't count in label length.
-  * The EgrOvfl list needs to be last so we truncate them at the configured
-  * context count for the device.
+Thanks for your patch.
+
+Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
 
