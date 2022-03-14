@@ -2,138 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 358464D8E2F
-	for <lists+linux-rdma@lfdr.de>; Mon, 14 Mar 2022 21:30:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF344D9089
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Mar 2022 00:44:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245043AbiCNUbZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 14 Mar 2022 16:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38660 "EHLO
+        id S234064AbiCNXpP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 14 Mar 2022 19:45:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239124AbiCNUbX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Mar 2022 16:31:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8449739812;
-        Mon, 14 Mar 2022 13:30:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E0BE9611E3;
-        Mon, 14 Mar 2022 20:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 395EAC340EE;
-        Mon, 14 Mar 2022 20:30:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647289811;
-        bh=5slkzW/wYFCAJdfNlCFTBba0nZcr16X7BRShsWGs8e4=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=leggAOjDGLqu5Y16iRzmCapGpn9MgtEwT4CrU4eyl+t2E31oSfK39qKDLg3AehmbU
-         40wH8plobcUAZegoJFqfw9/xkqsBBPmZP9vZVSFOcI/Xp23ZGUf+pgmWTjQguJdafL
-         aR+7p6LxqiE9iThzqyS8jQ9G6EB+4tZZi+yCfGQiapJJIo9jcBYm9fR9I2LX08BkN2
-         bFDWmepy5ZVI6q23q7h6GXJ7SL0Svf5wH1oJCuTgacReCjqPgety1pGCFxOBEiOwa4
-         z9SA1gQwBNf2EwKLfJ+KdExejyFckwalTlOP/U5FXz63cZ94Vo7u6CrKogKN+nyC4B
-         +CVXdED/jOy7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0DC0AE6D3DE;
-        Mon, 14 Mar 2022 20:30:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S230486AbiCNXpO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 14 Mar 2022 19:45:14 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam08on2044.outbound.protection.outlook.com [40.107.100.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04580140DF;
+        Mon, 14 Mar 2022 16:44:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YA0fLTotffon8ahalBinwDWvINdHRronrAqat4Psj8/nZhIVnR6+qnAH3+XaTc5cBj+v1zpfjou+OZpF+g2F7F5GG88FJxq2XyDu6etaxKM6/JFjmefYU1kPyuAG6KEYtTn2Bvq+xAvZi74vbel89xQHfSXEyyLvKTdz3CwjAif9XDNYjQbS9IbdsDOihEm2/AwpLmK9ssMTkFqnPdJMzsXiqj5MhsisUwwYuA5CLa9OfkkR1+VIq+rglD3znUxdUm4tEZwr60ODjZagWl56k8q/xcNSYZuSQyKtIemjJEirKgazg/AT+dNyRaS+u8S/cdZe6gjgN7EsgZ/6elRqMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8YyY5n+0mFpvici13nWHk7nfhonx62HwCzDC3oTXBtU=;
+ b=XVtMih1NQPDi0ksUFBgp2wcfltxhzujByq4Xbx5AQUUfaWnQZqH86zhDN/Iw/hQdgQH24kUZuR4pkb3bO7bcMbowVbKjlPp1/R+TAp0rZ6tj9UoZJl/UrB0aPwSiyI4kgKOi7daQtthNDlTS5bxLgY/c/lTKksJICB0HUcBoaUdKJCVOOFIQ3IrorF7rvROJS7wHpbtx2AlXnLCauZ1PUrTkOVdB6q1JLGYkCjOX/04IhqMjVjXLqeIu+Td/ZJhBUt3D4hdN+s58k4rgpNvBkWA/zAirICMudEYTA+DqhO2FzWsiJpJN7JAT4+hboSm98HP5344AFLFTM2Whyraa6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8YyY5n+0mFpvici13nWHk7nfhonx62HwCzDC3oTXBtU=;
+ b=ZILoc8YRP+B38e7euGM0xNtieuQBElcqwh1XtpZB/bRvm2IxUcB9vzn13CL001GmFysiIQr2jp29+NFse9X1jJ6QoPsKf1A/IjHhBsT+D30oXtKIL/P78JTLdyYiFmLGkY4CcX9x15BKBF9hn6GYaBCgVNFH+uCHbS6XfSjyaGf+xbDynoWEAteKObTdfz6nRZv0iX+tO+qQTQ3i9SlJgmAt+Z7RtqnhyVMlujCbAk9INhmJYaH2nZ67rs1g9SJ7quB7NJxJ3lDbqc3ZphTp5A39JDKCAde14Fm8geKCENew6/1HxGcf42II22qjtTuLiCGpWkScG7vtO1h3p+7lCw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by CH2PR12MB3702.namprd12.prod.outlook.com (2603:10b6:610:27::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.26; Mon, 14 Mar
+ 2022 23:44:01 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::51a0:4aee:2b4c:ca28]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::51a0:4aee:2b4c:ca28%4]) with mapi id 15.20.5061.028; Mon, 14 Mar 2022
+ 23:44:01 +0000
+Date:   Mon, 14 Mar 2022 20:44:00 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] RDMA/irdma: prevent some integer underflows
+Message-ID: <20220314234400.GA172564@nvidia.com>
+References: <20220307125928.GE16710@kili>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220307125928.GE16710@kili>
+X-ClientProxiedBy: BL1PR13CA0269.namprd13.prod.outlook.com
+ (2603:10b6:208:2ba::34) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH 00/30] fix typos in comments
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164728981105.21494.10764025984714254687.git-patchwork-notify@kernel.org>
-Date:   Mon, 14 Mar 2022 20:30:11 +0000
-References: <20220314115354.144023-1-Julia.Lawall@inria.fr>
-In-Reply-To: <20220314115354.144023-1-Julia.Lawall@inria.fr>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     linux-can@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-sunxi@lists.linux.dev, linux-spi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org,
-        linux-wireless@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com,
-        linux-leds@vger.kernel.org, shayne.chen@mediatek.com,
-        sean.wang@mediatek.com, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-clk@vger.kernel.org, rafael@kernel.org,
-        linux-rdma@vger.kernel.org, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, linux-s390@vger.kernel.org,
-        matti.vaittinen@fi.rohmeurope.com, linux-power@fi.rohmeurope.com,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, namhyung@kernel.org,
-        linux-perf-users@vger.kernel.org
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9f079201-7ade-422f-b929-08da061483fe
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3702:EE_
+X-Microsoft-Antispam-PRVS: <CH2PR12MB370251CD75CDB16CB0C97B5AC20F9@CH2PR12MB3702.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L9MMxDnF6TU3/ie/EEzaguCCZcNcr7zFL4nHQQceLVUcogKOMeibXNzeeN4iAOABz2gI2LTREMQesDMV/IyP+WuJIAVsSpGHE5B6DzWm5Yb3XHsbaiPiKoM5CBV32rS8xlmxDPowknjmKyETsFfD3kPKwOOYI8cipV8tPl54WBVHZLuAuelfu6XdlsQrhmauuLsjYyDntECcvw3+eqUOAgkUVYRTCOryIvwKnMWQoiyMgm+dkOifBLdQGHcQ3PO21jOwqIG8Lvv62AnbZzEwq72h2ClI11gRgOkGg41BIQHIXcOCEcQKFvS6INsYnKBFviSiaZYk7p7//Uv+BG/e0yEri+mqzGn0ZK1cKdALZgkLumNi8xNdumViw51a1CxNxnSg36dC75FEpwqXaMJ2O1BcLGl+3FRXbda8qANMpsnDSzlHUuVv+X1TXwSv+x2UtBtC6vHSyIS40tn1Gs07W9zD3ClrhxQ6kS8GG1yFgO8ffaJtB5IxB2IO7yrl6yJ7Yl1d7qKbWj+lNW3yVDWk9DOU7234m9WEWBfcjOUi6oAVgIapn6XroAzHztb2NMVqDkpwJe87jojhGbt4MIiHeeRMf5Ty2pWvUEteDCQOGpKcWpi+DTKLnpNzxy10NjsbK/OnMRAlbdToDRlIZlRqQ8Jn4GVG3zM01TA4qdt3ij919PwfolBA0gjiWGugHZOigq8yQkDx/K/1tH6II0lc3w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2616005)(38100700002)(316002)(8676002)(26005)(186003)(83380400001)(4326008)(6916009)(1076003)(6512007)(86362001)(54906003)(33656002)(6486002)(2906002)(5660300002)(4744005)(66946007)(6506007)(66476007)(66556008)(508600001)(8936002)(36756003)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h2452XouyEVurTd7qt1/OIGLeIBGMU8e95L2z4tR1c7e0zO8VrbQH2kAH2y6?=
+ =?us-ascii?Q?7INIrvTlMy4IIJlcyscu7GG8GqXO0TEicshbzW8EZmU5aHGD1mn1GTM8ykP+?=
+ =?us-ascii?Q?Prw44IsNuv4FfhEfTjkvF3RRGYAOL9TXbzK4HtFgGKbK8cEmZhcPPSkrJAAi?=
+ =?us-ascii?Q?ldvAG/kmhIERGVg2RFz0LFdxuVgNyeXb7Ct7Nm+gAnWyBnBw5sc8WF1Zx5cP?=
+ =?us-ascii?Q?KQqzFM5v8Gnc7YJNeqnSJK+MP241/o3Pxt+ZvzLrm3yGxMKVofHtuOUmzN8L?=
+ =?us-ascii?Q?9mveCRpKAg1mAhYRj+CbD4oP1muh2QfglGKTcAg4OP7tEkli0CSpFd/BBAuy?=
+ =?us-ascii?Q?EpOyNBAdXWifsenib1th4oIr+caB/iG7trM289AqxmD69AAxpWcEBmVxVzNe?=
+ =?us-ascii?Q?jqMwXjD5U5KZoc5+avBxVIHsrVMtOfrkS0g3z58CFXXs3O00obCuofLytbC2?=
+ =?us-ascii?Q?s9V8TdIDWKLXkQjVlivtg+LsJyzYdvKe6BPhGVOboOM0P4iv+tl+uuul13Fd?=
+ =?us-ascii?Q?RmIHM7h9EdR5aOWUPSyy96N87eG+83k8+yz9qFv2wn5HCGgSzFTZTo8QaaSv?=
+ =?us-ascii?Q?o/vqBGep2XGucdm215xDxjAE9INAT4nL0wt4zUUoSHJU+TKQqeHl9w4Ku0di?=
+ =?us-ascii?Q?iKp4Lkr4UahxXVLMV8zqkKeks40+o0NuqVoI3ax07/1nqUNHAu1wzTrnRC7h?=
+ =?us-ascii?Q?hBttxLQSdnmwV8M/g3eSSTcl6HXr7Vz4BmhAqAq4QPCY30x0JdzdGzB/CrEw?=
+ =?us-ascii?Q?nhknBS/5E8nwnheM+T3vWnjq70/bMGuotAQRhxXR2pEWmkIrcbqqEPXR4LD8?=
+ =?us-ascii?Q?v9Hzqc8jVnU39osRajyTKOPU/p2x6mUe6r1qV06+AhmWLS9Rnp7BQNNefiyE?=
+ =?us-ascii?Q?ULwZLe7mbf4XQHoHtjEhSm53mgxzKUl3O84yq0QKfh+3KzETG7uX44NBpvr9?=
+ =?us-ascii?Q?seWzRjdJs1sSJw2Kj6J9/ZMXFRJ14Ih85zSQah3OW/lZ9Jk/E0vbeam+UPCD?=
+ =?us-ascii?Q?g8/8HbyU7ViJlfBz5K9CTyRrGLf7FpWWk8sKeOpfKi6Ne40UT0Mon8qpPH6K?=
+ =?us-ascii?Q?t9nqu2nhfIje5dWVG7S0zKp3iZOgqJIVq7MU/GcaqsWehgLob013wPe/CHmM?=
+ =?us-ascii?Q?iecqhIZ43RlkQTZP8NEybrS5b+80Iw19PfSw85KPKg0lVeJgM8NxK1DCGAAo?=
+ =?us-ascii?Q?MdNMCE1DzVLC6Lbwm2sOo7WPaSWQQ8lYTkNCfFFrMew0mUUg2ZmxUS3cuquz?=
+ =?us-ascii?Q?RNkQqOWpfxoaX4rQUrj+qxtVzDch9UxXOjSbQJtCMPejaUanTy950bxYuX79?=
+ =?us-ascii?Q?lpUIZWVT/0J4cZbaSlPvEwlsTQQDFoOWx/LtkQNwOYcwEUqoxKsnRMdQA3Iq?=
+ =?us-ascii?Q?zbqNKVxmNdEeAUIMREwXTZLuDO5mvRHe95AMKcnIzoynGy+GL4Ig45DG2ikQ?=
+ =?us-ascii?Q?4GVIfAQE8BfLb4+LrkILOCnqui6JgUKo?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f079201-7ade-422f-b929-08da061483fe
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Mar 2022 23:44:01.3092
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: cbmTwQcS/kPIB3I7DmaQxeXH3VfMUfpYr8OSfh8VhhsBLRdrF+yUV/2Tjo0hms6a
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3702
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (master)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Mon, 14 Mar 2022 12:53:24 +0100 you wrote:
-> Various spelling mistakes in comments.
-> Detected with the help of Coccinelle.
+On Mon, Mar 07, 2022 at 03:59:28PM +0300, Dan Carpenter wrote:
+> My static checker complains that:
 > 
+>     drivers/infiniband/hw/irdma/ctrl.c:3605 irdma_sc_ceq_init()
+>     warn: can subtract underflow 'info->dev->hmc_fpm_misc.max_ceqs'?
+> 
+> It appears that "info->dev->hmc_fpm_misc.max_ceqs" comes from the
+> firmware in irdma_sc_parse_fpm_query_buf() so, yes, there is a chance
+> that it could be zero.  Even if we trust the firmware, it's easy enough
+> to change the condition just as a hardenning measure.
+> 
+> Fixes: 3f49d6842569 ("RDMA/irdma: Implement HW Admin Queue OPs")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Acked-by: Shiraz Saleem <shiraz.saleem@intel.com>
 > ---
-> 
->  drivers/base/devres.c                               |    4 ++--
->  drivers/clk/qcom/gcc-sm6125.c                       |    2 +-
->  drivers/clk/ti/clkctrl.c                            |    2 +-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c              |    4 ++--
->  drivers/gpu/drm/amd/display/dc/bios/command_table.c |    6 +++---
->  drivers/gpu/drm/amd/pm/amdgpu_pm.c                  |    2 +-
->  drivers/gpu/drm/bridge/analogix/analogix_dp_core.c  |    4 ++--
->  drivers/gpu/drm/sti/sti_gdp.c                       |    2 +-
->  drivers/infiniband/hw/qib/qib_iba7220.c             |    4 ++--
->  drivers/leds/leds-pca963x.c                         |    2 +-
->  drivers/media/i2c/ov5695.c                          |    2 +-
->  drivers/mfd/rohm-bd9576.c                           |    2 +-
->  drivers/mtd/ubi/block.c                             |    2 +-
->  drivers/net/can/usb/ucan.c                          |    4 ++--
->  drivers/net/ethernet/packetengines/yellowfin.c      |    2 +-
->  drivers/net/wireless/ath/ath6kl/htc_mbox.c          |    2 +-
->  drivers/net/wireless/cisco/airo.c                   |    2 +-
->  drivers/net/wireless/mediatek/mt76/mt7915/init.c    |    2 +-
->  drivers/net/wireless/realtek/rtlwifi/rtl8821ae/dm.c |    6 +++---
->  drivers/platform/x86/uv_sysfs.c                     |    2 +-
->  drivers/s390/crypto/pkey_api.c                      |    2 +-
->  drivers/scsi/aic7xxx/aicasm/aicasm.c                |    2 +-
->  drivers/scsi/elx/libefc_sli/sli4.c                  |    2 +-
->  drivers/scsi/lpfc/lpfc_mbox.c                       |    2 +-
->  drivers/scsi/qla2xxx/qla_gs.c                       |    2 +-
->  drivers/spi/spi-sun4i.c                             |    2 +-
->  drivers/staging/rtl8723bs/core/rtw_mlme.c           |    2 +-
->  drivers/usb/gadget/udc/snps_udc_core.c              |    2 +-
->  fs/kernfs/file.c                                    |    2 +-
->  kernel/events/core.c                                |    2 +-
->  30 files changed, 39 insertions(+), 39 deletions(-)
+>  drivers/infiniband/hw/irdma/ctrl.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 
-Here is the summary with links:
-  - [03/30] ath6kl: fix typos in comments
-    (no matching commit)
-  - [10/30] mt76: mt7915: fix typos in comments
-    (no matching commit)
-  - [12/30] drivers: net: packetengines: fix typos in comments
-    https://git.kernel.org/netdev/net-next/c/ebc0b8b5374e
-  - [19/30] rtlwifi: rtl8821ae: fix typos in comments
-    (no matching commit)
-  - [20/30] airo: fix typos in comments
-    (no matching commit)
-  - [27/30] can: ucan: fix typos in comments
-    (no matching commit)
+Applied to for-next, thanks
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Jason
