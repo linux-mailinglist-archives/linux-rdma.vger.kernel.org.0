@@ -2,137 +2,264 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695A14DA2BB
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Mar 2022 19:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338E54DA323
+	for <lists+linux-rdma@lfdr.de>; Tue, 15 Mar 2022 20:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245513AbiCOSyr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Mar 2022 14:54:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39448 "EHLO
+        id S1344264AbiCOTPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Mar 2022 15:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243728AbiCOSyr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Mar 2022 14:54:47 -0400
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam08on2084.outbound.protection.outlook.com [40.107.102.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F5C2AE29
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 11:53:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oOthyRzr3kiLyzJCKucE//ISC9aChtJz/JiwD2Q5idh2KoRt7W3Cgpxxlr/mrysR9aEQQFv3Z8nzEgEoMBLpHt4naqPg9OGWpGslUJxOKUGizYKGXeIcaweFSDqhNEK2OttEi6bLF6o7vaR3suYw2bVz3Pl32sTTML96aRxa0UzUQ8EIPeUu0uB2CoMBbNcBmVJVtpPH1HNn+xekAKCxdHuyBfTxaIEiFiRArnyP/4Awy3t1SQjEGP03QcZ1dWPvSsifOHeBhjRkyrXYHe7bKYM81mNhxVADs0NFdQiFC8VtMwGDeqy1UT9Mex9HdpXucYtFm8P0ghY9zGPOeBsZbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2tsoF7IAOaWp0kaIhRtNhOoC+CLCWhufybkCyetRANo=;
- b=AJd1p65u3G+nm3OVnwq6NBDbUGgcgM61I/vHLUfk/iD/8XD6QEBcyOBiuORxCUNdH+dCc0hpNv4PZ2QQ9c9PhCabj7zagOoV9oprpRkf3Vx0f3lDRgKhTc6LhYRbRK7joOAEZM04TqWfUtmew2NYisch9HUPbduu5QXWkRmiKl63x1WY3zNta0p3zldoABsSR1FqaZSgS13H8HhxRMjAEYhpm2EcqcOvadcmZd0cp3zTy4JdG5R/KmUdRA55DZGZcsMv82vHStRYDp9aoO5Vsp2vaYLEhftsNvK8svj8iFa1ciAFu0rneY0JSpI42rv4nHXy8uLCHk6ZBV/N6fCo/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2tsoF7IAOaWp0kaIhRtNhOoC+CLCWhufybkCyetRANo=;
- b=jIU2PjhFfYfo9WBMUZqrcmuKcFM7D+bjSsLlf2II5ZHLCJpuf6bg3p+rMpk4mJKZgutqM3lW/NWv2qCUHzk2V8bG+8+IDc7u3XZg3yfmyCnd+yAPDXXLmz17pQbn4EoppzOuMwL45m4VkBzJcL3mlSsKluLpaAQBMZL8A6B3S6jAlcyFCMwHKRbKAbtj3OXABhT5BQB23bRbi9f+ie3415Dxj2B/BvLzoooxdn6sDAS6GfWcAE0eCKGYTNHPBK861XFmx9We2oAdIkDt4PKMR2sdu+QVFbp0mYTQuvPAw6bTyszDOGwqjJx82F5Ctc+/GAJfn3YRRbiAzB8ESH24vw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BN6PR1201MB0066.namprd12.prod.outlook.com (2603:10b6:405:54::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5061.26; Tue, 15 Mar
- 2022 18:53:31 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::51a0:4aee:2b4c:ca28]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::51a0:4aee:2b4c:ca28%4]) with mapi id 15.20.5061.029; Tue, 15 Mar 2022
- 18:53:31 +0000
-Date:   Tue, 15 Mar 2022 15:53:30 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Xiao Yang <yangx.jy@fujitsu.com>
-Cc:     linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev,
-        rpearsonhpe@gmail.com, y-goto@fujitsu.com, lizhijian@fujitsu.com,
-        tomasz.gromadzki@intel.com, tom@talpey.com, ira.weiny@intel.com
-Subject: Re: [PATCH v3 3/3] RDMA/rxe: Add RDMA Atomic Write attribute for rxe
- device
-Message-ID: <20220315185330.GA241071@nvidia.com>
-References: <20220311115247.23521-1-yangx.jy@fujitsu.com>
- <20220311115247.23521-4-yangx.jy@fujitsu.com>
+        with ESMTP id S235851AbiCOTPQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Mar 2022 15:15:16 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C676450;
+        Tue, 15 Mar 2022 12:14:03 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id hw13so41605710ejc.9;
+        Tue, 15 Mar 2022 12:14:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EFbNP0w17xl4ckdv5kSOTgg6lZ5fIOgNdcD9IrB7lZg=;
+        b=nEWTjh3R0qw2MipkYfZuI0wD5nIYhk9jDbUZJkU5yx/6WkTNzqOlh1+crJ1GxgbOpD
+         aFNTBS8E/wbdwQutDEHcHc/JiSLCaSYpAME4NbTiUyjUstDWJTTHeaH9ouA2jv4e96I7
+         6p84LWCSgC9SiVrA5FV1SX99MslJ/FDBERDu84cXu7NgDto6gFEBqoYjHWb8xFu5p16Q
+         lNBIJ+svxwtN57DVr2rLD7LprJxsvnJRw6Zacp8E0sauEPaoO1Pq0zWCroJjHoS8hP9+
+         atylVOW2c49WzA+9qdN07181oobuGKAxwi/1ESVnxYMcQSVHFy2/kz37UsNI2poGn3Ge
+         PDeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EFbNP0w17xl4ckdv5kSOTgg6lZ5fIOgNdcD9IrB7lZg=;
+        b=XtcOCnrc/sRcSC+noMgQnpTLMnDEGI/eidkQGNH1cAFli6zlr90dTTc4GZTYr0a4sq
+         DMIllINFiilcD0mtnzxkHCHjSctUZ5HymlYuzmjDa+QzRbiwkVbF21wJBaF0bNehfujP
+         KwNCHDOwEULAuhrckASAlyT1bBGRJymi3jbuzXip2GABeqTgvPEdqSmjjyYG35djE/Wj
+         qgtVZfx1QPeEEtkfLW7ViunWcB6q+sfUWxZL2mHFAfFFc7nTlnu9CKyxQvekvtztZZwM
+         6qfU+em6Jh/d46tU9m6ND6PMXvMFZoS4SIOzllKJAml/UDHzp4VPgj7YHsrxZkiu0IzO
+         9LlA==
+X-Gm-Message-State: AOAM530ULk8Jc+ruLrhOPrq31C5aFQZ1+CJkFodHUc1ZeotUlybBltRS
+        9paDVwcZwcrZ35m+fedL2fM=
+X-Google-Smtp-Source: ABdhPJyqnW/s/xxkoxZyQK1hpu8pU8gNgK4myEyJyvcj0jAlA6+BetXmfPBcIbP6vXrwUlJczymR1w==
+X-Received: by 2002:a17:906:a0ce:b0:6d1:cb30:3b3b with SMTP id bh14-20020a170906a0ce00b006d1cb303b3bmr23968745ejb.582.1647371641484;
+        Tue, 15 Mar 2022 12:14:01 -0700 (PDT)
+Received: from skbuf ([188.25.231.156])
+        by smtp.gmail.com with ESMTPSA id t14-20020a170906608e00b006d1455acc62sm8408270ejj.74.2022.03.15.12.13.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 15 Mar 2022 12:14:00 -0700 (PDT)
+Date:   Tue, 15 Mar 2022 21:13:58 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Jianbo Liu <jianbol@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, rajur@chelsio.com,
+        claudiu.manoil@nxp.com, sgoutham@marvell.com, gakula@marvell.com,
+        sbhatta@marvell.com, hkelam@marvell.com, saeedm@nvidia.com,
+        leon@kernel.org, idosch@nvidia.com, petrm@nvidia.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        simon.horman@corigine.com, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        baowen.zheng@corigine.com, louis.peens@netronome.com,
+        peng.zhang@corigine.com, oss-drivers@corigine.com, roid@nvidia.com
+Subject: Re: [PATCH net-next v3 1/2] net: flow_offload: add tc police action
+ parameters
+Message-ID: <20220315191358.taujzi2kwxlp6iuf@skbuf>
+References: <20220224102908.5255-1-jianbol@nvidia.com>
+ <20220224102908.5255-2-jianbol@nvidia.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220311115247.23521-4-yangx.jy@fujitsu.com>
-X-ClientProxiedBy: BLAPR03CA0016.namprd03.prod.outlook.com
- (2603:10b6:208:32b::21) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 353faacf-3ce2-4f96-0098-08da06b51978
-X-MS-TrafficTypeDiagnostic: BN6PR1201MB0066:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR1201MB0066553EA76BB4F140ABEF4AC2109@BN6PR1201MB0066.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: akxZwU0eRbCU++uOiGv9MgnrBuynZLrXN+XjkC6xK4EBZXB623dNkc4O19zZWWj/vKUayW4GT/gqcnpkGB7d/HAhmtHV2GRZIbz1NNjosNfUXPUO7y3aoXL3bUJfETb1wxQmY0y3kBVSxPoeVXToOWRitHwm+3jHkmHuNrlBPmFUPNrZKeut4Pym4uB1WqPDmE6TIoqIOn7GvomxDMUvOg9WlRz/2JXOnmHJBnOtxH5tdYJwM0+wxgCAg2xSErolHGMyBTX11eJoh5dyflBHn8R5pezuJe/t5HPD5DEFestGKK3zlKPE7lHxBQ4Rtz5r4mKjQQcqU2PHIPg70drs7iIWH0Mw4XgKFt8PHtwAPQ6/vL4b9vlVY7MjD5Z3Sxq8LK/Ur1mBFS8wSN/L4Mdt3rxYa/OAPTMEMm920FzzEyg++emRJOhtxvrzVUsAYZpmc0s78Xyuf1tMMtnjeMyeZcL+GnDo9gJfOKmSks3dkJIyl3JnW5NNLOocjBU2gJ6nYkDC0wTV0mGtBeUH6Pt5P6thtSapeFNYzEK1qCZnSqk9HGlYUp/QKE0pVjBsMylsi2y0j7bTJkYWT8RiEdDfhJNTMG6TdCmEScjKjRZg26QfvqRcADc/A5PDFzWEXn/LkZ7XdkcH39GhWQBJhDUFRzOtxy4IJsi9IV5jNt7q2XESwiQ+vKnmcjyaw8Czq5Ql
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4326008)(5660300002)(8676002)(66556008)(66476007)(66946007)(33656002)(4744005)(8936002)(6486002)(6916009)(316002)(36756003)(6512007)(6506007)(38100700002)(1076003)(2616005)(508600001)(2906002)(83380400001)(186003)(26005)(86362001)(27376004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?G5eY4sUDqwDbMP26D0gWB3dCvsCenui5sptEp+uV88dVhnT4n/W+fggzcPYc?=
- =?us-ascii?Q?aD1zTbtCaVMG/n/Myied5oTmyiUKNzxi1aT1r9wbh1v6l/+uTbbbFM8Qijcw?=
- =?us-ascii?Q?JxDc0hrNvVE4+W+8Lx8BnS42bJe5kQiH7zFtD5Fp2d4yfwkutBE7uBVqnKBr?=
- =?us-ascii?Q?okinPOuql6z1w7Zvc4GsIq+4t14Scbyx3sx87iYD+yeb1/mroSWnG/wHtLen?=
- =?us-ascii?Q?ltqLH8XKQgFu9Y3Ys/cfU35JPUj2GJ9SsZvnX1OnmO0kdKo8WTr0dRk/1IPZ?=
- =?us-ascii?Q?rv0c6bQzhXGk+Oirk3vMFSyNLiZ/O7eSCxLP2FE7fZXXn6dPRJ9Oa6ZazGJj?=
- =?us-ascii?Q?5TY6/8fpT4pLp/loy1PNeN8j/k6j2TrT956i8GHL5uE4/5CiyNizfFUFYs6n?=
- =?us-ascii?Q?BMeTrOvG76z96lcDStDpziG7lArN3CyuXkIVOtbF5LyFGyboeBR9YoGpNX2c?=
- =?us-ascii?Q?/1tcUaj28Y1RGf2bvF7gxATX6FVd+Xzhl975pl3toTiLBWV1GzKYt+oxh+9m?=
- =?us-ascii?Q?pbkTigRWesyFskV6sTvyLGPbt1ZgavTbnnfijpt890s9QfEC458dtAniQex2?=
- =?us-ascii?Q?bxjZTzd7FUtXv2FxPy/qzlnfhzbl/y/ZBcRvZfGGPKiyIGfSLhFYIdKNbUH9?=
- =?us-ascii?Q?6eaBDWhs6oBRZ1F/iyn4pQP6duuNAMvJgmlM2EySz+ev34guWREylN5x/7O2?=
- =?us-ascii?Q?q3asaUH9hX0p1GEV4WqhnHwsDL41DZbzQBGIqZXDY5S3MHM99bWfPrxWLZOs?=
- =?us-ascii?Q?FIi909eHYgOYDDB+f2TR2apzD11TWgsoiztwvP8QjxN3NoZFUpgrnnBbZrQc?=
- =?us-ascii?Q?ujSOmtQxjI25SRLB0DCHrx2kw1h2F6+bxK3PZif7A1xYELHvCxd7oeqVY/ux?=
- =?us-ascii?Q?FFKnU3RFa61n4xbVItkj+9kIUYvYkErPCs2TKhhWColCHyvSQ0w48ZWReDCm?=
- =?us-ascii?Q?/tdNRrrui6mS1IJQ09g8kAHJf5E1MnglPdbT1PVXLBf50d1WIZ3Ac0Pp68v/?=
- =?us-ascii?Q?gs19Ke6RrzYxf7Qi70s3lpmDSGIai8SFKcGWIq6Z1khQOLS/mLey8+FEwjIx?=
- =?us-ascii?Q?1EH6kAcYgQsr65VFPFrSl+1gr9INgugEVu2GprthFS9Vm7PotncBOc2QjoNi?=
- =?us-ascii?Q?AN5LHNaPLSAAvf/SanLBax6erA6Uw7+sq5/kA2LC/+J8hGU27+/t2XqP7uon?=
- =?us-ascii?Q?MwhxpiS0kqU2+prymPiN+s4JqCQ7BYl4E7e3X7qSERKeotlzSRbaHEFCoFwr?=
- =?us-ascii?Q?T62zjBImam6l4DN8z4JEW0ZLzmRORrxBn+z9eZVyJ9NsDBkQYQ25AqY89Zcx?=
- =?us-ascii?Q?2v3pmu53v1P0g3YPNfUU1wO5usKHfnkZlUL3eI0dRUkVOxmN9Ve8FQ5klPIV?=
- =?us-ascii?Q?Z19DHOif3mRPOMQPdE8IkKPb4SsvYAVLnxCGeRah1SA0XNvp3yI6e1S8fL7i?=
- =?us-ascii?Q?msNvOp6ZGXKcp9lY4bk/ZRFCZAfvK6JH?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 353faacf-3ce2-4f96-0098-08da06b51978
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2022 18:53:31.3738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gkz4TxiQzKcjohEaN7OJdGQkVEayCkvZxJLNDs3obCDXZvfQO/ezTpo1eu9DrBOE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR1201MB0066
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20220224102908.5255-2-jianbol@nvidia.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Mar 11, 2022 at 07:52:47PM +0800, Xiao Yang wrote:
+Hello Jianbo,
 
-> diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-> index abd1c5d3dc66..580b5cacec09 100644
-> +++ b/include/rdma/ib_verbs.h
-> @@ -291,6 +291,8 @@ enum ib_device_cap_flags {
->  	/* The device supports padding incoming writes to cacheline. */
->  	IB_DEVICE_PCI_WRITE_END_PADDING		= (1ULL << 36),
->  	IB_DEVICE_ALLOW_USER_UNREG		= (1ULL << 37),
-> +	/* Atomic write attributes */
-> +	IB_DEVICE_ATOMIC_WRITE			= (1ULL << 40),
+On Thu, Feb 24, 2022 at 10:29:07AM +0000, Jianbo Liu wrote:
+> The current police offload action entry is missing exceed/notexceed
+> actions and parameters that can be configured by tc police action.
+> Add the missing parameters as a pre-step for offloading police actions
+> to hardware.
+> 
+> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
+> Signed-off-by: Roi Dayan <roid@nvidia.com>
+> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+> ---
+>  include/net/flow_offload.h     |  9 +++++++
+>  include/net/tc_act/tc_police.h | 30 ++++++++++++++++++++++
+>  net/sched/act_police.c         | 46 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 85 insertions(+)
+> 
+> diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
+> index 5b8c54eb7a6b..74f44d44abe3 100644
+> --- a/include/net/flow_offload.h
+> +++ b/include/net/flow_offload.h
+> @@ -148,6 +148,8 @@ enum flow_action_id {
+>  	FLOW_ACTION_MPLS_MANGLE,
+>  	FLOW_ACTION_GATE,
+>  	FLOW_ACTION_PPPOE_PUSH,
+> +	FLOW_ACTION_JUMP,
+> +	FLOW_ACTION_PIPE,
+>  	NUM_FLOW_ACTIONS,
 >  };
+>  
+> @@ -235,9 +237,16 @@ struct flow_action_entry {
+>  		struct {				/* FLOW_ACTION_POLICE */
+>  			u32			burst;
+>  			u64			rate_bytes_ps;
+> +			u64			peakrate_bytes_ps;
+> +			u32			avrate;
+> +			u16			overhead;
+>  			u64			burst_pkt;
+>  			u64			rate_pkt_ps;
+>  			u32			mtu;
+> +			struct {
+> +				enum flow_action_id	act_id;
+> +				u32			extval;
+> +			} exceed, notexceed;
+>  		} police;
+>  		struct {				/* FLOW_ACTION_CT */
+>  			int action;
+> diff --git a/include/net/tc_act/tc_police.h b/include/net/tc_act/tc_police.h
+> index 72649512dcdd..283bde711a42 100644
+> --- a/include/net/tc_act/tc_police.h
+> +++ b/include/net/tc_act/tc_police.h
+> @@ -159,4 +159,34 @@ static inline u32 tcf_police_tcfp_mtu(const struct tc_action *act)
+>  	return params->tcfp_mtu;
+>  }
+>  
+> +static inline u64 tcf_police_peakrate_bytes_ps(const struct tc_action *act)
+> +{
+> +	struct tcf_police *police = to_police(act);
+> +	struct tcf_police_params *params;
+> +
+> +	params = rcu_dereference_protected(police->params,
+> +					   lockdep_is_held(&police->tcf_lock));
+> +	return params->peak.rate_bytes_ps;
+> +}
+> +
+> +static inline u32 tcf_police_tcfp_ewma_rate(const struct tc_action *act)
+> +{
+> +	struct tcf_police *police = to_police(act);
+> +	struct tcf_police_params *params;
+> +
+> +	params = rcu_dereference_protected(police->params,
+> +					   lockdep_is_held(&police->tcf_lock));
+> +	return params->tcfp_ewma_rate;
+> +}
+> +
+> +static inline u16 tcf_police_rate_overhead(const struct tc_action *act)
+> +{
+> +	struct tcf_police *police = to_police(act);
+> +	struct tcf_police_params *params;
+> +
+> +	params = rcu_dereference_protected(police->params,
+> +					   lockdep_is_held(&police->tcf_lock));
+> +	return params->rate.overhead;
+> +}
+> +
+>  #endif /* __NET_TC_POLICE_H */
+> diff --git a/net/sched/act_police.c b/net/sched/act_police.c
+> index 0923aa2b8f8a..a2275eef6877 100644
+> --- a/net/sched/act_police.c
+> +++ b/net/sched/act_police.c
+> @@ -405,20 +405,66 @@ static int tcf_police_search(struct net *net, struct tc_action **a, u32 index)
+>  	return tcf_idr_search(tn, a, index);
+>  }
+>  
+> +static int tcf_police_act_to_flow_act(int tc_act, u32 *extval)
+> +{
+> +	int act_id = -EOPNOTSUPP;
+> +
+> +	if (!TC_ACT_EXT_OPCODE(tc_act)) {
+> +		if (tc_act == TC_ACT_OK)
+> +			act_id = FLOW_ACTION_ACCEPT;
+> +		else if (tc_act ==  TC_ACT_SHOT)
+> +			act_id = FLOW_ACTION_DROP;
+> +		else if (tc_act == TC_ACT_PIPE)
+> +			act_id = FLOW_ACTION_PIPE;
+> +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_GOTO_CHAIN)) {
+> +		act_id = FLOW_ACTION_GOTO;
+> +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
+> +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_JUMP)) {
+> +		act_id = FLOW_ACTION_JUMP;
+> +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
+> +	}
+> +
+> +	return act_id;
+> +}
+> +
+>  static int tcf_police_offload_act_setup(struct tc_action *act, void *entry_data,
+>  					u32 *index_inc, bool bind)
+>  {
+>  	if (bind) {
+>  		struct flow_action_entry *entry = entry_data;
+> +		struct tcf_police *police = to_police(act);
+> +		struct tcf_police_params *p;
+> +		int act_id;
+> +
+> +		p = rcu_dereference_protected(police->params,
+> +					      lockdep_is_held(&police->tcf_lock));
+>  
+>  		entry->id = FLOW_ACTION_POLICE;
+>  		entry->police.burst = tcf_police_burst(act);
+>  		entry->police.rate_bytes_ps =
+>  			tcf_police_rate_bytes_ps(act);
+> +		entry->police.peakrate_bytes_ps = tcf_police_peakrate_bytes_ps(act);
+> +		entry->police.avrate = tcf_police_tcfp_ewma_rate(act);
+> +		entry->police.overhead = tcf_police_rate_overhead(act);
+>  		entry->police.burst_pkt = tcf_police_burst_pkt(act);
+>  		entry->police.rate_pkt_ps =
+>  			tcf_police_rate_pkt_ps(act);
+>  		entry->police.mtu = tcf_police_tcfp_mtu(act);
+> +
+> +		act_id = tcf_police_act_to_flow_act(police->tcf_action,
+> +						    &entry->police.exceed.extval);
 
-Can you make a patch to clean this up too? The right parts of it need
-to get moved to the uapi header and it should work similarly to the
-ib_uverbs_wr_opcode / ib_wr_opcode thing.
+I don't know why just now, but I observed an apparent regression here
+with these commands:
 
-You'll also need to do something about the 32 bit compatability that
-kbuild detected - I suppose this can't work on 32 bit platforms? So
-IS_ENABLED() it off or something?
+root@debian:~# tc qdisc add dev swp3 clsact
+root@debian:~# tc filter add dev swp3 ingress protocol ip flower skip_sw ip_proto icmp action police rate 100Mbit burst 10000
+[   45.767900] tcf_police_act_to_flow_act: 434: tc_act 1
+[   45.773100] tcf_police_offload_act_setup: 475, act_id -95
+Error: cls_flower: Failed to setup flow action.
+We have an error talking to the kernel, -1
 
-Jason
+The reason why I'm not sure is because I don't know if this should have
+worked as intended or not. I am remarking just now in "man tc-police"
+that the default conform-exceed action is "reclassify".
+
+So if I specify "conform-exceed drop", things are as expected, but with
+the default (implicitly "conform-exceed reclassify") things fail with
+-EOPNOTSUPP because tcf_police_act_to_flow_act() doesn't handle a
+police->tcf_action of TC_ACT_RECLASSIFY.
+
+Should it?
+
+> +		if (act_id < 0)
+> +			return act_id;
+> +
+> +		entry->police.exceed.act_id = act_id;
+> +
+> +		act_id = tcf_police_act_to_flow_act(p->tcfp_result,
+> +						    &entry->police.notexceed.extval);
+> +		if (act_id < 0)
+> +			return act_id;
+> +
+> +		entry->police.notexceed.act_id = act_id;
+> +
+>  		*index_inc = 1;
+>  	} else {
+>  		struct flow_offload_action *fl_action = entry_data;
+> -- 
+> 2.26.2
+> 
