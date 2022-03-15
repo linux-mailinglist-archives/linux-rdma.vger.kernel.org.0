@@ -2,264 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338E54DA323
-	for <lists+linux-rdma@lfdr.de>; Tue, 15 Mar 2022 20:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2942A4DA6A2
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Mar 2022 01:05:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344264AbiCOTPR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Mar 2022 15:15:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48900 "EHLO
+        id S243040AbiCPAEo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 15 Mar 2022 20:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235851AbiCOTPQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Mar 2022 15:15:16 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C676450;
-        Tue, 15 Mar 2022 12:14:03 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id hw13so41605710ejc.9;
-        Tue, 15 Mar 2022 12:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EFbNP0w17xl4ckdv5kSOTgg6lZ5fIOgNdcD9IrB7lZg=;
-        b=nEWTjh3R0qw2MipkYfZuI0wD5nIYhk9jDbUZJkU5yx/6WkTNzqOlh1+crJ1GxgbOpD
-         aFNTBS8E/wbdwQutDEHcHc/JiSLCaSYpAME4NbTiUyjUstDWJTTHeaH9ouA2jv4e96I7
-         6p84LWCSgC9SiVrA5FV1SX99MslJ/FDBERDu84cXu7NgDto6gFEBqoYjHWb8xFu5p16Q
-         lNBIJ+svxwtN57DVr2rLD7LprJxsvnJRw6Zacp8E0sauEPaoO1Pq0zWCroJjHoS8hP9+
-         atylVOW2c49WzA+9qdN07181oobuGKAxwi/1ESVnxYMcQSVHFy2/kz37UsNI2poGn3Ge
-         PDeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EFbNP0w17xl4ckdv5kSOTgg6lZ5fIOgNdcD9IrB7lZg=;
-        b=XtcOCnrc/sRcSC+noMgQnpTLMnDEGI/eidkQGNH1cAFli6zlr90dTTc4GZTYr0a4sq
-         DMIllINFiilcD0mtnzxkHCHjSctUZ5HymlYuzmjDa+QzRbiwkVbF21wJBaF0bNehfujP
-         KwNCHDOwEULAuhrckASAlyT1bBGRJymi3jbuzXip2GABeqTgvPEdqSmjjyYG35djE/Wj
-         qgtVZfx1QPeEEtkfLW7ViunWcB6q+sfUWxZL2mHFAfFFc7nTlnu9CKyxQvekvtztZZwM
-         6qfU+em6Jh/d46tU9m6ND6PMXvMFZoS4SIOzllKJAml/UDHzp4VPgj7YHsrxZkiu0IzO
-         9LlA==
-X-Gm-Message-State: AOAM530ULk8Jc+ruLrhOPrq31C5aFQZ1+CJkFodHUc1ZeotUlybBltRS
-        9paDVwcZwcrZ35m+fedL2fM=
-X-Google-Smtp-Source: ABdhPJyqnW/s/xxkoxZyQK1hpu8pU8gNgK4myEyJyvcj0jAlA6+BetXmfPBcIbP6vXrwUlJczymR1w==
-X-Received: by 2002:a17:906:a0ce:b0:6d1:cb30:3b3b with SMTP id bh14-20020a170906a0ce00b006d1cb303b3bmr23968745ejb.582.1647371641484;
-        Tue, 15 Mar 2022 12:14:01 -0700 (PDT)
-Received: from skbuf ([188.25.231.156])
-        by smtp.gmail.com with ESMTPSA id t14-20020a170906608e00b006d1455acc62sm8408270ejj.74.2022.03.15.12.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Mar 2022 12:14:00 -0700 (PDT)
-Date:   Tue, 15 Mar 2022 21:13:58 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Jianbo Liu <jianbol@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, rajur@chelsio.com,
-        claudiu.manoil@nxp.com, sgoutham@marvell.com, gakula@marvell.com,
-        sbhatta@marvell.com, hkelam@marvell.com, saeedm@nvidia.com,
-        leon@kernel.org, idosch@nvidia.com, petrm@nvidia.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        simon.horman@corigine.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        baowen.zheng@corigine.com, louis.peens@netronome.com,
-        peng.zhang@corigine.com, oss-drivers@corigine.com, roid@nvidia.com
-Subject: Re: [PATCH net-next v3 1/2] net: flow_offload: add tc police action
- parameters
-Message-ID: <20220315191358.taujzi2kwxlp6iuf@skbuf>
-References: <20220224102908.5255-1-jianbol@nvidia.com>
- <20220224102908.5255-2-jianbol@nvidia.com>
+        with ESMTP id S1350148AbiCPAEo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Mar 2022 20:04:44 -0400
+X-Greylist: delayed 91 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 15 Mar 2022 17:03:30 PDT
+Received: from wfbtwtsd.outbound-mail.sendgrid.net (wfbtwtsd.outbound-mail.sendgrid.net [159.183.151.109])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EAAD64DD
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 17:03:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net;
+        h=content-type:mime-version:content-transfer-encoding:
+        content-description:subject:from:reply-to:to;
+        s=smtpapi; bh=+XubWEXK/BJXXu61uT3EnBHqUsglhUBFcnaVp7zG7/4=;
+        b=zSSl4T15hCJTSO8S9RCNdQGxW4vKvp/3mtIvlQDwvLFe6TPVzVyfN05UWrezoSdheSo8
+        RdV1QSwccW1NvO8pRK23SOFg1f4q7usPStVt+dz+q+lhe2yAMyaQwa034uS23ycFm2VIMY
+        S595Kwl+LSoid93RkEGhLFS1XiSZZ2HU0=
+Received: by filterdrecv-7485957b4c-fwntq with SMTP id filterdrecv-7485957b4c-fwntq-1-6230DD34-4
+        2022-03-15 18:38:44.221903997 +0000 UTC m=+15792074.441215522
+Received: from [2.56.56.17] (unknown)
+        by geopod-ismtpd-5-0 (SG) with ESMTP
+        id 5x57wNFQQ4-wq9bHngupPw
+        Tue, 15 Mar 2022 18:38:44.003 +0000 (UTC)
+Content-Type: text/plain; charset=utf-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220224102908.5255-2-jianbol@nvidia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Mutual Partnership
+From:   David Hilton <hradmin@barakaoman.com>
+Date:   Tue, 15 Mar 2022 18:38:44 +0000 (UTC)
+Message-ID: <5x57wNFQQ4-wq9bHngupPw@geopod-ismtpd-5-0>
+Reply-To: davidhilton711@gmail.com
+X-SG-EID: =?us-ascii?Q?+kMxBqj35EdRUKoy8diX1m=2Fou=2FD6aClT4gB2IKO=2FcGJodugcVOzezUDLmaoUxx?=
+ =?us-ascii?Q?whgzor+vtRre5NhSKi0mjk6l7vyldhqVw7B8GE+?=
+ =?us-ascii?Q?j43qODHw4IXzZ2g5TUwdm4wZjRv1ert+Srt6XWr?=
+ =?us-ascii?Q?=2FtnoUjNxDWsFUVa2uA6GdKm=2F5JxBx7xa0NQyUvb?=
+ =?us-ascii?Q?kRIjEZv41F85QcgYhAFpuWrQM7nHWv5=2FFFOr1WD?=
+ =?us-ascii?Q?lJ5FbNH4bJZXwsaBl5XB6W7jaxVRJ6ZC0Vkq2mp?=
+ =?us-ascii?Q?l2jNrM3pDgnT3LbTaRBew=3D=3D?=
+To:     Recipients <hradmin@barakaoman.com>
+X-Entity-ID: 8J2mwNnjfs/vn1aSz7UEJg==
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DATE_IN_PAST_03_06,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_GREY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Report: *  0.4 URIBL_GREY Contains an URL listed in the URIBL greylist
+        *      [URIs: sendgrid.net]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.0 RCVD_IN_MSPIKE_H3 RBL: Good reputation (+3)
+        *      [159.183.151.109 listed in wl.mailspike.net]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [davidhilton711[at]gmail.com]
+        *  0.2 HEADER_FROM_DIFFERENT_DOMAINS From and EnvelopeFrom 2nd level
+        *      mail domains are different
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  1.6 DATE_IN_PAST_03_06 Date: is 3 to 6 hours before Received: date
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 RCVD_IN_MSPIKE_WL Mailspike good senders
+        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello Jianbo,
+Terveisi=C3=A4,
 
-On Thu, Feb 24, 2022 at 10:29:07AM +0000, Jianbo Liu wrote:
-> The current police offload action entry is missing exceed/notexceed
-> actions and parameters that can be configured by tc police action.
-> Add the missing parameters as a pre-step for offloading police actions
-> to hardware.
-> 
-> Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-> Signed-off-by: Roi Dayan <roid@nvidia.com>
-> Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> ---
->  include/net/flow_offload.h     |  9 +++++++
->  include/net/tc_act/tc_police.h | 30 ++++++++++++++++++++++
->  net/sched/act_police.c         | 46 ++++++++++++++++++++++++++++++++++
->  3 files changed, 85 insertions(+)
-> 
-> diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-> index 5b8c54eb7a6b..74f44d44abe3 100644
-> --- a/include/net/flow_offload.h
-> +++ b/include/net/flow_offload.h
-> @@ -148,6 +148,8 @@ enum flow_action_id {
->  	FLOW_ACTION_MPLS_MANGLE,
->  	FLOW_ACTION_GATE,
->  	FLOW_ACTION_PPPOE_PUSH,
-> +	FLOW_ACTION_JUMP,
-> +	FLOW_ACTION_PIPE,
->  	NUM_FLOW_ACTIONS,
->  };
->  
-> @@ -235,9 +237,16 @@ struct flow_action_entry {
->  		struct {				/* FLOW_ACTION_POLICE */
->  			u32			burst;
->  			u64			rate_bytes_ps;
-> +			u64			peakrate_bytes_ps;
-> +			u32			avrate;
-> +			u16			overhead;
->  			u64			burst_pkt;
->  			u64			rate_pkt_ps;
->  			u32			mtu;
-> +			struct {
-> +				enum flow_action_id	act_id;
-> +				u32			extval;
-> +			} exceed, notexceed;
->  		} police;
->  		struct {				/* FLOW_ACTION_CT */
->  			int action;
-> diff --git a/include/net/tc_act/tc_police.h b/include/net/tc_act/tc_police.h
-> index 72649512dcdd..283bde711a42 100644
-> --- a/include/net/tc_act/tc_police.h
-> +++ b/include/net/tc_act/tc_police.h
-> @@ -159,4 +159,34 @@ static inline u32 tcf_police_tcfp_mtu(const struct tc_action *act)
->  	return params->tcfp_mtu;
->  }
->  
-> +static inline u64 tcf_police_peakrate_bytes_ps(const struct tc_action *act)
-> +{
-> +	struct tcf_police *police = to_police(act);
-> +	struct tcf_police_params *params;
-> +
-> +	params = rcu_dereference_protected(police->params,
-> +					   lockdep_is_held(&police->tcf_lock));
-> +	return params->peak.rate_bytes_ps;
-> +}
-> +
-> +static inline u32 tcf_police_tcfp_ewma_rate(const struct tc_action *act)
-> +{
-> +	struct tcf_police *police = to_police(act);
-> +	struct tcf_police_params *params;
-> +
-> +	params = rcu_dereference_protected(police->params,
-> +					   lockdep_is_held(&police->tcf_lock));
-> +	return params->tcfp_ewma_rate;
-> +}
-> +
-> +static inline u16 tcf_police_rate_overhead(const struct tc_action *act)
-> +{
-> +	struct tcf_police *police = to_police(act);
-> +	struct tcf_police_params *params;
-> +
-> +	params = rcu_dereference_protected(police->params,
-> +					   lockdep_is_held(&police->tcf_lock));
-> +	return params->rate.overhead;
-> +}
-> +
->  #endif /* __NET_TC_POLICE_H */
-> diff --git a/net/sched/act_police.c b/net/sched/act_police.c
-> index 0923aa2b8f8a..a2275eef6877 100644
-> --- a/net/sched/act_police.c
-> +++ b/net/sched/act_police.c
-> @@ -405,20 +405,66 @@ static int tcf_police_search(struct net *net, struct tc_action **a, u32 index)
->  	return tcf_idr_search(tn, a, index);
->  }
->  
-> +static int tcf_police_act_to_flow_act(int tc_act, u32 *extval)
-> +{
-> +	int act_id = -EOPNOTSUPP;
-> +
-> +	if (!TC_ACT_EXT_OPCODE(tc_act)) {
-> +		if (tc_act == TC_ACT_OK)
-> +			act_id = FLOW_ACTION_ACCEPT;
-> +		else if (tc_act ==  TC_ACT_SHOT)
-> +			act_id = FLOW_ACTION_DROP;
-> +		else if (tc_act == TC_ACT_PIPE)
-> +			act_id = FLOW_ACTION_PIPE;
-> +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_GOTO_CHAIN)) {
-> +		act_id = FLOW_ACTION_GOTO;
-> +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
-> +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_JUMP)) {
-> +		act_id = FLOW_ACTION_JUMP;
-> +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
-> +	}
-> +
-> +	return act_id;
-> +}
-> +
->  static int tcf_police_offload_act_setup(struct tc_action *act, void *entry_data,
->  					u32 *index_inc, bool bind)
->  {
->  	if (bind) {
->  		struct flow_action_entry *entry = entry_data;
-> +		struct tcf_police *police = to_police(act);
-> +		struct tcf_police_params *p;
-> +		int act_id;
-> +
-> +		p = rcu_dereference_protected(police->params,
-> +					      lockdep_is_held(&police->tcf_lock));
->  
->  		entry->id = FLOW_ACTION_POLICE;
->  		entry->police.burst = tcf_police_burst(act);
->  		entry->police.rate_bytes_ps =
->  			tcf_police_rate_bytes_ps(act);
-> +		entry->police.peakrate_bytes_ps = tcf_police_peakrate_bytes_ps(act);
-> +		entry->police.avrate = tcf_police_tcfp_ewma_rate(act);
-> +		entry->police.overhead = tcf_police_rate_overhead(act);
->  		entry->police.burst_pkt = tcf_police_burst_pkt(act);
->  		entry->police.rate_pkt_ps =
->  			tcf_police_rate_pkt_ps(act);
->  		entry->police.mtu = tcf_police_tcfp_mtu(act);
-> +
-> +		act_id = tcf_police_act_to_flow_act(police->tcf_action,
-> +						    &entry->police.exceed.extval);
+Toivon, ett=C3=A4 t=C3=A4m=C3=A4 s=C3=A4hk=C3=B6posti saapuu sinulle eritt=
+=C3=A4in hyv=C3=A4ss=C3=A4 kunnossa. Olen David Hilton, Credit Suisse Banki=
+n kirjanpito-/tarkastusosaston p=C3=A4=C3=A4llikk=C3=B6, Cabot Square Londo=
+n Iso-Britannia. Otin sinuun yhteytt=C3=A4 koskien yritysehdotusta, josta o=
+n valtavasti hy=C3=B6ty=C3=A4 sek=C3=A4 meille ett=C3=A4 v=C3=A4hemm=C3=A4n=
+ etuoikeutetuille. P=C3=A4=C3=A4llik=C3=B6n kirjanpito-/tarkastusosastona S=
+uur-Lontoon aluetoimistossa l=C3=B6ysin 15 800 000,00 punnan (15 miljoonaa =
+kahdeksansataa tuhatta Englannin puntaa) summan tililt=C3=A4, =E2=80=8B=E2=
+=80=8Bjoka kuuluu yhdelle ulkomaiselle asiakkaallemme edesmenneen herra Man=
+zoor Hassanille. H=C3=A4n oli yritysmoguli, joka kuoli helikopterionnettomu=
+udessa vuonna 2014. Mr. Hassan oli 54-vuotias, kun molemmat h=C3=A4nen vaim=
+onsa, ainoa poikansa Avraham (Albert) ja mini=C3=A4ns=C3=A4 kuolivat heliko=
+pterionnettomuudessa.
 
-I don't know why just now, but I observed an apparent regression here
-with these commands:
+Valinta ottaa sinuun yhteytt=C3=A4 johtui asuinpaikkasi maantieteellisest=
+=C3=A4 luonteesta erityisesti tapahtuman arkaluonteisuuden ja sen luottamuk=
+sellisuuden vuoksi. Nyt pankkimme on odottanut jonkun sukulaisen hakevan pe=
+rint=C3=B6rahastoa, mutta valitettavasti kaikki ponnistelut ovat olleet tur=
+hia. Itse en ole onnistunut l=C3=B6yt=C3=A4m=C3=A4=C3=A4n herra Hassanin su=
+kulaisia =E2=80=8B=E2=80=8Btai l=C3=A4hisukulaisia. T=C3=A4lt=C3=A4 osin py=
+yd=C3=A4n suostumustasi esitell=C3=A4 sinut vainajan l=C3=A4hiomaisena / tu=
+levana edunsaajana, jotta t=C3=A4m=C3=A4n tilin tuotto, jonka arvo on 15,8 =
+miljoonaa Englannin puntaa, voidaan maksaa sinulle.
 
-root@debian:~# tc qdisc add dev swp3 clsact
-root@debian:~# tc filter add dev swp3 ingress protocol ip flower skip_sw ip_proto icmp action police rate 100Mbit burst 10000
-[   45.767900] tcf_police_act_to_flow_act: 434: tc_act 1
-[   45.773100] tcf_police_offload_act_setup: 475, act_id -95
-Error: cls_flower: Failed to setup flow action.
-We have an error talking to the kernel, -1
+T=C3=A4m=C3=A4 maksetaan tai jaetaan n=C3=A4iss=C3=A4 prosenteissa 60 % min=
+ulle ja 40 % sinulle. Kaikki tarvittavat lakiasiakirjat, joita voidaan k=C3=
+=A4ytt=C3=A4=C3=A4 t=C3=A4m=C3=A4n perint=C3=B6vaatimuksen varmuuskopioimis=
+eksi, eiv=C3=A4t ole ongelma ollenkaan. Minun tarvitsee vain ladata nimesi =
+asiakirjoihin ja laillistaa ne Britannian korkeimmassa oikeudessa todistaak=
+seni, ett=C3=A4 olet t=C3=A4m=C3=A4n rahaston laillinen edunsaaja. Tarvitse=
+n nyt vain rehellist=C3=A4 yhteisty=C3=B6t=C3=A4si, luottamuksellisuuttasi =
+ja luottamusta, jotta voimme toteuttaa t=C3=A4m=C3=A4n kaupan. Takaan sinul=
+le 100 % menestyksen ja sen, ett=C3=A4 t=C3=A4m=C3=A4 liiketoimi toteutetaa=
+n lain mukaisesti.
 
-The reason why I'm not sure is because I don't know if this should have
-worked as intended or not. I am remarking just now in "man tc-police"
-that the default conform-exceed action is "reclassify".
+Anna minulle alla seuraavat tiedot, sill=C3=A4 meill=C3=A4 on 5 ty=C3=B6p=
+=C3=A4iv=C3=A4=C3=A4 aikaa suorittaa se:
 
-So if I specify "conform-exceed drop", things are as expected, but with
-the default (implicitly "conform-exceed reclassify") things fail with
--EOPNOTSUPP because tcf_police_act_to_flow_act() doesn't handle a
-police->tcf_action of TC_ACT_RECLASSIFY.
+1. Koko nimesi
+2. Puhelinnumero
+3. Yhteysosoite
 
-Should it?
+K=C3=A4vitty=C3=A4ni j=C3=A4rjestelm=C3=A4llisen haun l=C3=A4pi, p=C3=A4=C3=
+=A4tin ottaa sinuun yhteytt=C3=A4 toivoen, ett=C3=A4 t=C3=A4m=C3=A4 ehdotus=
+ kiinnostaa sinua. Pyyd=C3=A4n sinua vahvistamaan t=C3=A4m=C3=A4n viestin j=
+a osoittamaan kiinnostuksesi, annan sinulle yksityiskohtaiset tiedot.
 
-> +		if (act_id < 0)
-> +			return act_id;
-> +
-> +		entry->police.exceed.act_id = act_id;
-> +
-> +		act_id = tcf_police_act_to_flow_act(p->tcfp_result,
-> +						    &entry->police.notexceed.extval);
-> +		if (act_id < 0)
-> +			return act_id;
-> +
-> +		entry->police.notexceed.act_id = act_id;
-> +
->  		*index_inc = 1;
->  	} else {
->  		struct flow_offload_action *fl_action = entry_data;
-> -- 
-> 2.26.2
-> 
+Arvostamme suuresti suostumustasi t=C3=A4h=C3=A4n s=C3=A4hk=C3=B6postiin ja=
+ yritysehdotukseen.
+
+Odotan kuulevani sinusta pian.
+
+Parhain terveisin,
+David Hilton.
