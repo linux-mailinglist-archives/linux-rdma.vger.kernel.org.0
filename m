@@ -2,67 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B574DA91E
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Mar 2022 04:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D734DA929
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Mar 2022 05:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343977AbiCPD6k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 15 Mar 2022 23:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
+        id S229642AbiCPEGZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Mar 2022 00:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231822AbiCPD6f (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 15 Mar 2022 23:58:35 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3AE153E04
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 20:57:21 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id a7-20020a9d5c87000000b005ad1467cb59so656627oti.5
-        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 20:57:21 -0700 (PDT)
+        with ESMTP id S229437AbiCPEGZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Mar 2022 00:06:25 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5E93344D4
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 21:05:11 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id o64so1385155oib.7
+        for <linux-rdma@vger.kernel.org>; Tue, 15 Mar 2022 21:05:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=qrjPYETKy9OxfLci9WepWlY9gTVrWxEiy/58XqnL1Es=;
-        b=A0TEGT4YfSfpjq66qsfuXknHFNKjAB9jx9fWw3a7Ppx/LyEudBr/ZfhStK50kD4zOV
-         PvTsCJnmS4S4Im2imSj77sNob5yp6igCjzJFXIufZG8oash8ZNqMX4nEDLq7vslqvPDn
-         ipGGYm6Dout5d4YtcheMHw5qZKtskjSp5Stqp//R3pqEDu+arergoTIFeiv0x8V0nf8y
-         PllFFeRtaqT8Aw4IvORA2U69DIqG6IkRuaLdOToWo87+AUMHZ7i1FOoB5cck8aVypcAY
-         /50dbHMo45ROm0EunQZyXmcC19+/HxgP+qSNtBoi5j1mG5iPiny2kuLm9vwTSHTIQHAA
-         MK3w==
+        bh=1Id4BsxxbJRKwY04Yn7KeGGp6Q51GOF8hycE21o3deo=;
+        b=UJCG1wALnIIftHDNpWXKGJhs94L7Qio+kE0UNE9gVVxs+ax3uzDnjkzduRERZMI4JI
+         PDabXbkqP3b4Uwvq/plRyb1uhRPZ47p0G5FnHTcpCRnsAojv6RU2nkJAHSLlDzfKJolz
+         kV6NRbIWIAB8YE9slrGxZy3zSVM1WTCMjmJMMn/SJraQlprfAtQyaUTY7dVJ075jWgVo
+         tIDUXbP/seQv6KOUhdcpGdOtRiCW12TFkCawms7FnpnL+GtjtYHuQDKTetm1XoHozNOz
+         EPKsNv8pDW9h2fIZmyXgVG6BJWAlhQLTTKl1q3yara0FeNOT6u8LAv5R/1cPRVaHXEM5
+         K2oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=qrjPYETKy9OxfLci9WepWlY9gTVrWxEiy/58XqnL1Es=;
-        b=i3MVEF7Bd0UNYGqpqLgCZJYZ19cuKuc1F4Urd9IEdNF25hMw6+9Lb+LUppLBM1iBDf
-         a9UXpYaACURZ1s+HzxpMlYProsyZUAUJkckRj7d/phIYZBEO9CCVT9eApooB8bRLf9pM
-         AkZlx8Mn4/vGGSum6JqVulYGGaupGu8Po8neSCaqBRm8lh1sti0TGuHMuH/K7aoGck/8
-         H7O6FYAfIsVs58CS8hmeRZQCOctvXBVFp+Ym3Vib8Pk1r2a0TQr2uAlx+9mSrYxquXAD
-         1DXGLdduY6JbKgOzvPbAuVb3hun7aO3sKmZNgOun2+hczuLu4TKpu4ddT+UvpvrZ5c7n
-         faCw==
-X-Gm-Message-State: AOAM531QQfEsfYW7frf62+4UBUpzZLQB3Yu2/dEVbFzy1MGhFw61eeS7
-        uEVnzq7jVn0bPYzn17SdNak=
-X-Google-Smtp-Source: ABdhPJy7fXXFzYaZAmkikMcaMOEAR1QUg/zKXOTZbkAakmUbyc3Ph2QyEQ5ah4Jr68d3F1vs+PiN2w==
-X-Received: by 2002:a05:6830:71b:b0:5af:62e1:99ee with SMTP id y27-20020a056830071b00b005af62e199eemr13324926ots.227.1647403041199;
-        Tue, 15 Mar 2022 20:57:21 -0700 (PDT)
+        bh=1Id4BsxxbJRKwY04Yn7KeGGp6Q51GOF8hycE21o3deo=;
+        b=Iu7fdNsKRTxFVR9HtIOUIuUsYz+8RKiiUN36/aow407iufM+K3HktDozQkPvgQc1Fs
+         fahmlEBXrjHRF1gcKeXRKyAqK16XPISYY9HSFFwcsOeya2GVtHIMk43RRftA8J7iWZCl
+         NqbhwjMwAJbj2rLBZjujzoaIhnhrRB8c8uHDCWVa6qMkEU880dhvjeMR3Pq5knH+3g+s
+         klLjJS9DALN69eCZ+LfzpKRH2RIz5zM7+gr1hw/+xWKCnze7vmrCxJ2Wdgtz2pglLGG9
+         idof782GM4nOBAZgr+eqGoO9uyUU5oAtfgKtG9lwLAqvqEvAmwJdFhgPN8/b0l9Jr0YX
+         qiGQ==
+X-Gm-Message-State: AOAM532JF1xmRyOxpdG1OVydYFO1ggs6GyA3+vZupRR1kUiPeAr5pGwh
+        bL9Rp0PEt2ON7S8E9VzrMXCy1Kwk4uU=
+X-Google-Smtp-Source: ABdhPJyr5db2YOK39OgiYrrUrL746P8ezxtBWd2t+b/+SMk3QgmheCId4J4JB17/bAUMtjn6kURo+w==
+X-Received: by 2002:a05:6808:8c4:b0:2da:575e:3402 with SMTP id k4-20020a05680808c400b002da575e3402mr2997618oij.8.1647403511088;
+        Tue, 15 Mar 2022 21:05:11 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:744:9605:b0bf:1b15? (2603-8081-140c-1a00-0744-9605-b0bf-1b15.res6.spectrum.com. [2603:8081:140c:1a00:744:9605:b0bf:1b15])
-        by smtp.gmail.com with ESMTPSA id p14-20020a056830304e00b005b246b673f2sm390184otr.71.2022.03.15.20.57.20
+        by smtp.gmail.com with ESMTPSA id 5-20020a056870100500b000ddac364643sm4802oai.30.2022.03.15.21.05.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 15 Mar 2022 20:57:20 -0700 (PDT)
-Message-ID: <1a6dab91-b178-6761-151c-a048511bd827@gmail.com>
-Date:   Tue, 15 Mar 2022 22:57:20 -0500
+        Tue, 15 Mar 2022 21:05:10 -0700 (PDT)
+Message-ID: <e8992581-f409-bb4a-2755-e4fcee29e051@gmail.com>
+Date:   Tue, 15 Mar 2022 23:05:10 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH for-next v11 11/13] RDMA/rxe: Add wait_for_completion to
- pool objects
+Subject: Re: [PATCH for-next v11 12/13] RDMA/rxe: Convert read side locking to
+ rcu
 Content-Language: en-US
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 References: <20220304000808.225811-1-rpearsonhpe@gmail.com>
- <20220304000808.225811-12-rpearsonhpe@gmail.com>
- <20220316001737.GW11336@nvidia.com>
+ <20220304000808.225811-13-rpearsonhpe@gmail.com>
+ <20220316001835.GX11336@nvidia.com>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <20220316001737.GW11336@nvidia.com>
+In-Reply-To: <20220316001835.GX11336@nvidia.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -75,23 +75,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 3/15/22 19:17, Jason Gunthorpe wrote:
-> On Thu, Mar 03, 2022 at 06:08:07PM -0600, Bob Pearson wrote:
->> Reference counting for object deletion can cause an object to
->> wait for something else to happen before an object gets deleted.
->> The destroy verbs can then return to rdma-core with the object still
->> holding references. Adding wait_for_completion in this path
->> prevents this.
+On 3/15/22 19:18, Jason Gunthorpe wrote:
+> On Thu, Mar 03, 2022 at 06:08:08PM -0600, Bob Pearson wrote:
+>> Use rcu_read_lock() for protecting read side operations in rxe_pool.c.
+>>
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>>  drivers/infiniband/sw/rxe/rxe_pool.c | 7 +++----
+>>  1 file changed, 3 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> index 4fb6c7dd32ad..ec464b03d120 100644
+>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+>> @@ -207,16 +207,15 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
+>>  {
+>>  	struct rxe_pool_elem *elem;
+>>  	struct xarray *xa = &pool->xa;
+>> -	unsigned long flags;
+>>  	void *obj;
+>>  
+>> -	xa_lock_irqsave(xa, flags);
+>> +	rcu_read_lock();
+>>  	elem = xa_load(xa, index);
+>>  	if (elem && kref_get_unless_zero(&elem->ref_cnt))
+>>  		obj = elem->obj;
+>>  	else
+>>  		obj = NULL;
+>> -	xa_unlock_irqrestore(xa, flags);
+>> +	rcu_read_unlock();
 > 
-> Maybe call this rxe_pool_destroy() or something instead of wait
+> This makes the hide even more confusing because hide is racey with
+> a RCU lookup.
 > 
-> wait doesn't really convay to the reader tha the memory is free after
-> it returns
+> Looks OK otherwise though
 > 
 > Jason
 
-which is correct because except for MRs which are freed in completion code
-all the other objects are just passed back to rdma-core which will free them
-in its own good time.
+This conforms with my understanding of RCU. hide() is a write side operation
+since it changes the xarray contents while pool_get_index() is a read side
+operation. The xa_load here just has to pick a side of the fence for what
+to return as the link. It should either return elem or NULL just not something
+in the middle. If we have to put the spinlock around the lookup there is no
+point in using RCU. In theory there are typically many packets received for
+each object create/destroy operation so we should benefit from RCU.
 
 Bob
+
