@@ -2,115 +2,160 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 034CA4DB5A1
-	for <lists+linux-rdma@lfdr.de>; Wed, 16 Mar 2022 17:08:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3986A4DB5AA
+	for <lists+linux-rdma@lfdr.de>; Wed, 16 Mar 2022 17:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240647AbiCPQJV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 16 Mar 2022 12:09:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37662 "EHLO
+        id S1345858AbiCPQLB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 16 Mar 2022 12:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355862AbiCPQJU (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Mar 2022 12:09:20 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2051.outbound.protection.outlook.com [40.107.93.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 547AF205E9
-        for <linux-rdma@vger.kernel.org>; Wed, 16 Mar 2022 09:08:04 -0700 (PDT)
+        with ESMTP id S1345736AbiCPQLB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 16 Mar 2022 12:11:01 -0400
+Received: from mx0b-002e3701.pphosted.com (mx0b-002e3701.pphosted.com [148.163.143.35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9785B3C2
+        for <linux-rdma@vger.kernel.org>; Wed, 16 Mar 2022 09:09:46 -0700 (PDT)
+Received: from pps.filterd (m0148664.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.1.2/8.16.1.2) with ESMTP id 22GEW7SM023870;
+        Wed, 16 Mar 2022 16:09:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pps0720;
+ bh=nH+i1q4EXsjUs1L3gqGaUaj7VNSiJBt2YWz79bek3DQ=;
+ b=UbhU9/D0KYrVeQHXCrQ2i6MP/PI/u12D2jL+Af8+8MRA3U3/hHk81yYWWp66FeU4b6NL
+ BgWmsITijKh1BG7RaVz2TDCQ/zlP05JOUKMtRt2laEx2ZVZECLyPvEDQexeeDdOHNuMN
+ nEpoeUpoRFOv4DxqZEpsUvynpe+7af6JD459P4aSw1iyFyjGRpG1TuGNqnFibk8YzmOl
+ ZdSf+8mMtCt5uPfkyArGmYIoFRrlfjT20i7yrrh58exiE5YNXWqES7x3pCuE/SbRatJa
+ wmaOOmAGxncN6bsW2Y1epy31jDQ+1yyPhCG7FmPtVAETEV4j6En0qkxzv6kMSbPd5/SA cQ== 
+Received: from g4t3425.houston.hpe.com (g4t3425.houston.hpe.com [15.241.140.78])
+        by mx0b-002e3701.pphosted.com (PPS) with ESMTPS id 3eue4q44md-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 16 Mar 2022 16:09:44 +0000
+Received: from G4W9119.americas.hpqcorp.net (g4w9119.houston.hp.com [16.210.20.214])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by g4t3425.houston.hpe.com (Postfix) with ESMTPS id DB6CE9A;
+        Wed, 16 Mar 2022 16:09:43 +0000 (UTC)
+Received: from G1W8107.americas.hpqcorp.net (2002:10c1:483b::10c1:483b) by
+ G4W9119.americas.hpqcorp.net (2002:10d2:14d6::10d2:14d6) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.23; Wed, 16 Mar 2022 16:09:43 +0000
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (15.241.52.12) by
+ G1W8107.americas.hpqcorp.net (16.193.72.59) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.23 via Frontend Transport; Wed, 16 Mar 2022 16:09:43 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g2FXyUKMO6uJCP4DXonoUJO2sS6B6860H6kaWbsGf47tYWENzw1r9qzs/FaFlTEREm9VmvN8Fz+I5cPt6FRZzglfyIiMN+1QbA+cEf2jRErFH+Co6+y88WBePvlEIPnEAaE7aKCHTyNujxg08TJwACkdKpXZyEynCgHDpDIihGjJNW04omp42iXZNak7qO129VkrbqRbgM1+ka5IvAMQZaw6L2OQwr7IaUrLbR2UcHblr5gpAfknTRu7VSYSsWoZ+62ySC93zh6saZ6WOw4KDB2klxj/lHIilA6g1kKxVB8I476LH1JwqX9fvjt7iBXfG0GElSHgj0EIGgatkL/Z2g==
+ b=WoGWWXMeBGS0/UUlmsP10I2FFFwg+hc+URH/W9K9/cALQsSEnzsoXMji0inanOPcdN3wYy7l1lJn/O+M8hl/oDonOsgipEEHHNUjkrjklRp21MfBCt4CgLO8Bqyrmcv0Ft6w/C3d33k9ZQVaeFw1R/sZDLCfZSW9Vn7RnN4kJ3voeP2Lj84g8OW/fD3hAeC34evnNLJbDdbpMk7HQrcoRL3L8PEpHxBI03ZHlyLZHUURfpliQ60zrphzA/KQcAmktCGrEzW1yY6xz73MHaQ4wtLjd2UDBu6Ma0Cthr77LFGybherpnv8UsZMb41Ab7opzwzbchvaRaD5Xfm7Uuhzqw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FhszJyCy/6RZbWx3TInh0abJBc/DfFIMJhmLV1B/AB4=;
- b=H3y4hS5EICaVLLJJWRvR436J6JzpCBMUstnj3bN+cyBMYMUm7BruM4uAHvO8P5atpwL+5CdTizcf4Jer1811aQm65UyvXfPew9KWbwDd+wG2Lp065qPp7phXv4QEBbWBBJNr0FzIbpveRF4TijgfK/2ltIkNxDhlGIn4KIjRBZqVpKgpI10pD7yLvq2WIa+Aextx5qUnYD5sA9gBWFpug6M2377y2cc/dlbXWFGNmr1Zsjvy+/F38qvhAn0glUn5bG9GaiVkjZeNuk7Mgy0pHSydv9bxMFJZIdgHwAh7xCmBDhOO861xYhi6MlPHQwZgQ04ol6SP6YeqtnkUeUs7uA==
+ bh=nH+i1q4EXsjUs1L3gqGaUaj7VNSiJBt2YWz79bek3DQ=;
+ b=YxDQDk92IdS0uuOETPTx3QGLRNe90CnLd4cHHqXrnzirXofYiJexEC8OWVzVU0TCBs68W39IHjuWUr5VIma6zGNXWreEw0ZT1fovEC5E8o/dzCtTxsnVgzth09B+Dmhz7ilqclqGgm7f5PbNo7JHfv6KxduKPBu2jwEtOZzX+IHJ41LP5VtIY3FqupvRDdE8K+N0uDwUcLS+ytazquEaPqMWTyBR73SXZId0kP8UWVJC7H8/X6AfqD2ntVFSVUqc75a4EOmXTK6A0+m+BfO1lLydyot2zPs8f8Ra3qCLnlCo/EWMXRWuSnBkGkgaS3JdJcPTqdIbBbP2qrVuH6b0YQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FhszJyCy/6RZbWx3TInh0abJBc/DfFIMJhmLV1B/AB4=;
- b=Hj9rkGJzj8UzqQHAwGaJoU4Xe2BCfC9DiNTD7lLzB9151y93tyuu2pOtbjA//fgNPSw0OtsnKjLpNX9TuBj5z+zt/ffUBVUb9UToUMTlntxMl7Qd1YBQrZtai1LEC3AhMFrclZwXMOIY8fUwKZEQ6CLzbDFE7OhmsSbD8q8k1LQUCJrfWjZz/Kb1G2UJ+A138Mqw09in3tjZGogDajpu5CcKH3/7SkAgNpZSeDdht5XQGwihSdlYq2M47XDIeAbLFh8rdkVXHDbNfQ+lBXFuU4ulqBrykZH2zaEibsHoR0ax/kyYcQhQkQQh3lj9CN7fohMgvX0D9PJKiH8IvxC2qA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BN6PR12MB1172.namprd12.prod.outlook.com (2603:10b6:404:1f::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5081.14; Wed, 16 Mar
- 2022 16:08:03 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::11a0:970a:4c24:c70c]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::11a0:970a:4c24:c70c%5]) with mapi id 15.20.5081.015; Wed, 16 Mar 2022
- 16:08:02 +0000
-Date:   Wed, 16 Mar 2022 13:08:01 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v11 00/13] Fix race conditions in rxe_pool
-Message-ID: <20220316160801.GJ11336@nvidia.com>
+ smtp.mailfrom=hpe.com; dmarc=pass action=none header.from=hpe.com; dkim=pass
+ header.d=hpe.com; arc=none
+Received: from PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:510:153::7)
+ by DM4PR84MB1398.NAMPRD84.PROD.OUTLOOK.COM (2603:10b6:8:49::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5081.14; Wed, 16 Mar 2022 16:09:42 +0000
+Received: from PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::985c:f8f9:b7e3:87b7]) by PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
+ ([fe80::985c:f8f9:b7e3:87b7%8]) with mapi id 15.20.5061.028; Wed, 16 Mar 2022
+ 16:09:42 +0000
+From:   "Pearson, Robert B" <robert.pearson2@hpe.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+CC:     "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: [PATCH for-next v11 00/13] Fix race conditions in rxe_pool
+Thread-Topic: [PATCH for-next v11 00/13] Fix race conditions in rxe_pool
+Thread-Index: AQHYL1wXiyneVSoZ9k2I7npYQgrGvazBOeSAgAA9nwCAAMnJgIAAAGCw
+Date:   Wed, 16 Mar 2022 16:09:42 +0000
+Message-ID: <PH7PR84MB1488B0A40B8D6AC313777F29BC119@PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM>
 References: <20220304000808.225811-1-rpearsonhpe@gmail.com>
  <20220316002515.GZ11336@nvidia.com>
  <883b72de-850c-7b4d-fdaf-457f23d309ea@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <883b72de-850c-7b4d-fdaf-457f23d309ea@gmail.com>
-X-ClientProxiedBy: BL1P221CA0017.NAMP221.PROD.OUTLOOK.COM
- (2603:10b6:208:2c5::35) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+ <20220316160801.GJ11336@nvidia.com>
+In-Reply-To: <20220316160801.GJ11336@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ee72df24-9576-4488-824c-08da07676163
+x-ms-traffictypediagnostic: DM4PR84MB1398:EE_
+x-microsoft-antispam-prvs: <DM4PR84MB13980A09C095B15A8A8FE3D7BC119@DM4PR84MB1398.NAMPRD84.PROD.OUTLOOK.COM>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: lt9omlggFfMU8oNvokdApLOypOcFE+FYkD1ds4Sc8mGKKQy1dANynzzJR/H9zTDHi8zDew68szQxMhy2Rkd1UHPxIltC13q7gz6zomQdEo1eWKHyi/bk29G9ID3K+ns32pOBitT4+rMP8ItPMRW4J4vgULHrBXx5gyyxL576Ow0yKSSFt/m3iDN+bDt3fO1Af3EHtjw+jUmzvDBP4y5/4dhQ1uGEcI24P/AZZ4vDip4/XzYzd/gNz8rQTIZM0Wtpi/ZeeF8E3eGhEU56IW/iGI5tGLi8Tqt+pNLsvhlBWP66oZ4aBsTAtpIX3uO1eJhnjGNg3F9KQWuozE7FEe3dHDMAyiaqDemhWmj5rWexsseeoC5sSPYUcfm1JTxyUUjJQCjCER0msPnvCRhHtwHO0/DshGtjQvCzTsJZRuf9j62jc6BQD+CNXVxrm35gCRgJtr682OP+lo+0mJ1b6MV/rYqhpoeZeRCj9WHMV0Arm2Xl0Wb4avYfcWfmzqkjt23DPhjJN8I1puUJc814gq77IcoOvkzDEviHDVuV5VcCnlZsXX3IUwv6V4rVy9j8jvwcPtQ1+aEqtsNyx5hF2HDh5L9mqrUEFOQwGvonLxAzgUajgpYgQi5mVNwdemwaaJnr38AknnI9aPrgUK5v4in0D1fjAfmP8cNpk0ALOZ19qIILJUj5Qhg31Eqzy5SZ87MCypH9BAIHaAqQQ/mVVWQ7Sg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230001)(366004)(33656002)(83380400001)(86362001)(76116006)(186003)(64756008)(26005)(66946007)(66476007)(66556008)(4326008)(8676002)(66446008)(508600001)(5660300002)(38100700002)(8936002)(2906002)(82960400001)(4744005)(52536014)(71200400001)(122000001)(55236004)(53546011)(6506007)(9686003)(7696005)(38070700005)(316002)(54906003)(55016003)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Zxng3S4rWVfyByNWpE44MGHaZzkEe++DEuMCalRVjOttjcSWnDoy/ehjG0Pg?=
+ =?us-ascii?Q?yb1lwyn1jaegGdj1LngdinfaKQ7JYj3y586RSlXF4qaKFDWaHuQL9iBmC2fj?=
+ =?us-ascii?Q?5HACDc2DwU+y7OOTiT6QNf33HPBuacHXORfG0AsAWUIQXO4H9vT0D0kGv7vh?=
+ =?us-ascii?Q?TIHtuQzMeyMJs34EsxNSBE4eydjwtFKKtzXua0oFkRVe3q1tpsTvdWllpS+8?=
+ =?us-ascii?Q?zFyW0imabKVHM67ylZ/cqBXwJzQdK8ww0/Jm96Lpi2wn4W6sIr8g0uOkFf4/?=
+ =?us-ascii?Q?RniyQKBTdm7RjUFWb1A7BUJBbS0Hgq8366zq1sqYLooycTw3A5AuZ0VqCm9x?=
+ =?us-ascii?Q?le/xC29xI7MQYQI8/C5CQshx8FR/3Ar4JhmNe9yyW+KtIx88eospwrowwNdx?=
+ =?us-ascii?Q?MrdYkxagREOSQLqm26+ogVdl9QxyJM2gVVODACvxTgC8g2kxKJnvYQFxAgGr?=
+ =?us-ascii?Q?lDp2S+duspaoDQEnok/o9DjH4MQ41N7XzcMPpoOXaHPePiJhzMUuLb95x66j?=
+ =?us-ascii?Q?7V9fji53bGVWhW3SAtHCLRR80ibi/Np1ceRDBlijOz1CCXR9GH3LAwajohzz?=
+ =?us-ascii?Q?5+5I9swHS1g3iiahAyhXtYGhOdmZ5rkm9wwvoyF9z2HrONLWRsVnVd4gkles?=
+ =?us-ascii?Q?3TCeILeTV+95O/EORc0VTvrJDnUt84GYjxgCssbFEZuIQCLxxQ+Uhoov2Gjd?=
+ =?us-ascii?Q?bvkSrUqoY2jKvvzVuebC1AjKQdz301T6QIQJCA4ChZgrPFO68J0GE1AUtd7r?=
+ =?us-ascii?Q?9pCzQOOoq2g72mA2LZwkqrcs+tZLQgBhd/jvBEYbJ3Rut1eW9JpQnifVgYHN?=
+ =?us-ascii?Q?lPkxEtpj+cGq+0br2t2CogTVoIgIBBuGYvFMTKh8ss3NruRgDSXkpKm23QNI?=
+ =?us-ascii?Q?Mpw2IIO0IFfKDqrJtnvcJtitz311INRd0BBh/hI7FLhu3TiuUMqm0sM4WHC+?=
+ =?us-ascii?Q?6KMXlcMTWicYF2KPQ25QkEfui99BuyfxF8m5rtvh0eojPAqkHvwH36Pk5Hpn?=
+ =?us-ascii?Q?wDp7XeLC7v0JMNmmxYE29mmyrNj+/Pd6c4dyOxN6lqrUWtqx4LLuGj7kfIy3?=
+ =?us-ascii?Q?xWEHckzzb3aPW+B47E7Skt11YDfNi2k+S2mg6V5fvplCFRs9wxlboBRGD5HV?=
+ =?us-ascii?Q?taNcjazGfkYLg1zw+j5yGI7mT+vPldK5Np8ftT2KY/z4Jau3QN7K33A2XfDY?=
+ =?us-ascii?Q?ORoIl60g78KYcWZF2nQMQYeJBPAfMCoH0qZdlL4LX2HghWbnW4qixeE3kp2i?=
+ =?us-ascii?Q?MFFoQqyx704Mswlp4NWfFJg30NU6txoSQ5yzEBYO3SYv4yZIA+HNLGYWJ//0?=
+ =?us-ascii?Q?+EanfQxdl24z+6+Vn/30gXzrXbz1f/fTjyDcpfH7AR+hnHCEyVjo2BXkGebL?=
+ =?us-ascii?Q?07MdohORyWP8ROALV1n6jvrH+e6GHeKJz0PjnCTNZsBKwi0FHl1SOKHEw/ld?=
+ =?us-ascii?Q?BJRlRjBEjQur3WEY56Vsjx9+A3x+Kpfo?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 209df7c3-cfba-4ff5-fb5f-08da076725f7
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1172:EE_
-X-Microsoft-Antispam-PRVS: <BN6PR12MB11721458E1B295E2D38A0318C2119@BN6PR12MB1172.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8j41tTLn4usMWtGjp9VJG1VcvuPv8Ac1jbsJPn+9lRhRsUDMCriWhXz0Yrv3tZxUOL5mZPRmENR3t5S0LbQI2WdkHPWDf7GBqxVyhHvpvryRio2pF3xXKA9q04M9v/GDeIu4NLosji4N0mHnWtsf8S46plcAtv/wV0AedCjuRRZZuB1PrO5QnnXjhVcOQ2nZqGbnvVK7R/VuPilhIMDIkQ20q209UovPnSG2YQjllqJBuIJwfCHELTqqpTkyFQfiPC0XCU6jQ0QHIw2yTwF1ro51cLQb4WUn2ZpMSxzt9OCkel0bkcc2I+KKqI4/ZuTIKYnjnUUUsaCbDbcP7CW1vksr5HfA+/4D5loNi2j3Hx0Vbl+8dtPMmkJ10RT3/9ILZmoGX57Ng+Ezl90MI/ZLEfC3hIrtarPWOdqQdXgLgHQS81Bcyp5tXc29CCrcpRXvXJwV+2U9+bqE5+6DZoR3/FbViZKgDyv7WMlr/pyYV3Ou98vQ6jijOXpqQ50Jx22Hcy1xTFU30bzRkXft7j/nQ1CwU4fs72bn+yeruqVM4+fT4OliPvxPg+tWVcygmYsI5nQJ2E+SWKkaP6bLYZ0gXCqevMy5h+Q0wbXbdx6iZxdNJJGUEld0zSLFVeFwAvY58n0quNVlA29GqJ6Zgdy+0g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4744005)(36756003)(2906002)(38100700002)(5660300002)(8936002)(33656002)(508600001)(316002)(6486002)(83380400001)(26005)(186003)(66946007)(1076003)(6512007)(6506007)(86362001)(6916009)(4326008)(66556008)(8676002)(66476007)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jCisC1ZQXqFdOazChEqY/bDwtwJMyY7slNDv78w9KiK+LoTtrg67E1f43cBI?=
- =?us-ascii?Q?dFLgwO2+7YISDMgfqE6G5xT8NhEvCBKfU/E5s9hwy2sX+TaMxsBBX7yQEun9?=
- =?us-ascii?Q?jD+vYBa8vhppMCLwaFPyL+I6IuljllQwGd7fvtcOv+0kqH8ONSMdBx5+R2j5?=
- =?us-ascii?Q?EYKrFFH/ObgORQpVMyEvl1fjndB6TdiWj/465LXhDlQlsoRlbKBPY1xi88p2?=
- =?us-ascii?Q?kfJgkxEV+Cbc7LgLnaeBNSNDHDmC+VnQEUJgX3rS6BY5THKNieO1iQe7XAgO?=
- =?us-ascii?Q?2CpqBgJyvMOe2YsghBEPH5kyZWD9TeJ/ZW3meJ87cQyQqt7QWcb1xUN3KWug?=
- =?us-ascii?Q?7RIkxjDQazAUwzx7X8fnMjI9+irqwFhRcmNC6Wq+lMCmQgIp6V0Ns3XkrtSn?=
- =?us-ascii?Q?DK2/fNzcZDrhdMbUHVeKWujXNuRRLlJ8M8MH+4uGeJFlscd+FMSQ38w3WQBS?=
- =?us-ascii?Q?TXZAXIPjp8KAxu2pSOXu9CLGDcIEGQcy6d65I62EJOhQYlt9dNDKBhbgjFcD?=
- =?us-ascii?Q?ONYoH8ZgX19VQUYr7ExpvIq+ooQluvFgDfCXEEC95bFPQybYb1gx38wcDknn?=
- =?us-ascii?Q?n05NmS9sXT9OO7iG537LcJz4n0udZb2QU0qv/+ocnpzxZb0npnXWHrDpdAXi?=
- =?us-ascii?Q?jLbChYRRuzCgI53n1RYp2eTR4/z3PJHsdEBaKrPl1e5kRg/xO8LLHFsoboin?=
- =?us-ascii?Q?Km8KYyTkp+pqYTfdY4d8RXxYBxenvj+QNl/SnI2J/L/8s0nPTlW3blbgxEYh?=
- =?us-ascii?Q?GqVwsDsRHSn633LdcoME5L5MsS4hpVXO07hHQnI+OeDn9hCvdi7sO4eB+ztz?=
- =?us-ascii?Q?q14rIMlT3KEIXyU6UpqHLWNn2f7KXf5rBG7iQ4Oeyyh0FQcbZXIHww2nzMiJ?=
- =?us-ascii?Q?1F62X9FiBLBP0/UOLEP9veoB78YV56Np0IiO6wQbLOYJEM4AsSfygcibH8M3?=
- =?us-ascii?Q?/+Q28DsmCln82UZJchNL/pl5Uft0iVsJRZZ23mX66PfbcjSWO6cfI7KkF51A?=
- =?us-ascii?Q?a8AewHijAVAnL1YhZ8NMoxC1TSuiqm/FlZ9h1SqdcByu7j3iLrhkhJ2iv6Mp?=
- =?us-ascii?Q?4zwCKrYBE0tEOqy9RmSjgGG5pGkd5jHOuBDQroC5gaze/0N1FSd1mAw89Pku?=
- =?us-ascii?Q?skcQOxLXkveLh3a9z5IPZaomZAIY0+yzyrKJnJ39dWPK+xMrMpdWo9wtE/kK?=
- =?us-ascii?Q?wXiJoPckGz6Gv17sYTv2bNymZRNXIidAJ6vSkGtbgkGR2+Pm2vpWRJ9PfJHM?=
- =?us-ascii?Q?+2yxtyV7UBAqgrWB/LUi7JNlUBnAX45zkaqF6XCDVhGCEhvhYkD+YRFS6zqZ?=
- =?us-ascii?Q?FT9Nh3Nnq++SzKpGQV5t/kHHMPXvkzn/J+uXSmv1szezQRqfU8LScuXCbRi4?=
- =?us-ascii?Q?4O2u7cX+Gp+TyA6Bv6u0ncfjyc6JeyoRX20eZ7+1g7IzRvt/K2AS6eG4FTUJ?=
- =?us-ascii?Q?gLNUgYMipYtU6wGW6n9llPA1BBazBHnV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 209df7c3-cfba-4ff5-fb5f-08da076725f7
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Mar 2022 16:08:02.8099
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR84MB1488.NAMPRD84.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: ee72df24-9576-4488-824c-08da07676163
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2022 16:09:42.2190
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EpuymW5pKJrirXSTPfOg+4UtXyw+NNIfMvO2IjBYt0hh6eoXrSm2HhTYx+NJyKDq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1172
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 105b2061-b669-4b31-92ac-24d304d195dc
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: V8U9cR0t+X38xofmJLvm2bd255DmvKMh8e2FYC3OXko12xemBt+k84TLPeZQyslIQTausAAVOlbDi1J7UiZROQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR84MB1398
+X-OriginatorOrg: hpe.com
+X-Proofpoint-ORIG-GUID: BhMxtp1SFyuXCUfeyoG-9P4AVKA5sAbg
+X-Proofpoint-GUID: BhMxtp1SFyuXCUfeyoG-9P4AVKA5sAbg
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-03-16_06,2022-03-15_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 malwarescore=0 clxscore=1011 priorityscore=1501
+ mlxlogscore=820 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2203160098
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
+
+
+
+-----Original Message-----
+From: Jason Gunthorpe <jgg@nvidia.com>=20
+Sent: Wednesday, March 16, 2022 11:08 AM
+To: Bob Pearson <rpearsonhpe@gmail.com>
+Cc: zyjzyj2000@gmail.com; linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v11 00/13] Fix race conditions in rxe_pool
 
 On Tue, Mar 15, 2022 at 11:05:48PM -0500, Bob Pearson wrote:
 > >> Bob Pearson (13):
@@ -123,12 +168,15 @@ On Tue, Mar 15, 2022 at 11:05:48PM -0500, Bob Pearson wrote:
 > >>   RDMA/rxe: Shorten pool names in rxe_pool.c
 > >>   RDMA/rxe: Replace red-black trees by xarrays
 > >>   RDMA/rxe: Use standard names for ref counting
-> > 
+> >=20
 > > If you let me know about the WARN_ON I think up to here is good
-> 
+>=20
 > I agreed to the change.
 
 Ok applied to for-next
 
 Thanks,
 Jason
+
+
+Thanks!
