@@ -2,277 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF774DC774
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 14:22:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4264DCA5E
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 16:48:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbiCQNYN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Mar 2022 09:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        id S236129AbiCQPtb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Mar 2022 11:49:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbiCQNYM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 09:24:12 -0400
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9A6B1D66FF;
-        Thu, 17 Mar 2022 06:22:50 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 472E358016A;
-        Thu, 17 Mar 2022 09:22:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Thu, 17 Mar 2022 09:22:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=eIlSa6kmb49A6jcxW
-        6cwLD9pgSEo9IJnzEj0YDWlu10=; b=b+KhIddF8J0sNT4bfCDjgMmQrtgAWfXGl
-        EAGO/qPzgdZ58oetHJnYWEDtgsC8NYFKFZklKUEGKvmjmroPe4lDzixrk/hjDUuY
-        KeT8U4Ja4eMn8+Y2aNW+Pc14r7W5QCbiGe4vt/pVCU8sPkJrWywfWCf+tseiOHaW
-        dezo3n2Aire65l6nI/mDxZzlJCYUNOA6P4WFWB4ULobbkr7H344QzQ7T0zkzC3xA
-        EHX//ljz+jIiZRqJpgpIjTgMCXwLqTQXC4YVagPPh91vAFwa4TLYRfPSU8lNBa31
-        zCBrCESN5LsrQfFZKF0h1YEA5k0bitCpb6ISNatHxAvfB3kIRD3Vw==
-X-ME-Sender: <xms:JzYzYny07R5NXiO5tesyU_Pl_9chN6YYNMiM8nTJkjiCH6_Mg7axvg>
-    <xme:JzYzYvRco-3JekkUPGyfZKYyg-FCmWat3Enc7Jg1iVoS-GLIK9kdyytmO5jPt42Sl
-    1r15FyTPL9XcYs>
-X-ME-Received: <xmr:JzYzYhUkYjTmY3V3JfCqyKXRkwcA3Of5LxoWLmu1zOwf4UKO_DOfvlXUiDigtBTThsY75_zTPfWXc4NoPgRmgr_FRfg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudefgedghedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehiug
-    hoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:JzYzYhinczglwNOn4Eo3EHcmCutmDrAiv7cm-nwzeGpoQdW5dLUptA>
-    <xmx:JzYzYpB5wQdieAYe1J7I7B1FLTplQ278ypxnsGmzRFFkWH05d8lPhg>
-    <xmx:JzYzYqK-PpLSNovypGnRPira-b8nGFrT15f39AXq4L2jvqOW8n3eFw>
-    <xmx:KDYzYqvxTfJn2T9op5AQG23zXoXuC1Vli2PVUP1cjlITl13-stHwLw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 17 Mar 2022 09:22:46 -0400 (EDT)
-Date:   Thu, 17 Mar 2022 15:22:42 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Jianbo Liu <jianbol@nvidia.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, rajur@chelsio.com,
-        claudiu.manoil@nxp.com, sgoutham@marvell.com, gakula@marvell.com,
-        sbhatta@marvell.com, hkelam@marvell.com, saeedm@nvidia.com,
-        leon@kernel.org, idosch@nvidia.com, petrm@nvidia.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        simon.horman@corigine.com, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        baowen.zheng@corigine.com, louis.peens@netronome.com,
-        peng.zhang@corigine.com, oss-drivers@corigine.com, roid@nvidia.com
-Subject: Re: [PATCH net-next v3 1/2] net: flow_offload: add tc police action
- parameters
-Message-ID: <YjM2IhX4k5XHnya0@shredder>
-References: <20220224102908.5255-1-jianbol@nvidia.com>
- <20220224102908.5255-2-jianbol@nvidia.com>
- <20220315191358.taujzi2kwxlp6iuf@skbuf>
+        with ESMTP id S236102AbiCQPt3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 11:49:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FA138B8;
+        Thu, 17 Mar 2022 08:48:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ThAyvdoG1U35K2Hzsm1O2USOWq/3qlMrhSaUoYHrsOs=; b=F6Vs/65oeZV/y3wN6Bw/M7u1FQ
+        5O+4lQTnS32R0VfdvOK1oVjLmv61tBR4yMMjN/NVDsOnHzoBbLMjP382aAGEyJMaumvolGSgA+m71
+        1Ehmx8UPj/GCllYWg+tBYociITo9JftToXJThRJBZ9nw2p07B62DgVCik4yzpt77Z8S9KNWcKP8vq
+        3tLkrgPZtcMac/dncj65oYGZ4SvtO6CK7F7u84MgNbC6goRbCxod26J//CJV7WZO58VGV5QhSn55l
+        /KYfPXjDju0sdq2JANUCt29NuoEjYNFSGZB5nEbrQ97N+XXeTVv8WhJJ+KmWXn+usTtelySDGt3Ln
+        87L6gQCw==;
+Received: from [54.239.6.186] (helo=freeip.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nUsLq-0075ta-2M; Thu, 17 Mar 2022 15:47:46 +0000
+Message-ID: <f7b858bb438d1979c1f092e105e0db4c7af47758.camel@infradead.org>
+Subject: Re: [PATCH 2/9] virtio_console: eliminate anonymous module_init &
+ module_exit
+From:   Amit Shah <amit@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eli Cohen <eli@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        =?UTF-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Igor Kotrasinski <i.kotrasinsk@samsung.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
+        Joachim Fritschi <jfritschi@freenet.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, x86@kernel.org
+Date:   Thu, 17 Mar 2022 16:47:42 +0100
+In-Reply-To: <20220316192010.19001-3-rdunlap@infradead.org>
+References: <20220316192010.19001-1-rdunlap@infradead.org>
+         <20220316192010.19001-3-rdunlap@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220315191358.taujzi2kwxlp6iuf@skbuf>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 15, 2022 at 09:13:58PM +0200, Vladimir Oltean wrote:
-> Hello Jianbo,
+On Wed, 2022-03-16 at 12:20 -0700, Randy Dunlap wrote:
+> Eliminate anonymous module_init() and module_exit(), which can lead to
+> confusion or ambiguity when reading System.map, crashes/oops/bugs,
+> or an initcall_debug log.
 > 
-> On Thu, Feb 24, 2022 at 10:29:07AM +0000, Jianbo Liu wrote:
-> > The current police offload action entry is missing exceed/notexceed
-> > actions and parameters that can be configured by tc police action.
-> > Add the missing parameters as a pre-step for offloading police actions
-> > to hardware.
-> > 
-> > Signed-off-by: Jianbo Liu <jianbol@nvidia.com>
-> > Signed-off-by: Roi Dayan <roid@nvidia.com>
-> > Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-> > ---
-> >  include/net/flow_offload.h     |  9 +++++++
-> >  include/net/tc_act/tc_police.h | 30 ++++++++++++++++++++++
-> >  net/sched/act_police.c         | 46 ++++++++++++++++++++++++++++++++++
-> >  3 files changed, 85 insertions(+)
-> > 
-> > diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
-> > index 5b8c54eb7a6b..74f44d44abe3 100644
-> > --- a/include/net/flow_offload.h
-> > +++ b/include/net/flow_offload.h
-> > @@ -148,6 +148,8 @@ enum flow_action_id {
-> >  	FLOW_ACTION_MPLS_MANGLE,
-> >  	FLOW_ACTION_GATE,
-> >  	FLOW_ACTION_PPPOE_PUSH,
-> > +	FLOW_ACTION_JUMP,
-> > +	FLOW_ACTION_PIPE,
-> >  	NUM_FLOW_ACTIONS,
-> >  };
-> >  
-> > @@ -235,9 +237,16 @@ struct flow_action_entry {
-> >  		struct {				/* FLOW_ACTION_POLICE */
-> >  			u32			burst;
-> >  			u64			rate_bytes_ps;
-> > +			u64			peakrate_bytes_ps;
-> > +			u32			avrate;
-> > +			u16			overhead;
-> >  			u64			burst_pkt;
-> >  			u64			rate_pkt_ps;
-> >  			u32			mtu;
-> > +			struct {
-> > +				enum flow_action_id	act_id;
-> > +				u32			extval;
-> > +			} exceed, notexceed;
-> >  		} police;
-> >  		struct {				/* FLOW_ACTION_CT */
-> >  			int action;
-> > diff --git a/include/net/tc_act/tc_police.h b/include/net/tc_act/tc_police.h
-> > index 72649512dcdd..283bde711a42 100644
-> > --- a/include/net/tc_act/tc_police.h
-> > +++ b/include/net/tc_act/tc_police.h
-> > @@ -159,4 +159,34 @@ static inline u32 tcf_police_tcfp_mtu(const struct tc_action *act)
-> >  	return params->tcfp_mtu;
-> >  }
-> >  
-> > +static inline u64 tcf_police_peakrate_bytes_ps(const struct tc_action *act)
-> > +{
-> > +	struct tcf_police *police = to_police(act);
-> > +	struct tcf_police_params *params;
-> > +
-> > +	params = rcu_dereference_protected(police->params,
-> > +					   lockdep_is_held(&police->tcf_lock));
-> > +	return params->peak.rate_bytes_ps;
-> > +}
-> > +
-> > +static inline u32 tcf_police_tcfp_ewma_rate(const struct tc_action *act)
-> > +{
-> > +	struct tcf_police *police = to_police(act);
-> > +	struct tcf_police_params *params;
-> > +
-> > +	params = rcu_dereference_protected(police->params,
-> > +					   lockdep_is_held(&police->tcf_lock));
-> > +	return params->tcfp_ewma_rate;
-> > +}
-> > +
-> > +static inline u16 tcf_police_rate_overhead(const struct tc_action *act)
-> > +{
-> > +	struct tcf_police *police = to_police(act);
-> > +	struct tcf_police_params *params;
-> > +
-> > +	params = rcu_dereference_protected(police->params,
-> > +					   lockdep_is_held(&police->tcf_lock));
-> > +	return params->rate.overhead;
-> > +}
-> > +
-> >  #endif /* __NET_TC_POLICE_H */
-> > diff --git a/net/sched/act_police.c b/net/sched/act_police.c
-> > index 0923aa2b8f8a..a2275eef6877 100644
-> > --- a/net/sched/act_police.c
-> > +++ b/net/sched/act_police.c
-> > @@ -405,20 +405,66 @@ static int tcf_police_search(struct net *net, struct tc_action **a, u32 index)
-> >  	return tcf_idr_search(tn, a, index);
-> >  }
-> >  
-> > +static int tcf_police_act_to_flow_act(int tc_act, u32 *extval)
-> > +{
-> > +	int act_id = -EOPNOTSUPP;
-> > +
-> > +	if (!TC_ACT_EXT_OPCODE(tc_act)) {
-> > +		if (tc_act == TC_ACT_OK)
-> > +			act_id = FLOW_ACTION_ACCEPT;
-> > +		else if (tc_act ==  TC_ACT_SHOT)
-> > +			act_id = FLOW_ACTION_DROP;
-> > +		else if (tc_act == TC_ACT_PIPE)
-> > +			act_id = FLOW_ACTION_PIPE;
-> > +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_GOTO_CHAIN)) {
-> > +		act_id = FLOW_ACTION_GOTO;
-> > +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
-> > +	} else if (TC_ACT_EXT_CMP(tc_act, TC_ACT_JUMP)) {
-> > +		act_id = FLOW_ACTION_JUMP;
-> > +		*extval = tc_act & TC_ACT_EXT_VAL_MASK;
-> > +	}
-> > +
-> > +	return act_id;
-> > +}
-> > +
-> >  static int tcf_police_offload_act_setup(struct tc_action *act, void *entry_data,
-> >  					u32 *index_inc, bool bind)
-> >  {
-> >  	if (bind) {
-> >  		struct flow_action_entry *entry = entry_data;
-> > +		struct tcf_police *police = to_police(act);
-> > +		struct tcf_police_params *p;
-> > +		int act_id;
-> > +
-> > +		p = rcu_dereference_protected(police->params,
-> > +					      lockdep_is_held(&police->tcf_lock));
-> >  
-> >  		entry->id = FLOW_ACTION_POLICE;
-> >  		entry->police.burst = tcf_police_burst(act);
-> >  		entry->police.rate_bytes_ps =
-> >  			tcf_police_rate_bytes_ps(act);
-> > +		entry->police.peakrate_bytes_ps = tcf_police_peakrate_bytes_ps(act);
-> > +		entry->police.avrate = tcf_police_tcfp_ewma_rate(act);
-> > +		entry->police.overhead = tcf_police_rate_overhead(act);
-> >  		entry->police.burst_pkt = tcf_police_burst_pkt(act);
-> >  		entry->police.rate_pkt_ps =
-> >  			tcf_police_rate_pkt_ps(act);
-> >  		entry->police.mtu = tcf_police_tcfp_mtu(act);
-> > +
-> > +		act_id = tcf_police_act_to_flow_act(police->tcf_action,
-> > +						    &entry->police.exceed.extval);
+> Give each of these init and exit functions unique driver-specific
+> names to eliminate the anonymous names.
 > 
-> I don't know why just now, but I observed an apparent regression here
-> with these commands:
+> Example 1: (System.map)
+>  ffffffff832fc78c t init
+>  ffffffff832fc79e t init
+>  ffffffff832fc8f8 t init
 > 
-> root@debian:~# tc qdisc add dev swp3 clsact
-> root@debian:~# tc filter add dev swp3 ingress protocol ip flower skip_sw ip_proto icmp action police rate 100Mbit burst 10000
-> [   45.767900] tcf_police_act_to_flow_act: 434: tc_act 1
-> [   45.773100] tcf_police_offload_act_setup: 475, act_id -95
-> Error: cls_flower: Failed to setup flow action.
-> We have an error talking to the kernel, -1
+> Example 2: (initcall_debug log)
+>  calling  init+0x0/0x12 @ 1
+>  initcall init+0x0/0x12 returned 0 after 15 usecs
+>  calling  init+0x0/0x60 @ 1
+>  initcall init+0x0/0x60 returned 0 after 2 usecs
+>  calling  init+0x0/0x9a @ 1
+>  initcall init+0x0/0x9a returned 0 after 74 usecs
 > 
-> The reason why I'm not sure is because I don't know if this should have
-> worked as intended or not. I am remarking just now in "man tc-police"
-> that the default conform-exceed action is "reclassify".
+> Fixes: 31610434bc35 ("Virtio console driver")
+> Fixes: 7177876fea83 ("virtio: console: Add ability to remove module")
+> Signed-off-by: Randy Dunlap <
+> rdunlap@infradead.org
+> >
+> Cc: Amit Shah <
+> amit@kernel.org
+> >
+> Cc: 
+> virtualization@lists.linux-foundation.org
 > 
-> So if I specify "conform-exceed drop", things are as expected, but with
-> the default (implicitly "conform-exceed reclassify") things fail with
-> -EOPNOTSUPP because tcf_police_act_to_flow_act() doesn't handle a
-> police->tcf_action of TC_ACT_RECLASSIFY.
-> 
-> Should it?
+> Cc: Arnd Bergmann <
+> arnd@arndb.de
+> >
+> Cc: Greg Kroah-Hartman <
+> gregkh@linuxfoundation.org
+> >
+> ---
+>  drivers/char/virtio_console.c |    8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Even if tcf_police_act_to_flow_act() handled "reclassify", the
-configuration would have been rejected later on by the relevant device
-driver since they all support "drop" for exceed action and nothing else.
+Reviewed-by: Amit Shah <amit@kernel.org>
 
-I don't know why iproute2 defaults to "reclassify", but the
-configuration in the example does something different in the SW and HW
-data paths. One ugly suggestion to keep this case working it to have
-tcf_police_act_to_flow_act() default to "drop" and emit a warning via
-extack so that user space is at least aware of this misconfiguration.
+I don't think the Fixes-by really applies here, though - we don't
+really want to push this into stable, nor do we want any automated
+tools to pick this up because of that tag..
 
-> 
-> > +		if (act_id < 0)
-> > +			return act_id;
-> > +
-> > +		entry->police.exceed.act_id = act_id;
-> > +
-> > +		act_id = tcf_police_act_to_flow_act(p->tcfp_result,
-> > +						    &entry->police.notexceed.extval);
-> > +		if (act_id < 0)
-> > +			return act_id;
-> > +
-> > +		entry->police.notexceed.act_id = act_id;
-> > +
-> >  		*index_inc = 1;
-> >  	} else {
-> >  		struct flow_offload_action *fl_action = entry_data;
-> > -- 
-> > 2.26.2
-> > 
+		Amit
+
