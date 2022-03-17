@@ -2,201 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7504DCF47
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 21:25:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 673714DCF7F
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 21:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbiCQU00 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Mar 2022 16:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34016 "EHLO
+        id S229831AbiCQUmi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Mar 2022 16:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbiCQU0Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 16:26:25 -0400
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F0C7149672
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 13:25:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1647548708; x=1679084708;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=W69FxdYiWt76TiSRkohslX4/Vne3SVsUJ1oOz7CYny0=;
-  b=mFk2/PbKc/lwso9ZaPiwXm6d3m4jLlGrG+cjpetxbLCIeWO9It0JZima
-   YnTCxtlQzJOlTDX32DI7jvdLrZ9Ea5VS3PqLKy8sxwlTTvj8WKrcjFChq
-   xqHJrsFwhaIgjaX9IS1rNNo4Xd//rMW4L2JJ1A2yGwA9xkWs2RJmRDf73
-   MKDQqT3vtZB+ITbfVvbiOaaq5me9uIJxPHgJ1GxboVMy4CI2yrkRHDT9I
-   b9CuMQ2CNtx1FdMwWexGNAYc8kxSIghfDw3mdr13NRZsPi86gXW3cvelX
-   eQYsplwq4Mi7S+PPXAVtSikQz7mRgy/m0mZuoP17FOQgDFefBxmpo0C+0
-   g==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10289"; a="281773012"
-X-IronPort-AV: E=Sophos;i="5.90,190,1643702400"; 
-   d="scan'208";a="281773012"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2022 13:25:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,190,1643702400"; 
-   d="scan'208";a="513570648"
-Received: from lkp-server02.sh.intel.com (HELO 89b41b6ae01c) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 17 Mar 2022 13:25:06 -0700
-Received: from kbuild by 89b41b6ae01c with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1nUwgD-000E2K-Up; Thu, 17 Mar 2022 20:25:05 +0000
-Date:   Fri, 18 Mar 2022 04:24:06 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 3197706abd053275d2a561cfb7dc8f6cfaf7d02c
-Message-ID: <623398e6.XlOuCxLde3Z3SsTV%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S229898AbiCQUmd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 16:42:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDB3C6EE6;
+        Thu, 17 Mar 2022 13:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=ROV+N7/7nL9ebCMUk84kLWbG+brDW++VtuozCZVdtkw=; b=Jqch/btFqW+CCJM0MuFijvZBnR
+        bKqVKg8MJPsG7xgEbyq8GpqXB7A8dE9YvSejZgGKMwlrFERInyVW/NwSKf4kQ/UA6psueuXc8llbi
+        tXp3gLO4A62BpBOiR5EK3lKKSfjt468nR9YWHbd0+I9WP14Gea0xgxgt+KOMxkIpTtW+MOsIHvwgj
+        hM+KtvJ/9csmz19wnZcmlJxpYZuCql/Ep3kcCjBTlQo66UU7MNW7TyDClTi6xfWHMMGkptDRxOs/s
+        kZkV9zPnBYwNqiK7nc3Q5CI7k99U6h5ic0GJ7k9j/2cf6pf3fSTuSgb5ZJ6Kw6nbakmqXx6kZ8nsy
+        H+5jNfRw==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1nUwvV-007InG-0P; Thu, 17 Mar 2022 20:40:53 +0000
+Message-ID: <da13fa80-83e7-f7cc-abf8-97b9e23a6737@infradead.org>
+Date:   Thu, 17 Mar 2022 13:40:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 2/9] virtio_console: eliminate anonymous module_init &
+ module_exit
+Content-Language: en-US
+To:     Amit Shah <amit@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Amit Shah <amit@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Eli Cohen <eli@mellanox.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Krzysztof Opasiak <k.opasiak@samsung.com>,
+        Igor Kotrasinski <i.kotrasinsk@samsung.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
+        Joachim Fritschi <jfritschi@freenet.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Karol Herbst <karolherbst@gmail.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, netdev@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org, x86@kernel.org
+References: <20220316192010.19001-1-rdunlap@infradead.org>
+ <20220316192010.19001-3-rdunlap@infradead.org>
+ <f7b858bb438d1979c1f092e105e0db4c7af47758.camel@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <f7b858bb438d1979c1f092e105e0db4c7af47758.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 3197706abd053275d2a561cfb7dc8f6cfaf7d02c  RDMA/rxe: Use standard names for ref counting
 
-elapsed time: 733m
 
-configs tested: 119
-configs skipped: 4
+On 3/17/22 08:47, Amit Shah wrote:
+> On Wed, 2022-03-16 at 12:20 -0700, Randy Dunlap wrote:
+>> Eliminate anonymous module_init() and module_exit(), which can lead to
+>> confusion or ambiguity when reading System.map, crashes/oops/bugs,
+>> or an initcall_debug log.
+>>
+>> Give each of these init and exit functions unique driver-specific
+>> names to eliminate the anonymous names.
+>>
+>> Example 1: (System.map)
+>>  ffffffff832fc78c t init
+>>  ffffffff832fc79e t init
+>>  ffffffff832fc8f8 t init
+>>
+>> Example 2: (initcall_debug log)
+>>  calling  init+0x0/0x12 @ 1
+>>  initcall init+0x0/0x12 returned 0 after 15 usecs
+>>  calling  init+0x0/0x60 @ 1
+>>  initcall init+0x0/0x60 returned 0 after 2 usecs
+>>  calling  init+0x0/0x9a @ 1
+>>  initcall init+0x0/0x9a returned 0 after 74 usecs
+>>
+>> Fixes: 31610434bc35 ("Virtio console driver")
+>> Fixes: 7177876fea83 ("virtio: console: Add ability to remove module")
+>> Signed-off-by: Randy Dunlap <
+>> rdunlap@infradead.org
+>>>
+>> Cc: Amit Shah <
+>> amit@kernel.org
+>>>
+>> Cc: 
+>> virtualization@lists.linux-foundation.org
+>>
+>> Cc: Arnd Bergmann <
+>> arnd@arndb.de
+>>>
+>> Cc: Greg Kroah-Hartman <
+>> gregkh@linuxfoundation.org
+>>>
+>> ---
+>>  drivers/char/virtio_console.c |    8 ++++----
+>>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> Reviewed-by: Amit Shah <amit@kernel.org>
+> 
+> I don't think the Fixes-by really applies here, though - we don't
+> really want to push this into stable, nor do we want any automated
+> tools to pick this up because of that tag..
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Yeah, I'm fine with that.
 
-gcc tested configs:
-arm                                 defconfig
-arm                              allmodconfig
-arm                              allyesconfig
-arm64                               defconfig
-arm64                            allyesconfig
-i386                          randconfig-c001
-sh                               alldefconfig
-powerpc                     tqm8548_defconfig
-xtensa                              defconfig
-mips                  maltasmvp_eva_defconfig
-x86_64                           alldefconfig
-sh                         ecovec24_defconfig
-arm                      jornada720_defconfig
-mips                  decstation_64_defconfig
-mips                      loongson3_defconfig
-mips                      maltasmvp_defconfig
-sh                ecovec24-romimage_defconfig
-sparc                            alldefconfig
-powerpc                       holly_defconfig
-mips                       capcella_defconfig
-arm                        clps711x_defconfig
-m68k                       m5208evb_defconfig
-riscv                               defconfig
-sh                          rsk7201_defconfig
-powerpc                      pasemi_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                     ep8248e_defconfig
-sh                            titan_defconfig
-powerpc                     sequoia_defconfig
-mips                         tb0226_defconfig
-alpha                            alldefconfig
-sh                          sdk7780_defconfig
-arm                           stm32_defconfig
-arm                        cerfcube_defconfig
-sh                        dreamcast_defconfig
-m68k                            q40_defconfig
-mips                     decstation_defconfig
-mips                           xway_defconfig
-sh                            migor_defconfig
-arm                  randconfig-c002-20220317
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-csky                                defconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-i386                              debian-10.3
-i386                   debian-10.3-kselftests
-i386                                defconfig
-sparc                               defconfig
-sparc                            allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-i386                          randconfig-a003
-x86_64                        randconfig-a015
-x86_64                        randconfig-a013
-x86_64                        randconfig-a011
-i386                          randconfig-a016
-arc                  randconfig-r043-20220317
-riscv                randconfig-r042-20220317
-s390                 randconfig-r044-20220317
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-riscv                    nommu_virt_defconfig
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                                  kexec
-x86_64                               rhel-8.3
-x86_64                          rhel-8.3-func
-x86_64                         rhel-8.3-kunit
-x86_64                    rhel-8.3-kselftests
+thanks.
 
-clang tested configs:
-arm                  randconfig-c002-20220317
-x86_64                        randconfig-c007
-riscv                randconfig-c006-20220317
-powerpc              randconfig-c003-20220317
-mips                 randconfig-c004-20220317
-i386                          randconfig-c001
-x86_64                        randconfig-a001
-x86_64                        randconfig-a003
-x86_64                        randconfig-a005
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a015
-i386                          randconfig-a011
-i386                          randconfig-a013
-hexagon              randconfig-r045-20220317
-hexagon              randconfig-r041-20220317
-
----
-0-DAY CI Kernel Test Service
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+~Randy
