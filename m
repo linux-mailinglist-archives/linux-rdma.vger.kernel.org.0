@@ -2,41 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 673714DCF7F
-	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 21:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 447514DCF9B
+	for <lists+linux-rdma@lfdr.de>; Thu, 17 Mar 2022 21:43:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbiCQUmi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Mar 2022 16:42:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60692 "EHLO
+        id S229918AbiCQUoD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Mar 2022 16:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbiCQUmd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 16:42:33 -0400
+        with ESMTP id S229879AbiCQUn7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 16:43:59 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBDB3C6EE6;
-        Thu, 17 Mar 2022 13:41:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1779A133690;
+        Thu, 17 Mar 2022 13:42:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
         :Reply-To:Content-ID:Content-Description;
-        bh=ROV+N7/7nL9ebCMUk84kLWbG+brDW++VtuozCZVdtkw=; b=Jqch/btFqW+CCJM0MuFijvZBnR
-        bKqVKg8MJPsG7xgEbyq8GpqXB7A8dE9YvSejZgGKMwlrFERInyVW/NwSKf4kQ/UA6psueuXc8llbi
-        tXp3gLO4A62BpBOiR5EK3lKKSfjt468nR9YWHbd0+I9WP14Gea0xgxgt+KOMxkIpTtW+MOsIHvwgj
-        hM+KtvJ/9csmz19wnZcmlJxpYZuCql/Ep3kcCjBTlQo66UU7MNW7TyDClTi6xfWHMMGkptDRxOs/s
-        kZkV9zPnBYwNqiK7nc3Q5CI7k99U6h5ic0GJ7k9j/2cf6pf3fSTuSgb5ZJ6Kw6nbakmqXx6kZ8nsy
-        H+5jNfRw==;
+        bh=3Vg3YWtqMNGIO5AWtFE29onUKdIZ8x188s7SviF5pPg=; b=tiAHL3PCQ2t7+lPOxKztKxihGl
+        vd4Y8NiotnXISBxPTEpDpjnfGwN/+2gCzocwX9f1n0YfUlqtTEW8abkTbOXNks1/pe9V0o1aeVqiU
+        mg+cp1CpvBpg/qj5G5LZWflb4aiFP803B14dktG2eQTzUpOmEwNqtoyK5FiuDb0e8dEHA1UwaTcNb
+        TjTsqtIXdQy5uDTkofF/krC+Z1b0PK1+/Sh9yQPukGAwmINpZ+kCjgEBdHe1EVJZaGIr2Nw3tHUkm
+        Ajhuyth6TCxfsRDyg2dioL17ZEbHaHLKorjuGU+sNiNOS0MkF5l5E/OHgiJGeyQY6IVrPFktt2Xla
+        WvlJyMgw==;
 Received: from [2601:1c0:6280:3f0::aa0b]
         by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nUwvV-007InG-0P; Thu, 17 Mar 2022 20:40:53 +0000
-Message-ID: <da13fa80-83e7-f7cc-abf8-97b9e23a6737@infradead.org>
-Date:   Thu, 17 Mar 2022 13:40:36 -0700
+        id 1nUwxB-007IuO-IC; Thu, 17 Mar 2022 20:42:37 +0000
+Message-ID: <15fdafd4-e753-2c0e-4e61-6b168e064e72@infradead.org>
+Date:   Thu, 17 Mar 2022 13:42:23 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH 2/9] virtio_console: eliminate anonymous module_init &
+Subject: Re: [PATCH 4/9] netfilter: h323: eliminate anonymous module_init &
  module_exit
 Content-Language: en-US
-To:     Amit Shah <amit@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Paolo Bonzini <pbonzini@redhat.com>,
         Stefan Hajnoczi <stefanha@redhat.com>,
@@ -46,7 +47,6 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Eli Cohen <eli@mellanox.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Leon Romanovsky <leon@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
         Jozsef Kadlecsik <kadlec@netfilter.org>,
         Florian Westphal <fw@strlen.de>,
         "David S. Miller" <davem@davemloft.net>,
@@ -80,10 +80,9 @@ Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
         virtualization@lists.linux-foundation.org, x86@kernel.org
 References: <20220316192010.19001-1-rdunlap@infradead.org>
- <20220316192010.19001-3-rdunlap@infradead.org>
- <f7b858bb438d1979c1f092e105e0db4c7af47758.camel@infradead.org>
+ <20220316192010.19001-5-rdunlap@infradead.org> <YjNYo2LKM3smgEJM@salvia>
 From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <f7b858bb438d1979c1f092e105e0db4c7af47758.camel@infradead.org>
+In-Reply-To: <YjNYo2LKM3smgEJM@salvia>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -98,8 +97,8 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 
 
-On 3/17/22 08:47, Amit Shah wrote:
-> On Wed, 2022-03-16 at 12:20 -0700, Randy Dunlap wrote:
+On 3/17/22 08:49, Pablo Neira Ayuso wrote:
+> On Wed, Mar 16, 2022 at 12:20:05PM -0700, Randy Dunlap wrote:
 >> Eliminate anonymous module_init() and module_exit(), which can lead to
 >> confusion or ambiguity when reading System.map, crashes/oops/bugs,
 >> or an initcall_debug log.
@@ -119,37 +118,60 @@ On 3/17/22 08:47, Amit Shah wrote:
 >>  initcall init+0x0/0x60 returned 0 after 2 usecs
 >>  calling  init+0x0/0x9a @ 1
 >>  initcall init+0x0/0x9a returned 0 after 74 usecs
->>
->> Fixes: 31610434bc35 ("Virtio console driver")
->> Fixes: 7177876fea83 ("virtio: console: Add ability to remove module")
->> Signed-off-by: Randy Dunlap <
->> rdunlap@infradead.org
->>>
->> Cc: Amit Shah <
->> amit@kernel.org
->>>
->> Cc: 
->> virtualization@lists.linux-foundation.org
->>
->> Cc: Arnd Bergmann <
->> arnd@arndb.de
->>>
->> Cc: Greg Kroah-Hartman <
->> gregkh@linuxfoundation.org
->>>
+> 
+> LGTM.
+> 
+> Should I route this through the netfilter tree?
+
+Yes, please.
+Thanks.
+
+> 
+>> Fixes: f587de0e2feb ("[NETFILTER]: nf_conntrack/nf_nat: add H.323 helper port")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+>> Cc: Jozsef Kadlecsik <kadlec@netfilter.org>
+>> Cc: Florian Westphal <fw@strlen.de>
+>> Cc: netfilter-devel@vger.kernel.org
+>> Cc: coreteam@netfilter.org
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: netdev@vger.kernel.org
 >> ---
->>  drivers/char/virtio_console.c |    8 ++++----
+>>  net/ipv4/netfilter/nf_nat_h323.c |    8 ++++----
 >>  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> Reviewed-by: Amit Shah <amit@kernel.org>
-> 
-> I don't think the Fixes-by really applies here, though - we don't
-> really want to push this into stable, nor do we want any automated
-> tools to pick this up because of that tag..
-
-Yeah, I'm fine with that.
-
-thanks.
+>>
+>> --- lnx-517-rc8.orig/net/ipv4/netfilter/nf_nat_h323.c
+>> +++ lnx-517-rc8/net/ipv4/netfilter/nf_nat_h323.c
+>> @@ -580,7 +580,7 @@ static struct nf_ct_helper_expectfn call
+>>  };
+>>  
+>>  /****************************************************************************/
+>> -static int __init init(void)
+>> +static int __init nf_nat_h323_init(void)
+>>  {
+>>  	BUG_ON(set_h245_addr_hook != NULL);
+>>  	BUG_ON(set_h225_addr_hook != NULL);
+>> @@ -607,7 +607,7 @@ static int __init init(void)
+>>  }
+>>  
+>>  /****************************************************************************/
+>> -static void __exit fini(void)
+>> +static void __exit nf_nat_h323_fini(void)
+>>  {
+>>  	RCU_INIT_POINTER(set_h245_addr_hook, NULL);
+>>  	RCU_INIT_POINTER(set_h225_addr_hook, NULL);
+>> @@ -624,8 +624,8 @@ static void __exit fini(void)
+>>  }
+>>  
+>>  /****************************************************************************/
+>> -module_init(init);
+>> -module_exit(fini);
+>> +module_init(nf_nat_h323_init);
+>> +module_exit(nf_nat_h323_fini);
+>>  
+>>  MODULE_AUTHOR("Jing Min Zhao <zhaojingmin@users.sourceforge.net>");
+>>  MODULE_DESCRIPTION("H.323 NAT helper");
 
 -- 
 ~Randy
