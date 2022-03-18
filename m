@@ -2,58 +2,60 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6BE4DD29D
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 02:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A012A4DD29A
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 02:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbiCRB4z (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 17 Mar 2022 21:56:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47032 "EHLO
+        id S231348AbiCRB44 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 17 Mar 2022 21:56:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbiCRB4y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 21:56:54 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD2BD2405A9
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:29 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id j83so7528918oih.6
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:29 -0700 (PDT)
+        with ESMTP id S231449AbiCRB44 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 21:56:56 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661D1232D15
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:30 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id b188so7493266oia.13
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PFW8uzzWNyNDnMqerZ55amLh962e/6oXJe4Y+uHZh8=;
-        b=Ec0vB1KLy0CBd3tkb8hQH9guEiV5qSZHwpHFJvP2MhEhFGo2NRQmecPYl6w1cHD2ZQ
-         hnpYC0s84BNxPwbSAK+rHs0vQqI4jhoAemrsOcugnbyqCWdmhK8/8zeXwyJwZT4AxOgT
-         iaaePkeK6XeE34Sqgs1xJP6bUh0ZaQgoDVELXFKuX05oabI9y5tAAaO0ibCNgRTb2kO5
-         fssByewDXQtNAVvJ6bjZa3Gkuwe71bJjpPbVFewI+3hkDapMDk+tZYYEJY+s5CbP0DUl
-         FlVvW8gkTKho5V86DWe8RkT3MzyM+vcoDUWBDCQj3i6uhm6b41v8RWBMvPlrt0j+eGYC
-         4xoQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=rExX1OJrPQYVE2X/63iWoaDZ4BIl+puEpR+q6gPwOx4=;
+        b=c52FCH3FLsa+HooJvsurW1KFbxq0KhotlknyFUQjs2fjlEEy99epwqOFD/5JePf5Oz
+         2GCucTjkht9EbaM0wdS2X9AB/zcF5lbwDQIGLVPfeDQy0lnCWc52xDo6P1Dnd75BOV/g
+         UWA+VqmtSL6eMJ/b2Ul29XsVz/5te2A5YBpertfaT9vlKA839EHGFRLyYcxr7SYjFl8Q
+         YiiKgJm2bcaBzE18176+fTUx0KLGgFNI28QhNesUBsVP2UOFFWdHbp97IggyP4CPQYRL
+         hqqzzEXHUckugWx0aq4vQtE57CtmJPCA+u5knyZqO7MwzJpiZ2amRdmbLdEf1J4tos4Q
+         KbTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1PFW8uzzWNyNDnMqerZ55amLh962e/6oXJe4Y+uHZh8=;
-        b=oBJPcgTVZIHkkOujVM1qUVS0XH4YEUEx69Fsn6yeqkC9KyK/3FfJDD/ePAq8TZqj0o
-         Rl1FGDlwDs4RRfIx3ZAGxwnv8MrblKi8u9d7fyzjsXEeSaDdcUHGw67MS+p7tLTHzCBU
-         C0huJTjea6u/NgVeRkxS38O05z2Oi+3STba9va4qlqpWcuSSrqhRA7UIgnOcd4lEHLNT
-         J0Qxmvwuy9EEZmg+vcnws3IVh9W37daN5neIAFHsMluk7G9So2qAPRtxMkeW6lWmkvJc
-         Aj5MKNyyAzZeOw+8YL/OhAIX0kYzzZSXXa26NLDrXHtMLHcCDOUjHbZtlFRJa7oIAPMX
-         pI2g==
-X-Gm-Message-State: AOAM532yJCGjKylGwmTPWMSb26JpJ88UKR/rnusmUWoFJIbcwV9hLMVG
-        SEyxo68+VhVjfNtV2Am37mI=
-X-Google-Smtp-Source: ABdhPJwf+C9n0l7q9GkGn9jzfgV6avDd6tEzU9T/21v7aAaEvhgXnIC7ktBT0zck3wQ0vTfkc4Kw5A==
-X-Received: by 2002:a54:4502:0:b0:2d9:a01a:4c01 with SMTP id l2-20020a544502000000b002d9a01a4c01mr3499563oil.296.1647568528813;
-        Thu, 17 Mar 2022 18:55:28 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=rExX1OJrPQYVE2X/63iWoaDZ4BIl+puEpR+q6gPwOx4=;
+        b=1+D0cN6wRSqF4R6DHtCaT7FkAiXPzIK5Wt+R34Q1VkFug+fcQGPpuVlqiCOAzZYHTR
+         CQoJpq6tv7P/Jkq9eXPkas4pnAoUKfdC2nmG/XEw4xbCYJsw0hG72kLpM/pGn20S8Zm+
+         GWmNJ9/kki/voscgpmnmQ35hoUfChAULm8DtEuhF5YSDhm/x7E77nFRYfvubTeUmIGY+
+         ash+TkCz0kxwcqw01uQ8Tmr96pBBZ9V8OysMMl9VObe+jlOkKyCfjSLgSXW8sY2/vaWU
+         sOP+hYtDY5rzEVIAwiZAMnCgaphbiNBMtkkqdza7I2++bqKMqUx+18KTiBN4zB9RzKO7
+         nt8g==
+X-Gm-Message-State: AOAM530T9c4rjolRFnRrvx5q1JLygZEae8sYLfgi/WCUxSJ0+JqfvpCI
+        e3L8e8it/e47KO20cTP8/SKjVfQfyZQ=
+X-Google-Smtp-Source: ABdhPJx80n5I/SiSEHTGp1B2OzZTNWWlZ66oN4cpQaeR08TTxwiflj1gmMm+TceL5l4/8BgRLzQEnA==
+X-Received: by 2002:aca:180c:0:b0:2ec:94a4:f0a2 with SMTP id h12-20020aca180c000000b002ec94a4f0a2mr7317506oih.211.1647568529717;
+        Thu, 17 Mar 2022 18:55:29 -0700 (PDT)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-257e-2cb6-0a79-8c62.res6.spectrum.com. [2603:8081:140c:1a00:257e:2cb6:a79:8c62])
-        by smtp.googlemail.com with ESMTPSA id a32-20020a056870a1a000b000d458b1469dsm3292878oaf.10.2022.03.17.18.55.27
+        by smtp.googlemail.com with ESMTPSA id a32-20020a056870a1a000b000d458b1469dsm3292878oaf.10.2022.03.17.18.55.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Mar 2022 18:55:28 -0700 (PDT)
+        Thu, 17 Mar 2022 18:55:29 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v12 00/11] Fix race conditions in rxe_pool
-Date:   Thu, 17 Mar 2022 20:55:03 -0500
-Message-Id: <20220318015514.231621-1-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v12 01/11] RDMA/rxe: Replace #define by enum
+Date:   Thu, 17 Mar 2022 20:55:04 -0500
+Message-Id: <20220318015514.231621-2-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20220318015514.231621-1-rpearsonhpe@gmail.com>
+References: <20220318015514.231621-1-rpearsonhpe@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -66,93 +68,151 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There are several race conditions discovered in the current rdma_rxe
-driver.  They mostly relate to races between normal operations and
-destroying objects.  This patch series
- - Makes several minor cleanups in rxe_pool.[ch]
- - Adds wait for completions to the paths in verbs APIs which destroy
-   objects.
- - Changes read side locking to rcu.
- - Moves object cleanup code to after ref count is zero
+Currently the #define IB_SRQ_INIT_MASK is used to distinguish
+the rxe_create_srq verb from the rxe_modify_srq verb so that some code
+can be shared between these two subroutines.
+
+This commit replaces the #define with an enum which extends
+enum ib_srq_attr_mask and makes related changes to prototypes
+to clean up type warnings. The parameter is given a rxe specific
+name.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
-v12
-  Rebased to current wip/jgg-for-next
-  Dropped patches already accepted from v11.
-  Moved all object cleanup code to type specific cleanup routines.
-  Renamed to match Jason's requests.
-  Addressed some other issued raised.
-  Kept the contentious rxe_hide() function but renamed to
-  rxe_disable_lookup() which says what it does. I am still convinced
-  this cleaner than other alternatives like moving xa_erase to the
-  top of destroy routines but just for indexed objects.
-v11
-  Rebased to current for-next.
-  Reordered patches and made other changes to respond to issues
-  reported by Jason Gunthorpe.
-v10
-  Rebased to current wip/jgg-for-next.
-  Split some patches into smaller ones.
-v9
-  Corrected issues reported by Jason Gunthorpe,
-  Converted locking in rxe_mcast.c and rxe_pool.c to use RCU
-  Split up the patches into smaller changes
-v8
-  Fixed an additional race in 3/8 which was not handled correctly.
-v7
-  Corrected issues reported by Jason Gunthorpe
-Link: https://lore.kernel.org/linux-rdma/20211207190947.GH6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207191857.GI6385@nvidia.com/
-Link: https://lore.kernel.org/linux-rdma/20211207192824.GJ6385@nvidia.com/
-v6
-  Fixed a kzalloc flags bug.
-  Fixed comment bug reported by 'Kernel Test Robot'.
-  Changed type of rxe_pool.c in __rxe_fini().
-v5
-  Removed patches already accepted into for-next and addressed comments
-  from Jason Gunthorpe.
-v4
-  Restructured patch series to change to xarray earlier which
-  greatly simplified the changes.
-  Rebased to current for-next
-v3
-  Changed rxe_alloc to use GFP_KERNEL
-  Addressed other comments by Jason Gunthorp
-  Merged the previous 06/10 and 07/10 patches into one since they overlapped
-  Added some minor cleanups as 10/10
-v2
-  Rebased to current for-next.
-  Added 4 additional patches
+ drivers/infiniband/sw/rxe/rxe_loc.h   |  8 ++------
+ drivers/infiniband/sw/rxe/rxe_srq.c   | 10 +++++-----
+ drivers/infiniband/sw/rxe/rxe_verbs.c |  7 ++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  6 ++++++
+ 4 files changed, 17 insertions(+), 14 deletions(-)
 
-Bob Pearson (11):
-  RDMA/rxe: Replace #define by enum
-  RDMA/rxe: Add rxe_srq_cleanup()
-  RDMA/rxe: Check rxe_get() return value
-  RDMA/rxe: Move qp cleanup code to rxe_qp_do_cleanup()
-  RDMA/rxe: Move mr cleanup code to rxe_mr_cleanup()
-  RDMA/rxe: Move mw cleanup code to rxe_mw_cleanup()
-  RDMA/rxe: Enforce IBA C11-17
-  RDMA/rxe: Stop lookup of partially built objects
-  RDMA/rxe: Add wait_for_completion to pool objects
-  RDMA/rxe: Convert read side locking to rcu
-  RDMA/rxe: Cleanup rxe_pool.c
-
- drivers/infiniband/sw/rxe/rxe_comp.c  |   3 +-
- drivers/infiniband/sw/rxe/rxe_loc.h   |  16 +--
- drivers/infiniband/sw/rxe/rxe_mr.c    |  13 +--
- drivers/infiniband/sw/rxe/rxe_mw.c    |  62 ++++++-----
- drivers/infiniband/sw/rxe/rxe_pool.c  | 155 ++++++++++++++++++++++----
- drivers/infiniband/sw/rxe/rxe_pool.h  |  14 ++-
- drivers/infiniband/sw/rxe/rxe_qp.c    |  22 ++--
- drivers/infiniband/sw/rxe/rxe_req.c   |   3 +-
- drivers/infiniband/sw/rxe/rxe_resp.c  |   3 +-
- drivers/infiniband/sw/rxe/rxe_srq.c   |  21 +++-
- drivers/infiniband/sw/rxe/rxe_verbs.c |  73 ++++++------
- drivers/infiniband/sw/rxe/rxe_verbs.h |   7 ++
- 12 files changed, 273 insertions(+), 119 deletions(-)
-
-base-commit: 3197706abd053275d2a561cfb7dc8f6cfaf7d02c
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 2ffbe3390668..9067d3b6f1ee 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -159,17 +159,13 @@ void retransmit_timer(struct timer_list *t);
+ void rnr_nak_timer(struct timer_list *t);
+ 
+ /* rxe_srq.c */
+-#define IB_SRQ_INIT_MASK (~IB_SRQ_LIMIT)
+-
+ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+-		     struct ib_srq_attr *attr, enum ib_srq_attr_mask mask);
+-
++		     struct ib_srq_attr *attr, enum rxe_srq_attr_mask mask);
+ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 		      struct ib_srq_init_attr *init, struct ib_udata *udata,
+ 		      struct rxe_create_srq_resp __user *uresp);
+-
+ int rxe_srq_from_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+-		      struct ib_srq_attr *attr, enum ib_srq_attr_mask mask,
++		      struct ib_srq_attr *attr, enum rxe_srq_attr_mask mask,
+ 		      struct rxe_modify_srq_cmd *ucmd, struct ib_udata *udata);
+ 
+ void rxe_dealloc(struct ib_device *ib_dev);
+diff --git a/drivers/infiniband/sw/rxe/rxe_srq.c b/drivers/infiniband/sw/rxe/rxe_srq.c
+index 0c0721f04357..862aa749c93a 100644
+--- a/drivers/infiniband/sw/rxe/rxe_srq.c
++++ b/drivers/infiniband/sw/rxe/rxe_srq.c
+@@ -10,14 +10,14 @@
+ #include "rxe_queue.h"
+ 
+ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+-		     struct ib_srq_attr *attr, enum ib_srq_attr_mask mask)
++		     struct ib_srq_attr *attr, enum rxe_srq_attr_mask mask)
+ {
+ 	if (srq && srq->error) {
+ 		pr_warn("srq in error state\n");
+ 		goto err1;
+ 	}
+ 
+-	if (mask & IB_SRQ_MAX_WR) {
++	if (mask & RXE_SRQ_MAX_WR) {
+ 		if (attr->max_wr > rxe->attr.max_srq_wr) {
+ 			pr_warn("max_wr(%d) > max_srq_wr(%d)\n",
+ 				attr->max_wr, rxe->attr.max_srq_wr);
+@@ -39,7 +39,7 @@ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 			attr->max_wr = RXE_MIN_SRQ_WR;
+ 	}
+ 
+-	if (mask & IB_SRQ_LIMIT) {
++	if (mask & RXE_SRQ_LIMIT) {
+ 		if (attr->srq_limit > rxe->attr.max_srq_wr) {
+ 			pr_warn("srq_limit(%d) > max_srq_wr(%d)\n",
+ 				attr->srq_limit, rxe->attr.max_srq_wr);
+@@ -54,7 +54,7 @@ int rxe_srq_chk_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+ 		}
+ 	}
+ 
+-	if (mask == IB_SRQ_INIT_MASK) {
++	if (mask == RXE_SRQ_INIT) {
+ 		if (attr->max_sge > rxe->attr.max_srq_sge) {
+ 			pr_warn("max_sge(%d) > max_srq_sge(%d)\n",
+ 				attr->max_sge, rxe->attr.max_srq_sge);
+@@ -122,7 +122,7 @@ int rxe_srq_from_init(struct rxe_dev *rxe, struct rxe_srq *srq,
+ }
+ 
+ int rxe_srq_from_attr(struct rxe_dev *rxe, struct rxe_srq *srq,
+-		      struct ib_srq_attr *attr, enum ib_srq_attr_mask mask,
++		      struct ib_srq_attr *attr, enum rxe_srq_attr_mask mask,
+ 		      struct rxe_modify_srq_cmd *ucmd, struct ib_udata *udata)
+ {
+ 	int err;
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 67184b0281a0..5609956d2bc3 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -7,8 +7,8 @@
+ #include <linux/dma-mapping.h>
+ #include <net/addrconf.h>
+ #include <rdma/uverbs_ioctl.h>
++
+ #include "rxe.h"
+-#include "rxe_loc.h"
+ #include "rxe_queue.h"
+ #include "rxe_hw_counters.h"
+ 
+@@ -295,7 +295,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ 		uresp = udata->outbuf;
+ 	}
+ 
+-	err = rxe_srq_chk_attr(rxe, NULL, &init->attr, IB_SRQ_INIT_MASK);
++	err = rxe_srq_chk_attr(rxe, NULL, &init->attr, RXE_SRQ_INIT);
+ 	if (err)
+ 		goto err1;
+ 
+@@ -320,13 +320,14 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ }
+ 
+ static int rxe_modify_srq(struct ib_srq *ibsrq, struct ib_srq_attr *attr,
+-			  enum ib_srq_attr_mask mask,
++			  enum ib_srq_attr_mask ibmask,
+ 			  struct ib_udata *udata)
+ {
+ 	int err;
+ 	struct rxe_srq *srq = to_rsrq(ibsrq);
+ 	struct rxe_dev *rxe = to_rdev(ibsrq->device);
+ 	struct rxe_modify_srq_cmd ucmd = {};
++	enum rxe_srq_attr_mask mask = (enum rxe_srq_attr_mask)ibmask;
+ 
+ 	if (udata) {
+ 		if (udata->inlen < sizeof(ucmd))
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index e7eff1ca75e9..34aa013c7801 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -93,6 +93,12 @@ struct rxe_rq {
+ 	struct rxe_queue	*queue;
+ };
+ 
++enum rxe_srq_attr_mask {
++	RXE_SRQ_MAX_WR		= IB_SRQ_MAX_WR,
++	RXE_SRQ_LIMIT		= IB_SRQ_LIMIT,
++	RXE_SRQ_INIT		= BIT(2),
++};
++
+ struct rxe_srq {
+ 	struct ib_srq		ibsrq;
+ 	struct rxe_pool_elem	elem;
 -- 
 2.32.0
 
