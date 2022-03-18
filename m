@@ -2,48 +2,48 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B52434DD92E
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 12:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22F3F4DD9B2
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 13:24:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235469AbiCRLsD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 18 Mar 2022 07:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
+        id S235536AbiCRMZg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 18 Mar 2022 08:25:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbiCRLsD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Mar 2022 07:48:03 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFCD32CD81F
-        for <linux-rdma@vger.kernel.org>; Fri, 18 Mar 2022 04:46:44 -0700 (PDT)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4KKj0J4fjgzcZyn;
-        Fri, 18 Mar 2022 19:46:40 +0800 (CST)
+        with ESMTP id S232354AbiCRMZg (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 18 Mar 2022 08:25:36 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7872310780E
+        for <linux-rdma@vger.kernel.org>; Fri, 18 Mar 2022 05:24:15 -0700 (PDT)
+Received: from dggpeml500026.china.huawei.com (unknown [172.30.72.54])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KKjnv1dJbzfYlF;
+        Fri, 18 Mar 2022 20:22:43 +0800 (CST)
 Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ dggpeml500026.china.huawei.com (7.185.36.106) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2308.21; Fri, 18 Mar 2022 19:46:42 +0800
+ 15.1.2308.21; Fri, 18 Mar 2022 20:24:12 +0800
 Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
  (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2308.21; Fri, 18 Mar
- 2022 19:46:42 +0800
-Subject: Re: [PATCH for-next v4 07/12] RDMA/erdma: Add verbs header file
+ 2022 20:24:12 +0800
+Subject: Re: [PATCH for-next v4 08/12] RDMA/erdma: Add verbs implementation
 To:     Cheng Xu <chengyou@linux.alibaba.com>, <jgg@ziepe.ca>,
         <dledford@redhat.com>
 References: <20220314064739.81647-1-chengyou@linux.alibaba.com>
- <20220314064739.81647-8-chengyou@linux.alibaba.com>
+ <20220314064739.81647-9-chengyou@linux.alibaba.com>
 CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
         <KaiShen@linux.alibaba.com>, <tonylu@linux.alibaba.com>,
         <BMT@zurich.ibm.com>
 From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <ed3059aa-0c30-84ff-97f4-ac3224f5a64b@huawei.com>
-Date:   Fri, 18 Mar 2022 19:46:42 +0800
+Message-ID: <d61a22b5-249e-557e-cb23-c7035a97c767@huawei.com>
+Date:   Fri, 18 Mar 2022 20:24:12 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
  Thunderbird/45.7.1
 MIME-Version: 1.0
-In-Reply-To: <20220314064739.81647-8-chengyou@linux.alibaba.com>
+In-Reply-To: <20220314064739.81647-9-chengyou@linux.alibaba.com>
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
 X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml500017.china.huawei.com (7.185.36.243)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -57,32 +57,302 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 2022/3/14 14:47, Cheng Xu wrote:
-> This header file defines the main structrues and functions used for RDMA
-> Verbs, including qp, cq, mr ucontext, etc,.
+> The RDMA verbs implementation of erdma is divided into three files:
+> erdma_qp.c, erdma_cq.c, and erdma_verbs.c. Internal used functions and
+> datapath functions of QP/CQ are put in erdma_qp.c and erdma_cq.c, the reset
+> is in erdma_verbs.c.
 
-structrues -> structures?
+reset -> rest.
 
 <...>
-> +struct erdma_uqp {
-> +	struct erdma_mem sq_mtt;
-> +	struct erdma_mem rq_mtt;
+> +static int erdma_poll_one_cqe(struct erdma_cq *cq, struct erdma_cqe *cqe,
+> +			      struct ib_wc *wc)
+> +{
+> +	struct erdma_dev *dev = to_edev(cq->ibcq.device);
+> +	struct erdma_qp *qp;
+> +	struct erdma_kqp *kern_qp;
+> +	u64 *wqe_hdr;
+> +	u64 *id_table;
+> +	u32 qpn = be32_to_cpu(cqe->qpn);
+> +	u16 wqe_idx = be32_to_cpu(cqe->qe_idx);
+> +	u32 hdr = be32_to_cpu(cqe->hdr);
+> +	u16 depth;
+> +	u8 opcode, syndrome, qtype;
 > +
-> +	dma_addr_t sq_db_info_dma_addr;
-> +	dma_addr_t rq_db_info_dma_addr;
-> +
-> +	struct erdma_user_dbrecords_page *user_dbr_page;
-> +
-> +	u32 rq_offset;
-> +};
+> +	qp = find_qp_by_qpn(dev, qpn);
+> +	kern_qp = &qp->kern_qp;
 
-A blank line is missing here.
+The qp returned by find_qp_by_qpn may be null.
+
+> +
+> +	qtype = FIELD_GET(ERDMA_CQE_HDR_QTYPE_MASK, hdr);
+> +	syndrome = FIELD_GET(ERDMA_CQE_HDR_SYNDROME_MASK, hdr);
+> +	opcode = FIELD_GET(ERDMA_CQE_HDR_OPCODE_MASK, hdr);
+> +
+> +	if (qtype == ERDMA_CQE_QTYPE_SQ) {
+> +		id_table = kern_qp->swr_tbl;
+> +		depth = qp->attrs.sq_size;
+> +		wqe_hdr = (u64 *)get_sq_entry(qp, wqe_idx);
+
+The pointer type returned by get_sq_entry is "void *",
+which does not need to be cast.
+
+<...>
+> +int erdma_poll_cq(struct ib_cq *ibcq, int num_entries, struct ib_wc *wc)
+> +{
+> +	struct erdma_cq *cq = to_ecq(ibcq);
+> +	struct erdma_cqe *cqe;
+> +	unsigned long flags;
+> +	u32 owner;
+> +	u32 ci;
+> +	int i, ret;
+> +	int new = 0;
+> +	u32 hdr;
+> +
+> +	spin_lock_irqsave(&cq->kern_cq.lock, flags);
+> +
+> +	owner = cq->kern_cq.owner;
+> +	ci = cq->kern_cq.ci;
+> +
+> +	for (i = 0; i < num_entries; i++) {
+> +		cqe = &cq->kern_cq.qbuf[ci & (cq->depth - 1)];
+> +
+> +		hdr = be32_to_cpu(READ_ONCE(cqe->hdr));
+> +		if (FIELD_GET(ERDMA_CQE_HDR_OWNER_MASK, hdr) != owner)
+> +			break;
+> +
+> +		/* cqbuf should be ready when we poll*/
+
+"poll*/" -> "poll */".
+
+> +		dma_rmb();
+> +		ret = erdma_poll_one_cqe(cq, cqe, wc);
+> +		ci++;
+> +		if ((ci & (cq->depth - 1)) == 0)
+> +			owner = !owner;
+> +		if (ret)
+
+The return value of erdma_poll_one_cqe is always 0.
+
+> +			continue;
+> +		wc++;
+> +		new++;
+> +	}
+> +	cq->kern_cq.owner = owner;
+> +	cq->kern_cq.ci = ci;
+> +
+> +	spin_unlock_irqrestore(&cq->kern_cq.lock, flags);
+> +	return new;
+> +}
+<...>
+> +struct ib_qp *erdma_get_ibqp(struct ib_device *ibdev, int id)
+> +{
+> +	struct erdma_qp *qp = find_qp_by_qpn(to_edev(ibdev), id);
+> +
+> +	if (qp)
+> +		return &qp->ibqp;
+> +
+> +	return (struct ib_qp *)NULL;
+
+Redundant cast?
+
+<...>
+> +int erdma_modify_qp_internal(struct erdma_qp *qp, struct erdma_qp_attrs *attrs,
+> +			     enum erdma_qp_attr_mask mask)
+> +{
+> +	int drop_conn = 0, ret = 0;
+> +
+> +	if (!mask)
+> +		return 0;
+> +
+> +	if (!(mask & ERDMA_QP_ATTR_STATE))
+> +		return 0;
+> +
+> +	switch (qp->attrs.state) {
+> +	case ERDMA_QP_STATE_IDLE:
+> +	case ERDMA_QP_STATE_RTR:
+> +		if (attrs->state == ERDMA_QP_STATE_RTS) {
+> +			ret = erdma_modify_qp_state_to_rts(qp, attrs, mask);
+> +		} else if (attrs->state == ERDMA_QP_STATE_ERROR) {
+> +			qp->attrs.state = ERDMA_QP_STATE_ERROR;
+> +			if (qp->cep) {
+> +				erdma_cep_put(qp->cep);
+> +				qp->cep = NULL;
+> +			}
+> +			ret = erdma_modify_qp_state_to_stop(qp, attrs, mask);
+> +		}
+> +		break;
+> +	case ERDMA_QP_STATE_RTS:
+> +		if (attrs->state == ERDMA_QP_STATE_CLOSING) {
+> +			ret = erdma_modify_qp_state_to_stop(qp, attrs, mask);
+> +			drop_conn = 1;
+> +		} else if (attrs->state == ERDMA_QP_STATE_TERMINATE) {
+> +			qp->attrs.state = ERDMA_QP_STATE_TERMINATE;
+> +			ret = erdma_modify_qp_state_to_stop(qp, attrs, mask);
+> +			drop_conn = 1;
+> +		} else if (attrs->state == ERDMA_QP_STATE_ERROR) {
+> +			ret = erdma_modify_qp_state_to_stop(qp, attrs, mask);
+> +			qp->attrs.state = ERDMA_QP_STATE_ERROR;
+> +			drop_conn = 1;
+> +		}
+> +		break;
+> +	case ERDMA_QP_STATE_TERMINATE:
+> +		if (attrs->state == ERDMA_QP_STATE_ERROR)
+> +			qp->attrs.state = ERDMA_QP_STATE_ERROR;
+> +		break;
+> +	case ERDMA_QP_STATE_CLOSING:
+> +		if (attrs->state == ERDMA_QP_STATE_IDLE)
+> +			qp->attrs.state = ERDMA_QP_STATE_IDLE;
+> +		else if (attrs->state == ERDMA_QP_STATE_ERROR) {
+> +			ret = erdma_modify_qp_state_to_stop(qp, attrs, mask);
+> +			qp->attrs.state = ERDMA_QP_STATE_ERROR;
+> +		} else if (attrs->state != ERDMA_QP_STATE_CLOSING) {
+> +			return -ECONNABORTED;
+> +		}
+
+If the conditional statement has a branch with curly braces,
+then all branches use curly braces.
+
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	if (drop_conn)
+> +		erdma_qp_cm_drop(qp);
+
+Can this conditional statement be placed in the ERDMA_QP_STATE_RTS branch
+of the switch-case alternative branch?
+
+The logic related to drop_conn is concentrated into one piece to improve
+code aggregation.
+
+> +
+> +	return ret;
+> +}
+<...>
+> +static int erdma_push_one_sqe(struct erdma_qp *qp, u16 *pi,
+> +			      const struct ib_send_wr *send_wr)
+> +{
+> +	struct erdma_write_sqe *write_sqe;
+> +	struct erdma_send_sqe *send_sqe;
+> +	struct erdma_readreq_sqe *read_sqe;
+> +	struct erdma_reg_mr_sqe *regmr_sge;
+> +	struct erdma_mr *mr;
+> +	struct ib_rdma_wr *rdma_wr;
+> +	struct ib_sge *sge;
+> +	u32 wqe_size, wqebb_cnt, hw_op;
+> +	int ret;
+> +	u32 flags = send_wr->send_flags;
+> +	u32 idx = *pi & (qp->attrs.sq_size - 1);
+> +	u64 *entry = (u64 *)get_sq_entry(qp, idx);
+
+<...>
+
+> +		sge = (struct ib_sge *)get_sq_entry(qp, idx + 1);
+
+<...>
+
+> +			inline_data = (u64 *)get_sq_entry(qp, idx + 1);
+
+The pointer type returned by get_sq_entry is "void *",
+which does not need to be cast.
+
+<...>
+> +static int erdma_post_recv_one(struct ib_qp *ibqp,
+> +			       const struct ib_recv_wr *recv_wr,
+> +			       const struct ib_recv_wr **bad_recv_wr)
+
+bad_recv_wr is a redundant input parameter.
+
+> +{
+> +	struct erdma_qp *qp = to_eqp(ibqp);
+> +	struct erdma_rqe *rqe;
+> +	unsigned int rq_pi;
+> +	u16 idx;
+> +
+> +	rq_pi = qp->kern_qp.rq_pi;
+> +	idx = rq_pi & (qp->attrs.rq_size - 1);
+> +	rqe = (struct erdma_rqe *)qp->kern_qp.rq_buf + idx;
+> +
+> +	rqe->qe_idx = rq_pi + 1;
+> +	rqe->qpn = QP_ID(qp);
+> +
+> +	if (recv_wr->num_sge == 0) {
+> +		rqe->length = 0;
+> +	} else if (recv_wr->num_sge == 1) {
+> +		rqe->stag = recv_wr->sg_list[0].lkey;
+> +		rqe->to = recv_wr->sg_list[0].addr;
+> +		rqe->length = recv_wr->sg_list[0].length;
+> +	} else {
+> +		return -EINVAL;
+> +	}
+> +
+> +	*(u64 *)qp->kern_qp.rq_db_info = *(u64 *)rqe;
+> +	writeq(*(u64 *)rqe, qp->kern_qp.hw_rq_db);
+> +
+> +	qp->kern_qp.rwr_tbl[idx] = recv_wr->wr_id;
+> +	qp->kern_qp.rq_pi = rq_pi + 1;
+> +
+> +	return 0;
+> +}
+> +
+> +int erdma_post_recv(struct ib_qp *qp, const struct ib_recv_wr *recv_wr,
+> +		    const struct ib_recv_wr **bad_recv_wr)
+> +{
+> +	struct erdma_qp *eqp = to_eqp(qp);
+> +	int ret = 0;
+> +	const struct ib_recv_wr *wr = recv_wr;
+> +	unsigned long flags;
+> +
+> +	if (!qp || !recv_wr)
+> +		return -EINVAL;
+> +
+> +	spin_lock_irqsave(&eqp->lock, flags);
+> +	while (wr) {
+> +		ret = erdma_post_recv_one(qp, wr, bad_recv_wr);
+> +		if (ret) {
+> +			*bad_recv_wr = wr;
+> +			break;
+> +		}
+> +		wr = wr->next;
+> +	}
+> +	spin_unlock_irqrestore(&eqp->lock, flags);
+> +	return ret;
+> +}
+
+The "ret" does not need to be initialized to 0, it has been reassigned
+before the function returns.
+
+<...>
+> +static int erdma_create_stag(struct erdma_dev *dev, u32 *stag)
+> +{
+> +	int stag_idx;
+> +	u32 key = 0;
+> +
+> +	stag_idx = erdma_alloc_idx(&dev->res_cb[ERDMA_RES_TYPE_STAG_IDX]);
+> +	if (stag_idx < 0)
+> +		return stag_idx;
+> +
+> +	*stag = (stag_idx << 8) | (key & 0xFF);
+
+The "key" is initialized to 0 and never assigned again.
+
+<...>
+> +int erdma_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *qp_attr,
+> +		   int qp_attr_mask, struct ib_qp_init_attr *qp_init_attr)
+> +{
+> +	struct erdma_qp *qp;
+> +	struct erdma_dev *dev;
+> +
+> +	if (ibqp && qp_attr && qp_init_attr) {
+> +		qp = to_eqp(ibqp);
+> +		dev = to_edev(ibqp->device);
+> +	} else
+> +		return -EINVAL;
+
+If the conditional statement has a branch with curly braces,
+then all branches use curly braces.
 
 Thanks,
 Wenpeng
-
-> +struct erdma_kqp {
-> +	u16 sq_pi;
-> +	u16 sq_ci;
-> +
-> +	u16 rq_pi;
-> +	u16 rq_ci;
