@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4227A4DD29C
-	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 02:56:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B244DD299
+	for <lists+linux-rdma@lfdr.de>; Fri, 18 Mar 2022 02:55:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbiCRB47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S231670AbiCRB47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 17 Mar 2022 21:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47250 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbiCRB46 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 21:56:58 -0400
-Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4A9C24223E
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:34 -0700 (PDT)
-Received: by mail-oo1-xc32.google.com with SMTP id j7-20020a4ad6c7000000b0031c690e4123so8641819oot.11
-        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:34 -0700 (PDT)
+        with ESMTP id S231635AbiCRB47 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 17 Mar 2022 21:56:59 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E9AB243700
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:35 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id t8-20020a0568301e2800b005b235a56f2dso4732783otr.9
+        for <linux-rdma@vger.kernel.org>; Thu, 17 Mar 2022 18:55:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yxF2KUc6EO6kphwo4HlT4qqWAakQzhVgtzyDrqKl8JA=;
-        b=jh8jCnZocMTq++PDjOrq3FhJSZroSMa8/vwqLJ7EcNyo+PQ++Ix5YuhQakpjlkmJQY
-         UND2bhle9t2GGNYkX5Md6kNaGu+K8h3VpSC4UG2vng7uX8IkiUkVU8AJ6/LpYSvf9+zb
-         8djWNtOnStUVSV51vznybanBUR1jX5Ir0cepdL2o+fDCGdgrieo+S220ihQF7BizwNpH
-         3MDz7Qj2i5w0ocnnYZE5M5sipnocWFq+t4M7hGSwimVXqIUf1e3Mx8GQF8KR0P7Tv88Q
-         hueSpeUp/Onio9j0OLAgcQhFyqIUuCMH1Z6uZDGSMIfqVvPY1a1+tLsWF+ssGtS05sYz
-         /Qqg==
+        bh=+SdF1uWi4XJsKk+Knhny+0qCi8cPiaW1ef6UDKr5t3o=;
+        b=MErwI4FrxF0aWEhq1oMYAU56RtzMRpUcJSErdKfRSnyUlcrDVYXBpnb6/Byt5M4lfU
+         4dP3WGtGUD8NzKTXNkTHIwgq79T4dZhnAFdaiqEoS+m7CzGdUZjm0lFvmNUme8wfYKIf
+         86bm4psv55/IBYh8F/325oz8MEAq+jS8ajmdpY1/VDnF5k6MBW+LOvfgwA9fd9t+2ln/
+         NrQ6jeqhHi7QU6UJ+0ex9Ci9SBru46bm7Ptth35sM2m206hAubWXW2qryb85LtgoAph5
+         7GRr2d0UZ3Je6rDJumxahPNGWlYKSjfkmuw4mwi39TqxwG7bZjOx+2xr+rn7sO1ZLP6R
+         4ZHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yxF2KUc6EO6kphwo4HlT4qqWAakQzhVgtzyDrqKl8JA=;
-        b=NxNXZSqeXak2wEDB91oOt8RsPNSK2rqtTQhT1I2NfYkYvrl2ZMU3Vf0fbZ64wjL2qp
-         yrBRBik44FTMcQHCgiX3i1NPp2WCbEoWmCDq4pWLabK2UICdXb1ntXzwmyZ5jT6v8FKY
-         yPdhKSqFLBBc4JWD1ZUEKS776a6rh30KuVVuop6QQPLbJ5HxLeGNVC5GgMXtch6U/4xC
-         E2q1JCdaslo05KJ3y88F9Ay06jZevSc99ZSLw5NOap8Ix1umUfWzVnl8ACUFotEYCSHq
-         3K4VnkkXFoLeQltkO5FVnrdKFRakEf3ZSnftEZPOG0Q4LFVveAAy4U67ccYdfHc3hfnc
-         ySgQ==
-X-Gm-Message-State: AOAM53288tclBQO6lxK5kdvzy7sLpSRA/jhmjIUfz5yiREFuDDvVYjIU
-        0E3O8HmOxpIPtXQGPibQsxE=
-X-Google-Smtp-Source: ABdhPJyTbcXT575WAelXOptxhAfWOn4mVJU9HiaTPTgtx/0Zx5r8yxYfEWnhILxXZKmW1lCyWVo1Lg==
-X-Received: by 2002:a05:6870:231f:b0:da:c15:fd43 with SMTP id w31-20020a056870231f00b000da0c15fd43mr2695069oao.135.1647568534270;
+        bh=+SdF1uWi4XJsKk+Knhny+0qCi8cPiaW1ef6UDKr5t3o=;
+        b=zZ0y1AF2NSWKrqHQFxCiprWZR6o3FXNRznu8wUW+CO9u6FFOymc8ocGF53vlcCz5nT
+         n285gVjQWckrtRVRWqvXDwqib/czor9iEATwqsEHMIqrTj10mRdS3nk3HkOEAV1Slewk
+         u3afbUgIc0MF2cTXikSMO1xh0gIKIOADVxH3rAGn8qsNrttZTpg9P2r5FTZRMdXQSiiI
+         xUstOO8VFw2SsCG+9orRXHOxJOFBuEh2987qiJgpxKkvNvtR4M1QDwSTEtTGCDSqaCjw
+         n56mnx5gie9cyMxYx2shrRilVL0oGuajUG5pbhldfsJOqjwQaSISGWzZVaruCR0DQEbt
+         H/oQ==
+X-Gm-Message-State: AOAM531GH5JLwzGGzURCDzYZh3kzW6afFrKxn95g+hbaa6aBoZPaBwTK
+        kuORklgBTjOg70VwXOfN0Zo=
+X-Google-Smtp-Source: ABdhPJwLhsPCArY0Kx6h4iFy0FmSSn1w97gEaNHyDEQPyY1VzGoLDLWkLQKyweA3KZUxOG4gufQjCQ==
+X-Received: by 2002:a9d:77d7:0:b0:5b2:29b0:70cb with SMTP id w23-20020a9d77d7000000b005b229b070cbmr2514561otl.276.1647568534925;
         Thu, 17 Mar 2022 18:55:34 -0700 (PDT)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-257e-2cb6-0a79-8c62.res6.spectrum.com. [2603:8081:140c:1a00:257e:2cb6:a79:8c62])
-        by smtp.googlemail.com with ESMTPSA id a32-20020a056870a1a000b000d458b1469dsm3292878oaf.10.2022.03.17.18.55.33
+        by smtp.googlemail.com with ESMTPSA id a32-20020a056870a1a000b000d458b1469dsm3292878oaf.10.2022.03.17.18.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 17 Mar 2022 18:55:34 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v12 07/11] RDMA/rxe: Enforce IBA C11-17
-Date:   Thu, 17 Mar 2022 20:55:10 -0500
-Message-Id: <20220318015514.231621-8-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v12 08/11] RDMA/rxe: Stop lookup of partially built objects
+Date:   Thu, 17 Mar 2022 20:55:11 -0500
+Message-Id: <20220318015514.231621-9-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220318015514.231621-1-rpearsonhpe@gmail.com>
 References: <20220318015514.231621-1-rpearsonhpe@gmail.com>
@@ -68,85 +68,229 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a counter to keep track of the number of WQs connected to
-a CQ and return an error if destroy_cq is called while the
-counter is non zero.
+Currently the rdma_rxe driver has a security weakness due to giving
+objects which are partially initialized indices allowing external
+actors to gain access to them by sending packets which refer to
+their index (e.g. qpn, rkey, etc) causing unpredictable results.
+
+This patch adds two new APIs rxe_finalize(obj) and
+rxe_disable_lookup(obj) which enable or disable looking up pool objects
+from indices using rxe_pool_get_index(). By default objects are disabled.
+These APIs are used to enable looking up objects which have indices:
+AH, QP, MR, and MW. They are added in create verbs after the
+objects are fully initialized and as soon as possible in destroy
+verbs.
+
+Note, the sequence
+	rxe_disable_lookup(obj);
+	rxe_put(obj);
+in destroy verbs stops the looking up of objects by clearing the
+pointer in the xarray with __xa_store() before a possible
+long wait until the last reference is dropped somewhere else and
+the xarray entry is erased with xa_erase().
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c    | 10 ++++++++++
- drivers/infiniband/sw/rxe/rxe_verbs.c |  6 ++++++
- drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
- 3 files changed, 17 insertions(+)
+ drivers/infiniband/sw/rxe/rxe_mr.c    |  1 +
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  3 +++
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 36 ++++++++++++++++++++++++---
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  9 ++++---
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 10 ++++++++
+ 5 files changed, 53 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index f5200777399c..18861b9edbfd 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -334,6 +334,9 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	qp->scq			= scq;
- 	qp->srq			= srq;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+index fc3942e04a1f..8059f31882ae 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -687,6 +687,7 @@ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 	if (atomic_read(&mr->num_mw) > 0)
+ 		return -EINVAL;
  
-+	atomic_inc(&rcq->num_wq);
-+	atomic_inc(&scq->num_wq);
-+
- 	rxe_qp_init_misc(rxe, qp, init);
++	rxe_disable_lookup(mr);
+ 	rxe_put(mr);
  
- 	err = rxe_qp_init_req(rxe, qp, init, udata, uresp);
-@@ -353,6 +356,9 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	rxe_queue_cleanup(qp->sq.queue);
- 	qp->sq.queue = NULL;
- err1:
-+	atomic_dec(&rcq->num_wq);
-+	atomic_dec(&scq->num_wq);
-+
- 	qp->pd = NULL;
- 	qp->rcq = NULL;
- 	qp->scq = NULL;
-@@ -810,10 +816,14 @@ static void rxe_qp_do_cleanup(struct work_struct *work)
- 	if (qp->rq.queue)
- 		rxe_queue_cleanup(qp->rq.queue);
+ 	return 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index ba3f94c69171..2464952a04d4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -25,6 +25,8 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ 			RXE_MW_STATE_FREE : RXE_MW_STATE_VALID;
+ 	spin_lock_init(&mw->lock);
  
-+	atomic_dec(&qp->scq->num_wq);
- 	if (qp->scq)
- 		rxe_put(qp->scq);
++	rxe_finalize(mw);
 +
-+	atomic_dec(&qp->rcq->num_wq);
- 	if (qp->rcq)
- 		rxe_put(qp->rcq);
-+
- 	if (qp->pd)
- 		rxe_put(qp->pd);
+ 	return 0;
+ }
  
+@@ -32,6 +34,7 @@ int rxe_dealloc_mw(struct ib_mw *ibmw)
+ {
+ 	struct rxe_mw *mw = to_rmw(ibmw);
+ 
++	rxe_disable_lookup(mw);
+ 	rxe_put(mw);
+ 
+ 	return 0;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index 0fdde3d46949..87b89d263f80 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -140,7 +140,9 @@ void *rxe_alloc(struct rxe_pool *pool)
+ 	elem->obj = obj;
+ 	kref_init(&elem->ref_cnt);
+ 
+-	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
++	/* allocate index in array but leave pointer as NULL so it
++	 * can't be looked up until rxe_finalize() is called */
++	err = xa_alloc_cyclic(&pool->xa, &elem->index, NULL, pool->limit,
+ 			      &pool->next, GFP_KERNEL);
+ 	if (err)
+ 		goto err_free;
+@@ -168,7 +170,7 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+ 	elem->obj = (u8 *)elem - pool->elem_offset;
+ 	kref_init(&elem->ref_cnt);
+ 
+-	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
++	err = xa_alloc_cyclic(&pool->xa, &elem->index, NULL, pool->limit,
+ 			      &pool->next, GFP_KERNEL);
+ 	if (err)
+ 		goto err_cnt;
+@@ -202,8 +204,12 @@ static void rxe_elem_release(struct kref *kref)
+ {
+ 	struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
+ 	struct rxe_pool *pool = elem->pool;
++	struct xarray *xa = &pool->xa;
++	unsigned long flags;
+ 
+-	xa_erase(&pool->xa, elem->index);
++	xa_lock_irqsave(xa, flags);
++	__xa_erase(&pool->xa, elem->index);
++	xa_unlock_irqrestore(xa, flags);
+ 
+ 	if (pool->cleanup)
+ 		pool->cleanup(elem);
+@@ -223,3 +229,27 @@ int __rxe_put(struct rxe_pool_elem *elem)
+ {
+ 	return kref_put(&elem->ref_cnt, rxe_elem_release);
+ }
++
++void __rxe_finalize(struct rxe_pool_elem *elem)
++{
++	struct xarray *xa = &elem->pool->xa;
++	unsigned long flags;
++	void *ret;
++
++	xa_lock_irqsave(xa, flags);
++	ret = __xa_store(&elem->pool->xa, elem->index, elem, GFP_KERNEL);
++	xa_unlock_irqrestore(xa, flags);
++	WARN_ON(xa_err(ret));
++}
++
++void __rxe_disable_lookup(struct rxe_pool_elem *elem)
++{
++	struct xarray *xa = &elem->pool->xa;
++	unsigned long flags;
++	void *ret;
++
++	xa_lock_irqsave(xa, flags);
++	ret = __xa_store(&elem->pool->xa, elem->index, NULL, GFP_KERNEL);
++	xa_unlock_irqrestore(xa, flags);
++	WARN_ON(xa_err(ret));
++}
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+index 24bcc786c1b3..aa66d0eea13b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.h
++++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+@@ -63,20 +63,23 @@ void *rxe_alloc(struct rxe_pool *pool);
+ 
+ /* connect already allocated object to pool */
+ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem);
+-
+ #define rxe_add_to_pool(pool, obj) __rxe_add_to_pool(pool, &(obj)->elem)
+ 
+ /* lookup an indexed object from index. takes a reference on object */
+ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index);
+ 
+ int __rxe_get(struct rxe_pool_elem *elem);
+-
+ #define rxe_get(obj) __rxe_get(&(obj)->elem)
+ 
+ int __rxe_put(struct rxe_pool_elem *elem);
+-
+ #define rxe_put(obj) __rxe_put(&(obj)->elem)
+ 
+ #define rxe_read(obj) kref_read(&(obj)->elem.ref_cnt)
+ 
++void __rxe_finalize(struct rxe_pool_elem *elem);
++#define rxe_finalize(obj) __rxe_finalize(&(obj)->elem)
++
++void __rxe_disable_lookup(struct rxe_pool_elem *elem);
++#define rxe_disable_lookup(obj) __rxe_disable_lookup(&(obj)->elem)
++
+ #endif /* RXE_POOL_H */
 diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9a3c33dad979..4c082ac439c6 100644
+index 4c082ac439c6..6a83b4a630f5 100644
 --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
 +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -802,6 +802,12 @@ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
- {
- 	struct rxe_cq *cq = to_rcq(ibcq);
+@@ -197,6 +197,8 @@ static int rxe_create_ah(struct ib_ah *ibah,
+ 	}
  
-+	/* See IBA C11-17: The CI shall return an error if this Verb is
-+	 * invoked while a Work Queue is still associated with the CQ.
-+	 */
-+	if (atomic_read(&cq->num_wq))
-+		return -EINVAL;
+ 	rxe_init_av(init_attr->ah_attr, &ah->av);
++	rxe_finalize(ah);
 +
- 	rxe_cq_disable(cq);
+ 	return 0;
+ }
  
- 	rxe_put(cq);
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-index 34aa013c7801..5764aeed921a 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-@@ -67,6 +67,7 @@ struct rxe_cq {
- 	bool			is_dying;
- 	bool			is_user;
- 	struct tasklet_struct	comp_task;
-+	atomic_t		num_wq;
- };
+@@ -228,6 +230,7 @@ static int rxe_destroy_ah(struct ib_ah *ibah, u32 flags)
+ {
+ 	struct rxe_ah *ah = to_rah(ibah);
  
- enum wqe_state {
++	rxe_disable_lookup(ah);
+ 	rxe_put(ah);
+ 	return 0;
+ }
+@@ -435,6 +438,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+ 	if (err)
+ 		goto qp_init;
+ 
++	rxe_finalize(qp);
+ 	return 0;
+ 
+ qp_init:
+@@ -487,6 +491,7 @@ static int rxe_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	struct rxe_qp *qp = to_rqp(ibqp);
+ 	int ret;
+ 
++	rxe_disable_lookup(qp);
+ 	ret = rxe_qp_chk_destroy(qp);
+ 	if (ret)
+ 		return ret;
+@@ -905,6 +910,7 @@ static struct ib_mr *rxe_get_dma_mr(struct ib_pd *ibpd, int access)
+ 
+ 	rxe_get(pd);
+ 	rxe_mr_init_dma(pd, access, mr);
++	rxe_finalize(mr);
+ 
+ 	return &mr->ibmr;
+ }
+@@ -933,6 +939,8 @@ static struct ib_mr *rxe_reg_user_mr(struct ib_pd *ibpd,
+ 	if (err)
+ 		goto err3;
+ 
++	rxe_finalize(mr);
++
+ 	return &mr->ibmr;
+ 
+ err3:
+@@ -965,6 +973,8 @@ static struct ib_mr *rxe_alloc_mr(struct ib_pd *ibpd, enum ib_mr_type mr_type,
+ 	if (err)
+ 		goto err2;
+ 
++	rxe_finalize(mr);
++
+ 	return &mr->ibmr;
+ 
+ err2:
 -- 
 2.32.0
 
