@@ -2,191 +2,179 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775A64E1B77
-	for <lists+linux-rdma@lfdr.de>; Sun, 20 Mar 2022 13:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7284E1BC4
+	for <lists+linux-rdma@lfdr.de>; Sun, 20 Mar 2022 14:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245013AbiCTMG0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 20 Mar 2022 08:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40526 "EHLO
+        id S240048AbiCTNBu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 20 Mar 2022 09:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245042AbiCTMGY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 20 Mar 2022 08:06:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9AA233702D
-        for <linux-rdma@vger.kernel.org>; Sun, 20 Mar 2022 05:05:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647777900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dluyFNWHj0wdqGZD9WiZi8hb8qI80pWjkbX+xynrT7U=;
-        b=NatXzc0l1hN+DWDEjPhDLQWVCskvBWypGy0/f3JsM9la9Fem8I1WVXP33pw+FTDZ8EuMdk
-        ecThVAuHL7OiXJFuy4MV+aaotNm88zM6FWkAPaVh3A77efiyU6Zz2Qk1S062nUElNwFZ3i
-        XJRCrJqBaQxcHKASe9+UIymvmIj7i/Y=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-655-vHIGfFaqM9if2rQKpZatRw-1; Sun, 20 Mar 2022 08:04:59 -0400
-X-MC-Unique: vHIGfFaqM9if2rQKpZatRw-1
-Received: by mail-ej1-f71.google.com with SMTP id er8-20020a170907738800b006e003254d86so302456ejc.11
-        for <linux-rdma@vger.kernel.org>; Sun, 20 Mar 2022 05:04:59 -0700 (PDT)
+        with ESMTP id S235848AbiCTNBu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 20 Mar 2022 09:01:50 -0400
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D4E4B844
+        for <linux-rdma@vger.kernel.org>; Sun, 20 Mar 2022 06:00:27 -0700 (PDT)
+Received: by mail-wr1-f46.google.com with SMTP id h23so16860825wrb.8
+        for <linux-rdma@vger.kernel.org>; Sun, 20 Mar 2022 06:00:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dluyFNWHj0wdqGZD9WiZi8hb8qI80pWjkbX+xynrT7U=;
-        b=FN51jYUsFD6DwoVEu1PO/4auhM+ArHyw6t2kkeldFiM6yCjy8aUF0p+HUByMG8Y+BR
-         jgwj/yhC4azyDEyD15w/banYUHlY2VP8SHjEFyzGxYpnH+b1sKb7gMShvF31Vmh0Ztjh
-         ifJei047qedu9YSr0ox07aJIlDJhTeOdZg6ZLi/iI2xPZ+7QLcO0FkYn+ubgFB1R7N4b
-         r9i8/inn4rBgIxBu6JrGMuopQswO9WJticNxHGaV2+v+A6zB4KbjKatGC9L0VOi7QDKJ
-         TcNlRPdoBrklaj2aMs62cJiOK3bZc2ysq+v6EP2PiIptptaGAuL3d+U69hJJ6Y/sFq8k
-         u60w==
-X-Gm-Message-State: AOAM532ilBevSDNNCVpcCzTmXYY2n7sa7vuka08g/RH39M5G6vH+1iCf
-        qc5ReSTsbQSV/C0VGQWd93EUlAh7rff8SCGeoqYVGejGJ4xehk3Pplo9yuCul69PJ6mMQJiLzRn
-        WXtV30/zH2wlfBJDhrPSd3g==
-X-Received: by 2002:a05:6402:40c5:b0:418:e73c:a1ab with SMTP id z5-20020a05640240c500b00418e73ca1abmr18517070edb.52.1647777898129;
-        Sun, 20 Mar 2022 05:04:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzfAQhzmlNy6q9yY+EnFX+2g1gYETe+axmQh3kzhVOc32at9/0TqUx+j50nzMAK4FS++1BWlA==
-X-Received: by 2002:a05:6402:40c5:b0:418:e73c:a1ab with SMTP id z5-20020a05640240c500b00418e73ca1abmr18517008edb.52.1647777897820;
-        Sun, 20 Mar 2022 05:04:57 -0700 (PDT)
-Received: from redhat.com ([2.55.132.0])
-        by smtp.gmail.com with ESMTPSA id 27-20020a17090600db00b006df6b34d9b8sm5854831eji.211.2022.03.20.05.04.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Mar 2022 05:04:57 -0700 (PDT)
-Date:   Sun, 20 Mar 2022 08:04:48 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eli Cohen <eli@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Igor Kotrasinski <i.kotrasinsk@samsung.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
-        Joachim Fritschi <jfritschi@freenet.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org
-Subject: Re: [PATCH 2/9] virtio_console: eliminate anonymous module_init &
- module_exit
-Message-ID: <20220320080438-mutt-send-email-mst@kernel.org>
-References: <20220316192010.19001-1-rdunlap@infradead.org>
- <20220316192010.19001-3-rdunlap@infradead.org>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=y5sRQAmoTSGTiIsfeqFCXPb93iYlZ+sGnfZi7ymf7ck=;
+        b=BqadzXL3t3dZIFucqI+0LmEQ+twfQ7d+1mfUlz0T0bfsZyhDdknJlxpZXYslj/Fq7+
+         2adHFziOhTg8JqXov3CVnbY8tPvNKqhyqc4n0PEweSFJYlGSy1Aoax58vyXtZD5pu/UW
+         zqKYoUngP5U1phi0umPogDYlcC9mz2nfqpsnn/LFkb8ra6L7qcOuyUMVmBv/mLlQemff
+         /xO2FUTsX7mbg28NVCxUYwkJyNi2hOCsUNbpFfN4hhtG+grfpUqzQi3TLYY43R97W0GA
+         3Cshk+8up0NRW4kLuSISU/YcsEf6K2/T2QPmUpsRk9++lmrZEvaFlQYNw5tVSQmO+K69
+         vk3g==
+X-Gm-Message-State: AOAM530vd2LO/yeOaV1RlfZTun/kmXbKHBzjfA5A2nIitfP1GTqKyG6Y
+        z3TNg5hAFuUpcfxv9txllhO3QjsIrKE=
+X-Google-Smtp-Source: ABdhPJza6KxaJvBjbj6xX61/XOa9xgzJrOxnYWpMqEt78TAWMoqN3jdiYy0Si5ydTRJxKyItWreBAg==
+X-Received: by 2002:a05:6000:2ab:b0:204:f77:c1a with SMTP id l11-20020a05600002ab00b002040f770c1amr1384207wry.173.1647781225836;
+        Sun, 20 Mar 2022 06:00:25 -0700 (PDT)
+Received: from [10.100.102.14] (46-117-116-119.bb.netvision.net.il. [46.117.116.119])
+        by smtp.gmail.com with ESMTPSA id v188-20020a1cacc5000000b00384b71a50d5sm11281287wme.24.2022.03.20.06.00.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Mar 2022 06:00:25 -0700 (PDT)
+Message-ID: <9ba8bfae-2363-e331-83c7-317a9456da31@grimberg.me>
+Date:   Sun, 20 Mar 2022 15:00:24 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220316192010.19001-3-rdunlap@infradead.org>
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [bug report] NVMe/IB: kmemleak observed on 5.17.0-rc5 with
+ nvme-rdma testing
+Content-Language: en-US
+To:     Yi Zhang <yi.zhang@redhat.com>, Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
+        Nitzan Carmi <nitzanc@nvidia.com>,
+        Israel Rukshin <israelr@nvidia.com>
+References: <CAHj4cs8vnLXyddEJkV_1Dbmn7UaM4sLX=C1CN9tuA-5Mhczayw@mail.gmail.com>
+ <9d9abd33-51f2-5a8e-9df9-8ffe72e3a30b@nvidia.com>
+ <CAHj4cs_uViOtdMmFmJZ=htBXybjUP3uL3LnRR0C4PCnHWUM82A@mail.gmail.com>
+ <bbb103d5-7622-dc88-07b8-1edc684d2f82@nvidia.com>
+ <CAHj4cs_L=QHh4XeOJGfibfSJhhijS6s7RBNuLd_XetKT3hfjWQ@mail.gmail.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <CAHj4cs_L=QHh4XeOJGfibfSJhhijS6s7RBNuLd_XetKT3hfjWQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 16, 2022 at 12:20:03PM -0700, Randy Dunlap wrote:
-> Eliminate anonymous module_init() and module_exit(), which can lead to
-> confusion or ambiguity when reading System.map, crashes/oops/bugs,
-> or an initcall_debug log.
+
+>>> # nvme connect to target
+>>> # nvme reset /dev/nvme0
+>>> # nvme disconnect-all
+>>> # sleep 10
+>>> # echo scan > /sys/kernel/debug/kmemleak
+>>> # sleep 60
+>>> # cat /sys/kernel/debug/kmemleak
+>>>
+>> Thanks I was able to repro it with the above commands.
+>>
+>> Still not clear where is the leak is, but I do see some non-symmetric
+>> code in the error flows that we need to fix. Plus the keep-alive timing
+>> movement.
+>>
+>> It will take some time for me to debug this.
+>>
+>> Can you repro it with tcp transport as well ?
 > 
-> Give each of these init and exit functions unique driver-specific
-> names to eliminate the anonymous names.
+> Yes, nvme/tcp also can reproduce it, here is the log:
 > 
-> Example 1: (System.map)
->  ffffffff832fc78c t init
->  ffffffff832fc79e t init
->  ffffffff832fc8f8 t init
-> 
-> Example 2: (initcall_debug log)
->  calling  init+0x0/0x12 @ 1
->  initcall init+0x0/0x12 returned 0 after 15 usecs
->  calling  init+0x0/0x60 @ 1
->  initcall init+0x0/0x60 returned 0 after 2 usecs
->  calling  init+0x0/0x9a @ 1
->  initcall init+0x0/0x9a returned 0 after 74 usecs
-> 
-> Fixes: 31610434bc35 ("Virtio console driver")
-> Fixes: 7177876fea83 ("virtio: console: Add ability to remove module")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Amit Shah <amit@kernel.org>
-> Cc: virtualization@lists.linux-foundation.org
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> unreferenced object 0xffff8881675f7000 (size 192):
+>    comm "nvme", pid 3711, jiffies 4296033311 (age 2272.976s)
+>    hex dump (first 32 bytes):
+>      20 59 04 92 ff ff ff ff 00 00 da 13 81 88 ff ff   Y..............
+>      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>    backtrace:
+>      [<00000000adbc7c81>] kmem_cache_alloc_trace+0x10e/0x220
+>      [<00000000c04d85be>] blk_iolatency_init+0x4e/0x380
+>      [<00000000897ffdaf>] blkcg_init_queue+0x12e/0x610
+>      [<000000002653e58d>] blk_alloc_queue+0x400/0x840
+>      [<00000000fcb99f3c>] blk_mq_init_queue_data+0x6a/0x100
+>      [<00000000486936b6>] nvme_tcp_setup_ctrl+0x70c/0xbe0 [nvme_tcp]
+>      [<000000000bb29b26>] nvme_tcp_create_ctrl+0x953/0xbb4 [nvme_tcp]
+>      [<00000000ca3d4e54>] nvmf_dev_write+0x44e/0xa39 [nvme_fabrics]
+>      [<0000000056b79a25>] vfs_write+0x17e/0x9a0
+>      [<00000000a5af6c18>] ksys_write+0xf1/0x1c0
+>      [<00000000c035c128>] do_syscall_64+0x3a/0x80
+>      [<000000000e5ea863>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> unreferenced object 0xffff8881675f7600 (size 192):
+>    comm "nvme", pid 3711, jiffies 4296033320 (age 2272.967s)
+>    hex dump (first 32 bytes):
+>      20 59 04 92 ff ff ff ff 00 00 22 92 81 88 ff ff   Y........".....
+>      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>    backtrace:
+>      [<00000000adbc7c81>] kmem_cache_alloc_trace+0x10e/0x220
+>      [<00000000c04d85be>] blk_iolatency_init+0x4e/0x380
+>      [<00000000897ffdaf>] blkcg_init_queue+0x12e/0x610
+>      [<000000002653e58d>] blk_alloc_queue+0x400/0x840
+>      [<00000000fcb99f3c>] blk_mq_init_queue_data+0x6a/0x100
+>      [<000000006ca5f9f6>] nvme_tcp_setup_ctrl+0x772/0xbe0 [nvme_tcp]
+>      [<000000000bb29b26>] nvme_tcp_create_ctrl+0x953/0xbb4 [nvme_tcp]
+>      [<00000000ca3d4e54>] nvmf_dev_write+0x44e/0xa39 [nvme_fabrics]
+>      [<0000000056b79a25>] vfs_write+0x17e/0x9a0
+>      [<00000000a5af6c18>] ksys_write+0xf1/0x1c0
+>      [<00000000c035c128>] do_syscall_64+0x3a/0x80
+>      [<000000000e5ea863>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+> unreferenced object 0xffff8891fb6a3600 (size 192):
+>    comm "nvme", pid 3711, jiffies 4296033511 (age 2272.776s)
+>    hex dump (first 32 bytes):
+>      20 59 04 92 ff ff ff ff 00 00 5c 1d 81 88 ff ff   Y........\.....
+>      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>    backtrace:
+>      [<00000000adbc7c81>] kmem_cache_alloc_trace+0x10e/0x220
+>      [<00000000c04d85be>] blk_iolatency_init+0x4e/0x380
+>      [<00000000897ffdaf>] blkcg_init_queue+0x12e/0x610
+>      [<000000002653e58d>] blk_alloc_queue+0x400/0x840
+>      [<00000000fcb99f3c>] blk_mq_init_queue_data+0x6a/0x100
+>      [<000000004a3bf20e>] nvme_tcp_setup_ctrl.cold.57+0x868/0xa5d [nvme_tcp]
+>      [<000000000bb29b26>] nvme_tcp_create_ctrl+0x953/0xbb4 [nvme_tcp]
+>      [<00000000ca3d4e54>] nvmf_dev_write+0x44e/0xa39 [nvme_fabrics]
+>      [<0000000056b79a25>] vfs_write+0x17e/0x9a0
+>      [<00000000a5af6c18>] ksys_write+0xf1/0x1c0
+>      [<00000000c035c128>] do_syscall_64+0x3a/0x80
+>      [<000000000e5ea863>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
+Looks like there is some asymmetry on blk_iolatency. It is intialized
+when allocating a request queue and exited when deleting a genhd. In
+nvme we have request queues that will never have genhd that corresponds
+to them (like the admin queue).
 
-If this is done tree-wide, it's ok to do it for virtio too.
+Does this patch eliminate the issue?
+--
+diff --git a/block/blk-core.c b/block/blk-core.c
+index 94bf37f8e61d..6ccc02a41f25 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -323,6 +323,7 @@ void blk_cleanup_queue(struct request_queue *q)
 
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
+         blk_queue_flag_set(QUEUE_FLAG_DEAD, q);
 
-No real opinion on whether it's a good idea.
++       rq_qos_exit(q);
+         blk_sync_queue(q);
+         if (queue_is_mq(q)) {
+                 blk_mq_cancel_work_sync(q);
+diff --git a/block/genhd.c b/block/genhd.c
+index 54f60ded2ee6..10ff0606c100 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -626,7 +626,6 @@ void del_gendisk(struct gendisk *disk)
 
+         blk_mq_freeze_queue_wait(q);
 
-> ---
->  drivers/char/virtio_console.c |    8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> --- lnx-517-rc8.orig/drivers/char/virtio_console.c
-> +++ lnx-517-rc8/drivers/char/virtio_console.c
-> @@ -2245,7 +2245,7 @@ static struct virtio_driver virtio_rproc
->  	.remove =	virtcons_remove,
->  };
->  
-> -static int __init init(void)
-> +static int __init virtio_console_init(void)
->  {
->  	int err;
->  
-> @@ -2280,7 +2280,7 @@ free:
->  	return err;
->  }
->  
-> -static void __exit fini(void)
-> +static void __exit virtio_console_fini(void)
->  {
->  	reclaim_dma_bufs();
->  
-> @@ -2290,8 +2290,8 @@ static void __exit fini(void)
->  	class_destroy(pdrvdata.class);
->  	debugfs_remove_recursive(pdrvdata.debugfs_dir);
->  }
-> -module_init(init);
-> -module_exit(fini);
-> +module_init(virtio_console_init);
-> +module_exit(virtio_console_fini);
->  
->  MODULE_DESCRIPTION("Virtio console driver");
->  MODULE_LICENSE("GPL");
-
+-       rq_qos_exit(q);
+         blk_sync_queue(q);
+         blk_flush_integrity();
+         /*
+--
