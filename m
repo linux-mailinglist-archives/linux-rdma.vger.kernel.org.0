@@ -2,77 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 823054E39C0
-	for <lists+linux-rdma@lfdr.de>; Tue, 22 Mar 2022 08:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F7FE4E3C40
+	for <lists+linux-rdma@lfdr.de>; Tue, 22 Mar 2022 11:13:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229488AbiCVHoE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 22 Mar 2022 03:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44636 "EHLO
+        id S232089AbiCVKPH (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 22 Mar 2022 06:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230462AbiCVHnz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Mar 2022 03:43:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C92704AE2C
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Mar 2022 00:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1647934587;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=wuRrFu5cUVUqipL227+fRPZtFhvEt9/85KsEOXh5jl0=;
-        b=jG5rtXDANFU3ViIeSWF7n4QeQNM8+vM/lxbSqVezgWiYigoUs48j4A/1ZssFqhNZ/3r2Jh
-        QtT5WIrv+fHZ3C22KDIGiefhi8BoBIziKU87ZIYL26ZNkBYte0p3qA/5cljnj85c1qSiY/
-        H4svxUj/lGm3J85JYpo6Qg5QthrzyTU=
-Received: from mail-yw1-f200.google.com (mail-yw1-f200.google.com
- [209.85.128.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-106-ExZvV-HmObKyq9qaCphmzQ-1; Tue, 22 Mar 2022 03:36:26 -0400
-X-MC-Unique: ExZvV-HmObKyq9qaCphmzQ-1
-Received: by mail-yw1-f200.google.com with SMTP id 00721157ae682-2e5a3c1384cso139405947b3.4
-        for <linux-rdma@vger.kernel.org>; Tue, 22 Mar 2022 00:36:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wuRrFu5cUVUqipL227+fRPZtFhvEt9/85KsEOXh5jl0=;
-        b=U2HLV8Gjd5NODuVl1TeO8xC1VmMCdNKy2kW9M7V0GxiliHZ2wxSkqp734cIUIZ3F+J
-         hfAAaJ2xZid0eiYtfpXohnxjSx3c4gpWfmq60NkJGTt2U1lxyxNI3+GsqfjwBKNWGb4h
-         dJx7GqUDB/7HxAP4QpnCXPhN1BPq8LDFpGTSKsENWqT7JmOhrahxZ1jcG4TiBGhPJ35c
-         eJOjyLcOwHoV1MeiQnpYvi2vyRKdMEQY3lwCZdlJUaMMVG1DH7Yn5KUV0aT05Kwutj5l
-         erCj89ppGJbZp4LR5Th0PZ2oppK1PVs+PGye44+hOOtVC9SWwlOZ+ehgNsD5lLX12Dwm
-         vGsQ==
-X-Gm-Message-State: AOAM532tANXeMDtpstI2/IUOZLuqa3UAMhWc0s+Of+hKwgYsHSAw+Vbv
-        0tonHt8aVTkrJDCLCgofqh55LWwkFVf+ueo68WAdiG+06QWcFn2Spah/K0zzF9Wq7gSB6vPjCvb
-        VXJMlMG6rlASgStPl02DbjMYTVRu54ucBf0F/ZQ==
-X-Received: by 2002:a25:6e08:0:b0:633:6ade:e95c with SMTP id j8-20020a256e08000000b006336adee95cmr24781873ybc.489.1647934585702;
-        Tue, 22 Mar 2022 00:36:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwrNJf4CSwm5n2+dQ8e4PKJuYJ746DO4tb+dICt8VHxI9e7TiXuz2wEye8LJChdsYi6q/e266oM9xHuq7awqus=
-X-Received: by 2002:a25:6e08:0:b0:633:6ade:e95c with SMTP id
- j8-20020a256e08000000b006336adee95cmr24781859ybc.489.1647934585517; Tue, 22
- Mar 2022 00:36:25 -0700 (PDT)
+        with ESMTP id S231845AbiCVKPG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 22 Mar 2022 06:15:06 -0400
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908F8240A8;
+        Tue, 22 Mar 2022 03:13:39 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 790E058024B;
+        Tue, 22 Mar 2022 06:13:36 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 22 Mar 2022 06:13:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=EWmG3jSf1BnvVGbFL
+        8jiO1r4X5cFxx3tAO4xA/Ho7MY=; b=KPSyiagqsFsBkQYpqzhD2qFm8ggdQyyJN
+        3FTgXIXsOjqqRRxTNNAMRgJFe7I8aY1WusTW6rRgbaMIHRZsmefHFDaqm+daXj1T
+        FKnq8teRsj4SLCst0cz2JF0iu2ic9scxQItw+YwuSkyxiXHgeJrlWpdh0goBjcFE
+        uzhQ+XKv5/+pUWGAx9okR0WgM/khX4akyqj997ZnWqaJS4iBiCUnKg1wbqpVUk/q
+        wImvhSM6IkoBzDMXhXV4McYYlcI9ukLVkNuP+Wava5sd2YgSPy6SxztwuPnwz+JL
+        A9HHlzhTkJRjwtMJKh7seVnozZhqbuYA+upcWq4pm6wwSUlD550RQ==
+X-ME-Sender: <xms:T6E5YkzhYOV_CPgFx2NHLaSCfOcEtYd2E-0mEC3Y3xz27V5dY3_Pgw>
+    <xme:T6E5YoRRsJbLWmSRiV93Oiklf1HwPkJpqAmFNJoDm1GYgeaYqJSXMwAZ_bR06T-Ay
+    zUG8lhRuIycf8w>
+X-ME-Received: <xmr:T6E5YmWlXycqEed0oO8KCkG94xaCeXhWxRZQfMHaBhaOgOK3glg3cvOw9je2u2U-dtvwVtpF6yL2dZcq3Gq5qzmb_Sk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudeghedgudduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
+    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
+    gvrhhnpeehhfdthfduueehgfekkefhhedutddvveefteehteekleevgfegteevueelheek
+    ueenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomhepihguohhstghhsehiughoshgthhdrohhrgh
+X-ME-Proxy: <xmx:T6E5YiiWUQakm6lu4H5YeFYXF-P1hkEzdZ78gFSjNCWw_oVEqc0Gbw>
+    <xmx:T6E5YmCjyFZja3mZue3lcF5tTpFHDqhvKGvm8_CdfHVJoQVLci9WGg>
+    <xmx:T6E5YjJsnJMzVyP2nCu2HAZIZbM7I5ldlFjhhAVzsl9Xsl0_SA2FRg>
+    <xmx:UKE5YvufkQCMBCvx_m7PKJEMf-zrPYfiMiSxm6VVpXnIiQyHIxmOxg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 22 Mar 2022 06:13:34 -0400 (EDT)
+Date:   Tue, 22 Mar 2022 12:13:31 +0200
+From:   Ido Schimmel <idosch@idosch.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Jianbo Liu <jianbol@nvidia.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-rdma@vger.kernel.org, andrew@lunn.ch,
+        vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, kuba@kernel.org, rajur@chelsio.com,
+        claudiu.manoil@nxp.com, sgoutham@marvell.com, gakula@marvell.com,
+        sbhatta@marvell.com, hkelam@marvell.com, saeedm@nvidia.com,
+        leon@kernel.org, idosch@nvidia.com, petrm@nvidia.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        simon.horman@corigine.com, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        baowen.zheng@corigine.com, louis.peens@netronome.com,
+        peng.zhang@corigine.com, oss-drivers@corigine.com, roid@nvidia.com
+Subject: Re: [PATCH net-next v3 1/2] net: flow_offload: add tc police action
+ parameters
+Message-ID: <YjmhS7mEw7DraXfE@shredder>
+References: <20220224102908.5255-1-jianbol@nvidia.com>
+ <20220224102908.5255-2-jianbol@nvidia.com>
+ <20220315191358.taujzi2kwxlp6iuf@skbuf>
+ <YjM2IhX4k5XHnya0@shredder>
+ <20220317185249.5mff5u2x624pjewv@skbuf>
+ <YjON61Hum0+B4m6y@shredder>
 MIME-Version: 1.0
-References: <CAHj4cs8vnLXyddEJkV_1Dbmn7UaM4sLX=C1CN9tuA-5Mhczayw@mail.gmail.com>
- <9d9abd33-51f2-5a8e-9df9-8ffe72e3a30b@nvidia.com> <CAHj4cs_uViOtdMmFmJZ=htBXybjUP3uL3LnRR0C4PCnHWUM82A@mail.gmail.com>
- <bbb103d5-7622-dc88-07b8-1edc684d2f82@nvidia.com> <CAHj4cs_L=QHh4XeOJGfibfSJhhijS6s7RBNuLd_XetKT3hfjWQ@mail.gmail.com>
- <9ba8bfae-2363-e331-83c7-317a9456da31@grimberg.me> <CAHj4cs9cmOt=9++wuqJ1ehLPDJcaXJGyTKcHSjU-avWxr1CBrA@mail.gmail.com>
- <f5394785-aafa-784c-9ac0-b4abe19f65be@grimberg.me> <CAHj4cs_WQg752czaR4mtaZVPRW6ZqO16EAHZ10njRB+g+8gOOQ@mail.gmail.com>
-In-Reply-To: <CAHj4cs_WQg752czaR4mtaZVPRW6ZqO16EAHZ10njRB+g+8gOOQ@mail.gmail.com>
-From:   Ming Lei <ming.lei@redhat.com>
-Date:   Tue, 22 Mar 2022 15:36:14 +0800
-Message-ID: <CAFj5m9KD+AUn1nJ=XaqwuuWz4TQgZ+d8Uxq8n7j3adHvg8gR0A@mail.gmail.com>
-Subject: Re: [bug report] NVMe/IB: kmemleak observed on 5.17.0-rc5 with
- nvme-rdma testing
-To:     Yi Zhang <yi.zhang@redhat.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>,
-        Nitzan Carmi <nitzanc@nvidia.com>,
-        Israel Rukshin <israelr@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YjON61Hum0+B4m6y@shredder>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,56 +85,21 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Mar 22, 2022 at 12:58 PM Yi Zhang <yi.zhang@redhat.com> wrote:
->
-> On Mon, Mar 21, 2022 at 5:25 PM Sagi Grimberg <sagi@grimberg.me> wrote:
-> >
-> >
-> > >>>>> # nvme connect to target
-> > >>>>> # nvme reset /dev/nvme0
-> > >>>>> # nvme disconnect-all
-> > >>>>> # sleep 10
-> > >>>>> # echo scan > /sys/kernel/debug/kmemleak
-> > >>>>> # sleep 60
-> > >>>>> # cat /sys/kernel/debug/kmemleak
-> > >>>>>
-> > >>>> Thanks I was able to repro it with the above commands.
-> > >>>>
-> > >>>> Still not clear where is the leak is, but I do see some non-symmetric
-> > >>>> code in the error flows that we need to fix. Plus the keep-alive timing
-> > >>>> movement.
-> > >>>>
-> > >>>> It will take some time for me to debug this.
-> > >>>>
-> > >>>> Can you repro it with tcp transport as well ?
-> > >>>
-> > >>> Yes, nvme/tcp also can reproduce it, here is the log:
-> >
-> > Looks like the offending commit was 8e141f9eb803 ("block: drain file
-> > system I/O on del_gendisk") which moved the call-site for a reason.
-> >
-> > However rq_qos_exit() should be reentrant safe, so can you verify
-> > that this change eliminates the issue as well?
->
-> Yes, this change also fixed the kmemleak, thanks.
->
-> > --
-> > diff --git a/block/blk-core.c b/block/blk-core.c
-> > index 94bf37f8e61d..6ccc02a41f25 100644
-> > --- a/block/blk-core.c
-> > +++ b/block/blk-core.c
-> > @@ -323,6 +323,7 @@ void blk_cleanup_queue(struct request_queue *q)
-> >
-> >          blk_queue_flag_set(QUEUE_FLAG_DEAD, q);
-> >
-> > +       rq_qos_exit(q);
-> >          blk_sync_queue(q);
-> >          if (queue_is_mq(q)) {
-> >                  blk_mq_cancel_work_sync(q);
+On Thu, Mar 17, 2022 at 09:37:22PM +0200, Ido Schimmel wrote:
+> On Thu, Mar 17, 2022 at 08:52:49PM +0200, Vladimir Oltean wrote:
+> > I'd just like the 'reclassify' action to be propagated in some reasonable
+> > way to flow offload, considering that at the moment the error is quite cryptic.
+> 
+> OK, will check next week. Might be best to simply propagate extack to
+> offload_act_setup() and return a meaningful message in
+> tcf_police_offload_act_setup(). There are a bunch of other actions whose
+> callback simply returns '-EOPNOTSUPP' that can benefit from it.
 
-BTW,  the similar fix has been merged to v5.17:
+# tc filter add dev dummy0 ingress protocol ip flower skip_sw ip_proto icmp action police rate 100Mbit burst 10000
+Error: act_police: Offload not supported when conform/exceed action is "reclassify".
+We have an error talking to the kernel
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=daaca3522a8e67c46e39ef09c1d542e866f85f3b
+Available here:
+https://github.com/idosch/linux/commits/tc_extack
 
-Thanks,
-
+I plan to submit the patches after net-next reopens.
