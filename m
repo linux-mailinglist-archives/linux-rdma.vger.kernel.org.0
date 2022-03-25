@@ -2,47 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B55274E698B
-	for <lists+linux-rdma@lfdr.de>; Thu, 24 Mar 2022 20:53:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF0A4E6CA2
+	for <lists+linux-rdma@lfdr.de>; Fri, 25 Mar 2022 03:47:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344245AbiCXTzR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 24 Mar 2022 15:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S1357951AbiCYCss (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 24 Mar 2022 22:48:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235510AbiCXTzQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Mar 2022 15:55:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D1EA144F
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Mar 2022 12:53:44 -0700 (PDT)
+        with ESMTP id S1357949AbiCYCsr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 24 Mar 2022 22:48:47 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC0FBF03B;
+        Thu, 24 Mar 2022 19:47:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 97B5660A73
-        for <linux-rdma@vger.kernel.org>; Thu, 24 Mar 2022 19:53:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 844F0C340EC;
-        Thu, 24 Mar 2022 19:53:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 70820B81D87;
+        Fri, 25 Mar 2022 02:47:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 23C8AC340ED;
+        Fri, 25 Mar 2022 02:47:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648151623;
-        bh=OJIxnGAmJO6RrIIm6r84SCUG2856gepIo3RB4rmXcvs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ESc0FeXE9m+AtBAiufVhFoVQ0x4LaUAZN548jas6qzfmvz/S2shwnT++FK5kpK8zc
-         +kcni24Nx2fCK0ZqEoI2HNceFYn+mEOqZ+JsksTI42cXJ0VK6uolVKR6QKPmfEbOFS
-         3SoZ6QAZxUIGAdeWISBSV2W71nTWayn59H2sc3akbmuPEZpApa2sMknApajhx3OBGY
-         zVksDa0d2T/Nql7QEEGFJFe5ioLKcUcnMhcPhtk7mTSAWmUZiEnFUW+h6YTBr2FBK/
-         n4rarD455O9ONW67Gr7QnHKu2lYJL8pJLXuRqM9VYtbdWf7RAv8NOmSbRHfL9twj+O
-         bXOV+SSLzBFQA==
-Date:   Thu, 24 Mar 2022 21:53:38 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
-Subject: Re: [PATCH 1/1] RDMA/irdma: Remove the redundant variable
-Message-ID: <YjzMQoYoUxqlP8Zw@unreal>
-References: <20220323230135.291813-1-yanjun.zhu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220323230135.291813-1-yanjun.zhu@intel.com>
+        s=k20201202; t=1648176432;
+        bh=hMAQccOefc/GgMbYVJm7PF0uWq02bRrih9hwRFqJ200=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=MaxnKXl3sVgZkh+VCLLHedDWf113xJCKCiyFGeORBn/h+3JzsR0U2maiPd9eJT2GB
+         c5LIrzZ0ziqD/b56eHfuO7yHQrCZOhEDDbCQYIZrFwe/MDUzKBF+qjqgLfyvBOFKkD
+         zZEnaJ3vrUKW9S/tJ5BvBS8nDMfM6mdDlcVuWH0b1zKtJ+nenLuIRsiPZ+60Enf/+q
+         DlUo27uruY0fh04Rg+KE35XPavyOhUa8ngBHg+KcAyQDdaQ5Ke5r3nKs4Xq2rbz+mH
+         plX5eF8SxwVDnEyCPr992bcp/5LCa1PjZ4k0bzeKPHvYPhUBZdWA8vDdeTxlVbX6ro
+         hGr9DmtbSmE2Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 122D5E7BB0B;
+        Fri, 25 Mar 2022 02:47:12 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull RDMA subsystem changes
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220323195436.GA1216814@nvidia.com>
+References: <20220323195436.GA1216814@nvidia.com>
+X-PR-Tracked-List-Id: <linux-rdma.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220323195436.GA1216814@nvidia.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+X-PR-Tracked-Commit-Id: 87e0eacb176f9500c2063d140c0a1d7fa51ab8a5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 2dacc1e57b95ebc42ddcbfc26cd74700b341f1df
+Message-Id: <164817643207.17034.1765146112155388319.pr-tracker-bot@kernel.org>
+Date:   Fri, 25 Mar 2022 02:47:12 +0000
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -53,17 +60,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 07:01:35PM -0400, Zhu Yanjun wrote:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> In the function irdma_puda_get_next_send_wqe, the variable wqe
-> is not necessary. So remove it.
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> ---
->  drivers/infiniband/hw/irdma/puda.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
-> 
+The pull request you sent on Wed, 23 Mar 2022 16:54:36 -0300:
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/2dacc1e57b95ebc42ddcbfc26cd74700b341f1df
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
