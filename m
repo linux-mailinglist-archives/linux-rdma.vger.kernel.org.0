@@ -2,119 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 162994E88E6
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Mar 2022 18:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1012F4E89E3
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Mar 2022 22:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbiC0QkT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Mar 2022 12:40:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43672 "EHLO
+        id S236576AbiC0UCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Mar 2022 16:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236072AbiC0QkQ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Mar 2022 12:40:16 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51370261C;
-        Sun, 27 Mar 2022 09:38:38 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F1E38B80D89;
-        Sun, 27 Mar 2022 16:38:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2073DC340EC;
-        Sun, 27 Mar 2022 16:38:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648399115;
-        bh=QAaO5L4NqAlCNulmy+O4X6kte3dGuHZtQf0q+5vG9Qo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NaExAObnJMFh1sJitxjXppDB/9ElBotMK5GD0/eid3FDbRstW/pDNiOgJCtWb6Pqz
-         Ns+KJ2LXDiLa6ZPD1MHOTwp1+Z7NYq1NiJV9y8YzFTNPzvEIJlXMzyWTs7ihsQj82n
-         OX0TWneJKcPu8TNPQEhdnuYXjB52FCNrQbxk+9VUXEQuS5avJHDf5DRRvQUOyTahEh
-         f0vJp2ZQDbE3KCWO5aQzfkBH1C+Mh8ifZ9ZkHWtEIkupQwKERGr6naB9DouslmY5fC
-         g9pRskkbzDpoKk5Y5szo177EDOU/Nxeew1yEewo6pnVfqwlnEw4n2uRHDJKnEGQwh2
-         2MWWO/QKxm7Jw==
-Date:   Sun, 27 Mar 2022 19:38:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Xiaomeng Tong <xiam0nd.tong@gmail.com>
-Cc:     bharat@chelsio.com, jgg@ziepe.ca, vipul@chelsio.com,
-        roland@purestorage.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] cxgb4: cm: fix a incorrect NULL check on list iterator
-Message-ID: <YkCTB/F4jc3DWRo8@unreal>
-References: <20220327073542.10990-1-xiam0nd.tong@gmail.com>
+        with ESMTP id S229584AbiC0UCM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Mar 2022 16:02:12 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB9F12087;
+        Sun, 27 Mar 2022 13:00:32 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id r13so24704489ejd.5;
+        Sun, 27 Mar 2022 13:00:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=78iW5XK4+ASAwJVsAvI1krxN1Cn3kULaSzDMrQW3lbE=;
+        b=W7sg25bHaszzvWVJN0gyX6n6UFKurK5uWS8e6vL3YRtpn8QA30BzDbsf0Fo0KnzuVo
+         f5lgeCM1g7VjeI4+YsTMtUtXLU8OULMmeB5PSBFxtOhNQxOmFPwV58KHSise/8GMyt0R
+         UkRxgQ3CLiyEWm9B5wmzgYC64NBf7VmqUh+uCDsTRhKm1dBL3PhDD7kvx2KxY5v+Ou9s
+         LtCbA+PaAxJA8Aqhhp0q2Rfl3QnpipqfZJ/WNelj96BMMf018qhLZN8AMLxNqJh1Ixg8
+         Af8ZbFHjT7fOZzcs+O1sgyvPQnq9W6Aze+RWRCdQHnD8mS6FSfbjKHib+pU03gWIfqf1
+         ov8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=78iW5XK4+ASAwJVsAvI1krxN1Cn3kULaSzDMrQW3lbE=;
+        b=ZmonW1tyc16bGmt4eGqB/bGDMcjSVrcxHhhvxkq1J2QuvGtadUCuauS2i64BFdbHdh
+         fald6rcruUT0imX2uwJiXvXlKTP8dYRdWeRpHrHRwoOaLy/vXw0XnQRgl+UuKN4iGhUQ
+         wMoMCVYNZokjU2MmEzQ3EFpHSOu5iLZhuXo1XYVH1W/YWB3EsczCMyrT1G9s4luM2sr3
+         dIWUWOl0PGl/bwp825Gil0EH+SXT6FClgZbCeK9NuChTwFaD1jhHmq8SSwa2UOIUvJs4
+         P6C+9+sp47+LpcVKv6x7AAhKT5PgWIIm0c5PXW199mhsksvS50i6feCxjKDtEbueZlzY
+         /qPw==
+X-Gm-Message-State: AOAM5321I1VjcLNmqJUahq/dlTke0c8clt5HM/mKGd9J3P0KvOqalsQC
+        uvWTE6XKEfErJkyt5UtA372kjwV/uL0gsFfvKVo=
+X-Google-Smtp-Source: ABdhPJwdyxkAQAdfH1wRFs+W0MNyk4bgRb4Rgv1M9DLQvwm3YbnfTG06hhOU+eKDq7Hs4uOIofL7RgDFq+x0npk+U+Y=
+X-Received: by 2002:a17:907:628e:b0:6d9:c6fa:6168 with SMTP id
+ nd14-20020a170907628e00b006d9c6fa6168mr23537601ejc.132.1648411230602; Sun, 27
+ Mar 2022 13:00:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220327073542.10990-1-xiam0nd.tong@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20220326165909.506926-1-benni@stuerz.xyz> <20220326165909.506926-5-benni@stuerz.xyz>
+In-Reply-To: <20220326165909.506926-5-benni@stuerz.xyz>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 27 Mar 2022 22:59:54 +0300
+Message-ID: <CAHp75VeTXMAueQc_c0Ryj5+a8PrJ7gk-arugiNnxtAm03x7XTg@mail.gmail.com>
+Subject: Re: [PATCH 05/22] acpica: Replace comments with C99 initializers
+To:     =?UTF-8?Q?Benjamin_St=C3=BCrz?= <benni@stuerz.xyz>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        linux@simtec.co.uk, Krzysztof Kozlowski <krzk@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Robert Moore <robert.moore@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>, 3chas3@gmail.com,
+        Harald Welte <laforge@gnumonks.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Robert Richter <rric@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        mike.marciniszyn@cornelisnetworks.com,
+        dennis.dalessandro@cornelisnetworks.com,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Karsten Keil <isdn@linux-pingi.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Kalle Valo <kvalo@kernel.org>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        linux-atm-general@lists.sourceforge.net,
+        netdev <netdev@vger.kernel.org>, linux-edac@vger.kernel.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
+        linux-input <linux-input@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>, linux-media@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 03:35:42PM +0800, Xiaomeng Tong wrote:
-> The bug is here:
-> 	if (!pdev) {
-> 
-> The list iterator value 'pdev' will *always* be set and non-NULL
-> by for_each_netdev(), so it is incorrect to assume that the
-> iterator value will be NULL if the list is empty or no element
-> found (in this case, the check 'if (!pdev)' can be bypassed as
-> it always be false unexpectly).
-> 
-> To fix the bug, use a new variable 'iter' as the list iterator,
-> while use the original variable 'pdev' as a dedicated pointer to
-> point to the found element.
+On Sat, Mar 26, 2022 at 7:39 PM Benjamin St=C3=BCrz <benni@stuerz.xyz> wrot=
+e:
+>
+> This replaces comments with C99's designated
+> initializers because the kernel supports them now.
 
-I don't think that the description is correct.
-We are talking about loopback interface which received packet, the pdev will always exist.
-Most likely. the check of "if (!pdev)" is to catch impossible situation where IPV6 packet
-was sent over loopback, but IPV6 is not enabled.
+Does it follow the conventions which are accepted in the ACPI CA project?
 
-Thanks
-
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 830662f6f032f ("RDMA/cxgb4: Add support for active and passive open connection with IPv6 address")
-> Signed-off-by: Xiaomeng Tong <xiam0nd.tong@gmail.com>
-> ---
->  drivers/infiniband/hw/cxgb4/cm.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-> index c16017f6e8db..870d8517310b 100644
-> --- a/drivers/infiniband/hw/cxgb4/cm.c
-> +++ b/drivers/infiniband/hw/cxgb4/cm.c
-> @@ -2071,7 +2071,7 @@ static int import_ep(struct c4iw_ep *ep, int iptype, __u8 *peer_ip,
->  {
->  	struct neighbour *n;
->  	int err, step;
-> -	struct net_device *pdev;
-> +	struct net_device *pdev = NULL, *iter;
->  
->  	n = dst_neigh_lookup(dst, peer_ip);
->  	if (!n)
-> @@ -2083,14 +2083,14 @@ static int import_ep(struct c4iw_ep *ep, int iptype, __u8 *peer_ip,
->  		if (iptype == 4)
->  			pdev = ip_dev_find(&init_net, *(__be32 *)peer_ip);
->  		else if (IS_ENABLED(CONFIG_IPV6))
-> -			for_each_netdev(&init_net, pdev) {
-> +			for_each_netdev(&init_net, iter) {
->  				if (ipv6_chk_addr(&init_net,
->  						  (struct in6_addr *)peer_ip,
-> -						  pdev, 1))
-> +						  iter, 1)) {
-> +					pdev = iter;
->  					break;
-> +				}
->  			}
-> -		else
-> -			pdev = NULL;
->  
->  		if (!pdev) {
->  			err = -ENODEV;
-> -- 
-> 2.17.1
-> 
+--=20
+With Best Regards,
+Andy Shevchenko
