@@ -2,112 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1012F4E89E3
-	for <lists+linux-rdma@lfdr.de>; Sun, 27 Mar 2022 22:00:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898104E8A37
+	for <lists+linux-rdma@lfdr.de>; Sun, 27 Mar 2022 23:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236576AbiC0UCN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 27 Mar 2022 16:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45840 "EHLO
+        id S232972AbiC0VcA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 27 Mar 2022 17:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbiC0UCM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Mar 2022 16:02:12 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB9F12087;
-        Sun, 27 Mar 2022 13:00:32 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id r13so24704489ejd.5;
-        Sun, 27 Mar 2022 13:00:31 -0700 (PDT)
+        with ESMTP id S230226AbiC0Vb7 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 27 Mar 2022 17:31:59 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0932FE56;
+        Sun, 27 Mar 2022 14:30:19 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id qa43so24911871ejc.12;
+        Sun, 27 Mar 2022 14:30:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=78iW5XK4+ASAwJVsAvI1krxN1Cn3kULaSzDMrQW3lbE=;
-        b=W7sg25bHaszzvWVJN0gyX6n6UFKurK5uWS8e6vL3YRtpn8QA30BzDbsf0Fo0KnzuVo
-         f5lgeCM1g7VjeI4+YsTMtUtXLU8OULMmeB5PSBFxtOhNQxOmFPwV58KHSise/8GMyt0R
-         UkRxgQ3CLiyEWm9B5wmzgYC64NBf7VmqUh+uCDsTRhKm1dBL3PhDD7kvx2KxY5v+Ou9s
-         LtCbA+PaAxJA8Aqhhp0q2Rfl3QnpipqfZJ/WNelj96BMMf018qhLZN8AMLxNqJh1Ixg8
-         Af8ZbFHjT7fOZzcs+O1sgyvPQnq9W6Aze+RWRCdQHnD8mS6FSfbjKHib+pU03gWIfqf1
-         ov8Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xA5oCyfiJYaNAgB/bEJJxA3FBMRY5wTuBnv+OuT16p0=;
+        b=nr5PYmuLrwHeD+CAZyhPp1njB9vkYw9iEoobgsjwJuQBkEsAMYyCaXy7+pSryMHqGE
+         O40dA/lxPRmnGVyey6vTn2GgAMt9C83v9wv/Y6Arj5sPFLZG6o2Cy1GZoRo5VKlyjLAU
+         jHFPg3Ayqe26hFtuMIirIgizJzlsHDlFVOzVAx8mrc808pif1VD9l1xb1AkfCWv3CObc
+         5jEI3BS7ZebORO+Px+trRXOzuF9nbmVwo7jvMFXVP/94t5iLmE11diHOXc4+GM/ZWZhT
+         JLsWOHve/BdN0K2a5UEEDDh9OKfxORrLkAVpL/vso7JuDozduEbGbj0kijf8Ih6LJrxt
+         2Gbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=78iW5XK4+ASAwJVsAvI1krxN1Cn3kULaSzDMrQW3lbE=;
-        b=ZmonW1tyc16bGmt4eGqB/bGDMcjSVrcxHhhvxkq1J2QuvGtadUCuauS2i64BFdbHdh
-         fald6rcruUT0imX2uwJiXvXlKTP8dYRdWeRpHrHRwoOaLy/vXw0XnQRgl+UuKN4iGhUQ
-         wMoMCVYNZokjU2MmEzQ3EFpHSOu5iLZhuXo1XYVH1W/YWB3EsczCMyrT1G9s4luM2sr3
-         dIWUWOl0PGl/bwp825Gil0EH+SXT6FClgZbCeK9NuChTwFaD1jhHmq8SSwa2UOIUvJs4
-         P6C+9+sp47+LpcVKv6x7AAhKT5PgWIIm0c5PXW199mhsksvS50i6feCxjKDtEbueZlzY
-         /qPw==
-X-Gm-Message-State: AOAM5321I1VjcLNmqJUahq/dlTke0c8clt5HM/mKGd9J3P0KvOqalsQC
-        uvWTE6XKEfErJkyt5UtA372kjwV/uL0gsFfvKVo=
-X-Google-Smtp-Source: ABdhPJwdyxkAQAdfH1wRFs+W0MNyk4bgRb4Rgv1M9DLQvwm3YbnfTG06hhOU+eKDq7Hs4uOIofL7RgDFq+x0npk+U+Y=
-X-Received: by 2002:a17:907:628e:b0:6d9:c6fa:6168 with SMTP id
- nd14-20020a170907628e00b006d9c6fa6168mr23537601ejc.132.1648411230602; Sun, 27
- Mar 2022 13:00:30 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xA5oCyfiJYaNAgB/bEJJxA3FBMRY5wTuBnv+OuT16p0=;
+        b=Vq02RuajnHeN+gWKhjQ/RkaAGVWw8eyZHnuKXcg66BE1HaulFnhazra/I6f9OoZsU4
+         Jr1Z6qC80POpS6BK1GriISJbLlCKHPWzaezdNbng8LlWdEyVpOpSfxdnf9sdK9uLfOJ+
+         qGHAqPUe4oc6qCpep8XabsMBxb0SDsjEUjzrwyUgeRMz3a27k05h4wrk55o81iPYRZ0g
+         4JQmEXWaR8/44M0c4C3MTtR/St9paEsOQErzWdeVwzihy2rKSEDuiXAouXEZUb8tyziH
+         nUjCCTu0xhRgGBme4ekCWuivmsETsVQaTaZbQ2k2iCu5mUGjLoLrlgOoBA3gUi6Chpwf
+         Xhpg==
+X-Gm-Message-State: AOAM530mvthWor0F84bv+0G9ECNi+lpIrGXVZzefUuqQxZIiDE1qr2WX
+        +Prm/fejyCl/4y5UMdesOBo=
+X-Google-Smtp-Source: ABdhPJx56d7M0sdeJ6YeQ2Nvz0sSKeO6gH6+YQw3oxJeqRPM1YlM/4LGsulwh2vKvwuoldcVpqXfqg==
+X-Received: by 2002:a17:906:2991:b0:6cc:fc18:f10c with SMTP id x17-20020a170906299100b006ccfc18f10cmr23664954eje.744.1648416618303;
+        Sun, 27 Mar 2022 14:30:18 -0700 (PDT)
+Received: from localhost.localdomain (i130160.upc-i.chello.nl. [62.195.130.160])
+        by smtp.googlemail.com with ESMTPSA id g20-20020aa7c594000000b004194b07bbfasm1707968edq.10.2022.03.27.14.30.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Mar 2022 14:30:17 -0700 (PDT)
+From:   Jakob Koschel <jakobkoschel@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        Mark Zhang <markzhang@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Jakob Koschel <jakobkoschel@gmail.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mike Rapoport <rppt@kernel.org>,
+        "Brian Johannesmeyer" <bjohannesmeyer@gmail.com>,
+        Cristiano Giuffrida <c.giuffrida@vu.nl>,
+        "Bos, H.J." <h.j.bos@vu.nl>
+Subject: [PATCH v2] IB/SA: replace usage of found with dedicated list iterator variable
+Date:   Sun, 27 Mar 2022 23:29:43 +0200
+Message-Id: <20220327212943.2165728-1-jakobkoschel@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220326165909.506926-1-benni@stuerz.xyz> <20220326165909.506926-5-benni@stuerz.xyz>
-In-Reply-To: <20220326165909.506926-5-benni@stuerz.xyz>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 27 Mar 2022 22:59:54 +0300
-Message-ID: <CAHp75VeTXMAueQc_c0Ryj5+a8PrJ7gk-arugiNnxtAm03x7XTg@mail.gmail.com>
-Subject: Re: [PATCH 05/22] acpica: Replace comments with C99 initializers
-To:     =?UTF-8?Q?Benjamin_St=C3=BCrz?= <benni@stuerz.xyz>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        linux@simtec.co.uk, Krzysztof Kozlowski <krzk@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Robert Moore <robert.moore@intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>, 3chas3@gmail.com,
-        Harald Welte <laforge@gnumonks.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Kalle Valo <kvalo@kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        linux-atm-general@lists.sourceforge.net,
-        netdev <netdev@vger.kernel.org>, linux-edac@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>, linux-media@vger.kernel.org,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -118,14 +76,72 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Mar 26, 2022 at 7:39 PM Benjamin St=C3=BCrz <benni@stuerz.xyz> wrot=
-e:
->
-> This replaces comments with C99's designated
-> initializers because the kernel supports them now.
+To move the list iterator variable into the list_for_each_entry_*()
+macro in the future it should be avoided to use the list iterator
+variable after the loop body.
 
-Does it follow the conventions which are accepted in the ACPI CA project?
+To *never* use the list iterator variable after the loop it was
+concluded to use a separate iterator variable instead of a
+found boolean [1].
 
---=20
-With Best Regards,
-Andy Shevchenko
+This removes the need to use a found variable and simply checking if
+the variable was set, can determine if the break/goto was hit.
+
+v1->v2:
+- set query correctly (Mark Zhang)
+
+Link: https://lore.kernel.org/all/CAHk-=wgRr_D8CB-D9Kg-c=EHreAsk5SqXPwr9Y7k9sA6cWXJ6w@mail.gmail.com/
+Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+---
+ drivers/infiniband/core/sa_query.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/infiniband/core/sa_query.c b/drivers/infiniband/core/sa_query.c
+index 74ecd7456a11..ed26066b706f 100644
+--- a/drivers/infiniband/core/sa_query.c
++++ b/drivers/infiniband/core/sa_query.c
+@@ -1035,10 +1035,9 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+ 			      struct netlink_ext_ack *extack)
+ {
+ 	unsigned long flags;
+-	struct ib_sa_query *query;
++	struct ib_sa_query *query = NULL, *iter;
+ 	struct ib_mad_send_buf *send_buf;
+ 	struct ib_mad_send_wc mad_send_wc;
+-	int found = 0;
+ 	int ret;
+
+ 	if ((nlh->nlmsg_flags & NLM_F_REQUEST) ||
+@@ -1046,20 +1045,21 @@ int ib_nl_handle_resolve_resp(struct sk_buff *skb,
+ 		return -EPERM;
+
+ 	spin_lock_irqsave(&ib_nl_request_lock, flags);
+-	list_for_each_entry(query, &ib_nl_request_list, list) {
++	list_for_each_entry(iter, &ib_nl_request_list, list) {
+ 		/*
+ 		 * If the query is cancelled, let the timeout routine
+ 		 * take care of it.
+ 		 */
+-		if (nlh->nlmsg_seq == query->seq) {
+-			found = !ib_sa_query_cancelled(query);
+-			if (found)
+-				list_del(&query->list);
++		if (nlh->nlmsg_seq == iter->seq) {
++			if (!ib_sa_query_cancelled(iter)) {
++				list_del(&iter->list);
++				query = iter;
++			}
+ 			break;
+ 		}
+ 	}
+
+-	if (!found) {
++	if (!query) {
+ 		spin_unlock_irqrestore(&ib_nl_request_lock, flags);
+ 		goto resp_out;
+ 	}
+
+base-commit: b47d5a4f6b8d42f8a8fbe891b36215e4fddc53be
+--
+2.25.1
+
