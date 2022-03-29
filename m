@@ -2,287 +2,206 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7474EA37B
-	for <lists+linux-rdma@lfdr.de>; Tue, 29 Mar 2022 01:13:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8284B4EA552
+	for <lists+linux-rdma@lfdr.de>; Tue, 29 Mar 2022 04:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230284AbiC1XKF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 28 Mar 2022 19:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S230339AbiC2CjA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 28 Mar 2022 22:39:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbiC1XKD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Mar 2022 19:10:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B471DFE5;
-        Mon, 28 Mar 2022 16:08:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1648508897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GW5piibXVKo9A/BIxG2OaJSsIL3nRb2gFVpSMD8Zngg=;
-        b=RataHu52uLY+1j4O0rcSXT0F7L8lkLcVrcT9weAkzaKSC0NHIk3kvnB0qFAmfvDIlsEd0G
-        UPZTvh7TgcalSd1NjpUx2DmQFqGZapNjbfS1SP9dFm7PLlrXhDbbKJaQePnxynRB6i580m
-        j6ExbwCCgxEpnvnJtrTQioJk/TtTamCz93AG21LXrtGWDNLj5x3PzKowf6NJKDBdv2In6T
-        SFHIAuVbgNhvLIZf52lVvPW/bj3bqilEfjSg6IVt2pNR0ffuYP/vkLbkT8Stt8Ous3Qlax
-        Bc9PCNEBPEy1tyHAqwSE/gSh3gZUmCRoc/yd8/iF4MdHN+pFm90GiY7eASJ96Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1648508897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GW5piibXVKo9A/BIxG2OaJSsIL3nRb2gFVpSMD8Zngg=;
-        b=aOELans+tovI5r1VYnU410Rrhjf4G2toTen/ParOs+ebyjfwwNbUXzKvkk4zFq8Hn7i6vn
-        uY0etoAkLcKmnUCg==
-To:     Benjamin =?utf-8?Q?St=C3=BCrz?= <benni@stuerz.xyz>, andrew@lunn.ch
-Cc:     sebastian.hesselbarth@gmail.com, gregory.clement@bootlin.com,
-        linux@armlinux.org.uk, linux@simtec.co.uk, krzk@kernel.org,
-        alim.akhtar@samsung.com, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, robert.moore@intel.com,
-        rafael.j.wysocki@intel.com, lenb@kernel.org, 3chas3@gmail.com,
-        laforge@gnumonks.org, arnd@arndb.de, gregkh@linuxfoundation.org,
-        mchehab@kernel.org, tony.luck@intel.com, james.morse@arm.com,
-        rric@kernel.org, linus.walleij@linaro.org, brgl@bgdev.pl,
-        mike.marciniszyn@cornelisnetworks.com,
-        dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
-        pali@kernel.org, dmitry.torokhov@gmail.com, isdn@linux-pingi.de,
-        benh@kernel.crashing.org, fbarrat@linux.ibm.com, ajd@linux.ibm.com,
-        davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        nico@fluxnic.net, loic.poulain@linaro.org, kvalo@kernel.org,
-        pkshih@realtek.com, bhelgaas@google.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-acpi@vger.kernel.org, devel@acpica.org,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-edac@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-input@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-media@vger.kernel.org,
-        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
-        linux-pci@vger.kernel.org,
-        Benjamin =?utf-8?Q?St=C3=BCrz?= <benni@stuerz.xyz>
-Subject: Re: [PATCH 04/22] x86: Replace comments with C99 initializers
-In-Reply-To: <20220326165909.506926-4-benni@stuerz.xyz>
-References: <20220326165909.506926-1-benni@stuerz.xyz>
- <20220326165909.506926-4-benni@stuerz.xyz>
-Date:   Tue, 29 Mar 2022 01:08:16 +0200
-Message-ID: <87lewtfzfj.ffs@tglx>
+        with ESMTP id S230478AbiC2Ciy (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 28 Mar 2022 22:38:54 -0400
+Received: from esa9.fujitsucc.c3s2.iphmx.com (esa9.fujitsucc.c3s2.iphmx.com [68.232.159.90])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE17B247C3E
+        for <linux-rdma@vger.kernel.org>; Mon, 28 Mar 2022 19:37:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1648521426; x=1680057426;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=tzxd3TVmJAjukDRPxKcQfs70luIcn0AOmKO69ibrlUU=;
+  b=GDu61n7qkPbRcxUv0++OCw6imwKMSu7Uwn8NueZFZJ/61zVTY941X5CC
+   SgQbePPz1vl8Be3ruajxYHbJFffwfQEP4vEos5CAzfjVMVNPk6n1xLBxn
+   zHuFZ3IDxxSksS7CyRW9Xv7EeIeYqrckcTpML5Jl//xaOrcHKM51a7zqI
+   swRYf3YeeapqAJRhFm80yiIiLtwK7G2WylCaQUwNvK3sN+utyJvL6cPpa
+   e6sm6/lCzgPwiQfJTdDEuiIyx9wJdNb743ZdtZp8/e0R2LOZISevaNsa5
+   0xb4PlLPSpa40LNWkZlbypedhKpocn/DEbRh93Fb2o8Q3P1OMfx57StGy
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10300"; a="52855892"
+X-IronPort-AV: E=Sophos;i="5.90,219,1643641200"; 
+   d="scan'208";a="52855892"
+Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Mar 2022 11:37:01 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GlFUgdMnNhfgXuyIGPS8O2Z1cf/U7A5ESV4mz3qNRyh4maDdH7rFen/Z0zQXGAH7o+oTTB1eyz2AZUjidhfE8N5W9l94NMmm5N9hcYytQRkBwP+M5FFCYkSexNhTVxmvFgLoOzL5YXph1p8oA5MxZo7cgcb4RYvUCqPdoGTO15SeMNkDL2dHy+eHRcDbc2miF53w5CLvwZyLRZE3EWdEvFU09OVWoZZ2PN4ksM4/INwTelnQiUR5sWix/AJH7wwtCxvOHxuPcG+eoezS3GAnz7XEqDcxs9hFgOsatl18Zi4S5DYaWW4lq2B/LflsOVCbFkIhWvIMVWJDkuPPNVzCOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tzxd3TVmJAjukDRPxKcQfs70luIcn0AOmKO69ibrlUU=;
+ b=Eb3Q3PURXvM5bHXhHoiT3/LXJzRx8yiLCrfhVTvaKIuyh04avWl208TXqI2SPiwleAdbofJvyHUnnn9UIZ+xVIZx/0bXRm+9HyHhaL+1fhpFW8YC9nttoXoDZw/KGJEGeYmNhBZeBxhfuMArJ1WdNQKhKwcK3HCf4xWg53VKj7Gh5KQ7hsYyy8D7gC8P8wNlCsAl5vJSq/whVV7sX4r/91f8bxG1JTk5n+Qrv2qng3zrI/Xu6RwhffirCFUlOLEtuYqDy2a66DJdeYhv2rPwZtvauxuQHyB9Q50vYTJU93EDiSMYr7/j6UCeP+8fNj8eUSJmyy4oPR1PIZHSg5hAKw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tzxd3TVmJAjukDRPxKcQfs70luIcn0AOmKO69ibrlUU=;
+ b=ZCFb+yQvKUv3+gYbA4uIJalqgovGdlF8GQIVaMbhc/oLivkafJOYC46+cZjAFFlRPMgoJ3iBx4gB98Xxia1zsN5zLRuxdeFFDcaiV/d6RhoKM3nA1jOK6j2nG0vngZozYGHzrHBpziU4bcwQCCRUNTMLa+L44ihz3lKqnKE0STw=
+Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com (2603:1096:604:104::9)
+ by TY2PR01MB3658.jpnprd01.prod.outlook.com (2603:1096:404:d4::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.22; Tue, 29 Mar
+ 2022 02:36:56 +0000
+Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com
+ ([fe80::535:f301:94fd:62da]) by OS0PR01MB6371.jpnprd01.prod.outlook.com
+ ([fe80::535:f301:94fd:62da%8]) with mapi id 15.20.5102.023; Tue, 29 Mar 2022
+ 02:36:56 +0000
+From:   "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+CC:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "y-goto@fujitsu.com" <y-goto@fujitsu.com>,
+        "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        "tomasz.gromadzki@intel.com" <tomasz.gromadzki@intel.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "ira.weiny@intel.com" <ira.weiny@intel.com>
+Subject: Re: [PATCH v3 3/3] RDMA/rxe: Add RDMA Atomic Write attribute for rxe
+ device
+Thread-Topic: [PATCH v3 3/3] RDMA/rxe: Add RDMA Atomic Write attribute for rxe
+ device
+Thread-Index: AQHYNT6Zd/sV5d3li0GAOL19eVqOcazA0W8AgAhy8oCAAMLcgIAGCbqAgAAbZwCABIBiAIAAGdCAgAD6qIA=
+Date:   Tue, 29 Mar 2022 02:36:56 +0000
+Message-ID: <a733ce1b-70bb-10ac-6d62-361f6ee88ace@fujitsu.com>
+References: <20220311115247.23521-1-yangx.jy@fujitsu.com>
+ <20220311115247.23521-4-yangx.jy@fujitsu.com>
+ <20220315185330.GA241071@nvidia.com>
+ <0dcc96af-1d0f-100c-aa17-d423a45f9062@fujitsu.com>
+ <20220321153225.GX11336@nvidia.com>
+ <c4442831-0704-ed6b-f2a7-ed8288d2944e@fujitsu.com>
+ <20220325132252.GB1342626@nvidia.com>
+ <470872a3-3191-905a-f1f1-8452455d5ca1@fujitsu.com>
+ <20220328113947.GG1342626@nvidia.com>
+In-Reply-To: <20220328113947.GG1342626@nvidia.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=fujitsu.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 78ed4155-9572-4f4f-e041-08da112cfe34
+x-ms-traffictypediagnostic: TY2PR01MB3658:EE_
+x-microsoft-antispam-prvs: <TY2PR01MB3658CA93089EAEDFE0FB26A8831E9@TY2PR01MB3658.jpnprd01.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IVSddgxEsVo+fAiGUQaJWXULTN58uviEGoS3B7UrF7qQWQo9G/CWTWnahm6F7RC4KKvAn6RjJparYLsZddyXWKQoYaHxgllGj93Tfslb63zDnig04tVV0vvVucVh8Cz6JZDwIiTYUY9WCO1YTCfQPN9b8jXFVspXOOXP5RSDie3Nc/62+wI3362vpc0offyW6aescYZd/u0uszWN3AI/zM2FYDkLXEPIb7Hd0ds8YrSGDGp4sHCGwpKQEEDy3U7UtvspdHp7Bs4RWeXQ2VGbFd0o9ETuVFWCFX2e6q7/BiQxHPS3YuKnzQNmQp8+ERJKKcE+NHcDtSNGkCiBfHqiu0OorxJpGQOFh9hYyTD3EB+lxnDeBTRfho4Z5RA/+9WBhQgwYrUcWAygJP/RjmsfnhyKwkF/wAJSGQTU8RpqRL+kIesx2jiAM7Iv8fweXD1Nhl4uRblA++u9CjexQef2CSJVJdPpaW5KURIOYSiKTJuoYKrMnedhXD45FaB3u8NPldQmca6g0EU0GnD5ZpyYE/ZT9B4qcLUmMGixKmpoqeKGtnBYpT6TYJPDpcarINXMxoDto7vattnU+Ihs5OxJ3/tXff8CN5F8/VxHqv+l+5thd/glA3cE7kmMPKDV6i7DMQMH9ZWIErkgC53uRpHUffshzL87saRkbAiP/alxUwnoQfkBfrLnHFTnlomHrxP/iVBSBMaBJDSr2qJ5Ji2jHCGld/bq8TQ4ASu7BFeJGrp+O6bBglP31Up90aYsBCrW
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB6371.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(91956017)(36756003)(26005)(66946007)(76116006)(38070700005)(85182001)(54906003)(66556008)(6916009)(66476007)(66446008)(186003)(6506007)(53546011)(6512007)(64756008)(316002)(31686004)(6486002)(8676002)(83380400001)(4326008)(38100700002)(86362001)(31696002)(8936002)(122000001)(2906002)(5660300002)(508600001)(71200400001)(82960400001)(2616005)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?azlSUXVnSUh3SHc5ajg4TWZyYkwyTVBlNGJZbEkvSkI3bUQ5Uk15aitha2NE?=
+ =?utf-8?B?QXdoakZzOTZLMllmSk5oK0l5TXhLczRmbldzZklXK2FPNkVseTZVNEdHdTds?=
+ =?utf-8?B?Q1g2TWtnSWUwSFVya0JjY2xyQWFPOGkwV0VINnF6Uk0yZDZ2KzdGbk5VaFNI?=
+ =?utf-8?B?VTdBNnZKY0FvQzJxK2RKZkxITTV2d2Fldk4vZGhhcStTb25takkyaGhUMDdl?=
+ =?utf-8?B?TGx4eCtMdVBSRndaVDRuN1hLRFloeENuc0gvUGY5QktUMDRYMWpVTjF5Umg2?=
+ =?utf-8?B?NklSSnEyVC9teHZ3RlByaWZRUWtGUjNWTnRxZ0RleHR2bURueU1jREx6Zlov?=
+ =?utf-8?B?a05taEVFZkQ1VlpaQ0dva29nYktRQUNFaCtQU2NMS3h4aTVDd3hiYTZGdkN2?=
+ =?utf-8?B?TG9URXkxbTIzR0tFWkZtNmJvbm5sNDlXR1p5dzhxeURPS2hla0lJdHlWS3dW?=
+ =?utf-8?B?dHY5aDg0alBnMHl6dHVhd0FFSVBsK1k0aUFXWWRFWjRWWWFEM1JWczNydzhK?=
+ =?utf-8?B?dWVnS2I3SVdaTXgrVFBKdkpBK3VCRVdzd01CNzZpL2hyZ3F0UzRqSXVQQ2pv?=
+ =?utf-8?B?c2JzUG1QbnZqM2t4cFJwNnI4bkczclR6UEcxMTV4eGZxTnhLbm1MdEo4S1U2?=
+ =?utf-8?B?dklYS1owb1ozT2JyYmFmTkxBL0tudWRGVVN6anRIRFZ5WlhnUjVNdmVXTUds?=
+ =?utf-8?B?L1ZseW9kNFhHNFdPM0JHS3hNZGNuNnh4WHJLb3JKQ0hrTlJXdVVvZmw0QmVP?=
+ =?utf-8?B?V2FGVHI1WHRuV2g1UzdFM2VPUnNjRnpUdUY5Rnl0NGJWYkozTzJqbHU0c0ZK?=
+ =?utf-8?B?WEpYb29kR3pJUFY3YmsySDNJb3o3UG1xWjVMMVRJRURXYnpOK0lTT0Zoc3Jx?=
+ =?utf-8?B?MjZncVZvQ3VnY2hRTG1xbWZHZGlCeU5YSzZMQTFmUWRjUjUxWjdCS3V5UXV0?=
+ =?utf-8?B?SFh6Tk5aQWsxTDJQVEloTk4rYlAxOXZZVW5hd2J3SlhTbTFyRndYOGhUZFpW?=
+ =?utf-8?B?dmxUTG9KMHNuRjd2QzNGM2VYL0dGMlZGMEI5dktLcHI0aHN2WlgwZ1haVzAw?=
+ =?utf-8?B?NTVaSklPUURpcWZkTkRJTEtPcXcyWkNqZzZTOS9ieEhaZEJPYWdSQUtPdTlZ?=
+ =?utf-8?B?c3JYZkkrVFdhWWlFRDZFUDhrLzByRklpU1dBaUx2QUQxYjFXdUpaZEhkR1VB?=
+ =?utf-8?B?blBFWmJmaW9yRFppQ1d4SnY3Y0pEbVJQNkVlanJhWm1VaE13VHdoSk9xaEVu?=
+ =?utf-8?B?eFFPaDdvM3F5YmNoWk8zY3JNWEsvd2xTM2c5YW1WdTRIbXBYMEM4NjlFYlZt?=
+ =?utf-8?B?Z1kvWEhwbDREYWVMcndJWGI2enA2R2JrYlBTckc4dm9peG9jMHFvWjg3YU5l?=
+ =?utf-8?B?ZjExTjM1RGpzakdsbWhZTUpoUUh5S1Y4RmZMZ05TeTJSVnpCMG10cGRMOWUw?=
+ =?utf-8?B?ODYrdUFWRm5Oa0xhdFkxZ0RTUzI4QVRuRmVVVnZPbEdaK3FKWnFsT1Z1Q1pr?=
+ =?utf-8?B?ejlTTHhZaEFsNWcvei92YTI3MFM5d0JidEpjVDZ6b2JUUEJEWVovTllzbnpO?=
+ =?utf-8?B?NW4zSlh0cm0ybUxjL3crTWxkeUlYejcydVUvaEVyUExpOEc1TFVBREZEUFFm?=
+ =?utf-8?B?aWV6RmxhWGNyVWk0YmVYaUZMbURDWFliV3o0OHJ5Y3lXN1pRMnp4bGlnem9l?=
+ =?utf-8?B?TUhueXlQbG9KQW9zYVJTQU9LYnB5TXpWMmdxakQrbmVDSFhHVTdvc2xNeU9E?=
+ =?utf-8?B?WXprRDEzd3prMjdITlhpWjhWazM4MnMwOTBkYlkrUzdQd3hRZ2I2ZHRhNFVW?=
+ =?utf-8?B?clBlV0pBdWRCQmkyNVV5dEZDZVZjYU5PWGZqY0pHek1ZTHNhWWtIWGxRUHdM?=
+ =?utf-8?B?SWFmUkdTNG13NG90RXFualA1UzlJclBabmRCZlp5MG9JRkU4SjJEQzA2dVRi?=
+ =?utf-8?B?RldoWWtseDJIVEUwbHVzS0t6S2laQ29sWjB5QlhIRXFnM1VDS216Vm9GZ2F5?=
+ =?utf-8?B?MWNza1V1RnpERGVQZ1M0RjVFZGttTnFmaWNXc3BZbytTTHdkcFhVYzFFcXA3?=
+ =?utf-8?B?SWoxM0ZCU1YyQ1pTTk9KMndUazNTdDAwMHlGNnB0b3FCTkxCbTV6VzhSWHBt?=
+ =?utf-8?B?bFIyV3l1RklZcUNqSGhPU0hVdVR5WTZyQ2lKb21vTEVSSmpyZDN3NDl1UVJy?=
+ =?utf-8?B?MHZZTFBGQk8yRWUyNmZOdndvTmNKemo5WU1SeENZbWI5RDlxRFoxa2Q3SHJx?=
+ =?utf-8?B?Y3RpendTcVlJNWNvTE5XdjUwa2JrQTgxdXA4NXJ3K2lUVC9VSXhzU2F4TVJL?=
+ =?utf-8?B?UHpBd3pCOVBEaW9Ia3JJTEdLOUk3SlkzS2tpb3VBdnpWcUV3dTc1RlM3cjJM?=
+ =?utf-8?Q?UF4coGCOsxYkKhAg=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BE0494E82B7D3E479E401D7D9521E969@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB6371.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 78ed4155-9572-4f4f-e041-08da112cfe34
+X-MS-Exchange-CrossTenant-originalarrivaltime: 29 Mar 2022 02:36:56.6832
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mdITQ/OQLsK9QfSZM1rFjNf0XmfE8eoSMjY6gOUEAgvIEIiYMCKd9t1+KMP/qZKMci7tMTk2JLN7Af0pNk679g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY2PR01MB3658
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Benjamin,
-
-On Sat, Mar 26 2022 at 17:58, Benjamin St=C3=BCrz wrote:
-
-> This replaces comments with C99's designated
-> initializers because the kernel supports them now.
-
-the kernel has used designated array initializers for a very long time
-simply because the kernel did not use pure C89 but C89 with GNU
-extensions, i.e. -std=3Dgnu89, which include designated array
-initializers. GCC supports this since 1998 with =3Dgnu89, so 'now' is
-more than slightly off.
-
-Explicit value assignment to enum constants are a different story. They
-are neither designated initializers nor new in C99. The following
-paragraph from the standard has not been changed since C89:
-
-   "The identifiers in an enumerator list are declared as constants that
-    have type int and may appear wherever such are permitted. An
-    enumerator with =3D defines its enumeration constant as the value of
-    the constant expression. If the first enumerator has no =3D, the value
-    of its enumeration constant is 0. Each subsequent enumerator with no
-    =3D defines its enumeration constant as the value of the constant
-    expression obtained by adding 1 to the value of the previous
-    enumeration constant. (The use of enumerators with =3D may produce
-    enumeration constants with values that duplicate other values in the
-    same enumeration.)"
-
-Please make sure that your changelogs are factual. Making uninformed
-claims is not helping your cause.
-
-The most important part is the WHY:
-
-    Why is the current code suboptimal?
-
-    Why is the proposed change making it better, more correct, less
-    error prone?
-
-If you can't come up with proper technical answers for these questions
-then why should it be changed?
-
->  enum regnames {
-> -	GDB_AX,			/* 0 */
-> +	GDB_AX =3D 0,
-
-Linear enums without value assignment like here are not a problem at
-all. Simply because they are well defined and well understood. See the
-above quote of the standard.
-
-Whether the explicit assignment is an improvement over the trailing
-comment or not is a matter of taste and preference. There is absolutely
-_zero_ technical advantage in using explicit value assignments in _this_
-case and neither in many other cases of your series.
-
-Also completely removing the comments here loses information:
-
-> -	GDB_PC,			/* 8 also known as eip */
-> -	GDB_PS,			/* 9 also known as eflags */
-
-Can you map _PC to EIP and _PS to EFLAGS? I can't without digging
-deep...
-
->  static const char *const mtrr_strings[MTRR_NUM_TYPES] =3D
->  {
-> -	"uncachable",		/* 0 */
-> -	"write-combining",	/* 1 */
-> -	"?",			/* 2 */
-> -	"?",			/* 3 */
-> -	"write-through",	/* 4 */
-> -	"write-protect",	/* 5 */
-> -	"write-back",		/* 6 */
-> +	[0] =3D "uncachable",
-> +	[1] =3D "write-combining",
-> +	[2] =3D "?",
-> +	[3] =3D "?",
-> +	[4] =3D "write-through",
-> +	[5] =3D "write-protect",
-> +	[6] =3D "write-back",
-
-Again, while not supported in C89, the kernel uses designators in array
-initializers for a very long time...
-
-Linear array initializers like the mtrr strings are not a real problem
-simply because there is no correlation and the code using the array
-still has to make sure that the index into the array is what it expects
-to be the content. Changing it from C89 automatic to explicit C99
-designators does not help there at all.
-
-It becomes a different story if you combine [enum] constants and arrays
-and use the constants in code because then the change to the constants
-will immediately be reflected in the array initializer. I.e. for this
-case:
-
-enum foo {
-     BAR,
-     BAZ,
-     RAB,
-     ZAR,
-};
-
-char foobar[] =3D {
-     "bar",
-     "baz",
-     "rab",
-     "zar",
-};
-
-it makes a difference if someone does:
-
-  enum foo {
-     BAR,
-     BAZ,
-+    MOO,
-     RAB,
-     ZAR,
-  };
-
-because then the related array initializer is obviously out of
-order. With:
-
-char *foobar[] =3D {
-     [BAR] =3D "bar",
-     [BAZ] =3D "baz",
-     [RAB] =3D "rab",
-     [ZAR] =3D "zar",
-};
-
-the existing values are still in the same place, just the newly added
-value is a NULL pointer. It also does not matter when the fixup for the
-missing array entry becomes:
-
-  char *foobar[] =3D {
-     [BAR] =3D "bar",
-     [BAZ] =3D "baz",
-     [RAB] =3D "rab",
-     [ZAR] =3D "zar",
-+    [MOO] =3D "moo",=20=20=20=20=20
-  };
-
-because the compiled result is still in enum order. While doing
-
-  char foobar[] =3D {
-     "bar",
-     "baz",
-     "rab",
-     "zar",
-+    "moo",
-  };
-
-would be blantantly wrong. See?
-
-But that does not apply to any of your proposed changes.
-
-So you really need to look at things and not just throw a mechanical
-change scheme at it, which results even in failures like reported by
-the 0-day robot against patch 10/22.
-
-That said, I'm not completely opposed to those changes, but you really
-have to come up with good reasons why they make sense aside of
-cosmetical reasons.
-
-Btw, the really important change regarding initializers between C89 and
-C99 was the ability to initialize struct members explicitly.
-
-In C89 the only way to initialize a struct was
-
-   =3D { a, b, c, d }
-
-which was way more error prone than the enum/array initializers. The
-dangerous part or C89 struct initializers are changes to the struct
-unless the change of the struct is actually triggering a type
-mismatch.
-
-But even that needs some serious inspection whether there is confusion
-potential or not. The harmless example is a file local:
-
-struct foo {
-       unsigned int      id;
-       unsigned int      flags;
-};
-
-and the C89 style initializer:
-
-static struct foo[] {
-       { ID_A, 0x01 },
-       { ID_B, 0x02 },
-       { ID_C, 0x01 },
-};
-
-which has a very low confusion potential simply because it's scope is
-file local and well defined and unlikely to change.
-
-A globally used structure is a different problem especially when it
-becomes necessary to insert a new struct member in the middle instead of
-appending it, changing the order, removing a member... That ends up in a
-hard to diagnose disaster with C89 style unnamed initializers pretty
-fast.
-
-Ideally C89 style unnamed struct initializers should not be used at all,
-but again it's a matter of common sense and justification whether it's
-worth to change it just because.
-
-Thanks,
-
-        tglx
+T24gMjAyMi8zLzI4IDE5OjM5LCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+IE9uIE1vbiwgTWFy
+IDI4LCAyMDIyIGF0IDEwOjA3OjI2QU0gKzAwMDAsIHlhbmd4Lmp5QGZ1aml0c3UuY29tIHdyb3Rl
+Og0KPj4gT24gMjAyMi8zLzI1IDIxOjIyLCBKYXNvbiBHdW50aG9ycGUgd3JvdGU6DQo+Pj4gSXQg
+aXMgbm90IGdyZWF0LCBidXQgdGhlcmUgaXMgbm90IGFub3RoZXIgY2hvaWNlIEkgY2FuIHNlZS4u
+DQo+PiBIaSBKYXNvbiwNCj4+DQo+PiBJIHBsYW4gdG8gb25seSBkaXNhYmxlIHRoZSBrZXkgcGxh
+Y2VzIGJ5IHRoZSBmb2xsb3dpbmcgY2hhbmdlIHNvIHRoYXQNCj4+IHVzZXIgY2Fubm90IHVzZSB0
+aGUgYXRvbWljIHdyaXRlOg0KPiBJc24ndCB0aGVyZSBhIGNhcCBmbGFnIHRvbz8NCg0KSGkgSmFz
+b24sDQoNCkkgd2lsbCBkaXNhYmxlIHRoZSBhdG9taWMgd3JpdGUgY2FwIGZsYWcgYXMgd2VsbCwg
+bGlrZSB0aGlzOg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcGFyYW0uaCANCmIvZHJpdmVy
+cy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcGFyYW0uaA0KaW5kZXggOTE4MjcwZTM0YTM1Li44ODk1
+M2Y5YzI2ZTQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV9wYXJh
+bS5oDQorKysgYi9kcml2ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV9wYXJhbS5oDQpAQCAtNTMs
+NyArNTMsMTIgQEAgZW51bSByeGVfZGV2aWNlX3BhcmFtIHsNCiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgfCBJQl9ERVZJQ0VfQUxMT1dfVVNFUl9VTlJFRw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8
+IElCX0RFVklDRV9NRU1fV0lORE9XDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwgSUJfREVWSUNF
+X01FTV9XSU5ET1dfVFlQRV8yQQ0KKyNpZmRlZiBDT05GSUdfNjRCSVQNCivCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHwgSUJfREVWSUNFX01FTV9XSU5ET1dfVFlQRV8yQg0KK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgfCBJQl9ERVZJQ0VfQVRPTUlDX1dSSVRFLA0KKyNlbHNlDQogwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIHwgSUJfREVWSUNFX01FTV9XSU5ET1dfVFlQRV8yQiwNCisjZW5kaWYgLyogQ09ORklHXzY0
+QklUICovDQogwqDCoMKgwqDCoMKgwqAgUlhFX01BWF9TR0XCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgID0gMzIsDQogwqDCoMKgwqDCoMKgwqAgUlhFX01BWF9XUUVfU0la
+RcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA9IHNpemVvZihzdHJ1Y3QgcnhlX3NlbmRf
+d3FlKSArDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBzaXplb2Yoc3RydWN0IGliX3NnZSkg
+KiANClJYRV9NQVhfU0dFLA0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
+DQpCVFc6DQoNCkkgaG9wZSB3ZSBjYW4gcmV2aWV3IGFuZCBtZXJnZSBteSBjbGVhbnVwIHBhdGNo
+c2V0WzFdWzJdIGZpcnN0LiBTbyB0aGF0IA0KSSB3aWxsIHVwZGF0ZSB0aGUgdGhpcmQgcGF0Y2hb
+M10gYmFzZWQgb24gaXQuIF5fXg0KDQpbMV06IFtQQVRDSCB2MiAxLzJdIElCL3V2ZXJiczogTW92
+ZSBlbnVtIGliX3Jhd19wYWNrZXRfY2FwcyB0byB1YXBpDQoNClsyXTogW1BBVENIIHYyIDIvMl0g
+SUIvdXZlcmJzOiBNb3ZlIHBhcnQgb2YgZW51bSBpYl9kZXZpY2VfY2FwX2ZsYWdzIHRvIHVhcGkN
+Cg0KWzNdOiBbUEFUQ0ggdjMgMy8zXSBSRE1BL3J4ZTogQWRkIFJETUEgQXRvbWljIFdyaXRlIGF0
+dHJpYnV0ZSBmb3IgcnhlIGRldmljZQ0KDQpCZXN0IFJlZ2FyZHMsDQoNClhpYW8gWWFuZw0KDQo+
+DQo+IEphc29u
