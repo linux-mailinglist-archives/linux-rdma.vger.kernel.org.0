@@ -2,49 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E924EC4FC
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Mar 2022 14:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786114EC507
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Mar 2022 14:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345255AbiC3Mzc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 30 Mar 2022 08:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42918 "EHLO
+        id S1344144AbiC3M6e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Mar 2022 08:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244567AbiC3Mz2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Mar 2022 08:55:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4A3B7C43;
-        Wed, 30 Mar 2022 05:53:43 -0700 (PDT)
+        with ESMTP id S1345425AbiC3M6c (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Mar 2022 08:58:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC381E95F0;
+        Wed, 30 Mar 2022 05:56:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EA4A260DBD;
-        Wed, 30 Mar 2022 12:53:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEDD6C340EC;
-        Wed, 30 Mar 2022 12:53:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F849609EE;
+        Wed, 30 Mar 2022 12:56:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2BA3C340EC;
+        Wed, 30 Mar 2022 12:56:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648644822;
-        bh=9Lzjr4C0o5+FuexRlUqn1UHUEVXyAWYqGNh6uZkxC+I=;
+        s=k20201202; t=1648645005;
+        bh=VHo/+AAAdD7AcNL5Os1HfUvU8wmL18pGNJzsepY5ZFQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i0VxgskMCgRM4kAySGl45svHARNH1Vsj2v4R1/c+RIJI29ku2csDF2j3rFwiOxL00
-         zD2NzTqJ05g61MQJsfxU7IWLVUzO67+jusGwUN7Ec+u/DUUrd4Ju5Dm+kk8RSCBRWA
-         faaoHHtIrNOmx3wSdMKj6qn+zcSk448lrazNpC5ZGzKfsUNbAV4vYXJix1bo9o2L3C
-         XcOf/yEZedo1xCjlWd/zOjgKFWufBA3obKORa12PHQCz3XG2ooiekq+HITSjrD5deT
-         1Qv6/iU6hRN0GHDG8gLS6O2oJcOrPfBquBwY3f7BHTbu7Sx1P0Ahf2oXtpWwenYOt7
-         NOGodGQ697QUA==
-Date:   Wed, 30 Mar 2022 15:53:38 +0300
+        b=pV4+Vhu8H9npYiN+2MpM5l1p20Q7roif82TTS4Z8raPdLnd1jZjmE+Hsdr6x4P+Sm
+         JkGQTIypsui3dk71t772m8jtP2whIjcMzKwfv7QIN9SNEYpaUSPpykAby50Rlc3+hu
+         SoS9eysq7f9cbjp7t57/Gg08jpp1sCGhg/+sLSAYX+RyEMDWxsbwK2WHQ/4pMNak8Z
+         jJBsJnQCUL9dpodaRxeQUG1ckZmRAcpKu6SEu/ZrDv6WTWT0+gtiGbr3WWsQFPnWgQ
+         Xom+ogFkXPTY+f11UeZczBkm4zNPLXM6xmXm57cEdH5p188zas8gMWP+yXQH2PG9QJ
+         z5DtDrj4/oduA==
+Date:   Wed, 30 Mar 2022 15:56:41 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Xiaomeng Tong <xiam0nd.tong@gmail.com>
-Cc:     bharat@chelsio.com, jgg@ziepe.ca, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, roland@purestorage.com,
-        stable@vger.kernel.org, vipul@chelsio.com
-Subject: Re: [PATCH] cxgb4: cm: fix a incorrect NULL check on list iterator
-Message-ID: <YkRS0sImiTd+mhd3@unreal>
-References: <YkCTB/F4jc3DWRo8@unreal>
- <20220330123027.25897-1-xiam0nd.tong@gmail.com>
+To:     Haakon Bugge <haakon.bugge@oracle.com>
+Cc:     Guo Zhengkui <guozhengkui@vivo.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "zhengkui_guo@outlook.com" <zhengkui_guo@outlook.com>
+Subject: Re: [PATCH linux-next] RDMA: simplify if-if to if-else
+Message-ID: <YkRTidagKVgSUGld@unreal>
+References: <20220328130900.8539-1-guozhengkui@vivo.com>
+ <YkQ43f9pFnU+BnC7@unreal>
+ <76AE36BF-01F9-420B-B7BF-A7C9F523A45C@oracle.com>
+ <YkQ/092IYsQxU9bi@unreal>
+ <93D39EC2-6C71-45D8-883A-F8DAA6ECFEDF@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220330123027.25897-1-xiam0nd.tong@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <93D39EC2-6C71-45D8-883A-F8DAA6ECFEDF@oracle.com>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -55,41 +64,58 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 08:30:27PM +0800, Xiaomeng Tong wrote:
-> On Sun, 27 Mar 2022 19:38:31 +0300, Leon Romanovsky wrote:
+On Wed, Mar 30, 2022 at 12:26:51PM +0000, Haakon Bugge wrote:
+> 
+> 
+> > On 30 Mar 2022, at 13:32, Leon Romanovsky <leon@kernel.org> wrote:
 > > 
-> > On Sun, Mar 27, 2022 at 03:35:42PM +0800, Xiaomeng Tong wrote:
-> > > The bug is here:
-> > > 	if (!pdev) {
-> > > 
-> > > The list iterator value 'pdev' will *always* be set and non-NULL
-> > > by for_each_netdev(), so it is incorrect to assume that the
-> > > iterator value will be NULL if the list is empty or no element
-> > > found (in this case, the check 'if (!pdev)' can be bypassed as
-> > > it always be false unexpectly).
-> > > 
-> > > To fix the bug, use a new variable 'iter' as the list iterator,
-> > > while use the original variable 'pdev' as a dedicated pointer to
-> > > point to the found element.
+> > On Wed, Mar 30, 2022 at 11:06:03AM +0000, Haakon Bugge wrote:
+> >> 
+> >> 
+> >>> On 30 Mar 2022, at 13:02, Leon Romanovsky <leon@kernel.org> wrote:
+> >>> 
+> >>> On Mon, Mar 28, 2022 at 09:08:59PM +0800, Guo Zhengkui wrote:
+> >>>> `if (!ret)` can be replaced with `else` for simplification.
+> >>>> 
+> >>>> Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+> >>>> ---
+> >>>> drivers/infiniband/hw/irdma/puda.c | 4 ++--
+> >>>> drivers/infiniband/hw/mlx4/mcg.c   | 3 +--
+> >>>> 2 files changed, 3 insertions(+), 4 deletions(-)
+> >>>> 
+> >>> 
+> >>> Thanks,
+> >>> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> >> 
+> >> Fix the unbalanced curly brackets at the same time?
 > > 
-> > I don't think that the description is correct.
-> > We are talking about loopback interface which received packet, the pdev will always exist.
+> > I think that it is ok to have if () ... else { ... } code.
 > 
-> Do the both conditions impossible?
-> 1. the list is empty or
-> 2. we can not found a pdev due to this check
-> 	if (ipv6_chk_addr(&init_net,
->   			  (struct in6_addr *)peer_ip,
-> 			  pdev, 1))
-> 			  iter, 1))
+> 
+> Hmm, doesn't the kernel coding style say:
+> 
+> "Do not unnecessarily use braces where a single statement will do."
+> 
+> [snip]
+> 
+> "This does not apply if only one branch of a conditional statement is a single statement; in the latter case use braces in both branches"
 
-Yes, both are impossible.
+ok, if it is written in documentation, let's follow it.
 
-Thanks
+Thanks for pointing that out.
 
 > 
-> > Most likely. the check of "if (!pdev)" is to catch impossible situation where IPV6 packet
-> > was sent over loopback, but IPV6 is not enabled.
 > 
-> --
-> Xiaomeng Tong
+> Thxs, Håkon
+> 
+> 
+> > 
+> > There is one place that needs an indentation fix, in mlx4, but it is
+> > faster to fix when applying the patch instead of asking to resubmit.
+> > 
+> > thanks
+> > 
+> >> 
+> >> 
+> >> Thxs, Håkon
+> 
