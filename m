@@ -2,201 +2,238 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908884EB916
-	for <lists+linux-rdma@lfdr.de>; Wed, 30 Mar 2022 05:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D0E4EBC00
+	for <lists+linux-rdma@lfdr.de>; Wed, 30 Mar 2022 09:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242430AbiC3D40 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 29 Mar 2022 23:56:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S239565AbiC3HqK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 30 Mar 2022 03:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234735AbiC3D4Z (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 29 Mar 2022 23:56:25 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 050425AEF5;
-        Tue, 29 Mar 2022 20:54:37 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 22U3Avcj011972;
-        Wed, 30 Mar 2022 03:51:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2021-07-09;
- bh=MTAz/AZSivMduMxR16LfoZmOoRCY6iaWZcf+qgW2veU=;
- b=yTpwjuV5XJJenXGLOtJ5APN89BpjH44AssGabqf/HygQwOebr2m4RHYT4Q1MzyH16BnY
- GnyZKvQVaCZLd98vNGy2WsjvcqrDpa8Ec4fM1/LY1E4hztStu38u4Jkvje7b5HyJ7+bh
- cw6FohmU/fasg4XAwefa32vxq1blUcaaJ+uxiTVBrWktt7HYaRFOFL6wJFuGhMFWq1f3
- 2z6WYFDDa7n8Exepk7rmE1Q8Oo/SQv2q+lW99AKK5kFxSwZlO3vM8wxRYBTv++kR7TAM
- Ao/vx89J+88h+Wsz9cjJ2uhXywCEL6NAB2I3Rwq/ijIr0nDmQIysnjkRxSYO2y9uA4Cl vw== 
-Received: from aserp3030.oracle.com ([141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 3f1sm2gb1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Mar 2022 03:51:33 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.1.2/8.16.1.2) with SMTP id 22U3ohVf156677;
-        Wed, 30 Mar 2022 03:51:32 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2175.outbound.protection.outlook.com [104.47.59.175])
-        by aserp3030.oracle.com with ESMTP id 3f1rv8e93f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Mar 2022 03:51:32 +0000
+        with ESMTP id S234304AbiC3HqJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 30 Mar 2022 03:46:09 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2072.outbound.protection.outlook.com [40.107.223.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1208E62
+        for <linux-rdma@vger.kernel.org>; Wed, 30 Mar 2022 00:44:23 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WsJDH6e55m6fMwohhPNYcmQRIrEvhDM2k2HjvuVF+z/9iVJ3ZsDioCAihqcehce8Hy3R63fU0BbWUe5/LGBLKDYDY5QcSU+qd9I1RAN2wNhE0N59EkmZusC/UzwWGS3/H1ys/MUGsPpbaLi+nVf65rJPtK22Egcrq/imGIuBN+ymSeSiuT4EB4b+p295d5zsHC5Jo8ZwQK/LV/ZSpsI1KmiFdZNrspCPQTKQG1/RG984MCGzi7BVy/jJHavdZZ5neoiZvydJf6LQrejcZlZuue+KPfXMf4uQSoeQ2CT7ABcM3HcbVkDRhQH9LYmPePhKdIVHer/shqIXvFU5+vDDZQ==
+ b=dgPgPfNG4GUCqWKDHXxdj8ozncPQMyHON/IylJBuv+tN3STC2f/ppukUKu4JYLcdiUR0D8qq29lpEemtxx8KykHrvFi3WfuwP8ibjpwmEj6yEph5C6Zn0fECB7LVgCcz0EsH9jnqG+lqCwrvKFvYCghtS6v+a8iSbz/cTdyBsYiDdNpBTIsjRN51zPlre0ZfFGnuRFvwk4iVKTd3i2OzYr2uZ3yjwFDtCoZ6aFnuu9Fa59jdYL7/IXsGZDFlI8yUtJ6hzLACCrrNT4NdViFG9RZ0I/33naocKXYDpzyJROO+loWpdftL5IZKgwx/AH5m40WOsBx7a7UWXPItSM3qLw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MTAz/AZSivMduMxR16LfoZmOoRCY6iaWZcf+qgW2veU=;
- b=PbQA+hAIyGQ4PeDMPggqKePXD++iXwaSd1MWuNo5T+x+RgvCEoYywO8iTtbSTaH3bZf/drQwHaDF2ri2ISaVAJbIHmGmdfXhwA89jUVjajXvUEZWfPJCYE3ZBIv810xGIimWsLrHFlkyYqJNjyiFxCUlJXCv8xlbBRmh+08ZDViXltrrJJsQrJG2dtz50KEp5PLLo5ySWnNnQPG5KlAI8Zj9iQ0E6AyftWIBBsHaOionU3Md4KSxroCjPpFQijRdZKQk39J8pZ2ycv+ny9Uofep7rstzpXbLO3V45v4gCcU+xvHqS0SttRYrTUPo+aByOdEzbcYMtOAzApC1GefUcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ bh=YBuAhFX7ZEm4DfCHkuNWAJ9OMy6aW0R730kiUzPoDBM=;
+ b=mqOLzLPLv86zi6qggCeF17RL1QYLrmpC2tSSdPV4eoRVbGw//FwwgCPgVS2MD2Fk+99sFv4Ybbswr72NTg6lHEumpAHCd/bguWDese40etFGrTMVaMcYHxFYnMLZj/ibjzCod5SeemXbZcUOpIxsqpdJo1GPaaXH5O5k0R4Rj954FCJeTsFhmH54LqTQUxkBc3ib6hPeKcMI1ijvmTCrQPh3kHnjF/Ud0lK8O4gBHbeezIyg1ZVQ7M5dxI6zcp3t+aCQJNzQFuQz0bksm6alzlZx9Ecd7YUOcLxrf7eYblJddhc5H+F0Tp9ViUDUlykPBkVjsr4FUf8VtMrM8v61qA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.235) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com; dmarc=pass
+ (p=reject sp=reject pct=100) action=none header.from=nvidia.com; dkim=none
+ (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MTAz/AZSivMduMxR16LfoZmOoRCY6iaWZcf+qgW2veU=;
- b=x9YEY0C9uo937d1SOBCJcYlAQFFtKI5NgsnWuF7P51+RtvrhrPdgw6sidLrs0+gDe57kVAyZVSeDFChVzDziyki6SoIJRjPg/AiFPRVpNyvq4OLiiES6uSAp7kQE3JVV0TbGhUSxZKn7gOQFUFp8tXAIfL1UBT9IEc6o2QrI+TQ=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by MN2PR10MB4173.namprd10.prod.outlook.com (2603:10b6:208:1d1::19) with
+ bh=YBuAhFX7ZEm4DfCHkuNWAJ9OMy6aW0R730kiUzPoDBM=;
+ b=ZvxkiHRaGtAnSZt0NoniPOGbK1/SliUZZcmRA7ypMPQbiqhUL02+IXBo07cBfttGUPeQakDTKt0gXg4wj/01G1OGorkiH+DdgYI+Ka0JCYjyctzaJPeEweGw534DSsyfrvsqyV/ymczAWWMz7EBFcCJUXEnVRN/uql3jiz/hmio8qKi4m9kRS+zzcXRnV8hhh8/w2a58P5GUGtl4y27OXRyYVSOXRj83qVuGB+L/VjSecEvOLIPZsq0q7nPpap7TiCKLkj6NW5yCdDi1f/vkILk3BqUE0yC8pehXIcLXTlb5/m+pPpL9//DAAHctkgwlmrBkroEGQdcj8SzqwYNApg==
+Received: from DM5PR22CA0020.namprd22.prod.outlook.com (2603:10b6:3:101::30)
+ by CO6PR12MB5409.namprd12.prod.outlook.com (2603:10b6:5:357::7) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5102.18; Wed, 30 Mar
- 2022 03:51:30 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::48e3:d153:6df4:fbed]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::48e3:d153:6df4:fbed%4]) with mapi id 15.20.5102.023; Wed, 30 Mar 2022
- 03:51:30 +0000
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, Amit Shah <amit@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Eli Cohen <eli@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Felipe Balbi <felipe.balbi@linux.intel.com>,
-        =?utf-8?Q?Micha=C5=82_Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Krzysztof Opasiak <k.opasiak@samsung.com>,
-        Igor Kotrasinski <i.kotrasinsk@samsung.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Jussi Kivilinna <jussi.kivilinna@mbnet.fi>,
-        Joachim Fritschi <jfritschi@freenet.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Karol Herbst <karolherbst@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, netfilter-devel@vger.kernel.org,
-        coreteam@netfilter.org, netdev@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-usb@vger.kernel.org, nouveau@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org, x86@kernel.org
-Subject: Re: [PATCH 5/9] virtio-scsi: eliminate anonymous module_init &
- module_exit
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1y20st7ww.fsf@ca-mkp.ca.oracle.com>
-References: <20220316192010.19001-1-rdunlap@infradead.org>
-        <20220316192010.19001-6-rdunlap@infradead.org>
-Date:   Tue, 29 Mar 2022 23:51:27 -0400
-In-Reply-To: <20220316192010.19001-6-rdunlap@infradead.org> (Randy Dunlap's
-        message of "Wed, 16 Mar 2022 12:20:06 -0700")
-Content-Type: text/plain
-X-ClientProxiedBy: DM6PR02CA0042.namprd02.prod.outlook.com
- (2603:10b6:5:177::19) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+ 2022 07:44:22 +0000
+Received: from DM6NAM11FT055.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:3:101:cafe::46) by DM5PR22CA0020.outlook.office365.com
+ (2603:10b6:3:101::30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.13 via Frontend
+ Transport; Wed, 30 Mar 2022 07:44:21 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.235)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.235 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.235; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (12.22.5.235) by
+ DM6NAM11FT055.mail.protection.outlook.com (10.13.173.103) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5123.19 via Frontend Transport; Wed, 30 Mar 2022 07:44:21 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL107.nvidia.com
+ (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Wed, 30 Mar
+ 2022 07:44:15 +0000
+Received: from localhost (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.22; Wed, 30 Mar
+ 2022 00:44:14 -0700
+Date:   Wed, 30 Mar 2022 10:44:11 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
+CC:     "yanjun.zhu@linux.dev" <yanjun.zhu@linux.dev>,
+        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>
+Subject: Re: [PATCH v2] RDMA/rxe: Generate a completion on error after
+ getting a wqe
+Message-ID: <YkQKS0ZaB8inihGP@unreal>
+References: <20220328151748.304551-1-yangx.jy@fujitsu.com>
+ <YkICq+3JmsTSrELB@unreal>
+ <ce13b0dc-6e1e-28a1-75f3-dafaa044c230@fujitsu.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce13b0dc-6e1e-28a1-75f3-dafaa044c230@fujitsu.com>
+X-Originating-IP: [10.126.231.35]
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 609889fb-058c-4bdb-5695-08da12009300
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4173:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR10MB4173D0036F739BDDC7753C888E1F9@MN2PR10MB4173.namprd10.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 28cc4090-f8d2-44ef-eeeb-08da12211ac7
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5409:EE_
+X-Microsoft-Antispam-PRVS: <CO6PR12MB54092603D6750E363DFA3EE9BD1F9@CO6PR12MB5409.namprd12.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: un6f//6iu39uhfJNawpCiF2FMLLldzDMSXxNSS8zBCMV13ExzfYEjDtFTwTgjWWM558X85eREvri4Y+lciAQodprT9CfTyHFh3pKxn2SYZcw2ii8GZL1b2MREo3ctfCgozkX7uXt4H0SFaKzRMW3GzaspFYrxNLVVCfvlEKqn4JY0C6GpUhCa7oyVPKTYe1o78Z0AN+jyHTjVFQXAk7JtfcMaS6RkDIN5Fkh2fT3wQD4Bymr86V7LaBWpKl4K9UfPXw8tbh86SEe9RgtNOT9oY+o587CX+k/V5XFB3bgdGMkFDZeV1MWMHWlu8Cysq7U7ELege/BfmtFvS50QlounZYAEO1wf9OoNw4nC2U7F7Aik8XddeYBpY3IR8diGgVdsieiybiVNpu2fBDZbL4G3P5h4iPMPGGfLfsHsWOTY/JO02HCce0KVbC548eyJFBWbGqIN1auEIRrQdk1ynesnOxzMloZSi9yvcFCLxY7N3RpJAuxUgCjaN7nXQbARTZB3c1zrdElYWF0wMS6dyeia/n3XlD1zh1bbZOsymlwcTKK1yvWxyyF/35Nx0tf5q9i1Ge/uwcsKMmQshIGxS2ckItIV2M3DPFmUAmfSfF20Yigyx3qfTm5ozR1ohCJw7ikhZ86uf4y/v98K2ndxSDo/T7Gwffu+niK/+wv1MImEbUl0VoxCFBEWjHxydMd+EJqchuOX51IKj3ZMbzzDGpa0A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(316002)(6486002)(4326008)(7366002)(8676002)(54906003)(7416002)(36916002)(2906002)(66556008)(6512007)(6666004)(6916009)(66476007)(7406005)(5660300002)(86362001)(52116002)(66946007)(558084003)(38100700002)(38350700002)(26005)(6506007)(508600001)(8936002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Vxpgna/MvdxlJqlYd+4dFReKfRiyjM9rdLnc/OFC6HX/OQgo7Y7DcKA6CDD7?=
- =?us-ascii?Q?EgT+vkeh3ThSpqf18xVol9ikVRAx8S4e3R29pEohzXqwgq9TPf25ZPHxOq2X?=
- =?us-ascii?Q?Y303ft/jsd1h3FXPN7Uyp5qRadYwZS7bA6gZkgBgypdVv0bQ8g7ecmXBalvB?=
- =?us-ascii?Q?jvqUpgObUcLyZLc/pyvMqrAYPkrTt4uOAwa18AlV/S1uupXtK5PWMUk0OCk2?=
- =?us-ascii?Q?YwOmTXIvVURrvwcQX/cdk/CYGJWZQa/UZDnBZI5Ea4A8wBcWclMeWZpfOV0r?=
- =?us-ascii?Q?IdbRffXM5s1zhNocpjUtqRO6ODJBh0F3J9oZZ7XDLvw5BNKHxKdOqXmvrGsy?=
- =?us-ascii?Q?M+sdn9GkNL47FiVDfhkADMt15Il9iGYPGL0vCsLxv3952mcGK5mv/J7jJypq?=
- =?us-ascii?Q?uHBG7piUL/R6u502DY5gu8XFcy/Fh9Zrxp7x8dmtZ7eS+RmKLQAxC6tZ6Tvg?=
- =?us-ascii?Q?FzEQAMiKdoiGz0F5IdYLPl3uMmC5f43ODBSTMxoUoZomRRMd5SWR6uRxBdOz?=
- =?us-ascii?Q?OXhJF3CitpEtt+l0kpzqMu+iFqN6OviCuB9m+uSVOX6wmqbkGzwuvkTnk8h8?=
- =?us-ascii?Q?3y+nuukANnCwK3A/yDgEFE9Gn9wd1z9I+ksULstacbvePDjDmPpGNkeHMp4N?=
- =?us-ascii?Q?42/5/Ejyf6CdKsNnPSASiV6ws7pg2hTrtDidCe0UuLgoEyn4DuccIaluetWk?=
- =?us-ascii?Q?HAveApqmuCFndhUEcnJOUkOynuLooW6XwJTM8bExDJd+if/j91btSSE7mj28?=
- =?us-ascii?Q?UW60RIvNXL2KrB/YrjniWak53zsdyezUivhX+1A9fn2ffQx16UN4eWnB5aPS?=
- =?us-ascii?Q?JD0lROY9/YSR519lUcMI8WonHlnz02sCSPCPhF/Pklhh8vOfOICFgIbmFoLQ?=
- =?us-ascii?Q?9idSTBft+PIrVGwFB7BTrlXO8MtY3sZq5rqxosTo24H+LCXOhtr4YX+Ky/TY?=
- =?us-ascii?Q?5ZfksXfzXAX5s4KxhuDZBJHGyrpXCAxLTksbJ3cut7k2GgQOuF7adi4pDdwT?=
- =?us-ascii?Q?T0R7695z5RDiEgEV1/b7MQOf8UN7MqBgJ0UIE/AzIsK1eWf+xTKibXK2vkFE?=
- =?us-ascii?Q?KuV0EwU9P7Ilfun5FOPoLmhfsntWB5pnEJKsmEqKEzo6CGVECD2Sw0cGmfAg?=
- =?us-ascii?Q?IPAQ551LEyXAW8T70zAls9ReqBDv0d+G/f2Dx5DG/1CbNwXbWPv+OIbNXT0o?=
- =?us-ascii?Q?mLaa1Bn9HBJ2JhVYBrmxElo+U7r408sI/a4xh3fgY2KtDop6P4CxywxsaxqV?=
- =?us-ascii?Q?VTvw9X87kZk9pXw1xODOSBIMb6R1MQoJJVxpW8bdldwqAVwap8wMZE1ApIGN?=
- =?us-ascii?Q?UP37WhAxED5nJKcYTDGD4hfQKswtr4gCwayjeA+ZCHIwfw8lwdB8hKoUGD+u?=
- =?us-ascii?Q?K6EMzAtgcuAr7xh7pGYKMHWegegOa9Dvg6Qj2swuZ2Ml4bqOnijK5i0CYvCm?=
- =?us-ascii?Q?gLa1WgGSNY0vLshRhZFP+Rg2RaH1FN6z9z42vfYLwRHOM4HZKl3AVIaT1z94?=
- =?us-ascii?Q?d5WUv5Yt/cm8iNWQP3UyKOGrRcmzyt26yHt7IIXvGhwYHPwuqz+TVK9DPA+1?=
- =?us-ascii?Q?LABK2/ATjBM1oBN4rejj+UnIn5SqilLKYPnTd6FvUr7Ydy7pRi9wxwEdqXze?=
- =?us-ascii?Q?VvQMLe5Vq2jO92qBr1nDZkIgCmGe98P09ytI3JGzX+drHCkIofZzV2rRUZKu?=
- =?us-ascii?Q?kyCMel8BZIMLOZzdf5w5wGVZcSmdvGM8WDrncLMPILlMxDVQ2PStAW/awZoQ?=
- =?us-ascii?Q?cQL+1NUbGiKknlAarVNKOe92qf9gV/s=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 609889fb-058c-4bdb-5695-08da12009300
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2022 03:51:30.4418
+X-Microsoft-Antispam-Message-Info: 6mAKJm+Lhg+uld5KcxDj1xAsd73plth8+quWR7ljtcK/hnVCWfJyknExgSvTT0bwK6j6/5iKXHL1sMTxmJKMluwqUjIhcJcPZ24/Iw1UI90h6mdKX/SFblv/dsJES01D1Y+56XdvsM2nC7+vPQTkfoCpqkxJEO6+P9drfqytmSf1JEVuEdtSUWVHUAySgx5i0ji3CzKRJ/5xGmKiz6dbs1ULDJ1Q0Y2TH0CqRty2wv970jjSpH6AM3/XB3hyrMrmjJfu95JSsxhzGisI/MTb5U6iJOjKjbBmAjOOfA3PEy5K6L4Sf2Be2C+CZVCU475J9RlPTEUI3dC9tu7yl8YEdLgsb+ZWGIc6b0O1F708KAsy3vE87nOhim2BsiI+tPfuTJgBORKPNDR1vZ9rdKgm5jJIYTyvDohD9BvTc9wqS6nKSfAschs6Zk7Da+AQYD3TCoVUiBz4DCBrvfpbv3tcPpeR8TYgzo4ZKkhjF3NZmfnGbOGlO236RGKCA+2+JtVzGaXuUgMmVH+RR1TdyzMICvzoiLErXMXt56OKEttlI2euKBKCZJlFvTyUrn8N6VXNUTtappGUC/tXZ6iQc1ehyT19AIwjtzescifmGsLUC/NBl1ZC2T7MVx4T1W4plRzW/JxNk/qJ+Zy7cmAfEfcgIDpTAeJ+7XupMeIJu8wa+vQN0k1cR0Fxj872QscxI7hFpv7tYA6wZZA8WDUTv3g0yQ==
+X-Forefront-Antispam-Report: CIP:12.22.5.235;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230001)(4636009)(7916004)(40470700004)(36840700001)(46966006)(6666004)(53546011)(82310400004)(8676002)(4326008)(83380400001)(40460700003)(70586007)(36860700001)(316002)(70206006)(86362001)(6916009)(508600001)(426003)(47076005)(336012)(356005)(8936002)(81166007)(107886003)(186003)(9686003)(16526019)(33716001)(5660300002)(26005)(54906003)(2906002)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Mar 2022 07:44:21.7471
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x71bOGbVgGxrMdmSRIqZvsq7l5SWhdaI4jtwFsMcqPQDBb3QZ+Uxw2lm2IWWC5fX2yOaCAuYCcMvAEMGz6Z+tsGhfk+VxDvKjr1vBsq0PKo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR10MB4173
-X-Proofpoint-Virus-Version: vendor=nai engine=6300 definitions=10301 signatures=695566
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=806 spamscore=0
- adultscore=0 mlxscore=0 phishscore=0 bulkscore=0 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2202240000 definitions=main-2203300017
-X-Proofpoint-ORIG-GUID: NlyRnsT44OwC8SWLKEdZBVwQEiUY1Qxq
-X-Proofpoint-GUID: NlyRnsT44OwC8SWLKEdZBVwQEiUY1Qxq
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 28cc4090-f8d2-44ef-eeeb-08da12211ac7
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.235];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT055.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5409
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,FORGED_SPF_HELO,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, Mar 29, 2022 at 03:55:07AM +0000, yangx.jy@fujitsu.com wrote:
+> On 2022/3/29 2:47, Leon Romanovsky wrote:
+> > I see that you put same wqe->status for all error paths.
+> > If we assume that same status needs to be for all errors, you will better
+> > put this line under err label.
+> >
+> > diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> > index 5eb89052dd66..003a9b109eff 100644
+> > --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> > +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> > @@ -752,6 +752,7 @@ int rxe_requester(void *arg)
+> >          goto next_wqe;
+> >
+> >   err:
+> > +       wqe->status = IB_WC_LOC_QP_OP_ERR;
+> >          wqe->state = wqe_state_error;
+> >          __rxe_do_task(&qp->comp.task);
+> >
+> >
+> > BTW, I didn't review if same error status is applicable for all paths.
+> 
+> Hi Leon,
+> 
+> It's not suitable to set the same IB_WC_LOC_QP_OP_ERR for all paths 
+> because other error status also will be set in some places.
+> 
+> For example:
+> 
+> IB_WC_LOC_QP_OP_ERR or IB_WC_MW_BIND_ERR will be set in rxe_do_local_ops()
+> 
+> IB_WC_LOC_PROT_ERR or IB_WC_LOC_QP_OP_ERR will be set by checking the 
+> return value of finish_packet()
 
-Randy,
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index 5eb89052dd66..5515a095cbba 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -657,26 +657,24 @@ int rxe_requester(void *arg)
+                psn_compare(qp->req.psn, (qp->comp.psn +
+                                RXE_MAX_UNACKED_PSNS)) > 0)) {
+                qp->req.wait_psn = 1;
+-               goto exit;
++               goto qp_err;
+        }
+ 
+        /* Limit the number of inflight SKBs per QP */
+        if (unlikely(atomic_read(&qp->skb_out) >
+                     RXE_INFLIGHT_SKBS_PER_QP_HIGH)) {
+                qp->need_req_skb = 1;
+-               goto exit;
++               goto qp_err;
+        }
+ 
+        opcode = next_opcode(qp, wqe, wqe->wr.opcode);
+-       if (unlikely(opcode < 0)) {
+-               wqe->status = IB_WC_LOC_QP_OP_ERR;
+-               goto exit;
+-       }
++       if (unlikely(opcode < 0))
++               goto qp_err;
+ 
+        mask = rxe_opcode[opcode].mask;
+        if (unlikely(mask & RXE_READ_OR_ATOMIC_MASK)) {
+                if (check_init_depth(qp, wqe))
+-                       goto exit;
++                       goto qp_err;
+        }
+ 
+        mtu = get_mtu(qp);
+@@ -706,11 +704,8 @@ int rxe_requester(void *arg)
+        }
+ 
+        skb = init_req_packet(qp, wqe, opcode, payload, &pkt);
+-       if (unlikely(!skb)) {
+-               pr_err("qp#%d Failed allocating skb\n", qp_num(qp));
+-               wqe->status = IB_WC_LOC_QP_OP_ERR;
+-               goto err;
+-       }
++       if (unlikely(!skb))
++               goto qp_err;
+ 
+        ret = finish_packet(qp, wqe, &pkt, skb, payload);
+        if (unlikely(ret)) {
+@@ -742,15 +737,15 @@ int rxe_requester(void *arg)
+                        rxe_run_task(&qp->req.task, 1);
+                        goto exit;
+                }
+-
+-               wqe->status = IB_WC_LOC_QP_OP_ERR;
+-               goto err;
++               goto qp_err;
+        }
+ 
+        update_state(qp, wqe, &pkt, payload);
+ 
+        goto next_wqe;
+ 
++qp_err:
++       wqe->status = IB_WC_LOC_QP_OP_ERR;
+ err:
+        wqe->state = wqe_state_error;
+        __rxe_do_task(&qp->comp.task);
 
-> Eliminate anonymous module_init() and module_exit(), which can lead to
-> confusion or ambiguity when reading System.map, crashes/oops/bugs, or
-> an initcall_debug log.
+> 
+> 
+> Hi Leon, Bob, Yanjun
+> 
+> How can I know if IB_WC_LOC_QP_OP_ERR is suitable for all changes on my 
+> patch?
+> 
+> In other words,  how can I know which error status should be used in 
+> which case?
 
-Applied to 5.18/scsi-staging, thanks!
+You will need to open IBTA spec and try to understand from it.
+But realistically speaking, I think that it will be too hard to do it
+and not sure if it is really important.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Please resubmit your patch with updated diff and commit message.
+
+Thanks
+
+> 
+> 
+> Best Regards,
+> 
+> Xiao Yang
+> 
+> >
+> > Thanks
