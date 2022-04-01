@@ -2,116 +2,113 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2494EE7A0
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Apr 2022 07:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 373CB4EE95F
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Apr 2022 09:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245014AbiDAFMe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Apr 2022 01:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57710 "EHLO
+        id S242922AbiDAH4P (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Apr 2022 03:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245001AbiDAFMd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Apr 2022 01:12:33 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1859D1E8CC9;
-        Thu, 31 Mar 2022 22:10:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=V32+zQcO407Oigns62fencqAWiQUbjG3dkYmA/bzFgs=; b=ZfJXByG0vD8l+JFtQ4yjotGAuY
-        xAgedtPzZTd8OUi1dzB10Si101BKwG0IYWbUCcMjsIiNuwNVenxVCR/KUkSyd/oDjtfDtwUtY+Mn9
-        tnE9E6ckU/QHuJU1mNFHjKGmNRoYXc7KQCx4T17fUppasjeBeiMsnvEfkkgFKrt2669XSgfwMt26e
-        EII86iOdGu6w/fzgHJVnCqnoDNPCV3PpARH3CmgKBBJACtqcFtJloyHytdjvZpcXSGPAB9I2RnLLa
-        pVcCVcwCoVfPWnVPAvAUEZBYbQyavK/AJMzt4IuTrmRktkBZkumKIQqDVXR1iP+MBwNx5+iddah/E
-        9mEWW45w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1na9YU-004W8V-1i; Fri, 01 Apr 2022 05:10:38 +0000
-Date:   Thu, 31 Mar 2022 22:10:38 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Benjamin =?iso-8859-1?Q?St=FCrz?= <benni@stuerz.xyz>,
-        Andrew Lunn <andrew@lunn.ch>,
-        linux-atm-general@lists.sourceforge.net,
-        linux-ia64@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-pci@vger.kernel.org, Robert Moore <robert.moore@intel.com>,
-        Harald Welte <laforge@gnumonks.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, wcn36xx@lists.infradead.org,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Linux Samsung SOC <linux-samsung-soc@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-edac@vger.kernel.org,
-        dennis.dalessandro@cornelisnetworks.com,
-        "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Ingo Molnar <mingo@redhat.com>,
-        3chas3@gmail.com, linux-input <linux-input@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Len Brown <lenb@kernel.org>,
-        mike.marciniszyn@cornelisnetworks.com,
-        Robert Richter <rric@kernel.org>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Kalle Valo <kvalo@kernel.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux@simtec.co.uk,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Tony Luck <tony.luck@intel.com>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-wireless@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        James Morse <james.morse@arm.com>,
-        netdev <netdev@vger.kernel.org>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH 05/22] acpica: Replace comments with C99 initializers
-Message-ID: <YkaJTh+Bhf+oPQB7@infradead.org>
-References: <20220326165909.506926-1-benni@stuerz.xyz>
- <20220326165909.506926-5-benni@stuerz.xyz>
- <CAHp75VeTXMAueQc_c0Ryj5+a8PrJ7gk-arugiNnxtAm03x7XTg@mail.gmail.com>
+        with ESMTP id S241860AbiDAH4O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Apr 2022 03:56:14 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0B419894D;
+        Fri,  1 Apr 2022 00:54:25 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id bp39so1543134qtb.6;
+        Fri, 01 Apr 2022 00:54:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+u9zqczQO+VO7jrn2VLlynTKy/bzO3BVuchdr9Nikuo=;
+        b=nj2sbGZvbWTjn9mYX46I9W9yoLP0Ke6pKI1xrZ3pM8/rzhatGBYNMxEOq9z5CubKTV
+         cdNRSFToM6VsVIqYxR5gGtPPql08FEd+TzXe3zAGtlH4i9VhQJPlYrDDmNLtXuQlTder
+         VNSRbmk+hFZAxCZWOLilUVn8nD/OCrjwiW1qnGSrWfed/2WFGj9hNQjMTea0qJ5hUk5I
+         CVOPVfIXRbekP7JXEfp97PjGPufYEzHHCNBg+BOKqocSrJbUPDuUi5YIJ6F54iL1Xx9M
+         pnjA1PD2MwTk+6ievCg1iuYvLWXIaa3ZZoNs027Ly10EowaIAh87hqEAlsSbdUZEhEmf
+         NWXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+u9zqczQO+VO7jrn2VLlynTKy/bzO3BVuchdr9Nikuo=;
+        b=TX9CPA3LZK0Bc2lxP12LEX++ubh1TPQOn0HAb4Jex3beN2WtaZQ5nLEyJFTGJ0G0xa
+         zuzVbtzmAw0ZrbZXAIJm+nlkbDP3iWMqSE1JzTZalm9CGxQIdHKC8q9FYCIn8Iarax0W
+         ZrAO8QvUA3isbBwpBo74L+jVON34drVrWWCHFaXxEoPqnvmNqTXC3wqFFpqSDV1J5gHn
+         ETBV4ms9rMYqs3+EoUMBAJJAQwsrLKqpqc1ez7+1mUCmWDIoacAYyDlQjVnKPGBdIgmp
+         0VrMIS12JUvZkdYzOxCIbTG0Ot4+fEOshnJ/U2ZIs1cx5ll7K4bzfV6iRIrbQpRMVawL
+         dOkw==
+X-Gm-Message-State: AOAM530q7uJOSFghugO0n2cCqme9X4JgBp6kexNSUhRwmgiZ7C4pQ9Hn
+        Yy9nypD6xdij1WLDyY0n2+xaLGuEnTg=
+X-Google-Smtp-Source: ABdhPJwfuKc7yJpGenp1uWYpSA05RK1BUQFniGAYsaa1t2YAt0LFACJa0wze7ujeexNgmG9sxfT/sQ==
+X-Received: by 2002:ac8:5b87:0:b0:2e1:fe79:d65d with SMTP id a7-20020ac85b87000000b002e1fe79d65dmr7571238qta.480.1648799664556;
+        Fri, 01 Apr 2022 00:54:24 -0700 (PDT)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id w22-20020ac87e96000000b002eb8e71950csm1334551qtj.71.2022.04.01.00.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Apr 2022 00:54:23 -0700 (PDT)
+From:   cgel.zte@gmail.com
+X-Google-Original-From: lv.ruyi@zte.com.cn
+To:     mike.marciniszyn@cornelisnetworks.com
+Cc:     dennis.dalessandro@cornelisnetworks.com, jgg@ziepe.ca,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lv Ruyi <lv.ruyi@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>
+Subject: [PATCH] RDMA: Replace zero-length array with flexible-array member
+Date:   Fri,  1 Apr 2022 07:54:06 +0000
+Message-Id: <20220401075406.2407294-1-lv.ruyi@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VeTXMAueQc_c0Ryj5+a8PrJ7gk-arugiNnxtAm03x7XTg@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 10:59:54PM +0300, Andy Shevchenko wrote:
-> On Sat, Mar 26, 2022 at 7:39 PM Benjamin St�rz <benni@stuerz.xyz> wrote:
-> >
-> > This replaces comments with C99's designated
-> > initializers because the kernel supports them now.
-> 
-> Does it follow the conventions which are accepted in the ACPI CA project?
+From: Lv Ruyi <lv.ruyi@zte.com.cn>
 
-Why would ACPI CA be allowed to make up it's own conventions?  And as
-you might imply not allow using a very useful and more than 20 year old
-C feature?  This kind of BS need to stop.
+There is a regular need in the kernel to provide a way to declare
+having a dynamically sized set of trailing elements in a structure.
+Kernel code should always use “flexible array members”[1] for these
+cases. The older style of one-element or zero-length arrays should
+no longer be used[2].
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.16/process/deprecated.html#zero-length-and-one-element-arrays
+
+Reported-by: Zeal Robot <zealci@zte.com.cn>
+Signed-off-by: Lv Ruyi <lv.ruyi@zte.com.cn>
+---
+ drivers/infiniband/hw/hfi1/mad.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/mad.c b/drivers/infiniband/hw/hfi1/mad.c
+index 4146a2113a95..09fe0eb87884 100644
+--- a/drivers/infiniband/hw/hfi1/mad.c
++++ b/drivers/infiniband/hw/hfi1/mad.c
+@@ -2437,7 +2437,7 @@ struct opa_port_data_counters_msg {
+ 			__be64 port_vl_xmit_wait_data;
+ 			__be64 port_vl_rcv_bubble;
+ 			__be64 port_vl_mark_fecn;
+-		} vls[0];
++		} vls[];
+ 		/* array size defined by #bits set in vl_select_mask*/
+ 	} port[1]; /* array size defined by  #ports in attribute modifier */
+ };
+@@ -2470,7 +2470,7 @@ struct opa_port_error_counters64_msg {
+ 		u8 reserved3[7];
+ 		struct _vls_ectrs {
+ 			__be64 port_vl_xmit_discards;
+-		} vls[0];
++		} vls[];
+ 		/* array size defined by #bits set in vl_select_mask */
+ 	} port[1]; /* array size defined by #ports in attribute modifier */
+ };
+-- 
+2.25.1
+
