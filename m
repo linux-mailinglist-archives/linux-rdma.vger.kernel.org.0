@@ -2,123 +2,233 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D354EF385
-	for <lists+linux-rdma@lfdr.de>; Fri,  1 Apr 2022 17:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A0F64EF77A
+	for <lists+linux-rdma@lfdr.de>; Fri,  1 Apr 2022 18:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348725AbiDAPES (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 1 Apr 2022 11:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
+        id S244228AbiDAP5e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 1 Apr 2022 11:57:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352565AbiDAOu6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Apr 2022 10:50:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFC292B3D66;
-        Fri,  1 Apr 2022 07:42:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 21656B82519;
-        Fri,  1 Apr 2022 14:41:38 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D790C34111;
-        Fri,  1 Apr 2022 14:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648824096;
-        bh=79s09JmfnRTspuMBLjDF/9qtIeFT50RzlTzUkGad3r4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RrrJEc3+n5gh3IGsMhRwes0/KyLGtVJmB/2sJACAUZ9/5F3w7DV6ANJcAbqo8cvAd
-         NI7PKuC61/6BMsVA6eWn97fZsRO/5PG1mvFAoB/GScR13+nbKz5DCOMdbaU7pWPrCA
-         m2PziGXnoM83zm/KwFVMejPAdzg51aaiZ8O93DwgfI36r8nxrNiXjhskOuR3NI1xWR
-         YnabOnFl4BGDalo5Vh3Eyqztx2Pig6qhELom5gt5tCC7upi/jZVTAGFzRydpMjKmqH
-         12TQXZiiDxuf/8LkX0ULnc0GGU6EbFEV7XrCX5fy8dxkzICUYQ9AcDnQLzuOqpQpfi
-         /NB5Ysr9ozBSg==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gal Pressman <gal@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
-        Maxim Mikityanskiy <maximmi@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 84/98] net/mlx5e: Remove overzealous validations in netlink EEPROM query
-Date:   Fri,  1 Apr 2022 10:37:28 -0400
-Message-Id: <20220401143742.1952163-84-sashal@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401143742.1952163-1-sashal@kernel.org>
-References: <20220401143742.1952163-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        with ESMTP id S1358261AbiDAPmJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 1 Apr 2022 11:42:09 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD1B2B3D42;
+        Fri,  1 Apr 2022 08:16:34 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id p15so6518208ejc.7;
+        Fri, 01 Apr 2022 08:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9jSvmrcxa3BrthKf28LR6iQlwhB8Fp11bxqRJaDoPQ4=;
+        b=c/MWb4ayrGBGC3GVIXfoAWO7GDWE/s9EEx/jK3E33PZRw4Hitr36dI810eMbHTokW+
+         WKXmAQgUtWWEufkRmtpNtzgIvAIRxOTuyTcFF2Io0UJirLHrv4FQk6S8IXnYUGEYQ5Zm
+         7T4/dvjor6irpAmhvDs9Tf5Pwfd1tE2tyTbL5LNb+OACADNLr3PmVYgQOnVJ3RWWIjIo
+         DA55mX3hUIvea4KCK9BAlCXuQ0ZAyDo+pnFn7eo7O0gzrKWgan2TYPmtFMcnde3tjQBe
+         +I/v88QEmf0bD7gktED1HOoQfZ7C47DE7wd/fo3FsDhxwsRISA2zoIKjNbg9MdwuNAcO
+         YtCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=9jSvmrcxa3BrthKf28LR6iQlwhB8Fp11bxqRJaDoPQ4=;
+        b=FliClmxM8WImDdwwz+RL/LnHPZEj29+Of0zF1Zv1Qza8aewg6VjY1ihvSr2CsFYz7/
+         zQgkP3mg0JN2ckvRJI2BtIpkfz/Usvb5jHlCXJgNVLimXrc/tmihH911mHYZVezMlFGS
+         KYw1U7kl1JYvddNhh8EfaEGSxekVVtahmNMFRo5bvTP1kmFFfeMoMjglK+kOQWSzr7tE
+         pZbbEo/4w8VHr1SGfTusgip8+SXvUtU7ZIGArq3t/9ATGqc1WDt15PlYbKz/RLn9RhZ7
+         dW07gJMFsod/tis0dCt39F5UdwoQsloD0yBmcTALKJc/VurQDieD3N7zQGUmjPUZSL1/
+         3nog==
+X-Gm-Message-State: AOAM532VlapR4YL8llsFTiBZOPI2d9NnU5CJWHIlhxmWrEAILYjnx9oP
+        IbmvClQBKgX/hbRF/x5iKVs=
+X-Google-Smtp-Source: ABdhPJyj1x5zxOKPhdW9FhcHdGg9CnDqeJtt+ellJDnNgz6FNFcycEZ2cWZwQljsY6IU7h7orVX+FQ==
+X-Received: by 2002:a17:907:72c4:b0:6df:917c:df6f with SMTP id du4-20020a17090772c400b006df917cdf6fmr291481ejc.120.1648826190736;
+        Fri, 01 Apr 2022 08:16:30 -0700 (PDT)
+Received: from smtpclient.apple (i130160.upc-i.chello.nl. [62.195.130.160])
+        by smtp.gmail.com with ESMTPSA id p24-20020a056402045800b0041614c8f79asm1285712edw.88.2022.04.01.08.16.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Apr 2022 08:16:30 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3696.80.82.1.1\))
+Subject: Re: [PATCH] IB/hfi1: remove check of list iterator against head past
+ the loop body
+From:   Jakob Koschel <jakobkoschel@gmail.com>
+In-Reply-To: <0d3e61ea-b3b8-620a-f418-0c91b381b67d@cornelisnetworks.com>
+Date:   Fri, 1 Apr 2022 17:16:29 +0200
+Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>,
+        Brian Johannesmeyer <bjohannesmeyer@gmail.com>,
+        Cristiano Giuffrida <c.giuffrida@vu.nl>,
+        "Bos, H.J." <h.j.bos@vu.nl>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6CBAC9B8-F675-41B8-AE72-C0A8B5FA0303@gmail.com>
+References: <20220331224501.904039-1-jakobkoschel@gmail.com>
+ <0d3e61ea-b3b8-620a-f418-0c91b381b67d@cornelisnetworks.com>
+To:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+X-Mailer: Apple Mail (2.3696.80.82.1.1)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Gal Pressman <gal@nvidia.com>
 
-[ Upstream commit 970adfb76095fa719778d70a6b86030d2feb88dd ]
 
-Unlike the legacy EEPROM callbacks, when using the netlink EEPROM query
-(get_module_eeprom_by_page) the driver should not try to validate the
-query parameters, but just perform the read requested by the userspace.
+> On 1. Apr 2022, at 16:34, Dennis Dalessandro =
+<dennis.dalessandro@cornelisnetworks.com> wrote:
+>=20
+> On 3/31/22 6:45 PM, Jakob Koschel wrote:
+>> When list_for_each_entry() completes the iteration over the whole =
+list
+>> without breaking the loop, the iterator value will be a bogus pointer
+>> computed based on the head element.
+>>=20
+>> While it is safe to use the pointer to determine if it was computed
+>> based on the head element, either with list_entry_is_head() or
+>> &pos->member =3D=3D head, using the iterator variable after the loop =
+should
+>> be avoided.
+>>=20
+>> In preparation to limit the scope of a list iterator to the list
+>> traversal loop, use a dedicated pointer to point to the found element =
+[1].
+>=20
+> The code isn't searching the list. So there is no "found" element. It =
+is walking
+> a list of things and using each one it comes across.
 
-Recent discussion in the mailing list:
-https://lore.kernel.org/netdev/20220120093051.70845141@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net/
+Ok, I can see how this is confusing. I'll change the text accordingly.
 
-Signed-off-by: Gal Pressman <gal@nvidia.com>
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Maxim Mikityanskiy <maximmi@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- .../net/ethernet/mellanox/mlx5/core/port.c    | 23 -------------------
- 1 file changed, 23 deletions(-)
+>=20
+>>=20
+>> Link: =
+https://lore.kernel.org/all/CAHk-=3DwgRr_D8CB-D9Kg-c=3DEHreAsk5SqXPwr9Y7k9=
+sA6cWXJ6w@mail.gmail.com/ [1]
+>> Signed-off-by: Jakob Koschel <jakobkoschel@gmail.com>
+>> ---
+>> drivers/infiniband/hw/hfi1/tid_rdma.c | 16 +++++++++-------
+>> 1 file changed, 9 insertions(+), 7 deletions(-)
+>>=20
+>> diff --git a/drivers/infiniband/hw/hfi1/tid_rdma.c =
+b/drivers/infiniband/hw/hfi1/tid_rdma.c
+>> index 2a7abf7a1f7f..b12abf83a91c 100644
+>> --- a/drivers/infiniband/hw/hfi1/tid_rdma.c
+>> +++ b/drivers/infiniband/hw/hfi1/tid_rdma.c
+>> @@ -1239,7 +1239,7 @@ static int kern_alloc_tids(struct tid_rdma_flow =
+*flow)
+>> 	struct hfi1_ctxtdata *rcd =3D flow->req->rcd;
+>> 	struct hfi1_devdata *dd =3D rcd->dd;
+>> 	u32 ngroups, pageidx =3D 0;
+>> -	struct tid_group *group =3D NULL, *used;
+>> +	struct tid_group *group =3D NULL, *used, *iter;
+>> 	u8 use;
+>>=20
+>> 	flow->tnode_cnt =3D 0;
+>> @@ -1248,13 +1248,15 @@ static int kern_alloc_tids(struct =
+tid_rdma_flow *flow)
+>> 		goto used_list;
+>>=20
+>> 	/* First look at complete groups */
+>> -	list_for_each_entry(group, &rcd->tid_group_list.list, list) {
+>> -		kern_add_tid_node(flow, rcd, "complete groups", group,
+>> -				 group->size);
+>> +	list_for_each_entry(iter, &rcd->tid_group_list.list, list) {
+>> +		kern_add_tid_node(flow, rcd, "complete groups", iter,
+>> +				 iter->size);
+>>=20
+>> -		pageidx +=3D group->size;
+>> -		if (!--ngroups)
+>> +		pageidx +=3D iter->size;
+>> +		if (!--ngroups) {
+>> +			group =3D iter;
+>> 			break;
+>> +		}
+>> 	}
+>=20
+> The original code's intention was that if group is NULL we never =
+iterated the
+> list. If group !=3D NULL we either iterated the entire list and ran =
+out or we had
+> enough and hit the break.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/port.c b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-index 7b16a1188aab..fd79860de723 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/port.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/port.c
-@@ -433,35 +433,12 @@ int mlx5_query_module_eeprom_by_page(struct mlx5_core_dev *dev,
- 				     struct mlx5_module_eeprom_query_params *params,
- 				     u8 *data)
- {
--	u8 module_id;
- 	int err;
- 
- 	err = mlx5_query_module_num(dev, &params->module_number);
- 	if (err)
- 		return err;
- 
--	err = mlx5_query_module_id(dev, params->module_number, &module_id);
--	if (err)
--		return err;
--
--	switch (module_id) {
--	case MLX5_MODULE_ID_SFP:
--		if (params->page > 0)
--			return -EINVAL;
--		break;
--	case MLX5_MODULE_ID_QSFP:
--	case MLX5_MODULE_ID_QSFP28:
--	case MLX5_MODULE_ID_QSFP_PLUS:
--		if (params->page > 3)
--			return -EINVAL;
--		break;
--	case MLX5_MODULE_ID_DSFP:
--		break;
--	default:
--		mlx5_core_err(dev, "Module ID not recognized: 0x%x\n", module_id);
--		return -EINVAL;
--	}
--
- 	if (params->i2c_address != MLX5_I2C_ADDR_HIGH &&
- 	    params->i2c_address != MLX5_I2C_ADDR_LOW) {
- 		mlx5_core_err(dev, "I2C address not recognized: 0x%x\n", params->i2c_address);
--- 
-2.34.1
+This is however not correct. list_for_each_entry() always sets 'group'.
+It needs to do so to check the terminating condition of the loop.
+It does so even if the list is empty and the loop body is not even =
+executed once.
+
+>=20
+> Under the proposed code, group is NULL if we never iterated the loop. =
+It will
+> also be NULL if we reach the end of the list. So the only time group =
+!=3D NULL is
+> when we iterated the list and found all the groups we needed.
+>=20
+>> 	if (pageidx >=3D flow->npagesets)
+>> @@ -1277,7 +1279,7 @@ static int kern_alloc_tids(struct tid_rdma_flow =
+*flow)
+>> 	 * However, if we are at the head, we have reached the end of =
+the
+>> 	 * complete groups list from the first loop above
+>> 	 */
+>> -	if (group && &group->list =3D=3D &rcd->tid_group_list.list)
+>> +	if (!group)
+>=20
+> So the problem here is group->list may point to gibberish if we =
+iterated the
+> entire loop?
+
+In this case it would be &group->list =3D=3D &rcd->tid_group_list.list
+So the second part of the check is correct whereas the check "if group =
+=3D=3D true"
+is just always true.
+
+Since the intention is to move the scope of the list iterator into the =
+macro
+itself I'm removing the accesses to the list iterator after the loop =
+body
+('group' in this case).
+
+>=20
+> Perhaps instead of group, add a bool, call it "need_more" or =
+something. Set it
+> to True at init time. Then when/if we hit the break set it to False. =
+Means we
+> found enough groups. Then down here we check if (need_more)....
+
+If I understand you correctly the condition here should be:
+
+	if (!list_empty(&rcd->tid_group_list.list) && !group)
+
+which will only be true if the list actually did at least one iteration =
+but did not
+break early.
+
+>=20
+> At the very least if you want to keep the code as it is, fix up the =
+comments to
+> make sense and explain the situation.
+
+The code behaves exactly as it did before my patch.
+Sorry I've missed that comment, I'll update it as well. As explain =
+above, this
+comment is a bit misleading since that's not actually what is executing =
+and therefore
+I got confused. group would be "at head" if the list being iterated
+is empty, since the list iterator macros does not differentiate between
+"not running any iteration of the loop since the list is empty" and=20
+"running to the end of the loop with at least one iteration".
+
+>=20
+> -Denny
+
+Sorry for the confusing terminology and missing the comment.
+
+Thanks,
+Jakob
+
 
