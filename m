@@ -2,51 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904074F1180
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 10:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C08574F11ED
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 11:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343612AbiDDJAQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Apr 2022 05:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43508 "EHLO
+        id S1353825AbiDDJ27 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Apr 2022 05:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245362AbiDDJAO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 05:00:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B4C3BA5D
-        for <linux-rdma@vger.kernel.org>; Mon,  4 Apr 2022 01:58:19 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1F2CD6140C
-        for <linux-rdma@vger.kernel.org>; Mon,  4 Apr 2022 08:58:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FD57C34110;
-        Mon,  4 Apr 2022 08:58:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649062698;
-        bh=Y6gLhe52+PxEjLMtlOIxTBfTt73M1h9sp3Hw+NQYlJo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FgE42Dv2Ovzql7993l3jVCccqJUJmb8yCkLUHqGvzdSTAbbF7WbuEAr0u7fe8QlRy
-         bou1Htl8lU+kotvbYuEOpny9En+yN58wm3n8KzblYWb/8K6tvgyPnwQmcwVoblZweR
-         WrePEJ1sowf/B9Cv6FKp2pCFqPISVEY7Y4ZfnPfh1g8xHGtkT3U1a8wfC99va3XSQ6
-         RZ0v5vnSs3oo/0QyXUZRh33E4JwFFdIwTOrx4KTMOKTqrSylWuoXEUhVtnde6oBFRc
-         pZYyTs+JiQz5WQDlJ+JN+YAMpvcE4TKcjryZaM6ftvN7dSzhm6KfSEgcmOgV+ZKGIg
-         LyYIO1P3AVjrw==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Zhang <markzhang@nvidia.com>,
-        Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Maor Gottlieb <maorg@nvidia.com>, Shay Drory <shayd@nvidia.com>
-Subject: [PATCH rdma-rc v1 3/3] IB/cm: Cancel mad on the DREQ event when the state is MRA_REP_RCVD
-Date:   Mon,  4 Apr 2022 11:58:05 +0300
-Message-Id: <75261c00c1d82128b1d981af9ff46e994186e621.1649062436.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649062436.git.leonro@nvidia.com>
-References: <cover.1649062436.git.leonro@nvidia.com>
+        with ESMTP id S1353794AbiDDJ26 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 05:28:58 -0400
+Received: from mail105.syd.optusnet.com.au (mail105.syd.optusnet.com.au [211.29.132.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F8523BBCB;
+        Mon,  4 Apr 2022 02:27:02 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-43-123.pa.nsw.optusnet.com.au [49.180.43.123])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 29B8410E55FB;
+        Mon,  4 Apr 2022 19:26:57 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1nbIz9-00Dc5C-Sq; Mon, 04 Apr 2022 19:26:55 +1000
+Date:   Mon, 4 Apr 2022 19:26:55 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        linux-rdma@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-media@vger.kernel.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-xfs@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-s390@vger.kernel.org
+Subject: Re: Build regressions/improvements in v5.18-rc1
+Message-ID: <20220404092655.GR1544202@dread.disaster.area>
+References: <CAHk-=wg6FWL1xjVyHx7DdjD2dHZETA5_=FqqW17Z19X-WTfWSg@mail.gmail.com>
+ <20220404074734.1092959-1-geert@linux-m68k.org>
+ <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2204041006230.1941618@ramsan.of.borg>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.4 cv=VuxAv86n c=1 sm=1 tr=0 ts=624ab9e5
+        a=MV6E7+DvwtTitA3W+3A2Lw==:117 a=MV6E7+DvwtTitA3W+3A2Lw==:17
+        a=kj9zAlcOel0A:10 a=z0gMJWrwH1QA:10 a=6Fu7hv2xAAAA:8 a=7-415B0cAAAA:8
+        a=L05BbbQJD6-TbP0LrSsA:9 a=CjuIK1q_8ugA:10 a=OCr_TKDY-yBPQKLGgHr3:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,42 +58,53 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Zhang <markzhang@nvidia.com>
+On Mon, Apr 04, 2022 at 10:16:08AM +0200, Geert Uytterhoeven wrote:
+> On Mon, 4 Apr 2022, Geert Uytterhoeven wrote:
+> > Below is the list of build error/warning regressions/improvements in
+> > v5.18-rc1[1] compared to v5.17[2].
+> > 
+> > Summarized:
+> >  - build errors: +36/-15
+> >  - build warnings: +5/-38
+> > 
+> > Happy fixing! ;-)
 
-On the passive side when the disconnectReq event comes, if the current
-state is MRA_REP_RCVD, it needs to cancel the MAD before enter the
-DREQ_RCVD and TIMEWAIT state, otherwise the destroy_id may block until
-this mad will reach timeout.
+Well....
 
-Fixes: a977049dacde ("[PATCH] IB: Add the kernel CM implementation")
-Signed-off-by: Mark Zhang <markzhang@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/cm.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> >  + /kisskb/src/fs/xfs/xfs_buf.h: error: initializer element is not constant:  => 46:23
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 35f0d5e7533d..1c107d6d03b9 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -2824,6 +2824,7 @@ static int cm_dreq_handler(struct cm_work *work)
- 	switch (cm_id_priv->id.state) {
- 	case IB_CM_REP_SENT:
- 	case IB_CM_DREQ_SENT:
-+	case IB_CM_MRA_REP_RCVD:
- 		ib_cancel_mad(cm_id_priv->msg);
- 		break;
- 	case IB_CM_ESTABLISHED:
-@@ -2831,8 +2832,6 @@ static int cm_dreq_handler(struct cm_work *work)
- 		    cm_id_priv->id.lap_state == IB_CM_MRA_LAP_RCVD)
- 			ib_cancel_mad(cm_id_priv->msg);
- 		break;
--	case IB_CM_MRA_REP_RCVD:
--		break;
- 	case IB_CM_TIMEWAIT:
- 		atomic_long_inc(&work->port->counters[CM_RECV_DUPLICATES]
- 						     [CM_DREQ_COUNTER]);
+Looking at:
+
+http://kisskb.ellerman.id.au/kisskb/buildresult/14714961/
+
+The build error is:
+
+/kisskb/src/fs/xfs/./xfs_trace.h:432:2: note: in expansion of macro 'TP_printk'
+  TP_printk("dev %d:%d daddr 0x%llx bbcount 0x%x hold %d pincount %d "
+  ^
+/kisskb/src/fs/xfs/./xfs_trace.h:440:5: note: in expansion of macro '__print_flags'
+     __print_flags(__entry->flags, "|", XFS_BUF_FLAGS),
+     ^
+/kisskb/src/fs/xfs/xfs_buf.h:67:4: note: in expansion of macro 'XBF_UNMAPPED'
+  { XBF_UNMAPPED,  "UNMAPPED" }
+    ^
+/kisskb/src/fs/xfs/./xfs_trace.h:440:40: note: in expansion of macro 'XFS_BUF_FLAGS'
+     __print_flags(__entry->flags, "|", XFS_BUF_FLAGS),
+                                        ^
+/kisskb/src/fs/xfs/./xfs_trace.h: In function 'trace_raw_output_xfs_buf_flags_class':
+/kisskb/src/fs/xfs/xfs_buf.h:46:23: error: initializer element is not constant
+ #define XBF_UNMAPPED  (1 << 31)/* do not map the buffer */
+
+This doesn't make a whole lotta sense to me. It's blown up in a
+tracepoint macro in XFS that was not changed at all in 5.18-rc1, nor
+was any of the surrounding XFS code or contexts.  Perhaps something
+outside XFS changed to cause this on these platforms?
+
+Can you bisect this, please?
+
+Cheers,
+
+Dave.
 -- 
-2.35.1
-
+Dave Chinner
+david@fromorbit.com
