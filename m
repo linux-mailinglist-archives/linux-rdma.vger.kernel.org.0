@@ -2,132 +2,173 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF254F1698
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 15:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E474F17A0
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 16:52:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352793AbiDDN6v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Apr 2022 09:58:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40756 "EHLO
+        id S1357941AbiDDOyY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Apr 2022 10:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242856AbiDDN6u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 09:58:50 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam08on2086.outbound.protection.outlook.com [40.107.101.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 836F23EAAF
-        for <linux-rdma@vger.kernel.org>; Mon,  4 Apr 2022 06:56:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KvHqRQ1vyzaqdYNDnRibgXJA5OPXSyAQ2LqjWbYORuzfWKjzxRiLIcrbMmhQhQnUbosKZSiI26oPeq+esnzsGWoOuv3lAurK2GUVyd7Md8y+b44eAhciOp8U0AY1gOH8G3xT9tzDbMI6IfRrZdNqvY6Gy7SZv8s3JsmQCEdf/SK70yuexOWcmQjruTEM+mP1M0i4yQ4U/Gu7ppuQiTH3+L+HvydPrJFMta8GdPC4P9VSYnzK9zeusxWOcmqyo2jI/kc4A7BuFEuL2B09nFcOE5R65FbclpVlpxitUL9fO6VoQ04W37auXP9U3g22BcWvRwE1usFQLehZtHjoJ9omvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6VJuPhUkN6GvNzrwcu36JgLlPFGSo5c6/8sREv307VE=;
- b=HScw+RzvR72SODcjLL2Qn6WMwS9dUOQsqbu9LAHmsO8PeQedKse+qJNKmuxtaltBYHvEt3TnPM95cfwdcx90X9CDwvhMah1EemTJ5ACpQEZVpNhJRUU7IrwlxFf+3IvBH5W3E35P2sNMT7nIdjcrKp6cW/wZpnZ9MB61y1UVWOlSfb7Orw+WblLvc8nMg4xLNgMxIzUcIQP6BJltma0qnMmy++Xap3r8/AChK4sQmbeANfafCR1ipITD2AIFBc65EYs6AA7zht9mAu/EFQPq9KHYvP+1R7d46NIiyQ9vVPy2N9XrC7CBWHx6UE1FL4Zw7PoVqj8h6REujazZlZFuvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6VJuPhUkN6GvNzrwcu36JgLlPFGSo5c6/8sREv307VE=;
- b=L0mVmFYzsw6UBwDMX6zgWkv4e7yy1RwwRzDAV6JkbsTZPUEPZuN7NbHRXaF+qPWe2OWADza+N45/m3TRkD9tdMDsJMjEqBlOgi/ZGEtyPF2iso2wtFV3wXqlD6mUYeo/dUko+2Uqw7H6uA/6piNlcx6ooJl7OGAGCjVmSgdn0r3TCfos8Oo39pbKGq5asTDSAa5SaD9wfRfXHHE1pEOKSC1g7vNsQfzPysxkvRoJFbpTh96lYY37zOwiaIxfVNCIAZwE4ZdzX1V8TuVdMb8n70HTVHw6irD0inwy/BjpUldqnxOB7xlm7KC1pff+c+zwrGrYHt9ehnOlYWVWuRgC2w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by MN2PR12MB4424.namprd12.prod.outlook.com (2603:10b6:208:26a::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
- 2022 13:56:53 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374%5]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
- 13:56:53 +0000
-Date:   Mon, 4 Apr 2022 10:56:52 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Zhu Yanjun <yanjun.zhu@intel.com>
-Cc:     mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
-Subject: Re: [PATCH 1/1] RDMA/irdma: Remove the redundant variable
-Message-ID: <20220404135652.GA2911188@nvidia.com>
-References: <20220323230135.291813-1-yanjun.zhu@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220323230135.291813-1-yanjun.zhu@intel.com>
-X-ClientProxiedBy: MN2PR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:208:d4::17) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S238922AbiDDOyW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 10:54:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC49FD77;
+        Mon,  4 Apr 2022 07:52:25 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 91080B815AA;
+        Mon,  4 Apr 2022 14:52:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D230AC340EE;
+        Mon,  4 Apr 2022 14:52:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649083943;
+        bh=u+iokChokqnptOaYdhPCnVKH5AXTQ1F0xqg4my/Zjps=;
+        h=From:To:Cc:Subject:Date:From;
+        b=asSjYG5vOjbN7wxNwnyTrfk7Jlwrpy+dMdF9Gln+3BQ1+32W1r+MzhWJfKaV1eq2h
+         YZ5bhwnpHrOR1tsW428mTsOe7/RU6gLfbfaaFRQGJ4wUYgyibnuoZs4QXZya/lDHfV
+         jX2me6StIQFa1fYl/xP5O77OxN0+jTh9yxc48wSUCr051do5nnUCJk3WwerBtZtZbs
+         2kpPMOco1Z/jvx9W+zuFmoFt4tObGaid3yrjsNawg0OA+TH5OPZPmVNXX9tBc8NSZj
+         HLmyLlMhg64kOnIddApJddN6/CM1+y4yX10BH0u0PHqRQou79tr1Vs9GujYNEybsT1
+         ivHeMIP5ffbBA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Mark Zhang <markzhang@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org,
+        syzbot+8fcbb77276d43cc8b693@syzkaller.appspotmail.com
+Subject: [PATCH rdma-rc] RDMA/cma: Limit join multicast to UD QP type only
+Date:   Mon,  4 Apr 2022 17:52:18 +0300
+Message-Id: <4132fdbc9fbba5dca834c84ae383d7fe6a917760.1649083917.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a8a7c0ca-17ef-44e9-c794-08da1642f937
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4424:EE_
-X-Microsoft-Antispam-PRVS: <MN2PR12MB44244FB167F9776276371690C2E59@MN2PR12MB4424.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SgQtUBZ52FWqeAYuB7eqD6DP3zmSvGLs6UeEyQOpkd7pm7HQjP5V3i1HGAeY3B0KpvEJguwK+nayo9YW4XHi7wHEpqmgOcCEbg3m2IMAy4CgyeLKro7yKXNRQmgF7CDz8jWJIHzXaVIBNYadxjxGME7R505gkH7kNACe+Ke5yKJ1PRRPmo3ti91KuwDKLnw99p7gXNZkWyhnbQsCQcIdPSxvi4s4BrFgaLk5wpJUAyUscBY4csQLOj5bO3n02dlCkfwUYERQGTmapmvjG0v27xM6im9vEOrEgHjf030eGhWs8sXl5p3w6bG31FfSTLyJ9M8txsE6JSHfu0JnFaSSnAk97NFtk5fbKBxe0dFedBpLw+AVgdE0B53f4kvwuygVFF7su4hMcOw6eqPv+L1cuMnON2UJX4BbqVDtfyT2nFcXlrPg9iN5qHiDkPyMaJ3b6VMQaC+hZtMUEEUOhkMGC/nfLO9WVUBnTrHCEgHIkbHzTo9nlUJOWJb6XtiMV4BYdvcRGSQrnbg3LGa1li9/loD7RinjeaSSIfWf4Kmma3DJYMlpZGcLXHPHHTJ2CKRCk4zxP/vHuaWpJpkE9CBo5y00+qZIcMzp64pfAirhNCKV4Lz2SuqCGCY0QQ4uq0vMQUYQzQiJYD/4NETo9ZGYIQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(508600001)(66556008)(6486002)(66476007)(6506007)(4326008)(83380400001)(6916009)(316002)(86362001)(6512007)(66946007)(8676002)(33656002)(8936002)(38100700002)(26005)(186003)(5660300002)(4744005)(2906002)(36756003)(1076003)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JllQy+XfJ9O3GxPHes+PZe8afQUCgoxz6LMnrS68zB6QLmQUtFMAHMCPNALZ?=
- =?us-ascii?Q?D7GyCkRbc2OhLNuKpCVompb9faROpN8f7/NBGrMTRpBgIgnVCH5OPwbd8jWF?=
- =?us-ascii?Q?Tl3jTucGjdR4v4z6wXW0pI2DYf5e8icrUED7Krv2F9/GWILNUYvrAOb5FZlH?=
- =?us-ascii?Q?agIR6P2rlD+dUbg+PWkC919e5XHpZIdAYACj08lpzto/CawTJ4dDegbyib1M?=
- =?us-ascii?Q?pi1EUT9VJivom0YNwt2xw+VLQGPaviYvXPRtbBAvBqMyxRvs6W2V/4wF/sgK?=
- =?us-ascii?Q?Dsb1q9Mddn9YzDUx6KZwSmjkQFVQ3jhI9+I491Z6aH3BvV39gHwCnBn9xekY?=
- =?us-ascii?Q?Ap54hnjI7MZZWdkLSuHE4yGi44UUJVmAr3PPXWq3Q4xd/pQg5WvoVKDxnNpz?=
- =?us-ascii?Q?VbYgQJY9D8QLcgATARwOtWUiiM9bJH2Qg7WJ5Rhwk8BSWgYnZRnc+MmQ7poc?=
- =?us-ascii?Q?rap2NbrisIqC2heF2Pnc137b5sKAo2zkdOF8BO4F+OBpbADe4yzMrfEKFb0r?=
- =?us-ascii?Q?xUnUWOF3tJd8zBYwPfLPxAC3Kyqfiwk+m44qf/culSECM526wI3D6fzoY9KA?=
- =?us-ascii?Q?K69WGf+cb3k+OqTek5z1D9x7wDVhr3/kk/uaLgP/GWxeqxIWFwDHKLp6T0mX?=
- =?us-ascii?Q?1hXHmeDLIRbNr+Yb2lqfQsfGqd3xNwpB/AJTFGHnogBFzEqNPUe5RJx2eF+t?=
- =?us-ascii?Q?o0oXsob0EQHlNAltDlaoUNSbua7BgSoM9dXYKTKSy83450NtWm7uErWQZnNW?=
- =?us-ascii?Q?6U80JyTGxRfxPTfofb705ApkiyZzvpSqtVK70GBOPw0pRpT/oz1oLU4fVYWx?=
- =?us-ascii?Q?XyvW9Sbr5mkpPh0H+3Lww36gs2Ze0lEQ77jv3WW8x+qpfXKCHZQMlZ+Towfi?=
- =?us-ascii?Q?875sE4P4XWyQAewK+/L7gSQnph62BMNSAvobzWl7V61m1v0y8lRY9Upwisn4?=
- =?us-ascii?Q?DnWiYzw1jj36VmVtBSXIdglyTf4o2t0OT06044BmLZucOm6i6dQsQARI+zwK?=
- =?us-ascii?Q?N8gT4CHy7GvT+EWFg8ZcIH+DHWeGuciDPkon48nLndbx2mB2BEs2dCHZ/QHy?=
- =?us-ascii?Q?V80Jkg4ZLH/DNt5j/chz9yWds6xZydxTBnYBL9KNjCXk1G6ilA2ltv2wux00?=
- =?us-ascii?Q?YmbPaWThBqvzpTxcK8iidxIdJY+8sPw6bx3hq0qKsFlORMDgt1t2eVGr0urI?=
- =?us-ascii?Q?sK0ZWnF/UzKTqMkrFzxSQhK8L4SPE/q7zQns3G0uXz3z57+35kHxtuJEXlwt?=
- =?us-ascii?Q?sgG2xnFihxerbXUAZsq6+OGhlVJGnw197tqt6ZhrV1NIjg9330vD2vPEMNAg?=
- =?us-ascii?Q?fknjgcmWDNBz9p3ga5IbkCexng04IalD1ShvdxoHvMBaTr4+GcwJUiw1nKa7?=
- =?us-ascii?Q?C576GSZ0HlNSTwom5z5Z8IKjeHGU5tOgdKLw0XMVYlIlq8cPQhCxNeEqPcvA?=
- =?us-ascii?Q?dGI9RTE2fgTclY6yNTtPaZ1T8vaJrgt4fR2jhOSPMJeFHZ84SCkfn+FNIkQY?=
- =?us-ascii?Q?dTRL7h8vPlPZnVSHWq80P9EN5CYtAFQo90lIxmgtsSdcZGtyMlUJ5oMU2P+v?=
- =?us-ascii?Q?kX3n1xHFT44RAJm6Y9DuVq1c766ZR6X1D8a6ITqlGYvintSD/iIxi7+WHT1k?=
- =?us-ascii?Q?blzs2NK6MU5DLAOu54cErBenKDO9PfyejIy4h0gNc0ODNQgaTWzZoGkhXrll?=
- =?us-ascii?Q?dFSINs/NXGfpi/jQicuvpDl9QZr4vSDLkb6veqVZZWzI/+xWneFtrbQDMWrC?=
- =?us-ascii?Q?rQrAFdZnLA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a8a7c0ca-17ef-44e9-c794-08da1642f937
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2022 13:56:53.3369
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O+9UAUOnC+vI8K1Zj52uPY6wWlIQ7n/BbQEAsrqgOLRrHqREzJ1TH9Nh2F9ALgAh
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4424
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Mar 23, 2022 at 07:01:35PM -0400, Zhu Yanjun wrote:
-> From: Zhu Yanjun <yanjun.zhu@linux.dev>
-> 
-> In the function irdma_puda_get_next_send_wqe, the variable wqe
-> is not necessary. So remove it.
-> 
-> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/irdma/puda.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+From: Mark Zhang <markzhang@nvidia.com>
 
-Applied to for-next, thanks
+Only UD QP type is allowed to join multicast.
 
-Jason
+This patch also fixes an uninit-value error: the ib->rec.qkey field is
+accessed without being initialized. This is because multicast join was
+allowed for all port spaces, even these that omit qkey.
+
+=====================================================
+BUG: KMSAN: uninit-value in cma_set_qkey drivers/infiniband/core/cma.c:510 [inline]
+BUG: KMSAN: uninit-value in cma_make_mc_event+0xb73/0xe00 drivers/infiniband/core/cma.c:4570
+ cma_set_qkey drivers/infiniband/core/cma.c:510 [inline]
+ cma_make_mc_event+0xb73/0xe00 drivers/infiniband/core/cma.c:4570
+ cma_iboe_join_multicast drivers/infiniband/core/cma.c:4782 [inline]
+ rdma_join_multicast+0x2b83/0x30a0 drivers/infiniband/core/cma.c:4814
+ ucma_process_join+0xa76/0xf60 drivers/infiniband/core/ucma.c:1479
+ ucma_join_multicast+0x1e3/0x250 drivers/infiniband/core/ucma.c:1546
+ ucma_write+0x639/0x6d0 drivers/infiniband/core/ucma.c:1732
+ vfs_write+0x8ce/0x2030 fs/read_write.c:588
+ ksys_write+0x28c/0x520 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __ia32_sys_write+0xdb/0x120 fs/read_write.c:652
+ do_syscall_32_irqs_on arch/x86/entry/common.c:114 [inline]
+ __do_fast_syscall_32+0x96/0xf0 arch/x86/entry/common.c:180
+ do_fast_syscall_32+0x34/0x70 arch/x86/entry/common.c:205
+ do_SYSENTER_32+0x1b/0x20 arch/x86/entry/common.c:248
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+
+Local variable ib.i created at:
+cma_iboe_join_multicast drivers/infiniband/core/cma.c:4737 [inline]
+rdma_join_multicast+0x586/0x30a0 drivers/infiniband/core/cma.c:4814
+ucma_process_join+0xa76/0xf60 drivers/infiniband/core/ucma.c:1479
+
+CPU: 0 PID: 29874 Comm: syz-executor.3 Not tainted 5.16.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+=====================================================
+
+Fixes: b5de0c60cc30 ("RDMA/cma: Fix use after free race in roce multicast join")
+Reported-by: syzbot+8fcbb77276d43cc8b693@syzkaller.appspotmail.com
+Signed-off-by: Mark Zhang <markzhang@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ drivers/infiniband/core/cma.c | 32 ++++++++++++++++++--------------
+ 1 file changed, 18 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
+index fabca5e51e3d..3e315fc0ac16 100644
+--- a/drivers/infiniband/core/cma.c
++++ b/drivers/infiniband/core/cma.c
+@@ -496,22 +496,11 @@ static inline unsigned short cma_family(struct rdma_id_private *id_priv)
+ 	return id_priv->id.route.addr.src_addr.ss_family;
+ }
+ 
+-static int cma_set_qkey(struct rdma_id_private *id_priv, u32 qkey)
++static int cma_set_default_qkey(struct rdma_id_private *id_priv)
+ {
+ 	struct ib_sa_mcmember_rec rec;
+ 	int ret = 0;
+ 
+-	if (id_priv->qkey) {
+-		if (qkey && id_priv->qkey != qkey)
+-			return -EINVAL;
+-		return 0;
+-	}
+-
+-	if (qkey) {
+-		id_priv->qkey = qkey;
+-		return 0;
+-	}
+-
+ 	switch (id_priv->id.ps) {
+ 	case RDMA_PS_UDP:
+ 	case RDMA_PS_IB:
+@@ -528,9 +517,22 @@ static int cma_set_qkey(struct rdma_id_private *id_priv, u32 qkey)
+ 	default:
+ 		break;
+ 	}
++
+ 	return ret;
+ }
+ 
++static int cma_set_qkey(struct rdma_id_private *id_priv, u32 qkey)
++{
++	if (!qkey)
++		return cma_set_default_qkey(id_priv);
++
++	if (id_priv->qkey && (id_priv->qkey != qkey))
++		return -EINVAL;
++
++	id_priv->qkey = qkey;
++	return 0;
++}
++
+ static void cma_translate_ib(struct sockaddr_ib *sib, struct rdma_dev_addr *dev_addr)
+ {
+ 	dev_addr->dev_type = ARPHRD_INFINIBAND;
+@@ -4762,8 +4764,7 @@ static int cma_iboe_join_multicast(struct rdma_id_private *id_priv,
+ 	cma_iboe_set_mgid(addr, &ib.rec.mgid, gid_type);
+ 
+ 	ib.rec.pkey = cpu_to_be16(0xffff);
+-	if (id_priv->id.ps == RDMA_PS_UDP)
+-		ib.rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
++	ib.rec.qkey = cpu_to_be32(RDMA_UDP_QKEY);
+ 
+ 	if (dev_addr->bound_dev_if)
+ 		ndev = dev_get_by_index(dev_addr->net, dev_addr->bound_dev_if);
+@@ -4815,6 +4816,9 @@ int rdma_join_multicast(struct rdma_cm_id *id, struct sockaddr *addr,
+ 			    READ_ONCE(id_priv->state) != RDMA_CM_ADDR_RESOLVED))
+ 		return -EINVAL;
+ 
++	if (id_priv->id.qp_type != IB_QPT_UD)
++		return -EINVAL;
++
+ 	mc = kzalloc(sizeof(*mc), GFP_KERNEL);
+ 	if (!mc)
+ 		return -ENOMEM;
+-- 
+2.35.1
+
