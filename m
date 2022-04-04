@@ -2,251 +2,127 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8FD4F14BF
-	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 14:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC374F1611
+	for <lists+linux-rdma@lfdr.de>; Mon,  4 Apr 2022 15:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343578AbiDDM3k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 4 Apr 2022 08:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49652 "EHLO
+        id S233642AbiDDNk6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 4 Apr 2022 09:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343964AbiDDM3k (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 08:29:40 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B3D03E0E5;
-        Mon,  4 Apr 2022 05:27:43 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id BE839B8165E;
-        Mon,  4 Apr 2022 12:27:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0223C2BBE4;
-        Mon,  4 Apr 2022 12:27:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649075260;
-        bh=Fjyu3Mm43bmPbpUEJYRQuHeGgiet8bhGJPq1YPIhX04=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R3TxaXpksoyQHTxqc5NbOXuxvtrmhNcFJfYHOxB3DUiGlNdwM0APQ8jT2M/KdZvTz
-         Pz3Gv08NE2yi1ixceLHnDn3mP5dy1U3bJfz0cXo1JJGaZfZhhPZ5OgbgN5b79dUo7v
-         s8Rt5b+/Wzs5JfGb2/XTMowickBIda/7Mkg3miOKFVKIK/JLdeW4ztWM0qatBWkb0B
-         J3jXenWEupWpPHGah/gdME39YPP8PwWUUyTkLyGIe0iWwBHQ4R5NHoAO3XcbtE7kcr
-         IVhP1Dc19XELR9Ppz2QdVKHU1QdIlcT/+lPp2FYFTgITQczHWHqZgHrz/3TKKQlI6e
-         cj69aQFojXBAg==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Patrisious Haddad <phaddad@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Mark Zhang <markzhang@nvidia.com>
-Subject: [PATCH rdma-next 2/2] RDMA/core: Add a netevent notifier to cma
-Date:   Mon,  4 Apr 2022 15:27:27 +0300
-Message-Id: <8c85028f89a877e9b4e6bb58bdd8a7f2cb4567a9.1649075034.git.leonro@nvidia.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <cover.1649075034.git.leonro@nvidia.com>
-References: <cover.1649075034.git.leonro@nvidia.com>
+        with ESMTP id S1355357AbiDDNk5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 4 Apr 2022 09:40:57 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2042.outbound.protection.outlook.com [40.107.244.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C532BF4
+        for <linux-rdma@vger.kernel.org>; Mon,  4 Apr 2022 06:39:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S9TxThN8JiR+NPZVtACXCR1Gcfl6H/EAuzOp/phY4X0HGpps/r4Hj/fwsjfD/+z2We0khMqKubWFLLpzJ9l1/Va5OlN9YJdwuicl58zRyuBxJVlDvaRVnOUtWHe5uaR0Nn74wyTBFKAPjJ0HgORuf9lkU3IKe+GCLqiQTFZn3OBn/dUAXZJvCTHqw8FHoJyMKQEtF7qlNJbJLV6Mjd0so7cLazAR1pd5oA+RwO6pBhRYsCUum88rtnbXGSfbUxcGxahFsysmLE7gM79RYLBtO7fosWIDE/b8aH2BXpoVEbt4ndrxShIvARcqv/Bpu97VeNkYJ3Nzn7uABvZ49/da1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=xkDDMaM+vMXDkwGM11xAjEycH5+vZORAJNEE1EMaM1Q=;
+ b=ahXhd39yGNUrFiQLJd6aHYOGEPXP7k1e+PsuE4GX5mMIauhPmyeoWmzc1SWX0xi5pNpvj+XbPUrxN7yaM5SQVsvKA6/fQqKvErRtDDsm5+/dE3SU0791fgq3aGPQb82CaxfIdBl/AGOd8I3LC+eqsDAllp4t4PEJCnmLQNv1GvjN/Hv9B470/9pWeS0L+3Has1WrFcANqkqDA2VUcU6EfvKKSFm8WToYl8oVxbNHkc0aWRw+bVoyQCgG7izCPGRyF8QCGW2KaIr1vpADVpjEEbgsSyrMoVMxVeAzDfVqtRoebC5mryqAJ8oqx/vcXYMEWrTZ3lbEehjWuZPUvRM31g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xkDDMaM+vMXDkwGM11xAjEycH5+vZORAJNEE1EMaM1Q=;
+ b=haR15fYeyNe6uL84uv8xy/OEWw+0wbvBtEa8Yskca2Ru0L0K6Y1nIKk+Xg18GkSJJ6/u5i1tnk9owkBx7YbvHm9OKlEauKbJy7f+Dtx6/Zh7h6aYkZQmRffXY6rHq27OqBUdX4hP4IV0XBlLMX5cbRwG8mWd64kXeQzO+rU69DS4+/M9oT41FwBGXU1KYkQ4IZkklYQcsBTVYHBC0FRCPtRnaQs79kPsvXdUWTF+iW4woWv5VF6dhXvk9YlyfmUXN2tw+biyhXUdC71KkZuMLaFtrFwUNUxLTrkfaAwLJgTGdVE1mKIxVmNx0emrmdXqwjc0gD/LcybXJr5L4zOi7Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MWHPR12MB1504.namprd12.prod.outlook.com (2603:10b6:301:c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Mon, 4 Apr
+ 2022 13:38:59 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374%5]) with mapi id 15.20.5123.031; Mon, 4 Apr 2022
+ 13:38:59 +0000
+Date:   Mon, 4 Apr 2022 10:38:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leonro@nvidia.com>, linux-rdma@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Add Leon Romanovsky to RDMA maintainers
+Message-ID: <20220404133857.GA2905023@nvidia.com>
+References: <0-v1-64175bea3d24+13436-leon_maint_jgg@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0-v1-64175bea3d24+13436-leon_maint_jgg@nvidia.com>
+X-ClientProxiedBy: YT3PR01CA0022.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:86::26) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: af1fdb9a-ffa9-4724-915b-08da1640791b
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1504:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1504991C59B2DCCDA7C3991BC2E59@MWHPR12MB1504.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uBnAEi2eWW+7zKINvBVuLH3gWLF0+tpDtAzP18wW3jhbSLIcW+tOGBRcPljKJTSfzTkzJpkHFmKPTRXL1fLFgTnS0IaRqzX4N1ej4+mGUAHV2kLI7ZUZh8w7BEgBEnrSpxSYld0EuqpnZgc0zx5WNRsSlJ0mFOJks6zv1IvlE3URNSDxR9d1qcBFaw/UFB2MOTW6F7jmqIxBDHgSOp38kjFfHiotVnetBJJ6dpl9ZeE9J0HpF6glltBNYMX/j/6suC5rQ65aG3mi/LsLWvYW02jJ8BmU3asCatW7IozCnVevSNWFeMnf08StW3+iaphYt899AgtpHDsl7N2xZaOsX1mJpmrdE0qB4ay9aolwyy+mi4YkiqmluW1hqukMr4Px0w4Cn7zav/YOk6+CSH8szWImnzn7s8Eu6wyyddYswQe4lNZXsBzYKaXxK+KjN79mqdmWKxsFhP98eM1I+foj7yGGyPiVcYBVI59BXdROqfb/8Cs5xJDWagnEo+CDNezKKsjpJMWrJ3ltoGl0znk3la1/Vbv7QkVFV7bfW++GZ9dt6Fdk5aQg6wAZKKJKzn3qGZlkcHdowncH9n/PzgywPTtsNmxrvfnNT+sG0DKHW+jAi76DvMQQPqsYbRFoIVzv6oPkfpwG8EfJrEdLJzSNOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(508600001)(6486002)(36756003)(6506007)(2616005)(86362001)(6512007)(1076003)(2906002)(186003)(316002)(26005)(8936002)(66556008)(66946007)(5660300002)(4744005)(8676002)(33656002)(66476007)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?H3yf7xp1HAnVQmESRhmGH/gQvlEO4pQPSZ6NQb5ZyDzz4TciwEca2YQV0uRS?=
+ =?us-ascii?Q?EvQLlCg46bsU/pQ7ipTMkImjs+KHOFr+iW5rD2WXi7TMRM/T1mbeM+1EdAno?=
+ =?us-ascii?Q?fjbk9+Y+t6PNYG7ZMFz2e5NcCNyWSVl5QmoPoeG0yaM1+E0p2BwiQkTbixRk?=
+ =?us-ascii?Q?CRf+PN9O0mQLs+i+hR78iEZSFX4jhXfznmtMSL4lnJmB0+0RKqBPKGiKuMwB?=
+ =?us-ascii?Q?ADxnm9/bSBP3gkyjMcDh0X08szOf4SVfqRYAO5r8d3+9WQ8mCeMiJK/m4bt4?=
+ =?us-ascii?Q?yqtdLYgwVnSbdV0BWYt5rK15mkA5F7OFwI1oD4eojOUM4PpvJWu+8jbXVRCV?=
+ =?us-ascii?Q?X+xWNZKMTxp+1rKCRvQh7D2LKBp2A6z5Gy9/jawO0dT2oQ/tUbaHH2C7xrGk?=
+ =?us-ascii?Q?bWg6HZoTsw9C1fpDqzIkqvoz/Px4C0ZTezK644jQ5nR1tN5XzjcKNeQoSuYv?=
+ =?us-ascii?Q?fO4qnIRKnS9Xpi1Zi2TWFWwueTYmJlkzrp875JzC/GMWP4nHrWqfDd52BPYg?=
+ =?us-ascii?Q?e347Lscdfm3iDJRKnWCE8HnnjQOdtFLJ/uYsbs56YjByaJSDXYoa54cCnQ5L?=
+ =?us-ascii?Q?xHg65+zqNI19+9kjAVuUuBFTvVYHeecxD1T2ZsFs91N6fvz5APYDGkSUgte4?=
+ =?us-ascii?Q?qoHTKsJpVg6LQ8DAQfCk48bFqIF8jPCERB3WN/x0BlGbtvRXwKzYKfySiWRl?=
+ =?us-ascii?Q?SiwXbLlmz8W6Owr+IY3QNQ0bHjF/8XFg01r4BflMRdfHfqXLAGs4ed4v4Qbk?=
+ =?us-ascii?Q?DDyayJRnn04p7RTor2WNcm6n+qXTw0RpkdNJEsVklo070jUMfduhA5y6/1Is?=
+ =?us-ascii?Q?27CswAY1uwyUdlqyfHEpbDs7UE3GKtHleds2uWzJogCpGQeCejITt/tz9bL+?=
+ =?us-ascii?Q?I5/M+WIG+IEtzFI3DvJ/VMufWKs2v/BIGbbXaNZcvu4GY8rwGVg26W+N37pD?=
+ =?us-ascii?Q?IZJ3vHPIrK++JkOZNwgCjq3td2T+seVW4VxwrUxzvJNzq3EG0YnHoWWCA2tN?=
+ =?us-ascii?Q?sWKwPZqQd+4sZSI79uxKT1r4sG2DBM29GvOy+q4P8rDG4gykSK8DIiLQyDlt?=
+ =?us-ascii?Q?2oQquoUyqnS4vDK/xOU+KPUOMEunxhVWKtiWrK4Ip9ZOvp/rvLSwG74pArbc?=
+ =?us-ascii?Q?uO7AkXIOcQypO0NcDVhqwumlglACPK+qH94XxhaVICqetvBJ+CU0zCO9YGjH?=
+ =?us-ascii?Q?NN8GmPXkG5DwW37KOf8nmHtunyHYZlUyZ3EhP4kfEliTyKmaZTJK0fsWh2Oa?=
+ =?us-ascii?Q?xtUm21mix5SfRCum0iGGIESlsuHB7EiiSKZ32hFaGUoY8MbrB/sqBDK/8JnQ?=
+ =?us-ascii?Q?Dd7eZuMrBsYP7WV8CbTzaoCiDBkE6OnbeIVcQX2mc649avebwIvErTnJxwl9?=
+ =?us-ascii?Q?tW723LkPgsoSn+cXyBsjoSOE2By+NM4NKUBmccnjENNUMzm7f/WLcBeJ0uB4?=
+ =?us-ascii?Q?HhwlO7Z5UFXB/LEjwfWhPPFjjPhiW1pz9Qc6IUpLsUktQg1YIrftdjXak6lt?=
+ =?us-ascii?Q?tuBPiybCIlXKhbNj9yiUEoCBN8ZyO2FOCYEkZP/A1Gdka5ZgdFAwsSbuKE/e?=
+ =?us-ascii?Q?jip84tyJIXPcex63Q080qv/4dVptuLUUHczUV/7mbrv+B0Oazaqm+JIGvQ7C?=
+ =?us-ascii?Q?lfExJQ/RvS5pGNaJd+R53r2eVLNvtd7UzGF3CZ/gxfW+cb0MA3AYfRrYqXns?=
+ =?us-ascii?Q?dHV49u2+wcxWWVFisWihFm7aFjVF4Z18P/2iSbzFtCf/ZFaWh48U5FKUT+xb?=
+ =?us-ascii?Q?24+2s76Zgg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: af1fdb9a-ffa9-4724-915b-08da1640791b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2022 13:38:59.3632
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: XhhRLh7t5lcrAGrg8jEM41+GGliq8ah05VDFapaWHzcYUX+2YoPQZPBR6P0NBkUx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1504
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Patrisious Haddad <phaddad@nvidia.com>
+On Thu, Mar 24, 2022 at 02:53:19PM -0300, Jason Gunthorpe wrote:
+> Welcome Leon to the maintainer list so we continue to have two people on a
+> medium sized subsystem.
+> 
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
 
-Add a netevent callback for cma, mainly to catch NETEVENT_NEIGH_UPDATE.
+Applied to for-rc
 
-Previously, when a system with failover MAC mechanism change its MAC address
-during a CM connection attempt, the RDMA-CM would take a lot of time till
-it disconnects and timesout due to the incorrect MAC address.
-
-Now when we get a NETEVENT_NEIGH_UPDATE we check if it is due to a failover
-MAC change and if so, we instantly destroy the CM and notify the user in order
-to spare the unnecessary waiting for the timeout.
-
-Signed-off-by: Patrisious Haddad <phaddad@nvidia.com>
-Reviewed-by: Mark Zhang <markzhang@nvidia.com>
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- drivers/infiniband/core/cma.c | 104 ++++++++++++++++++++++++++++++++++
- 1 file changed, 104 insertions(+)
-
-diff --git a/drivers/infiniband/core/cma.c b/drivers/infiniband/core/cma.c
-index bfe2b70daf39..c26fec94d032 100644
---- a/drivers/infiniband/core/cma.c
-+++ b/drivers/infiniband/core/cma.c
-@@ -21,6 +21,7 @@
- 
- #include <net/net_namespace.h>
- #include <net/netns/generic.h>
-+#include <net/netevent.h>
- #include <net/tcp.h>
- #include <net/ipv6.h>
- #include <net/ip_fib.h>
-@@ -173,6 +174,7 @@ static struct rb_root id_table = RB_ROOT;
- /* Serialize operations of id_table tree */
- static DEFINE_SPINLOCK(id_table_lock);
- static struct workqueue_struct *cma_wq;
-+static struct workqueue_struct *cma_netevent_wq;
- static unsigned int cma_pernet_id;
- 
- struct cma_pernet {
-@@ -373,6 +375,11 @@ struct cma_work {
- 	struct rdma_cm_event	event;
- };
- 
-+struct cma_netevent_work {
-+	struct work_struct work;
-+	struct rdma_id_private *id_priv;
-+};
-+
- union cma_ip_addr {
- 	struct in6_addr ip6;
- 	struct {
-@@ -5054,10 +5061,95 @@ static int cma_netdev_callback(struct notifier_block *self, unsigned long event,
- 	return ret;
- }
- 
-+static void cma_netevent_work_handler(struct work_struct *_work)
-+{
-+	struct cma_netevent_work *network =
-+		container_of(_work, struct cma_netevent_work, work);
-+	struct rdma_cm_event event = {};
-+
-+	mutex_lock(&network->id_priv->handler_mutex);
-+
-+	if (READ_ONCE(network->id_priv->state) == RDMA_CM_DESTROYING ||
-+	    READ_ONCE(network->id_priv->state) == RDMA_CM_DEVICE_REMOVAL)
-+		goto out_unlock;
-+
-+	event.event = RDMA_CM_EVENT_UNREACHABLE;
-+	event.status = -ETIMEDOUT;
-+
-+	if (cma_cm_event_handler(network->id_priv, &event)) {
-+		__acquire(&network->id_priv->handler_mutex);
-+		network->id_priv->cm_id.ib = NULL;
-+		cma_id_put(network->id_priv);
-+		destroy_id_handler_unlock(network->id_priv);
-+		kfree(network);
-+		return;
-+	}
-+
-+out_unlock:
-+	mutex_unlock(&network->id_priv->handler_mutex);
-+	cma_id_put(network->id_priv);
-+	kfree(network);
-+}
-+
-+static int cma_netevent_callback(struct notifier_block *self,
-+				 unsigned long event, void *ctx)
-+{
-+	struct id_table_entry *ips_node = NULL;
-+	struct rdma_id_private *current_id;
-+	struct cma_netevent_work *network;
-+	struct neighbour *neigh = ctx;
-+	unsigned long flags;
-+
-+	if (event != NETEVENT_NEIGH_UPDATE)
-+		return NOTIFY_DONE;
-+
-+	spin_lock_irqsave(&id_table_lock, flags);
-+	if (neigh->tbl->family == AF_INET6) {
-+		struct sockaddr_in6 neigh_sock_6;
-+
-+		neigh_sock_6.sin6_family = AF_INET6;
-+		neigh_sock_6.sin6_addr = *(struct in6_addr *)neigh->primary_key;
-+		ips_node = node_from_ndev_ip(&id_table, neigh->dev->ifindex,
-+					     (struct sockaddr *)&neigh_sock_6);
-+	} else if (neigh->tbl->family == AF_INET) {
-+		struct sockaddr_in neigh_sock_4;
-+
-+		neigh_sock_4.sin_family = AF_INET;
-+		neigh_sock_4.sin_addr.s_addr = *(__be32 *)(neigh->primary_key);
-+		ips_node = node_from_ndev_ip(&id_table, neigh->dev->ifindex,
-+					     (struct sockaddr *)&neigh_sock_4);
-+	} else
-+		goto out;
-+
-+	if (!ips_node)
-+		goto out;
-+
-+	list_for_each_entry(current_id, &ips_node->id_list, id_list_entry) {
-+		if (!memcmp(current_id->id.route.addr.dev_addr.dst_dev_addr,
-+			   neigh->ha, ETH_ALEN))
-+			continue;
-+		network = kzalloc(sizeof(*network), GFP_ATOMIC);
-+		if (!network)
-+			goto out;
-+
-+		INIT_WORK(&network->work, cma_netevent_work_handler);
-+		network->id_priv = current_id;
-+		cma_id_get(current_id);
-+		queue_work(cma_netevent_wq, &network->work);
-+	}
-+out:
-+	spin_unlock_irqrestore(&id_table_lock, flags);
-+	return NOTIFY_DONE;
-+}
-+
- static struct notifier_block cma_nb = {
- 	.notifier_call = cma_netdev_callback
- };
- 
-+static struct notifier_block cma_netevent_cb = {
-+	.notifier_call = cma_netevent_callback
-+};
-+
- static void cma_send_device_removal_put(struct rdma_id_private *id_priv)
- {
- 	struct rdma_cm_event event = { .event = RDMA_CM_EVENT_DEVICE_REMOVAL };
-@@ -5274,12 +5366,19 @@ static int __init cma_init(void)
- 	if (!cma_wq)
- 		return -ENOMEM;
- 
-+	cma_netevent_wq = alloc_ordered_workqueue("rdma_cm_netevent", 0);
-+	if (!cma_netevent_wq) {
-+		ret = -ENOMEM;
-+		goto err_netevent_wq;
-+	}
-+
- 	ret = register_pernet_subsys(&cma_pernet_operations);
- 	if (ret)
- 		goto err_wq;
- 
- 	ib_sa_register_client(&sa_client);
- 	register_netdevice_notifier(&cma_nb);
-+	register_netevent_notifier(&cma_netevent_cb);
- 
- 	ret = ib_register_client(&cma_client);
- 	if (ret)
-@@ -5294,10 +5393,13 @@ static int __init cma_init(void)
- err_ib:
- 	ib_unregister_client(&cma_client);
- err:
-+	unregister_netevent_notifier(&cma_netevent_cb);
- 	unregister_netdevice_notifier(&cma_nb);
- 	ib_sa_unregister_client(&sa_client);
- 	unregister_pernet_subsys(&cma_pernet_operations);
- err_wq:
-+	destroy_workqueue(cma_netevent_wq);
-+err_netevent_wq:
- 	destroy_workqueue(cma_wq);
- 	return ret;
- }
-@@ -5306,9 +5408,11 @@ static void __exit cma_cleanup(void)
- {
- 	cma_configfs_exit();
- 	ib_unregister_client(&cma_client);
-+	unregister_netevent_notifier(&cma_netevent_cb);
- 	unregister_netdevice_notifier(&cma_nb);
- 	ib_sa_unregister_client(&sa_client);
- 	unregister_pernet_subsys(&cma_pernet_operations);
-+	destroy_workqueue(cma_netevent_wq);
- 	destroy_workqueue(cma_wq);
- }
- 
--- 
-2.35.1
-
+Jason
