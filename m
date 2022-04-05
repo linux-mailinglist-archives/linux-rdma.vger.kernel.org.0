@@ -2,52 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2407E4F5195
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 04:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7994F5184
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 04:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1442947AbiDFCFu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 5 Apr 2022 22:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S240883AbiDFCEu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 5 Apr 2022 22:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573251AbiDESdW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Apr 2022 14:33:22 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 788F713F6F;
-        Tue,  5 Apr 2022 11:31:23 -0700 (PDT)
+        with ESMTP id S1573253AbiDESem (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 5 Apr 2022 14:34:42 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383DA13F6F;
+        Tue,  5 Apr 2022 11:32:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 2573EB81E2E;
-        Tue,  5 Apr 2022 18:31:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 658C7C385A1;
-        Tue,  5 Apr 2022 18:31:20 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B8C68618CE;
+        Tue,  5 Apr 2022 18:32:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6932EC385A4;
+        Tue,  5 Apr 2022 18:32:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649183480;
-        bh=1hnkQYUuoWkC4yQdqZXmunRlJ4PgNWR3bFFQPi+NKyg=;
+        s=k20201202; t=1649183563;
+        bh=FL6Vjlysi/fOyZpJE2rSS+FIJYJRHCiZpiMOwwjfWKo=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WAh2iBjp+FfhVbPaBSaaW1gZl23WvY8W7NK7nD02Ge6408pU+/hV1gDEDnPZmTwzw
-         7QyNLelnig/aEflwUslwjCPrVhDTGVt/I1ic0FVr2Yo2r7/9geSY8WOPoxytkS7M//
-         Z8WU+k2aZq2HLB4Y7/a+5Tc9FckxgyPiLy9TuAXn70Vh311gcXeoSufKgqtzpneRYe
-         m4TOGfewkusTEIbOAyBax6kd88obeERSAjxC9l7yhfuczjIVHVZlC/yiSEaEpcAWgV
-         bh9TDfaQ4FGOzXWJIjaS2mtFXSBHxzgyNoN6TpmYbpg/3yBdEKaQVudQgYDbbMSHrX
-         BknM8GzlOpsuw==
-Date:   Tue, 5 Apr 2022 21:31:16 +0300
+        b=bS2Cf+uzFDViHR8cb3krNj3czacXlc7byzZjPKhNO5NUVAKnRvgyuk5+wApweFmIj
+         pHy5IVyT7lwNS5T3/VDkOQbRuhnkLZXJKkMRwlCInPB5cIUpwRfWYdpLbN8/5ASr52
+         +INauoBeJ79nfZrnfNaK40X81MG0NSkSETMesvwdTZBSsRyKq+BFlbZ2RMLOS5b888
+         T8a6J0cwq1pfzCcdDS4RYDxESzTzFTBOxcbNhsdnOkxnvo/3NucFHI/jiRnCVW6kEq
+         61BN8YYGxDLO7iVr0nuSdY+5+eqS01t9I9QhHjk5VA0mNdNqn1iWZJFGliGwcK8alJ
+         YHQX3NGhVT4og==
+Date:   Tue, 5 Apr 2022 21:32:39 +0300
 From:   Leon Romanovsky <leon@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Jason Gunthorpe <jgg@nvidia.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 10/11] IB/mlx5: Fix undefined behavior due to shift
- overflowing the constant
-Message-ID: <YkyK9NfN57ldFuyY@unreal>
-References: <20220405151517.29753-1-bp@alien8.de>
- <20220405151517.29753-11-bp@alien8.de>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>
+Subject: Re: [PATCH mlx5-next 4/5] net/mlx5: Remove tls vs. ktls separation
+ as it is the same
+Message-ID: <YkyLR+VBb81npXnC@unreal>
+References: <cover.1649073691.git.leonro@nvidia.com>
+ <67e596599edcffb0de43f26551208dfd34ac777e.1649073691.git.leonro@nvidia.com>
+ <20220405003322.afko7uo527w5j3zu@sx1>
+ <YkvW9SNJeb5VPmeg@unreal>
+ <20220405172049.slomqla4pmnyczbj@sx1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220405151517.29753-11-bp@alien8.de>
+In-Reply-To: <20220405172049.slomqla4pmnyczbj@sx1>
 X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -58,50 +61,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 05, 2022 at 05:15:16PM +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
+On Tue, Apr 05, 2022 at 10:20:49AM -0700, Saeed Mahameed wrote:
+> On 05 Apr 08:43, Leon Romanovsky wrote:
+> > On Mon, Apr 04, 2022 at 05:33:22PM -0700, Saeed Mahameed wrote:
+> > > On 04 Apr 15:08, Leon Romanovsky wrote:
+> > > > From: Leon Romanovsky <leonro@nvidia.com>
+> > > >
+> > > > After removal FPGA TLS, we can remove tls->ktls indirection too,
+> > > > as it is the same thing.
 > 
-> Fix:
+> [...]
 > 
->   drivers/infiniband/hw/mlx5/main.c: In function ‘translate_eth_legacy_proto_oper’:
->   drivers/infiniband/hw/mlx5/main.c:370:2: error: case label does not reduce to an integer constant
->     case MLX5E_PROT_MASK(MLX5E_50GBASE_KR2):
->     ^~~~
+> > > rename drivers/net/ethernet/mellanox/mlx5/core/en_accel/{tls_stats.c => ktls_stats.c} (76%)
+> > > 
+> > > Why not ktls_*.c => tls_*.c ?
+> > 
+> > Mostly because other drivers use _ktls_ name for this type of functionality.
+> > Plus internally, Tariq suggested to squash everything into ktls.
+> > 
+> > > 
+> > > Since we now have one TLS implementation, it would've been easier to maybe
+> > > repurpose TLS to be KTLS only and avoid renaming every TLS to KTLS in all
+> > > functions and files.
+> > > 
+> > > So just keep tls.c and all mlx5_tls_xyz functions and implement ktls
+> > > directly in them, the renaming will be done only on the ktls implementation
+> > > part of the code rather than in every caller.
+> > 
+> > Should I do it or keep this patch as is?
+> > 
 > 
-> See https://lore.kernel.org/r/YkwQ6%2BtIH8GQpuct@zn.tnic for the gory
-> details as to why it triggers with older gccs only.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: Saeed Mahameed <saeedm@nvidia.com>
-> Cc: linux-rdma@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> ---
->  include/linux/mlx5/port.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Keep it, i don't have any strong feeling about this,
+> I just wanted to reduce the patch size.
 
-I would like to take this patch to mlx5-next, but it didn't show
-nor in patchworks [1] nor in lore [2].
-
-Thanks
-
-[1] https://patchwork.kernel.org/project/linux-rdma/list/
-[2] https://lore.kernel.org/linux-rdma/
-
-> 
-> diff --git a/include/linux/mlx5/port.h b/include/linux/mlx5/port.h
-> index 28a928b0684b..e96ee1e348cb 100644
-> --- a/include/linux/mlx5/port.h
-> +++ b/include/linux/mlx5/port.h
-> @@ -141,7 +141,7 @@ enum mlx5_ptys_width {
->  	MLX5_PTYS_WIDTH_12X	= 1 << 4,
->  };
->  
-> -#define MLX5E_PROT_MASK(link_mode) (1 << link_mode)
-> +#define MLX5E_PROT_MASK(link_mode) (1U << link_mode)
->  #define MLX5_GET_ETH_PROTO(reg, out, ext, field)	\
->  	(ext ? MLX5_GET(reg, out, ext_##field) :	\
->  	MLX5_GET(reg, out, field))
-> -- 
-> 2.35.1
-> 
+Thanks for the review.
