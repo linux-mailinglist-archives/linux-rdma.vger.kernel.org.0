@@ -2,179 +2,567 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717744F633D
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 17:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C1224F6535
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 18:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236051AbiDFP2Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Apr 2022 11:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56020 "EHLO
+        id S237092AbiDFQOo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Apr 2022 12:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbiDFP2I (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 11:28:08 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2043.outbound.protection.outlook.com [40.107.94.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA13A577F3E;
-        Wed,  6 Apr 2022 05:27:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EaXPFvfU7SBCNPzLhpKst60+zlk/spsbdwVxMVOK/YsVBmpzvJ7QeAH+lhL1MvQN5HkkzsNfkaq0sqtK4ADzE0I3EAxpem4zyGpIQu3jtPc3sNiirvQQCuZD1EhzYVPn1lf9GRdYJUKFvvGQjfvnZtD69RCji8vSHo5dSUsTsVAtp48fZ+WBtrH6SjNdDct5AYWS1oX43FutmFE3XJSYe6fdx6L0/Ej4yYYpxCFUud7Om60BhdJ/ZWmzaKMSjE3OIL8Ofbs2CRiIK4ZYgVuqXOZGcHOXBFLhaAlqHZ1W1puB61O09Lup/IocjFaGnsIxfEFZkHE1DufkoHWQFqHGFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DXAQpREFgfdnC7+UbVkwfhToUStahafDSVg0xlfxXdI=;
- b=HaDmcirnvvUByYCScNstwPBTgK6RmcfNikIaf/7PjQsHZRrxztp+XSvg41BBSEX5diKU80lOTY76GuRfKX0rMeVEnh3OF1RLsih9ro3dCuEzIV3yCa+go2JAGtuzPryo9dC+DpCWKPvKjM4VEySg0E9KQmbT+fnh46WrIDDIW95+HuCuM4HxF2PYA8S/woM7yHsSm+G8vDBo1Rm8SvXtxUUHsJcAiubtlIzXPrvlY6urfAK/j14j0JI5nm4u4R0mtNIcRvOdAJVXQZJVgdr+6xJxJ40h5Bq73bmIrQvZbaDlIWhU3mvbebEbkZBmtZClAyyeNbXDNquGMpFDhdo0aQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DXAQpREFgfdnC7+UbVkwfhToUStahafDSVg0xlfxXdI=;
- b=oDzi3F9wREQ0pOd4g6ZjBXPz8EJGyRa70qpqbNy6Pd+hcUcaRIuDIyA9G+BdOB3KxEa3tsSmGJcRxu0pLK38LCQtwGWoQNYVkhtA6QwzTz7/Z7CagT1o28Bw8dWriPF0sxKN5w1QimPcBnEHrahaU/EiXCgwglCEODqV+nyX5TgMgn2N96haXD5+5uQmzKi6iLM/C7mpain9A58uCHhZw+SW44KW5Y8gqVfisRUi7TtrGJkZ3Jd8okQPFg8O5upWMY4JUU64T7pBwtr9fvhHh3mtr0oB6nnKV3q/M4qGcmD7KhUHiq06DNUm0wvtuytN3Q4wR21UEXeYME8bWwzfhQ==
-Received: from BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17)
- by BN6PR12MB1282.namprd12.prod.outlook.com (2603:10b6:404:1d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.19; Wed, 6 Apr
- 2022 12:27:41 +0000
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BL1PR12MB5320.namprd12.prod.outlook.com (2603:10b6:208:314::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5123.31; Wed, 6 Apr
- 2022 12:27:40 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374%6]) with mapi id 15.20.5144.021; Wed, 6 Apr 2022
- 12:27:40 +0000
-Date:   Wed, 6 Apr 2022 09:27:38 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 3/5] iommu: Introduce the domain op
- enforce_cache_coherency()
-Message-ID: <20220406122738.GB2120790@nvidia.com>
-References: <0-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
- <3-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
- <BN9PR11MB527691474154C32D5D1678918CE79@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BN9PR11MB527691474154C32D5D1678918CE79@BN9PR11MB5276.namprd11.prod.outlook.com>
-X-ClientProxiedBy: YT3PR01CA0076.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:84::19) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S237080AbiDFQOb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 12:14:31 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE2B289595
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 19:34:57 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V9JZmJC_1649212494;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V9JZmJC_1649212494)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 06 Apr 2022 10:34:54 +0800
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+To:     jgg@ziepe.ca, dledford@redhat.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
+        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
+        BMT@zurich.ibm.com
+Subject: [PATCH for-next v5 03/12] RDMA/erdma: Add the hardware related definitions
+Date:   Wed,  6 Apr 2022 10:34:41 +0800
+Message-Id: <20220406023450.56683-4-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+In-Reply-To: <20220406023450.56683-1-chengyou@linux.alibaba.com>
+References: <20220406023450.56683-1-chengyou@linux.alibaba.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f67b13fe-fdee-4958-f767-08da17c8d77c
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5320:EE_|BN6PR12MB1282:EE_
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5320A1A24A413C64E534E0A8C2E79@BL1PR12MB5320.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BOKxCUV1dgCKvovzVNPrrBF1p41vRVvJuvgIsA41zeoElC66KHGvuAY3e/pihxNrSJ+eyDdFL3eTDuwJc1lEXLKWMH1cgsdczZrVGVnOi1q+vdS7GnmW+2jm9o0npU3tjtPe/ASjHANJCjcqmYcVczWX4hveiB/PP03cUyf5BfJOP0F2BQ6Sa4F3GIETdR26fjBRqdCWMZ7V4b3yLWWVaZL1J/nlIN7kjK6RnkHfVjxeZw1qPpDQ3FLhza/z2EiIX9UASw8Ic69fy/UspCGn6WJAga2PF5Rd8r2vyNUVI4u+8NZCq6IWVTkAnjgARp+hf4PL1gpRtGM4wfC6d0QOv0WhdUHeZ44EJk+/6LTXQbxfXiqaTeBo7TKofeUqwDHKMfA/erIKUC4z0fqg3Khe0Zc8sAO+guzi9UH+wKfZW8XGNHSbH0w4xzpYGkKQzcNQ82dUUng8w+7tN0Pu6tgHUr0t1sM5cDqxBbYTx6TpULsn9vQZSDlyr9FX4DdEgibkXo3fuKMLN7cQ6AJ0qm25avNAg43OJ5FTpVriWOieBH7e1ixs2mWHM6zEuXDVBIav2iPv4up8YJ3HabtKnJlVqlTeq+Heh5up+Mo71N67RfcoYIYN63onSTkxjGezk7AYBK8zFYZmAWqMGAKUUHtTcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5320.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(33656002)(5660300002)(2906002)(6506007)(8936002)(6486002)(7416002)(86362001)(508600001)(186003)(26005)(83380400001)(6512007)(2616005)(1076003)(36756003)(38100700002)(6916009)(54906003)(316002)(66946007)(4326008)(8676002)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?q2VVonRfm1pAMzXl8GqxbdW5a8tcfvAR9cSXKeMReT/TyTPhteTFRYGQ8eQW?=
- =?us-ascii?Q?t0xv43vYzdi+lstQCFcUoZJMkomQ2lURNePJkmtcctrVpy/Lh8vcI5HHvFYt?=
- =?us-ascii?Q?uSUY/sS9cwC+xC6eVUv7FA/eqrYHzT0bUy/+jKH+5k7ffZZMUoSWNa5Zxqci?=
- =?us-ascii?Q?EyHCrVRJfK6YSTDoR4sf7VXGtVbJ3cKs7xKCNcrwHxiUAr/P8ujp2cN751uF?=
- =?us-ascii?Q?tLRwLo51M4de2octoiQypv0us0M4Om8gho83I9wGlbYWpUujfg0dMRrM+n+W?=
- =?us-ascii?Q?7h6waJJzNZBRjargJZ0lBDZpeBIfa8gVBv15xsptCWZwQG6fPyMtq2fe4r8t?=
- =?us-ascii?Q?yB+vMpTzaAIxhpnYrBhw3ARt4+DA1N8IMsoErmIBPheuGviCa5ds6rYqTFys?=
- =?us-ascii?Q?vBCxvD/0eObANtnpn2j3EgOJP3iS40zPbvxBl+2CfJOS9cfv6rOi7HU8lbbt?=
- =?us-ascii?Q?Xh1uIJS8sxxxNxUgP2yFXzgmW4IA0itQT7meDsstzZm34C4ryj8DXt8jrjQ6?=
- =?us-ascii?Q?gNQfxO2R10EQxfPfVb1usmiVlm9ccy1bhkxDFuwjqp52f/MusLyrgRroOCvZ?=
- =?us-ascii?Q?KMy2cxfgauzRUr/QS+py8bd3KwHJTfoZb0Iy/Wq3vVajV4Nx3lbRAqvvAo+Y?=
- =?us-ascii?Q?TuvVPCXONgIRWaf+75SO1mxovuWdG3GaefElU5k9bmJ2kYm1zT+qPb8Q2pec?=
- =?us-ascii?Q?955D0AoEa+RJldSgrK+iNgxNtq2LVVu/23SvN6YBCkFVRAya3xCPMsbYyorY?=
- =?us-ascii?Q?1T1ghdNEJLOE96Ywa+PJ5prEaVpY6kfJhjU70WYz5/f3Ho0+y5MVM7zxR/Mr?=
- =?us-ascii?Q?apOB3ptKN/5mgQ+9OivZ31tT20ZsD7cCPIXdRBQKVenvVUhrkZ8csSqB7TJX?=
- =?us-ascii?Q?pjbf1cpSsQQ4ouQchQWIilBsOQvEci7jBjM59dr8OP4cKD8nv3FXNRCiar8o?=
- =?us-ascii?Q?PwD3WSlfQj4iLnj/K/+oQvRv0CS/RUsyoJVJe9RN7bxUuhUbhUSgTBJaUrI9?=
- =?us-ascii?Q?Tn3szC9xPfWpS5LVh4vfdEY/56Pewm73dDA6w1Vp9ElAF7illbQ5UM8nfK7N?=
- =?us-ascii?Q?hRE1sD9kDAoqdM1EYmZj8BDnhf6TchasmCbDj64bGU2UiJ28V14HxOTyf9Eq?=
- =?us-ascii?Q?B1poAoonhQLpMLL/q8LjlXAx9zEBruDaW0yKSBBDfJ0UBvQ6Z5mMqRnpsDIB?=
- =?us-ascii?Q?WhniciaCXkorS7yubVUJvgxaudQOjMpotFrzS2QD5GkKlI4TTTKIUMx+mjuO?=
- =?us-ascii?Q?jv7JcFrn9PncrDZ6IflDhP7tlc0t0PZsHHO9kdEVsztR0HOxbmUUrglGomwv?=
- =?us-ascii?Q?AIvR8tZJ7Tlmn/jOyrqtd5Gn2wkoR0zDs7G8KJXUsvBFiDAonR5EtBa6UXsA?=
- =?us-ascii?Q?Et0+x2E3aXF8Xw9Gr3FfbqXVagUioC19O4SljLRN2M+ZMM0V0rvDJ0Bgm3cV?=
- =?us-ascii?Q?Yefpf6OF888OmyQNIgF6FrutiPr4mCT6tnaSFaNG67ynxhkKsCW0CW63Sks9?=
- =?us-ascii?Q?IhIP2qdV+9QV3VvglExg35/qQejnvruPx1X65Y9Iv/uAClHwqO+DGgfQSPGY?=
- =?us-ascii?Q?yraEu2mCxxuL31iVyWxLWWiwL1O0Vclm+OV6MYJhvffZ4E2f74Ji/5+Os3yh?=
- =?us-ascii?Q?jmElyUbME1p17ql3rR9bz2WI5nqXNQMw8ZPtoI9uNN1DmbvQjhEqu02jlPk0?=
- =?us-ascii?Q?31JTBJK8DyMyZs3GRqsjM+C2T7Wz4eVM6ijMcg27jjpArPPRYeHEDbIdBpUI?=
- =?us-ascii?Q?4Dby2QQLug=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f67b13fe-fdee-4958-f767-08da17c8d77c
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2022 12:27:40.4566
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DpzlyGq0IZUJW+DDPpP6quY3UUqx+yEMrQW/SIRWEqNUnW0mg8Nhdpf+FazTx5Uc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1282
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,UPPERCASE_50_75,USER_IN_DEF_SPF_WL autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 07:09:49AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, April 6, 2022 12:16 AM
-> > 
-> > This new mechanism will replace using IOMMU_CAP_CACHE_COHERENCY
-> > and
-> > IOMMU_CACHE to control the no-snoop blocking behavior of the IOMMU.
-> > 
-> > Currently only Intel and AMD IOMMUs are known to support this
-> > feature. They both implement it as an IOPTE bit, that when set, will cause
-> > PCIe TLPs to that IOVA with the no-snoop bit set to be treated as though
-> > the no-snoop bit was clear.
-> > 
-> > The new API is triggered by calling enforce_cache_coherency() before
-> > mapping any IOVA to the domain which globally switches on no-snoop
-> > blocking. This allows other implementations that might block no-snoop
-> > globally and outside the IOPTE - AMD also documents such an HW capability.
-> > 
-> > Leave AMD out of sync with Intel and have it block no-snoop even for
-> > in-kernel users. This can be trivially resolved in a follow up patch.
-> > 
-> > Only VFIO will call this new API.
-> 
-> Is it too restrictive? In theory vdpa may also implement a contract with
-> KVM and then wants to call this new API too?
+ERDMA is a PCIe device, and this file provides ERDMA hardware related
+definitions, mainly including PCIe device capabilities restrictions,
+device registers definitions, doorbell space, doorbell structure
+definitions and WQE definitions.
 
-I expect iommufd to handle this for all kernel users eventually.
+Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+---
+ drivers/infiniband/hw/erdma/erdma_hw.h | 504 +++++++++++++++++++++++++
+ 1 file changed, 504 insertions(+)
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_hw.h
 
-Certainly vdpa should not be calling kvm functions.
+diff --git a/drivers/infiniband/hw/erdma/erdma_hw.h b/drivers/infiniband/hw/erdma/erdma_hw.h
+new file mode 100644
+index 000000000000..70f17639b5a0
+--- /dev/null
++++ b/drivers/infiniband/hw/erdma/erdma_hw.h
+@@ -0,0 +1,504 @@
++/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
++
++/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
++/*          Kai Shen <kaishen@linux.alibaba.com> */
++/* Copyright (c) 2020-2022, Alibaba Group. */
++
++#ifndef __ERDMA_HW_H__
++#define __ERDMA_HW_H__
++
++#include <linux/kernel.h>
++#include <linux/types.h>
++
++/* PCIe device related definition. */
++#define PCI_VENDOR_ID_ALIBABA 0x1ded
++
++#define ERDMA_PCI_WIDTH 64
++#define ERDMA_FUNC_BAR 0
++#define ERDMA_MISX_BAR 2
++
++#define ERDMA_BAR_MASK (BIT(ERDMA_FUNC_BAR) | BIT(ERDMA_MISX_BAR))
++
++/* MSI-X related. */
++#define ERDMA_NUM_MSIX_VEC 32U
++#define ERDMA_MSIX_VECTOR_CMDQ 0
++
++/* PCIe Bar0 Registers. */
++#define ERDMA_REGS_VERSION_REG 0x0
++#define ERDMA_REGS_DEV_CTRL_REG 0x10
++#define ERDMA_REGS_DEV_ST_REG 0x14
++#define ERDMA_REGS_NETDEV_MAC_L_REG 0x18
++#define ERDMA_REGS_NETDEV_MAC_H_REG 0x1C
++#define ERDMA_REGS_CMDQ_SQ_ADDR_L_REG 0x20
++#define ERDMA_REGS_CMDQ_SQ_ADDR_H_REG 0x24
++#define ERDMA_REGS_CMDQ_CQ_ADDR_L_REG 0x28
++#define ERDMA_REGS_CMDQ_CQ_ADDR_H_REG 0x2C
++#define ERDMA_REGS_CMDQ_DEPTH_REG 0x30
++#define ERDMA_REGS_CMDQ_EQ_DEPTH_REG 0x34
++#define ERDMA_REGS_CMDQ_EQ_ADDR_L_REG 0x38
++#define ERDMA_REGS_CMDQ_EQ_ADDR_H_REG 0x3C
++#define ERDMA_REGS_AEQ_ADDR_L_REG 0x40
++#define ERDMA_REGS_AEQ_ADDR_H_REG 0x44
++#define ERDMA_REGS_AEQ_DEPTH_REG 0x48
++#define ERDMA_REGS_GRP_NUM_REG 0x4c
++#define ERDMA_REGS_AEQ_DB_REG 0x50
++#define ERDMA_CMDQ_SQ_DB_HOST_ADDR_REG 0x60
++#define ERDMA_CMDQ_CQ_DB_HOST_ADDR_REG 0x68
++#define ERDMA_CMDQ_EQ_DB_HOST_ADDR_REG 0x70
++#define ERDMA_AEQ_DB_HOST_ADDR_REG 0x78
++#define ERDMA_REGS_STATS_TSO_IN_PKTS_REG 0x80
++#define ERDMA_REGS_STATS_TSO_OUT_PKTS_REG 0x88
++#define ERDMA_REGS_STATS_TSO_OUT_BYTES_REG 0x90
++#define ERDMA_REGS_STATS_TX_DROP_PKTS_REG 0x98
++#define ERDMA_REGS_STATS_TX_BPS_METER_DROP_PKTS_REG 0xa0
++#define ERDMA_REGS_STATS_TX_PPS_METER_DROP_PKTS_REG 0xa8
++#define ERDMA_REGS_STATS_RX_PKTS_REG 0xc0
++#define ERDMA_REGS_STATS_RX_BYTES_REG 0xc8
++#define ERDMA_REGS_STATS_RX_DROP_PKTS_REG 0xd0
++#define ERDMA_REGS_STATS_RX_BPS_METER_DROP_PKTS_REG 0xd8
++#define ERDMA_REGS_STATS_RX_PPS_METER_DROP_PKTS_REG 0xe0
++#define ERDMA_REGS_CEQ_DB_BASE_REG 0x100
++#define ERDMA_CMDQ_SQDB_REG 0x200
++#define ERDMA_CMDQ_CQDB_REG 0x300
++
++/* DEV_CTRL_REG details. */
++#define ERDMA_REG_DEV_CTRL_RESET_MASK 0x00000001
++#define ERDMA_REG_DEV_CTRL_INIT_MASK 0x00000002
++
++/* DEV_ST_REG details. */
++#define ERDMA_REG_DEV_ST_RESET_DONE_MASK 0x00000001U
++#define ERDMA_REG_DEV_ST_INIT_DONE_MASK 0x00000002U
++
++/* eRDMA PCIe DBs definition. */
++#define ERDMA_BAR_DB_SPACE_BASE 4096
++
++#define ERDMA_BAR_SQDB_SPACE_OFFSET ERDMA_BAR_DB_SPACE_BASE
++#define ERDMA_BAR_SQDB_SPACE_SIZE (384 * 1024)
++
++#define ERDMA_BAR_RQDB_SPACE_OFFSET \
++	(ERDMA_BAR_SQDB_SPACE_OFFSET + ERDMA_BAR_SQDB_SPACE_SIZE)
++#define ERDMA_BAR_RQDB_SPACE_SIZE (96 * 1024)
++
++#define ERDMA_BAR_CQDB_SPACE_OFFSET \
++	(ERDMA_BAR_RQDB_SPACE_OFFSET + ERDMA_BAR_RQDB_SPACE_SIZE)
++
++/* Doorbell page resources related. */
++/*
++ * Max # of parallelly issued directSQE is 3072 per device,
++ * hardware organizes this into 24 group, per group has 128 credits.
++ */
++#define ERDMA_DWQE_MAX_GRP_CNT 24
++#define ERDMA_DWQE_NUM_PER_GRP 128
++
++#define ERDMA_DWQE_TYPE0_CNT 64
++#define ERDMA_DWQE_TYPE1_CNT 496
++/* type1 DB contains 2 DBs, takes 256Byte. */
++#define ERDMA_DWQE_TYPE1_CNT_PER_PAGE 16
++
++#define ERDMA_SDB_SHARED_PAGE_INDEX 95
++
++/* Doorbell related. */
++#define ERDMA_DB_SIZE 8
++
++#define ERDMA_CQDB_IDX_MASK GENMASK_ULL(63, 56)
++#define ERDMA_CQDB_CQN_MASK GENMASK_ULL(55, 32)
++#define ERDMA_CQDB_ARM_MASK BIT_ULL(31)
++#define ERDMA_CQDB_SOL_MASK BIT_ULL(30)
++#define ERDMA_CQDB_CMDSN_MASK GENMASK_ULL(29, 28)
++#define ERDMA_CQDB_CI_MASK GENMASK_ULL(23, 0)
++
++#define ERDMA_EQDB_ARM_MASK BIT(31)
++#define ERDMA_EQDB_CI_MASK GENMASK_ULL(23, 0)
++
++#define ERDMA_PAGE_SIZE_SUPPORT 0x7FFFF000
++
++/* WQE related. */
++#define EQE_SIZE 16
++#define EQE_SHIFT 4
++#define RQE_SIZE 32
++#define RQE_SHIFT 5
++#define CQE_SIZE 32
++#define CQE_SHIFT 5
++#define SQEBB_SIZE 32
++#define SQEBB_SHIFT 5
++#define SQEBB_MASK (~(SQEBB_SIZE - 1))
++#define SQEBB_ALIGN(size) ((size + SQEBB_SIZE - 1) & SQEBB_MASK)
++#define SQEBB_COUNT(size) (SQEBB_ALIGN(size) >> SQEBB_SHIFT)
++
++#define ERDMA_MAX_SQE_SIZE 128
++#define ERDMA_MAX_WQEBB_PER_SQE 4
++
++/* CMDQ related. */
++#define ERDMA_CMDQ_MAX_OUTSTANDING 128
++#define ERDMA_CMDQ_SQE_SIZE 64
++
++/* cmdq sub module definition. */
++enum CMDQ_WQE_SUB_MOD {
++	CMDQ_SUBMOD_RDMA = 0,
++	CMDQ_SUBMOD_COMMON = 1
++};
++
++enum CMDQ_RDMA_OPCODE {
++	CMDQ_OPCODE_QUERY_DEVICE = 0,
++	CMDQ_OPCODE_CREATE_QP = 1,
++	CMDQ_OPCODE_DESTROY_QP = 2,
++	CMDQ_OPCODE_MODIFY_QP = 3,
++	CMDQ_OPCODE_CREATE_CQ = 4,
++	CMDQ_OPCODE_DESTROY_CQ = 5,
++	CMDQ_OPCODE_REG_MR = 8,
++	CMDQ_OPCODE_DEREG_MR = 9
++};
++
++enum CMDQ_COMMON_OPCODE {
++	CMDQ_OPCODE_CREATE_EQ = 0,
++	CMDQ_OPCODE_DESTROY_EQ = 1,
++	CMDQ_OPCODE_QUERY_FW_INFO = 2,
++};
++
++/* cmdq-SQE HDR */
++#define ERDMA_CMD_HDR_WQEBB_CNT_MASK GENMASK_ULL(54, 52)
++#define ERDMA_CMD_HDR_CONTEXT_COOKIE_MASK GENMASK_ULL(47, 32)
++#define ERDMA_CMD_HDR_SUB_MOD_MASK GENMASK_ULL(25, 24)
++#define ERDMA_CMD_HDR_OPCODE_MASK GENMASK_ULL(23, 16)
++#define ERDMA_CMD_HDR_WQEBB_INDEX_MASK GENMASK_ULL(15, 0)
++
++struct erdma_cmdq_destroy_cq_req {
++	u64 hdr;
++	u32 cqn;
++};
++
++#define ERDMA_EQ_TYPE_AEQ 0
++#define ERDMA_EQ_TYPE_CEQ 1
++
++struct erdma_cmdq_create_eq_req {
++	u64 hdr;
++	u64 qbuf_addr;
++	u8 vector_idx;
++	u8 eqn;
++	u8 depth;
++	u8 qtype;
++	u32 db_dma_addr_l;
++	u32 db_dma_addr_h;
++};
++
++struct erdma_cmdq_destroy_eq_req {
++	u64 hdr;
++	u64 rsvd0;
++	u8 vector_idx;
++	u8 eqn;
++	u8 rsvd1;
++	u8 qtype;
++};
++
++/* create_cq cfg0 */
++#define ERDMA_CMD_CREATE_CQ_DEPTH_MASK GENMASK(31, 24)
++#define ERDMA_CMD_CREATE_CQ_PAGESIZE_MASK GENMASK(23, 20)
++#define ERDMA_CMD_CREATE_CQ_CQN_MASK GENMASK(19, 0)
++
++/* create_cq cfg1 */
++#define ERDMA_CMD_CREATE_CQ_MTT_CNT_MASK GENMASK(31, 16)
++#define ERDMA_CMD_CREATE_CQ_MTT_TYPE_MASK BIT(15)
++#define ERDMA_CMD_CREATE_CQ_EQN_MASK GENMASK(9, 0)
++
++struct erdma_cmdq_create_cq_req {
++	u64 hdr;
++	u32 cfg0;
++	u32 qbuf_addr_l;
++	u32 qbuf_addr_h;
++	u32 cfg1;
++	u64 cq_db_info_addr;
++	u32 first_page_offset;
++};
++
++/* regmr/deregmr cfg0 */
++#define ERDMA_CMD_MR_VALID_MASK BIT(31)
++#define ERDMA_CMD_MR_KEY_MASK GENMASK(27, 20)
++#define ERDMA_CMD_MR_MPT_IDX_MASK GENMASK(19, 0)
++
++/* regmr cfg1 */
++#define ERDMA_CMD_REGMR_PD_MASK GENMASK(31, 12)
++#define ERDMA_CMD_REGMR_TYPE_MASK GENMASK(7, 6)
++#define ERDMA_CMD_REGMR_RIGHT_MASK GENMASK(5, 2)
++#define ERDMA_CMD_REGMR_ACC_MODE_MASK GENMASK(1, 0)
++
++/* regmr cfg2 */
++#define ERDMA_CMD_REGMR_PAGESIZE_MASK GENMASK(31, 27)
++#define ERDMA_CMD_REGMR_MTT_TYPE_MASK GENMASK(21, 20)
++#define ERDMA_CMD_REGMR_MTT_CNT_MASK GENMASK(19, 0)
++
++struct erdma_cmdq_reg_mr_req {
++	u64 hdr;
++	u32 cfg0;
++	u32 cfg1;
++	u64 start_va;
++	u32 size;
++	u32 cfg2;
++	u64 phy_addr[4];
++};
++
++struct erdma_cmdq_dereg_mr_req {
++	u64 hdr;
++	u32 cfg;
++};
++
++/* modify qp cfg */
++#define ERDMA_CMD_MODIFY_QP_STATE_MASK GENMASK(31, 24)
++#define ERDMA_CMD_MODIFY_QP_CC_MASK GENMASK(23, 20)
++#define ERDMA_CMD_MODIFY_QP_QPN_MASK GENMASK(19, 0)
++
++struct erdma_cmdq_modify_qp_req {
++	u64 hdr;
++	u32 cfg;
++	u32 cookie;
++	u32 dip;
++	u32 sip;
++	u16 sport;
++	u16 dport;
++	u32 send_nxt;
++	u32 recv_nxt;
++};
++
++/* create qp cfg0 */
++#define ERDMA_CMD_CREATE_QP_SQ_DEPTH_MASK GENMASK(31, 20)
++#define ERDMA_CMD_CREATE_QP_QPN_MASK GENMASK(19, 0)
++
++/* create qp cfg1 */
++#define ERDMA_CMD_CREATE_QP_RQ_DEPTH_MASK GENMASK(31, 20)
++#define ERDMA_CMD_CREATE_QP_PD_MASK GENMASK(19, 0)
++
++/* create qp cqn_mtt_cfg */
++#define ERDMA_CMD_CREATE_QP_PAGE_SIZE_MASK GENMASK(31, 28)
++#define ERDMA_CMD_CREATE_QP_CQN_MASK GENMASK(23, 0)
++
++/* create qp mtt_cfg */
++#define ERDMA_CMD_CREATE_QP_PAGE_OFFSET_MASK GENMASK(31, 12)
++#define ERDMA_CMD_CREATE_QP_MTT_CNT_MASK GENMASK(11, 1)
++#define ERDMA_CMD_CREATE_QP_MTT_TYPE_MASK BIT(0)
++
++#define ERDMA_CMDQ_CREATE_QP_RESP_COOKIE_MASK GENMASK_ULL(31, 0)
++
++struct erdma_cmdq_create_qp_req {
++	u64 hdr;
++	u32 cfg0;
++	u32 cfg1;
++	u32 sq_cqn_mtt_cfg;
++	u32 rq_cqn_mtt_cfg;
++	u64 sq_buf_addr;
++	u64 rq_buf_addr;
++	u32 sq_mtt_cfg;
++	u32 rq_mtt_cfg;
++	u64 sq_db_info_dma_addr;
++	u64 rq_db_info_dma_addr;
++};
++
++struct erdma_cmdq_destroy_qp_req {
++	u64 hdr;
++	u32 qpn;
++};
++
++/* cap qword 0 definition */
++#define ERDMA_CMD_DEV_CAP_MAX_CQE_MASK GENMASK_ULL(47, 40)
++#define ERDMA_CMD_DEV_CAP_MAX_RECV_WR_MASK GENMASK_ULL(23, 16)
++#define ERDMA_CMD_DEV_CAP_MAX_MR_SIZE_MASK GENMASK_ULL(7, 0)
++
++/* cap qword 1 definition */
++#define ERDMA_CMD_DEV_CAP_DMA_LOCAL_KEY_MASK GENMASK_ULL(63, 32)
++#define ERDMA_CMD_DEV_CAP_DEFAULT_CC_MASK GENMASK_ULL(31, 28)
++#define ERDMA_CMD_DEV_CAP_QBLOCK_MASK GENMASK_ULL(27, 16)
++#define ERDMA_CMD_DEV_CAP_MAX_MW_MASK GENMASK_ULL(7, 0)
++
++#define ERDMA_NQP_PER_QBLOCK 1024
++
++#define ERDMA_CMD_INFO0_FW_VER_MASK GENMASK_ULL(31, 0)
++
++/* CQE hdr */
++#define ERDMA_CQE_HDR_OWNER_MASK BIT(31)
++#define ERDMA_CQE_HDR_OPCODE_MASK GENMASK(23, 16)
++#define ERDMA_CQE_HDR_QTYPE_MASK GENMASK(15, 8)
++#define ERDMA_CQE_HDR_SYNDROME_MASK GENMASK(7, 0)
++
++#define ERDMA_CQE_QTYPE_SQ 0
++#define ERDMA_CQE_QTYPE_RQ 1
++#define ERDMA_CQE_QTYPE_CMDQ 2
++
++struct erdma_cqe {
++	__be32 hdr;
++	__be32 qe_idx;
++	__be32 qpn;
++	union {
++		__le32 imm_data;
++		__be32 inv_rkey;
++	};
++	__be32 size;
++	__be32 rsvd[3];
++};
++
++struct erdma_sge {
++	__aligned_le64 laddr;
++	__le32 length;
++	__le32 lkey;
++};
++
++/* Receive Queue Element */
++struct erdma_rqe {
++	__le16 qe_idx;
++	__le16 rsvd0;
++	__le32 qpn;
++	__le32 rsvd1;
++	__le32 rsvd2;
++	__le64 to;
++	__le32 length;
++	__le32 stag;
++};
++
++/* SQE */
++#define ERDMA_SQE_HDR_SGL_LEN_MASK GENMASK_ULL(63, 56)
++#define ERDMA_SQE_HDR_WQEBB_CNT_MASK GENMASK_ULL(54, 52)
++#define ERDMA_SQE_HDR_QPN_MASK GENMASK_ULL(51, 32)
++#define ERDMA_SQE_HDR_OPCODE_MASK GENMASK_ULL(31, 27)
++#define ERDMA_SQE_HDR_DWQE_MASK BIT_ULL(26)
++#define ERDMA_SQE_HDR_INLINE_MASK BIT_ULL(25)
++#define ERDMA_SQE_HDR_FENCE_MASK BIT_ULL(24)
++#define ERDMA_SQE_HDR_SE_MASK BIT_ULL(23)
++#define ERDMA_SQE_HDR_CE_MASK BIT_ULL(22)
++#define ERDMA_SQE_HDR_WQEBB_INDEX_MASK GENMASK_ULL(15, 0)
++
++/* REG MR attrs */
++#define ERDMA_SQE_MR_MODE_MASK GENMASK_ULL(1, 0)
++#define ERDMA_SQE_MR_ACCESS_MASK GENMASK_ULL(5, 2)
++#define ERDMA_SQE_MR_MTT_TYPE_MASK GENMASK_ULL(7, 6)
++#define ERDMA_SQE_MR_MTT_CNT_MASK GENMASK_ULL(31, 12)
++
++struct erdma_write_sqe {
++	__le64 hdr;
++	__le32 imm_data;
++	__le32 length;
++
++	__le32 sink_stag;
++	__le32 sink_to_l;
++	__le32 sink_to_h;
++
++	__le32 rsvd;
++
++	struct erdma_sge sgl[0];
++};
++
++struct erdma_send_sqe {
++	__le64 hdr;
++	__le32 imm_data;
++	__le32 length;
++	struct erdma_sge sgl[0];
++};
++
++struct erdma_readreq_sqe {
++	__le64 hdr;
++	__le32 invalid_stag;
++	__le32 length;
++	__le32 sink_stag;
++	__le32 sink_to_l;
++	__le32 sink_to_h;
++	__le32 rsvd;
++};
++
++struct erdma_reg_mr_sqe {
++	__le64 hdr;
++	__le64 addr;
++	__le32 length;
++	__le32 stag;
++	__le32 attrs;
++	__le32 rsvd;
++};
++
++/* EQ related. */
++#define ERDMA_DEFAULT_EQ_DEPTH 256
++
++/* ceqe */
++#define ERDMA_CEQE_HDR_DB_MASK BIT_ULL(63)
++#define ERDMA_CEQE_HDR_PI_MASK GENMASK_ULL(55, 32)
++#define ERDMA_CEQE_HDR_O_MASK BIT_ULL(31)
++#define ERDMA_CEQE_HDR_CQN_MASK GENMASK_ULL(19, 0)
++
++/* aeqe */
++#define ERDMA_AEQE_HDR_O_MASK BIT(31)
++#define ERDMA_AEQE_HDR_TYPE_MASK GENMASK(23, 16)
++#define ERDMA_AEQE_HDR_SUBTYPE_MASK GENMASK(7, 0)
++
++#define ERDMA_AE_TYPE_QP_FATAL_EVENT 0
++#define ERDMA_AE_TYPE_QP_ERQ_ERR_EVENT 1
++#define ERDMA_AE_TYPE_ACC_ERR_EVENT 2
++#define ERDMA_AE_TYPE_CQ_ERR 3
++#define ERDMA_AE_TYPE_OTHER_ERROR 4
++
++struct erdma_aeqe {
++	__le32 hdr;
++	__le32 event_data0;
++	__le32 event_data1;
++	__le32 rsvd;
++};
++
++enum erdma_opcode {
++	ERDMA_OP_WRITE = 0,
++	ERDMA_OP_READ = 1,
++	ERDMA_OP_SEND = 2,
++	ERDMA_OP_SEND_WITH_IMM = 3,
++
++	ERDMA_OP_RECEIVE = 4,
++	ERDMA_OP_RECV_IMM = 5,
++	ERDMA_OP_RECV_INV = 6,
++
++	ERDMA_OP_REQ_ERR = 7,
++	ERDMA_OP_READ_RESPONSE = 8,
++	ERDMA_OP_WRITE_WITH_IMM = 9,
++
++	ERDMA_OP_RECV_ERR = 10,
++
++	ERDMA_OP_INVALIDATE = 11,
++	ERDMA_OP_RSP_SEND_IMM = 12,
++	ERDMA_OP_SEND_WITH_INV = 13,
++
++	ERDMA_OP_REG_MR = 14,
++	ERDMA_OP_LOCAL_INV = 15,
++	ERDMA_OP_READ_WITH_INV = 16,
++	ERDMA_NUM_OPCODES = 17,
++	ERDMA_OP_INVALID = ERDMA_NUM_OPCODES + 1
++};
++
++enum erdma_wc_status {
++	ERDMA_WC_SUCCESS = 0,
++	ERDMA_WC_GENERAL_ERR = 1,
++	ERDMA_WC_RECV_WQE_FORMAT_ERR = 2,
++	ERDMA_WC_RECV_STAG_INVALID_ERR = 3,
++	ERDMA_WC_RECV_ADDR_VIOLATION_ERR = 4,
++	ERDMA_WC_RECV_RIGHT_VIOLATION_ERR = 5,
++	ERDMA_WC_RECV_PDID_ERR = 6,
++	ERDMA_WC_RECV_WARRPING_ERR = 7,
++	ERDMA_WC_SEND_WQE_FORMAT_ERR = 8,
++	ERDMA_WC_SEND_WQE_ORD_EXCEED = 9,
++	ERDMA_WC_SEND_STAG_INVALID_ERR = 10,
++	ERDMA_WC_SEND_ADDR_VIOLATION_ERR = 11,
++	ERDMA_WC_SEND_RIGHT_VIOLATION_ERR = 12,
++	ERDMA_WC_SEND_PDID_ERR = 13,
++	ERDMA_WC_SEND_WARRPING_ERR = 14,
++	ERDMA_WC_FLUSH_ERR = 15,
++	ERDMA_WC_RETRY_EXC_ERR = 16,
++	ERDMA_NUM_WC_STATUS
++};
++
++enum erdma_vendor_err {
++	ERDMA_WC_VENDOR_NO_ERR = 0,
++	ERDMA_WC_VENDOR_INVALID_RQE = 1,
++	ERDMA_WC_VENDOR_RQE_INVALID_STAG = 2,
++	ERDMA_WC_VENDOR_RQE_ADDR_VIOLATION = 3,
++	ERDMA_WC_VENDOR_RQE_ACCESS_RIGHT_ERR = 4,
++	ERDMA_WC_VENDOR_RQE_INVALID_PD = 5,
++	ERDMA_WC_VENDOR_RQE_WRAP_ERR = 6,
++	ERDMA_WC_VENDOR_INVALID_SQE = 0x20,
++	ERDMA_WC_VENDOR_ZERO_ORD = 0x21,
++	ERDMA_WC_VENDOR_SQE_INVALID_STAG = 0x30,
++	ERDMA_WC_VENDOR_SQE_ADDR_VIOLATION = 0x31,
++	ERDMA_WC_VENDOR_SQE_ACCESS_ERR = 0x32,
++	ERDMA_WC_VENDOR_SQE_INVALID_PD = 0x33,
++	ERDMA_WC_VENDOR_SQE_WARP_ERR = 0x34
++};
++
++#endif
+-- 
+2.27.0
 
-Jason
