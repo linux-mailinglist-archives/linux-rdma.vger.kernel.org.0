@@ -2,39 +2,55 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 522484F653F
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 18:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D014F65C2
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 18:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237079AbiDFQYZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Apr 2022 12:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47686 "EHLO
+        id S237748AbiDFQdW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Apr 2022 12:33:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237859AbiDFQWj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 12:22:39 -0400
-Received: from out30-44.freemail.mail.aliyun.com (out30-44.freemail.mail.aliyun.com [115.124.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1232D13D60
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 19:35:07 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V9JZmMv_1649212504;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V9JZmMv_1649212504)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Apr 2022 10:35:05 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, dledford@redhat.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
-        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
-        BMT@zurich.ibm.com
-Subject: [PATCH for-next v5 12/12] RDMA/erdma: Add driver to kernel build environment
-Date:   Wed,  6 Apr 2022 10:34:50 +0800
-Message-Id: <20220406023450.56683-13-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
-In-Reply-To: <20220406023450.56683-1-chengyou@linux.alibaba.com>
-References: <20220406023450.56683-1-chengyou@linux.alibaba.com>
+        with ESMTP id S237974AbiDFQce (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 12:32:34 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999C3AAB60;
+        Wed,  6 Apr 2022 06:51:55 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A79E468AFE; Wed,  6 Apr 2022 15:51:50 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 15:51:50 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        iommu@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nelson Escobar <neescoba@cisco.com>, netdev@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        virtualization@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Subject: Re: [PATCH 1/5] iommu: Replace uses of IOMMU_CAP_CACHE_COHERENCY
+ with dev_is_dma_coherent()
+Message-ID: <20220406135150.GA21532@lst.de>
+References: <0-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com> <1-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com> <20220406053039.GA10580@lst.de> <20220406120730.GA2120790@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406120730.GA2120790@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,85 +58,12 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- MAINTAINERS                          |  8 ++++++++
- drivers/infiniband/Kconfig           |  1 +
- drivers/infiniband/hw/Makefile       |  1 +
- drivers/infiniband/hw/erdma/Kconfig  | 12 ++++++++++++
- drivers/infiniband/hw/erdma/Makefile |  4 ++++
- 5 files changed, 26 insertions(+)
- create mode 100644 drivers/infiniband/hw/erdma/Kconfig
- create mode 100644 drivers/infiniband/hw/erdma/Makefile
+On Wed, Apr 06, 2022 at 09:07:30AM -0300, Jason Gunthorpe wrote:
+> Didn't see it
+> 
+> I'll move dev_is_dma_coherent to device.h along with
+> device_iommu_mapped() and others then
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ea3e6c914384..6beb3019764d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -723,6 +723,14 @@ S:	Maintained
- F:	Documentation/i2c/busses/i2c-ali1563.rst
- F:	drivers/i2c/busses/i2c-ali1563.c
- 
-+ALIBABA ELASTIC RDMA DRIVER
-+M:	Cheng Xu <chengyou@linux.alibaba.com>
-+M:	Kai Shen <kaishen@linux.alibaba.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/hw/erdma
-+F:	include/uapi/rdma/erdma-abi.h
-+
- ALIENWARE WMI DRIVER
- L:	Dell.Client.Kernel@dell.com
- S:	Maintained
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 33d3ce9c888e..cc6a7ff88ff3 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -92,6 +92,7 @@ source "drivers/infiniband/hw/hns/Kconfig"
- source "drivers/infiniband/hw/bnxt_re/Kconfig"
- source "drivers/infiniband/hw/hfi1/Kconfig"
- source "drivers/infiniband/hw/qedr/Kconfig"
-+source "drivers/infiniband/hw/erdma/Kconfig"
- source "drivers/infiniband/sw/rdmavt/Kconfig"
- source "drivers/infiniband/sw/rxe/Kconfig"
- source "drivers/infiniband/sw/siw/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index fba0b3be903e..6b3a88046125 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_INFINIBAND_HFI1)		+= hfi1/
- obj-$(CONFIG_INFINIBAND_HNS)		+= hns/
- obj-$(CONFIG_INFINIBAND_QEDR)		+= qedr/
- obj-$(CONFIG_INFINIBAND_BNXT_RE)	+= bnxt_re/
-+obj-$(CONFIG_INFINIBAND_ERDMA)		+= erdma/
-diff --git a/drivers/infiniband/hw/erdma/Kconfig b/drivers/infiniband/hw/erdma/Kconfig
-new file mode 100644
-index 000000000000..c90f2be1ea63
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INFINIBAND_ERDMA
-+	tristate "Alibaba Elastic RDMA Adapter (ERDMA) support"
-+	depends on PCI_MSI && 64BIT && !CPU_BIG_ENDIAN
-+	depends on INFINIBAND_ADDR_TRANS
-+	depends on INFINIBAND_USER_ACCESS
-+	help
-+	  This is a RDMA/iWarp driver for Alibaba Elastic RDMA Adapter(ERDMA),
-+	  which supports RDMA features in Alibaba cloud environment.
-+
-+	  To compile this driver as module, choose M here. The module will be
-+	  called erdma.
-diff --git a/drivers/infiniband/hw/erdma/Makefile b/drivers/infiniband/hw/erdma/Makefile
-new file mode 100644
-index 000000000000..51d2ef91905a
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_INFINIBAND_ERDMA) := erdma.o
-+
-+erdma-y := erdma_cm.o erdma_main.o erdma_cmdq.o erdma_cq.o erdma_verbs.o erdma_qp.o erdma_eq.o
--- 
-2.27.0
-
+No.  It it is internal for a reason.  It also doesn't actually work
+outside of the dma core.  E.g. for non-swiotlb ARM configs it will
+not actually work.
