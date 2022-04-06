@@ -2,306 +2,79 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 775074F57DB
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 10:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 968984F5796
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 10:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244652AbiDFIja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Apr 2022 04:39:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39026 "EHLO
+        id S235107AbiDFHgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Apr 2022 03:36:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352956AbiDFIiK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 04:38:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 57CB824BD5F
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 20:08:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649214502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=9bTSfLjFF7iqlXRDGX3kKsYLttLOx5fBawMFEF0BeGA=;
-        b=fINh6HeBT5XCxbkr6ZFAz/sS02s44vePY3+U9zWJ69hcqql3yDv/7TNCzS+Pcjv6JO0cWG
-        kqoiogZ97uD2Sgfi/ijWVJ2TPQv0BxQE4OCYd7iiXa7ZVSYXmrnAZq2xKSQAexzSHiIXVR
-        +ui2CrbBV64bXt5DAq9hT8R7y6dP8Ek=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-29-Uy9K_WaLMv61m9NmdDGq4A-1; Tue, 05 Apr 2022 23:08:21 -0400
-X-MC-Unique: Uy9K_WaLMv61m9NmdDGq4A-1
-Received: by mail-pg1-f197.google.com with SMTP id z132-20020a63338a000000b003844e317066so669325pgz.19
-        for <linux-rdma@vger.kernel.org>; Tue, 05 Apr 2022 20:08:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=9bTSfLjFF7iqlXRDGX3kKsYLttLOx5fBawMFEF0BeGA=;
-        b=647hk4frTJKPfCQ49xgLiOytz8gQ1mLnNhRwtTWCmUvI/qzX/MVBrsdc+ZVCUmjlVP
-         +BnHbVuUWmkczIEDOwVnwB6Ls5rMKCvRZH4GGKsmxqzleOLmsK3PlIpYZphs8sH+g+vw
-         AD2KrIef2ZRnhIztXo/82VkIXP75B/ZpIWM1RN4CF2Waij9djfIYfUzwjI0iXzA5iwLB
-         qAReE7CuPQH/QpFawSlL+1dXZ0Uor8RFgTTt3bZqDIPGTCz82nAwpVyITy7/nYRaVUgb
-         wLZOg1olHUNjqMIyR/iE8VG20gNxCzABIrjlYYdQMuYffJ+I6FCf0TCepu7/dY5toKDs
-         bCGw==
-X-Gm-Message-State: AOAM532rSNYuerEIWhwspjBgbVkkEuZvzlRhAijbOe/LvvysD7MsStKt
-        I5LIP+7+Iutav/3mEf0KKNEEsXt23n2RjGNLyi3Ztil1jfsvgLTSjzbAUbSmGHqlWnV2JcrjFo2
-        mVhyemE/NK7DMJL5f8A+QPR9RNOIa/iFJc7Uy9Q==
-X-Received: by 2002:a63:5b4b:0:b0:382:9344:7224 with SMTP id l11-20020a635b4b000000b0038293447224mr5314715pgm.28.1649214499396;
-        Tue, 05 Apr 2022 20:08:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyfz1UBVrQVvHaD+IdhM7T6JN+PxxB66TL484v+dQwR9JwFOimY6KYeoAqK1+PlvmeWVnQWdNKdKwtZAudOMl4=
-X-Received: by 2002:a63:5b4b:0:b0:382:9344:7224 with SMTP id
- l11-20020a635b4b000000b0038293447224mr5314697pgm.28.1649214499016; Tue, 05
- Apr 2022 20:08:19 -0700 (PDT)
+        with ESMTP id S1358453AbiDFHDY (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 03:03:24 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD21EA284;
+        Tue,  5 Apr 2022 22:30:46 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E913E68AFE; Wed,  6 Apr 2022 07:30:39 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 07:30:39 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        iommu@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nelson Escobar <neescoba@cisco.com>, netdev@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        virtualization@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Subject: Re: [PATCH 1/5] iommu: Replace uses of IOMMU_CAP_CACHE_COHERENCY
+ with dev_is_dma_coherent()
+Message-ID: <20220406053039.GA10580@lst.de>
+References: <0-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com> <1-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
 MIME-Version: 1.0
-From:   Yi Zhang <yi.zhang@redhat.com>
-Date:   Wed, 6 Apr 2022 11:08:06 +0800
-Message-ID: <CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com>
-Subject: [bug report] rdma_rxe: WARNING: inconsistent lock state, inconsistent
- {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage
-To:     RDMA mailing list <linux-rdma@vger.kernel.org>
-Cc:     Bart Van Assche <bvanassche@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello
+On Tue, Apr 05, 2022 at 01:16:00PM -0300, Jason Gunthorpe wrote:
+> diff --git a/drivers/infiniband/hw/usnic/usnic_uiom.c b/drivers/infiniband/hw/usnic/usnic_uiom.c
+> index 760b254ba42d6b..24d118198ac756 100644
+> --- a/drivers/infiniband/hw/usnic/usnic_uiom.c
+> +++ b/drivers/infiniband/hw/usnic/usnic_uiom.c
+> @@ -42,6 +42,7 @@
+>  #include <linux/list.h>
+>  #include <linux/pci.h>
+>  #include <rdma/ib_verbs.h>
+> +#include <linux/dma-map-ops.h>
+>  
+>  #include "usnic_log.h"
+>  #include "usnic_uiom.h"
+> @@ -474,6 +475,12 @@ int usnic_uiom_attach_dev_to_pd(struct usnic_uiom_pd *pd, struct device *dev)
+>  	struct usnic_uiom_dev *uiom_dev;
+>  	int err;
+>  
+> +	if (!dev_is_dma_coherent(dev)) {
 
-Below WARNING triggered during blktests srp/ tests with 5.18.0-rc1
-debug kernel, pls help check it, let me know if you need any info for
-it, thanks.
-
-[  290.308984] run blktests srp/001 at 2022-04-05 23:01:02
-[  290.999913] null_blk: module loaded
-[  291.260285] device-mapper: multipath service-time: version 0.3.0 loaded
-[  291.262990] device-mapper: table: 253:3: multipath: error getting
-device (-EBUSY)
-[  291.270535] device-mapper: ioctl: error adding target to table
-[  291.362284] rdma_rxe: loaded
-[  291.428444] infiniband eno1_rxe: set active
-[  291.428462] infiniband eno1_rxe: added eno1
-[  291.467142] eno2 speed is unknown, defaulting to 1000
-[  291.472327] eno2 speed is unknown, defaulting to 1000
-[  291.477680] eno2 speed is unknown, defaulting to 1000
-[  291.516123] infiniband eno2_rxe: set down
-[  291.516130] infiniband eno2_rxe: added eno2
-[  291.516649] eno2 speed is unknown, defaulting to 1000
-[  291.542551] eno2 speed is unknown, defaulting to 1000
-[  291.558995] eno3 speed is unknown, defaulting to 1000
-[  291.564127] eno3 speed is unknown, defaulting to 1000
-[  291.569462] eno3 speed is unknown, defaulting to 1000
-[  291.607876] infiniband eno3_rxe: set down
-[  291.607883] infiniband eno3_rxe: added eno3
-[  291.608430] eno3 speed is unknown, defaulting to 1000
-[  291.632891] eno2 speed is unknown, defaulting to 1000
-[  291.638180] eno3 speed is unknown, defaulting to 1000
-[  291.655089] eno4 speed is unknown, defaulting to 1000
-[  291.660213] eno4 speed is unknown, defaulting to 1000
-[  291.665569] eno4 speed is unknown, defaulting to 1000
-[  291.703975] infiniband eno4_rxe: set down
-[  291.703982] infiniband eno4_rxe: added eno4
-[  291.704642] eno4 speed is unknown, defaulting to 1000
-[  291.822650] scsi_debug:sdebug_add_store: dif_storep 524288 bytes @
-ffffc90001801000
-[  291.825441] scsi_debug:sdebug_driver_probe: scsi_debug: trim
-poll_queues to 0. poll_q/nr_hw = (0/1)
-[  291.834505] scsi_debug:sdebug_driver_probe: host protection DIF3 DIX3
-[  291.834513] scsi host15: scsi_debug: version 0191 [20210520]
-                 dev_size_mb=32, opts=0x0, submit_queues=1, statistics=0
-[  291.837267] scsi 15:0:0:0: Direct-Access     Linux    scsi_debug
-   0191 PQ: 0 ANSI: 7
-[  291.839793] sd 15:0:0:0: Power-on or device reset occurred
-[  291.840110] sd 15:0:0:0: Attached scsi generic sg1 type 0
-[  291.845521] sd 15:0:0:0: [sdb] Enabling DIF Type 3 protection
-[  291.845878] sd 15:0:0:0: [sdb] 65536 512-byte logical blocks: (33.6
-MB/32.0 MiB)
-[  291.845939] sd 15:0:0:0: [sdb] Write Protect is off
-[  291.845954] sd 15:0:0:0: [sdb] Mode Sense: 73 00 10 08
-[  291.846049] sd 15:0:0:0: [sdb] Write cache: enabled, read cache:
-enabled, supports DPO and FUA
-[  291.846254] sd 15:0:0:0: [sdb] Optimal transfer size 524288 bytes
-[  291.859380] sd 15:0:0:0: [sdb] Enabling DIX T10-DIF-TYPE3-CRC protection
-[  291.859398] sd 15:0:0:0: [sdb] DIF application tag size 6
-[  291.860158] sd 15:0:0:0: [sdb] Attached SCSI disk
-[  292.666414] eno2 speed is unknown, defaulting to 1000
-[  292.771984] eno3 speed is unknown, defaulting to 1000
-[  292.876762] eno4 speed is unknown, defaulting to 1000
-[  293.033291] Rounding down aligned max_sectors from 4294967295 to 4294967288
-[  293.102261] ib_srpt:srpt_add_one: ib_srpt device = 0000000047a39f45
-[  293.102363] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno1_rxe):
-use_srq = 0; ret = 0
-[  293.102369] ib_srpt:srpt_add_one: ib_srpt Target login info:
-id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
-[  293.102680] ib_srpt:srpt_add_one: ib_srpt added eno1_rxe.
-[  293.102692] ib_srpt:srpt_add_one: ib_srpt device = 00000000b2dfcbe9
-[  293.102725] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno2_rxe):
-use_srq = 0; ret = 0
-[  293.102730] ib_srpt:srpt_add_one: ib_srpt Target login info:
-id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
-[  293.102741] eno2 speed is unknown, defaulting to 1000
-[  293.107884] ib_srpt:srpt_add_one: ib_srpt added eno2_rxe.
-[  293.107893] ib_srpt:srpt_add_one: ib_srpt device = 0000000061e03247
-[  293.107922] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno3_rxe):
-use_srq = 0; ret = 0
-[  293.107926] ib_srpt:srpt_add_one: ib_srpt Target login info:
-id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
-[  293.107936] eno3 speed is unknown, defaulting to 1000
-[  293.113038] ib_srpt:srpt_add_one: ib_srpt added eno3_rxe.
-[  293.113046] ib_srpt:srpt_add_one: ib_srpt device = 00000000c0e3d43d
-[  293.113081] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno4_rxe):
-use_srq = 0; ret = 0
-[  293.113085] ib_srpt:srpt_add_one: ib_srpt Target login info:
-id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
-[  293.113096] eno4 speed is unknown, defaulting to 1000
-[  293.118198] ib_srpt:srpt_add_one: ib_srpt added eno4_rxe.
-[  293.584001] Rounding down aligned max_sectors from 255 to 248
-[  293.654030] Rounding down aligned max_sectors from 255 to 248
-[  293.724363] Rounding down aligned max_sectors from 4294967295 to 4294967288
-[  296.450772] ib_srp:srp_add_one: ib_srp: srp_add_one:
-18446744073709551615 / 4096 = 4503599627370495 <> 512
-[  296.450783] ib_srp:srp_add_one: ib_srp: eno1_rxe: mr_page_shift =
-12, device->max_mr_size = 0xffffffffffffffff,
-device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
-mr_max_size = 0x200000
-[  296.451222] ib_srp:srp_add_one: ib_srp: srp_add_one:
-18446744073709551615 / 4096 = 4503599627370495 <> 512
-[  296.451229] ib_srp:srp_add_one: ib_srp: eno2_rxe: mr_page_shift =
-12, device->max_mr_size = 0xffffffffffffffff,
-device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
-mr_max_size = 0x200000
-[  296.451517] ib_srp:srp_add_one: ib_srp: srp_add_one:
-18446744073709551615 / 4096 = 4503599627370495 <> 512
-[  296.451523] ib_srp:srp_add_one: ib_srp: eno3_rxe: mr_page_shift =
-12, device->max_mr_size = 0xffffffffffffffff,
-device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
-mr_max_size = 0x200000
-[  296.451769] ib_srp:srp_add_one: ib_srp: srp_add_one:
-18446744073709551615 / 4096 = 4503599627370495 <> 512
-[  296.451774] ib_srp:srp_add_one: ib_srp: eno4_rxe: mr_page_shift =
-12, device->max_mr_size = 0xffffffffffffffff,
-device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
-mr_max_size = 0x200000
-[  296.605925] ib_srp:srp_parse_in: ib_srp: 10.16.221.116 -> 10.16.221.116:0
-[  296.605956] ib_srp:srp_parse_in: ib_srp: 10.16.221.116:5555 ->
-10.16.221.116:5555
-[  296.606014] ib_srp:add_target_store: ib_srp: max_sectors = 1024;
-max_pages_per_mr = 512; mr_page_size = 4096; max_sectors_per_mr =
-4096; mr_per_cmd = 2
-[  296.606021] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
-
-[  296.616660] ================================
-[  296.620931] WARNING: inconsistent lock state
-[  296.625207] 5.18.0-rc1 #1 Tainted: G S        I
-[  296.630259] --------------------------------
-[  296.634531] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-[  296.640535] ksoftirqd/30/188 [HC0[0]:SC1[1]:HE0:SE0] takes:
-[  296.646106] ffff888151491468 (&xa->xa_lock#15){+.?.}-{2:2}, at:
-rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-[  296.655588] {SOFTIRQ-ON-W} state was registered at:
-[  296.660467]   lock_acquire+0x1d2/0x5a0
-[  296.664221]   _raw_spin_lock+0x33/0x80
-[  296.667972]   __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
-[  296.673112]   __ib_alloc_pd+0xf9/0x550 [ib_core]
-[  296.677758]   ib_mad_init_device+0x2d9/0xd20 [ib_core]
-[  296.682924]   add_client_context+0x2fa/0x450 [ib_core]
-[  296.688088]   enable_device_and_get+0x1b7/0x350 [ib_core]
-[  296.693503]   ib_register_device+0x757/0xaf0 [ib_core]
-[  296.698660]   rxe_register_device+0x2eb/0x390 [rdma_rxe]
-[  296.703973]   rxe_net_add+0x83/0xc0 [rdma_rxe]
-[  296.708421]   rxe_newlink+0x76/0x90 [rdma_rxe]
-[  296.712865]   nldev_newlink+0x245/0x3e0 [ib_core]
-[  296.717597]   rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
-[  296.722492]   rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
-[  296.727042]   netlink_unicast+0x43b/0x640
-[  296.731056]   netlink_sendmsg+0x7eb/0xc40
-[  296.735069]   sock_sendmsg+0xe0/0x110
-[  296.738734]   __sys_sendto+0x1d7/0x2b0
-[  296.742486]   __x64_sys_sendto+0xdd/0x1b0
-[  296.746500]   do_syscall_64+0x37/0x80
-[  296.750166]   entry_SYSCALL_64_after_hwframe+0x44/0xae
-[  296.755304] irq event stamp: 25305
-[  296.758710] hardirqs last  enabled at (25304): [<ffffffff89815de8>]
-__local_bh_enable_ip+0xa8/0x110
-[  296.767750] hardirqs last disabled at (25305): [<ffffffff8b970219>]
-_raw_spin_lock_irqsave+0x69/0x90
-[  296.776875] softirqs last  enabled at (25294): [<ffffffff8bc0064a>]
-__do_softirq+0x64a/0xa4c
-[  296.785307] softirqs last disabled at (25299): [<ffffffff898159f2>]
-run_ksoftirqd+0x32/0x60
-[  296.793654]
-               other info that might help us debug this:
-[  296.800177]  Possible unsafe locking scenario:
-
-[  296.806097]        CPU0
-[  296.808550]        ----
-[  296.811003]   lock(&xa->xa_lock#15);
-[  296.814583]   <Interrupt>
-[  296.817209]     lock(&xa->xa_lock#15);
-[  296.820961]
-                *** DEADLOCK ***
-
-[  296.826880] no locks held by ksoftirqd/30/188.
-[  296.831326]
-               stack backtrace:
-[  296.835686] CPU: 30 PID: 188 Comm: ksoftirqd/30 Tainted: G S
-I       5.18.0-rc1 #1
-[  296.843859] Hardware name: Dell Inc. PowerEdge R640/06NR82, BIOS
-2.11.2 004/21/2021
-[  296.851509] Call Trace:
-[  296.853964]  <TASK>
-[  296.856070]  dump_stack_lvl+0x44/0x57
-[  296.859734]  mark_lock.part.52.cold.79+0x3c/0x46
-[  296.864355]  ? lock_chain_count+0x20/0x20
-[  296.868367]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
-[  296.872994]  ? orc_find.part.4+0x310/0x310
-[  296.877096]  ? __module_text_address.part.55+0x13/0x140
-[  296.882326]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
-[  296.886947]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
-[  296.891566]  ? is_module_text_address+0x41/0x60
-[  296.896098]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
-[  296.900718]  ? kernel_text_address+0x13/0xd0
-[  296.904991]  ? create_prof_cpu_mask+0x20/0x20
-[  296.909351]  ? sched_clock_cpu+0x15/0x200
-[  296.913364]  __lock_acquire+0x1565/0x34a0
-[  296.917377]  ? rcu_read_lock_sched_held+0xaf/0xe0
-[  296.922079]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[  296.926529]  lock_acquire+0x1d2/0x5a0
-[  296.930193]  ? rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-[  296.935429]  ? rcu_read_unlock+0x50/0x50
-[  296.939353]  ? mark_lock.part.52+0xa3d/0x1c00
-[  296.943712]  ? _raw_spin_lock_irqsave+0x69/0x90
-[  296.948247]  _raw_spin_lock_irqsave+0x42/0x90
-[  296.952603]  ? rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-[  296.957830]  rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-[  296.962882]  ? __rxe_add_to_pool+0x230/0x230 [rdma_rxe]
-[  296.968108]  ? __rxe_get+0xc1/0x140 [rdma_rxe]
-[  296.972554]  rxe_get_av+0x168/0x2a0 [rdma_rxe]
-[  296.977007]  ? lockdep_lock+0xcb/0x1c0
-[  296.980761]  rxe_requester+0x75b/0x4a90 [rdma_rxe]
-[  296.985557]  ? rxe_do_task+0xe2/0x230 [rdma_rxe]
-[  296.990183]  ? sched_clock_cpu+0x15/0x200
-[  296.994193]  ? find_held_lock+0x3a/0x1c0
-[  296.998119]  ? rnr_nak_timer+0x80/0x80 [rdma_rxe]
-[  297.002826]  ? lock_release+0x42f/0xc90
-[  297.006664]  ? lock_downgrade+0x6b0/0x6b0
-[  297.010676]  ? lock_acquired+0x262/0xb10
-[  297.014605]  ? __local_bh_enable_ip+0xa8/0x110
-[  297.019051]  ? rnr_nak_timer+0x80/0x80 [rdma_rxe]
-[  297.023764]  rxe_do_task+0x134/0x230 [rdma_rxe]
-[  297.028297]  tasklet_action_common.isra.12+0x1f7/0x2d0
-[  297.033435]  __do_softirq+0x1ea/0xa4c
-[  297.037100]  ? tasklet_kill+0x1c0/0x1c0
-[  297.040941]  run_ksoftirqd+0x32/0x60
-[  297.044518]  smpboot_thread_fn+0x503/0x860
-[  297.048618]  ? sort_range+0x20/0x20
-[  297.052110]  kthread+0x29b/0x340
-[  297.055342]  ? kthread_complete_and_exit+0x20/0x20
-[  297.060137]  ret_from_fork+0x1f/0x30
-[  297.063720]  </TASK>
-
--- 
-Best Regards,
-  Yi Zhang
-
+Which part of the comment at the top of dma-map-ops.h is not clear
+enough to you?
