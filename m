@@ -2,31 +2,33 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6C84F5B62
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 12:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9984F5B03
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 12:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348950AbiDFJji (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Apr 2022 05:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56658 "EHLO
+        id S243934AbiDFJls (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Apr 2022 05:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1585966AbiDFJgw (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 05:36:52 -0400
+        with ESMTP id S1358461AbiDFJjr (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 05:39:47 -0400
 Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DBC2AC2AC
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 19:34:53 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R451e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V9JW3pf_1649212490;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V9JW3pf_1649212490)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D321F621B
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 19:35:05 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V9JW3tO_1649212502;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V9JW3tO_1649212502)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Apr 2022 10:34:51 +0800
+          Wed, 06 Apr 2022 10:35:03 +0800
 From:   Cheng Xu <chengyou@linux.alibaba.com>
 To:     jgg@ziepe.ca, dledford@redhat.com, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
         chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
         BMT@zurich.ibm.com
-Subject: [PATCH for-next v5 00/12] Elastic RDMA Adapter (ERDMA) driver
-Date:   Wed,  6 Apr 2022 10:34:38 +0800
-Message-Id: <20220406023450.56683-1-chengyou@linux.alibaba.com>
+Subject: [PATCH for-next v5 10/12] RDMA/erdma: Add the erdma module
+Date:   Wed,  6 Apr 2022 10:34:48 +0800
+Message-Id: <20220406023450.56683-11-chengyou@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0 (Apple Git-132)
+In-Reply-To: <20220406023450.56683-1-chengyou@linux.alibaba.com>
+References: <20220406023450.56683-1-chengyou@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
@@ -40,148 +42,653 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello all,
+Add the main erdma module, which provides interface to infiniband
+subsystem. Also fix a bug reported by kernel test robot.
 
-This v5 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
-which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
-userspace provider has already been created [1].
-
-ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
-environment, initially offered in g7re instance. It can improve the
-efficiency of large-scale distributed computing and communication
-significantly and expand dynamically with the cluster scale of Alibaba
-Cloud.
-
-ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
-works in the VPC network environment (overlay network), and uses iWarp
-transport protocol. ERDMA supports reliable connection (RC). ERDMA also
-supports both kernel space and user space verbs. Now we have already
-supported HPC/AI applications with libfabric, NoF and some other internal
-verbs libraries, such as xrdma, epsl, etc,.
-
-For the ECS instance with RDMA enabled, our MOC hardware generates two
-kinds of PCI devices: one for ERDMA, and one for the original net device
-(virtio-net). They are separated PCI devices, using "rdma link" command
-with a filter inside our rdma_link_ops.newlink implementation can bind
-them together properly.
-
-Besides, this patchset contains a change in iw_query_port to fix this
-issue [2]. This change lets the device drivers decide the return value of
-iw_query_port when attached netdev is NULL. After this change, erdma can
-register device successfully in pci probe function, and keep port state
-invalid until a netdev is binded to it.
-
-Fixed issues or changes in v5:
-- Rename the reserved fields of structure definitions to improve
-  readability.
-- Remove some magic numbers and unnecessary initializations.
-- Fix some coding style format issues.
-- Fix some typos in comments.
-- No casting in the assignment if the function's returned pointer is
-  "void *".
-- Re-write the polling functions (cmdq cq, verbs cq, aeq and ceq), which
-  all check the valid bit in order to get next valid QE. This new
-  implementation is more simple. Thank Wenpeng.
-- Fix an issue reported by kernel test robot.
-- Some minor changes in code (such as removing SRQ definitions since we do
-  not support it yet).
-
-Fixed issues in v4:
-- Fix some typos.
-- Use __GFP_ZERO flags in dma_alloc_coherent, instead of memset after
-  buffer allocation.
-- Use one single polling function for AEQ and CEQ, before there had two.
-- Fix wrong iov_num when calling kernel_sendmsg.
-- Add necessary comment in erdma_cm.
-- Remove duplicated check in MPA processing function.
-- Always return 0 in erdma_query_port.
-- Directly return error code instead of assigning "ret", and then returning
-  "ret" in init_kernel_qp.
-
-Fixed issues or changes in v3:
-- Change char limit of column from 100 to 80.
-- Remove unnecessary field or structure definitions in erdma.h.
-- Use exactly type (bool, unsigned int) instead of "int" in erdma_dev.
-- Make ibdev and pci device having the same lifecycle. ERDMA will remain
-  an invalid port state until binded to the corresponding netdev.
-- ib_core: allow query_port when netdev is NULL for iWarp device.
-- Move large inline function in erdma.h to .c files.
-- Use dev_{info, warn, err} or ibdev_{info, warn, err} instead of
-  pr_{info, warn, err} function calls.
-- Remove print function calls in userspace-triggered paths.
-- Add necessary comments in CM part.
-- Remove unused entries in map_cqe_opcode[] table.
-- Use rdma_is_kernel_res instead of self-definitions.
-- Remove unsed resources counter in erdma_dev.
-- Use pgprot_device instead of pgprot_noncached in erdma_mmap.
-- Remove disassociate_ucontext interface implementation
-
-Fixed issues in v2:
-- No "extern" to function declarations.
-- No inline functions in .c files, no void casting for functions with
-  return values.
-- Based on siw's newest kernel version, rewrite the code (mainly CM and
-  CM related part) which originally based on an old siw version.
-- remove debugfs.
-- fix issues reported by kernel test robot.
-- Using RDMA_NLDEV_CMD_NEWLINK instead of binding in net notifiers.
-
-[1] https://github.com/linux-rdma/rdma-core/pull/1126
-[2] https://lore.kernel.org/all/20220118141324.GF8034@ziepe.ca/
-
-Thanks,
-Cheng Xu
-
-Cheng Xu (12):
-  RDMA: Add ERDMA to rdma_driver_id definition
-  RDMA/core: Allow calling query_port when netdev isn't attached in
-    iWarp
-  RDMA/erdma: Add the hardware related definitions
-  RDMA/erdma: Add main include file
-  RDMA/erdma: Add cmdq implementation
-  RDMA/erdma: Add event queue implementation
-  RDMA/erdma: Add verbs header file
-  RDMA/erdma: Add verbs implementation
-  RDMA/erdma: Add connection management (CM) support
-  RDMA/erdma: Add the erdma module
-  RDMA/erdma: Add the ABI definitions
-  RDMA/erdma: Add driver to kernel build environment
-
- MAINTAINERS                               |    8 +
- drivers/infiniband/Kconfig                |    1 +
- drivers/infiniband/core/device.c          |    7 +-
- drivers/infiniband/hw/Makefile            |    1 +
- drivers/infiniband/hw/erdma/Kconfig       |   12 +
- drivers/infiniband/hw/erdma/Makefile      |    4 +
- drivers/infiniband/hw/erdma/erdma.h       |  288 ++++
- drivers/infiniband/hw/erdma/erdma_cm.c    | 1434 ++++++++++++++++++++
- drivers/infiniband/hw/erdma/erdma_cm.h    |  168 +++
- drivers/infiniband/hw/erdma/erdma_cmdq.c  |  497 +++++++
- drivers/infiniband/hw/erdma/erdma_cq.c    |  205 +++
- drivers/infiniband/hw/erdma/erdma_eq.c    |  334 +++++
- drivers/infiniband/hw/erdma/erdma_hw.h    |  504 +++++++
- drivers/infiniband/hw/erdma/erdma_main.c  |  631 +++++++++
- drivers/infiniband/hw/erdma/erdma_qp.c    |  564 ++++++++
- drivers/infiniband/hw/erdma/erdma_verbs.c | 1454 +++++++++++++++++++++
- drivers/infiniband/hw/erdma/erdma_verbs.h |  342 +++++
- include/uapi/rdma/erdma-abi.h             |   49 +
- include/uapi/rdma/ib_user_ioctl_verbs.h   |    1 +
- 19 files changed, 6503 insertions(+), 1 deletion(-)
- create mode 100644 drivers/infiniband/hw/erdma/Kconfig
- create mode 100644 drivers/infiniband/hw/erdma/Makefile
- create mode 100644 drivers/infiniband/hw/erdma/erdma.h
- create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.h
- create mode 100644 drivers/infiniband/hw/erdma/erdma_cmdq.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_cq.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_eq.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_hw.h
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+---
+ drivers/infiniband/hw/erdma/erdma_main.c | 631 +++++++++++++++++++++++
+ 1 file changed, 631 insertions(+)
  create mode 100644 drivers/infiniband/hw/erdma/erdma_main.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_qp.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.c
- create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.h
- create mode 100644 include/uapi/rdma/erdma-abi.h
 
+diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
+new file mode 100644
+index 000000000000..6b412b66e42d
+--- /dev/null
++++ b/drivers/infiniband/hw/erdma/erdma_main.c
+@@ -0,0 +1,631 @@
++// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
++
++/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
++/*          Kai Shen <kaishen@linux.alibaba.com> */
++/* Copyright (c) 2020-2022, Alibaba Group. */
++
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/list.h>
++#include <linux/netdevice.h>
++#include <linux/pci.h>
++#include <net/addrconf.h>
++#include <rdma/erdma-abi.h>
++#include <rdma/ib_verbs.h>
++#include <rdma/ib_user_verbs.h>
++
++#include "erdma.h"
++#include "erdma_cm.h"
++#include "erdma_hw.h"
++#include "erdma_verbs.h"
++
++MODULE_AUTHOR("Cheng Xu <chengyou@linux.alibaba.com>");
++MODULE_DESCRIPTION("Alibaba elasticRDMA adapter driver");
++MODULE_LICENSE("Dual BSD/GPL");
++
++static int erdma_device_register(struct erdma_dev *dev)
++{
++	struct ib_device *ibdev = &dev->ibdev;
++	int ret;
++
++	memset(ibdev->name, 0, IB_DEVICE_NAME_MAX);
++	/*
++	 * In Ali ECS environment, ENI's mac address is unique in VPC.
++	 * So, generating the ibdev's name from mac address of the binded
++	 * netdev.
++	 */
++	ret = snprintf(ibdev->name, IB_DEVICE_NAME_MAX, "%s_%.2x%.2x%.2x",
++		       DRV_MODULE_NAME, dev->attrs.peer_addr[3],
++		       dev->attrs.peer_addr[4], dev->attrs.peer_addr[5]);
++	if (ret < 0)
++		return ret;
++
++	ibdev->phys_port_cnt = 1;
++	ret = ib_device_set_netdev(ibdev, NULL, 1);
++	if (ret)
++		return ret;
++
++	ret = ib_register_device(ibdev, ibdev->name, &dev->pdev->dev);
++	if (ret)
++		dev_err(&dev->pdev->dev,
++			"ib_register_device(%s) failed: ret = %d\n",
++			ibdev->name, ret);
++
++	return ret;
++}
++
++static int erdma_netdev_event(struct notifier_block *nb, unsigned long event,
++			      void *arg)
++{
++	struct net_device *netdev = netdev_notifier_info_to_dev(arg);
++	struct erdma_dev *dev = container_of(nb, struct erdma_dev, netdev_nb);
++
++	if (dev->netdev == NULL || dev->netdev != netdev)
++		goto done;
++
++	switch (event) {
++	case NETDEV_UP:
++		dev->state = IB_PORT_ACTIVE;
++		erdma_port_event(dev, IB_EVENT_PORT_ACTIVE);
++		break;
++	case NETDEV_DOWN:
++		dev->state = IB_PORT_DOWN;
++		erdma_port_event(dev, IB_EVENT_PORT_ERR);
++		break;
++	case NETDEV_REGISTER:
++	case NETDEV_UNREGISTER:
++	case NETDEV_CHANGEADDR:
++	case NETDEV_CHANGEMTU:
++	case NETDEV_GOING_DOWN:
++	case NETDEV_CHANGE:
++	default:
++		break;
++	}
++
++done:
++	return NOTIFY_OK;
++}
++
++static int erdma_newlink(const char *dev_name, struct net_device *netdev)
++{
++	struct ib_device *ibdev;
++	struct erdma_dev *dev;
++	int ret;
++
++	ibdev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_ERDMA);
++	if (ibdev) {
++		ib_device_put(ibdev);
++		return -EEXIST;
++	}
++
++	ibdev = ib_device_get_by_name(dev_name, RDMA_DRIVER_ERDMA);
++	if (!ibdev)
++		return -ENODEV;
++
++	dev = to_edev(ibdev);
++
++	if (!ether_addr_equal_unaligned(netdev->perm_addr,
++					dev->attrs.peer_addr)) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	addrconf_addr_eui48((u8 *)&dev->ibdev.node_guid, netdev->dev_addr);
++	ret = ib_device_set_netdev(&dev->ibdev, netdev, 1);
++	if (ret)
++		goto out;
++
++	if (netif_running(netdev) && netif_carrier_ok(netdev))
++		dev->state = IB_PORT_ACTIVE;
++	else
++		dev->state = IB_PORT_DOWN;
++
++	dev->netdev_nb.notifier_call = erdma_netdev_event;
++	dev->netdev = netdev;
++
++	ret = register_netdevice_notifier(&dev->netdev_nb);
++out:
++	ib_device_put(ibdev);
++	return ret;
++}
++
++static struct rdma_link_ops erdma_link_ops = {
++	.type = "erdma",
++	.newlink = erdma_newlink,
++};
++
++static irqreturn_t erdma_comm_irq_handler(int irq, void *data)
++{
++	struct erdma_dev *dev = data;
++
++	erdma_cmdq_completion_handler(&dev->cmdq);
++	erdma_aeq_event_handler(dev);
++
++	return IRQ_HANDLED;
++}
++
++static void erdma_dwqe_resource_init(struct erdma_dev *dev)
++{
++	int total_pages, type0, type1;
++
++	dev->attrs.grp_num = erdma_reg_read32(dev, ERDMA_REGS_GRP_NUM_REG);
++
++	if (dev->attrs.grp_num < 4)
++		dev->attrs.disable_dwqe = true;
++	else
++		dev->attrs.disable_dwqe = false;
++
++	/* One page contains 4 goups. */
++	total_pages = dev->attrs.grp_num * 4;
++
++	if (dev->attrs.grp_num >= ERDMA_DWQE_MAX_GRP_CNT) {
++		dev->attrs.grp_num = ERDMA_DWQE_MAX_GRP_CNT;
++		type0 = ERDMA_DWQE_TYPE0_CNT;
++		type1 = ERDMA_DWQE_TYPE1_CNT / ERDMA_DWQE_TYPE1_CNT_PER_PAGE;
++	} else {
++		type1 = total_pages / 3;
++		type0 = total_pages - type1 - 1;
++	}
++
++	dev->attrs.dwqe_pages = type0;
++	dev->attrs.dwqe_entries = type1 * ERDMA_DWQE_TYPE1_CNT_PER_PAGE;
++}
++
++static int erdma_request_vectors(struct erdma_dev *dev)
++{
++	int expect_irq_num = min(num_possible_cpus() + 1, ERDMA_NUM_MSIX_VEC);
++
++	dev->attrs.irq_num = pci_alloc_irq_vectors(dev->pdev, 1, expect_irq_num,
++						   PCI_IRQ_MSIX);
++	if (dev->attrs.irq_num <= 0) {
++		dev_err(&dev->pdev->dev, "request irq vectors failed(%d)\n",
++			dev->attrs.irq_num);
++		return -ENOSPC;
++	}
++
++	return 0;
++}
++
++static int erdma_comm_irq_init(struct erdma_dev *dev)
++{
++	snprintf(dev->comm_irq.name, ERDMA_IRQNAME_SIZE, "erdma-common@pci:%s",
++		 pci_name(dev->pdev));
++	dev->comm_irq.msix_vector =
++		pci_irq_vector(dev->pdev, ERDMA_MSIX_VECTOR_CMDQ);
++
++	cpumask_set_cpu(cpumask_first(cpumask_of_pcibus(dev->pdev->bus)),
++			&dev->comm_irq.affinity_hint_mask);
++	irq_set_affinity_hint(dev->comm_irq.msix_vector,
++			      &dev->comm_irq.affinity_hint_mask);
++
++	return request_irq(dev->comm_irq.msix_vector, erdma_comm_irq_handler, 0,
++			   dev->comm_irq.name, dev);
++}
++
++static void erdma_comm_irq_uninit(struct erdma_dev *dev)
++{
++	irq_set_affinity_hint(dev->comm_irq.msix_vector, NULL);
++	free_irq(dev->comm_irq.msix_vector, dev);
++}
++
++static int erdma_device_init(struct erdma_dev *dev, struct pci_dev *pdev)
++{
++	int err;
++
++	erdma_dwqe_resource_init(dev);
++
++	/* force dma width to 64. */
++	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(ERDMA_PCI_WIDTH));
++	if (err)
++		return err;
++
++	return pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ERDMA_PCI_WIDTH));
++}
++
++static void erdma_device_uninit(struct erdma_dev *dev)
++{
++	u32 ctrl = FIELD_PREP(ERDMA_REG_DEV_CTRL_RESET_MASK, 1);
++
++	erdma_reg_write32(dev, ERDMA_REGS_DEV_CTRL_REG, ctrl);
++}
++
++static const struct pci_device_id erdma_pci_tbl[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_ALIBABA, 0x107f) },
++	{}
++};
++
++static int erdma_probe_dev(struct pci_dev *pdev)
++{
++	int err;
++	struct erdma_dev *dev;
++	u32 version;
++	int bars;
++
++	err = pci_enable_device(pdev);
++	if (err) {
++		dev_err(&pdev->dev, "pci_enable_device failed(%d)\n", err);
++		return err;
++	}
++
++	pci_set_master(pdev);
++
++	dev = ib_alloc_device(erdma_dev, ibdev);
++	if (!dev) {
++		dev_err(&pdev->dev, "ib_alloc_device failed\n");
++		err = -ENOMEM;
++		goto err_disable_device;
++	}
++
++	pci_set_drvdata(pdev, dev);
++	dev->pdev = pdev;
++	dev->attrs.numa_node = dev_to_node(&pdev->dev);
++
++	bars = pci_select_bars(pdev, IORESOURCE_MEM);
++	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
++	if (bars != ERDMA_BAR_MASK || err) {
++		err = err ? err : -EINVAL;
++		goto err_ib_device_release;
++	}
++
++	dev->func_bar_addr = pci_resource_start(pdev, ERDMA_FUNC_BAR);
++	dev->func_bar_len = pci_resource_len(pdev, ERDMA_FUNC_BAR);
++
++	dev->func_bar =
++		devm_ioremap(&pdev->dev, dev->func_bar_addr, dev->func_bar_len);
++	if (!dev->func_bar) {
++		dev_err(&pdev->dev, "devm_ioremap failed.\n");
++		err = -EFAULT;
++		goto err_release_bars;
++	}
++
++	version = erdma_reg_read32(dev, ERDMA_REGS_VERSION_REG);
++	if (version == 0) {
++		/* we knows that it is a non-functional function. */
++		err = -ENODEV;
++		goto err_iounmap_func_bar;
++	}
++
++	err = erdma_device_init(dev, pdev);
++	if (err)
++		goto err_iounmap_func_bar;
++
++	err = erdma_request_vectors(dev);
++	if (err)
++		goto err_iounmap_func_bar;
++
++	err = erdma_comm_irq_init(dev);
++	if (err)
++		goto err_free_vectors;
++
++	err = erdma_aeq_init(dev);
++	if (err)
++		goto err_uninit_comm_irq;
++
++	err = erdma_cmdq_init(dev);
++	if (err)
++		goto err_uninit_aeq;
++
++	err = erdma_ceqs_init(dev);
++	if (err)
++		goto err_uninit_cmdq;
++
++	erdma_finish_cmdq_init(dev);
++
++	return 0;
++
++err_uninit_cmdq:
++	erdma_device_uninit(dev);
++	erdma_cmdq_destroy(dev);
++
++err_uninit_aeq:
++	erdma_aeq_destroy(dev);
++
++err_uninit_comm_irq:
++	erdma_comm_irq_uninit(dev);
++
++err_free_vectors:
++	pci_free_irq_vectors(dev->pdev);
++
++err_iounmap_func_bar:
++	devm_iounmap(&pdev->dev, dev->func_bar);
++
++err_release_bars:
++	pci_release_selected_regions(pdev, bars);
++
++err_ib_device_release:
++	ib_dealloc_device(&dev->ibdev);
++
++err_disable_device:
++	pci_disable_device(pdev);
++
++	return err;
++}
++
++static void erdma_remove_dev(struct pci_dev *pdev)
++{
++	struct erdma_dev *dev = pci_get_drvdata(pdev);
++
++	erdma_ceqs_uninit(dev);
++
++	erdma_device_uninit(dev);
++
++	erdma_cmdq_destroy(dev);
++	erdma_aeq_destroy(dev);
++	erdma_comm_irq_uninit(dev);
++	pci_free_irq_vectors(dev->pdev);
++
++	devm_iounmap(&pdev->dev, dev->func_bar);
++	pci_release_selected_regions(pdev, ERDMA_BAR_MASK);
++
++	ib_dealloc_device(&dev->ibdev);
++
++	pci_disable_device(pdev);
++}
++
++#define ERDMA_GET_CAP(name, cap) FIELD_GET(ERDMA_CMD_DEV_CAP_##name##_MASK, cap)
++
++static int erdma_dev_attrs_init(struct erdma_dev *dev)
++{
++	int err;
++	u64 req_hdr, cap0, cap1;
++
++	erdma_cmdq_build_reqhdr(&req_hdr, CMDQ_SUBMOD_RDMA,
++				CMDQ_OPCODE_QUERY_DEVICE);
++
++	err = erdma_post_cmd_wait(&dev->cmdq, &req_hdr, sizeof(req_hdr), &cap0,
++				  &cap1);
++	if (err)
++		return err;
++
++	dev->attrs.max_cqe = 1 << ERDMA_GET_CAP(MAX_CQE, cap0);
++	dev->attrs.max_mr_size = 1ULL << ERDMA_GET_CAP(MAX_MR_SIZE, cap0);
++	dev->attrs.max_mw = 1 << ERDMA_GET_CAP(MAX_MW, cap1);
++	dev->attrs.max_recv_wr = 1 << ERDMA_GET_CAP(MAX_RECV_WR, cap0);
++	dev->attrs.local_dma_key = ERDMA_GET_CAP(DMA_LOCAL_KEY, cap1);
++	dev->attrs.cc = ERDMA_GET_CAP(DEFAULT_CC, cap1);
++	dev->attrs.max_qp = ERDMA_NQP_PER_QBLOCK * ERDMA_GET_CAP(QBLOCK, cap1);
++	dev->attrs.max_mr = dev->attrs.max_qp << 1;
++	dev->attrs.max_cq = dev->attrs.max_qp << 1;
++
++	dev->attrs.max_send_wr = ERDMA_MAX_SEND_WR;
++	dev->attrs.max_ord = ERDMA_MAX_ORD;
++	dev->attrs.max_ird = ERDMA_MAX_IRD;
++	dev->attrs.cap_flags =
++		IB_DEVICE_LOCAL_DMA_LKEY | IB_DEVICE_MEM_MGT_EXTENSIONS;
++	dev->attrs.max_send_sge = ERDMA_MAX_SEND_SGE;
++	dev->attrs.max_recv_sge = ERDMA_MAX_RECV_SGE;
++	dev->attrs.max_sge_rd = ERDMA_MAX_SGE_RD;
++	dev->attrs.max_pd = ERDMA_MAX_PD;
++
++	dev->res_cb[ERDMA_RES_TYPE_PD].max_cap = ERDMA_MAX_PD;
++	dev->res_cb[ERDMA_RES_TYPE_STAG_IDX].max_cap = dev->attrs.max_mr;
++
++	erdma_cmdq_build_reqhdr(&req_hdr, CMDQ_SUBMOD_COMMON,
++				CMDQ_OPCODE_QUERY_FW_INFO);
++
++	err = erdma_post_cmd_wait(&dev->cmdq, &req_hdr, sizeof(req_hdr), &cap0,
++				  &cap1);
++
++	dev->attrs.fw_version = FIELD_GET(ERDMA_CMD_INFO0_FW_VER_MASK, cap0);
++
++	return err;
++}
++
++static int erdma_res_cb_init(struct erdma_dev *dev)
++{
++	int i, j;
++
++	for (i = 0; i < ERDMA_RES_CNT; i++) {
++		dev->res_cb[i].next_alloc_idx = 1;
++		spin_lock_init(&dev->res_cb[i].lock);
++		dev->res_cb[i].bitmap =
++			kcalloc(BITS_TO_LONGS(dev->res_cb[i].max_cap),
++				sizeof(unsigned long), GFP_KERNEL);
++		/* We will free the memory in erdma_res_cb_free */
++		if (!dev->res_cb[i].bitmap)
++			goto err;
++	}
++
++	return 0;
++
++err:
++	for (j = 0; j < i; j++)
++		kfree(dev->res_cb[j].bitmap);
++
++	return -ENOMEM;
++}
++
++static void erdma_res_cb_free(struct erdma_dev *dev)
++{
++	int i;
++
++	for (i = 0; i < ERDMA_RES_CNT; i++)
++		kfree(dev->res_cb[i].bitmap);
++}
++
++static const struct ib_device_ops erdma_device_ops = {
++	.owner = THIS_MODULE,
++	.driver_id = RDMA_DRIVER_ERDMA,
++	.uverbs_abi_ver = ERDMA_ABI_VERSION,
++
++	.alloc_mr = erdma_ib_alloc_mr,
++	.alloc_pd = erdma_alloc_pd,
++	.alloc_ucontext = erdma_alloc_ucontext,
++	.create_cq = erdma_create_cq,
++	.create_qp = erdma_create_qp,
++	.dealloc_pd = erdma_dealloc_pd,
++	.dealloc_ucontext = erdma_dealloc_ucontext,
++	.dereg_mr = erdma_dereg_mr,
++	.destroy_cq = erdma_destroy_cq,
++	.destroy_qp = erdma_destroy_qp,
++	.get_dma_mr = erdma_get_dma_mr,
++	.get_port_immutable = erdma_get_port_immutable,
++	.iw_accept = erdma_accept,
++	.iw_add_ref = erdma_qp_get_ref,
++	.iw_connect = erdma_connect,
++	.iw_create_listen = erdma_create_listen,
++	.iw_destroy_listen = erdma_destroy_listen,
++	.iw_get_qp = erdma_get_ibqp,
++	.iw_reject = erdma_reject,
++	.iw_rem_ref = erdma_qp_put_ref,
++	.map_mr_sg = erdma_map_mr_sg,
++	.mmap = erdma_mmap,
++	.modify_qp = erdma_modify_qp,
++	.post_recv = erdma_post_recv,
++	.post_send = erdma_post_send,
++	.poll_cq = erdma_poll_cq,
++	.query_device = erdma_query_device,
++	.query_gid = erdma_query_gid,
++	.query_port = erdma_query_port,
++	.query_qp = erdma_query_qp,
++	.req_notify_cq = erdma_req_notify_cq,
++	.reg_user_mr = erdma_reg_user_mr,
++
++	INIT_RDMA_OBJ_SIZE(ib_cq, erdma_cq, ibcq),
++	INIT_RDMA_OBJ_SIZE(ib_pd, erdma_pd, ibpd),
++	INIT_RDMA_OBJ_SIZE(ib_ucontext, erdma_ucontext, ibucontext),
++	INIT_RDMA_OBJ_SIZE(ib_qp, erdma_qp, ibqp),
++};
++
++static int erdma_ib_device_add(struct pci_dev *pdev)
++{
++	struct erdma_dev *dev = pci_get_drvdata(pdev);
++	struct ib_device *ibdev = &dev->ibdev;
++	u64 mac;
++	int ret = 0;
++
++	ret = erdma_dev_attrs_init(dev);
++	if (ret)
++		return ret;
++
++	ibdev->node_type = RDMA_NODE_RNIC;
++	memcpy(ibdev->node_desc, ERDMA_NODE_DESC, sizeof(ERDMA_NODE_DESC));
++
++	/*
++	 * Current model (one-to-one device association):
++	 * One ERDMA device per net_device or, equivalently,
++	 * per physical port.
++	 */
++	ibdev->phys_port_cnt = 1;
++	ibdev->num_comp_vectors = dev->attrs.irq_num - 1;
++
++	ib_set_device_ops(ibdev, &erdma_device_ops);
++
++	INIT_LIST_HEAD(&dev->cep_list);
++
++	spin_lock_init(&dev->lock);
++	xa_init_flags(&dev->qp_xa, XA_FLAGS_ALLOC1);
++	xa_init_flags(&dev->cq_xa, XA_FLAGS_ALLOC1);
++	dev->next_alloc_cqn = 1;
++	dev->next_alloc_qpn = 1;
++
++	ret = erdma_res_cb_init(dev);
++	if (ret)
++		return ret;
++
++	spin_lock_init(&dev->db_bitmap_lock);
++	bitmap_zero(dev->sdb_page, ERDMA_DWQE_TYPE0_CNT);
++	bitmap_zero(dev->sdb_entry, ERDMA_DWQE_TYPE1_CNT);
++
++	atomic_set(&dev->num_ctx, 0);
++
++	mac = erdma_reg_read32(dev, ERDMA_REGS_NETDEV_MAC_L_REG);
++	mac |= (u64)erdma_reg_read32(dev, ERDMA_REGS_NETDEV_MAC_H_REG) << 32;
++
++	u64_to_ether_addr(mac, dev->attrs.peer_addr);
++
++	ret = erdma_device_register(dev);
++	if (ret)
++		goto err_out;
++
++	return 0;
++
++err_out:
++	xa_destroy(&dev->qp_xa);
++	xa_destroy(&dev->cq_xa);
++
++	erdma_res_cb_free(dev);
++
++	return ret;
++}
++
++static void erdma_ib_device_remove(struct pci_dev *pdev)
++{
++	struct erdma_dev *dev = pci_get_drvdata(pdev);
++
++	if (dev->netdev) {
++		ib_device_set_netdev(&dev->ibdev, NULL, 1);
++		dev->netdev = NULL;
++		unregister_netdevice_notifier(&dev->netdev_nb);
++	}
++
++	ib_unregister_device(&dev->ibdev);
++
++	erdma_res_cb_free(dev);
++	xa_destroy(&dev->qp_xa);
++	xa_destroy(&dev->cq_xa);
++}
++
++static int erdma_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
++{
++	int ret;
++
++	ret = erdma_probe_dev(pdev);
++	if (ret)
++		return ret;
++
++	ret = erdma_ib_device_add(pdev);
++	if (ret) {
++		erdma_remove_dev(pdev);
++		return ret;
++	}
++
++	return 0;
++}
++
++static void erdma_remove(struct pci_dev *pdev)
++{
++	erdma_ib_device_remove(pdev);
++	erdma_remove_dev(pdev);
++}
++
++static struct pci_driver erdma_pci_driver = {
++	.name = DRV_MODULE_NAME,
++	.id_table = erdma_pci_tbl,
++	.probe = erdma_probe,
++	.remove = erdma_remove
++};
++
++MODULE_DEVICE_TABLE(pci, erdma_pci_tbl);
++
++static __init int erdma_init_module(void)
++{
++	int ret;
++
++	ret = erdma_cm_init();
++	if (ret)
++		return ret;
++
++	ret = pci_register_driver(&erdma_pci_driver);
++	if (ret) {
++		erdma_cm_exit();
++		return ret;
++	}
++
++	rdma_link_register(&erdma_link_ops);
++
++	return 0;
++}
++
++static void __exit erdma_exit_module(void)
++{
++	rdma_link_unregister(&erdma_link_ops);
++
++	pci_unregister_driver(&erdma_pci_driver);
++
++	erdma_cm_exit();
++}
++
++module_init(erdma_init_module);
++module_exit(erdma_exit_module);
 -- 
 2.27.0
 
