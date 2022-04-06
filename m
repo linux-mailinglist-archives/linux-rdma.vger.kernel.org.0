@@ -2,693 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F9984F5B03
-	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 12:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 625F04F5AF2
+	for <lists+linux-rdma@lfdr.de>; Wed,  6 Apr 2022 12:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243934AbiDFJls (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 6 Apr 2022 05:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S231745AbiDFKQL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 6 Apr 2022 06:16:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358461AbiDFJjr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 05:39:47 -0400
-Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D321F621B
-        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 19:35:05 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0V9JW3tO_1649212502;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0V9JW3tO_1649212502)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Apr 2022 10:35:03 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, dledford@redhat.com, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
-        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
-        BMT@zurich.ibm.com
-Subject: [PATCH for-next v5 10/12] RDMA/erdma: Add the erdma module
-Date:   Wed,  6 Apr 2022 10:34:48 +0800
-Message-Id: <20220406023450.56683-11-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.0 (Apple Git-132)
-In-Reply-To: <20220406023450.56683-1-chengyou@linux.alibaba.com>
-References: <20220406023450.56683-1-chengyou@linux.alibaba.com>
+        with ESMTP id S1358460AbiDFKPK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 6 Apr 2022 06:15:10 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2916D7468
+        for <linux-rdma@vger.kernel.org>; Tue,  5 Apr 2022 23:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1649227433; x=1680763433;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6Ie/cVT15yDfrvIAVPm0AbTbxjojMJF3afk+TtqXsX4=;
+  b=iwH0I6yAr7mv46ihUV5VKQZioDxe8SKiJUj1HmU/tuAJHNf1r+dj1uOX
+   c9T+ok3K33jeZ8yCS6qI+ax9fOCPw0f7of/XPMFH5XTwEyrfLL1RK+duR
+   QhkI7mapxyknaEChYfOO0Jr2cBhFhKWsVB5oGZczJa/+Pn9c8hI0R/zcM
+   kAPdh38hl2uODlIrCBfjLampSYf1SJUyPMcWObXjZPSeYJMaZ+Z0H19hn
+   8J6V7F2h/fVUoWC96pDkc1giV25tT38aijuVkREi37+IFKXH6BWswh4q3
+   xkmG8w97GTVT85ZhjJZQ/zgTC6bH1GaL6b3dmIRh2WHTJ9ldD9W6wujOL
+   w==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10308"; a="240899100"
+X-IronPort-AV: E=Sophos;i="5.90,239,1643702400"; 
+   d="scan'208";a="240899100"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2022 23:43:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,239,1643702400"; 
+   d="scan'208";a="524333138"
+Received: from lkp-server02.sh.intel.com (HELO a44fdfb70b94) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 05 Apr 2022 23:43:51 -0700
+Received: from kbuild by a44fdfb70b94 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nbzOQ-00048z-F4;
+        Wed, 06 Apr 2022 06:43:50 +0000
+Date:   Wed, 06 Apr 2022 14:43:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ 22cbc6c2681a0a4fe76150270426e763d52353a4
+Message-ID: <624d3684.ghhEUFB6vId4Ule0%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add the main erdma module, which provides interface to infiniband
-subsystem. Also fix a bug reported by kernel test robot.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: 22cbc6c2681a0a4fe76150270426e763d52353a4  IB/rdmavt: add missing locks in rvt_ruc_loopback
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- drivers/infiniband/hw/erdma/erdma_main.c | 631 +++++++++++++++++++++++
- 1 file changed, 631 insertions(+)
- create mode 100644 drivers/infiniband/hw/erdma/erdma_main.c
+elapsed time: 729m
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_main.c b/drivers/infiniband/hw/erdma/erdma_main.c
-new file mode 100644
-index 000000000000..6b412b66e42d
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/erdma_main.c
-@@ -0,0 +1,631 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+
-+/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
-+/*          Kai Shen <kaishen@linux.alibaba.com> */
-+/* Copyright (c) 2020-2022, Alibaba Group. */
-+
-+#include <linux/errno.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/list.h>
-+#include <linux/netdevice.h>
-+#include <linux/pci.h>
-+#include <net/addrconf.h>
-+#include <rdma/erdma-abi.h>
-+#include <rdma/ib_verbs.h>
-+#include <rdma/ib_user_verbs.h>
-+
-+#include "erdma.h"
-+#include "erdma_cm.h"
-+#include "erdma_hw.h"
-+#include "erdma_verbs.h"
-+
-+MODULE_AUTHOR("Cheng Xu <chengyou@linux.alibaba.com>");
-+MODULE_DESCRIPTION("Alibaba elasticRDMA adapter driver");
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-+static int erdma_device_register(struct erdma_dev *dev)
-+{
-+	struct ib_device *ibdev = &dev->ibdev;
-+	int ret;
-+
-+	memset(ibdev->name, 0, IB_DEVICE_NAME_MAX);
-+	/*
-+	 * In Ali ECS environment, ENI's mac address is unique in VPC.
-+	 * So, generating the ibdev's name from mac address of the binded
-+	 * netdev.
-+	 */
-+	ret = snprintf(ibdev->name, IB_DEVICE_NAME_MAX, "%s_%.2x%.2x%.2x",
-+		       DRV_MODULE_NAME, dev->attrs.peer_addr[3],
-+		       dev->attrs.peer_addr[4], dev->attrs.peer_addr[5]);
-+	if (ret < 0)
-+		return ret;
-+
-+	ibdev->phys_port_cnt = 1;
-+	ret = ib_device_set_netdev(ibdev, NULL, 1);
-+	if (ret)
-+		return ret;
-+
-+	ret = ib_register_device(ibdev, ibdev->name, &dev->pdev->dev);
-+	if (ret)
-+		dev_err(&dev->pdev->dev,
-+			"ib_register_device(%s) failed: ret = %d\n",
-+			ibdev->name, ret);
-+
-+	return ret;
-+}
-+
-+static int erdma_netdev_event(struct notifier_block *nb, unsigned long event,
-+			      void *arg)
-+{
-+	struct net_device *netdev = netdev_notifier_info_to_dev(arg);
-+	struct erdma_dev *dev = container_of(nb, struct erdma_dev, netdev_nb);
-+
-+	if (dev->netdev == NULL || dev->netdev != netdev)
-+		goto done;
-+
-+	switch (event) {
-+	case NETDEV_UP:
-+		dev->state = IB_PORT_ACTIVE;
-+		erdma_port_event(dev, IB_EVENT_PORT_ACTIVE);
-+		break;
-+	case NETDEV_DOWN:
-+		dev->state = IB_PORT_DOWN;
-+		erdma_port_event(dev, IB_EVENT_PORT_ERR);
-+		break;
-+	case NETDEV_REGISTER:
-+	case NETDEV_UNREGISTER:
-+	case NETDEV_CHANGEADDR:
-+	case NETDEV_CHANGEMTU:
-+	case NETDEV_GOING_DOWN:
-+	case NETDEV_CHANGE:
-+	default:
-+		break;
-+	}
-+
-+done:
-+	return NOTIFY_OK;
-+}
-+
-+static int erdma_newlink(const char *dev_name, struct net_device *netdev)
-+{
-+	struct ib_device *ibdev;
-+	struct erdma_dev *dev;
-+	int ret;
-+
-+	ibdev = ib_device_get_by_netdev(netdev, RDMA_DRIVER_ERDMA);
-+	if (ibdev) {
-+		ib_device_put(ibdev);
-+		return -EEXIST;
-+	}
-+
-+	ibdev = ib_device_get_by_name(dev_name, RDMA_DRIVER_ERDMA);
-+	if (!ibdev)
-+		return -ENODEV;
-+
-+	dev = to_edev(ibdev);
-+
-+	if (!ether_addr_equal_unaligned(netdev->perm_addr,
-+					dev->attrs.peer_addr)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	addrconf_addr_eui48((u8 *)&dev->ibdev.node_guid, netdev->dev_addr);
-+	ret = ib_device_set_netdev(&dev->ibdev, netdev, 1);
-+	if (ret)
-+		goto out;
-+
-+	if (netif_running(netdev) && netif_carrier_ok(netdev))
-+		dev->state = IB_PORT_ACTIVE;
-+	else
-+		dev->state = IB_PORT_DOWN;
-+
-+	dev->netdev_nb.notifier_call = erdma_netdev_event;
-+	dev->netdev = netdev;
-+
-+	ret = register_netdevice_notifier(&dev->netdev_nb);
-+out:
-+	ib_device_put(ibdev);
-+	return ret;
-+}
-+
-+static struct rdma_link_ops erdma_link_ops = {
-+	.type = "erdma",
-+	.newlink = erdma_newlink,
-+};
-+
-+static irqreturn_t erdma_comm_irq_handler(int irq, void *data)
-+{
-+	struct erdma_dev *dev = data;
-+
-+	erdma_cmdq_completion_handler(&dev->cmdq);
-+	erdma_aeq_event_handler(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static void erdma_dwqe_resource_init(struct erdma_dev *dev)
-+{
-+	int total_pages, type0, type1;
-+
-+	dev->attrs.grp_num = erdma_reg_read32(dev, ERDMA_REGS_GRP_NUM_REG);
-+
-+	if (dev->attrs.grp_num < 4)
-+		dev->attrs.disable_dwqe = true;
-+	else
-+		dev->attrs.disable_dwqe = false;
-+
-+	/* One page contains 4 goups. */
-+	total_pages = dev->attrs.grp_num * 4;
-+
-+	if (dev->attrs.grp_num >= ERDMA_DWQE_MAX_GRP_CNT) {
-+		dev->attrs.grp_num = ERDMA_DWQE_MAX_GRP_CNT;
-+		type0 = ERDMA_DWQE_TYPE0_CNT;
-+		type1 = ERDMA_DWQE_TYPE1_CNT / ERDMA_DWQE_TYPE1_CNT_PER_PAGE;
-+	} else {
-+		type1 = total_pages / 3;
-+		type0 = total_pages - type1 - 1;
-+	}
-+
-+	dev->attrs.dwqe_pages = type0;
-+	dev->attrs.dwqe_entries = type1 * ERDMA_DWQE_TYPE1_CNT_PER_PAGE;
-+}
-+
-+static int erdma_request_vectors(struct erdma_dev *dev)
-+{
-+	int expect_irq_num = min(num_possible_cpus() + 1, ERDMA_NUM_MSIX_VEC);
-+
-+	dev->attrs.irq_num = pci_alloc_irq_vectors(dev->pdev, 1, expect_irq_num,
-+						   PCI_IRQ_MSIX);
-+	if (dev->attrs.irq_num <= 0) {
-+		dev_err(&dev->pdev->dev, "request irq vectors failed(%d)\n",
-+			dev->attrs.irq_num);
-+		return -ENOSPC;
-+	}
-+
-+	return 0;
-+}
-+
-+static int erdma_comm_irq_init(struct erdma_dev *dev)
-+{
-+	snprintf(dev->comm_irq.name, ERDMA_IRQNAME_SIZE, "erdma-common@pci:%s",
-+		 pci_name(dev->pdev));
-+	dev->comm_irq.msix_vector =
-+		pci_irq_vector(dev->pdev, ERDMA_MSIX_VECTOR_CMDQ);
-+
-+	cpumask_set_cpu(cpumask_first(cpumask_of_pcibus(dev->pdev->bus)),
-+			&dev->comm_irq.affinity_hint_mask);
-+	irq_set_affinity_hint(dev->comm_irq.msix_vector,
-+			      &dev->comm_irq.affinity_hint_mask);
-+
-+	return request_irq(dev->comm_irq.msix_vector, erdma_comm_irq_handler, 0,
-+			   dev->comm_irq.name, dev);
-+}
-+
-+static void erdma_comm_irq_uninit(struct erdma_dev *dev)
-+{
-+	irq_set_affinity_hint(dev->comm_irq.msix_vector, NULL);
-+	free_irq(dev->comm_irq.msix_vector, dev);
-+}
-+
-+static int erdma_device_init(struct erdma_dev *dev, struct pci_dev *pdev)
-+{
-+	int err;
-+
-+	erdma_dwqe_resource_init(dev);
-+
-+	/* force dma width to 64. */
-+	err = pci_set_dma_mask(pdev, DMA_BIT_MASK(ERDMA_PCI_WIDTH));
-+	if (err)
-+		return err;
-+
-+	return pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(ERDMA_PCI_WIDTH));
-+}
-+
-+static void erdma_device_uninit(struct erdma_dev *dev)
-+{
-+	u32 ctrl = FIELD_PREP(ERDMA_REG_DEV_CTRL_RESET_MASK, 1);
-+
-+	erdma_reg_write32(dev, ERDMA_REGS_DEV_CTRL_REG, ctrl);
-+}
-+
-+static const struct pci_device_id erdma_pci_tbl[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_ALIBABA, 0x107f) },
-+	{}
-+};
-+
-+static int erdma_probe_dev(struct pci_dev *pdev)
-+{
-+	int err;
-+	struct erdma_dev *dev;
-+	u32 version;
-+	int bars;
-+
-+	err = pci_enable_device(pdev);
-+	if (err) {
-+		dev_err(&pdev->dev, "pci_enable_device failed(%d)\n", err);
-+		return err;
-+	}
-+
-+	pci_set_master(pdev);
-+
-+	dev = ib_alloc_device(erdma_dev, ibdev);
-+	if (!dev) {
-+		dev_err(&pdev->dev, "ib_alloc_device failed\n");
-+		err = -ENOMEM;
-+		goto err_disable_device;
-+	}
-+
-+	pci_set_drvdata(pdev, dev);
-+	dev->pdev = pdev;
-+	dev->attrs.numa_node = dev_to_node(&pdev->dev);
-+
-+	bars = pci_select_bars(pdev, IORESOURCE_MEM);
-+	err = pci_request_selected_regions(pdev, bars, DRV_MODULE_NAME);
-+	if (bars != ERDMA_BAR_MASK || err) {
-+		err = err ? err : -EINVAL;
-+		goto err_ib_device_release;
-+	}
-+
-+	dev->func_bar_addr = pci_resource_start(pdev, ERDMA_FUNC_BAR);
-+	dev->func_bar_len = pci_resource_len(pdev, ERDMA_FUNC_BAR);
-+
-+	dev->func_bar =
-+		devm_ioremap(&pdev->dev, dev->func_bar_addr, dev->func_bar_len);
-+	if (!dev->func_bar) {
-+		dev_err(&pdev->dev, "devm_ioremap failed.\n");
-+		err = -EFAULT;
-+		goto err_release_bars;
-+	}
-+
-+	version = erdma_reg_read32(dev, ERDMA_REGS_VERSION_REG);
-+	if (version == 0) {
-+		/* we knows that it is a non-functional function. */
-+		err = -ENODEV;
-+		goto err_iounmap_func_bar;
-+	}
-+
-+	err = erdma_device_init(dev, pdev);
-+	if (err)
-+		goto err_iounmap_func_bar;
-+
-+	err = erdma_request_vectors(dev);
-+	if (err)
-+		goto err_iounmap_func_bar;
-+
-+	err = erdma_comm_irq_init(dev);
-+	if (err)
-+		goto err_free_vectors;
-+
-+	err = erdma_aeq_init(dev);
-+	if (err)
-+		goto err_uninit_comm_irq;
-+
-+	err = erdma_cmdq_init(dev);
-+	if (err)
-+		goto err_uninit_aeq;
-+
-+	err = erdma_ceqs_init(dev);
-+	if (err)
-+		goto err_uninit_cmdq;
-+
-+	erdma_finish_cmdq_init(dev);
-+
-+	return 0;
-+
-+err_uninit_cmdq:
-+	erdma_device_uninit(dev);
-+	erdma_cmdq_destroy(dev);
-+
-+err_uninit_aeq:
-+	erdma_aeq_destroy(dev);
-+
-+err_uninit_comm_irq:
-+	erdma_comm_irq_uninit(dev);
-+
-+err_free_vectors:
-+	pci_free_irq_vectors(dev->pdev);
-+
-+err_iounmap_func_bar:
-+	devm_iounmap(&pdev->dev, dev->func_bar);
-+
-+err_release_bars:
-+	pci_release_selected_regions(pdev, bars);
-+
-+err_ib_device_release:
-+	ib_dealloc_device(&dev->ibdev);
-+
-+err_disable_device:
-+	pci_disable_device(pdev);
-+
-+	return err;
-+}
-+
-+static void erdma_remove_dev(struct pci_dev *pdev)
-+{
-+	struct erdma_dev *dev = pci_get_drvdata(pdev);
-+
-+	erdma_ceqs_uninit(dev);
-+
-+	erdma_device_uninit(dev);
-+
-+	erdma_cmdq_destroy(dev);
-+	erdma_aeq_destroy(dev);
-+	erdma_comm_irq_uninit(dev);
-+	pci_free_irq_vectors(dev->pdev);
-+
-+	devm_iounmap(&pdev->dev, dev->func_bar);
-+	pci_release_selected_regions(pdev, ERDMA_BAR_MASK);
-+
-+	ib_dealloc_device(&dev->ibdev);
-+
-+	pci_disable_device(pdev);
-+}
-+
-+#define ERDMA_GET_CAP(name, cap) FIELD_GET(ERDMA_CMD_DEV_CAP_##name##_MASK, cap)
-+
-+static int erdma_dev_attrs_init(struct erdma_dev *dev)
-+{
-+	int err;
-+	u64 req_hdr, cap0, cap1;
-+
-+	erdma_cmdq_build_reqhdr(&req_hdr, CMDQ_SUBMOD_RDMA,
-+				CMDQ_OPCODE_QUERY_DEVICE);
-+
-+	err = erdma_post_cmd_wait(&dev->cmdq, &req_hdr, sizeof(req_hdr), &cap0,
-+				  &cap1);
-+	if (err)
-+		return err;
-+
-+	dev->attrs.max_cqe = 1 << ERDMA_GET_CAP(MAX_CQE, cap0);
-+	dev->attrs.max_mr_size = 1ULL << ERDMA_GET_CAP(MAX_MR_SIZE, cap0);
-+	dev->attrs.max_mw = 1 << ERDMA_GET_CAP(MAX_MW, cap1);
-+	dev->attrs.max_recv_wr = 1 << ERDMA_GET_CAP(MAX_RECV_WR, cap0);
-+	dev->attrs.local_dma_key = ERDMA_GET_CAP(DMA_LOCAL_KEY, cap1);
-+	dev->attrs.cc = ERDMA_GET_CAP(DEFAULT_CC, cap1);
-+	dev->attrs.max_qp = ERDMA_NQP_PER_QBLOCK * ERDMA_GET_CAP(QBLOCK, cap1);
-+	dev->attrs.max_mr = dev->attrs.max_qp << 1;
-+	dev->attrs.max_cq = dev->attrs.max_qp << 1;
-+
-+	dev->attrs.max_send_wr = ERDMA_MAX_SEND_WR;
-+	dev->attrs.max_ord = ERDMA_MAX_ORD;
-+	dev->attrs.max_ird = ERDMA_MAX_IRD;
-+	dev->attrs.cap_flags =
-+		IB_DEVICE_LOCAL_DMA_LKEY | IB_DEVICE_MEM_MGT_EXTENSIONS;
-+	dev->attrs.max_send_sge = ERDMA_MAX_SEND_SGE;
-+	dev->attrs.max_recv_sge = ERDMA_MAX_RECV_SGE;
-+	dev->attrs.max_sge_rd = ERDMA_MAX_SGE_RD;
-+	dev->attrs.max_pd = ERDMA_MAX_PD;
-+
-+	dev->res_cb[ERDMA_RES_TYPE_PD].max_cap = ERDMA_MAX_PD;
-+	dev->res_cb[ERDMA_RES_TYPE_STAG_IDX].max_cap = dev->attrs.max_mr;
-+
-+	erdma_cmdq_build_reqhdr(&req_hdr, CMDQ_SUBMOD_COMMON,
-+				CMDQ_OPCODE_QUERY_FW_INFO);
-+
-+	err = erdma_post_cmd_wait(&dev->cmdq, &req_hdr, sizeof(req_hdr), &cap0,
-+				  &cap1);
-+
-+	dev->attrs.fw_version = FIELD_GET(ERDMA_CMD_INFO0_FW_VER_MASK, cap0);
-+
-+	return err;
-+}
-+
-+static int erdma_res_cb_init(struct erdma_dev *dev)
-+{
-+	int i, j;
-+
-+	for (i = 0; i < ERDMA_RES_CNT; i++) {
-+		dev->res_cb[i].next_alloc_idx = 1;
-+		spin_lock_init(&dev->res_cb[i].lock);
-+		dev->res_cb[i].bitmap =
-+			kcalloc(BITS_TO_LONGS(dev->res_cb[i].max_cap),
-+				sizeof(unsigned long), GFP_KERNEL);
-+		/* We will free the memory in erdma_res_cb_free */
-+		if (!dev->res_cb[i].bitmap)
-+			goto err;
-+	}
-+
-+	return 0;
-+
-+err:
-+	for (j = 0; j < i; j++)
-+		kfree(dev->res_cb[j].bitmap);
-+
-+	return -ENOMEM;
-+}
-+
-+static void erdma_res_cb_free(struct erdma_dev *dev)
-+{
-+	int i;
-+
-+	for (i = 0; i < ERDMA_RES_CNT; i++)
-+		kfree(dev->res_cb[i].bitmap);
-+}
-+
-+static const struct ib_device_ops erdma_device_ops = {
-+	.owner = THIS_MODULE,
-+	.driver_id = RDMA_DRIVER_ERDMA,
-+	.uverbs_abi_ver = ERDMA_ABI_VERSION,
-+
-+	.alloc_mr = erdma_ib_alloc_mr,
-+	.alloc_pd = erdma_alloc_pd,
-+	.alloc_ucontext = erdma_alloc_ucontext,
-+	.create_cq = erdma_create_cq,
-+	.create_qp = erdma_create_qp,
-+	.dealloc_pd = erdma_dealloc_pd,
-+	.dealloc_ucontext = erdma_dealloc_ucontext,
-+	.dereg_mr = erdma_dereg_mr,
-+	.destroy_cq = erdma_destroy_cq,
-+	.destroy_qp = erdma_destroy_qp,
-+	.get_dma_mr = erdma_get_dma_mr,
-+	.get_port_immutable = erdma_get_port_immutable,
-+	.iw_accept = erdma_accept,
-+	.iw_add_ref = erdma_qp_get_ref,
-+	.iw_connect = erdma_connect,
-+	.iw_create_listen = erdma_create_listen,
-+	.iw_destroy_listen = erdma_destroy_listen,
-+	.iw_get_qp = erdma_get_ibqp,
-+	.iw_reject = erdma_reject,
-+	.iw_rem_ref = erdma_qp_put_ref,
-+	.map_mr_sg = erdma_map_mr_sg,
-+	.mmap = erdma_mmap,
-+	.modify_qp = erdma_modify_qp,
-+	.post_recv = erdma_post_recv,
-+	.post_send = erdma_post_send,
-+	.poll_cq = erdma_poll_cq,
-+	.query_device = erdma_query_device,
-+	.query_gid = erdma_query_gid,
-+	.query_port = erdma_query_port,
-+	.query_qp = erdma_query_qp,
-+	.req_notify_cq = erdma_req_notify_cq,
-+	.reg_user_mr = erdma_reg_user_mr,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_cq, erdma_cq, ibcq),
-+	INIT_RDMA_OBJ_SIZE(ib_pd, erdma_pd, ibpd),
-+	INIT_RDMA_OBJ_SIZE(ib_ucontext, erdma_ucontext, ibucontext),
-+	INIT_RDMA_OBJ_SIZE(ib_qp, erdma_qp, ibqp),
-+};
-+
-+static int erdma_ib_device_add(struct pci_dev *pdev)
-+{
-+	struct erdma_dev *dev = pci_get_drvdata(pdev);
-+	struct ib_device *ibdev = &dev->ibdev;
-+	u64 mac;
-+	int ret = 0;
-+
-+	ret = erdma_dev_attrs_init(dev);
-+	if (ret)
-+		return ret;
-+
-+	ibdev->node_type = RDMA_NODE_RNIC;
-+	memcpy(ibdev->node_desc, ERDMA_NODE_DESC, sizeof(ERDMA_NODE_DESC));
-+
-+	/*
-+	 * Current model (one-to-one device association):
-+	 * One ERDMA device per net_device or, equivalently,
-+	 * per physical port.
-+	 */
-+	ibdev->phys_port_cnt = 1;
-+	ibdev->num_comp_vectors = dev->attrs.irq_num - 1;
-+
-+	ib_set_device_ops(ibdev, &erdma_device_ops);
-+
-+	INIT_LIST_HEAD(&dev->cep_list);
-+
-+	spin_lock_init(&dev->lock);
-+	xa_init_flags(&dev->qp_xa, XA_FLAGS_ALLOC1);
-+	xa_init_flags(&dev->cq_xa, XA_FLAGS_ALLOC1);
-+	dev->next_alloc_cqn = 1;
-+	dev->next_alloc_qpn = 1;
-+
-+	ret = erdma_res_cb_init(dev);
-+	if (ret)
-+		return ret;
-+
-+	spin_lock_init(&dev->db_bitmap_lock);
-+	bitmap_zero(dev->sdb_page, ERDMA_DWQE_TYPE0_CNT);
-+	bitmap_zero(dev->sdb_entry, ERDMA_DWQE_TYPE1_CNT);
-+
-+	atomic_set(&dev->num_ctx, 0);
-+
-+	mac = erdma_reg_read32(dev, ERDMA_REGS_NETDEV_MAC_L_REG);
-+	mac |= (u64)erdma_reg_read32(dev, ERDMA_REGS_NETDEV_MAC_H_REG) << 32;
-+
-+	u64_to_ether_addr(mac, dev->attrs.peer_addr);
-+
-+	ret = erdma_device_register(dev);
-+	if (ret)
-+		goto err_out;
-+
-+	return 0;
-+
-+err_out:
-+	xa_destroy(&dev->qp_xa);
-+	xa_destroy(&dev->cq_xa);
-+
-+	erdma_res_cb_free(dev);
-+
-+	return ret;
-+}
-+
-+static void erdma_ib_device_remove(struct pci_dev *pdev)
-+{
-+	struct erdma_dev *dev = pci_get_drvdata(pdev);
-+
-+	if (dev->netdev) {
-+		ib_device_set_netdev(&dev->ibdev, NULL, 1);
-+		dev->netdev = NULL;
-+		unregister_netdevice_notifier(&dev->netdev_nb);
-+	}
-+
-+	ib_unregister_device(&dev->ibdev);
-+
-+	erdma_res_cb_free(dev);
-+	xa_destroy(&dev->qp_xa);
-+	xa_destroy(&dev->cq_xa);
-+}
-+
-+static int erdma_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
-+{
-+	int ret;
-+
-+	ret = erdma_probe_dev(pdev);
-+	if (ret)
-+		return ret;
-+
-+	ret = erdma_ib_device_add(pdev);
-+	if (ret) {
-+		erdma_remove_dev(pdev);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void erdma_remove(struct pci_dev *pdev)
-+{
-+	erdma_ib_device_remove(pdev);
-+	erdma_remove_dev(pdev);
-+}
-+
-+static struct pci_driver erdma_pci_driver = {
-+	.name = DRV_MODULE_NAME,
-+	.id_table = erdma_pci_tbl,
-+	.probe = erdma_probe,
-+	.remove = erdma_remove
-+};
-+
-+MODULE_DEVICE_TABLE(pci, erdma_pci_tbl);
-+
-+static __init int erdma_init_module(void)
-+{
-+	int ret;
-+
-+	ret = erdma_cm_init();
-+	if (ret)
-+		return ret;
-+
-+	ret = pci_register_driver(&erdma_pci_driver);
-+	if (ret) {
-+		erdma_cm_exit();
-+		return ret;
-+	}
-+
-+	rdma_link_register(&erdma_link_ops);
-+
-+	return 0;
-+}
-+
-+static void __exit erdma_exit_module(void)
-+{
-+	rdma_link_unregister(&erdma_link_ops);
-+
-+	pci_unregister_driver(&erdma_pci_driver);
-+
-+	erdma_cm_exit();
-+}
-+
-+module_init(erdma_init_module);
-+module_exit(erdma_exit_module);
+configs tested: 136
+configs skipped: 5
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+m68k                        m5407c3_defconfig
+powerpc                     pq2fads_defconfig
+sparc64                          alldefconfig
+arm                       imx_v6_v7_defconfig
+sh                     magicpanelr2_defconfig
+openrisc                  or1klitex_defconfig
+mips                        vocore2_defconfig
+m68k                            q40_defconfig
+arm                           tegra_defconfig
+arc                            hsdk_defconfig
+arm                        shmobile_defconfig
+m68k                        mvme16x_defconfig
+riscv                            allmodconfig
+mips                  maltasmvp_eva_defconfig
+sparc                       sparc32_defconfig
+sh                           se7722_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                     tqm8548_defconfig
+i386                             alldefconfig
+arm                        spear6xx_defconfig
+m68k                       bvme6000_defconfig
+m68k                       m5249evb_defconfig
+ia64                        generic_defconfig
+arm                           viper_defconfig
+powerpc                     tqm8541_defconfig
+xtensa                    smp_lx200_defconfig
+arm                          exynos_defconfig
+openrisc                            defconfig
+sh                            shmin_defconfig
+sh                            migor_defconfig
+sh                      rts7751r2d1_defconfig
+arc                          axs101_defconfig
+m68k                                defconfig
+powerpc                 mpc837x_mds_defconfig
+sparc                       sparc64_defconfig
+arm                          iop32x_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                        mvebu_v7_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                           xway_defconfig
+xtensa                    xip_kc705_defconfig
+mips                          rb532_defconfig
+m68k                        m5307c3_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220405
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+x86_64                        randconfig-a006
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a011
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+x86_64                          rhel-8.3-func
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                         rhel-8.3-kunit
+x86_64                               rhel-8.3
+
+clang tested configs:
+x86_64                        randconfig-c007
+i386                          randconfig-c001
+powerpc              randconfig-c003-20220405
+riscv                randconfig-c006-20220405
+mips                 randconfig-c004-20220405
+arm                  randconfig-c002-20220405
+arm                       mainstone_defconfig
+arm                       spear13xx_defconfig
+powerpc                        fsp2_defconfig
+arm                           sama7_defconfig
+powerpc                   microwatt_defconfig
+riscv                            alldefconfig
+powerpc                     tqm8560_defconfig
+powerpc                     kmeter1_defconfig
+arm                         bcm2835_defconfig
+arm                      tct_hammer_defconfig
+powerpc                  mpc885_ads_defconfig
+arm                         shannon_defconfig
+powerpc                       ebony_defconfig
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r045-20220405
+riscv                randconfig-r042-20220405
+hexagon              randconfig-r041-20220405
+
 -- 
-2.27.0
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp
