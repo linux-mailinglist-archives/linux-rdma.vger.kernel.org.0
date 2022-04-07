@@ -2,142 +2,144 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6C74F847C
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 18:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3032A4F8499
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 18:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241463AbiDGQF2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 12:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34044 "EHLO
+        id S235405AbiDGQM0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Apr 2022 12:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234257AbiDGQFX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 12:05:23 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2059.outbound.protection.outlook.com [40.107.244.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AD21E6EB6;
-        Thu,  7 Apr 2022 09:03:21 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lJQz9jQ1c6rWVUvbWCia6THECFR7fE47aE1xvG0TmzuUVGxBv8vmSG8pIk/+EcgRuFWIVegrxEbnOSGG/tjUHBwY0GhJnwNmeKF+S/ZPfC7j8Gt8ic8PNdL1pF8aVrROwLRG5k+xJPaiHVB2ULlFBw9DjPh+Bpqr0rWlKg1YPWO9Vunaf7el9gLMnIctDe3YbcStM/8XWn+Z0Mtt8hEnNJ4nCQxvcRgWSq6jznOi0Jeia3n0Xir2o5+75mXoRXW6x9ngKbWGjKje6Lc/0+RX9otd8wpj+Tnuw6zePj56xUosMe3otVEyPrM+HYnpUTexjgNrhh2SZ8kMQSHHDSaZxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EKLmve+AfnltkRtIBW4QNFGwcvNoA3YRTGhK2ba5PaI=;
- b=T049GM+RX57UOXRj5ghQE9LhB0OJZkdYYZC7cwNJLnlBj+XQEX+QoOOTR5lchq67u/iMuD9DRe44CMFgneHxjf0CV/XLx5n9W1itjTs9vSNdD6BlmqpGHcB9XhL8Pt1jViu0ywl0LdYSatny3yST7Xt5OpJgR7akAKeuT8DeLb2FVScZddQCTbXfTlGRiwcQSRbRLSlfgo3HkuhdPK3BWOBoK5mpKoLpwZKYeXOJzMK4F1DVX+cycWPOJc1Q8ZR0iFJ4EKU3B6hLEl7RKsu91zDl7Y/sQRlslGlU0sIsjyFdaXHm1kOJkY/nelClita16iVIb7gvEzjC/5RbI7SUTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EKLmve+AfnltkRtIBW4QNFGwcvNoA3YRTGhK2ba5PaI=;
- b=dV+74AIZjYbeybBVpJWxh1CmwlSL3eVMS9J49W94pE11RQxlZvrN1ZeVF2Cv/b4hF3ZTpx0dMfg15RuzHrWr+3JVmF8beDOf+NyGAUIkDEiP4wY9A5OT+RyaHcM/UXSVfsjBTCKgFTe1GDKzLSJ2r6zy7YLVMkxe2o2vfwrsLApquCOn4awgKfV+LuQicK5MrmN78VWwQ/bVudh+Sy+W3pg0E1kr9rqWPUSSKlF3Je/QBv7A0p99L+ie+wvH8cjD/wIsz1qAM8RovhaDZfNkXdCs8alPlVnYe0ypz+JQ8TWPR4Biln5bakdspl36px4jcprYmZk5DkLMRt4bieLLmw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BY5PR12MB4885.namprd12.prod.outlook.com (2603:10b6:a03:1de::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Thu, 7 Apr
- 2022 16:03:16 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::cdfb:f88e:410b:9374%6]) with mapi id 15.20.5144.022; Thu, 7 Apr 2022
- 16:03:16 +0000
-Date:   Thu, 7 Apr 2022 13:03:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        netdev@vger.kernel.org, Raed Salem <raeds@nvidia.com>
-Subject: Re: [PATCH mlx5-next 08/17] RDMA/core: Delete IPsec flow action
- logic from the core
-Message-ID: <20220407160314.GA3429238@nvidia.com>
-References: <cover.1649232994.git.leonro@nvidia.com>
- <a638e376314a2eb1c66f597c0bbeeab2e5de7faf.1649232994.git.leonro@nvidia.com>
+        with ESMTP id S231956AbiDGQMZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 12:12:25 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CB76A415;
+        Thu,  7 Apr 2022 09:10:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BEB2A61F44;
+        Thu,  7 Apr 2022 16:10:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BAEBC385A4;
+        Thu,  7 Apr 2022 16:10:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649347816;
+        bh=i/wI2nzdbQUEB94WRWW6f8QcGZr6oohGA822sn6gZF4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eVbBbFbyiyzgR20zLG+AnfXVrI5nEGG79xuOPOVMalMxhIGSGEVoKz4Zk0uK6hYA9
+         ZjXmnPLmqX+MvdzV+QsQYZfEkumyWyeOCvicUvezw+zRZBxNE+Awinh1hRxGnvb6R0
+         CE2CEqtYGmJyCucjKbJiuRfKZISkJABZP6d1a2NTJBVEqrwtkZCa4wq1S/9msusv2d
+         h8wmCqOxNpk6rbbTrVQApUZhu+ZMHOzRREJlW6GwcNwIs8d/9JF3sTQGds6ptSAsAO
+         4ia9BQBibsx6GwI+Pql5oR6OVE4ikKAodu2gV9J8J9TRcIpghQvpJiGxjm7aUYDN/J
+         PSHcKxS6aFCRA==
+Date:   Thu, 7 Apr 2022 19:10:12 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Ariel Elior <aelior@marvell.com>,
+        Anna Schumaker <anna@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Chaitanya Kulkarni <kch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-rdma@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Nelson Escobar <neescoba@cisco.com>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>, rds-devel@oss.oracle.com,
+        Sagi Grimberg <sagi@grimberg.me>,
+        samba-technical@lists.samba.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        target-devel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH v2] RDMA: Split kernel-only global device caps from
+ uverbs device caps
+Message-ID: <Yk8M5C/7YO7F9sk2@unreal>
+References: <0-v2-22c19e565eef+139a-kern_caps_jgg@nvidia.com>
+ <ca06d463-cf68-4b6f-8432-a86e34398bf0@acm.org>
+ <20220407155244.GP2120790@nvidia.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a638e376314a2eb1c66f597c0bbeeab2e5de7faf.1649232994.git.leonro@nvidia.com>
-X-ClientProxiedBy: YT3PR01CA0070.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:84::18) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 20dacdbb-12e4-495e-537a-08da18b0207c
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4885:EE_
-X-Microsoft-Antispam-PRVS: <BY5PR12MB48851EAC475D98F07BB13BE7C2E69@BY5PR12MB4885.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +gdrztrPN4z+rzkOSIXB7fpNdTDnywzq2E6QGV585hYzwR/Q0hsLUKnqwgHBI+y1GdR8DqZV3YuivW8KfNXfJr6fC7boLULVTiESbBS6BwMx5+aU0agKhDDhFpdK5sbww8l9DjjIrZEZ2nhyOqV0qauXuJtJpSBpwotBlqi6ceLn0FojbdWr7ssWzPONRgbulqomBv+FDvccL5CG4W8ElSrnsV0MmJdXCfu7K3XhDk2RAIrqYkBHJ8t5eFlQ5MMdTHRDoyEG1/FYD9+SQBKKYPMgXYASq1CymlCLGCXwnGZKTdQe72gfS5RYOPo6/vIBrAUPp3hyytPbmOJGwp8t809A/+8g20K279929FTkf+JH70usgbasPUffSUnVosd/jy89LCQz5S6cZjRnxDr8PUDpObf/v/2HfX9OQ2O46gisHOHMLBGetA2PAu2tLyUJMqCbCb3scpqTplamo8lvyGX+CICFo05ocLAGu3wL8Uef8RCnij+8TbzU7rKMP5xCWWWZii7vdls3Rp1ugh6MT0ERNEaZ6qe8ZBPuIV7+W2nx5Xv89qpfGDcZk9yyLLSDwqiqUZXfj72gXx9eBCadvelkN02YYhNhXYLlDW6gK/nxi05IclIcxv0jtKqYwv7Cd/TiAmCvrzDFtRGit96p0w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(8936002)(5660300002)(1076003)(4744005)(186003)(26005)(33656002)(4326008)(6512007)(6506007)(86362001)(66946007)(66476007)(107886003)(8676002)(2616005)(83380400001)(66556008)(38100700002)(316002)(54906003)(6916009)(2906002)(6486002)(36756003)(508600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n3cZW0TqpEKZ8kbACwMptOdMmQ6gbhv3YWSXLYLlL9VSxSt5Wz8fayku/5bs?=
- =?us-ascii?Q?gVwzf14mbOekUYzFKQ6R/yFvvmnCoBoBPVv9gp705OLueJW/fxtEH04t4hRn?=
- =?us-ascii?Q?LWfHESy3cGNUNyelMFrNcuZ8Vm0NCPbb7My8h3NCvBjf2WxlcU/K0qWVnFkB?=
- =?us-ascii?Q?XDzyjba4j5OQg6cU0bQ0dngKJRVcwLibA9+eU1LuOh4k2IIVivYF3hxGHpAS?=
- =?us-ascii?Q?GEBApRLOos+kAQ4rz6/INkskUcR4vvkbX3NhqMYa0CVbhwSchzQgc8+eE2ZJ?=
- =?us-ascii?Q?PTox3NYL7GY2HNYKiK4a6AogHOEBAbMpwl1w988tnn27yxd9bPnUXh45/RVa?=
- =?us-ascii?Q?F9WxGbLS9FMyJ+CL9O1bYh5GkBdsjYeEkGfsx6FEFt7d44jWPgy3DPDdQmoh?=
- =?us-ascii?Q?DmnAo8Skj6GzzbkDSG4BupWLDgoVsFvLQpWjVsCJPtcfSH7yI488Fck3fWia?=
- =?us-ascii?Q?rFPcUdUUceqj/whRj7ABfdL5RMMJoSS5sX+xpzq33ektPchCRUqYQ+iyTk+f?=
- =?us-ascii?Q?ityIn49VsbeQTT06D43ungH7KXuijZgncHNfQa+STHk+v9mbrjm5umuRI/rm?=
- =?us-ascii?Q?zus9NQpeXem5HPPTqibpc/qWVeHv/7SeU7UvPuIo0T53kqdXvgmUuKD2bj8E?=
- =?us-ascii?Q?/GsLrQQatWkXtLjioj2Ne9m5VpAm0VxdtEFyNvc9fvqCXAsUnPtcy0uUAm4S?=
- =?us-ascii?Q?q69ug+PaRhuvXcRl4TPuEXT2WozsnpvXdPlBjWZGUMTV6stJ5y16GZczUCI5?=
- =?us-ascii?Q?uqtqwA5ZfNOyM2+N0NF4ZTmymZbFPenbsQxgFM9ReZluDrvaxOm5HT46NXvz?=
- =?us-ascii?Q?yweQH+cEpHYdeb3bbY1cQ9XCoGEdYr6tk0PoSzlx27NTxIJ83L8rfnLatgfc?=
- =?us-ascii?Q?hRnElFZI78oXCgfXbuFSGvYoYd0ag/0KoxP3UDbflbQQ4+COrwf+SXlTTxO8?=
- =?us-ascii?Q?BEydaFyj0tELIYYPHaUiF/LqsinhVRV3ADcICBIayzC/1jz8J5qewZMBLsmW?=
- =?us-ascii?Q?sHvQEUfo/8qLC7TKiiCSun9DOQ24QfveiOVTKQ7Y62kpggMQUc63kcP7Nsa0?=
- =?us-ascii?Q?N4XIN6dy6i5Pfag4xHbBNY8gL5kcp2M0bMstbDDfNTrf+EaCBhA+DotIeEF3?=
- =?us-ascii?Q?HYefqIQBX0vnOHV7DW7CXdi1diRkfx2FsyHJKtXwPuy5RuMaduvRM7q8RUV2?=
- =?us-ascii?Q?FwEGiEDuHrrCUe/vuoXBu1awoibcm2uFrdv6QIwpEdYk3Bu7S3s9XR/K+F8R?=
- =?us-ascii?Q?UNOXC465Pknq8GuWzs9aoUedeyUwMhZg4KxlXyvLC/QXBSwprGfDr/Aeq42M?=
- =?us-ascii?Q?75KkDlSyf+7kOBS+0vCHvu4J2SmXBod5uan9PToXguVvZM/YIq0xC4prpgaa?=
- =?us-ascii?Q?ssqGgCnbBykOFa6eoFV8bhwnw+/QS2APjypyn0Rkmoea7HwBdlW6vka/tiTT?=
- =?us-ascii?Q?PXsMdv2ISxizJaiAw+Z74RGMHDQHg1bLG82S7dEZ6qoCSWHHYTC36tSMFCZQ?=
- =?us-ascii?Q?5Nbq+KdZ6RqVZM7GmGAEzRPgbbwsyMUi58GaRelKYX4Etbr5me9Avgka7uKf?=
- =?us-ascii?Q?2zJJDf6duEZF8CXYe02N1VptvE1m7yc+6XIojKN6VlLVDCgOK5CTo8v0FjGn?=
- =?us-ascii?Q?n4ht49Mfh678ptMWWSJAHPoyBapwqOa9Drkz3n0XqP/weA3qt+PlMoNy1tXi?=
- =?us-ascii?Q?UwzpXC3YO/DsC6/KOLQsIkw+nuXYke1zQd9AAT4SoE8gvFbapYqEV2sPGtTl?=
- =?us-ascii?Q?RZupLvrgkg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20dacdbb-12e4-495e-537a-08da18b0207c
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2022 16:03:16.5769
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tVxgGD0pCpUxVRVk6ZFJ6LZzWxcCNIdSUDpXpDGbuCxsUWEqXec9rKzZfsbV9YlJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4885
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20220407155244.GP2120790@nvidia.com>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Apr 06, 2022 at 11:25:43AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Apr 07, 2022 at 12:52:44PM -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 06, 2022 at 12:57:31PM -0700, Bart Van Assche wrote:
+> > On 4/6/22 12:27, Jason Gunthorpe wrote:
+> > > +enum ib_kernel_cap_flags {
+> > > +	/*
+> > > +	 * This device supports a per-device lkey or stag that can be
+> > > +	 * used without performing a memory registration for the local
+> > > +	 * memory.  Note that ULPs should never check this flag, but
+> > > +	 * instead of use the local_dma_lkey flag in the ib_pd structure,
+> > > +	 * which will always contain a usable lkey.
+> > > +	 */
+> > > +	IBK_LOCAL_DMA_LKEY = 1 << 0,
+> > > +	/* IB_QP_CREATE_INTEGRITY_EN is supported to implement T10-PI */
+> > > +	IBK_INTEGRITY_HANDOVER = 1 << 1,
+> > > +	/* IB_ACCESS_ON_DEMAND is supported during reg_user_mr() */
+> > > +	IBK_ON_DEMAND_PAGING = 1 << 2,
+> > > +	/* IB_MR_TYPE_SG_GAPS is supported */
+> > > +	IBK_SG_GAPS_REG = 1 << 3,
+> > > +	/* Driver supports RDMA_NLDEV_CMD_DELLINK */
+> > > +	IBK_ALLOW_USER_UNREG = 1 << 4,
+> > > +
+> > > +	/* ipoib will use IB_QP_CREATE_BLOCK_MULTICAST_LOOPBACK */
+> > > +	IBK_BLOCK_MULTICAST_LOOPBACK = 1 << 5,
+> > > +	/* iopib will use IB_QP_CREATE_IPOIB_UD_LSO for its QPs */
+> > > +	IBK_UD_TSO = 1 << 6,
+> > > +	/* iopib will use the device ops:
+> > > +	 *   get_vf_config
+> > > +	 *   get_vf_guid
+> > > +	 *   get_vf_stats
+> > > +	 *   set_vf_guid
+> > > +	 *   set_vf_link_state
+> > > +	 */
+> > > +	IBK_VIRTUAL_FUNCTION = 1 << 7,
+> > > +	/* ipoib will use IB_QP_CREATE_NETDEV_USE for its QPs */
+> > > +	IBK_RDMA_NETDEV_OPA = 1 << 8,
+> > > +};
+> > 
+> > Has it been considered to use the kernel-doc syntax? This means moving all
+> > comments above "enum ib_kernel_cap_flags {".
 > 
-> The removal of mlx5 flow steering logic, left the kernel without any RDMA
-> drivers that implements flow action callbacks supplied by RDMA/core. Any
-> user access to them caused to EOPNOTSUPP error, which can be achieved by
-> simply removing ioctl implementation.
+> TBH I'm not a huge fan of kdoc for how wordy it is:
 > 
-> Reviewed-by: Raed Salem <raeds@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/core/device.c              |   2 -
->  .../core/uverbs_std_types_flow_action.c       | 383 +-----------------
->  include/rdma/ib_verbs.h                       |   8 -
->  3 files changed, 1 insertion(+), 392 deletions(-)
+>  /** @IBK_RDMA_NETDEV_OPA: ipoib will use IB_QP_CREATE_NETDEV_USE for its QPs */
+>  IBK_RDMA_NETDEV_OPA = 1 << 8,
+> 
+> Is the shortest format and still a bit awkward.
+> 
+> Given that we don't have a proper kdoc for rdma I haven't been putting
+> much energy there.
+> 
+> If someone came with patches to make a kdoc chapter and start to
+> organize it nicely I could see enforcing kdoc format..
 
-Acked-by: Jason Gunthorpe <jgg@nvidia.com>
+Do you see any value in kdoc?
 
-Jason
+I personally didn't find it useful for kernel at all.
+
+> 
+> Jason
