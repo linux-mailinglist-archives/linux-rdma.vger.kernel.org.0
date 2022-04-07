@@ -2,25 +2,25 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E4F4F7EA7
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 14:05:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0BD4F7F98
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 14:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240664AbiDGMGV (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 08:06:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58606 "EHLO
+        id S245542AbiDGM4n (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Apr 2022 08:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245105AbiDGMF5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 08:05:57 -0400
+        with ESMTP id S235962AbiDGM4m (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 08:56:42 -0400
 Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5D46CA0E9;
-        Thu,  7 Apr 2022 05:03:26 -0700 (PDT)
-Received: by ajax-webmail-mail-app3 (Coremail) ; Thu, 7 Apr 2022 20:02:58
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 678FA25A49E;
+        Thu,  7 Apr 2022 05:54:39 -0700 (PDT)
+Received: by ajax-webmail-mail-app3 (Coremail) ; Thu, 7 Apr 2022 20:54:13
  +0800 (GMT+08:00)
 X-Originating-IP: [10.181.226.201]
-Date:   Thu, 7 Apr 2022 20:02:58 +0800 (GMT+08:00)
+Date:   Thu, 7 Apr 2022 20:54:13 +0800 (GMT+08:00)
 X-CM-HeaderCharset: UTF-8
 From:   duoming@zju.edu.cn
-To:     "Oliver Neukum" <oneukum@suse.com>
+To:     "Dan Carpenter" <dan.carpenter@oracle.com>
 Cc:     linux-kernel@vger.kernel.org, chris@zankel.net, jcmvbkbc@gmail.com,
         mustafa.ismail@intel.com, shiraz.saleem@intel.com, jgg@ziepe.ca,
         wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
@@ -30,23 +30,23 @@ Cc:     linux-kernel@vger.kernel.org, chris@zankel.net, jcmvbkbc@gmail.com,
         linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
         netdev@vger.kernel.org, linux-hippi@sunsite.dk,
         linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org, linma@zju.edu.cn
-Subject: Re: Re: [PATCH 02/11] drivers: usb: host: Fix deadlock in
- oxu_bus_suspend()
+        linux-usb@vger.kernel.org
+Subject: Re: Re: [PATCH 09/11] drivers: infiniband: hw: Fix deadlock in
+ irdma_cleanup_cm_core()
 X-Priority: 3
 X-Mailer: Coremail Webmail Server Version XT5.0.8 build 20200806(7a9be5e8)
  Copyright (c) 2002-2022 www.mailtech.cn zju.edu.cn
-In-Reply-To: <8ed7760a-471d-19a2-0a3b-1e0fc3a27281@suse.com>
+In-Reply-To: <20220407112455.GK3293@kadam>
 References: <cover.1649310812.git.duoming@zju.edu.cn>
- <8b1201dc7554a2ab3ca555a2b6e2747761603d19.1649310812.git.duoming@zju.edu.cn>
- <8ed7760a-471d-19a2-0a3b-1e0fc3a27281@suse.com>
+ <4069b99042d28c8e51b941d9e698b99d1656ed33.1649310812.git.duoming@zju.edu.cn>
+ <20220407112455.GK3293@kadam>
 Content-Transfer-Encoding: base64
 Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Message-ID: <4170b816.3f4a8.18003e801f8.Coremail.duoming@zju.edu.cn>
+Message-ID: <1be0c02d.3f701.1800416ef60.Coremail.duoming@zju.edu.cn>
 X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgAXj2Ly0k5i+UeSAQ--.26944W
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgQNAVZdtZE08wABsj
+X-CM-TRANSID: cC_KCgDnXmL13k5iNReTAQ--.17805W
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgYNAVZdtZE4DQAFsX
 X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
         CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
         daVFxhVjvjDU=
@@ -59,46 +59,40 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGVsbG8sCgpPbiBUaHUsIDcgQXByIDIwMjIgMTA6MDE6NDMgKzAyMDAgT2xpdmVyIE5ldWt1bSB3
-cm90ZToKCj4gT24gMDcuMDQuMjIgMDg6MzMsIER1b21pbmcgWmhvdSB3cm90ZToKPiA+IFRoZXJl
-IGlzIGEgZGVhZGxvY2sgaW4gb3h1X2J1c19zdXNwZW5kKCksIHdoaWNoIGlzIHNob3duIGJlbG93
-Ogo+ID4KPiA+ICAgIChUaHJlYWQgMSkgICAgICAgICAgICAgIHwgICAgICAoVGhyZWFkIDIpCj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IHRpbWVyX2FjdGlvbigpCj4gPiBveHVfYnVz
-X3N1c3BlbmQoKSAgICAgICAgICB8ICBtb2RfdGltZXIoKQo+ID4gIHNwaW5fbG9ja19pcnEoKSAv
-LygxKSAgICAgfCAgKHdhaXQgYSB0aW1lKQo+ID4gIC4uLiAgICAgICAgICAgICAgICAgICAgICAg
-fCBveHVfd2F0Y2hkb2coKQo+ID4gIGRlbF90aW1lcl9zeW5jKCkgICAgICAgICAgfCAgc3Bpbl9s
-b2NrX2lycSgpIC8vKDIpCj4gPiAgKHdhaXQgdGltZXIgdG8gc3RvcCkgICAgICB8ICAuLi4KPiA+
-Cj4gPiBXZSBob2xkIG94dS0+bG9jayBpbiBwb3NpdGlvbiAoMSkgb2YgdGhyZWFkIDEsIGFuZCB1
-c2UKPiA+IGRlbF90aW1lcl9zeW5jKCkgdG8gd2FpdCB0aW1lciB0byBzdG9wLCBidXQgdGltZXIg
-aGFuZGxlcgo+ID4gYWxzbyBuZWVkIG94dS0+bG9jayBpbiBwb3NpdGlvbiAoMikgb2YgdGhyZWFk
-IDIuIEFzIGEgcmVzdWx0LAo+ID4gb3h1X2J1c19zdXNwZW5kKCkgd2lsbCBibG9jayBmb3JldmVy
-Lgo+ID4KPiA+IFRoaXMgcGF0Y2ggZXh0cmFjdHMgZGVsX3RpbWVyX3N5bmMoKSBmcm9tIHRoZSBw
-cm90ZWN0aW9uIG9mCj4gPiBzcGluX2xvY2tfaXJxKCksIHdoaWNoIGNvdWxkIGxldCB0aW1lciBo
-YW5kbGVyIHRvIG9idGFpbgo+ID4gdGhlIG5lZWRlZCBsb2NrLgo+IEdvb2QgY2F0Y2guCj4gPiBT
-aWduZWQtb2ZmLWJ5OiBEdW9taW5nIFpob3UgPGR1b21pbmdAemp1LmVkdS5jbj4KPiA+IC0tLQo+
-ID4gIGRyaXZlcnMvdXNiL2hvc3Qvb3h1MjEwaHAtaGNkLmMgfCAyICsrCj4gPiAgMSBmaWxlIGNo
-YW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3VzYi9o
-b3N0L294dTIxMGhwLWhjZC5jIGIvZHJpdmVycy91c2IvaG9zdC9veHUyMTBocC1oY2QuYwo+ID4g
-aW5kZXggYjc0MTY3MDUyNWUuLmVlNDAzZGYzMzA5IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy91
-c2IvaG9zdC9veHUyMTBocC1oY2QuYwo+ID4gKysrIGIvZHJpdmVycy91c2IvaG9zdC9veHUyMTBo
-cC1oY2QuYwo+ID4gQEAgLTM5MDksOCArMzkwOSwxMCBAQCBzdGF0aWMgaW50IG94dV9idXNfc3Vz
-cGVuZChzdHJ1Y3QgdXNiX2hjZCAqaGNkKQo+ID4gIAkJfQo+ID4gIAl9Cj4gPiAgCj4gPiArCXNw
-aW5fdW5sb2NrX2lycSgmb3h1LT5sb2NrKTsKPiA+ICAJLyogdHVybiBvZmYgbm93LWlkbGUgSEMg
-Ki8KPiA+ICAJZGVsX3RpbWVyX3N5bmMoJm94dS0+d2F0Y2hkb2cpOwo+ID4gKwlzcGluX2xvY2tf
-aXJxKCZveHUtPmxvY2spOwo+ID4gIAllaGNpX2hhbHQob3h1KTsKPiA+ICAJaGNkLT5zdGF0ZSA9
-IEhDX1NUQVRFX1NVU1BFTkRFRDsKPiA+ICAKPiAKPiBXaGF0IGlzIHRoZSBsb2NrIHByb3RlY3Rp
-bmcgYXQgdGhhdCBzdGFnZT8gV2h5IG5vdCBqdXN0IGRyb3AgaXQgZWFybGllci4KCkkgdGhpbmsg
-dGhlcmUgaXMgYSByYWNlIGNvbmRpdGlvbiBiZXR3ZWVuIG94dV9idXNfc3VzcGVuZCgpIGFuZCBv
-eHVfc3RvcCgpLApzbyBJIHRoaW5rIHdlIGNvdWxkIG5vdCBkcm9wIHRoZSBveHUtPmxvY2sgZWFy
-bGllci4KCiAgICAgICAgICAgICAgIChUaHJlYWQgMSkgICAgICAgICAgICAgICB8ICAgICAgICAg
-KFRocmVhZCAyKQogb3h1X2J1c19zdXNwZW5kKCkgICAgICAgICAgICAgICAgICAgICAgfCBveHVf
-c3RvcCgpCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IAogaGNkLT5z
-dGF0ZSA9IEhDX1NUQVRFX1NVU1BFTkRFRDsgICAgICAgfCAgc3Bpbl9sb2NrX2lycSgmb3h1LT5s
-b2NrKTsKIC4uLiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgCiB3cml0ZWwo
-bWFzaywgJm94dS0+cmVncy0+aW50cl9lbmFibGUpOyB8ICAuLi4KICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHwgIHdyaXRlbCgwLCAmb3h1LT5yZWdzLT5pbnRyX2VuYWJs
-ZSk7CiByZWFkbCgmb3h1LT5yZWdzLT5pbnRyX2VuYWJsZSk7ICAgICAgICB8CgpUaGUgb3h1LT5y
-ZWdzLT5pbnRyX2VuYWJsZSBpcyBzZXQgdG8gMCBpbiBveHVfc3RvcCgpLCBhbmQgdGhlIHJlYWRs
-KCkgaW4Kb3h1X2J1c19zdXNwZW5kKCkgd2lsbCByZWFkIHRoZSB3cm9uZyB2YWx1ZS4KClRoYW5r
-cyBhIGxvdCBmb3IgeW91ciB0aW1lIGFuZCBhZHZpY2UuIElmIHlvdSBoYXZlIHF1ZXN0aW9ucywg
-d2VsY29tZSB0byBhc2sgbWUuCgpCZXN0IHJlZ2FyZHMsCkR1b21pbmcgWmhvdQo=
+SGVsbG8sCgpPbiBUaHUsIDcgQXByIDIwMjIgMTQ6MjQ6NTYgKzAzMDAgRGFuIENhcnBlbnRlciB3
+cm90ZToKCj4gPiBUaGVyZSBpcyBhIGRlYWRsb2NrIGluIGlyZG1hX2NsZWFudXBfY21fY29yZSgp
+LCB3aGljaCBpcyBzaG93bgo+ID4gYmVsb3c6Cj4gPiAKPiA+ICAgIChUaHJlYWQgMSkgICAgICAg
+ICAgICAgIHwgICAgICAoVGhyZWFkIDIpCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+IGlyZG1hX3NjaGVkdWxlX2NtX3RpbWVyKCkKPiA+IGlyZG1hX2NsZWFudXBfY21fY29yZSgpICAg
+IHwgIGFkZF90aW1lcigpCj4gPiAgc3Bpbl9sb2NrX2lycXNhdmUoKSAvLygxKSB8ICAod2FpdCBh
+IHRpbWUpCj4gPiAgLi4uICAgICAgICAgICAgICAgICAgICAgICB8IGlyZG1hX2NtX3RpbWVyX3Rp
+Y2soKQo+ID4gIGRlbF90aW1lcl9zeW5jKCkgICAgICAgICAgfCAgc3Bpbl9sb2NrX2lycXNhdmUo
+KSAvLygyKQo+ID4gICh3YWl0IHRpbWVyIHRvIHN0b3ApICAgICAgfCAgLi4uCj4gPiAKPiA+IFdl
+IGhvbGQgY21fY29yZS0+aHRfbG9jayBpbiBwb3NpdGlvbiAoMSkgb2YgdGhyZWFkIDEgYW5kCj4g
+PiB1c2UgZGVsX3RpbWVyX3N5bmMoKSB0byB3YWl0IHRpbWVyIHRvIHN0b3AsIGJ1dCB0aW1lciBo
+YW5kbGVyCj4gPiBhbHNvIG5lZWQgY21fY29yZS0+aHRfbG9jayBpbiBwb3NpdGlvbiAoMikgb2Yg
+dGhyZWFkIDIuCj4gPiBBcyBhIHJlc3VsdCwgaXJkbWFfY2xlYW51cF9jbV9jb3JlKCkgd2lsbCBi
+bG9jayBmb3JldmVyLgo+ID4gCj4gPiBUaGlzIHBhdGNoIGV4dHJhY3RzIGRlbF90aW1lcl9zeW5j
+KCkgZnJvbSB0aGUgcHJvdGVjdGlvbiBvZgo+ID4gc3Bpbl9sb2NrX2lycXNhdmUoKSwgd2hpY2gg
+Y291bGQgbGV0IHRpbWVyIGhhbmRsZXIgdG8gb2J0YWluCj4gPiB0aGUgbmVlZGVkIGxvY2suCj4g
+PiAKPiA+IFNpZ25lZC1vZmYtYnk6IER1b21pbmcgWmhvdSA8ZHVvbWluZ0B6anUuZWR1LmNuPgo+
+ID4gLS0tCj4gPiAgZHJpdmVycy9pbmZpbmliYW5kL2h3L2lyZG1hL2NtLmMgfCA1ICsrKystCj4g
+PiAgMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4gCj4g
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2lyZG1hL2NtLmMgYi9kcml2ZXJz
+L2luZmluaWJhbmQvaHcvaXJkbWEvY20uYwo+ID4gaW5kZXggZGVkYjNiN2VkZDguLjAxOWRkOGJm
+ZTA4IDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2lyZG1hL2NtLmMKPiA+
+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jCj4gPiBAQCAtMzI1Miw4ICsz
+MjUyLDExIEBAIHZvaWQgaXJkbWFfY2xlYW51cF9jbV9jb3JlKHN0cnVjdCBpcmRtYV9jbV9jb3Jl
+ICpjbV9jb3JlKQo+ID4gIAkJcmV0dXJuOwo+ID4gIAo+ID4gIAlzcGluX2xvY2tfaXJxc2F2ZSgm
+Y21fY29yZS0+aHRfbG9jaywgZmxhZ3MpOwo+ID4gLQlpZiAodGltZXJfcGVuZGluZygmY21fY29y
+ZS0+dGNwX3RpbWVyKSkKPiA+ICsJaWYgKHRpbWVyX3BlbmRpbmcoJmNtX2NvcmUtPnRjcF90aW1l
+cikpIHsKPiA+ICsJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmNtX2NvcmUtPmh0X2xvY2ssIGZs
+YWdzKTsKPiA+ICAJCWRlbF90aW1lcl9zeW5jKCZjbV9jb3JlLT50Y3BfdGltZXIpOwo+ID4gKwkJ
+c3Bpbl9sb2NrX2lycXNhdmUoJmNtX2NvcmUtPmh0X2xvY2ssIGZsYWdzKTsKPiA+ICsJfQo+ID4g
+IAlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbV9jb3JlLT5odF9sb2NrLCBmbGFncyk7Cj4gCj4g
+VGhpcyBsb2NrIGRvZXNuJ3Qgc2VlbSB0byBiZSBwcm90ZWN0aW5nIGFueXRoaW5nLiAgQWxzbyBk
+byB3ZSBuZWVkIHRvCj4gY2hlY2sgdGltZXJfcGVuZGluZygpPyAgSSB0aGluayB0aGUgZGVsX3Rp
+bWVyX3N5bmMoKSBmdW5jdGlvbiB3aWxsIGp1c3QKPiByZXR1cm4gZGlyZWN0bHkgaWYgdGhlcmUg
+aXNuJ3QgYSBwZW5kaW5nIGxvY2s/CgpUaGFua3MgYSBsb3QgZm9yIHlvdXIgYWR2aWNlLCBJIHdp
+bGwgcmVtb3ZlIHRoZSB0aW1lcl9wZW5kaW5nKCkgYW5kIHRoZQpyZWR1bmRhbnQgbG9jay4KCkJl
+c3QgcmVnYXJkcywKRHVvbWluZyBaaG91
