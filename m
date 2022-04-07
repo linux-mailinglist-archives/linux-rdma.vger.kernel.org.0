@@ -2,59 +2,147 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6CC4F81EE
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 16:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE664F8235
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 16:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244748AbiDGOkt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 10:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
+        id S1344313AbiDGOzj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Apr 2022 10:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231358AbiDGOks (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 10:40:48 -0400
-Received: from zju.edu.cn (spam.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 358B11A7766;
-        Thu,  7 Apr 2022 07:38:42 -0700 (PDT)
-Received: by ajax-webmail-mail-app3 (Coremail) ; Thu, 7 Apr 2022 22:38:13
- +0800 (GMT+08:00)
-X-Originating-IP: [10.181.226.201]
-Date:   Thu, 7 Apr 2022 22:38:13 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   duoming@zju.edu.cn
-To:     "Jason Gunthorpe" <jgg@ziepe.ca>
-Cc:     "Dan Carpenter" <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org, chris@zankel.net, jcmvbkbc@gmail.com,
-        mustafa.ismail@intel.com, shiraz.saleem@intel.com,
-        wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        kuba@kernel.org, pabeni@redhat.com, jes@trained-monkey.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        alexander.deucher@amd.com, linux-xtensa@linux-xtensa.org,
-        linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hippi@sunsite.dk,
-        linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: Re: Re: [PATCH 09/11] drivers: infiniband: hw: Fix deadlock in
- irdma_cleanup_cm_core()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.8 build 20200806(7a9be5e8)
- Copyright (c) 2002-2022 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20220407142355.GV64706@ziepe.ca>
-References: <cover.1649310812.git.duoming@zju.edu.cn>
- <4069b99042d28c8e51b941d9e698b99d1656ed33.1649310812.git.duoming@zju.edu.cn>
- <20220407112455.GK3293@kadam>
- <1be0c02d.3f701.1800416ef60.Coremail.duoming@zju.edu.cn>
- <20220407142355.GV64706@ziepe.ca>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        with ESMTP id S1344310AbiDGOzi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 10:55:38 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2089.outbound.protection.outlook.com [40.107.237.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 211FE205E2;
+        Thu,  7 Apr 2022 07:53:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=H98o54iydr1dDiGVWOhYen8z6O7vjCkgxBpy+3apEts/MIy7rR79zN4Wa+k4Idb8HcKHVUccG/9PggpYphSoj964j/qzvi9bYoBQyfEQCRvXqvKtMEkQ1H73dD498t+IruqKfpPvjHAGNZt1l7n/fMB1xLFc5O2s8PZr66Ms+abxrLbV6lIk/0qfr5cRvAXNV7N1yOsZ7mrtQ1Mq4MIKTjtM8XJH0aEC8MjRaB/GC073j2TcYaGvhXDF05FhucyU5c+yAVtRHcmpHYD1YQZFdr3sP0YBD4Zvk6Vuwtnu7zvIed9kz7o2AdEy9Jq/Gak2Yt6v2ru2U6x4AFsDcjvS4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Vezn6pghw+/ojLfERDtLmCF1oV0Fa3dAA0amYTZe8Pw=;
+ b=AMfXRkN9lqBC74Y0su8lV38xNZuJtrifoWi10bxko10b/kdNgtMwvb1v3P+11QPSZwAyPcB443onXfnpAiRlaiJTIBmrzpSXqzIB0SQL3uBJnp+MCDH7dphv1DPZCqh8eO3P+J/CWGwvRJj6xPTEEi3VMdZW6R9w7Vp6lIgednvyKtFoCqoYlLG1wjFrvpq8ycVQ1fhrWgZvcl4uUNl21q29XJDrIRsCo5O7Yvygf/LnQsgY96U39zl0vSlmdnmlLl0vyb64Zh2G358aAp/4R7LT14x81Fm1WTY5Aulo7gZFCkNL6SQPtkLfMZht1skqFMptGegyRGXZZCOTXfM1ZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Vezn6pghw+/ojLfERDtLmCF1oV0Fa3dAA0amYTZe8Pw=;
+ b=E3hJQWiNqbeGRxyYd23yghNIid0lBlergOrflUL/l6QUo/Ajwccj56RRda+d0ThsxehZRGfBYj8obih7YqYNiS7yllS80PmCEV2Zc4O4r+XvJRQc65vtiy4XFqL9sbO9na2UT2OmlTbyXXgBRkdmTZDrh6TVD9FbNdelRkWn3DgA9VE8JP6856jYfOlt49dKIfyO8p8w31rsB4Nqy8kr0VajRT9IktKxNM6rmORz8q5yPnOcq5glWCv0X6i7cguqkgEeICPMqpyzloE7fJMHOHneKhcMtCCu1zdsFuAQHodv1SccAJXORnHjeK0qOJngF6NAOKxGrHCNpfGpkKOFbQ==
+Received: from DM6PR12MB4500.namprd12.prod.outlook.com (2603:10b6:5:28f::13)
+ by CH0PR12MB5369.namprd12.prod.outlook.com (2603:10b6:610:d4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Thu, 7 Apr
+ 2022 14:53:34 +0000
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by DM6PR12MB4500.namprd12.prod.outlook.com (2603:10b6:5:28f::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Thu, 7 Apr
+ 2022 14:53:33 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374%6]) with mapi id 15.20.5144.022; Thu, 7 Apr 2022
+ 14:53:33 +0000
+Date:   Thu, 7 Apr 2022 11:53:32 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Jason Wang <jasowang@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nelson Escobar <neescoba@cisco.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        Will Deacon <will@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 2/5] vfio: Require that devices support DMA cache
+ coherence
+Message-ID: <20220407145332.GA3397825@nvidia.com>
+References: <0-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
+ <2-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
+ <20220405131044.23910b77.alex.williamson@redhat.com>
+ <20220405192916.GT2120790@nvidia.com>
+ <BN9PR11MB52766319F89353256863D41E8CE79@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BN9PR11MB52766319F89353256863D41E8CE79@BN9PR11MB5276.namprd11.prod.outlook.com>
+X-ClientProxiedBy: CH2PR11CA0012.namprd11.prod.outlook.com
+ (2603:10b6:610:54::22) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Message-ID: <403bbe08.3fc24.18004762739.Coremail.duoming@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgB3HwBV905iIZ2UAQ--.29189W
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAg4NAVZdtZE9jgAGsa
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 43ec1380-6fe2-43ec-9d94-08da18a66326
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4500:EE_|CH0PR12MB5369:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4500E77208EFE0E1B3D7ED23C2E69@DM6PR12MB4500.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yxj4MhC4rfK1c6dZxPMOBA7eSsFhY6Sir1BSAHEXOflRtq0tVX1J+ye62SCOut4+ycSCNKuS7wCRKldNJaXgue9osNFps1X0ILQ6XmAgMSIXS7SDWAhp4uywmS5EwgSwt6+juNA9i0JhgzbgUw7Vuf4TsJ2Xw95/LtX9zqNiPrzUYix8+ma/M8TbY6L03LeoJUkdqHow/0UZgDSI5I02VLQ5BrejysfCqLP1gSsfEB6svyuM4xmW9POZBMWg0eIbu9lK8BbwCQbF/VFKN8x7LoALPRTfTcqTEoP1SzCgLXcse18QCWJ4gSsN3BQ1BAxblWOITMx3Y+dsb12Cn5F/WrP03eQAsAsH3bDfHP9lGCr9li+ICGjHacAwNbLhgkUEhbT/Bq5x9cukMAyVCWFa55qyTW/ELN/Y+4sXLj01NXx0W2bUSr6JbUpw1ime7MDFrU9NGU3TPipTZPtMySr7XO2XT+bU3u/HSL0fmmZutz/o+t4maR+pjxyXRZdMBTK768WjL5oHa1XDNnSqGtPEI0VTP9cf6oMlkpvCZ50CEXx2p7/T5WZo3aKJoCWXRRypypxxBbXiRaT9IL0H4wNqWMg8FHxDQk7I39crN5dQw0bytxOwIwL7p7EVABz0b3mNgbFEmO+qZNi3uFXM2el0Qg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4500.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(186003)(86362001)(6916009)(316002)(26005)(54906003)(6506007)(4744005)(508600001)(6512007)(8676002)(4326008)(36756003)(66946007)(66476007)(66556008)(38100700002)(6486002)(8936002)(5660300002)(33656002)(1076003)(2616005)(7416002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NpfG20A9hiuLjO4yJb/Gw4Dz10yJdicx7jOXipBdqm8fki8JeapB1kRM380l?=
+ =?us-ascii?Q?BEkY6ETmljGAhFtCFTc9eIsY9pDJoH19KIAwLNjoYAAh+CtPNKrxN5lOKj+g?=
+ =?us-ascii?Q?A1wSCac0OCA8YXI2XA0XXIeQRYmD4IqJr3HPNGdlfNPSGY6ECBFZ2RKVG3BE?=
+ =?us-ascii?Q?aX/s47P8nfdehEX1jx2IoxCk9toCNWv9Y+F2F11IvCA0/DJ+GvDbKDEtpUyT?=
+ =?us-ascii?Q?5WS61Vz5wUZopiziFls7KSHE0U5mrVOsmBXLRUqX5foZ61+w4toZxJyUQG0d?=
+ =?us-ascii?Q?CEyTvzmmG+hkxNtmSQDeoROGAy2dSlaJEHAkDrE92FD+smP+I39MCs0pDRMb?=
+ =?us-ascii?Q?8bA3N8hytx0l/Fp47oCpmWhkxZCkkGSwueDyVVTD83XXwJLOcKs6pTQFWXl+?=
+ =?us-ascii?Q?HMTdkZxdbw1C4Vl2GR0WmUnJrRSYQ6dnpv9UHKjJV2CKPEFy+pBiAURh9FAp?=
+ =?us-ascii?Q?cCFQj1Ljlh+aAa+bB+LH7bYdt6QVa7bLhcv3lIZsVwpagCa1l8I3jucZdc6v?=
+ =?us-ascii?Q?OarTk45ell/1j0ws78uh4laNID6O1LBecBtH27JOx9AAbIUnLlmna/312SUD?=
+ =?us-ascii?Q?/VR3l1sLQ0egMvH+T398Uo43jf6x8O7TYbYZe46zwktveBGofADj/vW5qt8/?=
+ =?us-ascii?Q?1Wi4mJ37V7igjz6o8XbhsOPneslZQx2RG/kAxsmc76nUeCH4K65bxWLspG0x?=
+ =?us-ascii?Q?XpZ5aPUjQCm2sWVVpn4wv9RGdRVshCtfci9jGiKkAgA13fH9sX/oyJbpyZ4j?=
+ =?us-ascii?Q?+mB3OpbRlw7vPVhV3xFXTpG8LxKq0UqLU6a+G4L5fN2ZtM8tSUDDwbN4eXMp?=
+ =?us-ascii?Q?ettmT5HZfJ9QhNMnaubbH/SYgFTvkj2ZEihx2/BdQ/Y8n8wPtV6XAjIyZ944?=
+ =?us-ascii?Q?oyHCcHn+FS11ANWFQBvpdkkJjmU2l/rk7tz8QrbXXxiizyDon2CnYzBZCXOe?=
+ =?us-ascii?Q?L6dlW5mbCtxzlzoa5pgm9m3jX98140UeyaQlLWA5fn8zAa6IJI5+j+c9aL1m?=
+ =?us-ascii?Q?lqHC5gu2np7PuzzwgCaKc8LFI/A0bIxBQN9maiMusjXIaVc3VZb0bH8+oKza?=
+ =?us-ascii?Q?zAtQOMI/3PWVojncXOWnCd5ab7o4HEJcgzYcULYXKdH0+pHtC5nAmWtohjkx?=
+ =?us-ascii?Q?+g0DddoOP1RYnCSsHdaNIiWlFbnUnHpw/ZHWiMLj9HVZPu5IgpV8V5ecIry8?=
+ =?us-ascii?Q?Qz999Me8DFMeMOuDEc//dC5dYDIQHVJBnKnpotJvhsvWlC3UJ9XeZHedllVk?=
+ =?us-ascii?Q?QP+5dlGPJFxJgv6erhjfXp1aPQ4p1VLN2NLCk/TOF6ZbZw5yUluRCaULuapZ?=
+ =?us-ascii?Q?tZHTZfQL9EMhqsKbsqs22TZKp2PJNzG6H8lVkTUiEjyOMQ+Bh0tbIEnFfeh+?=
+ =?us-ascii?Q?y8uvHoBBQVL6AXHl3M8/pN8/1qOyz1B+NxlfDfBzzqSvAmbozcDr85lzVnAX?=
+ =?us-ascii?Q?4rrrCAYtCNkeAHhFwD3vg5ql7+UyPWifNqLDUHRzpvdPNGz0BMImIdG9FM8q?=
+ =?us-ascii?Q?GmyItF+BrZnUSNCq/+M29pEXF2Jp7ZdGYJYYVZ6QYWQLCycZcmmawYFe2t9j?=
+ =?us-ascii?Q?PlEwfjU4IDjoEI3Bjv3kyijcVG4lRc4tg4QIW/K/PdE1G0Ix9VqkzNBc74bA?=
+ =?us-ascii?Q?3fSWyCPBpKotDZlxki0hQVD3byggEB0bLhioUocfFSHXyXQl9gUIZFGZPPej?=
+ =?us-ascii?Q?o0Q68qSBx/NIzWu1+sd3mJujI0XqhzK9UVepu1IxLH3w2r4G+zAQDsF3SMY0?=
+ =?us-ascii?Q?XB9xDHVysw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 43ec1380-6fe2-43ec-9d94-08da18a66326
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2022 14:53:33.5010
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: de7R+721boXukfBThpCDiUmZtv10iq1C8vldnhy7DHB1yaKUtxgp2xLA6Jm6bUaZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5369
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,27 +150,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGVsbG8sCgpPbiBUaHUsIDcgQXByIDIwMjIgMTE6MjM6NTUgLTAzMDAgSmFzb24gR3VudGhvcnBl
-IHdyb3RlOgoKPiA+ID4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbmZpbmliYW5kL2h3L2lyZG1h
-L2NtLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvaXJkbWEvY20uYwo+ID4gPiA+IGluZGV4IGRl
-ZGIzYjdlZGQ4Li4wMTlkZDhiZmUwOCAxMDA2NDQKPiA+ID4gPiArKysgYi9kcml2ZXJzL2luZmlu
-aWJhbmQvaHcvaXJkbWEvY20uYwo+ID4gPiA+IEBAIC0zMjUyLDggKzMyNTIsMTEgQEAgdm9pZCBp
-cmRtYV9jbGVhbnVwX2NtX2NvcmUoc3RydWN0IGlyZG1hX2NtX2NvcmUgKmNtX2NvcmUpCj4gPiA+
-ID4gIAkJcmV0dXJuOwo+ID4gPiA+ICAKPiA+ID4gPiAgCXNwaW5fbG9ja19pcnFzYXZlKCZjbV9j
-b3JlLT5odF9sb2NrLCBmbGFncyk7Cj4gPiA+ID4gLQlpZiAodGltZXJfcGVuZGluZygmY21fY29y
-ZS0+dGNwX3RpbWVyKSkKPiA+ID4gPiArCWlmICh0aW1lcl9wZW5kaW5nKCZjbV9jb3JlLT50Y3Bf
-dGltZXIpKSB7Cj4gPiA+ID4gKwkJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmY21fY29yZS0+aHRf
-bG9jaywgZmxhZ3MpOwo+ID4gPiA+ICAJCWRlbF90aW1lcl9zeW5jKCZjbV9jb3JlLT50Y3BfdGlt
-ZXIpOwo+ID4gPiA+ICsJCXNwaW5fbG9ja19pcnFzYXZlKCZjbV9jb3JlLT5odF9sb2NrLCBmbGFn
-cyk7Cj4gPiA+ID4gKwl9Cj4gPiA+ID4gIAlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbV9jb3Jl
-LT5odF9sb2NrLCBmbGFncyk7Cj4gPiA+IAo+ID4gPiBUaGlzIGxvY2sgZG9lc24ndCBzZWVtIHRv
-IGJlIHByb3RlY3RpbmcgYW55dGhpbmcuICBBbHNvIGRvIHdlIG5lZWQgdG8KPiA+ID4gY2hlY2sg
-dGltZXJfcGVuZGluZygpPyAgSSB0aGluayB0aGUgZGVsX3RpbWVyX3N5bmMoKSBmdW5jdGlvbiB3
-aWxsIGp1c3QKPiA+ID4gcmV0dXJuIGRpcmVjdGx5IGlmIHRoZXJlIGlzbid0IGEgcGVuZGluZyBs
-b2NrPwo+ID4gCj4gPiBUaGFua3MgYSBsb3QgZm9yIHlvdXIgYWR2aWNlLCBJIHdpbGwgcmVtb3Zl
-IHRoZSB0aW1lcl9wZW5kaW5nKCkgYW5kIHRoZQo+ID4gcmVkdW5kYW50IGxvY2suCj4gCj4gRG9l
-cyBkZWxfdGltZXJfc3luYyB3b3JrIHdpdGggYSBzZWxmLXJlc2NoZWR1bGluZyB0aW1lciBsaWtl
-IHRoaXMgaGFzPwoKVGhlIGRlbF90aW1lcl9zeW5jKCkgd2lsbCBraWxsIHRoZSB0aW1lciBhbHRo
-b3VnaCBpdCBpcyBzZWxmLXJlc2NoZWR1bGluZy4KV2UgY291bGQgdXNlIG90aGVyIGZ1bmN0aW9u
-cyB0byBhcm91c2UgdGltZXIgYWdhaW4gYmVzaWRlcyB0aW1lciBoYW5kbGVyIGl0c2VsZi4KCkJl
-c3QgcmVnYXJkcywKRHVvbWluZyBaaG91Cg==
+On Wed, Apr 06, 2022 at 07:02:36AM +0000, Tian, Kevin wrote:
+
+> > So like this:
+> > 
+> >  int vfio_register_group_dev(struct vfio_device *device)
+> >  {
+> > +       if (!dev_is_dma_coherent(device->dev))
+> > +               return -EINVAL;
+> > +
+> >         return __vfio_register_dev(device,
+> >                 vfio_group_find_or_alloc(device->dev));
+> >  }
+> > 
+> > I fixed it up.
+> > 
+> 
+> if that is the case should it also apply to usnic and vdpa in the first
+> patch (i.e. fail the probe)?
+
+Ideally, but I don't want to mess with existing logic in these
+drivers..
+
+Thanks,
+Jason
