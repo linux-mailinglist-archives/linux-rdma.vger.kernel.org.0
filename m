@@ -2,139 +2,111 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4484F78E9
-	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 10:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BDE4F7A75
+	for <lists+linux-rdma@lfdr.de>; Thu,  7 Apr 2022 10:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242714AbiDGIEu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 04:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        id S243315AbiDGIzr (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Apr 2022 04:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242720AbiDGIEk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 04:04:40 -0400
-Received: from de-smtp-delivery-102.mimecast.com (de-smtp-delivery-102.mimecast.com [194.104.111.102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523FF15E20C
-        for <linux-rdma@vger.kernel.org>; Thu,  7 Apr 2022 01:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1649318519;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BZywxi4X8gvLc3fx2K6Z2dr8nxNJc6B99yIMn0l1lLs=;
-        b=BPYFzDJ6l3PMHlf2IOx4f9KbrVHkYbBmmb8svzeds12mKq/uaP5T2D41HYQVIcF4FAWX9n
-        FqMwZbfgUu10j+UxjQOn5Xz5Z03d6ssdHXwDxfdPmnHk6V4ZWi8wHgHBDQFOTJ54Ih091p
-        +jCdBq5DRQJlvtlVDFtb52R0kLsFPT4=
-Received: from EUR03-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur03lp2055.outbound.protection.outlook.com [104.47.9.55]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- de-mta-2-u17umFqDNHadmA3TNKMecA-1; Thu, 07 Apr 2022 10:01:56 +0200
-X-MC-Unique: u17umFqDNHadmA3TNKMecA-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VrKOREHEvu4FyCWXaq8pBaC19yn4y3Izt3Dc2O9SsgFylUi271aVGnL08Pt8j88I27mOhcwUO69q1q/6mzw1T1DLgQwnFrfXL5HEOTkiAfCMp62YqapI1J+9PrRhXyZwwCmK1I9uwgzg5AnRgKvrrwmgOV1DHwZM3F8IdsdQGZYbg5iI0puzdi6poknbAJKT+7+UZCmRnzjT3BXiQ5F1doH/woy66kgwEZECO1xNJyQDq5Nv0wtTd4SHz4V8YklC/wCPkqngZQqOQOsfCFRWYEsjW4z7H7+indpbIr4a+AxomRSsTwxc9IkChVYOf3LxU5k+pqiVW3HsXxI7bWRByg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Zp/Cxh7Kdh9KWenjykU8ITr9puUVLChRwB7HuZ5dynA=;
- b=WzreP261zl+7PB49J26eEo4lG3D2jhYQ+obHTnXpACtdW8VF8wSxvxbzL9BYPluUF0yQsn6uEC9u7/icwQRVngz3hbxz9Br1LCik1ksgOYwOox3vFhAeIzH+2/ovk/uJinFmQSsXkbh8tANIgCvaLRRVo3zf5MH5fvbLow0gvUz/KqDm+IEpFaYS4rkCquOfRWwshXIzVH7teJ6us05epNtN6eT4f/JUEAA9uUp6FXDzKyALgrR8KqNu2bRcxbQ0vYCUmKyDbsycycQzA3ZPuGcRdT49OT3/PNNEpxuHekrWHqlla+7oxnJmwGO+4vvmqM2lOCunlMX6HpcbQQLkow==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from VI1PR0401MB2526.eurprd04.prod.outlook.com
- (2603:10a6:800:58::16) by VI1PR04MB5629.eurprd04.prod.outlook.com
- (2603:10a6:803:de::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Thu, 7 Apr
- 2022 08:01:53 +0000
-Received: from VI1PR0401MB2526.eurprd04.prod.outlook.com
- ([fe80::8c82:19c5:ce96:491b]) by VI1PR0401MB2526.eurprd04.prod.outlook.com
- ([fe80::8c82:19c5:ce96:491b%4]) with mapi id 15.20.5144.022; Thu, 7 Apr 2022
- 08:01:53 +0000
-Message-ID: <8ed7760a-471d-19a2-0a3b-1e0fc3a27281@suse.com>
-Date:   Thu, 7 Apr 2022 10:01:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH 02/11] drivers: usb: host: Fix deadlock in
- oxu_bus_suspend()
-Content-Language: en-US
-To:     Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
-CC:     chris@zankel.net, jcmvbkbc@gmail.com, mustafa.ismail@intel.com,
-        shiraz.saleem@intel.com, jgg@ziepe.ca, wg@grandegger.com,
-        mkl@pengutronix.de, davem@davemloft.net, kuba@kernel.org,
-        pabeni@redhat.com, jes@trained-monkey.org,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        alexander.deucher@amd.com, linux-xtensa@linux-xtensa.org,
-        linux-rdma@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hippi@sunsite.dk,
-        linux-staging@lists.linux.dev, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <cover.1649310812.git.duoming@zju.edu.cn>
- <8b1201dc7554a2ab3ca555a2b6e2747761603d19.1649310812.git.duoming@zju.edu.cn>
-From:   Oliver Neukum <oneukum@suse.com>
-In-Reply-To: <8b1201dc7554a2ab3ca555a2b6e2747761603d19.1649310812.git.duoming@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AM6P195CA0022.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:209:81::35) To VI1PR0401MB2526.eurprd04.prod.outlook.com
- (2603:10a6:800:58::16)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c60fd6fc-55c9-4762-b7d9-08da186ce077
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5629:EE_
-X-Microsoft-Antispam-PRVS: <VI1PR04MB5629A60B46EFB7120A28B0CBC7E69@VI1PR04MB5629.eurprd04.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LHrQKyGre7nKuUslvrKjnKwhMzAl8dMYuGtSB8cEJmplV4qey6crhcLik6Z6wY8VfcPOcsbsksI0M22OnuUDXBZFB7EbyURfEmkQ4PpKX/OBoXKjHoaXTuS7TfKYWe8FuzKE3bjFC0+LVM7i2mzxwzkYNfPi5a4QqBsek8mpLKYkT+uuH3zGaToXct+mHiwu/YZANqrHXwdb7pLPyoODl9h063oBLfGLVKpIaLKbuiKo16Qq7QnTzrFyP/yOshGBL7rqGAScDQTlDiTOCWzN6/WFE4+a7Uvbz7q1969O/3KMmwEftYpqPJsBHbu/dd3rb6QqIWzYUq0vUB41IdKl90fIi5iWiAAFND8I5iMUU4qmnHCaJeaOjvQeGkmFmElX9plhLYXHEt97v2pXoyj/ufej5zTUzpCh2YN6ZEECX3yZXgNfpDIy69Ny0SiFTFV/yIRmXzrOR8KAtD30riLP+YwSOX1dOv2cb9ET6oD5AIi0KbUjKvTZ4QE3uyQ/omLLjpRS88jpi8qYRSWVYgAHIIaiv6dThGfBZuS8oABjHzcWdVfqte59hp+I9LdIDFKz2IOLXwWU9tNbqB31aTHgr8Mn0rJ+SULeoYA+E0vBXPQD/vGbuAi6C1wSdnVtmeFLxX+1yjL5Pg5cWReqjtvaer99NgKBqkDiA7ZlIlGSUgEHkDXBthvQelWXqBlHmuk8cWcm5p8dLZAVhMyU/lpLT4ZbJTs2WL2kz4PMcDX3ZRg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2526.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(86362001)(7416002)(31696002)(6486002)(8936002)(5660300002)(508600001)(53546011)(2616005)(6512007)(186003)(2906002)(6666004)(6506007)(4326008)(38100700002)(66556008)(8676002)(66476007)(66946007)(316002)(36756003)(31686004)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?T9SPt2wJrGUHywXJ/sCDf0aK6Xe6Yhg2Jr7+YedWfqMdlpdQ97Q9nieTLi5a?=
- =?us-ascii?Q?MdIrw9Vj+TD50byWNO53xVTEM2VizRhVkO9QW5tTAl4QTjg7D1w+QejVo1om?=
- =?us-ascii?Q?mh+2Ch7Dh+FD0aQlwGJBv1EqT7zm5o7Z2G6VafZzjAmgKV70+Pbi0Z7PtXyS?=
- =?us-ascii?Q?TcdvKRIuMqFRWUe63oY6cnKvbyMqCvC+2EmzdyYINlXf+J19TJzU0z0dc/jy?=
- =?us-ascii?Q?wIKufrMfAI6oP6i4nkXbung3SKqTa1Sz77pSutmg1m5/eptSv7f9guWcMAzy?=
- =?us-ascii?Q?EjpsPTPbUlUhIVJ2qfhgu0XM1V5jV+7GallXx5LpE8et/SF1ClfljBLGcdLr?=
- =?us-ascii?Q?QZQ6Et8kUc4FMnC4EObVhmwcOcCqovlNyTOnYl1B5eCv4oSGCXr2h7FbPaIg?=
- =?us-ascii?Q?+q6HU7OVhiD+oWsTj8Myj45v7eZykW1/R8VXd2bvyIkZx/5LBGF4bG+gGDBg?=
- =?us-ascii?Q?JTChcyBgOzaGFSV1vtTHfowh3T4QFUr+WsyzQ/B7N4uAHYYj0Ae0xMW6xvtw?=
- =?us-ascii?Q?TS2osd1oc888ONad0blb4q94sb5ByjAH1HopMTX9NoAHmt2aGDhub+0QOgg+?=
- =?us-ascii?Q?yQBRGvZJwjYuZGVxUN7geSL3KiZA9knYDDhxyOvJtt1m5zTqv3XcX5vHnjDm?=
- =?us-ascii?Q?Je9Gif8lxfwK3yftZ2+lBmftMlMkITZM1fHbCN+8O8pDO3YISfcOn1Liu/na?=
- =?us-ascii?Q?ruyRM2AQ3CUl/ejMohJPdufuVisAzqVVhiqHTsfSpAr+gKWCTtXEHeHneSzC?=
- =?us-ascii?Q?cxDZ1HIhNRJxmJ9cFMn0WjaBBpBcCRb9WZP/v4WnT2uGXE7Ohw6BWsUFu9Yk?=
- =?us-ascii?Q?qZaoe8yMVwL8EzIb50A7193TbOAjMU+P0Iyj/Yq+WhDIul5iv/+0uQuCBuLE?=
- =?us-ascii?Q?PaGJMnWCHCxBl2SGIZJmtD/Sl0xwC1+xwX76m8I3qqnU9/0Pl9xAE2D/1goo?=
- =?us-ascii?Q?zsQLLsBRtDQWgzllyNEwej2wB/KaqG8Qex7rtDauoGASiQkSVTNsxv/WMfjt?=
- =?us-ascii?Q?uA9IduIT2yyo7xgYGX7KoUON4EEM/cfK/I5h3awpM3HLDp761DypRPDp+RFb?=
- =?us-ascii?Q?ITX21KcwL0odxXN6onVhk3O2HerlOqh9K6d+7XTy1sQTkGiRlUiSwAhn48T3?=
- =?us-ascii?Q?Nr519KwhUuuehapwxU628+oLWSdwGnhHjF2zZDZsC1o0M2X4hRx4LdCYo2d8?=
- =?us-ascii?Q?1oIozVD8lzi5s9ILGSCVhBStFMzzt8Urm8uHeyL5ZvaH094J7e/zlZxuXSMT?=
- =?us-ascii?Q?UYIk4ybG6f5idQuTsu5gRectV+v7m0afVl9tkrbNYp9eOiSv7jEHJfOtiN6X?=
- =?us-ascii?Q?M1G7yINZuIfM97yJGU+JGqhbX4RqmVmNzAFSfh0oxe+g6K9O2aNtXoNseAmv?=
- =?us-ascii?Q?fFBtiHJYgAeozBLZTeDDlsSghjnAro/1kmgrvMe0MHYaWhkwAQtBKci5Nubk?=
- =?us-ascii?Q?PwlQXFXqKKO9+z0W3py9qFOjZYarTOiHQtnK0ShtGmlUYKaP1Sc6hhHqh3e0?=
- =?us-ascii?Q?eyHR/IuHp8yqtWTqI3IMf08BzDCVrHFskYnylYZ8ANDIXr9Z/hBYgGTwxYgo?=
- =?us-ascii?Q?kREIhiEk1oMQ5CYPmoc8hMK78WB4crLuz+hd7sS1RDrVtBdEsj0cgTX0QGTV?=
- =?us-ascii?Q?PtNN1DKH3PSC/u3zXS8Ha3wQxiabxLvmYGOTEwDkHl9du2Qct1eF07O894IP?=
- =?us-ascii?Q?TC/a0bOS1ZzzjwzHKrGa4WypKFRGArmfFmoHi1MY/+CxjrBcr73ZtV/baXG+?=
- =?us-ascii?Q?HWUcPmcVL5IKS4BjGgT0WNvg+Ho82SA2k5zTGmG663RYceOj2VxszbaQIlU7?=
-X-MS-Exchange-AntiSpam-MessageData-1: vDNhRNnWoiNPGg==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c60fd6fc-55c9-4762-b7d9-08da186ce077
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2526.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2022 08:01:53.1416
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7fjZPmdWT0psiNNmwya64OxxthZhzquIVbI0XfaO0GAVpFvvI98W/ZOpyNQE32g3KnivHZElI3uTsoQufYQPUA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5629
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        with ESMTP id S243294AbiDGIzl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 04:55:41 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99AF174EA6;
+        Thu,  7 Apr 2022 01:53:41 -0700 (PDT)
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 2377o8qo019769;
+        Thu, 7 Apr 2022 08:53:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=uyNsE8Ex9YI8S1tXwshKVJTLTCexafBD49QkhLU1s24=;
+ b=FIAHZtfeTCueKaFXrFSiIT9mlRhR2N7A9UyZB5RgrAXC+maFHN1717MdP1JqhFOaDibp
+ 4+Y2xKI7/hfsiKKVoGCGX6uJC0t0T162ThJkE0Y9zefCIQyEg7zHTZHyDhCUiaIfz6XF
+ jCMe41zf57d5Y0xYQsBj7BdgvDfx0SBGvssJQCVNrtt19y5F+9TRk9aCSSRSeNf7M56r
+ W3E725XQn1PWg6S8lhDPKeXyziP5whMW23+ig4CAqErOnAgqvf+huPCCiTW0vZaRWTOw
+ f0W3EiowdEZxHY8Yffo+8eRLunyL7OiDNkVA3X+HjbtfvUGXWoeOEL0XClWot27ZsroZ 5g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f9uwts6ch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Apr 2022 08:53:11 +0000
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 2378ZRZ7031643;
+        Thu, 7 Apr 2022 08:53:11 GMT
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3f9uwts6br-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Apr 2022 08:53:11 +0000
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 2378njqQ008880;
+        Thu, 7 Apr 2022 08:53:09 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 3f6e48qsa8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Apr 2022 08:53:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 2378r5OY48496960
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Apr 2022 08:53:05 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A230AE051;
+        Thu,  7 Apr 2022 08:53:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 52950AE045;
+        Thu,  7 Apr 2022 08:53:04 +0000 (GMT)
+Received: from sig-9-145-36-59.uk.ibm.com (unknown [9.145.36.59])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Apr 2022 08:53:04 +0000 (GMT)
+Message-ID: <49d40d562dbccdac58597b863c357b32f0798284.camel@linux.ibm.com>
+Subject: Re: [PATCH 1/5] iommu: Replace uses of IOMMU_CAP_CACHE_COHERENCY
+ with dev_is_dma_coherent()
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Christian Benvenuti <benve@cisco.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        iommu@lists.linux-foundation.org, Jason Wang <jasowang@redhat.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Nelson Escobar <neescoba@cisco.com>, netdev@vger.kernel.org,
+        Rob Clark <robdclark@gmail.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        virtualization@lists.linux-foundation.org,
+        Will Deacon <will@kernel.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>
+Date:   Thu, 07 Apr 2022 10:53:03 +0200
+In-Reply-To: <20220406171729.GJ2120790@nvidia.com>
+References: <1-v1-ef02c60ddb76+12ca2-intel_no_snoop_jgg@nvidia.com>
+         <db5a6daa-bfe9-744f-7fc5-d5167858bc3e@arm.com>
+         <20220406142432.GF2120790@nvidia.com> <20220406151823.GG2120790@nvidia.com>
+         <20220406155056.GA30433@lst.de> <20220406160623.GI2120790@nvidia.com>
+         <20220406161031.GA31790@lst.de> <20220406171729.GJ2120790@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-18.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: -eI2_i-ijsMVu9WpUqTiTy_ZXGgnAkK_
+X-Proofpoint-GUID: d3-YNui-0WOxSLMzaNCj1z5uxlf9oVYW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.850,Hydra:6.0.425,FMLib:17.11.64.514
+ definitions=2022-04-06_13,2022-04-06_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ mlxlogscore=999 lowpriorityscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 suspectscore=0 clxscore=1011 adultscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2204070043
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -142,52 +114,68 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Wed, 2022-04-06 at 14:17 -0300, Jason Gunthorpe wrote:
+> On Wed, Apr 06, 2022 at 06:10:31PM +0200, Christoph Hellwig wrote:
+> > On Wed, Apr 06, 2022 at 01:06:23PM -0300, Jason Gunthorpe wrote:
+> > > On Wed, Apr 06, 2022 at 05:50:56PM +0200, Christoph Hellwig wrote:
+> > > > On Wed, Apr 06, 2022 at 12:18:23PM -0300, Jason Gunthorpe wrote:
+> > > > > > Oh, I didn't know about device_get_dma_attr()..
+> > > > 
+> > > > Which is completely broken for any non-OF, non-ACPI plaform.
+> > > 
+> > > I saw that, but I spent some time searching and could not find an
+> > > iommu driver that would load independently of OF or ACPI. ie no IOMMU
+> > > platform drivers are created by board files. Things like Intel/AMD
+> > > discover only from ACPI, etc.
+> > 
+> > s390?
+> 
+> Ah, I missed looking in s390, hyperv and virtio.. 
+> 
+> hyperv is not creating iommu_domains, just IRQ remapping
+> 
+> virtio is using OF
+> 
+> And s390 indeed doesn't obviously have OF or ACPI parts..
+> 
+> This seems like it would be consistent with other things:
+> 
+> enum dev_dma_attr device_get_dma_attr(struct device *dev)
+> {
+> 	const struct fwnode_handle *fwnode = dev_fwnode(dev);
+> 	struct acpi_device *adev = to_acpi_device_node(fwnode);
+> 
+> 	if (is_of_node(fwnode)) {
+> 		if (of_dma_is_coherent(to_of_node(fwnode)))
+> 			return DEV_DMA_COHERENT;
+> 		return DEV_DMA_NON_COHERENT;
+> 	} else if (adev) {
+> 		return acpi_get_dma_attr(adev);
+> 	}
+> 
+> 	/* Platform is always DMA coherent */
+> 	if (!IS_ENABLED(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) &&
+> 	    !IS_ENABLED(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) &&
+> 	    !IS_ENABLED(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL) &&
+> 	    device_iommu_mapped(dev))
+> 		return DEV_DMA_COHERENT;
+> 	return DEV_DMA_NOT_SUPPORTED;
+> }
+> EXPORT_SYMBOL_GPL(device_get_dma_attr);
+> 
+> ie s390 has no of or acpi but the entire platform is known DMA
+> coherent at config time so allow it. Not sure we need the
+> device_iommu_mapped() or not.
 
+I only took a short look but I think the device_iommu_mapped() call in
+there is wrong. On s390 PCI always goes through IOMMU hardware both
+when using the IOMMU API and when using the DMA API and this hardware
+is always coherent. This is even true for s390 guests in QEMU/KVM and
+under the z/VM hypervisor. As far as I can see device_iommu_mapped()'s
+check for dev->iommu_group would only work while the device is under
+IOMMU API control not DMA API, no?
 
-On 07.04.22 08:33, Duoming Zhou wrote:
-> There is a deadlock in oxu_bus_suspend(), which is shown below:
->
->    (Thread 1)              |      (Thread 2)
->                            | timer_action()
-> oxu_bus_suspend()          |  mod_timer()
->  spin_lock_irq() //(1)     |  (wait a time)
->  ...                       | oxu_watchdog()
->  del_timer_sync()          |  spin_lock_irq() //(2)
->  (wait timer to stop)      |  ...
->
-> We hold oxu->lock in position (1) of thread 1, and use
-> del_timer_sync() to wait timer to stop, but timer handler
-> also need oxu->lock in position (2) of thread 2. As a result,
-> oxu_bus_suspend() will block forever.
->
-> This patch extracts del_timer_sync() from the protection of
-> spin_lock_irq(), which could let timer handler to obtain
-> the needed lock.
-Good catch.
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-> ---
->  drivers/usb/host/oxu210hp-hcd.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/usb/host/oxu210hp-hcd.c b/drivers/usb/host/oxu210hp-=
-hcd.c
-> index b741670525e..ee403df3309 100644
-> --- a/drivers/usb/host/oxu210hp-hcd.c
-> +++ b/drivers/usb/host/oxu210hp-hcd.c
-> @@ -3909,8 +3909,10 @@ static int oxu_bus_suspend(struct usb_hcd *hcd)
->  		}
->  	}
-> =20
-> +	spin_unlock_irq(&oxu->lock);
->  	/* turn off now-idle HC */
->  	del_timer_sync(&oxu->watchdog);
-> +	spin_lock_irq(&oxu->lock);
->  	ehci_halt(oxu);
->  	hcd->state =3D HC_STATE_SUSPENDED;
-> =20
-
-What is the lock protecting at that stage? Why not just drop it earlier.
-
-=C2=A0=C2=A0=C2=A0 Regards
-=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 Oliver
+Also, while it is true that s390 *hardware* devices are always cache
+coherent there is also the case that SWIOTLB is used for protected
+virtualization and then cache flushing APIs must be used.
 
