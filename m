@@ -2,110 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AAB4F8B56
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 02:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0F94F8B1F
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 02:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232280AbiDGWkY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 18:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
+        id S232678AbiDHAJF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 7 Apr 2022 20:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbiDGWkP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 18:40:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DA66313BAD8
-        for <linux-rdma@vger.kernel.org>; Thu,  7 Apr 2022 15:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649371063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NOIZSnS98gQ3xydj16FHLPEIjDJjA+ZwlFfjRBiVUDY=;
-        b=Vk4Z+reM9UdPsG+8dZ1C3F/AjQTFreZkPTuV6839sN4FXsLPsA9fW2h/IMln7jazNvZ4AM
-        lgCWKwkPQX3WoxaTV71WS29cLgCYbnQ/W43o2Adhy7v7Qow+tcKvTBfrhh+OEonmBVKKe/
-        SCj/WtKJk/MVseHX/M2ZWmf16lrJPDc=
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
- [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-344-9o7C-eJ5O_CAF3J0niI1pw-1; Thu, 07 Apr 2022 18:37:41 -0400
-X-MC-Unique: 9o7C-eJ5O_CAF3J0niI1pw-1
-Received: by mail-ot1-f70.google.com with SMTP id o6-20020a9d4106000000b005b23737b666so3441748ote.16
-        for <linux-rdma@vger.kernel.org>; Thu, 07 Apr 2022 15:37:41 -0700 (PDT)
+        with ESMTP id S232660AbiDHAJE (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 20:09:04 -0400
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D9D2A33B8
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Apr 2022 17:07:02 -0700 (PDT)
+Received: by mail-pg1-f172.google.com with SMTP id q19so6336330pgm.6
+        for <linux-rdma@vger.kernel.org>; Thu, 07 Apr 2022 17:07:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=NOIZSnS98gQ3xydj16FHLPEIjDJjA+ZwlFfjRBiVUDY=;
-        b=zSJYH6pb50FPnoQo8lLSUqTec6pXmsFuF/0EbTKu/wKi+YIYVX6Ayzajc9zRXxLtVN
-         gSwP2ej2hMDquEIAt1xDvPQWj/SieL/ab3J9OeNcywQA3ZY+D3n7Cx3b13cZ+xIDFuU0
-         NHNSky2BBJoCqvB4m0olvpPg0NyyJrfdJlubz9SvhvtnaxJZgguxBItcihShN5MHnED+
-         yvsYHIpoFuIDAo16lEmSwVslDLrS0XnApKenn1GNT16f0FnBSHxV3oofdBHmG2tCX0nj
-         8svdMTNf/Jr4GBKcbn5z7ZMPDmZIQ79Rgm3/ua7nT1az2tNDn0DAB/giC1zPcmseOMwD
-         Zd2Q==
-X-Gm-Message-State: AOAM5306ua23AbQUv0P3Mfoyt0iK7ZKUGrZKarVxlC/5i8g7rXpeeW17
-        dTZvV7Z1XLG9hMSyKzuqE4BNXHzIVt+FrzUSxXhEN1xgAGnpuRlOMbKi4YaERBvwg3kWWiHqv2r
-        Kyrd6ZrVecrvfhQ9/hVOYkw==
-X-Received: by 2002:a9d:ee7:0:b0:5cd:feb9:66b5 with SMTP id 94-20020a9d0ee7000000b005cdfeb966b5mr5515085otj.216.1649371061195;
-        Thu, 07 Apr 2022 15:37:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxcVZwyerJlnB50z195byTw9JBG/9w1iOCvt6QyoKpKsIz/rFvJndsMgHRlm6GD1Fo6Sk8OMg==
-X-Received: by 2002:a9d:ee7:0:b0:5cd:feb9:66b5 with SMTP id 94-20020a9d0ee7000000b005cdfeb966b5mr5515064otj.216.1649371060962;
-        Thu, 07 Apr 2022 15:37:40 -0700 (PDT)
-Received: from redhat.com ([38.15.36.239])
-        by smtp.gmail.com with ESMTPSA id c8-20020a4ad788000000b0031ce69b1640sm7642523oou.10.2022.04.07.15.37.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Apr 2022 15:37:40 -0700 (PDT)
-Date:   Thu, 7 Apr 2022 16:37:37 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Jason Wang <jasowang@redhat.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 1/5] iommu: Replace uses of IOMMU_CAP_CACHE_COHERENCY
- with dev_is_dma_coherent()
-Message-ID: <20220407163737.2a7ccd7a.alex.williamson@redhat.com>
-In-Reply-To: <20220407152331.GN2120790@nvidia.com>
-References: <db5a6daa-bfe9-744f-7fc5-d5167858bc3e@arm.com>
-        <20220406142432.GF2120790@nvidia.com>
-        <20220406151823.GG2120790@nvidia.com>
-        <20220406155056.GA30433@lst.de>
-        <20220406160623.GI2120790@nvidia.com>
-        <20220406161031.GA31790@lst.de>
-        <20220406171729.GJ2120790@nvidia.com>
-        <BN9PR11MB5276F9CEA2B01B3E75094B6D8CE69@BN9PR11MB5276.namprd11.prod.outlook.com>
-        <20220407135946.GM2120790@nvidia.com>
-        <fb55a025-348e-800c-e368-48be075d8e9c@arm.com>
-        <20220407152331.GN2120790@nvidia.com>
-Organization: Red Hat
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=O1F0Rga4shJfbu/xEg0lrLwUsMW/rbQnyjvbz0KIRsA=;
+        b=pphtGKbvo8uONYoyXhEXqsy58+i784E1JNDL1shquyd5A7WurgrIc3qLekVfbO1UGD
+         POYfiKdRztdkx7zwtw/98RF0y87JXRV6pCg3z3xg1YjI6KnZO9E2TXqFG5TZg8Xge1aV
+         sauEKMOOXHrWtZJlIZyTVjhA6Ac3EME5UxqjzSU+xWTc1iNNVSYzM+VZ3np6ADybRuVm
+         mPVmyXXwe86TUgsNmWZ6NwEWXfjlHmA+rmGLXJxALmnXE02rGI6IYcEHixAYkEI8r7Ty
+         irz58TcgLqVvpnvE3LfwmyDoTLwUNFgIBj0YE5HMmhdVk6m6JG1Qm9DhnxYpKijfsKGN
+         sYWg==
+X-Gm-Message-State: AOAM5325/fWHlk8vwoxn+CSJyhRfn7ybHuTYatd+WbKYK/038VG88UYu
+        +8la0f74U+GQLVsCj1xgn7g=
+X-Google-Smtp-Source: ABdhPJzH2sEZNpqBXnMJAWdVnL/cwRL/DDS98iXjQyjfabVGTJrVB1hfDoP64tqe8uCpL374pbQzZQ==
+X-Received: by 2002:a65:4b85:0:b0:399:8cd:5270 with SMTP id t5-20020a654b85000000b0039908cd5270mr13025472pgq.418.1649376421805;
+        Thu, 07 Apr 2022 17:07:01 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id q9-20020a638c49000000b00398677b6f25sm20251144pgn.70.2022.04.07.17.07.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Apr 2022 17:07:01 -0700 (PDT)
+Message-ID: <fd17d243-f98f-517e-0344-60fe4e326728@acm.org>
+Date:   Thu, 7 Apr 2022 17:06:59 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [bug report] rdma_rxe: WARNING: inconsistent lock state,
+ inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage
+Content-Language: en-US
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com>
+ <1c16f053-0183-8343-9b36-62027c7260a8@acm.org>
+ <CAFc_bgZ5oYtK2doybVT5fhrU+Ut-RfPT+g2z1bbf9V3jTtRTUg@mail.gmail.com>
+ <d80141c8-04ee-e6ed-34d8-5cf43b49fd55@acm.org>
+ <ca8722e6-db2d-0ab1-b8af-0932017df23e@gmail.com>
+ <f7b84702-8001-70bf-2f26-704548b96279@acm.org>
+ <92181dc8-dadc-3df6-3ecc-e2dca9047be4@gmail.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <92181dc8-dadc-3df6-3ecc-e2dca9047be4@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,27 +70,20 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, 7 Apr 2022 12:23:31 -0300
-Jason Gunthorpe <jgg@nvidia.com> wrote:
+On 4/7/22 15:34, Bob Pearson wrote:
+> It looks like on 5.18-rc1+ blktest is not running for me. (Last time I ran it was pre 5.18)
+> I am not seeing the Warning but instead it just hangs? Are you enabling some lock checking
+> that I am not? If so how?
 
-> On Thu, Apr 07, 2022 at 04:17:11PM +0100, Robin Murphy wrote:
-> 
-> > For the specific case of overriding PCIe No Snoop (which is more problematic
-> > from an Arm SMMU PoV) when assigning to a VM, would that not be easier
-> > solved by just having vfio-pci clear the "Enable No Snoop" control bit in
-> > the endpoint's PCIe capability?  
-> 
-> Ideally.
-> 
-> That was rediscussed recently, apparently there are non-compliant
-> devices and drivers that just ignore the bit. 
-> 
-> Presumably this is why x86 had to move to an IOMMU enforced feature..
+Hi Bob,
 
-I considered this option when implementing the current solution, but
-ultimately I didn't have confidence in being able to prevent drivers
-from using device specific means to effect the change anyway.  GPUs
-especially have various back channels to config space.  Thanks,
+The warning shown in the email at the start of this thread has been 
+reported by lockdep. I think that you will need to enable at least the 
+following in the kernel configuration:
 
-Alex
+CONFIG_LOCKDEP=y
+CONFIG_PROVE_LOCKING=y
 
+Thanks,
+
+Bart.
