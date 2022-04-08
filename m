@@ -2,141 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA82B4F96C3
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 15:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49724F9AA1
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 18:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236308AbiDHNhe (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 8 Apr 2022 09:37:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37570 "EHLO
+        id S231481AbiDHQc4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Apr 2022 12:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236298AbiDHNhb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Apr 2022 09:37:31 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2093.outbound.protection.outlook.com [40.107.223.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63AD52F2F01;
-        Fri,  8 Apr 2022 06:35:27 -0700 (PDT)
+        with ESMTP id S231444AbiDHQcz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Apr 2022 12:32:55 -0400
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2081.outbound.protection.outlook.com [40.107.92.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B33100740;
+        Fri,  8 Apr 2022 09:30:51 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PKWDlnsHYN4kDmVTSLa0VYpVIGDFQhx0wnp5D2ncg2k91Fc5Q36ymRenOMhyHmB79EsSj5f2SjLmaKJhOYyoDXbBbMj36o2jqDelmsECreNY5hUOPYda0n5G5cukML+hKNkMgse9eM1BoQifUBNfW9Of1t0+g7dh1R4rUQzWnInoGb8OLDq9wryOG09q+PrqhSmjhRFx+SWT4YTOkSTqUfHAYsERk0ssuJnpn0V1UvpbcJSQXulSZSmZMAJklidVZdvJFykcqSeyBzGkd/9CgWwX6EqjarppRqjOguT43rRara52uVm3BMlUdl+WvP9DRGAq+O+2Tmm9QihWCf9P6Q==
+ b=bL+azEUwqCNerrgRR5sNE/IjdWR1DdA4445d+4bpPd2gG/5z0wKmZJvEI6epYyS8fngn+7uYIAQVe6W0R2OY40QcAaadxes5GThF3nUiCChU7QCq3g0m2s/DVnL/Ke1LDeo1pA1lu/To8T5WesEoTSD+m4swa2mHyf/4XFHAotpld16TDiYT1zl82aNNQYHbudBac7bQ+INt7pwxQXgTTZX/KD46qczEeDqr1TEfIZ6HgsP7kpy16ufOlTNL3YQHNadY+XIxTp9bRN0thZZfZ1jW19Vdi/CsD6euvt5+1v343l1U1c0izaJvBBRiU8TWh4JlD2GIfZtQdk8CsCVwJg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=klNnV1XAsBNVKfd0eAGL/7jL5aybKITsKgbMNKUM+Dg=;
- b=SQSFaN562TyJ9KCDzUTzdtFd0wzSqstaU31SWDMGoHD0e6r9/jciJIwztDYUA+KeqCPuQG03njNG//3ibfg2nx9MXKhAqHi4qDSX39NCq4ruoBOJ9KXAZDSVqGAGEL5tua29Z6AGxwGDVOrqKKI2wK+ZE2fFFQ2/zidtSX7NyCalth4djFOT8RFdZwXd1qoJjIkjuwsNc5u4RnL4AUjnHdKOB/k985LZqElSBaWpjNax2nbGHLJz0sh6ztbAd8Gg6hTWwXbRNgagJb5DNSNLKIyYeqjYMO1eOCAz+TtFvUTRVMkgAZbXJi51TUoYsrduKwNZHfj3RP3aaX/AZdGjyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=nvidia.com
- smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
+ bh=Ozv3lx9gpodI5BqGm9JcwhJkNegEH3qGgq3KmiWkWLc=;
+ b=gPqkt+2uH22rMfJrSN28l1MPP8dyZ7vquxqyTu8aEAkSBLkoUCn0RtSMr91p5vVIYNs6vfGM1Y80oYeYHtyKXYKlUif5l1itiHtmNOFZcpltuJGPAFKtUmXcV6WXUhgCCwsNbepHrLcVy9X3Dv8YwQERD8Y6jEaAYfqKjJKVDVxpqAxX0qiPbnwZItx1AWVPu/nw4sb0r9Cl9UTnkQVAdnJce7g8rF1o6ckhktWHNX+S7BEoH5p6rn/ML/0Rohu+csmKg5/RDBWhz1vcvxKXEy/BoR7htR3V1YMW6aDCN0hjrzJNJT0EUWDq9ItlALv7QO40KJ1HQfroGXB0LFadFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=klNnV1XAsBNVKfd0eAGL/7jL5aybKITsKgbMNKUM+Dg=;
- b=OOZeMZg27EBzUlCs77KBdRyed+6R7Jy1XKtpr0epsudZFjb0Rd1U2liHTbNg8SY/CEy4lvJztFhaxvc2qW5E+oMmMtib9M2bysAGOVv37ZS6d5oQauLSb1W9CUCnIR8Ky7Wb1htaTAH034e7nHlioGKJNX5e55x4MhS/cOxm+njhHtW4qpXSCdHyv+376UICh4v/cFSy4dUOJKr/jAslGerL07LXyPv6EqYDTiebz6iV6G+0KBibnK8vwfmRXbTcHzDY9YLMHWNeflITxDJZJab+PSFIlaB+NhbMkJQHdvg5miEnVeLM+9bXyHW/W9G/gSxS+bSmgzXKWLW6lZbh/A==
-Received: from DM6PR14CA0046.namprd14.prod.outlook.com (2603:10b6:5:18f::23)
- by SN6PR01MB4221.prod.exchangelabs.com (2603:10b6:805:ae::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5123.21; Fri, 8 Apr 2022 13:35:24 +0000
-Received: from DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:18f:cafe::cc) by DM6PR14CA0046.outlook.office365.com
- (2603:10b6:5:18f::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22 via Frontend
- Transport; Fri, 8 Apr 2022 13:35:24 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
- smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=awfm-01.cornelisnetworks.com;
-Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by
- DM6NAM11FT053.mail.protection.outlook.com (10.13.173.74) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5144.20 via Frontend Transport; Fri, 8 Apr 2022 13:35:24 +0000
-Received: from awfm-01.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-01.cornelisnetworks.com (8.14.7/8.14.7) with ESMTP id 238DZNjH122187;
-        Fri, 8 Apr 2022 09:35:23 -0400
-Subject: [PATCH for-rc] RDMA/hfi1: Fix use-after-free bug for mm struct
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     jgg@nvidia.com
-Cc:     linux-rdma@vger.kernel.org, leonro@nvidia.com,
-        Douglas Miller <doug.miller@cornelisnetworks.com>,
-        stable@vger.kernel.org
-Date:   Fri, 08 Apr 2022 09:35:23 -0400
-Message-ID: <20220408133523.122165.72975.stgit@awfm-01.cornelisnetworks.com>
-User-Agent: StGit/0.17.1-dirty
+ bh=Ozv3lx9gpodI5BqGm9JcwhJkNegEH3qGgq3KmiWkWLc=;
+ b=R6uu9AVKLZbRsGkmdfgqJwX6lUTmGY4s/MLG+A3JQjvKjpFfmRCrOW0h1iETt7dNGcWKH1RXVYAMJ+LzqbUwIddpGlq69e5W2QB+8KA1skFtaEv1UTTv5RQNmQjoMH8bKrcW4oWg9Ue91OwjhMnwdgutPAtE/yoXjTwm+P1YELsax0e2tcl5NQ1clionXipFgyRFS5LG82ZTSUyoU7ylvboONfZlziDNal9zhfgIM7GduWKnavBwvmkZBrq9oEMJmNU2ZhWSwjp5nqIr/QyX4hPwTCww9XqXgYp+K5a1YqpliH0lHmQ1IUZkU9Wy0e2ZRoSArUyA+RG1uTI6Lyj7fw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by BYAPR12MB5703.namprd12.prod.outlook.com (2603:10b6:a03:a5::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Fri, 8 Apr
+ 2022 16:30:48 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::cdfb:f88e:410b:9374%6]) with mapi id 15.20.5144.026; Fri, 8 Apr 2022
+ 16:30:48 +0000
+Date:   Fri, 8 Apr 2022 13:30:46 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Niels Dossche <dossche.niels@gmail.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+Subject: Re: [PATCH] IB/rdmavt: add lock to call to rvt_error_qp to prevent a
+ race condition
+Message-ID: <20220408163046.GA3612436@nvidia.com>
+References: <20220228165330.41546-1-dossche.niels@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220228165330.41546-1-dossche.niels@gmail.com>
+X-ClientProxiedBy: BL0PR02CA0066.namprd02.prod.outlook.com
+ (2603:10b6:207:3d::43) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2d111028-2491-4044-2944-08da1964a2d0
-X-MS-TrafficTypeDiagnostic: SN6PR01MB4221:EE_
-X-Microsoft-Antispam-PRVS: <SN6PR01MB4221D40452D520FDC541B157F4E99@SN6PR01MB4221.prod.exchangelabs.com>
+X-MS-Office365-Filtering-Correlation-Id: 55c4267c-e86d-4d22-b9e4-08da197d233c
+X-MS-TrafficTypeDiagnostic: BYAPR12MB5703:EE_
+X-Microsoft-Antispam-PRVS: <BYAPR12MB570330876972872B55DCC00AC2E99@BYAPR12MB5703.namprd12.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eZiBR/AKSABq0jjQ7guvjTuuBDzO+akzk37JbVocpZn5mDGB3zFmjdN0PBi1i4UP/0xVYPqKgIVgq6hmHCt9ZwXSCwC3Vau0d+KT5WeG+Cp5n72BLsfJWeb5816LZPWCQ+HUdiE+Ha7sN2GaWqjpQOZuZfo3zdwF3VjBtvuLca7cq7qKO0NxrPW0pMlDE4AqogEzevHWfm89TZ3bEpKqSRlW19HBJgaF0O/7fHFyAuW2j7vyRnUOSwycKFbIHzMDdeOoOpyW3g6C0cq7XRtSSSjkAEInmLZQyvMEJf/hjBF3Qg7JPxHyVHo+SyvkW/wYo8BjSm3p3jKgcVH6LP7j3ecrqIGwSkf7nLIWoTRymU9chGthSXbqx76p0GNzLyF4RjeG+mxOy7li6qOdPrW7QelFm8FLWBR0DD/5sLvac/Cg61D2jsUMUBhnDTdA0zOtCvX9sUzGB/y2o+KNXJjeOJrK9eM1Y293zMNd9Pq2iQIY4JXvJHpyfKRJrefhDz0grQ32fHhfpqKiQ1xLWnR7cHYh7lnIX79XH+wtP8Lj+xDyLMZYJEAOwvXcKjD7KaGGhX/O3GAy9vF8ioQ2tAbSXZWI22BJXe5n/n/2xIMDXOTnOJlvVrjrsGr63/MDGAdDOu/MBvrEcu3AM/7yCBUZybQnfo5BiEl2SiPI18tE2LGbTed1aV9UpS+i5RzP1fK+uVU6JF8l2N3YHLfvG4+Egw==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-01.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(39840400004)(346002)(136003)(376002)(396003)(46966006)(36840700001)(2906002)(40480700001)(55016003)(5660300002)(86362001)(6916009)(7696005)(8936002)(103116003)(82310400005)(508600001)(356005)(81166007)(44832011)(26005)(83380400001)(7126003)(1076003)(316002)(186003)(426003)(336012)(8676002)(70586007)(4326008)(70206006)(47076005)(36860700001)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2022 13:35:24.4227
+X-Microsoft-Antispam-Message-Info: in6kvzUE8U2QS2Y1swBviJoBuGWPVULeeptKU9aqlKe0rLqehXkKRxb2a+DPLIQifJsljGeDy0YXmmRS0MJPjCAG6vw6ZhBakz1LCgsDaUQjAqG081y9kZcLSTDCKJD/blxIr01cqd/cGf+X0F7wHEJ3SgkyyBHAUYUTeIU5kcgvES3oMlx3+gxDVbsuRpH2I6hP1TiADjAZ1NdBXB8GCjPzZtgFO40QUZ7WrMlrL85yt/hBFL5yOL9iSMQHLyKjGa7ezKUBvllbVtoRpZ0DPcc/QPaQaOhl9Vm6MmOZIRImeFNSk/4qFC4LwVUTE2lpoqtCqLqx1YVdwaM19aKTgYu3xavxWL4l4FY/rEzY6cWdf/s+snvSEQ5CBPXwIXzM6pcSWYSFt05nXO7lijTsvGrMbJKYXZ6G8zzFhb4a6UvV0CYVZmyER8N24fTkRqUDbP7n5t75nLsvzhRpL8kiYhMcx/Gv+vw+nCIHOE/y4f60WHfHHMtFAQwxrWOJA0w/IvTnR1utI0nmZe+54f1h8yQOiLSvziQjYf7J34R/3CYSfTEJwgluqJEk9WBAzdygIKr3LkcRE+2SsOOIbqxJAuhz6MexqJWNMWiAMQpQQqjEwWG0pLbZGI4eHgGr6Fjd
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4326008)(6506007)(38100700002)(86362001)(2906002)(6916009)(1076003)(83380400001)(66476007)(8676002)(66556008)(316002)(66946007)(36756003)(54906003)(5660300002)(6486002)(26005)(186003)(2616005)(6512007)(33656002)(4744005)(508600001)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ohYdTlM2xCNVbunQx1ft94NP2lcrkcEqd6pPtMI7xawW9fsnTQZPbnRUKnHX?=
+ =?us-ascii?Q?19dCAIZNO17qIE9U1UvYzh9cGVwZ7qEcAZ8kMy/pUVjStulqHiYW6N5WjfrC?=
+ =?us-ascii?Q?r3SjVIkTr1VD2Xz/A3ljjBhXhtKGeKpZMI41R4i16mGxUJgSgBhxdXtbrxus?=
+ =?us-ascii?Q?xp4mLsLyvyOPnjeSo0gLzBcx7jDmAROvFdTrpFsIrUW+qqsf0i+QKFlwy9RO?=
+ =?us-ascii?Q?yLNTGxz6HgsEJvnV5TCXM0vObQm271zOjQvEX8Xmuqv0BqxMgiU+I/0K8Y2g?=
+ =?us-ascii?Q?eXxdif4LNhiXs7FJCCXAmc6HdRPly43OS9pNhxhhdN259m9LHclW6W70PDM2?=
+ =?us-ascii?Q?k5CeDKSUr2QkbNxKWVVFIOYREjPkZyQ0/u2tj97SmSIF1WqBYMCmYvx8VucC?=
+ =?us-ascii?Q?XCQaxz1/+iXfs9nWf6WgNSuOkPfryJk2cBo293Wkzegn7zI7gGfXPlGA+mGl?=
+ =?us-ascii?Q?Zx+BPefPJhXVu8C9rB3yRdWC4WvbKege5lwuh2cSVUB/PnN8G1Iqw103Smp2?=
+ =?us-ascii?Q?mgOW1lMr5RfhC91qySXGRkcF+lfX+/ufbQQ3G5h4VfEO5skZLDRDFoZ29gA6?=
+ =?us-ascii?Q?bMAKXNdYR3VvUWfOEtpq1MLK3G+TBVIP3YevVmOnbwQERKZLQ5V4Iw7rviKS?=
+ =?us-ascii?Q?Z1eYz9zXsWa50k+I2h91AeUp1u9pdfC7Y6Y9b5BGeqK0iQVcxYOBYI4UEqQ3?=
+ =?us-ascii?Q?LGuLwrCBIatV3NO5xizzktYZ8ZXAT62WTPXqBP0QIV3OH+770BnU9UsApuu7?=
+ =?us-ascii?Q?7N2W937Ar4S2XpL8ELYpik0oWN+yWDFzhw9zp5y+2KZwEXeFWFl4EunpqPOx?=
+ =?us-ascii?Q?XXdgvVhFVD+pV2DYzgCujz4jm59PKrmbvFWCyJJjPoOmlDW66HQp255eWcQU?=
+ =?us-ascii?Q?qgwHkuXK+MvaZrJy5wP3j9poFcPmX28ymSPKiePaPrnWAEyu65L8+gicBq3e?=
+ =?us-ascii?Q?ZfaPNjUAACppTUSz9IHvNCA9upk7qxFuAqtBH5psNokUAYKsUAHwYzD5+b+E?=
+ =?us-ascii?Q?dqw3hpFIsBKn1rbYMkw+PjXQ5lXk4iqMkXxptA/BdX8fJiCkfhL8y7ub0eAY?=
+ =?us-ascii?Q?pmy1APufRSKdzogqgzNJdLmtHFAApWfQTlF0NckVwJt9eZtbSzfIBTqEPoc1?=
+ =?us-ascii?Q?XE0R4dV9w9SuKyHNIqvOcfGIly9YNCzbxXfIQNDiEe9qzbi6fgD5V/HWS8Tw?=
+ =?us-ascii?Q?JBVLdUyPZc1biptcUlRdJjKHvlpjKFUs1PugYI9SUWZNJvVGXnHmndxsayJT?=
+ =?us-ascii?Q?Gp2N9SEQFId76eh2kc2jhLlDW9CbUtVvD0KbH4nnwxMYY0hES61kTfI8QG2h?=
+ =?us-ascii?Q?7BZvi8Fpe+TGPJ/RybpE/FhF0V2spyWBarQSIUS4GcPMVT1F08ZkMOHo0Rzl?=
+ =?us-ascii?Q?MQCOAlL/J+XUqE6vfONMAX/o7nDrYNirWLytVLbwT+z+htEU4aL0NLGOuHm3?=
+ =?us-ascii?Q?y7MDby5iqCB6G/IrfFZWkZtcQ0vQ9r52Z4I0jyIREa46FrW/AIbfGL2fEdN6?=
+ =?us-ascii?Q?gRa1FARWBJk8WQH+XOF/+bbsg7cpw5sJVhs+wP9sZtJJJ849PvI3qFeoGZ8J?=
+ =?us-ascii?Q?NiMEOFUyBWk6jXiozJoFg6Ne3VjMmyLbXj4IdCe9JfaKS13v9rhO5b1JUXPY?=
+ =?us-ascii?Q?cn0KHSX2UPfc4B4elJfQskLHRrkqKoS8nI6DA8/2v7BYSkkK3xbRHQkkxiul?=
+ =?us-ascii?Q?g6E2ICDov292OlyfFtp4fcvZf9FnGMoO5WUGerktiaQoHUVVGlbpX4bTPdUK?=
+ =?us-ascii?Q?K1rkxXngbA=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55c4267c-e86d-4d22-b9e4-08da197d233c
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2022 16:30:48.3509
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d111028-2491-4044-2944-08da1964a2d0
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-01.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT053.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR01MB4221
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: c1TKIMcdDX4pjmAFSTiPniLNHgSOdLC7M+kzYy8ZIjv9aIIT0pAMm4/SUIU8Jglw
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB5703
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Douglas Miller <doug.miller@cornelisnetworks.com>
+On Mon, Feb 28, 2022 at 05:53:30PM +0100, Niels Dossche wrote:
+> The documentation of the function rvt_error_qp says both r_lock and
+> s_lock need to be held when calling that function.
+> It also asserts using lockdep that both of those locks are held.
+> However, the commit I referenced in Fixes accidentally makes the call
+> to rvt_error_qp in rvt_ruc_loopback no longer covered by r_lock.
+> This results in the lockdep assertion failing and also possibly in a
+> race condition.
+> 
+> Fixes: d757c60eca9b ("IB/rdmavt: Fix concurrency panics in QP post_send and modify to error")
+> Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+> ---
+>  drivers/infiniband/sw/rdmavt/qp.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 
-Under certain conditions, such as MPI_Abort, the hfi1 cleanup
-code may represent the last reference held on the task mm.
-hfi1_mmu_rb_unregister() then drops the last reference and the mm is
-freed before the final use in hfi1_release_user_pages().  A new task
-may allocate the mm structure while it is still being used, resulting in
-problems. One manifestation is corruption of the mmap_sem counter leading
-to a hang in down_write().  Another is corruption of an mm struct that
-is in use by another task.
+Applied to for-rc, thanks
 
-Fixes: 3d2a9d642512 ("IB/hfi1: Ensure correct mm is used at all times")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Douglas Miller <doug.miller@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/hw/hfi1/mmu_rb.c |    6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/drivers/infiniband/hw/hfi1/mmu_rb.c b/drivers/infiniband/hw/hfi1/mmu_rb.c
-index 876cc78..7333646 100644
---- a/drivers/infiniband/hw/hfi1/mmu_rb.c
-+++ b/drivers/infiniband/hw/hfi1/mmu_rb.c
-@@ -80,6 +80,9 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
- 	unsigned long flags;
- 	struct list_head del_list;
- 
-+	/* Prevent freeing of mm until we are completely finished. */
-+	mmgrab(handler->mn.mm);
-+
- 	/* Unregister first so we don't get any more notifications. */
- 	mmu_notifier_unregister(&handler->mn, handler->mn.mm);
- 
-@@ -102,6 +105,9 @@ void hfi1_mmu_rb_unregister(struct mmu_rb_handler *handler)
- 
- 	do_remove(handler, &del_list);
- 
-+	/* Now the mm may be freed. */
-+	mmdrop(handler->mn.mm);
-+
- 	kfree(handler);
- }
- 
-
+Jason
