@@ -2,146 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20BB24F8E5A
-	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 08:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E51B4F8DF6
+	for <lists+linux-rdma@lfdr.de>; Fri,  8 Apr 2022 08:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbiDHDlk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 7 Apr 2022 23:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60148 "EHLO
+        id S234492AbiDHFJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 8 Apr 2022 01:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232654AbiDHDla (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 7 Apr 2022 23:41:30 -0400
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Apr 2022 20:39:27 PDT
-Received: from esa3.fujitsucc.c3s2.iphmx.com (esa3.fujitsucc.c3s2.iphmx.com [68.232.151.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3053FD6
-        for <linux-rdma@vger.kernel.org>; Thu,  7 Apr 2022 20:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1649389168; x=1680925168;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=5pB1K8MNj/GbsBpq6jNVzCSDDX6v4S+s+A0iOwgbp6g=;
-  b=cgROC66tR0kXsAFeOLVX3NaRT1d5rhc0fO6WjkYYjHDPaR2BOCGpBifi
-   Quzcdeck+3m1ji9z8+jZn4Be2X876+Yy/Oyubqa6gBHgF5Xt+vbvchWkK
-   ek2zp1d8iA+Pois4emLWCuzNzD2utH/Q13NWsNBKM6BRJ1a9oSxYDZZ+U
-   fe3t0lCuYRJZdZ2YHBcJYKQ4IUSKv1Ksgs4f7O147pz2zOEW5A3BwYA0C
-   sfYep5xD61rtgpBYvxam6Wgmqwqo7UO9C5+4ogsksnDtFk1aCcQvlzyX0
-   cbzfSiwec8Mqx5eppIHKwlJlnqONxJECkAvK6xaHUzR87sx6o+6wK893S
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10310"; a="61589949"
-X-IronPort-AV: E=Sophos;i="5.90,243,1643641200"; 
-   d="scan'208";a="61589949"
-Received: from mail-os0jpn01lp2112.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.112])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2022 12:38:17 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U7cmPerp/ls8qdZ5qRmM+3h1EGsvNlsUx+kX/qoJ/0PTf5xxuEqP32nok0m3me7vhXM8szjxFFyEyEDnwhweXWLUp8TpYqvJLBRmDnDoHWyeax0DAiIFl/4m3Roh/ubsL6450fycXxY2idinKtDtkjFTWU2CpHz+kgyMesiLqG1EZ53ZXEcYhmbpiU/exPD4LTa2NJphapuZ2PV+5N/7k6YspfBAeJLY7+pLTagFgt0CeuFpxhTNablTOtah1K47s3IX4JBzbqJCUaVYsAPXA+6bw8DdkNMRB/mPRfxFFoFYJ9QyAfl5xT111SoVnEV1ziYIfvfjmBur5HRarZvy2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5pB1K8MNj/GbsBpq6jNVzCSDDX6v4S+s+A0iOwgbp6g=;
- b=P0K6gMc5LQZ5BLxBaggQEgcUo08wUUgK1VI92g37NZ7gut3bXBrgKoIJIqUt+m3pHVSF/lTcB6k5RUPFSEMthglZjDcWurZjj5Tw3a38Yyp3HKx/JIR0naLGGXlx0oqvfA2fFTcW6+xewWSh111IvESzI8ElbPEHkxCSYACBFucZiKR3xPLr15gfEWHMOxjy0WbnMiKy7eDMkS2qQ5F0yIZ8DFvzy9kgDqugKsG42Qh5gIe+fJIkWoPq9c+uTp5DXjcoPSIZWSsAifkretv5t8MQlbJroIqsxj9zT9KZMe0A91NbQQXfSoLyw1xb0i/nR/Zml+/pdIGN2awOL0X97Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5pB1K8MNj/GbsBpq6jNVzCSDDX6v4S+s+A0iOwgbp6g=;
- b=hjgBQ3//HTJpCUxUIBDdIas6iApkwTfCQnL/nPS2z8DGuVQ3YT+4UswgP8opuU0M47N/jWffk8dIEq/VRhOjanlz3JFUZoN+NEI6ZimctctYwj35unRwGuoWJZ3Eg6FZwuDq95U0Wgb7HqfTduoVka3SpuZoFZVdG99VuyJAIh4=
-Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com (2603:1096:604:104::9)
- by OS3PR01MB5910.jpnprd01.prod.outlook.com (2603:1096:604:c1::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.22; Fri, 8 Apr
- 2022 03:38:14 +0000
-Received: from OS0PR01MB6371.jpnprd01.prod.outlook.com
- ([fe80::81d3:f9c:79b0:edf5]) by OS0PR01MB6371.jpnprd01.prod.outlook.com
- ([fe80::81d3:f9c:79b0:edf5%4]) with mapi id 15.20.5144.021; Fri, 8 Apr 2022
- 03:38:13 +0000
-From:   "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Fwd: [PATCH for-next] RDMA/rxe: Remove reliable datagram support
-Thread-Topic: Fwd: [PATCH for-next] RDMA/rxe: Remove reliable datagram support
-Thread-Index: AQHYSsN1xub1YEvFpkGDIkt7zA31MKzlXiWA
-Date:   Fri, 8 Apr 2022 03:38:13 +0000
-Message-ID: <d089e634-742d-210f-5a5d-dcc142cff5f1@fujitsu.com>
-References: <20220407190522.19326-1-rpearsonhpe@gmail.com>
- <cce0f07d-25fc-5880-69e7-001d951750b7@gmail.com>
-In-Reply-To: <cce0f07d-25fc-5880-69e7-001d951750b7@gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=fujitsu.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 27e83697-95b4-4c7b-fa43-08da1911361d
-x-ms-traffictypediagnostic: OS3PR01MB5910:EE_
-x-microsoft-antispam-prvs: <OS3PR01MB59102F7105798D0B0312AED083E99@OS3PR01MB5910.jpnprd01.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: FJcBswTWDAw1sSFMHs5QTz5JjieN+aLLsvmDpn5wfe4bRvl2yP5rEBxk0LvbBUNupU4HsldPHzwcir+ml9zR3vjZ41AiMI2qyHSG/m1/qVr5wRQsendJKjKRop1gXr4219S8xx+amcwgL0f2c37I2Qjg1+cSLE/k/jCBOJf7EY4L6UMZs62EijHPFbNbVyR/DQBvvRc+clkFj0D9LneIbV7bUQP0htMKZHMWah0jtkFtpA0sqTTmsM6khqzjU4O7FXFrGhj+ft/6mJ2EfkhTQ1UQ6Kj/36zjGCA7gf+1M3iWAk1eMIxpF9zIimqYiRdh5Rlwgcvn2qsMXfvDZB9wwY3UWfW8lO2ylVeBTwzoz+t/LWtOPLCKWNr0HdNU58dmN/QDSD9vCvDAamPI7N+Pf2wvQ9IygqEaSqGMw7XnDKgzyKa/DPGdVdohPbjyqawKAnrL41uk1CZwLlBWQXJtpy8/DOCUVhI4Cp/dGq5Z9wuYO8etceyodtktUZSu8B4ManuEu5SCa1ZE3ZJCuBl1o5qgyB/ATgmZsnCpctCZ3f3ByRpP8pjOo3/Xvrr3saPwC2mFUtV+VYXzrWBjeqY+taw3iWe2bbdcuaBojF4A1RhKLrOPsOzcDH7AZIX3OsWwO9tx0GqHXFNWZnQYwrXakchfvMlp86KC8E224FR4i8d4hDEglfL61JZz1uFnEE7fbr8Vo6Puy0LBpXOSphkzzFuN6FczmgnGbhLQmn/pnPMRKpizSkfZYJoBe0dJutla
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB6371.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2906002)(6512007)(6506007)(64756008)(8676002)(36756003)(53546011)(316002)(31686004)(66476007)(66556008)(76116006)(66446008)(31696002)(5660300002)(66946007)(8936002)(86362001)(83380400001)(91956017)(85182001)(6486002)(508600001)(26005)(38070700005)(122000001)(186003)(2616005)(71200400001)(82960400001)(110136005)(38100700002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?WUg3YUl6NmpWL0dtcHJOeUVpSUdGd0k0YWdYbElKVFlGYlEzVm05aCtpb3ZM?=
- =?utf-8?B?bWxkSW0zOGxtQmlJU1RrOTVndk1wR2VxSVY0eFFTVjBaMGVMYVA4cnZST1hx?=
- =?utf-8?B?c0N3bXlDSVBiaHhyNkdUZHlqMStqOHFzdnNUTTRCVnJRMUZsSDEvK0M1NW40?=
- =?utf-8?B?blZsaHEvYnJwZ3RPZVJFSEQ3NlM3OGZWTGZDM0EvN2RFZnNNaFh6VlhlaWZj?=
- =?utf-8?B?c05MVzUveDhaUVdwajYwckpiM2lZQ2ZvTmZvU0xhcFdFb3ZpUXcyZkpEV3Bo?=
- =?utf-8?B?WDFSVUt4R0tuWDVKS1FWUkU5MDZuU1JLSk4yU1R3dkxmUVM2eVI2VU41UG04?=
- =?utf-8?B?VHBkVzRQMlF3RUxkMmtGb2FOb3lTSTEwcXJlTnRCNGdrbGEvakVCN3kybkxy?=
- =?utf-8?B?Z3RybUJKV1k0ZWdwRVhmZnE0Nk9NTXdxS1RtQ0dNTHpubnhkWnNvc25mNEZZ?=
- =?utf-8?B?dUdDYXNyTjFIRllhbmoyVGd4OEdIZStjOGJtK3d3SlZnejg0NUlzSWxWTVBR?=
- =?utf-8?B?c2d6d0Nobi82SWdXVXZadDUyRXZoUm43U3pDQ3FLNCtPRWRFTWlDNWJmdEFG?=
- =?utf-8?B?MWN4ekh2K0ovQ0dGZzNBeWVqYTJidGxnTFl2eGNnRHRUUHFLY2FpSFVaTjNO?=
- =?utf-8?B?d1llZmtiVW9saWZmMkRhVUhLT1VVa2tucXpUVS9oUmk3QitOQjg2SWFCaTN2?=
- =?utf-8?B?L3Nzak5JUXpjbGc2cWd1M2xCZjNKMkdubnpjanpFQ0pNbGoya1hTTWVYNktR?=
- =?utf-8?B?a1Z6U3Y2UnJsSDQxV2lJalpxUU9TeFhKVnRRaHo4RjR4ZWpUdEtOUnJCNi9z?=
- =?utf-8?B?cFFBKzVKNmUybWVlb2FGcmY0YXJrdHU4ZlJYNnhRdmFOSnJ3bURURmRZU1Vk?=
- =?utf-8?B?VFhhZEhDU0YyRlFOYjFWcUs3TlBhZUs3bWw3S21seGhxR1JaWTVhSElQTlhn?=
- =?utf-8?B?R3AxRURyL2dvcXA1Zlk5SWRLRk9pQit0dzdFV0R3cS9PbFpyNW9NV0tSMjJH?=
- =?utf-8?B?M3VORnl1YVAwdWcyVGoyYkFmRG9OeS9zaHI1alI3Y1NxYjM5VWNvSmhYY3RD?=
- =?utf-8?B?YitEYUdKdHJOeW1ZR3IwRjVKZUpycHFiNE1ZZ1BQaDZvUTN5bW1KdlB4UDND?=
- =?utf-8?B?Z01CbG1jR0pIQVR0SnBvZzBiQXNYS01NV21CY05wdktWbWNFdlAvRmlpQXF1?=
- =?utf-8?B?bW83a2dJdm9EWERqWUhseDN3aFFwVERLdXl1a08vT1dzeEREdkN1dGVnN1c2?=
- =?utf-8?B?OEo1L096bjZUNmlxOHVHanhFNXh6bXJ1dUg1TGRMam45djJDdTR1VzZVM0hF?=
- =?utf-8?B?emZ3Mmtuem9udTBsdXkwSmQyWWJ1WDh6MjJDM3ZkTFpPSmtrWFh2MnUyRWZN?=
- =?utf-8?B?NnJnajFsTWJZdEM2V2djMll6a3ZJVzY2UFA4VUNwVHp2WFlhcDNMc2dQaUYv?=
- =?utf-8?B?emJzUHpOMEhWcWxGRm5kZk4xSVE2bHBzR094RHJxWWw0Z3BDNGcreWRCRWJ3?=
- =?utf-8?B?Y2VqOEdDck1KK3g1MEFKVWsvUis5NnRmemRBdHhtdy9JenpTaEptQUZjelBu?=
- =?utf-8?B?VWNmdUN0YXVET0IxWUx4NHZKakhVRVpxN1lIMU9lQ21DQlUwbC9oTkJGSkxv?=
- =?utf-8?B?emxmeEhyQi9WaGgzM1BadkFObWVaN3pEMGwxM3dkYk9oSFhxbVNjM1pzd1Nq?=
- =?utf-8?B?Q3lGa3ZBNGlqRHM3Q2lnbXJQT2N2Qms1b3JVK1hibDdTOG9vdHE5WEFBU0Na?=
- =?utf-8?B?VHo3S2NXWkQwWWNWZG9hV1FvcURlblArMkRNQmJucTRNZ3VkQ2JNTVk0Zmh3?=
- =?utf-8?B?U1lZc0tiZ1g4aU9MVFdvZ2hrWDdRUkJZQUNYUnNwUkxtTWxHTkRmT29OK3RX?=
- =?utf-8?B?eDlwRStJRDd2QmRqalNrVm1GN1RoMDNsRm5aL2krVWkweW02TUhpcVI3VUd6?=
- =?utf-8?B?c2MwOGplUkdENWpCM1BaMFRVMFAyeHd4Vk4ycGU0dkxoYmFPRngwYmRrS1Q5?=
- =?utf-8?B?U0xabE8vdU8xaldTa3g2dHdIdjYwQ1U1RW1pdzB5OVVaRW1HWmNXdmRudy9S?=
- =?utf-8?B?QmlCRmFmSzI1ZmRrckFEK0JLZm8xaWtFaVZYOEZ3VUlrNnMvcFZxVi9NR255?=
- =?utf-8?B?OXhHck1lOFVLY1RYb2NNZGtZMVg5Z08vMEJDczFNM3p6ekRZb2V1bFU4QnN5?=
- =?utf-8?B?VXluWHdPeWhubUVtZVZEalgyMlZITmJmQnN4NkRsek5UaEpiUU5ZMi8wWWhh?=
- =?utf-8?B?NmEyU2NLNHhMOVJ0U3lTVkVGcnBRVk5YdGR1VmYrbnZOc1hQSGxBVURJa2dO?=
- =?utf-8?B?WXBpTE9NL2YxdElrdHBZNXNZTG1XbmJUYVMzeVJnSkRUSlRMNklrK0xSSHJr?=
- =?utf-8?Q?2eh3v2p7IFE/uxvo=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <39B8F1A6E75EB2478CF02EF165B259D0@jpnprd01.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        with ESMTP id S231382AbiDHFJX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 8 Apr 2022 01:09:23 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAE90136FC5
+        for <linux-rdma@vger.kernel.org>; Thu,  7 Apr 2022 22:07:19 -0700 (PDT)
+Message-ID: <ebcabe3b-56f9-533b-e975-3a9945c3ee99@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1649394437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lLoxcdZ0oJvabVmbA+L6JxKBmr9AcbJcYfJGyR4noGE=;
+        b=euOMXBDjHR9qFIomH/v4V/uCMzo5kdaAe4/KEJ4UoOrtHigT51i6Y9+45hC2jB9oifIGvK
+        BbkizknQKH1H+ccFzhVoIKCAImXEexlUbZAHMOlruu8UaiDT+FKedYQSriiEWpOeUYbHmm
+        iudzuBN/7G1ASNBZQdVbPo3olIn8L7E=
+Date:   Fri, 8 Apr 2022 13:07:05 +0800
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB6371.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 27e83697-95b4-4c7b-fa43-08da1911361d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2022 03:38:13.7387
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BIqs/v4oZxEC9ROPY6pi7a6NXCzzFyUaR9XWU+mnUkodsx3cCO5b3k68RyLww2bWfn2klpXKsVA+U+Vm4f5DuA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB5910
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+Subject: Re: [bug report] rdma_rxe: WARNING: inconsistent lock state,
+ inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage
+To:     Yi Zhang <yi.zhang@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>
+Cc:     Bart Van Assche <bvanassche@acm.org>
+References: <CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -150,42 +51,255 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-T24gMjAyMi80LzggNTowNCwgQm9iIFBlYXJzb24gd3JvdGU6DQo+IA0KPiANCj4gDQo+IC0tLS0t
-LS0tIEZvcndhcmRlZCBNZXNzYWdlIC0tLS0tLS0tDQo+IFN1YmplY3Q6IFtQQVRDSCBmb3ItbmV4
-dF0gUkRNQS9yeGU6IFJlbW92ZSByZWxpYWJsZSBkYXRhZ3JhbSBzdXBwb3J0DQo+IERhdGU6IFRo
-dSwgIDcgQXByIDIwMjIgMTQ6MDU6MjMgLTA1MDANCj4gRnJvbTogQm9iIFBlYXJzb24gPHJwZWFy
-c29uaHBlQGdtYWlsLmNvbT4NCj4gVG86IGpnZ0BudmlkaWEuY29tLCB6eWp6eWoyMDAwQGdtYWls
-LmNvbSwgbGludXgtcmRtYUB2Z2VyLmtlcm5lLm9yZw0KPiBDQzogQm9iIFBlYXJzb24gPHJwZWFy
-c29uaHBlQGdtYWlsLmNvbT4NCj4gDQo+IFRoZSByZG1hX3J4ZSBkcml2ZXIgZG9lcyBub3QgYWN0
-dWFsbHkgc3VwcG9ydCB0aGUgcmVsaWFibGUgZGF0YWdyYW0gdHJhbnNwb3J0DQo+IGJ1dCBjb250
-YWlucyB0d28gcmVmZXJlbmNlcyB0byBSRCBvcGNvZGVzIGluIGRyaXZlciBjb2RlLg0KPiBUaGlz
-IGNvbW1pdCByZW1vdmVzIHRoZXNlIHJlZmVyZW5jZXMgdG8gUkQgdHJhbnNwb3J0IG9wY29kZXMg
-d2hpY2gNCj4gYXJlIG5ldmVyIHVzZWQuDQoNCkhpIEJvYiwNCg0KQWdyZWVkLiBJdCBsb29rcyBn
-b29kIHRvIG1lLiBeX14NCg0KQmVzdCBSZWdhcmRzLA0KWGlhbyBZYW5nDQo+IA0KPiBTaWduZWQt
-b2ZmLWJ5OiBCb2IgUGVhcnNvbiA8cnBlYXJzb25ocGVAZ21haWwuY29tPg0KPiAtLS0NCj4gICBk
-cml2ZXJzL2luZmluaWJhbmQvc3cvcnhlL3J4ZV9yZXEuYyAgfCAzICstLQ0KPiAgIGRyaXZlcnMv
-aW5maW5pYmFuZC9zdy9yeGUvcnhlX3Jlc3AuYyB8IDMgKy0tDQo+ICAgMiBmaWxlcyBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDQgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJp
-dmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcmVxLmMgYi9kcml2ZXJzL2luZmluaWJhbmQvc3cv
-cnhlL3J4ZV9yZXEuYw0KPiBpbmRleCA1MmMxZDhmZjZlNWIuLjVmNzM0OGIxMTI2OCAxMDA2NDQN
-Cj4gLS0tIGEvZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcmVxLmMNCj4gKysrIGIvZHJp
-dmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcmVxLmMNCj4gQEAgLTQxMyw4ICs0MTMsNyBAQCBz
-dGF0aWMgc3RydWN0IHNrX2J1ZmYgKmluaXRfcmVxX3BhY2tldChzdHJ1Y3QgcnhlX3FwICpxcCwN
-Cj4gICANCj4gICAJaWYgKHBrdC0+bWFzayAmIFJYRV9BVE1FVEhfTUFTSykgew0KPiAgIAkJYXRt
-ZXRoX3NldF92YShwa3QsIHdxZS0+aW92YSk7DQo+IC0JCWlmIChvcGNvZGUgPT0gSUJfT1BDT0RF
-X1JDX0NPTVBBUkVfU1dBUCB8fA0KPiAtCQkgICAgb3Bjb2RlID09IElCX09QQ09ERV9SRF9DT01Q
-QVJFX1NXQVApIHsNCj4gKwkJaWYgKG9wY29kZSA9PSBJQl9PUENPREVfUkNfQ09NUEFSRV9TV0FQ
-KSB7DQo+ICAgCQkJYXRtZXRoX3NldF9zd2FwX2FkZChwa3QsIGlid3ItPndyLmF0b21pYy5zd2Fw
-KTsNCj4gICAJCQlhdG1ldGhfc2V0X2NvbXAocGt0LCBpYndyLT53ci5hdG9taWMuY29tcGFyZV9h
-ZGQpOw0KPiAgIAkJfSBlbHNlIHsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9z
-dy9yeGUvcnhlX3Jlc3AuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9yeGUvcnhlX3Jlc3AuYw0K
-PiBpbmRleCA5ZGMzOGY3Yzk5MGIuLmUyNjUzYTg3MjFmZSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
-cy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcmVzcC5jDQo+ICsrKyBiL2RyaXZlcnMvaW5maW5pYmFu
-ZC9zdy9yeGUvcnhlX3Jlc3AuYw0KPiBAQCAtNTc2LDggKzU3Niw3IEBAIHN0YXRpYyBlbnVtIHJl
-c3Bfc3RhdGVzIHByb2Nlc3NfYXRvbWljKHN0cnVjdCByeGVfcXAgKnFwLA0KPiAgIA0KPiAgIAlx
-cC0+cmVzcC5hdG9taWNfb3JpZyA9ICp2YWRkcjsNCj4gICANCj4gLQlpZiAocGt0LT5vcGNvZGUg
-PT0gSUJfT1BDT0RFX1JDX0NPTVBBUkVfU1dBUCB8fA0KPiAtCSAgICBwa3QtPm9wY29kZSA9PSBJ
-Ql9PUENPREVfUkRfQ09NUEFSRV9TV0FQKSB7DQo+ICsJaWYgKHBrdC0+b3Bjb2RlID09IElCX09Q
-Q09ERV9SQ19DT01QQVJFX1NXQVApIHsNCj4gICAJCWlmICgqdmFkZHIgPT0gYXRtZXRoX2NvbXAo
-cGt0KSkNCj4gICAJCQkqdmFkZHIgPSBhdG1ldGhfc3dhcF9hZGQocGt0KTsNCj4gICAJfSBlbHNl
-IHs=
+
+Hi, all
+
+In 5.18-rc1, this commit "[PATCH for-next] RDMA/rxe: Revert changes from 
+irqsave to bh locks" does not exist.
+
+The link is 
+https://patchwork.kernel.org/project/linux-rdma/patch/20220215194448.44369-1-rpearsonhpe@gmail.com/
+
+Please apply this commit and make tests again.
+Please let me know the test result.
+
+Best Regards,
+
+Zhu Yanjun
+
+在 2022/4/6 11:08, Yi Zhang 写道:
+> Hello
+> 
+> Below WARNING triggered during blktests srp/ tests with 5.18.0-rc1
+> debug kernel, pls help check it, let me know if you need any info for
+> it, thanks.
+> 
+> [  290.308984] run blktests srp/001 at 2022-04-05 23:01:02
+> [  290.999913] null_blk: module loaded
+> [  291.260285] device-mapper: multipath service-time: version 0.3.0 loaded
+> [  291.262990] device-mapper: table: 253:3: multipath: error getting
+> device (-EBUSY)
+> [  291.270535] device-mapper: ioctl: error adding target to table
+> [  291.362284] rdma_rxe: loaded
+> [  291.428444] infiniband eno1_rxe: set active
+> [  291.428462] infiniband eno1_rxe: added eno1
+> [  291.467142] eno2 speed is unknown, defaulting to 1000
+> [  291.472327] eno2 speed is unknown, defaulting to 1000
+> [  291.477680] eno2 speed is unknown, defaulting to 1000
+> [  291.516123] infiniband eno2_rxe: set down
+> [  291.516130] infiniband eno2_rxe: added eno2
+> [  291.516649] eno2 speed is unknown, defaulting to 1000
+> [  291.542551] eno2 speed is unknown, defaulting to 1000
+> [  291.558995] eno3 speed is unknown, defaulting to 1000
+> [  291.564127] eno3 speed is unknown, defaulting to 1000
+> [  291.569462] eno3 speed is unknown, defaulting to 1000
+> [  291.607876] infiniband eno3_rxe: set down
+> [  291.607883] infiniband eno3_rxe: added eno3
+> [  291.608430] eno3 speed is unknown, defaulting to 1000
+> [  291.632891] eno2 speed is unknown, defaulting to 1000
+> [  291.638180] eno3 speed is unknown, defaulting to 1000
+> [  291.655089] eno4 speed is unknown, defaulting to 1000
+> [  291.660213] eno4 speed is unknown, defaulting to 1000
+> [  291.665569] eno4 speed is unknown, defaulting to 1000
+> [  291.703975] infiniband eno4_rxe: set down
+> [  291.703982] infiniband eno4_rxe: added eno4
+> [  291.704642] eno4 speed is unknown, defaulting to 1000
+> [  291.822650] scsi_debug:sdebug_add_store: dif_storep 524288 bytes @
+> ffffc90001801000
+> [  291.825441] scsi_debug:sdebug_driver_probe: scsi_debug: trim
+> poll_queues to 0. poll_q/nr_hw = (0/1)
+> [  291.834505] scsi_debug:sdebug_driver_probe: host protection DIF3 DIX3
+> [  291.834513] scsi host15: scsi_debug: version 0191 [20210520]
+>                   dev_size_mb=32, opts=0x0, submit_queues=1, statistics=0
+> [  291.837267] scsi 15:0:0:0: Direct-Access     Linux    scsi_debug
+>     0191 PQ: 0 ANSI: 7
+> [  291.839793] sd 15:0:0:0: Power-on or device reset occurred
+> [  291.840110] sd 15:0:0:0: Attached scsi generic sg1 type 0
+> [  291.845521] sd 15:0:0:0: [sdb] Enabling DIF Type 3 protection
+> [  291.845878] sd 15:0:0:0: [sdb] 65536 512-byte logical blocks: (33.6
+> MB/32.0 MiB)
+> [  291.845939] sd 15:0:0:0: [sdb] Write Protect is off
+> [  291.845954] sd 15:0:0:0: [sdb] Mode Sense: 73 00 10 08
+> [  291.846049] sd 15:0:0:0: [sdb] Write cache: enabled, read cache:
+> enabled, supports DPO and FUA
+> [  291.846254] sd 15:0:0:0: [sdb] Optimal transfer size 524288 bytes
+> [  291.859380] sd 15:0:0:0: [sdb] Enabling DIX T10-DIF-TYPE3-CRC protection
+> [  291.859398] sd 15:0:0:0: [sdb] DIF application tag size 6
+> [  291.860158] sd 15:0:0:0: [sdb] Attached SCSI disk
+> [  292.666414] eno2 speed is unknown, defaulting to 1000
+> [  292.771984] eno3 speed is unknown, defaulting to 1000
+> [  292.876762] eno4 speed is unknown, defaulting to 1000
+> [  293.033291] Rounding down aligned max_sectors from 4294967295 to 4294967288
+> [  293.102261] ib_srpt:srpt_add_one: ib_srpt device = 0000000047a39f45
+> [  293.102363] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno1_rxe):
+> use_srq = 0; ret = 0
+> [  293.102369] ib_srpt:srpt_add_one: ib_srpt Target login info:
+> id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
+> [  293.102680] ib_srpt:srpt_add_one: ib_srpt added eno1_rxe.
+> [  293.102692] ib_srpt:srpt_add_one: ib_srpt device = 00000000b2dfcbe9
+> [  293.102725] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno2_rxe):
+> use_srq = 0; ret = 0
+> [  293.102730] ib_srpt:srpt_add_one: ib_srpt Target login info:
+> id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
+> [  293.102741] eno2 speed is unknown, defaulting to 1000
+> [  293.107884] ib_srpt:srpt_add_one: ib_srpt added eno2_rxe.
+> [  293.107893] ib_srpt:srpt_add_one: ib_srpt device = 0000000061e03247
+> [  293.107922] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno3_rxe):
+> use_srq = 0; ret = 0
+> [  293.107926] ib_srpt:srpt_add_one: ib_srpt Target login info:
+> id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
+> [  293.107936] eno3 speed is unknown, defaulting to 1000
+> [  293.113038] ib_srpt:srpt_add_one: ib_srpt added eno3_rxe.
+> [  293.113046] ib_srpt:srpt_add_one: ib_srpt device = 00000000c0e3d43d
+> [  293.113081] ib_srpt:srpt_use_srq: ib_srpt srpt_use_srq(eno4_rxe):
+> use_srq = 0; ret = 0
+> [  293.113085] ib_srpt:srpt_add_one: ib_srpt Target login info:
+> id_ext=f2d4e2fffee6e1e0,ioc_guid=f2d4e2fffee6e1e0,pkey=ffff,service_id=f2d4e2fffee6e1e0
+> [  293.113096] eno4 speed is unknown, defaulting to 1000
+> [  293.118198] ib_srpt:srpt_add_one: ib_srpt added eno4_rxe.
+> [  293.584001] Rounding down aligned max_sectors from 255 to 248
+> [  293.654030] Rounding down aligned max_sectors from 255 to 248
+> [  293.724363] Rounding down aligned max_sectors from 4294967295 to 4294967288
+> [  296.450772] ib_srp:srp_add_one: ib_srp: srp_add_one:
+> 18446744073709551615 / 4096 = 4503599627370495 <> 512
+> [  296.450783] ib_srp:srp_add_one: ib_srp: eno1_rxe: mr_page_shift =
+> 12, device->max_mr_size = 0xffffffffffffffff,
+> device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
+> mr_max_size = 0x200000
+> [  296.451222] ib_srp:srp_add_one: ib_srp: srp_add_one:
+> 18446744073709551615 / 4096 = 4503599627370495 <> 512
+> [  296.451229] ib_srp:srp_add_one: ib_srp: eno2_rxe: mr_page_shift =
+> 12, device->max_mr_size = 0xffffffffffffffff,
+> device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
+> mr_max_size = 0x200000
+> [  296.451517] ib_srp:srp_add_one: ib_srp: srp_add_one:
+> 18446744073709551615 / 4096 = 4503599627370495 <> 512
+> [  296.451523] ib_srp:srp_add_one: ib_srp: eno3_rxe: mr_page_shift =
+> 12, device->max_mr_size = 0xffffffffffffffff,
+> device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
+> mr_max_size = 0x200000
+> [  296.451769] ib_srp:srp_add_one: ib_srp: srp_add_one:
+> 18446744073709551615 / 4096 = 4503599627370495 <> 512
+> [  296.451774] ib_srp:srp_add_one: ib_srp: eno4_rxe: mr_page_shift =
+> 12, device->max_mr_size = 0xffffffffffffffff,
+> device->max_fast_reg_page_list_len = 512, max_pages_per_mr = 512,
+> mr_max_size = 0x200000
+> [  296.605925] ib_srp:srp_parse_in: ib_srp: 10.16.221.116 -> 10.16.221.116:0
+> [  296.605956] ib_srp:srp_parse_in: ib_srp: 10.16.221.116:5555 ->
+> 10.16.221.116:5555
+> [  296.606014] ib_srp:add_target_store: ib_srp: max_sectors = 1024;
+> max_pages_per_mr = 512; mr_page_size = 4096; max_sectors_per_mr =
+> 4096; mr_per_cmd = 2
+> [  296.606021] ib_srp:srp_max_it_iu_len: ib_srp: max_iu_len = 8260
+> 
+> [  296.616660] ================================
+> [  296.620931] WARNING: inconsistent lock state
+> [  296.625207] 5.18.0-rc1 #1 Tainted: G S        I
+> [  296.630259] --------------------------------
+> [  296.634531] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+> [  296.640535] ksoftirqd/30/188 [HC0[0]:SC1[1]:HE0:SE0] takes:
+> [  296.646106] ffff888151491468 (&xa->xa_lock#15){+.?.}-{2:2}, at:
+> rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
+> [  296.655588] {SOFTIRQ-ON-W} state was registered at:
+> [  296.660467]   lock_acquire+0x1d2/0x5a0
+> [  296.664221]   _raw_spin_lock+0x33/0x80
+> [  296.667972]   __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
+> [  296.673112]   __ib_alloc_pd+0xf9/0x550 [ib_core]
+> [  296.677758]   ib_mad_init_device+0x2d9/0xd20 [ib_core]
+> [  296.682924]   add_client_context+0x2fa/0x450 [ib_core]
+> [  296.688088]   enable_device_and_get+0x1b7/0x350 [ib_core]
+> [  296.693503]   ib_register_device+0x757/0xaf0 [ib_core]
+> [  296.698660]   rxe_register_device+0x2eb/0x390 [rdma_rxe]
+> [  296.703973]   rxe_net_add+0x83/0xc0 [rdma_rxe]
+> [  296.708421]   rxe_newlink+0x76/0x90 [rdma_rxe]
+> [  296.712865]   nldev_newlink+0x245/0x3e0 [ib_core]
+> [  296.717597]   rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
+> [  296.722492]   rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
+> [  296.727042]   netlink_unicast+0x43b/0x640
+> [  296.731056]   netlink_sendmsg+0x7eb/0xc40
+> [  296.735069]   sock_sendmsg+0xe0/0x110
+> [  296.738734]   __sys_sendto+0x1d7/0x2b0
+> [  296.742486]   __x64_sys_sendto+0xdd/0x1b0
+> [  296.746500]   do_syscall_64+0x37/0x80
+> [  296.750166]   entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  296.755304] irq event stamp: 25305
+> [  296.758710] hardirqs last  enabled at (25304): [<ffffffff89815de8>]
+> __local_bh_enable_ip+0xa8/0x110
+> [  296.767750] hardirqs last disabled at (25305): [<ffffffff8b970219>]
+> _raw_spin_lock_irqsave+0x69/0x90
+> [  296.776875] softirqs last  enabled at (25294): [<ffffffff8bc0064a>]
+> __do_softirq+0x64a/0xa4c
+> [  296.785307] softirqs last disabled at (25299): [<ffffffff898159f2>]
+> run_ksoftirqd+0x32/0x60
+> [  296.793654]
+>                 other info that might help us debug this:
+> [  296.800177]  Possible unsafe locking scenario:
+> 
+> [  296.806097]        CPU0
+> [  296.808550]        ----
+> [  296.811003]   lock(&xa->xa_lock#15);
+> [  296.814583]   <Interrupt>
+> [  296.817209]     lock(&xa->xa_lock#15);
+> [  296.820961]
+>                  *** DEADLOCK ***
+> 
+> [  296.826880] no locks held by ksoftirqd/30/188.
+> [  296.831326]
+>                 stack backtrace:
+> [  296.835686] CPU: 30 PID: 188 Comm: ksoftirqd/30 Tainted: G S
+> I       5.18.0-rc1 #1
+> [  296.843859] Hardware name: Dell Inc. PowerEdge R640/06NR82, BIOS
+> 2.11.2 004/21/2021
+> [  296.851509] Call Trace:
+> [  296.853964]  <TASK>
+> [  296.856070]  dump_stack_lvl+0x44/0x57
+> [  296.859734]  mark_lock.part.52.cold.79+0x3c/0x46
+> [  296.864355]  ? lock_chain_count+0x20/0x20
+> [  296.868367]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
+> [  296.872994]  ? orc_find.part.4+0x310/0x310
+> [  296.877096]  ? __module_text_address.part.55+0x13/0x140
+> [  296.882326]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
+> [  296.886947]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
+> [  296.891566]  ? is_module_text_address+0x41/0x60
+> [  296.896098]  ? rxe_do_task+0x26/0x230 [rdma_rxe]
+> [  296.900718]  ? kernel_text_address+0x13/0xd0
+> [  296.904991]  ? create_prof_cpu_mask+0x20/0x20
+> [  296.909351]  ? sched_clock_cpu+0x15/0x200
+> [  296.913364]  __lock_acquire+0x1565/0x34a0
+> [  296.917377]  ? rcu_read_lock_sched_held+0xaf/0xe0
+> [  296.922079]  ? rcu_read_lock_bh_held+0xc0/0xc0
+> [  296.926529]  lock_acquire+0x1d2/0x5a0
+> [  296.930193]  ? rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
+> [  296.935429]  ? rcu_read_unlock+0x50/0x50
+> [  296.939353]  ? mark_lock.part.52+0xa3d/0x1c00
+> [  296.943712]  ? _raw_spin_lock_irqsave+0x69/0x90
+> [  296.948247]  _raw_spin_lock_irqsave+0x42/0x90
+> [  296.952603]  ? rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
+> [  296.957830]  rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
+> [  296.962882]  ? __rxe_add_to_pool+0x230/0x230 [rdma_rxe]
+> [  296.968108]  ? __rxe_get+0xc1/0x140 [rdma_rxe]
+> [  296.972554]  rxe_get_av+0x168/0x2a0 [rdma_rxe]
+> [  296.977007]  ? lockdep_lock+0xcb/0x1c0
+> [  296.980761]  rxe_requester+0x75b/0x4a90 [rdma_rxe]
+> [  296.985557]  ? rxe_do_task+0xe2/0x230 [rdma_rxe]
+> [  296.990183]  ? sched_clock_cpu+0x15/0x200
+> [  296.994193]  ? find_held_lock+0x3a/0x1c0
+> [  296.998119]  ? rnr_nak_timer+0x80/0x80 [rdma_rxe]
+> [  297.002826]  ? lock_release+0x42f/0xc90
+> [  297.006664]  ? lock_downgrade+0x6b0/0x6b0
+> [  297.010676]  ? lock_acquired+0x262/0xb10
+> [  297.014605]  ? __local_bh_enable_ip+0xa8/0x110
+> [  297.019051]  ? rnr_nak_timer+0x80/0x80 [rdma_rxe]
+> [  297.023764]  rxe_do_task+0x134/0x230 [rdma_rxe]
+> [  297.028297]  tasklet_action_common.isra.12+0x1f7/0x2d0
+> [  297.033435]  __do_softirq+0x1ea/0xa4c
+> [  297.037100]  ? tasklet_kill+0x1c0/0x1c0
+> [  297.040941]  run_ksoftirqd+0x32/0x60
+> [  297.044518]  smpboot_thread_fn+0x503/0x860
+> [  297.048618]  ? sort_range+0x20/0x20
+> [  297.052110]  kthread+0x29b/0x340
+> [  297.055342]  ? kthread_complete_and_exit+0x20/0x20
+> [  297.060137]  ret_from_fork+0x1f/0x30
+> [  297.063720]  </TASK>
+> 
+
