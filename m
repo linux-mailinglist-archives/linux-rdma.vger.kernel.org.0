@@ -2,38 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7B664FAF48
-	for <lists+linux-rdma@lfdr.de>; Sun, 10 Apr 2022 19:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E024FB093
+	for <lists+linux-rdma@lfdr.de>; Sun, 10 Apr 2022 23:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238596AbiDJRXS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Apr 2022 13:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
+        id S235767AbiDJWAa (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Apr 2022 18:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237212AbiDJRXR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Apr 2022 13:23:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC124FC7C;
-        Sun, 10 Apr 2022 10:21:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6037AB80E07;
-        Sun, 10 Apr 2022 17:21:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A287AC385A4;
-        Sun, 10 Apr 2022 17:21:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649611264;
-        bh=En/x4sQXrycflDw2rOe4f0ui/DcpMkVuXJKAhHJCcQA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pgiukU1LAyNAAMUq9h/sUAStVcsyVAmEe4DtpDpw6ZeZ0Lj357e8FjjfkuT1F4z7F
-         LR0zGPSlIL/q6Lf6EH7YU7OVfT6bXRuT9Jx1sobLhsJTyeHKNUi77Kh7h1QxnZohmn
-         tng4kGrBJHCtrSJIEl+uPNMGkZ8YG9v5cjeq5Wfbom5xq8aByq4R+bQuLXCOlTMJlc
-         svHsknU5dkJHVop0pRuVjC8hq5SR+QLqbMkiTUAThmXWxeNrhGFA29uyA5aMGRbfkf
-         aaqDyjHMPcpnU0211lVvW0ZUAgtuuNjxNueQR0Ad0fL1/doJU4vj0yJaVutFLFtP1y
-         MhDbjFg4L57UQ==
-Date:   Sun, 10 Apr 2022 20:21:00 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
+        with ESMTP id S231882AbiDJWA3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Apr 2022 18:00:29 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6664E4F9C4;
+        Sun, 10 Apr 2022 14:58:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lWqVRrALxBriHSTC4snvBQAujJDdfMmmLorvC0jL+/oRTsZlhuW63jnzmGWdSmLkzCdXv6PjUwCfyxRMDFu2u6EPQNn4OeKXOXrjEWlf0TuzGtYISJnZ6YIc11ka81y8ebFMnH1ma3S/nBUZTcd/tW8eTBbnoIU0an4oJyn9LvmR5NcziBNE5yqsuAWP0aY9pF4kCFM0G+W9qq6f+Jb5ijGZ0Tuapl7A0awThDy8wAxGRgFhiYQKGaAOsePMly0a74ZAG1h/b4kgun24ABS3UwKd1gluH1KSU83vjkz+qC1+4S8N0p2kumhlf8JnE2Id4Ush7SzTTPsRzU8NQVHN8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AZEQ+Amou9JGh/6mxGNzRC4IWj3gadU/MX6wbwU2TPA=;
+ b=O5Hls49UiXmCriMb8SDXBUFGKpOixNfqQlaQrJ/HvF5jBWbm6+ifG/O8Q7+ZNvXrVUrbDjo3A+k73jFq4QHSFhQETpk+ZA+mW5CYuhlPEwod28ay+xreP41JVdEUyQI9UOJZLHA5cEdRBpwF/wuGuUm4RLIwEIH6LmjQUvBdtqCAGT+84t589pEQyQU65sSPtNsMlFLgjHp/LhNUAxQ6A6gZK8xIM2nZWf7c9FZu3PqoJHqBLvMV8nwZeiE0cC7Dp07NMAt4NgPGIpdCJ8XYzgp9q1dVx4jzuqvAjvO7TFnZclCjDtZGv8IZnO8ri8LibcEWZ7aigXEvBo+jVl2FFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AZEQ+Amou9JGh/6mxGNzRC4IWj3gadU/MX6wbwU2TPA=;
+ b=CJ/GUja8zNkCe4Ucs/wgmbEBP6fr1uW/VSgPcG6UiR8ICKQzbLYYgSNH1j8M1fNKZ5o7JOAQIvZAZ/OaBHU7oVQdjXPL85yaD62bf/KNRoq0LCBd33eSH9wCGrDjEXP5BQX+CkrqQwET+Y8DIL+OA025pwEM1aYc0A2Wdt7XBMaP4JoFN98Ioe0FXasT4KwRQXVIbY/jG/sydKJ4UTbfYhO8O5KI5/7nndnNRjsxt0b0SpIc9+De46L4jG79slFdg3wVZ4x7MZ7tJnwz5U8t+A++1eU3RRDaE5HI08XuDSSKN+25SZgMr1N5nyCG4OjjSaHd8qzfHLrHlezYQHzViA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by MWHPR12MB1920.namprd12.prod.outlook.com (2603:10b6:300:10e::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5144.29; Sun, 10 Apr
+ 2022 21:58:16 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::f811:b003:4bd2:4602]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::f811:b003:4bd2:4602%6]) with mapi id 15.20.5144.029; Sun, 10 Apr 2022
+ 21:58:15 +0000
+Date:   Sun, 10 Apr 2022 14:58:13 -0700
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
 Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
         "David S . Miller" <davem@davemloft.net>,
         Jason Gunthorpe <jgg@nvidia.com>,
@@ -42,220 +51,108 @@ Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
         Raed Salem <raeds@nvidia.com>
 Subject: Re: [PATCH mlx5-next 01/17] net/mlx5: Simplify IPsec flow steering
  init/cleanup functions
-Message-ID: <YlMR/CHoS3xg5uRL@unreal>
+Message-ID: <20220410215813.sxqmvmm5wkeguj6y@sx1>
 References: <cover.1649578827.git.leonro@nvidia.com>
  <3f7001272e4dc51fcef031bf896a7e01a2b4b7f6.1649578827.git.leonro@nvidia.com>
  <20220410164620.2dfzhx6qt4cg6b6o@sx1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+ <YlMR/CHoS3xg5uRL@unreal>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20220410164620.2dfzhx6qt4cg6b6o@sx1>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YlMR/CHoS3xg5uRL@unreal>
+X-ClientProxiedBy: SJ0PR03CA0223.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::18) To BY5PR12MB4209.namprd12.prod.outlook.com
+ (2603:10b6:a03:20d::22)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f9d37de0-b136-40de-ff34-08da1b3d36d1
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1920:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB1920D68C57407B22FD121CECB3EB9@MWHPR12MB1920.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oZI98aAcoUd8e+RHbP74QrqQm2yJGIcCcfU+hRjefXGsFl91cNj6YNigpj1BqEdb8B5VUpEH8FU1PenkBZ5xUAdewv1Z0smVz++BsFyhd8lBrLLCBfb3xX/MM2kv45emBQpBqz3XAjoTkCbjHDtwViHuN/ALrGY+uKMqLBvwIikUHOOMMXcQwIc+TwUX+csQlAWivElPUDvGm5bTGIGoBtGvzNbSr+kXu3IwrjD4dWiqtivVpxmXz0CeXCdNYDOiMSvR4Ro/FOg0LKfLRNsFv3yxxEf4eluFtpBv6ywWld3Pig/WSi9n1X88zuvTdRSmbTGBrQ1trsqoNjL1FgqKouNIXrS1cnvUOZXMNQ6JYhtlRBFJRX41+k0g2g+9f5XpaWnZmwBoY509+35LL5fBhnl9goK42lt7KmVMl71jyK3INLpcn/yXEi3L3r/nn5G8j+GwV46AqhhhCECy/BFdaf3G9SJoS0JhiHB/29uu6cTvy9S00oKuTv5Ks26OnpMY8VyCKaMkcDNVaDstEmHgd9hAIo2EK6cNdVf2Es/x8PnDMicFLKaxCRinfSyft52IiCmVdV3ihsEXpFIEW7LJrpM1AcQO9l7Ke33q/OY77QNdXVhc4KaWt8Dd2MutzaIGAQun9xOnvSUOiyJ5qXQjfw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(7916004)(4636009)(366004)(8936002)(86362001)(38100700002)(2906002)(9686003)(5660300002)(66476007)(316002)(6512007)(6506007)(1076003)(107886003)(54906003)(508600001)(186003)(6486002)(6916009)(33716001)(8676002)(4326008)(66556008)(66946007)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?CYwDCpuwUSQoX7SEfO12K5TC4es0pY81ut3tjbMouLakoGgY9CawN0SJN7ss?=
+ =?us-ascii?Q?dRtRM6y+okXAH85aa8BtBwnRKI8QgdflyXJ74uGxYPQEPtWklMLRQngTbfHU?=
+ =?us-ascii?Q?8Ogfqz1aospQgF/fvk1wk6+ajsONoGXKsFc/nKak/oSwPIGGaAHJrDcyILXH?=
+ =?us-ascii?Q?YnOOMbI2Slbon6voMZkJ0UVjob7bSXT+8kxpkmZx2/U7c4qe9z0i1zAvcA/Z?=
+ =?us-ascii?Q?LD1hUccyhTqcDavURX5pzGZsihoaP9ztK2MRFXY0OFHXuN689R+uMzm6egLI?=
+ =?us-ascii?Q?WtUrzgmGDtyEkPPonYfu/6Thf2nu/OwIHbA6aF9faXR3DzbCIfUVAx3Ls0le?=
+ =?us-ascii?Q?BF6emvAW/LRKKnr9vG1zvOCoG0Cb5oYfy+TcOR1Oy0v+iiRmDTitKqijrMFi?=
+ =?us-ascii?Q?uNTaJ85kh3DzuHyRi6VL+cdwGKUVflIc0epuu3+P+ZnaeEwTLhyBWpQ+UTOz?=
+ =?us-ascii?Q?OBJFj+yxslMsCmWemwOMLMelruVVuk3R07zlxNlK347bqEsioT81KlSeRDYZ?=
+ =?us-ascii?Q?M3dgkWN7VuwL2rmOdsHEN/2XYM+/DVDFXoGQ+lybWZUO5VsQuUPuIFy0+Tkq?=
+ =?us-ascii?Q?Ub5vhVobIa7ab75VN7mQ1GbJeIYiN99KtXAwdMNqJcSAm5Exg4nRGeaA6Zdf?=
+ =?us-ascii?Q?eLETaRYR73/VAQ45Nv+sFbHSrI7Qhfm/EHeEFu6nvS04Zfz4DXzwZ7mKopTe?=
+ =?us-ascii?Q?F2vdSKAj1ayAhpyccwJyLbKRY5pJ86rACMbi7/hMoeWYfFKYimoJHuLojhwK?=
+ =?us-ascii?Q?bqXLIoVtmIuBbsGR+Rl4T8Mlqg5Vs2FIKvke/ki+tA268tK/X2EYuE1Yq+Ww?=
+ =?us-ascii?Q?R5zNgc5xCkVnilotP2lHgC3zO2ZJuHJ1PPNyv2LWL8mSO63Z/WdN60n+B2jH?=
+ =?us-ascii?Q?8LiTPtMU/E0ddrLiofTA4DYW99BomVoPYMpZ1KhWa43HcfQQRy1uXZahFLIG?=
+ =?us-ascii?Q?7CN+BEHDL5ypOSC6st1oFlMMfOmbKmKSYm7oimqndXPM4C6FpAHrTwku1GeA?=
+ =?us-ascii?Q?WEK7n48IsThUCSnohqaMMdOr2LvUJ0fUkaVYOWHyHnoJdd9tMy3dzAwM6kjx?=
+ =?us-ascii?Q?e+zdGojsdluxqGsIz85mva2f/9sjVGpQ5TFxroDPXZeVht7vGblDlQjtN9iB?=
+ =?us-ascii?Q?xUac+zrgCtyxuKK8DuWNVkvh7bA+WxMPHC/fojAvQ9Vg96esR7PK+MXiBdMs?=
+ =?us-ascii?Q?57VY3jfkpv6z9pSJ10cFR1d2blBE5l2VpjQc8oXPq2hZmYUV+hzheWgZoHvj?=
+ =?us-ascii?Q?Gfq3fr3dk7hQzI12lD4XB3zTc9gs+SRpd2K8rntZBMr9O21h9U8m7PzzAqpc?=
+ =?us-ascii?Q?xt/d/bfEVdz20T93H07rAzcRZrrPlFe/AS/6Cgme4D0IqjO7bTp6quDwZ4p4?=
+ =?us-ascii?Q?Pn9lcJA2/gBBUL2jOiKgueD08XWKtq3yp9N/ZCvvBTc96fynq9Z8Q7KUD7+J?=
+ =?us-ascii?Q?mxJ33CjBNvWFg8RAdpkPB58krDgrQHKJavr5QO45JUpzMDNHwlJpLwm7jvRU?=
+ =?us-ascii?Q?yOtOLsN4fN2Vvg41dNSjuAqy6Ef4PONKhI+cHt+2doXGKvq9HDdxXglTn9zK?=
+ =?us-ascii?Q?UKmKLtYTZtgmw222ynKK+Mi+glzwykBAKzDHnsHiXbuX+YZs9FEzDBPyJyP4?=
+ =?us-ascii?Q?H9fHU2RB8EiJnYjpre1CdppFCxfthFPLcBFa+SypGwasbDTc+sBLNf5kWNx1?=
+ =?us-ascii?Q?gy6zlFjDlDXqddqdhUmhSPsrih8CxC8EHraDOz/c+7Ey7my4qlwgfdHkyoru?=
+ =?us-ascii?Q?32djT+yt5BKevPL/4dfjE9nzMEWXGEM=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9d37de0-b136-40de-ff34-08da1b3d36d1
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2022 21:58:15.4283
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dwiE/9hdbCJmN2cGKTqnefz1EFN4G4+GJJbJ5tc1oyib9pL1W2dNGo81U3aKoyYyj4WVtyt1eFwpI7/c53ufnQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1920
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 09:46:20AM -0700, Saeed Mahameed wrote:
-> On 10 Apr 11:28, Leon Romanovsky wrote:
-> > From: Leon Romanovsky <leonro@nvidia.com>
-> > 
-> > Cleanup IPsec FS initialization and cleanup functions.
-> 
-> Can you be more clear about what are you cleaning up ?
-> 
-> unfolding/joining static functions shouldn't be considered as cleanup.
+On 10 Apr 20:21, Leon Romanovsky wrote:
+>On Sun, Apr 10, 2022 at 09:46:20AM -0700, Saeed Mahameed wrote:
+>> On 10 Apr 11:28, Leon Romanovsky wrote:
+>> > From: Leon Romanovsky <leonro@nvidia.com>
+>> >
+>> > Cleanup IPsec FS initialization and cleanup functions.
+>>
+>> Can you be more clear about what are you cleaning up ?
+>>
+>> unfolding/joining static functions shouldn't be considered as cleanup.
+>
+>And how would you describe extensive usage of one time called functions
+>that have no use as standalone ones?
+>
 
-And how would you describe extensive usage of one time called functions
-that have no use as standalone ones?
+Functional programming.
 
-This patch makes sure that all flow steering initialized and cleaned at
-one place and allows me to present coherent picture of what is needed
-for IPsec FS.
+>This patch makes sure that all flow steering initialized and cleaned at
+>one place and allows me to present coherent picture of what is needed
+>for IPsec FS.
+>
 
-You should focus on the end result of this series rather on single patch.
- 15 files changed, 320 insertions(+), 839 deletions(-)
+This is already the case before this patch.
 
-> 
-> Also i don't agree these patches should go to mlx5-next, we need to avoid
-> bloating  mlx5-next.
-> Many of these patches are purely ipsec, yes i understand you are heavily
-> modifying include/linux/mlx5/accel.h but from what I can tell, it's not
-> affecting rdma.
+>You should focus on the end result of this series rather on single patch.
+> 15 files changed, 320 insertions(+), 839 deletions(-)
 
-I'm deleting include/linux/mlx5/accel.h, it is not needed.
-But I don't care about the target, it can be net-next and not
-mlx5-next.
+Overall the series is fine, this patch in particular is unnecessary cancelation of
+others previous decisions, which i personally like and might as well have
+suggested myself, so let's avoid such clutter.
 
-> 
-> Please give me a chance to review the whole series until next week as i am
-> out of office this week.
 
-I see this problematic as next week will be combination of my Passover
-vacation and paternity leave at the same time.
-
-Thanks
-
-> 
-> > 
-> > Reviewed-by: Raed Salem <raeds@nvidia.com>
-> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> > ---
-> > .../mellanox/mlx5/core/en_accel/ipsec.c       |  4 +-
-> > .../mellanox/mlx5/core/en_accel/ipsec_fs.c    | 73 ++++++-------------
-> > .../mellanox/mlx5/core/en_accel/ipsec_fs.h    |  4 +-
-> > 3 files changed, 27 insertions(+), 54 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> > index c280a18ff002..5a10755dd4f1 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-> > @@ -424,7 +424,7 @@ int mlx5e_ipsec_init(struct mlx5e_priv *priv)
-> > 	}
-> > 
-> > 	priv->ipsec = ipsec;
-> > -	mlx5e_accel_ipsec_fs_init(priv);
-> > +	mlx5e_ipsec_fs_init(ipsec);
-> > 	netdev_dbg(priv->netdev, "IPSec attached to netdevice\n");
-> > 	return 0;
-> > }
-> > @@ -436,7 +436,7 @@ void mlx5e_ipsec_cleanup(struct mlx5e_priv *priv)
-> > 	if (!ipsec)
-> > 		return;
-> > 
-> > -	mlx5e_accel_ipsec_fs_cleanup(priv);
-> > +	mlx5e_ipsec_fs_cleanup(ipsec);
-> > 	destroy_workqueue(ipsec->wq);
-> > 
-> > 	kfree(ipsec);
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-> > index 66b529e36ea1..869b5692e9b9 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.c
-> > @@ -632,81 +632,54 @@ void mlx5e_accel_ipsec_fs_del_rule(struct mlx5e_priv *priv,
-> > 		tx_del_rule(priv, ipsec_rule);
-> > }
-> > 
-> > -static void fs_cleanup_tx(struct mlx5e_priv *priv)
-> > -{
-> > -	mutex_destroy(&priv->ipsec->tx_fs->mutex);
-> > -	WARN_ON(priv->ipsec->tx_fs->refcnt);
-> > -	kfree(priv->ipsec->tx_fs);
-> > -	priv->ipsec->tx_fs = NULL;
-> > -}
-> > -
-> > -static void fs_cleanup_rx(struct mlx5e_priv *priv)
-> > +void mlx5e_ipsec_fs_cleanup(struct mlx5e_ipsec *ipsec)
-> > {
-> > 	struct mlx5e_accel_fs_esp_prot *fs_prot;
-> > 	struct mlx5e_accel_fs_esp *accel_esp;
-> > 	enum accel_fs_esp_type i;
-> > 
-> > -	accel_esp = priv->ipsec->rx_fs;
-> > +	if (!ipsec->rx_fs)
-> > +		return;
-> > +
-> > +	mutex_destroy(&ipsec->tx_fs->mutex);
-> > +	WARN_ON(ipsec->tx_fs->refcnt);
-> > +	kfree(ipsec->tx_fs);
-> > +
-> > +	accel_esp = ipsec->rx_fs;
-> > 	for (i = 0; i < ACCEL_FS_ESP_NUM_TYPES; i++) {
-> > 		fs_prot = &accel_esp->fs_prot[i];
-> > 		mutex_destroy(&fs_prot->prot_mutex);
-> > 		WARN_ON(fs_prot->refcnt);
-> > 	}
-> > -	kfree(priv->ipsec->rx_fs);
-> > -	priv->ipsec->rx_fs = NULL;
-> > -}
-> > -
-> > -static int fs_init_tx(struct mlx5e_priv *priv)
-> > -{
-> > -	priv->ipsec->tx_fs =
-> > -		kzalloc(sizeof(struct mlx5e_ipsec_tx), GFP_KERNEL);
-> > -	if (!priv->ipsec->tx_fs)
-> > -		return -ENOMEM;
-> > -
-> > -	mutex_init(&priv->ipsec->tx_fs->mutex);
-> > -	return 0;
-> > +	kfree(ipsec->rx_fs);
-> > }
-> > 
-> > -static int fs_init_rx(struct mlx5e_priv *priv)
-> > +int mlx5e_ipsec_fs_init(struct mlx5e_ipsec *ipsec)
-> > {
-> > 	struct mlx5e_accel_fs_esp_prot *fs_prot;
-> > 	struct mlx5e_accel_fs_esp *accel_esp;
-> > 	enum accel_fs_esp_type i;
-> > +	int err = -ENOMEM;
-> > 
-> > -	priv->ipsec->rx_fs =
-> > -		kzalloc(sizeof(struct mlx5e_accel_fs_esp), GFP_KERNEL);
-> > -	if (!priv->ipsec->rx_fs)
-> > +	ipsec->tx_fs = kzalloc(sizeof(*ipsec->tx_fs), GFP_KERNEL);
-> > +	if (!ipsec->tx_fs)
-> > 		return -ENOMEM;
-> > 
-> > -	accel_esp = priv->ipsec->rx_fs;
-> > +	ipsec->rx_fs = kzalloc(sizeof(*ipsec->rx_fs), GFP_KERNEL);
-> > +	if (!ipsec->rx_fs)
-> > +		goto err_rx;
-> > +
-> > +	mutex_init(&ipsec->tx_fs->mutex);
-> > +
-> > +	accel_esp = ipsec->rx_fs;
-> > 	for (i = 0; i < ACCEL_FS_ESP_NUM_TYPES; i++) {
-> > 		fs_prot = &accel_esp->fs_prot[i];
-> > 		mutex_init(&fs_prot->prot_mutex);
-> > 	}
-> > 
-> > 	return 0;
-> > -}
-> > -
-> > -void mlx5e_accel_ipsec_fs_cleanup(struct mlx5e_priv *priv)
-> > -{
-> > -	if (!priv->ipsec->rx_fs)
-> > -		return;
-> > -
-> > -	fs_cleanup_tx(priv);
-> > -	fs_cleanup_rx(priv);
-> > -}
-> > -
-> > -int mlx5e_accel_ipsec_fs_init(struct mlx5e_priv *priv)
-> > -{
-> > -	int err;
-> > -
-> > -	err = fs_init_tx(priv);
-> > -	if (err)
-> > -		return err;
-> > -
-> > -	err = fs_init_rx(priv);
-> > -	if (err)
-> > -		fs_cleanup_tx(priv);
-> > 
-> > +err_rx:
-> > +	kfree(ipsec->tx_fs);
-> > 	return err;
-> > }
-> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.h b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.h
-> > index b70953979709..8e0e829ab58f 100644
-> > --- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.h
-> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec_fs.h
-> > @@ -9,8 +9,8 @@
-> > #include "ipsec_offload.h"
-> > #include "en/fs.h"
-> > 
-> > -void mlx5e_accel_ipsec_fs_cleanup(struct mlx5e_priv *priv);
-> > -int mlx5e_accel_ipsec_fs_init(struct mlx5e_priv *priv);
-> > +void mlx5e_ipsec_fs_cleanup(struct mlx5e_ipsec *ipsec);
-> > +int mlx5e_ipsec_fs_init(struct mlx5e_ipsec *ipsec);
-> > int mlx5e_accel_ipsec_fs_add_rule(struct mlx5e_priv *priv,
-> > 				  struct mlx5_accel_esp_xfrm_attrs *attrs,
-> > 				  u32 ipsec_obj_id,
-> > -- 
-> > 2.35.1
-> > 
