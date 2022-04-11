@@ -2,182 +2,219 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161A74FB26A
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 05:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF81C4FB328
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 07:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243913AbiDKDgm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Apr 2022 23:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S236609AbiDKFQq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Apr 2022 01:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234926AbiDKDgl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Apr 2022 23:36:41 -0400
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6050262B
-        for <linux-rdma@vger.kernel.org>; Sun, 10 Apr 2022 20:34:26 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10313"; a="348461799"
-X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
-   d="scan'208";a="348461799"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2022 20:34:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
-   d="scan'208";a="525799568"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga006.jf.intel.com with ESMTP; 10 Apr 2022 20:34:23 -0700
-From:   yanjun.zhu@linux.dev
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        yanjun.zhu@linux.dev, linux-rdma@vger.kernel.org
-Cc:     Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCHv2 1/1] RDMA/rxe: Fix a dead lock problem
-Date:   Mon, 11 Apr 2022 16:00:18 -0400
-Message-Id: <20220411200018.1363127-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S244412AbiDKFQo (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Apr 2022 01:16:44 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044D9654C
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Apr 2022 22:14:30 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id s13so18673936ljd.5
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Apr 2022 22:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R+I2S0fGmNRlian1W9qFD/Q6hmTx341o9Qt+Qf+7pIo=;
+        b=ULkLzQL23dPashePJhcnkOzSPqw7+NY9RckJu6hrKidR7c7bcNLOiRwkRe8AOm6K+y
+         Mun6GJ38t2PZCtjA1CbPPL4x3QpEvZynVp5MS6wOsnTv5DpDSw90TfxmVs29+rDxflVM
+         Ls81K7QfqhRDox9N6Gg3cSXHZ66TWN47jAvBfH3xYPw57gWzkbd4swi+3w/cghGI31jE
+         ZPi0uHl/K2snCTX23Alr+H4MDbhJt+aAuQX/AA+CnHEIBEtddzJYMtpxzgKx/1lOq0BY
+         eCerCkKsaVyRw4vmc1eRxHzDX6ccnO4yQlA09fJ3GooNphQWPxKKCRKCaYDWRmV7B06Q
+         SMGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R+I2S0fGmNRlian1W9qFD/Q6hmTx341o9Qt+Qf+7pIo=;
+        b=HTvtjDu9JYUyvE7ebHxXG7v3oYr91THkAGct/dzybOr2HKxFBPig6DIb5szVyYGEQP
+         wZjQ076QyroxCbClceVPVTqlXClMqPBEgVfvXqLhh2mYjZdYplQceoSsUdTMiK6qJClg
+         3wq3ARl23jzqeMwsi0DZFguxjujgOmqK4F8pkpagaN2Y/iAOpJCa/tOkgpBN0Kvuo0mQ
+         XLlQNyLB68/m1CL74DfFsPg+yxV+ciNHj3XQwRLi7JD+niPfNcj7nGj7Iok7yIydEkh3
+         qtUXg7/6WBpxyxOSRTSPZf12qBHIcBHjujyn7bzCZD0ILePmel2EW0+D1oB0ZhFDlaeq
+         FJ2A==
+X-Gm-Message-State: AOAM532D4dKw45Pk4Ody4B42l1qik9bPRQ31yY79d2eIjdbQ5EuEwMNE
+        6a5xXd0RodSG+a0LDL3zI3fEK8cTgQQqYpBUqZeDq/DyU+Q=
+X-Google-Smtp-Source: ABdhPJw92dgNex4qEw6sVnNSaa+nTVVWM4kXd/w+sy2+UwkDY7H/Lp7B7R9rJfh9tWVFJal4jGdkDtkztXBAp9X11vA=
+X-Received: by 2002:a2e:7c16:0:b0:244:be33:9718 with SMTP id
+ x22-20020a2e7c16000000b00244be339718mr19113353ljc.467.1649654067927; Sun, 10
+ Apr 2022 22:14:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <1b0ae089-ff3f-7e84-4c07-a5d97554e3c0@gmail.com>
+In-Reply-To: <1b0ae089-ff3f-7e84-4c07-a5d97554e3c0@gmail.com>
+From:   Zhu Yanjun <zyjzyj2000@gmail.com>
+Date:   Mon, 11 Apr 2022 13:14:16 +0800
+Message-ID: <CAD=hENdM=VEF4MM_L=W1PtiX=x2s_kucMLc41WWmK-6c6s2Nrg@mail.gmail.com>
+Subject: Re: null pointer in rxe_mr_copy()
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
+On Mon, Apr 11, 2022 at 11:34 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> Zhu,
+>
+> Since checking for mr == NULL in rxe_mr_copy fixes the problem you were seeing in rping.
+> Perhaps it would be a good idea to apply the following patch which would tell us which of
+> the three calls to rxe_mr_copy is failing. My suspicion is the one in read_reply()
+Hi, Bob
 
-This is a dead lock problem.
-The xa_lock first is acquired in this:
+Yes. It is the function read_reply.
 
-{SOFTIRQ-ON-W} state was registered at:
+ kernel: ------------[ cut here ]------------
+ kernel: WARNING: CPU: 74 PID: 38510 at
+drivers/infiniband/sw/rxe/rxe_resp.c:768 rxe_responder+0x1d67/0x1dd0
+[rdma_rxe]
+ kernel: Modules linked in: rdma_rxe(OE) ip6_udp_tunnel udp_tunnel
+rds_rdma rds xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
+nf_reject_ipv4 nft_compat nft_chain_nat nf_nat nf_conntrack
+nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun bridge stp llc
+vfat fat rpcrdma sunrpc rdma_ucm ib_srpt ib_isert iscsi_target_mod
+target_core_mod intel_rapl_msr intel_rapl_common ib_iser libiscsi
+scsi_transport_iscsi rdma_cm ib_cm i10nm_edac iw_cm nfit libnvdimm
+x86_pkg_temp_thermal intel_powerclamp coretemp ipmi_ssif kvm_intel kvm
+irdma iTCO_wdt iTCO_vendor_support i40e irqbypass crct10dif_pclmul
+crc32_pclmul ib_uverbs ghash_clmulni_intel rapl intel_cstate ib_core
+intel_uncore wmi_bmof pcspkr mei_me isst_if_mbox_pci isst_if_mmio
+acpi_ipmi isst_if_common ipmi_si i2c_i801 mei intel_pch_thermal
+i2c_smbus ipmi_devintf ipmi_msghandler acpi_power_meter ip_tables xfs
+libcrc32c sd_mod t10_pi crc64_rocksoft crc64 sg mgag200 i2c_algo_bit
+drm_shmem_helper drm_kms_helper syscopyarea sysfillrect ice
+ kernel: sysimgblt fb_sys_fops ahci drm libahci crc32c_intel libata
+megaraid_sas tg3 wmi dm_mirror dm_region_hash dm_log dm_mod fuse [last
+unloaded: ip6_udp_tunnel]
+ kernel: CPU: 74 PID: 38510 Comm: rping Kdump: loaded Tainted: G S
+ W  OE     5.18.0.RXE #14
+ kernel: Hardware name: Dell Inc. PowerEdge R750/06V45N, BIOS 1.2.4 05/28/2021
+ kernel: RIP: 0010:rxe_responder+0x1d67/0x1dd0 [rdma_rxe]
+ kernel: Code: 24 30 48 89 44 24 30 49 8b 86 88 00 00 00 48 89 44 24
+38 48 8b 73 20 48 8b 43 18 ff d0 0f 1f 00 e9 10 e3 ff ff e8 e9 52 98
+ee <0f> 0b 45 8b 86 f0 00 00 00 48 8b 8c 24 e0 00 00 00 ba 01 03 00 00
+ kernel: RSP: 0018:ff5f5b78c7624e70 EFLAGS: 00010246
+ kernel: RAX: ff20346c70a1d700 RBX: ff20346c7127c040 RCX: ff20346c70a1d700
+ kernel: RDX: 0000000000000000 RSI: 0000000000000000 RDI: ff20346c53194000
+ kernel: RBP: 0000000000000040 R08: 2ebbb556a556fe7f R09: 69de575d0320dc48
+ kernel: R10: ff5f5b78c7624de0 R11: 00000000ee4984a4 R12: ff20346c70a1d700
+ kernel: R13: 0000000000000000 R14: ff20346ef0539000 R15: ff20346c70a1c528
+ kernel: FS:  00007ff34d49b740(0000) GS:ff20347b3fa80000(0000)
+knlGS:0000000000000000
+ kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ kernel: CR2: 00007ff40be030c0 CR3: 00000003d0634005 CR4: 0000000000771ee0
+ kernel: DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ kernel: DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ kernel: PKRU: 55555554
+ kernel: Call Trace:
+ kernel: <IRQ>
+ kernel: ? __local_bh_enable_ip+0x9f/0xe0
+ kernel: ? rxe_do_task+0x67/0xe0 [rdma_rxe]
+ kernel: ? __local_bh_enable_ip+0x77/0xe0
+ kernel: rxe_do_task+0x71/0xe0 [rdma_rxe]
+ kernel: tasklet_action_common.isra.15+0xb8/0xf0
+ kernel: __do_softirq+0xe4/0x48c
+ kernel: ? rxe_do_task+0x67/0xe0 [rdma_rxe]
+ kernel: do_softirq+0xb5/0x100
+ kernel: </IRQ>
+ kernel: <TASK>
+ kernel: __local_bh_enable_ip+0xd0/0xe0
+ kernel: rxe_do_task+0x67/0xe0 [rdma_rxe]
+ kernel: rxe_post_send+0x2ff/0x4c0 [rdma_rxe]
+ kernel: ? rdma_lookup_get_uobject+0x131/0x1e0 [ib_uverbs]
+ kernel: ib_uverbs_post_send+0x4d5/0x700 [ib_uverbs]
+ kernel: ib_uverbs_write+0x38f/0x5e0 [ib_uverbs]
+ kernel: ? find_held_lock+0x2d/0x90
+ kernel: vfs_write+0xb8/0x370
+ kernel: ksys_write+0xbb/0xd0
+ kernel: ? syscall_trace_enter.isra.15+0x169/0x220
+ kernel: do_syscall_64+0x37/0x80
 
-  lock_acquire+0x1d2/0x5a0
-  _raw_spin_lock+0x33/0x80
-  __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
-  __ib_alloc_pd+0xf9/0x550 [ib_core]
-  ib_mad_init_device+0x2d9/0xd20 [ib_core]
-  add_client_context+0x2fa/0x450 [ib_core]
-  enable_device_and_get+0x1b7/0x350 [ib_core]
-  ib_register_device+0x757/0xaf0 [ib_core]
-  rxe_register_device+0x2eb/0x390 [rdma_rxe]
-  rxe_net_add+0x83/0xc0 [rdma_rxe]
-  rxe_newlink+0x76/0x90 [rdma_rxe]
-  nldev_newlink+0x245/0x3e0 [ib_core]
-  rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
-  rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
-  netlink_unicast+0x43b/0x640
-  netlink_sendmsg+0x7eb/0xc40
-  sock_sendmsg+0xe0/0x110
-  __sys_sendto+0x1d7/0x2b0
-  __x64_sys_sendto+0xdd/0x1b0
-  do_syscall_64+0x37/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
+Zhu Yanjun
 
-Then xa_lock is acquired in this:
-
-{IN-SOFTIRQ-W}:
-
-Call Trace:
- <TASK>
-  dump_stack_lvl+0x44/0x57
-  mark_lock.part.52.cold.79+0x3c/0x46
-  __lock_acquire+0x1565/0x34a0
-  lock_acquire+0x1d2/0x5a0
-  _raw_spin_lock_irqsave+0x42/0x90
-  rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-  rxe_get_av+0x168/0x2a0 [rdma_rxe]
-  rxe_requester+0x75b/0x4a90 [rdma_rxe]
-  rxe_do_task+0x134/0x230 [rdma_rxe]
-  tasklet_action_common.isra.12+0x1f7/0x2d0
-  __do_softirq+0x1ea/0xa4c
-  run_ksoftirqd+0x32/0x60
-  smpboot_thread_fn+0x503/0x860
-  kthread+0x29b/0x340
-  ret_from_fork+0x1f/0x30
- </TASK>
-
-From the above, in the function __rxe_add_to_pool,
-xa_lock is acquired. Then the function __rxe_add_to_pool
-is interrupted by softirq. The function
-rxe_pool_get_index will also acquire xa_lock.
-
-Finally, the dead lock appears.
-
-[  296.806097]        CPU0
-[  296.808550]        ----
-[  296.811003]   lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
-[  296.814583]   <Interrupt>
-[  296.817209]     lock(&xa->xa_lock#15); <---- rxe_pool_get_index
-[  296.820961]
-                 *** DEADLOCK ***
-
-Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
-Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
-V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
----
- drivers/infiniband/sw/rxe/rxe_pool.c | 19 ++++++++++++++-----
- 1 file changed, 14 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 87066d04ed18..9675184a759f 100644
---- a/drivers/infiniband/sw/rxe/rxe_pool.c
-+++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -121,6 +121,7 @@ void *rxe_alloc(struct rxe_pool *pool)
- 	struct rxe_pool_elem *elem;
- 	void *obj;
- 	int err;
-+	unsigned long flags;
- 
- 	if (WARN_ON(!(pool->flags & RXE_POOL_ALLOC)))
- 		return NULL;
-@@ -138,8 +139,10 @@ void *rxe_alloc(struct rxe_pool *pool)
- 	elem->obj = obj;
- 	kref_init(&elem->ref_cnt);
- 
--	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
--			      &pool->next, GFP_KERNEL);
-+	xa_lock_irqsave(&pool->xa, flags);
-+	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_ATOMIC);
-+	xa_unlock_irqrestore(&pool->xa, flags);
- 	if (err)
- 		goto err_free;
- 
-@@ -155,6 +158,7 @@ void *rxe_alloc(struct rxe_pool *pool)
- int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
- {
- 	int err;
-+	unsigned long flags;
- 
- 	if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
- 		return -EINVAL;
-@@ -166,8 +170,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
- 	elem->obj = (u8 *)elem - pool->elem_offset;
- 	kref_init(&elem->ref_cnt);
- 
--	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
--			      &pool->next, GFP_KERNEL);
-+	xa_lock_irqsave(&pool->xa, flags);
-+	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_ATOMIC);
-+	xa_unlock_irqrestore(&pool->xa, flags);
- 	if (err)
- 		goto err_cnt;
- 
-@@ -200,8 +206,11 @@ static void rxe_elem_release(struct kref *kref)
- {
- 	struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
- 	struct rxe_pool *pool = elem->pool;
-+	unsigned long flags;
- 
--	xa_erase(&pool->xa, elem->index);
-+	xa_lock_irqsave(&pool->xa, flags);
-+	__xa_erase(&pool->xa, elem->index);
-+	xa_unlock_irqrestore(&pool->xa, flags);
- 
- 	if (pool->cleanup)
- 		pool->cleanup(elem);
--- 
-2.27.0
-
+ in rxe_resp.c
+> This could be caused by a race between shutting down the qp and finishing up an RDMA read.
+> The responder resources state machine is completely unprotected from simultaneous access by
+> verbs code and bh code in rxe_resp.c. rxe_resp is a tasklet so all the accesses from there are
+> serialized but if anyone makes a verbs call that touches the responder resources it could
+> cause problems. The most likely (only?) place this could happen is qp shutdown.
+>
+> Bob
+>
+>
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+>
+> index 60a31b718774..66184f5a4ddf 100644
+>
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+>
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+>
+> @@ -489,6 +489,7 @@ int copy_data(
+>
+>                 if (bytes > 0) {
+>
+>                         iova = sge->addr + offset;
+>
+>
+>
+> +                       WARN_ON(!mr);
+>
+>                         err = rxe_mr_copy(mr, iova, addr, bytes, dir);
+>
+>                         if (err)
+>
+>                                 goto err2;
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>
+> index 1d95fab606da..6e3e86bdccd7 100644
+>
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>
+> @@ -536,6 +536,7 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
+>
+>         int     err;
+>
+>         int data_len = payload_size(pkt);
+>
+>
+>
+> +       WARN_ON(!qp->resp.mr);
+>
+>         err = rxe_mr_copy(qp->resp.mr, qp->resp.va + qp->resp.offset,
+>
+>                           payload_addr(pkt), data_len, RXE_TO_MR_OBJ);
+>
+>         if (err) {
+>
+> @@ -772,6 +773,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>
+>         if (!skb)
+>
+>                 return RESPST_ERR_RNR;
+>
+>
+>
+> +       WARN_ON(!mr);
+>
+>         err = rxe_mr_copy(mr, res->read.va, payload_addr(&ack_pkt),
+>
+>                           payload, RXE_FROM_MR_OBJ);
+>
+>         if (err)
+>
