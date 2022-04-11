@@ -2,116 +2,81 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 962554FB3D2
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 08:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73EA4FB792
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 11:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244984AbiDKGkM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 11 Apr 2022 02:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46004 "EHLO
+        id S237419AbiDKJhf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 11 Apr 2022 05:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244963AbiDKGkJ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Apr 2022 02:40:09 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D867622BE7;
-        Sun, 10 Apr 2022 23:37:56 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7474EB8108F;
-        Mon, 11 Apr 2022 06:37:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82C7CC385A3;
-        Mon, 11 Apr 2022 06:37:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649659074;
-        bh=IH9HGCzUDxr6ArC4hLFPFbPwK9Zx/tl75hCAOLBSY7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Nu48QePC1ycUvVxDUKg/81Q2EKwKNcfenlPm+JScXmAK7SaTV0dlGK8X3e9d7Pkir
-         7F8MoV+8GcJON3PP5zY5KoX3pZLeWMOeCdH2LwlQXcmzmq8Tt8/CIFo3+ObgwhVe83
-         X+TST+krtD+MNpdn5ZKFyQoOK4e/RGliG9LFlAMKtHhyCiqixygpf/qJf2bW2wUip7
-         n/xOIUpnbv/gUXRT8ol2nwfqfdSI5fvj7bha0OzKYeFke7RNpjRPaEXjpJy37z0fpo
-         R2JZhhIZRNo1dqob1Fc+I8B6LK7Fz0h5zC4b/KXUbZsr6aqG3Fu7O3pOlRO4Ou6zEi
-         21JYMfnPSddSg==
-Date:   Mon, 11 Apr 2022 09:37:50 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Paolo Abeni <pabeni@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Raed Salem <raeds@nvidia.com>
-Subject: Re: [PATCH mlx5-next 01/17] net/mlx5: Simplify IPsec flow steering
- init/cleanup functions
-Message-ID: <YlPMvuDXHFsZReLt@unreal>
-References: <cover.1649578827.git.leonro@nvidia.com>
- <3f7001272e4dc51fcef031bf896a7e01a2b4b7f6.1649578827.git.leonro@nvidia.com>
- <20220410164620.2dfzhx6qt4cg6b6o@sx1>
- <YlMR/CHoS3xg5uRL@unreal>
- <20220410215813.sxqmvmm5wkeguj6y@sx1>
+        with ESMTP id S1344438AbiDKJhZ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 11 Apr 2022 05:37:25 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25CCD12083
+        for <linux-rdma@vger.kernel.org>; Mon, 11 Apr 2022 02:35:12 -0700 (PDT)
+Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4KcNvQ0xHpzgYbg;
+        Mon, 11 Apr 2022 17:33:22 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 11 Apr 2022 17:35:10 +0800
+Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
+ (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 11 Apr
+ 2022 17:35:10 +0800
+Subject: Re: [PATCH for-next] RDMA/hns: Fix the missing device capability flag
+ on the virtual function
+To:     Jason Gunthorpe <jgg@nvidia.com>
+References: <20220409083523.12097-1-liangwenpeng@huawei.com>
+ <20220409223405.GC2120790@nvidia.com>
+CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linuxarm@huawei.com>
+From:   Wenpeng Liang <liangwenpeng@huawei.com>
+Message-ID: <a63f789e-41d4-9370-afdb-be5182469ee5@huawei.com>
+Date:   Mon, 11 Apr 2022 17:35:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220410215813.sxqmvmm5wkeguj6y@sx1>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20220409223405.GC2120790@nvidia.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.238.78]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sun, Apr 10, 2022 at 02:58:13PM -0700, Saeed Mahameed wrote:
-> On 10 Apr 20:21, Leon Romanovsky wrote:
-> > On Sun, Apr 10, 2022 at 09:46:20AM -0700, Saeed Mahameed wrote:
-> > > On 10 Apr 11:28, Leon Romanovsky wrote:
-> > > > From: Leon Romanovsky <leonro@nvidia.com>
-> > > >
-> > > > Cleanup IPsec FS initialization and cleanup functions.
-> > > 
-> > > Can you be more clear about what are you cleaning up ?
-> > > 
-> > > unfolding/joining static functions shouldn't be considered as cleanup.
-> > 
-> > And how would you describe extensive usage of one time called functions
-> > that have no use as standalone ones?
-> > 
+On 2022/4/10 6:34, Jason Gunthorpe wrote:
+> On Sat, Apr 09, 2022 at 04:35:23PM +0800, Wenpeng Liang wrote:
+>> If the device is a virtual function, the corresponding device capability
+>> flag should be set when querying the device.
+>>
+>> Fixes: 0b567cde9d7a ("RDMA/hns: Enable RoCE on virtual functions")
+>> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
+>> ---
+>>  drivers/infiniband/hw/hns/hns_roce_main.c | 3 +++
+>>  1 file changed, 3 insertions(+)
 > 
-> Functional programming.
-
-The separation between various modules and their functions is function
-programming, but wrapper in .c file over basic kernel primitive (kzalloc)
-is obfuscation.
-
+> No, this is only set if the device implements the _vf_ ops and uses
+> ipoib
 > 
-> > This patch makes sure that all flow steering initialized and cleaned at
-> > one place and allows me to present coherent picture of what is needed
-> > for IPsec FS.
-> > 
+> roce devices never run ipoib
 > 
-> This is already the case before this patch.
 
-With two main differences: 
-First, it is is less code to achieve the same and second, it is easy
-to read (I read this code a lot lately).
+I would unset this flag. Please ignore this patch.
 
- 3 files changed, 27 insertions(+), 54 deletions(-)
+Thanks,
+Wenpeng
 
-> 
-> > You should focus on the end result of this series rather on single patch.
-> > 15 files changed, 320 insertions(+), 839 deletions(-)
-> 
-> Overall the series is fine, this patch in particular is unnecessary cancelation of
-> others previous decisions, which i personally like and might as well have
-> suggested myself, so let's avoid such clutter.
-
-Sorry, but I disagree that removal of useless indirection that hurts
-readability is clutter. It is refactoring.
-
-Please focus on end goal of this series.
-
-Thanks
-
-> 
+> Jason
+> .
 > 
