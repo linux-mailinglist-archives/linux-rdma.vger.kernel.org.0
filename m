@@ -2,42 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 696EC4FB22E
-	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 05:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 161A74FB26A
+	for <lists+linux-rdma@lfdr.de>; Mon, 11 Apr 2022 05:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241134AbiDKDNq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 10 Apr 2022 23:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
+        id S243913AbiDKDgm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 10 Apr 2022 23:36:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236397AbiDKDNp (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Apr 2022 23:13:45 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163802F3A2
-        for <linux-rdma@vger.kernel.org>; Sun, 10 Apr 2022 20:11:31 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10313"; a="243905662"
+        with ESMTP id S234926AbiDKDgl (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 10 Apr 2022 23:36:41 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6050262B
+        for <linux-rdma@vger.kernel.org>; Sun, 10 Apr 2022 20:34:26 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6400,9594,10313"; a="348461799"
 X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
-   d="scan'208";a="243905662"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2022 20:11:30 -0700
+   d="scan'208";a="348461799"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2022 20:34:25 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,250,1643702400"; 
-   d="scan'208";a="550940731"
+   d="scan'208";a="525799568"
 Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga007.jf.intel.com with ESMTP; 10 Apr 2022 20:11:28 -0700
+  by orsmga006.jf.intel.com with ESMTP; 10 Apr 2022 20:34:23 -0700
 From:   yanjun.zhu@linux.dev
 To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
         yanjun.zhu@linux.dev, linux-rdma@vger.kernel.org
 Cc:     Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCH 1/1] RDMA/rxe: Fix a dead lock problem
-Date:   Mon, 11 Apr 2022 15:37:23 -0400
-Message-Id: <20220411193723.1337324-1-yanjun.zhu@linux.dev>
+Subject: [PATCHv2 1/1] RDMA/rxe: Fix a dead lock problem
+Date:   Mon, 11 Apr 2022 16:00:18 -0400
+Message-Id: <20220411200018.1363127-1-yanjun.zhu@linux.dev>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=2.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -115,11 +114,13 @@ Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
 Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
 Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
+V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
+---
  drivers/infiniband/sw/rxe/rxe_pool.c | 19 ++++++++++++++-----
  1 file changed, 14 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 87066d04ed18..eb76ca185303 100644
+index 87066d04ed18..9675184a759f 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.c
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
 @@ -121,6 +121,7 @@ void *rxe_alloc(struct rxe_pool *pool)
@@ -138,7 +139,7 @@ index 87066d04ed18..eb76ca185303 100644
 -			      &pool->next, GFP_KERNEL);
 +	xa_lock_irqsave(&pool->xa, flags);
 +	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_KERNEL);
++				&pool->next, GFP_ATOMIC);
 +	xa_unlock_irqrestore(&pool->xa, flags);
  	if (err)
  		goto err_free;
@@ -159,7 +160,7 @@ index 87066d04ed18..eb76ca185303 100644
 -			      &pool->next, GFP_KERNEL);
 +	xa_lock_irqsave(&pool->xa, flags);
 +	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_KERNEL);
++				&pool->next, GFP_ATOMIC);
 +	xa_unlock_irqrestore(&pool->xa, flags);
  	if (err)
  		goto err_cnt;
