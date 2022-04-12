@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29E24FD9C8
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Apr 2022 12:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8374FDB0A
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Apr 2022 12:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245198AbiDLJ5Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Apr 2022 05:57:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55294 "EHLO
+        id S1345026AbiDLJ5T (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Apr 2022 05:57:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359459AbiDLHnE (ORCPT
+        with ESMTP id S1359462AbiDLHnE (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Apr 2022 03:43:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBA112094
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 00:24:34 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FDF12AE2
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 00:24:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 684286152A
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 07:24:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55D62C385A8;
-        Tue, 12 Apr 2022 07:24:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 48639615B4
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 07:24:38 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D35FC385A6;
+        Tue, 12 Apr 2022 07:24:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649748273;
-        bh=jxzBQ3p511Q4zNZoSo17Nc0/mX6rU2ZH6d6/tFfjLPo=;
+        s=k20201202; t=1649748277;
+        bh=CxGgkv+CN8qmVT9z/k/Q06lGgwTEIg+2ZPL7IEkoPpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UumpKQeQoMVNt7SOEtOxZkIlnh/nSfb6z0CABQObZQkG2AoKQrNONJkxwe1i0rPYM
-         2ba49t/b0olKqD5O9jEl7Zb03iFeQLhcrujO2Nn8oZu6I3zkvBeareKBG6e6HE/MZO
-         Oh2XGspM5M+tR6vLXhSHibz7zv54LK1TZGrb0H0spDWNyEaQUcq+NUJ4QDCagvuEdf
-         AdyZ85+ogCGjwVflppE3NxKRSv0ARJ1FLXL2sciTZ7oV1RrR7Y546mcjd05oUNAqkK
-         kg4oAUBBdmuU+yTPZEZ+UP8g7Rt1v9tWWhOy47/usdDONkrA/xVTRIZZ5Ae4m/2RSc
-         00xHVC9SUBOXg==
+        b=gy6vGHUwXO7aeeNbbOxmgbPUsaRfrTuXgYqZqr33AbWeEB8FRH8shwgpkua3si497
+         XG27mrQJQxFt0iNJesZAt0Y3glguSQ8i7C8sy+Ty+p/cIjnvXbjfmusqjvuySPgELC
+         JSpdFE0pxa/Bn364ZS8kKNftA3s3marLRER/rbELEctA77G+A76dBL/cOK9yQIK0HT
+         o2M+e2eWC3PJnPloj27aC3ACNESxgdzoQASteD6knOWNQzE2y/Ab4/LbLMduNt9J4w
+         ZMemhFnX3TzygtIYwNctYRwVqstx0vYXptZBWxUkysHTlWPYCohXXdaBQwWyaGJc6h
+         UdLUq1PWgFIQg==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
         Michael Guralnik <michaelgur@nvidia.com>
-Subject: [PATCH rdma-next 06/12] RDMA/mlx5: Introduce mlx5_umr_post_send_wait()
-Date:   Tue, 12 Apr 2022 10:24:01 +0300
-Message-Id: <f027dd592fde62402b2d49efded8d1d22229d22b.1649747695.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 07/12] RDMA/mlx5: Use mlx5_umr_post_send_wait() to revoke MRs
+Date:   Tue, 12 Apr 2022 10:24:02 +0300
+Message-Id: <63717dfdaf6007f81b3e6dbf598f5bf3875ce86f.1649747695.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649747695.git.leonro@nvidia.com>
 References: <cover.1649747695.git.leonro@nvidia.com>
@@ -55,148 +55,130 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Aharon Landau <aharonl@nvidia.com>
 
-Introduce mlx5_umr_post_send_wait() that uses a UMR adjusted flow for
-posting WQEs. The next patches will gradually move UMR operations to use
-this flow. Once done, will get rid of mlx5_ib_post_send_wait().
+Move the revoke_mr logic to umr.c, and using mlx5_umr_post_send_wait()
+instead of mlx5_ib_post_send_wait().
 
-mlx5_umr_post_send_wait gets already written WQE segments and will only
-memcpy it to the SQ. This way, we avoid packing all the data in a WR just
-to unpack it into the WQE.
+In the new implementation, do not zero out the access flags. Before
+reusing the MR, we will update it to the required access.
 
 Signed-off-by: Aharon Landau <aharonl@nvidia.com>
 Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/umr.c | 92 ++++++++++++++++++++++++++++++++
- drivers/infiniband/hw/mlx5/umr.h | 12 +++++
- 2 files changed, 104 insertions(+)
+ drivers/infiniband/hw/mlx5/mr.c  | 31 +++----------------------------
+ drivers/infiniband/hw/mlx5/umr.c | 29 +++++++++++++++++++++++++++++
+ drivers/infiniband/hw/mlx5/umr.h |  2 ++
+ 3 files changed, 34 insertions(+), 28 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
+index 6d87a93e03db..32ad93e69a89 100644
+--- a/drivers/infiniband/hw/mlx5/mr.c
++++ b/drivers/infiniband/hw/mlx5/mr.c
+@@ -1629,31 +1629,6 @@ struct ib_mr *mlx5_ib_reg_user_mr_dmabuf(struct ib_pd *pd, u64 offset,
+ 	return ERR_PTR(err);
+ }
+ 
+-/**
+- * revoke_mr - Fence all DMA on the MR
+- * @mr: The MR to fence
+- *
+- * Upon return the NIC will not be doing any DMA to the pages under the MR,
+- * and any DMA in progress will be completed. Failure of this function
+- * indicates the HW has failed catastrophically.
+- */
+-static int revoke_mr(struct mlx5_ib_mr *mr)
+-{
+-	struct mlx5_umr_wr umrwr = {};
+-
+-	if (mr_to_mdev(mr)->mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
+-		return 0;
+-
+-	umrwr.wr.send_flags = MLX5_IB_SEND_UMR_DISABLE_MR |
+-			      MLX5_IB_SEND_UMR_UPDATE_PD_ACCESS;
+-	umrwr.wr.opcode = MLX5_IB_WR_UMR;
+-	umrwr.pd = mr_to_mdev(mr)->umrc.pd;
+-	umrwr.mkey = mr->mmkey.key;
+-	umrwr.ignore_free_state = 1;
+-
+-	return mlx5_ib_post_send_wait(mr_to_mdev(mr), &umrwr);
+-}
+-
+ /*
+  * True if the change in access flags can be done via UMR, only some access
+  * flags can be updated.
+@@ -1730,7 +1705,7 @@ static int umr_rereg_pas(struct mlx5_ib_mr *mr, struct ib_pd *pd,
+ 	 * with it. This ensure the change is atomic relative to any use of the
+ 	 * MR.
+ 	 */
+-	err = revoke_mr(mr);
++	err = mlx5r_umr_revoke_mr(mr);
+ 	if (err)
+ 		return err;
+ 
+@@ -1808,7 +1783,7 @@ struct ib_mr *mlx5_ib_rereg_user_mr(struct ib_mr *ib_mr, int flags, u64 start,
+ 		 * Only one active MR can refer to a umem at one time, revoke
+ 		 * the old MR before assigning the umem to the new one.
+ 		 */
+-		err = revoke_mr(mr);
++		err = mlx5r_umr_revoke_mr(mr);
+ 		if (err)
+ 			return ERR_PTR(err);
+ 		umem = mr->umem;
+@@ -1953,7 +1928,7 @@ int mlx5_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 
+ 	/* Stop DMA */
+ 	if (mr->cache_ent) {
+-		if (revoke_mr(mr)) {
++		if (mlx5r_umr_revoke_mr(mr)) {
+ 			spin_lock_irq(&mr->cache_ent->lock);
+ 			mr->cache_ent->total_mrs--;
+ 			spin_unlock_irq(&mr->cache_ent->lock);
 diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
-index 8131501dc052..f17f64cb1925 100644
+index f17f64cb1925..2f14f6ccf9da 100644
 --- a/drivers/infiniband/hw/mlx5/umr.c
 +++ b/drivers/infiniband/hw/mlx5/umr.c
-@@ -3,6 +3,7 @@
- 
- #include "mlx5_ib.h"
- #include "umr.h"
-+#include "wr.h"
- 
- static __be64 get_umr_enable_mr_mask(void)
- {
-@@ -228,3 +229,94 @@ void mlx5r_umr_resource_cleanup(struct mlx5_ib_dev *dev)
- 	ib_free_cq(dev->umrc.cq);
- 	ib_dealloc_pd(dev->umrc.pd);
+@@ -320,3 +320,32 @@ static int mlx5r_umr_post_send_wait(struct mlx5_ib_dev *dev, u32 mkey,
+ 	up(&umrc->sem);
+ 	return err;
  }
 +
-+static int mlx5r_umr_post_send(struct ib_qp *ibqp, u32 mkey, struct ib_cqe *cqe,
-+			       struct mlx5r_umr_wqe *wqe, bool with_data)
++/**
++ * mlx5r_umr_revoke_mr - Fence all DMA on the MR
++ * @mr: The MR to fence
++ *
++ * Upon return the NIC will not be doing any DMA to the pages under the MR,
++ * and any DMA in progress will be completed. Failure of this function
++ * indicates the HW has failed catastrophically.
++ */
++int mlx5r_umr_revoke_mr(struct mlx5_ib_mr *mr)
 +{
-+	unsigned int wqe_size =
-+		with_data ? sizeof(struct mlx5r_umr_wqe) :
-+			    sizeof(struct mlx5r_umr_wqe) -
-+				    sizeof(struct mlx5_wqe_data_seg);
-+	struct mlx5_ib_dev *dev = to_mdev(ibqp->device);
-+	struct mlx5_core_dev *mdev = dev->mdev;
-+	struct mlx5_ib_qp *qp = to_mqp(ibqp);
-+	struct mlx5_wqe_ctrl_seg *ctrl;
-+	union {
-+		struct ib_cqe *ib_cqe;
-+		u64 wr_id;
-+	} id;
-+	void *cur_edge, *seg;
-+	unsigned long flags;
-+	unsigned int idx;
-+	int size, err;
++	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
++	struct mlx5r_umr_wqe wqe = {};
 +
-+	if (unlikely(mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR))
-+		return -EIO;
++	if (dev->mdev->state == MLX5_DEVICE_STATE_INTERNAL_ERROR)
++		return 0;
 +
-+	spin_lock_irqsave(&qp->sq.lock, flags);
++	wqe.ctrl_seg.mkey_mask |= get_umr_update_pd_mask();
++	wqe.ctrl_seg.mkey_mask |= get_umr_disable_mr_mask();
++	wqe.ctrl_seg.flags |= MLX5_UMR_INLINE;
 +
-+	err = mlx5r_begin_wqe(qp, &seg, &ctrl, &idx, &size, &cur_edge, 0,
-+			      cpu_to_be32(mkey), false, false);
-+	if (WARN_ON(err))
-+		goto out;
++	MLX5_SET(mkc, &wqe.mkey_seg, free, 1);
++	MLX5_SET(mkc, &wqe.mkey_seg, pd, to_mpd(dev->umrc.pd)->pdn);
++	MLX5_SET(mkc, &wqe.mkey_seg, qpn, 0xffffff);
++	MLX5_SET(mkc, &wqe.mkey_seg, mkey_7_0,
++		 mlx5_mkey_variant(mr->mmkey.key));
 +
-+	qp->sq.wr_data[idx] = MLX5_IB_WR_UMR;
-+
-+	mlx5r_memcpy_send_wqe(&qp->sq, &cur_edge, &seg, &size, wqe, wqe_size);
-+
-+	id.ib_cqe = cqe;
-+	mlx5r_finish_wqe(qp, ctrl, seg, size, cur_edge, idx, id.wr_id, 0,
-+			 MLX5_FENCE_MODE_NONE, MLX5_OPCODE_UMR);
-+
-+	mlx5r_ring_db(qp, 1, ctrl);
-+
-+out:
-+	spin_unlock_irqrestore(&qp->sq.lock, flags);
-+
-+	return err;
-+}
-+
-+static void mlx5r_umr_done(struct ib_cq *cq, struct ib_wc *wc)
-+{
-+	struct mlx5_ib_umr_context *context =
-+		container_of(wc->wr_cqe, struct mlx5_ib_umr_context, cqe);
-+
-+	context->status = wc->status;
-+	complete(&context->done);
-+}
-+
-+static inline void mlx5r_umr_init_context(struct mlx5r_umr_context *context)
-+{
-+	context->cqe.done = mlx5r_umr_done;
-+	init_completion(&context->done);
-+}
-+
-+static int mlx5r_umr_post_send_wait(struct mlx5_ib_dev *dev, u32 mkey,
-+				   struct mlx5r_umr_wqe *wqe, bool with_data)
-+{
-+	struct umr_common *umrc = &dev->umrc;
-+	struct mlx5r_umr_context umr_context;
-+	int err;
-+
-+	err = umr_check_mkey_mask(dev, be64_to_cpu(wqe->ctrl_seg.mkey_mask));
-+	if (WARN_ON(err))
-+		return err;
-+
-+	mlx5r_umr_init_context(&umr_context);
-+
-+	down(&umrc->sem);
-+	err = mlx5r_umr_post_send(umrc->qp, mkey, &umr_context.cqe, wqe,
-+				  with_data);
-+	if (err)
-+		mlx5_ib_warn(dev, "UMR post send failed, err %d\n", err);
-+	else {
-+		wait_for_completion(&umr_context.done);
-+		if (umr_context.status != IB_WC_SUCCESS) {
-+			mlx5_ib_warn(dev, "reg umr failed (%u)\n",
-+				     umr_context.status);
-+			err = -EFAULT;
-+		}
-+	}
-+	up(&umrc->sem);
-+	return err;
++	return mlx5r_umr_post_send_wait(dev, mr->mmkey.key, &wqe, false);
 +}
 diff --git a/drivers/infiniband/hw/mlx5/umr.h b/drivers/infiniband/hw/mlx5/umr.h
-index 0fe6cdd633d4..d984213caf60 100644
+index d984213caf60..c14072b06ffb 100644
 --- a/drivers/infiniband/hw/mlx5/umr.h
 +++ b/drivers/infiniband/hw/mlx5/umr.h
-@@ -79,4 +79,16 @@ int mlx5r_umr_set_umr_ctrl_seg(struct mlx5_ib_dev *dev,
- 			       struct mlx5_wqe_umr_ctrl_seg *umr,
- 			       const struct ib_send_wr *wr);
+@@ -91,4 +91,6 @@ struct mlx5r_umr_wqe {
+ 	struct mlx5_wqe_data_seg data_seg;
+ };
  
-+struct mlx5r_umr_context {
-+	struct ib_cqe cqe;
-+	enum ib_wc_status status;
-+	struct completion done;
-+};
-+
-+struct mlx5r_umr_wqe {
-+	struct mlx5_wqe_umr_ctrl_seg ctrl_seg;
-+	struct mlx5_mkey_seg mkey_seg;
-+	struct mlx5_wqe_data_seg data_seg;
-+};
++int mlx5r_umr_revoke_mr(struct mlx5_ib_mr *mr);
 +
  #endif /* _MLX5_IB_UMR_H */
 -- 
