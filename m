@@ -2,42 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 182B14FD9A5
-	for <lists+linux-rdma@lfdr.de>; Tue, 12 Apr 2022 12:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1924FD49A
+	for <lists+linux-rdma@lfdr.de>; Tue, 12 Apr 2022 12:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352514AbiDLJ54 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 12 Apr 2022 05:57:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58090 "EHLO
+        id S1352355AbiDLJ5p (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 12 Apr 2022 05:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1359464AbiDLHnE (ORCPT
+        with ESMTP id S1359465AbiDLHnE (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Tue, 12 Apr 2022 03:43:04 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF7BDEC0
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 00:24:46 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69CE3B44
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 00:24:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 397F96152A
-        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 07:24:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28CC7C385A1;
-        Tue, 12 Apr 2022 07:24:44 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id EB58C6152A
+        for <linux-rdma@vger.kernel.org>; Tue, 12 Apr 2022 07:24:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53CFC385A1;
+        Tue, 12 Apr 2022 07:24:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649748285;
-        bh=q5L1DolPWD/WwHSMWLTE9PdMAs6ForWtPQOPrPh3POU=;
+        s=k20201202; t=1649748289;
+        bh=CDlqlNryDllor4HoZ6eyPTcJY5LFUoAHm7kCYJqvH5I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YCTak1QTS0QUQPZ0TagZ9VDfzp1Lfoqr/v3zikZT+PFzySl7iDdILI+P9XfyV4WlK
-         nDw0CfJ2LgK+IFsp7Z35whhym31UY+in2KsXA+BZ1dCkCHZxjd2ydSd2jLH2tYc/yR
-         Iol2Iu7Hp+iiFio9HfCh8z511VfnCrGRAFFpG6LhmfzVRa0/cXBJwGcFs1N/N5ftWY
-         q8iqcblMfHYhXFiypslXtHbiCidAd91YiGwZMMjDWoS2rTL/Haz99Zr3UBL3nMtihD
-         qhTT8fG3hIJX9GwxJImOeZN8E/m/BC7et277XQqVbgkA94oiwSMkF1RTpPGoxqufGs
-         A2ZuwYZWnblQQ==
+        b=j/ajHn/fOhartafF8loQwwj77NdhxBTd/GFz8TzvAScF/gmS/gDoblvq3LK4gYLte
+         jLoHtTU+HI/nhbM6O99ulRxVGdt0zFHu+6nzPvskEtXkk6syGh2Q2yIUlzMB2czYiN
+         5s1wrSqR/ppQ96EKWlieB4rUwmp6EHQhHu/5wWA5N+uTy5YfdPK6WS3MqruyIe+ySC
+         5uviPMd8K47GvV5pGQoWiAJgG1y5NeqKvizaiPdzraj5nx1FlYJWU0NvwNesDm/uwX
+         7ZYXzS0pZsQe3ukZo3V0+cFb15V1Ly5ZG+GHS2RiJh20kmBd11XGM3xYajqcawPwVt
+         qE8Ax3UWAhFGA==
 From:   Leon Romanovsky <leon@kernel.org>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
         Michael Guralnik <michaelgur@nvidia.com>
-Subject: [PATCH rdma-next 09/12] RDMA/mlx5: Move creation and free of translation tables to umr.c
-Date:   Tue, 12 Apr 2022 10:24:04 +0300
-Message-Id: <1d93f1381be82a22aaf1168cdbdfb227eac1ce62.1649747695.git.leonro@nvidia.com>
+Subject: [PATCH rdma-next 10/12] RDMA/mlx5: Use mlx5_umr_post_send_wait() to update MR pas
+Date:   Tue, 12 Apr 2022 10:24:05 +0300
+Message-Id: <ed8f2ee6c64804072155d727149abf7105f92536.1649747695.git.leonro@nvidia.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <cover.1649747695.git.leonro@nvidia.com>
 References: <cover.1649747695.git.leonro@nvidia.com>
@@ -55,307 +55,329 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Aharon Landau <aharonl@nvidia.com>
 
-The only use of the translation tables is to update the mkey translation
-by a UMR operation. Move the responsibility of creating and freeing them
-to umr.c
+Move mlx5_ib_update_mr_pas logic to umr.c, and use mlx5_umr_post_send_wait()
+instead of mlx5_ib_post_send_wait().
 
 Signed-off-by: Aharon Landau <aharonl@nvidia.com>
 Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
 Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 ---
- drivers/infiniband/hw/mlx5/mr.c  | 103 +----------------------------
- drivers/infiniband/hw/mlx5/umr.c | 109 +++++++++++++++++++++++++++++++
- drivers/infiniband/hw/mlx5/umr.h |   5 ++
- 3 files changed, 117 insertions(+), 100 deletions(-)
+ drivers/infiniband/hw/mlx5/mlx5_ib.h |   1 -
+ drivers/infiniband/hw/mlx5/mr.c      |  76 +------------
+ drivers/infiniband/hw/mlx5/odp.c     |   2 +-
+ drivers/infiniband/hw/mlx5/umr.c     | 159 +++++++++++++++++++++++++++
+ drivers/infiniband/hw/mlx5/umr.h     |   1 +
+ 5 files changed, 164 insertions(+), 75 deletions(-)
 
+diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+index d77a27503488..ea4d5519df8c 100644
+--- a/drivers/infiniband/hw/mlx5/mlx5_ib.h
++++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
+@@ -1289,7 +1289,6 @@ int mlx5_ib_alloc_mw(struct ib_mw *mw, struct ib_udata *udata);
+ int mlx5_ib_dealloc_mw(struct ib_mw *mw);
+ int mlx5_ib_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
+ 		       int page_shift, int flags);
+-int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags);
+ struct mlx5_ib_mr *mlx5_ib_alloc_implicit_mr(struct mlx5_ib_pd *pd,
+ 					     int access_flags);
+ void mlx5_ib_free_implicit_mr(struct mlx5_ib_mr *mr);
 diff --git a/drivers/infiniband/hw/mlx5/mr.c b/drivers/infiniband/hw/mlx5/mr.c
-index 50b4ccd38fe2..e7cc32b46851 100644
+index e7cc32b46851..df79fd5be5f2 100644
 --- a/drivers/infiniband/hw/mlx5/mr.c
 +++ b/drivers/infiniband/hw/mlx5/mr.c
-@@ -46,13 +46,6 @@
- #include "mlx5_ib.h"
- #include "umr.h"
- 
--/*
-- * We can't use an array for xlt_emergency_page because dma_map_single doesn't
-- * work on kernel modules memory
-- */
--void *xlt_emergency_page;
--static DEFINE_MUTEX(xlt_emergency_page_mutex);
--
- enum {
- 	MAX_PENDING_REG_MR = 8,
- };
-@@ -966,74 +959,6 @@ static struct mlx5_ib_mr *alloc_cacheable_mr(struct ib_pd *pd,
- 	return mr;
+@@ -1082,76 +1082,6 @@ int mlx5_ib_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
+ 	return err;
  }
  
--#define MLX5_MAX_UMR_CHUNK ((1 << (MLX5_MAX_UMR_SHIFT + 4)) - \
--			    MLX5_UMR_MTT_ALIGNMENT)
--#define MLX5_SPARE_UMR_CHUNK 0x10000
--
 -/*
-- * Allocate a temporary buffer to hold the per-page information to transfer to
-- * HW. For efficiency this should be as large as it can be, but buffer
-- * allocation failure is not allowed, so try smaller sizes.
+- * Send the DMA list to the HW for a normal MR using UMR.
+- * Dmabuf MR is handled in a similar way, except that the MLX5_IB_UPD_XLT_ZAP
+- * flag may be used.
 - */
--static void *mlx5_ib_alloc_xlt(size_t *nents, size_t ent_size, gfp_t gfp_mask)
+-int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
 -{
--	const size_t xlt_chunk_align =
--		MLX5_UMR_MTT_ALIGNMENT / ent_size;
--	size_t size;
--	void *res = NULL;
+-	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
+-	struct device *ddev = &dev->mdev->pdev->dev;
+-	struct ib_block_iter biter;
+-	struct mlx5_mtt *cur_mtt;
+-	struct mlx5_umr_wr wr;
+-	size_t orig_sg_length;
+-	struct mlx5_mtt *mtt;
+-	size_t final_size;
+-	struct ib_sge sg;
+-	int err = 0;
 -
--	static_assert(PAGE_SIZE % MLX5_UMR_MTT_ALIGNMENT == 0);
+-	if (WARN_ON(mr->umem->is_odp))
+-		return -EINVAL;
 -
--	/*
--	 * MLX5_IB_UPD_XLT_ATOMIC doesn't signal an atomic context just that the
--	 * allocation can't trigger any kind of reclaim.
--	 */
--	might_sleep();
+-	mtt = mlx5_ib_create_xlt_wr(mr, &wr, &sg,
+-				    ib_umem_num_dma_blocks(mr->umem,
+-							   1 << mr->page_shift),
+-				    sizeof(*mtt), flags);
+-	if (!mtt)
+-		return -ENOMEM;
+-	orig_sg_length = sg.length;
 -
--	gfp_mask |= __GFP_ZERO | __GFP_NORETRY;
+-	cur_mtt = mtt;
+-	rdma_for_each_block (mr->umem->sgt_append.sgt.sgl, &biter,
+-			     mr->umem->sgt_append.sgt.nents,
+-			     BIT(mr->page_shift)) {
+-		if (cur_mtt == (void *)mtt + sg.length) {
+-			dma_sync_single_for_device(ddev, sg.addr, sg.length,
+-						   DMA_TO_DEVICE);
+-			err = mlx5_ib_post_send_wait(dev, &wr);
+-			if (err)
+-				goto err;
+-			dma_sync_single_for_cpu(ddev, sg.addr, sg.length,
+-						DMA_TO_DEVICE);
+-			wr.offset += sg.length;
+-			cur_mtt = mtt;
+-		}
 -
--	/*
--	 * If the system already has a suitable high order page then just use
--	 * that, but don't try hard to create one. This max is about 1M, so a
--	 * free x86 huge page will satisfy it.
--	 */
--	size = min_t(size_t, ent_size * ALIGN(*nents, xlt_chunk_align),
--		     MLX5_MAX_UMR_CHUNK);
--	*nents = size / ent_size;
--	res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
--				       get_order(size));
--	if (res)
--		return res;
+-		cur_mtt->ptag =
+-			cpu_to_be64(rdma_block_iter_dma_address(&biter) |
+-				    MLX5_IB_MTT_PRESENT);
 -
--	if (size > MLX5_SPARE_UMR_CHUNK) {
--		size = MLX5_SPARE_UMR_CHUNK;
--		*nents = size / ent_size;
--		res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
--					       get_order(size));
--		if (res)
--			return res;
+-		if (mr->umem->is_dmabuf && (flags & MLX5_IB_UPD_XLT_ZAP))
+-			cur_mtt->ptag = 0;
+-
+-		cur_mtt++;
 -	}
 -
--	*nents = PAGE_SIZE / ent_size;
--	res = (void *)__get_free_page(gfp_mask);
--	if (res)
--		return res;
+-	final_size = (void *)cur_mtt - (void *)mtt;
+-	sg.length = ALIGN(final_size, MLX5_UMR_MTT_ALIGNMENT);
+-	memset(cur_mtt, 0, sg.length - final_size);
+-	wr.wr.send_flags |= xlt_wr_final_send_flags(flags);
+-	wr.xlt_size = sg.length;
 -
--	mutex_lock(&xlt_emergency_page_mutex);
--	memset(xlt_emergency_page, 0, PAGE_SIZE);
--	return xlt_emergency_page;
--}
+-	dma_sync_single_for_device(ddev, sg.addr, sg.length, DMA_TO_DEVICE);
+-	err = mlx5_ib_post_send_wait(dev, &wr);
 -
--static void mlx5_ib_free_xlt(void *xlt, size_t length)
--{
--	if (xlt == xlt_emergency_page) {
--		mutex_unlock(&xlt_emergency_page_mutex);
--		return;
--	}
--
--	free_pages((unsigned long)xlt, get_order(length));
+-err:
+-	sg.length = orig_sg_length;
+-	mlx5r_umr_unmap_free_xlt(dev, mtt, &sg);
+-	return err;
 -}
 -
  /*
-  * Create a MLX5_IB_SEND_UMR_UPDATE_XLT work request and XLT buffer ready for
-  * submission.
-@@ -1044,22 +969,9 @@ static void *mlx5_ib_create_xlt_wr(struct mlx5_ib_mr *mr,
- 				   unsigned int flags)
- {
- 	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
--	struct device *ddev = &dev->mdev->pdev->dev;
--	dma_addr_t dma;
- 	void *xlt;
+  * If ibmr is NULL it will be allocated by reg_create.
+  * Else, the given ibmr will be used.
+@@ -1368,7 +1298,7 @@ static struct ib_mr *create_real_mr(struct ib_pd *pd, struct ib_umem *umem,
+ 		 * configured properly but left disabled. It is safe to go ahead
+ 		 * and configure it again via UMR while enabling it.
+ 		 */
+-		err = mlx5_ib_update_mr_pas(mr, MLX5_IB_UPD_XLT_ENABLE);
++		err = mlx5r_umr_update_mr_pas(mr, MLX5_IB_UPD_XLT_ENABLE);
+ 		if (err) {
+ 			mlx5_ib_dereg_mr(&mr->ibmr, NULL);
+ 			return ERR_PTR(err);
+@@ -1467,7 +1397,7 @@ static void mlx5_ib_dmabuf_invalidate_cb(struct dma_buf_attachment *attach)
+ 	if (!umem_dmabuf->sgt)
+ 		return;
  
--	xlt = mlx5_ib_alloc_xlt(&nents, ent_size,
--				flags & MLX5_IB_UPD_XLT_ATOMIC ? GFP_ATOMIC :
--								 GFP_KERNEL);
--	sg->length = nents * ent_size;
--	dma = dma_map_single(ddev, xlt, sg->length, DMA_TO_DEVICE);
--	if (dma_mapping_error(ddev, dma)) {
--		mlx5_ib_err(dev, "unable to map DMA during XLT update.\n");
--		mlx5_ib_free_xlt(xlt, sg->length);
--		return NULL;
--	}
--	sg->addr = dma;
--	sg->lkey = dev->umrc.pd->local_dma_lkey;
-+	xlt = mlx5r_umr_create_xlt(dev, sg, nents, ent_size, flags);
- 
- 	memset(wr, 0, sizeof(*wr));
- 	wr->wr.send_flags = MLX5_IB_SEND_UMR_UPDATE_XLT;
-@@ -1078,15 +990,6 @@ static void *mlx5_ib_create_xlt_wr(struct mlx5_ib_mr *mr,
- 	return xlt;
+-	mlx5_ib_update_mr_pas(mr, MLX5_IB_UPD_XLT_ZAP);
++	mlx5r_umr_update_mr_pas(mr, MLX5_IB_UPD_XLT_ZAP);
+ 	ib_umem_dmabuf_unmap_pages(umem_dmabuf);
  }
  
--static void mlx5_ib_unmap_free_xlt(struct mlx5_ib_dev *dev, void *xlt,
--				   struct ib_sge *sg)
--{
--	struct device *ddev = &dev->mdev->pdev->dev;
--
--	dma_unmap_single(ddev, sg->addr, sg->length, DMA_TO_DEVICE);
--	mlx5_ib_free_xlt(xlt, sg->length);
--}
--
- static unsigned int xlt_wr_final_send_flags(unsigned int flags)
- {
- 	unsigned int res = 0;
-@@ -1175,7 +1078,7 @@ int mlx5_ib_update_xlt(struct mlx5_ib_mr *mr, u64 idx, int npages,
- 		err = mlx5_ib_post_send_wait(dev, &wr);
+@@ -1602,7 +1532,7 @@ static int umr_rereg_pas(struct mlx5_ib_mr *mr, struct ib_pd *pd,
+ 	mr->ibmr.length = new_umem->length;
+ 	mr->page_shift = order_base_2(page_size);
+ 	mr->umem = new_umem;
+-	err = mlx5_ib_update_mr_pas(mr, upd_flags);
++	err = mlx5r_umr_update_mr_pas(mr, upd_flags);
+ 	if (err) {
+ 		/*
+ 		 * The MR is revoked at this point so there is no issue to free
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 99dc06f589d4..c00e70e74d94 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -715,7 +715,7 @@ static int pagefault_dmabuf_mr(struct mlx5_ib_mr *mr, size_t bcnt,
+ 		ib_umem_dmabuf_unmap_pages(umem_dmabuf);
+ 		err = -EINVAL;
+ 	} else {
+-		err = mlx5_ib_update_mr_pas(mr, xlt_flags);
++		err = mlx5r_umr_update_mr_pas(mr, xlt_flags);
  	}
- 	sg.length = orig_sg_length;
--	mlx5_ib_unmap_free_xlt(dev, xlt, &sg);
-+	mlx5r_umr_unmap_free_xlt(dev, xlt, &sg);
- 	return err;
- }
- 
-@@ -1245,7 +1148,7 @@ int mlx5_ib_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
- 
- err:
- 	sg.length = orig_sg_length;
--	mlx5_ib_unmap_free_xlt(dev, mtt, &sg);
-+	mlx5r_umr_unmap_free_xlt(dev, mtt, &sg);
- 	return err;
- }
+ 	dma_resv_unlock(umem_dmabuf->attach->dmabuf->resv);
  
 diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
-index 716c35258e33..ba61e6280cb5 100644
+index ba61e6280cb5..b56e3569c677 100644
 --- a/drivers/infiniband/hw/mlx5/umr.c
 +++ b/drivers/infiniband/hw/mlx5/umr.c
-@@ -5,6 +5,13 @@
- #include "umr.h"
- #include "wr.h"
+@@ -499,3 +499,162 @@ void *mlx5r_umr_create_xlt(struct mlx5_ib_dev *dev, struct ib_sge *sg,
  
-+/*
-+ * We can't use an array for xlt_emergency_page because dma_map_single doesn't
-+ * work on kernel modules memory
-+ */
-+void *xlt_emergency_page;
-+static DEFINE_MUTEX(xlt_emergency_page_mutex);
-+
- static __be64 get_umr_enable_mr_mask(void)
- {
- 	u64 result;
-@@ -390,3 +397,105 @@ int mlx5r_umr_rereg_pd_access(struct mlx5_ib_mr *mr, struct ib_pd *pd,
- 	mr->access_flags = access_flags;
- 	return 0;
+ 	return xlt;
  }
 +
-+#define MLX5_MAX_UMR_CHUNK                                                     \
-+	((1 << (MLX5_MAX_UMR_SHIFT + 4)) - MLX5_UMR_MTT_ALIGNMENT)
-+#define MLX5_SPARE_UMR_CHUNK 0x10000
++static void
++mlx5r_umr_set_update_xlt_ctrl_seg(struct mlx5_wqe_umr_ctrl_seg *ctrl_seg,
++				  unsigned int flags, struct ib_sge *sg)
++{
++	if (!(flags & MLX5_IB_UPD_XLT_ENABLE))
++		/* fail if free */
++		ctrl_seg->flags = MLX5_UMR_CHECK_FREE;
++	else
++		/* fail if not free */
++		ctrl_seg->flags = MLX5_UMR_CHECK_NOT_FREE;
++	ctrl_seg->xlt_octowords =
++		cpu_to_be16(mlx5r_umr_get_xlt_octo(sg->length));
++}
++
++static void mlx5r_umr_set_update_xlt_mkey_seg(struct mlx5_ib_dev *dev,
++					      struct mlx5_mkey_seg *mkey_seg,
++					      struct mlx5_ib_mr *mr,
++					      unsigned int page_shift)
++{
++	mlx5r_umr_set_access_flags(dev, mkey_seg, mr->access_flags);
++	MLX5_SET(mkc, mkey_seg, pd, to_mpd(mr->ibmr.pd)->pdn);
++	MLX5_SET64(mkc, mkey_seg, start_addr, mr->ibmr.iova);
++	MLX5_SET64(mkc, mkey_seg, len, mr->ibmr.length);
++	MLX5_SET(mkc, mkey_seg, log_page_size, page_shift);
++	MLX5_SET(mkc, mkey_seg, qpn, 0xffffff);
++	MLX5_SET(mkc, mkey_seg, mkey_7_0, mlx5_mkey_variant(mr->mmkey.key));
++}
++
++static void
++mlx5r_umr_set_update_xlt_data_seg(struct mlx5_wqe_data_seg *data_seg,
++				  struct ib_sge *sg)
++{
++	data_seg->byte_count = cpu_to_be32(sg->length);
++	data_seg->lkey = cpu_to_be32(sg->lkey);
++	data_seg->addr = cpu_to_be64(sg->addr);
++}
++
++static void mlx5r_umr_update_offset(struct mlx5_wqe_umr_ctrl_seg *ctrl_seg,
++				    u64 offset)
++{
++	u64 octo_offset = mlx5r_umr_get_xlt_octo(offset);
++
++	ctrl_seg->xlt_offset = cpu_to_be16(octo_offset & 0xffff);
++	ctrl_seg->xlt_offset_47_16 = cpu_to_be32(octo_offset >> 16);
++	ctrl_seg->flags |= MLX5_UMR_TRANSLATION_OFFSET_EN;
++}
++
++static void mlx5r_umr_final_update_xlt(struct mlx5_ib_dev *dev,
++				       struct mlx5r_umr_wqe *wqe,
++				       struct mlx5_ib_mr *mr, struct ib_sge *sg,
++				       unsigned int flags)
++{
++	bool update_pd_access, update_translation;
++
++	if (flags & MLX5_IB_UPD_XLT_ENABLE)
++		wqe->ctrl_seg.mkey_mask |= get_umr_enable_mr_mask();
++
++	update_pd_access = flags & MLX5_IB_UPD_XLT_ENABLE ||
++			   flags & MLX5_IB_UPD_XLT_PD ||
++			   flags & MLX5_IB_UPD_XLT_ACCESS;
++
++	if (update_pd_access) {
++		wqe->ctrl_seg.mkey_mask |= get_umr_update_access_mask(dev);
++		wqe->ctrl_seg.mkey_mask |= get_umr_update_pd_mask();
++	}
++
++	update_translation =
++		flags & MLX5_IB_UPD_XLT_ENABLE || flags & MLX5_IB_UPD_XLT_ADDR;
++
++	if (update_translation) {
++		wqe->ctrl_seg.mkey_mask |= get_umr_update_translation_mask();
++		if (!mr->ibmr.length)
++			MLX5_SET(mkc, &wqe->mkey_seg, length64, 1);
++	}
++
++	wqe->ctrl_seg.xlt_octowords =
++		cpu_to_be16(mlx5r_umr_get_xlt_octo(sg->length));
++	wqe->data_seg.byte_count = cpu_to_be32(sg->length);
++}
 +
 +/*
-+ * Allocate a temporary buffer to hold the per-page information to transfer to
-+ * HW. For efficiency this should be as large as it can be, but buffer
-+ * allocation failure is not allowed, so try smaller sizes.
++ * Send the DMA list to the HW for a normal MR using UMR.
++ * Dmabuf MR is handled in a similar way, except that the MLX5_IB_UPD_XLT_ZAP
++ * flag may be used.
 + */
-+static void *mlx5r_umr_alloc_xlt(size_t *nents, size_t ent_size, gfp_t gfp_mask)
++int mlx5r_umr_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
 +{
-+	const size_t xlt_chunk_align = MLX5_UMR_MTT_ALIGNMENT / ent_size;
-+	size_t size;
-+	void *res = NULL;
-+
-+	static_assert(PAGE_SIZE % MLX5_UMR_MTT_ALIGNMENT == 0);
-+
-+	/*
-+	 * MLX5_IB_UPD_XLT_ATOMIC doesn't signal an atomic context just that the
-+	 * allocation can't trigger any kind of reclaim.
-+	 */
-+	might_sleep();
-+
-+	gfp_mask |= __GFP_ZERO | __GFP_NORETRY;
-+
-+	/*
-+	 * If the system already has a suitable high order page then just use
-+	 * that, but don't try hard to create one. This max is about 1M, so a
-+	 * free x86 huge page will satisfy it.
-+	 */
-+	size = min_t(size_t, ent_size * ALIGN(*nents, xlt_chunk_align),
-+		     MLX5_MAX_UMR_CHUNK);
-+	*nents = size / ent_size;
-+	res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
-+				       get_order(size));
-+	if (res)
-+		return res;
-+
-+	if (size > MLX5_SPARE_UMR_CHUNK) {
-+		size = MLX5_SPARE_UMR_CHUNK;
-+		*nents = size / ent_size;
-+		res = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
-+					       get_order(size));
-+		if (res)
-+			return res;
-+	}
-+
-+	*nents = PAGE_SIZE / ent_size;
-+	res = (void *)__get_free_page(gfp_mask);
-+	if (res)
-+		return res;
-+
-+	mutex_lock(&xlt_emergency_page_mutex);
-+	memset(xlt_emergency_page, 0, PAGE_SIZE);
-+	return xlt_emergency_page;
-+}
-+
-+void mlx5r_umr_free_xlt(void *xlt, size_t length)
-+{
-+	if (xlt == xlt_emergency_page) {
-+		mutex_unlock(&xlt_emergency_page_mutex);
-+		return;
-+	}
-+
-+	free_pages((unsigned long)xlt, get_order(length));
-+}
-+
-+void mlx5r_umr_unmap_free_xlt(struct mlx5_ib_dev *dev, void *xlt,
-+			     struct ib_sge *sg)
-+{
++	struct mlx5_ib_dev *dev = mr_to_mdev(mr);
 +	struct device *ddev = &dev->mdev->pdev->dev;
++	struct mlx5r_umr_wqe wqe = {};
++	struct ib_block_iter biter;
++	struct mlx5_mtt *cur_mtt;
++	size_t orig_sg_length;
++	struct mlx5_mtt *mtt;
++	size_t final_size;
++	struct ib_sge sg;
++	u64 offset = 0;
++	int err = 0;
 +
-+	dma_unmap_single(ddev, sg->addr, sg->length, DMA_TO_DEVICE);
-+	mlx5r_umr_free_xlt(xlt, sg->length);
-+}
++	if (WARN_ON(mr->umem->is_odp))
++		return -EINVAL;
 +
-+/*
-+ * Create an XLT buffer ready for submission.
-+ */
-+void *mlx5r_umr_create_xlt(struct mlx5_ib_dev *dev, struct ib_sge *sg,
-+			  size_t nents, size_t ent_size, unsigned int flags)
-+{
-+	struct device *ddev = &dev->mdev->pdev->dev;
-+	dma_addr_t dma;
-+	void *xlt;
++	mtt = mlx5r_umr_create_xlt(
++		dev, &sg, ib_umem_num_dma_blocks(mr->umem, 1 << mr->page_shift),
++		sizeof(*mtt), flags);
++	if (!mtt)
++		return -ENOMEM;
 +
-+	xlt = mlx5r_umr_alloc_xlt(&nents, ent_size,
-+				 flags & MLX5_IB_UPD_XLT_ATOMIC ? GFP_ATOMIC :
-+								  GFP_KERNEL);
-+	sg->length = nents * ent_size;
-+	dma = dma_map_single(ddev, xlt, sg->length, DMA_TO_DEVICE);
-+	if (dma_mapping_error(ddev, dma)) {
-+		mlx5_ib_err(dev, "unable to map DMA during XLT update.\n");
-+		mlx5r_umr_free_xlt(xlt, sg->length);
-+		return NULL;
++	orig_sg_length = sg.length;
++
++	mlx5r_umr_set_update_xlt_ctrl_seg(&wqe.ctrl_seg, flags, &sg);
++	mlx5r_umr_set_update_xlt_mkey_seg(dev, &wqe.mkey_seg, mr,
++					  mr->page_shift);
++	mlx5r_umr_set_update_xlt_data_seg(&wqe.data_seg, &sg);
++
++	cur_mtt = mtt;
++	rdma_for_each_block(mr->umem->sgt_append.sgt.sgl, &biter,
++			    mr->umem->sgt_append.sgt.nents,
++			    BIT(mr->page_shift)) {
++		if (cur_mtt == (void *)mtt + sg.length) {
++			dma_sync_single_for_device(ddev, sg.addr, sg.length,
++						   DMA_TO_DEVICE);
++
++			err = mlx5r_umr_post_send_wait(dev, mr->mmkey.key, &wqe,
++						       true);
++			if (err)
++				goto err;
++			dma_sync_single_for_cpu(ddev, sg.addr, sg.length,
++						DMA_TO_DEVICE);
++			offset += sg.length;
++			mlx5r_umr_update_offset(&wqe.ctrl_seg, offset);
++
++			cur_mtt = mtt;
++		}
++
++		cur_mtt->ptag =
++			cpu_to_be64(rdma_block_iter_dma_address(&biter) |
++				    MLX5_IB_MTT_PRESENT);
++
++		if (mr->umem->is_dmabuf && (flags & MLX5_IB_UPD_XLT_ZAP))
++			cur_mtt->ptag = 0;
++
++		cur_mtt++;
 +	}
-+	sg->addr = dma;
-+	sg->lkey = dev->umrc.pd->local_dma_lkey;
 +
-+	return xlt;
++	final_size = (void *)cur_mtt - (void *)mtt;
++	sg.length = ALIGN(final_size, MLX5_UMR_MTT_ALIGNMENT);
++	memset(cur_mtt, 0, sg.length - final_size);
++	mlx5r_umr_final_update_xlt(dev, &wqe, mr, &sg, flags);
++
++	dma_sync_single_for_device(ddev, sg.addr, sg.length, DMA_TO_DEVICE);
++	err = mlx5r_umr_post_send_wait(dev, mr->mmkey.key, &wqe, true);
++
++err:
++	sg.length = orig_sg_length;
++	mlx5r_umr_unmap_free_xlt(dev, mtt, &sg);
++	return err;
 +}
 diff --git a/drivers/infiniband/hw/mlx5/umr.h b/drivers/infiniband/hw/mlx5/umr.h
-index 53816316cb1f..2485379fec32 100644
+index 2485379fec32..3bb251f07f4e 100644
 --- a/drivers/infiniband/hw/mlx5/umr.h
 +++ b/drivers/infiniband/hw/mlx5/umr.h
-@@ -94,5 +94,10 @@ struct mlx5r_umr_wqe {
- int mlx5r_umr_revoke_mr(struct mlx5_ib_mr *mr);
- int mlx5r_umr_rereg_pd_access(struct mlx5_ib_mr *mr, struct ib_pd *pd,
- 			      int access_flags);
-+void *mlx5r_umr_create_xlt(struct mlx5_ib_dev *dev, struct ib_sge *sg,
-+			   size_t nents, size_t ent_size, unsigned int flags);
-+void mlx5r_umr_free_xlt(void *xlt, size_t length);
-+void mlx5r_umr_unmap_free_xlt(struct mlx5_ib_dev *dev, void *xlt,
-+			      struct ib_sge *sg);
+@@ -99,5 +99,6 @@ void *mlx5r_umr_create_xlt(struct mlx5_ib_dev *dev, struct ib_sge *sg,
+ void mlx5r_umr_free_xlt(void *xlt, size_t length);
+ void mlx5r_umr_unmap_free_xlt(struct mlx5_ib_dev *dev, void *xlt,
+ 			      struct ib_sge *sg);
++int mlx5r_umr_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags);
  
  #endif /* _MLX5_IB_UMR_H */
 -- 
