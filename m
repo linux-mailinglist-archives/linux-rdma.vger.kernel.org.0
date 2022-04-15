@@ -2,36 +2,37 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B09395020E2
+	by mail.lfdr.de (Postfix) with ESMTP id 0C5675020E1
 	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 05:29:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245371AbiDODcM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 14 Apr 2022 23:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58558 "EHLO
+        id S1349043AbiDODcL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 14 Apr 2022 23:32:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241106AbiDODcJ (ORCPT
+        with ESMTP id S245371AbiDODcJ (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 14 Apr 2022 23:32:09 -0400
 Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDD8B140D4
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Apr 2022 20:29:40 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="323528803"
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03C0A1AF2F
+        for <linux-rdma@vger.kernel.org>; Thu, 14 Apr 2022 20:29:41 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6400,9594,10317"; a="323528813"
 X-IronPort-AV: E=Sophos;i="5.90,261,1643702400"; 
-   d="scan'208";a="323528803"
+   d="scan'208";a="323528813"
 Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2022 20:29:39 -0700
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Apr 2022 20:29:41 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,261,1643702400"; 
-   d="scan'208";a="527659281"
+   d="scan'208";a="527659285"
 Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga006.jf.intel.com with ESMTP; 14 Apr 2022 20:29:38 -0700
+  by orsmga006.jf.intel.com with ESMTP; 14 Apr 2022 20:29:40 -0700
 From:   yanjun.zhu@linux.dev
 To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
         yanjun.zhu@linux.dev
-Cc:     Yi Zhang <yi.zhang@redhat.com>
-Subject: [PATCHv4 1/2] RDMA/rxe: Fix a dead lock problem
-Date:   Fri, 15 Apr 2022 15:56:29 -0400
-Message-Id: <20220415195630.279510-1-yanjun.zhu@linux.dev>
+Subject: [PATCH 2/2] RDMA/rxe: Use different xa locks on different path
+Date:   Fri, 15 Apr 2022 15:56:30 -0400
+Message-Id: <20220415195630.279510-2-yanjun.zhu@linux.dev>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220415195630.279510-1-yanjun.zhu@linux.dev>
+References: <20220415195630.279510-1-yanjun.zhu@linux.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=1.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
@@ -46,143 +47,145 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-This is a dead lock problem.
-The xa_lock first is acquired in this:
+The function __rxe_add_to_pool is called on different path, and the
+requirement of the locks is different. The function rxe_create_ah
+requires xa_lock_irqsave/irqrestore while others only require xa_lock_irq.
 
-{SOFTIRQ-ON-W} state was registered at:
-
-  lock_acquire+0x1d2/0x5a0
-  _raw_spin_lock+0x33/0x80
-  __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
-  __ib_alloc_pd+0xf9/0x550 [ib_core]
-  ib_mad_init_device+0x2d9/0xd20 [ib_core]
-  add_client_context+0x2fa/0x450 [ib_core]
-  enable_device_and_get+0x1b7/0x350 [ib_core]
-  ib_register_device+0x757/0xaf0 [ib_core]
-  rxe_register_device+0x2eb/0x390 [rdma_rxe]
-  rxe_net_add+0x83/0xc0 [rdma_rxe]
-  rxe_newlink+0x76/0x90 [rdma_rxe]
-  nldev_newlink+0x245/0x3e0 [ib_core]
-  rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
-  rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
-  netlink_unicast+0x43b/0x640
-  netlink_sendmsg+0x7eb/0xc40
-  sock_sendmsg+0xe0/0x110
-  __sys_sendto+0x1d7/0x2b0
-  __x64_sys_sendto+0xdd/0x1b0
-  do_syscall_64+0x37/0x80
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Then xa_lock is acquired in this:
-
-{IN-SOFTIRQ-W}:
-
-Call Trace:
- <TASK>
-  dump_stack_lvl+0x44/0x57
-  mark_lock.part.52.cold.79+0x3c/0x46
-  __lock_acquire+0x1565/0x34a0
-  lock_acquire+0x1d2/0x5a0
-  _raw_spin_lock_irqsave+0x42/0x90
-  rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
-  rxe_get_av+0x168/0x2a0 [rdma_rxe]
-  rxe_requester+0x75b/0x4a90 [rdma_rxe]
-  rxe_do_task+0x134/0x230 [rdma_rxe]
-  tasklet_action_common.isra.12+0x1f7/0x2d0
-  __do_softirq+0x1ea/0xa4c
-  run_ksoftirqd+0x32/0x60
-  smpboot_thread_fn+0x503/0x860
-  kthread+0x29b/0x340
-  ret_from_fork+0x1f/0x30
- </TASK>
-
-From the above, in the function __rxe_add_to_pool,
-xa_lock is acquired. Then the function __rxe_add_to_pool
-is interrupted by softirq. The function
-rxe_pool_get_index will also acquire xa_lock.
-
-Finally, the dead lock appears.
-
-[  296.806097]        CPU0
-[  296.808550]        ----
-[  296.811003]   lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
-[  296.814583]   <Interrupt>
-[  296.817209]     lock(&xa->xa_lock#15); <---- rxe_pool_get_index
-[  296.820961]
-                 *** DEADLOCK ***
-
-Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
-Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
 Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
 ---
-V3->V4: xa_lock_irq locks are used.
-V2->V3: __rxe_add_to_pool is between spin_lock and spin_unlock, so
-        GFP_ATOMIC is used in __rxe_add_to_pool.
-V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
----
- drivers/infiniband/sw/rxe/rxe_pool.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  2 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 20 ++++++++++++++------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  4 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 12 ++++++------
+ 4 files changed, 23 insertions(+), 15 deletions(-)
 
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index c86b2efd58f2..9d72dcc9060d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -14,7 +14,7 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ 
+ 	rxe_get(pd);
+ 
+-	ret = rxe_add_to_pool(&rxe->mw_pool, mw);
++	ret = rxe_add_to_pool(&rxe->mw_pool, mw, GFP_KERNEL);
+ 	if (ret) {
+ 		rxe_put(pd);
+ 		return ret;
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index 87066d04ed18..f1f06dc7e64f 100644
+index f1f06dc7e64f..e64c9433ab0e 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.c
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -106,7 +106,7 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
- 
- 	atomic_set(&pool->num_elem, 0);
- 
--	xa_init_flags(&pool->xa, XA_FLAGS_ALLOC);
-+	xa_init_flags(&pool->xa, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
- 	pool->limit.min = info->min_index;
- 	pool->limit.max = info->max_index;
+@@ -154,10 +154,9 @@ void *rxe_alloc(struct rxe_pool *pool)
+ 	return NULL;
  }
-@@ -138,8 +138,10 @@ void *rxe_alloc(struct rxe_pool *pool)
- 	elem->obj = obj;
- 	kref_init(&elem->ref_cnt);
  
--	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
--			      &pool->next, GFP_KERNEL);
-+	xa_lock_irq(&pool->xa);
-+	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_KERNEL);
-+	xa_unlock_irq(&pool->xa);
- 	if (err)
- 		goto err_free;
- 
-@@ -155,6 +157,7 @@ void *rxe_alloc(struct rxe_pool *pool)
- int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+-int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
++int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem, gfp_t gfp)
  {
  	int err;
-+	unsigned long flags;
+-	unsigned long flags;
  
  	if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
  		return -EINVAL;
-@@ -166,8 +169,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+@@ -169,10 +168,19 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
  	elem->obj = (u8 *)elem - pool->elem_offset;
  	kref_init(&elem->ref_cnt);
  
--	err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
--			      &pool->next, GFP_KERNEL);
-+	xa_lock_irqsave(&pool->xa, flags);
-+	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
-+				&pool->next, GFP_ATOMIC);
-+	xa_unlock_irqrestore(&pool->xa, flags);
+-	xa_lock_irqsave(&pool->xa, flags);
+-	err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+-				&pool->next, GFP_ATOMIC);
+-	xa_unlock_irqrestore(&pool->xa, flags);
++	if (gfp & GFP_ATOMIC) { /* for rxe_create_ah */
++		unsigned long flags;
++
++		xa_lock_irqsave(&pool->xa, flags);
++		err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem,
++					pool->limit, &pool->next, GFP_ATOMIC);
++		xa_unlock_irqrestore(&pool->xa, flags);
++	} else if (gfp & GFP_KERNEL) {
++		xa_lock_irq(&pool->xa);
++		err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem,
++					pool->limit, &pool->next, GFP_KERNEL);
++		xa_unlock_irq(&pool->xa);
++	}
  	if (err)
  		goto err_cnt;
  
-@@ -200,8 +205,11 @@ static void rxe_elem_release(struct kref *kref)
- {
- 	struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
- 	struct rxe_pool *pool = elem->pool;
-+	unsigned long flags;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+index 24bcc786c1b3..12986622088b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.h
++++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+@@ -62,9 +62,9 @@ void rxe_pool_cleanup(struct rxe_pool *pool);
+ void *rxe_alloc(struct rxe_pool *pool);
  
--	xa_erase(&pool->xa, elem->index);
-+	xa_lock_irqsave(&pool->xa, flags);
-+	__xa_erase(&pool->xa, elem->index);
-+	xa_unlock_irqrestore(&pool->xa, flags);
+ /* connect already allocated object to pool */
+-int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem);
++int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem, gfp_t gfp);
  
- 	if (pool->cleanup)
- 		pool->cleanup(elem);
+-#define rxe_add_to_pool(pool, obj) __rxe_add_to_pool(pool, &(obj)->elem)
++#define rxe_add_to_pool(pool, obj, gfp) __rxe_add_to_pool(pool, &(obj)->elem, gfp)
+ 
+ /* lookup an indexed object from index. takes a reference on object */
+ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 67184b0281a0..20b133f857f5 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -108,7 +108,7 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
+ 	struct rxe_dev *rxe = to_rdev(ibuc->device);
+ 	struct rxe_ucontext *uc = to_ruc(ibuc);
+ 
+-	return rxe_add_to_pool(&rxe->uc_pool, uc);
++	return rxe_add_to_pool(&rxe->uc_pool, uc, GFP_KERNEL);
+ }
+ 
+ static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
+@@ -142,7 +142,7 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	struct rxe_dev *rxe = to_rdev(ibpd->device);
+ 	struct rxe_pd *pd = to_rpd(ibpd);
+ 
+-	return rxe_add_to_pool(&rxe->pd_pool, pd);
++	return rxe_add_to_pool(&rxe->pd_pool, pd, GFP_KERNEL);
+ }
+ 
+ static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+@@ -176,7 +176,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
+ 	if (err)
+ 		return err;
+ 
+-	err = rxe_add_to_pool(&rxe->ah_pool, ah);
++	err = rxe_add_to_pool(&rxe->ah_pool, ah, GFP_ATOMIC);
+ 	if (err)
+ 		return err;
+ 
+@@ -299,7 +299,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ 	if (err)
+ 		goto err1;
+ 
+-	err = rxe_add_to_pool(&rxe->srq_pool, srq);
++	err = rxe_add_to_pool(&rxe->srq_pool, srq, GFP_KERNEL);
+ 	if (err)
+ 		goto err1;
+ 
+@@ -431,7 +431,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+ 		qp->is_user = false;
+ 	}
+ 
+-	err = rxe_add_to_pool(&rxe->qp_pool, qp);
++	err = rxe_add_to_pool(&rxe->qp_pool, qp, GFP_KERNEL);
+ 	if (err)
+ 		return err;
+ 
+@@ -800,7 +800,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	if (err)
+ 		return err;
+ 
+-	return rxe_add_to_pool(&rxe->cq_pool, cq);
++	return rxe_add_to_pool(&rxe->cq_pool, cq, GFP_KERNEL);
+ }
+ 
+ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
 -- 
 2.27.0
 
