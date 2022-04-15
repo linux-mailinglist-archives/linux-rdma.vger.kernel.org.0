@@ -2,71 +2,76 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D09C5502626
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 09:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A0F502634
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 09:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351002AbiDOHYm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Apr 2022 03:24:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56952 "EHLO
+        id S238332AbiDOH3U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Apr 2022 03:29:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350990AbiDOHYl (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 03:24:41 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C9DB3DC5
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:22:14 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id bj24so2281743oib.11
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:22:14 -0700 (PDT)
+        with ESMTP id S229580AbiDOH3T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 03:29:19 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EABB820D
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id z2so3362449oic.6
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=/ZS12THHQOHe+Sqwlg6ECwzL99QW1FVOo2wly298CTk=;
-        b=YGPsNUyWSe1PqT0gDfnIPcjbAvv58b24JuzKGBHFuuyEp3Hw+/0tj5HBQHesGyWp+k
-         oHdlryat19DSv0ooiPhXqMzGGon4MQq5jJLWgGcdSPzUVGUAVQ1eDmOfU8TokonJdleQ
-         U+bx3cp9HydKEf+9prx3pBcpT9L+HLhEcglxNsck50BNt4Pne1SV/c73BlYc4SA9Cbox
-         dCJAwQyWK807SFd62Sa/v6mKZ/6XsrphCLDWDjo6GDvsfIDruCNEAlX5M9MnheJDJG6+
-         +yUAAOQE5VoW3g9xKSMQuQIORSJJLHy3FHqXCkr/RUW1NDDHLlV1o71vdK+AbUgMxYZ8
-         LuFQ==
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=qgnUI9r4fJMDz+Lo8Xa85Jzwuj7q/JPRQ8V0e4xHDj4=;
+        b=olVtZsZTzFC3j/4UVIP/IeRYEcm7tOiqrGrcoP17uJF24VIXRUc3QWOLR/YCIJz87w
+         1HgIiNZzt7iE4scFP2UQeaJH6gruYyk34zZ+c7QlQPSSSH8D09ZTiF7J8gGO5mAvsn8U
+         IgUV7MEHDcQWEs8X7zVnGL+zV3WfXkliRL4u1iuI7posfW1I2QXPqzCvVrKQyD1Rl08O
+         zG/VciuI1ROgXJhbjd/aGwN7mboCSdml0ZKxm4k7NsZ4EVZ+kq2tGOLbVNm5zvh6DPlG
+         wxUbs8ZNLTXkBQCB9/MoPMYpprZlEFVNiHfbiLXWv+jP23mbf9zZxISUxPI8wgip22Nx
+         9F/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
+         :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=/ZS12THHQOHe+Sqwlg6ECwzL99QW1FVOo2wly298CTk=;
-        b=pKpCYm2C9cCfZAZmYtg5JiJp4A0CQf6BVKXpkUixaIsfulz2J3ZdrjylaPfJ5Zaq/s
-         Pxv4HR/BifUEDxBryfVNuobaFx4x5Q6TC+JxkLosZfZMa7aGzE+gr+0czSruHRexYBKc
-         IBFSqNbjcJeC0IzgJYJBel1hcRY/xSyIBb0Qvcuws0YE9QmKZGCoJNQE57JPkeq5KpVD
-         Xsxgr1NHw7vNgV62ju1X0xXyLIqg3WZOW0slSBf76fJhCKjTtsHF3c5j90NwJFKAS38y
-         7L5hmU7UA+qKLcNJoDs3UDDKZGrphXHKFcxZUaAzlm5CKOCOmAMnWjZCSI2/2Q3+qHss
-         ZEpg==
-X-Gm-Message-State: AOAM531urvPbM2c05whqpaZPWZ4jfUUGNRdLCScNOFT52S7eOcbtoCyb
-        FHC+VBO/oQcVHj4S4bzfqaYVOv3s4w0=
-X-Google-Smtp-Source: ABdhPJyEOaW8PZ+jJEkpvqiMWRcfplQYKbqZCa1es6dJ/Ie7gFabchkLG8rvyB1mea7XXVkhXEUXEg==
-X-Received: by 2002:a05:6808:1287:b0:2da:5cea:fb11 with SMTP id a7-20020a056808128700b002da5ceafb11mr1041915oiw.147.1650007333354;
-        Fri, 15 Apr 2022 00:22:13 -0700 (PDT)
+        bh=qgnUI9r4fJMDz+Lo8Xa85Jzwuj7q/JPRQ8V0e4xHDj4=;
+        b=BL61IRd26j/2gnIq2nsemq6R8OVHnU512219YQcsK5hBcci7gggiRPJOC/wM/OKPu3
+         SmZBDDbqfLkCaCyItE8OmQy8t3OeK4YEGwVwVMhaff0FWFyw+bzYMsARQup++ZnOxD1X
+         lNc3op2ph1+WnLi2LK89RNwVvnBH7FYrnhD7vxh6DMyOwEn2od0UVsscQkxFn7gFD5ua
+         cQfPapMfbzxxUT9pi12/3IghK2KOfkrwikISZHXVKwYoHQxQ12CjqB16jtmaQgpGYWqr
+         F/QQe0SOAz3ekF2N6ifyNtiYkS6cwkyOT2bq1N591/cKeCp34K2UEAKAiTxi/WnKs8yj
+         G4VQ==
+X-Gm-Message-State: AOAM531n0aDb6xY7VIAFi1oWEfh6/pNdD9IUN7FzCNGc9OuXv4oRGbcz
+        erk8H0IEKznmFcR2PrangQ8=
+X-Google-Smtp-Source: ABdhPJwGJIGciMQ1ZqQx+Qd+rYhYywZKOiaRaeeVux6LACpSWrGeLU76kkTrfGNfSar/1fsoPFsUUA==
+X-Received: by 2002:a05:6808:10d3:b0:2ec:ddb3:c82d with SMTP id s19-20020a05680810d300b002ecddb3c82dmr1047881ois.250.1650007611331;
+        Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:447:11e9:73f1:b59c? (2603-8081-140c-1a00-0447-11e9-73f1-b59c.res6.spectrum.com. [2603:8081:140c:1a00:447:11e9:73f1:b59c])
-        by smtp.gmail.com with ESMTPSA id v17-20020a4a6951000000b00329d8b23f0dsm913836oof.5.2022.04.15.00.22.12
+        by smtp.gmail.com with ESMTPSA id n124-20020aca4082000000b002ecd08d8497sm877622oia.5.2022.04.15.00.26.50
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Apr 2022 00:22:13 -0700 (PDT)
-Message-ID: <72d96848-3414-b665-d800-759986540aed@gmail.com>
-Date:   Fri, 15 Apr 2022 02:22:12 -0500
+        Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
+Message-ID: <3154cd57-cde4-139b-c363-0bca5fbcf2a7@gmail.com>
+Date:   Fri, 15 Apr 2022 02:26:50 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCHv4 1/2] RDMA/rxe: Fix a dead lock problem
+Subject: Re: blktest failures
 Content-Language: en-US
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-References: <20220415195630.279510-1-yanjun.zhu@linux.dev>
- <e217ab50-75ff-9112-e492-a70cca50759b@gmail.com>
- <0d88246e-c29a-27c0-95c5-da73f52e6a59@linux.dev>
- <726e75b0-c165-92f8-c367-1a5a777bc8b1@gmail.com>
- <5597e6eb-1543-6895-77fc-426e0a601338@linux.dev>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>, Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <533dc3b0-e58a-0bc8-2f07-5dbfb3d1235e@gmail.com>
+ <28b4c636-c5a7-451b-965b-6201ac5af460@gmail.com>
+ <98f2a27d-7fa6-074f-a3e5-6b172c79ccd7@acm.org>
+ <20220409050405.GA17755@lst.de>
+ <8ff53db7-137f-8d29-18e7-3926de255deb@gmail.com>
+ <d594aef2-7728-d9f3-59eb-148a492ec8af@linux.dev>
 From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <5597e6eb-1543-6895-77fc-426e0a601338@linux.dev>
+In-Reply-To: <d594aef2-7728-d9f3-59eb-148a492ec8af@linux.dev>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-6.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -76,241 +81,36 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/15/22 01:49, Yanjun Zhu wrote:
-> 在 2022/4/15 14:35, Bob Pearson 写道:
->> On 4/15/22 00:54, Yanjun Zhu wrote:
+On 4/15/22 02:12, Yanjun Zhu wrote:
+> 在 2022/4/10 5:43, Bob Pearson 写道:
+>> On 4/9/22 00:04, Christoph Hellwig wrote:
+>>> On Fri, Apr 08, 2022 at 04:25:12PM -0700, Bart Van Assche wrote:
+>>>> One of the functions in the above call stack is sd_remove(). sd_remove()
+>>>> calls del_gendisk() just before calling sd_shutdown(). sd_shutdown()
+>>>> submits the SYNCHRONIZE CACHE command. In del_gendisk() I found the
+>>>> following comment: "Fail any new I/O". Do you agree that failing new I/O
+>>>> before sd_shutdown() is called is wrong? Is there any other way to fix this
+>>>> than moving the blk_queue_start_drain() etc. calls out of del_gendisk() and
+>>>> into a new function?
 >>>
->>> 在 2022/4/15 13:37, Bob Pearson 写道:
->>>> On 4/15/22 14:56, yanjun.zhu@linux.dev wrote:
->>>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>>
->>>>> This is a dead lock problem.
->>>>> The xa_lock first is acquired in this:
->>>>>
->>>>> {SOFTIRQ-ON-W} state was registered at:
->>>>>
->>>>>     lock_acquire+0x1d2/0x5a0
->>>>>     _raw_spin_lock+0x33/0x80
->>>>>     __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
->>>>>     __ib_alloc_pd+0xf9/0x550 [ib_core]
->>>>>     ib_mad_init_device+0x2d9/0xd20 [ib_core]
->>>>>     add_client_context+0x2fa/0x450 [ib_core]
->>>>>     enable_device_and_get+0x1b7/0x350 [ib_core]
->>>>>     ib_register_device+0x757/0xaf0 [ib_core]
->>>>>     rxe_register_device+0x2eb/0x390 [rdma_rxe]
->>>>>     rxe_net_add+0x83/0xc0 [rdma_rxe]
->>>>>     rxe_newlink+0x76/0x90 [rdma_rxe]
->>>>>     nldev_newlink+0x245/0x3e0 [ib_core]
->>>>>     rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
->>>>>     rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
->>>>>     netlink_unicast+0x43b/0x640
->>>>>     netlink_sendmsg+0x7eb/0xc40
->>>>>     sock_sendmsg+0xe0/0x110
->>>>>     __sys_sendto+0x1d7/0x2b0
->>>>>     __x64_sys_sendto+0xdd/0x1b0
->>>>>     do_syscall_64+0x37/0x80
->>>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>> There is a separate xarray for each object pool. So this one is
->>>> rxe->pd_pool.xa.xa_lock from rxe_alloc_pd().
->>>>
->>>>> Then xa_lock is acquired in this:
->>>>>
->>>>> {IN-SOFTIRQ-W}:
->>>>>
->>>>> Call Trace:
->>>>>    <TASK>
->>>>>     dump_stack_lvl+0x44/0x57
->>>>>     mark_lock.part.52.cold.79+0x3c/0x46
->>>>>     __lock_acquire+0x1565/0x34a0
->>>>>     lock_acquire+0x1d2/0x5a0
->>>>>     _raw_spin_lock_irqsave+0x42/0x90
->>>>>     rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
->>>>>     rxe_get_av+0x168/0x2a0 [rdma_rxe]
->>>>>     rxe_requester+0x75b/0x4a90 [rdma_rxe]
->>>>>     rxe_do_task+0x134/0x230 [rdma_rxe]
->>>>>     tasklet_action_common.isra.12+0x1f7/0x2d0
->>>>>     __do_softirq+0x1ea/0xa4c
->>>>>     run_ksoftirqd+0x32/0x60
->>>>>     smpboot_thread_fn+0x503/0x860
->>>>>     kthread+0x29b/0x340
->>>>>     ret_from_fork+0x1f/0x30
->>>> And this one is rxe->ah_pool.xa.xa_lock from rxe_requester
->>>> in the process of sending a UD packet from a work request
->>>> which contains the index of the ah.
->>>>
->>>> For your story to work there needs to be an another ah_pool.xa.xa_lock somewhere.
->>>> Let's assume it is there somewhere and it's from (a different) add_to_pool call
->>>> then the add_to_pool_ routine should disable interrupts when it gets the lock
->>>> with spin_lock_xxx. But only for AH objects.
->>>>
->>>> This may be old news.
->>>
->>> What do you mean? Please check the call trace in the bug.
+>>> That SYNCHRONIZE CACHE is a passthrough command sent on the request_queue
+>>> and should not be affected by stopping all file system I/O.
 >>
->> I mean the trace you show here shows an instance of xa_lock being
->> acquired from the pd pool followed by an instance of xa_lock being
->> acquired from rxe_pool_get_index from the ah pool. They are different
->> locks. They can't deadlock against each other. So there must be
->> some other trace (not shown) that also gets xa_lock from the ah pool.
+>> When I run check -q srp
+>> all the test cases pass but each one stops for 3+ minutes at synchronize cache.
+>> The rxe device is still active until sync cache returns when the last QP and the PD
+>> are destroyed. It may be that the queues are blocked waiting for something else
+>> even though they have reported success??
 > 
-> Please check the bug report mail. The link is news://nntp.lore.kernel.org:119/CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com
-> 
-> BTW, what is the update about wr crash caused by your xarray patches?
+> If you remove all the xarray patches and use the original source code. This will not occur.
 > 
 > Zhu Yanjun
 > 
->>
->>>
->>> Zhu Yanjun
->>>
->>>>
->>>>>    </TASK>
->>>>>
->>>>>   From the above, in the function __rxe_add_to_pool,
->>>>> xa_lock is acquired. Then the function __rxe_add_to_pool
->>>>> is interrupted by softirq. The function
->>>>> rxe_pool_get_index will also acquire xa_lock.
->>>>>
->>>>> Finally, the dead lock appears.
->>>>>
->>>>> [  296.806097]        CPU0
->>>>> [  296.808550]        ----
->>>>> [  296.811003]   lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
->>>>> [  296.814583]   <Interrupt>
->>>>> [  296.817209]     lock(&xa->xa_lock#15); <---- rxe_pool_get_index
->>>>> [  296.820961]
->>>>>                    *** DEADLOCK ***
->>>>>
->>>>> Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
->>>>> Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
->>>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>> ---
->>>>> V3->V4: xa_lock_irq locks are used.
->>>>> V2->V3: __rxe_add_to_pool is between spin_lock and spin_unlock, so
->>>>>           GFP_ATOMIC is used in __rxe_add_to_pool.
->>>>> V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
->>>>> ---
->>>>>    drivers/infiniband/sw/rxe/rxe_pool.c | 20 ++++++++++++++------
->>>>>    1 file changed, 14 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->>>>> index 87066d04ed18..f1f06dc7e64f 100644
->>>>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->>>>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->>>>> @@ -106,7 +106,7 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
->>>>>          atomic_set(&pool->num_elem, 0);
->>>>>    -    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC);
->>>>> +    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
->>>>>        pool->limit.min = info->min_index;
->>>>>        pool->limit.max = info->max_index;
->>>>>    }
->>>>> @@ -138,8 +138,10 @@ void *rxe_alloc(struct rxe_pool *pool)
->>>>>        elem->obj = obj;
->>>>>        kref_init(&elem->ref_cnt);
->>>>>    -    err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>>> -                  &pool->next, GFP_KERNEL);
->>>>> +    xa_lock_irq(&pool->xa);
->>>>> +    err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>>> +                &pool->next, GFP_KERNEL);
->>>>> +    xa_unlock_irq(&pool->xa);
->>>>>        if (err)
->>>>>            goto err_free;
->>>>>    @@ -155,6 +157,7 @@ void *rxe_alloc(struct rxe_pool *pool)
->>>>>    int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->>>>>    {
->>>>>        int err;
->>>>> +    unsigned long flags;
->>>>>          if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
->>>>>            return -EINVAL;
->>>>> @@ -166,8 +169,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->>>>>        elem->obj = (u8 *)elem - pool->elem_offset;
->>>>>        kref_init(&elem->ref_cnt);
->>>>>    -    err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>>> -                  &pool->next, GFP_KERNEL);
->>>>> +    xa_lock_irqsave(&pool->xa, flags);
->>>>> +    err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>>> +                &pool->next, GFP_ATOMIC);
->>>>> +    xa_unlock_irqrestore(&pool->xa, flags);
->>>>>        if (err)
->>>>>            goto err_cnt;
->>>>>    @@ -200,8 +205,11 @@ static void rxe_elem_release(struct kref *kref)
->>>>>    {
->>>>>        struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
->>>>>        struct rxe_pool *pool = elem->pool;
->>>>> +    unsigned long flags;
->>>>>    -    xa_erase(&pool->xa, elem->index);
->>>>> +    xa_lock_irqsave(&pool->xa, flags);
->>>>> +    __xa_erase(&pool->xa, elem->index);
->>>>> +    xa_unlock_irqrestore(&pool->xa, flags);
->>>>>          if (pool->cleanup)
->>>>>            pool->cleanup(elem);
->>
-> 
 
-Here is my output. Everything passes there are no bugs or unexpected warnings in the kernel trace.
-
-bob@ubuntu-21:~/src/blktests$ sudo ./check -q srp
-
-srp/001 (Create and remove LUNs)                             [passed]
-
-    runtime  3.402s  ...  2.753s
-
-srp/002 (File I/O on top of multipath concurrently with logout and login (mq)) [passed]time  34.431s  ...
-
-    runtime  34.431s  ...  34.328s
-
-srp/003 (File I/O on top of multipath concurrently with logout and login (sq)) [not run]
-
-    legacy device mapper support is missing
-
-srp/004 (File I/O on top of multipath concurrently with logout and login (sq-on-srp/004 (File I/O on top of multipath concurrently with logout and login (sq-on-mq)) [not run]
-
-    legacy device mapper support is missing
-
-srp/005 (Direct I/O with large transfer sizes, cmd_sg_entries=255 and bs=4M) [passed]
-
-    runtime  14.332s  ...  12.919s
-
-srp/006 (Direct I/O with large transfer sizes, cmd_sg_entries=255 and bs=8M) [passed]
-
-    runtime  13.361s  ...  12.959s
-
-srp/007 (Direct I/O with large transfer sizes, cmd_sg_entries=1 and bs=4M) [passed]
-
-    runtime  14.293s  ...  12.912s
-
-srp/008 (Direct I/O with large transfer sizes, cmd_sg_entries=1 and bs=8M) [passed]
-
-    runtime  13.369s  ...  13.165s
-
-srp/009 (Buffered I/O with large transfer sizes, cmd_sg_entries=255 and bs=4M) [passed]
-
-    runtime  13.636s  ...  14.201s
-
-srp/010 (Buffered I/O with large transfer sizes, cmd_sg_entries=255 and bs=8M) [passed]
-
-    runtime  13.361s  ...  12.909s
-
-srp/011 (Block I/O on top of multipath concurrently with logout and login) [passed]
-
-    runtime  33.706s  ...  33.571s
-
-srp/012 (dm-mpath on top of multiple I/O schedulers)         [passed]
-
-    runtime  13.592s  ...  14.138s
-
-srp/013 (Direct I/O using a discontiguous buffer)            [passed]
-
-    runtime  3.230s  ...  3.513s
-
-srp/014 (Run sg_reset while I/O is ongoing)                  [passed]
-
-    runtime  33.070s  ...  33.059s
-
-srp/015 (File I/O on top of multipath concurrently with logout and login (mq) using the SoftiWARP (siw) dsrp/015 (File I/O on top of multipath concurrently with logout and login (mq) using the SoftiWARP (siw) driver) [passed].148s  ...
-
-    runtime  35.148s  ...  34.974s
-
-bob@ubuntu-21:~/src/blktests$ 
+I know. I am trying to find out why. For performance reasons I very much want to
+make the xarray + rcu_locking patches work correctly. All the spinlock issues are
+now fixed in my tree. What is left is a race in the RDMA read retry code somewhere.
+I'll find it. In the process of chasing this I have found several real bugs and
+I suspect a few more are out there.
 
 Bob
