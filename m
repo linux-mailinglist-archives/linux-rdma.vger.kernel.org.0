@@ -2,30 +2,30 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F588502845
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 12:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD10502C77
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 17:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230086AbiDOK20 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Apr 2022 06:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54786 "EHLO
+        id S1354948AbiDOPWl (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Apr 2022 11:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244084AbiDOK20 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 06:28:26 -0400
-Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D33D5BABBB
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 03:25:56 -0700 (PDT)
-Message-ID: <8dfe8000-af53-b771-d522-40e022d7e0d6@linux.dev>
+        with ESMTP id S1354954AbiDOPWd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 11:22:33 -0400
+Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5842E0B8
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 08:20:02 -0700 (PDT)
+Message-ID: <2aaf9d79-f073-96ed-bf8e-592f63c14fdc@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1650018355;
+        t=1650036001;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=x06nbzD5leSEvRwCqWZWLEDiF7ngzVtUjEGIDIYLo88=;
-        b=CyFXdUF+kDY9QqdaybkUlg2YTdMBOS1DotZckhyUi02+baBPaLX2BwPGLGkuP/a23gM02P
-        IPEyJYEL/7vx4tupkYA083zIRLWPfXT0JpOgycBJmCkB+LLtqtXJoTvZwUZdSEMDeErMhF
-        n6DJOnALL+j+kR2qUMgbyubwxiiGIw4=
-Date:   Fri, 15 Apr 2022 18:25:44 +0800
+        bh=rTgbj5XN7vQO/eebXhf2qdapcmVtjr2VUFuzKzL4ZOs=;
+        b=Da0wqs5AkEzA0VxdxKJb8z2K5n4zPdlgUizo1EOLJ9TWqsRea/aIwL0QFApvHsnWwKx0FR
+        FX4y3rqmKT9pYgkLTDaqycdmLz0geALc3WgRuptBjdAYls3R2AFaWCF1ES1ax50h2UB70X
+        v/V0vN3lN6h6Y16W5s0jAZU9ljdmfVs=
+Date:   Fri, 15 Apr 2022 23:19:50 +0800
 MIME-Version: 1.0
 Subject: Re: [PATCHv4 1/2] RDMA/rxe: Fix a dead lock problem
 To:     Bob Pearson <rpearsonhpe@gmail.com>, yanjun.zhu@linux.dev,
@@ -39,9 +39,10 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -114,12 +115,15 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 > then the add_to_pool_ routine should disable interrupts when it gets the lock
 > with spin_lock_xxx. But only for AH objects.
 
+Fortunately, I can reproduce this problem.
+"
+Apr 15 19:06:05 kernel: rdma_rxe: drivers/infiniband/sw/rxe/rxe_pool.c 
++169, __rxe_add_to_pool, name:ah
 
-If I understand you correctly, you are suspecting the above call trace.
-If yes, please check the bug reported in the maillist.
-
-And please based on 5.18-rc2 to discuss this bug because this bug 
-occurred in 5.18-rc2. And we are working on 5.18-rc2.
+Apr 15 19:06:05 kernel: rdma_rxe: drivers/infiniband/sw/rxe/rxe_pool.c 
++189, rxe_pool_get_index, name:ah
+"
+Please check the above logs. Focus on the pool name.
 
 Zhu Yanjun
 
