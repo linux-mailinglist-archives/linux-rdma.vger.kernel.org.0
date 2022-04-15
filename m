@@ -2,54 +2,54 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A0F502634
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 09:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA29502638
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 09:29:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238332AbiDOH3U (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Apr 2022 03:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39372 "EHLO
+        id S245747AbiDOHbo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Apr 2022 03:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbiDOH3T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 03:29:19 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0EABB820D
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id z2so3362449oic.6
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
+        with ESMTP id S229580AbiDOHbm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 03:31:42 -0400
+Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A323B8217
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:29:15 -0700 (PDT)
+Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-d6e29fb3d7so7467559fac.7
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=qgnUI9r4fJMDz+Lo8Xa85Jzwuj7q/JPRQ8V0e4xHDj4=;
-        b=olVtZsZTzFC3j/4UVIP/IeRYEcm7tOiqrGrcoP17uJF24VIXRUc3QWOLR/YCIJz87w
-         1HgIiNZzt7iE4scFP2UQeaJH6gruYyk34zZ+c7QlQPSSSH8D09ZTiF7J8gGO5mAvsn8U
-         IgUV7MEHDcQWEs8X7zVnGL+zV3WfXkliRL4u1iuI7posfW1I2QXPqzCvVrKQyD1Rl08O
-         zG/VciuI1ROgXJhbjd/aGwN7mboCSdml0ZKxm4k7NsZ4EVZ+kq2tGOLbVNm5zvh6DPlG
-         wxUbs8ZNLTXkBQCB9/MoPMYpprZlEFVNiHfbiLXWv+jP23mbf9zZxISUxPI8wgip22Nx
-         9F/w==
+        bh=azXV3BtC/Ojix/p1H0oiuUBj2nroGRqXI6DhkYMhLws=;
+        b=hxjs6EuGT2plnKUOZkHTW3xb+QdQ5a4KvfRcw/F+Ot+RtPPY4TOBOWEKd1QLoqadcn
+         bjzIE23RpCgqB+1FQDxY/1ZEo/KC4v4ypETWswdg26HbuvMo2T9oyoIRRohIEwFMmAto
+         sD/2XlbyX1dEJDFn+uhCMuBrbCjkbny5D6rmAOopFeqe95A5Ns8vPXiq5nMd1oygCqW7
+         3DbmgXM0FLHhPhM5aBYOfbLO5dHKgAey4gu5CsudqfXYz1vG//02wiUlZTrwfbtLnNOF
+         pcMK8LtxJ3IqCsKT3f/cjMB0ZycHwaQdlkGuu1Tn+I/dCiZzMFFtv4c96ftwRJzU05t4
+         kfyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=qgnUI9r4fJMDz+Lo8Xa85Jzwuj7q/JPRQ8V0e4xHDj4=;
-        b=BL61IRd26j/2gnIq2nsemq6R8OVHnU512219YQcsK5hBcci7gggiRPJOC/wM/OKPu3
-         SmZBDDbqfLkCaCyItE8OmQy8t3OeK4YEGwVwVMhaff0FWFyw+bzYMsARQup++ZnOxD1X
-         lNc3op2ph1+WnLi2LK89RNwVvnBH7FYrnhD7vxh6DMyOwEn2od0UVsscQkxFn7gFD5ua
-         cQfPapMfbzxxUT9pi12/3IghK2KOfkrwikISZHXVKwYoHQxQ12CjqB16jtmaQgpGYWqr
-         F/QQe0SOAz3ekF2N6ifyNtiYkS6cwkyOT2bq1N591/cKeCp34K2UEAKAiTxi/WnKs8yj
-         G4VQ==
-X-Gm-Message-State: AOAM531n0aDb6xY7VIAFi1oWEfh6/pNdD9IUN7FzCNGc9OuXv4oRGbcz
-        erk8H0IEKznmFcR2PrangQ8=
-X-Google-Smtp-Source: ABdhPJwGJIGciMQ1ZqQx+Qd+rYhYywZKOiaRaeeVux6LACpSWrGeLU76kkTrfGNfSar/1fsoPFsUUA==
-X-Received: by 2002:a05:6808:10d3:b0:2ec:ddb3:c82d with SMTP id s19-20020a05680810d300b002ecddb3c82dmr1047881ois.250.1650007611331;
-        Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
+        bh=azXV3BtC/Ojix/p1H0oiuUBj2nroGRqXI6DhkYMhLws=;
+        b=Un3u0TIL4eaYRnRgEWVPuxIe6pAxSkYeT6OZFTPTwep+sGsAb8d4KvLKWnXbH5crDn
+         +jc8/gx5hpl1d3yCUxCvTjhMQAhmu1iFqkR9u8NXdpKRu4lBYlhkMc9p0/cU3GP5fKwk
+         IF4gg67QxOzOeqBu0Ec4ssouw7gL6FfUb53xWEatkRzy+W/ExpmEnuB01emzIB6lk74D
+         3GVf6gRklkfRzk7pM8T3Lzz7EWp9PcJM83aI/MAJ02+9aDptUQt2F/Krgv427hUnHZAf
+         ZacUkHGUXNeewAPJNtQBX6z0fw82AiAlLCQ0aaHUym8bAjsfKmZXmWpR6E8XOtZPA3ZH
+         8pog==
+X-Gm-Message-State: AOAM531+PChr0wa5eajg9P/BzeM1xmqH3VUPY/MvvsCA/QfM5j55veVY
+        0b2LZukMkyBvj1tbuVSNIy8=
+X-Google-Smtp-Source: ABdhPJwoRv5DVdcvmRysDXBqlxXNTqvoX3N+9iG4PhKwWP8hDRhQz0VskTZ+Z0G6wU3AVPUyq7y0SQ==
+X-Received: by 2002:a05:6870:9589:b0:dc:4640:ef89 with SMTP id k9-20020a056870958900b000dc4640ef89mr919984oao.175.1650007753886;
+        Fri, 15 Apr 2022 00:29:13 -0700 (PDT)
 Received: from ?IPV6:2603:8081:140c:1a00:447:11e9:73f1:b59c? (2603-8081-140c-1a00-0447-11e9-73f1-b59c.res6.spectrum.com. [2603:8081:140c:1a00:447:11e9:73f1:b59c])
-        by smtp.gmail.com with ESMTPSA id n124-20020aca4082000000b002ecd08d8497sm877622oia.5.2022.04.15.00.26.50
+        by smtp.gmail.com with ESMTPSA id t22-20020a4a8256000000b003332a0402f5sm908180oog.23.2022.04.15.00.29.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Apr 2022 00:26:51 -0700 (PDT)
-Message-ID: <3154cd57-cde4-139b-c363-0bca5fbcf2a7@gmail.com>
-Date:   Fri, 15 Apr 2022 02:26:50 -0500
+        Fri, 15 Apr 2022 00:29:13 -0700 (PDT)
+Message-ID: <faacdaa0-849b-e10f-7f27-f63bd203aaed@gmail.com>
+Date:   Fri, 15 Apr 2022 02:29:13 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
@@ -107,10 +107,5 @@ On 4/15/22 02:12, Yanjun Zhu wrote:
 > Zhu Yanjun
 > 
 
-I know. I am trying to find out why. For performance reasons I very much want to
-make the xarray + rcu_locking patches work correctly. All the spinlock issues are
-now fixed in my tree. What is left is a race in the RDMA read retry code somewhere.
-I'll find it. In the process of chasing this I have found several real bugs and
-I suspect a few more are out there.
-
-Bob
+I missed one other point. The 3 minute delay is actually not a rxe bug at all but was recently
+caused by a bad scsi patch which has since been reverted.
