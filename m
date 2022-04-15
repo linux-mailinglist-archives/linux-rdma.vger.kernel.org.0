@@ -2,49 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0EC5025DD
-	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 08:49:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A949F50260B
+	for <lists+linux-rdma@lfdr.de>; Fri, 15 Apr 2022 09:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239658AbiDOGwY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Apr 2022 02:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S1347656AbiDOHPN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 15 Apr 2022 03:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237495AbiDOGwX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 02:52:23 -0400
-Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC541B3691
-        for <linux-rdma@vger.kernel.org>; Thu, 14 Apr 2022 23:49:53 -0700 (PDT)
-Message-ID: <5597e6eb-1543-6895-77fc-426e0a601338@linux.dev>
+        with ESMTP id S241498AbiDOHPN (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 03:15:13 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62673A774D
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 00:12:45 -0700 (PDT)
+Message-ID: <d594aef2-7728-d9f3-59eb-148a492ec8af@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1650005392;
+        t=1650006763;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=IH4KfqLgHtzqb7J2hQTZH4KBE4whnVp5hEG5umIqiW0=;
-        b=dZzPlff/T5ENzyNKiJmfXvh6Fhimombl1Fh5QJgG7quNHnEUIR9CvQoxNXAbC/CUhFHaGE
-        hYZ08IypHUjc5sSZzhokbzuWiqepJvsPVmn57LcgA7sdb3g5b2xUZlZOrHsybiJWmCEpbS
-        dUtFsTA7fNb5cWiFRl2mlnLB/8fk3rM=
-Date:   Fri, 15 Apr 2022 14:49:48 +0800
+        bh=q9g836RHRj8Ky3yjeisLvve2++dQtHdFZy494aOGhMU=;
+        b=X3TFnEFEEgal2QgdSRV5K/i0qzln+yCdDknqGFLSEehWVciOfdZYmLvCPhw2Y1bGtUPqJA
+        YQP9aXcxqayKj4bdMxo8Q2LW/h5mMsd2iLsi00sq+k/qchAjZYyMt+ZsY9Nz4R/dwMemTh
+        O4TmJkCz7HG5dyD4n+MvJoTnL4ktgVk=
+Date:   Fri, 15 Apr 2022 15:12:32 +0800
 MIME-Version: 1.0
-Subject: Re: [PATCHv4 1/2] RDMA/rxe: Fix a dead lock problem
+Subject: Re: blktest failures
 To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Yanjun Zhu <yanjun.zhu@linux.dev>, jgg@ziepe.ca,
-        leon@kernel.org, linux-rdma@vger.kernel.org
-References: <20220415195630.279510-1-yanjun.zhu@linux.dev>
- <e217ab50-75ff-9112-e492-a70cca50759b@gmail.com>
- <0d88246e-c29a-27c0-95c5-da73f52e6a59@linux.dev>
- <726e75b0-c165-92f8-c367-1a5a777bc8b1@gmail.com>
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+References: <533dc3b0-e58a-0bc8-2f07-5dbfb3d1235e@gmail.com>
+ <28b4c636-c5a7-451b-965b-6201ac5af460@gmail.com>
+ <98f2a27d-7fa6-074f-a3e5-6b172c79ccd7@acm.org>
+ <20220409050405.GA17755@lst.de>
+ <8ff53db7-137f-8d29-18e7-3926de255deb@gmail.com>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <726e75b0-c165-92f8-c367-1a5a777bc8b1@gmail.com>
+In-Reply-To: <8ff53db7-137f-8d29-18e7-3926de255deb@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,173 +56,28 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/4/15 14:35, Bob Pearson 写道:
-> On 4/15/22 00:54, Yanjun Zhu wrote:
+在 2022/4/10 5:43, Bob Pearson 写道:
+> On 4/9/22 00:04, Christoph Hellwig wrote:
+>> On Fri, Apr 08, 2022 at 04:25:12PM -0700, Bart Van Assche wrote:
+>>> One of the functions in the above call stack is sd_remove(). sd_remove()
+>>> calls del_gendisk() just before calling sd_shutdown(). sd_shutdown()
+>>> submits the SYNCHRONIZE CACHE command. In del_gendisk() I found the
+>>> following comment: "Fail any new I/O". Do you agree that failing new I/O
+>>> before sd_shutdown() is called is wrong? Is there any other way to fix this
+>>> than moving the blk_queue_start_drain() etc. calls out of del_gendisk() and
+>>> into a new function?
 >>
->> 在 2022/4/15 13:37, Bob Pearson 写道:
->>> On 4/15/22 14:56, yanjun.zhu@linux.dev wrote:
->>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>>
->>>> This is a dead lock problem.
->>>> The xa_lock first is acquired in this:
->>>>
->>>> {SOFTIRQ-ON-W} state was registered at:
->>>>
->>>>     lock_acquire+0x1d2/0x5a0
->>>>     _raw_spin_lock+0x33/0x80
->>>>     __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
->>>>     __ib_alloc_pd+0xf9/0x550 [ib_core]
->>>>     ib_mad_init_device+0x2d9/0xd20 [ib_core]
->>>>     add_client_context+0x2fa/0x450 [ib_core]
->>>>     enable_device_and_get+0x1b7/0x350 [ib_core]
->>>>     ib_register_device+0x757/0xaf0 [ib_core]
->>>>     rxe_register_device+0x2eb/0x390 [rdma_rxe]
->>>>     rxe_net_add+0x83/0xc0 [rdma_rxe]
->>>>     rxe_newlink+0x76/0x90 [rdma_rxe]
->>>>     nldev_newlink+0x245/0x3e0 [ib_core]
->>>>     rdma_nl_rcv_msg+0x2d4/0x790 [ib_core]
->>>>     rdma_nl_rcv+0x1ca/0x3f0 [ib_core]
->>>>     netlink_unicast+0x43b/0x640
->>>>     netlink_sendmsg+0x7eb/0xc40
->>>>     sock_sendmsg+0xe0/0x110
->>>>     __sys_sendto+0x1d7/0x2b0
->>>>     __x64_sys_sendto+0xdd/0x1b0
->>>>     do_syscall_64+0x37/0x80
->>>>     entry_SYSCALL_64_after_hwframe+0x44/0xae
->>> There is a separate xarray for each object pool. So this one is
->>> rxe->pd_pool.xa.xa_lock from rxe_alloc_pd().
->>>
->>>> Then xa_lock is acquired in this:
->>>>
->>>> {IN-SOFTIRQ-W}:
->>>>
->>>> Call Trace:
->>>>    <TASK>
->>>>     dump_stack_lvl+0x44/0x57
->>>>     mark_lock.part.52.cold.79+0x3c/0x46
->>>>     __lock_acquire+0x1565/0x34a0
->>>>     lock_acquire+0x1d2/0x5a0
->>>>     _raw_spin_lock_irqsave+0x42/0x90
->>>>     rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
->>>>     rxe_get_av+0x168/0x2a0 [rdma_rxe]
->>>>     rxe_requester+0x75b/0x4a90 [rdma_rxe]
->>>>     rxe_do_task+0x134/0x230 [rdma_rxe]
->>>>     tasklet_action_common.isra.12+0x1f7/0x2d0
->>>>     __do_softirq+0x1ea/0xa4c
->>>>     run_ksoftirqd+0x32/0x60
->>>>     smpboot_thread_fn+0x503/0x860
->>>>     kthread+0x29b/0x340
->>>>     ret_from_fork+0x1f/0x30
->>> And this one is rxe->ah_pool.xa.xa_lock from rxe_requester
->>> in the process of sending a UD packet from a work request
->>> which contains the index of the ah.
->>>
->>> For your story to work there needs to be an another ah_pool.xa.xa_lock somewhere.
->>> Let's assume it is there somewhere and it's from (a different) add_to_pool call
->>> then the add_to_pool_ routine should disable interrupts when it gets the lock
->>> with spin_lock_xxx. But only for AH objects.
->>>
->>> This may be old news.
->>
->> What do you mean? Please check the call trace in the bug.
+>> That SYNCHRONIZE CACHE is a passthrough command sent on the request_queue
+>> and should not be affected by stopping all file system I/O.
 > 
-> I mean the trace you show here shows an instance of xa_lock being
-> acquired from the pd pool followed by an instance of xa_lock being
-> acquired from rxe_pool_get_index from the ah pool. They are different
-> locks. They can't deadlock against each other. So there must be
-> some other trace (not shown) that also gets xa_lock from the ah pool.
+> When I run check -q srp
+> all the test cases pass but each one stops for 3+ minutes at synchronize cache.
+> The rxe device is still active until sync cache returns when the last QP and the PD
+> are destroyed. It may be that the queues are blocked waiting for something else
+> even though they have reported success??
 
-Please check the bug report mail. The link is 
-news://nntp.lore.kernel.org:119/CAHj4cs-MT13RiEsWXUAcX_H5jEtjsebuZgSeUcfptNVuELgjYQ@mail.gmail.com
-
-BTW, what is the update about wr crash caused by your xarray patches?
+If you remove all the xarray patches and use the original source code. 
+This will not occur.
 
 Zhu Yanjun
-
-> 
->>
->> Zhu Yanjun
->>
->>>
->>>>    </TASK>
->>>>
->>>>   From the above, in the function __rxe_add_to_pool,
->>>> xa_lock is acquired. Then the function __rxe_add_to_pool
->>>> is interrupted by softirq. The function
->>>> rxe_pool_get_index will also acquire xa_lock.
->>>>
->>>> Finally, the dead lock appears.
->>>>
->>>> [  296.806097]        CPU0
->>>> [  296.808550]        ----
->>>> [  296.811003]   lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
->>>> [  296.814583]   <Interrupt>
->>>> [  296.817209]     lock(&xa->xa_lock#15); <---- rxe_pool_get_index
->>>> [  296.820961]
->>>>                    *** DEADLOCK ***
->>>>
->>>> Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
->>>> Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
->>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->>>> ---
->>>> V3->V4: xa_lock_irq locks are used.
->>>> V2->V3: __rxe_add_to_pool is between spin_lock and spin_unlock, so
->>>>           GFP_ATOMIC is used in __rxe_add_to_pool.
->>>> V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
->>>> ---
->>>>    drivers/infiniband/sw/rxe/rxe_pool.c | 20 ++++++++++++++------
->>>>    1 file changed, 14 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->>>> index 87066d04ed18..f1f06dc7e64f 100644
->>>> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->>>> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->>>> @@ -106,7 +106,7 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
->>>>          atomic_set(&pool->num_elem, 0);
->>>>    -    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC);
->>>> +    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
->>>>        pool->limit.min = info->min_index;
->>>>        pool->limit.max = info->max_index;
->>>>    }
->>>> @@ -138,8 +138,10 @@ void *rxe_alloc(struct rxe_pool *pool)
->>>>        elem->obj = obj;
->>>>        kref_init(&elem->ref_cnt);
->>>>    -    err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>> -                  &pool->next, GFP_KERNEL);
->>>> +    xa_lock_irq(&pool->xa);
->>>> +    err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>> +                &pool->next, GFP_KERNEL);
->>>> +    xa_unlock_irq(&pool->xa);
->>>>        if (err)
->>>>            goto err_free;
->>>>    @@ -155,6 +157,7 @@ void *rxe_alloc(struct rxe_pool *pool)
->>>>    int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->>>>    {
->>>>        int err;
->>>> +    unsigned long flags;
->>>>          if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
->>>>            return -EINVAL;
->>>> @@ -166,8 +169,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->>>>        elem->obj = (u8 *)elem - pool->elem_offset;
->>>>        kref_init(&elem->ref_cnt);
->>>>    -    err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>> -                  &pool->next, GFP_KERNEL);
->>>> +    xa_lock_irqsave(&pool->xa, flags);
->>>> +    err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->>>> +                &pool->next, GFP_ATOMIC);
->>>> +    xa_unlock_irqrestore(&pool->xa, flags);
->>>>        if (err)
->>>>            goto err_cnt;
->>>>    @@ -200,8 +205,11 @@ static void rxe_elem_release(struct kref *kref)
->>>>    {
->>>>        struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
->>>>        struct rxe_pool *pool = elem->pool;
->>>> +    unsigned long flags;
->>>>    -    xa_erase(&pool->xa, elem->index);
->>>> +    xa_lock_irqsave(&pool->xa, flags);
->>>> +    __xa_erase(&pool->xa, elem->index);
->>>> +    xa_unlock_irqrestore(&pool->xa, flags);
->>>>          if (pool->cleanup)
->>>>            pool->cleanup(elem);
-> 
 
