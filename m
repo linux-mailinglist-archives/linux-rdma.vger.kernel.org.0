@@ -2,93 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 276A650331C
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Apr 2022 07:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B9250347B
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Apr 2022 08:34:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbiDPCP5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 15 Apr 2022 22:15:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36706 "EHLO
+        id S229671AbiDPGhF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Apr 2022 02:37:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229627AbiDPCOL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 15 Apr 2022 22:14:11 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219AADD95B
-        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 19:11:13 -0700 (PDT)
-Received: from dggpeml500022.china.huawei.com (unknown [172.30.72.54])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4KgGr81rrGz1HBy3;
-        Sat, 16 Apr 2022 10:10:32 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500022.china.huawei.com (7.185.36.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Sat, 16 Apr 2022 10:11:11 +0800
-Received: from [10.40.238.78] (10.40.238.78) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Sat, 16 Apr
- 2022 10:11:11 +0800
-Subject: Re: [PATCH for-next 2/2] RDMA/hns: Add NOP operation for sending WR
-To:     Jason Gunthorpe <jgg@nvidia.com>
-References: <20220407131403.26040-1-liangwenpeng@huawei.com>
- <20220407131403.26040-3-liangwenpeng@huawei.com>
- <20220407132012.GL2120790@nvidia.com>
-CC:     <leon@kernel.org>, <linux-rdma@vger.kernel.org>,
-        <linuxarm@huawei.com>
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-Message-ID: <c71b711f-8c89-6ac5-850b-16624af14168@huawei.com>
-Date:   Sat, 16 Apr 2022 10:11:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        with ESMTP id S229659AbiDPGhF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Apr 2022 02:37:05 -0400
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A59A4FCBE8
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 23:34:33 -0700 (PDT)
+Received: by mail-oi1-x22d.google.com with SMTP id q189so10091211oia.9
+        for <linux-rdma@vger.kernel.org>; Fri, 15 Apr 2022 23:34:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIGhQCXJDK11kpUfCuGP4lZthQ+FuAV/cYfZfOF2x4o=;
+        b=bVqnSKbctsbWAxb/O66lyb2YygU4jgErZXWwtPlYQcAhFzYzo5BDaIh53NWZzXfVZu
+         rEDDEqhJKZQ44xbfmePsSKpzko1nCtI3VhhpUormocLz+cvEzp1/xjPcP0sLJ88d8nSD
+         ZgGxH9ghLVg7LnWuTtSFnKpZZCN4Pw4TXJ5of/STO82RjznHiO+JMp10BeYMuY2hrWGh
+         /ZNEUlK4cEfyG/QkDYxFx8YbMES6g1iTKYiL1JgaZPzhBUt7Q0ZRASREA/ihgOb4UbLI
+         /U6sP6IoCjhkBIdCZCkX5t/DVSfMYvDHkqxbDrPMEbU0KyYKU/kT2Q+NPF+QUTVexhmf
+         TTDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TIGhQCXJDK11kpUfCuGP4lZthQ+FuAV/cYfZfOF2x4o=;
+        b=uaABPzNmzvFDhCf4kW+aCZBA4/SaJwcysulERFRkzeMQYXUjKH0b+66KenyVFrCZCy
+         tfPNDu3bMaNpnkEe7liK3xn7uXzXUo2OSroyaedBhny51nFux5I24fxsvDzfSzANYT20
+         LhQ+eJ0y2+yN2chuM8mZm93gbF3MM3z1UJuL5RDtqamoU22scC8G6JLGT0Z1BMjmmLk+
+         XRoFvtUTDRpEHT4xnnWX0nlNvinEYSnAcT1TDfoXyhyMI5iOuNRc2LIK94KKFWoaC08S
+         bsMO1Aryoi1IBx+/NVdEQTuTq2Nd4jgp9YmThgigBf6W2n7lIZXyMJpm5mDEI0XGI0as
+         ElLA==
+X-Gm-Message-State: AOAM5314RHJk2DRD1NOYFG49I3unJm4GaSqj9oGQO5RECt8+fshLImK6
+        0ZUrTu0JKDEycRsOZRZ8QePq65iXox8=
+X-Google-Smtp-Source: ABdhPJxQevmt1otwWuRQjNGNLoqhXxe0afwcf74KV7fMVyLJjO0sil15xOHrHpp0owaPE32gTStvFQ==
+X-Received: by 2002:aca:2818:0:b0:322:3bd7:66f1 with SMTP id 24-20020aca2818000000b003223bd766f1mr1025778oix.38.1650090872991;
+        Fri, 15 Apr 2022 23:34:32 -0700 (PDT)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-0663-b630-41ee-9f7d.res6.spectrum.com. [2603:8081:140c:1a00:663:b630:41ee:9f7d])
+        by smtp.googlemail.com with ESMTPSA id s6-20020a4ae546000000b0032480834193sm1897685oot.46.2022.04.15.23.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Apr 2022 23:34:32 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH] Subject: [PATCH for-next] RDMA/rxe: Fix "Soft RoCE Driver"
+Date:   Sat, 16 Apr 2022 01:33:13 -0500
+Message-Id: <20220416063312.7777-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20220407132012.GL2120790@nvidia.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.40.238.78]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 2022/4/7 21:20, Jason Gunthorpe wrote:
-> On Thu, Apr 07, 2022 at 09:14:03PM +0800, Wenpeng Liang wrote:
->> From: Yangyang Li <liyangyang20@huawei.com>
->>
->> The NOP operation is a no-op, mainly used in scenarios where SQWQE requires
->> page alignment or WQE size alignment. Each NOP WR consumes one SQWQE, but
->> the hardware does not operate and directly generates a CQE. The IB
->> specification does not specify this type of WR.
->>
->> Signed-off-by: Yangyang Li <liyangyang20@huawei.com>
->> Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
->> ---
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 9 +++++++++
->>  drivers/infiniband/hw/hns/hns_roce_hw_v2.h | 9 +++++++++
->>  2 files changed, 18 insertions(+)
-> 
-> Where is it used?
-> 
+The rping benchmark fails on long runs. The root cause of this
+failure has been traced to a failure to compute a nonzero value of mr
+in rare situations.
 
-This function has a precondition. The driver needs to provide two interfaces
-to the user, one interface is used to fill the wqe, and the other is used to
-ring the doorbell. If the content of the wqe is repeated, then the user does
-not need to fill this wqe again but directly rings the doorbell.
+Fix this failure by correctly handling the computation of mr in
+read_reply() in rxe_resp.c in the replay flow.
 
-If the user's wqe used to complete the specified work request does not fill
-the send queue, then the user can fill the remaining wqe in the send queue
-as a NOP operation.
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_resp.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-This feature requires some cooperating code and does not meet the upstream
-conditions. Therefore, I will revoke this patch.
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index e2653a8721fe..2e627685e804 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -734,8 +734,14 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+ 	}
+ 
+ 	if (res->state == rdatm_res_state_new) {
+-		mr = qp->resp.mr;
+-		qp->resp.mr = NULL;
++		if (!res->replay) {
++			mr = qp->resp.mr;
++			qp->resp.mr = NULL;
++		} else {
++			mr = rxe_recheck_mr(qp, res->read.rkey);
++			if (!mr)
++				return RESPST_ERR_RKEY_VIOLATION;
++		}
+ 
+ 		if (res->read.resid <= mtu)
+ 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY;
 
-Thanks,
-Wenpeng
+base-commit: 98c8026331ceabe1df579940b81eec75eb49cdd9
+-- 
+2.32.0
 
-> Jason
-> .
-> 
