@@ -2,106 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 913CA5034FF
-	for <lists+linux-rdma@lfdr.de>; Sat, 16 Apr 2022 09:52:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E425035D3
+	for <lists+linux-rdma@lfdr.de>; Sat, 16 Apr 2022 12:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229436AbiDPHwn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 16 Apr 2022 03:52:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
+        id S231313AbiDPKGK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 16 Apr 2022 06:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230167AbiDPHw0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Apr 2022 03:52:26 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E460A10075B
-        for <linux-rdma@vger.kernel.org>; Sat, 16 Apr 2022 00:49:38 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id t13so10079987pgn.8
-        for <linux-rdma@vger.kernel.org>; Sat, 16 Apr 2022 00:49:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=bJd2DIgtyK+bZCVQpMa9XLiI7bVnFQgVFeGzbZ6bXamjrEFIUCNaIDR9YpvR5iTRQC
-         EoRjHn2hxdGgHpTmUXoJLhLdkz8kw8CpdMkf+RjOM2yxgJf0M2w5tnzpw0NiczM9cGQm
-         aTRY2J48j2+AVBVM6ZplapTERLwB7sqpQHn0KTPy+GATyEE1HlWbU25nZewZyTln9PiO
-         eb2iuPe3VcoLkYjZ6tmC44EeIcF1BzRiek/y+/+gg720T1wEvd/5m2iOgdTIUS3isI5Z
-         q2z1OdX/gYACU6OexrbNcXzEKBC+MKUq0Bm7V68HpmeyS3D5tFhEEP1iOfnkPKJo7x6w
-         XtNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=KeMi8W+p20zdR41YZoRj2EapY7imNsLYkAgQIQsIzqY=;
-        b=JIJGAR/G1mMshWbVABnwFIOCRj6N/vDy+Pli6ELX70vY2o7roVrlI5KaxFE5xvnPtA
-         dPjYXbwxyqjJauCatPG5P+9k08co/TOMDiD37YbP2wzs+PwpPy7Ulq3JPo4fJcFRWsBT
-         xPXQYqeXsXBHYX7dG5YneaS+/Z8q4tUTbcppCBejppWu34Ig+QiOZiHe/tkyloxnTDGV
-         t0ef1hTRWos4qU+lEcbEKPjc874NO2XyB60AdC0wiNZ4OXJZ74DejR+wkBEymQCCS5RM
-         MmJeQqmgTvfZQCVVD8jBp+f5BkfZ+VZn+81FIPdNDB9+owkhG6+BU8ip+lf4/TRKfG9G
-         g6vw==
-X-Gm-Message-State: AOAM53218m8LcctmTqTE/ETLfSXIINT+fmco8VmiI2YqK1vF3pkiHZLa
-        LzeE8vFmb6ZizLCGn/he5jnAS7xjM2+I3oXOkp1rma/LZbA=
-X-Google-Smtp-Source: ABdhPJzPQ782jxaaybf4v05kBQtFRTzv0MMrux20NcZ4Q10XmGrK6dnUIabFDBNBmBOv8fFyQY5zqzYAgf4Cnc3KaCc=
-X-Received: by 2002:a92:508:0:b0:2cb:ebd8:a76b with SMTP id
- q8-20020a920508000000b002cbebd8a76bmr1009500ile.156.1650095366830; Sat, 16
- Apr 2022 00:49:26 -0700 (PDT)
+        with ESMTP id S229705AbiDPKGJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 16 Apr 2022 06:06:09 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5380FEDF1F
+        for <linux-rdma@vger.kernel.org>; Sat, 16 Apr 2022 03:03:36 -0700 (PDT)
+Message-ID: <77223356-6762-aa69-1cb3-480b41b45d97@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1650103414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=o2XRyNkhWkPWTwYz4lP2bkcaNhuuohtxAKjcI6s44Jk=;
+        b=IMDrV+o8AXYNGJ8imDfYQJqnF+5ZJFrXQzbw+RovKMOClNUSmEZszZXS9KHVqJyehVDam0
+        3fT/udTXPHXBwUCjLts0A7q8EH8sX8K0lEKREH6Vevdg3PoaPTEahPq9sNhY0MW2GqGNQj
+        AwJflfzchiFvx9roXISbMEsNr/kYMbw=
+Date:   Sat, 16 Apr 2022 18:03:22 +0800
 MIME-Version: 1.0
-Received: by 2002:a05:6638:1309:0:0:0:0 with HTTP; Sat, 16 Apr 2022 00:49:26
- -0700 (PDT)
-Reply-To: daniel.seyba@yahoo.com
-From:   Seyba Daniel <royhalton13@gmail.com>
-Date:   Sat, 16 Apr 2022 09:49:26 +0200
-Message-ID: <CALSxb2w9zQYotuLcRSCPns53ksvT9UrEMVx-1Cp1f8RE7er3cA@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:543 listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [royhalton13[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [royhalton13[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  3.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
+Subject: Re: [PATCH] Subject: [PATCH for-next] RDMA/rxe: Fix "Soft RoCE
+ Driver"
+To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
+        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+References: <20220416063312.7777-1-rpearsonhpe@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <20220416063312.7777-1-rpearsonhpe@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello,
+在 2022/4/16 14:33, Bob Pearson 写道:
+> The rping benchmark fails on long runs. The root cause of this
+> failure has been traced to a failure to compute a nonzero value of mr
+> in rare situations.
+> 
+> Fix this failure by correctly handling the computation of mr in
+> read_reply() in rxe_resp.c in the replay flow.
+> 
+> Fixes: 8700e3e7c485 ("Soft RoCE driver")
 
-I am so sorry contacting you in this means especially when we have never
-met before. I urgently seek your service to represent me in investing in
-your region / country and you will be rewarded for your service without
-affecting your present job with very little time invested in it.
+Fixes should be 8a1a0be894da ("RDMA/rxe: Replace mr by rkey in responder 
+resources")
 
-My interest is in buying real estate, private schools or companies with
-potentials for rapid growth in long terms.
 
-So please confirm interest by responding back.
+> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_resp.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index e2653a8721fe..2e627685e804 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -734,8 +734,14 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>   	}
+>   
+>   	if (res->state == rdatm_res_state_new) {
+> -		mr = qp->resp.mr;
+> -		qp->resp.mr = NULL;
+> +		if (!res->replay) {
+> +			mr = qp->resp.mr;
+> +			qp->resp.mr = NULL;
+> +		} else {
+> +			mr = rxe_recheck_mr(qp, res->read.rkey);
+> +			if (!mr)
+> +				return RESPST_ERR_RKEY_VIOLATION;
+> +		}
+>   
+>   		if (res->read.resid <= mtu)
+>   			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY;
+> 
+> base-commit: 98c8026331ceabe1df579940b81eec75eb49cdd9
 
-My dearest regards
-
-Seyba Daniel
