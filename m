@@ -2,46 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C77F0505BF2
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 17:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 513C4505BFC
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 17:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243553AbiDRPxZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Apr 2022 11:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        id S1345944AbiDRPyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Apr 2022 11:54:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346066AbiDRPwj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 11:52:39 -0400
+        with ESMTP id S1345941AbiDRPyK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 11:54:10 -0400
 Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6430A13D22;
-        Mon, 18 Apr 2022 08:33:31 -0700 (PDT)
-Received: from ubuntu.localdomain (unknown [10.15.192.164])
-        by mail-app3 (Coremail) with SMTP id cC_KCgD3ScrDhF1i+V5vAg--.33517S2;
-        Mon, 18 Apr 2022 23:33:27 +0800 (CST)
-From:   Duoming Zhou <duoming@zju.edu.cn>
-To:     linux-kernel@vger.kernel.org, shiraz.saleem@intel.com
-Cc:     mustafa.ismail@intel.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, Duoming Zhou <duoming@zju.edu.cn>
-Subject: [PATCH V6] RDMA/irdma: Fix deadlock in irdma_cleanup_cm_core()
-Date:   Mon, 18 Apr 2022 23:33:22 +0800
-Message-Id: <20220418153322.42524-1-duoming@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgD3ScrDhF1i+V5vAg--.33517S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw13Ar15Xw1rZryxtF43Jrb_yoW8ArWrpr
-        WDWw1Skryq9F42ka18Xw1kAF9xXw1kXa9Fvryqv395ZFn5XFyUAFnFyr10qFZ8JF9Fgr4f
-        GF1FvryrCasIvr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v
-        1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r
-        18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vI
-        r41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr
-        1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvE
-        x4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAg0EAVZdtZQIiwADsg
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46D952E6A4;
+        Mon, 18 Apr 2022 08:41:05 -0700 (PDT)
+Received: by ajax-webmail-mail-app2 (Coremail) ; Mon, 18 Apr 2022 23:41:00
+ +0800 (GMT+08:00)
+X-Originating-IP: [10.190.65.57]
+Date:   Mon, 18 Apr 2022 23:41:00 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   duoming@zju.edu.cn
+To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: RE: [PATCH V5] drivers: infiniband: hw: Fix deadlock in
+ irdma_cleanup_cm_core()
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2022 www.mailtech.cn zju.edu.cn
+In-Reply-To: <MWHPR11MB0029A6F789272ED3AB28F0E7E9F39@MWHPR11MB0029.namprd11.prod.outlook.com>
+References: <20220417131414.98144-1-duoming@zju.edu.cn>
+ <MWHPR11MB0029A6F789272ED3AB28F0E7E9F39@MWHPR11MB0029.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <7e8f030a.7535.1803d559499.Coremail.duoming@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: by_KCgB3FMSMhl1i9TYAAg--.24505W
+X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgUEAVZdtZQI8gADsR
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
@@ -51,52 +52,48 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There is a deadlock in irdma_cleanup_cm_core(), which is shown
-below:
-
-   (Thread 1)              |      (Thread 2)
-                           | irdma_schedule_cm_timer()
-irdma_cleanup_cm_core()    |  add_timer()
- spin_lock_irqsave() //(1) |  (wait a time)
- ...                       | irdma_cm_timer_tick()
- del_timer_sync()          |  spin_lock_irqsave() //(2)
- (wait timer to stop)      |  ...
-
-We hold cm_core->ht_lock in position (1) of thread 1 and
-use del_timer_sync() to wait timer to stop, but timer handler
-also need cm_core->ht_lock in position (2) of thread 2.
-As a result, irdma_cleanup_cm_core() will block forever.
-
-This patch removes the check of timer_pending() in
-irdma_cleanup_cm_core(), because the del_timer_sync()
-function will just return directly if there isn't a
-pending timer. As a result, the lock is redundant,
-because there is no resource it could protect.
-
-Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
----
-Changes in V6:
-  - Change subject line prefixed with "RDMA/irdma: ".
-
- drivers/infiniband/hw/irdma/cm.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
-index dedb3b7edd8..4b6b1065f85 100644
---- a/drivers/infiniband/hw/irdma/cm.c
-+++ b/drivers/infiniband/hw/irdma/cm.c
-@@ -3251,10 +3251,7 @@ void irdma_cleanup_cm_core(struct irdma_cm_core *cm_core)
- 	if (!cm_core)
- 		return;
- 
--	spin_lock_irqsave(&cm_core->ht_lock, flags);
--	if (timer_pending(&cm_core->tcp_timer))
--		del_timer_sync(&cm_core->tcp_timer);
--	spin_unlock_irqrestore(&cm_core->ht_lock, flags);
-+	del_timer_sync(&cm_core->tcp_timer);
- 
- 	destroy_workqueue(cm_core->event_wq);
- 	cm_core->dev->ws_reset(&cm_core->iwdev->vsi);
--- 
-2.17.1
-
+SGVsbG8sCgpPbiBNb24sIDE4IEFwciAyMDIyIDE0OjU3OjA2ICswMDAwIFNhbGVlbSwgU2hpcmF6
+IHdyb3RlOgoKPiA+IFRoZXJlIGlzIGEgZGVhZGxvY2sgaW4gaXJkbWFfY2xlYW51cF9jbV9jb3Jl
+KCksIHdoaWNoIGlzIHNob3duCj4gPiBiZWxvdzoKPiA+IAo+ID4gICAgKFRocmVhZCAxKSAgICAg
+ICAgICAgICAgfCAgICAgIChUaHJlYWQgMikKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHwgaXJkbWFfc2NoZWR1bGVfY21fdGltZXIoKQo+ID4gaXJkbWFfY2xlYW51cF9jbV9jb3JlKCkg
+ICAgfCAgYWRkX3RpbWVyKCkKPiA+ICBzcGluX2xvY2tfaXJxc2F2ZSgpIC8vKDEpIHwgICh3YWl0
+IGEgdGltZSkKPiA+ICAuLi4gICAgICAgICAgICAgICAgICAgICAgIHwgaXJkbWFfY21fdGltZXJf
+dGljaygpCj4gPiAgZGVsX3RpbWVyX3N5bmMoKSAgICAgICAgICB8ICBzcGluX2xvY2tfaXJxc2F2
+ZSgpIC8vKDIpCj4gPiAgKHdhaXQgdGltZXIgdG8gc3RvcCkgICAgICB8ICAuLi4KPiA+IAo+ID4g
+V2UgaG9sZCBjbV9jb3JlLT5odF9sb2NrIGluIHBvc2l0aW9uICgxKSBvZiB0aHJlYWQgMSBhbmQg
+dXNlIGRlbF90aW1lcl9zeW5jKCkKPiA+IHRvIHdhaXQgdGltZXIgdG8gc3RvcCwgYnV0IHRpbWVy
+IGhhbmRsZXIgYWxzbyBuZWVkIGNtX2NvcmUtPmh0X2xvY2sgaW4gcG9zaXRpb24gKDIpCj4gPiBv
+ZiB0aHJlYWQgMi4KPiA+IEFzIGEgcmVzdWx0LCBpcmRtYV9jbGVhbnVwX2NtX2NvcmUoKSB3aWxs
+IGJsb2NrIGZvcmV2ZXIuCj4gPiAKPiA+IFRoaXMgcGF0Y2ggcmVtb3ZlcyB0aGUgY2hlY2sgb2Yg
+dGltZXJfcGVuZGluZygpIGluIGlyZG1hX2NsZWFudXBfY21fY29yZSgpLAo+ID4gYmVjYXVzZSB0
+aGUgZGVsX3RpbWVyX3N5bmMoKSBmdW5jdGlvbiB3aWxsIGp1c3QgcmV0dXJuIGRpcmVjdGx5IGlm
+IHRoZXJlIGlzbid0IGEKPiA+IHBlbmRpbmcgdGltZXIuIEFzIGEgcmVzdWx0LCB0aGUgbG9jayBp
+cyByZWR1bmRhbnQsIGJlY2F1c2UgdGhlcmUgaXMgbm8gcmVzb3VyY2UgaXQKPiA+IGNvdWxkIHBy
+b3RlY3QuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IER1b21pbmcgWmhvdSA8ZHVvbWluZ0B6anUu
+ZWR1LmNuPgo+ID4gLS0tCj4gPiBDaGFuZ2VzIGluIFY1Ogo+ID4gICAtIFJlbW92ZSBtb2RfdGlt
+ZXIoKSBpbiBpcmRtYV9zY2hlZHVsZV9jbV90aW1lciBhbmQgaXJkbWFfY21fdGltZXJfdGljay4K
+PiA+IAo+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jIHwgNSArLS0tLQo+ID4g
+IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgNCBkZWxldGlvbnMoLSkKPiA+IAo+ID4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jIGIvZHJpdmVycy9p
+bmZpbmliYW5kL2h3L2lyZG1hL2NtLmMKPiA+IGluZGV4IGRlZGIzYjdlZGQ4Li40YjZiMTA2NWY4
+NSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jCj4gPiAr
+KysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvaXJkbWEvY20uYwo+ID4gQEAgLTMyNTEsMTAgKzMy
+NTEsNyBAQCB2b2lkIGlyZG1hX2NsZWFudXBfY21fY29yZShzdHJ1Y3QKPiA+IGlyZG1hX2NtX2Nv
+cmUgKmNtX2NvcmUpCj4gPiAgCWlmICghY21fY29yZSkKPiA+ICAJCXJldHVybjsKPiA+IAo+ID4g
+LQlzcGluX2xvY2tfaXJxc2F2ZSgmY21fY29yZS0+aHRfbG9jaywgZmxhZ3MpOwo+ID4gLQlpZiAo
+dGltZXJfcGVuZGluZygmY21fY29yZS0+dGNwX3RpbWVyKSkKPiA+IC0JCWRlbF90aW1lcl9zeW5j
+KCZjbV9jb3JlLT50Y3BfdGltZXIpOwo+ID4gLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbV9j
+b3JlLT5odF9sb2NrLCBmbGFncyk7Cj4gPiArCWRlbF90aW1lcl9zeW5jKCZjbV9jb3JlLT50Y3Bf
+dGltZXIpOwo+ID4gCj4gPiAgCWRlc3Ryb3lfd29ya3F1ZXVlKGNtX2NvcmUtPmV2ZW50X3dxKTsK
+PiA+ICAJY21fY29yZS0+ZGV2LT53c19yZXNldCgmY21fY29yZS0+aXdkZXYtPnZzaSk7Cj4gPiAt
+LQo+IAo+IEkgYW0gbm90IHN1cmUgdGhlIGRlYWRsb2NrIGlzIHBvc3NpYmxlIHByYWN0aWNhbGx5
+IHNpbmNlIGFsbCBDTSBub2RlcyBzaG91bGQgYmUgY3VsbGVkIGJ5IHRoZSB0aW1lIHdlIGdldCB0
+byBpcmRtYV9jbGVhbnVwX2NtX2NvcmUuCgpJIHRoaW5rIHRoZSBkZWFkbG9jayBpcyBwb3NzaWJs
+ZSwgYmVjYXVzZSB0aGUgdGltZXIgaXMgYSBkZWxheSBtZWNoYW5pc20gdGhhdCBjb3VsZCBleGVj
+dXRlIGF0IGFueSB0aW1lLCBhbHRob3VnaCBhbGwgQ00gbm9kZXMgYXJlIGN1bGxlZC4KCj4gSG93
+ZXZlciwgdGltZXJfcGVuZGluZyBjaGVjayBhbmQgbG9ja3MgYXJlIHJlZHVuZGFudCBhbmQgc2hv
+dWxkIGJlIHJlbW92ZWQuCj4gCj4gVGhlIHN1YmplY3QgbGluZSBmb3IgcGF0Y2hlcyB0byBvdXIg
+ZHJpdmVyIGFyZSB0eXBpY2FsbHkgcHJlZml4ZWQgd2l0aCAiUkRNQS9pcmRtYTogIgoKSSBzZW50
+ICJbUEFUQ0ggVjZdIFJETUEvaXJkbWE6IEZpeCBkZWFkbG9jayBpbiBpcmRtYV9jbGVhbnVwX2Nt
+X2NvcmUoKSIganVzdCBub3cuCgpCZXN0IHJlZ2FyZHMsCkR1b21pbmcgWmhvdQo=
