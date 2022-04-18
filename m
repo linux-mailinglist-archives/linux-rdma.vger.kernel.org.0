@@ -2,98 +2,112 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 513C4505BFC
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 17:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B47C505D9A
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 19:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345944AbiDRPyj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Apr 2022 11:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
+        id S240262AbiDRRpQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Apr 2022 13:45:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345941AbiDRPyK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 11:54:10 -0400
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46D952E6A4;
-        Mon, 18 Apr 2022 08:41:05 -0700 (PDT)
-Received: by ajax-webmail-mail-app2 (Coremail) ; Mon, 18 Apr 2022 23:41:00
- +0800 (GMT+08:00)
-X-Originating-IP: [10.190.65.57]
-Date:   Mon, 18 Apr 2022 23:41:00 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   duoming@zju.edu.cn
-To:     "Saleem, Shiraz" <shiraz.saleem@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Ismail, Mustafa" <mustafa.ismail@intel.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: RE: [PATCH V5] drivers: infiniband: hw: Fix deadlock in
- irdma_cleanup_cm_core()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2022 www.mailtech.cn zju.edu.cn
-In-Reply-To: <MWHPR11MB0029A6F789272ED3AB28F0E7E9F39@MWHPR11MB0029.namprd11.prod.outlook.com>
-References: <20220417131414.98144-1-duoming@zju.edu.cn>
- <MWHPR11MB0029A6F789272ED3AB28F0E7E9F39@MWHPR11MB0029.namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        with ESMTP id S231288AbiDRRpO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 13:45:14 -0400
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A5C83054B
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Apr 2022 10:42:34 -0700 (PDT)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-e5c42b6e31so4936505fac.12
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Apr 2022 10:42:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xaj4GRzXLcIyWaaDG7BOyv9UOaIGcQlx8xn7xC0o0CE=;
+        b=eGHjG9174vqkY21umAHukRm2s/UxYGsGzMtGQWXtDIaA2+ldDpUBuXP5D9Wy1r83fl
+         FAZLoo/r3YDdpCzX5sefEV+57zEV7GfvMTsAL9XzxYi0IX6FPqV/n4C2x/uWS+gtknHn
+         OK26JGo70VFgyiqWebyO47uQFFF8zZH4TGAOokEadV8gx8xqZOZjWDL6rqSMbvZAYYlM
+         LBWfQsrLMoNxr3B1M+iomi+WsrhwuHanbpud/ZOXHtyDZ5Ir3MuRteCiM2/wbrPWvgJw
+         NUrCijSKzzwThhUdFL0chj3CZrK+iTNfvgjF5cVrBUSiMTiCHf09xqeykzqu68EnCAGV
+         LKHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Xaj4GRzXLcIyWaaDG7BOyv9UOaIGcQlx8xn7xC0o0CE=;
+        b=GhglA5uT6h6nUgnGHUZ1pI/F4nbjOjSjMNs7y5o1iMAQuXy4AltuGGaFC0gGmG8sLV
+         HTz5JZBuHPrX+f48EkihVcU6bJdo47Y4i4smleF3KZVjPiypiYOV4iATC/h5jBg4Pl9a
+         9x0XZtm+jKvWdPYy1hzjJKcT7CzZXwWK9ZEKeANiMaOKjDspiUa1pZUQQXHU62oMbWb9
+         RU/rCs7ZXT1qjaE44pWSgRgnRnuB1Mjjj3nn5IWsbHFzsOb+wcYPJHOcZzOM4rZ+78hC
+         RIa9qFoPkeTL0IEY3cy7gY3mbD5gR0Ed8O4RDYnUFHc/dchCsGr8jYh1PR2oFE7pB1Wb
+         NSaQ==
+X-Gm-Message-State: AOAM532t7SI3jkMGmGGWYdKTE+f3ft/GoxsBjX+PmC+e28i6IG+chR/N
+        VLYt/u5pQZhwYtsnR3ZnACg=
+X-Google-Smtp-Source: ABdhPJw32VftmGM2NwKAlBPgpd9328EHkxvqmot5lpWXkuwiUBovUunED4l4OGm12iolCdAofqMdKw==
+X-Received: by 2002:a05:6870:15d3:b0:da:c49f:9113 with SMTP id k19-20020a05687015d300b000dac49f9113mr4800112oad.91.1650303753587;
+        Mon, 18 Apr 2022 10:42:33 -0700 (PDT)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-003d-6ec6-6342-73eb.res6.spectrum.com. [2603:8081:140c:1a00:3d:6ec6:6342:73eb])
+        by smtp.googlemail.com with ESMTPSA id t129-20020a4a5487000000b00329d2493f8esm4499827ooa.41.2022.04.18.10.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Apr 2022 10:42:33 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v2] RDMA/rxe: Fix "Replace mr by rkey in responder resources"
+Date:   Mon, 18 Apr 2022 12:41:04 -0500
+Message-Id: <20220418174103.3040-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Message-ID: <7e8f030a.7535.1803d559499.Coremail.duoming@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgB3FMSMhl1i9TYAAg--.24505W
-X-CM-SenderInfo: qssqjiasttq6lmxovvfxof0/1tbiAgUEAVZdtZQI8gADsR
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-SGVsbG8sCgpPbiBNb24sIDE4IEFwciAyMDIyIDE0OjU3OjA2ICswMDAwIFNhbGVlbSwgU2hpcmF6
-IHdyb3RlOgoKPiA+IFRoZXJlIGlzIGEgZGVhZGxvY2sgaW4gaXJkbWFfY2xlYW51cF9jbV9jb3Jl
-KCksIHdoaWNoIGlzIHNob3duCj4gPiBiZWxvdzoKPiA+IAo+ID4gICAgKFRocmVhZCAxKSAgICAg
-ICAgICAgICAgfCAgICAgIChUaHJlYWQgMikKPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHwgaXJkbWFfc2NoZWR1bGVfY21fdGltZXIoKQo+ID4gaXJkbWFfY2xlYW51cF9jbV9jb3JlKCkg
-ICAgfCAgYWRkX3RpbWVyKCkKPiA+ICBzcGluX2xvY2tfaXJxc2F2ZSgpIC8vKDEpIHwgICh3YWl0
-IGEgdGltZSkKPiA+ICAuLi4gICAgICAgICAgICAgICAgICAgICAgIHwgaXJkbWFfY21fdGltZXJf
-dGljaygpCj4gPiAgZGVsX3RpbWVyX3N5bmMoKSAgICAgICAgICB8ICBzcGluX2xvY2tfaXJxc2F2
-ZSgpIC8vKDIpCj4gPiAgKHdhaXQgdGltZXIgdG8gc3RvcCkgICAgICB8ICAuLi4KPiA+IAo+ID4g
-V2UgaG9sZCBjbV9jb3JlLT5odF9sb2NrIGluIHBvc2l0aW9uICgxKSBvZiB0aHJlYWQgMSBhbmQg
-dXNlIGRlbF90aW1lcl9zeW5jKCkKPiA+IHRvIHdhaXQgdGltZXIgdG8gc3RvcCwgYnV0IHRpbWVy
-IGhhbmRsZXIgYWxzbyBuZWVkIGNtX2NvcmUtPmh0X2xvY2sgaW4gcG9zaXRpb24gKDIpCj4gPiBv
-ZiB0aHJlYWQgMi4KPiA+IEFzIGEgcmVzdWx0LCBpcmRtYV9jbGVhbnVwX2NtX2NvcmUoKSB3aWxs
-IGJsb2NrIGZvcmV2ZXIuCj4gPiAKPiA+IFRoaXMgcGF0Y2ggcmVtb3ZlcyB0aGUgY2hlY2sgb2Yg
-dGltZXJfcGVuZGluZygpIGluIGlyZG1hX2NsZWFudXBfY21fY29yZSgpLAo+ID4gYmVjYXVzZSB0
-aGUgZGVsX3RpbWVyX3N5bmMoKSBmdW5jdGlvbiB3aWxsIGp1c3QgcmV0dXJuIGRpcmVjdGx5IGlm
-IHRoZXJlIGlzbid0IGEKPiA+IHBlbmRpbmcgdGltZXIuIEFzIGEgcmVzdWx0LCB0aGUgbG9jayBp
-cyByZWR1bmRhbnQsIGJlY2F1c2UgdGhlcmUgaXMgbm8gcmVzb3VyY2UgaXQKPiA+IGNvdWxkIHBy
-b3RlY3QuCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IER1b21pbmcgWmhvdSA8ZHVvbWluZ0B6anUu
-ZWR1LmNuPgo+ID4gLS0tCj4gPiBDaGFuZ2VzIGluIFY1Ogo+ID4gICAtIFJlbW92ZSBtb2RfdGlt
-ZXIoKSBpbiBpcmRtYV9zY2hlZHVsZV9jbV90aW1lciBhbmQgaXJkbWFfY21fdGltZXJfdGljay4K
-PiA+IAo+ID4gIGRyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jIHwgNSArLS0tLQo+ID4g
-IDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgNCBkZWxldGlvbnMoLSkKPiA+IAo+ID4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jIGIvZHJpdmVycy9p
-bmZpbmliYW5kL2h3L2lyZG1hL2NtLmMKPiA+IGluZGV4IGRlZGIzYjdlZGQ4Li40YjZiMTA2NWY4
-NSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9ody9pcmRtYS9jbS5jCj4gPiAr
-KysgYi9kcml2ZXJzL2luZmluaWJhbmQvaHcvaXJkbWEvY20uYwo+ID4gQEAgLTMyNTEsMTAgKzMy
-NTEsNyBAQCB2b2lkIGlyZG1hX2NsZWFudXBfY21fY29yZShzdHJ1Y3QKPiA+IGlyZG1hX2NtX2Nv
-cmUgKmNtX2NvcmUpCj4gPiAgCWlmICghY21fY29yZSkKPiA+ICAJCXJldHVybjsKPiA+IAo+ID4g
-LQlzcGluX2xvY2tfaXJxc2F2ZSgmY21fY29yZS0+aHRfbG9jaywgZmxhZ3MpOwo+ID4gLQlpZiAo
-dGltZXJfcGVuZGluZygmY21fY29yZS0+dGNwX3RpbWVyKSkKPiA+IC0JCWRlbF90aW1lcl9zeW5j
-KCZjbV9jb3JlLT50Y3BfdGltZXIpOwo+ID4gLQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbV9j
-b3JlLT5odF9sb2NrLCBmbGFncyk7Cj4gPiArCWRlbF90aW1lcl9zeW5jKCZjbV9jb3JlLT50Y3Bf
-dGltZXIpOwo+ID4gCj4gPiAgCWRlc3Ryb3lfd29ya3F1ZXVlKGNtX2NvcmUtPmV2ZW50X3dxKTsK
-PiA+ICAJY21fY29yZS0+ZGV2LT53c19yZXNldCgmY21fY29yZS0+aXdkZXYtPnZzaSk7Cj4gPiAt
-LQo+IAo+IEkgYW0gbm90IHN1cmUgdGhlIGRlYWRsb2NrIGlzIHBvc3NpYmxlIHByYWN0aWNhbGx5
-IHNpbmNlIGFsbCBDTSBub2RlcyBzaG91bGQgYmUgY3VsbGVkIGJ5IHRoZSB0aW1lIHdlIGdldCB0
-byBpcmRtYV9jbGVhbnVwX2NtX2NvcmUuCgpJIHRoaW5rIHRoZSBkZWFkbG9jayBpcyBwb3NzaWJs
-ZSwgYmVjYXVzZSB0aGUgdGltZXIgaXMgYSBkZWxheSBtZWNoYW5pc20gdGhhdCBjb3VsZCBleGVj
-dXRlIGF0IGFueSB0aW1lLCBhbHRob3VnaCBhbGwgQ00gbm9kZXMgYXJlIGN1bGxlZC4KCj4gSG93
-ZXZlciwgdGltZXJfcGVuZGluZyBjaGVjayBhbmQgbG9ja3MgYXJlIHJlZHVuZGFudCBhbmQgc2hv
-dWxkIGJlIHJlbW92ZWQuCj4gCj4gVGhlIHN1YmplY3QgbGluZSBmb3IgcGF0Y2hlcyB0byBvdXIg
-ZHJpdmVyIGFyZSB0eXBpY2FsbHkgcHJlZml4ZWQgd2l0aCAiUkRNQS9pcmRtYTogIgoKSSBzZW50
-ICJbUEFUQ0ggVjZdIFJETUEvaXJkbWE6IEZpeCBkZWFkbG9jayBpbiBpcmRtYV9jbGVhbnVwX2Nt
-X2NvcmUoKSIganVzdCBub3cuCgpCZXN0IHJlZ2FyZHMsCkR1b21pbmcgWmhvdQo=
+The rping benchmark fails on long runs. The root cause of this
+failure has been traced to a failure to compute a nonzero value of mr
+in rare situations.
+
+Fix this failure by correctly handling the computation of mr in
+read_reply() in rxe_resp.c in the replay flow.
+
+Fixes: 8a1a0be894da ("RDMA/rxe: Replace mr by rkey in responder resources")
+Link: https://lore.kernel.org/linux-rdma/1a9a9190-368d-3442-0a62-443b1a6c1209@linux.dev/
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+v2
+  Renamed commit
+  Changed fixes line to correctly ID the bug
+  Added a link to the reported mr == NULL issue
+
+ drivers/infiniband/sw/rxe/rxe_resp.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index e2653a8721fe..2e627685e804 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -734,8 +734,14 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+ 	}
+ 
+ 	if (res->state == rdatm_res_state_new) {
+-		mr = qp->resp.mr;
+-		qp->resp.mr = NULL;
++		if (!res->replay) {
++			mr = qp->resp.mr;
++			qp->resp.mr = NULL;
++		} else {
++			mr = rxe_recheck_mr(qp, res->read.rkey);
++			if (!mr)
++				return RESPST_ERR_RKEY_VIOLATION;
++		}
+ 
+ 		if (res->read.resid <= mtu)
+ 			opcode = IB_OPCODE_RC_RDMA_READ_RESPONSE_ONLY;
+
+base-commit: 98c8026331ceabe1df579940b81eec75eb49cdd9
+-- 
+2.32.0
+
