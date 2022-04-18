@@ -2,160 +2,190 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E4C504DD3
-	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 10:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8641E505A32
+	for <lists+linux-rdma@lfdr.de>; Mon, 18 Apr 2022 16:43:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231270AbiDRIcC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 18 Apr 2022 04:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55052 "EHLO
+        id S243202AbiDROpp (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 18 Apr 2022 10:45:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229817AbiDRIcC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 04:32:02 -0400
-Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC08A193F0;
-        Mon, 18 Apr 2022 01:29:23 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VAM.vKD_1650270559;
-Received: from 30.43.105.155(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VAM.vKD_1650270559)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Apr 2022 16:29:21 +0800
-Message-ID: <07be0869-13d9-6893-28b4-924c840a7804@linux.alibaba.com>
-Date:   Mon, 18 Apr 2022 16:29:19 +0800
+        with ESMTP id S243003AbiDROpi (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 18 Apr 2022 10:45:38 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F48B50B3F
+        for <linux-rdma@vger.kernel.org>; Mon, 18 Apr 2022 06:30:57 -0700 (PDT)
+Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 23IDUpNq009654;
+        Mon, 18 Apr 2022 22:30:51 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
+ Mon, 18 Apr 2022 22:30:51 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 23IDUpAI009646
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 18 Apr 2022 22:30:51 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <0fadd34b-21cf-3a0d-a494-bde7b8dbc3ed@I-love.SAKURA.ne.jp>
+Date:   Mon, 18 Apr 2022 22:30:47 +0900
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.7.0
-Subject: Re: siw_cm.c:255 siw_cep_put+0x125/0x130 kernel warning while testing
- blktests srp/002 v5.17-rc7
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
 Content-Language: en-US
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Bart Van Assche <bvanassche@acm.org>
-Cc:     linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Pankaj Raghav <pankydev8@gmail.com>,
-        Pankaj Raghav <p.raghav@samsung.com>
-References: <Yliu2ROIh0nLk5l0@bombadil.infradead.org>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <Yliu2ROIh0nLk5l0@bombadil.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-12.5 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH] RDMA/core: Avoid flush_workqueue(system_unbound_wq) usage
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-DQoNCk9uIDQvMTUvMjIgNzozMSBBTSwgTHVpcyBDaGFtYmVybGFpbiB3cm90ZToNCg0KPC4u
-Lj4NCg0KPiBbICAxOTUuMjE4NzgzXSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0tLS0tLS0t
-LS0tLS0NCj4gWyAgMTk1LjIyMTI0Ml0gV0FSTklORzogQ1BVOiA3IFBJRDogMjAxIGF0IGRy
-aXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X2NtLmM6MjU1IHNpd19jZXBfcHV0KzB4MTI1
-LzB4MTMwIFtzaXddDQo+IFsgIDE5NS4yMjI4MzhdIE1vZHVsZXMgbGlua2VkIGluOiBpYl9z
-cnAoRSkgc2NzaV90cmFuc3BvcnRfc3JwKEUpIHRhcmdldF9jb3JlX3BzY3NpKEUpIHRhcmdl
-dF9jb3JlX2ZpbGUoRSkgaWJfc3JwdChFKSB0YXJnZXRfY29yZV9pYmxvY2soRSkgdGFyZ2V0
-X2NvcmVfbW9kKEUpIHJkbWFfY20oRSkgaXdfY20oRSkgaWJfY20oRSkgc2NzaV9kZWJ1ZyhF
-KSBzaXcoRSkgbnVsbF9ibGsoRSkgaWJfdW1hZChFKSBpYl91dmVyYnMoRSkgc2RfbW9kKEUp
-IHNnKEUpIGRtX3NlcnZpY2VfdGltZShFKSBzY3NpX2RoX3JkYWMoRSkgc2NzaV9kaF9lbWMo
-RSkgc2NzaV9kaF9hbHVhKEUpIGRtX211bHRpcGF0aChFKSBpYl9jb3JlKEUpIGRtX21vZChF
-KSBudm1lX2ZhYnJpY3MoRSkga3ZtX2ludGVsKEUpIGt2bShFKSBpcnFieXBhc3MoRSkgY3Jj
-dDEwZGlmX3BjbG11bChFKSBnaGFzaF9jbG11bG5pX2ludGVsKEUpIGFlc25pX2ludGVsKEUp
-IGNyeXB0b19zaW1kKEUpIGNyeXB0ZChFKSBqb3lkZXYoRSkgZXZkZXYoRSkgc2VyaW9fcmF3
-KEUpIGNpcnJ1cyhFKSBkcm1fc2htZW1faGVscGVyKEUpIGRybV9rbXNfaGVscGVyKEUpIHZp
-cnRpb19iYWxsb29uKEUpIGNlYyhFKSBpNjMwMGVzYihFKSBidXR0b24oRSkgZHJtKEUpIGNv
-bmZpZ2ZzKEUpIGlwX3RhYmxlcyhFKSB4X3RhYmxlcyhFKSBhdXRvZnM0KEUpIGV4dDQoRSkg
-Y3JjMTYoRSkgbWJjYWNoZShFKSBqYmQyKEUpIGJ0cmZzKEUpIGJsYWtlMmJfZ2VuZXJpYyhF
-KSB4b3IoRSkgcmFpZDZfcHEoRSkgenN0ZF9jb21wcmVzcyhFKSBsaWJjcmMzMmMoRSkgY3Jj
-MzJjX2dlbmVyaWMoRSkgdmlydGlvX25ldChFKSBuZXRfZmFpbG92ZXIoRSkgZmFpbG92ZXIo
-RSkgdmlydGlvX2JsayhFKSBhdGFfZ2VuZXJpYyhFKSB1aGNpX2hjZChFKSBlaGNpX2hjZChF
-KSBjcmMzMl9wY2xtdWwoRSkgY3JjMzJjX2ludGVsKEUpIGF0YV9waWl4KEUpIHBzbW91c2Uo
-RSkgbnZtZShFKSBsaWJhdGEoRSkgdmlydGlvX3BjaShFKQ0KPiBbICAxOTUuMjIyOTg2XSAg
-dmlydGlvX3BjaV9sZWdhY3lfZGV2KEUpIHZpcnRpb19wY2lfbW9kZXJuX2RldihFKSB1c2Jj
-b3JlKEUpIHZpcnRpbyhFKSB1c2JfY29tbW9uKEUpIHNjc2lfbW9kKEUpIG52bWVfY29yZShF
-KSBpMmNfcGlpeDQoRSkgdmlydGlvX3JpbmcoRSkgdDEwX3BpKEUpIHNjc2lfY29tbW9uKEUp
-IFtsYXN0IHVubG9hZGVkOiBudWxsX2Jsa10NCj4gWyAgMTk1LjI0MTAzNl0gc2QgMzowOjA6
-MTogW3NkZF0gQXR0YWNoZWQgU0NTSSBkaXNuDQo+IFsgIDE5NS4yNDExODhdIENQVTogMiBQ
-SUQ6IDIwMSBDb21tOiBrd29ya2VyL3UxNjoyMiBLZHVtcDogbG9hZGVkIFRhaW50ZWQ6IEcg
-ICAgICAgICAgICBFICAgICA1LjE3LjAtcmM3ICMxDQo+IFsgIDE5NS4yNDYwNTNdIEhhcmR3
-YXJlIG5hbWU6IFFFTVUgU3RhbmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9T
-IDEuMTUuMC0xIDA0LzAxLzIwMTQNCj4gWyAgMTk1LjI0OTEyM10gV29ya3F1ZXVlOiBpd19j
-bV93cSBjbV93b3JrX2hhbmRsZXIgW2l3X2NtXQ0KPiBbICAxOTUuMjUxMjc0XSBSSVA6IDAw
-MTA6c2l3X2NlcF9wdXQrMHgxMjUvMHgxMzAgW3Npd10NCj4gWyAgMTk1LjI1MzU0OF0gQ29k
-ZTogYmIgYzAgZTggYWUgNzQgMGYgZDcgNDggODkgZWYgNWQgNDEgNWMgNDEgNWQgZTkgYjEg
-ZDYgZWYgZDYgNWQgYmUgMDMgMDAgMDAgMDAgNDEgNWMgNDEgNWQgZTkgMjIgYjcgMGMgZDcg
-MGYgMGIgZTkgZjMgZmUgZmYgZmYgPDBmPiAwYiBlOSAxYyBmZiBmZiBmZiAwZiAxZiA0MCAw
-MCAwZiAxZiA0NCAwMCAwMCA1NSA0OCA4ZCA2ZiAyMCA1Mw0KPiBbICAxOTUuMjU4OTgyXSBS
-U1A6IDAwMTg6ZmZmZmJjNTM0MDRlYmM5OCBFRkxBR1M6IDAwMDEwMjg2DQo+IFsgIDE5NS4y
-NjEwMThdIFJBWDogMDAwMDAwMDAwMDAwMDAwMSBSQlg6IDAwMDAwMDAwMDAwMDAwMDAgUkNY
-OiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgIDE5NS4yNjM1NjldIFJEWDogMDAwMDAwMDAwMDAw
-MDAwMSBSU0k6IDAwMDAwMDAwMDAwMDAyNDYgUkRJOiBmZmZmYTAzZDExMDJhOTI0DQo+IFsg
-IDE5NS4yNjYxNTFdIFJCUDogZmZmZmEwM2QxMTAyYTkwMCBSMDg6IGZmZmZhMDNkMTEwMmE5
-MjAgUjA5OiBmZmZmYmM1MzQwNGViYzUwDQo+IFsgIDE5NS4yNjkxNTBdIFIxMDogZmZmZmZm
-ZmY5OGEwNjBlMCBSMTE6IDAwMDAwMDAwMDAwMDAwMDAgUjEyOiBmZmZmYTAzY2M0Mjk3MDAw
-DQo+IFsgIDE5NS4yNzI3NDRdIFIxMzogZmZmZmEwM2QyYTQ4YWVhMCBSMTQ6IGZmZmZhMDNk
-MmE0OGFlNzggUjE1OiBmZmZmYTAzY2M0MjdhZDU4DQo+IFsgIDE5NS4yNzU1NzVdIEZTOiAg
-MDAwMDAwMDAwMDAwMDAwMCgwMDAwKSBHUzpmZmZmYTAzZGY3YzgwMDAwKDAwMDApIGtubEdT
-OjAwMDAwMDAwMDAwMDAwMDANCj4gWyAgMTk1LjI3ODkzMl0gQ1M6ICAwMDEwIERTOiAwMDAw
-IEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPiBbICAxOTUuMjgwOTYzXSBDUjI6
-IDAwMDA1NTkwYmMyZTRmZTggQ1IzOiAwMDAwMDAwMDg1MDBhMDA0IENSNDogMDAwMDAwMDAw
-MDc3MGVlMA0KPiBbICAxOTUuMjgyODAzXSBEUjA6IDAwMDAwMDAwMDAwMDAwMDAgRFIxOiAw
-MDAwMDAwMDAwMDAwMDAwIERSMjogMDAwMDAwMDAwMDAwMDAwMA0KPiBbICAxOTUuMjg0NjUw
-XSBEUjM6IDAwMDAwMDAwMDAwMDAwMDAgRFI2OiAwMDAwMDAwMGZmZmUwZmYwIERSNzogMDAw
-MDAwMDAwMDAwMDQwMA0KPiBbICAxOTUuMjg2NTIyXSBQS1JVOiA1NTU1NTU1NA0KPiBbICAx
-OTUuMjg3OTk4XSBDYWxsIFRyYWNlOg0KPiBbICAxOTUuMjg5MjEwXSAgPFRBU0s+DQo+IFsg
-IDE5NS4yOTA5NjldICBzaXdfcmVqZWN0KzB4YWMvMHgxODAgW3Npd10NCj4gWyAgMTk1LjI5
-MjY3OV0gIGl3X2NtX3JlamVjdCsweDY4LzB4YzAgW2l3X2NtXQ0KPiBbICAxOTUuMjk0MTM2
-XSAgY21fd29ya19oYW5kbGVyKzB4NTlkLzB4ZTIwIFtpd19jbV0NCj4gWyAgMTk1LjI5NTU4
-OF0gIHByb2Nlc3Nfb25lX3dvcmsrMHgxZTIvMHgzYjANCj4gWyAgMTk1LjI5ODMzOF0gIHdv
-cmtlcl90aHJlYWQrMHg1MC8weDNhMA0KPiBbICAxOTUuMzAwMzMwXSAgPyByZXNjdWVyX3Ro
-cmVhZCsweDM5MC8weDM5MA0KPiBbICAxOTUuMzAyMjY5XSAga3RocmVhZCsweGU1LzB4MTEw
-DQo+IFsgIDE5NS4zMDQwNjJdICA/IGt0aHJlYWRfY29tcGxldGVfYW5kX2V4aXQrMHgyMC8w
-eDIwDQo+IFsgIDE5NS4zMDc2MTJdICByZXRfZnJvbV9mb3JrKzB4MWYvMHgzMA0KPiBbICAx
-OTUuMzA5NTg1XSAgPC9UQVNLPg0KPiBbICAxOTUuMzEwNjc0XSAtLS1bIGVuZCB0cmFjZSAw
-MDAwMDAwMDAwMDAwMDAwIF0tLS0NCj4gWyAgMTk1LjMxMzI5MF0gc2NzaSBob3N0NDogaWJf
-c3JwOiBSRUogcmVjZWl2ZWQNCj4gWyAgMTk1LjMxMzI5M10gc2NzaSBob3N0NDogICBSRUog
-cmVhc29uIDB4ZmZmZmZmOTgNCj4gWyAgMTk1LjMxNTQzM10gc2NzaSBob3N0NDogaWJfc3Jw
-OiBDb25uZWN0aW9uIDAvOCB0byAxNzIuMTcuOC4xMTMgZmFpbGVkDQo+IFsgIDE5NS40NzI3
-MThdIGliX3NycDpzcnBfcGFyc2VfaW46IGliX3NycDogMTcyLjE3LjguMTEzIC0+IDE3Mi4x
-Ny44LjExMzowDQo+IFsgIDE5NS40NzI3MzldIGliX3NycDpzcnBfcGFyc2VfaW46IGliX3Ny
-cDogMTcyLjE3LjguMTEzOjU1NTUgLT4gMTcyLjE3LjguMTEzOjU1NTUNCj4gWyAgMTk1LjQ3
-MjgwN10gaWJfc3JwOnNycF9wYXJzZV9pbjogaWJfc3JwOiBbZmU4MDo6NTA1NDpmZjpmZTVi
-OjkwZGMlM10gLT4gW2ZlODA6OjUwNTQ6ZmY6ZmU1Yjo5MGRjXTowLzIwMjQ0Mjg2NSUzDQo+
-ID4gWzBdIGh0dHBzOi8vZ2l0aHViLmNvbS9tY2dyb2Yva2Rldm9wcw0KPiAgPiAgICBMdWlz
-DQoNCkhpLCBCZXJuYXJkDQoNCkkgcmVwcm9kdWNlZCB0aGlzIGlzc3VlLCBhbmQgaXQgbG9v
-a3MgbGlrZSBhIGNvbmRpdGlvbiByYWNlIGJldHdlZW4NCidjbV93b3JrX2hhbmRsZXInIGFu
-ZCAnc2l3X2NtX3dvcmtfaGFuZGxlcicuDQoNCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCiAgVGhyZWFkMDogICAg
-ICAgICAgICAgICAgICAgICAgICAgVGhyZWFkMToNCiAgc2l3X2NtX3dvcmtfaGFuZGxlciAg
-ICAgICAgICAgICAgY21fd29ya19oYW5kbGVyDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpzdGVwMDoNCnNpd19j
-bV91cGNhbGwgd2l0aA0KSVdfQ01fRVZFTlRfQ09OTkVDVF9SRVFVRVNUDQoNCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgPT09PiBjbV9jb25uX3JlcV9oYW5kbGVyDQogICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAuLi4NCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgY21faWQtPmNtX2hhbmRsZXIgKGZhaWxlZCkNCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXdfY21fcmVqZWN0DQogICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2l3X3JlamVjdA0KDQoqc3RlcDEq
-Og0KZGV0YWNoIGNlcCB3aXRoIGxpc3Rlbl9jZXANCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KV2hlbiBzaXdf
-cmVqZWN0IGlzIGNhbGxlZCBpbiBjbV93b3JrX2hhbmRsZXIsIHRoZSByZWxhdGVkIGNlcCBt
-YXkgaGF2ZQ0Kbm90IGJlZW4gZGV0YWNoZWQgd2l0aCBpdHMgbGlzdGVuX2NlcCwgdGhyb3Vn
-aCB0aGUgdHdvIHN0ZXBzIGFyZSB2ZXJ5DQpjbG9zZS4NCg0KSSB0aGluayBvbmUgc2ltcGxl
-IHdheSB0byBmaXggdGhpcyBpc3N1ZSBpcyBrZWVwIHN0ZXAxIHVuZGVyDQpzaXdfY2VwX3Nl
-dF9pbnVzZSdzIHByb3RlY3Rpb24sIGFuZCB0aGlzIHdpbGwgbWFrZSBzaXdfcmVqZWN0IHdp
-bGwgYmUNCnBlbmRpbmcgdXRpbCBzaXdfY21fd29ya19oYW5kbGVyIHJlbGVhc2UgdGhlIGxv
-Y2s6DQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19jbS5j
-IA0KYi9kcml2ZXJzL2luZmluaWJhbmQvc3cvc2l3L3Npd19jbS5jDQppbmRleCA3YWNkZDNj
-M2E1OTkuLmYwMzNiNmRhMWU5ZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvaW5maW5pYmFuZC9z
-dy9zaXcvc2l3X2NtLmMNCisrKyBiL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9zaXcvc2l3X2Nt
-LmMNCkBAIC05NjgsMTMgKzk2OCwxNSBAQCBzdGF0aWMgdm9pZCBzaXdfYWNjZXB0X25ld2Nv
-bm4oc3RydWN0IHNpd19jZXAgKmNlcCkNCg0KICAgICAgICAgICAgICAgICBzaXdfY2VwX3Nl
-dF9pbnVzZShuZXdfY2VwKTsNCiAgICAgICAgICAgICAgICAgcnYgPSBzaXdfcHJvY19tcGFy
-ZXEobmV3X2NlcCk7DQotICAgICAgICAgICAgICAgc2l3X2NlcF9zZXRfZnJlZShuZXdfY2Vw
-KTsNCg0KICAgICAgICAgICAgICAgICBpZiAocnYgIT0gLUVBR0FJTikgew0KICAgICAgICAg
-ICAgICAgICAgICAgICAgIHNpd19jZXBfcHV0KGNlcCk7DQogICAgICAgICAgICAgICAgICAg
-ICAgICAgbmV3X2NlcC0+bGlzdGVuX2NlcCA9IE5VTEw7DQorICAgICAgICAgICAgICAgICAg
-ICAgICBzaXdfY2VwX3NldF9mcmVlKG5ld19jZXApOw0KICAgICAgICAgICAgICAgICAgICAg
-ICAgIGlmIChydikNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdvdG8gZXJy
-b3I7DQorICAgICAgICAgICAgICAgfSBlbHNlIHsNCisgICAgICAgICAgICAgICAgICAgICAg
-IHNpd19jZXBfc2V0X2ZyZWUobmV3X2NlcCk7DQogICAgICAgICAgICAgICAgIH0NCiAgICAg
-ICAgIH0NCiAgICAgICAgIHJldHVybjsNCg0KVGhhbmtzLA0KQ2hlbmcgWHUNCg==
+Flushing system-wide workqueues is dangerous and will be forbidden.
+Replace system_unbound_wq with local ib_unbound_wq.
+
+Link: https://lkml.kernel.org/r/49925af7-78a8-a3dd-bce6-cfc02e1a9236@I-love.SAKURA.ne.jp
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+Note: This patch is only compile tested.
+
+ drivers/infiniband/core/device.c | 25 +++++++++++++++----------
+ drivers/infiniband/core/ucma.c   |  2 +-
+ drivers/infiniband/hw/mlx5/odp.c |  4 ++--
+ include/rdma/ib_verbs.h          |  1 +
+ 4 files changed, 19 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/infiniband/core/device.c b/drivers/infiniband/core/device.c
+index 4deb60a3b43f..75d9f592c6a1 100644
+--- a/drivers/infiniband/core/device.c
++++ b/drivers/infiniband/core/device.c
+@@ -58,6 +58,8 @@ struct workqueue_struct *ib_comp_wq;
+ struct workqueue_struct *ib_comp_unbound_wq;
+ struct workqueue_struct *ib_wq;
+ EXPORT_SYMBOL_GPL(ib_wq);
++struct workqueue_struct *ib_unbound_wq;
++EXPORT_SYMBOL_GPL(ib_unbound_wq);
+ 
+ /*
+  * Each of the three rwsem locks (devices, clients, client_data) protects the
+@@ -1602,7 +1604,7 @@ void ib_unregister_device_queued(struct ib_device *ib_dev)
+ 	WARN_ON(!refcount_read(&ib_dev->refcount));
+ 	WARN_ON(!ib_dev->ops.dealloc_driver);
+ 	get_device(&ib_dev->dev);
+-	if (!queue_work(system_unbound_wq, &ib_dev->unregistration_work))
++	if (!queue_work(ib_unbound_wq, &ib_dev->unregistration_work))
+ 		put_device(&ib_dev->dev);
+ }
+ EXPORT_SYMBOL(ib_unregister_device_queued);
+@@ -2751,27 +2753,28 @@ static const struct rdma_nl_cbs ibnl_ls_cb_table[RDMA_NL_LS_NUM_OPS] = {
+ 
+ static int __init ib_core_init(void)
+ {
+-	int ret;
++	int ret = -ENOMEM;
+ 
+ 	ib_wq = alloc_workqueue("infiniband", 0, 0);
+ 	if (!ib_wq)
+ 		return -ENOMEM;
+ 
++	ib_unbound_wq = alloc_workqueue("ib-unb-wq", WQ_UNBOUND,
++					WQ_UNBOUND_MAX_ACTIVE);
++	if (!ib_unbound_wq)
++		goto err;
++
+ 	ib_comp_wq = alloc_workqueue("ib-comp-wq",
+ 			WQ_HIGHPRI | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
+-	if (!ib_comp_wq) {
+-		ret = -ENOMEM;
+-		goto err;
+-	}
++	if (!ib_comp_wq)
++		goto err_unbound;
+ 
+ 	ib_comp_unbound_wq =
+ 		alloc_workqueue("ib-comp-unb-wq",
+ 				WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM |
+ 				WQ_SYSFS, WQ_UNBOUND_MAX_ACTIVE);
+-	if (!ib_comp_unbound_wq) {
+-		ret = -ENOMEM;
++	if (!ib_comp_unbound_wq)
+ 		goto err_comp;
+-	}
+ 
+ 	ret = class_register(&ib_class);
+ 	if (ret) {
+@@ -2831,6 +2834,8 @@ static int __init ib_core_init(void)
+ 	destroy_workqueue(ib_comp_unbound_wq);
+ err_comp:
+ 	destroy_workqueue(ib_comp_wq);
++err_unbound:
++	destroy_workqueue(ib_unbound_wq);
+ err:
+ 	destroy_workqueue(ib_wq);
+ 	return ret;
+@@ -2852,7 +2857,7 @@ static void __exit ib_core_cleanup(void)
+ 	destroy_workqueue(ib_comp_wq);
+ 	/* Make sure that any pending umem accounting work is done. */
+ 	destroy_workqueue(ib_wq);
+-	flush_workqueue(system_unbound_wq);
++	destroy_workqueue(ib_unbound_wq);
+ 	WARN_ON(!xa_empty(&clients));
+ 	WARN_ON(!xa_empty(&devices));
+ }
+diff --git a/drivers/infiniband/core/ucma.c b/drivers/infiniband/core/ucma.c
+index 9d6ac9dff39a..65c31c7a3af1 100644
+--- a/drivers/infiniband/core/ucma.c
++++ b/drivers/infiniband/core/ucma.c
+@@ -360,7 +360,7 @@ static int ucma_event_handler(struct rdma_cm_id *cm_id,
+ 	if (event->event == RDMA_CM_EVENT_DEVICE_REMOVAL) {
+ 		xa_lock(&ctx_table);
+ 		if (xa_load(&ctx_table, ctx->id) == ctx)
+-			queue_work(system_unbound_wq, &ctx->close_work);
++			queue_work(ib_unbound_wq, &ctx->close_work);
+ 		xa_unlock(&ctx_table);
+ 	}
+ 	return 0;
+diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
+index 41c964a45f89..7611a28a4573 100644
+--- a/drivers/infiniband/hw/mlx5/odp.c
++++ b/drivers/infiniband/hw/mlx5/odp.c
+@@ -220,7 +220,7 @@ static void destroy_unused_implicit_child_mr(struct mlx5_ib_mr *mr)
+ 
+ 	/* Freeing a MR is a sleeping operation, so bounce to a work queue */
+ 	INIT_WORK(&mr->odp_destroy.work, free_implicit_child_mr_work);
+-	queue_work(system_unbound_wq, &mr->odp_destroy.work);
++	queue_work(ib_unbound_wq, &mr->odp_destroy.work);
+ }
+ 
+ static bool mlx5_ib_invalidate_range(struct mmu_interval_notifier *mni,
+@@ -1818,6 +1818,6 @@ int mlx5_ib_advise_mr_prefetch(struct ib_pd *pd,
+ 		destroy_prefetch_work(work);
+ 		return rc;
+ 	}
+-	queue_work(system_unbound_wq, &work->work);
++	queue_work(ib_unbound_wq, &work->work);
+ 	return 0;
+ }
+diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
+index b0bc9de5e9a8..8be23c03f412 100644
+--- a/include/rdma/ib_verbs.h
++++ b/include/rdma/ib_verbs.h
+@@ -54,6 +54,7 @@ struct ib_port;
+ struct hw_stats_device_data;
+ 
+ extern struct workqueue_struct *ib_wq;
++extern struct workqueue_struct *ib_unbound_wq;
+ extern struct workqueue_struct *ib_comp_wq;
+ extern struct workqueue_struct *ib_comp_unbound_wq;
+ 
+-- 
+2.32.0
+
