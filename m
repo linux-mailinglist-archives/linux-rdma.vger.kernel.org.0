@@ -2,71 +2,72 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83479508697
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Apr 2022 13:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1236A5086A4
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Apr 2022 13:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377923AbiDTLKK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Apr 2022 07:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47650 "EHLO
+        id S230118AbiDTLLN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Apr 2022 07:11:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377917AbiDTLKI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 07:10:08 -0400
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 240A940900
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 04:07:23 -0700 (PDT)
+        with ESMTP id S244125AbiDTLLJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 07:11:09 -0400
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C364091D
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 04:08:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650452843; x=1681988843;
+  t=1650452904; x=1681988904;
   h=date:from:to:cc:subject:message-id:mime-version:
    content-transfer-encoding;
-  bh=A4eYkz2Xd7YCXwYyQ14mOzHusG0bIEjQkgAF45KUqfE=;
-  b=icNsjDg1izZuK+RiB5K8hvo5c9M0BfRhlffXib/hg2fBsKXp7mOYfCq/
-   Gwn8EYOw2KfdjIEdK+26JVCoxtkamv23wpphJ0aGYqUmaXELKt9im3awS
-   d9hv91hhLkDeHRKRpzFZMBladMLdNBn8hreUPnvRarA9UcRcNA5WNMaIG
-   nKcs4xHmDEnIJoAeRnGET1apuOxMfjadGssRFWDw8wI7S04JPU4hD+/nD
-   MQKPMITzeeH8dC6tfNtStP10wO3zAGvn+IpsKOKklas9yXkfwz5fq0YxG
-   Im5CiogQ2mDw7y0gMb35vR85KHWkn+Pl0GZ+YzIJeJk1+tp9cl3+2MHKL
-   w==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="245893230"
+  bh=zvtWLgE1ObyfD1sRzPTSK/n8xbyIHSYRsBc5QMvPs84=;
+  b=dBj2vj2VZnoVsXWFG0dVH+qr9J3dOLnwavR9DCsC7cBW7lwj6gfaeCZk
+   aRHuWQihGMde/mbsDouHI6ctJn/7W2ZOPhqxmNh5M1nHkM/hrFvqvaHBC
+   NGceDK86vQ+JIEHlCp5+HG6N2zgP8E5ZfzGCLAu8bLz5Dx+JJt8QsCz70
+   JtRt6vWlKsSLtDzBPVpnC0ExZEAC2YJ3ofbNtXklF7JjAEZceT7Vyf6Qf
+   f5X0um/oKWWo88d0uKYqmG/P7ioRW5FY1uWvRwdF1aYopALQ3fPjkIo0t
+   M5msJtbdZVsBd7x6JDsmkP7ejfDo5GgavoxFq6I4mh2Mj2OBwqeJ3pei7
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10322"; a="289105611"
 X-IronPort-AV: E=Sophos;i="5.90,275,1643702400"; 
-   d="scan'208";a="245893230"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 04:07:22 -0700
+   d="scan'208";a="289105611"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 04:08:23 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.90,275,1643702400"; 
-   d="scan'208";a="668350998"
+   d="scan'208";a="510509385"
 Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 20 Apr 2022 04:07:21 -0700
+  by orsmga003.jf.intel.com with ESMTP; 20 Apr 2022 04:08:21 -0700
 Received: from kbuild by 3abc53900bec with local (Exim 4.95)
         (envelope-from <lkp@intel.com>)
-        id 1nh8B6-0006vF-Ij;
-        Wed, 20 Apr 2022 11:07:20 +0000
-Date:   Wed, 20 Apr 2022 19:07:03 +0800
+        id 1nh8C4-0006vk-NQ;
+        Wed, 20 Apr 2022 11:08:20 +0000
+Date:   Wed, 20 Apr 2022 19:07:41 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     Jason Gunthorpe <jgg@nvidia.com>
 Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 679ab61bf5f5f519377d812afb4fb93634782c74
-Message-ID: <625fe957.WRRzYYam/xZkZ0gT%lkp@intel.com>
+Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
+ b5a93e79df64c32814f0edefdb920b540cbc986a
+Message-ID: <625fe97d.6fiydlicsvIICSoo%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_HI,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 679ab61bf5f5f519377d812afb4fb93634782c74  RDMA/irdma: Fix deadlock in irdma_cleanup_cm_core()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
+branch HEAD: b5a93e79df64c32814f0edefdb920b540cbc986a  RDMA/mlx5: Fix flow steering egress flow
 
-elapsed time: 829m
+elapsed time: 830m
 
-configs tested: 146
+configs tested: 148
 configs skipped: 5
 
 The following configs have been built successfully.
@@ -173,7 +174,9 @@ x86_64                        randconfig-a015
 i386                          randconfig-a012
 i386                          randconfig-a014
 i386                          randconfig-a016
+riscv                randconfig-r042-20220419
 arc                  randconfig-r043-20220419
+s390                 randconfig-r044-20220419
 arc                  randconfig-r043-20220420
 riscv                               defconfig
 riscv                    nommu_virt_defconfig
