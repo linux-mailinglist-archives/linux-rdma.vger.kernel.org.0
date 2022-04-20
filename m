@@ -2,91 +2,123 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F012508D82
-	for <lists+linux-rdma@lfdr.de>; Wed, 20 Apr 2022 18:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E787508E5B
+	for <lists+linux-rdma@lfdr.de>; Wed, 20 Apr 2022 19:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380681AbiDTQoL (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Apr 2022 12:44:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53558 "EHLO
+        id S1355509AbiDTR1E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Apr 2022 13:27:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353698AbiDTQoK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 12:44:10 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55FB31C931
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 09:41:24 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id y19so1729159qvk.5
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 09:41:24 -0700 (PDT)
+        with ESMTP id S243846AbiDTR1D (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 13:27:03 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DB445065
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 10:24:16 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id e189so2799159oia.8
+        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 10:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a0xAdyTd3UEGCCIxMuWK2NQGNgRm5FZ0wW3W7rwBTJQ=;
-        b=bjPsUEnt9+TL91IV1vmLMm0cP8q3ah4fNKBZHL+2WMcMHEUalYHys1pJLeDRNs3NWS
-         Q1VmJpyAnhd1Q47tr27SGja/9pl+ljj2PvouLWQGZVo9C9sMLRrd98DVJ6ia0i2/FqgA
-         u5Ax7NeLDrnIIP7otHcYH1ByXsdQD7bWdDN7DDXbCYmJUmKEMYzQl66Ph1QKE9iycEt9
-         L3H0oRcy5ZrVWyYwHTKPYUKnI3lZE+P5RgIe16boragtRrqsjY+XMizqEhtahJlm3uuW
-         ER9EkGOVqL2RbKiS0RTT58ye1nF8ps6QOHZbx1H9qim4Yyhau317fxas0ZP1+UVJffYp
-         ihXA==
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DtsgZ1ds7jxE2AzjxjHhajOgNxFupSvPhZPQASbup80=;
+        b=ZEErxYckjVlR/ndZa09Xb9qR/tE5xxZ2upBbVwdhhtAac2CWekjj0ctmEkALl///wG
+         rRT0SwZhots9Q9yopyjaAUBiB3BDDtoCqVxJJ76GSkoMmZuLTc/okA6ZFC1Jj5oNLDFg
+         1Y2jm13OGEpQQB9DYaxgI07buOpiWUpOD4qIXEDXgOnM61MMi5rD5xt1qZiCHkf5knQl
+         LODtPQ4wbeiWlP/3meEeJk6M3uXSmp6ZWMiHjUg9npw12KCNtOOdrF10EBmB51nknzCs
+         fKCuOcmsMcPRv51KqtT8C7KIOHb7O8Pfc2VAv6+OZXdWbt6HaUCaF0Mpey/3Y+TGqXsj
+         kcpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a0xAdyTd3UEGCCIxMuWK2NQGNgRm5FZ0wW3W7rwBTJQ=;
-        b=crqeDLPe+W4aBIVfYoGrscQACgI/48caLBmWFVFdryGfmBYjBXpLP5GSqZrzA6HkmU
-         kfP7CpIxiF2AwWGsyOtXpnVixrF7xNleDacO+q791s9U760brvH3Dhq2bCI0oZLqhJb3
-         5+ziFPs1Cp2QcxxP1lbXRkbgerhiaLfFg2fFyI57K33CGJkbxtAsPHBDYNtSQg9iaTlc
-         peZ5Aud13W+UTGz2UnunET0hqQPjR4uOp1KqUPAnAl8b5ajgXKCE5iEEPP+/hVa5xsKk
-         ubMwW6q7UlNxJZIInFbOBQF9pb7u/CkvG+nFRgNWw6fpRNx9R3/nM9H7nK6C9bRIpfe5
-         9Jdg==
-X-Gm-Message-State: AOAM5335hwc7h7c+gniihjEfx2+gi4wSXuQL8cPhwQgdd24ddXUAAnRS
-        m1dQSNIgn3XsjUe5+VgdgmO1rHrgvrPy9g==
-X-Google-Smtp-Source: ABdhPJwuEBXiB0s9B7PJB7qbWeygCok9EwT+S4QgEUhh1IxSoNtnW8Vpgt48BTeBV9ugp52LMoCi+g==
-X-Received: by 2002:a05:6214:20af:b0:446:787a:e748 with SMTP id 15-20020a05621420af00b00446787ae748mr6115896qvd.79.1650472883527;
-        Wed, 20 Apr 2022 09:41:23 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id q8-20020a05622a04c800b002e06d7c1eabsm1958684qtx.16.2022.04.20.09.41.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DtsgZ1ds7jxE2AzjxjHhajOgNxFupSvPhZPQASbup80=;
+        b=av/kB+eXhNQ9B8MCUjAwyT22H5XQnFMB0ayr30uoodZprXr+9kJY1C27kAqVPp+BvI
+         BgJHsH9ux7PY2874414ZqwQEonAxj4CSwYZ4havXp5cL7dNvWD85fKcdK60JZlwWGuKH
+         /1W4LWho3SKUeibv7cMPgh72guVpO0XuZGMWrfS4h1+JYTr3sbMw6JXwXbwz0EKZfJpQ
+         bwLtQP+HJRsFnF+T6byNhQ62p0o7YoBreAFIzbr68WjrPeQBmoT+BXMcWSqIAV0S3nfA
+         jgcwG6ipM58yTpoZe0idEm997AT1ZpMDCE3UV1ZyhqxG3mkAkEl+76tOeZaRB4Z+be88
+         oCwA==
+X-Gm-Message-State: AOAM533z25HF8jCEGyhvbQd00tOJUPXKakV7uauILjGgLiD6X1OJMl0J
+        zK7W667d8ikAGaGu6GDwFSjm7MCT9j8=
+X-Google-Smtp-Source: ABdhPJxV8zMVqjbWM/55NV2fXK5/eU1eNMJpeFfe3DIAFUGrMCp5IF8PkT+uzjxQwjvEaHEZkRXYnA==
+X-Received: by 2002:a05:6808:ec5:b0:2f9:a7fb:4dfb with SMTP id q5-20020a0568080ec500b002f9a7fb4dfbmr2322713oiv.156.1650475456161;
+        Wed, 20 Apr 2022 10:24:16 -0700 (PDT)
+Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-02db-d105-a6dd-c1d6.res6.spectrum.com. [2603:8081:140c:1a00:2db:d105:a6dd:c1d6])
+        by smtp.googlemail.com with ESMTPSA id w2-20020a4a7642000000b0033a2cdbe62fsm5022259ooe.45.2022.04.20.10.24.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 09:41:22 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nhDOM-0061UJ-6Y; Wed, 20 Apr 2022 13:41:22 -0300
-Date:   Wed, 20 Apr 2022 13:41:22 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Yanjun Zhu <yanjun.zhu@linux.dev>, leon@kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [PATCHv4 1/2] RDMA/rxe: Fix a dead lock problem
-Message-ID: <20220420164122.GS64706@ziepe.ca>
-References: <20220415195630.279510-1-yanjun.zhu@linux.dev>
- <e217ab50-75ff-9112-e492-a70cca50759b@gmail.com>
- <0d88246e-c29a-27c0-95c5-da73f52e6a59@linux.dev>
- <726e75b0-c165-92f8-c367-1a5a777bc8b1@gmail.com>
+        Wed, 20 Apr 2022 10:24:15 -0700 (PDT)
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>
+Subject: [PATCH for-next] RDMA/rxe: Fix typo: replace paylen by payload
+Date:   Wed, 20 Apr 2022 12:23:17 -0500
+Message-Id: <20220420172316.5465-1-rpearsonhpe@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <726e75b0-c165-92f8-c367-1a5a777bc8b1@gmail.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 15, 2022 at 01:35:58AM -0500, Bob Pearson wrote:
+In finish_packet() in rxe_req.c a variable was incorrectly called
+paylen instead of payload. Elsewhere in the rxe source payload is
+always used for the RoCE payload length and paylen is always used
+for the UDP payload length. This will cause unnecessary confusion.
 
-> I mean the trace you show here shows an instance of xa_lock being
-> acquired from the pd pool followed by an instance of xa_lock being
-> acquired from rxe_pool_get_index from the ah pool. They are different
-> locks. They can't deadlock against each other. So there must be
-> some other trace (not shown) that also gets xa_lock from the ah pool.
+Replace paylen by payload in finish_packet().
 
-This is because lockdep groups locks by allocation point into the same
-'lock class' so as far as lockdep is concerned the AH and PD's are all
-the same lock and you'll get reports like the above.
+Fixes: 63221acb0c631 ("RDMA/rxe: Fix ref error in rxe_av.c")
+Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+---
+ drivers/infiniband/sw/rxe/rxe_req.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-The same issue will show up with AH only, you just need to hit a path
-that allocates an AH from a process context, like uverbs.
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+index e2659663b283..9bb24b824968 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -435,7 +435,7 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+ 
+ static int finish_packet(struct rxe_qp *qp, struct rxe_av *av,
+ 			 struct rxe_send_wqe *wqe, struct rxe_pkt_info *pkt,
+-			 struct sk_buff *skb, u32 paylen)
++			 struct sk_buff *skb, u32 payload)
+ {
+ 	int err;
+ 
+@@ -447,19 +447,19 @@ static int finish_packet(struct rxe_qp *qp, struct rxe_av *av,
+ 		if (wqe->wr.send_flags & IB_SEND_INLINE) {
+ 			u8 *tmp = &wqe->dma.inline_data[wqe->dma.sge_offset];
+ 
+-			memcpy(payload_addr(pkt), tmp, paylen);
++			memcpy(payload_addr(pkt), tmp, payload);
+ 
+-			wqe->dma.resid -= paylen;
+-			wqe->dma.sge_offset += paylen;
++			wqe->dma.resid -= payload;
++			wqe->dma.sge_offset += payload;
+ 		} else {
+ 			err = copy_data(qp->pd, 0, &wqe->dma,
+-					payload_addr(pkt), paylen,
++					payload_addr(pkt), payload,
+ 					RXE_FROM_MR_OBJ);
+ 			if (err)
+ 				return err;
+ 		}
+ 		if (bth_pad(pkt)) {
+-			u8 *pad = payload_addr(pkt) + paylen;
++			u8 *pad = payload_addr(pkt) + payload;
+ 
+ 			memset(pad, 0, bth_pad(pkt));
+ 		}
 
-Jason
+base-commit: b5a93e79df64c32814f0edefdb920b540cbc986a
+-- 
+2.32.0
+
