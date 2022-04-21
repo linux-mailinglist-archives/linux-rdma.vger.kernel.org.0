@@ -2,57 +2,57 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DF95094BB
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Apr 2022 03:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF895094BC
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Apr 2022 03:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383670AbiDUBoF (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Apr 2022 21:44:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S1383685AbiDUBoG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 20 Apr 2022 21:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383668AbiDUBoD (ORCPT
+        with ESMTP id S1383667AbiDUBoD (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 21:44:03 -0400
-Received: from mail-oa1-x2a.google.com (mail-oa1-x2a.google.com [IPv6:2001:4860:4864:20::2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD7D17046
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D6C765E
         for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 18:41:15 -0700 (PDT)
-Received: by mail-oa1-x2a.google.com with SMTP id 586e51a60fabf-e656032735so2673644fac.0
+Received: by mail-oi1-x235.google.com with SMTP id z8so4115185oix.3
         for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 18:41:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=rSkUR8iHoCDwj4Zz9gZcYpz6HMH9rY869OGi2lAzZt4=;
-        b=fOegawjiKNomL1JphUlrIDktaUZmXLKyEhqgrMcjPmT/qFvXDoJe4lhOajVcCmozHS
-         IklxTydGr3/aO5qqtbGTuq4rk1T05mCgMzlQnLrH+kw0JlhZiE5IZk8krQLnpTthsBdj
-         xWt3FC0JafbXC4ZTdKJSu8w2sw6KdbzH5msZ5PrDr/WIzIJE0Ctzt0uc61jEcYib04+j
-         ndakI2+TDBIStbhOQAnmWEUcRkGMFy4latodGHQ/zGeyW4h/mUI84Qm2oC/0u6Ukmdbz
-         MB+1do0ImcFFg1Cx7EzcQi5FZXXXfpuO0J+uJLa+q6jyx2IqyTatIDjU8z83D5e5TJdD
-         5q/Q==
+        bh=PN7pvzubqtiBUl4kd7cQKBgLlljE+56vzGXCYJHPmkk=;
+        b=CnJPCFT27FPwc7qUyIlEx8rbIBu75DRS64wh0mslROMhV20EbzHUxNuUmk24CswNze
+         4aIjyqSEYHwApAOjicjKGzNWWUs/In+lT/w9AEOCo4m4SjvJ3rKhqdI0Hujbvs0+9wZY
+         xMKuFmrnWWQrphQV/23g+eFsDGXIoXnIVstVlZ70MvwFrQq2cmq+hUVURT7eWqW5f2Dl
+         Pf9BhFXY3EuShRwM95jZTxdZ3WD/BkHo6sj+ss9AUEWFLZImawRr/e55yc48SD/f5chQ
+         wYqdngNP22aope8AfihIqT0bodBm/2wnh1/lazQQnvYZ68M3fj7SoR/F2KiZdCqqwFTs
+         VXdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=rSkUR8iHoCDwj4Zz9gZcYpz6HMH9rY869OGi2lAzZt4=;
-        b=6VkeU+NtWb0/fO4/sNFBrQMsi9lwCJrJa1RZHp3rnWmRsIT/NHa4/giB9PkoxEcNWL
-         18ouAbxqHzK4Rfu+dATFvrCoZpZ50S4Kxmp9fC9Mhdxdej0cZ0TnLHaimc4dpCt4PXI9
-         m+WW3i/1aPljGbFuCQVmC0qjCaqzuabANbOlLAd0T8MzFb8KODoR3uKyVBV2tYbpARjq
-         MGFgw8v0gpz3tUMMHbzJZ8KaSbJ3UH5zYyrhUbSCfkViPb1l1UniPtqrMJj01G0BUEMG
-         1rL23nzpNKJ9vK5Tein5R91YIYw2fqMZTuEntEH7OfA8errblD0Nuog0ggZFLm9se8Ov
-         25dg==
-X-Gm-Message-State: AOAM532EUVWWrlpU6xdlhgnTwVtPrhRPCGb5ZWJdfIz0mostUN1Llbf6
-        55U4Flk+MGil8YMV8WHNZuE=
-X-Google-Smtp-Source: ABdhPJymekjzGraWL09YLz9gWIMyXp2u2tVIVTf58MBTv4gvpIW5EDoqLXNxnQeB9bDJobFVHOoslw==
-X-Received: by 2002:a05:6870:a40a:b0:e5:c4cb:7b84 with SMTP id m10-20020a056870a40a00b000e5c4cb7b84mr2906013oal.123.1650505274715;
-        Wed, 20 Apr 2022 18:41:14 -0700 (PDT)
+        bh=PN7pvzubqtiBUl4kd7cQKBgLlljE+56vzGXCYJHPmkk=;
+        b=R9lDHIktNqudbn8cwdb+AW7WU4XCqG/+NF0G1vDRlKnZ7JMO4nscM+zDbqt7PqaU5L
+         bkqDLfgctJ68V85GIChemOZ+kN2ZGb69qmfpIv2udmzDtUnHS+tOSXz84dwnUNTdac1C
+         44fV0dyxkHcAevQrJzS/HJc4yqAeKouKDLwECIwIAi24mbrWpN375mFVuFq1tmZn4eqM
+         2Eitn8ZJBo/qoBUrpKHjpfbS3t3PN+sZEAT/Lw2TLe6O/4ennivDh+SOOICtCwuAJryn
+         qMgEAMc2qT5WNs5BqduGzUyc9mP1aAaFjerPSY+fhhpMBIySluyYbebsg0Jbh7um+vYa
+         2qbg==
+X-Gm-Message-State: AOAM530Ah1jRySY5lWTOTZjQ1xfcxQ8G09A3qDuxGr1Pi29i6SRunXHm
+        VVjfVAhmqUbQo5cA7Bn1kXeQR3hC92w=
+X-Google-Smtp-Source: ABdhPJyOnrAxnzYDLKog+YC6hkGxkVo88w1pNk9lNumqBY9z6dH3IzB4hzHP/VslE1ZHdLmpKMIkzg==
+X-Received: by 2002:a05:6808:2205:b0:322:8621:84f with SMTP id bd5-20020a056808220500b003228621084fmr3228785oib.80.1650505275366;
+        Wed, 20 Apr 2022 18:41:15 -0700 (PDT)
 Received: from ubuntu-21.tx.rr.com (2603-8081-140c-1a00-c7f7-b397-372c-b2f0.res6.spectrum.com. [2603:8081:140c:1a00:c7f7:b397:372c:b2f0])
         by smtp.googlemail.com with ESMTPSA id l16-20020a9d6a90000000b0060548d240d4sm4847710otq.74.2022.04.20.18.41.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Apr 2022 18:41:14 -0700 (PDT)
+        Wed, 20 Apr 2022 18:41:15 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v14 09/10] RDMA/rxe: Convert read side locking to rcu
-Date:   Wed, 20 Apr 2022 20:40:42 -0500
-Message-Id: <20220421014042.26985-10-rpearsonhpe@gmail.com>
+Subject: [PATCH for-next v14 10/10] RDMA/rxe: Cleanup rxe_pool.c
+Date:   Wed, 20 Apr 2022 20:40:43 -0500
+Message-Id: <20220421014042.26985-11-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20220421014042.26985-1-rpearsonhpe@gmail.com>
 References: <20220421014042.26985-1-rpearsonhpe@gmail.com>
@@ -68,83 +68,52 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Use rcu_read_lock() for protecting read side operations in rxe_pool.c.
-Convert write side locking to use plain spin_lock().
+Minor cleanup of rxe_pool.c. Add document comment headers for
+the subroutines. Increase alignment for pool elements.
+Convert some printk's to WARN-ON's.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_pool.c | 26 ++++++++++----------------
- 1 file changed, 10 insertions(+), 16 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_pool.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
-index f5380b6bdea2..661e0af522a9 100644
+index 661e0af522a9..24bcf5d1f66f 100644
 --- a/drivers/infiniband/sw/rxe/rxe_pool.c
 +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
-@@ -191,16 +191,15 @@ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index)
- {
- 	struct rxe_pool_elem *elem;
- 	struct xarray *xa = &pool->xa;
--	unsigned long flags;
- 	void *obj;
- 
--	xa_lock_irqsave(xa, flags);
-+	rcu_read_lock();
- 	elem = xa_load(xa, index);
- 	if (elem && kref_get_unless_zero(&elem->ref_cnt))
- 		obj = elem->obj;
- 	else
- 		obj = NULL;
--	xa_unlock_irqrestore(xa, flags);
-+	rcu_read_unlock();
- 
- 	return obj;
+@@ -256,16 +256,32 @@ int __rxe_cleanup(struct rxe_pool_elem *elem)
+ 	return err;
  }
-@@ -217,16 +216,15 @@ int __rxe_cleanup(struct rxe_pool_elem *elem)
- 	struct rxe_pool *pool = elem->pool;
- 	struct xarray *xa = &pool->xa;
- 	static int timeout = RXE_POOL_TIMEOUT;
--	unsigned long flags;
- 	int ret, err = 0;
- 	void *xa_ret;
  
-+	WARN_ON(!in_task());
-+
- 	/* erase xarray entry to prevent looking up
- 	 * the pool elem from its index
- 	 */
--	xa_lock_irqsave(xa, flags);
--	xa_ret = __xa_erase(xa, elem->index);
--	xa_unlock_irqrestore(xa, flags);
-+	xa_ret = xa_erase(xa, elem->index);
- 	WARN_ON(xa_err(xa_ret));
++/**
++ * __rxe_get - takes a ref on the object unless ref count is zero
++ * @elem: rxe_pool_elem embedded in object
++ *
++ * Returns: 1 if reference is added else 0
++ */
+ int __rxe_get(struct rxe_pool_elem *elem)
+ {
+ 	return kref_get_unless_zero(&elem->ref_cnt);
+ }
  
- 	/* if this is the last call to rxe_put complete the
-@@ -251,7 +249,7 @@ int __rxe_cleanup(struct rxe_pool_elem *elem)
- 		pool->cleanup(elem);
++/**
++ * __rxe_put - puts a ref on the object
++ * @elem: rxe_pool_elem embedded in object
++ *
++ * Returns: 1 if ref count reaches zero and release called else 0
++ */
+ int __rxe_put(struct rxe_pool_elem *elem)
+ {
+ 	return kref_put(&elem->ref_cnt, rxe_elem_release);
+ }
  
- 	if (pool->flags & RXE_POOL_ALLOC)
--		kfree(elem->obj);
-+		kfree_rcu(elem->obj);
- 
- 	atomic_dec(&pool->num_elem);
- 
-@@ -270,12 +268,8 @@ int __rxe_put(struct rxe_pool_elem *elem)
- 
++/**
++ * __rxe_finalize - enable looking up object from index
++ * @elem: rxe_pool_elem embedded in object
++ */
  void __rxe_finalize(struct rxe_pool_elem *elem)
  {
--	struct xarray *xa = &elem->pool->xa;
--	unsigned long flags;
--	void *ret;
--
--	xa_lock_irqsave(xa, flags);
--	ret = __xa_store(&elem->pool->xa, elem->index, elem, GFP_KERNEL);
--	xa_unlock_irqrestore(xa, flags);
--	WARN_ON(xa_err(ret));
-+	void *xa_ret;
-+
-+	xa_ret = xa_store(&elem->pool->xa, elem->index, elem, GFP_KERNEL);
-+	WARN_ON(xa_err(xa_ret));
- }
+ 	void *xa_ret;
 -- 
 2.32.0
 
