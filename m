@@ -2,193 +2,196 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9176050958E
-	for <lists+linux-rdma@lfdr.de>; Thu, 21 Apr 2022 05:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A5495098C7
+	for <lists+linux-rdma@lfdr.de>; Thu, 21 Apr 2022 09:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384008AbiDUDvI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 20 Apr 2022 23:51:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43846 "EHLO
+        id S1385364AbiDUHUn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 21 Apr 2022 03:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384006AbiDUDvI (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 20 Apr 2022 23:51:08 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E968AE7A
-        for <linux-rdma@vger.kernel.org>; Wed, 20 Apr 2022 20:48:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1650512900; x=1682048900;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=aWY0luQ+9oSefJcJmTnP/ULIsERbrAbw7oKSpCDOyoI=;
-  b=UNW5nqXidstBmbCXioNf/6ooJyoecyt0baRt6wH+0BmT/MIWQIVVFeFx
-   +BaClwwCuNmt1jdHN+O/Q9ZOMDzzxFxlzMmBf2fcQ88ANNI5QEzBNa23u
-   X8K6dRDz7x2lCCx0WI9/bTeQ30eUWNSDcFpk6RXGm8QUctTY9yKZSAccf
-   880hqBIlGjeVjv+Qh62+PS4+gcRpxR6p1RRJRf1NHv03MDy37TBRjddsV
-   eOnKC3ngacf8VhH9M8KTyakhgADPqPHZZcAomxQqwqjuHsTyZ1rSDj6Xt
-   OnEamkdgXqXudAwAuDtw7o7mtg0Pk5ndPMQJKWi4NJ9WDhWd15SdDEAcL
-   A==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10323"; a="244809417"
-X-IronPort-AV: E=Sophos;i="5.90,277,1643702400"; 
-   d="scan'208";a="244809417"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Apr 2022 20:48:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.90,277,1643702400"; 
-   d="scan'208";a="647951320"
-Received: from lkp-server01.sh.intel.com (HELO 3abc53900bec) ([10.239.97.150])
-  by FMSMGA003.fm.intel.com with ESMTP; 20 Apr 2022 20:48:18 -0700
-Received: from kbuild by 3abc53900bec with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1nhNnl-0007on-TN;
-        Thu, 21 Apr 2022 03:48:17 +0000
-Date:   Thu, 21 Apr 2022 11:44:29 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-rc] BUILD SUCCESS
- 570a4bf7440e9fb2a4164244a6bf60a46362b627
-Message-ID: <6260d31d.kqcscJ4syaLLrtTu%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S1353459AbiDUHUm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 21 Apr 2022 03:20:42 -0400
+Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D415165BE
+        for <linux-rdma@vger.kernel.org>; Thu, 21 Apr 2022 00:17:52 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R491e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VAdmiDM_1650525468;
+Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VAdmiDM_1650525468)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 21 Apr 2022 15:17:49 +0800
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+To:     jgg@ziepe.ca, dledford@redhat.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
+        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
+        BMT@zurich.ibm.com
+Subject: [PATCH for-next v7 00/12] Elastic RDMA Adapter (ERDMA) driver
+Date:   Thu, 21 Apr 2022 15:17:35 +0800
+Message-Id: <20220421071747.1892-1-chengyou@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0 (Apple Git-132)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-rc
-branch HEAD: 570a4bf7440e9fb2a4164244a6bf60a46362b627  RDMA/rxe: Recheck the MR in when generating a READ reply
+Hello all,
 
-elapsed time: 743m
+This v7 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
+which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
+userspace provider has already been created [1].
 
-configs tested: 110
-configs skipped: 3
+ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+environment, initially offered in g7re instance. It can improve the
+efficiency of large-scale distributed computing and communication
+significantly and expand dynamically with the cluster scale of Alibaba
+Cloud.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+works in the VPC network environment (overlay network), and uses iWarp
+transport protocol. ERDMA supports reliable connection (RC). ERDMA also
+supports both kernel space and user space verbs. Now we have already
+supported HPC/AI applications with libfabric, NoF and some other internal
+verbs libraries, such as xrdma, epsl, etc,.
 
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                          randconfig-c001
-m68k                       m5208evb_defconfig
-m68k                          hp300_defconfig
-powerpc                      ppc6xx_defconfig
-powerpc                      pcm030_defconfig
-mips                     loongson1b_defconfig
-arm                          lpd270_defconfig
-xtensa                         virt_defconfig
-powerpc                      chrp32_defconfig
-ia64                      gensparse_defconfig
-sh                        apsh4ad0a_defconfig
-mips                         cobalt_defconfig
-arm                            qcom_defconfig
-sh                   secureedge5410_defconfig
-powerpc                       ppc64_defconfig
-arm64                            alldefconfig
-sh                          polaris_defconfig
-x86_64                        randconfig-c001
-arm                  randconfig-c002-20220420
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-s390                                defconfig
-s390                             allmodconfig
-parisc                              defconfig
-parisc64                            defconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64                        randconfig-a006
-x86_64                        randconfig-a004
-x86_64                        randconfig-a002
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                          randconfig-a012
-i386                          randconfig-a014
-i386                          randconfig-a016
-arc                  randconfig-r043-20220420
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                                  kexec
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
+For the ECS instance with RDMA enabled, our MOC hardware generates two
+kinds of PCI devices: one for ERDMA, and one for the original net device
+(virtio-net). They are separated PCI devices, using "rdma link" command
+with a filter inside our rdma_link_ops.newlink implementation can bind
+them together properly.
 
-clang tested configs:
-riscv                randconfig-c006-20220420
-mips                 randconfig-c004-20220420
-x86_64                        randconfig-c007
-i386                          randconfig-c001
-arm                  randconfig-c002-20220420
-powerpc              randconfig-c003-20220420
-arm                           omap1_defconfig
-powerpc                      ppc44x_defconfig
-powerpc                     pseries_defconfig
-powerpc                     skiroot_defconfig
-arm                          ep93xx_defconfig
-powerpc                    gamecube_defconfig
-arm                        neponset_defconfig
-x86_64                        randconfig-a005
-x86_64                        randconfig-a003
-x86_64                        randconfig-a001
-i386                          randconfig-a002
-i386                          randconfig-a006
-i386                          randconfig-a004
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-i386                          randconfig-a013
-i386                          randconfig-a011
-i386                          randconfig-a015
-hexagon              randconfig-r041-20220420
-riscv                randconfig-r042-20220420
-hexagon              randconfig-r045-20220420
-s390                 randconfig-r044-20220420
+Besides, this patchset contains a change in iw_query_port to fix this
+issue [2]. This change lets the device drivers decide the return value of
+iw_query_port when attached netdev is NULL. After this change, erdma can
+register device successfully in pci probe function, and keep port state
+invalid until a netdev is binded to it.
+
+Changes in v7:
+- Fix a wrong doorbell records' address calculation issue in
+  erdma_create_qp.
+- Fix a condition race issue when reporting IW_CM_EVENT_CONNECT_REQUEST
+  event in cm.
+- Sorry for a mmap_free implementation missing, we add it in this version.
+- Remove unnecessary reference to erdma_dev in erdma_ucontext.
+
+Changes in v6:
+- Rebase to the latest for-next code, and solve the compilation issues.
+
+Fixed issues or changes in v5:
+- Rename the reserved fields of structure definitions to improve
+  readability.
+- Remove some magic numbers and unnecessary initializations.
+- Fix some coding style format issues.
+- Fix some typos in comments.
+- No casting in the assignment if the function's returned pointer is
+  "void *".
+- Re-write the polling functions (cmdq cq, verbs cq, aeq and ceq), which
+  all check the valid bit in order to get next valid QE. This new
+  implementation is more simple. Thank Wenpeng.
+- Fix an issue reported by kernel test robot.
+- Some minor changes in code (such as removing SRQ definitions since we do
+  not support it yet).
+
+Fixed issues in v4:
+- Fix some typos.
+- Use __GFP_ZERO flags in dma_alloc_coherent, instead of memset after
+  buffer allocation.
+- Use one single polling function for AEQ and CEQ, before there had two.
+- Fix wrong iov_num when calling kernel_sendmsg.
+- Add necessary comment in erdma_cm.
+- Remove duplicated check in MPA processing function.
+- Always return 0 in erdma_query_port.
+- Directly return error code instead of assigning "ret", and then returning
+  "ret" in init_kernel_qp.
+
+Fixed issues or changes in v3:
+- Change char limit of column from 100 to 80.
+- Remove unnecessary field or structure definitions in erdma.h.
+- Use exactly type (bool, unsigned int) instead of "int" in erdma_dev.
+- Make ibdev and pci device having the same lifecycle. ERDMA will remain
+  an invalid port state until binded to the corresponding netdev.
+- ib_core: allow query_port when netdev is NULL for iWarp device.
+- Move large inline function in erdma.h to .c files.
+- Use dev_{info, warn, err} or ibdev_{info, warn, err} instead of
+  pr_{info, warn, err} function calls.
+- Remove print function calls in userspace-triggered paths.
+- Add necessary comments in CM part.
+- Remove unused entries in map_cqe_opcode[] table.
+- Use rdma_is_kernel_res instead of self-definitions.
+- Remove unsed resources counter in erdma_dev.
+- Use pgprot_device instead of pgprot_noncached in erdma_mmap.
+- Remove disassociate_ucontext interface implementation
+
+Fixed issues in v2:
+- No "extern" to function declarations.
+- No inline functions in .c files, no void casting for functions with
+  return values.
+- Based on siw's newest kernel version, rewrite the code (mainly CM and
+  CM related part) which originally based on an old siw version.
+- remove debugfs.
+- fix issues reported by kernel test robot.
+- Using RDMA_NLDEV_CMD_NEWLINK instead of binding in net notifiers.
+
+[1] https://github.com/linux-rdma/rdma-core/pull/1126
+[2] https://lore.kernel.org/all/20220118141324.GF8034@ziepe.ca/
+
+Thanks,
+Cheng Xu
+
+Cheng Xu (12):
+  RDMA: Add ERDMA to rdma_driver_id definition
+  RDMA/core: Allow calling query_port when netdev isn't attached in
+    iWarp
+  RDMA/erdma: Add the hardware related definitions
+  RDMA/erdma: Add main include file
+  RDMA/erdma: Add cmdq implementation
+  RDMA/erdma: Add event queue implementation
+  RDMA/erdma: Add verbs header file
+  RDMA/erdma: Add verbs implementation
+  RDMA/erdma: Add connection management (CM) support
+  RDMA/erdma: Add the erdma module
+  RDMA/erdma: Add the ABI definitions
+  RDMA/erdma: Add driver to kernel build environment
+
+ MAINTAINERS                               |    8 +
+ drivers/infiniband/Kconfig                |    1 +
+ drivers/infiniband/core/device.c          |    7 +-
+ drivers/infiniband/hw/Makefile            |    1 +
+ drivers/infiniband/hw/erdma/Kconfig       |   12 +
+ drivers/infiniband/hw/erdma/Makefile      |    4 +
+ drivers/infiniband/hw/erdma/erdma.h       |  287 ++++
+ drivers/infiniband/hw/erdma/erdma_cm.c    | 1435 ++++++++++++++++++++
+ drivers/infiniband/hw/erdma/erdma_cm.h    |  168 +++
+ drivers/infiniband/hw/erdma/erdma_cmdq.c  |  497 +++++++
+ drivers/infiniband/hw/erdma/erdma_cq.c    |  205 +++
+ drivers/infiniband/hw/erdma/erdma_eq.c    |  334 +++++
+ drivers/infiniband/hw/erdma/erdma_hw.h    |  504 +++++++
+ drivers/infiniband/hw/erdma/erdma_main.c  |  625 +++++++++
+ drivers/infiniband/hw/erdma/erdma_qp.c    |  564 ++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.c | 1461 +++++++++++++++++++++
+ drivers/infiniband/hw/erdma/erdma_verbs.h |  342 +++++
+ include/uapi/rdma/erdma-abi.h             |   49 +
+ include/uapi/rdma/ib_user_ioctl_verbs.h   |    1 +
+ 19 files changed, 6504 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/infiniband/hw/erdma/Kconfig
+ create mode 100644 drivers/infiniband/hw/erdma/Makefile
+ create mode 100644 drivers/infiniband/hw/erdma/erdma.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cmdq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_cq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_eq.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_hw.h
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_main.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_qp.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.c
+ create mode 100644 drivers/infiniband/hw/erdma/erdma_verbs.h
+ create mode 100644 include/uapi/rdma/erdma-abi.h
 
 -- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+2.27.0
+
