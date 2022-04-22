@@ -2,85 +2,109 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF2C50BD84
-	for <lists+linux-rdma@lfdr.de>; Fri, 22 Apr 2022 18:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA10D50C1E3
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Apr 2022 00:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1449854AbiDVQwM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Apr 2022 12:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50056 "EHLO
+        id S230364AbiDVV4J (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Apr 2022 17:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1449836AbiDVQwL (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 12:52:11 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD16D5F8D3
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 09:49:17 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id hh4so5890425qtb.10
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 09:49:17 -0700 (PDT)
+        with ESMTP id S230326AbiDVV4F (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 17:56:05 -0400
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EC51AFF41
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 13:38:25 -0700 (PDT)
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-e604f712ecso9784063fac.9
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 13:38:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V4YMzXqCtJOmW7ZMrgUTPPMhbH/Ycg5fw/d8JD4mp3A=;
-        b=BiYMih/T0LciSr5fejE2O5KBZasfvYSEZRxnWvabriuJQzjJxVhO6Nwwuwmo41S3KP
-         97StoBreGeuIzhWGvJuJAuNDAjxYRDQ+dVhbyO4sZjWJYLRBckuC2yqiyGKMrMzugrK/
-         aCjBr/K9a+QD/54inORiBaNfTBl2CVTsDrB9uHLcGnoVW7oFn+Cv7HBcDWjQS6UXKbrW
-         FwHzSTqOad7qPSeeOAvlPdeKhuv2JhU6R/Vj6udLo/espYQ82GJiXtL0ifgIVvdkEryt
-         rRCQvN0BrxlIia1hqrJpfN7qMD/J2P3FVqm1rtTBepd3xKwHzNzoSYBxCY635JaFfPJ4
-         Uk3g==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=9Vja0gmvNhV4pxhmUvSgYknvyf0Bo4kUgxqwwnpsH+Q=;
+        b=n0VuuUUjn/yN66EpN/GJIskzR/IB2c7moqC1SzcE+PXUnSk6u6pJPAY2wCcZQtznhM
+         nHAW9nV4rbusmplBQjZRiiLBLTvHLTpa/a4xGjYEFlYV9ckkjHLTQuWgo6hLh0VZvSBz
+         P4tOoLSwZkFi4HgGP0ewAvlu/fqrHKPUFjHkQUzw086tKGJVr+1POynuuSOPQQs0InFt
+         h3pjogxPpNBNhQ3dz899pdes8K7U+p1AfH0KHWm8ooIjUTh+QcIGMCfliI9Sasi+6uCv
+         6j0xBmLOsdh3HD9OYL2etNZxNGAdglH4mGSk/wl8R4xzf+WGZH7QI5GLM4dw72MpbY1m
+         Oe+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V4YMzXqCtJOmW7ZMrgUTPPMhbH/Ycg5fw/d8JD4mp3A=;
-        b=hGxoJYk2twUzlwyH/gpxQKt2+HaySymxbLzseLd5APtOPUNaYgdU6zlMyBNL6adMhb
-         pvvvzbQLlwVT1blC58uJF4I9mIlKqaQh7iDLywWCYAzN9oBp8z7jUmw1E23sxupYNyGg
-         Swh1pMUqhQJymOPKL2vX7Wb4URg8ggJHXG/DcfT4ku9eIpY3J4YRDqJkGcsoE+8uu/ga
-         LgmRX6d6MtgsIUVAMxh7J+zsBXvzw4KlF3VKk5p69m9jx+mX5L5+O93tGR2Xm4yvs40G
-         0J7fgdqjDj/uTLJIyn+gXK/EI6KvQ15aaPslJSxYzKe48KmTU9hXyIHsbboiVfetK+3z
-         StGw==
-X-Gm-Message-State: AOAM533VMPnV93Zm2dzQ2sxeoCQPbE/WKwMrBu1iXT5GM3WSXx5ALXfT
-        e5rxMlcsWJQ1srQFnqKvwQXfjPBsEcW6QA==
-X-Google-Smtp-Source: ABdhPJyj5UlJT307L5Ao3E7ph/NJvZXD9kzTE02F5xTr+ob7VRnS236RbdJia8vqdfgBsvk4iuJd5w==
-X-Received: by 2002:a05:622a:2c6:b0:2f3:591e:68ac with SMTP id a6-20020a05622a02c600b002f3591e68acmr2524641qtx.17.1650646156821;
-        Fri, 22 Apr 2022 09:49:16 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id f11-20020a05622a1a0b00b002f1f3b66bd4sm1455764qtb.94.2022.04.22.09.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Apr 2022 09:49:15 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nhwT5-008Fbr-7h; Fri, 22 Apr 2022 13:49:15 -0300
-Date:   Fri, 22 Apr 2022 13:49:15 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     yanjun.zhu@linux.dev
-Cc:     leon@kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 4/4] RDMA/rxe: Check RDMA_CREATE_AH_SLEEPABLE in creating
- AH
-Message-ID: <20220422164915.GV64706@ziepe.ca>
-References: <20220422194416.983549-1-yanjun.zhu@linux.dev>
- <20220422194416.983549-4-yanjun.zhu@linux.dev>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:subject:content-transfer-encoding;
+        bh=9Vja0gmvNhV4pxhmUvSgYknvyf0Bo4kUgxqwwnpsH+Q=;
+        b=LlmusfWk2thGanFuwdM/UBNykISOgKZ3uj6Inipd9oG90Se7qXwLg7i2LwS2nx8ivb
+         crfANt1TyLMcoXrIfLK0lZJpcCDI04fRGRtlxtdYSkpl1INc5g4z3HL6uTHpu0vy+Rn6
+         ZJUjYF7zodUWuKXKgtGTkBgpkMflVdexh8No9EEWUYW+5no3RUn/60w5DSUr9ai+8UUX
+         +XReh89exgaFRNhdZX1k9ZHE9dvMJD/f81LXhEYNodSTbD/5/nzceZzaUKOf56tTZtm8
+         +FmjqUfEEou19bqmsW43VPMHd0gCoDsSD97z1ATgU7MRcWk/GRtxWugQIGbb4SDxl0p9
+         O9DQ==
+X-Gm-Message-State: AOAM531wvZe/z2h1pOsYqDVapWFS1Bz7/Wqi80ccwoNje2T4QAlctSqn
+        casUCDqhMcywNU6/DJlaGcfkttQfvXM=
+X-Google-Smtp-Source: ABdhPJx7XJJilclV/aR7jeNTUs58OltjKeB0g8POOAAuwvKlZ37fRuxFqEStJToioy0rTQwwPmGhlg==
+X-Received: by 2002:a05:6870:15d3:b0:da:c49f:9113 with SMTP id k19-20020a05687015d300b000dac49f9113mr2601726oad.91.1650652345566;
+        Fri, 22 Apr 2022 11:32:25 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:e508:94f4:5ee:8557? (2603-8081-140c-1a00-e508-94f4-05ee-8557.res6.spectrum.com. [2603:8081:140c:1a00:e508:94f4:5ee:8557])
+        by smtp.gmail.com with ESMTPSA id t129-20020a4a5487000000b00329d2493f8esm1080246ooa.41.2022.04.22.11.32.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Apr 2022 11:32:25 -0700 (PDT)
+Message-ID: <983bec37-4765-b45e-0f73-c474976d2dfc@gmail.com>
+Date:   Fri, 22 Apr 2022 13:32:24 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220422194416.983549-4-yanjun.zhu@linux.dev>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Subject: much about ah objects in rxe
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Fri, Apr 22, 2022 at 03:44:16PM -0400, yanjun.zhu@linux.dev wrote:
-> @@ -166,16 +166,18 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->  	elem->obj = (u8 *)elem - pool->elem_offset;
->  	kref_init(&elem->ref_cnt);
->  
-> -	if (pool->type == RXE_TYPE_AH) {
-> +	if ((pool->type == RXE_TYPE_AH) && (gfp & GFP_ATOMIC)) {
->  		unsigned long flags;
+Jason,
 
-No test for AH should be here, just gfp.
+I am confused a little.
 
-Jason
+ - xa_alloc_xxx internally takes xa->xa_lock with a spinlock but
+   has a gfp_t parameter which is normally GFP_KERNEL. So I trust them when they say
+   that it releases the lock around kmalloc's by 'magic' as you say.
+
+ - The only read side operation on the rxe pool xarrays is in rxe_pool_get_index() but
+   that will be protected by a rcu_read_lock so it can't deadlock with the write
+   side spinlocks regardless of type (plain, _bh, _saveirq)
+
+ - Apparently CM is calling ib_create_ah while holding spin locks. This would
+   call xa_alloc_xxx which would unlock xa_lock and call kmalloc(..., GFP_KERNEL)
+   which should cause a warning for AH. You say it does not because xarray doesn't
+   call might_sleep().
+
+I am not sure how might_sleep() works. When I add might_sleep() just ahead of
+xa_alloc_xxx() it does not cause warnings for CM test cases (e.g. rping.)
+Another way to study this would be to test for in_atomic() but
+that seems to be discouraged and may not work as assumed. It's hard to reproduce
+evidence that ib_create_ah really has spinlocks held by the caller. I think it
+was seen in lockdep traces but I have a hard time reading them.
+
+ - There is a lot of effort trying to make 'deadlocks' go away. But the read side
+   is going to end as up rcu_read_lock so there soon will be no deadlocks with
+   rxe_pool_get_index() possible. xarrays were designed to work well with rcu
+   so it would better to just go ahead and do it. Verbs objects tend to be long
+   lived with lots of IO on each instance. This is a perfect use case for rcu.
+
+I think this means there is no reason for anything but a plain spinlock in rxe_alloc
+and rxe_add_to_pool.
+
+To sum up once we have rcu enabled the only required change is to use GFP_ATOMIC
+or find a way to pre-allocate for AH objects (assuming that I can convince myself
+that ib_create_ah really comes with spinlocks held).
+
+Bob
