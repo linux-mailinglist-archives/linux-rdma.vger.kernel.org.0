@@ -2,70 +2,41 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5815B50C644
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Apr 2022 03:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD05450C63E
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Apr 2022 03:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229455AbiDWB5v (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Apr 2022 21:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
+        id S230143AbiDWBxh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Apr 2022 21:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231768AbiDWB5p (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 21:57:45 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CC07E4B
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:54:50 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id t15so11010917oie.1
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:54:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :from:to:references:in-reply-to:content-transfer-encoding;
-        bh=p7vjC567BURP8YKsIzj2NxBh4cGKgwagWxOhdvW3eo8=;
-        b=cs5lsrjhx6QXVYkA9C8DrRm3BUjaXhH/jehrk2iCOsWmhICQeTUwNLEe6MiBKFV0XI
-         pXy1G8Vd/yuDCSvl7+svjxmWJMoWV7OkO5ZfCwTA9fGTbE4pdJ9bL7pTMhyXkRFPIv+J
-         Qw5NwDOCn6gJB9Wk+HiD/eYbm+WyiD/oAOtGBzTgaiZo2HL2qY/QVwl9Z19QlQRjHasY
-         QHkjqge3HTnQmpOjk6Ng/Y38OH2H3JvHjqz2pmRtdwbkA9QfdcoROXxiU1lvRzX212ew
-         pdbxAJtidsqxdtpVoM5l36EyqP9CCxPO1MVgsmYXMjrFxP6s4oNnECCjuBrp9wZUqNSh
-         Braw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:from:to:references:in-reply-to
-         :content-transfer-encoding;
-        bh=p7vjC567BURP8YKsIzj2NxBh4cGKgwagWxOhdvW3eo8=;
-        b=cD8Wqt2z1yF0zMmjdmhSo57TGlJk3K6ZsWvLBoc70DDAD5iSzhR8UwCkjhMiopGnJe
-         umYqtdS2jFBH7mHRHw3hHhXl1qyHUx5ErMb/w6nRdW+oj5jg7Jvkt+BZqtGxfA4nVfdv
-         E1btWfelnH9qvI2FyGerfML/yvBqdvms0GNzgzChaak5fvGBfjU8uuGvtPI74dLdh3TV
-         jEATUQ0vbtzR2g+5P/a8Dvgf6om/8UcRZCY8wvb2nMhjDpxmw0Zv6mEEHopwqAW+ISV1
-         ed9yYrwkhP7WyavbfInLJ1CyMucCZwtm6jDEK9yuqrMTSA88hUSnQA5ocTbdeaWqZxBj
-         EJgg==
-X-Gm-Message-State: AOAM532rNKbMBHIv/mXvYoxf6Ib5nIvpFEEoTQGnh/cyXMGyLHa4QDlT
-        tOJ7wR9pV1Dk3E1qNXPoD/4=
-X-Google-Smtp-Source: ABdhPJxmOQfim2m0ldQSmihxqSoVS7m9W++gbY0Ukz5h5b8+gOeojVvjCFLqAlcKQ8fi1BQuoi3tiQ==
-X-Received: by 2002:a05:6808:17a3:b0:324:fcbf:3142 with SMTP id bg35-20020a05680817a300b00324fcbf3142mr1314494oib.5.1650678889752;
-        Fri, 22 Apr 2022 18:54:49 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:e508:94f4:5ee:8557? (2603-8081-140c-1a00-e508-94f4-05ee-8557.res6.spectrum.com. [2603:8081:140c:1a00:e508:94f4:5ee:8557])
-        by smtp.gmail.com with ESMTPSA id k15-20020a4a2a0f000000b0033a34a057c8sm1457554oof.11.2022.04.22.18.54.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 22 Apr 2022 18:54:49 -0700 (PDT)
-Message-ID: <c362b55f-64c2-4eda-8acf-c389b6435bcd@gmail.com>
-Date:   Fri, 22 Apr 2022 20:54:48 -0500
+        with ESMTP id S229530AbiDWBxh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 21:53:37 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53572E15
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:50:41 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6400,9594,10324"; a="245403741"
+X-IronPort-AV: E=Sophos;i="5.90,283,1643702400"; 
+   d="scan'208";a="245403741"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2022 18:50:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,283,1643702400"; 
+   d="scan'208";a="703783158"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Apr 2022 18:50:34 -0700
+From:   yanjun.zhu@linux.dev
+To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev
+Subject: [PATCHv2 4/4] RDMA/rxe: Check RDMA_CREATE_AH_SLEEPABLE in creating AH
+Date:   Sat, 23 Apr 2022 14:17:02 -0400
+Message-Id: <20220423181702.1034048-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20220422164915.GV64706@ziepe.ca>
+References: <20220422164915.GV64706@ziepe.ca>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: bug report for rdma_rxe
-Content-Language: en-US
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <5de7d1a9-a7ac-aea5-d11c-49423d3f0bf1@gmail.com>
-In-Reply-To: <5de7d1a9-a7ac-aea5-d11c-49423d3f0bf1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,34 +44,158 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/22/22 16:04, Bob Pearson wrote:
-> Local operations in the rdma_rxe driver are not obviously idempotent. But, the
-> RC retry mechanism backs up the send queue to the point of the wqe that is
-> currently being acknowledged and re-walks the sq. Each send or write operation is
-> retried with the exception that the first one is truncated by the packets already
-> having been acknowledged. Each read and atomic operation is resent except that
-> read data already received in the first wqe is not requested. But all the
-> local operations are replayed. The problem is local invalidate which is destructive.
-> For example
-> 
-> sq:	some operation that times out
-> 	bind mw to mr
-> 	some other operation
-> 	invalidate mw
-> 	invalidate mr
-> 
-> can't be replayed because invalidating the mr makes the second bind fail.
-> There are lots of other examples where things go wrong.
-> 
-> To make things worse the send queue timer is never cleared and for typical
-> timeout values goes off every few msec whether anything actually failed.
-> 
-> Bob
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-This looks like an unholy mess. The reason I was looking at it is because Lustre
-on rxe doesn't work at the moment and the problems were traced to retry flows (on a very
-reliable network) caused by stray timeouts. We see local_invalidate_mr operations
-getting retried multiple times and not all of them succeed because the caller
-is remapping the fast MR in the mean time and changing the rkey.
+During creating AH, the flag RDMA_CREATE_AH_SLEEPABLE should
+be tested.
 
-Bob
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+V1->V2: Remove the RXE_TYPE_AH test
+---
+ drivers/infiniband/sw/rxe/rxe_mw.c    |  2 +-
+ drivers/infiniband/sw/rxe/rxe_pool.c  | 14 ++++++++------
+ drivers/infiniband/sw/rxe/rxe_pool.h  |  4 ++--
+ drivers/infiniband/sw/rxe/rxe_verbs.c | 18 ++++++++++++------
+ 4 files changed, 23 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_mw.c b/drivers/infiniband/sw/rxe/rxe_mw.c
+index c86b2efd58f2..9d72dcc9060d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mw.c
++++ b/drivers/infiniband/sw/rxe/rxe_mw.c
+@@ -14,7 +14,7 @@ int rxe_alloc_mw(struct ib_mw *ibmw, struct ib_udata *udata)
+ 
+ 	rxe_get(pd);
+ 
+-	ret = rxe_add_to_pool(&rxe->mw_pool, mw);
++	ret = rxe_add_to_pool(&rxe->mw_pool, mw, GFP_KERNEL);
+ 	if (ret) {
+ 		rxe_put(pd);
+ 		return ret;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
+index 3f3fa2123f30..793df1569ff1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.c
++++ b/drivers/infiniband/sw/rxe/rxe_pool.c
+@@ -152,7 +152,7 @@ void *rxe_alloc(struct rxe_pool *pool)
+ 	return NULL;
+ }
+ 
+-int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
++int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem, gfp_t gfp)
+ {
+ 	int err;
+ 
+@@ -166,16 +166,18 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
+ 	elem->obj = (u8 *)elem - pool->elem_offset;
+ 	kref_init(&elem->ref_cnt);
+ 
+-	if (pool->type == RXE_TYPE_AH) {
++	if (gfp & GFP_ATOMIC) {
+ 		unsigned long flags;
+ 
+ 		xa_lock_irqsave(&pool->xa, flags);
+-		err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
+-					&pool->next, GFP_ATOMIC);
++		err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem,
++					pool->limit, &pool->next,
++					GFP_ATOMIC);
+ 		xa_unlock_irqrestore(&pool->xa, flags);
+ 	} else {
+-		err = xa_alloc_cyclic_irq(&pool->xa, &elem->index, elem, pool->limit,
+-					  &pool->next, GFP_KERNEL);
++		err = xa_alloc_cyclic_irq(&pool->xa, &elem->index, elem,
++					  pool->limit, &pool->next,
++					  GFP_KERNEL);
+ 	}
+ 	if (err)
+ 		goto err_cnt;
+diff --git a/drivers/infiniband/sw/rxe/rxe_pool.h b/drivers/infiniband/sw/rxe/rxe_pool.h
+index 24bcc786c1b3..12986622088b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_pool.h
++++ b/drivers/infiniband/sw/rxe/rxe_pool.h
+@@ -62,9 +62,9 @@ void rxe_pool_cleanup(struct rxe_pool *pool);
+ void *rxe_alloc(struct rxe_pool *pool);
+ 
+ /* connect already allocated object to pool */
+-int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem);
++int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem, gfp_t gfp);
+ 
+-#define rxe_add_to_pool(pool, obj) __rxe_add_to_pool(pool, &(obj)->elem)
++#define rxe_add_to_pool(pool, obj, gfp) __rxe_add_to_pool(pool, &(obj)->elem, gfp)
+ 
+ /* lookup an indexed object from index. takes a reference on object */
+ void *rxe_pool_get_index(struct rxe_pool *pool, u32 index);
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+index 67184b0281a0..dce665e74fa7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.c
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+@@ -108,7 +108,7 @@ static int rxe_alloc_ucontext(struct ib_ucontext *ibuc, struct ib_udata *udata)
+ 	struct rxe_dev *rxe = to_rdev(ibuc->device);
+ 	struct rxe_ucontext *uc = to_ruc(ibuc);
+ 
+-	return rxe_add_to_pool(&rxe->uc_pool, uc);
++	return rxe_add_to_pool(&rxe->uc_pool, uc, GFP_KERNEL);
+ }
+ 
+ static void rxe_dealloc_ucontext(struct ib_ucontext *ibuc)
+@@ -142,7 +142,7 @@ static int rxe_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+ 	struct rxe_dev *rxe = to_rdev(ibpd->device);
+ 	struct rxe_pd *pd = to_rpd(ibpd);
+ 
+-	return rxe_add_to_pool(&rxe->pd_pool, pd);
++	return rxe_add_to_pool(&rxe->pd_pool, pd, GFP_KERNEL);
+ }
+ 
+ static int rxe_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
+@@ -162,6 +162,7 @@ static int rxe_create_ah(struct ib_ah *ibah,
+ 	struct rxe_ah *ah = to_rah(ibah);
+ 	struct rxe_create_ah_resp __user *uresp = NULL;
+ 	int err;
++	gfp_t gfp;
+ 
+ 	if (udata) {
+ 		/* test if new user provider */
+@@ -176,7 +177,12 @@ static int rxe_create_ah(struct ib_ah *ibah,
+ 	if (err)
+ 		return err;
+ 
+-	err = rxe_add_to_pool(&rxe->ah_pool, ah);
++	if (init_attr->flags & RDMA_CREATE_AH_SLEEPABLE)
++		gfp = GFP_KERNEL;
++	else
++		gfp = GFP_ATOMIC;
++
++	err = rxe_add_to_pool(&rxe->ah_pool, ah, gfp);
+ 	if (err)
+ 		return err;
+ 
+@@ -299,7 +305,7 @@ static int rxe_create_srq(struct ib_srq *ibsrq, struct ib_srq_init_attr *init,
+ 	if (err)
+ 		goto err1;
+ 
+-	err = rxe_add_to_pool(&rxe->srq_pool, srq);
++	err = rxe_add_to_pool(&rxe->srq_pool, srq, GFP_KERNEL);
+ 	if (err)
+ 		goto err1;
+ 
+@@ -431,7 +437,7 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
+ 		qp->is_user = false;
+ 	}
+ 
+-	err = rxe_add_to_pool(&rxe->qp_pool, qp);
++	err = rxe_add_to_pool(&rxe->qp_pool, qp, GFP_KERNEL);
+ 	if (err)
+ 		return err;
+ 
+@@ -800,7 +806,7 @@ static int rxe_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
+ 	if (err)
+ 		return err;
+ 
+-	return rxe_add_to_pool(&rxe->cq_pool, cq);
++	return rxe_add_to_pool(&rxe->cq_pool, cq, GFP_KERNEL);
+ }
+ 
+ static int rxe_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
+-- 
+2.27.0
+
