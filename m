@@ -2,63 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A202E50C5FA
-	for <lists+linux-rdma@lfdr.de>; Sat, 23 Apr 2022 03:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D1D50C62E
+	for <lists+linux-rdma@lfdr.de>; Sat, 23 Apr 2022 03:48:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbiDWBV5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 22 Apr 2022 21:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        id S230107AbiDWBvE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 22 Apr 2022 21:51:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbiDWBV4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 21:21:56 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D70B1344DA
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:19:01 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id x33so17091830lfu.1
-        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:19:01 -0700 (PDT)
+        with ESMTP id S229899AbiDWBvC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 22 Apr 2022 21:51:02 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67FE73587F
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:48:07 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-e2442907a1so10433856fac.8
+        for <linux-rdma@vger.kernel.org>; Fri, 22 Apr 2022 18:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8d3wNrw8WGOMa20x7PhYD/FHArQ12k6AYGNhgCPteTY=;
-        b=pl8mxjzTNAXatFMaJUoMpu51JFOze2mrcn2zJuSunvr4t5vMbWSwQCBnfcBKnf9jTo
-         RBUf7fi8Vu+wtPnkXM+KRdm8Bwts15XrGZ6senNhEQAY9vaML7ZGGE8Try7Pm2nlfLUl
-         vlGDVQdpc8Ebs62YXHwLgzBeAcLmuC7BupnmmkatcAqcLNTBspfiAIUGKi9I6FWeQAuc
-         Y5LVpj/sUUi3GE12IZ1T2P2ZCwN1Rh+hxNp1Rpy9k9YbiCFisV43v5c6B8jUm7MFPrxz
-         ZD5/qLvFOpUlbB5CQ5lhc/IJooUCdsW6SP5wUKwV+1eAdleIHQ5NWlgZ7fqEmkv/X9sr
-         nuAg==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=NMyzs0GzPyJHkw6zyFtovg/jK1SOWO4AAgth+CnSrPc=;
+        b=hpP5zospA9akaZV8vWXvqiStLM+JZGuL16NmBRp3dYmHdiyfgONgPILjWrIeuxHa9M
+         yc3hGsSqqMy5/yelkBFBYqsEqU6s1rbQSKPNUwE16TuE5ajbAyyGO5CAoN62Rl9YTVni
+         +JIXjy4mi6SHXeztgimTB3sis34qgZfamDf/fu1vk64IBlfNar5uspmk6TH3121I2T5n
+         SCFamq5COTjXMx3f0W/Je97AzBTJDC1KFm904QB6k+NX4aJ6WhlAxJDZzUAfNCrHZCN0
+         FxaJexdM4VOkd4mx4543EOTj0OIoQxrlLw9Eh0dOBFNMF6xcGtXzaEqHb6c//0oSimjw
+         JRBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8d3wNrw8WGOMa20x7PhYD/FHArQ12k6AYGNhgCPteTY=;
-        b=E0VRowSHh4Rip4oGtTHHcF34ReAtJ136/gi0xGW1usfzlXx/6WxJI9oMxeamOsbWHk
-         GdZX5pQAjPP9YFRbqb9HT0F2wH5IuBsY9NLY17fLWHE7/T+zpqiWbzi1foH9pwx3BtTI
-         7XxIHtAez/u3Ca2rOfVj/1xpuIg4sOPb/s3XsRPv5MA6tDjj3KMm4CBF5iy4UcWB3OYN
-         ez6WaFNZpLrUiDlfZy/SLXUb1Kwa9MrAQnbKHBtU4La9c1itt10c8D1Axgi/hytADKrf
-         XD+5bBWzC5O00Y55rZrmbWIFrcku5JW2FexHjHv8ume/ZPU4q0PvOoXzPUyHt21DkuN0
-         Uh0g==
-X-Gm-Message-State: AOAM532PeIzKU8yOYIzXVM6r3Q3UwUpRwkBGD3dDPJldKeouPjiyZ+ol
-        qgnmnRjJsAwMiRJvTTXzwlib+7cIdVcdEFrrXuk=
-X-Google-Smtp-Source: ABdhPJzp2r/4cN4Z151f1sOp9Tl7dQi9YmxQDbismk+HNg+sqaxRsj9cWMjmZ4lTTHsEbD4Ad1ruFN1THn68s/pV9kc=
-X-Received: by 2002:a05:6512:3334:b0:471:f727:7e20 with SMTP id
- l20-20020a056512333400b00471f7277e20mr309869lfe.281.1650676739348; Fri, 22
- Apr 2022 18:18:59 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=NMyzs0GzPyJHkw6zyFtovg/jK1SOWO4AAgth+CnSrPc=;
+        b=Zu17yrG6Z/akDy5qA/uc80XPsZ/uEog8QJzucuyv36R1H49g5D8KnJ4L9GEDtT2VKD
+         xLYcIr3rsABn58/yQULH+5Wi0Wys8/Wo9KqIE1pc52k9lWwaK71TcXvjJkm9uPvTX5kh
+         dcKx0gD6AwU2AyhxVKK+mvjDq3+4JC2XbqD2Q1e0I6W0C9GPn8N2go70Ln/YZmWG9W/c
+         jRvjIP4CjD2X2vl6MzII0obEKK6mpeBeYDEI/b/1ZAqzQF+XjnuGkygY6nADWcaYh5NZ
+         y5PK2vxU+XB3hGEdB/pzTr2hWz5QYqylH3YZNtn65/LUGSjfgR83ag3j/xzYvPpB3QuV
+         M+Gg==
+X-Gm-Message-State: AOAM53242i753+tg5Z/QClqRp4yRSTn8HvSGQyNe95e+h4ZWGxxTQMHV
+        sa5RGqLj8+01iYRlChJvmItqvkc2z/I=
+X-Google-Smtp-Source: ABdhPJx+08BI7vctb7CweRieJPxRCR8FAudmFU2bgj1OJnPRmlTDNjzDOzYGXyFiAsX3+QNg9y7rmQ==
+X-Received: by 2002:a05:6870:2047:b0:e9:1b34:fbe with SMTP id l7-20020a056870204700b000e91b340fbemr106604oad.64.1650678486694;
+        Fri, 22 Apr 2022 18:48:06 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:e508:94f4:5ee:8557? (2603-8081-140c-1a00-e508-94f4-05ee-8557.res6.spectrum.com. [2603:8081:140c:1a00:e508:94f4:5ee:8557])
+        by smtp.gmail.com with ESMTPSA id 11-20020a05687013cb00b000dd9b5dd71csm1303407oat.56.2022.04.22.18.48.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Apr 2022 18:48:06 -0700 (PDT)
+Message-ID: <5fc18e8e-25f9-5398-f0c8-e546466e08f3@gmail.com>
+Date:   Fri, 22 Apr 2022 20:48:05 -0500
 MIME-Version: 1.0
-References: <983bec37-4765-b45e-0f73-c474976d2dfc@gmail.com>
- <20220422210025.GL2120790@nvidia.com> <387a0976-9f6f-29d3-347f-0ae551821b34@gmail.com>
-In-Reply-To: <387a0976-9f6f-29d3-347f-0ae551821b34@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Sat, 23 Apr 2022 09:18:47 +0800
-Message-ID: <CAD=hENe6mQhOEp976UX+cR9Yf74gABcSnt7iXmitVV3sGcVzfA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
 Subject: Re: much about ah objects in rxe
-To:     Bob Pearson <rpearsonhpe@gmail.com>
+Content-Language: en-US
+To:     Zhu Yanjun <zyjzyj2000@gmail.com>
 Cc:     Jason Gunthorpe <jgg@nvidia.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <983bec37-4765-b45e-0f73-c474976d2dfc@gmail.com>
+ <20220422210025.GL2120790@nvidia.com>
+ <387a0976-9f6f-29d3-347f-0ae551821b34@gmail.com>
+ <CAD=hENe6mQhOEp976UX+cR9Yf74gABcSnt7iXmitVV3sGcVzfA@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAD=hENe6mQhOEp976UX+cR9Yf74gABcSnt7iXmitVV3sGcVzfA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,100 +76,139 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 6:11 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 4/22/22 16:00, Jason Gunthorpe wrote:
-> > On Fri, Apr 22, 2022 at 01:32:24PM -0500, Bob Pearson wrote:
-> >> Jason,
-> >>
-> >> I am confused a little.
-> >>
-> >>  - xa_alloc_xxx internally takes xa->xa_lock with a spinlock but
-> >>    has a gfp_t parameter which is normally GFP_KERNEL. So I trust them when they say
-> >>    that it releases the lock around kmalloc's by 'magic' as you say.
-> >>
-> >>  - The only read side operation on the rxe pool xarrays is in rxe_pool_get_index() but
-> >>    that will be protected by a rcu_read_lock so it can't deadlock with the write
-> >>    side spinlocks regardless of type (plain, _bh, _saveirq)
-> >>
-> >>  - Apparently CM is calling ib_create_ah while holding spin locks. This would
-> >>    call xa_alloc_xxx which would unlock xa_lock and call kmalloc(..., GFP_KERNEL)
-> >>    which should cause a warning for AH. You say it does not because xarray doesn't
-> >>    call might_sleep().
-> >>
-> >> I am not sure how might_sleep() works. When I add might_sleep() just ahead of
-> >> xa_alloc_xxx() it does not cause warnings for CM test cases (e.g. rping.)
-> >> Another way to study this would be to test for in_atomic() but
-> >
-> > might_sleep should work, it definately triggers from inside a
-> > spinlock. Perhaps you don't have all the right debug kconfig enabled?
-> >
-> >> that seems to be discouraged and may not work as assumed. It's hard to reproduce
-> >> evidence that ib_create_ah really has spinlocks held by the caller. I think it
-> >> was seen in lockdep traces but I have a hard time reading them.
-> >
-> > There is a call to create_ah inside RDMA CM that is under a spinlock
-> >
-> >>  - There is a lot of effort trying to make 'deadlocks' go away. But the read side
-> >>    is going to end as up rcu_read_lock so there soon will be no deadlocks with
-> >>    rxe_pool_get_index() possible. xarrays were designed to work well with rcu
-> >>    so it would better to just go ahead and do it. Verbs objects tend to be long
-> >>    lived with lots of IO on each instance. This is a perfect use case for rcu.
-> >
-> > Yes
-> >
-> >> I think this means there is no reason for anything but a plain spinlock in rxe_alloc
-> >> and rxe_add_to_pool.
-> >
-> > Maybe, are you sure there are no other xa spinlocks held from an IRQ?
-> >
-> > And you still have to deal with the create AH called in an atomic
-> > region.
->
-> There are only 3 references to the xarrays:
->
->         1. When an object is allocated. Either from rxe_alloc() which is called
->            an MR is registered or from rxe_add_to_pool() when the other
->            objects are created.
->         2. When an object is looked up from rxe_pool_get_index()
->         3. When an object is cleaned up from rxe_xxx_destroy() and similar.
->
-> For non AH objects the create and destroy verbs are always called in process
-> context and non-atomic and the lookup routine is normally called in soft IRQ
-> context but doesn't take a lock when rcu is used so can't deadlock.
+On 4/22/22 20:18, Zhu Yanjun wrote:
+> On Sat, Apr 23, 2022 at 6:11 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> On 4/22/22 16:00, Jason Gunthorpe wrote:
+>>> On Fri, Apr 22, 2022 at 01:32:24PM -0500, Bob Pearson wrote:
+>>>> Jason,
+>>>>
+>>>> I am confused a little.
+>>>>
+>>>>  - xa_alloc_xxx internally takes xa->xa_lock with a spinlock but
+>>>>    has a gfp_t parameter which is normally GFP_KERNEL. So I trust them when they say
+>>>>    that it releases the lock around kmalloc's by 'magic' as you say.
+>>>>
+>>>>  - The only read side operation on the rxe pool xarrays is in rxe_pool_get_index() but
+>>>>    that will be protected by a rcu_read_lock so it can't deadlock with the write
+>>>>    side spinlocks regardless of type (plain, _bh, _saveirq)
+>>>>
+>>>>  - Apparently CM is calling ib_create_ah while holding spin locks. This would
+>>>>    call xa_alloc_xxx which would unlock xa_lock and call kmalloc(..., GFP_KERNEL)
+>>>>    which should cause a warning for AH. You say it does not because xarray doesn't
+>>>>    call might_sleep().
+>>>>
+>>>> I am not sure how might_sleep() works. When I add might_sleep() just ahead of
+>>>> xa_alloc_xxx() it does not cause warnings for CM test cases (e.g. rping.)
+>>>> Another way to study this would be to test for in_atomic() but
+>>>
+>>> might_sleep should work, it definately triggers from inside a
+>>> spinlock. Perhaps you don't have all the right debug kconfig enabled?
+>>>
+>>>> that seems to be discouraged and may not work as assumed. It's hard to reproduce
+>>>> evidence that ib_create_ah really has spinlocks held by the caller. I think it
+>>>> was seen in lockdep traces but I have a hard time reading them.
+>>>
+>>> There is a call to create_ah inside RDMA CM that is under a spinlock
+>>>
+>>>>  - There is a lot of effort trying to make 'deadlocks' go away. But the read side
+>>>>    is going to end as up rcu_read_lock so there soon will be no deadlocks with
+>>>>    rxe_pool_get_index() possible. xarrays were designed to work well with rcu
+>>>>    so it would better to just go ahead and do it. Verbs objects tend to be long
+>>>>    lived with lots of IO on each instance. This is a perfect use case for rcu.
+>>>
+>>> Yes
+>>>
+>>>> I think this means there is no reason for anything but a plain spinlock in rxe_alloc
+>>>> and rxe_add_to_pool.
+>>>
+>>> Maybe, are you sure there are no other xa spinlocks held from an IRQ?
+>>>
+>>> And you still have to deal with the create AH called in an atomic
+>>> region.
+>>
+>> There are only 3 references to the xarrays:
+>>
+>>         1. When an object is allocated. Either from rxe_alloc() which is called
+>>            an MR is registered or from rxe_add_to_pool() when the other
+>>            objects are created.
+>>         2. When an object is looked up from rxe_pool_get_index()
+>>         3. When an object is cleaned up from rxe_xxx_destroy() and similar.
+>>
+>> For non AH objects the create and destroy verbs are always called in process
+>> context and non-atomic and the lookup routine is normally called in soft IRQ
+>> context but doesn't take a lock when rcu is used so can't deadlock.
+> 
+> Are you sure about this? There are about several non AH objects.
+> You can make sure that all in process context?
+> 
+> And you can ensure it in the future?
 
-Are you sure about this? There are about several non AH objects.
-You can make sure that all in process context?
+I added the line
 
-And you can ensure it in the future?
+	WARN_ON(!in_task());
 
->
-> For AH objects the create call is always called in process context but may
+to rxe_alloc and rxe_add_to_pool
 
-How to ensure it?
+and it never triggered. I would be theoretically possible for someone to try
+to write a module that responds to an interrupt in some wigit and then
+tries to start a verbs session. But it would be very strange. It is reasonable
+to just declare that the verbs APIs are not callable in interrupt (soft or hard)
+context. I believe this is tacitly understood and currently is true. It is a
+separate issue whether or not the caller is in 'atomic context' which includes
+holding a spinlock and implies that the thread cannot sleep. the xarray code
+if you look at the code for xa_alloc_cyclic() does take the xa_lock spinlock around
+_xa_alloc_cyclic() but they also say in the comments that they release that lock
+internally before calling kmalloc() and friends if the gfp_t parameter is
+GFP_KERNEL so that it is safe to sleep.  However cma.c calls ib_create_ah() while
+holding spinlocks (happens to be spin_lock_saveirq() but that doesn't matter here
+since any spinlock makes it bad to call kmalloc()). So we have to use GFP_ATOMIC
+for AH objects.
 
-> or may not hold an irq spinlock so hard interrupts are disabled to prevent
-> deadlocking CMs locks. The cleanup call is also in process context but also
-> may or may not hold an irq spinlock (not sure if it happens). These calls
-> can't deadlock each other for the xa_lock because there either won't be an
-> interrupt or because the process context calls don't cause reentering the
-> rxe code. They also can't deadlock with the lookup call when it is using rcu.
+It is clear that the assumption of the verbs APIs is that they are always called
+in process context.
+> 
+>>
+>> For AH objects the create call is always called in process context but may
+> 
+> How to ensure it?
 
-From you, all the operations including create, destroy and lookup are
-in process context or soft IRQ context.
-How to ensure it? I mean that all operations are always in process or
-soft IRQ context, and will not violate?
-Even though in different calls ?
+Same way. It is true now see the WARN_ON above.
+> 
+>> or may not hold an irq spinlock so hard interrupts are disabled to prevent
+>> deadlocking CMs locks. The cleanup call is also in process context but also
+>> may or may not hold an irq spinlock (not sure if it happens). These calls
+>> can't deadlock each other for the xa_lock because there either won't be an
+>> interrupt or because the process context calls don't cause reentering the
+>> rxe code. They also can't deadlock with the lookup call when it is using rcu.
+> 
+> From you, all the operations including create, destroy and lookup are
+> in process context or soft IRQ context.
+> How to ensure it? I mean that all operations are always in process or
+> soft IRQ context, and will not violate?
+> Even though in different calls ?
 
-Zhu Yanjun
+We have no way to get into interrupt context. We get called from above through
+the verbs APIs in process context and from below by NAPI passing network packets
+to us in softirq context. We also internally defer work to tasklets which are
+always soft IRQs. Unless someone outside of the rdma-core subsystem called into
+verbs calls from interrupt context (weird) it can never happen. And has never
+happened. Again don't get confused with irqsave spinlocks. They are used in
+process or soft irq context sometimes and disable hardware interrupts to prevent
+a deadlock with another spinlock in a hardware interrupt handler. But we don't
+have any code that runs in hardware interrupt context to worry about. I doubt
+cma does either but many people use irqsave spinlocks when they are not needed.
+> 
+> Zhu Yanjun
+> 
+>>
+>>>
+>>>> To sum up once we have rcu enabled the only required change is to use GFP_ATOMIC
+>>>> or find a way to pre-allocate for AH objects (assuming that I can convince myself
+>>>> that ib_create_ah really comes with spinlocks held).
+>>>
+>>> Possibly yes
+>>>
+>>> Jason
+>>
 
->
-> >
-> >> To sum up once we have rcu enabled the only required change is to use GFP_ATOMIC
-> >> or find a way to pre-allocate for AH objects (assuming that I can convince myself
-> >> that ib_create_ah really comes with spinlocks held).
-> >
-> > Possibly yes
-> >
-> > Jason
->
