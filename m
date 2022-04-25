@@ -2,211 +2,162 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46C6650E75A
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 19:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E7350E776
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 19:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbiDYRfi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Apr 2022 13:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
+        id S237036AbiDYRq7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Apr 2022 13:46:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237180AbiDYRfg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 13:35:36 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 400B7633B1
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 10:32:31 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id e4so17910141oif.2
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 10:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=0rnJUvB1Q071eWjsaJ9GJ30s3Ys7//r/fWm/2A1bVxQ=;
-        b=WMDLWCVaA1JZGedJ6j2IlPobhQJbf86ifSscgXmsm1RPavA4viuiWluqCgwt95mQWS
-         te6bp+WdroFpywOYlVst3QWdPHQlkGVHwdXjFo468tIVjyW5wj9CutO6lOCNX/l0jN4G
-         2IZ7j85LS3LZhuuwg2Pf83VQyFUY1B3BPdFa5t+Wlwmj37xw1nr5u2dIydOdWmvtMJmY
-         tKqG214TSdE8KIVABJip6RUP/agCizQPsqQE4+yZFBxt4N3/chRCHMV2fLmiA14pp3ts
-         GgBAOgHCx4KzOkCcMpaNT4yjyP4gSao3lW0VMLyIRMaIzRa2j6sEG//Obj1wb0PX32BB
-         qv4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=0rnJUvB1Q071eWjsaJ9GJ30s3Ys7//r/fWm/2A1bVxQ=;
-        b=JrhHYjW0ZzyQ4altmMvz6QCPm3e3BfQxppZGKHKD/umSPspmKOhDyaQMknDl2VNiDo
-         h4g8WDPHgyldoyiGPlJIet9mm94zUnJ5LLxXo5g8HivdTj62cQq5YjE/dTkLQbv60V63
-         ynRAGTF3QzABB87FpR2y4YTsRWPNgInr3TAVSHEJ8088cYKUrfwQIjHCg/MBCywnLpOO
-         aY7kQbghLuDbKKR/yP8wgrumRzdzbrWie67L6Zf/y2OIE6q4e5uZss4FuxxJa45f4+gz
-         k2lT363c4YVxgmqK+IT/L2lhNsZCfnivr/RpI+pVbFLN6VmqS8um3L5/njQcfmOowf60
-         9p1A==
-X-Gm-Message-State: AOAM532+ocKwMIgTQYCckoL7XYy22ZV3hLAHJPvIx8gEg3MeLvJ6DeQF
-        CQy/856Q7H9in4HogOqUmrA=
-X-Google-Smtp-Source: ABdhPJyHWUnRNk+OctXyks1T/kTqFkWOZiFKjQoAu9n67CSWgxWaoX40gw7g21eVdVVFaG2hUnyJ2Q==
-X-Received: by 2002:a05:6808:148f:b0:325:1f58:9dfc with SMTP id e15-20020a056808148f00b003251f589dfcmr3870184oiw.20.1650907950614;
-        Mon, 25 Apr 2022 10:32:30 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:219e:3c55:e4f9:4342? (2603-8081-140c-1a00-219e-3c55-e4f9-4342.res6.spectrum.com. [2603:8081:140c:1a00:219e:3c55:e4f9:4342])
-        by smtp.gmail.com with ESMTPSA id fq16-20020a0568710b1000b000e91c16eeb7sm2272979oab.38.2022.04.25.10.32.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 25 Apr 2022 10:32:30 -0700 (PDT)
-Message-ID: <37452048-aabf-07dd-a968-7bb2dfa92c15@gmail.com>
-Date:   Mon, 25 Apr 2022 12:32:29 -0500
+        with ESMTP id S235684AbiDYRq6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 13:46:58 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2085.outbound.protection.outlook.com [40.107.236.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37964124D87
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 10:43:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cPTzbZFHX2s3NT3LBbXMl+4nuW4eWM0x/Fl/GiNJxhRg2Et3jWKWx5aeeffTSlulq5lSwJpgdWSZi70Sp6dXT3aZ4JpynGe4HMwWue6FEf7uWcPw0owC9B1CTPYQExj/kwPTcM/bjronLfgctMoBQZeCXFOcColAaxNNdGNWkNAv2+o7vvfzp6Gs8VSlZCyZnSdxCyhfA/qxVG+J7BSPoHwDEn+fZt0MxPNJV2I78t7KzWFYvqa6VtebAV22kfgHbwZfiNeG8ONV9QkNUOPyPKX87LUnDqS5k1mNhTq3QThXQo+bkqpzSkZaKziK84KidzVAO36yjYUK2WGAmeuyMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=N5wK9LTp49MUvygK0Msac1/VdFZVCTc/NceLfTz6j1k=;
+ b=bpQYL1Dkn5J0LAoQAR6HijOLw3xNXzbw3cyU4GKI7ayMLVOtN5JLG2a66YyTvR0KxYibzhhCmqLwvQk5nu7BfkRTm/m0ekyLJRr+EZ3+9cNwHA/he/6+l7xxRkAlw4OSSC7d5BNP/Y3orrY6SyQE7H9QVMaAKQbkyyDB6Ztdvpc+EtfJs8wJXPZSp2rr4YEvfGYHUbIV8opiY+v/6QZFe8c8L4i+UiRywyH37eARgfj4Bj12KmCI8EeHi1JmD4PyNIhXYkfc92dchdLmieqE0IuO3ShVnsLJkpMJvkivbUipA0s70gangTcLdeNNsQLb8KLWvGmcu49oQ1KJI1KYmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5wK9LTp49MUvygK0Msac1/VdFZVCTc/NceLfTz6j1k=;
+ b=fYk4x2x/V4kNvJj7qpRyWZaxoYRKNZDNtVCcAeeW2w7whWChH0RzRRwveqNN4jjrTYg7t6KKTrb1Pj6dQd1FsuUCfbm7pxstkrn7eAW3fH63UNNJLvB9NacpWW85RVjxUg3HMPNLaLIHz74iEXRATI0VlqMF40WcsNWjTHYvmyH+A2nNLRvVlMY73M8XSCf8UegbbNq39t7bDCB3Vl6imYROfEWthXUyfk/6fj22Vm45yngAwwBXjgLXrquG2TmmWlVjXGqAuD5a7QhofYhMTKKgsQtRJOdkeOrTWebUekWBvsJjQQmu7n2Hl+cz/dpPwCsE/pdWMRcVg10t9YEnqg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MWHPR12MB1440.namprd12.prod.outlook.com (2603:10b6:300:13::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.18; Mon, 25 Apr
+ 2022 17:43:51 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2%6]) with mapi id 15.20.5186.021; Mon, 25 Apr 2022
+ 17:43:51 +0000
+Date:   Mon, 25 Apr 2022 14:43:50 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
+        Michael Guralnik <michaelgur@nvidia.com>
+Subject: Re: [PATCH rdma-next 10/12] RDMA/mlx5: Use mlx5_umr_post_send_wait()
+ to update MR pas
+Message-ID: <20220425174350.GA2224482@nvidia.com>
+References: <cover.1649747695.git.leonro@nvidia.com>
+ <ed8f2ee6c64804072155d727149abf7105f92536.1649747695.git.leonro@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed8f2ee6c64804072155d727149abf7105f92536.1649747695.git.leonro@nvidia.com>
+X-ClientProxiedBy: BLAPR03CA0018.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::23) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCHv6 1/4] RDMA/rxe: Fix dead lock caused by __rxe_add_to_pool
- interrupted by rxe_pool_get_index
-Content-Language: en-US
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>,
-        "Pearson, Robert B" <robert.pearson2@hpe.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Cc:     Yi Zhang <yi.zhang@redhat.com>
-References: <20220422194416.983549-1-yanjun.zhu@linux.dev>
- <MW4PR84MB23078B439AE048978D67F42EBCF79@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
- <79753213-60cc-87bf-b0e6-b9c6a29209a3@linux.dev>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <79753213-60cc-87bf-b0e6-b9c6a29209a3@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 6eb34916-d9c1-41df-388a-08da26e32911
+X-MS-TrafficTypeDiagnostic: MWHPR12MB1440:EE_
+X-Microsoft-Antispam-PRVS: <MWHPR12MB14406BB3F7B93EE178F908D0C2F89@MWHPR12MB1440.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Way22aNjz2Gj8WoyWFRjrpQ1xPJ4qMtOP3v1uYjj9STmcQzS37hXEyWra6wr/f+3CjMOE+QIXjkv2Wk68pR0S9vQwxyn2gQpDkLV/dE1roCgZFDS0CTIF0vR4S/tffe/GihZKJXXt7S5iyOkApxvkdyWpGCleW1sYaVeoLQqClzstSXkLr3+FuZvqoXV1Mrp08z0dgH4QrmAgmV59iuAi3PeXzP1qYfGm+CZ4xvSQekIN/cSHqupD3YMem/Cun5tWlkDazkjvocRu8Yk3L8N4eY/o+POco+QlkKEYK6QweqVynNEK/Sw6FtkuXRRUmluSxQQv8o4O0mNZpDVLZdq3qpiSm5w8y5Mi3ITc+3oaqkvlRMSjyNvHsUYMBYe7RWQNn8MasWwqn1yPSv6WNsx79ymAvG1xTygQR5EL1UK5YvRBYivAURWl3owj//h14jZf5HOetbIHwswkGYt0VgGB8cmHbxrCCBYnSULKAoif5eiIg146eP/mVI/MypiOCoeHvqRYQT1fLk3r/Kwxb/BldqRYVZeKwlShvnLnOJz6Y7mQTDr/Y4leC3B3wpnbVJ4GrDZLYwLTCo6ztJGClds5ZF2/TcqgCgiwohZra8Q8Uz25CICEuLOO/hNJeVK8e15z0B1t8O+DGlw3qEC5XQOjQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66476007)(66946007)(66556008)(54906003)(33656002)(6916009)(2906002)(38100700002)(6506007)(8676002)(4326008)(6512007)(86362001)(26005)(8936002)(508600001)(5660300002)(186003)(316002)(83380400001)(107886003)(2616005)(1076003)(6486002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oYkdZmNnx1pMA2kikTHo7lznC90JPLfYrFLzudsd/2bTKmLQvGf9XKFoz1X8?=
+ =?us-ascii?Q?ZM927I5lo6e/Njb6//wj3EUL5FLeBHDmU/5hkxYjO1gPFZCjP7LZH0BMQmZ4?=
+ =?us-ascii?Q?tHiACCxEBB7cgPbfWTxnfDlfykFh3N7Lx2rP4lgMG3oSs4sdq/I2ukyLT8kn?=
+ =?us-ascii?Q?MYmvLf7aV0/sMvTS4Xx0mk2vUBdcZAuRm6fs6Z+ofq2z3+Y9WnCsVqsHoDHJ?=
+ =?us-ascii?Q?BFuSP2NuEDQi2Iz0GaSlr2YRqlvCRXX7hRiHMcr4hEIJuDigWr2MAbjTuyjp?=
+ =?us-ascii?Q?IUMKjwi2EeoVS3/R+72f0TA8YMVHPu2U/4YN0f15PY7pLymswURoU1FzXnIR?=
+ =?us-ascii?Q?3bPSpLw5iI0X2Nr7CKM5ZllVd3/0uA0d3r2pI6bxBQKKrdBCc4OYnRD68HZc?=
+ =?us-ascii?Q?SBeABYBO/ZYph5tF/CXX8zzFZrdZeOLXVBM5x6bl9OmIabYoXoizuYMrvsMX?=
+ =?us-ascii?Q?+YmYLXwlio6NRPiyrEW/Dfi6xNtXAJrTBoemQSIphhgYsaCLGl/B5yZk5wc9?=
+ =?us-ascii?Q?xs8RQlGTY30Xp8usPoBBxOxPSmiUTGEPEbq4rogIKpouNxX1G2VFVo33YVzB?=
+ =?us-ascii?Q?UNJ6QeQctaqgAKNqaZePSuTg2IvdQlwZky1KmzumObuLCFRHvUoZCpnXN1Ph?=
+ =?us-ascii?Q?14EVt6bDdp1vhYikUtgOAk6uX29LOw5NaQVWX3RslUjsCGAJP4TkzhbFOdXi?=
+ =?us-ascii?Q?v3qfl2+rOYPSJH0KjAl3l+HFyaqokT+kTNNv9tt0jWYqeM2NVwaMwgX3PrBl?=
+ =?us-ascii?Q?/iom9r5y83NWYKiGoGNmcKaBj/7zgEVS35MvqDIdONbnXefP0SqdBYrfLoU9?=
+ =?us-ascii?Q?J+uJl9onNqM7Tkz5cU1TXFmzQBV9IfFccXRFViPT2eVOo+N55uMO0ur2JuGq?=
+ =?us-ascii?Q?mGPekEEVbUllRv3QaVJj3IkXCQjv9VZ4hg9KcQ7IH62JsZmBKLOZ01gIkWom?=
+ =?us-ascii?Q?O4Aqlv2PcKjH1z0ldLoO7Wjj6X8QJkobihB8+5POauXmfgokPD1Z4JKcbzBf?=
+ =?us-ascii?Q?fFHpfmBclDTGz//MXuhyyiTjfTv3RmrTMJhboCxXgafc2AA94xMTnb5OGNhm?=
+ =?us-ascii?Q?p41pqKxA72ti/17esinCvREMPXrkU0qRH+DBy8fAonox0Z5UVQIpzGFsvg3X?=
+ =?us-ascii?Q?d1p7pxLvueFbYgcJdbDfKoRjCRFxo1sF51ptlE4YTsACzs2BBkiaagVZ40rb?=
+ =?us-ascii?Q?J9mv5N+PTok/eR0gBw4+ZK05HRWk/jixVAikXBVgyi0dMGa6ctIS8JX7C4lh?=
+ =?us-ascii?Q?a3QnCG6carJtFlZlyD+fppRiN8TjRY8WJ5erWBU//ufFtp1J6S3zQ9Vp3hId?=
+ =?us-ascii?Q?pfL5+G7TprobWLMn6dFlhkqV/v/4rbxY9Kp3i6rpHmgucKS4O54KbKeZHAbm?=
+ =?us-ascii?Q?/8AuFVwrb+goTSBfLyVbKxvVenMmfAN64HNUIyKFleHkL1m1mzs1VtvNGR/4?=
+ =?us-ascii?Q?XY/ByGTqdKqe9QvPXgtNOsFMwVMi3iMtOCzOaRd/8whkS4CzLOU4oexIUlLR?=
+ =?us-ascii?Q?7lfSaeGdT3+jsBkvi5vihCEmi/ZZqvfr7FXHho4VpmC+SRvew0gM5l3YmPrx?=
+ =?us-ascii?Q?v7gYIdkDyOpWzjYpe3krAQSt3+G5Nc9FYRlEH7GCgx9MXi/Ett7zCCWk1lSo?=
+ =?us-ascii?Q?DhLbRHGBU99j11DsK/zlLKkQDD8fo/60yKS+eqhXRobYe1Qv43KyaurflGZZ?=
+ =?us-ascii?Q?cWF0VPT36DoUgaM9kAr3HCpU2RUeDG5omqEJWCCDfq1vROkPBBDbXZA4m7Es?=
+ =?us-ascii?Q?nZubU1KMFA=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6eb34916-d9c1-41df-388a-08da26e32911
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2022 17:43:51.5876
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: s2aNTIo/IXj19fkfO3R3VbC4BaYQDEZDuiOucHgGNwzYod3abNDXgqkApxOd2YMJ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1440
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 4/24/22 18:47, Yanjun Zhu wrote:
-> 在 2022/4/22 23:57, Pearson, Robert B 写道:
->> Use of rcu_read_lock solves this problem. Rcu_read_lock and spinlock on same data can
->> Co-exist at the same time. That is the whole point. All this is going away soon.
-> 
-> This is based on your unproved assumption.
-We are running the same tests (pyverbs, rping, blktests, perftest, etc.) with the same
-configurations set (lockdep) and I am using rcu_read_lock for rxe_pool_get_index.
-I do not see any deadlocks or lockdep warnings. The idea of RCU is to separate accesses
-to a shared data structure into write operations and read operations. For write operations
-a normal spinlock is used to allow only one writer at a time to access the data.
-For RCU, unlike rwlocks, the reader is *not* locked at all and the writers are written so
-that they can change the data structure underneath the readers and the reader will either
-see the old data or the new data and not some combination of the two. This requires
-some care but there is library support for this usually denoted by xxx_rcu(). In the case
-of xarrays the whole library is RCU enabled so one can safely use xa_load() without
-holding a spinlock. The rcu_read_lock() API marks the critical section so the writers can
-make sure to wait long enough that there are no readers in the critical section before
-freeing the data. The rcu_read_lock() is also recursive. It just expands the critical section.
-In the case of rxe_pool.c the only rcu reader is rxe_pool_get_index() which looks up an
-object from its index by calling xa_load(). This normally runs in a tasklet but sometimes
-could run in process context. The only writers (as we have discussed) run in process context
-in a create or destroy verbs call. The writers sometimes call while holding a _saveirq
-spinlock from ib_create_ah() so lockdep issues warnings unless the spinlock in rxe_add_to_pool()
-is also an _irq spinlock. However it does not issue this warning when RCU is used because
-the reader *doesn't take a lock and therefore can't deadlock*. Thus the default xa_alloc_xxx()
-which takes a spin_lock() it OK and the sequence xa_lock_irq(); __xa_alloc_xxx(); xa_unlock_irq()
-is not needed.
-> 
-> Zhu Yanjun
-> 
->>
->> Bob
->>
->> -----Original Message-----
->> From: yanjun.zhu@linux.dev <yanjun.zhu@linux.dev>
->> Sent: Friday, April 22, 2022 2:44 PM
->> To: jgg@ziepe.ca; leon@kernel.org; linux-rdma@vger.kernel.org; yanjun.zhu@linux.dev
->> Cc: Yi Zhang <yi.zhang@redhat.com>
->> Subject: [PATCHv6 1/4] RDMA/rxe: Fix dead lock caused by __rxe_add_to_pool interrupted by rxe_pool_get_index
->>
->> From: Zhu Yanjun <yanjun.zhu@linux.dev>
->>
->> This is a dead lock problem.
->> The ah_pool xa_lock first is acquired in this:
->>
->> {SOFTIRQ-ON-W} state was registered at:
->>
->>    lock_acquire+0x1d2/0x5a0
->>    _raw_spin_lock+0x33/0x80
->>    __rxe_add_to_pool+0x183/0x230 [rdma_rxe]
->>
->> Then ah_pool xa_lock is acquired in this:
->>
->> {IN-SOFTIRQ-W}:
->>
->> Call Trace:
->>   <TASK>
->>    dump_stack_lvl+0x44/0x57
->>    mark_lock.part.52.cold.79+0x3c/0x46
->>    __lock_acquire+0x1565/0x34a0
->>    lock_acquire+0x1d2/0x5a0
->>    _raw_spin_lock_irqsave+0x42/0x90
->>    rxe_pool_get_index+0x72/0x1d0 [rdma_rxe]
->>    rxe_get_av+0x168/0x2a0 [rdma_rxe]
->> </TASK>
->>
->>  From the above, in the function __rxe_add_to_pool, xa_lock is acquired. Then the function __rxe_add_to_pool is interrupted by softirq. The function rxe_pool_get_index will also acquire xa_lock.
->>
->> Finally, the dead lock appears.
->>
->>          CPU0
->>          ----
->>     lock(&xa->xa_lock#15);  <----- __rxe_add_to_pool
->>     <Interrupt>
->>       lock(&xa->xa_lock#15); <---- rxe_pool_get_index
->>
->>                   *** DEADLOCK ***
->>
->> Fixes: 3225717f6dfa ("RDMA/rxe: Replace red-black trees by carrays")
->> Reported-and-tested-by: Yi Zhang <yi.zhang@redhat.com>
->> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
->> ---
->> V5->V6: One dead lock fix in one commit
->> V4->V5: Commit logs are changed.
->> V3->V4: xa_lock_irq locks are used.
->> V2->V3: __rxe_add_to_pool is between spin_lock and spin_unlock, so
->>          GFP_ATOMIC is used in __rxe_add_to_pool.
->> V1->V2: Replace GFP_KERNEL with GFP_ATOMIC
->> ---
->>   drivers/infiniband/sw/rxe/rxe_pool.c | 11 +++++++----
->>   1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/infiniband/sw/rxe/rxe_pool.c b/drivers/infiniband/sw/rxe/rxe_pool.c
->> index 87066d04ed18..67f1d4733682 100644
->> --- a/drivers/infiniband/sw/rxe/rxe_pool.c
->> +++ b/drivers/infiniband/sw/rxe/rxe_pool.c
->> @@ -106,7 +106,7 @@ void rxe_pool_init(struct rxe_dev *rxe, struct rxe_pool *pool,
->>         atomic_set(&pool->num_elem, 0);
->>   -    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC);
->> +    xa_init_flags(&pool->xa, XA_FLAGS_ALLOC | XA_FLAGS_LOCK_IRQ);
->>       pool->limit.min = info->min_index;
->>       pool->limit.max = info->max_index;
->>   }
->> @@ -155,6 +155,7 @@ void *rxe_alloc(struct rxe_pool *pool)  int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)  {
->>       int err;
->> +    unsigned long flags;
->>         if (WARN_ON(pool->flags & RXE_POOL_ALLOC))
->>           return -EINVAL;
->> @@ -166,8 +167,10 @@ int __rxe_add_to_pool(struct rxe_pool *pool, struct rxe_pool_elem *elem)
->>       elem->obj = (u8 *)elem - pool->elem_offset;
->>       kref_init(&elem->ref_cnt);
->>   -    err = xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->> -                  &pool->next, GFP_KERNEL);
->> +    xa_lock_irqsave(&pool->xa, flags);
->> +    err = __xa_alloc_cyclic(&pool->xa, &elem->index, elem, pool->limit,
->> +                &pool->next, GFP_ATOMIC);
->> +    xa_unlock_irqrestore(&pool->xa, flags);
->>       if (err)
->>           goto err_cnt;
->>   @@ -201,7 +204,7 @@ static void rxe_elem_release(struct kref *kref)
->>       struct rxe_pool_elem *elem = container_of(kref, typeof(*elem), ref_cnt);
->>       struct rxe_pool *pool = elem->pool;
->>   -    xa_erase(&pool->xa, elem->index);
->> +    xa_erase_irq(&pool->xa, elem->index);
->>         if (pool->cleanup)
->>           pool->cleanup(elem);
->> -- 
->> 2.27.0
->>
-> 
+On Tue, Apr 12, 2022 at 10:24:05AM +0300, Leon Romanovsky wrote:
 
+> +/*
+> + * Send the DMA list to the HW for a normal MR using UMR.
+> + * Dmabuf MR is handled in a similar way, except that the MLX5_IB_UPD_XLT_ZAP
+> + * flag may be used.
+> + */
+> +int mlx5r_umr_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
+> +{
+
+I would prefer to see zap split into its own function, it shouldn't
+call rdma_for_each_block at all - the only reason it was structured
+this way in the first place was because everything had to be squeezed
+into a WR struct.
+
+Then all the places calling
+
+mlx5r_umr_update_xlt(.. MLX5_IB_UPD_XLT_ZAP) 
+
+should call this new function instead as well.
+
+Zapping an ODP or zapping an normal mkey should just be the same
+logic.
+
+Also, looking at it, it would be futher nice if the duplication
+between mlx5r_umr_update_xlt() and mlx5r_umr_update_mr_pas() could be
+removed and perhaps organized into a way to make it logical to
+eliminate the mlx5_odp_populate_xlt() "callback"
+
+Which would give four entry points:
+
+'umr fill xlt from sgl' (mlx5r_umr_update_mr_pas)
+'umr fill xlt from dma_list' (populate_mtt)
+'umr fill klm from xarray' (populate_klm)
+'umr fill xlt/klm with zero' (zap)
+
+I'd imagine a general construction to consolidate more stuff into
+mlx5r_umr_create_xlt(), probably having it return a struct, including
+setting up the initial wqe so the above are slimmer.
+
+Maybe in a followup series though
+
+Jason
