@@ -2,117 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB2E50EC73
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 01:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E69E350EC80
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 01:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237151AbiDYXQP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Apr 2022 19:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59648 "EHLO
+        id S229819AbiDYXT4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Apr 2022 19:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237124AbiDYXQP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 19:16:15 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E1B46668
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 16:13:08 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id e128so12002371qkd.7
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 16:13:08 -0700 (PDT)
+        with ESMTP id S229816AbiDYXTz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 19:19:55 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDAC19C1B
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 16:16:50 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id x21so2034771qtr.12
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 16:16:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=859SzIAl5s4qyDYzHMnInkzDTVU0f+lfGR9c6BypQKU=;
-        b=VFMKBb4spKVN4vXzZmGlcljUkn8jDXuHsiypBo8IpuM+TtBh+LnxNjfREzL8kMHQ+/
-         GyN6Hve3dAxf26J8NV9n1G2dLOP6w4d8Wi+PdKWvN0RNtdhCshdN4Kj01Aa42XW/S7Rz
-         7Q9T6F4NBS917g8xR2MU60I8vn2Zp7N/VQteaEwXAVlbERBnfvYLAPKIunkG0MAt3gtV
-         0vk3il+3Co25IWYnl2IT5zWZ93sJcqqHpmE++7SkTInXHWwN35cr4URvGhyuj6pyWyBf
-         iKRcbEl3hWk6wBiIdAdnote+DN2WS5js6dUKvdufawLmRDPL4DDEEFUTFynGLDs50qLB
-         BnNQ==
+        bh=K/uLq/CezghcIjmwWwFdZNpMyZctJP1Pkey47cRrUic=;
+        b=h9YcBUButrGiMr4N2DW12g9zwKd9vEPe+g+YQkdQhQCMolXfzn2F7WRffuS/Pd2S9T
+         kdgFkgJLJHZOn4hwF6uS3IOvOvQRAPmIZcGmsmr3xfpZqd2K7qIBy5EjMjwwixFawvKZ
+         v6sWaMJbLTImVCPSmXb0Z818BXW7ydJo7vZ5kFxXl/ix38tvU/VU4iTxr4srR6sZ+UrI
+         GuCp8GNXVOpI83llbLHCmMHVfhjhvxTgpyAkXAwdIhtwu0ObC2LSvcWXNq1tuR/rtWi3
+         qPYHrVucxvG1zSrGr6OsuLr7FGbXaoMd04Zbs6VxmQec0MCnBwe35AFFTXrYh9CToNFl
+         czPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=859SzIAl5s4qyDYzHMnInkzDTVU0f+lfGR9c6BypQKU=;
-        b=7xDsxR++//WdjTWf78djYOATqTksolt2UJJEnRLClCta2V73159GO6JJGeMPdZ2vyI
-         bZqK6ybaCv6LoeggEXCHyODUAi1ax08JKkfhNLO5CxBg/S97xGj5BAW7iGpYjDj8pAh8
-         jp0Hhn1CoIQSWNOEggNyfnqbaZrRk6mI4wzio856p4PRh9tGcp0zCCodH23fkdu8QZK2
-         pS4MhRmeqyjuPSuk5BfmpG6Dl58NuvWcJRPqwb7rRuFJ0pHFrXXLO3QTE/D7u/LoBf/M
-         JwpYFrNqFkEf7lfr9C4YGOSkrsHQZ++Yaqi8Qyy4RBHLjl+/s0k1cO4JEhRFHggQ6KL/
-         R3gg==
-X-Gm-Message-State: AOAM532NkOAn7ATWb0RtmfSrh9Qubwmcl9bdNLxNwtkDnP6uG9iwnSq+
-        bDAvbkPcb1JOAh/en5lwlOoVyQ==
-X-Google-Smtp-Source: ABdhPJyBm1rfe/bIM2Tf4Z/VxltzqOD4aEPfsMfKA3H69l46JBqz8Rvc4A+jnw7zX9p/YaPB+m+lPw==
-X-Received: by 2002:a37:4549:0:b0:69f:556c:4e38 with SMTP id s70-20020a374549000000b0069f556c4e38mr4588420qka.202.1650928387552;
-        Mon, 25 Apr 2022 16:13:07 -0700 (PDT)
+        bh=K/uLq/CezghcIjmwWwFdZNpMyZctJP1Pkey47cRrUic=;
+        b=QZkeEw03bYGq7YT9MqlriWrVXfFVYcNdgtbI3/gbTutNO79oTyLc1MGTqgq4oP20Ac
+         8t7L4gKJRNBmAQSkRQXoQRUMRXJlUiUeNPEzNoWj6u86L8bFbSKHRfWUV7j/QYaFnVFc
+         kj59MVgnp15g21ApHQ7j3am7e5Hvk6b7xVv+6fS1K1RF9T95RXdLtlYpY8NjLAt0keL6
+         3xKQAddWX5VHRi5jGGW8qhRMMrdBZG+eNjZ/sF+xAiCvrHGVrLJ+1tAviSdf/pX9jaSz
+         c5bEAIL5RHLRoRWWaeGVb2lWmJREeVN1eVsO3t3MFCwLexg4Vety0IK6IguFs5RSCiBJ
+         GM7A==
+X-Gm-Message-State: AOAM531XP8OgiRO1RW2Vm+0GHxVuPo57HYvBywaYx1adQtLf7bq5YVl8
+        RmT87VNjE8bb8ePlJobzw9XVi+VPqEzT5w==
+X-Google-Smtp-Source: ABdhPJyQaGRUl72V5P1t+Zt7o6UK9Hlt53aKfuBU58zlr0orBCjrF30tpoNlrXB2mWnTQFPA86juDQ==
+X-Received: by 2002:a05:622a:13cf:b0:2f3:6168:13c0 with SMTP id p15-20020a05622a13cf00b002f3616813c0mr8579436qtk.144.1650928609312;
+        Mon, 25 Apr 2022 16:16:49 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id h23-20020ac87777000000b002f3604761desm5115402qtu.35.2022.04.25.16.13.06
+        by smtp.gmail.com with ESMTPSA id x20-20020ac85f14000000b002e1ee1c56c3sm6886225qta.76.2022.04.25.16.16.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Apr 2022 16:13:06 -0700 (PDT)
+        Mon, 25 Apr 2022 16:16:48 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1nj7tB-009VkQ-Qg; Mon, 25 Apr 2022 20:13:05 -0300
-Date:   Mon, 25 Apr 2022 20:13:05 -0300
+        id 1nj7wm-009VtS-5X; Mon, 25 Apr 2022 20:16:48 -0300
+Date:   Mon, 25 Apr 2022 20:16:48 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
-Cc:     netdev@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-rdma@vger.kernel.org
-Subject: Re: "mm: uninline copy_overflow()" breaks i386 build in Mellanox MLX4
-Message-ID: <20220425231305.GY64706@ziepe.ca>
-References: <dbd203b1-3988-4c9c-909c-2d1f7f173a0d@o2.pl>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>
+Cc:     "Pearson, Robert B" <robert.pearson2@hpe.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Yi Zhang <yi.zhang@redhat.com>
+Subject: Re: [PATCHv6 1/4] RDMA/rxe: Fix dead lock caused by
+ __rxe_add_to_pool interrupted by rxe_pool_get_index
+Message-ID: <20220425231648.GZ64706@ziepe.ca>
+References: <20220422194416.983549-1-yanjun.zhu@linux.dev>
+ <MW4PR84MB23078B439AE048978D67F42EBCF79@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
+ <79753213-60cc-87bf-b0e6-b9c6a29209a3@linux.dev>
+ <20220425190227.GX64706@ziepe.ca>
+ <8d8413e4-d30c-9e65-914e-231cc8e9784a@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dbd203b1-3988-4c9c-909c-2d1f7f173a0d@o2.pl>
+In-Reply-To: <8d8413e4-d30c-9e65-914e-231cc8e9784a@linux.dev>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, Apr 21, 2022 at 10:47:01PM +0200, Mateusz Jończyk wrote:
-> Hello,
+On Tue, Apr 26, 2022 at 06:01:51AM +0800, Yanjun Zhu wrote:
 > 
-> commit ad7489d5262d ("mm: uninline copy_overflow()")
+> 在 2022/4/26 3:02, Jason Gunthorpe 写道:
+> > On Mon, Apr 25, 2022 at 07:47:23AM +0800, Yanjun Zhu wrote:
+> > > 在 2022/4/22 23:57, Pearson, Robert B 写道:
+> > > > Use of rcu_read_lock solves this problem. Rcu_read_lock and spinlock on same data can
+> > > > Co-exist at the same time. That is the whole point. All this is going away soon.
+> > > This is based on your unproved assumption.
+> > No, Bob is right, RCU avoids the need for a BH lock on this XA, the
+> > only remaining issue is the AH creation atomic call path.
 > 
-> breaks for me a build for i386 in the Mellanox MLX4 driver:
-> 
->         In file included from ./arch/x86/include/asm/preempt.h:7,
->                          from ./include/linux/preempt.h:78,
->                          from ./include/linux/percpu.h:6,
->                          from ./include/linux/context_tracking_state.h:5,
->                          from ./include/linux/hardirq.h:5,
->                          from drivers/net/ethernet/mellanox/mlx4/cq.c:37:
->         In function ‘check_copy_size’,
->             inlined from ‘copy_to_user’ at ./include/linux/uaccess.h:159:6,
->             inlined from ‘mlx4_init_user_cqes’ at drivers/net/ethernet/mellanox/mlx4/cq.c:317:9,
->             inlined from ‘mlx4_cq_alloc’ at drivers/net/ethernet/mellanox/mlx4/cq.c:394:10:
->         ./include/linux/thread_info.h:228:4: error: call to ‘__bad_copy_from’ declared with attribute error: copy source size is too small
->           228 |    __bad_copy_from();
->               |    ^~~~~~~~~~~~~~~~~
->         make[5]: *** [scripts/Makefile.build:288: drivers/net/ethernet/mellanox/mlx4/cq.o] Błąd 1
->         make[4]: *** [scripts/Makefile.build:550: drivers/net/ethernet/mellanox/mlx4] Błąd 2
->         make[3]: *** [scripts/Makefile.build:550: drivers/net/ethernet/mellanox] Błąd 2
->         make[2]: *** [scripts/Makefile.build:550: drivers/net/ethernet] Błąd 2
->         make[1]: *** [scripts/Makefile.build:550: drivers/net] Błąd 2
-> 
-> Reverting this commit fixes the build. Disabling Mellanox Ethernet drivers
-> in Kconfig (tested only with also disabling of all Infiniband support) also fixes the build.
-> 
-> It appears that uninlining of copy_overflow() causes GCC to analyze the code deeper.
+> If RCU is used, the similar issues like AH creation atomic call path will
+> become more.
 
-This looks like a compiler bug to me, array_size(entries, cqe_size)
-cannot be known at compile time, so the __builtin_constant_p(bytes)
-should be compile time false meaning the other two bad branches should
-have been eliminated.
+AH creation is unique, there will not be more cases like it.
 
 Jason
