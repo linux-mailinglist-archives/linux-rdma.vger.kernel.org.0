@@ -2,162 +2,508 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E7350E776
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 19:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1806C50E7E4
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 20:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237036AbiDYRq7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Apr 2022 13:46:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
+        id S234471AbiDYSTj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Apr 2022 14:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235684AbiDYRq6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 13:46:58 -0400
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2085.outbound.protection.outlook.com [40.107.236.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37964124D87
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 10:43:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cPTzbZFHX2s3NT3LBbXMl+4nuW4eWM0x/Fl/GiNJxhRg2Et3jWKWx5aeeffTSlulq5lSwJpgdWSZi70Sp6dXT3aZ4JpynGe4HMwWue6FEf7uWcPw0owC9B1CTPYQExj/kwPTcM/bjronLfgctMoBQZeCXFOcColAaxNNdGNWkNAv2+o7vvfzp6Gs8VSlZCyZnSdxCyhfA/qxVG+J7BSPoHwDEn+fZt0MxPNJV2I78t7KzWFYvqa6VtebAV22kfgHbwZfiNeG8ONV9QkNUOPyPKX87LUnDqS5k1mNhTq3QThXQo+bkqpzSkZaKziK84KidzVAO36yjYUK2WGAmeuyMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=N5wK9LTp49MUvygK0Msac1/VdFZVCTc/NceLfTz6j1k=;
- b=bpQYL1Dkn5J0LAoQAR6HijOLw3xNXzbw3cyU4GKI7ayMLVOtN5JLG2a66YyTvR0KxYibzhhCmqLwvQk5nu7BfkRTm/m0ekyLJRr+EZ3+9cNwHA/he/6+l7xxRkAlw4OSSC7d5BNP/Y3orrY6SyQE7H9QVMaAKQbkyyDB6Ztdvpc+EtfJs8wJXPZSp2rr4YEvfGYHUbIV8opiY+v/6QZFe8c8L4i+UiRywyH37eARgfj4Bj12KmCI8EeHi1JmD4PyNIhXYkfc92dchdLmieqE0IuO3ShVnsLJkpMJvkivbUipA0s70gangTcLdeNNsQLb8KLWvGmcu49oQ1KJI1KYmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N5wK9LTp49MUvygK0Msac1/VdFZVCTc/NceLfTz6j1k=;
- b=fYk4x2x/V4kNvJj7qpRyWZaxoYRKNZDNtVCcAeeW2w7whWChH0RzRRwveqNN4jjrTYg7t6KKTrb1Pj6dQd1FsuUCfbm7pxstkrn7eAW3fH63UNNJLvB9NacpWW85RVjxUg3HMPNLaLIHz74iEXRATI0VlqMF40WcsNWjTHYvmyH+A2nNLRvVlMY73M8XSCf8UegbbNq39t7bDCB3Vl6imYROfEWthXUyfk/6fj22Vm45yngAwwBXjgLXrquG2TmmWlVjXGqAuD5a7QhofYhMTKKgsQtRJOdkeOrTWebUekWBvsJjQQmu7n2Hl+cz/dpPwCsE/pdWMRcVg10t9YEnqg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by MWHPR12MB1440.namprd12.prod.outlook.com (2603:10b6:300:13::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.18; Mon, 25 Apr
- 2022 17:43:51 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2%6]) with mapi id 15.20.5186.021; Mon, 25 Apr 2022
- 17:43:51 +0000
-Date:   Mon, 25 Apr 2022 14:43:50 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@nvidia.com>
-Subject: Re: [PATCH rdma-next 10/12] RDMA/mlx5: Use mlx5_umr_post_send_wait()
- to update MR pas
-Message-ID: <20220425174350.GA2224482@nvidia.com>
-References: <cover.1649747695.git.leonro@nvidia.com>
- <ed8f2ee6c64804072155d727149abf7105f92536.1649747695.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed8f2ee6c64804072155d727149abf7105f92536.1649747695.git.leonro@nvidia.com>
-X-ClientProxiedBy: BLAPR03CA0018.namprd03.prod.outlook.com
- (2603:10b6:208:32b::23) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S235475AbiDYSTj (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 14:19:39 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B4E3B282
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 11:16:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1650910594; x=1682446594;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9HBHqCldgRDw/2FnBFmmwZTpKaxXVN5PYvtNfmMaBUA=;
+  b=ICEjfrDK020pH0aOsapaoq/Vj6pjKkRLhBn4J7GcI7EfmeHp+oEKxhqU
+   tuchufgGvoqXdZPKIJ4AnDtvAExbm3CGoPePHlEQdaGiqoXvHPtNTZ6bg
+   VN1yOSbtQFLANNRVsIecXIZcyuMOHcvGT3pOZrQCAqjLJYrZysdMuyJxc
+   z/u9tfeOgQuulFPipleXPCMhMnejZfyrQ7Q0JMBlCm8EFS67L2+kZA1Ii
+   YRHWMHq51sHXRQoH2+3UjG+pnPKPiqyQ+q50HBHFV2XW2lBmz9G0IY9dq
+   wpU6jNCxR6zuZ4iJthO2S+UBqGW9SNDlH7u7kgMN3/RcudNmquxSqqK1T
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10328"; a="325815448"
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; 
+   d="scan'208";a="325815448"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2022 11:16:33 -0700
+X-IronPort-AV: E=Sophos;i="5.90,289,1643702400"; 
+   d="scan'208";a="537707953"
+Received: from ssaleem-mobl1.amr.corp.intel.com ([10.212.50.71])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Apr 2022 11:16:33 -0700
+From:   Shiraz Saleem <shiraz.saleem@intel.com>
+To:     jgg@nvidia.com, leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org,
+        Mustafa Ismail <mustafa.ismail@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>
+Subject: [PATCH for-next] RDMA/irdma: Add SW mechanism to generate completions on error
+Date:   Mon, 25 Apr 2022 13:16:24 -0500
+Message-Id: <20220425181624.1617-1-shiraz.saleem@intel.com>
+X-Mailer: git-send-email 2.35.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6eb34916-d9c1-41df-388a-08da26e32911
-X-MS-TrafficTypeDiagnostic: MWHPR12MB1440:EE_
-X-Microsoft-Antispam-PRVS: <MWHPR12MB14406BB3F7B93EE178F908D0C2F89@MWHPR12MB1440.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Way22aNjz2Gj8WoyWFRjrpQ1xPJ4qMtOP3v1uYjj9STmcQzS37hXEyWra6wr/f+3CjMOE+QIXjkv2Wk68pR0S9vQwxyn2gQpDkLV/dE1roCgZFDS0CTIF0vR4S/tffe/GihZKJXXt7S5iyOkApxvkdyWpGCleW1sYaVeoLQqClzstSXkLr3+FuZvqoXV1Mrp08z0dgH4QrmAgmV59iuAi3PeXzP1qYfGm+CZ4xvSQekIN/cSHqupD3YMem/Cun5tWlkDazkjvocRu8Yk3L8N4eY/o+POco+QlkKEYK6QweqVynNEK/Sw6FtkuXRRUmluSxQQv8o4O0mNZpDVLZdq3qpiSm5w8y5Mi3ITc+3oaqkvlRMSjyNvHsUYMBYe7RWQNn8MasWwqn1yPSv6WNsx79ymAvG1xTygQR5EL1UK5YvRBYivAURWl3owj//h14jZf5HOetbIHwswkGYt0VgGB8cmHbxrCCBYnSULKAoif5eiIg146eP/mVI/MypiOCoeHvqRYQT1fLk3r/Kwxb/BldqRYVZeKwlShvnLnOJz6Y7mQTDr/Y4leC3B3wpnbVJ4GrDZLYwLTCo6ztJGClds5ZF2/TcqgCgiwohZra8Q8Uz25CICEuLOO/hNJeVK8e15z0B1t8O+DGlw3qEC5XQOjQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(66476007)(66946007)(66556008)(54906003)(33656002)(6916009)(2906002)(38100700002)(6506007)(8676002)(4326008)(6512007)(86362001)(26005)(8936002)(508600001)(5660300002)(186003)(316002)(83380400001)(107886003)(2616005)(1076003)(6486002)(36756003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?oYkdZmNnx1pMA2kikTHo7lznC90JPLfYrFLzudsd/2bTKmLQvGf9XKFoz1X8?=
- =?us-ascii?Q?ZM927I5lo6e/Njb6//wj3EUL5FLeBHDmU/5hkxYjO1gPFZCjP7LZH0BMQmZ4?=
- =?us-ascii?Q?tHiACCxEBB7cgPbfWTxnfDlfykFh3N7Lx2rP4lgMG3oSs4sdq/I2ukyLT8kn?=
- =?us-ascii?Q?MYmvLf7aV0/sMvTS4Xx0mk2vUBdcZAuRm6fs6Z+ofq2z3+Y9WnCsVqsHoDHJ?=
- =?us-ascii?Q?BFuSP2NuEDQi2Iz0GaSlr2YRqlvCRXX7hRiHMcr4hEIJuDigWr2MAbjTuyjp?=
- =?us-ascii?Q?IUMKjwi2EeoVS3/R+72f0TA8YMVHPu2U/4YN0f15PY7pLymswURoU1FzXnIR?=
- =?us-ascii?Q?3bPSpLw5iI0X2Nr7CKM5ZllVd3/0uA0d3r2pI6bxBQKKrdBCc4OYnRD68HZc?=
- =?us-ascii?Q?SBeABYBO/ZYph5tF/CXX8zzFZrdZeOLXVBM5x6bl9OmIabYoXoizuYMrvsMX?=
- =?us-ascii?Q?+YmYLXwlio6NRPiyrEW/Dfi6xNtXAJrTBoemQSIphhgYsaCLGl/B5yZk5wc9?=
- =?us-ascii?Q?xs8RQlGTY30Xp8usPoBBxOxPSmiUTGEPEbq4rogIKpouNxX1G2VFVo33YVzB?=
- =?us-ascii?Q?UNJ6QeQctaqgAKNqaZePSuTg2IvdQlwZky1KmzumObuLCFRHvUoZCpnXN1Ph?=
- =?us-ascii?Q?14EVt6bDdp1vhYikUtgOAk6uX29LOw5NaQVWX3RslUjsCGAJP4TkzhbFOdXi?=
- =?us-ascii?Q?v3qfl2+rOYPSJH0KjAl3l+HFyaqokT+kTNNv9tt0jWYqeM2NVwaMwgX3PrBl?=
- =?us-ascii?Q?/iom9r5y83NWYKiGoGNmcKaBj/7zgEVS35MvqDIdONbnXefP0SqdBYrfLoU9?=
- =?us-ascii?Q?J+uJl9onNqM7Tkz5cU1TXFmzQBV9IfFccXRFViPT2eVOo+N55uMO0ur2JuGq?=
- =?us-ascii?Q?mGPekEEVbUllRv3QaVJj3IkXCQjv9VZ4hg9KcQ7IH62JsZmBKLOZ01gIkWom?=
- =?us-ascii?Q?O4Aqlv2PcKjH1z0ldLoO7Wjj6X8QJkobihB8+5POauXmfgokPD1Z4JKcbzBf?=
- =?us-ascii?Q?fFHpfmBclDTGz//MXuhyyiTjfTv3RmrTMJhboCxXgafc2AA94xMTnb5OGNhm?=
- =?us-ascii?Q?p41pqKxA72ti/17esinCvREMPXrkU0qRH+DBy8fAonox0Z5UVQIpzGFsvg3X?=
- =?us-ascii?Q?d1p7pxLvueFbYgcJdbDfKoRjCRFxo1sF51ptlE4YTsACzs2BBkiaagVZ40rb?=
- =?us-ascii?Q?J9mv5N+PTok/eR0gBw4+ZK05HRWk/jixVAikXBVgyi0dMGa6ctIS8JX7C4lh?=
- =?us-ascii?Q?a3QnCG6carJtFlZlyD+fppRiN8TjRY8WJ5erWBU//ufFtp1J6S3zQ9Vp3hId?=
- =?us-ascii?Q?pfL5+G7TprobWLMn6dFlhkqV/v/4rbxY9Kp3i6rpHmgucKS4O54KbKeZHAbm?=
- =?us-ascii?Q?/8AuFVwrb+goTSBfLyVbKxvVenMmfAN64HNUIyKFleHkL1m1mzs1VtvNGR/4?=
- =?us-ascii?Q?XY/ByGTqdKqe9QvPXgtNOsFMwVMi3iMtOCzOaRd/8whkS4CzLOU4oexIUlLR?=
- =?us-ascii?Q?7lfSaeGdT3+jsBkvi5vihCEmi/ZZqvfr7FXHho4VpmC+SRvew0gM5l3YmPrx?=
- =?us-ascii?Q?v7gYIdkDyOpWzjYpe3krAQSt3+G5Nc9FYRlEH7GCgx9MXi/Ett7zCCWk1lSo?=
- =?us-ascii?Q?DhLbRHGBU99j11DsK/zlLKkQDD8fo/60yKS+eqhXRobYe1Qv43KyaurflGZZ?=
- =?us-ascii?Q?cWF0VPT36DoUgaM9kAr3HCpU2RUeDG5omqEJWCCDfq1vROkPBBDbXZA4m7Es?=
- =?us-ascii?Q?nZubU1KMFA=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6eb34916-d9c1-41df-388a-08da26e32911
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2022 17:43:51.5876
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s2aNTIo/IXj19fkfO3R3VbC4BaYQDEZDuiOucHgGNwzYod3abNDXgqkApxOd2YMJ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR12MB1440
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 10:24:05AM +0300, Leon Romanovsky wrote:
+From: Mustafa Ismail <mustafa.ismail@intel.com>
 
-> +/*
-> + * Send the DMA list to the HW for a normal MR using UMR.
-> + * Dmabuf MR is handled in a similar way, except that the MLX5_IB_UPD_XLT_ZAP
-> + * flag may be used.
-> + */
-> +int mlx5r_umr_update_mr_pas(struct mlx5_ib_mr *mr, unsigned int flags)
-> +{
+HW flushes after QP in error state is not reliable. This can lead to
+application hang waiting on a completion for outstanding WRs.
+Implement a SW mechanism to generate completions for any
+outstanding WR's after the QP is modified to error.
 
-I would prefer to see zap split into its own function, it shouldn't
-call rdma_for_each_block at all - the only reason it was structured
-this way in the first place was because everything had to be squeezed
-into a WR struct.
+This is accomplished by starting a delayed worker after the QP is
+modified to error and the HW flush is performed. The worker
+will generate completions that will be returned to the application
+when it polls the CQ. This mechanism only applies to Kernel
+applications.
 
-Then all the places calling
+Signed-off-by: Mustafa Ismail <mustafa.ismail@intel.com>
+Signed-off-by: Shiraz Saleem <shiraz.saleem@intel.com>
+---
+ drivers/infiniband/hw/irdma/hw.c    |  31 ++++----
+ drivers/infiniband/hw/irdma/utils.c | 147 ++++++++++++++++++++++++++++++++++++
+ drivers/infiniband/hw/irdma/verbs.c |  56 ++++++++------
+ drivers/infiniband/hw/irdma/verbs.h |  13 +++-
+ 4 files changed, 210 insertions(+), 37 deletions(-)
 
-mlx5r_umr_update_xlt(.. MLX5_IB_UPD_XLT_ZAP) 
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index ec477c4..dd3943d 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -61,7 +61,7 @@ static void irdma_iwarp_ce_handler(struct irdma_sc_cq *iwcq)
+ 	struct irdma_cq *cq = iwcq->back_cq;
+ 
+ 	if (!cq->user_mode)
+-		cq->armed = false;
++		atomic_set(&cq->armed, 0);
+ 	if (cq->ibcq.comp_handler)
+ 		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
+ }
+@@ -2689,24 +2689,29 @@ void irdma_flush_wqes(struct irdma_qp *iwqp, u32 flush_mask)
+ 	info.sq = flush_mask & IRDMA_FLUSH_SQ;
+ 	info.rq = flush_mask & IRDMA_FLUSH_RQ;
+ 
+-	if (flush_mask & IRDMA_REFLUSH) {
+-		if (info.sq)
+-			iwqp->sc_qp.flush_sq = false;
+-		if (info.rq)
+-			iwqp->sc_qp.flush_rq = false;
+-	}
+-
+ 	/* Generate userflush errors in CQE */
+ 	info.sq_major_code = IRDMA_FLUSH_MAJOR_ERR;
+ 	info.sq_minor_code = FLUSH_GENERAL_ERR;
+ 	info.rq_major_code = IRDMA_FLUSH_MAJOR_ERR;
+ 	info.rq_minor_code = FLUSH_GENERAL_ERR;
+ 	info.userflushcode = true;
+-	if (flush_code) {
+-		if (info.sq && iwqp->sc_qp.sq_flush_code)
+-			info.sq_minor_code = flush_code;
+-		if (info.rq && iwqp->sc_qp.rq_flush_code)
+-			info.rq_minor_code = flush_code;
++
++	if (flush_mask & IRDMA_REFLUSH) {
++		if (info.sq)
++			iwqp->sc_qp.flush_sq = false;
++		if (info.rq)
++			iwqp->sc_qp.flush_rq = false;
++	} else {
++		if (flush_code) {
++			if (info.sq && iwqp->sc_qp.sq_flush_code)
++				info.sq_minor_code = flush_code;
++			if (info.rq && iwqp->sc_qp.rq_flush_code)
++				info.rq_minor_code = flush_code;
++		}
++		if (!iwqp->user_mode)
++			queue_delayed_work(iwqp->iwdev->cleanup_wq,
++					   &iwqp->dwork_flush,
++					   msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
+ 	}
+ 
+ 	/* Issue flush */
+diff --git a/drivers/infiniband/hw/irdma/utils.c b/drivers/infiniband/hw/irdma/utils.c
+index 346c2c5..7f1526f 100644
+--- a/drivers/infiniband/hw/irdma/utils.c
++++ b/drivers/infiniband/hw/irdma/utils.c
+@@ -2498,3 +2498,150 @@ bool irdma_cq_empty(struct irdma_cq *iwcq)
+ 
+ 	return polarity != ukcq->polarity;
+ }
++
++void irdma_remove_cmpls_list(struct irdma_cq *iwcq)
++{
++	struct irdma_cmpl_gen *cmpl_node;
++	struct list_head *tmp_node, *list_node;
++
++	list_for_each_safe (list_node, tmp_node, &iwcq->cmpl_generated) {
++		cmpl_node = list_entry(list_node, struct irdma_cmpl_gen, list);
++		list_del(&cmpl_node->list);
++		kfree(cmpl_node);
++	}
++}
++
++int irdma_generated_cmpls(struct irdma_cq *iwcq, struct irdma_cq_poll_info *cq_poll_info)
++{
++	struct irdma_cmpl_gen *cmpl;
++
++	if (list_empty(&iwcq->cmpl_generated))
++		return -ENOENT;
++	cmpl = list_first_entry_or_null(&iwcq->cmpl_generated, struct irdma_cmpl_gen, list);
++	list_del(&cmpl->list);
++	memcpy(cq_poll_info, &cmpl->cpi, sizeof(*cq_poll_info));
++	kfree(cmpl);
++
++	ibdev_dbg(iwcq->ibcq.device,
++		  "VERBS: %s: Poll artificially generated completion for QP 0x%X, op %u, wr_id=0x%llx\n",
++		  __func__, cq_poll_info->qp_id, cq_poll_info->op_type,
++		  cq_poll_info->wr_id);
++
++	return 0;
++}
++
++/**
++ * irdma_set_cpi_common_values - fill in values for polling info struct
++ * @cpi: resulting structure of cq_poll_info type
++ * @qp: QPair
++ * @qp_num: id of the QP
++ */
++static void irdma_set_cpi_common_values(struct irdma_cq_poll_info *cpi,
++					struct irdma_qp_uk *qp, u32 qp_num)
++{
++	cpi->comp_status = IRDMA_COMPL_STATUS_FLUSHED;
++	cpi->error = true;
++	cpi->major_err = IRDMA_FLUSH_MAJOR_ERR;
++	cpi->minor_err = FLUSH_GENERAL_ERR;
++	cpi->qp_handle = (irdma_qp_handle)(uintptr_t)qp;
++	cpi->qp_id = qp_num;
++}
++
++static inline void irdma_comp_handler(struct irdma_cq *cq)
++{
++	if (!cq->ibcq.comp_handler)
++		return;
++	if (atomic_cmpxchg(&cq->armed, 1, 0))
++		cq->ibcq.comp_handler(&cq->ibcq, cq->ibcq.cq_context);
++}
++
++void irdma_generate_flush_completions(struct irdma_qp *iwqp)
++{
++	struct irdma_qp_uk *qp = &iwqp->sc_qp.qp_uk;
++	struct irdma_ring *sq_ring = &qp->sq_ring;
++	struct irdma_ring *rq_ring = &qp->rq_ring;
++	struct irdma_cmpl_gen *cmpl;
++	__le64 *sw_wqe;
++	u64 wqe_qword;
++	u32 wqe_idx;
++	bool compl_generated = false;
++	unsigned long flags1;
++
++	spin_lock_irqsave(&iwqp->iwscq->lock, flags1);
++	if (irdma_cq_empty(iwqp->iwscq)) {
++		unsigned long flags2;
++
++		spin_lock_irqsave(&iwqp->lock, flags2);
++		while (IRDMA_RING_MORE_WORK(*sq_ring)) {
++			cmpl = kzalloc(sizeof(*cmpl), GFP_ATOMIC);
++			if (!cmpl) {
++				spin_unlock_irqrestore(&iwqp->lock, flags2);
++				spin_unlock_irqrestore(&iwqp->iwscq->lock, flags1);
++				return;
++			}
++
++			wqe_idx = sq_ring->tail;
++			irdma_set_cpi_common_values(&cmpl->cpi, qp, qp->qp_id);
++
++			cmpl->cpi.wr_id = qp->sq_wrtrk_array[wqe_idx].wrid;
++			sw_wqe = qp->sq_base[wqe_idx].elem;
++			get_64bit_val(sw_wqe, 24, &wqe_qword);
++			cmpl->cpi.op_type = (u8)FIELD_GET(IRDMAQPSQ_OPCODE, IRDMAQPSQ_OPCODE);
++			/* remove the SQ WR by moving SQ tail*/
++			IRDMA_RING_SET_TAIL(*sq_ring,
++				sq_ring->tail + qp->sq_wrtrk_array[sq_ring->tail].quanta);
++
++			ibdev_dbg(iwqp->iwscq->ibcq.device,
++				  "DEV: %s: adding wr_id = 0x%llx SQ Completion to list qp_id=%d\n",
++				  __func__, cmpl->cpi.wr_id, qp->qp_id);
++			list_add_tail(&cmpl->list, &iwqp->iwscq->cmpl_generated);
++			compl_generated = true;
++		}
++		spin_unlock_irqrestore(&iwqp->lock, flags2);
++		spin_unlock_irqrestore(&iwqp->iwscq->lock, flags1);
++		if (compl_generated)
++			irdma_comp_handler(iwqp->iwrcq);
++	} else {
++		spin_unlock_irqrestore(&iwqp->iwscq->lock, flags1);
++		mod_delayed_work(iwqp->iwdev->cleanup_wq, &iwqp->dwork_flush,
++				 msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
++	}
++
++	spin_lock_irqsave(&iwqp->iwrcq->lock, flags1);
++	if (irdma_cq_empty(iwqp->iwrcq)) {
++		unsigned long flags2;
++
++		spin_lock_irqsave(&iwqp->lock, flags2);
++		while (IRDMA_RING_MORE_WORK(*rq_ring)) {
++			cmpl = kzalloc(sizeof(*cmpl), GFP_ATOMIC);
++			if (!cmpl) {
++				spin_unlock_irqrestore(&iwqp->lock, flags2);
++				spin_unlock_irqrestore(&iwqp->iwrcq->lock, flags1);
++				return;
++			}
++
++			wqe_idx = rq_ring->tail;
++			irdma_set_cpi_common_values(&cmpl->cpi, qp, qp->qp_id);
++
++			cmpl->cpi.wr_id = qp->rq_wrid_array[wqe_idx];
++			cmpl->cpi.op_type = IRDMA_OP_TYPE_REC;
++			/* remove the RQ WR by moving RQ tail */
++			IRDMA_RING_SET_TAIL(*rq_ring, rq_ring->tail + 1);
++			ibdev_dbg(iwqp->iwrcq->ibcq.device,
++				  "DEV: %s: adding wr_id = 0x%llx RQ Completion to list qp_id=%d, wqe_idx=%d\n",
++				  __func__, cmpl->cpi.wr_id, qp->qp_id,
++				  wqe_idx);
++			list_add_tail(&cmpl->list, &iwqp->iwrcq->cmpl_generated);
++
++			compl_generated = true;
++		}
++		spin_unlock_irqrestore(&iwqp->lock, flags2);
++		spin_unlock_irqrestore(&iwqp->iwrcq->lock, flags1);
++		if (compl_generated)
++			irdma_comp_handler(iwqp->iwrcq);
++	} else {
++		spin_unlock_irqrestore(&iwqp->iwrcq->lock, flags1);
++		mod_delayed_work(iwqp->iwdev->cleanup_wq, &iwqp->dwork_flush,
++				 msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
++	}
++}
+diff --git a/drivers/infiniband/hw/irdma/verbs.c b/drivers/infiniband/hw/irdma/verbs.c
+index f70ddf9..83ba188 100644
+--- a/drivers/infiniband/hw/irdma/verbs.c
++++ b/drivers/infiniband/hw/irdma/verbs.c
+@@ -535,6 +535,9 @@ static int irdma_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
+ 	if (iwqp->iwarp_state == IRDMA_QP_STATE_RTS)
+ 		irdma_modify_qp_to_err(&iwqp->sc_qp);
+ 
++	if (!iwqp->user_mode)
++		cancel_delayed_work_sync(&iwqp->dwork_flush);
++
+ 	irdma_qp_rem_ref(&iwqp->ibqp);
+ 	wait_for_completion(&iwqp->free_qp);
+ 	irdma_free_lsmm_rsrc(iwqp);
+@@ -790,6 +793,14 @@ static int irdma_validate_qp_attrs(struct ib_qp_init_attr *init_attr,
+ 	return 0;
+ }
+ 
++static void irdma_flush_worker(struct work_struct *work)
++{
++	struct delayed_work *dwork = to_delayed_work(work);
++	struct irdma_qp *iwqp = container_of(dwork, struct irdma_qp, dwork_flush);
++
++	irdma_generate_flush_completions(iwqp);
++}
++
+ /**
+  * irdma_create_qp - create qp
+  * @ibqp: ptr of qp
+@@ -909,6 +920,7 @@ static int irdma_create_qp(struct ib_qp *ibqp,
+ 		init_info.qp_uk_init_info.abi_ver = iwpd->sc_pd.abi_ver;
+ 		irdma_setup_virt_qp(iwdev, iwqp, &init_info);
+ 	} else {
++		INIT_DELAYED_WORK(&iwqp->dwork_flush, irdma_flush_worker);
+ 		init_info.qp_uk_init_info.abi_ver = IRDMA_ABI_VER;
+ 		err_code = irdma_setup_kmode_qp(iwdev, iwqp, &init_info, init_attr);
+ 	}
+@@ -1400,11 +1412,11 @@ int irdma_modify_qp_roce(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 			}
+ 			if (iwqp->ibqp_state > IB_QPS_RTS &&
+ 			    !iwqp->flush_issued) {
+-				iwqp->flush_issued = 1;
+ 				spin_unlock_irqrestore(&iwqp->lock, flags);
+ 				irdma_flush_wqes(iwqp, IRDMA_FLUSH_SQ |
+ 						       IRDMA_FLUSH_RQ |
+ 						       IRDMA_FLUSH_WAIT);
++				iwqp->flush_issued = 1;
+ 			} else {
+ 				spin_unlock_irqrestore(&iwqp->lock, flags);
+ 			}
+@@ -1757,6 +1769,8 @@ static int irdma_destroy_cq(struct ib_cq *ib_cq, struct ib_udata *udata)
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&iwcq->lock, flags);
++	if (!list_empty(&iwcq->cmpl_generated))
++		irdma_remove_cmpls_list(iwcq);
+ 	if (!list_empty(&iwcq->resize_list))
+ 		irdma_process_resize_list(iwcq, iwdev, NULL);
+ 	spin_unlock_irqrestore(&iwcq->lock, flags);
+@@ -1961,6 +1975,7 @@ static int irdma_create_cq(struct ib_cq *ibcq,
+ 	cq->back_cq = iwcq;
+ 	spin_lock_init(&iwcq->lock);
+ 	INIT_LIST_HEAD(&iwcq->resize_list);
++	INIT_LIST_HEAD(&iwcq->cmpl_generated);
+ 	info.dev = dev;
+ 	ukinfo->cq_size = max(entries, 4);
+ 	ukinfo->cq_id = cq_num;
+@@ -3046,15 +3061,12 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 	unsigned long flags;
+ 	bool inv_stag;
+ 	struct irdma_ah *ah;
+-	bool reflush = false;
+ 
+ 	iwqp = to_iwqp(ibqp);
+ 	ukqp = &iwqp->sc_qp.qp_uk;
+ 	dev = &iwqp->iwdev->rf->sc_dev;
+ 
+ 	spin_lock_irqsave(&iwqp->lock, flags);
+-	if (iwqp->flush_issued && ukqp->sq_flush_complete)
+-		reflush = true;
+ 	while (ib_wr) {
+ 		memset(&info, 0, sizeof(info));
+ 		inv_stag = false;
+@@ -3204,15 +3216,14 @@ static int irdma_post_send(struct ib_qp *ibqp,
+ 		ib_wr = ib_wr->next;
+ 	}
+ 
+-	if (!iwqp->flush_issued && iwqp->hw_iwarp_state <= IRDMA_QP_STATE_RTS) {
+-		irdma_uk_qp_post_wr(ukqp);
++	if (!iwqp->flush_issued) {
++		if (iwqp->hw_iwarp_state <= IRDMA_QP_STATE_RTS)
++			irdma_uk_qp_post_wr(ukqp);
+ 		spin_unlock_irqrestore(&iwqp->lock, flags);
+-	} else if (reflush) {
+-		ukqp->sq_flush_complete = false;
+-		spin_unlock_irqrestore(&iwqp->lock, flags);
+-		irdma_flush_wqes(iwqp, IRDMA_FLUSH_SQ | IRDMA_REFLUSH);
+ 	} else {
+ 		spin_unlock_irqrestore(&iwqp->lock, flags);
++		mod_delayed_work(iwqp->iwdev->cleanup_wq, &iwqp->dwork_flush,
++				 msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
+ 	}
+ 	if (err)
+ 		*bad_wr = ib_wr;
+@@ -3235,14 +3246,11 @@ static int irdma_post_recv(struct ib_qp *ibqp,
+ 	struct irdma_post_rq_info post_recv = {};
+ 	unsigned long flags;
+ 	int err = 0;
+-	bool reflush = false;
+ 
+ 	iwqp = to_iwqp(ibqp);
+ 	ukqp = &iwqp->sc_qp.qp_uk;
+ 
+ 	spin_lock_irqsave(&iwqp->lock, flags);
+-	if (iwqp->flush_issued && ukqp->rq_flush_complete)
+-		reflush = true;
+ 	while (ib_wr) {
+ 		post_recv.num_sges = ib_wr->num_sge;
+ 		post_recv.wr_id = ib_wr->wr_id;
+@@ -3258,13 +3266,10 @@ static int irdma_post_recv(struct ib_qp *ibqp,
+ 	}
+ 
+ out:
+-	if (reflush) {
+-		ukqp->rq_flush_complete = false;
+-		spin_unlock_irqrestore(&iwqp->lock, flags);
+-		irdma_flush_wqes(iwqp, IRDMA_FLUSH_RQ | IRDMA_REFLUSH);
+-	} else {
+-		spin_unlock_irqrestore(&iwqp->lock, flags);
+-	}
++	spin_unlock_irqrestore(&iwqp->lock, flags);
++	if (iwqp->flush_issued)
++		mod_delayed_work(iwqp->iwdev->cleanup_wq, &iwqp->dwork_flush,
++				 msecs_to_jiffies(IRDMA_FLUSH_DELAY_MS));
+ 
+ 	if (err)
+ 		*bad_wr = ib_wr;
+@@ -3476,6 +3481,11 @@ static int __irdma_poll_cq(struct irdma_cq *iwcq, int num_entries, struct ib_wc
+ 	/* check the current CQ for new cqes */
+ 	while (npolled < num_entries) {
+ 		ret = irdma_poll_one(ukcq, cur_cqe, entry + npolled);
++		if (ret == -ENOENT) {
++			ret = irdma_generated_cmpls(iwcq, cur_cqe);
++			if (!ret)
++				irdma_process_cqe(entry + npolled, cur_cqe);
++		}
+ 		if (!ret) {
+ 			++npolled;
+ 			cq_new_cqe = true;
+@@ -3557,13 +3567,13 @@ static int irdma_req_notify_cq(struct ib_cq *ibcq,
+ 	if (iwcq->last_notify == IRDMA_CQ_COMPL_SOLICITED && notify_flags != IB_CQ_SOLICITED)
+ 		promo_event = true;
+ 
+-	if (!iwcq->armed || promo_event) {
+-		iwcq->armed = true;
++	if (!atomic_cmpxchg(&iwcq->armed, 0, 1) || promo_event) {
+ 		iwcq->last_notify = cq_notify;
+ 		irdma_uk_cq_request_notification(ukcq, cq_notify);
+ 	}
+ 
+-	if ((notify_flags & IB_CQ_REPORT_MISSED_EVENTS) && !irdma_cq_empty(iwcq))
++	if ((notify_flags & IB_CQ_REPORT_MISSED_EVENTS) &&
++	    (!irdma_cq_empty(iwcq) || !list_empty(&iwcq->cmpl_generated)))
+ 		ret = 1;
+ 	spin_unlock_irqrestore(&iwcq->lock, flags);
+ 
+diff --git a/drivers/infiniband/hw/irdma/verbs.h b/drivers/infiniband/hw/irdma/verbs.h
+index 08ba24d..4309b71 100644
+--- a/drivers/infiniband/hw/irdma/verbs.h
++++ b/drivers/infiniband/hw/irdma/verbs.h
+@@ -4,6 +4,7 @@
+ #define IRDMA_VERBS_H
+ 
+ #define IRDMA_MAX_SAVED_PHY_PGADDR	4
++#define IRDMA_FLUSH_DELAY_MS		20
+ 
+ #define IRDMA_PKEY_TBL_SZ		1
+ #define IRDMA_DEFAULT_PKEY		0xFFFF
+@@ -115,7 +116,7 @@ struct irdma_cq {
+ 	u16 cq_size;
+ 	u16 cq_num;
+ 	bool user_mode;
+-	bool armed;
++	atomic_t armed;
+ 	enum irdma_cmpl_notify last_notify;
+ 	u32 polled_cmpls;
+ 	u32 cq_mem_size;
+@@ -126,6 +127,12 @@ struct irdma_cq {
+ 	struct irdma_pbl *iwpbl_shadow;
+ 	struct list_head resize_list;
+ 	struct irdma_cq_poll_info cur_cqe;
++	struct list_head cmpl_generated;
++};
++
++struct irdma_cmpl_gen {
++	struct list_head list;
++	struct irdma_cq_poll_info cpi;
+ };
+ 
+ struct disconn_work {
+@@ -166,6 +173,7 @@ struct irdma_qp {
+ 	refcount_t refcnt;
+ 	struct iw_cm_id *cm_id;
+ 	struct irdma_cm_node *cm_node;
++	struct delayed_work dwork_flush;
+ 	struct ib_mr *lsmm_mr;
+ 	atomic_t hw_mod_qp_pend;
+ 	enum ib_qp_state ibqp_state;
+@@ -229,4 +237,7 @@ static inline u16 irdma_fw_minor_ver(struct irdma_sc_dev *dev)
+ void irdma_ib_unregister_device(struct irdma_device *iwdev);
+ void irdma_ib_dealloc_device(struct ib_device *ibdev);
+ void irdma_ib_qp_event(struct irdma_qp *iwqp, enum irdma_qp_event_type event);
++void irdma_generate_flush_completions(struct irdma_qp *iwqp);
++void irdma_remove_cmpls_list(struct irdma_cq *iwcq);
++int irdma_generated_cmpls(struct irdma_cq *iwcq, struct irdma_cq_poll_info *cq_poll_info);
+ #endif /* IRDMA_VERBS_H */
+-- 
+1.8.3.1
 
-should call this new function instead as well.
-
-Zapping an ODP or zapping an normal mkey should just be the same
-logic.
-
-Also, looking at it, it would be futher nice if the duplication
-between mlx5r_umr_update_xlt() and mlx5r_umr_update_mr_pas() could be
-removed and perhaps organized into a way to make it logical to
-eliminate the mlx5_odp_populate_xlt() "callback"
-
-Which would give four entry points:
-
-'umr fill xlt from sgl' (mlx5r_umr_update_mr_pas)
-'umr fill xlt from dma_list' (populate_mtt)
-'umr fill klm from xarray' (populate_klm)
-'umr fill xlt/klm with zero' (zap)
-
-I'd imagine a general construction to consolidate more stuff into
-mlx5r_umr_create_xlt(), probably having it return a struct, including
-setting up the initial wqe so the above are slimmer.
-
-Maybe in a followup series though
-
-Jason
