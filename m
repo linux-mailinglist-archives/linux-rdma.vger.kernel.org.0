@@ -2,203 +2,133 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B526D50E449
-	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 17:22:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B71650E65C
+	for <lists+linux-rdma@lfdr.de>; Mon, 25 Apr 2022 18:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbiDYPZ5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Apr 2022 11:25:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51228 "EHLO
+        id S229816AbiDYRCC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 25 Apr 2022 13:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239819AbiDYPZ5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 11:25:57 -0400
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam08on2052.outbound.protection.outlook.com [40.107.100.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0409FE124A
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 08:22:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eg/wb/jjBJ0X/FNVzcG/lLBI9HDTAxsLs5jm+5JJpdrqv47FS6RuUsArKOECf3aFhVWMUPxiH7dqI/nNW5r0+KIsrpWRwIQG63d9NUQ4hpNj7t9bcIDe7j/Gbi9YvPoEIQ2x3Pnncns72LdrvDS5RuvPKMwXIUmShkxFwgknUggRN1UXS2uY6azyIUBUe78bckFNLAJkwlfP9lK/aCgh4ysu2BRIPiNNrlPIDCFYPicsaZHRBGv5xmZ3dd5fVumgKTKEaVwDuqkfcghIuK1mLBRkC4DWp29K/lRX8BUeNAIhbO6lrM9lGPJUcRFdRqqdK+hmeEnLKQH0JqZMyTMozw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JZZK81TBUdgP363xxSvaBUzaUdcVnX1edAR2HYWO+7Y=;
- b=CtKEyjygiefWx0z1NV2HABrxOTpN4n4qFbol1F6Ysd1DyqKOex8p1ux/j9djIMn1Nt4Ozkr93igS27d9d6H2VB+xUFrZRsnnxs+8bnOP6E/BhImMrYldgh9vHgfrEm31jhzX9UcUKSoSjmi1MTAm4ab2moym3LTNoUMz2pSqCgjIUS1k5rR01oubKzU13N/AbmX1JbvtjBpS5FNhcyPKlV2VSe8R3FP0rSwAw5U3Nn5ge4bVCzOt4J9gI7Qxd/NDs07MPZcG96dDJKFeRWrPaTLAGpFOB5ZC6Vgf+gF3uxK4Iy76KK8Jg9I9vChibHP9LhNdBEke6SWSBiSZF+PQ+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JZZK81TBUdgP363xxSvaBUzaUdcVnX1edAR2HYWO+7Y=;
- b=Nrs1pBO+60kzpWcabs7tRZ6blr1mL3PenLem/gozBsLVdkEfpvGu8YtTciiMgma3NzSpmHYrgbX6HuKfajtDmvT9sMFmYACJxdJ2reNaFQ3UsajF0LGjva0ZCgBHm8XSVBEKqzOroFI54nv2UbX5E6yqG1egNb5LYMbBHIaGhb5jrwqj+sZ/l4UOum2OQYqnguZxN3EPV2084cVqTGDm4ymPrYxrdWU9VOS0wc9boa3ujQZKU3PpT0YM9LqGmbTpcm3B0eyWkCVHG4bG3Kx30qgxjIzjHYWGy1iUtXIhhqkd32KdG4m7l1d6g94M5MqZguGC9exIOFElGzzKMoXQ1g==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by BN9PR12MB5384.namprd12.prod.outlook.com (2603:10b6:408:105::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.15; Mon, 25 Apr
- 2022 15:22:50 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2%6]) with mapi id 15.20.5186.021; Mon, 25 Apr 2022
- 15:22:50 +0000
-Date:   Mon, 25 Apr 2022 12:22:49 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Aharon Landau <aharonl@nvidia.com>, linux-rdma@vger.kernel.org,
-        Michael Guralnik <michaelgur@nvidia.com>
-Subject: Re: [PATCH rdma-next 03/12] RDMA/mlx5: Move mkey ctrl segment logic
- to umr.c
-Message-ID: <20220425152249.GA2225197@nvidia.com>
-References: <cover.1649747695.git.leonro@nvidia.com>
- <5a7fac8ae8543521d19d174663245ae84b910310.1649747695.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a7fac8ae8543521d19d174663245ae84b910310.1649747695.git.leonro@nvidia.com>
-X-ClientProxiedBy: BL0PR02CA0029.namprd02.prod.outlook.com
- (2603:10b6:207:3c::42) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S232710AbiDYRCB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 13:02:01 -0400
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32ED044A2B
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 09:58:57 -0700 (PDT)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-e93ff05b23so3592400fac.9
+        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 09:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=oEouq6GY/SJQQl5LqlMUagtK3fDXMwoeuQPZYpXN8W0=;
+        b=Xv+Zo3uy6LeZjp4k1SfSUsoOj6qHJlfm0T6GIVjukwCWAUJB3IoI/6POX68qB/lbv5
+         XKQDthXVD0VQw9PlsO/EsesN+s60y6JIiE4vltwfz8T8sEdvBJPCpEG9pumn3Fcg++rR
+         a6WUtf0m8QKRbSYPXXjvGsoZoZbUmM60pQWRnX1Juwcq8QKZ/2YOMw0hy+cHtfOeGI4C
+         eW9+QPtsncsxFCC5TThJrUNuzjGWvAwWM63X7TnZZbpjFdZQKELJiCs/ygaFITmina6H
+         pwIWnm/35cfQB2gkpO6CGGsRD9FmeOMvL8jQSaaJxaAi3rtXmr/7RS2+LZ/hS20r/qF4
+         2dTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=oEouq6GY/SJQQl5LqlMUagtK3fDXMwoeuQPZYpXN8W0=;
+        b=cVo/Fwv3G/nDWulN9rgjWzyl8l1+XF2W5nEasVyx7EWCtOqP6jb/IZjUCjvfGm7Q86
+         UV+SCCngo058nECJvzaBS0BSr8/MPUeQUCCf3Nf/RT/FNHcxKQg60J+Cf49YGQ5UsYRv
+         dM9h6u1u9FGnGvyU+ybYPhONmtMKCTcG9WqlZjiay/2GEqNsZfmHJ6C8Z7Il4bJ5ZXin
+         7XeoHKKKY5YoIR2bDv4LHUFyCW3yx7yt1wK3qQwAYwSD9L/oF5YyaENjuXE+Ewa9912H
+         bFUWa6xxHuu5pIp3KhVfhqo81ysniWD/L1slmvxAZMLAIJUGqa97etkBngeS2NkvBMjc
+         /4Nw==
+X-Gm-Message-State: AOAM5308NH6AysF1Y5kBC06slWegZx68LQekpUhp6zywQhphoMbYsh+G
+        Yo8tprE2Xvvd2xy3JwEWLGbiaHHlmbg=
+X-Google-Smtp-Source: ABdhPJyrKXH4a7373dg9rR0yP00cpSMmFfFQI5GClFn6x6PAhWFP8d2EereFHFFb9jtN9yeAj/hmkg==
+X-Received: by 2002:a05:6870:1244:b0:ce:c0c9:620 with SMTP id 4-20020a056870124400b000cec0c90620mr11634377oao.114.1650905936129;
+        Mon, 25 Apr 2022 09:58:56 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:219e:3c55:e4f9:4342? (2603-8081-140c-1a00-219e-3c55-e4f9-4342.res6.spectrum.com. [2603:8081:140c:1a00:219e:3c55:e4f9:4342])
+        by smtp.gmail.com with ESMTPSA id z20-20020a056871015400b000e946697146sm965563oab.25.2022.04.25.09.58.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 25 Apr 2022 09:58:55 -0700 (PDT)
+Message-ID: <dfba7eb7-8467-59b5-2c2a-071ed1e4949f@gmail.com>
+Date:   Mon, 25 Apr 2022 11:58:55 -0500
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 951197ea-f6f2-494a-009f-08da26cf7605
-X-MS-TrafficTypeDiagnostic: BN9PR12MB5384:EE_
-X-Microsoft-Antispam-PRVS: <BN9PR12MB5384991E4A45C51F52C56C3DC2F89@BN9PR12MB5384.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Wz1xSSnW+Isi9dA/IrNq9fwB3VcgVTp6u81drPkh/ANrMNt6xibq3C3Xch6GqlGpxOcofFUkBXriQYo6b7p5BjsRYAt7/KnbzCZ2HZPTMluYVj5BNGmtCyuklawGS37n/Q+ZhAR3MP0wJh6WqrJycbVu4kpeZEnKkaBVIw2WWWJNgYGkas5qP4DUQExxIGNQxETlYC/Jbl/7eJ5RN8sqThFOo9D+pZGgV9Se9/htouzyo2sN1f8wHUrPgcw8GflT6okGhP7bVopE1i+8IyKGJodWW/0B99EhUCPYVScBaXbhcnpcxKKSII5orRvRYq7cIOa5wr7wfg6bShcYPX0k7451tGf/kx79NxA5qF7tTelvpJG4XRVroT3EqhHQGSg5UtOZa4IzE9FgDKgBx9yt3TcHBMdYc/qfrhgrM8+vWR9BB8VFgFfFTrWnvi+hU6m7741F1PVXqUaj8ucnsU08qmfB0CI6x3rUzHnPVg1J8iBsFajYrQw6ThB6xeQXPg4Jm0yTEktqpEUsEa6uXU6SsNpTadiYVG9ZGdYKGD1QPoy7AhDpG/Yxsp4sBDUDTT3IN1OJgwIFlaCLb7S5bJPBdhcoA99jeqWYHw53ROaL7nfIUMkJ98iU8sAtP6UbcAfAu6EyY2k2yowvP0ww76NBcA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(4326008)(8676002)(33656002)(83380400001)(107886003)(54906003)(6916009)(36756003)(2616005)(6486002)(316002)(2906002)(26005)(38100700002)(86362001)(508600001)(8936002)(6512007)(186003)(1076003)(66476007)(5660300002)(6506007)(66946007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Nv9hSEoOS2BgBhob5kQ/mvXfQP8ibVSDAk/CXA9wNH/X1kqGAkrHFT+gdtiT?=
- =?us-ascii?Q?/KEfpTlUrhYB3TZBIUtxSiLWaSH6hffrHg7I6TpDm9T8ZHoa/iG9NYgEelrM?=
- =?us-ascii?Q?BxmuVy51rehijhgflwxEKJwSIENI4rtsrxeLJP/cpDFY7gShQHVmNXELJzP2?=
- =?us-ascii?Q?/VbgLsrduAgvruxthpw/rFkalbAKynPV9jEUf7DMiV4yglwccsK3MxZ5GTX7?=
- =?us-ascii?Q?HAN1EtWx9cUGn8GNi9VQtI0c697YDF8lXSfdUa3JuRFcbRIXYXl7qToTWZI+?=
- =?us-ascii?Q?Ql5qxNsE5ticL4VwNYqkUInn0MBYqze4ErQpUgOxdUQ1fySKECkKcKfdova9?=
- =?us-ascii?Q?qNC/roIqUDsDnlL3kYyQ9aLiALqFOhRDxCO+J2zPCz73vfsIYa4UV/cdA9nZ?=
- =?us-ascii?Q?+IkEMWGs8nXa9iyLVFIDXl0fD3hp0Q8jtWB6RVwbe8F1JK147ELfDFw93ZZC?=
- =?us-ascii?Q?PNfT+QgsvjPkgDeVZqmglvfgdAnqGUoIytPnv5gmcmHfVGF/9pz9WTV6Yb5e?=
- =?us-ascii?Q?X/LyO37qirtmszgJr8Ot/Prn6CfXMtQDW5lT2W1OS6kIpIZ5tErJRveKOdwk?=
- =?us-ascii?Q?0rwXEpXyUlqXCoCe+xqUqZzS461f0AYzuX8r0p0zWLwaYjaK79CLZ61IjV0b?=
- =?us-ascii?Q?/uI2dehpHwjAFXtGTY5kLCyHSwsAxgkMR+4UpNTGRypS/pFwBf/eloMGo+LU?=
- =?us-ascii?Q?FJyJ0JAOzSlKETrd5JKu0Uw6Rr3803qOGPnFd9zlVd9E5mBvu2qXm6xPOgm3?=
- =?us-ascii?Q?gCW3lNF+UqL3ZV0I6ZEcSbyxbch977PuaRgZtJDzmh5/0/XmZlqI5C7zTlH6?=
- =?us-ascii?Q?jBCheWjLnJzpcTSuePqJ/n7SQByQJ49Q9uCDqs3xZoJDMwukMlmSXFq71Gvz?=
- =?us-ascii?Q?NJa+5u/OwlF0c/rdv36YElR/4v32VEPB7MLqGuVOYS5SyrmdaWPiQpel/V3R?=
- =?us-ascii?Q?KBa3e1TUBWDYckrUxbQcUKy5RRK+ioEwppfwFPHJrvEX3nXjwd9HDmXUdpoQ?=
- =?us-ascii?Q?ncQji7b6q3H36Q14xf5YN6XWvTDcYtYe2xXuoJUJbiS0S0elGY7XPBbgMmY0?=
- =?us-ascii?Q?93k4WW6rGCP7k8k2WFMmZm8dHRtiSz6rkgPpaQfIpLgD+faa5a8H73SkNcBz?=
- =?us-ascii?Q?Zez2rcRG48bmd2nSkz/Otu9MJ20GWcX8H9Ierd02dgXxVYCkf+PkiAIm9Rv+?=
- =?us-ascii?Q?D8GEARJZtqWDw02En05oiLc1yuTu++8O5YVZgazCqM60SqYJrNLpwGRXiZuL?=
- =?us-ascii?Q?K1ICMSLLIe3HnAipWis6inGhePgFDtPnOAR9uzXySLowyqRGpRzlS3XvL9pu?=
- =?us-ascii?Q?dDgmxT6oCag6a7Vpi/WjjWnJyacY/A/F5dRZrkWORyppUZBq8yWFxZAoiL0y?=
- =?us-ascii?Q?6APA5V2/qjlpVQLlQ+9vKGWgjZ2qpSYSGWUItrYkzMjDO8e/awckPrLrxozv?=
- =?us-ascii?Q?buUlhXSuP1KVZrdk4bVBCXlZyh57MQuIs0+k5exntd76qbDQwLONXo9Rcm+K?=
- =?us-ascii?Q?lKeGjxExP7fEbGsLEB77ENiT9dfTX/d8jT9Ka6pmT41yLC8/igpwCSf8nN+n?=
- =?us-ascii?Q?tELKL1P4q7AnmHdjRoQF/LcyHgLbON65ECL7HOb/bqEX+hYFH/rpySdpqrlc?=
- =?us-ascii?Q?4kT3OmFWCQ4PAfvg01GVets29uQzQTrMiSVmOQjHNgelTdh6EHyHhohRGf20?=
- =?us-ascii?Q?jy0hCcUY0jJfC0uMawD1sA2kX/imrVoKFHmUYeIteQg0LFAtvkXp/ReVCre1?=
- =?us-ascii?Q?1uOnzFn2Fg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 951197ea-f6f2-494a-009f-08da26cf7605
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Apr 2022 15:22:50.7721
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cYgsTs+qUkj0eeDJMf6m910LWg3vNf0wY1pAHI6tKYxIrbasaokC5QHnRsFFw7sf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5384
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: bug report for rdma_rxe
+Content-Language: en-US
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <5de7d1a9-a7ac-aea5-d11c-49423d3f0bf1@gmail.com>
+ <98ad3df7-b934-ad2b-49c6-bb07a06a5c4f@linux.dev>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <98ad3df7-b934-ad2b-49c6-bb07a06a5c4f@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 12, 2022 at 10:23:58AM +0300, Leon Romanovsky wrote:
-> From: Aharon Landau <aharonl@nvidia.com>
+On 4/24/22 19:04, Yanjun Zhu wrote:
+> 在 2022/4/23 5:04, Bob Pearson 写道:
+>> Local operations in the rdma_rxe driver are not obviously idempotent. But, the
+>> RC retry mechanism backs up the send queue to the point of the wqe that is
+>> currently being acknowledged and re-walks the sq. Each send or write operation is
+>> retried with the exception that the first one is truncated by the packets already
+>> having been acknowledged. Each read and atomic operation is resent except that
+>> read data already received in the first wqe is not requested. But all the
+>> local operations are replayed. The problem is local invalidate which is destructive.
+>> For example
 > 
-> Move set_reg_umr_segment() and its helpers to umr.c.
+> Is there any example or just your analysis?
+
+I have a colleague at HPE who is testing Lustre/o2iblnd/rxe. They are testing over a
+highly reliable network so do not expect to see dropped or out of order packets. But they
+see multiple timeout flows. When working on rping a week ago I also saw lots of timeouts
+and verified that the timeout code in rxe has the behavior that when a new RC operation is
+sent the retry timer is modified to go off at jiffies + qp->timeout_jiffies but only if
+there is not a currently pending timer. Once set it is never cleared so it will fire
+typically a few msec later initiating a retry flow. If IO operations are frequent then
+there will be a timeout every few msec (about 20 times a second for typical timeout values.)
+o2iblnd uses fast reg MRs to write data to the target system and then local invalidate
+operations to invalidate the MR and then increments the key portion of the rkey and resets
+the map and then does a reg mr operation. Retry flows cause the local invalidate and reg MR
+operations to be re-executed over and over again. A single retry can cause a half a dozen
+invalidate operations to be run with various rkeys and they mostly fail because they don't
+match the current MR. This results in Lustre crashing.
+
+Currently I am actually happy that the unneeded retries are happening because it makes
+testing the retry code a lot easier. But eventually it would be good to clear or reset the timer
+after the operation is completed which would greatly reduce the number of retries. Also
+it will be important to figure out how the IBA intended for local invalidates and reg MRs to
+work. The way they are now they cannot be successfully retried. Also marking them as done
+and skipping them in the retry sequence does not work. (It breaks some of the blktests test
+cases.)
+
+> You know, sometimes your analysis is not always correct.
+> To prove your analysis, please show us some solid example.
 > 
-> Signed-off-by: Aharon Landau <aharonl@nvidia.com>
-> Reviewed-by: Michael Guralnik <michaelgur@nvidia.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
->  drivers/infiniband/hw/mlx5/mlx5_ib.h |   3 -
->  drivers/infiniband/hw/mlx5/qp.c      |   1 +
->  drivers/infiniband/hw/mlx5/umr.c     | 129 ++++++++++++++++++++++++
->  drivers/infiniband/hw/mlx5/umr.h     |  13 +++
->  drivers/infiniband/hw/mlx5/wr.c      | 142 +--------------------------
->  5 files changed, 147 insertions(+), 141 deletions(-)
+> Zhu Yanjun
 > 
-> diff --git a/drivers/infiniband/hw/mlx5/mlx5_ib.h b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> index 18ba11e4e2e6..d77a27503488 100644
-> +++ b/drivers/infiniband/hw/mlx5/mlx5_ib.h
-> @@ -311,9 +311,6 @@ struct mlx5_ib_flow_db {
->  #define MLX5_IB_QPT_DCT		IB_QPT_RESERVED4
->  #define MLX5_IB_WR_UMR		IB_WR_RESERVED1
->  
-> -#define MLX5_IB_UMR_OCTOWORD	       16
-> -#define MLX5_IB_UMR_XLT_ALIGNMENT      64
-> -
->  #define MLX5_IB_UPD_XLT_ZAP	      BIT(0)
->  #define MLX5_IB_UPD_XLT_ENABLE	      BIT(1)
->  #define MLX5_IB_UPD_XLT_ATOMIC	      BIT(2)
-> diff --git a/drivers/infiniband/hw/mlx5/qp.c b/drivers/infiniband/hw/mlx5/qp.c
-> index 3f467557d34e..d2f243d3c4e2 100644
-> +++ b/drivers/infiniband/hw/mlx5/qp.c
-> @@ -40,6 +40,7 @@
->  #include "ib_rep.h"
->  #include "counters.h"
->  #include "cmd.h"
-> +#include "umr.h"
->  #include "qp.h"
->  #include "wr.h"
->  
-> diff --git a/drivers/infiniband/hw/mlx5/umr.c b/drivers/infiniband/hw/mlx5/umr.c
-> index 46eaf919eb49..d3626a9dc8ab 100644
-> +++ b/drivers/infiniband/hw/mlx5/umr.c
-> @@ -4,6 +4,135 @@
->  #include "mlx5_ib.h"
->  #include "umr.h"
->  
-> +static __be64 get_umr_enable_mr_mask(void)
-> +{
-> +	u64 result;
-> +
-> +	result = MLX5_MKEY_MASK_KEY |
-> +		 MLX5_MKEY_MASK_FREE;
-> +
-> +	return cpu_to_be64(result);
-> +}
-> +
-> +static __be64 get_umr_disable_mr_mask(void)
-> +{
-> +	u64 result;
-> +
-> +	result = MLX5_MKEY_MASK_FREE;
-> +
-> +	return cpu_to_be64(result);
-> +}
-> +
-> +static __be64 get_umr_update_translation_mask(void)
-> +{
-> +	u64 result;
-> +
-> +	result = MLX5_MKEY_MASK_LEN |
-> +		 MLX5_MKEY_MASK_PAGE_SIZE |
-> +		 MLX5_MKEY_MASK_START_ADDR;
-> +
-> +	return cpu_to_be64(result);
-> +}
+>>
+>> sq:    some operation that times out
+>>     bind mw to mr
+>>     some other operation
+>>     invalidate mw
+>>     invalidate mr
+>>
+>> can't be replayed because invalidating the mr makes the second bind fail.
+>> There are lots of other examples where things go wrong.
+>>
+>> To make things worse the send queue timer is never cleared and for typical
+>> timeout values goes off every few msec whether anything actually failed.
+>>
+>> Bob
+> 
 
-This is pretty ugly, it is fine to copy it, but an add-on patch to
-remove these function wrappers would be nice
-
-#define UMR_MR_MASK_DISABLE cpu_to_be64(MLX5_MKEY_MASK_FREE)
-
-At worst (and arguably it can just be open coded)
-
-Jason
