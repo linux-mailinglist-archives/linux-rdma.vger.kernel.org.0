@@ -2,101 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E021150FE58
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 15:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46091510006
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 16:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350655AbiDZNMB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 26 Apr 2022 09:12:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
+        id S242089AbiDZOJh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Apr 2022 10:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350648AbiDZNL6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Apr 2022 09:11:58 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE8151E4C
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Apr 2022 06:08:50 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id q14so21866491ljc.12
-        for <linux-rdma@vger.kernel.org>; Tue, 26 Apr 2022 06:08:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=nIgHZXIaeZhf23re2WIWSl8FwNzY4XssmB5G+OP1fgY=;
-        b=Rp5M6DGffMumgwzkfOxSGjjr4ftDhLODR5a1+q5sbrDoKirJOLXuBQ71oayOURisMO
-         9Molv9WeL2gfac8WqaGpduQH6/7pR2Awbo44GWSqvV/tk4K9F8weG4VpvHx3pAej7BNF
-         HPsLeLucDBWWTffw5HaUQ6d+hbLv1YrsXfNgFQjlReZshnJhK+b55jz4gAES9FItZNOi
-         ymE+uxRgs1h7TzFLT3kZQoLIR5mQQlJk9p5lSj+3Yfbs/exThc/f68iWae4fMOA+yfl3
-         zGmd3Lvb8K9xbkqQ9nEiwqb4AGeMmEHL8FjHscFDPpE4nQwcz4BC7KcbbB39dik+ISmK
-         4QiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=nIgHZXIaeZhf23re2WIWSl8FwNzY4XssmB5G+OP1fgY=;
-        b=3F25QrpP5mg2cltsgli5iOTRU5UURUyhWn9xtYLtn6WfRG0SgZcquG2a/Aq4CtyyLE
-         wQA9xrU+SRAZg9SM8CVlslCMwOzM8jwLMTIJAqghNwLDZL83uzzTeahBiSkipnWGFI2E
-         XvUEKRi4JCWOF5odJnbmLH0emf+Wq7SEiT9CXDKxeTUDRmbwAZNZErWcK17soeMg8jj/
-         huZbv85y9U/ut8lp5m77E6qqP3d2Ok/24Ua5lUwBsMk8bfJ+eax274+1RfsALrJBPJDn
-         WSOGmfFPoEE7uYWu00YYqi9KQnuz6gIJMDqPSuZo83rYrsGD1Yh091O1ifttskqmdr3p
-         9ZZg==
-X-Gm-Message-State: AOAM533qktSGotXOLGEB9/2YCo3zHCTMWpF86wry5LKvhPlUx/l2YM9x
-        heuIzseFH3KSUUUsF8qhqrx8Rdw6ePRJUEfObSA=
-X-Google-Smtp-Source: ABdhPJxJgeVKOFA/6frHypReElNZg7XGWMv45cKJWIMCxQMjsLYM6e2ktns33x2pek7Zln0pYRmYoOJAo4wHgFeZBcM=
-X-Received: by 2002:a2e:9c43:0:b0:24b:469:2bb6 with SMTP id
- t3-20020a2e9c43000000b0024b04692bb6mr15136354ljj.248.1650978528342; Tue, 26
- Apr 2022 06:08:48 -0700 (PDT)
+        with ESMTP id S1351592AbiDZOJa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Apr 2022 10:09:30 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2057.outbound.protection.outlook.com [40.92.99.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568D710CF
+        for <linux-rdma@vger.kernel.org>; Tue, 26 Apr 2022 07:06:22 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XsLaFBOXaenJ4MmOPH4dd8TWBHTFga7E7aLwSI5tejvvFCDW6of1i4ptCPjDtRlFouSP5raQC0k5Q9um6bZEaxQUAd9D6xCjDr3JtZ9xZtr84OlXY2stUKrM9DASc1KMUtq7yagx4ysS7NRfqiyNTmTORX5GUeIZ/xViRfHQUu+cUsMzKAtKZ60jP17FhPwwS02GU+loXAVJl5hCf1K+7ThtMLz83yh2OVlTxZ18SvuragmXqNYMYQT1qv/LtXyOqpSM4ii+I2bLxxlAvs1fSMJjG4CjbK0A16/aA5lL+2ZRXaM131535SlsWRPexSDyzuvwGulBN705O+HAYujKLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6aFGU1H65PwWu8KAMJ8bzCE4PenODrO3/5svx9Ro2xM=;
+ b=oaGSPzw7fD5Mb5LA1nblVsFBLc+Cioy88FEnhFc4MleeiHuY5u07ZoCsJPEXo4LTl/LHqJy2XmHeWtskWYPLdx/YbHxY62us3FHUQ4gd77ywOJDHMQZW55AyfnyufEVtT2fNo/2B+BsSxKK6O7WJYfbaDsb6oTLmtupkOmXtL5FB3VY6YXNFszcGlhRrN3GfdKY8UOoqwhnL655j74KWlDPeU+sybvRqeDbJ3WRhgEvV8mO8cN6oqpu2RJ6yYQkrSNY9/800kcshMjV5xBiUjs0ag0gbJc1VRX/NsxD1NZvweRJnAJQrmt/eiglXcIKyYAp5Z09dVXFP6RClARNZZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6aFGU1H65PwWu8KAMJ8bzCE4PenODrO3/5svx9Ro2xM=;
+ b=Ojq852WI3EN3ZMZh2PzVpHA8ONJbIEgMeYdxz6uo5+CCbqim/qKxffLXqLnjeU7JjaTHnBHDMnw1p1eSIiVSJ2eyk4rEUYj1e60dMxfa2mBRmntdcz9AY/IrRrhtptQD93si0BpzZhFN+LYXlscuF3+WwtNXKhozgYzmEIEFyZMcVaaVB9cfIOOfnfiCdj1kSFAjHTxoSn5eGWa8H3v/SMOS96rNypdpaTfIKctgjfucwD23oURmNsOp9Ttxf4GJWHd79Kcsw0LzfQcsjZYoxKFm+R85tBzFdvoWr1IDvx6zb6oX3y8tpIRxQbdnZh998NEGTQ4Yp87uUX6locVrpA==
+Received: from OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:1b5::13)
+ by OS0P286MB0083.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:a4::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.14; Tue, 26 Apr
+ 2022 14:06:20 +0000
+Received: from OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::2511:338a:d575:dd61]) by OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::2511:338a:d575:dd61%8]) with mapi id 15.20.5186.021; Tue, 26 Apr 2022
+ 14:06:20 +0000
+Date:   Tue, 26 Apr 2022 22:06:11 +0800
+From:   Changcheng Liu <changchengx.liu@outlook.com>
+To:     leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org
+Subject: [PATCH] net/mlx5: correct ECE offset in query qp output
+Message-ID: <OSZP286MB1629E3E8563657C551711194FEFB9@OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM>
+Reply-To: Changcheng Liu <changchengx.liu@outlook.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TMN:  [2ciifU56X/cPyUiUh/ct0ykiy4WSr7RG]
+X-ClientProxiedBy: FR3P281CA0028.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1c::19) To OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:1b5::13)
+X-Microsoft-Original-Message-ID: <Ymf8UyYakhQM855G@gen-l-vrt-307.mtl.labs.mlnx>
 MIME-Version: 1.0
-Received: by 2002:aa6:cb41:0:b0:1be:7e9f:f9a6 with HTTP; Tue, 26 Apr 2022
- 06:08:47 -0700 (PDT)
-Reply-To: usarmy.jameston1@gmail.com
-From:   Major James Walton <josephinmnyinge70@gmail.com>
-Date:   Tue, 26 Apr 2022 14:08:47 +0100
-Message-ID: <CAEH2Oon1-iK2-v5D9jvDrtSNmU1_Pm6ePrZ8FNs74Jpb3_goVA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 12112ba0-52e3-4bff-183b-08da278df009
+X-MS-TrafficTypeDiagnostic: OS0P286MB0083:EE_
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Xli7xBlyWRx9jmkdlVyLzdd3+quXmnp2gMs30RnmN5kWGvs7lvxX/xIBRFNekB1mIIIii2XrsaoXOoJEX62CYLxzLhGlgNIvuE8HFTPiuU9HQLBh7j8AE4/tf/0IMKWNEX5ZfBUoO6QqFrjDUxWDaj9DATs+X3VbHY0kq0szr/PENpn+AEj52JWE824KID8rVgaFAWxa/ckoHyWzjzRtv6hVyfzLeDMwcOd0H/faZhIWapylt0oOBt+FuaRMHnUPVH9+o3N9h+WQRIzPi+UW2Gkz5U0Tv/799x6WWVQbmKH9bUmbuggr7fcendFaDiPl72sZqYy3zx0rx8Hozl8uDhs0WD/112zjQq9FqifKRgpfeABb0+8M7Znt0ElpWk4yYwLML/tin/f61PShkVQl7WHsGtKS+2W2J/VBGApNgccdFVon3FdfJKIBEY5iqVsfdPVb3UcY6KgLILRziu1cm2Sy6k0RpBpCeppAZzMgqSYBaKNii175arr2r8JrDVc/S891IUryqkPLdQYU29q8rIXV9ZfDlabGxkks0ubMIE0yCFDUNVf8OdpNqkUXh+oln+PvvH1FQTUaVpderbYthw==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/xr3QxDXZBFx9HDKao8KZpj+L8VRXLnbV5Vhj/0GML6kX+KEjRY8/lqMLZe7?=
+ =?us-ascii?Q?s9gdjKE5ObH6gMirNA+OzduVTdtwypTQftX+FVYe5rbEQDm7lLwAOk3fVkek?=
+ =?us-ascii?Q?jUjXysMyoUEc4kIVladxdKjSNnMEgQpdaRQAxrNfrp3hYV+OEJwKsF1jyNJK?=
+ =?us-ascii?Q?yi4QHDQtQkt6IGlciJ8GLA04WaMVCNmnQ6f9Nxte02HJDiA9EU+Yv4xB7cVw?=
+ =?us-ascii?Q?mTrn8DgJHpZO4VwWHEl7mGiH+YnqkSepKMFE+8cyiGVQ6H8jXzDZoY25SMuN?=
+ =?us-ascii?Q?2VQCZcRl42l1pLOyTVAnP4jDEDVNDHxiSUmnq1IcbjoAsUzBO5A1MqObt0Hb?=
+ =?us-ascii?Q?6nf5OqNoB3Va9Kzg6bK1G+P/BDHO3OoNIWKjTCD9m+oVbR2CZBLcZ7tETfCp?=
+ =?us-ascii?Q?SxflYlyCl9cQxpFRNQMSEZ2L2rAqoGDE5IQFltBbPR2O27bnD4LznWEQ7AF8?=
+ =?us-ascii?Q?R+eqzAhVgxZl1hUTcADL/K8U7/y07OVZlvcdCsTCV7uTat0UdWbeC0L7DBB1?=
+ =?us-ascii?Q?+ZjLCUfvAc3uYqUAR/IqEEChQY3KhZmIcajNGEy0ysccAxxUk5O9wvA+jNju?=
+ =?us-ascii?Q?Wt1C49/CvMfYjEDimEfG+lctKuO6MKBFomW5CmdFWj+mCyVXawUlPOEh8uvI?=
+ =?us-ascii?Q?5Bwh8/M+qqYpqxIysgUTrj1Q6SvWFMhQMYRtoDtcl2TxKUbnvfDxSHaeIKMP?=
+ =?us-ascii?Q?6xB+xWUeeVn4vs7hhh0xcGMV6tWdsQvUrThhQDu1tmj2CysK85xu1G6/5zST?=
+ =?us-ascii?Q?Og77/2yGZaUX0KMO0vM5gPp/pf5v6ifmKb1JLHDJSpLjfBulFk5mdqGK/gOw?=
+ =?us-ascii?Q?aU3qexphyzegb8Zx9YyazrArnBeM3cS2X0yBs5bmL3kG9ilTCcCNAP2uUfbF?=
+ =?us-ascii?Q?eaqRmyDg8K6Ze+of6ZadGElZGe7estBwtTlbMAVORRiIW2LjH0GAFMBDFSQQ?=
+ =?us-ascii?Q?HmAUYB4pblz6X0swfrEVY6tXAbEkly7iD3jfyD2hZJQeRRyU7BBOD7dfYYGw?=
+ =?us-ascii?Q?lCDyerlt26PsEGwKfUZivilAcDHTbMAAlj/+8/X4uD6EggUMrqUZwX8SbhIf?=
+ =?us-ascii?Q?AI0PcZvQZTtQjqxDWcya4myq7MrbO2JPOwH9cLhzhZR8zLnkUhXS0tzSBru6?=
+ =?us-ascii?Q?HkwzsHiOPFYpFM69hyoRutMbpfEWEQisMD1GhQ9Ethm06sVE0p4mKjcfjBdl?=
+ =?us-ascii?Q?UgpqACNw0otUBWmkPG2fP5Vp8hSCSZ3P537+7u71MoAmBFzgM0xM5Wx/MsDC?=
+ =?us-ascii?Q?UkgOhCXoNlCCh9HpX6oHFCTkZdsqXyUTWUZZYycNzPV/ylHgiZ+m2Hf43kNa?=
+ =?us-ascii?Q?4QothDjhAmKC4rFjyMhTimYi7ZHZoamOJ5zTRnF4zNF+czT+QLNweQH6ibI2?=
+ =?us-ascii?Q?Gi9UHloqyjSHcb/zGTcbE/j46E/m4VIZ+QTjcQIEELZr+Am7gTwiQgVmOPas?=
+ =?us-ascii?Q?Bt9yDxw1DscrDk8Ui8iJGI1jSokrqtZA?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12112ba0-52e3-4bff-183b-08da278df009
+X-MS-Exchange-CrossTenant-AuthSource: OSZP286MB1629.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2022 14:06:20.6250
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS0P286MB0083
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2a00:1450:4864:20:0:0:0:22a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4070]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [josephinmnyinge70[at]gmail.com]
-        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
-        *      digit
-        *      [usarmy.jameston1[at]gmail.com]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [josephinmnyinge70[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  3.6 UNDISC_FREEM Undisclosed recipients + freemail reply-to
-        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
-        *      different freemails
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+
+From cd2890fc0f756d809f684768fabb34b449df6d29 Mon Sep 17 00:00:00 2001
+From: Changcheng Liu <jerrliu@nvidia.com>
+Date: Tue, 26 Apr 2022 21:28:14 +0800
+Subject: [PATCH] net/mlx5: correct ECE offset in query qp output
+
+ECE field should be after opt_param_mask in query qp output.
+
+Fixes: 6b646a7e4af6 ("net/mlx5: Add ability to read and write ECE options")
+Signed-off-by: Changcheng Liu <jerrliu@nvidia.com>
+
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 7d2d0ba82144..2e162ec2a3d3 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -5180,12 +5180,11 @@ struct mlx5_ifc_query_qp_out_bits {
+ 
+ 	u8         syndrome[0x20];
+ 
+-	u8         reserved_at_40[0x20];
+-	u8         ece[0x20];
++	u8         reserved_at_40[0x40];
+ 
+ 	u8         opt_param_mask[0x20];
+ 
+-	u8         reserved_at_a0[0x20];
++	u8         ece[0x20];
+ 
+ 	struct mlx5_ifc_qpc_bits qpc;
+ 
 -- 
-I am Major James Walton,currently serving with the 3rd Brigade Support
-Battalion in Iraq.I have a proposal for you. Kindly reply for
-details.Reply to: usarmy.jameston1@gmail.com
+2.27.0
 
-
-Regards,
-Major James Walton.
