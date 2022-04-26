@@ -2,167 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB6150EF0C
-	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 05:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6109850F1D3
+	for <lists+linux-rdma@lfdr.de>; Tue, 26 Apr 2022 09:09:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbiDZDN2 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 25 Apr 2022 23:13:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        id S231238AbiDZHMo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 26 Apr 2022 03:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230155AbiDZDN1 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 25 Apr 2022 23:13:27 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346665F91
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 20:10:20 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id q14so20207526ljc.12
-        for <linux-rdma@vger.kernel.org>; Mon, 25 Apr 2022 20:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RZf97l/wm+IEcmMfZPiAtToahHb3DGj6gAN9wcpLEX0=;
-        b=KlZq2it9IToH9/EW+XqHiZN6eGV75jW8r3Zj2yP4u7xu79yg2i/+G35NnzSlKThhoy
-         /ctOjC71Pzy8VOJdu2ukm5882uP+sPyuSpHFfZGkTPzH9JJhnz+0d5UScTabQYOTNcT9
-         31itBdRDmldMXLYdjZG6ryXmUabOIdR9MDfalVLxNIaIdAyXAghohGMFRa4FQ0Z/pAR7
-         bvsxAYs7QcBPT/BcnNCJ7Nlu+bvoHZfiNgQYmX00ZIDB0Cna0Y0E/M5eFYA4K5ruydj5
-         Yq5HDNG3D5+vM1R+p+2uiHLBUsGAgsD/h0mPsFa47Ed6gB6r/SBqm7mJx6SIeR25OkZH
-         zJ+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RZf97l/wm+IEcmMfZPiAtToahHb3DGj6gAN9wcpLEX0=;
-        b=hrMB5ZaP4Yjnz8xBWVqJvRcMl13LeMonmtMw7dG4AoU8AXRM27V2jimNV18/K6BNKw
-         FTbms6VU+95pdhKENq459C+3c1H/Rqm7XhoIs21O10gw/hpMucSU3Z4oASubFDYoYzwN
-         fIa2/4TCdJpizS99cuuLs7iCXW/06SAbcc/D6FUiirBr7F6o2yp0Ef3UNvY6VkBj9N1G
-         QPBq7tK7boPjedv8un/vQvSkYtmg6LRheLhwHb68ajPLqNROJgMlAbXvFdcZcdbGo0v7
-         gAXsatZNy57n3H8DUFZUHGhb5Q6sil4PoFzpcfrSmNr0QZzpeIGm5cVkX13CaXm9C8Ke
-         RK5w==
-X-Gm-Message-State: AOAM531C1gyoaBLpJ1cPw8f/mly8xutVHf+z0Tv26mn6Vwys3PABO/te
-        S4tKQAHy3RirmNVeIbtgYMbqycDC8lp9Eh1PWak=
-X-Google-Smtp-Source: ABdhPJxUctgR8mrugv3j7TFo/kRDyG0JRILvhz1KCHVvBIwTzP0x82LtsNyJXrGQ5RORToBZfH6f6GPkpXEf3ZlIHGE=
-X-Received: by 2002:a2e:88ce:0:b0:24f:fff:603c with SMTP id
- a14-20020a2e88ce000000b0024f0fff603cmr5697435ljk.527.1650942618207; Mon, 25
- Apr 2022 20:10:18 -0700 (PDT)
+        with ESMTP id S1343689AbiDZHMf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 26 Apr 2022 03:12:35 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2123.outbound.protection.outlook.com [40.107.255.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DC5537BE3;
+        Tue, 26 Apr 2022 00:09:29 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nsRwxrQOLtR9X/+IdBAs2oURh6PIR4vTCa50szfe6Q4ImPMsi+6yeGda3S/VOfPB2y0E8BlWmf3q3J38+FKJOoNTVHzSVWHVV40Hzi21znrIJZsTePKMYcad4hw2FUSIyEWd4+mICePzQ+Oh8arZ2CDw1SyVSST9qgKIZvAhRLPevwiz8lr5GfVjVe0r/EVzVsl5r1sAjOXf6dgLCq8zq4NwWf20QRjddsBo7c0u1rtSojVzg9ypTcg0x6lCjIbuTIX2OJURbZ+liCsjXWA+vtzIUs8REOGFO/qPIXiC0Cb7Wfp24lq8kRBFkayvvKDFFAq+8Rx2UJFxy6ASIwpfnA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=U+Mwo+kI9IJ0TdazOsc4a6RXRcrGWWb77F1gLFHmXfo=;
+ b=JozYvhHnUHNXGUq9m/WE6n1FXLedfOPszoQ81LyQIosgb1kuE6N8HldM3OqMjdVNGlQmI3iiCFlFh1UyC2k53PwOC0XlOoQAembqBHuOqHe8xQF+YVslNPsx443cm3kY19kMA8dOpgYjEMlVk084R4Y5EMsct1c6Kn87UvQcNWWr7eyBeqqcXG+2oEcIy8wH5BmMb9ewK3ILykgBCp/66i/qld5pkjIPvHGeht72oK4TaUHksllWSq77BKILxhrn1+bfS4MyyDpoF56eKVsotNHevOsvVfF9usi7PJNgGkifzVMFCY5DgJ29SshAOtHryUbnrmBB54PrC74TpBGHTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo0.onmicrosoft.com;
+ s=selector2-vivo0-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=U+Mwo+kI9IJ0TdazOsc4a6RXRcrGWWb77F1gLFHmXfo=;
+ b=EM0rPDtx4pdJq7RkbN8+hvJQPlvByPCc9wlulTvfzfKgq+DJ6z9PrjX3FvZpIjZQz3szlQbX/2ECV3IW73T2xW5RZjwMSQEzoSJvnURri+HW0nRzPq+9NyrPBvxii9r4Sr0uSQPCmmErHfg3BdXPzYq1y+qNH1us3znW/IdjJIs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com (2603:1096:202:2f::10)
+ by SEZPR06MB5094.apcprd06.prod.outlook.com (2603:1096:101:39::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5186.14; Tue, 26 Apr
+ 2022 07:09:25 +0000
+Received: from HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::88e1:dc04:6851:ad08]) by HK2PR06MB3492.apcprd06.prod.outlook.com
+ ([fe80::88e1:dc04:6851:ad08%7]) with mapi id 15.20.5186.021; Tue, 26 Apr 2022
+ 07:09:25 +0000
+From:   Guo Zhengkui <guozhengkui@vivo.com>
+To:     Wenpeng Liang <liangwenpeng@huawei.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        linux-rdma@vger.kernel.org (open list:HISILICON ROCE DRIVER),
+        linux-kernel@vger.kernel.org (open list)
+Cc:     zhengkui_guo@outlook.com, Guo Zhengkui <guozhengkui@vivo.com>
+Subject: [PATCH linux-next] RDMA/hns: fix returnvar.cocci warning
+Date:   Tue, 26 Apr 2022 15:08:58 +0800
+Message-Id: <20220426070858.9098-1-guozhengkui@vivo.com>
+X-Mailer: git-send-email 2.20.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYCPR01CA0084.jpnprd01.prod.outlook.com
+ (2603:1096:405:3::24) To HK2PR06MB3492.apcprd06.prod.outlook.com
+ (2603:1096:202:2f::10)
 MIME-Version: 1.0
-References: <5de7d1a9-a7ac-aea5-d11c-49423d3f0bf1@gmail.com>
- <98ad3df7-b934-ad2b-49c6-bb07a06a5c4f@linux.dev> <dfba7eb7-8467-59b5-2c2a-071ed1e4949f@gmail.com>
-In-Reply-To: <dfba7eb7-8467-59b5-2c2a-071ed1e4949f@gmail.com>
-From:   Zhu Yanjun <zyjzyj2000@gmail.com>
-Date:   Tue, 26 Apr 2022 11:10:06 +0800
-Message-ID: <CAD=hENcsA5DqQMMnHEB-r07_4-PxJyVWNA6hCJjj2x0usfwrPg@mail.gmail.com>
-Subject: Re: bug report for rdma_rxe
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Yanjun Zhu <yanjun.zhu@linux.dev>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c94db07e-d23b-4dd8-3191-08da2753b204
+X-MS-TrafficTypeDiagnostic: SEZPR06MB5094:EE_
+X-Microsoft-Antispam-PRVS: <SEZPR06MB5094F320811372225371A8DEC7FB9@SEZPR06MB5094.apcprd06.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: PQlq+EabCa5Xvh0phdvOvxLFvSeMV767KXHeucZM+4tiqQVE58LieHA/kaDz2sJNNX02pW6KNA3ReZmFvDCziN5KcbME/Kq9DTA6em8MdQWpXEnwQiIXNfnFoBj96R794DGlXQAlSWa5jt2TCMeBrRB7MV1Us43UrgRs18CeKPkAqUcsM2ACVdbbu2eS8VSc70s1vjbozvBhqe2wRR2vesxF0mvOUxKs759sxZwfKvkb4ipjFha27DhkgMngA6Odi+4VYLtV4oAHwFn2K4ruVX9yH6lyPu2iwhXWgEHN8iWQveQfChxxBtzWzON14oM8xPJvvPObItqsNPEbqdtwvSJ03ZSe7Umj76AZqHcErs5HvjHoT+xHsO0E1Uu3aanWW6P9aJmN25WyKbdhc0oQOaa6dKhVRnhNsxxuH4f/pyuPhel0SaXCsl9EeBYnpVgRQACEu9dVyGKO7XltAcoe2ZO5JwYJprRPt0IPswSnUEa57gvpbk/b8LCvs4dJitGrGXnB8BsY3HWcTbBkOwUcpuDXPh3WZqvLOrmfHeEs+ZdMN6KEobWG7wh86pZ9c7tg4gKeH5vcxvIMI/sri+B9AtvCb662b6bJkalnGhfVMFlyLWxlRuRnNvRQ83PG/NiQZKqrmYUTl5pV33zpInlZ0edzoI3T6zVeEPkEJn75f4MK41j1eDxKwv9gZQpzJexPQblJ5K1810z4tlrHnljL1A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3492.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(6506007)(2616005)(86362001)(1076003)(5660300002)(6512007)(6666004)(26005)(508600001)(2906002)(52116002)(38350700002)(38100700002)(6486002)(8936002)(107886003)(186003)(83380400001)(8676002)(110136005)(66476007)(66556008)(316002)(4326008)(36756003)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pSr0Ylt8c7l6WJG/um8sjHOKPaP3P6ZqyAT1o4zE32v5cXUn62zkjI0CVQru?=
+ =?us-ascii?Q?5j0YzlmB33hO0v5+jr/NxMpeXMLn/FUgtQsULW4H/Jt+Qg6Jre4tvjhbN3r3?=
+ =?us-ascii?Q?JgfL2BLTVO3l/oL7AX4xIXC/7fGj5H3Etqg78pgzLVsfl7XmmmKFewcTSK4+?=
+ =?us-ascii?Q?2xghAcZCvABlsWg2+h1Kt3WXFYUj+m9E9K1sN39Np2zltViZTdufwyFMUppr?=
+ =?us-ascii?Q?8zD3W2rax4j81yY/Bw/7qvBzWEg/G9Ps1sxYx9BUUQJR6SkvRt57IXYa9lWd?=
+ =?us-ascii?Q?g9LNVEM9vljz/L5GgOQnPN+5OWQ5vzoCdgbIsP9xjaUE3DrLAOjqNWRA+2q9?=
+ =?us-ascii?Q?sCh0OoMrSEW9+lXo4eraq4rtj4rLYwdXxps/gNmEjhX4tXz9ZxcE/WlR72Bx?=
+ =?us-ascii?Q?ONY975w4KAg/ZSwEjb0HMnkqYTjukboCKkRK1DcdWzeG5IF7lbqSQ4o4Y2GZ?=
+ =?us-ascii?Q?fjdfsC4IsZ7b3+SwxDc2EKRA823b/WrD78G6MmmnGDVGNJdwqQ/n1bxjPKHN?=
+ =?us-ascii?Q?Jsdu3yDR8O4QrmFGkiwZrye999bTHmWyK+i+kx8NuMkpsZ9x1tHxuvVQRrds?=
+ =?us-ascii?Q?vHcW7axq/YFVB4Di4ix2DaSGYcedboUor00q3CH6ad6hIT8CWKAZzZTkcjix?=
+ =?us-ascii?Q?4w9HKCTl6fXj7GsEJfpMByp1Zc5yCfTAtW7slnl7YT4tiulIW6xWVLm0m3Sm?=
+ =?us-ascii?Q?r5p8DHc9CsX7DmXq9DXJN7OAYqjjrzQqrSC0b/mYv6MuzjJ90uV0fe0N3alw?=
+ =?us-ascii?Q?nRm/dzUI7wEGgMNWYgm8kjDz2cmawv9Qd9YmVbfrqVcGTV+cNPFLWbs9xmD4?=
+ =?us-ascii?Q?jQWPo12ukA/6knREJo/go6JeOwKyLQ8MX6jIvlBipRZiRtMcta4087mdnfoz?=
+ =?us-ascii?Q?cD56mNOh+D3/Xj7+ShEt589I7FOurISMCXAqY/A6Umwkv89pvwp+tkjZLUxw?=
+ =?us-ascii?Q?qzl65/dvYOEDJ9uwu8ttPJcVP1W28SQnM/82O9Hj/DO4cJh3s3SHCGsOpMAU?=
+ =?us-ascii?Q?C9oVJy3Seq+bDGaR9LF0qtuTK8gLDvjhUcUHgqR2ef7K28hdp+cJK0GSfrrU?=
+ =?us-ascii?Q?wjPRB8wvwY12ibEuW432IjWFgPDvtuqZqpvO+t8qPjOTGLqPBLCdydsNxaig?=
+ =?us-ascii?Q?4+gf+x2okbbuTAWstpmOCmceM9chMVQs17lFI8dvO2BLHf7KYjPs+yRxGwD3?=
+ =?us-ascii?Q?WQUg0+Iqmx9sVZ+mgnGrmxMK97WgXLYr05CI0fbIvBiU9eYbNr2N4OlCp5Jl?=
+ =?us-ascii?Q?4+Elv+qio9DlD2tcx2r2AM8bAgdbiuM+1KSg5qizs+JdzVy1zRjMNLmMBMzp?=
+ =?us-ascii?Q?4+pXrlxP/Xv5nCEs/6d0EW+NEuVbThCkfPBQLIG+6I5RYzvPgOlTEu9khTqa?=
+ =?us-ascii?Q?mA89fUrjPof87WWuzUmIsQpyqw5byjF6D+Yj4YGN6WcRSsJilBq7iY8g1sWC?=
+ =?us-ascii?Q?ZpFeRQmChyJLlcRmYdvbO3bTXR4JdVufu4cRGpY0nKlhdRPlie3/rQHfcXOp?=
+ =?us-ascii?Q?4gY84xeFYkej8zlBI5UXua1dPY4PkVGMgL6sxdcXP555C11aUH6bTl1+UfWd?=
+ =?us-ascii?Q?4Akw3gFqKd5dyJCpnpH79AddK75F+mCx8NPoUVQlj9wD89RGOQ4jLnXn/TVI?=
+ =?us-ascii?Q?+2n8qMYj+DMtwPGyL57u/8LMhlA2P1ILo8s+xzx6euvqOqeOGBBaaB8ejt8Y?=
+ =?us-ascii?Q?eXDVYSAKNgn7M61DI4Fn4sNt/qOdfMkQefm1bTKpkjKXWKxhCfOt99UR98sk?=
+ =?us-ascii?Q?y9HmVRqmEw=3D=3D?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c94db07e-d23b-4dd8-3191-08da2753b204
+X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3492.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Apr 2022 07:09:25.1859
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PzYFG/RTZu5oILm6XaMhkvz58UOA31+vbdWgCwXmMB6kLrtbvRla1KR++tD2Hc5fltLge8ivc7Ix30cfGC/Zgw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5094
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Apr 26, 2022 at 12:58 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
->
-> On 4/24/22 19:04, Yanjun Zhu wrote:
-> > =E5=9C=A8 2022/4/23 5:04, Bob Pearson =E5=86=99=E9=81=93:
-> >> Local operations in the rdma_rxe driver are not obviously idempotent. =
-But, the
-> >> RC retry mechanism backs up the send queue to the point of the wqe tha=
-t is
-> >> currently being acknowledged and re-walks the sq. Each send or write o=
-peration is
-> >> retried with the exception that the first one is truncated by the pack=
-ets already
-> >> having been acknowledged. Each read and atomic operation is resent exc=
-ept that
-> >> read data already received in the first wqe is not requested. But all =
-the
-> >> local operations are replayed. The problem is local invalidate which i=
-s destructive.
-> >> For example
-> >
-> > Is there any example or just your analysis?
->
-> I have a colleague at HPE who is testing Lustre/o2iblnd/rxe. They are tes=
-ting over a
-> highly reliable network so do not expect to see dropped or out of order p=
-ackets. But they
-> see multiple timeout flows. When working on rping a week ago I also saw l=
-ots of timeouts
-> and verified that the timeout code in rxe has the behavior that when a ne=
-w RC operation is
-> sent the retry timer is modified to go off at jiffies + qp->timeout_jiffi=
-es but only if
-> there is not a currently pending timer. Once set it is never cleared so i=
-t will fire
-> typically a few msec later initiating a retry flow. If IO operations are =
-frequent then
-> there will be a timeout every few msec (about 20 times a second for typic=
-al timeout values.)
-> o2iblnd uses fast reg MRs to write data to the target system and then loc=
-al invalidate
-> operations to invalidate the MR and then increments the key portion of th=
-e rkey and resets
-> the map and then does a reg mr operation. Retry flows cause the local inv=
-alidate and reg MR
-> operations to be re-executed over and over again. A single retry can caus=
-e a half a dozen
-> invalidate operations to be run with various rkeys and they mostly fail b=
-ecause they don't
-> match the current MR. This results in Lustre crashing.
->
-> Currently I am actually happy that the unneeded retries are happening bec=
-ause it makes
-> testing the retry code a lot easier. But eventually it would be good to c=
-lear or reset the timer
-> after the operation is completed which would greatly reduce the number of=
- retries. Also
+Fix the following coccicheck warning:
+drivers/infiniband/hw/hns/hns_roce_mr.c:343:5-8: Unneeded variable: "ret".
+Return "0" on line 351.
 
-This retry is triggered by RDMA/RXE or by some applications? And the
-mr is used the original one or allocate a new one?
+Signed-off-by: Guo Zhengkui <guozhengkui@vivo.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_mr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-If this retry is triggered by RDMA/RXE, and the original mr is freed
-and a new one is allocated, it is very similar to ODP.
-Currently ODP is not supported in RXE, but the behavior is very similar.
+diff --git a/drivers/infiniband/hw/hns/hns_roce_mr.c b/drivers/infiniband/hw/hns/hns_roce_mr.c
+index b389738d157f..867972c2a894 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_mr.c
++++ b/drivers/infiniband/hw/hns/hns_roce_mr.c
+@@ -340,7 +340,6 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibmr->device);
+ 	struct hns_roce_mr *mr = to_hr_mr(ibmr);
+-	int ret = 0;
+ 
+ 	if (hr_dev->hw->dereg_mr)
+ 		hr_dev->hw->dereg_mr(hr_dev);
+@@ -348,7 +347,7 @@ int hns_roce_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
+ 	hns_roce_mr_free(hr_dev, mr);
+ 	kfree(mr);
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ struct ib_mr *hns_roce_alloc_mr(struct ib_pd *pd, enum ib_mr_type mr_type,
+-- 
+2.20.1
 
-Zhu Yanjun
-
-> it will be important to figure out how the IBA intended for local invalid=
-ates and reg MRs to
-> work. The way they are now they cannot be successfully retried. Also mark=
-ing them as done
-> and skipping them in the retry sequence does not work. (It breaks some of=
- the blktests test
-> cases.)
->
-> > You know, sometimes your analysis is not always correct.
-> > To prove your analysis, please show us some solid example.
-> >
-> > Zhu Yanjun
-> >
-> >>
-> >> sq:    some operation that times out
-> >>     bind mw to mr
-> >>     some other operation
-> >>     invalidate mw
-> >>     invalidate mr
-> >>
-> >> can't be replayed because invalidating the mr makes the second bind fa=
-il.
-> >> There are lots of other examples where things go wrong.
-> >>
-> >> To make things worse the send queue timer is never cleared and for typ=
-ical
-> >> timeout values goes off every few msec whether anything actually faile=
-d.
-> >>
-> >> Bob
-> >
->
