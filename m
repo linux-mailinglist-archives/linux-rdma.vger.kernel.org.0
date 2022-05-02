@@ -2,73 +2,98 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6CA8516A75
-	for <lists+linux-rdma@lfdr.de>; Mon,  2 May 2022 07:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5D2516B27
+	for <lists+linux-rdma@lfdr.de>; Mon,  2 May 2022 09:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357900AbiEBF6a (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 2 May 2022 01:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48040 "EHLO
+        id S1358362AbiEBHRy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 2 May 2022 03:17:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243435AbiEBF6a (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 May 2022 01:58:30 -0400
-X-Greylist: delayed 907 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 01 May 2022 22:55:01 PDT
-Received: from sender2-op-o12.zoho.com.cn (sender2-op-o12.zoho.com.cn [163.53.93.243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDC73FBDB
-        for <linux-rdma@vger.kernel.org>; Sun,  1 May 2022 22:55:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1651469975;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:From:To:To:Cc:Cc:Message-ID:Subject:Subject:Date:Date:MIME-Version:Content-Transfer-Encoding:Content-Type:Message-Id:Reply-To;
-        bh=YmYbdCZgSkUFIeTNYDYHikphekilUEQkctqzm4qj0Vk=;
-        b=Vfsbd71Eq0EpR7UdbU/ucug1+R0uhDbecTaPOFB1Y+Uk4pSXCd9K86/uiunnLKM6
-        3l0jWD8SIXI9dRtdR9BI12N+725IaLv6NMG5Bl5706+P+58+M7BjeouJ+ln1uP+smKZ
-        j0+LLgOKZdBgSJeIwmnNLemGrumyvqPY9gWfL2uA=
-Received: from GigGun.. (113.116.156.201 [113.116.156.201]) by mx.zoho.com.cn
-        with SMTPS id 16514699734651004.6165712235154; Mon, 2 May 2022 13:39:33 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20220502053907.6388-1-cgxu519@mykernel.net>
-Subject: [RFC PATCH] RDMA/rxe: skip adjusting remote addr for write in retry operation
-Date:   Mon,  2 May 2022 01:39:07 -0400
-X-Mailer: git-send-email 2.32.0
+        with ESMTP id S1350633AbiEBHRx (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 2 May 2022 03:17:53 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4821F4B848
+        for <linux-rdma@vger.kernel.org>; Mon,  2 May 2022 00:14:21 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:194e:5782:c420:7f87])
+        by andre.telenet-ops.be with bizsmtp
+        id RjEK2700a28fWK501jEKBR; Mon, 02 May 2022 09:14:20 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1nlQGB-002lJZ-99; Mon, 02 May 2022 09:14:19 +0200
+Date:   Mon, 2 May 2022 09:14:19 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+X-X-Sender: geert@ramsan.of.borg
+To:     linux-kernel@vger.kernel.org
+cc:     Arnd Bergmann <arnd@arndb.de>, linux-sh@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-rdma@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: Build regressions/improvements in v5.18-rc5
+In-Reply-To: <20220502065353.2658957-1-geert@linux-m68k.org>
+Message-ID: <alpine.DEB.2.22.394.2205020912140.658493@ramsan.of.borg>
+References: <CAHk-=wjUhfhaes6_hMYDQFTbGjkmA-j2ZSeXZ32H66ufRfYrmQ@mail.gmail.com> <20220502065353.2658957-1-geert@linux-m68k.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE,SUSPICIOUS_RECIPS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-For write request the remote addr will be sent only with first packet
-so we don't have to adjust wqe->iova in retry operation.
+On Mon, 2 May 2022, Geert Uytterhoeven wrote:
+> JFYI, when comparing v5.18-rc5[1] to v5.18-rc4[3], the summaries are:
+>  - build errors: +6/-21
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- drivers/infiniband/sw/rxe/rxe_req.c | 2 --
- 1 file changed, 2 deletions(-)
+6 error regressions:
+   + /kisskb/src/arch/sh/kernel/machvec.c: error: array subscript 'struct sh_machine_vector[0]' is partly outside array bounds of 'long int[1]' [-Werror=array-bounds]:  => 105:33
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rx=
-e/rxe_req.c
-index ae5fbc79dd5c..f08010651ef7 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -33,8 +33,6 @@ static inline void retry_first_write_send(struct rxe_qp *=
-qp,
- =09=09} else {
- =09=09=09advance_dma_data(&wqe->dma, to_send);
- =09=09}
--=09=09if (mask & WR_WRITE_MASK)
--=09=09=09wqe->iova +=3D qp->mtu;
- =09}
- }
-=20
---=20
-2.35.1
+sh4-gcc11/se7750_defconfig
+sh4-gcc11/sh-defconfig
+sh4-gcc11/se7619_defconfig
+sh4-gcc11/sh-allmodconfig
+sh4-gcc11/sh-allyesconfig
+sh4-gcc11/sh-allnoconfig
 
+gcc-11 fallout
 
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: 'struct cpuinfo_um' has no member named 'x86_cache_size':  => 88:22
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: control reaches end of non-void function [-Werror=return-type]:  => 89:1
+   + /kisskb/src/drivers/infiniband/sw/rdmavt/qp.c: error: implicit declaration of function '__copy_user_nocache' [-Werror=implicit-function-declaration]:  => 100:2
+
+um-x86_64/um-all{yes,no}config
+
+   + /kisskb/src/include/linux/sh_intc.h: error: division 'sizeof (void *) / sizeof (void)' does not compute the number of array elements [-Werror=sizeof-pointer-div]:  => 100:63
+
+v5.18-rc5/sh4-gcc11/se7750_defconfig
+v5.18-rc5/sh4-gcc11/sh-defconfig
+v5.18-rc5/sh4-gcc11/se7619_defconfig
+v5.18-rc5/sh4-gcc11/sh-allmodconfig
+v5.18-rc5/sh4-gcc11/sh-allyesconfig
+v5.18-rc5/sh4-gcc11/sh-allnoconfig
+
+gcc-10/11 fallout, seen before for sh4-gcc10/se7750_defconfig and sh4-gcc10/se7619_defconfig
+
+   + {standard input}: Error: branch to a symbol in another ISA mode:  => 1295
+
+mips-gcc11/micro32r2_defconfig
+mips-gcc11/micro32r2el_defconfig
+
+gcc-11 fallout
+
+> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/672c0c5173427e6b3e2a9bbb7be51ceeec78093a/ (all 138 configs)
+> [3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/af2d861d4cd2a4da5137f795ee3509e6f944a25b/ (96 out of 138 configs)
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
