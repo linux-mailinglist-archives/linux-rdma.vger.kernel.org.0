@@ -2,125 +2,161 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D0151856A
-	for <lists+linux-rdma@lfdr.de>; Tue,  3 May 2022 15:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C6A5185CB
+	for <lists+linux-rdma@lfdr.de>; Tue,  3 May 2022 15:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbiECNbI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 3 May 2022 09:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        id S236378AbiECNrO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 3 May 2022 09:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232840AbiECNbH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 May 2022 09:31:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BD09227F
-        for <linux-rdma@vger.kernel.org>; Tue,  3 May 2022 06:27:34 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-281-NrXSpE7mPDKXmd5uSu6LLg-1; Tue, 03 May 2022 14:27:31 +0100
-X-MC-Unique: NrXSpE7mPDKXmd5uSu6LLg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.32; Tue, 3 May 2022 14:27:31 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.033; Tue, 3 May 2022 14:27:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Paolo Abeni' <pabeni@redhat.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Eric Dumazet <edumazet@google.com>
-CC:     Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        with ESMTP id S236392AbiECNrM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 3 May 2022 09:47:12 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89C91D32F
+        for <linux-rdma@vger.kernel.org>; Tue,  3 May 2022 06:43:39 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-2f7c424c66cso180419007b3.1
+        for <linux-rdma@vger.kernel.org>; Tue, 03 May 2022 06:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GDW9NFvTVUZU0OXiK1V5vkvO7rLAmfjO6t3+PGR4Adg=;
+        b=QgaEpgJAAyem65Q6TAKxwJJ3o1V+C7zObAPPgKlJM62+lc8DygEVsd+kYoEYkM16Fl
+         vitMPIHaEUJ9hGhopT4e1uv51ALgp9qB8NpKutqi8oD5KNfOlzeymJCPL9wLQMqMfZfa
+         gHgkLdEl3lrVRqMvjZeiosAb85yvrAbxdBDLHeGAfJlWEnxgVNoruJpbryO6HtlGHFdE
+         TGDReQmhU8Jwcqp5xdkxTOvk91Uwna7rkKD1Yu7G38UuLHX1HtUBPP1n7v452Aujr25B
+         FUUU62RlnvfoIgHhxDE7Wqxk4Cdl89PBphh7FMcF0ee2SDrJCdEsHQ1NN4+nCl89tghK
+         g2dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GDW9NFvTVUZU0OXiK1V5vkvO7rLAmfjO6t3+PGR4Adg=;
+        b=TJZkopieV2XCf0PufgwgcVXaFPPhOE0UXGZ8DJzZPg/fXNku1ICc6u0LbAhqHe3Y3U
+         OfHx/8W3P4NGpanPPIZIusOYmFMTAxpamXaJe4F6GDh/aap52afY44RqNJ8cscctG0Q0
+         gHkWB1ZkHRkv+EugUIEQExo4CTKF9M9yreKjH50kTnhWXWVfJNA4av9ikkYsowI6i3GA
+         7TcGc4f6BzcAbIdLxRRDkpyuoB2uHci63WBZtUEmZbqzo4gU5uheCkPrkTmUlxR8UA/c
+         Hbku9R1jiigLwLUrfnjyLL2sHgLdq+lRSdiAe1XZCqtS8CIm/qNCFanu6PTxc2YmaFO4
+         hRgA==
+X-Gm-Message-State: AOAM531ahlebqHcDi1/Vh7rJSM3p/wUPvBHrDwdO1LqO6DNNBa9GtlxQ
+        W3Yn6k6lePP5vJkh5y6mXTmQqB0LVyUMFmPLpA70mQ==
+X-Google-Smtp-Source: ABdhPJyNRiMmKn7C6XCkZGQqbYy63g4zeoEzquu1MeADlJuMPOJ3hIrnxuDlqew8AFLimody0G+bq16PwL2zsWwlQHM=
+X-Received: by 2002:a81:1d4e:0:b0:2f7:be8b:502e with SMTP id
+ d75-20020a811d4e000000b002f7be8b502emr15496205ywd.278.1651585418486; Tue, 03
+ May 2022 06:43:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <00000000000045dc96059f4d7b02@google.com> <000000000000f75af905d3ba0716@google.com>
+ <c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp>
+ <b0f99499-fb6a-b9ec-7bd3-f535f11a885d@I-love.SAKURA.ne.jp>
+ <5f90c2b8-283e-6ca5-65f9-3ea96df00984@I-love.SAKURA.ne.jp>
+ <f8ae5dcd-a5ed-2d8b-dd7a-08385e9c3675@I-love.SAKURA.ne.jp>
+ <CANn89iJukWcN9-fwk4HEH-StAjnTVJ34UiMsrN=mdRbwVpo8AA@mail.gmail.com>
+ <a5fb1fc4-2284-3359-f6a0-e4e390239d7b@I-love.SAKURA.ne.jp>
+ <3b6bc24c8cd3f896dcd480ff75715a2bf9b2db06.camel@redhat.com> <8783dad64b0d41af9624f923cb4e4f03@AcuMS.aculab.com>
+In-Reply-To: <8783dad64b0d41af9624f923cb4e4f03@AcuMS.aculab.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 3 May 2022 06:43:27 -0700
+Message-ID: <CANn89iJE5anTbyLJ0TdGAqGsE+GichY3YzQECjNUVMz=G3bcQg@mail.gmail.com>
+Subject: Re: [PATCH v2] net: rds: acquire refcount on TCP sockets
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
         netdev <netdev@vger.kernel.org>,
         syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
         OFED mailing list <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH v2] net: rds: acquire refcount on TCP sockets
-Thread-Topic: [PATCH v2] net: rds: acquire refcount on TCP sockets
-Thread-Index: AQHYXsyW1iInROXA4UOMkVmM8/hvqK0NI0Qg
-Date:   Tue, 3 May 2022 13:27:30 +0000
-Message-ID: <8783dad64b0d41af9624f923cb4e4f03@AcuMS.aculab.com>
-References: <00000000000045dc96059f4d7b02@google.com>
-         <000000000000f75af905d3ba0716@google.com>
-         <c389e47f-8f82-fd62-8c1d-d9481d2f71ff@I-love.SAKURA.ne.jp>
-         <b0f99499-fb6a-b9ec-7bd3-f535f11a885d@I-love.SAKURA.ne.jp>
-         <5f90c2b8-283e-6ca5-65f9-3ea96df00984@I-love.SAKURA.ne.jp>
-         <f8ae5dcd-a5ed-2d8b-dd7a-08385e9c3675@I-love.SAKURA.ne.jp>
-         <CANn89iJukWcN9-fwk4HEH-StAjnTVJ34UiMsrN=mdRbwVpo8AA@mail.gmail.com>
-         <a5fb1fc4-2284-3359-f6a0-e4e390239d7b@I-love.SAKURA.ne.jp>
- <3b6bc24c8cd3f896dcd480ff75715a2bf9b2db06.camel@redhat.com>
-In-Reply-To: <3b6bc24c8cd3f896dcd480ff75715a2bf9b2db06.camel@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-RnJvbTogUGFvbG8gQWJlbmkNCj4gU2VudDogMDMgTWF5IDIwMjIgMTA6MDMNCj4gDQo+IEhlbGxv
-LA0KPiANCj4gT24gTW9uLCAyMDIyLTA1LTAyIGF0IDEwOjQwICswOTAwLCBUZXRzdW8gSGFuZGEg
-d3JvdGU6DQo+ID4gc3l6Ym90IGlzIHJlcG9ydGluZyB1c2UtYWZ0ZXItZnJlZSByZWFkIGluIHRj
-cF9yZXRyYW5zbWl0X3RpbWVyKCkgWzFdLA0KPiA+IGZvciBUQ1Agc29ja2V0IHVzZWQgYnkgUkRT
-IGlzIGFjY2Vzc2luZyBzb2NrX25ldCgpIHdpdGhvdXQgYWNxdWlyaW5nIGENCj4gPiByZWZjb3Vu
-dCBvbiBuZXQgbmFtZXNwYWNlLiBTaW5jZSBUQ1AncyByZXRyYW5zbWlzc2lvbiBjYW4gaGFwcGVu
-IGFmdGVyDQo+ID4gYSBwcm9jZXNzIHdoaWNoIGNyZWF0ZWQgbmV0IG5hbWVzcGFjZSB0ZXJtaW5h
-dGVkLCB3ZSBuZWVkIHRvIGV4cGxpY2l0bHkNCj4gPiBhY3F1aXJlIGEgcmVmY291bnQuDQo+ID4N
-Cj4gPiBMaW5rOiBodHRwczovL3N5emthbGxlci5hcHBzcG90LmNvbS9idWc/ZXh0aWQ9Njk0MTIw
-ZTEwMDJjMTE3NzQ3ZWQgWzFdDQo+ID4gUmVwb3J0ZWQtYnk6IHN5emJvdCA8c3l6Ym90KzY5NDEy
-MGUxMDAyYzExNzc0N2VkQHN5emthbGxlci5hcHBzcG90bWFpbC5jb20+DQo+ID4gRml4ZXM6IDI2
-YWJlMTQzNzlmOGUyZmEgKCJuZXQ6IE1vZGlmeSBza19hbGxvYyB0byBub3QgcmVmZXJlbmNlIGNv
-dW50IHRoZSBuZXRucyBvZiBrZXJuZWwgc29ja2V0cy4iKQ0KPiA+IEZpeGVzOiA4YTY4MTczNjkx
-ZjAzNjYxICgibmV0OiBza19jbG9uZV9sb2NrKCkgc2hvdWxkIG9ubHkgZG8gZ2V0X25ldCgpIGlm
-IHRoZSBwYXJlbnQgaXMgbm90IGENCj4ga2VybmVsIHNvY2tldCIpDQo+ID4gU2lnbmVkLW9mZi1i
-eTogVGV0c3VvIEhhbmRhIDxwZW5ndWluLWtlcm5lbEBJLWxvdmUuU0FLVVJBLm5lLmpwPg0KPiA+
-IFRlc3RlZC1ieTogc3l6Ym90IDxzeXpib3QrNjk0MTIwZTEwMDJjMTE3NzQ3ZWRAc3l6a2FsbGVy
-LmFwcHNwb3RtYWlsLmNvbT4NCj4gPiAtLS0NCj4gPiBDaGFuZ2VzIGluIHYyOg0KPiA+ICAgQWRk
-IEZpeGVzOiB0YWcuDQo+ID4gICBNb3ZlIHRvIGluc2lkZSBsb2NrX3NvY2soKSBzZWN0aW9uLg0K
-PiA+DQo+ID4gSSBjaG9zZSAyNmFiZTE0Mzc5ZjhlMmZhIGFuZCA4YTY4MTczNjkxZjAzNjYxIHdo
-aWNoIHdlbnQgdG8gNC4yIGZvciBGaXhlczogdGFnLA0KPiA+IGZvciByZWZjb3VudCB3YXMgaW1w
-bGljaXRseSB0YWtlbiB3aGVuIDcwMDQxMDg4ZTNiOTc2NjIgKCJSRFM6IEFkZCBUQ1AgdHJhbnNw
-b3J0DQo+ID4gdG8gUkRTIikgd2FzIGFkZGVkIHRvIDIuNi4zMi4NCj4gPg0KPiA+ICBuZXQvcmRz
-L3RjcC5jIHwgOCArKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCsp
-DQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvbmV0L3Jkcy90Y3AuYyBiL25ldC9yZHMvdGNwLmMNCj4g
-PiBpbmRleCA1MzI3ZDEzMGM0YjUuLjJmNjM4ZjhiN2IxZSAxMDA2NDQNCj4gPiAtLS0gYS9uZXQv
-cmRzL3RjcC5jDQo+ID4gKysrIGIvbmV0L3Jkcy90Y3AuYw0KPiA+IEBAIC00OTUsNiArNDk1LDE0
-IEBAIHZvaWQgcmRzX3RjcF90dW5lKHN0cnVjdCBzb2NrZXQgKnNvY2spDQo+ID4NCj4gPiAgCXRj
-cF9zb2NrX3NldF9ub2RlbGF5KHNvY2stPnNrKTsNCj4gPiAgCWxvY2tfc29jayhzayk7DQo+ID4g
-KwkvKiBUQ1AgdGltZXIgZnVuY3Rpb25zIG1pZ2h0IGFjY2VzcyBuZXQgbmFtZXNwYWNlIGV2ZW4g
-YWZ0ZXINCj4gPiArCSAqIGEgcHJvY2VzcyB3aGljaCBjcmVhdGVkIHRoaXMgbmV0IG5hbWVzcGFj
-ZSB0ZXJtaW5hdGVkLg0KPiA+ICsJICovDQo+ID4gKwlpZiAoIXNrLT5za19uZXRfcmVmY250KSB7
-DQo+ID4gKwkJc2stPnNrX25ldF9yZWZjbnQgPSAxOw0KPiA+ICsJCWdldF9uZXRfdHJhY2sobmV0
-LCAmc2stPm5zX3RyYWNrZXIsIEdGUF9LRVJORUwpOw0KPiA+ICsJCXNvY2tfaW51c2VfYWRkKG5l
-dCwgMSk7DQo+ID4gKwl9DQo+ID4gIAlpZiAocnRuLT5zbmRidWZfc2l6ZSA+IDApIHsNCj4gPiAg
-CQlzay0+c2tfc25kYnVmID0gcnRuLT5zbmRidWZfc2l6ZTsNCj4gPiAgCQlzay0+c2tfdXNlcmxv
-Y2tzIHw9IFNPQ0tfU05EQlVGX0xPQ0s7DQo+IA0KPiBUaGlzIGxvb2tzIGVxdWl2YWxlbnQgdG8g
-dGhlIGZpeCBwcmVzZW50ZWQgaGVyZToNCj4gDQo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2Fs
-bC9DQU5uODlpKzQ4NGZmcWI5M2FRbTFOLXRqeHh2YjNXREtYMEViRDczMThSd1Jnc2F0andAbWFp
-bC5nbWFpbC5jb20vDQo+IA0KPiBidXQgdGhlIGxhdHRlciBsb29rcyBhIG1vcmUgZ2VuZXJpYyBz
-b2x1dGlvbi4gQFRldHN1byBjb3VsZCB5b3UgcGxlYXNlDQo+IHRlc3QgdGhlIGFib3ZlIGluIHlv
-dXIgc2V0dXA/DQoNCldvdWxkbid0IGEgbW9yZSBnZW5lcmljIHNvbHV0aW9uIGJlIHRvIGFkZCBh
-IGZsYWcgdG8gc29ja19jcmVhdGVfa2VybigpDQpzbyB0aGF0IGl0IGFjcXVpcmVzIGEgcmVmZXJl
-bmNlIHRvIHRoZSBuYW1lc3BhY2U/DQpUaGlzIGNvdWxkIGJlIGEgYml0IG9uIG9uZSBvZiB0aGUg
-ZXhpc3RpbmcgcGFyYW1ldGVycyAtIGxpa2UgU09DS19OT05CTE9DSy4NCg0KSSd2ZSBhIGRyaXZl
-ciB0aGF0IHVzZXMgX19zb2NrX2NyZWF0ZSgpIGluIG9yZGVyIHRvIGdldCB0aGF0IHJlZmVyZW5j
-ZS4NCkknbSBwcmV0dHkgc3VyZSB0aGUgZXh0cmEgJ3NlY3VyaXR5JyBjaGVjayB3aWxsIG5ldmVy
-IGZhaWwuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1s
-ZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJh
-dGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Tue, May 3, 2022 at 6:27 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Paolo Abeni
+> > Sent: 03 May 2022 10:03
+> >
+> > Hello,
+> >
+> > On Mon, 2022-05-02 at 10:40 +0900, Tetsuo Handa wrote:
+> > > syzbot is reporting use-after-free read in tcp_retransmit_timer() [1],
+> > > for TCP socket used by RDS is accessing sock_net() without acquiring a
+> > > refcount on net namespace. Since TCP's retransmission can happen after
+> > > a process which created net namespace terminated, we need to explicitly
+> > > acquire a refcount.
+> > >
+> > > Link: https://syzkaller.appspot.com/bug?extid=694120e1002c117747ed [1]
+> > > Reported-by: syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+> > > Fixes: 26abe14379f8e2fa ("net: Modify sk_alloc to not reference count the netns of kernel sockets.")
+> > > Fixes: 8a68173691f03661 ("net: sk_clone_lock() should only do get_net() if the parent is not a
+> > kernel socket")
+> > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > > Tested-by: syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+> > > ---
+> > > Changes in v2:
+> > >   Add Fixes: tag.
+> > >   Move to inside lock_sock() section.
+> > >
+> > > I chose 26abe14379f8e2fa and 8a68173691f03661 which went to 4.2 for Fixes: tag,
+> > > for refcount was implicitly taken when 70041088e3b97662 ("RDS: Add TCP transport
+> > > to RDS") was added to 2.6.32.
+> > >
+> > >  net/rds/tcp.c | 8 ++++++++
+> > >  1 file changed, 8 insertions(+)
+> > >
+> > > diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+> > > index 5327d130c4b5..2f638f8b7b1e 100644
+> > > --- a/net/rds/tcp.c
+> > > +++ b/net/rds/tcp.c
+> > > @@ -495,6 +495,14 @@ void rds_tcp_tune(struct socket *sock)
+> > >
+> > >     tcp_sock_set_nodelay(sock->sk);
+> > >     lock_sock(sk);
+> > > +   /* TCP timer functions might access net namespace even after
+> > > +    * a process which created this net namespace terminated.
+> > > +    */
+> > > +   if (!sk->sk_net_refcnt) {
+> > > +           sk->sk_net_refcnt = 1;
+> > > +           get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
+> > > +           sock_inuse_add(net, 1);
+> > > +   }
+> > >     if (rtn->sndbuf_size > 0) {
+> > >             sk->sk_sndbuf = rtn->sndbuf_size;
+> > >             sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
+> >
+> > This looks equivalent to the fix presented here:
+> >
+> > https://lore.kernel.org/all/CANn89i+484ffqb93aQm1N-tjxxvb3WDKX0EbD7318RwRgsatjw@mail.gmail.com/
+> >
+> > but the latter looks a more generic solution. @Tetsuo could you please
+> > test the above in your setup?
+>
+> Wouldn't a more generic solution be to add a flag to sock_create_kern()
+> so that it acquires a reference to the namespace?
+> This could be a bit on one of the existing parameters - like SOCK_NONBLOCK.
+>
+> I've a driver that uses __sock_create() in order to get that reference.
+> I'm pretty sure the extra 'security' check will never fail.
+>
 
+This would be silly really.
+
+Definition of a 'kernel socket' is that it does not hold a reference
+to the namespace.
+(otherwise a netns could not be destroyed by user space)
+
+A kernel layer using kernel sockets needs to properly dismantle them
+when a namespace is destroyed.
+
+In the RDS case, the socket was a user socket, or RDS lacked proper
+tracking of all the sockets
+so that they can be dismantled properly.
