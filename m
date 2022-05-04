@@ -2,152 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A06DF51AC8B
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 20:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B56DF51ACD1
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 20:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1376860AbiEDSS1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 14:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        id S1377065AbiEDSc6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 14:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376834AbiEDSSV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 14:18:21 -0400
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F698A7C9
-        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 10:38:53 -0700 (PDT)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-e93bbb54f9so1879620fac.12
-        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 10:38:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:from
-         :subject:content-transfer-encoding;
-        bh=DGzZSw/awxeuepH+l94VTGTJCKR5bVfYV3OiIM0dxA0=;
-        b=Iehn+izQ5P3JZgmPoMQEUsLPINO6YPfnXDrNbUSwonWsF7xzQ5zNRYuAIbwvjPwCwT
-         hnkT74q1C/t6xp7AI+t+vM6T/Z/b8uOdSUyyj/gzHAyeYNzNSLbeLD7J9D5xUbVEQn6E
-         dcNJIPkSrSMkPTx7fHgetArLuKSMsnCVg5sYRCzO8MtNYl2iK8tbLk6mJ7Ei5DOR20qI
-         tFcbVJ1SnzGKVMb/azQvTzPV7XOWDLJhg5WjY9nL5xwio/zFhnC17lGI2Zefjizyf8HK
-         FZeD2mNTIFyR4wQfgaixz4F5NmK439nSsyy5OJhaYhcVPfBsZ6Ff7K/Zg4BchycXK5K4
-         0B1A==
+        with ESMTP id S1376932AbiEDScm (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 14:32:42 -0400
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C50E5AA43;
+        Wed,  4 May 2022 11:09:11 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id m6-20020a05683023a600b0060612720715so1395504ots.10;
+        Wed, 04 May 2022 11:09:11 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:from:subject:content-transfer-encoding;
-        bh=DGzZSw/awxeuepH+l94VTGTJCKR5bVfYV3OiIM0dxA0=;
-        b=dzlL7ZwuPv/9rY3RrB0k7i0hZcK8oH/rtbYlgQtmhAQSfyWccyM5IrG6XKD4QhwSMV
-         IEsA3GApBKhZBSv7DVTD6VT5g6P61WLhlHUSebxm0HaYsgmaWTZ1aXtX+iSLBlVRR4YM
-         UejmMafMr2baZPcMfz5kJxSiipnhps349wEG3twKE4Zo5hAB943DlTCwM9H+yVx4fM3L
-         DtHzp0XT+8CVaLC1UeNMiZEdCogeFUB/kV4xQQCaHV4/R3hFOa2sZIYT3CSgMWYdevgJ
-         c91cMElxHJ+cSWv8YskKu+mLqsSBGIOeBJNqSz5uUbW41/a1CQzsZImkVAsQdiBEgnbj
-         GRXA==
-X-Gm-Message-State: AOAM533iYG/b0br75mZP4LdoBQR5/HotIh1a/HLF+GeMDErXeAe0mAQ7
-        aDVH+7hjTy+jJ//yvLnp3bLkdq8euZU=
-X-Google-Smtp-Source: ABdhPJyLhKvipdPQYF3lg1Xko34cPO9oBkqKkk+G+NIydel1/KTrTljeKWt7QK6AosrxqjQ3cx3L3g==
-X-Received: by 2002:a05:6870:6006:b0:e5:e6f1:5f2a with SMTP id t6-20020a056870600600b000e5e6f15f2amr316685oaa.160.1651685932846;
-        Wed, 04 May 2022 10:38:52 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:1840:1391:d605:ccf5? (2603-8081-140c-1a00-1840-1391-d605-ccf5.res6.spectrum.com. [2603:8081:140c:1a00:1840:1391:d605:ccf5])
-        by smtp.gmail.com with ESMTPSA id l25-20020a9d7359000000b006062836c4f4sm2848528otk.71.2022.05.04.10.38.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 May 2022 10:38:52 -0700 (PDT)
-Message-ID: <b2174369-07e5-1e0c-3c09-ac92cff9949d@gmail.com>
-Date:   Wed, 4 May 2022 12:38:51 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D+E9lNuRbHFdd170vr+MtjOcic+cq6LuKuOZKRSFmmQ=;
+        b=hqu6R1IRae0VoX6RVScHw+Zzo1GjIz7JEVjL/qj/M5RsjpSzZPnxbWaJ2QRNj9pG/V
+         GzcagHr+46Vvmokee05IR5m2irmd6EgL7Zj5NeOxB9mO4H+0VWs7t+QY6SdSEHLAFOQX
+         7nlxFOlTSSaPyJczzOi0IByyUPBRQBxkBJureHxsnNNwZLVdOxVmsPv3XR9dms/Hhmdq
+         Dpei6T4pf7hR9BSOp3RbmeuXVXYkTBZhjTdTpNg8Sjcc5Id2RNDvW92doze4AoQiouKc
+         /p5ZsjI6uJj0BqaJNqAfTwSy3ZnrnJ6J4Wl3iDw286tyYbPdWZk0VQKlkpwQfXgmyYMV
+         dCDg==
+X-Gm-Message-State: AOAM531GBGiEJMipM7x6IPEegxYs2k8skR7Jmuzu2kokd0nLw2UfSWFh
+        7VEkFE2UyuEFyw5s9SPLig==
+X-Google-Smtp-Source: ABdhPJz7UxGCoN/1mtQLUptxPhW193aedSmrIFdTLYGH8vHQEwAOv7HLwELKhlP+txzkjgVxGZbMKA==
+X-Received: by 2002:a05:6830:116:b0:606:3fb1:e89e with SMTP id i22-20020a056830011600b006063fb1e89emr2227922otp.310.1651687750783;
+        Wed, 04 May 2022 11:09:10 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id d19-20020a4ad353000000b0035eb4e5a6bfsm6240803oos.21.2022.05.04.11.09.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 May 2022 11:09:10 -0700 (PDT)
+Received: (nullmailer pid 1975953 invoked by uid 1000);
+        Wed, 04 May 2022 18:09:09 -0000
+Date:   Wed, 4 May 2022 13:09:09 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-xtensa@linux-xtensa.org, devicetree@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org, linux-hardening@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-wireless@vger.kernel.org, llvm@lists.linux.dev,
+        netdev@vger.kernel.org, selinux@vger.kernel.org
+Subject: Re: [PATCH 29/32] xtensa: Use mem_to_flex_dup() with struct property
+Message-ID: <YnKbaXEUHyu+btOD@robh.at.kernel.org>
+References: <20220504014440.3697851-1-keescook@chromium.org>
+ <20220504014440.3697851-30-keescook@chromium.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Content-Language: en-US
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Jason Gunthorpe <jgg@nvidia.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: Suspicious code in rxe requester and completer tasklets
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220504014440.3697851-30-keescook@chromium.org>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I am continuing to chase some bugs seen here at HPE which were centered on spurious retries.
-In the course of this I have been looking carefully at data sharing between the request side
-tasklets (requester and completer) and have noticed the following.
+Gmail won't send this, so I've trimmed the recipients...
 
-Under light load the two tasklets call/schedule each other so tend to run on the same cpu
-most of the time. Under heavy load the completer tasklet can get scheduled from the NAPI thread
-and run multiple cycles while the requester tasklet gets scheduled from the post send verbs API
-and can also run multiple cycles thus you can see two different cpus remaining active. So
-basically we can make no assumption about the relative timing of shared data accesses between
-the two tasklets and any other threads that also access shared data.
+On Tue, May 03, 2022 at 06:44:38PM -0700, Kees Cook wrote:
+> As part of the work to perform bounds checking on all memcpy() uses,
+> replace the open-coded a deserialization of bytes out of memory into a
+> trailing flexible array by using a flex_array.h helper to perform the
+> allocation, bounds checking, and copying.
+> 
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Frank Rowand <frowand.list@gmail.com>
+> Cc: Guenter Roeck <linux@roeck-us.net>
+> Cc: linux-xtensa@linux-xtensa.org
+> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/xtensa/platforms/xtfpga/setup.c | 9 +++------
+>  include/linux/of.h                   | 3 ++-
+>  2 files changed, 5 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/xtensa/platforms/xtfpga/setup.c b/arch/xtensa/platforms/xtfpga/setup.c
+> index 538e6748e85a..31c1fa4ba4ec 100644
+> --- a/arch/xtensa/platforms/xtfpga/setup.c
+> +++ b/arch/xtensa/platforms/xtfpga/setup.c
+> @@ -102,7 +102,7 @@ CLK_OF_DECLARE(xtfpga_clk, "cdns,xtfpga-clock", xtfpga_clk_setup);
+>  #define MAC_LEN 6
+>  static void __init update_local_mac(struct device_node *node)
+>  {
+> -	struct property *newmac;
+> +	struct property *newmac = NULL;
+>  	const u8* macaddr;
+>  	int prop_len;
+>  
+> @@ -110,19 +110,16 @@ static void __init update_local_mac(struct device_node *node)
+>  	if (macaddr == NULL || prop_len != MAC_LEN)
+>  		return;
+>  
+> -	newmac = kzalloc(sizeof(*newmac) + MAC_LEN, GFP_KERNEL);
+> -	if (newmac == NULL)
+> +	if (mem_to_flex_dup(&newmac, macaddr, MAC_LEN, GFP_KERNEL))
+>  		return;
+>  
+> -	newmac->value = newmac + 1;
+> -	newmac->length = MAC_LEN;
+> +	newmac->value = newmac->contents;
+>  	newmac->name = kstrdup("local-mac-address", GFP_KERNEL);
+>  	if (newmac->name == NULL) {
+>  		kfree(newmac);
+>  		return;
+>  	}
+>  
+> -	memcpy(newmac->value, macaddr, MAC_LEN);
+>  	((u8*)newmac->value)[5] = (*(u32*)DIP_SWITCHES_VADDR) & 0x3f;
+>  	of_update_property(node, newmac);
+>  }
+> diff --git a/include/linux/of.h b/include/linux/of.h
+> index 17741eee0ca4..efb0f419fd1f 100644
+> --- a/include/linux/of.h
+> +++ b/include/linux/of.h
+> @@ -30,7 +30,7 @@ typedef u32 ihandle;
+>  
+>  struct property {
+>  	char	*name;
+> -	int	length;
+> +	DECLARE_FLEX_ARRAY_ELEMENTS_COUNT(int, length);
+>  	void	*value;
+>  	struct property *next;
+>  #if defined(CONFIG_OF_DYNAMIC) || defined(CONFIG_SPARC)
+> @@ -42,6 +42,7 @@ struct property {
+>  #if defined(CONFIG_OF_KOBJ)
+>  	struct bin_attribute attr;
+>  #endif
+> +	DECLARE_FLEX_ARRAY_ELEMENTS(u8, contents);
 
-The code is written as though protection was an afterthought. There are a few cases where
-atomic_t are used and in one case a lock is added but in other cases no effort is made to
-protect shared data accesses. A good example is in complete_ack() in rxe_comp.c which has
+99.9% of the time, this is not where the property value is stored as it 
+points into an FDT blob. I suppose that is okay, but just want to make 
+sure.
 
-        if (wqe->has_rd_atomic) {
+The DT API for creating new nodes and properties is horrible as it is 
+multiple allocs and strdups which makes for tricky error paths. A better 
+API to centralize it would be welcome, but if this is the only case you 
+came across it's certainly not a requirement.
 
-                wqe->has_rd_atomic = 0;
-
-                atomic_inc(&qp->req.rd_atomic);
-
-                if (qp->req.need_rd_atomic) {
-
-                        qp->comp.timeout_retry = 0;
-
-                        qp->req.need_rd_atomic = 0;
-
-                        rxe_run_task(&qp->req.task, 0);
-
-                }
-
-        }
-
-
-and check_init_depth() in rxe_req.c
-
-static inline int check_init_depth(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
-
-{
-
-        int depth;
-
-
-
-        if (wqe->has_rd_atomic)
-
-                return 0;
-
-
-
-        qp->req.need_rd_atomic = 1;
-
-        depth = atomic_dec_return(&qp->req.rd_atomic);
-
-
-
-        if (depth >= 0) {
-
-                qp->req.need_rd_atomic = 0;
-
-                wqe->has_rd_atomic = 1;
-
-                return 0;
-
-        }
-
-
-
-        atomic_inc(&qp->req.rd_atomic);
-
-        return -EAGAIN;
-
-}
-
-
-It makes my head hurt trying to figure out all the combinations in this mess. Both of
-these can run multiple times as well with retries with arbitrary relative timing.
-
-This code may be perfect but it feels quite unsafe to me.
-
-Bob 
+Rob
