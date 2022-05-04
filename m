@@ -2,361 +2,152 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB0F51AE8D
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 21:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC4B51AEDA
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 22:15:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377833AbiEDUCI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 16:02:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34892 "EHLO
+        id S237034AbiEDUTK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 16:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377821AbiEDUBz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 16:01:55 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985984EDE8
-        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 12:58:15 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id g6so4940256ejw.1
-        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 12:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y+sByE56HbVf5kRX6gGxIKl4lkDcQYxYxjANal7cqo4=;
-        b=Fisf8qNfLenDK0j792maHiYPMMvmyhGB9B3J/xS9stoAM/UZoSn3s9eWa4z58SqqtN
-         zwNzc/F7jGucn3q+uOerwwvhkYcHR8WadSDg35wFqZ6iJOtuV3DgeIHYCsICPjn3FRC5
-         ijS3ruVDVcid8vwK6Aeyu8cvVWuqX4vHHcMprgjz8mGjIqaTTVh5y7xE1A9w5vPgc3/M
-         9OL1YFUN+X3Smqy7ONv67Xs9IxNQQJThHBH0mRzDjCqw6Y6Boyru+xViNBlwab5eTP66
-         Ql7OyvNLc8tFoVxvf1pFaiO/JKRt9GNoTAQHusID9bvyAzw/qXdqG5nBEcpTVWJq8YZ4
-         Z1Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y+sByE56HbVf5kRX6gGxIKl4lkDcQYxYxjANal7cqo4=;
-        b=ahlzSSuXHpuoaJ4//3W4BARqqMlABQeRIaFy+n9nAMLr7MnTDoNFSQR4/BXpkv/KGz
-         OVzwo1K9sxiBSGKt3EF0g+H4DDmStoTWtjfum9SU9O+uhz3hqsS9tqvTpYNrcZ0ApYiI
-         ZORrseU2QHoRb9E5gDClh29H8GOtzZn9txVxrXOmzS4FDsWlzlv37ak+dbrNCsQuxtVO
-         nszxz+1PqYk3BH7lKL5JbmVj1wNsjTRnoTCSFvJWZWA2Vj8LbQDrcNCkU5GAzNE2+32h
-         YHaJk+isyNchYCvHf10b6j7qd+CKVBN1p8Qy7PHwanRLmUFMmdOY5w95KDJavGNymlyE
-         THdQ==
-X-Gm-Message-State: AOAM531HzlitXRoBcLTXKmfEhvdbjq0HpSxh+fb0JGHRDbUe8ejgPbGV
-        9O/cGmZC78mJV29oXuWrjvoaHzs40HnjqpTKvuooeA==
-X-Google-Smtp-Source: ABdhPJyNqylHJlc3dOLmSwn3LLwT4ktliGhTIZtJUbCp6p9cyFNeSQSMHaaSeuuF72ZsBGrGa7DMKOVMS/2gIc+sdec=
-X-Received: by 2002:a17:907:9726:b0:6f4:c0e:40ce with SMTP id
- jg38-20020a170907972600b006f40c0e40cemr21300141ejc.170.1651694293700; Wed, 04
- May 2022 12:58:13 -0700 (PDT)
+        with ESMTP id S1377953AbiEDUSz (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 16:18:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81BB662FB;
+        Wed,  4 May 2022 13:15:17 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1651695314;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2oJD7k+4DnOtUc+hYYmeV/3FEHnovMfe+24BdevlrYw=;
+        b=ESY3+67uixkgq/KnTmlbfh/J1esj5LQdSZff0zyIDPvxmM6KQcWk26aEmRWKHmLLWFurHQ
+        a5jUnBetFH+EW1367CNQoH+OSRAiVtzbTpfKIoKjBegg5eDD41Ytux9Ne2C4glXX1lWC6Q
+        JT6Ucq3++D0XX/AVNFoZA2NsjBq4Qs9+fk7EqgfgEC84QKUTjWV8/pzJEWjwA6vZAMMegI
+        6TO4CQZGYW1g07XBCFkEdX4YoAcdlMgxNgQH4qw5ZQOQZcVL7mwFmzYBslK12slf+cmmqH
+        mCaSyJttDTbQMmzawol2JsQDZnRzNWQZXTjxOLxtnUIhtJiKRtrXWRlOPnLAFA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1651695315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2oJD7k+4DnOtUc+hYYmeV/3FEHnovMfe+24BdevlrYw=;
+        b=z7V/iS1I/z0AcRhPiegimDhqSc9oxg7BG2knHRxNmH83LE8hyYBQpG6IbzvBjXno08JE75
+        xn7/LaaLV0qUHqBg==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Christoph Lameter <cl@gentwo.de>, linux-kernel@vger.kernel.org,
+        Nitesh Lal <nilal@redhat.com>,
+        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Oscar Shiang <oscar0225@livemail.tw>,
+        linux-rdma@vger.kernel.org
+Subject: Re: [patch v12 00/13] extensible prctl task isolation interface and
+ vmstat sync
+In-Reply-To: <YnLMc5X8MZElk0NT@fuller.cnet>
+References: <20220315153132.717153751@fedora.localdomain>
+ <alpine.DEB.2.22.394.2204271049050.159551@gentwo.de>
+ <YnF7CjzYBhASi1Eo@fuller.cnet> <87h765juyk.ffs@tglx>
+ <YnLMc5X8MZElk0NT@fuller.cnet>
+Date:   Wed, 04 May 2022 22:15:14 +0200
+Message-ID: <871qx9jbql.ffs@tglx>
 MIME-Version: 1.0
-References: <20220504014440.3697851-1-keescook@chromium.org> <20220504014440.3697851-4-keescook@chromium.org>
-In-Reply-To: <20220504014440.3697851-4-keescook@chromium.org>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 4 May 2022 14:58:02 -0500
-Message-ID: <CAGS_qxrPauYtkrfB37ne9bOXJR2JQc4=jaJP5tGN4mnha7mANg@mail.gmail.com>
-Subject: Re: [PATCH 03/32] flex_array: Add Kunit tests
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        Alexei Starovoitov <ast@kernel.org>,
-        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Baowen Zheng <baowen.zheng@corigine.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Christian Brauner <brauner@kernel.org>,
-        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Eli Cohen <elic@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hulk Robot <hulkci@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        John Keeping <john@metanate.com>,
-        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
-        Keith Packard <keithp@keithp.com>, keyrings@vger.kernel.org,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Louis Peens <louis.peens@corigine.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Rich Felker <dalias@aerifal.cx>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, selinux@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        SHA-cyfmac-dev-list@infineon.com,
-        Simon Horman <simon.horman@corigine.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
-        Udipto Goswami <quic_ugoswami@quicinc.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        Xiu Jianfeng <xiujianfeng@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 3, 2022 at 8:47 PM Kees Cook <keescook@chromium.org> wrote:
-> +#define COMPARE_STRUCTS(STRUCT_A, STRUCT_B)    do {                    \
-> +       STRUCT_A *ptr_A;                                                \
-> +       STRUCT_B *ptr_B;                                                \
-> +       int rc;                                                         \
-> +       size_t size_A, size_B;                                          \
-> +                                                                       \
-> +       /* matching types for flex array elements and count */          \
-> +       KUNIT_EXPECT_EQ(test, sizeof(*ptr_A), sizeof(*ptr_B));          \
-> +       KUNIT_EXPECT_TRUE(test, __same_type(*ptr_A->data,               \
-> +               *ptr_B->__flex_array_elements));                        \
+On Wed, May 04 2022 at 15:56, Marcelo Tosatti wrote:
+> On Wed, May 04, 2022 at 03:20:03PM +0200, Thomas Gleixner wrote:
+>> Can we please focus on the initial problem of
+>> providing a sensible isolation mechanism with well defined semantics?
+>
+> Case 2, however, was implicitly suggested by you (or at least i
+> understood that):
+>
+> "Summary: The problem to be solved cannot be restricted to
+>
+>     self_defined_important_task(OWN_WORLD);
+>
+> Policy is not a binary on/off problem. It's manifold across all levels
+> of the stack and only a kernel problem when it comes down to the last
+> line of defence.
+>
+> Up to the point where the kernel puts the line of last defence, policy
+> is defined by the user/admin via mechanims provided by the kernel.
+>
+> Emphasis on "mechanims provided by the kernel", aka. user API.
+>
+> Just in case, I hope that I don't have to explain what level of scrunity
+> and thought this requires."
 
-Leaving some minor suggestions to go along with David's comments.
+Correct. This reasoning is still valid and I haven't changed my opinion
+on that since then.
 
-Should we make these KUNIT_ASSERT_.* instead?
-I assume if we have a type-mismatch, then we should bail out instead
-of continuing to produce more error messages.
+My main objections against the proposed solution back then were the all
+or nothing approach and the implicit hard coded policies.
 
-> +       KUNIT_EXPECT_TRUE(test, __same_type(ptr_A->datalen,             \
-> +               ptr_B->__flex_array_elements_count));                   \
-> +       KUNIT_EXPECT_EQ(test, sizeof(*ptr_A->data),                     \
-> +                             sizeof(*ptr_B->__flex_array_elements));   \
-> +       KUNIT_EXPECT_EQ(test, offsetof(typeof(*ptr_A), data),           \
-> +                             offsetof(typeof(*ptr_B),                  \
-> +                                      __flex_array_elements));         \
-> +       KUNIT_EXPECT_EQ(test, offsetof(typeof(*ptr_A), datalen),        \
-> +                             offsetof(typeof(*ptr_B),                  \
-> +                                      __flex_array_elements_count));   \
-> +                                                                       \
-> +       /* struct_size() vs __fas_bytes() */                            \
-> +       size_A = struct_size(ptr_A, data, 13);                          \
-> +       rc = __fas_bytes(ptr_B, __flex_array_elements,                  \
-> +                        __flex_array_elements_count, 13, &size_B);     \
-> +       KUNIT_EXPECT_EQ(test, rc, 0);                                   \
+> The idea, as i understood was that certain task isolation features (or
+> they parameters) might have to be changed at runtime (which depends on
+> the task isolation features themselves, and the plan is to create
+> an extensible interface).
 
-Hmm, what do you think about inlining the call/dropping rc?
+Again. I'm not against useful controls to select the isolation an
+application requires. I'm neither against extensible interfaces.
 
-i.e. something like
-KUNIT_EXPECT_EQ(test, 0, __fas_bytes(ptr_B, __flex_array_elements, \
-                        __flex_array_elements_count, 13, &size_B));
+But I'm against overengineered implementations which lack any form of
+sensible design and have ill defined semantics at the user ABI.
 
-That would give a slightly clearer error message on failure.
-Otherwise the user only really gets a line number to try and start to
-understand what went wrong.
+Designing user space ABI is _hard_ and needs a lot of thoughts. It's not
+done with throwing something 'extensible' at the kernel and hope it
+sticks. As I showed you in the review, the ABI is inconsistent in
+itself, it has ill defined semantics and lacks any form of justification
+of the approach taken.
 
-> +
-> +#define CHECK_COPY(ptr)                do {                                            \
-> +       typeof(*(ptr)) *_cc_dst = (ptr);                                        \
-> +       KUNIT_EXPECT_EQ(test, _cc_dst->induce_padding, 0);                      \
-> +       memcpy(&padding, &_cc_dst->induce_padding + sizeof(_cc_dst->induce_padding), \
-> +              sizeof(padding));                                                \
-> +       /* Padding should be zero too. */                                       \
-> +       KUNIT_EXPECT_EQ(test, padding, 0);                                      \
-> +       KUNIT_EXPECT_EQ(test, src->count, _cc_dst->count);                      \
+Can we please take a step back and:
 
-This also seems like a good place to use ASSERT instead of EXPECT.
+  1) Define what is trying to be solved and what are the pieces known
+     today which need to be controlled in order to achieve the desired
+     isolation properties.
 
+  2) Describe the usage scenarios and the resulting constraints.
 
-> +       KUNIT_EXPECT_EQ(test, _cc_dst->count, TEST_TARGET);                     \
-> +       for (i = 0; i < _cc_dst->count - 1; i++) {                              \
-> +               /* 'A' is 0x41, and here repeated in a u32. */                  \
-> +               KUNIT_EXPECT_EQ(test, _cc_dst->flex[i], 0x41414141);            \
-> +       }                                                                       \
-> +       /* Last item should be different. */                                    \
-> +       KUNIT_EXPECT_EQ(test, _cc_dst->flex[_cc_dst->count - 1], 0x14141414);   \
-> +} while (0)
-> +
-> +/* Test copying from one flexible array struct into another. */
-> +static void flex_cpy_test(struct kunit *test)
-> +{
-> +#define TEST_BOUNDS    13
-> +#define TEST_TARGET    12
-> +#define TEST_SMALL     10
-> +       struct flex_cpy_obj *src, *dst;
-> +       unsigned long padding;
-> +       int i, rc;
-> +
-> +       /* Prepare open-coded source. */
-> +       src = kzalloc(struct_size(src, flex, TEST_BOUNDS), GFP_KERNEL);
+  3) Describe the requirements for features on top, e.g. inheritance
+     or external control.
 
-Looks like we could use kunit_kzalloc() here and avoid needing the
-manual call to kfree?
-This also holds for the other test cases where they don't have early
-calls to kfree().
+Once we have that, we can have a discussion about the desired control
+granularity and how to support the extra features in a consistent and
+well defined way.
 
-Doing so would also let you use KUNIT_ASSERT's without fear of leaking
-these allocations.
+A good and extensible UABI design comes with well defined functionality
+for the start and an obvious and maintainable extension path. The most
+important part is the well defined functionality.
 
-> +       src->count = TEST_BOUNDS;
-> +       memset(src->flex, 'A', flex_array_size(src, flex, TEST_BOUNDS));
-> +       src->flex[src->count - 2] = 0x14141414;
-> +       src->flex[src->count - 1] = 0x24242424;
-> +
-> +       /* Prepare open-coded destination, alloc only. */
-> +       dst = kzalloc(struct_size(src, flex, TEST_BOUNDS), GFP_KERNEL);
-> +       /* Pre-fill with 0xFE marker. */
-> +       memset(dst, 0xFE, struct_size(src, flex, TEST_BOUNDS));
-> +       /* Pretend we're 1 element smaller. */
-> +       dst->count = TEST_TARGET;
-> +
-> +       /* Pretend to match the target destination size. */
-> +       src->count = TEST_TARGET;
-> +
-> +       rc = flex_cpy(dst, src);
-> +       KUNIT_EXPECT_EQ(test, rc, 0);
-> +       CHECK_COPY(dst);
-> +       /* Item past last copied item is unchanged from initial memset. */
-> +       KUNIT_EXPECT_EQ(test, dst->flex[dst->count], 0xFEFEFEFE);
-> +
-> +       /* Now trip overflow, and verify we didn't clobber beyond end. */
-> +       src->count = TEST_BOUNDS;
-> +       rc = flex_cpy(dst, src);
-> +       KUNIT_EXPECT_EQ(test, rc, -E2BIG);
-> +       /* Item past last copied item is unchanged from initial memset. */
-> +       KUNIT_EXPECT_EQ(test, dst->flex[dst->count], 0xFEFEFEFE);
-> +
-> +       /* Reset destination contents. */
-> +       memset(dst, 0xFD, struct_size(src, flex, TEST_BOUNDS));
-> +       dst->count = TEST_TARGET;
-> +
-> +       /* Copy less than max. */
-> +       src->count = TEST_SMALL;
-> +       rc = flex_cpy(dst, src);
-> +       KUNIT_EXPECT_EQ(test, rc, 0);
-> +       /* Verify count was adjusted. */
-> +       KUNIT_EXPECT_EQ(test, dst->count, TEST_SMALL);
+There have been enough examples in the past how well received approaches
+are, which lack the well defined part. Linus really loves to get a pull
+request for something which cannot be described what it does, but could
+be used for cool things in the future.
 
-Just an FYI, macros get evaluated before the expect macros can stringify them.
-So the error message would look something like
-  Expected dest->count == 10
-     but dest->count = 9
+> So for case 2, all you'd have to do is to modify the application only
+> once and allow the admin to configure the features.
 
-Not a big concern, but just noting that "TEST_SMALL" won't be visible at all.
-Could opt for
+That's still an orthogonal problem, which can be solved once a sensible
+mechanism to control the isolation and handle it at the transition
+points is in place. You surely want to consider it when designing the
+UABI, but it's not required to create the real isolation mechanism in
+the first place.
 
-KUNIT_EXPECT_EQ_MSG(test, dst->count, TEST_SMALL, "my custom extra message");
+Problem decomposition is not an entirely new concept, really.
 
-if you think it'd be usable to make the test more grokkable.
+Thanks,
 
-> +       /* Verify element beyond src size was wiped. */
-> +       KUNIT_EXPECT_EQ(test, dst->flex[TEST_SMALL], 0);
-> +       /* Verify element beyond original dst size was untouched. */
-> +       KUNIT_EXPECT_EQ(test, dst->flex[TEST_TARGET], 0xFDFDFDFD);
-> +
-> +       kfree(dst);
-> +       kfree(src);
-> +#undef TEST_BOUNDS
-> +#undef TEST_TARGET
-> +#undef TEST_SMALL
-> +}
-> +
-> +static void flex_dup_test(struct kunit *test)
-> +{
-> +#define TEST_TARGET    12
-> +       struct flex_cpy_obj *src, *dst = NULL, **null = NULL;
-> +       struct flex_dup_obj *encap = NULL;
-> +       unsigned long padding;
-> +       int i, rc;
-> +
-> +       /* Prepare open-coded source. */
-> +       src = kzalloc(struct_size(src, flex, TEST_TARGET), GFP_KERNEL);
-> +       src->count = TEST_TARGET;
-> +       memset(src->flex, 'A', flex_array_size(src, flex, TEST_TARGET));
-> +       src->flex[src->count - 1] = 0x14141414;
-> +
-> +       /* Reject NULL @alloc. */
-> +       rc = flex_dup(null, src, GFP_KERNEL);
-> +       KUNIT_EXPECT_EQ(test, rc, -EINVAL);
-> +
-> +       /* Check good copy. */
-> +       rc = flex_dup(&dst, src, GFP_KERNEL);
-> +       KUNIT_EXPECT_EQ(test, rc, 0);
-> +       KUNIT_ASSERT_TRUE(test, dst != NULL);
-> +       CHECK_COPY(dst);
-> +
-> +       /* Reject non-NULL *@alloc. */
-> +       rc = flex_dup(&dst, src, GFP_KERNEL);
-> +       KUNIT_EXPECT_EQ(test, rc, -EINVAL);
-> +
-> +       kfree(dst);
-> +
-> +       /* Check good encap copy. */
-> +       rc = __flex_dup(&encap, .fas, src, GFP_KERNEL);
-> +       KUNIT_EXPECT_EQ(test, rc, 0);
-> +       KUNIT_ASSERT_TRUE(test, dst != NULL);
-
-FYI, there's a new KUNIT_ASSERT_NOT_NULL() macro in the
--kselftest/kunit branch,
-https://patchwork.kernel.org/project/linux-kselftest/patch/20220211164246.410079-1-ribalda@chromium.org/
-
-But that's not planned for inclusion into mainline until 5.19, so
-leaving this as-is is better for now.
+        tglx
