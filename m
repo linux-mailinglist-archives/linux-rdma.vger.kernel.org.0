@@ -2,129 +2,298 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A344F51A400
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 17:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E6F51A439
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 17:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352403AbiEDP3k (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 11:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55596 "EHLO
+        id S1343710AbiEDPnj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 11:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352786AbiEDP3g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 11:29:36 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5042C661
-        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 08:25:59 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id p1so630651uak.1
-        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 08:25:59 -0700 (PDT)
+        with ESMTP id S1352584AbiEDPly (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 11:41:54 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F4F18B2D
+        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 08:38:15 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id bo5so1434475pfb.4
+        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 08:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o6KaVnI7rfJenx+3SffjuaqizCTMLuYUAgf5qe0eYiA=;
-        b=T2/LHo+e7vqogm5r3+Ft3/zWLxozf82phySmunwDoFOZGd9qUxBu3AApyFG8BpHOzH
-         VbImHv8Bevwo0UVGj/eA/Po5vzg/bgFj5PdRFG8JMhYDzNTLwF2xuojuvQgxI1G2j2A0
-         pBKajlla5RL83zk4AD8kJ5WgDFckOZZzYlCq1T6+x3o+l/Fo9Z0XrdzvrZm+i1le1tfc
-         egNajVfLtSFmPN8mM8tiy6KSEEfiB/Z2wz3v8KpAoGfIUbFk/M9VpwPDZmg/YvtuBiXe
-         oJlVK1pO+RaQE4oOvkUXq/Baca3um/Nba9BYW2sc/ejANBQjRZA8MJJAXgZu9/Nzl4fd
-         5nTg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KqAJb/V6gfBBDG6bSPIb4vESmdq1P/sKe2F177CTgUM=;
+        b=fQrMYNAIqMyggez1Cxk6MO5ffmDcMsHa95ZyVgeB+XLocHYSpcdXLdDMIvfhtVHebJ
+         c6KLuD9O1zHpfXOArUQ9i6OPKZN0wLEdS36xK8UGnJ7GhAZoY1ZaUI/INEIjt/aYGDme
+         7yPqIKR/2ePc228VdQYx3R6Gd7ox0JMkE5pTk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o6KaVnI7rfJenx+3SffjuaqizCTMLuYUAgf5qe0eYiA=;
-        b=j4MmKfpoUnMCTe1zEbBijH5XWBB7ilHcIBMSzLDZ52vICjqeGS/C7mFLWnSXMogLQF
-         Ztsyi4bW6dYo44xr0eo2S6fS3ecUiXD5IcQBjasxoX+AmIkBObv+fKo9uhwOCwUixOzz
-         LuSCUtF9TfwuV3X3rBVD1sU4t+X/v9yrapnyCZ+UV8rf5TA2xFikbAiITbQjdTWLMpkZ
-         ZugyYZNQDKC33iv7Ra/digPfcadw1EhHYFW29vJpL/1nZSjID7XZ6t43JSbSGbc9dHFL
-         nY6hcM3muRd4PjWJ+Y/bv20Y4uL29HskQhicVYWbwEQXRSTuj0O64lfPkNXWXtEHnyuy
-         XOaQ==
-X-Gm-Message-State: AOAM533Cpe9eb+Y/y4LPAjmJUBCCXXVZ8aeidMbUPRFB+vka5HuFVd21
-        giCQilM7Qyo5DZ6h2uNeX17hmOp/Sb/6FVz85fenOlXO
-X-Google-Smtp-Source: ABdhPJx+sH2KXrlk80uNsBwp1e3lZw+ZwmdepI7CsBTKDvCD7clxr1vKUUld+5bxVALApokTnz6F6C/qRuFUJi9ph1Q=
-X-Received: by 2002:ab0:407:0:b0:35f:ef75:81e8 with SMTP id
- 7-20020ab00407000000b0035fef7581e8mr6394763uav.91.1651677958955; Wed, 04 May
- 2022 08:25:58 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KqAJb/V6gfBBDG6bSPIb4vESmdq1P/sKe2F177CTgUM=;
+        b=RXx9FUOe0eKvZqMyTDyRjuB7gVIKzRFLFLitxQq+vtUjLbe6oyU8BZBfMZuMla1PM8
+         T3FCN06Gycp7kwyQRt2ow9ik4JeIMk6Zq4rFgFRHsl4v5zFukcpQ/V/MOMBDa+6WDT50
+         6UpB159h/zM7OjRfKjSAU17U6k5Ev/Q9cyDLanwcNEjox+FtuvUw0IxqYbImMvIRwICV
+         iOi3tzwCOUYoeX29xRutBPScuI/nKLNqJtFSBPvXwBdcG03avvT9WRSW7Q+gPTktkZbu
+         KDdvBlWIvpCK3cEocKz8QZaWJFUUl2JvIBrPx3CaegGvj+PryOAfsOQsBFb3ypF48r6I
+         Tx5Q==
+X-Gm-Message-State: AOAM531sPlse99OZYJsbvm0UY6tpP1BkfY2ULwyYqGz1EVC5Nzn6WfCu
+        FZ2IrYoWA6IdTIegECxPhWtfQg==
+X-Google-Smtp-Source: ABdhPJzzQnECj6TQ/WMnbIXyOhNDieYzy1koe+Zij9CEDYVoBr0fSGu6X0G/3k8EfFivormHMckX3w==
+X-Received: by 2002:a63:6b82:0:b0:39d:a6ce:14dc with SMTP id g124-20020a636b82000000b0039da6ce14dcmr8170661pgc.476.1651678695154;
+        Wed, 04 May 2022 08:38:15 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id t4-20020a170902bc4400b0015e8d4eb1f9sm8430240plz.67.2022.05.04.08.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 May 2022 08:38:14 -0700 (PDT)
+Date:   Wed, 4 May 2022 08:38:13 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Keith Packard <keithp@keithp.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Baowen Zheng <baowen.zheng@corigine.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Christian Brauner <brauner@kernel.org>,
+        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        David Gow <davidgow@google.com>,
+        David Howells <dhowells@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eli Cohen <elic@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hulk Robot <hulkci@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        John Keeping <john@metanate.com>,
+        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
+        keyrings@vger.kernel.org, kunit-dev@googlegroups.com,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Louis Peens <louis.peens@corigine.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Rich Felker <dalias@aerifal.cx>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, selinux@vger.kernel.org,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        Simon Horman <simon.horman@corigine.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        Udipto Goswami <quic_ugoswami@quicinc.com>,
+        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH 02/32] Introduce flexible array struct memcpy() helpers
+Message-ID: <202205040819.DEA70BD@keescook>
+References: <20220504014440.3697851-1-keescook@chromium.org>
+ <20220504014440.3697851-3-keescook@chromium.org>
+ <d3b73d80f66325fdfaf2d1f00ea97ab3db03146a.camel@sipsolutions.net>
 MIME-Version: 1.0
-References: <20220502053907.6388-1-cgxu519@mykernel.net> <MW4PR84MB230773A6CD5414E6CC8E502CBCC19@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
- <6b41c49d-b3ed-8396-a217-c756a37b5e05@mykernel.net>
-In-Reply-To: <6b41c49d-b3ed-8396-a217-c756a37b5e05@mykernel.net>
-From:   Robert Pearson <rpearsonhpe@gmail.com>
-Date:   Wed, 4 May 2022 10:25:48 -0500
-Message-ID: <CAFc_bgbnMed9VeBM5RJ1py2tzyOSGXbMThmNskSQdiiQAeidJw@mail.gmail.com>
-Subject: Re: [RFC PATCH] RDMA/rxe: skip adjusting remote addr for write in
- retry operation
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     "Pearson, Robert B" <robert.pearson2@hpe.com>,
-        "zyjzyj2000@gmail.com" <zyjzyj2000@gmail.com>,
-        "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d3b73d80f66325fdfaf2d1f00ea97ab3db03146a.camel@sipsolutions.net>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Sorry I misread your original post. You are correct. The wqe->iova is
-only used to fill in the RETH header so it is not needed after
-the first packet.
-This commit looks OK.
+On Wed, May 04, 2022 at 09:25:56AM +0200, Johannes Berg wrote:
+> On Tue, 2022-05-03 at 18:44 -0700, Kees Cook wrote:
+> > 
+> > For example, using the most complicated helper, mem_to_flex_dup():
+> > 
+> >     /* Flexible array struct with members identified. */
+> >     struct something {
+> >         int mode;
+> >         DECLARE_FLEX_ARRAY_ELEMENTS_COUNT(int, how_many);
+> >         unsigned long flags;
+> >         DECLARE_FLEX_ARRAY_ELEMENTS(u32, value);
+> 
+> In many cases, the order of the elements doesn't really matter, so maybe
+> it'd be nicer to be able to write it as something like
+> 
+> DECLARE_FLEX_STRUCT(something,
+> 	int mode;
+> 	unsigned long flags;
+> 	,
+> 	int, how_many,
+> 	u32, value);
+> 
+> perhaps? OK, that doesn't seem so nice either.
+> 
+> Maybe
+> 
+> struct something {
+> 	int mode;
+> 	unsigned long flags;
+> 	FLEX_ARRAY(
+> 		int, how_many,
+> 		u32, value
+> 	);
+> };
 
-On Tue, May 3, 2022 at 2:59 PM Chengguang Xu <cgxu519@mykernel.net> wrote:
->
-> =E5=9C=A8 2022/5/3 1:15, Pearson, Robert B =E5=86=99=E9=81=93:
-> >> -----Original Message-----
-> >> From: Chengguang Xu <cgxu519@mykernel.net>
-> >> Sent: Monday, May 2, 2022 12:39 AM
-> >> To: zyjzyj2000@gmail.com; jgg@ziepe.ca; leon@kernel.org
-> >> Cc: linux-rdma@vger.kernel.org; Chengguang Xu <cgxu519@mykernel.net>
-> >> Subject: [RFC PATCH] RDMA/rxe: skip adjusting remote addr for write in=
- retry operation
-> >>
-> >> For write request the remote addr will be sent only with first packet =
-so we don't have to adjust wqe->iova in retry operation.
-> > This is problematic for lossy networks. A very large read request, say =
-8MiB, sends 2048 packets in response without any acknowledgement
-> > from the requester. If the packet loss rate was 1% the read request wou=
-ld never finish as the probability of sending 2048 packets without
-> > loss is very small. The way the code works today is that the iova is ad=
-justed, and if you are lucky the responder has already finished the
-> > previous read operation and starts over with a new read reply starting =
-with a first packet at iova. If you are less fortunate the previous
-> > read reply has not finished and the responder will continue to work on =
-it until it is finished before looking at the new read request wqe.
-> > the completer will respond to each out of order packet by checking to s=
-ee if it should start a retry but since it has already done so
-> > it drops the packet. It's messy but one can make forward progress ~100 =
-packets at a time. It would be faster if the responder saw that
-> > the new request replaced the old one and stopped sending packets on the=
- old read. I have no idea how CX NICs do this but just restarting
-> > from scratch seems bad.
->
-> I agree that read request indeed needs to adjust iova during retry and
-> the adjustment(for read) has already done in below logic in req_retry().
->
->
-> if (mask & WR_READ_MASK) {
->          npsn =3D (wqe->dma.length - wqe->dma.resid) /
->                       qp->mtu;
->          wqe->iova +=3D npsn * qp->mtu;
-> }
->
-> For write request, retry will not send new iova because only first write
-> packet has RXE_RETH_MASK regardless iova adjustment.
-> Am I missing something?
->
->
-> Thanks,
-> Chengguang
->
->
->
->
->
+Yeah, I mention some of my exploration of this idea in the sibling reply:
+https://lore.kernel.org/linux-hardening/202205040730.161645EC@keescook/#t
+
+It seemed like requiring a structure be rearranged to take advantage of
+the "automatic layout introspection" wasn't very friendly. On the other
+hand, looking at the examples, most of them are already neighboring
+members. Hmmm.
+
+> or so? The long and duplicated DECLARE_FLEX_ARRAY_ELEMENTS_COUNT and
+> DECLARE_FLEX_ARRAY_ELEMENTS seems a bit tedious to me, at least in cases
+> where the struct layout is not the most important thing (or it's already
+> at the end anyway).
+
+The names aren't great, but I wanted to distinguish "elements" as the
+array not the count. Yay naming.
+
+However, perhaps the solution is to have _both_. i.e using
+BOUNDED_FLEX_ARRAY(count_type, count_name, array_type, array_name) for
+the "neighboring" case, and the DECLARE...{ELEMENTS,COUNT} for the
+"split" case.
+
+And DECLARE_FLEX_ARRAY_ELEMENTS could actually be expanded to include
+the count_name too, so both methods could be "forward portable" to a
+future where C grew the syntax for bounded flex arrays.
+
+> 
+> >     struct something *instance = NULL;
+> >     int rc;
+> > 
+> >     rc = mem_to_flex_dup(&instance, byte_array, count, GFP_KERNEL);
+> >     if (rc)
+> >         return rc;
+> 
+> This seems rather awkward, having to set it to NULL, then checking rc
+> (and possibly needing a separate variable for it), etc.
+
+I think the errno return is completely required. I had an earlier version
+of this that was much more like a drop-in replacement for memcpy that
+would just truncate or panic, and when I had it all together, I could
+just imagine hearing Linus telling me to start over because it was unsafe
+(truncation may be just as bad as overflow) and disruptive ("never BUG"),
+and that it should be recoverable. So, I rewrote it all to return a
+__must_check errno.
+
+Requiring instance to be NULL is debatable, but I feel pretty strongly
+about it because it does handle a class of mistakes (resource leaks),
+and it's not much of a burden to require a known-good starting state.
+
+> But I can understand how you arrived at this:
+>  - need to pass instance or &instance or such for typeof()
+>    or offsetof() or such
+
+Right.
+
+>  - instance = mem_to_flex_dup(instance, ...)
+>    looks too much like it would actually dup 'instance', rather than
+>    'byte_array'
+
+And I need an errno output to keep imaginary Linus happy. :)
+
+>  - if you pass &instance anyway, checking for NULL is simple and adds a
+>    bit of safety
+
+Right.
+
+> but still, honestly, I don't like it. As APIs go, it feels a bit
+> cumbersome and awkward to use, and you really need everyone to use this,
+> and not say "uh what, I'll memcpy() instead".
+
+Sure, and I have tried to get it down as small as possible. The earlier
+"just put all the member names in every call" version was horrid. :P I
+realize it's more work to check errno, but the memcpy() API we've all
+been trained to use is just plain dangerous. I don't think it's
+unreasonable to ask people to retrain themselves to avoid it. All that
+said, yes, I want it to be as friendly as possible.
+
+> Maybe there should also be a realloc() version of it?
+
+Sure! Seems reasonable. I'd like to see the code pattern for this
+though. Do you have any examples? Most of what I'd been able to find for
+the fragile memcpy() usage was just basic serialize/deserialize or
+direct copying.
+
+> > +/** __fas_bytes - Calculate potential size of flexible array structure
+> 
+> I think you forgot "\n *" in many cases here after "/**".
+
+Oops! Yes, thank you. I'll fix these.
+
+-Kees
+
+-- 
+Kees Cook
