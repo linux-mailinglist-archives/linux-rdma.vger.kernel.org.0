@@ -2,116 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A6451A0C6
-	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 15:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F6351A0E1
+	for <lists+linux-rdma@lfdr.de>; Wed,  4 May 2022 15:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350697AbiEDNY7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 09:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        id S238008AbiEDN3q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 09:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350532AbiEDNYk (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 09:24:40 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8F841339;
-        Wed,  4 May 2022 06:20:05 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1651670403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QrZdXSiMuCobYvYSpsrOQ7STvgiRilriNe6RKeWUt1A=;
-        b=0gERZxvgUmEb2yLnoczRMdHSKmOhphnWGgVmH2y7JNgmMuOPX8POrOioAV4RZc1seuqVV2
-        tcbOqswbmMLhVLnJNCHUZzwFeEAtfExlbt9KjoBcA5RBvyWR0g3VInUea3O3qaeChQeHNt
-        qmH/hn94pzwew6tbi8qF3L8axaXlrwBiHuPDLwjUtb+5P47expQbOyQ2Zfe6RnpCjU9DTI
-        6nc1j16YhkdLYg6r8oEYduudDP8RBJUNNVc9WbO8eU16ADAIo3SHIwa7ekCltS+WBPsuSZ
-        VznAYxxAsb2RMnllZDpJp4xfQ6e/Hx7Ox8WG3dQCJ56xP5mTboVvHOYND1dpFA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1651670403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QrZdXSiMuCobYvYSpsrOQ7STvgiRilriNe6RKeWUt1A=;
-        b=WfCTZqDwmX6SIcf/TVUfvjWKsChb735lpRJuJ7kNUr0IDUVy/WS8OP8VME/zq0MLg5UfJb
-        RdFxX1xkmtBg8eBw==
-To:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Christoph Lameter <cl@gentwo.de>
-Cc:     linux-kernel@vger.kernel.org, Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oscar Shiang <oscar0225@livemail.tw>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [patch v12 00/13] extensible prctl task isolation interface and
- vmstat sync
-In-Reply-To: <YnF7CjzYBhASi1Eo@fuller.cnet>
-References: <20220315153132.717153751@fedora.localdomain>
- <alpine.DEB.2.22.394.2204271049050.159551@gentwo.de>
- <YnF7CjzYBhASi1Eo@fuller.cnet>
-Date:   Wed, 04 May 2022 15:20:03 +0200
-Message-ID: <87h765juyk.ffs@tglx>
+        with ESMTP id S1347065AbiEDN3n (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 09:29:43 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6977523BE6
+        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 06:26:02 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id h10so2348237ybc.4
+        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 06:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HrYMTeFGo9vv6CKXzizg7NkClqf4L09RghpNP8UrcKs=;
+        b=gMcuDBZiJC9XVzC3n0YH66HtjurBfHh9/PMn4aWd97i19KpMA6GLOinhB/NrchmZH7
+         UVaqK8p6QOwMxC5k2gidFLzSIyOPKtwjZXpU15v73eOPe9YbzWjJPBNYzgQdo2d4+tVQ
+         9VX218pK5y+5Ra2/hdErORbiys9t3VHLj4+f1ayC2q9ob0dUtcwrW+H8iskxbY9k2LCO
+         rCRR9A4rRAYRRLNf/cxL3m4Kj69l7qb/OXnlDJknnc60Na1XB85lEXZVWOax+IBnSIPP
+         KWdUwEi0gMPAnTBjQASSMXAl1FJR9WCHoC392rb8Pofp8V0iqltRtaasQ4eUETkOjise
+         g+pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HrYMTeFGo9vv6CKXzizg7NkClqf4L09RghpNP8UrcKs=;
+        b=otkbvyRFw8Cq/AIjAKykTxR/B9pMnYMx9J/RaSM29VxK4dJF8I5zpdV1t5p7U1Bkg2
+         ZI2BDPQ6Zsjmap+vlXNZnAeWKlWzOGp0OVbBI4C5t0J/MpEHvTd2H2tXPOB+Dn1U/s9F
+         4faXPIDe9niEGNRKNEEVcWHz8Vou+hYyRZEmxvmIQ1RUOnp45hB6XkdPClDMp0KYX77c
+         SdQFGOiUWRgHTObWzXJmasTrxiyu/e6Rpkn3kQPC/KT1Oou7JCZdlcl8ZkrzTij0smL4
+         HCIrrePtZ4RUkGzLsPtMP8+EpPRVySSiqFrDsofxFTOz8yK9sLGeKkKx8FBDV6l4YA7E
+         NEnQ==
+X-Gm-Message-State: AOAM5325j2RJv10Pa8KMs13XJvhgLRnjCkjX8U6k6K6dKXs14dyq2CVW
+        D7gSjGFJkWYMT9DXJtZGjY4ehtXt/gFzOE6LlZs3DQ==
+X-Google-Smtp-Source: ABdhPJzZO0k04SWiCPzvEWue+yEqCZJeE4lPhq25YMS11jefYio+fzRyjZzkukLm52cgXUWdeg/CKblpgLuPSy5HoM0=
+X-Received: by 2002:a25:ba50:0:b0:649:b5b2:6fca with SMTP id
+ z16-20020a25ba50000000b00649b5b26fcamr8221474ybj.55.1651670760992; Wed, 04
+ May 2022 06:26:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <a5fb1fc4-2284-3359-f6a0-e4e390239d7b@I-love.SAKURA.ne.jp>
+ <165157801106.17866.6764782659491020080.git-patchwork-notify@kernel.org>
+ <CANn89iLHihonbBUQWkd0mjJPUuYBLMVoLCsRswtXmGjU3NKL5w@mail.gmail.com> <d3d068eda5ef2d1ab818f01d7d07fab901363446.camel@redhat.com>
+In-Reply-To: <d3d068eda5ef2d1ab818f01d7d07fab901363446.camel@redhat.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 4 May 2022 06:25:49 -0700
+Message-ID: <CANn89i+W-b8CPxzdTzGXJsHLV4yyKagQK6OJP6CUjM8f+qpB5Q@mail.gmail.com>
+Subject: Re: [PATCH v2] net: rds: acquire refcount on TCP sockets
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     patchwork-bot+netdevbpf@kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,ENV_AND_HDR_SPF_MATCH,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 03 2022 at 15:57, Marcelo Tosatti wrote:
-> On Wed, Apr 27, 2022 at 11:19:02AM +0200, Christoph Lameter wrote:
->> I could modify busyloop() in ib2roce.c to use the oneshot mode via prctl
->> provided by this patch instead of the NOHZ_FULL.
->> 
->> What kind of metric could I be using to show the difference in idleness of
->> the quality of the cpu isolation?
+On Wed, May 4, 2022 at 6:09 AM Paolo Abeni <pabeni@redhat.com> wrote:
 >
-> Interruption length and frequencies:
+> On Tue, 2022-05-03 at 14:17 -0700, Eric Dumazet wrote:
+> > On Tue, May 3, 2022 at 4:40 AM <patchwork-bot+netdevbpf@kernel.org> wrote:
+> > >
+> > > Hello:
+> > >
+> > > This patch was applied to netdev/net.git (master)
+> > > by Paolo Abeni <pabeni@redhat.com>:
+> > >
+> > > On Mon, 2 May 2022 10:40:18 +0900 you wrote:
+> > > > syzbot is reporting use-after-free read in tcp_retransmit_timer() [1],
+> > > > for TCP socket used by RDS is accessing sock_net() without acquiring a
+> > > > refcount on net namespace. Since TCP's retransmission can happen after
+> > > > a process which created net namespace terminated, we need to explicitly
+> > > > acquire a refcount.
+> > > >
+> > > > Link: https://syzkaller.appspot.com/bug?extid=694120e1002c117747ed [1]
+> > > > Reported-by: syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+> > > > Fixes: 26abe14379f8e2fa ("net: Modify sk_alloc to not reference count the netns of kernel sockets.")
+> > > > Fixes: 8a68173691f03661 ("net: sk_clone_lock() should only do get_net() if the parent is not a kernel socket")
+> > > > Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> > > > Tested-by: syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>
+> > > >
+> > > > [...]
+> > >
+> > > Here is the summary with links:
+> > >   - [v2] net: rds: acquire refcount on TCP sockets
+> > >     https://git.kernel.org/netdev/net/c/3a58f13a881e
+> > >
+> > > You are awesome, thank you!
+> > > --
+> > > Deet-doot-dot, I am a bot.
+> > > https://korg.docs.kernel.org/patchwork/pwbot.html
+> > >
+> > >
+> >
+> > I think we merged this patch too soon.
 >
-> -------|xxxxx|---------------|xxx|---------
-> 	 5us 		      3us
+> My fault.
 >
-> which is what should be reported by oslat ?
-
-How is oslat helpful there? That's running artifical workload benchmarks
-which are not necessarily representing the actual
-idle->interrupt->idle... timing sequence of the real world usecase.
-
-> Inheritance is an attempt to support unmodified binaries like so:
 >
-> 1) configure task isolation parameters (eg sync per-CPU vmstat to global
-> stats on system call returns).
-> 2) enable inheritance (so that task isolation configuration and
-> activation states are copied across to child processes).
-> 3) enable task isolation.
-> 4) execv(binary, params)
-
-What for? If an application has isolation requirements, then the
-specific requirements are part of the application design and not of some
-arbitrary wrapper. Can we please focus on the initial problem of
-providing a sensible isolation mechanism with well defined semantics?
-
-Inheritance is an orthogonal problem and there is no reason to have this
-initially.
-
->> Special handling when the scheduler
->> switches a task? If tasks are being switched that requires them to be low
->> latency and undisturbed then something went very very wrong with the
->> system configuration and the only thing I would suggest is to issue some
->> kernel warning that this is not the way one should configure the system.
+> > My question is : What prevents rds_tcp_conn_path_connect(), and thus
+> > rds_tcp_tune() to be called
+> > after the netns refcount already reached 0 ?
+> >
+> > I guess we can wait for next syzbot report, but I think that get_net()
+> > should be replaced
+> > by maybe_get_net()
+> >
+> Should we revert this patch before the next pull request, if a suitable
+> incremental fix is not available by then?
 >
-> Trying to provide mechanisms, not policy? 
+> It looks like the window of opportunity for the race is roughly the
+> same?
+>
 
-This preemption notifier is not a mechanism, it's simply mindless
-hackery as I told you already.
+No need to revert the patch, we certainly are in a better situation,
+as refcount_t helps here.
 
-Thanks,
+We can refine the logic in a followup.
 
-        tglx
+Thanks.
