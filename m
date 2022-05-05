@@ -2,146 +2,183 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E592E51B4B9
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 02:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A80B551B4CE
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 02:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbiEEAgP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 20:36:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
+        id S232733AbiEEAtc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 20:49:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232419AbiEEAgM (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 20:36:12 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2087.outbound.protection.outlook.com [40.107.94.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AAF04BB87
-        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 17:32:34 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YCIrMsNRnT9tokD4oRCvin9KNFfPeP7H6colpVLyqO2njDqalR3wZ8jjt695cPDT+BzfFufj47yxEiFQOUep1oFU0/7jqklFmspffp/Fv961NodFARkkyo6YfiPlguQrjMXZJRKS1F9z5kDjAAqI2M7dBwPuPiAgyMwdJ34CBnUc8ffB698onrXzW2YIbxdmbZMOeaTnwzESz8BOiDHb8jjVD+xgXO+OFl/4IJGPFVXLszg96andcpkn/gZSoUAPXtU5K0EK8XnJow3JVNIdXe+nn1285SYZWcUdv6//Zi0GSk1Ui9N4OQi+YcU55EJFzgdSORvJqtCOlsM8yOixSw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FUjBqc60ZdI7sWHJ1bZaH2Fo4R1w6LgnfZlH4gt2R8M=;
- b=VQc+X3xRO63j560QfqcoQ5hBANZJ4Tbfizjoa0cd08NGz04ReeHoxOUnD/mZ8hC+6p0QDeEQ/82xD6VDr0xgfN970DBpinUaBPr/g/YMzx8X1hl/UCuX3a8bhvHECRlg+n8/PczmQrjdcIcfV+kHX1mcH2d6NJlYP6I3huIGVum3b7J1z2MKXeceeabQfmInqfNp1OgUvjnE1ajAtAmrrmuGX68jA0ghPdfOShkQftk7m94mAT4bSrEPpSmV+DaZr0rgCilBqRJhty0DW5c68isPUcbeXJSJhfwkzIkdUHyd1JN5CQo+f1PFIm2FC8fNCCqqn9X0QXpqPIWH7z42Iw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FUjBqc60ZdI7sWHJ1bZaH2Fo4R1w6LgnfZlH4gt2R8M=;
- b=K2q9FS+adi2Hs8IDcsuRMDc1VU0QJEk9jjsg+HLTU7wUn5D4KMpss74V4LI+xQ+8LPJj6oDyON1Z1dqWxFAheiJM6EeSIrlBNl4EHTrOvcMH2eRCophUMVJz/zbegAnlZMN8HCwNOGETaANfxbY1i20JeyNpeiACrvik/vnFi5Uetjg3Ich25Y0vig+FwHACnurai8aUr+ZxCtTBJU6SxIhDX3QyLeZcvA2cEodG+K+s+Ncw7fS9UZORx9qCwXp88LUoHS62uUZGJscv1gMjnAycJQfZVsdCTo/lGxjSMTEzRAN/I9ewdMSxjEOwC6U/zhNM6GZJ5+8li9WTvpcbKg==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by SJ1PR12MB6099.namprd12.prod.outlook.com (2603:10b6:a03:45e::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.13; Thu, 5 May
- 2022 00:32:31 +0000
-Received: from MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
- ([fe80::ec2d:9167:1b47:2db2%6]) with mapi id 15.20.5206.027; Thu, 5 May 2022
- 00:32:31 +0000
-Date:   Wed, 4 May 2022 21:32:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH for-next v2] RDMA/rxe: Fix "RDMA/rxe: Cleanup rxe_mcast.c"
-Message-ID: <20220505003229.GO49344@nvidia.com>
-References: <20220504202817.98247-1-rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220504202817.98247-1-rpearsonhpe@gmail.com>
-X-ClientProxiedBy: BL1PR13CA0073.namprd13.prod.outlook.com
- (2603:10b6:208:2b8::18) To MN2PR12MB4192.namprd12.prod.outlook.com
- (2603:10b6:208:1d5::15)
+        with ESMTP id S232603AbiEEAtb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 20:49:31 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198781BE84
+        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 17:45:52 -0700 (PDT)
+Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 2450joNY018435;
+        Thu, 5 May 2022 09:45:50 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
+ Thu, 05 May 2022 09:45:50 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 2450joIS018432
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 5 May 2022 09:45:50 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <63dab11e-2aeb-5608-6dcb-6ebc3e98056e@I-love.SAKURA.ne.jp>
+Date:   Thu, 5 May 2022 09:45:49 +0900
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4abb1550-decc-4dba-b7be-08da2e2ebd97
-X-MS-TrafficTypeDiagnostic: SJ1PR12MB6099:EE_
-X-Microsoft-Antispam-PRVS: <SJ1PR12MB6099D833D09E1761238761AEC2C29@SJ1PR12MB6099.namprd12.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ttGmNU9d+wZIQdHtHbizxAxPiB1ODvVavSS/WNWBrHmHp7c02koIb7WwRgvnmRQrQ2FNWLD61Kl/7lylApO/1MMJ8zVv9xcsxvbdydOdR9bX5r+FQflcbKQjjuPAaDdZwYSllvdNW+q3q2CHa8h+w0Xf6hKWBHTIiCLK9EnOW7iazGBnZnvMoLgG+HKUUtKA1JAom5k3qnOODmmUBSggLb60CvQELOAofvZKrqR2bSDpMYzy1df7kJkIVPhVFgGtvg7xAvJD7y+Bfwclwyes/LPYetH+2a9Nc2dRlj9ffwdBTKDPq4TWacB5SlrwezdJByrmqcv8FRCTVjo6pDoE33fQrMsTU/VDt6wY7fAjHUJY9w345VePGgDbdtdp2dzl1T92H3bSYQbuS88hAeSCPE1SALBmZ2KiYIXNoZKSIFC546WURKP/8AuhwiR0PbtNUTotXQMqpxAU+JWR5aN7sh9I3z8VI1C3IqV0rHVy33Ft9RwEMiiv6gqCL/tgciIFKmfUsTljoX8OiyhP6zlRWt7+McI9JussPsIvNESy4DLi51bJGoDnf1YKTXffpzGqze0SlgIkR3+tqmQ0tu/UnQB3K2Oz9L4W1HCgj9/mU9DLEmp/lWZ4jC5yB8KGtH8i4Ot2tvnfQfUAuU+0GNqObw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(186003)(36756003)(83380400001)(66946007)(2616005)(1076003)(33656002)(2906002)(8936002)(66556008)(6486002)(508600001)(5660300002)(66476007)(38100700002)(316002)(6916009)(6512007)(86362001)(26005)(8676002)(4326008)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NeYOtPi547RbocWM1Us33DMWCZgZEnXOZeMZqDtRSiAxxRb+7ySEJlkB3oTH?=
- =?us-ascii?Q?tHX5/TvhXtH3WBZGXoxLU88ECJtSywwQnugOhD2xadd59t0OzJJe0rvrSeSC?=
- =?us-ascii?Q?G11XUZsYqHEhduLaQCfgOzONeyluxJSlXmcbQNzmSwvnX3oJ1slVvz+AWxnk?=
- =?us-ascii?Q?UhSFZ65F4sWf3N7Cu7fl0EPYCw8epaefYzXsHlgodan99J5NpcUJuJgh3qOm?=
- =?us-ascii?Q?QJFzduOljx/ly/EeHNResa0Jq/WzzY8J0HULwgsqJWrKngTMY0NghsKqG7Uf?=
- =?us-ascii?Q?mezzjnmEeBz+oP+BYAQ8TA23OxOWCyXj8swOmWonjdYm98L1gl4ybHq0NwFu?=
- =?us-ascii?Q?mrE8nsMgst/+6W+ExxPOxsgF4GRzXagUGzHFWlwFxR7BzftFRjnRd1IRpNmh?=
- =?us-ascii?Q?lwy4yVHIrVvexOTZ/QFL7gcKQbHwD95MNo8X9VqfQoqYp2MRmldleABUmANE?=
- =?us-ascii?Q?6uyosf/bI+S9wkocwNA5oik0I8rzZw6gHrpyhWW/52L3ClUVYlRyzwKfVHjm?=
- =?us-ascii?Q?uFZrb5cBSXkfSY33Rpz20+/a4+xT331EY4cbkJ2UF2gVaX8ob57oK4UJVi0U?=
- =?us-ascii?Q?s/IgFHOuOnQfgS/SR7K4nqHDPBfNYQPawymTyI6EdPHgfeeXYhiv24d6XqI/?=
- =?us-ascii?Q?/fe8AeLx5jYQkE5xyCpLqkxG11/XaISsb938CRZPimbR7bGVBjacy7G2a09B?=
- =?us-ascii?Q?7fxC74pSVvKg/4Zc00zEQQGEiFf7DHvpLYGsBaZ+rHRUAWZZ0jL+nfwiBg6c?=
- =?us-ascii?Q?vDc+1xyOMwg9buNoSnM8Rq/G0C/zfNA/2LA1IZePXCUQ2n41D18OGU3S50RO?=
- =?us-ascii?Q?vxZS+irFpEIaKK6gTYLzhuyLPoI1IzX1opTYbOhTF1WyX6eqjWfW8tolpAG+?=
- =?us-ascii?Q?B8z4+iVmJ7nTijWcbVyWGuRscH4c8cqvESi1D7+yRakikTthXdUD7OXCl6GX?=
- =?us-ascii?Q?msTpl5I866caZCI7VVagwRUXBl0KO7Zo4wz88aJlizQ+gusAwKPtz3F1JeGV?=
- =?us-ascii?Q?zR0TBk1Lirsyv0/wiM/sKi+mZtFFZNHAJYbb2PGtb0pX6dtNSERZNpgDpXPM?=
- =?us-ascii?Q?BKA6MXd6lMUSTME7ibwJ2TzTfQGHcmnraCXZS4uE8LLnKSV7nVgj8d0z/WBl?=
- =?us-ascii?Q?3gHSX9xfO3S5+h9qOFMS5HRG+o6/iL4jcpMeC53HZXdGR7mrJiMs8+M0FzMy?=
- =?us-ascii?Q?4EKB1qc1stDSO04cWLN7FZ2L/AYm6tj4KFuW6MpgBC034sVCgmSKPysxgMvN?=
- =?us-ascii?Q?5uIGV6kOc1e0g5ZHtOg/cYbutkwygllm3W664T3rFveoqfDCJr1vp9wzrjQt?=
- =?us-ascii?Q?TgX5qm1D/k4ylHx3exTttVqYdU9PECupoH+lFZ2fWSCv04ItsKp2nUR0DTv8?=
- =?us-ascii?Q?xjeqf2S5q69s6EZ11lcPRI5B2eeOf3tJhDFPpFFWC3jbBQ2rb8KUOeOTaRiI?=
- =?us-ascii?Q?wD8WoIX+G+7oUhuz3MCz+dQ2qcrmkQC96Wr/uJiRNM3Pu1wBOHYJeu6pu6nV?=
- =?us-ascii?Q?E8jRGMTmYs2brPPg8PoKKSQc7PoFLhOOfnwyt18c9BBdha91L3eZIh8WFPp2?=
- =?us-ascii?Q?ABkUbnflJk2PZlr31+f3kjlqNlKhW9Dk/WWbQDSRfrhYex8iRg8q1ZNzJyDG?=
- =?us-ascii?Q?s1ub6bHOVAzpcygaGl14anhGTtE45495T6ZP3kXtfEyDah9lU4XFONB5pfdu?=
- =?us-ascii?Q?2dHGWUn28pcib8Dvu02zUhD+/bp3b/dofNakKOM+RJrIiVn7WWv7+ZIaX0NH?=
- =?us-ascii?Q?phFq7vSJcg=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4abb1550-decc-4dba-b7be-08da2e2ebd97
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2022 00:32:31.2275
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JA+LzYxizJF1Q1wUfwBKt0/oY+Z/TNKVxAGSWb+YP/VV2Zne3NtJX2Oq4AUqu62F
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6099
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: [PATCH] net: rds: use maybe_get_net() when acquiring refcount on TCP
+ sockets
+Content-Language: en-US
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+To:     Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
+Cc:     patchwork-bot+netdevbpf@kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>
+References: <a5fb1fc4-2284-3359-f6a0-e4e390239d7b@I-love.SAKURA.ne.jp>
+ <165157801106.17866.6764782659491020080.git-patchwork-notify@kernel.org>
+ <CANn89iLHihonbBUQWkd0mjJPUuYBLMVoLCsRswtXmGjU3NKL5w@mail.gmail.com>
+ <CANn89iJ=LF0KhRXDiFcky7mqpVaiHdbc6RDacAdzseS=iwjr4Q@mail.gmail.com>
+ <f6f9f21d-7cdd-682f-f958-5951aa180ec7@I-love.SAKURA.ne.jp>
+ <CANn89iJOt9oC_sSmVhRx8fyyvJ2hWzYKcTfH1Rvbzpt5aP0qNA@mail.gmail.com>
+ <bf5ce176-35e6-0a75-1ada-6bed071a6a75@I-love.SAKURA.ne.jp>
+ <5f3feecc-65ad-af5f-0ecd-94b2605ab67e@I-love.SAKURA.ne.jp>
+In-Reply-To: <5f3feecc-65ad-af5f-0ecd-94b2605ab67e@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 04, 2022 at 03:28:17PM -0500, Bob Pearson wrote:
-> rxe_mcast.c currently uses _irqsave spinlocks for rxe->mcg_lock
-> while rxe_recv.c uses _bh spinlocks for the same lock.
-> 
-> Additionally the current code issues a warning that _irqrestore
-> is restoring hardware interrupts while some interrupts are
-> enabled. This is traced to calls to the calls to dev_mc_add/del().
-> 
-> Change the locking of rxe->mcg_lock in rxe_mcast.c to use
-> spin_(un)lock_bh() which matches that in rxe_recv.c. Also move
-> the calls to dev_mc_add and dev_mc_del outside of spinlocks.
-> 
-> Fixes: 6090a0c4c7c6 ("RDMA/rxe: Cleanup rxe_mcast.c")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
-> v2
->   Addressed comments from Jason re not placing calls to dev_mc_add/del
->   inside of spinlocks.
+Eric Dumazet is reporting addition on 0 problem at rds_tcp_tune(), for
+delayed works queued in rds_wq might be invoked after a net namespace's
+refcount already reached 0.
 
-I split this into two patches and put it into for-rc
+Since rds_tcp_exit_net() from cleanup_net() calls flush_workqueue(rds_wq),
+it is guaranteed that we can instead use maybe_get_net() from delayed work
+functions until rds_tcp_exit_net() returns.
 
-Please check, and try to write commit messages in this style - "Fix
-'some other commit'" is not a good subject, state what bug the patch
-is correcting.
+Note that I'm not convinced that all works which might access a net
+namespace are already queued in rds_wq by the moment rds_tcp_exit_net()
+calls flush_workqueue(rds_wq). If some race is there, rds_tcp_exit_net()
+will fail to wait for work functions, and kmem_cache_free() could be
+called from net_free() before maybe_get_net() is called from
+rds_tcp_tune().
 
-One patch per bug
+Reported-by: Eric Dumazet <edumazet@google.com>
+Fixes: 3a58f13a881ed351 ("net: rds: acquire refcount on TCP sockets")
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ net/rds/tcp.c         | 11 ++++++++---
+ net/rds/tcp.h         |  2 +-
+ net/rds/tcp_connect.c |  5 ++++-
+ net/rds/tcp_listen.c  |  5 ++++-
+ 4 files changed, 17 insertions(+), 6 deletions(-)
 
-Include the oops messages in the commit messages.
+diff --git a/net/rds/tcp.c b/net/rds/tcp.c
+index 2f638f8b7b1e..8e26bcf02044 100644
+--- a/net/rds/tcp.c
++++ b/net/rds/tcp.c
+@@ -487,11 +487,11 @@ struct rds_tcp_net {
+ /* All module specific customizations to the RDS-TCP socket should be done in
+  * rds_tcp_tune() and applied after socket creation.
+  */
+-void rds_tcp_tune(struct socket *sock)
++bool rds_tcp_tune(struct socket *sock)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct net *net = sock_net(sk);
+-	struct rds_tcp_net *rtn = net_generic(net, rds_tcp_netid);
++	struct rds_tcp_net *rtn;
+ 
+ 	tcp_sock_set_nodelay(sock->sk);
+ 	lock_sock(sk);
+@@ -499,10 +499,14 @@ void rds_tcp_tune(struct socket *sock)
+ 	 * a process which created this net namespace terminated.
+ 	 */
+ 	if (!sk->sk_net_refcnt) {
++		if (!maybe_get_net(net)) {
++			release_sock(sk);
++			return false;
++		}
+ 		sk->sk_net_refcnt = 1;
+-		get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
+ 		sock_inuse_add(net, 1);
+ 	}
++	rtn = net_generic(net, rds_tcp_netid);
+ 	if (rtn->sndbuf_size > 0) {
+ 		sk->sk_sndbuf = rtn->sndbuf_size;
+ 		sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
+@@ -512,6 +516,7 @@ void rds_tcp_tune(struct socket *sock)
+ 		sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
+ 	}
+ 	release_sock(sk);
++	return true;
+ }
+ 
+ static void rds_tcp_accept_worker(struct work_struct *work)
+diff --git a/net/rds/tcp.h b/net/rds/tcp.h
+index dc8d745d6857..f8b5930d7b34 100644
+--- a/net/rds/tcp.h
++++ b/net/rds/tcp.h
+@@ -49,7 +49,7 @@ struct rds_tcp_statistics {
+ };
+ 
+ /* tcp.c */
+-void rds_tcp_tune(struct socket *sock);
++bool rds_tcp_tune(struct socket *sock);
+ void rds_tcp_set_callbacks(struct socket *sock, struct rds_conn_path *cp);
+ void rds_tcp_reset_callbacks(struct socket *sock, struct rds_conn_path *cp);
+ void rds_tcp_restore_callbacks(struct socket *sock,
+diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
+index 5461d77fff4f..f0c477c5d1db 100644
+--- a/net/rds/tcp_connect.c
++++ b/net/rds/tcp_connect.c
+@@ -124,7 +124,10 @@ int rds_tcp_conn_path_connect(struct rds_conn_path *cp)
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	rds_tcp_tune(sock);
++	if (!rds_tcp_tune(sock)) {
++		ret = -EINVAL;
++		goto out;
++	}
+ 
+ 	if (isv6) {
+ 		sin6.sin6_family = AF_INET6;
+diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
+index 09cadd556d1e..7edf2e69d3fe 100644
+--- a/net/rds/tcp_listen.c
++++ b/net/rds/tcp_listen.c
+@@ -133,7 +133,10 @@ int rds_tcp_accept_one(struct socket *sock)
+ 	__module_get(new_sock->ops->owner);
+ 
+ 	rds_tcp_keepalive(new_sock);
+-	rds_tcp_tune(new_sock);
++	if (!rds_tcp_tune(new_sock)) {
++		ret = -EINVAL;
++		goto out;
++	}
+ 
+ 	inet = inet_sk(new_sock->sk);
+ 
+-- 
+2.34.1
 
-Jason
+
