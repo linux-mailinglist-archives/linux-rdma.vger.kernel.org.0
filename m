@@ -2,54 +2,53 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBDA51C8F2
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 21:27:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 596A251C930
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 21:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1385006AbiEETbQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 May 2022 15:31:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
+        id S1385213AbiEETgO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 May 2022 15:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239924AbiEETbP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 15:31:15 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F29555224
-        for <linux-rdma@vger.kernel.org>; Thu,  5 May 2022 12:27:34 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id c1-20020a17090a558100b001dca2694f23so4826152pji.3
-        for <linux-rdma@vger.kernel.org>; Thu, 05 May 2022 12:27:34 -0700 (PDT)
+        with ESMTP id S1385133AbiEETgB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 15:36:01 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DEF5BE59
+        for <linux-rdma@vger.kernel.org>; Thu,  5 May 2022 12:32:20 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id w5-20020a17090aaf8500b001d74c754128so8902100pjq.0
+        for <linux-rdma@vger.kernel.org>; Thu, 05 May 2022 12:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=/twjVtbcWPue2Jf3IhiwlWWY7Rof9WWSi6Cv9vIoV/Q=;
-        b=Zw4fRetuqYTkqeq+yVUkdhxXm/8i81f3Tz5yiq/8IIDSZ024zV3L+pNdERes4bJaav
-         31/Q4CkRhBZLAixBgNaxyPQDOPUfRkG6V2Lznu+vqnnAE8TdezgewvauqqI6bgLcXe8G
-         8pjfVWQFjtIzIDipg+thK9X2Q1whG0Xu+Ovt4=
+         :content-disposition:in-reply-to;
+        bh=EOewjZKogNzEx9zFkxTiwVeX9O73E8+rxUrKCGLnZxg=;
+        b=TgYp87XeMuHw4kfuuIYKyJ5xg3Bf+EBlgFpOVZz9+/0BPs+Z6azVvmnOICk6zx2eTE
+         tczIFjF07XtN/n9uGmSnmZf+pbPbkOzW9u24HVcBrKjfFRAXW8suN/eYiFsQiaSTDjAj
+         AGDsgPRlkyLVEDH7ZM2ezggNxFIlqaWFz6sF8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=/twjVtbcWPue2Jf3IhiwlWWY7Rof9WWSi6Cv9vIoV/Q=;
-        b=5Ks9bP8WgMxfQE7kI6L0yxgHV3CFcDdm9W4gtGDxRv+aqgd2j4gqE7BNoBQ1bfcidU
-         fk+cmE4UtmFkaZvXj+VuCULtkKAtZzXcKfRNNMbzOWpWfBOqbSEaqgSkiGYLNukyjFon
-         hntWPui3LbPp/ckF5hEuuC5FbdB+RucEYWT2k7iZvzBG6UNpIPZ30gkijSVGkXdEMlyl
-         ZKfW2fEGmS3F4wRiqlEqr3SBcCz/vUbnLnEB2GxBV/G7vgTgRZ8RYRztlJr1u0bU00N3
-         MvL2hOu4IIwEgtWHDJ0pVTTKemXJQNNj/5I9py0bBr0BHCn22nSgGwly/sWeym6iBiJj
-         pchg==
-X-Gm-Message-State: AOAM530eRTpDkez+ES0DWetXlTk0TRsrl2xfeOKWBZ1t+PilkWEpPv8T
-        WaCoWZZwNFy9HW9hIZ9bXFU1Rw==
-X-Google-Smtp-Source: ABdhPJyav77hf2OM1reUdtV3HW9WqLRQkX6N0+xVipZ4MkOtaIgBrGdD2dZR4M6krBDZsVod+2klvQ==
-X-Received: by 2002:a17:90b:1d92:b0:1dc:3f14:f8d0 with SMTP id pf18-20020a17090b1d9200b001dc3f14f8d0mr8041119pjb.7.1651778853636;
-        Thu, 05 May 2022 12:27:33 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to;
+        bh=EOewjZKogNzEx9zFkxTiwVeX9O73E8+rxUrKCGLnZxg=;
+        b=CpNyslGQjfUYAuog6FWztJ24EFaqBko+XLeyKLAeZ8qyl4E4j7p0IlW45CZdXoYWLv
+         Bbat7bGx20X9JGcPgwhIGHGOEXY4OrSQ4vj9rLJc4oUZxpxY4jzZoQTEGT4Ypk62dW9O
+         LNKpre5ng6HdfkQH3FrGHYOHhXRk6MB70qIpOtLjS0bcfm95Y+I8ypZs9WXB9bGwupDX
+         zI0xQuWzyV/58LX3S9nQ9XXA4Wkx2gHIU2tUBnvdHb81OspP+O8TS0ySZCVWrPh9VECq
+         aWS9CX39cxLWaQKAPxniF8dq8EKhOo1YmBVfbaVcEb/zyxoHlNNQ+9O1mb95fBkPGb+l
+         ZfXA==
+X-Gm-Message-State: AOAM533ORgObJb0ObiInmslK5ToCYzz1iJwWpwI5CQHBFQYDNk5QPhQC
+        SYxLeIgm5BEruNsESW5jh0Ql2A==
+X-Google-Smtp-Source: ABdhPJyYVTC3IlPABWaYFjuUxUPmftJikWm0tSMiHJQXGEPyNPhTGmOnvVXhpQMvhvSdSnY3GHaMBA==
+X-Received: by 2002:a17:90b:388b:b0:1dc:515e:1b0c with SMTP id mu11-20020a17090b388b00b001dc515e1b0cmr8065877pjb.224.1651779139576;
+        Thu, 05 May 2022 12:32:19 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b10-20020a17090a550a00b001d954837197sm5617594pji.22.2022.05.05.12.27.33
+        by smtp.gmail.com with ESMTPSA id n11-20020a170903404b00b0015e8d4eb250sm1889338pla.154.2022.05.05.12.32.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 May 2022 12:27:33 -0700 (PDT)
-Date:   Thu, 5 May 2022 12:27:32 -0700
+        Thu, 05 May 2022 12:32:19 -0700 (PDT)
+Date:   Thu, 5 May 2022 12:32:18 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithp@keithp.com>,
+To:     Keith Packard <keithp@keithp.com>
+Cc:     Johannes Berg <johannes@sipsolutions.net>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
         Francis Laniel <laniel_francis@privacyrequired.com>,
         Daniel Axtens <dja@axtens.net>,
         Dan Williams <dan.j.williams@intel.com>,
@@ -122,6 +121,7 @@ Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
         Louis Peens <louis.peens@corigine.com>,
         Luca Coelho <luciano.coelho@intel.com>,
         Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
         Marcel Holtmann <marcel@holtmann.org>,
         Mark Brown <broonie@kernel.org>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
@@ -151,20 +151,20 @@ Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
         Xiu Jianfeng <xiujianfeng@huawei.com>,
         Yang Yingliang <yangyingliang@huawei.com>
 Subject: Re: [PATCH 02/32] Introduce flexible array struct memcpy() helpers
-Message-ID: <202205051143.6B19E63983@keescook>
+Message-ID: <202205051228.4D5B8CD624@keescook>
 References: <20220504014440.3697851-1-keescook@chromium.org>
  <20220504014440.3697851-3-keescook@chromium.org>
  <d3b73d80f66325fdfaf2d1f00ea97ab3db03146a.camel@sipsolutions.net>
  <202205040819.DEA70BD@keescook>
  <970a674df04271b5fd1971b495c6b11a996c20c2.camel@sipsolutions.net>
+ <871qx8qabo.fsf@keithp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <970a674df04271b5fd1971b495c6b11a996c20c2.camel@sipsolutions.net>
+In-Reply-To: <871qx8qabo.fsf@keithp.com>
 X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -172,115 +172,27 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 05, 2022 at 03:16:19PM +0200, Johannes Berg wrote:
-> On Wed, 2022-05-04 at 08:38 -0700, Kees Cook wrote:
-> > 
-> > It seemed like requiring a structure be rearranged to take advantage of
-> > the "automatic layout introspection" wasn't very friendly. On the other
-> > hand, looking at the examples, most of them are already neighboring
-> > members. Hmmm.
+On Thu, May 05, 2022 at 08:16:11AM -0700, Keith Packard wrote:
+> Johannes Berg <johannes@sipsolutions.net> writes:
 > 
-> A lot of them are, and many could be, though not all.
-
-Yeah, I did a pass through them for the coming v2. Only a few have the
-struct order as part of an apparent hardware interface.
-
-> > And DECLARE_FLEX_ARRAY_ELEMENTS could actually be expanded to include
-> > the count_name too, so both methods could be "forward portable" to a
-> > future where C grew the syntax for bounded flex arrays.
+> > Yeah, dunno, I guess I'm slightly more on the side of not requiring it,
+> > since we don't do the same for kmalloc() etc. and probably really
+> > wouldn't want to add kmalloc_s() that does it ;-)
 > 
-> I guess I don't see that happening :)
+> I suspect the number of bugs this catches will be small, but they'll be
+> in places where the flow of control is complicated. What we want is to
+> know that there's no "real" value already present. I'd love it if we
+> could make the macro declare a new name (yeah, I know, mixing
+> declarations and code).
 
-Well ... it's on my roadmap. ;) I want it for -fsanitize=array-bounds so
-that dynamic array indexing can be checked too. (Right now we can do
-constant-sized array index bounds checking at runtime, but the much
-harder to find problems tend to come from flex arrays.)
+I don't think I can do a declaration and an expression statement at the
+same time with different scopes, but that would be kind of cool. We did
+just move to c11 to gain the in-loop iterator declarations...
 
-> > Requiring instance to be NULL is debatable, but I feel pretty strongly
-> > about it because it does handle a class of mistakes (resource leaks),
-> > and it's not much of a burden to require a known-good starting state.
-> 
-> Yeah, dunno, I guess I'm slightly more on the side of not requiring it,
-> since we don't do the same for kmalloc() etc. and probably really
-> wouldn't want to add kmalloc_s() that does it ;-)
+> Of course, we could also end up with people writing a wrapping macro
+> that sets the variable to NULL before invoking the underlying macro...
 
-Well, I dislike all the *alloc APIs. :P
-
-> I mean, you _could_ go there:
-> 
-> int kmalloc_s(void **ptr, size_t size, gfp_t gfp)
-
-Oh, and I really do (though as a macro, not a "real" function), since
-having type introspection would be _extremely_ useful. Though maybe it
-needs to be through some kind of type-of-lvalue thing...
-
-https://github.com/KSPP/linux/issues/189
-https://github.com/KSPP/linux/issues/87
-
-> So I'm not really sure why this aspect here should need to be different,
-> except of course that you already need the input argument for the magic.
-
-Right, and trying to move the kernel code closer to a form where the
-compiler can take more of the burden of handling code safety.
-
-> And btw, while I was writing it down I was looking to see if it should
-> be "size_t elements" or "size_t len" (like memcpy), it took me some time
-> to figure out, and I was looking at the examples:
-> 
->  1) most of them actually use __u8 or some variant thereof, so you
->     could probably add an even simpler macro like
->        BOUNDED_FLEX_DATA(int, bytes, data)
->     which has the u8 type internally.
-
-I didn't want these helpers to be "opinionated" about their types (just
-their API), so while it's true u8 is usually "good enough", I don't
-think it's common enough to make a special case for.
-
->  2) Unless I'm confusing myself, you got the firewire change wrong,
->     because __mem_to_flex_dup takes the "elements_count", but the
->     memcpy() there wasn't multiplied by the sizeof(element)? Or maybe
->     the fact that it was declared as __u32 header[0] is wrong, and it
->     should be __u8, but it's all very confusing, and I'm really not
->     sure about this at all.
-
-Yes indeed; thanks for catching that. In fact, it's not a strict flex
-array struct, since, as you say, it's measuring bytes, not elements.
-Yeah, I'll see if that needs to be adjusted/dropped, etc.
-
-> One "perhaps you'll laugh me out of the room" suggestion might be to
-> actually be able to initialize the whole thing too?
-> 
-> mydata = flex_struct_alloc(mydata, GFP_KERNEL,
->                            variable_data, variable_len,
->                            .member = 1,
->                            .another = 2);
-> 
-> (the ordering can't really be otherwise since you have to use
-> __VA_ARGS__).
-
-Oooh, that's a cool idea for the API. Hmmmm.
-
-> That might reduce some more code too, though I guess it's quite some
-> additional magic ... :)
-
-Yay preprocessor magic!
-
-> I was going to point to struct cfg80211_bss_ies, but I realize now
-> they're RCU-managed, so we never resize them anyway ... So maybe it's
-> less common than I thought it might be.
-> 
-> I suppose you know better since you converted a lot of stuff already :-)
-
-Well, I've seen a lot of fragile code (usually in the form of
-exploitable flaws around flex arrays) and they do mostly look the same.
-Not everything fits perfectly into the forms this API tries to address,
-but my goal is to get it fitting well enough, and the weird stuff can be
-more carefully examined -- they're easier to find and audit if all the
-others are nicely wrapped up in some fancy flex*() API.
-
-Thanks for your thoughts on all of this! I'll continue to work on a v2...
-
--Kees
+I hope it won't come to that! :)
 
 -- 
 Kees Cook
