@@ -2,153 +2,154 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8841B51C07D
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 15:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230C251C103
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 15:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1379136AbiEENXB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 May 2022 09:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
+        id S1344632AbiEENpD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 May 2022 09:45:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236579AbiEENW6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 09:22:58 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE58542EC9;
-        Thu,  5 May 2022 06:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=Content-Transfer-Encoding:MIME-Version:
-        Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=WOqM4DKEC8qEB5Nc8Asp0yMdSAPt0BrvJUl7fGL2K2o=;
-        t=1651756758; x=1652966358; b=VlPjU//FNXa2+XxsG73YHHulvZS9LU1Ok/2Gr9U1udS3ClE
-        gggIn61BX96CpB7Ev+Na+syeXPKWxqroWgqIhhVP9CcvNs+ZUeF9ru4Hgk5+IJYQFsVqZ/jpcfF6b
-        +cYxGWJCtu7d22kSwdnXxhbbkUvm0YOS0PSvMRyuLmd3/IUHs69f64s5/PkDAYh6/9dg+xKKoqLkL
-        MK7v/u3ZQBkLUUCMZ8d2YxNKjC2UIKIbu17RYhSwkQTUP9KyJG8aVfpDoZD+Pj7tFfaRoDSTF49fC
-        dWqQ6DUUZRcVUBWBnlwDbyxvb4M45fmuQnwHrqOAL+nt+iG9j3PRoD0+FZJ2Jyjg==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.95)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1nmbLD-002nmQ-2E;
-        Thu, 05 May 2022 15:16:23 +0200
-Message-ID: <970a674df04271b5fd1971b495c6b11a996c20c2.camel@sipsolutions.net>
-Subject: Re: [PATCH 02/32] Introduce flexible array struct memcpy() helpers
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        Keith Packard <keithp@keithp.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        Daniel Axtens <dja@axtens.net>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Tadeusz Struk <tadeusz.struk@linaro.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Andy Lavr <andy.lavr@gmail.com>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Baowen Zheng <baowen.zheng@corigine.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Bradley Grove <linuxdrivers@attotech.com>,
-        brcm80211-dev-list.pdl@broadcom.com,
-        Christian Brauner <brauner@kernel.org>,
-        Christian =?ISO-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
-        Christian Lamparter <chunkeey@googlemail.com>,
-        Chris Zankel <chris@zankel.net>,
-        Cong Wang <cong.wang@bytedance.com>,
-        David Gow <davidgow@google.com>,
-        David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Eli Cohen <elic@nvidia.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Hulk Robot <hulkci@huawei.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        John Keeping <john@metanate.com>,
-        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
-        keyrings@vger.kernel.org, kunit-dev@googlegroups.com,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux1394-devel@lists.sourceforge.net,
-        linux-afs@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Louis Peens <louis.peens@corigine.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Mark Brown <broonie@kernel.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nuno =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Rich Felker <dalias@aerifal.cx>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, selinux@vger.kernel.org,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        SHA-cyfmac-dev-list@infineon.com,
-        Simon Horman <simon.horman@corigine.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Stefan Richter <stefanr@s5r6.in-berlin.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
-        Udipto Goswami <quic_ugoswami@quicinc.com>,
-        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
-        xen-devel@lists.xenproject.org,
-        Xiu Jianfeng <xiujianfeng@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>
-Date:   Thu, 05 May 2022 15:16:19 +0200
-In-Reply-To: <202205040819.DEA70BD@keescook>
-References: <20220504014440.3697851-1-keescook@chromium.org>
-         <20220504014440.3697851-3-keescook@chromium.org>
-         <d3b73d80f66325fdfaf2d1f00ea97ab3db03146a.camel@sipsolutions.net>
-         <202205040819.DEA70BD@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 (3.42.4-2.fc35) 
+        with ESMTP id S235092AbiEENpA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 09:45:00 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4353B037;
+        Thu,  5 May 2022 06:41:19 -0700 (PDT)
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 245DCGYC019438;
+        Thu, 5 May 2022 13:41:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pp1; bh=77ab0Ty5ykqQwDgnYPocLacwmJ+dNP2u8u33Qv8fCfI=;
+ b=f8hKKuyh7bz1abW8e3kbwdoxkkdPR3kRH8a+zm/R3pvah9nt+HZbJ8z8WD5tDQIseSSr
+ Gxp1XizawxLkMvEbWprrztGCwrh4/E85l+dPVo/KYK+BC5YFArQWpfiprWw64BRH9tiy
+ 1/tJo33MgLGVENpN3lze+PxrIyBx9BJgCHBw6rBPgrZzwn9f2H4NXM0vDObAgfYC36Pz
+ T0JA6GEAe8k4hndUCk2Bz1OKUawk76dQygHnlT7srnC/rTXvSjNOukLcJVlcjQLMeILu
+ a6FQh6jmDlwofKvLJG+32tsun/vVnNnZ+eBsaVK4x6tGE5H+buRtzoGx8g+QXwdwIxTQ BA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fvf8grn1r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 May 2022 13:41:01 +0000
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 245DE6CQ027671;
+        Thu, 5 May 2022 13:41:00 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3fvf8grn17-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 05 May 2022 13:41:00 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kbYO743AGZX5NGJUAy2kfWYPqT2BapcFqLAyEkVnJIp3hTA7PRh0k0ntwuUQfcOQNP5VLMmk/fsCsigV9l6+4ZOYiwHUoK6iBTb4jMqDIW1JjilWodVz308UrezCWAfQ7Kfna3fYXilHZmoIoKdNpVFXwkqEubrJQ5X+zn/o1rVoKeOQaT6Ii20Uaz/a3qVBzx7zEoGoLm/mkyFgiUym+sd7iVJ1wgZ+Ev3UR/w/u4HLcnvacs3Mb7PgZQwXbkxIjoWfFcdufc0Av7MGhZlJgY1ZOMawozrwBR/r0xBkUOAAAqeAyayzyMy+6GWIxmZugerkfxVn8hcN35upT+EL6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=77ab0Ty5ykqQwDgnYPocLacwmJ+dNP2u8u33Qv8fCfI=;
+ b=muXxwMjRjYAz5b5yqjh391iBXFwfzHbFWorTktD+wBKfL4MT1V4iqUlNLPDgR2gYdAY0PvrpZ/d8G0AeeB0M6frOmcBlgBeIuBths/5BQckhF9+OQqKzQHbtrKUQRVQlIbopnZmTlK7pA8dADBp8YzljQIMe8tCl2DQNIYEt8BzulJl6XpBW6bwh6r9kLwRGVtdkGrQ941KfIIIdt3MSNLqmCNA2Q50vVHAH4oS/RyYkPGr7OqDWqJ2B3fq41LuGE9bSV3E+tKk7clGcTrb8Vs4Zh/p+jiLw/jrq1oEyqvA8UeecJY4noLLNW9mB3jyW2cB16Jh8Q5hkbJSA6JmG5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=zurich.ibm.com; dmarc=pass action=none
+ header.from=zurich.ibm.com; dkim=pass header.d=zurich.ibm.com; arc=none
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (2603:10b6:a03:150::19)
+ by BN8PR15MB3057.namprd15.prod.outlook.com (2603:10b6:408:8d::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.25; Thu, 5 May
+ 2022 13:40:58 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::fc90:e9f2:8fa8:a7c3]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::fc90:e9f2:8fa8:a7c3%7]) with mapi id 15.20.5206.024; Thu, 5 May 2022
+ 13:40:58 +0000
+From:   Bernard Metzler <BMT@zurich.ibm.com>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+CC:     Cheng Xu <chengyou@linux.alibaba.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Pankaj Raghav <pankydev8@gmail.com>,
+        Pankaj Raghav <p.raghav@samsung.com>
+Subject: RE: Re: siw_cm.c:255 siw_cep_put+0x125/0x130 kernel warning while
+ testing blktests srp/002 v5.17-rc7
+Thread-Topic: Re: siw_cm.c:255 siw_cep_put+0x125/0x130 kernel warning while
+ testing blktests srp/002 v5.17-rc7
+Thread-Index: AdhghAgr0FkkgxdCQ1WInjOIf4Ev5A==
+Date:   Thu, 5 May 2022 13:40:58 +0000
+Message-ID: <BYAPR15MB2631DAC4FC3CB59344879A4C99C29@BYAPR15MB2631.namprd15.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8632f566-3e6e-4369-e52d-08da2e9ce2f2
+x-ms-traffictypediagnostic: BN8PR15MB3057:EE_
+x-microsoft-antispam-prvs: <BN8PR15MB305734CB569DB3BCE658DDDF99C29@BN8PR15MB3057.namprd15.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3FuU5oux3OlOQfmZr6I6jfkjPPb4lMpH2EGlCzfTvtnnMcKtcD54J1UmvDBZMD6mOaLAZqAJehi4IZS5FH0Ff40gilYxAw4w089LRx4S2mJgZI/3Si07FXRG8OWxr59nikQg8OJraO+uLWLsIhDO3lw+AH+S4fGuWoimJWTqsCd2V+r3Gdw0Aq2dMb4x50JM+94mc0yZfSg/wMMHy9Isjdf+1JT5WoHc/DS732s6paQk0fQB9cB/n9AJkgSZmrrdD3gnmQErvRT3czFHs6m8JI62fPdyRbb3fktf9OkMAtdhVfz9WNU06W3NP7m2WzoNF62wV4utF3nlUdyUqhpOPRJQKXq4ogv61jnc/0w28RVxKoVZd5+9BPVwJ9vqAoHt6yG1HiUnQkLttHXfFrD8MgHRfvgDSCRXH5qJ9o0DwQEmgQlOczy087nr+/Qy7auFzvk3Abj9hUyuZj2vnWxHgk97qcs7c754SaF2bPWnj6zmLKc+5fJChbHjlQPivfObZTgslpGn22FoXXS9o4n4ZB1xwU7Nf/YA5DgE/IOKap6eIaYIcLPpSjpTWCkwKlxqipbaA9Y0U5GwVp+4fo81KQMLFd3LZjzT8isgXDMCir4v+BxsXrwvg4Zv9wmYoZ3WDJBaw4swT6L2dHsmajo5nzbD/SLkTEQ/KWqN6tcKPAD2e15S+WoizAKyPrFqcJ8CwVaxGxGdsiIIbRUuKpV+2A==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB2631.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(54906003)(6916009)(52536014)(19627235002)(508600001)(6506007)(5660300002)(8936002)(186003)(9686003)(316002)(83380400001)(33656002)(38100700002)(38070700005)(86362001)(122000001)(55016003)(71200400001)(8676002)(7696005)(76116006)(66946007)(2906002)(66556008)(66476007)(4326008)(64756008)(53546011)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dVR5cllHb0g1TWhWNDJ5dUtERGdXVFNVSEFCOWg4OHM3RjkxZCs2U2lKdDZl?=
+ =?utf-8?B?VUpzVmlkWFQ0ZjhUMzlYYjZIWjZCQjM2SllOUmlUb2FSS09DYWoxRXRFSlhP?=
+ =?utf-8?B?NjBwcWZEaGZsbVpqRWZ2cTZLY3pHV2hLWUNid0w3VjAyTFRVbmxMcktaSVVy?=
+ =?utf-8?B?MnVTWkRJaE9DM25vRHRoa1l6RTk5ZWlXSmhCbWFINWE0R2J2UkU1ODRpYW44?=
+ =?utf-8?B?dnJrSlI2LzJDWjFtQis2eDk4N3o4cDRMVE5xRFBOMysvYVI5eS9aZDBOb0Rs?=
+ =?utf-8?B?OTB3NjRJMTNOVXZzZzRUOUJIclpmK0VOL2pXSzQxbXhNZHBlWUF2UFJUTzVI?=
+ =?utf-8?B?WmNZUmxjdWd6ckpXMXAxV3ZiSmpYQTZwTmxIT0FpQ2J2Wkt1SlNRaWFNNkRp?=
+ =?utf-8?B?T0tPOGtLZHNsRklkc1BPeHY0eFJ5NXdhYWJWNzlIZUJzeTV4OVhVQml2WXdJ?=
+ =?utf-8?B?UUc2V2VzcFU1RmVpanNRR0pxRXF2dXNEdkRBWUNmS1VGRlNGcHFqRjIrOEhX?=
+ =?utf-8?B?TVVaNkYrUThCSDV6WmFOM3l5YVJJSnFmZFdIbFFPaGNOOEJrdWhJK0VaREI5?=
+ =?utf-8?B?dHNHQm9yMXJOMVFSMVI2T041TGZZbzd2b2pYTTJheTl1VTBGSi9mR0Y4Rlhi?=
+ =?utf-8?B?SndNK2Q2Mm04WmMrYVN5K0ZyRWVtSFI1Mk1YTGJhUXZDL2NiN2tmOGtaTERm?=
+ =?utf-8?B?VWNxYk53eHVjUkU4RHBpM28zYW5Rb2xNcWo0R2JMdlUrUTlaNWZGZFljNWgz?=
+ =?utf-8?B?aXdwSzdrUUJrbUlOWWZIVldkcGJwcjVWalg2TnVOVTZEYVJoQW8zbGRSRkJN?=
+ =?utf-8?B?dklLTUUvSHNhRWx0d0xRS1hwbWFsZm5rQ0Zld08yam1QT1hyWHBzUjFsZzNB?=
+ =?utf-8?B?L0FhV09MS3lOL1FoODV6NUNFaEdZYVhQQWdYVFZFVUZlai9ianRMaHpLbzZU?=
+ =?utf-8?B?NTRYUE9yZkp1RC85di91RGxwdWxDTUkyakVKMnVJT08rUWcwYnBOcTBxVTJI?=
+ =?utf-8?B?TW4vSWxVKy9OdDNnTGkyZ0ZncWdSYzJPd0VUeTI2cE8wbXpVKzRIZ1dYU3lD?=
+ =?utf-8?B?eUpGMjNINDV4RGFseDFBVlcrcnRyMHVXNEdIcDBjTnVUaERNK0pHWVFhVmk1?=
+ =?utf-8?B?UU5zczZjU2lCakl5bUljcjFFWCtEZkE2MmJPQjlyeE83VDdMRmw2SjV5YUxn?=
+ =?utf-8?B?Y3BVOEFNMWNQVUw5K3MrQnduRUF2Tm1iSkl5K3FRSlM1VzRIY0xGazlNSkpX?=
+ =?utf-8?B?V056S01WQnEyZVJaQzlYaEZodGZuYlFhaDV3YmJEOERvKzIxQS8xbEhrTHRy?=
+ =?utf-8?B?QThHczBldGhPMlpOMzZleG14U3hhcUNwR2JZbTIwbVA0YXFYeVNxRmkwcC9K?=
+ =?utf-8?B?VFlhUTFIczJYTGduS0JlbTN3OXNBeFZFc0l3Y0RUa2VjTGJjbENaSVpDTXNQ?=
+ =?utf-8?B?UlhNS0RZbFZMSHBTM3pTVWdMcFpRWi9QMnlacUVzaGJOSkNMbUcxNTFuRG5u?=
+ =?utf-8?B?cVZpVEtHV3VFdVRQV2VyK2M5aXNkMGJpYXF1WmNBeGlzZU1tVTFyZ0hLZ21m?=
+ =?utf-8?B?WmZRMU5YRVZzdnNFS284dTVoKzJxa1Y3T2xuZlB1WFdvSTlLRUhhZHpYYllT?=
+ =?utf-8?B?c0xmdnFRU3pOQ3E1dk0wZjJBZGd3WTc5c3RoZWlpZzJRVjIremtJQ1NkcGQ3?=
+ =?utf-8?B?dWdiZU9mOUcvWEY0WTFSd3pQWGx1UUQ3bEN3ZWJrdlphYkczTC8vNW41bk9o?=
+ =?utf-8?B?RzlKZitmeXhINklTdGx5TUN1NmpSU0NCYUJEcVd3ZTdUeW93VXNGZlBBWkpD?=
+ =?utf-8?B?ckZRSCtRT1JnZlFKQ2NjOTB5NTlHek5DYS9QSmJmSElyZFE3ZU9HWGhrcXh1?=
+ =?utf-8?B?OTZ2TFBRSmtvKzhCVUdrNkNhcHYxUnU4c2ZqeDNQRjRRaWdjZytDSGlSWGEr?=
+ =?utf-8?B?MElFQjMzMDF2d00rdzZOT0NMVFlwUU1FS2ZIcjRtS29zVFNpQTlmZVUzNTQz?=
+ =?utf-8?B?SE9nNmRQWFNnSXl4cko1MWlGY2xRckVBbWVkQmtXT0dwekVJWklkbnN6QXQr?=
+ =?utf-8?B?aW5kZUhTZ0FycFRiZVJrUDV1SmtxT3JuN25SbDRsRlVXS3NGdU0yQmJicU9T?=
+ =?utf-8?B?R2h1MmNPUHppQ2EwNUlPRnhSYjd0ZlNCd09aWk5UR2tGNDFwVk1lcVlqSkZJ?=
+ =?utf-8?B?RHVYS3V3L2RFbFYzeFFDWC9LSXl5SHhuc244NlhCemtXOHEyejErZS9kR21G?=
+ =?utf-8?B?bUNZTHRQV2prRFNMNEU3MzZBVzluNmFsaldmSmVTYWlja2dUTFppTkhtcHlC?=
+ =?utf-8?B?UnNBZGhoK1Jscll2YW91a0pJcjl0cmtjQ1phbkV1S0NZWVpJWE45V1E0akF1?=
+ =?utf-8?Q?hgfuSXpXIxEQDZe0PGF9BjJcxOLvE7EAPapo2?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+X-OriginatorOrg: Zurich.ibm.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB2631.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8632f566-3e6e-4369-e52d-08da2e9ce2f2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2022 13:40:58.3222
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: fcf67057-50c9-4ad4-98f3-ffca64add9e9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: KnGGu13DL8KFk0pkZCKfPh9yTzKrrhrlSO7bfzdbmPOS7/eZPpfTfVVf+5ygsJuCpIGIBsAFdTR3/bkT8xtTlQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3057
+X-Proofpoint-GUID: vNaChS6Lx1vG-ymdrt10Y15YXG_EsthV
+X-Proofpoint-ORIG-GUID: Ut2TdMuKvyTmzvF5vLHUdIFF5UwSE7uc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.858,Hydra:6.0.486,FMLib:17.11.64.514
+ definitions=2022-05-05_05,2022-05-05_01,2022-02-23_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ impostorscore=0 adultscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205050099
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -156,154 +157,37 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, 2022-05-04 at 08:38 -0700, Kees Cook wrote:
-> 
-> It seemed like requiring a structure be rearranged to take advantage of
-> the "automatic layout introspection" wasn't very friendly. On the other
-> hand, looking at the examples, most of them are already neighboring
-> members. Hmmm.
-
-A lot of them are, and many could be, though not all.
-
-> > or so? The long and duplicated DECLARE_FLEX_ARRAY_ELEMENTS_COUNT and
-> > DECLARE_FLEX_ARRAY_ELEMENTS seems a bit tedious to me, at least in cases
-> > where the struct layout is not the most important thing (or it's already
-> > at the end anyway).
-> 
-> The names aren't great, but I wanted to distinguish "elements" as the
-> array not the count. Yay naming.
-
-:-)
-
-> However, perhaps the solution is to have _both_. i.e using
-> BOUNDED_FLEX_ARRAY(count_type, count_name, array_type, array_name) for
-> the "neighboring" case, and the DECLARE...{ELEMENTS,COUNT} for the
-> "split" case.
-
-Seems reasonable to me.
-
-> And DECLARE_FLEX_ARRAY_ELEMENTS could actually be expanded to include
-> the count_name too, so both methods could be "forward portable" to a
-> future where C grew the syntax for bounded flex arrays.
-
-I guess I don't see that happening :)
-
-> > This seems rather awkward, having to set it to NULL, then checking rc
-> > (and possibly needing a separate variable for it), etc.
-> 
-> I think the errno return is completely required. I had an earlier version
-> of this that was much more like a drop-in replacement for memcpy that
-> would just truncate or panic, 
-> 
-
-Oh, I didn't mean to imply it should truncate or panic or such - but if
-it returns a pointer it can still be an ERR_PTR() or NULL instead of
-having this separate indication, which even often confuses static type
-checkers since they don't always see the "errno == 0 <=> ptr != NULL"
-relation.
-
-So not saying you shouldn't have any error return - clearly you need
-that, just saying that I'm not sure that having the two separated is
-great.
-
-
-> Requiring instance to be NULL is debatable, but I feel pretty strongly
-> about it because it does handle a class of mistakes (resource leaks),
-> and it's not much of a burden to require a known-good starting state.
-
-Yeah, dunno, I guess I'm slightly more on the side of not requiring it,
-since we don't do the same for kmalloc() etc. and probably really
-wouldn't want to add kmalloc_s() that does it ;-)
-
-I mean, you _could_ go there:
-
-int kmalloc_s(void **ptr, size_t size, gfp_t gfp)
-{
-  void *ret;
-
-  if (*ptr)
-    return -EINVAL;
-
-  ret = kmalloc(size, gfp);
-  if (!ret)
-    return -ENOMEM;
-  *ptr = ret;
-  return 0;  
-}
-
-right? But we don't really do that, and I'm not sure it'd be a win if
-done over the whole code base.
-
-So I'm not really sure why this aspect here should need to be different,
-except of course that you already need the input argument for the magic.
-
-But we could still have (this prototype is theoretical, of course, it
-cannot be implemented in C):
-
-void *mem_to_flex_dup(void *ptr, const void *data, size_t elements,
-                      gfp_t gfp);
-
-
-which isn't really that much better though.
-
-And btw, while I was writing it down I was looking to see if it should
-be "size_t elements" or "size_t len" (like memcpy), it took me some time
-to figure out, and I was looking at the examples:
-
- 1) most of them actually use __u8 or some variant thereof, so you
-    could probably add an even simpler macro like
-       BOUNDED_FLEX_DATA(int, bytes, data)
-    which has the u8 type internally.
-
- 2) Unless I'm confusing myself, you got the firewire change wrong,
-    because __mem_to_flex_dup takes the "elements_count", but the
-    memcpy() there wasn't multiplied by the sizeof(element)? Or maybe
-    the fact that it was declared as __u32 header[0] is wrong, and it
-    should be __u8, but it's all very confusing, and I'm really not
-    sure about this at all.
-
-
-
-One "perhaps you'll laugh me out of the room" suggestion might be to
-actually be able to initialize the whole thing too?
-
-
-mydata = flex_struct_alloc(mydata, GFP_KERNEL,
-                           variable_data, variable_len,
-                           .member = 1,
-                           .another = 2);
-
-(the ordering can't really be otherwise since you have to use
-__VA_ARGS__).
-
-That might reduce some more code too, though I guess it's quite some
-additional magic ... :)
-
-
-> > but still, honestly, I don't like it. As APIs go, it feels a bit
-> > cumbersome and awkward to use, and you really need everyone to use this,
-> > and not say "uh what, I'll memcpy() instead".
-> 
-> Sure, and I have tried to get it down as small as possible. The earlier
-> "just put all the member names in every call" version was horrid. :P
-
-:-D
-
-> I
-> realize it's more work to check errno, but the memcpy() API we've all
-> been trained to use is just plain dangerous. I don't think it's
-> unreasonable to ask people to retrain themselves to avoid it. All that
-> said, yes, I want it to be as friendly as possible.
-> 
-> > Maybe there should also be a realloc() version of it?
-> 
-> Sure! Seems reasonable. I'd like to see the code pattern for this
-> though. Do you have any examples?
-
-I was going to point to struct cfg80211_bss_ies, but I realize now
-they're RCU-managed, so we never resize them anyway ... So maybe it's
-less common than I thought it might be.
-
-I suppose you know better since you converted a lot of stuff already :-)
-
-johannes
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogTHVpcyBDaGFtYmVybGFp
+biA8bWNncm9mQGluZnJhZGVhZC5vcmc+IE9uIEJlaGFsZiBPZiBMdWlzDQo+IENoYW1iZXJsYWlu
+DQo+IFNlbnQ6IFRodXJzZGF5LCA1IE1heSAyMDIyIDE0OjQ4DQo+IFRvOiBCZXJuYXJkIE1ldHps
+ZXIgPEJNVEB6dXJpY2guaWJtLmNvbT4NCj4gQ2M6IENoZW5nIFh1IDxjaGVuZ3lvdUBsaW51eC5h
+bGliYWJhLmNvbT47IEJhcnQgVmFuIEFzc2NoZQ0KPiA8YnZhbmFzc2NoZUBhY20ub3JnPjsgbGlu
+dXgtYmxvY2tAdmdlci5rZXJuZWwub3JnOyBsaW51eC0NCj4gcmRtYUB2Z2VyLmtlcm5lbC5vcmc7
+IFBhbmthaiBSYWdoYXYgPHBhbmt5ZGV2OEBnbWFpbC5jb20+OyBQYW5rYWogUmFnaGF2DQo+IDxw
+LnJhZ2hhdkBzYW1zdW5nLmNvbT4NCj4gU3ViamVjdDogW0VYVEVSTkFMXSBSZTogc2l3X2NtLmM6
+MjU1IHNpd19jZXBfcHV0KzB4MTI1LzB4MTMwIGtlcm5lbA0KPiB3YXJuaW5nIHdoaWxlIHRlc3Rp
+bmcgYmxrdGVzdHMgc3JwLzAwMiB2NS4xNy1yYzcNCj4gDQo+IE9uIFRodSwgTWF5IDA1LCAyMDIy
+IGF0IDExOjQyOjU1QU0gKzAwMDAsIEJlcm5hcmQgTWV0emxlciB3cm90ZToNCj4gPg0KPiA+ID4g
+LS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+ID4NCj4gPiA+ID4gKnBva2UqDQo+ID4g
+PiA+DQo+ID4gPiA+IFdvdWxkIGJlIGdvb2QgdG8gZ2V0IGEgZml4IG1lcmdlZC4gQW5kIGlmIGEg
+cGF0Y2ggaXMgcG9zdGVkIGRvZXMNCj4gdGhpcw0KPiA+ID4gPiBuZWVkIHRvIGdvIHRvIHN0YWJs
+ZT8NCj4gPiA+ID4NCj4gPiA+ID4gICAgTHVpcw0KPiA+ID4NCj4gPiA+IFRoZSBwYXRjaCBoYXMg
+YmVlbiBhY2NlcHRlZCBhbmQgbWVyZ2VkIHRvIGZvci1yYywgc2VlOg0KPiA+ID4NCj4gPiA+IElO
+VkFMSUQgVVJJIFJFTU9WRUQNCj4gPiA+DQo+IDNBX19sb3JlLmtlcm5lbC5vcmdfYWxsX2Q1Mjhk
+ODM0NjZjNDQ2ODdmMzg3MmVhZGNiOGMxODQ1MjhiMmUyZDQuMTY1MDUyNg0KPiA+ID4gNTU0Lmdp
+dC5jaGVuZ3lvdS00MGxpbnV4LmFsaWJhYmEuY29tX1RfJmQ9RHdJQ2FRJmM9amZfaWFTSHZKT2JU
+YngtDQo+ID4gPiBzaUExWk9nJnI9MlRhWVhRMFQtDQo+IHI4Wk8xUFAxYWxOd1VfUUpjUlJMZm1Z
+VEFnZDNRQ3ZxU2MmbT1najJBeUtvT01fazlmWUYtDQo+ID4gPg0KPiBfWFE0SGNZd192aU9Jd2w2
+bEROUEhxcDdMMXkyT2lWUld2WmtURkdGSFNTWklub3Imcz1QX0hhWElYdDltQmJDZUJOQkxzV2UN
+Cj4gPiA+IFJUejVodm5VR1V2T2J6czhsb3d6Q00mZT0NCj4gPiA+DQo+ID4gPiBJIHRoaW5rIHRo
+aXMgcGF0Y2ggbmVlZCBub3QgYmUgbWVyZ2VkIGJhY2sgdG8gc3RhYmxlLCBiZWNhdXNlIHRoZQ0K
+PiBpc3N1ZQ0KPiA+ID4gaXMgbm90IGEgZnVuY3Rpb25hbCBwcm9ibGVtLCBidXQgb25seSBwcm9k
+dWNlIGEgV0FSTiBpbiBkbWVzZy4NCj4gPiA+DQo+ID4gPiBUaGFua3MsDQo+ID4gPiBDaGVuZyBY
+dQ0KPiA+DQo+ID4gSSBhZ3JlZS4gSXQgZG9lcyBub3QgZml4IGEgbWVtb3J5IGxlYWsgb3Igc29t
+ZSBzdWNoLg0KPiANCj4gSWYgdGhlIHdhcm5pbmcgdHJpZ2dlcnMgb24gb2xkZXIga2VybmVscyBp
+dCBtZWFucyB0ZXN0aW5nIHVzaW5nIHRoaXMNCj4gZHJpdmVyIHdpbGwgZmFpbCBhbmQgdGhvc2Ug
+dGVzdHMgd2lsbCBiZSBza2lwcGVkLiBJbiB0aGlzIGNhc2UgdGhlDQo+IHRlc3Qgc3JwLzAwMiB3
+b3VsZCBiZSBza2lwcGVkIHVubGVzcyB0aGlzIGlzIGZpeGVkIHRvIG5vdCB0cmlnZ2VyDQo+IGEg
+a2VybmVsIHdhcm5pbmcuDQo+IA0KPiAgIEx1aXMNCg0KDQpBaCBva2F5Lg0KU2luY2UgaXQgd2Fz
+IGFuIGVhc3kgZml4LCBJJ2QgZ28gZm9yIG1lcmdpbmcgYmFjayB0byBzdGFibGUsDQppZiBpdCdz
+IG5vdCB0b28gbXVjaCBvZiBhbiBlZmZvcnQuDQoNClRoYW5rcyENCkJlcm5hcmQuDQo=
