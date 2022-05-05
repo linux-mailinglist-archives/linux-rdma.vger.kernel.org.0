@@ -2,476 +2,243 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C41C51C574
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 18:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCF7C51C83B
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 20:44:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382112AbiEEQ5V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 5 May 2022 12:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46188 "EHLO
+        id S1384578AbiEESsW (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 5 May 2022 14:48:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233268AbiEEQ5U (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 12:57:20 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C1EB57B15
-        for <linux-rdma@vger.kernel.org>; Thu,  5 May 2022 09:53:39 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id y63so4932456oia.7
-        for <linux-rdma@vger.kernel.org>; Thu, 05 May 2022 09:53:39 -0700 (PDT)
+        with ESMTP id S1376837AbiEESsB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 14:48:01 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55075640D
+        for <linux-rdma@vger.kernel.org>; Thu,  5 May 2022 11:39:19 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id j8-20020a17090a060800b001cd4fb60dccso4860095pjj.2
+        for <linux-rdma@vger.kernel.org>; Thu, 05 May 2022 11:39:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language
-         :references:to:from:in-reply-to:content-transfer-encoding;
-        bh=GP0ytFsieiTaXLEx3SXvr3Ziz6ftqTZf3iZOTFJ8DhQ=;
-        b=VolZvjAIQ4IaFY56OXmjuaOWo10c3el/C5dKQS8+qJq6ubL9nzl0z+B5le9I4qgxy5
-         vOnEPb3Vthr9VSSRdVN2xrpWGAT/sxqwvjXrgDyve12oF7LbceGrXj4EBoy71qkJ3PBp
-         VzxUIusOrqRkC5oqVLZ1AjybmARxQIEhy64kwTRO5EEoEd4Nl5f0Ne+jbavHevb2tm4w
-         Dg+0f0xLdzDkUxOs1ue052ovj6xXhrkgSBegFfNRmADdIEpiNswDw23jwwMlJmEt6ELP
-         D9qwcMnbT/M3oJRbn8RusEMuLdXf4i93oOE7tQPsjKbd47QUERxDLvmbMT9VaB/XmVzy
-         yyBA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bIDYG8oUb6Mu7NvJ6XCyJeRsH11vzTSCPCwxqfuBo6Q=;
+        b=TAsZfcIzZ1Euc/qIeEg34BQq2COz7cgqBz00GoicuXUNf9pdGcbnWHwxzUdfUr95G6
+         aZkeIr2DXfy8REqoWNWUrHkDO72sG3i0jXoJwl1ByCdJe4nI3ufTivSeF9XGTyVfZSBt
+         E8X9FJkYlIIwFcdiPVlMoWZYSaWqjlfPLGIK0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:references:to:from:in-reply-to
-         :content-transfer-encoding;
-        bh=GP0ytFsieiTaXLEx3SXvr3Ziz6ftqTZf3iZOTFJ8DhQ=;
-        b=BzUCXxEXojiZVvjGim1e9V/9W4bzdrAmGF0Kj0Pwa8sF9remOWngcmIk+kW83VhkEr
-         DJKc0KdEi10XPpLFG9kyB+MXFdyzqmPlrldJZbuvRCKzkY2nGfHkmS4+D9YOIkOG3TPL
-         PrI7/w7528O1YXQcS6FMZI5CgGnEFofFUBwDVe76PHQkDTKIcC5qrQKdqtY28d8bAYCu
-         yD5Gr92Ej4iQclcxRqamIvxUaTUVw/PJQ6A13X5xFKVPJmXMoXQRi91K8/x9pM2UPQW4
-         TnU1At0cm4fnGKFwkLwItp06ghDoJ0Ne8rZpfP3eltz9IMA4hR2ZFWTLEzNthdcsZstE
-         I7uA==
-X-Gm-Message-State: AOAM533eegAxQUd8Az6R2y0XvHaRcCj1KfJf63LKlVoa9/Xf3pu4CwET
-        2AukB2wT70U3L4leiuRyfGsHF5Rc8yk=
-X-Google-Smtp-Source: ABdhPJxGK0Qf5sEVzu48zjZQXSfQgk4bk4v+E7PuGO+2fmXR3Sn3fS2JQAG7B5c5THTxtaNQbb3VUQ==
-X-Received: by 2002:aca:4b95:0:b0:326:1179:5414 with SMTP id y143-20020aca4b95000000b0032611795414mr3042811oia.256.1651769618966;
-        Thu, 05 May 2022 09:53:38 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:4d34:531:f6db:3282? (2603-8081-140c-1a00-4d34-0531-f6db-3282.res6.spectrum.com. [2603:8081:140c:1a00:4d34:531:f6db:3282])
-        by smtp.gmail.com with ESMTPSA id z14-20020a056870e30e00b000e7a517df41sm693538oad.13.2022.05.05.09.53.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 May 2022 09:53:38 -0700 (PDT)
-Message-ID: <af415ea5-8e4d-3821-e4f8-0638119419af@gmail.com>
-Date:   Thu, 5 May 2022 11:53:37 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bIDYG8oUb6Mu7NvJ6XCyJeRsH11vzTSCPCwxqfuBo6Q=;
+        b=3lDXyLoBNXhzT+A3uJ6Z9+YF5/lZSLa5GazAoqGw/u5V7SDz8DhbDciajysGcJz6cY
+         cZa6IMJqwVTwXPSlWoQf/A5YYXPCEG/x8UtC3w6/kDPZcSKgtt+PCbUyYjzotg7W6V8P
+         00kwDTdYu1Lg2jbStAhW0OhsADaKxVUihwFDy8sUhEhME7KsCYaFzEUXh6kYziv51fHD
+         uPdo/AKXx4+/3SgVPBKOFrnk8dD5PB0zEG1c9sugoFX4c+KBtOM12G7ovZfx1OU7+9Iu
+         r1PMxlEvj3GP/GKsecZaEax3IXl3HOVz+K6NeCi1DLcOX4xh09W1Hh1s/2IrMt1lXc2k
+         mFpA==
+X-Gm-Message-State: AOAM530wQo14fkg4+Zv3anllK+Lur5tn/qBU0fgkE+9ixE/Ah7Omw1uD
+        9hwujhBbQW3DCxMyuAV8CcS+3g==
+X-Google-Smtp-Source: ABdhPJwhJknux9s/+qFqH2XgmMgiW2vZym5kO8XlabzZGnT4KBaHxWpUmQRgMpcqhaJmjVSWVeT9nQ==
+X-Received: by 2002:a17:902:c78b:b0:15c:e5dc:4f63 with SMTP id w11-20020a170902c78b00b0015ce5dc4f63mr28835867pla.90.1651775959148;
+        Thu, 05 May 2022 11:39:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f10-20020a170902860a00b0015e8d4eb1fcsm1871783plo.70.2022.05.05.11.39.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 May 2022 11:39:18 -0700 (PDT)
+Date:   Thu, 5 May 2022 11:39:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
+        netdev@vger.kernel.org, selinux@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Baowen Zheng <baowen.zheng@corigine.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Christian Brauner <brauner@kernel.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Gow <davidgow@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eli Cohen <elic@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Hulk Robot <hulkci@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        John Keeping <john@metanate.com>,
+        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
+        Keith Packard <keithp@keithp.com>, keyrings@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Louis Peens <louis.peens@corigine.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rich Felker <dalias@aerifal.cx>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        Simon Horman <simon.horman@corigine.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        Udipto Goswami <quic_ugoswami@quicinc.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH 28/32] selinux: Use mem_to_flex_dup() with xfrm and sidtab
+Message-ID: <202205051124.6D80ABAE32@keescook>
+References: <20220504014440.3697851-1-keescook@chromium.org>
+ <20220504014440.3697851-29-keescook@chromium.org>
+ <CAHC9VhT5Y=ENiSyb=S-NVbGX63sLOv4nVuR_GS-yww6tiz0wYA@mail.gmail.com>
+ <20220504234324.GA12556@embeddedor>
+ <CAHC9VhRJC4AxeDsGpdphfJD4WzgaeBsdONHnixBzft5u_cE-Dw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Fwd: [PATCH for-next] RDMA/rxe: Fix "RDMA/rxe: Cleanup rxe_mcast.c"
-Content-Language: en-US
-References: <0a2fe427-a185-0432-0690-3ac0e1e0b055@gmail.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <0a2fe427-a185-0432-0690-3ac0e1e0b055@gmail.com>
-X-Forwarded-Message-Id: <0a2fe427-a185-0432-0690-3ac0e1e0b055@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHC9VhRJC4AxeDsGpdphfJD4WzgaeBsdONHnixBzft5u_cE-Dw@mail.gmail.com>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-You can reproduce the error by running the pyverbs test suite on for-next with
-rdmacm enabled and lock checking configured. Both of these are tricky.
-You will also see a lockdep warning but that is for a different test case.
-
-1. The pyverbs test suite has a bug that prevents rxe from attempting several
-test cases that depend on rdmacm for connection setup. I always apply the
-following git patch which is a hack but enables these to run
-
-diff --git a/tests/base.py b/tests/base.py
-
-index 93568c7f..03b5601e 100644
-
---- a/tests/base.py
-
-+++ b/tests/base.py
-
-@@ -245,10 +245,11 @@ class RDMATestCase(unittest.TestCase):
-
-         self._add_gids_per_port(ctx, dev, self.ib_port)
-
- 
-
-     def _get_ip_mac(self, dev, port, idx):
-
--        if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
-
--            self.args.append([dev, port, idx, None, None])
-
--            return
-
--        net_name = self.get_net_name(dev)
-
-+        #if not os.path.exists('/sys/class/infiniband/{}/device/net/'.format(dev)):
-
-+            #self.args.append([dev, port, idx, None, None])
-
-+            #return
-
-+        #net_name = self.get_net_name(dev)
-
-+        net_name = "enp0s3"
-
-         try:
-
-             ip_addr, mac_addr = self.get_ip_mac_address(net_name)
-
-         except (KeyError, IndexError):
-
-This test on /sys/class/infiniband fails because the rxe driver does not have
-a device/net entry. I just provide the device name of my ethernet adapter (enp0s3).
-I reported this to the maintainer of the pyverbs tests months ago but he never responded.
-
-2. The following diff patch shows the locking tools I have configured
-
-11363,11364c11363
-
-< CONFIG_PROVE_LOCKING=y
-
-< CONFIG_PROVE_RAW_LOCK_NESTING=y
-
----
-
-> # CONFIG_PROVE_LOCKING is not set
-
-11366,11379c11365,11371
-
-< CONFIG_DEBUG_RT_MUTEXES=y
-
-< CONFIG_DEBUG_SPINLOCK=y
-
-< CONFIG_DEBUG_MUTEXES=y
-
-< CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y
-
-< CONFIG_DEBUG_RWSEMS=y
-
-< CONFIG_DEBUG_LOCK_ALLOC=y
-
-< CONFIG_LOCKDEP=y
-
-< CONFIG_LOCKDEP_BITS=15
-
-< CONFIG_LOCKDEP_CHAINS_BITS=16
-
-< CONFIG_LOCKDEP_STACK_TRACE_BITS=19
-
-< CONFIG_LOCKDEP_STACK_TRACE_HASH_BITS=14
-
-< CONFIG_LOCKDEP_CIRCULAR_QUEUE_BITS=12
-
-< CONFIG_DEBUG_LOCKDEP=y
-
-< CONFIG_DEBUG_ATOMIC_SLEEP=y
-
----
-
-> # CONFIG_DEBUG_RT_MUTEXES is not set
-
-> # CONFIG_DEBUG_SPINLOCK is not set
-
-> # CONFIG_DEBUG_MUTEXES is not set
-
-> # CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set
-
-> # CONFIG_DEBUG_RWSEMS is not set
-
-> # CONFIG_DEBUG_LOCK_ALLOC is not set
-
-> # CONFIG_DEBUG_ATOMIC_SLEEP is not set
-
-11385,11386d11376
-
-< CONFIG_PROVE_NVDIMM_LOCKING=y
-
-< # CONFIG_PROVE_CXL_LOCKING is not set
-
-11389,11391c11379
-
-< CONFIG_TRACE_IRQFLAGS=y
-
-< CONFIG_TRACE_IRQFLAGS_NMI=y
-
-< CONFIG_DEBUG_IRQFLAGS=y
-
----
-
-> # CONFIG_DEBUG_IRQFLAGS is not set
-
-11411d11398
-
-< CONFIG_PROVE_RCU=y
-
-11445d11431
-
-< CONFIG_PREEMPTIRQ_TRACEPOINTS=y
-
-I think the one that exhibits this warning is one of CONFIG_TRACE_IRQFLAGS=y
-
-Unfortunately it only prints out the warning once per reboot as far as I can tell.
-Reloading the rxe driver won't do it.
-
-Once all this is in place just type
-
-sudo ./build/bin/run_tests.py --dev rxe0
-
-The warning output is below. Since two days ago it has been determined that the
-cause of the warning is calling dev_mc_add() inside a spin_lock_irqsave()/_irqrestore().
-
-Bob
-
-
--------- Forwarded Message --------
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix "RDMA/rxe: Cleanup rxe_mcast.c"
-Date: Tue, 3 May 2022 23:39:36 -0500
-From: Bob Pearson <rpearsonhpe@gmail.com>
-To: Jason Gunthorpe <jgg@nvidia.com>
-
-On 5/3/22 23:22, Bob Pearson wrote:
-> On 5/3/22 19:40, Jason Gunthorpe wrote:
->> On Tue, May 03, 2022 at 05:40:50PM -0500, Bob Pearson wrote:
->>> On 5/3/22 06:38, Jason Gunthorpe wrote:
->>>> On Wed, Apr 13, 2022 at 12:29:38AM -0500, Bob Pearson wrote:
->>>>> rxe_mcast.c currently uses _irqsave spinlocks for rxe->mcg_lock
->>>>> while rxe_recv.c uses _bh spinlocks for the same lock. Adding
->>>>> tracing shows that the code in rxe_mcast.c is all executed in_task()
->>>>> context while the code in rxe_recv.c that refers to the lock
->>>>> executes in softirq context. This causes a lockdep warning in code
->>>>> that executes multicast I/O including blktests check srp.
->>>>
->>>> What is the lockdep warning? This patch looks OK, but irqsave should
->>>> be a universal lock - so why does lockdep complain? Is there nesting?
->>>>
->>>> Jason
->>>
->>> I am bad at parsing them but basically just complaining that you can't
->>> mix _irq and _bh locks I believe.
->>
->> irqsave is a superset of bh within a process context, so lockdep
->> should not complain about just that.
->>
->>> I had had _irqsave locks in rxe_mcast.c which is process context and
->>> _bh locks in rxe_recv.c which is softirq context (NAPI). 
->>
->> Yes, I see that, but that alone should be OK.
->>
->> So lockdep is pointing at something else becoming involved in this..
->>
->>> There isn't any hard irq context for this lock. If you want to see
->>> it I can recompile with lockdep and run the python tests again.
->>
->> Please - the lockdep report should be pasted into the commit message.
->>
->> This patch doesn't make sense alone, although it seems correct from
->> what I can tell.
->>
->> Jason
-> 
-> This is the warning. I assumed it was lockdep but it seems it's something else.
-> 
-> [  159.430321] ------------[ cut here ]------------
-> [  159.430326] raw_local_irq_restore() called with IRQs enabled
-> [  159.430334] WARNING: CPU: 13 PID: 3107 at kernel/locking/irqflag-debug.c:10 warn_bogus_irq_restore+0x2f/0x50
-> [  159.430341] Modules linked in: rdma_ucm(E) rdma_cm(E) iw_cm(E) ib_cm(E) rdma_rxe(E) ib_uverbs(E) ip6_udp_tunnel udp_tunnel ib_core(E) isofs vboxvideo drm_vram_helper vboxsf snd_intel8x0 snd_ac97_codec nls_iso8859_1 ac97_bus intel_rapl_msr snd_pcm intel_rapl_common snd_seq_midi snd_seq_midi_event snd_rawmidi snd_seq crct10dif_pclmul ghash_clmulni_intel snd_seq_device aesni_intel crypto_simd snd_timer joydev cryptd input_leds snd serio_raw vboxguest soundcore mac_hid sch_fq_codel vmwgfx drm_ttm_helper ttm drm_kms_helper fb_sys_fops syscopyarea sysfillrect sysimgblt ipmi_devintf ipmi_msghandler dm_multipath scsi_dh_rdac drm scsi_dh_emc scsi_dh_alua msr parport_pc ppdev lp parport ip_tables x_tables autofs4 hid_generic usbhid hid psmouse crc32_pclmul e1000 ahci i2c_piix4 libahci pata_acpi video
-> [  159.430391] CPU: 13 PID: 3107 Comm: python3 Tainted: G            E     5.18.0-rc1+ #7
-> [  159.430395] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-> [  159.430397] RIP: 0010:warn_bogus_irq_restore+0x2f/0x50
-> [  159.430400] Code: 0f b6 1d af af 05 01 80 fb 01 77 26 83 e3 01 74 06 48 8b 5d f8 c9 c3 48 c7 c7 00 2c de 86 c6 05 91 af 05 01 01 e8 66 0d f2 ff <0f> 0b 48 8b 5d f8 c9 c3 0f b6 f3 48 c7 c7 90 d4 0b 87 e8 fa d6 84
-> [  159.430403] RSP: 0018:ffffb8dd054db9e8 EFLAGS: 00010282
-> [  159.430405] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [  159.430406] RDX: 0000000000000002 RSI: ffffffff86df36a1 RDI: 00000000ffffffff
-> [  159.430408] RBP: ffffb8dd054db9f0 R08: 0000000000000003 R09: 0000000000000000
-> [  159.430409] R10: 65725f7172695f6c R11: 0000000000000000 R12: ffff9524680f56c8
-> [  159.430410] R13: ffff95240c5fde40 R14: ffff952467e81000 R15: ffff95240c5fde40
-> [  159.430411] FS:  00007f2eb2f23000(0000) GS:ffff952517880000(0000) knlGS:0000000000000000
-> [  159.430413] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  159.430414] CR2: 00007f2eb0bb3a00 CR3: 0000000122d6e000 CR4: 00000000000506e0
-> [  159.430418] Call Trace:
-> [  159.430420]  <TASK>
-> [  159.430423]  _raw_spin_unlock_irqrestore+0x75/0x80
-> [  159.430427]  rxe_attach_mcast+0x304/0x480 [rdma_rxe]
-> [  159.430437]  ib_attach_mcast+0x88/0xa0 [ib_core]
-> [  159.430452]  ib_uverbs_attach_mcast+0x186/0x1e0 [ib_uverbs]
-> [  159.430459]  ib_uverbs_handler_UVERBS_METHOD_INVOKE_WRITE+0xcd/0x140 [ib_uverbs]
-> [  159.430465]  ? _copy_from_user+0x7f/0xb0
-> [  159.430474]  ib_uverbs_cmd_verbs+0xdb0/0xea0 [ib_uverbs]
-> [  159.430480]  ? rcu_read_lock_sched_held+0x16/0x80
-> [  159.430484]  ? lock_release+0x23d/0x330
-> [  159.430487]  ? ib_uverbs_handler_UVERBS_METHOD_QUERY_CONTEXT+0xe0/0xe0 [ib_uverbs]
-> [  159.430496]  ? lock_release+0x23d/0x330
-> [  159.430501]  ? slab_free_freelist_hook.constprop.0+0x8e/0x180
-> [  159.430505]  ? lock_acquire+0x1bd/0x330
-> [  159.430507]  ? rcu_read_lock_sched_held+0x16/0x80
-> [  159.430509]  ? rcu_read_lock_sched_held+0x16/0x80
-> [  159.430511]  ? lock_acquire+0x1bd/0x330
-> [  159.430514]  ? __might_fault+0x77/0x80
-> [  159.430517]  ib_uverbs_ioctl+0xd2/0x160 [ib_uverbs]
-> [  159.430522]  ? ib_uverbs_ioctl+0x8e/0x160 [ib_uverbs]
-> [  159.430528]  __x64_sys_ioctl+0x91/0xc0
-> [  159.430530]  do_syscall_64+0x5c/0x80
-> [  159.430533]  ? syscall_exit_to_user_mode+0x3b/0x50
-> [  159.430535]  ? do_syscall_64+0x69/0x80
-> [  159.430537]  ? syscall_exit_to_user_mode+0x3b/0x50
-> [  159.430540]  ? do_syscall_64+0x69/0x80
-> [  159.430541]  ? irqentry_exit+0x63/0x90
-> [  159.430544]  ? exc_page_fault+0xa8/0x2f0
-> [  159.430546]  ? asm_exc_page_fault+0x8/0x30
-> [  159.430548]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> [  159.430549] RIP: 0033:0x7f2eb2d1aaff
-> [  159.430551] Code: 00 48 89 44 24 18 31 c0 48 8d 44 24 60 c7 04 24 10 00 00 00 48 89 44 24 08 48 8d 44 24 20 48 89 44 24 10 b8 10 00 00 00 0f 05 <41> 89 c0 3d 00 f0 ff ff 77 1f 48 8b 44 24 18 64 48 2b 04 25 28 00
-> [  159.430556] RSP: 002b:00007ffd3f260c60 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> [  159.430558] RAX: ffffffffffffffda RBX: 00007ffd3f260da8 RCX: 00007f2eb2d1aaff
-> [  159.430559] RDX: 00007ffd3f260d90 RSI: 00000000c0181b01 RDI: 000000000000003b
-> [  159.430561] RBP: 00007ffd3f260d70 R08: 000055c046934e00 R09: 0000000000000000
-> [  159.430562] R10: 000000000000001e R11: 0000000000000246 R12: 0000000000000000
-> [  159.430563] R13: 0000000000000000 R14: 0000000000000000 R15: 000055c046934f40
-> [  159.430567]  </TASK>
-> [  159.430568] irq event stamp: 0
-> [  159.430569] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-> [  159.430571] hardirqs last disabled at (0): [<ffffffff856bce5d>] copy_process+0x9dd/0x1f40
-> [  159.430574] softirqs last  enabled at (0): [<ffffffff856bce5d>] copy_process+0x9dd/0x1f40
-> [  159.430575] softirqs last disabled at (0): [<0000000000000000>] 0x0
-> [  159.430577] ---[ end trace 0000000000000000 ]---
-> 
-> The code for rxe_attach_mcast is
-> 
-> int rxe_attach_mcast(struct ib_qp *ibqp, union ib_gid *mgid, u16 mlid)
-> 
-> {
-> 
-> 	int err;
-> 
-> 	struct rxe_dev *rxe = to_rdev(ibqp->device);
-> 
-> 	struct rxe_qp *qp = to_rqp(ibqp);
-> 
-> 	struct rxe_mcg *mcg;
-> 
-> 
-> 
-> 	/* takes a ref on mcg if successful */
-> 
-> 	mcg = rxe_get_mcg(rxe, mgid);
-> 
-> 	if (IS_ERR(mcg))
-> 
-> 		return PTR_ERR(mcg);
-> 
-> 
-> 
-> 	err = rxe_attach_mcg(mcg, qp);
-> 
-> 
-> 
-> 	/* if we failed to attach the first qp to mcg tear it down */
-> 
-> 	if (atomic_read(&mcg->qp_num) == 0)
-> 
-> 		rxe_destroy_mcg(mcg);
-> 
-> 
-> 
-> 	kref_put(&mcg->ref_cnt, rxe_cleanup_mcg);
-> 
-> 
-> 
-> 	return err;
-> 
-> }
-> 
-> which calls static function rxe_attach_mcg() which is
-> 
-> static int rxe_attach_mcg(struct rxe_mcg *mcg, struct rxe_qp *qp)
-> 
-> {
-> 
-> 	struct rxe_dev *rxe = mcg->rxe;
-> 
-> 	struct rxe_mca *mca, *tmp;
-> 
-> 	unsigned long flags;
-> 
-> 	int err;
-> 
-> 
-> 
-> 	/* check to see if the qp is already a member of the group */
-> 
-> 	spin_lock_irqsave(&rxe->mcg_lock, flags);
-> 
-> 	list_for_each_entry(mca, &mcg->qp_list, qp_list) {
-> 
-> 		if (mca->qp == qp) {
-> 
-> 			spin_unlock_irqrestore(&rxe->mcg_lock, flags);
-> 
-> 			return 0;
-> 
-> 		}
-> 
-> 	}
-> 
-> 	spin_unlock_irqrestore(&rxe->mcg_lock, flags);
-> 
-> 
-> 
-> 	/* speculative alloc new mca without using GFP_ATOMIC */
-> 
-> 	mca = kzalloc(sizeof(*mca), GFP_KERNEL);
-> 
-> 	if (!mca)
-> 
-> 		return -ENOMEM;
-> 
-> 
-> 
-> 	spin_lock_irqsave(&rxe->mcg_lock, flags);
-> 
-> 	/* re-check to see if someone else just attached qp */
-> 
-> 	list_for_each_entry(tmp, &mcg->qp_list, qp_list) {
-> 
-> 		if (tmp->qp == qp) {
-> 
-> 			kfree(mca);
-> 
-> 			err = 0;
-> 
-> 			goto out;
-> 
-> 		}
-> 
-> 	}
-> 
-> 
-> 
-> 	err = __rxe_init_mca(qp, mcg, mca);
-> 
-> 	if (err)
-> 
-> 		kfree(mca);
-> 
-> out:
-> 
-> 	spin_unlock_irqrestore(&rxe->mcg_lock, flags);
-> 
-> 	return err;
-> 
-> }
-> 
-> which has the offending spin_unlock_irqrestore apparently inline.
-> 
-> I replace the locks with _bh locks the warning goes away.
-> 
-> Bob 
-
-I looked up the error message and the commit that added the check claims to be
-looking for irq_save/irq_restore sequences that enable some irqs in between them.
-I sure don't see anything that looks like that.
-
-Bob
+On Wed, May 04, 2022 at 11:14:42PM -0400, Paul Moore wrote:
+> On Wed, May 4, 2022 at 7:34 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> >
+> > Hi Paul,
+> >
+> > On Wed, May 04, 2022 at 06:57:28PM -0400, Paul Moore wrote:
+> > > On Tue, May 3, 2022 at 9:57 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > [..]
+> >
+> > > > +++ b/include/uapi/linux/xfrm.h
+> > > > @@ -31,9 +31,9 @@ struct xfrm_id {
+> > > >  struct xfrm_sec_ctx {
+> > > >         __u8    ctx_doi;
+> > > >         __u8    ctx_alg;
+> > > > -       __u16   ctx_len;
+> > > > +       __DECLARE_FLEX_ARRAY_ELEMENTS_COUNT(__u16, ctx_len);
+> > > >         __u32   ctx_sid;
+> > > > -       char    ctx_str[0];
+> > > > +       __DECLARE_FLEX_ARRAY_ELEMENTS(char, ctx_str);
+> > > >  };
+> > >
+> > > While I like the idea of this in principle, I'd like to hear about the
+> > > testing you've done on these patches.  A previous flex array
+> > > conversion in the audit uapi headers ended up causing a problem with
+> >
+> > I'm curious about which commit caused those problems...?
+> 
+> Commit ed98ea2128b6 ("audit: replace zero-length array with
+> flexible-array member"), however, as I said earlier, the problem was
+> actually with SWIG, it just happened to be triggered by the kernel
+> commit.  There was a brief fedora-devel mail thread about the problem,
+> see the link below:
+> 
+> * https://www.spinics.net/lists/fedora-devel/msg297991.html
+
+Wow, that's pretty weird -- it looks like SWIG was scraping the headers
+to build its conversions? I assume SWIG has been fixed now?
+
+> To reiterate, I'm supportive of changes like this, but I would like to
+> hear how it was tested to ensure there are no unexpected problems with
+> userspace.  If there are userspace problems it doesn't mean we can't
+> make changes like this, it just means we need to ensure that the
+> userspace issues are resolved first.
+
+Well, as this is the first and only report of any problems with [0] -> []
+conversions (in UAPI or anywhere) that I remember seeing, and they've
+been underway since at least v5.9, I hadn't been doing any new testing.
+
+So, for this case, I guess I should ask what tests you think would be
+meaningful here? Anything using #include should be fine:
+https://codesearch.debian.net/search?q=linux%2Fxfrm.h&literal=1&perpkg=1
+Which leaves just this, which may be doing something weird:
+
+libabigail_2.0-1/tests/data/test-diff-filter/test-PR27569-v0.abi
+        </data-member>
+        <data-member access="public" layout-offset-in-bits="128">
+          <var-decl name="seq_hi" type-id="3f1a6b60" visibility="default" filepath="include/uapi/linux/xfrm.h" line="97" column="1"/>
+        </data-member>
+        <data-member access="public" layout-offset-in-bits="160">
+
+But I see that SWIG doesn't show up in a search for linux/audit.h:
+https://codesearch.debian.net/search?q=linux%2Faudit.h&literal=1&perpkg=1
+
+So this may not be a sufficient analysis...
+
+-- 
+Kees Cook
