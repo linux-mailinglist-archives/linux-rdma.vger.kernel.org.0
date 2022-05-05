@@ -2,64 +2,167 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A478551B568
-	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 03:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5104351B65D
+	for <lists+linux-rdma@lfdr.de>; Thu,  5 May 2022 05:15:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236417AbiEEB5g (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 4 May 2022 21:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35326 "EHLO
+        id S240703AbiEEDSi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 4 May 2022 23:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235781AbiEEB5g (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 21:57:36 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925514CD7F
-        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 18:53:57 -0700 (PDT)
-Received: from fsav115.sakura.ne.jp (fsav115.sakura.ne.jp [27.133.134.242])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 2451rtkV069073;
-        Thu, 5 May 2022 10:53:55 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav115.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp);
- Thu, 05 May 2022 10:53:55 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav115.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 2451rsmX069069
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 5 May 2022 10:53:55 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <41d09faf-bc78-1a87-dfd1-c6d1b5984b61@I-love.SAKURA.ne.jp>
-Date:   Thu, 5 May 2022 10:53:53 +0900
+        with ESMTP id S240712AbiEEDSf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 4 May 2022 23:18:35 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EEEC4FC5E
+        for <linux-rdma@vger.kernel.org>; Wed,  4 May 2022 20:14:55 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id t6so4339105wra.4
+        for <linux-rdma@vger.kernel.org>; Wed, 04 May 2022 20:14:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6ucVUJA/3XuUnAZZDdzrSa00V5OM/xNG80G7w+rY/AM=;
+        b=TuxTKLvOuI4WPEKhesTppN+S/ZTkV+RZI5Wf5W2p+hsrw7/gyfISF8EIiT+rnx8Zu6
+         zyyiN1wYwPcxjcCA2Sf5xnxirRkddqYIXy2R06dd7qAEUind0ZWDkOOMEqGzEQWPzWzC
+         ZTGq5qihhGmXwhHHxuYfhzg3wQjnC+ThZO+LDVhD9+QIb89VKx3wO1YbUFwWrxXrBCMa
+         SL8UA4+69pMFcpj8M2pJPoNe1J5xXeNZwxQABf1kR5+ALPhLTrYwt5fLtjpY8BeYkBF4
+         nHH6g/sC5IM5M9d/Ecm/JssJwuDneWf8+Vn5nXmTehGUz+AEuc9+Pt2ztZNda+z83bgG
+         KQkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6ucVUJA/3XuUnAZZDdzrSa00V5OM/xNG80G7w+rY/AM=;
+        b=ovz4ZvsF/M4Ld3RLbklOyptOF6FCNgqJMjIxZaOsmHhQzfDPXNBypu1scx5VU5VIZO
+         8obgVY4ksDXgMLnaZaKNzcI0fDWvEo1xfU9Yw9L3wiqyjFeJqyp/cFNKxynsw/ObHoua
+         o3ube+CLuePFju8SBx2M72j1qStRJZi2rYkZcf0KPlTDw3bwOwKBYR04MeXJ7v2TzCZv
+         DFJHue8JtpJYNDZJTof3uxh/zKQr3ZWbcBd7k8c4zf/Y4yGPQHsYqSz/tHAaUHyJ9Lx9
+         +dUEjqNMqPSFoEL2GrdF+WFIl+3W+wYqsKJYKza3YcEqEjcDNOSvZBvB7WTxhZRXmfnK
+         VYVw==
+X-Gm-Message-State: AOAM531R08JHI9gtayMlo/F2GRutw2YVbsla/q6sWEkgBwe5Te34AIyq
+        /6MkfE6vvzDZCtbersgazwGBUFatG1/fFHwm6bhF
+X-Google-Smtp-Source: ABdhPJzVMX+BMHIo/6Rx3rt/EGt5DUCiA1Xs3vZE5oz5hLJkbM0bMmp2okAEnKI/au/mDAitpvRIKuXqsxBU1V8TuLw=
+X-Received: by 2002:a5d:590d:0:b0:20a:c3eb:2584 with SMTP id
+ v13-20020a5d590d000000b0020ac3eb2584mr18412244wrd.18.1651720493308; Wed, 04
+ May 2022 20:14:53 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: [PATCH net v2] net: rds: use maybe_get_net() when acquiring refcount
- on TCP sockets
-Content-Language: en-US
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To:     Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>
-Cc:     patchwork-bot+netdevbpf@kernel.org,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        David Miller <davem@davemloft.net>,
+References: <20220504014440.3697851-1-keescook@chromium.org>
+ <20220504014440.3697851-29-keescook@chromium.org> <CAHC9VhT5Y=ENiSyb=S-NVbGX63sLOv4nVuR_GS-yww6tiz0wYA@mail.gmail.com>
+ <20220504234324.GA12556@embeddedor>
+In-Reply-To: <20220504234324.GA12556@embeddedor>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Wed, 4 May 2022 23:14:42 -0400
+Message-ID: <CAHC9VhRJC4AxeDsGpdphfJD4WzgaeBsdONHnixBzft5u_cE-Dw@mail.gmail.com>
+Subject: Re: [PATCH 28/32] selinux: Use mem_to_flex_dup() with xfrm and sidtab
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>,
+        netdev@vger.kernel.org, selinux@vger.kernel.org,
+        Alexei Starovoitov <ast@kernel.org>,
+        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Baowen Zheng <baowen.zheng@corigine.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Christian Brauner <brauner@kernel.org>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Gow <davidgow@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eli Cohen <elic@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Hulk Robot <hulkci@huawei.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        syzbot <syzbot+694120e1002c117747ed@syzkaller.appspotmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>
-References: <a5fb1fc4-2284-3359-f6a0-e4e390239d7b@I-love.SAKURA.ne.jp>
- <165157801106.17866.6764782659491020080.git-patchwork-notify@kernel.org>
- <CANn89iLHihonbBUQWkd0mjJPUuYBLMVoLCsRswtXmGjU3NKL5w@mail.gmail.com>
- <CANn89iJ=LF0KhRXDiFcky7mqpVaiHdbc6RDacAdzseS=iwjr4Q@mail.gmail.com>
- <f6f9f21d-7cdd-682f-f958-5951aa180ec7@I-love.SAKURA.ne.jp>
- <CANn89iJOt9oC_sSmVhRx8fyyvJ2hWzYKcTfH1Rvbzpt5aP0qNA@mail.gmail.com>
- <bf5ce176-35e6-0a75-1ada-6bed071a6a75@I-love.SAKURA.ne.jp>
- <5f3feecc-65ad-af5f-0ecd-94b2605ab67e@I-love.SAKURA.ne.jp>
- <63dab11e-2aeb-5608-6dcb-6ebc3e98056e@I-love.SAKURA.ne.jp>
-In-Reply-To: <63dab11e-2aeb-5608-6dcb-6ebc3e98056e@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        John Keeping <john@metanate.com>,
+        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
+        Keith Packard <keithp@keithp.com>, keyrings@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux1394-devel@lists.sourceforge.net,
+        linux-afs@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Louis Peens <louis.peens@corigine.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rich Felker <dalias@aerifal.cx>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        Simon Horman <simon.horman@corigine.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        Udipto Goswami <quic_ugoswami@quicinc.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        Yang Yingliang <yangyingliang@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,123 +170,47 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Eric Dumazet is reporting addition on 0 problem at rds_tcp_tune(), for
-delayed works queued in rds_wq might be invoked after a net namespace's
-refcount already reached 0.
+On Wed, May 4, 2022 at 7:34 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> Hi Paul,
+>
+> On Wed, May 04, 2022 at 06:57:28PM -0400, Paul Moore wrote:
+> > On Tue, May 3, 2022 at 9:57 PM Kees Cook <keescook@chromium.org> wrote:
+>
+> [..]
+>
+> > > +++ b/include/uapi/linux/xfrm.h
+> > > @@ -31,9 +31,9 @@ struct xfrm_id {
+> > >  struct xfrm_sec_ctx {
+> > >         __u8    ctx_doi;
+> > >         __u8    ctx_alg;
+> > > -       __u16   ctx_len;
+> > > +       __DECLARE_FLEX_ARRAY_ELEMENTS_COUNT(__u16, ctx_len);
+> > >         __u32   ctx_sid;
+> > > -       char    ctx_str[0];
+> > > +       __DECLARE_FLEX_ARRAY_ELEMENTS(char, ctx_str);
+> > >  };
+> >
+> > While I like the idea of this in principle, I'd like to hear about the
+> > testing you've done on these patches.  A previous flex array
+> > conversion in the audit uapi headers ended up causing a problem with
+>
+> I'm curious about which commit caused those problems...?
 
-Since rds_tcp_exit_net() from cleanup_net() calls flush_workqueue(rds_wq),
-it is guaranteed that we can instead use maybe_get_net() from delayed work
-functions until rds_tcp_exit_net() returns.
+Commit ed98ea2128b6 ("audit: replace zero-length array with
+flexible-array member"), however, as I said earlier, the problem was
+actually with SWIG, it just happened to be triggered by the kernel
+commit.  There was a brief fedora-devel mail thread about the problem,
+see the link below:
 
-Note that I'm not convinced that all works which might access a net
-namespace are already queued in rds_wq by the moment rds_tcp_exit_net()
-calls flush_workqueue(rds_wq). If some race is there, rds_tcp_exit_net()
-will fail to wait for work functions, and kmem_cache_free() could be
-called from net_free() before maybe_get_net() is called from
-rds_tcp_tune().
+* https://www.spinics.net/lists/fedora-devel/msg297991.html
 
-Reported-by: Eric Dumazet <edumazet@google.com>
-Fixes: 3a58f13a881ed351 ("net: rds: acquire refcount on TCP sockets")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
-Changes in v2:
-  Add netns_tracker_alloc().
+To reiterate, I'm supportive of changes like this, but I would like to
+hear how it was tested to ensure there are no unexpected problems with
+userspace.  If there are userspace problems it doesn't mean we can't
+make changes like this, it just means we need to ensure that the
+userspace issues are resolved first.
 
- net/rds/tcp.c         | 12 +++++++++---
- net/rds/tcp.h         |  2 +-
- net/rds/tcp_connect.c |  5 ++++-
- net/rds/tcp_listen.c  |  5 ++++-
- 4 files changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/net/rds/tcp.c b/net/rds/tcp.c
-index 2f638f8b7b1e..73ee2771093d 100644
---- a/net/rds/tcp.c
-+++ b/net/rds/tcp.c
-@@ -487,11 +487,11 @@ struct rds_tcp_net {
- /* All module specific customizations to the RDS-TCP socket should be done in
-  * rds_tcp_tune() and applied after socket creation.
-  */
--void rds_tcp_tune(struct socket *sock)
-+bool rds_tcp_tune(struct socket *sock)
- {
- 	struct sock *sk = sock->sk;
- 	struct net *net = sock_net(sk);
--	struct rds_tcp_net *rtn = net_generic(net, rds_tcp_netid);
-+	struct rds_tcp_net *rtn;
- 
- 	tcp_sock_set_nodelay(sock->sk);
- 	lock_sock(sk);
-@@ -499,10 +499,15 @@ void rds_tcp_tune(struct socket *sock)
- 	 * a process which created this net namespace terminated.
- 	 */
- 	if (!sk->sk_net_refcnt) {
-+		if (!maybe_get_net(net)) {
-+			release_sock(sk);
-+			return false;
-+		}
- 		sk->sk_net_refcnt = 1;
--		get_net_track(net, &sk->ns_tracker, GFP_KERNEL);
-+		netns_tracker_alloc(net, &sk->ns_tracker, GFP_KERNEL);
- 		sock_inuse_add(net, 1);
- 	}
-+	rtn = net_generic(net, rds_tcp_netid);
- 	if (rtn->sndbuf_size > 0) {
- 		sk->sk_sndbuf = rtn->sndbuf_size;
- 		sk->sk_userlocks |= SOCK_SNDBUF_LOCK;
-@@ -512,6 +517,7 @@ void rds_tcp_tune(struct socket *sock)
- 		sk->sk_userlocks |= SOCK_RCVBUF_LOCK;
- 	}
- 	release_sock(sk);
-+	return true;
- }
- 
- static void rds_tcp_accept_worker(struct work_struct *work)
-diff --git a/net/rds/tcp.h b/net/rds/tcp.h
-index dc8d745d6857..f8b5930d7b34 100644
---- a/net/rds/tcp.h
-+++ b/net/rds/tcp.h
-@@ -49,7 +49,7 @@ struct rds_tcp_statistics {
- };
- 
- /* tcp.c */
--void rds_tcp_tune(struct socket *sock);
-+bool rds_tcp_tune(struct socket *sock);
- void rds_tcp_set_callbacks(struct socket *sock, struct rds_conn_path *cp);
- void rds_tcp_reset_callbacks(struct socket *sock, struct rds_conn_path *cp);
- void rds_tcp_restore_callbacks(struct socket *sock,
-diff --git a/net/rds/tcp_connect.c b/net/rds/tcp_connect.c
-index 5461d77fff4f..f0c477c5d1db 100644
---- a/net/rds/tcp_connect.c
-+++ b/net/rds/tcp_connect.c
-@@ -124,7 +124,10 @@ int rds_tcp_conn_path_connect(struct rds_conn_path *cp)
- 	if (ret < 0)
- 		goto out;
- 
--	rds_tcp_tune(sock);
-+	if (!rds_tcp_tune(sock)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	if (isv6) {
- 		sin6.sin6_family = AF_INET6;
-diff --git a/net/rds/tcp_listen.c b/net/rds/tcp_listen.c
-index 09cadd556d1e..7edf2e69d3fe 100644
---- a/net/rds/tcp_listen.c
-+++ b/net/rds/tcp_listen.c
-@@ -133,7 +133,10 @@ int rds_tcp_accept_one(struct socket *sock)
- 	__module_get(new_sock->ops->owner);
- 
- 	rds_tcp_keepalive(new_sock);
--	rds_tcp_tune(new_sock);
-+	if (!rds_tcp_tune(new_sock)) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
- 
- 	inet = inet_sk(new_sock->sk);
- 
 -- 
-2.34.1
-
-
+paul-moore.com
