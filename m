@@ -2,204 +2,220 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8503051D99A
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 May 2022 15:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A881251DCBE
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 May 2022 18:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230036AbiEFNyc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 6 May 2022 09:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51008 "EHLO
+        id S1443312AbiEFQFj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 6 May 2022 12:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229713AbiEFNya (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 May 2022 09:54:30 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD20251E55
-        for <linux-rdma@vger.kernel.org>; Fri,  6 May 2022 06:50:46 -0700 (PDT)
-Received: from fsav415.sakura.ne.jp (fsav415.sakura.ne.jp [133.242.250.114])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 246DoawE061937;
-        Fri, 6 May 2022 22:50:37 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav415.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp);
- Fri, 06 May 2022 22:50:36 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav415.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 246DoHZQ061862
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 6 May 2022 22:50:36 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <22f7183b-cc16-5a34-e879-7605f5efc6e6@I-love.SAKURA.ne.jp>
-Date:   Fri, 6 May 2022 22:50:13 +0900
+        with ESMTP id S1443311AbiEFQFh (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 6 May 2022 12:05:37 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2053.outbound.protection.outlook.com [40.107.237.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBE269CCB;
+        Fri,  6 May 2022 09:01:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LT3ZBZYNq4kCVh94y+yilizC1vRfzKttbEr+lGH/TE26QmuLZZEwvOvjygFN9zUgBUXRIF7zExyh6CI1/eNJiOgQLOMxquzyxlixZHKJJ+4cFAMBxrZJyZTXFirz8pw3AQ+zPd3nVzRYJYHZo6QfNTJj+tHYLr81I18H1c4CciZjqTBqmfhM0Sqz+Bj14G2Su1Z4txxyEJJstKhOrYGp6BoHuIltSD1/yXHCGqDl3NHucDENMMfqf/GlcGi0s8SON3dsKd4qSKNMChj+XZMZ3Q+CRREG1fncP+tEeYuQC34y+dhJMskP9lNjQ70lWEydjH5fGWbmc31SGRuljbgFQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ABKlwoDNfGL7SO9zoH+Z6rxhhunkENDfaOKcO2QyVMc=;
+ b=EQf4KLMis+Lw6QIMEmNm0jmPtVC3LWZmtaf88LI+dF/8t0P8ZAJBJpm447e+CIEzNNecPSQ1tibZs5vttCP4qFAergC4ih4gkSDA0nt1E//rin6jZhDiKK8hE+/XEXBf0q4wYX1GG7V1x8AJ6ikmdRep2Il3OssBoxgFYmNw7GZUyzSxqMKONnzLcyeQ1F8IWtar6q4CATRHcC5Umyw4TwdRGkcQG57ylMtwJCY1BVHwL4CPLlDiwT90GHWOqybXxcRHWbXXQLVS02sv7BT0NQIjSVOaEP9GqqcEuUDjvOlU/xqsR09Gm75jaBMcKmROSnwNFVNxTUji4qmiAvAhew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ABKlwoDNfGL7SO9zoH+Z6rxhhunkENDfaOKcO2QyVMc=;
+ b=kYF0KQcUGXr3s2p8/bZ3Ckhw88BZOn5/haC2jJnTg4x8CHuWsJHF0LqHyi2c073W3LO+yQtWTq1WIXFYCfsACJNa+pzsR0NMUufeurzRHotle5mzilRt6QL93OskEODYXPZmGtXcWvK8r3MiuawLzM5ToDrBJaMWAp7qXKrrGzQdDKFBcLvA+Ux92VQhOnxGGucGuhuA2xGC0FSvE3coWW6E0SGfd/84PqDNs3Ot1FKlfDnEuODECbSvTOfH9N1gZRhFFzb4TCL7L6tqXyJfSxNeQMQByCN6BXkX7yVjznLLgEAgwVt76lPlrG2lr9SeUZi5nIhC6PSabgY4srObcQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by CH0PR12MB5250.namprd12.prod.outlook.com (2603:10b6:610:d1::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5206.24; Fri, 6 May
+ 2022 16:01:52 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2%6]) with mapi id 15.20.5206.028; Fri, 6 May 2022
+ 16:01:52 +0000
+Date:   Fri, 6 May 2022 13:01:51 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20220506160151.GA596656@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
+X-ClientProxiedBy: BL1PR13CA0011.namprd13.prod.outlook.com
+ (2603:10b6:208:256::16) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Content-Language: en-US
-To:     Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     OFED mailing list <linux-rdma@vger.kernel.org>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] RDMA/mlx4: Avoid flush_scheduled_work() usage
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 5fad01df-d448-4962-b376-08da2f79bc48
+X-MS-TrafficTypeDiagnostic: CH0PR12MB5250:EE_
+X-Microsoft-Antispam-PRVS: <CH0PR12MB5250919560399367185F2B09C2C59@CH0PR12MB5250.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Bm/2oOyKRYYrqNigEH0oWrJWwE/jZHbdg+vLKufeeSYO0xJhJS4FV6stpcSGABJnwCGP2Q0olOn7qeafZTMW66FedxwsZ/KDgiT8xu9akJnMD6IkCx4/z+3Q0rKe8uYrzsMWY3HVnZLStZvfNv1jqgxjD6xXlTBveIDQuMNSndcNFQqerX+jEkNUiP1rRgPezRViKu1583ZQNHYThG+jhaMYXMIH5X5O8kK1W1NckOvmpRBQKvTj8tlrNPk6phhhJ5ZTUqkZPHy04DH2eL5J8BhbRHKBYsliPStF7Ry4ICbHZI1j/PhtRzJCUU7BrJI9KKnurYO6xqzIwFUM26Wnvv2U3E+6DOHKfZ8TEAfBgO+2k+swJUhlhiZE+2YkC6F71i2baTTBbEPt1uKWRqiBLCiMJvlh6A9EBvDDPvZAj5nVAznOM8AWrq7q09jviTQIVe8wRcKpXV/TKRKbFP6r7e1rlhw15LCUqLmz7BPHNdrJN/s0I15DtyWFobiZIRD3yAbettSgvJBF5ADnMZesHgy8CcxDWQ4yCXxJnm4RxMmGJJYovDHwDKPq+UrtwWpEzrr6ajhNkiCreo7RN1RtIUARgWHneeJU9to9rl0OcOmb9thIy/Ppj1IDjtxrvhhPahJO3k4Lb3DNrL7hn+AmXNrYiQ+UNlYN0zJuSX+w2EQLxBwtfNGwsZxhhc10cnAyqRA2g9iIPmvJlLM2YTJGtXNWqWwARfypp0c6EXVgQXsubxkQ36+8K12kvgqJynZP+f9e/Tko9uAcQnxeAAwTVas9Xdt9F5DUJCBqLW+2dx0Td3RqqmRH8gCiFTuXaixX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(38100700002)(36756003)(107886003)(26005)(1076003)(508600001)(83380400001)(66946007)(6512007)(4326008)(66476007)(8676002)(8936002)(6506007)(44144004)(21480400003)(5660300002)(316002)(6916009)(2906002)(186003)(86362001)(2616005)(33656002)(6486002)(966005)(66556008)(27376004)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nC+ATjJA8zpuYYAPlwnEbnI31so1NoeHghgroiyTVWMI6pqc8+X29eqcRVFh?=
+ =?us-ascii?Q?kfQJq2ke4BB23d9ZG04SG/WKWoy6Uz+ZVpLp4giO5LkJc8mpA+gWiorbbuWs?=
+ =?us-ascii?Q?Kg5aae0UMBiV81UTaTzDxhLaAyjZBtmbPY+wYazIBqtGEBy93ptQk1cE3bgQ?=
+ =?us-ascii?Q?bRJk1J0nSSSbpPJQCZtkqXiuUFEQpbfQvOb3tpULjY+WakdqIMgmHJreKUwB?=
+ =?us-ascii?Q?Nr9w8nclMqNkW4SH92V5GU60+1TNnSb2MV2QuP1uVn1m/skq2JTK2zHBF4uq?=
+ =?us-ascii?Q?s01mQ8aAEZJIa3kYQPF+VytuvGpC44izxRMko1lwlkqlRJxmuVq33idFiQFS?=
+ =?us-ascii?Q?3dGvQqRA05+/O9yC60LF7BYFtXvv2l2HhfysCzQ8wyJF38/1NCpdVgspE7Xf?=
+ =?us-ascii?Q?4kA6JnfTKUIJDb9eMqTWiH+fgzoaLIA4NJvwzFtmBnGpq1Lk06gEXLfS/7Zm?=
+ =?us-ascii?Q?6yA+JgzW75YtMmXd8E6t2am4OoHvzwRID3tB3FyPYnbPMV70p2/OgGzoNvyw?=
+ =?us-ascii?Q?/yP/hjFq+rvK0aC01gVfOQXSTC3/B6TRd/QVLLbftIEx+aeiGWQILpkuCOVN?=
+ =?us-ascii?Q?gu6AFK3s0AvAiUFZdeYJqHr9aAoe34CjzgEKzokHeouE+VUmXFlpIx7B0dQ3?=
+ =?us-ascii?Q?Xn5nxZKlZvAmk3gzEkEmGToJKQtdgQcjMPCw+tLAypCe3QRmy6wXmOapzjb9?=
+ =?us-ascii?Q?nA5cbsSQrCRbWo7JuIU2ES+dR6hlOKwUkNqUATv86KdFzNdWk5z/aBetFDrv?=
+ =?us-ascii?Q?Hsqmw08U8looyXv/fbF6mxTL/7fJEVbTfA8lfNgNC6+wQJo6WlXab2DvBkln?=
+ =?us-ascii?Q?51xJR7lO4JksOgwM8CMlHgtzYUb+LHzBkiDIsZmF8b2V0qxDKx8EyHNnmzDV?=
+ =?us-ascii?Q?XN8Np8XEkSa4AhoWFrhOXjmdISvzrrP2CX5MaRArljd804Ug9PsSL/We/g1a?=
+ =?us-ascii?Q?JNfGsHLmeIadouCucfVOBOlasr9Do0uumK/5fdJW6nwvXjJOSO3oadNwtDvu?=
+ =?us-ascii?Q?xswhdIU4y2CFKowMlCGZ1+C3k6LMG3wOq3AfJI93mlHSWKxsxDiA59/wD+eT?=
+ =?us-ascii?Q?d9Lj0+BHgE+CJay7fzCEVquZ/FDj1fsbqvM85ne/KbfnFaHOZC2X+fBNivWe?=
+ =?us-ascii?Q?g6OY6ubSb9tQ7fRpHs3hh1+WXqYdItydiLptfnICQPHPlsyT/NIWPCGIS7Ma?=
+ =?us-ascii?Q?RieuZnPKkZ8SZ+qkZAK27ejKLfCHSm0qMmRqfnqCPFbnHo5iPlBd7JJQ2e1/?=
+ =?us-ascii?Q?s7FuOnSDviFCbh1WhWsMWaPI/shXmzq1KeA0pIesA9HfW5wC8dZ8BB2KHkCI?=
+ =?us-ascii?Q?ILXL5hyWoOXx4837cmB7JM5kaZVFbUmWvXE9H+YzgNj5T9fG7sXW6oCjjzbA?=
+ =?us-ascii?Q?ZX7qw+FmqnZ8vIpghck5Lwld32wYFD1SWYb3cgA42vyRCJfu6rmhl2poVdFL?=
+ =?us-ascii?Q?VM0aLOiLui3zqlyMqAY5JM0+YoTuLlEjrEyLP0mQD2baj5DAW0QTe3F4CyBg?=
+ =?us-ascii?Q?hwg0biXy5z3XIofC1i5JwnKSzk7L+czvRA6xzKRRP5AH0DgdJUgTPGHkD7Xr?=
+ =?us-ascii?Q?yFLpLYw4X7CaOYkdTj3aUwjX4v6fWk39veQr5KGZ6qWhHGqRm4Z7nk4v8qpe?=
+ =?us-ascii?Q?ac6bfFtfjRUy+9J5+/wlwVOETNcH/appOsweL+alIwOYbvXZcKFRqIu5mO6S?=
+ =?us-ascii?Q?kb3m0BwvnIEP2l2HKNbapttqQWQ0WbpSqdTFpB/ta2y+GyzkPhCLrLGeSKzz?=
+ =?us-ascii?Q?dKFwz17Nrg=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5fad01df-d448-4962-b376-08da2f79bc48
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2022 16:01:52.5431
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qV+KTi9VhQ+mjeKOsyv6C/iQBeVRm4tjYeLi5aXe7JV7THix7FHCxJuRZ2T1AGgE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5250
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Flushing system-wide workqueues is dangerous and will be forbidden.
-Replace system_wq with local cm_wq.
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Link: https://lkml.kernel.org/r/49925af7-78a8-a3dd-bce6-cfc02e1a9236@I-love.SAKURA.ne.jp
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
-Note: This patch is only compile tested.
+Hi Linus,
 
- drivers/infiniband/hw/mlx4/cm.c      | 29 +++++++++++++++++++++-------
- drivers/infiniband/hw/mlx4/main.c    | 10 +++++++++-
- drivers/infiniband/hw/mlx4/mlx4_ib.h |  3 +++
- 3 files changed, 34 insertions(+), 8 deletions(-)
+Small update, still some rxe bugs that need fixing, but that is normal
+for rxe.
 
-diff --git a/drivers/infiniband/hw/mlx4/cm.c b/drivers/infiniband/hw/mlx4/cm.c
-index 4aff1c8298b1..12b481d138cf 100644
---- a/drivers/infiniband/hw/mlx4/cm.c
-+++ b/drivers/infiniband/hw/mlx4/cm.c
-@@ -80,6 +80,7 @@ struct cm_req_msg {
- 	union ib_gid primary_path_sgid;
- };
- 
-+static struct workqueue_struct *cm_wq;
- 
- static void set_local_comm_id(struct ib_mad *mad, u32 cm_id)
- {
-@@ -288,10 +289,10 @@ static void schedule_delayed(struct ib_device *ibdev, struct id_map_entry *id)
- 	/*make sure that there is no schedule inside the scheduled work.*/
- 	if (!sriov->is_going_down && !id->scheduled_delete) {
- 		id->scheduled_delete = 1;
--		schedule_delayed_work(&id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+		queue_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 	} else if (id->scheduled_delete) {
- 		/* Adjust timeout if already scheduled */
--		mod_delayed_work(system_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+		mod_delayed_work(cm_wq, &id->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 	}
- 	spin_unlock_irqrestore(&sriov->going_down_lock, flags);
- 	spin_unlock(&sriov->id_map_lock);
-@@ -370,7 +371,7 @@ static int alloc_rej_tmout(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id, int sl
- 			ret =  xa_err(item);
- 		else
- 			/* If a retry, adjust delayed work */
--			mod_delayed_work(system_wq, &item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+			mod_delayed_work(cm_wq, &item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 		goto err_or_exists;
- 	}
- 	xa_unlock(&sriov->xa_rej_tmout);
-@@ -393,7 +394,7 @@ static int alloc_rej_tmout(struct mlx4_ib_sriov *sriov, u32 rem_pv_cm_id, int sl
- 		return xa_err(old);
- 	}
- 
--	schedule_delayed_work(&item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
-+	queue_delayed_work(cm_wq, &item->timeout, CM_CLEANUP_CACHE_TIMEOUT);
- 
- 	return 0;
- 
-@@ -500,7 +501,7 @@ static void rej_tmout_xa_cleanup(struct mlx4_ib_sriov *sriov, int slave)
- 	xa_lock(&sriov->xa_rej_tmout);
- 	xa_for_each(&sriov->xa_rej_tmout, id, item) {
- 		if (slave < 0 || slave == item->slave) {
--			mod_delayed_work(system_wq, &item->timeout, 0);
-+			mod_delayed_work(cm_wq, &item->timeout, 0);
- 			flush_needed = true;
- 			++cnt;
- 		}
-@@ -508,7 +509,7 @@ static void rej_tmout_xa_cleanup(struct mlx4_ib_sriov *sriov, int slave)
- 	xa_unlock(&sriov->xa_rej_tmout);
- 
- 	if (flush_needed) {
--		flush_scheduled_work();
-+		flush_workqueue(cm_wq);
- 		pr_debug("Deleted %d entries in xarray for slave %d during cleanup\n",
- 			 cnt, slave);
- 	}
-@@ -540,7 +541,7 @@ void mlx4_ib_cm_paravirt_clean(struct mlx4_ib_dev *dev, int slave)
- 	spin_unlock(&sriov->id_map_lock);
- 
- 	if (need_flush)
--		flush_scheduled_work(); /* make sure all timers were flushed */
-+		flush_workqueue(cm_wq); /* make sure all timers were flushed */
- 
- 	/* now, remove all leftover entries from databases*/
- 	spin_lock(&sriov->id_map_lock);
-@@ -587,3 +588,17 @@ void mlx4_ib_cm_paravirt_clean(struct mlx4_ib_dev *dev, int slave)
- 
- 	rej_tmout_xa_cleanup(sriov, slave);
- }
-+
-+int mlx4_ib_cm_init(void)
-+{
-+	cm_wq = alloc_workqueue("mlx4_ib_cm", 0, 0);
-+	if (!cm_wq)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
-+void mlx4_ib_cm_destroy(void)
-+{
-+	destroy_workqueue(cm_wq);
-+}
-diff --git a/drivers/infiniband/hw/mlx4/main.c b/drivers/infiniband/hw/mlx4/main.c
-index c448168375db..ba47874f90d3 100644
---- a/drivers/infiniband/hw/mlx4/main.c
-+++ b/drivers/infiniband/hw/mlx4/main.c
-@@ -3307,10 +3307,14 @@ static int __init mlx4_ib_init(void)
- 	if (!wq)
- 		return -ENOMEM;
- 
--	err = mlx4_ib_mcg_init();
-+	err = mlx4_ib_cm_init();
- 	if (err)
- 		goto clean_wq;
- 
-+	err = mlx4_ib_mcg_init();
-+	if (err)
-+		goto clean_cm;
-+
- 	err = mlx4_register_interface(&mlx4_ib_interface);
- 	if (err)
- 		goto clean_mcg;
-@@ -3320,6 +3324,9 @@ static int __init mlx4_ib_init(void)
- clean_mcg:
- 	mlx4_ib_mcg_destroy();
- 
-+clean_cm:
-+	mlx4_ib_cm_destroy();
-+
- clean_wq:
- 	destroy_workqueue(wq);
- 	return err;
-@@ -3329,6 +3336,7 @@ static void __exit mlx4_ib_cleanup(void)
- {
- 	mlx4_unregister_interface(&mlx4_ib_interface);
- 	mlx4_ib_mcg_destroy();
-+	mlx4_ib_cm_destroy();
- 	destroy_workqueue(wq);
- }
- 
-diff --git a/drivers/infiniband/hw/mlx4/mlx4_ib.h b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-index d84023b4b1b8..6a3b0f121045 100644
---- a/drivers/infiniband/hw/mlx4/mlx4_ib.h
-+++ b/drivers/infiniband/hw/mlx4/mlx4_ib.h
-@@ -937,4 +937,7 @@ mlx4_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *wq_ind_table)
- int mlx4_ib_umem_calc_optimal_mtt_size(struct ib_umem *umem, u64 start_va,
- 				       int *num_of_mtts);
- 
-+int mlx4_ib_cm_init(void);
-+void mlx4_ib_cm_destroy(void);
-+
- #endif /* MLX4_IB_H */
--- 
-2.34.1
+Also, I replaced my Yubikey with a newer one that can do the smaller
+edwards curves and so have a generated a new pgp subkey. I signed the
+tag with the new key and this message with the old. It should be on
+the keyservers now, but if you have trouble it is in the kernel.org
+repo:
+
+https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/tree/keys/A5F46BDD553C74FA.asc
+
+Thanks,
+Jason
+
+The following changes since commit ce522ba9ef7e2d9fb22a39eb3371c0c64e2a433e:
+
+  Linux 5.18-rc2 (2022-04-10 14:21:36 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
+
+for you to fetch changes up to bfdc0edd11f9501b891a069b5bbd3b16731941e1:
+
+  RDMA/rxe: Change mcg_lock to a _bh lock (2022-05-04 21:29:25 -0300)
+
+----------------------------------------------------------------
+v5.18 second rc pull request
+
+A few recent regressions in rxe's multicast code, and some old driver
+bugs:
+
+- Error case unwind bug in rxe for rkeys
+
+- Dot not call netdev functions under a spinlock in rxe multicast code
+
+- Use the proper BH lock type in rxe multicast code
+
+- Fix idrma deadlock and crash
+
+- Add a missing flush to drain irdma QPs when in error
+
+- Fix high userspace latency in irdma during destroy due to
+  synchronize_rcu()
+
+- Rare race in siw MPA processing
+
+----------------------------------------------------------------
+Bob Pearson (4):
+      RDMA/rxe: Fix "Replace mr by rkey in responder resources"
+      RDMA/rxe: Recheck the MR in when generating a READ reply
+      RDMA/rxe: Do not call  dev_mc_add/del() under a spinlock
+      RDMA/rxe: Change mcg_lock to a _bh lock
+
+Cheng Xu (1):
+      RDMA/siw: Fix a condition race issue in MPA request processing
+
+Duoming Zhou (1):
+      RDMA/irdma: Fix deadlock in irdma_cleanup_cm_core()
+
+Mustafa Ismail (1):
+      RDMA/irdma: Fix possible crash due to NULL netdev in notifier
+
+Shiraz Saleem (1):
+      RDMA/irdma: Reduce iWARP QP destroy time
+
+Tatyana Nikolova (1):
+      RDMA/irdma: Flush iWARP QP if modified to ERR from RTR state
+
+ drivers/infiniband/hw/irdma/cm.c      | 33 ++++--------
+ drivers/infiniband/hw/irdma/utils.c   | 21 ++++----
+ drivers/infiniband/hw/irdma/verbs.c   |  4 +-
+ drivers/infiniband/sw/rxe/rxe_mcast.c | 95 ++++++++++++++++-------------------
+ drivers/infiniband/sw/rxe/rxe_resp.c  | 35 +++++++++----
+ drivers/infiniband/sw/siw/siw_cm.c    |  7 +--
+ 6 files changed, 92 insertions(+), 103 deletions(-)
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEfB7FMLh+8QxL+6i3OG33FX4gmxoFAmJ1RmgACgkQOG33FX4g
+mxqgQxAAnO1CVmoZdEYygfmb48SNs60x7Eq29z6pM4XWxSXx7x5AbtEr+GBzRTX2
+dBoSEEeC8sW7KUmmcLOLM7lFmjkLD0bjC/EthmamKr9NEK7jqB5LzU01cqP5a+zh
+4Y9nCVDZhEoxUh5WeQT4pkZpgp3hHWXkaD1zZDoih1CSAIKPYAtFlZXyoD46r3rc
+yzDWQKKeOZ0TX19+M2SEW5qoR7WR79lsvVeIAThe7aNmihIGEaisJaUEh+lpbL6X
+oMyoj5HhPMyVmxh4a8Hd/VWWyApdIa7TUDCev1D8CvWfKZbd15XY9Q3ElNMlOErq
+Qg6ChsvT7i5gy9ybyqAd9ypq+HW+JRmFVY1bcgpBbJ8qvSyMjj/69hghWEcfuf2r
+mrryP/ZlNdbF4HV6UBaj7hKAIGGQ4lWtcHmollfnKmBQUbyLcVg6jVhYx0xfebxO
+AIPsAv+syKlxamJCfd1AuqSwuyzbRRCh9MG5JB61jEbO9hGMB7vyvM2krKv9Km1k
+aqMBG23FzTqk5fuZzmB/EV2XmCjPkZPn+gsyLtFlclJwTN5R1PF49jRfihPMcHSS
+oShLkGZSP3jTm8sDM5RS9hKXFty2R+ikqrHtgmzhuxBtnwTll8OS9YPXvXqGrEWG
+wnG7RFqBkNxc9OTVb869w9c65mBZm8fFgALMH+Aozg5U9qp9gII=
+=Cmfj
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
