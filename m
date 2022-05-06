@@ -2,55 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D24551CE51
-	for <lists+linux-rdma@lfdr.de>; Fri,  6 May 2022 04:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B1E51CEE5
+	for <lists+linux-rdma@lfdr.de>; Fri,  6 May 2022 04:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1387875AbiEFBYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S245503AbiEFBYA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 5 May 2022 21:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347738AbiEFBX4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 21:23:56 -0400
+        with ESMTP id S1387844AbiEFBX6 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 5 May 2022 21:23:58 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E98219D;
-        Thu,  5 May 2022 18:20:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91929C2D;
+        Thu,  5 May 2022 18:20:16 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 793B662018;
-        Fri,  6 May 2022 01:20:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C94B1C385A4;
-        Fri,  6 May 2022 01:20:12 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1E29A62029;
+        Fri,  6 May 2022 01:20:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1082EC385B4;
+        Fri,  6 May 2022 01:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1651800012;
-        bh=Qhl/N+qbK22h+zLWoK1of85zPPO7o7EyYgwHNqqHCO8=;
+        s=k20201202; t=1651800015;
+        bh=4sE3ggOy+dlpQdbHbeyDY3gRDDi9ok/3eqQEzCi+FZM=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fsb06PynXkuBvejMe/qIlAnqbucOMG9AAN2OKAijbMC3JYg3N+AAH7yar1GGl2Aty
-         +cXonLAUBt15799WSbFPw0zIJaEGQ14AbtIdmxqGL4B6wTqI9XxsCbJOvo+XSVXQ8q
-         hWbe8TDVQNg+72stlyQJTE+CoYU3CSqCLmnKyZS6WG6woOAmPz0EJcal+h+B2VnDAJ
-         /VwbZOW299EvYVE/v41fIWPz5XADTjh9Gw3xZKRtepBUUvQY+hESQzsKXpE3cBHYJG
-         THVU3YoE5wNWwaaazmn5RuU8XNg4i0YvLB3fJeU9KyVwjViP2mCFFzngdfTmqg38eZ
-         /niae7/SDkyrQ==
+        b=kzwLOw6JqC+w2wVVoacvJm9uu12CQct/IMjI/mjVIzNPw3m+np6ldV0/iix2ZGMYF
+         j4oMPMaBxzg7De8UdDyKDV9oHm7vtT8IoZ0AMEN/elTXUPWNTqbQWf/e4ZnR+TH+tG
+         eQVyDBzMV5g+j0hMY3bc/F813aKlvK/SwCGcBiyhV8EFr8dl74lKmtH5pQWPVcJJDo
+         oHxfdakfVzWq7X70b0RTBgU5XJntEsD8JmLkozKPCqzQMoASmssnwDeatKtq2arfUb
+         A2h0Krhjf+M7OmY8bhMeyQ7TPSsjC1e972PJSxM0SGfyJ8RGTb+1f3TH3yFKJMwAjK
+         376bYn/4cVA2Q==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A777CF03876;
-        Fri,  6 May 2022 01:20:12 +0000 (UTC)
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6C47F03876;
+        Fri,  6 May 2022 01:20:14 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: rds: use maybe_get_net() when acquiring refcount
- on TCP sockets
+Subject: Re: [PATCH net-next 1/2] net: switch to netif_napi_add_tx()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <165180001268.16316.132918877268340088.git-patchwork-notify@kernel.org>
-Date:   Fri, 06 May 2022 01:20:12 +0000
-References: <41d09faf-bc78-1a87-dfd1-c6d1b5984b61@I-love.SAKURA.ne.jp>
-In-Reply-To: <41d09faf-bc78-1a87-dfd1-c6d1b5984b61@I-love.SAKURA.ne.jp>
-To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc:     edumazet@google.com, pabeni@redhat.com,
-        patchwork-bot+netdevbpf@kernel.org, santosh.shilimkar@oracle.com,
-        davem@davemloft.net, kuba@kernel.org,
-        syzbot+694120e1002c117747ed@syzkaller.appspotmail.com,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        linux-rdma@vger.kernel.org
+Message-Id: <165180001494.16316.16139936183700758910.git-patchwork-notify@kernel.org>
+Date:   Fri, 06 May 2022 01:20:14 +0000
+References: <20220504163725.550782-1-kuba@kernel.org>
+In-Reply-To: <20220504163725.550782-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, pabeni@redhat.com,
+        edumazet@google.com, rafal@milecki.pl, f.fainelli@gmail.com,
+        opendmb@gmail.com, dmichail@fungible.com, hauke@hauke-m.de,
+        tariqt@nvidia.com, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        shshaikh@marvell.com, manishc@marvell.com, jiri@resnulli.us,
+        hayashi.kunihiko@socionext.com, peppe.cavallaro@st.com,
+        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
+        mcoquelin.stm32@gmail.com, grygorii.strashko@ti.com,
+        elder@kernel.org, wintera@linux.ibm.com, wenjia@linux.ibm.com,
+        svens@linux.ibm.com, mathew.j.martineau@linux.intel.com,
+        matthieu.baerts@tessares.net, s-vadapalli@ti.com,
+        chi.minghao@zte.com.cn, linux-rdma@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, mptcp@lists.linux.dev
 X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -63,23 +70,54 @@ X-Mailing-List: linux-rdma@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (master)
+This series was applied to netdev/net-next.git (master)
 by Jakub Kicinski <kuba@kernel.org>:
 
-On Thu, 5 May 2022 10:53:53 +0900 you wrote:
-> Eric Dumazet is reporting addition on 0 problem at rds_tcp_tune(), for
-> delayed works queued in rds_wq might be invoked after a net namespace's
-> refcount already reached 0.
+On Wed,  4 May 2022 09:37:24 -0700 you wrote:
+> Switch net callers to the new API not requiring
+> the NAPI_POLL_WEIGHT argument.
 > 
-> Since rds_tcp_exit_net() from cleanup_net() calls flush_workqueue(rds_wq),
-> it is guaranteed that we can instead use maybe_get_net() from delayed work
-> functions until rds_tcp_exit_net() returns.
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: rafal@milecki.pl
+> CC: f.fainelli@gmail.com
+> CC: opendmb@gmail.com
+> CC: dmichail@fungible.com
+> CC: hauke@hauke-m.de
+> CC: tariqt@nvidia.com
+> CC: kys@microsoft.com
+> CC: haiyangz@microsoft.com
+> CC: sthemmin@microsoft.com
+> CC: wei.liu@kernel.org
+> CC: decui@microsoft.com
+> CC: shshaikh@marvell.com
+> CC: manishc@marvell.com
+> CC: jiri@resnulli.us
+> CC: hayashi.kunihiko@socionext.com
+> CC: peppe.cavallaro@st.com
+> CC: alexandre.torgue@foss.st.com
+> CC: joabreu@synopsys.com
+> CC: mcoquelin.stm32@gmail.com
+> CC: grygorii.strashko@ti.com
+> CC: elder@kernel.org
+> CC: wintera@linux.ibm.com
+> CC: wenjia@linux.ibm.com
+> CC: svens@linux.ibm.com
+> CC: mathew.j.martineau@linux.intel.com
+> CC: matthieu.baerts@tessares.net
+> CC: s-vadapalli@ti.com
+> CC: chi.minghao@zte.com.cn
+> CC: linux-rdma@vger.kernel.org
+> CC: linux-hyperv@vger.kernel.org
+> CC: mptcp@lists.linux.dev
 > 
 > [...]
 
 Here is the summary with links:
-  - [net,v2] net: rds: use maybe_get_net() when acquiring refcount on TCP sockets
-    https://git.kernel.org/netdev/net/c/6997fbd7a3da
+  - [net-next,1/2] net: switch to netif_napi_add_tx()
+    https://git.kernel.org/netdev/net-next/c/16d083e28f1a
+  - [net-next,2/2] net: move snowflake callers to netif_napi_add_tx_weight()
+    https://git.kernel.org/netdev/net-next/c/8d602e1a132e
 
 You are awesome, thank you!
 -- 
