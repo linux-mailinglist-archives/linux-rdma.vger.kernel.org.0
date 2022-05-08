@@ -2,82 +2,92 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA36E51E78B
-	for <lists+linux-rdma@lfdr.de>; Sat,  7 May 2022 15:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFBC51EB5C
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 May 2022 06:13:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbiEGN4Q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 7 May 2022 09:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        id S232026AbiEHERX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 May 2022 00:17:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232825AbiEGN4N (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 7 May 2022 09:56:13 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4852446678
-        for <linux-rdma@vger.kernel.org>; Sat,  7 May 2022 06:52:27 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id l9-20020a4abe09000000b0035eb3d4a2aeso1740565oop.0
-        for <linux-rdma@vger.kernel.org>; Sat, 07 May 2022 06:52:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:from
-         :subject:content-transfer-encoding;
-        bh=8C4+33mTjZ3HWWtyq51pdoJZvdBkpLExTmtjb0//ANs=;
-        b=MtE2ipD7aTRL35X61TcYJpnYTt8WxjFZRKd6MTQZg9cZSBl3xEaCjKUCpx4FjlW0pp
-         0e7J/5sy7puOQXkPtXIZ4VJ8IgRWXkuE8c3zFRHfJEOAhkJL3HuQGl+tT4zbH/VM8qQJ
-         pAc0FZTaxjc7of3okp6r8EOdwRMRqSgRa01Thc2G+i0h9M0UXDuZAVbjurof6AQNrxV5
-         u72RtSb0MEy5C238OXkR29YgwzAASh6D+eD1K/erIKynMSSiE0/cZ1ThKZTLDIlIThmI
-         675CWYCY8AtaCcCR1kbyqeEW/bwCf4bQNw2+gtifguERBOfNWte1pOE4yIZ7TetI9kVZ
-         tcrA==
+        with ESMTP id S230371AbiEHERW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 May 2022 00:17:22 -0400
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C17667
+        for <linux-rdma@vger.kernel.org>; Sat,  7 May 2022 21:13:33 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id k1so11040741pll.4
+        for <linux-rdma@vger.kernel.org>; Sat, 07 May 2022 21:13:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent
-         :content-language:to:from:subject:content-transfer-encoding;
-        bh=8C4+33mTjZ3HWWtyq51pdoJZvdBkpLExTmtjb0//ANs=;
-        b=6NIVKGGhRSYr4wGGOPNkk3grGPiXll2xju9y8+Z+jTS6IszPa2jNyBjz+kpdT8U7Az
-         CFrweu5uoi8kWkrjLSK2agd6OgtebVSKcN10whW1+zWnsW6l2fd67vYiJSqHTZ2BxZ4d
-         WLUmOdegBVURJKibpDRzz+TsPEr5fcboTiyGZRYsrIAwUTIK173b2A+/YTQ06BJG7i4z
-         tR2+AUd3eXCK7zeVxuRc+TFe6Ww1am4ScWXnVCZE+Tpxi8EOMaE0Br+s2ezPGCXIFEZE
-         ZgTZv7+W+ZcOZ18uI5M7SBLLbTCnUhIQzfkYpb1US2Roj2GDKWDGWbRtt2I6tCSCLCCS
-         S4dA==
-X-Gm-Message-State: AOAM533sCGG4/KYJIxXUGAGgvNxtd/0D3Z1IjXS5qfdY343M4QznJnWP
-        wQxFaExl8wVD6tAmNIkrHLRNAs4lnfI=
-X-Google-Smtp-Source: ABdhPJyR5GY8ZTcIn5JuGtyYs3pqiuH3gVcMxYsdMokrgpk5Xopb2egftCiQWUbl3ZrafiJy3IWbrg==
-X-Received: by 2002:a4a:b48d:0:b0:338:da9e:87b5 with SMTP id b13-20020a4ab48d000000b00338da9e87b5mr2765653ooo.59.1651931546673;
-        Sat, 07 May 2022 06:52:26 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:d2c5:54e1:2725:1869? (2603-8081-140c-1a00-d2c5-54e1-2725-1869.res6.spectrum.com. [2603:8081:140c:1a00:d2c5:54e1:2725:1869])
-        by smtp.gmail.com with ESMTPSA id a204-20020acab1d5000000b00325643bce40sm2768710oif.0.2022.05.07.06.52.26
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
+         :subject:to:cc:references:content-language:in-reply-to
+         :content-transfer-encoding;
+        bh=Qk4mmyoNPmQOFOEdNrOAi375TkFGSkxDTNsMnGpyv/c=;
+        b=hCYfTjSCoKLZ0xJ5oJ/iVhdtoHCAoJwxR96ULZzNOeXS2QHKGQNjR99FT79jSm69Gq
+         l32O2bjw5nC2M80AXOC5r6ohmf9y0UiInGVU7erx3VskxroXtjoDxIOerhmWHRoF5qZm
+         74PyKjS4bKCvngXjPLrrvS+CmIqm2vsWnJdMsSCKQKBKW8tMO4eDKCy1j8B5/F4A5Cbd
+         +sAEGexU7qiXwJ3mImg8+Su05FtoiSyhONXgTShT3IPBuRtohp1C14BZOoVEhIaAXJ32
+         yqv6nrpLMTs6o1Nl4dYFTBPf4CJcwd8Tq4z/TmXYq9FcrnG5APENuEatPCyWDO7RcuyF
+         EDUQ==
+X-Gm-Message-State: AOAM531tNDNtRbZVBCeW/jRZDJ2VcDPgcX+QWlxgLqRouMZGmbSsD4gp
+        yIzrjhCO15sltJdErxg9nMQ=
+X-Google-Smtp-Source: ABdhPJxhQNq67c6T7/hDQGa9qPhW8A5CSLUGszgi6Kb3zGK+QvDQWnUlQXkSLHNGHK6Wd/BM0qJ8kQ==
+X-Received: by 2002:a17:90a:cc0a:b0:1dc:9a3a:6eef with SMTP id b10-20020a17090acc0a00b001dc9a3a6eefmr20197593pju.127.1651983212744;
+        Sat, 07 May 2022 21:13:32 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id y9-20020a170902b48900b0015e8d4eb21asm4340911plr.100.2022.05.07.21.13.31
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 May 2022 06:52:26 -0700 (PDT)
-Message-ID: <a8287823-1408-4273-bc22-99a0678db640@gmail.com>
-Date:   Sat, 7 May 2022 08:52:25 -0500
+        Sat, 07 May 2022 21:13:31 -0700 (PDT)
+Message-ID: <4c3439c3-6279-804f-63b2-99d8529e5d3d@acm.org>
+Date:   Sat, 7 May 2022 21:13:30 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.1
+From:   Bart Van Assche <bvanassche@acm.org>
+Subject: Re: Apparent regression in blktests since 5.18-rc1+
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Yanjun Zhu <yanjun.zhu@linux.dev>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>
+References: <e7c31ebb-60c0-cd57-2009-5e9383ecc472@gmail.com>
+ <cf8b9980-3965-a4f6-07e0-d4b25755b0db@acm.org>
+ <4b0153c7-a8e9-98de-26ae-d421434a116d@linux.dev>
+ <20220507012952.GH49344@nvidia.com>
+ <81571bbb-c5d2-9b68-765d-f004eb7ba6fd@linux.dev>
+ <43c2fed8-699f-19fe-81fa-c5f5b4af646f@gmail.com>
 Content-Language: en-US
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-Subject: RDMA/rxe: [BUG-REPORT] Incorrect rnr retry behavior
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <43c2fed8-699f-19fe-81fa-c5f5b4af646f@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-(Not related to blktests at all)
+On 5/7/22 06:43, Bob Pearson wrote:
+> The hang I was showing was for siw not rxe. rxe also shows similar hangs on my system.
+> The siw run was vanilla rdma-linux without any patches.
 
-When running the python test suite repeatedly (~50-100X) I occasionally see RNR retry failures.
-With some tracing it turns out that the rxe driver *never* waits for the rnr_nak_timer to expire
-before retrying the send queue. Something else is triggering the requester tasklet to re-run and
-retry the send queue much too early so not enough time is allowed. This can be fixed by adding
-a flag to qp->req indicating that the requester should wait for the rnr_nak_timer to fire
-before running again. Most of the time it still works with the reduced timeout but occasionally
-it fails. This will cause intermittent rnr_nak failures.
+Hi Bob,
 
-Bob
+If I run the SRP tests against the rdma for-next branch then I can 
+reproduce the hang mentioned in a previous email.
+
+If I merge Linus' master branch into the rdma for-next branch then the 
+SRP tests pass with the Soft-iWARP driver and also with the soft-RoCE 
+driver.
+
+I think this shows that the root cause of the hang is in the rdma 
+for-next branch and not in the SRP tests. Maybe a patch from the master 
+branch is missing from the rdma for-next branch?
+
+Thanks,
+
+Bart.
