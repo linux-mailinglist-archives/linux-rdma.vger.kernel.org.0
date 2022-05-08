@@ -2,52 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFBC51EB5C
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 May 2022 06:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B0351EC34
+	for <lists+linux-rdma@lfdr.de>; Sun,  8 May 2022 10:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbiEHERX (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 May 2022 00:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S231342AbiEHIrO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 8 May 2022 04:47:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbiEHERW (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 May 2022 00:17:22 -0400
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C17667
-        for <linux-rdma@vger.kernel.org>; Sat,  7 May 2022 21:13:33 -0700 (PDT)
-Received: by mail-pl1-f170.google.com with SMTP id k1so11040741pll.4
-        for <linux-rdma@vger.kernel.org>; Sat, 07 May 2022 21:13:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:from
-         :subject:to:cc:references:content-language:in-reply-to
-         :content-transfer-encoding;
-        bh=Qk4mmyoNPmQOFOEdNrOAi375TkFGSkxDTNsMnGpyv/c=;
-        b=hCYfTjSCoKLZ0xJ5oJ/iVhdtoHCAoJwxR96ULZzNOeXS2QHKGQNjR99FT79jSm69Gq
-         l32O2bjw5nC2M80AXOC5r6ohmf9y0UiInGVU7erx3VskxroXtjoDxIOerhmWHRoF5qZm
-         74PyKjS4bKCvngXjPLrrvS+CmIqm2vsWnJdMsSCKQKBKW8tMO4eDKCy1j8B5/F4A5Cbd
-         +sAEGexU7qiXwJ3mImg8+Su05FtoiSyhONXgTShT3IPBuRtohp1C14BZOoVEhIaAXJ32
-         yqv6nrpLMTs6o1Nl4dYFTBPf4CJcwd8Tq4z/TmXYq9FcrnG5APENuEatPCyWDO7RcuyF
-         EDUQ==
-X-Gm-Message-State: AOAM531tNDNtRbZVBCeW/jRZDJ2VcDPgcX+QWlxgLqRouMZGmbSsD4gp
-        yIzrjhCO15sltJdErxg9nMQ=
-X-Google-Smtp-Source: ABdhPJxhQNq67c6T7/hDQGa9qPhW8A5CSLUGszgi6Kb3zGK+QvDQWnUlQXkSLHNGHK6Wd/BM0qJ8kQ==
-X-Received: by 2002:a17:90a:cc0a:b0:1dc:9a3a:6eef with SMTP id b10-20020a17090acc0a00b001dc9a3a6eefmr20197593pju.127.1651983212744;
-        Sat, 07 May 2022 21:13:32 -0700 (PDT)
-Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
-        by smtp.gmail.com with ESMTPSA id y9-20020a170902b48900b0015e8d4eb21asm4340911plr.100.2022.05.07.21.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 May 2022 21:13:31 -0700 (PDT)
-Message-ID: <4c3439c3-6279-804f-63b2-99d8529e5d3d@acm.org>
-Date:   Sat, 7 May 2022 21:13:30 -0700
+        with ESMTP id S230516AbiEHIrO (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 May 2022 04:47:14 -0400
+Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F786400
+        for <linux-rdma@vger.kernel.org>; Sun,  8 May 2022 01:43:23 -0700 (PDT)
+Message-ID: <64a45406-b1ea-d3d6-2e6d-843fb9d9e59a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1651999401;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9GuJcMH2zuy0sFElGMEXbD0bEM3iRQAbMrd1OA6V5g=;
+        b=YaRwkCZwuRG+9AuDy+RyRCxNr3vWTeUlp11uMcWwCKT+UArL8oCWTiAeI8jeCB+8cSdN5A
+        l97Xfj+LQGUyz9kzDrtWDiT4fyC8FfjpPhro8RJ+MkIhPb0/14B7PEG2QwyV6R2Kiq/+dO
+        4nRLi3LtKBNkFF3tFETx8IoRc9MTSEw=
+Date:   Sun, 8 May 2022 16:43:14 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-From:   Bart Van Assche <bvanassche@acm.org>
 Subject: Re: Apparent regression in blktests since 5.18-rc1+
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Yanjun Zhu <yanjun.zhu@linux.dev>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Bart Van Assche <bvanassche@acm.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
         Bernard Metzler <bmt@zurich.ibm.com>
 References: <e7c31ebb-60c0-cd57-2009-5e9383ecc472@gmail.com>
@@ -55,39 +41,101 @@ References: <e7c31ebb-60c0-cd57-2009-5e9383ecc472@gmail.com>
  <4b0153c7-a8e9-98de-26ae-d421434a116d@linux.dev>
  <20220507012952.GH49344@nvidia.com>
  <81571bbb-c5d2-9b68-765d-f004eb7ba6fd@linux.dev>
- <43c2fed8-699f-19fe-81fa-c5f5b4af646f@gmail.com>
-Content-Language: en-US
-In-Reply-To: <43c2fed8-699f-19fe-81fa-c5f5b4af646f@gmail.com>
+In-Reply-To: <81571bbb-c5d2-9b68-765d-f004eb7ba6fd@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/7/22 06:43, Bob Pearson wrote:
-> The hang I was showing was for siw not rxe. rxe also shows similar hangs on my system.
-> The siw run was vanilla rdma-linux without any patches.
 
-Hi Bob,
+在 2022/5/7 9:55, Yanjun Zhu 写道:
+>
+> 在 2022/5/7 9:29, Jason Gunthorpe 写道:
+>> On Sat, May 07, 2022 at 08:29:31AM +0800, Yanjun Zhu wrote:
+>>
+>>>> If I try to run the SRP test 002 with the soft-RoCE driver, the
+>>>> following appears:
+>>>>
+>>>> [  749.901966] ================================
+>>>> [  749.903638] WARNING: inconsistent lock state
+>>>> [  749.905376] 5.18.0-rc5-dbg+ #1 Not tainted
+>>>> [  749.907039] --------------------------------
+>>>> [  749.908699] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+>>>> [  749.910646] ksoftirqd/5/40 [HC0[0]:SC1[1]:HE0:SE0] takes:
+>>>> [  749.912499] ffff88818244d350 (&xa->xa_lock#14){+.?.}-{2:2}, at:
+>>>> rxe_pool_get_index+0x73/0x170 [rdma_rxe]
+>>>> [  749.914691] {SOFTIRQ-ON-W} state was registered at:
+>>>> [  749.916648]   __lock_acquire+0x45b/0xce0
+>>>> [  749.918599]   lock_acquire+0x18a/0x450
+>>>> [  749.920480]   _raw_spin_lock+0x34/0x50
+>>>> [  749.922580]   __rxe_add_to_pool+0xcc/0x140 [rdma_rxe]
+>>>> [  749.924583]   rxe_alloc_pd+0x2d/0x40 [rdma_rxe]
+>>>> [  749.926394]   __ib_alloc_pd+0xa3/0x270 [ib_core]
+>>>> [  749.928579]   ib_mad_port_open+0x44a/0x790 [ib_core]
+>>>> [  749.930640]   ib_mad_init_device+0x8e/0x110 [ib_core]
+>>>> [  749.932495]   add_client_context+0x26a/0x330 [ib_core]
+>>>> [  749.934302]   enable_device_and_get+0x169/0x2b0 [ib_core]
+>>>> [  749.936217]   ib_register_device+0x26f/0x330 [ib_core]
+>>>> [  749.938020]   rxe_register_device+0x1b4/0x1d0 [rdma_rxe]
+>>>> [  749.939794]   rxe_add+0x8c/0xc0 [rdma_rxe]
+>>>> [  749.941552]   rxe_net_add+0x5b/0x90 [rdma_rxe]
+>>>> [  749.943356]   rxe_newlink+0x71/0x80 [rdma_rxe]
+>>>> [  749.945182]   nldev_newlink+0x21e/0x370 [ib_core]
+>>>> [  749.946917]   rdma_nl_rcv_msg+0x200/0x410 [ib_core]
+>>>> [  749.948657]   rdma_nl_rcv+0x140/0x220 [ib_core]
+>>>> [  749.950373]   netlink_unicast+0x307/0x460
+>>>> [  749.952063]   netlink_sendmsg+0x422/0x750
+>>>> [  749.953672]   __sys_sendto+0x1c2/0x250
+>>>> [  749.955281]   __x64_sys_sendto+0x7f/0x90
+>>>> [  749.956849]   do_syscall_64+0x35/0x80
+>>>> [  749.958353]   entry_SYSCALL_64_after_hwframe+0x44/0xae
+>>>> [  749.959942] irq event stamp: 1411849
+>>>> [  749.961517] hardirqs last  enabled at (1411848): 
+>>>> [<ffffffff810cdb28>]
+>>>> __local_bh_enable_ip+0x88/0xf0
+>>>> [  749.963338] hardirqs last disabled at (1411849): 
+>>>> [<ffffffff81ebf24d>]
+>>>> _raw_spin_lock_irqsave+0x5d/0x60
+>>>> [  749.965214] softirqs last  enabled at (1411838): 
+>>>> [<ffffffff82200467>]
+>>>> __do_softirq+0x467/0x6e1
+>>>> [  749.967027] softirqs last disabled at (1411843): 
+>>>> [<ffffffff810cd947>]
+>>>> run_ksoftirqd+0x37/0x60
+>>> To this, Please use this patch series
+>>> news://nntp.lore.kernel.org:119/20220422194416.983549-1-yanjun.zhu@linux.dev 
+>>>
+>> No, that is the wrong fix for this. This is mismatched lock modes with
+>> the lookup path in the BH, the fix is to consistently use BH locking
+>> with the xarray everwhere or to use RCU. I'm expecting to go with
+>> Bob's RCU patch.
+>
+> Bob's RCU patch causes some atomic problems. Not sure these problems 
+> can be fixed properly.
 
-If I run the SRP tests against the rdma for-next branch then I can 
-reproduce the hang mentioned in a previous email.
+I delved into Bob's rcu patch series, in this 
+https://patchwork.kernel.org/project/linux-rdma/patch/20220421014042.26985-9-rpearsonhpe@gmail.com/,
 
-If I merge Linus' master branch into the rdma for-next branch then the 
-SRP tests pass with the Soft-iWARP driver and also with the soft-RoCE 
-driver.
+Sometimes __rxe_cleanup is called between spin_lock_irq and spin_unlock_irq.
 
-I think this shows that the root cause of the hang is in the rdma 
-for-next branch and not in the SRP tests. Maybe a patch from the master 
-branch is missing from the rdma for-next branch?
+With Bob's rcu patch, this will cause oop.
 
-Thanks,
+Best Regards,
 
-Bart.
+Zhu Yanjun
+
+>
+> Zhu Yanjun
+>
+>>
+>> We still need a proper patch for the AH problem.
+>>
+>> Jason
