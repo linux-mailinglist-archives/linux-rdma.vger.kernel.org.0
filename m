@@ -2,140 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89B0351EC34
-	for <lists+linux-rdma@lfdr.de>; Sun,  8 May 2022 10:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003BA51F530
+	for <lists+linux-rdma@lfdr.de>; Mon,  9 May 2022 09:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231342AbiEHIrO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 8 May 2022 04:47:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
+        id S229437AbiEIHWP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 9 May 2022 03:22:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230516AbiEHIrO (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 8 May 2022 04:47:14 -0400
-Received: from out2.migadu.com (out2.migadu.com [188.165.223.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F786400
-        for <linux-rdma@vger.kernel.org>; Sun,  8 May 2022 01:43:23 -0700 (PDT)
-Message-ID: <64a45406-b1ea-d3d6-2e6d-843fb9d9e59a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1651999401;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i9GuJcMH2zuy0sFElGMEXbD0bEM3iRQAbMrd1OA6V5g=;
-        b=YaRwkCZwuRG+9AuDy+RyRCxNr3vWTeUlp11uMcWwCKT+UArL8oCWTiAeI8jeCB+8cSdN5A
-        l97Xfj+LQGUyz9kzDrtWDiT4fyC8FfjpPhro8RJ+MkIhPb0/14B7PEG2QwyV6R2Kiq/+dO
-        4nRLi3LtKBNkFF3tFETx8IoRc9MTSEw=
-Date:   Sun, 8 May 2022 16:43:14 +0800
+        with ESMTP id S235468AbiEIHAq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 9 May 2022 03:00:46 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E51991498C3
+        for <linux-rdma@vger.kernel.org>; Sun,  8 May 2022 23:56:52 -0700 (PDT)
+Received: from [2a02:8108:963f:de38:eca4:7d19:f9a2:22c5]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1nnxK6-0003RF-Ta; Mon, 09 May 2022 08:56:50 +0200
+Message-ID: <09333bbb-25b0-031d-a208-a81de34ad6a6@leemhuis.info>
+Date:   Mon, 9 May 2022 08:56:49 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
 Subject: Re: Apparent regression in blktests since 5.18-rc1+
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Bart Van Assche <bvanassche@acm.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
+Content-Language: en-US
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Bart Van Assche <bvanassche@acm.org>,
         Zhu Yanjun <zyjzyj2000@gmail.com>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
 References: <e7c31ebb-60c0-cd57-2009-5e9383ecc472@gmail.com>
- <cf8b9980-3965-a4f6-07e0-d4b25755b0db@acm.org>
- <4b0153c7-a8e9-98de-26ae-d421434a116d@linux.dev>
- <20220507012952.GH49344@nvidia.com>
- <81571bbb-c5d2-9b68-765d-f004eb7ba6fd@linux.dev>
-In-Reply-To: <81571bbb-c5d2-9b68-765d-f004eb7ba6fd@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Cc:     "regressions@lists.linux.dev" <regressions@lists.linux.dev>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <e7c31ebb-60c0-cd57-2009-5e9383ecc472@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1652079413;3a235561;
+X-HE-SMSGID: 1nnxK6-0003RF-Ta
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+[TLDR: I'm adding this regression report to the list of tracked
+regressions; all text from me you find below is based on a few templates
+paragraphs you might have encountered already already in similar form.]
 
-在 2022/5/7 9:55, Yanjun Zhu 写道:
->
-> 在 2022/5/7 9:29, Jason Gunthorpe 写道:
->> On Sat, May 07, 2022 at 08:29:31AM +0800, Yanjun Zhu wrote:
->>
->>>> If I try to run the SRP test 002 with the soft-RoCE driver, the
->>>> following appears:
->>>>
->>>> [  749.901966] ================================
->>>> [  749.903638] WARNING: inconsistent lock state
->>>> [  749.905376] 5.18.0-rc5-dbg+ #1 Not tainted
->>>> [  749.907039] --------------------------------
->>>> [  749.908699] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
->>>> [  749.910646] ksoftirqd/5/40 [HC0[0]:SC1[1]:HE0:SE0] takes:
->>>> [  749.912499] ffff88818244d350 (&xa->xa_lock#14){+.?.}-{2:2}, at:
->>>> rxe_pool_get_index+0x73/0x170 [rdma_rxe]
->>>> [  749.914691] {SOFTIRQ-ON-W} state was registered at:
->>>> [  749.916648]   __lock_acquire+0x45b/0xce0
->>>> [  749.918599]   lock_acquire+0x18a/0x450
->>>> [  749.920480]   _raw_spin_lock+0x34/0x50
->>>> [  749.922580]   __rxe_add_to_pool+0xcc/0x140 [rdma_rxe]
->>>> [  749.924583]   rxe_alloc_pd+0x2d/0x40 [rdma_rxe]
->>>> [  749.926394]   __ib_alloc_pd+0xa3/0x270 [ib_core]
->>>> [  749.928579]   ib_mad_port_open+0x44a/0x790 [ib_core]
->>>> [  749.930640]   ib_mad_init_device+0x8e/0x110 [ib_core]
->>>> [  749.932495]   add_client_context+0x26a/0x330 [ib_core]
->>>> [  749.934302]   enable_device_and_get+0x169/0x2b0 [ib_core]
->>>> [  749.936217]   ib_register_device+0x26f/0x330 [ib_core]
->>>> [  749.938020]   rxe_register_device+0x1b4/0x1d0 [rdma_rxe]
->>>> [  749.939794]   rxe_add+0x8c/0xc0 [rdma_rxe]
->>>> [  749.941552]   rxe_net_add+0x5b/0x90 [rdma_rxe]
->>>> [  749.943356]   rxe_newlink+0x71/0x80 [rdma_rxe]
->>>> [  749.945182]   nldev_newlink+0x21e/0x370 [ib_core]
->>>> [  749.946917]   rdma_nl_rcv_msg+0x200/0x410 [ib_core]
->>>> [  749.948657]   rdma_nl_rcv+0x140/0x220 [ib_core]
->>>> [  749.950373]   netlink_unicast+0x307/0x460
->>>> [  749.952063]   netlink_sendmsg+0x422/0x750
->>>> [  749.953672]   __sys_sendto+0x1c2/0x250
->>>> [  749.955281]   __x64_sys_sendto+0x7f/0x90
->>>> [  749.956849]   do_syscall_64+0x35/0x80
->>>> [  749.958353]   entry_SYSCALL_64_after_hwframe+0x44/0xae
->>>> [  749.959942] irq event stamp: 1411849
->>>> [  749.961517] hardirqs last  enabled at (1411848): 
->>>> [<ffffffff810cdb28>]
->>>> __local_bh_enable_ip+0x88/0xf0
->>>> [  749.963338] hardirqs last disabled at (1411849): 
->>>> [<ffffffff81ebf24d>]
->>>> _raw_spin_lock_irqsave+0x5d/0x60
->>>> [  749.965214] softirqs last  enabled at (1411838): 
->>>> [<ffffffff82200467>]
->>>> __do_softirq+0x467/0x6e1
->>>> [  749.967027] softirqs last disabled at (1411843): 
->>>> [<ffffffff810cd947>]
->>>> run_ksoftirqd+0x37/0x60
->>> To this, Please use this patch series
->>> news://nntp.lore.kernel.org:119/20220422194416.983549-1-yanjun.zhu@linux.dev 
->>>
->> No, that is the wrong fix for this. This is mismatched lock modes with
->> the lookup path in the BH, the fix is to consistently use BH locking
->> with the xarray everwhere or to use RCU. I'm expecting to go with
->> Bob's RCU patch.
->
-> Bob's RCU patch causes some atomic problems. Not sure these problems 
-> can be fixed properly.
+Hi, this is your Linux kernel regression tracker. Top-posting for once,
+to make this easily accessible to everyone.
 
-I delved into Bob's rcu patch series, in this 
-https://patchwork.kernel.org/project/linux-rdma/patch/20220421014042.26985-9-rpearsonhpe@gmail.com/,
+CCing the regression mailing list, as it should be in the loop for all
+regressions, as explained here:
+https://www.kernel.org/doc/html/latest/admin-guide/reporting-issues.html
 
-Sometimes __rxe_cleanup is called between spin_lock_irq and spin_unlock_irq.
+To be sure below issue doesn't fall through the cracks unnoticed, I'm
+adding it to regzbot, my Linux kernel regression tracking bot:
 
-With Bob's rcu patch, this will cause oop.
+#regzbot ^introduced v5.17..v5.18-rc6
+#regzbot title rdma: hangs in blktests since 5.18-rc1+
+#regzbot ignore-activity
 
-Best Regards,
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply -- ideally with also
+telling regzbot about it, as explained here:
+https://linux-regtracking.leemhuis.info/tracked-regression/
 
-Zhu Yanjun
+Reminder for developers: When fixing the issue, add 'Link:' tags
+pointing to the report (the mail this one replied to), as the kernel's
+documentation call for; above page explains why this is important for
+tracked regressions.
 
->
-> Zhu Yanjun
->
->>
->> We still need a proper patch for the AH problem.
->>
->> Jason
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+
+P.S.: As the Linux kernel's regression tracker I deal with a lot of
+reports and sometimes miss something important when writing mails like
+this. If that's the case here, don't hesitate to tell me in a public
+reply, it's in everyone's interest to set the public record straight.
+
+On 06.05.22 20:11, Bob Pearson wrote:
+> Bart,
+> 
+> Before the most recent kernel update I had blktests running OK on rdma_rxe. Since we went on to 5.18.0-rc1+
+> I have been experiencing hangs. All of this is with the 'revert scsi-debug' patch which addressed the
+> 3 min timeout related to modprobe -r scsi-debug.
+> 
+> You suggested checking with siw and I finally got around to this and the behavior is exactly the same.
+> 
+> Specifically here is a run and dmesgs from that run:
+> 
+> root@u-22:/home/bob/src/blktests# use_siw=1 ./check srp
+> 
+> srp/001 (Create and remove LUNs)                             [passed]
+> 
+>     runtime  3.388s  ...  3.501s
+> 
+> srp/002 (File I/O on top of multipath concurrently with logout and login (mq))
+> 
+>     runtime  54.689s  ...
+>   <HANGS HERE>
+> 
+> I had to reboot to recover.
+> 
+> The dmesg output is attached in a long file called out.
+> The output looks normal until line 1875 where it hangs at an "Already connected ..." message.
+> This is the same as the other hangs I have been seeing.
+> This is followed by a splat warning that a cpu has hung for 120 seconds.
+> 
+> Since this is behaving the same for rxe and siw I am going to stop chasing this bug since
+> it is most likely outside of the the rxe driver.
+> 
+> Bob
+> 
+
