@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBB5521F41
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 17:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36234521F9E
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 17:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346108AbiEJPrq (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 May 2022 11:47:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58326 "EHLO
+        id S1346310AbiEJPux (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 May 2022 11:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244300AbiEJPrq (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 11:47:46 -0400
+        with ESMTP id S1346352AbiEJPsu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 11:48:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED8227BC6D;
-        Tue, 10 May 2022 08:43:47 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDF3328245F;
+        Tue, 10 May 2022 08:44:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D96426142F;
-        Tue, 10 May 2022 15:43:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 216D7C385CB;
-        Tue, 10 May 2022 15:43:45 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 020B361381;
+        Tue, 10 May 2022 15:44:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 894EFC385A6;
+        Tue, 10 May 2022 15:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1652197426;
+        s=k20201202; t=1652197473;
         bh=+l9VM40uiVb+n4IVUTtTjvorAX2ljEdfYbnI8zg2EbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IVmr/tyGVilFu/pZ3pf9X7wruC7ddqhwaGJ/bWbNXUGRpb7O29EqAt80EqMz4tL4n
-         oeIegy7u03DEiLYp0Pg5C9Bx0wJyVoYqiSfq93RD/YWsjOCO6JD7KFW+CLHnwd0Js8
-         F9YR5/ZdflWnyGuTxDhYkI9Ob57P5bGSGUxeCPjM7Evl/XXJZvtWIYQqFQSU/UOM8h
-         Mpyu3oTu1Sn+MKv9ikmqy5ON7OWhwj8yT0eROQeT9AZoBUb2dI6pvCQqfm0/43hVqt
-         vtXXFRzLGeR7OM/KgCMU41dqfwqL2cgbSUFHxaxMkDqOgBmpUXTrSuTz+iyXE9HS/T
-         LUsEuOAG8n6qA==
+        b=LaMB1hkPjXrrDIBGXesKWbgBGZBFyNN4xpRSbYVTh3mooh4N8IiuWpx58qwsYHQkT
+         D/Avlx9u0C8WAwCaGCfY7MKdCwy6YgyLsyUoMDxFL3MXbXFlOZlagc3EFOK/d/Nq8+
+         azDHYDUuT76s6cD/1/js4jy+Y6uFC+kliS1F5lzaWmmX24HUVlK9cUXXNSn7A7HR2Y
+         hanriREBYaFBH91I3sjLi4R6DJuu/6McJggxQjJI+2FrtCD+F5f68LpbREaTtTvVUh
+         9nDkwXrDO4QZf3rrYe/KVtqTKdG9j/yiPvy0MSIdmwDZHtcCl/VACDYgcouBIC3gPA
+         9DQK3MPOIJZJg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Duoming Zhou <duoming@zju.edu.cn>,
@@ -38,12 +38,12 @@ Cc:     Duoming Zhou <duoming@zju.edu.cn>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, mustafa.ismail@intel.com,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.17 03/21] RDMA/irdma: Fix deadlock in irdma_cleanup_cm_core()
-Date:   Tue, 10 May 2022 11:43:22 -0400
-Message-Id: <20220510154340.153400-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 02/19] RDMA/irdma: Fix deadlock in irdma_cleanup_cm_core()
+Date:   Tue, 10 May 2022 11:44:12 -0400
+Message-Id: <20220510154429.153677-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220510154340.153400-1-sashal@kernel.org>
-References: <20220510154340.153400-1-sashal@kernel.org>
+In-Reply-To: <20220510154429.153677-1-sashal@kernel.org>
+References: <20220510154429.153677-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
