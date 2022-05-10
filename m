@@ -2,83 +2,62 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E83A8521FFF
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 17:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B97A5223F9
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 20:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346677AbiEJPxG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 May 2022 11:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        id S245415AbiEJS24 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 May 2022 14:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347267AbiEJPwN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 11:52:13 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3D8B27FE4;
-        Tue, 10 May 2022 08:48:15 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id fu47so13827619qtb.5;
-        Tue, 10 May 2022 08:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Yb/F6YFHx8jMmT8NzFo+iYOEgGU08YViXeElbI3tjgc=;
-        b=MMnXS3xA1tmydR2qCDMamehnHI5FTZPQnT0YdSBT4isID4m9dejiQqAVaASciKXh2t
-         uNvjLP9M1SpNR4L9suFWs2GB3zj0kW6tIw+HGOGD0qgwx94I6AWsORwzqjwEJ0Yw8Lon
-         SHAjLcmqVRiNW8qsl5AfmJNSQJxIMdeX/5OhcZCWobvLe1G4TOlSiS1f4gQUkC3AyewE
-         s/5zKTm6e85HXpPxzZGWWHF7kuC8kNjOOFMOLzuI6valozkPvbjyLJR/echRLonbSXes
-         Vef44tpvYg2wXOOhFuE8RU0X4TxNWG/udFq3Emz7Cl/FRJe4tXgux0zhuZj3kBgh3jZD
-         9N3g==
+        with ESMTP id S244905AbiEJS2z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 14:28:55 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E94222C12;
+        Tue, 10 May 2022 11:28:53 -0700 (PDT)
+Received: by mail-pl1-f178.google.com with SMTP id c9so16792076plh.2;
+        Tue, 10 May 2022 11:28:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Yb/F6YFHx8jMmT8NzFo+iYOEgGU08YViXeElbI3tjgc=;
-        b=76KRrIAfArRUp4oHOH+q8Q1eCGeF4C0taImlIGbukwMIGyjKwxuWpkklPgrT/kuhc5
-         yJPlwBiUUp3BfXD23HIutJPzok2gMTbXuAj4TuMCfatte54JKnaTs071rCvslAIwfiXs
-         GjRWKXwZFo9LmnbeHU8EjetkITZw7XCvp42ZLbB3JLqyzZzL1+DB9cnrgumfFfx3XEFu
-         81YqUvKwGGgrNZyCzo6JE1EVaALx3h+bAiMXJl4CHM1eEt9COp5aKE8QD4F5RSCIpWXf
-         x+OskF7rVUhA5bp/XIPd8YDkylrloaraa3kfMW70URozjbjLZN88Y0WDdn4hP1GoV2s2
-         ZjHQ==
-X-Gm-Message-State: AOAM530b7Dwz3XLIq9adoT9BAqCT1884OEYOjet/Y45Lk+w3lWs23hnH
-        poNcC8IgoVBlCZE81XbzsAg=
-X-Google-Smtp-Source: ABdhPJwV70hoAcYnRzaFrPNRGD//htdKIyrvhMG9B5O5rgnhDgAUf7COuLmQzmUbet3XQOUvrJCg2A==
-X-Received: by 2002:a05:622a:93:b0:2f3:c4ef:6c71 with SMTP id o19-20020a05622a009300b002f3c4ef6c71mr19568082qtw.505.1652197694757;
-        Tue, 10 May 2022 08:48:14 -0700 (PDT)
-Received: from localhost ([98.242.65.84])
-        by smtp.gmail.com with ESMTPSA id c2-20020ac80542000000b002f39b99f67bsm9312717qth.21.2022.05.10.08.48.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 May 2022 08:48:14 -0700 (PDT)
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joe Perches <joe@perches.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Matti Vaittinen <Matti.Vaittinen@fi.rohmeurope.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Leon Romanovsky <leon@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: [PATCH 15/22] net/mlx5: use cpumask_weight_gt() in irq_pool_request_irq()
-Date:   Tue, 10 May 2022 08:47:43 -0700
-Message-Id: <20220510154750.212913-16-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20220510154750.212913-1-yury.norov@gmail.com>
-References: <20220510154750.212913-1-yury.norov@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=2VCAe3+5d6v1gJ9JUTUSueBETGStDd1QrI+SfUX7SoXKOxuWoF5p5s5rFjUco4drHV
+         vJrNBHac0y1TBrEJmT9bef1Zy2sx7kOa00JZ/Li+F6JQswU1x4ip2Oq/2cECVwQC5wpO
+         eZZQUuggoR7UcQKL29XmTEc4427gOXNuL16UALxjeiGNff/L2y88o+5qNq2dRxGVzpoK
+         xXiqxc44sSqniCtxvzayXdnohreduIDJWF4UepJDXjC4HeWVz9ocWLWfkvfaSm8Zf9h1
+         7QymYy7TW5hLu7BedqTF1fZ3CI6AqZw+13v9IusBZGGUjUjxkot4FqCDLHDO0jC68P/O
+         Gt3g==
+X-Gm-Message-State: AOAM533RUvrkNrOz1ohfEoXKuxqksu0xAMrvNasinft5DhYnMLIHSpOO
+        KMRqYPdzwjT5gUk6SNQONa4=
+X-Google-Smtp-Source: ABdhPJxmCDW6ahpwx9iYz9rrpsjvWGYh75/sFM6vutBMoA3/sKLVKx2FlkJLCXb8Y5/lE5D9Dm9mNA==
+X-Received: by 2002:a17:902:d2d1:b0:15e:9b06:28b3 with SMTP id n17-20020a170902d2d100b0015e9b0628b3mr22212124plc.148.1652207333267;
+        Tue, 10 May 2022 11:28:53 -0700 (PDT)
+Received: from [172.16.228.60] ([65.122.177.243])
+        by smtp.gmail.com with ESMTPSA id bh2-20020a170902a98200b0015e8d4eb2d2sm2343362plb.284.2022.05.10.11.28.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 May 2022 11:28:53 -0700 (PDT)
+Message-ID: <3cb0c6bc-0c79-77d2-a892-2492d10a7bcc@grimberg.me>
+Date:   Tue, 10 May 2022 11:28:52 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH] IB/isert: Avoid flush_scheduled_work() usage
+Content-Language: en-US
+To:     Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     OFED mailing list <linux-rdma@vger.kernel.org>,
+        target-devel@vger.kernel.org
+References: <fbe5e9a8-0110-0c22-b7d6-74d53948d042@I-love.SAKURA.ne.jp>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <fbe5e9a8-0110-0c22-b7d6-74d53948d042@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,TVD_SPACE_RATIO,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,36 +65,4 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-cpumask_weight_gt() is more efficient because it may stop traversing
-cpumask depending on condition.
-
-CC: David S. Miller <davem@davemloft.net>
-CC: Eric Dumazet <edumazet@google.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Leon Romanovsky <leon@kernel.org>
-CC: Paolo Abeni <pabeni@redhat.com>
-CC: Saeed Mahameed <saeedm@nvidia.com>
-CC: netdev@vger.kernel.org
-CC: linux-rdma@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-index 380a208ab137..d57f804ee934 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/irq_affinity.c
-@@ -58,7 +58,7 @@ irq_pool_request_irq(struct mlx5_irq_pool *pool, const struct cpumask *req_mask)
- 	if (err)
- 		return ERR_PTR(err);
- 	if (pool->irqs_per_cpu) {
--		if (cpumask_weight(req_mask) > 1)
-+		if (cpumask_weight_gt(req_mask, 1))
- 			/* if req_mask contain more then one CPU, set the least loadad CPU
- 			 * of req_mask
- 			 */
--- 
-2.32.0
-
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
