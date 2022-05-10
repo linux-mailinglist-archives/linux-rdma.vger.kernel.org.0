@@ -2,254 +2,159 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23651520F53
-	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 10:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D50565215B8
+	for <lists+linux-rdma@lfdr.de>; Tue, 10 May 2022 14:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237711AbiEJIFc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 May 2022 04:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
+        id S241927AbiEJMr4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 10 May 2022 08:47:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237706AbiEJIFR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 04:05:17 -0400
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7E8741319
-        for <linux-rdma@vger.kernel.org>; Tue, 10 May 2022 01:01:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1652169679; x=1683705679;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding;
-  bh=xU5SnKyJF/CstIhNm/lZ+PRT1U9IzwBcBw8/wBzuQLM=;
-  b=QRWzvnHaemLrpvHB9RrnSZBj171RQsXo8Iel2fc2wywwYik3ChdbPR5d
-   wBXVimfrBDhUMwk+DTUFLdf967urrTCY8tcu+qP6C7JMBbd17dbfifNe2
-   jDnoTzvpLqt3Rp9QIEHKjB585VpqLN+ySeJ4BZ7p4eCZbastWC/+1pIdL
-   ZzhX8hnBWvUduWv2r49GocddQgWUVwuKG3pbL0FJsUS+bKKOrVFGxRGu4
-   7Wh3haT/SdbRabuTPXYAYvq2KkZbzNj9BtTDUs3+kiP1F3fvXxYcCjWFw
-   +MoEHSkOYeGNkU/nmJHfjl+WU2rxtiBgJR40mWy0WcsFcaS4VzpYTfoHC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10342"; a="332334082"
-X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; 
-   d="scan'208";a="332334082"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2022 01:01:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,213,1647327600"; 
-   d="scan'208";a="602350921"
-Received: from lkp-server01.sh.intel.com (HELO 5056e131ad90) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 10 May 2022 01:01:17 -0700
-Received: from kbuild by 5056e131ad90 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1noKo1-000HXi-8v;
-        Tue, 10 May 2022 08:01:17 +0000
-Date:   Tue, 10 May 2022 16:01:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
-Subject: [rdma:wip/jgg-for-next] BUILD SUCCESS
- 4703b4f0d94a5f887297713a2f6c2916a1ef08fd
-Message-ID: <627a1bc1.GL9ifuSUZsPp0nMr%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        with ESMTP id S241929AbiEJMrv (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 08:47:51 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2061.outbound.protection.outlook.com [40.107.236.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C1A54F87
+        for <linux-rdma@vger.kernel.org>; Tue, 10 May 2022 05:43:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QykdGOTxV9reRr3SmmLj5YJXW2nSZf0OAmcNtMTb5aDftLb98n5Ts9uN07fgPuHo1TqN6uJeYMEa6CHRs4Z8e5IV5+Jp3XxTUQho8kgfnGre/+iEgEWQ0vGz6juHGvBm9RyQDWg0Ym52DWOiRWcLRhG5xU0NHiGPSemiDbiVLsJQWtqBkHPM7OPyCfa4MuioyVeImTJK/BDdbe5q/M2PS7H/4JjMG3u+9fq4GmJquMiHbdfJUIAr/UitpJECjXmPrinG5TIcOKkG1HC2UUdkB49cAOwKnDG0yqNk1Yv/TEgqCl21s+qa5NqjZpJwvuRguntDW/FA3le13zrOHyuTpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=h1A1MG3SiUxbOr+EkVHanZ8raGTDgyUKkDAV3xQrSj0=;
+ b=FVdfLFpsAOrZeqjA0LNFuFTU3s10r7Tj4uDGzsKL0W218bqroVtVOmJCr76qsoc3z9NBQnGp4WTA0VsZ0gmm4w1/WX+GBsGiJZEfjxE2uuruQNeUF32BFiK10O4wsQvQ+s7adrlSuHmZ54hT8SKxcAffz3/NJ+x7XTPa+zcIAQs8cTE13m/CK2OhLubUyx8vQ0bQLST2fYsyNKkSREA/kxriE5m0Ex4lZzus5GCa8wyuGzRaV2nLf/RsM9WMgtq8/SemY8Wu0XITBs9FxyttcM9CZDARElWwV3raHTubLx3k37++b9/TihneRJa+NAMUdvWxRvc/H9bw+7L1yxLzEQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=h1A1MG3SiUxbOr+EkVHanZ8raGTDgyUKkDAV3xQrSj0=;
+ b=eQpXEv8LWwhmdGYO1VWUnm66xT9g7EqIER3zRP8PULGIBMoyVxmxWC2gYfgDPv7o29s2IW/eBpHPjgHGVt3buNHl70XD4DLFA+cKMVBzboaXqgIoYYvlkwqNlRHJpZtMo9g33TU2owOn9CErJprAZNhmHmVOOxgQMgxCIdEPfD0Wt3KLoq50IrlH9AqOCkWqz6OpRMsOHFbpczLL8FYbl0uKjHlGYqQvz7R89LLMaE/49O1buv3kb+uR0gwOCO5HMsA8IvZus1jJvnBh3BDGbUVg1V/8SvumhPNN3fbPv0Odn7J/LVsOG9KLeDqoMreptzAm2a0PutU+bEIfqicedA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MN0PR12MB6341.namprd12.prod.outlook.com (2603:10b6:208:3c2::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.22; Tue, 10 May
+ 2022 12:43:53 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ec2d:9167:1b47:2db2%5]) with mapi id 15.20.5227.023; Tue, 10 May 2022
+ 12:43:53 +0000
+Date:   Tue, 10 May 2022 09:43:51 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH for-next v14 00/10] Fix race conditions in rxe_pool
+Message-ID: <20220510124351.GX49344@nvidia.com>
+References: <20220421014042.26985-1-rpearsonhpe@gmail.com>
+ <20220509182353.GA927104@nvidia.com>
+ <a52a0cc3-7f29-05f3-04f3-585483cd5d1d@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a52a0cc3-7f29-05f3-04f3-585483cd5d1d@linux.dev>
+X-ClientProxiedBy: MN2PR07CA0003.namprd07.prod.outlook.com
+ (2603:10b6:208:1a0::13) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e0135f5c-5b22-4f3a-9f00-08da3282bd49
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6341:EE_
+X-Microsoft-Antispam-PRVS: <MN0PR12MB6341FE6679FB8013CE935532C2C99@MN0PR12MB6341.namprd12.prod.outlook.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VLza1gZiXC8qFQiDS3ktfC/WxVxuN8neF8TymR4gDwVRNSy+blH2q8umeT1tKiFcLGDFNnKvJ7FgSjKMRz5yNHb7IRgEpepCYiaj7I2F71AzLApm1inyUgUb+vsGIu0kR7VVtIQYha4uEFijT95IVdPP4lOzXS6aiIpW1wexfQcchzy3+vSMRFMb3ns7rC0SfqbzkNjIeWVq531PzcVCIpdEydPm1hmxaYj/T/5Br/4AKq8g9bUd5mmWeMwwgLO61O0BN8rIuR6KGXYWNleb01Uyu6pvaCGyYA3/kN0BgXp+XMbiAsgPfQeHS562PzPOQgDsem+mwlflQ9PyKIxi8QqVm3ncyLMDCg3Q2Jp/l/p5F/gQ0eFv98TSLkQl1lrx0BqaiaKuguQD9xcGYef3qi5s/NWlJTnBi919gr4EvJnDqP5QuNBHa3B36wA3Oi2+TmSYtX2cI+zwQuCqXRu5yzlgidNmtaJrxExkZ2Gu7bLnRpOEnj9H21swYpIkJF4MM3Okub/9r+ZO121sVYhO/Gk4a/FoXl3iRBum4M+JLMo7Iy+h1t4QKxH1IwgyoJQonjcsYGVtV3s/GMUxVIG/bu7y7HVO+Yd8/64oddCTqAb8fwtfkBF2Dx6oB7VL9dpeWDxHe5UWCK7ZOcnGeXT+mw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(2616005)(6512007)(38100700002)(26005)(6916009)(36756003)(8676002)(4326008)(186003)(1076003)(66556008)(66946007)(66476007)(316002)(5660300002)(2906002)(86362001)(6506007)(508600001)(8936002)(33656002)(6486002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VTdkV21vVTNjZlo0eDBMYm9valgxckRXaWZ2cUYvVXNXelpTbVpab3VxN3Fh?=
+ =?utf-8?B?Q0drTkpmbFk2L2JKejNIZDdhd1ZqeE9BYUJkQlVXL1NYMnIzdzhqSDhIeGgx?=
+ =?utf-8?B?ZThPWVRlbVIzUEtSVzNBVDJxRE9PWWwzNDdUM2FSWFVJYlZHN085dDFXcW5x?=
+ =?utf-8?B?VldMQ29uOUplZkRmcmw2RTFkSjJHemJYUHdzTlc3NWNnT0E4OEpPR2RGTUZL?=
+ =?utf-8?B?U0g4Ynk5ZFdXR2hJWXdrSjROMGVYK0lMcGpXTzczSkNGYnZMbVRzWFY0L0Vv?=
+ =?utf-8?B?cmNzSWZGUkw2WFRtMVlOcENsTHE0ck9JU2xsdHNQdkVsQ0NyUkIwUU9yUzBD?=
+ =?utf-8?B?dUpLMHV3b1Mxd1ZnNkdjaCtJRkFrMWcvSmR4aXRYdUpYcmNWRSt6OGVaZDUx?=
+ =?utf-8?B?WmpOUXV0NERvWGFKYlF6dFRHNVpiWEJrZHRpRk92U0pOMmdjZXFKVjdNd2Vn?=
+ =?utf-8?B?ZytIbEEwblJHUHNlaWt0dzBQdmZMaFNMdHpMcFZ3R2VtTkxkcXhZWWpjUHA0?=
+ =?utf-8?B?MGRVTVhab3BiTUpTbWJpWUhSOUJiKy8zZWN2MjBZVVFiWFJGYWZodTl4N05M?=
+ =?utf-8?B?OE1IbXNqckNielFISjRLaXA3akx3dHlvY0NvZGpBbmRYVVFsVlNOQjhKNTJL?=
+ =?utf-8?B?QXZzZG1qOHMrVFIxR0lUUklQdjhWTjd4ckZNUE1ZK1U3Q1hzcllzY1N3MGVR?=
+ =?utf-8?B?NkF1WGRlVUZFRnJvYkFXdmZ0a2N3My9LNzVPM3UrU1RFQ2RqOHJweXdJRzZt?=
+ =?utf-8?B?MUZ6eUlBcVVtTkdMSjB1UW5tK2plb2ZlOWgvbksvMTk2ZTlYaGRCRWJBeiti?=
+ =?utf-8?B?RG5RNDhRUVJNcDBZR2RLMjZZb3hqQXVGQnN3ekFUd1RiMkwzVVdseGx1NndB?=
+ =?utf-8?B?akh2M1pXNDN4Ykh3ckdvK3NzclFUSkxKbFFUZ3VHeDdrMDNIVXp0M2htSnR2?=
+ =?utf-8?B?Wm9yQ2JYNFZtTUYySDBnQzBRNzNQd2lBckxKdmUwQ3BGS292SG5wRW42anpu?=
+ =?utf-8?B?VGl0azJQVERkRGp0eDQ4WnRzMkVOMVJ6ZjdWUDFDMGtZWk1OZWU3aitEQ3ho?=
+ =?utf-8?B?bEtzdWU4UmVXVEZBcDc2NWVGcUlXeUdXeFJrYlg3TCtScXFudE94N29YTFh3?=
+ =?utf-8?B?SjZQaTVuTzQ4cHZQL0w5bVdzc3RJUEE4cnRQU1EwUCt0Wm9oYTVsUDBnbFQv?=
+ =?utf-8?B?SWhVUWt0ZkJ1cUczckdsQ09uWWFBRVpVc0dmWFpaUHJReS92eFdzVytDenoz?=
+ =?utf-8?B?V0dCY0lhQnpEMndmdytQNVZwbkpkOHkzY090b3RXdy8veG1ZNUZyUWMzZmQv?=
+ =?utf-8?B?Z3I2S0hWYTBHbUtPQVByQWIzaWFNVVQ3K2pFL3RCNWZXSWkyZ1dvRFoxTjhF?=
+ =?utf-8?B?dkYyeWJySEFDaVJuS1V4SUxjaSt6ZkRZM1YwZkJIbkxVbTI5M2xtRkJNcXZk?=
+ =?utf-8?B?TS9JQTdTdzg1WWtjbit5YlVOeElPUUpOdURjSElLdHhOb1hmaDRZbDlGRmky?=
+ =?utf-8?B?alczZ0REdFdyaDBwQTFZdXl0eFhLSFdIZldnT25PVEhwMlRPeEo5Z0ZYYmc3?=
+ =?utf-8?B?N2VHN3lLZUp1WlMzaFVhb1AzY1J0VkhqeStoS2xvNUtINC9pNjVrUGtNRnZ2?=
+ =?utf-8?B?dU1ROUhxZGcwR2N6ejNwK3prTDhOOFU5WFQxeHMxbmFscjR3dXJJZytXaDQv?=
+ =?utf-8?B?cWxYQUN3VWhSUk9URWRjeTNpdlJzci9DZnJ4NElhbWg5aFF0NGFsWE5kb2du?=
+ =?utf-8?B?WkQ1OC96dnA1Q1MwWFphT3YxNEFBTWhNdzl1Y05xSkpkNitVSjdmUnB6cjkv?=
+ =?utf-8?B?K3hoQlFjRmZkakVwazJYSVhPRzVlaHJudmpHdTJiRWt3b29GR1BZTmZBUnk2?=
+ =?utf-8?B?ZXV5RmdaZkpLOENoVDVXdGNxbkIwYklrL2E3ZVdwQUZWTUwwckthc3NjMDNB?=
+ =?utf-8?B?SkVzbTZZTE9xTmJjVmhiS1dQUXdWNUF6R2dnaFBCWnBWaGVWYTFoSDVEdjlN?=
+ =?utf-8?B?OEVML084WU4xYWdaRlQ3WDl4NURsSkNnVkptSU9ZWjF3eWhwNDh2VGlOZ0U1?=
+ =?utf-8?B?L0VxR0Q0YStONTdHQURtU3hhczhDSy9LZE5tUitCbUp2TlBGaDhJRDJsNmZX?=
+ =?utf-8?B?bGgyN1cvMnNHTXpzeUNHZlVUTkhrZGVqUUlvSWhUZ3Myb0RnZlg4ZHpVMnVn?=
+ =?utf-8?B?NFQrd1Vmc3lSdng1ZTU1a2tpMVE3djNxTTFtaTYxZUZyUTFwam5mRXRDWkhn?=
+ =?utf-8?B?emVkSUNsd1pESVN2V0tadEV6RmppeW5OcmxaYlVEV1F2YkJHMXhQcVV3ZXhq?=
+ =?utf-8?B?MzVZOGdWekw3M3FvLzI0RWdCVlpmKytQb0tIcnZlY09Ddms3SFMrdz09?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0135f5c-5b22-4f3a-9f00-08da3282bd49
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 May 2022 12:43:53.0452
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: gSnkOTJmER/EtjUG1U0akctzCH8WKfrFqfMNaTtX6Ye7FU27JRbaSZ6BKTpBvXIY
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6341
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git wip/jgg-for-next
-branch HEAD: 4703b4f0d94a5f887297713a2f6c2916a1ef08fd  RDMA/rxe: Enforce IBA C11-17
+On Tue, May 10, 2022 at 08:35:34AM +0800, Yanjun Zhu wrote:
+> 在 2022/5/10 2:23, Jason Gunthorpe 写道:
+> > On Wed, Apr 20, 2022 at 08:40:33PM -0500, Bob Pearson wrote:
+> > 
+> > > Bob Pearson (10):
+> > >    RDMA/rxe: Remove IB_SRQ_INIT_MASK
+> > >    RDMA/rxe: Add rxe_srq_cleanup()
+> > >    RDMA/rxe: Check rxe_get() return value
+> > >    RDMA/rxe: Move qp cleanup code to rxe_qp_do_cleanup()
+> > >    RDMA/rxe: Move mr cleanup code to rxe_mr_cleanup()
+> > >    RDMA/rxe: Move mw cleanup code to rxe_mw_cleanup()
+> > >    RDMA/rxe: Enforce IBA C11-17
+> > 
+> > I took these patches with the small edits I noted
+> > 
+> > >    RDMA/rxe: Stop lookup of partially built objects
+> > >    RDMA/rxe: Convert read side locking to rcu
+> > >    RDMA/rxe: Cleanup rxe_pool.c
+> > 
+> > It seems OK, but we need to fix the AH problem at least in the destroy
+> > path first - lets try to fix it in alloc as well?
+> 
+> I do not mean to bring more efforts to Bob.
+> But normally a new feature is merged into rdma. some test cases should also
+> be added to rdma-core to verify this new feature.
 
-elapsed time: 777m
+It isn't a feature.
 
-configs tested: 170
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                               defconfig
-arm64                            allyesconfig
-arm                              allmodconfig
-arm                                 defconfig
-arm                              allyesconfig
-i386                 randconfig-c001-20220509
-i386                          randconfig-c001
-powerpc                        warp_defconfig
-sh                           se7721_defconfig
-arm                           corgi_defconfig
-mips                 decstation_r4k_defconfig
-arm                         lubbock_defconfig
-parisc                           alldefconfig
-sh                          urquell_defconfig
-arm                             rpc_defconfig
-mips                         cobalt_defconfig
-sh                          sdk7780_defconfig
-sh                           se7712_defconfig
-arm                        clps711x_defconfig
-arc                              alldefconfig
-sh                          landisk_defconfig
-arm                         axm55xx_defconfig
-arm                       omap2plus_defconfig
-powerpc64                           defconfig
-arc                        vdk_hs38_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                             allmodconfig
-powerpc                    klondike_defconfig
-arm                        realview_defconfig
-arc                          axs103_defconfig
-sh                             sh03_defconfig
-arc                                 defconfig
-arm                      footbridge_defconfig
-arc                 nsimosci_hs_smp_defconfig
-sh                           se7343_defconfig
-sh                          kfr2r09_defconfig
-arm                             ezx_defconfig
-sh                           sh2007_defconfig
-xtensa                           allyesconfig
-arm                          badge4_defconfig
-arm                      integrator_defconfig
-powerpc                 mpc8540_ads_defconfig
-arm                            xcep_defconfig
-powerpc                     taishan_defconfig
-arm                      jornada720_defconfig
-sh                           se7724_defconfig
-m68k                        m5272c3_defconfig
-sh                           se7780_defconfig
-sh                        edosk7705_defconfig
-powerpc                      ppc40x_defconfig
-arm                            qcom_defconfig
-mips                        vocore2_defconfig
-arc                     nsimosci_hs_defconfig
-sh                         apsh4a3a_defconfig
-s390                                defconfig
-mips                         mpc30x_defconfig
-powerpc                 linkstation_defconfig
-powerpc                 mpc834x_itx_defconfig
-s390                       zfcpdump_defconfig
-arm                            hisi_defconfig
-powerpc                      makalu_defconfig
-sh                             espt_defconfig
-um                                  defconfig
-arm                       aspeed_g5_defconfig
-sh                         ecovec24_defconfig
-x86_64               randconfig-c001-20220509
-arm                  randconfig-c002-20220509
-ia64                             allmodconfig
-ia64                             allyesconfig
-ia64                                defconfig
-m68k                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-csky                                defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-parisc                              defconfig
-parisc64                            defconfig
-sparc                               defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-i386                   debian-10.3-kselftests
-i386                              debian-10.3
-mips                             allyesconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a015-20220509
-x86_64               randconfig-a012-20220509
-x86_64               randconfig-a016-20220509
-x86_64               randconfig-a013-20220509
-x86_64               randconfig-a011-20220509
-x86_64               randconfig-a014-20220509
-x86_64                        randconfig-a011
-x86_64                        randconfig-a013
-x86_64                        randconfig-a015
-i386                 randconfig-a011-20220509
-i386                 randconfig-a013-20220509
-i386                 randconfig-a016-20220509
-i386                 randconfig-a015-20220509
-i386                 randconfig-a014-20220509
-i386                 randconfig-a012-20220509
-arc                  randconfig-r043-20220509
-s390                 randconfig-r044-20220509
-riscv                randconfig-r042-20220509
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-riscv                    nommu_k210_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-x86_64                          rhel-8.3-func
-x86_64                           rhel-8.3-syz
-x86_64                              defconfig
-x86_64                           allyesconfig
-x86_64                         rhel-8.3-kunit
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-c007-20220509
-i386                 randconfig-c001-20220509
-powerpc              randconfig-c003-20220509
-riscv                randconfig-c006-20220509
-arm                  randconfig-c002-20220509
-mips                 randconfig-c004-20220509
-powerpc                     tqm5200_defconfig
-arm                                 defconfig
-mips                          ath79_defconfig
-powerpc                      ppc64e_defconfig
-mips                        workpad_defconfig
-arm                          pcm027_defconfig
-arm                      pxa255-idp_defconfig
-hexagon                             defconfig
-powerpc                      walnut_defconfig
-arm                     am200epdkit_defconfig
-mips                            e55_defconfig
-arm                       aspeed_g4_defconfig
-arm                       versatile_defconfig
-arm                         s3c2410_defconfig
-arm                          collie_defconfig
-powerpc                     tqm8560_defconfig
-arm                        vexpress_defconfig
-mips                     loongson1c_defconfig
-mips                     cu1830-neo_defconfig
-x86_64               randconfig-a006-20220509
-x86_64               randconfig-a002-20220509
-x86_64               randconfig-a001-20220509
-x86_64               randconfig-a004-20220509
-x86_64               randconfig-a005-20220509
-x86_64               randconfig-a003-20220509
-i386                 randconfig-a004-20220509
-i386                 randconfig-a006-20220509
-i386                 randconfig-a002-20220509
-i386                 randconfig-a003-20220509
-i386                 randconfig-a001-20220509
-i386                 randconfig-a005-20220509
-x86_64                        randconfig-a012
-x86_64                        randconfig-a014
-x86_64                        randconfig-a016
-hexagon              randconfig-r045-20220509
-hexagon              randconfig-r041-20220509
-
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+Jason
