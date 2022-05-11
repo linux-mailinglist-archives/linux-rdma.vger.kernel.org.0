@@ -2,1089 +2,213 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9310523018
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 May 2022 12:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF70D52335F
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 May 2022 14:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236932AbiEKJ7Y (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 11 May 2022 05:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S242746AbiEKMuh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 May 2022 08:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235507AbiEKJ7R (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 May 2022 05:59:17 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381021CA376
-        for <linux-rdma@vger.kernel.org>; Wed, 11 May 2022 02:59:14 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 204so1550685pfx.3
-        for <linux-rdma@vger.kernel.org>; Wed, 11 May 2022 02:59:14 -0700 (PDT)
+        with ESMTP id S242737AbiEKMug (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 May 2022 08:50:36 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 842785EBF4;
+        Wed, 11 May 2022 05:50:34 -0700 (PDT)
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24B9hku6023549;
+        Wed, 11 May 2022 12:50:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2021-07-09;
+ bh=3IbGn1hDgk3YzxTMVYL+Xc6DmtnqqAjmGsSSrffkxn0=;
+ b=PWZ6X/T6jaMZxseQw5h1u5jUyqU1LVa0sT+vf0y1yWOE5pGWGVTDgPZI4YrwYzLvjWg8
+ zvzTywdKeYNVU5uVzFp3jRjDv7xoaf5+mDqdieL7PzJnWdJwMYr+0GjPMhmhzaPL1he6
+ xDAsNSUUU8oIiyE/fMqcyDPgbW+93BsaOt45KUN3o+AfbFuWDg/xqPZGJu2V5RmSPyd+
+ 60jv/WWD8SeXoSKZCgcJUQSAEDo9QRUOWeUEbFanbDP0UMqSFoi/zDBim2KOkgqnunNn
+ lUypSwtZH0bmr1yyuiifW45nRG9EPtYJ2qTMIftxOTPgJ2UT7himrRCds9uNL4zSjOpZ rQ== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3fwgcssr97-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 May 2022 12:50:28 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.16.1.2/8.16.1.2) with SMTP id 24BCfXiE030114;
+        Wed, 11 May 2022 12:50:27 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam08lp2047.outbound.protection.outlook.com [104.47.74.47])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com with ESMTP id 3fwf73jsat-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 May 2022 12:50:27 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZR+NN/hClv7q7N1Uulhy2HC1wY8ggUWRoyAWm0UMm/wECMtUCi7b0ZSYxi/DxuImOrS3z7SK7jmef9dsPwYuD2jq+IbpJagTjkImi4M6WG01eWrbhTinqC366E1AyZBSnFXtFYLPEH90M8z9Bs8BNpCKOBCvZconeIlrLCNi4awRZl/KtVxISuLl3w7mG1LAlCGoWBbLGthWSWcBkUkizquL0CoGOYAz9dvd3SUKYYEDNd1voJ5wYHdc82ZhD+bqgK7vLQoQN0YYgrQ6sSYoHm38p3AhlPZfYETl1aEzkfjguerm9VASqm0f8kUEXVbPkI4EUVlkopxPzHkW9D/5IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3IbGn1hDgk3YzxTMVYL+Xc6DmtnqqAjmGsSSrffkxn0=;
+ b=fcB1tvTK/z4By8/0kkOQVXbh+8cacwl5bgF/tIkf2Vkc+G+KI9w3x11xmwJUUlF+VzzYAiNAg7lHu9BrGpklZJkVUgBHl/aJlMmnOIyBwwl3ehzaheDg1Q4C7cc4kwK/J5L4conlDISxZ0L6KSWdwDVRhscb2Ho5eolKyR5Yl7QuMVxUqZJr7J7OlFa6xz0CZXxRrAGZd6Ho/gkx6OpiJmhkg15egT7ANaWyRQ55fWOw9niSTXnmUe6knGDTtvD6+ImbGBcEHV9yILgfL0O4Tdg54FTSW7nFyZ7JppWt+p761DgIHvTjNGPiYnq4+9JV02x4cyMOnHvtZt+a9TbWFg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20210112.gappssmtp.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WtYE9EINOv1aao7vZ/n60ACCZI/z9WdNgVvQ/xpxwjY=;
-        b=XrQzwwabatLXt28jRyfqSScIzAa6KmPvBNQADuUUygoaDIzXIcY+rWys8jAQ8jWICP
-         46pYVmkulDo/V4097nXrM2tUZgAP8h6sSkRUdoUbM05b+5VaaUYcIoyaQLcEG6wzYIjy
-         rjriSXqLj3j1IDG1DV1JcPhjtaFG1vZ7T0yhknGqymaZdPvPXSLvzLTyRyua8hsVdkWk
-         MNWxiAApJcUvlbXulUsAmlajo3rYpS2Ez4zUknl+vSFaRt3jaTQZ47oe8noM51jvpls5
-         xhzYDcGoYXxxGQnCqGp5MrDNAalVLkO07uyHFEDHkFeTDcWzijXdnkBQE18b8l5J7dxt
-         kfCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WtYE9EINOv1aao7vZ/n60ACCZI/z9WdNgVvQ/xpxwjY=;
-        b=poOmyPyEQSFMHxjobev4z83X0T3LzOr9Bp6S5+7do9XmfWt+m29Iq5Pq48o02wdkJM
-         SPIQX/fK8u/tkz+FxmQMc+I2ToWqHOU9lV5+IjgtKDHeliujOXDErKeDmmpYhze0B1MF
-         DP/oIA+IYFMdpoo6NDZ1AyuY00LYnCsZxNP6XI0x3iXZFTyYCsOwqIB5WK9CKd1B2jJa
-         iBPW/c2qkj1OmbdzoUJm+ceieb73OdShO3AhC3MQCa9oTWduPEl32eGHMAX6KgMjL24+
-         KLFXpr4F+lmu4Gshxd0/ARNlikijTbLm6piJ9JrdJljhKXmrTzb3tmBbRIyGiVX2u0t1
-         P/Dw==
-X-Gm-Message-State: AOAM533ql5vRerARRVu2H698VaSgkXpTPDrouZakxO6BoijVFrdxzw5g
-        aG+QBGIXAl6bae4yxNCc6f4x
-X-Google-Smtp-Source: ABdhPJyANC4R0MET/fOQWlOTGs4EvDWWqjGYz06EJUYXuKNB6WuhAKszHeAqBuPBAON2eO/aL6ldBQ==
-X-Received: by 2002:a63:4384:0:b0:3ab:9d95:a30a with SMTP id q126-20020a634384000000b003ab9d95a30amr20071739pga.68.1652263153156;
-        Wed, 11 May 2022 02:59:13 -0700 (PDT)
-Received: from localhost ([101.229.232.246])
-        by smtp.gmail.com with ESMTPSA id u3-20020a170903108300b0015ee9bb2a38sm1332771pld.72.2022.05.11.02.59.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 May 2022 02:59:12 -0700 (PDT)
-From:   Xie Yongji <xieyongji@bytedance.com>
-To:     jasowang@redhat.com, mst@redhat.com, leon@kernel.org,
-        dledford@redhat.com, jgg@ziepe.ca, yuval.shaia.ml@gmail.com,
-        marcel.apfelbaum@gmail.com, cohuck@redhat.com, hare@suse.de
-Cc:     chaiwen.cc@bytedance.com, zhoujielong@bytedance.com,
-        duanxiongchun@bytedance.com, virtio-dev@lists.oasis-open.org,
-        virtio-comment@lists.oasis-open.org, linux-rdma@vger.kernel.org
-Subject: [RFC v2] virtio-net: Add RoCE (RDMA over Converged Ethernet) support
-Date:   Wed, 11 May 2022 17:59:00 +0800
-Message-Id: <20220511095900.343-1-xieyongji@bytedance.com>
-X-Mailer: git-send-email 2.25.1
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3IbGn1hDgk3YzxTMVYL+Xc6DmtnqqAjmGsSSrffkxn0=;
+ b=kNprfy9XN6vfrbhW9+/K5mU3VgIKgLM7dPaHch2uzNGMQkoaFsUvMcCIP7DCw8H//EAoOv6y4sJwiHOC+HwIWgZts8pn6vrf9yv07by7VdwaiSOV/jEOFkESH6MltpS58S/yMhbIzbp1Jas64Dq+CU+gZmU4xs63UQhEOGRDNq8=
+Received: from PH0PR10MB5593.namprd10.prod.outlook.com (2603:10b6:510:f5::16)
+ by BLAPR10MB5315.namprd10.prod.outlook.com (2603:10b6:208:324::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5227.22; Wed, 11 May
+ 2022 12:50:25 +0000
+Received: from PH0PR10MB5593.namprd10.prod.outlook.com
+ ([fe80::b5ad:fa56:954:8395]) by PH0PR10MB5593.namprd10.prod.outlook.com
+ ([fe80::b5ad:fa56:954:8395%7]) with mapi id 15.20.5227.023; Wed, 11 May 2022
+ 12:50:25 +0000
+From:   Haakon Bugge <haakon.bugge@oracle.com>
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+CC:     Cheng Xu <chengyou@linux.alibaba.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] RDMA/rxe: Generate error completion for error
+ requester state
+Thread-Topic: [PATCH v2 2/2] RDMA/rxe: Generate error completion for error
+ requester state
+Thread-Index: AQHYZN4jBQJwtTYvNUiAcVHRFz66Hq0ZCP+AgABRjoCAAEcSgA==
+Date:   Wed, 11 May 2022 12:50:25 +0000
+Message-ID: <5160F240-B5ED-406D-B552-C74678A8FB1B@oracle.com>
+References: <20220511023030.229212-1-lizhijian@fujitsu.com>
+ <20220511023030.229212-3-lizhijian@fujitsu.com>
+ <b37c53a7-86df-0283-1a77-c31af108d39f@linux.alibaba.com>
+ <0eb4cdcb-4d9b-18a6-a030-59bb2b359c2e@fujitsu.com>
+In-Reply-To: <0eb4cdcb-4d9b-18a6-a030-59bb2b359c2e@fujitsu.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3696.80.82.1.1)
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1b04bee2-8480-4b76-d03f-08da334cd1b8
+x-ms-traffictypediagnostic: BLAPR10MB5315:EE_
+x-microsoft-antispam-prvs: <BLAPR10MB53156ACB9A64350109E40BE1FDC89@BLAPR10MB5315.namprd10.prod.outlook.com>
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N/BUYnp1oCRHvWVfky8iJ3CNk0cobr2F2TJ3Sz54RwvvHQkGaDMSH8qiIV4qwOqFfM4RPcMLEMRdFFO6R3BjzZRPjIVbpmiBzHtnPaEbD4KF7igMYX7CJS646TqjxsbZIhLjgsIEFp/uN74r2pCvGqqDadJ4L+GP0++oWf5JFxm8J4of07tUflhfJrMR+TPOtOtr26yHgK4xLq8/8qiVkmLQ3l+CQ2DEBv/8f8baLAzkVVRXGXTi3e1Qoig0NjG59lr6BD2m2FjGAdwSyR756sdh2RAQHV3/C2A8dIwF0VZJ8A8HVmao55+c8T7G1Epg/2V+cBwk3MkC8UqxgwjlpkKm09X5HSX87L/RdZfaERiAg0aTx9s1+91SNH65DHVEXk1sxiPDUhnxQzvT9zBJtBg4nnfur/69DMq+3BiLsiB0ZKaF0YWW1zTa/nhQPLFun/gG5hnPt2Yp+IDhtYHmq7bVV1L+PeY8uU2KqrcmHRR4ndCY0QgQQOM+YaTQSCRWTy6qH4Gvx1tPfc7oEvHtwLF8kGSrvs34LuHt6jPZabsalBBKqpAPV7OdoGoGaB1z6a1Eab0HWzdoIrnPm+35lY1ufDkFA188VP9NDsUR/im48Bc3z/9XqWOiFSAopIJhs81SQvREuxi5++jLMFBDIY+MpMxdfl/92ydIAxlXaO44K7OT02S2CzlxsPZtT+R9O84j0P8KKyWDsFYAYwEfwO7Voq1YJtE84EU8Eu1z9/A=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5593.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(508600001)(6506007)(86362001)(33656002)(6486002)(8936002)(53546011)(71200400001)(5660300002)(2906002)(44832011)(83380400001)(6512007)(122000001)(38100700002)(2616005)(38070700005)(66574015)(186003)(54906003)(66476007)(66946007)(316002)(66556008)(76116006)(91956017)(66446008)(6916009)(64756008)(36756003)(8676002)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TE5Qa2dHeWpTWThMV2RNNC9JaEdJRXp3MGZDWEpwdnJ5UzBlTHY1R05nY25L?=
+ =?utf-8?B?RUdPb2g3U2dWSEg3OTl4N0FQa3prYU5NUWE1bS9iVVhLVGdpUUJrU1d2Y3h3?=
+ =?utf-8?B?TUpSVHNteDZaWTRqWUxQZmF4LzJJNTFSY25USmlreXk5VWhzOUR4QmZnV0lL?=
+ =?utf-8?B?SjNBeXphcHdQTlRGRm82dDhjekJkQ1E3Y1UwUE5IckhPbDNPL2doOWNsV1M0?=
+ =?utf-8?B?SlBCMlhyYUxjcE55M2R2TGhlcGdsQ0tQejFSUWxFWTUzNVdRR0E1TmJlcjd6?=
+ =?utf-8?B?N3BDUFcyVmxmVFRXYnpPRXIrdHBLSVpXbElUMHd6aWNwY0g4TXBFd1pRTkRM?=
+ =?utf-8?B?WERYaFpFZ1RMTVJ6dkdySW1VN0lmR2IwdVM1MGZScmF3TllDMkRMZVJBcjdm?=
+ =?utf-8?B?bzlQOGxMYlo2UTdSeXVaa3dzSnpWYXpsYU9URlcrcXlCa3R0MG9OUGpHaUV4?=
+ =?utf-8?B?MFU2VmJxN0gxeUlXN1BkTTVaVFNZLzRGa3JTZ2l5MUJEY0NGNGJpWkVGNlM2?=
+ =?utf-8?B?dHVva21pRUx4OVFsWHNPL2lpcld2UFNaTTVGN0Q4RVNBV1l0bnBCNFdWUmt3?=
+ =?utf-8?B?cWtSK1puVEZTdmpwbmxVZHhaZFl4V3BEMmpza1lTS1lSUzc4MW12cjlCYkpI?=
+ =?utf-8?B?eFR0Z25xSnF6YUlxaUhqMkZPaW9XWDRKTmx4Q01mTnUrb3ZicENHS0RzQmNz?=
+ =?utf-8?B?bkZaNGp6ME9vQ2hyczk3VXZERi9ZZEN3WWp2VndhVjZCd2c3LzhiTlg4aEEr?=
+ =?utf-8?B?YmtMNHFCa0hEY0pNSkljcUFpRFZ3a09KMHVLaDBOTGNDbGc1VHczbUF6dFZ6?=
+ =?utf-8?B?TmVUNjh3d0piT0lzQk9tbGZYbmQyaFRNb1p6MytMMnJrUE5TRDVwZDN2NG05?=
+ =?utf-8?B?aER1bGpocjFZOVhxWXpMNCt2TnM5UmtHYzRNclg3SGUya09ldjQvNUQ4eTFN?=
+ =?utf-8?B?dXJWTVF6SDFrUUFDY01IQ2VxUHFnRUcxVWQyM0YrK0dsZlZWTVcveDNWTGwx?=
+ =?utf-8?B?SnExVU1yV0ZRcjZzMzlYcmxUNFpMOExKTndsKzc3cTVtbDU3UGhjY1BqWDVn?=
+ =?utf-8?B?cHMxVloxd01aNDZWeWdmYTVNeTlsZFVvZGxNOEVKK3p3NkE2aWRzeHFSeWFx?=
+ =?utf-8?B?VmsvamdlZUQ5UTBLYnNIQUhwTmRKS0pyTnk3UjMvTVVQU1JDenZnMWdrSkpD?=
+ =?utf-8?B?cDBwTEpYbnBIRmg1cDVLZXpiZFg2Z0hZU2ZtRG9tMDVjcklPNmttK2U0NjJF?=
+ =?utf-8?B?Q3lHbUwrODNkK3Y4dUoxcDE4a2FMdkZZVndSbXNVMFdJa1dSUnI2YUNXUkU2?=
+ =?utf-8?B?a2lmdC8zNU04cTZGd1ZobXBjVTVqUlIrMnRmWW16a2d0dEp6RnRndGppOG5U?=
+ =?utf-8?B?RUJ6Q1lWM3VqeUhSd24xclZyY1pZWFU5dlRPeVFKK2lxa2NoU0xPK3l2Smgw?=
+ =?utf-8?B?a3hJQVJiY1lnWXdvSHpacHRaakJxcElVNEd3d0NUQ3k0bXhmMXNHNTBTbG54?=
+ =?utf-8?B?YWlsbTlhU25MWXpxR09DUW1SUUxKK3l3MEc3Y3VhUS9TZXp0SkRyYmRKTjJq?=
+ =?utf-8?B?OTFYckUralh4NkgvTXJ5cEV6ZE0vZUtXZVhwRG1GUEYrYkpYcTVLM1ZGdm5j?=
+ =?utf-8?B?Tk5idFp5bW1HaytzMFZoTU5XTnlXOVRONXJmQlNzcWxNaDZabXFmYmJQZHJs?=
+ =?utf-8?B?SGNQMkhNQUhpcHBNTWx6dW0xSlJFUktvWnB2YkJwd041VW9xQ0NKRmhTV1Rm?=
+ =?utf-8?B?ZTkzZmZnZGpZdVJMdGEyRnhhZ21YaDI3YnMzOXlqOVoxZVRxSUpmbEdJd05m?=
+ =?utf-8?B?RGNBRmliSXcxQ2h0VVFacmRUTHgxV3lOcW15dUtXb0VIdXpFNHphb0pqTHkr?=
+ =?utf-8?B?eWhyckRNcVpQRTVBN3JuTDdRTER0STFtVkNINjU4T0p0U1lWd0ZJL1NGY002?=
+ =?utf-8?B?a3BmOERTTzkrSitxaEY5cEYyOXJLTGxYZGZJUWNRazVkNnhRR2dJb3gvWG5I?=
+ =?utf-8?B?eHRLL0tGRzMzYXpURHlhc3I4N3d6YjZUNGpXT3VTN3dzZzNFdW9TYnlCd3E4?=
+ =?utf-8?B?S0ovY2E2Y0d5RUJqcG4wTFA5ZURGMTBVTy92UndFS2xycm9YNkw5UFJIZlE0?=
+ =?utf-8?B?bzM0QS81aGVlVHU3TExXT2NGVjFzeEg4Tml4ZWwzaEFhOTlXWmo2VU40MzZp?=
+ =?utf-8?B?eExvd0F1azhKRHV4YTRkNlNNMkI4a0VLMUQyNE9oUTl0WE9zRGVtMWFjK0V5?=
+ =?utf-8?B?TG1TSVhYQk82OXMzdHJRNmNOaEpsSFlMUUJLVTRtczdaSkVlNFEzbi9sa2Mw?=
+ =?utf-8?B?R1ZydlVXVVJlREIrYTI3dlpXbElyZU1jT2dtT3lyMkNicHZGRFIwN3Nva0RZ?=
+ =?utf-8?Q?V1ntxe24OKCIt3u2nuMQY8Igu513Utniz0CdCux9p8uE4?=
+x-ms-exchange-antispam-messagedata-1: CiaRDPGYGHqWtE8LDlF5oMTW90+hgrvAf2Y=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <966592ABD7D5FC4193C9826D1E9B3322@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5593.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1b04bee2-8480-4b76-d03f-08da334cd1b8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 May 2022 12:50:25.4811
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZDiesTOTGNv//FS7Y3S5a8+D6CSLD4CXbhL14NIZ3d1RdozaDn/W0i2OEHddy/whJv89WSyeICaHfQ+P9IJdvQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5315
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.486,18.0.858
+ definitions=2022-05-11_03:2022-05-11,2022-05-11 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 bulkscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2202240000 definitions=main-2205110059
+X-Proofpoint-GUID: dNzipJttAOpzChfz3As05uQJPHLYcyNu
+X-Proofpoint-ORIG-GUID: dNzipJttAOpzChfz3As05uQJPHLYcyNu
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi all,
-
-This RFC aims to introduce our recent work on enabling RoCE support
-for virtio-net device.
-
-To support RoCE, three types of virtqueues including RDMA send virtqueue,
-RDMA receive virtqueue and RDMA completion virtqueue are introduced.
-And control virtqueue is reused to support the RDMA control messages.
-
-Now we support some basic RDMA semantics such as send/receive
-and read/write operation.
-
-To test with our demo:
-
-1. Build Guest kernel [1] with config INFINIBAND_VIRTIO_RDMA
-
-2. Build QEMU [2] with config VHOST_USER_RDMA
-
-3. Build rdma-core [3]
-
-4. Build and install DPDK (NOTE that we only tested on DPDK 20.11.3)
-
-5. Build vhost-user-rdma [4]
-
-6. Run vhost-user-rdma with command:
-    $ ./vhost-user-rdma --vdev 'net_tap0' --lcore '1-3' -- -s '/tmp/vhost-rdma0'
-
-7. Run qemu with command:
-    $ qemu-system-x86_64 -chardev socket,path=/tmp/vhost-rdma0,id=vrdma \
-      -device vhost-user-rdma-pci,page-per-vq,chardev=vrdma ...
-
-[1] https://github.com/bytedance/linux/tree/virtio-net-roce
-[2] https://github.com/bytedance/qemu/tree/vhost-user-rdma
-[3] https://github.com/YongjiXie/rdma-core/tree/virtio-rdma
-[4] https://github.com/YongjiXie/vhost-user-rdma
-
-We have already tested it with ibv_rc_pingpong, ibv_ud_pingpong and some
-others in rdma-core.
-
-TODO:
-
-1. Add support for Base Memory Management Extensions
-
-2. Add support for atomic operation
-
-3. Add support for SRQ
-
-4. Add support for virtqueue resize
-
-5. Add support for enabling/disabling virtqueue at runtime
-
-Please review, thanks!
-
-V1 to V2:
-- Rework the implementation via extending virtio-net instead of
-  introducing a new device type [Jason]
-- Add address handle support
-
-Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-Co-developed-by: Wei Junji <weijunji@bytedance.com>
-Signed-off-by: Wei Junji <weijunji@bytedance.com>
----
- content.tex | 858 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 854 insertions(+), 4 deletions(-)
-
-diff --git a/content.tex b/content.tex
-index 7508dd1..646d82a 100644
---- a/content.tex
-+++ b/content.tex
-@@ -3008,7 +3008,10 @@ \section{Network Device}\label{sec:Device Types / Network Device}
- placed in one virtqueue for receiving packets, and outgoing
- packets are enqueued into another for transmission in that order.
- A third command queue is used to control advanced filtering
--features.
-+features. And if RoCE (RDMA over Converged Ethernet) capability
-+is enabled, the virtio network device can also support transmitting
-+and receiving RDMA message through RDMA send virtqueue, RDMA receive
-+virtqueue and RDMA completion virtqueue.
- 
- \subsection{Device ID}\label{sec:Device Types / Network Device / Device ID}
- 
-@@ -3023,13 +3026,24 @@ \subsection{Virtqueues}\label{sec:Device Types / Network Device / Virtqueues}
- \item[2(N-1)] receiveqN
- \item[2(N-1)+1] transmitqN
- \item[2N] controlq
-+\item[2N+1] rdma_completeq1
-+\item[\ldots]
-+\item[2N+M] rdma_completeqM
-+\item[2N+M+1] rdma_transmitq1
-+\item[2N+M+2] rdma_receiveq1
-+\item[\ldots]
-+\item[2N+M+2L-1] rdma_transmitqL
-+\item[2N+M+2L] rdma_receiveqL
- \end{description}
- 
-  N=1 if neither VIRTIO_NET_F_MQ nor VIRTIO_NET_F_RSS are negotiated, otherwise N is set by
-- \field{max_virtqueue_pairs}.
-+ \field{max_virtqueue_pairs}. M is set by \field{max_rdma_cqs} and L is set by
-+ \field{max_rdma_qps}.
- 
-  controlq only exists if VIRTIO_NET_F_CTRL_VQ set.
- 
-+ rdma_completeq, rdma_transmitq and rdma_receiveq only exist if VIRTIO_NET_F_ROCE set
-+
- \subsection{Feature bits}\label{sec:Device Types / Network Device / Feature bits}
- 
- \begin{description}
-@@ -3084,6 +3098,9 @@ \subsection{Feature bits}\label{sec:Device Types / Network Device / Feature bits
- \item[VIRTIO_NET_F_CTRL_MAC_ADDR(23)] Set MAC address through control
-     channel.
- 
-+\item[VIRTIO_NET_F_ROCE(55)] Device supports RoCE (RDMA over Converged Ethernet)
-+    capability.
-+
- \item[VIRTIO_NET_F_HOST_USO (56)] Device can receive USO packets. Unlike UFO
-  (fragmenting the packet) the USO splits large UDP packet
-  to several segments when each of these smaller packets has UDP header.
-@@ -3129,6 +3146,7 @@ \subsubsection{Feature bit requirements}\label{sec:Device Types / Network Device
- \item[VIRTIO_NET_F_GUEST_ANNOUNCE] Requires VIRTIO_NET_F_CTRL_VQ.
- \item[VIRTIO_NET_F_MQ] Requires VIRTIO_NET_F_CTRL_VQ.
- \item[VIRTIO_NET_F_CTRL_MAC_ADDR] Requires VIRTIO_NET_F_CTRL_VQ.
-+\item[VIRTIO_NET_F_ROCE] Requires VIRTIO_NET_F_CTRL_VQ.
- \item[VIRTIO_NET_F_RSC_EXT] Requires VIRTIO_NET_F_HOST_TSO4 or VIRTIO_NET_F_HOST_TSO6.
- \item[VIRTIO_NET_F_RSS] Requires VIRTIO_NET_F_CTRL_VQ.
- \end{description}
-@@ -3190,6 +3208,8 @@ \subsection{Device configuration layout}\label{sec:Device Types / Network Device
-         u8 rss_max_key_size;
-         le16 rss_max_indirection_table_length;
-         le32 supported_hash_types;
-+        le32 max_rdma_qps;
-+        le32 max_rdma_cps;
- };
- \end{lstlisting}
- The following field, \field{rss_max_key_size} only exists if VIRTIO_NET_F_RSS or VIRTIO_NET_F_HASH_REPORT is set.
-@@ -3204,11 +3224,23 @@ \subsection{Device configuration layout}\label{sec:Device Types / Network Device
- Field \field{supported_hash_types} contains the bitmask of supported hash types.
- See \ref{sec:Device Types / Network Device / Device Operation / Processing of Incoming Packets / Hash calculation for incoming packets / Supported/enabled hash types} for details of supported hash types.
- 
-+Field \field{max_rdma_qps} only exists if VIRTIO_NET_F_ROCE is set.
-+It specifies the maximum number of queue pairs (send virtqueue and receive virtqueue) for RoCE usage.
-+
-+Field \field{max_rdma_cqs} only exists if VIRTIO_NET_F_ROCE is set.
-+It specifies the maximum number of completion virtqueue for RoCE usage.
-+
- \devicenormative{\subsubsection}{Device configuration layout}{Device Types / Network Device / Device configuration layout}
- 
- The device MUST set \field{max_virtqueue_pairs} to between 1 and 0x8000 inclusive,
- if it offers VIRTIO_NET_F_MQ.
- 
-+The device MUST set \field{max_rdma_qps} to between 1 an 16384 inclusive,
-+if it offers VIRTIO_NET_F_ROCE.
-+
-+The device MUST set \field{max_rdma_cqs} to between 1 an 16384 inclusive,
-+if it offers VIRTIO_NET_F_ROCE.
-+
- The device MUST set \field{mtu} to between 68 and 65535 inclusive,
- if it offers VIRTIO_NET_F_MTU.
- 
-@@ -3306,6 +3338,12 @@ \subsection{Device Initialization}\label{sec:Device Types / Network Device / Dev
- \item If the VIRTIO_NET_F_CTRL_VQ feature bit is negotiated,
-   identify the control virtqueue.
- 
-+\item If the VIRTIO_NET_F_ROCE feature bit is negotiated,
-+  identify the the RDMA completion virtqueues, up to max_rdma_cqs.
-+
-+\item If the VIRTIO_NET_F_ROCE feature bit is negotiated,
-+  identify the the RDMA send and receive virtqueues, up to max_rdma_qps.
-+
- \item Fill the receive queues with buffers: see \ref{sec:Device Types / Network Device / Device Operation / Setting Up Receive Buffers}.
- 
- \item Even with VIRTIO_NET_F_MQ, only receiveq1, transmitq1 and
-@@ -4007,6 +4045,7 @@ \subsubsection{Control Virtqueue}\label{sec:Device Types / Network Device / Devi
-         u8 command;
-         u8 command-specific-data[];
-         u8 ack;
-+        u8 ack-specific-data[];
- };
- 
- /* ack values */
-@@ -4015,8 +4054,8 @@ \subsubsection{Control Virtqueue}\label{sec:Device Types / Network Device / Devi
- \end{lstlisting}
- 
- The \field{class}, \field{command} and command-specific-data are set by the
--driver, and the device sets the \field{ack} byte. There is little it can
--do except issue a diagnostic if \field{ack} is not
-+driver, and the device sets the \field{ack} byte and ack-specific-data. There
-+is little it can do except issue a diagnostic if \field{ack} is not
- VIRTIO_NET_OK.
- 
- \paragraph{Packet Receive Filtering}\label{sec:Device Types / Network Device / Device Operation / Control Virtqueue / Packet Receive Filtering}
-@@ -4463,6 +4502,534 @@ \subsubsection{Control Virtqueue}\label{sec:Device Types / Network Device / Devi
- according to the native endian of the guest rather than
- (necessarily when not using the legacy interface) little-endian.
- 
-+\paragraph{RoCE Configuration}\label{sec:Device Types / Network Device / Device Operation / Control Virtqueue / RoCE Configuration}
-+
-+If the driver negotiates the VIRTIO_NET_F_ROCE feature bit (depends on VIRTIO_NET_F_CTRL_VQ),
-+it can send control commands for RoCE usage. The following commands are defined now:
-+
-+\begin{lstlisting}
-+#define VIRTIO_NET_CTRL_ROCE    6
-+ #define VIRTIO_NET_CTRL_ROCE_QUERY_DEVICE      0
-+ #define VIRTIO_NET_CTRL_ROCE_QUERY_PORT        1
-+ #define VIRTIO_NET_CTRL_ROCE_CREATE_CQ         2
-+ #define VIRTIO_NET_CTRL_ROCE_DESTROY_CQ        3
-+ #define VIRTIO_NET_CTRL_ROCE_CREATE_PD         4
-+ #define VIRTIO_NET_CTRL_ROCE_DESTROY_PD        5
-+ #define VIRTIO_NET_CTRL_ROCE_GET_DMA_MR        6
-+ #define VIRTIO_NET_CTRL_ROCE_REG_USER_MR       7
-+ #define VIRTIO_NET_CTRL_ROCE_DEREG_MR          8
-+ #define VIRTIO_NET_CTRL_ROCE_CREATE_QP         9
-+ #define VIRTIO_NET_CTRL_ROCE_MODIFY_QP         10
-+ #define VIRTIO_NET_CTRL_ROCE_QUERY_QP          11
-+ #define VIRTIO_NET_CTRL_ROCE_DESTROY_QP        12
-+ #define VIRTIO_NET_CTRL_ROCE_CREATE_AH         13
-+ #define VIRTIO_NET_CTRL_ROCE_DESTROY_AH        14
-+ #define VIRTIO_NET_CTRL_ROCE_ADD_GID           15
-+ #define VIRTIO_NET_CTRL_ROCE_DEL_GID           16
-+ #define VIRTIO_NET_CTRL_ROCE_REQ_NOTIFY_CQ     17
-+\end{lstlisting}
-+
-+\begin{description}
-+\item[VIRTIO_NET_CTRL_ROCE_QUERY_DEVICE] Query the attributes of device.
-+  No command-specific-data;
-+  the ack-specific-data is \field{struct virtio_rdma_ack_query_device}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_ack_query_device {
-+#define VIRTIO_IB_DEVICE_RC_RNR_NAK_GEN    (1 << 0)
-+        /* Capabilities mask */
-+        le64 device_cap_flags;
-+        /* Largest contiguous block that can be registered */
-+        le64 max_mr_size;
-+        /* Supported memory shift sizes */
-+        le64 page_size_cap;
-+        /* Hardware version */
-+        le32 hw_ver;
-+        /* Maximum number of outstanding Work Requests (WR) on Send Queue (SQ) and Receive Queue (RQ) */
-+        le32 max_qp_wr;
-+        /* Maximum number of scatter/gather (s/g) elements per WR for SQ for non RDMA Read operations */
-+        le32 max_send_sge;
-+        /* Maximum number of s/g elements per WR for RQ for non RDMA Read operations */
-+        le32 max_recv_sge;
-+        /* Maximum number of s/g per WR for RDMA Read operations */
-+        le32 max_sge_rd;
-+        /* Maximum size of Completion Queue (CQ) */
-+        le32 max_cqe;
-+        /* Maximum number of Memory Regions (MR) */
-+        le32 max_mr;
-+        /* Maximum number of Protection Domains (PD) */
-+        le32 max_pd;
-+        /* Maximum number of RDMA Read perations that can be outstanding per Queue Pair (QP) */
-+        le32 max_qp_rd_atom;
-+        /* Maximum depth per QP for initiation of RDMA Read operations */
-+        le32 max_qp_init_rd_atom;
-+        /* Maximum number of Address Handles (AH) */
-+        le32 max_ah;
-+        /* Local CA ack delay */
-+        u8 local_ca_ack_delay;
-+        /* Padding */
-+        u8 padding[3];
-+        /* Reserved for future */
-+        le32 reserved[14];
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_QUERY_PORT] Query the attributes of port.
-+  No command-specific-data;
-+  the ack-specific-data is \field{struct virtio_rdma_ack_query_port}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_ack_query_port {
-+        /* Length of source Global Identifier (GID) table */
-+        le32 gid_tbl_len;
-+        /* Maximum message size */
-+        le32 max_msg_sz;
-+        /* Reserved for future */
-+        le32 reserved[6];
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_CREATE_CQ] Create a Completion Queue (CQ).
-+  The command-specific-data is \field{struct virtio_rdma_cmd_create_cq};
-+  the ack-specific-data is \field{struct virtio_rdma_ack_create_cq}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_create_cq {
-+        /* Size of CQ */
-+        le32 cqe;
-+};
-+
-+struct virtio_rdma_ack_create_cq {
-+        /* The index of CQ */
-+        le32 cqn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DESTROY_CQ] Destroy a Completion Queue.
-+  The command-specific-data is \field{struct virtio_rdma_cmd_destroy_cq};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_destroy_cq {
-+        /* The index of CQ */
-+        le32 cqn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_CREATE_PD] Create a Protection Domain (PD).
-+  No command-specific-data;
-+  the ack-specific-data is \field{struct virtio_rdma_ack_create_pd}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_ack_create_pd {
-+        /* The handle of PD */
-+        le32 pdn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DESTORY_PD] Destroy a Protection Domain.
-+  The command-specific-data is \field{virtio_rdma_cmd_destroy_pd};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_destroy_pd {
-+        /* The handle of PD */
-+        le32 pdn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_GET_DMA_MR] Get the DMA Memory Region (MR).
-+  associated with one protection domain.
-+  The command-specific-data is \field{virtio_rdma_cmd_get_dma_mr};
-+  the ack-specific-data is \field{virtio_rdma_ack_get_dma_mr}.
-+
-+\begin{lstlisting}
-+enum virtio_ib_access_flags {
-+        VIRTIO_IB_ACCESS_LOCAL_WRITE = (1 << 0),
-+        VIRTIO_IB_ACCESS_REMOTE_WRITE = (1 << 1),
-+        VIRTIO_IB_ACCESS_REMOTE_READ = (1 << 2),
-+};
-+
-+struct virtio_rdma_cmd_get_dma_mr {
-+        /* The handle of PD which the MR associated with */
-+        le32 pdn;
-+        /* MR's protection attributes, enum virtio_ib_access_flags */
-+        le32 access_flags;
-+};
-+
-+struct virtio_rdma_ack_get_dma_mr {
-+        /* The handle of MR */
-+        le32 mrn;
-+        /* MR's local access key */
-+        le32 lkey;
-+        /* MR's remote access key */
-+        le32 rkey;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_REG_USER_MR] Register a user Memory Region
-+  associated with one Protection Domain.
-+  The command-specific-data is \field{virtio_rdma_cmd_reg_user_mr};
-+  the ack-specific-data is \field{virtio_rdma_ack_reg_user_mr}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_reg_user_mr {
-+        /* The handle of PD which the MR associated with */
-+        le32 pdn;
-+        /* MR's protection attributes, enum virtio_ib_access_flags */
-+        le32 access_flags;
-+        /* Starting virtual address of MR */
-+        le64 virt_addr;
-+        /* Length of MR */
-+        le64 length;
-+        /* Size of the below page array */
-+        le32 npages;
-+        /* Padding */
-+        le32 padding;
-+        /* Array to store physical address of each page in MR */
-+        le64 pages[];
-+};
-+
-+struct virtio_rdma_ack_reg_user_mr {
-+        /* The handle of MR */
-+        le32 mrn;
-+        /* MR's local access key */
-+        le32 lkey;
-+        /* MR's remote access key */
-+        le32 rkey;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DEREG_MR] De-register a Memory Region.
-+  The command-specific-data is \field{virtio_rdma_cmd_dereg_mr};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_dereg_mr {
-+        /* The handle of MR */
-+        le32 mrn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_CREATE_QP] Create a Queue Pair (Send Queue and Receive Queue).
-+  The command-specific-data is \field{virtio_rdma_cmd_create_qp};
-+  the ack-specific-data is \field{virtio_rdma_ack_create_qp}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_qp_cap {
-+        /* Maximum number of outstanding WRs in SQ */
-+        le32 max_send_wr;
-+        /* Maximum number of outstanding WRs in RQ */
-+        le32 max_recv_wr;
-+        /* Maximum number of s/g elements per WR in SQ */
-+        le32 max_send_sge;
-+        /* Maximum number of s/g elements per WR in RQ */
-+        le32 max_recv_sge;
-+        /* Maximum number of data (bytes) that can be posted inline to SQ */
-+        le32 max_inline_data;
-+        /* Padding */
-+        le32 padding;
-+};
-+
-+struct virtio_rdma_cmd_create_qp {
-+        /* The handle of PD which the QP associated with */
-+        le32 pdn;
-+#define VIRTIO_IB_QPT_SMI    0
-+#define VIRTIO_IB_QPT_GSI    1
-+#define VIRTIO_IB_QPT_RC     2
-+#define VIRTIO_IB_QPT_UC     3
-+#define VIRTIO_IB_QPT_UD     4
-+        /* QP's type */
-+        u8 qp_type;
-+        /* If set, each WR submitted to the SQ generates a completion entry */
-+        u8 sq_sig_all;
-+        /* Padding */
-+        u8 padding[2];
-+        /* The index of CQ which the SQ associated with */
-+        le32 send_cqn;
-+        /* The index of CQ which the RQ associated with */
-+        le32 recv_cqn;
-+        /* QP's capabilities */
-+        struct virtio_rdma_qp_cap cap;
-+        /* Reserved for future */
-+        le32 reserved[4];
-+};
-+
-+struct virtio_rdma_ack_create_qp {
-+        /* The index of QP */
-+        le32 qpn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_MODIFY_QP] Modify the attributes of a Queue Pair.
-+  The command-specific-data is \field{virtio_rdma_cmd_modify_qp};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_global_route {
-+        /* Destination GID or MGID */
-+        u8 dgid[16];
-+        /* Flow label */
-+        le32 flow_label;
-+        /* Source GID index */
-+        u8 sgid_index;
-+        /* Hop limit */
-+        u8 hop_limit;
-+        /* Traffic class */
-+        u8 traffic_class;
-+        /* Padding */
-+        u8 padding;
-+};
-+
-+struct virtio_rdma_ah_attr {
-+        /* Global Routing Header (GRH) attributes */
-+        virtio_rdma_global_route grh;
-+        /* Destination MAC address */
-+        u8 dmac[6];
-+        /* Reserved for future */
-+        u8 reserved[10];
-+};
-+
-+enum virtio_ib_qp_attr_mask {
-+        VIRTIO_IB_QP_STATE = (1 << 0),
-+        VIRTIO_IB_QP_CUR_STATE = (1 << 1),
-+        VIRTIO_IB_QP_ACCESS_FLAGS = (1 << 2),
-+        VIRTIO_IB_QP_QKEY = (1 << 3),
-+        VIRTIO_IB_QP_AV = (1 << 4),
-+        VIRTIO_IB_QP_PATH_MTU = (1 << 5),
-+        VIRTIO_IB_QP_TIMEOUT = (1 << 6),
-+        VIRTIO_IB_QP_RETRY_CNT = (1 << 7),
-+        VIRTIO_IB_QP_RNR_RETRY = (1 << 8),
-+        VIRTIO_IB_QP_RQ_PSN = (1 << 9),
-+        VIRTIO_IB_QP_MAX_QP_RD_ATOMIC = (1 << 10),
-+        VIRTIO_IB_QP_MIN_RNR_TIMER = (1 << 11),
-+        VIRTIO_IB_QP_SQ_PSN = (1 << 12),
-+        VIRTIO_IB_QP_MAX_DEST_RD_ATOMIC = (1 << 13),
-+        VIRTIO_IB_QP_CAP = (1 << 14),
-+        VIRTIO_IB_QP_DEST_QPN = (1 << 15),
-+        VIRTIO_IB_QP_RATE_LIMIT = (1 << 16),
-+};
-+
-+enum virtio_ib_qp_state {
-+        VIRTIO_IB_QPS_RESET,
-+        VIRTIO_IB_QPS_INIT,
-+        VIRTIO_IB_QPS_RTR,
-+        VIRTIO_IB_QPS_RTS,
-+        VIRTIO_IB_QPS_SQD,
-+        VIRTIO_IB_QPS_SQE,
-+        VIRTIO_IB_QPS_ERR
-+};
-+
-+enum virtio_ib_mtu {
-+        VIRTIO_IB_MTU_256 = 1,
-+        VIRTIO_IB_MTU_512 = 2,
-+        VIRTIO_IB_MTU_1024 = 3,
-+        VIRTIO_IB_MTU_2048 = 4,
-+        VIRTIO_IB_MTU_4096 = 5
-+};
-+
-+struct virtio_rdma_cmd_modify_qp {
-+        /* The index of QP */
-+        le32 qpn;
-+        /* The mask of attributes needs to be modified, enum virtio_ib_qp_attr_mask */
-+        le32 attr_mask;
-+        /* Move the QP to this state, enum virtio_ib_qp_state */
-+        u8 qp_state;
-+        /* Current QP state, enum virtio_ib_qp_state */
-+        u8 cur_qp_state;
-+        /* Path MTU (valid only for RC/UC QPs), enum virtio_ib_mtu */
-+        u8 path_mtu;
-+        /* Number of outstanding RDMA Read operations on destination QP (valid only for RC QPs) */
-+        u8 max_rd_atomic;
-+        /* Number of responder resources for handling incoming RDMA Read operations (valid only for RC QPs) */
-+        u8 max_dest_rd_atomic;
-+        /* Minimum RNR (Receiver Not Ready) NAK timer (valid only for RC QPs) */
-+        u8 min_rnr_timer;
-+        /* Local ack timeout (valid only for RC QPs) */
-+        u8 timeout;
-+        /* Retry count (valid only for RC QPs) */
-+        u8 retry_cnt;
-+        /* RNR retry (valid only for RC QPs) */
-+        u8 rnr_retry;
-+        /* Padding */
-+        u8 padding[7];
-+        /* Q_Key for the QP (valid only for UD QPs) */
-+        le32 qkey;
-+        /* PSN for RQ (valid only for RC/UC QPs) */
-+        le32 rq_psn;
-+        /* PSN for SQ */
-+        le32 sq_psn;
-+        /* Destination QP number (valid only for RC/UC QPs) */
-+        le32 dest_qp_num;
-+        /* Mask of enabled remote access operations (valid only for RC/UC QPs), enum virtio_ib_access_flags */
-+        le32 qp_access_flags;
-+        /* Rate limit in kbps for packet pacing */
-+        le32 rate_limit;
-+        /* QP capabilities */
-+        struct virtio_rdma_qp_cap cap;
-+        /* Address Vector (valid only for RC/UC QPs) */
-+        struct virtio_rdma_ah_attr ah_attr;
-+        /* Reserved for future */
-+        le32 reserved[4];
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_QUERY_QP] Query the attributes of a Queue Pair.
-+  The command-specific-data is \field{virtio_rdma_cmd_query_qp};
-+  the ack-specific-data is \field{virtio_rdma_ack_query_qp}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_query_qp {
-+	/* The index of QP */
-+        le32 qpn;
-+        /* The mask of attributes need to be queried, enum virtio_ib_qp_attr_mask */
-+        le32 attr_mask;
-+};
-+
-+struct virtio_rdma_ack_query_qp {
-+        /* Move the QP to this state, enum virtio_ib_qp_state */
-+        u8 qp_state;
-+        /* Path MTU (valid only for RC/UC QPs), enum virtio_ib_mtu */
-+        u8 path_mtu;
-+        /* Is the SQ draining */
-+        u8 sq_draining;
-+        /* Number of outstanding RDMA read operations on destination QP (valid only for RC QPs) */
-+        u8 max_rd_atomic;
-+        /* Number of responder resources for handling incoming RDMA read operations (valid only for RC QPs) */
-+        u8 max_dest_rd_atomic;
-+        /* Minimum RNR NAK timer (valid only for RC QPs) */
-+        u8 min_rnr_timer;
-+        /* Local ack timeout (valid only for RC QPs) */
-+        u8 timeout;
-+        /* Retry count (valid only for RC QPs) */
-+        u8 retry_cnt;
-+        /* RNR retry (valid only for RC QPs) */
-+        u8 rnr_retry;
-+        /* Padding */
-+        u8 padding[7];
-+        /* Q_Key for the QP (valid only for UD QPs) */
-+        le32 qkey;
-+        /* PSN for RQ (valid only for RC/UC QPs) */
-+        le32 rq_psn;
-+        /* PSN for SQ */
-+        le32 sq_psn;
-+        /* Destination QP number (valid only for RC/UC QPs) */
-+        le32 dest_qp_num;
-+        /* Mask of enabled remote access operations (valid only for RC/UC QPs), enum virtio_ib_access_flags */
-+        le32 qp_access_flags;
-+        /* Rate limit in kbps for packet pacing */
-+        le32 rate_limit;
-+        /* QP capabilities */
-+        struct virtio_rdma_qp_cap cap;
-+        /* Address Vector (valid only for RC/UC QPs) */
-+        struct virtio_rdma_ah_attr ah_attr;
-+        /* Reserved for future */
-+        le32 reserved[4];
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DESTROY_QP] Destroy a Queue Pair.
-+  The command-specific-data is \field{virtio_rdma_cmd_destroy_qp};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_destroy_qp {
-+        /* The index of QP */
-+        le32 qpn;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_CREATE_AH] Create a Address Handle (AH).
-+  The command-specific-data is \field{virtio_rdma_cmd_create_ah};
-+  the ack-specific-data is \field{virtio_rdma_ack_create_ah}.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_create_ah {
-+        /* The handle of PD which the AH associated with */
-+        le32 pdn;
-+        /* Padding */
-+        le32 padding;
-+        /* Address Vector */
-+        struct virtio_rdma_ah_attr ah_attr;
-+};
-+
-+struct virtio_rdma_ack_create_ah {
-+        /* The address handle */
-+        le32 ah;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DESTROY_AH] Destroy a Address Handle.
-+  The command-specific-data is \field{virtio_rdma_cmd_destroy_ah};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_destroy_ah {
-+        /* The handle of PD which the AH associated with */
-+        le32 pdn;
-+        /* The address handle */
-+        le32 ah;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_ADD_GID] Add a Global Identifier (GID).
-+  The command-specific-data is \field{virtio_rdma_cmd_add_gid};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_add_gid {
-+        /* Index of GID */
-+        le16 index;
-+        /* Padding */
-+        le16 padding[3];
-+        /* GID to be added */
-+        u8 gid[16];
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_DEL_GID] Delete a Global Identifier.
-+  The command-specific-data is \field{virtio_rdma_cmd_del_gid};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_del_gid {
-+        /* Index of GID */
-+        le16 index;
-+};
-+\end{lstlisting}
-+
-+\item[VIRTIO_NET_CTRL_ROCE_REQ_NOTIFY_CQ] Request a completion notification
-+  on a Completion Queue.
-+  The command-specific-data is \field{virtio_rdma_cmd_req_notify};
-+  no ack-specific-data.
-+
-+\begin{lstlisting}
-+struct virtio_rdma_cmd_req_notify {
-+        /* The index of CQ */
-+        le32 cqn;
-+#define VIRTIO_IB_NOTIFY_SOLICITED (1 << 0)
-+#define VIRTIO_IB_NOTIFY_NEXT_COMPLETION (1 << 1)
-+        /* Notify flags */
-+        le32 flags;
-+};
-+\end{lstlisting}
-+
-+\end{description}
-+
-+\drivernormative{\subparagraph}{RoCE Configuration}{Device Types / Network Device / Device Operation / Control Virtqueue / RoCE Configuration}
-+
-+A driver MUST initialize the completion virtqueue and fill it with
-+enough entries after command VIRTIO_NET_CTRL_ROCE_CREATE_CQ is
-+successfully executed.
-+
-+A driver MUST reset the completion virtqueue after
-+command VIRTIO_NET_CTRL_ROCE_DESTROY_CQ is successfully executed.
-+
-+A driver MUST initialize the send virtqueue and receive virtqueue after
-+command VIRTIO_NET_CTRL_ROCE_CREATE_QP is successfully executed.
-+
-+A driver MUST reset the send virtqueue and receive virtqueue after
-+command VIRTIO_NET_CTRL_ROCE_DESTROY_QP is successfully executed.
- 
- \subsubsection{Legacy Interface: Framing Requirements}\label{sec:Device
- Types / Network Device / Legacy Interface: Framing Requirements}
-@@ -4496,6 +5063,289 @@ \subsubsection{Legacy Interface: Framing Requirements}\label{sec:Device
- See \ref{sec:Basic
- Facilities of a Virtio Device / Virtqueues / Message Framing}.
- 
-+\subsubsection{RoCE Support}\label{sec:Device Types / Network Device / Device Operation / RoCE Support}
-+
-+RDMA over Converged Ethernet (RoCE) is a network protocol that allows
-+remote direct memory access (RDMA) over an Ethernet network. To support
-+RoCE (if VIRTIO_NET_F_ROCE is negotiated), in addtion to the control
-+virtqueue support mentioned in \ref{sec:Device Types / Network Device /
-+Device Operation / Control Virtqueue / RoCE Configuration}, multiple
-+types of virtqueues including send virtqueue, receive virtqueue and
-+completion virtqueue are introduced.
-+
-+The send virtqueue contains elements that describe the data to be
-+transmitted.
-+
-+Requests (device-readable) have the following format:
-+
-+\begin{lstlisting}
-+enum virtio_ib_wr_opcode {
-+        VIRTIO_IB_WR_RDMA_WRITE,
-+        VIRTIO_IB_WR_RDMA_WRITE_WITH_IMM,
-+        VIRTIO_IB_WR_SEND,
-+        VIRTIO_IB_WR_SEND_WITH_IMM,
-+        VIRTIO_IB_WR_RDMA_READ,
-+};
-+
-+struct virtio_rdma_sge {
-+        le64 addr;
-+        le32 length;
-+        le32 lkey;
-+};
-+
-+struct virtio_rdma_sq_req {
-+        /* User defined WR ID */
-+        le64 wr_id;
-+        /* WR opcode, enum virtio_ib_wr_opcode */
-+        u8 opcode;
-+#define VIRTIO_IB_SEND_FENCE        (1 << 0)
-+#define VIRTIO_IB_SEND_SIGNALED     (1 << 1)
-+#define VIRTIO_IB_SEND_SOLICITED    (1 << 2)
-+#define VIRTIO_IB_SEND_INLINE       (1 << 3)
-+        /* Flags of the WR properties */
-+        u8 send_flags;
-+        /* Padding */
-+        le16 padding;
-+        /* Immediate data (in network byte order) to send */
-+        le32 imm_data;
-+        union {
-+                struct {
-+                        /* Start address of remote memory buffer */
-+                        le64 remote_addr;
-+                        /* Key of the remote MR */
-+                        le32 rkey;
-+                } rdma;
-+                struct {
-+                        /* Index of the destination QP */
-+                        le32 remote_qpn;
-+                        /* Q_Key of the destination QP */
-+                        le32 remote_qkey;
-+                        /* Address Handle */
-+                        le32 ah;
-+                } ud;
-+                /* Reserved for future */
-+                le64 reserved[4];
-+        };
-+        /* Inline data */
-+        u8 inline_data[512];
-+        union {
-+                /* Length of sg_list */
-+                le32 num_sge;
-+                /* Length of inline data */
-+                le16 inline_len;
-+        };
-+        /* Reserved for future */
-+        le32 reserved2[3];
-+	/* Scatter/gather list */
-+        struct virtio_rdma_sge sg_list[];
-+};
-+\end{lstlisting}
-+
-+The receive virtqueue contains elements that describe where to place incoming data.
-+
-+Requests (device-readable) have the following format:
-+
-+\begin{lstlisting}
-+struct virtio_rdma_rq_req {
-+        /* User defined WR ID */
-+        le64 wr_id;
-+        /* Length of sg_list */
-+        le32 num_sge;
-+        /* Reserved for future */
-+        le32 reserved[3];
-+        /* Scatter/gather list */
-+        struct virtio_rdma_sge sg_list[];
-+};
-+\end{lstlisting}
-+
-+The completion virtqueue is used to notify the completion of requests in
-+send virtqueue or receive virtqueue.
-+
-+Requests (device-writable) have the following format:
-+
-+\begin{lstlisting}
-+enum virtio_ib_wc_opcode {
-+        VIRTIO_IB_WC_SEND,
-+        VIRTIO_IB_WC_RDMA_WRITE,
-+        VIRTIO_IB_WC_RDMA_READ,
-+        VIRTIO_IB_WC_RECV,
-+        VIRTIO_IB_WC_RECV_RDMA_WITH_IMM,
-+};
-+
-+enum virtio_ib_wc_status {
-+        /* Operation completed successfully */
-+        VIRTIO_IB_WC_SUCCESS,
-+        /* Local Length Error */
-+        VIRTIO_IB_WC_LOC_LEN_ERR,
-+        /* Local QP Operation Error */
-+        VIRTIO_IB_WC_LOC_QP_OP_ERR,
-+        /* Local Protection Error */
-+        VIRTIO_IB_WC_LOC_PROT_ERR,
-+        /* Work Request Flushed Error */
-+        VIRTIO_IB_WC_WR_FLUSH_ERR,
-+        /* Bad Response Error */
-+        VIRTIO_IB_WC_BAD_RESP_ERR,
-+        /* Local Access Error */
-+        VIRTIO_IB_WC_LOC_ACCESS_ERR,
-+        /* Remote Invalid Request Error */
-+        VIRTIO_IB_WC_REM_INV_REQ_ERR,
-+        /* Remote Access Error */
-+        VIRTIO_IB_WC_REM_ACCESS_ERR,
-+        /* Remote Operation Error */
-+        VIRTIO_IB_WC_REM_OP_ERR,
-+        /* Transport Retry Counter Exceeded */
-+        VIRTIO_IB_WC_RETRY_EXC_ERR,
-+        /* RNR Retry Counter Exceeded */
-+        VIRTIO_IB_WC_RNR_RETRY_EXC_ERR,
-+        /* Remote Aborted Error */
-+        VIRTIO_IB_WC_REM_ABORT_ERR,
-+        /* Fatal Error */
-+        VIRTIO_IB_WC_FATAL_ERR,
-+        /* Response Timeout Error */
-+        VIRTIO_IB_WC_RESP_TIMEOUT_ERR,
-+        /* General Error */
-+        VIRTIO_IB_WC_GENERAL_ERR
-+};
-+
-+struct virtio_rdma_cq_req {
-+        /* User defined WR ID */
-+        le64 wr_id;
-+        /* Work completion status, enum virtio_ib_wc_status */
-+        u8 status;
-+        /* WR opcode, enum virtio_ib_wc_opcode */
-+        u8 opcode;
-+        /* Padding */
-+        le16 padding;
-+        /* Vendor error */
-+        le32 vendor_err;
-+        /* Number of bytes transferred */
-+        le32 byte_len;
-+        /* Immediate data (in network byte order) to send */
-+        le32 imm_data;
-+        /* Local QP number of completed WR */
-+        le32 qp_num;
-+        /* Source QP number (remote QP number) of completed WR (valid only for UD QPs) */
-+        le32 src_qp;
-+#define VIRTIO_IB_WC_GRH         (1 << 0)
-+#define VIRTIO_IB_WC_WITH_IMM    (1 << 1)
-+        /* Work completion flag */
-+        le32 wc_flags;
-+        /* Reserved for future */
-+        le32 reserved[3];
-+};
-+\end{lstlisting}
-+
-+\paragraph{Send Operation}\label{sec:Device Types / Network Device / Device Operation / RoCE Support / Send Operation}
-+
-+The send operation allows us to send data to a remote QP’s Receive Queue.
-+The receiver MUST have previously posted a receive buffer to receive the data.
-+
-+To do a send operation, a request with \field{opcode} set to
-+VIRTIO_IB_WR_SEND or VIRTIO_IB_WR_SEND_WITH_IMM MUST be posted to the Send
-+Queue as one output descriptor and the device is notified of the new entry.
-+
-+\drivernormative{\subparagraph}{Send Operation}{Device Types / Network Device / Device Operation / RoCE Support / Send Operation}
-+
-+If VIRTIO_IB_SEND_INLINE is set in \field{send_flags}, the driver MUST fill
-+send buffer into \field{inline_data} field and set \field{inline_len} to the
-+length of the buffer. Otherwise, the driver MUST fill \field{sg_list} to
-+describe the buffer.
-+
-+\devicenormative{\subparagraph}{Send Operation}{Device Types / Network Device / Device Operation / RoCE Support / Send Operation}
-+
-+If \field{opcode} is not set to VIRTIO_IB_WR_SEND_WITH_IMM, the device MUST
-+ignore \field{imm_data}.
-+
-+If the QP type is UD, the device MUST validate \field{ud.ah}.
-+
-+If VIRTIO_IB_SEND_INLINE is not set in \field{send_flags}, the device MUST
-+validate the \field{addr}, \field{length} and \field{lkey} in \field{sg_list}.
-+
-+\paragraph{Receive Operation}\label{sec:Device Types / Network Device / Device Operation / RoCE Support / Receive Operation}
-+
-+The receive operation allows us to receive data from remote QP.
-+It's the corresponding operation to a send operation.
-+
-+To do a receive operation, a request MUST be posted to the Receive
-+Queue as one output descriptor and the device is notified of the new entry.
-+
-+\drivernormative{\subparagraph}{Receive Operation}{Device Types / Network Device / Device Operation / RoCE Support / Receive Operation}
-+
-+The driver MUST fill \field{sg_list} to describe the receive buffer.
-+
-+\devicenormative{\subparagraph}{Receive Operation}{Device Types / Network Device / Device Operation / RoCE Support / Receive Operation}
-+
-+The device MUST validate the \field{addr}, \field{length} and \field{lkey}
-+in \field{sg_list}.
-+
-+\paragraph{Write Operation}\label{sec:Device Types / Network Device / Device Operation / RoCE Support / Write Operation}
-+
-+The write operation allows us to write data to the local memory buffer
-+in remote side with no notification. The remote side wouldn't be aware
-+that this operation being done.
-+
-+To do a write operation, a request with \field{opcode} set to
-+VIRTIO_IB_WR_RDMA_WRITE or VIRTIO_IB_WR_RDMA_WRITE_WITH_IMM MUST be
-+posted to the Send Queue as one output descriptor and the device is
-+notified of the new entry.
-+
-+\drivernormative{\subparagraph}{Write Operation}{Device Types / Network Device / Device Operation / RoCE Support / Write Operation}
-+
-+The driver MUST fill \field{sg_list} to describe the write buffer.
-+
-+The driver MUST fill \field{rdma.remote_addr} and \field{rdma.rkey} to
-+identify the remote buffer.
-+
-+\devicenormative{\subparagraph}{Write Operation}{Device Types / Network Device / Device Operation / RoCE Support / Write Operation}
-+
-+If \field{opcode} is not set to VIRTIO_IB_WR_RDMA_WRITE_WITH_IMM, the device
-+MUST ignore \field{imm_data}.
-+
-+The device MUST validate the \field{addr}, \field{length} and \field{lkey}
-+in \field{sg_list}.
-+
-+\paragraph{Read Operation}\label{sec:Device Types / Network Device / Device Operation / RoCE Support / Read Operation}
-+
-+The read operation allows us to read data from the local memory buffer
-+in remote side with no notification. The remote side wouldn't be aware
-+that this operation being done.
-+
-+To do a read operation, a request with \field{opcode} set to
-+VIRTIO_IB_WR_RDMA_READ MUST be posted to the Send Queue as one output
-+descriptor and the device is notified of the new entry.
-+
-+\drivernormative{\subparagraph}{Read Operation}{Device Types / Network Device / Device Operation / RoCE Support / Read Operation}
-+
-+The driver MUST fill \field{sg_list} to describe the read buffer.
-+
-+The driver MUST fill \field{rdma.remote_addr} and \field{rdma.rkey} to
-+identify the remote buffer.
-+
-+\devicenormative{\subparagraph}{Read Operation}{Device Types / Network Device / Device Operation / RoCE Support / Read Operation}
-+
-+The device MUST validate the \field{addr}, \field{length} and \field{lkey}
-+in \field{sg_list}.
-+
-+\paragraph{Completion Notification}\label{sec:Device Types / Network Device / Device Operation / RoCE Support / Completion Notification}
-+
-+After above operation is completed, a completion notification MUST
-+be triggered by the device. To achieve that, the device MUST consume
-+an entry of the Completion Queue associated with the Send Queue/Receive
-+Queue which the operation belongs to.
-+
-+\drivernormative{\subparagraph}{Completion Notification}{Device Types / Network Device / Device Operation / RoCE Support / Completion Notification}
-+
-+The driver MUST fill the Completion Queue with enough entries previously.
-+
-+\devicenormative{\subparagraph}{Completion Notification}{Device Types / Network Device / Device Operation / RoCE Support / Completion Notification}
-+
-+If \field{imm_data} is valid, the device MUST set VIRTIO_IB_WC_WITH_IMM to
-+\field{wc_flags}.
-+
-+The device MUST set \field{wr_id} to the value of \field{wr_id} of
-+corresponding \field{struct virtio_rdma_sq_req} or
-+\field{struct virtio_rdma_rq_req}.
-+
- \section{Block Device}\label{sec:Device Types / Block Device}
- 
- The virtio block device is a simple virtual block device (ie.
--- 
-2.11.0
-
+DQoNCj4gT24gMTEgTWF5IDIwMjIsIGF0IDEwOjM2LCBsaXpoaWppYW5AZnVqaXRzdS5jb20gd3Jv
+dGU6DQo+IA0KPiANCj4gDQo+IE9uIDExLzA1LzIwMjIgMTE6NDQsIENoZW5nIFh1IHdyb3RlOg0K
+Pj4gDQo+PiANCj4+IE9uIDUvMTEvMjIgMTA6MzAgQU0sIExpIFpoaWppYW4gd3JvdGU6DQo+Pj4g
+U29mdFJvQ0UgYWx3YXlzIHJldHVybnMgc3VjY2VzcyB3aGVuIHVzZXIgc3BhY2UgaXMgcG9zdGlu
+ZyBhIG5ldyB3cWUgd2hlcmUNCj4+PiBpdCB1c3VhbGx5IGp1c3QgZW5xdWV1ZXMgYSB3cWUuDQo+
+Pj4gDQo+Pj4gT25jZSB0aGUgcmVxdWVzdGVyIHN0YXRlIGJlY29tZXMgUVBfU1RBVEVfRVJST1Is
+IHdlIHNob3VsZCBnZW5lcmF0ZSBlcnJvcg0KPj4+IGNvbXBsZXRpb24gZm9yIGFsbCBzdWJzZXF1
+ZW50IHdxZS4gU28gdGhlIHVzZXIgaXMgYWJsZSB0byBwb2xsIHRoZQ0KPj4+IGNvbXBsZXRpb24g
+ZXZlbnQgdG8gY2hlY2sgaWYgdGhlIGZvcm1lciB3cWUgaXMgaGFuZGxlZCBjb3JyZWN0bHkuDQoN
+ClRoaXMgaXMgbm90IGNvcnJlY3QuIFlvdSBzaGFsbCBiZSBhYmxlIHRvIHBvc3QgbmV3IHNlbmQg
+d29yayByZXF1ZXN0cy4gVGhleSBzaGFsbCBiZSBjb21wbGV0ZWQgd2l0aCBGTFVTSEVEX0lOX0VS
+Uk9SLiBBcyBwZXIgSUJUQSBDMTAtNDI6DQoNCldvcmsgUmVxdWVzdHMgc3Vic2VxdWVudCB0byB0
+aGF0IHdoaWNoIGNhdXNlZCB0aGUgQ29tcGxldGlvbiBFcnJvciBsZWFkaW5nIHRvIHRoZSB0cmFu
+c2l0aW9uIGludG8gdGhlIEVycm9yIHN0YXRlLCBpbmNsdWRpbmcgdGhvc2Ugc3VibWl0dGVkIGFm
+dGVyIHRoZSB0cmFuc2l0aW9uLCBtdXN0IHJldHVybiB0aGUgRmx1c2ggRXJyb3IgY29tcGxldGlv
+biBzdGF0dXMgdGhyb3VnaCB0aGUgQ29tcGxldGlvbiBRdWV1ZS4NCg0KDQpUaHhzLCBIw6Vrb24N
+Cg0KPj4+IA0KPj4+IEhlcmUgd2UgY2hlY2sgUVBfU1RBVEVfRVJST1IgYWZ0ZXIgcmVxX25leHRf
+d3FlKCkgc28gdGhhdCB0aGUgY29tcGxldGlvbg0KPj4+IGNhbiBhc3NvY2lhdGUgd2l0aCBpdHMg
+d3FlLg0KPj4+IA0KPj4+IFNpZ25lZC1vZmYtYnk6IExpIFpoaWppYW4gPGxpemhpamlhbkBmdWpp
+dHN1LmNvbT4NCj4+PiAtLS0NCj4+PiAgIGRyaXZlcnMvaW5maW5pYmFuZC9zdy9yeGUvcnhlX3Jl
+cS5jIHwgMTAgKysrKysrKysrLQ0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygr
+KSwgMSBkZWxldGlvbigtKQ0KPj4+IA0KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2luZmluaWJh
+bmQvc3cvcnhlL3J4ZV9yZXEuYyBiL2RyaXZlcnMvaW5maW5pYmFuZC9zdy9yeGUvcnhlX3JlcS5j
+DQo+Pj4gaW5kZXggOGJkZDBiNmI1NzhmLi5lZDZhNDg2YzQzNDMgMTAwNjQ0DQo+Pj4gLS0tIGEv
+ZHJpdmVycy9pbmZpbmliYW5kL3N3L3J4ZS9yeGVfcmVxLmMNCj4+PiArKysgYi9kcml2ZXJzL2lu
+ZmluaWJhbmQvc3cvcnhlL3J4ZV9yZXEuYw0KPj4+IEBAIC02MjQsNyArNjI0LDcgQEAgaW50IHJ4
+ZV9yZXF1ZXN0ZXIodm9pZCAqYXJnKQ0KPj4+ICAgICAgIHJ4ZV9nZXQocXApOw0KPj4+ICAgICBu
+ZXh0X3dxZToNCj4+PiAtICAgIGlmICh1bmxpa2VseSghcXAtPnZhbGlkIHx8IHFwLT5yZXEuc3Rh
+dGUgPT0gUVBfU1RBVEVfRVJST1IpKQ0KPj4+ICsgICAgaWYgKHVubGlrZWx5KCFxcC0+dmFsaWQp
+KQ0KPj4+ICAgICAgICAgICBnb3RvIGV4aXQ7DQo+Pj4gICAgICAgICBpZiAodW5saWtlbHkocXAt
+PnJlcS5zdGF0ZSA9PSBRUF9TVEFURV9SRVNFVCkpIHsNCj4+PiBAQCAtNjQ2LDYgKzY0NiwxNCBA
+QCBpbnQgcnhlX3JlcXVlc3Rlcih2b2lkICphcmcpDQo+Pj4gICAgICAgaWYgKHVubGlrZWx5KCF3
+cWUpKQ0KPj4+ICAgICAgICAgICBnb3RvIGV4aXQ7DQo+Pj4gICArICAgIGlmIChxcC0+cmVxLnN0
+YXRlID09IFFQX1NUQVRFX0VSUk9SKSB7DQo+Pj4gKyAgICAgICAgLyoNCj4+PiArICAgICAgICAg
+KiBHZW5lcmF0ZSBhbiBlcnJvciBjb21wbGV0aW9uIHNvIHRoYXQgdXNlciBzcGFjZSBpcyBhYmxl
+IHRvDQo+Pj4gKyAgICAgICAgICogcG9sbCB0aGlzIGNvbXBsZXRpb24uDQo+Pj4gKyAgICAgICAg
+ICovDQo+Pj4gKyAgICAgICAgZ290byBlcnI7DQo+Pj4gKyAgICB9DQo+Pj4gKw0KPj4gDQo+PiBT
+aG91bGQgdGhpcyBzdGlsbCB1c2UgdW5saWtlbHkoLi4uKSA/IEJlY2F1c2UgdGhlIG9yaWdpbmFs
+IGp1ZGdlbWVudCBoYXMNCj4+IGEgdW5saWtlbHkgc3Vycm91bmRlZC4NCj4gDQo+IEdvb2QgY2F0
+Y2guIGl0IHNvdW5kcyBnb29kIDopDQo+IA0KPiANCj4gVGhhbmtzDQo+IFpoaWppYW4NCj4gDQo+
+IA0KPiANCj4+IA0KPj4gQ2hlbmcgWHUNCj4+IA0KPj4+ICAgICAgIGlmICh3cWUtPm1hc2sgJiBX
+Ul9MT0NBTF9PUF9NQVNLKSB7DQo+Pj4gICAgICAgICAgIHJldCA9IHJ4ZV9kb19sb2NhbF9vcHMo
+cXAsIHdxZSk7DQo+Pj4gICAgICAgICAgIGlmICh1bmxpa2VseShyZXQpKQ0KDQo=
