@@ -2,99 +2,104 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD46D522A81
-	for <lists+linux-rdma@lfdr.de>; Wed, 11 May 2022 05:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769D5522B42
+	for <lists+linux-rdma@lfdr.de>; Wed, 11 May 2022 06:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbiEKDoP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 10 May 2022 23:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S241954AbiEKEkS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 11 May 2022 00:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231319AbiEKDoN (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 10 May 2022 23:44:13 -0400
-Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8499B183;
-        Tue, 10 May 2022 20:44:11 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0VCu1bA1_1652240648;
-Received: from 30.43.105.194(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VCu1bA1_1652240648)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 11 May 2022 11:44:09 +0800
-Message-ID: <b37c53a7-86df-0283-1a77-c31af108d39f@linux.alibaba.com>
-Date:   Wed, 11 May 2022 11:44:07 +0800
+        with ESMTP id S240131AbiEKEj1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 11 May 2022 00:39:27 -0400
+Received: from mail-oa1-x33.google.com (mail-oa1-x33.google.com [IPv6:2001:4860:4864:20::33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA3614E2E8
+        for <linux-rdma@vger.kernel.org>; Tue, 10 May 2022 21:39:23 -0700 (PDT)
+Received: by mail-oa1-x33.google.com with SMTP id 586e51a60fabf-ee1e7362caso1460663fac.10
+        for <linux-rdma@vger.kernel.org>; Tue, 10 May 2022 21:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=nrkBIDyCffFbQz5WNhQU88q5l+bx8m1CoLNL/nRcxBFZRgp3B2RwRJzpJi69hjmFPQ
+         Eotn36CVTQor8sTwq84btYhQQ+OsypTpYdHIfGkC/Ekjg8a9U0HkQq0T/gbcQg5/if4Y
+         i1yzcJYhTRMm8ny1NIiOYUNRazrfloxlCC/1XVxW2+TG0ItQpx2/G3cXjgMuOALgO1Rc
+         auxKHXwS3ghK6vFFIfR8essc70JXfRi2oIpi3YT/VLqISCMTaVWCOI/Xf0rWfpfTmlnw
+         XgqCFC8jOuHD5AjsEtox3h0b9tzcHlVM0fA1RrJyDFubK9aS707t1BYf/K43qSc4slo4
+         wrQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=s3Cdswvtyrq8qHVwuRB9YRoTAIoD9G/2//h6WeFZHzo=;
+        b=ycbuDs+GZIIT9D+o9cla5ZXfnMEM4WofdWEWvJx2Tfrc3JNwVdSS6KBoyBb4lei5/a
+         143VBkxTQpc3UEKTYiJHZDwUjMm4JcbfDA3t1ZlA7e9Ct0RC0cJ780Ja+QuGdbt3rejM
+         L/3xeONtNVZpJScCEL5h1VhCx1H7Tqs8oKiOGEuPrh/RQQ5JRHFT0LitN7888gbVFtGs
+         TsxmE+6myZtAM4Lctu30NyCI1cNM9L0v60tjoP8koI6GcmyK155yAM1CwLNgew8qSpy4
+         HGXo/QLWRHVFFIHyYyc5Ndv/SnzreX7bDsv4uxqAqJDPeUeaZyfpnbDtHhh0LX5cY2p8
+         8ylw==
+X-Gm-Message-State: AOAM533keJOh5NG0ZCoVz5hJVHetqjgK/RLodBx3jzMWUzGfKt7oK/H/
+        I/McYp+wxXqjn0312gTgapbFewP9o8etr0+Iokl+57VAIhyn0Q==
+X-Google-Smtp-Source: ABdhPJwbKHmbnZDflMHBZCcp2YbZAAZvFdPcM4owWeuPIkoxodmwIZJ+Xpgi08ylB1RFXLrw63SQRxJzumbwJKMTxhs=
+X-Received: by 2002:a17:90b:1007:b0:1dc:9862:68af with SMTP id
+ gm7-20020a17090b100700b001dc986268afmr3261389pjb.205.1652243951499; Tue, 10
+ May 2022 21:39:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH v2 2/2] RDMA/rxe: Generate error completion for error
- requester state
-Content-Language: en-US
-To:     Li Zhijian <lizhijian@fujitsu.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20220511023030.229212-1-lizhijian@fujitsu.com>
- <20220511023030.229212-3-lizhijian@fujitsu.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <20220511023030.229212-3-lizhijian@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-10.8 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6a10:319:0:0:0:0 with HTTP; Tue, 10 May 2022 21:39:10
+ -0700 (PDT)
+From:   Private Mail <privatemail1961@gmail.com>
+Date:   Tue, 10 May 2022 21:39:10 -0700
+Message-ID: <CANjAOAiiVcSrSv31FjThCVmeppS54UVvGVj3SRSvMfxOB+T8DA@mail.gmail.com>
+Subject: Have you had this? It is for your Benefit
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.3 required=5.0 tests=ADVANCE_FEE_4_NEW_MONEY,
+        BAYES_50,DEAR_BENEFICIARY,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,
+        DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FREEMAIL_REPLY,
+        LOTS_OF_MONEY,MONEY_FRAUD_5,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_MONEY autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+Our Ref: BG/WA0151/2022
 
+Dear Beneficiary
 
-On 5/11/22 10:30 AM, Li Zhijian wrote:
-> SoftRoCE always returns success when user space is posting a new wqe where
-> it usually just enqueues a wqe.
-> 
-> Once the requester state becomes QP_STATE_ERROR, we should generate error
-> completion for all subsequent wqe. So the user is able to poll the
-> completion event to check if the former wqe is handled correctly.
-> 
-> Here we check QP_STATE_ERROR after req_next_wqe() so that the completion
-> can associate with its wqe.
-> 
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_req.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index 8bdd0b6b578f..ed6a486c4343 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -624,7 +624,7 @@ int rxe_requester(void *arg)
->   	rxe_get(qp);
->   
->   next_wqe:
-> -	if (unlikely(!qp->valid || qp->req.state == QP_STATE_ERROR))
-> +	if (unlikely(!qp->valid))
->   		goto exit;
->   
->   	if (unlikely(qp->req.state == QP_STATE_RESET)) {
-> @@ -646,6 +646,14 @@ int rxe_requester(void *arg)
->   	if (unlikely(!wqe))
->   		goto exit;
->   
-> +	if (qp->req.state == QP_STATE_ERROR) {
-> +		/*
-> +		 * Generate an error completion so that user space is able to
-> +		 * poll this completion.
-> +		 */
-> +		goto err;
-> +	}
-> +
+Subject: An Estate of US$15.8 Million
 
-Should this still use unlikely(...) ? Because the original judgement has
-a unlikely surrounded.
+Blount and Griffin Genealogical Investigators specializes in probate
+research to locate missing heirs and beneficiaries to estates in the
+United Kingdom and Europe.
 
-Cheng Xu
+We can also help you find wills, obtain copies of certificates, help
+you to administer an estate, as well as calculating how an estate,
+intestacy or trust should be distributed.
 
->   	if (wqe->mask & WR_LOCAL_OP_MASK) {
->   		ret = rxe_do_local_ops(qp, wqe);
->   		if (unlikely(ret))
+You may be entitled to a large pay out for an inheritance in Europe
+worth US$15.8 million. We have discovered an estate belonging to the
+late Depositor has remained unclaimed since he died in 2011 and we
+have strong reasons to believe you are the closest living relative to
+the deceased we can find.
+
+You may unknowingly be the heir of this person who died without
+leaving a will (intestate). We will conduct a probate research to
+prove your entitlement, and can submit a claim on your behalf all at
+no risk to yourselves.
+
+Our service fee of 10% will be paid to us after you have received the estate.
+
+The estate transfer process should take just a matter of days as we
+have the mechanism and expertise to get this done very quickly. This
+message may come to you as a shock, however we hope to work with you
+to transfer the estate to you as quickly as possible.
+
+Feel free to email our senior case worker Mr. Malcolm Casey on email:
+malcolmcasey68@yahoo.com for further discussions.
+
+With warm regards,
+
+Mr. Blount W. Gort, CEO.
+Blount and Griffin Associates Inc
