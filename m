@@ -2,70 +2,207 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 892D952632D
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 15:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A6952662E
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 17:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232492AbiEMNuE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 May 2022 09:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        id S241744AbiEMPdE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 May 2022 11:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382461AbiEMNs0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 09:48:26 -0400
-Received: from gentwo.de (gentwo.de [IPv6:2a02:c206:2048:5042::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F042EFD3C
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 06:48:22 -0700 (PDT)
-Received: by gentwo.de (Postfix, from userid 1001)
-        id C7AC5B0061B; Fri, 13 May 2022 15:48:19 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.de; s=default;
-        t=1652449699; bh=9bPKZ31zyrzkdNSM2sG9QfqIvg8NzDUFA0AgpOMGiiU=;
-        h=Date:From:To:cc:Subject:From;
-        b=Zyxta5BmDpjHGfV8n96YaOH0cNWnHnPuegLC8fHwvszYG6SVz+TJhEp/fa7FIugd/
-         ECLUXCMP8YqogUoXJl1A6KubZuU4ZSyayCOYj8jaMbIj5OlXDPFNm3cU8XaYA13v8W
-         1nzbxzgix7IefeLe50qXgvJs/H6tIVjYv/F01Kaql5yQATbrlcsJBsACKoF2a0TPa2
-         Fs5HoN4ZsHmCqsvZcIen/OIPGU/soaCLpU/tYBTwTIWNJ+c545ij8rhQ74y0890gsh
-         NftH8q3A/7ty6ktgwrJdawDMCJM6KaZx3bxoDqUKxn3yODiNkEydOFZOutRHxi0PeL
-         uK4pWacL/LJmg==
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id C59C7B00149;
-        Fri, 13 May 2022 15:48:19 +0200 (CEST)
-Date:   Fri, 13 May 2022 15:48:19 +0200 (CEST)
-From:   Christoph Lameter <cl@gentwo.de>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-cc:     linux-rdma@vger.kernel.org, zyjzyj2000@gmail.com, jgg@nvidia.com
-Subject: Redhat 9 removes RXE (SoftROCE) support
-Message-ID: <alpine.DEB.2.22.394.2205131542300.2577@gentwo.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        with ESMTP id S1378806AbiEMPdD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 11:33:03 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F5A2DC6
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:33:02 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id a23-20020a4ad5d7000000b0035ee70da7a9so2825044oot.1
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=zoWR5zpqSTxZNYVD7THWk2/WBfptOQ6odUdYwIgshDM=;
+        b=MYXkPM1XtKRlMBvzG0GAfJvQuV3xaxDPhaI4/lL4g3uR0m0angScQjfSazBzT6+9Y2
+         faGArjeJomydxUTAf2SBgftvCezaHbDG7urVTzfqyCGZG9I3csSORrJv67M28RoM0ppT
+         +T+EFGc77CCVcApx5jQyRLFlCxEBQfIjMm1rHZJ5GkknY6ZnetHb2dcvUwqzIhM9ojg7
+         29RLAnyZoAwg92piPsgy86LNFPxvZzGQX/4EJqeWlNtbP6lU8N7HYd3/9UrS3WaZZtbt
+         85fJQYkw6J87ale1txL2lcDjxjj+YybZDagOdZlpYrg+oHAoydVmzdoI0TYfats06EAT
+         4A3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=zoWR5zpqSTxZNYVD7THWk2/WBfptOQ6odUdYwIgshDM=;
+        b=D4ObVEGdGM7zopb19jal9P5W40GnhiySt4/YB5mPsySZWfMoFXy+B1wet9EyJNKI7B
+         /nk1AHRo13Oqz4RjCrC4MGqX+CHmNmi4ksraxcNmX4DpyozdQlEhmTmmoy9ZM6xsytCi
+         jLJdYIyNxG/GylFI1QdGPSfrBakbK1APcmRXK6/kxUejINZlZ4Ul2p3Gm0sGqMzFpyyl
+         OtLpLTLBEfIzV4kloRqSQM6J3wo7cQnGfDLxYlR5MJZqsfYWGMlSIJa/8ZKo59Q4nU7q
+         segTjEa2/LX025oylHfjGm+ONdzFNpVWyJk1RXOiEA0C/doprvSIdZuVqHC4EsY2Wokk
+         NCZA==
+X-Gm-Message-State: AOAM530bB2j+vSwnSV6BcdbVmVgs0R65YWzlh2Cs61qWIMrx0yhzJh3V
+        wAJHQj13f1/+RD7P11KWlGU=
+X-Google-Smtp-Source: ABdhPJwSqlEI8L/Heh66Lg9zgth0nEymTF5dV1tvS+mfVZyi1IMr1wVQa+rpnRwn/95EgAt2ll7aRA==
+X-Received: by 2002:a4a:314f:0:b0:35e:9802:1ce5 with SMTP id v15-20020a4a314f000000b0035e98021ce5mr2112607oog.60.1652455981461;
+        Fri, 13 May 2022 08:33:01 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:7f98:64fc:d1b4:c63a? (2603-8081-140c-1a00-7f98-64fc-d1b4-c63a.res6.spectrum.com. [2603:8081:140c:1a00:7f98:64fc:d1b4:c63a])
+        by smtp.gmail.com with ESMTPSA id w205-20020aca62d6000000b00325cf57766bsm1136766oib.1.2022.05.13.08.33.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 May 2022 08:33:01 -0700 (PDT)
+Message-ID: <d3ac03f3-f11f-59e1-5dec-d0670b214e72@gmail.com>
+Date:   Fri, 13 May 2022 10:33:00 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH for-rc] RDMA/rxe: Fix rnr retry behavior
+Content-Language: en-US
+To:     Tom Talpey <tom@talpey.com>, jgg@nvidia.com, zyjzyj2000@gmail.com,
+        linux-rdma@vger.kernel.org
+References: <20220512194901.76696-1-rpearsonhpe@gmail.com>
+ <ca817696-530e-f94f-dcfa-68f1980d31eb@talpey.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <ca817696-530e-f94f-dcfa-68f1980d31eb@talpey.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I was surprised to find that RHEL 9 removes ROCE support after it was a
-"tech preview" in Redhat 8. Its a good feature with many use cases here
-and there for development, testing and production issues.
+On 5/13/22 08:04, Tom Talpey wrote:
+> 
+> On 5/12/2022 3:49 PM, Bob Pearson wrote:
+>> Currently the completer tasklet when it sets the retransmit timer or the
+>> nak timer sets the same flag (qp->req.need_retry) so that if either
+>> timer fires it will attempt to perform a retry flow on the send queue.
+>> This has the effect of responding to an RNR NAK at the first retransmit
+>> timer event which does not allow for the requested rnr timeout.
+>>
+>> This patch adds a new flag (qp->req.need_rnr_timeout) which, if set,
+>> prevents a retry flow until the rnr nak timer fires.
+> 
+> The new name is a little confusing, nobody "needs" an RNR timeout. :)
+> But it seems really odd (and maybe fragile) to have two flags. To me,
+> setting need_retry to "-1", or anything but 0 or 1, would be better.
+> After all, if the RNR NAK timer goes off, the code will generally retry, right? So it seems more logical to merge these.
+I am trying to cleanup pyverbs runs which sometimes fail with rnr retry errors.
+In this specific case the rnr timeout value is set a lot longer than the retry timeout.
+As discussed earlier the retry timer is never cleared so it continuously fires at about
+40 times a second. The failing test is intentionally setting up a situation where the
+receiver is not ready and then it is. The retry timeout usually acts as though it
+were the rnr retry and 'fixes' the problem and the test passes. Since the retry timer
+is just randomly firing it sometimes happens too soon and the receiver isn't ready yet
+which leads to the failed test.
 
-Any idea why Redhat would not support RXE? Could we get a campaign going
-to convince Redhat to include RXE?
+Logic says that if you receive an rnr nak the target is waiting for that specific send
+packet to be resent and no other so we shouldn't be responding to a spurious retry
+timeout.
 
+You are correct that the retry sequence can be shared but it shouldn't start until the
+rnr timer has fired once an rnr nak is seen. This patch does exactly that by blocking
+the retry sequence until the rnr timer fires.
 
-From:
-https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9-beta/pdf/considerations_in_adopting_rhel_9/red_hat_enterprise_linux-9-beta-considerations_in_adopting_rhel_9-en-us.pdf
+If you don't like 'need_rnr_timeout' perhaps you would accept 'wait_rnr_timeout' instead.
+Overloading need_retry is less clear IMHO. You don't need the retry until the rnr timer
+has fired then you do. If you really want to just use one variable we are basically
+implementing a state machine with 3 states and it should get an enum to define the states.
 
+Once this issue is resolved I will fix the spurious retries to make them a lot less likely.
+> 
+>> This patch fixes rnr retry errors which can be observed by running the
+>> pyverbs test suite 50-100X. With this patch applied they do not occur.
+>>
+>> Link: https://lore.kernel.org/linux-rdma/a8287823-1408-4273-bc22-99a0678db640@gmail.com/
+>> Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_comp.c  | 4 +---
+>>   drivers/infiniband/sw/rxe/rxe_qp.c    | 1 +
+>>   drivers/infiniband/sw/rxe/rxe_req.c   | 6 ++++--
+>>   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
+>>   4 files changed, 7 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+>> index 138b3e7d3a5f..bc668cb211b1 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+>> @@ -733,9 +733,7 @@ int rxe_completer(void *arg)
+>>                   if (qp->comp.rnr_retry != 7)
+>>                       qp->comp.rnr_retry--;
+>>   -                qp->req.need_retry = 1;
+>> -                pr_debug("qp#%d set rnr nak timer\n",
+>> -                     qp_num(qp));
+>> +                qp->req.need_rnr_timeout = 1;
+> 
+> Suggest req.need_rnr_retry = -1  (and keep the useful pr_debug!)
+> 
+>>                   mod_timer(&qp->rnr_nak_timer,
+>>                         jiffies + rnrnak_jiffies(aeth_syn(pkt)
+>>                           & ~AETH_TYPE_MASK));
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> index 62acf890af6c..1c962468714e 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> @@ -513,6 +513,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+>>       atomic_set(&qp->ssn, 0);
+>>       qp->req.opcode = -1;
+>>       qp->req.need_retry = 0;
+>> +    qp->req.need_rnr_timeout = 0;
+>>       qp->req.noack_pkts = 0;
+>>       qp->resp.msn = 0;
+>>       qp->resp.opcode = -1;
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+>> index ae5fbc79dd5c..770ae4279f73 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+>> @@ -103,7 +103,8 @@ void rnr_nak_timer(struct timer_list *t)
+>>   {
+>>       struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
+>>   -    pr_debug("qp#%d rnr nak timer fired\n", qp_num(qp));
+>> +    qp->req.need_retry = 1;
+>> +    qp->req.need_rnr_timeout = 0;
+> 
+> Simply setting need_retry = 1 would suffice, if suggestion accepted.
+> 
+>>       rxe_run_task(&qp->req.task, 1);
+>>   }
+>>   @@ -624,10 +625,11 @@ int rxe_requester(void *arg)
+>>           qp->req.need_rd_atomic = 0;
+>>           qp->req.wait_psn = 0;
+>>           qp->req.need_retry = 0;
+>> +        qp->req.need_rnr_timeout = 0;
+>>           goto exit;
+>>       }
+>>   -    if (unlikely(qp->req.need_retry)) {
+>> +    if (unlikely(qp->req.need_retry && !qp->req.need_rnr_timeout)) {
+> 
+> This would become (unlikely (qp->req.rnr_retry > 0)) ...
+> 
+>>           req_retry(qp);
+>>           qp->req.need_retry = 0;
+>>       }
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> index e7eff1ca75e9..ab3186478c3f 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+>> @@ -123,6 +123,7 @@ struct rxe_req_info {
+>>       int            need_rd_atomic;
+>>       int            wait_psn;
+>>       int            need_retry;
+>> +    int            need_rnr_timeout;
+> 
+> Drop
+> 
+>>       int            noack_pkts;
+>>       struct rxe_task        task;
+>>   };
+>>
+>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
+> 
+> 
+> Tom.
 
-11.2. REMOVED HARDWARE SUPPORT
-
-This section lists devices (drivers, adapters) that have been removed from RHEL 9.
-PCI device IDs are in the format of vendor:device:subvendor:subdevice. If no device ID is listed, all
-devices associated with the corresponding driver are unmaintained. To  check the PCI IDs of the
-hardware on your system, run the lspci -nn command.
-
-Device ID Driver Device name
-Soft-RoCE (rdma_rxe)
-HNS-RoCE HNS GE/10GE/25GE/50GE/100GE RDMA Network
-Contro
