@@ -2,190 +2,201 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 984A1526664
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 17:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED233526667
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 17:44:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382195AbiEMPnA (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 May 2022 11:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33196 "EHLO
+        id S1382202AbiEMPom (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 May 2022 11:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382207AbiEMPm6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 11:42:58 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19A8B326C0
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:42:52 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id k25-20020a056830169900b00605f215e55dso5200940otr.13
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:42:52 -0700 (PDT)
+        with ESMTP id S1382164AbiEMPol (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 11:44:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651723A705
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:44:38 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id cq17-20020a17090af99100b001dc0386cd8fso8108381pjb.5
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 08:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=PkJPsRBjGRiYk3mE4GV/YrpFid4hgGjc8pJq/HAkkik=;
-        b=OD//0aeuZLgbkLNr13hwSR+gUYoZyqND5uIggu596bpJFM2b2foNkypyn8N8S+2+kM
-         rTaEnSK0G+MH7V3wyFk0UMMtoOXHnpasQ1xCEcQPgHOFZtv2j1XWZno+T7BRSmRNK5KH
-         VfwaLp3avRHx/pRRQMfVOFn1ZY3LiHp9z/CeBVEknpq8s7Sg0zqQQO1uqJSGVskKcbSP
-         MafwpzumPt4H+wbll0eXQGR8W6B/9mYGOBjDjdgu8RtwgVMV8Cpo8Umf8vb3O9e63Mdx
-         Md3Y18Hg8iF5y+UqRi2y2/8jQ/RP8QOkFImABGWPe2tB++kSEey5ZBAOKT5CPUvTEmdI
-         wPhg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ptf+f5eGDE5JGEu9b++jcke6m+bu7vV+b5hUvmlYQQo=;
+        b=SjhK1c9Qotr1qDOqwKlBj3Rw1mlIdcXMiMnONLsDWXIlWQego7JtnDd+2u8lNhcb5o
+         VntS/+cGhwP5NiXqFa0xo4Eurcd+QW1c6ntV0GvlsEyq5axRcQY1ctFnycyCWVGns4We
+         RoLfLtxqMSNKYzeck8DbrFFmqTXggtzGcj49k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=PkJPsRBjGRiYk3mE4GV/YrpFid4hgGjc8pJq/HAkkik=;
-        b=j/lMJRvmkbbHeQOg890h/H+y1x69vwp+XFkpx7epBb9Nb+yQorHB3aV/PUt4BZuc4h
-         G099IIjfV/8lyc8vD5cIMvWHKTjMinVI67/bUIX6BPCrHZ5tEUpNLF/SAmeYx7fiUlws
-         tkxtfWXR7BeHhsZVIQeoHWmgdOZHKIgT/DiY3ShyGTKy6e8+Q5eYdvHYHA+auLrTN33L
-         SJNyR7ajuZVpG8wr6Du6Uf7/ykFuJv5P6WmxkS/8A0/9Fww7Wxk4OrURAK108jMlqOlQ
-         RRuIIMgSod4iYKhQFd5M20yBfiaJ4qLS0s1vPXic10qCv9YGAwYGiOuAeAhiks71BpGb
-         FNTg==
-X-Gm-Message-State: AOAM5337u/Et4purwkkVCYREuw8plVUCc3dtnqlW1JCTVkyxiDO1P12+
-        shGmp3BCLFOoNn4/ELAR4LijaGtI+/E=
-X-Google-Smtp-Source: ABdhPJwplWPsezRllnL76nRSXPhlD9U5dlTUT1gz0TGH7ORLXzU/K9ij6Ov125UK67zcqrCUo7EM8g==
-X-Received: by 2002:a9d:c67:0:b0:605:da22:8181 with SMTP id 94-20020a9d0c67000000b00605da228181mr2060935otr.149.1652456571357;
-        Fri, 13 May 2022 08:42:51 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:7f98:64fc:d1b4:c63a? (2603-8081-140c-1a00-7f98-64fc-d1b4-c63a.res6.spectrum.com. [2603:8081:140c:1a00:7f98:64fc:d1b4:c63a])
-        by smtp.gmail.com with ESMTPSA id s124-20020aca5e82000000b00325cda1ffb8sm1089502oib.55.2022.05.13.08.42.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 May 2022 08:42:51 -0700 (PDT)
-Message-ID: <29797ad1-01dd-eabd-fde0-511ba79ce4cc@gmail.com>
-Date:   Fri, 13 May 2022 10:42:50 -0500
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ptf+f5eGDE5JGEu9b++jcke6m+bu7vV+b5hUvmlYQQo=;
+        b=qeiQqWivh+BDgn+1nezqNSToDbj89rMVRa5KK6Fhsven4RdLbCqA7LoF9LlZoNp4lS
+         sjuoDflDS4/NMdXoUV0LVgHJmDYsPnn7kcVcfl5XLrXMC2Dl1t9LgQ1DoF6BErC9dmBJ
+         qgterwbeTAHPov4mhmFY3ACW0LT8NVxPNYbWD9PakKEMlAlxthfERIfUyME1kRwhGYnV
+         /CVSNMocAGTFUhjA2JEIa75XBR/JqUFG/0ZLzZxl6Y/pvMsV5yUb+I1Lm11++FQwCKxM
+         YHhiwi/KZpdlBQ085u9ZaVQV7w49O0GDqZ980uDQgg1EHGRA0tIbVDE4NmzvsEVrWNRr
+         SVBA==
+X-Gm-Message-State: AOAM530ZFeZXoYe4ZuKiK1/J5xAbSlqivzsourJkuNBBvPKc753zhUN0
+        gFPTIN3vDeCY8eKcBCrXVqdDdA==
+X-Google-Smtp-Source: ABdhPJxasBICZO798rz+17+y+t9nZitCCqENVQI5RwTabPKWbsVJ7C2OmZDJ+yTA2ILgpXFaCw37jw==
+X-Received: by 2002:a17:902:ecc8:b0:15e:9e46:cb7e with SMTP id a8-20020a170902ecc800b0015e9e46cb7emr5389423plh.111.1652456677896;
+        Fri, 13 May 2022 08:44:37 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q6-20020a170902a3c600b0015e8d4eb1c9sm2059662plb.19.2022.05.13.08.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 May 2022 08:44:37 -0700 (PDT)
+Date:   Fri, 13 May 2022 08:44:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-afs@lists.infradead.org, Alexei Starovoitov <ast@kernel.org>,
+        alsa-devel@alsa-project.org, Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Andy Lavr <andy.lavr@gmail.com>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Baowen Zheng <baowen.zheng@corigine.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Bradley Grove <linuxdrivers@attotech.com>,
+        brcm80211-dev-list.pdl@broadcom.com,
+        Christian Brauner <brauner@kernel.org>,
+        Christian =?iso-8859-1?Q?G=F6ttsche?= <cgzones@googlemail.com>,
+        Christian Lamparter <chunkeey@googlemail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Daniel Axtens <dja@axtens.net>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Gow <davidgow@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        devicetree@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eli Cohen <elic@nvidia.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gregory Greenman <gregory.greenman@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Hulk Robot <hulkci@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        John Keeping <john@metanate.com>,
+        Juergen Gross <jgross@suse.com>, Kalle Valo <kvalo@kernel.org>,
+        Keith Packard <keithp@keithp.com>, keyrings@vger.kernel.org,
+        kunit-dev@googlegroups.com,
+        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux1394-devel@lists.sourceforge.net,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-xtensa@linux-xtensa.org, llvm@lists.linux.dev,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Louis Peens <louis.peens@corigine.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Mark Brown <broonie@kernel.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Nathan Chancellor <nathan@kernel.org>, netdev@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Rich Felker <dalias@aerifal.cx>,
+        Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, selinux@vger.kernel.org,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        SHA-cyfmac-dev-list@infineon.com,
+        Simon Horman <simon.horman@corigine.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Stefan Richter <stefanr@s5r6.in-berlin.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Tadeusz Struk <tadeusz.struk@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>, Tom Rix <trix@redhat.com>,
+        Udipto Goswami <quic_ugoswami@quicinc.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        wcn36xx@lists.infradead.org, Wei Liu <wei.liu@kernel.org>,
+        xen-devel@lists.xenproject.org,
+        Xiu Jianfeng <xiujianfeng@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>
+Subject: Re: [PATCH 19/32] afs: Use mem_to_flex_dup() with struct afs_acl
+Message-ID: <202205130841.686F21B64@keescook>
+References: <20220504014440.3697851-20-keescook@chromium.org>
+ <20220504014440.3697851-1-keescook@chromium.org>
+ <898803.1652391665@warthog.procyon.org.uk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
-Subject: Re: [PATCH for-rc] RDMA/rxe: Fix rnr retry behavior
-Content-Language: en-US
-To:     Yanjun Zhu <yanjun.zhu@linux.dev>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-References: <20220512194901.76696-1-rpearsonhpe@gmail.com>
- <e587f531-0650-1548-1fe0-04d0152a5082@linux.dev>
- <36f6e476-9762-6d39-e167-abb8dcc9f2bb@linux.dev>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <36f6e476-9762-6d39-e167-abb8dcc9f2bb@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <898803.1652391665@warthog.procyon.org.uk>
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/13/22 08:38, Yanjun Zhu wrote:
+On Thu, May 12, 2022 at 10:41:05PM +0100, David Howells wrote:
 > 
+> Kees Cook <keescook@chromium.org> wrote:
 > 
-> 在 2022/5/13 10:40, Yanjun Zhu 写道:
->> 在 2022/5/13 3:49, Bob Pearson 写道:
->>> Currently the completer tasklet when it sets the retransmit timer or the
->>> nak timer sets the same flag (qp->req.need_retry) so that if either
->>> timer fires it will attempt to perform a retry flow on the send queue.
->>> This has the effect of responding to an RNR NAK at the first retransmit
->>> timer event which does not allow for the requested rnr timeout.
->>>
->>> This patch adds a new flag (qp->req.need_rnr_timeout) which, if set,
->>> prevents a retry flow until the rnr nak timer fires.
->>>
->>> This patch fixes rnr retry errors which can be observed by running the
->>> pyverbs test suite 50-100X. With this patch applied they do not occur.
->>
->> Do you mean that running run_tests.py for 50-100times can reproduce this bug? I want to reproduce this problem.
+> >  struct afs_acl {
+> > -	u32	size;
+> > -	u8	data[];
+> > +	DECLARE_FLEX_ARRAY_ELEMENTS_COUNT(u32, size);
+> > +	DECLARE_FLEX_ARRAY_ELEMENTS(u8, data);
+> >  };
 > 
-> Running run_tests.py for 50-100times, I can not reproduce this problem
+> Oof...  That's really quite unpleasant syntax.  Is it not possible to have
+> mem_to_flex_dup() and friends work without that?  You are telling them the
+> fields they have to fill in.
 
-I see them consistently. It is just luck of timing. If you add print statements
-to show when the retry timer fires and when the rnr timer fires you should see that
-all the retry sequences are a result of the retry timer and not the rnr timer.
-This means that you are not allowing the requested rnr delay for the responder.
-In my traces most of the time the retry timer fires and the test ends and the qp
-is torn down deleting the rnr timer before it ever times out. Occasionally the
-retry timer fires too early and the test fails. This is still a bug and it should
-be fixed.
+Other threads discussed this too. I'm hoping to have something more
+flexible (pardon the pun) in v2.
 
-Bob
+> [...]
+> or:
 > 
-> Zhu Yanjun
+> 	ret = mem_to_flex_dup(&acl, buffer, size, GFP_KERNEL);
+> 	if (ret < 0)
 > 
->>
->> Thanks a lot.
->> Zhu Yanjun
->>
->>>
->>> Link: https://lore.kernel.org/linux-rdma/a8287823-1408-4273-bc22-99a0678db640@gmail.com/
->>> Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
->>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
->>> ---
->>>   drivers/infiniband/sw/rxe/rxe_comp.c  | 4 +---
->>>   drivers/infiniband/sw/rxe/rxe_qp.c    | 1 +
->>>   drivers/infiniband/sw/rxe/rxe_req.c   | 6 ++++--
->>>   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
->>>   4 files changed, 7 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
->>> index 138b3e7d3a5f..bc668cb211b1 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
->>> @@ -733,9 +733,7 @@ int rxe_completer(void *arg)
->>>                   if (qp->comp.rnr_retry != 7)
->>>                       qp->comp.rnr_retry--;
->>> -                qp->req.need_retry = 1;
->>> -                pr_debug("qp#%d set rnr nak timer\n",
->>> -                     qp_num(qp));
->>> +                qp->req.need_rnr_timeout = 1;
->>>                   mod_timer(&qp->rnr_nak_timer,
->>>                         jiffies + rnrnak_jiffies(aeth_syn(pkt)
->>>                           & ~AETH_TYPE_MASK));
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
->>> index 62acf890af6c..1c962468714e 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
->>> @@ -513,6 +513,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
->>>       atomic_set(&qp->ssn, 0);
->>>       qp->req.opcode = -1;
->>>       qp->req.need_retry = 0;
->>> +    qp->req.need_rnr_timeout = 0;
->>>       qp->req.noack_pkts = 0;
->>>       qp->resp.msn = 0;
->>>       qp->resp.opcode = -1;
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
->>> index ae5fbc79dd5c..770ae4279f73 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
->>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
->>> @@ -103,7 +103,8 @@ void rnr_nak_timer(struct timer_list *t)
->>>   {
->>>       struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
->>> -    pr_debug("qp#%d rnr nak timer fired\n", qp_num(qp));
->>> +    qp->req.need_retry = 1;
->>> +    qp->req.need_rnr_timeout = 0;
->>>       rxe_run_task(&qp->req.task, 1);
->>>   }
->>> @@ -624,10 +625,11 @@ int rxe_requester(void *arg)
->>>           qp->req.need_rd_atomic = 0;
->>>           qp->req.wait_psn = 0;
->>>           qp->req.need_retry = 0;
->>> +        qp->req.need_rnr_timeout = 0;
->>>           goto exit;
->>>       }
->>> -    if (unlikely(qp->req.need_retry)) {
->>> +    if (unlikely(qp->req.need_retry && !qp->req.need_rnr_timeout)) {
->>>           req_retry(qp);
->>>           qp->req.need_retry = 0;
->>>       }
->>> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
->>> index e7eff1ca75e9..ab3186478c3f 100644
->>> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
->>> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
->>> @@ -123,6 +123,7 @@ struct rxe_req_info {
->>>       int            need_rd_atomic;
->>>       int            wait_psn;
->>>       int            need_retry;
->>> +    int            need_rnr_timeout;
->>>       int            noack_pkts;
->>>       struct rxe_task        task;
->>>   };
->>>
->>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
->>
+> (or use != 0 rather than < 0)
 
+Sure, I can make the tests more explicit. The kerndoc, etc all shows it's
+using < 0 for errors.
+
+-- 
+Kees Cook
