@@ -2,115 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42A7526290
-	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 15:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE80526314
+	for <lists+linux-rdma@lfdr.de>; Fri, 13 May 2022 15:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358511AbiEMNE6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 May 2022 09:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S229977AbiEMNjG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 May 2022 09:39:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240402AbiEMNE4 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 09:04:56 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2073.outbound.protection.outlook.com [40.107.93.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7BB46644
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 06:04:55 -0700 (PDT)
+        with ESMTP id S1381094AbiEMNb3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 09:31:29 -0400
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam08on2076.outbound.protection.outlook.com [40.107.100.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271E15DA71
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 06:31:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZWR+qhta3g3dfb27+gP278K0F8uHPIxYH79fy1JInGbDL+4Mc+YT8UG6RZKYiib7gln2UA5YAsT3Wyh0SH9ogxoI8eJY7hrHdGaTPeNPCs21bluITFQtaC/n+APTecdWs39wlK6KN+N22+em1x6+BO9JudxwQC7tOVKdyZL+QFq3PBRpeaJmRCenN4rfMBm9/tjpyVeqttYzNwvqBkkFGMOb1nkaX64fSwPFQ+Bo7q4gicLVaw41Da94Neo8QxSBnwmxmsPrc2Hw7U7RR0xHJjfQWha3Yadu57SIelp4/5Jnm1xJuCJGrdBPDqzDqPb5muPXJ56uDsKN3IitmxstDQ==
+ b=YyW3M9G8MWtaMqP6lTFejLx311T4P967yZeldWchAmiC40ozZNUuztL6oWH5xU82NtipXSSjQF0wteOs//ZQd1oNjlV85jMxraxwKeRbGKmtbBtIjHVQf/nKzeWV6BBhBfS1sJwNdhqLwbLt5mNtDoiU45nLmcCXuyf+GNufw9ES1PZA34YAtXl/A+zC4Pc5dR01cfRhtfkwpP6+jGyWMicvQAjG285nlsFAVZrWfoUGjcpMGb1tun4BNicHypGhj0835wMSU6wjt4JzJWliz9Xz4upiCSWSrLQxi57ELz254OqJs/S2fmaJkYvAHr3rNoEqpQ/ydQl/et3ESndQDw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XVNZZcHdsgvlIyHgbJVoS2HWaI4YiNjUvSFitoBA0Gw=;
- b=kbbWcZ7tjd9oXXPPYifWeGPkFor/k2CV4mHSML92elmEVVEwGFhSoz4LSykrmCkWI20lp3bAJ92+RWO4dQjgynnQds7xozMiPFhWenA/s9b1Y7ot7X6mR0wBatcRLwj6G5Ki+daNNBkuybqV/2uA2KrwMfQyocfFItL+BAXRBR5n7eT/My5FKp39QMBQuLteJqXBRhAjAuE9a0coZD8cZX/9DvXjEJA0h+1RW3pI2Rf5YYT3TwY/tXb4jlCt2eT404S15eARREuc4tjlw0fy+/Zf8pkJdiLNY7sSJ4CrcgK0wSQOcbyGgJ7v39UFksZEzG+l1Xw9l6yePBhWEnE35g==
+ bh=yk3lsVWV9R3TwAouD+e+LAql870cEzhJ4N//ALukgE8=;
+ b=Bna1MD5A7bt1AD0Ppw7LYSjXvF4AGTfM3+71w6N2zCqUbOjdgkVq6o3z9o5lQm0CL/8Kx0v+W7wxgT8G072bcwmdkSsdCxijmS+1cBTfSD4B5jS+UbR7khgmQTBjQRQskt7esxRMAdAtB0AKCtnZvXyaJAJDiCuGkLjJbrUkt2utBiGIgDBXhBR7g3ov2QSMXsDUvQa85fwHZR/OKcZwsJI9kh0ZfyfZtwX1J+0HkAoysRylbPwyQq7UO0iSLeNH1FHrW0SyaUd8bP3y8HfoEBDquXS1p7+FYVh33v9T4NFjcIUbhaBP9yztPu8qYCThfv1Z7YCzbKiyJgjaAgS8Cw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
  dkim=pass header.d=talpey.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=talpey.com;
 Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
- BL0PR01MB5252.prod.exchangelabs.com (2603:10b6:208:7d::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5227.22; Fri, 13 May 2022 13:04:51 +0000
+ DM6PR01MB5881.prod.exchangelabs.com (2603:10b6:5:203::15) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5227.23; Fri, 13 May 2022 13:31:25 +0000
 Received: from SN6PR01MB4445.prod.exchangelabs.com
  ([fe80::d41:91cf:552e:b16b]) by SN6PR01MB4445.prod.exchangelabs.com
  ([fe80::d41:91cf:552e:b16b%7]) with mapi id 15.20.5227.023; Fri, 13 May 2022
- 13:04:51 +0000
-Message-ID: <ca817696-530e-f94f-dcfa-68f1980d31eb@talpey.com>
-Date:   Fri, 13 May 2022 09:04:47 -0400
+ 13:31:25 +0000
+Message-ID: <3c154d9a-bb9e-b237-3a4f-a4d5b2137bbf@talpey.com>
+Date:   Fri, 13 May 2022 09:31:23 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
  Thunderbird/91.9.0
-Subject: Re: [PATCH for-rc] RDMA/rxe: Fix rnr retry behavior
+Subject: Re: [RFC] Adding private data and private data len as argument to
+ rdma_disconnect()
 Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-References: <20220512194901.76696-1-rpearsonhpe@gmail.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Anand Ashok Khoje <anand.a.khoje@oracle.com>,
+        Linux RDMA <linux-rdma@vger.kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Rama Nichanamatlu <rama.nichanamatlu@oracle.com>,
+        Manjunath Patil <manjunath.b.patil@oracle.com>
+References: <057cdabf-997b-6f4a-6877-0be89254166b@oracle.com>
+ <22a2ee27-fe80-fc64-6838-0dd272288c46@oracle.com>
+ <BYAPR15MB26310745FFF0D04D6E73822199CA9@BYAPR15MB2631.namprd15.prod.outlook.com>
+ <20220513124601.GD63055@ziepe.ca>
 From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <20220512194901.76696-1-rpearsonhpe@gmail.com>
+In-Reply-To: <20220513124601.GD63055@ziepe.ca>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0189.namprd13.prod.outlook.com
- (2603:10b6:208:2be::14) To SN6PR01MB4445.prod.exchangelabs.com
+X-ClientProxiedBy: MN2PR11CA0023.namprd11.prod.outlook.com
+ (2603:10b6:208:23b::28) To SN6PR01MB4445.prod.exchangelabs.com
  (2603:10b6:805:e2::33)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1f3dcd55-f7d1-4b33-539b-08da34e12a4e
-X-MS-TrafficTypeDiagnostic: BL0PR01MB5252:EE_
-X-Microsoft-Antispam-PRVS: <BL0PR01MB52525D801EEB27BE9C662F67D6CA9@BL0PR01MB5252.prod.exchangelabs.com>
+X-MS-Office365-Filtering-Correlation-Id: 4301ed7f-7b02-45dc-fe5b-08da34e4e0eb
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5881:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR01MB5881C079BE38AA9315CE8DD9D6CA9@DM6PR01MB5881.prod.exchangelabs.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Mvzgui0RbIx2NsVkstXPHHuvsfNNQzUSJk8qWOl69CbR3BlDSuv7bzkUEPQBd86qj69HZwNEM5X0iS7+a2UNL6JSEc8SXgw9EdLkh3ZN3MSu4eJk2XZN/TVYEA46WEYVy+miYajnkN1QnEnJDcjmxk7r3jtI882Gen1vnQmBMVMTqsIaVGdHye+chyfob2hjHrdtbYpXbXLR3Medn/kbb7GrsBvod/i6OQGjMOPAsC0uYZ6IUXLsBMAaiHdmW/YQBmfoKHF01HNMbXKDkQt18lQMhNjkxuxKc86ebds01ysspAzX7ZzQMzxm/y7vOLqIcI9li07AfsmiT15jZrygiYEfVILdoNsEyGMuc65vjuKFCy4H/OrnjDhfakSUPNS+8NKjD5ADQwCxbJRgQAcJUeha6hz+XcmPQikg40kAOn5OBJmrkwsV63/CDtUxtav5jkril7T6ezQqCvih2d4AxRab0u8Q9ADrmWyg2uFrreaKFHviE9TSIFhm0aukAcgb3pjLtu82tpIJSuIzfVhK0C9pah1rlEQYHEnIsjYsDeMIHfSjVTmB/i+o0G2NqOCV9eOhGNjI1iVQc5x2X30Uw9B/u/ngKdrbF0Fk6HImCXmkKnQ19CVlRE+pp6eHv089hN9QvZBD6UI1fqIDHxF1nB/8YX0Hxt4LBezUilstQ/FudDYkEpg30YmgLEsNOvlN1+uKmbbRVf2qIa0PWg/iSvOxVSDbC5SoR72Z5Ggv+h6Sxj2W780JMVI9KIJ3+MJ1XGKzT3FlzuTeDc2aNNw/ODV1XjUxK3YaKQj8tpnYkmQR4QLpjJcCWBgZthZ24Baq
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(39830400003)(396003)(346002)(376002)(366004)(136003)(66556008)(66946007)(31686004)(186003)(66476007)(53546011)(8676002)(26005)(36756003)(31696002)(86362001)(966005)(8936002)(6486002)(508600001)(38350700002)(316002)(5660300002)(38100700002)(6506007)(45080400002)(52116002)(2906002)(2616005)(6512007)(6666004)(83380400001)(43740500002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: wOyCmMjjtOtVoRbDL6IAqRy4aYzNOZ8vfAliVouyz5l3YjfMyKDVFCuNP5dQ5oM4c55+2q8+F6ZURQEuv7oI6RJpMkFw7xvx4CKw7J1RAIl13jt5i1FSkRV7ZDdJZ0A9fPoIa4ZVQs/gx38yxL2ghS3tl6uet8ghL7h1c5ITzyIp3e0ldEKqH1TMPIamIX0r150abyKTytdSZA1rSBpZ5uycq8c0J/raLf4Dt5Ru7LvfBTNr7HQjmix7ksAMe97+4oMpD7BzqMBvjSB6u3kQkdjp4ac5gnlJszsiDzlhpZf3QqKgo/f3tx6FEaQpU3V6FlH3QbaMBsWRlS/ApIHHIxu36GRGxGfJNYcLz49bSDFQxVRNEPyxoW+KsxlYSWsa+zcALjiDAzzOFlgUtaSuEjIO/1uKShvOo4nptK4IzKjgXTD2QIAwoacpKSuIrV3taDTxKlfED6Md0FDWzyS+inrwObPvzdAn5Q0vRpqYBU452ts8c1ZLnZeNe12HojJtaZpAgwW1iXt3+VouULpPpFEVp6O8TgntqPJW1nRAXjBlq0xAS0o6Y024q1/E4UOAxGItoEoF6EnqrhQ1XRaam2i0mBYIqEk3TB9CI+OL/RW3+wfO7snsdGIC50NFLmhCEYl9kiccdxwr2SqHht7NaRsKlLOfg9YfK1VHoImouR6XB5UwjgX/WxapOLJxOmEZX15Rzc0gvgYYVzFsZFP7bMly77FTJ9rMPiEb2AdBauPlMIyAcbZ40VvZWZw+FrNVklZSrNQE/ze7T57ySw8H/GqV4IiaL8w5kGB6QCxnorbYnhyADtcGO6r+MYLT49aE
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(346002)(366004)(136003)(376002)(39830400003)(396003)(53546011)(38350700002)(86362001)(83380400001)(6512007)(26005)(31696002)(186003)(2616005)(8936002)(31686004)(66556008)(316002)(66476007)(8676002)(66946007)(36756003)(4326008)(38100700002)(5660300002)(508600001)(2906002)(54906003)(110136005)(6506007)(6486002)(966005)(52116002)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dkFiU3JvTVJLc1JDMXF0WHcxcG5uL1MrMXpMbldBSlpBenV2NHhSRFQ3TnJp?=
- =?utf-8?B?cys3NGRpbDRJRE5oTytjdnN3TUVmWGhoTWoyc3A3VFJVSXB4NkNLN21JVVVn?=
- =?utf-8?B?eFFQRWxZKysrcmZ0YVNrVE9EamhQYzNaSVFnQUNNQlFYWU1FOEZPWWMvMUlF?=
- =?utf-8?B?bE9YVEIvN1dGd0w3d1RlMTV4ZHgrSXN3TXdMd2VTN1BhVDVSWWxtSmdZc1dk?=
- =?utf-8?B?Z01qWjZISWdTM1cwMFE5eWlicXZBMEUxY1BOOUFVU3p6cEZXSkhWYUdla2FP?=
- =?utf-8?B?dnoraDR0K1RyQS9xWEpPYWh2SFpMQlgwQU93NkNDNmpPZDZaSlc3cFVBRW50?=
- =?utf-8?B?YWhIcU0xSzZ6MElxamo0YlJSeUJFNzFJRnRWVkZLdWJjVnJERUFiMCtIZXlj?=
- =?utf-8?B?aWlBZks0YVpDdVJvT1lnQVFITjBSVHp0TDZ3OFF2dzdtRE5wLy9EVmNQa0pa?=
- =?utf-8?B?YXNNcmU5N0FnTUpKWlBaVm1MY3loS3g4VjlLQUVpekV5TVptdUprYStKSVdY?=
- =?utf-8?B?NURad3g3Q0JKVU5PMnZrY29mV2hyVTYvWkhacExVLzhTaTY2MnIvbWJSZFpG?=
- =?utf-8?B?OHVuVlgvTWpGZ056NDVBNUcyRGc2K2haWVpST3NBeElIWnZnZnVKNSsybFRu?=
- =?utf-8?B?TDU5U25uSkhBaWFiU0phdDRCTDZHM1J3TCtSeEpXUTB4TTVMaFo4VmVJTjhZ?=
- =?utf-8?B?T2xwcnJjVFE5clZuUnNxVjRtS1c5YTNaT1ZjM0Y4dHBxS2EzR1lleDNLeUFy?=
- =?utf-8?B?eTJwTkl5UkxBdXNkdUZmTkYyK3MxV3FabTFTRjB1TEVweTZCZkZhdHNReWt1?=
- =?utf-8?B?aDF5YXRSZEx1U0dZeVVZa3lnU01yYzF4KzBaVXYvdjdLalUrQUpZeDBCTlgz?=
- =?utf-8?B?R1dnTzYvMUJYUHg5QU9MT2ordndSSUhQMVhKamRXOGFWaU5QNkRXbFNSb1Ny?=
- =?utf-8?B?eFZCcGhadldkQXBTQ0IzSFIyWWRIL2tDakFYN3ZPZDZsVEVjNnphazk5VWlO?=
- =?utf-8?B?UTdSMzNTU2VPWktCTTNhYVkxL1RaNlhxbll5WU1qSGxySWt5VVZJcHBBYi9M?=
- =?utf-8?B?ckh3RzM3a0Q5dCtnV3EwMi8zYWFqd0VPV21oMnZsRGVSUDJtWGIwNDFBVXBv?=
- =?utf-8?B?L2VUbFEyODVqMUc2MU5SZmRoODJqQ0ZvaWpXS3BtaXBySWRHSFFlZXVwSTZk?=
- =?utf-8?B?aldIbm9laXNFSlAvak9veGRBS2tLMDZHdzNBdlFtaEFZWDBpSS9jMHB1djRo?=
- =?utf-8?B?Q0FwN3hLVG9DZG5xMjVXNzhmYk9LeVhkQjFWNVVIMlBHR1VoeTdIT3BNcm1l?=
- =?utf-8?B?WVoxQXROM2dnTThlOXcrd09DWE9uSkFwOEVKdFhrdDlFY0lHVGR3QXh3MWQ1?=
- =?utf-8?B?MldzemhQY09wVEZrZnlxTm9NditBNE15N3phM0FRZmNrdnBPbGV5Z0wyNUdP?=
- =?utf-8?B?bjZ5YU9Sa3ducGVBZnlycW5LdWtYNUdIdEhiVjNWR2UvU3JoNGZNY3pWZFEw?=
- =?utf-8?B?bnErL3dWU0FFRzcyUk91Wi9VTkRReGdINExkRm95YnRvMS9wMFBhbENGaUdU?=
- =?utf-8?B?MEJZNzNHWFFRcnA2QU1SQVp0YkpUdllFenAyRzM1ZjZadTZSUisyRWk1YkZD?=
- =?utf-8?B?b3lUVTVnbnVZVFpCWXFKUnhlRi9md05PMjIyS2ZKUjM5cHJxbnRYaWNIaVM1?=
- =?utf-8?B?RTBPQnZtNlJhL09BMjBSQ3YzZEQ2elVnWDd4K1hJUWZlcEhieG85bGNPdXIr?=
- =?utf-8?B?MnpUT215ZDdnT0p5NEdtTXR0NmV1WGJwZjczR0kycmJHY09ERitWV2xTdWlZ?=
- =?utf-8?B?alpiQU45ekFUa09mNTNFMm9Gci9SQkNySTVrSm1WRXRPc0tZYllPcFAvRE80?=
- =?utf-8?B?WEl3M0JBK2hFNlpKRVNua1lnTE5TUzI3cHZUbXZhaFlWQjhDSHNIYklwZUFJ?=
- =?utf-8?B?YmZHSFIrdXVrQzIva2RSc3VjdEMxV1Z5aW1heGNTTlNyT0EyK05hN0lnNGZs?=
- =?utf-8?B?dHV4UURYWFo0TFhMU0tEVzc3RGNTNVc5elRRWUtkTllyTUhqYWdFakRFMHBj?=
- =?utf-8?B?cDZhNVN4cmpVQVlJTG1mQlAxbGJpME8xOFRRMkZuaFY5eHpUeW5XWUE1aWps?=
- =?utf-8?B?OUUzMVBhb1lpTGJJNlpnc2FFeXAwUm9xK1BncTVaSlBCbTJQRjlvbXQzTUhr?=
- =?utf-8?B?ZVM0V3BaVHdMa0hUU3o3VzNWTXhHNTBNejM0d1E1Vm5YeHZOR2FseVQySFFB?=
- =?utf-8?B?R2R4bGZPd3pvMEM5ZkhLdWN0VVBLVlk2dkVkaTUxeXM5aHRPeHc3SHp1VnUw?=
- =?utf-8?Q?oxTkxQ7NMwkFwS9hqr?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?R201WEgzNkduUVZxVnNqd2liZ0hQOEFSUXBkMnZDcE5TMkJOTmF3aEl4TTVF?=
+ =?utf-8?B?WUtEblpMUUpyUU40aEYyRDdRNlBOWjdZdm9kT1pwbGxRbXU5cCsxb0xZVHp2?=
+ =?utf-8?B?Q2FDT21IMzNzQmVBOWRkZk42TnBzeXdtd24vVmN4RlhNL1IyeEZFZ2pBZFY4?=
+ =?utf-8?B?UStuTU81d1R5ejFiejVOekl6V2NUMWpDRlR2bEMyS2xrMXJralZQZW5hS0lY?=
+ =?utf-8?B?V2JVb0dtenVZNHF5SGdvVjBtUXN2WDl5anZ1MXlsSjZGeGQrTnVRZnNhckVa?=
+ =?utf-8?B?UXUzNEtSdTFLcTBzMjRrRC90aGVLbGZ3RnV6NzNzb2lzOEpnQkVaODZDRmF2?=
+ =?utf-8?B?MTdDQi80Ymkyb05NdDRlN2hjRnJjVGgzTjhBMlFWd1pqcVBBTEhldkJoV0o1?=
+ =?utf-8?B?QWlKQVlHQjkwM2RxbHNWdG9rT1k1R2VNeDRvOXhTQ0kyVFZacmdLdFEwRXRH?=
+ =?utf-8?B?M0dUc0UvTWQrTlk2UjRicEs1cnlITGNJVlRVS1h0aG9iaE4yZm9PZFlrUWJP?=
+ =?utf-8?B?SjJHTGlKb0tQN0QrM25OdzFERWo3Und5dE9zZGlNNDYzYWNiZmM3TTFHSmlr?=
+ =?utf-8?B?S1RyOCtVMTNzZDNRYmV3c0svOUs2ZWpEcEFCaHp1Qk5jSzBXTW1wSkJBOWsz?=
+ =?utf-8?B?WUFJUFp6S3FaOXU1MkNXRkRyT0owT25JcU53K2ZhNUJtb2tTRnRaTTVIOURP?=
+ =?utf-8?B?cVluSlVkck5KaEMrd3dHdFpUeHdVQmNkUGJQMEJYVU5haWQ0d0ZuNGNYdnlU?=
+ =?utf-8?B?MEQvYkI5bVo4dmtuekxySURFc3VXN1IrWkFhT3dlQnRZbGMway9NZFRlV1JM?=
+ =?utf-8?B?S3dNWFdRRVhRQ0hqYjYzL29ub1VldFBpNURJbk56NFU1c0JuanpYdUdrMW1y?=
+ =?utf-8?B?Tjkwa095NVlKMHFBQ2k5enRnQ0FxYmlhV3JiUmRjeG4vaElsSWp2eW9makZw?=
+ =?utf-8?B?NlZua2lkZW1WQy9zbDkxUlFIT3FwS3d4OEloVGt3RmFVREJLTDlQV04zZC9l?=
+ =?utf-8?B?U1JFY2lwcTNoT0ZqNFVKSlZpM2M1MG14L0NCa3loOTMycjA3WUlTaFh3MXhV?=
+ =?utf-8?B?a1VaSGhZbjJYMzVBekxudHNoaCtDNHVvZDdnY0hJZzJIaWN0RkJMQ1lUd3Rp?=
+ =?utf-8?B?Nk0yV2g0VlNjdEY1U2xGVkN5OGxXODlFL3dGSUtLWllYcTRUQVgxWTMvT1FB?=
+ =?utf-8?B?NlJCN2JZZVFBb2FDYTg4ZWJxU0JaSWQyVHpIbURWZVZkWTZ0TThxYm5sSXVE?=
+ =?utf-8?B?bUQrT2VyWXVVR1ZjMXlKRFhKSjRJRktCa29ieGJ1SWNxWlFSa203MkFZTGdP?=
+ =?utf-8?B?cUZaLzM5UWU5dUZCaWZtYnNydE9Cb1FSbjdJZjVQQ0RmSnd4dVd3VGhFVDZY?=
+ =?utf-8?B?OFk4Q29ha1hiVEFaL2dRd29MWWYrQ1VFT1RtcE1nZFliekYwa2h5M2FCZEly?=
+ =?utf-8?B?NGQ3dkdsYWtBdDNzdDZHb2tmNkxsK05ZTEs4aXJKR05sMk1oK2pPbVUzaDlp?=
+ =?utf-8?B?ZnF5cVlqZnZTUzJRamIvRzVXaGFiS05wRXM1bExYc1pRcEdZam5UNEVucVdW?=
+ =?utf-8?B?SGY5bnRGWTFNL1o5MWhOOXpGY1pqWUZia2t3UHpQN1lmdlRNZDQ4L1dOUm5R?=
+ =?utf-8?B?dWdiWERuN2ZzcVIrSEtQYmYvSHNaY0ptOTlIYUJxWDVTSFAvL1ZhOFJXc1Z0?=
+ =?utf-8?B?QThOUm54eDhCb0lBUjdtR3dOcmZ5VDdZbFdJNzFTV2U5YkFKUm9pSk5JOGph?=
+ =?utf-8?B?N0JRVGVLek43aWxJeHByNXg3MXl4eWpaZDhtQW0rejB5RWpmbEdSeFYzb0hB?=
+ =?utf-8?B?YW5hTUs0c1Y2cm00S2habmE3S2RxUkRRU2g5NG8zOXJKdEw2ZkJmUThLQmFF?=
+ =?utf-8?B?K3YzcllKUW93clZSd2tDR1pnc2NjaFM2RzVxc0pnQTZ4ZkgwcXcyL2RxWlB0?=
+ =?utf-8?B?d0VFQTJOUFdibXZSRGVmZjhmVjRiVmx5QUIzZ1dtYllqSU5kVHJVdjNyMkQv?=
+ =?utf-8?B?bG9RKzlGN2t5Wlo5WnU2c05wcy9LcnY5WTdXRU5ZY1lIZ2xoUEg2OUs0bVFX?=
+ =?utf-8?B?ZHR2WXRIUkFMR3UxYk1qV1NkVW1abG5jUFVHM0tGc2dIc0k2bWZOeVlVSzdn?=
+ =?utf-8?B?S2VoSmlWa1BMNzBPRWZpeVJBUmNKNVNJdG42cmRuMGRLNXhtaTA0VytZdFp2?=
+ =?utf-8?B?V3pIREZwbWpQQW5McDhkREVkMDdEN0hLc1pDTkhkSEtlSFBpZXk0MGxWYmM0?=
+ =?utf-8?B?aGs4WHJBNndhTUx3eDhDdGdzU1ZnODRyM3JSWjd0V2hlWktuazFkdEJZRU1M?=
+ =?utf-8?Q?nZJ2+XNyz455pdJyBd?=
 X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1f3dcd55-f7d1-4b33-539b-08da34e12a4e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4301ed7f-7b02-45dc-fe5b-08da34e4e0eb
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2022 13:04:51.0752
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2022 13:31:25.8502
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FhV7nri4p+XjqXrcdYlLu3TpWhQnowlmEfxZtYeZFABxagWZh6pZwVERquG3OtZ7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR01MB5252
+X-MS-Exchange-CrossTenant-UserPrincipalName: Gg+qNcb2V8nCGwXkvk/QyoPZC6VbnA+q1IeEPVeuWZI10jPgawP5LDwqmKDi0zVS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB5881
 X-Spam-Status: No, score=-4.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
@@ -120,116 +129,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-On 5/12/2022 3:49 PM, Bob Pearson wrote:
-> Currently the completer tasklet when it sets the retransmit timer or the
-> nak timer sets the same flag (qp->req.need_retry) so that if either
-> timer fires it will attempt to perform a retry flow on the send queue.
-> This has the effect of responding to an RNR NAK at the first retransmit
-> timer event which does not allow for the requested rnr timeout.
+On 5/13/2022 8:46 AM, Jason Gunthorpe wrote:
+> On Fri, May 13, 2022 at 09:39:44AM +0000, Bernard Metzler wrote:
 > 
-> This patch adds a new flag (qp->req.need_rnr_timeout) which, if set,
-> prevents a retry flow until the rnr nak timer fires.
-
-The new name is a little confusing, nobody "needs" an RNR timeout. :)
-But it seems really odd (and maybe fragile) to have two flags. To me,
-setting need_retry to "-1", or anything but 0 or 1, would be better.
-After all, if the RNR NAK timer goes off, the code will generally retry, 
-right? So it seems more logical to merge these.
-
-> This patch fixes rnr retry errors which can be observed by running the
-> pyverbs test suite 50-100X. With this patch applied they do not occur.
+>> Not all providers support the transfer of private data in control
+>> messages after connection establishment -
+>> rdma_reject()/rdma_accept() being the last opportunity to send
+>> private data in connections lifetime for e.g.  iWarp
+>> connections. Maybe that is why it is not exposed at the disconnect
+>> API call? Would RoCE support it?
 > 
-> Link: https://lore.kernel.org/linux-rdma/a8287823-1408-4273-bc22-99a0678db640@gmail.com/
-> Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
-> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> ---
->   drivers/infiniband/sw/rxe/rxe_comp.c  | 4 +---
->   drivers/infiniband/sw/rxe/rxe_qp.c    | 1 +
->   drivers/infiniband/sw/rxe/rxe_req.c   | 6 ++++--
->   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
->   4 files changed, 7 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
-> index 138b3e7d3a5f..bc668cb211b1 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_comp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_comp.c
-> @@ -733,9 +733,7 @@ int rxe_completer(void *arg)
->   				if (qp->comp.rnr_retry != 7)
->   					qp->comp.rnr_retry--;
->   
-> -				qp->req.need_retry = 1;
-> -				pr_debug("qp#%d set rnr nak timer\n",
-> -					 qp_num(qp));
-> +				qp->req.need_rnr_timeout = 1;
+> RoCE and IB have a place to put it, IB does not.
 
-Suggest req.need_rnr_retry = -1  (and keep the useful pr_debug!)
+I think you meant "iWARP does not", but that's partially incorrect.
+The Terminate message in iWARP carries a payload which is provided
+by the layer which caused the termination.
 
->   				mod_timer(&qp->rnr_nak_timer,
->   					  jiffies + rnrnak_jiffies(aeth_syn(pkt)
->   						& ~AETH_TYPE_MASK));
-> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-> index 62acf890af6c..1c962468714e 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-> @@ -513,6 +513,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
->   	atomic_set(&qp->ssn, 0);
->   	qp->req.opcode = -1;
->   	qp->req.need_retry = 0;
-> +	qp->req.need_rnr_timeout = 0;
->   	qp->req.noack_pkts = 0;
->   	qp->resp.msn = 0;
->   	qp->resp.opcode = -1;
-> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> index ae5fbc79dd5c..770ae4279f73 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> @@ -103,7 +103,8 @@ void rnr_nak_timer(struct timer_list *t)
->   {
->   	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
->   
-> -	pr_debug("qp#%d rnr nak timer fired\n", qp_num(qp));
-> +	qp->req.need_retry = 1;
-> +	qp->req.need_rnr_timeout = 0;
+The "layer" 4-bit field and RDMA/DDP/LLP ETypes in:
+   https://datatracker.ietf.org/doc/html/rfc5040#section-4.8
 
-Simply setting need_retry = 1 would suffice, if suggestion accepted.
+It has been discussed before to add additional values to iWARP,
+to carry exactly this kind of "syndrome" data. The discussion
+could certainly be had again!
 
->   	rxe_run_task(&qp->req.task, 1);
->   }
->   
-> @@ -624,10 +625,11 @@ int rxe_requester(void *arg)
->   		qp->req.need_rd_atomic = 0;
->   		qp->req.wait_psn = 0;
->   		qp->req.need_retry = 0;
-> +		qp->req.need_rnr_timeout = 0;
->   		goto exit;
->   	}
->   
-> -	if (unlikely(qp->req.need_retry)) {
-> +	if (unlikely(qp->req.need_retry && !qp->req.need_rnr_timeout)) {
+> The lack of support in iWarp is problematic, these APIs are supposed
+> to be fairly high level things.
 
-This would become (unlikely (qp->req.rnr_retry > 0)) ...
+Right. Especially we do not want to define a "protocol-in-protocol"
+which allows arbitary data to be exchanged here. It needs an
+interoperable, and testable, specification. For all RDMA protocols,
+which all ULPs can rely on.
 
->   		req_retry(qp);
->   		qp->req.need_retry = 0;
->   	}
-> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> index e7eff1ca75e9..ab3186478c3f 100644
-> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
-> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
-> @@ -123,6 +123,7 @@ struct rxe_req_info {
->   	int			need_rd_atomic;
->   	int			wait_psn;
->   	int			need_retry;
-> +	int			need_rnr_timeout;
+> We clearly can't just extend the existing rdma_disconnect() due to
+> this, and some kind of negotiation would be needed so the ULP can
+> learn if the extra data is supported at all.
 
-Drop
-
->   	int			noack_pkts;
->   	struct rxe_task		task;
->   };
-> 
-> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
-
+Yep.
 
 Tom.
+
+> 
+> Jason
+> 
