@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B14C526F63
-	for <lists+linux-rdma@lfdr.de>; Sat, 14 May 2022 09:15:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932FD526F04
+	for <lists+linux-rdma@lfdr.de>; Sat, 14 May 2022 09:15:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbiENDI3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 13 May 2022 23:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38606 "EHLO
+        id S230257AbiENDJY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 13 May 2022 23:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbiENDI2 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 23:08:28 -0400
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489A1322799
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 20:08:23 -0700 (PDT)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-f16a3e0529so2448434fac.2
-        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 20:08:23 -0700 (PDT)
+        with ESMTP id S230333AbiENDJW (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 13 May 2022 23:09:22 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC52332DF2
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 20:09:20 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-d39f741ba0so12709637fac.13
+        for <linux-rdma@vger.kernel.org>; Fri, 13 May 2022 20:09:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gqPXfeaRqfxlpT8MOv9ifZh9DcX4RBWAPF+Dv9bYlVY=;
-        b=TxzfEV/F7k+EYfztg/YK9tp6MFWlQQzN9rfaRju++3/iuYx6ou2NhCwfS64aEEDCms
-         DnDXECjuHTPapTOrZTbubqhst6wPGU7zSD1jRCHcfK8CP0f4bWbk6E5WLaeRxvRU4Kvq
-         SDCzYqW2w53cviIdPDu0Agtpi743ckg1zwiHRvfvfC/VJMJpAgVGzOAToHRaUtcEmM1y
-         cVQao4A3OXFrSQEii0XTe8xrI+xAAEQycD9DGz9F+J+KxkkuYshnsCxKGBclcgw0ECr4
-         UrVqhTdjs2nWoxRxzDsNRmZH4YxPReDCCeB/ensv2vn0MBC0L7tY00j3gOI6lYKh8y4Y
-         cn0w==
+        bh=FLYsPTf3mH4pLVB6koKRyPCBVVH6lTi57dBdJm9igvE=;
+        b=dK2de0dlD5M61/vPU36dLGPnuz2n4n9bXwyn9zpA917p0PzXaDJXTwmjyrOPFifqXt
+         MXPllpuxQHTy4tCSrjz6trkt8x/DXMh0SZPHxCqMXd/IsFSyA5XNbFWSZkySA6hA75Pb
+         7Hr7SaRY7ur751wWY+alE4Y5iYZ9vUtFWcQwmkmCwD6cMb5zD0mOXgC1N4hvR4lOF0a+
+         trme6ZsKX2Z/DF32TT2a0KXXYVxMRkiO4/NqYQdeZNPV1PhhUlQ67Dqc3984qjs9YXAp
+         Kau97fmtC1MKijPWJO60MqGUvAfgrX2R1PHRHpxN+HQ5UHYOQQaktC/hPVlyotbukCwr
+         I4KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gqPXfeaRqfxlpT8MOv9ifZh9DcX4RBWAPF+Dv9bYlVY=;
-        b=ZAUhxHA96ykkKQ1Rr9GBpIsSDS8KuQlvRXuFvGc6C8GZFLIhCuXhCnOSMep5dVDs1Y
-         lwmQuWx5hl/TuJgzTDZsGiru4w15F3mGBVKe+BsmJ4hT+6p0J1kzPIa8EoSVSOsgnXJ0
-         feSAbl5s6aEG6NSCuqm4fAac6X+Zu0XqpMl9aaXBVgAb7JDLZ3DPy94Oh7J8368kiZ5D
-         KePTY/8EkBeldSThte/Pb9PUuW5vtbvKr1gKLVOEfSxXNfzetzuCn3hraZkPoc23AT0G
-         6RFtmFWgQlDIRQ/wEdNzNu0OBfnWA8VC1mBWXgye9sd/rWNYT9KJQozCbBbVs17FO7e7
-         xUxQ==
-X-Gm-Message-State: AOAM530yaduiiLqgR3BqMQYftdH635rEb/ndWH+xIx0c/4928y5m16xd
-        NpZdojE8IJk8QQgihf0SqeE=
-X-Google-Smtp-Source: ABdhPJwrBGm3/YRwFWKt6u5IUl49YonWLRJS9BdjNT3gqPPTa/RWB0fLKMfcl2Od7w4/ztmcX8hC2g==
-X-Received: by 2002:a05:6870:240a:b0:de:7fcb:56c0 with SMTP id n10-20020a056870240a00b000de7fcb56c0mr4178137oap.8.1652497702686;
-        Fri, 13 May 2022 20:08:22 -0700 (PDT)
+        bh=FLYsPTf3mH4pLVB6koKRyPCBVVH6lTi57dBdJm9igvE=;
+        b=UCenOCOErUlZ03iWRkCCqPRU6YKVTGqd80C/ZmULhhaGLK44sDr4xW7YlaXUV5Beu4
+         Epvj1ZGr0lC7fjLlSGKdp6qfPe+w/w4SX2uRRlK9WR4Zhvm1dUvnkaDzvq2PnrtGfEth
+         qkG7lqtuZ78VXvFel54vCCSJbntkOTIEsmdez+FqF26FwnNN0T5mtJJtoaoPFusUWaqz
+         wMVYadDVbP2l7M4YWiE7Hgrb/tUf31M7+79diwmsdyvXun4az26tfMRaocNSq+MEdkIV
+         f6o/9ROYOmMAZFbE5Z9u80acadIFtQ36IkpRFuDfvmCEM344l9qfo7rmrA9Wr6BzqJqv
+         kUkw==
+X-Gm-Message-State: AOAM533M9JdgCNc2/6eUBn4WbNmQJSLnr4ze9Smfr3wDgpJBto2vaqAp
+        LhOMCf5TeKm+pifxFHCUcjAiOlfH9wQ=
+X-Google-Smtp-Source: ABdhPJymjLYI8crjRSzVqeo65J96EY97eCse5xpCsHE236JpPQYUaGTyCYCRdrVuxPOuPJbKbecFNg==
+X-Received: by 2002:a05:6870:7d08:b0:ee:7028:8829 with SMTP id os8-20020a0568707d0800b000ee70288829mr9581630oab.106.1652497759618;
+        Fri, 13 May 2022 20:09:19 -0700 (PDT)
 Received: from u-22.tx.rr.com (2603-8081-140c-1a00-0642-4ec7-2b63-14d6.res6.spectrum.com. [2603:8081:140c:1a00:642:4ec7:2b63:14d6])
-        by smtp.googlemail.com with ESMTPSA id h64-20020a9d2f46000000b0060603221262sm1691176otb.50.2022.05.13.20.08.22
+        by smtp.googlemail.com with ESMTPSA id h64-20020a9d2f46000000b0060603221262sm1691176otb.50.2022.05.13.20.09.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 May 2022 20:08:22 -0700 (PDT)
+        Fri, 13 May 2022 20:09:19 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, tom@talpey.com,
         linux-rdma@vger.kernel.org, jhack@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-rc v2 2/4] RDMA/rxe: Add a pkt->mask bit for ack_req
-Date:   Fri, 13 May 2022 22:04:36 -0500
-Message-Id: <20220514030435.91155-3-rpearsonhpe@gmail.com>
+Subject: [PATCH for-rc v2 3/4] RDMA/rxe: Fix rnr retry behavior
+Date:   Fri, 13 May 2022 22:04:38 -0500
+Message-Id: <20220514030435.91155-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220514030435.91155-1-rpearsonhpe@gmail.com>
 References: <20220514030435.91155-1-rpearsonhpe@gmail.com>
@@ -69,60 +69,124 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add a bit to pkt->mask indicating that the ackreq bit has been
-set in the current packet. Use this bit to condition setting
-the retransmit timer since a packet without the ackreq bit set
-will not generate a response.
+Currently the completer tasklet when it sets the retransmit timer or the
+rnr timer sets the same flag (qp->req.need_retry) so that if either
+timer fires it will attempt to perform a retry flow on the send queue.
+This has the effect of responding to an RNR NAK at the first retransmit
+timer event which might not allow for the requested rnr timeout.
 
+This patch adds a new flag (qp->req.wait_for_rnr_timer) which, if set,
+prevents a retry flow until the rnr nak timer fires.
+
+This patch fixes rnr retry errors which can be observed by running the
+pyverbs test_rdmacm_async_traffic_external_qp multiple times. With this
+patch applied they do not occur.
+
+Link: https://lore.kernel.org/linux-rdma/a8287823-1408-4273-bc22-99a0678db640@gmail.com/
+Link: https://lore.kernel.org/linux-rdma/2bafda9e-2bb6-186d-12a1-179e8f6a2678@talpey.com/
+Fixes: 8700e3e7c485 ("Soft RoCE (RXE) - The software RoCE driver")
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_opcode.h |  1 +
- drivers/infiniband/sw/rxe/rxe_req.c    | 11 +++++++----
- 2 files changed, 8 insertions(+), 4 deletions(-)
+v2
+  Added comments and changed the name of the new flag to make things
+  more understandable per an email exchange with Tom Talpey.
+---
+ drivers/infiniband/sw/rxe/rxe_comp.c  |  8 +++++++-
+ drivers/infiniband/sw/rxe/rxe_qp.c    |  1 +
+ drivers/infiniband/sw/rxe/rxe_req.c   | 15 +++++++++++++--
+ drivers/infiniband/sw/rxe/rxe_verbs.h |  1 +
+ 4 files changed, 22 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_opcode.h b/drivers/infiniband/sw/rxe/rxe_opcode.h
-index 8f9aaaf260f2..629504245e98 100644
---- a/drivers/infiniband/sw/rxe/rxe_opcode.h
-+++ b/drivers/infiniband/sw/rxe/rxe_opcode.h
-@@ -80,6 +80,7 @@ enum rxe_hdr_mask {
- 	RXE_END_MASK		= BIT(NUM_HDR_TYPES + 10),
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index badd423966dc..3c77201c01d1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -114,6 +114,8 @@ void retransmit_timer(struct timer_list *t)
+ {
+ 	struct rxe_qp *qp = from_timer(qp, t, retrans_timer);
  
- 	RXE_LOOPBACK_MASK	= BIT(NUM_HDR_TYPES + 12),
-+	RXE_ACK_REQ_MASK	= BIT(NUM_HDR_TYPES + 13),
++	pr_debug("%s: fired for qp#%d\n", __func__, qp->elem.index);
++
+ 	if (qp->valid) {
+ 		qp->comp.timeout = 1;
+ 		rxe_run_task(&qp->comp.task, 1);
+@@ -729,11 +731,15 @@ int rxe_completer(void *arg)
+ 			break;
  
- 	RXE_READ_OR_ATOMIC_MASK	= (RXE_READ_MASK | RXE_ATOMIC_MASK),
- 	RXE_WRITE_OR_SEND_MASK	= (RXE_WRITE_MASK | RXE_SEND_MASK),
+ 		case COMPST_RNR_RETRY:
++			/* we come here if we received an RNR NAK */
+ 			if (qp->comp.rnr_retry > 0) {
+ 				if (qp->comp.rnr_retry != 7)
+ 					qp->comp.rnr_retry--;
+ 
+-				qp->req.need_retry = 1;
++				/* don't start a retry flow until the
++				 * rnr timer has fired
++				 */
++				qp->req.wait_for_rnr_timer = 1;
+ 				pr_debug("qp#%d set rnr nak timer\n",
+ 					 qp_num(qp));
+ 				mod_timer(&qp->rnr_nak_timer,
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index fc22ff36fdea..2f6f378a232d 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -513,6 +513,7 @@ static void rxe_qp_reset(struct rxe_qp *qp)
+ 	atomic_set(&qp->ssn, 0);
+ 	qp->req.opcode = -1;
+ 	qp->req.need_retry = 0;
++	qp->req.wait_for_rnr_timer = 0;
+ 	qp->req.noack_pkts = 0;
+ 	qp->resp.msn = 0;
+ 	qp->resp.opcode = -1;
 diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 1884e3a64310..d15165e9319c 100644
+index d15165e9319c..aa9066ff5257 100644
 --- a/drivers/infiniband/sw/rxe/rxe_req.c
 +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -394,11 +394,13 @@ static struct sk_buff *init_req_packet(struct rxe_qp *qp,
+@@ -103,7 +103,11 @@ void rnr_nak_timer(struct timer_list *t)
+ {
+ 	struct rxe_qp *qp = from_timer(qp, t, rnr_nak_timer);
  
- 	ack_req = ((pkt->mask & RXE_END_MASK) ||
- 		(qp->req.noack_pkts++ > RXE_MAX_PKT_PER_ACK));
--	if (ack_req)
-+	if (ack_req) {
- 		qp->req.noack_pkts = 0;
-+		pkt->mask |= RXE_ACK_REQ_MASK;
-+	}
- 
--	bth_init(pkt, pkt->opcode, solicited, 0, pad, IB_DEFAULT_PKEY_FULL, qp_num,
--		 ack_req, pkt->psn);
-+	bth_init(pkt, pkt->opcode, solicited, 0, pad, IB_DEFAULT_PKEY_FULL,
-+		 qp_num, ack_req, pkt->psn);
- 
- 	/* init optional headers */
- 	if (pkt->mask & RXE_RETH_MASK) {
-@@ -539,7 +541,8 @@ static void update_state(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
- 
- 	qp->need_req_skb = 0;
- 
--	if (qp->timeout_jiffies && !timer_pending(&qp->retrans_timer))
-+	if ((pkt->mask & RXE_ACK_REQ_MASK) && qp->timeout_jiffies &&
-+	    !timer_pending(&qp->retrans_timer))
- 		mod_timer(&qp->retrans_timer,
- 			  jiffies + qp->timeout_jiffies);
+-	pr_debug("qp#%d rnr nak timer fired\n", qp_num(qp));
++	pr_debug("%s: fired for qp#%d\n", __func__, qp_num(qp));
++
++	/* request a send queue retry */
++	qp->req.need_retry = 1;
++	qp->req.wait_for_rnr_timer = 0;
+ 	rxe_run_task(&qp->req.task, 1);
  }
+ 
+@@ -628,10 +632,17 @@ int rxe_requester(void *arg)
+ 		qp->req.need_rd_atomic = 0;
+ 		qp->req.wait_psn = 0;
+ 		qp->req.need_retry = 0;
++		qp->req.wait_for_rnr_timer = 0;
+ 		goto exit;
+ 	}
+ 
+-	if (unlikely(qp->req.need_retry)) {
++	/* we come here if the retransmot timer has fired
++	 * or if the rnr timer has fired. If the retransmit
++	 * timer fires while we are processing an RNR NAK wait
++	 * until the rnr timer has fired before starting the
++	 * retry flow
++	 */
++	if (unlikely(qp->req.need_retry && !qp->req.wait_for_rnr_timer)) {
+ 		req_retry(qp);
+ 		qp->req.need_retry = 0;
+ 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index 83b6f80440d8..a6c6f0d786c7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -123,6 +123,7 @@ struct rxe_req_info {
+ 	int			need_rd_atomic;
+ 	int			wait_psn;
+ 	int			need_retry;
++	int			wait_for_rnr_timer;
+ 	int			noack_pkts;
+ 	struct rxe_task		task;
+ };
 -- 
 2.34.1
 
