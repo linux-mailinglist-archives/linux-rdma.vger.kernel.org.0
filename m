@@ -2,47 +2,42 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 312DD52AC28
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 21:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7D8A52AC26
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 21:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236860AbiEQTmu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 May 2022 15:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
+        id S231671AbiEQTmv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 May 2022 15:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231671AbiEQTms (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 15:42:48 -0400
-Received: from smtp.smtpout.orange.fr (smtp02.smtpout.orange.fr [80.12.242.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4E22655D
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 12:42:46 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.180.246])
-        by smtp.orange.fr with ESMTPA
-        id r35enso0WEMbDr35enGE51; Tue, 17 May 2022 21:42:44 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: YWZlNiIxYWMyZDliZWIzOTcwYTEyYzlhMmU3ZiQ1M2U2MzfzZDfyZTMxZTBkMTYyNDBjNDJlZmQ3ZQ==
-X-ME-Date: Tue, 17 May 2022 21:42:44 +0200
-X-ME-IP: 86.243.180.246
-Message-ID: <301a1d0a-971b-5b27-c5a9-86390358de9a@wanadoo.fr>
-Date:   Tue, 17 May 2022 21:42:41 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.1
+        with ESMTP id S233929AbiEQTmu (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 15:42:50 -0400
+Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 768A727B07
+        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 12:42:49 -0700 (PDT)
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gldr-linux-rdma@m.gmane-mx.org>)
+        id 1nr35j-0005TV-82
+        for linux-rdma@vger.kernel.org; Tue, 17 May 2022 21:42:47 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-rdma@vger.kernel.org
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Subject: Re: [PATCH] RDMA: remove null check after call container_of()
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Haowen Bai <baihaowen@meizu.com>
-Newsgroups: gmane.linux.drivers.rdma,gmane.linux.kernel
+Date:   Tue, 17 May 2022 21:42:41 +0200
+Message-ID: <301a1d0a-971b-5b27-c5a9-86390358de9a@wanadoo.fr>
 References: <1652751208-23211-1-git-send-email-baihaowen@meizu.com>
  <20220517121646.GE63055@ziepe.ca>
  <142a9c03-574f-adcf-bc4d-bb2a25c01e88@wanadoo.fr>
  <20220517180303.GK63055@ziepe.ca>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20220517180303.GK63055@ziepe.ca>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Content-Language: en-US
+In-Reply-To: <20220517180303.GK63055@ziepe.ca>
+Cc:     linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,3 +81,4 @@ Crystal clear.
 Thank you for the explanation.
 
 CJ
+
