@@ -2,113 +2,171 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F11E152A591
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 17:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF3F52A5CF
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 17:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349557AbiEQPDn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 May 2022 11:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S243212AbiEQPPJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 May 2022 11:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349553AbiEQPDn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 11:03:43 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA5A3BFA2
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 08:03:41 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id u3so4252140qta.8
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 08:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nYw9MLrmTgrCyt32icuujwVIUmzRK3qobN37OJ0H6Dk=;
-        b=YIjyNubMBQN3j3kq8COxDOs9ZfyumC6z67UoQ2FYG9OrbcSw89m7muMq6Ee/AEBQIN
-         Znt8L77xweytRK5+XWVErzOjLGyuLd781OgCT7nEzZ+2p42AFQcJW6+vMmMqNqb6imCH
-         yC5ny4vzLdqIcnFqOtpkVy9/pchereg5BA/DDcpwXqViuGISm1EmqlzOWKyzrzLEX8fW
-         PDZupU2SGzflxTCdTC9+1ls0wSz05ZJSH8vKc7S2E+G40p9vgyR74ZH21+jPx5Ew26MD
-         sZbtW2pwcterOngapb6X791W2mKDNIB20J4hw3mTG8/RNL6irZULDmfs53nRiHWko8FA
-         +p/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nYw9MLrmTgrCyt32icuujwVIUmzRK3qobN37OJ0H6Dk=;
-        b=pj6o2IgP4JxqVvoLVX+a1XFOFoCRRsxyyWOOffQZVAiBEh2wzmFb02UljQi63jHb4A
-         mmctymLkDj2UyCkXWFkydg7VaEy3iCyRP8A9AEmVNI+ZlsoLIuZyBGVCn8dj/JOv+93o
-         lMSqtSyrWtdaxuMMNnVOEu7JHFXsH8KfMJTXS6igx02vDxqBRa/jPqjaKWFRUf6gBKAY
-         4K9tGyBhEMUW5Jy13OYQvaHRAEDihsV6jiQbmyWQpdrc80JBaoDKVUQNEYPzfjHMqoQw
-         kYbFb8BO4R0rzfihI6fjnvH9UUFdvWw1+QQCCPtcKwW/2FIZHwzzS+WzqT0hwDHYr8qW
-         dJKQ==
-X-Gm-Message-State: AOAM532EV9mGDxV0gyiFQi4usvZmqr5TvtCvUzcwqI3vVeCmHbSpGg62
-        2pQAGKv6B6/MyOZEyofeIyw15A==
-X-Google-Smtp-Source: ABdhPJzNAviWPSBXWWUJ/iGKw+c/h25D3QSyPMqu9y9mjuiv7nOxJijw6Gy3AK7v52SKehoMul0w4Q==
-X-Received: by 2002:ac8:7f43:0:b0:2f3:d55d:7296 with SMTP id g3-20020ac87f43000000b002f3d55d7296mr20083913qtk.635.1652799820611;
-        Tue, 17 May 2022 08:03:40 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id u123-20020ae9d881000000b006a0462eb091sm7772405qkf.80.2022.05.17.08.03.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 08:03:39 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nqyjb-0084ZN-6l; Tue, 17 May 2022 12:03:39 -0300
-Date:   Tue, 17 May 2022 12:03:39 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     longli@microsoft.com
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [PATCH 09/12] net: mana: Move header files to a common location
-Message-ID: <20220517150339.GI63055@ziepe.ca>
-References: <1652778276-2986-1-git-send-email-longli@linuxonhyperv.com>
- <1652778276-2986-10-git-send-email-longli@linuxonhyperv.com>
+        with ESMTP id S242418AbiEQPPJ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 11:15:09 -0400
+Received: from out1.migadu.com (out1.migadu.com [91.121.223.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48A845501
+        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 08:15:07 -0700 (PDT)
+Message-ID: <f3a827f0-69bd-7bae-21cf-02a88063d39d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1652800506;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GLTLzbqsVYc9lieOGX6EFWjrboSr2mUjCRip872wLCs=;
+        b=bV2zzQLLL4eiwkwRVkmEX/AVLf+NEX8aZA9XeSPIG9AIVNx+9YBNBujT/CC65pKaXmPmIJ
+        9Y1Dr7yQDFcSz4ZHS5h9DBxaMXeawMTFFytAp8Dx7ZtrBlJTHJkFddrzQnBEq6UuhuU3qc
+        96kCFDUMagjWMgfCh5/jJYC1kFgsCJs=
+Date:   Tue, 17 May 2022 23:14:56 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1652778276-2986-10-git-send-email-longli@linuxonhyperv.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 1/1] RDMA/rxe: Compact the function
+ free_rd_atomic_resource
+To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20220517190800.122757-1-yanjun.zhu@linux.dev>
+ <c9e99081-f6aa-0167-77ff-57533b107e90@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <c9e99081-f6aa-0167-77ff-57533b107e90@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 17, 2022 at 02:04:33AM -0700, longli@linuxonhyperv.com wrote:
-> From: Long Li <longli@microsoft.com>
-> 
-> In preparation to add MANA RDMA driver, move all the required header files
-> to a common location for use by both Ethernet and RDMA drivers.
-> 
-> Signed-off-by: Long Li <longli@microsoft.com>
-> ---
->  MAINTAINERS                                                   | 1 +
->  drivers/net/ethernet/microsoft/mana/gdma_main.c               | 2 +-
->  drivers/net/ethernet/microsoft/mana/hw_channel.c              | 4 ++--
->  drivers/net/ethernet/microsoft/mana/mana_bpf.c                | 2 +-
->  drivers/net/ethernet/microsoft/mana/mana_en.c                 | 2 +-
->  drivers/net/ethernet/microsoft/mana/mana_ethtool.c            | 2 +-
->  drivers/net/ethernet/microsoft/mana/shm_channel.c             | 2 +-
->  {drivers/net/ethernet/microsoft => include/linux}/mana/gdma.h | 0
->  .../ethernet/microsoft => include/linux}/mana/hw_channel.h    | 0
->  {drivers/net/ethernet/microsoft => include/linux}/mana/mana.h | 0
->  .../ethernet/microsoft => include/linux}/mana/shm_channel.h   | 0
->  11 files changed, 8 insertions(+), 7 deletions(-)
->  rename {drivers/net/ethernet/microsoft => include/linux}/mana/gdma.h (100%)
->  rename {drivers/net/ethernet/microsoft => include/linux}/mana/hw_channel.h (100%)
->  rename {drivers/net/ethernet/microsoft => include/linux}/mana/mana.h (100%)
->  rename {drivers/net/ethernet/microsoft => include/linux}/mana/shm_channel.h (100%)
 
-I know mlx5 did it like this, but I wonder if include/net is more
-appropriate?
+在 2022/5/17 22:51, Bob Pearson 写道:
+> On 5/17/22 14:08, yanjun.zhu@linux.dev wrote:
+>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>
+>> Compact the function and move it to the header file.
+> I have two issues with this patch.
+>
+> There is no advantage of having an inline function in a header file
+> that is only called once. The compiler is perfectly capable of (and does)
+> inlining a static function in a .c file if only called once. This just
+> makes the code harder to read.
 
-Or maybe include/aux/?
+When this function is put into the header file, this function can be 
+included into the caller function file.
 
-Jason
+The compiler does not need to call this function in different file. In 
+theory, this can increase
+
+the compile speed.
+
+Why do you insist on putting this function in .c file?
+
+Zhu Yanjun
+
+>
+> There is a patch in for-rc that gets rid of read.mr in favor of an rkey.
+> This patch is out of date.
+>
+> Bob
+>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>> ---
+>>   drivers/infiniband/sw/rxe/rxe_loc.h  | 11 ++++++++++-
+>>   drivers/infiniband/sw/rxe/rxe_qp.c   | 15 ++-------------
+>>   drivers/infiniband/sw/rxe/rxe_resp.c |  4 ++--
+>>   3 files changed, 14 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+>> index 409efeecd581..6517b4f104b1 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+>> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+>> @@ -145,7 +145,16 @@ static inline int rcv_wqe_size(int max_sge)
+>>   		max_sge * sizeof(struct ib_sge);
+>>   }
+>>   
+>> -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
+>> +static inline void free_rd_atomic_resource(struct resp_res *res)
+>> +{
+>> +	if (res->type == RXE_ATOMIC_MASK) {
+>> +		kfree_skb(res->atomic.skb);
+>> +	} else if (res->type == RXE_READ_MASK) {
+>> +		if (res->read.mr)
+>> +			rxe_drop_ref(res->read.mr);
+>> +	}
+>> +	res->type = 0;
+>> +}
+>>   
+>>   static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
+>>   {
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> index 5f270cbf18c6..b29208852bc4 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+>> @@ -126,24 +126,13 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+>>   		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>>   			struct resp_res *res = &qp->resp.resources[i];
+>>   
+>> -			free_rd_atomic_resource(qp, res);
+>> +			free_rd_atomic_resource(res);
+>>   		}
+>>   		kfree(qp->resp.resources);
+>>   		qp->resp.resources = NULL;
+>>   	}
+>>   }
+>>   
+>> -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+>> -{
+>> -	if (res->type == RXE_ATOMIC_MASK) {
+>> -		kfree_skb(res->atomic.skb);
+>> -	} else if (res->type == RXE_READ_MASK) {
+>> -		if (res->read.mr)
+>> -			rxe_drop_ref(res->read.mr);
+>> -	}
+>> -	res->type = 0;
+>> -}
+>> -
+>>   static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>>   {
+>>   	int i;
+>> @@ -152,7 +141,7 @@ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>>   	if (qp->resp.resources) {
+>>   		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>>   			res = &qp->resp.resources[i];
+>> -			free_rd_atomic_resource(qp, res);
+>> +			free_rd_atomic_resource(res);
+>>   		}
+>>   	}
+>>   }
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>> index c369d78fc8e8..923a71ff305c 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>> @@ -663,7 +663,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>   		 */
+>>   		res = &qp->resp.resources[qp->resp.res_head];
+>>   
+>> -		free_rd_atomic_resource(qp, res);
+>> +		free_rd_atomic_resource(res);
+>>   		rxe_advance_resp_resource(qp);
+>>   
+>>   		res->type		= RXE_READ_MASK;
+>> @@ -977,7 +977,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+>>   	}
+>>   
+>>   	res = &qp->resp.resources[qp->resp.res_head];
+>> -	free_rd_atomic_resource(qp, res);
+>> +	free_rd_atomic_resource(res);
+>>   	rxe_advance_resp_resource(qp);
+>>   
+>>   	skb_get(skb);
