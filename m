@@ -2,82 +2,181 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A990B52A154
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 14:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B2F52A54B
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 16:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239516AbiEQMQv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 May 2022 08:16:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37036 "EHLO
+        id S244850AbiEQOvy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 May 2022 10:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232460AbiEQMQu (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 08:16:50 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7740E47072
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 05:16:49 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id fu47so14123193qtb.5
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 05:16:49 -0700 (PDT)
+        with ESMTP id S1349344AbiEQOvs (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 10:51:48 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D334192A5
+        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 07:51:46 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id w123so22563220oiw.5
+        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 07:51:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=iLF/Jj6XGtMs56rxYAeYQ7aazvooOov9erMd/9bEfPQ=;
-        b=fiOi4pYO3Ucyf+7FuK4zet1/Jrh5FNueHMfQsBWQeNmM+oiOJyxTdNlbr1t9VLdyhg
-         9nnuVkUKb83uryRngEDhnS5o94eiJe93lwhXp+wpS27xl4TkStjDfTZ715iptprz+jW3
-         MpUxDvL0fKMOFtw9rmvkf7xeoYp8nB4XyP6+DfgmKDQAuDpUcTIYTMRdjg5ZPEHMLPFv
-         vEHCKfmt8hSMAxR5k6e+5RnlwzI1nEYkjjupaI3/vYVZ5H1fV95C4RMgRL4Me2GUjMyf
-         7zq9XS1+bSeDTII8ZcaHbw1b1aj1fuqGvo2v1P/BppYVXOnnl6DQleSxHipNy6pGcHvr
-         UzIA==
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=Zvsvqlg5tb5I1MU/XfFP2vZFPX3ccrgBSECf3GGh4ts=;
+        b=l8c+q0i0C/Pjn1jtikZ5hzcdAbgZ68Bu0NiUlbr7QyleUvGBOBCAtxgBPhZ5Ae22KA
+         PFYf2UGR0fgNnmA6lVlCU5eI72XyWB+z1nB61NtYkj815cPfvI5p0xGSohEOoY3CF+if
+         JjWlDIEtDCkhwEX7kqz5S6ESE8tfC9jdoBeJkrouXq9Z8zcB8Uq7W5ZgRwi0Msg8Byxf
+         Yp3GoYQa1We+/sYtxQFuP9Q+2RnuA975TbuVYUUOpOKUz1rUFmACAh+NzsR8xiUsXkwO
+         3VJmR3PkqVXs9+zkZP6Ei/Ylb6Zzyoy6WN+50dZL7HlVfQ2hjdtpoa+vPXnzqg5RnnKF
+         GZyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iLF/Jj6XGtMs56rxYAeYQ7aazvooOov9erMd/9bEfPQ=;
-        b=6tYacKuQeHLZMsnsKEs+qt823VU2Vq48Ji6QMtuHCpGGdGe5cPWmzIbOIRmXMKJ4+v
-         BstmqlKmW3ink/I0kGB+uKo8JaLTkxz9C2boA2/AyXQ1Sotrz6WhVy/uIidMmQLT384y
-         tSoZ2nmclRhuk0IchQb9Y2tZ737MnIo/U3eVAASie4lH7Lgqq29eG1A7MNvjRQPflctt
-         8FEKsgabV/55gobRpV8pQ0lq1a5PgHwuPwKYDBHc0Gx5fwUgTmsUOLyB9bgdFpPwKUpC
-         K7ZwpFVAf3UdtCAozEa/aJYTa3eZok0mF29N1ZH/DPvTO2VyoZ+j6ewAQWzrKen9M+Nl
-         IUNw==
-X-Gm-Message-State: AOAM5322LxeG00JbTMYVcF5yu0NuU3XzGr5et0QjFmF4of2pJk3fcFjF
-        +THiihkufbsnKNlts13yBTOXwkPouTSyLg==
-X-Google-Smtp-Source: ABdhPJyM0PjqPIZlBBrcOc/L+rNk+S3zVViqLlxik9IW8PIxUqbzj0SfEK7pvUwiKoa9Oml5VkNn/A==
-X-Received: by 2002:a05:622a:8d:b0:2f3:ba67:a0ba with SMTP id o13-20020a05622a008d00b002f3ba67a0bamr19347798qtw.129.1652789808588;
-        Tue, 17 May 2022 05:16:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id o11-20020ac8554b000000b002f3ca56e6edsm625334qtr.8.2022.05.17.05.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 05:16:47 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nqw86-007z0H-QE; Tue, 17 May 2022 09:16:46 -0300
-Date:   Tue, 17 May 2022 09:16:46 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Haowen Bai <baihaowen@meizu.com>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] RDMA: remove null check after call container_of()
-Message-ID: <20220517121646.GE63055@ziepe.ca>
-References: <1652751208-23211-1-git-send-email-baihaowen@meizu.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=Zvsvqlg5tb5I1MU/XfFP2vZFPX3ccrgBSECf3GGh4ts=;
+        b=YEgOUusxJ6oJjGjaTkFqzCpHtSgRlCvA38uROCs2SEDF7V5p7E1Vhgv7Dl2pwtMWol
+         ywklWk8otEjN5P4pgcNQSDP11BWFcAks6b2NUUvYuQB+0VDpUkeva/Vc5NDV2ei6AYYQ
+         wje8r4Xxd5fVrdge4rWh/ZKKFUnJQydFxbSvfdmZ0gH/R1JCFTS6Z2CnmDoI7LDtbIMM
+         fSqOafH89zrIzOWPlAgj53/4ARAbivgTUlH9bWL/YapP8hGdfN7gy5beldo+9J1qSLcE
+         BR9F1l3HWfpd6bI27N58OvpmYZXlZhZuGbDxkhOLD484JegsFaCfKk7x9KQYlwZmNrAB
+         ZfAA==
+X-Gm-Message-State: AOAM530AXfKZjJuswhwVMyHkw04ijhaHbimVnlu6P9wQaBYBy9gzYyDZ
+        OuAm4XI+7QC72m0M1TNJWBK8fKCVQq4=
+X-Google-Smtp-Source: ABdhPJx9sHrQH00xtxQYUKiO0vD+ZBYZX0eNj4b9yp72SPKswZSc9PF0sJUe1iBHhvv9ewRAjWTWYA==
+X-Received: by 2002:aca:a8d7:0:b0:328:b19f:dbac with SMTP id r206-20020acaa8d7000000b00328b19fdbacmr7353753oie.243.1652799105561;
+        Tue, 17 May 2022 07:51:45 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:d310:a4f5:635f:2e00? (2603-8081-140c-1a00-d310-a4f5-635f-2e00.res6.spectrum.com. [2603:8081:140c:1a00:d310:a4f5:635f:2e00])
+        by smtp.gmail.com with ESMTPSA id g15-20020a9d6a0f000000b006060322124csm4980643otn.28.2022.05.17.07.51.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 17 May 2022 07:51:45 -0700 (PDT)
+Message-ID: <c9e99081-f6aa-0167-77ff-57533b107e90@gmail.com>
+Date:   Tue, 17 May 2022 09:51:44 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1652751208-23211-1-git-send-email-baihaowen@meizu.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 1/1] RDMA/rxe: Compact the function
+ free_rd_atomic_resource
+Content-Language: en-US
+To:     yanjun.zhu@linux.dev, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20220517190800.122757-1-yanjun.zhu@linux.dev>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220517190800.122757-1-yanjun.zhu@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 17, 2022 at 09:33:28AM +0800, Haowen Bai wrote:
-> container_of() will never return NULL, so remove useless code.
+On 5/17/22 14:08, yanjun.zhu@linux.dev wrote:
+> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+> 
+> Compact the function and move it to the header file.
+I have two issues with this patch.
 
-It is confusing here, but it can be null. If you want to do this then
-you have to split out the _ib_alloc_device call and check it
-seperately.
+There is no advantage of having an inline function in a header file
+that is only called once. The compiler is perfectly capable of (and does)
+inlining a static function in a .c file if only called once. This just
+makes the code harder to read.
 
-Jason
+There is a patch in for-rc that gets rid of read.mr in favor of an rkey.
+This patch is out of date.
+
+Bob
+> 
+> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_loc.h  | 11 ++++++++++-
+>  drivers/infiniband/sw/rxe/rxe_qp.c   | 15 ++-------------
+>  drivers/infiniband/sw/rxe/rxe_resp.c |  4 ++--
+>  3 files changed, 14 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 409efeecd581..6517b4f104b1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -145,7 +145,16 @@ static inline int rcv_wqe_size(int max_sge)
+>  		max_sge * sizeof(struct ib_sge);
+>  }
+>  
+> -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
+> +static inline void free_rd_atomic_resource(struct resp_res *res)
+> +{
+> +	if (res->type == RXE_ATOMIC_MASK) {
+> +		kfree_skb(res->atomic.skb);
+> +	} else if (res->type == RXE_READ_MASK) {
+> +		if (res->read.mr)
+> +			rxe_drop_ref(res->read.mr);
+> +	}
+> +	res->type = 0;
+> +}
+>  
+>  static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
+>  {
+> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+> index 5f270cbf18c6..b29208852bc4 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+> @@ -126,24 +126,13 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+>  		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>  			struct resp_res *res = &qp->resp.resources[i];
+>  
+> -			free_rd_atomic_resource(qp, res);
+> +			free_rd_atomic_resource(res);
+>  		}
+>  		kfree(qp->resp.resources);
+>  		qp->resp.resources = NULL;
+>  	}
+>  }
+>  
+> -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+> -{
+> -	if (res->type == RXE_ATOMIC_MASK) {
+> -		kfree_skb(res->atomic.skb);
+> -	} else if (res->type == RXE_READ_MASK) {
+> -		if (res->read.mr)
+> -			rxe_drop_ref(res->read.mr);
+> -	}
+> -	res->type = 0;
+> -}
+> -
+>  static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>  {
+>  	int i;
+> @@ -152,7 +141,7 @@ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>  	if (qp->resp.resources) {
+>  		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>  			res = &qp->resp.resources[i];
+> -			free_rd_atomic_resource(qp, res);
+> +			free_rd_atomic_resource(res);
+>  		}
+>  	}
+>  }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index c369d78fc8e8..923a71ff305c 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -663,7 +663,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>  		 */
+>  		res = &qp->resp.resources[qp->resp.res_head];
+>  
+> -		free_rd_atomic_resource(qp, res);
+> +		free_rd_atomic_resource(res);
+>  		rxe_advance_resp_resource(qp);
+>  
+>  		res->type		= RXE_READ_MASK;
+> @@ -977,7 +977,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+>  	}
+>  
+>  	res = &qp->resp.resources[qp->resp.res_head];
+> -	free_rd_atomic_resource(qp, res);
+> +	free_rd_atomic_resource(res);
+>  	rxe_advance_resp_resource(qp);
+>  
+>  	skb_get(skb);
+
