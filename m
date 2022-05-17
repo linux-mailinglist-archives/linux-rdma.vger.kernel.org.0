@@ -2,140 +2,102 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BF6529773
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 04:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 658B95298FE
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 07:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbiEQClM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 May 2022 22:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
+        id S230027AbiEQFND (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 May 2022 01:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238564AbiEQClG (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 May 2022 22:41:06 -0400
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17132271E
-        for <linux-rdma@vger.kernel.org>; Mon, 16 May 2022 19:41:05 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10349"; a="271155752"
-X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
-   d="scan'208";a="271155752"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2022 19:41:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
-   d="scan'208";a="596860035"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga008.jf.intel.com with ESMTP; 16 May 2022 19:41:03 -0700
-From:   yanjun.zhu@linux.dev
-To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
-        yanjun.zhu@linux.dev
-Subject: [PATCH 1/1] RDMA/rxe: Compact the function free_rd_atomic_resource
-Date:   Tue, 17 May 2022 15:08:00 -0400
-Message-Id: <20220517190800.122757-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S237129AbiEQFNC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 01:13:02 -0400
+Received: from sender2-op-o12.zoho.com.cn (sender2-op-o12.zoho.com.cn [163.53.93.243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5920275CB
+        for <linux-rdma@vger.kernel.org>; Mon, 16 May 2022 22:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1652764372;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:Date:MIME-Version:Subject:Subject:To:To:References:From:From:Message-ID:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+        bh=cic6GCVa562snG1G4OtGMxmT7IOEVCv4aFCfD+8xY2A=;
+        b=e6GEX0ic3IBf0SajuA8hiYO7+9lMw5CkU5ycxztmxbA4Wz7f364N9w2zQ9fTULu8
+        e6IkHETyihIyhC13/huD/dzTZXMwr5jFTARLliGK3Pl83O62iFG4pslKhDkdtFbK9zn
+        77dtiLiB1hMP3fR3HNqkXfNtfdAltjfn5NIfBPWM=
+Received: from [192.168.255.10] (113.108.77.66 [113.108.77.66]) by mx.zoho.com.cn
+        with SMTPS id 1652764369627136.7957860436769; Tue, 17 May 2022 13:12:49 +0800 (CST)
+Date:   Tue, 17 May 2022 13:12:48 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: Question about AETH_NAK_PSN_SEQ_ERROR
+To:     Bob Pearson <rpearsonhpe@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <2eeb36ab-0f4d-fc9a-44a6-9b6bfa2f7970@mykernel.net>
+ <7f51a1c8-757f-21c2-cf8d-fd91b5e26563@mykernel.net>
+ <64bb14e5-2511-e78f-8618-d1877cc856bb@gmail.com>
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Message-ID: <1298f881-ff4c-7f29-2688-a104e64137b2@mykernel.net>
+In-Reply-To: <64bb14e5-2511-e78f-8618-d1877cc856bb@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-ZohoCNMailClient: External
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Compact the function and move it to the header file.
+=E5=9C=A8 2022/5/15 0:22, Bob Pearson =E5=86=99=E9=81=93:
+> On 5/14/22 09:20, Chengguang Xu wrote:
+>> =E5=9C=A8 2022/5/14 21:35, Chengguang Xu =E5=86=99=E9=81=93:
+>>> Hello Folks,
+>>>
+>>>
+>>> There is a logic(below code) in check_ack() in rxe_comp.c,=C2=A0 the ca=
+se (AETH_NAK_PSN_SEQ_ERROR)
+>>> indicates sending side received a nak ack which means opposite side had=
+ an psn seq error(expected psn < received psn).
+>>> I don't fully understand the comment(/* a nak implicitly acks all packe=
+ts with psns before */) here,
+>>> could someone give me a hint for this?
+> For a start go to
+>
+> https://www.infinibandta.org/ibta-specification/
+>
+> and follow the directions to get access to the InfiniBand Architecture Sp=
+ecification Vol. 1. It should be
+> free but you have to provide contact information. Unless your company is =
+a member of the IBTA.
+>
+> If you already have access then look at IBA 9.7.5.1.2 Coalesced Acknowled=
+ge Messages.
+>
+> Any response carrying a packet sequence number implicitly acks all reques=
+t packets with
+> a PSN smaller than the one carried in the response packet. It may ack or =
+nak the request packet
+> with the same psn.
+>
+>> Carefully checking rxe_resp.c and found the psn in the ack (with AETH_NA=
+K_PSN_SEQ_ERROR) is resp.psn not received pkt->psn.=C2=A0 :-)
+>>
+> resp.psn will carry the correct response psn for the current response pac=
+ket. This will be the same
+> as the psn of the req packet for send/write, and atomic requests but will=
+ be one of the range
+> of psns of a read request response. I.e. if the mtu is 4K and the read is=
+ 1MB there will be
+> 256 read response packets to reply to the read request with psns starting=
+ at the psn of the
+> request and increasing by 1 until the message is done. The next request p=
+acket must leave a gap of
+> 255 psns.
 
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_loc.h  | 11 ++++++++++-
- drivers/infiniband/sw/rxe/rxe_qp.c   | 15 ++-------------
- drivers/infiniband/sw/rxe/rxe_resp.c |  4 ++--
- 3 files changed, 14 insertions(+), 16 deletions(-)
+Thank you very much for detailed explanation!
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 409efeecd581..6517b4f104b1 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -145,7 +145,16 @@ static inline int rcv_wqe_size(int max_sge)
- 		max_sge * sizeof(struct ib_sge);
- }
- 
--void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
-+static inline void free_rd_atomic_resource(struct resp_res *res)
-+{
-+	if (res->type == RXE_ATOMIC_MASK) {
-+		kfree_skb(res->atomic.skb);
-+	} else if (res->type == RXE_READ_MASK) {
-+		if (res->read.mr)
-+			rxe_drop_ref(res->read.mr);
-+	}
-+	res->type = 0;
-+}
- 
- static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
- {
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 5f270cbf18c6..b29208852bc4 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -126,24 +126,13 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
- 		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
- 			struct resp_res *res = &qp->resp.resources[i];
- 
--			free_rd_atomic_resource(qp, res);
-+			free_rd_atomic_resource(res);
- 		}
- 		kfree(qp->resp.resources);
- 		qp->resp.resources = NULL;
- 	}
- }
- 
--void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
--{
--	if (res->type == RXE_ATOMIC_MASK) {
--		kfree_skb(res->atomic.skb);
--	} else if (res->type == RXE_READ_MASK) {
--		if (res->read.mr)
--			rxe_drop_ref(res->read.mr);
--	}
--	res->type = 0;
--}
--
- static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
- {
- 	int i;
-@@ -152,7 +141,7 @@ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
- 	if (qp->resp.resources) {
- 		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
- 			res = &qp->resp.resources[i];
--			free_rd_atomic_resource(qp, res);
-+			free_rd_atomic_resource(res);
- 		}
- 	}
- }
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index c369d78fc8e8..923a71ff305c 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -663,7 +663,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
- 		 */
- 		res = &qp->resp.resources[qp->resp.res_head];
- 
--		free_rd_atomic_resource(qp, res);
-+		free_rd_atomic_resource(res);
- 		rxe_advance_resp_resource(qp);
- 
- 		res->type		= RXE_READ_MASK;
-@@ -977,7 +977,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	}
- 
- 	res = &qp->resp.resources[qp->resp.res_head];
--	free_rd_atomic_resource(qp, res);
-+	free_rd_atomic_resource(res);
- 	rxe_advance_resp_resource(qp);
- 
- 	skb_get(skb);
--- 
-2.30.2
+Chengguang
+
 
