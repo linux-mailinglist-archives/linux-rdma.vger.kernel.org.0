@@ -2,111 +2,140 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB5EA5296F3
-	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 03:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44BF6529773
+	for <lists+linux-rdma@lfdr.de>; Tue, 17 May 2022 04:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235739AbiEQBxk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 16 May 2022 21:53:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
+        id S229937AbiEQClM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 16 May 2022 22:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbiEQBxj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 May 2022 21:53:39 -0400
-Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B013D4B4
-        for <linux-rdma@vger.kernel.org>; Mon, 16 May 2022 18:53:37 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VDPKjTu_1652752413;
-Received: from 30.43.105.205(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VDPKjTu_1652752413)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 17 May 2022 09:53:34 +0800
-Message-ID: <0f7e9389-daf3-16ec-83e8-439361ee7d97@linux.alibaba.com>
-Date:   Tue, 17 May 2022 09:53:32 +0800
+        with ESMTP id S238564AbiEQClG (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 16 May 2022 22:41:06 -0400
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17132271E
+        for <linux-rdma@vger.kernel.org>; Mon, 16 May 2022 19:41:05 -0700 (PDT)
+X-IronPort-AV: E=McAfee;i="6400,9594,10349"; a="271155752"
+X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
+   d="scan'208";a="271155752"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2022 19:41:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,231,1647327600"; 
+   d="scan'208";a="596860035"
+Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
+  by orsmga008.jf.intel.com with ESMTP; 16 May 2022 19:41:03 -0700
+From:   yanjun.zhu@linux.dev
+To:     jgg@ziepe.ca, leon@kernel.org, linux-rdma@vger.kernel.org,
+        yanjun.zhu@linux.dev
+Subject: [PATCH 1/1] RDMA/rxe: Compact the function free_rd_atomic_resource
+Date:   Tue, 17 May 2022 15:08:00 -0400
+Message-Id: <20220517190800.122757-1-yanjun.zhu@linux.dev>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma module
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     dledford@redhat.com, leon@kernel.org, linux-rdma@vger.kernel.org,
-        KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com,
-        BMT@zurich.ibm.com
-References: <20220421071747.1892-1-chengyou@linux.alibaba.com>
- <20220421071747.1892-11-chengyou@linux.alibaba.com>
- <20220510131724.GA1093822@nvidia.com>
- <15a6e72f-2967-5c19-3742-d854409275ce@linux.alibaba.com>
- <20220516114940.GT1343366@nvidia.com>
- <3bf3f0f4-1592-2aa6-42c7-f1b4ff73fc6d@linux.alibaba.com>
- <1b6dbe3a-8b15-3c56-5353-27525095962a@linux.alibaba.com>
- <20220516140721.GW1343366@nvidia.com>
- <eb2f87be-7d9a-72c9-645e-0d789b604c2e@linux.alibaba.com>
- <20220516173102.GF1343366@nvidia.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <20220516173102.GF1343366@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.3 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
+Compact the function and move it to the header file.
 
-On 5/17/22 1:31 AM, Jason Gunthorpe wrote:
-> On Mon, May 16, 2022 at 11:14:24PM +0800, Cheng Xu wrote:
->>>> I think this twice, use a net notifier of module can not solve this, due
->>>> to the leak of all ib devices information in erdma module.
->>>
->>> I don't understand what this means
->> At first I want to register a global net notifier in our module, and link
->> the ib device and net device if matches in the callback. But in the
->> callback, we can not get the ib devices registered by erdma, because our
->> driver module does not maintain the ib device list. This is not the
->> right way.
-> 
-> The core has the device list, if you need to search it then you need
-> to add a new searching function
-> 
+Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+---
+ drivers/infiniband/sw/rxe/rxe_loc.h  | 11 ++++++++++-
+ drivers/infiniband/sw/rxe/rxe_qp.c   | 15 ++-------------
+ drivers/infiniband/sw/rxe/rxe_resp.c |  4 ++--
+ 3 files changed, 14 insertions(+), 16 deletions(-)
 
-I had a mistake, instead of what I said, erdma should search net devices
-in a wq to find the matched net device. Not search ib devices in net
-notifier callback.
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 409efeecd581..6517b4f104b1 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -145,7 +145,16 @@ static inline int rcv_wqe_size(int max_sge)
+ 		max_sge * sizeof(struct ib_sge);
+ }
+ 
+-void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
++static inline void free_rd_atomic_resource(struct resp_res *res)
++{
++	if (res->type == RXE_ATOMIC_MASK) {
++		kfree_skb(res->atomic.skb);
++	} else if (res->type == RXE_READ_MASK) {
++		if (res->read.mr)
++			rxe_drop_ref(res->read.mr);
++	}
++	res->type = 0;
++}
+ 
+ static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
+ {
+diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+index 5f270cbf18c6..b29208852bc4 100644
+--- a/drivers/infiniband/sw/rxe/rxe_qp.c
++++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+@@ -126,24 +126,13 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+ 		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+ 			struct resp_res *res = &qp->resp.resources[i];
+ 
+-			free_rd_atomic_resource(qp, res);
++			free_rd_atomic_resource(res);
+ 		}
+ 		kfree(qp->resp.resources);
+ 		qp->resp.resources = NULL;
+ 	}
+ }
+ 
+-void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+-{
+-	if (res->type == RXE_ATOMIC_MASK) {
+-		kfree_skb(res->atomic.skb);
+-	} else if (res->type == RXE_READ_MASK) {
+-		if (res->read.mr)
+-			rxe_drop_ref(res->read.mr);
+-	}
+-	res->type = 0;
+-}
+-
+ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+ {
+ 	int i;
+@@ -152,7 +141,7 @@ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+ 	if (qp->resp.resources) {
+ 		for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+ 			res = &qp->resp.resources[i];
+-			free_rd_atomic_resource(qp, res);
++			free_rd_atomic_resource(res);
+ 		}
+ 	}
+ }
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+index c369d78fc8e8..923a71ff305c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -663,7 +663,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+ 		 */
+ 		res = &qp->resp.resources[qp->resp.res_head];
+ 
+-		free_rd_atomic_resource(qp, res);
++		free_rd_atomic_resource(res);
+ 		rxe_advance_resp_resource(qp);
+ 
+ 		res->type		= RXE_READ_MASK;
+@@ -977,7 +977,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+ 	}
+ 
+ 	res = &qp->resp.resources[qp->resp.res_head];
+-	free_rd_atomic_resource(qp, res);
++	free_rd_atomic_resource(res);
+ 	rxe_advance_resp_resource(qp);
+ 
+ 	skb_get(skb);
+-- 
+2.30.2
 
-I think is should be fine.
-
->>
->>>> The solution may be simple: register net notifier per device in probe,
->>>> and call ib_device_set_netdev if matches in the notifier callback.
->>>
->>> That sounds wrong
->>>
->>
->> OK. So using rdma link command to handle the link relationship manually
->> is still a better choice？
-> 
-> No
->   
->> Actually, erdma looks like a hardware implementation of siw/rxe (more
->> likes siw, because erdma uses iWarp, and have similar CM
->> implementation): the ethernet functionality is provided by existed net
->> device, no matter what kind of the net device (due to virtio-net is
->> de-facto in cloud virtualization, erdma is binded to virtio-net in
->> practice). Due to this similarity, siw/rxe use 'rdma link' to link the
->> ib device and net device (including create ib device), Does it sound
->> reasonable that erdma use it to link the net deivce?
-> 
-> It is not like siw because it cannot run on any netdevice, it can only
-> run on the signle netdevice the HW is linked to in the background.
-> 
-
-Yeah, you are exactly right, I omitted this detail in the last
-reply.
-
-Thanks,
-Cheng Xu
-
-> Jason
