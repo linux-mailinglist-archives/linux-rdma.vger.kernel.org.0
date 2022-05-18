@@ -2,98 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550B752BE91
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 May 2022 17:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD9352BF6C
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 May 2022 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239214AbiERPXb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 18 May 2022 11:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        id S239803AbiERQFb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 18 May 2022 12:05:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbiERPXa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 May 2022 11:23:30 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166A5199B36
-        for <linux-rdma@vger.kernel.org>; Wed, 18 May 2022 08:23:29 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-f17f1acffeso3137601fac.4
-        for <linux-rdma@vger.kernel.org>; Wed, 18 May 2022 08:23:29 -0700 (PDT)
+        with ESMTP id S239792AbiERQF3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 18 May 2022 12:05:29 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D9F1D675B
+        for <linux-rdma@vger.kernel.org>; Wed, 18 May 2022 09:05:28 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id v5so1826007qvs.10
+        for <linux-rdma@vger.kernel.org>; Wed, 18 May 2022 09:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S82V2k8xLNZUjcMt1WsmA964lMW/mTEg1/F59m0lsKE=;
-        b=cYeTSvdpiA2EgoxcG+bqi2vkOf2H6O9hIiAtLexAKHiB+6fi4rjHajSW9FhnBdw/6m
-         7rpR1/HbF8YCDJ9k947M+VD9nZFX7N+T0GwJ4RxPNmNEnnHpsm3wEzmOYmKxV/PNwjJL
-         fuN51TPLb6C3XY83602dz0uZ9TAivx6swr9turaJTtAJtJm3MFiXrBzGF7zsBQS5TwfZ
-         O1FLBikuPN4BoIbynZjYFFhGSmK7KKgCj5y9Fvr95A++PQRyH4VEkcRL1FRBWKNEswL6
-         W1XvdkwdEEi5kr7s00Y3BY7OO1J5qe/arW94pBdw/+3JyXS2V6/zD5LSLBq7yk6MjnE7
-         zuvg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AsDPJQJoORPGh0qS4EUeaOiktBXOii5jyqGHGv+kXII=;
+        b=N76w0omWsgq1J3trQP+78nGSW1FVT0gWGjc72Mb7QVydmmWW9+FAv5I3Dcl5COOIKO
+         4vA4c/iw6Hjv1lPlLWYuu4ZXAV0cmilaFztjoqQq3rpGsdIFIbi3551Hy18a84tDtlM1
+         /PVy20Jd2KeJ0STPnZZTjPBpGkbDWJmfUuaImI4EugibkVhOCmGuKS4x5BqJjjSa84Tw
+         nnk40ZmaQIdUG4daGMY+vWEQed0/kZKjkAfoSigwJTPRTsEEfJAYQcPLAAF4LtR/2p+U
+         xlREPjULkf2pEVenp75I+mD993ExL5U5UfVfMA2Y0WgBGhVwjcrJdMytRTXhKHsMJl4j
+         uWxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S82V2k8xLNZUjcMt1WsmA964lMW/mTEg1/F59m0lsKE=;
-        b=Uo6kUo2FEzAnTptb0Q5BySe0ST99F+4Ku0z/lyPiBo4rB8tIMcVi5aaSWn6qXByNmn
-         B1tMtv3gJle6PYFjMaEfllLY48oxo711ISfvs1FgHyn85votWnJKA7CzB6pIcAm9cVfs
-         iyrJQdT20nyttxvzCiiLtYVOyS2XcZDBvb4LjUqDvNaFQax4FpA17t2lwG2lG3s53gF2
-         qA7aRp0Kzzpxa0bWHK/qPRnDxguoe8tWT1vVdyE76qz9gSmpF3LkIv91N7h+GjEMMlCt
-         8gwnnWwU6XNsAQ0EWbtnvPoa+kAacYZA8KQ/34/yEAG85aZY7Qgv6U/zpE8gy2qbxAv1
-         FxrA==
-X-Gm-Message-State: AOAM531kUGGhks66eKRvggSRum/iTn+ZJpbgHkgoEbhq2wm6WO4qiu9a
-        n+YXGY8K5a42+lJv6lAxsOc=
-X-Google-Smtp-Source: ABdhPJxpblgGiMCiE1s2ZsEG03/5t0aukUkEI4Z7NDIZ/twj4HJo16sQeweSDqDng12z/OURsIN3Xg==
-X-Received: by 2002:a05:6870:4188:b0:d9:eed0:5a41 with SMTP id y8-20020a056870418800b000d9eed05a41mr12836oac.161.1652887408410;
-        Wed, 18 May 2022 08:23:28 -0700 (PDT)
-Received: from u-22.tx.rr.com (2603-8081-140c-1a00-e8c5-4d15-83a3-c730.res6.spectrum.com. [2603:8081:140c:1a00:e8c5:4d15:83a3:c730])
-        by smtp.googlemail.com with ESMTPSA id k20-20020a056830151400b00606aa21608esm851180otp.17.2022.05.18.08.23.27
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AsDPJQJoORPGh0qS4EUeaOiktBXOii5jyqGHGv+kXII=;
+        b=MQbv5HErdrIqRv98vRXHbQn+F2iZBVuC5y+NWrpxn8pcr87489IcsdXHHbVgdEEv3R
+         Q2Z9JHDqDv03y3TAk/5S3p0bQOhkFpjb5kowAPlMQ7vNojNqvN2v0cjayl7bFJBUifug
+         FJFih9Biu/f0pVM3UCiCTJ+3BHRjsputYgupjnKF8yY3BCfBwFvxo13QiSuuQ5X6w+5H
+         GuS6+0ZFVCA0/u7HwORElwRv0/wK04uGk37qCMFzVK8XzinloQ5GJD2zMWqTczSR82D/
+         DFqpvH8YT3Q4rFGbtLo6kKVEBoIZB9pSQzAvEb+TsBNQTxpkkGi4aXASPMicrkkiRyma
+         8TvQ==
+X-Gm-Message-State: AOAM533hNbZNiqKh7Nu9E8lyZ0ADpaMmuwEBBkUf9aKwtYLXymG79ak1
+        8zKc7sUXbqwqCe8GmTO4/m1eFw==
+X-Google-Smtp-Source: ABdhPJwuWum5215mzbkNuSWa3OtW1/3pKlaT8sVXotoEFY0mMu9fuRHdN8UiWPfDKaWJgTpYISj/9g==
+X-Received: by 2002:a05:6214:224d:b0:461:f264:ba2 with SMTP id c13-20020a056214224d00b00461f2640ba2mr406148qvc.43.1652889927418;
+        Wed, 18 May 2022 09:05:27 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id l19-20020a05622a175300b002f39b99f670sm1567656qtk.10.2022.05.18.09.05.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 May 2022 08:23:27 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     edwards@nvidia.com, leon@kernel.org, jgg@nvidia.com,
-        zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next] RDMA/core: Fix wrong rkey in test_qp_ex_rc_bind_mw
-Date:   Wed, 18 May 2022 10:23:10 -0500
-Message-Id: <20220518152310.20866-1-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 18 May 2022 09:05:26 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nrMAv-008VXe-MH; Wed, 18 May 2022 13:05:25 -0300
+Date:   Wed, 18 May 2022 13:05:25 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     Long Li <longli@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: Re: [EXTERNAL] Re: [PATCH 05/12] net: mana: Set the DMA device max
+ page size
+Message-ID: <20220518160525.GP63055@ziepe.ca>
+References: <1652778276-2986-1-git-send-email-longli@linuxonhyperv.com>
+ <1652778276-2986-6-git-send-email-longli@linuxonhyperv.com>
+ <20220517145949.GH63055@ziepe.ca>
+ <PH7PR21MB3263EFA8F624F681C3B57636CECE9@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <20220517193515.GN63055@ziepe.ca>
+ <PH7PR21MB3263C44368F02B8AF8521C4ACECE9@PH7PR21MB3263.namprd21.prod.outlook.com>
+ <20220518000356.GO63055@ziepe.ca>
+ <BL1PR21MB3283790E8270ED6C639AAB0DD6D19@BL1PR21MB3283.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <BL1PR21MB3283790E8270ED6C639AAB0DD6D19@BL1PR21MB3283.namprd21.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The current test_qp_ex_rc_bind_mw in tests/test_qpex.py uses an incorrect
-value for the new_rkey based on the old mr.rkey. This patch fixes that
-behavior by basing the new rkey on the old mw.rkey instead.
+On Wed, May 18, 2022 at 05:59:00AM +0000, Ajay Sharma wrote:
+> Thanks Long. 
+> Hello Jason,
+> I am the author of the patch.
+> To your comment below : 
+> " As I've already said, you are supposed to set the value that limits to ib_sge and *NOT* the value that is related to ib_umem_find_best_pgsz. It is usually 2G because the ib_sge's typically work on a 32 bit length."
+> 
+> The ib_sge is limited by the __sg_alloc_table_from_pages() which
+> uses ib_dma_max_seg_size() which is what is set by the eth driver
+> using dma_set_max_seg_size() . Currently our hw does not support
+> PTEs larger than 2M.
 
-Before this patch the test will fail for the rxe driver about 1 in 256
-tries since randomly that is the freguency of new_rkeys which have the
-same 8 bit key portion as the current mw which is not allowed. With
-this patch those errors do not occur.
+*sigh* again it has nothing to do with *PTEs* in the HW.
 
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- tests/test_qpex.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tests/test_qpex.py b/tests/test_qpex.py
-index 8f3f338e..a4c99910 100644
---- a/tests/test_qpex.py
-+++ b/tests/test_qpex.py
-@@ -300,7 +300,7 @@ class QpExTestCase(RDMATestCase):
-             if ex.error_code == errno.EOPNOTSUPP:
-                 raise unittest.SkipTest('Memory Window allocation is not supported')
-             raise ex
--        new_key = inc_rkey(server.mr.rkey)
-+        new_key = inc_rkey(mw.rkey)
-         server.qp.wr_bind_mw(mw, new_key, bind_info)
-         server.qp.wr_complete()
-         u.poll_cq(server.cq)
--- 
-2.34.1
-
+Jason
