@@ -2,135 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6DC852AEF0
-	for <lists+linux-rdma@lfdr.de>; Wed, 18 May 2022 02:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C553852AFBD
+	for <lists+linux-rdma@lfdr.de>; Wed, 18 May 2022 03:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbiERAEB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 17 May 2022 20:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35012 "EHLO
+        id S233364AbiERBPU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 17 May 2022 21:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232008AbiERAEA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 20:04:00 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7636950440
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 17:03:58 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id n8so370831qke.11
-        for <linux-rdma@vger.kernel.org>; Tue, 17 May 2022 17:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rc9GkWPYwi9LjqP/Z5LP2qV70hypQrqBkulyuMgMrFs=;
-        b=GyE4RctcHXmpHwWg3/vj2qWS+pJOYVc0XqsDwxjK94QvKCHOXSGP/2QEz3efBSZWCT
-         H4CvW8XL8GdJD0msOv980Gooh7AC3Wc3CqvDGXkdaAZXz39Q2u71SvyoZF8Up253bzYS
-         goKPZggFYA5z1F44SkDR7jfLk29BeY2pWCidXYNEdOeZjC2/oakC7+Gq0sP5tsLHG1yE
-         d9LvRHW6oha2Pe+/oGMstHAI4nBRZIAsffa/V5J3qdtwwlSlKeyoeF8WUySB0HRtRYzq
-         wXI3kIw/DmdcurybnglIzcCy+Hp68JRkm+PLhCRG4lF2og5VUx9yYeONNJVENCk5isn5
-         wT7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rc9GkWPYwi9LjqP/Z5LP2qV70hypQrqBkulyuMgMrFs=;
-        b=DZtyKvu5Pc1q2wPNjozXTLAZGj55jsGn8F7IkEdbVbiS7mYbqxXnwTSDsGxiKCTAkq
-         37DsByrVTHIL5ArXaham3BVgx2yEgkmc0uEy1q+TSXGLVBTLb4A4aHjiKT0QzydQ+gKR
-         xVSB+AlSy1Fse0Dd4WQIoPKEGDQiRYqscVaHVodnpd7UOZs52eCVqru/Qt4KoacLaCUg
-         IgK9D6avLENDwumby9gzu0CleY6t4DivewtlFU8kSgxITazOZSUljuwJVY2gn8Vvmi+v
-         WambjcS9VeV9yVzkKut6YsUGl5iHc2uD0/aJV52uYdd/jFDy+e4OdPaYx9TL3ffbvLr/
-         Xg7A==
-X-Gm-Message-State: AOAM530PHQUv3QgKqXj/Zf+/oTnuHRJZ4EbcznqC4zZpkyAzD9i3AAcw
-        LSbkNn/ARUj4kXRjAZYi0RbQfQ==
-X-Google-Smtp-Source: ABdhPJx1uUSvOMA2ilddaCy47Ot+FFkFnYYMTPmBJEHO9pSg/n8gspCmeg+o5fLHgqBtvEqimUFbsQ==
-X-Received: by 2002:a05:620a:42:b0:6a0:c64c:35ae with SMTP id t2-20020a05620a004200b006a0c64c35aemr18539952qkt.607.1652832237634;
-        Tue, 17 May 2022 17:03:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id n7-20020ac81e07000000b002f39b99f6bfsm262039qtl.89.2022.05.17.17.03.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 May 2022 17:03:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nr7AS-008EVK-0v; Tue, 17 May 2022 21:03:56 -0300
-Date:   Tue, 17 May 2022 21:03:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Long Li <longli@microsoft.com>
-Cc:     Ajay Sharma <sharmaajay@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
+        with ESMTP id S233380AbiERBPS (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 17 May 2022 21:15:18 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A6D54187;
+        Tue, 17 May 2022 18:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652836514; x=1684372514;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6tM7gH4JRFS/rWl6JwkUGKCjUG1QwGkrdJ6CLSIx99k=;
+  b=BW5DDf8NhRFcwwpKiqW9KZolGfJwVscOubYrTOKqqHebUf91oDAXlarP
+   k/aN2ccibWeqLp5xycukAmpICJ/jwTPjFvlpCpn6qwsMniJcRU/JEeKty
+   MsmFB9hJw5xYSfbhiW+0ArudxZNQAVqL9+gK9QisOYmoQIvkvM+OVRxmx
+   A/9GaW+W9Qasylu3nkPgUK1yH0xijTCFJTfBfP0pSa0pwr71/THrnCWpH
+   tGiSONpmu/w8dJeAa0mwkcNADEUfEA/PLN0AJJWMBqKgxHwt/FW4SGuy2
+   hyq8XsEHR2i2iykVT8qkfxlqHyz3V2RFT+eHrrvLkE6mUrUF5l2/KqfKq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10350"; a="258979715"
+X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; 
+   d="scan'208";a="258979715"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 May 2022 18:15:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,233,1647327600"; 
+   d="scan'208";a="597448146"
+Received: from lkp-server02.sh.intel.com (HELO 242b25809ac7) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 17 May 2022 18:15:10 -0700
+Received: from kbuild by 242b25809ac7 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nr8HN-0001d7-Md;
+        Wed, 18 May 2022 01:15:09 +0000
+Date:   Wed, 18 May 2022 09:14:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     longli@linuxonhyperv.com, "K. Y. Srinivasan" <kys@microsoft.com>,
         Haiyang Zhang <haiyangz@microsoft.com>,
         Stephen Hemminger <sthemmin@microsoft.com>,
         Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 05/12] net: mana: Set the DMA device max page size
-Message-ID: <20220518000356.GO63055@ziepe.ca>
-References: <1652778276-2986-1-git-send-email-longli@linuxonhyperv.com>
- <1652778276-2986-6-git-send-email-longli@linuxonhyperv.com>
- <20220517145949.GH63055@ziepe.ca>
- <PH7PR21MB3263EFA8F624F681C3B57636CECE9@PH7PR21MB3263.namprd21.prod.outlook.com>
- <20220517193515.GN63055@ziepe.ca>
- <PH7PR21MB3263C44368F02B8AF8521C4ACECE9@PH7PR21MB3263.namprd21.prod.outlook.com>
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>
+Cc:     llvm@lists.linux.dev, kbuild-all@lists.01.org,
+        netdev@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Long Li <longli@microsoft.com>
+Subject: Re: [PATCH 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
+ Network Adapter
+Message-ID: <202205180903.446J0L2Y-lkp@intel.com>
+References: <1652778276-2986-13-git-send-email-longli@linuxonhyperv.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH7PR21MB3263C44368F02B8AF8521C4ACECE9@PH7PR21MB3263.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <1652778276-2986-13-git-send-email-longli@linuxonhyperv.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 17, 2022 at 08:04:58PM +0000, Long Li wrote:
-> > Subject: Re: [PATCH 05/12] net: mana: Set the DMA device max page size
-> > 
-> > On Tue, May 17, 2022 at 07:32:51PM +0000, Long Li wrote:
-> > > > Subject: Re: [PATCH 05/12] net: mana: Set the DMA device max page
-> > > > size
-> > > >
-> > > > On Tue, May 17, 2022 at 02:04:29AM -0700, longli@linuxonhyperv.com
-> > wrote:
-> > > > > From: Long Li <longli@microsoft.com>
-> > > > >
-> > > > > The system chooses default 64K page size if the device does not
-> > > > > specify the max page size the device can handle for DMA. This do
-> > > > > not work well when device is registering large chunk of memory in
-> > > > > that a large page size is more efficient.
-> > > > >
-> > > > > Set it to the maximum hardware supported page size.
-> > > >
-> > > > For RDMA devices this should be set to the largest segment size an
-> > > > ib_sge can take in when posting work. It should not be the page size
-> > > > of MR. 2M is a weird number for that, are you sure it is right?
-> > >
-> > > Yes, this is the maximum page size used in hardware page tables.
-> > 
-> > As I said, it should be the size of the sge in the WQE, not the "hardware page
-> > tables"
-> 
-> This driver uses the following code to figure out the largest page
-> size for memory registration with hardware:
-> 
-> page_sz = ib_umem_find_best_pgsz(mr->umem, PAGE_SZ_BM, iova);
-> 
-> In this function, mr->umem is created with ib_dma_max_seg_size() as
-> its max segment size when creating its sgtable.
->
-> The purpose of setting DMA page size to 2M is to make sure this
-> function returns the largest possible MR size that the hardware can
-> take. Otherwise, this function will return 64k: the default DMA
-> size.
+Hi,
 
-As I've already said, you are supposed to set the value that limits to
-ib_sge and *NOT* the value that is related to
-ib_umem_find_best_pgsz. It is usually 2G because the ib_sge's
-typically work on a 32 bit length.
+I love your patch! Yet something to improve:
 
-Jason
+[auto build test ERROR on linus/master]
+[also build test ERROR on v5.18-rc7 next-20220517]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/longli-linuxonhyperv-com/Introduce-Microsoft-Azure-Network-Adapter-MANA-RDMA-driver/20220517-170632
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 42226c989789d8da4af1de0c31070c96726d990c
+config: x86_64-randconfig-a002-20220516 (https://download.01.org/0day-ci/archive/20220518/202205180903.446J0L2Y-lkp@intel.com/config)
+compiler: clang version 15.0.0 (https://github.com/llvm/llvm-project 853fa8ee225edf2d0de94b0dcbd31bea916e825e)
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/f082dc68ab65c498c978d574e62413d50286b4f9
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review longli-linuxonhyperv-com/Introduce-Microsoft-Azure-Network-Adapter-MANA-RDMA-driver/20220517-170632
+        git checkout f082dc68ab65c498c978d574e62413d50286b4f9
+        # save the config file
+        mkdir build_dir && cp config build_dir/.config
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 O=build_dir ARCH=x86_64 SHELL=/bin/bash
+
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+   In file included from <built-in>:1:
+>> ./usr/include/rdma/mana-abi.h:12:10: fatal error: 'linux/mana/mana.h' file not found
+   #include <linux/mana/mana.h>
+            ^~~~~~~~~~~~~~~~~~~
+   1 error generated.
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
