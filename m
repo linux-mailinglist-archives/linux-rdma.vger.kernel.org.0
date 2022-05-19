@@ -2,158 +2,241 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4817D52DBE6
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 May 2022 19:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 882B052DD15
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 May 2022 20:51:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243569AbiESRvu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 May 2022 13:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51454 "EHLO
+        id S243438AbiESSvb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 May 2022 14:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243409AbiESRvd (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 May 2022 13:51:33 -0400
-X-Greylist: delayed 166548 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 19 May 2022 10:50:11 PDT
-Received: from na01-obe.outbound.protection.outlook.com (unknown [52.101.56.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A53ED682B;
-        Thu, 19 May 2022 10:50:10 -0700 (PDT)
+        with ESMTP id S242580AbiESSv3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 May 2022 14:51:29 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2072.outbound.protection.outlook.com [40.107.220.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D24159311
+        for <linux-rdma@vger.kernel.org>; Thu, 19 May 2022 11:51:28 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NLhKTR8UY/Vi4jS/AtGgRfbJaEMpg/bE/p5hdptB9WU2+5lyOfnvWMldjTR21iifEzZU0uXnU/B9PILjukADbX/dj9dwLDUx879A3FsH8l82cxC9eUfvsxKoQneXyDqzn7PZEuCV3RW0EHJ8ENNQRidAOfj/JxTPB6nBZo3wzMt+fOUNTA6cDOGC56GleMhWZno7dHFXi/0qUer1xMtsZsnFc9R46py5FEOF7WF8pxhm87IJZvlyCEtpZuUMCy6bdDvxiTGsrYcs5/4X1aQg7RizCh3bX3xOwMB7NAZGni4hfxXIXQ8sEsby9RDrdQZNoCN8KqTduZiJxdnssokGhA==
+ b=E3lx5i1dtBk+ppVXRst8oMQM6t5DHeB6crba6ndaMsVrkELm1zrh1lwvckEHt6RXdF7VoT4tKGjiLv8qAOS6+Zz+55kQMaCqkttn8uR68NF7gAfJUJkb9mKoIavvcUs7HQGSA4ZCkSUikYeWOUL1CtcTvRf17MY9N7BjBcnrtzsAGW73PEEIbqySpU51KzBrO9rRVp2gKQfbygA6GVrV8bfBlMwkrGm3XNgBvmeP/KWcvb1km/qctAFnA0yaI6PhG8J4gWLyjmIBETU1Pe7ai0LzSsEd7Ms0+GDQGv1CUiHkhev8r689bvt5Yk8E9uvm4wdJIs7CN8MCpV5Uqbvo3A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yiYNtSv62ZMVlCT+rEup7TeWJ+PSPxRRNIaV8FeSjyU=;
- b=X3UmW9wJyU38n7o/jz0m2eyZgk6e03s27gfeg/NHoKwaQ5aa9ApSRO6FXDNvKWiTpLbyLluHGSSRJz/c3ELOdKJ1EoQxcvDaYVs0i5o3ysnbgRClN9t2MiSNOoC9riPY5fo46cW9Kl/aGmE/wLbDlRlTbRvW8zLE7x7iFXfW5i5xtqZCmktRAuvlsL1Jl4hHIoSmr0YJLVf51NvBBBBxelvh1RGLtnbdb84EBtmLuh+kMb63BAvwra1WE/UlrHE+LHZW1cAq8UDsh+Sj12UZhMKGdY3W8c61OPtmD1eQ73Cy+7dQgsGDPjExwmn9sZiUlaIt43rwbc6QOdK4JlOBcw==
+ bh=iusDiyzQYsJRyhyiZ1un1ZkXZcVa/b1dlVFTlxd/gKc=;
+ b=Gjut5zoVb5y0J411fmI23Djnwd8UyTZEegf4tqHEd8sx4K06bZx4I7G6VjCUzur8ALtQNMjElrPIY5krsAEgWzDAFhgTw3jBBGGq81UW130lzqxjLI6Mr76BiJQVpg2/28nl0qqzLQ0Eaie4dXQp7RkoNPPV9mDQJC6wtfl6uJOESiXGQuUM/JYtVvCqL2KlUmR6Ej/TplFa4Aeq+N1RxTo7N8wtyjsTz7dNfQr5EIOeRYMm8NFlhGyTvwKfWKZ5Yeu+F9HzGT1FcIvubop+n58rsNm/2cnFvK/ru6KgGG0ZzCFWf30Gzgf1Rg0IoD7XQBna3SVlEM/RiYHh2vsL8A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yiYNtSv62ZMVlCT+rEup7TeWJ+PSPxRRNIaV8FeSjyU=;
- b=XdG5DqXBj0j+88yWerYT+IY2h4twMkMOxhdE+qtZzZl4rCw3Pmna3QP0p0LoBK+PWTbeB+fCANsxVXKgjxKxaJfcaYO2uObyIQKbKrxr6s4Wxm5BSeQHMtYNCLzc70oLpyEpGdUUYNz5CfsWnZp/nR7Mn7/8udoTlnc5eXLQmBA=
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com (2603:10b6:510:1db::16)
- by SJ0PR21MB1901.namprd21.prod.outlook.com (2603:10b6:a03:294::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.7; Thu, 19 May
- 2022 17:50:08 +0000
-Received: from PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::bdc5:cad:529a:4cdd]) by PH7PR21MB3263.namprd21.prod.outlook.com
- ([fe80::bdc5:cad:529a:4cdd%7]) with mapi id 15.20.5293.007; Thu, 19 May 2022
- 17:50:07 +0000
-From:   Long Li <longli@microsoft.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: RE: [PATCH 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-Thread-Topic: [PATCH 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-Thread-Index: AQHYac0wRAeXK+HCykeq53JGGiXdWK0jMLSAgAJ/saCAAHmfAIAAUdjQ
-Date:   Thu, 19 May 2022 17:50:07 +0000
-Message-ID: <PH7PR21MB3263E61F0A8CA25545B47173CED09@PH7PR21MB3263.namprd21.prod.outlook.com>
-References: <1652778276-2986-1-git-send-email-longli@linuxonhyperv.com>
- <1652778276-2986-13-git-send-email-longli@linuxonhyperv.com>
- <20220517152409.GJ63055@ziepe.ca>
- <PH7PR21MB326393A3D6BF619C2A7B4A42CED09@PH7PR21MB3263.namprd21.prod.outlook.com>
- <20220519124900.GR63055@ziepe.ca>
-In-Reply-To: <20220519124900.GR63055@ziepe.ca>
-Accept-Language: en-US
+ smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
+ dkim=pass header.d=talpey.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=talpey.com;
+Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
+ DM6PR01MB5212.prod.exchangelabs.com (2603:10b6:5:56::27) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.5250.18; Thu, 19 May 2022 18:51:26 +0000
+Received: from SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::f135:e76f:7ddd:f21]) by SN6PR01MB4445.prod.exchangelabs.com
+ ([fe80::f135:e76f:7ddd:f21%3]) with mapi id 15.20.5273.016; Thu, 19 May 2022
+ 18:51:25 +0000
+Message-ID: <77506ee4-b4d5-7f93-cf34-0c7361f658a0@talpey.com>
+Date:   Thu, 19 May 2022 14:51:22 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma module
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=5073ea08-8e9b-4bab-9bf9-70b6eeff0487;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2022-05-19T17:41:55Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9d9319f8-71e2-4816-9bdb-08da39c0034a
-x-ms-traffictypediagnostic: SJ0PR21MB1901:EE_
-x-microsoft-antispam-prvs: <SJ0PR21MB1901880D24CC39B700CE8DEFCED09@SJ0PR21MB1901.namprd21.prod.outlook.com>
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: WkQEzyJ8XHhDjkG+DruviIarFAKRPC6GIlHEpG/cKV3PPrWnxJp9cDBXwnQkhJkdIAErg/G44KBBIgYFFPyTVkHbpBGkDrdg+umxO8oNPQLtZ5IlQYOi60JMZLa62KfFZgk0lxKG9x15lGzPxdk53F5MCWGGn9lQCP/xEHcfaTpPJLK15lZjYzjDa/L6k/FzRXIwjh5StT6YZu+GJQrSuPnSQbFBVDNLQ0THk+5PP7PJ55y9i9Q80UuVSXVEV5h9/MO7QbNvlLE+50TM3yPYV0EYcmUrqkzkte3WOqPPAO/bkVm0ih9DzCUBkpqK9VBzqvqH24eYvhYhdjWyRoKDw6SdvaX5GlC7okx7zU7ZLfK/iCHQf9y4JiXTrLcVHNZP+S3gA+RjRi0CGfRdumqPhvYW2mC4MRtuWc+jZhvLpbdFiRLIzM2Uh7m8knm1l5SgKg3/S8jGQNYXBHSax3uyP1v/hCLgIYNGBF5QJupJlFJTYGDaLtfngV2oa/fuiky3nNz514kARDxKv2eeXjwq164mpQBQOOdIrvU7AzWLtgtrvQDsYsBiYetPy4g9Ux6SkVeB4eAKIpgC2ytwlpj4Rx3tNp+YvgF4nKWt7yGQ7srvAhD3fZxbl+nT2OHS4xHbOW+GjW0oeIfhWe9vIM7LhCbmkWplyiztxB/MIJHBbjcfy+56Pl2g1iWFWDxKji+wqUEsYV0HlqtQGkJuiXn0B4JtFQz0W/1vOGT+GudkmtFKcMYGEao4MAIncrpjMo8D
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR21MB3263.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(366004)(47530400004)(451199009)(186003)(6506007)(7696005)(33656002)(508600001)(26005)(9686003)(71200400001)(10290500003)(6916009)(54906003)(8990500004)(316002)(76116006)(66946007)(86362001)(55016003)(4744005)(2906002)(7416002)(5660300002)(8936002)(52536014)(82950400001)(38100700002)(66446008)(122000001)(38070700005)(64756008)(82960400001)(66556008)(66476007)(8676002)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?OOSUalzX6TUJNthELMdZDvisaBQY/WnchLkM4EmP8AKNTduwU84EDd4bjXiH?=
- =?us-ascii?Q?gLEHPjEJTl76UUvK00uTEfamBRgTPCIg1bxHQSEeeeahycop9TV3Eul+k3OS?=
- =?us-ascii?Q?4VYW0/DmUGEeB4HEgFwGODjyMB0NMMQFXiaWulwYiux5Ux2438xshNv41irV?=
- =?us-ascii?Q?dyinCV7gHRf1Z1cIL1S0JDewqPmsk9aH2FWQg8TzV0L7wKKuGW0Pn2sVtRJd?=
- =?us-ascii?Q?fOAvkVJ0BmuLkk6Ac+xbZZyy4Lofspr1xD2emDXbtkbNaebIPC471GsT7ipw?=
- =?us-ascii?Q?1T5z0gqtt35feCgi2BNu4PtdxoO+cpUZcxkavv6QOL7OagTq5BA8YoOlIs+J?=
- =?us-ascii?Q?6nnElB4MxuEnPpKnb3zdnZ/0deYXrtUdgu/ly7kSUh2aIrGHqim6vUqYEnFQ?=
- =?us-ascii?Q?xliPzfpXSh1zqxTegpvVXujANyGURINfINVNTLRaXPYZBRLCtM7ZikiRvtUq?=
- =?us-ascii?Q?ucuy0miH5V5XBh1G7pxAcMtDWLR+nq1l4aNRu9sjmjKn7AI9+Q1aBghbU1M/?=
- =?us-ascii?Q?l59Oi9TmlBl+/MXDMac61REwJSNSQL5yea4+THv+JbaemA9LOich4P4pXNf0?=
- =?us-ascii?Q?qP2k4G9uNxJDOZJU0Td6Grc8j43YG1gFzJg4raLu4xKBeQSRBlK5tcQpmwrB?=
- =?us-ascii?Q?iLwF3rfAVdo0tyyKFIqizsoOUay/lYCo5zREviVmeCIiR6GcG0yvhB5z0+de?=
- =?us-ascii?Q?9yUiFxiSvn1pXICnRi2BylnXfz96i9NpnOKWRIgKz2OhnzAGjD08TBdw6E8W?=
- =?us-ascii?Q?xppuXH6JoiHAklFLHHXyQMsCv44wRip+2ALabjp25CRwrEnOwc3lrI0aVfva?=
- =?us-ascii?Q?p8sfROboPBRCSLuxlgHRldlWMsURDkThgBOQaTNzBS88ObK2OW0AHH3GMIKK?=
- =?us-ascii?Q?rOOtqFLncSzinSlPsnTnIb2BO9HkFtklyI9WeXXG+H5mApO1WQtFmrczDxxF?=
- =?us-ascii?Q?GuKvHWSZ6JdWc+Sopup3AAKSHLht/RnFS+BS38cV7vpBhII8hkangmqs6nzl?=
- =?us-ascii?Q?hDZreCDeiwDUNa4ulCcqJ+oOW5l75ajt11vrc/jqPSdFyO1voQHSW0PDf0PY?=
- =?us-ascii?Q?BxxICHb9jbE3auGSQ/WIDBs03VIEkYFN1YjCWbGmzacBN0ql8nDPgDmbcez7?=
- =?us-ascii?Q?TwvIC84cydAzihaekr3Ty2JqZcj1SW7dJjT5r3XihrCkyoLa4nGR9oOy0eOV?=
- =?us-ascii?Q?OSWbqhsr39zHgMrXbZH4ybYQvt9nnGT6wFJ/wVL9llXQInhAzEdc7KgBYarW?=
- =?us-ascii?Q?LyE7uXBjiVaNeJ7StCHrBwEuE9c9sLJr/3g7h7r8mweMouzeAMYR/MqyeRIB?=
- =?us-ascii?Q?e9v5gaxBs71Bk4PqpJXtVGzfN2ZtcLQjQJAbNCHswlqqRXhUztgoqBY8wsAj?=
- =?us-ascii?Q?1mYQLN787MIfI2Q/DmSMEDfwQCLqycv1UgdkX9olhUsrI2TuBD1C8GOpgv9Z?=
- =?us-ascii?Q?FZEKfXHyEUtkhYd8MBhnLFLoOgljIkyBtN274Ye4O6omH8+NmxF1lzZ8ic/R?=
- =?us-ascii?Q?MTaVhINOrHp+6AWuQNja6ky6AL+ifyOgPYIHSCZ2s6mFxH+T00x3yDFjDcEs?=
- =?us-ascii?Q?n683GfPK8VHd5EGki2UxzAA32d6M/oJXWcRiIUiN3qnZadJWZdmE4CN4n9BN?=
- =?us-ascii?Q?WeYauNcprj3IXBPJgZaSWWAEYg9S1Kk+IakYDpUQrckz6oqb670ZyyBzPGYz?=
- =?us-ascii?Q?Sn+l+kCXjAkpmRHU71/ye6s5hBu3Y6R+2B2gA9dydpM8y1hewtFyVH32WADw?=
- =?us-ascii?Q?PFkgyK+WdA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Bernard Metzler <BMT@zurich.ibm.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     "dledford@redhat.com" <dledford@redhat.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "KaiShen@linux.alibaba.com" <KaiShen@linux.alibaba.com>,
+        "tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>
+References: <20220421071747.1892-1-chengyou@linux.alibaba.com>
+ <20220421071747.1892-11-chengyou@linux.alibaba.com>
+ <20220510131724.GA1093822@nvidia.com>
+ <2a46d5b3-e905-4eb5-c775-c6fc227ad615@linux.alibaba.com>
+ <20220518144621.GH1343366@nvidia.com>
+ <83ed54cd-7893-ea26-6bf0-780e12ca2a3e@linux.alibaba.com>
+ <20220518163142.GR1343366@nvidia.com>
+ <BYAPR15MB2631B46350315B486CA9ED3599D09@BYAPR15MB2631.namprd15.prod.outlook.com>
+From:   Tom Talpey <tom@talpey.com>
+In-Reply-To: <BYAPR15MB2631B46350315B486CA9ED3599D09@BYAPR15MB2631.namprd15.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MN2PR05CA0061.namprd05.prod.outlook.com
+ (2603:10b6:208:236::30) To SN6PR01MB4445.prod.exchangelabs.com
+ (2603:10b6:805:e2::33)
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bf7732b9-c234-495f-7b9c-08da39c8936b
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5212:EE_
+X-Microsoft-Antispam-PRVS: <DM6PR01MB52122F1F8ACA7A99D3530796D6D09@DM6PR01MB5212.prod.exchangelabs.com>
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mAlFj9P5SaIg2PblanZ7DtSW88qFhVz5LtbAu6FIlJbm2eESrLzUjoGMEdnQCV1Hc4gmgC/r2+WOQVoOKrEIZFIA99fc/WjTBkwQ8ePtzJ4PpzfoAaT4jLk+WqlHEifPjJBxoD0JAHnZIeyZHjybLetGUdPVopN+jbdeFIkI9ibI4rGz7utvV/34dKNtFgDv0tSMAnFc8T4LArPkab5c+xDfDoFN1thcUY0viBDcsipq0htnyJGyC6C7fYdbTJpt2/ibdbT+U6W1EoNvErY3WQd469FZRsvl0klwuMbRMcls2jGQMmcB/xHmede2BmMHPeYDVB+3WxVZBqrSRVGRM7tDnlhjVG5JYP3nq7g1vd2z8LR23VIGNIwHPumxYNpZceLUoxO3za+lYOM9M6wgkVx2boGCl50brlFLGYzQy06UfqYp9KAA5V7GouJyQfthJJTrHVjBMKPQgBKwkEc0M7NlS4vokOmIl53nC1Nh6jyKtWzPiTMvHsbXOhOP5xC/uYv141LdrWJ+QmBPCRgFiIr9CQ1Aar8Jm/Yxd8/4xN/8Dg4bTqrWJRwNs1NPFoZg1hm54P7rTbsLWQ5mHH3zxvQcz7sSgJC6lRnPs6cUMv1+Lxr93lfdW1EoNjbGPTpNeEk7G1RE+oLM5UW/70/SxuZLLej6WHzw3oLepRxzZC8hB+W+e2aUBPS3z/No1nlEa9LAtB7zqRZ1qfXAP676rBuRrTHNTORdIuN8wU5fHXw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(396003)(136003)(376002)(346002)(39830400003)(6506007)(6666004)(31686004)(186003)(36756003)(2906002)(66556008)(4326008)(52116002)(66946007)(41300700001)(110136005)(53546011)(86362001)(2616005)(31696002)(26005)(8936002)(508600001)(5660300002)(6486002)(66476007)(54906003)(316002)(38100700002)(6512007)(83380400001)(8676002)(38350700002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Nm9jWDdOVy92TVhTK2Q3YTYxdjFNb2V3UE9rZitHWDNqRnhZTFBvS0svSWtj?=
+ =?utf-8?B?Q1ZhaWJWeXgrenM3UXl5MWdnSjlPYjBLbmVrWWVORi80UlJRVnBKZTZrdVJL?=
+ =?utf-8?B?UnAvaGVBNFozd2RtYzJ4MllZVEpKcVgydlJLdG5FcWw4cmY4T1NXTmpFQ0Fs?=
+ =?utf-8?B?cFhieExMMURGb1lYMUlrSmx0ekpHZFRMT3kyWDNReHQxYUZNU252d3lPcldV?=
+ =?utf-8?B?NFloVGlkMlZxVDhEaVAwaHFjblNCek1mWHhiNHFTOTBqWFNTK3czRVJOVzV4?=
+ =?utf-8?B?YnNGV3VLeFNjd2F3eHc0OXVyd05COS9XQVpWS3RkQkY3cHh3Sk9oWWFYT2JO?=
+ =?utf-8?B?QWhPR2tNNkxRRFI2VjhWakRTbzFpVkc3cmlYSy9SeWtya2VkVU5wWmFWQUp4?=
+ =?utf-8?B?b2NpaEd0Zy9lblhIdE5TUTZMTlhCbndXd3c5a2VCaWY4QUo2QmttYmJzZjdw?=
+ =?utf-8?B?alNzaytpZWRCcmZlcUIzVUxuY3NLZ2ZlOWZSWnEwLy94VDhYNUtJRnFQMVpw?=
+ =?utf-8?B?VTMwNm1ZQitQMUF4eGtpU1Y1UXlhRkV3MVMzZHhCNG13cXROTzJFemJ1d0F3?=
+ =?utf-8?B?cUpGa3QyZlpwczZoSGdxaXY3M05FbXYvZHRpK0JocTVNUlZ2RThGVGV0SmE3?=
+ =?utf-8?B?dDJkdmI0bHZRNGovVFJQZGorZThMb1R3MlN2QnA5aDJaM0cwQWNBbk41eTVt?=
+ =?utf-8?B?bFVQNGNETzloL0ZqcHpjc1RFdmRHelhyWUloSFEzeEZ6dm9FZEs0REVWa0Ey?=
+ =?utf-8?B?b2VRcklDdnErbUYxaUVaVGVuSnNoa2ZDRHhUSEtONm8yWFlleVEzWERiLzhi?=
+ =?utf-8?B?cmtNN2NHVDlzMTB1TlFWeTRSWFlYTHpaTEFHTGEwUEtwc0g4TUYwQVk2MFkx?=
+ =?utf-8?B?NlBpc1hjcVJ2KzZMWXkwdWZSNjZpa0pRY3I1WWsweDBZZm9tOUFSQnhxKzI3?=
+ =?utf-8?B?MHdBczJCTzNSN2tnWXQ2ZTVYYjRKTmFCem1WRG5WR1dVTVlMOEc3K1JFaDlZ?=
+ =?utf-8?B?T3hlblNEVncxa3l6R3lrbW92aFdoaHZrQ0NPVTNJZzE0T3BndFdQWEZSSm84?=
+ =?utf-8?B?eThsQVBoRndveVlFNEJQeTdMRWw4d3Fzd25ERGVaaC8xSCtMZ3pvTUJXRTBE?=
+ =?utf-8?B?YmtqcUhNakM3VVBDTS8rOEhLdmlOMmxJQVpxY3Jtc1d3VEhxalArdUV0dlFO?=
+ =?utf-8?B?NFA1N2xabUduUlJxRFV3ai9oQW1acEs4dys1a1c1Qi9SWHVwdnN2RUVVN3ZY?=
+ =?utf-8?B?VTIvTm52YzRoSG95V296anhUdS8vUHloSnN4VzVzYUVvQ0tiMTJkeVdIampU?=
+ =?utf-8?B?bFZNNklic1lrRWxHSExhdnNoV0NRMUJ4VkpNWkhQZnkvWk90RmJPRHFlRHo2?=
+ =?utf-8?B?OEZiNXlFZ2NqVFRqenZCMlgxTXhYa3JPU1FrR1VSUnY5b0J0UGlzdnJYTi9z?=
+ =?utf-8?B?bndnVFlIMW1vUU5EdnlHTkNESWYrYXRYN3hxcEFMekZUMTZqSjZZQk9mdFlo?=
+ =?utf-8?B?M3VqVFRiTVJ3RUF1Z0oxS0ErLzZZcHkvNzhzUE9nOTRGSStnbnFRWG56SXdu?=
+ =?utf-8?B?N2c3MitsbHd6OHQwa0kxRFNSeDNLeW9UbkJadTh5OFpUOFp3bDlyZGU3QnZn?=
+ =?utf-8?B?Y3NBM0ZqTDNOMXBCWXJNZHJZdEViTytYTTZUZVNybGlMVzllS2JwRVhPcXBI?=
+ =?utf-8?B?b2R0Wjk2ZG1OamVWNCtDMkVaTEN5QUF2RkM0V2ordE15YjBpaFY1RFRwSDNC?=
+ =?utf-8?B?NlhlK1p4QWdFUVZzcFh1Nk9WRXlPRGxsd0dHV2tISTZJY2Q3OHc2YUk0UlFG?=
+ =?utf-8?B?Vyt6YmQyRWJXR1BGNEhDYlVoTGJRL1haUCtFaG9EQlJKTC9rekRobjVNYi95?=
+ =?utf-8?B?bS9haDRpaThFa3lzTWcwWG00bTJJY0x2aGROUzFjT2xCV0RINEdsOFZLTnVl?=
+ =?utf-8?B?YWV6UkFJOGlvQXYzK3dZY25IbXgydFVsbk5uRzNuMVBCc29uQ2JBWmViaGh4?=
+ =?utf-8?B?WTVEeFY2NytWcXp2b2V5N2pSZG5UWFNPelFWRFdIN0Fyak04V2JpM05iRmxl?=
+ =?utf-8?B?d2NqK1UxZm90cXlwREQ3cWxZRU8vN2MwMSs2WUxqbmhHOWFNeDFTUnJMSXF0?=
+ =?utf-8?B?bkhwekNzVzhaYm4yc2pPK0tkcVdkRGhuKzhrK2dpVUFZWDJEOEJwNW9sTDJW?=
+ =?utf-8?B?NEd3LzMrN2xMeWRNa1d4ZVJlb1hYenVXcmhqME8yNTBIVXRqRndXZHJxVi91?=
+ =?utf-8?B?NXdKNzAwMFlwYzJ6eU9wL1NsZEFtS1B2WlBVZWtGS3BEbHUvTzNHTzhEL0J1?=
+ =?utf-8?Q?uSNPVC+un5nTB/LDcm?=
+X-OriginatorOrg: talpey.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf7732b9-c234-495f-7b9c-08da39c8936b
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR21MB3263.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d9319f8-71e2-4816-9bdb-08da39c0034a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 May 2022 17:50:07.7621
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2022 18:51:25.8539
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: CmXr7CWydjPWv23eUVp9T8ekjO+108HQmlziicyIGOfFYbkY/QG9p3G+AYsm5lgzb1fRNt4qMqcZcgor7z39ZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR21MB1901
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IN46RbzI4U75lrY0MxBzmoxRzzaKLstaLezTvvyblTAwotBndTUMIQbnvZkfrYO8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR01MB5212
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-> Subject: Re: [PATCH 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
-> Network Adapter
->=20
-> On Thu, May 19, 2022 at 05:57:01AM +0000, Long Li wrote:
->=20
-> > > > +
-> > > > +	err =3D ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd),
-> > > > +udata->inlen));
-> > >
-> > > Skeptical this min is correct, many other drivers get this wrong.
-> >
-> > I think this is correct. This is to prevent user-mode passing more data=
- that may
-> overrun the kernel buffer.
->=20
-> And what happens when udata->inlen is, say, 0?
 
-Thanks. I'll add check before calling ib_copy_from_udata().
+On 5/19/2022 12:20 PM, Bernard Metzler wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Jason Gunthorpe <jgg@nvidia.com>
+>> Sent: Wednesday, 18 May 2022 18:32
+>> To: Cheng Xu <chengyou@linux.alibaba.com>; Bernard Metzler
+>> <BMT@zurich.ibm.com>; Tom Talpey <tom@talpey.com>
+>> Cc: dledford@redhat.com; leon@kernel.org; linux-rdma@vger.kernel.org;
+>> KaiShen@linux.alibaba.com; tonylu@linux.alibaba.com
+>> Subject: [EXTERNAL] Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma
+>> module
+>>
+>> On Thu, May 19, 2022 at 12:24:22AM +0800, Cheng Xu wrote:
+>>>
+>>>
+>>> On 5/18/22 10:46 PM, Jason Gunthorpe wrote:
+>>>> On Wed, May 18, 2022 at 04:30:33PM +0800, Cheng Xu wrote:
+>>>>>
+>>>>>
+>>>>> On 5/10/22 9:17 PM, Jason Gunthorpe wrote:
+>>>>>> On Thu, Apr 21, 2022 at 03:17:45PM +0800, Cheng Xu wrote:
+>>>>>>
+>>>>>>> +static struct rdma_link_ops erdma_link_ops = {
+>>>>>>> +	.type = "erdma",
+>>>>>>> +	.newlink = erdma_newlink,
+>>>>>>> +};
+>>>>>>
+>>>>>> Why is there still a newlink?
+>>>>>>
+>>>>>
+>>>>> Hello, Jason,
+>>>>>
+>>>>> About this issue, I have another idea, more simple and reasonable.
+>>>>>
+>>>>> Maybe erdma driver doesn't need to link to a net device in kernel. In
+>>>>> the core code, the ib_device_get_netdev has several use cases:
+>>>>>
+>>>>>     1). query port info in netlink
+>>>>>     2). get eth speed for IB (ib_get_eth_speed)
+>>>>>     3). enumerate all RoCE ports (ib_enum_roce_netdev)
+>>>>>     4). iw_query_port
+>>>>>
+>>>>> The cases related to erdma is 4). But we change it in our patch
+>> 02/12.
+>>>>> So, it seems all right that we do not link erdma to a net device.
+>>>>>
+>>>>> * I also test this solution, it works for both perftest and NoF. *
+>>>>>
+>>>>> Another issue is how to get the port state and attributes without
+>>>>> net device. For this, erdma can get it from HW directly.
+>>>>>
+>>>>> So, I think this may be the final solution. (BTW, I have gone over
+>>>>> the rdma drivers, EFA does in this way, it also has two separated
+>>>>> devices for net and rdma. It inspired me).
+>>>>
+>>>> I'm not sure this works for an iWarp device - various things expect to
+>>>> know the netdevice to know how to relate IP addresses to the iWarp
+>>>> stuff - but then I don't really know iWarp.
+>>>
+>>> As far as I know, iWarp device only has one GID entry which generated
+>>> from MAC address.
+>>>
+>>> For iWarp, The CM part in core code resolves address, finds
+>>> route with the help of kernel's net subsystem, and then obtains the
+>> correct
+>>> ibdev by GID matching. The GID matching in iWarp is indeed MAC address
+>>> matching.
+>>>
+>>> In another words, for iWarp devices, the core code doesn't handle IP
+>>> addressing related stuff directly, it is finished by calling net APIs.
+>>> The netdev set by ib_device_set_netdev does not used in iWarp's CM
+>>> process.
+>>>
+>>> The binded netdev in iWarp devices, mainly have two purposes:
+>>>    1). generated GID0, using the netdev's mac address.
+>>>    2). get the port state and attributes.
+>>>
+>>> For 1), erdma device binded to net device also by mac address, which can
+>>> be obtained from our PCIe bar registers.
+>>> For 2), erdma can also get the information, and may be more accurately.
+>>> For example, erdma can have different MTU with virtio-net in our cloud.
+>>>
+>>> For RoCEv2, I know that it has many GIDs, some of them are generated
+>>> from IP addresses, and handing IP addressing in core code.
+>>
+>> Bernard, Tom what do you think?
+>>
+>> Jason
+> 
+> I think iWarp (and now RoCEv2 with its UDP dependency) drivers
+> produce GIDs mostly to satisfy the current RDMA CM infrastructure,
+> which depends on this type of unique identifier, inherited from IB.
+> Imo, more natural would be to implement IP based RDMA protocols
+> connection management by relying on IP addresses.
 
-Long
+Agreed. Exposing MAC addresses for this seems so... 20th century.
+
+Tom.
+
+> Sorry for asking again - why erdma does not need to link with netdev?
+> Can erdma exist without using a netdev?
+> 
+> 
+> Thanks,
+> Bernard
