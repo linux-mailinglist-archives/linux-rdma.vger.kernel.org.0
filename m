@@ -2,138 +2,191 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85ADB52D2EC
-	for <lists+linux-rdma@lfdr.de>; Thu, 19 May 2022 14:49:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B3952D57A
+	for <lists+linux-rdma@lfdr.de>; Thu, 19 May 2022 16:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238028AbiESMtG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 19 May 2022 08:49:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50846 "EHLO
+        id S239554AbiESOCi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 19 May 2022 10:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbiESMtE (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 May 2022 08:49:04 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 649C3BA57A
-        for <linux-rdma@vger.kernel.org>; Thu, 19 May 2022 05:49:03 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id g207so1790407qke.7
-        for <linux-rdma@vger.kernel.org>; Thu, 19 May 2022 05:49:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZYNVM4/IO7V0fYNlQI5NvKWUT/yRQDy6ZvaTZbyqfac=;
-        b=mJWbE0QEIqGVvxszguDCXk6HwPAW7vSyy5sd3KThi4tH55htbFfVr/pC0ToJ9Wjpa1
-         NMmJnnauuKYVCnsnAXjrwKHeXhHl8ZPuLdHTFaFsHnnnmZs/DR1fBs0GWnkicU365rSs
-         MDd0k6/yu9md8zAjjRbTMI3qMGHSL2wGEXHcaHNOhg7ATegQxyCdQWMpnJjS9kEMrpsw
-         qAf5/l3VqY4vD1G5EoG5q0Ppuy/F+LqgJQy7AHg2mM4GxpxngJov49ELqlDU312VZzAS
-         x0NZG6iAjVCyxWGkBA/EzzSF3qXZiUBc5CNglAFiNWxAi2Te8oEllwRgTQe+Qirgs8yO
-         AkHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZYNVM4/IO7V0fYNlQI5NvKWUT/yRQDy6ZvaTZbyqfac=;
-        b=Rch3BRgLke/rGJ1w0OV/BReMPfbJhB1zadWZzwHa+LqIB98z7MQQMDrJphK6wxzLCP
-         7ojS+sPG8QoUhJB8Icf8EHx0WOTxjyNomGt0DGDAwms35MwUfW/HFapSGIJvwonKFrtw
-         AYroZeea0epsAnn+GCS8Tovhgr8l7JoMglmCFkLi1MOn5IMwFTQTJSOLwWf/E5XkO10Z
-         OhaRxoJDOJZuzDtAnkxogWEHZrkqnY66sxT1Sy9LUvcvQfsqPmQydq0sMVE9Xg8khz8y
-         34Xvw+IC1M9n51Kr6H+uUCqEOWp9+K7R4TrXKc5/8VhI0gE3N0vk+NAStE6eeMu40rh7
-         cbvA==
-X-Gm-Message-State: AOAM530QU0QWRpFoJ98lzQsJBHnrt/v0WADhDvf0EnIceKV7ojVEPuyv
-        Guytq6nSo3fRUThaxdiRydrdzg==
-X-Google-Smtp-Source: ABdhPJwC7dyR0Qk9BGcWgMtmzQUq9wbfQt5NmHbKY9nEqa9QgAxBxse0MPnEsgUdrJlcKLQUc1t5uA==
-X-Received: by 2002:a37:6883:0:b0:6a3:42ae:e17b with SMTP id d125-20020a376883000000b006a342aee17bmr524511qkc.59.1652964542542;
-        Thu, 19 May 2022 05:49:02 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id p7-20020a37a607000000b0069fc13ce24dsm1250439qke.126.2022.05.19.05.49.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 May 2022 05:49:01 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nrfaO-008vEJ-VD; Thu, 19 May 2022 09:49:00 -0300
-Date:   Thu, 19 May 2022 09:49:00 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Long Li <longli@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [PATCH 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure
- Network Adapter
-Message-ID: <20220519124900.GR63055@ziepe.ca>
-References: <1652778276-2986-1-git-send-email-longli@linuxonhyperv.com>
- <1652778276-2986-13-git-send-email-longli@linuxonhyperv.com>
- <20220517152409.GJ63055@ziepe.ca>
- <PH7PR21MB326393A3D6BF619C2A7B4A42CED09@PH7PR21MB3263.namprd21.prod.outlook.com>
+        with ESMTP id S239381AbiESOCA (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 19 May 2022 10:02:00 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C398B5E154
+        for <linux-rdma@vger.kernel.org>; Thu, 19 May 2022 07:00:59 -0700 (PDT)
+Message-ID: <f46194ce-edf9-e6d0-78ce-7401c48ef233@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1652968857;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4Uon3dEbBl+tAkG5Ji2syvjbQEmQ5072gBJVJSFT2YQ=;
+        b=M6AeeksoYpeJsreG8wPuK/05r/DI3+j52XxfVcRGCxPes636MkoS1/CcHBPHRNceo66gWP
+        cS5OtWrfmJT/OH2aAjFhSdTNVPi3g+iHQ6ACT2t63pwIPPhxbLrNHuTXo/7u3BGvdKXb2F
+        Xd5sb7HfCdBZoRX7V40ryEcYDd/kaQc=
+Date:   Thu, 19 May 2022 22:00:38 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB326393A3D6BF619C2A7B4A42CED09@PH7PR21MB3263.namprd21.prod.outlook.com>
+Subject: Re: [PATCH 1/1] RDMA/rxe: Compact the function
+ free_rd_atomic_resource
+To:     Bob Pearson <rpearsonhpe@gmail.com>, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org
+References: <20220517190800.122757-1-yanjun.zhu@linux.dev>
+ <c9e99081-f6aa-0167-77ff-57533b107e90@gmail.com>
+ <f3a827f0-69bd-7bae-21cf-02a88063d39d@linux.dev>
+ <599adff3-63f3-8ebf-46aa-307619837859@gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yanjun Zhu <yanjun.zhu@linux.dev>
+In-Reply-To: <599adff3-63f3-8ebf-46aa-307619837859@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 19, 2022 at 05:57:01AM +0000, Long Li wrote:
 
-> > > +
-> > > +	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd),
-> > > +udata->inlen));
-> > 
-> > Skeptical this min is correct, many other drivers get this wrong.
-> 
-> I think this is correct. This is to prevent user-mode passing more data that may overrun the kernel buffer.
+在 2022/5/17 23:49, Bob Pearson 写道:
+> On 5/17/22 10:14, Yanjun Zhu wrote:
+>> 在 2022/5/17 22:51, Bob Pearson 写道:
+>>> On 5/17/22 14:08, yanjun.zhu@linux.dev wrote:
+>>>> From: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>>
+>>>> Compact the function and move it to the header file.
+>>> I have two issues with this patch.
+>>>
+>>> There is no advantage of having an inline function in a header file
+>>> that is only called once. The compiler is perfectly capable of (and does)
+>>> inlining a static function in a .c file if only called once. This just
+>>> makes the code harder to read.
+>> When this function is put into the header file, this function can be included into the caller function file.
+>>
+>> The compiler does not need to call this function in different file. In theory, this can increase
+>>
+>> the compile speed.
+>>
+>> Why do you insist on putting this function in .c file?
+> I don't insist. I just don't like them. Jason is correct the subroutine is in rxe_qp.c
+> and there are two calls in rxe_resp.c and one in rxe_qp.c. Given there are three calls
+> I would prefer to not do anything. The responder resources code
+>
+> 	alloc_rd_atomic_resources()
+> 	free_rd_atomic_resources()
+> 	free_rd_atomic_resource()
+> 	cleanup_rd_atomic_resources()
+>
+> is mostly called by rxe_qp.c so they are in the right place. The 2-3 instructions
+> you might save by inlining free_rd_atomic_resource() just aren't worth it in the
+> tens of thousands of instructions in the response to an rdma_read or atomic request.
 
-And what happens when udata->inlen is, say, 0?
- 
-> > > +	// map to the page indexed by ucontext->doorbell
-> > 
-> > Not kernel style, be sure to run checkpatch and fix the egregious things.
-> > 
-> > > +static void mana_ib_disassociate_ucontext(struct ib_ucontext
-> > > +*ibcontext) { }
-> > 
-> > Does this driver actually support disassociate? Don't define this function if it
-> > doesn't.
-> > 
-> > I didn't see any mmap zapping so I guess it doesn't.
-> 
-> The user-mode deals with zapping.
-> I see the following comments on rdma_umap_priv_init():
-> 
-> /* RDMA drivers supporting disassociation must have their user space designed
->  * to cope in some way with their IO pages going to the zero page. */
-> 
-> Is there any other additional work for the kernel driver to support
-> disassociate? It seems uverbs_user_mmap_disassociate() has done all
-> the zapping when destroying a ucontext.
+The above 4 functions are in rxe_qp.c because these functions will use 
+qp as parameter.
 
-Nope, that looks OK then
- 
-> I will open PR to rdma-core. The current version of the driver
-> supports queue pair type IB_QPT_RAW_PACKET. The test case will be
-> limited to querying device and load/unload. Running traffic tests
-> will require DPDK (or other user-mode program making use of
-> IB_QPT_RAW_PACKET).
-> 
-> Is it acceptable to develop test cases for this driver without
-> traffic/data tests?
+Now free_rd_atomic_resource will not use qp as paramter and other files 
+also will call this function.
 
-I'm not keen on that, even EFA was able to do simple traffic.
+As such it is a good idea to put this function free_rd_atomic_resource 
+to the head file.
 
-Even with RAW_PACKET I would expect the driver to be able to send/recv
-using standard verbs as RAW_PACKET is a common feature.
+Zhu Yanjun
 
-Jason
+>
+> To Jason's question. 8a1a0be894da and 290c4a902b79 are already in for-rc. There
+> isn't any res.read.mr left.
+>
+> Bob
+>
+>> Zhu Yanjun
+>>
+>>> There is a patch in for-rc that gets rid of read.mr in favor of an rkey.
+>>> This patch is out of date.
+>>>
+>>> Bob
+>>>> Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
+>>>> ---
+>>>>    drivers/infiniband/sw/rxe/rxe_loc.h  | 11 ++++++++++-
+>>>>    drivers/infiniband/sw/rxe/rxe_qp.c   | 15 ++-------------
+>>>>    drivers/infiniband/sw/rxe/rxe_resp.c |  4 ++--
+>>>>    3 files changed, 14 insertions(+), 16 deletions(-)
+>>>>
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+>>>> index 409efeecd581..6517b4f104b1 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+>>>> @@ -145,7 +145,16 @@ static inline int rcv_wqe_size(int max_sge)
+>>>>            max_sge * sizeof(struct ib_sge);
+>>>>    }
+>>>>    -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res);
+>>>> +static inline void free_rd_atomic_resource(struct resp_res *res)
+>>>> +{
+>>>> +    if (res->type == RXE_ATOMIC_MASK) {
+>>>> +        kfree_skb(res->atomic.skb);
+>>>> +    } else if (res->type == RXE_READ_MASK) {
+>>>> +        if (res->read.mr)
+>>>> +            rxe_drop_ref(res->read.mr);
+>>>> +    }
+>>>> +    res->type = 0;
+>>>> +}
+>>>>      static inline void rxe_advance_resp_resource(struct rxe_qp *qp)
+>>>>    {
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
+>>>> index 5f270cbf18c6..b29208852bc4 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_qp.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_qp.c
+>>>> @@ -126,24 +126,13 @@ static void free_rd_atomic_resources(struct rxe_qp *qp)
+>>>>            for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>>>>                struct resp_res *res = &qp->resp.resources[i];
+>>>>    -            free_rd_atomic_resource(qp, res);
+>>>> +            free_rd_atomic_resource(res);
+>>>>            }
+>>>>            kfree(qp->resp.resources);
+>>>>            qp->resp.resources = NULL;
+>>>>        }
+>>>>    }
+>>>>    -void free_rd_atomic_resource(struct rxe_qp *qp, struct resp_res *res)
+>>>> -{
+>>>> -    if (res->type == RXE_ATOMIC_MASK) {
+>>>> -        kfree_skb(res->atomic.skb);
+>>>> -    } else if (res->type == RXE_READ_MASK) {
+>>>> -        if (res->read.mr)
+>>>> -            rxe_drop_ref(res->read.mr);
+>>>> -    }
+>>>> -    res->type = 0;
+>>>> -}
+>>>> -
+>>>>    static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>>>>    {
+>>>>        int i;
+>>>> @@ -152,7 +141,7 @@ static void cleanup_rd_atomic_resources(struct rxe_qp *qp)
+>>>>        if (qp->resp.resources) {
+>>>>            for (i = 0; i < qp->attr.max_dest_rd_atomic; i++) {
+>>>>                res = &qp->resp.resources[i];
+>>>> -            free_rd_atomic_resource(qp, res);
+>>>> +            free_rd_atomic_resource(res);
+>>>>            }
+>>>>        }
+>>>>    }
+>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>> index c369d78fc8e8..923a71ff305c 100644
+>>>> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+>>>> @@ -663,7 +663,7 @@ static enum resp_states read_reply(struct rxe_qp *qp,
+>>>>             */
+>>>>            res = &qp->resp.resources[qp->resp.res_head];
+>>>>    -        free_rd_atomic_resource(qp, res);
+>>>> +        free_rd_atomic_resource(res);
+>>>>            rxe_advance_resp_resource(qp);
+>>>>              res->type        = RXE_READ_MASK;
+>>>> @@ -977,7 +977,7 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
+>>>>        }
+>>>>          res = &qp->resp.resources[qp->resp.res_head];
+>>>> -    free_rd_atomic_resource(qp, res);
+>>>> +    free_rd_atomic_resource(res);
+>>>>        rxe_advance_resp_resource(qp);
+>>>>          skb_get(skb);
