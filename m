@@ -2,141 +2,142 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B10D952F327
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 May 2022 20:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A621F52F583
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 May 2022 00:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352957AbiETShh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 May 2022 14:37:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S231553AbiETWMu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 May 2022 18:12:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352946AbiETShf (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 May 2022 14:37:35 -0400
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2096.outbound.protection.outlook.com [40.107.223.96])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1F1195934
-        for <linux-rdma@vger.kernel.org>; Fri, 20 May 2022 11:37:33 -0700 (PDT)
+        with ESMTP id S237117AbiETWMt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 May 2022 18:12:49 -0400
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2083.outbound.protection.outlook.com [40.107.236.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1BE1994A9;
+        Fri, 20 May 2022 15:12:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bPn+8mpA3n6RBrmvf9/xtsolNH45SaEg0gDcUuibuEOy7bGnuW0Ita1w2bfhJdt014tm1gTcGwsZwvwYydA+9WWeq6a7uZHAMtXjiZ+eXIhO4lcnzuhOdBZghVGtNTGMsUfwg8m9LZAeYI+GP6rZzdWkOGIp+o5R+mIL+Sm7xDCVsxy5IbwR3QLOBRpOU1uM5K59tX+EbihE6Ok3umXnY+pMHqYG5HIpL5Yz+SSz4znJ5/PLycktBvwhS0xVl9yuNW3A7Iz0EGLkfzEBy+QZo+70jOBFgg0nA6KYxLIEPFUo6+DIMM0KXPQ0Z+IA+kT522QeI5jKk95O9ayofR2LvQ==
+ b=bxePF30dRLZwjtaIvObpKV3fOJQcyIy6C1qCHs/Nprm04HIv0uVRhhIWbBXKaBtVEfCbDVVnj/QEIWPeLvT8jGWHqbSHuOPfCbI8sg/UPh0Goctk246LhsviEeOlTbBPq5kiFJQNH6KB9YQmZHLanpVh5KQv3V2hw6Dvn7S5InR+nWCjy5qI+J6U8uPSatKEmoafY0GutjS9FeChNWhuzQZtUrelR4pkWNdJIrET7h02slsfjWxrO/1o/6AZPVRsUuu/63S3eFCyOYDUwx83W/q2LGr4pWpJJOQkaPrdc74fD+vusPkdmwLEdiTezSyRh4pMnjozIfxqPtxf80AhBA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=35+qFFoJMGLSyuqUYFOf1FhMq8V1FHvskPvODH76Osk=;
- b=TEPPJkR6T/SG2qXj0mfj9W2rZlck29YcrSSPQlrC5ueALIS4MMKPM4Rr0RlUeebrDwANaefexS/gca9ezu7lBFJ3jt3Q9QPSGsPSw6dn0NdVNP0/708MLhXA1OiD0qwXJq1m95K0KWkxnsXiGCnGK91HewiR038eJq+wnASGeiFxwgqwLpHkKA4tqQqIX6NWa4vvthZPWVXxVULWlyi/rvnHwbEGizhXjUUyVwhTaizmPStZMVsNcGBISkCVm0RAOckKMnK3R2cJ2thD2kAkz9nmoy/E+SAq2SYV3dzzZc7E9Ges8Wje6eWiFsPiCk/pz9sDgY87DxfGybBAaQbEmg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 208.255.156.42) smtp.rcpttodomain=nvidia.com
- smtp.mailfrom=cornelisnetworks.com; dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
+ bh=TK4mIdRmLldCgehempqYJzYIzj/+HjHTMSRgx4T+z6E=;
+ b=VhVsaqpZogiMuy1BmdCbQhIQLoCpPCCz9jiMIpeGgFQcwmYXk3asEWMkAaQDxGA8ngCzitzeZazAePDbyCfhm877VU3TE5rCIhY5JsxlOjGhg7B94tQ33DtxjFIy+AGvF7FTsYONPpPXsfXVj/kjmvxlQ/5R9fY/40AiuU4lZ3X/7/Sdid7OvPfB3ja4gZryJZ+flgrXDWx65RVgUIJiclA331N9CZ0DeWY4VE/ZhymabETQzpp3LeNTvwvoq/qAfWg/kq2eI0F8RJ8eK2i+BoVpqsgrBt2E7CA7Y5NJqSC+218W5Retsm1tac5B9bxj1NPOX573LzZwLlkv0HrMkg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=35+qFFoJMGLSyuqUYFOf1FhMq8V1FHvskPvODH76Osk=;
- b=WwOdBS/J5KZTTv4cAo3pRzPEPMcJO+uZXFiZX6Kyl7TzLP1htnw7eKcVc3+BIOWgD93SM7wiivNgs6Oejkk295EOM6qPWjjCfDqaUl3UinXTvPXt2vNHAXIggO8yrVsqJWUZyDPIDfR0UtO2sNBED5b0XJffWAm2kDOwZJlzL7Ao8NL2wRvUIwQ8phsd5Kn9UacHNBHTB3FuZe4yMdtNoOlEGzutsM4fkIiiXfF6+ci63AUcKlYKeFcioEVp0xQbzIHiztD+Jcoh3IgZdMISsQfhNSr9Ry63jjnsimUilOknxkuQIdvEn2Y+IcWtgRniz3q01vxIta9NOHo1PKy8oA==
-Received: from MW4PR03CA0058.namprd03.prod.outlook.com (2603:10b6:303:8e::33)
- by DM8PR01MB7046.prod.exchangelabs.com (2603:10b6:8:1b::6) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5273.14; Fri, 20 May 2022 18:37:29 +0000
-Received: from CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:8e:cafe::ff) by MW4PR03CA0058.outlook.office365.com
- (2603:10b6:303:8e::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.14 via Frontend
- Transport; Fri, 20 May 2022 18:37:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 208.255.156.42)
- smtp.mailfrom=cornelisnetworks.com; dkim=none (message not signed)
- header.d=none;dmarc=bestguesspass action=none
- header.from=cornelisnetworks.com;
-Received-SPF: Pass (protection.outlook.com: domain of cornelisnetworks.com
- designates 208.255.156.42 as permitted sender)
- receiver=protection.outlook.com; client-ip=208.255.156.42;
- helo=awfm-01.cornelisnetworks.com; pr=C
-Received: from awfm-01.cornelisnetworks.com (208.255.156.42) by
- CO1NAM11FT068.mail.protection.outlook.com (10.13.175.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5273.14 via Frontend Transport; Fri, 20 May 2022 18:37:28 +0000
-Received: from awfm-01.cornelisnetworks.com (localhost [127.0.0.1])
-        by awfm-01.cornelisnetworks.com (8.14.7/8.14.7) with ESMTP id 24KIbRMO056711;
-        Fri, 20 May 2022 14:37:27 -0400
-Subject: [PATCH for-next 6/6] RDMA/hfi1: Remove all traces of diagpkt support
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-To:     leonro@nvidia.com, jgg@nvidia.com
-Cc:     linux-rdma@vger.kernel.org
-Date:   Fri, 20 May 2022 14:37:27 -0400
-Message-ID: <20220520183727.48973.93587.stgit@awfm-01.cornelisnetworks.com>
-In-Reply-To: <20220520183516.48973.565.stgit@awfm-01.cornelisnetworks.com>
-References: <20220520183516.48973.565.stgit@awfm-01.cornelisnetworks.com>
-User-Agent: StGit/0.17.1-dirty
+ bh=TK4mIdRmLldCgehempqYJzYIzj/+HjHTMSRgx4T+z6E=;
+ b=Zf+7XHhiee30t040ZgvmEmKQefK07flisYveNVRbDyYqVT8giFzQHhBSDNhJR+fzBoK5O6cKyrMVSaLO+Ie9kbUJ27tyEXO1r8Yv7LoQdP/Io1qyT15/6ym5qcroLfTryJEjyHfHKO0Vf7ZOd7ScIfoQeVTps42+NLTajjQKD5SAVUbaXKk3bhelNn1Ne6uRi+ycMDJC3sVm1NM3YKqhu3jjUzJn5+FgF3c6ZeH9cYl/N2ViAaRN2T/2rx2GeiZhN4gq5PTssV/tD5jtPxONioCrnPQDoJq01cHwjJlwvdpfDJ8PTQP9UyHgWd6VzlGWnYRIrYe1kB5c9Q/Veu1TIw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com (2603:10b6:a03:20d::22)
+ by DM5PR12MB1178.namprd12.prod.outlook.com (2603:10b6:3:6c::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.14; Fri, 20 May
+ 2022 22:12:47 +0000
+Received: from BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::bcda:499a:1cc1:abca]) by BY5PR12MB4209.namprd12.prod.outlook.com
+ ([fe80::bcda:499a:1cc1:abca%4]) with mapi id 15.20.5273.015; Fri, 20 May 2022
+ 22:12:46 +0000
+Date:   Fri, 20 May 2022 15:12:45 -0700
+From:   Saeed Mahameed <saeedm@nvidia.com>
+To:     Guan Jing <guanjing6@huawei.com>
+Cc:     davem@davemloft.net, leon@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] net/mlx5: Fix build error of multiple definition
+Message-ID: <20220520221245.bsf3abwo566l3yzs@sx1>
+References: <20220520073423.35556-1-guanjing6@huawei.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20220520073423.35556-1-guanjing6@huawei.com>
+X-ClientProxiedBy: SJ0PR05CA0192.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::17) To BY5PR12MB4209.namprd12.prod.outlook.com
+ (2603:10b6:a03:20d::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e95671fe-e976-4d52-3d78-08da3a8fcb35
-X-MS-TrafficTypeDiagnostic: DM8PR01MB7046:EE_
-X-Microsoft-Antispam-PRVS: <DM8PR01MB704611F00AE1600579170395F4D39@DM8PR01MB7046.prod.exchangelabs.com>
+X-MS-Office365-Filtering-Correlation-Id: d4f0f0b5-ed24-43ae-6bf9-08da3aaddeb4
+X-MS-TrafficTypeDiagnostic: DM5PR12MB1178:EE_
+X-Microsoft-Antispam-PRVS: <DM5PR12MB1178F214D4BDC6EDD570674CB3D39@DM5PR12MB1178.namprd12.prod.outlook.com>
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7Z0HTdb2TvUQxboTjDgr9e1Cu9vUPLTQQg1772uhichq8sSa0YB7W8iwcTzb32bg8CBoG13tQRCTbEyBvkQu58os8hAWAWhCzFN1KiccoiXhV+QyhFZTlXRyWLLMnGDVYUuAj+mFQ7w9GL3r+4MWyrJOdX8qJwG3bu42ZTiP68q86IA4Ws5OHRHuQj0sB/eptR/5aNEqYukCz0zG+ICdgk4eD5ghFjFLBstkvwypjq4ZBjHGgdx8WJAd1LwAuhenjMBJb9w+XnLUnDJf4oqRT+l4vVY9zUB2zU9Ofapf0e+bfB1zXwaeiJ1VhAspb8ZKhuN/Cj8TOElF2DqQ35QSEXaSrybC8RCR97+WjVh7THefZ/micBZ5KsWkRapxhhMgk0ZEsoYNT6az4VX3hQ2YOvg1RJFJT9hbHmSSCdNHZ2M3AysSFo9xtMcphVVQAdlkw4G5d2ry2FSflSjUMuYETS8MScmxnKcsThwPEQt5kJ2F1J/M6YzwJnlMCIL7cLmvSInYcwPFbDyd1AmAoaiVxi1sX19e2d8+lMI5qcrwL+vGNfSdG3MhLniuzPtgaUi7RvhBAzo21S+f7iZrM7Z0JGv5e/Cdwfl6HXZOW5faNcZkxlocmWCgzHiChoYb0KxTFRC5CdzANiWKfuV9Xqh9zCg1LAvJ5K4RIZfEjY+qcydleC4L9y3YlD/cEmtRzuGFS4sCA6JA7dYXoIM8JvWTjw==
-X-Forefront-Antispam-Report: CIP:208.255.156.42;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:awfm-01.cornelisnetworks.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230001)(4636009)(39840400004)(376002)(396003)(346002)(136003)(46966006)(36840700001)(44832011)(47076005)(5660300002)(70586007)(81166007)(8676002)(356005)(4326008)(8936002)(70206006)(103116003)(82310400005)(26005)(36860700001)(336012)(426003)(86362001)(7696005)(316002)(41300700001)(2906002)(40480700001)(1076003)(83380400001)(7126003)(55016003)(186003)(508600001)(36900700001);DIR:OUT;SFP:1102;
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2022 18:37:28.8782
+X-Microsoft-Antispam-Message-Info: lOKrtZ8jY1TPGBkPb2yJdZniB6/lfd38AhWjm9tpT0Uhx7EO9Vu1kKsP0DzlW1Q+9gwLEVniDGk8wHqKYgELjhgT8W6ihqR4HTZWf2pZJzP1HjsZJr3IqaG3YZtAlxmsA4bAH9Y1TlFIThfWaGxegO2Qj1RlCaPqrrqqgnbgX4YPFaOB5euaQeFfBLzmeg11cOJ6xDmqGlegYY40lfFJPyd4xFHpKNo0wdJpY8K9iMIEcVqTaBzDrmIpYMlXBBKpAO8d4bGakutCSCv3cqpRIGzfG+zJ3/PQ8IwbVCGvRu8LK5M5bChXiXmHpL1q+6yZN4l7ZrtLe1SQsFI/W+IIr3LBZtv4Lbl6l4giKBxellFizJwOpUHbS7GJo2v6QOHc3J7Z24wwIWLpE2h/DrbtfI5sNRcrn8aIpChKwgruUw4hZZiahhQBxlUrb8OyQ/FGQvmjyhWT3MyJu0EfDSiqAN2/eE1pg8QuLun0CrnYVYC71nvOPHOvStGK9ieBZbZKyNB5871Z0MZlWcQ1K0CnKHOBv2nsdT35zjgh3NTDV8Dqjv+QyjfF0rZlMtkK31RmX5Et+v+atGLZeObqzTE09NnrEMSSLDL8JmVX47pPNJKIi0p+BYOXIsk63rgOmezpzYkQzNmg5RYcELfBKdCX/A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4209.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(4636009)(7916004)(366004)(9686003)(33716001)(4744005)(1076003)(6486002)(508600001)(6512007)(8936002)(5660300002)(38100700002)(86362001)(66946007)(66476007)(66556008)(2906002)(6506007)(186003)(316002)(6916009)(8676002)(4326008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?LZepl6KdLUelwrjGb75X8POoTTfRLXEU3DaS8cMy1SdgF0SokiuZAwsUsUyw?=
+ =?us-ascii?Q?rbbSUzmvxORu0E6Ed+B43uCMfaOG1qOCJvJJmqrJZiiBaaY7z1I3GjAzjYfn?=
+ =?us-ascii?Q?RuCAlVuRtzIcMlT01trBrl/W5GFOtMrcZ9gUW3OF468d97R1gdgoDYyqgQ9I?=
+ =?us-ascii?Q?TJzjrNXUKvQqZ7ivKepIeHjTvTBBrWPvZ9heDY23ua1jzIvQc93dCwLWYqDS?=
+ =?us-ascii?Q?/SSgTygM6YWRMJwAkLiKwc14Grgona9izSwtaGL1NsjvZiJ8eFRkX3CVE9tj?=
+ =?us-ascii?Q?Xrp2kr+QOlnyRiaZ1wiqzwGdgTCPh4ty1k1xkbEVKwEXjGjVHXws3Bw63bZf?=
+ =?us-ascii?Q?GckkfdvStPlNdJG3Fl8NK+39vg85dARztwBe74yGY60qBAmmYXK+ZS5L2a7N?=
+ =?us-ascii?Q?YPpMpU8gHAg0kxiqXGXTKaRZPdPTPRd2BhfI+7zNMnosDQsjoJ9StPKittrS?=
+ =?us-ascii?Q?Yg/b+JxjINJKUHDHxZbGAdyq+/X9abLUz7NRt/b3CyW1a/Bn+kwNx3da8XPl?=
+ =?us-ascii?Q?IKUKYugSMLsCQ+SKdLcT004MRODNAiPN9aM/LsBEot8fuV89oiDa8Bdp69I4?=
+ =?us-ascii?Q?bG9XSVwcsq4a6nvMGtqUTlVmPfTCsfvGRrFE2JHy/atJLAmoCh5Qp4ejaAX5?=
+ =?us-ascii?Q?uAuk09Sb3Vq5PzR6Z5hSSYPQVufjhYJ7QOYD4Yxa5ceRcCtWv20BOGSjMUsQ?=
+ =?us-ascii?Q?SL+P8giTDvBSEiKPl+zUzRWQuvCrchSxFDeqk+QosSIdV+BFS+GLaom2OTPH?=
+ =?us-ascii?Q?HRvJiKVcyijGhkWW8PJfLw0mj4TjrQTpqRy/L/WlTtAi7eJ5TumcIwgxWhFF?=
+ =?us-ascii?Q?NdIkFTQJufxA4Ml+EUjcxFNkDTNC4NWoxPghW3mFdojORPAprcphi7kGTXCv?=
+ =?us-ascii?Q?GDwRd1w/cFHtIipRtOkwGLRf31MVd604+bg+Hqs71/g0mYuC9ZjVEtXGLWYX?=
+ =?us-ascii?Q?enaGlV4gIzCMnF2xX4EC+cORxHYg5/YBX8F5pqLHolmyHJ85jWmkXpen5g7T?=
+ =?us-ascii?Q?OZuPOKWhIDfURBlj7qCu8jSy9UkTvTy4f44ViLCaVpDJrs/WOXoH8M5r08bO?=
+ =?us-ascii?Q?5zqcX0I+IRniwzS7BotBzwmUpxFk7MXkbLYNJ4zJrXYRkVjR39zAAbfXNXJK?=
+ =?us-ascii?Q?PFFSqS1/5ck9yVIwohfVojY8u8Gq/8i08sP5YTUoSXFYgH4Zotwyahq3006h?=
+ =?us-ascii?Q?cYU7QefyetAaGr2TzPgmq5b2o9rzgANRlg+GqI4I2NP1hTYutI114zJVY0RM?=
+ =?us-ascii?Q?xJW/t3Klj3FMXq1wvCa6XKiiglYKlfefJfwekRWugaNh45J/Lw2fBXkUX/JB?=
+ =?us-ascii?Q?snIMinDYz315tk3rNPj7ouy7lhSLS5xDwf/t8Cemim4f+x3V8n7iVMiQrkIr?=
+ =?us-ascii?Q?p0F3r4K1MJ6FrQHLx4xpUIPA2MIipbFAPqSQdMDaHBtzSGGwNc8/Ha4BItWP?=
+ =?us-ascii?Q?B7kqLrEPVvsuqIKHYuONWSDVNOltcPEkUYuF+QbvRxbXrPYt32QW1mWG1sco?=
+ =?us-ascii?Q?aM7B+8FSzU/A4lFr48vFTS/gHE19c34+qmhWfEbV5tsHGqRFEC/8LsRGf44h?=
+ =?us-ascii?Q?JbLt5TVeFMb7kppOUhz1VA6qVVQvCLx0/6nwAcry4uKHPn2K+mYBnZ+fSYso?=
+ =?us-ascii?Q?ZZBCYD1PVqVHq80Y8uvbEgafP2WZby07eAMp4zrdgHmYGq16yjqrUvomgOga?=
+ =?us-ascii?Q?ZiGyEfpSUtJ0OodzAeziuw6AkhUFF7OHYqKkXiBVxaPMa/aJUEQ/P7LDGxU9?=
+ =?us-ascii?Q?pP4ZSgIcpRUpokKTUpjOmwOE6KL5pUEvkhFLcHqDdv05h80pYE6G?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4f0f0b5-ed24-43ae-6bf9-08da3aaddeb4
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4209.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2022 22:12:46.8965
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e95671fe-e976-4d52-3d78-08da3a8fcb35
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a;Ip=[208.255.156.42];Helo=[awfm-01.cornelisnetworks.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR01MB7046
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: bPkv0KIg+Ihszl1+zZdGc9u9r093OlSRKvAzyCi5okryQEZ8qiZNz4id8q1/n9luacEA79wLSOMnwcLxrEiS5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1178
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-One of the concessions we made to get our driver upstream was to remove the
-diagnostic packet support. There is however still some cruft that was left over.
-Remove it.
+On 20 May 15:34, Guan Jing wrote:
+>There are some errors like:
+>
+>drivers/net/ethernet/mellanox/mlx5/core/lag/lag.o:
+>In function `mlx5_lag_mpesw_init':
+>lag.c:(.text+0xb70): multiple definition of `mlx5_lag_mpesw_init'
+>drivers/net/ethernet/mellanox/mlx5/core/lag/debugfs.o:debugfs.c:(.text+0x440):
+>first defined here
+>drivers/net/ethernet/mellanox/mlx5/core/lag/lag.o: In function `mlx5_lag_mpesw_cleanup':
+>lag.c:(.text+0xb80): multiple definition of `mlx5_lag_mpesw_cleanup'
+>drivers/net/ethernet/mellanox/mlx5/core/lag/debugfs.o:debugfs.c:(.text+0x450):
+>first defined here
+>
+>So, add 'static inline' on the defineation of these functions.
+Already fixed by:
+commit d935053a62fa11d06c757c1725782e46e7e823db
+Author: Jakub Kicinski <kuba@kernel.org>
+Date:   Wed May 18 11:30:22 2022 -0700
 
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
----
- drivers/infiniband/hw/hfi1/common.h |   23 -----------------------
- 1 file changed, 23 deletions(-)
+     net/mlx5: fix multiple definitions of mlx5_lag_mpesw_init / mlx5_lag_mpesw_cleanup
 
-diff --git a/drivers/infiniband/hw/hfi1/common.h b/drivers/infiniband/hw/hfi1/common.h
-index f32f858..166ad6b 100644
---- a/drivers/infiniband/hw/hfi1/common.h
-+++ b/drivers/infiniband/hw/hfi1/common.h
-@@ -138,29 +138,6 @@
- 			     HFI1_USER_SWMINOR)
- 
- /*
-- * Diagnostics can send a packet by writing the following
-- * struct to the diag packet special file.
-- *
-- * This allows a custom PBC qword, so that special modes and deliberate
-- * changes to CRCs can be used.
-- */
--#define _DIAG_PKT_VERS 1
--struct diag_pkt {
--	__u16 version;		/* structure version */
--	__u16 unit;		/* which device */
--	__u16 sw_index;		/* send sw index to use */
--	__u16 len;		/* data length, in bytes */
--	__u16 port;		/* port number */
--	__u16 unused;
--	__u32 flags;		/* call flags */
--	__u64 data;		/* user data pointer */
--	__u64 pbc;		/* PBC for the packet */
--};
--
--/* diag_pkt flags */
--#define F_DIAGPKT_WAIT 0x1	/* wait until packet is sent */
--
--/*
-  * The next set of defines are for packet headers, and chip register
-  * and memory bits that are visible to and/or used by user-mode software.
-  */
+
+Thanks.
 
