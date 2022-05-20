@@ -2,138 +2,90 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C963852E5CD
-	for <lists+linux-rdma@lfdr.de>; Fri, 20 May 2022 09:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8F752E654
+	for <lists+linux-rdma@lfdr.de>; Fri, 20 May 2022 09:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244824AbiETHEi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 20 May 2022 03:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S1346510AbiETHgN (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 20 May 2022 03:36:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346298AbiETHEb (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 May 2022 03:04:31 -0400
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12981154B30
-        for <linux-rdma@vger.kernel.org>; Fri, 20 May 2022 00:03:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VDpalL8_1653030219;
-Received: from 30.43.105.9(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VDpalL8_1653030219)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 20 May 2022 15:03:40 +0800
-Message-ID: <6ed58a41-1b75-2dd6-fb3a-8da1dce1400e@linux.alibaba.com>
-Date:   Fri, 20 May 2022 15:03:39 +0800
+        with ESMTP id S238923AbiETHgM (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 20 May 2022 03:36:12 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0601338A3;
+        Fri, 20 May 2022 00:36:09 -0700 (PDT)
+Received: from kwepemi100015.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4L4JNl5R78zQkB3;
+        Fri, 20 May 2022 15:33:11 +0800 (CST)
+Received: from kwepemm600012.china.huawei.com (7.193.23.74) by
+ kwepemi100015.china.huawei.com (7.221.188.125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 20 May 2022 15:36:07 +0800
+Received: from ubuntu1804.huawei.com (10.67.175.29) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Fri, 20 May 2022 15:36:01 +0800
+From:   Guan Jing <guanjing6@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <saeedm@nvidia.com>, <leon@kernel.org>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Guan Jing <guanjing6@huawei.com>
+Subject: [PATCH -next] net/mlx5: Fix build error of multiple definition
+Date:   Fri, 20 May 2022 15:34:23 +0800
+Message-ID: <20220520073423.35556-1-guanjing6@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma module
-Content-Language: en-US
-To:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Tom Talpey <tom@talpey.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "KaiShen@linux.alibaba.com" <KaiShen@linux.alibaba.com>,
-        "tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>
-References: <20220421071747.1892-1-chengyou@linux.alibaba.com>
- <20220421071747.1892-11-chengyou@linux.alibaba.com>
- <20220510131724.GA1093822@nvidia.com>
- <2a46d5b3-e905-4eb5-c775-c6fc227ad615@linux.alibaba.com>
- <20220518144621.GH1343366@nvidia.com>
- <83ed54cd-7893-ea26-6bf0-780e12ca2a3e@linux.alibaba.com>
- <20220518163142.GR1343366@nvidia.com>
- <BYAPR15MB2631B46350315B486CA9ED3599D09@BYAPR15MB2631.namprd15.prod.outlook.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <BYAPR15MB2631B46350315B486CA9ED3599D09@BYAPR15MB2631.namprd15.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-10.6 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.67.175.29]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+There are some errors like:
 
+drivers/net/ethernet/mellanox/mlx5/core/lag/lag.o:
+In function `mlx5_lag_mpesw_init':
+lag.c:(.text+0xb70): multiple definition of `mlx5_lag_mpesw_init'
+drivers/net/ethernet/mellanox/mlx5/core/lag/debugfs.o:debugfs.c:(.text+0x440):
+first defined here
+drivers/net/ethernet/mellanox/mlx5/core/lag/lag.o: In function `mlx5_lag_mpesw_cleanup':
+lag.c:(.text+0xb80): multiple definition of `mlx5_lag_mpesw_cleanup'
+drivers/net/ethernet/mellanox/mlx5/core/lag/debugfs.o:debugfs.c:(.text+0x450):
+first defined here
 
-On 5/20/22 12:20 AM, Bernard Metzler wrote:
-> 
-> 
+So, add 'static inline' on the defineation of these functions.
 
-<...>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Fixes: 94db33177819 ("net/mlx5: Support multiport eswitch mode")
+Signed-off-by: Guan Jing <guanjing6@huawei.com>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->>> As far as I know, iWarp device only has one GID entry which generated
->>> from MAC address.
->>>
->>> For iWarp, The CM part in core code resolves address, finds
->>> route with the help of kernel's net subsystem, and then obtains the
->> correct
->>> ibdev by GID matching. The GID matching in iWarp is indeed MAC address
->>> matching.
->>>
->>> In another words, for iWarp devices, the core code doesn't handle IP
->>> addressing related stuff directly, it is finished by calling net APIs.
->>> The netdev set by ib_device_set_netdev does not used in iWarp's CM
->>> process.
->>>
->>> The binded netdev in iWarp devices, mainly have two purposes:
->>>    1). generated GID0, using the netdev's mac address.
->>>    2). get the port state and attributes.
->>>
->>> For 1), erdma device binded to net device also by mac address, which can
->>> be obtained from our PCIe bar registers.
->>> For 2), erdma can also get the information, and may be more accurately.
->>> For example, erdma can have different MTU with virtio-net in our cloud.
->>>
->>> For RoCEv2, I know that it has many GIDs, some of them are generated
->>> from IP addresses, and handing IP addressing in core code.
->>
->> Bernard, Tom what do you think?
->>
->> Jason
-> 
-> I think iWarp (and now RoCEv2 with its UDP dependency) drivers
-> produce GIDs mostly to satisfy the current RDMA CM infrastructure,
-> which depends on this type of unique identifier, inherited from IB.
-> Imo, more natural would be to implement IP based RDMA protocols
-> connection management by relying on IP addresses.
-> 
-> Sorry for asking again - why erdma does not need to link with netdev?
-> Can erdma exist without using a netdev?
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h b/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h
+index d39a02280e29..be4abcb8fcd5 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/mpesw.h
+@@ -19,8 +19,8 @@ bool mlx5_lag_mpesw_is_activated(struct mlx5_core_dev *dev);
+ void mlx5_lag_mpesw_init(struct mlx5_lag *ldev);
+ void mlx5_lag_mpesw_cleanup(struct mlx5_lag *ldev);
+ #else
+-void mlx5_lag_mpesw_init(struct mlx5_lag *ldev) {}
+-void mlx5_lag_mpesw_cleanup(struct mlx5_lag *ldev) {}
++static inline void mlx5_lag_mpesw_init(struct mlx5_lag *ldev) {}
++static inline void mlx5_lag_mpesw_cleanup(struct mlx5_lag *ldev) {}
+ #endif
+ 
+ #endif /* __MLX5_LAG_MPESW_H__ */
+-- 
+2.17.1
 
-Actually erdma also need a net device binded to, and so does it.
-
-These days I’m trying to find out acceptable ways to get the reference
-of the binded netdev, e,g, the 'struct net_device' pointer. Unlike other
-RDMA drivers can get the reference of their binded netdevs' reference 
-easily (most RDMA devices are based on the extended aux devices), it is
-a little more complex for erdma, because erdma and its binded net device
-are two separated PCIe devices.
-
-Then I find that the netdev reference hold in ibdev is rarely used
-in core code for iWarp deivces, GID0 is the key attribute (As you and 
-Tom mentioned, it appears with the historical need for compatibility,
-but I think this is another story).
-
-So, there are two choices for erdma: enum net devices and find the
-matched one, or never calling ib_device_set_netdev. The second one has 
-less code.
-
-The second way can't work in ROCE. But it works for iWarp (I've tested),
-since the netdev reference is rarely used for iWarp in core code, as I
-said in last reply.
-
-In short, the question discussed here is that: is it acceptable that
-doesn't hold the netdev reference in core code for a iWarp driver
-(indeed it has a netdev binded to) ? Or is it necessary that calling
-ib_device_set_netdev to set the binded netdev for iWarp driver?
-
-You and Tom both are specialists in iWarp, your opinions are important.
-
-Thanks very much
-Cheng Xu
-
-
-> 
-> Thanks,
-> Bernard.
