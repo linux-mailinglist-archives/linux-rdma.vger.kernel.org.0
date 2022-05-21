@@ -2,39 +2,39 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED33E52FB70
-	for <lists+linux-rdma@lfdr.de>; Sat, 21 May 2022 13:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A81F452FB95
+	for <lists+linux-rdma@lfdr.de>; Sat, 21 May 2022 13:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242419AbiEULPK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 21 May 2022 07:15:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        id S1354927AbiEULPO (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 21 May 2022 07:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355024AbiEULOF (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 21 May 2022 07:14:05 -0400
+        with ESMTP id S1355047AbiEULOI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 21 May 2022 07:14:08 -0400
 Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0154E13129D;
-        Sat, 21 May 2022 04:12:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFFF35DFC;
+        Sat, 21 May 2022 04:12:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
   d=inria.fr; s=dc;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=IH3/VnVrLuGMaaxoHOH/EHWbIQ/9NHXAPtai+38Nr0E=;
-  b=uOPBbfzv71iW7ljzl3a/j23mxWXbumwYiNsbIzhlXIa8L78OEqAvxsZc
-   +8vruhssScJXUyFhWhFEtr3JUN5GTZNs4+0NRlhn7nyyn7+ylS4RzLIpN
-   oZ35F8ljfwrMZWNw46NQvOMl9pvGThScvGoYu5NUaii3wThP+SxrZEW5H
-   M=;
+  bh=DsOgnd5SeHFfVowAerPFBLnuFro3sYsxUMok15sASes=;
+  b=iBtCEFndKsIo+D1RLq3uP6eJZai5xG7n35JbZdRHF5h/0vlO4k0SIVZD
+   Bl+O4oXVzJIo2Gn/ZSydKkNgzCuyNs/lEFQflkX4/g/WeBmYFcM5E2tzi
+   X18drz3PrNwFKW1alGUDjsOqkKeHrhJvFx2ZeF3STSnf4s7iTDvVDmgry
+   g=;
 Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=Julia.Lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
 X-IronPort-AV: E=Sophos;i="5.91,242,1647298800"; 
-   d="scan'208";a="14727994"
+   d="scan'208";a="14727995"
 Received: from i80.paris.inria.fr (HELO i80.paris.inria.fr.) ([128.93.90.48])
   by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2022 13:12:07 +0200
 From:   Julia Lawall <Julia.Lawall@inria.fr>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     kernel-janitors@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
         linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] RDMA/core: fix typo in comment
-Date:   Sat, 21 May 2022 13:11:36 +0200
-Message-Id: <20220521111145.81697-86-Julia.Lawall@inria.fr>
+Subject: [PATCH] IB/core: fix typo in comment
+Date:   Sat, 21 May 2022 13:11:37 +0200
+Message-Id: <20220521111145.81697-87-Julia.Lawall@inria.fr>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -54,20 +54,20 @@ Detected with the help of Coccinelle.
 Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
 
 ---
- include/rdma/ib_verbs.h |    2 +-
+ drivers/infiniband/core/umem_odp.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index b0bc9de5e9a8..9c6317cf80d5 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -578,7 +578,7 @@ struct rdma_stat_desc {
- /**
-  * struct rdma_hw_stats
-  * @lock - Mutex to protect parallel write access to lifespan and values
-- *    of counters, which are 64bits and not guaranteeed to be written
-+ *    of counters, which are 64bits and not guaranteed to be written
-  *    atomicaly on 32bits systems.
-  * @timestamp - Used by the core code to track when the last update was
-  * @lifespan - Used by the core code to determine how old the counters
+diff --git a/drivers/infiniband/core/umem_odp.c b/drivers/infiniband/core/umem_odp.c
+index aead24c1a682..186ed8859920 100644
+--- a/drivers/infiniband/core/umem_odp.c
++++ b/drivers/infiniband/core/umem_odp.c
+@@ -455,7 +455,7 @@ int ib_umem_odp_map_dma_and_lock(struct ib_umem_odp *umem_odp, u64 user_virt,
+ 			break;
+ 		}
+ 	}
+-	/* upon sucesss lock should stay on hold for the callee */
++	/* upon success lock should stay on hold for the callee */
+ 	if (!ret)
+ 		ret = dma_index - start_idx;
+ 	else
 
