@@ -2,236 +2,234 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D39BC5313AC
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 May 2022 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407A353140B
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 May 2022 18:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbiEWNZv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 23 May 2022 09:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        id S236357AbiEWNhE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 23 May 2022 09:37:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236201AbiEWNZg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 May 2022 09:25:36 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2082.outbound.protection.outlook.com [40.107.244.82])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD234C78E
-        for <linux-rdma@vger.kernel.org>; Mon, 23 May 2022 06:25:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PvHaHc6r10z2lyqQ1mmkRi2jKQpTFXoEEDPv15jE49YAmLeV8aRaZmuhxDFVbS6oCT2URmf2V7mczwRN3aZGPzPXUPo6VmRiaUHBgCUjLCtM/Uz3HOwXC5+WsAh/0irSVD3E3eVc4cka2oHzz9EKRCoiLnr6V+pQs0bqpqqS48e683piq7NqO4taylBnSaQ83FckRG9VeStVCh8tsmVCDob3UfVL9aaA5PR79iKT+x43GvJWLePjhqJu9a3/7lu0xbClAPrhb064lS4rpa5vTl5Moq7b/4KIqtAItl4jKyf1RhbRSR9I6pDPlVrteRST8h88ELiYcDNft9Avsb/ddQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h/BmKCjs7PazFF8w6XwOY3MaEIHmrfh8675GIhfXB7M=;
- b=P+PXkPQKHfMihXbrNJgMdi/P6Lcd9M6QsIqUEZJfOSfjvxmD+Ov29H5yBC7RBV079bp1Vc/DCf+Btbu00zXuuv83XI/e267st3s7mjNXAOBLQ+8hX23aYGM28Xn0PZS+Vq5UX9l49S9f3vM0bWEgdvm5WUdca2aXe1pE28g3ORGoHMPU+/4gfW42oD8hhOUsmvPraALbodYNcwthr6xPml5gSTMtpT2ieTksPsSWAp9doRMeR+9ZJqvTNVDWYjWwaLPLr74vNfLSdd7jJshO9/sYRsVgvitEUfKXe8vpvQB3x5F2Hws6QQFHyhT0EnWvDHKlQKNrs2wCJ6Rb5+FAvA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=talpey.com; dmarc=pass action=none header.from=talpey.com;
- dkim=pass header.d=talpey.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=talpey.com;
-Received: from SN6PR01MB4445.prod.exchangelabs.com (2603:10b6:805:e2::33) by
- BYAPR01MB3782.prod.exchangelabs.com (2603:10b6:a02:82::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.5273.15; Mon, 23 May 2022 13:25:28 +0000
-Received: from SN6PR01MB4445.prod.exchangelabs.com
- ([fe80::f135:e76f:7ddd:f21]) by SN6PR01MB4445.prod.exchangelabs.com
- ([fe80::f135:e76f:7ddd:f21%3]) with mapi id 15.20.5273.023; Mon, 23 May 2022
- 13:25:24 +0000
-Message-ID: <434eaddc-6419-bf89-9053-932906bce6e9@talpey.com>
-Date:   Mon, 23 May 2022 09:25:22 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma module
-Content-Language: en-US
-To:     Cheng Xu <chengyou@linux.alibaba.com>,
-        Bernard Metzler <BMT@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "KaiShen@linux.alibaba.com" <KaiShen@linux.alibaba.com>,
-        "tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>
-References: <BYAPR15MB263173D47513D1B16E1B00C199D39@BYAPR15MB2631.namprd15.prod.outlook.com>
- <27ce4b52-89cf-26a0-9452-f77ae59d9e7b@linux.alibaba.com>
-From:   Tom Talpey <tom@talpey.com>
-In-Reply-To: <27ce4b52-89cf-26a0-9452-f77ae59d9e7b@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BL1PR13CA0028.namprd13.prod.outlook.com
- (2603:10b6:208:256::33) To SN6PR01MB4445.prod.exchangelabs.com
- (2603:10b6:805:e2::33)
+        with ESMTP id S236786AbiEWNgd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 23 May 2022 09:36:33 -0400
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0976A2FFEB
+        for <linux-rdma@vger.kernel.org>; Mon, 23 May 2022 06:36:30 -0700 (PDT)
+Received: by mail-il1-f198.google.com with SMTP id z10-20020a056e0217ca00b002d1a8674f81so2128299ilu.9
+        for <linux-rdma@vger.kernel.org>; Mon, 23 May 2022 06:36:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=PWVuKEE9bBkY12k8vg+z8QNr9+c6DLKmUQgNLGQRizg=;
+        b=z3wvjuFANu1bo86hwLGG2lbOt0+ieO/pRJosqBVaT1FiI0E2eNSI9EEnCgGvI3U3/d
+         ND3931gf4+fR0/yJKaPcpTtmkA9skQCUrOVzuKHbquHyA4DXh/zDKG4FLtnzC3suL9+8
+         BCIvryD6AqltuvdPtT8pqvNYuAjJ/+eC5vKrMRvLFrKnkHEcXN+zGrvZ1xeS+cZFttkw
+         QNKf8Nvf8d5ulUdFvodbsEVoZt/Cw8Zq4aGDKi8FSuOyrTWbmQvB7DQxsIpGNMjTXWLu
+         fTBGNYC6dNPAXkdIlB6p/1qtAgEy6nDpt1TQB4JihsZfoQNwK/UsFIBg1eWJhvdzIEhN
+         IwEA==
+X-Gm-Message-State: AOAM530S/7puLhFNnio0Zfas6GForXbyAIk3PdQ2bCWEbzDfk3ipXPGR
+        uWww5Kz/cApj/vTRGPTTXUkWuV9KAK7ozQdBW+u3MSstNPEW
+X-Google-Smtp-Source: ABdhPJyNrF71n8Tw+UiKR3u1IltNUUevh3fpRdQ2ndEjTIsrqdtZ8vHzspy+MfGUPYvhr62sCxohmeb+sqYesDn01MUeKWJChiEl
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0cb26046-1897-46fc-9a06-08da3cbfb182
-X-MS-TrafficTypeDiagnostic: BYAPR01MB3782:EE_
-X-Microsoft-Antispam-PRVS: <BYAPR01MB3782635366D8460F9C5C6230D6D49@BYAPR01MB3782.prod.exchangelabs.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: P/lyibZ48aGi7CfSkH3MBcpRWuK155C+CVIhSdqFb+N40oNPi2uOqNgLJ8bdv6Is62rYPg8CvqWKzwajRA5jlc9H8NfUAXAfuoLgzNvDouj/iLVdEl25mz6CmCiiRfJ6siDi+r5FkB8r8ToOt208UjbpjulrYKBRON5TMvbGmrFpvhHjgr+1acn9c3AdayV19/5yF2dmtYLmB873+CktVcUEB04Srr0hyn5eT3/XoZxK0OeUQDDGLUgGyIZyZ+EB4KoaJpDXAP/nfVed7jqvD0byP3EB0crWyDuRFdzwSfLiISeKEafxjuOMwiY8SYNAjhjM3FgI1gcHZEAX2MnzwUXubiclurWGbZq7IESpfi+FMm0pGuBRAiZq2ksV5VNV+bXynv8FivlWM+ox2E8KQ5F8FP3gaNAkls4Cmtupm0u5ezrmENWdu/6o6TMw4/vJNyKgf7fX7AOlHNjSQ5HjcLn1kqdCGoWChm/uYyVPeIKy/SJiRdbvyDRQoiskHXYTP/KEJVvVsPF6xTx1ChOFq8XzBFNR8PUvr/qEhJgv4r5B7l/Mghi3sHmAYlS8OaXL6QDL0V5pJ5bxzPttCyXgZkypLLkVxyS4uuFIvU+oMt9ikay6ekXqeZVfT2A6GkoWsJXLmI2Ae09m3CtJSU2m2UAKlzR+Wfgp7zDPL1S57VkEk/+StlDDizROWYV1TxLNuJE8Yg2AGUUe+huQAt8O7cqXw9F4osuGFbAB2iu/ZzI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR01MB4445.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230001)(366004)(396003)(136003)(39830400003)(376002)(346002)(86362001)(6506007)(5660300002)(38100700002)(83380400001)(2906002)(6486002)(31696002)(8936002)(38350700002)(508600001)(316002)(52116002)(6512007)(54906003)(26005)(2616005)(110136005)(41300700001)(186003)(31686004)(53546011)(8676002)(4326008)(66556008)(66946007)(66476007)(36756003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RUVGV0F4aExMNytaNzMwZ3ZCMnAvOWlYMTYvREZMVHNub3doM3FiVnVVOG12?=
- =?utf-8?B?L1puT2JENEFxNVpJdHVCTXJXV1JxRjZySmFTeE5KWVE1RHllbkNJWUxxOU5R?=
- =?utf-8?B?NzhjaFFwWVBFUVFsMk4reGxCZTJhUW1udktuUEFmbVRMcTlEODdyV2t0RTFX?=
- =?utf-8?B?QkZpMXBpRE91ZmtDVHVqL0pSb01MVGtrTFFRVjMrcklBeVMxUUkrc1QwL0wy?=
- =?utf-8?B?ZktzZU5aYjBFbm1MUEpDWS9pYTc0Q0VTZGFaWFJBd2VXd1ozYk5CeXVxSXBE?=
- =?utf-8?B?V3BzZWFwdUpyOGFUdkZZSG9TSEFYbUpER2FIZ2ZIOWVLMXFnb1RuczE5VEY4?=
- =?utf-8?B?K3FZaVZzRnZYWmhDMVE5QU5qaFhyWW05MEFXR3RGZ0lPUDFkSzU1VjRFSitZ?=
- =?utf-8?B?Wjc1TGRpQ25VQUVZM3RPeXdvRDQ1QUUxYVVCSE9KaGNIWFV5RE16Wjl0SVcy?=
- =?utf-8?B?bEFiMGJleTNGWXhmRklQQS9vQVcrRHcxNXpuTk9Od2M0bm1TRjE3V0o5Q1VU?=
- =?utf-8?B?SFFYb3psN21pdTN6alBweW01azRTckFqSGtpdmhHV1ZUZ1JGTnlPbEZrMjl3?=
- =?utf-8?B?TkxKVVlucEQweUYvekZKUGxyYkdKL3dZUHdUQkdiQzRXS2QxR0JIeHZQVms2?=
- =?utf-8?B?SHRjOHBDbERhcENOOHo5TnZQUXJ1VzFqK0lOSldTbnRCOWVUcC9TY3p0eHhH?=
- =?utf-8?B?Q0hOeFpqS2pnWnFBeXc3bUhhVDVCZUwyd0N0OGF2elpKbElKODl4bituNk0z?=
- =?utf-8?B?bHVCLzdUY1RTSmxvdE4rWFk3MVI3TFh3Sk5lRGd3VGFDS1hCQmlVaDJLMVhp?=
- =?utf-8?B?ZEttUGNPNUF6eDBGVmw5NEdkUVBnN21JS09mNS9XSVdJRTdqbnV3NGJIVTJ1?=
- =?utf-8?B?bDNCRlBIMFJxYlBBRnBwM1FpbzNNL01ybURmelZWWS9kMHkwbXkyKzBOOHpx?=
- =?utf-8?B?dzVyUkJLVlZ3TU1FWkVucHJSWjQrNXYweGJ5ZW1xdnRmSzUrUm1ERzJnYUs0?=
- =?utf-8?B?TmcvNnR4ZUhRcDB6UEhWQmpEYjJXME9NL3M3ODFHa2N4NERHb3N6L2JZVkdV?=
- =?utf-8?B?TUtWLzdCMitaRVI4Yk9uWHZvNU9OdVRCUHNjTkIrb2N5L2ltcEdKOG5zRGJO?=
- =?utf-8?B?WWFiMVJyU3JmeFpxVFdVYkpycjVIQ1YvbHhRcFN1V0VSQytOTmFJcjZyK1d0?=
- =?utf-8?B?QmlSa3lWWWpXMTFaSUUrWlpTVXp6VTFpdkF5S2V5MUc5K3hJc2ZwaSt1djZt?=
- =?utf-8?B?ZTAzdmhiY0J1V0ozRThiazI5NXhzQ2ptemdMcWZ0Mk1TV1BjM3JXZFI4SENT?=
- =?utf-8?B?Z1UyRExmK0NudHM0alBjdEYxcU9GZjdMODgySlNacVNBT1NDci9JMEpUQ2xG?=
- =?utf-8?B?MU5ZZ1g0bDd2OGo5WlhiWHpHcWRVQ3ZvbjJjNGxJYXk5Q1oxazMzbVNPazdJ?=
- =?utf-8?B?eUtlTlJNNGNnellLNEt1aWsrcnFyc3Y2cWZqeExNYXFGWnd4Ym42ZFF2aUE1?=
- =?utf-8?B?WnZNY1o3djFIVVpVdUltUllDbTFMTlpsWGlSa3FIQy9BSjUwVGYwR3FJbjEr?=
- =?utf-8?B?R1ZNbTJ2ai9aS3hwcWlTSDhUY3htbDF6Qk4yeXIvS1JCUm4vU3FsaXRtakk1?=
- =?utf-8?B?bnZSaVZYYzByRCt0RHMrSDlneVNOK3RPYWp5ajd3QXg5TEYxb1BDOWpLRHBC?=
- =?utf-8?B?b3U0QUViaWc4NkQ3UTlGMVZBRkxxd3d2eFBwYVVSN1VCd0dXbFRiNEgxd0hi?=
- =?utf-8?B?R3B6ZW9pQTkxaS9BU0Y1N0g4bVU5c2k4TmZaRjhBem44U1ZjQzIrNEJIQ3E4?=
- =?utf-8?B?Ny9kalJGaGxKYUNKMUhzb1k0dmVqNlQxdFVFaWNSdVZ2RWlMUkwra1B5eHVu?=
- =?utf-8?B?dEJrYlpVLzRiaWxUdHN0ZkRLN3ZPM2FZblhhMWJidXJ3UGN0eUxiTnVHTEFD?=
- =?utf-8?B?b3dUemd0WHRVaGxkN3VpT1p2bHdmR1VDdHVseFdBdE4vTE9ONG5SemxDb1NT?=
- =?utf-8?B?ektueDFLSFc4Um41UjdWNlFDSGJhVjJUTjRQamlIYVNBMFFUaDZPWlE3VTli?=
- =?utf-8?B?UC9MWUNBQ21VRXFaSkJiTExlUk9peU16cFVJSlFJUmxHYU01MytZaG12Z1Fz?=
- =?utf-8?B?OHkyVE5LZ29sbnV3NnpjUXZSUWM0dVl2MElEMjRYOGVjdmJpZWhFaFh6MzZI?=
- =?utf-8?B?NkxtREpYSW1tV2QrTEI1V0NKM3ZNUDVBVytNOVFjSHVZUFVXTjBPL05lQzVD?=
- =?utf-8?B?WGczMU1ES2haeFN3Z2YzWkJVTmM3M0FzMnRxSU9wYkNhL3I0V1NsYmxTTDlQ?=
- =?utf-8?Q?EbhDCbdXgddEVDiZhH?=
-X-OriginatorOrg: talpey.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0cb26046-1897-46fc-9a06-08da3cbfb182
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR01MB4445.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2022 13:25:24.2455
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 2b2dcae7-2555-4add-bc80-48756da031d5
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s7ENUEExfG8gljy71nwDGY/PERVNU1MDVUx26CyVIH/ZOXmvL5pHocWcvCotLozG
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB3782
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6e02:2165:b0:2d1:a330:b587 with SMTP id
+ s5-20020a056e02216500b002d1a330b587mr3596692ilv.50.1653312989351; Mon, 23 May
+ 2022 06:36:29 -0700 (PDT)
+Date:   Mon, 23 May 2022 06:36:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006ed46805dfaded18@google.com>
+Subject: [syzbot] INFO: trying to register non-static key in rxe_cleanup_task
+From:   syzbot <syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com>
+To:     jgg@ziepe.ca, leon@kernel.org, linux-kernel@vger.kernel.org,
+        linux-rdma@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        zyjzyj2000@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/22/2022 9:39 PM, Cheng Xu wrote:
-> 
-> 
-> On 5/20/22 11:13 PM, Bernard Metzler wrote:
->>
->>> -----Original Message-----
->>> From: Cheng Xu <chengyou@linux.alibaba.com>
->>> Sent: Friday, 20 May 2022 09:04
->>> To: Bernard Metzler <BMT@zurich.ibm.com>; Jason Gunthorpe
->>> <jgg@nvidia.com>; Tom Talpey <tom@talpey.com>
->>> Cc: dledford@redhat.com; leon@kernel.org; linux-rdma@vger.kernel.org;
->>> KaiShen@linux.alibaba.com; tonylu@linux.alibaba.com
->>> Subject: [EXTERNAL] Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the
->>> erdma module
->>>
->>>
->>>
->>> On 5/20/22 12:20 AM, Bernard Metzler wrote:
->>>>
->>>>
->>>
->>> <...>
->>>
->>>>>> As far as I know, iWarp device only has one GID entry which
->>> generated
->>>>>> from MAC address.
->>>>>>
->>>>>> For iWarp, The CM part in core code resolves address, finds
->>>>>> route with the help of kernel's net subsystem, and then obtains the
->>>>> correct
->>>>>> ibdev by GID matching. The GID matching in iWarp is indeed MAC
->>> address
->>>>>> matching.
->>>>>>
->>>>>> In another words, for iWarp devices, the core code doesn't handle IP
->>>>>> addressing related stuff directly, it is finished by calling net
->>> APIs.
->>>>>> The netdev set by ib_device_set_netdev does not used in iWarp's CM
->>>>>> process.
->>>>>>
->>>>>> The binded netdev in iWarp devices, mainly have two purposes:
->>>>>>     1). generated GID0, using the netdev's mac address.
->>>>>>     2). get the port state and attributes.
->>>>>>
->>>>>> For 1), erdma device binded to net device also by mac address, which
->>> can
->>>>>> be obtained from our PCIe bar registers.
->>>>>> For 2), erdma can also get the information, and may be more
->>> accurately.
->>>>>> For example, erdma can have different MTU with virtio-net in our
->>> cloud.
->>>>>>
->>>>>> For RoCEv2, I know that it has many GIDs, some of them are generated
->>>>>> from IP addresses, and handing IP addressing in core code.
->>>>>
->>>>> Bernard, Tom what do you think?
->>>>>
->>>>> Jason
->>>>
->>>> I think iWarp (and now RoCEv2 with its UDP dependency) drivers
->>>> produce GIDs mostly to satisfy the current RDMA CM infrastructure,
->>>> which depends on this type of unique identifier, inherited from IB.
->>>> Imo, more natural would be to implement IP based RDMA protocols
->>>> connection management by relying on IP addresses.
->>>>
->>>> Sorry for asking again - why erdma does not need to link with netdev?
->>>> Can erdma exist without using a netdev?
->>>
->>> Actually erdma also need a net device binded to, and so does it.
->>>
->>> These days I’m trying to find out acceptable ways to get the reference
->>> of the binded netdev, e,g, the 'struct net_device' pointer. Unlike other
->>> RDMA drivers can get the reference of their binded netdevs' reference
->>> easily (most RDMA devices are based on the extended aux devices), it is
->>> a little more complex for erdma, because erdma and its binded net device
->>> are two separated PCIe devices.
->>>
->>> Then I find that the netdev reference hold in ibdev is rarely used
->>> in core code for iWarp deivces, GID0 is the key attribute (As you and
->>> Tom mentioned, it appears with the historical need for compatibility,
->>> but I think this is another story).
->>>
->>
->> Yes, I think this is right.
->>
->> If you are saying you can go away with a NULL netdev at CM core, then
->> I think that's fine?
->> Of course the erdma driver must somehow keep track of the state of
->> its associated network device - like catching up with link status -
->> and must provide related information/events to the RDMA core.
->>
-> 
-> All right, and get it. I'd like to hold the binded netdev reference in
-> our probe routine, and send v9 patches.
+Hello,
 
-Cheng Xu, by this do you mean you'll drop the reference after the probe?
-In addition to watching for link status changes, I'd expect you also
-will want to monitor ARP/ND changes, maybe even perform those in the
-netdev stack rather than your firmware. Does your adapter not also
-function as a normal NIC?
+syzbot found the following issue on:
 
-Tom.
+HEAD commit:    cc63e8e92cb8 Add linux-next specific files for 20220523
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17adae81f00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c414c5699721a60d
+dashboard link: https://syzkaller.appspot.com/bug?extid=833061116fa28df97f3b
+compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
 
-> Thanks your time for looking at this, Jason, Bernard and Tom.
-> 
-> Cheng Xu
-> 
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
+
+infiniband syz1: set active
+infiniband syz1: added batadv_slave_1
+INFO: trying to register non-static key.
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 1 PID: 8344 Comm: syz-executor.4 Not tainted 5.18.0-next-20220523-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xcd/0x134 lib/dump_stack.c:106
+ assign_lock_key kernel/locking/lockdep.c:979 [inline]
+ register_lock_class+0xf30/0x1130 kernel/locking/lockdep.c:1292
+ __lock_acquire+0x10a/0x5660 kernel/locking/lockdep.c:4932
+ lock_acquire kernel/locking/lockdep.c:5665 [inline]
+ lock_acquire+0x1ab/0x570 kernel/locking/lockdep.c:5630
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:365 [inline]
+ rxe_cleanup_task+0x6f/0xc0 drivers/infiniband/sw/rxe/rxe_task.c:117
+ rxe_qp_do_cleanup+0x88/0x8b0 drivers/infiniband/sw/rxe/rxe_qp.c:781
+ execute_in_process_context+0x37/0x150 kernel/workqueue.c:3351
+ rxe_elem_release drivers/infiniband/sw/rxe/rxe_pool.c:206 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ __rxe_put+0x107/0x1f0 drivers/infiniband/sw/rxe/rxe_pool.c:221
+ rxe_create_qp+0x2a5/0x320 drivers/infiniband/sw/rxe/rxe_verbs.c:435
+ create_qp+0x5ac/0x960 drivers/infiniband/core/verbs.c:1233
+ ib_create_qp_kernel+0x9d/0x310 drivers/infiniband/core/verbs.c:1344
+ ib_create_qp include/rdma/ib_verbs.h:3732 [inline]
+ create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2910
+ ib_mad_port_open drivers/infiniband/core/mad.c:2991 [inline]
+ ib_mad_init_device+0xd51/0x13f0 drivers/infiniband/core/mad.c:3082
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
+ ib_register_device drivers/infiniband/core/device.c:1420 [inline]
+ ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1366
+ rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1112
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:521
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:195 [inline]
+ rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:176
+ nldev_newlink+0x32e/0x5c0 drivers/infiniband/core/nldev.c:1717
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2492
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2546
+ __sys_sendmsg net/socket.c:2575 [inline]
+ __do_sys_sendmsg net/socket.c:2584 [inline]
+ __se_sys_sendmsg net/socket.c:2582 [inline]
+ __x64_sys_sendmsg+0x132/0x220 net/socket.c:2582
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x7f0c6ac890e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0c6be25168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f0c6ad9bf60 RCX: 00007f0c6ac890e9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 00007f0c6ace308d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffcdd7fce9f R14: 00007f0c6be25300 R15: 0000000000022000
+ </TASK>
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 4dd1a067 P4D 4dd1a067 PUD 1ccf5067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 1 PID: 8344 Comm: syz-executor.4 Not tainted 5.18.0-next-20220523-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000ddf6b50 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88801ae9e568 RCX: ffffc90006d16000
+RDX: 0000000000040000 RSI: ffffffff86d3e56b RDI: 0000000000000000
+RBP: ffffed10035d3cbc R08: 0000000000000001 R09: ffff88801ae9e63f
+R10: ffffed10035d3cc7 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffed10035d3cbd R14: ffff88801ae9e5e0 R15: ffff88801ae9e5e8
+FS:  00007f0c6be25700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000025396000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __rxe_do_task+0x56/0xc0 drivers/infiniband/sw/rxe/rxe_task.c:18
+ rxe_qp_do_cleanup+0x102/0x8b0 drivers/infiniband/sw/rxe/rxe_qp.c:792
+ execute_in_process_context+0x37/0x150 kernel/workqueue.c:3351
+ rxe_elem_release drivers/infiniband/sw/rxe/rxe_pool.c:206 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ __rxe_put+0x107/0x1f0 drivers/infiniband/sw/rxe/rxe_pool.c:221
+ rxe_create_qp+0x2a5/0x320 drivers/infiniband/sw/rxe/rxe_verbs.c:435
+ create_qp+0x5ac/0x960 drivers/infiniband/core/verbs.c:1233
+ ib_create_qp_kernel+0x9d/0x310 drivers/infiniband/core/verbs.c:1344
+ ib_create_qp include/rdma/ib_verbs.h:3732 [inline]
+ create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2910
+ ib_mad_port_open drivers/infiniband/core/mad.c:2991 [inline]
+ ib_mad_init_device+0xd51/0x13f0 drivers/infiniband/core/mad.c:3082
+ add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:721
+ enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1332
+ ib_register_device drivers/infiniband/core/device.c:1420 [inline]
+ ib_register_device+0x814/0xaf0 drivers/infiniband/core/device.c:1366
+ rxe_register_device+0x2fe/0x3b0 drivers/infiniband/sw/rxe/rxe_verbs.c:1112
+ rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:521
+ rxe_newlink drivers/infiniband/sw/rxe/rxe.c:195 [inline]
+ rxe_newlink+0xa9/0xd0 drivers/infiniband/sw/rxe/rxe.c:176
+ nldev_newlink+0x32e/0x5c0 drivers/infiniband/core/nldev.c:1717
+ rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
+ rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+ rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
+ netlink_unicast_kernel net/netlink/af_netlink.c:1319 [inline]
+ netlink_unicast+0x543/0x7f0 net/netlink/af_netlink.c:1345
+ netlink_sendmsg+0x917/0xe10 net/netlink/af_netlink.c:1921
+ sock_sendmsg_nosec net/socket.c:714 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:734
+ ____sys_sendmsg+0x6eb/0x810 net/socket.c:2492
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2546
+ __sys_sendmsg net/socket.c:2575 [inline]
+ __do_sys_sendmsg net/socket.c:2584 [inline]
+ __se_sys_sendmsg net/socket.c:2582 [inline]
+ __x64_sys_sendmsg+0x132/0x220 net/socket.c:2582
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x35/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x46/0xb0
+RIP: 0033:0x7f0c6ac890e9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f0c6be25168 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f0c6ad9bf60 RCX: 00007f0c6ac890e9
+RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000003
+RBP: 00007f0c6ace308d R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007ffcdd7fce9f R14: 00007f0c6be25300 R15: 0000000000022000
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+RSP: 0018:ffffc9000ddf6b50 EFLAGS: 00010246
+RAX: 0000000000040000 RBX: ffff88801ae9e568 RCX: ffffc90006d16000
+RDX: 0000000000040000 RSI: ffffffff86d3e56b RDI: 0000000000000000
+RBP: ffffed10035d3cbc R08: 0000000000000001 R09: ffff88801ae9e63f
+R10: ffffed10035d3cc7 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffed10035d3cbd R14: ffff88801ae9e5e0 R15: ffff88801ae9e5e8
+FS:  00007f0c6be25700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000025396000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
