@@ -2,44 +2,71 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B96853072D
-	for <lists+linux-rdma@lfdr.de>; Mon, 23 May 2022 03:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BEEE530829
+	for <lists+linux-rdma@lfdr.de>; Mon, 23 May 2022 05:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235208AbiEWBjn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 22 May 2022 21:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
+        id S229446AbiEWDvU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 22 May 2022 23:51:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbiEWBjn (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 May 2022 21:39:43 -0400
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15CA2FE60
-        for <linux-rdma@vger.kernel.org>; Sun, 22 May 2022 18:39:41 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VE2YvtU_1653269977;
-Received: from 30.43.105.112(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VE2YvtU_1653269977)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 23 May 2022 09:39:38 +0800
-Message-ID: <27ce4b52-89cf-26a0-9452-f77ae59d9e7b@linux.alibaba.com>
-Date:   Mon, 23 May 2022 09:39:37 +0800
+        with ESMTP id S1353499AbiEWDvT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 22 May 2022 23:51:19 -0400
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E36DDEB8
+        for <linux-rdma@vger.kernel.org>; Sun, 22 May 2022 20:51:17 -0700 (PDT)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-f1eafa567cso13519706fac.8
+        for <linux-rdma@vger.kernel.org>; Sun, 22 May 2022 20:51:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=kL8Owk8JlhQcUDx6AfCEIiEcEmD3iCNCJKY2L2kdQvM=;
+        b=IUI9lh27Z1ZaG7xjEjGZPJsQ9vcSgKS+0Sgmct8/ibpS5VJEawq1qpRpAU6RWWVxHw
+         2+4btxthcpAAHRsOUh2HrJofHKfFjUQ0j2bgHymBOVgAlL19/YhmIGdBspAP7HEQ+4R0
+         qSbVcwB8qAuuCYOh/8zt2H49PG/ifehrXRcNYkAJCwbRusoC1sHEgE8mqqGIJOe4hMkf
+         /YUiyR8h2JiD+SYpwzW0RMjEBHiL1Z32eA+3t/4zu35qhAToJo3Z9M5LWT9AgMh8a3SZ
+         RFqG9/25Crqy+n++CkBWvFILT5xQzwou+ev+po2WlqR0ntOXi1TqdIHbv7ffpOaq6eWR
+         sD7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=kL8Owk8JlhQcUDx6AfCEIiEcEmD3iCNCJKY2L2kdQvM=;
+        b=OKFQuMtIJBsrDrrXCee22m6sKn2cIhjehFWPpS9C4C1n1aBrkrWv9i4nj5uyeRU7kv
+         X3lKpn0Ib7Z7cxtZVMsEpglw5gMTb6epsSI59FiuKmqrv7hVR1HiUm2z8cR04LN2aYUn
+         OWh8MGvNtNKXq0oty73PI+k7g0EM77ZlpXob57szAlv4IXrSsT8AYj10tZ1FZoQpa1RJ
+         L5ZYnFwI9OgwkUMg2uGab3qKkJibJ44brYYexXd150JmQeCIsoixw8Pg3WqpTAhrYuoJ
+         EIpYoA+kRJc1nPR5Jgct3kNNKP5MQCRfy5A5Wqu7co5/7ZkhQgMhrdEsPFS/maaz/RA4
+         zEIg==
+X-Gm-Message-State: AOAM531GXQxC6rCyacStuuvmbtaU56T4L3YH0ozcD6YB4q9OlRxYk31/
+        tHzEET7FJRRUgIOKMPEmyuw=
+X-Google-Smtp-Source: ABdhPJxl/HifViPh13RyI38MnmT5bCvzX/kgQ1sNpNnp3i0PMdQjRwphbkHgrn/hUSVZiS2N1i7siw==
+X-Received: by 2002:a05:6870:c59b:b0:f1:231c:c82c with SMTP id ba27-20020a056870c59b00b000f1231cc82cmr10784651oab.217.1653277876613;
+        Sun, 22 May 2022 20:51:16 -0700 (PDT)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id p187-20020acabfc4000000b0032b4ae1fc2csm559660oif.21.2022.05.22.20.51.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 22 May 2022 20:51:16 -0700 (PDT)
+Message-ID: <e81610d6-7896-03d6-91f9-15d68c7b8192@gmail.com>
+Date:   Sun, 22 May 2022 22:51:15 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.0
-Subject: Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the erdma module
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix incorrect fencing
 Content-Language: en-US
-To:     Bernard Metzler <BMT@zurich.ibm.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, Tom Talpey <tom@talpey.com>
-Cc:     "dledford@redhat.com" <dledford@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "KaiShen@linux.alibaba.com" <KaiShen@linux.alibaba.com>,
-        "tonylu@linux.alibaba.com" <tonylu@linux.alibaba.com>
-References: <BYAPR15MB263173D47513D1B16E1B00C199D39@BYAPR15MB2631.namprd15.prod.outlook.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <BYAPR15MB263173D47513D1B16E1B00C199D39@BYAPR15MB2631.namprd15.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+To:     Haris Iqbal <haris.iqbal@ionos.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
+        frank.zago@hpe.com, linux-rdma@vger.kernel.org
+References: <20220522223345.9889-1-rpearsonhpe@gmail.com>
+ <CAJpMwyjjbZtG152GAZZV_t6sn8bw6J0tSGaaY_9LTdw0Ve7gEg@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAJpMwyjjbZtG152GAZZV_t6sn8bw6J0tSGaaY_9LTdw0Ve7gEg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -47,101 +74,115 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-
-
-On 5/20/22 11:13 PM, Bernard Metzler wrote:
+On 5/22/22 18:59, Haris Iqbal wrote:
+> On Mon, May 23, 2022 at 12:36 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> Currently the rxe driver checks if any previous operation
+>> is not complete to determine if a fence wait is required.
+>> This is not correct. For a regular fence only previous
+>> read or atomic operations must be complete while for a local
+>> invalidate fence all previous operations must be complete.
+>> This patch corrects this behavior.
+>>
+>> Fixes: 8700e3e7c4857 ("Soft RoCE (RXE) - The software RoCE driver")
+>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>> ---
+>>  drivers/infiniband/sw/rxe/rxe_req.c | 42 ++++++++++++++++++++++++-----
+>>  1 file changed, 36 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+>> index ae5fbc79dd5c..f36263855a45 100644
+>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+>> @@ -163,16 +163,41 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
+>>                      (wqe->state != wqe_state_processing)))
+>>                 return NULL;
+>>
+>> -       if (unlikely((wqe->wr.send_flags & IB_SEND_FENCE) &&
+>> -                                                    (index != cons))) {
+>> -               qp->req.wait_fence = 1;
+>> -               return NULL;
+>> -       }
+>> -
+>>         wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
+>>         return wqe;
+>>  }
+>>
+>> +/**
+>> + * rxe_wqe_is_fenced - check if next wqe is fenced
+>> + * @qp: the queue pair
+>> + * @wqe: the next wqe
+>> + *
+>> + * Returns: 1 if wqe is fenced (needs to wait)
+>> + *         0 if wqe is good to go
+>> + */
+>> +static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>> +{
+>> +       unsigned int cons;
+>> +
+>> +       if (!(wqe->wr.send_flags & IB_SEND_FENCE))
+>> +               return 0;
+>> +
+>> +       cons = queue_get_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
+>> +
+>> +       /* Local invalidate fence (LIF) see IBA 10.6.5.1
+>> +        * Requires ALL previous operations on the send queue
+>> +        * are complete.
+>> +        */
+>> +       if (wqe->wr.opcode == IB_WR_LOCAL_INV)
+>> +               return qp->req.wqe_index != cons;
 > 
->> -----Original Message-----
->> From: Cheng Xu <chengyou@linux.alibaba.com>
->> Sent: Friday, 20 May 2022 09:04
->> To: Bernard Metzler <BMT@zurich.ibm.com>; Jason Gunthorpe
->> <jgg@nvidia.com>; Tom Talpey <tom@talpey.com>
->> Cc: dledford@redhat.com; leon@kernel.org; linux-rdma@vger.kernel.org;
->> KaiShen@linux.alibaba.com; tonylu@linux.alibaba.com
->> Subject: [EXTERNAL] Re: [PATCH for-next v7 10/12] RDMA/erdma: Add the
->> erdma module
->>
->>
->>
->> On 5/20/22 12:20 AM, Bernard Metzler wrote:
->>>
->>>
->>
->> <...>
->>
->>>>> As far as I know, iWarp device only has one GID entry which
->> generated
->>>>> from MAC address.
->>>>>
->>>>> For iWarp, The CM part in core code resolves address, finds
->>>>> route with the help of kernel's net subsystem, and then obtains the
->>>> correct
->>>>> ibdev by GID matching. The GID matching in iWarp is indeed MAC
->> address
->>>>> matching.
->>>>>
->>>>> In another words, for iWarp devices, the core code doesn't handle IP
->>>>> addressing related stuff directly, it is finished by calling net
->> APIs.
->>>>> The netdev set by ib_device_set_netdev does not used in iWarp's CM
->>>>> process.
->>>>>
->>>>> The binded netdev in iWarp devices, mainly have two purposes:
->>>>>     1). generated GID0, using the netdev's mac address.
->>>>>     2). get the port state and attributes.
->>>>>
->>>>> For 1), erdma device binded to net device also by mac address, which
->> can
->>>>> be obtained from our PCIe bar registers.
->>>>> For 2), erdma can also get the information, and may be more
->> accurately.
->>>>> For example, erdma can have different MTU with virtio-net in our
->> cloud.
->>>>>
->>>>> For RoCEv2, I know that it has many GIDs, some of them are generated
->>>>> from IP addresses, and handing IP addressing in core code.
->>>>
->>>> Bernard, Tom what do you think?
->>>>
->>>> Jason
->>>
->>> I think iWarp (and now RoCEv2 with its UDP dependency) drivers
->>> produce GIDs mostly to satisfy the current RDMA CM infrastructure,
->>> which depends on this type of unique identifier, inherited from IB.
->>> Imo, more natural would be to implement IP based RDMA protocols
->>> connection management by relying on IP addresses.
->>>
->>> Sorry for asking again - why erdma does not need to link with netdev?
->>> Can erdma exist without using a netdev?
->>
->> Actually erdma also need a net device binded to, and so does it.
->>
->> These days I’m trying to find out acceptable ways to get the reference
->> of the binded netdev, e,g, the 'struct net_device' pointer. Unlike other
->> RDMA drivers can get the reference of their binded netdevs' reference
->> easily (most RDMA devices are based on the extended aux devices), it is
->> a little more complex for erdma, because erdma and its binded net device
->> are two separated PCIe devices.
->>
->> Then I find that the netdev reference hold in ibdev is rarely used
->> in core code for iWarp deivces, GID0 is the key attribute (As you and
->> Tom mentioned, it appears with the historical need for compatibility,
->> but I think this is another story).
->>
 > 
-> Yes, I think this is right.
+> Do I understand correctly that according to this code a wr with opcode
+> IB_WR_LOCAL_INV needs to have the IB_SEND_FENCE also set for this to
+> work?
 > 
-> If you are saying you can go away with a NULL netdev at CM core, then
-> I think that's fine?
-> Of course the erdma driver must somehow keep track of the state of
-> its associated network device - like catching up with link status -
-> and must provide related information/events to the RDMA core.
+> If that is the desired behaviour, can you point out where in spec this
+> is mentioned.
+
+According to IBA "Local invalidate fence" (LIF) and regular Fence behave
+differently. (See the referenced sections in the IBA.) For a local invalidate
+operation the fence bit fences all previous operations. That was the old behavior
+which made no distinction between local invalidate and other operations.
+The change here are the other operations with a regular fence which should only
+requires read and atomic operations to be fenced.
+
+Not sure what you mean by 'also'. Per the IBA if the LIF is set then you have
+strict invalidate ordering if not then you have relaxed ordering. The kernel verbs
+API only has one fence bit and does not have a separate LIF bit so I am
+interpreting them to share the one bit.
+
+Bob
 > 
-
-All right, and get it. I'd like to hold the binded netdev reference in
-our probe routine, and send v9 patches.
-
-Thanks your time for looking at this, Jason, Bernard and Tom.
-
-Cheng Xu
+> Thanks.
+> 
+> 
+>> +
+>> +       /* Fence see IBA 10.8.3.3
+>> +        * Requires that all previous read and atomic operations
+>> +        * are complete.
+>> +        */
+>> +       return atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
+>> +}
+>> +
+>>  static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
+>>  {
+>>         switch (opcode) {
+>> @@ -636,6 +661,11 @@ int rxe_requester(void *arg)
+>>         if (unlikely(!wqe))
+>>                 goto exit;
+>>
+>> +       if (rxe_wqe_is_fenced(qp, wqe)) {
+>> +               qp->req.wait_fence = 1;
+>> +               goto exit;
+>> +       }
+>> +
+>>         if (wqe->mask & WR_LOCAL_OP_MASK) {
+>>                 ret = rxe_do_local_ops(qp, wqe);
+>>                 if (unlikely(ret))
+>>
+>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
+>> --
+>> 2.34.1
+>>
 
