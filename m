@@ -2,102 +2,95 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0BA53300F
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 20:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 761B553303A
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 20:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236911AbiEXSHh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 May 2022 14:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S240253AbiEXSNR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 May 2022 14:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234325AbiEXSHg (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 14:07:36 -0400
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB8F6AA73
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 11:07:35 -0700 (PDT)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-edeb6c3642so23239575fac.3
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 11:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=4UQLj9nZMe/piEs6Qs/au14TDlF3M1m1CLeKyubuPuk=;
-        b=MXdJOxwAn4gBdB36VVPfLx14jaBgOdIMFLR8aFolt0B1FVAAMfvn5dh6/MI81pXGsR
-         //8XgJveAvMohczLriykEwnuZZCP1TFrActDKR2KjxCbc3SHFe32Fcsh3aUaCFaerUFp
-         PYI5s54dZxABOzl1COsepDsv8AxORuaebmqCOU5u9RTf1E0i19AyYsEe5r69m1VUOE78
-         K4D7AskwOrcNmtUG2NihealCduVtAraEOBjdNaeiL1+mMure5pR1Mz5iIJk3YUmQj5O/
-         VHoeZbChS2XqmgKZ2gcUjBuGzF92e26feC5y4P/LkG7kKniIRnnWnnzXR6hsN83cyY40
-         Nzyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=4UQLj9nZMe/piEs6Qs/au14TDlF3M1m1CLeKyubuPuk=;
-        b=tZSk8PxCdXIjruxyn1tbvfKmc/B9uwIHBPaN/C1SYRBdxg8c1xgAQr40B3peeUZsbb
-         MJ7+P1YFFjz4FpY6Flb/N6lvamzv+90Pzp8Y1A2xh1oGTwu3m2w2tteFjsNFVSZnuthC
-         zAF2gMrLtjrw8HpjGKwHihdu4ZYFz7LompnSF8TYBgHQNPqGQMQYBbIv0Xx9xZa4c3e4
-         2JeK3Sd0PAZ/p4Clc8rA0JMjsAIBcupESP/v6VhBYO8shmh8zU8ywQ+crDX9dZeuj8Rt
-         88CgjbE04TP1nAaLxufD5LsSOYl5W8rrPQgAishUpgoYn8Bj1euyUva7j66R8BYkaB/E
-         2asw==
-X-Gm-Message-State: AOAM531aLbddqp3UbPx0/aafzsU+7y8yXxfNdSsO7VYfXNOnnAufsSYw
-        IqbeZLWotfoqq7dSPkvlqC4=
-X-Google-Smtp-Source: ABdhPJzaP7j438MGYj9qX8u/i7pTfR0Ys1kM8P9yCtyh3MJddhq8BPJXCFZA39C9VzvQoCCTzrJRjQ==
-X-Received: by 2002:a05:6870:ecac:b0:f1:a98e:f2ed with SMTP id eo44-20020a056870ecac00b000f1a98ef2edmr3085340oab.159.1653415654773;
-        Tue, 24 May 2022 11:07:34 -0700 (PDT)
-Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.gmail.com with ESMTPSA id s16-20020a4aa550000000b0035eb4e5a6c8sm5605143oom.30.2022.05.24.11.07.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 May 2022 11:07:34 -0700 (PDT)
-Message-ID: <0ddfb667-87cb-47b0-539f-51a20125abf3@gmail.com>
-Date:   Tue, 24 May 2022 13:07:33 -0500
+        with ESMTP id S240375AbiEXSNK (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 14:13:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FEB6C0DF;
+        Tue, 24 May 2022 11:13:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C34B2B817F2;
+        Tue, 24 May 2022 18:13:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5D58C34100;
+        Tue, 24 May 2022 18:13:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653415987;
+        bh=6rwhj+FNXWqPtzOtmUwHpc8UehTtQ8TTd4aiRslpLJs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=awrrNQMJSMGE0APJacZ9loO4V8nMQJ2pCJZ0PfZEEaetkLdWYb0PdpfbMhn5T2LeP
+         j+4q9P7ROB6LBl3xP2kGqHS4MwZE7SzObRSz7fo3jyU4kOtl1NrbX9hkZxLLO8rf2Y
+         Jf1dD9UvgtNp+c3chGASwaN2dqnkGXo+E9MLUwnX8zf+uk3uVTf5/H7eelKujGCruw
+         rvRbCtIyxsb+Kbo2Y1UVhRsKjn2050ioXXgjEvywiGTZWbqIj5xBkuZnFM2goc0J8w
+         7oVS0EPvn3sRq+Z0cdKSJfZ7P2K8yUfXs1Z20YefOyYooVWstiY5wLlEvh/7Dbwx+O
+         20yjzZv2oqGiw==
+Date:   Tue, 24 May 2022 21:13:02 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     roid@nvidia.com, linux-rdma@vger.kernel.org,
+        Mark Bloch <markb@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        linux-netdev <netdev@vger.kernel.org>
+Subject: Re: [bug report] net/mlx5: E-Switch, Protect changing mode while
+ adding rules
+Message-ID: <Yo0gLpMS7CuUII0D@unreal>
+References: <YoH3ZVir5UZUgs3R@kili>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: null pointer in rxe_mr_copy()
-Content-Language: en-US
-To:     "yangx.jy@fujitsu.com" <yangx.jy@fujitsu.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <1b0ae089-ff3f-7e84-4c07-a5d97554e3c0@gmail.com>
- <CAD=hENdM=VEF4MM_L=W1PtiX=x2s_kucMLc41WWmK-6c6s2Nrg@mail.gmail.com>
- <CAD=hENet+KQe35eqXabM+EpucHh3mYypUo4H8S-XmwNPcOv4+A@mail.gmail.com>
- <84888208-ac2e-115c-43d5-2ef211948c78@fujitsu.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <84888208-ac2e-115c-43d5-2ef211948c78@fujitsu.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YoH3ZVir5UZUgs3R@kili>
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 5/24/22 08:18, yangx.jy@fujitsu.com wrote:
-> On 2022/4/11 13:34, Zhu Yanjun wrote:
->>   738         if (res->state == rdatm_res_state_new) {
->>   739                 mr = qp->resp.mr;
->> <----It seems that mr is from here.
->>   740                 qp->resp.mr = NULL;
->>   741
+On Mon, May 16, 2022 at 10:04:05AM +0300, Dan Carpenter wrote:
+> Hello Roi Dayan,
 > 
-> Hi Bob and Yanjun
+> The patch 7dc84de98bab: "net/mlx5: E-Switch, Protect changing mode
+> while adding rules" from Sep 16, 2020, leads to the following Smatch
+> static checker warning:
 > 
-> I wonder if the following patch has fixed the null pointer issue in 
-> rxe_mr_copy().
+> 	drivers/net/ethernet/mellanox/mlx5/core/eswitch.c:2000 mlx5_esw_unlock()
+> 	warn: inconsistent returns '&esw->mode_lock'.
 > 
-> commit 570a4bf7440e9fb2a4164244a6bf60a46362b627
-> Author: Bob Pearson <rpearsonhpe@gmail.com>
-> Date:   Mon Apr 18 12:41:04 2022 -0500
+> drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
+>     1996 void mlx5_esw_unlock(struct mlx5_eswitch *esw)
+>     1997 {
+>     1998         if (!mlx5_esw_allowed(esw))
+>     1999                 return;
 > 
->      RDMA/rxe: Recheck the MR in when generating a READ reply
+> Smatch is complaining because how will the caller know if we dropped
+> the lock or not.  I thought, "Hm.  I guess the lock function has a
+> similar check?  Although, how does that work that mlx5_esw_allowed()
+> means that it doesn't need locking?"
 > 
-> Best Regards,
-> Xiao Yang
+> But then when I looked at the lock function, mlx5_esw_try_lock(), and it
+> does *NOT* have a similar check.  This probably works because it's
+> checked in different layers and this is just a duplicative (layering
+> violation) check which is ugly but harmless.
 
-Correct.
+Your analysis is correct and I agree with you, the check should be removed.
+However the "problematic" commit is ec2fa47d7b98 ("net/mlx5: Lag, use lag lock"),
+where mlx5_esw_lock() was removed.
 
-Bob
+Thanks
+
+> 
+> --> 2000         up_write(&esw->mode_lock);
+>     2001 }
+> 
+> regards,
+> dan carpenter
