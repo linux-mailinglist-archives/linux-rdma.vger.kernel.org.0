@@ -2,86 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBCA5331AE
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 21:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58957533386
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 May 2022 00:28:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240548AbiEXTTI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 May 2022 15:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S242610AbiEXW2R (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 May 2022 18:28:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229555AbiEXTTH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 15:19:07 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBD0764BCA
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 12:19:06 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id n10so37315791ejk.5
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 12:19:06 -0700 (PDT)
+        with ESMTP id S242193AbiEXW2G (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 18:28:06 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B77BA52B37
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 15:28:02 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id s188so19305079oie.4
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 15:28:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UtJfoxcmxh4p5gn5ZBZR16DlkStePWq+mnG7T2bej/g=;
-        b=KjgwRAXgwYxOQkTPWa+kIEYy4ozTQgi0D0yuWaP830hXW2CLl34DdoRyLIFpqXGAKf
-         SXaxuSxo+V6Jow5JV/Cg1tmcv3IOqBZfZDelsHFEOLNTER0ztOt+eIBo+xzydbG3Yozn
-         oArpYkW8VpSmv4Q0sMmPtwpiQJo/Of5Oxwsx5n7Hj2Aie19p+gbyTNyZp1xDyjNWrPDj
-         pZrbhy4ThCra+dJNrplITmDUvafUaj3agGTsWTlp923NjR2fZ1Puu6Wov2YjJ7+WIBGk
-         4c/HXqMiD949BXl1bnPQEKngTTL2lqcg2mWs0hoQC11gTLxeFri9RLhdyJTEU2wP3TO8
-         wa3Q==
+        h=message-id:date:mime-version:user-agent:content-language:from:to
+         :subject:content-transfer-encoding;
+        bh=hyFh1SbqWrQdGYmE092106zoC6Tsn7p5s/wOyXle7TI=;
+        b=OWspICcRmSFkAtg9QP3hVW1Y/yNREJuNkVaXIgO+2hjID2A3ghtFwORWk/Fk2HDyDp
+         1UPjPxyRDnz/pZ54ZV/OhlGilK9xHn+ZTlr7Mveyzvk6cAcLGJ4k+YhOF8AEmnJymN4W
+         nS0+hiGaJviusE28lI/VB/2vlZ/h1+GNEZZhV7NN1gEHTl+oVzmdaMsNPjqiGaxxDuGD
+         oPiyPs0AXukdsb/2LNNGRN23ltwjEc0OgxZknjg3VVUVSnkprKDCQ2lsnUBHB/Bq+erI
+         n0QiU9D+G/ba7l5/8O7rrQvUlDrzywFvis3/e6SLl0mZr6gqIesW8UKP4jUbwb4KMdAN
+         lZqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UtJfoxcmxh4p5gn5ZBZR16DlkStePWq+mnG7T2bej/g=;
-        b=TCckn1hK9RGACbr6MnweO1FhPxuCAtLgPlFAPGyJFuWeOdE62Agxe4iPmWWU5ez6zO
-         7eHut4HAFcBAkokMsOLg+3RnanjwJOiYrJS6sPcuE+9X4ZKor3gLLMcmBzrHYIt6g8ur
-         2146GOTJSIlSpyCBGlQ8Ez1J4XWo9CvdyzFjZuwZZT3uRU03rvAtwp4yQGcD2pvTSMMh
-         jLoUmCGXQaR1mSwyJaaJ5TeIpxYVTKQGpZ6SyDZaq16ZVhl5MPnKue1Ts9YAqZDKTXxG
-         Spci4mV3y1k/kXXlX7SCsa3LXMuJgARSSZcsn/je1pkNHkakQrbDi0i0Lz9/1uUesm5p
-         dpwQ==
-X-Gm-Message-State: AOAM531uomTwKeI3/XeKarQrQvZLZbP5SZKTYzF58DvNm5repKMHCoUe
-        5Lk39iZ7Uy3wrg0JbDZo7ul1f6KmSnEqALjpDoFubZz6
-X-Google-Smtp-Source: ABdhPJwpdBGVQs0lNvyrTNKfvE6J0bz8J3wxJw0kgnYETR7ovUQK39AJO+NoGWZ9qmHHuQLwHr5Q3AAso1NS5NX4jVE=
-X-Received: by 2002:a17:906:3958:b0:6fe:90ef:c4b with SMTP id
- g24-20020a170906395800b006fe90ef0c4bmr26269292eje.36.1653419945312; Tue, 24
- May 2022 12:19:05 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:from:to:subject:content-transfer-encoding;
+        bh=hyFh1SbqWrQdGYmE092106zoC6Tsn7p5s/wOyXle7TI=;
+        b=u3cRL082AVLGQ1EzLqI2i/tYLi7k5sPkMydfMXOLrmDWN1d0GOF12W+GVn0A7rT9ye
+         XlZupEjsuW07nSdEs6B2G4XFyXBrdubaMNxegsfAnfhiND/ckiqqNBx0wBo8FsaVhQAV
+         4ry9lcGh4/Rhxls1ZMMUgmbK7/g7SGfu0DtWd+Jw2YzLZwKGEuoKsDWrPOVaRBomZLxr
+         tYiv1Oo8CwPmluvTzkg/3LqYZ6sfNGJFCzfJ3/nEJmFyTteQGudRCCkEFL0UNNkraKnP
+         tASszskwIqBH3WVJWmLubvosn8eGoAuKXOpNsNIodBiRLgxMd/KPuxQY7iil28QsCL/j
+         v6mA==
+X-Gm-Message-State: AOAM5319ITiHRNrQHiRl+sfNfBsJyRNpTeyxXTwqD9qGciNfm9IEov/7
+        zj6q8mH7kAqNZN0A6gVzkjk=
+X-Google-Smtp-Source: ABdhPJyySIZz8qlfJ6yHGun7Jfaf+zUaiQ1/UL4MMGWks0+zPOkz0h9KRg3dQzcujui4SXOUt3ilsQ==
+X-Received: by 2002:a05:6808:1206:b0:2d7:65a8:65e with SMTP id a6-20020a056808120600b002d765a8065emr3598276oil.107.1653431281337;
+        Tue, 24 May 2022 15:28:01 -0700 (PDT)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id p7-20020a05683019c700b00606ad72bdcbsm5451619otp.38.2022.05.24.15.28.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 May 2022 15:28:01 -0700 (PDT)
+Message-ID: <78918262-6060-546b-134d-2d29bbefb349@gmail.com>
+Date:   Tue, 24 May 2022 17:28:00 -0500
 MIME-Version: 1.0
-References: <CAFMmRNyHUSg6_+af9W39e36aCx2a=_9WC8MB08W9XfnMKoYXAQ@mail.gmail.com>
- <YoyEPnFpd7/mI1Mm@unreal> <CAFMmRNxS56xWoZ_-Sz4yBrZvK95vdpQR9xrxjDhkAAGi3krK=A@mail.gmail.com>
- <Yo0tJPKOCHkqF5Gl@unreal>
-In-Reply-To: <Yo0tJPKOCHkqF5Gl@unreal>
-From:   Ryan Stone <rysto32@gmail.com>
-Date:   Tue, 24 May 2022 15:18:53 -0400
-Message-ID: <CAFMmRNx0wgPQRhMpHz+9h9fXv-bPbzPDRmwtZrHqYSc5WHmfHQ@mail.gmail.com>
-Subject: Re: Possible bug in ipoib_reap_dead_ahs in datagram mode
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Content-Language: en-US
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Hack, Jenny (Ft. Collins)" <jhack@hpe.com>,
+        Frank Zago <frank.zago@hpe.com>
+Subject: [RFC] Alternative design for fast register physical memory
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-I believe that if we never enter that if statement, then we will leak
-the entries that are supposed to be cleaned up.  That's better than
-the use-after-free that I feared but still not good.
+Jason,
 
-On Tue, May 24, 2022 at 3:08 PM Leon Romanovsky <leon@kernel.org> wrote:
->
-> On Tue, May 24, 2022 at 09:33:52AM -0400, Ryan Stone wrote:
-> > On Tue, May 24, 2022 at 3:07 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > IPoIB in mlx5 is HW offloaded version of ulp/ipoib one. AFAIK, it doesn't
-> > > change "tx_tail" and we won't enter into this if (...).
-> > >
-> > > Thanks
-> >
-> > I don't quite follow this response.  Is this the if statement that you
-> > mean that we won't fall into?
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/infiniband/ulp/ipoib/ipoib_ib.c#n682
->
-> Yes, I think so, maybe wrong here.
+There has been a lot of chatter on the FMRs in rxe recently and I am also trying to help out at home with
+the folks who are trying to run Lustre on rxe. The last fix for this was to split the state in an FMR into
+two with separate rkeys and memory maps so that apps can pipeline the preparation of IO and doing IO.
+
+However, I am convinced that the current design only works by accident when it works. The thing that really
+makes a hash of it is retries. Unfortunately the documentation on all this is almost non existent. Lustre
+(actually o2iblnd) makes heavy use of FMRs and typically has several different MRs in flight in the send queue
+with a mixture of local and remote writes accessing these MRs interleaved with REG_MRs and INVALIDATE_MR local
+work requests. When a packet gets dropped from a WQE deep in the send queue the result is nothing works at all.
+
+We have a work around by fencing all the local operations which more or less works but will have bad performance.
+The maps used in FMRs have fairly short lifetimes but definitely longer than we we can support today. I am
+trying to work out the semantics of everything.
+
+IBA view of FMRs:
+
+verb: ib_alloc_mr(pd, max_num_sg)			- creates empty MR object
+	roughly Allocate L_Key
+
+verb: ib_dereg_mr(mr)					- destroys MR object
+
+verb: ib_map_mr_sg(mr, sg, sg_nents, sg_offset)		- builds a map for MR
+	roughly (Re)Register Physical Memory Region
+
+verb: ib_update_fast_reg_key(mr, newkey)		- update key portion of l/rkey
+
+send wr: IB_WR_REG_MR(mr, key)				- moves MR from FREE to VALID and updates
+	roughly Fast Register Physical Memory Region	  key portion of l/rkey to key
+
+send_wr: IB_WR_LOCAL_INV(invalidate_rkey)		- invalidate local MR moves MR to FREE
+
+send_wr: IB_SEND_WITH_INV(invalidate_rkey)		- invalidate remote MR moves MR to FREE
+
+
+To make this all recoverable in the face of errors let there be more than one map present for an
+FMR indexed by the key portion of the l/rkeys. 
+
+Alternative view of FMRs:
+
+verb: ib_alloc_mr(pd, max_num_sg)			- create an empty MR object with no maps
+							  with l/rkey = [index, key] with index
+							  fixed and key some initial value.
+
+verb: ib_update_fast_reg_key(mr, newkey)		- update key portion of l/rkey
+
+verb: ib_map_mr_sg(mr, sg, sg_nents, sg_offset)		- create a new map from allocated memory
+							  or by re-using an INVALID map. Maps are
+							  all the same size (max_num_sg). The
+							  key (index) of this map is the current
+							  key from l/rkey. The initial state of
+							  the map is FREE. (and thus not usable
+							  until a REG_MR work request is used.)
+
+verb: ib_dereg_mr(mr)					- free all maps and the MR.
+
+send_wr: IB_WR_REG_MR(mr, key)				- Find mr->map[key] and change its state
+							  to VALID. Associate QP with map since
+							  it will be hard to manage multiple QPs
+							  trying to use the same MR at the same
+							  time with differing states. Fail if the
+							  map is not FREE. A map with that key must
+							  have been created by ib_map_mr_sg with
+							  the same key previously. Check the current
+							  number of VALID maps and if this exceeds
+							  a limit pause the send queue until there
+							  is room to reg another MR.
+
+send_wr: IB_WR_LOCAL_INV (execute)			- Lookup a map with the same index and key
+							  Change its state to FREE and dissociate
+							  from QP. Leave map contents the same.
+			 (complete)			- When the local invalidate operation is
+							  completed (after all previous send queue WQEs
+							  have completed) change its state to INVALID
+							  and place map resources on a free list or
+							  free memory.
+
+send_wr: IB_SEND_WITH_INV				- same except at remote end.
+
+retry:							- if a retry occurs for a send queue. Back up
+							  the requester to the first incomplete PSN.
+							  Change the state of all maps which were
+							  VALID at that PSN back to VALID. This will
+							  require maintaining a list of valid maps
+							  at the boundary of completed and un-completed
+							  WQEs.
+
+Arrival of RDMA packet					  Lookup MR from index and map from key and if
+							  the state is VALID carry out the memory copy.
+
+
+This is an improvement over the current state. At the moment we have only two maps one for making new
+ones and one for doing IO. There is no room to back up but at the moment the retry logic assumes that
+you can which is false. This can be fixed easily by forcing all local operations to be fenced
+which is what we are doing at the moment at HPE. This can insert long delays between every new FMR instance.
+By allowing three maps and then fencing we can back up one broken IO operation without too much of a delay.
+
+Even if you have a clean network the current design of the retransmit timer which is never cleared and which
+can fire frequently can make a mess of MB sized IOs used for storage.
+
+Bob
