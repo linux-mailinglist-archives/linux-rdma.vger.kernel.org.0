@@ -2,64 +2,126 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D8B532563
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 10:36:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C63C5325B9
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 10:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbiEXIgD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 May 2022 04:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
+        id S233922AbiEXI4i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 May 2022 04:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbiEXIf7 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 04:35:59 -0400
-X-Greylist: delayed 1331 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 May 2022 01:35:57 PDT
-Received: from mail.greatagencyonline.pl (mail.greatagencyonline.pl [89.40.125.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A79694B5
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 01:35:57 -0700 (PDT)
-Received: by mail.greatagencyonline.pl (Postfix, from userid 1001)
-        id D577EA4E14; Tue, 24 May 2022 09:02:15 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=greatagencyonline.pl;
-        s=mail; t=1653379355;
-        bh=ksvwLPFdjL017OLwir5xHXy3Vmrj/5fhZ5DwBI62qzc=;
-        h=Date:From:To:Subject:From;
-        b=PxwAQH7elcHsaPTZBQ2C6ehGcqb5DSKQyXjsQDcxz3mhf1t3/zc93fY7B/H5boiRL
-         JevTj1Id9Eaepbc+aDvcVtzbv1tlb7F29EDH2hHq3dZbOOlNOc4OdJSir3Nz0K3LSx
-         auC23pznqpRYuQOgXvee00TElzKN6yd5yDRzG9Jp3vV+/ynQop8oDlwuNKq5waiwXn
-         9k9aq6kR/DKVlg4Zo6vWYnlt97T5pMNJdXyYVAAV9JRd4J7ZCgQJ1cVRF+6hK6HiA2
-         lVZ6kmXD7UKy/gJrVftSV55uBssrHb0Qmv5JtaE6xjLCiJ2x34ZGiuSsR3EBvE3uAm
-         RbGUniYYqKt6A==
-Received: by mail.greatagencyonline.pl for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 08:00:54 GMT
-Message-ID: <20220524074502-0.1.43.vyfd.0.3g2bcajpxv@greatagencyonline.pl>
-Date:   Tue, 24 May 2022 08:00:54 GMT
-From:   =?UTF-8?Q? "Miko=C5=82aj_Rudzik" ?= 
-        <mikolaj.rudzik@greatagencyonline.pl>
-To:     <linux-rdma@vger.kernel.org>
-Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
-X-Mailer: mail.greatagencyonline.pl
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        with ESMTP id S230086AbiEXI4T (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 04:56:19 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A3652A71F;
+        Tue, 24 May 2022 01:56:17 -0700 (PDT)
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 0CE5C20B71D5; Tue, 24 May 2022 01:56:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0CE5C20B71D5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1653382577;
+        bh=q6+10vIn7gksEq8uQbjXxOjVwfFIGP+vMhljlQ+vW7c=;
+        h=From:To:Cc:Subject:Date:Reply-To:From;
+        b=dmgXmJnklCANUE4vQgU1kjm3WH/UOKVEoEoionCCBOLFFNFZh2LCilHxrxA9aEGDX
+         c7PeD4Uyb/69AMK1uSDlR1slho0JQy4h8ygz4TlmLwdgMHNTZ3BG2yUvwS5HXHfXms
+         xY/69ZWKiE3lPhw7fBMxrj2sj//0JLLhZWn1T6yw=
+From:   longli@linuxonhyperv.com
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Ajay Sharma <sharmaajay@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Long Li <longli@microsoft.com>
+Subject: [Patch v2 00/12] Introduce Microsoft Azure Network Adapter (MANA) RDMA driver
+Date:   Tue, 24 May 2022 01:56:00 -0700
+Message-Id: <1653382572-14788-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
+Reply-To: longli@microsoft.com
+X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Dzie=C5=84 dobry,
+From: Long Li <longli@microsoft.com>
 
-chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
-skania nowych zlece=C5=84 ze strony www.
+This patchset implements a RDMA driver for Microsoft Azure Network
+Adapter (MANA). In MANA, the RDMA device is modeled as an auxiliary device
+to the Ethernet device.
 
-Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
-, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
-=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
-jonowania strony w Google.
+The first 11 patches modify the MANA Ethernet driver to support RDMA driver.
+The last patch implementes the RDMA driver.
 
-Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
+The user-mode of the driver is being reviewed at:
+https://github.com/linux-rdma/rdma-core/pull/1177
 
 
-Pozdrawiam,
-Miko=C5=82aj Rudzik
+Ajay Sharma (3):
+  net: mana: Set the DMA device max segment size
+  net: mana: Define data structures for protection domain and memory
+    registration
+  net: mana: Define and process GDMA response code
+    GDMA_STATUS_MORE_ENTRIES
+
+Long Li (9):
+  net: mana: Add support for auxiliary device
+  net: mana: Record the physical address for doorbell page region
+  net: mana: Handle vport sharing between devices
+  net: mana: Add functions for allocating doorbell page from GDMA
+  net: mana: Export Work Queue functions for use by RDMA driver
+  net: mana: Record port number in netdev
+  net: mana: Move header files to a common location
+  net: mana: Define max values for SGL entries
+  RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter
+
+ MAINTAINERS                                   |   4 +
+ drivers/infiniband/Kconfig                    |   1 +
+ drivers/infiniband/hw/Makefile                |   1 +
+ drivers/infiniband/hw/mana/Kconfig            |   7 +
+ drivers/infiniband/hw/mana/Makefile           |   4 +
+ drivers/infiniband/hw/mana/cq.c               |  79 +++
+ drivers/infiniband/hw/mana/main.c             | 648 ++++++++++++++++++
+ drivers/infiniband/hw/mana/mana_ib.h          | 144 ++++
+ drivers/infiniband/hw/mana/mr.c               | 134 ++++
+ drivers/infiniband/hw/mana/qp.c               | 494 +++++++++++++
+ drivers/infiniband/hw/mana/wq.c               | 115 ++++
+ .../net/ethernet/microsoft/mana/gdma_main.c   |  93 ++-
+ .../net/ethernet/microsoft/mana/hw_channel.c  |   6 +-
+ .../net/ethernet/microsoft/mana/mana_bpf.c    |   2 +-
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 140 +++-
+ .../ethernet/microsoft/mana/mana_ethtool.c    |   2 +-
+ .../net/ethernet/microsoft/mana/shm_channel.c |   2 +-
+ .../microsoft => include/net}/mana/gdma.h     | 191 +++++-
+ .../net}/mana/hw_channel.h                    |   0
+ .../microsoft => include/net}/mana/mana.h     |  26 +-
+ .../net}/mana/shm_channel.h                   |   0
+ include/uapi/rdma/ib_user_ioctl_verbs.h       |   1 +
+ include/uapi/rdma/mana-abi.h                  |  68 ++
+ 23 files changed, 2117 insertions(+), 45 deletions(-)
+ create mode 100644 drivers/infiniband/hw/mana/Kconfig
+ create mode 100644 drivers/infiniband/hw/mana/Makefile
+ create mode 100644 drivers/infiniband/hw/mana/cq.c
+ create mode 100644 drivers/infiniband/hw/mana/main.c
+ create mode 100644 drivers/infiniband/hw/mana/mana_ib.h
+ create mode 100644 drivers/infiniband/hw/mana/mr.c
+ create mode 100644 drivers/infiniband/hw/mana/qp.c
+ create mode 100644 drivers/infiniband/hw/mana/wq.c
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/gdma.h (77%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/hw_channel.h (100%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/mana.h (94%)
+ rename {drivers/net/ethernet/microsoft => include/net}/mana/shm_channel.h (100%)
+ create mode 100644 include/uapi/rdma/mana-abi.h
+
+-- 
+2.17.1
+
