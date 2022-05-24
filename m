@@ -2,60 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 934E9532792
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 12:29:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B31532859
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 12:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235771AbiEXK2u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 May 2022 06:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57106 "EHLO
+        id S236206AbiEXK45 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 May 2022 06:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234435AbiEXK2u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 06:28:50 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBD11572D
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 03:28:48 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id s5so20320083ljd.10
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 03:28:48 -0700 (PDT)
+        with ESMTP id S235567AbiEXK4z (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 06:56:55 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B28E22CC8F
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 03:56:53 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id m6so20440296ljb.2
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 03:56:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ionos.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gbiJSOa4hOD5QnPyAxSH3xKRFzzEIxhox/DDVqxatt4=;
-        b=Vejwuy38YIrtg0rL0p/Z1kfdZsbIrhN5TY9nLT1xT3wSPlKCZHtu0zMEuV4D+UzCpH
-         pV+anFBU1WZ7u/b/cZ0RndcqE8q8ZJ+bIZUUQsuaw2EJQpFJVb5gB7ARz0Jf2EQajujl
-         LSWMRW1GwB/5Wm/a91dtmEhS1V+e4g8W7e8v5e2KcGbnqlCUiSdtwxug8Y21ZaYWtrtw
-         37LHzbiaoua26dyemFEcf5qrA9FX9G9GHHXcAFtXOXasQ1ZrrtR92y11eFLC9BPe4tkV
-         NsdMZTsZKs3xj1DusTepulqQXFAUpuYXoYm/RXQQ2cNt/cMsBx24PKLkrdKMtaXYjPAG
-         0WSw==
+        bh=QnYq5/1KDN6nj1Cx6w4BELQSxaZlmCHFI8UJEJylCow=;
+        b=UQ8wuLN7bK6Vkz/LJwvBZdh47U3rso8jMnZ16DG/fEXfBUWQXqGQtUtwIz+oymUMcc
+         i/wwSMdwbJ80cOHGa/lttWrZeZEvVyg1dynY/O6IlVfYHQZkV1D852EQOzT09QFlLRHk
+         GjzVyC43DhFAPqLJnSORfc57khHbQSpR5Ta6yW55jVZBHjWmZMkaIHpxlgM/6PBO/F6h
+         aIY+IsGnfNw6E52wmaa2t0f4bH5cpRErXOI9qxjtESCjfbvgDUPLLCFoMWJJ17wrf/0Q
+         J01n68osZZJ12ocIJGI6BBU7HWM6hAJwu14PKSJ0LyTwDHWAmCZaxc4m+fz+SPXZL5EK
+         damQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gbiJSOa4hOD5QnPyAxSH3xKRFzzEIxhox/DDVqxatt4=;
-        b=tJWhARlxgCDtRO2+at9FE7RZBmU9glr8tSAG1U9cav+3WQmX7hPVfw8+XUHrqQkWWT
-         YZbDnJnIMg7r1G2FIj8c7CAJRRC91sUSj7H0lSe2fWZI+hGUHzKUm1pRBkwGk6IWmV20
-         ErSkDN9+feX+lK/d2Dwy8uqudm8q6UQj7zQfUOfJ0a7sfb1XEMriSejog8pVhcJEKf2a
-         W+8wuOK2OJfqdmzaSwHErPJFNah08IGmPUo62P3xj+Uge7Q4f50U+2J2B1UnwjOwDv7K
-         AskyZWLDdSUeoZqNn96gTuksVxqSYqSKwmL6+bIb3gXQHK7iFAyqi0JBzcJgjMgDAUsI
-         zwUg==
-X-Gm-Message-State: AOAM532w91lruowYYvkNXU07khxh4zqjXYk4MEFJUGrtRzwipqvB3ESk
-        pGv6HizMPEEWX9mDQdlNtATDG3Hcz9cDZ+JLBlRNRA==
-X-Google-Smtp-Source: ABdhPJwOl4K0W4VI7jloriwgmmCAikZUGmmeicmwWUpJnKVJwggFw/lLXrl+Xh3RUKJl7yV8JgatOobceunxiA9uLCU=
-X-Received: by 2002:a05:651c:90b:b0:254:1c1:7f95 with SMTP id
- e11-20020a05651c090b00b0025401c17f95mr5696ljq.267.1653388126919; Tue, 24 May
- 2022 03:28:46 -0700 (PDT)
+        bh=QnYq5/1KDN6nj1Cx6w4BELQSxaZlmCHFI8UJEJylCow=;
+        b=z8t6DoKrMJoMve9SPmNQXG8CyaJQc0MU2h7uGsDdxU2MHSjaTYtg7rLa74hkzoDD1A
+         6XaVspl2FDhDnGPbo/rOJAXGyv308N9jrZMANzK+1Hi5/WUe34zobfN9d8/t5bR+CyLL
+         shVI5eZ0BsVpSwHXFVkDXXeMGhge56w+PHuyIX+N5j7V6GpdyYGzzJaY1CbnZTbe0yo3
+         lRPLqHff8vsXr7UG6NxliU9Z8PPsTKpDm7vfxYr7epv932zLhiw+BtoyGTuOyH48vA6v
+         kVWbsrrjhge9se+lNie36UFSPsHoaFbVYGJnowY4Fw3s9cU7FXKEmbaMnzouYpT2hZPh
+         MLeg==
+X-Gm-Message-State: AOAM533mM0WqxmQ51FAr/DRWEvUvxO8Jokl7DXH0ZCfOifXfHv6dtYXC
+        /UxqpOOL55IDANST29Z5o6ZWBfE1mlwRbOYIT8vzOw==
+X-Google-Smtp-Source: ABdhPJxhhGu8tuKXGHamzXzuMkljtS+ymWd5z2W3fsBYEBxb0CUccqxyvHGKRftMXBEB5nzeyZHxgIs/7tFCW7qyHX4=
+X-Received: by 2002:a2e:90c1:0:b0:24f:eca:3eb2 with SMTP id
+ o1-20020a2e90c1000000b0024f0eca3eb2mr15627907ljg.158.1653389811988; Tue, 24
+ May 2022 03:56:51 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220522223345.9889-1-rpearsonhpe@gmail.com> <CAJpMwyjjbZtG152GAZZV_t6sn8bw6J0tSGaaY_9LTdw0Ve7gEg@mail.gmail.com>
- <e81610d6-7896-03d6-91f9-15d68c7b8192@gmail.com> <CAJpMwyhsf_C6dosUH81_5aD4fd5XHNPD94B3NE=TT+fSBAKW1g@mail.gmail.com>
- <aa01e627-04fe-b331-b367-07cbb8731b8d@gmail.com>
-In-Reply-To: <aa01e627-04fe-b331-b367-07cbb8731b8d@gmail.com>
+References: <20220518043725.771549-1-lizhijian@fujitsu.com>
+ <20220520144511.GA2302907@nvidia.com> <d956bac8-36a6-0148-6f9c-fa43c8c272a7@fujitsu.com>
+ <3e3373f5-7b12-a8e8-2d73-c2976b272290@fujitsu.com>
+In-Reply-To: <3e3373f5-7b12-a8e8-2d73-c2976b272290@fujitsu.com>
 From:   Haris Iqbal <haris.iqbal@ionos.com>
-Date:   Tue, 24 May 2022 12:28:35 +0200
-Message-ID: <CAJpMwyjNcMd4gAdGQxv3BBPhEdE3sYpcKLQto53B=WO=QUSaLQ@mail.gmail.com>
-Subject: Re: [PATCH for-next] RDMA/rxe: Fix incorrect fencing
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
-        frank.zago@hpe.com, linux-rdma@vger.kernel.org,
+Date:   Tue, 24 May 2022 12:56:41 +0200
+Message-ID: <CAJpMwyhhWSC_x4Fef32iW5Umzk5bLdJFweuZmN9LEJTQGyHfbQ@mail.gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Use kzalloc() to alloc map_set
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Bob Pearson <rpearsonhpe@gmail.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Guoqing Jiang <guoqing.jiang@linux.dev>,
         Aleksei Marov <aleksei.marov@ionos.com>,
         Jinpu Wang <jinpu.wang@ionos.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,148 +73,207 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 23, 2022 at 8:22 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+On Tue, May 24, 2022 at 6:00 AM lizhijian@fujitsu.com
+<lizhijian@fujitsu.com> wrote:
 >
-> On 5/23/22 03:05, Haris Iqbal wrote:
-> > On Mon, May 23, 2022 at 5:51 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
-> >>
-> >> On 5/22/22 18:59, Haris Iqbal wrote:
-> >>> On Mon, May 23, 2022 at 12:36 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
-> >>>>
-> >>>> Currently the rxe driver checks if any previous operation
-> >>>> is not complete to determine if a fence wait is required.
-> >>>> This is not correct. For a regular fence only previous
-> >>>> read or atomic operations must be complete while for a local
-> >>>> invalidate fence all previous operations must be complete.
-> >>>> This patch corrects this behavior.
-> >>>>
-> >>>> Fixes: 8700e3e7c4857 ("Soft RoCE (RXE) - The software RoCE driver")
-> >>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
-> >>>> ---
-> >>>>  drivers/infiniband/sw/rxe/rxe_req.c | 42 ++++++++++++++++++++++++-----
-> >>>>  1 file changed, 36 insertions(+), 6 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-> >>>> index ae5fbc79dd5c..f36263855a45 100644
-> >>>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
-> >>>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
-> >>>> @@ -163,16 +163,41 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
-> >>>>                      (wqe->state != wqe_state_processing)))
-> >>>>                 return NULL;
-> >>>>
-> >>>> -       if (unlikely((wqe->wr.send_flags & IB_SEND_FENCE) &&
-> >>>> -                                                    (index != cons))) {
-> >>>> -               qp->req.wait_fence = 1;
-> >>>> -               return NULL;
-> >>>> -       }
-> >>>> -
-> >>>>         wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
-> >>>>         return wqe;
-> >>>>  }
-> >>>>
-> >>>> +/**
-> >>>> + * rxe_wqe_is_fenced - check if next wqe is fenced
-> >>>> + * @qp: the queue pair
-> >>>> + * @wqe: the next wqe
-> >>>> + *
-> >>>> + * Returns: 1 if wqe is fenced (needs to wait)
-> >>>> + *         0 if wqe is good to go
-> >>>> + */
-> >>>> +static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
-> >>>> +{
-> >>>> +       unsigned int cons;
-> >>>> +
-> >>>> +       if (!(wqe->wr.send_flags & IB_SEND_FENCE))
-> >>>> +               return 0;
-> >>>> +
-> >>>> +       cons = queue_get_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
-> >>>> +
-> >>>> +       /* Local invalidate fence (LIF) see IBA 10.6.5.1
-> >>>> +        * Requires ALL previous operations on the send queue
-> >>>> +        * are complete.
-> >>>> +        */
-> >>>> +       if (wqe->wr.opcode == IB_WR_LOCAL_INV)
-> >>>> +               return qp->req.wqe_index != cons;
-> >>>
-> >>>
-> >>> Do I understand correctly that according to this code a wr with opcode
-> >>> IB_WR_LOCAL_INV needs to have the IB_SEND_FENCE also set for this to
-> >>> work?
-> >>>
-> >>> If that is the desired behaviour, can you point out where in spec this
-> >>> is mentioned.
-> >>
-> >> According to IBA "Local invalidate fence" (LIF) and regular Fence behave
-> >> differently. (See the referenced sections in the IBA.) For a local invalidate
-> >> operation the fence bit fences all previous operations. That was the old behavior
-> >> which made no distinction between local invalidate and other operations.
-> >> The change here are the other operations with a regular fence which should only
-> >> requires read and atomic operations to be fenced.
-> >>
-> >> Not sure what you mean by 'also'. Per the IBA if the LIF is set then you have
-> >> strict invalidate ordering if not then you have relaxed ordering. The kernel verbs
-> >> API only has one fence bit and does not have a separate LIF bit so I am
-> >> interpreting them to share the one bit.
-> >
-> > I see. Now I understand. Thanks for the explanation.
-> >
-> > I do have a follow-up question. For a IB_WR_LOCAL_INV wr, without the
-> > fence bit means relaxed ordering. This would mean that the completion
-> > for that wr must take place "before any subsequent WQE has begun
-> > execution". From what I understand, multiple rxe_requester instances
-> > can run in parallel and pick up wqes and execute them. How is the
-> > relaxed ordering criteria fulfilled?
+> Hi Jason & Bob
+> CC Guoqing
 >
-> The requester is a tasklet. There is one tasklet instance per QP. Tasklets can only
-> run on a single cpu so not in parallel. The tasklets for multiple cpus each
-> execute a single send queue in order.
+> @Guoqing, It may correlate with your previous bug report: https://lore.kernel.org/all/20220210073655.42281-1-guoqing.jiang@linux.dev/T/
+>
+>
+> It's observed that a same MR in rnbd server will trigger below code
+> path:
+>   -> rxe_mr_init_fast()
+>   |-> alloc map_set() # map_set is uninitialized
+>   |...-> rxe_map_mr_sg() # build the map_set
+>       |-> rxe_mr_set_page()
+>   |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
+>                            # we can access host memory(such rxe_mr_copy)
+>   |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
+>   |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
+>                            # but map_set was not built again
+>   |...-> rxe_mr_copy() # kernel crash due to access wild addresses
+>                        # that lookup from the map_set
+>
+> I draft a patch like below for it, but i wonder if it's rxe's responsibility to do such checking.
+> Any comments are very welcome.
+>
+>
+>  From e9d0bd821f07f5e049027f07b3ce9dc283624201 Mon Sep 17 00:00:00 2001
+> From: Li Zhijian <lizhijian@fujitsu.com>
+> Date: Tue, 24 May 2022 10:56:19 +0800
+> Subject: [PATCH] RDMA/rxe: check map_set valid when handle IB_WR_REG_MR
+>
+> It's observed that a same MR in rnbd server will trigger below code
+> path:
+>   -> rxe_mr_init_fast()
+>   |-> alloc map_set() # map_set is uninitialized
+>   |...-> rxe_map_mr_sg() # build the map_set
+>       |-> rxe_mr_set_page()
+>   |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE that means
+>                            # we can access host memory(such rxe_mr_copy)
+>   |...-> rxe_invalidate_mr() # mr->state change to FREE from VALID
+>   |...-> rxe_reg_fast_mr() # mr->state change to VALID from FREE,
+>                            # but map_set was not built again
+>   |...-> rxe_mr_copy() # kernel crash due to access wild addresses
+>                        # that lookup from the map_set
+>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/infiniband/sw/rxe/rxe_mr.c    | 9 +++++++++
+>   drivers/infiniband/sw/rxe/rxe_verbs.c | 1 +
+>   drivers/infiniband/sw/rxe/rxe_verbs.h | 1 +
+>   3 files changed, 11 insertions(+)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index 787c7dadc14f..09673d559c06 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -90,6 +90,7 @@ static int rxe_mr_alloc_map_set(int num_map, struct rxe_map_set **setp)
+>          if (!set->map)
+>                  goto err_free_set;
+>
+> +       set->valid = false;
+>          for (i = 0; i < num_map; i++) {
+>                  set->map[i] = kmalloc(sizeof(struct rxe_map), GFP_KERNEL);
+>                  if (!set->map[i])
+> @@ -216,6 +217,7 @@ int rxe_mr_init_user(struct rxe_pd *pd, u64 start, u64 length, u64 iova,
+>          }
+>
+>          set = mr->cur_map_set;
+> +       set->valid = true;
+>          set->page_shift = PAGE_SHIFT;
+>          set->page_mask = PAGE_SIZE - 1;
+>
+> @@ -643,6 +645,7 @@ int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
+>          }
+>
+>          mr->state = RXE_MR_STATE_FREE;
+> +       mr->cur_map_set->valid = mr->next_map_set->valid = false;
+>          ret = 0;
+>
+>   err_drop_ref:
+> @@ -679,12 +682,18 @@ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>                  return -EINVAL;
+>          }
+>
+> +       if (!mr->next_map_set->valid) {
+> +               pr_warn("%s: map set is not valid\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+>          mr->access = access;
+>          mr->lkey = (mr->lkey & ~0xff) | key;
+>          mr->rkey = (access & IB_ACCESS_REMOTE) ? mr->lkey : 0;
+>          mr->state = RXE_MR_STATE_VALID;
+>
+>          set = mr->cur_map_set;
+> +       set->valid = false;
+>          mr->cur_map_set = mr->next_map_set;
+>          mr->cur_map_set->iova = wqe->wr.wr.reg.mr->iova;
+>          mr->next_map_set = set;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> index 58e4412b1d16..4b7ae2d1d921 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
+> @@ -992,6 +992,7 @@ static int rxe_map_mr_sg(struct ib_mr *ibmr, struct scatterlist *sg,
+>          set->page_shift = ilog2(ibmr->page_size);
+>          set->page_mask = ibmr->page_size - 1;
+>          set->offset = set->iova & set->page_mask;
+> +       set->valid = true;
+>
+>          return n;
+>   }
+> diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> index 86068d70cd95..2edf31aab7e1 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_verbs.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+> @@ -289,6 +289,7 @@ struct rxe_map {
+>
+>   struct rxe_map_set {
+>          struct rxe_map          **map;
+> +       bool                    valid;
+>          u64                     va;
+>          u64                     iova;
+>          size_t                  length;
+> --
+> 2.31.1
 
-I see. So, according to the function rxe_run_task, it will run the
-tasklet only if "sched" is set to 1. Otherwise, its is going to run
-the function rxe_do_task directly, which calls task->func directly.
+Thanks for posting the description and the patch.
 
-I can see places that its calling rxe_run_task with sched = 0, but
-they are few. I did not look into all the execution paths through
-which these can be hit, but was wondering, if there is a way it is
-being made sure that such calls to rxe_run_task with sched = 0, does
-not happen in parallel?
+We have been facing the exact same issue (only with rxe), and we also
+realized that to get around this we will have to call ib_map_mr_sg()
+before every IB_WR_REG_MR wr; even if we are reusing the MR and simply
+invalidating and re-validating them.
 
+In reference to this, we have 2 questions.
 
+1) This change was made in the following commit.
 
+commit 647bf13ce944f20f7402f281578423a952274e4a
+Author: Bob Pearson <rpearsonhpe@gmail.com>
+Date:   Tue Sep 14 11:42:06 2021 -0500
+
+    RDMA/rxe: Create duplicate mapping tables for FMRs
+
+    For fast memory regions create duplicate mapping tables so ib_map_mr_sg()
+    can build a new mapping table which is then swapped into place
+    synchronously with the execution of an IB_WR_REG_MR work request.
+
+    Currently the rxe driver uses the same table for receiving RDMA operations
+    and for building new tables in preparation for reusing the MR. This
+    exposes users to potentially incorrect results.
+
+    Link: https://lore.kernel.org/r/20210914164206.19768-5-rpearsonhpe@gmail.com
+    Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+    Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+
+We tried to understand what potential incorrect result that commit
+message talks about, but were not able to. If someone can through
+light into this scenario where single mapping table can result into
+issues, it would be great.
+
+2)
+We wanted to confirm that, with the above patch, it clearly means that
+the use-case where we reuse the MR, by simply invalidating and
+re-validating (IB_WR_REG_MR wr) is a correct one.
+And there is no requirement saying that ib_map_mr_sg() needs to be
+done everytime regardless.
+
+(We were planning to send this in the coming days, but wanted other
+discussions to get over. Since the patch got posted and discussion
+started, we thought better to put this out.)
+
+Regards
+
+>
+>
+> On 23/05/2022 22:02, Li, Zhijian wrote:
+> >
+> > on 2022/5/20 22:45, Jason Gunthorpe wrote:
+> >> On Wed, May 18, 2022 at 12:37:25PM +0800, Li Zhijian wrote:
+> >>> Below call chains will alloc map_set without fully initializing map_set.
+> >>> rxe_mr_init_fast()
+> >>>   -> rxe_mr_alloc()
+> >>>      -> rxe_mr_alloc_map_set()
+> >>>
+> >>> Uninitialized values inside struct rxe_map_set are possible to cause
+> >>> kernel panic.
+> >> If the value is uninitialized then why is 0 an OK value?
+> >>
+> >> Would be happier to know the exact value that is not initialized
+> >
+> > Well, good question. After re-think of this issue, it seems this patch wasn't the root cause though it made the crash disappear in some extent.
+> >
+> > I'm still working on the root cause :)
+> >
+> > Thanks
+> >
+> > Zhijian
+> >
 > >
 > >>
-> >> Bob
-> >>>
-> >>> Thanks.
-> >>>
-> >>>
-> >>>> +
-> >>>> +       /* Fence see IBA 10.8.3.3
-> >>>> +        * Requires that all previous read and atomic operations
-> >>>> +        * are complete.
-> >>>> +        */
-> >>>> +       return atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
-> >>>> +}
-> >>>> +
-> >>>>  static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
-> >>>>  {
-> >>>>         switch (opcode) {
-> >>>> @@ -636,6 +661,11 @@ int rxe_requester(void *arg)
-> >>>>         if (unlikely(!wqe))
-> >>>>                 goto exit;
-> >>>>
-> >>>> +       if (rxe_wqe_is_fenced(qp, wqe)) {
-> >>>> +               qp->req.wait_fence = 1;
-> >>>> +               goto exit;
-> >>>> +       }
-> >>>> +
-> >>>>         if (wqe->mask & WR_LOCAL_OP_MASK) {
-> >>>>                 ret = rxe_do_local_ops(qp, wqe);
-> >>>>                 if (unlikely(ret))
-> >>>>
-> >>>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
-> >>>> --
-> >>>> 2.34.1
-> >>>>
-> >>
->
+> >> Jason
+> >
+> >
