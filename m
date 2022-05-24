@@ -2,95 +2,247 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 761B553303A
-	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 20:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4510C533058
+	for <lists+linux-rdma@lfdr.de>; Tue, 24 May 2022 20:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240253AbiEXSNR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 24 May 2022 14:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57088 "EHLO
+        id S233371AbiEXSUM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 24 May 2022 14:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240375AbiEXSNK (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 14:13:10 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FEB6C0DF;
-        Tue, 24 May 2022 11:13:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C34B2B817F2;
-        Tue, 24 May 2022 18:13:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5D58C34100;
-        Tue, 24 May 2022 18:13:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653415987;
-        bh=6rwhj+FNXWqPtzOtmUwHpc8UehTtQ8TTd4aiRslpLJs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=awrrNQMJSMGE0APJacZ9loO4V8nMQJ2pCJZ0PfZEEaetkLdWYb0PdpfbMhn5T2LeP
-         j+4q9P7ROB6LBl3xP2kGqHS4MwZE7SzObRSz7fo3jyU4kOtl1NrbX9hkZxLLO8rf2Y
-         Jf1dD9UvgtNp+c3chGASwaN2dqnkGXo+E9MLUwnX8zf+uk3uVTf5/H7eelKujGCruw
-         rvRbCtIyxsb+Kbo2Y1UVhRsKjn2050ioXXgjEvywiGTZWbqIj5xBkuZnFM2goc0J8w
-         7oVS0EPvn3sRq+Z0cdKSJfZ7P2K8yUfXs1Z20YefOyYooVWstiY5wLlEvh/7Dbwx+O
-         20yjzZv2oqGiw==
-Date:   Tue, 24 May 2022 21:13:02 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     roid@nvidia.com, linux-rdma@vger.kernel.org,
-        Mark Bloch <markb@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        linux-netdev <netdev@vger.kernel.org>
-Subject: Re: [bug report] net/mlx5: E-Switch, Protect changing mode while
- adding rules
-Message-ID: <Yo0gLpMS7CuUII0D@unreal>
-References: <YoH3ZVir5UZUgs3R@kili>
+        with ESMTP id S229726AbiEXSUL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 24 May 2022 14:20:11 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BA172237
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 11:20:10 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id w19-20020a9d6393000000b0060aeb359ca8so9424003otk.6
+        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 11:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=haJF16NFd1lSQDdAHEPzSuU6fKS8/NvWC4NtM3j61Nw=;
+        b=qdtTEECLuhVSHuO06gvMiixCBuiVqkQSM4RObyLWk/79zxUa3HxMbw6DDNEkwZN/qv
+         MdR1U0bDu7SwGFAVbFh8LzLjkDiTFXhWsMgtL0apr5sHgEiZZxo4afyflhV/qTvwP6Wr
+         WFIFfPn6xJ8WsGaxTZbpg1JOYBbpeDhsMx3AYWlabGiK6gX/XqFgW4zrRLdzKQuG1nVz
+         s4LstIQm16Y9sksEFwEGuEN8H98SaYF5OgjcUy/SuVRRNYJRNZQsI+pea52h0LeKbm6p
+         lN9dZkJ++Txqe5XWjItZPxepzLp9H4Omj3K0m2/a9L4WHcs7zy20Bv3Sj/67AVj++Dsa
+         pXEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=haJF16NFd1lSQDdAHEPzSuU6fKS8/NvWC4NtM3j61Nw=;
+        b=6gNIiJjfJzGT7CsOfedP0I7e7n3xcutErPmYYQ8YrAmNp1AWzbb5SY3csQGey2T+Rg
+         4D96H2qwKj5cChfJMG/SRbxtnfdpu28zUjr8wb5Zf6Lm9D9BHkum1yBEFcXpK0ycG0LB
+         WKYubk5/VrlJSo/lE0KS5KKdtn43oGrMk3Hwm9sKrQhp8bqAD7wYzMlY3J2M+DG9Rnu7
+         6SYuvmtCu900BJBVj5otombqjnJ55ZMDx5qIRiRGzdt9Z6VTOsEofQ8Dgr4i57eipNV1
+         ucLPUYkEjhti8pdsBuqMcpGOgaMgvJAeFijZnqsld2lJ4r6WS5raewktLYD9u2blBXjo
+         vkBA==
+X-Gm-Message-State: AOAM533XfLOOMeeLl+tSrpvtwHyYwGbziIiKqaPnfgoRNVnQfWKMPEUW
+        kjVEsxIYoj536EDqjQLTpQs=
+X-Google-Smtp-Source: ABdhPJxdwi6s43ORC73tGTaFQDazu2OVGwa0IPfU8FT0ZQwkoS3C8RZBzjrtXWRqqVQFCC1mGIN0Eg==
+X-Received: by 2002:a05:6830:3147:b0:606:4fa2:bb19 with SMTP id c7-20020a056830314700b006064fa2bb19mr11238648ots.346.1653416410007;
+        Tue, 24 May 2022 11:20:10 -0700 (PDT)
+Received: from [192.168.0.27] (097-099-248-255.res.spectrum.com. [97.99.248.255])
+        by smtp.gmail.com with ESMTPSA id e2-20020a056870920200b000f2776dd2acsm2205249oaf.27.2022.05.24.11.20.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 May 2022 11:20:09 -0700 (PDT)
+Message-ID: <cfc52ebf-1798-0b07-39de-eaa5650f9084@gmail.com>
+Date:   Tue, 24 May 2022 13:20:08 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YoH3ZVir5UZUgs3R@kili>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix incorrect fencing
+Content-Language: en-US
+To:     Haris Iqbal <haris.iqbal@ionos.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
+        frank.zago@hpe.com, linux-rdma@vger.kernel.org,
+        Aleksei Marov <aleksei.marov@ionos.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>
+References: <20220522223345.9889-1-rpearsonhpe@gmail.com>
+ <CAJpMwyjjbZtG152GAZZV_t6sn8bw6J0tSGaaY_9LTdw0Ve7gEg@mail.gmail.com>
+ <e81610d6-7896-03d6-91f9-15d68c7b8192@gmail.com>
+ <CAJpMwyhsf_C6dosUH81_5aD4fd5XHNPD94B3NE=TT+fSBAKW1g@mail.gmail.com>
+ <aa01e627-04fe-b331-b367-07cbb8731b8d@gmail.com>
+ <CAJpMwyjNcMd4gAdGQxv3BBPhEdE3sYpcKLQto53B=WO=QUSaLQ@mail.gmail.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <CAJpMwyjNcMd4gAdGQxv3BBPhEdE3sYpcKLQto53B=WO=QUSaLQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, May 16, 2022 at 10:04:05AM +0300, Dan Carpenter wrote:
-> Hello Roi Dayan,
+On 5/24/22 05:28, Haris Iqbal wrote:
+> On Mon, May 23, 2022 at 8:22 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>
+>> On 5/23/22 03:05, Haris Iqbal wrote:
+>>> On Mon, May 23, 2022 at 5:51 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>
+>>>> On 5/22/22 18:59, Haris Iqbal wrote:
+>>>>> On Mon, May 23, 2022 at 12:36 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>>>>>>
+>>>>>> Currently the rxe driver checks if any previous operation
+>>>>>> is not complete to determine if a fence wait is required.
+>>>>>> This is not correct. For a regular fence only previous
+>>>>>> read or atomic operations must be complete while for a local
+>>>>>> invalidate fence all previous operations must be complete.
+>>>>>> This patch corrects this behavior.
+>>>>>>
+>>>>>> Fixes: 8700e3e7c4857 ("Soft RoCE (RXE) - The software RoCE driver")
+>>>>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+>>>>>> ---
+>>>>>>  drivers/infiniband/sw/rxe/rxe_req.c | 42 ++++++++++++++++++++++++-----
+>>>>>>  1 file changed, 36 insertions(+), 6 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+>>>>>> index ae5fbc79dd5c..f36263855a45 100644
+>>>>>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+>>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+>>>>>> @@ -163,16 +163,41 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
+>>>>>>                      (wqe->state != wqe_state_processing)))
+>>>>>>                 return NULL;
+>>>>>>
+>>>>>> -       if (unlikely((wqe->wr.send_flags & IB_SEND_FENCE) &&
+>>>>>> -                                                    (index != cons))) {
+>>>>>> -               qp->req.wait_fence = 1;
+>>>>>> -               return NULL;
+>>>>>> -       }
+>>>>>> -
+>>>>>>         wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
+>>>>>>         return wqe;
+>>>>>>  }
+>>>>>>
+>>>>>> +/**
+>>>>>> + * rxe_wqe_is_fenced - check if next wqe is fenced
+>>>>>> + * @qp: the queue pair
+>>>>>> + * @wqe: the next wqe
+>>>>>> + *
+>>>>>> + * Returns: 1 if wqe is fenced (needs to wait)
+>>>>>> + *         0 if wqe is good to go
+>>>>>> + */
+>>>>>> +static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>>>>>> +{
+>>>>>> +       unsigned int cons;
+>>>>>> +
+>>>>>> +       if (!(wqe->wr.send_flags & IB_SEND_FENCE))
+>>>>>> +               return 0;
+>>>>>> +
+>>>>>> +       cons = queue_get_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
+>>>>>> +
+>>>>>> +       /* Local invalidate fence (LIF) see IBA 10.6.5.1
+>>>>>> +        * Requires ALL previous operations on the send queue
+>>>>>> +        * are complete.
+>>>>>> +        */
+>>>>>> +       if (wqe->wr.opcode == IB_WR_LOCAL_INV)
+>>>>>> +               return qp->req.wqe_index != cons;
+>>>>>
+>>>>>
+>>>>> Do I understand correctly that according to this code a wr with opcode
+>>>>> IB_WR_LOCAL_INV needs to have the IB_SEND_FENCE also set for this to
+>>>>> work?
+>>>>>
+>>>>> If that is the desired behaviour, can you point out where in spec this
+>>>>> is mentioned.
+>>>>
+>>>> According to IBA "Local invalidate fence" (LIF) and regular Fence behave
+>>>> differently. (See the referenced sections in the IBA.) For a local invalidate
+>>>> operation the fence bit fences all previous operations. That was the old behavior
+>>>> which made no distinction between local invalidate and other operations.
+>>>> The change here are the other operations with a regular fence which should only
+>>>> requires read and atomic operations to be fenced.
+>>>>
+>>>> Not sure what you mean by 'also'. Per the IBA if the LIF is set then you have
+>>>> strict invalidate ordering if not then you have relaxed ordering. The kernel verbs
+>>>> API only has one fence bit and does not have a separate LIF bit so I am
+>>>> interpreting them to share the one bit.
+>>>
+>>> I see. Now I understand. Thanks for the explanation.
+>>>
+>>> I do have a follow-up question. For a IB_WR_LOCAL_INV wr, without the
+>>> fence bit means relaxed ordering. This would mean that the completion
+>>> for that wr must take place "before any subsequent WQE has begun
+>>> execution". From what I understand, multiple rxe_requester instances
+>>> can run in parallel and pick up wqes and execute them. How is the
+>>> relaxed ordering criteria fulfilled?
+>>
+>> The requester is a tasklet. There is one tasklet instance per QP. Tasklets can only
+>> run on a single cpu so not in parallel. The tasklets for multiple cpus each
+>> execute a single send queue in order.
 > 
-> The patch 7dc84de98bab: "net/mlx5: E-Switch, Protect changing mode
-> while adding rules" from Sep 16, 2020, leads to the following Smatch
-> static checker warning:
+> I see. So, according to the function rxe_run_task, it will run the
+> tasklet only if "sched" is set to 1. Otherwise, its is going to run
+> the function rxe_do_task directly, which calls task->func directly.
 > 
-> 	drivers/net/ethernet/mellanox/mlx5/core/eswitch.c:2000 mlx5_esw_unlock()
-> 	warn: inconsistent returns '&esw->mode_lock'.
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/eswitch.c
->     1996 void mlx5_esw_unlock(struct mlx5_eswitch *esw)
->     1997 {
->     1998         if (!mlx5_esw_allowed(esw))
->     1999                 return;
-> 
-> Smatch is complaining because how will the caller know if we dropped
-> the lock or not.  I thought, "Hm.  I guess the lock function has a
-> similar check?  Although, how does that work that mlx5_esw_allowed()
-> means that it doesn't need locking?"
-> 
-> But then when I looked at the lock function, mlx5_esw_try_lock(), and it
-> does *NOT* have a similar check.  This probably works because it's
-> checked in different layers and this is just a duplicative (layering
-> violation) check which is ugly but harmless.
+> I can see places that its calling rxe_run_task with sched = 0, but
+> they are few. I did not look into all the execution paths through
+> which these can be hit, but was wondering, if there is a way it is
+> being made sure that such calls to rxe_run_task with sched = 0, does
+> not happen in parallel?
 
-Your analysis is correct and I agree with you, the check should be removed.
-However the "problematic" commit is ec2fa47d7b98 ("net/mlx5: Lag, use lag lock"),
-where mlx5_esw_lock() was removed.
+It's a little more complicated than that. rxe_run_task(task, sched)
+runs the tasklet task as a tasklet if sched is nonzero. If it is zero
+it runs on the current thread but carefully locks and only runs the
+subroutine if the tasklet is not already running otherwise it marks the
+task as needing to be continued and leaves it running in the tasklet.
+The net effect is that either call to rxe_run_task will cause the
+tasklet code to run. When you schedule a tasket it normally runs on the
+same cpu as the calling code so there isn't a lot of difference between
+sched and non-sched. The sched version leaves two threads able to run
+on the cpu. The non-sched just has the original thread.
 
-Thanks
+__rxe_do_task() is also used and just calls the subroutine directly.
+It can only be used if you know that the tasklet is disabled since
+the tasklet code is non re-entrant and should never be running twice
+at the same time. It is used in rxe_qp.c during setup, reset and 
+cleanup of queue pairs.
 
+Bob
 > 
-> --> 2000         up_write(&esw->mode_lock);
->     2001 }
 > 
-> regards,
-> dan carpenter
+> 
+>>>
+>>>>
+>>>> Bob
+>>>>>
+>>>>> Thanks.
+>>>>>
+>>>>>
+>>>>>> +
+>>>>>> +       /* Fence see IBA 10.8.3.3
+>>>>>> +        * Requires that all previous read and atomic operations
+>>>>>> +        * are complete.
+>>>>>> +        */
+>>>>>> +       return atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
+>>>>>> +}
+>>>>>> +
+>>>>>>  static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
+>>>>>>  {
+>>>>>>         switch (opcode) {
+>>>>>> @@ -636,6 +661,11 @@ int rxe_requester(void *arg)
+>>>>>>         if (unlikely(!wqe))
+>>>>>>                 goto exit;
+>>>>>>
+>>>>>> +       if (rxe_wqe_is_fenced(qp, wqe)) {
+>>>>>> +               qp->req.wait_fence = 1;
+>>>>>> +               goto exit;
+>>>>>> +       }
+>>>>>> +
+>>>>>>         if (wqe->mask & WR_LOCAL_OP_MASK) {
+>>>>>>                 ret = rxe_do_local_ops(qp, wqe);
+>>>>>>                 if (unlikely(ret))
+>>>>>>
+>>>>>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
+>>>>>> --
+>>>>>> 2.34.1
+>>>>>>
+>>>>
+>>
+
