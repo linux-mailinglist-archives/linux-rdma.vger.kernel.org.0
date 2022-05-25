@@ -2,53 +2,59 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05BF5336A8
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 May 2022 08:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32265337D1
+	for <lists+linux-rdma@lfdr.de>; Wed, 25 May 2022 09:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241044AbiEYGK1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 May 2022 02:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35760 "EHLO
+        id S231877AbiEYHwu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 May 2022 03:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240020AbiEYGKZ (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 May 2022 02:10:25 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1AB46EB38
-        for <linux-rdma@vger.kernel.org>; Tue, 24 May 2022 23:10:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id E03D3B8172B
-        for <linux-rdma@vger.kernel.org>; Wed, 25 May 2022 06:10:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2966CC385B8;
-        Wed, 25 May 2022 06:10:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653459020;
-        bh=ErBOykNRjfTy0nNY+gAscNbc4sXmHKb211mDR3SRUG8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Kmc2JW9KuDBPe8ZX13COLPrN3bgW0GqZkrtTFiYvdOS9sf4dB8Jk5EeQfcVx2tE0j
-         f/hcPmievBUhaCDN7YpjtloSLW2yr5bqIhPCLpnC+qssnaPx4Vn5VLTaiC3dSn/px9
-         PM/FPit5QcqQjLE7G/WtvsIUKYoUyR7Y+mdICobT/24cbloNgd79U/yIc9k87dyR6U
-         y0VE0QZ2GIgqDPSwXCmBepHKE4VfniTzwnp0VSWTEpNa2kY4XFRhw5MGjjRDe3VOdo
-         C6iSr6ALkt3G4pBP0oktXxhWfO5oT2TIXLUSc5PfYZXVyT23tFYgFyiU21LooWc3Ld
-         +BE05z+GWSvcw==
-Date:   Wed, 25 May 2022 09:10:16 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Ryan Stone <rysto32@gmail.com>
-Cc:     linux-rdma@vger.kernel.org
-Subject: Re: Possible bug in ipoib_reap_dead_ahs in datagram mode
-Message-ID: <Yo3ISBaM3awcm1o6@unreal>
-References: <CAFMmRNyHUSg6_+af9W39e36aCx2a=_9WC8MB08W9XfnMKoYXAQ@mail.gmail.com>
- <YoyEPnFpd7/mI1Mm@unreal>
- <CAFMmRNxS56xWoZ_-Sz4yBrZvK95vdpQR9xrxjDhkAAGi3krK=A@mail.gmail.com>
- <Yo0tJPKOCHkqF5Gl@unreal>
- <CAFMmRNx0wgPQRhMpHz+9h9fXv-bPbzPDRmwtZrHqYSc5WHmfHQ@mail.gmail.com>
+        with ESMTP id S229645AbiEYHwt (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 May 2022 03:52:49 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1042E7C162
+        for <linux-rdma@vger.kernel.org>; Wed, 25 May 2022 00:52:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1653465169; x=1685001169;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=p5hgizX5c57SEWHUh1cjD3E4YUO2oaTQfQoRiXZXBR4=;
+  b=PvzVh0J4r+1T/8fqBOtNqd17B4a3gvbO6tZ7gFZcAzrxWipt/4iOW2oa
+   dCSvgRHN0q3A6INiTYQP6QwnHNpgpNepQFTaZDWdnt9cAWY2dVa6kNJl6
+   sDcp1TO36CfuvyIxKWxS8PMcputsUaugoKy3y8+82+NSB6lZXMh5Dr/bX
+   Wp2swtkk78e/6KU4Rb0ClAHAwjOQOaPWTYhkPU6BnzQ1mWi4y820Xd4dY
+   dPrAfGtdvO3AJM6mV3KPdTv8TZqKYy9AXb82aZRNDCgbDlKak+dNba/B/
+   Ht/66SOd8xn/xkD4v5e7N/raX8RXcH76uKhXnZz8jFh99zk/EMM+yzNrd
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10357"; a="254246700"
+X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
+   d="scan'208";a="254246700"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2022 00:52:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
+   d="scan'208";a="609018828"
+Received: from lkp-server01.sh.intel.com (HELO db63a1be7222) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 25 May 2022 00:52:47 -0700
+Received: from kbuild by db63a1be7222 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1ntlp0-0002qM-Dr;
+        Wed, 25 May 2022 07:52:46 +0000
+Date:   Wed, 25 May 2022 15:52:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-next] BUILD SUCCESS
+ b90c7e97c48bb1a94cd49cc32a4d2a62a06cbf1c
+Message-ID: <628de023.GJOrtDrdNg29f0dn%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFMmRNx0wgPQRhMpHz+9h9fXv-bPbzPDRmwtZrHqYSc5WHmfHQ@mail.gmail.com>
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,29 +62,105 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 24, 2022 at 03:18:53PM -0400, Ryan Stone wrote:
-> I believe that if we never enter that if statement, then we will leak
-> the entries that are supposed to be cleaned up.  That's better than
-> the use-after-free that I feared but still not good.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-next
+branch HEAD: b90c7e97c48bb1a94cd49cc32a4d2a62a06cbf1c  RDMA/hfi1: Remove all traces of diagpkt support
 
-I don't know, we are running enhanced IPoIB all the time and I never got
-any reports about kmemleaks/KASAN in that area.
+elapsed time: 721m
 
-Thanks
+configs tested: 84
+configs skipped: 3
 
-> 
-> On Tue, May 24, 2022 at 3:08 PM Leon Romanovsky <leon@kernel.org> wrote:
-> >
-> > On Tue, May 24, 2022 at 09:33:52AM -0400, Ryan Stone wrote:
-> > > On Tue, May 24, 2022 at 3:07 AM Leon Romanovsky <leon@kernel.org> wrote:
-> > > > IPoIB in mlx5 is HW offloaded version of ulp/ipoib one. AFAIK, it doesn't
-> > > > change "tx_tail" and we won't enter into this if (...).
-> > > >
-> > > > Thanks
-> > >
-> > > I don't quite follow this response.  Is this the if statement that you
-> > > mean that we won't fall into?
-> > >
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/infiniband/ulp/ipoib/ipoib_ib.c#n682
-> >
-> > Yes, I think so, maybe wrong here.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+i386                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+i386                          randconfig-a001
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a013
+x86_64                        randconfig-a011
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a016
+i386                          randconfig-a014
+x86_64                        randconfig-a004
+x86_64                        randconfig-a002
+x86_64                        randconfig-a006
+arc                  randconfig-r043-20220524
+s390                 randconfig-r044-20220524
+riscv                randconfig-r042-20220524
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                             allnoconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              defconfig
+x86_64                                  kexec
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                    rhel-8.3-kselftests
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+x86_64                        randconfig-a005
+x86_64                        randconfig-a003
+x86_64                        randconfig-a001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a012
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+i386                          randconfig-a013
+i386                          randconfig-a011
+i386                          randconfig-a015
+hexagon              randconfig-r045-20220524
+hexagon              randconfig-r041-20220524
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
