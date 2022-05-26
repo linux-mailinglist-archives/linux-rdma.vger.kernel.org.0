@@ -2,109 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2776E533A9D
-	for <lists+linux-rdma@lfdr.de>; Wed, 25 May 2022 12:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB72534974
+	for <lists+linux-rdma@lfdr.de>; Thu, 26 May 2022 05:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234454AbiEYK2L (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 25 May 2022 06:28:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44826 "EHLO
+        id S242009AbiEZDra (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 25 May 2022 23:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234058AbiEYK2J (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 May 2022 06:28:09 -0400
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27B53939B7
-        for <linux-rdma@vger.kernel.org>; Wed, 25 May 2022 03:28:08 -0700 (PDT)
-X-IronPort-AV: E=McAfee;i="6400,9594,10357"; a="254276779"
-X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
-   d="scan'208";a="254276779"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 May 2022 03:28:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.91,250,1647327600"; 
-   d="scan'208";a="548944861"
-Received: from unknown (HELO intel-71.bj.intel.com) ([10.238.154.71])
-  by orsmga006.jf.intel.com with ESMTP; 25 May 2022 03:28:05 -0700
-From:   yanjun.zhu@linux.dev
-To:     zyjzyj2000@gmail.com, jgg@ziepe.ca, leon@kernel.org,
-        linux-rdma@vger.kernel.org, yanjun.zhu@linux.dev
-Cc:     syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
-Subject: [PATCH 1/1] RDMA/rxe: Fix qp error handler
-Date:   Wed, 25 May 2022 22:54:38 -0400
-Message-Id: <20220526025438.572870-1-yanjun.zhu@linux.dev>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S233544AbiEZDr3 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 25 May 2022 23:47:29 -0400
+Received: from out30-43.freemail.mail.aliyun.com (out30-43.freemail.mail.aliyun.com [115.124.30.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AC6257;
+        Wed, 25 May 2022 20:47:26 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VEQTeja_1653536838;
+Received: from 30.225.28.183(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VEQTeja_1653536838)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 26 May 2022 11:47:24 +0800
+Message-ID: <8a518b27-3048-cb0b-d2e3-a68d0ef05171@linux.alibaba.com>
+Date:   Thu, 26 May 2022 11:47:18 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.8.1
+Subject: Re: [RFC net-next] net/smc:introduce 1RTT to SMC
+To:     Alexandra Winter <wintera@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <1653375127-130233-1-git-send-email-alibuda@linux.alibaba.com>
+ <YoyOGlG2kVe4VA4m@TonyMac-Alibaba>
+ <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_12_24,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-10.0 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
 
-Move the qp error handler to be near the rxe_create_qp.
 
-Reported-by: syzbot+833061116fa28df97f3b@syzkaller.appspotmail.com
-Signed-off-by: Zhu Yanjun <yanjun.zhu@linux.dev>
----
- drivers/infiniband/sw/rxe/rxe_qp.c    | 14 ++++++++++----
- drivers/infiniband/sw/rxe/rxe_verbs.c |  1 -
- 2 files changed, 10 insertions(+), 5 deletions(-)
+在 2022/5/25 下午9:42, Alexandra Winter 写道:
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index 22e9b85344c3..f73ca567a8b3 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -220,8 +220,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 			   &qp->sq.queue->ip);
- 
- 	if (err) {
--		vfree(qp->sq.queue->buf);
--		kfree(qp->sq.queue);
-+		rxe_queue_cleanup(qp->sq.queue);
- 		qp->sq.queue = NULL;
- 		return err;
- 	}
-@@ -277,8 +276,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- 				   qp->rq.queue->buf, qp->rq.queue->buf_size,
- 				   &qp->rq.queue->ip);
- 		if (err) {
--			vfree(qp->rq.queue->buf);
--			kfree(qp->rq.queue);
-+			rxe_queue_cleanup(qp->rq.queue);
- 			qp->rq.queue = NULL;
- 			return err;
- 		}
-@@ -341,6 +339,14 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- 	return 0;
- 
- err2:
-+	if (qp_type(qp) == IB_QPT_RC) {
-+		del_timer_sync(&qp->retrans_timer);
-+		del_timer_sync(&qp->rnr_nak_timer);
-+	}
-+
-+	rxe_cleanup_task(&qp->req.task);
-+	rxe_cleanup_task(&qp->comp.task);
-+
- 	rxe_queue_cleanup(qp->sq.queue);
- 	qp->sq.queue = NULL;
- err1:
-diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.c b/drivers/infiniband/sw/rxe/rxe_verbs.c
-index 9d995854a174..d0bc195b572f 100644
---- a/drivers/infiniband/sw/rxe/rxe_verbs.c
-+++ b/drivers/infiniband/sw/rxe/rxe_verbs.c
-@@ -432,7 +432,6 @@ static int rxe_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *init,
- 	return 0;
- 
- qp_init:
--	rxe_put(qp);
- 	return err;
- }
- 
--- 
-2.31.1
+> Thank you D. Wythe for your proposals, the prototype and measurements.
+> They sound quite promising to us.
+>  > We need to carefully evaluate them and make sure everything is compatible
+> with the existing implementations of SMC-D and SMC-R v1 and v2. In the
+> typical s390 environment ROCE LAG is propably not good enough, as the card
+> is still a single point of failure. So your ideas need to be compatible
+> with link redundancy. We also need to consider that the extension of the
+> protocol does not block other desirable extensions.
+> 
+> Your prototype is very helpful for the understanding. Before submitting any
+> code patches to net-next, we should agree on the details of the protocol
+> extension. Maybe you could formulate your proposal in plain text, so we can
+> discuss it here?
+
+I am very pleased to hear that your team have interest in this 
+proposals, and thanks a lot for your advise. We really appreciate your 
+point of view about compatibility, In fact, we are working on some 
+written drafts which compatibility is quite a important part, and will 
+be shared here soon.
+
+> 
+> We also need to inform you that several public holidays are upcoming in the
+> next weeks and several of our team will be out for summer vacation, so please
+> allow for longer response times.
+
+Thanks for your informing, that's totaly okay to us. May your holidays 
+be full of warmth and cheer.
+
+
+> Kind regards
+> Alexandra Winter
+> 
+
+
+D. Wyther
+Thanks.
+
+
+
 
