@@ -2,64 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31223535DB4
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 May 2022 11:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80809535E08
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 May 2022 12:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbiE0J6E (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 May 2022 05:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32988 "EHLO
+        id S238860AbiE0KS5 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 May 2022 06:18:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350723AbiE0J6C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 May 2022 05:58:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0FC5E36B79
-        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 02:58:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1653645480;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=g70eeQab0Dc/APhWo7A5wxlMInbPG1Rn3g7zC/mVZsg=;
-        b=CPgr3RNSdH1hZM9XPKslEbP6nDyj5rYHhU7tlQNWANQlTWN25/IT/UX9sgyAFEiElCjmbG
-        AyVztofccpN/CgULXzXcJvaohRnolMJ6+MwtVWWNupWlF5gviT6HB8Jv8P7jFAgVWmMf7C
-        /9GSNsfMnNogUw/sfvAntr8PDdhNPkA=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-605-4f9NXIa7NfCf9z4YGM0pqw-1; Fri, 27 May 2022 05:57:55 -0400
-X-MC-Unique: 4f9NXIa7NfCf9z4YGM0pqw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6CCDF3803907;
-        Fri, 27 May 2022 09:57:54 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.33.36.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D2DBF2026D64;
-        Fri, 27 May 2022 09:57:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Bob Pearson <rpearsonhpe@gmail.com>,
-        Steve French <smfrench@gmail.com>
-cc:     dhowells@redhat.com, willy@infradead.org,
-        Tom Talpey <tom@talpey.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        linux-rdma@vger.kernel.org, linux-cifs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Lockdep splat in RXE (softRoCE) driver in xarray accesses
+        with ESMTP id S240807AbiE0KS4 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 May 2022 06:18:56 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 062601269A8
+        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 03:18:55 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id t13so2053939ljd.6
+        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 03:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9Ja0trDOj1AHAzQELpHkuCoOvpIRGW0mjd6Tr80A8+E=;
+        b=DGx6s9XGykmNgR7kySHzIUs1ndbN2ek3Hp/VQGsziqvuWafL3kLabZaaA0QIk08IXQ
+         ufi5CqgSHxijD1o+CsNsiRs3jHDjIqTHdZKp4Zdqhr2RbfNerY1B0ZfkVjrX9w8n5Ncz
+         uSp7xXm4vcxc3nc0BCGM45nxvpPE4v/Asr/Csjyrb/cwmFd4hsUpA/q8ivN7gnigqMQt
+         cbWfpVTbTH4J98/Iw6rZpPnhmwxguVv9uisb0LT05g3hXsC/X0geHqmnbA8RY9jmhevQ
+         pJ1WmO/shGAGmi6eo8KogZ/RLsjBGphZoXN2yNcTyeZYlgT/alQlTErzoSUfN07q5xgM
+         /vPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9Ja0trDOj1AHAzQELpHkuCoOvpIRGW0mjd6Tr80A8+E=;
+        b=4xrjdR9tpsKF2Q3hAlXPJ+NaGbtD1EuBKKacMFu0ak9z469QLSyIe6YDTdTehpMFpN
+         qBF53IspcSLwaMh94mqsBgW87qsF7FFrPs3J3bYpkw3G5VFoQ5aXxQDfmT/gJ4C+Ky7R
+         eVOroXQvV5m5660nTZvUJRsJP2BlAsb3z6BEgBPJjJR1k68pd6XkhvnF4bfd6frUl4SQ
+         Z/CdTcyRWmmTB6H3lIhZVzrnBPKK0CqZHwWHhhoV/1Akc4NDCQXFvXaBkeoAVpF1vkIO
+         y0FkZEXWemDON8s6nLxG0WOenoxY8vQDEAQHcPI4I2QIQ1PW45GDWUfgEFCpMKllWlRv
+         7UCA==
+X-Gm-Message-State: AOAM533QG+wHit9H6ZtXg7Mvd91lgntIKzLIXCRxFKVDFs4uDrRjjne9
+        F9ovZNUxP7aOyf/iLy04nQ5O36h/45Il45xxX1aFjw==
+X-Google-Smtp-Source: ABdhPJw7nNZF4Zwhwy1+u45j03gxXkRtFr2ZIMnJYATTXdpjhmfEfZwp1n7XYy1mtrUY1trhC8S5s8InO+auv7Ei+gU=
+X-Received: by 2002:a2e:a4b5:0:b0:254:aeb8:d275 with SMTP id
+ g21-20020a2ea4b5000000b00254aeb8d275mr3747462ljm.64.1653646733200; Fri, 27
+ May 2022 03:18:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3301351.1653645472.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Fri, 27 May 2022 10:57:52 +0100
-Message-ID: <3301352.1653645472@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.78 on 10.11.54.4
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+References: <20220522223345.9889-1-rpearsonhpe@gmail.com> <CAJpMwyjjbZtG152GAZZV_t6sn8bw6J0tSGaaY_9LTdw0Ve7gEg@mail.gmail.com>
+ <e81610d6-7896-03d6-91f9-15d68c7b8192@gmail.com> <CAJpMwyhsf_C6dosUH81_5aD4fd5XHNPD94B3NE=TT+fSBAKW1g@mail.gmail.com>
+ <aa01e627-04fe-b331-b367-07cbb8731b8d@gmail.com> <CAJpMwyjNcMd4gAdGQxv3BBPhEdE3sYpcKLQto53B=WO=QUSaLQ@mail.gmail.com>
+ <cfc52ebf-1798-0b07-39de-eaa5650f9084@gmail.com>
+In-Reply-To: <cfc52ebf-1798-0b07-39de-eaa5650f9084@gmail.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Fri, 27 May 2022 12:18:41 +0200
+Message-ID: <CAJpMwyimQ8mQ6p7FRFGjQjEYJKiBj8fMpv=bnHfYaPF544Ce3w@mail.gmail.com>
+Subject: Re: [PATCH for-next] RDMA/rxe: Fix incorrect fencing
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     jgg@nvidia.com, zyjzyj2000@gmail.com, jhack@hpe.com,
+        frank.zago@hpe.com, linux-rdma@vger.kernel.org,
+        Aleksei Marov <aleksei.marov@ionos.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,148 +70,175 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Zhu, Bob, Steve,
+On Tue, May 24, 2022 at 8:20 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> On 5/24/22 05:28, Haris Iqbal wrote:
+> > On Mon, May 23, 2022 at 8:22 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+> >>
+> >> On 5/23/22 03:05, Haris Iqbal wrote:
+> >>> On Mon, May 23, 2022 at 5:51 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+> >>>>
+> >>>> On 5/22/22 18:59, Haris Iqbal wrote:
+> >>>>> On Mon, May 23, 2022 at 12:36 AM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+> >>>>>>
+> >>>>>> Currently the rxe driver checks if any previous operation
+> >>>>>> is not complete to determine if a fence wait is required.
+> >>>>>> This is not correct. For a regular fence only previous
+> >>>>>> read or atomic operations must be complete while for a local
+> >>>>>> invalidate fence all previous operations must be complete.
+> >>>>>> This patch corrects this behavior.
+> >>>>>>
+> >>>>>> Fixes: 8700e3e7c4857 ("Soft RoCE (RXE) - The software RoCE driver")
+> >>>>>> Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
+> >>>>>> ---
+> >>>>>>  drivers/infiniband/sw/rxe/rxe_req.c | 42 ++++++++++++++++++++++++-----
+> >>>>>>  1 file changed, 36 insertions(+), 6 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> >>>>>> index ae5fbc79dd5c..f36263855a45 100644
+> >>>>>> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> >>>>>> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> >>>>>> @@ -163,16 +163,41 @@ static struct rxe_send_wqe *req_next_wqe(struct rxe_qp *qp)
+> >>>>>>                      (wqe->state != wqe_state_processing)))
+> >>>>>>                 return NULL;
+> >>>>>>
+> >>>>>> -       if (unlikely((wqe->wr.send_flags & IB_SEND_FENCE) &&
+> >>>>>> -                                                    (index != cons))) {
+> >>>>>> -               qp->req.wait_fence = 1;
+> >>>>>> -               return NULL;
+> >>>>>> -       }
+> >>>>>> -
+> >>>>>>         wqe->mask = wr_opcode_mask(wqe->wr.opcode, qp);
+> >>>>>>         return wqe;
+> >>>>>>  }
+> >>>>>>
+> >>>>>> +/**
+> >>>>>> + * rxe_wqe_is_fenced - check if next wqe is fenced
+> >>>>>> + * @qp: the queue pair
+> >>>>>> + * @wqe: the next wqe
+> >>>>>> + *
+> >>>>>> + * Returns: 1 if wqe is fenced (needs to wait)
+> >>>>>> + *         0 if wqe is good to go
+> >>>>>> + */
+> >>>>>> +static int rxe_wqe_is_fenced(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+> >>>>>> +{
+> >>>>>> +       unsigned int cons;
+> >>>>>> +
+> >>>>>> +       if (!(wqe->wr.send_flags & IB_SEND_FENCE))
+> >>>>>> +               return 0;
+> >>>>>> +
+> >>>>>> +       cons = queue_get_consumer(qp->sq.queue, QUEUE_TYPE_FROM_CLIENT);
+> >>>>>> +
+> >>>>>> +       /* Local invalidate fence (LIF) see IBA 10.6.5.1
+> >>>>>> +        * Requires ALL previous operations on the send queue
+> >>>>>> +        * are complete.
+> >>>>>> +        */
+> >>>>>> +       if (wqe->wr.opcode == IB_WR_LOCAL_INV)
+> >>>>>> +               return qp->req.wqe_index != cons;
+> >>>>>
+> >>>>>
+> >>>>> Do I understand correctly that according to this code a wr with opcode
+> >>>>> IB_WR_LOCAL_INV needs to have the IB_SEND_FENCE also set for this to
+> >>>>> work?
+> >>>>>
+> >>>>> If that is the desired behaviour, can you point out where in spec this
+> >>>>> is mentioned.
+> >>>>
+> >>>> According to IBA "Local invalidate fence" (LIF) and regular Fence behave
+> >>>> differently. (See the referenced sections in the IBA.) For a local invalidate
+> >>>> operation the fence bit fences all previous operations. That was the old behavior
+> >>>> which made no distinction between local invalidate and other operations.
+> >>>> The change here are the other operations with a regular fence which should only
+> >>>> requires read and atomic operations to be fenced.
+> >>>>
+> >>>> Not sure what you mean by 'also'. Per the IBA if the LIF is set then you have
+> >>>> strict invalidate ordering if not then you have relaxed ordering. The kernel verbs
+> >>>> API only has one fence bit and does not have a separate LIF bit so I am
+> >>>> interpreting them to share the one bit.
+> >>>
+> >>> I see. Now I understand. Thanks for the explanation.
+> >>>
+> >>> I do have a follow-up question. For a IB_WR_LOCAL_INV wr, without the
+> >>> fence bit means relaxed ordering. This would mean that the completion
+> >>> for that wr must take place "before any subsequent WQE has begun
+> >>> execution". From what I understand, multiple rxe_requester instances
+> >>> can run in parallel and pick up wqes and execute them. How is the
+> >>> relaxed ordering criteria fulfilled?
+> >>
+> >> The requester is a tasklet. There is one tasklet instance per QP. Tasklets can only
+> >> run on a single cpu so not in parallel. The tasklets for multiple cpus each
+> >> execute a single send queue in order.
+> >
+> > I see. So, according to the function rxe_run_task, it will run the
+> > tasklet only if "sched" is set to 1. Otherwise, its is going to run
+> > the function rxe_do_task directly, which calls task->func directly.
+> >
+> > I can see places that its calling rxe_run_task with sched = 0, but
+> > they are few. I did not look into all the execution paths through
+> > which these can be hit, but was wondering, if there is a way it is
+> > being made sure that such calls to rxe_run_task with sched = 0, does
+> > not happen in parallel?
+>
+> It's a little more complicated than that. rxe_run_task(task, sched)
+> runs the tasklet task as a tasklet if sched is nonzero. If it is zero
+> it runs on the current thread but carefully locks and only runs the
+> subroutine if the tasklet is not already running otherwise it marks the
+> task as needing to be continued and leaves it running in the tasklet.
+> The net effect is that either call to rxe_run_task will cause the
+> tasklet code to run. When you schedule a tasket it normally runs on the
+> same cpu as the calling code so there isn't a lot of difference between
+> sched and non-sched. The sched version leaves two threads able to run
+> on the cpu. The non-sched just has the original thread.
+>
+> __rxe_do_task() is also used and just calls the subroutine directly.
+> It can only be used if you know that the tasklet is disabled since
+> the tasklet code is non re-entrant and should never be running twice
+> at the same time. It is used in rxe_qp.c during setup, reset and
+> cleanup of queue pairs.
+>
+> Bob
 
-There seems to be a locking bug in the softRoCE driver when mounting a cif=
-s
-share.  See attached trace.  I'm guessing the problem is that a softirq
-handler is accessing the xarray, but other accesses to the xarray aren't
-guarded by _bh or _irq markers on the lock primitives.
+I see.. Thanks for the responses.
 
-I wonder if rxe_pool_get_index() should just rely on the RCU read lock and=
- not
-take the spinlock.
 
-Alternatively, __rxe_add_to_pool() should be using xa_alloc_cyclic_bh() or
-xa_alloc_cyclic_irq().
-
-I used the following commands:
-
-   rdma link add rxe0 type rxe netdev enp6s0 # andromeda, softRoCE
-   mount //192.168.6.1/scratch /xfstest.scratch -o user=3Dshares,rdma,pass=
-=3D...
-
-talking to ksmbd on the other side.
-
-Kernel is v5.18-rc6.
-
-David
----
-infiniband rxe0: set active
-infiniband rxe0: added enp6s0
-RDS/IB: rxe0: added
-CIFS: No dialect specified on mount. Default has changed to a more secure =
-dialect, SMB2.1 or later (e.g. SMB3.1.1), from CIFS (SMB1). To use the les=
-s secure SMB1 dialect to access old servers which do not support SMB3.1.1 =
-(or even SMB3 or SMB2.1) specify vers=3D1.0 on mount.
-CIFS: Attempting to mount \\192.168.6.1\scratch
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-WARNING: inconsistent lock state
-5.18.0-rc6-build2+ #465 Not tainted
---------------------------------
-inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-ksoftirqd/1/20 [HC0[0]:SC1[1]:HE0:SE0] takes:
-ffff888134d11310 (&xa->xa_lock#12){+.?.}-{2:2}, at: rxe_pool_get_index+0x1=
-9/0x69
-{SOFTIRQ-ON-W} state was registered at:
-  mark_usage+0x169/0x17b
-  __lock_acquire+0x50c/0x96a
-  lock_acquire+0x2f4/0x37b
-  _raw_spin_lock+0x2f/0x39
-  xa_alloc_cyclic.constprop.0+0x20/0x55
-  __rxe_add_to_pool+0xe3/0xf2
-  __ib_alloc_pd+0xa2/0x26b
-  ib_mad_port_open+0x1ac/0x4a1
-  ib_mad_init_device+0x9b/0x1b9
-  add_client_context+0x133/0x1b3
-  enable_device_and_get+0x129/0x248
-  ib_register_device+0x256/0x2fd
-  rxe_register_device+0x18e/0x1b7
-  rxe_net_add+0x57/0x71
-  rxe_newlink+0x71/0x8e
-  nldev_newlink+0x200/0x26a
-  rdma_nl_rcv_msg+0x260/0x2ab
-  rdma_nl_rcv+0x108/0x1a7
-  netlink_unicast+0x1fc/0x2b3
-  netlink_sendmsg+0x4ce/0x51b
-  sock_sendmsg_nosec+0x41/0x4f
-  __sys_sendto+0x157/0x1cc
-  __x64_sys_sendto+0x76/0x82
-  do_syscall_64+0x39/0x46
-  entry_SYSCALL_64_after_hwframe+0x44/0xae
-irq event stamp: 194111
-hardirqs last  enabled at (194110): [<ffffffff81094eb2>] __local_bh_enable=
-_ip+0xb8/0xcc
-hardirqs last disabled at (194111): [<ffffffff82040077>] _raw_spin_lock_ir=
-qsave+0x1b/0x51
-softirqs last  enabled at (194100): [<ffffffff8240043a>] __do_softirq+0x43=
-a/0x489
-softirqs last disabled at (194105): [<ffffffff81094d30>] run_ksoftirqd+0x3=
-1/0x56
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&xa->xa_lock#12);
-  <Interrupt>
-    lock(&xa->xa_lock#12);
-
- *** DEADLOCK ***
-
-no locks held by ksoftirqd/1/20.
-
-stack backtrace:
-CPU: 1 PID: 20 Comm: ksoftirqd/1 Not tainted 5.18.0-rc6-build2+ #465
-Hardware name: ASUS All Series/H97-PLUS, BIOS 2306 10/09/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x45/0x59
- valid_state+0x56/0x61
- mark_lock_irq+0x9b/0x2ec
- ? ret_from_fork+0x1f/0x30
- ? valid_state+0x61/0x61
- ? stack_trace_save+0x8f/0xbe
- ? filter_irq_stacks+0x58/0x58
- ? jhash.constprop.0+0x1ad/0x202
- ? save_trace+0x17c/0x196
- mark_lock.part.0+0x10c/0x164
- mark_usage+0xe6/0x17b
- __lock_acquire+0x50c/0x96a
- lock_acquire+0x2f4/0x37b
- ? rxe_pool_get_index+0x19/0x69
- ? rcu_read_unlock+0x52/0x52
- ? jhash.constprop.0+0x1ad/0x202
- ? lockdep_unlock+0xde/0xe6
- ? validate_chain+0x44a/0x4a8
- ? req_next_wqe+0x312/0x363
- _raw_spin_lock_irqsave+0x41/0x51
- ? rxe_pool_get_index+0x19/0x69
- rxe_pool_get_index+0x19/0x69
- rxe_get_av+0xbe/0x14b
- rxe_requester+0x6b5/0xbb0
- ? rnr_nak_timer+0x16/0x16
- ? lock_downgrade+0xad/0xad
- ? rcu_read_lock_bh_held+0xab/0xab
- ? __wake_up+0xf/0xf
- ? mark_held_locks+0x1f/0x78
- ? __local_bh_enable_ip+0xb8/0xcc
- ? rnr_nak_timer+0x16/0x16
- rxe_do_task+0xb5/0x13d
- ? rxe_detach_mcast+0x1d6/0x1d6
- tasklet_action_common.constprop.0+0xda/0x145
- __do_softirq+0x202/0x489
- ? __irq_exit_rcu+0x108/0x108
- ? _local_bh_enable+0x1c/0x1c
- run_ksoftirqd+0x31/0x56
- smpboot_thread_fn+0x35c/0x376
- ? sort_range+0x1c/0x1c
- kthread+0x164/0x173
- ? kthread_complete_and_exit+0x20/0x20
- ret_from_fork+0x1f/0x30
- </TASK>
-CIFS: VFS: RDMA transport established
-
+> >
+> >
+> >
+> >>>
+> >>>>
+> >>>> Bob
+> >>>>>
+> >>>>> Thanks.
+> >>>>>
+> >>>>>
+> >>>>>> +
+> >>>>>> +       /* Fence see IBA 10.8.3.3
+> >>>>>> +        * Requires that all previous read and atomic operations
+> >>>>>> +        * are complete.
+> >>>>>> +        */
+> >>>>>> +       return atomic_read(&qp->req.rd_atomic) != qp->attr.max_rd_atomic;
+> >>>>>> +}
+> >>>>>> +
+> >>>>>>  static int next_opcode_rc(struct rxe_qp *qp, u32 opcode, int fits)
+> >>>>>>  {
+> >>>>>>         switch (opcode) {
+> >>>>>> @@ -636,6 +661,11 @@ int rxe_requester(void *arg)
+> >>>>>>         if (unlikely(!wqe))
+> >>>>>>                 goto exit;
+> >>>>>>
+> >>>>>> +       if (rxe_wqe_is_fenced(qp, wqe)) {
+> >>>>>> +               qp->req.wait_fence = 1;
+> >>>>>> +               goto exit;
+> >>>>>> +       }
+> >>>>>> +
+> >>>>>>         if (wqe->mask & WR_LOCAL_OP_MASK) {
+> >>>>>>                 ret = rxe_do_local_ops(qp, wqe);
+> >>>>>>                 if (unlikely(ret))
+> >>>>>>
+> >>>>>> base-commit: c5eb0a61238dd6faf37f58c9ce61c9980aaffd7a
+> >>>>>> --
+> >>>>>> 2.34.1
+> >>>>>>
+> >>>>
+> >>
+>
