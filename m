@@ -2,68 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6399B5362EB
-	for <lists+linux-rdma@lfdr.de>; Fri, 27 May 2022 14:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B4D7536301
+	for <lists+linux-rdma@lfdr.de>; Fri, 27 May 2022 14:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352963AbiE0Moo (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 27 May 2022 08:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59490 "EHLO
+        id S240235AbiE0Mwh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 27 May 2022 08:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353214AbiE0MoX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 May 2022 08:44:23 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7980141F8F
-        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 05:42:44 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id j6so4742023qkp.9
-        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 05:42:44 -0700 (PDT)
+        with ESMTP id S1345453AbiE0Mwd (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 27 May 2022 08:52:33 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2537322288
+        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 05:52:33 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id x7so5240296qta.6
+        for <linux-rdma@vger.kernel.org>; Fri, 27 May 2022 05:52:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=QEFQvdnc1igsNXj4rOyzPFfHqQwBiqjxQbcN3hjdtJ4=;
-        b=SHZqpLNdIG5/yK9rYAfN5L1onm2YYpB3cSMWQwV7Fjnm1Ss5K60Ra0JglCh/KuLbXt
-         7Fb8Wa2ZCwwWlKnX1HtkGa0Ggq2urUZxR5C4loWZIUfiIwiUzG1c0uOEZ4EvUn9RRZBK
-         8tSxnGacae5aVGswBwGNEESn8KXRoVKzwLICaiqHD4uVs1yZU5vfy8PaL+G2tNUqgXv7
-         Wl6s/xIWHXMW+OLdROIEjyYo3Wx0OcBZtmqFV6G4oX//EXdl57rH70lS+82/rMA/wikr
-         rjFmJHJcNOtcHx6m3ZdqEEmYcgWAE1nyWVCexs1cPxWB83lUH6zUWD36wwu4bZdtSOnU
-         o7KA==
+        bh=DZg9xbU9yxm1xo3qkZ8efM5ifvw3Vhad1pHzBVlG+v4=;
+        b=c8rxJq9OvPEKNxx0OsdTOP5PeIHfaLQkyOrsfMAukNcx3KdZBfPHq4EHCd3GzT7EkG
+         rfDaKsshKLY4QF8JNCF6rIHWwDn0keL+VmJ6HQeSnw6AUBOvRIetbCSF+G1EM2xMQLQ5
+         GoERoG81+Qb9c4okmPjnZIsYQQb7ULxkg/2myXfNNp8dkb19UZc4gUfYy9urR88FDNBT
+         CjrK29poJXql55I3ofCKqznBn9m752tBucxlkIkers0jEoS1gCC7sUXsMfE/nnMHfY+V
+         0cnGGKfVSN+z5yYAE8p3CO+3bD5XjsJKsrdEh9EoNZr+Fp7OA+hbozFXjD4RJ1tToij/
+         8TqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=QEFQvdnc1igsNXj4rOyzPFfHqQwBiqjxQbcN3hjdtJ4=;
-        b=IVA44PxQV2jZ8ZmvttSVdAQACv+6HlT7Bv2mA24Cm7j8Y0RekppzLhI4bCmXkcZq9G
-         yCVXLyXSeEIWZwBIHDtaAAg4mJy/Z1aAmeEyUpaiyd4V2JLoOdVesJ/88VTohOQ12p8x
-         nLvfVEx9zmmZKl7BXO7YBVLK+CWu2Rt+knwYXpso3FKVIAoR023DzTqoUc8/EMooIZZK
-         6ko0Knb8zmyelsMuDZYJA7LDyVP8GVhnoTd8HrR6BVQ0TF7HGt2l+wjit19NljIHMRWC
-         qkaKbacUgQogDeHjnhCES+41JZWe27dRC1qqerWTbcCBsqjKhfqPpsYQAp8ckRdsgm3/
-         kKtw==
-X-Gm-Message-State: AOAM5308NNDA4o/6iucTX3V28fsb66UaUFUnydEq9zfHBbVETQXXDqTp
-        Ww/Qwpl1NoE1SRo3sJVGpbjTmmelyPdj4w==
-X-Google-Smtp-Source: ABdhPJwdFGfRKGRt0AAUzgyyrIs9u/hwTQoLNcPEpW/HewSI8VjBvW9IX3jF0NVoBsH/xVTPznBSvQ==
-X-Received: by 2002:a05:620a:4102:b0:6a3:5f1c:f9d3 with SMTP id j2-20020a05620a410200b006a35f1cf9d3mr22706727qko.672.1653655363589;
-        Fri, 27 May 2022 05:42:43 -0700 (PDT)
+        bh=DZg9xbU9yxm1xo3qkZ8efM5ifvw3Vhad1pHzBVlG+v4=;
+        b=O7D3Q+Bbr3DcMxWzEJip4DR3MrwIVPhKgh1eBIKyTjLxaDD6x68gicDWmLFRoD8Yv7
+         m8sPrcdfgNVz4DWasM1GD66gXdGqegZr1KlTk+hqgvvvRhsavLvnrAi9vZkZYRjt8fkF
+         q8px1G+HiSmIKriZ1ovBmAhtDk6G9MLlmUGdKMJZCvT/u4kbEK6w0PCkWIPVvxKM11sH
+         d/JcVpv3OSfaLkkL8eZ8mFgxcjpwteDWtSNRnW8BAtZsUSodyVfn9eBKcsxolKBS89Lx
+         xkXoZkXwFhEE/JUPlWAYG2h60v3qLBQAFYJ5aTOycDxu+5riVG9oq1FskFoMrK8Kfrzl
+         wruA==
+X-Gm-Message-State: AOAM533C5BxLHEfxKoQ6EqXeMkqx0zdqcVy76mexiXLZSc8b9i1B9PcQ
+        RUrcnL3fpdSPTcwmToeVyAW9ng==
+X-Google-Smtp-Source: ABdhPJy9KUyIkr0thNdUR4pH5z2yU7qc34AvvkaLcG+UoNOzPuO+lRTxBz4xqGYInakIxnK5+bG0GQ==
+X-Received: by 2002:a05:622a:1455:b0:2f9:3278:e95c with SMTP id v21-20020a05622a145500b002f93278e95cmr21944422qtx.297.1653655951920;
+        Fri, 27 May 2022 05:52:31 -0700 (PDT)
 Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id l18-20020a05622a051200b002f939be4868sm2505431qtx.19.2022.05.27.05.42.41
+        by smtp.gmail.com with ESMTPSA id h18-20020ac846d2000000b002fbf0114477sm2473601qto.3.2022.05.27.05.52.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 May 2022 05:42:42 -0700 (PDT)
+        Fri, 27 May 2022 05:52:31 -0700 (PDT)
 Received: from jgg by mlx with local (Exim 4.94)
         (envelope-from <jgg@ziepe.ca>)
-        id 1nuZIe-00DTLG-GI; Fri, 27 May 2022 09:42:40 -0300
-Date:   Fri, 27 May 2022 09:42:40 -0300
+        id 1nuZS9-00DTV9-86; Fri, 27 May 2022 09:52:29 -0300
+Date:   Fri, 27 May 2022 09:52:29 -0300
 From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     Zhu Yanjun <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "Hack, Jenny (Ft. Collins)" <jhack@hpe.com>,
-        Frank Zago <frank.zago@hpe.com>
-Subject: Re: [RFC] Alternative design for fast register physical memory
-Message-ID: <20220527124240.GB2960187@ziepe.ca>
-References: <78918262-6060-546b-134d-2d29bbefb349@gmail.com>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, Yi Zhang <yi.zhang@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>
+Subject: Re: [bug report] WARNING: possible circular locking at:
+ rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
+Message-ID: <20220527125229.GC2960187@ziepe.ca>
+References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
+ <13441b9b-cc13-f0e0-bd46-f14983dadd49@grimberg.me>
+ <4f15039a-eae1-ff69-791c-1aeda1d693df@acm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <78918262-6060-546b-134d-2d29bbefb349@gmail.com>
+In-Reply-To: <4f15039a-eae1-ff69-791c-1aeda1d693df@acm.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -74,57 +76,22 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 24, 2022 at 05:28:00PM -0500, Bob Pearson wrote:
-
-> We have a work around by fencing all the local operations which more
-> or less works but will have bad performance.  The maps used in FMRs
-> have fairly short lifetimes but definitely longer than we we can
-> support today. I am trying to work out the semantics of everything.
-
-IBTA specifies the fence requirements, I thought we decided RXE or
-maybe even lustre wasn't following the spec?
-
-> To make this all recoverable in the face of errors let there be more
-> than one map present for an FMR indexed by the key portion of the
-> l/rkeys.
-
-Real HW doesn't have more than one map, this seems like the wrong
-direction.
-
-As we discussed, there is something wrong with how rxe is processing
-its queues, it isn't following IBTA define behaviors in the
-exceptional cases.
-
+On Wed, May 25, 2022 at 08:50:52PM +0200, Bart Van Assche wrote:
+> On 5/25/22 13:01, Sagi Grimberg wrote:
+> > iirc this was reported before, based on my analysis lockdep is giving
+> > a false alarm here. The reason is that the id_priv->handler_mutex cannot
+> > be the same for both cm_id that is handling the connect and the cm_id
+> > that is handling the rdma_destroy_id because rdma_destroy_id call
+> > is always called on a already disconnected cm_id, so this deadlock
+> > lockdep is complaining about cannot happen.
+> > 
+> > I'm not sure how to settle this.
 > 
-> Alternative view of FMRs:
-> 
-> verb: ib_alloc_mr(pd, max_num_sg)			- create an empty MR object with no maps
-> 							  with l/rkey = [index, key] with index
-> 							  fixed and key some initial value.
-> 
-> verb: ib_update_fast_reg_key(mr, newkey)		- update key portion of l/rkey
-> 
-> verb: ib_map_mr_sg(mr, sg, sg_nents, sg_offset)		- create a new map from allocated memory
-> 							  or by re-using an INVALID map. Maps are
-> 							  all the same size (max_num_sg). The
-> 							  key (index) of this map is the current
-> 							  key from l/rkey. The initial state of
-> 							  the map is FREE. (and thus not usable
-> 							  until a REG_MR work request is used.)
+> If the above is correct, using lockdep_register_key() for
+> id_priv->handler_mutex instead of a static key should make the lockdep false
+> positive disappear.
 
-More than one map is nonsense, real HW has a single map, a MR object is that
-single map.
-
-> This is an improvement over the current state. At the moment we have
-> only two maps one for making new ones and one for doing IO. There is
-> no room to back up but at the moment the retry logic assumes that
-> you can which is false. This can be fixed easily by forcing all
-> local operations to be fenced which is what we are doing at the
-> moment at HPE. This can insert long delays between every new FMR
-> instance.  By allowing three maps and then fencing we can back up
-> one broken IO operation without too much of a delay.
-
-IMHO you need to go back to one map and fix the queue processing
-logic to be spec compliant.
+That only works if you can detect actual different lock classes during
+lock creation. It doesn't seem applicable in this case.
 
 Jason
