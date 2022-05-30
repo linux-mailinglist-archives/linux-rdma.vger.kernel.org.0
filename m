@@ -2,35 +2,35 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2123B538232
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 May 2022 16:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9AB53822F
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 May 2022 16:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237728AbiE3OWU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 May 2022 10:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
+        id S237620AbiE3OWS (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 May 2022 10:22:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241360AbiE3ORc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 May 2022 10:17:32 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A11C8FD73;
-        Mon, 30 May 2022 06:45:38 -0700 (PDT)
+        with ESMTP id S241920AbiE3OSL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 May 2022 10:18:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2D449CCBB;
+        Mon, 30 May 2022 06:48:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B13E2B80D6B;
-        Mon, 30 May 2022 13:45:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBF7C3411E;
-        Mon, 30 May 2022 13:45:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 4852861024;
+        Mon, 30 May 2022 13:48:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54AB6C36AEA;
+        Mon, 30 May 2022 13:48:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653918335;
-        bh=q6aShHAJlQVWsk/gq5NTtcTJbslhzhx3oIcuqoqOWFQ=;
+        s=k20201202; t=1653918496;
+        bh=Gr+Vw9+XXHKPKIAm54nUK/J4qufutb1HXkatbHy3PKE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gC/l4dDkWuWF1S/HhVpH0kqTOgHBvzxgpvcsXJjH9rYPnOMyqRivKaGmpOiLCcUyT
-         6PXkgAY/FYrWx+Yifuioxsk89I8w9Xnr6sGVsodU8NrOj6rWYICoysEnve4baJZ8Ca
-         LrSZwqTYjolZJZiO7kFyLUJM/dms7YFkid/JFflcIL+KwXiXn77IkItoveKYZquJMC
-         MJ9bsqo+q3fD1adnvY4zxuFDyO3WhQRf51zTqp5w8H/orxU4Z4ArwSWW9ss8XTgDjV
-         5e04v5jdXMr1rP6TKt/DaMtS/eN83uqrmHJmW6xrSQTu5l9LrRgbakUIARgw0ZDoW0
-         4y7OUtkIe5mIA==
+        b=Y7tOju2OJq2c5lCWGO+m1B0YN/S6gujOxlAUrKualLw3FDGPTL7OeYa5gIbzLv0W1
+         aHh44d4pUTRcQvpzKjrQYVOzilUI5fbu74z5YjmYXex57g5CICVhpbyL/QBdzygabg
+         8ULcpknW64QCyul7tpIeHrL8vzJ7ndroemqNRr6eBSGmdWF9vE4dGJ26gxsV39RwKz
+         T8Uqpkvb2wpJdF7uR+DzEx6/TuNw1XIUrIYwvujGVIv3YFGYx/r91fzjbbUQW+4OcR
+         JzbxskWyM66Kpb/L4pnLi2C9IcQBkUBqgkLleNuJYuuHZR0tA1NFE5ocvfQgZwEuxh
+         duAeVuCBsU5ag==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Mark Bloch <mbloch@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>,
@@ -38,12 +38,12 @@ Cc:     Mark Bloch <mbloch@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
         netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 39/76] net/mlx5: fs, delete the FTE when there are no rules attached to it
-Date:   Mon, 30 May 2022 09:43:29 -0400
-Message-Id: <20220530134406.1934928-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 28/55] net/mlx5: fs, delete the FTE when there are no rules attached to it
+Date:   Mon, 30 May 2022 09:46:34 -0400
+Message-Id: <20220530134701.1935933-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
-References: <20220530134406.1934928-1-sashal@kernel.org>
+In-Reply-To: <20220530134701.1935933-1-sashal@kernel.org>
+References: <20220530134701.1935933-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -77,10 +77,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 55772f0cbbf8..15472fb15d7d 100644
+index 5baf2c666d29..8c8b68e7abb4 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -2024,16 +2024,16 @@ void mlx5_del_flow_rules(struct mlx5_flow_handle *handle)
+@@ -1937,16 +1937,16 @@ void mlx5_del_flow_rules(struct mlx5_flow_handle *handle)
  	down_write_ref_node(&fte->node, false);
  	for (i = handle->num_rules - 1; i >= 0; i--)
  		tree_remove_node(&handle->rule[i]->node, true);
