@@ -2,45 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19F6C537D94
-	for <lists+linux-rdma@lfdr.de>; Mon, 30 May 2022 15:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953CC537D72
+	for <lists+linux-rdma@lfdr.de>; Mon, 30 May 2022 15:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237217AbiE3Ned (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 30 May 2022 09:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S234162AbiE3Nh3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 30 May 2022 09:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237188AbiE3NdA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 May 2022 09:33:00 -0400
+        with ESMTP id S237554AbiE3Nf2 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 30 May 2022 09:35:28 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C869155D;
-        Mon, 30 May 2022 06:27:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38334939A3;
+        Mon, 30 May 2022 06:28:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id B5B2960DD4;
-        Mon, 30 May 2022 13:27:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C58C3411F;
-        Mon, 30 May 2022 13:27:51 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C6D7460DD4;
+        Mon, 30 May 2022 13:28:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC635C385B8;
+        Mon, 30 May 2022 13:28:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653917273;
-        bh=KIXhqxSYoKrP4kKBC0eYCNhdJSzSYEi5MBaoOve82dc=;
+        s=k20201202; t=1653917308;
+        bh=HQF46pET341uvIM6dclJ+MRdmoa7RzWaMYRR/mwcVOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lu9zQ1cErMXXhQSXGvlEFyb+HENqITeeo+9M/cOxbvAegGTTMquh4OI5bEWGmX03x
-         41kvakt0o7t6oIFaJ7UxctpehUcRrLYJIQWZN297TRNMvzj2+125ZXJbBMSu1prf6r
-         zRQt+SZO+5vlAjm6tkqYaTvTH28bFU64xG+bUIhA+N68wKsgyS8rSZOhujGRC5eKk7
-         z4zN+8pT9h3S/CLgVXqsp1w3rJbD+/kQhlpA9Gc2zq3YUq+xk1nXaSFDU4wJWfTa2y
-         G/zmrMsj4dewb35Y7IP5x+EWdU4p9ooeMff6C893qIAWaHBT1FguVqqdp9ykbRYLrK
-         c+IoimIEwuf7Q==
+        b=IqxGvW94lUrmk6erj8b1q6sR1tTKbhMxJitgLvVPUfkfiQg2dS2vwVsJEGtQCXmwQ
+         1C8txWGl1Ff9T+fFyqK9EW6BPCcGCNN0/0YQO2AYxC/R8sJAWIHO243m+O0xtFnmA8
+         xGM41Nk716ythmzVsMM7AzufIMSVrAPoU6B0JkXeBzpCjTeh8icwj0t9SGq0iTjWBL
+         xXNRVSA5xgl2vJAF4k/h6SJKM++xCGR/gUj6ghJbAcx1atpRm4uFZbtX4xBOFHnSeE
+         IMIgoZGwR+wl3Gn4mVZ4kcfV7KqmY2evr3lKMmORTUz87cN+IJ8R3ug5/nhc+W1Ffc
+         SnSWB1ifT68GA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mark Bloch <mbloch@nvidia.com>, Maor Gottlieb <maorg@nvidia.com>,
+Cc:     Gavin Li <gavinl@nvidia.com>, Moshe Shemesh <moshe@nvidia.com>,
+        Shay Drory <shayd@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, davem@davemloft.net,
         edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 077/159] net/mlx5: fs, delete the FTE when there are no rules attached to it
-Date:   Mon, 30 May 2022 09:23:02 -0400
-Message-Id: <20220530132425.1929512-77-sashal@kernel.org>
+        amirtz@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 090/159] net/mlx5: Increase FW pre-init timeout for health recovery
+Date:   Mon, 30 May 2022 09:23:15 -0400
+Message-Id: <20220530132425.1929512-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220530132425.1929512-1-sashal@kernel.org>
 References: <20220530132425.1929512-1-sashal@kernel.org>
@@ -58,50 +60,196 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Mark Bloch <mbloch@nvidia.com>
+From: Gavin Li <gavinl@nvidia.com>
 
-[ Upstream commit 7b0c6338597613f465d131bd939a51844a00455a ]
+[ Upstream commit 37ca95e62ee23fa6d2c2c64e3dc40b4a0c0146dc ]
 
-When an FTE has no children is means all the rules where removed
-and the FTE can be deleted regardless of the dests_size value.
-While dests_size should be 0 when there are no children
-be extra careful not to leak memory or get firmware syndrome
-if the proper bookkeeping of dests_size wasn't done.
+Currently, health recovery will reload driver to recover it from fatal
+errors. During the driver's load process, it would wait for FW to set the
+pre-init bit for up to 120 seconds, beyond this threshold it would abort
+the load process. In some cases, such as a FW upgrade on the DPU, this
+timeout period is insufficient, and the user has no way to recover the
+host device.
 
-Signed-off-by: Mark Bloch <mbloch@nvidia.com>
-Reviewed-by: Maor Gottlieb <maorg@nvidia.com>
+To solve this issue, introduce a new FW pre-init timeout for health
+recovery, which is set to 2 hours.
+
+The timeout for devlink reload and probe will use the original one because
+they are user triggered flows, and therefore should not have a
+significantly long timeout, during which the user command would hang.
+
+Signed-off-by: Gavin Li <gavinl@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Reviewed-by: Shay Drory <shayd@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |  4 ++--
+ .../ethernet/mellanox/mlx5/core/fw_reset.c    |  2 +-
+ .../ethernet/mellanox/mlx5/core/lib/tout.c    |  1 +
+ .../ethernet/mellanox/mlx5/core/lib/tout.h    |  1 +
+ .../net/ethernet/mellanox/mlx5/core/main.c    | 23 +++++++++++--------
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  2 +-
+ 6 files changed, 20 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-index 3ad67e6b5586..89ba72e8d109 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/fs_core.c
-@@ -2071,16 +2071,16 @@ void mlx5_del_flow_rules(struct mlx5_flow_handle *handle)
- 	down_write_ref_node(&fte->node, false);
- 	for (i = handle->num_rules - 1; i >= 0; i--)
- 		tree_remove_node(&handle->rule[i]->node, true);
--	if (fte->dests_size) {
--		if (fte->modify_mask)
--			modify_fte(fte);
--		up_write_ref_node(&fte->node, false);
--	} else if (list_empty(&fte->node.children)) {
-+	if (list_empty(&fte->node.children)) {
- 		del_hw_fte(&fte->node);
- 		/* Avoid double call to del_hw_fte */
- 		fte->node.del_hw_func = NULL;
- 		up_write_ref_node(&fte->node, false);
- 		tree_put_node(&fte->node, false);
-+	} else if (fte->dests_size) {
-+		if (fte->modify_mask)
-+			modify_fte(fte);
-+		up_write_ref_node(&fte->node, false);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+index 057dde6f4417..9401127fb0ec 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/devlink.c
+@@ -178,13 +178,13 @@ static int mlx5_devlink_reload_up(struct devlink *devlink, enum devlink_reload_a
+ 	*actions_performed = BIT(action);
+ 	switch (action) {
+ 	case DEVLINK_RELOAD_ACTION_DRIVER_REINIT:
+-		return mlx5_load_one(dev);
++		return mlx5_load_one(dev, false);
+ 	case DEVLINK_RELOAD_ACTION_FW_ACTIVATE:
+ 		if (limit == DEVLINK_RELOAD_LIMIT_NO_RESET)
+ 			break;
+ 		/* On fw_activate action, also driver is reloaded and reinit performed */
+ 		*actions_performed |= BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT);
+-		return mlx5_load_one(dev);
++		return mlx5_load_one(dev, false);
+ 	default:
+ 		/* Unsupported action should not get to this function */
+ 		WARN_ON(1);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+index 81eb67fb95b0..052af4901c0b 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/fw_reset.c
+@@ -149,7 +149,7 @@ static void mlx5_fw_reset_complete_reload(struct mlx5_core_dev *dev)
+ 	if (test_bit(MLX5_FW_RESET_FLAGS_PENDING_COMP, &fw_reset->reset_flags)) {
+ 		complete(&fw_reset->done);
  	} else {
- 		up_write_ref_node(&fte->node, false);
+-		mlx5_load_one(dev);
++		mlx5_load_one(dev, false);
+ 		devlink_remote_reload_actions_performed(priv_to_devlink(dev), 0,
+ 							BIT(DEVLINK_RELOAD_ACTION_DRIVER_REINIT) |
+ 							BIT(DEVLINK_RELOAD_ACTION_FW_ACTIVATE));
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.c b/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.c
+index c1df0d3595d8..d758848d34d0 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.c
+@@ -10,6 +10,7 @@ struct mlx5_timeouts {
+ 
+ static const u32 tout_def_sw_val[MAX_TIMEOUT_TYPES] = {
+ 	[MLX5_TO_FW_PRE_INIT_TIMEOUT_MS] = 120000,
++	[MLX5_TO_FW_PRE_INIT_ON_RECOVERY_TIMEOUT_MS] = 7200000,
+ 	[MLX5_TO_FW_PRE_INIT_WARN_MESSAGE_INTERVAL_MS] = 20000,
+ 	[MLX5_TO_FW_PRE_INIT_WAIT_MS] = 2,
+ 	[MLX5_TO_FW_INIT_MS] = 2000,
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.h b/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.h
+index 1c42ead782fa..257c03eeab36 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/lib/tout.h
+@@ -7,6 +7,7 @@
+ enum mlx5_timeouts_types {
+ 	/* pre init timeouts (not read from FW) */
+ 	MLX5_TO_FW_PRE_INIT_TIMEOUT_MS,
++	MLX5_TO_FW_PRE_INIT_ON_RECOVERY_TIMEOUT_MS,
+ 	MLX5_TO_FW_PRE_INIT_WARN_MESSAGE_INTERVAL_MS,
+ 	MLX5_TO_FW_PRE_INIT_WAIT_MS,
+ 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/main.c b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+index ef196cb764e2..8b5263699994 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/main.c
+@@ -1014,7 +1014,7 @@ static void mlx5_cleanup_once(struct mlx5_core_dev *dev)
+ 	mlx5_devcom_unregister_device(dev->priv.devcom);
+ }
+ 
+-static int mlx5_function_setup(struct mlx5_core_dev *dev, bool boot)
++static int mlx5_function_setup(struct mlx5_core_dev *dev, u64 timeout)
+ {
+ 	int err;
+ 
+@@ -1029,11 +1029,11 @@ static int mlx5_function_setup(struct mlx5_core_dev *dev, bool boot)
+ 
+ 	/* wait for firmware to accept initialization segments configurations
+ 	 */
+-	err = wait_fw_init(dev, mlx5_tout_ms(dev, FW_PRE_INIT_TIMEOUT),
++	err = wait_fw_init(dev, timeout,
+ 			   mlx5_tout_ms(dev, FW_PRE_INIT_WARN_MESSAGE_INTERVAL));
+ 	if (err) {
+ 		mlx5_core_err(dev, "Firmware over %llu MS in pre-initializing state, aborting\n",
+-			      mlx5_tout_ms(dev, FW_PRE_INIT_TIMEOUT));
++			      timeout);
+ 		return err;
  	}
+ 
+@@ -1296,7 +1296,7 @@ int mlx5_init_one(struct mlx5_core_dev *dev)
+ 	mutex_lock(&dev->intf_state_mutex);
+ 	dev->state = MLX5_DEVICE_STATE_UP;
+ 
+-	err = mlx5_function_setup(dev, true);
++	err = mlx5_function_setup(dev, mlx5_tout_ms(dev, FW_PRE_INIT_TIMEOUT));
+ 	if (err)
+ 		goto err_function;
+ 
+@@ -1360,9 +1360,10 @@ void mlx5_uninit_one(struct mlx5_core_dev *dev)
+ 	mutex_unlock(&dev->intf_state_mutex);
+ }
+ 
+-int mlx5_load_one(struct mlx5_core_dev *dev)
++int mlx5_load_one(struct mlx5_core_dev *dev, bool recovery)
+ {
+ 	int err = 0;
++	u64 timeout;
+ 
+ 	mutex_lock(&dev->intf_state_mutex);
+ 	if (test_bit(MLX5_INTERFACE_STATE_UP, &dev->intf_state)) {
+@@ -1372,7 +1373,11 @@ int mlx5_load_one(struct mlx5_core_dev *dev)
+ 	/* remove any previous indication of internal error */
+ 	dev->state = MLX5_DEVICE_STATE_UP;
+ 
+-	err = mlx5_function_setup(dev, false);
++	if (recovery)
++		timeout = mlx5_tout_ms(dev, FW_PRE_INIT_ON_RECOVERY_TIMEOUT);
++	else
++		timeout = mlx5_tout_ms(dev, FW_PRE_INIT_TIMEOUT);
++	err = mlx5_function_setup(dev, timeout);
+ 	if (err)
+ 		goto err_function;
+ 
+@@ -1746,7 +1751,7 @@ static void mlx5_pci_resume(struct pci_dev *pdev)
+ 
+ 	mlx5_pci_trace(dev, "Enter, loading driver..\n");
+ 
+-	err = mlx5_load_one(dev);
++	err = mlx5_load_one(dev, false);
+ 
+ 	mlx5_pci_trace(dev, "Done, err = %d, device %s\n", err,
+ 		       !err ? "recovered" : "Failed");
+@@ -1833,7 +1838,7 @@ static int mlx5_resume(struct pci_dev *pdev)
+ {
+ 	struct mlx5_core_dev *dev = pci_get_drvdata(pdev);
+ 
+-	return mlx5_load_one(dev);
++	return mlx5_load_one(dev, false);
+ }
+ 
+ static const struct pci_device_id mlx5_core_pci_table[] = {
+@@ -1878,7 +1883,7 @@ int mlx5_recover_device(struct mlx5_core_dev *dev)
+ 			return -EIO;
+ 	}
+ 
+-	return mlx5_load_one(dev);
++	return mlx5_load_one(dev, true);
+ }
+ 
+ static struct pci_driver mlx5_core_driver = {
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+index a9b2d6ead542..9026be1d6223 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/mlx5_core.h
+@@ -290,7 +290,7 @@ void mlx5_mdev_uninit(struct mlx5_core_dev *dev);
+ int mlx5_init_one(struct mlx5_core_dev *dev);
+ void mlx5_uninit_one(struct mlx5_core_dev *dev);
+ void mlx5_unload_one(struct mlx5_core_dev *dev);
+-int mlx5_load_one(struct mlx5_core_dev *dev);
++int mlx5_load_one(struct mlx5_core_dev *dev, bool recovery);
+ 
+ int mlx5_vport_get_other_func_cap(struct mlx5_core_dev *dev, u16 function_id, void *out);
+ 
 -- 
 2.35.1
 
