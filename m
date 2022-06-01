@@ -2,76 +2,51 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCEA153A562
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 14:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28D553A63B
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 15:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244755AbiFAMqD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 08:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
+        id S1344512AbiFANw0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 09:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353086AbiFAMqC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 08:46:02 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1B16FA00
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 05:45:58 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id i19so1318644qvu.13
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 05:45:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ooKzx/PLlUEW72sZZpr/gukQbTFbGyWj7z70NcgCmqc=;
-        b=Hx2H33dnMryRuImn0cIZ4YekbwxEr8xim03iBeXhLVGjtl0dJoAKJbiCI1iAcKyUdv
-         aSPg/u2lO8izkzLncqgnp0h0RukjDQCG/OxC2K8/zSR42HQGRG53EimW/DOGwvahk9pb
-         HJqWQXaMvDWWnhWJiAoT6Uyx/11erTKfP/Td00oSFbUdd6z3WFMD/zraMSOD4MiKsW3v
-         vNDkgZq+IOKoy78PsrBrOa5/q2XMVa/7Tyr6bI770omEa5oLkc024pWIWtrVueOGj3ID
-         9fBo4etNd1VVVF55WxKsgC0ErddNWTSQqn+rhddlzzdFAzK6HZEUbpzKOa4bmHnWwVrN
-         UKQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ooKzx/PLlUEW72sZZpr/gukQbTFbGyWj7z70NcgCmqc=;
-        b=nZb/cCmZ4CFwTIrQd3A/aBy7BpSQtcPNrDzw3yu8A4IVVwKeXSnkpIpyIRYTrFiAVB
-         NW9CJ5Cl8YWUtfVIpppQYFAcRjKu5djSDD1dUAjIz/ttgJGNHAV0QX+VmrgRvjS4tTjR
-         9vKJ7FdwPc57p2wMpwydk4U+chPOhuoHFQE3Q+uLhamI0/cI99OY8zHb/OMpR4o0kg8U
-         BfwyrLI1ONwbiT81fnLGFMXNF5Ye9UTTVTIwzaNkUitFptklsf9YzdznCYXpsiqlsiXb
-         EqYH39znMC7taRXXm41AnHzJZbVHI62yYMRV9agXDbWekIRuqRTKKdGvIrxk7RkhzZ2S
-         UQQw==
-X-Gm-Message-State: AOAM531mS5mNEA+U8Vh5gjL4C6atr5/bAXtVlnYtGWP30cIIBOxDDJk5
-        8DtvKZydCYRbfNFS73KvKk361Q==
-X-Google-Smtp-Source: ABdhPJxgU0qcGAEEkwWzfSnGIhQHNGRbgJDA6ZV8b6pnQlzFtVryOsxZpk531dBvIja/tM1r8AEOUw==
-X-Received: by 2002:a05:6214:2245:b0:464:6b29:f443 with SMTP id c5-20020a056214224500b004646b29f443mr2914412qvc.99.1654087558029;
-        Wed, 01 Jun 2022 05:45:58 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id l22-20020a05620a28d600b006a5bc8e956esm1166173qkp.133.2022.06.01.05.45.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 Jun 2022 05:45:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1nwNjY-00G0Au-AK; Wed, 01 Jun 2022 09:45:56 -0300
-Date:   Wed, 1 Jun 2022 09:45:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     Sagi Grimberg <sagi@grimberg.me>, Yi Zhang <yi.zhang@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>
-Subject: Re: [bug report] WARNING: possible circular locking at:
- rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
-Message-ID: <20220601124556.GI2960187@ziepe.ca>
-References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
- <13441b9b-cc13-f0e0-bd46-f14983dadd49@grimberg.me>
- <4f15039a-eae1-ff69-791c-1aeda1d693df@acm.org>
- <20220527125229.GC2960187@ziepe.ca>
- <4d65a168-c701-6ffa-45b9-858ddcabbbda@acm.org>
- <20220531123544.GH2960187@ziepe.ca>
- <355f1926-9a0d-f65e-d604-6b452fa987e9@acm.org>
+        with ESMTP id S1353361AbiFANwX (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 09:52:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58D03136B;
+        Wed,  1 Jun 2022 06:52:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6884DB81ADA;
+        Wed,  1 Jun 2022 13:52:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B69DC385A5;
+        Wed,  1 Jun 2022 13:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654091536;
+        bh=Io4HhJb+Cz16sRUnVJbOtBv6IWiQnhJuRY59WG07j+s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=LKe/3zhUU/8lyK+lQ9MN9KiOY897DafvsEAGC77XO2a0aWFIqSZ42GFAcVZVnbgEd
+         VEvQyElQjIrEvgsYUb8zOS9E8xWKGpqoLq9T/m74O/UcV/oLY9Qi9JD1Zwib12PoVB
+         8EzYq2KlTsT2kfV08eN+EydAb7/mHTddqsQZMpmIAPX1NoK+BYCiISTF1gdOEzVcP0
+         owhLLCOzlNp/mnJ/9KWWqZ27hWzNMB0AYcQ+LPhWqwDBIYti64nUMx54zLPVmVJPvx
+         yDyjs8jI+ZqOKLKVPCIi7G0UZLzSUpC1LL7zvEKhabFTxcP6O4/bqQcMzbdWL4/pPD
+         sHIGf/h5u0knA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Niels Dossche <dossche.niels@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>,
+        dennis.dalessandro@cornelisnetworks.com, linux-rdma@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 01/49] IB/rdmavt: add missing locks in rvt_ruc_loopback
+Date:   Wed,  1 Jun 2022 09:51:25 -0400
+Message-Id: <20220601135214.2002647-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <355f1926-9a0d-f65e-d604-6b452fa987e9@acm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,36 +55,62 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, May 31, 2022 at 10:55:46AM -0700, Bart Van Assche wrote:
-> On 5/31/22 05:35, Jason Gunthorpe wrote:
-> > On Sat, May 28, 2022 at 09:00:16PM +0200, Bart Van Assche wrote:
-> > > On 5/27/22 14:52, Jason Gunthorpe wrote:
-> > > > That only works if you can detect actual different lock classes during
-> > > > lock creation. It doesn't seem applicable in this case.
-> > > 
-> > > Why doesn't it seem applicable in this case? The default behavior of
-> > > mutex_init() and related initialization functions is to create one lock
-> > > class per synchronization object initialization caller.
-> > > lockdep_register_key() can be used to create one lock class per
-> > > synchronization object instance. I introduced lockdep_register_key() myself
-> > > a few years ago.
-> > 
-> > I don't think this should be used to create one key per instance of
-> > the object which would be required here. The overhead would be very
-> > high.
-> 
-> Are we perhaps referring to different code changes? I'm referring to the
-> code change below. The runtime and memory overhead of the patch below
-> should be minimal.
+From: Niels Dossche <dossche.niels@gmail.com>
 
-This is not minimal, the lockdep graph will expand now with a node per
-created CM ID ever created and with all the additional locking
-arcs. This is an expensive operation.
+[ Upstream commit 22cbc6c2681a0a4fe76150270426e763d52353a4 ]
 
-AFIAK keys should not be created per-object like this but based on
-object classes known when the object is created - eg a CM listening ID
-vs a connceting ID as an example
+The documentation of the function rvt_error_qp says both r_lock and
+s_lock need to be held when calling that function.
+It also asserts using lockdep that both of those locks are held.
+rvt_error_qp is called form rvt_send_cq, which is called from
+rvt_qp_complete_swqe, which is called from rvt_send_complete, which is
+called from rvt_ruc_loopback in two places. Both of these places do not
+hold r_lock. Fix this by acquiring a spin_lock of r_lock in both of
+these places.
+The r_lock acquiring cannot be added in rvt_qp_complete_swqe because
+some of its other callers already have r_lock acquired.
 
-This might be a suitable hack if the # of objects was small???
+Link: https://lore.kernel.org/r/20220228195144.71946-1-dossche.niels@gmail.com
+Signed-off-by: Niels Dossche <dossche.niels@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/infiniband/sw/rdmavt/qp.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Jason
+diff --git a/drivers/infiniband/sw/rdmavt/qp.c b/drivers/infiniband/sw/rdmavt/qp.c
+index 8ef112f883a7..3acab569fbb9 100644
+--- a/drivers/infiniband/sw/rdmavt/qp.c
++++ b/drivers/infiniband/sw/rdmavt/qp.c
+@@ -2775,7 +2775,7 @@ void rvt_qp_iter(struct rvt_dev_info *rdi,
+ EXPORT_SYMBOL(rvt_qp_iter);
+ 
+ /*
+- * This should be called with s_lock held.
++ * This should be called with s_lock and r_lock held.
+  */
+ void rvt_send_complete(struct rvt_qp *qp, struct rvt_swqe *wqe,
+ 		       enum ib_wc_status status)
+@@ -3134,7 +3134,9 @@ void rvt_ruc_loopback(struct rvt_qp *sqp)
+ 	rvp->n_loop_pkts++;
+ flush_send:
+ 	sqp->s_rnr_retry = sqp->s_rnr_retry_cnt;
++	spin_lock(&sqp->r_lock);
+ 	rvt_send_complete(sqp, wqe, send_status);
++	spin_unlock(&sqp->r_lock);
+ 	if (local_ops) {
+ 		atomic_dec(&sqp->local_ops_pending);
+ 		local_ops = 0;
+@@ -3188,7 +3190,9 @@ void rvt_ruc_loopback(struct rvt_qp *sqp)
+ 	spin_unlock_irqrestore(&qp->r_lock, flags);
+ serr_no_r_lock:
+ 	spin_lock_irqsave(&sqp->s_lock, flags);
++	spin_lock(&sqp->r_lock);
+ 	rvt_send_complete(sqp, wqe, send_status);
++	spin_unlock(&sqp->r_lock);
+ 	if (sqp->ibqp.qp_type == IB_QPT_RC) {
+ 		int lastwqe;
+ 
+-- 
+2.35.1
+
