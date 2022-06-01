@@ -2,112 +2,120 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DB5539F76
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 10:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9A653A042
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 11:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350746AbiFAI3V (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 04:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S1350281AbiFAJZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 05:25:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349252AbiFAI3T (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 04:29:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A25824B861;
-        Wed,  1 Jun 2022 01:29:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 513D3B81854;
-        Wed,  1 Jun 2022 08:29:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C8AB1C385A5;
-        Wed,  1 Jun 2022 08:29:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654072155;
-        bh=1iXjC+c5NDksDK4JWBcsRyUMhftWpjNZ5o01WmkxYAc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HAildSU/sq7Bgxx0sWq8pyb5IW7hO4kp1mXK9VDpSGGieB/7DZd6I8AvLt0YkEDB5
-         +9cFXyLVug9Vm/WIEm8VnZNUT1z4Cq5kg6vxviY5FCRX+zYt+qLBnUkiDVvOmLyK5S
-         Vg07weRxFj18FDJWZQi0lB1p2bS1+QR/pMOUgNmyRTu+bsRv+D/tdfQN1BzCCN+cV2
-         efEexTSPtk+K5OXjyDx9LUL8ZJ2inc1V9RNShdvvit0zVWv85IWkYtNwak3eDwNJsp
-         Te868s6mOvSqgnV87dZx3TlrTHQeRWEjOuELjgaBo7/vwhXdgF+CD8Y975G7UB7sz/
-         TDqCVKcQG9zjg==
-Date:   Wed, 1 Jun 2022 11:29:10 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kent Overstreet <kent.overstreet@gmail.com>
-Cc:     Stephen Hemminger <stephen@networkplumber.org>,
-        Andrew Lunn <andrew@lunn.ch>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        netdev@vger.kernel.org, mcgrof@kernel.org, tytso@mit.edu,
-        RDMA mailing list <linux-rdma@vger.kernel.org>
-Subject: Re: RFC: Ioctl v2
-Message-ID: <YpcjVs/41EzAtr9k@unreal>
-References: <20220520161652.rmhqlvwvfrvskg4w@moria.home.lan>
- <Yof6hsC1hLiYITdh@lunn.ch>
- <20220521164546.h7huckdwvguvmmyy@moria.home.lan>
- <20220521124559.69414fec@hermes.local>
- <20220525170233.2yxb5pm75dehrjuj@moria.home.lan>
+        with ESMTP id S1350089AbiFAJZD (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 05:25:03 -0400
+Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482F4813D0;
+        Wed,  1 Jun 2022 02:25:00 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VF2we-e_1654075497;
+Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VF2we-e_1654075497)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 01 Jun 2022 17:24:57 +0800
+Date:   Wed, 1 Jun 2022 17:24:56 +0800
+From:   Tony Lu <tonylu@linux.alibaba.com>
+To:     "D. Wythe" <alibuda@linux.alibaba.com>
+Cc:     Alexandra Winter <wintera@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: Re: [RFC net-next] net/smc:introduce 1RTT to SMC
+Message-ID: <YpcwaNLUtPyzPBgc@TonyMac-Alibaba>
+Reply-To: Tony Lu <tonylu@linux.alibaba.com>
+References: <1653375127-130233-1-git-send-email-alibuda@linux.alibaba.com>
+ <YoyOGlG2kVe4VA4m@TonyMac-Alibaba>
+ <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
+ <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=gb2312
 Content-Disposition: inline
-In-Reply-To: <20220525170233.2yxb5pm75dehrjuj@moria.home.lan>
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, May 25, 2022 at 01:02:33PM -0400, Kent Overstreet wrote:
-> On Sat, May 21, 2022 at 12:45:59PM -0700, Stephen Hemminger wrote:
-> > On Sat, 21 May 2022 12:45:46 -0400
-> > Kent Overstreet <kent.overstreet@gmail.com> wrote:
-> > 
-> > > On Fri, May 20, 2022 at 10:31:02PM +0200, Andrew Lunn wrote:
-> > > > > I want to circulate this and get some comments and feedback, and if
-> > > > > no one raises any serious objections - I'd love to get collaborators
-> > > > > to work on this with me. Flame away!  
-> > > > 
-> > > > Hi Kent
-> > > > 
-> > > > I doubt you will get much interest from netdev. netdev already
-> > > > considers ioctl as legacy, and mostly uses netlink and a message
-> > > > passing structure, which is easy to extend in a backwards compatible
-> > > > manor.  
-> > > 
-> > > The more I look at netlink the more I wonder what on earth it's targeted at or
-> > > was trying to solve. It must exist for a reason, but I've written a few ioctls
-> > > myself and I can't fathom a situation where I'd actually want any of the stuff
-> > > netlink provides.
-> > 
-> > Netlink was built for networking operations, you want to set something like a route with a large
-> > number of varying parameters in one transaction. And you don't want to have to invent
-> > a new system call every time a new option is added.
-> > 
-> > Also, you want to monitor changes and see these events for a userspace control
-> > application such as a routing daemon.
+On Wed, Jun 01, 2022 at 02:33:09PM +0800, D. Wythe wrote:
 > 
-> That makes sense - perhaps the new mount API could've been done as a netlink
-> interface :)
+> ÔÚ 2022/5/25 ÏÂÎç9:42, Alexandra Winter Ð´µÀ:
 > 
-> But perhaps it makes sense to have both - netlink for the big complicated
-> stateful operations, ioctl v2 for the simpler ones. I haven't looked at netlink
-> usage at all, but most of the filesystem ioctls I've looked at fall into the the
-> simple bucket, for me.
+> > We need to carefully evaluate them and make sure everything is compatible
+> > with the existing implementations of SMC-D and SMC-R v1 and v2. In the
+> > typical s390 environment ROCE LAG is propably not good enough, as the card
+> > is still a single point of failure. So your ideas need to be compatible
+> > with link redundancy. We also need to consider that the extension of the
+> > protocol does not block other desirable extensions.
+> > 
+> > Your prototype is very helpful for the understanding. Before submitting any
+> > code patches to net-next, we should agree on the details of the protocol
+> > extension. Maybe you could formulate your proposal in plain text, so we can
+> > discuss it here?
+> > 
+> > We also need to inform you that several public holidays are upcoming in the
+> > next weeks and several of our team will be out for summer vacation, so please
+> > allow for longer response times.
+> > 
+> > Kind regards
+> > Alexandra Winter
+> > 
+> 
+> Hi alls,
+> 
+> In order to achieve signle-link compatibility, we must
+> complete at least once negotiation. We wish to provide
+> higher scalability while meeting this feature. There are
+> few ways to reach this.
+> 
+> 1. Use the available reserved bits. According to
+> the SMC v2 protocol, there are at least 28 reserved octets
+> in PROPOSAL MESSAGE and at least 10 reserved octets in
+> ACCEPT MESSAGE are available. We can define an area in which
+> as a feature area, works like bitmap. Considering the subsequent
+> scalability, we MAY use at least 2 reserved ctets, which can support
+> negotiation of at least 16 features.
+> 
+> 2. Unify all the areas named extension in current
+> SMC v2 protocol spec without reinterpreting any existing field
+> and field offset changes, including 'PROPOSAL V1 IP Subnet Extension',
+> 'PROPOSAL V2 Extension', 'PROPOSAL SMC-DV2 EXTENSION' .etc. And provides
+> the ability to grow dynamically as needs expand. This scheme will use
+> at least 10 reserved octets in the PROPOSAL MESSAGE and at least 4 reserved
+> octets in ACCEPT MESSAGE and CONFIRM MESSAGE. Fortunately, we only need to
+> use reserved fields, and the current reserved fields are sufficient. And
+> then we can easily add a new extension named SIGNLE LINK. Limited by space,
+> the details will be elaborated after the scheme is finalized.
 
-In RDMA, we solved this thing (standard entry points, multiple
-parameters and vendor specific data) by combining netlink and ioctls.
+After reading this and latest version of protocol, I agree with that the
+idea to provide a more flexible extension facilities. And, it's a good
+chance for us to set here talking about the protocol extension.
 
-The entry point is done with ioctls (mainly performance reason, but not
-only) while data is passed in netlink attributes style.
+There are some potential scenarios that need flexible extensions in my
+mind:
+- other protocols support, such as iWARP / IB or new version protocol,
+- dozens of feature flags in the future, like this proposal. With the
+  growth of new feature, it could overflow bitmap.
 
-ib_uverbs_ioctl:
-https://elixir.bootlin.com/linux/v5.18/source/drivers/infiniband/core/uverbs_ioctl.c#L605
+Actually, this extension facilities are very similar to TCP options.
 
-Latest example of newly added global to whole stack command:
-RDMA/uverbs: Add uverbs command for dma-buf based MR registration
-https://lore.kernel.org/linux-rdma/1608067636-98073-4-git-send-email-jianxin.xiong@intel.com/
+So what about your opinions about the solution of this? If there are
+some existed approaches for the future extensions, maybe this can get
+involved in it. Or we can start a discuss about this as this mail
+mentioned.
 
-Thanks
+Also, I am wondering if there is plan to update the RFC7609, add the
+latest v2 support?
+
+Thanks,
+Tony Lu
