@@ -2,183 +2,114 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B3553A43F
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 13:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEA153A562
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 14:46:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343840AbiFALgI (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 07:36:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
+        id S244755AbiFAMqD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 08:46:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229979AbiFALgH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 07:36:07 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24601326E6;
-        Wed,  1 Jun 2022 04:36:03 -0700 (PDT)
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 251A7Coe002163;
-        Wed, 1 Jun 2022 11:35:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=TEcSc53xq12JwZ22Jm+ODdKDD5AwMEfeVMyVhWez9hw=;
- b=ttSGw5fqRKA903UW753yjObMfeEdHTev/mVne0IVC9oE3f2LT4Z9hwfdzOKvnSWaxZ28
- Vto8GuvFQCP11bcSxQoR7ENsV7hZlGJZQ6p++pPH4dees+ShnTOM59AiYGMXxznprN3c
- UdieSl5volqMqRKKV0BYWo3gT63F8v1ADxExO2Yg4SfGgAmFMpoIBuh+bkLm9B0VlnrL
- 9tCelFJP1eI4+be0l//XFnPoEbAmwZ5hoF0zFXE/qBG4JB5twWM45Av6ikKvfSIhcHNb
- 6+KJ4Hvp9y7UEoIR2kPmNmaL+3OzQyBBMeb6JPzXKw5sa/90Vqg1v1Ln+Tevte7fDHkw 2Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ge4uq374g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jun 2022 11:35:58 +0000
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 251AwcgX017146;
-        Wed, 1 Jun 2022 11:35:58 GMT
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ge4uq373j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jun 2022 11:35:58 +0000
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 251BJioS008613;
-        Wed, 1 Jun 2022 11:35:56 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 3gbc97v6nw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 01 Jun 2022 11:35:56 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 251BZr0425952586
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 1 Jun 2022 11:35:53 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9963C4C04E;
-        Wed,  1 Jun 2022 11:35:53 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 555914C044;
-        Wed,  1 Jun 2022 11:35:53 +0000 (GMT)
-Received: from [9.152.224.55] (unknown [9.152.224.55])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  1 Jun 2022 11:35:53 +0000 (GMT)
-Message-ID: <7fb28436-1fca-ba4c-7745-ca88d83c657b@linux.ibm.com>
-Date:   Wed, 1 Jun 2022 13:35:52 +0200
+        with ESMTP id S1353086AbiFAMqC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 08:46:02 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E1B16FA00
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 05:45:58 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id i19so1318644qvu.13
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 05:45:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ooKzx/PLlUEW72sZZpr/gukQbTFbGyWj7z70NcgCmqc=;
+        b=Hx2H33dnMryRuImn0cIZ4YekbwxEr8xim03iBeXhLVGjtl0dJoAKJbiCI1iAcKyUdv
+         aSPg/u2lO8izkzLncqgnp0h0RukjDQCG/OxC2K8/zSR42HQGRG53EimW/DOGwvahk9pb
+         HJqWQXaMvDWWnhWJiAoT6Uyx/11erTKfP/Td00oSFbUdd6z3WFMD/zraMSOD4MiKsW3v
+         vNDkgZq+IOKoy78PsrBrOa5/q2XMVa/7Tyr6bI770omEa5oLkc024pWIWtrVueOGj3ID
+         9fBo4etNd1VVVF55WxKsgC0ErddNWTSQqn+rhddlzzdFAzK6HZEUbpzKOa4bmHnWwVrN
+         UKQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ooKzx/PLlUEW72sZZpr/gukQbTFbGyWj7z70NcgCmqc=;
+        b=nZb/cCmZ4CFwTIrQd3A/aBy7BpSQtcPNrDzw3yu8A4IVVwKeXSnkpIpyIRYTrFiAVB
+         NW9CJ5Cl8YWUtfVIpppQYFAcRjKu5djSDD1dUAjIz/ttgJGNHAV0QX+VmrgRvjS4tTjR
+         9vKJ7FdwPc57p2wMpwydk4U+chPOhuoHFQE3Q+uLhamI0/cI99OY8zHb/OMpR4o0kg8U
+         BfwyrLI1ONwbiT81fnLGFMXNF5Ye9UTTVTIwzaNkUitFptklsf9YzdznCYXpsiqlsiXb
+         EqYH39znMC7taRXXm41AnHzJZbVHI62yYMRV9agXDbWekIRuqRTKKdGvIrxk7RkhzZ2S
+         UQQw==
+X-Gm-Message-State: AOAM531mS5mNEA+U8Vh5gjL4C6atr5/bAXtVlnYtGWP30cIIBOxDDJk5
+        8DtvKZydCYRbfNFS73KvKk361Q==
+X-Google-Smtp-Source: ABdhPJxgU0qcGAEEkwWzfSnGIhQHNGRbgJDA6ZV8b6pnQlzFtVryOsxZpk531dBvIja/tM1r8AEOUw==
+X-Received: by 2002:a05:6214:2245:b0:464:6b29:f443 with SMTP id c5-20020a056214224500b004646b29f443mr2914412qvc.99.1654087558029;
+        Wed, 01 Jun 2022 05:45:58 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id l22-20020a05620a28d600b006a5bc8e956esm1166173qkp.133.2022.06.01.05.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jun 2022 05:45:57 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nwNjY-00G0Au-AK; Wed, 01 Jun 2022 09:45:56 -0300
+Date:   Wed, 1 Jun 2022 09:45:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     Sagi Grimberg <sagi@grimberg.me>, Yi Zhang <yi.zhang@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>
+Subject: Re: [bug report] WARNING: possible circular locking at:
+ rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
+Message-ID: <20220601124556.GI2960187@ziepe.ca>
+References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
+ <13441b9b-cc13-f0e0-bd46-f14983dadd49@grimberg.me>
+ <4f15039a-eae1-ff69-791c-1aeda1d693df@acm.org>
+ <20220527125229.GC2960187@ziepe.ca>
+ <4d65a168-c701-6ffa-45b9-858ddcabbbda@acm.org>
+ <20220531123544.GH2960187@ziepe.ca>
+ <355f1926-9a0d-f65e-d604-6b452fa987e9@acm.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.9.1
-Subject: Re: [RFC net-next] net/smc:introduce 1RTT to SMC
-Content-Language: en-US
-To:     Tony Lu <tonylu@linux.alibaba.com>,
-        "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-References: <1653375127-130233-1-git-send-email-alibuda@linux.alibaba.com>
- <YoyOGlG2kVe4VA4m@TonyMac-Alibaba>
- <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
- <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
- <YpcwaNLUtPyzPBgc@TonyMac-Alibaba>
-From:   Alexandra Winter <wintera@linux.ibm.com>
-In-Reply-To: <YpcwaNLUtPyzPBgc@TonyMac-Alibaba>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: rmR-56A_Yc69QUhYc_L6F9UW8RmytESf
-X-Proofpoint-GUID: 7mMhP4ywYKudnr9aA5spIx1AfmBjT44B
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
- definitions=2022-06-01_03,2022-06-01_01,2022-02-23_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 adultscore=0 mlxscore=0 suspectscore=0 spamscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2204290000 definitions=main-2206010052
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <355f1926-9a0d-f65e-d604-6b452fa987e9@acm.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On Tue, May 31, 2022 at 10:55:46AM -0700, Bart Van Assche wrote:
+> On 5/31/22 05:35, Jason Gunthorpe wrote:
+> > On Sat, May 28, 2022 at 09:00:16PM +0200, Bart Van Assche wrote:
+> > > On 5/27/22 14:52, Jason Gunthorpe wrote:
+> > > > That only works if you can detect actual different lock classes during
+> > > > lock creation. It doesn't seem applicable in this case.
+> > > 
+> > > Why doesn't it seem applicable in this case? The default behavior of
+> > > mutex_init() and related initialization functions is to create one lock
+> > > class per synchronization object initialization caller.
+> > > lockdep_register_key() can be used to create one lock class per
+> > > synchronization object instance. I introduced lockdep_register_key() myself
+> > > a few years ago.
+> > 
+> > I don't think this should be used to create one key per instance of
+> > the object which would be required here. The overhead would be very
+> > high.
+> 
+> Are we perhaps referring to different code changes? I'm referring to the
+> code change below. The runtime and memory overhead of the patch below
+> should be minimal.
 
+This is not minimal, the lockdep graph will expand now with a node per
+created CM ID ever created and with all the additional locking
+arcs. This is an expensive operation.
 
-On 01.06.22 11:24, Tony Lu wrote:
-> On Wed, Jun 01, 2022 at 02:33:09PM +0800, D. Wythe wrote:
->>
->> 在 2022/5/25 下午9:42, Alexandra Winter 写道:
->>
->>> We need to carefully evaluate them and make sure everything is compatible
->>> with the existing implementations of SMC-D and SMC-R v1 and v2. In the
->>> typical s390 environment ROCE LAG is propably not good enough, as the card
->>> is still a single point of failure. So your ideas need to be compatible
->>> with link redundancy. We also need to consider that the extension of the
->>> protocol does not block other desirable extensions.
->>>
->>> Your prototype is very helpful for the understanding. Before submitting any
->>> code patches to net-next, we should agree on the details of the protocol
->>> extension. Maybe you could formulate your proposal in plain text, so we can
->>> discuss it here?
->>>
->>> We also need to inform you that several public holidays are upcoming in the
->>> next weeks and several of our team will be out for summer vacation, so please
->>> allow for longer response times.
->>>
->>> Kind regards
->>> Alexandra Winter
->>>
->>
->> Hi alls,
->>
->> In order to achieve signle-link compatibility, we must
->> complete at least once negotiation. We wish to provide
->> higher scalability while meeting this feature. There are
->> few ways to reach this.
->>
->> 1. Use the available reserved bits. According to
->> the SMC v2 protocol, there are at least 28 reserved octets
->> in PROPOSAL MESSAGE and at least 10 reserved octets in
->> ACCEPT MESSAGE are available. We can define an area in which
->> as a feature area, works like bitmap. Considering the subsequent
->> scalability, we MAY use at least 2 reserved ctets, which can support
->> negotiation of at least 16 features.
->>
->> 2. Unify all the areas named extension in current
->> SMC v2 protocol spec without reinterpreting any existing field
->> and field offset changes, including 'PROPOSAL V1 IP Subnet Extension',
->> 'PROPOSAL V2 Extension', 'PROPOSAL SMC-DV2 EXTENSION' .etc. And provides
->> the ability to grow dynamically as needs expand. This scheme will use
->> at least 10 reserved octets in the PROPOSAL MESSAGE and at least 4 reserved
->> octets in ACCEPT MESSAGE and CONFIRM MESSAGE. Fortunately, we only need to
->> use reserved fields, and the current reserved fields are sufficient. And
->> then we can easily add a new extension named SIGNLE LINK. Limited by space,
->> the details will be elaborated after the scheme is finalized.
-> 
-> After reading this and latest version of protocol, I agree with that the
-> idea to provide a more flexible extension facilities. And, it's a good
-> chance for us to set here talking about the protocol extension.
-> 
-> There are some potential scenarios that need flexible extensions in my
-> mind:
-> - other protocols support, such as iWARP / IB or new version protocol,
-> - dozens of feature flags in the future, like this proposal. With the
->   growth of new feature, it could overflow bitmap.
-> 
-> Actually, this extension facilities are very similar to TCP options.
-> 
-> So what about your opinions about the solution of this? If there are
-> some existed approaches for the future extensions, maybe this can get
-> involved in it. Or we can start a discuss about this as this mail
-> mentioned.
-> 
-> Also, I am wondering if there is plan to update the RFC7609, add the
-> latest v2 support?
-> 
-> Thanks,
-> Tony Lu
+AFIAK keys should not be created per-object like this but based on
+object classes known when the object is created - eg a CM listening ID
+vs a connceting ID as an example
 
-We have asked the SMC protocol owners about their opinion about using the
-reserved fields for new options in particular, and about where and how to
-discuss this in general. (including where to document the versions).
-Please allow some time for us to come back to you.
+This might be a suitable hack if the # of objects was small???
 
-Kind regards
-Alexandra
+Jason
