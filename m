@@ -2,159 +2,138 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAB2539976
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 00:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC544539D46
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 08:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235799AbiEaWYY (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 31 May 2022 18:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
+        id S1349884AbiFAGdQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 02:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233920AbiEaWYX (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 31 May 2022 18:24:23 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DD120BE1
-        for <linux-rdma@vger.kernel.org>; Tue, 31 May 2022 15:24:21 -0700 (PDT)
-Message-ID: <363a175a-ef3c-e66c-a193-1fd331a48045@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1654035859;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NpUbXy+on4DtGFsEsUDzL2tVxRbeECPkrqUkqxqOPys=;
-        b=Ff1lpVKEH/bmMdbXcuINHmaURKadgYyItCR5LAQg6UmNzjHGL2MpBP/LmRnhoZrHWseSQ0
-        TExynKOZHDP9XsL4BqVu8Zf1OKLiOH/ACqx/S67KZI9UkwYnWlzMkNy5VKi3nX3nOv3FBT
-        qHprgs90lPrzO9DoU8wC2BkMP5oA59w=
-Date:   Wed, 1 Jun 2022 06:24:13 +0800
+        with ESMTP id S241485AbiFAGdP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 02:33:15 -0400
+Received: from out30-54.freemail.mail.aliyun.com (out30-54.freemail.mail.aliyun.com [115.124.30.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B382C31DD4;
+        Tue, 31 May 2022 23:33:13 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R281e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VF.o2aG_1654065189;
+Received: from 30.225.28.200(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0VF.o2aG_1654065189)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 01 Jun 2022 14:33:10 +0800
+Message-ID: <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
+Date:   Wed, 1 Jun 2022 14:33:09 +0800
 MIME-Version: 1.0
-Subject: Re: rdma-for-next, rdma_rxe: inconsistent lock state
-To:     "Pearson, Robert B" <robert.pearson2@hpe.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bob Pearson <rpearsonhpe@gmail.com>
-Cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <24ed4fac-0519-be62-6817-b4a73050e805@acm.org>
- <MW4PR84MB23075334E3E1CD9483BF4EDABCDC9@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yanjun Zhu <yanjun.zhu@linux.dev>
-In-Reply-To: <MW4PR84MB23075334E3E1CD9483BF4EDABCDC9@MW4PR84MB2307.NAMPRD84.PROD.OUTLOOK.COM>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.8.1
+Subject: Re: [RFC net-next] net/smc:introduce 1RTT to SMC
+To:     Alexandra Winter <wintera@linux.ibm.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Tony Lu <tonylu@linux.alibaba.com>
+Cc:     kgraul@linux.ibm.com, kuba@kernel.org, davem@davemloft.net,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+References: <1653375127-130233-1-git-send-email-alibuda@linux.alibaba.com>
+ <YoyOGlG2kVe4VA4m@TonyMac-Alibaba>
+ <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
+From:   "D. Wythe" <alibuda@linux.alibaba.com>
+In-Reply-To: <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-12.7 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-在 2022/6/1 4:55, Pearson, Robert B 写道:
-> 
-> 
-> -----Original Message-----
-> From: Bart Van Assche <bvanassche@acm.org>
-> Sent: Tuesday, May 31, 2022 3:47 PM
-> To: Bob Pearson <rpearsonhpe@gmail.com>
-> Cc: linux-rdma@vger.kernel.org
-> Subject: rdma-for-next, rdma_rxe: inconsistent lock state
-> 
-> Hi Bob,
-> 
-> With the rdma-for-next branch (commit 9c477178a0a1 ("RDMA/rtrs-clt: Fix one kernel-doc comment")) I see the following:
-> 
-> ================================
-> WARNING: inconsistent lock state
-> 5.18.0-dbg #4 Not tainted
-> --------------------------------
-> inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-> ksoftirqd/2/25 [HC0[0]:SC1[1]:HE0:SE0] takes:
-> ffff888116f0d350 (&xa->xa_lock#12){+.?.}-{2:2}, at: rxe_pool_get_index+0x73/0x170 [rdma_rxe] {SOFTIRQ-ON-W} state was registered at:
->     __lock_acquire+0x45b/0xce0
->     lock_acquire+0x18a/0x450
->     _raw_spin_lock+0x34/0x50
->     __rxe_add_to_pool+0xcc/0x140 [rdma_rxe]
->     rxe_alloc_pd+0x2d/0x40 [rdma_rxe]
->     __ib_alloc_pd+0xa3/0x270 [ib_core]
->     ib_mad_port_open+0x44a/0x790 [ib_core]
->     ib_mad_init_device+0x8e/0x110 [ib_core]
->     add_client_context+0x26a/0x330 [ib_core]
->     enable_device_and_get+0x169/0x2b0 [ib_core]
->     ib_register_device+0x26f/0x330 [ib_core]
->     rxe_register_device+0x1b4/0x1d0 [rdma_rxe]
->     rxe_add+0x8c/0xc0 [rdma_rxe]
->     rxe_net_add+0x5b/0x90 [rdma_rxe]
->     rxe_newlink+0x71/0x80 [rdma_rxe]
->     nldev_newlink+0x21e/0x370 [ib_core]
->     rdma_nl_rcv_msg+0x200/0x410 [ib_core]
->     rdma_nl_rcv+0x140/0x220 [ib_core]
->     netlink_unicast+0x307/0x460
->     netlink_sendmsg+0x422/0x750
->     __sys_sendto+0x1c2/0x250
->     __x64_sys_sendto+0x7f/0x90
->     do_syscall_64+0x35/0x80
->     entry_SYSCALL_64_after_hwframe+0x44/0xae
-> irq event stamp: 71543
-> hardirqs last  enabled at (71542): [<ffffffff810cdc28>] __local_bh_enable_ip+0x88/0xf0 hardirqs last disabled at (71543): [<ffffffff81e9d67d>] _raw_spin_lock_irqsave+0x5d/0x60 softirqs last  enabled at (71532): [<ffffffff82200467>] __do_softirq+0x467/0x6e1 softirqs last disabled at (71537): [<ffffffff810cda47>] run_ksoftirqd+0x37/0x60
-> 
-> other info that might help us debug this:
->    Possible unsafe locking scenario:
->          CPU0
->          ----
->     lock(&xa->xa_lock#12);
->     <Interrupt>
->       lock(&xa->xa_lock#12);
-> 
->    *** DEADLOCK ***
-> no locks held by ksoftirqd/2/25.
-> 
-> stack backtrace:
-> CPU: 2 PID: 25 Comm: ksoftirqd/2 Not tainted 5.18.0-dbg #4 Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.15.0-0-g2dd4b9b-rebuilt.opensuse.org 04/01/2014 Call Trace:
->    <TASK>
->    show_stack+0x52/0x58
->    dump_stack_lvl+0x5b/0x82
->    dump_stack+0x10/0x12
->    print_usage_bug.part.0+0x29c/0x2ab
->    mark_lock_irq.cold+0x54/0xbf
->    mark_lock.part.0+0x3f5/0xa70
->    mark_usage+0x74/0x1a0
->    __lock_acquire+0x45b/0xce0
->    lock_acquire+0x18a/0x450
->    _raw_spin_lock_irqsave+0x43/0x60
->    rxe_pool_get_index+0x73/0x170 [rdma_rxe]
->    rxe_get_av+0xcc/0x140 [rdma_rxe]
->    rxe_requester+0x34c/0xe60 [rdma_rxe]
->    rxe_do_task+0xcc/0x140 [rdma_rxe]
->    tasklet_action_common.constprop.0+0x168/0x1b0
->    tasklet_action+0x42/0x60
->    __do_softirq+0x1d8/0x6e1
->    run_ksoftirqd+0x37/0x60
->    smpboot_thread_fn+0x302/0x410
->    kthread+0x183/0x1c0
->    ret_from_fork+0x1f/0x30
->    </TASK>
-> 
-> Is this perhaps the same issue as what I reported on May 6 (https://lore.kernel.org/all/cf8b9980-3965-a4f6-07e0-d4b25755b0db@acm.org/)?
-> 
-> Thanks,
-> 
-> Bart.
-> 
-> (from windows)
-> 
-> Yes. There is a lock level bug in rxe_pool.c that requires a patch to fix. I have one that is a temporary fix.
-> Zhu had one that he posted  while ago but was never accepted. I don't want to step on his toes.
-> This is related to the "AH bug" i.e. rdmacm holding locks while calling into the verbs APIs which is just plain evil.
 
-Yes. This patch is not accepted. And it seems that all expect that this 
-problem should be fixed in your rcu patch series.
+在 2022/5/25 下午9:42, Alexandra Winter 写道:
 
-Zhu Yanjun
+> We need to carefully evaluate them and make sure everything is compatible
+> with the existing implementations of SMC-D and SMC-R v1 and v2. In the
+> typical s390 environment ROCE LAG is propably not good enough, as the card
+> is still a single point of failure. So your ideas need to be compatible
+> with link redundancy. We also need to consider that the extension of the
+> protocol does not block other desirable extensions.
+> 
+> Your prototype is very helpful for the understanding. Before submitting any
+> code patches to net-next, we should agree on the details of the protocol
+> extension. Maybe you could formulate your proposal in plain text, so we can
+> discuss it here?
+> 
+> We also need to inform you that several public holidays are upcoming in the
+> next weeks and several of our team will be out for summer vacation, so please
+> allow for longer response times.
+> 
+> Kind regards
+> Alexandra Winter
+> 
 
-> 
-> I'll send you my patch.
-> 
-> Bob
+Hi alls,
+
+In order to achieve signle-link compatibility, we must
+complete at least once negotiation. We wish to provide
+higher scalability while meeting this feature. There are
+few ways to reach this.
+
+1. Use the available reserved bits. According to
+the SMC v2 protocol, there are at least 28 reserved octets
+in PROPOSAL MESSAGE and at least 10 reserved octets in
+ACCEPT MESSAGE are available. We can define an area in which
+as a feature area, works like bitmap. Considering the subsequent 
+scalability, we MAY use at least 2 reserved ctets, which can support 
+negotiation of at least 16 features.
+
+2. Unify all the areas named extension in current
+SMC v2 protocol spec without reinterpreting any existing field
+and field offset changes, including 'PROPOSAL V1 IP Subnet Extension',
+'PROPOSAL V2 Extension', 'PROPOSAL SMC-DV2 EXTENSION' .etc. And provides
+the ability to grow dynamically as needs expand. This scheme will use
+at least 10 reserved octets in the PROPOSAL MESSAGE and at least 4 
+reserved octets in ACCEPT MESSAGE and CONFIRM MESSAGE. Fortunately, we 
+only need to use reserved fields, and the current reserved fields are 
+sufficient. And then we can easily add a new extension named SIGNLE 
+LINK. Limited by space, the details will be elaborated after the scheme 
+is finalized.
+
+But no matter what scheme is finalized, the workflow should be similar to:
+
+Allow Single-link:
+
+client							    server
+	proposal with Single-link feature bit or extension
+		-------->
+
+	accept with Single-link feature bit extension
+		<--------
+		
+		confirm
+		-------->
+
+
+Deny or not recognized:
+
+client							     server
+	proposal with Single-link feature bit or extension
+		-------->
+
+		rkey confirm
+		<------
+		------>
+
+	accept without Single-link feature bit or extension
+		<------
+
+		rkey confirm
+		------->
+		<------
+		
+		confirm
+		------->
+
+
+Look forward to your advice and comments.
+
+Thanks.
 
