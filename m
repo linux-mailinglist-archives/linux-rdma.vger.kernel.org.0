@@ -2,72 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6517F53AAD4
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 18:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3BE453AAD6
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 18:15:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356040AbiFAQOi (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 12:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60740 "EHLO
+        id S1348240AbiFAQPb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 12:15:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355340AbiFAQOh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 12:14:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7F73141F95
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 09:14:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1654100074;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=S7vUljB4Qlutv3sDYkD8hCAq5iyvO6STavGpYOs/65s=;
-        b=Lw254GP5nfsuJCD3u/9jnsF8FvQtdMT2oRQE8Ujb5jUwfhBYjVPAY8XpKQCz0TiWX0vba0
-        ShhodidVGaJF48sucebpjeORLgOgZ842s2YUfZ1OwiUASukirWtwKznGJNRGWN4QBn9XjM
-        X8ppatlcO3Rpx9rnIoMDBNjr/iZun18=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-435-VcQTElugMnidnE_a3jK_-A-1; Wed, 01 Jun 2022 12:14:31 -0400
-X-MC-Unique: VcQTElugMnidnE_a3jK_-A-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C84161C0CE78;
-        Wed,  1 Jun 2022 16:14:29 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2DAFC3323E;
-        Wed,  1 Jun 2022 16:14:27 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id 333E2417F27B; Wed,  1 Jun 2022 13:14:08 -0300 (-03)
-Date:   Wed, 1 Jun 2022 13:14:08 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Christoph Lameter <cl@gentwo.de>, linux-kernel@vger.kernel.org,
-        Nitesh Lal <nilal@redhat.com>,
-        Nicolas Saenz Julienne <nsaenzju@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alex Belits <abelits@belits.com>, Peter Xu <peterx@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Oscar Shiang <oscar0225@livemail.tw>,
-        linux-rdma@vger.kernel.org
-Subject: Re: [patch v12 00/13] extensible prctl task isolation interface and
- vmstat sync
-Message-ID: <YpeQUGo/xJw6WTjK@fuller.cnet>
-References: <20220315153132.717153751@fedora.localdomain>
- <alpine.DEB.2.22.394.2204271049050.159551@gentwo.de>
- <YnF7CjzYBhASi1Eo@fuller.cnet>
- <87h765juyk.ffs@tglx>
- <YnLMc5X8MZElk0NT@fuller.cnet>
- <871qx9jbql.ffs@tglx>
- <YnQA0xME3DwL2+ue@fuller.cnet>
+        with ESMTP id S240224AbiFAQPa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 12:15:30 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A435C41F95
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 09:15:28 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a15so3547701lfb.9
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 09:15:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IOM4sxtlBuB0wvE7Wc+vvHmqMyhOGEIMI1EufoY+h/k=;
+        b=OXDXqxN8a36I9JuGoPZ1hARW11nFjpVkEAGHn3l7ouLGG7rtbcOpN6VwEAdDYBHkor
+         2V9LIBbEtq7qTpj7hBlwdnjYoL/JNZmbvv+upwLsybQoQOtxk9+j0SITtWzSrJv6pezX
+         hmFI5Pp/2FpRp6QT8QXWJoMHzMxytO/QiD8h4ChPstOnaEILlv6mouShyMZ2w0e7a1zl
+         SwsKoukmx94qYIKf3AIWn365YYRUuA5f9b/+WrOF3QkGnCdTg8yMHNgZqAo+RQR+BDGj
+         UNPV/R98MVtnUDcavscQclEi1u/Gv5DIo4ZHiIGJUAkqQUdhe9sjJrzLCWPkV4uDCQzr
+         l61Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IOM4sxtlBuB0wvE7Wc+vvHmqMyhOGEIMI1EufoY+h/k=;
+        b=Vkxa9sNGXWTVu5tmZgVlh3ikMSlaNneWj1JXAtiPiVgWpfXLs+m2k4Ql5zJMpReCY4
+         ofFegT9Vq9pzy3wQQmlFO2+x1OLRlQb4oasohxgjVrkJipAN8zMpK/DlVr2mMick1OCE
+         vWts2FJhkfRYAjbwXnIibfVYnp0xxZm6FGWiMldVAgRyOZpN1wtwNp6S2695OC4aXQ5f
+         k6Z90ZdNW7lyIVcBcSNpFMMDJqmPAZrYqOjoJJdd/8LWsJzTwdpAo8IuNviX16VaHhFH
+         GQBFu0HzcbLIBanYOXe1zkm286lOIFchTXl67/2mdMPrB4+1B5ppqOT6uyyF7KA/wsJE
+         466w==
+X-Gm-Message-State: AOAM532Ge9ijwpMBLUayPsLCR15a8KdcnUPIU2u3pld+Jp3N2dtmdFyY
+        lX+G6Yr4IitXlp58o3y6VzktFDUGgcTMq7H4aFufmg==
+X-Google-Smtp-Source: ABdhPJy2hq5vN43Ljkw3PM/y+C8aiGIF1NfaseZ6iR9MOCvqTSKm4Ou/UdD8xMuPBBHX8XzjMcBgx3PTxAJpxLwjVZo=
+X-Received: by 2002:a05:6512:114e:b0:478:f40f:8d7d with SMTP id
+ m14-20020a056512114e00b00478f40f8d7dmr162649lfg.177.1654100126918; Wed, 01
+ Jun 2022 09:15:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YnQA0xME3DwL2+ue@fuller.cnet>
-X-Scanned-By: MIMEDefang 2.79 on 10.11.54.5
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+References: <CAJpMwyjL4iWSSLh_pgWEqLT7oCLgMAFCAdZTJ0w1Rv-gkDNDFQ@mail.gmail.com>
+ <bb958406-14a1-e785-a525-9c1d5132f10e@gmail.com>
+In-Reply-To: <bb958406-14a1-e785-a525-9c1d5132f10e@gmail.com>
+From:   Haris Iqbal <haris.iqbal@ionos.com>
+Date:   Wed, 1 Jun 2022 18:15:15 +0200
+Message-ID: <CAJpMwyj2YFyPqHprFUHvGHMBDgT7fFu72WSdXU0KZM8BMgm_7Q@mail.gmail.com>
+Subject: Re: RDME/rxe: Fast reg with local access rights and invalidation for
+ that MR
+To:     Bob Pearson <rpearsonhpe@gmail.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Aleksei Marov <aleksei.marov@ionos.com>,
+        Jinpu Wang <jinpu.wang@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -76,275 +70,289 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Thu, May 05, 2022 at 01:52:35PM -0300, Marcelo Tosatti wrote:
-> 
-> Hi Thomas,
-> 
-> On Wed, May 04, 2022 at 10:15:14PM +0200, Thomas Gleixner wrote:
-> > On Wed, May 04 2022 at 15:56, Marcelo Tosatti wrote:
-> > > On Wed, May 04, 2022 at 03:20:03PM +0200, Thomas Gleixner wrote:
-> > >> Can we please focus on the initial problem of
-> > >> providing a sensible isolation mechanism with well defined semantics?
-> > >
-> > > Case 2, however, was implicitly suggested by you (or at least i
-> > > understood that):
-> > >
-> > > "Summary: The problem to be solved cannot be restricted to
-> > >
-> > >     self_defined_important_task(OWN_WORLD);
-> > >
-> > > Policy is not a binary on/off problem. It's manifold across all levels
-> > > of the stack and only a kernel problem when it comes down to the last
-> > > line of defence.
-> > >
-> > > Up to the point where the kernel puts the line of last defence, policy
-> > > is defined by the user/admin via mechanims provided by the kernel.
-> > >
-> > > Emphasis on "mechanims provided by the kernel", aka. user API.
-> > >
-> > > Just in case, I hope that I don't have to explain what level of scrunity
-> > > and thought this requires."
-> > 
-> > Correct. This reasoning is still valid and I haven't changed my opinion
-> > on that since then.
-> > 
-> > My main objections against the proposed solution back then were the all
-> > or nothing approach and the implicit hard coded policies.
-> > 
-> > > The idea, as i understood was that certain task isolation features (or
-> > > they parameters) might have to be changed at runtime (which depends on
-> > > the task isolation features themselves, and the plan is to create
-> > > an extensible interface).
-> > 
-> > Again. I'm not against useful controls to select the isolation an
-> > application requires. I'm neither against extensible interfaces.
-> > 
-> > But I'm against overengineered implementations which lack any form of
-> > sensible design and have ill defined semantics at the user ABI.
-> > 
-> > Designing user space ABI is _hard_ and needs a lot of thoughts. It's not
-> > done with throwing something 'extensible' at the kernel and hope it
-> > sticks. As I showed you in the review, the ABI is inconsistent in
-> > itself, it has ill defined semantics and lacks any form of justification
-> > of the approach taken.
-> > 
-> > Can we please take a step back and:
-> > 
-> >   1) Define what is trying to be solved
-> 
-> Avoid interruptions to application code execution on isolated CPUs.
-> 
-> Different use-cases might accept different length/frequencies
-> of interruptions (including no interruptions).
-> 
-> >      and what are the pieces known
-> >      today which need to be controlled in order to achieve the desired
-> >      isolation properties.
-> 
-> I hope you don't mean the current CPU isolation features which have to
-> be enabled, but only the ones which are not enabled today:
-> 
-> "Isolation of the threads was done through the following kernel parameters:
-> 
-> nohz_full=8-15,24-31 rcu_nocbs=8-15,24-31 poll_spectre_v2=off
-> numa_balancing=disable rcutree.kthread_prio=3 intel_pstate=disable nosmt
-> 
-> And systemd was configured with the following affinites:
-> 
-> system.conf:CPUAffinity=0-7,16-23
-> 
-> This means that the second socket will be generally free of tasks and   
-> kernel threads."
-> 
-> So here are some features which could be written on top of the proposed
-> task isolation via prctl:
-> 
-> 1) 
-> 
-> Enable or disable the following optional behaviour
-> 
-> A.
-> if (cpu->isolated_avoid_queue_work)
-> 	return -EBUSY;
-> 
-> queue_work_on(cpu, workfn);
-> 
-> (for the functions that can handle errors gracefully).
-> 
-> B.
-> if (cpu->isolated_avoid_function_ipi)
-> 	return -EBUSY;
-> 
-> smp_call_function_single(cpu, fn);
-> (for the functions that can handle errors gracefully).
-> Those that can't handle errors gracefully should be changed 
-> to either handle errors or to remote work.
-> 
-> Not certain if this should be on per-case basis: say
-> "avoid action1|avoid action2|avoid action3|..." (bit per
-> action) and a "ALL" control, where actionZ is an action
-> that triggers an IPI or remote work (then you would check
-> for whether to fail not at smp_call_function_single 
-> time but before the action starts).
-> 
-> Also, one might use something such as stalld (that schedules 
-> tasks in/out for a short amount of time every given time window),
-> which might be acceptable for his workload, so he'd disable
-> cpu->isolated_avoid_queue_work (or expose this on per-case basis,
-> unsure which is better).
-> 
-> As for IPIs, whether to block a function call to an isolated
-> CPU depends on whether that function call (and its frequency) 
-> will cause the latency sensitive application to violate its "latency" 
-> requirements.
-> 
-> Perhaps "ALL - action1, action2, action3" is useful.
-> 
-> =======================================
-> 
-> 2)
-> 
-> In general, avoiding (or uncaching on return to userspace) 
-> a CPU from caching per-CPU data (which might require an 
-> IPI to invalidate later on) (see point [1] below for more thoughts
-> on this issue).
-> 
-> 
-> For example, for KVM:
-> 
-> /*
->  * MMU notifier 'invalidate_range_start' hook.
->  */
-> void gfn_to_pfn_cache_invalidate_start(struct kvm *kvm, unsigned long start,
->                                        unsigned long end, bool may_block)
-> {
->         DECLARE_BITMAP(vcpu_bitmap, KVM_MAX_VCPUS);
->         struct gfn_to_pfn_cache *gpc;
->         bool wake_vcpus = false;
-> 	...
-> 	called = kvm_make_vcpus_request_mask(kvm, req, vcpu_bitmap);
-> 
-> 	which will
-> 	smp_call_function_many(cpus, ack_flush, NULL, wait);
-> ...
-> 
-> 
-> ====================================================
-> 
-> 3) Enabling a kernel warning when a task switch happens on a CPU
-> which runs a task isolated thread?
-> 
-> From Christoph:
-> 
-> Special handling when the scheduler
-> switches a task? If tasks are being switched that requires them to be low
-> latency and undisturbed then something went very very wrong with the
-> system configuration and the only thing I would suggest is to issue some
-> kernel warning that this is not the way one should configure the system.
-> 
-> ====================================================
-> 
-> 4) Sending a signal whenever an application is interrupted
-> (hum, this could be done via BPF).
-> 
-> Those are the ones i can think of at the moment. 
-> Not sure what other people can think of.
-> 
-> >   2) Describe the usage scenarios and the resulting constraints.
-> 
-> Well the constraints should be in the form
-> 
-> 	"In a given window of time, there should be no more than N
-> 	 CPU interruptions of length L each."
-> 
-> 	(should be more complicated due to cache effects, but choosing
-> 	 a lower N and L one is able to correct that)
-> 
-> I believe?
-> 
-> Also some memory bandwidth must be available to the application
-> (or data/code in shared caches).
-> Which depends on what other CPUs in the system are doing, the
-> cache hierarchy, the application, etc.
-> 
-> [1]: There is also a question of whether to focus only on 
-> applications that do not perform system calls on their latency 
-> sensitive path, and applications that perform system calls. 
-> 
-> Because some CPU interruptions can't be avoided if the application 
-> is in the kernel: for example instruction cache flushes due to 
-> static_key rewrites or kernel TLB flushes (well they could be avoided 
-> with more infrastructure, but there is no such infrastructure at
-> the moment).
-> 
-> >   3) Describe the requirements for features on top, e.g. inheritance
-> >      or external control.
-> 
-> 1) Be able to use unmodified applications (as long as the features
-> to be enabled are compatible with such usage, for example "killing 
-> / sending signal to application if task is interrupted" is obviously
-> incompatible with unmodified applications).
-> 
-> 2) External control: be able to modify what task isolation features are
-> enabled externally (not within the application itself). The latency
-> sensitive application should inform the kernel the beginning of 
-> the latency sensitive section (at this time, the task isolation 
-> features configured externally will be activated).
-> 
-> 3) One-shot mode: be able to quiesce certain kernel activities
-> only on the first time a syscall is made (because the overhead
-> of subsequent quiescing, for the subsequent system calls, is
-> undesired).
-> 
-> > Once we have that, we can have a discussion about the desired control
-> > granularity and how to support the extra features in a consistent and
-> > well defined way.
-> > 
-> > A good and extensible UABI design comes with well defined functionality
-> > for the start and an obvious and maintainable extension path. The most
-> > important part is the well defined functionality.
-> > 
-> > There have been enough examples in the past how well received approaches
-> > are, which lack the well defined part. Linus really loves to get a pull
-> > request for something which cannot be described what it does, but could
-> > be used for cool things in the future.
-> > 
-> > > So for case 2, all you'd have to do is to modify the application only
-> > > once and allow the admin to configure the features.
-> > 
-> > That's still an orthogonal problem, which can be solved once a sensible
-> > mechanism to control the isolation and handle it at the transition
-> > points is in place. You surely want to consider it when designing the
-> > UABI, but it's not required to create the real isolation mechanism in
-> > the first place.
-> 
-> Ok, can drop all of that for smaller patches with the handling 
-> of transition points only (then later add oneshot mode, inheritance,
-> external control).
-> 
-> But might wait for discussion of requirements that you raise 
-> first.
-> 
-> > Problem decomposition is not an entirely new concept, really.
-> 
-> Sure, thanks.
+On Tue, May 31, 2022 at 7:12 PM Bob Pearson <rpearsonhpe@gmail.com> wrote:
+>
+> On 5/30/22 06:05, Haris Iqbal wrote:
+> > Hi Bob,
+> >
+> > I have a query. After the following patch,
+> >
+> > https://marc.info/?l=linux-rdma&m=163163776430842&w=2
+> >
+> > If I send a IB_WR_REG_MR wr with flag set to IB_ACCESS_LOCAL_WRITE,
+> > rxe will set the mr->rkey to 0 (mr->lkey will be set to the key I send
+> > in wr).
+> >
+> > Afterwards, If I have to invalidate that mr with IB_WR_LOCAL_INV,
+> > setting the .ex.invalidate_rkey to the key I sent previously in the
+> > IB_WR_REG_MR wr, the invalidate would fail with the following error.
+> >
+> > rkey (%#x) doesn't match mr->rkey
+> > (function rxe_invalidate_mr)
+> >
+> > Is this desired behaviour? If so, how would I go about invalidating
+> > the above MR?
+> >
+> > Regards
+> > -Haris
+>
+> I think that the first behavior is correct. If you don't do this then the
+> MR is open for RDMA operations which you didn't allow.
+>
+> The second behavior is more interesting. If you are doing a send_with_invalidate
+> from a remote node then no reason you should allow the remote node to do
+> anything to the MR since it didn't have access to begin with. For a local invalidate MR
+> If you read the IBA it claims that local invalidate operations should provide
+> the lkey, rkey and memory handle as parameters to the operation and that the
+> lkey should be invalidated and the rkey if there is one should be invalidated. But
+> ib_verbs.h only has one parameter labeled rkey.
+>
+> The rxe driver follows most other providers and always makes the lkey and rkey the same
+> if there is an rkey else the rkey is set to zero. So rxe_invalidate_mr should compare
+> to the lkey and not the rkey for local invalidate. And then move the MR to the FREE state.
+>
+> This is a bug. Fortunately the majority of use cases for physical memory regions are
+> for RDMA access.
 
-Actually, hope that the patches from Aaron:
+Thanks for the response Bob. I understand now.
 
-[RFC PATCH v3] tick/sched: Ensure quiet_vmstat() is called when the idle tick was stopped too
+>
+> Feel free to submit a patch or I will if you don't care to. The rxe_invalidate_mr() subroutine
+> needs have a new parameter since it is shared by local and remote invalidate operations and
+> they need to behave differently. Easiest is to have an lkey and rkey parameter. The local
+> operation would set the lkey and the remote operation the rkey.
 
-https://lore.kernel.org/all/alpine.DEB.2.22.394.2204250919400.2367@gentwo.de/T/
+Do you mean something like this?
 
-Can enable syncing of vmstat on return to userspace, for nohz_full CPUs.
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h
+b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 0e022ae1b8a5..1e6a6d8d330b 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -77,7 +77,7 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int
+access, u32 key,
+                         enum rxe_mr_lookup_type type);
+ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+-int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
++int rxe_invalidate_mr(struct rxe_qp *qp, u32 lkey, u32 rkey);
+ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+ int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
+ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c
+b/drivers/infiniband/sw/rxe/rxe_mr.c
+index fc3942e04a1f..cbdb8fa9a08e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -576,20 +576,27 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int
+access, u32 key,
+        return mr;
+ }
 
-Then the remaining items such as 
+-int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
++int rxe_invalidate_mr(struct rxe_qp *qp, u32 lkey, u32 rkey)
+ {
+        struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+        struct rxe_mr *mr;
+        int ret;
 
-> if (cpu->isolated_avoid_queue_work)
->       return -EBUSY;
+-       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
++       mr = rxe_pool_get_index(&rxe->mr_pool, (lkey ? lkey : rkey) >> 8);
+        if (!mr) {
+-               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
++               pr_err("%s: No MR for key %#x\n", __func__, (lkey ?
+lkey : rkey));
+                ret = -EINVAL;
+                goto err;
+        }
 
-Can be enabled with a different (more flexible) interface such as writes
-to filesystem (or task attribute that is transferred to per-CPU variable
-on task initialization and remove from per-CPU variables when task
-dies)
+-       if (rkey != mr->rkey) {
++       if (lkey && lkey != mr->lkey) {
++               pr_err("%s: lkey (%#x) doesn't match mr->lkey (%#x)\n",
++                       __func__, lkey, mr->lkey);
++               ret = -EINVAL;
++               goto err_drop_ref;
++       }
++
++       if (rkey && rkey != mr->rkey) {
+                pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
+                        __func__, rkey, mr->rkey);
+                ret = -EINVAL;
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c
+b/drivers/infiniband/sw/rxe/rxe_req.c
+index 9d98237389cf..478b86f59f6c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -550,7 +550,7 @@ static int rxe_do_local_ops(struct rxe_qp *qp,
+struct rxe_send_wqe *wqe)
+                if (rkey_is_mw(rkey))
+                        ret = rxe_invalidate_mw(qp, rkey);
+                else
+-                       ret = rxe_invalidate_mr(qp, rkey);
++                       ret = rxe_invalidate_mr(qp, rkey, 0);
 
+                if (unlikely(ret)) {
+                        wqe->status = IB_WC_LOC_QP_OP_ERR;
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c
+b/drivers/infiniband/sw/rxe/rxe_resp.c
+index d995ddbe23a0..48b474703aa7 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -803,7 +803,7 @@ static int invalidate_rkey(struct rxe_qp *qp, u32 rkey)
+        if (rkey_is_mw(rkey))
+                return rxe_invalidate_mw(qp, rkey);
+        else
+-               return rxe_invalidate_mr(qp, rkey);
++               return rxe_invalidate_mr(qp, 0, rkey);
+ }
 
+Another alternate way would be to separate the invalidate into 2
+functions. One for local and the other for remote.
+That way it will be clearer and we avoid the weird use of ternary
+operator in rxe_pool_get_index and the print afterwards.
+Something like this?
+
+diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h
+b/drivers/infiniband/sw/rxe/rxe_loc.h
+index 0e022ae1b8a5..4da57abbbc8c 100644
+--- a/drivers/infiniband/sw/rxe/rxe_loc.h
++++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+@@ -77,7 +77,8 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int
+access, u32 key,
+                         enum rxe_mr_lookup_type type);
+ int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+ int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+-int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
++int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey);
++int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey);
+ int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+ int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
+ int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c
+b/drivers/infiniband/sw/rxe/rxe_mr.c
+index fc3942e04a1f..1c7179dd92eb 100644
+--- a/drivers/infiniband/sw/rxe/rxe_mr.c
++++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+@@ -576,41 +576,72 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int
+access, u32 key,
+        return mr;
+ }
+
+-int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
++static int rxe_invalidate_mr(struct rxe_mr *mr)
++{
++       if (atomic_read(&mr->num_mw) > 0) {
++               pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
++                       __func__);
++               return -EINVAL;
++       }
++
++       if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
++               pr_warn("%s: mr->type (%d) is wrong type\n", __func__,
+mr->type);
++               return -EINVAL;
++       }
++
++       mr->state = RXE_MR_STATE_FREE;
++       return 0;
++}
++
++int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey)
+ {
+        struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+        struct rxe_mr *mr;
+        int ret;
+
+-       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
++       mr = rxe_pool_get_index(&rxe->mr_pool, lkey >> 8);
+        if (!mr) {
+-               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
++               pr_err("%s: No MR for lkey %#x\n", __func__, lkey);
+                ret = -EINVAL;
+                goto err;
+        }
+
+-       if (rkey != mr->rkey) {
+-               pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
+-                       __func__, rkey, mr->rkey);
++       if (lkey != mr->lkey) {
++               pr_err("%s: lkey (%#x) doesn't match mr->lkey (%#x)\n",
++                       __func__, lkey, mr->lkey);
+                ret = -EINVAL;
+                goto err_drop_ref;
+        }
+
+-       if (atomic_read(&mr->num_mw) > 0) {
+-               pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
+-                       __func__);
++       ret = rxe_invalidate_mr(mr);
++
++err_drop_ref:
++       rxe_put(mr);
++err:
++       return ret;
++}
++
++int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey)
++{
++       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
++       struct rxe_mr *mr;
++       int ret;
++
++       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
++       if (!mr) {
++               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
+                ret = -EINVAL;
+-               goto err_drop_ref;
++               goto err;
+        }
+
+-       if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
+-               pr_warn("%s: mr->type (%d) is wrong type\n", __func__,
+mr->type);
++       if (rkey != mr->rkey) {
++               pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
++                       __func__, rkey, mr->rkey);
+                ret = -EINVAL;
+                goto err_drop_ref;
+        }
+
+-       mr->state = RXE_MR_STATE_FREE;
+-       ret = 0;
++       ret = rxe_invalidate_mr(mr);
+
+ err_drop_ref:
+        rxe_put(mr);
+diff --git a/drivers/infiniband/sw/rxe/rxe_req.c
+b/drivers/infiniband/sw/rxe/rxe_req.c
+index 9d98237389cf..e7dd9738a255 100644
+--- a/drivers/infiniband/sw/rxe/rxe_req.c
++++ b/drivers/infiniband/sw/rxe/rxe_req.c
+@@ -550,7 +550,7 @@ static int rxe_do_local_ops(struct rxe_qp *qp,
+struct rxe_send_wqe *wqe)
+                if (rkey_is_mw(rkey))
+                        ret = rxe_invalidate_mw(qp, rkey);
+                else
+-                       ret = rxe_invalidate_mr(qp, rkey);
++                       ret = rxe_invalidate_mr_local(qp, rkey);
+
+                if (unlikely(ret)) {
+                        wqe->status = IB_WC_LOC_QP_OP_ERR;
+diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c
+b/drivers/infiniband/sw/rxe/rxe_resp.c
+index d995ddbe23a0..234e7858fb12 100644
+--- a/drivers/infiniband/sw/rxe/rxe_resp.c
++++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+@@ -803,7 +803,7 @@ static int invalidate_rkey(struct rxe_qp *qp, u32 rkey)
+        if (rkey_is_mw(rkey))
+                return rxe_invalidate_mw(qp, rkey);
+        else
+-               return rxe_invalidate_mr(qp, rkey);
++               return rxe_invalidate_mr_remote(qp, rkey);
+ }
+
+I tested both with rnbd/rtrs and both works fine.
+Let me know which one looks better. I will send that one as a patch.
+
+>
+> Bob
