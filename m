@@ -2,120 +2,75 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9A653A042
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 11:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C860953A32F
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 12:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350281AbiFAJZG (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 05:25:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
+        id S1352677AbiFAKsb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 06:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350089AbiFAJZD (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 05:25:03 -0400
-Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482F4813D0;
-        Wed,  1 Jun 2022 02:25:00 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VF2we-e_1654075497;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0VF2we-e_1654075497)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 01 Jun 2022 17:24:57 +0800
-Date:   Wed, 1 Jun 2022 17:24:56 +0800
-From:   Tony Lu <tonylu@linux.alibaba.com>
-To:     "D. Wythe" <alibuda@linux.alibaba.com>
-Cc:     Alexandra Winter <wintera@linux.ibm.com>,
-        Karsten Graul <kgraul@linux.ibm.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org,
-        linux-s390@vger.kernel.org, linux-rdma@vger.kernel.org
-Subject: Re: [RFC net-next] net/smc:introduce 1RTT to SMC
-Message-ID: <YpcwaNLUtPyzPBgc@TonyMac-Alibaba>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <1653375127-130233-1-git-send-email-alibuda@linux.alibaba.com>
- <YoyOGlG2kVe4VA4m@TonyMac-Alibaba>
- <64439f1c-9817-befd-c11b-fa64d22620a9@linux.ibm.com>
- <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
+        with ESMTP id S236040AbiFAKrk (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 06:47:40 -0400
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858EB13E95
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 03:47:01 -0700 (PDT)
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-f314077115so2187702fac.1
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 03:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=4IWjHL/5Vo6JeFN3XdXq446L6FUUmY7SjaH1cuJ3kmM=;
+        b=E5O90zcJSnFF/jhaT0ozVoCUxV9M4yYh3iuAVKFdq28iUKC9l/5jrhZLbsY0Lj0nWy
+         bcFMSCg5m5vHZSAcCywnfWMvCpjY4nGxAmUPbxF7T3tdDMaptfNOXiu5nYrE91nVX8+o
+         3Pm+Y5/TXGkP85Mhg1s7N0sPKVzjqmstiy629Ik84/vIWWO8T9rKsDoDO8mKudheMBdX
+         uuvJkTV2R9bwmb8GgobTeFr5o/5PgjRbsMtQEKhtf3aMPy7MfL9jwOUT9kQgxYqteft3
+         01yUBFDW2yk36M0C3o9tGVeP/NBkUyUKMQzCQioBwbvdwAJSnuiKmgg8QeoGyA33fbkD
+         k1/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=4IWjHL/5Vo6JeFN3XdXq446L6FUUmY7SjaH1cuJ3kmM=;
+        b=QXZf+lPGn2f6qI0royuHUO/Kk4jKKto6+EMwyBX1dWsd8yKQSjhfonmdaqyvqLixmQ
+         +0YkWRyCj93ECoErGJ9qOHls5bIvr2OyriBpNeP47AtXsfaQ31v8CN8JuMqUGjsNzTcg
+         9i6mzyZANQ9MgfG9In+OJO0F8by1tw8n4zFO2Vw8Iv8JyVix9J0bd0Vs+OUwPwUbNNiu
+         vRlD5sA97gbyq844Sxv4TaW7AAqfBk7OXimwBuWNAHP2gBBJZ8io5a9ygsWadTnHbc+T
+         G8SAsmBiunm1GfWQ1ySs4UmYIVHyqlWX4vFRToLYLMIiUrcx5LZiHCKDib8aJCE8QEib
+         1/Hw==
+X-Gm-Message-State: AOAM532o7k80+EJaLm/R7PWNCUeR1b6iZtNGXEyHOytSdNwu5qAzowGK
+        uuUDV0wjZ6CK4nmHaAl0lT/2L5s9WC1NAU+XisI=
+X-Google-Smtp-Source: ABdhPJwkiIXtBazZY+P/bXlB1SpjioxSsSEqZACDgYmOca+1Kn4FY5BpotMU+owbVJyE12WhtdNqf3cRMN42Hc4SZ0U=
+X-Received: by 2002:a05:6871:721:b0:f3:24af:e506 with SMTP id
+ f33-20020a056871072100b000f324afe506mr9687396oap.30.1654080420760; Wed, 01
+ Jun 2022 03:47:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7d57f299-115f-3d34-a45e-1c125a9a580a@linux.alibaba.com>
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a05:6358:1893:b0:a3:3beb:ce8 with HTTP; Wed, 1 Jun 2022
+ 03:47:00 -0700 (PDT)
+Reply-To: jbi880375@gmail.com
+From:   Julian Bikarm <tastomelina@gmail.com>
+Date:   Wed, 1 Jun 2022 03:47:00 -0700
+Message-ID: <CAJ=LxuR2FoAZMGwCYwMJVAzGGF8c1fXQ=Wt+MsfSkGOG2mDNgA@mail.gmail.com>
+Subject: Please can i have your attention
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLYTO,
+        FREEMAIL_REPLYTO_END_DIGIT,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNDISC_FREEM autolearn=no autolearn_force=no
+        version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 01, 2022 at 02:33:09PM +0800, D. Wythe wrote:
-> 
-> ÔÚ 2022/5/25 ÏÂÎç9:42, Alexandra Winter Ð´µÀ:
-> 
-> > We need to carefully evaluate them and make sure everything is compatible
-> > with the existing implementations of SMC-D and SMC-R v1 and v2. In the
-> > typical s390 environment ROCE LAG is propably not good enough, as the card
-> > is still a single point of failure. So your ideas need to be compatible
-> > with link redundancy. We also need to consider that the extension of the
-> > protocol does not block other desirable extensions.
-> > 
-> > Your prototype is very helpful for the understanding. Before submitting any
-> > code patches to net-next, we should agree on the details of the protocol
-> > extension. Maybe you could formulate your proposal in plain text, so we can
-> > discuss it here?
-> > 
-> > We also need to inform you that several public holidays are upcoming in the
-> > next weeks and several of our team will be out for summer vacation, so please
-> > allow for longer response times.
-> > 
-> > Kind regards
-> > Alexandra Winter
-> > 
-> 
-> Hi alls,
-> 
-> In order to achieve signle-link compatibility, we must
-> complete at least once negotiation. We wish to provide
-> higher scalability while meeting this feature. There are
-> few ways to reach this.
-> 
-> 1. Use the available reserved bits. According to
-> the SMC v2 protocol, there are at least 28 reserved octets
-> in PROPOSAL MESSAGE and at least 10 reserved octets in
-> ACCEPT MESSAGE are available. We can define an area in which
-> as a feature area, works like bitmap. Considering the subsequent
-> scalability, we MAY use at least 2 reserved ctets, which can support
-> negotiation of at least 16 features.
-> 
-> 2. Unify all the areas named extension in current
-> SMC v2 protocol spec without reinterpreting any existing field
-> and field offset changes, including 'PROPOSAL V1 IP Subnet Extension',
-> 'PROPOSAL V2 Extension', 'PROPOSAL SMC-DV2 EXTENSION' .etc. And provides
-> the ability to grow dynamically as needs expand. This scheme will use
-> at least 10 reserved octets in the PROPOSAL MESSAGE and at least 4 reserved
-> octets in ACCEPT MESSAGE and CONFIRM MESSAGE. Fortunately, we only need to
-> use reserved fields, and the current reserved fields are sufficient. And
-> then we can easily add a new extension named SIGNLE LINK. Limited by space,
-> the details will be elaborated after the scheme is finalized.
+Dear ,
 
-After reading this and latest version of protocol, I agree with that the
-idea to provide a more flexible extension facilities. And, it's a good
-chance for us to set here talking about the protocol extension.
+  Please can I have your attention and possibly help me for humanity's
+sake please. I am writing this message with a heavy heart filled with
+sorrows and sadness.
+Please if you can respond, i have an issue that i will be most
+grateful if you could help me deal with it please.
 
-There are some potential scenarios that need flexible extensions in my
-mind:
-- other protocols support, such as iWARP / IB or new version protocol,
-- dozens of feature flags in the future, like this proposal. With the
-  growth of new feature, it could overflow bitmap.
-
-Actually, this extension facilities are very similar to TCP options.
-
-So what about your opinions about the solution of this? If there are
-some existed approaches for the future extensions, maybe this can get
-involved in it. Or we can start a discuss about this as this mail
-mentioned.
-
-Also, I am wondering if there is plan to update the RFC7609, add the
-latest v2 support?
-
-Thanks,
-Tony Lu
+Julian
