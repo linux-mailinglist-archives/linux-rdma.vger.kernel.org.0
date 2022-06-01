@@ -2,53 +2,63 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE70353AB07
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 18:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5723553ABE2
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 19:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345573AbiFAQ1D (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 12:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35942 "EHLO
+        id S1345750AbiFARaM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 13:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243359AbiFAQ1C (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 12:27:02 -0400
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52B158E186
-        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 09:26:56 -0700 (PDT)
-Received: by mail-pg1-f176.google.com with SMTP id i185so2371978pge.4
-        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 09:26:56 -0700 (PDT)
+        with ESMTP id S1356333AbiFARaI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 13:30:08 -0400
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AAE78EDE
+        for <linux-rdma@vger.kernel.org>; Wed,  1 Jun 2022 10:30:07 -0700 (PDT)
+Received: by mail-qv1-xf2d.google.com with SMTP id v5so1932663qvs.10
+        for <linux-rdma@vger.kernel.org>; Wed, 01 Jun 2022 10:30:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aMQ31BRtxLqprW2PJA3KDD0QoPe/Axlx3wARGwuJL98=;
+        b=C7aB2j7BY73/2ByE/3EfRdBfJdDMAeNLiW4a6JR/QsYgOVRXSXcrRK0+IlLmavZZyN
+         sERYyJyuAmOkGV7NJ9EoRXVqw2Hlmbxryh+oKiq8UpsTw6uS7yP05IaasNtJ9AmYr6Bt
+         mpKVNS3QkFCiSovUzqrz9FzIdtMEx78JZ8EQERW+SGzzHONl8HRkHzqCH/nYhU9tl33E
+         6jZ5bdHne+zLzNXveiAJrTcM2Kdnz8TEHX+s+aLaVONMXh8VDgeDVNOZJaPC0GdJMjHm
+         uKestBGsT/kJIoQtcmGcNMkYNpBvvN4RYPJ5NYAt/FSU7DnOQgD+b9Gs0OY7gWe5G62h
+         vmqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Lppt8980/tB9Zbvmc9AUhdqZNXfdhmf9QtaVIK386yI=;
-        b=F2oDioyymUIMaDp4N1vPtNM5pDBj7Lq/0j2bhXZAspRLqYSn4Ru1h5FJB28JUTw4JU
-         gn03bagZd8adGzRpM6ydHohD1pS6F6oczb3VvF+cSXe3SBNT2CQPRAlcmO33yPo4oTny
-         H+vJGxI3oocbqy8l1ZpxaS/lETL6Igmkj3bStIgr6fagpXAPoyDXS5/casoWAvPw3NCP
-         Er195PwV5Y5CV6otfpRV4p/vK+gllJasHZz8rPauXbpZ4EL+1LnUtQRTwsIltxhwdZGv
-         /K6wTaQnUmnirwyxYeN5a/oLjBt3ClnPYSPYCtNiO8opbdgsdyojPtZgOUx1MBQ2u7Yi
-         akOQ==
-X-Gm-Message-State: AOAM530EbZRdJ5fP2HqQX2zvI8UHnNltSGsFfiVMGDFWd8hmKC7GqyOo
-        M1U0yMG7yhmUQACU6jXSZGI=
-X-Google-Smtp-Source: ABdhPJxwonQO+A/ZPdB1ZTjiqdXZ9STxcAjAxs46OSGQhx0SCMwkcpkJRREuAKWhCmPWYlbkJ2dUWQ==
-X-Received: by 2002:a05:6a00:815:b0:518:8acd:be39 with SMTP id m21-20020a056a00081500b005188acdbe39mr405069pfk.70.1654100815518;
-        Wed, 01 Jun 2022 09:26:55 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:be8c:a3d9:f876:d119? ([2620:15c:211:201:be8c:a3d9:f876:d119])
-        by smtp.gmail.com with ESMTPSA id s11-20020a170902a50b00b001661f9ada6dsm1443930plq.143.2022.06.01.09.26.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 01 Jun 2022 09:26:54 -0700 (PDT)
-Message-ID: <109ac246-5cc0-8d5a-ac0a-2937d86fbe06@acm.org>
-Date:   Wed, 1 Jun 2022 09:26:52 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [bug report] WARNING: possible circular locking at:
- rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
-Content-Language: en-US
-To:     Jason Gunthorpe <jgg@ziepe.ca>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aMQ31BRtxLqprW2PJA3KDD0QoPe/Axlx3wARGwuJL98=;
+        b=tFoN3gdrj+5shsEKYXdFsUuSTqzVD9X4WbvJphLamGoOCSNp/jWSKRvG9ileYiciIJ
+         COnFOdtrZ5g/PpQ06s91dgdDYWKKa0UoRU00hWmTb+EHjc5KHDw1JWu0Qz/5qzVZeCf2
+         2wvUuAfx+lOJRe9LTLBnwEPoh2PnndH2o0HKC99sFZNF7ELN6bOjaDCm3hAiQrjE7Bsq
+         LA5wudKrFedCffx7N2sBYJGjxevVmM4BHa7NTqaSo0SIMJGYxL7KlqeM+vEfy/9xV8pA
+         jt4gmmOKJwJs/mdtqPe3EUTW0oa8Jdcy0MgrDCaj9YIS/aDoVb1BotJqOcfVHfJn55MY
+         R98g==
+X-Gm-Message-State: AOAM531qQEh9+gwvUElwivJUqOgV+bM/EbJTQD9uIVBTiBwXjcdEUY3s
+        ++c2NbzeH6kI1yOW9BgkH3Qovg==
+X-Google-Smtp-Source: ABdhPJwxXijengjadUc09wmSv0uWM5yg67nxL9gzo/Bi8ukzVRcI9ZIZQiCwW7awUpcU8U+k/eyi9A==
+X-Received: by 2002:a05:6214:27c6:b0:464:63cd:3d41 with SMTP id ge6-20020a05621427c600b0046463cd3d41mr7044911qvb.75.1654104606855;
+        Wed, 01 Jun 2022 10:30:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id a13-20020a05620a102d00b0069fc13ce217sm1488248qkk.72.2022.06.01.10.30.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jun 2022 10:30:06 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1nwSAX-00G5gY-8O; Wed, 01 Jun 2022 14:30:05 -0300
+Date:   Wed, 1 Jun 2022 14:30:05 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Bart Van Assche <bvanassche@acm.org>
 Cc:     Sagi Grimberg <sagi@grimberg.me>, Yi Zhang <yi.zhang@redhat.com>,
         RDMA mailing list <linux-rdma@vger.kernel.org>,
         "open list:NVM EXPRESS DRIVER" <linux-nvme@lists.infradead.org>
+Subject: Re: [bug report] WARNING: possible circular locking at:
+ rdma_destroy_id+0x17/0x20 [rdma_cm] triggered by blktests nvmeof-mp/002
+Message-ID: <20220601173005.GJ2960187@ziepe.ca>
 References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
  <13441b9b-cc13-f0e0-bd46-f14983dadd49@grimberg.me>
  <4f15039a-eae1-ff69-791c-1aeda1d693df@acm.org>
@@ -57,61 +67,63 @@ References: <CAHj4cs93BfTRgWF6PbuZcfq6AARHgYC2g=RQ-7Jgcf1-6h+2SQ@mail.gmail.com>
  <20220531123544.GH2960187@ziepe.ca>
  <355f1926-9a0d-f65e-d604-6b452fa987e9@acm.org>
  <20220601124556.GI2960187@ziepe.ca>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20220601124556.GI2960187@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+ <109ac246-5cc0-8d5a-ac0a-2937d86fbe06@acm.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <109ac246-5cc0-8d5a-ac0a-2937d86fbe06@acm.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/1/22 05:45, Jason Gunthorpe wrote:
-> On Tue, May 31, 2022 at 10:55:46AM -0700, Bart Van Assche wrote:
->> On 5/31/22 05:35, Jason Gunthorpe wrote:
->>> On Sat, May 28, 2022 at 09:00:16PM +0200, Bart Van Assche wrote:
->>>> On 5/27/22 14:52, Jason Gunthorpe wrote:
->>>>> That only works if you can detect actual different lock classes during
->>>>> lock creation. It doesn't seem applicable in this case.
->>>>
->>>> Why doesn't it seem applicable in this case? The default behavior of
->>>> mutex_init() and related initialization functions is to create one lock
->>>> class per synchronization object initialization caller.
->>>> lockdep_register_key() can be used to create one lock class per
->>>> synchronization object instance. I introduced lockdep_register_key() myself
->>>> a few years ago.
->>>
->>> I don't think this should be used to create one key per instance of
->>> the object which would be required here. The overhead would be very
->>> high.
->>
->> Are we perhaps referring to different code changes? I'm referring to the
->> code change below. The runtime and memory overhead of the patch below
->> should be minimal.
+On Wed, Jun 01, 2022 at 09:26:52AM -0700, Bart Van Assche wrote:
+> On 6/1/22 05:45, Jason Gunthorpe wrote:
+> > On Tue, May 31, 2022 at 10:55:46AM -0700, Bart Van Assche wrote:
+> > > On 5/31/22 05:35, Jason Gunthorpe wrote:
+> > > > On Sat, May 28, 2022 at 09:00:16PM +0200, Bart Van Assche wrote:
+> > > > > On 5/27/22 14:52, Jason Gunthorpe wrote:
+> > > > > > That only works if you can detect actual different lock classes during
+> > > > > > lock creation. It doesn't seem applicable in this case.
+> > > > > 
+> > > > > Why doesn't it seem applicable in this case? The default behavior of
+> > > > > mutex_init() and related initialization functions is to create one lock
+> > > > > class per synchronization object initialization caller.
+> > > > > lockdep_register_key() can be used to create one lock class per
+> > > > > synchronization object instance. I introduced lockdep_register_key() myself
+> > > > > a few years ago.
+> > > > 
+> > > > I don't think this should be used to create one key per instance of
+> > > > the object which would be required here. The overhead would be very
+> > > > high.
+> > > 
+> > > Are we perhaps referring to different code changes? I'm referring to the
+> > > code change below. The runtime and memory overhead of the patch below
+> > > should be minimal.
+> > 
+> > This is not minimal, the lockdep graph will expand now with a node per
+> > created CM ID ever created and with all the additional locking
+> > arcs. This is an expensive operation.
+> > 
+> > AFIAK keys should not be created per-object like this but based on
+> > object classes known when the object is created - eg a CM listening ID
+> > vs a connceting ID as an example
+> > 
+> > This might be a suitable hack if the # of objects was small???
 > 
-> This is not minimal, the lockdep graph will expand now with a node per
-> created CM ID ever created and with all the additional locking
-> arcs. This is an expensive operation.
-> 
-> AFIAK keys should not be created per-object like this but based on
-> object classes known when the object is created - eg a CM listening ID
-> vs a connceting ID as an example
-> 
-> This might be a suitable hack if the # of objects was small???
+> Lockdep uses hashing when looking up a lock object so the lookup time
+> shouldn't increase significantly if the number of hash collisions stays low.
+> I think this is likely since the number of hash entries is identical to the
+> maximum number of synchronization objects divided by two. See also the
+> definition of the lock_keys_hash[] array in kernel/locking/lockdep.c.
 
-Lockdep uses hashing when looking up a lock object so the lookup time 
-shouldn't increase significantly if the number of hash collisions stays 
-low. I think this is likely since the number of hash entries is 
-identical to the maximum number of synchronization objects divided by 
-two. See also the definition of the lock_keys_hash[] array in 
-kernel/locking/lockdep.c.
+That is just the keys, not the graph arcs. lockdep records an arc
+between every key that establishes a locking relationship and
+minimizing the number of keys also de-duplicates those arcs.
 
-Thanks,
-
-Bart.
+Jason
