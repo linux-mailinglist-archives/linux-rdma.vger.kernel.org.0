@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C65E53A87D
-	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 16:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9555A53A8BD
+	for <lists+linux-rdma@lfdr.de>; Wed,  1 Jun 2022 16:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354564AbiFAOJf (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 1 Jun 2022 10:09:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51142 "EHLO
+        id S1354770AbiFAOLy (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 1 Jun 2022 10:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354513AbiFAOIt (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 10:08:49 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D50219F;
-        Wed,  1 Jun 2022 07:00:29 -0700 (PDT)
+        with ESMTP id S1354571AbiFAOJf (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 1 Jun 2022 10:09:35 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DCCBA186;
+        Wed,  1 Jun 2022 07:00:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 93A9DCE1A24;
-        Wed,  1 Jun 2022 14:00:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18DA7C34119;
-        Wed,  1 Jun 2022 14:00:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 967896149F;
+        Wed,  1 Jun 2022 14:00:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D64FC3411E;
+        Wed,  1 Jun 2022 14:00:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654092025;
-        bh=c/sh0ADfc8YO6RjUcVirxMAJQkJ6AkcflF2WlJjEjmA=;
+        s=k20201202; t=1654092058;
+        bh=/3YpkFpa0PKlf61xiEMBIL/Wzdp1RfVVz6gxZhozYrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mn0XS1RpsnrW2L9KDw8KkLJIdGpzZGlo6ChpR7I5JOC/TKo5APKRbCXCf+wQ1SY6S
-         PiTnye0EzGg8nkvfaEl4GU2WwpZyrfOAZobuXz01uzxMjOzAGsMrtT2wVnSbDwfqg2
-         6PghbyIV5uNF/eN65H4I5TbbpyT6YrNgmuDYYiT3v+oBgcqxhMfwhk8Ygt0HARTwcX
-         C9zgUGXPgKIxl9oGEakesqb5hayCVfrbBSSUi5tCPM0C5plNV9V9Ma7loIX9UfyCtM
-         O+J31VEGGsjDanAFyuYF5yfKxWKrP4MnKnqphvYrZfvuczEN9Zw85VonxgK1VxiQeS
-         BAx2skgdtjtnQ==
+        b=OU/dpFWozSu1b7rmR154M8jJzp/kQ8toibl+PVIadiLHI7aeaXSYU/zqSwY/sIj2V
+         D+EE80hhES7J397k1pMtPUeVdOmELbqpfOQw9Hsf7tfOh8ZjTV7cYF04ZHPQSWx6Ef
+         8fMIwAUiPrGvfvyBjWRluQItm2+jGnKUJ2M5maJUr3d/LxhSoBMea6lxxG8mSRHoFe
+         lva7kHrJ7KXxBrf5mrzr7shXFJ6+g9NRXojhXVYubzrGth634CZFjel+7vcRHwcuJz
+         k+vlUI2waoLzIgHVg2zoHSPmckeFTdiTq2AfN/5J2X1nEWZ/pJAQ/nztBOz/aaG+rI
+         yI+r+PQMyFSDA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Douglas Miller <doug.miller@cornelisnetworks.com>,
         Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 14/15] RDMA/hfi1: Prevent panic when SDMA is disabled
-Date:   Wed,  1 Jun 2022 09:59:49 -0400
-Message-Id: <20220601135951.2005085-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 13/14] RDMA/hfi1: Prevent panic when SDMA is disabled
+Date:   Wed,  1 Jun 2022 10:00:26 -0400
+Message-Id: <20220601140027.2005280-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220601135951.2005085-1-sashal@kernel.org>
-References: <20220601135951.2005085-1-sashal@kernel.org>
+In-Reply-To: <20220601140027.2005280-1-sashal@kernel.org>
+References: <20220601140027.2005280-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/drivers/infiniband/hw/hfi1/file_ops.c b/drivers/infiniband/hw/hfi1/file_ops.c
-index adeb259458de..64ee11542a56 100644
+index b3ab803bf8b1..7b8644610feb 100644
 --- a/drivers/infiniband/hw/hfi1/file_ops.c
 +++ b/drivers/infiniband/hw/hfi1/file_ops.c
-@@ -308,6 +308,8 @@ static ssize_t hfi1_write_iter(struct kiocb *kiocb, struct iov_iter *from)
+@@ -424,6 +424,8 @@ static ssize_t hfi1_write_iter(struct kiocb *kiocb, struct iov_iter *from)
  	unsigned long dim = from->nr_segs;
  	int idx;
  
