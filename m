@@ -2,58 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BCC53EB81
-	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jun 2022 19:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5615153E7F9
+	for <lists+linux-rdma@lfdr.de>; Mon,  6 Jun 2022 19:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239732AbiFFOj3 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 6 Jun 2022 10:39:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
+        id S239822AbiFFOja (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 6 Jun 2022 10:39:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239831AbiFFOj0 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jun 2022 10:39:26 -0400
-Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91CD150A29
-        for <linux-rdma@vger.kernel.org>; Mon,  6 Jun 2022 07:39:25 -0700 (PDT)
-Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-e656032735so19429492fac.0
-        for <linux-rdma@vger.kernel.org>; Mon, 06 Jun 2022 07:39:25 -0700 (PDT)
+        with ESMTP id S239791AbiFFOj1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 6 Jun 2022 10:39:27 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8CC153535
+        for <linux-rdma@vger.kernel.org>; Mon,  6 Jun 2022 07:39:26 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id m82so19886962oif.13
+        for <linux-rdma@vger.kernel.org>; Mon, 06 Jun 2022 07:39:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hNCWlLHg2GISb9iFySN3QSGSoJ3+7SrsBn0Xrg6VcdE=;
-        b=bScqZHssX3UlS+ZyQLDeEL8kUFm4Ykl7GGJFD/CsEskODP/zuTC0BlJs5VqrBnLnNi
-         flt5fE8rHgdEBwNxk92lYxfXpnCKMGi/Dl2myLqJoYOLH4CTFFXftr5WepFo7bwa5p3U
-         TEEnNNJ934sWoKYjtO36yBeSLbA8lnKDTHQWmYsizSonyZwRzyrc+RI1hSZuoU5KfFe7
-         c9xWkaa9s2PZmDbPq2IURqNeKRtU2Ct9aFpE1oqGjhocjBRlYSxF613StvTEH13TWuwv
-         3Qkl9Cw/fTiL3R5B9z+kl3/8jgz62dnWjSbdqpCUZbz/8JjfNyWvLWPuXOCrdeKgDDIl
-         tLZg==
+        bh=Z/QYRwqsPC9QQxGxg7qWciRwy16PvFOKYnmFeB9KJKo=;
+        b=LTxu10YPPd7ycHGk2ftF4kfCskcPPnJ9kaP0gq7HzB50NL1Le9D3uiInryTzrMKLD5
+         qXVrE+F4KVE5OIaCUf42ovh8HX+PXtBH1K1V7wEhCGVH4JZgqkSJG3cD7IMR90Bn6Uql
+         O6WnaRz1cTylPkpDp+Ne70qyNJxcCWvTScShRXpz80vWCDvm52greyaxOZMOje3IWg2y
+         OCEwhkT2WYrbG6olnQQ/Wlh+ZeTBtHOtmZlHPszW+uqOj7C91OzSWpuMbzSYl41dOgLj
+         AJZjafWTYmOxOZmfNTOj9l7A5skcibfFbdpzCA4o5jKlI01Z6KuKs/MEp8w8s4qhXxnW
+         KGXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hNCWlLHg2GISb9iFySN3QSGSoJ3+7SrsBn0Xrg6VcdE=;
-        b=CszRH5Qn0CwdR89JCy80KVYN/4/RxZVgtkuyUemNQvJRg08qYpH1VMkAbgpieAftkH
-         C7ERnPkXnRYDBoxlqNzRjzTs4XDN1faUcEA0fjw846lPnIY6PcOKzs0MryUqJhtAnuoN
-         hUoJcX62WG1hadj1GThcjDnQ5I2tlLlXiH+PdvOV/LkisSVrPqvPOezRbiLgmxeUWXEk
-         wz+5FiBkSiPghFSqck7XE7yEZMR266o+YdKZn5DOuphbwtyUgL7IFMTnolApga149Nuw
-         DxFU7BxiprnwH2KT1yML00RZSW9RB/zeIOorD4uh6Rz+jEhxjKOBw0ZK3q1BKa2h+yAl
-         WoWA==
-X-Gm-Message-State: AOAM531wEZJIblBuUi3I/+SHvl67cV9xM89QsCUFAArCT3qqZMxutITp
-        ft3OPNLG8DAnchFNjoI0HAM=
-X-Google-Smtp-Source: ABdhPJyi/seBzieyOrCTSuum+BIt9iQkRGPpAkT12n9/Wlh4hSs5AAwBu144wyW2LRDaPSHKhccQAA==
-X-Received: by 2002:a05:6871:7a1:b0:f1:b33d:7875 with SMTP id o33-20020a05687107a100b000f1b33d7875mr13691013oap.272.1654526365002;
+        bh=Z/QYRwqsPC9QQxGxg7qWciRwy16PvFOKYnmFeB9KJKo=;
+        b=KHtfCXg0httdBIvsDTRLYB+URrYI3alcyXWZx8JkTM8Q1evQH/xBPuXgdJO31txaxC
+         ODDLShfw7XAtoPzpWeFGNWReSnOUy50aDdtsWPgdbx4uBHXp0gUY4qTcLKQwbwYNdPwI
+         NCmX1SNj+2nr9gEo84S7PHfjdRoLuSNfTLbDIGjI9G7wvOclVyuSQH/U/Pp3dU+M4UAh
+         2kw0HxIMHqTUz0K4qWfLh2LGO6Aki2bZ04iPR2xDXA5AKW2XnlYW3ATa4miQWPvUVot4
+         1yNX54I0CcTKKa0mv8eEokZ0EKmChtHX8fmOJ0v8H4WigvkkbRLWU4hN6S8mtyM8wjJ9
+         0KkA==
+X-Gm-Message-State: AOAM532xQJNeRU/6cgajB2noUaRC1e2nW9aD+WXRESCmUWjVrCGdaO7O
+        iY77CInAt3iTIDalN4lkO7M=
+X-Google-Smtp-Source: ABdhPJwJNVjvnDLYiXA9nZQtUGDDNlhNaXSIZnLiw6pYjcoYqsvoDjaDeeSDJbB/EKKEI19v/unK4Q==
+X-Received: by 2002:a05:6808:17a8:b0:327:9efa:cf1a with SMTP id bg40-20020a05680817a800b003279efacf1amr28642920oib.81.1654526365614;
         Mon, 06 Jun 2022 07:39:25 -0700 (PDT)
 Received: from u-22.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id q28-20020a05683022dc00b0060c00c3fde5sm658335otc.72.2022.06.06.07.39.24
+        by smtp.googlemail.com with ESMTPSA id q28-20020a05683022dc00b0060c00c3fde5sm658335otc.72.2022.06.06.07.39.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jun 2022 07:39:24 -0700 (PDT)
+        Mon, 06 Jun 2022 07:39:25 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
         frank.zago@hpe.com, jhack@hpe.com
 Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH 1/5] RDMA/rxe: Move code to rxe_prepare_atomic_res()
-Date:   Mon,  6 Jun 2022 09:38:33 -0500
-Message-Id: <20220606143836.3323-2-rpearsonhpe@gmail.com>
+Subject: [PATCH 2/5] RDMA/rxe: Add a responder state for atomic reply
+Date:   Mon,  6 Jun 2022 09:38:34 -0500
+Message-Id: <20220606143836.3323-3-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220606143836.3323-1-rpearsonhpe@gmail.com>
 References: <20220606143836.3323-1-rpearsonhpe@gmail.com>
@@ -69,83 +69,85 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Separate the code that prepares the atomic responder resource
-into a subroutine. This is preparation for merging the normal
-and retry atomic responder flows.
+Add a responder state for atomic reply similar to read reply and
+rename process_atomic() rxe_atomic_reply(). In preparation for
+merging the normal and retry atomic responder flows.
 
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_resp.c | 37 ++++++++++++++++++----------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_resp.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index f4f6ee5d81fe..69723bc1a071 100644
+index 69723bc1a071..4babd6fbfefe 100644
 --- a/drivers/infiniband/sw/rxe/rxe_resp.c
 +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -1019,10 +1019,27 @@ static int send_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 	return err;
- }
+@@ -21,6 +21,7 @@ enum resp_states {
+ 	RESPST_CHK_RKEY,
+ 	RESPST_EXECUTE,
+ 	RESPST_READ_REPLY,
++	RESPST_ATOMIC_REPLY,
+ 	RESPST_COMPLETE,
+ 	RESPST_ACKNOWLEDGE,
+ 	RESPST_CLEANUP,
+@@ -55,6 +56,7 @@ static char *resp_state_name[] = {
+ 	[RESPST_CHK_RKEY]			= "CHK_RKEY",
+ 	[RESPST_EXECUTE]			= "EXECUTE",
+ 	[RESPST_READ_REPLY]			= "READ_REPLY",
++	[RESPST_ATOMIC_REPLY]			= "ATOMIC_REPLY",
+ 	[RESPST_COMPLETE]			= "COMPLETE",
+ 	[RESPST_ACKNOWLEDGE]			= "ACKNOWLEDGE",
+ 	[RESPST_CLEANUP]			= "CLEANUP",
+@@ -552,8 +554,8 @@ static enum resp_states write_data_in(struct rxe_qp *qp,
+ /* Guarantee atomicity of atomic operations at the machine level. */
+ static DEFINE_SPINLOCK(atomic_ops_lock);
  
-+static struct resp_res *rxe_prepare_atomic_res(struct rxe_qp *qp,
-+					       struct rxe_pkt_info *pkt)
-+{
-+	struct resp_res *res;
-+
-+	res = &qp->resp.resources[qp->resp.res_head];
-+	rxe_advance_resp_resource(qp);
-+	free_rd_atomic_resource(qp, res);
-+
-+	res->type = RXE_ATOMIC_MASK;
-+	res->first_psn = pkt->psn;
-+	res->last_psn = pkt->psn;
-+	res->cur_psn = pkt->psn;
-+
-+	return res;
-+}
-+
- static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 			   u8 syndrome)
+-static enum resp_states process_atomic(struct rxe_qp *qp,
+-				       struct rxe_pkt_info *pkt)
++static enum resp_states rxe_atomic_reply(struct rxe_qp *qp,
++					 struct rxe_pkt_info *pkt)
  {
--	int rc = 0;
-+	int err = 0;
- 	struct rxe_pkt_info ack_pkt;
- 	struct sk_buff *skb;
- 	struct resp_res *res;
-@@ -1031,28 +1048,22 @@ static int send_atomic_ack(struct rxe_qp *qp, struct rxe_pkt_info *pkt,
- 				 IB_OPCODE_RC_ATOMIC_ACKNOWLEDGE, 0, pkt->psn,
- 				 syndrome);
- 	if (!skb) {
--		rc = -ENOMEM;
-+		err = -ENOMEM;
- 		goto out;
- 	}
+ 	u64 *vaddr;
+ 	enum resp_states ret;
+@@ -585,7 +587,16 @@ static enum resp_states process_atomic(struct rxe_qp *qp,
  
--	res = &qp->resp.resources[qp->resp.res_head];
--	free_rd_atomic_resource(qp, res);
--	rxe_advance_resp_resource(qp);
--
- 	skb_get(skb);
--	res->type = RXE_ATOMIC_MASK;
+ 	spin_unlock_bh(&atomic_ops_lock);
+ 
+-	ret = RESPST_NONE;
++	qp->resp.msn++;
 +
-+	res = rxe_prepare_atomic_res(qp, pkt);
- 	res->atomic.skb = skb;
--	res->first_psn = ack_pkt.psn;
--	res->last_psn  = ack_pkt.psn;
--	res->cur_psn   = ack_pkt.psn;
- 
--	rc = rxe_xmit_packet(qp, &ack_pkt, skb);
--	if (rc) {
-+	err = rxe_xmit_packet(qp, &ack_pkt, skb);
-+	if (err) {
- 		pr_err_ratelimited("Failed sending ack\n");
- 		rxe_put(qp);
- 	}
++	/* next expected psn, read handles this separately */
++	qp->resp.psn = (pkt->psn + 1) & BTH_PSN_MASK;
++	qp->resp.ack_psn = qp->resp.psn;
++
++	qp->resp.opcode = pkt->opcode;
++	qp->resp.status = IB_WC_SUCCESS;
++
++	ret = RESPST_ACKNOWLEDGE;
  out:
--	return rc;
-+	return err;
+ 	return ret;
  }
- 
- static enum resp_states acknowledge(struct rxe_qp *qp,
+@@ -858,9 +869,7 @@ static enum resp_states execute(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+ 		qp->resp.msn++;
+ 		return RESPST_READ_REPLY;
+ 	} else if (pkt->mask & RXE_ATOMIC_MASK) {
+-		err = process_atomic(qp, pkt);
+-		if (err)
+-			return err;
++		return RESPST_ATOMIC_REPLY;
+ 	} else {
+ 		/* Unreachable */
+ 		WARN_ON_ONCE(1);
+@@ -1327,6 +1336,9 @@ int rxe_responder(void *arg)
+ 		case RESPST_READ_REPLY:
+ 			state = read_reply(qp, pkt);
+ 			break;
++		case RESPST_ATOMIC_REPLY:
++			state = rxe_atomic_reply(qp, pkt);
++			break;
+ 		case RESPST_ACKNOWLEDGE:
+ 			state = acknowledge(qp, pkt);
+ 			break;
 -- 
 2.34.1
 
