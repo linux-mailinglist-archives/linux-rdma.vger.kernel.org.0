@@ -2,62 +2,73 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9BB542820
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jun 2022 09:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F6542839
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jun 2022 09:48:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbiFHHcs (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jun 2022 03:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        id S232646AbiFHHcu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jun 2022 03:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354517AbiFHGTi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 02:19:38 -0400
-Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F47692B2;
-        Tue,  7 Jun 2022 23:12:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VFkRo6B_1654668758;
-Received: from 30.43.105.165(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VFkRo6B_1654668758)
-          by smtp.aliyun-inc.com;
-          Wed, 08 Jun 2022 14:12:39 +0800
-Message-ID: <ec5cf035-9734-29c2-99f4-049b4109e6d6@linux.alibaba.com>
-Date:   Wed, 8 Jun 2022 14:12:36 +0800
+        with ESMTP id S235103AbiFHG5Q (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 02:57:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377F51AA16B;
+        Tue,  7 Jun 2022 23:44:35 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2923EB825AB;
+        Wed,  8 Jun 2022 06:44:33 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB088C34116;
+        Wed,  8 Jun 2022 06:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1654670671;
+        bh=9uI57g5WwTcx50GI4FESw2HeW6aNiYBEucmXEvFRlcQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Z24xoyfRgVkYgNms9ujkTKLIaGkg3c6pJ3exyhEV2mM2OYZ1YOI85tFOZ/D3zTVws
+         LPQupZrIrjvaGocu+UwtlGRVC6ZpYZ+bvzgdxKyQxcAaIukeToZ50Zpeu9u5sHgLxW
+         O7CMst3VMjUZCFxTWydQHU5K2D607koO3LcsKk+o3gRXbiPNxxcc4LCpEFUUExpBeE
+         U5G42tKzGvJUUDCCtUKzm5RFQUoWKsSJgWxULMtuesNZ8JLjV5PGVFJ4dvn6evh2jm
+         VgpmvvdNsD+uYHD5ju1gYUsUGaLRkmpFWTE6EEsEFI9AZ5KpJj++62TuQYVNXWMEln
+         hRcGrp/PSwySw==
+Date:   Tue, 7 Jun 2022 23:44:31 -0700
+From:   Saeed Mahameed <saeed@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        Yevgeny Kliteynik <kliteyn@nvidia.com>,
+        Erez Shitrit <erezsh@mellanox.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Saeed Mahameed <saeedm@nvidia.com>
+Subject: Re: [PATCH mlx5-next 1/3] net/mlx5: Introduce header-modify-pattern
+ ICM properties
+Message-ID: <20220608064431.67k2jec2eue2lccl@sx1>
+References: <cover.1654605768.git.leonro@nvidia.com>
+ <66f4096ce4d4c8451f0b781284c650f97e545d41.1654605768.git.leonro@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.10.0
-Subject: Re: [PATCH -next] RDMA/erdma: Fix return value check in
- erdma_alloc_ucontext()
-Content-Language: en-US
-To:     Wei Yongjun <weiyongjun1@huawei.com>,
-        Kai Shen <kaishen@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-Cc:     linux-rdma@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-References: <20220608021251.990364-1-weiyongjun1@huawei.com>
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-In-Reply-To: <20220608021251.990364-1-weiyongjun1@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <66f4096ce4d4c8451f0b781284c650f97e545d41.1654605768.git.leonro@nvidia.com>
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
+On 07 Jun 15:47, Leon Romanovsky wrote:
+>From: Yevgeny Kliteynik <kliteyn@nvidia.com>
+>
+>Added new fields for device memory capabilities, in order to
+>support creation of ICM memory for modify header patterns.
+>
+>Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
+>Signed-off-by: Yevgeny Kliteynik <kliteyn@nvidia.com>
+>Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
 
+Acked-by: Saeed Mahameed <saeedm@nvidia.com>
 
-On 6/8/22 10:12 AM, Wei Yongjun wrote:
-> Fix the return value check which testing the wrong variable
-> in erdma_alloc_ucontext().
-> 
-> Fixes: c4612e83c14b ("RDMA/erdma: Add verbs implementation")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-
-
-Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
-
-Thanks.
