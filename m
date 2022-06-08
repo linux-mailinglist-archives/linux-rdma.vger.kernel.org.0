@@ -2,73 +2,69 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD2DA542703
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jun 2022 08:58:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C0354272C
+	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jun 2022 08:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234132AbiFHFEd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jun 2022 01:04:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
+        id S234381AbiFHGBJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jun 2022 02:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbiFHFDY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 01:03:24 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B68372497;
-        Tue,  7 Jun 2022 18:55:20 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4LHqyq71Q9z16JVQ;
-        Wed,  8 Jun 2022 09:54:11 +0800 (CST)
-Received: from CHINA (10.175.102.38) by canpemm500009.china.huawei.com
- (7.192.105.203) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Wed, 8 Jun
- 2022 09:54:29 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>, Cheng Xu <chengyou@linux.alibaba.com>,
-        Kai Shen <kaishen@linux.alibaba.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] RDMA/erdma: Fix return value check in erdma_alloc_ucontext()
-Date:   Wed, 8 Jun 2022 02:12:51 +0000
-Message-ID: <20220608021251.990364-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+        with ESMTP id S238718AbiFHFwB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 01:52:01 -0400
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA156703F9;
+        Tue,  7 Jun 2022 20:36:13 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0VFj6p37_1654659370;
+Received: from 30.43.105.165(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VFj6p37_1654659370)
+          by smtp.aliyun-inc.com;
+          Wed, 08 Jun 2022 11:36:11 +0800
+Message-ID: <ef94d5de-da12-a894-8ff3-af7ecf9d568a@linux.alibaba.com>
+Date:   Wed, 8 Jun 2022 11:36:07 +0800
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.10.0
+Subject: Re: [PATCH -next] RDMA/erdma: remove unneeded semicolon
+Content-Language: en-US
+To:     Yang Li <yang.lee@linux.alibaba.com>,
+        "jgg@ziepe.ca" <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>
+Cc:     kaishen@linux.alibaba.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20220608005534.76789-1-yang.lee@linux.alibaba.com>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20220608005534.76789-1-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix the return value check which testing the wrong variable
-in erdma_alloc_ucontext().
 
-Fixes: c4612e83c14b ("RDMA/erdma: Add verbs implementation")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- drivers/infiniband/hw/erdma/erdma_verbs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/erdma/erdma_verbs.c b/drivers/infiniband/hw/erdma/erdma_verbs.c
-index 5516f7ee5f1e..1bb36b570c5d 100644
---- a/drivers/infiniband/hw/erdma/erdma_verbs.c
-+++ b/drivers/infiniband/hw/erdma/erdma_verbs.c
-@@ -1225,7 +1225,7 @@ int erdma_alloc_ucontext(struct ib_ucontext *ibctx, struct ib_udata *udata)
- 
- 	ctx->rq_db_mmap_entry = erdma_user_mmap_entry_insert(
- 		ctx, (void *)ctx->rdb, PAGE_SIZE, ERDMA_MMAP_IO_NC, &uresp.rdb);
--	if (!ctx->sq_db_mmap_entry) {
-+	if (!ctx->rq_db_mmap_entry) {
- 		ret = -EINVAL;
- 		goto err_out;
- 	}
+On 6/8/22 8:55 AM, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./drivers/infiniband/hw/erdma/erdma_qp.c:254:3-4: Unneeded semicolon
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
+Reviewed-by: Cheng Xu <chengyou@linux.alibaba.com>
+
+Thanks.
+
+
+Jason,
+
+BTW, are this and other two patches for erdma posted today parts of
+the static checker reports which you mentioned in [1] ? If so, I think I
+should re-post the v10 patches including the fixes ?
+
+Thanks,
+Cheng Xu
+
+[1] https://lore.kernel.org/linux-rdma/20220606154754.GA645238@nvidia.com/
