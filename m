@@ -2,142 +2,89 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC62543D4B
-	for <lists+linux-rdma@lfdr.de>; Wed,  8 Jun 2022 22:06:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCA5254413C
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jun 2022 04:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235852AbiFHUFg (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 8 Jun 2022 16:05:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59458 "EHLO
+        id S230391AbiFICGb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 8 Jun 2022 22:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234345AbiFHUFc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 16:05:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B050830F1FD;
-        Wed,  8 Jun 2022 13:05:31 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E6A2E61C7A;
-        Wed,  8 Jun 2022 20:05:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DF6DC3411C;
-        Wed,  8 Jun 2022 20:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654718730;
-        bh=rfRZy5bClEZQrtsAwixBq183XD7OTaOrJsESf+FrZDg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X3WgKwZMMseBSsmZpKfcpL2sgAw7qg3ibOYffR2abC0MFIfyEv2l0To9SNeD8fKk5
-         piUKTM1hB4CgQYsoPaYDoX3joaKjyEsAVz5AY4NW+9/B4iGj7v9s7VRWSrFMar1IdD
-         aL0Cq+joN4MoISoTF4GjWtIihOm54sRhBRx5qhrH4ZYIXXy1cg2Nw0a/RuryGhSLg2
-         lqbP8MxDKKOCpqJzSFCJ3wPoIY8dyFL1HvhAIcnViQknFYFvXkSKmDAZ0gFoHG/v9n
-         icS/6pxFAF1cihOW1IY/blFkB2TRqPRhcPKyn5dQfnqzWKnBzNfS1INwKGfIkLbL4y
-         paWoGcxdeEzmg==
-From:   Saeed Mahameed <saeed@kernel.org>
-To:     Leon Romanovsky <leonro@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Ofer Levi <oferle@nvidia.com>
-Subject: [PATCH mlx5-next 6/6] net/mlx5: Add bits and fields to support enhanced CQE compression
-Date:   Wed,  8 Jun 2022 13:04:52 -0700
-Message-Id: <20220608200452.43880-7-saeed@kernel.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220608200452.43880-1-saeed@kernel.org>
-References: <20220608200452.43880-1-saeed@kernel.org>
+        with ESMTP id S229752AbiFICGa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 8 Jun 2022 22:06:30 -0400
+Received: from out30-56.freemail.mail.aliyun.com (out30-56.freemail.mail.aliyun.com [115.124.30.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1771E4424
+        for <linux-rdma@vger.kernel.org>; Wed,  8 Jun 2022 19:06:28 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R341e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0VFpDyjD_1654740384;
+Received: from 30.43.106.59(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VFpDyjD_1654740384)
+          by smtp.aliyun-inc.com;
+          Thu, 09 Jun 2022 10:06:25 +0800
+Message-ID: <c55b6b3b-ebaf-390a-184a-cd14638d6383@linux.alibaba.com>
+Date:   Thu, 9 Jun 2022 10:06:22 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.10.0
+Subject: Re: [PATCH for-next v10 00/11] Elastic RDMA Adapter (ERDMA) driver
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com,
+        BMT@zurich.ibm.com
+References: <20220608104320.53066-1-chengyou@linux.alibaba.com>
+ <20220608115400.GK3932382@ziepe.ca>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <20220608115400.GK3932382@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Ofer Levi <oferle@nvidia.com>
 
-Expose ifc bits and add needed structure fields and methods to
-support enhanced CQE compression feature.
-The enhanced CQE compression feature improves cpu utiliziation with
-better packet latency from nic to host.
 
-Signed-off-by: Ofer Levi <oferle@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
----
- include/linux/mlx5/device.h   | 16 +++++++++++++++-
- include/linux/mlx5/mlx5_ifc.h |  7 +++++--
- 2 files changed, 20 insertions(+), 3 deletions(-)
+On 6/8/22 7:54 PM, Jason Gunthorpe wrote:
+> On Wed, Jun 08, 2022 at 06:43:09PM +0800, Cheng Xu wrote:
+>> Hello all,
+>>
+>> This v10 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
+>> which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
+>> userspace provider has already been created [1].
+>>
+>> ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+>> environment, initially offered in g7re instance. It can improve the
+>> efficiency of large-scale distributed computing and communication
+>> significantly and expand dynamically with the cluster scale of Alibaba
+>> Cloud.
+>>
+>> ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+>> works in the VPC network environment (overlay network), and uses iWarp
+>> transport protocol. ERDMA supports reliable connection (RC). ERDMA also
+>> supports both kernel space and user space verbs. Now we have already
+>> supported HPC/AI applications with libfabric, NoF and some other internal
+>> verbs libraries, such as xrdma, epsl, etc,.
+>>
+>> For the ECS instance with RDMA enabled, our MOC hardware generates two
+>> kinds of PCI devices: one for ERDMA, and one for the original net device
+>> (virtio-net). They are separated PCI devices.
+>>
+>> Fixed issues in v10:
+>> - Remove unneeded semicolon in erdma_qp.c reported by Abcci Robot.
+>> - Remove duplicated include in erdma_cm.c reported by Abcci Robot.
+>> - Fix return value check in erdma_alloc_ucontext() reported by Hulk
+>>    Robot.
+>> - Sort the include headers.
+> 
+> I updated it, but please wait longer before sending v11.
+> 
+> Jason
 
-diff --git a/include/linux/mlx5/device.h b/include/linux/mlx5/device.h
-index 95a4fa0fd40a..b5f58fd37a0f 100644
---- a/include/linux/mlx5/device.h
-+++ b/include/linux/mlx5/device.h
-@@ -822,7 +822,10 @@ struct mlx5_cqe64 {
- 	__be32		timestamp_l;
- 	__be32		sop_drop_qpn;
- 	__be16		wqe_counter;
--	u8		signature;
-+	union {
-+		u8	signature;
-+		u8	validity_iteration_count;
-+	};
- 	u8		op_own;
- };
- 
-@@ -854,6 +857,11 @@ enum {
- 	MLX5_CQE_FORMAT_CSUM_STRIDX = 0x3,
- };
- 
-+enum {
-+	MLX5_CQE_COMPRESS_LAYOUT_BASIC = 0,
-+	MLX5_CQE_COMPRESS_LAYOUT_ENHANCED = 1,
-+};
-+
- #define MLX5_MINI_CQE_ARRAY_SIZE 8
- 
- static inline u8 mlx5_get_cqe_format(struct mlx5_cqe64 *cqe)
-@@ -866,6 +874,12 @@ static inline u8 get_cqe_opcode(struct mlx5_cqe64 *cqe)
- 	return cqe->op_own >> 4;
- }
- 
-+static inline u8 get_cqe_enhanced_num_mini_cqes(struct mlx5_cqe64 *cqe)
-+{
-+	/* num_of_mini_cqes is zero based */
-+	return get_cqe_opcode(cqe) + 1;
-+}
-+
- static inline u8 get_cqe_lro_tcppsh(struct mlx5_cqe64 *cqe)
- {
- 	return (cqe->lro.tcppsh_abort_dupack >> 6) & 1;
-diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index 585d246cef3b..e01148781d57 100644
---- a/include/linux/mlx5/mlx5_ifc.h
-+++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -1736,7 +1736,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
- 	u8	   log_max_dci_errored_streams[0x5];
- 	u8	   reserved_at_598[0x8];
- 
--	u8         reserved_at_5a0[0x13];
-+	u8         reserved_at_5a0[0x10];
-+	u8         enhanced_cqe_compression[0x1];
-+	u8         reserved_at_5b1[0x2];
- 	u8         log_max_dek[0x5];
- 	u8         reserved_at_5b8[0x4];
- 	u8         mini_cqe_resp_stride_index[0x1];
-@@ -4136,7 +4138,8 @@ struct mlx5_ifc_cqc_bits {
- 	u8         cqe_comp_en[0x1];
- 	u8         mini_cqe_res_format[0x2];
- 	u8         st[0x4];
--	u8         reserved_at_18[0x8];
-+	u8         reserved_at_18[0x6];
-+	u8         cqe_compression_layout[0x2];
- 
- 	u8         reserved_at_20[0x20];
- 
--- 
-2.36.1
+Got it, and I will wait longer.
 
+Thanks,
+Cheng Xu
