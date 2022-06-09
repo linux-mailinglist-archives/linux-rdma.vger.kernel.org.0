@@ -2,223 +2,139 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E146544B33
-	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jun 2022 14:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D049544DCD
+	for <lists+linux-rdma@lfdr.de>; Thu,  9 Jun 2022 15:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242528AbiFIMDc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 9 Jun 2022 08:03:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
+        id S233290AbiFINgR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 9 Jun 2022 09:36:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbiFIMDc (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jun 2022 08:03:32 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B7568FAD
-        for <linux-rdma@vger.kernel.org>; Thu,  9 Jun 2022 05:03:30 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id o68so17524897qkf.13
-        for <linux-rdma@vger.kernel.org>; Thu, 09 Jun 2022 05:03:30 -0700 (PDT)
+        with ESMTP id S239593AbiFINgP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 9 Jun 2022 09:36:15 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC594B870
+        for <linux-rdma@vger.kernel.org>; Thu,  9 Jun 2022 06:36:13 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id n10so47552809ejk.5
+        for <linux-rdma@vger.kernel.org>; Thu, 09 Jun 2022 06:36:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DinoQkxtsFggwn03fieMs2CFMhruMMTyGaVrm/GIj4w=;
-        b=FYEeSP2Oip9CqenHNojqET9XDZ6TmhP2qgiA6dJFRhe/2RtQLilTtyH4vQVX1JkDFv
-         qQ4tNW4j7GxxybHiBxvoCR9j/eJ+Na0KjLx+lb6CM58jv/11exIm5SliIXmeuj13qotU
-         LrxJIUwTSjeuZRCK5y95FDKSzBWnd1GEArSr3c6V67RNe2kwry47/jNMAHNCGz7KyOpI
-         asvG20VZ8uxSh/4JeMj15eHuMzme+ZbJCc02HnChbDAM0z087u68Fj79AYJxyAGW+01P
-         DafQiL13Kfofsv0CoYhHvN1IDPrgvsQuzruK97WEy8VurN/aYHQymwLLNNFhVOc/xuTu
-         zAyA==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aviE7mHKVUZ00EzCDsiL0+rxTiLNCOx2+AvKoknl1yc=;
+        b=oAP3/xXbwivou1cjC5brhFAWakoZZHqpGTypSiDS8lnRUU47sw33UkrgBipx9oudEI
+         /8H2Pc3TSWuN0noV33KZ6OJC3YkRVxXGAggSX6GqOM+MXYxdL9BaMj3Fb+NN3C3SiHFu
+         7oHRVDuDmdXd9XT+6j2lVLF1m18QP81Nah503Anzy3AIli0hR5XpzmYqh3n6loNjfSwq
+         yI8IN1KtRVJihDSAZF9mEgFO6/YbwwUVSd1JDofm9pKGR4nimLFjU0kbrzcAmcFXqnRS
+         rXVr+cp3fdKwMZdIOTV8wt9zhK6+zypyQMabzGfRxbvbggAGplt4nU/uGg7YIET5W42E
+         Uw6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DinoQkxtsFggwn03fieMs2CFMhruMMTyGaVrm/GIj4w=;
-        b=5JVBWu+6E5akJq/pdRqP1fbjYMcbxMAnuvDE3wnKeMnJhJKaQ8+gwaQgaIIOAZQd12
-         BchY35Oh1pUl+7y6tGkY5sY22OxK+P2xRQGVAXGwn8snnZIKUye6zzArM3j3Zlw2V5u/
-         6HxRnDm972zUjLlEsiNoSae5uMn7Q12j8+BbbzreEruD8Ozl4/Lz/dfQFJoLEmrRQ6q9
-         wN22qkP0IUQsbPKPLigzvL3Zx4rmKZigNw8r4dBVUVLCi/Sx2Wyyc/Ey9fw2jd+xo3oV
-         k0XzZmR7c4gka/6msJDYQcRulOyKy9ulJUJkdVKBjrdeiSaOz3WthZqegL0/Z6e8k5aZ
-         oE1g==
-X-Gm-Message-State: AOAM5326ao8FiK+7sS61r3PqyOCDTy3TKR9qFKRsjcTAXKvWxR3woDJv
-        tU+9qPUsQLFo4KfSb+CxuieA/zyCIh32xF63
-X-Google-Smtp-Source: ABdhPJx6hlEwY0OhVPEf7qgX8VTNzpMGAf+mnvnt2yJRb2AHUIG/MN7JRQGghbHWuQMYWEz+oB4R6A==
-X-Received: by 2002:a05:620a:28d6:b0:6a6:6c9c:ca9e with SMTP id l22-20020a05620a28d600b006a66c9cca9emr25103391qkp.518.1654776208738;
-        Thu, 09 Jun 2022 05:03:28 -0700 (PDT)
-Received: from lb01533.fkb.profitbricks.net ([85.214.13.132])
-        by smtp.gmail.com with ESMTPSA id v186-20020a3793c3000000b0069fc13ce1f3sm18252222qkd.36.2022.06.09.05.03.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jun 2022 05:03:27 -0700 (PDT)
-From:   Md Haris Iqbal <haris.phnx@gmail.com>
-To:     linux-rdma@vger.kernel.org
-Cc:     bvanassche@acm.org, leon@kernel.org, jgg@ziepe.ca,
-        haris.iqbal@ionos.com, jinpu.wang@ionos.com,
-        aleksei.marov@ionos.com, Md Haris Iqbal <haris.phnx@gmail.com>,
-        rpearsonhpe@gmail.com
-Subject: [PATCH] RDMA/rxe: Split rxe_invalidate_mr into local and remote versions
-Date:   Thu,  9 Jun 2022 14:03:22 +0200
-Message-Id: <20220609120322.144315-1-haris.phnx@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=aviE7mHKVUZ00EzCDsiL0+rxTiLNCOx2+AvKoknl1yc=;
+        b=5X8glbF5Ty4f4xSlBGIEbYWL5dzrFiMK7uw/IbjN9Tdd5ioUkiA/pOcHbQJv41Kt6e
+         E/pTwv/5ESsgCyyIaUXUEYWuyQvW0cFctxV3/CQudrkdqzdNQtSv7VJ0yhsmi7bLiZN1
+         pSzeftm+CkkpDxmrf629diNINGr8rQd3Dl/Pyh5m8b0idR2JkVkwDrVktKUQG4DUe0Pv
+         jP61vSrC14Y+l06iJQo2EpvpVJyECS7yuRxiOdiJblTwjNZTJcq59nC1mOPZrhmjS1bD
+         T15+ZBirripCLQsJ3kPDoyJDDaEtflsssoaBRQJhma5J2HFYYH46/TOzcZy4wNLSDCQC
+         iZYw==
+X-Gm-Message-State: AOAM532QxFYcHvcwUjGdjesfX2qbwVRan4bg0TpW7y0ixMIHbwpcnI4N
+        VBUOJ+PNoWJ1l/HYOYBVxLlBMw4XgDDmiB62Qs8=
+X-Google-Smtp-Source: ABdhPJxCAs8xWBIFtF8AUu6NWxlXFDnDLBJOrRIJ1SFsB9tCZbBUAWtV8nEiW5bE5gjpffdMd6gijIYQXpjsGbPRLtQ=
+X-Received: by 2002:a17:907:9813:b0:711:d5ac:b9ef with SMTP id
+ ji19-20020a170907981300b00711d5acb9efmr17300322ejc.95.1654781772119; Thu, 09
+ Jun 2022 06:36:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Received: by 2002:a54:34c7:0:0:0:0:0 with HTTP; Thu, 9 Jun 2022 06:36:11 -0700 (PDT)
+From:   Cheng Lee <clee23916@gmail.com>
+Date:   Thu, 9 Jun 2022 15:36:11 +0200
+Message-ID: <CAAUA_X9njiZAFw_ypP5H54wKZEnzL1WzC4+=t2NxL9JEuh-Grg@mail.gmail.com>
+Subject: GREETINGS,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.0 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
+        BAYES_50,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,HK_SCAM,LOTS_OF_MONEY,
+        MONEY_FRAUD_8,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_MONEY_PERCENT,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,URG_BIZ autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
+        *      https://www.dnswl.org/, no trust
+        *      [2a00:1450:4864:20:0:0:0:630 listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [clee23916[at]gmail.com]
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [clee23916[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        *  0.0 LOTS_OF_MONEY Huge... sums of money
+        *  0.0 HK_SCAM No description available.
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.6 URG_BIZ Contains urgent matter
+        *  0.0 T_MONEY_PERCENT X% of a lot of money for you
+        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
+        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
+        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Currently rxe_invalidate_mr does invalidate for both local ops, and remote
-ones. This means that MR being invalidated is compared with rkey for both,
-which is incorrect. For local invalidate, comparison should happen with
-lkey, and for the remote one, it should happen with rkey.
+Greetings,
 
-This commit splits the rxe_invalidate_mr into local and remote versions.
-Each of them does comparison the right way as described above (with lkey
-for local, and rkey for remote).
+Assalam alaikum,
+I have a proposal for you, however is not mandatory nor will I in any
+manner compel you to honor against your will. I am Mr Chen Lee, I am a business
+partners to former executive director of Arab Tunisian Bank here in Tunisia;
 
-Fixes: 3902b429ca14 ("RDMA/rxe: Implement invalidate MW operations")
-Cc: rpearsonhpe@gmail.com
-Signed-off-by: Md Haris Iqbal <haris.phnx@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_loc.h  |  3 +-
- drivers/infiniband/sw/rxe/rxe_mr.c   | 59 +++++++++++++++++++++-------
- drivers/infiniband/sw/rxe/rxe_req.c  |  2 +-
- drivers/infiniband/sw/rxe/rxe_resp.c |  2 +-
- 4 files changed, 49 insertions(+), 17 deletions(-)
+HE retired A year and 7 months ago after putting in 28 years of
+meticulous service. During his days with Arab Tunisian Bank, I was the
+personal account officer and one of the financial advisers to Mr. Zine
+Al-Abidine Ben Ali the past Tunisian President in self exile at Saudi
+Arabia. During his tryer period he instructed me to move all his
+investment in my care which consists of US$115M and 767KG of gold out
+of the Gulf States for safe keeping; and that I successfully did by
+moving US$50M to Madrid Spain, US$50M to Dubai United Arab Emirate,
+US$15M to Burkina Faso and the 767KG of gold to Accra Ghana in West
+Africa as an anonymous deposits, so that the funds will in no way to
+be traced to him. He has instructed me to find an investor who would
+stand as the beneficiary of the fund and the gold; and claim it for
+further investment.
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
-index 0e022ae1b8a5..4da57abbbc8c 100644
---- a/drivers/infiniband/sw/rxe/rxe_loc.h
-+++ b/drivers/infiniband/sw/rxe/rxe_loc.h
-@@ -77,7 +77,8 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 			 enum rxe_mr_lookup_type type);
- int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
- int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
--int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
-+int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey);
-+int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey);
- int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
- int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
- int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
-diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
-index fc3942e04a1f..1c7179dd92eb 100644
---- a/drivers/infiniband/sw/rxe/rxe_mr.c
-+++ b/drivers/infiniband/sw/rxe/rxe_mr.c
-@@ -576,41 +576,72 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
- 	return mr;
- }
- 
--int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
-+static int rxe_invalidate_mr(struct rxe_mr *mr)
-+{
-+	if (atomic_read(&mr->num_mw) > 0) {
-+		pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
-+			__func__);
-+		return -EINVAL;
-+	}
-+
-+	if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
-+		pr_warn("%s: mr->type (%d) is wrong type\n", __func__, mr->type);
-+		return -EINVAL;
-+	}
-+
-+	mr->state = RXE_MR_STATE_FREE;
-+	return 0;
-+}
-+
-+int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey)
- {
- 	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
- 	struct rxe_mr *mr;
- 	int ret;
- 
--	mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
-+	mr = rxe_pool_get_index(&rxe->mr_pool, lkey >> 8);
- 	if (!mr) {
--		pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
-+		pr_err("%s: No MR for lkey %#x\n", __func__, lkey);
- 		ret = -EINVAL;
- 		goto err;
- 	}
- 
--	if (rkey != mr->rkey) {
--		pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
--			__func__, rkey, mr->rkey);
-+	if (lkey != mr->lkey) {
-+		pr_err("%s: lkey (%#x) doesn't match mr->lkey (%#x)\n",
-+			__func__, lkey, mr->lkey);
- 		ret = -EINVAL;
- 		goto err_drop_ref;
- 	}
- 
--	if (atomic_read(&mr->num_mw) > 0) {
--		pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
--			__func__);
-+	ret = rxe_invalidate_mr(mr);
-+
-+err_drop_ref:
-+	rxe_put(mr);
-+err:
-+	return ret;
-+}
-+
-+int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey)
-+{
-+	struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
-+	struct rxe_mr *mr;
-+	int ret;
-+
-+	mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
-+	if (!mr) {
-+		pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
- 		ret = -EINVAL;
--		goto err_drop_ref;
-+		goto err;
- 	}
- 
--	if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
--		pr_warn("%s: mr->type (%d) is wrong type\n", __func__, mr->type);
-+	if (rkey != mr->rkey) {
-+		pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
-+			__func__, rkey, mr->rkey);
- 		ret = -EINVAL;
- 		goto err_drop_ref;
- 	}
- 
--	mr->state = RXE_MR_STATE_FREE;
--	ret = 0;
-+	ret = rxe_invalidate_mr(mr);
- 
- err_drop_ref:
- 	rxe_put(mr);
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 9d98237389cf..e7dd9738a255 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -550,7 +550,7 @@ static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
- 		if (rkey_is_mw(rkey))
- 			ret = rxe_invalidate_mw(qp, rkey);
- 		else
--			ret = rxe_invalidate_mr(qp, rkey);
-+			ret = rxe_invalidate_mr_local(qp, rkey);
- 
- 		if (unlikely(ret)) {
- 			wqe->status = IB_WC_LOC_QP_OP_ERR;
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index f4f6ee5d81fe..01411280cd73 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -818,7 +818,7 @@ static int invalidate_rkey(struct rxe_qp *qp, u32 rkey)
- 	if (rkey_is_mw(rkey))
- 		return rxe_invalidate_mw(qp, rkey);
- 	else
--		return rxe_invalidate_mr(qp, rkey);
-+		return rxe_invalidate_mr_remote(qp, rkey);
- }
- 
- /* Executes a new request. A retried request never reach that function (send
--- 
-2.25.1
+Consequent upon the above, my proposal is that I would like you as a
+foreigner to stand in as the beneficiary of this fund and the gold
+which I have successfully moved outside the country and provide an
+account overseas where this said fund will be transferred into. It is
+a careful network and my voluntary retirement from the Arab Tunisian
+Bank is to ensure a hitch-free operation as all modalities for you to
+stand as beneficiary and owner of the deposits has been perfected by
+me. Mr. Zine al-Abidine Ben Ali will offer you 20% of the total
+investment if you can be the investor and claim this deposits in Spain
+and Burkina Faso as the beneficiary.
 
+
+Now my questions are:-
+
+1. Can you handle this transaction?
+2. Can I give you this trust?
+
+Consider this and get back to me as soon as possible so that I can
+give you more details regarding this transaction. Finally, it is my
+humble request that the information as contained herein be accorded
+the necessary attention, urgency as well as the secrecy it deserves
+I expect your urgent response if you can handle this project.
+
+Respectfully yours,
+From:Mr Chen Lee.
