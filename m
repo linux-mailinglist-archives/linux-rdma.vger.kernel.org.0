@@ -2,139 +2,231 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A90546A67
-	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jun 2022 18:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B477F546A8C
+	for <lists+linux-rdma@lfdr.de>; Fri, 10 Jun 2022 18:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345716AbiFJQcu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 10 Jun 2022 12:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S1349655AbiFJQfd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 10 Jun 2022 12:35:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240625AbiFJQct (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jun 2022 12:32:49 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A87E56B15
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jun 2022 09:32:46 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id x38so2027053ybd.9
-        for <linux-rdma@vger.kernel.org>; Fri, 10 Jun 2022 09:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:sender:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=0XYuJwlWcPhF5wKwZj6AX0M1ehVlcZ8wjqHIDg46ZGY=;
-        b=YGb7T13IJ8UiqfUJsmv02nu9YXnSJcbAUt/Mw1b+6ond6Dc2qqxiyORhyo3av0M89s
-         9OcHBOtfbbrRc9cquT7RcjEQpvQa8VVX8YZOZj7QBiGS2dsajxO5Y/+BsgU+M7MgPMiM
-         pKT7ohn/HbmAeM6/yxR+dSbQSZEx3cImo7f4ikdZC0NhAAKeGRRcvpe5I6I5qjkdYfjp
-         ALRdVMVwT08KL5DBr4wUVfSvPEv4IIladqD1EdLJ+Iy9c7POvAZJwvM29n4D6Zxx7iMg
-         WRafBNmnTTDXsUKpZ+d+XQOE55IB1JLiIrAoQ1+Tt6YxeDtP/dG/SdhUVnHCwkkKT+Tm
-         Fm0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=0XYuJwlWcPhF5wKwZj6AX0M1ehVlcZ8wjqHIDg46ZGY=;
-        b=17QaJWLL5vFBO04MDQgWCBNAWl8vxZ9uyVpMwwM/nF+Mslsjbc/mOxVhG3wCW+MUVc
-         s/V9s8+YXvkwNfArOUQPHqglWyvODeppwSTZK4mZfYSmZvIZb79bM63q0WfulC70Blzg
-         f6HInpegMakuOg5bsonSKm13FvBKELW5lKdnEzFSjyjONryvZ/0kcfnEkzqbD38oudpe
-         MgsJey7lqRp2+qWiQWKtkttehX32q3yX7uVdrqTzkIzRANTeNu5mJ3H0xDz+0mBsbd18
-         OG826C0NrsTZgikl3j7IXQdbtFYAmG1MmhfQ9rXuDU3pdER3Wdy0PXA7/i1eqUKTRWKR
-         kRJA==
-X-Gm-Message-State: AOAM530tYp713l+LB74rhw9dXRRv9EGOUU/tmqRwrghEr3xUr5HD3VlF
-        Avt4zRP2l9QK1v/ipk4eoeIJR8cUhQFx4nSCewU=
-X-Google-Smtp-Source: ABdhPJwax1n8gVqAuKV+ceFuVHBEqDyXMZ25+fmnz7g3HqM17F6VLNri5lzclLDgJw8R7/qGGvkPhTKWnw5QPNso4k4=
-X-Received: by 2002:a5b:b:0:b0:663:f6b5:e66b with SMTP id a11-20020a5b000b000000b00663f6b5e66bmr14723467ybp.400.1654878765503;
- Fri, 10 Jun 2022 09:32:45 -0700 (PDT)
+        with ESMTP id S1349732AbiFJQfL (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 10 Jun 2022 12:35:11 -0400
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE1656F83
+        for <linux-rdma@vger.kernel.org>; Fri, 10 Jun 2022 09:34:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1654878887; x=1686414887;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=soOMFLa592DzBmgmRwLis9x/6MzcvUnBqLoDLZj2OO0=;
+  b=dD8bdIBPgwyzsm73PZPEaVVsy/7XTgeRq3rGOpYeNLweIA9VUOKJFRDe
+   stbOm251GE4RuMop/b+EbLSs6JQbafQIasa2ZfSktrvxkR4jfvpCVZf40
+   rntBGZ5t9MUkKtgfBVbwJIsXJ0p2H0AzQdQJ0PG+xPxqyHvyu9xSR2Tb/
+   soAGqNt7BG4Ym2zA4xm6cygSb3pdII0Fewqn+0JzhICtjaCdqG8+YSHVU
+   nHcJKL5/BAHTpr2i+tQBGuvfHo8fKJSG24tF1avuB5yKzQpxriAmzQpWH
+   6G5lZLl53fhSuKtXT1UZfD71/VuztpjmjSLGijImRQazN/oxz/tS8+ju4
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10374"; a="266445217"
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
+   d="scan'208";a="266445217"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2022 09:34:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.91,290,1647327600"; 
+   d="scan'208";a="684635086"
+Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 10 Jun 2022 09:34:45 -0700
+Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1nzhav-000I73-2m;
+        Fri, 10 Jun 2022 16:34:45 +0000
+Date:   Sat, 11 Jun 2022 00:34:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Leon Romanovsky <leonro@nvidia.com>
+Cc:     linux-rdma@vger.kernel.org, Jason Gunthorpe <jgg+lists@ziepe.ca>,
+        Doug Ledford <dledford@redhat.com>
+Subject: [rdma:for-rc] BUILD SUCCESS
+ 118f767413ada4eef7825fbd4af7c0866f883441
+Message-ID: <62a3729d.IxJAC0htCBd7uJxg%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Sender: adonald323@gmail.com
-Received: by 2002:a05:7000:8b10:0:0:0:0 with HTTP; Fri, 10 Jun 2022 09:32:45
- -0700 (PDT)
-From:   Dina Mckenna <dinamckenna1894@gmail.com>
-Date:   Fri, 10 Jun 2022 16:32:45 +0000
-X-Google-Sender-Auth: 7HtA3KAngftg8fKmIq7ATJwMLxs
-Message-ID: <CANHbP4O3ktPBLC5xwxvY+_Si8KuoUkpzj-spjV6P6JZeHKWDEw@mail.gmail.com>
-Subject: Please need your urgent assistance,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=6.2 required=5.0 tests=ADVANCE_FEE_5_NEW_MONEY,
-        BAYES_80,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,LOTS_OF_MONEY,MONEY_FRAUD_8,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNDISC_MONEY,URG_BIZ autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [2607:f8b0:4864:20:0:0:0:b32 listed in]
-        [list.dnswl.org]
-        *  2.0 BAYES_80 BODY: Bayes spam probability is 80 to 95%
-        *      [score: 0.9452]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [adonald323[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [dinamckenna1894[at]gmail.com]
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  0.6 URG_BIZ Contains urgent matter
-        *  0.0 MONEY_FRAUD_8 Lots of money and very many fraud phrases
-        *  3.0 ADVANCE_FEE_5_NEW_MONEY Advance Fee fraud and lots of money
-        *  0.6 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: ******
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hello my dear,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git for-rc
+branch HEAD: 118f767413ada4eef7825fbd4af7c0866f883441  RDMA/qedr: Fix reporting QP timeout attribute
 
- I sent this mail praying it will get to you in a good condition of
-health, since I myself are in a very critical health condition in
-which I sleep every night without knowing if I may be alive to see the
-next day. I bring peace and love to you.. It is by the grace of God, I
-had no choice than to do what is lawful and right in the sight of God
-for eternal life and in the sight of man, for witness of God=E2=80=99s merc=
-y
-and glory upon my life. I am Mrs. Dina Howley. Mckenna, a widow. I am
-suffering from a long time brain tumor, It has defiled all forms of
-medical treatment, and right now I have about a few months to leave,
-according to medical experts. The situation has gotten complicated
-recently with my inability to hear proper, am communicating with you
-with the help of the chief nurse herein the hospital, from all
-indication my conditions is really deteriorating and it is quite
-obvious that, according to my doctors they have advised me that I may
-not live too long, Because this illness has gotten to a very bad
-stage. I plead that you will not expose or betray this trust and
-confidence that I am about to repose on you for the mutual benefit of
-the orphans and the less privilege. I have some funds I inherited from
-my late husband, the sum of ($ 11,000,000.00, Eleven Million Dollars).
-Having known my condition, I decided to donate this fund to you
-believing that you will utilize it the way i am going to instruct
-herein. I need you to assist me and reclaim this money and use it for
-Charity works therein your country  for orphanages and gives justice
-and help to the poor, needy and widows says The Lord." Jeremiah
-22:15-16.=E2=80=9C and also build schools for less privilege that will be
-named after my late husband if possible and to promote the word of God
-and the effort that the house of God is maintained. I do not want a
-situation where this money will be used in an ungodly manner. That's
-why I'm taking this decision. I'm not afraid of death, so I know where
-I'm going. I accept this decision because I do not have any child who
-will inherit this money after I die.. Please I want your sincerely and
-urgent answer to know if you will be able to execute this project for
-the glory of God, and I will give you more information on how the fund
-will be transferred to your bank account. May the grace, peace, love
-and the truth in the Word of God be with you and all those that you
-love and care for.
+elapsed time: 4752m
 
-I'm waiting for your immediate reply.
+configs tested: 143
+configs skipped: 3
 
-May God Bless you,
-Mrs. Dina Howley. Mckenna.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm64                               defconfig
+arm64                            allyesconfig
+arm                              allmodconfig
+arm                                 defconfig
+arm                              allyesconfig
+i386                          randconfig-c001
+mips                 randconfig-c004-20220607
+sh                         ap325rxa_defconfig
+arc                     haps_hs_smp_defconfig
+m68k                       m5475evb_defconfig
+nios2                               defconfig
+m68k                          sun3x_defconfig
+powerpc                 mpc8540_ads_defconfig
+arc                      axs103_smp_defconfig
+sparc64                             defconfig
+sh                           sh2007_defconfig
+arm                           viper_defconfig
+sh                           se7206_defconfig
+powerpc                    adder875_defconfig
+sh                         apsh4a3a_defconfig
+sh                          r7785rp_defconfig
+powerpc                      ppc6xx_defconfig
+arm                        shmobile_defconfig
+parisc                generic-64bit_defconfig
+openrisc                 simple_smp_defconfig
+powerpc                 mpc837x_rdb_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                 mpc834x_itx_defconfig
+alpha                            alldefconfig
+m68k                            mac_defconfig
+arm                       imx_v6_v7_defconfig
+arm                         s3c6400_defconfig
+arm                             ezx_defconfig
+arm                      footbridge_defconfig
+m68k                        mvme147_defconfig
+powerpc                  storcenter_defconfig
+mips                           xway_defconfig
+openrisc                         alldefconfig
+mips                      fuloong2e_defconfig
+x86_64                        randconfig-c001
+arm                  randconfig-c002-20220607
+arm                  randconfig-c002-20220608
+arm                  randconfig-c002-20220609
+ia64                             allmodconfig
+ia64                             allyesconfig
+ia64                                defconfig
+riscv                             allnoconfig
+m68k                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+arc                              allyesconfig
+csky                                defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+h8300                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+s390                             allmodconfig
+parisc                              defconfig
+parisc64                            defconfig
+parisc                           allyesconfig
+s390                             allyesconfig
+sparc                               defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+i386                   debian-10.3-kselftests
+i386                              debian-10.3
+mips                             allyesconfig
+mips                             allmodconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+riscv                    nommu_k210_defconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+powerpc                          allyesconfig
+um                           x86_64_defconfig
+powerpc                           allnoconfig
+powerpc                          allmodconfig
+um                             i386_defconfig
+x86_64                        randconfig-a004
+i386                          randconfig-a003
+i386                          randconfig-a005
+x86_64                        randconfig-a011
+x86_64                        randconfig-a006
+x86_64                        randconfig-a002
+x86_64                        randconfig-a013
+x86_64                        randconfig-a015
+i386                          randconfig-a012
+i386                          randconfig-a014
+i386                          randconfig-a016
+i386                          randconfig-a001
+x86_64                    rhel-8.3-kselftests
+x86_64                                  kexec
+x86_64                              defconfig
+x86_64                           allyesconfig
+x86_64                               rhel-8.3
+x86_64                          rhel-8.3-func
+x86_64                           rhel-8.3-syz
+x86_64                         rhel-8.3-kunit
+
+clang tested configs:
+powerpc              randconfig-c003-20220608
+x86_64                        randconfig-c007
+riscv                randconfig-c006-20220608
+i386                          randconfig-c001
+s390                 randconfig-c005-20220608
+mips                 randconfig-c004-20220608
+arm                  randconfig-c002-20220608
+powerpc              randconfig-c003-20220607
+riscv                randconfig-c006-20220607
+s390                 randconfig-c005-20220607
+mips                 randconfig-c004-20220607
+arm                  randconfig-c002-20220607
+mips                      pic32mzda_defconfig
+arm                         socfpga_defconfig
+powerpc                  mpc866_ads_defconfig
+powerpc                        fsp2_defconfig
+powerpc                          g5_defconfig
+arm64                            allyesconfig
+mips                        maltaup_defconfig
+powerpc                       ebony_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                      katmai_defconfig
+powerpc                 mpc832x_mds_defconfig
+mips                        workpad_defconfig
+powerpc                     akebono_defconfig
+arm                         mv78xx0_defconfig
+arm                         lpc32xx_defconfig
+x86_64                        randconfig-k001
+i386                          randconfig-a002
+i386                          randconfig-a006
+i386                          randconfig-a004
+x86_64                        randconfig-a005
+x86_64                        randconfig-a001
+x86_64                        randconfig-a003
+x86_64                        randconfig-a012
+i386                          randconfig-a011
+x86_64                        randconfig-a014
+x86_64                        randconfig-a016
+hexagon              randconfig-r045-20220609
+s390                 randconfig-r044-20220609
+riscv                randconfig-r042-20220609
+hexagon              randconfig-r041-20220609
+hexagon              randconfig-r045-20220608
+hexagon              randconfig-r041-20220608
+
+-- 
+0-DAY CI Kernel Test Service
+https://01.org/lkp
