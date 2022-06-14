@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4965554A47D
-	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jun 2022 04:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A25654A500
+	for <lists+linux-rdma@lfdr.de>; Tue, 14 Jun 2022 04:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351886AbiFNCHv (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 13 Jun 2022 22:07:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        id S1352513AbiFNCLk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 13 Jun 2022 22:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351839AbiFNCGa (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Jun 2022 22:06:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781E134BB7;
-        Mon, 13 Jun 2022 19:05:47 -0700 (PDT)
+        with ESMTP id S1352745AbiFNCLU (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 13 Jun 2022 22:11:20 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC22C340D6;
+        Mon, 13 Jun 2022 19:07:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 230F4B80AC1;
-        Tue, 14 Jun 2022 02:05:46 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B520EC385A5;
-        Tue, 14 Jun 2022 02:05:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 2920560C15;
+        Tue, 14 Jun 2022 02:06:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97A9BC36AFF;
+        Tue, 14 Jun 2022 02:06:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655172344;
-        bh=h+I/OIk6amGoE9Whln4FBgZtBKD11xiw7L1RibirljI=;
+        s=k20201202; t=1655172411;
+        bh=wlx8IVpnV3uzgVLiWFw1A/YnWrKtwDyrE7/A0OAGLxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pryTeqNYBY3V8gfBukuVAEDFJjOx61MwYQ51VP6MqxL/mkBmI07JN3IXdsYDHBo4V
-         oGZUiarY7K05QIcR5RRzk14sHJ0HwrCGIskmcsx0s73msqChLV/h2z/6lhJ1ULtl7n
-         uOhMcjm1SNHwsLwVozVUh7rJ9GFFab/6P9x2xjBSggWKsSwe7rxYEMgn3opxYj7BUT
-         Oza/Y8n6iqKs8MnFHk3i36etg6/NoVeFUcP30GvYu6pIK5vZ4Kzxn23KOHiibBSJL3
-         aGJtHV1Lmt7GynJEQWFV5ZbaJUTdvzEvzqxiNsJXOuvv/kwUjIDeEgtfDDPTpRgkZf
-         z3ccb27h14HqQ==
+        b=L6FxctM/LtYmB3TimmVDv+xTGHBU34pUzm9Ao1p70Z1ygjVy7uVoyL1mmnhRstIDj
+         rguoOG4VtEzh5DEXGRA5ix3oDl+SNqINGrI9ToNd2EPIxV3Dppcmg/t50vufug6YKY
+         KO9kLmgVYaBDgYX08rSeJcO40qvgLKcdVeGbm2dUeS0G+svdZEvvRz9s9ylt5IukuQ
+         IlVafT0HfsDmw4DXoBewxcdKYNkByHsLM26Gx5ecO37sANtJBbVdnOJnpQ74KPSGM1
+         cJtEltwWhJ7NfBewwjdJ5XvTQlPGsvtdKuOR8jsy58+rXZt/9MLfzuyownYmMxRalt
+         gZsT+iXpI6YXQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>, saeedm@mellanox.com,
         matanb@mellanox.com, leonro@mellanox.com, netdev@vger.kernel.org,
         linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 37/47] mellanox: mlx5: avoid uninitialized variable warning with gcc-12
-Date:   Mon, 13 Jun 2022 22:04:30 -0400
-Message-Id: <20220614020441.1098348-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.17 33/43] mellanox: mlx5: avoid uninitialized variable warning with gcc-12
+Date:   Mon, 13 Jun 2022 22:05:52 -0400
+Message-Id: <20220614020602.1098943-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220614020441.1098348-1-sashal@kernel.org>
-References: <20220614020441.1098348-1-sashal@kernel.org>
+In-Reply-To: <20220614020602.1098943-1-sashal@kernel.org>
+References: <20220614020602.1098943-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-index 6cad3b72c133..5034833906df 100644
+index 4ddf6b330a44..f61b846d43f1 100644
 --- a/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
 +++ b/drivers/net/ethernet/mellanox/mlx5/core/lag/lag.c
-@@ -561,7 +561,7 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
+@@ -485,7 +485,7 @@ static void mlx5_do_bond(struct mlx5_lag *ldev)
  {
  	struct mlx5_core_dev *dev0 = ldev->pf[MLX5_LAG_P1].dev;
  	struct mlx5_core_dev *dev1 = ldev->pf[MLX5_LAG_P2].dev;
