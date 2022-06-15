@@ -2,148 +2,66 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E278B54BF72
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 03:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D33454BF8C
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 04:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345382AbiFOBwu (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jun 2022 21:52:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49640 "EHLO
+        id S229924AbiFOCDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jun 2022 22:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345288AbiFOBwr (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jun 2022 21:52:47 -0400
-Received: from out30-57.freemail.mail.aliyun.com (out30-57.freemail.mail.aliyun.com [115.124.30.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0CEEE17
-        for <linux-rdma@vger.kernel.org>; Tue, 14 Jun 2022 18:52:43 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VGQPaC0_1655257960;
-Received: from localhost(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VGQPaC0_1655257960)
-          by smtp.aliyun-inc.com;
-          Wed, 15 Jun 2022 09:52:40 +0800
-From:   Cheng Xu <chengyou@linux.alibaba.com>
-To:     jgg@ziepe.ca, leon@kernel.org
-Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
-        chengyou@linux.alibaba.com, tonylu@linux.alibaba.com,
-        BMT@zurich.ibm.com, dan.carpenter@oracle.com
-Subject: [PATCH for-next v11 11/11] RDMA/erdma: Add driver to kernel build environment
-Date:   Wed, 15 Jun 2022 09:52:27 +0800
-Message-Id: <20220615015227.65686-12-chengyou@linux.alibaba.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <20220615015227.65686-1-chengyou@linux.alibaba.com>
-References: <20220615015227.65686-1-chengyou@linux.alibaba.com>
+        with ESMTP id S1345651AbiFOCDV (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jun 2022 22:03:21 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE51C42A25;
+        Tue, 14 Jun 2022 19:03:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E21E619DD;
+        Wed, 15 Jun 2022 02:03:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42144C3411B;
+        Wed, 15 Jun 2022 02:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1655258598;
+        bh=ooQ+boKyWBcdibdOBlQX3Vvw/fy9lQQdF+1pOlITJdE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SfPGWYe/7kSQuIE28xE5KKktHR2JF+mggTTSQmQkNqlbmEN3yUWUdqe1Hn/iJa6kF
+         z/regpz64z8ar5hqFMnRDDpT+gSBr1+i9IDkvXN1trDmsGoliRU5MbQJl4RtWkTOeJ
+         kixxNwRfxQccJf/ZgKYq5KPLtbqU4sNtPkqJM1IeHYUKEu4Cr2InWGPz2IWvKz3I+w
+         WEnvJ4ooeYrIjItguxUPSUA67wPnRRKcWcC1R7sQASG1jBWiC2YCsXWyGwOXaidiDl
+         ZZxPpDdDD76OBuZhJU2B6Z4sK+Zqnk1lLdULpdqFvWLKq+Jtoik3b7CT/52879vF+O
+         PdSdSLaxHYeMw==
+Date:   Tue, 14 Jun 2022 19:03:17 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [GIT PULL][next-next][rdma-next] mlx5-next: updates 2022-06-14
+Message-ID: <20220614190317.7c87d0d5@kernel.org>
+In-Reply-To: <20220614184339.ywrfx6zgxs6bo4mg@sx1>
+References: <20220614184028.51548-1-saeed@kernel.org>
+        <20220614184339.ywrfx6zgxs6bo4mg@sx1>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Add erdma to the kernel build environment, and sort the source
-order in drivers/infiniband/Kconfig.
+On Tue, 14 Jun 2022 11:43:39 -0700 Saeed Mahameed wrote:
+> s/next-next/net-next
+> 
+> net-next patchwork bots won't see this one :/ .. should I re-post ? 
 
-Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
----
- MAINTAINERS                          |  8 ++++++++
- drivers/infiniband/Kconfig           | 15 ++++++++-------
- drivers/infiniband/hw/Makefile       |  1 +
- drivers/infiniband/hw/erdma/Kconfig  | 12 ++++++++++++
- drivers/infiniband/hw/erdma/Makefile |  4 ++++
- 5 files changed, 33 insertions(+), 7 deletions(-)
- create mode 100644 drivers/infiniband/hw/erdma/Kconfig
- create mode 100644 drivers/infiniband/hw/erdma/Makefile
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a6d3bd9d2a8d..e034f1461eb4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -733,6 +733,14 @@ S:	Maintained
- F:	Documentation/i2c/busses/i2c-ali1563.rst
- F:	drivers/i2c/busses/i2c-ali1563.c
- 
-+ALIBABA ELASTIC RDMA DRIVER
-+M:	Cheng Xu <chengyou@linux.alibaba.com>
-+M:	Kai Shen <kaishen@linux.alibaba.com>
-+L:	linux-rdma@vger.kernel.org
-+S:	Supported
-+F:	drivers/infiniband/hw/erdma
-+F:	include/uapi/rdma/erdma-abi.h
-+
- ALIENWARE WMI DRIVER
- L:	Dell.Client.Kernel@dell.com
- S:	Maintained
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 33d3ce9c888e..aa36ac618e72 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -78,20 +78,21 @@ config INFINIBAND_VIRT_DMA
- 	def_bool !HIGHMEM
- 
- if INFINIBAND_USER_ACCESS || !INFINIBAND_USER_ACCESS
--source "drivers/infiniband/hw/mthca/Kconfig"
--source "drivers/infiniband/hw/qib/Kconfig"
-+source "drivers/infiniband/hw/bnxt_re/Kconfig"
- source "drivers/infiniband/hw/cxgb4/Kconfig"
- source "drivers/infiniband/hw/efa/Kconfig"
-+source "drivers/infiniband/hw/erdma/Kconfig"
-+source "drivers/infiniband/hw/hfi1/Kconfig"
-+source "drivers/infiniband/hw/hns/Kconfig"
- source "drivers/infiniband/hw/irdma/Kconfig"
- source "drivers/infiniband/hw/mlx4/Kconfig"
- source "drivers/infiniband/hw/mlx5/Kconfig"
-+source "drivers/infiniband/hw/mthca/Kconfig"
- source "drivers/infiniband/hw/ocrdma/Kconfig"
--source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
--source "drivers/infiniband/hw/usnic/Kconfig"
--source "drivers/infiniband/hw/hns/Kconfig"
--source "drivers/infiniband/hw/bnxt_re/Kconfig"
--source "drivers/infiniband/hw/hfi1/Kconfig"
- source "drivers/infiniband/hw/qedr/Kconfig"
-+source "drivers/infiniband/hw/qib/Kconfig"
-+source "drivers/infiniband/hw/usnic/Kconfig"
-+source "drivers/infiniband/hw/vmw_pvrdma/Kconfig"
- source "drivers/infiniband/sw/rdmavt/Kconfig"
- source "drivers/infiniband/sw/rxe/Kconfig"
- source "drivers/infiniband/sw/siw/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index fba0b3be903e..6b3a88046125 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_INFINIBAND_HFI1)		+= hfi1/
- obj-$(CONFIG_INFINIBAND_HNS)		+= hns/
- obj-$(CONFIG_INFINIBAND_QEDR)		+= qedr/
- obj-$(CONFIG_INFINIBAND_BNXT_RE)	+= bnxt_re/
-+obj-$(CONFIG_INFINIBAND_ERDMA)		+= erdma/
-diff --git a/drivers/infiniband/hw/erdma/Kconfig b/drivers/infiniband/hw/erdma/Kconfig
-new file mode 100644
-index 000000000000..169038e3ceb1
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Kconfig
-@@ -0,0 +1,12 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config INFINIBAND_ERDMA
-+	tristate "Alibaba Elastic RDMA Adapter (ERDMA) support"
-+	depends on PCI_MSI && 64BIT
-+	depends on INFINIBAND_ADDR_TRANS
-+	depends on INFINIBAND_USER_ACCESS
-+	help
-+	  This is a RDMA/iWarp driver for Alibaba Elastic RDMA Adapter(ERDMA),
-+	  which supports RDMA features in Alibaba cloud environment.
-+
-+	  To compile this driver as module, choose M here. The module will be
-+	  called erdma.
-diff --git a/drivers/infiniband/hw/erdma/Makefile b/drivers/infiniband/hw/erdma/Makefile
-new file mode 100644
-index 000000000000..51d2ef91905a
---- /dev/null
-+++ b/drivers/infiniband/hw/erdma/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_INFINIBAND_ERDMA) := erdma.o
-+
-+erdma-y := erdma_cm.o erdma_main.o erdma_cmdq.o erdma_cq.o erdma_verbs.o erdma_qp.o erdma_eq.o
--- 
-2.27.0
-
+Looks like it's in, I'll pull shortly.
