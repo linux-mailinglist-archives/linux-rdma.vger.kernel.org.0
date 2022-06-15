@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01FE854CCE2
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0F054CCF6
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229653AbiFOP3e (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jun 2022 11:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S1351186AbiFOP3m (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jun 2022 11:29:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356340AbiFOP2u (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:50 -0400
+        with ESMTP id S1356483AbiFOP2w (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:52 -0400
 Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721004738E
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:28:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A488726CB
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
         s=42; h=Message-Id:Date:Cc:To:From;
-        bh=CEgEmMjNl8BESZVo+q7Rxw8wDkgp80BAxjvFIYVn9yk=; b=sR1ZWktq+O1YG8Hla5LxeVV7F+
-        ucO//3VHU8HkP8U/e4yCExnT+rAzDU5uCGlBFw8Jl/G+hk1YKgG8cOPyD9DiFzRpsGpGCHIaTl62q
-        Bg7PN0sU+ZYIiWja5atOymBJZZfyLVuzy4s4Zhw/1SZe3cTE0Yz0UMrHoPpUzkM5JbQVKDbrmyx6Q
-        nVMfuePLFiJ3rMBiCfzQHmns5ibAq7TsQNz/BFxK7YhSGdDdkUyZMvhf3mMJBGBj5WDgkcdVPgzfS
-        16F3ETj12Q6NkFK40EwTrnHVxH7pDk9o2vMC9501R9l0rOSLxnfrR5XmMSCvS0RxlSfaN/fFc+L/x
-        9l5sLqm4E6Id8nxUru5jT6LR6dsizFPE1u7MareL54kzVEmHOJTQTOQtz6HHnwI8yMceA5MZpGxZj
-        e29K+KO6lLU5g1kpApJQaMYrnqiQBW4IJdcaYsrVyHE9qFiYKZBzcyMI9LEx8fznBl3+RP0E93Cdp
-        R2OfTip1v8LwILzIcRbqrIZ0;
+        bh=bIGeRwzwO/EQ7FL6FpVkOJbT4Nin7T0rDTCXLOwdI0c=; b=dJf7fbFiVnof5igGhiwdp/mHoA
+        oaPfoBhjGR6Fu84twgI0kURIYlBjTd/jamqP0sf7sC19qwCrSc8txiXLNplbApXOJXzIvToCsRRXu
+        ZBwBs06GB0RRgl6SQRfyhzfy5DIhB+DlRIt2SXsXsydVzz8OFZNyaDpzwuMoeq0fr/tAy1qoRLXre
+        x0vYaCK2XaDOY8tCH7ZnuHaf12iBIA2yCJyJeNtTyyO8OMJD4WfdsBf+a1elQTz2v2IKI3MrE7P3f
+        hfhVNIftiktq250+EJIdGhzCfb/V8+7uAqkxsDp5SlfgLnVa73EJfpKFhU+BkxWCjL9lpiZUCRUo0
+        AqyIXQh1GddbcB3rRnB4hI1PrzszgrYlonyPCgxroEdqxfOH636dZJr/5cT4ugGRWHWu+SIPhKT0E
+        a7tp7nI0frVJe6j7LnpZmRSypRGSHfiULE2frO3L4QcrdC1l0SKlv3Mun8gY29Tn8I1Ujpi4gFXkJ
+        BRY24lCA/2Ujr1p01BBpSiEV;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
         by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
         (Exim)
-        id 1o1UwT-005rw5-03; Wed, 15 Jun 2022 15:28:25 +0000
+        id 1o1UwZ-005rwD-Lg; Wed, 15 Jun 2022 15:28:31 +0000
 From:   Stefan Metzmacher <metze@samba.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
 Cc:     Stefan Metzmacher <metze@samba.org>
-Subject: [PATCH v2 12/14] rdma/siw: start mpa timer before calling siw_send_mpareqrep()
-Date:   Wed, 15 Jun 2022 17:26:50 +0200
-Message-Id: <c5e7cb3b1a47cf7862988ece3bac78c68ccfab48.1655305567.git.metze@samba.org>
+Subject: [PATCH v2 13/14] rdma/siw: call the blocking kernel_bindconnect() just before siw_send_mpareqrep()
+Date:   Wed, 15 Jun 2022 17:26:51 +0200
+Message-Id: <95af035f1608d23f0221c39f5d6278646555e809.1655305567.git.metze@samba.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1655305567.git.metze@samba.org>
 References: <cover.1655305567.git.metze@samba.org>
@@ -49,54 +49,60 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The mpa timer will also span the non-blocking connect
-in the final patch.
+We should build all state before calling kernel_bindconnect().
+This will allow us to go async in the final patch.
 
 Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
 Signed-off-by: Stefan Metzmacher <metze@samba.org>
 Cc: Bernard Metzler <bmt@zurich.ibm.com>
 Cc: linux-rdma@vger.kernel.org
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 66d90fc77cef..279f5acf84d1 100644
+index 279f5acf84d1..74ed2a5a8f47 100644
 --- a/drivers/infiniband/sw/siw/siw_cm.c
 +++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1489,6 +1489,11 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
- 		cep->mpa.hdr.params.pd_len = pd_len;
+@@ -1386,18 +1386,6 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 	if (rv < 0)
+ 		goto error;
+ 
+-	/*
+-	 * NOTE: For simplification, connect() is called in blocking
+-	 * mode. Might be reconsidered for async connection setup at
+-	 * TCP level.
+-	 */
+-	rv = kernel_bindconnect(s, laddr, raddr, id->afonly);
+-	if (rv != 0) {
+-		siw_dbg_qp(qp, "kernel_bindconnect: error %d\n", rv);
+-		goto error;
+-	}
+-	if (siw_tcp_nagle == false)
+-		tcp_sock_set_nodelay(s->sk);
+ 	cep = siw_cep_alloc(sdev);
+ 	if (!cep) {
+ 		rv = -ENOMEM;
+@@ -1494,6 +1482,19 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+ 		goto error;
  	}
  
-+	rv = siw_cm_queue_work(cep, SIW_CM_WORK_MPATIMEOUT);
++	/*
++	 * NOTE: For simplification, connect() is called in blocking
++	 * mode. Might be reconsidered for async connection setup at
++	 * TCP level.
++	 */
++	rv = kernel_bindconnect(s, laddr, raddr, id->afonly);
 +	if (rv != 0) {
++		siw_dbg_qp(qp, "kernel_bindconnect: error %d\n", rv);
 +		goto error;
 +	}
++	if (siw_tcp_nagle == false)
++		tcp_sock_set_nodelay(s->sk);
 +
  	cep->state = SIW_EPSTATE_AWAIT_MPAREP;
  
  	rv = siw_send_mpareqrep(cep, cep->mpa.pdata,
-@@ -1506,11 +1511,6 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
- 		goto error;
- 	}
- 
--	rv = siw_cm_queue_work(cep, SIW_CM_WORK_MPATIMEOUT);
--	if (rv != 0) {
--		goto error;
--	}
--
- 	siw_dbg_cep(cep, "[QP %u]: exit\n", qp_id(qp));
- 	siw_cep_set_free(cep);
- 	return 0;
-@@ -1519,6 +1519,8 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
- 	siw_dbg(id->device, "failed: %d\n", rv);
- 
- 	if (cep) {
-+		siw_cancel_mpatimer(cep);
-+
- 		siw_socket_disassoc(s);
- 		sock_release(s);
- 		cep->sock = NULL;
 -- 
 2.34.1
 
