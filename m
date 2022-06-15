@@ -2,90 +2,124 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D1C54C820
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 14:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D00354CCCA
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:28:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242181AbiFOMH4 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jun 2022 08:07:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39168 "EHLO
+        id S1353475AbiFOP1u (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jun 2022 11:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239284AbiFOMHz (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 08:07:55 -0400
-Received: from gentwo.de (gentwo.de [IPv6:2a02:c206:2048:5042::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DCB71CFDC
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 05:07:53 -0700 (PDT)
-Received: by gentwo.de (Postfix, from userid 1001)
-        id 5F650B00213; Wed, 15 Jun 2022 14:07:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.de; s=default;
-        t=1655294869; bh=NGM6j1UwVvID+seSPP+2pQj5wYV+JsuB6apoOeMIEHE=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=e/uy1zGFCjOBAQbEvqGHhIG4me6QwS9H+hZifeB5cUbAw7CXMAwahNjH1VJD6wZ2D
-         ZfwJ/gQiapE1DT1b50B7zEB8JEyU0Op2yPf2h8EtOOtrsW0yiMujdcMRZYISQkzuuf
-         EIBx8lQT7Mf5LDQTCtEHm/Qr9FD/ZsBx1V3GBrzMR8E/fWroRY3OAX4KSUiletiRCg
-         h6ZEJXSLgYuBPqeeZDlx0zmalrVNfkSjzNFWNbk6PSvuM3gFEvhwdD6wDpaUlzTaQH
-         28ZYSEK8c1lMRxTii5tx0GNUkkXzEBHMoyN8IskbBODYEtf2q3o7bIJ/a6j+0aBi6c
-         ATdVwfCxwgDyg==
-Received: from localhost (localhost [127.0.0.1])
-        by gentwo.de (Postfix) with ESMTP id 5DF81B0017C;
-        Wed, 15 Jun 2022 14:07:49 +0200 (CEST)
-Date:   Wed, 15 Jun 2022 14:07:49 +0200 (CEST)
-From:   Christoph Lameter <cl@gentwo.de>
-To:     Meng Wang <meng@hcdatainc.com>
-cc:     "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: Fail to establish RoCE connectivity after restarting network
- service
-In-Reply-To: <BYAPR10MB2456DF1114106F49AB1A1A42CBAB9@BYAPR10MB2456.namprd10.prod.outlook.com>
-Message-ID: <alpine.DEB.2.22.394.2206151358300.460766@gentwo.de>
-References: <BYAPR10MB2456DF1114106F49AB1A1A42CBAB9@BYAPR10MB2456.namprd10.prod.outlook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        with ESMTP id S1353431AbiFOP1O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:27:14 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D7E6403E3
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+        s=42; h=Message-Id:Date:Cc:To:From;
+        bh=+Y32Wl6FCV1kUINAe5LvZMOBrJqeRWkl2vDxA2k/t08=; b=mKSLPtKCDEgMOtX7vcSBqXwk9C
+        FJ2Fao5kiq9qYF2tMEOB4cD22VUywpRcpS+RmQr3z9/wGxVQOdKyzE2RPSfX7o3DLAH/F8UygSL24
+        81SH/sjBYc2qa8AwBmQ68bNjdVE1ptL93rgVle/05YehKI3L7KAhJ4mWbn9z9U71FY/3K/503XToX
+        c3n78Oxot15PEjTszNZuwyaAL9WkJ4PH9TdYnjv580YmX2nL/XK9x3tGCNkfjyexbXWTYW3h3MPEG
+        XGgmNeYJBtqDJdy4GsioRRQcA1cSUF3MnnR4V7vX+zF/q2zwGA+CzEhkYY4gg96XuIClmpPbk6CEm
+        q3raEitOudLptgt6HQUB092TlWKVXL1ZN7fMpV5wYGZ1i2D6wnm0UG8izAh16kBfSJqL3OeCg9nEq
+        K2KEIWG1Zwblbt4ezFUVhpgLvvEjLrW9WdD29/iC9h2VtME5CvQIHV7aNPrEHMWdnp+vZcmlsKWqg
+        achJ37tmRQUL9ii7ebBWKcmN;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
+        (Exim)
+        id 1o1Uv5-005rsr-9b; Wed, 15 Jun 2022 15:26:59 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Bernard Metzler <bmt@zurich.ibm.com>
+Cc:     Stefan Metzmacher <metze@samba.org>, linux-rdma@vger.kernel.org
+Subject: [PATCH v2 00/14] rdma/siw: implement non-blocking connect
+Date:   Wed, 15 Jun 2022 17:26:38 +0200
+Message-Id: <cover.1655305567.git.metze@samba.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1655248086.git.metze@samba.org>
+References: <cover.1655248086.git.metze@samba.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, 13 Jun 2022, Meng Wang wrote:
+Hi Bernard,
 
-> We found a RoCE connectivity problem in such environment:
-> * two servers with ConnectX4 NICs (model: MCX414A-BCAT)
+as written a few month ago, I have a patchset with a lot
+of fixes for siw.ko.
 
-Thats pretty early ROCE hardware.
+As requested I'm only send isolated chunks for easier review.
 
-> * servers are connected to one SX6036 switch where flow control is enabled
+This is the first chunk adressing deadlocks in siw_connect()
 
-An Ethernet to IB gateway. And we are doing ROCE???
+The RDMA application layer expects rdma_connect() to be non-blocking
+as the completion is handled via RDMA_CM_EVENT_ESTABLISHED and
+other async events. It's not unlikely to hold a lock during
+the rdma_connect() call.
 
-So you are using the Ethernet ports on the SX6036? These tests are not
-Infiniband but purely Ethernet?
+Without out this a connection attempt to a non-existing/reachable
+server block until the very long tcp timeout hits.
+The application layer had no chance to have its own timeout handler
+as that would just deadlock with the already blocking rdma_connect().
 
-> rping is used to test RoCE links connectivity between servers. At
-> initial, they can establish RoCE connections (rping to each other
-> works). However, after we did ifdown/ifup the interfaces, restart
-> network services, or rebooted the two servers, the connectivity between
-> the two servers may become abnormal: i.e. sometimes the active side was
-> stuck at "rdma_connect" without any CM event generated later; sometimes,
-> the connection can be established, but the sender side failed to send
-> message to the receiver (with error 12: IBV_WC_RETRY_EXC_ERR). If we
-> repeat ifdown/up the affected interface or restart the network service
-> for several rounds, the connectivity between the two servers can
-> eventually become normal. We repeated this test on various linux
-> distributions, OFED drivers and kernel versions as listed above, and
-> found that this problem can be reproduced on all these setups. TCP/IP
-> connections are always working as expected. We are not sure whether it
-> is a bug or a configuration problem. Is there any method to troubleshoot
-> this problem? Any suggestion is appreciated.
+First rdma_connect() holds id_priv->handler_mutex and deadlocks
+rdma_destroy_id().
 
-The rping connections are using the RC logic with special MAD packet
-handshakes via QP1 (even under ROCE). IP is based on UD packets and thus does
-not use the MAD handshares to establish RC based connections. This points
-to an issue in the ROCE MAD handshake logic to establish an RC connection
-in the kernel.
+And iw_cm_connect() called from within rdma_connect() sets
+IWCM_F_CONNECT_WAIT during the call to cm_id->device->ops.iw_connect(),
+siw_connect() in this case. It means that iw_cm_disconnect()
+and iw_destroy_cm_id() will both deadlock waiting for
+IWCM_F_CONNECT_WAIT being cleared.
 
-The MAD packets on ROCE are encapsulated in UDP.
+Patch 1: Fixes a refcounting problem
 
+Patches 2-7: Intruduces __siw_cep_terminate_upcall()
+making he upcall handling much more consistent handling
+more state combinations.
+
+Patches 8-13 are preparation patches to siw_connect()
+in order to do the real non-blocking split in Patch 14.
+
+Please have a look.
+
+Thanks!
+metze
+
+Fixed issues in v2:
+- Include more preparation patches related to __siw_cep_terminate_upcall()
+  bases on review from Cheng Xu <chengyou@linux.alibaba.com>
+
+Stefan Metzmacher (14):
+  rdma/siw: remove superfluous siw_cep_put() from siw_connect() error
+    path
+  rdma/siw: make siw_cm_upcall() a noop without valid 'id'
+  rdma/siw: split out a __siw_cep_terminate_upcall() function
+  rdma/siw: use __siw_cep_terminate_upcall() for indirect
+    SIW_CM_WORK_CLOSE_LLP
+  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_PEER_CLOSE
+  rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_MPATIMEOUT
+  rdma/siw: handle SIW_EPSTATE_CONNECTING in
+    __siw_cep_terminate_upcall()
+  rdma/siw: make use of kernel_{bind,connect,listen}()
+  rdma/siw: let siw_connect() set AWAIT_MPAREP before
+    siw_send_mpareqrep()
+  rdma/siw: create a temporary copy of private data
+  rdma/siw: use error and out logic at the end of siw_connect()
+  rdma/siw: start mpa timer before calling siw_send_mpareqrep()
+  rdma/siw: call the blocking kernel_bindconnect() just before
+    siw_send_mpareqrep()
+  rdma/siw: implement non-blocking connect.
+
+ drivers/infiniband/sw/siw/siw_cm.c | 347 ++++++++++++++++++-----------
+ drivers/infiniband/sw/siw/siw_cm.h |   1 +
+ 2 files changed, 224 insertions(+), 124 deletions(-)
+
+-- 
+2.34.1
 
