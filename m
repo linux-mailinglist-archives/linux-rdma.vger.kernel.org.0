@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 417E754CCDB
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6D554CCEA
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345540AbiFOP26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jun 2022 11:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
+        id S1348439AbiFOP3i (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jun 2022 11:29:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355265AbiFOP2h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:37 -0400
+        with ESMTP id S1355712AbiFOP2l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:41 -0400
 Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F814F1C7
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:27:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE78D4338E
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:27:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
         s=42; h=Message-Id:Date:Cc:To:From;
-        bh=YhpO3TS14LMHOHwZO8jxbCVr+5Hbr5NLcdR2reS5xI0=; b=sVu08+VQYulrzVz/0J6kc/tidV
-        8jMQqywzuNXFrV5rx9HPyTQA7MY1+9EDTs1uv+IZav/n/8dnmf38Th53pb7nbp/Lck6IY/DRCKKZR
-        0UQb6cRs/fRTc9ZISoqMLc2LUrCCYcvF5puq4DHrcsH3ibHVuxD7XCCX7c73yyKcHZIKrnFpjD4Z2
-        pNvIBgFxOxSG+RLZ82qqkTJhAkmR/rRxl/DBjmn0vCOtFAwpTfYzlIH09FjzN72393myJk9eed+Ic
-        DfzjJlHso51Y+TFoTtPBA8DnwaoES7uIdBcUY04i/P3YTC31CF7pIaqup5GqiI/o0Sz+pzWF2Jyjl
-        M4JMqCQkJGwfQtxo6acadq1+3dEOatC2+jxBCGGVLig671gEmkQA/XlVByH8ANFojGfzb8Juvzxax
-        Z9SitMB0FJ+fKoc3ULS9DvCLbeLSTqew04QxLVugbOltZpS1t9YDP5fbAgaGRzLNT5dGLLyNghgwq
-        VW/04eW2nuNL4TSTuJ3R0wdI;
+        bh=K1YBsWTlv3dUju28IUgerHcp1VUDHyN7zkNFBdM0XsI=; b=fsyaotPoeJqLxjPLN6gyv9UhVp
+        z0mFvHDoQkVM1Amu77pVTtk9Sq7RtG0FNdUfEyR9gwM2HVKAdLrFYt05g5+Bm1L6OrHZmxA/46I72
+        5whVAJdbC03ofFKV7D+tbp62YxmLNLqwbIbrLdMzB1dLgAwLMbqZmNNiL/l4hNAxKLYTZnH1bQ+9c
+        yFexL7mc/AQhMZnRq2+kDXEQ1Zf7DHfbALxSWhPIbZr3P6ZcPPzFIRUBeW2vPFhahp2HtM7GJHU0z
+        DqTZphSdAzKx6mN+eByDK3dWj7D7ZbSgEOldHGkW5Sx3HD4cNXL1DxDrxInI7yb5Q2IR/mm+cTsUv
+        hLSX1zqD17og4ZW9IoDvtmz2kJYra0QOUGvArQJ7LyjNFZn/5iKRZrPw9LRBAX4+Nxgj2flQ8lP7d
+        0dNokVcaHZmg9oVrLhQNFG383rmrffeVK0M7QwGoAixJMIn1SxpBNLZeyOWK2LHpu3OkdYPxuaAbP
+        fFTFRCfzsI0WqmZxz+mBbMmQ;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
         by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
         (Exim)
-        id 1o1Uvn-005ru0-01; Wed, 15 Jun 2022 15:27:43 +0000
+        id 1o1Uvu-005ruG-FQ; Wed, 15 Jun 2022 15:27:50 +0000
 From:   Stefan Metzmacher <metze@samba.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
 Cc:     Stefan Metzmacher <metze@samba.org>
-Subject: [PATCH v2 06/14] rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_MPATIMEOUT
-Date:   Wed, 15 Jun 2022 17:26:44 +0200
-Message-Id: <6854531a411a17e34efb2fe012f45fabd27c7d14.1655305567.git.metze@samba.org>
+Subject: [PATCH v2 07/14] rdma/siw: handle SIW_EPSTATE_CONNECTING in __siw_cep_terminate_upcall()
+Date:   Wed, 15 Jun 2022 17:26:45 +0200
+Message-Id: <4afcaaa2ba7bfe248f12030bd9168c70bbeb0fb2.1655305567.git.metze@samba.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1655305567.git.metze@samba.org>
 References: <cover.1655305567.git.metze@samba.org>
@@ -49,60 +49,45 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-It's easier to have generic logic in just one place.
+The final patch will implement a non-blocking connect,
+which means SIW_CM_WORK_MPATIMEOUT can also happen
+during SIW_EPSTATE_CONNECTING.
 
 Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
 Signed-off-by: Stefan Metzmacher <metze@samba.org>
 Cc: Bernard Metzler <bmt@zurich.ibm.com>
 Cc: linux-rdma@vger.kernel.org
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 31 ++++++++----------------------
- 1 file changed, 8 insertions(+), 23 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 3160f3fc4ca8..56c484f85160 100644
+index 56c484f85160..80e1d5b274e7 100644
 --- a/drivers/infiniband/sw/siw/siw_cm.c
 +++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1126,31 +1126,16 @@ static void siw_cm_work_handler(struct work_struct *w)
- 		break;
+@@ -125,6 +125,14 @@ static void __siw_cep_terminate_upcall(struct siw_cep *cep,
+ 	}
  
- 	case SIW_CM_WORK_MPATIMEOUT:
+ 	switch (cep->state) {
++	case SIW_EPSTATE_CONNECTING:
 +		/*
-+		 * MPA request timed out:
-+		 * Hide any partially received private data and signal
-+		 * timeout
++		 * The TCP connect got rejected or timed out.
 +		 */
- 		cep->mpa_timer = NULL;
-+		cep->mpa.hdr.params.pd_len = 0;
-+		__siw_cep_terminate_upcall(cep, -ETIMEDOUT);
++		siw_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
++			      reply_status);
++		break;
++
+ 	case SIW_EPSTATE_AWAIT_MPAREP:
+ 		/*
+ 		 * MPA reply not received, but connection drop,
+@@ -164,7 +172,6 @@ static void __siw_cep_terminate_upcall(struct siw_cep *cep,
  
--		if (cep->state == SIW_EPSTATE_AWAIT_MPAREP) {
--			/*
--			 * MPA request timed out:
--			 * Hide any partially received private data and signal
--			 * timeout
--			 */
--			cep->mpa.hdr.params.pd_len = 0;
--
--			if (cep->cm_id)
--				siw_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
--					      -ETIMEDOUT);
--			release_cep = 1;
--
--		} else if (cep->state == SIW_EPSTATE_AWAIT_MPAREQ) {
--			/*
--			 * No MPA request received after peer TCP stream setup.
--			 */
--			if (cep->listen_cep) {
--				siw_cep_put(cep->listen_cep);
--				cep->listen_cep = NULL;
--			}
--			release_cep = 1;
--		}
-+		release_cep = 1;
- 		break;
- 
+ 	case SIW_EPSTATE_IDLE:
+ 	case SIW_EPSTATE_LISTENING:
+-	case SIW_EPSTATE_CONNECTING:
+ 	case SIW_EPSTATE_CLOSED:
  	default:
+ 		/*
 -- 
 2.34.1
 
