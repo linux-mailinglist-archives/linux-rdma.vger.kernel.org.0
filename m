@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2761654CCDF
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D336054CCDE
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232421AbiFOP3A (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jun 2022 11:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49400 "EHLO
+        id S1352845AbiFOP27 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jun 2022 11:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356054AbiFOP2o (ORCPT
+        with ESMTP id S1356115AbiFOP2o (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:44 -0400
 Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D4D841627
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:28:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F2B84615B
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
         s=42; h=Message-Id:Date:Cc:To:From;
-        bh=w617rm3oZUEYJKGoyPrQTxhDUo13rDhgNJvJO7+eoSc=; b=T21IigJT9qYcPyqIPYE7rYhxGO
-        THvKb5TtLkdaAueUtbsj/itoH3DfSDxOhzKhqhSgk+KpQ2iy3/w9esl7E0ZtG3W+mxgbVDRhcmzlV
-        eDs26mmxLJ0EFbZHyK0OK3WR0rLM+YlRVK5D0hVU+ujHeGBvn5xCl2yI5thvrtY2v5m2AZa+lbIeQ
-        36zuyxXuNvGNwAflT4FGHOTKOf61wSEhqFNaCakUI/kHC8AuZKZFLxeq5soLriuaQ1EV/RQkyWP6Y
-        ONf8frHAIwB7vRYk9/IeXgl8wWNW9Zb9uxqb+WYrAEGnbKrUlvZ08atbsHtSlRLGb2pIFfTDGfzw+
-        fgxu5EbddF1eN9euUr3i581SXhMf7HqNJY65j5ffck8h9cg3bMYFah0JT6oHXp3YzAulblK9X/Z41
-        xr8XkM3YPckykYCVxmyhDJQRUxN3dfdA/Ddg+TItE45pMmWkVUddC8VtGqK3iKqPr6jy1yVjrdYwr
-        xFK2x5H9S+tlt3///p1/bPPM;
+        bh=R1jxQQe45vczPRNKdLsSJYVZvPiaBRAQEVVO1On1/ZY=; b=jTqYI7JZ9UMHLomPW+mVEZSmnD
+        q7tORyQl+DzpSWz0BHoms+atXzEL4BwpqejShks9vY31MY0k3q46wouE+Voy6qsV3Gc1jiE/0D6iH
+        isrFMouQ8ZIMfvHhjrTMQitCT/CfpH6MT/RsWFGJPB+rxHAl3gXVz8SClPctvJz8zkKrd55v1C1G0
+        ad9vHwNUKyigB8lvA4rfo653HdIXeqV7+0RxaUSmQmyxBAvGUdaXdZ9pn5G4bJzHjETO0zj9I0cqb
+        0MDRkOZHeyBbiSg8anL3WSQo7qO84FrEdCi0AG/6ZfDr4ASDH8W8RC8m9X5X0yf5c6AD90OQiSC2e
+        Co9DM1cM5cdPxvgwn/9G7dQum3T3VFZ8OuQumpiIZeFE+utlUQSjZ66wX9iO+0k4kEJyV/tH3OWkW
+        X+EJl6euCI9loysGekx5JpIGS1+oy1kakX3vj4d42sTw1z0j4Q9dnQ5VYDpjfRd8p+CE/SQeKny17
+        BAkldcYVqF+Os43C5qPz4zqP;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
         by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
         (Exim)
-        id 1o1Uw7-005rvh-Sj; Wed, 15 Jun 2022 15:28:03 +0000
+        id 1o1UwF-005rvp-3A; Wed, 15 Jun 2022 15:28:11 +0000
 From:   Stefan Metzmacher <metze@samba.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
 Cc:     Stefan Metzmacher <metze@samba.org>
-Subject: [PATCH v2 09/14] rdma/siw: let siw_connect() set AWAIT_MPAREP before siw_send_mpareqrep()
-Date:   Wed, 15 Jun 2022 17:26:47 +0200
-Message-Id: <b1ee74975ad57b75a4a8ca59af30be108a843b20.1655305567.git.metze@samba.org>
+Subject: [PATCH v2 10/14] rdma/siw: create a temporary copy of private data
+Date:   Wed, 15 Jun 2022 17:26:48 +0200
+Message-Id: <3f660bd8e98c907cbef88623476b7c24ff2f3635.1655305567.git.metze@samba.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1655305567.git.metze@samba.org>
 References: <cover.1655305567.git.metze@samba.org>
@@ -49,42 +49,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-There's no real change made in this commit, but it makes the follwing
-commits easier to review.
+The final patch will implement a non-blocking connect,
+which means that siw_connect() will be split into
+siw_connect() and siw_connected().
 
-The idea is that we stay in SIW_EPSTATE_CONNECTING as long as
-we only deal with tcp and not started the MPA negotiation.
+kernel_bindconnect() will be the last action
+in siw_connect(), while the MPA negotiation
+is deferred to siw_connected().
+
+We should not rely on the callers private data
+pointers to be still valid when siw_connected()
+is called, so we better create a copy.
+
+Also note that __siw_cep_dealloc() already calls
+kfree(cep->mpa.pdata), so we already have the required cleanup
+when we'll split out siw_connected() and an error will
+prevent siw_connected() being called at all.
 
 Fixes: 6c52fdc244b5 ("rdma/siw: connection management")
 Signed-off-by: Stefan Metzmacher <metze@samba.org>
 Cc: Bernard Metzler <bmt@zurich.ibm.com>
 Cc: linux-rdma@vger.kernel.org
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index e8e29ce609b4..c980e5035552 100644
+index c980e5035552..307494c6707a 100644
 --- a/drivers/infiniband/sw/siw/siw_cm.c
 +++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -1438,8 +1438,6 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
- 	 */
- 	siw_cep_socket_assoc(cep, s);
- 
--	cep->state = SIW_EPSTATE_AWAIT_MPAREP;
--
- 	/*
- 	 * Set MPA Request bits: CRC if required, no MPA Markers,
- 	 * MPA Rev. according to module parameter 'mpa_version', Key 'Request'.
-@@ -1482,6 +1480,8 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+@@ -1480,13 +1480,27 @@ int siw_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
  	}
  	memcpy(cep->mpa.hdr.key, MPA_KEY_REQ, 16);
  
-+	cep->state = SIW_EPSTATE_AWAIT_MPAREP;
++	if (pd_len > 0) {
++		cep->mpa.pdata = kmemdup(params->private_data, pd_len, GFP_KERNEL);
++		if (IS_ERR_OR_NULL(cep->mpa.pdata)) {
++			rv = -ENOMEM;
++			goto error;
++		}
++		cep->mpa.hdr.params.pd_len = pd_len;
++	}
 +
- 	rv = siw_send_mpareqrep(cep, params->private_data, pd_len);
+ 	cep->state = SIW_EPSTATE_AWAIT_MPAREP;
+ 
+-	rv = siw_send_mpareqrep(cep, params->private_data, pd_len);
++	rv = siw_send_mpareqrep(cep, cep->mpa.pdata,
++				cep->mpa.hdr.params.pd_len);
  	/*
  	 * Reset private data.
+ 	 */
+-	cep->mpa.hdr.params.pd_len = 0;
++	if (cep->mpa.hdr.params.pd_len) {
++		cep->mpa.hdr.params.pd_len = 0;
++		kfree(cep->mpa.pdata);
++		cep->mpa.pdata = NULL;
++	}
+ 
+ 	if (rv >= 0) {
+ 		rv = siw_cm_queue_work(cep, SIW_CM_WORK_MPATIMEOUT);
 -- 
 2.34.1
 
