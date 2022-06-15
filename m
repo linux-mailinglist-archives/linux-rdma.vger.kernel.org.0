@@ -2,53 +2,52 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D33454BF8C
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 04:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41EC554BF9F
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 04:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229924AbiFOCDj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 14 Jun 2022 22:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60890 "EHLO
+        id S1345300AbiFOCU1 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 14 Jun 2022 22:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345651AbiFOCDV (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jun 2022 22:03:21 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE51C42A25;
-        Tue, 14 Jun 2022 19:03:19 -0700 (PDT)
+        with ESMTP id S244004AbiFOCUT (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 14 Jun 2022 22:20:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C914927CE6;
+        Tue, 14 Jun 2022 19:20:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3E21E619DD;
-        Wed, 15 Jun 2022 02:03:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42144C3411B;
-        Wed, 15 Jun 2022 02:03:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 37021B81BE7;
+        Wed, 15 Jun 2022 02:20:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1EF6C341C4;
+        Wed, 15 Jun 2022 02:20:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1655258598;
-        bh=ooQ+boKyWBcdibdOBlQX3Vvw/fy9lQQdF+1pOlITJdE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=SfPGWYe/7kSQuIE28xE5KKktHR2JF+mggTTSQmQkNqlbmEN3yUWUdqe1Hn/iJa6kF
-         z/regpz64z8ar5hqFMnRDDpT+gSBr1+i9IDkvXN1trDmsGoliRU5MbQJl4RtWkTOeJ
-         kixxNwRfxQccJf/ZgKYq5KPLtbqU4sNtPkqJM1IeHYUKEu4Cr2InWGPz2IWvKz3I+w
-         WEnvJ4ooeYrIjItguxUPSUA67wPnRRKcWcC1R7sQASG1jBWiC2YCsXWyGwOXaidiDl
-         ZZxPpDdDD76OBuZhJU2B6Z4sK+Zqnk1lLdULpdqFvWLKq+Jtoik3b7CT/52879vF+O
-         PdSdSLaxHYeMw==
-Date:   Tue, 14 Jun 2022 19:03:17 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Saeed Mahameed <saeed@kernel.org>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org
-Subject: Re: [GIT PULL][next-next][rdma-next] mlx5-next: updates 2022-06-14
-Message-ID: <20220614190317.7c87d0d5@kernel.org>
-In-Reply-To: <20220614184339.ywrfx6zgxs6bo4mg@sx1>
-References: <20220614184028.51548-1-saeed@kernel.org>
-        <20220614184339.ywrfx6zgxs6bo4mg@sx1>
+        s=k20201202; t=1655259614;
+        bh=RkK29Anq4ut5sOL8np/E3I3mXEVNbem0IfIyeWhC9M4=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=cE71ktGeCO0zpq+1rPuBU1qv9KwA0ktV/QLdtl7jA5exq6xXOA9tAJ/JNX+0AexkD
+         u3lFi7OeVAB6j7Q9WpREFQc1yK4hHbKqpFC5LV85zxZv7Ebz7oqt/5eqTH/nVEMbYE
+         lP9drFwmtiDeNNT8DLBOQG2TsRFKS8z7SfNAeNevpOb925WnGCs4Octc16zZ3XtxW4
+         6527IXrCOFgY8q6KbZUH5VAGkM8ZUAek8T1zz5xPaHD9NPPyX1be+qHm8pnPsgiKgD
+         62x5v08yIGU7OSdvUGf9U6vgP22PUjKsCSfnSohf0GBVRIOrIaGvmMiivXK2HY+Aqr
+         aAM+TOiChyXTg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9DFEFFD99FF;
+        Wed, 15 Jun 2022 02:20:14 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [GIT PULL][next-next][rdma-next] mlx5-next: updates 2022-06-14                               
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165525961464.10274.8388525139871863585.git-patchwork-notify@kernel.org>
+Date:   Wed, 15 Jun 2022 02:20:14 +0000
+References: <20220614184028.51548-1-saeed@kernel.org>
+In-Reply-To: <20220614184028.51548-1-saeed@kernel.org>
+To:     Saeed Mahameed <saeed@kernel.org>
+Cc:     jgg@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, edumazet@google.com, leonro@nvidia.com,
+        saeedm@nvidia.com, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
 X-Spam-Status: No, score=-8.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -59,9 +58,29 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, 14 Jun 2022 11:43:39 -0700 Saeed Mahameed wrote:
-> s/next-next/net-next
-> 
-> net-next patchwork bots won't see this one :/ .. should I re-post ? 
+Hello:
 
-Looks like it's in, I'll pull shortly.
+This pull request was applied to netdev/net-next.git (master)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Tue, 14 Jun 2022 11:40:28 -0700 you wrote:
+> From: Saeed Mahameed <saeedm@nvidia.com>
+> 
+> The following changes since commit f2906aa863381afb0015a9eb7fefad885d4e5a56:
+> 
+>   Linux 5.19-rc1 (2022-06-05 17:18:54 -0700)
+> 
+> are available in the Git repository at:
+> 
+> [...]
+
+Here is the summary with links:
+  - [GIT,PULL,next-next,rdma-next] mlx5-next: updates 2022-06-14
+    https://git.kernel.org/netdev/net-next/c/6ac6dc746d70
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
