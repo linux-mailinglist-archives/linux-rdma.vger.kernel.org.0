@@ -2,38 +2,38 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFF554CCDA
-	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417E754CCDB
+	for <lists+linux-rdma@lfdr.de>; Wed, 15 Jun 2022 17:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241794AbiFOP26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S1345540AbiFOP26 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Wed, 15 Jun 2022 11:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48424 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243040AbiFOP2Y (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:24 -0400
+        with ESMTP id S1355265AbiFOP2h (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 11:28:37 -0400
 Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD45520BDD
-        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:27:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F814F1C7
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 08:27:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
         s=42; h=Message-Id:Date:Cc:To:From;
-        bh=uhlPF86eIyB2XWzVT6cUueNapFDGhTlydRZCxMCvo9U=; b=TTnRBRTBvcWoK0tpKHn0F6sDTd
-        UTqyLwuI1d2pkDPZLbFrOa2JaI9MF+30IzVUJBX9OTvyqaAbvNjFLpmvlrYU2o9WYs81iDXEsO+fg
-        oimy/rLdoov9814kRn08VRsBP4o3cApJPGEUj/LU1RCqxsTAEk+9CmQeoQQ0R/hm2GEzRyVx9pDPY
-        Zigd2wLwzLU4cGqvsrag1er6193HIqkETZk3YF9AXBMdZ2mJnUBc52u9l3KDfQnhYcbUmK/W+LpeA
-        8JnAaMHU8N2nwCJsrzYJJ6YS5H1YWKPTrN8ZRvQ2Brf0p+eoFd94q6Zt1pAm4iGgiRmoHF4u45VdL
-        zfgUWVvL3NKjHEjL65CPVGU+s6R09Kr2TzTXo6kBmU9jZ2UW2NDwcMF86EyJXbYujhbMSkJzE8oFF
-        EKUemeoUOm/P7oa1MHYpCvO4dJrBWX2mEGIRAlT/Fn6K46RIF29ydc7mkPxDxwOdtNT2rjySB8a0x
-        HJIdBboGwPcVljbcB/ujrZXL;
+        bh=YhpO3TS14LMHOHwZO8jxbCVr+5Hbr5NLcdR2reS5xI0=; b=sVu08+VQYulrzVz/0J6kc/tidV
+        8jMQqywzuNXFrV5rx9HPyTQA7MY1+9EDTs1uv+IZav/n/8dnmf38Th53pb7nbp/Lck6IY/DRCKKZR
+        0UQb6cRs/fRTc9ZISoqMLc2LUrCCYcvF5puq4DHrcsH3ibHVuxD7XCCX7c73yyKcHZIKrnFpjD4Z2
+        pNvIBgFxOxSG+RLZ82qqkTJhAkmR/rRxl/DBjmn0vCOtFAwpTfYzlIH09FjzN72393myJk9eed+Ic
+        DfzjJlHso51Y+TFoTtPBA8DnwaoES7uIdBcUY04i/P3YTC31CF7pIaqup5GqiI/o0Sz+pzWF2Jyjl
+        M4JMqCQkJGwfQtxo6acadq1+3dEOatC2+jxBCGGVLig671gEmkQA/XlVByH8ANFojGfzb8Juvzxax
+        Z9SitMB0FJ+fKoc3ULS9DvCLbeLSTqew04QxLVugbOltZpS1t9YDP5fbAgaGRzLNT5dGLLyNghgwq
+        VW/04eW2nuNL4TSTuJ3R0wdI;
 Received: from [127.0.0.2] (localhost [127.0.0.1])
         by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
         (Exim)
-        id 1o1Uvg-005rtq-Ai; Wed, 15 Jun 2022 15:27:36 +0000
+        id 1o1Uvn-005ru0-01; Wed, 15 Jun 2022 15:27:43 +0000
 From:   Stefan Metzmacher <metze@samba.org>
 To:     Bernard Metzler <bmt@zurich.ibm.com>, linux-rdma@vger.kernel.org
 Cc:     Stefan Metzmacher <metze@samba.org>
-Subject: [PATCH v2 05/14] rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_PEER_CLOSE
-Date:   Wed, 15 Jun 2022 17:26:43 +0200
-Message-Id: <31498ba0d4fde312d6bdc94072f64e29380bc966.1655305567.git.metze@samba.org>
+Subject: [PATCH v2 06/14] rdma/siw: use __siw_cep_terminate_upcall() for SIW_CM_WORK_MPATIMEOUT
+Date:   Wed, 15 Jun 2022 17:26:44 +0200
+Message-Id: <6854531a411a17e34efb2fe012f45fabd27c7d14.1655305567.git.metze@samba.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1655305567.git.metze@samba.org>
 References: <cover.1655305567.git.metze@samba.org>
@@ -56,132 +56,53 @@ Signed-off-by: Stefan Metzmacher <metze@samba.org>
 Cc: Bernard Metzler <bmt@zurich.ibm.com>
 Cc: linux-rdma@vger.kernel.org
 ---
- drivers/infiniband/sw/siw/siw_cm.c | 89 +++++++++++++++++-------------
- 1 file changed, 50 insertions(+), 39 deletions(-)
+ drivers/infiniband/sw/siw/siw_cm.c | 31 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/infiniband/sw/siw/siw_cm.c b/drivers/infiniband/sw/siw/siw_cm.c
-index 4387cdf99cf9..3160f3fc4ca8 100644
+index 3160f3fc4ca8..56c484f85160 100644
 --- a/drivers/infiniband/sw/siw/siw_cm.c
 +++ b/drivers/infiniband/sw/siw/siw_cm.c
-@@ -110,26 +110,67 @@ static void siw_socket_disassoc(struct socket *s)
- static void __siw_cep_terminate_upcall(struct siw_cep *cep,
- 				       int reply_status)
- {
--	if (cep->qp && cep->qp->term_info.valid)
--		siw_send_terminate(cep->qp);
-+	bool suspended = false;
-+
-+	if (cep->qp) {
-+		struct siw_qp *qp = cep->qp;
-+
-+		if (qp->term_info.valid)
-+			siw_send_terminate(qp);
-+
-+		if (qp->rx_stream.rx_suspend || qp->tx_ctx.tx_suspend)
-+			suspended = true;
-+	} else {
-+		suspended = true;
-+	}
- 
- 	switch (cep->state) {
- 	case SIW_EPSTATE_AWAIT_MPAREP:
-+		/*
-+		 * MPA reply not received, but connection drop,
-+		 * or timeout.
-+		 */
- 		siw_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
- 			      reply_status);
+@@ -1126,31 +1126,16 @@ static void siw_cm_work_handler(struct work_struct *w)
  		break;
  
- 	case SIW_EPSTATE_RDMA_MODE:
+ 	case SIW_CM_WORK_MPATIMEOUT:
 +		/*
-+		 * NOTE: IW_CM_EVENT_DISCONNECT is given just
-+		 *       to transition IWCM into CLOSING.
++		 * MPA request timed out:
++		 * Hide any partially received private data and signal
++		 * timeout
 +		 */
-+		WARN(!suspended, "SIW_EPSTATE_RDMA_MODE called without suspended\n");
-+		siw_cm_upcall(cep, IW_CM_EVENT_DISCONNECT, 0);
- 		siw_cm_upcall(cep, IW_CM_EVENT_CLOSE, 0);
- 		break;
+ 		cep->mpa_timer = NULL;
++		cep->mpa.hdr.params.pd_len = 0;
++		__siw_cep_terminate_upcall(cep, -ETIMEDOUT);
  
-+	case SIW_EPSTATE_RECVD_MPAREQ:
-+		/*
-+		 * Wait for the ulp/CM to call accept/reject
-+		 */
-+		siw_dbg_cep(cep, "mpa req recvd, wait for ULP\n");
-+		WARN(!suspended, "SIW_EPSTATE_RECVD_MPAREQ called without suspended\n");
-+		break;
-+
-+	case SIW_EPSTATE_AWAIT_MPAREQ:
-+		/*
-+		 * Socket close before MPA request received.
-+		 */
-+		siw_dbg_cep(cep, "no mpareq: drop listener\n");
-+		if (cep->listen_cep)
-+			siw_cep_put(cep->listen_cep);
-+		cep->listen_cep = NULL;
-+		break;
-+
- 	case SIW_EPSTATE_IDLE:
- 	case SIW_EPSTATE_LISTENING:
- 	case SIW_EPSTATE_CONNECTING:
--	case SIW_EPSTATE_AWAIT_MPAREQ:
--	case SIW_EPSTATE_RECVD_MPAREQ:
- 	case SIW_EPSTATE_CLOSED:
- 	default:
-+		/*
-+		 * for other states there is no connection
-+		 * known to the IWCM.
-+		 */
- 		break;
- 	}
- }
-@@ -1076,41 +1117,11 @@ static void siw_cm_work_handler(struct work_struct *w)
- 		break;
- 
- 	case SIW_CM_WORK_PEER_CLOSE:
--		if (cep->cm_id) {
--			if (cep->state == SIW_EPSTATE_AWAIT_MPAREP) {
--				/*
--				 * MPA reply not received, but connection drop
--				 */
--				siw_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
--					      -ECONNRESET);
--			} else if (cep->state == SIW_EPSTATE_RDMA_MODE) {
--				/*
--				 * NOTE: IW_CM_EVENT_DISCONNECT is given just
--				 *       to transition IWCM into CLOSING.
--				 */
--				siw_cm_upcall(cep, IW_CM_EVENT_DISCONNECT, 0);
--				siw_cm_upcall(cep, IW_CM_EVENT_CLOSE, 0);
--			}
+-		if (cep->state == SIW_EPSTATE_AWAIT_MPAREP) {
 -			/*
--			 * for other states there is no connection
--			 * known to the IWCM.
+-			 * MPA request timed out:
+-			 * Hide any partially received private data and signal
+-			 * timeout
 -			 */
--		} else {
--			if (cep->state == SIW_EPSTATE_RECVD_MPAREQ) {
--				/*
--				 * Wait for the ulp/CM to call accept/reject
--				 */
--				siw_dbg_cep(cep,
--					    "mpa req recvd, wait for ULP\n");
--			} else if (cep->state == SIW_EPSTATE_AWAIT_MPAREQ) {
--				/*
--				 * Socket close before MPA request received.
--				 */
--				siw_dbg_cep(cep, "no mpareq: drop listener\n");
+-			cep->mpa.hdr.params.pd_len = 0;
+-
+-			if (cep->cm_id)
+-				siw_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+-					      -ETIMEDOUT);
+-			release_cep = 1;
+-
+-		} else if (cep->state == SIW_EPSTATE_AWAIT_MPAREQ) {
+-			/*
+-			 * No MPA request received after peer TCP stream setup.
+-			 */
+-			if (cep->listen_cep) {
 -				siw_cep_put(cep->listen_cep);
 -				cep->listen_cep = NULL;
 -			}
+-			release_cep = 1;
 -		}
-+		/*
-+		 * Peer closed the connection: TCP_CLOSE*
-+		 */
-+		__siw_cep_terminate_upcall(cep, -ECONNRESET);
-+
- 		release_cep = 1;
++		release_cep = 1;
  		break;
  
+ 	default:
 -- 
 2.34.1
 
