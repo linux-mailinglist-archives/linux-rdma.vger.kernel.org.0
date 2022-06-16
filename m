@@ -2,55 +2,45 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D8554DDF1
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jun 2022 11:11:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5EA654DE75
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jun 2022 11:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1359040AbiFPJLT (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 16 Jun 2022 05:11:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37396 "EHLO
+        id S230095AbiFPJv6 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 16 Jun 2022 05:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1376594AbiFPJLR (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jun 2022 05:11:17 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4AA2554A9
-        for <linux-rdma@vger.kernel.org>; Thu, 16 Jun 2022 02:11:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-        s=42; h=From:Cc:To:Date:Message-ID;
-        bh=poSN8FThgOmJc3It1MVHGjnd7JjmLzxxYSTypqcTtaI=; b=RwtPA7d2T4/nEoyrhitv2PMG5Z
-        D20/j4dLQ1tatOb1wO/RktYo8LA0z0SSZPOkW4tsORc2JnhnCEq4V9semX0DR5NUyieYnx9WE/da9
-        0t/L7V9JLYVwb2bVCaJjVkuGkF/ko4om8oSbv9mpFtmHVrB06zFlZLbhiYyKsU6J/NTwx52U5HGIz
-        SwHQiTSR4Gc7hBWvzW7+/bdASc7OBVitpkaudSdiSfP6kmOb0Ygjy0VLUJg5+1m2OlL7U/7b1XBOW
-        2jHu+PEv6mwZQeW/xC1BYS0f+5PQNC1zjz5oETZFJ2Bmc9yVcmYj7GQdvyGLfw8symnzC9FS4jWQ1
-        DgeBUNEV07xtDL9ST5ByWe1WXgvnycDopIE8fBVxMVcS2HheKnOGY/4PKk3kxy+r10265fLplXJgs
-        hSlSqbQrtoE6y4cbKfI4eVP9frl5qTm/cekbIFxxCfUH7bwkKTg/luMXs/UCGDEGSt5n6mQFXnWD1
-        9kSbo9OT4TEWQ7Elu4TcsUtG;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__ECDSA_SECP256R1_SHA256__CHACHA20_POLY1305:256)
-        (Exim)
-        id 1o1lWz-0005X9-GO; Thu, 16 Jun 2022 09:11:13 +0000
-Message-ID: <ad1bb1ae-39ae-a728-07d6-2d996292d240@samba.org>
-Date:   Thu, 16 Jun 2022 11:11:13 +0200
+        with ESMTP id S229436AbiFPJv5 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 16 Jun 2022 05:51:57 -0400
+Received: from out30-45.freemail.mail.aliyun.com (out30-45.freemail.mail.aliyun.com [115.124.30.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E830D4EF75
+        for <linux-rdma@vger.kernel.org>; Thu, 16 Jun 2022 02:51:55 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=chengyou@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VGZsK7._1655373112;
+Received: from 30.43.105.121(mailfrom:chengyou@linux.alibaba.com fp:SMTPD_---0VGZsK7._1655373112)
+          by smtp.aliyun-inc.com;
+          Thu, 16 Jun 2022 17:51:53 +0800
+Message-ID: <519e5f3e-1319-d8f9-5ab0-a86351e96c0f@linux.alibaba.com>
+Date:   Thu, 16 Jun 2022 17:51:51 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.10.0
 Subject: Re: [PATCH for-next v11 08/11] RDMA/erdma: Add connection management
  (CM) support
 Content-Language: en-US
-To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
-        leon@kernel.org
+To:     Stefan Metzmacher <metze@samba.org>, jgg@ziepe.ca, leon@kernel.org
 Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
         tonylu@linux.alibaba.com, BMT@zurich.ibm.com,
-        dan.carpenter@oracle.com, Bernard Metzler <BMT@zurich.ibm.com>
+        dan.carpenter@oracle.com
 References: <20220615015227.65686-1-chengyou@linux.alibaba.com>
  <20220615015227.65686-9-chengyou@linux.alibaba.com>
-From:   Stefan Metzmacher <metze@samba.org>
-In-Reply-To: <20220615015227.65686-9-chengyou@linux.alibaba.com>
+ <ad1bb1ae-39ae-a728-07d6-2d996292d240@samba.org>
+From:   Cheng Xu <chengyou@linux.alibaba.com>
+In-Reply-To: <ad1bb1ae-39ae-a728-07d6-2d996292d240@samba.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-12.5 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,14 +48,31 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-Am 15.06.22 um 03:52 schrieb Cheng Xu:
-> ERDMA's transport protocol is iWarp, so the driver must support CM
-> interface. In CM part, we use the same way as SoftiWarp: using kernel
-> socket to set up the connection, then performing MPA negotiation in
-> kernel. So, this part of code mainly comes from SoftiWarp, base on it,
-> we add some more features, such as non-blocking iw_connect implementation.
 
-It would be great to have common parts to be unified in the long run
-otherwise fixes are only applied to one version.
+On 6/16/22 5:11 PM, Stefan Metzmacher wrote:
+> 
+> Am 15.06.22 um 03:52 schrieb Cheng Xu:
+>> ERDMA's transport protocol is iWarp, so the driver must support CM
+>> interface. In CM part, we use the same way as SoftiWarp: using kernel
+>> socket to set up the connection, then performing MPA negotiation in
+>> kernel. So, this part of code mainly comes from SoftiWarp, base on it,
+>> we add some more features, such as non-blocking iw_connect 
+>> implementation.
+> 
+> It would be great to have common parts to be unified in the long run
+> otherwise fixes are only applied to one version.
+> 
 
-metze
+Yeah, it's looks good. But for now I think it is better to keep the
+respective implementations. Because erdma and siw have different
+purposes: siw aims to provides a standard iWarp implementation in
+kernel, while erdma is a RDMA adapter in our cloud, needing fit our
+hardware and the special network environment. There are already some
+differences, and I'm not sure there will be more or not in the future.
+We may consider it in the future.
+
+Thanks your advice.
+Cheng Xu
+
+
+
