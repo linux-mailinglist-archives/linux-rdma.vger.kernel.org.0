@@ -2,1968 +2,1721 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E0AA54D7E8
-	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jun 2022 04:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA61054D8B6
+	for <lists+linux-rdma@lfdr.de>; Thu, 16 Jun 2022 05:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356553AbiFPCHt (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 15 Jun 2022 22:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
+        id S1350287AbiFPDAD (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 15 Jun 2022 23:00:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357782AbiFPCHm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 22:07:42 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A022B63CD;
-        Wed, 15 Jun 2022 19:07:37 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 52AB520C32BD; Wed, 15 Jun 2022 19:07:35 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 52AB520C32BD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1655345255;
-        bh=QiL/mZu3rY3jQLfdLf0fCzDNnmjB4grHVnjhXme7sdQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:Reply-To:From;
-        b=ZtkoLzOt3RBO7tJy50HRL7vXFKC1PIRH5v1b5phyhXbkCG5qvUGQg0ZiD+Jah5BRo
-         3tsCPoE0fvZZpYYTdqSR2ec94vWU+QGxMf5Y3VifPNNxT/HJp2AIxttuEJYzKNYWH0
-         nf+lWUYnL503PyXpuS/4duF5YZsZecBvR4fOhy3A=
-From:   longli@linuxonhyperv.com
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, edumazet@google.com,
-        shiraz.saleem@intel.com, Ajay Sharma <sharmaajay@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Long Li <longli@microsoft.com>
-Subject: [Patch v4 12/12] RDMA/mana_ib: Add a driver for Microsoft Azure Network Adapter
-Date:   Wed, 15 Jun 2022 19:07:20 -0700
-Message-Id: <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1655345240-26411-1-git-send-email-longli@linuxonhyperv.com>
-References: <1655345240-26411-1-git-send-email-longli@linuxonhyperv.com>
-Reply-To: longli@microsoft.com
-X-Spam-Status: No, score=-11.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        with ESMTP id S1344660AbiFPDAC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 15 Jun 2022 23:00:02 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9BA5A17A
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 19:59:59 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id y6so288252pfr.13
+        for <linux-rdma@vger.kernel.org>; Wed, 15 Jun 2022 19:59:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=YTKaeGO0czTBzJzljInrK8Cv8lBAXDVr17M+0q4M2qw=;
+        b=L5VrWvtFCfTvRHFpj0amhirOe/0Emys/ijmyHem/jhH6KVqtb17MNz4AwPA5TSaauF
+         W3h/9keQWVE7yhh+yL4/1n610uh2jHOPtNXX1JNA0dvytY1x4fxR3FL9+ipd6kAqGa2y
+         TyNJAYpOLmXCxn1aDTuSD5lZ7L2tWTWiaf5mFG+scxi4KN4xeeObAIwzUtLzyxlZuvGf
+         BXcF0Hp+F8GrV/90F4bFmouL5qxUgCQg1P0/IOw+iuM6NxY/dbueK4Z5yEA4AA6x6rrL
+         BhIJnkl+ZgKQnI7+7GxKDoI08JnXSy2mpfYPeGJqOB7N9bKuXH4ASTg4ukaPAWAstAmE
+         o8Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:in-reply-to
+         :content-transfer-encoding;
+        bh=YTKaeGO0czTBzJzljInrK8Cv8lBAXDVr17M+0q4M2qw=;
+        b=s6am869PMkjFAzaxlZ4bUxUzHFut+E2hKwp3ZYR7Bx2GtJlYvCjRJlQkPEoqmfGBRf
+         mqRhdVn4M/JETGN9PLKTvVqNzR/o8FYJ6tRDiqkps2egW0nW/kd82c8yzvgJXPQTE3TL
+         /O8y7fspu6V5bD/R3UK7+tieMazzp9D3icRn1YwmaKy3vWJPZ6yhERdUv3PhI/VF0+cB
+         Rx7MXCdXGULhU9PECrAal2xE7lWRRYHPHUWYmNIDNq3RMFkeURQP8olIA81hOudLDgm3
+         I+LMTCdXWYyFdEhzqjUgvUZiLukPVn8FhIhpNu0DFcLAhDKS2PlVeJPR8ChCvpci7qXY
+         P0bw==
+X-Gm-Message-State: AJIora/MdRH0GZ0rj3t4g44mN+2TFcJmMT3TtHyMEk7BvHJag0qVdnEa
+        DjnGOhmsgB3HwrPF4jLgR14=
+X-Google-Smtp-Source: AGRyM1tzP3kS4Mag7NBsNK2Yf2yPv/KZLxJnbjDpLMsrk0UtbtP3eaoFpMOKG1J/DC+705qMz1ihYg==
+X-Received: by 2002:a63:4911:0:b0:405:1870:39d4 with SMTP id w17-20020a634911000000b00405187039d4mr2589292pga.495.1655348398912;
+        Wed, 15 Jun 2022 19:59:58 -0700 (PDT)
+Received: from [0.0.0.0] ([2604:a840:3::501d])
+        by smtp.gmail.com with ESMTPSA id y2-20020a17090264c200b0016641a37e71sm340993pli.225.2022.06.15.19.59.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Jun 2022 19:59:58 -0700 (PDT)
+From:   Weihang Li <li.weihang93@gmail.com>
+X-Google-Original-From: Weihang Li <Li.Weihang93@gmail.com>
+Message-ID: <0ae9926f-fa76-82ca-c218-c16ca0601ec2@gmail.com>
+Date:   Thu, 16 Jun 2022 10:59:52 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: [PATCH for-next v11 08/11] RDMA/erdma: Add connection management
+ (CM) support
+Content-Language: en-US
+To:     Cheng Xu <chengyou@linux.alibaba.com>, jgg@ziepe.ca,
+        leon@kernel.org
+Cc:     linux-rdma@vger.kernel.org, KaiShen@linux.alibaba.com,
+        tonylu@linux.alibaba.com, BMT@zurich.ibm.com,
+        dan.carpenter@oracle.com
+References: <20220615015227.65686-1-chengyou@linux.alibaba.com>
+ <20220615015227.65686-9-chengyou@linux.alibaba.com>
+In-Reply-To: <20220615015227.65686-9-chengyou@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
 
-Add a RDMA VF driver for Microsoft Azure Network Adapter (MANA).
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
-Change log:
-v2:
-Changed coding sytles/formats
-Checked undersize for udata length
-Changed all logging to use ibdev_xxx()
-Avoided page array copy when doing MR
-Sorted driver ops
-Fixed warnings reported by kernel test robot <lkp@intel.com>
+On 2022/6/15 9:52, Cheng Xu wrote:
+> ERDMA's transport protocol is iWarp, so the driver must support CM
+> interface. In CM part, we use the same way as SoftiWarp: using kernel
+> socket to set up the connection, then performing MPA negotiation in
+> kernel. So, this part of code mainly comes from SoftiWarp, base on it,
+> we add some more features, such as non-blocking iw_connect implementation.
+> 
+> This commit also fixes a duplicated include issue reported by Abaci Robot.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> Signed-off-by: Cheng Xu <chengyou@linux.alibaba.com>
+> ---
+>   drivers/infiniband/hw/erdma/erdma_cm.c | 1430 ++++++++++++++++++++++++
+>   drivers/infiniband/hw/erdma/erdma_cm.h |  167 +++
+>   2 files changed, 1597 insertions(+)
+>   create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.c
+>   create mode 100644 drivers/infiniband/hw/erdma/erdma_cm.h
+> 
+> diff --git a/drivers/infiniband/hw/erdma/erdma_cm.c b/drivers/infiniband/hw/erdma/erdma_cm.c
+> new file mode 100644
+> index 000000000000..8b74a173dab7
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/erdma/erdma_cm.c
+> @@ -0,0 +1,1430 @@
+> +// SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause
+> +
+> +/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
+> +/*          Kai Shen <kaishen@linux.alibaba.com> */
+> +/* Copyright (c) 2020-2022, Alibaba Group. */
+> +
+> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+> +/*          Fredy Neeser */
+> +/*          Greg Joyce <greg@opengridcomputing.com> */
+> +/* Copyright (c) 2008-2019, IBM Corporation */
+> +/* Copyright (c) 2017, Open Grid Computing, Inc. */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/inetdevice.h>
+> +#include <linux/net.h>
+> +#include <linux/types.h>
+> +#include <linux/workqueue.h>
+> +#include <net/addrconf.h>
+> +
+> +#include <rdma/ib_user_verbs.h>
+> +#include <rdma/ib_verbs.h>
+> +
+> +#include "erdma.h"
+> +#include "erdma_cm.h"
+> +#include "erdma_verbs.h"
+> +
+> +static struct workqueue_struct *erdma_cm_wq;
+> +
+> +static void erdma_cm_llp_state_change(struct sock *sk);
+> +static void erdma_cm_llp_data_ready(struct sock *sk);
+> +static void erdma_cm_llp_error_report(struct sock *sk);
+> +
+> +static void erdma_sk_assign_cm_upcalls(struct sock *sk)
+> +{
+> +	write_lock_bh(&sk->sk_callback_lock);
+> +	sk->sk_state_change = erdma_cm_llp_state_change;
+> +	sk->sk_data_ready = erdma_cm_llp_data_ready;
+> +	sk->sk_error_report = erdma_cm_llp_error_report;
+> +	write_unlock_bh(&sk->sk_callback_lock);
+> +}
+> +
+> +static void erdma_sk_save_upcalls(struct sock *sk)
+> +{
+> +	struct erdma_cep *cep = sk_to_cep(sk);
+> +
+> +	write_lock_bh(&sk->sk_callback_lock);
+> +	cep->sk_state_change = sk->sk_state_change;
+> +	cep->sk_data_ready = sk->sk_data_ready;
+> +	cep->sk_error_report = sk->sk_error_report;
+> +	write_unlock_bh(&sk->sk_callback_lock);
+> +}
+> +
+> +static void erdma_sk_restore_upcalls(struct sock *sk, struct erdma_cep *cep)
+> +{
+> +	sk->sk_state_change = cep->sk_state_change;
+> +	sk->sk_data_ready = cep->sk_data_ready;
+> +	sk->sk_error_report = cep->sk_error_report;
+> +	sk->sk_user_data = NULL;
+> +}
+> +
+> +static void erdma_socket_disassoc(struct socket *s)
+> +{
+> +	struct sock *sk = s->sk;
+> +	struct erdma_cep *cep;
+> +
+> +	if (sk) {
+> +		write_lock_bh(&sk->sk_callback_lock);
+> +		cep = sk_to_cep(sk);
+> +		if (cep) {
+> +			erdma_sk_restore_upcalls(sk, cep);
+> +			erdma_cep_put(cep);
+> +		} else {
+> +			WARN_ON_ONCE(1);
+> +		}
+> +		write_unlock_bh(&sk->sk_callback_lock);
+> +	} else {
+> +		WARN_ON_ONCE(1);
+> +	}
+> +}
+> +
+> +static void erdma_cep_socket_assoc(struct erdma_cep *cep, struct socket *s)
+> +{
+> +	cep->sock = s;
+> +	erdma_cep_get(cep);
+> +	s->sk->sk_user_data = cep;
+> +
+> +	erdma_sk_save_upcalls(s->sk);
+> +	erdma_sk_assign_cm_upcalls(s->sk);
+> +}
+> +
+> +static void erdma_disassoc_listen_cep(struct erdma_cep *cep)
+> +{
+> +	if (cep->listen_cep) {
+> +		erdma_cep_put(cep->listen_cep);
+> +		cep->listen_cep = NULL;
+> +	}
+> +}
+> +
+> +static struct erdma_cep *erdma_cep_alloc(struct erdma_dev *dev)
+> +{
+> +	struct erdma_cep *cep = kzalloc(sizeof(*cep), GFP_KERNEL);
+> +	unsigned long flags;
+> +
+> +	if (!cep)
+> +		return NULL;
+> +
+> +	INIT_LIST_HEAD(&cep->listenq);
+> +	INIT_LIST_HEAD(&cep->devq);
+> +	INIT_LIST_HEAD(&cep->work_freelist);
+> +
+> +	kref_init(&cep->ref);
+> +	cep->state = ERDMA_EPSTATE_IDLE;
+> +	init_waitqueue_head(&cep->waitq);
+> +	spin_lock_init(&cep->lock);
+> +	cep->dev = dev;
+> +
+> +	spin_lock_irqsave(&dev->lock, flags);
+> +	list_add_tail(&cep->devq, &dev->cep_list);
+> +	spin_unlock_irqrestore(&dev->lock, flags);
+> +
+> +	return cep;
+> +}
+> +
+> +static void erdma_cm_free_work(struct erdma_cep *cep)
+> +{
+> +	struct list_head *w, *tmp;
+> +	struct erdma_cm_work *work;
+> +
+> +	list_for_each_safe(w, tmp, &cep->work_freelist) {
+> +		work = list_entry(w, struct erdma_cm_work, list);
+> +		list_del(&work->list);
+> +		kfree(work);
+> +	}
+> +}
+> +
+> +static void erdma_cancel_mpatimer(struct erdma_cep *cep)
+> +{
+> +	spin_lock_bh(&cep->lock);
+> +	if (cep->mpa_timer) {
+> +		if (cancel_delayed_work(&cep->mpa_timer->work)) {
+> +			erdma_cep_put(cep);
+> +			kfree(cep->mpa_timer);
+> +		}
+> +		cep->mpa_timer = NULL;
+> +	}
+> +	spin_unlock_bh(&cep->lock);
+> +}
+> +
+> +static void erdma_put_work(struct erdma_cm_work *work)
+> +{
+> +	INIT_LIST_HEAD(&work->list);
+> +	spin_lock_bh(&work->cep->lock);
+> +	list_add(&work->list, &work->cep->work_freelist);
+> +	spin_unlock_bh(&work->cep->lock);
+> +}
+> +
+> +static void erdma_cep_set_inuse(struct erdma_cep *cep)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&cep->lock, flags);
+> +	while (cep->in_use) {
+> +		spin_unlock_irqrestore(&cep->lock, flags);
+> +		wait_event_interruptible(cep->waitq, !cep->in_use);
+> +		if (signal_pending(current))
+> +			flush_signals(current);
+> +
+> +		spin_lock_irqsave(&cep->lock, flags);
+> +	}
+> +
+> +	cep->in_use = 1;
+> +	spin_unlock_irqrestore(&cep->lock, flags);
+> +}
+> +
+> +static void erdma_cep_set_free(struct erdma_cep *cep)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&cep->lock, flags);
+> +	cep->in_use = 0;
+> +	spin_unlock_irqrestore(&cep->lock, flags);
+> +
+> +	wake_up(&cep->waitq);
+> +}
+> +
+> +static void __erdma_cep_dealloc(struct kref *ref)
+> +{
+> +	struct erdma_cep *cep = container_of(ref, struct erdma_cep, ref);
+> +	struct erdma_dev *dev = cep->dev;
+> +	unsigned long flags;
+> +
+> +	WARN_ON(cep->listen_cep);
+> +
+> +	kfree(cep->private_data);
+> +	kfree(cep->mpa.pdata);
+> +	spin_lock_bh(&cep->lock);
+> +	if (!list_empty(&cep->work_freelist))
+> +		erdma_cm_free_work(cep);
+> +	spin_unlock_bh(&cep->lock);
+> +
+> +	spin_lock_irqsave(&dev->lock, flags);
+> +	list_del(&cep->devq);
+> +	spin_unlock_irqrestore(&dev->lock, flags);
+> +	kfree(cep);
+> +}
+> +
+> +static struct erdma_cm_work *erdma_get_work(struct erdma_cep *cep)
+> +{
+> +	struct erdma_cm_work *work = NULL;
+> +
+> +	spin_lock_bh(&cep->lock);
+> +	if (!list_empty(&cep->work_freelist)) {
+> +		work = list_entry(cep->work_freelist.next, struct erdma_cm_work,
+> +				  list);
+> +		list_del_init(&work->list);
+> +	}
+> +
+> +	spin_unlock_bh(&cep->lock);
+> +	return work;
+> +}
+> +
+> +static int erdma_cm_alloc_work(struct erdma_cep *cep, int num)
+> +{
+> +	struct erdma_cm_work *work;
+> +
+> +	while (num--) {
+> +		work = kmalloc(sizeof(*work), GFP_KERNEL);
+> +		if (!work) {
+> +			if (!(list_empty(&cep->work_freelist)))
+> +				erdma_cm_free_work(cep);
+> +			return -ENOMEM;
+> +		}
+> +		work->cep = cep;
+> +		INIT_LIST_HEAD(&work->list);
+> +		list_add(&work->list, &cep->work_freelist);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int erdma_cm_upcall(struct erdma_cep *cep, enum iw_cm_event_type reason,
+> +			   int status)
+> +{
+> +	struct iw_cm_event event;
+> +	struct iw_cm_id *cm_id;
+> +
+> +	memset(&event, 0, sizeof(event));
+> +	event.status = status;
+> +	event.event = reason;
+> +
+> +	if (reason == IW_CM_EVENT_CONNECT_REQUEST) {
+> +		event.provider_data = cep;
+> +		cm_id = cep->listen_cep->cm_id;
+> +
+> +		event.ird = cep->dev->attrs.max_ird;
+> +		event.ord = cep->dev->attrs.max_ord;
+> +	} else {
+> +		cm_id = cep->cm_id;
+> +	}
+> +
+> +	if (reason == IW_CM_EVENT_CONNECT_REQUEST ||
+> +	    reason == IW_CM_EVENT_CONNECT_REPLY) {
+> +		u16 pd_len = be16_to_cpu(cep->mpa.hdr.params.pd_len);
+> +
+> +		if (pd_len && cep->mpa.pdata) {
+> +			event.private_data_len = pd_len;
+> +			event.private_data = cep->mpa.pdata;
+> +		}
+> +
+> +		getname_local(cep->sock, &event.local_addr);
+> +		getname_peer(cep->sock, &event.remote_addr);
+> +	}
+> +
+> +	return cm_id->event_handler(cm_id, &event);
+> +}
+> +
+> +void erdma_qp_cm_drop(struct erdma_qp *qp)
+> +{
+> +	struct erdma_cep *cep = qp->cep;
+> +
+> +	if (!qp->cep)
+> +		return;
+> +
+> +	erdma_cep_set_inuse(cep);
+> +
+> +	/* already closed. */
+> +	if (cep->state == ERDMA_EPSTATE_CLOSED)
+> +		goto out;
+> +
+> +	if (cep->cm_id) {
+> +		switch (cep->state) {
+> +		case ERDMA_EPSTATE_AWAIT_MPAREP:
+> +			erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+> +					-EINVAL);
+> +			break;
+> +
+> +		case ERDMA_EPSTATE_RDMA_MODE:
+> +			erdma_cm_upcall(cep, IW_CM_EVENT_CLOSE, 0);
+> +			break;
+> +
+> +		case ERDMA_EPSTATE_IDLE:
+> +		case ERDMA_EPSTATE_LISTENING:
+> +		case ERDMA_EPSTATE_CONNECTING:
+> +		case ERDMA_EPSTATE_AWAIT_MPAREQ:
+> +		case ERDMA_EPSTATE_RECVD_MPAREQ:
+> +		case ERDMA_EPSTATE_CLOSED:
+> +		default:
+> +			break;
+> +		}
+> +		cep->cm_id->rem_ref(cep->cm_id);
+> +		cep->cm_id = NULL;
+> +		erdma_cep_put(cep);
+> +	}
+> +	cep->state = ERDMA_EPSTATE_CLOSED;
+> +
+> +	if (cep->sock) {
+> +		erdma_socket_disassoc(cep->sock);
+> +		sock_release(cep->sock);
+> +		cep->sock = NULL;
+> +	}
+> +
+> +	if (cep->qp) {
+> +		cep->qp = NULL;
+> +		erdma_qp_put(qp);
+> +	}
+> +out:
+> +	erdma_cep_set_free(cep);
+> +}
+> +
+> +void erdma_cep_put(struct erdma_cep *cep)
+> +{
+> +	WARN_ON(kref_read(&cep->ref) < 1);
+> +	kref_put(&cep->ref, __erdma_cep_dealloc);
+> +}
+> +
+> +void erdma_cep_get(struct erdma_cep *cep)
+> +{
+> +	kref_get(&cep->ref);
+> +}
+> +
+> +static int erdma_send_mpareqrep(struct erdma_cep *cep, const void *pdata,
+> +				u8 pd_len)
+> +{
+> +	struct socket *s = cep->sock;
+> +	struct mpa_rr *rr = &cep->mpa.hdr;
+> +	struct kvec iov[3];
+> +	struct msghdr msg;
+> +	int iovec_num = 0;
+> +	int ret;
+> +	int mpa_len;
+> +
+> +	memset(&msg, 0, sizeof(msg));
+> +
+> +	rr->params.pd_len = cpu_to_be16(pd_len);
+> +
+> +	iov[iovec_num].iov_base = rr;
+> +	iov[iovec_num].iov_len = sizeof(*rr);
+> +	iovec_num++;
+> +	mpa_len = sizeof(*rr);
+> +
+> +	iov[iovec_num].iov_base = &cep->mpa.ext_data;
+> +	iov[iovec_num].iov_len = sizeof(cep->mpa.ext_data);
+> +	iovec_num++;
+> +	mpa_len += sizeof(cep->mpa.ext_data);
+> +
+> +	if (pd_len) {
+> +		iov[iovec_num].iov_base = (char *)pdata;
+> +		iov[iovec_num].iov_len = pd_len;
+> +		mpa_len += pd_len;
+> +		iovec_num++;
+> +	}
+> +
+> +	ret = kernel_sendmsg(s, &msg, iov, iovec_num, mpa_len);
+> +
+> +	return ret < 0 ? ret : 0;
+> +}
+> +
+> +static inline int ksock_recv(struct socket *sock, char *buf, size_t size,
+> +			     int flags)
+> +{
+> +	struct kvec iov = { buf, size };
+> +	struct msghdr msg = { .msg_name = NULL, .msg_flags = flags };
+> +
+> +	return kernel_recvmsg(sock, &msg, &iov, 1, size, flags);
+> +}
+> +
+> +static int __recv_mpa_hdr(struct erdma_cep *cep, int hdr_rcvd, char *hdr,
+> +			  int hdr_size, int *rcvd_out)
+> +{
+> +	struct socket *s = cep->sock;
+> +	int rcvd;
+> +
+> +	*rcvd_out = 0;
+> +	if (hdr_rcvd < hdr_size) {
+> +		rcvd = ksock_recv(s, hdr + hdr_rcvd, hdr_size - hdr_rcvd,
+> +				  MSG_DONTWAIT);
+> +		if (rcvd == -EAGAIN)
+> +			return -EAGAIN;
+> +
+> +		if (rcvd <= 0)
+> +			return -ECONNABORTED;
+> +
+> +		hdr_rcvd += rcvd;
+> +		*rcvd_out = rcvd;
+> +
+> +		if (hdr_rcvd < hdr_size)
+> +			return -EAGAIN;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void __mpa_rr_set_revision(__be16 *bits, u8 rev)
+> +{
+> +	*bits = (*bits & ~MPA_RR_MASK_REVISION) |
+> +		(cpu_to_be16(rev) & MPA_RR_MASK_REVISION);
+> +}
+> +
+> +static u8 __mpa_rr_revision(__be16 mpa_rr_bits)
+> +{
+> +	__be16 rev = mpa_rr_bits & MPA_RR_MASK_REVISION;
+> +
+> +	return (u8)be16_to_cpu(rev);
+> +}
+> +
+> +static void __mpa_ext_set_cc(__be32 *bits, u32 cc)
+> +{
+> +	*bits = (*bits & ~MPA_EXT_FLAG_CC) |
+> +		(cpu_to_be32(cc) & MPA_EXT_FLAG_CC);
+> +}
+> +
+> +static u8 __mpa_ext_cc(__be32 mpa_ext_bits)
+> +{
+> +	__be32 cc = mpa_ext_bits & MPA_EXT_FLAG_CC;
+> +
+> +	return (u8)be32_to_cpu(cc);
+> +}
+> +
+> +/*
+> + * Receive MPA Request/Reply header.
+> + *
+> + * Returns 0 if complete MPA Request/Reply haeder including
+> + * eventual private data was received. Returns -EAGAIN if
+> + * header was partially received or negative error code otherwise.
+> + *
+> + * Context: May be called in process context only
+> + */
+> +static int erdma_recv_mpa_rr(struct erdma_cep *cep)
+> +{
+> +	struct mpa_rr *hdr = &cep->mpa.hdr;
+> +	struct socket *s = cep->sock;
+> +	u16 pd_len;
+> +	int rcvd, to_rcv, ret, pd_rcvd;
+> +
+> +	if (cep->mpa.bytes_rcvd < sizeof(struct mpa_rr)) {
+> +		ret = __recv_mpa_hdr(cep, cep->mpa.bytes_rcvd,
+> +				     (char *)&cep->mpa.hdr,
+> +				     sizeof(struct mpa_rr), &rcvd);
+> +		cep->mpa.bytes_rcvd += rcvd;
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (be16_to_cpu(hdr->params.pd_len) > MPA_MAX_PRIVDATA ||
+> +	    __mpa_rr_revision(hdr->params.bits) != MPA_REVISION_EXT_1)
+> +		return -EPROTO;
+> +
+> +	if (cep->mpa.bytes_rcvd - sizeof(struct mpa_rr) <
+> +	    sizeof(struct erdma_mpa_ext)) {
+> +		ret = __recv_mpa_hdr(
+> +			cep, cep->mpa.bytes_rcvd - sizeof(struct mpa_rr),
+> +			(char *)&cep->mpa.ext_data,
+> +			sizeof(struct erdma_mpa_ext), &rcvd);
+> +		cep->mpa.bytes_rcvd += rcvd;
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	pd_len = be16_to_cpu(hdr->params.pd_len);
+> +	pd_rcvd = cep->mpa.bytes_rcvd - sizeof(struct mpa_rr) -
+> +		  sizeof(struct erdma_mpa_ext);
+> +	to_rcv = pd_len - pd_rcvd;
+> +
+> +	if (!to_rcv) {
+> +		/*
+> +		 * We have received the whole MPA Request/Reply message.
+> +		 * Check against peer protocol violation.
+> +		 */
+> +		u32 word;
+> +
+> +		ret = __recv_mpa_hdr(cep, 0, (char *)&word, sizeof(word),
+> +				     &rcvd);
+> +		if (ret == -EAGAIN && rcvd == 0)
+> +			return 0;
+> +
+> +		if (ret)
+> +			return ret;
+> +
+> +		return -EPROTO;
+> +	}
+> +
+> +	/*
+> +	 * At this point, MPA header has been fully received, and pd_len != 0.
+> +	 * So, begin to receive private data.
+> +	 */
+> +	if (!cep->mpa.pdata) {
+> +		cep->mpa.pdata = kmalloc(pd_len + 4, GFP_KERNEL);
+> +		if (!cep->mpa.pdata)
+> +			return -ENOMEM;
+> +	}
+> +
+> +	rcvd = ksock_recv(s, cep->mpa.pdata + pd_rcvd, to_rcv + 4,
+> +			  MSG_DONTWAIT);
+> +	if (rcvd < 0)
+> +		return rcvd;
+> +
+> +	if (rcvd > to_rcv)
+> +		return -EPROTO;
+> +
+> +	cep->mpa.bytes_rcvd += rcvd;
+> +
+> +	if (to_rcv == rcvd)
+> +		return 0;
+> +
+> +	return -EAGAIN;
+> +}
+> +
+> +/*
+> + * erdma_proc_mpareq()
+> + *
+> + * Read MPA Request from socket and signal new connection to IWCM
+> + * if success. Caller must hold lock on corresponding listening CEP.
+> + */
+> +static int erdma_proc_mpareq(struct erdma_cep *cep)
+> +{
+> +	struct mpa_rr *req;
+> +	int ret;
+> +
+> +	ret = erdma_recv_mpa_rr(cep);
+> +	if (ret)
+> +		return ret;
+> +
+> +	req = &cep->mpa.hdr;
+> +
+> +	if (memcmp(req->key, MPA_KEY_REQ, MPA_KEY_SIZE))
+> +		return -EPROTO;
+> +
+> +	memcpy(req->key, MPA_KEY_REP, MPA_KEY_SIZE);
+> +
+> +	/* Currently does not support marker and crc. */
+> +	if (req->params.bits & MPA_RR_FLAG_MARKERS ||
+> +	    req->params.bits & MPA_RR_FLAG_CRC)
+> +		goto reject_conn;
+> +
+> +	cep->state = ERDMA_EPSTATE_RECVD_MPAREQ;
+> +
+> +	/* Keep reference until IWCM accepts/rejects */
+> +	erdma_cep_get(cep);
+> +	ret = erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REQUEST, 0);
+> +	if (ret)
+> +		erdma_cep_put(cep);
+> +
+> +	return ret;
+> +
+> +reject_conn:
+> +	req->params.bits &= ~MPA_RR_FLAG_MARKERS;
+> +	req->params.bits |= MPA_RR_FLAG_REJECT;
+> +	req->params.bits &= ~MPA_RR_FLAG_CRC;
+> +
+> +	kfree(cep->mpa.pdata);
+> +	cep->mpa.pdata = NULL;
+> +	erdma_send_mpareqrep(cep, NULL, 0);
+> +
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static int erdma_proc_mpareply(struct erdma_cep *cep)
+> +{
+> +	struct erdma_qp_attrs qp_attrs;
+> +	struct erdma_qp *qp = cep->qp;
+> +	struct mpa_rr *rep;
+> +	int ret;
+> +
+> +	ret = erdma_recv_mpa_rr(cep);
+> +	if (ret != -EAGAIN)
+> +		erdma_cancel_mpatimer(cep);
+> +	if (ret)
+> +		goto out_err;
+> +
+> +	rep = &cep->mpa.hdr;
+> +
+> +	if (memcmp(rep->key, MPA_KEY_REP, MPA_KEY_SIZE)) {
+> +		ret = -EPROTO;
+> +		goto out_err;
+> +	}
+> +
+> +	if (rep->params.bits & MPA_RR_FLAG_REJECT) {
+> +		erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY, -ECONNRESET);
+> +		return -ECONNRESET;
+> +	}
+> +
+> +	/* Currently does not support marker and crc. */
+> +	if ((rep->params.bits & MPA_RR_FLAG_MARKERS) ||
+> +	    (rep->params.bits & MPA_RR_FLAG_CRC)) {
+> +		erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY, -ECONNREFUSED);
+> +		return -EINVAL;
+> +	}
+> +
+> +	memset(&qp_attrs, 0, sizeof(qp_attrs));
+> +	qp_attrs.irq_size = cep->ird;
+> +	qp_attrs.orq_size = cep->ord;
+> +	qp_attrs.state = ERDMA_QP_STATE_RTS;
+> +
+> +	down_write(&qp->state_lock);
+> +	if (qp->attrs.state > ERDMA_QP_STATE_RTR) {
+> +		ret = -EINVAL;
+> +		up_write(&qp->state_lock);
+> +		goto out_err;
+> +	}
+> +
+> +	qp->attrs.qp_type = ERDMA_QP_ACTIVE;
+> +	if (__mpa_ext_cc(cep->mpa.ext_data.bits) != qp->attrs.cc)
+> +		qp->attrs.cc = COMPROMISE_CC;
+> +
+> +	ret = erdma_modify_qp_internal(qp, &qp_attrs,
+> +				       ERDMA_QP_ATTR_STATE |
+> +				       ERDMA_QP_ATTR_LLP_HANDLE |
+> +				       ERDMA_QP_ATTR_MPA);
+> +
+> +	up_write(&qp->state_lock);
+> +
+> +	if (!ret) {
+> +		ret = erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY, 0);
+> +		if (!ret)
+> +			cep->state = ERDMA_EPSTATE_RDMA_MODE;
+> +
+> +		return 0;
+> +	}
+> +
+> +out_err:
+> +	erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY, -EINVAL);
+> +	return ret;
+> +}
+> +
+> +static void erdma_accept_newconn(struct erdma_cep *cep)
+> +{
+> +	struct socket *s = cep->sock;
+> +	struct socket *new_s = NULL;
+> +	struct erdma_cep *new_cep = NULL;
+> +	int ret = 0;
+> +
+> +	if (cep->state != ERDMA_EPSTATE_LISTENING)
+> +		goto error;
+> +
+> +	new_cep = erdma_cep_alloc(cep->dev);
+> +	if (!new_cep)
+> +		goto error;
+> +
+> +	/*
+> +	 * 4: Allocate a sufficient number of work elements
+> +	 * to allow concurrent handling of local + peer close
+> +	 * events, MPA header processing + MPA timeout.
+> +	 */
+> +	if (erdma_cm_alloc_work(new_cep, 4) != 0)
+> +		goto error;
+> +
+> +	/*
+> +	 * Copy saved socket callbacks from listening CEP
+> +	 * and assign new socket with new CEP
+> +	 */
+> +	new_cep->sk_state_change = cep->sk_state_change;
+> +	new_cep->sk_data_ready = cep->sk_data_ready;
+> +	new_cep->sk_error_report = cep->sk_error_report;
+> +
+> +	ret = kernel_accept(s, &new_s, O_NONBLOCK);
+> +	if (ret != 0)
+> +		goto error;
+> +
+> +	new_cep->sock = new_s;
+> +	erdma_cep_get(new_cep);
+> +	new_s->sk->sk_user_data = new_cep;
+> +
+> +	tcp_sock_set_nodelay(new_s->sk);
+> +	new_cep->state = ERDMA_EPSTATE_AWAIT_MPAREQ;
+> +
+> +	ret = erdma_cm_queue_work(new_cep, ERDMA_CM_WORK_MPATIMEOUT);
+> +	if (ret)
+> +		goto error;
+> +
+> +	new_cep->listen_cep = cep;
+> +	erdma_cep_get(cep);
+> +
+> +	if (atomic_read(&new_s->sk->sk_rmem_alloc)) {
+> +		/* MPA REQ already queued */
+> +		erdma_cep_set_inuse(new_cep);
+> +		ret = erdma_proc_mpareq(new_cep);
+> +		if (ret != -EAGAIN) {
+> +			erdma_cep_put(cep);
+> +			new_cep->listen_cep = NULL;
+> +			if (ret) {
+> +				erdma_cep_set_free(new_cep);
+> +				goto error;
+> +			}
+> +		}
+> +		erdma_cep_set_free(new_cep);
+> +	}
+> +	return;
+> +
+> +error:
+> +	if (new_cep) {
+> +		new_cep->state = ERDMA_EPSTATE_CLOSED;
+> +		erdma_cancel_mpatimer(new_cep);
+> +
+> +		erdma_cep_put(new_cep);
+> +		new_cep->sock = NULL;
+> +	}
+> +
+> +	if (new_s) {
+> +		erdma_socket_disassoc(new_s);
+> +		sock_release(new_s);
+> +	}
+> +}
+> +
+> +static int erdma_newconn_connected(struct erdma_cep *cep)
+> +{
+> +	int ret = 0;
+> +
+> +	cep->mpa.hdr.params.bits = 0;
+> +	__mpa_rr_set_revision(&cep->mpa.hdr.params.bits, MPA_REVISION_EXT_1);
+> +
+> +	memcpy(cep->mpa.hdr.key, MPA_KEY_REQ, MPA_KEY_SIZE);
+> +	cep->mpa.ext_data.cookie = cpu_to_be32(cep->qp->attrs.cookie);
+> +	__mpa_ext_set_cc(&cep->mpa.ext_data.bits, cep->qp->attrs.cc);
+> +
+> +	ret = erdma_send_mpareqrep(cep, cep->private_data, cep->pd_len);
+> +	cep->state = ERDMA_EPSTATE_AWAIT_MPAREP;
+> +	cep->mpa.hdr.params.pd_len = 0;
+> +
+> +	if (ret >= 0)
+> +		ret = erdma_cm_queue_work(cep, ERDMA_CM_WORK_MPATIMEOUT);
+> +
+> +	return ret;
+> +}
+> +
+> +static void erdma_cm_work_handler(struct work_struct *w)
+> +{
+> +	struct erdma_cm_work *work;
+> +	struct erdma_cep *cep;
+> +	int release_cep = 0, ret = 0;
+> +
+> +	work = container_of(w, struct erdma_cm_work, work.work);
+> +	cep = work->cep;
+> +
+> +	erdma_cep_set_inuse(cep);
+> +
+> +	switch (work->type) {
+> +	case ERDMA_CM_WORK_CONNECTED:
+> +		erdma_cancel_mpatimer(cep);
+> +		if (cep->state == ERDMA_EPSTATE_CONNECTING) {
+> +			ret = erdma_newconn_connected(cep);
+> +			if (ret) {
+> +				erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+> +						-EIO);
+> +				release_cep = 1;
+> +			}
+> +		}
+> +		break;
+> +	case ERDMA_CM_WORK_CONNECTTIMEOUT:
+> +		if (cep->state == ERDMA_EPSTATE_CONNECTING) {
+> +			cep->mpa_timer = NULL;
+> +			erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+> +					-ETIMEDOUT);
+> +			release_cep = 1;
+> +		}
+> +		break;
+> +	case ERDMA_CM_WORK_ACCEPT:
+> +		erdma_accept_newconn(cep);
+> +		break;
+> +	case ERDMA_CM_WORK_READ_MPAHDR:
+> +		if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREQ) {
+> +			if (cep->listen_cep) {
+> +				erdma_cep_set_inuse(cep->listen_cep);
+> +
+> +				if (cep->listen_cep->state ==
+> +				    ERDMA_EPSTATE_LISTENING)
+> +					ret = erdma_proc_mpareq(cep);
+> +				else
+> +					ret = -EFAULT;
+> +
+> +				erdma_cep_set_free(cep->listen_cep);
+> +
+> +				if (ret != -EAGAIN) {
+> +					erdma_cep_put(cep->listen_cep);
+> +					cep->listen_cep = NULL;
+> +					if (ret)
+> +						erdma_cep_put(cep);
+> +				}
+> +			}
+> +		} else if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREP) {
+> +			ret = erdma_proc_mpareply(cep);
+> +		}
+> +
+> +		if (ret && ret != -EAGAIN)
+> +			release_cep = 1;
+> +		break;
+> +	case ERDMA_CM_WORK_CLOSE_LLP:
+> +		if (cep->cm_id)
+> +			erdma_cm_upcall(cep, IW_CM_EVENT_CLOSE, 0);
+> +		release_cep = 1;
+> +		break;
+> +	case ERDMA_CM_WORK_PEER_CLOSE:
+> +		if (cep->cm_id) {
+> +			if (cep->state == ERDMA_EPSTATE_CONNECTING ||
+> +			    cep->state == ERDMA_EPSTATE_AWAIT_MPAREP) {
+> +				/*
+> +				 * MPA reply not received, but connection drop
+> +				 */
+> +				erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+> +						-ECONNRESET);
+> +			} else if (cep->state == ERDMA_EPSTATE_RDMA_MODE) {
+> +				/*
+> +				 * NOTE: IW_CM_EVENT_DISCONNECT is given just
+> +				 *       to transition IWCM into CLOSING.
+> +				 */
+> +				erdma_cm_upcall(cep, IW_CM_EVENT_DISCONNECT, 0);
+> +				erdma_cm_upcall(cep, IW_CM_EVENT_CLOSE, 0);
+> +			}
+> +		} else if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREQ) {
+> +			/* Socket close before MPA request received. */
+> +			erdma_disassoc_listen_cep(cep);
+> +			erdma_cep_put(cep);
+> +		}
+> +		release_cep = 1;
+> +		break;
+> +	case ERDMA_CM_WORK_MPATIMEOUT:
+> +		cep->mpa_timer = NULL;
+> +		if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREP) {
+> +			/*
+> +			 * MPA request timed out:
+> +			 * Hide any partially received private data and signal
+> +			 * timeout
+> +			 */
+> +			cep->mpa.hdr.params.pd_len = 0;
+> +
+> +			if (cep->cm_id)
+> +				erdma_cm_upcall(cep, IW_CM_EVENT_CONNECT_REPLY,
+> +						-ETIMEDOUT);
+> +			release_cep = 1;
+> +		} else if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREQ) {
+> +			/* No MPA req received after peer TCP stream setup. */
+> +			erdma_disassoc_listen_cep(cep);
+> +
+> +			erdma_cep_put(cep);
+> +			release_cep = 1;
+> +		}
+> +		break;
+> +	default:
+> +		WARN(1, "Undefined CM work type: %d\n", work->type);
+> +	}
+> +
+> +	if (release_cep) {
+> +		erdma_cancel_mpatimer(cep);
+> +		cep->state = ERDMA_EPSTATE_CLOSED;
+> +		if (cep->qp) {
+> +			struct erdma_qp *qp = cep->qp;
+> +			/*
+> +			 * Serialize a potential race with application
+> +			 * closing the QP and calling erdma_qp_cm_drop()
+> +			 */
+> +			erdma_qp_get(qp);
+> +			erdma_cep_set_free(cep);
+> +
+> +			erdma_qp_llp_close(qp);
+> +			erdma_qp_put(qp);
+> +
+> +			erdma_cep_set_inuse(cep);
+> +			cep->qp = NULL;
+> +			erdma_qp_put(qp);
+> +		}
+> +
+> +		if (cep->sock) {
+> +			erdma_socket_disassoc(cep->sock);
+> +			sock_release(cep->sock);
+> +			cep->sock = NULL;
+> +		}
+> +
+> +		if (cep->cm_id) {
+> +			cep->cm_id->rem_ref(cep->cm_id);
+> +			cep->cm_id = NULL;
+> +			if (cep->state != ERDMA_EPSTATE_LISTENING)
+> +				erdma_cep_put(cep);
+> +		}
+> +	}
+> +	erdma_cep_set_free(cep);
+> +	erdma_put_work(work);
+> +	erdma_cep_put(cep);
+> +}
+> +
+> +int erdma_cm_queue_work(struct erdma_cep *cep, enum erdma_work_type type)
+> +{
+> +	struct erdma_cm_work *work = erdma_get_work(cep);
+> +	unsigned long delay = 0;
+> +
+> +	if (!work)
+> +		return -ENOMEM;
+> +
+> +	work->type = type;
+> +	work->cep = cep;
+> +
+> +	erdma_cep_get(cep);
+> +
+> +	INIT_DELAYED_WORK(&work->work, erdma_cm_work_handler);
+> +
+> +	if (type == ERDMA_CM_WORK_MPATIMEOUT) {
+> +		cep->mpa_timer = work;
+> +
+> +		if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREP)
+> +			delay = MPAREP_TIMEOUT;
+> +		else
+> +			delay = MPAREQ_TIMEOUT;
+> +	} else if (type == ERDMA_CM_WORK_CONNECTTIMEOUT) {
+> +		cep->mpa_timer = work;
+> +
+> +		delay = CONNECT_TIMEOUT;
+> +	}
+> +
+> +	queue_delayed_work(erdma_cm_wq, &work->work, delay);
+> +
+> +	return 0;
+> +}
+> +
+> +static void erdma_cm_llp_data_ready(struct sock *sk)
+> +{
+> +	struct erdma_cep *cep;
+> +
+> +	read_lock(&sk->sk_callback_lock);
+> +
+> +	cep = sk_to_cep(sk);
+> +	if (!cep)
+> +		goto out;
+> +
+> +	if (cep->state == ERDMA_EPSTATE_AWAIT_MPAREQ ||
+> +	    cep->state == ERDMA_EPSTATE_AWAIT_MPAREP)
+> +		erdma_cm_queue_work(cep, ERDMA_CM_WORK_READ_MPAHDR);
+> +
+> +out:
+> +	read_unlock(&sk->sk_callback_lock);
+> +}
+> +
+> +static void erdma_cm_llp_error_report(struct sock *sk)
+> +{
+> +	struct erdma_cep *cep = sk_to_cep(sk);
+> +
+> +	if (cep)
+> +		cep->sk_error_report(sk);
+> +}
+> +
+> +static void erdma_cm_llp_state_change(struct sock *sk)
+> +{
+> +	struct erdma_cep *cep;
+> +	void (*orig_state_change)(struct sock *sk);
+> +
+> +	read_lock(&sk->sk_callback_lock);
+> +
+> +	cep = sk_to_cep(sk);
+> +	if (!cep) {
+> +		read_unlock(&sk->sk_callback_lock);
+> +		return;
+> +	}
+> +	orig_state_change = cep->sk_state_change;
+> +
+> +	switch (sk->sk_state) {
+> +	case TCP_ESTABLISHED:
+> +		if (cep->state == ERDMA_EPSTATE_CONNECTING)
+> +			erdma_cm_queue_work(cep, ERDMA_CM_WORK_CONNECTED);
+> +		else
+> +			erdma_cm_queue_work(cep, ERDMA_CM_WORK_ACCEPT);
+> +		break;
+> +	case TCP_CLOSE:
+> +	case TCP_CLOSE_WAIT:
+> +		if (cep->state != ERDMA_EPSTATE_LISTENING)
+> +			erdma_cm_queue_work(cep, ERDMA_CM_WORK_PEER_CLOSE);
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +	read_unlock(&sk->sk_callback_lock);
+> +	orig_state_change(sk);
+> +}
+> +
+> +static int kernel_bindconnect(struct socket *s, struct sockaddr *laddr,
+> +			      int laddrlen, struct sockaddr *raddr,
+> +			      int raddrlen, int flags)
+> +{
+> +	int ret;
+> +
+> +	sock_set_reuseaddr(s->sk);
+> +	ret = s->ops->bind(s, laddr, laddrlen);
+> +	if (ret)
+> +		return ret;
+> +	ret = s->ops->connect(s, raddr, raddrlen, flags);
+> +	return ret < 0 ? ret : 0;
+> +}
+> +
+> +int erdma_connect(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+> +{
+> +	struct erdma_dev *dev = to_edev(id->device);
+> +	struct erdma_qp *qp;
+> +	struct erdma_cep *cep = NULL;
+> +	struct socket *s = NULL;
+> +	struct sockaddr *laddr = (struct sockaddr *)&id->m_local_addr;
+> +	struct sockaddr *raddr = (struct sockaddr *)&id->m_remote_addr;
+> +	u16 pd_len = params->private_data_len;
+> +	int ret;
+> +
+> +	if (pd_len > MPA_MAX_PRIVDATA)
+> +		return -EINVAL;
+> +
+> +	if (params->ird > dev->attrs.max_ird ||
+> +	    params->ord > dev->attrs.max_ord)
+> +		return -EINVAL;
+> +
+> +	if (laddr->sa_family != AF_INET || raddr->sa_family != AF_INET)
+> +		return -EAFNOSUPPORT;
+> +
+> +	qp = find_qp_by_qpn(dev, params->qpn);
+> +	if (!qp)
+> +		return -ENOENT;
+> +	erdma_qp_get(qp);
+> +
+> +	ret = sock_create(AF_INET, SOCK_STREAM, IPPROTO_TCP, &s);
+> +	if (ret < 0)
+> +		goto error_put_qp;
+> +
+> +	cep = erdma_cep_alloc(dev);
+> +	if (!cep) {
+> +		ret = -ENOMEM;
+> +		goto error_release_sock;
+> +	}
+> +
+> +	erdma_cep_set_inuse(cep);
+> +
+> +	/* Associate QP with CEP */
+> +	erdma_cep_get(cep);
+> +	qp->cep = cep;
+> +	cep->qp = qp;
+> +
+> +	/* Associate cm_id with CEP */
+> +	id->add_ref(id);
+> +	cep->cm_id = id;
+> +
+> +	/*
+> +	 * 6: Allocate a sufficient number of work elements
+> +	 * to allow concurrent handling of local + peer close
+> +	 * events, MPA header processing + MPA timeout, connected event
+> +	 * and connect timeout.
+> +	 */
+> +	ret = erdma_cm_alloc_work(cep, 6);
+> +	if (ret != 0) {
+> +		ret = -ENOMEM;
+> +		goto error_release_cep;
+> +	}
+> +
+> +	cep->ird = params->ird;
+> +	cep->ord = params->ord;
+> +	cep->state = ERDMA_EPSTATE_CONNECTING;
+> +
+> +	erdma_cep_socket_assoc(cep, s);
+> +
+> +	if (pd_len) {
+> +		cep->pd_len = pd_len;
+> +		cep->private_data = kmalloc(pd_len, GFP_KERNEL);
+> +		if (!cep->private_data) {
+> +			ret = -ENOMEM;
+> +			goto error_disassoc;
+> +		}
+> +
+> +		memcpy(cep->private_data, params->private_data,
+> +		       params->private_data_len);
+> +	}
+> +
+> +	ret = kernel_bindconnect(s, laddr, sizeof(*laddr), raddr,
+> +				 sizeof(*raddr), O_NONBLOCK);
+> +	if (ret != -EINPROGRESS && ret != 0) {
+> +		goto error_disassoc;
+> +	} else if (ret == 0) {
+> +		ret = erdma_cm_queue_work(cep, ERDMA_CM_WORK_CONNECTED);
+> +		if (ret)
+> +			goto error_disassoc;
+> +	} else {
+> +		ret = erdma_cm_queue_work(cep, ERDMA_CM_WORK_CONNECTTIMEOUT);
+> +		if (ret)
+> +			goto error_disassoc;
+> +	}
+> +
+> +	erdma_cep_set_free(cep);
+> +	return 0;
+> +
+> +error_disassoc:
+> +	kfree(cep->private_data);
+> +	cep->private_data = NULL;
+> +	cep->pd_len = 0;
+> +
+> +	erdma_socket_disassoc(s);
+> +
+> +error_release_cep:
+> +	/* disassoc with cm_id */
+> +	cep->cm_id = NULL;
+> +	id->rem_ref(id);
+> +
+> +	/* disassoc with qp */
+> +	qp->cep = NULL;
+> +	erdma_cep_put(cep);
+> +	cep->qp = NULL;
+> +
+> +	cep->state = ERDMA_EPSTATE_CLOSED;
+> +
+> +	erdma_cep_set_free(cep);
+> +
+> +	/* release the cep. */
+> +	erdma_cep_put(cep);
+> +
+> +error_release_sock:
+> +	if (s)
+> +		sock_release(s);
+> +error_put_qp:
+> +	erdma_qp_put(qp);
+> +
+> +	return ret;
+> +}
+> +
+> +int erdma_accept(struct iw_cm_id *id, struct iw_cm_conn_param *params)
+> +{
+> +	struct erdma_dev *dev = to_edev(id->device);
+> +	struct erdma_cep *cep = (struct erdma_cep *)id->provider_data;
+> +	struct erdma_qp *qp;
+> +	struct erdma_qp_attrs qp_attrs;
+> +	int ret;
+> +
+> +	erdma_cep_set_inuse(cep);
+> +	erdma_cep_put(cep);
+> +
+> +	/* Free lingering inbound private data */
+> +	if (cep->mpa.hdr.params.pd_len) {
+> +		cep->mpa.hdr.params.pd_len = 0;
+> +		kfree(cep->mpa.pdata);
+> +		cep->mpa.pdata = NULL;
+> +	}
+> +	erdma_cancel_mpatimer(cep);
+> +
+> +	if (cep->state != ERDMA_EPSTATE_RECVD_MPAREQ) {
+> +		erdma_cep_set_free(cep);
+> +		erdma_cep_put(cep);
+> +
+> +		return -ECONNRESET;
+> +	}
+> +
+> +	qp = find_qp_by_qpn(dev, params->qpn);
+> +	if (!qp)
+> +		return -ENOENT;
+> +	erdma_qp_get(qp);
+> +
+> +	down_write(&qp->state_lock);
+> +	if (qp->attrs.state > ERDMA_QP_STATE_RTR) {
+> +		ret = -EINVAL;
+> +		up_write(&qp->state_lock);
+> +		goto error;
+> +	}
+> +
+> +	if (params->ord > dev->attrs.max_ord ||
+> +	    params->ird > dev->attrs.max_ord) {
+> +		ret = -EINVAL;
+> +		up_write(&qp->state_lock);
+> +		goto error;
+> +	}
+> +
+> +	if (params->private_data_len > MPA_MAX_PRIVDATA) {
+> +		ret = -EINVAL;
+> +		up_write(&qp->state_lock);
+> +		goto error;
+> +	}
+> +
+> +	cep->ird = params->ird;
+> +	cep->ord = params->ord;
+> +
+> +	cep->cm_id = id;
+> +	id->add_ref(id);
+> +
+> +	memset(&qp_attrs, 0, sizeof(qp_attrs));
+> +	qp_attrs.orq_size = params->ord;
+> +	qp_attrs.irq_size = params->ird;
+> +
+> +	qp_attrs.state = ERDMA_QP_STATE_RTS;
+> +
+> +	/* Associate QP with CEP */
+> +	erdma_cep_get(cep);
+> +	qp->cep = cep;
+> +	cep->qp = qp;
+> +
+> +	cep->state = ERDMA_EPSTATE_RDMA_MODE;
+> +
+> +	qp->attrs.qp_type = ERDMA_QP_PASSIVE;
+> +	qp->attrs.pd_len = params->private_data_len;
+> +
+> +	if (qp->attrs.cc != __mpa_ext_cc(cep->mpa.ext_data.bits))
+> +		qp->attrs.cc = COMPROMISE_CC;
+> +
+> +	/* move to rts */
+> +	ret = erdma_modify_qp_internal(qp, &qp_attrs,
+> +				       ERDMA_QP_ATTR_STATE |
+> +				       ERDMA_QP_ATTR_ORD |
+> +				       ERDMA_QP_ATTR_LLP_HANDLE |
+> +				       ERDMA_QP_ATTR_IRD |
+> +				       ERDMA_QP_ATTR_MPA);
+> +	up_write(&qp->state_lock);
+> +
+> +	if (ret)
+> +		goto error;
+> +
+> +	cep->mpa.ext_data.bits = 0;
+> +	__mpa_ext_set_cc(&cep->mpa.ext_data.bits, qp->attrs.cc);
+> +	cep->mpa.ext_data.cookie = cpu_to_be32(cep->qp->attrs.cookie);
+> +
+> +	ret = erdma_send_mpareqrep(cep, params->private_data,
+> +				   params->private_data_len);
 
-v3:
-More coding sytle/format changes
+Hi, Cheng Xu
 
-v4:
-Process error on hardware vport configuration
+After modify qp to RTS, is that means this TCP stream is offloaded
+to the hardware, and the inbound TCP segments related to the TCP stream
+will not be received in the kernel stack where this driver is running.
+If yes, the ACK of mpa reply will never been revieced by the stack?
 
- MAINTAINERS                             |   3 +
- drivers/infiniband/Kconfig              |   1 +
- drivers/infiniband/hw/Makefile          |   1 +
- drivers/infiniband/hw/mana/Kconfig      |   7 +
- drivers/infiniband/hw/mana/Makefile     |   4 +
- drivers/infiniband/hw/mana/cq.c         |  80 +++
- drivers/infiniband/hw/mana/main.c       | 681 ++++++++++++++++++++++++
- drivers/infiniband/hw/mana/mana_ib.h    | 145 +++++
- drivers/infiniband/hw/mana/mr.c         | 133 +++++
- drivers/infiniband/hw/mana/qp.c         | 501 +++++++++++++++++
- drivers/infiniband/hw/mana/wq.c         | 114 ++++
- include/net/mana/mana.h                 |   3 +
- include/uapi/rdma/ib_user_ioctl_verbs.h |   1 +
- include/uapi/rdma/mana-abi.h            |  66 +++
- 14 files changed, 1740 insertions(+)
- create mode 100644 drivers/infiniband/hw/mana/Kconfig
- create mode 100644 drivers/infiniband/hw/mana/Makefile
- create mode 100644 drivers/infiniband/hw/mana/cq.c
- create mode 100644 drivers/infiniband/hw/mana/main.c
- create mode 100644 drivers/infiniband/hw/mana/mana_ib.h
- create mode 100644 drivers/infiniband/hw/mana/mr.c
- create mode 100644 drivers/infiniband/hw/mana/qp.c
- create mode 100644 drivers/infiniband/hw/mana/wq.c
- create mode 100644 include/uapi/rdma/mana-abi.h
+Thanks
+Weihang
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 51bec6d5076d..1bed8444786d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9078,6 +9078,7 @@ M:	Haiyang Zhang <haiyangz@microsoft.com>
- M:	Stephen Hemminger <sthemmin@microsoft.com>
- M:	Wei Liu <wei.liu@kernel.org>
- M:	Dexuan Cui <decui@microsoft.com>
-+M:	Long Li <longli@microsoft.com>
- L:	linux-hyperv@vger.kernel.org
- S:	Supported
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git
-@@ -9095,6 +9096,7 @@ F:	arch/x86/kernel/cpu/mshyperv.c
- F:	drivers/clocksource/hyperv_timer.c
- F:	drivers/hid/hid-hyperv.c
- F:	drivers/hv/
-+F:	drivers/infiniband/hw/mana/
- F:	drivers/input/serio/hyperv-keyboard.c
- F:	drivers/iommu/hyperv-iommu.c
- F:	drivers/net/ethernet/microsoft/
-@@ -9110,6 +9112,7 @@ F:	include/clocksource/hyperv_timer.h
- F:	include/linux/hyperv.h
- F:	include/net/mana
- F:	include/uapi/linux/hyperv.h
-+F:	include/uapi/rdma/mana-abi.h
- F:	net/vmw_vsock/hyperv_transport.c
- F:	tools/hv/
- 
-diff --git a/drivers/infiniband/Kconfig b/drivers/infiniband/Kconfig
-index 33d3ce9c888e..a062c662ecff 100644
---- a/drivers/infiniband/Kconfig
-+++ b/drivers/infiniband/Kconfig
-@@ -83,6 +83,7 @@ source "drivers/infiniband/hw/qib/Kconfig"
- source "drivers/infiniband/hw/cxgb4/Kconfig"
- source "drivers/infiniband/hw/efa/Kconfig"
- source "drivers/infiniband/hw/irdma/Kconfig"
-+source "drivers/infiniband/hw/mana/Kconfig"
- source "drivers/infiniband/hw/mlx4/Kconfig"
- source "drivers/infiniband/hw/mlx5/Kconfig"
- source "drivers/infiniband/hw/ocrdma/Kconfig"
-diff --git a/drivers/infiniband/hw/Makefile b/drivers/infiniband/hw/Makefile
-index fba0b3be903e..f62e9e00c780 100644
---- a/drivers/infiniband/hw/Makefile
-+++ b/drivers/infiniband/hw/Makefile
-@@ -4,6 +4,7 @@ obj-$(CONFIG_INFINIBAND_QIB)		+= qib/
- obj-$(CONFIG_INFINIBAND_CXGB4)		+= cxgb4/
- obj-$(CONFIG_INFINIBAND_EFA)		+= efa/
- obj-$(CONFIG_INFINIBAND_IRDMA)		+= irdma/
-+obj-$(CONFIG_MANA_INFINIBAND)		+= mana/
- obj-$(CONFIG_MLX4_INFINIBAND)		+= mlx4/
- obj-$(CONFIG_MLX5_INFINIBAND)		+= mlx5/
- obj-$(CONFIG_INFINIBAND_OCRDMA)		+= ocrdma/
-diff --git a/drivers/infiniband/hw/mana/Kconfig b/drivers/infiniband/hw/mana/Kconfig
-new file mode 100644
-index 000000000000..b3ff03a23257
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/Kconfig
-@@ -0,0 +1,7 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+config MANA_INFINIBAND
-+	tristate "Microsoft Azure Network Adapter support"
-+	depends on NETDEVICES && ETHERNET && PCI && MICROSOFT_MANA
-+	help
-+	  This driver provides low-level RDMA support for
-+	  Microsoft Azure Network Adapter (MANA).
-diff --git a/drivers/infiniband/hw/mana/Makefile b/drivers/infiniband/hw/mana/Makefile
-new file mode 100644
-index 000000000000..a799fe264c5a
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+obj-$(CONFIG_MANA_INFINIBAND) += mana_ib.o
-+
-+mana_ib-y := main.o wq.o qp.o cq.o mr.o
-diff --git a/drivers/infiniband/hw/mana/cq.c b/drivers/infiniband/hw/mana/cq.c
-new file mode 100644
-index 000000000000..046fd290073d
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/cq.c
-@@ -0,0 +1,80 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#include "mana_ib.h"
-+
-+int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-+		      struct ib_udata *udata)
-+{
-+	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+	struct ib_device *ibdev = ibcq->device;
-+	struct mana_ib_create_cq ucmd = {};
-+	struct mana_ib_dev *mdev;
-+	int err;
-+
-+	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	if (udata->inlen < sizeof(ucmd))
-+		return -EINVAL;
-+
-+	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
-+	if (err) {
-+		ibdev_dbg(ibdev,
-+			  "Failed to copy from udata for create cq, %d\n", err);
-+		return -EFAULT;
-+	}
-+
-+	if (attr->cqe > MAX_SEND_BUFFERS_PER_QUEUE) {
-+		ibdev_dbg(ibdev, "CQE %d exceeding limit\n", attr->cqe);
-+		return -EINVAL;
-+	}
-+
-+	cq->cqe = attr->cqe;
-+	cq->umem = ib_umem_get(ibdev, ucmd.buf_addr, cq->cqe * COMP_ENTRY_SIZE,
-+			       IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(cq->umem)) {
-+		err = PTR_ERR(cq->umem);
-+		ibdev_dbg(ibdev, "Failed to get umem for create cq, err %d\n",
-+			  err);
-+		return err;
-+	}
-+
-+	err = mana_ib_gd_create_dma_region(mdev, cq->umem, &cq->gdma_region,
-+					   PAGE_SIZE);
-+	if (err) {
-+		ibdev_err(ibdev,
-+			  "Failed to create dma region for create cq, %d\n",
-+			  err);
-+		goto err_release_umem;
-+	}
-+
-+	ibdev_dbg(ibdev,
-+		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  err, cq->gdma_region);
-+
-+	/* The CQ ID is not known at this time
-+	 * The ID is generated at create_qp
-+	 */
-+
-+	return 0;
-+
-+err_release_umem:
-+	ib_umem_release(cq->umem);
-+	return err;
-+}
-+
-+int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata)
-+{
-+	struct mana_ib_cq *cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+	struct ib_device *ibdev = ibcq->device;
-+	struct mana_ib_dev *mdev;
-+
-+	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	mana_ib_gd_destroy_dma_region(mdev, cq->gdma_region);
-+	ib_umem_release(cq->umem);
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/main.c b/drivers/infiniband/hw/mana/main.c
-new file mode 100644
-index 000000000000..58254a0cf581
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/main.c
-@@ -0,0 +1,681 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#include "mana_ib.h"
-+
-+MODULE_DESCRIPTION("Microsoft Azure Network Adapter IB driver");
-+MODULE_LICENSE("Dual BSD/GPL");
-+
-+void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
-+			 u32 port)
-+{
-+	struct gdma_dev *gd = dev->gdma_dev;
-+	struct mana_port_context *mpc;
-+	struct net_device *ndev;
-+	struct mana_context *mc;
-+
-+	mc = gd->driver_data;
-+	ndev = mc->ports[port];
-+	mpc = netdev_priv(ndev);
-+
-+	mutex_lock(&pd->vport_mutex);
-+
-+	pd->vport_use_count--;
-+	WARN_ON(pd->vport_use_count < 0);
-+
-+	if (!pd->vport_use_count)
-+		mana_uncfg_vport(mpc);
-+
-+	mutex_unlock(&pd->vport_mutex);
-+}
-+
-+int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port, struct mana_ib_pd *pd,
-+		      u32 doorbell_id)
-+{
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct mana_port_context *mpc;
-+	struct mana_context *mc;
-+	struct net_device *ndev;
-+	int err;
-+
-+	mc = mdev->driver_data;
-+	ndev = mc->ports[port];
-+	mpc = netdev_priv(ndev);
-+
-+	mutex_lock(&pd->vport_mutex);
-+
-+	pd->vport_use_count++;
-+	if (pd->vport_use_count > 1) {
-+		ibdev_dbg(&dev->ib_dev,
-+			  "Skip as this PD is already configured vport\n");
-+		mutex_unlock(&pd->vport_mutex);
-+		return 0;
-+	}
-+	mutex_unlock(&pd->vport_mutex);
-+
-+	err = mana_cfg_vport(mpc, pd->pdn, doorbell_id);
-+	if (err) {
-+		mutex_lock(&pd->vport_mutex);
-+		pd->vport_use_count--;
-+		mutex_unlock(&pd->vport_mutex);
-+
-+		ibdev_err(&dev->ib_dev, "Failed to configure vPort %d\n", err);
-+		return err;
-+	}
-+
-+	pd->tx_shortform_allowed = mpc->tx_shortform_allowed;
-+	pd->tx_vp_offset = mpc->tx_vp_offset;
-+
-+	ibdev_dbg(&dev->ib_dev,
-+		  "vport handle %llx pdid %x doorbell_id %x "
-+		  "tx_shortform_allowed %d tx_vp_offset %u\n",
-+		  mpc->port_handle, pd->pdn, doorbell_id,
-+		  pd->tx_shortform_allowed, pd->tx_vp_offset);
-+
-+	return 0;
-+}
-+
-+static int mana_ib_alloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct ib_device *ibdev = ibpd->device;
-+	enum gdma_pd_flags flags = 0;
-+	struct mana_ib_dev *dev;
-+	int ret;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	/* Set flags if this is a kernel request */
-+	if (!ibpd->uobject)
-+		flags = GDMA_PD_FLAG_ALLOW_GPA_MR | GDMA_PD_FLAG_ALLOW_FMR_MR;
-+
-+	ret = mana_ib_gd_create_pd(dev, &pd->pd_handle, &pd->pdn, flags);
-+	if (ret) {
-+		ibdev_err(ibdev, "Failed to get pd id, err %d\n", ret);
-+		return ret;
-+	}
-+
-+	mutex_init(&pd->vport_mutex);
-+	pd->vport_use_count = 0;
-+	return 0;
-+}
-+
-+static int mana_ib_dealloc_pd(struct ib_pd *ibpd, struct ib_udata *udata)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct ib_device *ibdev = ibpd->device;
-+	struct mana_ib_dev *dev;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	return mana_ib_gd_destroy_pd(dev, pd->pd_handle);
-+}
-+
-+static int mana_ib_alloc_ucontext(struct ib_ucontext *ibcontext,
-+				  struct ib_udata *udata)
-+{
-+	struct mana_ib_ucontext *ucontext =
-+		container_of(ibcontext, struct mana_ib_ucontext, ibucontext);
-+	struct ib_device *ibdev = ibcontext->device;
-+	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
-+	struct gdma_dev *dev;
-+	int doorbell_page;
-+	int ret;
-+
-+	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	dev = mdev->gdma_dev;
-+	gc = dev->gdma_context;
-+
-+	/* Allocate a doorbell page index */
-+	ret = mana_gd_allocate_doorbell_page(gc, &doorbell_page);
-+	if (ret) {
-+		ibdev_err(ibdev, "Failed to allocate doorbell page %d\n", ret);
-+		return -ENOMEM;
-+	}
-+
-+	ibdev_dbg(ibdev, "Doorbell page allocated %d\n", doorbell_page);
-+
-+	ucontext->doorbell = doorbell_page;
-+
-+	return 0;
-+}
-+
-+static void mana_ib_dealloc_ucontext(struct ib_ucontext *ibcontext)
-+{
-+	struct mana_ib_ucontext *mana_ucontext =
-+		container_of(ibcontext, struct mana_ib_ucontext, ibucontext);
-+	struct ib_device *ibdev = ibcontext->device;
-+	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
-+	int ret;
-+
-+	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
-+
-+	ret = mana_gd_destroy_doorbell_page(gc, mana_ucontext->doorbell);
-+	if (ret)
-+		ibdev_err(ibdev, "Failed to destroy doorbell page %d\n", ret);
-+}
-+
-+int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+				 mana_handle_t *gdma_region, u64 page_sz)
-+{
-+	size_t num_pages_total = ib_umem_num_dma_blocks(umem, page_sz);
-+	struct gdma_dma_region_add_pages_req *add_req = NULL;
-+	struct gdma_create_dma_region_resp create_resp = {};
-+	struct gdma_create_dma_region_req *create_req;
-+	size_t num_pages_cur, num_pages_to_handle;
-+	unsigned int create_req_msg_size;
-+	struct hw_channel_context *hwc;
-+	struct ib_block_iter biter;
-+	size_t max_pgs_create_cmd;
-+	struct gdma_context *gc;
-+	struct gdma_dev *mdev;
-+	unsigned int i;
-+	int err;
-+
-+	mdev = dev->gdma_dev;
-+	gc = mdev->gdma_context;
-+	hwc = gc->hwc.driver_data;
-+	max_pgs_create_cmd =
-+		(hwc->max_req_msg_size - sizeof(*create_req)) / sizeof(u64);
-+
-+	num_pages_to_handle =
-+		min_t(size_t, num_pages_total, max_pgs_create_cmd);
-+	create_req_msg_size =
-+		struct_size(create_req, page_addr_list, num_pages_to_handle);
-+
-+	create_req = kzalloc(create_req_msg_size, GFP_KERNEL);
-+	if (!create_req)
-+		return -ENOMEM;
-+
-+	mana_gd_init_req_hdr(&create_req->hdr, GDMA_CREATE_DMA_REGION,
-+			     create_req_msg_size, sizeof(create_resp));
-+
-+	create_req->length = umem->length;
-+	create_req->offset_in_page = umem->address & (page_sz - 1);
-+	create_req->gdma_page_type = order_base_2(page_sz) - PAGE_SHIFT;
-+	create_req->page_count = num_pages_total;
-+	create_req->page_addr_list_len = num_pages_to_handle;
-+
-+	ibdev_dbg(&dev->ib_dev,
-+		  "size_dma_region %lu num_pages_total %lu, "
-+		  "page_sz 0x%llx offset_in_page %u\n",
-+		  umem->length, num_pages_total, page_sz,
-+		  create_req->offset_in_page);
-+
-+	ibdev_dbg(&dev->ib_dev, "num_pages_to_handle %lu, gdma_page_type %u",
-+		  num_pages_to_handle, create_req->gdma_page_type);
-+
-+	__rdma_umem_block_iter_start(&biter, umem, page_sz);
-+
-+	for (i = 0; i < num_pages_to_handle; ++i) {
-+		dma_addr_t cur_addr;
-+
-+		__rdma_block_iter_next(&biter);
-+		cur_addr = rdma_block_iter_dma_address(&biter);
-+
-+		create_req->page_addr_list[i] = cur_addr;
-+
-+		ibdev_dbg(&dev->ib_dev, "page num %u cur_addr 0x%llx\n", i,
-+			  cur_addr);
-+	}
-+
-+	err = mana_gd_send_request(gc, create_req_msg_size, create_req,
-+				   sizeof(create_resp), &create_resp);
-+	kfree(create_req);
-+
-+	if (err || create_resp.hdr.status) {
-+		ibdev_err(&dev->ib_dev,
-+			  "Failed to create DMA region: %d, 0x%x\n", err,
-+			  create_resp.hdr.status);
-+		goto error;
-+	}
-+
-+	*gdma_region = create_resp.dma_region_handle;
-+	ibdev_dbg(&dev->ib_dev, "Created DMA region with handle 0x%llx\n",
-+		  *gdma_region);
-+
-+	num_pages_cur = num_pages_to_handle;
-+
-+	if (num_pages_cur < num_pages_total) {
-+		unsigned int add_req_msg_size;
-+		size_t max_pgs_add_cmd =
-+			(hwc->max_req_msg_size - sizeof(*add_req)) /
-+			sizeof(u64);
-+
-+		num_pages_to_handle =
-+			min_t(size_t, num_pages_total - num_pages_cur,
-+			      max_pgs_add_cmd);
-+
-+		/* Calculate the max num of pages that will be handled */
-+		add_req_msg_size = struct_size(add_req, page_addr_list,
-+					       num_pages_to_handle);
-+
-+		add_req = kmalloc(add_req_msg_size, GFP_KERNEL);
-+		if (!add_req) {
-+			err = -ENOMEM;
-+			goto error;
-+		}
-+
-+		while (num_pages_cur < num_pages_total) {
-+			struct gdma_general_resp add_resp = {};
-+			u32 expected_status = 0;
-+
-+			if (num_pages_cur + num_pages_to_handle <
-+			    num_pages_total) {
-+				/* Status indicating more pages are needed */
-+				expected_status = GDMA_STATUS_MORE_ENTRIES;
-+			}
-+
-+			memset(add_req, 0, add_req_msg_size);
-+
-+			mana_gd_init_req_hdr(&add_req->hdr,
-+					     GDMA_DMA_REGION_ADD_PAGES,
-+					     add_req_msg_size,
-+					     sizeof(add_resp));
-+			add_req->dma_region_handle = *gdma_region;
-+			add_req->page_addr_list_len = num_pages_to_handle;
-+
-+			for (i = 0; i < num_pages_to_handle; ++i) {
-+				dma_addr_t cur_addr =
-+					rdma_block_iter_dma_address(&biter);
-+				add_req->page_addr_list[i] = cur_addr;
-+				__rdma_block_iter_next(&biter);
-+
-+				ibdev_dbg(&dev->ib_dev,
-+					  "page_addr_list %lu addr 0x%llx\n",
-+					  num_pages_cur + i, cur_addr);
-+			}
-+
-+			err = mana_gd_send_request(gc, add_req_msg_size,
-+						   add_req, sizeof(add_resp),
-+						   &add_resp);
-+			if (!err || add_resp.hdr.status != expected_status) {
-+				ibdev_err(&dev->ib_dev,
-+					  "Failed put DMA pages %u: %d,0x%x\n",
-+					  i, err, add_resp.hdr.status);
-+				err = -EPROTO;
-+				goto free_req;
-+			}
-+
-+			num_pages_cur += num_pages_to_handle;
-+			num_pages_to_handle =
-+				min_t(size_t, num_pages_total - num_pages_cur,
-+				      max_pgs_add_cmd);
-+			add_req_msg_size = sizeof(*add_req) +
-+					   num_pages_to_handle * sizeof(u64);
-+		}
-+free_req:
-+		kfree(add_req);
-+	}
-+
-+error:
-+	return err;
-+}
-+
-+int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev, u64 gdma_region)
-+{
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct gdma_context *gc;
-+
-+	gc = mdev->gdma_context;
-+	ibdev_dbg(&dev->ib_dev, "destroy dma region 0x%llx\n", gdma_region);
-+
-+	return mana_gd_destroy_dma_region(gc, gdma_region);
-+}
-+
-+int mana_ib_gd_create_pd(struct mana_ib_dev *dev, u64 *pd_handle, u32 *pd_id,
-+			 enum gdma_pd_flags flags)
-+{
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct gdma_create_pd_resp resp = {};
-+	struct gdma_create_pd_req req = {};
-+	struct gdma_context *gc;
-+	int err;
-+
-+	gc = mdev->gdma_context;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_PD, sizeof(req),
-+			     sizeof(resp));
-+
-+	req.flags = flags;
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+
-+	if (err || resp.hdr.status) {
-+		ibdev_err(&dev->ib_dev,
-+			  "Failed to get pd_id err %d status %u\n", err,
-+			  resp.hdr.status);
-+		if (!err)
-+			err = -EPROTO;
-+
-+		return err;
-+	}
-+
-+	*pd_handle = resp.pd_handle;
-+	*pd_id = resp.pd_id;
-+	ibdev_dbg(&dev->ib_dev, "pd_handle 0x%llx pd_id %d\n", *pd_handle,
-+		  *pd_id);
-+
-+	return 0;
-+}
-+
-+int mana_ib_gd_destroy_pd(struct mana_ib_dev *dev, u64 pd_handle)
-+{
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct gdma_destory_pd_resp resp = {};
-+	struct gdma_destroy_pd_req req = {};
-+	struct gdma_context *gc;
-+	int err;
-+
-+	gc = mdev->gdma_context;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_PD, sizeof(req),
-+			     sizeof(resp));
-+
-+	req.pd_handle = pd_handle;
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+
-+	if (err || resp.hdr.status) {
-+		ibdev_err(&dev->ib_dev,
-+			  "Failed to destroy pd_handle 0x%llx err %d status %u",
-+			  pd_handle, err, resp.hdr.status);
-+		if (!err)
-+			err = -EPROTO;
-+	}
-+
-+	return err;
-+}
-+
-+int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
-+			 struct gdma_create_mr_params *mr_params)
-+{
-+	struct gdma_create_mr_response resp = {};
-+	struct gdma_create_mr_request req = {};
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct gdma_context *gc;
-+	int err;
-+
-+	gc = mdev->gdma_context;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_CREATE_MR, sizeof(req),
-+			     sizeof(resp));
-+	req.pd_handle = mr_params->pd_handle;
-+
-+	switch (mr_params->mr_type) {
-+	case GDMA_MR_TYPE_GVA:
-+		req.mr_type = GDMA_MR_TYPE_GVA;
-+		req.gva.dma_region_handle = mr_params->gva.dma_region_handle;
-+		req.gva.virtual_address = mr_params->gva.virtual_address;
-+		req.gva.access_flags = mr_params->gva.access_flags;
-+		break;
-+
-+	case GDMA_MR_TYPE_GPA:
-+		req.mr_type = GDMA_MR_TYPE_GPA;
-+		req.gpa.access_flags = mr_params->gpa.access_flags;
-+		break;
-+
-+	case GDMA_MR_TYPE_FMR:
-+		req.mr_type = GDMA_MR_TYPE_FMR;
-+		req.fmr.page_size = mr_params->fmr.page_size;
-+		req.fmr.reserved_pte_count = mr_params->fmr.reserved_pte_count;
-+		break;
-+
-+	default:
-+		ibdev_dbg(&dev->ib_dev,
-+			  "invalid param (GDMA_MR_TYPE) passed, type %d\n",
-+			  req.mr_type);
-+		err = -EINVAL;
-+		goto error;
-+	}
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+
-+	if (err || resp.hdr.status) {
-+		ibdev_err(&dev->ib_dev, "Failed to create mr %d, %u", err,
-+			  resp.hdr.status);
-+		goto error;
-+	}
-+
-+	mr->ibmr.lkey = resp.lkey;
-+	mr->ibmr.rkey = resp.rkey;
-+	mr->mr_handle = resp.mr_handle;
-+
-+	return 0;
-+error:
-+	return err;
-+}
-+
-+int mana_ib_gd_destroy_mr(struct mana_ib_dev *dev, gdma_obj_handle_t mr_handle)
-+{
-+	struct gdma_destroy_mr_response resp = {};
-+	struct gdma_destroy_mr_request req = {};
-+	struct gdma_dev *mdev = dev->gdma_dev;
-+	struct gdma_context *gc;
-+	int err;
-+
-+	gc = mdev->gdma_context;
-+
-+	mana_gd_init_req_hdr(&req.hdr, GDMA_DESTROY_MR, sizeof(req),
-+			     sizeof(resp));
-+
-+	req.mr_handle = mr_handle;
-+
-+	err = mana_gd_send_request(gc, sizeof(req), &req, sizeof(resp), &resp);
-+	if (err || resp.hdr.status) {
-+		dev_err(gc->dev, "Failed to destroy MR: %d, 0x%x\n", err,
-+			resp.hdr.status);
-+		if (!err)
-+			err = -EPROTO;
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mana_ib_mmap(struct ib_ucontext *ibcontext,
-+			struct vm_area_struct *vma)
-+{
-+	struct mana_ib_ucontext *mana_ucontext =
-+		container_of(ibcontext, struct mana_ib_ucontext, ibucontext);
-+	struct ib_device *ibdev = ibcontext->device;
-+	struct mana_ib_dev *mdev;
-+	struct gdma_context *gc;
-+	phys_addr_t pfn;
-+	pgprot_t prot;
-+	int ret;
-+
-+	mdev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+	gc = mdev->gdma_dev->gdma_context;
-+
-+	if (vma->vm_pgoff != 0) {
-+		ibdev_err(ibdev, "Unexpected vm_pgoff %lu\n", vma->vm_pgoff);
-+		return -EINVAL;
-+	}
-+
-+	/* Map to the page indexed by ucontext->doorbell */
-+	pfn = (gc->phys_db_page_base +
-+	       gc->db_page_size * mana_ucontext->doorbell) >>
-+	      PAGE_SHIFT;
-+	prot = pgprot_writecombine(vma->vm_page_prot);
-+
-+	ret = rdma_user_mmap_io(ibcontext, vma, pfn, gc->db_page_size, prot,
-+				NULL);
-+	if (ret)
-+		ibdev_err(ibdev, "can't rdma_user_mmap_io ret %d\n", ret);
-+	else
-+		ibdev_dbg(ibdev, "mapped I/O pfn 0x%llx page_size %u, ret %d\n",
-+			  pfn, gc->db_page_size, ret);
-+
-+	return ret;
-+}
-+
-+static int mana_ib_get_port_immutable(struct ib_device *ibdev, u32 port_num,
-+				      struct ib_port_immutable *immutable)
-+{
-+	/* This version only support RAW_PACKET
-+	 * other values need to be filled for other types
-+	 */
-+	immutable->core_cap_flags = RDMA_CORE_PORT_RAW_PACKET;
-+
-+	return 0;
-+}
-+
-+static int mana_ib_query_device(struct ib_device *ibdev,
-+				struct ib_device_attr *props,
-+				struct ib_udata *uhw)
-+{
-+	props->max_qp = MANA_MAX_NUM_QUEUES;
-+	props->max_qp_wr = MAX_SEND_BUFFERS_PER_QUEUE;
-+
-+	/* max_cqe could be potentially much bigger.
-+	 * As this version of driver only support RAW QP, set it to the same
-+	 * value as max_qp_wr
-+	 */
-+	props->max_cqe = MAX_SEND_BUFFERS_PER_QUEUE;
-+
-+	props->max_mr_size = MANA_IB_MAX_MR_SIZE;
-+	props->max_mr = INT_MAX;
-+	props->max_send_sge = MAX_TX_WQE_SGL_ENTRIES;
-+	props->max_recv_sge = MAX_RX_WQE_SGL_ENTRIES;
-+
-+	return 0;
-+}
-+
-+static int mana_ib_query_port(struct ib_device *ibdev, u32 port,
-+			      struct ib_port_attr *props)
-+{
-+	/* This version doesn't return port properties */
-+	return 0;
-+}
-+
-+static int mana_ib_query_gid(struct ib_device *ibdev, u32 port, int index,
-+			     union ib_gid *gid)
-+{
-+	/* This version doesn't return GID properties */
-+	return 0;
-+}
-+
-+static void mana_ib_disassociate_ucontext(struct ib_ucontext *ibcontext)
-+{
-+}
-+
-+static const struct ib_device_ops mana_ib_dev_ops = {
-+	.owner = THIS_MODULE,
-+	.driver_id = RDMA_DRIVER_MANA,
-+	.uverbs_abi_ver = MANA_IB_UVERBS_ABI_VERSION,
-+
-+	.alloc_pd = mana_ib_alloc_pd,
-+	.alloc_ucontext = mana_ib_alloc_ucontext,
-+	.create_cq = mana_ib_create_cq,
-+	.create_qp = mana_ib_create_qp,
-+	.create_rwq_ind_table = mana_ib_create_rwq_ind_table,
-+	.create_wq = mana_ib_create_wq,
-+	.dealloc_pd = mana_ib_dealloc_pd,
-+	.dealloc_ucontext = mana_ib_dealloc_ucontext,
-+	.dereg_mr = mana_ib_dereg_mr,
-+	.destroy_cq = mana_ib_destroy_cq,
-+	.destroy_qp = mana_ib_destroy_qp,
-+	.destroy_rwq_ind_table = mana_ib_destroy_rwq_ind_table,
-+	.destroy_wq = mana_ib_destroy_wq,
-+	.disassociate_ucontext = mana_ib_disassociate_ucontext,
-+	.get_port_immutable = mana_ib_get_port_immutable,
-+	.mmap = mana_ib_mmap,
-+	.modify_qp = mana_ib_modify_qp,
-+	.modify_wq = mana_ib_modify_wq,
-+	.query_device = mana_ib_query_device,
-+	.query_gid = mana_ib_query_gid,
-+	.query_port = mana_ib_query_port,
-+	.reg_user_mr = mana_ib_reg_user_mr,
-+
-+	INIT_RDMA_OBJ_SIZE(ib_cq, mana_ib_cq, ibcq),
-+	INIT_RDMA_OBJ_SIZE(ib_pd, mana_ib_pd, ibpd),
-+	INIT_RDMA_OBJ_SIZE(ib_qp, mana_ib_qp, ibqp),
-+	INIT_RDMA_OBJ_SIZE(ib_ucontext, mana_ib_ucontext, ibucontext),
-+	INIT_RDMA_OBJ_SIZE(ib_rwq_ind_table, mana_ib_rwq_ind_table,
-+			   ib_ind_table),
-+};
-+
-+static int mana_ib_probe(struct auxiliary_device *adev,
-+			 const struct auxiliary_device_id *id)
-+{
-+	struct mana_adev *madev = container_of(adev, struct mana_adev, adev);
-+	struct gdma_dev *mdev = madev->mdev;
-+	struct mana_context *mc;
-+	struct mana_ib_dev *dev;
-+	int ret = 0;
-+
-+	mc = mdev->driver_data;
-+
-+	dev = ib_alloc_device(mana_ib_dev, ib_dev);
-+	if (!dev)
-+		return -ENOMEM;
-+
-+	ib_set_device_ops(&dev->ib_dev, &mana_ib_dev_ops);
-+
-+	dev->ib_dev.phys_port_cnt = mc->num_ports;
-+
-+	ibdev_dbg(&dev->ib_dev, "mdev=%p id=%d num_ports=%d\n", mdev,
-+		  mdev->dev_id.as_uint32, dev->ib_dev.phys_port_cnt);
-+
-+	dev->gdma_dev = mdev;
-+	dev->ib_dev.node_type = RDMA_NODE_IB_CA;
-+
-+	/* num_comp_vectors needs to set to the max MSIX index
-+	 * when interrupts and event queues are implemented
-+	 */
-+	dev->ib_dev.num_comp_vectors = 1;
-+	dev->ib_dev.dev.parent = mdev->gdma_context->dev;
-+
-+	ret = ib_register_device(&dev->ib_dev, "mana_%d",
-+				 mdev->gdma_context->dev);
-+	if (ret) {
-+		ib_dealloc_device(&dev->ib_dev);
-+		return ret;
-+	}
-+
-+	dev_set_drvdata(&adev->dev, dev);
-+
-+	return 0;
-+}
-+
-+static void mana_ib_remove(struct auxiliary_device *adev)
-+{
-+	struct mana_ib_dev *dev = dev_get_drvdata(&adev->dev);
-+
-+	ib_unregister_device(&dev->ib_dev);
-+	ib_dealloc_device(&dev->ib_dev);
-+}
-+
-+static const struct auxiliary_device_id mana_id_table[] = {
-+	{
-+		.name = "mana.rdma",
-+	},
-+	{},
-+};
-+
-+MODULE_DEVICE_TABLE(auxiliary, mana_id_table);
-+
-+static struct auxiliary_driver mana_driver = {
-+	.name = "rdma",
-+	.probe = mana_ib_probe,
-+	.remove = mana_ib_remove,
-+	.id_table = mana_id_table,
-+};
-+
-+static int __init mana_ib_init(void)
-+{
-+	auxiliary_driver_register(&mana_driver);
-+
-+	return 0;
-+}
-+
-+static void __exit mana_ib_cleanup(void)
-+{
-+	auxiliary_driver_unregister(&mana_driver);
-+}
-+
-+module_init(mana_ib_init);
-+module_exit(mana_ib_cleanup);
-diff --git a/drivers/infiniband/hw/mana/mana_ib.h b/drivers/infiniband/hw/mana/mana_ib.h
-new file mode 100644
-index 000000000000..d3d42b11e95f
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/mana_ib.h
-@@ -0,0 +1,145 @@
-+/* SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB */
-+/*
-+ * Copyright (c) 2022 Microsoft Corporation. All rights reserved.
-+ */
-+
-+#ifndef _MANA_IB_H_
-+#define _MANA_IB_H_
-+
-+#include <rdma/ib_verbs.h>
-+#include <rdma/ib_mad.h>
-+#include <rdma/ib_umem.h>
-+#include <linux/auxiliary_bus.h>
-+#include <rdma/mana-abi.h>
-+
-+#include <net/mana/mana.h>
-+
-+#define PAGE_SZ_BM                                                             \
-+	(SZ_4K | SZ_8K | SZ_16K | SZ_32K | SZ_64K | SZ_128K | SZ_256K |        \
-+	 SZ_512K | SZ_1M | SZ_2M)
-+
-+/* MANA doesn't have any limit for MR size */
-+#define MANA_IB_MAX_MR_SIZE ((u64)(~(0ULL)))
-+
-+struct mana_ib_dev {
-+	struct ib_device ib_dev;
-+	struct gdma_dev *gdma_dev;
-+};
-+
-+struct mana_ib_wq {
-+	struct ib_wq ibwq;
-+	struct ib_umem *umem;
-+	int wqe;
-+	u32 wq_buf_size;
-+	u64 gdma_region;
-+	u64 id;
-+	mana_handle_t rx_object;
-+};
-+
-+struct mana_ib_pd {
-+	struct ib_pd ibpd;
-+	u32 pdn;
-+	mana_handle_t pd_handle;
-+
-+	/* Mutex for sharing access to vport_use_count */
-+	struct mutex vport_mutex;
-+	int vport_use_count;
-+
-+	bool tx_shortform_allowed;
-+	u32 tx_vp_offset;
-+};
-+
-+struct mana_ib_mr {
-+	struct ib_mr ibmr;
-+	struct ib_umem *umem;
-+	mana_handle_t mr_handle;
-+};
-+
-+struct mana_ib_cq {
-+	struct ib_cq ibcq;
-+	struct ib_umem *umem;
-+	int cqe;
-+	u64 gdma_region;
-+	u64 id;
-+};
-+
-+struct mana_ib_qp {
-+	struct ib_qp ibqp;
-+
-+	/* Work queue info */
-+	struct ib_umem *sq_umem;
-+	int sqe;
-+	u64 sq_gdma_region;
-+	u64 sq_id;
-+	mana_handle_t tx_object;
-+
-+	/* The port on the IB device, starting with 1 */
-+	u32 port;
-+};
-+
-+struct mana_ib_ucontext {
-+	struct ib_ucontext ibucontext;
-+	u32 doorbell;
-+};
-+
-+struct mana_ib_rwq_ind_table {
-+	struct ib_rwq_ind_table ib_ind_table;
-+};
-+
-+int mana_ib_gd_create_dma_region(struct mana_ib_dev *dev, struct ib_umem *umem,
-+				 mana_handle_t *gdma_region, u64 page_sz);
-+
-+int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
-+				  mana_handle_t gdma_region);
-+
-+struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
-+				struct ib_wq_init_attr *init_attr,
-+				struct ib_udata *udata);
-+
-+int mana_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
-+		      u32 wq_attr_mask, struct ib_udata *udata);
-+
-+int mana_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata);
-+
-+int mana_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 struct ib_udata *udata);
-+
-+int mana_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl);
-+
-+struct ib_mr *mana_ib_get_dma_mr(struct ib_pd *ibpd, int access_flags);
-+
-+struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *pd, u64 start, u64 length,
-+				  u64 iova, int access_flags,
-+				  struct ib_udata *udata);
-+
-+int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
-+
-+int mana_ib_create_qp(struct ib_qp *qp, struct ib_qp_init_attr *qp_init_attr,
-+		      struct ib_udata *udata);
-+
-+int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-+		      int attr_mask, struct ib_udata *udata);
-+
-+int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata);
-+
-+int mana_ib_cfg_vport(struct mana_ib_dev *dev, u32 port_id,
-+		      struct mana_ib_pd *pd, u32 doorbell_id);
-+void mana_ib_uncfg_vport(struct mana_ib_dev *dev, struct mana_ib_pd *pd,
-+			 u32 port);
-+
-+int mana_ib_create_cq(struct ib_cq *ibcq, const struct ib_cq_init_attr *attr,
-+		      struct ib_udata *udata);
-+
-+int mana_ib_destroy_cq(struct ib_cq *ibcq, struct ib_udata *udata);
-+
-+int mana_ib_gd_create_pd(struct mana_ib_dev *dev, u64 *pd_handle, u32 *pd_id,
-+			 enum gdma_pd_flags flags);
-+
-+int mana_ib_gd_destroy_pd(struct mana_ib_dev *dev, u64 pd_handle);
-+
-+int mana_ib_gd_create_mr(struct mana_ib_dev *dev, struct mana_ib_mr *mr,
-+			 struct gdma_create_mr_params *mr_params);
-+
-+int mana_ib_gd_destroy_mr(struct mana_ib_dev *dev, mana_handle_t mr_handle);
-+#endif
-diff --git a/drivers/infiniband/hw/mana/mr.c b/drivers/infiniband/hw/mana/mr.c
-new file mode 100644
-index 000000000000..962e40f2de53
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/mr.c
-@@ -0,0 +1,133 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#include "mana_ib.h"
-+
-+#define VALID_MR_FLAGS                                                         \
-+	(IB_ACCESS_LOCAL_WRITE | IB_ACCESS_REMOTE_WRITE | IB_ACCESS_REMOTE_READ)
-+
-+static enum gdma_mr_access_flags
-+mana_ib_verbs_to_gdma_access_flags(int access_flags)
-+{
-+	enum gdma_mr_access_flags flags = GDMA_ACCESS_FLAG_LOCAL_READ;
-+
-+	if (access_flags & IB_ACCESS_LOCAL_WRITE)
-+		flags |= GDMA_ACCESS_FLAG_LOCAL_WRITE;
-+
-+	if (access_flags & IB_ACCESS_REMOTE_WRITE)
-+		flags |= GDMA_ACCESS_FLAG_REMOTE_WRITE;
-+
-+	if (access_flags & IB_ACCESS_REMOTE_READ)
-+		flags |= GDMA_ACCESS_FLAG_REMOTE_READ;
-+
-+	return flags;
-+}
-+
-+struct ib_mr *mana_ib_reg_user_mr(struct ib_pd *ibpd, u64 start, u64 length,
-+				  u64 iova, int access_flags,
-+				  struct ib_udata *udata)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct gdma_create_mr_params mr_params = {};
-+	struct ib_device *ibdev = ibpd->device;
-+	gdma_obj_handle_t dma_region_handle;
-+	struct mana_ib_dev *dev;
-+	struct mana_ib_mr *mr;
-+	u64 page_sz;
-+	int err;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	ibdev_dbg(ibdev,
-+		  "start 0x%llx, iova 0x%llx length 0x%llx access_flags 0x%x",
-+		  start, iova, length, access_flags);
-+
-+	if (access_flags & ~VALID_MR_FLAGS)
-+		return ERR_PTR(-EINVAL);
-+
-+	mr = kzalloc(sizeof(*mr), GFP_KERNEL);
-+	if (!mr)
-+		return ERR_PTR(-ENOMEM);
-+
-+	mr->umem = ib_umem_get(ibdev, start, length, access_flags);
-+	if (IS_ERR(mr->umem)) {
-+		err = PTR_ERR(mr->umem);
-+		ibdev_dbg(ibdev,
-+			  "Failed to get umem for register user-mr, %d\n", err);
-+		goto err_free;
-+	}
-+
-+	page_sz = ib_umem_find_best_pgsz(mr->umem, PAGE_SZ_BM, iova);
-+	if (unlikely(!page_sz)) {
-+		ibdev_err(ibdev, "Failed to get best page size\n");
-+		err = -EOPNOTSUPP;
-+		goto err_umem;
-+	}
-+	ibdev_dbg(ibdev, "Page size chosen %llu\n", page_sz);
-+
-+	err = mana_ib_gd_create_dma_region(dev, mr->umem, &dma_region_handle,
-+					   page_sz);
-+	if (err) {
-+		ibdev_err(ibdev, "Failed create dma region for user-mr, %d\n",
-+			  err);
-+		goto err_umem;
-+	}
-+
-+	ibdev_dbg(ibdev,
-+		  "mana_ib_gd_create_dma_region ret %d gdma_region %llx\n", err,
-+		  dma_region_handle);
-+
-+	mr_params.pd_handle = pd->pd_handle;
-+	mr_params.mr_type = GDMA_MR_TYPE_GVA;
-+	mr_params.gva.dma_region_handle = dma_region_handle;
-+	mr_params.gva.virtual_address = iova;
-+	mr_params.gva.access_flags =
-+		mana_ib_verbs_to_gdma_access_flags(access_flags);
-+
-+	err = mana_ib_gd_create_mr(dev, mr, &mr_params);
-+	if (err)
-+		goto err_dma_region;
-+
-+	/* There is no need to keep track of dma_region_handle after MR is
-+	 * successfully created. The dma_region_handle is tracked in the PF
-+	 * as part of the lifecycle of this MR.
-+	 */
-+
-+	mr->ibmr.length = length;
-+	mr->ibmr.page_size = page_sz;
-+	return &mr->ibmr;
-+
-+err_dma_region:
-+	mana_gd_destroy_dma_region(dev->gdma_dev->gdma_context,
-+				   dma_region_handle);
-+
-+err_umem:
-+	ib_umem_release(mr->umem);
-+
-+err_free:
-+	kfree(mr);
-+	return ERR_PTR(err);
-+}
-+
-+int mana_ib_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata)
-+{
-+	struct mana_ib_mr *mr = container_of(ibmr, struct mana_ib_mr, ibmr);
-+	struct ib_device *ibdev = ibmr->device;
-+	struct mana_ib_dev *dev;
-+	int err;
-+
-+	dev = container_of(ibdev, struct mana_ib_dev, ib_dev);
-+
-+	err = mana_ib_gd_destroy_mr(dev, mr->mr_handle);
-+	if (err)
-+		return err;
-+
-+	if (mr->umem)
-+		ib_umem_release(mr->umem);
-+
-+	kfree(mr);
-+
-+	return 0;
-+}
-diff --git a/drivers/infiniband/hw/mana/qp.c b/drivers/infiniband/hw/mana/qp.c
-new file mode 100644
-index 000000000000..75100674f1cf
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/qp.c
-@@ -0,0 +1,501 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#include "mana_ib.h"
-+
-+static int mana_ib_cfg_vport_steering(struct mana_ib_dev *dev,
-+				      struct net_device *ndev,
-+				      mana_handle_t default_rxobj,
-+				      mana_handle_t ind_table[],
-+				      u32 log_ind_tbl_size, u32 rx_hash_key_len,
-+				      u8 *rx_hash_key)
-+{
-+	struct mana_port_context *mpc = netdev_priv(ndev);
-+	struct mana_cfg_rx_steer_req *req = NULL;
-+	struct mana_cfg_rx_steer_resp resp = {};
-+	mana_handle_t *req_indir_tab;
-+	struct gdma_context *gc;
-+	struct gdma_dev *mdev;
-+	u32 req_buf_size;
-+	int i, err;
-+
-+	mdev = dev->gdma_dev;
-+	gc = mdev->gdma_context;
-+
-+	req_buf_size =
-+		sizeof(*req) + sizeof(mana_handle_t) * MANA_INDIRECT_TABLE_SIZE;
-+	req = kzalloc(req_buf_size, GFP_KERNEL);
-+	if (!req)
-+		return -ENOMEM;
-+
-+	mana_gd_init_req_hdr(&req->hdr, MANA_CONFIG_VPORT_RX, req_buf_size,
-+			     sizeof(resp));
-+
-+	req->vport = mpc->port_handle;
-+	req->rx_enable = 1;
-+	req->update_default_rxobj = 1;
-+	req->default_rxobj = default_rxobj;
-+	req->hdr.dev_id = mdev->dev_id;
-+
-+	/* If there are more than 1 entries in indirection table, enable RSS */
-+	if (log_ind_tbl_size)
-+		req->rss_enable = true;
-+
-+	req->num_indir_entries = MANA_INDIRECT_TABLE_SIZE;
-+	req->indir_tab_offset = sizeof(*req);
-+	req->update_indir_tab = true;
-+
-+	req_indir_tab = (mana_handle_t *)(req + 1);
-+	/* The ind table passed to the hardware must have
-+	 * MANA_INDIRECT_TABLE_SIZE entries. Adjust the verb
-+	 * ind_table to MANA_INDIRECT_TABLE_SIZE if required
-+	 */
-+	ibdev_dbg(&dev->ib_dev, "ind table size %u\n", 1 << log_ind_tbl_size);
-+	for (i = 0; i < MANA_INDIRECT_TABLE_SIZE; i++) {
-+		req_indir_tab[i] = ind_table[i % (1 << log_ind_tbl_size)];
-+		ibdev_dbg(&dev->ib_dev, "index %u handle 0x%llx\n", i,
-+			  req_indir_tab[i]);
-+	}
-+
-+	req->update_hashkey = true;
-+	if (rx_hash_key_len)
-+		memcpy(req->hashkey, rx_hash_key, rx_hash_key_len);
-+	else
-+		netdev_rss_key_fill(req->hashkey, MANA_HASH_KEY_SIZE);
-+
-+	ibdev_dbg(&dev->ib_dev, "vport handle %llu default_rxobj 0x%llx\n",
-+		  req->vport, default_rxobj);
-+
-+	err = mana_gd_send_request(gc, req_buf_size, req, sizeof(resp), &resp);
-+	if (err) {
-+		netdev_err(ndev, "Failed to configure vPort RX: %d\n", err);
-+		goto out;
-+	}
-+
-+	if (resp.hdr.status) {
-+		netdev_err(ndev, "vPort RX configuration failed: 0x%x\n",
-+			   resp.hdr.status);
-+		err = -EPROTO;
-+	}
-+
-+	netdev_info(ndev, "Configured steering vPort %llu log_entries %u\n",
-+		    mpc->port_handle, log_ind_tbl_size);
-+
-+out:
-+	kfree(req);
-+	return err;
-+}
-+
-+static int mana_ib_create_qp_rss(struct ib_qp *ibqp, struct ib_pd *pd,
-+				 struct ib_qp_init_attr *attr,
-+				 struct ib_udata *udata)
-+{
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+	struct mana_ib_dev *mdev =
-+		container_of(pd->device, struct mana_ib_dev, ib_dev);
-+	struct ib_rwq_ind_table *ind_tbl = attr->rwq_ind_tbl;
-+	struct mana_ib_create_qp_rss_resp resp = {};
-+	struct mana_ib_create_qp_rss ucmd = {};
-+	struct gdma_dev *gd = mdev->gdma_dev;
-+	mana_handle_t *mana_ind_table;
-+	struct mana_port_context *mpc;
-+	struct mana_context *mc;
-+	struct net_device *ndev;
-+	struct mana_ib_cq *cq;
-+	struct mana_ib_wq *wq;
-+	struct ib_cq *ibcq;
-+	struct ib_wq *ibwq;
-+	int i = 0, ret;
-+	u32 port;
-+
-+	mc = gd->driver_data;
-+
-+	if (udata->inlen < sizeof(ucmd))
-+		return -EINVAL;
-+
-+	ret = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
-+	if (ret) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Failed copy from udata for create rss-qp, err %d\n",
-+			  ret);
-+		return -EFAULT;
-+	}
-+
-+	if (attr->cap.max_recv_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Requested max_recv_wr %d exceeding limit.\n",
-+			  attr->cap.max_recv_wr);
-+		return -EINVAL;
-+	}
-+
-+	if (attr->cap.max_recv_sge > MAX_RX_WQE_SGL_ENTRIES) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Requested max_recv_sge %d exceeding limit.\n",
-+			  attr->cap.max_recv_sge);
-+		return -EINVAL;
-+	}
-+
-+	if (ucmd.rx_hash_function != MANA_IB_RX_HASH_FUNC_TOEPLITZ) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "RX Hash function is not supported, %d\n",
-+			  ucmd.rx_hash_function);
-+		return -EINVAL;
-+	}
-+
-+	/* IB ports start with 1, MANA start with 0 */
-+	port = ucmd.port;
-+	if (port < 1 || port > mc->num_ports) {
-+		ibdev_dbg(&mdev->ib_dev, "Invalid port %u in creating qp\n",
-+			  port);
-+		return -EINVAL;
-+	}
-+	ndev = mc->ports[port - 1];
-+	mpc = netdev_priv(ndev);
-+
-+	ibdev_dbg(&mdev->ib_dev, "rx_hash_function %d port %d\n",
-+		  ucmd.rx_hash_function, port);
-+
-+	mana_ind_table = kzalloc(sizeof(mana_handle_t) *
-+					 (1 << ind_tbl->log_ind_tbl_size),
-+				 GFP_KERNEL);
-+	if (!mana_ind_table) {
-+		ret = -ENOMEM;
-+		goto fail;
-+	}
-+
-+	qp->port = port;
-+
-+	for (i = 0; i < (1 << ind_tbl->log_ind_tbl_size); i++) {
-+		struct mana_obj_spec wq_spec = {};
-+		struct mana_obj_spec cq_spec = {};
-+
-+		ibwq = ind_tbl->ind_tbl[i];
-+		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+
-+		ibcq = ibwq->cq;
-+		cq = container_of(ibcq, struct mana_ib_cq, ibcq);
-+
-+		wq_spec.gdma_region = wq->gdma_region;
-+		wq_spec.queue_size = wq->wq_buf_size;
-+
-+		cq_spec.gdma_region = cq->gdma_region;
-+		cq_spec.queue_size = cq->cqe * COMP_ENTRY_SIZE;
-+		cq_spec.modr_ctx_id = 0;
-+		cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+
-+		ret = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_RQ,
-+					 &wq_spec, &cq_spec, &wq->rx_object);
-+		if (ret)
-+			goto fail;
-+
-+		/* The GDMA regions are now owned by the WQ object */
-+		wq->gdma_region = GDMA_INVALID_DMA_REGION;
-+		cq->gdma_region = GDMA_INVALID_DMA_REGION;
-+
-+		wq->id = wq_spec.queue_index;
-+		cq->id = cq_spec.queue_index;
-+
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "ret %d rx_object 0x%llx wq id %llu cq id %llu\n",
-+			  ret, wq->rx_object, wq->id, cq->id);
-+
-+		resp.entries[i].cqid = cq->id;
-+		resp.entries[i].wqid = wq->id;
-+
-+		mana_ind_table[i] = wq->rx_object;
-+	}
-+	resp.num_entries = i;
-+
-+	ret = mana_ib_cfg_vport_steering(mdev, ndev, wq->rx_object,
-+					 mana_ind_table,
-+					 ind_tbl->log_ind_tbl_size,
-+					 ucmd.rx_hash_key_len,
-+					 ucmd.rx_hash_key);
-+	if (ret)
-+		goto fail;
-+
-+	kfree(mana_ind_table);
-+
-+	if (udata) {
-+		ret = ib_copy_to_udata(udata, &resp, sizeof(resp));
-+		if (ret) {
-+			ibdev_dbg(&mdev->ib_dev,
-+				  "Failed to copy to udata create rss-qp, %d\n",
-+				  ret);
-+			goto fail;
-+		}
-+	}
-+
-+	return 0;
-+
-+fail:
-+	while (i-- > 0) {
-+		ibwq = ind_tbl->ind_tbl[i];
-+		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
-+	}
-+
-+	kfree(mana_ind_table);
-+
-+	return ret;
-+}
-+
-+static int mana_ib_create_qp_raw(struct ib_qp *ibqp, struct ib_pd *ibpd,
-+				 struct ib_qp_init_attr *attr,
-+				 struct ib_udata *udata)
-+{
-+	struct mana_ib_pd *pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+	struct mana_ib_dev *mdev =
-+		container_of(ibpd->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_cq *send_cq =
-+		container_of(attr->send_cq, struct mana_ib_cq, ibcq);
-+	struct ib_ucontext *ib_ucontext = ibpd->uobject->context;
-+	struct mana_ib_create_qp_resp resp = {};
-+	struct mana_ib_ucontext *mana_ucontext;
-+	struct gdma_dev *gd = mdev->gdma_dev;
-+	struct mana_ib_create_qp ucmd = {};
-+	struct mana_obj_spec wq_spec = {};
-+	struct mana_obj_spec cq_spec = {};
-+	struct mana_port_context *mpc;
-+	struct mana_context *mc;
-+	struct net_device *ndev;
-+	struct ib_umem *umem;
-+	int err;
-+	u32 port;
-+
-+	mana_ucontext =
-+		container_of(ib_ucontext, struct mana_ib_ucontext, ibucontext);
-+	mc = gd->driver_data;
-+
-+	if (udata->inlen < sizeof(ucmd))
-+		return -EINVAL;
-+
-+	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
-+	if (err) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Failed to copy from udata create qp-raw, %d\n", err);
-+		return -EFAULT;
-+	}
-+
-+	/* IB ports start with 1, MANA Ethernet ports start with 0 */
-+	port = ucmd.port;
-+	if (ucmd.port > mc->num_ports)
-+		return -EINVAL;
-+
-+	if (attr->cap.max_send_wr > MAX_SEND_BUFFERS_PER_QUEUE) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Requested max_send_wr %d exceeding limit\n",
-+			  attr->cap.max_send_wr);
-+		return -EINVAL;
-+	}
-+
-+	if (attr->cap.max_send_sge > MAX_TX_WQE_SGL_ENTRIES) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Requested max_send_sge %d exceeding limit\n",
-+			  attr->cap.max_send_sge);
-+		return -EINVAL;
-+	}
-+
-+	ndev = mc->ports[port - 1];
-+	mpc = netdev_priv(ndev);
-+	ibdev_dbg(&mdev->ib_dev, "port %u ndev %p mpc %p\n", port, ndev, mpc);
-+
-+	err = mana_ib_cfg_vport(mdev, port - 1, pd, mana_ucontext->doorbell);
-+	if (err)
-+		return -ENODEV;
-+
-+	qp->port = port;
-+
-+	ibdev_dbg(&mdev->ib_dev, "ucmd sq_buf_addr 0x%llx port %u\n",
-+		  ucmd.sq_buf_addr, ucmd.port);
-+
-+	umem = ib_umem_get(ibpd->device, ucmd.sq_buf_addr, ucmd.sq_buf_size,
-+			   IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(umem)) {
-+		err = PTR_ERR(umem);
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Failed to get umem for create qp-raw, err %d\n",
-+			  err);
-+		goto err_free_vport;
-+	}
-+	qp->sq_umem = umem;
-+
-+	err = mana_ib_gd_create_dma_region(mdev, qp->sq_umem,
-+					   &qp->sq_gdma_region, PAGE_SIZE);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev,
-+			  "Failed to create dma region for create qp-raw, %d\n",
-+			  err);
-+		goto err_release_umem;
-+	}
-+
-+	ibdev_dbg(&mdev->ib_dev,
-+		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  err, qp->sq_gdma_region);
-+
-+	/* Create a WQ on the same port handle used by the Ethernet */
-+	wq_spec.gdma_region = qp->sq_gdma_region;
-+	wq_spec.queue_size = ucmd.sq_buf_size;
-+
-+	cq_spec.gdma_region = send_cq->gdma_region;
-+	cq_spec.queue_size = send_cq->cqe * COMP_ENTRY_SIZE;
-+	cq_spec.modr_ctx_id = 0;
-+	cq_spec.attached_eq = GDMA_CQ_NO_EQ;
-+
-+	err = mana_create_wq_obj(mpc, mpc->port_handle, GDMA_SQ, &wq_spec,
-+				 &cq_spec, &qp->tx_object);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev,
-+			  "Failed to create wq for create raw-qp, err %d\n",
-+			  err);
-+		goto err_destroy_dma_region;
-+	}
-+
-+	/* The GDMA regions are now owned by the WQ object */
-+	qp->sq_gdma_region = GDMA_INVALID_DMA_REGION;
-+	send_cq->gdma_region = GDMA_INVALID_DMA_REGION;
-+
-+	qp->sq_id = wq_spec.queue_index;
-+	send_cq->id = cq_spec.queue_index;
-+
-+	ibdev_dbg(&mdev->ib_dev,
-+		  "ret %d qp->tx_object 0x%llx sq id %llu cq id %llu\n", err,
-+		  qp->tx_object, qp->sq_id, send_cq->id);
-+
-+	resp.sqid = qp->sq_id;
-+	resp.cqid = send_cq->id;
-+	resp.tx_vp_offset = pd->tx_vp_offset;
-+
-+	if (udata) {
-+		err = ib_copy_to_udata(udata, &resp, sizeof(resp));
-+		if (err) {
-+			ibdev_dbg(&mdev->ib_dev,
-+				  "Failed copy udata for create qp-raw, %d\n",
-+				  err);
-+			goto err_destroy_wq_obj;
-+		}
-+	}
-+
-+	return 0;
-+
-+err_destroy_wq_obj:
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+
-+err_destroy_dma_region:
-+	mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
-+
-+err_release_umem:
-+	ib_umem_release(umem);
-+
-+err_free_vport:
-+	mana_ib_uncfg_vport(mdev, pd, port - 1);
-+
-+	return err;
-+}
-+
-+int mana_ib_create_qp(struct ib_qp *ibqp, struct ib_qp_init_attr *attr,
-+		      struct ib_udata *udata)
-+{
-+	switch (attr->qp_type) {
-+	case IB_QPT_RAW_PACKET:
-+		/* When rwq_ind_tbl is used, it's for creating WQs for RSS */
-+		if (attr->rwq_ind_tbl)
-+			return mana_ib_create_qp_rss(ibqp, ibqp->pd, attr,
-+						     udata);
-+
-+		return mana_ib_create_qp_raw(ibqp, ibqp->pd, attr, udata);
-+	default:
-+		/* Creating QP other than IB_QPT_RAW_PACKET is not supported */
-+		ibdev_dbg(ibqp->device, "Creating QP type %u not supported\n",
-+			  attr->qp_type);
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+int mana_ib_modify_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
-+		      int attr_mask, struct ib_udata *udata)
-+{
-+	/* modify_qp is not supported by this version of the driver */
-+	return -EOPNOTSUPP;
-+}
-+
-+static int mana_ib_destroy_qp_rss(struct mana_ib_qp *qp,
-+				  struct ib_rwq_ind_table *ind_tbl,
-+				  struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev =
-+		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
-+	struct gdma_dev *gd = mdev->gdma_dev;
-+	struct mana_port_context *mpc;
-+	struct mana_context *mc;
-+	struct net_device *ndev;
-+	struct mana_ib_wq *wq;
-+	struct ib_wq *ibwq;
-+	int i;
-+
-+	mc = gd->driver_data;
-+	ndev = mc->ports[qp->port - 1];
-+	mpc = netdev_priv(ndev);
-+
-+	for (i = 0; i < (1 << ind_tbl->log_ind_tbl_size); i++) {
-+		ibwq = ind_tbl->ind_tbl[i];
-+		wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+		ibdev_dbg(&mdev->ib_dev, "destroying wq->rx_object %llu\n",
-+			  wq->rx_object);
-+		mana_destroy_wq_obj(mpc, GDMA_RQ, wq->rx_object);
-+	}
-+
-+	return 0;
-+}
-+
-+static int mana_ib_destroy_qp_raw(struct mana_ib_qp *qp, struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev =
-+		container_of(qp->ibqp.device, struct mana_ib_dev, ib_dev);
-+	struct gdma_dev *gd = mdev->gdma_dev;
-+	struct ib_pd *ibpd = qp->ibqp.pd;
-+	struct mana_port_context *mpc;
-+	struct mana_context *mc;
-+	struct net_device *ndev;
-+	struct mana_ib_pd *pd;
-+
-+	mc = gd->driver_data;
-+	ndev = mc->ports[qp->port - 1];
-+	mpc = netdev_priv(ndev);
-+	pd = container_of(ibpd, struct mana_ib_pd, ibpd);
-+
-+	mana_destroy_wq_obj(mpc, GDMA_SQ, qp->tx_object);
-+
-+	if (qp->sq_umem) {
-+		mana_ib_gd_destroy_dma_region(mdev, qp->sq_gdma_region);
-+		ib_umem_release(qp->sq_umem);
-+	}
-+
-+	mana_ib_uncfg_vport(mdev, pd, qp->port - 1);
-+
-+	return 0;
-+}
-+
-+int mana_ib_destroy_qp(struct ib_qp *ibqp, struct ib_udata *udata)
-+{
-+	struct mana_ib_qp *qp = container_of(ibqp, struct mana_ib_qp, ibqp);
-+
-+	switch (ibqp->qp_type) {
-+	case IB_QPT_RAW_PACKET:
-+		if (ibqp->rwq_ind_tbl)
-+			return mana_ib_destroy_qp_rss(qp, ibqp->rwq_ind_tbl,
-+						      udata);
-+
-+		return mana_ib_destroy_qp_raw(qp, udata);
-+
-+	default:
-+		ibdev_dbg(ibqp->device, "Unexpected QP type %u\n",
-+			  ibqp->qp_type);
-+	}
-+
-+	return -ENOENT;
-+}
-diff --git a/drivers/infiniband/hw/mana/wq.c b/drivers/infiniband/hw/mana/wq.c
-new file mode 100644
-index 000000000000..a11d0ae35ff7
---- /dev/null
-+++ b/drivers/infiniband/hw/mana/wq.c
-@@ -0,0 +1,114 @@
-+// SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#include "mana_ib.h"
-+
-+struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
-+				struct ib_wq_init_attr *init_attr,
-+				struct ib_udata *udata)
-+{
-+	struct mana_ib_dev *mdev =
-+		container_of(pd->device, struct mana_ib_dev, ib_dev);
-+	struct mana_ib_create_wq ucmd = {};
-+	struct mana_ib_wq *wq;
-+	struct ib_umem *umem;
-+	int err;
-+
-+	if (udata->inlen < sizeof(ucmd))
-+		return ERR_PTR(-EINVAL);
-+
-+	err = ib_copy_from_udata(&ucmd, udata, min(sizeof(ucmd), udata->inlen));
-+	if (err) {
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Failed to copy from udata for create wq, %d\n", err);
-+		return ERR_PTR(-EFAULT);
-+	}
-+
-+	wq = kzalloc(sizeof(*wq), GFP_KERNEL);
-+	if (!wq)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ibdev_dbg(&mdev->ib_dev, "ucmd wq_buf_addr 0x%llx\n", ucmd.wq_buf_addr);
-+
-+	umem = ib_umem_get(pd->device, ucmd.wq_buf_addr, ucmd.wq_buf_size,
-+			   IB_ACCESS_LOCAL_WRITE);
-+	if (IS_ERR(umem)) {
-+		err = PTR_ERR(umem);
-+		ibdev_dbg(&mdev->ib_dev,
-+			  "Failed to get umem for create wq, err %d\n", err);
-+		goto err_free_wq;
-+	}
-+
-+	wq->umem = umem;
-+	wq->wqe = init_attr->max_wr;
-+	wq->wq_buf_size = ucmd.wq_buf_size;
-+	wq->rx_object = INVALID_MANA_HANDLE;
-+
-+	err = mana_ib_gd_create_dma_region(mdev, wq->umem, &wq->gdma_region,
-+					   PAGE_SIZE);
-+	if (err) {
-+		ibdev_err(&mdev->ib_dev,
-+			  "Failed to create dma region for create wq, %d\n",
-+			  err);
-+		goto err_release_umem;
-+	}
-+
-+	ibdev_dbg(&mdev->ib_dev,
-+		  "mana_ib_gd_create_dma_region ret %d gdma_region 0x%llx\n",
-+		  err, wq->gdma_region);
-+
-+	/* WQ ID is returned at wq_create time, doesn't know the value yet */
-+
-+	return &wq->ibwq;
-+
-+err_release_umem:
-+	ib_umem_release(umem);
-+
-+err_free_wq:
-+	kfree(wq);
-+
-+	return ERR_PTR(err);
-+}
-+
-+int mana_ib_modify_wq(struct ib_wq *wq, struct ib_wq_attr *wq_attr,
-+		      u32 wq_attr_mask, struct ib_udata *udata)
-+{
-+	/* modify_wq is not supported by this version of the driver */
-+	return -EOPNOTSUPP;
-+}
-+
-+int mana_ib_destroy_wq(struct ib_wq *ibwq, struct ib_udata *udata)
-+{
-+	struct mana_ib_wq *wq = container_of(ibwq, struct mana_ib_wq, ibwq);
-+	struct ib_device *ib_dev = ibwq->device;
-+	struct mana_ib_dev *mdev;
-+
-+	mdev = container_of(ib_dev, struct mana_ib_dev, ib_dev);
-+
-+	mana_ib_gd_destroy_dma_region(mdev, wq->gdma_region);
-+	ib_umem_release(wq->umem);
-+
-+	kfree(wq);
-+
-+	return 0;
-+}
-+
-+int mana_ib_create_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_table,
-+				 struct ib_rwq_ind_table_init_attr *init_attr,
-+				 struct ib_udata *udata)
-+{
-+	/* There is no additional data in ind_table to be maintained by this
-+	 * driver, do nothing
-+	 */
-+	return 0;
-+}
-+
-+int mana_ib_destroy_rwq_ind_table(struct ib_rwq_ind_table *ib_rwq_ind_tbl)
-+{
-+	/* There is no additional data in ind_table to be maintained by this
-+	 * driver, do nothing
-+	 */
-+	return 0;
-+}
-diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-index 3a0bc6e0b730..1ff6e0d07cfd 100644
---- a/include/net/mana/mana.h
-+++ b/include/net/mana/mana.h
-@@ -406,6 +406,9 @@ int mana_bpf(struct net_device *ndev, struct netdev_bpf *bpf);
- 
- extern const struct ethtool_ops mana_ethtool_ops;
- 
-+/* A CQ can be created not associated with any EQ */
-+#define GDMA_CQ_NO_EQ  0xffff
-+
- struct mana_obj_spec {
- 	u32 queue_index;
- 	u64 gdma_region;
-diff --git a/include/uapi/rdma/ib_user_ioctl_verbs.h b/include/uapi/rdma/ib_user_ioctl_verbs.h
-index 3072e5d6b692..081aabf536dc 100644
---- a/include/uapi/rdma/ib_user_ioctl_verbs.h
-+++ b/include/uapi/rdma/ib_user_ioctl_verbs.h
-@@ -250,6 +250,7 @@ enum rdma_driver_id {
- 	RDMA_DRIVER_QIB,
- 	RDMA_DRIVER_EFA,
- 	RDMA_DRIVER_SIW,
-+	RDMA_DRIVER_MANA,
- };
- 
- enum ib_uverbs_gid_type {
-diff --git a/include/uapi/rdma/mana-abi.h b/include/uapi/rdma/mana-abi.h
-new file mode 100644
-index 000000000000..559c49b72e0d
---- /dev/null
-+++ b/include/uapi/rdma/mana-abi.h
-@@ -0,0 +1,66 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note) OR Linux-OpenIB) */
-+/*
-+ * Copyright (c) 2022, Microsoft Corporation. All rights reserved.
-+ */
-+
-+#ifndef MANA_ABI_USER_H
-+#define MANA_ABI_USER_H
-+
-+#include <linux/types.h>
-+#include <rdma/ib_user_ioctl_verbs.h>
-+
-+/*
-+ * Increment this value if any changes that break userspace ABI
-+ * compatibility are made.
-+ */
-+
-+#define MANA_IB_UVERBS_ABI_VERSION 1
-+
-+struct mana_ib_create_cq {
-+	__aligned_u64 buf_addr;
-+};
-+
-+struct mana_ib_create_qp {
-+	__aligned_u64 sq_buf_addr;
-+	__u32 sq_buf_size;
-+	__u32 port;
-+};
-+
-+struct mana_ib_create_qp_resp {
-+	__u32 sqid;
-+	__u32 cqid;
-+	__u32 tx_vp_offset;
-+	__u32 reserved;
-+};
-+
-+struct mana_ib_create_wq {
-+	__aligned_u64 wq_buf_addr;
-+	__u32 wq_buf_size;
-+	__u32 reserved;
-+};
-+
-+/* RX Hash function flags */
-+enum mana_ib_rx_hash_function_flags {
-+	MANA_IB_RX_HASH_FUNC_TOEPLITZ = 1 << 0,
-+};
-+
-+struct mana_ib_create_qp_rss {
-+	__aligned_u64 rx_hash_fields_mask;
-+	__u8 rx_hash_function;
-+	__u8 reserved[7];
-+	__u32 rx_hash_key_len;
-+	__u8 rx_hash_key[40];
-+	__u32 port;
-+};
-+
-+struct rss_resp_entry {
-+	__u32 cqid;
-+	__u32 wqid;
-+};
-+
-+struct mana_ib_create_qp_rss_resp {
-+	__aligned_u64 num_entries;
-+	struct rss_resp_entry entries[64];
-+};
-+
-+#endif
--- 
-2.17.1
-
+> +	if (!ret) {
+> +		ret = erdma_cm_upcall(cep, IW_CM_EVENT_ESTABLISHED, 0);
+> +		if (ret)
+> +			goto error;
+> +
+> +		erdma_cep_set_free(cep);
+> +
+> +		return 0;
+> +	}
+> +
+> +error:
+> +	erdma_socket_disassoc(cep->sock);
+> +	sock_release(cep->sock);
+> +	cep->sock = NULL;
+> +
+> +	cep->state = ERDMA_EPSTATE_CLOSED;
+> +
+> +	if (cep->cm_id) {
+> +		cep->cm_id->rem_ref(id);
+> +		cep->cm_id = NULL;
+> +	}
+> +
+> +	if (qp->cep) {
+> +		erdma_cep_put(cep);
+> +		qp->cep = NULL;
+> +	}
+> +
+> +	cep->qp = NULL;
+> +	erdma_qp_put(qp);
+> +
+> +	erdma_cep_set_free(cep);
+> +	erdma_cep_put(cep);
+> +
+> +	return ret;
+> +}
+> +
+> +int erdma_reject(struct iw_cm_id *id, const void *pdata, u8 plen)
+> +{
+> +	struct erdma_cep *cep = (struct erdma_cep *)id->provider_data;
+> +
+> +	erdma_cep_set_inuse(cep);
+> +	erdma_cep_put(cep);
+> +
+> +	erdma_cancel_mpatimer(cep);
+> +
+> +	if (cep->state != ERDMA_EPSTATE_RECVD_MPAREQ) {
+> +		erdma_cep_set_free(cep);
+> +		erdma_cep_put(cep);
+> +
+> +		return -ECONNRESET;
+> +	}
+> +
+> +	if (__mpa_rr_revision(cep->mpa.hdr.params.bits) == MPA_REVISION_EXT_1) {
+> +		cep->mpa.hdr.params.bits |= MPA_RR_FLAG_REJECT; /* reject */
+> +		erdma_send_mpareqrep(cep, pdata, plen);
+> +	}
+> +
+> +	erdma_socket_disassoc(cep->sock);
+> +	sock_release(cep->sock);
+> +	cep->sock = NULL;
+> +
+> +	cep->state = ERDMA_EPSTATE_CLOSED;
+> +
+> +	erdma_cep_set_free(cep);
+> +	erdma_cep_put(cep);
+> +
+> +	return 0;
+> +}
+> +
+> +int erdma_create_listen(struct iw_cm_id *id, int backlog)
+> +{
+> +	struct socket *s;
+> +	struct erdma_cep *cep = NULL;
+> +	int ret = 0;
+> +	struct erdma_dev *dev = to_edev(id->device);
+> +	int addr_family = id->local_addr.ss_family;
+> +	struct sockaddr_in *laddr = &to_sockaddr_in(id->local_addr);
+> +
+> +	if (addr_family != AF_INET)
+> +		return -EAFNOSUPPORT;
+> +
+> +	ret = sock_create(addr_family, SOCK_STREAM, IPPROTO_TCP, &s);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	sock_set_reuseaddr(s->sk);
+> +
+> +	/* For wildcard addr, limit binding to current device only */
+> +	if (ipv4_is_zeronet(laddr->sin_addr.s_addr))
+> +		s->sk->sk_bound_dev_if = dev->netdev->ifindex;
+> +
+> +	ret = s->ops->bind(s, (struct sockaddr *)laddr,
+> +			   sizeof(struct sockaddr_in));
+> +	if (ret)
+> +		goto error;
+> +
+> +	cep = erdma_cep_alloc(dev);
+> +	if (!cep) {
+> +		ret = -ENOMEM;
+> +		goto error;
+> +	}
+> +	erdma_cep_socket_assoc(cep, s);
+> +
+> +	ret = erdma_cm_alloc_work(cep, backlog);
+> +	if (ret)
+> +		goto error;
+> +
+> +	ret = s->ops->listen(s, backlog);
+> +	if (ret)
+> +		goto error;
+> +
+> +	cep->cm_id = id;
+> +	id->add_ref(id);
+> +
+> +	if (!id->provider_data) {
+> +		id->provider_data =
+> +			kmalloc(sizeof(struct list_head), GFP_KERNEL);
+> +		if (!id->provider_data) {
+> +			ret = -ENOMEM;
+> +			goto error;
+> +		}
+> +		INIT_LIST_HEAD((struct list_head *)id->provider_data);
+> +	}
+> +
+> +	list_add_tail(&cep->listenq, (struct list_head *)id->provider_data);
+> +	cep->state = ERDMA_EPSTATE_LISTENING;
+> +
+> +	return 0;
+> +
+> +error:
+> +	if (cep) {
+> +		erdma_cep_set_inuse(cep);
+> +
+> +		if (cep->cm_id) {
+> +			cep->cm_id->rem_ref(cep->cm_id);
+> +			cep->cm_id = NULL;
+> +		}
+> +		cep->sock = NULL;
+> +		erdma_socket_disassoc(s);
+> +		cep->state = ERDMA_EPSTATE_CLOSED;
+> +
+> +		erdma_cep_set_free(cep);
+> +		erdma_cep_put(cep);
+> +	}
+> +	sock_release(s);
+> +
+> +	return ret;
+> +}
+> +
+> +static void erdma_drop_listeners(struct iw_cm_id *id)
+> +{
+> +	struct list_head *p, *tmp;
+> +	/*
+> +	 * In case of a wildcard rdma_listen on a multi-homed device,
+> +	 * a listener's IWCM id is associated with more than one listening CEP.
+> +	 */
+> +	list_for_each_safe(p, tmp, (struct list_head *)id->provider_data) {
+> +		struct erdma_cep *cep =
+> +			list_entry(p, struct erdma_cep, listenq);
+> +
+> +		list_del(p);
+> +
+> +		erdma_cep_set_inuse(cep);
+> +
+> +		if (cep->cm_id) {
+> +			cep->cm_id->rem_ref(cep->cm_id);
+> +			cep->cm_id = NULL;
+> +		}
+> +		if (cep->sock) {
+> +			erdma_socket_disassoc(cep->sock);
+> +			sock_release(cep->sock);
+> +			cep->sock = NULL;
+> +		}
+> +		cep->state = ERDMA_EPSTATE_CLOSED;
+> +		erdma_cep_set_free(cep);
+> +		erdma_cep_put(cep);
+> +	}
+> +}
+> +
+> +int erdma_destroy_listen(struct iw_cm_id *id)
+> +{
+> +	if (!id->provider_data)
+> +		return 0;
+> +
+> +	erdma_drop_listeners(id);
+> +	kfree(id->provider_data);
+> +	id->provider_data = NULL;
+> +
+> +	return 0;
+> +}
+> +
+> +int erdma_cm_init(void)
+> +{
+> +	erdma_cm_wq = create_singlethread_workqueue("erdma_cm_wq");
+> +	if (!erdma_cm_wq)
+> +		return -ENOMEM;
+> +
+> +	return 0;
+> +}
+> +
+> +void erdma_cm_exit(void)
+> +{
+> +	if (erdma_cm_wq)
+> +		destroy_workqueue(erdma_cm_wq);
+> +}
+> diff --git a/drivers/infiniband/hw/erdma/erdma_cm.h b/drivers/infiniband/hw/erdma/erdma_cm.h
+> new file mode 100644
+> index 000000000000..040c05dd3625
+> --- /dev/null
+> +++ b/drivers/infiniband/hw/erdma/erdma_cm.h
+> @@ -0,0 +1,167 @@
+> +/* SPDX-License-Identifier: GPL-2.0 or BSD-3-Clause */
+> +
+> +/* Authors: Cheng Xu <chengyou@linux.alibaba.com> */
+> +/*          Kai Shen <kaishen@linux.alibaba.com> */
+> +/* Copyright (c) 2020-2022, Alibaba Group. */
+> +
+> +/* Authors: Bernard Metzler <bmt@zurich.ibm.com> */
+> +/*          Greg Joyce <greg@opengridcomputing.com> */
+> +/* Copyright (c) 2008-2019, IBM Corporation */
+> +/* Copyright (c) 2017, Open Grid Computing, Inc. */
+> +
+> +#ifndef __ERDMA_CM_H__
+> +#define __ERDMA_CM_H__
+> +
+> +#include <linux/tcp.h>
+> +#include <net/sock.h>
+> +#include <rdma/iw_cm.h>
+> +
+> +/* iWarp MPA protocol defs */
+> +#define MPA_REVISION_EXT_1 129
+> +#define MPA_MAX_PRIVDATA RDMA_MAX_PRIVATE_DATA
+> +#define MPA_KEY_REQ "MPA ID Req Frame"
+> +#define MPA_KEY_REP "MPA ID Rep Frame"
+> +#define MPA_KEY_SIZE 16
+> +#define MPA_DEFAULT_HDR_LEN 28
+> +
+> +struct mpa_rr_params {
+> +	__be16 bits;
+> +	__be16 pd_len;
+> +};
+> +
+> +/*
+> + * MPA request/response Hdr bits & fields
+> + */
+> +enum {
+> +	MPA_RR_FLAG_MARKERS = __cpu_to_be16(0x8000),
+> +	MPA_RR_FLAG_CRC = __cpu_to_be16(0x4000),
+> +	MPA_RR_FLAG_REJECT = __cpu_to_be16(0x2000),
+> +	MPA_RR_RESERVED = __cpu_to_be16(0x1f00),
+> +	MPA_RR_MASK_REVISION = __cpu_to_be16(0x00ff)
+> +};
+> +
+> +/*
+> + * MPA request/reply header
+> + */
+> +struct mpa_rr {
+> +	u8 key[16];
+> +	struct mpa_rr_params params;
+> +};
+> +
+> +struct erdma_mpa_ext {
+> +	__be32 cookie;
+> +	__be32 bits;
+> +};
+> +
+> +enum {
+> +	MPA_EXT_FLAG_CC = cpu_to_be32(0x0000000f),
+> +};
+> +
+> +struct erdma_mpa_info {
+> +	struct mpa_rr hdr; /* peer mpa hdr in host byte order */
+> +	struct erdma_mpa_ext ext_data;
+> +	char *pdata;
+> +	int bytes_rcvd;
+> +};
+> +
+> +struct erdma_sk_upcalls {
+> +	void (*sk_state_change)(struct sock *sk);
+> +	void (*sk_data_ready)(struct sock *sk, int bytes);
+> +	void (*sk_error_report)(struct sock *sk);
+> +};
+> +
+> +struct erdma_dev;
+> +
+> +enum erdma_cep_state {
+> +	ERDMA_EPSTATE_IDLE = 1,
+> +	ERDMA_EPSTATE_LISTENING,
+> +	ERDMA_EPSTATE_CONNECTING,
+> +	ERDMA_EPSTATE_AWAIT_MPAREQ,
+> +	ERDMA_EPSTATE_RECVD_MPAREQ,
+> +	ERDMA_EPSTATE_AWAIT_MPAREP,
+> +	ERDMA_EPSTATE_RDMA_MODE,
+> +	ERDMA_EPSTATE_CLOSED
+> +};
+> +
+> +struct erdma_cep {
+> +	struct iw_cm_id *cm_id;
+> +	struct erdma_dev *dev;
+> +	struct list_head devq;
+> +	spinlock_t lock;
+> +	struct kref ref;
+> +	int in_use;
+> +	wait_queue_head_t waitq;
+> +	enum erdma_cep_state state;
+> +
+> +	struct list_head listenq;
+> +	struct erdma_cep *listen_cep;
+> +
+> +	struct erdma_qp *qp;
+> +	struct socket *sock;
+> +
+> +	struct erdma_cm_work *mpa_timer;
+> +	struct list_head work_freelist;
+> +
+> +	struct erdma_mpa_info mpa;
+> +	int ord;
+> +	int ird;
+> +
+> +	int pd_len;
+> +	/* hold user's private data. */
+> +	void *private_data;
+> +
+> +	/* Saved upcalls of socket llp.sock */
+> +	void (*sk_state_change)(struct sock *sk);
+> +	void (*sk_data_ready)(struct sock *sk);
+> +	void (*sk_error_report)(struct sock *sk);
+> +};
+> +
+> +#define MPAREQ_TIMEOUT (HZ * 20)
+> +#define MPAREP_TIMEOUT (HZ * 10)
+> +#define CONNECT_TIMEOUT (HZ * 10)
+> +
+> +enum erdma_work_type {
+> +	ERDMA_CM_WORK_ACCEPT = 1,
+> +	ERDMA_CM_WORK_READ_MPAHDR,
+> +	ERDMA_CM_WORK_CLOSE_LLP, /* close socket */
+> +	ERDMA_CM_WORK_PEER_CLOSE, /* socket indicated peer close */
+> +	ERDMA_CM_WORK_MPATIMEOUT,
+> +	ERDMA_CM_WORK_CONNECTED,
+> +	ERDMA_CM_WORK_CONNECTTIMEOUT
+> +};
+> +
+> +struct erdma_cm_work {
+> +	struct delayed_work work;
+> +	struct list_head list;
+> +	enum erdma_work_type type;
+> +	struct erdma_cep *cep;
+> +};
+> +
+> +#define to_sockaddr_in(a) (*(struct sockaddr_in *)(&(a)))
+> +
+> +static inline int getname_peer(struct socket *s, struct sockaddr_storage *a)
+> +{
+> +	return s->ops->getname(s, (struct sockaddr *)a, 1);
+> +}
+> +
+> +static inline int getname_local(struct socket *s, struct sockaddr_storage *a)
+> +{
+> +	return s->ops->getname(s, (struct sockaddr *)a, 0);
+> +}
+> +
+> +int erdma_connect(struct iw_cm_id *id, struct iw_cm_conn_param *param);
+> +int erdma_accept(struct iw_cm_id *id, struct iw_cm_conn_param *param);
+> +int erdma_reject(struct iw_cm_id *id, const void *pdata, u8 plen);
+> +int erdma_create_listen(struct iw_cm_id *id, int backlog);
+> +int erdma_destroy_listen(struct iw_cm_id *id);
+> +
+> +void erdma_cep_get(struct erdma_cep *ceq);
+> +void erdma_cep_put(struct erdma_cep *ceq);
+> +int erdma_cm_queue_work(struct erdma_cep *ceq, enum erdma_work_type type);
+> +
+> +int erdma_cm_init(void);
+> +void erdma_cm_exit(void);
+> +
+> +#define sk_to_cep(sk) ((struct erdma_cep *)((sk)->sk_user_data))
+> +
+> +#endif
