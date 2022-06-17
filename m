@@ -2,29 +2,29 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ED354F618
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jun 2022 13:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5490854F61F
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jun 2022 13:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380273AbiFQLBn (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jun 2022 07:01:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56654 "EHLO
+        id S1382272AbiFQLBz (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jun 2022 07:01:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381972AbiFQLBm (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jun 2022 07:01:42 -0400
+        with ESMTP id S1381563AbiFQLBq (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jun 2022 07:01:46 -0400
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC77694B9;
-        Fri, 17 Jun 2022 04:01:40 -0700 (PDT)
-Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LPbc14wRDz687hH;
-        Fri, 17 Jun 2022 18:57:53 +0800 (CST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369F36C0CF;
+        Fri, 17 Jun 2022 04:01:45 -0700 (PDT)
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LPbhC6ZMMz689NN;
+        Fri, 17 Jun 2022 19:01:31 +0800 (CST)
 Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 17 Jun 2022 13:01:38 +0200
+ 15.1.2375.24; Fri, 17 Jun 2022 13:01:43 +0200
 Received: from localhost.localdomain (10.69.192.58) by
  lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 17 Jun 2022 12:01:34 +0100
+ 15.1.2375.24; Fri, 17 Jun 2022 12:01:38 +0100
 From:   John Garry <john.garry@huawei.com>
 To:     <axboe@kernel.dk>, <damien.lemoal@opensource.wdc.com>,
         <bvanassche@acm.org>, <hch@lst.de>, <jejb@linux.ibm.com>,
@@ -35,9 +35,9 @@ CC:     <linux-rdma@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
         <linux-scsi@vger.kernel.org>, <mpi3mr-linuxdrv.pdl@broadcom.com>,
         <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <nbd@other.debian.org>, John Garry <john.garry@huawei.com>
-Subject: [PATCH 1/5] scsi: core: Remove reserved request time-out handling
-Date:   Fri, 17 Jun 2022 18:55:16 +0800
-Message-ID: <1655463320-241202-2-git-send-email-john.garry@huawei.com>
+Subject: [PATCH 2/5] blk-mq: Add a flag for reserved requests
+Date:   Fri, 17 Jun 2022 18:55:17 +0800
+Message-ID: <1655463320-241202-3-git-send-email-john.garry@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1655463320-241202-1-git-send-email-john.garry@huawei.com>
 References: <1655463320-241202-1-git-send-email-john.garry@huawei.com>
@@ -56,92 +56,65 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The SCSI code does not currently support reserved commands. As such,
-requests which time-out would never be reserved, and scsi_timeout()
-'reserved' arg should never be set.
-
-Remove handling for reserved requests and drop wrapper scsi_timeout() as
-it now just calls scsi_times_out() always.
+Add a flag for reserved requests so that drivers may know this for any
+special handling.
 
 Signed-off-by: John Garry <john.garry@huawei.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Bart Van Assche <bvanassche@acm.org>
 ---
- drivers/scsi/scsi_error.c |  3 ++-
- drivers/scsi/scsi_lib.c   | 12 ++----------
- drivers/scsi/scsi_priv.h  |  3 ++-
- 3 files changed, 6 insertions(+), 12 deletions(-)
+ block/blk-mq.c         | 6 ++++++
+ include/linux/blk-mq.h | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 49ef864df581..80cd6835ac70 100644
---- a/drivers/scsi/scsi_error.c
-+++ b/drivers/scsi/scsi_error.c
-@@ -318,6 +318,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
- /**
-  * scsi_times_out - Timeout function for normal scsi commands.
-  * @req:	request that is timing out.
-+ * @reserved:	whether the request is a reserved request.
-  *
-  * Notes:
-  *     We do not need to lock this.  There is the potential for a race
-@@ -325,7 +326,7 @@ void scsi_eh_scmd_add(struct scsi_cmnd *scmd)
-  *     normal completion function determines that the timer has already
-  *     fired, then it mustn't do anything.
-  */
--enum blk_eh_timer_return scsi_times_out(struct request *req)
-+enum blk_eh_timer_return scsi_times_out(struct request *req, bool reserved)
- {
- 	struct scsi_cmnd *scmd = blk_mq_rq_to_pdu(req);
- 	enum blk_eh_timer_return rtn = BLK_EH_DONE;
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index 6ffc9e4258a8..d635831165d5 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1790,14 +1790,6 @@ static blk_status_t scsi_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	return ret;
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 7a5558bbc7f6..15e66416de60 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -474,6 +474,9 @@ static struct request *__blk_mq_alloc_requests(struct blk_mq_alloc_data *data)
+ 	if (!(data->rq_flags & RQF_ELV))
+ 		blk_mq_tag_busy(data->hctx);
+ 
++	if (data->flags & BLK_MQ_REQ_RESERVED)
++		data->rq_flags |= RQF_RESV;
++
+ 	/*
+ 	 * Try batched alloc if we want more than 1 tag.
+ 	 */
+@@ -586,6 +589,9 @@ struct request *blk_mq_alloc_request_hctx(struct request_queue *q,
+ 	else
+ 		data.rq_flags |= RQF_ELV;
+ 
++	if (flags & BLK_MQ_REQ_RESERVED)
++		data.rq_flags |= RQF_RESV;
++
+ 	ret = -EWOULDBLOCK;
+ 	tag = blk_mq_get_tag(&data);
+ 	if (tag == BLK_MQ_NO_TAG)
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index e2d9daf7e8dd..6d81fe10e850 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -57,6 +57,7 @@ typedef __u32 __bitwise req_flags_t;
+ #define RQF_TIMED_OUT		((__force req_flags_t)(1 << 21))
+ /* queue has elevator attached */
+ #define RQF_ELV			((__force req_flags_t)(1 << 22))
++#define RQF_RESV			((__force req_flags_t)(1 << 23))
+ 
+ /* flags that prevent us from merging requests: */
+ #define RQF_NOMERGE_FLAGS \
+@@ -823,6 +824,11 @@ static inline bool blk_mq_need_time_stamp(struct request *rq)
+ 	return (rq->rq_flags & (RQF_IO_STAT | RQF_STATS | RQF_ELV));
  }
  
--static enum blk_eh_timer_return scsi_timeout(struct request *req,
--		bool reserved)
--{
--	if (reserved)
--		return BLK_EH_RESET_TIMER;
--	return scsi_times_out(req);
--}
--
- static int scsi_mq_init_request(struct blk_mq_tag_set *set, struct request *rq,
- 				unsigned int hctx_idx, unsigned int numa_node)
- {
-@@ -1912,7 +1904,7 @@ static const struct blk_mq_ops scsi_mq_ops_no_commit = {
- 	.put_budget	= scsi_mq_put_budget,
- 	.queue_rq	= scsi_queue_rq,
- 	.complete	= scsi_complete,
--	.timeout	= scsi_timeout,
-+	.timeout	= scsi_times_out,
- #ifdef CONFIG_BLK_DEBUG_FS
- 	.show_rq	= scsi_show_rq,
- #endif
-@@ -1941,7 +1933,7 @@ static const struct blk_mq_ops scsi_mq_ops = {
- 	.queue_rq	= scsi_queue_rq,
- 	.commit_rqs	= scsi_commit_rqs,
- 	.complete	= scsi_complete,
--	.timeout	= scsi_timeout,
-+	.timeout	= scsi_times_out,
- #ifdef CONFIG_BLK_DEBUG_FS
- 	.show_rq	= scsi_show_rq,
- #endif
-diff --git a/drivers/scsi/scsi_priv.h b/drivers/scsi/scsi_priv.h
-index 5c4786310a31..8966f20b7d55 100644
---- a/drivers/scsi/scsi_priv.h
-+++ b/drivers/scsi/scsi_priv.h
-@@ -72,7 +72,8 @@ extern void scsi_exit_devinfo(void);
- 
- /* scsi_error.c */
- extern void scmd_eh_abort_handler(struct work_struct *work);
--extern enum blk_eh_timer_return scsi_times_out(struct request *req);
-+extern enum blk_eh_timer_return scsi_times_out(struct request *req,
-+					       bool reserved);
- extern int scsi_error_handler(void *host);
- extern enum scsi_disposition scsi_decide_disposition(struct scsi_cmnd *cmd);
- extern void scsi_eh_wakeup(struct Scsi_Host *shost);
++static inline bool blk_mq_is_reserved_rq(struct request *rq)
++{
++	return rq->rq_flags & RQF_RESV;
++}
++
+ /*
+  * Batched completions only work when there is no I/O error and no special
+  * ->end_io handler.
 -- 
 2.35.3
 
