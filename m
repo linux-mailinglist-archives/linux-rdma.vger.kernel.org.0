@@ -2,47 +2,47 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2672254FB0F
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jun 2022 18:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D0A54FB40
+	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jun 2022 18:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383301AbiFQQ37 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jun 2022 12:29:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42710 "EHLO
+        id S1383328AbiFQQdQ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 17 Jun 2022 12:33:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383300AbiFQQ36 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jun 2022 12:29:58 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C1B942A0C;
-        Fri, 17 Jun 2022 09:29:58 -0700 (PDT)
-Received: by mail-pj1-f47.google.com with SMTP id t3-20020a17090a510300b001ea87ef9a3dso4586976pjh.4;
-        Fri, 17 Jun 2022 09:29:58 -0700 (PDT)
+        with ESMTP id S1383322AbiFQQdP (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jun 2022 12:33:15 -0400
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3925333A20;
+        Fri, 17 Jun 2022 09:33:15 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id i15so4322030plr.1;
+        Fri, 17 Jun 2022 09:33:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=1CdPsYcJMiRyRao0OFv69oSt2+3EiKlT7x2/BM9HIJY=;
-        b=wLXdHre4Ceoa7M466IhIXfn5jrZ4LP/it/CFC1T/kC158ldBbMa0XHUPU1Ui3nx30q
-         zIbMsqXjn7q65AmCHto7DfvTWi6rrZlM1JOFSjP1q6D7+vxho2NVX1Nsv46q3uE1P/jm
-         KjG6IlvmLh9b+WHwWElL7zqM7Pmi3IYJWtG7yVGDw49en2/HxC9tN9uBGJ1w3zG1Mp5e
-         rWv/q7dj3KoMG9OZf8D6326gscoaYpjYbBgbb9DY/v+ql59tOSeoXCzmxpiJP6X2fQtL
-         ONL5ic9UHCCdrKFexP2scZizqZEqhzXPGbLWC7xpFf1uudP2Wc8DeqboWVHJKGqJB/jc
-         BjIQ==
-X-Gm-Message-State: AJIora+g7fiM2nLNBMpQErm8+tyxYrxCfS79iIJdhVqyYA/m9sEA4e1O
-        ioOkuHU0qRyN/trW5E69t4M=
-X-Google-Smtp-Source: AGRyM1t/wDXMzo+bOEkKIQH/k9xjz21/990h5UWigbcfj8KAhJoJx1iRoTgXlJGSllOagISeEk0Fkg==
-X-Received: by 2002:a17:90a:6444:b0:1ea:b662:c12e with SMTP id y4-20020a17090a644400b001eab662c12emr11580102pjm.199.1655483397636;
-        Fri, 17 Jun 2022 09:29:57 -0700 (PDT)
+        bh=ZFZOF4kIZf5haKivlSJCFlw6yEpj+kTMN6wkZ1f2sSk=;
+        b=UHKJifPL4xtbAPNhZJFcnltd6jefCSYR2N/M5Y1xYH2yEqSp0ILwoWgRqfiPbUeVJR
+         CUmoeAkFkffjR55X2hEAzyJhGKUkYG4XXrbdMG0q6UT0UrviPRpKCq1VM4SPKhLEtmId
+         doxy2Yv0geHiF9h3DgciEi+TAfbCYv0j4pvzEweA0rF+PXN7CrudIY/hCtG5sO5OfrDP
+         +vtWrZ/oDJ7GynpOXShFl2aDSX3qfBA1p4468SO9R+u923F6QQfl/gPoRy5Ai1VYxslw
+         lrhNCLdqClGwjGU8x9zuHdX/LzEPgrxXtUk6egFN40C9S7kQv0pSIKQeifFR+q5Nl5dH
+         BDjw==
+X-Gm-Message-State: AJIora8n/J8+pw/Re3/RiZZuZOMfBMUC/2fCV/aMTnlsT7gTNfFtDYT7
+        3GXoEIahyZ7muafrvugIydE=
+X-Google-Smtp-Source: AGRyM1tFt6HG3OqcSvJKpLgUFiFTa/8qOGRuw+HZNz8Qnbyh9yDTQ+C2yWV2UI5DfkTd9FHmrT3DIw==
+X-Received: by 2002:a17:902:7886:b0:167:5c8c:4d3e with SMTP id q6-20020a170902788600b001675c8c4d3emr10521665pll.74.1655483594617;
+        Fri, 17 Jun 2022 09:33:14 -0700 (PDT)
 Received: from ?IPV6:2620:15c:211:201:5d24:3188:b21f:5671? ([2620:15c:211:201:5d24:3188:b21f:5671])
-        by smtp.gmail.com with ESMTPSA id jb11-20020a170903258b00b0015e8d4eb25bsm3756460plb.165.2022.06.17.09.29.55
+        by smtp.gmail.com with ESMTPSA id j1-20020a170903028100b00163d4c3ffabsm3774192plr.304.2022.06.17.09.33.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jun 2022 09:29:56 -0700 (PDT)
-Message-ID: <336492df-d74d-9eb9-4b51-d6d1f915493a@acm.org>
-Date:   Fri, 17 Jun 2022 09:29:54 -0700
+        Fri, 17 Jun 2022 09:33:13 -0700 (PDT)
+Message-ID: <017cae1e-b45f-04fd-d34c-22ae736b28e5@acm.org>
+Date:   Fri, 17 Jun 2022 09:33:11 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.8.0
-Subject: Re: [PATCH 4/5] scsi: fnic: Drop reserved request handling
+Subject: Re: [PATCH 5/5] blk-mq: Drop 'reserved' member of busy_tag_iter_fn
 Content-Language: en-US
 To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
         damien.lemoal@opensource.wdc.com, hch@lst.de, jejb@linux.ibm.com,
@@ -54,16 +54,16 @@ Cc:     linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         nbd@other.debian.org
 References: <1655463320-241202-1-git-send-email-john.garry@huawei.com>
- <1655463320-241202-5-git-send-email-john.garry@huawei.com>
+ <1655463320-241202-6-git-send-email-john.garry@huawei.com>
 From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <1655463320-241202-5-git-send-email-john.garry@huawei.com>
+In-Reply-To: <1655463320-241202-6-git-send-email-john.garry@huawei.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -71,7 +71,51 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 On 6/17/22 03:55, John Garry wrote:
-> The SCSI core code does not support reserved requests, so drop the
-> handling in fnic_pending_aborts_iter().
+> We no longer use the 'reserved' member in for any iter function so it
+                                          ^^^^^^
+One of these two words probably should be removed.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+> index 2dcd738c6952..b8cc8b41553f 100644
+> --- a/block/blk-mq-tag.c
+> +++ b/block/blk-mq-tag.c
+> @@ -266,7 +266,6 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+>   	struct blk_mq_hw_ctx *hctx = iter_data->hctx;
+>   	struct request_queue *q = iter_data->q;
+>   	struct blk_mq_tag_set *set = q->tag_set;
+> -	bool reserved = iter_data->reserved;
+>   	struct blk_mq_tags *tags;
+>   	struct request *rq;
+>   	bool ret = true;
+> @@ -276,7 +275,7 @@ static bool bt_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+>   	else
+>   		tags = hctx->tags;
+>   
+> -	if (!reserved)
+> +	if (!iter_data->reserved)
+>   		bitnr += tags->nr_reserved_tags;
+>   	/*
+>   	 * We can hit rq == NULL here, because the tagging functions
+
+Is the above change really necessary?
+
+> @@ -337,12 +336,11 @@ static bool bt_tags_iter(struct sbitmap *bitmap, unsigned int bitnr, void *data)
+>   {
+>   	struct bt_tags_iter_data *iter_data = data;
+>   	struct blk_mq_tags *tags = iter_data->tags;
+> -	bool reserved = iter_data->flags & BT_TAG_ITER_RESERVED;
+>   	struct request *rq;
+>   	bool ret = true;
+>   	bool iter_static_rqs = !!(iter_data->flags & BT_TAG_ITER_STATIC_RQS);
+>   
+> -	if (!reserved)
+> +	if (!(iter_data->flags & BT_TAG_ITER_RESERVED))
+>   		bitnr += tags->nr_reserved_tags;
+>   
+>   	/*
+
+Same question here: is the above change really necessary?
+
+Thanks,
+
+Bart.
