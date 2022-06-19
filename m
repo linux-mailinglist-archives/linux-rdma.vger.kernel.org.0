@@ -2,101 +2,151 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0B8A552A70
-	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jun 2022 07:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885B4552AC6
+	for <lists+linux-rdma@lfdr.de>; Tue, 21 Jun 2022 08:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbiFUFZ7 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 21 Jun 2022 01:25:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
+        id S1345533AbiFUGHG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 21 Jun 2022 02:07:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbiFUFZ6 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jun 2022 01:25:58 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DE42124D;
-        Mon, 20 Jun 2022 22:25:57 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id go6so7206511pjb.0;
-        Mon, 20 Jun 2022 22:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cObR3+olODnsmHmG40dfcNk9dBbtTD141Doa/y8coxE=;
-        b=PvwRqUb/i0fSGKPftsQ1EvcaFh/v7AmSfz9FHt3LB3+HaYe1qYVdiWY7uytiwvhrTe
-         e/p0JBYfwfrESybD/kF8zC2YB6Zw/Ks1YLOYYfxOAOesk3BJ7wk804AQueWCJ/5G+HIs
-         PqVuLMupqclywDPFvkLlFTHSh9/t0N2HPdPcdjx5BMTVJtS0VWV5zcs6WOjuoUFdBk4C
-         +CAfKP5RL6GtltSasWefoTZrHOgJZEGgS2tokYZeuqUn2MhPdkY2bHmHyQi8UsXJPApX
-         QmCCQg+THKWzM4+Dk5lKdbc5ss5Zqa6F1sPGdTJUpQG490CDchrRqgsWfI+eIM8Pc7IC
-         Ehpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=cObR3+olODnsmHmG40dfcNk9dBbtTD141Doa/y8coxE=;
-        b=esmXdKEm3YMfN5Ei3BSGemTGNjayVqm0pSlAbMXJx1fqE4vLiXHCLQhfB/Yder1Tmn
-         Ae3Gu926ZEkSKHZx9bhZKhyd7BUtzJLPs5jLtlDa82ZvAQbr3GCga0GZe3lboV4oRNIN
-         2qk7gU9RJEr5Hri3jmPB832kuADq+QxqC7ZMKpFllKfOaBo2YiUhW4nYIswi8qMmDzHK
-         LzXa8/rFww6+AjuHxW0BYB3Kh3eFf5UFlYmsfsjXmwz15EUOy0CUnEOd3i2mQXWo8zgl
-         9sctWTD+JRUuWufekkud1s2u2UAmeJGIdkw/u3qTcGARwzz9qYbfZlf7oRLcBm+I8Mgy
-         7HHg==
-X-Gm-Message-State: AJIora8EqU09NKxhrzdSbpEtF3L85Dn0c0Ag7brP9ZO8t0KuzE0mstTH
-        4fFV04AgAg/wiREFM/Ld79A=
-X-Google-Smtp-Source: AGRyM1ui1Et9aDTy1aPasyfHl0qi1yawDAg9J/fOvbEllSGx9hNYepdkFsTxzGb3ysKQqfPu197Y5A==
-X-Received: by 2002:a17:90b:4b10:b0:1ea:fa1a:feb5 with SMTP id lx16-20020a17090b4b1000b001eafa1afeb5mr26854018pjb.205.1655789157389;
-        Mon, 20 Jun 2022 22:25:57 -0700 (PDT)
-Received: from localhost.localdomain ([202.120.234.246])
-        by smtp.googlemail.com with ESMTPSA id g23-20020a17090a579700b001eaec814132sm10966488pji.3.2022.06.20.22.25.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jun 2022 22:25:56 -0700 (PDT)
-From:   Miaoqian Lin <linmq006@gmail.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Mark Zhang <markzhang@nvidia.com>,
-        Maor Gottlieb <maorg@nvidia.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Wenpeng Liang <liangwenpeng@huawei.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     linmq006@gmail.com
-Subject: [PATCH] RDMA/cm: Fix memory leak in ib_cm_insert_listen
-Date:   Tue, 21 Jun 2022 09:25:44 +0400
-Message-Id: <20220621052546.4821-1-linmq006@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S229480AbiFUGHF (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 21 Jun 2022 02:07:05 -0400
+X-Greylist: delayed 731 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Jun 2022 23:06:59 PDT
+Received: from bufferz9.csloxinfo.com (bufferz.csloxinfo.com [203.146.237.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63BAB2018C;
+        Mon, 20 Jun 2022 23:06:59 -0700 (PDT)
+Received: from mailx1-13.cslox.com (unknown [10.20.140.13])
+        by bufferz9.csloxinfo.com (Postfix) with ESMTP id 5A85B2363E38;
+        Tue, 21 Jun 2022 12:54:47 +0700 (ICT)
+IronPort-SDR: vhR7/MXbkCdA16SZwtt4atABoFu5lIOTuBscHM41VBpXJdDfCd6OnKBHDoeQCJ2VSWT5w+HgiO
+ dCu80+a3enU93pU9yXa/zJLTcC+UneKPw=
+IronPort-Data: =?us-ascii?q?A9a23=3AW3y846pYj3y+B1wm/t1K1hVl9iZeBmLwYBIvg?=
+ =?us-ascii?q?KrLsJaIsI4StFCztgarIBnSa/bZYjTyft5yboi2/BsBvpfUmt4wQVA5+SlhF?=
+ =?us-ascii?q?SIa+ePIVI+TRqvS04F+DeWdFhM+s5hAAjX4wUldokb0/n9B65Dt8itx07+mX?=
+ =?us-ascii?q?L35BLKWMyx9X1Y9Gj0gghI6wb9/iYlt2IDrDwSIsNL0gsveJF78hm4ubDtKu?=
+ =?us-ascii?q?/7dpUM9pun2tRMZokc6NKJCs1LpnnUICI4SePOqJHziT4gIRuO3Hr6RzLyw8?=
+ =?us-ascii?q?m7D0Q0qD9epzuTyfkEQG+eAJwmFiiMMCu6phR0b/n4+1aMyNfw9b0ZLimzUz?=
+ =?us-ascii?q?4ovkYsd6cK9EF57MLfNleIRVwhjPxt/ZaAWqqXaJXWfsNCIyxyUenTh9PxiE?=
+ =?us-ascii?q?UUqMNBK4e1wG2xPqaQVJT1UNUKDiuu6zaiBR/Fol9gkKMW3booTtms5lmPWE?=
+ =?us-ascii?q?PUvQJXKQqGM7thdhW9iisdLFPfYRswYdTs2MkmbOkcRYQ9MBcJshvqsi1n+b?=
+ =?us-ascii?q?yZc+QCcqqcA6mTOyBB8jer2O93Pd93WHchYkxrKpm/C+GilUBgWOMbFkmiA+?=
+ =?us-ascii?q?3OowODVlCX3VZIZEKCj9+BnxlaUwzVLWhERUFK6p9i/i1K/AogBcxZJonJz8?=
+ =?us-ascii?q?6Vipla2StTdXgGjpCLWtBArXdcNQfYx7xuAy/aJ7guUboTeouWtU/R78p5sL?=
+ =?us-ascii?q?dAW/gXRxYmxW2Y26OT9pU+1r994kxvjYUD5EkdfPUfofSNdizXSiNlbYiDnF?=
+ =?us-ascii?q?r6PI4bt5jHBIgwc9hjRxMQIaxr/uuZQv0mz1QivbztBPfElRCZtjuncdjrNA?=
+ =?us-ascii?q?g+U+OeYi4KUBVjztZ6sLa6cR1iF+nceks6S4fAFCYyWlTKABu4KGdlF5d7fb?=
+ =?us-ascii?q?3uG3AIpRsV/sW3yk5KgVdg4DDVWLUxiNdsCZRfzYUTT4FkAopRUORNGaIcsO?=
+ =?us-ascii?q?N7rV5p3kfmI+dPNE6q8gsB1SoN6dBWA8Cx0TVCdwGHo1VUyjuc1NP+zatqlB?=
+ =?us-ascii?q?GoyF6l4zTzzWvkCl7Umrgg/w23UbY71xg6il7GZYRa9SLELN3OQYOc/4LjCp?=
+ =?us-ascii?q?gG929ZeM8+HzR9FWevySjfZ7MgfIDgiLH41ArjopdEReuPrCglrHmczAv/Vz?=
+ =?us-ascii?q?LUJZYJ42ahY/s/T5nanRkNZxVzkmVXZJg7MYH0LQLzuQb5hon8hey8hJ1Cl3?=
+ =?us-ascii?q?z4ke4nHxKMecYYnOLgm88R9wvNuCfoIYcONBrJIUDuv0zAca4Tt6ZRpdTy1i?=
+ =?us-ascii?q?g+UeSmoej4ye9hnXQOh0tvleBb/sTMCCyOfq8Qzufuj2xndTJ5FQB5tZO7Sa?=
+ =?us-ascii?q?fSy3xauvGIQnO9pRGPWLdRJPkbh6o5nL2r2lPBfC8UNNxiG3jKG3AaXBxgwu?=
+ =?us-ascii?q?+bAuck2/cPPiKTCqJ2me8N0BE1dHHLz87m5PC3e83Cyh4RHVY6gZz/YEmPp+?=
+ =?us-ascii?q?aOvY81LwPS6NPAGkFtMrox9DfBtycoW7Nvmvbtd0hhpWnPMdViwFqlnJ1GY0?=
+ =?us-ascii?q?tNCuaxKwPlCtGOeREuU+91bO67PN8LjE1k5OgU5KOCdvdkWkyPb6PMuCFv66?=
+ =?us-ascii?q?SVt+7zBV0hOVzGUjDFGLb9xOas7weoroskQrQqylnICN9+cjykS7WOANH0PT?=
+ =?us-ascii?q?qg18IoTBoTrhxgD1FFDe9rbECCeyJCJZdJkLEkuLTKSibbDjK8azU3HG1IyE?=
+ =?us-ascii?q?3bK9fRdnpULuwpHzUQCKk6HncDJwPM6tDVW/zo2RQl90BRO2Ot/N21qPEQzL?=
+ =?us-ascii?q?qKLlx9jgM9YUmynEhldBRqf0lLwwlAOkSvSSEzAfmDEMGQlI+eT9UsI6WNTf?=
+ =?us-ascii?q?iRA1K+ZwW3iVHDhe8SZ9jMoVFV+g+LiRNd280vJn8XPN9ndR8I3bTP5i7e0Z?=
+ =?us-ascii?q?HQBoAr9AMwxmFbvu+hj9+F1L6b8MEY4rrB9B5Gd/aoRQRuDIWdIWrdq+6ZhN?=
+ =?us-ascii?q?X7Rciq73TWVA16wc89QLOCM+kj+Fs8GDtxGUx65zimmsDESCKoIKvlymJYB6?=
+ =?us-ascii?q?cQPfK/DO28PvLbZpDcBmJTd6CX4mEc1QtxhnIA3J+v5aTOLHXaZrWVVkmDXp?=
+ =?us-ascii?q?Y9PPW/QSccFbQLm1cir8ewGDZtFtuxwGWkq0rayo3iPNQph8jqKvQrMfaaPl?=
+ =?us-ascii?q?apkxJgEt5XtG6pZDl+cN9L6W/6B9BG+9dJDcbvnNM7AuQISrlT7IwV+I7oYX?=
+ =?us-ascii?q?9ln07+N2Pby1UzKvbtwSGXYh5mpCahA48m9Ru1KKoT8K3wytSqEVsjE/RoK/?=
+ =?us-ascii?q?W28LZtPmd9c78y6XRG5bsb2ftkQM/9C3n1OYi5SOwgcAqL6cuHno2W2ppyx5?=
+ =?us-ascii?q?rI1ueDcBIn4syW0MScCKnFOYsKWN+M9gN72jvgwkWiGLEVs6ylaPqJF?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3At2FZhKOh5KyDC8BcT9X155DYdb4zR+YMi2?=
+ =?us-ascii?q?TDiHoddfUFSKalfp6V98jztCWE8wr5PUtNpTnuAtjkfZqxz+8Q3WBzB8bbYO?=
+ =?us-ascii?q?CFghrPEGgK1+KLrFOQeFydygNE78ddmsBFeaDN5DNB/L/HCWeDYrEdKe28gd?=
+ =?us-ascii?q?yVrNab43NpdwZmTKcI1XYCNu/XKDwAeCB2Qb4CULaM7MtOoDStPVwRc8SAH3?=
+ =?us-ascii?q?EAG9POotXa/aiWEyLvU3QciTWmvHeN0vrXAhKY1hARX3dk2rE561XIlAT/++?=
+ =?us-ascii?q?GKr+y74gW07R6e071m3P/ajvdTDs2FjcYYbh/2jByzWYhnU7qe+BgoveCU7k?=
+ =?us-ascii?q?owmtWkmWZsAy1K0QKfQoiJm2qn5+Cg6kdn15ba8y7QvZI3m72yeNo4Y/Ax9r?=
+ =?us-ascii?q?6xPCGppXbIh+sMrp6j71jpyKa/Mimw7RgVx+K4Ii2CxXDE1UbLr4Yo/gxiuM?=
+ =?us-ascii?q?0lGclskbA=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0D//wBFXLFi/xGS/htaBhUBAQEBDS8?=
+ =?us-ascii?q?BAQEDAwEBAQIBAQEFAQEBAQEJAQkJgUgBgTkCAQEBAQEBSgEBBgEUgRo2KxI?=
+ =?us-ascii?q?YAQGNeIYBgzAVAo9wGYRwiDULAQEBAQEBAQEBDQ4wBAEBgU4BgyoCCFEBAQE?=
+ =?us-ascii?q?BAQYKhGYBJTgTAQIEAQEBEgEBBQMCAQcEgQkThXVAAQwBCAEBBwEFAT8BAwF?=
+ =?us-ascii?q?kARMBAQGEEAEIAUhWDRQwAlBHAQEFAYJCRQGCUgIBnXiHQodTgTMaAmWEWYM?=
+ =?us-ascii?q?FgiCBOwIBAQEBAQEBAYYYF0eIHhYGgT9OgUuBBYFvPoFTgnGEDYIuBJk3BBo?=
+ =?us-ascii?q?5AzQTNBKBIUUsAQgGBgcKBTIGAgwYFAQCExJTHQISDAocDlQZDA8DEgMRAQc?=
+ =?us-ascii?q?CCxIIFSwIAwIDCAMCAy4CAxcJBwoDHQgKHBIQFAIEEx4LCAMZHywJAgQOA0U?=
+ =?us-ascii?q?ICwoDEQQDExgLFggQBAYDCS8NKAsDFA0BBgMGAgUFAQMgAxQDBScHAyEHCyY?=
+ =?us-ascii?q?NDQQcBx0DAwUmAwICGwcCAgMCBhcGAgJuCiYNCAQIBBwdJBAFAgcxBQQvAh4?=
+ =?us-ascii?q?EBQYRCQIWAgYEBQIEBBYCAhIIAggnGwcWNhkBBV0GCwkhHAkgCwYFBhYDI3E?=
+ =?us-ascii?q?FSA8pNTY8LyEbCoEjLCcGISlZD54igUmRLyGBOY4HYIIUnAYjBwECg06JfZV?=
+ =?us-ascii?q?8GjEYg0sBEYxDhhsOCBYDkWGWbqF7hhlhOSWBWXAVgVkKJYEcUBmPAI4MNG8?=
+ =?us-ascii?q?CBgsBAQMJiFmCJTCBGxaCIgEB?=
+Spam_Positive: LL
+X-IronPort-AV: E=Sophos;i="5.92,209,1650906000"; 
+   d="scan'208";a="334246549"
+Received: from unknown (HELO mail.grandexclusive.com) ([27.254.146.17])
+  by mail-1.csloxinfo.com with ESMTP; 21 Jun 2022 12:54:45 +0700
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.grandexclusive.com (Postfix) with ESMTP id 816BD2849B0;
+        Sun, 19 Jun 2022 17:48:22 +0700 (+07)
+Received: from mail.grandexclusive.com ([127.0.0.1])
+        by localhost (mail.grandexclusive.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id u8zaoDQQjiDI; Sun, 19 Jun 2022 17:48:21 +0700 (+07)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.grandexclusive.com (Postfix) with ESMTP id 5DB562849AB;
+        Sun, 19 Jun 2022 17:48:21 +0700 (+07)
+X-Virus-Scanned: amavisd-new at grandexclusive.com
+Received: from mail.grandexclusive.com ([127.0.0.1])
+        by localhost (mail.grandexclusive.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id htBESyOZiQPS; Sun, 19 Jun 2022 17:48:21 +0700 (+07)
+Received: from [107.161.81.135] (unknown [107.161.81.135])
+        by mail.grandexclusive.com (Postfix) with ESMTPSA id BDA6F2849B4;
+        Sun, 19 Jun 2022 17:48:09 +0700 (+07)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Re: Charity Giving.... ........   
+To:     Recipients <account@rich129.com>
+From:   "Ms G. Kailai" <account@rich129.com>
+Date:   Sun, 19 Jun 2022 18:47:57 +0800
+Reply-To: mail@gukaimail.com
+Message-Id: <20220619104809.BDA6F2849B4@mail.grandexclusive.com>
+X-Spam-Status: Yes, score=6.3 required=5.0 tests=BAYES_50,KHOP_HELO_FCRDNS,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_PSBL,RCVD_IN_SBL,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Report: *  1.3 RCVD_IN_BL_SPAMCOP_NET RBL: Received via a relay in
+        *      bl.spamcop.net
+        *      [Blocked - see <https://www.spamcop.net/bl.shtml?27.254.146.17>]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.1 RCVD_IN_SBL RBL: Received via a relay in Spamhaus SBL
+        *      [203.146.237.187 listed in zen.spamhaus.org]
+        *  2.7 RCVD_IN_PSBL RBL: Received via a relay in PSBL
+        *      [203.146.237.187 listed in psbl.surriel.com]
+        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
+        *      https://senderscore.org/blocklistlookup/
+        *      [203.146.237.187 listed in bl.score.senderscore.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 SPF_NONE SPF: sender does not publish an SPF Record
+        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
+        *  0.0 KHOP_HELO_FCRDNS Relay HELO differs from its IP's reverse DNS
+X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-cm_alloc_id_priv() allocates resource for cm_id_priv.
-when cm_init_listen() fails, it doesn't free it,
-leading to memory leak. call ib_destroy_cm_id() to fix this.
+Hello,
 
-Fixes: 98f67156a80f ("RDMA/cm: Simplify establishing a listen cm_id")
-Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
----
- drivers/infiniband/core/cm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-index 1c107d6d03b9..b985e0d9bc05 100644
---- a/drivers/infiniband/core/cm.c
-+++ b/drivers/infiniband/core/cm.c
-@@ -1252,8 +1252,10 @@ struct ib_cm_id *ib_cm_insert_listen(struct ib_device *device,
- 		return ERR_CAST(cm_id_priv);
- 
- 	err = cm_init_listen(cm_id_priv, service_id, 0);
--	if (err)
-+	if (err) {
-+		ib_destroy_cm_id(&cm_id_priv->id);
- 		return ERR_PTR(err);
-+	}
- 
- 	spin_lock_irq(&cm_id_priv->lock);
- 	listen_id_priv = cm_insert_listen(cm_id_priv, cm_handler);
--- 
-2.25.1
+I want to gve out to Charities in your City, can you refer any to me? Please reply for details.
 
+
+Ms. Gu Kailai
+19th June
+ZA1
