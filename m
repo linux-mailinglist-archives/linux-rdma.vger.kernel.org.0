@@ -2,100 +2,105 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC6E54FBAF
-	for <lists+linux-rdma@lfdr.de>; Fri, 17 Jun 2022 18:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AADB55080F
+	for <lists+linux-rdma@lfdr.de>; Sun, 19 Jun 2022 05:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1382587AbiFQQzj (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 17 Jun 2022 12:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39102 "EHLO
+        id S229762AbiFSDbc (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 18 Jun 2022 23:31:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382738AbiFQQzi (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 17 Jun 2022 12:55:38 -0400
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00EAA15801;
-        Fri, 17 Jun 2022 09:55:37 -0700 (PDT)
-Received: by mail-pl1-f179.google.com with SMTP id t2so4360695pld.4;
-        Fri, 17 Jun 2022 09:55:37 -0700 (PDT)
+        with ESMTP id S229733AbiFSDbb (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 18 Jun 2022 23:31:31 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AA42DF8A
+        for <linux-rdma@vger.kernel.org>; Sat, 18 Jun 2022 20:31:30 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id q1-20020a056830018100b0060c2bfb668eso6009018ota.8
+        for <linux-rdma@vger.kernel.org>; Sat, 18 Jun 2022 20:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=XnZnNjYMTH4syOCIhrjlMWdTwRb5WDvupRx0/COS2wM=;
+        b=e2phu4NndMPt72XI6GW2wwDVgrS3kqEHudVukuwN7sK6P1LlGkazC22JvMiG4Aw1CF
+         46mCe3ATV9ixuwtcugugnn743EofnKbvWoRlNtJzDhwmcQnD1PNfZYEi99gQdNntblGN
+         ZAiL99AgSDiUK7uh+qxcYVHV7x5Tucn8A0GvD3tENvfSDXMTBqw9kvlTXMZE9OGdzb/5
+         S+vFgGOVGOZZ39Ic6zmPfNMb1wGlVd/yDctm122ulQE0Sevo16M2mRyZKnkUJkKIiik4
+         Krlls6ODI/kWnR57RsuHQNUZJ4265uQdkqYTgTcZ6Or/IUCXEIlWwVPG5bDBlzy8kLUs
+         sedA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=NQvpbNnhd1Hb0j8v30FPXqT+MFqFElEXEqSS6ck3brY=;
-        b=aCyqpQX7dhesop7GetkwFHh8dcccktPV24/VIY3oi+Tzas62t+A1YHIjj0QufjxfDz
-         QBQYzKzZrc3NSnlM0d7OKLXOCj0C7pcm4gc+IJ7UldmYe/Zi5x8yq1vKRfIvj4gGP28L
-         XCYVrFA8Cn8i3Ydrk71gisuIMbLRM5SaaWbHdMq044aUbaYF8TV2kzUp+qtZtlF4BoHm
-         Tqn2DJvJX/XvIcePhAZBdgT4/bfIOuhQpT12JW1Z4amhh5Ax3gCMdv3UHxy64fn36IYg
-         RmI7ik9MM7z+KtFlPPfCphUGmXT6cCxZuEDk7tv1P9GpLtFUYvp/aaw3T3k5QUvbJDLV
-         q2aQ==
-X-Gm-Message-State: AJIora+ix3kQrVLYkT4FEQX0u8Iq4xujKRk1b2yGA0mReu7QRyBAt+wb
-        6OdOIq2e89u/pGzG9Vr67/w=
-X-Google-Smtp-Source: AGRyM1uVwwnPkhP6RYNzI5TunYKnnEx27Gq+Jz+noCToEfYq5XweGJSbPYfjWq1VJ+qXOBF2dFKLpw==
-X-Received: by 2002:a17:90a:784f:b0:1ea:fa7d:7013 with SMTP id y15-20020a17090a784f00b001eafa7d7013mr7943869pjl.222.1655484936639;
-        Fri, 17 Jun 2022 09:55:36 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:5d24:3188:b21f:5671? ([2620:15c:211:201:5d24:3188:b21f:5671])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170902820100b001690b65b2absm3014083pln.175.2022.06.17.09.55.35
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:subject:content-transfer-encoding;
+        bh=XnZnNjYMTH4syOCIhrjlMWdTwRb5WDvupRx0/COS2wM=;
+        b=QhZXUwUXU1IvjVnGOEmrX8mcTKh5JDb0FDqOOsJ0RD2Jn4uUX6+9/Jv2o71BRbnPiD
+         92shiqzzZWudPgfI0EVkJvtgERPgATcDwRu8uyxPgvjmzKQpQDaVGJ37wpKwr/FfTP78
+         AwQug0O0WLCNwTqW9r2LO4OtaaZv+FGzs5vpYrzP8kYmeCVENBtikKq6lqScfaVWEI1+
+         h3shmDR54iSc+YMOzQojQza5XLUaEB51ZnI1Ib88a4dSecozaSMU7BmbNy0lzuxJuZ/k
+         MA2wIK/ugJdTugb4TH91iFsmAZYZjOswFpUCztz3RV1oODOaJVpvYKtApWXpMUwuwN3k
+         EiZQ==
+X-Gm-Message-State: AJIora+s1HUEZf6vFMOMmOkcL+FPy7Yzh6LoVQJfbda6HL9wQyKMhliS
+        yTlA37As299yoeen09TJmotMioxC6q4=
+X-Google-Smtp-Source: AGRyM1ud3iwBBQQVslTDfeXhqJaY1ZYqLE1Huhpflz3qksKG0Eyr8qmJpA1v7xBzH7TQZ5W3CjqDbQ==
+X-Received: by 2002:a05:6830:1188:b0:60e:32a4:349 with SMTP id u8-20020a056830118800b0060e32a40349mr6043282otq.116.1655609489400;
+        Sat, 18 Jun 2022 20:31:29 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:6625:8470:de4c:3360? (2603-8081-140c-1a00-6625-8470-de4c-3360.res6.spectrum.com. [2603:8081:140c:1a00:6625:8470:de4c:3360])
+        by smtp.gmail.com with ESMTPSA id u19-20020a056870951300b000f309d52933sm4963147oal.47.2022.06.18.20.31.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Jun 2022 09:55:35 -0700 (PDT)
-Message-ID: <c6a0eb8d-ad51-01b1-bc17-758acc37f216@acm.org>
-Date:   Fri, 17 Jun 2022 09:55:34 -0700
+        Sat, 18 Jun 2022 20:31:28 -0700 (PDT)
+Message-ID: <c8dff35b-a40b-19a0-a1a0-68d5637b3709@gmail.com>
+Date:   Sat, 18 Jun 2022 22:31:28 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 5/5] blk-mq: Drop 'reserved' member of busy_tag_iter_fn
+ Thunderbird/91.9.1
 Content-Language: en-US
-To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
-        damien.lemoal@opensource.wdc.com, hch@lst.de, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, hare@suse.de, satishkh@cisco.com,
-        sebaddel@cisco.com, kartilak@cisco.com
-Cc:     linux-rdma@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-scsi@vger.kernel.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nbd@other.debian.org
-References: <1655463320-241202-1-git-send-email-john.garry@huawei.com>
- <1655463320-241202-6-git-send-email-john.garry@huawei.com>
- <017cae1e-b45f-04fd-d34c-22ae736b28e5@acm.org>
- <a18fa379-5a9b-ff45-3be4-b253efd96a50@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <a18fa379-5a9b-ff45-3be4-b253efd96a50@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Edward Srouji <edwards@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Bug in pyverbs test_resize_cq
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/17/22 09:42, John Garry wrote:
-> On 17/06/2022 17:33, Bart Van Assche wrote:
->> On 6/17/22 03:55, John Garry wrote:
->>> @@ -276,7 +275,7 @@ static bool bt_iter(struct sbitmap *bitmap, 
->>> unsigned int bitnr, void *data)
->>>       else
->>>           tags = hctx->tags;
->>> -    if (!reserved)
->>> +    if (!iter_data->reserved)
->>>           bitnr += tags->nr_reserved_tags;
->>>       /*
->>>        * We can hit rq == NULL here, because the tagging functions
->>
->> Is the above change really necessary?
-> 
-> It's not totally necessary. Since local variable 'reserved' would now 
-> only be used once I thought it was better to get rid of it.
-> 
-> I can keep it if you really think that is better.
+Edward,
 
-I'd prefer that these changes are either left out or that these are 
-moved into a separate patch. I think that will make this patch series 
-easier to review.
+In the test_resize_cq test the following is written
 
-Thanks,
+        # Fill the CQ entries except one for avoid cq_overrun warnings.
 
-Bart.
+        send_wr, _ = u.get_send_elements(self.client, False)
+
+        ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
+
+        for i in range(self.client.cq.cqe - 1):
+
+            u.send(self.client, send_wr, ah=ah_client)
+
+
+
+        # Decrease the CQ size to less than the CQ unpolled entries.
+
+        new_cq_size = 1
+
+        with self.assertRaises(PyverbsRDMAError) as ex:
+
+            self.client.cq.resize(new_cq_size)
+
+        self.assertEqual(ex.exception.error_code, errno.EINVAL)
+
+
+No where does it make any attempt to see if the sends are completed before testing to
+resize the cq. Software drivers might not get finished in time and fail the test
+because there are no entries in the cq. Technically this is wrong code. You should test
+for the completion before attempting to destroy them. Or insert a small delay.
+
+Bob
