@@ -2,134 +2,80 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED7D55149F
-	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jun 2022 11:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27CF551703
+	for <lists+linux-rdma@lfdr.de>; Mon, 20 Jun 2022 13:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239208AbiFTJmP (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 20 Jun 2022 05:42:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47312 "EHLO
+        id S241867AbiFTLOm (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 20 Jun 2022 07:14:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239851AbiFTJmP (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jun 2022 05:42:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039DB13DDA;
-        Mon, 20 Jun 2022 02:42:12 -0700 (PDT)
-Date:   Mon, 20 Jun 2022 11:42:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1655718130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcBmBxo2fP82JevvTDoeP4Kiy4jWkYCZ+jz5+ZP0+F0=;
-        b=34AeDgo5rWRo4UqRiVBhnQ/5xJfxd38VAC5dMP/YsiTjyWX9dYIK3VSSGQw9ws9BvMBGnM
-        DJDrIAj96ZmI3EJkBC56mn2Jf30/VRh0OhXl1LKhcSEmaogTMfxgFNzOJkgRZ4/V2J4yeh
-        +NKxPWuZ9HSkxbpCuRi/Ac+mtb7u8aNPqxXM/oDVa5rRs1T5jMQnLa2PfD0vhYCQ380Y+7
-        yc6oAMZY2SE64K4bhJCmbuSx8xH31sSco+vOPx2bpGM1E4zjd5hXlyp7pIJR2oQJplZXRs
-        xesA955nfEDTUYIHiBDLlE8eDnAjuy95Be/o+S0gyU35sQqUS77pwFfci5Iupw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1655718130;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hcBmBxo2fP82JevvTDoeP4Kiy4jWkYCZ+jz5+ZP0+F0=;
-        b=vFc8Hz4WM/MmpvWNk9Tr9MnumxRG2GagKVnGwQVnIbUsb6x5FXtZXa6j0NAogVOvXHWN8z
-        DWRxwFvYzenBqmAg==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
-Subject: Re: [locking/lockdep]  4051a81774:
- page_allocation_failure:order:#,mode:#(GFP_KERNEL),nodemask=(null)
-Message-ID: <YrBA7ysAif4I9nPv@linutronix.de>
-References: <20220620020727.GA3669@xsang-OptiPlex-9020>
+        with ESMTP id S241874AbiFTLO1 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 20 Jun 2022 07:14:27 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D562175A9;
+        Mon, 20 Jun 2022 04:13:17 -0700 (PDT)
+Received: from fraeml704-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LRRlt2yjBz6H6lq;
+        Mon, 20 Jun 2022 19:11:06 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml704-chm.china.huawei.com (10.206.15.53) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2375.24; Mon, 20 Jun 2022 13:12:58 +0200
+Received: from [10.195.35.72] (10.195.35.72) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Mon, 20 Jun
+ 2022 12:12:57 +0100
+Message-ID: <b98ad03b-e599-6023-3b34-ebefb590bf8c@huawei.com>
+Date:   Mon, 20 Jun 2022 12:12:55 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20220620020727.GA3669@xsang-OptiPlex-9020>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH 5/5] blk-mq: Drop 'reserved' member of busy_tag_iter_fn
+To:     Bart Van Assche <bvanassche@acm.org>, <axboe@kernel.dk>,
+        <damien.lemoal@opensource.wdc.com>, <hch@lst.de>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>, <hare@suse.de>,
+        <satishkh@cisco.com>, <sebaddel@cisco.com>, <kartilak@cisco.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        <linux-nvme@lists.infradead.org>, <linux-s390@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <mpi3mr-linuxdrv.pdl@broadcom.com>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nbd@other.debian.org>
+References: <1655463320-241202-1-git-send-email-john.garry@huawei.com>
+ <1655463320-241202-6-git-send-email-john.garry@huawei.com>
+ <017cae1e-b45f-04fd-d34c-22ae736b28e5@acm.org>
+ <a18fa379-5a9b-ff45-3be4-b253efd96a50@huawei.com>
+ <c6a0eb8d-ad51-01b1-bc17-758acc37f216@acm.org>
+From:   John Garry <john.garry@huawei.com>
+In-Reply-To: <c6a0eb8d-ad51-01b1-bc17-758acc37f216@acm.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.195.35.72]
+X-ClientProxiedBy: lhreml744-chm.china.huawei.com (10.201.108.194) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-+ rtrs, infiniband folks.=20
+On 17/06/2022 17:55, Bart Van Assche wrote:
+>>
+>> It's not totally necessary. Since local variable 'reserved' would now 
+>> only be used once I thought it was better to get rid of it.
+>>
+>> I can keep it if you really think that is better.
+> 
+> I'd prefer that these changes are either left out or that these are 
+> moved into a separate patch. I think that will make this patch series 
+> easier to review.
 
-On 2022-06-20 10:07:27 [+0800], kernel test robot wrote:
-> Greeting,
->=20
-> FYI, we noticed the following commit (built with gcc-11):
->=20
-> commit: 4051a81774d6d8e28192742c26999d6f29bc0e68 ("locking/lockdep: Use s=
-ched_clock() for random numbers")
-> https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git locking/urgent
-=E2=80=A6
-> in testcase: boot
->=20
-> on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -=
-m 16G
->=20
-=E2=80=A6
-> [   17.451787][    T1] rtrs_server L2256: Loading module rtrs_server, pro=
-to 2.0: (max_chunk_size: 131072 (pure IO 126976, headers 4096) , sess_queue=
-_depth: 512, always_invalidate: 1)
-> [   17.470894][    T1] swapper: page allocation failure: order:5, mode:0x=
-cc0(GFP_KERNEL), nodemask=3D(null)
+Personally I think that this is a trivial change and does not merit a 
+separate patch. Other reviewers seem to agree. Anyway, if you feel 
+strongly about this then I can put in another patch.
 
-If I read this right, it allocates "512 * 10" chunks of order 5 / 128KiB
-of memory (contiguous memory). And this appears to fail.=20
-This is either a lot of memory or something that shouldn't be used on
-i386.
-
-Either way, locking/urgent is innocent.
-
-> [   17.470905][    T1] CPU: 0 PID: 1 Comm: swapper Not tainted 5.19.0-rc2=
--00001-g4051a81774d6 #1
-=E2=80=A6
-> [   17.471016][    T1] Node 0 active_anon:0kB inactive_anon:0kB active_fi=
-le:0kB inactive_file:0kB unevictable:350872kB isolated(anon):0kB isolated(f=
-ile):0kB mapped:0kB dirty:0kB writeback:0kB shmem:0kB writeback_tmp:0kB ker=
-nel_stack:304kB pagetables:4kB all_unreclaimable? no
-> [   17.471022][    T1] DMA free:2304kB boost:0kB min:80kB low:100kB high:=
-120kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB active_file=
-:0kB inactive_file:0kB unevictable:0kB writepending:0kB present:15992kB man=
-aged:15360kB mlocked:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB
-> [   17.471029][    T1] lowmem_reserve[]: 0 544 2867 2867
-> [   17.471034][    T1] Normal free:3040kB boost:0kB min:2940kB low:3672kB=
- high:4404kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB acti=
-ve_file:0kB inactive_file:0kB unevictable:16348kB writepending:0kB present:=
-749560kB managed:671404kB mlocked:0kB bounce:0kB free_pcp:900kB local_pcp:9=
-00kB free_cma:0kB
-> [   17.471041][    T1] lowmem_reserve[]: 0 0 18591 18591
-> [   17.471045][    T1] HighMem free:2040716kB boost:0kB min:512kB low:365=
-2kB high:6792kB reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB a=
-ctive_file:0kB inactive_file:0kB unevictable:334524kB writepending:0kB pres=
-ent:2379656kB managed:2379656kB mlocked:0kB bounce:0kB free_pcp:296kB local=
-_pcp:296kB free_cma:0kB
-> [   17.471052][    T1] lowmem_reserve[]: 0 0 0 0
-> [   17.471056][    T1] DMA: 0*4kB 0*8kB 0*16kB 0*32kB 0*64kB 0*128kB 1*25=
-6kB (U) 0*512kB 0*1024kB 1*2048kB (U) 0*4096kB =3D 2304kB
-> [   17.471073][    T1] Normal: 4*4kB (UM) 2*8kB (UM) 2*16kB (U) 3*32kB (U=
-M) 3*64kB (UM) 1*128kB (M) 2*256kB (M) 0*512kB 2*1024kB (M) 0*2048kB 0*4096=
-kB =3D 3040kB
-> [   17.471093][    T1] HighMem: 1*4kB (M) 1*8kB (U) 0*16kB 0*32kB 0*64kB =
-1*128kB (M) 1*256kB (U) 1*512kB (M) 2*1024kB (UM) 1*2048kB (M) 497*4096kB (=
-M) =3D 2040716kB
-> [   17.471114][    T1] 87718 total pagecache pages
-> [   17.471116][    T1] 786302 pages RAM
-> [   17.471116][    T1] 594914 pages HighMem/MovableOnly
-> [   17.471117][    T1] 19697 pages reserved
-> [   17.471118][    T1] 0 pages hwpoisoned
-
-Sebastian
+Thanks,
+John
