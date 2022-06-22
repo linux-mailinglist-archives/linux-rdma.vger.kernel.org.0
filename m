@@ -2,117 +2,242 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9336554371
-	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jun 2022 09:04:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4BC3554C4D
+	for <lists+linux-rdma@lfdr.de>; Wed, 22 Jun 2022 16:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351875AbiFVG47 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Wed, 22 Jun 2022 02:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37986 "EHLO
+        id S1357211AbiFVOMd (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Wed, 22 Jun 2022 10:12:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350036AbiFVG47 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jun 2022 02:56:59 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFC2369DA
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jun 2022 23:56:57 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id ge10so601903ejb.7
-        for <linux-rdma@vger.kernel.org>; Tue, 21 Jun 2022 23:56:57 -0700 (PDT)
+        with ESMTP id S1357924AbiFVOMa (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Wed, 22 Jun 2022 10:12:30 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0E138DAB
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Jun 2022 07:12:29 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a2so28014102lfg.5
+        for <linux-rdma@vger.kernel.org>; Wed, 22 Jun 2022 07:12:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GVCryb+NZ1RjJur3tYCrgFj4R72wJeWsi7jJvADmLLY=;
-        b=KVdIr9FNS2CkgZZdgMYWrs9jPiiqL/Ra10PQ06IHWg9S7jHJXR8hvvZwdASiRXjCnl
-         Ws0jBogVMuWPZzTF9gVY4Knxs4ZZBl1oZhBz3cyg2QCwDOrEU1ipd6/7ag7D7NOAGHRU
-         wMA7zATaNhTIql4Egm7L8pIrhQKuSI9FwaszCUIM0vbUnFRBfC0d74xTi3hFYE10IcU4
-         Jt/k0vDD5x77hpYEZZlc6K6F/R1kqm3oCxVg30Uxs7NDvJUJg44NH+ecEQZlCX6icbJz
-         +cVwfM/0av6bunaNQp5cum+6Q79+O/02K0c3qFOYFuBQLy9wrx82RiKlInYLHhdJXOec
-         04DQ==
+         :cc;
+        bh=HE2RiMrFRUWYn+AfThB1299RuVVXDc/N4p+KwM7qp8s=;
+        b=iNCIul0UCZt9woTXykdusizepfiLJtyCQxJgq24SOZYTktnnCugp+qVY4t98DPCaZn
+         LuQjy/Q0kZNNEEkWzk7F0qZ+QA0AhlaVOCu5jAeaRcbEu832phMars+bJVlxaFFw5UNc
+         hhJk4RWDP2W4XJAFBiIdoTIfRLKlZo5vogHuV9uSoSrt38jO2yejUrYHvjUGFLytpQZ8
+         fxGTLxwNdewfGjtNBaHwglHDNa146Z013U9536T9QAKGA6RPw04S4GEAJghiORsoJcVI
+         wN14YZ0qv9cyS3UudxpFme105txuOiTQ5L7DMwNjvJDQK96RRHmi//eez35zNpII9Npl
+         qOiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GVCryb+NZ1RjJur3tYCrgFj4R72wJeWsi7jJvADmLLY=;
-        b=uiCWB4/dpuFRR6OXZewaQr35NDySZUfExjguK87a4Qjw5sAU2ZgUbOfnwD6wA0z9JH
-         7dsiiftyPZpNgfjklZm8kPYAODZ3YWUxHqwl9n+h3VyO2N2gp6djM5rIH2Pq35mNMnja
-         +DNlqs8c7wSyA4+f71pkahV7nka3i9iH9MW7iIo/q4SqzZ8m3JtSCA0eA2v1cyXt63OR
-         7EV7vfo9yJhcHDhJ63XpSSxBpoEkvD4tEeNsZoRhMqyRVJaDXdXcgEsLn2oupB10ndlK
-         06NNUAWLdCH//bX741wZO3ZqdMfbOYgnKqEk5PEVu6qnaYR1T3L6Hk/X3kiYXuVCHqhO
-         Useg==
-X-Gm-Message-State: AJIora/rDYNiGTPPFJXLOCnXWgLtF1g7UuopepaYi3uRGf/gmPQiYAe7
-        tVRW5JVgbYNbMwpCI7K7vUoVuN/zog29qSmcz7cjYQ==
-X-Google-Smtp-Source: AGRyM1sVg74726SXM1ZoL6HLHlCRixomOhvot1HwS+fJv8rCvOSjwC9qaYT6H0x6agypdmTW4tgo7pLFBoBi/DvM+34=
-X-Received: by 2002:a17:906:5350:b0:711:f866:ed8 with SMTP id
- j16-20020a170906535000b00711f8660ed8mr1604571ejo.441.1655881015882; Tue, 21
- Jun 2022 23:56:55 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=HE2RiMrFRUWYn+AfThB1299RuVVXDc/N4p+KwM7qp8s=;
+        b=XaNAXNeYtbrLTQu2wnCFAyJXGukIcybtsqD2X89bmsOI/S8J97G5nwiG8cv7saN8Cf
+         7+QCSPLb7wbLQiF9rM215DX1IZhG0SCjfEBetXhXIVDSEyeDQf5cX5oGaq+rBLZYJgWt
+         kbBWwFzMjHwRHMJdNM8qM2aTejE9eBS54yBsPdHAw5ogB284pgk24L5f4VU8iWhBJDpK
+         Q8ZIfzUD7KSFFHkDHofcOSO0tLL7U4TkZhhJvlUtlrGhaWoHP1jnSQ/2iPe2qebi6QIm
+         ugDPiws9wYOzsmraKDylBqh719WmMG3sOU6lBcWoCYzVyMEdeDaIzNAl6yydWwAXo47E
+         Uthg==
+X-Gm-Message-State: AJIora8FHIrtg4eja3FbwtEjVtKJkL4bIbD6WrxBIMEPYBkIxZJgkD6o
+        0t+Nrs2tsUb3liMpdzRN2I0fmoQIKawVoQWSqSQIS4quLSk5r8bP
+X-Google-Smtp-Source: AGRyM1t2854+oXDMU67V3odIdJBNtO17El8wZGEseG7dkp2sISCUJMahszR63+tPsWk4jv16SXNvI/A+afe/Lw5jSCU=
+X-Received: by 2002:a05:6512:2607:b0:47d:ad86:2761 with SMTP id
+ bt7-20020a056512260700b0047dad862761mr2343952lfb.133.1655907147770; Wed, 22
+ Jun 2022 07:12:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220620020727.GA3669@xsang-OptiPlex-9020> <YrBA7ysAif4I9nPv@linutronix.de>
- <CAMGffEksZGQrdHM9CS0H0Tq4TvfQMAbdcFYZej2KNWY=VxuBQg@mail.gmail.com> <YrK6Iv5jsBa7BRrL@linutronix.de>
-In-Reply-To: <YrK6Iv5jsBa7BRrL@linutronix.de>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Wed, 22 Jun 2022 08:56:45 +0200
-Message-ID: <CAMGffE=qxXNwTeRvzX3YYEgEgB9FJzDhkUM6R=v4BTsVRasH6g@mail.gmail.com>
-Subject: Re: [locking/lockdep] 4051a81774: page_allocation_failure:order:#,mode:#(GFP_KERNEL),nodemask=(null)
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        lkp@lists.01.org, lkp@intel.com,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org
+References: <20220616140908.666092-1-haris.phnx@gmail.com>
+In-Reply-To: <20220616140908.666092-1-haris.phnx@gmail.com>
+From:   haris iqbal <haris.phnx@gmail.com>
+Date:   Wed, 22 Jun 2022 16:12:01 +0200
+Message-ID: <CAE_WKMypM1pTCpQV_yJUwa9DzVZnB9grCM=kiVt_6m3HD98eiA@mail.gmail.com>
+Subject: Re: [PATCH v2] RDMA/rxe: Split rxe_invalidate_mr into local and
+ remote versions
+To:     linux-rdma@vger.kernel.org
+Cc:     Leon Romanovsky <leon@kernel.org>, jgg@ziepe.ca,
+        zyjzyj2000@gmail.com, haris.iqbal@ionos.com,
+        Jinpu Wang <jinpu.wang@ionos.com>, aleksei.marov@ionos.com,
+        rpearsonhpe@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,FREEMAIL_REPLY,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 8:43 AM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On Thu, Jun 16, 2022 at 4:09 PM Md Haris Iqbal <haris.phnx@gmail.com> wrote:
 >
-> On 2022-06-21 17:27:22 [+0200], Jinpu Wang wrote:
-> > Hi, there
-> Hi,
+> Currently rxe_invalidate_mr does invalidate for both local ops, and remote
+> ones. This means that MR being invalidated is compared with rkey for both,
+> which is incorrect. For local invalidate, comparison should happen with
+> lkey, and for the remote one, it should happen with rkey.
 >
-> > > > on test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -s=
-mp 2 -m 16G
-> > > >
-> > > =E2=80=A6
-> > > > [   17.451787][    T1] rtrs_server L2256: Loading module rtrs_serve=
-r, proto 2.0: (max_chunk_size: 131072 (pure IO 126976, headers 4096) , sess=
-_queue_depth: 512, always_invalidate: 1)
-> > > > [   17.470894][    T1] swapper: page allocation failure: order:5, m=
-ode:0xcc0(GFP_KERNEL), nodemask=3D(null)
-> > >
-> > > If I read this right, it allocates "512 * 10" chunks of order 5 / 128=
-KiB
-> > > of memory (contiguous memory). And this appears to fail.
-> > > This is either a lot of memory or something that shouldn't be used on
-> > > i386.
-> > It allocates 512 * 128 KiB of memory, which is probably to big for
-> > this VM setup.
+> This commit splits the rxe_invalidate_mr into local and remote versions.
+> Each of them does comparison the right way as described above (with lkey
+> for local, and rkey for remote).
 >
-> why 512 * 128KiB? It is:
-> |         chunk_pool =3D mempool_create_page_pool(sess_queue_depth * CHUN=
-K_POOL_SZ,
-> |                                               get_order(max_chunk_size)=
-);
-> with
-> | static int __read_mostly max_chunk_size =3D DEFAULT_MAX_CHUNK_SIZE;
-> | static int __read_mostly sess_queue_depth =3D DEFAULT_SESS_QUEUE_DEPTH;
-> | #define CHUNK_POOL_SZ 10
+> Fixes: 3902b429ca14 ("RDMA/rxe: Implement invalidate MW operations")
+> Cc: rpearsonhpe@gmail.com
+> Signed-off-by: Md Haris Iqbal <haris.phnx@gmail.com>
+> ---
+> v1 -> v2
+> give a better name to key variable in function rxe_do_local_ops
 >
-> so isn't it (512 * 10) * 128KiB?
-eh, you're right, I forgot we have mempool. We discussed internally in
-the past to remove that, we should do it.
+>  drivers/infiniband/sw/rxe/rxe_loc.h  |  3 +-
+>  drivers/infiniband/sw/rxe/rxe_mr.c   | 59 +++++++++++++++++++++-------
+>  drivers/infiniband/sw/rxe/rxe_req.c  | 10 ++---
+>  drivers/infiniband/sw/rxe/rxe_resp.c |  2 +-
+>  4 files changed, 53 insertions(+), 21 deletions(-)
+>
+> diff --git a/drivers/infiniband/sw/rxe/rxe_loc.h b/drivers/infiniband/sw/rxe/rxe_loc.h
+> index 0e022ae1b8a5..4da57abbbc8c 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_loc.h
+> +++ b/drivers/infiniband/sw/rxe/rxe_loc.h
+> @@ -77,7 +77,8 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+>                          enum rxe_mr_lookup_type type);
+>  int mr_check_range(struct rxe_mr *mr, u64 iova, size_t length);
+>  int advance_dma_data(struct rxe_dma_info *dma, unsigned int length);
+> -int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey);
+> +int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey);
+> +int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey);
+>  int rxe_reg_fast_mr(struct rxe_qp *qp, struct rxe_send_wqe *wqe);
+>  int rxe_mr_set_page(struct ib_mr *ibmr, u64 addr);
+>  int rxe_dereg_mr(struct ib_mr *ibmr, struct ib_udata *udata);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_mr.c b/drivers/infiniband/sw/rxe/rxe_mr.c
+> index fc3942e04a1f..1c7179dd92eb 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_mr.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_mr.c
+> @@ -576,41 +576,72 @@ struct rxe_mr *lookup_mr(struct rxe_pd *pd, int access, u32 key,
+>         return mr;
+>  }
+>
+> -int rxe_invalidate_mr(struct rxe_qp *qp, u32 rkey)
+> +static int rxe_invalidate_mr(struct rxe_mr *mr)
+> +{
+> +       if (atomic_read(&mr->num_mw) > 0) {
+> +               pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
+> +                       __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
+> +               pr_warn("%s: mr->type (%d) is wrong type\n", __func__, mr->type);
+> +               return -EINVAL;
+> +       }
+> +
+> +       mr->state = RXE_MR_STATE_FREE;
+> +       return 0;
+> +}
+> +
+> +int rxe_invalidate_mr_local(struct rxe_qp *qp, u32 lkey)
+>  {
+>         struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+>         struct rxe_mr *mr;
+>         int ret;
+>
+> -       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
+> +       mr = rxe_pool_get_index(&rxe->mr_pool, lkey >> 8);
+>         if (!mr) {
+> -               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
+> +               pr_err("%s: No MR for lkey %#x\n", __func__, lkey);
+>                 ret = -EINVAL;
+>                 goto err;
+>         }
+>
+> -       if (rkey != mr->rkey) {
+> -               pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
+> -                       __func__, rkey, mr->rkey);
+> +       if (lkey != mr->lkey) {
+> +               pr_err("%s: lkey (%#x) doesn't match mr->lkey (%#x)\n",
+> +                       __func__, lkey, mr->lkey);
+>                 ret = -EINVAL;
+>                 goto err_drop_ref;
+>         }
+>
+> -       if (atomic_read(&mr->num_mw) > 0) {
+> -               pr_warn("%s: Attempt to invalidate an MR while bound to MWs\n",
+> -                       __func__);
+> +       ret = rxe_invalidate_mr(mr);
+> +
+> +err_drop_ref:
+> +       rxe_put(mr);
+> +err:
+> +       return ret;
+> +}
+> +
+> +int rxe_invalidate_mr_remote(struct rxe_qp *qp, u32 rkey)
+> +{
+> +       struct rxe_dev *rxe = to_rdev(qp->ibqp.device);
+> +       struct rxe_mr *mr;
+> +       int ret;
+> +
+> +       mr = rxe_pool_get_index(&rxe->mr_pool, rkey >> 8);
+> +       if (!mr) {
+> +               pr_err("%s: No MR for rkey %#x\n", __func__, rkey);
+>                 ret = -EINVAL;
+> -               goto err_drop_ref;
+> +               goto err;
+>         }
+>
+> -       if (unlikely(mr->type != IB_MR_TYPE_MEM_REG)) {
+> -               pr_warn("%s: mr->type (%d) is wrong type\n", __func__, mr->type);
+> +       if (rkey != mr->rkey) {
+> +               pr_err("%s: rkey (%#x) doesn't match mr->rkey (%#x)\n",
+> +                       __func__, rkey, mr->rkey);
+>                 ret = -EINVAL;
+>                 goto err_drop_ref;
+>         }
+>
+> -       mr->state = RXE_MR_STATE_FREE;
+> -       ret = 0;
+> +       ret = rxe_invalidate_mr(mr);
+>
+>  err_drop_ref:
+>         rxe_put(mr);
+> diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
+> index 9d98237389cf..ef193a8a7158 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_req.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_req.c
+> @@ -541,16 +541,16 @@ static void update_state(struct rxe_qp *qp, struct rxe_pkt_info *pkt)
+>  static int rxe_do_local_ops(struct rxe_qp *qp, struct rxe_send_wqe *wqe)
+>  {
+>         u8 opcode = wqe->wr.opcode;
+> -       u32 rkey;
+> +       u32 key;
+>         int ret;
+>
+>         switch (opcode) {
+>         case IB_WR_LOCAL_INV:
+> -               rkey = wqe->wr.ex.invalidate_rkey;
+> -               if (rkey_is_mw(rkey))
+> -                       ret = rxe_invalidate_mw(qp, rkey);
+> +               key = wqe->wr.ex.invalidate_rkey;
+> +               if (rkey_is_mw(key))
+> +                       ret = rxe_invalidate_mw(qp, key);
+>                 else
+> -                       ret = rxe_invalidate_mr(qp, rkey);
+> +                       ret = rxe_invalidate_mr_local(qp, key);
+>
+>                 if (unlikely(ret)) {
+>                         wqe->status = IB_WC_LOC_QP_OP_ERR;
+> diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
+> index f4f6ee5d81fe..01411280cd73 100644
+> --- a/drivers/infiniband/sw/rxe/rxe_resp.c
+> +++ b/drivers/infiniband/sw/rxe/rxe_resp.c
+> @@ -818,7 +818,7 @@ static int invalidate_rkey(struct rxe_qp *qp, u32 rkey)
+>         if (rkey_is_mw(rkey))
+>                 return rxe_invalidate_mw(qp, rkey);
+>         else
+> -               return rxe_invalidate_mr(qp, rkey);
+> +               return rxe_invalidate_mr_remote(qp, rkey);
+>  }
+>
+>  /* Executes a new request. A retried request never reach that function (send
+> --
+> 2.25.1
+>
 
-Sorry
->
-> > Thanks!
->
-> Sebastian
+ping.
