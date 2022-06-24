@@ -2,328 +2,146 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55557559850
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jun 2022 13:10:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3922155A1A1
+	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jun 2022 21:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbiFXLK0 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jun 2022 07:10:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41808 "EHLO
+        id S229651AbiFXTRR (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jun 2022 15:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbiFXLKY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jun 2022 07:10:24 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C6856746
-        for <linux-rdma@vger.kernel.org>; Fri, 24 Jun 2022 04:10:22 -0700 (PDT)
-Received: from dggpeml500025.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4LTvVg1R4bzdZPF;
-        Fri, 24 Jun 2022 19:08:11 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggpeml500025.china.huawei.com (7.185.36.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 24 Jun 2022 19:10:21 +0800
-Received: from localhost.localdomain (10.69.192.56) by
- dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Fri, 24 Jun 2022 19:10:21 +0800
-From:   Wenpeng Liang <liangwenpeng@huawei.com>
-To:     <jgg@nvidia.com>, <leon@kernel.org>
-CC:     <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
-        <liangwenpeng@huawei.com>
-Subject: [PATCH for-next 5/5] RDMA/hns: Recover 1bit-ECC error of RAM on chip
-Date:   Fri, 24 Jun 2022 19:08:45 +0800
-Message-ID: <20220624110845.48184-6-liangwenpeng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20220624110845.48184-1-liangwenpeng@huawei.com>
-References: <20220624110845.48184-1-liangwenpeng@huawei.com>
+        with ESMTP id S229645AbiFXTRQ (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jun 2022 15:17:16 -0400
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2060.outbound.protection.outlook.com [40.107.101.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B7908238B
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Jun 2022 12:17:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ed6L4YFQa+bbKb7aKfa3LovnmOAruS0dP40DxKJ3FKopOUoLCoc9XlOQ3s7RgVkAwmjzqWEOuzRPvOA9Z9BaVmC204KyX0BsJO5YBrHv7XoQJoVHL9SA+zMkGw3zwN4sjXy6YBoAKZIN59YDWcFaYM4LOQ8Ei7D7EFxBB3JcSZPNrhSmdn5yc35D25CTo5D8ZMc5ZaI6SkXMZIQ8lLRx12wM2hEkFw0TGwiz/rY1XCV7baNeGlGqdVO57l7T/6JTTsV1ql4T9NGPHAGSmNSl2uX2w58FM393SKAlUAE/eD96I2EqSOscLZlrK990S9yagMKwfWAc7Y4ka9lsZTlK3g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=60YKuXQtlG9iZ1DJe3A1vspXbgEUfmIg/wex9yMGLMI=;
+ b=ax5byerSMsY6BupyysqlIJ6hMo23fmEhX1WGcsYyHQVieyhuv+8uSywbvLJNTSF0+2qE2myxly9JLPe3fT+bcDMfCApxm7X40YFhbvPauhBwejzw1pMjUaPurEVLPnHOg/FT06/IUt4/nzcBaaSPQW+BPl5F/FloovBZ8tDLVzJVr9VKpgufEpifrAjFsUltdKN0cu84G7gVfJ9O103XZFqwovxcM7SP78E2a4yni+QWa6luV3Jespm0p4KTF+4ujNoPdZSms4K7O/FcTBH3hCbX4Roi1qXYt7HW8PEV7q8X9UyZC8GvFl7S/d8uSbk+iPXKrlk1OKPWKVoO61swMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60YKuXQtlG9iZ1DJe3A1vspXbgEUfmIg/wex9yMGLMI=;
+ b=b/qBge7C42Jnqd4XPk1zLDKAncQ9sj5cBesI64Hrbnfgd5Lv3IOKKQqX61SSaC5s8zE6fl884AsYDER3iSSaUI9rXOMPdn4P/zlgXH4/ob/SRYd6xk32BmPoCzAH+v6JLQ1M3LtdENKKSpRjSJb6D4baR1iUE1WzyweTWQhYt6NrR7DimBSDfwRKM8WWlGle0zfHBvNdpslxs2g4hLuun51qCukRTHiHaUwLEtyKGpG0XxwBBMsHwZ2GgJ3zLpNEVMmbrmn38eDunI2bONHjoDGVh1RL3TkUkitHVdvzi/FJkfozt7kWPp8gNpuZUBfoi46uWmsfCJ6zK/Cm8Lj8ww==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
+ by MN2PR12MB4440.namprd12.prod.outlook.com (2603:10b6:208:26e::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.17; Fri, 24 Jun
+ 2022 19:17:14 +0000
+Received: from MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb]) by MN2PR12MB4192.namprd12.prod.outlook.com
+ ([fe80::ac35:7c4b:3282:abfb%3]) with mapi id 15.20.5373.016; Fri, 24 Jun 2022
+ 19:17:14 +0000
+Date:   Fri, 24 Jun 2022 16:17:13 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Cheng Xu <chengyou@linux.alibaba.com>
+Cc:     leon@kernel.org, linux-rdma@vger.kernel.org,
+        KaiShen@linux.alibaba.com, tonylu@linux.alibaba.com,
+        BMT@zurich.ibm.com, dan.carpenter@oracle.com
+Subject: Re: [PATCH for-next v11 00/11] Elastic RDMA Adapter (ERDMA) driver
+Message-ID: <20220624191713.GA234832@nvidia.com>
+References: <20220615015227.65686-1-chengyou@linux.alibaba.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220615015227.65686-1-chengyou@linux.alibaba.com>
+X-ClientProxiedBy: BL1PR13CA0108.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::23) To MN2PR12MB4192.namprd12.prod.outlook.com
+ (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d0a05f87-313e-40d7-f400-08da5616256b
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4440:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XcRTK6n14rb7OamhGb0vMQR9TDFPDsyExsbqIqHDZezYYXJbdHqhHvJCc8UNjrw5JgXW33tTX9efaYqZCq8TXuAPh440mujU3nwM93kOwTXA7/FqdUzkqeNI1Yti4bLzLAAUpSJmuCeJaQ7tg+kPwhOUwNJsIsDcprGDpDf/65qIRC+NfiOTGg2UnvcTXFFZJS5AWRWe9s0V6BafJNF4wTkTeijfyd1PvfhK1z05mfN9efwFRtP81Ge3FZAfq6YtXa4WOOwat4T3QioW3zQpMSxtdADUrsrelV2Fu1glROD8DcBSngf2ZM+VuA9ko2xGc9k2hkehPtz6hNKY2eb40KmBWAxZkC1RTJDACSTkzo0FN3gwr3N7seCTkmc01DMWExcuOt9R2sFLNXqxwvQVKNVnGab0YeVQ42/3TwA5XbuDZ4rlJeZ7yNPHZCKZhZGoaKsFmERytFB/vQBFkn6IywgGrG9j6cvbQnrUGLayw/gOvjkIbQGggFemWooolcCHgIxSX6kFnId9RWVHwbMHPYPoCc78YlLttjHe9ZuLAKvw+J763EDKjebWRp9BjZNPu766YxEODAMWdH7KNIrj8w6/BsVaaueG4V0dqAbltmBhTqz/JUHA61bHoJMjsDrktrpEZt7T6un8Hwlcb+Rv0F15dZ2dEPld3l6JSsvqmEwb1uLoiAnocWuHdyVhIjRFt97Fwgot0gdYgJOQkqGvDDrTI/WmGuzMqtJYJbVZxIHTWz/HSxPaumXuFFjXyVrYj2cy6MWOIebhyZ4ATJIbOmsjFdOENsJf6tSkxNZQM5o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(39860400002)(366004)(396003)(136003)(346002)(376002)(4326008)(66476007)(66556008)(66946007)(8676002)(316002)(8936002)(86362001)(2906002)(6486002)(6916009)(36756003)(38100700002)(33656002)(1076003)(26005)(6512007)(186003)(2616005)(478600001)(6506007)(83380400001)(5660300002)(41300700001)(27376004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SXUKGecfsvqhc6BW+8xmB+PnlC7+aKJ+gkeKLxxJDReSpoKe61UAXxxt5+OR?=
+ =?us-ascii?Q?AZcLPMLfgOImnD0lLuiB5L1430GWsV7NbQXHVkCHTZPWHffg+K8TbwzxiMna?=
+ =?us-ascii?Q?vER8YKHGZpYYwg5+Algwkc/PMvYct7+sVKqD/vhTzXs92JJDbelh2dkRNqz2?=
+ =?us-ascii?Q?cGjYpzRQYaSD8xdyHN+wwZ8tSXjswltgHW3JjJdj2xxwFcHv3LsYX6TI/6W9?=
+ =?us-ascii?Q?091+KkoE/Gz4sViutpfFsVJzKSoZVEd5edbGi46Sbax3CmVemnLmv8Kxpw/y?=
+ =?us-ascii?Q?NOzEuXgoY4UOnEe+1tDGI62MDciXWtVzbATX2a1NH0EjCNpYbv1MJr8k9mtp?=
+ =?us-ascii?Q?3UwoInopgZe5TodubXLlHUPNR7uQirDSE3n+seoVEyJyl0oT9nmRqrRnJa9C?=
+ =?us-ascii?Q?dLWhhUz8+ep2jBNWMZVYFIJjLql4nenMRzhhQLGVB8oIqVAJgbBooHiS+Zkh?=
+ =?us-ascii?Q?mGejU0NPEVyjnfW2j7LN7YITqbynJKLViYV/UZ4tbe/85UUdsiOeuP8cV/3c?=
+ =?us-ascii?Q?wIbGc0wJUMjllZnZImjI7oiSwhQvEZRqSrIO24d6OeOVXTOeaI8hrgb8a5oM?=
+ =?us-ascii?Q?nsLXV9zdwSt/4rkSOgwaEr2zrhpknq+jq5RkhkP+WGMlBIhWFzofTDVKI/Nn?=
+ =?us-ascii?Q?y71GABGI6ePBBlufGkJ4/6ECydto86ZIYD6GQKtEoYeHYbnBb6y/4Boy1yKf?=
+ =?us-ascii?Q?o7ED/sFpXMjEpZkRlbFIoGxg2WELweoOv8n+VWUfUSnDN1HblVHjwAcFXbvK?=
+ =?us-ascii?Q?Jtghqej9ULMoiKbQj4H1MX8Kvd4pja2ZZsaygIVtpg9AMh7t6isHtkoRQ5Hj?=
+ =?us-ascii?Q?T84m0FW5Sl9yLNE09409GR3pnkG/8lwkHE/IjW97hABYXVddmBlMbadNoXZX?=
+ =?us-ascii?Q?R8sJXIPryvE+noTmpMcNqUZOOxIABzWs7GOG999dnObvqsT8fNlc8i8Agaeq?=
+ =?us-ascii?Q?ff4nI2P3IMAXswX2EXYjJc3VJpYx7I+DOuDgZE7gR1IytYDdpFovKpw55Jul?=
+ =?us-ascii?Q?7DiKkWHk7EvPLZUNeu33sEqNBuOgxtdYdC728RJccGI4aNOl5csr0jnEjjtf?=
+ =?us-ascii?Q?sosdXmRJQQJsyiUDDtzODHHjZ8XT46chFSQ8+3FhFJnVjafv88r5M7wD9yWX?=
+ =?us-ascii?Q?3M0HwOaU0DzpvOtSHBQoJjrPWtBmoBnOAq2jnQxDX1O2oKniURY0d+24GKeK?=
+ =?us-ascii?Q?T2UEv3mSRJQxIhTETd+aTetcj7LsmkvtCI//a6fNG1Yn7V3s4PGgM3Gu9jZ1?=
+ =?us-ascii?Q?dBgYa3uH0HnS6h9Bkj11Sii2aNL+wojAT5ZdRriN/AGNZqI+bQAKg5zmc7sP?=
+ =?us-ascii?Q?M6JnbwtEc2La/EBjZrXx7GIXGIHvdjiobMPlrqaqRzd7KgoTrtKzVRDDWGZV?=
+ =?us-ascii?Q?PtzSX6z2ExmAwAHqC3873LnOY79BSn+Ym7I8SsI4TcC1ilcDGJn66c5ffU1W?=
+ =?us-ascii?Q?TT5aJpNBrqBS+Iwnu9cRlSQ0joHf05bveLAAwyPtVA8YW48X6dFMWtETaGAb?=
+ =?us-ascii?Q?6lNH8T3DA4BKIVkpgivpoDJxZwxAFfJ3+w41ZymPfg1q7aiLf8KOH8g8rd6Z?=
+ =?us-ascii?Q?9R6ve4n+2yxsbmzXD7bF5Lq2A84f2syo27oB+ZhQ?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d0a05f87-313e-40d7-f400-08da5616256b
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2022 19:17:14.5165
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tEQ7hSGXyZ6w1OT9ZRVYowHxYfuMwRY2hBdhB6zgiVWhxU+R6uZBRSZh+tozgWBm
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4440
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-From: Haoyue Xu <xuhaoyue1@hisilicon.com>
+On Wed, Jun 15, 2022 at 09:52:16AM +0800, Cheng Xu wrote:
+> Hello all,
+> 
+> This v11 patch set introduces the Elastic RDMA Adapter (ERDMA) driver,
+> which released in Apsara Conference 2021 by Alibaba. The PR of ERDMA
+> userspace provider has already been created [1].
+> 
+> ERDMA enables large-scale RDMA acceleration capability in Alibaba ECS
+> environment, initially offered in g7re instance. It can improve the
+> efficiency of large-scale distributed computing and communication
+> significantly and expand dynamically with the cluster scale of Alibaba
+> Cloud.
+> 
+> ERDMA is a RDMA networking adapter based on the Alibaba MOC hardware. It
+> works in the VPC network environment (overlay network), and uses iWarp
+> transport protocol. ERDMA supports reliable connection (RC). ERDMA also
+> supports both kernel space and user space verbs. Now we have already
+> supported HPC/AI applications with libfabric, NoF and some other internal
+> verbs libraries, such as xrdma, epsl, etc,.
+> 
+> For the ECS instance with RDMA enabled, our MOC hardware generates two
+> kinds of PCI devices: one for ERDMA, and one for the original net device
+> (virtio-net). They are separated PCI devices.
+> 
+> Fixed issues in v11:
+> - Return -EIO when CMDQ response has error status.
+> - Eliminate static checker warnings.
 
-Since ECC memory maintains a memory system immune to single-bit errors,
-add support for correcting the 1bit-ECC error, which prevents a 1bit-ECC
-error become an uncorrected type error. When a 1bit-ECC error happens in
-the internal ram of the ROCE engine, such as the QPC table, as a 1bit-ECC
-error caused by reading, the ROCE engine only corrects those 1bit ECC
-errors by writing.
+I updated the linux-next branch
 
-Signed-off-by: Haoyue Xu <xuhaoyue1@hisilicon.com>
-Signed-off-by: Wenpeng Liang <liangwenpeng@huawei.com>
----
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 195 +++++++++++++++++++++
- drivers/infiniband/hw/hns/hns_roce_hw_v2.h |  12 ++
- 2 files changed, 207 insertions(+)
-
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 782f09a7f8af..f3be9817a755 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -55,6 +55,42 @@ enum {
- 	CMD_RST_PRC_EBUSY,
- };
- 
-+enum ecc_resource_type {
-+	ECC_RESOURCE_QPC = 0,
-+	ECC_RESOURCE_CQC,
-+	ECC_RESOURCE_MPT,
-+	ECC_RESOURCE_SRQC,
-+	ECC_RESOURCE_GMV,
-+	ECC_RESOURCE_QPC_TIMER,
-+	ECC_RESOURCE_CQC_TIMER,
-+	ECC_RESOURCE_SCCC,
-+	ECC_RESOURCE_COUNT,
-+};
-+
-+static const struct {
-+	char *name;
-+	u8 read_bt0_op;
-+	u8 write_bt0_op;
-+} fmea_ram_res[] = {
-+	{ "ECC_RESOURCE_QPC",
-+	  HNS_ROCE_CMD_READ_QPC_BT0, HNS_ROCE_CMD_WRITE_QPC_BT0 },
-+	{ "ECC_RESOURCE_CQC",
-+	  HNS_ROCE_CMD_READ_CQC_BT0, HNS_ROCE_CMD_WRITE_CQC_BT0 },
-+	{ "ECC_RESOURCE_MPT",
-+	  HNS_ROCE_CMD_READ_MPT_BT0, HNS_ROCE_CMD_WRITE_MPT_BT0 },
-+	{ "ECC_RESOURCE_SRQC",
-+	  HNS_ROCE_CMD_READ_SRQC_BT0, HNS_ROCE_CMD_WRITE_SRQC_BT0 },
-+	/* ECC_RESOURCE_GMV is handled by cmdq, not mailbox */
-+	{ "ECC_RESOURCE_GMV",
-+	  0, 0 },
-+	{ "ECC_RESOURCE_QPC_TIMER",
-+	  HNS_ROCE_CMD_READ_QPC_TIMER_BT0, HNS_ROCE_CMD_WRITE_QPC_TIMER_BT0 },
-+	{ "ECC_RESOURCE_CQC_TIMER",
-+	  HNS_ROCE_CMD_READ_CQC_TIMER_BT0, HNS_ROCE_CMD_WRITE_CQC_TIMER_BT0 },
-+	{ "ECC_RESOURCE_SCCC",
-+	  HNS_ROCE_CMD_READ_SCCC_BT0, HNS_ROCE_CMD_WRITE_SCCC_BT0 },
-+};
-+
- static inline void set_data_seg_v2(struct hns_roce_v2_wqe_data_seg *dseg,
- 				   struct ib_sge *sg)
- {
-@@ -6017,6 +6053,163 @@ static irqreturn_t abnormal_interrupt_basic(struct hns_roce_dev *hr_dev,
- 	return IRQ_RETVAL(int_work);
- }
- 
-+static int fmea_ram_ecc_query(struct hns_roce_dev *hr_dev,
-+			       struct fmea_ram_ecc *ecc_info)
-+{
-+	struct hns_roce_cmq_desc desc;
-+	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
-+	int ret;
-+
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_QUERY_RAM_ECC, true);
-+	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
-+	if (ret)
-+		return ret;
-+
-+	ecc_info->is_ecc_err = hr_reg_read(req, QUERY_RAM_ECC_1BIT_ERR);
-+	ecc_info->res_type = hr_reg_read(req, QUERY_RAM_ECC_RES_TYPE);
-+	ecc_info->index = hr_reg_read(req, QUERY_RAM_ECC_TAG);
-+
-+	return 0;
-+}
-+
-+static int fmea_recover_gmv(struct hns_roce_dev *hr_dev, u32 idx)
-+{
-+	struct hns_roce_cmq_desc desc;
-+	struct hns_roce_cmq_req *req = (struct hns_roce_cmq_req *)desc.data;
-+	u32 addr_upper;
-+	u32 addr_low;
-+	int ret;
-+
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GMV_BT, true);
-+	hr_reg_write(req, CFG_GMV_BT_IDX, idx);
-+
-+	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"failed to execute cmd to read gmv, ret = %d.\n", ret);
-+		return ret;
-+	}
-+
-+	addr_low =  hr_reg_read(req, CFG_GMV_BT_BA_L);
-+	addr_upper = hr_reg_read(req, CFG_GMV_BT_BA_H);
-+
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_CFG_GMV_BT, false);
-+	hr_reg_write(req, CFG_GMV_BT_BA_L, addr_low);
-+	hr_reg_write(req, CFG_GMV_BT_BA_H, addr_upper);
-+	hr_reg_write(req, CFG_GMV_BT_IDX, idx);
-+
-+	return hns_roce_cmq_send(hr_dev, &desc, 1);
-+}
-+
-+static u64 fmea_get_ram_res_addr(u32 res_type, __le64 *data)
-+{
-+	if (res_type == ECC_RESOURCE_QPC_TIMER ||
-+	    res_type == ECC_RESOURCE_CQC_TIMER ||
-+	    res_type == ECC_RESOURCE_SCCC)
-+		return le64_to_cpu(*data);
-+
-+	return le64_to_cpu(*data) << PAGE_SHIFT;
-+}
-+
-+static int fmea_recover_others(struct hns_roce_dev *hr_dev, u32 res_type,
-+			       u32 index)
-+{
-+	u8 write_bt0_op = fmea_ram_res[res_type].write_bt0_op;
-+	u8 read_bt0_op = fmea_ram_res[res_type].read_bt0_op;
-+	struct hns_roce_cmd_mailbox *mailbox;
-+	u64 addr;
-+	int ret;
-+
-+	mailbox = hns_roce_alloc_cmd_mailbox(hr_dev);
-+	if (IS_ERR(mailbox))
-+		return PTR_ERR(mailbox);
-+
-+	ret = hns_roce_cmd_mbox(hr_dev, 0, mailbox->dma, read_bt0_op, index);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"failed to execute cmd to read fmea ram, ret = %d.\n",
-+			ret);
-+		goto err;
-+	}
-+
-+	addr = fmea_get_ram_res_addr(res_type, mailbox->buf);
-+
-+	ret = hns_roce_cmd_mbox(hr_dev, addr, 0, write_bt0_op, index);
-+	if (ret) {
-+		dev_err(hr_dev->dev,
-+			"failed to execute cmd to write fmea ram, ret = %d.\n",
-+			ret);
-+		goto err;
-+	}
-+
-+err:
-+	hns_roce_free_cmd_mailbox(hr_dev, mailbox);
-+	return ret;
-+}
-+
-+static void fmea_ram_ecc_recover(struct hns_roce_dev *hr_dev,
-+				 struct fmea_ram_ecc *ecc_info)
-+{
-+	u32 res_type = ecc_info->res_type;
-+	u32 index = ecc_info->index;
-+	int ret;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(fmea_ram_res) != ECC_RESOURCE_COUNT);
-+
-+	if (res_type >= ECC_RESOURCE_COUNT) {
-+		dev_err(hr_dev->dev, "unsupported fmea ram ecc type %u.\n",
-+			res_type);
-+		return;
-+	}
-+
-+	if (res_type == ECC_RESOURCE_GMV)
-+		ret = fmea_recover_gmv(hr_dev, index);
-+	else
-+		ret = fmea_recover_others(hr_dev, res_type, index);
-+	if (ret)
-+		dev_err(hr_dev->dev,
-+			"failed to recover %s, index = %u, ret = %d.\n",
-+			fmea_ram_res[res_type].name, index, ret);
-+}
-+
-+static void fmea_ram_ecc_work(struct work_struct *work)
-+{
-+	struct hns_roce_work *ecc_work =
-+		container_of(work, struct hns_roce_work, work);
-+	struct hns_roce_dev *hr_dev = ecc_work->hr_dev;
-+	struct fmea_ram_ecc ecc_info = {};
-+
-+	if (fmea_ram_ecc_query(hr_dev, &ecc_info)) {
-+		dev_err(hr_dev->dev, "failed to query fmea ram ecc.\n");
-+		goto err;
-+	}
-+
-+	if (!ecc_info.is_ecc_err) {
-+		dev_err(hr_dev->dev, "there is no fmea ram ecc err found.\n");
-+		goto err;
-+	}
-+
-+	fmea_ram_ecc_recover(hr_dev, &ecc_info);
-+
-+err:
-+	kfree(ecc_work);
-+}
-+
-+static irqreturn_t abnormal_interrupt_others(struct hns_roce_dev *hr_dev)
-+{
-+	struct hns_roce_work *ecc_work;
-+
-+	ecc_work = kzalloc(sizeof(*ecc_work), GFP_ATOMIC);
-+	if (!ecc_work)
-+		return IRQ_NONE;
-+
-+	ecc_work->hr_dev = hr_dev;
-+	INIT_WORK(&ecc_work->work, fmea_ram_ecc_work);
-+	queue_work(hr_dev->irq_workq, &ecc_work->work);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
- {
- 	struct hns_roce_dev *hr_dev = dev_id;
-@@ -6027,6 +6220,8 @@ static irqreturn_t hns_roce_v2_msix_interrupt_abn(int irq, void *dev_id)
- 
- 	if (int_st)
- 		int_work = abnormal_interrupt_basic(hr_dev, int_st);
-+	else if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
-+		int_work = abnormal_interrupt_others(hr_dev);
- 	else
- 		dev_err(hr_dev->dev, "there is no abnormal irq found.\n");
- 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-index e6186149ef19..f96debac30fe 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
-@@ -250,6 +250,7 @@ enum hns_roce_opcode_type {
- 	HNS_ROCE_OPC_CFG_GMV_TBL			= 0x850f,
- 	HNS_ROCE_OPC_CFG_GMV_BT				= 0x8510,
- 	HNS_ROCE_OPC_EXT_CFG				= 0x8512,
-+	HNS_ROCE_QUERY_RAM_ECC				= 0x8513,
- 	HNS_SWITCH_PARAMETER_CFG			= 0x1033,
- };
- 
-@@ -1107,6 +1108,11 @@ enum {
- #define CFG_GMV_BT_BA_H CMQ_REQ_FIELD_LOC(51, 32)
- #define CFG_GMV_BT_IDX CMQ_REQ_FIELD_LOC(95, 64)
- 
-+/* Fields of HNS_ROCE_QUERY_RAM_ECC */
-+#define QUERY_RAM_ECC_1BIT_ERR CMQ_REQ_FIELD_LOC(31, 0)
-+#define QUERY_RAM_ECC_RES_TYPE CMQ_REQ_FIELD_LOC(63, 32)
-+#define QUERY_RAM_ECC_TAG CMQ_REQ_FIELD_LOC(95, 64)
-+
- struct hns_roce_cfg_sgid_tb {
- 	__le32	table_idx_rsv;
- 	__le32	vf_sgid_l;
-@@ -1343,6 +1349,12 @@ struct hns_roce_dip {
- 	struct list_head node; /* all dips are on a list */
- };
- 
-+struct fmea_ram_ecc {
-+	u32	is_ecc_err;
-+	u32	res_type;
-+	u32	index;
-+};
-+
- /* only for RNR timeout issue of HIP08 */
- #define HNS_ROCE_CLOCK_ADJUST 1000
- #define HNS_ROCE_MAX_CQ_PERIOD 65
--- 
-2.33.0
-
+Thanks,
+Jason
