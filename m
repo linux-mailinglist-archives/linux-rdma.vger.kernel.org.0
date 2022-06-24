@@ -2,108 +2,106 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C60E555A275
-	for <lists+linux-rdma@lfdr.de>; Fri, 24 Jun 2022 22:18:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6CDA55A487
+	for <lists+linux-rdma@lfdr.de>; Sat, 25 Jun 2022 00:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbiFXURh (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Fri, 24 Jun 2022 16:17:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33176 "EHLO
+        id S230402AbiFXW4K (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Fri, 24 Jun 2022 18:56:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbiFXURh (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jun 2022 16:17:37 -0400
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam07on2088.outbound.protection.outlook.com [40.107.212.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E77D823B0;
-        Fri, 24 Jun 2022 13:17:36 -0700 (PDT)
+        with ESMTP id S231411AbiFXW4H (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Fri, 24 Jun 2022 18:56:07 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2077.outbound.protection.outlook.com [40.107.220.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A768988953
+        for <linux-rdma@vger.kernel.org>; Fri, 24 Jun 2022 15:56:06 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m4mQuEwrL7V4tT0SwKL4XLyidHSr/GsdaKa9iCJfZr/QH/fHdY+IuPvR6TXLGYiVfn6IZpnI9uDf1ZtgpVzdqIFHuRbkZfjdEJocDlp8o/fHq2sfbQCFAp4bJGvTzuvfCSiDszLKvQXhHTCBT6I9er4UZRgwfNALzCFUavg3YkM3K4V+AtnVJfWO1sIdcqS61Gj66NYXNfUdYeB+90S4mY6hGzJmwe4v1l0/0U7TZyPWR1WCvF2HY6X4VLkFt4Kz0knAvtA7KgEA92VIo6719a8EURCLGlGkcf+tKbXpy48k66THJxMaIobihUaFk8r7BK1UiC2M/bIHTESZ58zQqA==
+ b=HKAddifXaqCaJxHkVZRlMIH96rBvJ7f9iZX2bzC85Mh20uHSlwKqIRIQbn+4zl2XqLty27Fyu7+fexC1mqz34gpAV2jrDCh3QNxTMIf7nrM4rLe8FGcPgTMDGAKjm06Sjg9L3FMFNyQbK1XIsAIEscJ7cxMBylrkKYh/JnIB7taVXJl7sE4tHU/4o5zyUWv+aV7AV1fFLS8r5sp8jO451egLm1tvEs0CuW7iKuWUHI+xKh5gjgGl/RwuP4Nbs2cF/tc/KCXbV4Ck4vvbC4WXe2CGt2jx2fGFxuPBs5i6wqm7UFRlSepnwIS2f2fv8ZOHtsZ7mtqeRXYIW817fqqODQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mHJKSTmb0JocfdJgnT1iUZ89kEOKKuOPceCp9F7l7U4=;
- b=F01Z5ujUYzFKcpsYzySfn5k+mKO2MAPS566rG7aH/EjqqOYI4QIY/YYQW2NhbDMtlUU0XH/2sy7pD7BykdC06zn1SvozZKoby8+rYIfWuyq/4xMNo+2PYsjVIo58SyGE3GlXmMnT+o2hV2ZyfUtsN80RszDcCjAfAV9kJqzQsCmLgXN5Q6Kbxm9vnlmUIrYj+x8jwEviQiB1ElwWux7kH24xPZIwrAIT5JxTYIZdaNaoq23skXdT7HhbGRE52ynEz1+n3IZ0xtNVmA4g6bMYVxykE0PQfYe8BVAnxlebjgQ/m6pa/1ozNTtGhG/YZ8ZLtyTLZcA8DRgGNAXdJi/Aig==
+ bh=OWLBhSdUSTTaay51p3Ey31EEZbyeRhCbMhc2wjcx2IY=;
+ b=dLxMUv5eMHy8SEt0DEwvZNtIv0sJQcsvfI91tQWMGeDoJ22wBBqe7tk5v5wQiWcVRe7ylYBb5AGSDjzXzs9DpB1o95GmAWUyVvg5UYXypTUJKO871e7OovKYE9JNcCIF0ZH+JiI1gVxxoxx2uKTuyAwcw3x1FrV8toxheGj1BcJAxw2vtIu99o0u7JW89phaxbSPYwBodf9ChTQWOtPzeU+loNGBV0jFcwKDAoEi2d7A006+/VczRIleeUacPjEBEnJUVzRSDnxEZc47tCf35grhhC6gXZkEcF48DXXxb2Rqb+NvJuTghyxTC3AXufNYVZjdAp0pnkwZ9h1pmWuvrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mHJKSTmb0JocfdJgnT1iUZ89kEOKKuOPceCp9F7l7U4=;
- b=hFwyMZXUUJCrI3a2/RzkyhyFSQm4P7WgYqMdDezUOJYQeQYTdkU64On9dPmyM64c4s/5fzaOUu/Vpj8F1k+AEURezrbClrdTzVj6s84h7RDHtcBjLAARO8P0izPlo8rkCtc5j9b2jmf9Walz+LeVpKlprL0vHAo1FkghyoZ7jEUGq8sSY2RIy8IsYQ++tAwZBFyEkjEfKZJ5z3q8ppmuOVD6yI9Wbkas4V8ZOBKILbg9Jv3Csh5xiJctO3jNk1kNpzFzIlsRxIgr2/zMmb+Y1Ij84Oe+BItwJXnEbnCGbFcdJtfqZipivbKmYCgljNzIL2DXTEvG1/nKL9ki28Elmg==
+ bh=OWLBhSdUSTTaay51p3Ey31EEZbyeRhCbMhc2wjcx2IY=;
+ b=pTQ8R+9hdMQLC+G13VC6EeRICABQ3m1I6AhrkqttzWkJbzP/A2jwq+wcpfF1GGI1UwVTBxv5Yu20VkYzeZ0d3AIThW7KTSBexRNLYHQDis35P1pTfvWYRPQ26mYz8hOZaMidGfdK1J4WwE1pqhtAhPqJwhAuPnnabDUi9Ff9fku18LDAX8wh53HflDXO5gFX6DGcwFoCAZ2X4Q7rxIwFjK6JHhehSHPV85zTInrR9bIgRigzZWCUQoRY5Jb7ae8aZCvi6PsdvmBCtR3U0BM+Ue8vb+U2rak9lFVggiLr4aaRu2w2AWBVVDcaMbtwWPY2m0OPKZIsaCOWsp7bgtaDog==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nvidia.com;
 Received: from MN2PR12MB4192.namprd12.prod.outlook.com (2603:10b6:208:1d5::15)
- by MWHPR1201MB0062.namprd12.prod.outlook.com (2603:10b6:301:54::13) with
+ by CH2PR12MB4151.namprd12.prod.outlook.com (2603:10b6:610:78::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.17; Fri, 24 Jun
- 2022 20:17:34 +0000
+ 2022 22:56:05 +0000
 Received: from MN2PR12MB4192.namprd12.prod.outlook.com
  ([fe80::ac35:7c4b:3282:abfb]) by MN2PR12MB4192.namprd12.prod.outlook.com
  ([fe80::ac35:7c4b:3282:abfb%3]) with mapi id 15.20.5373.016; Fri, 24 Jun 2022
- 20:17:34 +0000
-Date:   Fri, 24 Jun 2022 17:17:33 -0300
+ 22:56:05 +0000
+Date:   Fri, 24 Jun 2022 19:56:04 -0300
 From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Mark Zhang <markzhang@nvidia.com>
-Cc:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, leon@kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: Re: [PATCH] RDMA/cm: fix cond_no_effect.cocci warnings
-Message-ID: <20220624201733.GA284068@nvidia.com>
-References: <20220610094530.28950-1-jiapeng.chong@linux.alibaba.com>
- <e187af34-d0a8-55ed-cc21-d88845ec1eb5@nvidia.com>
+To:     Xiao Yang <yangx.jy@fujitsu.com>
+Cc:     linux-rdma@vger.kernel.org, Leon Romanovsky <leon@kernel.org>,
+        Bob Pearson <rpearsonhpe@gmail.com>
+Subject: Re: [PATCH] RDMA/rxe: Remove useless pkt parameters
+Message-ID: <20220624225604.GA303488@nvidia.com>
+References: <20220623131627.18903-1-yangx.jy@fujitsu.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e187af34-d0a8-55ed-cc21-d88845ec1eb5@nvidia.com>
-X-ClientProxiedBy: BL1PR13CA0434.namprd13.prod.outlook.com
- (2603:10b6:208:2c3::19) To MN2PR12MB4192.namprd12.prod.outlook.com
+In-Reply-To: <20220623131627.18903-1-yangx.jy@fujitsu.com>
+X-ClientProxiedBy: BLAPR03CA0106.namprd03.prod.outlook.com
+ (2603:10b6:208:32a::21) To MN2PR12MB4192.namprd12.prod.outlook.com
  (2603:10b6:208:1d5::15)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1265c336-b26a-420a-2539-08da561e9307
-X-MS-TrafficTypeDiagnostic: MWHPR1201MB0062:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1e0ec07c-90bb-45bf-898e-08da5634b7e8
+X-MS-TrafficTypeDiagnostic: CH2PR12MB4151:EE_
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: glCt6IQu3rXijD1RB5In7SSjh9p8iRPeIcQPV/NSjNWUVJFqYe8q0Jch8nb7VrQqbGGm/yT1o6SSMZ1FBcC5etvYWVVIpXDvPuvo260/48GqL6Yz6exuS021D6f4hdxbX/OcCLwGjLxi8TwWA7nUK1P+YjJ5XaLUHUgE35UFUwpPQwNBb1hKqYmxly2wNpcs6hFtcD0nVGrmzodHKD2JgvYrQXW1RVpcKVUnQTSjTEeltqIoCnhHiqRU3zLByE0SG+CgfcO4WAlwiXXDGFOqpdHzPd+FKQN0SBeaXfXnm/h07UqLDvZO67s2qLhvii9wKPD2sFiTZhcfIcnaJGZrMEuWqGPHD2jyhiRtZzKmDsWw8Ru1il5gyBtSaGFdiRmwhHHcYGjQQi4YmoTiPAZhkd+DDxeNXd4iQPF7p+rCYtdm0cE2h1/GRD6+wXevD2wqa+Z+1K+7cM7YwUST1CujIHo0mE6AeGwZHaiZFakDzEEwaQIyyl5kiQ1LWu0fp3QV3TrRdp+QlXCrq96Dg/J/4zLypUwfeEpy5rw0RL/XHGocKdFidgSVXvHdSHl/x4kUaiunJKixD4UecYqDkpp9XGxbCvBKOV6Z6gGCvxfg616XFEYteQTqDNT4rlpW0ppFa8SIivEkMcNqLDtxPkYmSwjVPLPsw2FwfYJsXMQzIfHU1isA0HKbxihLax/sPCijUee/kPxnRVStQFjx6aF35XAbX4H8qxJeM/wtiaTYhjjv0K22ZpmYqfyZ0uDJo4mv3KQ3ky4SUH7vYC8dpHyedmFrLMQwAs1Uv1Uc0Miw8/A=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(83380400001)(478600001)(38100700002)(6486002)(186003)(2906002)(33656002)(5660300002)(36756003)(6512007)(6636002)(66556008)(316002)(8936002)(86362001)(41300700001)(66946007)(4326008)(8676002)(1076003)(2616005)(6862004)(66476007)(54906003)(53546011)(6506007)(37006003)(26005)(27376004);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: W9kygjU37stVX7I4/capuFHl+aMAMxHVrhrMZn6WTAbRL8L4N85hi5C4HoR0NtUZ04uKdqMaBogoQrLxIJmvnB11Iy/tQ4br59kuM5bNMVBdk+sERlDX1Fp/7otF9kJ+5L8dTl30gPLG4BgHANc11MIk2+UejCZu+xmexkAK8nYnQRx+XBrOY4rPJg0ZPFWlfS7LXYcOXDZEyCL7fktwbr+HUiUu6nHVsiLH3gJENNjO9Qn0YMrYkTU06MRkRc94d/m/CS05bW1vMc3iEh+KgeFmz0yFn0W0dbTKDN5h8Oz/d+Bt2/jIkZCJT7PwznLc57KSAhOYNafltW3ABymJn8K/G780QuGeVwM84mveddNZuCgLmUkxRQy8zLRdA4qFLiQEVp0zs8VWkpFFBkqrwyQQRworXoZVP/xuCFeZ4+qS4cQpPPzQ4fhP5yw/dmCGmJrmrZ0faH/ib+EO3u7A2iBPQy1th9Zwb1hpMtqhOnqd4sh4haTEZSOIhmntrFTzMo0LNIomW+K9i4M4+IJBg6ElU0QkCquSWaekYUcXaJfOfgUCFBFCgNgaG/BwwiiOnjfhQvPb2hWy3rdsTdT/zOBLxM3wKhX/ban0RhNITUZAutRfAzg7m3T1qmkfQ083GrlkOxUxT8kcPj7/Zk9HvJPZL6gHKsrmZtOnb02udTliC6TyKDIaO82woscuALA235j0+f7wGCNXTB73RTeJAzDjw9pssqZS7CWoaKbYQkaY+XNmgmc0LR0cfJKEenwhOGpZMI4dD6n7xpOMdcwGFYvGtg19N+ON3qzr4giH/aM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4192.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230016)(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(478600001)(33656002)(83380400001)(6486002)(186003)(4744005)(2906002)(5660300002)(36756003)(66946007)(4326008)(86362001)(316002)(41300700001)(54906003)(8676002)(66556008)(6916009)(2616005)(1076003)(8936002)(66476007)(6506007)(6512007)(38100700002)(26005)(27376004);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?8SpWjDHCYiIFm7KVsLTISqwVOTTrhCHltJXXZgkfi2FMV+z0dLNFiXq1nK0x?=
- =?us-ascii?Q?6dKvCkCz0RkvOvc3WkUd21dxSa7b3lV0aF0L2X3eG8rU3mcEJdSBzdSsGOTh?=
- =?us-ascii?Q?qEsPEwPoRICGbWWFWt88Vx89qKUFxT7EtfLZZxtPw+5y8C34fgHENcjDXtqB?=
- =?us-ascii?Q?CrvyZaDK81xRBxbK6u14WlIqs+NTrU90Tb5bYVLzkjtbmLAuEgm5e2io9Y0c?=
- =?us-ascii?Q?Uv5wT86ybSfoaWkqG3VVxPNDykKIxDjuoD4CAqQJe4BDIPmHYQ069UBMUO+I?=
- =?us-ascii?Q?a2pL3tRZZ83KtR7DOu1bt4OQUlet/sW65naZzYnsGZoqLt3O/eb9v0skXY5g?=
- =?us-ascii?Q?QRn8FDvzCyFLSUUzD8rxH+bi71+c9BqlkWRKKGnIKNI1wzfIoUJbZXZhkLc8?=
- =?us-ascii?Q?FRynrkUXXlWy+zYzTN8TFTJ5T3GrTGXWalmfupOLcceDGO999BS3aclyF6BA?=
- =?us-ascii?Q?CQYmBbnu0O/m8Tw3JAB0OP++mhXS6rfsFtnFyFsnYcCQRFn9OJWZSKUi6+Xl?=
- =?us-ascii?Q?V7eOFUAaKNuw95DpvyHhdzA+1cd1B/zltkjbEnLhWuBsHdhjRAewCWlTu+VD?=
- =?us-ascii?Q?5aal4pSy8Zv+pRH/9+/ChFUzbiL5ZDRq2bDDQ4OK2+/uj2ZBNah++5RlAwnr?=
- =?us-ascii?Q?xIhqF+moqSNVHKMHGNNgqD/LoN+QT7/Ec+LOCe4+7Sh9b5lu06cdXrtV+fh/?=
- =?us-ascii?Q?7gl4dxJZJeCZAteIkRfiYEk2sfGZZVV1F3BDQ1ZDfGm3fVZxaKgrESctv0DB?=
- =?us-ascii?Q?vQcNEZ30UBs0QMDckNb/so6dGeaSVg2jY5ro4t2uCTtyU4vdT77XsHk2ZuJ2?=
- =?us-ascii?Q?P0Qp5kYIKBgsrFVhKshzLIsXkVIopXJFp3fbNf4LV79m6Hb7eM3YLM9Irb6b?=
- =?us-ascii?Q?vAS9N5JKvvwaKis5BlA3TAGz7dGoHxpbgiBisou20tnFwi0i0xgNcy2/foRQ?=
- =?us-ascii?Q?ixn7JXh90Ze9geqUv1km7VxEwpC3Yzh1HkImgUAj8v8MPAExXnCBsB9yy8/c?=
- =?us-ascii?Q?nCBHbGapdUff6ETROTc0epPlCSZYsuBcJNve6IfSh5fU9I3ZGlCyFcTTrYb7?=
- =?us-ascii?Q?sWhhR3A2iEGVXyqegFU/2k8Y3SNY49axD29aXzTt7P7WSa22iS4YzC1TT3W9?=
- =?us-ascii?Q?VW54UbUX/rQuVMMwiiSJqvXGv8hkMwuiiMyuV+ZAaU4KyOBwg+C9Fe+D++HY?=
- =?us-ascii?Q?R/G9+t9hiCBAl00CgnLG5qmhEwft8E1zboDUe6iE2uRIyX8oWCuC8r9+S7Oi?=
- =?us-ascii?Q?WN3PPh4Lqh65mKllb5zTjykR/0whPOVPcdsDCgXkTwm4IAl8E2KfsY+zC6Rt?=
- =?us-ascii?Q?9AagEUfeoIwA5zBJdUZPDbYZE0xcWUPJdbgBqMXnKOXSx/VKaw14OSkKzkyL?=
- =?us-ascii?Q?KcG5eb054e/fg8G+ksBrl6sTi9TdizxbFofjOyXd1Cs7w6d2s/TcGrZkC4WM?=
- =?us-ascii?Q?N+spfjngvJL7KIyCYIHJOqV+TMvgISniLuh78JB8ut0cVzlb/B1ZfvZaoq2Z?=
- =?us-ascii?Q?Bjim39NwikRsbSGjr7dTMMbO0mKPzwXvN/pm2LxfVpIOU6UFseqSXqz/qv6j?=
- =?us-ascii?Q?bJB8HSk8fWP+NvnIqaHp9TeLHeMJ//ywtl/iMjVw?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cZKvNb1iawg4MHPngOaumEGuxjddIQ4mHtcPpWCyQEOfQyaaSx7TN8ZL6g2J?=
+ =?us-ascii?Q?aA+CRq5IQ3MYQMWc3WwinVhcJUg9OU/VYe/YGXv3Zl54ULB/lO10VDtcza6m?=
+ =?us-ascii?Q?6w3KuBPSS1cPutSK67yGvfJghoWklzBopx02gwpMmqr+Goc4TQRwS1dtnjzb?=
+ =?us-ascii?Q?4YcABFLEVhTg/3bBPu5/CWe6vN7JV1wE4zMcuNtf2DyJb5ZY5nspi/vZbcwp?=
+ =?us-ascii?Q?Mpg452BMu5Lms7dWnERXiXI1vvuI5qlXWgmG+7DoAnzyRj4IhGDIk5X5hV5F?=
+ =?us-ascii?Q?FSvpACCd6mmLeX9T96NhFJsdzKOeL2Y9MwvKJ+CjpYA98XwupQFF0x6ATW01?=
+ =?us-ascii?Q?74hwNCD4a70pdcSwLXFCcYrAZh0FETZBYGsz92KoEfr2VoPsIfi62gAbiiWt?=
+ =?us-ascii?Q?CwzUX+sKxoEb+40ke9xhVwBl6yuRoGbBelOhOvthC5+kzeD+EnBoFXne3kYP?=
+ =?us-ascii?Q?POvsrILx00DwZympoRR/sGNEt3nbaebHnBhueCGY7KDw5m1TA7qosQ5vm5Ih?=
+ =?us-ascii?Q?2W57uxO5FH9UrOZZbc3a35BAAW+rr15FhYdPFR6KhGeI+pi9suHoQY9O7KN3?=
+ =?us-ascii?Q?pbJBIH4vN0Dl6BCTPOG5S4Ke9ZquPeK+kOZxZxiQUDOmGiMuIVW2/cNlLsXo?=
+ =?us-ascii?Q?Q7UpZS3v121woj5K22F6Ro4C3CP+z9FaKda2/dYpB1MFH1/qHTdu9Lk9KBWZ?=
+ =?us-ascii?Q?Jrjv2JidDvpxfmKohTSfGwWXvAANIIc+p6QNoqWapZBUpIkIBaXxYBYavfMb?=
+ =?us-ascii?Q?ImYFw9TxiN3itTG1lhDzDNvzTryn3DmSBXSgqvS25CTHdLovhWTNIC7tX/6P?=
+ =?us-ascii?Q?Ia76EMsMaUbEFn7usp68ktD7vKyygjvmtTqDxlDlg+93sMUq35n36MJ/8cv7?=
+ =?us-ascii?Q?Bm4I6ydqR6W61NMiy5JhAKo+zYQbsZSlwGlofIeBsKk6V4niwWGsYTkKz7We?=
+ =?us-ascii?Q?hdyaKwPjmzjmJqE/78LWWqxovHgTWK05V95wYea1+y3+zuJ6msFXByUnMgSm?=
+ =?us-ascii?Q?ljQ3tgANlED3OorbVW36PLnFwktM4SZLZJcckKsyKBrIEBOJvuXoxDeeldvZ?=
+ =?us-ascii?Q?cudLDnDexj0dEGUuUm4RfCVAiARXB9I4hGlXMrCSSqGGJvcsGgscBTuATENB?=
+ =?us-ascii?Q?PCYkbQg6bWkMb1vN2WsZ+ch71AI7RsUw3apdIdxuRDGtZC2VMLYNjFI7EOQu?=
+ =?us-ascii?Q?GWESwnWPFDh8Aix2Grobu2nUzahJV0QOOTe8OieQOfmGqi2gP0fPRNZDkZf8?=
+ =?us-ascii?Q?WZeJRtSUANtvBWboe/s5OyTVMB77uOJj4Q2RaF+kRGzkX6h2BrIJMCcvlHXW?=
+ =?us-ascii?Q?9eVBBu0VEkw6Enm3Yk/Nss6Y+pJVcBmRnHmLBdKWZkUxXD8S7niyBB2g1emU?=
+ =?us-ascii?Q?pAiWEiJ8vsOvgZmMr9ob+f4G3zyfj7NlJKjcPLliwktBwVpKM6Ihkm3YIYAW?=
+ =?us-ascii?Q?iAR3+BV9dWu3fA+iVT7HliNRRQEEQ4ZTJ0eb/PNOQV/68KUhOqAcmW2DMn92?=
+ =?us-ascii?Q?JAilKqQRhK3t0CZYlP7kbLhCjV4jSYZMcFPvsV4YusQ7k4xIA2955Q5i0CWV?=
+ =?us-ascii?Q?Fsk7soPlDpODszDN6iA1V/NsjNVFVw8Q7LdIMPFw?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1265c336-b26a-420a-2539-08da561e9307
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e0ec07c-90bb-45bf-898e-08da5634b7e8
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB4192.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2022 20:17:34.3803
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2022 22:56:05.2603
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: v0Dqmr58Twx/41X+7vfXgb6zTDC2sM0+/oldZlJXIIX4Nr6xf+ZK5KZa+OGxAu1J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1201MB0062
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZUevF6oRQIsrlBXSu7QNBo15p8FPs61Do+lSSp27lH7nTnIlEJwaGp4V8EA+a0qx
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4151
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -114,72 +112,18 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 14, 2022 at 09:19:14AM +0800, Mark Zhang wrote:
-> On 6/10/2022 5:45 PM, Jiapeng Chong wrote:
-> > This was found by coccicheck:
-> > 
-> > ./drivers/infiniband/core/cm.c:685:7-9: WARNING: possible condition with no effect (if == else).
-> > 
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> > ---
-> >   drivers/infiniband/core/cm.c | 9 ++-------
-> >   1 file changed, 2 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
-> > index 1c107d6d03b9..bb6a2b6b9657 100644
-> > --- a/drivers/infiniband/core/cm.c
-> > +++ b/drivers/infiniband/core/cm.c
-> > @@ -676,14 +676,9 @@ static struct cm_id_private *cm_find_listen(struct ib_device *device,
-> >   			refcount_inc(&cm_id_priv->refcount);
-> >   			return cm_id_priv;
-> >   		}
-> > -		if (device < cm_id_priv->id.device)
-> > +		if (device < cm_id_priv->id.device ||
-> > +		    be64_lt(service_id, cm_id_priv->id.service_id))
-> >   			node = node->rb_left;
-> > -		else if (device > cm_id_priv->id.device)
-> > -			node = node->rb_right;
-> > -		else if (be64_lt(service_id, cm_id_priv->id.service_id))
-> > -			node = node->rb_left;
-> > -		else if (be64_gt(service_id, cm_id_priv->id.service_id))
-> > -			node = node->rb_right;
-> >   		else
-> >   			node = node->rb_right;
-> >   	}
+On Thu, Jun 23, 2022 at 09:16:27PM +0800, Xiao Yang wrote:
+> The pkt parameters in prepare_ack_packet(), send_ack() and
+> send_atomic_ack() have become useless by the following commits.
+> So remove them directly.
 > 
-> Not sure if the fix is correct, e.g. with this condition:
->   device > cm_id_priv->id.device &&
->   be64_lt(service_id, cm_id_priv->id.service_id)
-> 
-> The original code gets rb_right but this fix gets rb_left. Maybe the warning
-> is complain about this:
-> 	...
-> 	else if (be64_gt(service_id, cm_id_priv->id.service_id))
-> 		node = node->rb_right;
-> 	else
-> 		node = node->rb_right;
-> 
-> Besides cm_insert_listen() has same logic.
+> Fixes: bf139b58af09 ("RDMA/rxe: Remove unused pkt->offset")
+> Fixes: 3896bde92d03 ("RDMA/rxe: Fix extra copy in prepare_ack_packet")
+> Signed-off-by: Xiao Yang <yangx.jy@fujitsu.com>
+> ---
+>  drivers/infiniband/sw/rxe/rxe_resp.c | 28 ++++++++++++----------------
+>  1 file changed, 12 insertions(+), 16 deletions(-)
 
-Yes, this is a standard pattern for walking tree with priority, we
-should not obfuscate it.
-
-The final else means 'equal' and the first if should ideally be placed
-there
-
-However this function is complicated by the use of the service_mask
-for equality checking, and it doesn't even work right if the
-service_mask is not -1.
-
-If someone wants to clean this then please go through and eliminate
-service_mask completely. From what I can see its value is always -1.
-Three patches:
- - Remove the service_mask parameter from ib_cm_listen(), all callers
-   use 0
- - Remove the service_mask parameter from cm_init_listen(), all
-   callers use 0. Inspect and remove cm_id_priv->id.service_mask,
-   it is the constant value  ~cpu_to_be64(0) which is a NOP when &'d
- - Move the test at the top of cm_find_listen() into the final else
+Applied to for-next, thanks
 
 Jason
