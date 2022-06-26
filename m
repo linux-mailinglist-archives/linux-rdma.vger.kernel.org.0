@@ -2,101 +2,134 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1C255ADB0
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jun 2022 02:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4D755AE86
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jun 2022 05:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbiFZADk (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sat, 25 Jun 2022 20:03:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
+        id S233799AbiFZDaC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sat, 25 Jun 2022 23:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbiFZADj (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jun 2022 20:03:39 -0400
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4602613EBB
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Jun 2022 17:03:38 -0700 (PDT)
-Received: by mail-qv1-xf35.google.com with SMTP id 59so9999170qvb.3
-        for <linux-rdma@vger.kernel.org>; Sat, 25 Jun 2022 17:03:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uzBv+rLiOMQN1QJ1CAlWRVrSA/M0AyPQIUhJ4NlvMOE=;
-        b=DuSHNIG60LiWNKf6jLN1j6RVigzx0qhdEesKDgOV6wCISOLAQI7oQlLZ/pFMrGS7uL
-         hfcEwE0OB9CtMtMYxyMiNYaG81IkT4C7Ua/QhOEJnd39panh+4ltOP/BIBAEV3y1R9GA
-         gv/uHXrgxGI6bX2M8ODhkxbSUoYXIQKyd3l/SN/UakjuIzb9CfFxYw4rJ1i++aOpA7Ar
-         28C4xehBv/LYcrSDI0eWRkL2H7mbfx8qErhO3Q+c3I7RJcgd1K95DRVGNFv533NU9SJR
-         LJCRdDJqjgWOpL8hXm0Btn05S45hfiod4wR8rAV4Po2MD/PXo22z8w15OPX/cpr44Fsz
-         wgfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uzBv+rLiOMQN1QJ1CAlWRVrSA/M0AyPQIUhJ4NlvMOE=;
-        b=rvaYXgQqc7gq7FvjZx94eLFZDKGu98n1sFl3GEik4fH8gauRZjCfVkiPh3VXZrAQ5M
-         tXnbhG/P35BaCbhPOqBuqwraXx3SoVXW06TJLWnZ6WH0NbzxXKM27HuoOsu1xXQ/MhUu
-         UpDyWCU94qfXO7XYuihOSdVuhob40AeARvLrSWhqw/C+oMx8eesdv9+bgA+UqXrsw9g2
-         pSaGtsOUe2aDFnKyIH9p7Qiocn6akSMFHIZhn2F17npcAgOYGcR23LNSoi9v2IOnbyah
-         UTcKUydQHGzAK3edtBJd4C2sgU/v3irPdn1vjbRVrMTiGoBesn1lBHLtNs/VwM1+i518
-         CM/Q==
-X-Gm-Message-State: AJIora/b4vcUIhju0qwRIR5KPzr/4IRzxtJNM5EzfWMEstK4FI4kXlAF
-        iJLLBkfg+jF9G1vV2cOtnYqQtQ==
-X-Google-Smtp-Source: AGRyM1tE4BoFBAJJvdfxmP6e/GRmO8k9uiseuk8Afwuboo2RrknpwMgvTsRL6ljMihM8ni/ZMauTrg==
-X-Received: by 2002:a05:6214:c2c:b0:470:a060:4543 with SMTP id a12-20020a0562140c2c00b00470a0604543mr4509412qvd.49.1656201817425;
-        Sat, 25 Jun 2022 17:03:37 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
-        by smtp.gmail.com with ESMTPSA id h18-20020ac87772000000b002f905347586sm4168554qtu.14.2022.06.25.17.03.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 25 Jun 2022 17:03:36 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1o5FkV-001s2q-Pc; Sat, 25 Jun 2022 21:03:35 -0300
-Date:   Sat, 25 Jun 2022 21:03:35 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Ajay Sharma <sharmaajay@microsoft.com>
-Cc:     Long Li <longli@microsoft.com>, KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "shiraz.saleem@intel.com" <shiraz.saleem@intel.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-Subject: Re: [EXTERNAL] [Patch v4 12/12] RDMA/mana_ib: Add a driver for
- Microsoft Azure Network Adapter
-Message-ID: <20220626000335.GL23621@ziepe.ca>
-References: <1655345240-26411-1-git-send-email-longli@linuxonhyperv.com>
- <1655345240-26411-13-git-send-email-longli@linuxonhyperv.com>
- <DM4PR21MB32967BB85B7B022671ECADD1D6B79@DM4PR21MB3296.namprd21.prod.outlook.com>
+        with ESMTP id S230439AbiFZDaB (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sat, 25 Jun 2022 23:30:01 -0400
+Received: from heian.cn.fujitsu.com (mail.cn.fujitsu.com [183.91.158.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D105111804;
+        Sat, 25 Jun 2022 20:29:59 -0700 (PDT)
+IronPort-Data: =?us-ascii?q?A9a23=3AUErOU6OzLIe7VGDvrR0xlcFynXyQoLVcMsFnjC/?=
+ =?us-ascii?q?WdQTs0TNx3jxSmmEXW2mCbPuKMWCjftElPYWzoBwPvcWGm99gGjLY11k3ESsS9?=
+ =?us-ascii?q?pCt6fd1j6vIF3rLaJWFFSqL1u1GAjX7BJ1yHi+0SiuFaOC79yEmjfjQH9IQNca?=
+ =?us-ascii?q?fUsxPbV49IMseoUI78wIJqtYAbemRW2thi/uryyHsEAPNNwpPD44hw/nrRCWDE?=
+ =?us-ascii?q?xjFkGhwUlQWPZintbJF/pUfJMp3yaqZdxMUTmTId9NWSdovzJnhlo/Y1xwrTN2?=
+ =?us-ascii?q?4kLfnaVBMSbnXVeSMoiMOHfH83V4Z/Wpvuko4HKN0hUN/jzSbn9FzydxLnZKtS?=
+ =?us-ascii?q?wY1JbCKk+MYO/VdO3gkY/QYo+KbcBBTtuTWlSUqaUDEyPVjCk4nOpAw/udxHHE?=
+ =?us-ascii?q?I/PgZIjkHZ1aIgOfe6KOyTOtxgIIxLNTDOIIZp2EmwTzHZd4mSJnARKOM78JX0?=
+ =?us-ascii?q?zoYgdpHFvLTIcEebFJHaBXGfg0KOVoNDp86tPmni2O5cDBCrl+R460t7AD7yA1?=
+ =?us-ascii?q?3zaioKtbQc/SUSshP2EWVvGTL+yL+GB5yHN6QxhKX83+0i6nElEvGtCg6fFGj3?=
+ =?us-ascii?q?qcyxgTNmSpIU1tLPWZXaMKR0iaWM++z4WRNksb2kZUPyQ=3D=3D?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AEcZ7e6lIXPVwcbq8CPpBP8x2a4zpDfIQ3DAb?=
+ =?us-ascii?q?v31ZSRFFG/Fw9vre+MjzsCWYtN9/Yh8dcK+7UpVoLUm8yXcX2/h1AV7BZniEhI?=
+ =?us-ascii?q?LAFugLgrcKqAeQeREWmNQ86Y5QN4B6CPDVSWNxlNvG5mCDeOoI8Z2q97+JiI7l?=
+ =?us-ascii?q?o0tQcQ=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.88,333,1635177600"; 
+   d="scan'208";a="126163549"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 26 Jun 2022 11:29:58 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id B71594D17168;
+        Sun, 26 Jun 2022 11:29:53 +0800 (CST)
+Received: from G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.83) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.23; Sun, 26 Jun 2022 11:29:54 +0800
+Received: from [192.168.122.212] (10.167.226.45) by
+ G08CNEXCHPEKD08.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.23 via Frontend Transport; Sun, 26 Jun 2022 11:29:53 +0800
+Subject: Re: [PATCH v3 0/2] RDMA/rxe: Fix no completion event issue
+To:     Yanjun Zhu <yanjun.zhu@linux.dev>, Jason Gunthorpe <jgg@ziepe.ca>,
+        "Haakon Bugge" <haakon.bugge@oracle.com>,
+        Cheng Xu <chengyou@linux.alibaba.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "Yang, Xiao" <yangx.jy@fujitsu.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20220516015329.445474-1-lizhijian@fujitsu.com>
+ <fa9863f0-d42e-f114-5321-108dda270e27@fujitsu.com>
+ <3ee9e8d1-01dc-0936-efde-b07482a5e785@linux.dev>
+From:   "Li, Zhijian" <lizhijian@fujitsu.com>
+Message-ID: <83cfdf23-7a2d-0776-85ee-7314187e9980@fujitsu.com>
+Date:   Sun, 26 Jun 2022 11:29:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM4PR21MB32967BB85B7B022671ECADD1D6B79@DM4PR21MB3296.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <3ee9e8d1-01dc-0936-efde-b07482a5e785@linux.dev>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-yoursite-MailScanner-ID: B71594D17168.AC98B
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lizhijian@fujitsu.com
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Sat, Jun 25, 2022 at 04:20:19AM +0000, Ajay Sharma wrote:
-> Hello Maintainers,
->  Any idea when these patches would make it into the next kernel release ?
 
-New rdma drivers typically take a long time to get merged due to their
-typical huge size. Currently I'm working through ERDMA. Reviewing the
-ERDMA submission would be helpful, I generally prefer it if people
-proposing new drivers review other new drivers being submitted.
+on 6/25/2022 8:59 PM, Yanjun Zhu wrote:
+>
+> 在 2022/6/7 16:32, lizhijian@fujitsu.com 写道:
+>> Hi Json & Yanjun
+>>
+>>
+>> I know there are still a few regressions on RXE, but i do wish you 
+>> could take some time to review these *simple and bugfix* patches
+>> They are not related to the regressions.
+>
+> Now there are some problems from Redhat and other Linux Vendors.
+>
+> We had better focus on these problems.
 
-In this case it seems smaller, so you might make this cycle, though I
-haven't even opened the userspace portion yet.
++ Xiao
+I do believe regression is high priority,  and I'm very willing to contribute our efforts to improve the stability of RXE :)
+Yang,Xiao and me tried to reproduce the issues in maillist and we also tried to review the their corresponding patches.
+However actually we didn't find a unified way something like bugzilla to maintain the issues and their status, and most of
+them are not reproduced by our local environment. So it's a bit hard for us to review/verify the patches especially for the
+large/complicate patch if we don't have the use cases.
 
-Jason
+BTW, IMO we shouldn't stop reviewing other fixes expect recent regressions.
+
+Zhijian
+
+>
+> Zhu Yanjun
+>
+>>
+>>
+>> Thanks
+>> Zhijian
+>>
+>>
+>> On 16/05/2022 09:53, Li Zhijian wrote:
+>>> Since RXE always posts RDMA_WRITE successfully, it's observed that
+>>> no more completion occurs after a few incorrect posts. Actually, it
+>>> will block the polling. we can easily reproduce it by the below 
+>>> pattern.
+>>>
+>>> a. post correct RDMA_WRITE
+>>> b. poll completion event
+>>> while true {
+>>>     c. post incorrect RDMA_WRITE(wrong rkey for example)
+>>>     d. poll completion event <<<< block after 2 incorrect RDMA_WRITE 
+>>> posts
+>>> }
+>>>
+>>>
+>>> Li Zhijian (2):
+>>>     RDMA/rxe: Update wqe_index for each wqe error completion
+>>>     RDMA/rxe: Generate error completion for error requester QP state
+>>>
+>>>    drivers/infiniband/sw/rxe/rxe_req.c | 12 +++++++++++-
+>>>    1 file changed, 11 insertions(+), 1 deletion(-)
+>>>
+
+
