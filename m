@@ -2,103 +2,67 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4707755B240
-	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jun 2022 15:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37ED755B25C
+	for <lists+linux-rdma@lfdr.de>; Sun, 26 Jun 2022 15:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234445AbiFZNXC (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Sun, 26 Jun 2022 09:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S231445AbiFZN7B (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Sun, 26 Jun 2022 09:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234581AbiFZNXC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Jun 2022 09:23:02 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2059.outbound.protection.outlook.com [40.107.244.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B44C10
-        for <linux-rdma@vger.kernel.org>; Sun, 26 Jun 2022 06:23:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lTBdmUyGwXpl11+C3+yF4piybHkbxx9iMs1/zoC+89gL51p4k4PkUEkCvl/ziROjiGw6MjNmCPEhPG1HhR/lKjTcwgFIM+Qb4jyRQZ1+79NTSuudiPTkJCAW9X+iBd5LCz53fExIqatkEQp1hnGbw8Iok8i62tEeK7gIM2oKu4MjqdyC0CfiQgwX9FVLj8uCsrO//jHU9Tz23ecqpvFDjR2U/MXjvQW5gWVFTg/gXo7sgBv+X6q8PxsejB5Jts5yJv75lzWbe+fZAW/b6WRv8gYleLKiAY4PV6BJvPtgnxLLPBIzkesVLEseI9dHQGMSCgdN5Jmsx67SGpiE1p9fTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hpjHvpJL8rcd+cDpE1ImEMjpA2XxzNUCfwHyPhe8eT0=;
- b=Ez8ZDDsC2LUT5ez476nv+n0hBhEZ2QfG2+r7LgXpCxW8zgZzqiXnf4yH39cxYprAsCsfOKG/p7TlH5/cioNrxO+B11pV82y6UkWumoXVZgJDtN8b4Q2K0jbXV3oVrRX4q/9v7x0joVy0Al7dBAqRZ/1pD84yjyULnrEvETrsaUJiA400U5/pVF9IntY5EVJs1vxvu8zuQHIftSTHzdh5wFP6+sENn+T58FwLM+PR3ZwoVMADF1i+IQWjijix/1okIq4Ivn/FnZ8zsBcOzk+nlbhGR8dRxzyAtEciNukWwzoY/RPIwMHLfRbYyuiI6aGfr0iAqMw3y+4OaXG3mNiLZg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 12.22.5.234) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hpjHvpJL8rcd+cDpE1ImEMjpA2XxzNUCfwHyPhe8eT0=;
- b=RIm2/b8jgtNbuyQkjG/P3fPlHkT3QRRNFAXLjbWrwnXI8yCIhmqTTsdZB1OLJBPD7GGJDcGPcw5g3Waw3Q7S0/ZxWc5YAdk/LaNrC6j9LauRWtJY6HE2NdlvJPs8MaL1Wv4t4LSkFsLrQRRk4MY2QKUK++HmvNedXGuwskDACV3KvV7aOdBBHboF7HnQh+PJ4ADux83nZwmeGAvmdCN0iAUifpUfhghK3e3GbnjBnz1X/Zh/E/bPZMR07jk8QJQWaUBmW7t8KwHZRN+nOP2jnuibMxsjD+BOkVsP++5LWM6oCz2M54e9+N8HS90SZL6umEB8qgMYncKmRyXjnZzwUA==
-Received: from BN9PR03CA0252.namprd03.prod.outlook.com (2603:10b6:408:ff::17)
- by CY5PR12MB6527.namprd12.prod.outlook.com (2603:10b6:930:30::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.16; Sun, 26 Jun
- 2022 13:22:59 +0000
-Received: from BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:ff:cafe::aa) by BN9PR03CA0252.outlook.office365.com
- (2603:10b6:408:ff::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.15 via Frontend
- Transport; Sun, 26 Jun 2022 13:22:58 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.234)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 12.22.5.234 as permitted sender) receiver=protection.outlook.com;
- client-ip=12.22.5.234; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (12.22.5.234) by
- BN8NAM11FT068.mail.protection.outlook.com (10.13.177.69) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.5373.15 via Frontend Transport; Sun, 26 Jun 2022 13:22:58 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL101.nvidia.com
- (10.27.9.10) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Sun, 26 Jun
- 2022 13:22:57 +0000
-Received: from [10.80.0.165] (10.126.231.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Sun, 26 Jun
- 2022 06:22:55 -0700
-Message-ID: <d15692b9-7a43-4a5d-a65d-60b12d33b739@nvidia.com>
-Date:   Sun, 26 Jun 2022 16:22:53 +0300
+        with ESMTP id S230497AbiFZN7A (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Sun, 26 Jun 2022 09:59:00 -0400
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DE9DEF1;
+        Sun, 26 Jun 2022 06:58:59 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id v14so9497042wra.5;
+        Sun, 26 Jun 2022 06:58:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=2AbSkeFZUioPAQ3a70nNyeL3mIPEJabq4zioJ0USaqA=;
+        b=geSJHIbg5t3jd54nRzJoLOR/s7fT7SkWRtJuYJnPsWfbEZyqK4XKlBl3ZvBskPd2oj
+         k/soBnos/N0cL8mZfrCw6KqM7WOgIyQzDzmP9esNMGls56ISU6KAGcithnhQnqvmBlRz
+         wjrFKNY5pvcjCBvfS4Ieron3r35hz1SP8j7aNwuBcUFA4SV+Ik7OChn9qc3++2EUzzs1
+         miSJsOflGOYxku9ZqzRgrbdcdDq78z/EjEmt3o1By8yXjKw9uottB0Nl1j1B9PsOLh5T
+         4ZGjMsfNctiLedXxhlTrwnPNpy8PmrVDvEb8aiUMiKcK5cj8ubAowDLWjrsYHD9IRpw2
+         PTog==
+X-Gm-Message-State: AJIora9lifaGOyMShuRarCPnfspoj6gOeu5wlIVQUn0lNDkCtTMAMvJ7
+        RdRMC7ybQnQAMkBmnLQqQOw=
+X-Google-Smtp-Source: AGRyM1tsNjy9pUQ2/KlwB69wacP4xwTylLY6Td/+6NMMtK1xKOX8O1lC5Yu/j8LwK2/38EbSaAC5PA==
+X-Received: by 2002:adf:f102:0:b0:21b:8bba:5025 with SMTP id r2-20020adff102000000b0021b8bba5025mr8255000wro.174.1656251938109;
+        Sun, 26 Jun 2022 06:58:58 -0700 (PDT)
+Received: from [192.168.64.180] (bzq-219-42-90.isdn.bezeqint.net. [62.219.42.90])
+        by smtp.gmail.com with ESMTPSA id l16-20020adffe90000000b0021b9a4a75e2sm7723716wrr.30.2022.06.26.06.58.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 26 Jun 2022 06:58:57 -0700 (PDT)
+Message-ID: <bb9ba2df-ca20-1126-4393-d2f1e6ba6a1b@grimberg.me>
+Date:   Sun, 26 Jun 2022 16:58:55 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: Bug in pyverbs test_resize_cq
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 5/6] blk-mq: Drop 'reserved' arg of busy_tag_iter_fn
 Content-Language: en-US
-To:     Bob Pearson <rpearsonhpe@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "Zhu Yanjun" <zyjzyj2000@gmail.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <c8dff35b-a40b-19a0-a1a0-68d5637b3709@gmail.com>
-From:   Edward Srouji <edwards@nvidia.com>
-In-Reply-To: <c8dff35b-a40b-19a0-a1a0-68d5637b3709@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     John Garry <john.garry@huawei.com>, axboe@kernel.dk,
+        damien.lemoal@opensource.wdc.com, bvanassche@acm.org, hch@lst.de,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, hare@suse.de,
+        satishkh@cisco.com, sebaddel@cisco.com, kartilak@cisco.com
+Cc:     linux-doc@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        mpi3mr-linuxdrv.pdl@broadcom.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org
+References: <1655810143-67784-1-git-send-email-john.garry@huawei.com>
+ <1655810143-67784-6-git-send-email-john.garry@huawei.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+In-Reply-To: <1655810143-67784-6-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.231.35]
-X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 531ff6d4-fcc3-4d1e-280e-08da5776fcd0
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6527:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Ni+dyCJ/WRFSFEmHAwrByjfrUIjtAS6QOH2+cV45iBO/7hT9zN1YE2gBB6+0T/DRgitEc+VfcFT1Lj6vJFhfDIEMXib211AGvSnJzH2pxvUnxVJdQYtmx21uMN0Jjk8qP4gRoMILovbZhxUqZkcwRB5SV1KS81SnHFFHf2hrUX66F4UmREkC6FTDw4lOb3JZRISX2YkD273Nf8feqQfnaj7bSf+evArPoEYQmyyf02R0W76rk3joTlj6seEovK9kQifUiPrWNhtDsRv7tyCPn+UBeSswj2VuWjz20nc6ygQkcbETtbf3rXNzc2I38WVUdze6e1OqXP7yWq3Nq6o1imCNxYT32ciHaqUq+eMOW6cazaKKjfw275Lzpr0YSYRNhOIqWSNg6y7gkxy4qkoiaeVXYM3xl3RjJff2qPfhgjpyjf7YHzbczhRuF/W5Cmwmxs+kkR7JaQ7UGwOBX98FAVV0AuEZDyCx621HmtgC9tU58GwaQ3/5cpOAfz2xBe7CT2X04kr2caeObsNl9WoTURDGeBEv3WotsUlzZoQxOtJ+gFHk8xl1jQm5rZO5tt65bh7ifOXuWB6yDTcJDUnyIdJvip246lLZeUG6YOfxqOC/w9faapuk+EygTmcEXnCI59Q5ezd2hlBX/sUmUwGO5aXphCpUFRaYGLP1d1iO2EH6utxyxyWWpfNF3uolQQKvV2d5RwLh00C00rxO/rcw74Krrsmq/8TnroPXM+xfES/ykZbgxUh1xx8RFZGglj/99oFN1qBQdWKHHT4X6Pq4k5F9Sej76Uf5caqhg6f0VO93CZCQ0KCDT/bK2WqZYKBIJTOD32dM2qIm7Ns01lGKZfhgYVaQVNQC6j58zx0Gkoua4+xySd5GmP3kaOzssIIF
-X-Forefront-Antispam-Report: CIP:12.22.5.234;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(4636009)(396003)(346002)(39860400002)(376002)(136003)(36840700001)(46966006)(40470700004)(41300700001)(426003)(36860700001)(81166007)(186003)(8936002)(336012)(5660300002)(26005)(2906002)(40480700001)(82740400003)(478600001)(16576012)(356005)(316002)(16526019)(53546011)(110136005)(40460700003)(47076005)(70586007)(2616005)(70206006)(8676002)(31696002)(31686004)(36756003)(86362001)(83380400001)(82310400005)(43740500002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2022 13:22:58.3885
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 531ff6d4-fcc3-4d1e-280e-08da5776fcd0
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.234];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT068.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6527
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,50 +71,24 @@ List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
 
-On 6/19/2022 6:31 AM, Bob Pearson wrote:
-> External email: Use caution opening links or attachments
->
->
-> Edward,
->
-> In the test_resize_cq test the following is written
->
->          # Fill the CQ entries except one for avoid cq_overrun warnings.
->
->          send_wr, _ = u.get_send_elements(self.client, False)
->
->          ah_client = u.get_global_ah(self.client, self.gid_index, self.ib_port)
->
->          for i in range(self.client.cq.cqe - 1):
->
->              u.send(self.client, send_wr, ah=ah_client)
->
->
->
->          # Decrease the CQ size to less than the CQ unpolled entries.
->
->          new_cq_size = 1
->
->          with self.assertRaises(PyverbsRDMAError) as ex:
->
->              self.client.cq.resize(new_cq_size)
->
->          self.assertEqual(ex.exception.error_code, errno.EINVAL)
->
->
-> No where does it make any attempt to see if the sends are completed before testing to
-> resize the cq. Software drivers might not get finished in time and fail the test
-> because there are no entries in the cq. Technically this is wrong code. You should test
-> for the completion before attempting to destroy them. Or insert a small delay.
 
-Have you actually encountered this issue?
+On 6/21/22 14:15, John Garry wrote:
+> We no longer use the 'reserved' arg in busy_tag_iter_fn for any iter
+> function so it may be dropped.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Hannes Reinecke <hare@suse.de>
+> ---
+>   block/blk-mq-debugfs.c              |  2 +-
+>   block/blk-mq-tag.c                  |  7 +++----
+>   block/blk-mq.c                      | 10 ++++------
+>   drivers/block/mtip32xx/mtip32xx.c   |  6 +++---
+>   drivers/block/nbd.c                 |  2 +-
+>   drivers/infiniband/ulp/srp/ib_srp.c |  3 +--
+>   drivers/nvme/host/core.c            |  2 +-
+>   drivers/nvme/host/fc.c              |  3 +--
+>   drivers/nvme/host/nvme.h            |  2 +-
 
-I understand what you're saying, but we only send 6 WQEs , and we 
-intentionally don't poll them (to not "drain" the CQ).
-It's enough for the device to get 2 WQEs in order to pass the test, I 
-don't expect anyone to fail on that, unless there's a real performance 
-issue. In case you encountered with this issue I'll re-look into it.
-
-> Bob
-Thanks.
-
+for the nvme bits:
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
