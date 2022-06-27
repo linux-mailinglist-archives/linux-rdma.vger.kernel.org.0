@@ -2,41 +2,64 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A8955D4FA
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 15:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2125155CF4D
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 15:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbiF0OBE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jun 2022 10:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37204 "EHLO
+        id S234815AbiF0Qhb (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jun 2022 12:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234788AbiF0OBA (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jun 2022 10:01:00 -0400
-Received: from mail-m2835.qiye.163.com (mail-m2835.qiye.163.com [103.74.28.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EC7D11C
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Jun 2022 07:00:58 -0700 (PDT)
-Received: from localhost.localdomain (unknown [124.126.138.30])
-        by mail-m2835.qiye.163.com (Hmail) with ESMTPA id 5FE3A8A003E;
-        Mon, 27 Jun 2022 22:00:56 +0800 (CST)
-From:   Tao Liu <thomas.liu@ucloud.cn>
-To:     linux-rdma@vger.kernel.org
-Cc:     saeedm@nvidia.com, talgi@nvidia.com, leonro@nvidia.com,
-        mgurtovoy@nvidia.com, jgg@nvidia.com, yaminf@nvidia.com,
-        thomas.liu@ucloud.cn
-Subject: [PATCH v3] linux/dim: Fix divide 0 in RDMA DIM.
-Date:   Mon, 27 Jun 2022 22:00:04 +0800
-Message-Id: <20220627140004.3099-1-thomas.liu@ucloud.cn>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+        with ESMTP id S239532AbiF0Qh0 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jun 2022 12:37:26 -0400
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22D56120AA;
+        Mon, 27 Jun 2022 09:37:24 -0700 (PDT)
+Received: by mail-pj1-f54.google.com with SMTP id i8-20020a17090aee8800b001ecc929d14dso10555760pjz.0;
+        Mon, 27 Jun 2022 09:37:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=h+CBkZaCUAPsWCF3WoXppHNKCyy0dZJN6jYn++00T3g=;
+        b=7p1fFtmxjpgpdCxfjBHM1/VvTSG6Lpy9043NJpMYFZvwJzsJKlyeMseOTDj9+yFtBO
+         XP8VxNnsyciE6/OHjDc3RAd81A9hgwmtxesSC4opzbmEV9lJmPwSHWxvyNXSK8/9ntIv
+         8T15ZK1PnGHKIaW48WErH/47wJRY8itJXSxsDCC1VDpHcuS3ovEuvnO/i+7dlclnAa5k
+         D9W2ds7N4JRSTbOgdxCjCgW9rPEgI7ew+a7pooShyhtFixgNmJrVOCjR27Iha1SUGGXR
+         xJv+HfCOdoYqcBrLj1lJl5qEnlSY1TVx9L53ibCszzCShfZYqJ6Xc2B8x/FdAqZt/9K1
+         4CFA==
+X-Gm-Message-State: AJIora98faboZt6EoG9xTun9oAE15ZN3Zn5yWNpmiQ9BQ+7BscbWGnxi
+        FfvNNhEUr+B0DwEUrDoA/PE=
+X-Google-Smtp-Source: AGRyM1uxX09PPBW2F2Ve5hEmUYge6i2EYx09NheABWO/DbMTHVZ8M4EiHWU/Ay5mZjKCh3PMVRT2OQ==
+X-Received: by 2002:a17:902:d4c8:b0:16a:480b:b79c with SMTP id o8-20020a170902d4c800b0016a480bb79cmr235609plg.15.1656347843352;
+        Mon, 27 Jun 2022 09:37:23 -0700 (PDT)
+Received: from ?IPV6:2620:15c:211:201:ebc3:3a94:fe74:44f0? ([2620:15c:211:201:ebc3:3a94:fe74:44f0])
+        by smtp.gmail.com with ESMTPSA id v19-20020aa78093000000b0051b693baadcsm7559184pff.205.2022.06.27.09.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Jun 2022 09:37:22 -0700 (PDT)
+Message-ID: <ed7e268e-94c5-38b1-286d-e2cb10412334@acm.org>
+Date:   Mon, 27 Jun 2022 09:37:21 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkaHkJKVk4aGhpLQh9CT0wZSVUZERMWGhIXJBQOD1
-        lXWRgSC1lBWUpJT1VKSU1VSkhDVUhLWVdZFhoPEhUdFFlBWU9LSFVKSktISkNVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OlE6HBw6EjIWSAgUAhI5OjlM
-        EQ8aCSlVSlVKTU5NSEhDT05NTEJCVTMWGhIXVQ8TFBYaCFUXEg47DhgXFA4fVRgVRVlXWRILWUFZ
-        SklPVUpJTVVKSENVSEtZV1kIAVlBSEhKTzcG
-X-HM-Tid: 0a81a5771f8f841dkuqw5fe3a8a003e
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.10.0
+Subject: Re: use-after-free in srpt_enable_tpg()
+Content-Language: en-US
+To:     Mike Christie <michael.christie@oracle.com>
+Cc:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <17649b9c-7e42-1625-8bc9-8ad333ab771c@fujitsu.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <17649b9c-7e42-1625-8bc9-8ad333ab771c@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -44,64 +67,16 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Fix a divide 0 error in rdma_dim_stats_compare() when prev->cpe_ratio == 0.
+On 6/27/22 00:09, lizhijian@fujitsu.com wrote:
+> So far, I doubt if the previous defect of configfs mentioned in
+> 9b64f7d0b: "(RDMA/srpt: Postpone HCA removal until after configfs
+> directory removal)" has got a better solution. if not, i have no a
+> clear mechanism to avoid it yet.
+> 
+> feedbacks are very welcome.
+Mike, are you perhaps aware of any plans to add functions to the LIO 
+core for removing tpg and wwn objects?
 
-CallTrace:
-  Hardware name: H3C R4900 G3/RS33M2C9S, BIOS 2.00.37P21 03/12/2020
-  task: ffff880194b78000 task.stack: ffffc90006714000
-  RIP: 0010:backport_rdma_dim+0x10e/0x240 [mlx_compat]
-  RSP: 0018:ffff880c10e83ec0 EFLAGS: 00010202
-  RAX: 0000000000002710 RBX: ffff88096cd7f780 RCX: 0000000000000064
-  RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
-  RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000000 R12: 000000001d7c6c09
-  R13: ffff88096cd7f780 R14: ffff880b174fe800 R15: 0000000000000000
-  FS:  0000000000000000(0000) GS:ffff880c10e80000(0000)
-  knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00000000a0965b00 CR3: 000000000200a003 CR4: 00000000007606e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  PKRU: 55555554
-  Call Trace:
-   <IRQ>
-   ib_poll_handler+0x43/0x80 [ib_core]
-   irq_poll_softirq+0xae/0x110
-   __do_softirq+0xd1/0x28c
-   irq_exit+0xde/0xf0
-   do_IRQ+0x54/0xe0
-   common_interrupt+0x8f/0x8f
-   </IRQ>
-   ? cpuidle_enter_state+0xd9/0x2a0
-   ? cpuidle_enter_state+0xc7/0x2a0
-   ? do_idle+0x170/0x1d0
-   ? cpu_startup_entry+0x6f/0x80
-   ? start_secondary+0x1b9/0x210
-   ? secondary_startup_64+0xa5/0xb0
-  Code: 0f 87 e1 00 00 00 8b 4c 24 14 44 8b 43 14 89 c8 4d 63 c8 44 29 c0 99 31 d0 29 d0 31 d2 48 98 48 8d 04 80 48 8d 04 80 48 c1 e0 02 <49> f7 f1 48 83 f8 0a 0f 86 c1 00 00 00 44 39 c1 7f 10 48 89 df
-  RIP: backport_rdma_dim+0x10e/0x240 [mlx_compat] RSP: ffff880c10e83ec0
+Thanks,
 
-Fixes: f4915455dcf0 ("linux/dim: Implement RDMA adaptive moderation (DIM)")
-Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-Reviewed-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-Acked-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/linux/dim.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/dim.h b/include/linux/dim.h
-index b698266d0035..6c5733981563 100644
---- a/include/linux/dim.h
-+++ b/include/linux/dim.h
-@@ -21,7 +21,7 @@
-  * We consider 10% difference as significant.
-  */
- #define IS_SIGNIFICANT_DIFF(val, ref) \
--	(((100UL * abs((val) - (ref))) / (ref)) > 10)
-+	((ref) && (((100UL * abs((val) - (ref))) / (ref)) > 10))
- 
- /*
-  * Calculate the gap between two values.
--- 
-2.30.1 (Apple Git-130)
-
+Bart.
