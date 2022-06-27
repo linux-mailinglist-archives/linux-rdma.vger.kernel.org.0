@@ -2,179 +2,170 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77BF055D0F8
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 15:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FDB755D175
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 15:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbiF0IpZ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Mon, 27 Jun 2022 04:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        id S233512AbiF0I5q (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Mon, 27 Jun 2022 04:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233019AbiF0IpY (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jun 2022 04:45:24 -0400
-Received: from mail-m2835.qiye.163.com (mail-m2835.qiye.163.com [103.74.28.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF12558A
-        for <linux-rdma@vger.kernel.org>; Mon, 27 Jun 2022 01:45:21 -0700 (PDT)
-Received: from localhost (unknown [117.48.120.186])
-        by mail-m2835.qiye.163.com (Hmail) with ESMTPA id 42A018A0324;
-        Mon, 27 Jun 2022 16:45:18 +0800 (CST)
-Date:   Mon, 27 Jun 2022 16:45:14 +0800
-From:   Tao Liu <thomas.liu@ucloud.cn>
-To:     Leon Romanovsky <leonro@nvidia.com>
-Cc:     linux-rdma@vger.kernel.org, saeedm@nvidia.com, talgi@nvidia.com,
-        mgurtovoy@nvidia.com, jgg@nvidia.com, yaminf@nvidia.com
+        with ESMTP id S233345AbiF0I5p (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Mon, 27 Jun 2022 04:57:45 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2050.outbound.protection.outlook.com [40.107.237.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAD16393
+        for <linux-rdma@vger.kernel.org>; Mon, 27 Jun 2022 01:57:44 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RCO9O2jNlZB0aqmNIQFydKOOqeLBpFjRODW51ovA4D6W+rJnOExNhE5qqWPv373b7kL9N4jBaXE462GpXsLzbmw+z4IXX4lf1xGk97cBsohekEoGd3CD7Uq8or2iXz9RCFPwxssopeI8cUQQw6+FKu8cowfqjYKbAq1OYnYS0KWPFoj0G/UCeLGwCCcVu0M7XR4SRhdi9kF7WoN667urZGljWUcU0IUPDBMa0DnNt+qWrxePactSF/s8NvpZ130Bh4uLuEegX4AJoQ5nZzrmZ4ihnJRiAMoe3AHrafdXsLYGXkHKTz0QSJQJNTB6FucdRmHhPCzPyh6Cg/DPWVRp1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dzGbuAf/lcZVlddd7DcCoEMOSAxK2RSfizCyiPFiYa8=;
+ b=Ri21wAJ1Pk4DsIo7LDKbsvZ+94VuyRGkozw/a2JKL9bPfh1qAz7GEJn0sfdg9t6s86wFwf/6dZhUhBkmdKk5npCi3mSm3Xbbh1sx/WCWdt9rZtpY5WAelfTpNfl8P8zxiONoKkCmoSvKPAi+glHvDmx6CZvElua+RddXpWEzl2KdevXa68Gd2ZkN5SJ9YOWkk47lA2EE4RFZnKcki3PGhIKjX7zYoBkSKYgewfGZggezNAXFf25vGdzJdvawwwiRKTIafujbL2VtcQajms+N3FYsegC8xYC8pr3Thb+Ssxbh583QqY6th+0vZ+uOE/e6XxxncXuJfwPyUVsQrCfdvg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 12.22.5.236) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dzGbuAf/lcZVlddd7DcCoEMOSAxK2RSfizCyiPFiYa8=;
+ b=YSeH0bzKvto2Y7JsEdOs8vDVcsu7ECIcFq6kVzxE9+M2VyYmFRl7PY6fuWpRom7MpB+NeauVLQAytvn7Ybx/DakRSTGEaXWO+oPtlRou2MAByRY58aNTOLxboHj4PiUSsFDlmF38fw5hT670gx/IJSvA/exMqqVaW/64RpAUgJiHO2UN656/dH6nw49tu4rZVl3Gat6pFz0NbA6MuB9ty7ymt/SRjceOfgdhuDmW7FHYK2HHifLJtgB0j8nNxEnp5UV4v8e+9FFPa+DR1QkVZDyvmiWJQwh/J5BzIDPShQi5BO4/1LeQaMiIRiufT5XSB/r6/yN9NCLAFqNmgIAwKQ==
+Received: from BN9PR03CA0103.namprd03.prod.outlook.com (2603:10b6:408:fd::18)
+ by DM6PR12MB2843.namprd12.prod.outlook.com (2603:10b6:5:48::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.17; Mon, 27 Jun
+ 2022 08:57:42 +0000
+Received: from BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:408:fd:cafe::f2) by BN9PR03CA0103.outlook.office365.com
+ (2603:10b6:408:fd::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5373.16 via Frontend
+ Transport; Mon, 27 Jun 2022 08:57:41 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 12.22.5.236)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 12.22.5.236 as permitted sender) receiver=protection.outlook.com;
+ client-ip=12.22.5.236; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (12.22.5.236) by
+ BN8NAM11FT061.mail.protection.outlook.com (10.13.177.144) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.5373.15 via Frontend Transport; Mon, 27 Jun 2022 08:57:41 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by DRHQMAIL109.nvidia.com
+ (10.27.9.19) with Microsoft SMTP Server (TLS) id 15.0.1497.32; Mon, 27 Jun
+ 2022 08:57:34 +0000
+Received: from localhost (10.126.230.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.26; Mon, 27 Jun
+ 2022 01:57:33 -0700
+Date:   Mon, 27 Jun 2022 11:57:30 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Tao Liu <thomas.liu@ucloud.cn>
+CC:     <linux-rdma@vger.kernel.org>, <saeedm@nvidia.com>,
+        <talgi@nvidia.com>, <mgurtovoy@nvidia.com>, <jgg@nvidia.com>,
+        <yaminf@nvidia.com>
 Subject: Re: [PATCH RFC net] linux/dim: Fix divide 0 in RDMA DIM.
-Message-ID: <YrluGtk3wawXlnag@FVFF87CCQ6LR.local>
+Message-ID: <Yrlw+j8dnvCUVa1y@unreal>
 References: <20220623085858.42945-1-thomas.liu@ucloud.cn>
  <YrlfSnNNdjkaajAg@unreal>
+ <YrluGtk3wawXlnag@FVFF87CCQ6LR.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <YrlfSnNNdjkaajAg@unreal>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVlDGE0dVh1CGUhLTUpJHRpLT1UZERMWGhIXJBQOD1
-        lXWRgSC1lBWUpKTFVPQ1VKSUtVSkNNWVdZFhoPEhUdFFlBWU9LSFVKSktISkxVS1kG
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NlE6CQw4HDIWNQkRCDQcLR8z
-        DigKCxhVSlVKTU5NSEpCTkpDTUhJVTMWGhIXVQ8TFBYaCFUXEg47DhgXFA4fVRgVRVlXWRILWUFZ
-        SkpMVU9DVUpJS1VKQ01ZV1kIAVlBTkNJSDcG
-X-HM-Tid: 0a81a4562653841dkuqw42a018a0324
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <YrluGtk3wawXlnag@FVFF87CCQ6LR.local>
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a144b870-f1d6-4853-c376-08da581b182a
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2843:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VudhmzMP+Q+OW1qspdHv47wA54yPAjltHMrXx3ETCI0c5N0LpJJasCP80iq9axW4pJDYoamnv6Ump7RirzyYE4A2RgwdLSpthzTkfXvYHAJj09k0pLCk0B73ZFR6cfXol6Wt+E/oV5lmqls4xPB+IUtAXbaYd8/JRUqGP1uPzqpnqXn4pDqtkvp7Fn/yi+grc9arnbZWpfj0ZZ968Y0etf5ZpF/NytjQFfXZMwjAjetq4F20FcfkY/8rHC0MrNugWv9nIq/0L68q5clUwZLunsczGY53iML2an6OC/SaLeEZUVL/Nna8tOJrBm6icAc78Th7kogpAhqp1ieiqw7Pamkjo7CQNe3ZcvKykrLMsRNS28qaysF7iIQiMJeHi5M3sN4wn2MKpxLqT7UmhWpVAG/UlpiEkBRpgWfMUYjjdJwEEhjj+meqOb4cvOh4y0MoiuSyTGhae88MsA/ze/DxfZNYivx78Fe5wOVHxoTOggKPa+UhLRjDCKBy98Ipdq3y7mQ0cTbebHHUHL1wS1otnTv6i3svETLoqsF52/p/8gyiF3UdpOZSLk5ULFSnT3P3IW60IkMNf3jnxFpuZRlItGzq1TUKGv4c+cfadkZ1+H3GQ9oVHWMdywNmq4lRP38H3u5FP7XbrZANynlQJ6NfSfdO1zoOjUlKrFCjCilCBvPcIe+jBzOoiZk2jZnbFd/hqAteL/jdVPFdF9LoLs+0V4BsjvgvnfEuKbjIs/5Jv8JrkJmFhzbg1Wy0bKGD15GXv2E+K/nRMg3Ki3obSUH5Nf0a4YTZKVXnKExAt0g6W+A0m6iUxRyw+GLio62dBgF9GhujjqrpgJB7FMDLLeMq05dLbZRRZI1IGlyvlvVg7+JZrpXkxxQlQtXWDw6KtdnryD2JcpdV1FNcqX9d0dVvLA==
+X-Forefront-Antispam-Report: CIP:12.22.5.236;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:InfoNoRecords;CAT:NONE;SFS:(13230016)(4636009)(7916004)(136003)(39860400002)(376002)(346002)(396003)(40470700004)(36840700001)(46966006)(54906003)(107886003)(8676002)(5660300002)(36860700001)(4326008)(316002)(336012)(186003)(6916009)(16526019)(47076005)(9686003)(426003)(82310400005)(40480700001)(70586007)(83380400001)(26005)(70206006)(81166007)(41300700001)(2906002)(33716001)(478600001)(356005)(40460700003)(8936002)(82740400003)(86362001)(36900700001)(67856001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Jun 2022 08:57:41.7444
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a144b870-f1d6-4853-c376-08da581b182a
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[12.22.5.236];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT061.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2843
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Mon, Jun 27, 2022 at 10:42:02AM +0300, Leon Romanovsky wrote:
-> On Thu, Jun 23, 2022 at 04:58:58PM +0800, Tao Liu wrote:
-> > We hit a divide 0 error in ofed 5.1.2.3.7.1. But dim.c and
-> > rdma_dim.c seem same as upstream.
-> > 
-> > CallTrace:
-> >   Hardware name: H3C R4900 G3/RS33M2C9S, BIOS 2.00.37P21 03/12/2020
-> >   task: ffff880194b78000 task.stack: ffffc90006714000
-> >   RIP: 0010:backport_rdma_dim+0x10e/0x240 [mlx_compat]
-> >   RSP: 0018:ffff880c10e83ec0 EFLAGS: 00010202
-> >   RAX: 0000000000002710 RBX: ffff88096cd7f780 RCX: 0000000000000064
-> >   RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
-> >   RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-> >   R10: 0000000000000000 R11: 0000000000000000 R12: 000000001d7c6c09
-> >   R13: ffff88096cd7f780 R14: ffff880b174fe800 R15: 0000000000000000
-> >   FS:  0000000000000000(0000) GS:ffff880c10e80000(0000)
-> >   knlGS:0000000000000000
-> >   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >   CR2: 00000000a0965b00 CR3: 000000000200a003 CR4: 00000000007606e0
-> >   DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> >   DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> >   PKRU: 55555554
-> >   Call Trace:
-> >    <IRQ>
-> >    ib_poll_handler+0x43/0x80 [ib_core]
-> >    irq_poll_softirq+0xae/0x110
-> >    __do_softirq+0xd1/0x28c
-> >    irq_exit+0xde/0xf0
-> >    do_IRQ+0x54/0xe0
-> >    common_interrupt+0x8f/0x8f
-> >    </IRQ>
-> >    ? cpuidle_enter_state+0xd9/0x2a0
-> >    ? cpuidle_enter_state+0xc7/0x2a0
-> >    ? do_idle+0x170/0x1d0
-> >    ? cpu_startup_entry+0x6f/0x80
-> >    ? start_secondary+0x1b9/0x210
-> >    ? secondary_startup_64+0xa5/0xb0
-> >   Code: 0f 87 e1 00 00 00 8b 4c 24 14 44 8b 43 14 89 c8 4d 63 c8 44 29 c0 99 31 d0 29 d0 31 d2 48 98 48 8d 04 80 48 8d 04 80 48 c1 e0 02 <49> f7 f1 48 83 f8 0a 0f 86 c1 00 00 00 44 39 c1 7f 10 48 89 df
-> >   RIP: backport_rdma_dim+0x10e/0x240 [mlx_compat] RSP: ffff880c10e83ec0
-> > 
-> > crash> struct dim ffff88096cd7f780
-> > struct dim {
-> >   state = 1 '\001',
-> >   prev_stats = {
-> >       ppms = 2142150514,
-> >       bpms = 391112768,
-> >       epms = -30709,
-> >       cpms = 1,
-> >       cpe_ratio = 0
-> >     },
-> >   start_sample = {
-> >       time = 51174507127193614,
-> >       pkt_ctr = 0,
-> >       byte_ctr = 0,
-> >       event_ctr = 1,
-> >       comp_ctr = 494693321
-> >     },
-> >   measuring_sample = {
-> >       time = 51174507266581985,
-> >       pkt_ctr = 0,
-> >       byte_ctr = 0,
-> >       event_ctr = 65,
-> >       comp_ctr = 494693385
-> >     },
-> >   work = {
-> >       data = {
-> >             counter = 128
-> >           },
-> >       entry = {
-> >             next = 0xffff88096cd7f7d0,
-> >             prev = 0xffff88096cd7f7d0
-> >           },
-> >       func = 0xffffffffa02b9f80
-> >     },
-> >   priv = 0xffff880b174fe800,
-> >   profile_ix = 1 '\001',
-> >   mode = 0 '\000',
-> >   tune_state = 2 '\002',
-> >   steps_right = 1 '\001',
-> >   steps_left = 1 '\001',
-> >   tired = 0 '\000'
-> > }
-> > 
-> > Fixes: f4915455dcf0 ("linux/dim: Implement RDMA adaptive moderation (DIM)")
-> > Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
-> > ---
-> >  lib/dim/rdma_dim.c | 3 +++
-> >  1 file changed, 3 insertions(+)
-> 
-> I think that this change will be better as it won't change
-> decision order in rdma_dim_stats_compare()
-> 
-> diff --git a/include/linux/dim.h b/include/linux/dim.h
-> index b698266d0035..69ae238ec2dc 100644
-> --- a/include/linux/dim.h
-> +++ b/include/linux/dim.h
-> @@ -21,7 +21,7 @@
->   * We consider 10% difference as significant.
->   */
->  #define IS_SIGNIFICANT_DIFF(val, ref) \
-> -       (((100UL * abs((val) - (ref))) / (ref)) > 10)
-> +       (ref && (((100UL * abs((val) - (ref))) / (ref)) > 10))
->  
->  /*
->   * Calculate the gap between two values.
-> 
-> 
-Reviewed code in net_dim_stats_compare() and rdma_dim_stats_compare(), the
-crash point is the only place not covered 0 condition. So it maybe not
-need to change the macro.
+On Mon, Jun 27, 2022 at 04:45:14PM +0800, Tao Liu wrote:
+> On Mon, Jun 27, 2022 at 10:42:02AM +0300, Leon Romanovsky wrote:
+> > On Thu, Jun 23, 2022 at 04:58:58PM +0800, Tao Liu wrote:
+> > > We hit a divide 0 error in ofed 5.1.2.3.7.1. But dim.c and
+> > > rdma_dim.c seem same as upstream.
 
-But I am not familiar with the algorithm, and not sure what is the right
-return value.
+<...>
+
+> > > Fixes: f4915455dcf0 ("linux/dim: Implement RDMA adaptive moderation (DIM)")
+> > > Signed-off-by: Tao Liu <thomas.liu@ucloud.cn>
+> > > ---
+> > >  lib/dim/rdma_dim.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
 > > 
-> > diff --git a/lib/dim/rdma_dim.c b/lib/dim/rdma_dim.c
-> > index 15462d54758d..a657b106343c 100644
-> > --- a/lib/dim/rdma_dim.c
-> > +++ b/lib/dim/rdma_dim.c
-> > @@ -34,6 +34,9 @@ static int rdma_dim_stats_compare(struct dim_stats *curr,
-> >  		return (curr->cpms > prev->cpms) ? DIM_STATS_BETTER :
-> >  						DIM_STATS_WORSE;
+> > I think that this change will be better as it won't change
+> > decision order in rdma_dim_stats_compare()
+> > 
+> > diff --git a/include/linux/dim.h b/include/linux/dim.h
+> > index b698266d0035..69ae238ec2dc 100644
+> > --- a/include/linux/dim.h
+> > +++ b/include/linux/dim.h
+> > @@ -21,7 +21,7 @@
+> >   * We consider 10% difference as significant.
+> >   */
+> >  #define IS_SIGNIFICANT_DIFF(val, ref) \
+> > -       (((100UL * abs((val) - (ref))) / (ref)) > 10)
+> > +       (ref && (((100UL * abs((val) - (ref))) / (ref)) > 10))
 > >  
-> > +	if (!prev->cpe_ratio)
-> > +		return DIM_STATS_SAME;
-> > +
-> >  	if (IS_SIGNIFICANT_DIFF(curr->cpe_ratio, prev->cpe_ratio))
-> >  		return (curr->cpe_ratio > prev->cpe_ratio) ? DIM_STATS_BETTER :
-> >  						DIM_STATS_WORSE;
-> > -- 
-> > 2.30.1 (Apple Git-130)
+> >  /*
+> >   * Calculate the gap between two values.
 > > 
+> > 
+> Reviewed code in net_dim_stats_compare() and rdma_dim_stats_compare(), the
+> crash point is the only place not covered 0 condition. So it maybe not
+> need to change the macro.
+
+Change in the macro ensures that we check cqe_ratio only when it is
+needed.
+
+Can you please resubmit?
+
+Thanks
+
 > 
+> But I am not familiar with the algorithm, and not sure what is the right
+> return value.
+> > > 
+> > > diff --git a/lib/dim/rdma_dim.c b/lib/dim/rdma_dim.c
+> > > index 15462d54758d..a657b106343c 100644
+> > > --- a/lib/dim/rdma_dim.c
+> > > +++ b/lib/dim/rdma_dim.c
+> > > @@ -34,6 +34,9 @@ static int rdma_dim_stats_compare(struct dim_stats *curr,
+> > >  		return (curr->cpms > prev->cpms) ? DIM_STATS_BETTER :
+> > >  						DIM_STATS_WORSE;
+> > >  
+> > > +	if (!prev->cpe_ratio)
+> > > +		return DIM_STATS_SAME;
+> > > +
+> > >  	if (IS_SIGNIFICANT_DIFF(curr->cpe_ratio, prev->cpe_ratio))
+> > >  		return (curr->cpe_ratio > prev->cpe_ratio) ? DIM_STATS_BETTER :
+> > >  						DIM_STATS_WORSE;
+> > > -- 
+> > > 2.30.1 (Apple Git-130)
+> > > 
+> > 
