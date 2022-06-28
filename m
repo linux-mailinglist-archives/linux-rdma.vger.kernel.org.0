@@ -2,141 +2,82 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B248955EEF6
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 22:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4ED55F0BD
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 23:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230157AbiF1UNK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jun 2022 16:13:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47880 "EHLO
+        id S229874AbiF1V4O (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jun 2022 17:56:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229954AbiF1UMC (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 16:12:02 -0400
-Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4800EBA7
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 13:04:16 -0700 (PDT)
-Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-101bb9275bcso18493175fac.8
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 13:04:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=we3hGFudT9IHePxOt4PmGTmdgA1uxn5fDI+UMaLcmus=;
-        b=csyRa4rvVCkRVarBGflyxxuTg0qzEAc8+Szp9HrHtCJW62rCvbQsEfrelXh/AcEUQb
-         J+h8KJxzOuuh4AsecN7NId07ZFyr8R1omVIqm+869Q1c6vlE2A5Vl0825zkW1HcYSfzB
-         9JDgjmZzhQt2BrrgTfIF74CfoYs6T+D6F7BrlVd0BJOTofyuBgFEyJtzQEkFxwL/QP3h
-         guclMUbFN4ORTijFzzOcVI2A3itJ5bBKL5IisdtIg3YTth7sBCbyTB109tEBDFkKIPPC
-         OuN8I3zPoQhlXVII4UFEUtCkoWKqPc/l2eZkN4akQIs5rrf2AOj9wnoWhhrMSpMCV0k3
-         B05A==
+        with ESMTP id S229646AbiF1V4O (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 17:56:14 -0400
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0DC1AF1C;
+        Tue, 28 Jun 2022 14:56:13 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id c205so13200181pfc.7;
+        Tue, 28 Jun 2022 14:56:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=we3hGFudT9IHePxOt4PmGTmdgA1uxn5fDI+UMaLcmus=;
-        b=wiEEtf9Y6w8Yc58YU1vUDEKTh3+lKAjIWrdSITVvEIyOhBvTytkGR3XTEPIh0xafrc
-         X+sDmFnk8esq9fbl+vxR4nJ9aWSTPEYiEvROa6SNECLExaCXHASwnpfH4z8NJGqoNuf2
-         Zw9c82qZu2sstWBaYSprKpuXzlCMRrq7xZcVBx8h/dl52x/N55skEcwUzCiE+dC+nPm6
-         OhTFcDDkoq0d+Tkp+GY4W9KG5nP021QgT3irOeuW+dN3x3FgmSkGENxokMdKeqA+p1GF
-         i0UZnWjBcfq2q5BI7Fi3Yu0ion4FiVdRneytH0cPB5seNR62W9Rw5rgIOMna1gMGGMml
-         VIyA==
-X-Gm-Message-State: AJIora9Qi0uE7rFbyvbEiRUnw1sUVh2+YJOOXMz7CcHO2MgJT9zcAY/N
-        afYqX+Y+VyL5qwftb6l2gHk=
-X-Google-Smtp-Source: AGRyM1t5A7nkwPB6xFeWq+j79tIki+I0PspeK7DCx/r+rzi7u98IDruo1bRc7CYvYDUJmqBEc/9cZA==
-X-Received: by 2002:a05:6870:2053:b0:e9:3c2f:23d9 with SMTP id l19-20020a056870205300b000e93c2f23d9mr859372oad.158.1656446655139;
-        Tue, 28 Jun 2022 13:04:15 -0700 (PDT)
-Received: from ?IPV6:2603:8081:140c:1a00:207a:447b:2525:c16a? (2603-8081-140c-1a00-207a-447b-2525-c16a.res6.spectrum.com. [2603:8081:140c:1a00:207a:447b:2525:c16a])
-        by smtp.gmail.com with ESMTPSA id v2-20020a056808004200b0032e7bd6557fsm7345927oic.50.2022.06.28.13.04.12
+        bh=pWelTq6EwN56QbJGveF4saWXx8x5SzMztkDjtuePWmo=;
+        b=Y5nVIPDnwws3+DibmU8OVMqeaaG8d5lb14hm3FcRyQXR6/N4qaV+FHIyje+UE1r36B
+         yyV0ZJ4jCt+lqL0oKw8XnumaT4fpY4EfR2f0b+d4jkq4e+DO4zhkmYJBi3QHrvOp+OH0
+         uKwYTPsQX4BRMrpithLqB+zccP+8kvZAKqKgaFo2UJi7E4R8kJE684bfI8ygTX8lblWE
+         481dd0zFLmZ8XgkJQ/q7qiZ48w5P/Q+XISjfwJAd3kqUVH/0XPoa5/UTQYxQn18tw0Pb
+         0mBTy5SUyN3/SLRCZVaNxNqyqxGnsSe8QHys7M7aGvtjqIn9ZENvCTLMDXwD3NxYlMlY
+         ZWwA==
+X-Gm-Message-State: AJIora9tskAC3Lu7AO2ymu6szjabs6MLMgIWNv74AZDN7D3GzfCjvcWc
+        QZxrfU4bQXgG3NvrCa3yOHc=
+X-Google-Smtp-Source: AGRyM1siu9bfq6SiHtW1/mutIkn/vmbrZLnwoXPu3Cu6+nFlYYd2MTNkAcoYt1fFa64lPtl+vJg6NQ==
+X-Received: by 2002:a05:6a00:18a7:b0:51b:c63f:1989 with SMTP id x39-20020a056a0018a700b0051bc63f1989mr6824988pfh.49.1656453373150;
+        Tue, 28 Jun 2022 14:56:13 -0700 (PDT)
+Received: from ?IPV6:2601:647:4000:d7:feaa:14ff:fe9d:6dbd? ([2601:647:4000:d7:feaa:14ff:fe9d:6dbd])
+        by smtp.gmail.com with ESMTPSA id j2-20020a170902758200b0016a058b7547sm9629449pll.294.2022.06.28.14.56.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 13:04:13 -0700 (PDT)
-Message-ID: <fa0da24c-2cbf-6251-d0c6-9a7ac3add9ed@gmail.com>
-Date:   Tue, 28 Jun 2022 15:04:11 -0500
+        Tue, 28 Jun 2022 14:56:12 -0700 (PDT)
+Message-ID: <c9a8d74b-40c1-cc0c-6b21-0cec7d69ed8e@acm.org>
+Date:   Tue, 28 Jun 2022 14:56:11 -0700
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] RDMA/rxe: Split rxe_invalidate_mr into local and remote
- versions
+ Thunderbird/91.10.0
+Subject: Re: [RFC PATCH] RDMA/srp: Fix use-after-free in srp_exit_cmd_priv
 Content-Language: en-US
-To:     haris iqbal <haris.phnx@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+To:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
         "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "haris.iqbal@ionos.com" <haris.iqbal@ionos.com>,
-        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-        "aleksei.marov@ionos.com" <aleksei.marov@ionos.com>
-References: <20220609120322.144315-1-haris.phnx@gmail.com>
- <d4223faa-0ac4-707a-1323-3d3ad769706b@fujitsu.com>
- <CAE_WKMy-rGgh_6_=OY_77pXNmV73tmww18eb4+XLpp_DtyASdA@mail.gmail.com>
- <20220624232745.GF23621@ziepe.ca>
- <CAE_WKMwcV_QFyN1j8Mb74-Nxg7V7j1V9M+16OxphUWYAU9m9GA@mail.gmail.com>
- <20220628163446.GQ23621@ziepe.ca>
- <CAE_WKMz1XB19T9mXsSq+m0aUg9fKH0X4fTUYEoLtLR=NKZvKBg@mail.gmail.com>
- <20220628165047.GR23621@ziepe.ca>
- <CAE_WKMw9+XuRUyYhAwVVUv1exJQc13_7Vmnm0vQOX2FdCG1M8w@mail.gmail.com>
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-In-Reply-To: <CAE_WKMw9+XuRUyYhAwVVUv1exJQc13_7Vmnm0vQOX2FdCG1M8w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20220624040253.1420844-1-lizhijian@fujitsu.com>
+ <20220624225908.GA303931@nvidia.com>
+ <5a4a42fe-c5c8-63fe-365f-e6c74a279cc2@acm.org>
+ <20220624234757.GD4147@nvidia.com>
+ <343aa894-796f-181e-1691-15cb8659ab06@fujitsu.com>
+ <41517c0e-acde-25ce-b4d0-7a32499009f3@acm.org>
+ <12bca306-e113-a459-c29f-e36785bdf08f@fujitsu.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <12bca306-e113-a459-c29f-e36785bdf08f@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On 6/28/22 12:05, haris iqbal wrote:
-> On Tue, Jun 28, 2022 at 6:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>
->> On Tue, Jun 28, 2022 at 06:46:39PM +0200, haris iqbal wrote:
->>> On Tue, Jun 28, 2022 at 6:34 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->>>>
->>>> On Tue, Jun 28, 2022 at 06:21:09PM +0200, haris iqbal wrote:
->>>>
->>>>>> Yes, no driver in Linux suports a disjoint key space.
->>>>>
->>>>> If disjoint key space is not supported in Linux; does this mean
->>>>> irrespective of whether an MR is registered (IB_WR_REG_MR) for LOCAL
->>>>> or REMOTE access, both rkey and lkey should be set?
->>>>
->>>> No.. It means given any key the driver can always tell if it is a rkey
->>>> or a lkey. There is never any aliasing of key values. Thus the API
->>>> often doesn't have a away to tell if the given key is an rkey or lkey.
->>>>
->>>>> PS: This discussion started in the following thread,
->>>>> https://marc.info/?l=linux-rdma&m=165390868832428&w=2
->>>>
->>>> rxe is incorrect to not accept the lkey presented on the
->>>> invalidate_rkey input. invalidate_rkey is misnamed.
->>>
->>>
->>> Understood. So a better fix for rxe (as compared to the one I sent)
->>> would be one of the following (if I understand correctly).
->>>
->>> 1) The key sent in INV, is compared with lkey or rkey based on which
->>> one is set (non-zero).
->>
->> This one seems to match the spec
->>
->> However, it requires that keys don't alias, I don't know if rxe has
->> done this.
+On 6/27/22 21:41, lizhijian@fujitsu.com wrote:
+> Awesome, It works for me.
 > 
-> Rxe seems to be NOT aliasing for fast reg. Unsure about other cases.
-> 
-> Maybe Bob or Zhu can shed some light?
-> 
->>
->>> OR,
->>> 2) The key sent in INV, is compared with lkey if the MR has only LOCAL
->>> access, and rkey if the MR has REMOTE access.
->>
->> That might make more sense if rxe has aliasing keys and you need to be
->> specific about r/l
->>
->> Jason
+> Tested-by: Li Zhijian<lizhijian@fujitsu.com>
 
-rxe always has lkey=rkey if rkey is asked for else rkey=0 and lkey is always set.
+Thanks for having tested this patch :-) This patch has been posted on the
+linux-scsi mailing list. See also
+https://lore.kernel.org/linux-scsi/20220628175612.2157218-1-bvanassche@acm.org/T/#u
 
-Bob
+Bart.
