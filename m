@@ -2,96 +2,91 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2932755EBEB
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989FE55ECD1
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 20:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbiF1SGB (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jun 2022 14:06:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        id S230119AbiF1SoJ (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jun 2022 14:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233156AbiF1SF5 (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 14:05:57 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26E41D335
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 11:05:55 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id k9so3484052pfg.5
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 11:05:55 -0700 (PDT)
+        with ESMTP id S229955AbiF1SoI (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 14:44:08 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E2D237E7
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 11:44:06 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id c1so21323757qvi.11
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 11:44:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=ziepe.ca; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pTcGgtfSu6n7KkCWKQ4ciWe5XeKK5S4riO8KfNVW7Ig=;
-        b=F/CZTCTDOlhkWqZ+vOzW0DaoZ/EZ1dOhoCSSJ2RrwBNwuY7CCyvEtaLLk8DO+FYVI8
-         oY1bh2Rw2NH/e7uwuajkABgxQQynq/vb9wDrQT1ziurYSmeBDoqa9s9XGmGLyXXXVu1m
-         Ptj/OKkdrLcBprdD9gQ9RffSNU26yKh9HCJiI=
+         :content-disposition:in-reply-to;
+        bh=srd0vxfduo9pXREXizXvQ1Gwi/kEACFP1rdXcY0Aglg=;
+        b=QDfPPT0fYl+zbzIvYII9znFGb4s02ZWc7rdJXgoVlQii3pb6MPHXUbo2NQcshGpobE
+         dWlWXPBgu4AcM4BoWih7Z1Nr6ImLeGEz2FZoCblM4qyf8MsycIzs6ej4nXX7nwNpGP6Q
+         WS2wAoLm7tunOmWFHsCTXENR5aJ2dwangh3Hiy+KajaZLCQ31/GJ39i5LG+HlW0f/4Yp
+         DzCT3gMR3JvAVHruRt3NJZXTCo87e7XIf3RRiCTD40KLgGYQ8Oy9U016RK3fPhyNykEI
+         VcI+7whSObzV9gDqoR9iwpi6V1hWpQPbHnX1dl7fE5ec/owdsM9r7W03JXKpNXxaLmSi
+         lJng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pTcGgtfSu6n7KkCWKQ4ciWe5XeKK5S4riO8KfNVW7Ig=;
-        b=KBcdXLiJsJpU2rq8cFoLz8UQ6VXlgwpIi+Db1LlfuXeZ2HUmHhPQ4/2TFeOJT/CDHH
-         Sj2xuEmb/qnwwgRGQP1VmA42+/heTnvuG9lF+ZRp2tQOr42+l353jKhe39tWi8AYjIBb
-         KpTz9aQ75XilQIWtwzaLbmzY+53lgr8281C+VVsOnMT+/RNlrLNADFm5aoBGVoaruHnx
-         NGyICgWYa/WGXz5F/4q1wBOcixYW5hDCWw2DyDH1KPHWhSPU8lCu7gcrkyZQWUkFU2kc
-         8joHqp5fggUA+irCJxYLMxVvy5qlrHvzS3oF/PiVj+792rFO7GLxuLjngUb5AVA2EPR4
-         PGFQ==
-X-Gm-Message-State: AJIora/wwGpSU0LUb13ZMaVN0bBtt1jlssr503MtbO3w8Zi7AfOUVLZy
-        eXhtJbwWjqwp3Ncg3bt18T35sA==
-X-Google-Smtp-Source: AGRyM1v6cdnwBfGpeB2JnkCbahQ14YUYaqjRd3VUKbR8YPBigZjfWVkzlvmFIFzfbBj+r2XqbA+86w==
-X-Received: by 2002:a63:7412:0:b0:40c:fa27:9d07 with SMTP id p18-20020a637412000000b0040cfa279d07mr18441815pgc.27.1656439554674;
-        Tue, 28 Jun 2022 11:05:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i3-20020a170902cf0300b0016a0ac06424sm9669985plg.51.2022.06.28.11.05.54
+         :mime-version:content-disposition:in-reply-to;
+        bh=srd0vxfduo9pXREXizXvQ1Gwi/kEACFP1rdXcY0Aglg=;
+        b=6Kd043hlcz+ajN2NpPhrKfepCwM4Ss2044AeaZJLvHHqMfsCLZ8Sm5UMxKbAV5yIt9
+         fSP28A4f0mMQJhajI1sdt3/TJ9uFw4TogcZAiEFNv1sAYlQ5ZBZZI3pC4qgQ8h0Teqi9
+         lt4NGsq1c4TN95B54gQM0Au2U2vM+zJcWNcWbdd6MBQOMNlN38K7sxB4jOD3FcDdZEbI
+         ivAq/kF0Zfs9gwIN8RAJ74UscBhKAjzmNwUL9unC0DMzGmzJVqyvsl7Uo8q8Ife4dJIW
+         +ai0W/I0oFyCsb3R4KKlyMl8YyOUptFvDADI4buUd7Ew0xqgeozVE8fptsiJAYrs8eWH
+         Q8mA==
+X-Gm-Message-State: AJIora8/HDiXhjTOqnKsoWlAwIhADtT0FRaZOLmcYj4qpND1oH5qFR70
+        RhsBLqcc4I8sGqLR/N8LG+Vxtw==
+X-Google-Smtp-Source: AGRyM1uBRJ6m7mmrK5Ju1JW1doBHC+UzIgAGX/xwYqaVx3XSmh4juFCDP3TjiYp7BZ5iZ3elpoeXxg==
+X-Received: by 2002:a05:622a:7:b0:31b:74bd:1597 with SMTP id x7-20020a05622a000700b0031b74bd1597mr6494688qtw.677.1656441846052;
+        Tue, 28 Jun 2022 11:44:06 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-162-113-129.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.113.129])
+        by smtp.gmail.com with ESMTPSA id h9-20020ac85149000000b003050bd1f7c9sm9708477qtn.76.2022.06.28.11.44.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 Jun 2022 11:05:54 -0700 (PDT)
-Date:   Tue, 28 Jun 2022 11:05:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        dm-devel@redhat.com, linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-can@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Tue, 28 Jun 2022 11:44:05 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1o6GBw-0035y2-Fs; Tue, 28 Jun 2022 15:44:04 -0300
+Date:   Tue, 28 Jun 2022 15:44:04 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
         linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        nvdimm@lists.linux.dev,
-        NetFilter <netfilter-devel@vger.kernel.org>,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
         coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
         linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        target-devel <target-devel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
         virtualization@lists.linux-foundation.org,
-        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-hardening@vger.kernel.org
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
 Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
  flexible-array members
-Message-ID: <202206281104.7CC3935@keescook>
+Message-ID: <20220628184404.GS23621@ziepe.ca>
 References: <20220627180432.GA136081@embeddedor>
- <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+ <20220628004052.GM23621@ziepe.ca>
+ <202206281009.4332AA33@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+In-Reply-To: <202206281009.4332AA33@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -100,30 +95,15 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 09:27:21AM +0200, Geert Uytterhoeven wrote:
-> Hi Gustavo,
-> 
-> Thanks for your patch!
-> 
-> On Mon, Jun 27, 2022 at 8:04 PM Gustavo A. R. Silva
-> <gustavoars@kernel.org> wrote:
-> > There is a regular need in the kernel to provide a way to declare
-> > having a dynamically sized set of trailing elements in a structure.
-> > Kernel code should always use “flexible array members”[1] for these
-> > cases. The older style of one-element or zero-length arrays should
-> > no longer be used[2].
-> 
-> These rules apply to the kernel, but uapi is not considered part of the
-> kernel, so different rules apply.  Uapi header files should work with
-> whatever compiler that can be used for compiling userspace.
+On Tue, Jun 28, 2022 at 10:54:58AM -0700, Kees Cook wrote:
 
-Right, userspace isn't bound by these rules, but the kernel ends up
-consuming these structures, so we need to fix them. The [0] -> []
-changes (when they are not erroneously being used within other
-structures) is valid for all compilers. Flexible arrays are C99; it's
-been 23 years. :)
+ 
+> which must also be assuming it's a header. So probably better to just
+> drop the driver_data field? I don't see anything using it (that I can
+> find) besides as a sanity-check that the field exists and is at the end
+> of the struct.
 
-But, yes, where we DO break stuff we need to workaround it, etc.
+The field is guaranteeing alignment of the following structure. IIRC
+there are a few cases that we don't have a u64 already to force this.
 
--- 
-Kees Cook
+Jason
