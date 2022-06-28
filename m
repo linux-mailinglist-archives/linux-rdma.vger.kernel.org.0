@@ -2,124 +2,175 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 625EF55EA99
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 19:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 539FF55EB6B
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 19:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbiF1RGK (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Tue, 28 Jun 2022 13:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49586 "EHLO
+        id S232771AbiF1RzE (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jun 2022 13:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229896AbiF1RGH (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 13:06:07 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBE6A2B24A
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 10:06:04 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id a4so9847212lfm.0
-        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 10:06:04 -0700 (PDT)
+        with ESMTP id S232499AbiF1RzC (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 13:55:02 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0427BF28
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 10:55:00 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id x20so6137535plx.6
+        for <linux-rdma@vger.kernel.org>; Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3C6lgNVt/Y+xHEk69ZYYlWNlbW8tBfmExUxbwK8KUBg=;
-        b=bxTUSrWnKVhG8L+zirctkGHYvaY1hBM3O5Aj9uImIvdujElWSxyjy9ktfPwUwZ8EPE
-         5VlIJa2ajZ/OPelB1vfODTTmIGq5twjutkQ0xV8HlyAOTM+eBBB3nc50xKgoVNkc/IWK
-         Tb9yaN/G6qNyS0dW5ZUK5cQC0Ee2gZV8YmjsbZeBcYZtfDoG98A24X2P9MeGS5EruGXF
-         hu9NtE+zl/hLqcf+Kzq3UnGelNtNwbW5jffsvR9/v5VHMxhCEHEtCIfJT/aikzMxrp9P
-         3fGn2ithfIa94Jw/e4GPxxMvk6gF/cSE1T5h1DVE06Q485NzeI72soIvnQpRa7xsHnNT
-         ziew==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Ifakbg1KSXljeCc2KlqlOz+XfzIBohlTVCEx+b5hm2Y=;
+        b=Lpc3rw2lUDFTgNuiFkNi7vJ3FOoQQ8sPNV+A/xT7kPgFFi5TelrrdXlIUbrL4j9GT+
+         3+ei8DuymmFwmq4TMtVSFXVwj/BEoFuIu2AqPN9i6R5zOS+ndUs4OIvpg1Fj2tZP3rAs
+         mZTqNdFC15vlNUFmjWu7inrraPu1BA3Mkzqts=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3C6lgNVt/Y+xHEk69ZYYlWNlbW8tBfmExUxbwK8KUBg=;
-        b=VpgJaX/e66mDgCxeGRPplAQlmS2gSDgsHk0CPfLu0pNApX6UAuxvlGnmZar1PDu4ai
-         Aoq6yKvDMH0KPDaQC3+aXG1Z3TosnVfbnhA8Dq/TSi3scd91ZaZZfWj5DCE9urbpYds6
-         sHwKwxTSz2o2X4XkHjD8AzwPBtcwwiSApMFzzhtMl+7lv/4R2DAzpyxIRH/j6pmRlyQU
-         nwkQkWeIBSs7/R2F4QV+kEKIDA5P3d+WG64FVk/7xgeS9nj7Lwxlp/sIVujFv6z2Cwgf
-         7GJJhsdzAoS/3itQ8Bg2dk20mySQ7QhxmvDjrwcAg18GVmj7SILIxHh/qyPVlwVBVX/8
-         yrHw==
-X-Gm-Message-State: AJIora82V43SRl1/wOvxlGqvH0cuqd494GkdB2+KJ2oYxijlXv4QDK/C
-        oxq6rKXTN5sJ86ymMfddudBeqzSEVv5ZL7kKaXs=
-X-Google-Smtp-Source: AGRyM1teMkgB5+FFFAexWJIjBRwf7WKNJA72jvGQbVIhZSW1qkQ7uioOg4mpzx7mCKGQZjOHoeHY8WgOA77B6sJL2Cw=
-X-Received: by 2002:a05:6512:39ca:b0:47f:a9e1:e3b8 with SMTP id
- k10-20020a05651239ca00b0047fa9e1e3b8mr11910512lfu.564.1656435963217; Tue, 28
- Jun 2022 10:06:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220609120322.144315-1-haris.phnx@gmail.com> <d4223faa-0ac4-707a-1323-3d3ad769706b@fujitsu.com>
- <CAE_WKMy-rGgh_6_=OY_77pXNmV73tmww18eb4+XLpp_DtyASdA@mail.gmail.com>
- <20220624232745.GF23621@ziepe.ca> <CAE_WKMwcV_QFyN1j8Mb74-Nxg7V7j1V9M+16OxphUWYAU9m9GA@mail.gmail.com>
- <20220628163446.GQ23621@ziepe.ca> <CAE_WKMz1XB19T9mXsSq+m0aUg9fKH0X4fTUYEoLtLR=NKZvKBg@mail.gmail.com>
- <20220628165047.GR23621@ziepe.ca>
-In-Reply-To: <20220628165047.GR23621@ziepe.ca>
-From:   haris iqbal <haris.phnx@gmail.com>
-Date:   Tue, 28 Jun 2022 19:05:37 +0200
-Message-ID: <CAE_WKMw9+XuRUyYhAwVVUv1exJQc13_7Vmnm0vQOX2FdCG1M8w@mail.gmail.com>
-Subject: Re: [PATCH] RDMA/rxe: Split rxe_invalidate_mr into local and remote versions
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ifakbg1KSXljeCc2KlqlOz+XfzIBohlTVCEx+b5hm2Y=;
+        b=uG1Qmg5MEXmTXlVVBxHRduRhg74YmLW8cip7ExGLFce2bp69oa9PVv9ZZyH5j0hoFy
+         S/rzOoPmR5cRN/Xjk4wYXQu2xImmpjNCsimzehvFZfzLHV24kccnSCbyek8jDL7X1EtL
+         yxFjcogTM/bdhD4Ef9OOQXcMU+sZjIZlITjQwY8W1FbTHmhYjgvR+4vCinBocUKAIE/F
+         H8y5wW82s+U546dG5FqW0NITkZ94BaVIlEnzWPLgNnrKE8Wfd6jGtBrU25QFdqe0sVfS
+         jhcG9zMewncjQRKUaE3sHjOVm7GN5flpybQtqdogfEy9IT9Mzp1CPv/dWEt7zOdbcHSf
+         g4+A==
+X-Gm-Message-State: AJIora/r3fF+aWwk4P6xRQd9CSxC+XDFRLEHxBXwcaRRnqF1m+2GdosI
+        MCFDKIRCj+H5BF81z/PTEVdQb1fmxADmbw==
+X-Google-Smtp-Source: AGRyM1vNNODoy68cNcew+BOwykVJS5AyiEbndqdKVVh3DpwTH+wUBJ1HcGxnO6zSsyx2Hva19xbd8w==
+X-Received: by 2002:a17:90b:3b52:b0:1ec:db2a:b946 with SMTP id ot18-20020a17090b3b5200b001ecdb2ab946mr838564pjb.229.1656438899502;
+        Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id f15-20020a170902ff0f00b0016a84d232a6sm5432810plj.46.2022.06.28.10.54.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Jun 2022 10:54:59 -0700 (PDT)
+Date:   Tue, 28 Jun 2022 10:54:58 -0700
+From:   Kees Cook <keescook@chromium.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     "lizhijian@fujitsu.com" <lizhijian@fujitsu.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "haris.iqbal@ionos.com" <haris.iqbal@ionos.com>,
-        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
-        "aleksei.marov@ionos.com" <aleksei.marov@ionos.com>,
-        "rpearsonhpe@gmail.com" <rpearsonhpe@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, dm-devel@redhat.com,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, linux-can@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
+        lvs-devel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        kasan-dev@googlegroups.com, linux-mmc@vger.kernel.org,
+        nvdimm@lists.linux.dev, netfilter-devel@vger.kernel.org,
+        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-usb@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        v9fs-developer@lists.sourceforge.net, linux-rdma@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
+ flexible-array members
+Message-ID: <202206281009.4332AA33@keescook>
+References: <20220627180432.GA136081@embeddedor>
+ <6bc1e94c-ce1d-a074-7d0c-8dbe6ce22637@iogearbox.net>
+ <20220628004052.GM23621@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220628004052.GM23621@ziepe.ca>
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-On Tue, Jun 28, 2022 at 6:50 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Tue, Jun 28, 2022 at 06:46:39PM +0200, haris iqbal wrote:
-> > On Tue, Jun 28, 2022 at 6:34 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > >
-> > > On Tue, Jun 28, 2022 at 06:21:09PM +0200, haris iqbal wrote:
-> > >
-> > > > > Yes, no driver in Linux suports a disjoint key space.
-> > > >
-> > > > If disjoint key space is not supported in Linux; does this mean
-> > > > irrespective of whether an MR is registered (IB_WR_REG_MR) for LOCAL
-> > > > or REMOTE access, both rkey and lkey should be set?
-> > >
-> > > No.. It means given any key the driver can always tell if it is a rkey
-> > > or a lkey. There is never any aliasing of key values. Thus the API
-> > > often doesn't have a away to tell if the given key is an rkey or lkey.
-> > >
-> > > > PS: This discussion started in the following thread,
-> > > > https://marc.info/?l=linux-rdma&m=165390868832428&w=2
-> > >
-> > > rxe is incorrect to not accept the lkey presented on the
-> > > invalidate_rkey input. invalidate_rkey is misnamed.
-> >
-> >
-> > Understood. So a better fix for rxe (as compared to the one I sent)
-> > would be one of the following (if I understand correctly).
-> >
-> > 1) The key sent in INV, is compared with lkey or rkey based on which
-> > one is set (non-zero).
->
-> This one seems to match the spec
->
-> However, it requires that keys don't alias, I don't know if rxe has
-> done this.
+On Mon, Jun 27, 2022 at 09:40:52PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 27, 2022 at 08:27:37PM +0200, Daniel Borkmann wrote:
+> > [...]
+> > Fyi, this breaks BPF CI:
+> > 
+> > https://github.com/kernel-patches/bpf/runs/7078719372?check_suite_focus=true
+> > 
+> >   [...]
+> >   progs/map_ptr_kern.c:314:26: error: field 'trie_key' with variable sized type 'struct bpf_lpm_trie_key' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+> >           struct bpf_lpm_trie_key trie_key;
+> >                                   ^
 
-Rxe seems to be NOT aliasing for fast reg. Unsure about other cases.
+The issue here seems to be a collision between "unknown array size"
+and known sizes:
 
-Maybe Bob or Zhu can shed some light?
+struct bpf_lpm_trie_key {
+        __u32   prefixlen;      /* up to 32 for AF_INET, 128 for AF_INET6 */
+        __u8    data[0];        /* Arbitrary size */
+};
 
->
-> > OR,
-> > 2) The key sent in INV, is compared with lkey if the MR has only LOCAL
-> > access, and rkey if the MR has REMOTE access.
->
-> That might make more sense if rxe has aliasing keys and you need to be
-> specific about r/l
->
-> Jason
+struct lpm_key {
+	struct bpf_lpm_trie_key trie_key;
+	__u32 data;
+};
+
+This is treating trie_key as a header, which it's not: it's a complete
+structure. :)
+
+Perhaps:
+
+struct lpm_key {
+        __u32 prefixlen;
+        __u32 data;
+};
+
+I don't see anything else trying to include bpf_lpm_trie_key.
+
+> 
+> This will break the rdma-core userspace as well, with a similar
+> error:
+> 
+> /usr/bin/clang-13 -DVERBS_DEBUG -Dibverbs_EXPORTS -Iinclude -I/usr/include/libnl3 -I/usr/include/drm -g -O2 -fdebug-prefix-map=/__w/1/s=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -Wmissing-prototypes -Wmissing-declarations -Wwrite-strings -Wformat=2 -Wcast-function-type -Wformat-nonliteral -Wdate-time -Wnested-externs -Wshadow -Wstrict-prototypes -Wold-style-definition -Werror -Wredundant-decls -g -fPIC   -std=gnu11 -MD -MT libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o -MF libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o.d -o libibverbs/CMakeFiles/ibverbs.dir/cmd_flow.c.o   -c ../libibverbs/cmd_flow.c
+> In file included from ../libibverbs/cmd_flow.c:33:
+> In file included from include/infiniband/cmd_write.h:36:
+> In file included from include/infiniband/cmd_ioctl.h:41:
+> In file included from include/infiniband/verbs.h:48:
+> In file included from include/infiniband/verbs_api.h:66:
+> In file included from include/infiniband/ib_user_ioctl_verbs.h:38:
+> include/rdma/ib_user_verbs.h:436:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_cq_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_cq_resp base;
+>                                         ^
+> include/rdma/ib_user_verbs.h:644:34: error: field 'base' with variable sized type 'struct ib_uverbs_create_qp_resp' not at the end of a struct or class is a GNU extension [-Werror,-Wgnu-variable-sized-type-not-at-end]
+>         struct ib_uverbs_create_qp_resp base;
+
+This looks very similar, a struct of unknown size is being treated as a
+header struct:
+
+struct ib_uverbs_create_cq_resp {
+        __u32 cq_handle;
+        __u32 cqe;
+        __aligned_u64 driver_data[0];
+};
+
+struct ib_uverbs_ex_create_cq_resp {
+        struct ib_uverbs_create_cq_resp base;
+        __u32 comp_mask;
+        __u32 response_length;
+};
+
+And it only gets used here:
+
+                DECLARE_UVERBS_WRITE(IB_USER_VERBS_CMD_CREATE_CQ,
+                                     ib_uverbs_create_cq,
+                                     UAPI_DEF_WRITE_UDATA_IO(
+                                             struct ib_uverbs_create_cq,
+                                             struct ib_uverbs_create_cq_resp),
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                     UAPI_DEF_METHOD_NEEDS_FN(create_cq)),
+
+which must also be assuming it's a header. So probably better to just
+drop the driver_data field? I don't see anything using it (that I can
+find) besides as a sanity-check that the field exists and is at the end
+of the struct.
+
+-- 
+Kees Cook
