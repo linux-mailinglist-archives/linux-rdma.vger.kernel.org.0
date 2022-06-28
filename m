@@ -2,122 +2,130 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC73555CA1E
-	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 14:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FC5B55D7D0
+	for <lists+linux-rdma@lfdr.de>; Tue, 28 Jun 2022 15:19:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243282AbiF1H17 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-rdma@lfdr.de>); Tue, 28 Jun 2022 03:27:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57784 "EHLO
+        id S244915AbiF1I2F (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Tue, 28 Jun 2022 04:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242985AbiF1H1h (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 03:27:37 -0400
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C165B2CE26;
-        Tue, 28 Jun 2022 00:27:35 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id i17so18728446qvo.13;
-        Tue, 28 Jun 2022 00:27:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=hwgLtruPC06mcRCnQAsf+kJqHCP1mf00hTNnpiQ34M0=;
-        b=3tQxdeTXaeHedyn+zuV/55ACvAhAXmWcP4mEBFJ7jzsyYq6RsSgMON/8hhCXyPFuse
-         MLSN3K1iygLYNzbYfsEUEZlABb1G1eppIZbae+40fb4YMxpctrE+lrJz3qET/ldo5zGd
-         37edeyXGnan1cSc5wL4OCPTZESLkJDeXBVsf5Jitdq4F2SUoLicy4d+r65QQwFBoAQaF
-         rVmUy/gVspn4buiPbwq5cSH0lOm6yf061HBv7eJrhJeCu9Xa08CHGXWzt6wFcbBU42zO
-         cc0C2wJwrVFqggLP3rTWVXzc4tL0SV7qsxw7pHWn+6UvTIPwY9qNnceTZYR/8yu6Ppqr
-         0hkQ==
-X-Gm-Message-State: AJIora91XfpVhN+yRTRlxkAy8ZQagB28kxgOh0hSO/dgpIY4a+cEmxEM
-        RRrXPZ914wNJxYzvqW7oNwha7fO41WOfPA==
-X-Google-Smtp-Source: AGRyM1vuyurBth3w/1QAUlj3nOiF8B4hIrD4wqWY4IUnkxCMfrPNbOyI3fDTEu0sS0pUw3shJaj5og==
-X-Received: by 2002:a05:622a:647:b0:306:6b30:bd0a with SMTP id a7-20020a05622a064700b003066b30bd0amr12004710qtb.327.1656401254977;
-        Tue, 28 Jun 2022 00:27:34 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id f14-20020a05620a408e00b006a5d2eb58b2sm11643530qko.33.2022.06.28.00.27.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 Jun 2022 00:27:34 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-3176b6ed923so107319457b3.11;
-        Tue, 28 Jun 2022 00:27:33 -0700 (PDT)
-X-Received: by 2002:a81:a092:0:b0:318:5c89:a935 with SMTP id
- x140-20020a81a092000000b003185c89a935mr20762801ywg.383.1656401253054; Tue, 28
- Jun 2022 00:27:33 -0700 (PDT)
+        with ESMTP id S1343982AbiF1I1l (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Tue, 28 Jun 2022 04:27:41 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2793F0C;
+        Tue, 28 Jun 2022 01:27:39 -0700 (PDT)
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4LXHkl0stbz6GDGM;
+        Tue, 28 Jun 2022 16:26:55 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 28 Jun 2022 10:27:37 +0200
+Received: from [10.126.174.22] (10.126.174.22) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Tue, 28 Jun 2022 09:27:36 +0100
+Message-ID: <b530d4ac-2d7b-0989-c5da-6b6351a0a68f@huawei.com>
+Date:   Tue, 28 Jun 2022 09:27:37 +0100
 MIME-Version: 1.0
-References: <20220627180432.GA136081@embeddedor>
-In-Reply-To: <20220627180432.GA136081@embeddedor>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 28 Jun 2022 09:27:21 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Message-ID: <CAMuHMdU27TG_rpd=WTRPRcY22A4j4aN-6d_8OmK2aNpX06G3ig@mail.gmail.com>
-Subject: Re: [PATCH][next] treewide: uapi: Replace zero-length arrays with
- flexible-array members
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>, dm-devel@redhat.com,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-can@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux1394-devel@lists.sourceforge.net, io-uring@vger.kernel.org,
-        lvs-devel@vger.kernel.org,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        nvdimm@lists.linux.dev,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        coreteam@netfilter.org, linux-perf-users@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-sctp@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        scsi <linux-scsi@vger.kernel.org>,
-        target-devel <target-devel@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        V9FS Developers <v9fs-developer@lists.sourceforge.net>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.1
+Subject: Re: [PATCH v2 0/6] blk-mq: Add a flag for reserved requests series
+To:     <axboe@kernel.dk>
+CC:     <linux-doc@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
+        <linux-s390@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <mpi3mr-linuxdrv.pdl@broadcom.com>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <nbd@other.debian.org>,
+        <damien.lemoal@opensource.wdc.com>, <jejb@linux.ibm.com>,
+        <hch@lst.de>, <martin.petersen@oracle.com>, <kartilak@cisco.com>,
+        <bvanassche@acm.org>, <satishkh@cisco.com>, <hare@suse.de>,
+        <sebaddel@cisco.com>
+References: <1655810143-67784-1-git-send-email-john.garry@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+In-Reply-To: <1655810143-67784-1-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.174.22]
+X-ClientProxiedBy: lhreml726-chm.china.huawei.com (10.201.108.77) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-Hi Gustavo,
+On 21/06/2022 12:15, John Garry wrote:
 
-Thanks for your patch!
+Hi Jens,
 
-On Mon, Jun 27, 2022 at 8:04 PM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
-> There is a regular need in the kernel to provide a way to declare
-> having a dynamically sized set of trailing elements in a structure.
-> Kernel code should always use “flexible array members”[1] for these
-> cases. The older style of one-element or zero-length arrays should
-> no longer be used[2].
+about this series, would you be ok to pick this up for merging? Do you 
+find the changes acceptable?
 
-These rules apply to the kernel, but uapi is not considered part of the
-kernel, so different rules apply.  Uapi header files should work with
-whatever compiler that can be used for compiling userspace.
+Thanks,
+John
 
-Gr{oetje,eeting}s,
+> In [0] I included "blk-mq: Add a flag for reserved requests" to identify
+> if a request is 'reserved' for special handling. Doing this is easier than
+> passing a 'reserved' arg to the blk_mq_ops callbacks. Indeed, only 1x
+> timeout implementation or blk-mq iter function actually uses the
+> 'reserved' arg (or 3x if you count SCSI core and FNIC SCSI driver). So
+> this series drops the 'reserved' arg for these timeout and iter functions.
+> Christoph suggested that I try to upstream now.
+> 
+> Differences to v1:
+> - Use "scsi_timeout" as name for SCSI timeout function and update docs
+> - Add RB tags (thanks!)
+> - Split out patch to drop local variables for 'reserved', as requested by
+>    Bart
+> 
+> Based on following:
+> 6dbcddf6e76b (block/for-5.20/block) block: bfq: Fix kernel-doc headers
+> 
+> [0] https://lore.kernel.org/linux-scsi/1654770559-101375-1-git-send-email-john.garry@huawei.com/T/#m22aa9f89e55835edc2e650d43f7e3219a3a1a324
+> 
+> John Garry (6):
+>    scsi: core: Remove reserved request time-out handling
+>    blk-mq: Add a flag for reserved requests
+>    blk-mq: Drop blk_mq_ops.timeout 'reserved' arg
+>    scsi: fnic: Drop reserved request handling
+>    blk-mq: Drop 'reserved' arg of busy_tag_iter_fn
+>    blk-mq: Drop local variable for reserved tag
+> 
+>   Documentation/scsi/scsi_eh.rst          |  3 +--
+>   Documentation/scsi/scsi_mid_low_api.rst |  2 +-
+>   block/blk-mq-debugfs.c                  |  2 +-
+>   block/blk-mq-tag.c                      | 13 +++++--------
+>   block/blk-mq.c                          | 22 +++++++++++++---------
+>   block/bsg-lib.c                         |  2 +-
+>   drivers/block/mtip32xx/mtip32xx.c       | 11 +++++------
+>   drivers/block/nbd.c                     |  5 ++---
+>   drivers/block/null_blk/main.c           |  2 +-
+>   drivers/infiniband/ulp/srp/ib_srp.c     |  3 +--
+>   drivers/mmc/core/queue.c                |  3 +--
+>   drivers/nvme/host/apple.c               |  3 +--
+>   drivers/nvme/host/core.c                |  2 +-
+>   drivers/nvme/host/fc.c                  |  6 ++----
+>   drivers/nvme/host/nvme.h                |  2 +-
+>   drivers/nvme/host/pci.c                 |  2 +-
+>   drivers/nvme/host/rdma.c                |  3 +--
+>   drivers/nvme/host/tcp.c                 |  3 +--
+>   drivers/s390/block/dasd.c               |  2 +-
+>   drivers/s390/block/dasd_int.h           |  2 +-
+>   drivers/scsi/aacraid/comminit.c         |  2 +-
+>   drivers/scsi/aacraid/linit.c            |  2 +-
+>   drivers/scsi/fnic/fnic_scsi.c           | 14 ++++----------
+>   drivers/scsi/hosts.c                    | 14 ++++++--------
+>   drivers/scsi/mpi3mr/mpi3mr_os.c         | 16 ++++------------
+>   drivers/scsi/scsi_error.c               |  6 +++---
+>   drivers/scsi/scsi_lib.c                 |  8 --------
+>   drivers/scsi/scsi_priv.h                |  2 +-
+>   include/linux/blk-mq.h                  | 10 ++++++++--
+>   include/scsi/scsi_host.h                |  2 +-
+>   30 files changed, 71 insertions(+), 98 deletions(-)
+> 
 
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
