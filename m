@@ -2,57 +2,58 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AC556229D
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD0956229C
 	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jun 2022 21:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236812AbiF3TFM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        id S236813AbiF3TFM (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
         Thu, 30 Jun 2022 15:05:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236817AbiF3TFL (ORCPT
+        with ESMTP id S236355AbiF3TFL (ORCPT
         <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jun 2022 15:05:11 -0400
-Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B8023AA79
+Received: from mail-oa1-x36.google.com (mail-oa1-x36.google.com [IPv6:2001:4860:4864:20::36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA4337A32
         for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:05:10 -0700 (PDT)
-Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-10bab338f70so492922fac.7
+Received: by mail-oa1-x36.google.com with SMTP id 586e51a60fabf-101d2e81bceso585824fac.0
         for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:05:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=DyjLX6ic4CHAm5vSjTY4RzmAKn5FQWP0TWCHfZ2cDvE=;
-        b=pZRzuL+uqrxtoSqTFjyswvJnYHzQihNtfuUuzT8lTreRoyfT0ofAMg0Hz75nEbgefU
-         22QVri6ph0d5xl5vuoyMqGiTlHLmsIoix9TOnGXAfx748FUH3YZDK72cXl7ZAapVyYVY
-         paVaDzrLT/r929TAHDbIFXR6HVLvXghLLozoNawT/TIcmbB/bAKGsmiLJ7zuPcUtVrDQ
-         p9wl50ddJbT+4f8L2YeFUk+WRd0J5K+GP6yotYiAbYbRLxHPBzT+Gu9gZYyJy3ZdFEgr
-         56Y0U7Jta3YvKKQRxqziOw9NMBSUryxFXRbXKgHSKvHETjOa6r7TEjmfadVH8F6IeQ63
-         sYjQ==
+        bh=z/SBzaqpErJoT/wcV9MTdujz+diRyCzAJur4KDGnY3A=;
+        b=oob0klT/ryd4u3YiApFMmOM+r/5WBrGXchJROWcyGnN8F7V5cuVLEqiL7nT4BttzLl
+         O9s202sP3xtCK/alpewWKFHJLTGbcR/uml02Tw6tfan/LFi3ShSyaERWyiuDIFc3+bOc
+         bcsGSvYjTkWjhtI+Pj93TMGTJKfQ0M+7Rzl7l5mY1h0o8mXluMR+WrFuQ0MT53sjsKAZ
+         4c8pPOkyWgNhXQvGpk96HfQGVHsnx/vNYEaX5G03aI1il0fO0G9jQcVla4DesHHY6k6B
+         yMnK7PTmJHIHuHHA8RFMg4w/q0qq7Nf3Ug/P3tqU/tJUHzCNcZPaPLzFASwJLNvbIFWm
+         n+SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=DyjLX6ic4CHAm5vSjTY4RzmAKn5FQWP0TWCHfZ2cDvE=;
-        b=bIFk1gQSo43ctn4xQA/rs4Ru4UTgdV7/2EeK5S45Sp9XIX00+vZcxRkc9lXg4isIyj
-         JYQN5gUl2YtTlHG+SiOLGsre1hm1Hhv8KXrP+OVfy4UJljy62a7ZdatGPMhxiCX6Kyz/
-         F6rbmFCspjB1BKu9Wc1TBs7AFIhqlwKtlKagc0pRCPS4DFZYdgOWK+LXkhE5yC3x8UgH
-         grLzOPu4sU0g+EDVtPOs4OZuoB2tcx4ahLBPVSg5PH2zAq1ygONGwqvAoCos14k5SaTT
-         Ys+a0ebz/lq/DtcII4+RkAYi7u2I5iLG0ejux5mz0VKjOUfef7f4rc4du8jAEZ09VZnk
-         RCpg==
-X-Gm-Message-State: AJIora/xOCXh30zbfifa48Kd3K4iDjD2z6h5C/R1h/n2aegKQBSUfqXr
-        4UdsIUyhG06kfVtF+nYspss=
-X-Google-Smtp-Source: AGRyM1smD0Z/WzwqAvg1Kf6obfh/lGaOQt/txZDOmvkR3LMqjBb+fkUelhrxiP5LPOODXaFPN9qGYw==
-X-Received: by 2002:a05:6871:4705:b0:108:7537:d1ad with SMTP id py5-20020a056871470500b001087537d1admr6280910oab.5.1656615909183;
-        Thu, 30 Jun 2022 12:05:09 -0700 (PDT)
+        bh=z/SBzaqpErJoT/wcV9MTdujz+diRyCzAJur4KDGnY3A=;
+        b=dKNRUp51PtPt1GuypCzYdwKcYoW1oE3uuyILcALPtgs0ClASPI1wBa3vp+A+JV+acg
+         PeAGX/jFqjKrkgkjibFvNzzGOrQCq7diIOf71FlUvGJJrrlVKohXybsVLPDZTWbYDU0c
+         hZESomeWcHFeqF82VIjdkNCdaH2XqVOX3RmoWdDzzL/qvAl0aShTAPJa31rAJtxeWVKm
+         N8Z+0DjW9iD06ts4rGeCOzVt7ae/plGi754uPP6Qlv02s0s7ghKcVzhxAnbIX5Uc3rcX
+         OXTA57WLVMKDriPAHQAT5nDPk4ya4ZR+gzuA+51Zmmir8Dh5mDxLHh/GWtqLvfhMGbYZ
+         rNdg==
+X-Gm-Message-State: AJIora92Vku/E9t1vvbMPV62pkBF7xulzTUTbRv/wXFVT6U9Wh81M4OF
+        yP/o39Wp5Ys+S4silH9l5tk=
+X-Google-Smtp-Source: AGRyM1urucKaa1wWBFTOHaSmmu41hkfNE6OcuVMjFchdfgR59b2B9fcN9atxxzfGDGlGwFi8LHOoTA==
+X-Received: by 2002:a05:6870:65ab:b0:101:acac:7ba7 with SMTP id fp43-20020a05687065ab00b00101acac7ba7mr6429482oab.29.1656615910298;
+        Thu, 30 Jun 2022 12:05:10 -0700 (PDT)
 Received: from u-22.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id o4-20020a9d4104000000b0060bfb4e4033sm11756442ote.9.2022.06.30.12.05.08
+        by smtp.googlemail.com with ESMTPSA id o4-20020a9d4104000000b0060bfb4e4033sm11756442ote.9.2022.06.30.12.05.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 12:05:08 -0700 (PDT)
+        Thu, 30 Jun 2022 12:05:09 -0700 (PDT)
 From:   Bob Pearson <rpearsonhpe@gmail.com>
 To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 2/9] RDMA/rxe: Convert pr_warn/err to pr_debug in pyverbs
-Date:   Thu, 30 Jun 2022 14:04:19 -0500
-Message-Id: <20220630190425.2251-3-rpearsonhpe@gmail.com>
+Cc:     Bob Pearson <rpearsonhpe@gmail.com>,
+        Frank Zago <frank.zago@hpe.com>
+Subject: [PATCH for-next v2 3/9] RDMA/rxe: Remove unnecessary include statement
+Date:   Thu, 30 Jun 2022 14:04:20 -0500
+Message-Id: <20220630190425.2251-4-rpearsonhpe@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220630190425.2251-1-rpearsonhpe@gmail.com>
 References: <20220630190425.2251-1-rpearsonhpe@gmail.com>
@@ -68,74 +69,30 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-The pyverbs test suite generates a few dmesg traces from intentional
-error tests. This patch replaces those messages with pr_debug()
-calls which improves the usefullness of the tests.
+rxe_verbs.h includes the file <rdma/rdma_user_rxe.h>.
+It should have been <uapi/rdma/rdma_user_rxe.h>,
+however, it is not used and not required in this file.
 
+This patch removes the include statement.
+
+Reported-by: Frank Zago <frank.zago@hpe.com>
 Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
 ---
- drivers/infiniband/sw/rxe/rxe_cq.c   | 8 ++++----
- drivers/infiniband/sw/rxe/rxe_resp.c | 8 +++++---
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_verbs.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_cq.c b/drivers/infiniband/sw/rxe/rxe_cq.c
-index 642b52539ac3..b1a0ab3cd4bd 100644
---- a/drivers/infiniband/sw/rxe/rxe_cq.c
-+++ b/drivers/infiniband/sw/rxe/rxe_cq.c
-@@ -19,16 +19,16 @@ int rxe_cq_chk_attr(struct rxe_dev *rxe, struct rxe_cq *cq,
- 	}
+diff --git a/drivers/infiniband/sw/rxe/rxe_verbs.h b/drivers/infiniband/sw/rxe/rxe_verbs.h
+index ac464e68c923..ec9a70aecc1e 100644
+--- a/drivers/infiniband/sw/rxe/rxe_verbs.h
++++ b/drivers/infiniband/sw/rxe/rxe_verbs.h
+@@ -9,7 +9,6 @@
  
- 	if (cqe > rxe->attr.max_cqe) {
--		pr_warn("cqe(%d) > max_cqe(%d)\n",
--			cqe, rxe->attr.max_cqe);
-+		pr_debug("cqe(%d) > max_cqe(%d)\n",
-+				cqe, rxe->attr.max_cqe);
- 		goto err1;
- 	}
- 
- 	if (cq) {
- 		count = queue_count(cq->queue, QUEUE_TYPE_TO_CLIENT);
- 		if (cqe < count) {
--			pr_warn("cqe(%d) < current # elements in queue (%d)",
--				cqe, count);
-+			pr_debug("cqe(%d) < current # elements in queue (%d)",
-+					cqe, count);
- 			goto err1;
- 		}
- 	}
-diff --git a/drivers/infiniband/sw/rxe/rxe_resp.c b/drivers/infiniband/sw/rxe/rxe_resp.c
-index c45c9d954931..7aea5f06d061 100644
---- a/drivers/infiniband/sw/rxe/rxe_resp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_resp.c
-@@ -448,7 +448,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 	if (rkey_is_mw(rkey)) {
- 		mw = rxe_lookup_mw(qp, access, rkey);
- 		if (!mw) {
--			pr_err("%s: no MW matches rkey %#x\n", __func__, rkey);
-+			pr_debug("%s: no MW matches rkey %#x\n",
-+					__func__, rkey);
- 			state = RESPST_ERR_RKEY_VIOLATION;
- 			goto err;
- 		}
-@@ -468,7 +469,8 @@ static enum resp_states check_rkey(struct rxe_qp *qp,
- 	} else {
- 		mr = lookup_mr(qp->pd, access, rkey, RXE_LOOKUP_REMOTE);
- 		if (!mr) {
--			pr_err("%s: no MR matches rkey %#x\n", __func__, rkey);
-+			pr_debug("%s: no MR matches rkey %#x\n",
-+					__func__, rkey);
- 			state = RESPST_ERR_RKEY_VIOLATION;
- 			goto err;
- 		}
-@@ -1434,7 +1436,7 @@ int rxe_responder(void *arg)
- 
- 		case RESPST_ERROR:
- 			qp->resp.goto_error = 0;
--			pr_warn("qp#%d moved to error state\n", qp_num(qp));
-+			pr_debug("qp#%d moved to error state\n", qp_num(qp));
- 			rxe_qp_error(qp);
- 			goto exit;
- 
+ #include <linux/interrupt.h>
+ #include <linux/workqueue.h>
+-#include <rdma/rdma_user_rxe.h>
+ #include "rxe_pool.h"
+ #include "rxe_task.h"
+ #include "rxe_hw_counters.h"
 -- 
 2.34.1
 
