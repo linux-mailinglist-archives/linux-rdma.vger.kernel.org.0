@@ -2,64 +2,70 @@ Return-Path: <linux-rdma-owner@vger.kernel.org>
 X-Original-To: lists+linux-rdma@lfdr.de
 Delivered-To: lists+linux-rdma@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F68562298
-	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jun 2022 21:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272AE56231E
+	for <lists+linux-rdma@lfdr.de>; Thu, 30 Jun 2022 21:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236817AbiF3TFU (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
-        Thu, 30 Jun 2022 15:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        id S236748AbiF3T25 (ORCPT <rfc822;lists+linux-rdma@lfdr.de>);
+        Thu, 30 Jun 2022 15:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236818AbiF3TFT (ORCPT
-        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jun 2022 15:05:19 -0400
+        with ESMTP id S235269AbiF3T24 (ORCPT
+        <rfc822;linux-rdma@vger.kernel.org>); Thu, 30 Jun 2022 15:28:56 -0400
 Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2EB137A29
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:05:17 -0700 (PDT)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-101b4f9e825so505890fac.5
-        for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:05:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A631141619
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:28:55 -0700 (PDT)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-fb6b4da1dfso605430fac.4
+        for <linux-rdma@vger.kernel.org>; Thu, 30 Jun 2022 12:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fPzDkaS+L/Ev2tFB61N27jlt6NfPFid4f2EAXcBDn2E=;
-        b=ELTTZuLpnz7JdNf0hEUSLe5fVyi95b5IcjaVZs+dDNcMKByGbpqK3tTUWNU1xl2FWY
-         v/ZfgRIKC2HsAivbOhQo59VCNQcF0H7UDJbSv3iHZKvZYLfO9RkA/HAjjqDtnIEvQyQK
-         tmH3sRD47tM8Fi1lrx/2ST4VHBFT2nmUXonaEsloL0mPJG9zb2i405hFZnNYPhtCSkTr
-         R3WovGQ78qRs+EbTLjYlfjr7AxGf0J5nHrxPjNJMiCC6NbrFY1ViX8VqNWtoGtreILcD
-         fcaWLPbyAu43ZG8qOzH7oGkV3nEGBhzFaMAhkh3X7oTAM0gyYqCRM+F86QSGf5f7w5gc
-         Pg3A==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=UohUyuirfwwaIddSwqVXfcvohEM3cG/y5DKPfcIiHqA=;
+        b=BxhxkHxqa0wsRgiVvhmyrsdg1Oa1uaR3EWh/6Ufj3S2ycIDA8fGvfuHm3PSeENw/re
+         5T25/FpL77xCddRlmZsG65NNSuR1J8W5IhgFnZzLdYdS32DQk9JwTUA0kArsHXuh9Vvz
+         1J8OFURD9LbLIbfMf/Awfn+by9ob/YDe0XCdP0YK+0u2cyA9+fP6IZElCcrBbx7l9Kza
+         pk7gRkcFLFovqU3LwF65S0DxYjUuY+Ozy+A+EoL/ASPz1yfplIzrfrqjA6/FhbY1zKTi
+         SU13s638I4nclQv8rDiGCY0NqYXU8STiK9bDyKHQugIt3OVWAYccuYH5ovEhCRNGnDJJ
+         Cyqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fPzDkaS+L/Ev2tFB61N27jlt6NfPFid4f2EAXcBDn2E=;
-        b=luXdW6NlGgO/6rtg9FKAYC3Eil0OocBTfThVPVbnsc6d+fYeGQkeCvStT0gW9J6lCW
-         ZjUxe/QY0wkfWV/2Cln0kjtzTNQekgeOr0aFY1g+DQ8GjaolkiU6lWTrKu0N1QjbUK60
-         vgfLQwQjL0SZW2g7Tq20iDvgO6CeqBX1AoPwT0+9hiEMzAvp+mwYRZfESGnoruG4P/Uy
-         ScBX8e3KfH57gz8JRMGxFBdGuFtpcsd53N8cKSLLwTQHdXZii+n1LjqM3D7QvHVeDv7u
-         nuu7Ey2hD5jJgCJZf+C57YoIlNIZASJHfmVA11dQDA2D13XOENhHF5Vtu1BNYPf+p4V7
-         FaVA==
-X-Gm-Message-State: AJIora9wJj/ia6byd0NZ11SV+W7Jg8MilGyydgA/NkR5lE6+UMjOJdxa
-        6iid0uks6Wi49Z81U+IClwVflPnNPrjCPQ==
-X-Google-Smtp-Source: AGRyM1v1tY7hcIt0rtxvjKNYHZiEms6w69ar2wJs4HfQj8gDGEauFE+n5UEZsQQPMhDESupGCU0jCQ==
-X-Received: by 2002:a05:6871:4705:b0:108:7537:d1ad with SMTP id py5-20020a056871470500b001087537d1admr6281319oab.5.1656615917672;
-        Thu, 30 Jun 2022 12:05:17 -0700 (PDT)
-Received: from u-22.tx.rr.com (097-099-248-255.res.spectrum.com. [97.99.248.255])
-        by smtp.googlemail.com with ESMTPSA id o4-20020a9d4104000000b0060bfb4e4033sm11756442ote.9.2022.06.30.12.05.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 Jun 2022 12:05:16 -0700 (PDT)
-From:   Bob Pearson <rpearsonhpe@gmail.com>
-To:     jgg@nvidia.com, zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org
-Cc:     Bob Pearson <rpearsonhpe@gmail.com>
-Subject: [PATCH for-next v2 9/9] RDMA/rxe: Replace __rxe_do_task by rxe_run_task
-Date:   Thu, 30 Jun 2022 14:04:26 -0500
-Message-Id: <20220630190425.2251-10-rpearsonhpe@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220630190425.2251-1-rpearsonhpe@gmail.com>
-References: <20220630190425.2251-1-rpearsonhpe@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=UohUyuirfwwaIddSwqVXfcvohEM3cG/y5DKPfcIiHqA=;
+        b=CSQWYDwqHcJJQoEJ47Ixq7XbjnDk/7IkrTITX4OTX5BlpAW624qkHXKhsA9Wc2SysT
+         SHGipIMSk9tFIaFL5h9alG11BGgOO9LquaIBQJUqMaamKloO1mVTJ0nTxqQc+yCP9i3u
+         FxGcAa3lKG/ujA+Sd3Vj4/mfiLuU86UgXGiM2YQ0Fv2ug10ydDrnqIw1R9UdalKnm+4k
+         cug1mG6fazbjrCIliYosjuUZHVJWyRYhNiCR4LT1wUA7muwD+fRWLaj4aST0d5ltQ6pY
+         Yz10zCAM3mx/EIHTSCPBNBpOOpDeRkzDsye2mONWLeuq789Oa7jGUe38DVa5m1kl15c7
+         xCCg==
+X-Gm-Message-State: AJIora+8FFQo81+oI5DvPu3TP4daxoleJDJZmaMgiLe0+vGa8URCHElv
+        87roGS/TJTxzxflXqK40kmU=
+X-Google-Smtp-Source: AGRyM1svQ0vJh/FXjg2UEMSCs2T4wwuLcrAyLKZfzrkCHM8na4WBIwheSLjLEpSPqRmTCEDuny7o8Q==
+X-Received: by 2002:a05:6871:93:b0:fe:23b6:6efb with SMTP id u19-20020a056871009300b000fe23b66efbmr6212612oaa.201.1656617335118;
+        Thu, 30 Jun 2022 12:28:55 -0700 (PDT)
+Received: from ?IPV6:2603:8081:140c:1a00:e895:24ff:51a7:a632? (2603-8081-140c-1a00-e895-24ff-51a7-a632.res6.spectrum.com. [2603:8081:140c:1a00:e895:24ff:51a7:a632])
+        by smtp.gmail.com with ESMTPSA id l16-20020a056870f15000b00101bd4914f9sm13400083oac.43.2022.06.30.12.28.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Jun 2022 12:28:54 -0700 (PDT)
+Message-ID: <49cdb36d-3710-bdcd-7b8c-5edfeb93b36d@gmail.com>
+Date:   Thu, 30 Jun 2022 14:28:53 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH for-next 0/5] Fix incorrect atomic retry behavior
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     zyjzyj2000@gmail.com, linux-rdma@vger.kernel.org,
+        frank.zago@hpe.com, jhack@hpe.com
+References: <20220606143836.3323-1-rpearsonhpe@gmail.com>
+ <20220630185224.GA1055414@nvidia.com>
+From:   Bob Pearson <rpearsonhpe@gmail.com>
+In-Reply-To: <20220630185224.GA1055414@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -68,40 +74,17 @@ Precedence: bulk
 List-ID: <linux-rdma.vger.kernel.org>
 X-Mailing-List: linux-rdma@vger.kernel.org
 
-In rxe_req.c replace calls to __rxe_do_task() by calls to
-rxe_run_task(.., 0). Using __rxe_do_task is an error because
-the completer tasklet is not designed to be re-entrant and
-__rxe_do_task() should only be called when it is clear that
-no one else could be calling the completer tasklet as is the
-case in rxe_qp.c where this call is used in safe environments.
-
-Signed-off-by: Bob Pearson <rpearsonhpe@gmail.com>
----
- drivers/infiniband/sw/rxe/rxe_req.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/infiniband/sw/rxe/rxe_req.c b/drivers/infiniband/sw/rxe/rxe_req.c
-index 008ae51c7560..58b9f170b18b 100644
---- a/drivers/infiniband/sw/rxe/rxe_req.c
-+++ b/drivers/infiniband/sw/rxe/rxe_req.c
-@@ -723,7 +723,7 @@ int rxe_requester(void *arg)
- 						       qp->req.wqe_index);
- 			wqe->state = wqe_state_done;
- 			wqe->status = IB_WC_SUCCESS;
--			__rxe_do_task(&qp->comp.task);
-+			rxe_run_task(&qp->comp.task, 0);
- 			goto done;
- 		}
- 		payload = mtu;
-@@ -804,7 +804,7 @@ int rxe_requester(void *arg)
- 	goto out;
- err:
- 	wqe->state = wqe_state_error;
--	__rxe_do_task(&qp->comp.task);
-+	rxe_run_task(&qp->comp.task, 0);
- exit:
- 	ret = -EAGAIN;
- out:
--- 
-2.34.1
-
+On 6/30/22 13:52, Jason Gunthorpe wrote:
+> On Mon, Jun 06, 2022 at 09:38:32AM -0500, Bob Pearson wrote:
+>> Restructure the design of the atomic retries in rxe_resp.c modeled
+>> on the design of RDMA read reply. This fixes failures which
+>> occur when an atomic ack packet is lost as observed in the
+>> pyverbs test suite with a patch to randomly drop packets.
+> 
+> Applied to for-next
+> 
+> Thanks,
+> Jason
+Thanks.
+I think this will commute with the other fixes I just sent. If it doesn't I can rebase them.
+Bob
